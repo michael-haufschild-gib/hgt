@@ -16,10 +16,20 @@ namespace GaloisForLFunctions.SquareRootThreshold.HausdorffSaddle
 
 open _root_.RHTower
 
+/-- The width at which the Gaussian tail of the negative part is small. -/
+def hausdorffSaddleLength : ℝ := 131072 * (8000 * hausdorffNegativeConstant)
+
+/-- The order above which the saddle pays for the complete entry. -/
+def hausdorffOrderCut : ℕ :=
+  ⌈max 4 (max hausdorffSaddleLength (8000 * (16384 * Real.exp 1 + 8)))⌉₊
+
+/-- The saddle width above which the saddle pays for the complete entry. -/
+def hausdorffWidthCut : ℝ := max 200000 (hausdorffSaddleLength + 1)
+
 /-- A sufficiently broad saddle makes the complete calibrated entry nonnegative. -/
-theorem exists_broad_saddle_nonneg :
-    ∃ P : ℕ, 4 ≤ P ∧ ∃ W : ℝ, 32 ≤ W ∧ ∀ k r : ℕ, ∀ s w T : ℝ,
-      P ≤ k + 1 → W ≤ w → w ≤ s → 500 ≤ T → 0 < r →
+theorem broad_saddle_nonneg :
+    ∀ k r : ℕ, ∀ s w T : ℝ,
+      hausdorffOrderCut ≤ k + 1 → hausdorffWidthCut ≤ w → w ≤ s → 500 ≤ T → 0 < r →
       ((k + 1 : ℕ) : ℝ) * (primeArchEndpointHausdorffRadius * s ^ 2 - 1) = r →
       200 * ((k + 1 : ℕ) : ℝ) ≤ r →
       ((k + 1 : ℕ) : ℝ) * w ^ 2 = s ^ 2 →
@@ -27,22 +37,24 @@ theorem exists_broad_saddle_nonneg :
       0 ≤ scaledHausdorffMomentDifference primeArchEndpointHausdorffRadius
         normalizedPrimeArchMoment k r := by
   classical
-  obtain ⟨C, hC, Sn, hSn, hnegative⟩ := exists_negative_sum_bound
-  obtain ⟨Sc, hSc, Wc, hWc, hcount⟩ := exists_saddle_core_card_lower
-  let L : ℝ := 131072 * (8000 * C)
+  obtain ⟨C, hCd⟩ : ∃ C, C = hausdorffNegativeConstant := ⟨_, rfl⟩
+  have hC : 1 ≤ C := by rw [hCd]; exact one_le_hausdorffNegativeConstant
+  obtain ⟨L, hLd⟩ : ∃ L, L = hausdorffSaddleLength := ⟨_, rfl⟩
+  have hLC : L = 131072 * (8000 * C) := by rw [hLd, hCd, hausdorffSaddleLength]
   let Q : ℝ := 16384 * Real.exp 1 + 8
-  obtain ⟨P, hP⟩ := exists_nat_ge (max 4 (max L (8000 * Q)))
+  have hP : max 4 (max L (8000 * Q)) ≤ (hausdorffOrderCut : ℝ) := by
+    rw [hLd]
+    exact Nat.le_ceil _
+  obtain ⟨P, hPd⟩ : ∃ P, P = hausdorffOrderCut := ⟨_, rfl⟩
+  rw [← hPd] at hP
   have hP4 : 4 ≤ P := by exact_mod_cast (le_max_left _ _).trans hP
-  let W : ℝ := max 32 (max Wc (max (max Sn Sc) (L + 1)))
-  refine ⟨P, hP4, W, le_max_left _ _, ?_⟩
   intro k r s w T hp hw hws hT hr hbalance hpr hwidth hthermal
-  have hwp : 32 ≤ w := (le_max_left _ _).trans hw
-  have hwc : Wc ≤ w := (le_max_left _ _).trans ((le_max_right _ _).trans hw)
-  have hwm : max (max Sn Sc) (L + 1) ≤ w :=
-    (le_max_right _ _).trans ((le_max_right _ _).trans hw)
-  have hwsn : Sn ≤ w := (le_max_left _ _).trans ((le_max_left _ _).trans hwm)
-  have hwsc : Sc ≤ w := (le_max_right _ _).trans ((le_max_left _ _).trans hwm)
-  have hwL : L + 1 ≤ w := (le_max_right _ _).trans hwm
+  rw [← hPd] at hp
+  have hw2 : 200000 ≤ w := (le_max_left _ _).trans hw
+  have hwp : 32 ≤ w := by linarith only [hw2]
+  have hwL : L + 1 ≤ w := by
+    rw [hLd]
+    exact (le_max_right _ _).trans hw
   have hs0 : 0 < s := by linarith only [hwp, hws]
   have hw0 : 0 < w := by linarith only [hwp]
   have hpR : 0 < ((k + 1 : ℕ) : ℝ) := by positivity
@@ -51,9 +63,12 @@ theorem exists_broad_saddle_nonneg :
     (le_max_left _ _).trans ((le_max_right _ _).trans (hP.trans hPcast))
   have hpQ : 8000 * Q ≤ ((k + 1 : ℕ) : ℝ) :=
     (le_max_right _ _).trans ((le_max_right _ _).trans (hP.trans hPcast))
-  have hL0 : 0 ≤ L := by dsimp [L]; positivity
+  have hL0 : 0 ≤ L := by
+    rw [hLC]
+    linarith only [hC]
   have hwL2 : L ≤ w ^ 2 := by nlinarith only [hwL, hL0, sq_nonneg (w - 1)]
-  have hgaussian := gaussian_factor_le (by linarith only [hC] : 0 < C) hpL hwL2
+  have hgaussian := gaussian_factor_le (by linarith only [hC] : 0 < C)
+    (by rw [← hLC]; exact hpL) (by rw [← hLC]; exact hwL2)
   have horder := order_tail_le_inverse (k + 1) (Nat.succ_pos k)
   have horderSmall : (16384 * Real.exp 1 + 8) / ((k + 1 : ℕ) : ℝ) ≤ 1 / 8000 := by
     rw [div_le_iff₀ hpR]
@@ -66,8 +81,9 @@ theorem exists_broad_saddle_nonneg :
   have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hwp, hws])
   let V := M * w * Real.log s
   have hV : 0 ≤ V := by dsimp [V]; positivity
-  have hfinite := hnegative s w T k r (hwsn.trans hws) hwp hws hT (hP4.trans hp)
+  have hfinite := negative_sum_bound s w T k r (by linarith only [hw2, hws]) hwp hws hT (hP4.trans hp)
     hr hbalance hpr hwidth hthermal
+  rw [← hCd] at hfinite
   have htotal := (summable_negativeAtom primeArchEndpointHausdorffRadius k r).tsum_le_of_sum_le hfinite
   have hfar := mul_le_mul_of_nonneg_left hheight
     (show 0 ≤ 4096 * Real.exp 1 * M * Real.log s * (4 : ℝ)⁻¹ ^ (k + 1) by positivity)
@@ -79,7 +95,7 @@ theorem exists_broad_saddle_nonneg :
     dsimp [V, M] at hgaussian' horder'' hfar hlow ⊢
     nlinarith only [htotal, hfar, hlow, hgaussian', horder'']
   let B := xiCopiesBand (s - w / 10) (s + w / 10)
-  have hBcard := hcount s w (hwsc.trans hws) hwc hws
+  have hBcard := saddle_core_card_lower hw2 hws
   have hBterm : ∀ q ∈ B, M / 2 ≤ (hausdorffAtomTerm primeArchEndpointHausdorffRadius k r q).re := by
     intro q hq
     have hq' := mem_xiCopiesBand.mp hq
@@ -102,25 +118,50 @@ theorem exists_broad_saddle_nonneg :
   have hsource := core_sum_le_source_add_negative primeArchEndpointHausdorffRadius k r B
   nlinarith only [hcore, hsource, hnegativeSmall, hV]
 
-/-- One quadratic shift bound certifies all orders of the actual calibrated Hausdorff array. -/
-theorem exists_quadratic_scaledHausdorffMomentDifference_nonneg :
-    ∃ C : ℝ, 0 < C ∧ ∀ k r : ℕ, C * (((k + 1 : ℕ) : ℝ) ^ 2) ≤ r →
+/-- The explicit coefficient of the quadratic horizon of the Hausdorff array. -/
+def hausdorffQuadraticConstant : ℝ :=
+  max 200 (max (primeArchEndpointHausdorffRadius * hausdorffWidthCut ^ 2)
+    (max (2500000 * primeArchEndpointHausdorffRadius)
+      (∑ k ∈ Finset.range hausdorffOrderCut, (explicitPrimeArchHausdorffShift k : ℝ))))
+
+/-- **The explicit quadratic horizon.** Every entry of the actual calibrated Hausdorff array with
+`r ≥ C₀ (k+1)²` is nonnegative, for the explicit constant `C₀ = hausdorffQuadraticConstant`. -/
+theorem scaledHausdorffMomentDifference_nonneg_of_quadratic_le :
+    ∀ k r : ℕ, hausdorffQuadraticConstant * (((k + 1 : ℕ) : ℝ) ^ 2) ≤ r →
       0 ≤ scaledHausdorffMomentDifference primeArchEndpointHausdorffRadius
         normalizedPrimeArchMoment k r := by
   classical
-  obtain ⟨P, hP, W, hW, hmain⟩ := exists_broad_saddle_nonneg
+  obtain ⟨P, hPd⟩ : ∃ P, P = hausdorffOrderCut := ⟨_, rfl⟩
+  obtain ⟨W, hWd⟩ : ∃ W, W = hausdorffWidthCut := ⟨_, rfl⟩
+  have hW : 32 ≤ W := by
+    rw [hWd]
+    exact le_trans (by norm_num) (le_max_left _ _)
+  have hmain : ∀ k r : ℕ, ∀ s w T : ℝ,
+      P ≤ k + 1 → W ≤ w → w ≤ s → 500 ≤ T → 0 < r →
+      ((k + 1 : ℕ) : ℝ) * (primeArchEndpointHausdorffRadius * s ^ 2 - 1) = r →
+      200 * ((k + 1 : ℕ) : ℝ) ≤ r →
+      ((k + 1 : ℕ) : ℝ) * w ^ 2 = s ^ 2 →
+      10 * ((k + 1 : ℕ) : ℝ) * primeArchEndpointHausdorffRadius * T ^ 2 = r →
+      0 ≤ scaledHausdorffMomentDifference primeArchEndpointHausdorffRadius
+        normalizedPrimeArchMoment k r := by
+    rw [hPd, hWd]
+    exact broad_saddle_nonneg
   let R := primeArchEndpointHausdorffRadius
   have hR : 0 < R := primeArchEndpointHausdorffRadius_pos
-  let H : ℕ := ∑ k ∈ Finset.range P, explicitPrimeArchHausdorffShift k
-  let C : ℝ := max 200 (max (R * W ^ 2) (max (2500000 * R) (H : ℝ)))
-  have hC200 : 200 ≤ C := le_max_left _ _
-  have hCW : R * W ^ 2 ≤ C := (le_max_left _ _).trans (le_max_right _ _)
-  have hCT : 2500000 * R ≤ C :=
-    (le_max_left _ _).trans ((le_max_right _ _).trans (le_max_right _ _))
-  have hCH : (H : ℝ) ≤ C :=
-    (le_max_right _ _).trans ((le_max_right _ _).trans (le_max_right _ _))
+  obtain ⟨H, hHd⟩ : ∃ H : ℝ, H =
+      ∑ k ∈ Finset.range P, (explicitPrimeArchHausdorffShift k : ℝ) := ⟨_, rfl⟩
+  obtain ⟨C, hCd⟩ : ∃ C, C = hausdorffQuadraticConstant := ⟨_, rfl⟩
+  have hCmax : C = max 200 (max (R * W ^ 2) (max (2500000 * R) H)) := by
+    rw [hCd, hausdorffQuadraticConstant, hHd, hPd, hWd]
+  have hC200 : 200 ≤ C := by rw [hCmax]; exact le_max_left _ _
+  have hCW : R * W ^ 2 ≤ C := by
+    rw [hCmax]; exact (le_max_left _ _).trans (le_max_right _ _)
+  have hCT : 2500000 * R ≤ C := by
+    rw [hCmax]; exact (le_max_left _ _).trans ((le_max_right _ _).trans (le_max_right _ _))
+  have hCH : H ≤ C := by
+    rw [hCmax]; exact (le_max_right _ _).trans ((le_max_right _ _).trans (le_max_right _ _))
   have hC : 0 < C := by linarith only [hC200]
-  refine ⟨C, hC, ?_⟩
+  rw [← hCd]
   intro k r hshift
   have hp1 : (1 : ℝ) ≤ (k + 1 : ℕ) := by exact_mod_cast Nat.succ_le_succ (Nat.zero_le k)
   have hp0 : 0 < ((k + 1 : ℕ) : ℝ) := by positivity
@@ -169,9 +210,10 @@ theorem exists_quadratic_scaledHausdorffMomentDifference_nonneg :
     have hws := saddle_width_le_height hs0 hw0.le (Nat.succ_le_succ (Nat.zero_le k)) hwidth
     exact hmain k r s w T hp hwW hws hT500 hr hbalance hpr hwidth hthermal
   · have hkP : k < P := by omega
-    have hkH : explicitPrimeArchHausdorffShift k ≤ H :=
-      Finset.single_le_sum (fun _ _ => Nat.zero_le _) (Finset.mem_range.mpr hkP)
-    have hkHR : (explicitPrimeArchHausdorffShift k : ℝ) ≤ H := by exact_mod_cast hkH
+    have hkHR : (explicitPrimeArchHausdorffShift k : ℝ) ≤ H := by
+      rw [hHd]
+      exact Finset.single_le_sum (f := fun k => (explicitPrimeArchHausdorffShift k : ℝ))
+        (fun _ _ => Nat.cast_nonneg _) (Finset.mem_range.mpr hkP)
     have hCr : C ≤ (r : ℝ) := by
       have h := mul_le_mul_of_nonneg_left hp21 hC.le
       nlinarith only [h, hshift]
@@ -179,7 +221,13 @@ theorem exists_quadratic_scaledHausdorffMomentDifference_nonneg :
       exact_mod_cast hkHR.trans (hCH.trans hCr)
     exact scaledHausdorffMomentDifference_nonneg_of_explicit_shift_le k r hkr
 
-#print axioms exists_broad_saddle_nonneg
-#print axioms exists_quadratic_scaledHausdorffMomentDifference_nonneg
+/-- One quadratic shift bound certifies all orders of the actual calibrated Hausdorff array. -/
+theorem exists_quadratic_scaledHausdorffMomentDifference_nonneg :
+    ∃ C : ℝ, 0 < C ∧ ∀ k r : ℕ, C * (((k + 1 : ℕ) : ℝ) ^ 2) ≤ r →
+      0 ≤ scaledHausdorffMomentDifference primeArchEndpointHausdorffRadius
+        normalizedPrimeArchMoment k r :=
+  ⟨hausdorffQuadraticConstant,
+    lt_of_lt_of_le (by norm_num) (le_max_left _ _),
+    scaledHausdorffMomentDifference_nonneg_of_quadratic_le⟩
 
 end GaloisForLFunctions.SquareRootThreshold.HausdorffSaddle

@@ -22,14 +22,16 @@ For a nondegenerate diagonal form with determinant `D` over an odd finite field,
 `N_(2k+1)(t)=q^(2k)+χ((-1)^k D t)q^k` and
 `N_(2k+2)(t)=q^(2k+1)+χ((-1)^(k+1)D)v(t)q^k`,
 where `v(0)=q−1` and `v(t)=−1` for `t≠0`.
-The elementary input is `Σ_y χ(y²−c)=v(c)`: count `y²−z²=c` through the bijection `(y,z)↔(y−z,y+z)`. For `c≠0`, the product equation has `q−1` points. Induction on a diagonal variable then gives the displayed distributions.
+Both affine distributions and their actual-set recurrence are [formalized](../3-formalized/w4-diagonal-quadric-counts.md). The elementary input is `Σ_y χ(y²−c)=v(c)`: count `y²−z²=c` through the bijection `(y,z)↔(y−z,y+z)`. For `c≠0`, the product equation has `q−1` points. Induction on a diagonal variable gives the displayed distributions.
 
 Removing the zero vector and quotienting by nonzero scalars gives the projective trace. In transverse dimension `2k+2`, it is `Σ_{j=0}^{2k}q^j+χ((-1)^(k+1)D)q^k`; in dimension `2k+1`, it is `Σ_{j=0}^{2k−1}q^j`. The even-dimensional formula requires proving how the quadratic character changes under finite extension.
+
+For the actual critical form, `D` is a sign. The inspected identity `quadraticChar_neg_one` expresses its character through `χ₄(q)`. Multiplicativity and `#E=q^[E:F]` should therefore give the extension law directly: the nonambient eigenvalue is `χ_F((-1)^(k+1)D)q^k`. No general character-norm formula is needed for this specialization.
 
 ## Available inputs
 
 - `reciprocalSeries_quadratic` and `reciprocalPairing_transverse_nondegenerate` identify the exact quadratic coefficient and its radical.
 - `HTGeometry.bgv_det_diagonal_add_vecMulVec` proves the determinant identity over arbitrary commutative rings.
-- Mathlib `quadraticChar_card_sqrts` counts one-variable square roots; the multivariable quadric count remains to be proved.
+- `diagonalQuadraticCount_odd` and `diagonalQuadraticCount_even` prove the complete affine distributions. Transport to the actual transverse matrix and its projective quotient remain to be constructed.
 
 This supplies a local spectral correction, not the compactification's missing global trace formula or the ζ family.

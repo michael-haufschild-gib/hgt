@@ -15,7 +15,7 @@
 | A17 | star horizons done (`HodgeTheoryWithoutVarieties/TheDepthLawIsEffective`); Künneth jets closed as equivalence (`ArithmeticHarmonicAnalysis/SameOrderJetRecoveryIsHomogeneousLogIndependence`); gcd strata open | |
 | A18 | quadratic region done with non-explicit `C` (`3-formalized/hausdorff-quadratic-saddle-region.md`) | `SquareRootThreshold/EffectiveHorizons/HausdorffQuadraticRegion` |
 | A14 | done | `CompletedArithmeticForms/ThePrefixSchurCostIsThePrefixResidual.lean`: `S(tail z) = zᵀWz − rᵀA⁻¹r`, `r=(Wz)|_{[1,M]}`, so the debit is the prefix residual; `exists_plateauPrefixSchur_floor_on_conductor_block`: Schur complement keeps the conductor floor on fixed blocks. The crude `20‖By‖²` is false there (`By ∋ Ap`, size `log N`). Fixed-cell first-prime, coarse, polar costs: `ArithmeticIndexDescent/FixedCoarseCellsControlTheEntireWeilIndex.lean`, index `≤ R+A` on the literal full form |
-| A13 | open | |
+| A13 | done | `CriticalArithmeticCorrelationTheory/ReceivingCharges/LiteralChannelScaleDomination.lean`: cutoffs `A=MQ²⌈log N⌉`, `J=⌊N/(ceQ²)⌋` dominate all five costs on `ceMQ⁵⌈log N⌉≤N`, `‖U‖²≤K(BVW)²(s²(1+S)²+(sA_P)²/R²)`; whole band `exists_literal_upward_full_band_bound`; coherent law `‖U‖≤KBVW|t|(1/√log Q+ω_Q(M)/log Q)`; literal centered charge `≤KBW|t|/√log Q` at every admissible horizon |
 | A12 | open | |
 | A11 | ledger row stale: `θ<1/4` done (`EveryProfileIsPositiveAtLogLogOverlapOnPolynomialSpans`); past `1/4` open | |
 | A10 | open | |

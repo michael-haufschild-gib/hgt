@@ -331,9 +331,7 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
       simp only [hF]
       congr 1
       push_cast
-      ring_nf
-      rw [Complex.I_sq]
-      ring
+      linear_combination (y : ℂ) * Complex.I_sq
     rwa [hFI] at hrep
   have hunit : ∀ y : ℝ,
       (∫ w : ℝ, (halfPlanePoisson 1 w : ℂ) * Complex.exp (I * (y : ℂ) * (w : ℂ))) =
@@ -350,10 +348,12 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
       dsimp only
       have heven : halfPlanePoisson 1 (-w) = halfPlanePoisson 1 w := by
         unfold halfPlanePoisson; ring
-      rw [heven]
-      congr 2
-      push_cast
-      ring
+      have hexp_w : Complex.exp (I * (y : ℂ) * ((-w : ℝ) : ℂ)) =
+          Complex.exp (I * ((-y : ℝ) : ℂ) * (w : ℂ)) := by
+        congr 1
+        push_cast
+        ring
+      rw [heven, hexp_w]
   -- Step 2: rescale `s = σ * w` and shift `t = s + t₀`
   have hscale : (∫ s : ℝ, (halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ))) =
       Complex.exp (((-σ * |x| : ℝ) : ℂ)) := by
@@ -398,9 +398,13 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
             ((halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ))) := by
               refine integral_congr_ae (Filter.Eventually.of_forall fun s => ?_)
               dsimp only
-              rw [mul_left_comm, ← Complex.exp_add]
-              congr 2
-              push_cast
+              have hexp_s : Complex.exp (I * (x : ℂ) * ((s + t₀ : ℝ) : ℂ)) =
+                  Complex.exp (I * ((t₀ * x : ℝ) : ℂ)) * Complex.exp (I * (x : ℂ) * (s : ℂ)) := by
+                rw [← Complex.exp_add]
+                congr 1
+                push_cast
+                ring
+              rw [hexp_s]
               ring
       _ = Complex.exp (I * ((t₀ * x : ℝ) : ℂ)) *
             ∫ s : ℝ, (halfPlanePoisson σ s : ℂ) * Complex.exp (I * (x : ℂ) * (s : ℂ)) :=
@@ -593,7 +597,7 @@ theorem resonantHeckeStarSquare_eq_poisson_integral {u : ℂ} (hu : u.re < 0)
           (whittakerCoeff (I * (t : ℂ)) m * whittakerCoeff (I * (t : ℂ)) k)) := by
     intro m hm k hk
     have hbd : ∀ t : ℝ, ‖whittakerCoeff (I * (t : ℂ)) m * whittakerCoeff (I * (t : ℂ)) k‖ ≤
-        (m.divisors.card : ℝ) * (k.divisors.card : ℝ) := fun t => by
+        (m.divisorsAntidiagonal.card : ℝ) * (k.divisorsAntidiagonal.card : ℝ) := fun t => by
       rw [norm_mul]
       exact mul_le_mul (norm_whittakerCoeff_I_mul_real_le (hS m hm) t)
         (norm_whittakerCoeff_I_mul_real_le (hS k hk) t) (norm_nonneg _) (by positivity)

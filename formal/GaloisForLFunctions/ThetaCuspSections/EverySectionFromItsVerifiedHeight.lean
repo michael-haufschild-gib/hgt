@@ -105,19 +105,12 @@ private theorem abs_eval_basis_le {N i : ℕ} {h c b : ℝ} (hh : 0 < h) (hi : i
       simp only [eval_mul, eval_C, eval_sub, eval_X]
       rw [show c + (i : ℝ) * h - (c + j * h) = ((i : ℝ) - j) * h by ring]
       field_simp
-    rw [e, abs_div, abs_mul, abs_of_pos hh, div_div_eq_mul_div, div_le_div_iff₀ (by positivity) hab]
     have h1 : |b - (c + j * h)| ≤ 2 * |b| := by
       have := abs_sub (b) (c + j * h)
       have h2 := hv j hjN
       linarith only [this, h2]
-    have h3 : 0 ≤ h * |(i : ℝ) - j| := by positivity
-    calc |b - (c + j * h)| * |(i : ℝ) - j| ≤ 2 * |b| * |(i : ℝ) - j| :=
-          mul_le_mul_of_nonneg_right h1 hab.le
-      _ ≤ 2 * |b| * h * |(i : ℝ) - j| / (|(i : ℝ) - j| * h) * |(i : ℝ) - j| := by
-          have : 2 * |b| * h * |(i : ℝ) - j| / (|(i : ℝ) - j| * h) = 2 * |b| := by
-            field_simp
-          rw [this]
-      _ = _ := by ring
+    rw [e, abs_div, abs_mul, abs_of_pos hh, div_div, mul_comm h]
+    exact div_le_div_of_nonneg_right h1 (by positivity)
   refine (Finset.prod_le_prod (fun _ _ => abs_nonneg _) hbound).trans_eq ?_
   rw [Finset.prod_div_distrib, Finset.prod_const, hcard, prod_erase_abs]
 
@@ -143,7 +136,7 @@ private theorem sum_abs_eval_basis_le {N : ℕ} (hN : 1 ≤ N) {c b : ℝ}
       exact_mod_cast hc
     have h1 : (i.factorial : ℝ) ≠ 0 := by positivity
     have h2 : ((n - i).factorial : ℝ) ≠ 0 := by positivity
-    have h3 : (n.factorial : ℝ) ≠ 0 := by positivity
+    have h3 : (n.choose i : ℝ) ≠ 0 := by exact_mod_cast (Nat.choose_pos hin).ne'
     rw [← hc']
     field_simp
   rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum, ← Finset.sum_div]
@@ -178,7 +171,7 @@ private theorem sq_eval_le_nodes {N : ℕ} (hN : 1 ≤ N) {P : ℝ[X]} (hdeg : P
     exact_mod_cast h2
   have hdeg' : P.degree < ((Finset.range N).card : ℕ) := by rwa [Finset.card_range]
   have hint := congrArg (eval b) (Lagrange.eq_interpolate hinj hdeg')
-  rw [Lagrange.interpolate_apply, eval_finset_sum] at hint
+  rw [Lagrange.interpolate_apply, eval_finsetSum] at hint
   simp only [eval_mul, eval_C] at hint
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Finset.range N)
     (fun i => (Lagrange.basis (Finset.range N) v i).eval b) (fun i => P.eval (v i))
@@ -232,7 +225,7 @@ theorem sq_eval_le_integral {N : ℕ} (hN : 1 ≤ N) {P : ℝ[X]} (hdeg : P.degr
   have hcsum : Continuous fun s : ℝ => ∑ i ∈ Finset.range N, P.eval (1 + s + i * h) ^ 2 := by
     fun_prop
   have hmono := intervalIntegral.integral_mono_on hh0.le
-    (intervalIntegrable_const (c := P.eval b ^ 2))
+    (intervalIntegrable_const (μ := volume) (c := P.eval b ^ 2))
     ((hcsum.const_mul S).intervalIntegrable 0 h) hpt
   rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul, intervalIntegral.integral_const_mul,
     intervalIntegral.integral_finset_sum fun i _ => by
@@ -255,7 +248,6 @@ theorem sq_eval_le_integral {N : ℕ} (hN : 1 ≤ N) {P : ℝ[X]} (hdeg : P.degr
   have hadj := intervalIntegral.sum_integral_adjacent_intervals
     (a := fun k : ℕ => 1 + (k : ℝ) * h) (n := N) (f := fun x : ℝ => P.eval x ^ 2)
     (μ := volume) (fun k _ => hc.intervalIntegrable _ _)
-  simp only [] at hadj
   rw [hadj, Nat.cast_zero, zero_mul, add_zero, hNh, show (1 : ℝ) + 4 = 5 by norm_num] at hmono
   have hval : (N / 4 : ℝ) * h = 1 := by
     rw [hh]
@@ -292,11 +284,10 @@ theorem pow_mul_exp_tail_of_le {T x : ℝ} {m : ℕ} (hT : 0 < T) (hm : (m : ℝ
     ring
   have h4 := mul_le_mul_of_nonneg_right h2 (Real.exp_pos (-(7 / 5 * x))).le
   rw [e] at h4
+  have hp : x ^ m = T ^ m * y ^ m := by rw [hxy, mul_pow]
   calc x ^ m * Real.exp (-(7 / 5 * x)) = T ^ m * (y ^ m * Real.exp (-(7 / 5 * x))) := by
-        rw [hxy]
-        ring_nf
-        rw [hxy]
-        ring_nf
+        rw [hp]
+        ring
     _ ≤ T ^ m * (Real.exp (-(2 / 5 * T)) * Real.exp (-x)) :=
         mul_le_mul_of_nonneg_left h4 (by positivity)
     _ = _ := by ring
@@ -389,8 +380,10 @@ theorem section_numeric {N : ℕ} (hN : 1 ≤ N) :
     nlinarith only [hy3, mul_le_mul_of_nonneg_left hL1 hy0.le]
   -- The logarithm of the height.
   have hlogT : Real.log T ≤ 2 * L + 3 := by
-    rw [Real.log_le_iff_le_exp hT0, Real.exp_add, ← mul_comm (2 : ℝ), mul_comm L,
-      show (2 : ℝ) * L = L + L by ring, Real.exp_add, hL, Real.exp_log hy0]
+    rw [Real.log_le_iff_le_exp hT0]
+    have e : Real.exp (2 * L + 3) = y * y * Real.exp 3 := by
+      rw [Real.exp_add, show 2 * L = L + L by ring, Real.exp_add, hL, Real.exp_log hy0]
+    rw [e]
     have he3 : (20 : ℝ) ≤ Real.exp 3 := by
       have h1 := Real.exp_one_gt_d9
       have h2 : Real.exp 3 = Real.exp 1 ^ 3 := by
@@ -400,7 +393,7 @@ theorem section_numeric {N : ℕ} (hN : 1 ≤ N) :
       calc (20 : ℝ) ≤ (2.7182818283 : ℝ) ^ 3 := by norm_num
         _ ≤ _ := pow_le_pow_left₀ (by norm_num) h1.le 3
     have hTy : T ≤ 20 * (y * y) := by
-      rw [hTval, ← hL]
+      rw [hTval]
       nlinarith only [hy3, mul_le_mul_of_nonneg_left hL2 hy0.le]
     calc T ≤ 20 * (y * y) := hTy
       _ ≤ y * y * Real.exp 3 := by nlinarith only [mul_le_mul_of_nonneg_left he3 (mul_pos hy0 hy0).le]
@@ -609,7 +602,7 @@ theorem thetaCuspCenterMixedSignedHankel_posDef_of_rhVerifiedThrough (N : ℕ)
     exact degree_sum_fin_lt v
   have hcoeff : ∀ j : Fin N, P.coeff j = v j := by
     intro j
-    rw [hPdef, finset_sum_coeff, Finset.sum_eq_single j]
+    rw [hPdef, finsetSum_coeff, Finset.sum_eq_single j]
     · rw [coeff_C_mul_X_pow, if_pos rfl]
     · intro i _ hij
       rw [coeff_C_mul_X_pow, if_neg]
@@ -628,7 +621,7 @@ theorem thetaCuspCenterMixedSignedHankel_posDef_of_rhVerifiedThrough (N : ℕ)
       ∑ i : Fin N, ∑ j : Fin N, v i * v j * (b ^ ((i : ℕ) + (j : ℕ)) * current a b) := by
     intro b
     have h1 : P.eval b = ∑ i : Fin N, v i * b ^ (i : ℕ) := by
-      rw [hPdef, eval_finset_sum]
+      rw [hPdef, eval_finsetSum]
       simp only [eval_mul, eval_C, eval_pow, eval_X]
     rw [h1, sq, Finset.sum_mul_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -637,13 +630,13 @@ theorem thetaCuspCenterMixedSignedHankel_posDef_of_rhVerifiedThrough (N : ℕ)
     rw [pow_add]
     ring
   simp_rw [heval] at hpos
-  rw [integral_finset_sum _ fun i _ => integrable_finsetSum _ fun j _ =>
+  rw [integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ =>
     (raw_integrable a habs _).const_mul _] at hpos
   have heq : v ⬝ᵥ rawHankel a N *ᵥ v = ∑ i : Fin N, ∫ b : ℝ, ∑ j : Fin N,
       v i * v j * (b ^ ((i : ℕ) + (j : ℕ)) * current a b) := by
     simp only [dotProduct, mulVec, rawHankel, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [integral_finset_sum _ fun j _ => (raw_integrable a habs _).const_mul _]
+    rw [integral_finsetSum _ fun j _ => (raw_integrable a habs _).const_mul _]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [integral_const_mul]
     unfold rawMoment

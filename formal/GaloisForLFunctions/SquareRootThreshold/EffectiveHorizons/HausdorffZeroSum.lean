@@ -70,29 +70,27 @@ theorem negativeAtom_le_gaussian_shell {R s w : ℝ} (k r : ℕ) (hR : 0 < R)
   nlinarith only [hneg, hnorm, hmul]
 
 /-- Uniform finite sums of the possible negative part in the Gaussian region. -/
-theorem exists_negative_gaussian_sum_bound :
-    ∃ C : ℝ, 1 ≤ C ∧ ∃ S : ℝ, 16 ≤ S ∧ ∀ R s w : ℝ, ∀ k r : ℕ,
-      0 < R → S ≤ s → 32 ≤ w → w ≤ s → 0 < r →
+theorem negative_gaussian_sum_bound :
+    ∀ R s w : ℝ, ∀ k r : ℕ,
+      0 < R → 200 ≤ s → 32 ≤ w → w ≤ s → 0 < r →
       ((k + 1 : ℕ) : ℝ) * (R * s ^ 2 - 1) = r →
       200 * ((k + 1 : ℕ) : ℝ) ≤ r →
       ((k + 1 : ℕ) : ℝ) * w ^ 2 = s ^ 2 →
       ∀ F : Finset XiZeroCopy,
       (∀ q ∈ F, s / 4 ≤ |(q.1 : ℂ).im| ∧ |(q.1 : ℂ).im| ≤ 4 * s) →
       ∑ q ∈ F, negativeAtom R k r q ≤
-        C * gaussianSumConstant * Real.exp 1 * realKernel R (k + 1) r s * w * Real.log s *
+        1000 * gaussianSumConstant * Real.exp 1 * realKernel R (k + 1) r s * w * Real.log s *
           Real.exp (-min ((k + 1 : ℕ) : ℝ) (w ^ 2) / 131072) := by
   classical
-  obtain ⟨C, hC, S, hS, hcount⟩ := exists_radial_shell_card_upper
-  refine ⟨C, hC, S, hS, ?_⟩
   intro R s w k r hR hs hw hws hr hbalance hpr hwidth F hF
-  have hs0 : 0 < s := by linarith only [hS, hs]
+  have hs0 : 0 < s := by linarith only [hs]
   have hM := realKernel_saddle_pos hs0 (Nat.succ_pos k) hr hbalance
-  have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hS, hs])
+  have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hs])
   let index := fun q : XiZeroCopy => ⌊|( |(q.1 : ℂ).im| - s)| / w⌋₊
   have hcard : ∀ n : ℕ, ((F.filter (fun q => index q = n)).card : ℝ) ≤
-      (C * w * Real.log s) * ((n : ℝ) + 1) := by
+      (1000 * w * Real.log s) * ((n : ℝ) + 1) := by
     intro n
-    have h := hcount s w hs (by linarith only [hw]) hws n
+    have h := radial_shell_card_upper s w hs (by linarith only [hw]) hws n
       (F.filter (fun q => index q = n)) (by
         intro q hq
         obtain ⟨hqF, hqn⟩ := Finset.mem_filter.mp hq
@@ -103,15 +101,15 @@ theorem exists_negative_gaussian_sum_bound :
         Real.exp (-min ((k + 1 : ℕ) : ℝ) (w ^ 2) / 131072)) * Real.exp (-(index q : ℝ) / 32) := by
     intro q hq
     exact negativeAtom_le_gaussian_shell k r hR hs0 hr
-      (by linarith only [hS, hs]) hw hbalance hpr hwidth q (hF q hq).1 (hF q hq).2
+      (by linarith only [hs]) hw hbalance hpr hwidth q (hF q hq).1 (hF q hq).2
   have h := sum_le_gaussianSumConstant F index (negativeAtom R k r)
     (by positivity) (by positivity) hcard hterm
   nlinarith only [h]
 
 /-- Power tails are bounded after grouping copies in intervals of one saddle height. -/
-theorem exists_negative_power_sum_bound :
-    ∃ S : ℝ, 4 ≤ S ∧ ∀ R s w : ℝ, ∀ k r : ℕ,
-      0 < R → S ≤ s → 32 ≤ w → 4 ≤ k + 1 → 0 < r →
+theorem negative_power_sum_bound :
+    ∀ R s w : ℝ, ∀ k r : ℕ,
+      0 < R → 2000 ≤ s → 32 ≤ w → 4 ≤ k + 1 → 0 < r →
       ((k + 1 : ℕ) : ℝ) * (R * s ^ 2 - 1) = r →
       200 * ((k + 1 : ℕ) : ℝ) ≤ r →
       ((k + 1 : ℕ) : ℝ) * w ^ 2 = s ^ 2 →
@@ -119,13 +117,11 @@ theorem exists_negative_power_sum_bound :
       ∑ q ∈ F, negativeAtom R k r q ≤
         4096 * Real.exp 1 * realKernel R (k + 1) r s * s * Real.log s * (4 : ℝ)⁻¹ ^ (k + 1) := by
   classical
-  obtain ⟨S, hS, hcount⟩ := exists_total_card_upper
-  refine ⟨S, hS, ?_⟩
   intro R s w k r hR hs hw hp hr hbalance hpr hwidth F hF
-  have hs0 : 0 < s := by linarith only [hS, hs]
+  have hs0 : 0 < s := by linarith only [hs]
   have hlogs : 1 ≤ Real.log s := by
     have h := Real.log_le_log (Real.exp_pos 1)
-      (show Real.exp 1 ≤ s by linarith only [Real.exp_one_lt_d9, hS, hs])
+      (show Real.exp 1 ≤ s by linarith only [Real.exp_one_lt_d9, hs])
     rwa [Real.log_exp] at h
   have hM := realKernel_saddle_pos hs0 (Nat.succ_pos k) hr hbalance
   let index := fun q : XiZeroCopy => ⌊|(q.1 : ℂ).im| / s⌋₊
@@ -138,8 +134,8 @@ theorem exists_negative_power_sum_bound :
     intro n hn
     have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
     have hn1 : 0 < (n : ℝ) + 1 := by positivity
-    have hT : S ≤ ((n : ℝ) + 1) * s := by nlinarith only [hs, mul_nonneg hn0 hs0.le]
-    have hc := hcount (((n : ℝ) + 1) * s) hT (F.filter (fun q => index q = n)) (by
+    have hT : 2000 ≤ ((n : ℝ) + 1) * s := by nlinarith only [hs, mul_nonneg hn0 hs0.le]
+    have hc := total_card_upper hT (F.filter (fun q => index q = n)) (by
       intro q hq
       obtain ⟨_, hqn⟩ := Finset.mem_filter.mp hq
       have h := Nat.lt_floor_add_one (|(q.1 : ℂ).im| / s)
@@ -176,36 +172,36 @@ theorem exists_negative_power_sum_bound :
     (by positivity) (by positivity) hp hindex hcard hterm
   nlinarith only [h]
 
+/-- The coefficient of the Gaussian tail of the negative part. -/
+def hausdorffNegativeConstant : ℝ := 1000 * gaussianSumConstant * Real.exp 1 + 1
+
+theorem one_le_hausdorffNegativeConstant : 1 ≤ hausdorffNegativeConstant := by
+  have hG := gaussianSumConstant_pos
+  have h : 0 ≤ 1000 * gaussianSumConstant * Real.exp 1 := by positivity
+  unfold hausdorffNegativeConstant
+  linarith only [h]
+
 /-- Every possible negative term is paid by one of the three saddle tails. -/
-theorem exists_negative_sum_bound :
-    ∃ C : ℝ, 1 ≤ C ∧ ∃ S : ℝ, 16 ≤ S ∧ ∀ s w T : ℝ, ∀ k r : ℕ,
-      S ≤ s → 32 ≤ w → w ≤ s → 500 ≤ T → 4 ≤ k + 1 → 0 < r →
+theorem negative_sum_bound :
+    ∀ s w T : ℝ, ∀ k r : ℕ,
+      2000 ≤ s → 32 ≤ w → w ≤ s → 500 ≤ T → 4 ≤ k + 1 → 0 < r →
       ((k + 1 : ℕ) : ℝ) * (primeArchEndpointHausdorffRadius * s ^ 2 - 1) = r →
       200 * ((k + 1 : ℕ) : ℝ) ≤ r →
       ((k + 1 : ℕ) : ℝ) * w ^ 2 = s ^ 2 →
       10 * ((k + 1 : ℕ) : ℝ) * primeArchEndpointHausdorffRadius * T ^ 2 = r →
       ∀ F : Finset XiZeroCopy,
       ∑ q ∈ F, negativeAtom primeArchEndpointHausdorffRadius k r q ≤
-        C * realKernel primeArchEndpointHausdorffRadius (k + 1) r s * w * Real.log s *
-          Real.exp (-min ((k + 1 : ℕ) : ℝ) (w ^ 2) / 131072) +
+        hausdorffNegativeConstant * realKernel primeArchEndpointHausdorffRadius (k + 1) r s * w *
+          Real.log s * Real.exp (-min ((k + 1 : ℕ) : ℝ) (w ^ 2) / 131072) +
         4096 * Real.exp 1 * realKernel primeArchEndpointHausdorffRadius (k + 1) r s * s *
           Real.log s * (4 : ℝ)⁻¹ ^ (k + 1) +
         2 * realKernel primeArchEndpointHausdorffRadius (k + 1) r s * s * Real.log s *
           Real.exp (-4 * ((k + 1 : ℕ) : ℝ)) := by
   classical
-  obtain ⟨Cg, hCg, Sg, hSg, hgauss⟩ := exists_negative_gaussian_sum_bound
-  obtain ⟨Sp, hSp, hpower⟩ := exists_negative_power_sum_bound
-  obtain ⟨Sl, hSl, hcount⟩ := exists_total_card_upper
   have hG := gaussianSumConstant_pos
-  have hCgG : 0 ≤ Cg * gaussianSumConstant * Real.exp 1 := by positivity
-  refine ⟨Cg * gaussianSumConstant * Real.exp 1 + 1, by linarith only [hCgG],
-    max Sg (max Sp Sl), hSg.trans (le_max_left _ _), ?_⟩
   intro s w T k r hs hw hws hT hp hr hbalance hpr hwidth hthermal F
-  have hsg : Sg ≤ s := (le_max_left _ _).trans hs
-  have hsp : Sp ≤ s := (le_max_left _ _).trans ((le_max_right _ _).trans hs)
-  have hsl : Sl ≤ s := (le_max_right _ _).trans ((le_max_right _ _).trans hs)
-  have hs0 : 0 < s := by linarith only [hSg, hsg]
-  have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hSg, hsg])
+  have hs0 : 0 < s := by linarith only [hs]
+  have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hs])
   have hM := realKernel_saddle_pos hs0 (Nat.succ_pos k) hr hbalance
   let f := negativeAtom primeArchEndpointHausdorffRadius k r
   let L := F.filter (fun q => |(q.1 : ℂ).im| ≤ s / 4)
@@ -215,7 +211,7 @@ theorem exists_negative_sum_bound :
   have hlow : ∑ q ∈ L, f q ≤
       2 * realKernel primeArchEndpointHausdorffRadius (k + 1) r s * s * Real.log s *
         Real.exp (-4 * ((k + 1 : ℕ) : ℝ)) := by
-    have hcard := hcount s hsl L (by
+    have hcard := total_card_upper hs L (by
       intro q hq
       have h := (Finset.mem_filter.mp hq).2
       linarith only [h, hs0])
@@ -232,14 +228,14 @@ theorem exists_negative_sum_bound :
       (show 0 ≤ realKernel primeArchEndpointHausdorffRadius (k + 1) r s *
         Real.exp (-4 * ((k + 1 : ℕ) : ℝ)) by positivity)
     nlinarith only [hsum, hmul]
-  have hmid := hgauss primeArchEndpointHausdorffRadius s w k r
-    primeArchEndpointHausdorffRadius_pos hsg hw hws hr hbalance hpr hwidth B (by
+  have hmid := negative_gaussian_sum_bound primeArchEndpointHausdorffRadius s w k r
+    primeArchEndpointHausdorffRadius_pos (by linarith only [hs]) hw hws hr hbalance hpr hwidth B (by
       intro q hq
       obtain ⟨hqH, hhi⟩ := Finset.mem_filter.mp hq
       have hlo := (Finset.mem_filter.mp hqH).2
       exact ⟨(lt_of_not_ge hlo).le, hhi⟩)
-  have hfar := hpower primeArchEndpointHausdorffRadius s w k r
-    primeArchEndpointHausdorffRadius_pos hsp hw hp hr hbalance hpr hwidth P (by
+  have hfar := negative_power_sum_bound primeArchEndpointHausdorffRadius s w k r
+    primeArchEndpointHausdorffRadius_pos hs hw hp hr hbalance hpr hwidth P (by
       intro q hq
       exact (lt_of_not_ge (Finset.mem_filter.mp hq).2).le)
   have hsplit₁ : (∑ q ∈ L, f q) + ∑ q ∈ H, f q = ∑ q ∈ F, f q :=
@@ -249,6 +245,7 @@ theorem exists_negative_sum_bound :
   have hextra : 0 ≤ realKernel primeArchEndpointHausdorffRadius (k + 1) r s * w *
       Real.log s * Real.exp (-min ((k + 1 : ℕ) : ℝ) (w ^ 2) / 131072) := by positivity
   change ∑ q ∈ F, f q ≤ _
+  unfold hausdorffNegativeConstant
   nlinarith only [hlow, hmid, hfar, hsplit₁, hsplit₂, hextra]
 
 /-- Absolute convergence of the source series controls its negative part. -/

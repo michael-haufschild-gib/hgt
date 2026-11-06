@@ -50,6 +50,8 @@ wired into the umbrella. It proves the center derivative formula, affine Taylor 
 `nonnegTaylorAtZero_xiEndpointExteriorSeries`, `xiEndpointExteriorSeries_zero`, and
 `hasDerivAt_xiEndpointExteriorSeries_zero`.
 
-`EndpointExteriorProduct.lean`, `ComplexColoring.lean`, `AlternatingComplexColoring.lean`, and
-`EndpointAlternatingPositivity.lean` contain the product-to-character bridge under active Lean
-verification. Their conclusions are not yet certified.
+`EndpointExteriorProduct.lean` proves the exact product, absolute subset expansion, coefficient
+identification, and coefficient nonnegativity; its scratch check passes. `ComplexColoring.lean`
+passes checking and builds its exact complex cycle-factorization theorem. Final direct leaf checks
+remain. `AlternatingComplexColoring.lean` and `EndpointAlternatingPositivity.lean` contain the
+signed-character assembly under verification; no complete character-projection theorem is yet claimed.

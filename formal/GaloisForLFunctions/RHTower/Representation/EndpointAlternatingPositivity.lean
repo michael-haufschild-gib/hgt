@@ -30,7 +30,7 @@ theorem complexWordCharacter_xiEndpoint {X : Type*} [Fintype X] (σ : Equiv.Perm
   simp only [complexCycleCharacter, div_pow, tsum_div_const]
   rw [xiEndpointArithmeticCharacter, cycleMomentCharacter]
   push_cast
-  simp only [xiEndpointArithmeticCycle_complex]
+  simp only [Multiset.map_map, Function.comp_def, xiEndpointArithmeticCycle_complex]
 
 /-- The sign projection equals the corresponding derivative of the arithmetic exterior series. -/
 theorem xiEndpointArithmeticCharacter_alternating_eq (n : ℕ) :

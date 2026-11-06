@@ -77,9 +77,13 @@ theorem conjSymWave_conj (F : Finset ι) (c : ι → ℂ) (β : ℝ) (γ : ι �
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [map_add, map_mul, map_mul, Complex.conj_conj, ← Complex.exp_conj, ← Complex.exp_conj]
   have e1 : starRingEnd ℂ ((((β : ℂ) + Complex.I * (γ j : ℂ)) * (u : ℂ))) =
-      (((β : ℂ) - Complex.I * (γ j : ℂ)) * (u : ℂ)) := by simp
+      (((β : ℂ) - Complex.I * (γ j : ℂ)) * (u : ℂ)) := by
+    simp only [map_mul, map_add, Complex.conj_ofReal, Complex.conj_I]
+    ring
   have e2 : starRingEnd ℂ ((((β : ℂ) - Complex.I * (γ j : ℂ)) * (u : ℂ))) =
-      (((β : ℂ) + Complex.I * (γ j : ℂ)) * (u : ℂ)) := by simp
+      (((β : ℂ) + Complex.I * (γ j : ℂ)) * (u : ℂ)) := by
+    simp only [map_mul, map_sub, Complex.conj_ofReal, Complex.conj_I]
+    ring
   rw [e1, e2, add_comm]
 
 theorem conjSymWave_im_eq_zero (F : Finset ι) (c : ι → ℂ) (β : ℝ) (γ : ι → ℝ) (u : ℝ) :
@@ -100,7 +104,8 @@ theorem conjSymWave_re_eq_sum (F : Finset ι) (c : ι → ℂ) (β : ℝ) (γ : 
       starRingEnd ℂ (c j * Complex.exp ((((β : ℂ) + Complex.I * (γ j : ℂ)) * (u : ℂ)))) := by
     rw [map_mul, ← Complex.exp_conj]
     congr 2
-    simp
+    simp only [map_mul, map_add, Complex.conj_ofReal, Complex.conj_I]
+    ring
   rw [hconj, Complex.add_re, Complex.conj_re]
   ring
 
@@ -173,9 +178,10 @@ theorem laplace_conjSymWave_eq {F : Finset ι} {c : ι → ℂ} {β : ℝ} {γ :
     unfold conjSymWave
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun _ _ => mul_add _ _ _
-  rw [heq, integral_finsetSum F fun j _ =>
-    (integrableOn_Ioi_cexp_shift (by simpa using hs) (c j)).add
-      (integrableOn_Ioi_cexp_shift (by simpa using hs) (starRingEnd ℂ (c j)))]
+  rw [heq]
+  refine (integral_finsetSum F fun j _ => ?_).trans ?_
+  · exact (integrableOn_Ioi_cexp_shift (by simpa using hs) (c j)).add
+      (integrableOn_Ioi_cexp_shift (by simpa using hs) (starRingEnd ℂ (c j)))
   unfold conjSymWaveLaplace
   refine Finset.sum_congr rfl fun j _ => ?_
   have hi1 := integrableOn_Ioi_cexp_shift (z := (β : ℂ) + Complex.I * (γ j : ℂ))
@@ -200,8 +206,6 @@ theorem laplace_expBufferedWave_eq {F : Finset ι} {c : ι → ℂ} {β α C : �
         ((C : ℂ) * Complex.exp ((α : ℂ) * (u : ℂ))) := by
     funext u
     push_cast
-    rw [Complex.ofReal_exp]
-    push_cast
     rfl
   have hi_floor : IntegrableOn
       (fun u : ℝ => Complex.exp (-(s * (u : ℂ))) * ((C * Real.exp (α * u) : ℝ) : ℂ))
@@ -218,11 +222,22 @@ theorem laplace_expBufferedWave_eq {F : Finset ι} {c : ι → ℂ} {β α C : �
     integral_Ioi_cexp_shift (z := (α : ℂ)) (by simpa using hs) (C : ℂ),
     laplace_conjSymWave_eq hβs]
 
+private theorem continuousAt_finset_sum {s : Finset ι} {f : ι → ℂ → ℂ} {a : ℂ}
+    (h : ∀ i ∈ s, ContinuousAt (f i) a) :
+    ContinuousAt (fun z => ∑ i ∈ s, f i z) a := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simpa using (continuousAt_const : ContinuousAt (fun _ : ℂ => (0 : ℂ)) a)
+  | insert i s hi ih =>
+      simp only [Finset.sum_insert hi]
+      exact (h i (Finset.mem_insert_self i s)).add
+        (ih fun j hj => h j (Finset.mem_insert_of_mem hj))
+
 theorem continuousAt_conjSymWaveLaplace_of_poles_off_real {F : Finset ι} {c : ι → ℂ}
     {β α : ℝ} {γ : ι → ℝ} (hpoles : ∀ j ∈ F, β = α → γ j ≠ 0) :
     ContinuousAt (conjSymWaveLaplace F c β γ) (α : ℂ) := by
   unfold conjSymWaveLaplace
-  refine continuousAt_finset_sum F fun j hj => ?_
+  refine continuousAt_finset_sum fun j hj => ?_
   have hne_pos : (α : ℂ) - ((β : ℂ) + Complex.I * (γ j : ℂ)) ≠ 0 := by
     intro h0
     have hre : α - β = 0 := by simpa using congrArg Complex.re h0
@@ -250,7 +265,7 @@ theorem tendsto_sub_mul_laplace_expBufferedWave {F : Finset ι} {c : ι → ℂ}
     have h0 : Tendsto (fun s : ℂ => (s - (α : ℂ)) * conjSymWaveLaplace F c β γ s)
         (𝓝 (α : ℂ)) (𝓝 ((0 : ℂ) * conjSymWaveLaplace F c β γ (α : ℂ))) := by
       refine Tendsto.mul ?_ hcont.tendsto
-      simpa using (continuous_id.sub continuous_const).tendsto (α : ℂ)
+      simpa using tendsto_id.sub (tendsto_const_nhds (x := (α : ℂ)))
     simpa using tendsto_const_nhds.add h0
   refine (hlim.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
@@ -268,12 +283,12 @@ theorem conjSymWaveLaplace_residue_zero {F : Finset ι} {c : ι → ℂ} {β : �
     (hγ : ∀ j ∈ F, γ j ≠ 0) :
     Tendsto (fun s : ℂ => (s - (β : ℂ)) * conjSymWaveLaplace F c β γ s)
       (𝓝 (β : ℂ)) (𝓝 0) := by
-  have hcont := continuousAt_conjSymWaveLaplace_of_poles_off_real (c := c) (α := β)
+  have hcont := continuousAt_conjSymWaveLaplace_of_poles_off_real (c := c) (β := β) (α := β)
     (fun j hj _ => hγ j hj)
   have h0 : Tendsto (fun s : ℂ => (s - (β : ℂ)) * conjSymWaveLaplace F c β γ s)
       (𝓝 (β : ℂ)) (𝓝 ((0 : ℂ) * conjSymWaveLaplace F c β γ (β : ℂ))) := by
     refine Tendsto.mul ?_ hcont.tendsto
-    simpa using (continuous_id.sub continuous_const).tendsto (β : ℂ)
+    simpa using tendsto_id.sub (tendsto_const_nhds (x := (β : ℂ)))
   simpa using h0
 
 /-- **Exact conjugate-diagonal square decomposition.** Squaring `conjSymWave` isolates the strictly
@@ -332,7 +347,7 @@ theorem conjSymWave_sq_eq [DecidableEq ι] (F : Finset ι) (c : ι → ℂ) (β 
       2 * ((‖c j‖ ^ 2 : ℝ) : ℂ) * Complex.exp (((2 * (β : ℂ)) * (u : ℂ))) := by
     intro j
     rw [hpair_ab, hpair_ba, sub_self, Complex.ofReal_zero, mul_zero, add_zero, sub_zero,
-      mul_comm (starRingEnd ℂ (c j)) (c j), ← two_mul, mul_assoc, Complex.mul_conj,
+      mul_comm (starRingEnd ℂ (c j)) (c j), ← two_mul, Complex.mul_conj,
       Complex.normSq_eq_norm_sq]
     ring
   have hsq : (conjSymWave F c β γ u) ^ 2 =
@@ -440,7 +455,23 @@ theorem laplace_conjSymWave_sq_eq [DecidableEq ι] {F : Finset ι} {c : ι → �
     rw [conjSymWave_sq_eq]
     simp only [mul_add, Finset.mul_sum]
     ring
-  rw [heq, integral_add hi_diag (hi_off1.add hi_off2), integral_add hi_off1 hi_off2,
+  have hi_off : IntegrableOn (fun u : ℝ =>
+      (∑ j ∈ F, ∑ k ∈ F,
+        (Complex.exp (-(s * (u : ℂ))) *
+          (c j * c k *
+            Complex.exp ((((2 * (β : ℂ)) + Complex.I * ((γ j + γ k : ℝ) : ℂ)) * (u : ℂ)))) +
+        Complex.exp (-(s * (u : ℂ))) *
+          (starRingEnd ℂ (c j * c k) *
+            Complex.exp ((((2 * (β : ℂ)) - Complex.I * ((γ j + γ k : ℝ) : ℂ)) * (u : ℂ)))))) +
+      (∑ j ∈ F, ∑ k ∈ F.erase j,
+        (Complex.exp (-(s * (u : ℂ))) *
+          (c j * starRingEnd ℂ (c k) *
+            Complex.exp ((((2 * (β : ℂ)) + Complex.I * ((γ j - γ k : ℝ) : ℂ)) * (u : ℂ)))) +
+        Complex.exp (-(s * (u : ℂ))) *
+          (starRingEnd ℂ (c j) * c k *
+            Complex.exp ((((2 * (β : ℂ)) - Complex.I * ((γ j - γ k : ℝ) : ℂ)) * (u : ℂ)))))))
+      (Ioi (0 : ℝ)) := hi_off1.add hi_off2
+  rw [heq, integral_add hi_diag hi_off, integral_add hi_off1 hi_off2,
     integral_Ioi_cexp_shift (z := 2 * (β : ℂ)) (by simpa using hs)]
   congr 1
   unfold conjSymWaveSqOffDiagLaplace
@@ -480,7 +511,7 @@ theorem continuousAt_conjSymWaveSqOffDiagLaplace [DecidableEq ι] {F : Finset ι
     ContinuousAt (conjSymWaveSqOffDiagLaplace F c β γ) (2 * (β : ℂ)) := by
   unfold conjSymWaveSqOffDiagLaplace
   refine ContinuousAt.add ?_ ?_
-  · refine continuousAt_finset_sum F fun j hj => continuousAt_finset_sum F fun k hk => ?_
+  · refine continuousAt_finset_sum fun j hj => continuousAt_finset_sum fun k hk => ?_
     have hsum_pos : 0 < γ j + γ k := add_pos (hγ_pos j hj) (hγ_pos k hk)
     have hne1 : 2 * (β : ℂ) - (2 * (β : ℂ) + Complex.I * ((γ j + γ k : ℝ) : ℂ)) ≠ 0 := by
       intro h0
@@ -492,7 +523,7 @@ theorem continuousAt_conjSymWaveSqOffDiagLaplace [DecidableEq ι] {F : Finset ι
       linarith
     exact (continuousAt_const.div (continuousAt_id.sub continuousAt_const) hne1).add
       (continuousAt_const.div (continuousAt_id.sub continuousAt_const) hne2)
-  · refine continuousAt_finset_sum F fun j hj => continuousAt_finset_sum (F.erase j) fun k hk => ?_
+  · refine continuousAt_finset_sum fun j hj => continuousAt_finset_sum fun k hk => ?_
     obtain ⟨hk_ne, hkF⟩ := Finset.mem_erase.mp hk
     have hdiff_ne : γ j - γ k ≠ 0 := sub_ne_zero.mpr fun heq => hk_ne (hγ_inj hj hkF heq).symm
     have hne1 : 2 * (β : ℂ) - (2 * (β : ℂ) + Complex.I * ((γ j - γ k : ℝ) : ℂ)) ≠ 0 := by
@@ -523,7 +554,7 @@ theorem tendsto_sub_mul_laplace_conjSymWave_sq [DecidableEq ι] {F : Finset ι} 
         (𝓝 (2 * (β : ℂ)))
         (𝓝 ((0 : ℂ) * conjSymWaveSqOffDiagLaplace F c β γ (2 * (β : ℂ)))) := by
       refine Tendsto.mul ?_ hcont.tendsto
-      simpa using (continuous_id.sub continuous_const).tendsto (2 * (β : ℂ))
+      simpa using tendsto_id.sub (tendsto_const_nhds (x := 2 * (β : ℂ)))
     simpa using tendsto_const_nhds.add h0
   refine (hlim.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
@@ -542,7 +573,7 @@ theorem conjDiagResidue_pos_of_exists_ne_zero {F : Finset ι} {c : ι → ℂ}
   obtain ⟨j₀, hj₀, hne⟩ := hc
   have hpos : 0 < ‖c j₀‖ ^ 2 := pow_pos (norm_pos_iff.mpr hne) 2
   have hle : ‖c j₀‖ ^ 2 ≤ ∑ j ∈ F, ‖c j‖ ^ 2 :=
-    Finset.single_le_sum (fun _ _ => sq_nonneg _) hj₀
+    Finset.single_le_sum (f := fun j => ‖c j‖ ^ 2) (fun _ _ => sq_nonneg _) hj₀
   linarith
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry

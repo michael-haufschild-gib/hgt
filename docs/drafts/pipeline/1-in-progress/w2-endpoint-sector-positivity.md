@@ -18,7 +18,10 @@ The corpus provides `PFSeq.quadratic_of_cone`, closure under convolution and coe
 limits, and grouping finite products under an involution in
 `RHTower/XiHorizontalSlicePolyaFrequencyCone.lean`. Applying them to the endpoint product
 should give `PFSeq k (fun n => (xiEndpointExteriorCoefficient n).re)` from the same cone.
-An unconditional corollary must discharge the cone using an existing unconditional theorem.
+An unconditional corollary must discharge the cone. The corpus supplies `pf54Cone_centre` and,
+more strongly, `rhVerifiedThrough_sixtySeven` with `cone_of_distance` and
+`half_le_sq_mul_one_sub_cos`, which give the cone of order 200. The latter source theorem is in
+`VerifiedHeightRungs/HadamardBudget/TheVerifiedHeightSixtySeven.lean`.
 
 ## Product mechanism
 

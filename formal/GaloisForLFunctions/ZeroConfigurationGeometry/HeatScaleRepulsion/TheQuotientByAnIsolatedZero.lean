@@ -101,8 +101,11 @@ theorem dslope_xi_eq (h : IsolatedZero d η E T t) (hT : 8 ≤ T) {s : ℂ} (hre
     have hopen : IsOpen {z : ℂ | z.im ≠ 0} := isOpen_ne_fun Complex.continuous_im continuous_const
     have hev : xi =ᶠ[𝓝 (depthPoint d t)] fun z => archG z * riemannZeta z := by
       filter_upwards [hopen.mem_nhds him] with z hz using xi_eq_archG_mul_zeta_offReal hz
-    rw [hev.deriv_eq, ((differentiableAt_archG hre).hasDerivAt.mul
-      (differentiableAt_riemannZeta hne1).hasDerivAt).deriv, h.zero, mul_zero, zero_add]
+    have hd : HasDerivAt (fun z => archG z * riemannZeta z)
+        (deriv archG (depthPoint d t) * riemannZeta (depthPoint d t) +
+          archG (depthPoint d t) * deriv riemannZeta (depthPoint d t)) (depthPoint d t) :=
+      (differentiableAt_archG hre).hasDerivAt.mul (differentiableAt_riemannZeta hne1).hasDerivAt
+    rw [hev.deriv_eq, hd.deriv, h.zero, mul_zero, zero_add]
   · rw [dslope_of_ne _ hs, dslope_of_ne _ hs, slope_def_field, slope_def_field, h.xi_eq_zero hT, h.zero,
       sub_zero, sub_zero, xi_eq_archG_mul_zeta_offReal him, mul_div_assoc]
 
@@ -140,7 +143,7 @@ theorem norm_dslope_zeta_le (h : IsolatedZero d η E T t) (hη : 0 < η) (hη2 :
       by linarith only [him.2, hη2]⟩⟩
     intro he
     rw [he, Complex.one_im] at him
-    linarith only [him.2, hη2, h.mem.1, hT]
+    linarith only [him.1, hη2, h.mem.1, hT]
   have hdiff : DifferentiableOn ℂ (dslope riemannZeta (depthPoint d t)) (closedBall (depthPoint d t) η) :=
     fun z hz => (differentiableAt_dslope_zeta hρne (hball z hz).1).differentiableWithinAt
   refine Complex.norm_le_of_forall_mem_frontier_norm_le isBounded_ball
@@ -191,8 +194,7 @@ theorem levelPair (h : IsolatedZero d η (E / 2) T t) (hη : 0 < η) (hη1 : η 
   have hρne := h.depthPoint_ne_one hT
   have hc0 : (((3 / 2 - d : ℝ) : ℂ)) ≠ 0 := by
     have := h.three_halves_sub_pos
-    exact_mod_cast (by linarith only [this] : (3 / 2 - d : ℝ) ≠ 0 ∨ True).elim id (fun _ => by
-      exact (ne_of_gt (by linarith only [this])))
+    exact Complex.ofReal_ne_zero.mpr (ne_of_gt (by linarith only [this]))
   have hne1 : ∀ {s : ℂ}, |s.im - t| ≤ 2 → s ≠ 1 := by
     intro s hs he
     rw [he, Complex.one_im] at hs
@@ -238,8 +240,7 @@ theorem levelPair (h : IsolatedZero d η (E / 2) T t) (hη : 0 < η) (hη1 : η 
       exact hc0 hsub.symm
     have hval : quotZeta d t (2 + (t : ℂ) * I) = riemannZeta (2 + (t : ℂ) * I) := by
       unfold quotZeta
-      rw [dslope_of_ne _ hne, slope_def_field, h.zero, sub_zero, hsub]
-      field_simp
+      rw [dslope_of_ne _ hne, slope_def_field, h.zero, sub_zero, hsub, mul_comm, div_mul_cancel₀ _ hc0]
     rw [hval]
     exact (norm_riemannZeta_bounds_of_two_le_re (by simp)).1
   · -- Right of the abscissa `2`, the zero contributes at most `1` to the logarithmic derivative.
@@ -268,7 +269,8 @@ theorem levelPair (h : IsolatedZero d η (E / 2) T t) (hη : 0 < η) (hη1 : η 
       exact he.symm
     have hlogz : logDeriv riemannZeta s = logDeriv (fun z => z - depthPoint d t) s +
         logDeriv (dslope riemannZeta (depthPoint d t)) s := by
-      rw [← logDeriv_mul s (sub_ne_zero.mpr hsρ) hdn (by fun_prop) hdne, logDeriv_apply, logDeriv_apply,
+      rw [← logDeriv_mul (f := fun z => z - depthPoint d t) (g := dslope riemannZeta (depthPoint d t)) s
+        (sub_ne_zero.mpr hsρ) hdn (by fun_prop) hdne, logDeriv_apply, logDeriv_apply,
         hev.deriv_eq, hev.eq_of_nhds]
     have hlin : logDeriv (fun z => z - depthPoint d t) s = 1 / (s - depthPoint d t) := by
       rw [logDeriv_apply]
@@ -438,7 +440,7 @@ theorem lineModel (h : IsolatedZero d η (E / 2) T t) (hη : 0 < η) (hη2 : η 
         unfold lineFn quotXi
         rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by linarith only [hc1])]
         exact mul_le_mul_of_nonneg_left (hM _) (by linarith only [hc1])
-      have he : Real.exp (-(1 / (16 * τ) * w ^ 2)) = Real.exp (-(w ^ 2 / (16 * τ))) := by
+      have he : Real.exp (-(1 / (16 * τ)) * w ^ 2) = Real.exp (-(w ^ 2 / (16 * τ))) := by
         congr 1
         field_simp
       have hpos := Real.exp_pos (-(w ^ 2 / (16 * τ)))

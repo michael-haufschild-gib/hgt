@@ -991,7 +991,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
     rw [← integral_const_mul, ← integral_add (hmaini.const_mul _) (hfi.sub (hmaini.const_mul _) |>.congr
       (Eventually.of_forall fun y => by
         simp only [Pi.sub_apply, rest]
-        ring))]
+        ring_nf))]
     exact integral_congr_ae (Eventually.of_forall fun y => by
       simp only [rest]
       ring)

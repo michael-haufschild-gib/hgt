@@ -74,6 +74,7 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | The compactified moment is its actual projective count minus explicit Tate corrections; every corrected even trace is nonnegative | `projectiveReciprocalLocus_card`, `kloosterman_moment_compactified_extension`, `compactified_even_trace_nonneg` | proved |
 | Every normalized torus critical point descends through field embeddings; its constant Tate trace has exact binomial counts, including a separate characteristic-two formula | `reciprocalTorusCriticalPoints_card_embedding`, `criticalPointTateTrace_extension_count`, `reciprocalTorusCriticalPoints_card`, `reciprocalTorusCriticalPoints_card_char_two` | proved |
 | The full transverse tangent chart has the actual reciprocal quadratic matrix, whose determinant is `−∏xᵢ`, or `(-1)^(r+1)` for `r` negative coordinates | `reciprocalTangentVector_reconstruct`, `reciprocalSeries_transverse_quadratic`, `reciprocalTransverseMatrix_det_critical`, `reciprocalTransverseMatrix_det_signs` | proved |
+| Nondegenerate diagonal quadratic forms over odd finite fields have exact affine distributions in every dimension and at every target value | `diagonalQuadraticCount_odd`, `diagonalQuadraticCount_even` | proved |
 
 The `WeightFamilies/` results classify the algebraic input, prove the finite global
 trace step, and calibrate the receiver on the Kloosterman family. They do not
