@@ -155,8 +155,8 @@ theorem norm_opposite_lt (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : 4 * η 
   have he : powerRatio E η T * Real.exp 1 * Real.exp (-(2 * y * (horizontalSlope X).re) +
         τ * (powerSlopeError E η T + 1 / 8) ^ 2) +
       powerFar (powerRatio E η T) (powerSlopeError E η T) τ (horizontalSlope X).re ≤ 1 / 2 :=
-    le_trans (add_le_add_right (mul_le_mul_of_nonneg_left hexp
-      (mul_nonneg hK (Real.exp_pos _).le)) _) h.he2
+    le_trans (add_le_add (mul_le_mul_of_nonneg_left hexp
+      (mul_nonneg hK (Real.exp_pos _).le)) le_rfl) h.he2
   have hb2 := hb.trans (mul_le_mul_of_nonneg_left he hP.le)
   nlinarith only [hb2, hq, hP]
 

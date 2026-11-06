@@ -11,8 +11,8 @@
 | Task | Status | Lean / note |
 |---|---|---|
 | A26 | done | NGF and MZF modules all committed and wired into `NodalGeometryOfTheDeBruijnFlow.lean`, `MultiscaleMollifiedZetaField.lean` |
-| A36 | in progress | `CompletedArithmeticForms/TheApertureSpectrumIsAnEulerProduct.lean` |
-| A24 | planned | complex saddle at level `T^ε`, see below |
+| A36 | done (scans excluded: no computations) | `CompletedArithmeticForms/EisensteinDivisorTrace.lean`, `TheApertureSpectrumIsAnEulerProduct.lean`: `S = Σ_N τ_b(N) A(log N)`, `τ_b` is the coefficient of `E*`, `τ_b(p^k) = U_k(cos(b log p))`, `Σ τ_b(N) N^{−s} = ζ(s−ib) ζ(s+ib)`, `S = Π_p T_p A`, exponentials are eigenfunctions with eigenvalue `Π‖1−p^{−s+ib}‖⁻²`, `A` is not a positive Laplace mixture |
+| A24 | done | `ZeroConfigurationGeometry/HeatScaleRepulsion/TheExceptionalSetHasAPowerSaving.lean`: `exists_volume_localNewman_scaled_gt_le_rpow`, `exists_volume_nonreal_heat_le_rpow`; mechanism `TheComplexSaddleOfAGaussianAverage.lean` |
 
 ## A24: paper proof plan
 

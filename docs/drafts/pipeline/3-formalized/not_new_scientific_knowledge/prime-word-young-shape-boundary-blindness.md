@@ -28,21 +28,24 @@ lambda(w_22) = [2,2].
 ```
 
 Thus neither the support set nor the complete support-cardinality boundary germ determines the
-Young shape required by the Edrei--Thoma route.
+multiplicity partition. This partition is an occupancy statistic, not the Schur–Weyl shape.
 
 ## Positive repair
 
-The full word canonically determines its multiplicity partition.  A Young-graph source producer
-must therefore preserve the full prime word through
+The full word canonically determines its multiplicity partition through
 
 ```text
 word -> multiplicity counts -> Nat.Partition,
 ```
 
-and only then aggregate weights by shape.  The scalar boundary germ may grade the number of rows,
-but it cannot replace the partition.
+The scalar boundary germ may grade the number of occupied letters, but it cannot replace this
+partition. Aggregating independent-word weights by multiplicity does not produce the required
+coherent Young law: `SymmetricCharacters/MultiplicityBranching.lean` proves a size-three row
+discrepancy `R/2`, where `R = Σ_(a≠b) w_a² w_b`. It vanishes only when at most one letter has
+positive weight. The positive character survivor is the fixed-word construction in
+`SymmetricCharacters/CountableColoring.lean`.
 
-Lean also proves the complete exact Young-graph branching rule.  If `x` is a prime label not
+Lean also proves the exact multiplicity-partition insertion rule. If `x` is a prime label not
 occurring in `w`, then
 
 ```text
@@ -56,10 +59,9 @@ case is equally exact: if `x` occurs `k` times in `w`, then
 parts(lambda(x::w)) = (k+1) :: (parts(lambda(w)).erase(k)).
 ```
 
-Thus every letter insertion adds one box to exactly one row: a new row for a fresh letter and the
-row carried by `x` for a repeated letter.  What remains open is not the combinatorial Young edge,
-but the completed positive weight balance after all labelled preimages of an unlabelled shape are
-aggregated.
+Thus every letter insertion follows a Young-graph edge. This support property does not establish
+the dimension-weighted Young branching law; independent occupancy weights fail that law already
+between sizes three and two.
 
 The squarefree boundary is also classified exactly:
 
@@ -67,11 +69,9 @@ The squarefree boundary is also classified exactly:
 parts(lambda(w)) = [1,1,...,1]  <->  w has no repeated label.
 ```
 
-Consequently the positive squarefree Bernoulli law in `MobiusFiniteSchurTransfer.lean` occupies
-precisely the pure-column boundary of the Young graph.  This is both a no-go and a positive source
-theorem: squarefree Möbius amplitudes alone cannot generate shapes with a row of length at least
-two, while their entire surviving sector already has the correct column positivity.  Repeated
-prime powers are exactly the missing row-lengthening data.
+Consequently squarefree words occupy precisely the pure-column boundary of the multiplicity
+partition statistic. Repeated letters are exactly the data that lengthen its rows. This does not
+identify the irreducible decomposition of the associated permutation representation.
 
 ## Formal certificate
 
@@ -101,5 +101,5 @@ The exact module build is green.  Axiom audits report only `propext`, `Classical
 - [x] fresh-letter one-box Young branching formalized
 - [x] repeated-letter row-lengthening branch formalized
 - [x] squarefree words classified exactly as pure Young columns
-- [ ] completed positive weight balance over labelled preimages
+- [ ] coherent Young law from a corrected shape map; sorted occupancy fails
 - [x] accepted-axiom audit

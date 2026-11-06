@@ -19,6 +19,7 @@ Three consistency laws must be distinguished: restriction of characters along `S
 5. Audit the coordinate and sign conventions connecting W2's `1/(ρ(1−ρ))` to the corpus centre PF criterion. Formalize the exact bridge, then the RH capstone only when its source input is proved.
 6. Extend independent coloring to summable countable alphabets: finite-word products have total mass `(Σw)^n`; fixed-word sums are dominated by this mass; finite sums of stabilizer kernels are positive and their entrywise limit remains positive. Apply the construction to normalized positive endpoint real parts and identify its exact transposition discrepancy.
 7. Define the prescribed cycles without zeros: put `F(X)=logDeriv xi(1/2+√X)/√X`. The cycle of length `n+1` has value `Re[(-1)^n F^(n)(1/4)/n!]/poleSharpConstant^(n+1)`. The corpus resolvent derivative identity proves exact agreement with the endpoint power sums. This defines arithmetic values, not a positive representation.
+8. Identify the coloring character with the literal cycle-product class function on every permutation. Split invariant supports by `subtypeCongr`; transitivity makes fixed words constant on each cycle, and disjoint supports factor. This supplies the reverse direction of the full arithmetic character/RH equivalence from the existing positive endpoint family.
 
 ## Current evidence
 

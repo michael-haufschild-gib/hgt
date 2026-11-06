@@ -63,9 +63,13 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | Canonical divisor compression has point spectrum exactly `1/2 + i Im(ρ)` unconditionally | `compressed_eigenvalue_iff`, `compressed_eigenvalues_pure` | proved |
 | Frobenius preserves the canonical monodromy-invariant subspace iff RH | `invariant_subspace_stable_iff_riemannHypothesis` | proved |
 | A split group with full `SL₂` image realizes every prescribed-determinant Frobenius, including Golden | `splitAction_degree_one_iff`, `splitAction_normalizes`, `goldenFrobenius_has_split_lift` | proved |
+| A nonnegative virtual trace has the positive spectrum's exponential rate, with no prior bound on its negative spectrum | `negative_spectrum_norm_le`, `positive_virtualTrace_le`, `tensor_norm_pow_le_of_global_trace` | proved |
+| All Kloosterman moments equal character sums on `Σxⱼ=0` in a torus, with one factor `#F`; even moments are nonnegative | `kloosterman_moment_hypersurface`, `kloosterman_punctured_moment_hypersurface`, `kloosterman_even_moment_nonneg` | proved |
+| Actual Kloosterman extension traces determine pure curve data and nonnegative window forms via the Stepanov estimate | `exists_pure_kloosterman_pair`, `exists_kloosterman_curve_receiver` | proved |
 
-The `WeightFamilies/` results classify the algebraic input and the required
-global estimate; they do not construct an arithmetic family or prove a new purity bound for ζ.
+The `WeightFamilies/` results classify the algebraic input, prove the finite global
+trace step, and calibrate the receiver on the Kloosterman family. They do not
+construct a family containing ζ or prove a new purity bound for ζ.
 
 ## 6. Tools
 

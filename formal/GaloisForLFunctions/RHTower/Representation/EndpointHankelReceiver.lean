@@ -1,6 +1,6 @@
-import GaloisForLFunctions.RHTower.Representation.PositiveEndpointCharacter
+import GaloisForLFunctions.RHTower.Representation.EndpointArithmeticMoments
 import GaloisForLFunctions.RHTower.XiResolventHankelMatrixLadder
-import GaloisForLFunctions.HTGeometry.SymmetricCharacters.CommonPivotCycles
+import GaloisForLFunctions.HTGeometry.SymmetricCharacters.CycleCharacterIdentification
 
 /-!
 # The endpoint cycle-moment receiver
@@ -16,16 +16,6 @@ open scoped BigOperators
 
 namespace RHTower
 open GaloisForLFunctions.SymmetricCharacters
-
-theorem xiResolventPoint_endpoint (q : XiZeroCopy) :
-    xiResolventPoint (1 / 4) q = xiStripEdgeWeight q := by
-  rw [xiResolventPoint, xiStripEdgeWeight_eq_spectral, add_comm]
-  push_cast
-
-theorem xiEndpointSourceCycle_eq_resolvent (n : ℕ) :
-    xiEndpointSourceCycle n =
-      (xiResolventMoment n (1 / 4)).re / xiEndpointColorMass ^ (n + 1) := by
-  simp only [xiEndpointSourceCycle, xiResolventMoment, xiResolventPoint_endpoint]
 
 /-- Hankel matrix of normalized nonempty cycle values. -/
 def xiEndpointHankel (N : ℕ) : Matrix (Fin N) (Fin N) ℝ :=
@@ -111,5 +101,25 @@ theorem positive_xiEndpointCycleFamily_implies_rh :
   intro h
   exact forall_xiEndpointHankel_posSemidef_iff_rh.mp
     (fun N => h.hankel xiEndpointSourceCycle_zero N)
+
+/-- The literal source cycle-product function is positive exactly when RH holds. -/
+theorem positive_xiEndpointCycleFamily_iff_rh :
+    PositiveCycleFamily xiEndpointSourceCycle ↔ RiemannHypothesis := by
+  refine ⟨positive_xiEndpointCycleFamily_implies_rh, ?_⟩
+  intro hRH
+  have he (n : ℕ) : xiEndpointSourceCycle n =
+      ∑' q, (xiEndpointColor q : ℝ) ^ (n + 1) := by
+    rw [← xiEndpointCharacter_all_cycles_eq_source_iff_rh.mpr hRH n,
+      xiEndpointCharacter, wordCharacter_finRotate]
+  simpa only [he] using wordCharacter_positiveCycleFamily xiEndpointColor
+    summable_xiEndpointColor tsum_xiEndpointColor
+
+/-- The arithmetic response jets prescribe a positive cycle family exactly under RH. -/
+theorem positive_xiEndpointArithmeticCycleFamily_iff_rh :
+    PositiveCycleFamily xiEndpointArithmeticCycle ↔ RiemannHypothesis := by
+  have he : xiEndpointArithmeticCycle = xiEndpointSourceCycle :=
+    funext xiEndpointArithmeticCycle_eq_source
+  rw [he]
+  exact positive_xiEndpointCycleFamily_iff_rh
 
 end RHTower

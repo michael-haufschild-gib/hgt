@@ -14,7 +14,7 @@ The source bound gives angular Jensen upper coefficient `2/(πb)`, by `ThetaTail
 
 For a spectral square carrying the full Xi divisor twice, the necessary exponent is `b≤1`. This improves the simple-critical bound `b≤3/2` only when multiplicities are proved. Pointwise factorization by an arbitrary, possibly discontinuous quotient does not prove multiplicity containment.
 
-The exact finite-disc count is at least `k` times the symmetric Xi mass, before taking any limit. At `k=2`, the theta self-convolution attains equality; see [the sharp boundary](w3-theta-square-boundary.md).
+The exact finite-disc count is at least `k` times the symmetric Xi mass, before taking any limit. At `k=2`, equality is attained by both the [theta self-convolution](w3-theta-square-boundary.md) and the [exact integer-blind correlation](w3-exact-blind-correlation-boundary.md).
 
 ## Lean
 

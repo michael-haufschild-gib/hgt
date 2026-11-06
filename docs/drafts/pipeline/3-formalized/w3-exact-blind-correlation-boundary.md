@@ -1,7 +1,7 @@
 # W3: the exact blind correlation has exponent one
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For every probability measure on the modular arc, the scalarized test's autocorrelation `K` satisfies `|K(x)|≤C exp(−a exp|x|)` for some `a,C>0`. No such bound exists with `exp(b|x|)` for any `b>1`. In particular, the constructed integer-blind test attains this boundary.
 
 ## Proof
@@ -16,6 +16,12 @@ This realizes the sharp squared-divisor boundary with an integer-blind correlati
 
 ## Lean
 
-Construction and positive-strip lemmas are prerequisites. The truncation estimate is
-`CriticalHardyTheoryOfTheWindowCone.abs_crossCorr_truncTest_sub_le`; the lower obstruction is
-`ExactExtremal.ae_eq_zero_of_doubleExp_XiC_pow_divisor`. Formal assembly pending.
+`BiScaleUncertainty/ExactExtremal/SharpCorrelationTail.lean`:
+
+- `exists_doubleExp_crossCorr_arcSpectrum_bound`: exponent-one upper bound for every arc probability measure.
+- `not_faster_crossCorr_arcSpectrum`: exclusion of every exponent greater than one, with full Xi multiplicities.
+- `exactExtremalTest_sharp_correlation_tail`: both conclusions for the named integer-blind test.
+
+The upper bound uses `CriticalHardyTheoryOfTheWindowCone.abs_crossCorr_truncTest_sub_le`;
+the lower obstruction uses `ExactExtremal.ae_eq_zero_of_doubleExp_XiC_pow_divisor`.
+Individual `lake --old env lean` check passed.

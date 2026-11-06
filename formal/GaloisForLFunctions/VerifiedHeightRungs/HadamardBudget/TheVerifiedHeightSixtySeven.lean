@@ -85,7 +85,7 @@ private theorem neg_le_mul_cos {c w θ : ℝ} (h0 : 0 ≤ c) (hw : c ≤ w) :
 
 /-! ## Logarithms from powers of two -/
 
-private theorem le_log_of_two_pow_le {p : ℝ} (hp : 0 < p) {k m : ℕ} (hk : 0 < k)
+private theorem le_log_of_two_pow_le {p : ℝ} {k m : ℕ} (hk : 0 < k)
     (h : (2 : ℝ) ^ m ≤ p ^ k) : (m : ℝ) / k * Real.log 2 ≤ Real.log p := by
   have hl := Real.log_le_log (by positivity) h
   rw [Real.log_pow, Real.log_pow] at hl
@@ -102,7 +102,7 @@ private theorem log_le_of_pow_le_two_pow {p : ℝ} (hp : 0 < p) {k m : ℕ} (hk 
   linarith only [hl]
 
 private theorem log3_lb : (1.09857 : ℝ) ≤ Real.log 3 := by
-  have h := le_log_of_two_pow_le (p := 3) (by norm_num) (k := 53) (m := 84) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 3) (k := 53) (m := 84) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
@@ -116,42 +116,42 @@ private theorem log3_ub : Real.log 3 ≤ 1.09872 := by
   linarith only [h, h2]
 
 private theorem log5_lb : (1.60909 : ℝ) ≤ Real.log 5 := by
-  have h := le_log_of_two_pow_le (p := 5) (by norm_num) (k := 28) (m := 65) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 5) (k := 28) (m := 65) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]
 
 private theorem log7_lb : (1.9452 : ℝ) ≤ Real.log 7 := by
-  have h := le_log_of_two_pow_le (p := 7) (by norm_num) (k := 31) (m := 87) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 7) (k := 31) (m := 87) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]
 
 private theorem log11_lb : (2.3971 : ℝ) ≤ Real.log 11 := by
-  have h := le_log_of_two_pow_le (p := 11) (by norm_num) (k := 24) (m := 83) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 11) (k := 24) (m := 83) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]
 
 private theorem log13_lb : (2.5646 : ℝ) ≤ Real.log 13 := by
-  have h := le_log_of_two_pow_le (p := 13) (by norm_num) (k := 10) (m := 37) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 13) (k := 10) (m := 37) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]
 
 private theorem log17_lb : (2.8328 : ℝ) ≤ Real.log 17 := by
-  have h := le_log_of_two_pow_le (p := 17) (by norm_num) (k := 23) (m := 94) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 17) (k := 23) (m := 94) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]
 
 private theorem log19_lb : (2.9406 : ℝ) ≤ Real.log 19 := by
-  have h := le_log_of_two_pow_le (p := 19) (by norm_num) (k := 33) (m := 140) (by norm_num)
+  have h := le_log_of_two_pow_le (p := 19) (k := 33) (m := 140) (by norm_num)
     (by norm_num)
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
@@ -162,7 +162,7 @@ private theorem log_pi_lb : (1.1444 : ℝ) ≤ Real.log Real.pi := by
     have hπ := Real.pi_gt_d4
     calc (2 : ℝ) ^ 71 ≤ 3.1415 ^ 43 := by norm_num
       _ ≤ Real.pi ^ 43 := pow_le_pow_left₀ (by norm_num) hπ.le 43
-  have h := le_log_of_two_pow_le (p := Real.pi) Real.pi_pos (k := 43) (m := 71) (by norm_num) hpow
+  have h := le_log_of_two_pow_le (p := Real.pi) (k := 43) (m := 71) (by norm_num) hpow
   have h2 := Real.log_two_gt_d9
   norm_num at h ⊢
   linarith only [h, h2]

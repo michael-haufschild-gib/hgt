@@ -499,3 +499,9 @@ uniform estimate `Re R(z)>0` on `|Im z|≤501/1000` supplies its analytic square
 root. This factor introduces no zeros in that strip and retains exponential
 spectral decay. Scalarization preserves the mixture's full autocorrelation.
 The construction requires neither RH nor prime-blind positivity.
+
+`ExactExtremal/SharpCorrelationTail` proves that every such arc correlation has
+double-exponential exponent exactly one: `|K(x)|≤C exp(−a exp|x|)` for some
+`a,C>0`, while every exponent `b>1` is impossible. Truncation gives the upper
+bound; local Fourier inversion transfers the full `Ξ²` divisor and gives the
+sharp obstruction. The named integer-blind test therefore attains this boundary.

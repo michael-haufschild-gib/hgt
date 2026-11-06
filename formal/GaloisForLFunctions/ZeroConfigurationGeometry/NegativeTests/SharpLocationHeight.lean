@@ -377,5 +377,3 @@ theorem zeta_depth_lt_of_positive_aperture_closed_form {c T a : ℝ} (hc : 0 ≤
 
 end GaloisForLFunctions.ZeroConfigurationGeometry
 
-#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.zetaNegativeCameraHeight_le
-#print axioms GaloisForLFunctions.ZeroConfigurationGeometry.zeta_depth_lt_of_positive_aperture_closed_form

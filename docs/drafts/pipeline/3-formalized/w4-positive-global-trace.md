@@ -1,7 +1,7 @@
 # W4 — positivity controls the unknown cohomological spectrum
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** A nonnegative difference of two finite spectral traces has exponential rate at most the largest modulus in its positive part.
 
 ## Exact claim
@@ -15,3 +15,13 @@ Positivity gives `Re Q_n ≤ Re P_n ≤ #a B^n`. At `n = 0`, enlarge the constan
 ## Arithmetic obligation
 
 This proves the finite spectral step of the trace argument. It does not construct the global trace identity, a base, or a family containing ζ. These remain W4's arithmetic obligations.
+
+## Formalization
+
+`ArithmeticKunnethTheory/WeightFamilies/PositiveGlobalTrace.lean`:
+
+- `negative_spectrum_norm_le`: the negative spectrum lies within the positive spectral radius.
+- `positive_virtualTrace_le`: explicit constant `#a + #b`.
+- `tensor_norm_pow_le_of_global_trace`: domination at positive extension degrees bounds every local tensor eigenvalue.
+
+Checked with `lake --old env lean`.

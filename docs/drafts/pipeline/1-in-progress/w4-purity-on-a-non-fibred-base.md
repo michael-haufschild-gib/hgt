@@ -30,6 +30,8 @@ This algebraic obstruction does not refute W4. Identifying ζ's actual spectrum 
 
 Deligne's [Weil I, §3.3–3.7](https://www.jmilne.org/math/Documents/DeligneWeilI.pdf) uses nonnegative local even-tensor Euler coefficients, coefficient domination by the global product, and a cohomological expression whose poles have weight `kβ+1`. The base contributes the fixed `+1`; invariant weights identify the denominator but do not prove the global identity.
 
+The [positive global trace theorem](../3-formalized/w4-positive-global-trace.md) discharges the finite spectral step: if `Re(Σ a_i^n − Σ b_j^n) ≥ 0` for `n ≥ 1` and `|a_i| ≤ B`, then `|b_j| ≤ B` and the trace is at most `(#a+#b)B^n`. Thus no separate purity input for negative cohomology is needed once the global trace identity and its positive spectrum are constructed.
+
 ## Tensor-growth classification
 
 For a finite spectrum `z_i`, positive tensor degree `m`, and `B ≥ 0`,
@@ -48,4 +50,8 @@ The [split Weil-group model](../3-formalized/w4-split-weil-model.md) realizes ev
 
 ## Next conjecture
 
-The arithmetic target remains a trace identity producing the common `B` from cohomological degrees rather than from the unknown spectrum. The ζ family, its spectral identification, and recovery from a constructed function-field family remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.
+The [Kloosterman moment hypersurface](../3-formalized/w4-kloosterman-moment-hypersurface.md) gives a concrete source: every degree-`m` family moment equals `#F` times a character sum on `Σxⱼ=0` in `(F×)^m`, with an exact correction for the singular parameter. Even moments are nonnegative without invoking purity. The remaining cancellation on this hypersurface is not supplied by the fixed factor `#F`.
+
+The [Kloosterman window calibration](../3-formalized/w4-kloosterman-window-receiver.md) constructs a pure `CurveDatum` for every nonzero parameter over an odd prime field, identifies all extension-field traces, and proves every finite window form nonnegative. Its arithmetic estimate is the existing Artin–Schreier–Stepanov proof; a monodromy weight proof remains distinct.
+
+The arithmetic target remains a trace identity producing the common `B` from cohomological degrees rather than from the unknown spectrum. The ζ family and its spectral identification remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.

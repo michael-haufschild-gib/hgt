@@ -146,7 +146,7 @@ theorem not_faster_crossCorr_arcSpectrum (μ : ProbabilityMeasure ArcParam)
       rw [analyticOrderAt_mul hXiA hR]
       exact le_self_add
     · rw [hXiA.analyticOrderAt_eq_zero.mpr (pow_ne_zero _ hz)]
-      exact zero_le _
+      exact zero_le
   have hzero := ae_eq_zero_of_doubleExp_XiC_pow_divisor hu.aestronglyMeasurable ha
     (by linarith : 0 < b) (k := 2) (by norm_num; linarith) (C := M)
     (fun x => by simpa only [u, Complex.norm_real, Real.norm_eq_abs, hcorr, Φ] using hbound x) hdiv

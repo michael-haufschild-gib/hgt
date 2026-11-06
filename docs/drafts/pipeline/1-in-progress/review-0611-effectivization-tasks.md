@@ -10,8 +10,8 @@
 
 | Task | Status | Lean |
 |---|---|---|
-| A15 | open | |
-| A16 | interferometer done (`3-formalized/two-bump-interferometer-retains-complex-amplitudes.md`); constants, crystal open | |
+| A15 | done | `ZeroConfigurationGeometry/NegativeTests/SharpLocationHeight.lean`: `log(T₀(λ,c)/2π) ≤ max(4/(λ−1), 7Ω log(792Ω²/(λ−1)))`, `Ω=2.2·10¹⁷(c+51395)`, `1<λ≤2` |
+| A16 | interferometer done (`3-formalized/two-bump-interferometer-retains-complex-amplitudes.md`); crystal done (`3-formalized/cut-crystal-hides-fixed-depth-at-logarithmic-aperture.md`); constants open | `WindowVisibilityLaw/TheCutCrystalHidesFixedDepth.lean` |
 | A17 | star horizons done (`HodgeTheoryWithoutVarieties/TheDepthLawIsEffective`); Künneth jets closed as equivalence (`ArithmeticHarmonicAnalysis/SameOrderJetRecoveryIsHomogeneousLogIndependence`); gcd strata open | |
 | A18 | quadratic region done with non-explicit `C` (`3-formalized/hausdorff-quadratic-saddle-region.md`) | `SquareRootThreshold/EffectiveHorizons/HausdorffQuadraticRegion` |
 | A14 | open | |

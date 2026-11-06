@@ -169,7 +169,8 @@ theorem norm_logarithmicGreenRepresentative_sub_le (f : LogarithmicHalfLineL2) {
     ‖logarithmicGreenRepresentative f x -
         logarithmicBackwardConvolution (f : RealLineL2) 0 * (V x : ℂ)‖ ≤ 2 * A * V x ^ 2 := by
   have hm := (Lp.stronglyMeasurable (f : RealLineL2)).measurable
-  have hae := (Lp.stronglyMeasurable (f : RealLineL2)).aestronglyMeasurable
+  have hae : AEStronglyMeasurable ((f : RealLineL2) : ℝ → ℂ) volume :=
+    (Lp.stronglyMeasurable (f : RealLineL2)).aestronglyMeasurable
   have hA : 0 ≤ A := by
     obtain ⟨y, hy⟩ := hb.exists
     exact (norm_nonneg _).trans hy
@@ -217,12 +218,13 @@ theorem norm_logarithmicGreenRepresentative_le (f : LogarithmicHalfLineL2) {B : 
         ((ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall hbound))
     _ = _ := by
       rw [integral_mul_const]
-      rfl
+      change V x * B = _
+      ring
 
 /-- **The coupled readout of a profile with an edge law.** If `|G − τV| ≤ A V²` on `[0,ε]`, then
 `∫ v(y) G(ε−y) dy` is `τ J(ε)` up to `A V(ε) J(ε)`. -/
 theorem norm_integral_kernel_mul_sub_coupling_le {G : ℝ → ℂ} {τ : ℂ} {A ε : ℝ} (hA : 0 ≤ A)
-    (hε : 0 < ε) (hG : Measurable G) (hB : ∃ C, ∀ t, ‖G t‖ ≤ C)
+    (hG : Measurable G) (hB : ∃ C, ∀ t, ‖G t‖ ≤ C)
     (hedge : ∀ t ∈ Icc (0 : ℝ) ε, ‖G t - τ * (V t : ℂ)‖ ≤ A * V t ^ 2) :
     ‖(∫ y in Ioc (0 : ℝ) ε, (v y : ℂ) * G (ε - y)) - τ * (logarithmicRenewalCoupling ε : ℂ)‖ ≤
       A * V ε * logarithmicRenewalCoupling ε := by

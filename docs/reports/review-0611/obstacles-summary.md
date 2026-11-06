@@ -246,7 +246,8 @@ Each mechanism below avoids Σ payment, Π precision and Γ selection as stated.
 - **Idea.** Construct the exact null ray of the blind program, as Viazovska's functions do for a zero-slack LP [C].
 - **Result [L].** A nonzero test with `Φ=Ξ·g`, `|Φ|²` blind at every `log n`, `n≥2`, and exactly zero pole–archimedean energy is [constructed in Lean](../../drafts/pipeline/3-formalized/w3-single-exact-blind-test.md). The annihilating arc multiplier has positive real part on `|Im z|≤501/1000`; its principal square root supplies `g` without extra zeros in that strip.
 - **Why the walls differ.** No primes and no margin appear.
-- **Constraints [L].** The Carlson obstruction requires wider Mellin-strip decay and logarithmic-room integrability (`ExactNullCertificateOrderTransfer`); the constructed strip factor does not establish those hypotheses. Full containment of the `Ξ^k` divisor forces `kb≤2` for a nonzero source with tail `exp(−a exp(b|x|))`.
+- **Constraints [L].** The Carlson obstruction assumes wider Mellin-strip decay and logarithmic-room integrability (`ExactNullCertificateOrderTransfer`). Full containment of the `Ξ^k` divisor forces `kb≤2` for a nonzero source with tail `exp(−a exp(b|x|))`.
+- **Sharp boundary [L].** The constructed blind correlation [attains exponent one](../../drafts/pipeline/3-formalized/w3-exact-blind-correlation-boundary.md); every exponent `b>1` is excluded by its full `Ξ²` divisor.
 - **Remaining boundary.** Exact existence does not supply positivity of the entire blind program. Prime-blind positivity remains the RH-level question.
 
 ### W4. Purity by a weight argument on a non-fibred base

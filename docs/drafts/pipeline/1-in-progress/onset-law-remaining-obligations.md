@@ -23,10 +23,9 @@
    `Σmδ²≤2A₀log(|γ₀|+4)/a²`, without positivity. Thus the displayed order does
    not establish the claimed improvement; a nontrivial visibility gain requires a
    stronger statement or additional structure proved from the configuration.
-3. **Logarithmic-height crystals.** Retain fixed depth, place the entire tapered
-   packet near its stated height, and prove the specified RvM bound. A constant-density
-   lattice with density proportional to `log T` has no uniform RvM constant near height
-   zero. The claimed global uniformity needs a separate argument.
+3. **Logarithmic-height crystals: complete.** The lattice is cut below height `e^L`;
+   a localizer with a high-order zero at height zero pays the removed points.
+   [Paper proof and Lean theorem](../3-formalized/cut-crystal-hides-fixed-depth-at-logarithmic-aperture.md).
 4. **Interferometer: complete.** The [formalized correction and audit](../3-formalized/two-bump-interferometer-retains-complex-amplitudes.md)
    prove `‖S(v)‖≤Re S(0)` and the reflected-pair identity
    `2 exp(iγv)(Re(c) cosh(δv)+i Im(c) sinh(δv))`.
