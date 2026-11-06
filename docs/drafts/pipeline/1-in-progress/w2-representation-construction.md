@@ -21,7 +21,7 @@ Three consistency laws must be distinguished: restriction of characters along `S
 7. Define the prescribed cycles without zeros: put `F(X)=logDeriv xi(1/2+√X)/√X`. The cycle of length `n+1` has value `Re[(-1)^n F^(n)(1/4)/n!]/poleSharpConstant^(n+1)`. The corpus resolvent derivative identity proves exact agreement with the endpoint power sums. This defines arithmetic values, not a positive representation.
 8. Identify the coloring character with the literal cycle-product class function on every permutation. Split invariant supports by `subtypeCongr`; transitivity makes fixed words constant on each cycle, and disjoint supports factor. This supplies the reverse direction of the full arithmetic character/RH equivalence from the existing positive endpoint family.
 9. Distinguish stabilizing a partition from stabilizing each block. At rank two every partition is invariant under the transposition. At rank three its extension fails precisely when the fixed letter matches exactly one swapped letter. Predict a restriction discrepancy `2R`, with `R = Σ_(a≠b) w_a²w_b`. The survivor is blockwise stabilization, which is exactly the fixed-word character. On an infinite set with every occupied block infinite, a finitely supported permutation preserving the partition must fix each block: moving one block would put that entire infinite block in its finite support. This is the structural limit mechanism absent from finite unmarked stabilizers.
-10. Test the gap between generic Hankel tests and full character positivity on `p_n=t^n`. All normalized pivot tests should be positive for `|t|≤1`, whereas full character positivity should quantize nonzero `t` to signed reciprocals of positive integers. The proposed detector is the alternating sum over `S_n`, with value `Π_(j<n)(1−jt)`. This is a separate conjecture; the endpoint equivalence uses the actual divisor and does not assert a generic converse.
+10. The generic Hankel converse fails on `p_n=t^n`: every normalized pivot test is positive for `|t|≤1`, whereas full character positivity holds exactly for `t=0` or `t=±1/m`, `m>0`. The alternating projection is `Π_(j<n)(1−jt)`. `GeometricCharacters.lean` and its exact positive classification pass direct checking; the endpoint equivalence uses the actual divisor and does not assert a generic converse.
 11. Complete the countable curve calibration. The phase alphabet `1/(1/4+(Im ρ_(i,k))²)` is positive and summable by the corpus periodic-height bound. Its normalized coloring character exists for every nonempty curve datum. Coordinatewise identification with the actual endpoint alphabet should hold exactly for unitary Frobenius data; phase positivity alone forgets radial eigenvalue information.
 12. Test whether randomizing the positive endpoint alphabet can repair its source discrepancy while preserving each mean color. For a finite probability mixture with mean `a_q = Re α_q/M`, the expected transposition should exceed the arithmetic transposition by exactly `Σ(Im α_q)²/M² + Σ_q Var(w_q)`. The deterministic real-part alphabet then minimizes this discrepancy; equality with the source should force RH and zero supported color variance. This sharp minimum would strengthen the separate covariance obstruction for disjoint cycles.
 13. Test an unconditional arithmetic subfamily: every alternating projection. Put `G=xiCentreLift` and `E(z)=G(1/4+z/M)²/G(1/4)²`. The desired identity is `E^(n)(0)=Σ_(σ∈S_n) sign(σ) χ_arith(σ)`. The factor two is essential: the endpoint resolvent is `2G'/G`. Positive theta moments give positive coefficients of `G`; nonnegative translation and squaring should then make every derivative of `E` nonnegative. The missing formal bridges are the signed cycle-index identity and translation of the entire power series. This would prove column projections only, leaving mixed Young shapes and full Gram positivity open.
@@ -51,23 +51,18 @@ Three consistency laws must be distinguished: restriction of characters along `S
 
 Simon Thomas, [Characters and invariant random subgroups of the finitary symmetric group](https://ow3.math.rutgers.edu/~sthomas/Fin-chars.pdf), §1: fixed-point probabilities give characters; the pure row Thoma character is the product of color power sums. These are classical foundations, not novelty claims.
 
-## Geometric test family: proof mechanism under formalization
+## Generic Hankel boundary
 
-For `p_n=t^n`, the Hankel matrix is the outer product `(t^r_i)(t^r_j)`, and its
-diagonal is at most one when `|t|≤1`. To test the missing character constraints,
-sum the class function against the sign character. For a fixed word, the signed
-stabilizer sum is one if its letters are distinct and zero otherwise: exchange two
-equal letters to pair stabilizer elements with opposite signs. A uniform alphabet
-of `m` letters therefore gives `m(m−1)…(m−n+1)/m^n`. Polynomial interpolation at
-`t=1/m` should identify the general alternating sum with `Π_(j<n)(1−jt)`.
-If `t>0` is not a reciprocal integer, the first negative factor makes one such
-projection negative. Sign twist should give the negative-parameter boundary.
-These steps remain separate proof obligations until their Lean declarations pass.
+`GeometricCharacters.lean` gives the [exact geometric classification](../5-failed/w2-generic-hankel-character-converse.md).
+All common-pivot tests are positive on `[-1,1]`; full character positivity selects only
+zero and signed reciprocal integers. Uniform coloring, sign twist, and the regular character
+construct every survivor. This distinguishes the endpoint divisor argument below from a
+false generic Hankel-to-character converse.
 
 ## Exact character-to-moment receiver
 
 Cycles with a common pivot and otherwise disjoint supports have a product cycle of combined length minus one. Replicating each arm gives a Gram matrix
-`G_N((i,a),(j,b)) = H_ij + δ_((i,a),(j,b))(1−H_ii)`, where `H_ij = p_(r_i+r_j+1)`.
+`G_N((i,a),(j,b)) = H_ij + δ_((i,a),(j,b))(1−H_ii)`. Writing `c_n` for the cycle value at length `n+1`, `H_ij = c_(r_i+r_j)`.
 `ReplicatedKernel.lean` proves the exact classification: every `G_N` is positive semidefinite iff `H` is positive semidefinite and `H_ii≤1`. Constant block vectors give `N²Q_H(v)+NΣ_i(1−H_ii)v_i²`; differences of two replicas give the diagonal upper bound. The exact finite threshold for a negative test is `NQ_H(v)+Σ_i(1−H_ii)v_i²<0`. All three statements are kernel-checked.
 
 `CommonPivotCycles.lean` is kernel-checked: the literal cycle-product class function on finite symmetric groups has exactly these Gram matrices, using independently tagged arms and one pivot. Thus character positivity implies every Hankel test without invoking Thoma classification.
@@ -83,6 +78,7 @@ The existing `riemannHypothesis_iff_forall_xiResolventHankelMatrix_posSemidef` a
 - [x] Countable coloring character and actual positive endpoint application.
 - [x] Canonical arithmetic cycle function: positivity is equivalent to the existing RH moment criterion.
 - [ ] Arithmetic source representation and exact character identification.
-- [ ] RH conclusion kernel-checked; direct leaf checks and imports complete.
+- [ ] RH conclusion kernel-checked.
+- [ ] Direct leaf checks and imports complete for the constructed framework.
 
 No numerical experiments are used. No RH-strength input may enter a theorem as an unproved premise.

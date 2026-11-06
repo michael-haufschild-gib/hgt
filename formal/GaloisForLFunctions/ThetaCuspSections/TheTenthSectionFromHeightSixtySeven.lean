@@ -189,8 +189,6 @@ theorem integral_sq_comp_ge {g : ℝ → ℝ} (hg : Continuous g) (h0 : ∀ t, 0
     have := h0 (b ^ 2)
     nlinarith only [this, hb.2]
   rw [intervalIntegral.integral_const_mul] at hmono
-  have := Function.comp_def g fun b : ℝ => b ^ 2
-  simp only [Function.comp_apply] at hmono ⊢
   linarith only [hmono]
 
 /-- The form on the window `[1, 5]`. -/
@@ -273,7 +271,6 @@ theorem formW_le {w : ℕ → ℝ} {b : ℝ} (hb : 66 < |b|) :
     refine h.trans (mul_le_mul_of_nonneg_right ?_ (interval_sq_nonneg _))
     have e : 87 / 12 ^ 9 * t ^ 8 = 1 / 12 * (87 * (t / 12) ^ 8) := by
       field_simp
-      norm_num
     rw [e]
     exact mul_le_mul_of_nonneg_left hJ (by norm_num)
   have h1 := hbound (w 0) (w 2) (w 4) (w 6) (w 8)
@@ -288,7 +285,9 @@ theorem formW_le {w : ℕ → ℝ} {b : ℝ} (hb : 66 < |b|) :
     ⟨_, rfl⟩
   obtain ⟨E2, hE2⟩ : ∃ E2, E2 = ∫ u in (1 : ℝ)..25, quartic (w 1) (w 3) (w 5) (w 7) (w 9) u ^ 2 :=
     ⟨_, rfl⟩
-  rw [← hE1, ← hE2] at *
+  rw [← hE1] at h1
+  rw [← hE2] at h2
+  rw [← hE1, ← hE2]
   obtain ⟨R1, hR1⟩ : ∃ R1, R1 = quartic (w 0) (w 2) (w 4) (w 6) (w 8) t ^ 2 := ⟨_, rfl⟩
   obtain ⟨R2, hR2⟩ : ∃ R2, R2 = quartic (w 1) (w 3) (w 5) (w 7) (w 9) t ^ 2 := ⟨_, rfl⟩
   rw [← hR1] at h1 ⊢
@@ -440,7 +439,7 @@ theorem form_pos {a : ℝ} (ha0 : 0 < a) (ha : a ≤ 1 / 2) {w : ℕ → ℝ} (h
           _ ≤ _ := h2
           _ = _ := by ring
   have hint := integral_mono hLo hWint hpoint
-  have hval : ∫ b, Lo b = 0.0006 * a * ∫ b in (1 : ℝ)..5, formW w b - Z * (2 * Real.exp (-66)) := by
+  have hval : ∫ b, Lo b = 0.0006 * a * (∫ b in (1 : ℝ)..5, formW w b) - Z * (2 * Real.exp (-66)) := by
     simp only [Lo]
     rw [integral_sub (hind.const_mul _) (integrable_tailExp.const_mul _), integral_const_mul,
       integral_const_mul, integral_tailExp, integral_indicator measurableSet_Icc,
@@ -462,7 +461,7 @@ theorem form_pos {a : ℝ} (ha0 : 0 < a) (ha : a ≤ 1 / 2) {w : ℕ → ℝ} (h
       _ ≤ _ := by
           have : (4.5e-8 : ℝ) * (2 * 6050000000 * (87 / 12 ^ 9)) ≤ 0.00001 := by norm_num
           nlinarith only [mul_le_mul_of_nonneg_left this hA]
-  have h6 : 0.0006 * a * (1 / 10 * E) ≤ 0.0006 * a * ∫ b in (1 : ℝ)..5, formW w b :=
+  have h6 : 0.0006 * a * (1 / 10 * E) ≤ 0.0006 * a * (∫ b in (1 : ℝ)..5, formW w b) :=
     mul_le_mul_of_nonneg_left hcore (by positivity)
   have hfinal : 0 < a * E := by positivity
   norm_num at h6 hZle hint hfinal ⊢
@@ -482,7 +481,6 @@ theorem thetaCuspCenterMixedSignedHankel_ten_posDef {a : ℝ} (ha0 : 0 < a) (ha 
   have hwv : ∀ i : Fin 10, w i = v i := fun i => by
     rw [hw]
     simp only [i.isLt, dif_pos]
-    rfl
   have hne : ∃ i, i < 10 ∧ w i ≠ 0 := by
     by_contra hall
     push Not at hall

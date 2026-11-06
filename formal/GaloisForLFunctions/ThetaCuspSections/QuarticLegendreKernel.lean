@@ -59,7 +59,6 @@ theorem integral_quartic_sq (d0 d1 d2 d3 d4 : ℝ) :
         (2 * d3 * d4) * s ^ 7 + d4 ^ 2 * s ^ 8 := fun s => by ring
   simp_rw [e]
   rw [integral_poly_eight]
-  ring
 
 /-- The Legendre kernel of degree four on the diagonal. -/
 def legendreJ (s : ℝ) : ℝ :=
@@ -181,7 +180,11 @@ theorem legendreJ_le {s : ℝ} (hs : 361 ≤ s) : legendreJ s ≤ 87 * s ^ 8 := 
     rw [hu]
     ring
   unfold legendreJ
-  rw [hs8, ← hu]
+  have h0 : 3 / 2 * s ^ 2 = 3 / 2 * u := by rw [hu]
+  rw [hs8, h0]
+  generalize ((3 * s ^ 2 - 1) / 2) ^ 2 = A at h2 ⊢
+  generalize ((5 * s ^ 3 - 3 * s) / 2) ^ 2 = B at h3 ⊢
+  generalize ((35 * s ^ 4 - 30 * s ^ 2 + 3) / 8) ^ 2 = C at h4 ⊢
   have hu0 : 0 ≤ u := by linarith only [hu1]
   have h31 : u ^ 3 * 1000 ≤ u ^ 4 := by
     have := mul_le_mul_of_nonneg_left (by linarith only [hu1] : (1000 : ℝ) ≤ u) (pow_nonneg hu0 3)
@@ -192,7 +195,7 @@ theorem legendreJ_le {s : ℝ} (hs : 361 ≤ s) : legendreJ s ≤ 87 * s ^ 8 := 
     calc u ^ 2 * 1000 ≤ u ^ 2 * u := this
       _ = u ^ 3 := by ring
   have h11 : u * 1000 ≤ u ^ 2 := by nlinarith only [hu1]
-  norm_num at h2 h3 h4 ⊢
+  norm_num at h4 ⊢
   linarith only [h2, h3, h4, h31, h21, h11, hu1]
 
 /-- A quartic with vanishing energy has vanishing coefficients. -/

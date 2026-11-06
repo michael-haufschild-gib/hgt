@@ -7,13 +7,17 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilChainIsOneScal
 Compare two apertures `a ≤ b = a + h` in the left-endpoint coordinate: `Δ = s_b − ρ s_a`, with
 `ρ = e^{i z̄ h}`. The evaluation exponentials cancel, so the chart forcings differ only through `Δ`.
 
-* **Energy** (`integral_norm_chartIncrement_le`): the Hilbert residual gives `‖Δ‖₁ ≤ C√h`.
-* **Interior smallness** (`norm_chartIncrement_interior_le`): away from the far endpoint,
+* **Energy** (`exists_chartIncrement_mass_bound`): the Hilbert residual gives `‖Δ‖₁ ≤ C√h`.
+* **Interior smallness** (`exists_interior_bound`): away from the far endpoint,
   `|Δ| ≤ C V(3η) V(h^{1/4}) + C_η h^{1/4}`. The first constant does not depend on `η`.
-* **The kick** (`tendsto_leftTrace_right_kick`): as `ε ↓ 0`,
-  `(τ_L(a + ε/2, z) − τ_L(a, z)) log(1/ε) → w τ_R(a, z)`, where `w = Λ(n)/√n` if `2a = log n`, and
-  `w = 0` when no integer has that logarithm. Approaching from below there is no kick at all
+* **The increment** (`exists_trace_increment_bound`): `τ_L(b,z) − ρ τ_L(a,z)` is the readout of the
+  chart forcing of `Δ`. Up to interior size it equals `w τ_R(b,z) J(2h)`, with `J` the renewal coupling.
+* **The kick** (`tendsto_leftTrace_right_kick`): as `b ↓ a`,
+  `(τ_L(b,z) − τ_L(a,z)) log(1/(b−a)) → w(a) τ_R(a,z)`, where `w(a) = Λ(n)/√n` if `2a = log n`, and
+  `w(a) = 0` when no integer has that logarithm. Approaching from below there is no kick at all
   (`tendsto_leftTrace_left_kick`).
+* **The scalar flow**: `r` is continuous before contact (`continuousAt_anchorReflection`), and
+  `(Ψ(x) − Ψ(a)) log(1/(x−a)) → w(a)` as `x ↓ a` (`tendsto_canonicalPotential_right_kick`).
 
 The kick is continuous, of size `1/log(1/ε)`: this is the singular part of the potential at
 `2a = log n`. Prime powers act only from the right of their aperture.
@@ -91,7 +95,7 @@ theorem norm_chartResidual_sq (a b : PrecontactAperture) (hab : a.1.1 ≤ b.1.1)
       ‖evalVector b z‖ ^ 2 - Real.exp ((b.1.1 - a.1.1) * z.im) ^ 2 * ‖evalVector a z‖ ^ 2 := by
   set h := b.1.1 - a.1.1 with hh
   have hfit : a.1.1 + |h| ≤ b.1.1 := by
-    rw [abs_of_nonneg (sub_nonneg.mpr hab), hh]
+    rw [abs_of_nonneg (sub_nonneg.mpr hab)]
     linarith only
   set T := translate (a := a) (b := b) h hfit
   have hi : inner ℂ (evalVector b z) (T (evalVector a z)) =
@@ -114,7 +118,6 @@ theorem norm_chartResidual_sq (a b : PrecontactAperture) (hab : a.1.1 ≤ b.1.1)
     · simp only [Complex.add_im, Complex.mul_re, Complex.I_re, Complex.I_im, Complex.neg_re,
         Complex.neg_im, Complex.conj_re, Complex.conj_im, Complex.ofReal_re, Complex.ofReal_im,
         Complex.mul_im]
-      push_cast
       ring
   change ‖evalVector b z - chartPhase z h • T (evalVector a z)‖ ^ 2 = _
   rw [norm_sub_sq (𝕜 := ℂ), inner_smul_right, hi, norm_smul, T.norm_map, norm_chartPhase]
@@ -129,7 +132,7 @@ theorem physical_chartResidual_ae (a b : PrecontactAperture) (hab : a.1.1 ≤ b.
       fun x => chartIncrement a b z (x + b.1.1) := by
   set h := b.1.1 - a.1.1 with hh
   have hfit : a.1.1 + |h| ≤ b.1.1 := by
-    rw [abs_of_nonneg (sub_nonneg.mpr hab), hh]
+    rw [abs_of_nonneg (sub_nonneg.mpr hab)]
     linarith only
   have hval : ccmArchimedeanFormEmbedding b.1 (toForm b (chartResidual a b hab z)) =
       ccmArchimedeanFormEmbedding b.1 (toForm b (evalVector b z)) -
@@ -427,9 +430,8 @@ theorem exists_chartIncrement_mass_bound (a₁ a₂ : PrecontactAperture) (z : �
     rw [div_le_iff₀ (by positivity)]
     calc
       _ ≤ D * h / ccmRestrictedWeilGroundEnergy a₂.1 := hsq
-      _ = _ := by
-        rw [← hsqsq]
-        field_simp
+      _ = D * (Real.sqrt h * Real.sqrt h) / ccmRestrictedWeilGroundEnergy a₂.1 := by rw [hsqsq]
+      _ = _ := by field_simp
   have hmain : Real.sqrt h * (2 * b.1.1) / 2 ≤ a₂.1.1 * Real.sqrt h := by
     nlinarith only [hba₂, hsqrt]
   refine hbound.trans ?_
@@ -442,7 +444,7 @@ theorem exists_chartIncrement_mass_bound (a₁ a₂ : PrecontactAperture) (z : �
 private theorem integrable_bounded_mul {f k : ℝ → ℂ} (hf : Integrable f) (hk : Measurable k) {c : ℝ}
     (hb : ∀ t, ‖k t‖ ≤ c) : Integrable (fun t => k t * f t) :=
   (hf.mul_bdd hk.aestronglyMeasurable (Eventually.of_forall hb)).congr
-    (Eventually.of_forall fun t => by simp only [Pi.mul_apply, mul_comm])
+    (Eventually.of_forall fun t => by simp only [mul_comm])
 
 private theorem integrable_exp_source {S : ℝ → ℂ} (hS : Continuous S) (hc : HasCompactSupport S)
     (σ : ℝ) : Integrable (fun t : ℝ => (Real.exp (σ * t) : ℂ) * S t) :=
@@ -458,8 +460,8 @@ private theorem integrable_remainder_source {S : ℝ → ℂ} (hS : Integrable S
 theorem chartBounded_sub_mul {S S' : ℝ → ℂ} (hS : Continuous S) (hc : HasCompactSupport S)
     (hS' : Continuous S') (hc' : HasCompactSupport S') (ρ : ℂ) (y' : ℝ) :
     chartBounded (fun t => S t - ρ * S' t) y' = chartBounded S y' - ρ * chartBounded S' y' := by
-  have hi := hS.integrable_of_hasCompactSupport hc
-  have hi' := hS'.integrable_of_hasCompactSupport hc'
+  have hi : Integrable S := hS.integrable_of_hasCompactSupport hc
+  have hi' : Integrable S' := hS'.integrable_of_hasCompactSupport hc'
   have h1 : (∫ t : ℝ, (archLogRemainder |y' - t| : ℂ) * (S t - ρ * S' t)) =
       (∫ t : ℝ, (archLogRemainder |y' - t| : ℂ) * S t) -
         ρ * ∫ t : ℝ, (archLogRemainder |y' - t| : ℂ) * S' t := by
@@ -596,10 +598,10 @@ def chartScale (h : ℝ) : ℝ := Real.sqrt (Real.sqrt h)
 theorem chartScale_pos {h : ℝ} (hh : 0 < h) : 0 < chartScale h :=
   Real.sqrt_pos.mpr (Real.sqrt_pos.mpr hh)
 
-theorem sqrt_eq_chartScale_sq {h : ℝ} (hh : 0 < h) : Real.sqrt h = chartScale h ^ 2 :=
+theorem sqrt_eq_chartScale_sq (h : ℝ) : Real.sqrt h = chartScale h ^ 2 :=
   (Real.sq_sqrt (Real.sqrt_nonneg h)).symm
 
-theorem chartScale_le_one {h : ℝ} (hh : 0 ≤ h) (h1 : h ≤ 1) : chartScale h ≤ 1 := by
+theorem chartScale_le_one {h : ℝ} (h1 : h ≤ 1) : chartScale h ≤ 1 := by
   have h2 : Real.sqrt h ≤ 1 := Real.sqrt_le_one.mpr h1
   exact Real.sqrt_le_one.mpr h2
 
@@ -653,13 +655,13 @@ theorem exists_interior_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) :
   have habso : K * V (chartScale h) < 1 / 2 := hsub ⟨hh, hhu⟩
   let q := chartScale h
   have hq : 0 < q := chartScale_pos hh
-  have hq1 : q ≤ 1 := chartScale_le_one hh.le hh₁.le
+  have hq1 : q ≤ 1 := chartScale_le_one hh₁.le
   have hVq := logarithmicRenewalMass_le_one q
   have hVq0 := logarithmicRenewalMass_nonneg q
   have ha₁p := a₁.1.2
   have haa₂ : a.1.1 ≤ a₂.1.1 := hab.trans hb₂
   have hmass : ∫ s, ‖chartIncrement a b z s‖ ≤ C₂ * q ^ 2 := by
-    rw [← sqrt_eq_chartScale_sq hh]
+    rw [← sqrt_eq_chartScale_sq h]
     exact hC₂ a b ha₁ hab hb₂ hh
   have hc : 0 < 2 * a.1.1 - 2 * η := by linarith only [h3η, ha₁, hη]
   let c := 2 * a.1.1 - 2 * η
@@ -824,7 +826,7 @@ theorem exists_interior_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) :
 
 /-- The readout at the endpoint, with a majorant controlled only near the endpoint. -/
 theorem norm_integral_kernel_le_of_near {r : ℝ → ℂ} {g : ℝ → ℝ} {A B ρ : ℝ}
-    (hg : Integrable g) (hg0 : ∀ y, 0 ≤ g y) (hA : 0 ≤ A) (hB : 0 ≤ B) (hρ : 0 < ρ)
+    (hg : Integrable g) (hg0 : ∀ y, 0 ≤ g y) (hA : 0 ≤ A) (hρ : 0 < ρ)
     (hnear : ∀ y ∈ Ioc (0 : ℝ) ρ, g y ≤ A) (hb : ∀ᵐ y ∂volume, 0 < y → ‖r y‖ ≤ g y + B) :
     ‖∫ y : ℝ, (v y : ℂ) * r y‖ ≤ A * V ρ + (∫ y, g y) / ρ + B := by
   let G : ℝ → ℝ := (Ioc (0 : ℝ) ρ).indicator (fun t => v t * A)
@@ -866,9 +868,11 @@ theorem norm_integral_kernel_le_of_near {r : ℝ → ℂ} {g : ℝ → ℝ} {A B
             _ = _ := by ring
         nlinarith only [hbd, h2, hG0]
     _ = _ := by
-      rw [integral_add (hGi.add (hg.div_const ρ)) (logarithmicCausalKernel_mass_one.1.mul_const B),
-        integral_add hGi (hg.div_const ρ), hG, integral_div, integral_mul_const,
-        logarithmicCausalKernel_mass_one.2, one_mul]
+      have h1 : ∫ y, (G y + g y / ρ + v y * B) = (∫ y, (G y + g y / ρ)) + ∫ y, v y * B :=
+        integral_add (hGi.add (hg.div_const ρ)) (logarithmicCausalKernel_mass_one.1.mul_const B)
+      have h2 : ∫ y, (G y + g y / ρ) = (∫ y, G y) + ∫ y, g y / ρ :=
+        integral_add hGi (hg.div_const ρ)
+      rw [h1, h2, hG, integral_div, integral_mul_const, logarithmicCausalKernel_mass_one.2, one_mul]
 
 /-- The mass of the prime powers meeting the far endpoint of the old window. -/
 def chartKickMass (N : Finset ℕ) (a : ℝ) : ℝ :=
@@ -913,7 +917,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
   set h := b.1.1 - a.1.1 with hhdef
   set q := chartScale h with hqdef
   have hq : 0 < q := chartScale_pos hh
-  have hq1 : q ≤ 1 := chartScale_le_one hh.le hh1.le
+  have hq1 : q ≤ 1 := chartScale_le_one hh1.le
   have hVq := logarithmicRenewalMass_le_one q
   have hVq0 := logarithmicRenewalMass_nonneg q
   set ρ := chartPhase z h with hρdef
@@ -925,7 +929,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
   have hΔ0 (t : ℝ) (ht : t ≤ 0) : Δ t = 0 := chartIncrement_eq_zero hab z (Or.inl ht)
   have hΔT (t : ℝ) (ht : 2 * b.1.1 ≤ t) : Δ t = 0 := chartIncrement_eq_zero hab z (Or.inr ht)
   have hmass : ∫ s, ‖Δ s‖ ≤ C₂ * q ^ 2 := by
-    rw [hqdef, ← sqrt_eq_chartScale_sq hh]
+    rw [hqdef, ← sqrt_eq_chartScale_sq h]
     exact hC₂ a b ha₁ hab hb₂ hh
   have hL0 : 0 ≤ C₂ * q ^ 2 := by positivity
   have hcd : a₁.1.1 / 2 < a₁.1.1 := by linarith only [ha₁p]
@@ -1000,6 +1004,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
     rw [← integral_indicator measurableSet_Ioc]
     apply integral_congr_ae
     refine Eventually.of_forall fun y => ?_
+    change (v y : ℂ) * main y = (Ioc (0 : ℝ) ε).indicator (fun y => (v y : ℂ) * G (ε - y)) y
     by_cases hy0 : y ≤ 0
     · rw [logarithmicCausalKernel_of_nonpos hy0, indicator_of_notMem
         (fun hm : y ∈ Ioc (0 : ℝ) ε => absurd hm.1 (not_lt.mpr hy0))]
@@ -1114,7 +1119,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
         _ ≤ ∑ m ∈ N, criticalMellinAtomWeight m * D :=
           Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _)
             fun m _ _ => mul_nonneg (hwnn m) hD0
-        _ = _ := by rw [Finset.sum_mul]; rfl
+        _ = _ := by rw [chartPrimeMass, Finset.sum_mul]
     have h3 : ∑ m ∈ N, criticalMellinAtomWeight m * ‖Δ (y - Real.log m)‖ = 0 := by
       refine Finset.sum_eq_zero fun m hm => ?_
       have hm2 : (2 : ℝ) ≤ m := by exact_mod_cast (Finset.mem_Icc.mp hm).1
@@ -1131,7 +1136,7 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
     exact hi.trans (mul_le_mul_of_nonneg_left hmass (by positivity))
   have hrest : ‖∫ y : ℝ, (v y : ℂ) * rest y‖ ≤
       (B * L + K * D) * V q + (∫ y, g y) / q + 1 / a₁.1.1 * L := by
-    refine norm_integral_kernel_le_of_near hgi hg0 (by positivity) (by positivity) hq hnear ?_
+    refine norm_integral_kernel_le_of_near hgi hg0 (by positivity) hq hnear ?_
     filter_upwards [chartForcing_sub_ae C hab hb₂ hCa z] with y hy hy0
     have hfy := hy hy0.le
     have hrestEq : rest y = (C.toFun y : ℂ) * (chartMass * Δ y + chartBounded Δ y +
@@ -1229,6 +1234,931 @@ theorem exists_trace_increment_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) 
   have hmainb' := mul_le_mul_of_nonneg_left hcoupled hW0
   have hrest' := hrest.trans hreste
   nlinarith only [hmainb', hrest']
+
+
+/-! ### The limits -/
+
+private theorem eventually_lt_nhdsGT {a c : ℝ} (hc : a < c) : ∀ᶠ x : ℝ in 𝓝[>] a, x < c :=
+  mem_of_superset (Ioo_mem_nhdsGT hc) fun _ h => h.2
+
+private theorem eventually_gt_nhdsLT {a c : ℝ} (hc : a < c) : ∀ᶠ x : ℝ in 𝓝[<] c, a < x :=
+  mem_of_superset (Ioo_mem_nhdsLT hc) fun _ h => h.1
+
+theorem tendsto_two_mul_nhdsGT :
+    Tendsto (fun h : ℝ => 2 * h) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+  refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+  · have h0 : Tendsto (fun h : ℝ => 2 * h) (𝓝 (0 : ℝ)) (𝓝 (2 * 0)) :=
+      (continuous_const.mul continuous_id).tendsto 0
+    rw [mul_zero] at h0
+    exact h0.mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with h hh
+    exact mul_pos two_pos (mem_Ioi.mp hh)
+
+theorem logarithmicRenewalCoupling_nonneg (x : ℝ) : 0 ≤ logarithmicRenewalCoupling x :=
+  setIntegral_nonneg measurableSet_Ioc fun _ _ =>
+    mul_nonneg (logarithmicCausalKernel_nonneg _) (logarithmicRenewalMass_nonneg _)
+
+theorem tendsto_logarithmicRenewalCoupling_zero :
+    Tendsto logarithmicRenewalCoupling (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have h2 := tendsto_logarithmicRenewalMass_zero.pow 2
+  rw [zero_pow two_ne_zero] at h2
+  exact squeeze_zero logarithmicRenewalCoupling_nonneg logarithmicRenewalCoupling_le_square h2
+
+/-- `J(2h) log(1/h) → 1`. -/
+theorem tendsto_coupling_two_mul_mul_log :
+    Tendsto (fun h : ℝ => logarithmicRenewalCoupling (2 * h) * Real.log (1 / h)) (𝓝[>] (0 : ℝ))
+      (𝓝 1) := by
+  have h1 := tendsto_logarithmicRenewalCoupling_normalized.comp tendsto_two_mul_nhdsGT
+  have h2 := (tendsto_logarithmicRenewalCoupling_zero.comp tendsto_two_mul_nhdsGT).mul_const
+    (Real.log 2)
+  have h3 := h1.add h2
+  rw [zero_mul, add_zero] at h3
+  refine h3.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with h hh
+  have hh' : (0 : ℝ) < h := hh
+  simp only [Function.comp_apply]
+  have hlog : Real.log (1 / h) = Real.log (1 / (2 * h)) + Real.log 2 := by
+    rw [← Real.log_mul (by positivity) two_ne_zero]
+    congr 1
+    field_simp
+  rw [hlog]
+  ring
+
+theorem tendsto_mul_log_one_div :
+    Tendsto (fun h : ℝ => h * Real.log (1 / h)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have h0 : Tendsto (fun h : ℝ => h * Real.log h) (𝓝 (0 : ℝ)) (𝓝 (0 * Real.log 0)) :=
+    Real.continuous_mul_log.tendsto 0
+  rw [zero_mul] at h0
+  have h1 : Tendsto (fun h : ℝ => -(h * Real.log h)) (𝓝[>] (0 : ℝ)) (𝓝 (-0)) :=
+    (h0.mono_left nhdsWithin_le_nhds).neg
+  rw [neg_zero] at h1
+  refine h1.congr fun h => ?_
+  rw [one_div, Real.log_inv]
+  ring
+
+theorem norm_chartPhase_sub_one_le (z : ℂ) {h : ℝ} (hh : 0 ≤ h) (h1 : h * ‖z‖ ≤ 1) :
+    ‖chartPhase z h - 1‖ ≤ 2 * ‖z‖ * h := by
+  have hw : ‖I * (starRingEnd ℂ) z * (h : ℂ)‖ = h * ‖z‖ := by
+    rw [norm_mul, norm_mul, Complex.norm_I, one_mul, Complex.norm_conj, Complex.norm_real,
+      Real.norm_of_nonneg hh, mul_comm]
+  have hb := Complex.norm_exp_sub_one_le (x := I * (starRingEnd ℂ) z * (h : ℂ)) (by rw [hw]; exact h1)
+  rw [hw] at hb
+  rw [chartPhase]
+  linarith only [hb]
+
+theorem tendsto_chartPhase_sub_one (z : ℂ) :
+    Tendsto (fun h : ℝ => chartPhase z h - 1) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have hc : Continuous (fun h : ℝ => chartPhase z h - 1) := by
+    unfold chartPhase
+    fun_prop
+  have h0 := hc.tendsto 0
+  have hz : chartPhase z 0 - 1 = 0 := by simp [chartPhase]
+  rw [hz] at h0
+  exact h0.mono_left nhdsWithin_le_nhds
+
+/-- The phase is smooth, so it is invisible at logarithmic scale. -/
+theorem tendsto_chartPhase_sub_one_mul_log (z : ℂ) :
+    Tendsto (fun h : ℝ => (chartPhase z h - 1) * (Real.log (1 / h) : ℂ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have hb := (tendsto_mul_log_one_div.const_mul (2 * ‖z‖))
+  rw [mul_zero] at hb
+  refine squeeze_zero_norm' ?_ hb
+  have hsmall : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h * ‖z‖ < 1 := by
+    have ht : Tendsto (fun h : ℝ => h * ‖z‖) (𝓝 (0 : ℝ)) (𝓝 (0 * ‖z‖)) :=
+      (continuous_id.mul continuous_const).tendsto 0
+    rw [zero_mul] at ht
+    exact (ht.mono_left nhdsWithin_le_nhds).eventually_lt_const one_pos
+  have hlt : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < 1 := eventually_lt_nhdsGT one_pos
+  filter_upwards [self_mem_nhdsWithin, hsmall, hlt] with h hh hs hl
+  have hh' : (0 : ℝ) < h := hh
+  have hL : 0 ≤ Real.log (1 / h) := Real.log_nonneg ((one_le_div hh').mpr hl.le)
+  rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hL, ← mul_assoc]
+  exact mul_le_mul_of_nonneg_right (norm_chartPhase_sub_one_le z hh'.le hs.le) hL
+
+theorem chartScale_lt {h s : ℝ} (hs : 0 < s) (hh : h < (s ^ 2) ^ 2) : chartScale h < s :=
+  (Real.sqrt_lt' hs).mpr ((Real.sqrt_lt' (by positivity)).mpr hh)
+
+/-- A finite set of logarithms is separated from any point except where it hits it. -/
+theorem exists_log_gap (N : Finset ℕ) (c : ℝ) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ m ∈ N, Real.log m = c ∨ Real.log m ≤ c - δ ∨ c + δ ≤ Real.log m := by
+  classical
+  induction N using Finset.induction_on with
+  | empty => exact ⟨1, one_pos, by simp⟩
+  | insert m s _ ih =>
+    obtain ⟨δ, hδ, h⟩ := ih
+    by_cases hm : Real.log m = c
+    · refine ⟨δ, hδ, fun k hk => ?_⟩
+      rcases Finset.mem_insert.mp hk with hkm | hk
+      · rw [hkm]
+        exact Or.inl hm
+      · exact h k hk
+    · have hpos : 0 < |Real.log m - c| := abs_pos.mpr (sub_ne_zero.mpr hm)
+      obtain ⟨d, hd, hdδ, hdm⟩ : ∃ d : ℝ, 0 < d ∧ d ≤ δ ∧ d ≤ |Real.log m - c| :=
+        ⟨min δ |Real.log m - c|, lt_min hδ hpos, min_le_left _ _, min_le_right _ _⟩
+      refine ⟨d, hd, fun k hk => ?_⟩
+      rcases Finset.mem_insert.mp hk with hkm | hk
+      · rw [hkm]
+        right
+        rcases le_total (Real.log m) c with hle | hle
+        · left
+          rw [abs_of_nonpos (sub_nonpos.mpr hle)] at hdm
+          linarith only [hdm]
+        · right
+          rw [abs_of_nonneg (sub_nonneg.mpr hle)] at hdm
+          linarith only [hdm]
+      · rcases h k hk with h1 | h1 | h1
+        · exact Or.inl h1
+        · exact Or.inr (Or.inl (by linarith only [h1, hdδ]))
+        · exact Or.inr (Or.inr (by linarith only [h1, hdδ]))
+
+/-! ### The kick weight -/
+
+/-- The kick weight of an aperture: `Λ(n)/√n` if `2a = log n`, and zero when no integer has that
+logarithm. -/
+def traceKickWeight (a : ℝ) : ℝ := chartKickMass (Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊) a
+
+theorem traceKickWeight_nonneg (a : ℝ) : 0 ≤ traceKickWeight a := chartKickMass_nonneg _ _
+
+/-- The kick mass does not depend on the top of the prime window. -/
+theorem chartKickMass_eq_traceKickWeight {a c : ℝ} (hac : a ≤ c) :
+    chartKickMass (Finset.Icc 2 ⌊Real.exp (2 * c)⌋₊) a = traceKickWeight a := by
+  unfold traceKickWeight chartKickMass
+  refine Finset.sum_congr ?_ fun _ _ => rfl
+  ext m
+  simp only [Finset.mem_filter, Finset.mem_Icc]
+  constructor
+  · rintro ⟨⟨h2, _⟩, hlog⟩
+    refine ⟨⟨h2, ?_⟩, hlog⟩
+    have hpos : (0 : ℝ) < m := by exact_mod_cast (by omega : 0 < m)
+    have hfl : ⌊Real.exp (2 * a)⌋₊ = m := by rw [← hlog, Real.exp_log hpos, Nat.floor_natCast]
+    exact hfl.ge
+  · rintro ⟨⟨h2, hm⟩, hlog⟩
+    exact ⟨⟨h2, hm.trans (Nat.floor_le_floor (Real.exp_le_exp.mpr (by linarith only [hac])))⟩, hlog⟩
+
+theorem traceKickWeight_of_log {a : ℝ} {n : ℕ} (hn : 2 ≤ n) (ha : 2 * a = Real.log n) :
+    traceKickWeight a = criticalMellinAtomWeight n := by
+  have hpos : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  unfold traceKickWeight chartKickMass
+  have hfilter : (Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊).filter (fun m : ℕ => Real.log m = 2 * a) =
+      {n} := by
+    ext m
+    simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_singleton]
+    constructor
+    · rintro ⟨⟨h2, _⟩, hlog⟩
+      have hm : (0 : ℝ) < m := by exact_mod_cast (by omega : 0 < m)
+      have := Real.log_injOn_pos (Set.mem_Ioi.mpr hm) (Set.mem_Ioi.mpr hpos) (hlog.trans ha)
+      exact_mod_cast this
+    · intro hm
+      rw [hm]
+      refine ⟨⟨hn, ?_⟩, ha.symm⟩
+      have hfl : ⌊Real.exp (2 * a)⌋₊ = n := by rw [ha, Real.exp_log hpos, Nat.floor_natCast]
+      exact hfl.ge
+  rw [hfilter, Finset.sum_singleton]
+
+theorem traceKickWeight_eq_zero {a : ℝ} (ha : ∀ n : ℕ, 2 ≤ n → Real.log n ≠ 2 * a) :
+    traceKickWeight a = 0 := by
+  unfold traceKickWeight chartKickMass
+  refine Finset.sum_eq_zero fun m hm => ?_
+  obtain ⟨hmem, hlog⟩ := Finset.mem_filter.mp hm
+  exact absurd hlog (ha m (Finset.mem_Icc.mp hmem).1)
+
+/-! ### The logarithmic form of the increment -/
+
+/-- **The increment at logarithmic scale.** The coefficient `Q` of the interior term does not depend
+on the distance `η` to the far endpoint. -/
+theorem exists_trace_increment_log_bound (a₁ a₂ : PrecontactAperture) (z : ℂ) :
+    ∃ Q : ℝ, 0 ≤ Q ∧ ∀ η : ℝ, 0 < η → 3 * η ≤ a₁.1.1 →
+      ∃ G : ℝ → ℝ, Tendsto G (𝓝[>] (0 : ℝ)) (𝓝 0) ∧ ∃ h₀ : ℝ, 0 < h₀ ∧
+        ∀ a b : PrecontactAperture, a₁.1.1 ≤ a.1.1 → a.1.1 ≤ b.1.1 → b.1.1 ≤ a₂.1.1 →
+        0 < b.1.1 - a.1.1 → b.1.1 - a.1.1 < h₀ →
+        (∀ m ∈ Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊,
+          Real.log m ≤ 2 * a.1.1 - 4 * η ∨ 2 * b.1.1 ≤ Real.log m ∨ Real.log m = 2 * a.1.1) →
+        ‖evalVectorLeftTrace b z - chartPhase z (b.1.1 - a.1.1) * evalVectorLeftTrace a z -
+            (chartKickMass (Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊) a.1.1 : ℂ) *
+              evalVectorRightTrace b z *
+              (logarithmicRenewalCoupling (2 * (b.1.1 - a.1.1)) : ℂ)‖ *
+            Real.log (1 / (b.1.1 - a.1.1)) ≤
+          Q * V (3 * η) * (V (chartScale (b.1.1 - a.1.1)) ^ 2 * Real.log (1 / (b.1.1 - a.1.1))) +
+            G (b.1.1 - a.1.1) := by
+  obtain ⟨C₉, A, hC₉, hA, hinc⟩ := exists_trace_increment_bound a₁ a₂ z
+  obtain ⟨C₇, hC₇, hint⟩ := exists_interior_bound a₁ a₂ z
+  set N := Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊ with hNdef
+  set K := chartSupConstant N with hKdef
+  have hK : 0 ≤ K := chartSupConstant_nonneg N
+  refine ⟨K * C₇, mul_nonneg hK hC₇, fun η hη h3η => ?_⟩
+  obtain ⟨C₈, h₈, hC₈, hh₈, hint'⟩ := hint η hη h3η
+  set PM := chartPrimeMass N with hPMdef
+  have hPM : 0 ≤ PM := chartPrimeMass_nonneg N
+  let G : ℝ → ℝ := fun h => (K * C₈ + C₉) * (chartScale h * Real.log (1 / h)) +
+    2 * A * PM * (V (2 * h) * (logarithmicRenewalCoupling (2 * h) * Real.log (1 / h)))
+  have hG : Tendsto G (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have h1 := tendsto_sqrt_sqrt_mul_log.const_mul (K * C₈ + C₉)
+    have h2 := ((tendsto_logarithmicRenewalMass_zero.comp tendsto_two_mul_nhdsGT).mul
+      tendsto_coupling_two_mul_mul_log).const_mul (2 * A * PM)
+    have h3 := h1.add h2
+    simp only [zero_mul, mul_zero, add_zero] at h3
+    exact h3
+  have ha₁p := a₁.1.2
+  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  have hqη : 0 < 2 * η := by positivity
+  refine ⟨G, hG, min (min 1 (a₁.1.1 / 4)) (min h₈ (min (((2 * η) ^ 2) ^ 2)
+    ((Real.log 2 ^ 2) ^ 2))), by positivity, fun a b ha₁ hab hb₂ hh hh₀ hpart => ?_⟩
+  set h := b.1.1 - a.1.1 with hhdef
+  have hh1 : h < 1 := hh₀.trans_le ((min_le_left _ _).trans (min_le_left _ _))
+  have hh4 : 4 * h ≤ a₁.1.1 := by
+    have : h < a₁.1.1 / 4 := hh₀.trans_le ((min_le_left _ _).trans (min_le_right _ _))
+    linarith only [this]
+  have hh8 : h < h₈ := hh₀.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+  have hhq : h < ((2 * η) ^ 2) ^ 2 :=
+    hh₀.trans_le ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have hhl : h < (Real.log 2 ^ 2) ^ 2 :=
+    hh₀.trans_le ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  set q := chartScale h with hqdef
+  have hq : 0 < q := chartScale_pos hh
+  have hVq := logarithmicRenewalMass_le_one q
+  have hVq0 := logarithmicRenewalMass_nonneg q
+  have hV3 := logarithmicRenewalMass_nonneg (3 * η)
+  let D := C₇ * V (3 * η) * V q + C₈ * q
+  have hD0 : 0 ≤ D := by dsimp only [D]; positivity
+  have hmain := hinc a b ha₁ hab hb₂ hh hh1 hh4 η D hη h3η (chartScale_lt hqη hhq).le
+    (chartScale_lt hlog2 hhl) hD0 (fun t ht => hint' a b ha₁ hab hb₂ hh hh8 t ht) hpart
+  have hW : chartKickMass N a.1.1 ≤ PM := chartKickMass_le N _
+  have hW0 := chartKickMass_nonneg N a.1.1
+  have hJ0 := logarithmicRenewalCoupling_nonneg (2 * h)
+  have hV2 := logarithmicRenewalMass_nonneg (2 * h)
+  have hL : 0 ≤ Real.log (1 / h) := Real.log_nonneg ((one_le_div hh).mpr hh1.le)
+  have hlast : chartKickMass N a.1.1 * (2 * A * V (2 * h) * logarithmicRenewalCoupling (2 * h)) ≤
+      PM * (2 * A * V (2 * h) * logarithmicRenewalCoupling (2 * h)) :=
+    mul_le_mul_of_nonneg_right hW (by positivity)
+  have hKD : K * D * V q ≤ K * C₇ * V (3 * η) * V q ^ 2 + K * C₈ * q := by
+    have h1 : K * C₈ * q * V q ≤ K * C₈ * q :=
+      mul_le_of_le_one_right (by positivity) hVq
+    dsimp only [D]
+    nlinarith only [h1]
+  have hbound := (hmain.trans (add_le_add (add_le_add hKD le_rfl) hlast))
+  calc
+    _ ≤ (K * C₇ * V (3 * η) * V q ^ 2 + K * C₈ * q + C₉ * q +
+        PM * (2 * A * V (2 * h) * logarithmicRenewalCoupling (2 * h))) * Real.log (1 / h) :=
+      mul_le_mul_of_nonneg_right hbound hL
+    _ = K * C₇ * V (3 * η) * (V q ^ 2 * Real.log (1 / h)) +
+        ((K * C₈ + C₉) * (q * Real.log (1 / h)) +
+          2 * A * PM * (V (2 * h) * (logarithmicRenewalCoupling (2 * h) * Real.log (1 / h)))) := by
+      ring
+
+/-- **The increment is small at logarithmic scale**, uniformly on a compact precontact interval,
+whenever the prime powers keep a fixed distance `g` below the old far endpoint. -/
+theorem exists_trace_increment_small (a₁ a₂ : PrecontactAperture) (z : ℂ) {g e : ℝ} (hg : 0 < g)
+    (he : 0 < e) :
+    ∃ h₀ : ℝ, 0 < h₀ ∧ ∀ a b : PrecontactAperture, a₁.1.1 ≤ a.1.1 → a.1.1 ≤ b.1.1 →
+      b.1.1 ≤ a₂.1.1 → 0 < b.1.1 - a.1.1 → b.1.1 - a.1.1 < h₀ →
+      (∀ m ∈ Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊,
+        Real.log m ≤ 2 * a.1.1 - g ∨ 2 * b.1.1 ≤ Real.log m ∨ Real.log m = 2 * a.1.1) →
+      ‖evalVectorLeftTrace b z - chartPhase z (b.1.1 - a.1.1) * evalVectorLeftTrace a z -
+          (chartKickMass (Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊) a.1.1 : ℂ) *
+            evalVectorRightTrace b z *
+            (logarithmicRenewalCoupling (2 * (b.1.1 - a.1.1)) : ℂ)‖ *
+          Real.log (1 / (b.1.1 - a.1.1)) < e := by
+  obtain ⟨Q, hQ, hlog⟩ := exists_trace_increment_log_bound a₁ a₂ z
+  have ha₁ := a₁.1.2
+  -- Choose the distance `η` so that the interior term is below `e/2`.
+  have hsmallη : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ), Q * V (3 * η) * 5 < e / 2 := by
+    have h3 : Tendsto (fun η : ℝ => 3 * η) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+      refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+      · have h0 : Tendsto (fun h : ℝ => 3 * h) (𝓝 (0 : ℝ)) (𝓝 (3 * 0)) :=
+          (continuous_const.mul continuous_id).tendsto 0
+        rw [mul_zero] at h0
+        exact h0.mono_left nhdsWithin_le_nhds
+      · filter_upwards [self_mem_nhdsWithin] with h hh
+        exact mul_pos three_pos (mem_Ioi.mp hh)
+    have ht := ((tendsto_logarithmicRenewalMass_zero.comp h3).const_mul Q).mul_const 5
+    simp only [mul_zero, zero_mul] at ht
+    exact ht.eventually_lt_const (half_pos he)
+  have hη₁ : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ), η < min (g / 4) (a₁.1.1 / 3) :=
+    eventually_lt_nhdsGT (lt_min (by positivity) (by positivity))
+  obtain ⟨η, hηs, hηm, hηp⟩ :=
+    (hsmallη.and (hη₁.and eventually_mem_nhdsWithin)).exists
+  have hη : 0 < η := hηp
+  have hηg : 4 * η ≤ g := by
+    have := hηm.trans_le (min_le_left _ _)
+    linarith only [this]
+  have h3η : 3 * η ≤ a₁.1.1 := by
+    have := hηm.trans_le (min_le_right _ _)
+    linarith only [this]
+  obtain ⟨G, hG, h₀, hh₀, hmain⟩ := hlog η hη h3η
+  have hF : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), V (chartScale h) ^ 2 * Real.log (1 / h) < 5 :=
+    tendsto_renewalMass_quarter_sq_mul_log.eventually_lt_const (by norm_num)
+  have hGs : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), G h < e / 2 :=
+    hG.eventually_lt_const (half_pos he)
+  have hlt : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < h₀ := eventually_lt_nhdsGT hh₀
+  obtain ⟨u, hu, hsub⟩ := (mem_nhdsGT_iff_exists_Ioo_subset' (zero_lt_one' ℝ)).mp
+    (hF.and (hGs.and hlt))
+  have hu0 : (0 : ℝ) < u := hu
+  refine ⟨u, hu0, fun a b ha₁' hab hb₂ hh hhu hpart => ?_⟩
+  obtain ⟨hF', hG', hlt'⟩ := hsub ⟨hh, hhu⟩
+  have hpart' : ∀ m ∈ Finset.Icc 2 ⌊Real.exp (2 * a₂.1.1)⌋₊,
+      Real.log m ≤ 2 * a.1.1 - 4 * η ∨ 2 * b.1.1 ≤ Real.log m ∨ Real.log m = 2 * a.1.1 := by
+    intro m hm
+    rcases hpart m hm with h | h | h
+    · exact Or.inl (by linarith only [h, hηg])
+    · exact Or.inr (Or.inl h)
+    · exact Or.inr (Or.inr h)
+  have hb := hmain a b ha₁' hab hb₂ hh hlt' hpart'
+  have hcoef : 0 ≤ Q * V (3 * η) := mul_nonneg hQ (logarithmicRenewalMass_nonneg _)
+  have hmul := mul_le_mul_of_nonneg_left hF'.le hcoef
+  linarith only [hb, hmul, hηs, hG']
+
+/-! ### The filters of the two one-sided limits -/
+
+/-- The apertures approaching `a` from above. -/
+def fromAbove (a : ℝ) : Filter PrecontactAperture := comap (fun b => b.1.1) (𝓝[>] a)
+
+/-- The apertures approaching `a` from below. -/
+def fromBelow (a : ℝ) : Filter PrecontactAperture := comap (fun b => b.1.1) (𝓝[<] a)
+
+theorem tendsto_fromAbove_sub (a : ℝ) :
+    Tendsto (fun b : PrecontactAperture => b.1.1 - a) (fromAbove a) (𝓝[>] (0 : ℝ)) := by
+  have h1 : Tendsto (fun b : PrecontactAperture => b.1.1) (fromAbove a) (𝓝[>] a) :=
+    tendsto_comap
+  refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+  · have h2 := (h1.mono_right nhdsWithin_le_nhds).sub_const a
+    rwa [sub_self] at h2
+  · filter_upwards [h1.eventually eventually_mem_nhdsWithin] with b hb
+    exact sub_pos.mpr (mem_Ioi.mp hb)
+
+theorem tendsto_fromBelow_sub (b : ℝ) :
+    Tendsto (fun a : PrecontactAperture => b - a.1.1) (fromBelow b) (𝓝[>] (0 : ℝ)) := by
+  have h1 : Tendsto (fun a : PrecontactAperture => a.1.1) (fromBelow b) (𝓝[<] b) :=
+    tendsto_comap
+  refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+  · have h2 := (h1.mono_right nhdsWithin_le_nhds).const_sub b
+    rwa [sub_self] at h2
+  · filter_upwards [h1.eventually eventually_mem_nhdsWithin] with a ha
+    exact sub_pos.mpr (mem_Iio.mp ha)
+
+theorem exists_precontact_gt (a : PrecontactAperture) :
+    ∃ c : PrecontactAperture, a.1.1 < c.1.1 := by
+  obtain ⟨x, hx1, hx2⟩ := EReal.exists_between_coe_real a.2
+  have hax : a.1.1 < x := EReal.coe_lt_coe_iff.mp hx1
+  exact ⟨toPrecontact (a := x) ⟨a.1.2.trans hax, hx2⟩, hax⟩
+
+theorem exists_precontact_lt (b : PrecontactAperture) :
+    ∃ c : PrecontactAperture, c.1.1 < b.1.1 := by
+  have hb := b.1.2
+  have hlt : ((b.1.1 / 2 : ℝ) : EReal) < _ :=
+    (EReal.coe_le_coe_iff.mpr (by linarith only [hb] : b.1.1 / 2 ≤ b.1.1)).trans_lt b.2
+  exact ⟨toPrecontact (a := b.1.1 / 2) ⟨by linarith only [hb], hlt⟩, by
+    change b.1.1 / 2 < b.1.1
+    linarith only [hb]⟩
+
+/-- The fixed part of the right limit: the increment `X` of the trace is `o(1/log)`. -/
+theorem tendsto_right_increment (a : PrecontactAperture) (z : ℂ) {c : PrecontactAperture}
+    (hc : a.1.1 < c.1.1) :
+    Tendsto (fun b : PrecontactAperture =>
+        (evalVectorLeftTrace b z - chartPhase z (b.1.1 - a.1.1) * evalVectorLeftTrace a z -
+          (traceKickWeight a.1.1 : ℂ) * evalVectorRightTrace b z *
+            (logarithmicRenewalCoupling (2 * (b.1.1 - a.1.1)) : ℂ)) *
+          (Real.log (1 / (b.1.1 - a.1.1)) : ℂ))
+      (fromAbove a.1.1) (𝓝 0) := by
+  have hs := tendsto_fromAbove_sub a.1.1
+  have hval : Tendsto (fun b : PrecontactAperture => b.1.1) (fromAbove a.1.1) (𝓝[>] a.1.1) :=
+    tendsto_comap
+  obtain ⟨δ, hδ, hgap⟩ := exists_log_gap (Finset.Icc 2 ⌊Real.exp (2 * c.1.1)⌋₊) (2 * a.1.1)
+  rw [Metric.tendsto_nhds]
+  intro e he
+  obtain ⟨h₀, hh₀, hsmall⟩ := exists_trace_increment_small a c z hδ he
+  have hlt1 : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < min (min h₀ 1) (δ / 2) :=
+    eventually_lt_nhdsGT (by positivity)
+  have hcle : ∀ᶠ x : ℝ in 𝓝[>] a.1.1, x < c.1.1 := eventually_lt_nhdsGT hc
+  filter_upwards [hs.eventually eventually_mem_nhdsWithin, hs.eventually hlt1, hval.eventually hcle]
+    with b hb0 hb1 hb2
+  have hbpos : 0 < b.1.1 - a.1.1 := hb0
+  have hab : a.1.1 ≤ b.1.1 := (sub_pos.mp hbpos).le
+  have hmin : b.1.1 - a.1.1 < min (min h₀ 1) (δ / 2) := hb1
+  have hbh₀ : b.1.1 - a.1.1 < h₀ := hmin.trans_le ((min_le_left _ _).trans (min_le_left _ _))
+  have hb1' : b.1.1 - a.1.1 < 1 := hmin.trans_le ((min_le_left _ _).trans (min_le_right _ _))
+  have hbδ : b.1.1 - a.1.1 < δ / 2 := hmin.trans_le (min_le_right _ _)
+  have hpart : ∀ m ∈ Finset.Icc 2 ⌊Real.exp (2 * c.1.1)⌋₊,
+      Real.log m ≤ 2 * a.1.1 - δ ∨ 2 * b.1.1 ≤ Real.log m ∨ Real.log m = 2 * a.1.1 := by
+    intro m hm
+    rcases hgap m hm with h | h | h
+    · exact Or.inr (Or.inr h)
+    · exact Or.inl h
+    · exact Or.inr (Or.inl (by linarith only [h, hbδ]))
+  have hbound := hsmall a b le_rfl hab hb2.le hbpos hbh₀ hpart
+  rw [chartKickMass_eq_traceKickWeight hc.le] at hbound
+  have hL : 0 ≤ Real.log (1 / (b.1.1 - a.1.1)) :=
+    Real.log_nonneg ((one_le_div hbpos).mpr hb1'.le)
+  rw [dist_zero_right, norm_mul, Complex.norm_real, Real.norm_of_nonneg hL]
+  exact hbound
+
+/-- The fixed part of the left limit: there is no kick from below. -/
+theorem tendsto_left_increment (b : PrecontactAperture) (z : ℂ) :
+    Tendsto (fun a : PrecontactAperture =>
+        (evalVectorLeftTrace b z - chartPhase z (b.1.1 - a.1.1) * evalVectorLeftTrace a z) *
+          (Real.log (1 / (b.1.1 - a.1.1)) : ℂ))
+      (fromBelow b.1.1) (𝓝 0) := by
+  have hs := tendsto_fromBelow_sub b.1.1
+  have hval : Tendsto (fun a : PrecontactAperture => a.1.1) (fromBelow b.1.1) (𝓝[<] b.1.1) :=
+    tendsto_comap
+  obtain ⟨a₁, ha₁⟩ := exists_precontact_lt b
+  obtain ⟨δ, hδ, hgap⟩ := exists_log_gap (Finset.Icc 2 ⌊Real.exp (2 * b.1.1)⌋₊) (2 * b.1.1)
+  rw [Metric.tendsto_nhds]
+  intro e he
+  obtain ⟨h₀, hh₀, hsmall⟩ := exists_trace_increment_small a₁ b z (half_pos hδ) he
+  have hlt1 : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < min (min h₀ 1) (δ / 4) :=
+    eventually_lt_nhdsGT (by positivity)
+  have hcle : ∀ᶠ x : ℝ in 𝓝[<] b.1.1, a₁.1.1 < x := eventually_gt_nhdsLT ha₁
+  filter_upwards [hs.eventually eventually_mem_nhdsWithin, hs.eventually hlt1, hval.eventually hcle]
+    with a ha0 ha1 ha2
+  have hapos : 0 < b.1.1 - a.1.1 := ha0
+  have hab : a.1.1 ≤ b.1.1 := (sub_pos.mp hapos).le
+  have hmin : b.1.1 - a.1.1 < min (min h₀ 1) (δ / 4) := ha1
+  have hah₀ : b.1.1 - a.1.1 < h₀ := hmin.trans_le ((min_le_left _ _).trans (min_le_left _ _))
+  have ha1' : b.1.1 - a.1.1 < 1 := hmin.trans_le ((min_le_left _ _).trans (min_le_right _ _))
+  have haδ : b.1.1 - a.1.1 < δ / 4 := hmin.trans_le (min_le_right _ _)
+  have hpart : ∀ m ∈ Finset.Icc 2 ⌊Real.exp (2 * b.1.1)⌋₊,
+      Real.log m ≤ 2 * a.1.1 - δ / 2 ∨ 2 * b.1.1 ≤ Real.log m ∨ Real.log m = 2 * a.1.1 := by
+    intro m hm
+    rcases hgap m hm with h | h | h
+    · exact Or.inr (Or.inl h.ge)
+    · exact Or.inl (by linarith only [h, haδ])
+    · exact Or.inr (Or.inl (by linarith only [h, hδ]))
+  have hW : chartKickMass (Finset.Icc 2 ⌊Real.exp (2 * b.1.1)⌋₊) a.1.1 = 0 := by
+    unfold chartKickMass
+    refine Finset.sum_eq_zero fun m hm => ?_
+    obtain ⟨hmem, hlog⟩ := Finset.mem_filter.mp hm
+    exfalso
+    rcases hgap m hmem with h | h | h
+    · linarith only [h, hlog, hapos]
+    · linarith only [h, hlog, haδ, hδ]
+    · linarith only [h, hlog, hapos, hδ]
+  have hbound := hsmall a b ha2.le hab le_rfl hapos hah₀ hpart
+  rw [hW, Complex.ofReal_zero, zero_mul, zero_mul, sub_zero] at hbound
+  have hL : 0 ≤ Real.log (1 / (b.1.1 - a.1.1)) :=
+    Real.log_nonneg ((one_le_div hapos).mpr ha1'.le)
+  rw [dist_zero_right, norm_mul, Complex.norm_real, Real.norm_of_nonneg hL]
+  exact hbound
+
+/-- A quantity which is `o(1/log(1/h))` tends to zero. -/
+private theorem tendsto_zero_of_mul_log {ι : Type*} {l : Filter ι} {X : ι → ℂ} {h : ι → ℝ}
+    (hh : Tendsto h l (𝓝[>] (0 : ℝ)))
+    (hX : Tendsto (fun i => X i * (Real.log (1 / h i) : ℂ)) l (𝓝 0)) : Tendsto X l (𝓝 0) := by
+  have hn : Tendsto (fun i => ‖X i * (Real.log (1 / h i) : ℂ)‖) l (𝓝 0) := by
+    simpa only [norm_zero] using hX.norm
+  refine squeeze_zero_norm' ?_ hn
+  have hlt : ∀ᶠ x : ℝ in 𝓝[>] (0 : ℝ), x < Real.exp (-1) :=
+    eventually_lt_nhdsGT (Real.exp_pos _)
+  filter_upwards [hh.eventually eventually_mem_nhdsWithin, hh.eventually hlt] with i h0 h1
+  have h0' : 0 < h i := h0
+  have hl : Real.log (h i) < -1 := (Real.log_lt_iff_lt_exp h0').mpr h1
+  have hL : 1 ≤ Real.log (1 / h i) := by
+    rw [one_div, Real.log_inv]
+    linarith only [hl]
+  rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by linarith only [hL])]
+  exact le_mul_of_one_le_right (norm_nonneg _) hL
+
+/-! ### Continuity of the traces -/
+
+/-- **The traces are right-continuous** at every precontact aperture. -/
+theorem tendsto_leftTrace_right (a : PrecontactAperture) (z : ℂ) :
+    Tendsto (fun b : PrecontactAperture => evalVectorLeftTrace b z) (fromAbove a.1.1)
+      (𝓝 (evalVectorLeftTrace a z)) := by
+  obtain ⟨c, hc⟩ := exists_precontact_gt a
+  have hs := tendsto_fromAbove_sub a.1.1
+  have hval : Tendsto (fun b : PrecontactAperture => b.1.1) (fromAbove a.1.1) (𝓝[>] a.1.1) :=
+    tendsto_comap
+  have hX := tendsto_zero_of_mul_log hs (tendsto_right_increment a z hc)
+  have hρ := ((tendsto_chartPhase_sub_one z).comp hs).mul_const (evalVectorLeftTrace a z)
+  rw [zero_mul] at hρ
+  obtain ⟨A, _, hA⟩ := exists_uniform_endpoint_data a c (-z)
+  have hW := traceKickWeight_nonneg a.1.1
+  have hJ := (tendsto_logarithmicRenewalCoupling_zero.comp
+    (tendsto_two_mul_nhdsGT.comp hs)).const_mul (traceKickWeight a.1.1 * A)
+  rw [mul_zero] at hJ
+  have hkick : Tendsto (fun b : PrecontactAperture => (traceKickWeight a.1.1 : ℂ) *
+      evalVectorRightTrace b z * (logarithmicRenewalCoupling (2 * (b.1.1 - a.1.1)) : ℂ))
+      (fromAbove a.1.1) (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ hJ
+    have hcle : ∀ᶠ x : ℝ in 𝓝[>] a.1.1, x < c.1.1 := eventually_lt_nhdsGT hc
+    filter_upwards [hval.eventually eventually_mem_nhdsWithin, hval.eventually hcle] with b hb0 hb1
+    have hb0' : a.1.1 < b.1.1 := hb0
+    have hJ0 := logarithmicRenewalCoupling_nonneg (2 * (b.1.1 - a.1.1))
+    rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_of_nonneg hW,
+      Real.norm_of_nonneg hJ0, evalVectorRightTrace_eq_leftTrace_neg]
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+      (hA b hb0'.le hb1.le).1 hW) hJ0
+  have hsum := ((hX.add hρ).add hkick).add_const (evalVectorLeftTrace a z)
+  simp only [add_zero, zero_add] at hsum
+  refine hsum.congr fun b => ?_
+  simp only [Function.comp_apply]
+  ring
+
+/-- **The traces are left-continuous** at every precontact aperture. -/
+theorem tendsto_leftTrace_left (b : PrecontactAperture) (z : ℂ) :
+    Tendsto (fun a : PrecontactAperture => evalVectorLeftTrace a z) (fromBelow b.1.1)
+      (𝓝 (evalVectorLeftTrace b z)) := by
+  obtain ⟨a₁, ha₁⟩ := exists_precontact_lt b
+  have hs := tendsto_fromBelow_sub b.1.1
+  have hval : Tendsto (fun a : PrecontactAperture => a.1.1) (fromBelow b.1.1) (𝓝[<] b.1.1) :=
+    tendsto_comap
+  have hX := tendsto_zero_of_mul_log hs (tendsto_left_increment b z)
+  obtain ⟨A, _, hA⟩ := exists_uniform_endpoint_data a₁ b z
+  have hρ := ((tendsto_chartPhase_sub_one z).comp hs).norm.mul_const A
+  rw [norm_zero, zero_mul] at hρ
+  have hρt : Tendsto (fun a : PrecontactAperture =>
+      (chartPhase z (b.1.1 - a.1.1) - 1) * evalVectorLeftTrace a z) (fromBelow b.1.1) (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ hρ
+    have hcle : ∀ᶠ x : ℝ in 𝓝[<] b.1.1, a₁.1.1 < x := eventually_gt_nhdsLT ha₁
+    filter_upwards [hval.eventually eventually_mem_nhdsWithin, hval.eventually hcle] with a ha0 ha1
+    have ha0' : a.1.1 < b.1.1 := ha0
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (hA a ha1.le ha0'.le).1 (norm_nonneg _)
+  have hsum := ((hX.neg).sub hρt).const_add (evalVectorLeftTrace b z)
+  simp only [neg_zero, sub_zero, add_zero] at hsum
+  refine hsum.congr fun a => ?_
+  ring
+
+/-! ### The soft kick -/
+
+/-- **The soft prime kick.** As `b ↓ a`,
+`(τ_L(b,z) − τ_L(a,z)) log(1/(b−a)) → w(a) τ_R(a,z)`, where `w(a) = Λ(n)/√n` if `2a = log n`, and
+`w(a) = 0` when no integer has that logarithm. -/
+theorem tendsto_leftTrace_right_kick (a : PrecontactAperture) (z : ℂ) :
+    Tendsto (fun b : PrecontactAperture =>
+        (evalVectorLeftTrace b z - evalVectorLeftTrace a z) *
+          (Real.log (1 / (b.1.1 - a.1.1)) : ℂ))
+      (fromAbove a.1.1) (𝓝 ((traceKickWeight a.1.1 : ℂ) * evalVectorRightTrace a z)) := by
+  obtain ⟨c, hc⟩ := exists_precontact_gt a
+  have hs := tendsto_fromAbove_sub a.1.1
+  have hX := tendsto_right_increment a z hc
+  have hρ := ((tendsto_chartPhase_sub_one_mul_log z).comp hs).mul_const (evalVectorLeftTrace a z)
+  rw [zero_mul] at hρ
+  have hJ : Tendsto (fun b : PrecontactAperture =>
+      ((logarithmicRenewalCoupling (2 * (b.1.1 - a.1.1)) *
+        Real.log (1 / (b.1.1 - a.1.1)) : ℝ) : ℂ)) (fromAbove a.1.1) (𝓝 ((1 : ℝ) : ℂ)) :=
+    (Complex.continuous_ofReal.tendsto 1).comp (tendsto_coupling_two_mul_mul_log.comp hs)
+  rw [Complex.ofReal_one] at hJ
+  have hτ : Tendsto (fun b : PrecontactAperture => evalVectorRightTrace b z) (fromAbove a.1.1)
+      (𝓝 (evalVectorRightTrace a z)) := by
+    simp only [evalVectorRightTrace_eq_leftTrace_neg]
+    exact tendsto_leftTrace_right a (-z)
+  have hsum := (hX.add hρ).add ((hτ.const_mul (traceKickWeight a.1.1 : ℂ)).mul hJ)
+  simp only [add_zero, zero_add, mul_one] at hsum
+  refine hsum.congr fun b => ?_
+  simp only [Function.comp_apply]
+  push_cast
+  ring
+
+/-- **No kick from below.** As `a ↑ b`, `(τ_L(b,z) − τ_L(a,z)) log(1/(b−a)) → 0`: the prime powers act
+only from the right of their aperture. -/
+theorem tendsto_leftTrace_left_kick (b : PrecontactAperture) (z : ℂ) :
+    Tendsto (fun a : PrecontactAperture =>
+        (evalVectorLeftTrace b z - evalVectorLeftTrace a z) *
+          (Real.log (1 / (b.1.1 - a.1.1)) : ℂ))
+      (fromBelow b.1.1) (𝓝 0) := by
+  have hs := tendsto_fromBelow_sub b.1.1
+  have hsum := (tendsto_left_increment b z).add
+    (((tendsto_chartPhase_sub_one_mul_log z).comp hs).mul (tendsto_leftTrace_left b z))
+  simp only [add_zero, zero_mul] at hsum
+  refine hsum.congr fun a => ?_
+  simp only [Function.comp_apply]
+  ring
+
+/-! ### The scalar flow -/
+
+open SquareRootThreshold WindowVisibilityLaw Zeta23
+
+theorem precontactSet_mem_nhds (a : PrecontactAperture) : precontactSet ∈ 𝓝 a.1.1 := by
+  obtain ⟨c, hc⟩ := exists_precontact_gt a
+  obtain ⟨d, hd⟩ := exists_precontact_lt a
+  filter_upwards [Ioo_mem_nhds hd hc] with x hx
+  exact ⟨d.1.2.trans hx.1, (EReal.coe_le_coe_iff.mpr hx.2.le).trans_lt c.2⟩
+
+private theorem range_val_mem_nhds (a : PrecontactAperture) :
+    range (fun b : PrecontactAperture => b.1.1) ∈ 𝓝 a.1.1 :=
+  mem_of_superset (precontactSet_mem_nhds a) fun _ hx => ⟨toPrecontact hx, rfl⟩
+
+theorem anchorReflection_coe (b : PrecontactAperture) :
+    anchorReflection b.1.1 = (evalVectorRightTrace b I).re / (evalVectorLeftTrace b I).re := by
+  have hb : b.1.1 ∈ precontactSet := ⟨b.1.2, b.2⟩
+  rw [anchorReflection, dif_pos hb]
+  rfl
+
+theorem anchorLeftTrace_re_ne_zero (b : PrecontactAperture) : (evalVectorLeftTrace b I).re ≠ 0 := by
+  intro h0
+  have h := evalVector_anchorTrace_energy_difference b
+  have hpos : 0 < ‖evalVector b I‖ ^ 2 :=
+    sq_pos_of_pos (norm_pos_iff.mpr (evalVector_ne_zero _ _))
+  rw [Complex.sq_norm, Complex.normSq_apply, evalVectorLeftTrace_I_im, Complex.sq_norm,
+    Complex.normSq_apply, evalVectorRightTrace_I_im, h0] at h
+  nlinarith only [h, hpos, mul_self_nonneg (evalVectorRightTrace b I).re]
+
+private theorem tendsto_re_of_traces {l : Filter PrecontactAperture} (a : PrecontactAperture)
+    (hcont : ∀ z, Tendsto (fun b => evalVectorLeftTrace b z) l (𝓝 (evalVectorLeftTrace a z))) :
+    Tendsto (fun b => (evalVectorLeftTrace b I).re) l (𝓝 (evalVectorLeftTrace a I).re) ∧
+      Tendsto (fun b => (evalVectorRightTrace b I).re) l (𝓝 (evalVectorRightTrace a I).re) := by
+  constructor
+  · exact Complex.continuous_re.continuousAt.tendsto.comp (hcont I)
+  · simp only [evalVectorRightTrace_eq_leftTrace_neg]
+    exact Complex.continuous_re.continuousAt.tendsto.comp (hcont (-I))
+
+private theorem tendsto_anchorReflection_of_traces {l : Filter PrecontactAperture}
+    (a : PrecontactAperture)
+    (hcont : ∀ z, Tendsto (fun b => evalVectorLeftTrace b z) l (𝓝 (evalVectorLeftTrace a z))) :
+    Tendsto (fun b : PrecontactAperture => anchorReflection b.1.1) l
+      (𝓝 (anchorReflection a.1.1)) := by
+  obtain ⟨hu, hv⟩ := tendsto_re_of_traces a hcont
+  simp only [anchorReflection_coe]
+  exact hv.div hu (anchorLeftTrace_re_ne_zero a)
+
+/-- **The anchor reflection is continuous before contact**, although its derivative is singular at the
+logarithms of the prime powers. -/
+theorem continuousAt_anchorReflection (a : PrecontactAperture) :
+    ContinuousAt anchorReflection a.1.1 := by
+  have hright := tendsto_anchorReflection_of_traces a (fun z => tendsto_leftTrace_right a z)
+  have hleft := tendsto_anchorReflection_of_traces a (fun z => tendsto_leftTrace_left a z)
+  refine continuousAt_iff_continuous_left'_right'.mpr ⟨?_, ?_⟩
+  · exact (tendsto_comap'_iff (m := anchorReflection)
+      (i := fun b : PrecontactAperture => b.1.1) (f := 𝓝[<] a.1.1)
+      (mem_nhdsWithin_of_mem_nhds (range_val_mem_nhds a))).mp hleft
+  · exact (tendsto_comap'_iff (m := anchorReflection)
+      (i := fun b : PrecontactAperture => b.1.1) (f := 𝓝[>] a.1.1)
+      (mem_nhdsWithin_of_mem_nhds (range_val_mem_nhds a))).mp hright
+
+/-- A differentiable function transports the logarithmic scale of its argument. -/
+private theorem tendsto_comp_sub_mul_of_hasDerivAt {ι : Type*} {l : Filter ι} {f : ℝ → ℝ}
+    {f' x₀ c : ℝ} (hf : HasDerivAt f f' x₀) {φ L : ι → ℝ} (hφ : Tendsto φ l (𝓝 x₀))
+    (hL : Tendsto (fun i => (φ i - x₀) * L i) l (𝓝 c)) :
+    Tendsto (fun i => (f (φ i) - f x₀) * L i) l (𝓝 (f' * c)) := by
+  classical
+  let g : ℝ → ℝ := Function.update (slope f x₀) x₀ f'
+  have hg : ContinuousAt g x₀ := continuousAt_update_same.mpr (hasDerivAt_iff_tendsto_slope.mp hf)
+  have hgx : g x₀ = f' := Function.update_self _ _ _
+  have hval : ∀ y, f y - f x₀ = g y * (y - x₀) := by
+    intro y
+    by_cases hy : y = x₀
+    · rw [hy, hgx]
+      ring
+    · have hgy : g y = slope f x₀ y := Function.update_of_ne hy _ _
+      rw [hgy, slope_def_field]
+      exact (div_mul_cancel₀ _ (sub_ne_zero.mpr hy)).symm
+  have ht : Tendsto (fun i => g (φ i)) l (𝓝 f') := by
+    have hcomp := hg.tendsto.comp hφ
+    rw [hgx] at hcomp
+    exact hcomp
+  refine (ht.mul hL).congr fun i => ?_
+  rw [hval (φ i)]
+  ring
+
+private theorem tendsto_artanh_of_traces {l : Filter PrecontactAperture} (a : PrecontactAperture)
+    (hcont : ∀ z, Tendsto (fun b => evalVectorLeftTrace b z) l (𝓝 (evalVectorLeftTrace a z)))
+    {L : PrecontactAperture → ℝ} {c : ℝ}
+    (hu : Tendsto (fun b => ((evalVectorLeftTrace b I).re - (evalVectorLeftTrace a I).re) * L b) l
+      (𝓝 (c * (evalVectorRightTrace a I).re)))
+    (hv : Tendsto (fun b => ((evalVectorRightTrace b I).re - (evalVectorRightTrace a I).re) * L b) l
+      (𝓝 (c * (evalVectorLeftTrace a I).re))) :
+    Tendsto (fun b : PrecontactAperture =>
+      (Real.artanh (anchorReflection b.1.1) - Real.artanh (anchorReflection a.1.1)) * L b) l
+      (𝓝 c) := by
+  have hap : a.1.1 ∈ precontactSet := ⟨a.1.2, a.2⟩
+  have hmem := anchorReflection_mem hap
+  have hφ := tendsto_anchorReflection_of_traces a hcont
+  obtain ⟨hucont, _⟩ := tendsto_re_of_traces a hcont
+  have hua := anchorLeftTrace_re_ne_zero a
+  set ua := (evalVectorLeftTrace a I).re with huadef
+  set va := (evalVectorRightTrace a I).re with hvadef
+  have hra : anchorReflection a.1.1 = va / ua := anchorReflection_coe a
+  have hne : 1 - anchorReflection a.1.1 ^ 2 ≠ 0 := by
+    nlinarith only [hmem.1, hmem.2]
+  have hr : Tendsto (fun b : PrecontactAperture =>
+      (anchorReflection b.1.1 - anchorReflection a.1.1) * L b) l
+      (𝓝 (c * (1 - anchorReflection a.1.1 ^ 2))) := by
+    have hquot := ((hv.mul_const ua).sub (hu.const_mul va)).div (hucont.mul_const ua)
+      (mul_ne_zero hua hua)
+    have hlim : (c * ua * ua - va * (c * va)) / (ua * ua) =
+        c * (1 - anchorReflection a.1.1 ^ 2) := by
+      rw [hra]
+      field_simp
+      try ring
+    rw [hlim] at hquot
+    refine hquot.congr fun b => ?_
+    have hub := anchorLeftTrace_re_ne_zero b
+    rw [anchorReflection_coe b, hra]
+    simp only [Pi.div_apply]
+    field_simp
+    try ring
+  have hfinal := tendsto_comp_sub_mul_of_hasDerivAt (hasDerivAt_artanh hmem) hφ hr
+  have hc : 1 / (1 - anchorReflection a.1.1 ^ 2) * (c * (1 - anchorReflection a.1.1 ^ 2)) = c := by
+    field_simp
+  rwa [hc] at hfinal
+
+/-- **The hyperbolic angle receives the kick**: `(L(x) − L(a)) log(1/(x−a)) → w(a)` as `x ↓ a`, for
+`L = artanh r`. -/
+theorem tendsto_artanh_anchorReflection_right_kick (a : PrecontactAperture) :
+    Tendsto (fun x : ℝ => (Real.artanh (anchorReflection x) -
+        Real.artanh (anchorReflection a.1.1)) * Real.log (1 / (x - a.1.1)))
+      (𝓝[>] a.1.1) (𝓝 (traceKickWeight a.1.1)) := by
+  have hu : Tendsto (fun b : PrecontactAperture =>
+      ((evalVectorLeftTrace b I).re - (evalVectorLeftTrace a I).re) *
+        Real.log (1 / (b.1.1 - a.1.1))) (fromAbove a.1.1)
+      (𝓝 (traceKickWeight a.1.1 * (evalVectorRightTrace a I).re)) := by
+    have h := Complex.continuous_re.continuousAt.tendsto.comp (tendsto_leftTrace_right_kick a I)
+    rw [Complex.re_ofReal_mul] at h
+    refine h.congr fun b => ?_
+    simp only [Function.comp_apply]
+    rw [Complex.re_mul_ofReal, Complex.sub_re]
+  have hv : Tendsto (fun b : PrecontactAperture =>
+      ((evalVectorRightTrace b I).re - (evalVectorRightTrace a I).re) *
+        Real.log (1 / (b.1.1 - a.1.1))) (fromAbove a.1.1)
+      (𝓝 (traceKickWeight a.1.1 * (evalVectorLeftTrace a I).re)) := by
+    have h := Complex.continuous_re.continuousAt.tendsto.comp (tendsto_leftTrace_right_kick a (-I))
+    rw [evalVectorRightTrace_eq_leftTrace_neg, neg_neg, Complex.re_ofReal_mul] at h
+    refine h.congr fun b => ?_
+    simp only [Function.comp_apply, evalVectorRightTrace_eq_leftTrace_neg]
+    rw [Complex.re_mul_ofReal, Complex.sub_re]
+  have hmain := tendsto_artanh_of_traces a (fun z => tendsto_leftTrace_right a z) hu hv
+  exact (tendsto_comap'_iff (i := fun b : PrecontactAperture => b.1.1) (f := 𝓝[>] a.1.1)
+    (mem_nhdsWithin_of_mem_nhds (range_val_mem_nhds a))).mp hmain
+
+/-- From below the hyperbolic angle receives no kick at the logarithmic scale. -/
+theorem tendsto_artanh_anchorReflection_left_kick (b : PrecontactAperture) :
+    Tendsto (fun x : ℝ => (Real.artanh (anchorReflection b.1.1) -
+        Real.artanh (anchorReflection x)) * Real.log (1 / (b.1.1 - x)))
+      (𝓝[<] b.1.1) (𝓝 0) := by
+  have hu : Tendsto (fun a : PrecontactAperture =>
+      ((evalVectorLeftTrace a I).re - (evalVectorLeftTrace b I).re) *
+        Real.log (1 / (b.1.1 - a.1.1))) (fromBelow b.1.1)
+      (𝓝 (0 * (evalVectorRightTrace b I).re)) := by
+    rw [zero_mul]
+    have h := (Complex.continuous_re.continuousAt.tendsto.comp
+      (tendsto_leftTrace_left_kick b I)).neg
+    rw [Complex.zero_re, neg_zero] at h
+    refine h.congr fun a => ?_
+    simp only [Function.comp_apply]
+    rw [Complex.re_mul_ofReal, Complex.sub_re]
+    ring
+  have hv : Tendsto (fun a : PrecontactAperture =>
+      ((evalVectorRightTrace a I).re - (evalVectorRightTrace b I).re) *
+        Real.log (1 / (b.1.1 - a.1.1))) (fromBelow b.1.1)
+      (𝓝 (0 * (evalVectorLeftTrace b I).re)) := by
+    rw [zero_mul]
+    have h := (Complex.continuous_re.continuousAt.tendsto.comp
+      (tendsto_leftTrace_left_kick b (-I))).neg
+    rw [Complex.zero_re, neg_zero] at h
+    refine h.congr fun a => ?_
+    simp only [Function.comp_apply, evalVectorRightTrace_eq_leftTrace_neg]
+    rw [Complex.re_mul_ofReal, Complex.sub_re]
+    ring
+  have hmain := (tendsto_artanh_of_traces b (fun z => tendsto_leftTrace_left b z) hu hv).neg
+  rw [neg_zero] at hmain
+  have hF := (tendsto_comap'_iff (m := fun x : ℝ => -((Real.artanh (anchorReflection x) -
+      Real.artanh (anchorReflection b.1.1)) * Real.log (1 / (b.1.1 - x))))
+    (i := fun a : PrecontactAperture => a.1.1) (f := 𝓝[<] b.1.1)
+    (mem_nhdsWithin_of_mem_nhds (range_val_mem_nhds b))).mp hmain
+  refine hF.congr fun x => ?_
+  ring
+
+/-- The potential differs from the hyperbolic angle by the integral of the drift. -/
+private theorem canonicalPotential_sub_eq {base x y : ℝ} (hb : base ∈ precontactSet)
+    (hx : x ∈ precontactSet) (hy : y ∈ precontactSet) :
+    canonicalPotential base y - canonicalPotential base x =
+      Real.artanh (anchorReflection y) - Real.artanh (anchorReflection x) +
+        ∫ t in x..y, precontactCanonicalDrift t := by
+  have hl : 0 < min base (min x y) := lt_min hb.1 (lt_min hx.1 hy.1)
+  have hm : max base (max x y) ∈ precontactSet := by
+    rcases max_choice base (max x y) with h | h
+    · rw [h]
+      exact hb
+    · rcases max_choice x y with h' | h' <;> rw [h, h']
+      · exact hx
+      · exact hy
+  have hs : Icc (min base (min x y)) (max base (max x y)) ⊆ precontactSet := fun t ht =>
+    ⟨hl.trans_le ht.1, (EReal.coe_le_coe_iff.mpr ht.2).trans_lt hm.2⟩
+  have h := artanh_anchorReflection_sub hs (x := x) (y := y) (base := base)
+    ⟨min_le_left _ _, le_max_left _ _⟩
+    ⟨(min_le_right _ _).trans (min_le_left _ _), (le_max_left _ _).trans (le_max_right _ _)⟩
+    ⟨(min_le_right _ _).trans (min_le_right _ _), (le_max_right _ _).trans (le_max_right _ _)⟩
+  linarith only [h]
+
+/-- Near a precontact aperture the drift is bounded. -/
+private theorem exists_drift_bound (a : PrecontactAperture) :
+    ∃ C s : ℝ, 0 ≤ C ∧ 0 < s ∧ ∀ t, |t - a.1.1| < s → ‖precontactCanonicalDrift t‖ ≤ C := by
+  have hap : a.1.1 ∈ precontactSet := ⟨a.1.2, a.2⟩
+  have hmem := anchorReflection_mem hap
+  have hne : 1 - anchorReflection a.1.1 ^ 2 ≠ 0 := by
+    nlinarith only [hmem.1, hmem.2]
+  have hc := continuousAt_anchorReflection a
+  have hf : ContinuousAt (fun t => 2 * anchorReflection t / (1 - anchorReflection t ^ 2)) a.1.1 :=
+    (continuousAt_const.mul hc).div (continuousAt_const.sub (hc.pow 2)) hne
+  have hev : ∀ᶠ t in 𝓝 a.1.1, ‖2 * anchorReflection t / (1 - anchorReflection t ^ 2)‖ <
+      ‖2 * anchorReflection a.1.1 / (1 - anchorReflection a.1.1 ^ 2)‖ + 1 :=
+    hf.norm.tendsto.eventually_lt_const (lt_add_one _)
+  have hp : ∀ᶠ t in 𝓝 a.1.1, t ∈ precontactSet := precontactSet_mem_nhds a
+  obtain ⟨s, hs, hball⟩ := Metric.eventually_nhds_iff.mp (hev.and hp)
+  refine ⟨‖2 * anchorReflection a.1.1 / (1 - anchorReflection a.1.1 ^ 2)‖ + 1, s,
+    add_nonneg (norm_nonneg _) zero_le_one, hs, fun t ht => ?_⟩
+  obtain ⟨h1, h2⟩ := hball (show dist t a.1.1 < s by rwa [Real.dist_eq])
+  rw [precontactCanonicalDrift_eq h2]
+  exact h1.le
+
+/-- **The canonical potential has its singular term at the logarithms of the prime powers.** As
+`x ↓ a`, `(Ψ(x) − Ψ(a)) log(1/(x−a)) → w(a)`: the singular part of `q = Ψ′` at `2a = log n` is the
+derivative of the renewal coupling, with weight `Λ(n)/√n`. -/
+theorem tendsto_canonicalPotential_right_kick {base : ℝ} (hbase : base ∈ precontactSet)
+    (a : PrecontactAperture) :
+    Tendsto (fun x : ℝ => (canonicalPotential base x - canonicalPotential base a.1.1) *
+        Real.log (1 / (x - a.1.1)))
+      (𝓝[>] a.1.1) (𝓝 (traceKickWeight a.1.1)) := by
+  have hap : a.1.1 ∈ precontactSet := ⟨a.1.2, a.2⟩
+  obtain ⟨C, s, hC, hs, hb⟩ := exists_drift_bound a
+  have hsub : Tendsto (fun x : ℝ => x - a.1.1) (𝓝[>] a.1.1) (𝓝[>] (0 : ℝ)) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have h0 : Tendsto (fun x : ℝ => x - a.1.1) (𝓝 a.1.1) (𝓝 (a.1.1 - a.1.1)) :=
+        (continuous_id.sub continuous_const).tendsto _
+      rw [sub_self] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with x hx
+      exact sub_pos.mpr (mem_Ioi.mp hx)
+  have hI : Tendsto (fun x : ℝ => (∫ t in a.1.1..x, precontactCanonicalDrift t) *
+      Real.log (1 / (x - a.1.1))) (𝓝[>] a.1.1) (𝓝 0) := by
+    have hbd := (tendsto_mul_log_one_div.comp hsub).const_mul C
+    rw [mul_zero] at hbd
+    refine squeeze_zero_norm' ?_ hbd
+    have hlt : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < min s 1 :=
+      eventually_lt_nhdsGT (by positivity)
+    filter_upwards [self_mem_nhdsWithin, hsub.eventually hlt] with x hx hx1
+    have hx' : a.1.1 < x := hx
+    have hxs : x - a.1.1 < s := hx1.trans_le (min_le_left _ _)
+    have hx1' : x - a.1.1 < 1 := hx1.trans_le (min_le_right _ _)
+    have hL : 0 ≤ Real.log (1 / (x - a.1.1)) :=
+      Real.log_nonneg ((one_le_div (sub_pos.mpr hx')).mpr hx1'.le)
+    have hnorm : ‖∫ t in a.1.1..x, precontactCanonicalDrift t‖ ≤ C * |x - a.1.1| :=
+      intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => by
+        rw [uIoc_of_le hx'.le] at ht
+        apply hb
+        rw [abs_of_pos (sub_pos.mpr ht.1)]
+        linarith only [ht.2, hxs]
+    rw [abs_of_pos (sub_pos.mpr hx')] at hnorm
+    rw [norm_mul, Real.norm_of_nonneg hL]
+    simp only [Function.comp_apply]
+    calc
+      _ ≤ C * (x - a.1.1) * Real.log (1 / (x - a.1.1)) := mul_le_mul_of_nonneg_right hnorm hL
+      _ = _ := by ring
+  have hsum := (tendsto_artanh_anchorReflection_right_kick a).add hI
+  rw [add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [mem_nhdsWithin_of_mem_nhds (precontactSet_mem_nhds a)] with x hx
+  beta_reduce
+  rw [canonicalPotential_sub_eq hbase hap hx]
+  ring
+
+/-- From below the potential has no singular term at the logarithmic scale. -/
+theorem tendsto_canonicalPotential_left_kick {base : ℝ} (hbase : base ∈ precontactSet)
+    (b : PrecontactAperture) :
+    Tendsto (fun x : ℝ => (canonicalPotential base b.1.1 - canonicalPotential base x) *
+        Real.log (1 / (b.1.1 - x)))
+      (𝓝[<] b.1.1) (𝓝 0) := by
+  have hbp : b.1.1 ∈ precontactSet := ⟨b.1.2, b.2⟩
+  obtain ⟨C, s, hC, hs, hbd⟩ := exists_drift_bound b
+  have hsub : Tendsto (fun x : ℝ => b.1.1 - x) (𝓝[<] b.1.1) (𝓝[>] (0 : ℝ)) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have h0 : Tendsto (fun x : ℝ => b.1.1 - x) (𝓝 b.1.1) (𝓝 (b.1.1 - b.1.1)) :=
+        (continuous_const.sub continuous_id).tendsto _
+      rw [sub_self] at h0
+      exact h0.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with x hx
+      exact sub_pos.mpr (mem_Iio.mp hx)
+  have hI : Tendsto (fun x : ℝ => (∫ t in x..b.1.1, precontactCanonicalDrift t) *
+      Real.log (1 / (b.1.1 - x))) (𝓝[<] b.1.1) (𝓝 0) := by
+    have hbound := (tendsto_mul_log_one_div.comp hsub).const_mul C
+    rw [mul_zero] at hbound
+    refine squeeze_zero_norm' ?_ hbound
+    have hlt : ∀ᶠ h : ℝ in 𝓝[>] (0 : ℝ), h < min s 1 :=
+      eventually_lt_nhdsGT (by positivity)
+    filter_upwards [self_mem_nhdsWithin, hsub.eventually hlt] with x hx hx1
+    have hx' : x < b.1.1 := hx
+    have hxs : b.1.1 - x < s := hx1.trans_le (min_le_left _ _)
+    have hx1' : b.1.1 - x < 1 := hx1.trans_le (min_le_right _ _)
+    have hL : 0 ≤ Real.log (1 / (b.1.1 - x)) :=
+      Real.log_nonneg ((one_le_div (sub_pos.mpr hx')).mpr hx1'.le)
+    have hnorm : ‖∫ t in x..b.1.1, precontactCanonicalDrift t‖ ≤ C * |b.1.1 - x| :=
+      intervalIntegral.norm_integral_le_of_norm_le_const fun t ht => by
+        rw [uIoc_of_le hx'.le] at ht
+        apply hbd
+        rw [abs_sub_comm, abs_of_nonneg (sub_nonneg.mpr ht.2)]
+        linarith only [ht.1, hxs]
+    rw [abs_of_pos (sub_pos.mpr hx')] at hnorm
+    rw [norm_mul, Real.norm_of_nonneg hL]
+    simp only [Function.comp_apply]
+    calc
+      _ ≤ C * (b.1.1 - x) * Real.log (1 / (b.1.1 - x)) := mul_le_mul_of_nonneg_right hnorm hL
+      _ = _ := by ring
+  have hsum := (tendsto_artanh_anchorReflection_left_kick b).add hI
+  rw [add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [mem_nhdsWithin_of_mem_nhds (precontactSet_mem_nhds b)] with x hx
+  beta_reduce
+  rw [canonicalPotential_sub_eq hbase hx hbp]
+  ring
 
 end WeilHilbertBeforeContact
 end GaloisForLFunctions.CanonicalSystemOfTheWindowTower

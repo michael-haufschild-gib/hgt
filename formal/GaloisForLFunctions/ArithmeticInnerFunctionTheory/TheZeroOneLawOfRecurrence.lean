@@ -1,6 +1,7 @@
-import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheInnerFieldOfZeta
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheCrowdOfTheInnerField
 import GaloisForLFunctions.HTGeometry.SimultaneousDirichlet
 import GaloisForLFunctions.RHTower.DeBruijnNewmanNonnegative
+import GaloisForLFunctions.RHTower.ZetaWeakRecurrenceLadderCollapse
 
 /-!
 # Can an inner factor be finite and nontrivial?
@@ -40,8 +41,9 @@ theorem exists_isolating_circle {F : ℂ → ℂ} (hF : Differentiable ℂ F) {x
   have han : AnalyticAt ℂ F ρ := hF.analyticAt ρ
   have hne : ∀ᶠ z in 𝓝[≠] ρ, F z ≠ 0 := by
     refine han.eventually_eq_zero_or_eventually_ne_zero.resolve_left fun h => ?_
-    have hzero : F = 0 := (hF.analyticOnNhd (s := univ)).eq_of_eventuallyEq analyticOnNhd_const h
-    exact hx₀ (by rw [hzero]; rfl)
+    have hzero := AnalyticOnNhd.eqOn_zero_of_preconnected_of_eventuallyEq_zero (f := F) (U := univ)
+      (fun z _ => hF.analyticAt z) isPreconnected_univ (mem_univ ρ) h
+    exact hx₀ (hzero (mem_univ x₀))
   obtain ⟨r₁, hr₁, hball⟩ := Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp hne)
   set r := min (r₁ / 2) R with hr
   have hr0 : 0 < r := lt_min (by linarith) hR
@@ -107,7 +109,6 @@ theorem zero_free_or_infinite_of_recurrent {F : ℂ → ℂ} (hF : Differentiabl
   by_contra hcon
   push Not at hcon
   obtain ⟨⟨ρ, hρ, hρ0⟩, hfin⟩ := hcon
-  rw [Set.not_infinite] at hfin
   obtain ⟨M, hM⟩ : BddAbove (Complex.im '' {s | s ∈ vStrip a b ∧ F s = 0}) :=
     (hfin.image _).bddAbove
   obtain ⟨R, hR0, hU⟩ := exists_closedBall_subset_vStrip hρ
@@ -166,7 +167,7 @@ theorem isVerticallyRecurrent_dirichletPoly (S : Finset ℕ) (hS : ∀ n ∈ S, 
     exact ((continuous_const.mul (continuous_neg.const_cpow (Or.inl hn0))).norm).continuousOn
   have hB : ∃ B : ℝ, 0 ≤ B ∧ ∀ s ∈ closedBall c r, ∑ n ∈ S, ‖a n * (n : ℂ) ^ (-s)‖ ≤ B := by
     obtain ⟨B, hB⟩ := (isCompact_closedBall c r).exists_bound_of_continuousOn
-      (continuousOn_finset_sum S hcont)
+      (continuousOn_finsetSum S hcont)
     refine ⟨|B|, abs_nonneg _, fun s hs => ?_⟩
     have := hB s hs
     rw [Real.norm_of_nonneg (Finset.sum_nonneg fun _ _ => norm_nonneg _)] at this
@@ -208,15 +209,16 @@ theorem isVerticallyRecurrent_dirichletPoly (S : Finset ℕ) (hS : ∀ n ∈ S, 
         rw [hy]
         field_simp
       rw [e, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * π)]
-      rw [div_eq_mul_one_div]
-      exact mul_le_mul_of_nonneg_left hp.le (by positivity)
+      have h3 := mul_le_mul_of_nonneg_left hp.le (by positivity : (0 : ℝ) ≤ 2 * π)
+      have e3 : 2 * π * (1 / (Q : ℝ)) = 2 * π / Q := by ring
+      rwa [e3] at h3
     have hper : Complex.exp ((-y : ℝ) * I) = Complex.exp (((-(y - p * (2 * π)) : ℝ) : ℂ) * I) := by
       have e2 : ((-(y - p * (2 * π)) : ℝ) : ℂ) * I = ((-y : ℝ) : ℂ) * I + (p : ℂ) * (2 * π * I) := by
         push_cast
         ring
       rw [e2, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one]
     rw [hcpow, hper, mul_comm]
-    refine Complex.norm_exp_I_mul_ofReal_sub_one_le.trans ?_
+    refine (Real.norm_exp_I_mul_ofReal_sub_one_le (x := -(y - p * (2 * π)))).trans ?_
     rw [Real.norm_eq_abs, abs_neg]
     exact hdiff
   -- the sum of the phases
@@ -254,7 +256,7 @@ theorem dirichletPoly_zero_free_or_infinite (S : Finset ℕ) (hS : ∀ n ∈ S, 
 /-! ### Finite inner factors vanish at infinity -/
 
 /-- The Green kernel from above: `G(w, ρ) ≤ 2xb/|ρ − w|²`. -/
-theorem greenKernel_le {w ρ : ℂ} (hne : ρ ≠ w) :
+theorem greenKernel_le {w ρ : ℂ} (hw : 1 / 2 < w.re) (hρ : 1 / 2 < ρ.re) (hne : ρ ≠ w) :
     greenKernel w ρ ≤ 2 * (w.re - 1 / 2) * (ρ.re - 1 / 2) / ‖ρ - w‖ ^ 2 := by
   have hB : 0 < ‖ρ - w‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hne)
   have hpol : ‖ρ + conj w - 1‖ ^ 2 = ‖ρ - w‖ ^ 2 + 4 * (w.re - 1 / 2) * (ρ.re - 1 / 2) := by
@@ -263,17 +265,7 @@ theorem greenKernel_le {w ρ : ℂ} (hne : ρ ≠ w) :
     simp only [Complex.sub_re, Complex.add_re, Complex.conj_re, Complex.one_re,
       Complex.sub_im, Complex.add_im, Complex.conj_im, Complex.one_im]
     ring
-  by_cases hA : ‖ρ + conj w - 1‖ = 0
-  · rw [greenKernel, hA, zero_div, Real.log_zero]
-    have h4 : 4 * ((w.re - 1 / 2) * (ρ.re - 1 / 2)) = -‖ρ - w‖ ^ 2 := by
-      rw [hA] at hpol
-      nlinarith
-    have e : 2 * (w.re - 1 / 2) * (ρ.re - 1 / 2) / ‖ρ - w‖ ^ 2 = -(1 / 2) := by
-      have h2 : 2 * (w.re - 1 / 2) * (ρ.re - 1 / 2) = -‖ρ - w‖ ^ 2 / 2 := by linarith
-      rw [h2]
-      field_simp
-    sorry
-  have hApos : 0 < ‖ρ + conj w - 1‖ := lt_of_le_of_ne (norm_nonneg _) (Ne.symm hA)
+  have hApos : 0 < ‖ρ + conj w - 1‖ := norm_pos_iff.mpr (ne_zero_of_half_lt_re hw hρ)
   have hlog : Real.log (‖ρ + conj w - 1‖ ^ 2 / ‖ρ - w‖ ^ 2) ≤
       ‖ρ + conj w - 1‖ ^ 2 / ‖ρ - w‖ ^ 2 - 1 :=
     Real.log_le_sub_one_of_pos (by positivity)
@@ -341,7 +333,7 @@ theorem tendsto_innerField_of_finite [Finite ZetaRightZero] {σ : ℝ} (hσ : 1 
           have := ht ρ
           rw [h, him] at this
           exact lt_irrefl _ this
-        refine (greenKernel_le hneq).trans ?_
+        refine (greenKernel_le (by rw [hre]; exact hσ) ρ.2.2 hneq).trans ?_
         rw [hre]
         have hd : 0 < t - (ρ : ℂ).im := sub_pos.mpr (ht ρ)
         have him2 := Complex.abs_im_le_norm ((ρ : ℂ) - ((σ : ℂ) + (t : ℂ) * I))
@@ -353,6 +345,129 @@ theorem tendsto_innerField_of_finite [Finite ZetaRightZero] {σ : ℝ} (hσ : 1 
   have hs := tendsto_finsetSum (Finset.univ : Finset ZetaRightZero) (fun ρ _ => hterm ρ)
   simp only [Finset.sum_const_zero] at hs
   exact hs.congr' (hval.mono fun _ h => h.symm)
+
+/-! ### A vanishing inner field -/
+
+/-- The zeros lie in `Re s < 1`, so their depth is below `½`. -/
+theorem ZetaRightZero.re_lt_one (ρ : ZetaRightZero) : (ρ : ℂ).re < 1 := by
+  by_contra h
+  exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp h) ρ.2.1
+
+theorem one_le_zeroMult (ρ : ZetaRightZero) : 1 ≤ zeroMult ρ := by
+  have hp := zeroMult_pos ρ
+  rw [zeroMult] at hp ⊢
+  have : 0 < analyticOrderNatAt riemannZeta (ρ : ℂ) := by exact_mod_cast hp
+  exact_mod_cast this
+
+/-- **A vanishing field bounds the height of the deep zeros.** If `I(½ + h + it) → 0` as `t → ∞`, then the
+zeros with `Re ρ ≥ ½ + h` have bounded height. -/
+theorem exists_height_bound_of_tendsto_innerField {h : ℝ} (hh : 0 < h)
+    (hT : Tendsto (fun t : ℝ => innerField (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I)) atTop (𝓝 0)) :
+    ∃ T : ℝ, ∀ ρ : ZetaRightZero, 1 / 2 + h ≤ (ρ : ℂ).re → (ρ : ℂ).im < T := by
+  have hc : (0 : ℝ) < 4 * h / 5 := by positivity
+  obtain ⟨T, hT'⟩ := Filter.eventually_atTop.mp (hT.eventually (gt_mem_nhds hc))
+  refine ⟨T, fun ρ hρ => ?_⟩
+  by_contra hcon
+  push Not at hcon
+  have hw' : (1 / 2 : ℝ) < 1 / 2 + h := by linarith
+  -- a nonzero point at height within `h` of `ρ`
+  have hcount : {u : ℝ | zetaEntire (((1 / 2 + h : ℝ) : ℂ) + (((ρ : ℂ).im + u : ℝ) : ℂ) * I) = 0}.Countable := by
+    have hinj : Function.Injective
+        (fun u : ℝ => ((1 / 2 + h : ℝ) : ℂ) + (((ρ : ℂ).im + u : ℝ) : ℂ) * I) := by
+      intro a b hab
+      have := congrArg Complex.im hab
+      simpa using this
+    exact countable_setOf_zetaEntire_eq_zero.preimage hinj
+  obtain ⟨u, hu, hu0⟩ : ∃ u ∈ Set.Icc 0 h,
+      zetaEntire (((1 / 2 + h : ℝ) : ℂ) + (((ρ : ℂ).im + u : ℝ) : ℂ) * I) ≠ 0 := by
+    by_contra hall
+    push Not at hall
+    have hsub : Set.Icc 0 h ⊆ {u : ℝ | zetaEntire (((1 / 2 + h : ℝ) : ℂ) +
+        (((ρ : ℂ).im + u : ℝ) : ℂ) * I) = 0} := fun u hu => hall u hu
+    have hcc := hcount.mono hsub
+    have hm := hcc.measure_zero MeasureTheory.volume
+    rw [Real.volume_Icc, ENNReal.ofReal_eq_zero] at hm
+    linarith
+  set w : ℂ := ((1 / 2 + h : ℝ) : ℂ) + (((ρ : ℂ).im + u : ℝ) : ℂ) * I with hw
+  have hre : w.re = 1 / 2 + h := by simp [hw]
+  have him : w.im = (ρ : ℂ).im + u := by simp [hw]
+  have hne : (ρ : ℂ) ≠ w := by
+    intro he
+    apply hu0
+    rw [← he, zetaEntire_eq_zero_iff]
+    exact ρ.2.1
+  have hb1 : (ρ : ℂ).re - 1 / 2 < 1 / 2 := by linarith [ρ.re_lt_one]
+  have hb2 : h ≤ (ρ : ℂ).re - 1 / 2 := by linarith
+  have hG := greenKernel_ge (w := w) (ρ := ρ) (by rw [hre]; exact hw') ρ.2.2 hne
+  have hA : ‖(ρ : ℂ) + conj w - 1‖ ^ 2 ≤ 5 * ((ρ : ℂ).re - 1 / 2) ^ 2 := by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.add_re, Complex.conj_re, Complex.one_re,
+      Complex.sub_im, Complex.add_im, Complex.conj_im, Complex.one_im, sub_zero, hre, him]
+    have hu1 := hu.1
+    have hu2 := hu.2
+    nlinarith
+  have hApos : 0 < ‖(ρ : ℂ) + conj w - 1‖ ^ 2 :=
+    pow_pos (norm_pos_iff.mpr (ne_zero_of_half_lt_re (by rw [hre]; exact hw') ρ.2.2)) 2
+  have hGlow : 4 * h / 5 ≤ greenKernel w ρ := by
+    refine le_trans ?_ hG
+    rw [hre, div_le_div_iff₀ (by norm_num) hApos]
+    have hb0 : 0 < (ρ : ℂ).re - 1 / 2 := by linarith
+    have e1 : 1 / 2 + h - 1 / 2 = h := by ring
+    rw [e1]
+    have h3 : 4 * h * ‖(ρ : ℂ) + conj w - 1‖ ^ 2 ≤ 4 * h * (5 * ((ρ : ℂ).re - 1 / 2) ^ 2) :=
+      mul_le_mul_of_nonneg_left hA (by positivity)
+    nlinarith [mul_pos hh hb0]
+  have hge : innerField w ≥ 4 * h / 5 := by
+    have hsum := hasSum_innerField (w := w) (by rw [hre]; exact hw') hu0
+    have hnn : ∀ a : ZetaRightZero, 0 ≤ zeroMult a * greenKernel w a := fun a => by
+      refine mul_nonneg (zeroMult_pos a).le (greenKernel_pos (by rw [hre]; exact hw') a.2.2 ?_).le
+      intro he
+      apply hu0
+      rw [← he, zetaEntire_eq_zero_iff]
+      exact a.2.1
+    have hle := sum_le_hasSum ({ρ} : Finset ZetaRightZero) (fun a _ => hnn a) hsum
+    rw [Finset.sum_singleton] at hle
+    have hm := one_le_zeroMult ρ
+    have hGpos : 0 ≤ greenKernel w ρ := le_trans hc.le hGlow
+    nlinarith
+  have hlt := hT' ((ρ : ℂ).im + u) (by linarith [hu.1])
+  exact absurd hlt (not_lt.mpr hge)
+
+/-- **The split through the inner field.** RH holds iff `I(σ + it) → 0` on every vertical line and zeros recur:
+vanishing of the field is the zeros-approach-the-line half, recurrence the one-off half. -/
+theorem riemannHypothesis_iff_tendsto_innerField_and_recurrent :
+    RiemannHypothesis ↔
+      (∀ h : ℝ, 0 < h → Tendsto (fun t : ℝ => innerField (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I)) atTop (𝓝 0)) ∧
+        ZetaZeroDiscWeaklyRecurrent := by
+  constructor
+  · intro hRH
+    refine ⟨fun h hh => ?_, fun ρ₀ hρ₀ h1 _ => ?_⟩
+    · refine tendsto_const_nhds.congr fun t => ?_
+      have hw : 1 / 2 < (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I).re := by
+        simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
+          Complex.ofReal_im, Complex.I_im, mul_one, sub_self, add_zero]
+        linarith
+      have h0 : zetaEntire (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I) ≠ 0 := fun hz =>
+        (riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re.mp hRH) _ hw
+          (zetaEntire_eq_zero_iff.mp hz)
+      exact ((riemannHypothesis_iff_innerField_eq_zero hw h0).mp hRH).symm
+    · exact absurd hρ₀ ((riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re.mp hRH) ρ₀ h1)
+  · rintro ⟨hfield, hrec⟩
+    rw [riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+    intro ρ₀ h1 hz
+    have h2 : ρ₀.re < 1 := by
+      by_contra h
+      exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp h) hz
+    set h : ℝ := (ρ₀.re - 1 / 2) / 2 with hh
+    have hh0 : 0 < h := by rw [hh]; linarith
+    obtain ⟨T, hT⟩ := exists_height_bound_of_tendsto_innerField hh0 (hfield h hh0)
+    obtain ⟨w, hw0, hw1, hw2, -, hw4⟩ := exists_zeta_zero_far_of_zeroDiscWeaklyRecurrent hrec hz h1 h2
+      hh0 T
+    have := hT ⟨w, hw0, hw2⟩ (by
+      change 1 / 2 + h ≤ w.re
+      have : ρ₀.re - h = 1 / 2 + h := by rw [hh]; ring
+      linarith)
+    exact absurd hw4 (not_le.mpr this)
 
 end
 

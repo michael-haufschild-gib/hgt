@@ -25,7 +25,8 @@ and `y ≥ t` contribute `O(log t · e^{−πt/2})` and `O(e^{−5t})`.
 
 set_option autoImplicit false
 
-open Complex MeasureTheory Set Filter Topology UpperHalfPlane ModularGroup
+open Complex MeasureTheory Set Filter Topology ModularGroup
+open UpperHalfPlane hiding I
 open GaloisForLFunctions.HTGeometry
 open RHTower
 
@@ -195,13 +196,16 @@ theorem mul_firstMode_le_of_le_one {t y : ℝ} (ht : 1 ≤ t) (hy0 : 0 < y) (hy1
     have hprod : y * (Real.log (Real.pi * t / x) + 1) ≤ Real.log (Real.pi * t) + 2 := by
       rw [hsplit]
       nlinarith only [hlin, hyx]
+    have hfm : firstMode t y = ‖modifiedBesselKOrder x ((t : ℂ) * I)‖ := by rw [hxdef]; rfl
+    rw [hfm]
     calc
-      _ ≤ y * (Real.exp 1 * (Real.log (Real.pi * t / x) + 1) * Real.exp (-(Real.pi * t) / 2)) :=
+      y * ‖modifiedBesselKOrder x ((t : ℂ) * I)‖ ≤
+          y * (Real.exp 1 * (Real.log (Real.pi * t / x) + 1) * Real.exp (-(Real.pi * t) / 2)) :=
         mul_le_mul_of_nonneg_left hb hy0.le
       _ = Real.exp 1 * Real.exp (-(Real.pi * t) / 2) * (y * (Real.log (Real.pi * t / x) + 1)) := by ring
       _ ≤ Real.exp 1 * Real.exp (-(Real.pi * t) / 2) * (Real.log (Real.pi * t) + 2) :=
         mul_le_mul_of_nonneg_left hprod hE
-      _ = _ := by ring
+      _ = Real.exp 1 * (Real.log (Real.pi * t) + 2) * Real.exp (-(Real.pi * t) / 2) := by ring
 
 /-- Above height one the weighted first mode decays at rate five. -/
 theorem mul_firstMode_le_exp {t y : ℝ} (hy : 1 ≤ y) :
@@ -313,6 +317,7 @@ theorem integral_firstMode_sq_ge {t m : ℝ} (ht : 1 ≤ t) (hm0 : 0 ≤ m)
     rw [intervalIntegral.integral_of_le ht] at h
     rw [h]
     norm_num
+    linarith only
   rw [integral_sub (hi1.const_mul _) (hi3.const_mul _), integral_const_mul, integral_const_mul] at hpt
   refine le_trans ?_ hpt
   have hne : t ^ 4 ≠ 0 := by positivity
@@ -337,7 +342,7 @@ private theorem integrableOn_fd_norm_sq (u : ℂ) :
   exact pow_le_pow_left₀ (norm_nonneg _) (norm_truncatedLineModel_le_truncBound' u le_rfl hz) 2
 
 /-- **The first Whittaker mode is paid by the Maass–Selberg norm.** -/
-theorem eight_integral_firstMode_sq_le {t : ℝ} (ht : 0 < t) (ht1 : 1 ≤ t) :
+theorem eight_integral_firstMode_sq_le {t : ℝ} (ht : 0 < t) :
     8 * (∫ y in Ioc 1 t, firstMode t y ^ 2 / y) ≤ (msLineValue t 1).re := by
   rw [← integral_norm_sq_truncatedLineModel_line ht le_rfl]
   let S : Set (ℝ × ℝ) := unitIcc ×ˢ Ioc 1 t
@@ -351,7 +356,7 @@ theorem eight_integral_firstMode_sq_le {t : ℝ} (ht : 0 < t) (ht1 : 1 ≤ t) :
     have hc : (z.re, z.im) ∈ cuspRect 1 := ⟨hz.1, hz.2.1⟩
     exact ((coord_mem_cuspRect_iff le_rfl z).mp hc).1
   have hsub := setIntegral_mono_set (integrableOn_fd_norm_sq ((t : ℂ) * I))
-    (Eventually.of_forall fun z => by positivity) (HasSubset.Subset.eventuallyLE hZ)
+    (Eventually.of_forall fun z => by positivity) (LE.le.eventuallyLE hZ)
   refine le_trans ?_ hsub
   have hval : (∫ z in {z : ℍ | (z.re, z.im) ∈ S}, ‖truncatedLineModel ((t : ℂ) * I) 1 z‖ ^ 2) =
       ∫ z in {z : ℍ | (z.re, z.im) ∈ S}, F (z.re, z.im) := by
@@ -632,7 +637,7 @@ theorem half_norm_modeMellin_le {t : ℝ} (ht : 10 ^ 7 ≤ t) :
     have hπinv : (250 : ℝ)⁻¹ ≤ (2 * Real.pi)⁻¹ ^ 3 := by
       rw [inv_pow]
       refine inv_anti₀ (by positivity) ?_
-      have h6 : 2 * Real.pi ≤ 6.3 := by linarith only [hπ4]
+      have h6 : 2 * Real.pi ≤ 6.2832 := by linarith only [Real.pi_lt_d4]
       have := pow_le_pow_left₀ (by positivity) h6 3
       norm_num at this ⊢
       linarith only [this]
@@ -672,7 +677,7 @@ theorem norm_riemannZeta_boundary_lower {t : ℝ} (ht : 10 ^ 7 ≤ t) :
   have hπ0 := Real.pi_pos
   have hm := half_norm_modeMellin_le ht
   have hL2 := integral_firstMode_sq_ge ht1 (by positivity) hm
-  have hms := eight_integral_firstMode_sq_le ht0 ht1
+  have hms := eight_integral_firstMode_sq_le ht0
   have hup := msLineValue_re_le (show 100 ≤ t by linarith only [ht])
   have hM := norm_modeMellin_sq_ge ht0
   obtain ⟨x, hx⟩ : ∃ x, x = Real.exp (-(Real.pi * t)) := ⟨_, rfl⟩
@@ -701,7 +706,7 @@ theorem norm_riemannZeta_boundary_lower {t : ℝ} (ht : 10 ^ 7 ≤ t) :
   have hπinv : (250 : ℝ)⁻¹ ≤ (2 * Real.pi)⁻¹ ^ 3 := by
     rw [inv_pow]
     refine inv_anti₀ (by positivity) ?_
-    have h6 : 2 * Real.pi ≤ 6.3 := by linarith only [hπ4]
+    have h6 : 2 * Real.pi ≤ 6.2832 := by linarith only [Real.pi_lt_d4]
     have := pow_le_pow_left₀ (by positivity) h6 3
     norm_num at this ⊢
     linarith only [this]
