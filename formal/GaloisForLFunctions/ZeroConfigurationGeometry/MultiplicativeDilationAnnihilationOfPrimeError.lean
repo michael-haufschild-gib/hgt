@@ -794,11 +794,10 @@ theorem finite_xiZeroCopy_of_twoPrime_dilation_bound {p q : ℕ} (hp : p.Prime) 
             _ = ((n₁ - n₂ : ℤ) : ℝ) * (2 * Real.pi / Real.log q) := hdiff_p.symm.trans hdiff_q
             _ = ((n₁ - n₂ : ℤ) : ℝ) / Real.log q * (2 * Real.pi) := by ring
         exact (div_eq_div_iff hlogp.ne' hlogq.ne').mp heq_div
-      have hrat : Real.log q / Real.log p = (((n₁ - n₂ : ℤ) : ℚ) / ((m₁ - m₂ : ℤ) : ℚ) : ℚ) := by
-        push_cast
+      have hratR : Real.log q / Real.log p = ((n₁ - n₂ : ℤ) : ℝ) / ((m₁ - m₂ : ℤ) : ℝ) := by
         rw [div_eq_div_iff hlogp.ne' hm_ne]
         linarith
-      exact hirr ⟨((n₁ - n₂ : ℤ) : ℚ) / ((m₁ - m₂ : ℤ) : ℚ), hrat.symm⟩
+      exact hirr ⟨((n₁ - n₂ : ℤ) : ℚ) / ((m₁ - m₂ : ℤ) : ℚ), by push_cast; exact hratR.symm⟩
   have hOrd_fin : Ord.Finite := by
     let f : Ord → (A ×ˢ A) := fun x => ⟨tag x.1 x.2, htag_mem x.1 x.2⟩
     have hf_inj : Function.Injective f := fun x y hxy =>
