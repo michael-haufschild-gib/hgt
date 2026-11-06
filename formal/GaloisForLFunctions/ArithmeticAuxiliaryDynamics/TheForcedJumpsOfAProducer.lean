@@ -469,7 +469,8 @@ theorem psi_le (hP : IsProducer c m B) {x : ℝ} (hx : 1 ≤ x) :
       have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
       have hlogn : 0 ≤ Real.log n := Real.log_nonneg hnR
       have hdecomp : normSlope c m B * (1 - 1 / (B : ℝ)) = stencilSlope c / m := by
-        rw [normSlope]; field_simp
+        rw [normSlope, div_mul_eq_mul_div, div_eq_div_iff (mul_pos hm h1B).ne' hm.ne']
+        ring
       have hAB : stencilSlope c / m ≤ normSlope c m B := by
         rw [← hdecomp]
         have : 1 - 1 / (B : ℝ) ≤ 1 := by
@@ -539,7 +540,9 @@ theorem psi_le (hP : IsProducer c m B) {x : ℝ} (hx : 1 ≤ x) :
   have hlog_le : Real.log N ≤ Real.log x := Real.log_le_log (by linarith) hNx
   have hlogN : 0 ≤ Real.log N := Real.log_nonneg hNR
   refine (hmain N hN1).trans (add_le_add (mul_le_mul_of_nonneg_left hNx hA) ?_)
-  refine mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) hE) ?_ (by positivity) (by positivity)
+  have hlogx : 0 ≤ Real.log x := Real.log_nonneg hx
+  refine mul_le_mul (mul_le_mul_of_nonneg_left (by linarith) hE) ?_ (by positivity)
+    (mul_nonneg hE (by linarith))
   have : Real.log N / Real.log 2 ≤ Real.log x / Real.log 2 :=
     div_le_div_of_nonneg_right hlog_le hlog2.le
   linarith
@@ -558,7 +561,8 @@ theorem psi_le_of_alphabet (hP : IsProducer c m B) {K : ℕ} (hK : AlphabetLE c 
       have : (0 : ℝ) ≤ 1 / (B : ℝ) := by positivity
       linarith
     have hid : normSlope c m B * (1 - 1 / (B : ℝ)) = stencilSlope c / m := by
-      rw [normSlope]; field_simp
+      rw [normSlope, div_mul_eq_mul_div, div_eq_div_iff (mul_pos hm h1B).ne' hm.ne']
+      ring
     have hA0 : 0 ≤ normSlope c m B := div_nonneg hP.slope_nonneg (mul_pos hm h1B).le
     rw [← hid]
     nlinarith

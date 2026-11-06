@@ -45,25 +45,31 @@ def PrimeErrorIsFiniteOscillation : Prop :=
 
 /-! ### Convergence exponent one -/
 
+/-- The reciprocal ordinates of the zeros are in every `ℓ^p`, `p > 1`: the positive half is
+`summable_xiOrderedPositiveOrdinate_inv_rpow`, and conjugation carries the rest into it. -/
 theorem summable_abs_im_inv_rpow {p : ℝ} (hp : 1 < p) :
     Summable (fun q : XiZeroCopy => |(q.1 : ℂ).im|⁻¹ ^ p) := by
-  rw [← xiOrderedSignedZeroCopyEquiv.summable_iff]
   have h := summable_xiOrderedPositiveOrdinate_inv_rpow hp
-  have hpos : ∀ n, 0 < xiOrderedPositiveOrdinate n := xiOrderedPositiveOrdinate_pos
-  have hl : Summable ((fun q : XiZeroCopy => |(q.1 : ℂ).im|⁻¹ ^ p)
-      ∘ xiOrderedSignedZeroCopyEquiv ∘ Sum.inl) := by
+  have hP : Summable (fun q : XiPositiveZeroCopy => |(q.1.1 : ℂ).im|⁻¹ ^ p) := by
+    rw [← xiOrderedPositiveZeroCopyEquiv.summable_iff]
     refine h.congr fun n => ?_
-    have him : ((xiOrderedSignedZeroCopyEquiv (Sum.inl n)).1 : ℂ).im
-        = xiOrderedPositiveOrdinate n := xiOrderedPositiveZeroCopyEquiv_im n
-    simp only [Function.comp, him, abs_of_pos (hpos n)]
-  have hr : Summable ((fun q : XiZeroCopy => |(q.1 : ℂ).im|⁻¹ ^ p)
-      ∘ xiOrderedSignedZeroCopyEquiv ∘ Sum.inr) := by
-    refine h.congr fun n => ?_
-    have him : ((xiOrderedSignedZeroCopyEquiv (Sum.inr n)).1 : ℂ).im
-        = -xiOrderedPositiveOrdinate n :=
-      (xiZeroCopyConjEquiv_im _).trans (by rw [xiOrderedPositiveZeroCopyEquiv_im n])
-    simp only [Function.comp, him, abs_neg, abs_of_pos (hpos n)]
-  exact (hl.hasSum.sum hr.hasSum).summable
+    simp only [Function.comp_apply, xiOrderedPositiveZeroCopyEquiv_im n,
+      abs_of_pos (xiOrderedPositiveOrdinate_pos n)]
+  let s : Set XiZeroCopy := {q | 0 < (q.1 : ℂ).im}
+  have hneg : ∀ q : ↑sᶜ, 0 < ((xiZeroCopyConjEquiv q.1).1 : ℂ).im := by
+    intro q
+    rw [xiZeroCopyConjEquiv_im]
+    have hq : ¬ 0 < (q.1.1 : ℂ).im := q.2
+    have hlt : (q.1.1 : ℂ).im < 0 :=
+      lt_of_le_of_ne (not_lt.mp hq) (xiSupport_im_ne_zero q.1.1)
+    linarith
+  let ι : ↑sᶜ → XiPositiveZeroCopy := fun q => ⟨xiZeroCopyConjEquiv q.1, hneg q⟩
+  have hι : Function.Injective ι := fun a b hab =>
+    Subtype.ext (xiZeroCopyConjEquiv.injective (congrArg Subtype.val hab))
+  have hN : Summable (fun q : ↑sᶜ => |(q.1.1 : ℂ).im|⁻¹ ^ p) := by
+    refine (hP.comp_injective hι).congr fun q => ?_
+    simp only [Function.comp_apply, ι, xiZeroCopyConjEquiv_im, abs_neg]
+  exact summable_subtype_and_compl.mp ⟨hP, hN⟩
 
 /-- The summable weight `1/(|ρ||1−ρ|^θ)`. -/
 def zeroWeight (θ : ℝ) (q : XiZeroCopy) : ℝ :=
@@ -81,7 +87,7 @@ theorem summable_zeroWeight {θ : ℝ} (hθ : 0 < θ) : Summable (zeroWeight θ)
   have h2 : |(q.1 : ℂ).im| ≤ ‖1 - (q.1 : ℂ)‖ := by
     have := Complex.abs_im_le_norm (1 - (q.1 : ℂ))
     simpa using this
-  rw [zeroWeight, Real.rpow_add (inv_pos.mpr him), Real.rpow_one, ← Real.inv_rpow him.le]
+  rw [zeroWeight, Real.rpow_add (inv_pos.mpr him), Real.rpow_one, Real.inv_rpow him.le]
   exact mul_le_mul (inv_anti₀ him h1)
     (inv_anti₀ (Real.rpow_pos_of_pos him _) (Real.rpow_le_rpow him.le h2 hθ.le))
     (inv_nonneg.mpr (Real.rpow_nonneg (norm_nonneg _) _)) (inv_nonneg.mpr him.le)
@@ -158,7 +164,7 @@ theorem le_mul_rpow_of_le_of_le {t A R θ : ℝ} (ht : 0 ≤ t) (hA : t ≤ A) (
 inside `[x/2, 2x]`. -/
 theorem norm_lagWindowZeroTerm_le_interpolated {x H a b β₁ θ : ℝ} (hx : 1 ≤ x) (hH : 0 < H)
     (hxa : x / 2 ≤ a) (hab : b - a = H) (hb : b ≤ 2 * x) (hθ0 : 0 ≤ θ) (hθ1 : θ ≤ 1)
-    (hxH : H ≤ x) {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (hr : ρ.re ≤ β₁) :
+    {ρ : ℂ} (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (hr : ρ.re ≤ β₁) :
     ‖lagWindowZeroTerm ρ a b‖
       ≤ 16 * x ^ β₁ * (x / H) ^ θ * (‖ρ‖⁻¹ * (‖1 - ρ‖ ^ θ)⁻¹) := by
   have hx0 : 0 < x := by linarith
@@ -276,7 +282,7 @@ theorem norm_lagWindowZeroTerm_add_cpow_div_le {x H a b : ℝ} (ha : 1 ≤ a) (h
 interpolated contribution of all others. -/
 theorem norm_tsum_window_add_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H a b : ℝ}
     (hnon : ∀ q : XiZeroCopy, q ∉ top → (q.1 : ℂ).re ≤ β₁) (hθ0 : 0 < θ) (hθ1 : θ ≤ 1)
-    (hx : 1 ≤ x) (hH : 0 < H) (hHx : H ≤ x) (hxa : x / 2 ≤ a) (ha : 1 ≤ a) (hax : a ≤ x)
+    (hx : 1 ≤ x) (hH : 0 < H) (hxa : x / 2 ≤ a) (ha : 1 ≤ a) (hax : a ≤ x)
     (hxa' : x - a ≤ H) (hab : b - a = H) (hb : b ≤ 2 * x) :
     ‖(∑' q : XiZeroCopy, lagWindowZeroTerm (q.1 : ℂ) a b)
         + ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)‖
@@ -311,7 +317,7 @@ theorem norm_tsum_window_add_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H a
       have hw : 0 ≤ K * zeroWeight θ q := mul_nonneg hK0 (zeroWeight_nonneg θ q)
       linarith
     · simp only [hg, he, hq, if_false, add_zero, zero_add]
-      exact norm_lagWindowZeroTerm_le_interpolated hx hH hxa hab hb hθ0.le hθ1 hHx hq0 hq1
+      exact norm_lagWindowZeroTerm_le_interpolated hx hH hxa hab hb hθ0.le hθ1 hq0 hq1
         (hnon q hq)
   have hsum : (∑' q : XiZeroCopy, lagWindowZeroTerm (q.1 : ℂ) a b)
       + ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)
@@ -323,7 +329,7 @@ theorem norm_tsum_window_add_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H a
   exact (norm_tsum_le_tsum_norm hsn).trans (hsn.tsum_le_tsum hbd hes)
 
 /-- The trivial-zero term of a window is at most `4/(x h)`. -/
-theorem trivialWindowTerm_le {x h : ℝ} (hx : 2 ≤ x) (hh : 0 < h) :
+theorem trivialWindowTerm_le {x h : ℝ} (hx : 2 ≤ x) (hh : 0 < h) (hhx : h ≤ x) :
     (trivialZeroSeriesReal x / x - trivialZeroSeriesReal (x + h) / (x + h))
         / (1 / x - 1 / (x + h)) ≤ 4 / (x * h) := by
   have hx0 : 0 < x := by linarith
@@ -347,7 +353,7 @@ theorem trivialWindowTerm_le {x h : ℝ} (hx : 2 ≤ x) (hh : 0 < h) :
   refine hnum.trans ?_
   rw [show 4 / (x * h) * (h / (x * (x + h))) = 4 / (x ^ 2 * (x + h)) by field_simp, div_div,
     div_le_div_iff₀ (by positivity) (by positivity)]
-  nlinarith
+  nlinarith [mul_le_mul_of_nonneg_left hhx (sq_nonneg x)]
 
 /-- **The two-sided squeeze.**  `ψ(x) − x + Re Σ_top x^ρ/ρ` is at most the window width, the top
 errors and the interpolated sum of all other zeros, up to a constant. -/
@@ -364,8 +370,8 @@ theorem abs_psi_sub_add_re_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H : �
   set Err : ℝ := top.card * (2 * H) + 16 * x ^ β₁ * (x / H) ^ θ * ∑' q, zeroWeight θ q with hErr
   set Tp : ℂ := ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ) with hTp
   -- the right window `[x, x + H]`
-  have hU := norm_tsum_window_add_topSum_le (a := x) (b := x + H) hnon hθ0 hθ1 (by linarith) hH
-    (by linarith) (by linarith) (by linarith) le_rfl (by linarith) (by ring) (by linarith)
+  have hU := norm_tsum_window_add_topSum_le (x := x) (H := H) (a := x) (b := x + H) hnon hθ0 hθ1
+    (by linarith) hH (by linarith) (by linarith) le_rfl (by linarith) (by ring) (by linarith)
   have hwU : 0 < 1 / x - 1 / (x + H) := by
     rw [sub_pos]
     exact one_div_lt_one_div_of_lt hx0 (by linarith)
@@ -376,7 +382,7 @@ theorem abs_psi_sub_add_re_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H : �
   have hLU : Real.log ((x + H) / x) / (1 / x - 1 / (x + H)) ≤ x + H := by
     rw [div_le_iff₀ hwU]
     exact (log_div_le_mul_inv_sub hx0 (by linarith)).2
-  have hEU := trivialWindowTerm_le (show 2 ≤ x by linarith) hH
+  have hEU := trivialWindowTerm_le (show 2 ≤ x by linarith) hH (by linarith)
   have hE1 : 4 / (x * H) ≤ 1 := by
     rw [div_le_one (by positivity)]
     nlinarith
@@ -384,8 +390,8 @@ theorem abs_psi_sub_add_re_topSum_le {top : Finset XiZeroCopy} {β₁ θ x H : �
     rw [← Complex.add_re]
     exact (Complex.re_le_norm _).trans hU
   -- the left window `[x − H, x]`
-  have hL := norm_tsum_window_add_topSum_le (a := x - H) (b := x) hnon hθ0 hθ1 (by linarith) hH
-    (by linarith) (by linarith) (by linarith) (by linarith) (by linarith) (by ring) (by linarith)
+  have hL := norm_tsum_window_add_topSum_le (x := x) (H := H) (a := x - H) (b := x) hnon hθ0 hθ1
+    (by linarith) hH (by linarith) (by linarith) (by linarith) (by linarith) (by ring) (by linarith)
   have ha0 : 0 < x - H := by linarith
   have hwL : 0 < 1 / (x - H) - 1 / x := by
     rw [sub_pos]
@@ -451,9 +457,281 @@ theorem rpow_mul_finiteOscillation_top {top : Finset XiZeroCopy} {β x : ℝ} (h
     rw [h]
     refine Finset.sum_congr rfl fun ω _ => ?_
     rw [nsmul_eq_mul]
-  rw [finiteOscillation, hsum, ← Complex.re_ofReal_mul, Finset.mul_sum, ← Complex.neg_re,
-    Finset.sum_neg_distrib.symm ▸ rfl]
-  sorry
+  rw [finiteOscillation, hsum, ← Complex.re_ofReal_mul, Finset.mul_sum,
+    ← Complex.neg_re, ← Finset.sum_neg_distrib]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro ω _
+  dsimp [F]
+  ring
+
+/-- **The expansion from an isolated top layer.** -/
+theorem exists_expansion_of_top {top : Finset XiZeroCopy} {β β₁ : ℝ} (hβ₁ : 1 / 2 ≤ β₁)
+    (hβ₁β : β₁ < β) (hβ1 : β < 1) (hnon : ∀ q : XiZeroCopy, q ∉ top → (q.1 : ℂ).re ≤ β₁) :
+    ∃ C x₀ : ℝ, ∀ x, x₀ ≤ x →
+      |Chebyshev.psi x - x + (∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re|
+        ≤ C * x ^ ((β + β₁) / 2) := by
+  set E : ℝ := (β + β₁) / 2 with hE
+  set θ : ℝ := (β - β₁) / 4 with hθ
+  have hθ0 : 0 < θ := by rw [hθ]; linarith
+  have hθ1 : θ ≤ 1 := by rw [hθ]; linarith
+  have hE0 : 0 < E := by rw [hE]; linarith
+  have hE1 : E < 1 := by rw [hE]; linarith
+  have hgap : 0 < 1 - E := by linarith
+  set W : ℝ := ∑' q, zeroWeight θ q with hW
+  have hW0 : 0 ≤ W := tsum_nonneg (zeroWeight_nonneg θ)
+  have hlog : 0 ≤ Real.log (2 * Real.pi) :=
+    Real.log_nonneg (by nlinarith [Real.pi_gt_three])
+  refine ⟨2 + Real.log (2 * Real.pi) + 2 * top.card + 16 * W,
+    max 4 ((2 : ℝ) ^ (1 / (1 - E))), fun x hx => ?_⟩
+  have hx4 : 4 ≤ x := (le_max_left _ _).trans hx
+  have hx2 : (2 : ℝ) ^ (1 / (1 - E)) ≤ x := (le_max_right _ _).trans hx
+  have hx0 : 0 < x := by linarith
+  have hx1 : 1 ≤ x := by linarith
+  set H : ℝ := x ^ E with hH
+  have hH1 : 1 ≤ H := Real.one_le_rpow hx1 hE0.le
+  have hH0 : 0 < H := by linarith
+  have h2 : 2 ≤ x ^ (1 - E) := by
+    have h := Real.rpow_le_rpow (by positivity) hx2 hgap.le
+    rwa [← Real.rpow_mul (by norm_num), one_div_mul_cancel hgap.ne', Real.rpow_one] at h
+  have hsplit : H * x ^ (1 - E) = x := by
+    rw [hH, ← Real.rpow_add hx0]
+    simp
+  have hHx : H ≤ x / 2 := by
+    rw [le_div_iff₀ (by norm_num)]
+    nlinarith
+  have hmain := abs_psi_sub_add_re_topSum_le (x := x) (H := H) hnon hθ0 hθ1 hx4 hH1 hHx
+  refine hmain.trans ?_
+  have hratio : (x / H) ^ θ ≤ x ^ θ := by
+    refine Real.rpow_le_rpow (by positivity) ?_ hθ0.le
+    exact div_le_self hx0.le hH1
+  have hβθ : x ^ β₁ * x ^ θ ≤ H := by
+    rw [← Real.rpow_add hx0, hH]
+    refine Real.rpow_le_rpow_of_exponent_le hx1 ?_
+    rw [hE, hθ]
+    linarith
+  have hxβ : 0 ≤ x ^ β₁ := Real.rpow_nonneg hx0.le _
+  have hlast : 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * W * H := by
+    calc 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * x ^ β₁ * x ^ θ * W := by gcongr
+      _ = 16 * W * (x ^ β₁ * x ^ θ) := by ring
+      _ ≤ 16 * W * H := by gcongr
+  have hc : (top.card : ℝ) * (2 * H) = 2 * top.card * H := by ring
+  rw [hc]
+  nlinarith [mul_nonneg hlog (sub_nonneg.mpr hH1)]
+
+/-- **A one-off gives a finite oscillation.** -/
+theorem primeErrorIsFiniteOscillation_of_not_asymptoticAbscissaLaw
+    (h : ¬ AsymptoticAbscissaLaw) : PrimeErrorIsFiniteOscillation := by
+  classical
+  unfold AsymptoticAbscissaLaw at h
+  push Not at h
+  obtain ⟨h₀, hh0, hfin, q₀, hq₀⟩ := h
+  set F : Finset XiZeroCopy := hfin.toFinset with hFdef
+  have hmemF : ∀ q : XiZeroCopy, q ∈ F ↔ 1 / 2 + h₀ < (q.1 : ℂ).re := fun q => by
+    simp [hFdef]
+  have hF : F.Nonempty := ⟨q₀, (hmemF q₀).2 hq₀⟩
+  obtain ⟨qt, hqtF, hqt⟩ := F.exists_max_image (fun q : XiZeroCopy => (q.1 : ℂ).re) hF
+  set β : ℝ := (qt.1 : ℂ).re with hβ
+  have hβ1 : β < 1 := xiZeroCopy_re_lt_one qt
+  set top : Finset XiZeroCopy := F.filter (fun q => (q.1 : ℂ).re = β) with htopdef
+  set A : Finset ℝ := insert (1 / 2 + h₀)
+    ((F.filter (fun q : XiZeroCopy => (q.1 : ℂ).re < β)).image (fun q => (q.1 : ℂ).re)) with hA
+  have hAne : A.Nonempty := Finset.insert_nonempty _ _
+  set β₁ : ℝ := A.max' hAne with hβ₁
+  have hβ₁lt : β₁ < β := by
+    have hmem := A.max'_mem hAne
+    rw [hA, Finset.mem_insert, Finset.mem_image] at hmem
+    rcases hmem with hm | ⟨q, hq, hv⟩
+    · rw [hβ₁, hA, hm]
+      exact lt_of_lt_of_le hq₀ (hqt q₀ ((hmemF q₀).2 hq₀))
+    · rw [hβ₁, hA, ← hv]
+      exact (Finset.mem_filter.mp hq).2
+  have hβ₁half : 1 / 2 ≤ β₁ := by
+    have hle : 1 / 2 + h₀ ≤ β₁ := A.le_max' _ (Finset.mem_insert_self _ _)
+    linarith
+  have htop : ∀ q ∈ top, (q.1 : ℂ).re = β := fun q hq => (Finset.mem_filter.mp hq).2
+  have hnon : ∀ q : XiZeroCopy, q ∉ top → (q.1 : ℂ).re ≤ β₁ := by
+    intro q hq
+    by_cases hqF : 1 / 2 + h₀ < (q.1 : ℂ).re
+    · have hF' := (hmemF q).2 hqF
+      have hle := hqt q hF'
+      have hne : (q.1 : ℂ).re ≠ β := fun he => hq (Finset.mem_filter.mpr ⟨hF', he⟩)
+      exact A.le_max' _ (Finset.mem_insert_of_mem (Finset.mem_image.mpr
+        ⟨q, Finset.mem_filter.mpr ⟨hF', lt_of_le_of_ne hle hne⟩, rfl⟩))
+    · exact (not_lt.mp hqF).trans (A.le_max' _ (Finset.mem_insert_self _ _))
+  obtain ⟨C, x₀, hC⟩ := exists_expansion_of_top hβ₁half hβ₁lt hβ1 hnon
+  set S : Finset ℝ := top.image fun q => (q.1 : ℂ).im with hS
+  set c : ℝ → ℂ := fun ω =>
+    -((top.filter fun q => (q.1 : ℂ).im = ω).card : ℂ) / ((β : ℂ) + I * ω) with hc
+  have hexp : ∀ x, max x₀ 1 ≤ x →
+      |Chebyshev.psi x - x - x ^ β * finiteOscillation S c (Real.log x)|
+        ≤ C * x ^ ((β + β₁) / 2) := by
+    intro x hx
+    have hx1 : 1 ≤ x := (le_max_right _ _).trans hx
+    have hx₀ : x₀ ≤ x := (le_max_left _ _).trans hx
+    have hT := rpow_mul_finiteOscillation_top (top := top) (β := β) (x := x) (by linarith) htop
+    rw [hT, sub_neg_eq_add]
+    exact hC x hx₀
+  refine ⟨β, (β - β₁) / 2, by linarith, by linarith, S, c, ?_, C, max x₀ 1, ?_⟩
+  · by_contra hall
+    push Not at hall
+    have hb : ∀ x, max x₀ 1 ≤ x →
+        ‖oscillationError β ∅ 0 x‖ ≤ C * x ^ ((β + β₁) / 2) := by
+      intro x hx
+      have h := hexp x hx
+      rw [hall, mul_zero, sub_zero] at h
+      simpa [oscillationError, Complex.norm_real] using h
+    obtain ⟨ω, hω, -⟩ := eq_of_zeta_eq_zero_of_expansion hb (ρ := (qt.1 : ℂ))
+      (by change (β + β₁) / 2 < β; linarith) (xiZeroCopy_ne_one qt)
+      (riemannZeta_eq_zero_of_xiZeroCopy qt)
+    simp at hω
+  · intro x hx
+    have h := hexp x hx
+    rwa [show β - (β - β₁) / 2 = (β + β₁) / 2 by ring]
+
+/-! ### The converse -/
+
+/-- The coefficient of `e^{iμu}` in the real trigonometric polynomial. -/
+def oscillationCoeff (S : Finset ℝ) (c : ℝ → ℂ) (μ : ℝ) : ℂ :=
+  (if μ ∈ S then c μ else 0) / 2 + (if -μ ∈ S then (starRingEnd ℂ) (c (-μ)) else 0) / 2
+
+/-- The frequency set of the real trigonometric polynomial. -/
+def oscillationFrequencies (S : Finset ℝ) : Finset ℝ :=
+  S ∪ S.image fun ω => -ω
+
+/-- **Exponential form of a real trigonometric polynomial.** -/
+theorem finiteOscillation_eq_sum (S : Finset ℝ) (c : ℝ → ℂ) (u : ℝ) :
+    (finiteOscillation S c u : ℂ)
+      = ∑ μ ∈ oscillationFrequencies S, oscillationCoeff S c μ * cexp (I * μ * u) := by
+  classical
+  set e : ℝ → ℂ := fun μ => cexp (I * μ * u) with he
+  have hA : ∑ μ ∈ oscillationFrequencies S, (if μ ∈ S then c μ else 0) * e μ
+      = ∑ ω ∈ S, c ω * e ω := by
+    rw [← Finset.sum_subset (Finset.subset_union_left (s₁ := S) (s₂ := S.image fun ω => -ω))
+      fun μ _ hμ => by simp [hμ]]
+    exact Finset.sum_congr rfl fun ω hω => by simp [hω]
+  have hB : ∑ μ ∈ oscillationFrequencies S,
+        (if -μ ∈ S then (starRingEnd ℂ) (c (-μ)) else 0) * e μ
+      = ∑ ω ∈ S, (starRingEnd ℂ) (c ω) * e (-ω) := by
+    rw [← Finset.sum_subset (Finset.subset_union_right (s₁ := S) (s₂ := S.image fun ω => -ω))
+      fun μ _ hμ => ?_]
+    · rw [Finset.sum_image fun a _ b _ hab => neg_injective hab]
+      exact Finset.sum_congr rfl fun ω hω => by simp [hω]
+    · have hnot : -μ ∉ S := fun h => hμ (Finset.mem_image.mpr ⟨-μ, h, neg_neg μ⟩)
+      simp [hnot]
+  have hconj : (starRingEnd ℂ) (∑ ω ∈ S, c ω * cexp (I * ω * u))
+      = ∑ ω ∈ S, (starRingEnd ℂ) (c ω) * e (-ω) := by
+    rw [map_sum]
+    refine Finset.sum_congr rfl fun ω _ => ?_
+    rw [map_mul, ← Complex.exp_conj]
+    congr 2
+    simp only [he, map_mul, Complex.conj_I, Complex.conj_ofReal]
+    push_cast
+    ring
+  have hsum : ∑ μ ∈ oscillationFrequencies S, oscillationCoeff S c μ * e μ
+      = (∑ μ ∈ oscillationFrequencies S, (if μ ∈ S then c μ else 0) * e μ) / 2
+        + (∑ μ ∈ oscillationFrequencies S,
+            (if -μ ∈ S then (starRingEnd ℂ) (c (-μ)) else 0) * e μ) / 2 := by
+    rw [Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun μ _ => ?_
+    rw [oscillationCoeff]
+    ring
+  rw [hsum, hA, hB, ← hconj, finiteOscillation, Complex.re_eq_add_conj]
+  ring
+
+/-- A nonzero real trigonometric polynomial has a nonzero exponential coefficient. -/
+theorem exists_oscillationCoeff_ne_zero {S : Finset ℝ} {c : ℝ → ℂ} {u : ℝ}
+    (hu : finiteOscillation S c u ≠ 0) :
+    ∃ μ ∈ oscillationFrequencies S, oscillationCoeff S c μ ≠ 0 := by
+  by_contra hall
+  push Not at hall
+  apply hu
+  have h := finiteOscillation_eq_sum S c u
+  rw [Finset.sum_eq_zero fun μ hμ => by rw [hall μ hμ, zero_mul]] at h
+  exact_mod_cast h
+
+/-- Only finitely many zeros have bounded ordinate. -/
+theorem finite_abs_im_le (M : ℝ) : {q : XiZeroCopy | |(q.1 : ℂ).im| ≤ M}.Finite := by
+  have hs := summable_abs_im_inv_rpow (p := 2) one_lt_two
+  have hM : 0 < |M| + 1 := by positivity
+  have hε : 0 < (|M| + 1)⁻¹ ^ (2 : ℝ) := Real.rpow_pos_of_pos (inv_pos.mpr hM) _
+  have hev := hs.tendsto_cofinite_zero.eventually (gt_mem_nhds hε)
+  rw [Filter.eventually_cofinite] at hev
+  refine hev.subset fun q hq => ?_
+  have hq0 : 0 < |(q.1 : ℂ).im| := abs_pos.mpr (xiSupport_im_ne_zero q.1)
+  have hqM : |(q.1 : ℂ).im| ≤ |M| + 1 := by
+    have h1 : |(q.1 : ℂ).im| ≤ M := hq
+    have h2 := le_abs_self M
+    linarith
+  simp only [Set.mem_setOf_eq, not_lt]
+  exact Real.rpow_le_rpow (inv_nonneg.mpr hM.le) (inv_anti₀ hq0 hqM) (by norm_num)
+
+/-- **A finite oscillation gives a one-off.** -/
+theorem not_asymptoticAbscissaLaw_of_primeErrorIsFiniteOscillation
+    (h : PrimeErrorIsFiniteOscillation) : ¬ AsymptoticAbscissaLaw := by
+  obtain ⟨β, η, hβ, hη, S, c, ⟨u₀, hu₀⟩, C, x₀, hC⟩ := h
+  intro hAAL
+  set S' := oscillationFrequencies S with hS'
+  set d := oscillationCoeff S c with hd
+  set σ₀ : ℝ := max (β - η) ((β + 1 / 2) / 2) with hσ₀
+  have hσβ : σ₀ < β := max_lt (by linarith) (by linarith)
+  have hσhalf : 1 / 2 < σ₀ := lt_of_lt_of_le (by linarith) (le_max_right _ _)
+  have hb : ∀ x, max x₀ 1 ≤ x → ‖oscillationError β S' d x‖ ≤ |C| * x ^ σ₀ := by
+    intro x hx
+    have hx1 : 1 ≤ x := (le_max_right _ _).trans hx
+    have hx0 : 0 < x := by linarith
+    have hrep : oscillationError β S' d x
+        = ((Chebyshev.psi x - x - x ^ β * finiteOscillation S c (Real.log x) : ℝ) : ℂ) := by
+      have hsum : ∑ ω ∈ S', d ω * (x : ℂ) ^ ((β : ℂ) + I * ω)
+          = ((x ^ β * finiteOscillation S c (Real.log x) : ℝ) : ℂ) := by
+        rw [Complex.ofReal_mul, finiteOscillation_eq_sum, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun ω _ => ?_
+        rw [cpow_add_I_mul_eq hx0]
+        ring
+      rw [oscillationError, hsum]
+      push_cast
+      ring
+    rw [hrep, Complex.norm_real, Real.norm_eq_abs]
+    refine (hC x ((le_max_left _ _).trans hx)).trans ?_
+    calc C * x ^ (β - η) ≤ |C| * x ^ (β - η) :=
+          mul_le_mul_of_nonneg_right (le_abs_self C) (Real.rpow_nonneg hx0.le _)
+      _ ≤ |C| * x ^ σ₀ := by
+          refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg C)
+          exact Real.rpow_le_rpow_of_exponent_le hx1 (le_max_left _ _)
+  obtain ⟨μ₀, hμ₀, hne⟩ := exists_oscillationCoeff_ne_zero hu₀
+  have hζ := zeta_eq_zero_of_coeff_ne_zero hb hμ₀ hne hσβ (by linarith)
+  set ρ₀ : ℂ := (β : ℂ) + I * μ₀ with hρ₀
+  have hre : ρ₀.re = β := by simp [hρ₀]
+  have hβ1 : β < 1 := by
+    by_contra hge
+    exact riemannZeta_ne_zero_of_one_le_re (by rw [hre]; linarith) hζ
+  obtain ⟨q₀, hq₀⟩ := exists_xiZeroCopy_of_zeta_eq_zero_strip hζ (by rw [hre]; linarith)
+    (by rw [hre]; exact hβ1)
+  set M : ℝ := ∑ μ ∈ S', |μ| with hM
+  have hfin : {q : XiZeroCopy | 1 / 2 + (σ₀ - 1 / 2) < (q.1 : ℂ).re}.Finite := by
+    refine (finite_abs_im_le M).subset fun q hq => ?_
+    have hq' : σ₀ < (q.1 : ℂ).re := by
+      have : 1 / 2 + (σ₀ - 1 / 2) < (q.1 : ℂ).re := hq
+      linarith
+    obtain ⟨ω, hω, heq⟩ := eq_of_zeta_eq_zero_of_expansion hb hq' (xiZeroCopy_ne_one q)
+      (riemannZeta_eq_zero_of_xiZeroCopy q)
+    have him : (q.1 : ℂ).im = ω := by
+      rw [heq]
+      simp
+    have hle : |ω| ≤ M := Finset.single_le_sum (f := fun μ : ℝ => |μ|)
+      (fun _ _ => abs_nonneg _) hω
+    change |(q.1 : ℂ).im| ≤ M
+    rwa [him]
+  have hall := hAAL (σ₀ - 1 / 2) (by linarith) hfin q₀
+  rw [hq₀, hre] at hall
+  linarith
+
+/-- **The exact prime-side form of a one-off zero.**  The asymptotic abscissa law fails exactly when
+the prime number theorem error is a single finite oscillation at leading order. -/
+theorem not_asymptoticAbscissaLaw_iff_primeErrorIsFiniteOscillation :
+    ¬ AsymptoticAbscissaLaw ↔ PrimeErrorIsFiniteOscillation :=
+  ⟨primeErrorIsFiniteOscillation_of_not_asymptoticAbscissaLaw,
+    not_asymptoticAbscissaLaw_of_primeErrorIsFiniteOscillation⟩
 
 end
 

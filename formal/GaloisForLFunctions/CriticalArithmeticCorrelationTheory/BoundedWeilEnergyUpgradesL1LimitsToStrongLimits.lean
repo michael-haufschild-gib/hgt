@@ -45,7 +45,7 @@ private theorem integrable_cx_kernel {f : ℝ → ℝ} (hf : Integrable f) (r : 
   exact hm.mul (Continuous.aestronglyMeasurable (by fun_prop))
 
 /-- The transform of an integrable real function is bounded by its `L¹` norm. -/
-theorem norm_paperFT_le {f : ℝ → ℝ} (hf : Integrable f) (r : ℝ) :
+theorem norm_paperFT_le (f : ℝ → ℝ) (r : ℝ) :
     ‖paperFT (cx f) r‖ ≤ ∫ u, ‖f u‖ := by
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   exact integral_congr_ae (Eventually.of_forall fun u => norm_cx_kernel f r u)
@@ -66,7 +66,7 @@ theorem paperFT_cx_sub {f g : ℝ → ℝ} (hf : Integrable f) (hg : Integrable 
 theorem norm_paperFT_sub_le {f g : ℝ → ℝ} (hf : Integrable f) (hg : Integrable g) (r : ℝ) :
     ‖paperFT (cx f) r - paperFT (cx g) r‖ ≤ ∫ u, ‖f u - g u‖ := by
   rw [← paperFT_cx_sub hf hg]
-  exact norm_paperFT_le (hf.sub hg) r
+  exact norm_paperFT_le _ r
 
 /-- The transform of an integrable real function is continuous on real frequencies. -/
 theorem continuous_paperFT_cx {f : ℝ → ℝ} (hf : Integrable f) :
@@ -107,13 +107,14 @@ theorem tendsto_lowGammaForm {l : Filter ℕ} [IsCountablyGenerated l] {U : ℕ 
   have hsmall : ∀ᶠ N in l, (∫ y, ‖U N y - F y‖) < 1 := hL1.eventually (gt_mem_nhds one_pos)
   have hbdd : ∀ᶠ N in l, (∫ y, ‖U N y‖) ≤ C := by
     filter_upwards [hsmall] with N hN
-    have hi : Integrable fun y => ‖F y‖ + ‖U N y - F y‖ := hF.norm.add ((hU N).sub hF).norm
+    have hn : Integrable fun y => ‖U N y - F y‖ := ((hU N).sub hF).norm
+    have hi : Integrable fun y => ‖F y‖ + ‖U N y - F y‖ := hF.norm.add hn
     have hle : (∫ y, ‖U N y‖) ≤ ∫ y, (‖F y‖ + ‖U N y - F y‖) := by
       refine integral_mono (hU N).norm hi fun y => ?_
       have h := norm_add_le (F y) (U N y - F y)
       simp only [add_sub_cancel] at h
       exact h
-    rw [integral_add hF.norm ((hU N).sub hF).norm] at hle
+    rw [integral_add hF.norm hn] at hle
     dsimp only [C]
     linarith only [hle, hN]
   have hlim : Tendsto (fun N => ∫ r in (highFrequencies T)ᶜ,
@@ -126,7 +127,7 @@ theorem tendsto_lowGammaForm {l : Filter ℕ} [IsCountablyGenerated l] {U : ℕ 
     · filter_upwards [hbdd] with N hN
       refine (ae_restrict_iff' hHm.compl).mpr (Eventually.of_forall fun r hr => ?_)
       have hG := hB r (compl_highFrequencies_subset T hr)
-      have hn := (norm_paperFT_le (hU N) r).trans hN
+      have hn := (norm_paperFT_le (U N) r).trans hN
       rw [norm_mul, norm_pow, norm_norm]
       refine mul_le_mul (pow_le_pow_left₀ (norm_nonneg _) hn 2) ?_ (norm_nonneg _) (by positivity)
       exact hG.trans (le_abs_self B)
@@ -163,7 +164,7 @@ theorem lowGammaForm_add_high_le_archForm {f : ℝ → ℝ} (hf : ContDiff ℝ 2
     (ae_restrict_iff' hH).mpr (Eventually.of_forall fun r hr =>
       mul_nonneg (sq_nonneg _) (hlogT.trans (gammaBracket_ge_log_of_le_abs hT0 hr)))
   have hsub : highFrequencies T' ≤ᵐ[volume] highFrequencies T :=
-    HasSubset.Subset.eventuallyLE fun r hr => hTT'.trans hr
+    (show highFrequencies T' ≤ highFrequencies T from fun r hr => hTT'.trans hr).eventuallyLE
   have hmono := setIntegral_mono_set hki.integrableOn hpos hsub
   have hlow : (∫ r in highFrequencies T', (Real.log T' - factorialSpanGammaOffset) * F r) ≤
       ∫ r in highFrequencies T', k r :=
@@ -218,12 +219,13 @@ theorem integral_sq_sub_le {f g : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hfc : Ha
     have h1 : (∫ r in (highFrequencies T)ᶜ, ‖paperFT (cx d) r‖ ^ 2) ≤
         ∫ r in Set.Icc (-T) T, ‖paperFT (cx d) r‖ ^ 2 :=
       setIntegral_mono_set hDi.integrableOn (Eventually.of_forall fun _ => sq_nonneg _)
-        (HasSubset.Subset.eventuallyLE (compl_highFrequencies_subset T))
+        (show (highFrequencies T)ᶜ ≤ Set.Icc (-T) T from
+          compl_highFrequencies_subset T).eventuallyLE
     have h2 : (∫ r in Set.Icc (-T) T, ‖paperFT (cx d) r‖ ^ 2) ≤
         ∫ _r in Set.Icc (-T) T, A ^ 2 :=
       setIntegral_mono_on hDi.integrableOn (integrableOn_const (by simp))
         measurableSet_Icc fun r _ =>
-          pow_le_pow_left₀ (norm_nonneg _) (norm_paperFT_le (hfi.sub hgi) r) 2
+          pow_le_pow_left₀ (norm_nonneg _) (norm_paperFT_le d r) 2
     rw [setIntegral_const, smul_eq_mul, Real.volume_real_Icc_of_le (by linarith only [hT])] at h2
     have hpi : 0 < 1 / (2 * Real.pi) := by positivity
     have h3 := mul_le_mul_of_nonneg_left (h1.trans h2) hpi.le
@@ -325,14 +327,15 @@ theorem eventually_integral_sq_sub_le_of_high_tails {l : Filter ℕ} [NeBot l]
     refine eLpNorm_two_le_of_integral_sq_le hM ?_
     have h := integral_sq_sub_le (hU N) (hUc N) (hU (s k)) (hUc (s k)) hT
     have htri : (∫ y, ‖U N y - U (s k) y‖) ≤ 2 * δ := by
-      have hi : Integrable fun y => ‖U N y - F y‖ + ‖U (s k) y - F y‖ :=
-        ((hUi N).sub hF).norm.add (((hUi (s k)).sub hF).norm)
+      have hn1 : Integrable fun y => ‖U N y - F y‖ := ((hUi N).sub hF).norm
+      have hn2 : Integrable fun y => ‖U (s k) y - F y‖ := ((hUi (s k)).sub hF).norm
+      have hi : Integrable fun y => ‖U N y - F y‖ + ‖U (s k) y - F y‖ := hn1.add hn2
       have hle : (∫ y, ‖U N y - U (s k) y‖) ≤ ∫ y, (‖U N y - F y‖ + ‖U (s k) y - F y‖) := by
         refine integral_mono ((hUi N).sub (hUi (s k))).norm hi fun y => ?_
         have hn := norm_sub_le (U N y - F y) (U (s k) y - F y)
         simp only [sub_sub_sub_cancel_right] at hn
         exact hn
-      rw [integral_add ((hUi N).sub hF).norm ((hUi (s k)).sub hF).norm] at hle
+      rw [integral_add hn1 hn2] at hle
       linarith only [hle, hN2, hk2]
     have hpow : (∫ y, ‖U N y - U (s k) y‖) ^ 2 ≤ (2 * δ) ^ 2 :=
       pow_le_pow_left₀ (integral_nonneg fun _ => norm_nonneg _) htri 2
@@ -505,7 +508,9 @@ theorem tendsto_prime_and_pole_of_strong_limit {l : Filter ℕ} {U : ℕ → ℝ
       Tendsto (fun N => coshHalfMoment (U N)) l (𝓝 (coshHalfMoment F)) ∧
       Tendsto (fun N => sinhHalfMoment (U N)) l (𝓝 (sinhHalfMoment F)) := by
   have hroot : Tendsto (fun N => Real.sqrt (exponentialSourceMass fun y => U N y - F y)) l (𝓝 0) := by
-    simpa only [Real.sqrt_zero] using Real.continuous_sqrt.tendsto 0 |>.comp hd
+    have h := (Real.continuous_sqrt.tendsto 0).comp hd
+    rw [Real.sqrt_zero] at h
+    exact h
   let B : ℝ := Real.exp 2 + M
   have hbound : ∀ᶠ N in l, WeightedTwo (U N) ∧ exponentialSourceMass (U N) ≤ B := by
     filter_upwards [hsupp] with N hN
@@ -561,7 +566,6 @@ theorem weilQuad_eq_arch_sub_prime_add_pole {f : ℝ → ℝ} (hf : ContDiff ℝ
     weilQuad f = archForm f - primeSum f +
       (2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2) := by
   rw [weilQuad_eq hf hfc, archForm_eq_levyEnergy hf hfc]
-  ring
 
 /-- **Bounded Weil form and bounded masses keep the high frequencies uniformly small.** -/
 theorem high_tails_of_bounded_weilQuad {l : Filter ℕ} {U : ℕ → ℝ → ℝ}

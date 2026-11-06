@@ -128,8 +128,9 @@ theorem exists_abs_moebiusLogHarmonicPartial_sub_one_le :
     dsimp only [A]
     rw [normalization_abel, normalization_abel, sum_range_add]
     ring
-  have hlim : Tendsto (fun a : ℕ => |A (N + a) - A N|) atTop (𝓝 |1 - A N|) :=
-    ((hA.comp (tendsto_add_atTop_nat N)).sub_const (A N)).abs
+  have hlim : Tendsto (fun a : ℕ => |A (N + a) - A N|) atTop (𝓝 |1 - A N|) := by
+    simpa only [Nat.add_comm] using
+      ((hA.comp (tendsto_add_atTop_nat N)).sub_const (A N)).abs
   have htail' := le_of_tendsto' hlim (fun a => by rw [hdiff]; exact htail a)
   have hm : |deningerHarmonicPartial N| ≤ C₀ / (Real.log N) ^ 4 :=
     (hbound N (by omega)).trans (div_le_div_of_nonneg_left hC₀0 (by positivity)

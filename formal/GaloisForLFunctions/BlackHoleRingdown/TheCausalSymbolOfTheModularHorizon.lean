@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingTopologicalBlackHoleQNMIncidence
-import GaloisForLFunctions.RHTower.LiClockThetaSingleDampingStrip
+import GaloisForLFunctions.RHTower.SpectralBlaschkeMatching
+import GaloisForLFunctions.BlackHoleRingdown.TheEchoTrainOfTheCusp
 
 /-!
 # The causal symbol of the modular horizon
@@ -15,8 +16,9 @@ and is a regular zero. So the symbol selects `ω_-`, and its damping rate at `ρ
 `D + (1-β)/2`, with oscillation `γ/2`.
 
 Damping is universal, equal to `D + 1/4` at every zero, exactly when RH holds; this is a restatement of
-RH, not a route to it. The residue of the scattering coefficient at a simple zero is the excitation
-factor of the mode.
+RH, not a route to it. Each pole has a nonzero leading coefficient, the excitation factor of the mode.
+The symbol is a genuine causal object: up to `s/(s-1)` it is the retarded transform of the damped echo
+train `e^{-Dt} K(t)`.
 -/
 
 open Complex Filter Topology
@@ -154,37 +156,130 @@ theorem qnmMinus_re_xiSpectralPoint (n : ℕ) (q : XiZeroCopy) :
 /-- **Universal damping is RH.**  This restates RH; it is not an input towards it. -/
 theorem riemannHypothesis_iff_universal_damping (D : ℝ) :
     RiemannHypothesis ↔ ∀ q : XiZeroCopy, ringdownRate D (xiSpectralPoint q) = D + 1 / 4 := by
-  rw [riemannHypothesis_iff_forall_xiSpectralPoint_im_eq_zero]
-  refine forall_congr' fun q => ?_
-  rw [ringdownRate]
-  constructor <;> intro h <;> linarith
+  rw [riemannHypothesis_iff_forall_xiSpectralPointSupport_im_eq_zero]
+  constructor
+  · intro h q
+    have him : (xiSpectralPoint q).im = 0 := by
+      rw [xiSpectralPoint_eq_support]
+      exact h q.1
+    rw [ringdownRate, him]
+    ring
+  · intro h ρ
+    have hpos := xi_divisor_pos_on_support ρ
+    have hn : 0 < Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)) := by omega
+    have hq := h ⟨ρ, ⟨0, hn⟩⟩
+    rw [ringdownRate, xiSpectralPoint_eq_support] at hq
+    change D + 1 / 4 + (xiSpectralPointSupport ρ).im / 2 = D + 1 / 4 at hq
+    linarith
 
 /-! ### The excitation factor -/
 
-/-- **The excitation factor.**  At a simple zero of `XiC` the scattering coefficient has residue
-`XiC (z₀ + i) / XiC' z₀`. -/
-theorem tendsto_sub_mul_opticalCuspScattering {z₀ : ℂ} (h0 : XiC z₀ = 0) (hd : deriv XiC z₀ ≠ 0) :
-    Tendsto (fun z => (z - z₀) * thetaCuspHawkingOpticalCuspScattering z) (𝓝[≠] z₀)
-      (𝓝 (XiC (z₀ + I) / deriv XiC z₀)) := by
-  have hder : HasDerivAt XiC (deriv XiC z₀) z₀ := XiC_differentiable.differentiableAt.hasDerivAt
-  have hslope := hasDerivAt_iff_tendsto_slope.mp hder
-  have hinv := hslope.inv₀ hd
-  have hnum : Tendsto (fun z => XiC (z + I)) (𝓝[≠] z₀) (𝓝 (XiC (z₀ + I))) := by
+/-- **The excitation factor.**  At every Xi divisor the scattering coefficient has a pole of some
+finite order `m ≥ 1` with a nonzero leading coefficient. -/
+theorem exists_excitationFactor (q : XiZeroCopy) :
+    ∃ m : ℕ, 1 ≤ m ∧ ∃ A : ℂ, A ≠ 0 ∧
+      Tendsto (fun z => (z - xiSpectralPoint q) ^ m * thetaCuspHawkingOpticalCuspScattering z)
+        (𝓝[≠] (xiSpectralPoint q)) (𝓝 A) := by
+  set z₀ := xiSpectralPoint q with hz₀
+  have hnum : XiC (z₀ + I) ≠ 0 := thetaCuspHawkingOpticalCuspNumerator_xiSpectralPoint_ne_zero q
+  have hzero : XiC z₀ = 0 := XiC_xiSpectralPoint_eq_zero q
+  have han : AnalyticAt ℂ XiC z₀ := XiC_differentiable.analyticAt z₀
+  have htop : analyticOrderAt XiC z₀ ≠ ⊤ := by
+    intro h
+    have hevent : XiC =ᶠ[𝓝 z₀] 0 := analyticOrderAt_eq_top.mp h
+    have hglobal : AnalyticOnNhd ℂ XiC Set.univ := fun z _ => XiC_differentiable.analyticAt z
+    have hall := hglobal.eqOn_zero_of_preconnected_of_eventuallyEq_zero isPreconnected_univ
+      (Set.mem_univ z₀) hevent
+    exact hnum (hall (Set.mem_univ (z₀ + I)))
+  obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp htop
+  obtain ⟨g, hgan, hg0, hfac⟩ := (han.analyticOrderAt_eq_natCast (n := m)).mp hm.symm
+  have hm1 : 1 ≤ m := by
+    rcases Nat.eq_zero_or_pos m with rfl | hpos
+    · have hval := hfac.self_of_nhds
+      rw [pow_zero, one_smul] at hval
+      exact absurd (hval ▸ hzero) hg0
+    · exact hpos
+  refine ⟨m, hm1, XiC (z₀ + I) / g z₀, div_ne_zero hnum hg0, ?_⟩
+  have hnumT : Tendsto (fun z => XiC (z + I)) (𝓝[≠] z₀) (𝓝 (XiC (z₀ + I))) := by
     have hc : Continuous (fun z => XiC (z + I)) :=
       XiC_differentiable.continuous.comp (continuous_id.add continuous_const)
     exact (hc.tendsto z₀).mono_left nhdsWithin_le_nhds
-  have hmul := hnum.mul hinv
-  rw [← div_eq_mul_inv] at hmul
-  refine hmul.congr fun z => ?_
-  rw [slope_def_field, h0, sub_zero, thetaCuspHawkingOpticalCuspScattering,
-    thetaCuspHawkingOpticalCuspNumerator, thetaCuspHawkingOpticalCuspDenominator]
-  rw [inv_div]
-  ring
+  have hgT : Tendsto g (𝓝[≠] z₀) (𝓝 (g z₀)) := hgan.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  refine (hnumT.div hgT hg0).congr' ?_
+  filter_upwards [hfac.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with z hz hne
+  have hsub : z - z₀ ≠ 0 := sub_ne_zero.mpr hne
+  rw [thetaCuspHawkingOpticalCuspScattering, thetaCuspHawkingOpticalCuspNumerator,
+    thetaCuspHawkingOpticalCuspDenominator, hz, smul_eq_mul]
+  have hp : (z - z₀) ^ m ≠ 0 := pow_ne_zero m hsub
+  rw [mul_div_mul_left_comm]
+  field_simp
 
-/-- The excitation factor is nonzero at every simple Xi divisor. -/
-theorem excitationFactor_ne_zero (q : XiZeroCopy) (hd : deriv XiC (xiSpectralPoint q) ≠ 0) :
-    XiC (xiSpectralPoint q + I) / deriv XiC (xiSpectralPoint q) ≠ 0 :=
-  div_ne_zero (thetaCuspHawkingOpticalCuspNumerator_xiSpectralPoint_ne_zero q) hd
+/-! ### The causal transform -/
+
+/-- **The causal symbol is a retarded transform.**  For `Im ω > 1/2 - D`, the retarded transform of the
+damped echo train `e^{-Dt} K(t)` is `Λ(2s-1)/Λ(2s)` at `s = D + 1/2 - iω`, which is the causal symbol
+up to the kinematic factor `s/(s-1)`. -/
+theorem retardedTransform_dampedEchoKernel {D : ℝ} {ω : ℂ} (hω : 1 / 2 < D + ω.im) :
+    (∫ t : ℝ, Complex.exp (I * ω * (t : ℂ)) * ((Real.exp (-D * t) * echoKernel t : ℝ) : ℂ))
+      = ((D + 1 / 2 - I * ω) / (D + 1 / 2 - I * ω - 1)) * causalSymbol D ω := by
+  set s : ℂ := D + 1 / 2 - I * ω with hs
+  have hsre : s.re = D + 1 / 2 + ω.im := by
+    simp [hs, Complex.sub_re, Complex.mul_re]
+  have hs1 : 1 < s.re := by linarith
+  set w : ℂ := D - I * ω with hw
+  have hwre : 1 / 2 < w.re := by
+    have : w.re = D + ω.im := by
+      simp [hw, Complex.sub_re, Complex.mul_re]
+    linarith
+  have hint : (∫ t : ℝ, Complex.exp (I * ω * (t : ℂ)) * ((Real.exp (-D * t) * echoKernel t : ℝ) : ℂ))
+      = ∫ t : ℝ, Complex.exp (-w * (t : ℂ)) * ((echoKernel t : ℝ) : ℂ) := by
+    refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+    simp only
+    push_cast
+    rw [← mul_assoc, ← Complex.exp_add]
+    congr 2
+    rw [hw]
+    ring
+  have hws : w = s - 1 / 2 := by
+    rw [hw, hs]
+    ring
+  have htwo1 : 2 * w = 2 * s - 1 := by
+    rw [hws]
+    ring
+  have htwo2 : 2 * w + 1 = 2 * s := by
+    rw [hws]
+    ring
+  rw [hint, integral_cexp_mul_echoKernel_eq_completed hwre, htwo1, htwo2]
+  have hz : thetaCuspHawkingOpticalCuspResonanceParameter (causalCoordinate D ω) = s :=
+    resonanceParameter_causalCoordinate D ω
+  have hnum : thetaCuspHawkingOpticalCuspNumerator (causalCoordinate D ω) = xi (2 * s - 1) := by
+    rw [thetaCuspHawkingOpticalCuspNumerator_eq_xi, hz]
+  have hden : thetaCuspHawkingOpticalCuspDenominator (causalCoordinate D ω) = xi (2 * s) := by
+    rw [thetaCuspHawkingOpticalCuspDenominator_eq_xi, hz]
+  have hre2 : 1 < (2 * s).re := by
+    simp only [Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
+    linarith
+  have hre21 : 1 < (2 * s - 1).re := by
+    simp only [Complex.sub_re, Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, Complex.one_re,
+      zero_mul, sub_zero]
+    linarith
+  have hne (u : ℂ) (hu : 1 < u.re) : u ≠ 0 ∧ u ≠ 1 := by
+    constructor <;> intro h <;> simp [h] at hu <;> linarith
+  have hx1 := xi_eq_half_mul (hne _ hre21).1 (hne _ hre21).2
+  have hx2 := xi_eq_half_mul (hne _ hre2).1 (hne _ hre2).2
+  have hs0 : s ≠ 0 := fun h => by simp [h] at hs1; linarith
+  have hsm1 : s - 1 ≠ 0 := fun h => by
+    have : s = 1 := sub_eq_zero.mp h
+    simp [this] at hs1
+  have h2m1 : 2 * s - 1 ≠ 0 := (hne _ hre21).1
+  have hΛ : completedRiemannZeta (2 * s) ≠ 0 := by
+    intro h
+    have hG := Complex.Gammaℝ_ne_zero_of_re_pos (by linarith : 0 < (2 * s).re)
+    have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_le_re hre2.le
+    exact hz2 (by rw [riemannZeta_def_of_ne_zero (hne _ hre2).1, h, zero_div])
+  rw [causalSymbol, thetaCuspHawkingOpticalCuspScattering, hnum, hden, hx1, hx2]
+  field_simp
+  ring
 
 end GaloisForLFunctions.BlackHoleRingdown
 
