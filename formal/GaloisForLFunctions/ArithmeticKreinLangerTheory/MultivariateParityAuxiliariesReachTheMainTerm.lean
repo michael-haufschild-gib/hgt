@@ -1582,7 +1582,9 @@ theorem exists_producer_with_quantitative_support :
         _ ≤ (ℓ : ℝ) ^ 3 := pow_le_pow_right₀ hℓ1 (by omega)
     have hlog0 : 0 < Real.log (2 ^ ℓ : ℕ) := lt_of_lt_of_le (by positivity) hlog
     have hden : (ℓ : ℝ) ^ 3 / 8 ≤ (Real.log (2 ^ ℓ : ℕ)) ^ 3 := by
-      convert pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (ℓ : ℝ) / 2) hlog 3 using 1 <;> ring
+      calc (ℓ : ℝ) ^ 3 / 8 = ((ℓ : ℝ) / 2) ^ 3 := by ring
+        _ ≤ (Real.log (2 ^ ℓ : ℕ)) ^ 3 :=
+          pow_le_pow_left₀ (by positivity) hlog 3
     have herror : |_root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) - 1| ≤
         8 * K₃ / (ℓ : ℝ) := by
       calc |_root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) - 1|

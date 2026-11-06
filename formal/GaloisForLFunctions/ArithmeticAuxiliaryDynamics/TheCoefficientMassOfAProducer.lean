@@ -66,16 +66,15 @@ private lemma sum_Icc_sum_divisors (f : ℕ → ℝ) (K : ℕ) :
     have hlast : ((K / (K + 1) : ℕ) : ℝ) * f (K + 1) = 0 := by
       rw [Nat.div_eq_of_lt (Nat.lt_succ_self K)]
       simp
-    rw [hlast, add_zero, ← sum_filter]
-    congr 1
-    refine sum_congr ?_ fun _ _ => rfl
-    ext d
-    simp only [Nat.mem_divisors, mem_filter, mem_Icc]
-    constructor
-    · rintro ⟨hd, _⟩
-      exact ⟨⟨Nat.pos_of_dvd_of_pos hd (Nat.succ_pos K), Nat.le_of_dvd (Nat.succ_pos K) hd⟩, hd⟩
-    · rintro ⟨_, hd⟩
-      exact ⟨hd, Nat.succ_ne_zero K⟩
+    have hfilter : (Icc 1 (K + 1)).filter (· ∣ K + 1) = (K + 1).divisors := by
+      ext d
+      simp only [Nat.mem_divisors, mem_filter, mem_Icc]
+      constructor
+      · rintro ⟨_, hd⟩
+        exact ⟨hd, Nat.succ_ne_zero K⟩
+      · rintro ⟨hd, _⟩
+        exact ⟨⟨Nat.pos_of_dvd_of_pos hd (Nat.succ_pos K), Nat.le_of_dvd (Nat.succ_pos K) hd⟩, hd⟩
+    rw [hlast, add_zero, ← sum_filter, hfilter]
 
 /-- A coefficient is bounded by the divisor sum of the increments. -/
 theorem abs_coeff_le_sum_increment (c : ℕ →₀ ℤ) {n : ℕ} (hn : 0 < n) :
@@ -166,13 +165,15 @@ theorem excess_pos (hP : IsProducer c m B) : 0 < excess c m B := by
 theorem excess_eq_rate (hP : IsProducer c m B) :
     excess c m B = (m : ℝ) * (1 - 1 / (B : ℝ)) * rate c m B := by
   have hd : (m : ℝ) * (1 - 1 / (B : ℝ)) ≠ 0 := (mul_pos hP.m_pos hP.one_sub_pos).ne'
-  rw [excess, rate, normSlope, mul_sub, mul_div_cancel₀ _ hd, mul_one]
+  unfold excess rate normSlope
+  generalize (m : ℝ) * (1 - 1 / (B : ℝ)) = d at hd ⊢
+  rw [mul_sub, mul_div_cancel₀ _ hd, mul_one]
 
 theorem rate_pos (hP : IsProducer c m B) : 0 < rate c m B := by
   have hd : 0 < (m : ℝ) * (1 - 1 / (B : ℝ)) := mul_pos hP.m_pos hP.one_sub_pos
   have h := hP.excess_pos
   rw [hP.excess_eq_rate] at h
-  exact pos_of_mul_pos_of_pos_left h hd.le |> fun h' => h'
+  exact (mul_pos_iff_of_pos_left hd).mp h
 
 /-- The excess is at most `m ε`. -/
 theorem excess_le (hP : IsProducer c m B) : excess c m B ≤ (m : ℝ) * rate c m B := by
@@ -249,7 +250,11 @@ private lemma sum_stepWeight_pred_div_le (hP : IsProducer c m B) (K : ℕ) :
   induction K with
   | zero => simp [stepWeight_zero]
   | succ K ih =>
-    rw [Finset.sum_Icc_succ_top (by omega), Finset.sum_Icc_succ_top (a := 1) (b := K) (by omega)]
+    have hL := Finset.sum_Icc_succ_top (a := 1) (b := K + 1) (by omega)
+      (fun d => (stepWeight c (d - 1) : ℝ) / d)
+    have hR := Finset.sum_Icc_succ_top (a := 1) (b := K) (by omega)
+      (fun r => (stepWeight c r : ℝ) / r)
+    rw [hL, hR]
     have hg : (0 : ℝ) ≤ stepWeight c (K + 1) := by exact_mod_cast hP.nonneg (K + 1)
     have hdiv : (stepWeight c (K + 1 + 1 - 1) : ℝ) / ((K + 1 + 1 : ℕ) : ℝ) ≤
         (stepWeight c (K + 1) : ℝ) / ((K + 1 : ℕ) : ℝ) := by

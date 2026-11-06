@@ -94,10 +94,13 @@ private theorem weightedForm_eq_sub (lam : ℕ → ℝ) (a : SuzukiPositiveApert
           (((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) • ccmPrimeTransportOperator a n := by
       rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun n _ => ?_
-      rw [← add_smul]
-      congr 1
-      push_cast
-      ring
+      have hc : ((lam n : ℝ) : ℂ) = ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) +
+          ((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) := by
+        push_cast
+        ring
+      refine ContinuousLinearMap.ext fun x => ?_
+      rw [add_apply, smul_apply, smul_apply, smul_apply, hc]
+      exact add_smul _ _ _
     have hop : weightedRemainder lam a = ccmRestrictedWeilBoundedRemainder a -
         ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊,
           (((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) • ccmPrimeTransportOperator a n := by
@@ -484,21 +487,18 @@ theorem weightedGroundEnergy_mul_le (lam : ℕ → ℝ) (a : SuzukiPositiveApert
     (weightedRemainder lam a) (weightedRemainder_isSelfAdjoint lam a)
     (ccmArchimedeanFormToAperture_injective a) (denseRange_ccmArchimedeanFormToAperture a) v
 
-/-- **`W_λ` has a ground state on every window, for every weight.** -/
-theorem exists_weightedGroundState (lam : ℕ → ℝ) (a : SuzukiPositiveAperture) :
-    ∃ u : CCMArchimedeanFormDomain a, ccmArchimedeanFormToAperture a u ≠ 0 ∧
-      ∀ v, weightedForm lam a u v = (weightedGroundEnergy lam a : ℂ) *
-        inner ℂ (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v) := by
-  obtain ⟨J, hJ⟩ : ∃ J, J = ccmArchimedeanFormToAperture a := ⟨_, rfl⟩
-  obtain ⟨B, hB⟩ : ∃ B, B = weightedRemainder lam a := ⟨_, rfl⟩
-  have hBs : IsSelfAdjoint B := hB ▸ weightedRemainder_isSelfAdjoint lam a
-  obtain ⟨e, hene, he⟩ := boundedPerturbedFormCovariance_exists_norm_eigenvector J B hBs
-    (hJ ▸ ccmArchimedeanFormToAperture_injective a) (hJ ▸ denseRange_ccmArchimedeanFormToAperture a)
-    (hJ ▸ isCompactOperator_ccmArchimedeanFormToAperture a)
+private theorem exists_groundState_generic {H V : Type*}
+    [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    [NormedAddCommGroup V] [InnerProductSpace ℂ V] [CompleteSpace V] [Nontrivial H]
+    (J : V →L[ℂ] H) (B : H →L[ℂ] H) (hBs : IsSelfAdjoint B) (hJinj : Function.Injective J)
+    (hDense : Dense (J.range : Set H)) (hJc : IsCompactOperator J) :
+    ∃ u : V, J u ≠ 0 ∧ ∀ v, inner ℂ u v + inner ℂ (B (J u)) (J v) =
+      ((‖boundedPerturbedFormCovariance J B hBs‖⁻¹ - boundedPerturbedFormShift B : ℝ) : ℂ) *
+        inner ℂ (J u) (J v) := by
+  obtain ⟨e, hene, he⟩ := boundedPerturbedFormCovariance_exists_norm_eigenvector J B hBs hJinj hDense hJc
   obtain ⟨C, hC⟩ : ∃ C, C = boundedPerturbedFormCovariance J B hBs := ⟨_, rfl⟩
   rw [← hC] at he
-  have hCinj : Function.Injective C := hC ▸ boundedPerturbedFormCovariance_injective J B hBs
-    (hJ ▸ ccmArchimedeanFormToAperture_injective a) (hJ ▸ denseRange_ccmArchimedeanFormToAperture a)
+  have hCinj : Function.Injective C := hC ▸ boundedPerturbedFormCovariance_injective J B hBs hJinj hDense
   have hnorm : ‖C‖ ≠ 0 := by
     intro h0
     rw [h0, Complex.ofReal_zero, zero_smul] at he
@@ -515,7 +515,7 @@ theorem exists_weightedGroundState (lam : ℕ → ℝ) (a : SuzukiPositiveApertu
     rw [hu]
     exact (boundedPerturbedFormRieszEquiv J B hBs).apply_symm_apply (J.adjoint y)
   refine ⟨u, ?_, fun v => ?_⟩
-  · rw [← hJ, hJu]
+  · rw [hJu]
     exact hene
   have hform : inner ℂ y (J v) = inner ℂ u v + inner ℂ (B (J u)) (J v) +
       (boundedPerturbedFormShift B : ℂ) * inner ℂ (J u) (J v) := by
@@ -526,10 +526,19 @@ theorem exists_weightedGroundState (lam : ℕ → ℝ) (a : SuzukiPositiveApertu
     have hsm := inner_smul_left (𝕜 := ℂ) e (J v) (((‖C‖ : ℝ) : ℂ)⁻¹)
     rw [map_inv₀, Complex.conj_ofReal] at hsm
     rw [hy, hJu, hsm]
-  rw [weightedForm, weightedGroundEnergy, ← hJ, ← hB, ← hC]
+  rw [← hC]
   push_cast
   rw [sub_mul, ← hyv, hform]
   ring
+
+/-- **`W_λ` has a ground state on every window, for every weight.** -/
+theorem exists_weightedGroundState (lam : ℕ → ℝ) (a : SuzukiPositiveAperture) :
+    ∃ u : CCMArchimedeanFormDomain a, ccmArchimedeanFormToAperture a u ≠ 0 ∧
+      ∀ v, weightedForm lam a u v = (weightedGroundEnergy lam a : ℂ) *
+        inner ℂ (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v) :=
+  exists_groundState_generic (ccmArchimedeanFormToAperture a) (weightedRemainder lam a)
+    (weightedRemainder_isSelfAdjoint lam a) (ccmArchimedeanFormToAperture_injective a)
+    (denseRange_ccmArchimedeanFormToAperture a) (isCompactOperator_ccmArchimedeanFormToAperture a)
 
 /-- **The ground state of `Q^λ` is bounded and has the exact edge law, for every weight.** -/
 theorem weightedGroundState_bounded_and_edge_law (lam : ℕ → ℝ) (a : SuzukiPositiveAperture) :
@@ -541,17 +550,19 @@ theorem weightedGroundState_bounded_and_edge_law (lam : ℕ → ℝ) (a : Suzuki
           ccmArchimedeanFormToAperture a u)) := by
   obtain ⟨u, hne, hu⟩ := exists_weightedGroundState lam a
   refine ⟨u, hne, hu, ?_⟩
-  obtain ⟨U, hU⟩ : ∃ U, U = ccmArchimedeanFormToAperture a u := ⟨_, rfl⟩
-  have hg : ∀ᵐ x ∂volume, ‖(((weightedGroundEnergy lam a : ℂ) • U : suzukiApertureHilbert a) :
-      RealLineL2) x‖ ≤ 0 + |weightedGroundEnergy lam a| * ‖(U : RealLineL2) x‖ := by
-    filter_upwards [Lp.coeFn_smul (weightedGroundEnergy lam a : ℂ) (U : RealLineL2)] with x hx
-    change ‖((weightedGroundEnergy lam a : ℂ) • (U : RealLineL2) : RealLineL2) x‖ ≤ _
+  have hg : ∀ᵐ x ∂volume, ‖(((weightedGroundEnergy lam a : ℂ) • ccmArchimedeanFormToAperture a u :
+      suzukiApertureHilbert a) : RealLineL2) x‖ ≤ 0 + |weightedGroundEnergy lam a| *
+        ‖(ccmArchimedeanFormToAperture a u : RealLineL2) x‖ := by
+    filter_upwards [Lp.coeFn_smul (weightedGroundEnergy lam a : ℂ)
+      (ccmArchimedeanFormToAperture a u : RealLineL2)] with x hx
+    change ‖((weightedGroundEnergy lam a : ℂ) • (ccmArchimedeanFormToAperture a u : RealLineL2) :
+      RealLineL2) x‖ ≤ _
     rw [hx, Pi.smul_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs, zero_add]
-  have h : ∀ v, weightedForm lam a u v = inner ℂ ((weightedGroundEnergy lam a : ℂ) • U)
-      (ccmArchimedeanFormToAperture a v) := fun v => by
-    rw [hu v, hU, inner_smul_left, Complex.conj_ofReal]
-  rw [← hU] at hg ⊢
-  rw [hU] at hg h ⊢
+  have h : ∀ v, weightedForm lam a u v = inner ℂ ((weightedGroundEnergy lam a : ℂ) •
+      ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v) := fun v =>
+    (hu v).trans ((inner_smul_left (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u)
+      (ccmArchimedeanFormToAperture a v) (weightedGroundEnergy lam a : ℂ)).trans
+        (by rw [Complex.conj_ofReal])).symm
   exact weighted_window_bounded_and_edge_law lam a u _ le_rfl (abs_nonneg _) hg h
 
 /-! ### Margins -/
@@ -586,7 +597,11 @@ theorem HasMargin.le_weightedGroundEnergy {lam : ℕ → ℝ} {a : SuzukiPositiv
   have hm := h.le_weightedForm u
   have he : (weightedForm lam a u u).re = weightedGroundEnergy lam a *
       ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
-    rw [hu u, inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow, ← Complex.ofReal_mul, Complex.ofReal_re]
+    have hself : inner ℂ (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a u) =
+        ((‖ccmArchimedeanFormToAperture a u‖ ^ 2 : ℝ) : ℂ) := by
+      rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (ccmArchimedeanFormToAperture a u)]
+      norm_cast
+    rw [hu u, hself, ← Complex.ofReal_mul, Complex.ofReal_re]
   rw [he] at hm
   have hpos : 0 < ‖ccmArchimedeanFormToAperture a u‖ ^ 2 := by
     have := norm_pos_iff.mpr hne
@@ -616,10 +631,14 @@ private theorem weightedRiesz₀_isSelfAdjoint (lam : ℕ → ℝ) (a : SuzukiPo
   have hB := (ContinuousLinearMap.isSelfAdjoint_iff_isSymmetric.mp
     (weightedRemainder_isSelfAdjoint lam a))
   change inner ℂ (weightedRiesz₀ lam a u) v = inner ℂ u (weightedRiesz₀ lam a v)
-  rw [inner_weightedRiesz₀, ← inner_conj_symm u, inner_weightedRiesz₀]
-  simp only [weightedForm, map_add, inner_conj_symm]
+  have h2 : inner ℂ u (weightedRiesz₀ lam a v) = inner ℂ u v +
+      inner ℂ (ccmArchimedeanFormToAperture a u)
+        (weightedRemainder lam a (ccmArchimedeanFormToAperture a v)) := by
+    change inner ℂ u (v + (ccmArchimedeanFormToAperture a).adjoint
+      (weightedRemainder lam a (ccmArchimedeanFormToAperture a v))) = _
+    rw [inner_add_right, ContinuousLinearMap.adjoint_inner_right]
+  rw [inner_weightedRiesz₀, h2, weightedForm]
   congr 1
-  rw [inner_conj_symm]
   exact hB _ _
 
 /-- Inside the cone the Riesz operator has a lower bound. -/
@@ -631,13 +650,15 @@ private theorem norm_weightedRiesz₀_lower (lam : ℕ → ℝ) (a : SuzukiPosit
   obtain ⟨β, hβ⟩ : ∃ β, β = ‖weightedRemainder lam a‖ := ⟨_, rfl⟩
   rw [← hμd] at hμ ⊢
   rw [← hβ]
-  have hβ0 : 0 ≤ β := hβ ▸ norm_nonneg _
+  have hβ0 : 0 ≤ β := by
+    rw [hβ]
+    exact ContinuousLinearMap.opNorm_nonneg _
   obtain ⟨Q, hQ⟩ : ∃ Q, Q = (weightedForm lam a u u).re := ⟨_, rfl⟩
   have hfloor := weightedGroundEnergy_mul_le lam a u
   rw [← hμd, ← hQ] at hfloor
   have hupper : Q ≤ ‖weightedRiesz₀ lam a u‖ * ‖u‖ := by
     rw [hQ, ← inner_weightedRiesz₀]
-    exact (Complex.re_le_norm _).trans (norm_inner_le_norm _ _)
+    exact (Complex.re_le_norm _).trans (norm_inner_le_norm (𝕜 := ℂ) (E := CCMArchimedeanFormDomain a) _ _)
   obtain ⟨f, hf⟩ : ∃ f, f = ccmArchimedeanFormToAperture a u := ⟨_, rfl⟩
   rw [← hf] at hfloor
   have hlower : ‖u‖ ^ 2 - β * ‖f‖ ^ 2 ≤ Q := by
@@ -648,7 +669,8 @@ private theorem norm_weightedRiesz₀_lower (lam : ℕ → ℝ) (a : SuzukiPosit
     have h2 : |(inner ℂ (weightedRemainder lam a f) f).re| ≤ β * ‖f‖ ^ 2 := by
       calc
         _ ≤ ‖inner ℂ (weightedRemainder lam a f) f‖ := Complex.abs_re_le_norm _
-        _ ≤ ‖weightedRemainder lam a f‖ * ‖f‖ := norm_inner_le_norm _ _
+        _ ≤ ‖weightedRemainder lam a f‖ * ‖f‖ :=
+          norm_inner_le_norm (𝕜 := ℂ) (E := suzukiApertureHilbert a) _ _
         _ ≤ (‖weightedRemainder lam a‖ * ‖f‖) * ‖f‖ :=
           mul_le_mul_of_nonneg_right (ContinuousLinearMap.le_opNorm _ _) (norm_nonneg _)
         _ = _ := by rw [hβ]; ring
@@ -702,8 +724,8 @@ theorem exists_weightedRiesz (lam : ℕ → ℝ) (a : SuzukiPositiveAperture)
   obtain ⟨u, hu⟩ := hmem
   refine ⟨u, fun v => ?_⟩
   rw [← inner_weightedRiesz₀, ← hR]
-  change inner ℂ (R u) v = _
-  rw [hu, ContinuousLinearMap.adjoint_inner_left]
+  have hu' : R u = (ccmArchimedeanFormToAperture a).adjoint g := hu
+  rw [hu', ContinuousLinearMap.adjoint_inner_left]
 
 /-- **Riesz vectors of bounded forcing inside the cone are bounded and have the edge law.** -/
 theorem weightedRiesz_bounded_and_edge_law (lam : ℕ → ℝ) (a : SuzukiPositiveAperture)

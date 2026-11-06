@@ -263,10 +263,11 @@ theorem exists_psi_le_double_exp_producer_cost :
   have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
   have hlx : (1 / 2 : ℝ) ≤ Real.log x :=
     hl2.trans (Real.log_le_log (by norm_num) hx)
+  have hlx0 : 0 ≤ Real.log x := by linarith only [hlx]
   have hl20 : 0 < Real.log 2 := by linarith
   have hquot : Real.log x / Real.log 2 ≤ 2 * Real.log x := by
     rw [div_le_iff₀ hl20]
-    nlinarith
+    nlinarith only [mul_le_mul_of_nonneg_right hl2 hlx0]
   have hfirst : 1 + Real.log x ≤ 3 * Real.log x := by linarith
   have hsecond : 1 + Real.log x / Real.log 2 ≤ 4 * Real.log x := by linarith
   have hcost := producerCost_le_double_exp hK hε hε1

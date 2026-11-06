@@ -139,7 +139,7 @@ theorem qnmMinus_im_eq_neg_ringdownRate (n : ℕ) (z : ℂ) :
 theorem ringdownRate_xiSpectralPoint (D : ℝ) (q : XiZeroCopy) :
     ringdownRate D (xiSpectralPoint q) = D + (1 - (q.1 : ℂ).re) / 2 := by
   have him : (xiSpectralPoint q).im = 1 / 2 - (q.1 : ℂ).re := by
-    simp [xiSpectralPoint] <;> ring
+    simp [xiSpectralPoint]
   rw [ringdownRate, him]
   ring
 
@@ -151,7 +151,8 @@ theorem qnmMinus_re_xiSpectralPoint (n : ℕ) (q : XiZeroCopy) :
   have hre : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
     simp [xiSpectralPoint]
   simp [thetaCuspHawkingTopologicalBlackHoleQNMMinus,
-    thetaCuspHawkingTopologicalBlackHoleAngularMomentum, Complex.div_ofNat_re, hre] <;> ring
+    thetaCuspHawkingTopologicalBlackHoleAngularMomentum, Complex.div_ofNat_re, hre]
+  ring
 
 /-- **Universal damping is RH.**  This restates RH; it is not an input towards it. -/
 theorem riemannHypothesis_iff_universal_damping (D : ℝ) :
@@ -224,7 +225,7 @@ theorem retardedTransform_dampedEchoKernel {D : ℝ} {ω : ℂ} (hω : 1 / 2 < D
       = ((D + 1 / 2 - I * ω) / (D + 1 / 2 - I * ω - 1)) * causalSymbol D ω := by
   set s : ℂ := D + 1 / 2 - I * ω with hs
   have hsre : s.re = D + 1 / 2 + ω.im := by
-    simp [hs] <;> ring
+    simp [hs]
   have hs1 : 1 < s.re := by linarith
   set w : ℂ := D - I * ω with hw
   have hwre : 1 / 2 < w.re := by
@@ -278,7 +279,8 @@ theorem retardedTransform_dampedEchoKernel {D : ℝ} {ω : ℂ} (hω : 1 / 2 < D
     have hz2 : riemannZeta (2 * s) ≠ 0 := riemannZeta_ne_zero_of_one_le_re hre2.le
     exact hz2 (by rw [riemannZeta_def_of_ne_zero (hne _ hre2).1, h, zero_div])
   rw [causalSymbol, thetaCuspHawkingOpticalCuspScattering, hnum, hden, hx1, hx2]
-  field_simp <;> ring
+  field_simp
+  ring
 
 end GaloisForLFunctions.BlackHoleRingdown
 
