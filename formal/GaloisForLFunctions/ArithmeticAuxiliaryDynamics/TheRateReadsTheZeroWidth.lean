@@ -7,9 +7,8 @@ import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 `HasRate f` says that for all large `K` some producer on an alphabet in `[1, K]` has rate at most
 `f(K)`. The rate law turns such a family into a zero-free region, in the only way the two can meet.
 
-* A rate `K^{-a}`, `0 < a ≤ 1`, gives `Re ρ ≤ 1 − a/2` for every zero. So any polynomial rate gives a
-  zero-free strip, and rates `K^{-a}` for all `a < 1` give the Riemann hypothesis. The floor of the
-  slope stops at `1/(K log K)`, so `a = 1` is the end of the scale.
+* A rate `K^{-a}`, `0 < a ≤ 1`, gives `Re ρ ≤ 1 − a/2` for every zero, so any polynomial rate gives
+  a zero-free strip. The mean-value law sharpens this to `1 − 2a/3`.
 * A rate `exp(−(log K)^α)`, `0 < α ≤ 1`, gives
   `Re ρ ≤ 1 − c (log ‖ρ‖)^{1 − 1/α}`. At `α = 3/5` this is the Vinogradov–Korobov exponent `2/3`.
 

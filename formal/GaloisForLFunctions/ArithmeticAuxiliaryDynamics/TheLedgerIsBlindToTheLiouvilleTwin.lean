@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheCoefficientMassOfAProducer
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheLiouvilleTwinIsARatioOfHorizonTorsions
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.TheBatteryOfTheCount
 
 /-!
 # The ledger is blind to the Liouville twin
@@ -34,22 +35,14 @@ theorem IsProducer.abs_ledger_twin_le {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsP
     ArithmeticOfSquareRootPrecision.liouvilleWeight d with hW
   have hW0 : ∀ d, 0 ≤ W d := by
     intro d
-    simp only [hW, ArithmeticOfSquareRootPrecision.vonMangoldtWeight,
-      ArithmeticOfSquareRootPrecision.liouvilleWeight]
-    have hΛ : 0 ≤ ArithmeticFunction.vonMangoldt d := ArithmeticFunction.vonMangoldt_nonneg
-    have hlam : |(ArithmeticFunction.liouville d : ℝ)| ≤ 1 := by
-      rcases eq_or_ne d 0 with rfl | hd
-      · simp
-      · rw [ArithmeticFunction.liouville_apply hd]
-        rcases neg_one_pow_eq_or ℤ (ArithmeticFunction.cardFactors d) with h | h <;> rw [h] <;> simp
-    have := (abs_le.mp hlam).1
-    nlinarith
+    have h := (ArithmeticOfSquareRootPrecision.liouvilleWeight_add_vonMangoldt_le d).1
+    simp only [hW, ArithmeticOfSquareRootPrecision.vonMangoldtWeight]
+    linarith
   have hsum : ∑ d ∈ Ioc 0 n, W d = 2 * Chebyshev.psi (Nat.sqrt n) := by
     have h := ArithmeticOfSquareRootPrecision.partialSum_liouvilleWeight_eq n
     have hψ : ∑ d ∈ Ioc 0 n, ArithmeticOfSquareRootPrecision.vonMangoldtWeight d =
         Chebyshev.psi n := by
       rw [Chebyshev.psi, Nat.floor_natCast]
-      rfl
     simp only [ArithmeticOfSquareRootPrecision.partialSum, Nat.floor_natCast] at h
     simp only [hW, sum_add_distrib]
     linarith

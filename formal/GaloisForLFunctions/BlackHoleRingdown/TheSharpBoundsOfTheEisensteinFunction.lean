@@ -251,6 +251,7 @@ def tailPower (R : ℝ) (B₁ : ℕ) : ℕ := B₁ + (⌈3 * R + 1⌉₊ + 2 + 2
 
 include hY₀ hC₁ hB hu hY
 
+omit hY₀ hC₁ in
 theorem norm_mode_sharp (N : ℕ) :
     ‖d4BMSignedWhittakerMode negative N u x Y‖ ≤
       Real.sqrt (2 * Y₀) * sharpScale C₁ B₁ Y₀ |u.im| N := by
@@ -265,7 +266,7 @@ theorem norm_tail_sharp :
       Real.exp (-(Real.pi * |u.im| / 2)) :=
   norm_tsum_modeCoefficient_le_sharp hY₀ (Real.sqrt_nonneg _) hC₁ hu fun N => by
     have hb := sharpScale_nonneg hC₁ B₁ Y₀ (abs_nonneg u.im) N
-    have h := norm_mode_sharp hY₀ hC₁ hB negative x hu hY N
+    have h := norm_mode_sharp hB negative x hu hY N
     have hw := mul_le_mul_sq_succ (Real.sqrt_nonneg (2 * Y₀)) hb N (k := 0) (by norm_num)
     rw [pow_zero, one_mul] at hw
     exact h.trans hw
@@ -276,7 +277,7 @@ theorem norm_tailX_sharp :
   norm_tsum_modeCoefficient_le_sharp hY₀ (by positivity) hC₁ hu fun N => by
     have hb := sharpScale_nonneg hC₁ B₁ Y₀ (abs_nonneg u.im) N
     rw [d4BMSignedWhittakerModeHorizontalFirstJet, norm_mul, norm_signedFourierRate]
-    have h := mul_le_mul_of_nonneg_left (norm_mode_sharp hY₀ hC₁ hB negative x hu hY N)
+    have h := mul_le_mul_of_nonneg_left (norm_mode_sharp hB negative x hu hY N)
       (by positivity : 0 ≤ 2 * Real.pi * ((N : ℝ) + 1))
     refine h.trans ?_
     have hw := mul_le_mul_sq_succ (by positivity : 0 ≤ 2 * Real.pi * Real.sqrt (2 * Y₀)) hb N
@@ -291,9 +292,10 @@ theorem norm_tailXX_sharp :
   norm_tsum_modeCoefficient_le_sharp hY₀ (by positivity) hC₁ hu fun N => by
     have hb := sharpScale_nonneg hC₁ B₁ Y₀ (abs_nonneg u.im) N
     rw [d4BMSignedWhittakerModeHorizontalSecondJet, norm_mul, norm_pow, norm_signedFourierRate]
-    have h := mul_le_mul_of_nonneg_left (norm_mode_sharp hY₀ hC₁ hB negative x hu hY N)
+    have h := mul_le_mul_of_nonneg_left (norm_mode_sharp hB negative x hu hY N)
       (by positivity : 0 ≤ (2 * Real.pi * ((N : ℝ) + 1)) ^ 2)
     refine h.trans (le_of_eq ?_)
+    rw [sharpScale]
     ring
 
 theorem norm_tailY_sharp :
