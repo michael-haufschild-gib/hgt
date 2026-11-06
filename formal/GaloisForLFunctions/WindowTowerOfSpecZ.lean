@@ -85,3 +85,4 @@ payment of short windows; the Arakelov bundle of a window. See
 `WindowTowerOfSpecZ/README.md`.
 -/
 import GaloisForLFunctions.WindowTowerOfSpecZ.FiniteTemplatesEndAtTwentySevenFifths
+import GaloisForLFunctions.WindowTowerOfSpecZ.FiniteTemplatesBelowTwentySevenFifths

@@ -132,7 +132,7 @@ theorem toeplitzForm_nonneg_of_pos (hκ : IsEvenSeq κ) (hE : ∀ n, 0 < levinso
     by_cases hx : x = 0
     · subst hx
       exact (toeplitzForm_zero_vector κ (m + 1)).ge
-    · exact ((toeplitzForm_posDef_iff hκ m).mpr fun k _ => hE k).2 x hx |>.le
+    · exact (((toeplitzForm_posDef_iff hκ m).mpr fun k _ => hE k) x hx).le
 
 /-- **RH places every lattice of `Spec ℤ` at the threshold of its slack family.** -/
 theorem riemannHypothesis_iff_every_lattice_is_at_threshold :
@@ -184,7 +184,6 @@ theorem reflCoeff_one_eq (κ : ℤ → ℝ) (h0 : κ 0 ≠ 0) (h1 : κ 0 ^ 2 - �
     field_simp at h
     linarith
   field_simp
-  ring
 
 end
 

@@ -31,9 +31,19 @@ Prove the signed cycle-index identity with fixed points included. Equivalently, 
 Newton recurrence for the sign projection with the derivative recurrence from `E'/E`.
 Analytic coefficient positivity alone does not identify that projection.
 
+An alternative bridge is the endpoint product
+`E(z)=Π_q(1+z α_q/M)`. Pairing the centered Hadamard products at opposite arguments cancels
+the genus-one exponentials. Taking the quotient at square coordinates `1/4+z/M` and `1/4`
+then gives these exact factors. Absolute summability permits expansion over finite subsets.
+The remaining combinatorial identification is the signed fixed-word sum: repeated colors
+cancel, and injective words give `n!` times the subset mass of cardinality `n`.
+
 Even complete column positivity leaves mixed Young shapes and full Gram positivity open.
 No RH conclusion follows from this subfamily.
 
 ## Lean status
 
-Analytic proof drafted; direct checking pending. Cycle-index bridge remains open.
+`RHTower/Representation/EndpointExteriorSeries.lean` passes its direct leaf check and is
+wired into the umbrella. It proves the center derivative formula, affine Taylor positivity,
+`nonnegTaylorAtZero_xiEndpointExteriorSeries`, `xiEndpointExteriorSeries_zero`, and
+`hasDerivAt_xiEndpointExteriorSeries_zero`. Product and cycle-index identifications remain open.

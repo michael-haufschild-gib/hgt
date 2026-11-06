@@ -2018,7 +2018,7 @@ theorem tendsto_artanh_anchorReflection_left_kick (b : PrecontactAperture) :
   ring
 
 /-- The potential differs from the hyperbolic angle by the integral of the drift. -/
-private theorem canonicalPotential_sub_eq {base x y : ℝ} (hb : base ∈ precontactSet)
+theorem canonicalPotential_sub_eq {base x y : ℝ} (hb : base ∈ precontactSet)
     (hx : x ∈ precontactSet) (hy : y ∈ precontactSet) :
     canonicalPotential base y - canonicalPotential base x =
       Real.artanh (anchorReflection y) - Real.artanh (anchorReflection x) +
