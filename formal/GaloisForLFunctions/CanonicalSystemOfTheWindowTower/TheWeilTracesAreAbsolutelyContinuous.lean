@@ -217,7 +217,7 @@ private theorem integrable_kernel_readout (f : LogarithmicHalfLineL2) {A : ℝ}
     ((measurable_logarithmicBackwardConvolution
       (Lp.stronglyMeasurable (f : RealLineL2)).measurable).comp
         (measurable_const.sub measurable_id)).aestronglyMeasurable
-    (Eventually.of_forall fun s => norm_logarithmicBackwardConvolution_le hf _)
+    (Eventually.of_forall fun _ => norm_logarithmicBackwardConvolution_le hf _)
 
 /-- The renewal mass is additive across a level. -/
 theorem logarithmicRenewalMass_add {y τ : ℝ} (hy : 0 ≤ y) (hτ : 0 ≤ τ) :
@@ -285,8 +285,7 @@ theorem norm_readout_shift_sub_le (f₁ f₂ : LogarithmicHalfLineL2) (ρ : ℂ)
     (hp : 0 ≤ p) (h₁ : ∀ᵐ x ∂volume, ‖(f₁ : RealLineL2) x‖ ≤ A₁)
     (h₂ : ∀ᵐ x ∂volume, ‖(f₂ : RealLineL2) x‖ ≤ A₂) {g : ℝ → ℝ} (hgm : Measurable g)
     {G : ℝ} (hgG : ∀ y, |g y| ≤ G)
-    (hdom : ∀ᵐ w ∂volume, 0 ≤ w → ‖(f₂ : RealLineL2) (w + τ) - ρ * (f₁ : RealLineL2) w‖ ≤ g w + B)
-    (hg0 : ∀ y, 0 ≤ g y) (hB : 0 ≤ B) :
+    (hdom : ∀ᵐ w ∂volume, 0 ≤ w → ‖(f₂ : RealLineL2) (w + τ) - ρ * (f₁ : RealLineL2) w‖ ≤ g w + B) :
     ‖logarithmicBackwardConvolution (f₂ : RealLineL2) (p + τ) -
         ρ * logarithmicBackwardConvolution (f₁ : RealLineL2) p‖ ≤ levelMass g p + B := by
   have hk (q : ℝ) : Integrable (fun y : ℝ => (v (y - q) : ℂ)) :=
@@ -369,7 +368,7 @@ theorem norm_green_shift_le_level (f₁ f₂ : LogarithmicHalfLineL2) (ρ : ℂ)
       exact add_le_add (levelMass_le hgm hg0 (fun y => (le_abs_self _).trans (hgG y)) _) le_rfl
   refine setIntegral_mono_on hi₁ hi₂ measurableSet_Ioc fun s hs => ?_
   exact mul_le_mul_of_nonneg_left (norm_readout_shift_sub_le f₁ f₂ ρ (sub_nonneg.mpr hs.2) h₁ h₂ hgm hgG
-    hdom hg0 hB) (logarithmicCausalKernel_nonneg _)
+    hdom) (logarithmicCausalKernel_nonneg _)
 
 /-- Summing causal integrals of nonnegative levels over their domains. -/
 theorem sum_setIntegral_kernel_le (S : Finset ℕ) (E : ℕ → ℝ → ℝ) (x : ℕ → ℝ)
@@ -406,7 +405,7 @@ theorem sum_setIntegral_kernel_disjoint_le (S : Finset ℕ) (α β : ℕ → ℝ
   have hpt (i : ℕ) (hi : i ∈ S) : ∫ s in Ioc (α i) (β i), v s ≤
       (∫ s in Ioc (α i) (β i) ∩ Ioc 0 η, v s) + (β i - α i) / η := by
     have hu : Ioc (α i) (β i) = (Ioc (α i) (β i) ∩ Ioc 0 η) ∪ (Ioc (α i) (β i) \ Ioc 0 η) :=
-      (Set.inter_union_diff _ _).symm
+      (Set.inter_union_sdiff _ _).symm
     conv_lhs => rw [hu]
     rw [setIntegral_union (Set.disjoint_sdiff_right.mono_left Set.inter_subset_right)
       (measurableSet_Ioc.diff measurableSet_Ioc) hint.integrableOn hint.integrableOn]
@@ -423,7 +422,7 @@ theorem sum_setIntegral_kernel_disjoint_le (S : Finset ℕ) (α β : ℕ → ℝ
           (logarithmicCausalKernel_le_inv hη)
     have hm : MeasurableSet (Ioc (α i) (β i) \ Ioc 0 η) := measurableSet_Ioc.diff measurableSet_Ioc
     have hfin : volume (Ioc (α i) (β i) \ Ioc 0 η) < ⊤ :=
-      (measure_mono diff_subset).trans_lt (by simp)
+      (measure_mono sdiff_subset).trans_lt (by simp)
     calc
       _ ≤ ∫ _ in Ioc (α i) (β i) \ Ioc 0 η, 1 / η :=
         setIntegral_mono_on hint.integrableOn (integrableOn_const hfin.ne) hm hb
@@ -431,7 +430,7 @@ theorem sum_setIntegral_kernel_disjoint_le (S : Finset ℕ) (α β : ℕ → ℝ
         rw [setIntegral_const, smul_eq_mul, measureReal_def]
       _ ≤ (volume (Ioc (α i) (β i))).toReal * (1 / η) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-        exact ENNReal.toReal_mono (by simp) (measure_mono diff_subset)
+        exact ENNReal.toReal_mono (by simp) (measure_mono sdiff_subset)
       _ = _ := by
         rw [Real.volume_Ioc, ENNReal.toReal_ofReal (sub_nonneg.mpr (hαβ i hi))]
         ring
@@ -443,7 +442,7 @@ theorem sum_setIntegral_kernel_disjoint_le (S : Finset ℕ) (α β : ℕ → ℝ
     unfold logarithmicRenewalMass
     exact setIntegral_mono_set hint.integrableOn
       (Eventually.of_forall logarithmicCausalKernel_nonneg)
-      (HasSubset.Subset.eventuallyLE (iUnion₂_subset fun i _ => inter_subset_right))
+      (LE.le.eventuallyLE (iUnion₂_subset fun i _ => inter_subset_right))
   calc
     _ ≤ ∑ i ∈ S, ((∫ s in Ioc (α i) (β i) ∩ Ioc 0 η, v s) + (β i - α i) / η) :=
       Finset.sum_le_sum hpt
@@ -749,7 +748,7 @@ theorem increment_right_le {a b c : PrecontactAperture} (hab : a.1.1 ≤ b.1.1) 
       unfold logarithmicRenewalMass
       exact setIntegral_mono_set logarithmicCausalKernel_mass_one.1.integrableOn
         (Eventually.of_forall logarithmicCausalKernel_nonneg)
-        (HasSubset.Subset.eventuallyLE (Ioc_subset_Ioc_left hy0.le))
+        (LE.le.eventuallyLE (Ioc_subset_Ioc_left hy0.le))
 
 /-- The readout of the trace increment in the left chart. -/
 theorem trace_increment_le {a b c : PrecontactAperture} (hab : a.1.1 ≤ b.1.1) (hbc : b.1.1 ≤ c.1.1)
@@ -764,13 +763,9 @@ theorem trace_increment_le {a b c : PrecontactAperture} (hab : a.1.1 ≤ b.1.1) 
   have hZb : ∀ x, 2 * b.1.1 ≤ x → Z.toFun x = 0 := fun x hx => hZa x (by linarith only [hx, hab])
   obtain ⟨G, hG⟩ := chartMajorant_bound (Finset.Icc 2 ⌊Real.exp (2 * c.1.1)⌋₊) hab z
   have hS := continuous_chartIncrement a b z
-  have hIn : 0 ≤ ∫ r, ‖chartIncrement a b z r‖ := integral_nonneg fun _ => norm_nonneg _
-  have hc := chartBoundedConstant_nonneg (2 * c.1.1) (2 * c.1.1)
-  have hlip : 0 ≤ Z.lip / 2 := div_nonneg Z.lip_nonneg (by norm_num)
   have hmain := norm_readout_shift_sub_le (chartForcing Z a z) (chartForcing Z b z)
     (chartPhase z (b.1.1 - a.1.1)) (τ := 0) (p := 0) le_rfl h₁ h₂
     (continuous_chartMajorant _ hS).measurable hG (forcing_diff_left hab hbc Z hZa hZc z)
-    (chartMajorant_nonneg _ _) (mul_nonneg (add_nonneg hc hlip) hIn)
   rw [add_zero, logarithmicBackwardConvolution_chartForcing_zero Z b hZb hκ hone z,
     logarithmicBackwardConvolution_chartForcing_zero Z a hZa hκ hone z] at hmain
   exact hmain

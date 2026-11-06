@@ -1,8 +1,8 @@
 # A gap for integrable functional-equation defects
 
 - **ID:** integrable-fe-defect-gap
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** Γ74
 - **Statement:** A countable Beurling system satisfying the existing Hamburger strip conditions and `Σ|x|⁻³/²<∞`, with integrable uncompleted FE defect `g` and `6400‖g‖₁≤1`, has exactly the positive integers as generalized integers, each once, and exactly the rational primes as prime labels.
 
@@ -29,7 +29,7 @@ Only the unique atoms near 1 and 2 can contribute to the unit tent at 1. Their c
 The tent FE error is at most `8M≤1/16`, hence `0≤ρ≤19/16` and `ρ²<2`.
 The exact integer measure follows. Existing categorical Beurling rigidity then identifies the zeta function and gives a norm-preserving bijection of prime labels with rational primes.
 
-## Lean target
+## Lean
 
 `ArithmeticPositiveDuality/SmallIntegrableDefectsForceTheRationalPrimes.lean`:
 `beurlingSystem_rigidity_of_small_critical_line_defect`.
@@ -38,4 +38,8 @@ Supporting proofs: `IntegralSpectraHaveAPoleResidueGap`, `SmallDefectsBoundThePo
 `BeurlingNormsHaveAnOrderedIntegralSpectrum`, and the radial pole-reality lemma in
 `IntegrableDefectsAtUnitDensityAreRigid`.
 
-Formalization is in progress; no completed Lean claim or ledger status change yet.
+The full residue classification is `pole_residue_gap_of_integrable_theta_defect`.
+
+Direct `lake --old env lean GaloisForLFunctions/ArithmeticPositiveDuality/SmallIntegrableDefectsForceTheRationalPrimes.lean` check passed without warnings. All supporting modules passed Lean. Wired into `ArithmeticPositiveDuality.lean`.
+
+Axiom checks skipped as requested. No ledger status change.

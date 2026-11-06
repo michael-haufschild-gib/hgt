@@ -9,7 +9,8 @@ For `δ, M` and `A = δ/(64M²) · log T`, outside a set of heights of measure `
 form is positive for every real test `F₀ ∈ C²_c([−A, A])` of shape `‖F₀‖²_A ≤ M² A ∫ F₀²`:
 
 `Q_γ(F₀) = Q(F₀ cos γ·) + Q(F₀ sin γ·) > 0`
-(`exists_weilPositive_quadrature`, and for a fixed profile `g(·/A)` the constant `M` is scale invariant).
+(`exists_weilPositive_quadrature`; for dilated profiles `g(·/A)` the constant `M` is scale invariant,
+`exists_weilPositive_dilatedProfile`).
 
 The aperture is a fixed multiple of `log T`, the exceptional set does not depend on the test, and no
 information on the zeros enters.
@@ -433,6 +434,7 @@ theorem exists_bad_heights {T δ R : ℝ} {N : ℕ} (hN : 1 ≤ N) (hNT : (N : �
     positivity
   refine ⟨{γ | γ ∈ Icc T (2 * T) ∧ y ≤ primeField N R γ}, ?_, ?_⟩
   · refine (volume_primeField_ge_le hN hNT hR hy0).trans (ENNReal.ofReal_le_ofReal (le_of_eq ?_))
+    change T * κ * (π / R) / y = δ * T
     rw [hy]
     have hπ := Real.pi_ne_zero
     field_simp
@@ -465,6 +467,96 @@ theorem envelopeWindowNorm_le_shapeNorm {R : ℝ} (hR : 1 ≤ R) (F₀ : ℝ →
   have hR2 : 1 ≤ R ^ 2 := one_le_pow₀ hR
   nlinarith
 
+/-- The length of the polynomial at aperture `A`: `N = ⌈e^{2A}⌉` is at most `T` once
+`2A + 1 ≤ log T`, and `log N ≤ 2A + 1`. -/
+theorem exists_polynomial_length {A T : ℝ} (hA : 0 ≤ A) (hT : 0 < T) (hAT : 2 * A + 1 ≤ Real.log T) :
+    ∃ N : ℕ, 1 ≤ N ∧ Real.exp (2 * A) ≤ N ∧ (N : ℝ) ≤ T ∧ Real.log N ≤ 2 * A + 1 := by
+  have h1 : (1 : ℝ) ≤ Real.exp (2 * A) := Real.one_le_exp (by positivity)
+  have hNA : Real.exp (2 * A) ≤ (⌈Real.exp (2 * A)⌉₊ : ℝ) := Nat.le_ceil _
+  have hNlt : (⌈Real.exp (2 * A)⌉₊ : ℝ) < Real.exp (2 * A) + 1 :=
+    Nat.ceil_lt_add_one (Real.exp_pos _).le
+  have hN1 : 1 ≤ ⌈Real.exp (2 * A)⌉₊ := by exact_mod_cast h1.trans hNA
+  have hN0 : (0 : ℝ) < (⌈Real.exp (2 * A)⌉₊ : ℝ) := by exact_mod_cast hN1
+  have hNle2 : (⌈Real.exp (2 * A)⌉₊ : ℝ) ≤ 2 * Real.exp (2 * A) := by linarith
+  have hlog2 : Real.log 2 ≤ 1 := by
+    have := Real.log_two_lt_d9
+    linarith
+  have hexp2 : 2 * Real.exp (2 * A) = Real.exp (Real.log 2 + 2 * A) := by
+    rw [Real.exp_add, Real.exp_log (by norm_num)]
+  refine ⟨_, hN1, hNA, ?_, ?_⟩
+  · refine hNle2.trans ?_
+    rw [hexp2]
+    have h := Real.exp_le_exp.mpr (show Real.log 2 + 2 * A ≤ Real.log T by linarith)
+    rwa [Real.exp_log hT] at h
+  · have h := Real.log_le_log hN0 hNle2
+    rw [hexp2, Real.log_exp] at h
+    linarith
+
+/-- The pole term is at most `S²` at height `γ ≥ T ≥ 2`, when `e^A ≤ T` and `E ≤ S`. -/
+theorem pole_term_le {T γ A E S : ℝ} (hT : 2 ≤ T) (hγ : T ≤ γ) (hexpA : Real.exp A ≤ T)
+    (hE0 : 0 ≤ E) (hES : E ≤ S) :
+    4 * (Real.exp (A / 2) * E / (1 + γ ^ 2)) ^ 2 ≤ S ^ 2 := by
+  have hT0 : 0 < T := by linarith
+  have hS2 : 0 ≤ S ^ 2 := sq_nonneg S
+  have h1γ : T ^ 2 ≤ 1 + γ ^ 2 := by nlinarith
+  have hT2 : 0 < T ^ 2 := by positivity
+  have hexp2 : Real.exp (A / 2) ^ 2 = Real.exp A := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    push_cast
+    ring
+  have hnum : (Real.exp (A / 2) * E) ^ 2 ≤ T * S ^ 2 := by
+    rw [mul_pow, hexp2]
+    exact mul_le_mul hexpA (pow_le_pow_left₀ hE0 hES 2) (sq_nonneg _) hT0.le
+  have hden : (T ^ 2) ^ 2 ≤ (1 + γ ^ 2) ^ 2 := pow_le_pow_left₀ hT2.le h1γ 2
+  have hfrac : (Real.exp (A / 2) * E / (1 + γ ^ 2)) ^ 2 ≤ T * S ^ 2 / (T ^ 2) ^ 2 := by
+    rw [div_pow]
+    exact div_le_div₀ (by positivity) hnum (by positivity) hden
+  have hT4 : T * S ^ 2 / (T ^ 2) ^ 2 ≤ S ^ 2 / 4 := by
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    have hT3 : (4 : ℝ) ≤ T ^ 3 := by
+      have h := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2) hT 3
+      norm_num at h
+      linarith
+    have := mul_le_mul_of_nonneg_left hT3 (mul_nonneg hT0.le hS2)
+    calc T * S ^ 2 * 4 ≤ T * S ^ 2 * T ^ 3 := this
+      _ = S ^ 2 * (T ^ 2) ^ 2 := by ring
+  linarith only [hfrac, hT4]
+
+/-- The numerical closing step of local positivity: the archimedean term `½ L I` beats the field
+term `(3/64) L I`, the pole term `(1/64) L I`, and the constant, once `8 C + 8 ≤ L`. -/
+theorem closing_inequality {L C I F P W : ℝ} (hI : 0 < I) (hL : 8 * C + 8 ≤ L) (hC : 0 < C)
+    (hF : F ≤ 3 / 64 * L * I) (hP : P ≤ 1 / 64 * L * I)
+    (hW : (L / 2 - C) * I - F - P ≤ W) : 0 < W := by
+  have hpos : 0 < (7 / 16 * L - C) * I := mul_pos (by linarith) hI
+  have hval : (L / 2 - C) * I - 3 / 64 * L * I - 1 / 64 * L * I = (7 / 16 * L - C) * I := by ring
+  linarith only [hpos, hval, hF, hP, hW]
+
+/-- `M²·(λ L) = (δ/64) L` for `λ = δ/(64M²)`. -/
+theorem shape_scale_eq {δ M L : ℝ} (hM : M ≠ 0) :
+    M ^ 2 * (δ / (64 * M ^ 2) * L) = δ / 64 * L := by
+  field_simp
+
+/-- The field term at aperture `A`, with `log N + c + 2 ≤ 3A`. -/
+theorem field_term_le {δ M L I S A κ : ℝ} (hδ : 0 < δ) (hM : M ≠ 0) (hδ1 : 0 < L) (hA0 : 0 < A)
+    (hκ : κ ≤ 3 * A) (hAeq : A = δ / (64 * M ^ 2) * L)
+    (hshape : S ^ 2 ≤ M ^ 2 * A * I) :
+    κ / (A * δ) * S ^ 2 ≤ 3 / 64 * L * I := by
+  have hS : S ^ 2 ≤ δ / 64 * L * I := by
+    refine hshape.trans (le_of_eq ?_)
+    rw [hAeq, shape_scale_eq hM]
+  have hquot : κ / (A * δ) ≤ 3 / δ := by
+    rw [div_le_div_iff₀ (by positivity) hδ]
+    nlinarith
+  calc κ / (A * δ) * S ^ 2 ≤ 3 / δ * S ^ 2 := mul_le_mul_of_nonneg_right hquot (sq_nonneg S)
+    _ ≤ 3 / δ * (δ / 64 * L * I) := mul_le_mul_of_nonneg_left hS (by positivity)
+    _ = 3 / 64 * L * I := by
+      field_simp
+
+/-- The threshold for `T`: `A = λ log T` satisfies `A ≥ c + 3` and `8C + 8 ≤ log T` beyond it. -/
+def apertureThreshold (lam : ℝ) : ℝ :=
+  max (8 * (10 + Real.log 4) + 8) ((1 + fieldConstant + 2) / lam + 8)
+
 /-- **Local Weil positivity at small aperture on density `1 − δ` of the heights, for all tests of
 bounded shape.**  With `A = δ/(64M²) · log T`, outside a set of heights of measure `δT`, independent of
 the test, every real `F₀ ∈ C²_c([−A, A])` with `S_A(F₀)² ≤ M² A ∫ F₀²` and `F₀ ≠ 0` has `Q_γ(F₀) > 0`. -/
@@ -476,171 +568,164 @@ theorem exists_weilPositive_quadrature {δ M : ℝ} (hδ : 0 < δ) (hδ1 : δ �
           M ^ 2 * (δ / (64 * M ^ 2) * Real.log T) * (∫ u, F₀ u ^ 2) →
         0 < ∫ u, F₀ u ^ 2 →
         0 < fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ) := by
-  set lam : ℝ := δ / (64 * M ^ 2) with hlam
+  have hM0 : M ≠ 0 := by linarith
   have hM2 : 1 ≤ M ^ 2 := one_le_pow₀ hM
-  have hlam0 : 0 < lam := by
-    rw [hlam]
-    positivity
-  have hlamM : M ^ 2 * lam = δ / 64 := by
-    rw [hlam]
-    field_simp
-  have hlam1 : lam ≤ 1 / 64 := by
-    rw [hlam, div_le_iff₀ (by positivity)]
+  have hlam0 : 0 < δ / (64 * M ^ 2) := by positivity
+  have hlam1 : δ / (64 * M ^ 2) ≤ 1 / 64 := by
+    rw [div_le_iff₀ (by positivity)]
     nlinarith
-  set C₁ : ℝ := 10 + Real.log 4 with hC₁
-  have hC₁0 : 0 < C₁ := by
+  have hC₁0 : 0 < 10 + Real.log 4 := by
     have : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-    rw [hC₁]
     linarith
   have hc0 := fieldConstant_pos
-  -- the size of `T`
-  set L₀ : ℝ := max (8 * C₁ + 8) ((1 + fieldConstant + 2) / lam + 8) with hL₀
-  refine ⟨Real.exp L₀, fun T hT => ?_⟩
-  have hexp0 := Real.exp_pos L₀
+  refine ⟨Real.exp (apertureThreshold (δ / (64 * M ^ 2))), fun T hT => ?_⟩
+  have hexp0 := Real.exp_pos (apertureThreshold (δ / (64 * M ^ 2)))
   have hT0 : 0 < T := lt_of_lt_of_le hexp0 hT
-  have hL : L₀ ≤ Real.log T := by
+  have hL : apertureThreshold (δ / (64 * M ^ 2)) ≤ Real.log T := by
     have := Real.log_le_log hexp0 hT
     rwa [Real.log_exp] at this
-  have hLC : 8 * C₁ + 8 ≤ Real.log T := (le_max_left _ _).trans hL
-  have hLA : (1 + fieldConstant + 2) / lam + 8 ≤ Real.log T := (le_max_right _ _).trans hL
-  set A : ℝ := lam * Real.log T with hA
+  have hLC : 8 * (10 + Real.log 4) + 8 ≤ Real.log T := (le_max_left _ _).trans hL
+  have hLA : (1 + fieldConstant + 2) / (δ / (64 * M ^ 2)) + 8 ≤ Real.log T :=
+    (le_max_right _ _).trans hL
+  have hL0 : 0 < Real.log T := by linarith
+  obtain ⟨A, hAeq⟩ : ∃ A : ℝ, A = δ / (64 * M ^ 2) * Real.log T := ⟨_, rfl⟩
   have hA0 : 0 < A := by
-    have : 0 < Real.log T := by linarith
-    rw [hA]
+    rw [hAeq]
     positivity
   have hAbig : 1 + fieldConstant + 2 ≤ A := by
-    have h := (div_le_iff₀ hlam0).mp (show (1 + fieldConstant + 2) / lam ≤ Real.log T by linarith)
-    rw [hA, mul_comm]
+    have h := (div_le_iff₀ hlam0).mp
+      (show (1 + fieldConstant + 2) / (δ / (64 * M ^ 2)) ≤ Real.log T by linarith)
+    rw [hAeq, mul_comm]
     exact h
-  have hA1 : 1 ≤ A := by linarith
-  -- the length of the polynomial
-  set N : ℕ := ⌈Real.exp (2 * A)⌉₊ with hNdef
-  have hNA : Real.exp (2 * A) ≤ N := Nat.le_ceil _
-  have hN1 : 1 ≤ N := by
-    have h1 : (1 : ℝ) ≤ Real.exp (2 * A) := Real.one_le_exp (by positivity)
-    exact_mod_cast h1.trans hNA
-  have hNlt : (N : ℝ) < Real.exp (2 * A) + 1 := Nat.ceil_lt_add_one (Real.exp_pos _).le
-  have hNle2 : (N : ℝ) ≤ 2 * Real.exp (2 * A) := by
-    have h1 : (1 : ℝ) ≤ Real.exp (2 * A) := Real.one_le_exp (by positivity)
-    linarith
-  have hlogN : Real.log N ≤ 2 * A + 1 := by
-    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
-    have h := Real.log_le_log hN0 hNle2
-    rw [Real.log_mul (by norm_num) (Real.exp_pos _).ne', Real.log_exp] at h
-    have h2 : Real.log 2 ≤ 1 := by
-      have := Real.log_two_lt_d9
-      linarith
-    linarith
-  have hNT : (N : ℝ) ≤ T := by
-    have hA4 : 2 * A ≤ Real.log T / 32 := by
-      rw [hA]
-      nlinarith
-    have hTbig : Real.log T / 32 + 1 ≤ Real.log T := by linarith
-    have hle : Real.log 2 + 2 * A ≤ Real.log T := by
-      have h2 : Real.log 2 ≤ 1 := by
-        have := Real.log_two_lt_d9
-        linarith
-      linarith
-    have h := Real.exp_le_exp.mpr hle
-    rw [Real.exp_log hT0, Real.exp_add, Real.exp_log (by norm_num)] at h
-    linarith
+  have hAT : A ≤ Real.log T / 64 := by
+    rw [hAeq]
+    nlinarith
+  obtain ⟨N, hN1, hNA, hNT, hlogN⟩ :=
+    exists_polynomial_length hA0.le hT0 (show 2 * A + 1 ≤ Real.log T by linarith)
   obtain ⟨B, hB, hgood⟩ := exists_bad_heights hN1 hNT hδ hA0
   refine ⟨B, hB, fun γ hγ hγB F₀ hF₀ hF₀c hsupp hshape hpos => ?_⟩
+  rw [← hAeq] at hsupp hshape
   have hbase := hgood γ hγ hγB A hA0.le hNA F₀ hF₀ hF₀c hsupp
-  set I₂ : ℝ := ∫ u, F₀ u ^ 2 with hI₂
-  set S : ℝ := shapeNorm A F₀ with hS
-  have hS0 : 0 ≤ S := shapeNorm_nonneg A F₀
-  -- the archimedean main term
+  have hS0 : 0 ≤ shapeNorm A F₀ := shapeNorm_nonneg A F₀
   have hγT : T ≤ γ := hγ.1
   have hγ0 : 0 < γ := lt_of_lt_of_le hT0 hγT
   have hlogγ : Real.log T ≤ Real.log (2 + |γ|) := by
     rw [abs_of_pos hγ0]
     exact Real.log_le_log hT0 (by linarith)
-  -- the field term
-  have hκA : (Real.log N + fieldConstant) / (A * δ) ≤ 3 / δ := by
-    rw [div_le_div_iff₀ (by positivity) hδ]
-    nlinarith
-  have hfield : (Real.log N + fieldConstant) / (A * δ) * S ^ 2 ≤ 3 / 64 * Real.log T * I₂ := by
-    have h1 := mul_le_mul_of_nonneg_right hκA (sq_nonneg S)
-    refine h1.trans ?_
-    have h2 := mul_le_mul_of_nonneg_left hshape (by positivity : 0 ≤ 3 / δ)
-    refine h2.trans (le_of_eq ?_)
-    rw [hA]
-    have e : M ^ 2 * (lam * Real.log T) = δ / 64 * Real.log T := by
-      rw [← mul_assoc, hlamM]
-    rw [e]
-    field_simp
+  have hfield := field_term_le hδ hM0 hL0 hA0 (show Real.log N + fieldConstant ≤ 3 * A by linarith)
+    hAeq hshape
   -- the pole term
   have hexpA : Real.exp A ≤ T := by
-    have hle : A ≤ Real.log T := by
-      rw [hA]
-      nlinarith
-    have h := Real.exp_le_exp.mpr hle
+    have h := Real.exp_le_exp.mpr (show A ≤ Real.log T by linarith)
     rwa [Real.exp_log hT0] at h
-  have hT1 : 1 ≤ T := by
-    have : (1 : ℝ) ≤ Real.exp L₀ := Real.one_le_exp (by
-      have : 0 ≤ 8 * C₁ + 8 := by positivity
-      exact this.trans (le_max_left _ _))
+  have hT2 : 2 ≤ T := by
+    have h := Real.exp_le_exp.mpr (show (1 : ℝ) ≤ Real.log T by linarith)
+    rw [Real.exp_log hT0] at h
+    have h2 : (2 : ℝ) ≤ Real.exp 1 := by
+      have := Real.add_one_le_exp (1 : ℝ)
+      linarith
     linarith
-  have hpole : 4 * (Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + γ ^ 2)) ^ 2 ≤
-      1 / 64 * Real.log T * I₂ := by
-    have hN0 := envelopeWindowNorm_nonneg F₀
-    have hNS := envelopeWindowNorm_le_shapeNorm hA1 F₀
-    have h1γ : T ^ 2 ≤ 1 + γ ^ 2 := by nlinarith
-    have hexp2 : Real.exp (A / 2) ^ 2 = Real.exp A := by
-      rw [← Real.exp_nat_mul]
-      congr 1
-      push_cast
-      ring
-    have hnum : (Real.exp (A / 2) * envelopeWindowNorm F₀) ^ 2 ≤ T * S ^ 2 := by
-      rw [mul_pow, hexp2]
-      exact mul_le_mul hexpA (pow_le_pow_left₀ hN0 hNS 2) (sq_nonneg _) hT0.le
-    have hden : (T ^ 2) ^ 2 ≤ (1 + γ ^ 2) ^ 2 := pow_le_pow_left₀ (by positivity) h1γ 2
-    have hfrac : (Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + γ ^ 2)) ^ 2 ≤ T * S ^ 2 / T ^ 4 := by
-      rw [div_pow]
-      refine div_le_div₀ (by positivity) hnum (by positivity) ?_
-      calc T ^ 4 = (T ^ 2) ^ 2 := by ring
-        _ ≤ _ := hden
-    have hT4 : T * S ^ 2 / T ^ 4 ≤ S ^ 2 / 4 := by
-      have hT64 : (4 : ℝ) ≤ T ^ 3 := by
-        have hL8 : 8 ≤ Real.log T := by linarith
-        have hexp8 : Real.exp 2 ≤ T := by
-          have h := Real.exp_le_exp.mpr (show (2 : ℝ) ≤ Real.log T by linarith)
-          rwa [Real.exp_log hT0] at h
-        have h2 : (2 : ℝ) ≤ Real.exp 2 := by
-          have := Real.add_one_le_exp (2 : ℝ)
-          linarith
-        have h2T : (2 : ℝ) ≤ T := h2.trans hexp8
-        nlinarith [pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2) h2T 3]
-      rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-      have : T * S ^ 2 * 4 ≤ T * S ^ 2 * T ^ 3 :=
-        mul_le_mul_of_nonneg_left hT64 (by positivity)
-      calc T * S ^ 2 * 4 ≤ T * S ^ 2 * T ^ 3 := this
-        _ = S ^ 2 * T ^ 4 := by ring
-    have hS2 : S ^ 2 ≤ δ / 64 * Real.log T * I₂ := by
-      refine hshape.trans (le_of_eq ?_)
-      rw [hA]
-      have e : M ^ 2 * (lam * Real.log T) = δ / 64 * Real.log T := by
-        rw [← mul_assoc, hlamM]
-      rw [e]
-    have hδI : δ / 64 * Real.log T * I₂ ≤ 1 / 64 * Real.log T * I₂ := by
-      have hLI : 0 ≤ Real.log T * I₂ := mul_nonneg (by linarith) hpos.le
-      nlinarith
-    calc 4 * (Real.exp (A / 2) * envelopeWindowNorm F₀ / (1 + γ ^ 2)) ^ 2
-        ≤ 4 * (S ^ 2 / 4) := by
-          exact mul_le_mul_of_nonneg_left (hfrac.trans hT4) (by norm_num)
-      _ = S ^ 2 := by ring
-      _ ≤ _ := hS2.trans hδI
-  -- combine
-  have hmain : (Real.log T / 2 - C₁) * I₂ ≤ (Real.log (2 + |γ|) / 2 - C₁) * I₂ :=
+  have hpole₀ := pole_term_le hT2 hγT hexpA (envelopeWindowNorm_nonneg F₀)
+    (envelopeWindowNorm_le_shapeNorm (show 1 ≤ A by linarith) F₀)
+  have hshape' : shapeNorm A F₀ ^ 2 ≤ 1 / 64 * Real.log T * ∫ u, F₀ u ^ 2 := by
+    refine hshape.trans ?_
+    rw [hAeq, shape_scale_eq hM0]
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+      (by linarith) hL0.le) hpos.le
+  have hmain : (Real.log T / 2 - (10 + Real.log 4)) * (∫ u, F₀ u ^ 2) ≤
+      (Real.log (2 + |γ|) / 2 - (10 + Real.log 4)) * ∫ u, F₀ u ^ 2 :=
     mul_le_mul_of_nonneg_right (by linarith) hpos.le
-  have hfinal : 0 < (Real.log T / 2 - C₁) * I₂ - 3 / 64 * Real.log T * I₂ -
-      1 / 64 * Real.log T * I₂ := by
-    have hval : (Real.log T / 2 - C₁) * I₂ - 3 / 64 * Real.log T * I₂ -
-        1 / 64 * Real.log T * I₂ = (7 / 16 * Real.log T - C₁) * I₂ := by ring
-    rw [hval]
-    exact mul_pos (by linarith) hpos
-  linarith only [hbase, hfield, hpole, hmain, hfinal]
+  exact closing_inequality hpos hLC hC₁0 hfield (hpole₀.trans hshape') (by linarith only [hbase, hmain])
+
+/-! ### Dilated profiles: the shape constant is scale invariant -/
+
+theorem deriv_dilate {g : ℝ → ℝ} (hg : Differentiable ℝ g) (A : ℝ) :
+    deriv (fun u => g (u / A)) = fun u => A⁻¹ * deriv g (u / A) := by
+  funext u
+  have h := ((hg (u / A)).hasDerivAt).comp u ((hasDerivAt_id u).div_const A)
+  simp only [id_eq, one_div] at h
+  rw [show (fun u => g (u / A)) = g ∘ fun u => u / A from rfl, h.deriv]
+  ring
+
+theorem deriv_deriv_dilate {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) (A : ℝ) :
+    deriv (deriv fun u => g (u / A)) = fun u => A⁻¹ ^ 2 * deriv (deriv g) (u / A) := by
+  have h1 := contDiff_succ_iff_deriv.mp (show ContDiff ℝ (1 + 1) g from hg)
+  have hd : Differentiable ℝ (deriv g) := h1.2.2.differentiable (by norm_num)
+  rw [deriv_dilate (hg.differentiable (by norm_num)) A]
+  funext u
+  rw [deriv_const_mul _ (by
+    exact (hd (u / A)).comp u ((differentiableAt_id).div_const A))]
+  have h := congrFun (deriv_dilate hd A) u
+  rw [h]
+  ring
+
+/-- For `g(·/A)` the shape norm at scale `A` is exactly `A (∫|g| + ∫|g''|)`. -/
+theorem shapeNorm_dilate {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g) {A : ℝ} (hA : 0 < A) :
+    shapeNorm A (fun u => g (u / A)) =
+      A * ((∫ u, |g u|) + ∫ u, |deriv (deriv g) u|) := by
+  unfold shapeNorm
+  rw [deriv_deriv_dilate hg A]
+  have h1 : ∫ u, |g (u / A)| = A * ∫ u, |g u| := by
+    have h := Measure.integral_comp_div (fun u => |g u|) A
+    rw [h, abs_of_pos hA, smul_eq_mul]
+  have h2 : ∫ u, |A⁻¹ ^ 2 * deriv (deriv g) (u / A)| =
+      A⁻¹ * ∫ u, |deriv (deriv g) u| := by
+    have habs : ∀ u, |A⁻¹ ^ 2 * deriv (deriv g) (u / A)| =
+        A⁻¹ ^ 2 * |deriv (deriv g) (u / A)| := fun u => by
+      rw [abs_mul, abs_of_pos (by positivity)]
+    simp only [habs]
+    rw [integral_const_mul, Measure.integral_comp_div
+      (fun u => |deriv (deriv g) u|) A, abs_of_pos hA, smul_eq_mul]
+    field_simp
+  rw [h1, h2]
+  field_simp
+
+theorem integral_sq_dilate (g : ℝ → ℝ) {A : ℝ} (hA : 0 < A) :
+    ∫ u, g (u / A) ^ 2 = A * ∫ u, g u ^ 2 := by
+  have h := Measure.integral_comp_div (fun u => g u ^ 2) A
+  rw [h, abs_of_pos hA, smul_eq_mul]
+
+/-- **Weil positivity for all dilated profiles at once.**  Fix `δ` and `M`, and put
+`A = δ/(64M²) · log T`.  Off a set of heights of measure `δT` in `[T, 2T]`, every nonzero real profile
+`g ∈ C²_c([−1, 1])` with `∫|g| + ∫|g''| ≤ M ‖g‖₂` has `Q_γ(g(·/A)) > 0`.  Every nonzero `g` has a finite
+such `M`, so the theorem is not vacuous. -/
+theorem exists_weilPositive_dilatedProfile {δ M : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1) (hM : 1 ≤ M) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T → ∃ B : Set ℝ, volume B ≤ ENNReal.ofReal (δ * T) ∧
+      ∀ γ ∈ Icc T (2 * T), γ ∉ B → ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
+        (∀ u : ℝ, 1 < |u| → g u = 0) →
+        ((∫ u, |g u|) + ∫ u, |deriv (deriv g) u|) ^ 2 ≤ M ^ 2 * ∫ u, g u ^ 2 →
+        0 < ∫ u, g u ^ 2 →
+        0 < fullZeroForm (cosineSource (fun u => g (u / (δ / (64 * M ^ 2) * Real.log T))) γ) +
+          fullZeroForm (sineSource (fun u => g (u / (δ / (64 * M ^ 2) * Real.log T))) γ) := by
+  obtain ⟨T₀, hT₀⟩ := exists_weilPositive_quadrature hδ hδ1 hM
+  refine ⟨max T₀ 3, fun T hT => ?_⟩
+  obtain ⟨B, hB, hgood⟩ := hT₀ T ((le_max_left _ _).trans hT)
+  refine ⟨B, hB, fun γ hγ hγB g hg hgc hsupp hshape hpos => ?_⟩
+  have hT3 : (3 : ℝ) ≤ T := (le_max_right _ _).trans hT
+  have hL : 0 < Real.log T := Real.log_pos (by linarith)
+  obtain ⟨A, hAeq⟩ : ∃ A : ℝ, A = δ / (64 * M ^ 2) * Real.log T := ⟨_, rfl⟩
+  have hA : 0 < A := by
+    rw [hAeq]
+    positivity
+  rw [← hAeq] at hgood ⊢
+  have hcomp : Continuous fun u : ℝ => u / A := continuous_id.div_const A
+  refine hgood γ hγ hγB (fun u => g (u / A)) ?_ ?_ ?_ ?_ ?_
+  · exact hg.comp (contDiff_id.div_const A)
+  · have e : (fun u : ℝ => g (u / A)) = g ∘ Homeomorph.mulRight₀ A⁻¹ (inv_ne_zero hA.ne') := by
+      funext u
+      simp only [Function.comp_apply, Homeomorph.coe_mulRight₀, div_eq_mul_inv]
+    rw [e]
+    exact hgc.comp_homeomorph _
+  · intro u hu
+    refine hsupp _ ?_
+    rw [abs_div, abs_of_pos hA, lt_div_iff₀ hA, one_mul]
+    exact hu
+  · rw [shapeNorm_dilate hg hA, integral_sq_dilate g hA, mul_pow]
+    calc A ^ 2 * ((∫ u, |g u|) + ∫ u, |deriv (deriv g) u|) ^ 2
+        ≤ A ^ 2 * (M ^ 2 * ∫ u, g u ^ 2) := mul_le_mul_of_nonneg_left hshape (sq_nonneg A)
+      _ = M ^ 2 * A * (A * ∫ u, g u ^ 2) := by ring
+  · rw [integral_sq_dilate g hA]
+    exact mul_pos hA hpos
 
 end
 

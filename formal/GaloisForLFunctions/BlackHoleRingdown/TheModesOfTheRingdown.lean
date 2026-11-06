@@ -200,7 +200,6 @@ theorem laurentCoeff_packet_of_simple (ε ξ₀ τ x : ℝ) {Y : ℝ} (hY : 0 < 
     laurentCoeff (inverseXiQuotient (packetNumerator ε ξ₀ τ x Y)) p (-1) =
       Complex.exp (p * (τ : ℂ)) * (gaussianAmplitude ε ξ₀ (-I * p) * eisensteinNumerator p x Y /
         deriv (fun u : ℂ => xi (1 + 2 * u)) p) := by
-  have han := (gaussianNumerator_packet (ε := 1) one_pos ξ₀ τ x hY le_rfl).analytic
   have hN : AnalyticAt ℂ (packetNumerator ε ξ₀ τ x Y) p := by
     have h1 : AnalyticAt ℂ (fun v : ℂ => Complex.exp (v * (τ : ℂ))) p := by fun_prop
     exact ((analyticAt_gaussianAmplitude_rotated ε ξ₀ p).mul h1).mul
@@ -258,7 +257,7 @@ nonzero constant term `((1+2p)/(2p-1)) ξ(2p) Y^{½-p}`. -/
 theorem exists_eisensteinNumerator_ne_zero {p : ℂ} (hp : xi (1 + 2 * p) = 0) {Y : ℝ} (hY : 0 < Y) :
     ∃ x ∈ Ioc (0 : ℝ) 1, eisensteinNumerator p x Y ≠ 0 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   have hzero : ∫ x in Ioc (0 : ℝ) 1, eisensteinNumerator p x Y = 0 :=
     setIntegral_eq_zero_of_forall_eq_zero hcon
   rw [setIntegral_eisensteinNumerator p hY, hp, mul_zero, zero_add] at hzero
@@ -293,7 +292,7 @@ theorem exp_modeFrequency (D p τ : ℂ) :
     Complex.exp (-D * τ) * Complex.exp (p * τ) = Complex.exp (-I * modeFrequency D p * τ) := by
   rw [← Complex.exp_add, modeFrequency]
   congr 1
-  linear_combination (-(p - D) * τ) * I_sq
+  linear_combination ((p - D) * τ) * I_sq
 
 theorem poleCoordinate_zeroCopy (q : XiZeroCopy) :
     poleCoordinate (((q.1 : ℂ) - 1) / 2) = xiSpectralPoint q := by

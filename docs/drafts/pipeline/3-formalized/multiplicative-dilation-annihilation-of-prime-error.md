@@ -1,8 +1,8 @@
 # Multiplicative Dilation Annihilation of a Finite Prime-Error Oscillation and Two-Prime Pinning Equivalence
 
 - **ID:** multiplicative-dilation-annihilation-of-prime-error
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/drafts/pipeline/1-in-progress/pnt-error-single-finite-oscillation.md
 - **Statement:** Every single-base multiplicative dilation operator `dilationPolyOp b (dilationSetPoly b β S)` (`b > 1`, `β < 1`) identically annihilates `x^β T(log x)` on `(0, ∞)` while preserving a strictly positive linear main term `mainTermFactor b β S · x`; conversely, for any distinct primes `p ≠ q`, joint `O(x^{σ₀})` annihilation (`σ₀ < 1`) at bases `p` and `q` confines all zeros of `ζ` in `{Re s > σ₀}` to finitely many ordinates on `Re s = β`, yielding an exact prime-dilation characterization of `¬ AsymptoticAbscissaLaw`.
 
@@ -12,7 +12,7 @@ Connect the `x`-space finite prime-error oscillation to linear combinations of m
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven: complete paper proof below, no open dependency
-- [ ] 2 → 3  formalized: `GaloisForLFunctions.ZeroConfigurationGeometry.MultiplicativeDilationAnnihilationOfPrimeError`
+- [x] 2 → 3  formalized: `GaloisForLFunctions.ZeroConfigurationGeometry.MultiplicativeDilationAnnihilationOfPrimeError` (`dilationPolyOp`, `dilationPairPoly`, `dilationSetPoly`, `dilationSetOp`, `mainTermFactor`, `dilationSymbol`, `dilationSetOp_id_eq`, `dilationPolyOpC_cpow_eq`, `dilationSymbol_dilationSetPoly_eq`, `dilationSetOp_rpow_mul_finiteOscillation_eq_zero`, `mainTermFactor_ge_pos`, `abs_dilationSetOp_psi_sub_mainTerm_le`, `integral_Ioi_one_psi_div_mul_cpow`, `neg_dilationSymbol_mul_deriv_zetaResidueUnit_eq`, `dilationSymbol_eq_zero_of_zeta_eq_zero`, `re_eq_and_im_mem_periodic_of_dilation_bound`, `finite_xiZeroCopy_of_twoPrime_dilation_bound`, `not_asymptoticAbscissaLaw_iff_twoPrime_dilationAnnihilation`)
 
 ## Proof
 1. **Polynomial dilation algebra.** Associate to `P ∈ ℝ[X]` and `b > 0` the operator `(dilationPolyOp b P f)(x) = ∑_{k=0}^{deg P} P_k f(x / b^k)`. For `x > 0` and `s ∈ ℂ`, `(x / b^k)^s = x^s (b^{-s})^k`, so `dilationPolyOp b P` acts on `x^s` by scalar multiplication with `P(b^{-s})` and on `id` (`s = 1`) by `P(b^{-1}) x`.

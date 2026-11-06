@@ -50,23 +50,11 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszVectorsHa
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilChartsAreUniformlyBounded
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilTracesHaveTheirSoftKick
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheGreenCornerReadsThePotential
-
-/-!
-# The Canonical System of the Window Tower
-
-Umbrella for the exact two-collar theory of the window tower: ordered tests couple through the
-trivial divisor of `ζ` and the folds; the archimedean place transmits only trivial-divisor moments;
-a stage window is two previous windows glued along the interior, minus the new fold; the frozen
-two-collar form in closed form at every stage (moments and earlier-fold transports; stages one and
-two explicit); window growth as a translation contraction, the stage as a Carathéodory disk, and RH
-as the contraction of every growth step. Compact transform-zero moving preserves both aperture
-and the literal Weil form. Before contact, the unshifted Weil form defines a complete Hilbert
-space, and increasing apertures give isometric inclusions. Its entire Fourier realization has
-unitary zero-moving, an isometric conjugation, and an explicit Hermite–Biehler function recovering
-the full reproducing kernel. At finite contact some diagonal kernel diverges monotonically,
-although the contact window itself remains positive. Positive-level truncations and the literal
-cutoff archimedean kernel give bounded physical representatives of every precontact Riesz vector.
--/
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineGreenOperatorHasAShiftIdentity
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilGreenOperatorIsUniformlyBoundedOnBoundedForcing
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilRieszIncrementsAreLipschitzInL1
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilTracesAreAbsolutelyContinuous
+import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheSpectralDriftConvergesInL1
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheHalfLineLogarithmicGreenSolutionsHaveBoundaryValues
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicEnergyHasItsLiteralJumpForm
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.BoundedLipschitzCutoffsPreserveLogarithmicEnergy
@@ -105,3 +93,22 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilHamiltonianHas
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilKernelVanishesAtZeroAperture
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TranslationPreservesTheCompleteWeilForm
 import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheLogarithmicRenewalCouplingHasItsExactNormalization
+
+/-!
+# The Canonical System of the Window Tower
+
+Umbrella for the exact two-collar theory of the window tower: ordered tests couple through the
+trivial divisor of `ζ` and the folds; the archimedean place transmits only trivial-divisor moments;
+a stage window is two previous windows glued along the interior, minus the new fold; the frozen
+two-collar form in closed form at every stage (moments and earlier-fold transports; stages one and
+two explicit); window growth as a translation contraction, the stage as a Carathéodory disk, and RH
+as the contraction of every growth step. Compact transform-zero moving preserves both aperture
+and the literal Weil form. Before contact, the unshifted Weil form defines a complete Hilbert
+space, and increasing apertures give isometric inclusions. Its entire Fourier realization has
+unitary zero-moving, an isometric conjugation, and an explicit Hermite–Biehler function recovering
+the full reproducing kernel. At finite contact some diagonal kernel diverges monotonically,
+although the contact window itself remains positive. Positive-level truncations and the literal
+cutoff archimedean kernel give bounded physical representatives of every precontact Riesz vector.
+Before contact the Riesz increments are Lipschitz in `L¹`, the endpoint traces and the potential `Ψ`
+are absolutely continuous, `q = Ψ′` is a function, and the spectral drift converges to it in `L¹`.
+-/

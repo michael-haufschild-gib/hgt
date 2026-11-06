@@ -21,6 +21,12 @@ Resolve §2.9 of `obstacles-summary.md`:
 2. **Discrete Beurling Euler products without FE** (`BeurlingOneOffZeroCountermodelsAndDefectTradeoff.lean`, Broucke–Debruyne–Vindas): satisfy positive Euler product with one-off off-line zero pair, violating integer norms and exact Riemann FE.
 3. **Dirichlet series with exact FE and finite `ℕ`-prefix** (`functional-equation-is-blind-to-rh.md`, Davenport–Heilbronn): satisfy `s ↔ 1 - s` FE on `ℕ`-Dirichlet series with off-line zeros, violating Euler product (`Λ(n)` multiplicativity).
 4. **Function-field zeta functions** (`𝔽_q[T]`): have periodic vertical zeros (`AAL` holds automatically by vertical periodicity `2πi / log q`), whereas over `ℤ` `log p` are `ℚ`-linearly independent.
+5. **Symmetric rational zero relocation on `ξ`** (`SymmetricRationalZeroRelocationBohrObstruction.lean`, `zeroRelocation_destroys_vertical_bohr_and_LSeries`, `zeroRelocationFactor_two_mul_sub_one_eq_zero`): `completedRiemannZeta · zeroRelocationFactor ρ₀ γ₁ γ₂` preserves the exact `s ↔ 1 - s` functional equation, critical-line reality, and `1 + O(|t|^{-1})` vertical asymptotics while implanting `{ρ₀, conj ρ₀}`, yet strictly destroys vertical Bohr almost periodicity (and every summable `LSeries` representation) on every line `Re s = σ > 1` and vanishes at the half-shifted Eisenstein argument `2 s_* - 1` (`s_* = (1 + ρ₀)/2`, `Re s_* ∈ (3/4, 1)`).
+
+## Equivalence, canonical rigidity, and prime-dilation characterizations (formalized)
+- **Exact `A31` equivalence:** `¬ AsymptoticAbscissaLaw ↔ PrimeErrorIsFiniteOscillation` (`not_asymptoticAbscissaLaw_iff_primeErrorIsFiniteOscillation` in `TheOneOffsAreFiniteOscillationsOfThePrimeError.lean`, `ThePrimeErrorExpansionLocatesZeros.lean`).
+- **Canonical rigidity, sharp `Θ - Θ₂` threshold, sign changes, and parity transfer** (`PrimeErrorFiniteOscillationRigidityAndSignChanges.lean`): unconditional `1/2 ≤ σ₀` remainder floor (`half_le_of_oscillationError_bound`); pinning `β = Θ = zetaZeroAbscissa < 1` and global Fourier quantization `oscillationCoeff S c μ = -ord_{s = Θ + iμ}(ζ)/(Θ + iμ)` with `oscillationCoeff S c 0 = 0` (`oscillationCoeff_eq_neg_zeta_order_div`, `oscillationCoeff_zero_eq_zero`); uniqueness of `(β, T)` (`primeErrorFiniteOscillation_unique_abscissa_and_profile`); sharp secondary-abscissa ceiling `η ≤ Θ - Θ₂` (`eta_le_zetaZeroAbscissa_sub_secondAbscissa`) and converse for all `0 < η < Θ - Θ₂` (`exists_primeErrorFiniteOscillation_of_lt_gap`); bounded-logarithmic-gap bidirectional sign changes `± δ e^{Θ u}` (`exists_bounded_log_gap_sign_changes_of_primeErrorIsFiniteOscillation`); and exact alternating parity transfer `∑_{n ≤ x} (-1)^n Λ(n) = 2 (Nat.log 2 ⌊x⌋₊) log 2 - ψ(x)` (`sum_alternating_vonMangoldt_eq`, `alternating_vonMangoldt_finiteOscillation`).
+- **Multiplicative dilation annihilation and two-prime equivalence** (`MultiplicativeDilationAnnihilationOfPrimeError.lean`): `dilationSetOp b β S` (`b > 1`, `β < 1`) annihilates `x^β T(log x)` identically (`dilationSetOp_rpow_mul_finiteOscillation_eq_zero`), scales `x` by `mainTermFactor b β S ≥ (1 - b^{β - 1})^{2|S|} > 0` (`mainTermFactor_ge_pos`), clears the `s = 1` Mellin pole without `t = 1` boundary error (`integral_Ioi_one_psi_div_mul_cpow`, `neg_dilationSymbol_mul_deriv_zetaResidueUnit_eq`), pins zeros in `{Re s > σ₀}` to `Re ρ = β` and `Im ρ ∈ (S ∪ -S) + (2π / log b)ℤ` (`re_eq_and_im_mem_periodic_of_dilation_bound`), and gives the exact two-prime (`p ≠ q`) characterization `not_asymptoticAbscissaLaw_iff_twoPrime_dilationAnnihilation`.
 
 ## Approach
 1. **Equivalence layer (`A31`):** Mellin continuation of `(ψ(x) - x) x^{-s-1}` vs. truncated Perron contour shift across the bilateral spectral-gap strip `(β₁, β_*)` (`not_asymptoticAbscissaLaw_iff_bilateral_spectralGap`).
@@ -86,8 +92,12 @@ dilations obey the same bound. For the actual normalized von Mangoldt terms,
 `Σ_(1≤h≤floor(r^k)) |Σ_n a_k(n) conj(a_k(n+h))| → 0`.
 
 The proof bounds this sum by `C (r/R²)^k`, with the convergent constant
-`C=Σ Λ(n)² n^(-2(Re s−R))`. The Lean module and its dependency build passed with
-standard axioms; final source audit and the exact `¬AAL` consequence are pending.
+`C=Σ Λ(n)² n^(-2(Re s−R))`.
+`tendsto_normalizedMangoldtShortShiftCorrelations_zero` passed its final source
+and axiom audits. `not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts`
+proves that subtracting both orientations of these shifts from the off-diagonal
+sum preserves the limit `mρ²`. Its final source check passed; both dependency
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.
 This controls exponentially many shifts, not the full off-diagonal sum.
 
 ### Real-pole calibration
@@ -95,7 +105,9 @@ This controls exponentially many shifts, not the full off-diagonal sum.
 At `s=2`, the same raw moments tend to `+1` while their diagonal tends to zero.
 Indeed `(s−1)ζ(s)` is zero-free on `closedBall(2,3/2)` by the unconditional
 ordinate bound `|Im ρ|≥4`; its normalized jets vanish. The pole at `1` contributes
-exactly `1` at every order. Lean source is written; audit pending. Thus a bound
+exactly `1` at every order.
+`mangoldt_at_two_has_nonzero_moment_and_vanishing_diagonal` passed its final source
+and axiom audits with only `propext`, `Classical.choice`, and `Quot.sound`. Thus a bound
 deduced solely from diagonal decay cannot distinguish the proposed negative
 zero residue from an actual nonzero moment of the same arithmetic sequence.
 

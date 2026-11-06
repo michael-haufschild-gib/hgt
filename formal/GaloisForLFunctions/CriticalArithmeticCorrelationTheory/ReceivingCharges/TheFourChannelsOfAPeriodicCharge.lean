@@ -70,7 +70,6 @@ theorem packetVector_gcdTwistedCharge_mem (g : ℕ → ℝ) {M Q : ℕ} (hM : 0 
       ext n
       have hn : 0 < (n : ℕ) := (mem_Icc.mp n.property).1
       have h1 := ha n hn
-      simp only at h1
       have hg1 : ((n : ℕ).gcd (M * p)).gcd M = (n : ℕ).gcd M := by
         rw [Nat.gcd_assoc, Nat.gcd_eq_right (Dvd.intro p rfl)]
       have hg2 : p ∣ (n : ℕ).gcd (M * p) ↔ p ∣ (n : ℕ) :=
@@ -246,6 +245,283 @@ theorem eventually_four_channels_small {φ : ℝ → ℝ} (C : ℝ) {α β ε : 
       (linearPrimeStrip c : ℝ) * literalMultiplierWidth c *
           (1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q) ≤ ε ∧
         chargeChannelRate φ C c (M * Q) N ≤ ε := by
-  sorry
+  obtain ⟨κ, hκd⟩ : ∃ κ, κ = (∫ u, φ u) ^ 2 / ∫ u, φ u ^ 2 := ⟨_, rfl⟩
+  have hκ : 0 ≤ κ := by rw [hκd]; positivity
+  obtain ⟨κ', hκ'd⟩ : ∃ κ', κ' = 152 * (∫ u, |φ u|) ^ 2 / ∫ u, φ u ^ 2 := ⟨_, rfl⟩
+  have hκ' : 0 ≤ κ' := by rw [hκ'd]; positivity
+  obtain ⟨w, hwd⟩ : ∃ w, w = 3 + |mertensWindowConstant| + α := ⟨_, rfl⟩
+  have hw : 0 < w := by rw [hwd]; positivity
+  obtain ⟨γ', hγd⟩ : ∃ γ', γ' = β / 2 - α := ⟨_, rfl⟩
+  have hγ : 0 < γ' := by rw [hγd]; linarith only [h1]
+  obtain ⟨δ, hδd⟩ : ∃ δ, δ = 1 / 2 - β - 2 * α := ⟨_, rfl⟩
+  have hδ : 0 < δ := by rw [hδd]; linarith only [h2]
+  have hβ : 0 < β := by linarith only [h1, hα]
+  have hβ1 : β < 1 / 2 := by linarith only [h2, hα]
+  obtain ⟨C₃, hC₃d⟩ : ∃ C₃, C₃ = 4 * (576 * κ + 23 * κ' + 4 * C) / ε := ⟨_, rfl⟩
+  have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have htiny : ∀ᶠ L : ℝ in atTop, C * (L ^ 2 * Real.exp (-(L / 8))) ≤ ε / 4 := by
+    have h := (Real.tendsto_pow_mul_exp_neg_atTop_nhds_zero 2).comp
+      (tendsto_id.atTop_div_const (by norm_num : (0 : ℝ) < 8))
+    have h3 : Tendsto (fun L : ℝ => C * (64 * ((L / 8) ^ 2 * Real.exp (-(L / 8))))) atTop
+        (𝓝 (C * (64 * 0))) := (h.const_mul 64).const_mul C
+    rw [mul_zero, mul_zero] at h3
+    refine (h3.eventually (ge_mem_nhds (by positivity : 0 < ε / 4))).mono fun L hL => ?_
+    refine le_trans (le_of_eq ?_) hL
+    ring
+  have hratio : Tendsto (fun L : ℝ => L ^ (1 - β)) atTop atTop :=
+    tendsto_rpow_atTop (by linarith only [hβ1])
+  filter_upwards [hLlim.eventually_ge_atTop 2,
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1 hγ (8 * w / ε)),
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1 hδ C₃),
+    hLlim.eventually htiny,
+    hLlim.eventually (hratio.eventually_ge_atTop 12),
+    eventually_ge_atTop 1]
+    with N hL2 hupP hP htinyN hr12 hN1
+  intro c hc1 hcα M Q hM hQlo hQhi hMhi hω
+  obtain ⟨L, hLd⟩ : ∃ L, L = Real.log (N : ℝ) := ⟨_, rfl⟩
+  rw [← hLd] at hL2 hupP hP htinyN hr12 hcα hQlo hQhi hMhi
+  have hL1 : 1 ≤ L := by linarith only [hL2]
+  have hL0 : 0 < L := by linarith only [hL2]
+  have hlogL0 : 0 ≤ Real.log L := Real.log_nonneg hL1
+  have hc0 : 0 < c := by linarith only [hc1]
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  obtain ⟨a, had⟩ : ∃ a, a = L ^ α := ⟨_, rfl⟩
+  obtain ⟨b, hbd⟩ : ∃ b, b = L ^ β := ⟨_, rfl⟩
+  rw [← had] at hcα
+  rw [← hbd] at hQlo hQhi hMhi
+  have ha1 : 1 ≤ a := by rw [had]; exact Real.one_le_rpow hL1 hα.le
+  have hb1 : 1 ≤ b := by rw [hbd]; exact Real.one_le_rpow hL1 hβ.le
+  have ha0 : 0 < a := by linarith only [ha1]
+  have hb0 : 0 < b := by linarith only [hb1]
+  obtain ⟨P, hPd⟩ : ∃ P, P = L ^ δ := ⟨_, rfl⟩
+  obtain ⟨P', hP'd⟩ : ∃ P', P' = L ^ γ' := ⟨_, rfl⟩
+  have hP0 : 0 < P := by rw [hPd]; positivity
+  have hP'0 : 0 < P' := by rw [hP'd]; positivity
+  have hs : Real.sqrt L = a ^ 2 * b * P := by
+    rw [Real.sqrt_eq_rpow, had, hbd, hPd, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le,
+      ← Real.rpow_add hL0, ← Real.rpow_add hL0, hδd]
+    congr 1
+    push_cast
+    ring
+  have hsqrtb : Real.sqrt b = a * P' := by
+    rw [Real.sqrt_eq_rpow, had, hbd, hP'd, ← Real.rpow_mul hL0.le, ← Real.rpow_add hL0, hγd]
+    congr 1
+    ring
+  have hupP' : 8 * w / ε * (1 + Real.log L) ≤ P' := by
+    rw [hP'd]
+    simpa only [pow_one] using hupP
+  have hP' : C₃ * (1 + Real.log L) ≤ P := by
+    rw [hPd]
+    simpa only [pow_one] using hP
+  have hlogc : Real.log c ≤ α * Real.log L := by
+    have h := Real.log_le_log hc0 hcα
+    rw [had, Real.log_rpow hL0] at h
+    exact h
+  have hlogc0 : 0 ≤ Real.log c := Real.log_nonneg hc1
+  -- the conductor size
+  have hlogQ1 : 1 ≤ Real.log Q := hb1.trans hQlo
+  have hQ0 : (Q : ℝ) ≠ 0 := by
+    intro h
+    rw [h, Real.log_zero] at hlogQ1
+    linarith only [hlogQ1]
+  have hM0 : (M : ℝ) ≠ 0 := by exact_mod_cast hM.ne'
+  have hlogR : Real.log ((M * Q : ℕ) : ℝ) = Real.log M + Real.log Q := by
+    push_cast
+    exact Real.log_mul hM0 hQ0
+  have hlogM0 : 0 ≤ Real.log (M : ℝ) := Real.log_natCast_nonneg M
+  have hR : 1 + Real.log ((M * Q : ℕ) : ℝ) ≤ 4 * b := by
+    rw [hlogR]
+    linarith only [hb1, hMhi, hQhi]
+  have hR0 : 0 ≤ 1 + Real.log ((M * Q : ℕ) : ℝ) := by
+    rw [hlogR]
+    linarith only [hlogM0, hlogQ1]
+  have hsqrtQ : a * P' ≤ Real.sqrt (Real.log Q) := by
+    rw [← hsqrtb]
+    exact Real.sqrt_le_sqrt hQlo
+  have hsqrtQ0 : 0 < Real.sqrt (Real.log Q) := Real.sqrt_pos.mpr (by linarith only [hlogQ1])
+  refine ⟨?_, ?_⟩
+  · -- the upward coefficient
+    have hB : (linearPrimeStrip c : ℝ) ≤ 4 * a := by
+      have h1' : (linearPrimeStrip c : ℝ) < c * Real.exp 1 + 1 := by
+        unfold linearPrimeStrip
+        exact Nat.ceil_lt_add_one (by positivity)
+      have he : Real.exp 1 ≤ 3 := by linarith only [Real.exp_one_lt_d9]
+      have h3 : c * Real.exp 1 ≤ c * 3 := mul_le_mul_of_nonneg_left he hc0.le
+      linarith only [h1', h3, hcα, hc1]
+    have hW : literalMultiplierWidth c ≤ w * (1 + Real.log L) := by
+      unfold literalMultiplierWidth
+      have hpos : 0 ≤ Real.log (2 * c * Real.exp 1) := by
+        refine Real.log_nonneg ?_
+        have he : 1 ≤ Real.exp 1 := Real.one_le_exp (by norm_num)
+        nlinarith only [he, hc1]
+      rw [abs_of_nonneg hpos, Real.log_mul (by positivity) (Real.exp_pos 1).ne',
+        Real.log_mul (by norm_num) hc0.ne', Real.log_exp]
+      have hl2 : Real.log 2 ≤ 1 := by linarith only [Real.log_two_lt_d9]
+      have hm := le_abs_self mertensWindowConstant
+      have hexpand : w * (1 + Real.log L) = w + w * Real.log L := by ring
+      have hww : α * Real.log L ≤ w * Real.log L := by
+        refine mul_le_mul_of_nonneg_right ?_ hlogL0
+        rw [hwd]
+        linarith only [abs_nonneg mertensWindowConstant]
+      rw [hexpand]
+      have hw2 : w = 3 + |mertensWindowConstant| + α := hwd
+      linarith only [hl2, hm, hww, hlogc, hw2, hα]
+    have hW0 : 0 ≤ literalMultiplierWidth c := literalMultiplierWidth_nonneg c
+    have hfrac : 1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q ≤
+        2 / Real.sqrt (Real.log Q) := by
+      have hq : Real.log Q = Real.sqrt (Real.log Q) * Real.sqrt (Real.log Q) :=
+        (Real.mul_self_sqrt (by linarith only [hlogQ1])).symm
+      have h1' : (periodBandDivisors Q M : ℝ) / Real.log Q ≤ 1 / Real.sqrt (Real.log Q) := by
+        rw [div_le_div_iff₀ (by linarith only [hlogQ1]) hsqrtQ0]
+        nlinarith only [hω, hsqrtQ0, hq]
+      have e2 : 2 / Real.sqrt (Real.log Q) =
+          1 / Real.sqrt (Real.log Q) + 1 / Real.sqrt (Real.log Q) := by ring
+      linarith only [h1', e2]
+    have hfrac2 : 2 / Real.sqrt (Real.log Q) ≤ 2 / (a * P') :=
+      div_le_div_of_nonneg_left (by norm_num) (by positivity) hsqrtQ
+    have hfrac0 : 0 ≤ 1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q := by
+      have : 0 ≤ (periodBandDivisors Q M : ℝ) / Real.log Q :=
+        div_nonneg (Nat.cast_nonneg _) (by linarith only [hlogQ1])
+      positivity
+    calc (linearPrimeStrip c : ℝ) * literalMultiplierWidth c *
+          (1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q)
+        ≤ (4 * a) * (w * (1 + Real.log L)) * (2 / (a * P')) :=
+          mul_le_mul (mul_le_mul hB hW hW0 (by positivity)) (hfrac.trans hfrac2) hfrac0
+            (by positivity)
+      _ = 8 * w * (1 + Real.log L) / P' := by
+          field_simp
+          ring
+      _ ≤ ε := by
+          rw [div_le_iff₀ hP'0]
+          have h := (div_mul_eq_mul_div (8 * w) ε (1 + Real.log L)).symm
+          have h2 := (div_le_iff₀ hε).mp (h.trans_le hupP')
+          linarith only [h2, mul_comm ε P']
+  · -- the overlap, cross and center rates
+    unfold chargeChannelRate
+    have hsL : Real.sqrt (Real.log N) = a ^ 2 * b * P := by rw [← hLd]; exact hs
+    have hsL0 : 0 < a ^ 2 * b * P := by positivity
+    rw [hsL, ← hLd, ← hκ'd]
+    have hshift : completeWeilPoleShift φ c = c * κ := by
+      rw [completeWeilPoleShift, hκd, mul_div_assoc]
+    rw [hshift]
+    have hc2 : c ^ 2 ≤ a ^ 2 := pow_le_pow_left₀ hc0.le hcα 2
+    have hlog1 : 1 ≤ 1 + Real.log L := by linarith only [hlogL0]
+    -- center
+    have hcenter : 144 * (c * κ) * (1 + Real.log ((M * Q : ℕ) : ℝ)) / (a ^ 2 * b * P) ≤
+        576 * κ / P := by
+      rw [div_le_div_iff₀ hsL0 hP0]
+      have h1' : c * (1 + Real.log ((M * Q : ℕ) : ℝ)) ≤ a * (4 * b) :=
+        mul_le_mul hcα hR hR0 ha0.le
+      have h2' : a ≤ a ^ 2 := le_self_pow₀ ha1 (by norm_num)
+      have h3 : a * (4 * b) ≤ a ^ 2 * (4 * b) := mul_le_mul_of_nonneg_right h2' (by positivity)
+      have h4 := mul_le_mul_of_nonneg_left (h1'.trans h3)
+        (show 0 ≤ 144 * κ * P by positivity)
+      nlinarith only [h4]
+    -- cross
+    have hcross : 23 * κ' * (c ^ 2 / (a ^ 2 * b * P)) ≤ 23 * κ' / P := by
+      have h1' : c ^ 2 / (a ^ 2 * b * P) ≤ 1 / P := by
+        rw [div_le_div_iff₀ hsL0 hP0]
+        have h3 : a ^ 2 ≤ a ^ 2 * b := le_mul_of_one_le_right (by positivity) hb1
+        nlinarith only [mul_le_mul_of_nonneg_right (hc2.trans h3) hP0.le]
+      have h2' := mul_le_mul_of_nonneg_left h1' (show 0 ≤ 23 * κ' by positivity)
+      refine h2'.trans_eq ?_
+      ring
+    -- overlap
+    have hsqrtrate : Real.sqrt ((1 + Real.log c) / L) ≤ (1 + Real.log L) / (a ^ 2 * b * P) := by
+      rw [Real.sqrt_div (by linarith only [hlogc0]), hs]
+      refine div_le_div_of_nonneg_right ?_ hsL0.le
+      have h1' : 1 + Real.log c ≤ (1 + Real.log L) ^ 2 := by
+        have hle : Real.log c ≤ Real.log L := Real.log_le_log hc0 (hcα.trans (by
+          rw [had]
+          calc L ^ α ≤ L ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [h2, hβ])
+            _ = L := Real.rpow_one L))
+        nlinarith only [hle, hlog1, hlogL0]
+      calc Real.sqrt (1 + Real.log c) ≤ Real.sqrt ((1 + Real.log L) ^ 2) := Real.sqrt_le_sqrt h1'
+        _ = 1 + Real.log L := Real.sqrt_sq (by linarith only [hlog1])
+    have hover1 : c ^ 2 * (1 + Real.log ((M * Q : ℕ) : ℝ)) * Real.sqrt ((1 + Real.log c) / L) ≤
+        4 * (1 + Real.log L) / P := by
+      have h0 : 0 ≤ Real.sqrt ((1 + Real.log c) / L) := Real.sqrt_nonneg _
+      have h1' : c ^ 2 * (1 + Real.log ((M * Q : ℕ) : ℝ)) ≤ a ^ 2 * (4 * b) :=
+        mul_le_mul hc2 hR hR0 (by positivity)
+      have h2' := mul_le_mul h1' hsqrtrate h0 (by positivity)
+      refine h2'.trans_eq ?_
+      field_simp
+    -- the terminal scale
+    have hover2 : C * (c ^ 2 * ((M * Q : ℕ) : ℝ) * Real.sqrt (L / N)) ≤ ε / 4 := by
+      have hN : (N : ℝ) = Real.exp L := by rw [hLd, Real.exp_log hN0]
+      have hb4 : 3 * b ≤ L / 4 := by
+        have h1' : (12 : ℝ) ≤ L ^ (1 - β) := hr12
+        have hsplit : L = L ^ (1 - β) * b := by
+          rw [hbd, ← Real.rpow_add hL0]
+          norm_num
+        nlinarith only [mul_le_mul_of_nonneg_right h1' hb0.le, hsplit]
+      have hRle : ((M * Q : ℕ) : ℝ) ≤ Real.exp (L / 4) := by
+        have hRpos : (0 : ℝ) < ((M * Q : ℕ) : ℝ) := by
+          push_cast
+          have hM' : (0 : ℝ) < M := by exact_mod_cast hM
+          have hQ' : (0 : ℝ) < Q := lt_of_le_of_ne (Nat.cast_nonneg Q) (Ne.symm hQ0)
+          exact mul_pos hM' hQ'
+        rw [← Real.exp_log hRpos]
+        refine Real.exp_le_exp.mpr ?_
+        rw [hlogR]
+        linarith only [hMhi, hQhi, hb4]
+      have hca : c ^ 2 ≤ L := by
+        have hle : c ≤ L ^ (1 / 2 : ℝ) := hcα.trans (by
+          rw [had]
+          exact Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [h2, hβ]))
+        have h3 := pow_le_pow_left₀ hc0.le hle 2
+        have e : (L ^ (1 / 2 : ℝ)) ^ 2 = L := by
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+          norm_num
+        rwa [e] at h3
+      have hsqrt : Real.sqrt (L / N) ≤ L * Real.exp (-(L / 2)) := by
+        rw [hN, Real.sqrt_le_left (by positivity)]
+        have h1' : L / Real.exp L ≤ (L * Real.exp (-(L / 2))) ^ 2 := by
+          rw [mul_pow, ← Real.exp_nat_mul]
+          have e : ((2 : ℕ) : ℝ) * (-(L / 2)) = -L := by push_cast; ring
+          rw [e, Real.exp_neg, div_eq_mul_inv]
+          have hLL : L ≤ L ^ 2 := le_self_pow₀ hL1 (by norm_num)
+          exact mul_le_mul_of_nonneg_right hLL (by positivity)
+        exact h1'
+      have hprod : c ^ 2 * ((M * Q : ℕ) : ℝ) * Real.sqrt (L / N) ≤
+          L * Real.exp (L / 4) * (L * Real.exp (-(L / 2))) :=
+        mul_le_mul (mul_le_mul hca hRle (by positivity) hL0.le) hsqrt (Real.sqrt_nonneg _)
+          (by positivity)
+      have he : L * Real.exp (L / 4) * (L * Real.exp (-(L / 2))) ≤ L ^ 2 * Real.exp (-(L / 8)) := by
+        have h1' : Real.exp (L / 4) * Real.exp (-(L / 2)) ≤ Real.exp (-(L / 8)) := by
+          rw [← Real.exp_add]
+          exact Real.exp_le_exp.mpr (by linarith only [hL0])
+        have h2' := mul_le_mul_of_nonneg_left h1' (sq_nonneg L)
+        refine le_trans (le_of_eq ?_) h2'
+        ring
+      have h3 := mul_le_mul_of_nonneg_left (hprod.trans he) hC.le
+      exact h3.trans htinyN
+    -- assembly
+    have hsum : 576 * κ / P + 23 * κ' / P + C * (4 * (1 + Real.log L) / P) ≤ ε / 4 := by
+      have e : 576 * κ / P + 23 * κ' / P + C * (4 * (1 + Real.log L) / P) =
+          (576 * κ + 23 * κ' + 4 * C * (1 + Real.log L)) / P := by
+        field_simp
+      rw [e, div_le_iff₀ hP0]
+      have hnum : 576 * κ + 23 * κ' + 4 * C * (1 + Real.log L) ≤
+          (576 * κ + 23 * κ' + 4 * C) * (1 + Real.log L) := by
+        have h1' : 576 * κ * 1 ≤ 576 * κ * (1 + Real.log L) :=
+          mul_le_mul_of_nonneg_left hlog1 (by positivity)
+        have h3 : 23 * κ' * 1 ≤ 23 * κ' * (1 + Real.log L) :=
+          mul_le_mul_of_nonneg_left hlog1 (by positivity)
+        nlinarith only [h1', h3]
+      have hC3 : (576 * κ + 23 * κ' + 4 * C) * (1 + Real.log L) ≤ ε / 4 * P := by
+        have h := mul_le_mul_of_nonneg_left hP' (show 0 ≤ ε / 4 by positivity)
+        rw [hC₃d] at h
+        refine le_trans (le_of_eq ?_) h
+        field_simp
+      linarith only [hnum, hC3]
+    have hoverlap := mul_le_mul_of_nonneg_left hover1 hC.le
+    have hq : C * (c ^ 2 * (1 + Real.log ((M * Q : ℕ) : ℝ)) * Real.sqrt ((1 + Real.log c) / L) +
+        c ^ 2 * ((M * Q : ℕ) : ℝ) * Real.sqrt (L / N)) =
+        C * (c ^ 2 * (1 + Real.log ((M * Q : ℕ) : ℝ)) * Real.sqrt ((1 + Real.log c) / L)) +
+          C * (c ^ 2 * ((M * Q : ℕ) : ℝ) * Real.sqrt (L / N)) := by ring
+    rw [hq]
+    linarith only [hcenter, hcross, hoverlap, hover2, hsum, hε]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

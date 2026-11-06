@@ -29,7 +29,7 @@ private theorem Icc_sub_precontact {x₀ x₁ : ℝ} (h₀ : x₀ ∈ precontact
   ⟨h₀.1.trans_le ht.1, (EReal.coe_le_coe_iff.mpr ht.2).trans_lt h₁.2⟩
 
 private theorem continuousOn_spectralDrift {y : ℝ} (hy : 0 < y) {x₀ x₁ : ℝ}
-    (hs : Icc x₀ x₁ ⊆ precontactSet) : ContinuousOn (spectralDrift y) (Icc x₀ x₁) := fun x hx =>
+    (hs : Icc x₀ x₁ ⊆ precontactSet) : ContinuousOn (spectralDrift y) (Icc x₀ x₁) := fun _ hx =>
   (continuousAt_spectralDrift hy (toPrecontact (hs hx))).continuousWithinAt
 
 private theorem lipschitzOnWith_abs : LipschitzOnWith 1 (fun r : ℝ => |r|) univ := by
@@ -254,7 +254,7 @@ theorem tendsto_integral_abs_spectralDrift_sub_deriv {base : ℝ} (hbase : base 
     exact div_pos he (mul_pos (by norm_num) hL)
   have hηL : η * (x₁ - x₀ + 1) = e / 8 := by
     rw [hηd]
-    field_simp <;> ring
+    field_simp
   obtain ⟨δ, hδ, hunif⟩ := Metric.uniformContinuousOn_iff.mp
     (isCompact_Icc.uniformContinuousOn_of_continuous (s := Icc x₀ x₁) hgc.continuousOn) η hη
   obtain ⟨n, hn⟩ := exists_nat_gt ((x₁ - x₀) / δ)
@@ -270,8 +270,8 @@ theorem tendsto_integral_abs_spectralDrift_sub_deriv {base : ℝ} (hbase : base 
     linarith only [hn]
   have hnd : (n : ℝ) * d = x₁ - x₀ := by
     rw [hdd]
-    field_simp <;> ring
-  obtain ⟨pt, hpt⟩ : ∃ pt : ℕ → ℝ, pt = fun j => x₀ + j * d := ⟨_, rfl⟩
+    field_simp
+  obtain ⟨pt, hpt⟩ : ∃ pt : ℕ → ℝ, pt = fun j : ℕ => x₀ + (j : ℝ) * d := ⟨_, rfl⟩
   have hptv (j : ℕ) : pt j = x₀ + j * d := by rw [hpt]
   have hstep (j : ℕ) : pt (j + 1) = pt j + d := by
     rw [hptv, hptv]
@@ -332,7 +332,7 @@ theorem tendsto_integral_abs_spectralDrift_sub_deriv {base : ℝ} (hbase : base 
     have hlim : Tendsto R atTop
         (𝓝 (∑ _j ∈ Finset.range n, |(0 : ℝ) - 1 / 2 * Real.arsinh 0|)) := by
       rw [hR]
-      refine tendsto_finset_sum _ fun j hj => ?_
+      refine tendsto_finsetSum _ fun j hj => ?_
       have hj' : j < n := Finset.mem_range.mp hj
       have h1 : Tendsto (fun y : ℝ => Real.artanh (spectralReflection y (pt j))) atTop (𝓝 0) :=
         tendsto_artanh_spectralReflection_zero (toPrecontact (hP j hj'.le))

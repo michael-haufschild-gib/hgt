@@ -198,4 +198,32 @@ theorem integer_spectrum_of_residue_sq_lt_two {A : ℕ → ℕ} {lam : ℕ → �
     hgm hgb hgi hθ
   exact ⟨hb, fun n => ⟨(hvals n).1, hunitN n⟩⟩
 
+/-- The pole residue is either one, with the ordinary spectrum, or at least `√2`. -/
+theorem pole_residue_gap_of_integrable_theta_defect {A : ℕ → ℕ} {lam : ℕ → ℝ}
+    (hmono : StrictMono lam) (hlam0 : lam 0 = 1) (hA1 : ∀ n, 1 ≤ A n)
+    (ha : Summable fun n => (A n : ℝ) / lam n ^ 2) {β : ℝ}
+    {g : ℝ → ℂ} {Cg : ℝ} {N : ℕ} (hgm : Measurable g)
+    (hgb : ∀ t, ‖g t‖ ≤ Cg * (1 + |t|) ^ N) (hgi : Integrable g)
+    (hθ : ∀ x : ℝ, 0 < x → freqTheta (fun n => ((A n : ℝ) : ℂ)) lam x =
+      (x : ℂ) ^ (-(1 / 2 : ℂ)) * freqTheta (fun n => ((A n : ℝ) : ℂ)) lam x⁻¹ +
+        -(β : ℂ) + (β : ℂ) * (x : ℂ) ^ (-(1 / 2 : ℂ)) + defectKernel g x) :
+    (β = 1 / 2 ∧ ∀ n, lam n = n + 1 ∧ A n = 1) ∨ Real.sqrt 2 ≤ 2 * β := by
+  by_cases hsmall : (2 * β) ^ 2 < 2
+  · exact Or.inl (integer_spectrum_of_residue_sq_lt_two hmono hlam0 hA1 ha hsmall
+      hgm hgb hgi hθ)
+  have hlam : ∀ n, 1 ≤ lam n := fun n => hlam0 ▸ hmono.monotone (Nat.zero_le n)
+  have ha0 : ∀ n, 0 ≤ (A n : ℝ) := fun _ => Nat.cast_nonneg _
+  have hC0 := tendsto_abelCos_zero_of_theta_defect ha0 hlam ha hgm hgb hgi hθ
+  have hb : 0 ≤ β / Real.pi := le_of_tendsto_of_tendsto
+    (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) (𝓝[>] 0) (𝓝 0)) hC0 (by
+      filter_upwards [self_mem_nhdsWithin] with ε hε
+      simp only [abelCos, mul_zero, Real.cos_zero, mul_one]
+      exact mul_nonneg hε.le (tsum_nonneg fun n => mul_nonneg (ha0 n) (Real.exp_pos _).le))
+  have hb0 : 0 ≤ β := by
+    have hh := mul_nonneg hb Real.pi_pos.le
+    rwa [div_mul_cancel₀ _ Real.pi_ne_zero] at hh
+  have hs := Real.sqrt_le_sqrt (le_of_not_gt hsmall)
+  rw [Real.sqrt_sq (mul_nonneg zero_le_two hb0)] at hs
+  exact Or.inr hs
+
 end GaloisForLFunctions.ArithmeticPositiveDuality

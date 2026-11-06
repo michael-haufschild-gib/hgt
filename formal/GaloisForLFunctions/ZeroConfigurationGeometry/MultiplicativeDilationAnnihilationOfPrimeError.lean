@@ -155,7 +155,7 @@ theorem eval₂_dilationPairPoly_eq {b : ℝ} (hb : 0 < b) (β ω : ℝ) (z : �
   simp only [dilationPairPoly, Polynomial.eval₂_add, Polynomial.eval₂_sub, Polynomial.eval₂_one,
     Polynomial.eval₂_mul, Polynomial.eval₂_C, Polynomial.eval₂_X, Polynomial.eval₂_X_pow,
     algebraMap_real_complex_apply]
-  push_cast
+  rw [Complex.ofReal_mul, Complex.ofReal_mul, Complex.ofReal_ofNat]
   calc (1 : ℂ) - 2 * ((b ^ β : ℝ) : ℂ) * (Real.cos (ω * Real.log b) : ℂ) * z +
         ((b ^ (2 * β) : ℝ) : ℂ) * z ^ 2
       = 1 - ((b ^ β : ℝ) : ℂ) * (cexp (I * ω * Real.log b) + cexp (-I * ω * Real.log b)) * z +
@@ -344,6 +344,7 @@ theorem locallyIntegrableOn_dilationRemainder {b : ℝ} (hb : 0 < b) (P : Polyno
     have hiR : IntegrableOn (fun y : ℝ => Chebyshev.psi (y / b ^ k)) K :=
       MonotoneOn.integrableOn_isCompact isCompact_Icc (hmono.monotoneOn K)
     have hiC : IntegrableOn (fun y : ℝ => (Chebyshev.psi (y / b ^ k) : ℂ)) K := by
+      change Integrable _ _
       simpa only [Function.comp_def, Complex.ofRealCLM_apply] using
         Complex.ofRealCLM.integrable_comp hiR
     exact hiC.const_mul (P.coeff k : ℂ)
@@ -357,7 +358,7 @@ theorem locallyIntegrableOn_dilationRemainder {b : ℝ} (hb : 0 < b) (P : Polyno
 /-- Rescaling identity on `(1, ∞)`: for `c ≥ 1` and `Re s > 1`,
 `∫_1^∞ ψ(t / c) t^{−(s+1)} dt = c^{−s} ∫_1^∞ ψ(u) u^{−(s+1)} du` with zero boundary term at `1`,
 because `ψ(u) = 0` for `u ≤ 1 < 2`. -/
-theorem integral_Ioi_one_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (hs : 1 < s.re) :
+theorem integral_Ioi_one_psi_div_mul_cpow {c : ℝ} (hc : 1 ≤ c) {s : ℂ} (_hs : 1 < s.re) :
     (∫ t in Ioi (1 : ℝ), (Chebyshev.psi (t / c) : ℂ) * (t : ℂ) ^ (-(s + 1))) =
       (c : ℂ) ^ (-s) *
         ∫ u in Ioi (1 : ℝ), (Chebyshev.psi u : ℂ) * (u : ℂ) ^ (-(s + 1)) := by
@@ -501,7 +502,7 @@ theorem mul_mellin_dilationRemainder {b : ℝ} (hb : 1 ≤ b) (P : Polynomial �
     simp only [dilationPolyOp, Complex.ofReal_sub, Complex.ofReal_sum, Complex.ofReal_mul,
       sub_mul, Finset.sum_mul, mul_assoc, hpow]
   rw [hm, setIntegral_congr_fun measurableSet_Ioi hpt,
-    integral_sub (integrable_finsetSum _ hi_sum) hi_lin, integral_finset_sum _ hi_sum,
+    integral_sub (integrable_finsetSum _ hi_sum) hi_lin, integral_finsetSum _ hi_sum,
     integral_const_mul, integral_Ioi_cpow_of_lt hre1 one_pos, ofReal_one, one_cpow,
     show -s + 1 = -(s - 1) by ring, neg_div_neg_eq]
   have hsum_int : (∑ k ∈ Finset.range (P.natDegree + 1),
@@ -541,8 +542,9 @@ theorem differentiable_dilationSymbol {b : ℝ} (hb : 0 < b) (P : Polynomial ℝ
   have hpow : Differentiable ℂ (fun s : ℂ => (b : ℂ) ^ (-s)) :=
     differentiable_id.neg.const_cpow (Or.inl hb0)
   have heval : ∀ s : ℂ, P.eval₂ (algebraMap ℝ ℂ) ((b : ℂ) ^ (-s)) =
-      ∑ k ∈ Finset.range (P.natDegree + 1), (P.coeff k : ℂ) * ((b : ℂ) ^ (-s)) ^ k :=
-    fun _ => Polynomial.eval₂_eq_sum_range.trans (by simp only [algebraMap_real_complex_apply])
+      ∑ k ∈ Finset.range (P.natDegree + 1), (P.coeff k : ℂ) * ((b : ℂ) ^ (-s)) ^ k := fun s => by
+    rw [Polynomial.eval₂_eq_sum_range]
+    simp only [algebraMap_real_complex_apply]
   simp_rw [heval]
   exact Differentiable.fun_sum fun k _ => (differentiable_const _).mul (hpow.pow k)
 
@@ -713,8 +715,8 @@ theorem re_eq_and_im_mem_periodic_of_dilation_bound {b β σ₀ C x₀ : ℝ} (h
     have hre_eq := congrArg Complex.re hm
     have him_eq := congrArg Complex.im hm
     simp at hre_eq him_eq
-    have hre_zero : β - ρ.re = 0 := (mul_eq_zero.mp hre_eq).resolve_left hlogb.ne'
-    have hre_final : ρ.re = β := by linarith
+    have hre_final : ρ.re = β := by
+      rcases hre_eq with (rfl | rfl | rfl) | hre_zero <;> linarith
     have him_rel : (α - ρ.im) * Real.log b = (m : ℝ) * (2 * Real.pi) := by
       linarith [him_eq]
     refine ⟨hre_final, α, hα, -m, ?_⟩
@@ -797,7 +799,9 @@ theorem finite_xiZeroCopy_of_twoPrime_dilation_bound {p q : ℕ} (hp : p.Prime) 
       have hratR : Real.log q / Real.log p = ((n₁ - n₂ : ℤ) : ℝ) / ((m₁ - m₂ : ℤ) : ℝ) := by
         rw [div_eq_div_iff hlogp.ne' hm_ne]
         linarith
-      exact hirr ⟨((n₁ - n₂ : ℤ) : ℚ) / ((m₁ - m₂ : ℤ) : ℚ), by push_cast; exact hratR.symm⟩
+      exact hirr ⟨((n₁ - n₂ : ℤ) : ℚ) / ((m₁ - m₂ : ℤ) : ℚ), by
+        push_cast at hratR ⊢
+        exact hratR.symm⟩
   have hOrd_fin : Ord.Finite := by
     let f : Ord → (A ×ˢ A) := fun x => ⟨tag x.1 x.2, htag_mem x.1 x.2⟩
     have hf_inj : Function.Injective f := fun x y hxy =>

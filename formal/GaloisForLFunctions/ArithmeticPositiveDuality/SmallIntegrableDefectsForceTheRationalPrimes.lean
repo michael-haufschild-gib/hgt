@@ -48,14 +48,16 @@ theorem beurlingSystem_rigidity_of_small_critical_line_defect
   obtain ⟨p, -⟩ := Multiset.exists_mem_of_ne_zero hx₂0
   letI : Nonempty B.Label := ⟨p⟩
   obtain ⟨lam, index, hmono, hlam0, hsurj, hnorm, hfinite⟩ := exists_ordered_beurling_norms B hBsum
+  -- Finite norm fibers give positive integer atomic masses.
   let A : ℕ → ℕ := fun n => Nat.card {x : B.Integer // index x = n}
   have hA1 : ∀ n, 1 ≤ A n := by
     intro n
-    letI := (hfinite n).fintype
+    letI : Fintype {x : B.Integer // index x = n} := (hfinite n).fintype
     obtain ⟨x, hx⟩ := hsurj n
     letI : Nonempty {x : B.Integer // index x = n} := ⟨⟨x, hx⟩⟩
     have hh : 0 < Fintype.card {x : B.Integer // index x = n} := Fintype.card_pos_iff.mpr inferInstance
-    simpa only [A, Nat.card_eq_fintype_card] using hh
+    simp only [A, Nat.card_eq_fintype_card]
+    omega
   have hlam : ∀ n, 1 ≤ lam n := fun n => hlam0 ▸ hmono.monotone (Nat.zero_le n)
   have ha0 : ∀ n, 0 ≤ (A n : ℝ) := fun _ => Nat.cast_nonneg _
   have hBsum2 : Summable fun x : B.Integer => 1 / B.intNorm x ^ 2 := by
@@ -127,6 +129,7 @@ theorem beurlingSystem_rigidity_of_small_critical_line_defect
     rwa [div_mul_cancel₀ _ Real.pi_ne_zero] at hmul
   have hbound := pole_residue_le_of_small_critical_line_defect B hBsum hEc hEd hdecay hR hC
     hgm hgb hgi hsmall
+  -- The first tent puts the residue inside the rigidity gap.
   have hsq : (2 * β.re) ^ 2 < 2 := by
     have hh := mul_nonneg (sub_nonneg.mpr hbound)
       (show (0 : ℝ) ≤ 19 / 16 + 2 * β.re by linarith only [hβpos])
@@ -135,9 +138,10 @@ theorem beurlingSystem_rigidity_of_small_critical_line_defect
     hgm hgb hgi hθreal
   have hnormnat : ∀ x : B.Integer, B.intNorm x = (index x : ℝ) + 1 :=
     fun x => (hnorm x).symm.trans (hvals (index x)).1
+  -- Unit multiplicities turn the norm index into a bijection with ℕ.
   have hinj : Function.Injective index := by
     intro x y hxy
-    letI := (hfinite (index x)).fintype
+    letI : Fintype {z : B.Integer // index z = index x} := (hfinite (index x)).fintype
     have hc : Fintype.card {z : B.Integer // index z = index x} ≤ 1 := by
       rw [← Nat.card_eq_fintype_card]
       exact (hvals (index x)).2.le

@@ -10,6 +10,8 @@
 
 Let `1 = λ₀ < λ₁ < …`, `aₙ ≥ 1`, and `Σ aₙ/λₙ² < ∞`. The completed Dirichlet transform has the same strip regularity as the existing Hamburger receiver. Write its pole term as `β Γℝ(s−1)`, so the Dirichlet residue is `2β`. Assume `β` real and `β ≤ 1/2`. An integrable uncompleted defect forces `β = 1/2`, `λₙ = n+1`, and `aₙ = 1`.
 
+The critical-line formulation uses `Σ aₙλₙ⁻³/²<∞`; the theta-relation formulation needs only the inverse-square moment.
+
 ## Paper proof [PROVED HERE]
 
 The existing critical-line inverse Mellin formula gives

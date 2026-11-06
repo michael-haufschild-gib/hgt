@@ -115,7 +115,8 @@ positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 | Tent masses within (18/π + 4κ/π²)‖g‖₁ of 2Re β | `abs_integral_unitTent_sub_le_of_critical_line_defect` | proved |
 | Approximate FE fixes integers and primes up to height ≍ ‖g‖₁^{−1/2} | `beurling_primes_of_critical_line_defect` | proved |
 | Integrable FE defect, pole residue ≤1, and discrete atom masses ≥1 force the ordinary integer spectrum | `integer_spectrum_of_integrable_critical_line_defect` | proved |
-| Positive integer atom masses and integrable FE defect: pole residue below √2 forces the ordinary integer spectrum | `integer_spectrum_of_residue_sq_lt_two` | proved |
+| Positive integer atom masses and integrable FE defect: ordinary integer spectrum with residue 1, or residue ≥√2 | `pole_residue_gap_of_integrable_theta_defect` | proved |
+| Countable Beurling system with integrable FE defect of norm ≤1/6400: exact integer spectrum and rational-prime rigidity | `beurlingSystem_rigidity_of_small_critical_line_defect` | proved |
 | Poisson rigidity: positive self-dual with unit gap ⇔ comb; unit gap sharp; one-sided gap ⇒ density only | `tentSelfDual_iff_eq_smul_diracComb`, `exists_tentSelfDual_not_comb`, `measure_Icc_le_of_poissonPair` | proved |
 | Integer PD functions are sign characters; isolation forces δ₀ ⇔ no 2-torsion | `intValued_posDef_iff_signCharacter`, `isolation_forces_dirac_iff` | proved |
 | Fibre barrier 2cos(π/(K+2)); independent channels add nothing | `multiFrequency_purchase_le_fibre_fejer`, `independentChannel_purchase_le_fejer`, `twoChannel_joint_barrier_attained` | proved |
@@ -171,7 +172,7 @@ positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 2. Are singular continuous archimedean dilation spectra seen by some successor? (AC parts are, atoms are not.)
 3. Which Kronecker-null spectra arise from arithmetic successors beyond Hecke and Bost–Connes; classification of
    successor-compatible dilation parts.
-4. Sharp height in the approximate-FE prime theorem (currently ≍ ‖g‖₁^{−1/2}); higher degree analogues.
+4. Higher degree analogues of the absolute small-defect rigidity theorem.
 5. Positive crystalline measures beyond degree one.
 6. Coupled positivity: which coupling matrices K_ρ arise from arithmetic operators, and whether any carrier
    forces K-isotropy to become blindness.

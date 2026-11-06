@@ -17,6 +17,9 @@ The cofactor and its analytic remainder are constructed from the actual function
 At the unit horizontal shift the pole correction vanishes. The raw von Mangoldt
 moments then tend to a negative multiplicity while their coefficient-square
 diagonals vanish, leaving the squared multiplicity in the off-diagonal sum.
+Removing exponentially many short additive shifts preserves that limit.
+At the real centre `2`, the pole instead gives raw limit `1` with the same
+vanishing diagonal, so diagonal decay alone cannot exclude nonzero moments.
 -/
 
 open Complex Filter Metric Set Topology RHTower
@@ -404,7 +407,7 @@ theorem not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts :
     squeeze_zero_norm (fun k => norm_sum_le _ _) hnorm
   have hre := ((Complex.continuous_re.tendsto 0).comp hshort).const_mul 2
   simp only [Complex.zero_re, mul_zero] at hre
-  simpa only [sub_zero] using htotal.sub hre
+  simpa only [sub_zero, Function.comp_def] using htotal.sub hre
 
 #print axioms not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts
 

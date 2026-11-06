@@ -7,6 +7,9 @@ import GaloisForLFunctions.ArithmeticInnerFunctionTheory.EchoTrainsOnIndependent
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheEulerColumnsOfTheInnerField
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheZeroOneLawOfRecurrence
 import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheWindowReadsTheResidue
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheForwardMapFromPrimesToReflectors
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.NearExtremalMollifiersAreRigid
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheCalculusOfEulerColumns
 
 /-!
 # The questions of the field
@@ -25,13 +28,16 @@ stated as an equivalence.
 * **Why is `(β, s) = (1, 0)` critical?** (`question_five`) `s` is an absolutely continuous density over a measure with no such density: `s > 0` is Szegő, `s < 0` is empty,
   and `s = 0` is the threshold, which is RH for all lattices. `β ≠ 1` loses the rigidity of the weights.
 * **Can an arithmetic inner factor be finite and nontrivial?** (`question_six`) For a polynomial yes, for a Dirichlet polynomial never, and for `ζ` the answer is the second half of RH: inner field vanishing at infinity and recurrence.
+* **How do reflectors depend on primes past the first echo?** (`question_seven`) Through the autocorrelation of the predictor test at `log n₀`: the tangent of the forward map is exact at every stage.
+* **What plays the role of Castelnuovo?** (`question_eight`) Not the construction of a mollifier: its limit is forced to be `1/E`, with first coefficient `1 − γ`. What Castelnuovo gives over a curve is the finiteness and smallness of the excess of this one candidate.
+* **How does the Gamma base pay the columns?** (`question_nine`) By size up to `log(b/2π) > 14√P log P`, and at each height of alignment `[B, BQ^{|S|}]` it has to exceed the aligned mass.
 -/
 
 open Finset Filter Topology Set
 
 namespace GaloisForLFunctions.ArithmeticInnerFunctionTheory
 
-open GrowingWindowsOfSpecZ ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis Zeta23
+open GrowingWindowsOfSpecZ ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis Zeta23 _root_.RHTower
 
 noncomputable section
 
@@ -205,6 +211,35 @@ theorem question_six :
     fun S hS a _ hx₀ c d => dirichletPoly_zero_free_or_infinite S hS a hx₀ c d,
     fun _ _ hp hc t => tendsto_innerOf_column hp hc t,
     riemannHypothesis_iff_tendsto_innerField_and_recurrent⟩
+
+/-- **Q7. The forward map past the first echo.** A prime power moves the margin of stage `n` by `−(2/√n₀) A_n(log n₀)`, with `A_n` the autocorrelation of the
+predictor test, and the margin is concave in the weights. -/
+theorem question_seven {φ : ℝ → ℝ} {h r : ℝ} (hφ₀ : φ ∈ realTests) (hφ : ∀ y, y ∉ Icc (-r) 0 → φ y = 0)
+    (lam : ℕ → ℝ) {n₀ : ℕ} (hn₀ : 2 ≤ n₀) {n : ℕ} (hpd : ToeplitzPosDef (weilSeqW lam φ h) (n + 1)) :
+    HasDerivAt (fun t => levinsonErr (weilSeqW (Function.update lam n₀ (lam n₀ + t)) φ h) n)
+      (-(2 / Real.sqrt n₀) * autocorr (latticeTest φ h (levinsonVec (weilSeqW lam φ h) n)) (Real.log n₀)) 0 :=
+  hasDerivAt_levinsonErr_autocorr hφ₀ hφ lam hn₀ hpd
+
+/-- **Q8. The target of the mollifier is forced.** The excess of a budget controls the distance of `E M_Q` to `1` at every point, and the first coefficient of `Q`; RH is the existence of a family with excess tending to `0`, and its limit is `1/E`. -/
+theorem question_eight :
+    (∀ (Q : Polynomial ℂ), Q.coeff 0 = 0 → ∀ s : ℂ, 1 / 2 < s.re →
+      ‖zetaEntire s / s * polyMollifier 1 Q s - 1‖ ^ 2 ≤ (budget 1 Q - 1) * (‖s - 1‖ ^ 2 / (2 * s.re - 1))) ∧
+    (∀ (Q : Polynomial ℂ), Q.coeff 0 = 0 →
+      ‖Q.coeff 1 - (1 - (Real.eulerMascheroniConstant : ℂ))‖ ^ 2 ≤ budget 1 Q - 1) ∧
+    (RiemannHypothesis ↔ ∃ Q : ℕ → Polynomial ℂ, (∀ k, (Q k).coeff 0 = 0) ∧
+      Tendsto (fun k => budget 1 (Q k)) atTop (𝓝 1) ∧
+      ∀ s : ℂ, 1 / 2 < s.re → Tendsto (fun k => zetaEntire s / s * polyMollifier 1 (Q k) s) atTop (𝓝 1)) :=
+  ⟨fun _ hQ _ hs => norm_sub_one_sq_le hQ hs, fun _ hQ => norm_coeff_one_add_le hQ,
+    riemannHypothesis_iff_exists_near_extremal⟩
+
+/-- **Q9. The Gamma base against the columns.** The base pays by size, and alignment below the base fails the current. -/
+theorem question_nine {a : ℝ} (ha : 0 ≤ a) {S : Finset ℕ} (hS : ∀ p ∈ S, 2 ≤ p) :
+    (∀ b : ℝ, columnMass a S < Real.log (b / (2 * Real.pi)) / 2 → 0 < columnCurrent a S b) ∧
+    (∀ {B : ℝ} {Q : ℕ}, 0 < B → 0 < Q →
+      Real.log (B * (Q : ℝ) ^ S.card / (2 * Real.pi)) / 2 < alignedMass a S Q →
+      ∃ b : ℝ, B ≤ b ∧ b ≤ B * (Q : ℝ) ^ S.card ∧ columnCurrent a S b < 0) :=
+  ⟨fun _ hb => columnCurrent_pos_of_mass_lt ha hS hb,
+    fun hB hQ hlt => exists_columnCurrent_neg ha hS hB hQ hlt⟩
 
 end
 

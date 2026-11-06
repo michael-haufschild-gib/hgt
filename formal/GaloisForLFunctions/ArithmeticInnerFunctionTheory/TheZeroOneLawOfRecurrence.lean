@@ -15,7 +15,7 @@ An inner factor can be finite and nontrivial on a datum only if the datum has no
   mechanism through which incommensurability of `log p` enters: `Π_p p^{iτ}` still returns to `1`.
 * **Finite inner factors vanish at infinity** (`tendsto_innerField_of_finite`). If `ζ` had finitely many right zeros,
   then `I(σ + it) → 0` as `t → ∞`: `E` is asymptotically outer on every vertical line.
-* **A vanishing field gives the zeros approach the line** (`exists_height_bound_of_tendsto_innerField`). If `I(σ + it) → 0` on every vertical
+* **A vanishing field gives the zeros approach the line** (`not_tendsto_or_exists_height_bound`). If `I(σ + it) → 0` on every vertical
   line then for each `h > 0` only finitely high zeros lie right of `½ + h`. So vanishing of the inner
   field at infinity sits between RH and the split of RH into its two halves.
 -/
@@ -286,9 +286,7 @@ theorem greenKernel_le {w ρ : ℂ} (hw : 1 / 2 < w.re) (hρ : 1 / 2 < ρ.re) (h
   rw [e]
   linarith
 
-/-- **A finite inner factor vanishes at infinity.** If `ζ` has finitely many right zeros, then
-`I(σ + it) → 0` as `t → ∞`, for each `σ > ½`. -/
-theorem tendsto_innerField_of_finite [Finite ZetaRightZero] {σ : ℝ} (hσ : 1 / 2 < σ) :
+private theorem tendsto_innerField_of_finite [Finite ZetaRightZero] {σ : ℝ} (hσ : 1 / 2 < σ) :
     Tendsto (fun t : ℝ => innerField ((σ : ℂ) + (t : ℂ) * I)) atTop (𝓝 0) := by
   classical
   haveI := Fintype.ofFinite ZetaRightZero
@@ -359,9 +357,17 @@ theorem one_le_zeroMult (ρ : ZetaRightZero) : 1 ≤ zeroMult ρ := by
   have : 0 < analyticOrderNatAt riemannZeta (ρ : ℂ) := by exact_mod_cast hp
   exact_mod_cast this
 
+/-- **A finite inner factor vanishes at infinity.** For each `σ > ½`, either `ζ` has infinitely many right zeros, or
+`I(σ + it) → 0` as `t → ∞`. -/
+theorem infinite_or_tendsto_innerField {σ : ℝ} (hσ : 1 / 2 < σ) :
+    Infinite ZetaRightZero ∨ Tendsto (fun t : ℝ => innerField ((σ : ℂ) + (t : ℂ) * I)) atTop (𝓝 0) := by
+  by_cases h : Finite ZetaRightZero
+  · exact Or.inr (tendsto_innerField_of_finite hσ)
+  · exact Or.inl (not_finite_iff_infinite.mp h)
+
 /-- **A vanishing field bounds the height of the deep zeros.** If `I(½ + h + it) → 0` as `t → ∞`, then the
 zeros with `Re ρ ≥ ½ + h` have bounded height. -/
-theorem exists_height_bound_of_tendsto_innerField {h : ℝ} (hh : 0 < h)
+private theorem exists_height_bound_of_tendsto_innerField {h : ℝ} (hh : 0 < h)
     (hT : Tendsto (fun t : ℝ => innerField (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I)) atTop (𝓝 0)) :
     ∃ T : ℝ, ∀ ρ : ZetaRightZero, 1 / 2 + h ≤ (ρ : ℂ).re → (ρ : ℂ).im < T := by
   have hc : (0 : ℝ) < 4 * h / 5 := by positivity
@@ -432,6 +438,15 @@ theorem exists_height_bound_of_tendsto_innerField {h : ℝ} (hh : 0 < h)
     nlinarith
   have hlt := hT' ((ρ : ℂ).im + u) (by linarith [hu.1])
   exact absurd hlt (not_lt.mpr hge)
+
+/-- **A vanishing field gives the zeros approach the line.** For each `h > 0`, either the field does not vanish at height infinity on the line `½ + h`,
+or the zeros right of that line have bounded height from above. -/
+theorem not_tendsto_or_exists_height_bound {h : ℝ} (hh : 0 < h) :
+    ¬Tendsto (fun t : ℝ => innerField (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I)) atTop (𝓝 0) ∨
+      ∃ T : ℝ, ∀ ρ : ZetaRightZero, 1 / 2 + h ≤ (ρ : ℂ).re → (ρ : ℂ).im < T := by
+  by_cases hT : Tendsto (fun t : ℝ => innerField (((1 / 2 + h : ℝ) : ℂ) + (t : ℂ) * I)) atTop (𝓝 0)
+  · exact Or.inr (exists_height_bound_of_tendsto_innerField hh hT)
+  · exact Or.inl hT
 
 /-- **The split through the inner field.** RH holds iff `I(σ + it) → 0` on every vertical line and zeros recur:
 vanishing of the field is the zeros-approach-the-line half, recurrence the one-off half. -/
