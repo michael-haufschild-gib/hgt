@@ -80,6 +80,6 @@ The existing `riemannHypothesis_iff_forall_xiResolventHankelMatrix_posSemidef` a
 - [x] Canonical arithmetic cycle function: positivity is equivalent to the existing RH moment criterion.
 - [ ] Arithmetic source representation and exact character identification.
 - [ ] RH conclusion kernel-checked.
-- [ ] Direct leaf checks and imports complete for the constructed framework.
+- [x] Direct leaf checks and imports complete for the constructed framework.
 
 No numerical experiments are used. No RH-strength input may enter a theorem as an unproved premise.

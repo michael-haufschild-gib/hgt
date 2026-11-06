@@ -41,8 +41,7 @@ same derivative, proving its nonnegativity without any zero-location premise.
   `complexWordCharacter_xiEndpoint`, `xiEndpointArithmeticCharacter_alternating_eq`, and
   `xiEndpointArithmeticCharacter_alternating_nonneg`.
 
-The arithmetic capstone passes its direct leaf check. All five modules are umbrella-wired.
-Remaining dependency leaf checks are being completed.
+All five modules pass direct leaf checks and are umbrella-wired.
 
 ## Scope
 
