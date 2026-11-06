@@ -36,7 +36,7 @@ theorem producerCost_pos (K ε : ℝ) : 0 < producerCost K ε := by
 
 private theorem log_factorial_le_sq {n : ℕ} (hn : 1 ≤ n) :
     Real.log (n.factorial : ℝ) ≤ (n : ℝ) ^ 2 := by
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
   have hfac0 : (0 : ℝ) < n.factorial := by exact_mod_cast Nat.factorial_pos n
   have hfac : (n.factorial : ℝ) ≤ (n : ℝ) ^ n := by exact_mod_cast Nat.factorial_le_pow n
   have hlog := Real.log_le_log hfac0 hfac
@@ -55,16 +55,17 @@ theorem producerPeriod_le_double_exp {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1)
   let u : ℝ := 24 * (2 + Real.log (F : ℝ)) / ε
   let M : ℕ := max (4 * ℓ + 2) (Nat.ceil u + 6)
   have hinv0 : 0 ≤ 1 / ε := (one_div_pos.mpr hε).le
-  have ht1 : 1 ≤ t := by dsimp [t]; linarith [Nat.cast_nonneg ℓ]
+  have hℓ0 : (0 : ℝ) ≤ ℓ := Nat.cast_nonneg ℓ
+  have ht1 : 1 ≤ t := by dsimp [t]; linarith only [hℓ0, hinv0]
   have ht0 : 0 ≤ t := by linarith
   have hℓt : (ℓ : ℝ) ≤ t := by dsimp [t]; linarith
-  have hinvt : 1 / ε ≤ t := by dsimp [t]; linarith [Nat.cast_nonneg ℓ]
+  have hinvt : 1 / ε ≤ t := by dsimp [t]; linarith only [hℓ0]
   have htexp : t ≤ Real.exp t := by linarith [Real.add_one_le_exp t]
   have hexp1 : 1 ≤ Real.exp t := Real.one_le_exp_iff.mpr ht0
   have hexp12 : Real.exp t ≤ Real.exp (2 * t) := Real.exp_le_exp.mpr (by linarith)
   have hexp23 : Real.exp (2 * t) ≤ Real.exp (3 * t) := Real.exp_le_exp.mpr (by linarith)
-  have hB1 : 1 ≤ B := by dsimp [B]; omega
-  have hB0 : (0 : ℝ) < B := by exact_mod_cast hB1
+  have hB1 : 1 ≤ B := Nat.succ_le_succ (Nat.zero_le _)
+  have hB0 : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
   have hB : (B : ℝ) ≤ Real.exp t := by
     have hp1 : 1 ≤ 2 ^ ℓ := Nat.one_le_pow ℓ 2 zero_lt_two
     have hp : B ≤ 2 ^ (ℓ + 1) := by dsimp [B]; rw [pow_succ]; omega
@@ -138,7 +139,11 @@ theorem producerRadius_le_double_exp {K ε : ℝ} (hK : 0 < K) (hε : 0 < ε) (h
   push_cast
   have hid : 1 / (ε / 2) = 2 / ε := by field_simp
   rw [hid]
-  linarith
+  calc
+    100 * ((Nat.ceil (K / ε) : ℝ) + 10 + 1 + 2 / ε)
+        ≤ 100 * (K / ε + 12 + 2 / ε) := by linarith only [hceil]
+    _ ≤ 100 * (K / ε + 12 / ε + 2 / ε) := by linarith only [h12]
+    _ = 100 * (K + 14) / ε := by ring
 
 /-- The normalized error has the same doubly exponential rate as the alphabet radius. -/
 theorem producerCost_le_double_exp {K ε : ℝ} (hK : 0 < K) (hε : 0 < ε) (hε1 : ε ≤ 1) :
@@ -156,7 +161,8 @@ theorem producerCost_le_double_exp {K ε : ℝ} (hK : 0 < K) (hε : 0 < ε) (hε
   have hlog0 : 0 ≤ Real.log (producerRadius K ε) := Real.log_natCast_nonneg _
   have hcost : producerCost K ε ≤ 48 * Real.exp (4 * U) := by
     have hfac : 5 + Real.log (producerRadius K ε) ≤ 6 * Real.exp U := by linarith
-    calc producerCost K ε ≤ 8 * (Real.exp U) ^ 3 * (6 * Real.exp U) := by
+    calc
+      producerCost K ε ≤ 8 * (Real.exp U) ^ 3 * (6 * Real.exp U) := by
         unfold producerCost
         gcongr
       _ = 48 * Real.exp (4 * U) := by
@@ -199,8 +205,8 @@ theorem exists_producer_with_quantitative_cost :
     have heq : stencilSlope c = normSlope c m B * ((m : ℝ) * (1 - 1 / (B : ℝ))) := by
       rw [normSlope, div_mul_cancel₀ _ (mul_pos hP.m_pos hP.one_sub_pos).ne']
     have hbound : (m : ℝ) * (1 - 1 / (B : ℝ)) ≤ m := by
-      have : 0 ≤ (m : ℝ) / (B : ℝ) := by positivity
-      linarith
+      have hfactor : 1 - 1 / (B : ℝ) ≤ 1 := sub_le_self _ (by positivity)
+      simpa only [mul_one] using mul_le_mul_of_nonneg_left hfactor hP.m_pos.le
     rw [heq]
     calc normSlope c m B * ((m : ℝ) * (1 - 1 / (B : ℝ)))
         ≤ 2 * ((m : ℝ) * (1 - 1 / (B : ℝ))) :=

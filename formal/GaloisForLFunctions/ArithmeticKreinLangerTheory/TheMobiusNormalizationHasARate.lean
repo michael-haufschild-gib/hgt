@@ -1,7 +1,7 @@
 import GaloisForLFunctions.BezoutValuationIncidence.CoprimeMoebiusSigmaSumsDecay
 import GaloisForLFunctions.RHTower.Sieve.MoebiusLogarithmicNormalization
 
-/-!+# A quantitative normalization for the factorial producers
+/-! # A quantitative normalization for the factorial producers
 
 The harmonic Möbius bound `|Σ μ(n)/n| ≤ C/(1 + log N)⁴` gives
 `|-Σ μ(n) log n/n − 1| ≤ 3C/(log N)³` for `N ≥ 3`.
@@ -129,7 +129,7 @@ theorem exists_abs_moebiusLogHarmonicPartial_sub_one_le :
     rw [normalization_abel, normalization_abel, sum_range_add]
     ring
   have hlim : Tendsto (fun a : ℕ => |A (N + a) - A N|) atTop (𝓝 |1 - A N|) := by
-    simpa only [Nat.add_comm] using
+    simpa only [Nat.add_comm, Function.comp_apply] using
       ((hA.comp (tendsto_add_atTop_nat N)).sub_const (A N)).abs
   have htail' := le_of_tendsto' hlim (fun a => by rw [hdiff]; exact htail a)
   have hm : |deningerHarmonicPartial N| ≤ C₀ / (Real.log N) ^ 4 :=
@@ -152,8 +152,10 @@ theorem exists_abs_moebiusLogHarmonicPartial_sub_one_le :
       _ = _ := by rw [abs_neg]
   have hsmall : C₀ / (3 * (Real.log N) ^ 3) ≤ C₀ / (Real.log N) ^ 3 :=
     div_le_div_of_nonneg_left hC₀0 (by positivity) (by nlinarith [pow_pos hl0 3])
-  calc |moebiusLogHarmonicPartial N - 1| ≤ 3 * C₀ / (Real.log N) ^ 3 := by
-      linarith [htri, htail', hb, hfirst, hsmall]
+  calc
+    |moebiusLogHarmonicPartial N - 1| ≤ 3 * C₀ / (Real.log N) ^ 3 := by
+      rw [mul_div_assoc]
+      linarith only [htri, htail', hb, hfirst, hsmall]
     _ ≤ (3 * C₀ + 1) / (Real.log N) ^ 3 := by gcongr; linarith
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

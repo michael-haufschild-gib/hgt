@@ -539,12 +539,12 @@ theorem primeErrorIsFiniteOscillation_of_not_asymptoticAbscissaLaw
   have hAne : A.Nonempty := Finset.insert_nonempty _ _
   set β₁ : ℝ := A.max' hAne with hβ₁
   have hβ₁lt : β₁ < β := by
-    have hmem := A.max'_mem hAne
-    rw [hA, Finset.mem_insert, Finset.mem_image] at hmem
-    rcases hmem with hm | ⟨q, hq, hv⟩
-    · rw [hβ₁, hA, hm]
+    have hmem : β₁ ∈ A := A.max'_mem hAne
+    rcases Finset.mem_insert.mp hmem with hm | hm
+    · rw [hm]
       exact lt_of_lt_of_le hq₀ (hqt q₀ ((hmemF q₀).2 hq₀))
-    · rw [hβ₁, hA, ← hv]
+    · obtain ⟨q, hq, hv⟩ := Finset.mem_image.mp hm
+      rw [← hv]
       exact (Finset.mem_filter.mp hq).2
   have hβ₁half : 1 / 2 ≤ β₁ := by
     have hle : 1 / 2 + h₀ ≤ β₁ := A.le_max' _ (Finset.mem_insert_self _ _)
@@ -580,7 +580,9 @@ theorem primeErrorIsFiniteOscillation_of_not_asymptoticAbscissaLaw
       intro x hx
       have h := hexp x hx
       rw [hall, mul_zero, sub_zero] at h
-      simpa [oscillationError, Complex.norm_real] using h
+      have hrep : oscillationError β ∅ 0 x = ((Chebyshev.psi x - x : ℝ) : ℂ) := by
+        simp [oscillationError]
+      rwa [hrep, Complex.norm_real, Real.norm_eq_abs]
     obtain ⟨ω, hω, -⟩ := eq_of_zeta_eq_zero_of_expansion hb (ρ := (qt.1 : ℂ))
       (by change (β + β₁) / 2 < β; linarith) (xiZeroCopy_ne_one qt)
       (riemannZeta_eq_zero_of_xiZeroCopy qt)
@@ -607,25 +609,28 @@ theorem finiteOscillation_eq_sum (S : Finset ℝ) (c : ℝ → ℂ) (u : ℝ) :
   set e : ℝ → ℂ := fun μ => cexp (I * μ * u) with he
   have hA : ∑ μ ∈ oscillationFrequencies S, (if μ ∈ S then c μ else 0) * e μ
       = ∑ ω ∈ S, c ω * e ω := by
-    rw [← Finset.sum_subset (Finset.subset_union_left (s₁ := S) (s₂ := S.image fun ω => -ω))
-      fun μ _ hμ => by simp [hμ]]
-    exact Finset.sum_congr rfl fun ω hω => by simp [hω]
+    have h1 := Finset.sum_subset (s₁ := S) (s₂ := oscillationFrequencies S)
+      (f := fun μ : ℝ => (if μ ∈ S then c μ else 0) * e μ) Finset.subset_union_left
+      (fun μ _ hμ => by simp [hμ])
+    exact h1.symm.trans (Finset.sum_congr rfl fun ω hω => by simp [hω])
   have hB : ∑ μ ∈ oscillationFrequencies S,
         (if -μ ∈ S then (starRingEnd ℂ) (c (-μ)) else 0) * e μ
       = ∑ ω ∈ S, (starRingEnd ℂ) (c ω) * e (-ω) := by
-    rw [← Finset.sum_subset (Finset.subset_union_right (s₁ := S) (s₂ := S.image fun ω => -ω))
-      fun μ _ hμ => ?_]
-    · rw [Finset.sum_image fun a _ b _ hab => neg_injective hab]
-      exact Finset.sum_congr rfl fun ω hω => by simp [hω]
-    · have hnot : -μ ∉ S := fun h => hμ (Finset.mem_image.mpr ⟨-μ, h, neg_neg μ⟩)
-      simp [hnot]
+    have h1 := Finset.sum_subset (s₁ := S.image fun ω => -ω) (s₂ := oscillationFrequencies S)
+      (f := fun μ : ℝ => (if -μ ∈ S then (starRingEnd ℂ) (c (-μ)) else 0) * e μ)
+      Finset.subset_union_right (fun μ _ hμ => by
+        have hnot : -μ ∉ S := fun h => hμ (Finset.mem_image.mpr ⟨-μ, h, neg_neg μ⟩)
+        simp [hnot])
+    refine h1.symm.trans ?_
+    rw [Finset.sum_image fun a _ b _ hab => neg_injective hab]
+    exact Finset.sum_congr rfl fun ω hω => by simp [hω]
   have hconj : (starRingEnd ℂ) (∑ ω ∈ S, c ω * cexp (I * ω * u))
       = ∑ ω ∈ S, (starRingEnd ℂ) (c ω) * e (-ω) := by
     rw [map_sum]
     refine Finset.sum_congr rfl fun ω _ => ?_
     rw [map_mul, ← Complex.exp_conj]
     congr 2
-    simp only [he, map_mul, Complex.conj_I, Complex.conj_ofReal]
+    simp only [map_mul, Complex.conj_I, Complex.conj_ofReal]
     push_cast
     ring
   have hsum : ∑ μ ∈ oscillationFrequencies S, oscillationCoeff S c μ * e μ

@@ -321,7 +321,7 @@ theorem stencilErrorConst_le (hP : IsProducer c m B) {K : ℕ} (hK : AlphabetLE 
     _ = 4 * stencilSlope c * (K : ℝ) ^ 3 * (5 + Real.log K) := by ring
 
 /-- The terms of the excess series. -/
-private def excessTerm (m B : ℕ) (c : ℕ →₀ ℤ) (j : ℕ) : ℝ :=
+def excessTerm (m B : ℕ) (c : ℕ →₀ ℤ) (j : ℕ) : ℝ :=
   ((stepWeight c (j + 1) : ℝ) - (if j + 1 < B then (m : ℝ) else 0)) /
     (((j : ℝ) + 1) * ((j : ℝ) + 2))
 

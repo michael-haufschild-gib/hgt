@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheHighAliasingHasItsPhysicalDualFloor
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.BoundedWeilEnergyUpgradesL1LimitsToStrongLimits
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.LogarithmicOverlapOfTheCompleteWeilMatrixIsTheRiemannHypothesis
 
 /-!
 # The critical Weil form has a Γ-liminf along `L¹` limits
@@ -160,7 +161,9 @@ theorem eventually_lt_weilQuad_of_L1_limit {l : Filter ℕ} [NeBot l] [IsCountab
   -- the aliasing floor at the grid frequency
   let m : ℝ := ∫ u, tiltedUnitSpline u
   have hm2 : 0 < m ^ 2 :=
-    lt_of_le_of_ne (sq_nonneg m) (pow_ne_zero 2 integral_tiltedUnitSpline_ne_zero).symm
+    lt_of_le_of_ne (sq_nonneg m)
+      (pow_ne_zero 2 RenormalizedArithmeticPotentialTheory.integral_tiltedUnitSpline_ne_zero).symm
+  have hm2' : m ^ 2 ≠ 0 := hm2.ne'
   let κ : ℝ := 1 / (m ^ 2 * R)
   have hκ : 0 < κ := by dsimp only [κ]; positivity
   let I : ℝ := ∫ y in Set.Ioo (-A) 0, F y ^ 2 * Real.exp (-(8 * y))
@@ -199,8 +202,9 @@ theorem eventually_lt_weilQuad_of_L1_limit {l : Filter ℕ} [NeBot l] [IsCountab
       (𝓝 κ) := by
     have h := (hratio.sub hc8).div_const (m ^ 2)
     have e : (R⁻¹ - 0) / m ^ 2 = κ := by
+      rw [sub_zero]
       dsimp only [κ]
-      field_simp
+      rw [one_div, mul_inv, div_eq_mul_inv, mul_comm]
     rwa [e] at h
   have hlogN : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
@@ -252,12 +256,12 @@ theorem eventually_lt_weilQuad_of_L1_limit {l : Filter ℕ} [NeBot l] [IsCountab
       have h := mul_le_mul_of_nonneg_left hN2.le hquot
       refine h.trans_eq ?_
       have hne : m ^ 2 * c N ^ 8 ≠ 0 := (mul_pos hm2 hc8pos).ne'
-      change (Real.log N - A - G₀) / (m ^ 2 * c N ^ 8) *
-        (m ^ 2 * c N ^ 8 * highFourierMass (U N) ((N : ℝ) * Real.exp (-A))) = _
-      field_simp
-      rfl
-    have hgtN := hN1
-    rw [Set.mem_setOf_eq] at hgtN
+      have key : ∀ a d e : ℝ, d ≠ 0 → a / d * (d * e) = a * e := fun a d e hd => by
+        field_simp
+      exact key _ _ _ hne
+    have hgtN : b < lowGammaForm (U N) T +
+        ((Real.log N / c N ^ 8 - (A + G₀) / c N ^ 8) / m ^ 2) * b' - primeSum (U N) +
+        (2 * coshHalfMoment (U N) ^ 2 - 2 * sinhHalfMoment (U N) ^ 2) := hN1
     linarith only [hgtN, harch, hweil, hhigh]
   obtain ⟨N, h1, h2⟩ := (hpos.and hb').exists
   exact (not_lt.mpr h2) h1
