@@ -18,14 +18,14 @@ and `ϱ` is the pseudo-hyperbolic distance of the half plane `Re s > ½`; the he
 Integrating the camera equation over the centres and the mean value theorem over the heights bounds the same energy by
 `≪ L T/c²` on average (`integral_cameraEnergy_le`). So zeros of depth `≈ α/L` with Blaschke factor at least `B₀` obey
 
-`#S ≪_c (α + 1) T L e^{−2(1−3c)α} / B₀²` (`exists_card_hyperbolic_zeros_le`).
+`#S ≪_c (α + 1) T L e^{−2(1−3c)α} / B₀²`, up to an exceptional set of heights (`exists_card_hyperbolic_zeros_le`).
 
 **What this removes.** The Turán camera needs a bounded number of competitors in a sector and small mass outside it. Here the
 coefficients and positions of the zeros of `D` are arbitrary, and neither sector nor count enters. A competitor costs only its
 factor `ϱ`, which is close to `1` for far zeros, much deeper zeros and much shallower zeros. Only zeros at hyperbolic distance
 `O(1)` from `ρ`, that is comparably deep and within `≍ b_ρ` in ordinate, cost anything.
 
-The remaining conditions of `HyperbolicAt` bound the noise of the zeros outside `D` and the coefficient mass of `D` at the low centre.
+The remaining conditions of `HyperbolicAtHeight` bound the noise of the zeros outside `D` and the coefficient mass of `D` at the low centre.
 -/
 
 noncomputable section
@@ -221,7 +221,7 @@ theorem norm_zeroField_sub_expField_le (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v
 /-- **The energy chain at one height.** The Blaschke lower bound for the deep part of the field against the camera energy. -/
 theorem energy_chain (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| ≤ 1) (hv0 : ∀ u, 0 ≤ v u)
     {δ y₀ Y t b₀ B₀ Ξ E₀ : ℝ} {N : ℕ} (hδ : 0 < δ) (hy₀δ : δ < y₀) (hy : y₀ ≤ Y) (hb₀ : 0 < b₀)
-    (hB₀ : 0 ≤ B₀) (hΞ : 0 ≤ Ξ) (hE₀ : 0 ≤ E₀) (hsupp' : ∀ y ∈ Icc y₀ Y, cameraLength δ y ≤ N)
+    (hB₀ : 0 ≤ B₀) (hsupp' : ∀ y ∈ Icc y₀ Y, cameraLength δ y ≤ N)
     (hclose : ∀ y ∈ Icc y₀ Y, ‖zeroField v δ y t + cameraPoly v δ y t‖ ≤ E₀)
     {D : Finset zetaZeroConfig.carrier} {ρ : zetaZeroConfig.carrier} (hρ : ρ ∈ D)
     (hdeep : ∀ ρ' ∈ D, b₀ ≤ (ρ' : ℂ).re - 1 / 2)
@@ -316,8 +316,11 @@ theorem energy_chain (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| �
     nlinarith [sq_nonneg (a - E₀), sq_nonneg (a - Ξ), sq_nonneg (E₀ - Ξ)]
   have hint : (∫ y in y₀..Y, (3 * ‖cameraPolyAt v δ y N t‖ ^ 2 + 3 * (E₀ ^ 2 + Ξ ^ 2))) =
       3 * cameraEnergy v δ y₀ Y N t + 3 * (Y - y₀) * (E₀ ^ 2 + Ξ ^ 2) := by
-    rw [intervalIntegral.integral_add ((continuous_const.mul hP).intervalIntegrable _ _)
-      intervalIntegrable_const, intervalIntegral.integral_const_mul,
+    have hi1 : IntervalIntegrable (fun y : ℝ => 3 * ‖cameraPolyAt v δ y N t‖ ^ 2) volume y₀ Y :=
+      (continuous_const.mul hP).intervalIntegrable _ _
+    have hi2 : IntervalIntegrable (fun _ : ℝ => 3 * (E₀ ^ 2 + Ξ ^ 2)) volume y₀ Y :=
+      intervalIntegrable_const
+    rw [intervalIntegral.integral_add hi1 hi2, intervalIntegral.integral_const_mul,
       intervalIntegral.integral_const, smul_eq_mul]
     unfold cameraEnergy
     ring
@@ -328,11 +331,11 @@ theorem energy_chain (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| �
 
 /-! ### The count -/
 
-/-- `ρ` is hyperbolically isolated at the camera: at every height of its window there is a family `D ∋ ρ` of zeros of depth
-`≥ b₀` in which `ρ` has Blaschke factor at least `B₀`, with coefficient mass at most `Ξ` at the low centre and with
-the zeros outside `D` carrying mass at most `Ξ` at every centre. The zeros of `D` are otherwise unconstrained. -/
-def HyperbolicAt (v : ℝ → ℝ) (δ y₀ Y b₀ B₀ Ξ : ℝ) (ρ : zetaZeroConfig.carrier) : Prop :=
-  ∀ t : ℝ, |t - (ρ : ℂ).im| ≤ 1 / (10 * δ) → ∃ D : Finset zetaZeroConfig.carrier, ρ ∈ D ∧
+/-- `ρ` is hyperbolically isolated at the height `t`: there is a family `D ∋ ρ` of zeros of depth `≥ b₀` in which `ρ` has Blaschke
+factor at least `B₀`, with coefficient mass at most `Ξ` at the low centre and with the zeros outside `D` carrying mass at
+most `Ξ` at every centre. The zeros of `D` are otherwise unconstrained. -/
+def HyperbolicAtHeight (v : ℝ → ℝ) (δ y₀ Y b₀ B₀ Ξ : ℝ) (ρ : zetaZeroConfig.carrier) (t : ℝ) : Prop :=
+  ∃ D : Finset zetaZeroConfig.carrier, ρ ∈ D ∧
     (∀ ρ' ∈ D, b₀ ≤ (ρ' : ℂ).re - 1 / 2) ∧
     B₀ ≤ ∏ ρ' ∈ D.erase ρ, hyperbolicRatio (ρ : ℂ) (ρ' : ℂ) ∧
     profileMass v * ∑ ρ' ∈ D, (zetaZeroConfig.mult ρ' : ℝ) * companionWeight δ y₀ t ρ' ≤ Ξ ∧
@@ -366,7 +369,7 @@ theorem main_term_ge {I₀ B₀ b L α c Y δ : ℝ} (hL : 0 < L) (hα : 0 ≤ �
         field_simp
 
 /-- The closing arithmetic of the chain. -/
-theorem energy_threshold {L Θ Ξ E₀ G b₀ A 𝓔 ℓ : ℝ} (hL : 0 < L) (hΘ : 0 ≤ Θ) (hΞ : Ξ = Θ / 14)
+theorem energy_threshold {L Θ Ξ E₀ G b₀ A 𝓔 ℓ : ℝ} (hL : 0 < L) (hΞ : Ξ = Θ / 14)
     (hb₀ : b₀ = A / L) (hA : 1 ≤ A) (hE₀0 : 0 ≤ E₀) (hE₀ : 14 * E₀ ≤ Θ) (hℓ0 : 0 ≤ ℓ) (hℓ : ℓ ≤ L)
     (hG : L * Θ ^ 2 / 8 ≤ G) (hchain : G - Ξ ^ 2 / (2 * b₀) ≤ 3 * 𝓔 + 3 * ℓ * (E₀ ^ 2 + Ξ ^ 2)) :
     L * Θ ^ 2 / 40 ≤ 𝓔 := by
@@ -375,7 +378,7 @@ theorem energy_threshold {L Θ Ξ E₀ G b₀ A 𝓔 ℓ : ℝ} (hL : 0 < L) (h�
     rw [hΞ, hb₀]
     have e : (Θ / 14) ^ 2 / (2 * (A / L)) = L * Θ ^ 2 / 392 / A := by
       field_simp
-      norm_num
+      ring
     rw [e]
     exact div_le_self (by positivity) hA
   have hE2 : E₀ ^ 2 ≤ Θ ^ 2 / 196 := by
@@ -397,35 +400,145 @@ theorem energy_threshold {L Θ Ξ E₀ G b₀ A 𝓔 ℓ : ℝ} (hL : 0 < L) (h�
   have hLΘ : 0 ≤ L * Θ ^ 2 := by positivity
   nlinarith
 
-/-- **The hyperbolic camera bounds isolated zeros.** Separated zeros of depth in `[α/L, (α+1)/L]` in `[T+1, 2T−1]` with Blaschke
-factor at least `B₀` among zeros deeper than `A/L`, and with the noise and low-centre mass of `HyperbolicAt`, number
-`≪_c (α+1) T L e^{−2(1−3c)α}/B₀²`. -/
+/-- The camera equation on the dyadic range, with a constant depending only on `c`. -/
+theorem close_of_scale {C₁ c T L y t : ℝ} (hC₁0 : 0 ≤ C₁)
+    (hC₁ : ∀ δ y t : ℝ, 1 ≤ δ → δ < y → 1 ≤ t → Real.exp (y + δ) ≤ t →
+      ‖zeroField v δ y t + cameraPoly v δ y t‖ ≤ C₁ * (1 + Real.log (2 + t) / δ))
+    (hc0 : 0 < c) (hc : c < 1) (hT3 : 3 ≤ T) (hL : L = Real.log T) (hδ1 : 1 ≤ c * L)
+    (hyδ : c * L < y) (hy : y + c * L ≤ (1 - c) * L) (ht : t ∈ Ioc T (2 * T)) :
+    ‖zeroField v (c * L) y t + cameraPoly v (c * L) y t‖ ≤ C₁ * (1 + 2 / c) := by
+  have hT0 : 0 < T := by linarith
+  have ht1 : 1 ≤ t := by linarith [ht.1]
+  have hδ0 : 0 < c * L := by linarith
+  have hexpL : Real.exp L = T := by
+    rw [hL]
+    exact Real.exp_log hT0
+  have hNt : Real.exp (y + c * L) ≤ t := by
+    have h1 : Real.exp (y + c * L) ≤ Real.exp L := Real.exp_le_exp.2 (by nlinarith)
+    linarith [ht.1]
+  refine (hC₁ _ _ t hδ1 hyδ ht1 hNt).trans (mul_le_mul_of_nonneg_left ?_ hC₁0)
+  have hlog : Real.log (2 + t) ≤ 2 * L := by
+    have h1 : 2 + t ≤ T ^ 2 := by nlinarith [ht.2]
+    calc Real.log (2 + t) ≤ Real.log (T ^ 2) := Real.log_le_log (by linarith) h1
+      _ = 2 * L := by rw [Real.log_pow, ← hL]; norm_num
+  have hq : Real.log (2 + t) / (c * L) ≤ 2 / c := by
+    rw [div_le_div_iff₀ hδ0 hc0]
+    nlinarith
+  linarith
+
+/-- The count from the energy: separated windows lie in the set of large energy or in an exceptional set, or the bound is trivial. -/
+theorem card_le_of_energy {ι : Type*} (Z : Finset ι) (g : ι → ℝ) {𝓔 : ℝ → ℝ} (h𝓔 : Continuous 𝓔)
+    (h𝓔0 : ∀ t, 0 ≤ 𝓔 t) {r T L c Sv E₀ Θ Bbad : ℝ} {Bad : Set ℝ} (hr0 : 0 < r)
+    (h2r : (2 * r)⁻¹ = 5 * (c * L)) (hT : 0 < T) (hL : 0 < L) (hc : 0 < c) (hE₀ : 0 ≤ E₀) (hΘ : 0 < Θ)
+    (hBbad : 0 ≤ Bbad) (hBad : volume Bad ≤ ENNReal.ofReal Bbad)
+    (hmean : ∫ t in T..(2 * T), 𝓔 t ≤ L * (8 * Sv ^ 2 / c ^ 2 * T))
+    (hsep : ∀ ρ ∈ Z, ∀ ρ' ∈ Z, ρ ≠ ρ' → 2 * r ≤ |g ρ - g ρ'|)
+    (hmem : ∀ ρ ∈ Z, Ioo (g ρ - r) (g ρ + r) ⊆ Ioc T (2 * T))
+    (hbig : 14 * E₀ ≤ Θ → ∀ ρ ∈ Z, Ioo (g ρ - r) (g ρ + r) ⊆
+      {t | t ∈ Ioc T (2 * T) ∧ L * Θ ^ 2 / 40 ≤ 𝓔 t} ∪ Bad) :
+    (Z.card : ℝ) ≤ (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) * T * L / Θ ^ 2 + Bbad * (5 * (c * L)) := by
+  have hunion := volume_biUnion_windows_eq Z g hsep
+  have hcard_of : ∀ B : ℝ, (Z.card : ℝ) * (2 * r) ≤ B → (Z.card : ℝ) ≤ B * (5 * (c * L)) := by
+    intro B h
+    rw [← h2r]
+    have h2 : 0 < 2 * r := by positivity
+    calc (Z.card : ℝ) = (Z.card : ℝ) * (2 * r) * (2 * r)⁻¹ := by field_simp
+      _ ≤ B * (2 * r)⁻¹ := mul_le_mul_of_nonneg_right h (by positivity)
+  have hΘ2 : 0 < Θ ^ 2 := by positivity
+  have hBnn : 0 ≤ Bbad * (5 * (c * L)) := by positivity
+  rcases le_or_gt (14 * E₀) Θ with h14 | hsmall
+  · have hthr : 0 < L * Θ ^ 2 / 40 := by positivity
+    have hvol := volume_ge_le_of_integral h𝓔 h𝓔0 hT hthr hmean
+    have hle : volume (⋃ ρ ∈ Z, Ioo (g ρ - r) (g ρ + r)) ≤
+        ENNReal.ofReal (L * (8 * Sv ^ 2 / c ^ 2 * T) / (L * Θ ^ 2 / 40) + Bbad) := by
+      refine (measure_mono (Set.iUnion₂_subset (hbig h14))).trans ?_
+      refine (measure_union_le _ _).trans ?_
+      rw [ENNReal.ofReal_add (by positivity) hBbad]
+      exact add_le_add hvol hBad
+    rw [hunion] at hle
+    have hreal := (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hle
+    refine (hcard_of _ hreal).trans ?_
+    have e : (L * (8 * Sv ^ 2 / c ^ 2 * T) / (L * Θ ^ 2 / 40) + Bbad) * (5 * (c * L)) =
+        1600 * Sv ^ 2 / c * T * L / Θ ^ 2 + Bbad * (5 * (c * L)) := by
+      field_simp
+      ring
+    rw [e]
+    refine add_le_add ?_ le_rfl
+    refine div_le_div_of_nonneg_right ?_ hΘ2.le
+    have h0 : 0 ≤ 980 * c * E₀ ^ 2 * T * L := by positivity
+    nlinarith
+  · have hle : volume (⋃ ρ ∈ Z, Ioo (g ρ - r) (g ρ + r)) ≤ ENNReal.ofReal T := by
+      refine (measure_mono (Set.iUnion₂_subset hmem)).trans ?_
+      rw [Real.volume_Ioc, show 2 * T - T = T by ring]
+    rw [hunion] at hle
+    have hreal := (ENNReal.ofReal_le_ofReal_iff hT.le).1 hle
+    refine (hcard_of _ hreal).trans ?_
+    have hΘE : Θ ^ 2 ≤ 196 * E₀ ^ 2 := by nlinarith
+    have hmain : T * (5 * (c * L)) ≤ (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) * T * L / Θ ^ 2 := by
+      rw [le_div_iff₀ hΘ2]
+      have h1 : T * (5 * (c * L)) * Θ ^ 2 ≤ T * (5 * (c * L)) * (196 * E₀ ^ 2) :=
+        mul_le_mul_of_nonneg_left hΘE (by positivity)
+      have h2 : 0 ≤ 1600 * Sv ^ 2 / c * T * L := by positivity
+      have e : (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) * T * L =
+          1600 * Sv ^ 2 / c * T * L + T * (5 * (c * L)) * (196 * E₀ ^ 2) := by ring
+      rw [e]
+      linarith
+    linarith
+
+/-- The window of a hyperbolically isolated zero lies in the set of large energy. -/
+theorem window_subset_energy (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| ≤ 1)
+    (hv0 : ∀ u, 0 ≤ v u) {c L y₀ Y α A B₀ E₀ Θ x r : ℝ} {N : ℕ} (hc : c < 1 / 3)
+    (hδ0 : 0 < c * L) (hL0 : 0 < L) (hy₀δ : c * L < y₀) (hyy : y₀ ≤ Y) (hYδ : Y - c * L = (1 - 3 * c) * L)
+    (hℓ : Y - y₀ ≤ L) (hα : 0 ≤ α) (hA : 1 ≤ A) (hB₀ : 0 < B₀) (hE₀0 : 0 ≤ E₀) (hbig : 14 * E₀ ≤ Θ)
+    (hx : x = (1 - 3 * c) * α)
+    (hΘsq : Θ ^ 2 = (∫ u, v u) ^ 2 * Real.exp (2 * x) * B₀ ^ 2 / (α + 1)) (hr : r = 1 / (10 * (c * L)))
+    (hsupp' : ∀ y ∈ Icc y₀ Y, cameraLength (c * L) y ≤ N)
+    {t : ℝ} (hclose : ∀ y ∈ Icc y₀ Y, ‖zeroField v (c * L) y t + cameraPoly v (c * L) y t‖ ≤ E₀)
+    {ρ : zetaZeroConfig.carrier} (hd1 : α / L ≤ (ρ : ℂ).re - 1 / 2)
+    (hd2 : (ρ : ℂ).re - 1 / 2 ≤ (α + 1) / L) (habs : |t - (ρ : ℂ).im| ≤ r)
+    (hhyp : HyperbolicAtHeight v (c * L) y₀ Y (A / L) B₀ (Θ / 14) ρ t) :
+    L * Θ ^ 2 / 40 ≤ cameraEnergy v (c * L) y₀ Y N t := by
+  rw [hr] at habs
+  obtain ⟨D, hρD, hdeep, hprod, hlow, hnoise⟩ := hhyp
+  have hb₀ : 0 < A / L := by
+    have : 0 < A := by linarith
+    positivity
+  have hchain := energy_chain hv hsupp hv0 hδ0 hy₀δ hyy hb₀ hB₀.le hsupp'
+    hclose hρD hdeep hprod habs hlow hnoise
+  have hbρ : 0 < (ρ : ℂ).re - 1 / 2 := lt_of_lt_of_le hb₀ (hdeep ρ hρD)
+  have hG := main_term_ge (I₀ := ∫ u, v u) (B₀ := B₀) hL0 hα hc hd1 hd2 hbρ hYδ
+  rw [← hx, ← hΘsq] at hG
+  exact energy_threshold hL0 rfl rfl hA hE₀0 hbig (by linarith) hℓ hG hchain
+
+/-- **The hyperbolic camera bounds isolated zeros.** Separated zeros of depth in `[α/L, (α+1)/L]` in `[T+1, 2T−1]` that are hyperbolically
+isolated at every height of their window off an exceptional set `Bad` number `≪_c (α+1) T L e^{−2(1−3c)α}/B₀²`, up to
+`5cL |Bad|`. -/
 theorem exists_card_hyperbolic_zeros_le (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, v u ≠ 0 → |u| ≤ 1)
     (hv0 : ∀ u, 0 ≤ v u) (hI : 0 < ∫ u, v u) {c : ℝ} (hc0 : 0 < c) (hc : c < 1 / 4) :
-    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ α A B₀ : ℝ, 0 ≤ α → 1 ≤ A → 0 < B₀ →
-      ∀ S : Finset zetaZeroConfig.carrier,
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℝ in atTop, ∀ α A B₀ Bbad : ℝ, 0 ≤ α → 1 ≤ A → 0 < B₀ → 0 ≤ Bbad →
+      ∀ Bad : Set ℝ, volume Bad ≤ ENNReal.ofReal Bbad → ∀ S : Finset zetaZeroConfig.carrier,
       (∀ ρ ∈ S, α / Real.log T ≤ (ρ : ℂ).re - 1 / 2 ∧ (ρ : ℂ).re - 1 / 2 ≤ (α + 1) / Real.log T ∧
         T + 1 ≤ (ρ : ℂ).im ∧ (ρ : ℂ).im ≤ 2 * T - 1 ∧
-        HyperbolicAt v (c * Real.log T) (2 * (c * Real.log T)) ((1 - 2 * c) * Real.log T)
+        ∀ t : ℝ, |t - (ρ : ℂ).im| ≤ 1 / (10 * (c * Real.log T)) → t ∉ Bad →
+        HyperbolicAtHeight v (c * Real.log T) (2 * (c * Real.log T)) ((1 - 2 * c) * Real.log T)
           (A / Real.log T) B₀
-          ((∫ u, v u) * Real.exp ((1 - 3 * c) * α) * B₀ / Real.sqrt (α + 1) / 14) ρ) →
+          ((∫ u, v u) * Real.exp ((1 - 3 * c) * α) * B₀ / Real.sqrt (α + 1) / 14) ρ t) →
       (∀ ρ ∈ S, ∀ ρ' ∈ S, ρ ≠ ρ' → 1 / (5 * (c * Real.log T)) ≤ |(ρ : ℂ).im - (ρ' : ℂ).im|) →
-      (S.card : ℝ) ≤ C * (α + 1) * T * Real.log T * Real.exp (-(2 * (1 - 3 * c) * α)) / B₀ ^ 2 := by
+      (S.card : ℝ) ≤ C * (α + 1) * T * Real.log T * Real.exp (-(2 * (1 - 3 * c) * α)) / B₀ ^ 2 +
+        Bbad * (5 * (c * Real.log T)) := by
   classical
   obtain ⟨C₁, hC₁0, hC₁⟩ := exists_norm_zeroField_add_cameraPoly_le hv hsupp
   obtain ⟨Sv, hS0, hS⟩ := exists_abs_profile_le hv hsupp
   obtain ⟨CΛ, hCΛ⟩ := exists_sum_vonMangoldt_sq_div_le
-  obtain ⟨Iv, hIv⟩ : ∃ Iv, Iv = ∫ u, v u := ⟨_, rfl⟩
-  rw [← hIv] at hI
   obtain ⟨E₀, hE₀def⟩ : ∃ E₀, E₀ = C₁ * (1 + 2 / c) := ⟨_, rfl⟩
   have hE₀0 : 0 ≤ E₀ := by
     rw [hE₀def]
     positivity
-  refine ⟨(1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / Iv ^ 2 + 1, by positivity, ?_⟩
+  refine ⟨(1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / (∫ u, v u) ^ 2, by positivity, ?_⟩
   have hL : Tendsto Real.log atTop atTop := Real.tendsto_log_atTop
   filter_upwards [eventually_ge_atTop 3, hL.eventually_ge_atTop (1 / c), hL.eventually_ge_atTop 2,
     hL.eventually_ge_atTop (64 / c ^ 2), hL.eventually_ge_atTop (1 + |CΛ|)]
-    with T hT3 hLc hL2 hLd hLC α A B₀ hα hA hB₀ Z hZ hsep
+    with T hT3 hLc hL2 hLd hLC α A B₀ Bbad hα hA hB₀ hBbad Bad hBadvol Z hZ hsep
   have hT0 : 0 < T := by linarith
   have hsq : ∀ y : ℝ, 0 ≤ y + c * Real.log T → y + c * Real.log T ≤ (1 - c) * Real.log T →
       ∫ t in T..(2 * T), ‖cameraPoly v (c * Real.log T) y t‖ ^ 2 ≤ 8 * Sv ^ 2 / c ^ 2 * T :=
@@ -456,43 +569,21 @@ theorem exists_card_hyperbolic_zeros_le (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, 
     have := hy.2
     rw [hY] at this
     nlinarith
-  -- the camera equation on the dyadic range
   have hclose : ∀ t ∈ Ioc T (2 * T), ∀ y ∈ Icc y₀ Y,
-      ‖zeroField v (c * L) y t + cameraPoly v (c * L) y t‖ ≤ E₀ := by
-    intro t ht y hy
-    have ht1 : 1 ≤ t := by linarith [ht.1]
-    have hexpL : Real.exp L = T := by
-      rw [hLdef]
-      exact Real.exp_log hT0
-    have hNt : Real.exp (y + c * L) ≤ t := by
-      have h1 : Real.exp (y + c * L) ≤ Real.exp L :=
-        Real.exp_le_exp.2 (by nlinarith [hyrange y hy])
-      linarith [ht.1]
+      ‖zeroField v (c * L) y t + cameraPoly v (c * L) y t‖ ≤ E₀ := fun t ht y hy => by
     rw [hE₀def]
-    refine (hC₁ _ _ t hδ1 (lt_of_lt_of_le hy₀δ hy.1) ht1 hNt).trans
-      (mul_le_mul_of_nonneg_left ?_ hC₁0)
-    have hlog : Real.log (2 + t) ≤ 2 * L := by
-      have h1 : 2 + t ≤ T ^ 2 := by nlinarith [ht.2]
-      calc Real.log (2 + t) ≤ Real.log (T ^ 2) := Real.log_le_log (by linarith) h1
-        _ = 2 * L := by rw [Real.log_pow, ← hLdef]; norm_num
-    have hq : Real.log (2 + t) / (c * L) ≤ 2 / c := by
-      rw [div_le_div_iff₀ hδ0 hc0]
-      nlinarith
-    linarith
-  -- the energy on average
+    exact close_of_scale hC₁0 hC₁ hc0 (by linarith) hT3 hLdef hδ1
+      (lt_of_lt_of_le hy₀δ hy.1) (hyrange y hy) ht
   have hmv : ∀ y ∈ Icc y₀ Y, ∫ t in T..(2 * T), ‖cameraPolyAt v (c * L) y N t‖ ^ 2 ≤
       8 * Sv ^ 2 / c ^ 2 * T := by
     intro y hy
-    have h1 := hsq y (by linarith [hy.1]) (hyrange y hy)
-    refine le_trans (le_of_eq ?_) h1
+    refine le_trans (le_of_eq ?_) (hsq y (by linarith [hy.1]) (hyrange y hy))
     refine intervalIntegral.integral_congr fun t _ => ?_
-    simp only
     rw [cameraPoly_eq_cameraPolyAt hsupp hδ0 (hsupp' y hy)]
   have hmean := integral_cameraEnergy_le (v := v) hv.continuous (T := T) hyy hmv
   have hℓ : Y - y₀ ≤ L := by
     rw [hy₀, hY]
     nlinarith
-  have hℓ0 : 0 ≤ Y - y₀ := by linarith
   have hmean2 : ∫ t in T..(2 * T), cameraEnergy v (c * L) y₀ Y N t ≤ L * (8 * Sv ^ 2 / c ^ 2 * T) :=
     hmean.trans (mul_le_mul_of_nonneg_right hℓ (by positivity))
   obtain ⟨x, hx⟩ : ∃ x, x = (1 - 3 * c) * α := ⟨_, rfl⟩
@@ -503,15 +594,15 @@ theorem exists_card_hyperbolic_zeros_le (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, 
     ring
   rw [hexp2]
   have hα1 : 0 < α + 1 := by linarith
-  obtain ⟨Θ, hΘdef⟩ : ∃ Θ, Θ = Iv * Real.exp x * B₀ / Real.sqrt (α + 1) := ⟨_, rfl⟩
+  obtain ⟨Θ, hΘdef⟩ : ∃ Θ, Θ = (∫ u, v u) * Real.exp x * B₀ / Real.sqrt (α + 1) := ⟨_, rfl⟩
   have hΘ0 : 0 < Θ := by
     rw [hΘdef]
     positivity
-  have hΘsq : Θ ^ 2 = Iv ^ 2 * Real.exp (2 * x) * B₀ ^ 2 / (α + 1) := by
+  have hΘsq : Θ ^ 2 = (∫ u, v u) ^ 2 * Real.exp (2 * x) * B₀ ^ 2 / (α + 1) := by
     rw [hΘdef, div_pow, Real.sq_sqrt hα1.le, mul_pow, mul_pow, ← Real.exp_nat_mul]
     push_cast
     rfl
-  -- both cases give a bound through `T L/Θ²`
+  rw [← hΘdef] at hZ
   obtain ⟨r, hr⟩ : ∃ r, r = 1 / (10 * (c * L)) := ⟨_, rfl⟩
   have hr0 : 0 < r := by
     rw [hr]
@@ -531,97 +622,36 @@ theorem exists_card_hyperbolic_zeros_le (hv : ContDiff ℝ 2 v) (hsupp : ∀ u, 
       norm_num
     rw [e]
     exact hsep ρ hρ ρ' hρ' hne
-  have hunion := volume_biUnion_windows_eq Z (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ).im) hsep'
   have hmem : ∀ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r) ⊆ Ioc T (2 * T) := by
     intro ρ hρ t ht
     obtain ⟨-, -, hlow, hhigh, -⟩ := hZ ρ hρ
     exact ⟨by linarith [ht.1], by linarith [ht.2]⟩
-  have hcard_of : ∀ B : ℝ, 0 ≤ B → (Z.card : ℝ) * (2 * r) ≤ B → (Z.card : ℝ) ≤ B * (5 * (c * L)) := by
-    intro B _ h
-    rw [← h2r]
-    have h2 : 0 < 2 * r := by positivity
-    calc (Z.card : ℝ) = (Z.card : ℝ) * (2 * r) * (2 * r)⁻¹ := by field_simp
-      _ ≤ B * (2 * r)⁻¹ := mul_le_mul_of_nonneg_right h (by positivity)
-  have hkey : (Z.card : ℝ) ≤ (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) * T * L / Θ ^ 2 := by
-    rcases le_or_gt (14 * E₀) Θ with hbig | hsmall
-    · -- the windows lie in the set of large energy
-      have hthr : 0 < L * Θ ^ 2 / 40 := by positivity
-      have hvol := volume_ge_le_of_integral (continuous_cameraEnergy hv.continuous (c * L) y₀ Y N)
-        (cameraEnergy_nonneg hyy (c * L) N) hT0 hthr hmean2
-      have hsub : ∀ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r) ⊆
-          {t | t ∈ Ioc T (2 * T) ∧ L * Θ ^ 2 / 40 ≤ cameraEnergy v (c * L) y₀ Y N t} := by
-        intro ρ hρ t ht
-        obtain ⟨hd1, hd2, -, -, hhyp⟩ := hZ ρ hρ
-        have htI := hmem ρ hρ ht
-        have habs : |t - (ρ : ℂ).im| ≤ 1 / (10 * (c * L)) := by
-          rw [← hr, abs_le]
-          constructor <;> linarith [ht.1, ht.2]
-        obtain ⟨D, hρD, hdeep, hprod, hlow, hnoise⟩ := hhyp t habs
-        have hb₀ : 0 < A / L := by positivity
-        have hΞeq : (∫ u, v u) * Real.exp x * B₀ / Real.sqrt (α + 1) / 14 = Θ / 14 := by
-          rw [hΘdef, hIv]
-        rw [hΞeq] at hlow hnoise
-        have hchain := energy_chain hv hsupp hv0 hδ0 hy₀δ hyy hb₀ hB₀.le (by positivity) hE₀0 hsupp'
-          (hclose t htI) hρD hdeep hprod habs hlow hnoise
-        have hbρ : 0 < (ρ : ℂ).re - 1 / 2 := lt_of_lt_of_le hb₀ (hdeep ρ hρD)
-        have hYδ : Y - c * L = (1 - 3 * c) * L := by
-          rw [hY]
-          ring
-        have hG := main_term_ge (I₀ := Iv) (B₀ := B₀) (c := c) hL0 hα (by linarith) hd1 hd2 hbρ hYδ
-        rw [← hx] at hG
-        have hG' : L * Θ ^ 2 / 8 ≤ (∫ u, v u) ^ 2 *
-            Real.exp (2 * ((ρ : ℂ).re - 1 / 2) * (Y - c * L)) * B₀ ^ 2 /
-              (8 * ((ρ : ℂ).re - 1 / 2)) := by
-          rw [← hIv, hΘsq]
-          exact hG
-        exact ⟨htI, energy_threshold hL0 hΘ0.le rfl rfl hA hE₀0 hbig hℓ0 hℓ hG' hchain⟩
-      have hle : volume (⋃ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r)) ≤
-          ENNReal.ofReal (L * (8 * Sv ^ 2 / c ^ 2 * T) / (L * Θ ^ 2 / 40)) :=
-        (measure_mono (Set.iUnion₂_subset hsub)).trans hvol
-      rw [hunion] at hle
-      have hreal : (Z.card : ℝ) * (2 * r) ≤ L * (8 * Sv ^ 2 / c ^ 2 * T) / (L * Θ ^ 2 / 40) :=
-        (ENNReal.ofReal_le_ofReal_iff (by positivity)).1 hle
-      have hc1 := hcard_of _ (by positivity) hreal
-      refine hc1.trans (le_of_eq_of_le ?_ (div_le_div_of_nonneg_right
-        (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
-          (le_add_of_nonneg_right (by positivity : 0 ≤ 980 * c * E₀ ^ 2)) hT0.le) hL0.le)
-        (by positivity)))
-      field_simp
-      ring
-    · -- the energy bound is trivial here
-      have hsub : ∀ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r) ⊆ Ioc T (2 * T) := hmem
-      have hle : volume (⋃ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r)) ≤ ENNReal.ofReal T := by
-        refine (measure_mono (Set.iUnion₂_subset hsub)).trans ?_
-        rw [Real.volume_Ioc, show 2 * T - T = T by ring]
-      rw [hunion] at hle
-      have hreal : (Z.card : ℝ) * (2 * r) ≤ T :=
-        (ENNReal.ofReal_le_ofReal_iff hT0.le).1 hle
-      have hc1 := hcard_of _ hT0.le hreal
-      refine hc1.trans ?_
-      have hΘ2 : Θ ^ 2 ≤ 196 * E₀ ^ 2 := by nlinarith
-      rw [le_div_iff₀ (by positivity)]
-      have hS1 : 0 ≤ 1600 * Sv ^ 2 / c := by positivity
-      have hprod : 0 ≤ T * (c * L) := by positivity
-      have h1 : T * (5 * (c * L)) * Θ ^ 2 ≤ T * (5 * (c * L)) * (196 * E₀ ^ 2) :=
-        mul_le_mul_of_nonneg_left hΘ2 (by positivity)
-      have h2 : 0 ≤ 1600 * Sv ^ 2 / c * T * L := by positivity
-      nlinarith
-  -- rewrite the bound
-  have hfinal : (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) * T * L / Θ ^ 2 =
-      (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / Iv ^ 2 * (α + 1) * T * L * (Real.exp (2 * x))⁻¹ /
-        B₀ ^ 2 := by
-    rw [hΘsq]
-    field_simp
-  rw [hfinal] at hkey
-  refine hkey.trans ?_
-  refine div_le_div_of_nonneg_right ?_ (by positivity)
-  have hnn : 0 ≤ (α + 1) * T * L * (Real.exp (2 * x))⁻¹ := by positivity
-  calc (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / Iv ^ 2 * (α + 1) * T * L * (Real.exp (2 * x))⁻¹
-      = (1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / Iv ^ 2 * ((α + 1) * T * L * (Real.exp (2 * x))⁻¹) := by
-        ring
-    _ ≤ ((1600 * Sv ^ 2 / c + 980 * c * E₀ ^ 2) / Iv ^ 2 + 1) *
-          ((α + 1) * T * L * (Real.exp (2 * x))⁻¹) :=
-        mul_le_mul_of_nonneg_right (by linarith) hnn
-    _ = _ := by ring
+  have hYδ : Y - c * L = (1 - 3 * c) * L := by
+    rw [hY]
+    ring
+  have hwindow : 14 * E₀ ≤ Θ → ∀ ρ ∈ Z, Ioo ((ρ : ℂ).im - r) ((ρ : ℂ).im + r) ⊆
+      {t | t ∈ Ioc T (2 * T) ∧ L * Θ ^ 2 / 40 ≤ cameraEnergy v (c * L) y₀ Y N t} ∪ Bad := by
+    intro hbig ρ hρ t ht
+    by_cases htBad : t ∈ Bad
+    · exact Or.inr htBad
+    refine Or.inl ?_
+    obtain ⟨hd1, hd2, -, -, hhyp⟩ := hZ ρ hρ
+    have htI := hmem ρ hρ ht
+    have habs : |t - (ρ : ℂ).im| ≤ r := by
+      rw [abs_le]
+      constructor <;> linarith [ht.1, ht.2]
+    have hc3 : c < 1 / 3 := by linarith
+    have hhyp' : HyperbolicAtHeight v (c * L) y₀ Y (A / L) B₀ (Θ / 14) ρ t :=
+      hhyp t (by rw [← hr]; exact habs) htBad
+    refine ⟨htI, ?_⟩
+    exact window_subset_energy hv hsupp hv0 hc3 hδ0 hL0 hy₀δ hyy hYδ hℓ hα hA hB₀
+      hE₀0 hbig hx hΘsq hr hsupp' (hclose t htI) hd1 hd2 habs hhyp'
+  have hkey := card_le_of_energy Z (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ).im)
+    (continuous_cameraEnergy hv.continuous (c * L) y₀ Y N) (cameraEnergy_nonneg hyy (c * L) N)
+    (Sv := Sv) hr0 h2r hT0 hL0 hc0 hE₀0 hΘ0 hBbad hBadvol hmean2 hsep' hmem hwindow
+  refine hkey.trans (le_of_eq ?_)
+  rw [hΘsq]
+  congr 1
+  field_simp
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

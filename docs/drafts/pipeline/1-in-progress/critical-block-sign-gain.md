@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress
 - **Target:** B7, full-space positivity beyond the size-only optimum.
-- **Status:** Conjectural source transfer; benchmark specification pending.
+- **Status:** Conjectural source transfer; A4 absolute-assembly optimum uncertified.
 
 For an absolute two-block comparison with positive constants,
 
@@ -20,7 +20,7 @@ estimates admit one sharp common block comparison.
 
 Required source work: retain the constants and free splitting parameters
 in the dyadic far reserve, dual-collar residual and Schur payment; certify
-the optimum of the specified absolute assembly; prove its active endpoint
+the optimum of A4's absolute-value assembly; prove its active endpoint
 has a strict low-block gain. The existing existential small-band constants
 do not certify that optimum. An arbitrarily chosen absolute bound would
 not settle B7.
@@ -110,10 +110,35 @@ Thus `‖U_N‖₂=1` implies `‖x‖₂=O(c⁴)`. The audited discrete pairing
 lemma accommodates this growth: its error is bounded by
 `O(c¹⁰‖x‖₂/N)`, and every fixed power of `c` is `o(N)` on the critical curve.
 
+`AtomicSynthesisRetainsItsMixedMass.lean` formalizes this normalization and
+the mixed-row expansion, with error `O(c/N)‖x‖₂`. Writing `m=∫φ`,
+`H=halfWeight h`, and `U_{h,N}` for the normalized recovery vector,
+`tendsto_criticalCurve_mixed_mass_defect` proves
+
+`m c⁸(∫U_N U_{h,N}−m∫U_N H) → 7J₁(∫φ²)∫F H e⁻⁸ʸ`
+
+for unit physical mass and strong `L¹` convergence `U_N→F`.
+The direct audit passed with only standard axioms.
+
 For global confinement, retain the raw far reserve before imposing its
 small-multiple restriction. The required extension at fixed critical ratio
 `R` is `Q_N(z) ≥ (7/8)D_M(z)−C_R c S₇(z)−o(log N/(log log N)^B)P(z)`.
-Combined with the prefix defect floor, this would force
+The prefix defect floor requires orthogonality to a growing conductor packet,
+not merely to conductor one. With cutoff
+`q=N^(1/(1+log log N)^5)` and its terminal leakage controlled, it would force
 `P=O(c(log log N)^5/log N)S₇` for possible negative far vectors.
 The raw reserve is formalized; this extension and the signed mixed-source
 passage remain unproved.
+
+The window pole cost has a useful exact scaling. Its prefactor is bounded by
+`16(1+2e)c⁸/(g log N)`, and the pole term by `8e²c S₇`.
+Thus `c⁸/log N≤2R` bounds this cost by
+`256(1+2e)e² splineWindowConstant R c S₇/g`.
+No smallness of `R` is needed when this collar cost is retained.
+The prefix errors still require the parameter estimates and their formal transfer.
+
+The corresponding physical `L¹` tail bounds are `O(√(P/c))` for the prefix
+and `O(e⁻⁴ᴬ√S₇)` for the collar below depth `−A`. They follow from the
+synthesis triangle inequality and weighted Cauchy–Schwarz:
+`N⁻¹Σ_{n≤Ne⁻ᴬ}(n/N)⁷=O(e⁻⁸ᴬ)`.
+These bounds remain to be formalized and combined with local compactness.

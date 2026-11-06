@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `20442c963141758e1f9cda4b0de5fed405ab7038`.
+**Corpus checkpoint:** `e0d985d915d47fd4204514366cb45ff72bfbddc6`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -45,9 +45,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### RW — Restricted Weil ground energy
 
 - **Path:** Complete Weil form → μ(a)≥0 at every radius → RH.
-- **Established:** Attained strictly decreasing minima; nonnegative apertures extend through finite contact. Increasing a_k carries floor1/(20000·2^k), a₀>181/500. Precontact HB kernels; finite contact forces blowup. Strong rescaled L² collar traces; every finite evaluation Gram is absolutely continuous on compact precontact intervals, gain=integrated derivative [L]. Mixed density=sum of squared left/right combined traces; diagonal kernel O_(c,z)(a) as a↓0 inside fixed precontact c [S]. Translation is a full-Weil isometry; renewal mass J(x)log(1/x)→1. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
-- **Open:** All-aperture sign or contact-uniform arithmetic kernel bound. Increment error contains 2C_c²/μ(a); compact-precontact regularity does not bound growth at contact. [Specific floor tower has limit<0.3621](rh-killed-routes.md#frozen-weil-floor-tower) [L]; larger apertures need another producer. [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
-- **Sources:** C:TheApertureFlowNeverStalls; I:{MultiPrimeDilationModulusAndIteratedWeilFloors,TheWeilFloorTowerIsFrozen}; CSTW:{TheLocalWeilKernelIsHermiteBiehler,TheWeilKernelDivergesAtContact,TheWeilCollarResidualsHaveTheirActualL2Limit,TheWeilKernelIncrementHasItsCollarEnergyBound,TheWeilDiagonalKernelsAreAbsolutelyContinuous,TheEvaluationGramHasNoSingularPrecontactPart,TranslationPreservesTheCompleteWeilForm,TheLogarithmicRenewalCouplingHasItsExactNormalization} [L]; CSTW:{TheEvaluationGramsHaveTheirEndpointSlope,TheWeilKernelVanishesAtZeroAperture} [S]; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
+- **Established:** Attained decreasing minima; positive floor1/(20000·2^k) through a_k, a₀>181/500. Precontact canonical system: positive diagonal Hamiltonian, det H=1; every finite Gram equals integrated endpoint-trace energy from aperture0, with no initial atom. Complete sampling bases give positive critical-line measures reproducing ζ's smooth-window form below onset. All-lattice/two-site receivers [L]; exact {2,3} band below log2 [K].
+- **Open:** All-aperture sign or contact-uniform arithmetic kernel/Hamiltonian control. Finite contact forces kernel blowup; increment cost contains 2C_c²/μ(a). det H=1 and precontact sampling do not bound that growth. [Specific floor tower has limit<0.3621](rh-killed-routes.md#frozen-weil-floor-tower). [Prime-entry margins](#prime-entry), [EWU](#ewu), [OWU](#owu), [ACT](#act).
+- **Sources:** C:TheApertureFlowNeverStalls; I:TheWeilFloorTowerIsFrozen; CSTW:{TheWeilKernelDivergesAtContact,TheWeilTowerHasItsPrecontactCanonicalSystem,TheWeilHamiltonianHasDeterminantOne,TheWeilKernelVanishesAtZeroAperture,TheSamplingAtomsArePositiveMimicsOfZeta}; GWZ:RHIsDecidedOnTwoSites [L]; SWC:BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour [K].
 
 <a id="fu"></a>
 ### FU — CCM-FU signed prime scheduling
@@ -77,7 +77,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### PA — Prime–archimedean source passivity
 
 - **Path:** Prime−archimedean trace → current sign or subexponential mismatch → RH.
-- **Established:** Explicit H(k)=explicitPrimeArchHausdorffShift k gives Hausdorff-row nonnegativity for r≥H(k); remaining initial-segment signs⇔RH. HJ source branch: continued prime−Gamma paired kernel has exterior scalar-diagonal sign⇔RH at discharged radius218/25 [L]. HJ residual-only branch overlaps SEC/HCF.
+- **Established:** Explicit H(k)=explicitPrimeArchHausdorffShift k gives Hausdorff-row nonnegativity for r≥H(k); remaining initial-segment signs⇔RH. HJ source branch: continued prime−Gamma paired kernel has exterior scalar-diagonal sign⇔RH at discharged radius218/25 [L]. [Verified-height transfer](#finite-height) supplies conditional finite Hausdorff ranges. HJ residual-only branch overlaps SEC/HCF.
 - **Open:** Initial-segment signs uniformly in unbounded k; alternatively K(z,z)≥0 on 0<Im z<1/2, Re z>218/25 at regular points ζ(1/2+iz)≠0, or source Bernstein variation TV(n)/qⁿ→0 for every q>1. Finite per row is not a finite RH certificate.
 - **Sources:** R:{PrimeArchEndpointFrequencyAccretivity,PrimeArchBernsteinExponentialPhase,XiHurwitzOrientationPositivePairedSource,XiPositivePairedDiagonalSectorCollapse}; S:EffectiveHorizons/{HausdorffShifts,XiZeroMass} [L].
 
@@ -85,33 +85,33 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### MC — Möbius cancellation at half power
 
 - **Path:** Actual Möbius/Liouville half-power cancellation → RH.
-- **Established:** Hilbert subpower/Redheffer receivers. Damped centered energy E_ε: arbitrarily small ε>0 with sup_T E_ε(T)<∞⇔RH. At any fixed t₀, sharp Möbius sections M_N(1/2+it₀)=O_ε(N^ε) for every ε>0 and all N⇔RH [S]. Square-root-cutoff short divisor head paid. Explicit exponent-1/2 gauge outside finitely modified Dirichlet/vertical orbits; pole-preserving flips have exponent max(θ,Θ) [K].
+- **Established:** Damped centered energy E_ε: arbitrarily small ε>0 with sup_T E_ε(T)<∞⇔RH. At any fixed t₀, sharp M_N(1/2+it₀)=O_ε(N^ε) for every ε>0 and all N⇔RH. Undamped Hilbert energy≤CTexp(−c·vkScale(T)), uniformly N≤T; vkScale(T)=(logT)^(3/5)(loglogT)^(−5/3) [L]. Explicit exponent-1/2 gauge outside finite Dirichlet/vertical modifications; pole-preserving flips have exponent max(θ,Θ) [K].
 - **Open:** Actual trivial-gauge cancellation; signed long-modulus energy including harmonic tail. [Bounded undamped Hilbert form is impossible](rh-killed-routes.md#mobius-hilbert-endpoint); cofinal damped bounds remain open. Constructed half-power gauges and [pole matching](rh-killed-routes.md#pole-matching-half-power) do not discharge them.
-- **Sources:** R:MobiusHilbertFormEquivalence; ADT:TheMertensFunctionIsAGluingDeterminant; C:{TheDampedMobiusCriticalEnergy,SignedAveragedContinuationAndTheZeroWidthBand,LongModulusShortEnergy,LongModulusExactDecomposition} [L]; AGT:{AnExplicitPointHasExponentOneHalf,TheFlipPointsBreakTheMoebiusHalfPowerLaw} [K]; MZF:TheWidthIsReadInOneWindow [S].
+- **Sources:** R:MobiusHilbertFormEquivalence; ADT:TheMertensFunctionIsAGluingDeterminant; C:{TheDampedMobiusCriticalEnergy,MobiusHilbertVinogradovKorobov,LongModulusExactDecomposition}; MZF:TheWidthIsReadInOneWindow [L]; AGT:{AnExplicitPointHasExponentOneHalf,TheFlipPointsBreakTheMoebiusHalfPowerLaw} [K].
 
 <a id="tt"></a>
 ### TT — Theta-tail and heat–Cassini currents
 
 - **Path:** Actual theta/Wold residual → bounded weighted endpoint energy for every t<1/2 → RH.
-- **Established:** Residual naturalWeightSum_N−log N−holonomyConstant decays O(exp(−c√log N)); D_t+Q_t/2=endpointEnergy_t/2≥0. Boundedness for each 0<t<1/2⇔RH. Φ-Doob identities retain every reflected-prime term; odd-sign branch overlaps [OWU](#owu).
-- **Open:** For every 0<t<1/2, some C_t bounds D_t(N)+Q_t(N)/2 for all N, with literal weights (n+1)^(2t). Missing upper bound, not nonnegativity; endpoint t=1/2 fails.
-- **Sources:** R:{XiHeatCassiniWoldHolonomyExpRate,PaperWoldDirectedCovarianceEnergy,PaperWoldDirectedCovarianceRH,WeilMarkovOddPositivity} [L].
+- **Established:** Wold residual=O(exp(−c·vkScale(N))); D_t+Q_t/2=endpointEnergy_t/2≥0. Boundedness for each 0<t<1/2⇔RH. Φ-Doob identities retain every reflected-prime term. Uniform endpoint bound on the shrinking band 0≤t≤min(1/2,κ·vkScale(N+2)/(96log(N+2))) [L].
+- **Open:** For every fixed 0<t<1/2, some C_t bounds D_t(N)+Q_t(N)/2 for all N, with literal weights (n+1)^(2t). Shrinking-band control does not reach a fixed positive t; endpoint t=1/2 fails. Odd-sign branch: [OWU](#owu).
+- **Sources:** R:{PaperWoldDirectedCovarianceEnergy,PaperWoldDirectedCovarianceRH,WeilMarkovOddPositivity}; M:WoldResidualVinogradovKorobov; C:ThetaEndpointVinogradovKorobov [L].
 
 <a id="la"></a>
 ### LA — Jensen line anchor
 
 - **Path:** Actual Ξ Jensen polynomials → sublinear upper imaginary-root growth → RH.
-- **Established:** RH⇔infinitely many unshifted Jensen degrees real-rooted. Fixed finite Möbius mollifier, σ>0, any phase: sublinear upper imaginary-root growth along infinitely many reversed Jensen degrees⇔RH; ¬RH forces Im≥κd eventually. Nonreal multiplicity N_d is nondecreasing, sup_d N_d=total off-line ζ multiplicity; eventually N_d≤300√(d log d) [L].
-- **Open:** Actual sublinear bound on maximal upper root height, or all-root reality. A degree-independent N_d bound gives only finite off-line support, not extinction. [Bulk reality permits unbounded exceptions](rh-killed-routes.md#jensen-bulk-reality). Heat-descent branch: [ZCG](#zcg).
-- **Sources:** FFP:{FiniteFreeDeBruijnNewman,ImaginaryPartDichotomy,JensenCountsOffLineZeros,NonRealJensenCountBound,BulkBlindness} [L].
+- **Established:** RH⇔infinitely many unshifted Jensen degrees real-rooted. Also RH⇔∀ε>0, infinitely many reversed degrees have maximal upper-root height≤εd, for each fixed finite Möbius mollifier, σ>0 and phase. Large-d reversed Jensen roots with abs(Re z)≤√(d log d)/100 are real. Nonreal multiplicity N_d is nondecreasing, sup_d N_d=total off-line ζ multiplicity; N_d≤300√(d log d) for log d≥6.1·10⁶ [L]. [Verified-height transfer](#finite-height) gives conditional full-degree reality.
+- **Open:** Control roots outside the proved inner region: sublinear maximal upper height or all-root reality. Bounded N_d would give only finite off-line support. [Bulk reality permits unbounded exceptions](rh-killed-routes.md#jensen-bulk-reality). Heat descent: [ZCG](#zcg).
+- **Sources:** FFP:{FiniteFreeDeBruijnNewman,ImaginaryPartDichotomy,JensenCountsOffLineZeros,NonRealJensenCountBound,JensenRootsAreRealBelowTheSaddleEdge,BulkBlindness} [L].
 
 <a id="zcg"></a>
 ### ZCG — Zero-configuration geometry / heat descent
 
 - **Path:** Actual ξ half-Gaussian source → exclusion of positive-time heat collisions → RH.
-- **Established:** Q=halfGaussTransform(t,xiLine X): real collision⇔Re Q(0)=Im Q′(0)=0; no positive-time real collisions⇔RH. All-height large-X horizon t≥(6600/9991+ε)/log X [L]. Actual local Newman constant Λ_X·log X→0 in density; above (1/2+ε)/log((X−1)/(2π)), exceptional centres in [T,2T] have measure O(T^(1−ε²/32)), 0<ε≤1/4 [S]. An eventual all-height ceiling Λ_X log X≤κ bounds high-zero depth by √(κ/c), c>0; sufficiently small κ implies Θ<1 [L]. NGF: Fock/frequency certificate, Hermite collision profiles and buffered-window zero-count law [S]. Camera laws read isolated actual-ζ clusters [L].
-- **Open:** Exclude positive-time collisions at every height, including bounded/exceptional heights and arbitrarily small times. Density convergence supplies no eventual all-height ceiling. NGF needs actual frequency<1 at some positive scale at each putative collision; local collision geometry supplies no such bound. [Size-only repair fails](rh-killed-routes.md#heat-method-floor). Camera isolation/faithful positive mimic remain open; [unweighted counts need an atom-weight floor](rh-killed-routes.md#weighted-image-count). Almost-every-fibre repulsion does not decide a=0.
-- **Sources:** ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw,TypicalHeightHalfGaussReality}; R:Heat/AHeatCoefficientGivesAZeroFreeStrip; ZCG:NearCoincidencePrimeCurvatureAndStripCollisionLaw; ZCG:RealWeights/{ZetaTransfer,ZetaReadout,FlatLattice}; ADO:{UniformRepulsionCarriesReality,AlmostEveryValueRepelsAtPolynomialScale,TheExceptionalValuesOfZetaAreResidual} [L]; ZCG:HeatScaleRepulsion/{TypicalHeightLocalNewman,TheSaddleHorizonOnAlmostAllHeights}; NGF:{TheFrequencyIsAChaosLevel,CollisionsBlowUpToHermiteProfiles,TheZeroNumberDropsOnlyAtCollisions} [S].
+- **Established:** No positive-time real collisions⇔RH. All-height large-X horizon (6600/9991+ε)/logX. On one density-one set, Λ_XlogX→0; central gap g²≥c·min(t,log⁻²(2+abs(x))) holds eventually for each fixed κ>0 when κ≤tlog(x/2π)≤1 [L]. Quantitative refinement: Λ_XlogX≤32L^(−1/5) outside measure O(TL^(−14/5)), L=1+log4T [S]. Prime cameras control dominant/bounded clusters with explicit outside-noise hypotheses; precontact positive ζ-image mimics exist [L].
+- **Open:** All-height collision exclusion down to arbitrarily small t, including bounded/exceptional heights. Need actual frequency<1 at each putative collision, or global central-gap control; the latter also forces uniformly bounded multiplicity. Local Dyson/maximum-principle laws retain crowd/lateral-boundary inputs; [heat structure alone cannot select time0](rh-killed-routes.md#heat-time-shift). Cameras still need deep-cluster separation/noise control; [atom counts need a weight floor](rh-killed-routes.md#weighted-image-count).
+- **Sources:** ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw,LocalNewmanDensityOne}; NGF:{TheCentralInequalityOnAlmostAllHeights,TheCentralInequalityIsStrongerThanRH,TheGapsObeyAMaximumPrinciple}; MZF:{TheTuranCameraSeesBoundedClusters,TheNearLineZerosCannotBlockTheCamera}; CSTW:TheSamplingAtomsArePositiveMimicsOfZeta [L]; NGF:TheCentralInequalityAtAPowerOfTheLogarithm [S].
 
 <a id="tg"></a>
 ### TG — Topological sub-unit gate
@@ -141,9 +141,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Rank8 positive for 0<a<1/2; ranks≤N strict on |a−1/2|<c/(1+log(N+1)) [K]. Complete fifth-even tails PD for r≥0; rank9 positive and I₈(a)>0 throughout 0<a<1/2. First-atom center-tail matrices PD at every finite rank, r≥0. Pair sign equals cos(b log(n/m)), also after aperture integration. Actual Hedenmalm current=2·aperture-weighted full tail; ordered-pair truncation error O(a·exp(−πM)), uniform in frequency, 0≤a<1/2 [L].
-- **Open:** Rank10+ aperture-weighted signed-jet positivity throughout 0<a<1/2; jet/moment passage and signed aggregate control. [Unequal-pair spectra change sign](rh-killed-routes.md#theta-pairwise-positive); reassembly/remainder bounds supply no positivity. [Fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:{StrictEighthSection,LogarithmicCriticalCollar} [K]; TCS:{FifthEvenCompleteTail,StrictNinthSection}; CAF:{FirstAtomAllRankCenterTail,ThetaPairCenterTailSpectrum,ThetaPairCenterTailReassembly,ThetaPairApertureCurrent} [L].
+- **Established:** Full source ranks≤9 positive throughout 0<a<1/2; all finite ranks positive in a critical collar of width ≍(logN)^(−2/3)(loglogN)^(−5/3). Exact two-atom source has positive literal aperture-weighted Hankel sections at every rank, including cross terms. Pair jets/interchanges and rank-uniform Gaussian-relative remainder O(ae^(−πM)) closed. Rank-N full-source sign follows from current≥0 on a cubic frequency window [L].
+- **Open:** Full-source rank10+ throughout 0<a<1/2: signed aggregate/remainder payment. [Every fixed finite head lacks a positive all-rank Gaussian margin](rh-killed-routes.md#theta-finite-head-margin); a uniform error bound cannot complete that producer. [Unequal pairs change sign](rh-killed-routes.md#theta-pairwise-positive); [fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:StrictEighthSection [K]; TCS:{StrictNinthSection,VinogradovKorobovCriticalCollar,AllApertureFiniteRankCriterion}; CAF:{TwoAtomAllRankAperture,ThetaPairApertureJets,ThetaPairGaussianRemainder,ThetaPairGaussianCoercivityBoundary} [L].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -157,15 +157,15 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Source current/window energy → collision-charge bound, all-resolution sectoriality or cofinal long-mollifier moment control → RH.
-- **Established:** Attained extrema; min/mean/max/jet RH receivers; finite-theta right-port boundedness⇔window zero purity. Long-Möbius dyadic O(T), θ>1/2⇒finite depth≥1/(2θ)+ε set; cofinal prefix O_θ(T^K), fixed K/unbounded θ⇒RH. Normalized unit-bounded mollifiers: moment→1, log N=o(T)⇒critical-scale clustering; excess O(1/log T), log N≤T/log T⇒log-free occupancy. Prefix/shifted-detector occupancy receivers. Weighted defect D bounds the [1,T] moment by 2(T−1)+4π(¼+T²)D [L]. RH⇔∫₀¹abs(ζM_N(1/2+it))²dt=O_ε(N^(2ε)) for every ε>0, all N [S]; sparse all-window alternative: [CTF](#ctf).
-- **Open:** Prove the fixed-[0,1] subpolynomial moment bound for every length, or `hcofinal` with θ-independent K; alternatively source collision bounds or shifted-detector logarithmic saving. The weighted-defect bridge retains T² and needs an arithmetic upper bound for D. All-window control must include finite/shallow exceptions; density branch needs vanishing cluster tail. [Necessary length bounds](rh-killed-routes.md#kr-llm) construct no mollifier; [size alone does not supply occupancy](rh-killed-routes.md#window-density-separation).
-- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:SzegoCollision/{WindowEnergyLaplace,LogStageBesselCertificate}; CDG:WindowPortFlux/RightHalfPortCriticalLineControl; CDG:NearLineLogMean/{NearLineDensityBesselCertificateAndSeparation,TwoSidedThetaMollifierTrap,DiscCorridorDivergenceAndDetectorSharpness,SubexponentialMollifierLengthAndWindowSpikes}; APR:{LongMollifiersImplyCriticalClustering,PrefixCancellationAmplifiesTheZeroFloor} [L]; MZF:{TheExponentOfTheMollifiedErrorIsRigid,TheWidthIsReadInOneWindow} [S].
+- **Established:** Attained extrema and collision/window receivers. RH⇔fixed-[0,1] moment ∫abs(ζM_N)²=O_ε(N^(2ε)) for every ε>0, all N; cofinal long-prefix O_θ(T^K), fixed K/unbounded θ also suffices. Actual occupied-window proportion vanishes at depth ≍loglogT/logT [L]. Long-moment width-slope equivalence and reduction to pure Möbius moments [S]; neither supplies the fixed-K bound. Sparse all-window receiver: [CTF](#ctf).
+- **Open:** Produce the fixed-window subpolynomial bound, `hcofinal` with θ-independent K, collision bounds, or shifted-detector logarithmic saving. Weighted-defect transfer retains T². [Last-scale defect survives short Dirichlet weights](rh-killed-routes.md#short-weight-defect); stronger central O(logT) energy also requires bounded inverse-ζ′ residue mass. Finite/shallow exceptions and vanishing cluster tail remain uncontrolled.
+- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:NearLineLogMean/{TwoSidedThetaMollifierTrap,DiscCorridorDivergenceAndDetectorSharpness}; APR:{LongMollifiersImplyCriticalClustering,PrefixCancellationAmplifiesTheZeroFloor}; MZF:{TheWidthIsReadInOneWindow,TheOccupiedWindowsLoseOneLogarithm,TheLastScaleSurvivesEveryShortWeight,TheLongMollifierPaysForNegativeMoments} [L]; CDG:NearLineLogMean/LongMoebiusSecondMomentRigidity [S].
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
 
 - **Path:** Actual clock primitive lower bound / prime–Gamma history budget → RH.
-- **Established:** Guarded history-zero set Z_S finite; RH iff Z_S=∅. RH⇔primitive eventually bounded below⇔Cayley–Li sign on primitive vectors. Alternative: for every ε>0, response R(t)≥−C_εe^(εt) eventually [L].
+- **Established:** Guarded history-zero set Z_S finite; RH iff Z_S=∅. RH⇔primitive eventually bounded below⇔Cayley–Li sign on primitive vectors. Alternative: for every ε>0, response R(t)≥−C_εe^(εt) eventually [L]. [Verified-height transfer](#finite-height) gives conditional finite Li signs.
 - **Open:** Pay budget at every guarded zero or prove one of those lower bounds/signs. Finite Z_S is not finite off-line ζ support.
 - **Sources:** R:{LiEvenCrossActualClockTerminalHistory,LiEvenCrossActualClockGrowthLaw,LiEvenCrossActualClockPrimitiveNegative}; ALG:RHIsReflectionPositivityOfTheCayleyLadder [L].
 
@@ -173,25 +173,25 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### SZ — Suzuki screw and shifted-kernel limits
 
 - **Path:** Complete Ward/Abel residual bounded below/bounded → RH.
-- **Established:** Literal first variation=complete Weil energy; factorial/grid no-overshoot criteria. Coefficient-faithful completed Abel source A_N constructed; boundedness⇔RH. Canonical signed correction/core→1; aligned Gamma-completed energy has the same receiver [L].
-- **Open:** Actual sup_(N≥2) abs(A_N)<∞, complete first-variation sign, or rectangular Ward lower bound. Leading compensation and source assembly do not bound the remaining signed residual.
-- **Sources:** R:Suzuki/{SuzukiRectangularWardDefectBoundedness,SuzukiCriticalRHCompleteFamilyTransfer,SuzukiTransitionCoreAbelSourceMultiGateWeld,SuzukiCauchyReporterSecantPrimeChargeBridge,SuzukiTransitionCoreAlignedGammaCompletion,SuzukiCanonicalSignedCompensationSaturation} [L].
+- **Established:** Literal first variation=complete Weil energy. Completed Abel source A_N bounded⇔RH; abs(A_N)≤C√N exp(−c·vkScale(N)). Aligned completed/core energy ratio≤Cexp(−c·vkScale(N)) [L].
+- **Open:** Actual sup_(N≥2) abs(A_N)<∞, complete first-variation sign, or rectangular Ward lower bound. VK saving still leaves the √N scale; a vanishing normalized ratio supplies no bounded unnormalized residual.
+- **Sources:** R:Suzuki/{SuzukiRectangularWardDefectBoundedness,SuzukiCriticalRHCompleteFamilyTransfer,SuzukiTransitionCoreAbelSourceMultiGateWeld,SuzukiTransitionCoreAlignedGammaCompletion}; M:SuzukiResidualVinogradovKorobov [L].
 
 <a id="fzz-p--parity-delay-mellin-orientation"></a><a id="gauss-mayer"></a><a id="pm"></a>
 ### PM — Physical-model Haar approximation (FZZ-P)
 
 - **Path:** Faithful scattering source → Krein/Lewis positivity or pole/escape exclusion → RH.
-- **Established:** Krein positivity⇔RH; for 0<Re s<1/2, Im s>0, actual-core Haar admission⇔ζ(2s)=0. Completed coefficient-space identity Q(H)=2Re[WH,WH] [L]; physical cusp residue=Krein square, Gaussian residue→complete Weil form [K]. Resonant D_s is negative weighted Hecke energy divided by abs(1+p^(1−2s))², zero iff Re s=1/4; weight=mayerDefectWeight, not raw norm. Full D_s is negative on both off-line partners [L].
-- **Open:** Independent arithmetic D_s≥0 at every upper resonance, or complete renormalized Krein positivity. [Raw positive norms cannot supply this sign](rh-killed-routes.md#mayer-krein-sign). Physical mixed-parameter realization and signed-form descent remain; abstract coefficient-space completion is established.
-- **Sources:** RIT:MayerScattering/{MayerResonanceCharacterization,TheHeckeEquivariantCompletion,ArithmeticDefectObstructionAndReflectedCuspLaw} [L]; RIT:MayerScattering/{CoreHaarResonanceAdmission,AllPrimeBoundaryTransport,GaussianPhysicalCuspResidue,TheRetainedHeckeChannelReadsTheQuarterLine} [K].
+- **Established:** Krein positivity⇔RH; actual-core Haar admission⇔ζ(2s)=0 for 0<Re s<1/2, Im s>0. Completed identity Q(H)=2Re[WH,WH] [L]; physical cusp residue=Krein square, Gaussian residue→complete Weil form [K]. At upper resonances, D_s≤0, with equality iff Re s=1/4. Boundary Maass–Selberg norm proves ζ nonvanishing on Re w=1 away from the pole, and upper-boundary scattering modulus1 [L].
+- **Open:** Independent arithmetic D_s≥0 at every upper resonance, or full renormalized Krein positivity; physical mixed-parameter realization and signed descent. [Raw norm is not this sign](rh-killed-routes.md#mayer-krein-sign); [full spectral-determinant reflection fails even after λ-independent scalar repair](rh-killed-routes.md#mayer-spectral-reflection).
+- **Sources:** RIT:MayerScattering/{MayerResonanceCharacterization,TheHeckeEquivariantCompletion,ArithmeticDefectObstructionAndReflectedCuspLaw} [L]; RIT:MayerScattering/{GaussianPhysicalCuspResidue,TheRetainedHeckeChannelReadsTheQuarterLine} [K]; RIT:{GaussMayerBoundaryNorm,GaussMayerArithmeticReflectionTraceObstruction} [L].
 
 <a id="candidate-ptr"></a><a id="ptr"></a>
 ### PTR — Cosine-source zero-loss / photonic realization
 
 - **Path:** Actual A_h=cosTransform(Φ cosh(hu)) → collision-free descent in h → RH.
-- **Established:** Exact nonlocal sech handoff to Ξ; strict Laguerre inequality A_h′²−A_hA_h″>0 for h≥1/2. The same inequality for every 0<h<1/2, x∈ℝ is equivalent to RH; exclusion of real double zeros already suffices [L].
-- **Open:** Actual strict Laguerre sign or collision exclusion in the open depth band. Independent prime-faithful lossless stack construction remains open; generic stacks and fixed-gap ports do not prove the source inequality.
-- **Sources:** R:{XiCosineShiftExceptionalPointCriterion,XiCosineShiftStrictLaguerre,XiCosineShiftSechHandoff,PhotonicLosslessWindowRH} [L].
+- **Established:** Exact sech handoff to Ξ; strict Laguerre sign A_h′²−A_hA_h″>0 for h≥1/2, and for large abs(x), h>1/2−vkHadamardWidth(abs(x)+1). Sign at every 0<h<1/2,x∈ℝ⇔RH; real double-zero exclusion suffices [L].
+- **Open:** Extend strict sign/collision exclusion below the VK boundary at every height. Independent prime-faithful lossless stack remains unconstructed; generic stack positivity does not prove the source inequality.
+- **Sources:** R:{XiCosineShiftExceptionalPointCriterion,XiCosineShiftStrictLaguerre,XiCosineShiftSechHandoff,PhotonicLosslessWindowRH}; ZCG:CosineProducerStrictWindow [L].
 
 <a id="jas"></a>
 ### JAS — Joint ancestry
@@ -205,15 +205,15 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### CTF — Chronological tail / Báez–Duarte approximation
 
 - **Path:** Finite-row approximation / averaged-current control / Möbius defect / BSY sign → RH.
-- **Established:** RH⇔real unit-bounded finite rows reach every error tolerance. Dyadic linear-taper subpolynomial defect⇒RH. Sharp μ: D_y=(2π)⁻¹∫ℝ abs(1−ζM_y)²/(1/4+t²)dt≥c_ρy^(2Reρ−1) at every right zero, c_ρ>0; sparse subpolynomial D_y⇒RH. BSY sign I≤0⇔RH [L]. For E_N(t)=ζ(1/2+it)M_N(1/2+it)−1, RH⇔∃ν>0∀τ∈ℝ,ε>0, arbitrarily large N have meas{t∈[τ−1,τ+1]:abs(E_N(t))≤N^ε}≥ν. Any fixed p>0 with sparse ∫_(τ−1)^(τ+1)abs(E_N)^p≤N^(pε) for every real τ and ε>0 suffices [S].
+- **Established:** RH⇔real unit-bounded rows reach every error tolerance. Dyadic linear-taper subpolynomial defect⇒RH. Sharp μ defect D_y≥c_ρy^(2Reρ−1); sparse subpolynomial D_y⇒RH. BSY sign I≤0⇔RH. For E_N=ζM_N−1 on the line, RH⇔∃ν>0∀τ∈ℝ∀ε>0, arbitrarily large N give meas{t∈[τ−1,τ+1]:abs(E_N(t))≤N^ε}≥ν [L].
 - **Open:** Produce one approximation/sign/upper-bound criterion: vanishing-error rows, sparse subpolynomial D_y or linear-taper defect, BSY sign, or the uniform positive-proportion condition above. Lengths may depend on τ,ε. Averaged-current branch needs arbitrarily large X with M>X and abs(Re current(X,M,ρ))≤BX^ε for each ρ,ε>0. [Full sharp-sequence decay fails](rh-killed-routes.md#sharp-mobius-defect); [restricting to good heights retains the zero-forced exponent](rh-killed-routes.md#mollifier-good-set).
-- **Sources:** R:{ChronologicalRiemannEquivalence,EulerDeletionCutoffAverage,ZetaCriticalLineJensenInequality,BalazardSaiasYorCriterionEquivalence}; APR:{TheMollifierDefectIsASawtoothForm,FiniteSetsOfZerosPinAGramFloor,TheLinearMollifierIsTheChebyshevError,PrefixCancellationAmplifiesTheZeroFloor} [L]; MZF:TheExponentOfTheMollifiedErrorIsRigid [S].
+- **Sources:** R:{ChronologicalRiemannEquivalence,EulerDeletionCutoffAverage,BalazardSaiasYorCriterionEquivalence}; APR:{TheMollifierDefectIsASawtoothForm,TheLinearMollifierIsTheChebyshevError,PrefixCancellationAmplifiesTheZeroFloor}; MZF:TheExponentOfTheMollifiedErrorIsRigid [L].
 
 <a id="hcf"></a>
 ### HCF — Gaussian heat trace / critical feature variance
 
 - **Path:** Exact arch−prime heat trace → both prime-log grids positive at every degree → RH.
-- **Established:** Heat explicit formula and two-grid RH criterion at any independently fixed offsets. Absolute heat mass≤6/h; every off-line zero gives a pole-annihilating negative test on log2 or log3. Detector degree explicit from the finite outer sampled spectrum [L].
+- **Established:** Heat explicit formula and two-grid RH criterion at independently fixed offsets. Absolute heat mass≤6/h; every off-line zero gives a pole-annihilating negative test on log2 or log3. Detector degree explicit from the finite outer spectrum; [verified-height transfer](#finite-height) gives conditional finite-degree positivity [L].
 - **Open:** Nonnegative source moment functional on every real polynomial square annihilating the pole, on both grids at fixed offsets; alternatively bounded prime chirp on one vertical line. All degrees, not all offsets, are required. Spectral separation still controls detector degree.
 - **Sources:** R:{XiGaussianHeatTwoPrimeSourceSampling,XiGaussianHeatPrimeChirpReceiver,HeatGridAliasingBoundary}; S:EffectiveHorizons/{TraceHankelDegrees,HeatGridDegrees} [L].
 
@@ -293,9 +293,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### AIP — Arithmetic incidence positivity
 
 - **Path:** Complete reflected-prime/pole allocation → subexponential signed cost or full-space sign → RH.
-- **Established:** Exact allocation/decomposition; actual cost O(e^(r−c√r)) times Sobolev mass. Small-K full-space and all-R growing low-block positivity. Capacity=loglogN+O(1) [K]; simultaneous bounded-charge receiving modes with vanishing physical energy and growing but existential cutoffs [L].
+- **Established:** Exact allocation/decomposition; full odd signed cost≤Kexp(r−c(2r)^(3/5)(log(2r))^(−5/3))·Sobolev mass for large r [L]. Small-K full-space and all-R growing low-block positivity; capacity=loglogN+O(1) [K]. Receiving modes have bounded charge, vanishing physical energy and growing existential cutoffs [L].
 - **Open:** For every σ>0, abs(reflectedPrimePolarCost(F,r))≤C_σe^(2σr)(¼∫F²+∫F′²) for every odd compact C² F supported in [−r,r]; equivalently appropriate uniform allocation deficit. Packet branch still needs effective RH-complete schedules and full complementary Schur/four-channel payment.
-- **Sources:** I:{GlobalIncidenceAllocationCondition,ReflectedPrimePolarAllocation}; M:TheCompensatedRemainderOfTheFullLedger; S:TheIncidenceLedgerGradedByTheZeroWidth; CSAR:ReceivingCharges/GrowingSimultaneousReceivingModes [L]; ACPL:ReceivingCharges/PrimeIncidenceCapacityGrowth [K]; [shared frontier](#shared-frontier).
+- **Sources:** I:{GlobalIncidenceAllocationCondition,ReflectedPrimePolarAllocation,VinogradovKorobovSignedCost}; CSAR:ReceivingCharges/GrowingSimultaneousReceivingModes [L]; ACPL:ReceivingCharges/PrimeIncidenceCapacityGrowth [K]; [shared frontier](#shared-frontier).
 
 <a id="inter-tower-coupling"></a><a id="coupled-tower-signature"></a><a id="sc"></a>
 ### SC — Stokes/Witt–Krein / archimedean successor
@@ -309,9 +309,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### ACS — Arithmetic Castelnuovo–Severi effectivity
 
 - **Path:** Explicit Gamma/Lévy/horizon/Chebyshev source energy → all-aperture Bézout → RH.
-- **Established:** Concrete exact source cone and all-aperture Riemann–Roch; all-aperture Bézout/ampleness⇔all-aperture source-energy nonnegativity⇔RH. Criterion overlaps HF/WL/AIP. Rosati rigidity, modular-j reality and Selberg degree constraints provide support.
+- **Established:** Exact source cone and all-aperture Riemann–Roch; all-aperture Bézout/ampleness⇔source-energy sign⇔RH. Primitive h¹≥‖f‖²/10000 on all tests for a≤181/500; Künneth effectivity there [L]. Finite-curve window receivers characterize unitary model spectra, not ζ's all-aperture sign.
 - **Open:** For every r>0 and f∈realTestsAt r, criticalDeficitSourceEnergy(r,(0,0,f))≥0. Independent count/height/Rosati production of that sign remains unconstructed; exact source supply itself is closed.
-- **Sources:** G:ExactArithmeticSourceEffectivity; KPA:{RosatiDegreesOfDegreeZero,RiemannHypothesisIsTheRealityOfTheLegendreInvariant,TheModularInvariantNearTheCusp} [L]; SEL:{GammaIndependentEulerRigidity,DegreeGap,DegreeOneConductorPole} [K].
+- **Sources:** G:{ExactArithmeticSourceEffectivity,TheWindowReceiversOfACurve}; LST:ThePrimitiveH1IsCoerciveAtSmallDegree; KPA:RiemannHypothesisIsTheRealityOfTheLegendreInvariant [L]; SEL:{GammaIndependentEulerRigidity,DegreeGap,DegreeOneConductorPole} [K].
 
 <a id="sec"></a>
 ### SEC — Adjacent prime seam / time-one Fock bound
@@ -362,6 +362,7 @@ Critical ratio R=c⁸/logN; tilted spline has spectral order7. Other profile lim
 
 | Established | Open / scope | Sources |
 |---|---|---|
+| Atomic adjoint recovers Lipschitz tests with error O(c/N)‖x‖₂; tilted-alias pairing passes to strong physical L¹ limits. Fixed smooth profiles have below-grid error²≤C(c²r³/N²+1/r) [L]. Mixed-mass aliasing limit under the same compactness input [S]. | Strong L¹ compactness, varying-profile tails and full complementary sign are not supplied. | AHD:{AtomicSynthesisRecoversLipschitzTests,TheAliasingPairsWithStrongPhysicalLimits,TheSynthesizedProfileIsRecoveredBelowTheGrid} [L]; AHD:AtomicSynthesisRetainsItsMixedMass [S] |
 | Full tilted-spline matrix positive for every subcritical exponent<1/8 [L], and through one fixed small multiple c≤2K₀(logN)^(1/8), with complete Schur payment [K]. | Every K>0. Losses R and R² persist; increasing N does not pay them. | CACT:{TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot,CriticalMultipleCompleteWeilPositivity}; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline |
 | Every fixed independent mean-zero periodic joint family eventually PD at every ratio. Distinct primitive conductors>1 decouple at critical second order for common profiles, without parity restriction [L]. | Growing families/periods, coalescing frequencies and untwisted sign. Fixed-family positivity is not a full-space floor. | AHD:{JointPeriodicWindowsInheritThePolarization,PrimitiveCharacterConductorGrading,EveryFrequencySectorInheritsThePolarization} |
 | Critical pencil=κWeil+(7J/R)weighted Gram. Tower windows A≤2a_k positive at every R. Exact-clock inertia=(n₊,n₋+n₀,0); null directions enter negatively [L]. | All apertures and growing complements; actual nullvector existence. This specific tower has a_∞<0.3621, not aperture exhaustion [L]. | AHD:{EveryCriticalRatioIsPositiveOnALargerWindow,TheCriticalBoundaryAddsItsNullDirections}; I:{MultiPrimeDilationModulusAndIteratedWeilFloors,TheWeilFloorTowerIsFrozen} [L] |
@@ -373,6 +374,13 @@ Critical ratio R=c⁸/logN; tilted spline has spectral order7. Other profile lim
 | <a id="prime-entry"></a>Admissible weight fibres closed/bounded/convex. At entry δ=2c−log n↓0, allowed variation scales with an existing margin·√n log(1/δ). Absolute edge cost crosses1 at c*∈(½log5,½log6]. Below2c<log5, {2,3,4} outward kicks cost<991/1000 of Lévy energy [L]. | Actual Λ-weight membership and full sector margin; fibres may be empty. Signed Hankel/pole/variance payment remains beyond tower floors. | FADF:{TheEntryConstantIsOne,TheEdgeLawCrossesOneBetweenLogFiveAndLogSix}; SWC:NeutralThetaGaugeOptimizationAndPrimeFourSliverFrontier; [absolute boundary](rh-killed-routes.md#absolute-edge-payment) |
 | Window sign⇔all fitting lattices; all-lattice sign⇔RH∧λ=Λ. Even/odd jet sign⇔Hamburger moments; full sign⇔Stieltjes moments [L]. Retained-variance certificates below log2⇔convex {2,3} band [K]. | Actual positive measures/all-aperture band. Gamma-only derivative monotonicity omits prime/pole costs; variance-dropping fails. | GWZ:{AWindowIsTheUnionOfItsLattices,TheLatticeSelectsTheVonMangoldtWeight}; SWC:{TheSectorsAreTheMomentConditionsOfTheJets,BelowLogFour/RetainedVarianceAndHalfWindowBandBelowLogFour} |
 | One fixed smooth Beurling profile: eventual pole-hyperplane sign at c_N=2L(logL)², L=loglogN, ⇔RH. General subpolynomial conductor spans have cutoff-dependent super-log-log positive clocks [L]. | Sign on the prescribed profile/schedule. Another profile's proved positive clock does not transfer; omitted bands remain. | RIT:TheHodgeIndexAtCriticalOverlap; TM:ReceiverRate/EveryFiniteGramFitsOneCriticalOverlap; CACT:EverySubpolynomialSpanHasASuperLogLogPositivityClock |
+
+<a id="finite-height"></a>
+### Finite-height transfers — PA, LI, HCF, LA, TH
+
+Assuming `RHVerifiedThrough T`: Li n≤4.7T; Hausdorff k+1≤1.5(T−1), r≤RT³; heat-grid degree+1≤T/4800; Jensen degree d with 2·10⁷d⁴≤TlogT; central PF k+1≤3T. Each retains its stated lower-height threshold. Theta rank N, all 0<a≤3/4, follows from verification through D(N+1)³+1 [L]. **These transfers do not prove the verification input.** Independently, centre PF₅₄ is unconditional [L].
+
+Sources: VHR:{LiAndHausdorffEntries,HeatGridEntries,JensenEntries,PolyaFrequencyEntries,ThetaEntries}; S:EffectiveHorizons/LowHeightGammaPF54 [L].
 
 <a id="external-literature"></a>
 ### Scope guards
@@ -396,17 +404,19 @@ WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 a
 
 GWZ/CSTW: [RW](#rw)/AIP support. At log2<A<log3, exact first-stage Schur complement reduces complete-Weil sign to one two-collar inequality [L]; its sign remains open. Mixed precontact Gram trace identity: [RW](#rw). Source: GWZ:TheFirstStageComplementIsASchurComplement [L].
 
-MZF supports [WD](#wd)/[CTF](#ctf); exponent rigidity and sparse-window receivers, not an arithmetic upper bound. NGF supports [ZCG](#zcg): N=σD/F monotone, order-k floor N≥k/2; collisions have Hermite profiles, double-zero gap²∼8Δt. On zero-free moving boundaries, real-zero count changes exactly by Σ2⌊multiplicity/2⌋ at collisions [S]. Sources: NGF:{TheFrequencyIsAChaosLevel,CollisionsBlowUpToHermiteProfiles,TheZeroNumberDropsOnlyAtCollisions} [S].
+MZF: [WD](#wd)/[CTF](#ctf)/[ZCG](#zcg) support. Actual Selberg CLT and short-block twisted moments closed [L]; neither gives all-window purity. Prime cameras remove near-line competitors but retain deep-cluster/noise inputs [L]; hyperbolic-cluster extension [S]. Sources: MZF:{SelbergsCentralLimitTheorem,TheTwistedMomentFactorsOverBlocks,TheNearLineZerosCannotBlockTheCamera} [L]; MZF:TheHyperbolicCameraSeesIsolatedZeros [S].
+
+NGF: [ZCG](#zcg) support. Monotone Fock frequency N=σD/F≥k/2 at order k; Hermite collision profiles; buffered zero-count and depth-moment dissipation [L]. Finite-speed lateral-energy estimate [S] bounds, but does not exclude, tiny nonreal pairs. Exact mesh/cluster exclusion still needs boundary/crowd control; [time-shift obstruction](rh-killed-routes.md#heat-time-shift). Sources: NGF:{TheFrequencyIsAChaosLevel,CollisionsBlowUpToHermiteProfiles,TheZeroNumberDropsOnlyAtCollisions,TheDepthMomentsAreDissipated,TheGapsObeyAMaximumPrinciple} [L]; NGF:NonrealZerosEnterAtFiniteSpeed [S].
 
 FFP: LA/TH support. Exact zero-piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ drift0; reversed Jensen roots approach Im0 for σ≥1. At scale½log d, G_d(iθ)→1/(iθ+i), σ≥1/2, θ>0. Full upper-half-plane transform convergence for σ≥1, or given zero-freeness right ofσ [L]; critical-line stability/all-root control open. [Strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi,CauchyLimitLaw} [L].
 
-ADO: [ZCG](#zcg)/[LA](#la) support. Fixed integral pure factors/tangency-free Bohr bands repel; real pure factors need not. Two-prime cusp carrier and Lebesgue-a.e. ζ−a fibre have polynomial separation [L]. A dense Gδ null set E consists of fixed values a whose distinct ζ−a points have exponentially close pairs at arbitrarily high ordinates [L]. Whether 0∈E, repulsion at a=0 and growing-complexity transfer remain open. Sources: ADO:{IntegralPureEulerCarriersOfEveryDegreeRepel,AlgebraicTangenciesAreSingular,TheCuspCarrierRepelsAtPolynomialScale,AlmostEveryValueRepelsAtPolynomialScale} [L]; ADO:TheExceptionalValuesOfZetaAreResidual [L].
+ADO: [ZCG](#zcg)/[LA](#la) support. Exceptional nonrepelling ζ-values have Hausdorff dimension≤1, yet contain a dense residual set; nothing decides value0. FE pairs force critical-centre flatness O_ε(abs(γ)^(33/200+ε)·depth²), not their exclusion. Sources: ADO:{TheExceptionalValuesHaveSmallHausdorffDimension,TheExceptionalValuesOfZetaAreResidual,SubWeylFEPairFlatness} [L].
 
 <a id="cht"></a>CHT: RW/ACT/OWU support. Attained margin m*: m*→0⇔RH; at pole weight1, critical log-conductor=−m*(c). Coordinate bands are intervals pinned to Λ(n), diameter and m*(c)√n≤Cexp(Kn−c/1104), c≥2, 2≤n≤exp(2c−1/6). Finite-energy logarithmic window solutions with forcing dominated by constant + finite nonnegative translates are bounded; their Green representatives satisfy u(±(a−t))√log(1/t)→∫Kf_± [L]. Open: weight-specific specialization, contact-uniform bounds, all-aperture cone nonemptiness. Sources: CHT:{TheWindowConeCollapses,TheMarginLawOfTheWindowCone,TheWindowReadsTheResidue,TheConeIsPinnedAtEveryAtom,TheBandsOfTheCone,TheWindowSolutionsAreBounded} [L].
 
 APR: WL/MC/CTF/WD support. [Type-II norms](rh-killed-routes.md#type-ii-parity), [sublinear Type-I data](rh-killed-routes.md#type-i-parity), [finite convergent linear laws](rh-killed-routes.md#mertens-not-count) and [factor-stable bounds](rh-killed-routes.md#impure-euler-upper-bounds) do not supply square-root counting. Pole-corrected λΛ+2 shares Λ's error laws whenever √x·log²x=O(E). Real b₁=1, abs(b_n)≤1: excess κ∈(0,1/14) forces logN≥min(log²T/24,logT/(14κ)) [L]. Complex unit-bounded normalized mollifiers: excess K₀/logT forces logN≥log²T/(6K₀)−(4/3)logT, K₀>0 [L]. These are necessary bounds, not constructions. With logN=o(T), a factor 1−cp^(−s), c>√p forces liminf normalized moment≥c²/p>1. For abs(a_n)≤εn^(−η), 0≤η<1/2, class-wide O(ε²TlogT) at N≤T^θ iff θ(1−2η)≤1. Gallagher transfers logarithmic-window variance bounds to long second moments [L]; arithmetic upper bounds remain open. Sources: APR:{TheNecessaryLengthOfAMollifier,LongMollifiersImplyCriticalClustering,NoFiniteSystemOfLinearLawsDecides,TheLengthPrecisionLaw,TheLiouvilleTwinOnlySeesThePole,TheMollifiedSecondMomentSeesPurity,TheSelbergIntegralDictionary} [L]; CDG:NearLineLogMean/SubexponentialMollifierLengthAndWindowSpikes [L].
 
-HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N; topology supplies no signed cancellation. Source: HWV:SquarefreePrimeComplexIsASphereBouquet [L].
+HWV: prime-form ceiling (logN−γ+ε)‖x‖² and d-star reserve (logd−ε)‖x‖² hold beyond explicit ε-dependent horizons; shallow stars/full gluing remain. Squarefree prime-complex topology supplies no signed cancellation. Sources: HWV:{TheDepthLawIsEffective,SquarefreePrimeComplexIsASphereBouquet} [L].
 
 ## Source locator
 
@@ -457,4 +467,4 @@ HWV: squarefree prime complex≃wedge of S^(ω(m)−1), odd squarefree N/2<m≤N
 | FFP | FiniteFreeProbability | FADF | FrustratedArithmeticDirichletForms |
 | ADO | ArithmeticDiscreteness | CHT | CriticalHardyTheoryOfTheWindowCone |
 | APR | ArithmeticProduction | MZF | MultiscaleMollifiedZetaField |
-| NGF | NodalGeometryOfTheDeBruijnFlow | — | — |
+| NGF | NodalGeometryOfTheDeBruijnFlow | VHR | VerifiedHeightRungs |

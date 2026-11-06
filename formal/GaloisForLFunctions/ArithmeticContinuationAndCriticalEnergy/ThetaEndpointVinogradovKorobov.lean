@@ -37,13 +37,15 @@ private theorem exists_weighted_residual_bound :
   refine ⟨head+B^2, add_nonneg hhead (sq_nonneg _), ?_⟩
   intro T m t hm1 hmT ht0 ht1 hband
   have hm0 : (0 : ℝ) < m := by exact_mod_cast (show 0 < m by omega)
-  have hmR : (1:ℝ)≤m := by exact_mod_cast hm1
+  have hmR : (1:ℝ) ≤ m := by exact_mod_cast hm1
   rcases lt_or_ge m A with hsmall | hlarge
   · have hp : (m:ℝ)^(2*t) ≤ m := by
-      have h := Real.rpow_le_rpow_of_exponent_le hmR (show 2*t≤1 by linarith)
+      have h := Real.rpow_le_rpow_of_exponent_le hmR (show 2*t ≤ 1 by linarith)
       simpa only [Real.rpow_one] using h
     have hs : (m:ℝ)*R m^2*Real.exp ((1/24:ℝ)*Real.sqrt (Real.log m)) ≤ head :=
-      single_le_sum (fun n _ => by positivity) (mem_range.mpr hsmall)
+      single_le_sum (fun n (_ : n ∈ range A) =>
+        show (0 : ℝ) ≤ (n:ℝ)*R n^2*Real.exp ((1/24:ℝ)*Real.sqrt (Real.log n))
+          from by positivity) (mem_range.mpr hsmall)
     have hmul := mul_le_mul_of_nonneg_right hs
       (Real.exp_pos (-(1/24:ℝ)*Real.sqrt (Real.log m))).le
     have he : Real.exp ((1/24:ℝ)*Real.sqrt (Real.log m))*
@@ -55,7 +57,7 @@ private theorem exists_weighted_residual_bound :
       (hmul.trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right (sq_nonneg B))
         (Real.exp_pos _).le))
   · obtain ⟨hr, hvk, hexp⟩ := hA m hlarge
-    have hmT' : (m:ℝ)≤T := by exact_mod_cast hmT
+    have hmT' : (m:ℝ) ≤ T := by exact_mod_cast hmT
     have hL0 : 0 < Real.log (m:ℝ) := by linarith only [hvk.2.1]
     have hκ := vkKappa_pos
     have hratio := vkScale_div_log_le hexp hmT'
@@ -113,8 +115,8 @@ private theorem weight_increment_le {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1/2) 
       div_le_div_of_nonneg_right hp (by positivity)
     _ ≤ 2*((n:ℝ)+2)^(2*t)/((n:ℝ)+2) := by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith only [mul_nonneg (Real.rpow_nonneg (by positivity : 0≤(n:ℝ)+2) (2*t))
-        (show (0:ℝ)≤n from Nat.cast_nonneg n)]
+      nlinarith only [mul_nonneg (Real.rpow_nonneg (by positivity : 0 ≤ (n:ℝ)+2) (2*t))
+        (show (0:ℝ) ≤ n from Nat.cast_nonneg n)]
 
 /-- One bound controls every literal theta endpoint energy in the shrinking VK band. -/
 theorem exists_thetaEndpointEnergy_le_on_vinogradovKorobovBand :

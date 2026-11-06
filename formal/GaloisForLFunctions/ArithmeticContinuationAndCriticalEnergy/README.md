@@ -112,6 +112,12 @@ $T$. Three faces: damping $\varepsilon$ (main), cutoff, aperture $a$ (restricted
     H by Mertens squares; a split at √T retains the VK saving without assuming
     H is monotone. Subpower growth remains open.
 
+**K. Theta endpoint energy.**
+39. One constant bounds the literal Wold endpoint energy for every cutoff `N` and
+    `0 ≤ t ≤ 1/2` satisfying `t ≤ κ vkScale(N+2)/(96 log(N+2))`.
+    VK decay pays the power weights at every earlier index; concavity leaves a
+    summable logarithmic tail. Boundedness at each fixed positive `t` remains open.
+
 ## 5. Pillar theorems
 
 | Theorem | Content |
@@ -132,6 +138,7 @@ $T$. Three faces: damping $\varepsilon$ (main), cutoff, aperture $a$ (restricted
 | `groundEnergyRate_eq_polarGroundEnergyRate`, `formGroundEnergyRate_eq_zetaZeroWidth` | rate equalities |
 | `fqCenteredPrefix_eq` | function-field calibration |
 | `exists_uniform_mobiusHilbert_le_vinogradovKorobov` | undamped Hilbert energy: VK saving uniformly for N≤T |
+| `exists_thetaEndpointEnergy_le_on_vinogradovKorobovBand` | one endpoint-energy bound across the shrinking VK exponent band |
 
 ## 6. Tools
 
