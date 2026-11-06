@@ -27,7 +27,7 @@ open MeasureTheory Set Filter Topology Complex
 open scoped InnerProductSpace ComplexConjugate
 noncomputable section
 namespace GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone
-open _root_.RHTower CanonicalSystemOfTheWindowTower HTGeometry
+open _root_.RHTower _root_.Zeta23 CanonicalSystemOfTheWindowTower HTGeometry
 
 /-! ### The form -/
 
@@ -87,23 +87,28 @@ private theorem weightedForm_eq_sub (lam : ℕ → ℝ) (a : SuzukiPositiveApert
         ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊,
           (((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) *
             inner ℂ (ccmPrimeTransportOperator a n f) g := by
-    have hop : weightedRemainder lam a = ccmRestrictedWeilBoundedRemainder a -
+    have hs : (∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊, ((lam n : ℝ) : ℂ) • ccmPrimeTransportOperator a n) =
+        (∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊,
+          ((ArithmeticFunction.vonMangoldt n : ℝ) : ℂ) • ccmPrimeTransportOperator a n) +
         ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊,
           (((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) • ccmPrimeTransportOperator a n := by
-      unfold weightedRemainder ccmRestrictedWeilBoundedRemainder weightedPrimeOperator
-        ccmFinitePrimeOperator
-      rw [sub_sub, ← Finset.sum_add_distrib]
-      congr 2
+      rw [← Finset.sum_add_distrib]
       refine Finset.sum_congr rfl fun n _ => ?_
       rw [← add_smul]
       congr 1
       push_cast
       ring
-    rw [hop, ContinuousLinearMap.sub_apply, inner_sub_left, ContinuousLinearMap.sum_apply,
-      sum_inner]
+    have hop : weightedRemainder lam a = ccmRestrictedWeilBoundedRemainder a -
+        ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊,
+          (((lam n - ArithmeticFunction.vonMangoldt n : ℝ) : ℂ)) • ccmPrimeTransportOperator a n := by
+      unfold weightedRemainder ccmRestrictedWeilBoundedRemainder weightedPrimeOperator
+        ccmFinitePrimeOperator
+      rw [hs]
+      abel
+    rw [hop, sub_apply, inner_sub_left, sum_apply, sum_inner]
     congr 1
     refine Finset.sum_congr rfl fun n _ => ?_
-    rw [ContinuousLinearMap.smul_apply, inner_smul_left, Complex.conj_ofReal]
+    rw [smul_apply, inner_smul_left, Complex.conj_ofReal]
   rw [hl]
   ring
 
@@ -141,8 +146,8 @@ theorem continuous_weightedForm_self (lam : ℕ → ℝ) (a : SuzukiPositiveAper
     Continuous fun u : CCMArchimedeanFormDomain a => (weightedForm lam a u u).re := by
   unfold weightedForm
   have hJ := (ccmArchimedeanFormToAperture a).continuous
-  have hB := (weightedRemainder lam a).continuous
-  fun_prop
+  have hB := (weightedRemainder lam a).continuous.comp hJ
+  exact Complex.continuous_re.comp ((continuous_id.inner continuous_id).add (hB.inner hJ))
 
 /-! ### Passage to the logarithmic equation -/
 
@@ -162,7 +167,7 @@ theorem logarithmicFullForm_of_weighted {lam : ℕ → ℝ} {a : SuzukiPositiveA
   have hE : logarithmicDirichletForm a u v =
       inner ℂ (weightedForcing lam a u g) (ccmArchimedeanFormToAperture a v) := by
     rw [logarithmicDirichletForm_eq_adjustment, weightedForcing, inner_add_left,
-      ContinuousLinearMap.sub_apply, inner_sub_left, ← h v, weightedForm]
+      sub_apply, inner_sub_left, ← h v, weightedForm]
     ring
   rw [← logarithmicFullForm_ccm_embedding] at hE
   have hc := congrArg (star : ℂ → ℂ) hE
@@ -235,25 +240,28 @@ private theorem norm_weightedPrime_le (lam : ℕ → ℝ) (a : SuzukiPositiveApe
   generalize Finset.Icc 2 ⌊Real.exp (2 * a.1)⌋₊ = s
   induction s using Finset.induction_on with
   | empty =>
-    simp only [Finset.sum_empty, ContinuousLinearMap.zero_apply]
+    simp only [Finset.sum_empty, zero_apply]
     filter_upwards [Lp.coeFn_zero ℂ 2 (volume : Measure ℝ)] with x hx
     change ‖((0 : RealLineL2) : ℝ → ℂ) x‖ ≤ 0
     rw [hx, Pi.zero_apply, norm_zero]
   | @insert n s hn ih =>
-    rw [Finset.sum_insert hn, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply]
-    filter_upwards [ih, norm_primeTransport_le a n f,
-      Lp.coeFn_add ((((lam n : ℝ) : ℂ) • ccmPrimeTransportOperator a n f : suzukiApertureHilbert a) :
-        RealLineL2) (((∑ k ∈ s, ((lam k : ℝ) : ℂ) • ccmPrimeTransportOperator a k) f :
-          suzukiApertureHilbert a) : RealLineL2),
-      Lp.coeFn_smul ((lam n : ℝ) : ℂ) (ccmPrimeTransportOperator a n f : RealLineL2)]
-      with x h1 h2 h3 h4
-    change ‖((((lam n : ℝ) : ℂ) • ccmPrimeTransportOperator a n f : suzukiApertureHilbert a) :
-        RealLineL2) + ((∑ k ∈ s, ((lam k : ℝ) : ℂ) • ccmPrimeTransportOperator a k) f :
-          suzukiApertureHilbert a) : RealLineL2) x‖ ≤ _
+    rw [Finset.sum_insert hn, add_apply, smul_apply]
+    obtain ⟨X, hX⟩ : ∃ X : suzukiApertureHilbert a, X = ((lam n : ℝ) : ℂ) • ccmPrimeTransportOperator a n f :=
+      ⟨_, rfl⟩
+    obtain ⟨Y, hY⟩ : ∃ Y : suzukiApertureHilbert a,
+        Y = (∑ k ∈ s, ((lam k : ℝ) : ℂ) • ccmPrimeTransportOperator a k) f := ⟨_, rfl⟩
+    rw [← hX, ← hY]
+    rw [← hY] at ih
+    have hc : ((X + Y : suzukiApertureHilbert a) : RealLineL2) = (X : RealLineL2) + (Y : RealLineL2) := rfl
+    have hXv : (X : RealLineL2) = ((lam n : ℝ) : ℂ) • (ccmPrimeTransportOperator a n f : RealLineL2) := by
+      rw [hX]
+      rfl
+    rw [hc]
+    filter_upwards [ih, norm_primeTransport_le a n f, Lp.coeFn_add (X : RealLineL2) (Y : RealLineL2),
+      Lp.coeFn_smul ((lam n : ℝ) : ℂ) (ccmPrimeTransportOperator a n f : RealLineL2)] with x h1 h2 h3 h4
     rw [Finset.sum_insert hn, h3, Pi.add_apply]
     refine (norm_add_le _ _).trans (add_le_add ?_ h1)
-    change ‖(((lam n : ℝ) : ℂ) • (ccmPrimeTransportOperator a n f : RealLineL2) : RealLineL2) x‖ ≤ _
-    rw [h4, Pi.smul_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs, mul_assoc]
+    rw [hXv, h4, Pi.smul_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs, mul_assoc]
     exact mul_le_mul_of_nonneg_left h2 (abs_nonneg _)
 
 private theorem norm_polar_le (a : SuzukiPositiveAperture) (f : suzukiApertureHilbert a) :
@@ -392,7 +400,8 @@ theorem weightedForcing_dominated (lam : ℕ → ℝ) (a : SuzukiPositiveApertur
     Lp.coeFn_smul ccmArchimedeanRemainderScalar (f : RealLineL2)]
     with x h1 h2 h3 h4 e1 e2 e3 e4 e5 e6 e7
   rw [e1, Pi.add_apply, e2, Pi.sub_apply, e3, Pi.add_apply, e4, Pi.sub_apply, e5, Pi.add_apply, e6,
-    e7, Pi.smul_apply, Pi.smul_apply, sum_weightedIndex, smul_eq_mul, smul_eq_mul]
+    e7, Pi.smul_apply, Pi.smul_apply, smul_eq_mul, smul_eq_mul,
+    sum_weightedIndex lam _ a (fun y => ‖(f : RealLineL2) y‖) x]
   have hn1 : ‖(-(logarithmicFormScalar : ℂ))‖ = |logarithmicFormScalar| := by
     rw [norm_neg, Complex.norm_real, Real.norm_eq_abs]
   have hmain : ∀ A B C D E F : ℂ, ‖A + (B + C - (D + E - F))‖ ≤
@@ -409,10 +418,30 @@ theorem weightedForcing_dominated (lam : ℕ → ℝ) (a : SuzukiPositiveApertur
       _ = _ := by rw [norm_neg, norm_neg]
   refine (hmain _ _ _ _ _ _).trans ?_
   rw [norm_mul, norm_mul, hn1]
-  push_cast at h1 h2 h3 h4 ⊢
-  nlinarith only [h1, h2, h3, h4]
+  linarith only [h1, h2, h3, h4]
 
 /-! ### The edge law for every weight -/
+
+/-- The conclusion of the window theory: `U` is essentially bounded, and at both ends of the window it
+agrees with the Green representative of its localized forcing, with the exact normalized limit. -/
+def HasExactEdgeLaw (a : SuzukiPositiveAperture) (U F : suzukiApertureHilbert a) : Prop :=
+  (∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ x ∂volume, ‖(U : RealLineL2) x‖ ≤ C) ∧
+    (∀ᵐ x ∂volume, x ≤ 0 → (U : RealLineL2) x =
+      logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) (x + a.1)) ∧
+    Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) t *
+        (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
+      (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+        (logarithmicApertureLeftForcing a U F : RealLineL2) y)) ∧
+    (∀ᵐ x ∂volume, 0 ≤ x → (U : RealLineL2) x = logarithmicGreenRepresentative
+      (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
+        (logarithmicApertureReflection a F)) (a.1 - x)) ∧
+    Tendsto (fun t : ℝ => logarithmicGreenRepresentative
+        (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
+          (logarithmicApertureReflection a F)) t *
+        (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
+      (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
+        (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
+          (logarithmicApertureReflection a F) : RealLineL2) y))
 
 /-- **Solutions of `Q^λ` are bounded and have the exact edge law, for every weight `λ`.** -/
 theorem weighted_window_bounded_and_edge_law (lam : ℕ → ℝ) (a : SuzukiPositiveAperture)
@@ -421,39 +450,22 @@ theorem weighted_window_bounded_and_edge_law (lam : ℕ → ℝ) (a : SuzukiPosi
     (hg : ∀ᵐ x ∂volume, ‖(g : RealLineL2) x‖ ≤
       C₀ + c₀ * ‖(ccmArchimedeanFormToAperture a u : RealLineL2) x‖)
     (h : ∀ v, weightedForm lam a u v = inner ℂ g (ccmArchimedeanFormToAperture a v)) :
-    let U := ccmArchimedeanFormToAperture a u
-    let F := weightedForcing lam a u g
-    (∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ x ∂volume, ‖(U : RealLineL2) x‖ ≤ C) ∧
-      (∀ᵐ x ∂volume, x ≤ 0 → (U : RealLineL2) x =
-        logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) (x + a.1)) ∧
-      Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) t *
-          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
-        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
-          (logarithmicApertureLeftForcing a U F : RealLineL2) y)) ∧
-      (∀ᵐ x ∂volume, 0 ≤ x → (U : RealLineL2) x = logarithmicGreenRepresentative
-        (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
-          (logarithmicApertureReflection a F)) (a.1 - x)) ∧
-      Tendsto (fun t : ℝ => logarithmicGreenRepresentative
-          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
-            (logarithmicApertureReflection a F)) t *
-          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
-        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
-          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
-            (logarithmicApertureReflection a F) : RealLineL2) y)) := by
-  intro U F
-  have hU : HasLogarithmicEnergy (U : RealLineL2) := hasLogarithmicEnergy_ccm_form a u
+    HasExactEdgeLaw a (ccmArchimedeanFormToAperture a u) (weightedForcing lam a u g) := by
+  have hU : HasLogarithmicEnergy (ccmArchimedeanFormToAperture a u : RealLineL2) :=
+    hasLogarithmicEnergy_ccm_form a u
   have hsolve := logarithmicFullForm_of_weighted h
   have hD : 0 ≤ c₀ + |logarithmicFormScalar| + ‖ccmArchimedeanRemainderScalar‖ := by positivity
-  have hC : 0 ≤ C₀ + 3 / 4 * (∫ t, ‖(U : RealLineL2) t‖) +
-      (‖inner ℂ (ccmPolarApertureVector a (-1 / 2)) U‖ +
-        ‖inner ℂ (ccmPolarApertureVector a (1 / 2)) U‖) * Real.exp (a.1 / 2) := by
-    have := integral_nonneg (μ := (volume : Measure ℝ)) fun t => norm_nonneg ((U : RealLineL2) t)
-    positivity
+  have hI : 0 ≤ ∫ t, ‖(ccmArchimedeanFormToAperture a u : RealLineL2) t‖ :=
+    integral_nonneg fun t => norm_nonneg _
+  have hC : 0 ≤ C₀ + 3 / 4 * (∫ t, ‖(ccmArchimedeanFormToAperture a u : RealLineL2) t‖) +
+      (‖inner ℂ (ccmPolarApertureVector a (-1 / 2)) (ccmArchimedeanFormToAperture a u)‖ +
+        ‖inner ℂ (ccmPolarApertureVector a (1 / 2)) (ccmArchimedeanFormToAperture a u)‖) *
+          Real.exp (a.1 / 2) := by positivity
   have hdom := weightedForcing_dominated lam a u g hg
-  exact ⟨exists_ae_norm_le_of_window_equation a U F hU hsolve (weightedIndexSet a)
-    (fun j => weightedCoeff_nonneg lam hD j) weightedShift hC hdom,
-    window_edge_law a U F hU hsolve (weightedIndexSet a) (fun j => weightedCoeff_nonneg lam hD j)
-      weightedShift hC hdom⟩
+  exact ⟨exists_ae_norm_le_of_window_equation a _ _ hU hsolve (weightedIndexSet a) weightedShift
+      (weightedCoeff_nonneg lam hD) hC hdom,
+    window_edge_law a _ _ hU hsolve (weightedIndexSet a) weightedShift
+      (weightedCoeff_nonneg lam hD) hC hdom⟩
 
 /-! ### Ground states -/
 
@@ -511,7 +523,9 @@ theorem exists_weightedGroundState (lam : ℕ → ℝ) (a : SuzukiPositiveApertu
       inner_add_left, inner_smul_left, J.adjoint_inner_left, J.adjoint_inner_left]
     simp [boundedPerturbedFormShift]
   have hyv : inner ℂ y (J v) = ((‖C‖ : ℝ) : ℂ)⁻¹ * inner ℂ (J u) (J v) := by
-    rw [hy, hJu, inner_smul_left, map_inv₀, Complex.conj_ofReal]
+    have hsm := inner_smul_left (𝕜 := ℂ) e (J v) (((‖C‖ : ℝ) : ℂ)⁻¹)
+    rw [map_inv₀, Complex.conj_ofReal] at hsm
+    rw [hy, hJu, hsm]
   rw [weightedForm, weightedGroundEnergy, ← hJ, ← hB, ← hC]
   push_cast
   rw [sub_mul, ← hyv, hform]
@@ -522,23 +536,12 @@ theorem weightedGroundState_bounded_and_edge_law (lam : ℕ → ℝ) (a : Suzuki
     ∃ u : CCMArchimedeanFormDomain a, ccmArchimedeanFormToAperture a u ≠ 0 ∧
       (∀ v, weightedForm lam a u v = (weightedGroundEnergy lam a : ℂ) *
         inner ℂ (ccmArchimedeanFormToAperture a u) (ccmArchimedeanFormToAperture a v)) ∧
-      let U := ccmArchimedeanFormToAperture a u
-      let F := weightedForcing lam a u ((weightedGroundEnergy lam a : ℂ) • U)
-      (∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ x ∂volume, ‖(U : RealLineL2) x‖ ≤ C) ∧
-      Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) t *
-          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
-        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
-          (logarithmicApertureLeftForcing a U F : RealLineL2) y)) ∧
-      Tendsto (fun t : ℝ => logarithmicGreenRepresentative
-          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
-            (logarithmicApertureReflection a F)) t *
-          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
-        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
-          (logarithmicApertureLeftForcing a (logarithmicApertureReflection a U)
-            (logarithmicApertureReflection a F) : RealLineL2) y)) := by
+      HasExactEdgeLaw a (ccmArchimedeanFormToAperture a u)
+        (weightedForcing lam a u ((weightedGroundEnergy lam a : ℂ) •
+          ccmArchimedeanFormToAperture a u)) := by
   obtain ⟨u, hne, hu⟩ := exists_weightedGroundState lam a
   refine ⟨u, hne, hu, ?_⟩
-  intro U F
+  obtain ⟨U, hU⟩ : ∃ U, U = ccmArchimedeanFormToAperture a u := ⟨_, rfl⟩
   have hg : ∀ᵐ x ∂volume, ‖(((weightedGroundEnergy lam a : ℂ) • U : suzukiApertureHilbert a) :
       RealLineL2) x‖ ≤ 0 + |weightedGroundEnergy lam a| * ‖(U : RealLineL2) x‖ := by
     filter_upwards [Lp.coeFn_smul (weightedGroundEnergy lam a : ℂ) (U : RealLineL2)] with x hx
@@ -546,10 +549,10 @@ theorem weightedGroundState_bounded_and_edge_law (lam : ℕ → ℝ) (a : Suzuki
     rw [hx, Pi.smul_apply, norm_smul, Complex.norm_real, Real.norm_eq_abs, zero_add]
   have h : ∀ v, weightedForm lam a u v = inner ℂ ((weightedGroundEnergy lam a : ℂ) • U)
       (ccmArchimedeanFormToAperture a v) := fun v => by
-    rw [hu v, inner_smul_left, Complex.conj_ofReal]
-  obtain ⟨h1, -, h2, -, h3⟩ := weighted_window_bounded_and_edge_law lam a u
-    ((weightedGroundEnergy lam a : ℂ) • U) le_rfl (abs_nonneg _) hg h
-  exact ⟨h1, h2, h3⟩
+    rw [hu v, hU, inner_smul_left, Complex.conj_ofReal]
+  rw [← hU] at hg ⊢
+  rw [hU] at hg h ⊢
+  exact weighted_window_bounded_and_edge_law lam a u _ le_rfl (abs_nonneg _) hg h
 
 /-! ### Margins -/
 
@@ -708,20 +711,11 @@ theorem weightedRiesz_bounded_and_edge_law (lam : ℕ → ℝ) (a : SuzukiPositi
     (hg : ∀ᵐ x ∂volume, ‖(g : RealLineL2) x‖ ≤ C₀) :
     ∃ u : CCMArchimedeanFormDomain a,
       (∀ v, weightedForm lam a u v = inner ℂ g (ccmArchimedeanFormToAperture a v)) ∧
-      let U := ccmArchimedeanFormToAperture a u
-      let F := weightedForcing lam a u g
-      (∃ C : ℝ, 0 ≤ C ∧ ∀ᵐ x ∂volume, ‖(U : RealLineL2) x‖ ≤ C) ∧
-      Tendsto (fun t : ℝ => logarithmicGreenRepresentative (logarithmicApertureLeftForcing a U F) t *
-          (Real.sqrt (Real.log (1 / t)) : ℂ)) (𝓝[>] (0 : ℝ))
-        (nhds (∫ y : ℝ, (logarithmicCausalKernel y : ℂ) *
-          (logarithmicApertureLeftForcing a U F : RealLineL2) y)) := by
+      HasExactEdgeLaw a (ccmArchimedeanFormToAperture a u) (weightedForcing lam a u g) := by
   obtain ⟨u, hu⟩ := exists_weightedRiesz lam a hμ g
-  refine ⟨u, hu, ?_⟩
-  intro U F
-  obtain ⟨h1, -, h2, -, -⟩ := weighted_window_bounded_and_edge_law lam a u g hC₀ le_rfl
-    (hg.mono fun x hx => by
-      rw [zero_mul, add_zero]
-      exact hx) hu
-  exact ⟨h1, h2⟩
+  refine ⟨u, hu, weighted_window_bounded_and_edge_law lam a u g hC₀ le_rfl
+    (hg.mono fun x hx => ?_) hu⟩
+  rw [zero_mul, add_zero]
+  exact hx
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

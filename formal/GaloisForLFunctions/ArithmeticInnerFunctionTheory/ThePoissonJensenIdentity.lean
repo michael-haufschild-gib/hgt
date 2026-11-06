@@ -102,10 +102,10 @@ variable {Φ : ℂ → ℂ} (h : IsDiscDatum Φ)
 
 include h
 
-private theorem discMult_nonneg (u : ℂ) : 0 ≤ discMult Φ u :=
+theorem discMult_nonneg (u : ℂ) : 0 ≤ discMult Φ u :=
   MeromorphicOn.AnalyticOnNhd.divisor_nonneg h.analyticOnNhd_ball u
 
-private theorem discWeight_nonneg (u : ℂ) : 0 ≤ discWeight Φ u := by
+theorem discWeight_nonneg (u : ℂ) : 0 ≤ discWeight Φ u := by
   by_cases hu : u ∈ ball (0 : ℂ) 1
   · rcases eq_or_ne u 0 with rfl | hu0
     · simp [discWeight]

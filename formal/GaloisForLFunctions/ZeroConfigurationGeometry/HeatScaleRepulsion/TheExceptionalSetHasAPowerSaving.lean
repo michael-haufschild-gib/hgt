@@ -725,31 +725,22 @@ private theorem exists_unit_interval_net {η : ℝ} (hη : 0 < η) :
     refine ⟨v, by simpa only [hf.mem_toFinset] using hv, ?_⟩
     exact (show |w - v| < η by simpa only [mem_ball, Real.dist_eq] using hwv).le
 
-/-- **Atypical unit windows are power-saving rare.** -/
-theorem exists_volume_not_powerTypicalWindow_le_rpow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
-    ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
-      volume {X | X ∈ Icc T (2 * T) ∧ ¬ powerTypicalWindow η T X} ≤ ENNReal.ofReal (T ^ θ) := by
+/-- **Atypical unit windows are rare when atypical heights are.**  The union bound over a finite net
+costs half of the saving. -/
+theorem volume_not_powerTypicalWindow_le_of_typical {η θ₁ T₁ : ℝ} (hη : 0 < η) (hθ₁0 : 0 ≤ θ₁)
+    (hθ₁1 : θ₁ < 1)
+    (hbad : ∀ T : ℝ, T₁ ≤ T → volume {t | t ∈ Icc T (2 * T) ∧
+      ¬ zetaTypicalHeight η (powerLevel η) T t} ≤ ENNReal.ofReal (T ^ θ₁)) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      volume {X | X ∈ Icc T (2 * T) ∧ ¬ powerTypicalWindow η T X} ≤
+        ENNReal.ofReal (T ^ (θ₁ + (1 - θ₁) / 2)) := by
   classical
-  have hE0 : 0 < powerLevel η := by
-    unfold powerLevel
-    positivity
-  have hE1 : powerLevel η ≤ 1 := by
-    unfold powerLevel
-    have h1 : η ^ 3 ≤ 1 := pow_le_one₀ hη.le (by linarith only [hη8])
-    rw [div_le_one (by norm_num)]
-    linarith only [h1]
-  obtain ⟨θ₀, hθ₀, T₁, hbad⟩ := exists_volume_not_zetaTypicalHeight_le_rpow hη (by linarith only [hη8])
-    hE0 hE1
   obtain ⟨s, hs, hcover⟩ := exists_unit_interval_net (show 0 < η / 2 by positivity)
-  obtain ⟨θ₁, hθ₁⟩ : ∃ θ₁, θ₁ = max θ₀ 0 := ⟨_, rfl⟩
-  have hθ₁0 : 0 ≤ θ₁ := hθ₁ ▸ le_max_right _ _
-  have hθ₁1 : θ₁ < 1 := hθ₁ ▸ max_lt hθ₀ one_pos
   have hgap : 0 < (1 - θ₁) / 2 := by linarith only [hθ₁1]
-  -- The factor of the union bound costs half of the saving.
   have hev : ∀ᶠ T : ℝ in atTop, (s.card : ℝ) + 2 ≤ T ^ ((1 - θ₁) / 2) :=
     (tendsto_rpow_atTop hgap).eventually_ge_atTop _
   obtain ⟨T₂, hT₂⟩ := eventually_atTop.mp hev
-  refine ⟨θ₁ + (1 - θ₁) / 2, by linarith only [hθ₁1], max (max T₁ T₂) 1, fun T hT => ?_⟩
+  refine ⟨max (max T₁ T₂) 1, fun T hT => ?_⟩
   have hTT₁ : T₁ ≤ T := (le_max_left _ _).trans ((le_max_left _ _).trans hT)
   have hTT₂ : T₂ ≤ T := (le_max_right _ _).trans ((le_max_left _ _).trans hT)
   have hT1 : 1 ≤ T := (le_max_right _ _).trans hT
@@ -775,12 +766,10 @@ theorem exists_volume_not_powerTypicalWindow_le_rpow {η : ℝ} (hη : 0 < η) (
     refine ⟨X + v, htyp, ?_⟩
     simpa only [sub_add_eq_sub_sub] using hYv
   have hT0 : 0 < T := by linarith only [hT1]
-  have hTθ : T ^ θ₀ ≤ T ^ θ₁ :=
-    Real.rpow_le_rpow_of_exponent_le hT1 (hθ₁ ▸ le_max_left _ _)
   have htrans : ∀ v ∈ s, volume ((fun X : ℝ => X + v) ⁻¹' E') ≤ ENNReal.ofReal (T ^ θ₁) := by
     intro v _
     rw [measure_preimage_add_right]
-    exact (hbad T hTT₁).trans (ENNReal.ofReal_le_ofReal hTθ)
+    exact hbad T hTT₁
   have hfinite : volume (⋃ v ∈ s, (fun X : ℝ => X + v) ⁻¹' E') ≤
       ENNReal.ofReal ((s.card : ℝ) * T ^ θ₁) := by
     calc
@@ -809,6 +798,32 @@ theorem exists_volume_not_powerTypicalWindow_le_rpow {η : ℝ} (hη : 0 < η) (
     _ = ENNReal.ofReal (2 + (s.card : ℝ) * T ^ θ₁) := by
       rw [ENNReal.ofReal_add (by norm_num) (by positivity)]
     _ ≤ _ := ENNReal.ofReal_le_ofReal hsum
+
+/-- **Atypical unit windows are power-saving rare.** -/
+theorem exists_volume_not_powerTypicalWindow_le_rpow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
+    ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      volume {X | X ∈ Icc T (2 * T) ∧ ¬ powerTypicalWindow η T X} ≤ ENNReal.ofReal (T ^ θ) := by
+  have hE0 : 0 < powerLevel η := by
+    unfold powerLevel
+    positivity
+  have hE1 : powerLevel η ≤ 1 := by
+    unfold powerLevel
+    have h1 : η ^ 3 ≤ 1 := pow_le_one₀ hη.le (by linarith only [hη8])
+    rw [div_le_one (by norm_num)]
+    linarith only [h1]
+  obtain ⟨θ₀, hθ₀, T₁, hbad⟩ := exists_volume_not_zetaTypicalHeight_le_rpow hη (by linarith only [hη8])
+    hE0 hE1
+  obtain ⟨θ₁, hθ₁⟩ : ∃ θ₁, θ₁ = max θ₀ 0 := ⟨_, rfl⟩
+  have hθ₁0 : 0 ≤ θ₁ := hθ₁ ▸ le_max_right _ _
+  have hθ₁1 : θ₁ < 1 := hθ₁ ▸ max_lt hθ₀ one_pos
+  have hbad' : ∀ T : ℝ, max T₁ 1 ≤ T → volume {t | t ∈ Icc T (2 * T) ∧
+      ¬ zetaTypicalHeight η (powerLevel η) T t} ≤ ENNReal.ofReal (T ^ θ₁) := by
+    intro T hT
+    refine (hbad T ((le_max_left _ _).trans hT)).trans (ENNReal.ofReal_le_ofReal ?_)
+    exact Real.rpow_le_rpow_of_exponent_le ((le_max_right _ _).trans hT)
+      (hθ₁ ▸ le_max_left _ _)
+  obtain ⟨T₀, hT₀⟩ := volume_not_powerTypicalWindow_le_of_typical hη hθ₁0 hθ₁1 hbad'
+  exact ⟨θ₁ + (1 - θ₁) / 2, by linarith only [hθ₁1], T₀, hT₀⟩
 
 /-- A typical unit window has an all-future-time Newman bound with small coefficient. -/
 theorem eventually_localNewmanConstant_le_of_powerTypicalWindow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
@@ -839,10 +854,11 @@ private theorem eventually_log_le_twice_window_log :
     exact Real.log_le_log (by positivity) hdiv
   exact ⟨by linarith only [hlogπ, hlogX, hlower], by linarith only [hlogX, hlower]⟩
 
-/-- **The power-saving exceptional set.** For every `κ > 0` there is `θ < 1` such that the heights `X ∈ [T, 2T]` with
-`Λ_X log X > κ` have measure at most `T^θ`, for all large `T`. -/
-theorem exists_volume_localNewman_scaled_gt_le_rpow {κ : ℝ} (hκ : 0 < κ) :
-    ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+/-- A height with `Λ_X log X > κ` has an atypical unit window at level `η = min(κ/64, 1/8)`. -/
+theorem volume_localNewman_scaled_gt_le_of_window {κ θ T₁ : ℝ} (hκ : 0 < κ)
+    (hrare : ∀ T : ℝ, T₁ ≤ T → volume {X | X ∈ Icc T (2 * T) ∧
+      ¬ powerTypicalWindow (min (κ / 64) (1 / 8)) T X} ≤ ENNReal.ofReal (T ^ θ)) :
+    ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
       volume {X | X ∈ Icc T (2 * T) ∧ κ < localNewmanConstant X * Real.log X} ≤
         ENNReal.ofReal (T ^ θ) := by
   let η := min (κ / 64) (1 / 8)
@@ -851,10 +867,9 @@ theorem exists_volume_localNewman_scaled_gt_le_rpow {κ : ℝ} (hκ : 0 < κ) :
   have hηκ : 32 * η ≤ κ := by
     have hh : η ≤ κ / 64 := min_le_left _ _
     linarith only [hh, hκ]
-  obtain ⟨θ, hθ, T₁, hrare⟩ := exists_volume_not_powerTypicalWindow_le_rpow hη hη8
   obtain ⟨T₂, hT₂⟩ := eventually_atTop.mp (eventually_localNewmanConstant_le_of_powerTypicalWindow hη hη8)
   obtain ⟨X₀, hX₀⟩ := eventually_atTop.mp eventually_log_le_twice_window_log
-  refine ⟨θ, hθ, max (max T₁ T₂) (max X₀ 8), fun T hT => ?_⟩
+  refine ⟨max (max T₁ T₂) (max X₀ 8), fun T hT => ?_⟩
   have hTT₁ : T₁ ≤ T := (le_max_left _ _).trans ((le_max_left _ _).trans hT)
   have hTT₂ : T₂ ≤ T := (le_max_right _ _).trans ((le_max_left _ _).trans hT)
   have hTX₀ : X₀ ≤ T := (le_max_left _ _).trans ((le_max_right _ _).trans hT)
@@ -874,6 +889,17 @@ theorem exists_volume_localNewman_scaled_gt_le_rpow {κ : ℝ} (hκ : 0 < κ) :
         rw [div_le_iff₀ hL]
         nlinarith only [mul_le_mul_of_nonneg_left hlog (show 0 ≤ 16 * η by positivity)]
   exact (not_lt_of_ge (hle.trans hηκ)) hlarge
+
+/-- **The power-saving exceptional set.** For every `κ > 0` there is `θ < 1` such that the heights `X ∈ [T, 2T]` with
+`Λ_X log X > κ` have measure at most `T^θ`, for all large `T`. -/
+theorem exists_volume_localNewman_scaled_gt_le_rpow {κ : ℝ} (hκ : 0 < κ) :
+    ∃ θ : ℝ, θ < 1 ∧ ∃ T₀ : ℝ, ∀ T : ℝ, T₀ ≤ T →
+      volume {X | X ∈ Icc T (2 * T) ∧ κ < localNewmanConstant X * Real.log X} ≤
+        ENNReal.ofReal (T ^ θ) := by
+  obtain ⟨θ, hθ, T₁, hrare⟩ := exists_volume_not_powerTypicalWindow_le_rpow
+    (η := min (κ / 64) (1 / 8)) (lt_min (by positivity) (by norm_num)) (min_le_right _ _)
+  obtain ⟨T₀, hT₀⟩ := volume_localNewman_scaled_gt_le_of_window hκ hrare
+  exact ⟨θ, hθ, T₀, hT₀⟩
 
 /-- Off the same rare set, every zero of `H_τ` over the unit window is real for `τ ≥ κ / log X`. -/
 theorem exists_volume_nonreal_heat_le_rpow {κ : ℝ} (hκ : 0 < κ) :

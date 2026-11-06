@@ -46,7 +46,7 @@ private theorem log_factorial_le_sq {n : ℕ} (hn : 1 ≤ n) :
 
 /-- The factorial period is at most doubly exponential in the cutoff exponent and inverse
 slope excess. The estimate uses only `log(n!) ≤ n²` and the explicit period formula. -/
-theorem producerPeriod_le_double_exp {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) (ℓ : ℕ) :
+theorem producerPeriod_le_double_exp {ε : ℝ} (hε : 0 < ε) (_hε1 : ε ≤ 1) (ℓ : ℕ) :
     (producerPeriod ε ℓ : ℝ) ≤
       Real.exp (Real.exp (100 * ((ℓ : ℝ) + 1 + 1 / ε))) := by
   let t : ℝ := (ℓ : ℝ) + 1 + 1 / ε
@@ -219,7 +219,26 @@ theorem exists_producer_with_quantitative_cost :
   have hfac : 0 ≤ (producerRadius K ε : ℝ) ^ 3 *
       (5 + Real.log (producerRadius K ε)) := by positivity
   unfold producerCost
-  nlinarith [mul_le_mul_of_nonneg_right hS hfac]
+  nlinarith only [hE, mul_le_mul_of_nonneg_right hS hfac]
+
+/-- One absolute constant bounds both the alphabet and the normalized error of actual
+integer producers, uniformly in their slope excess. -/
+theorem exists_producer_with_double_exp_cost :
+    ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 →
+      ∃ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B ∧
+        normSlope c m B < 1 + ε ∧
+        (∀ k ∈ c.support, (k : ℝ) ≤ Real.exp (Real.exp (C / ε))) ∧
+        stencilErrorConst c / m ≤ Real.exp (Real.exp (C / ε)) := by
+  obtain ⟨K, hK, hprod⟩ := exists_producer_with_quantitative_cost
+  refine ⟨100 * (K + 14) + 52, by positivity, fun ε hε hε1 => ?_⟩
+  obtain ⟨c, m, B, hP, hA, halphabet, hE⟩ := hprod ε hε hε1
+  refine ⟨c, m, B, hP, hA, ?_, hE.trans (producerCost_le_double_exp hK hε hε1)⟩
+  intro k hk
+  have hkR : (k : ℝ) ≤ producerRadius K ε := by exact_mod_cast halphabet k hk
+  refine hkR.trans ((producerRadius_le_double_exp hK hε hε1).trans ?_)
+  apply Real.exp_le_exp.mpr
+  apply Real.exp_le_exp.mpr
+  exact div_le_div_of_nonneg_right (by linarith) hε.le
 
 /-- The factorial construction yields a prime-count bound with one explicit cost function
 for every `ε`; only its absolute scale constant is unspecified. -/
@@ -256,6 +275,14 @@ theorem exists_psi_le_double_exp_producer_cost :
       ≤ Real.exp (Real.exp ((100 * (K + 14) + 52) / ε)) *
           (3 * Real.log x) * (4 * Real.log x) := by gcongr
     _ = _ := by ring
+
+/-- The same producer cost controls the first Chebyshev function. -/
+theorem exists_theta_le_double_exp_producer_cost :
+    ∃ C : ℝ, 0 < C ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 → ∀ x : ℝ, 2 ≤ x →
+      Chebyshev.theta x ≤ (1 + ε) * x +
+        12 * Real.exp (Real.exp (C / ε)) * (Real.log x) ^ 2 := by
+  obtain ⟨C, hC, hpsi⟩ := exists_psi_le_double_exp_producer_cost
+  exact ⟨C, hC, fun ε hε hε1 x hx => (Chebyshev.theta_le_psi x).trans (hpsi ε hε hε1 x hx)⟩
 
 /-- Below the parity-blind floor the bounded-cost producers necessarily have both signs
 among their nontrivial letters. -/
