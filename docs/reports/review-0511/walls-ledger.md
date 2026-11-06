@@ -167,7 +167,7 @@ exceptional values of ζ.
 | Π3 Producer cost | Partially solved | sub / RH | Multivariate parity producers reach `(1+ε)x + C_εlog²x` [L]. |
 | Π4 Window precision (kernel = coupling) | Sharpened | RH | Reflection-pair prime-count band ⇔ RH. WL: bounded actual critical endpoint energy. JAS: subpower control on moving finite power windows. CTF: vanishing-error real unit-bounded rows, dyadic linear-Möbius defect bounds for every exponent, or BSY integral `I≤0` (already `I≥0`). PBM: pole-regularized signed sums at every square-root-plus-ε scale. RB: eventual Robin/Nicolas, including lcm-defect criterion, without `Θ<1` [L]. These receivers are proved; their arithmetic inequalities remain open. |
 | Π5 Conjugate diagonal | Sharpened | sub → ≥qRH → RH | Means `O_c(log U)`; one dyadic constant ⇔ RH [L]. |
-| Π6 Averages versus all heights | Sharpened | — | Double-log stage outside `O(V/log log V)` windows [L]. |
+| Π6 Averages versus all heights | Partially solved ([log-power corridors](../../drafts/pipeline/3-formalized/log-power-exceptional-windows.md)) | — | Double-log stage outside `O(V/log log V)` windows [L]. |
 | Π7 Census / pair surplus | Partially solved | sub | Simple critical `≥ 0.67250071`; positivity-only certificates cannot reach `3/4` [L]. |
 | Π8 Depth visibility | Classified | — | Cluster-product horizon [L]; superseded by Σ41 and Γ36. |
 | Π9 Exceptional moduli | Partially solved | sub | Uniform zero-free region and Siegel for `q ≤ (log x)^A` [L]. |
@@ -322,7 +322,7 @@ exceptional values of ζ.
 | Family | Solved | Partially solved | Sharpened | Open | No-go | Classified | Reduced |
 |---|---|---|---|---|---|---|---|
 | Σ (105) | 24 (Σ1a, Σ1b, Σ1c, Σ1h, Σ1k, Σ1o, Σ10, Σ12, Σ16, Σ24, Σ29, Σ35, Σ36, Σ37, Σ39, Σ43, Σ45, Σ51, Σ52, Σ55, Σ63, Σ64, Σ75, Σ83) | 14 (Σ1d, Σ1e, Σ1g, Σ1j, Σ1m, Σ3, Σ6, Σ9, Σ27, Σ72, Σ76, Σ78, Σ79, Σ82) | 20 (Σ1, Σ2, Σ3a, Σ4, Σ7, Σ8, Σ17, Σ19, Σ28, Σ32, Σ49, Σ47, Σ50, Σ56, Σ61, Σ66, Σ70, Σ73, Σ74, Σ77, Σ80) | 2 (Σ18, Σ20) | 11 (Σ1f, Σ2a, Σ13, Σ14, Σ23, Σ25, Σ42, Σ59, Σ60, Σ65, Σ69, Σ81) | 27 (Σ1i, Σ1n, Σ1p, Σ1q, Σ1r, Σ2b, Σ11, Σ15, Σ21, Σ22, Σ26, Σ31, Σ33, Σ34, Σ38, Σ40, Σ41, Σ44, Σ46, Σ48, Σ53, Σ54, Σ57, Σ58, Σ62, Σ68, Σ71, Σ84) | 4 (Σ1l → Σ56, Σ5 → Π17, Σ30 → single-prime transport, Σ67 → head thresholds) |
-| Π (58) | 11 (Π1, Π10, Π11g, Π13, Π26, Π31, Π32, Π38, Π39, Π41, Π44) | 8 (Π3, Π7, Π9, Π11f, Π12, Π47, Π49, Π50) | 11 (Π4, Π5, Π6, Π11h, Π16, Π17, Π22, Π30, Π36, Π42, Π48) | 3 (Π2, Π40, Π51) | 12 (Π11a–e, Π14, Π18, Π19, Π20, Π27, Π35, Π45) | 12 (Π8, Π15, Π21, Π24, Π25, Π28, Π29, Π33, Π34, Π37, Π43, Π46) | 1 (Π23 → off-line generating function) |
+| Π (58) | 11 (Π1, Π10, Π11g, Π13, Π26, Π31, Π32, Π38, Π39, Π41, Π44) | 9 (Π3, Π6, Π7, Π9, Π11f, Π12, Π47, Π49, Π50) | 10 (Π4, Π5, Π11h, Π16, Π17, Π22, Π30, Π36, Π42, Π48) | 3 (Π2, Π40, Π51) | 12 (Π11a–e, Π14, Π18, Π19, Π20, Π27, Π35, Π45) | 12 (Π8, Π15, Π21, Π24, Π25, Π28, Π29, Π33, Π34, Π37, Π43, Π46) | 1 (Π23 → off-line generating function) |
 | Γ (56) | 19 (Γ2, Γ6, Γ7, Γ12, Γ18, Γ23, Γ31, Γ32, Γ33, Γ34, Γ36, Γ39, Γ40, Γ41, Γ42, Γ43, Γ44, Γ47, Γ51) | 6 (Γ5, Γ15, Γ25, Γ46, Γ49, Γ56) | 9 (Γ4, Γ8, Γ10, Γ16, Γ19, Γ24, Γ52, Γ53, Γ54) | 1 (Γ1) | 13 (Γ3, Γ9, Γ11, Γ13, Γ14, Γ21, Γ22, Γ26, Γ27, Γ28, Γ29, Γ45, Γ50) | 7 (Γ17, Γ20, Γ30, Γ35, Γ37, Γ38, Γ48) | Γ55 → Σ56 |
 
 Strength of the open walls:

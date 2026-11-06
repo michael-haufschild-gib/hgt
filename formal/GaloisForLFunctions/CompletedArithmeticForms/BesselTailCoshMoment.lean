@@ -117,7 +117,7 @@ private theorem integrable_joint_cosh_bessel_power {p q η θ : ℝ}
   rw [norm_mul, Real.norm_eq_abs, abs_of_nonneg hun]
   have hb := mul_le_mul_of_nonneg_left
     (norm_cosh_bessel_radial_le hu hη hθ0 hθ z.2) hun
-  convert hb using 1 <;> ring
+  exact hb.trans_eq (by ring)
 
 private theorem cosh_mul_besselPowerTail_eq_integral (p q η τ : ℝ) :
     Real.cosh (η * τ) * besselPowerTail p (τ / 2) q =

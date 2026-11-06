@@ -1,7 +1,7 @@
 # Logarithmic-power exceptions and eventual geometric-ray corridors
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Π6
 - **Statement:** For `b>1` and `0<η<b−1`, bad unit-window heights in `[U,2U]` have measure `O(U/(log U)^η)`. For `b>2`, almost every `x∈[1,2]` eventually has no zero of depth at least `b log log T/log T` in the unit windows at `T=e^n x`.
 
@@ -28,5 +28,17 @@ The first Borel–Cantelli lemma gives `|limsup E_n|=0`. Thus almost every
 ## Frontier
 
 Existing sharp-corridor theorems retain only `O(U/log log U)` exceptions.
-The new summable estimate would control every sufficiently late sampled window
+The new summable estimate controls every sufficiently late sampled window
 for almost every geometric ray. It supplies no all-height corridor.
+
+## Lean
+
+Module: `GaloisForLFunctions/ConjugateDiagonalGeometry/LogScaleHeckeDefect/LogPowerExceptionalWindows.lean`.
+Namespace: `GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect`.
+
+- `eventually_volume_badLogLogWindows_le_logPower`: every exponent `0<η<b−1`.
+- `ae_eventually_geometric_unitWindow_corridor`: eventual strict corridor for almost every geometric ray, `b>2`.
+
+Audit passed: `lake --old env lean GaloisForLFunctions/ConjugateDiagonalGeometry/LogScaleHeckeDefect/LogPowerExceptionalWindows.lean` from `formal/`.
+Both declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`.
+Imported by the programme umbrella.

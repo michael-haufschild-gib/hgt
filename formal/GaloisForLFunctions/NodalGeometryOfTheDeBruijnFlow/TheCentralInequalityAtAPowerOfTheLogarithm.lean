@@ -14,7 +14,7 @@ The density-one statements hold with an explicit rate. Put `L = 1 + log 4T` and 
 
 So the part of the time axis on which the central inequality is open at a typical height shrinks from `t log X ≍ 1` to `t log X ≪ (log X)^{−1/5}`, that is `τ = t log² X ≪ (log X)^{4/5}`.
 
-The exceptional set has two sources. Large values of `ζ` near the height cost `T/L³`. A zero of `ζ` at depth `η_T/4` costs far less: Selberg's exponential density gives `T e^{−c L^{4/5}}` (`exists_volume_zetaZeroShadow_at_box_le`). The net over the unit window costs the factor `1/η_T`.
+The exceptional set has two sources. Large values of `ζ` near the height cost `T/L³`. A zero of `ζ` at depth `η_T/4` costs no more: Selberg's exponential density saves `e^{−c L^{4/5}}`, of which `T/L³` is recorded (`exists_volume_zetaZeroShadow_at_box_le`). The net over the unit window costs the factor `1/η_T`.
 
 The exponent `1/5` is what the envelope `b ≍ log L/η²` of the logarithmic derivative on a box permits: the Gaussian width `1/√L` must not feel it, so `η ≫ L^{−1/4}` up to a logarithm.
 -/

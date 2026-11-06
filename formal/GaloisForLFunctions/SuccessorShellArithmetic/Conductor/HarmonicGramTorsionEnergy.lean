@@ -213,13 +213,13 @@ private theorem orbitIntersection_nonneg {m l : ℕ} (hm : 0 < m) (hl : 0 < l) :
   · exact ArithmeticElectrostatics.orbitIntersection_nonneg_of_ne hm hl hml
 
 /-- Entrywise nonnegative intersections extend the torsion counterterm to the absolute signed pairing. -/
-theorem abs_torsionPairing_le_log (Q : ℕ) (f : ℕ → ℝ) :
+theorem abs_torsionPairing_le_two_log (Q : ℕ) (f : ℕ → ℝ) :
     |ArithmeticElectrostatics.torsionPairing Q f| ≤
-      (4 * Real.log Q + (Real.log 4 + 4)) * ArithmeticElectrostatics.selfMass Q f := by
+      (2 * Real.log Q + (Real.log 4 + 4)) * ArithmeticElectrostatics.selfMass Q f := by
   have he : ArithmeticElectrostatics.selfMass Q (fun m => |f m|) =
       ArithmeticElectrostatics.selfMass Q f := by
     simp only [ArithmeticElectrostatics.selfMass, sq_abs]
-  have h := ArithmeticElectrostatics.renormalizesAt_log Q (fun m => |f m|)
+  have h := ArithmeticElectrostatics.renormalizesAt_two_log Q (fun m => |f m|)
   rw [he] at h
   refine le_trans ?_ h
   unfold ArithmeticElectrostatics.torsionPairing
@@ -235,6 +235,15 @@ theorem abs_torsionPairing_le_log (Q : ℕ) (f : ℕ → ℝ) :
       intro l hl
       rw [abs_mul, abs_mul, abs_of_nonneg
         (orbitIntersection_nonneg (mem_Icc.mp hm).1 (mem_Icc.mp hl).1)]
+
+/-- The coarser absolute torsion bound. -/
+theorem abs_torsionPairing_le_log (Q : ℕ) (f : ℕ → ℝ) :
+    |ArithmeticElectrostatics.torsionPairing Q f| ≤
+      (4 * Real.log Q + (Real.log 4 + 4)) * ArithmeticElectrostatics.selfMass Q f := by
+  have hm : 0 ≤ ArithmeticElectrostatics.selfMass Q f :=
+    sum_nonneg fun m _ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+  refine (abs_torsionPairing_le_two_log Q f).trans (mul_le_mul_of_nonneg_right ?_ hm)
+  linarith only [Real.log_natCast_nonneg Q]
 
 /-- The complete harmonic finite-part form has logarithmic operator size in conductor cutoff. -/
 theorem abs_harmonicGram_finitePart_le_log (Q : ℕ) (f : ℕ → ℝ) :

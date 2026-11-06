@@ -12,17 +12,17 @@ removed: positivity needs a **counterterm**, a self-energy `κ` per point, and t
 energy `κ Σ φ(n) y_n² − Σ y_m y_n I(m, n)` must be nonnegative (`RenormalizesAt N κ`). A constant
 `κ` per point is compatible with every power map.
 
-* **Upper bound** (`renormalizesAt_log`): `κ = 4 log N + 2(log 4 + 4)` renormalizes every
-  configuration on orders `≤ N`. The diagonal costs `I(n, n) ≤ φ(n) log n`; off the diagonal a
-  Schur test with weights `1/n` reduces the row sums to the Hecke law: up the tower the row is
-  `φ(m) Σ_{t ≤ N/m} Λ(t)/t ≤ φ(m)(log N + log 4 + 4)` (Mertens), down the tower it is at most
-  `2φ(m) log m` (super-multiplicativity of `φ`, and `t ≤ 2φ(t)` at prime powers).
+* **Upper bound** (`renormalizesAt_two_log`): `κ = 2 log N + log 4 + 4` renormalizes every
+  configuration on orders `≤ N`. A Schur test with weights `1/n` reduces the row sums to the Hecke
+  law: up the tower the row is `φ(m) Σ_{t ≤ N/m} Λ(t)/t ≤ φ(m)(log(N/m) + log 4 + 4)` (Mertens), down
+  the tower it is exactly `φ(m) log m + D(m)` (`sum_divisors_totient_mul_quot`), and the local
+  correction `D` cancels against the diagonal `I(m, m) = φ(m) log m − D(m)`.
 * **Lower bound** (`le_of_renormalizesAt_prime`, `half_log_le_of_renormalizesAt`): the orbit of a
   prime `p ≤ N` alone has pairing `(p − 2) log p` against self-mass `p − 1`, so every renormalizing
   `κ` is at least `((p − 2)/(p − 1)) log p`; with Bertrand's postulate, at least `½ log(N/2)` for
   `N ≥ 4`.
 
-So the minimal counterterm on orders `≤ N` lies between `½ log(N/2)` and `4 log N + O(1)`: no finite
+So the minimal counterterm on orders `≤ N` lies between `½ log(N/2)` and `2 log N + O(1)`: no finite
 renormalization of the diagonal keeps the torsion pairing positive uniformly in the order, and the
 divergence is exactly logarithmic — the rate of the archimedean self-energy `log(1/ε)` of an atom of
 width `ε ≍ 1/N`, the spacing of the atoms `log n`, `n ≤ N`.
@@ -31,7 +31,7 @@ width `ε ≍ 1/N`, the spacing of the atoms `log n`, `n ≤ N`.
 noncomputable section
 
 open Finset
-open scoped ArithmeticFunction.Moebius
+open scoped ArithmeticFunction.Moebius ArithmeticFunction.zeta
 
 namespace GaloisForLFunctions.ArithmeticElectrostatics
 
@@ -117,74 +117,115 @@ theorem filter_Icc_dvd_eq_divisors {m N : ℕ} (hm : 0 < m) (hmN : m ≤ N) :
     have hn := Nat.pos_of_dvd_of_pos h hm
     exact ⟨⟨hn, (Nat.le_of_dvd hm h).trans hmN⟩, h⟩
 
-/-- The pointwise Schur bound off the diagonal. -/
-theorem orbitIntersection_mul_ratio_le {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (hmn : m ≠ n) :
-    orbitIntersection m n * ((m : ℝ) / n) ≤
+/-- The function `t ↦ t Λ(t)`. -/
+def idVonMangoldt : ArithmeticFunction ℝ := ⟨fun t => (t : ℝ) * Λ t, by simp⟩
+
+/-- **Exact descent**: `Σ_{n ∣ m} φ(n) (m/n) Λ(m/n) = φ(m) log m + D(m)`. Both sides have divisor sum
+`k log k`: the left one because `φ ⋆ 1 = id` and `Σ_{t ∣ k} Λ(t) = log k`. -/
+theorem sum_divisors_totient_mul_quot {m : ℕ} (hm : 0 < m) :
+    ∑ n ∈ m.divisors, (Nat.totient n : ℝ) * ((m / n : ℕ) : ℝ) * Λ (m / n) =
+      (Nat.totient m : ℝ) * Real.log m + localCorrection m := by
+  have hz (b : ℕ) : (totientR * ((ζ : ArithmeticFunction ℕ) : ArithmeticFunction ℝ)) b = b := by
+    rw [coe_mul_zeta_apply]
+    simp only [totientR_apply]
+    exact_mod_cast Nat.sum_totient b
+  have hsum : ∀ k : ℕ, k > 0 →
+      ∑ i ∈ k.divisors, (totientR * idVonMangoldt) i = (k : ℝ) * Real.log k := by
+    intro k _
+    rw [← coe_mul_zeta_apply, mul_comm totientR, mul_assoc, mul_apply]
+    have hpt : ∀ x ∈ k.divisorsAntidiagonal,
+        idVonMangoldt x.1 * (totientR * ((ζ : ArithmeticFunction ℕ) : ArithmeticFunction ℝ)) x.2 =
+          (k : ℝ) * Λ x.1 := by
+      intro x hx
+      obtain ⟨hmul, -⟩ := Nat.mem_divisorsAntidiagonal.mp hx
+      rw [hz, ← hmul]
+      change (x.1 : ℝ) * Λ x.1 * x.2 = _
+      push_cast
+      ring
+    rw [sum_congr rfl hpt, ← mul_sum,
+      Nat.sum_divisorsAntidiagonal (fun a _ => Λ a), vonMangoldt_sum]
+  have h1 := (sum_eq_iff_sum_mul_moebius_eq (f := fun i => (totientR * idVonMangoldt) i)
+    (g := fun k => (k : ℝ) * Real.log k)).mp hsum m hm
+  have h2 := (sum_eq_iff_sum_mul_moebius_eq
+    (f := fun i => (Nat.totient i : ℝ) * Real.log i + localCorrection i)
+    (g := fun k => (k : ℝ) * Real.log k)).mp
+    (fun k hk => sum_divisors_totient_log_add_localCorrection hk) m hm
+  have h3 := h1.symm.trans h2
+  rw [mul_apply, Nat.sum_divisorsAntidiagonal (fun a b => totientR a * idVonMangoldt b)] at h3
+  rw [← h3]
+  exact sum_congr rfl fun n _ => by
+    change _ = (Nat.totient n : ℝ) * (((m / n : ℕ) : ℝ) * Λ (m / n))
+    ring
+
+/-- The Schur entry off the diagonal, split into its two Hecke directions. -/
+theorem orbitIntersection_mul_ratio_eq {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (hmn : m ≠ n) :
+    orbitIntersection m n * ((m : ℝ) / n) =
       (if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n) else 0) +
-        (if n ∣ m then 2 * Nat.totient m * Λ (m / n) else 0) := by
-  have hratio : (0 : ℝ) ≤ (m : ℝ) / n := by positivity
+        (if n ∣ m then (Nat.totient n : ℝ) * ((m / n : ℕ) : ℝ) * Λ (m / n) else 0) := by
   rw [orbitIntersection_eq hm hn hmn]
   by_cases hnm : n ∣ m
   · have hmn' : ¬ m ∣ n := fun h => hmn (Nat.dvd_antisymm h hnm)
-    rw [if_pos hnm, if_neg hmn', if_pos hnm, zero_add]
     have hcast : (m : ℝ) / n = ((m / n : ℕ) : ℝ) := by
       rw [Nat.cast_div hnm (by exact_mod_cast hn.ne')]
-    rw [hcast]
-    have := totient_mul_quot_le hnm
-    linarith
+    rw [if_pos hnm, if_neg hmn', if_pos hnm, zero_add, hcast]
+    ring
   · rw [if_neg hnm, if_neg hnm, add_zero]
     split_ifs
-    · exact le_rfl
+    · rfl
     · simp
 
-/-- **The row bound**: `Σ_{n ≤ N, n ≠ m} I(m, n) m/n ≤ φ(m)(3 log N + log 4 + 4)`. -/
-theorem sum_offDiag_row_le {m N : ℕ} (hm : 0 < m) (hmN : m ≤ N) :
-    ∑ n ∈ (Icc 1 N).erase m, orbitIntersection m n * ((m : ℝ) / n) ≤
-      (Nat.totient m : ℝ) * (3 * Real.log N + (Real.log 4 + 4)) := by
+/-- **The row bound**: with the diagonal included, the row of `m` in the Schur test with weights
+`1/n` is at most `φ(m)(log m + log N + log 4 + 4)`. -/
+theorem orbitIntersection_self_add_row_le {m N : ℕ} (hm : 0 < m) (hmN : m ≤ N) :
+    orbitIntersection m m + ∑ n ∈ (Icc 1 N).erase m, orbitIntersection m n * ((m : ℝ) / n) ≤
+      (Nat.totient m : ℝ) * (Real.log m + Real.log N + (Real.log 4 + 4)) := by
   have hφ : (0 : ℝ) ≤ Nat.totient m := Nat.cast_nonneg _
-  have hN : 0 < N := lt_of_lt_of_le hm hmN
-  -- the two Hecke directions
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hN0 : (0 : ℝ) < N := hm0.trans_le (by exact_mod_cast hmN)
   have hup : ∑ n ∈ Icc 1 N, (if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n)
-      else 0) ≤ (Nat.totient m : ℝ) * (Real.log N + (Real.log 4 + 4)) := by
+      else 0) ≤ (Nat.totient m : ℝ) * (Real.log N - Real.log m + (Real.log 4 + 4)) := by
     rw [← sum_filter, filter_dvd_Icc_eq_image hm,
       sum_image fun a _ b _ h => Nat.eq_of_mul_eq_mul_left hm h]
     have hterm : ∀ t ∈ Icc 1 (N / m), (Nat.totient m : ℝ) * Λ (m * t / m) * ((m : ℝ) / (m * t : ℕ)) =
         (Nat.totient m : ℝ) * (Λ t / t) := by
       intro t ht
       have ht0 : (t : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by have := (mem_Icc.mp ht).1; omega)
-      have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
       rw [Nat.mul_div_cancel_left t hm, Nat.cast_mul]
       field_simp
     rw [sum_congr rfl hterm, ← mul_sum]
     refine mul_le_mul_of_nonneg_left ?_ hφ
     have hNm : 1 ≤ N / m := (Nat.le_div_iff_mul_le hm).mpr (by linarith)
-    have hmert := RHTower.Mertens.mertens_first (N / m) hNm
-    have hlog : Real.log ((N / m : ℕ) : ℝ) ≤ Real.log N :=
-      Real.log_le_log (by exact_mod_cast hNm) (by exact_mod_cast Nat.div_le_self N m)
-    have := (abs_le.mp hmert).2
-    linarith
-  have hdown : ∑ n ∈ Icc 1 N, (if n ∣ m then 2 * (Nat.totient m : ℝ) * Λ (m / n) else 0) ≤
-      (Nat.totient m : ℝ) * (2 * Real.log N) := by
-    rw [← sum_filter, filter_Icc_dvd_eq_divisors hm hmN, ← mul_sum,
-      Nat.sum_div_divisors m (fun d => Λ d), vonMangoldt_sum]
-    have hlog : Real.log m ≤ Real.log N :=
-      Real.log_le_log (by exact_mod_cast hm) (by exact_mod_cast hmN)
-    nlinarith
-  calc ∑ n ∈ (Icc 1 N).erase m, orbitIntersection m n * ((m : ℝ) / n)
-      ≤ ∑ n ∈ (Icc 1 N).erase m,
-          ((if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n) else 0) +
-            (if n ∣ m then 2 * Nat.totient m * Λ (m / n) else 0)) :=
-        sum_le_sum fun n hn => orbitIntersection_mul_ratio_le hm
-          (mem_Icc.mp (mem_of_mem_erase hn)).1 (ne_of_mem_erase hn).symm
-    _ ≤ ∑ n ∈ Icc 1 N,
-          ((if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n) else 0) +
-            (if n ∣ m then 2 * Nat.totient m * Λ (m / n) else 0)) := by
-        refine sum_le_sum_of_subset_of_nonneg (erase_subset _ _) fun n _ _ => ?_
-        refine add_nonneg ?_ ?_ <;> split_ifs <;> positivity
-    _ = _ + _ := sum_add_distrib
-    _ ≤ (Nat.totient m : ℝ) * (Real.log N + (Real.log 4 + 4)) +
-          (Nat.totient m : ℝ) * (2 * Real.log N) := add_le_add hup hdown
-    _ = (Nat.totient m : ℝ) * (3 * Real.log N + (Real.log 4 + 4)) := by ring
+    have hmert := (abs_le.mp (RHTower.Mertens.mertens_first (N / m) hNm)).2
+    have hNm0 : (0 : ℝ) < ((N / m : ℕ) : ℝ) := by exact_mod_cast hNm
+    have hlog : Real.log ((N / m : ℕ) : ℝ) ≤ Real.log N - Real.log m := by
+      rw [← Real.log_div hN0.ne' hm0.ne']
+      exact Real.log_le_log hNm0 Nat.cast_div_le
+    linarith only [hmert, hlog]
+  have hdown : ∑ n ∈ Icc 1 N, (if n ∣ m then (Nat.totient n : ℝ) * ((m / n : ℕ) : ℝ) * Λ (m / n)
+      else 0) = (Nat.totient m : ℝ) * Real.log m + localCorrection m := by
+    rw [← sum_filter, filter_Icc_dvd_eq_divisors hm hmN, sum_divisors_totient_mul_quot hm]
+  have hrow : ∑ n ∈ (Icc 1 N).erase m, orbitIntersection m n * ((m : ℝ) / n) ≤
+      ∑ n ∈ Icc 1 N, ((if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n) else 0) +
+        (if n ∣ m then (Nat.totient n : ℝ) * ((m / n : ℕ) : ℝ) * Λ (m / n) else 0)) := by
+    calc ∑ n ∈ (Icc 1 N).erase m, orbitIntersection m n * ((m : ℝ) / n)
+        = ∑ n ∈ (Icc 1 N).erase m,
+            ((if m ∣ n then (Nat.totient m : ℝ) * Λ (n / m) * ((m : ℝ) / n) else 0) +
+              (if n ∣ m then (Nat.totient n : ℝ) * ((m / n : ℕ) : ℝ) * Λ (m / n) else 0)) :=
+          sum_congr rfl fun n hn => orbitIntersection_mul_ratio_eq hm
+            (mem_Icc.mp (mem_of_mem_erase hn)).1 (ne_of_mem_erase hn).symm
+      _ ≤ _ := by
+          refine sum_le_sum_of_subset_of_nonneg (erase_subset _ _) fun n _ _ => ?_
+          refine add_nonneg ?_ ?_ <;> split_ifs <;> first
+            | exact le_rfl
+            | exact mul_nonneg (mul_nonneg (Nat.cast_nonneg _) vonMangoldt_nonneg) (by positivity)
+            | exact mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) vonMangoldt_nonneg
+  rw [sum_add_distrib] at hrow
+  rw [orbitIntersection_self_eq hm]
+  have hmul : (Nat.totient m : ℝ) * (Real.log m + Real.log N + (Real.log 4 + 4)) =
+      (Nat.totient m : ℝ) * (Real.log N - Real.log m + (Real.log 4 + 4)) +
+        2 * ((Nat.totient m : ℝ) * Real.log m) := by ring
+  rw [hmul]
+  linarith only [hrow, hup, hdown]
 
 /-! ### The upper bound -/
 
@@ -198,26 +239,18 @@ theorem sum_sum_erase_comm (S : Finset ℕ) (G : ℕ → ℕ → ℝ) :
     exact sum_congr rfl fun m hm => sum_erase_eq_sub hm
   rw [e (fun m n => G n m), e G, sum_comm]
 
-/-- **Upper bound**: `κ = 4 log N + (log 4 + 4)` renormalizes the orders `≤ N`. -/
-theorem renormalizesAt_log (N : ℕ) :
-    RenormalizesAt N (4 * Real.log N + (Real.log 4 + 4)) := by
+/-- **Upper bound**: `κ = 2 log N + (log 4 + 4)` renormalizes the orders `≤ N`. -/
+theorem renormalizesAt_two_log (N : ℕ) :
+    RenormalizesAt N (2 * Real.log N + (Real.log 4 + 4)) := by
   intro y
   set S := Icc 1 N
   have hpos : ∀ n ∈ S, 0 < n := fun n hn => (mem_Icc.mp hn).1
-  -- split off the diagonal
   have hsplit : torsionPairing N y =
       ∑ m ∈ S, y m ^ 2 * orbitIntersection m m +
         ∑ m ∈ S, ∑ n ∈ S.erase m, y m * y n * orbitIntersection m n := by
     rw [torsionPairing, ← sum_add_distrib]
     refine sum_congr rfl fun m hm => ?_
     rw [← add_sum_erase S _ hm, sq]
-  -- the diagonal
-  have hdiag : ∑ m ∈ S, y m ^ 2 * orbitIntersection m m ≤
-      ∑ m ∈ S, y m ^ 2 * ((Nat.totient m : ℝ) * Real.log N) := by
-    refine sum_le_sum fun m hm => mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
-    refine (orbitIntersection_self_le (hpos m hm)).trans (mul_le_mul_of_nonneg_left ?_
-      (Nat.cast_nonneg _))
-    exact Real.log_le_log (by exact_mod_cast hpos m hm) (by exact_mod_cast (mem_Icc.mp hm).2)
   -- off the diagonal: Schur with weights `1/n`
   have hpair : ∀ m ∈ S, ∀ n ∈ S.erase m, y m * y n * orbitIntersection m n ≤
       (y m ^ 2 * (orbitIntersection m n * ((m : ℝ) / n)) +
@@ -248,15 +281,35 @@ theorem renormalizesAt_log (N : ℕ) :
       _ = ∑ m ∈ S, y m ^ 2 * ∑ n ∈ S.erase m, orbitIntersection m n * ((m : ℝ) / n) := by
           simp only [← sum_div, sum_add_distrib, hsym, mul_sum]
           ring
-  have hrow : ∑ m ∈ S, y m ^ 2 * ∑ n ∈ S.erase m, orbitIntersection m n * ((m : ℝ) / n) ≤
-      ∑ m ∈ S, y m ^ 2 * ((Nat.totient m : ℝ) * (3 * Real.log N + (Real.log 4 + 4))) :=
-    sum_le_sum fun m hm => mul_le_mul_of_nonneg_left
-      (sum_offDiag_row_le (hpos m hm) (mem_Icc.mp hm).2) (sq_nonneg _)
+  have hrow : ∀ m ∈ S, y m ^ 2 * orbitIntersection m m +
+      y m ^ 2 * ∑ n ∈ S.erase m, orbitIntersection m n * ((m : ℝ) / n) ≤
+        y m ^ 2 * ((Nat.totient m : ℝ) * (2 * Real.log N + (Real.log 4 + 4))) := by
+    intro m hm
+    rw [← mul_add]
+    refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+    refine (orbitIntersection_self_add_row_le (hpos m hm) (mem_Icc.mp hm).2).trans
+      (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg _))
+    have hl : Real.log m ≤ Real.log N :=
+      Real.log_le_log (by exact_mod_cast hpos m hm) (by exact_mod_cast (mem_Icc.mp hm).2)
+    linarith only [hl]
   rw [hsplit, selfMass, mul_sum]
-  calc _ ≤ ∑ m ∈ S, y m ^ 2 * ((Nat.totient m : ℝ) * Real.log N) +
-        ∑ m ∈ S, y m ^ 2 * ((Nat.totient m : ℝ) * (3 * Real.log N + (Real.log 4 + 4))) :=
-        add_le_add hdiag (hoff.trans hrow)
-    _ = _ := by rw [← sum_add_distrib]; exact sum_congr rfl fun m _ => by ring
+  calc _ ≤ ∑ m ∈ S, y m ^ 2 * orbitIntersection m m +
+        ∑ m ∈ S, y m ^ 2 * ∑ n ∈ S.erase m, orbitIntersection m n * ((m : ℝ) / n) :=
+        add_le_add le_rfl hoff
+    _ = ∑ m ∈ S, (y m ^ 2 * orbitIntersection m m +
+        y m ^ 2 * ∑ n ∈ S.erase m, orbitIntersection m n * ((m : ℝ) / n)) := sum_add_distrib.symm
+    _ ≤ ∑ m ∈ S, y m ^ 2 * ((Nat.totient m : ℝ) * (2 * Real.log N + (Real.log 4 + 4))) :=
+        sum_le_sum hrow
+    _ = _ := sum_congr rfl fun m _ => by ring
+
+/-- The coarser counterterm `4 log N + (log 4 + 4)`. -/
+theorem renormalizesAt_log (N : ℕ) :
+    RenormalizesAt N (4 * Real.log N + (Real.log 4 + 4)) := by
+  intro y
+  have hmass : 0 ≤ selfMass N y := sum_nonneg fun n _ => mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+  have hlog := Real.log_natCast_nonneg N
+  refine (renormalizesAt_two_log N y).trans (mul_le_mul_of_nonneg_right ?_ hmass)
+  linarith only [hlog]
 
 /-! ### The lower bound -/
 
@@ -309,10 +362,10 @@ theorem half_log_le_of_renormalizesAt {N : ℕ} (hN : 4 ≤ N) {κ : ℝ} (h : R
   nlinarith
 
 /-- **The counterterm rate**: the minimal renormalizing counterterm on orders `≤ N` lies between
-`½ log(N/2)` and `4 log N + log 4 + 4`. -/
+`½ log(N/2)` and `2 log N + log 4 + 4`. -/
 theorem torsionCounterterm_rate :
-    (∀ N : ℕ, RenormalizesAt N (4 * Real.log N + (Real.log 4 + 4))) ∧
+    (∀ N : ℕ, RenormalizesAt N (2 * Real.log N + (Real.log 4 + 4))) ∧
       ∀ N : ℕ, 4 ≤ N → ∀ κ : ℝ, RenormalizesAt N κ → Real.log ((N : ℝ) / 2) / 2 ≤ κ :=
-  ⟨renormalizesAt_log, fun _ hN _ h => half_log_le_of_renormalizesAt hN h⟩
+  ⟨renormalizesAt_two_log, fun _ hN _ h => half_log_le_of_renormalizesAt hN h⟩
 
 end GaloisForLFunctions.ArithmeticElectrostatics

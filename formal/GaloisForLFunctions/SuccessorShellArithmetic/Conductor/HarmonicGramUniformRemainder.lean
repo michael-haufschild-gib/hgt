@@ -293,11 +293,11 @@ theorem abs_harmonicGram_quadratic_torsion_remainder {Q : ℕ}
   exact h.trans_eq (by ring)
 
 /-- The actual finite-horizon harmonic Gram differs from `log N` times identity by a logarithmic operator budget. -/
-theorem abs_harmonicGram_sub_log_mass_le {Q : ℕ} (hQ : 2 ≤ Q)
+theorem abs_harmonicGram_sub_log_mass_le_two_log {Q : ℕ} (hQ : 2 ≤ Q)
     {N : ℕ} (hN : 1 ≤ N) (a : ℕ → ℝ) :
     |(∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
         Real.log N * (∑ m ∈ Icc 1 Q, a m ^ 2)| ≤
-      (|Real.eulerMascheroniConstant| + 4 * Real.log Q + (Real.log 4 + 4) +
+      (|Real.eulerMascheroniConstant| + 2 * Real.log Q + (Real.log 4 + 4) +
         (Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1) + 1 / N) * ∑ m ∈ Icc 1 Q, a m ^ 2 := by
   let A := ∑ n ∈ Icc 1 N,
     (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)
@@ -307,9 +307,9 @@ theorem abs_harmonicGram_sub_log_mass_le {Q : ℕ} (hQ : 2 ≤ Q)
   have hr : |A - (harmonic N : ℝ) * M + T| ≤
       ((Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1)) * M :=
     abs_harmonicGram_quadratic_torsion_remainder hQ N a
-  have ht : |T| ≤ (4 * Real.log Q + (Real.log 4 + 4)) * M := by
+  have ht : |T| ≤ (2 * Real.log Q + (Real.log 4 + 4)) * M := by
     simpa only [normalized_coefficient_selfMass] using
-      abs_torsionPairing_le_log Q (fun m => a m / Real.sqrt (m.totient : ℝ))
+      abs_torsionPairing_le_two_log Q (fun m => a m / Real.sqrt (m.totient : ℝ))
   have hh : |(harmonic N : ℝ) - Real.log N| ≤ |Real.eulerMascheroniConstant| + 1 / N := by
     have h := _root_.HTGeometry.abs_harmonic_sub_log_sub_eulerMascheroni_le hN
     calc
@@ -328,10 +328,22 @@ theorem abs_harmonicGram_sub_log_mass_le {Q : ℕ} (hQ : 2 ≤ Q)
       (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     _ ≤ ((Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1)) * M +
         (|Real.eulerMascheroniConstant| + 1 / N) * M +
-        (4 * Real.log Q + (Real.log 4 + 4)) * M := by
+        (2 * Real.log Q + (Real.log 4 + 4)) * M := by
       rw [abs_mul, abs_of_nonneg hM]
       exact add_le_add (add_le_add hr (mul_le_mul_of_nonneg_right hh hM)) ht
     _ = _ := by ring
+
+/-- The coarser form of the harmonic Gram budget. -/
+theorem abs_harmonicGram_sub_log_mass_le {Q : ℕ} (hQ : 2 ≤ Q)
+    {N : ℕ} (hN : 1 ≤ N) (a : ℕ → ℝ) :
+    |(∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
+        Real.log N * (∑ m ∈ Icc 1 Q, a m ^ 2)| ≤
+      (|Real.eulerMascheroniConstant| + 4 * Real.log Q + (Real.log 4 + 4) +
+        (Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1) + 1 / N) * ∑ m ∈ Icc 1 Q, a m ^ 2 := by
+  have hM : 0 ≤ ∑ m ∈ Icc 1 Q, a m ^ 2 := sum_nonneg fun m _ => sq_nonneg (a m)
+  refine (abs_harmonicGram_sub_log_mass_le_two_log hQ hN a).trans
+    (mul_le_mul_of_nonneg_right ?_ hM)
+  linarith only [Real.log_natCast_nonneg Q]
 
 #print axioms abs_harmonicGram_quadratic_torsion_remainder
 #print axioms abs_harmonicGram_sub_log_mass_le

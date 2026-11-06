@@ -1,196 +1,175 @@
-# Signed low-block gain at the absolute assembly threshold
+# Signed gain beyond the absolute assembly threshold
 
 - **Stage:** 1-in-progress
-- **Target:** B7, full-space positivity beyond the size-only optimum.
-- **Status:** Conjectural source transfer; A4 absolute-assembly optimum uncertified.
+- **Target:** B7: eventual full-space positivity beyond the size-only optimum.
+- **Status:** Sharp aliasing floor formalized. Negative-vector compactness, signed source transfer,
+  and certification of A4's absolute-assembly optimum remain open.
 
-For an absolute two-block comparison with positive constants,
+## Threshold and limiting form
 
-`A(R)=J−αR`, `D(R)=g−βR`, `B(R)=γR`,
+For an absolute two-block comparison
+`A(R)=J−αR`, `D(R)=g−βR`, `B(R)=γR`, with positive constants,
+the admissible interval ends at `A(R)D(R)=B(R)²`, while both diagonal
+entries remain positive. Replacing `A(R)` by `J+ηR`, `η>0`, gives a strict
+gain at that endpoint and hence beyond it.
 
-the admissible interval ends when `A(R)D(R)=B(R)²`. At its positive
-endpoint both diagonal entries remain positive. Replacing `A(R)` by
-`J+ηR`, with `η>0`, strictly increases the determinant there; continuity
-then gives an interval beyond that endpoint.
+The actual growing low conductor packet has the checked positive polar
+correction `aφ(2+γ_E−log(4π))R`. Applying the comparison requires retaining
+all constants and free allocations in A4's far reserve, residual and Schur
+payments, and certifying their joint optimum. Existing existential
+small-multiple witnesses do not certify it.
 
-The actual growing conductor packet has the checked positive polar
-correction `aφ(2+γ_E−log(4π))R`. This makes the comparison a candidate
-for a full-space sign improvement, provided the actual far and mixed
-estimates admit one sharp common block comparison.
+For `R=c⁸/log N`, the optimized fixed-window limit is
 
-Required source work: retain the constants and free splitting parameters
-in the dyadic far reserve, dual-collar residual and Schur payment; certify
-the optimum of A4's absolute-value assembly; prove its active endpoint
-has a strict low-block gain. The existing existential small-band constants
-do not certify that optimum. An arbitrarily chosen absolute bound would
-not settle B7.
+`Q_R(h)=aφ W(H)+(7J₁/R)∫e⁻⁸ʸH²
+        −generalTerminalPolarSource(A,h)²/criticalPoleWindowCost(R)`,
+
+where `H=halfWeight h`. Its negative polar Schur term is essential.
+The transfer conjecture is that uniform positivity of this form in the
+exponential norm forces eventual full-space positivity. Positive limits
+on fixed periodic or trigonometric sectors do not control moving sectors.
 
 Corpus anchors: `TheTopCollarHasADyadicSeventhPowerReserve`,
 `LogarithmFreeCriticalConductorResiduals`,
-`TheCriticalSchurPairingRetainsTheCollarWeight`, and
-`TheSignedCriticalResidualIsCompactBelowOverlap`.
+`TheCriticalSchurPairingRetainsTheCollarWeight`,
+`TheCriticalLowPacketRetainsItsSignedPolarPart`.
 
-## Uniform transfer conjecture
+## Formalized aliasing floor
 
-For `R=c⁸/log N`, the optimized terminal-window limit already proved is
+Write `φ=tiltedUnitSpline`, `m=∫φ`, `Mφ=∫φ²`,
+`U_N=(√N/c) centredAtomicTest(φ,x_N,c,N)`, and `Cφ=7MφJ₁`.
+On every critical schedule `c⁸/log N→R>0`, with `c≥1`,
+`∫U_N²≤1`, integrable `F`, and strong physical `L¹` convergence `U_N→F`:
 
-`Q_R(h)=aφ W(halfWeight h)+(7 J₁/R)∫e⁻⁸ʸ(halfWeight h)²
-        −generalTerminalPolarSource(A,h)²/criticalPoleWindowCost(R)`.
+- `m c⁸ B_high(U_N,U_{h,N};Ne⁻ᴬ)→Cφ∫F H e⁻⁸ʸ`.
+- `c⁸ E_high(U_{h,N};Ne⁻ᴬ)→Cφ∫H²e⁻⁸ʸ`.
+- For every `A>0` and `b<Cφ∫_{(-A,0)}F²e⁻⁸ʸ`, eventually
+  `b<m²c⁸ E_high(U_N;Ne⁻ᴬ)`.
 
-Conjecture: a positive lower bound for `Q_R` in the exponential norm,
-uniform over compact windows, transfers to eventual full-space positivity.
-The conductor-one correction is included in `Q_R`; omitting its negative
-Schur term would give the wrong limiting form.
+These are `tendsto_criticalCurve_highFourierPair_horizon`,
+`tendsto_criticalCurve_highFourierMass_horizon`, and
+`eventually_criticalCurve_highFourierMass_gt_weighted_floor` in
+`ArithmeticHodgeTheoryOfDegenerations/TheHighAliasingHasItsPhysicalDualFloor.lean`.
+Fatou derives `F∈L²`; no separate square-integrability input is needed.
+The actual-path audit passed with only standard axioms.
 
-Fixed nonconstant periodic and trigonometric sectors have positive scalar
-limits (`trig_twisted_sector_inherits`,
-`ramComb_layer_criticalCurve_exact`). This does not give uniform control
-when the profiles, frequencies and number of sectors vary with `N`.
-The missing statement is compactness of possible negative vectors after
-retaining the seventh-power aliasing reserve and the conductor-one source.
-Neither a finite family limit nor positivity on every fixed twist proves it.
+The supporting results below are also formalized and audited with only
+standard axioms. Module names are under `ArithmeticHodgeTheoryOfDegenerations`
+unless marked `CriticalArithmeticCorrelationTheory`.
 
-A proved averaging step is the following actual-spline statement. For
-integrable `F` supported in `[δ,∞)`, `δ>0`,
+| Module | Mathematical input |
+|---|---|
+| `TheAliasingMeanIsStableUnderL1Convergence` | For integrable `G` supported in `[δ,∞)`, `∫G(x)c⁸ aliasDensity(φ,cx)→(7/2)MφJ₁∫G(x)x⁻⁸`; stable under strong `L¹` convergence. |
+| `AtomicSynthesisRecoversLipschitzTests` | Adjoint synthesis error at most `(c/N)Lip(f)‖φ‖₁‖x‖₂`. |
+| `TheAliasingPairsWithStrongPhysicalLimits` | The exact discrete pairing tends to `(7/2)MφJ₁∫Fg e⁻⁸ʸ` for bounded terminal Lipschitz `g` and polynomial coefficient growth. The scaled multiplier has Lipschitz constant `O(c⁹)`. |
+| `AtomicSynthesisRetainsItsMixedMass` | `∫U_N²≥growingMassConstant·Mφ c⁻⁸‖x_N‖₂²`; unit physical mass gives `‖x_N‖₂=O(c⁴)`. The mixed-row error is `O(c/N)‖x_N‖₂`, yielding `m c⁸(∫U_NU_{h,N}−m∫U_NH)→Cφ∫FHe⁻⁸ʸ`. |
+| `TheSynthesizedProfileIsRecoveredBelowTheGrid` | Below-grid Fourier error at most `C(c²r³/N²+1/r)` for `1≤r≤Ne⁻ᴬ`. Choosing `r=c^(j+1)` makes `c^j` times the error vanish. |
+| `CriticalArithmeticCorrelationTheory/TheHighFourierMassHasADualLowerBound` | `2m B_high(f,g)−E_high(g)≤m²E_high(f)`; the squared mixed error is bounded by `‖f‖₂²/(2π)` times the below-grid recovery error. |
+| `CriticalArithmeticCorrelationTheory/SmoothTerminalTestsRecoverWeightedMass` | Smooth tests supported in `[-A,0]` recover every strict lower bound below `∫_{(-A,0)}F²e⁻⁸ʸ` through `2∫FHe⁻⁸ʸ−∫H²e⁻⁸ʸ`. |
 
-`∫F(x)c⁸ aliasDensity(φ,cx) dx → (7/2)J₁(∫φ²)∫F(x)x⁻⁸ dx`.
+The cofinal-filter extension is drafted; verification is pending. Strong
+convergence for possible negative vectors remains open.
 
-The four cosine modes vanish by Riemann–Lebesgue; the rational-tail error
-vanishes under the integral, and the harmonic bounds are summable in
-`k⁻⁸`. A uniform multiplier bound extends this limit to weights converging
-in `L¹`. Both statements are formalized in
-`ArithmeticHodgeTheoryOfDegenerations/TheAliasingMeanIsStableUnderL1Convergence.lean`:
-`tendsto_integrable_tilted_aliasDensity` and
-`tendsto_tilted_aliasDensity_of_L1_convergence`. Direct audit passed with
-only standard axioms. This does not supply the missing compactness of
-negative vectors or the discrete aliasing lower bound along such vectors.
+## Confinement
 
-For a fixed terminal interval, a possible lower-bound argument uses
-`E_high(x) ≥ 2 B_high(x,v_h) − E_high(v_h)` with smooth recovery profiles
-`v_h`. The mass-row expansion separates the bulk from the alias term.
-The adjoint synthesis estimate is now formalized in
-`AtomicSynthesisRecoversLipschitzTests.lean`. For
-`F_N=(√N/c) centredAtomicTest(φ,x,c,N)` and a Lipschitz test `f`,
+Let `L=linearDefectCutoff c`, `M=N/L`,
+`P=Σ_{n≤M}x_n²`, and `S₇=Σ_{M<n≤N}(N/n)⁷x_n²`.
 
-`|∫F_N f − (∫φ)/√N Σ x_n f(log(n/N))|
- ≤ (c/N) Lip(f) ‖φ‖₁ ‖x‖₂`.
+Retain the raw far reserve before imposing a small-multiple restriction.
+The required fixed-`R` extension is
+`Q_N(w)≥(7/8)D_M(w)−C_R cS₇−o(log N/(log log N)^B)P`.
+Orthogonality to a growing conductor packet is essential. With
+`q=N^(1/(1+log log N)^5)` and controlled terminal leakage, the prefix
+floor would give `P=O(c(log log N)^5/log N)S₇` for negative far vectors.
+The fixed-ratio reserve is formalized below. The growing-packet absorption
+estimate remains open.
 
-`abs_integral_normalizedCentredAtomicTest_mul_sub_le` passed its direct
-audit with only standard axioms. The scaled alias multiplier has
-Lipschitz constant `O(c⁹)`, so this error vanishes on the critical curve.
-For polynomially bounded coefficient norms and strong physical `L¹` convergence
-`F_N→F`, the exact discrete pairing now satisfies
+The window-pole prefactor is at most `16(1+2e)c⁸/(g log N)` and its
+pole term at most `8e²cS₇`. Thus `c⁸/log N≤2R` gives total pole cost
+at most `256(1+2e)e² splineWindowConstant R cS₇/g`, without smallness of `R`.
 
-`(∫φ)/√N Σ x_n g(log(n/N)) c⁸ aliasDensity(φ,cn/N)
- → (7/2)J₁(∫φ²)∫F(y)g(y)e⁻⁸ʸ dy`
+For compactness, split the top archimedean form into one quarter of the
+dyadic aliasing bound, one half of the high-frequency bound, and one
+unpaid quarter. The existing cross payment spends one eighth of the
+aliasing bound. This leaves one eighth of that reserve and one quarter
+of the original archimedean form. Public inputs:
+`prefix_block_ge`, `archForm_prefix_top_split_ge`,
+`primeSum_prefix_top_split`, `translate_masses_le`,
+`exists_top_archForm_dyadic_seventh_reserve`.
+The fixed-ratio reserve is, for `c≤(log N)^(9/64)` and `c⁸≤R log N`,
 
-for every bounded Lipschitz `g` supported in a fixed terminal interval.
-`tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound` in
-`TheAliasingPairsWithStrongPhysicalLimits.lean` passed its direct audit
-with only standard axioms. Strong physical convergence remains an input
-to this lemma. Still required: the high-frequency row identity,
-compactness with the weighted tail retained, and the polar Schur passage.
+`Q_N(w)≥(7/8)D_M(w)+(g/8c⁷)(log N)S₇−(C_S+C_*R)cS₇
+          −κ(log N)/(1+log log N)^B P+archForm(top)/(4G)`,
 
-The below-grid operator comparison follows from the complex Riemann-sum
-estimate and `horizonDirichlet_sq_div_le`. For fixed smooth
-`h`, `H=halfWeight h`, `U_N=(√N/c) centredAtomicTest(φ,v_h,c,N)` and
-`1≤r≤Ne⁻ᴬ`,
-`∫|1_{|τ|≤Ne⁻ᴬ} Û_N(τ)−(∫φ)Ĥ(τ)|² ≤ C(c²r³/N²+1/r)`.
-Choosing `r=c^(m+1)` proves `c^m` times this error tends to zero for every
-fixed `m` on the critical curve. Both the bound and this limit are
-formalized in `TheSynthesizedProfileIsRecoveredBelowTheGrid.lean`:
-`integral_belowGrid_fourier_error_le` and
-`tendsto_criticalCurve_belowGrid_fourier_error`. The direct audit passed
-with only standard axioms.
+where `G=(c/N)Mφ`, `g=dyadicTopMassConstant`, and
+`C_*=128(1+2e)e² splineWindowConstant/g`. The free prefix tolerance `κ>0`
+can be absorbed using a growing conductor packet. Parameter choices use
+`9/64<1/7` and `13/7<2`; no smallness condition on `R` is needed.
 
-Physical normalization is compatible with polynomial coefficient growth:
-`integral_atomicTest_sq_ge_growing` gives
-`‖U_N‖₂² ≥ growingMassConstant (∫φ²)c⁻⁸‖x‖₂²`.
-Thus `‖U_N‖₂=1` implies `‖x‖₂=O(c⁴)`. The audited discrete pairing
-lemma accommodates this growth: its error is bounded by
-`O(c¹⁰‖x‖₂/N)`, and every fixed power of `c` is `o(N)` on the critical curve.
+After prefix absorption, negative vectors with `S₇=1` would have bounded
+archimedean energy. The logarithmic Gamma floor controls Fourier tails.
+A crude pole-cost bound suffices here; the signed limit still needs the
+sharp source. The raw and fixed-ratio reserves are formalized in
+`CriticalArithmeticCorrelationTheory/TheFarReserveRetainsArchimedeanEnergy.lean`:
+`exists_prefix_top_window_reserve_retaining_archForm` and
+`exists_fixed_ratio_far_reserve_retaining_archForm`. Their actual-path audits
+passed with only standard axioms.
 
-`AtomicSynthesisRetainsItsMixedMass.lean` formalizes this normalization and
-the mixed-row expansion, with error `O(c/N)‖x‖₂`. Writing `m=∫φ`,
-`H=halfWeight h`, and `U_{h,N}` for the normalized recovery vector,
-`tendsto_criticalCurve_mixed_mass_defect` proves
+Two spatial estimates complete the proposed compactness mechanism:
 
-`m c⁸(∫U_N U_{h,N}−m∫U_N H) → 7J₁(∫φ²)∫F H e⁻⁸ʸ`
+1. For `1≤c` and `L≤N`,
+   `∫e⁻⁸ʸU_tail²≤(256e²+4+2e)Mφ S₇`.
+   The Gram row at `n` has at most `1+2n(e^{c/N}−1)` overlaps.
+   Exponential conjugation gives `(N/n)⁸/c`; on the collar,
+   `N/n<L≤(256e²+4)c`, while `e^{c/N}−1≤ec/N`.
+2. Physical `L¹` tails are `O(√(P/c))` for the prefix and
+   `O(e⁻⁴ᴬ√S₇)` for the collar below `−A`. Weighted Cauchy–Schwarz gives
+   `(∫_{y≤−A}|H|)²≤e⁻⁸ᴬW₈(H)/8`; apply the first estimate.
 
-for unit physical mass and strong `L¹` convergence `U_N→F`.
-The direct audit passed with only standard axioms.
+The first bound is formalized as `normalized_tail_exponential_mass_le` in
+`CriticalArithmeticCorrelationTheory/ThePhysicalCollarHasBoundedExponentialMass.lean`.
+Its actual-path audit passed with standard axioms. The L¹ tail bound and the
+stronger truncated Laplace estimate are formalized in
+`CriticalArithmeticCorrelationTheory/ExponentialMassControlsLaplaceTails.lean`:
+for `p+2q>0`,
+`(∫_{y≤b}|H|e^{qy})²≤W_p(H)e^{(p+2q)b}/(p+2q)`.
+Both actual-path endpoint audits passed with standard axioms.
 
-`TheHighFourierMassHasADualLowerBound.lean` supplies the audited Fourier
-duality step: `2m B_high(f,g)−E_high(g)≤m²E_high(f)`. Its comparison with
-`∫fg−m∫fH` has squared error at most
-`‖f‖₂²/(2π) ∫|1_low ĝ−m Ĥ|²`. Together with below-grid recovery, this
-identifies the high-frequency mixed limit; the application is being formalized.
+`CriticalArithmeticCorrelationTheory/PhysicalAndFourierTailsGiveCompactness.lean`
+formalizes total boundedness, and compactness of the closure, for bounded L²
+families with uniform physical and Fourier tails. Both endpoints passed their
+actual-path standard-axiom audits. Establishing these premises for negative
+vectors still requires the growing-packet prefix absorption estimate.
 
-`SmoothTerminalTestsRecoverWeightedMass.lean` proves that smooth tests
-supported in `[-A,0]` attain every strict lower bound below
-`∫_{(-A,0)}F²e⁻⁸ʸ` through `2∫FHe⁻⁸ʸ−∫H²e⁻⁸ʸ`.
-Expanding smooth cutoffs and exponential conjugation give the density;
-the direct audit passed with only standard axioms.
+## Prime form and polar source
 
-For global confinement, retain the raw far reserve before imposing its
-small-multiple restriction. The required extension at fixed critical ratio
-`R` is `Q_N(z) ≥ (7/8)D_M(z)−C_R c S₇(z)−o(log N/(log log N)^B)P(z)`.
-The prefix defect floor requires orthogonality to a growing conductor packet,
-not merely to conductor one. With cutoff
-`q=N^(1/(1+log log N)^5)` and its terminal leakage controlled, it would force
-`P=O(c(log log N)^5/log N)S₇` for possible negative far vectors.
-The raw reserve is formalized; this extension and the signed mixed-source
-passage remain unproved.
-
-The window pole cost has a useful exact scaling. Its prefactor is bounded by
-`16(1+2e)c⁸/(g log N)`, and the pole term by `8e²c S₇`.
-Thus `c⁸/log N≤2R` bounds this cost by
-`256(1+2e)e² splineWindowConstant R c S₇/g`.
-No smallness of `R` is needed when this collar cost is retained.
-The prefix errors still require the parameter estimates and their formal transfer.
-
-The corresponding physical `L¹` tail bounds are `O(√(P/c))` for the prefix
-and `O(e⁻⁴ᴬ√S₇)` for the collar below depth `−A`. They follow from the
-synthesis triangle inequality and weighted Cauchy–Schwarz:
-`N⁻¹Σ_{n≤Ne⁻ᴬ}(n/N)⁷=O(e⁻⁸ᴬ)`.
-These bounds remain to be formalized and combined with local compactness.
-The aliasing limit must also hold along arbitrary cofinal subsequences,
-as required by compactness extraction.
-
-A local Gram-row count gives the needed weighted collar bound. For
-`L=linearDefectCutoff c`, `M=N/L`, `1≤c` and `L≤N`,
-`∫e⁻⁸ʸU_tail(y)²dy ≤ (256e²+4+2e)(∫φ²)S₇`.
-Indeed the row at `n` has at most `1+2n(e^{c/N}−1)` overlaps.
-Conjugating atoms by `e⁻⁴ʸ` gives the coefficient weight `(N/n)⁸/c`;
-`N/n<L≤(256e²+4)c` on the collar reduces its diagonal term to `S₇`.
-The off-diagonal term uses `e^{c/N}−1≤ec/N`. Formalization is pending.
-
-For a physical profile `H` supported in `(-∞,0]`, write
-`W₈(H)=∫e⁻⁸ʸH²`. The existing global bound in
+For `H` supported in `(-∞,0]`, put `W₈(H)=∫e⁻⁸ʸH²`.
+The existing global bound in
 `ArithmeticCastelnuovoSeveri/ExponentialSourceMassControlsTheFullPrimeSum.lean`
-applies to `|H|` and gives
-`|primeSum H|≤2(ΣΛ(n)n⁻³ᐟ²)∫e⁻²ʸH²`.
-The scalar inequality `Ct≤εt⁴+B_ε`, with `t=e⁻²ʸ`, therefore gives
-`|primeSum H|≤εW₈(H)+B_ε‖H‖₂²`, uniformly over all terminal apertures.
-This consequence is being formalized. Its discrete use requires separate
-prefix control.
+applied to `|H|` gives
+`|primeSum H|≤2(ΣΛ(k)k⁻³ᐟ²)∫e⁻²ʸH²`.
+Since `Ct≤εt⁴+B_ε`, this implies
+`|primeSum H|≤εW₈(H)+B_ε‖H‖₂²`, uniformly over terminal apertures.
+Both bounds are formalized in
+`CriticalArithmeticCorrelationTheory/PrimeShiftsAreInfinitesimalInTheExponentialWeight.lean`:
+`abs_primeSum_le_two_threeHalvesMass_mul_exponentialSourceMass` and
+`exists_abs_primeSum_le_exponential_mass`. The actual-path audit passed with
+only standard axioms.
 
-For compactness, retain a positive fraction of the top archimedean form
-in the raw reserve. Splitting it into an aliasing reserve, a high-frequency
-cross payment, and an unpaid quarter suggests
-`Q_N(w)≥aD_M(w)+b c archForm(U_tail)−C_R c S₇−o(log N/(log log N)^B)P`.
-After prefix absorption, negative vectors normalized by `S₇=1` would have
-bounded archimedean energy and weighted physical mass. The logarithmic
-Gamma floor then controls Fourier tails; the exponential mass controls
-spatial tails. A crude pole-cost bound suffices for this confinement step.
-The sharp polar source remains necessary for passage to the signed limit.
-This strengthened raw reserve and its parameter absorption remain unproved.
+The polar source has the candidate global functional
 
-The terminal polar source has the candidate aperture-independent kernel
-`s(y)=e⁻ʸᐟ²[1−eʸψ(e⁻ʸ)−eʸ(log(2π)+½log(1−e²ʸ))]`, `y<0`:
-`generalTerminalPolarSource(A,h)=aφ∫H(y)s(y)dy`.
-Finite prime-sum interchange gives the identity. The bound `ψ(x)=O(x)`
-and square-integrability of the endpoint logarithm give `∫e⁸ʸs(y)²dy<∞`.
-Thus strong local `L²` convergence with a uniform `W₈` bound would preserve
-the polar source. The identity and its discrete moving-source transfer
-remain to be formalized.
+`S(H)=aφ[∫He⁻ʸᐟ²−log(2π)∫Heʸᐟ²−½∫Heʸᐟ²log(1−e²ʸ)
+          −Σ_{k≥1}Λ(k)∫_{y≤−log k}Heʸᐟ²]`,
+
+with the first three integrals over `y<0`. Substitution `x=eʸ` gives
+`S(halfWeight h)=generalTerminalPolarSource(A,h)` on compact windows.
+Weighted Cauchy–Schwarz gives
+`|∫_{y≤−log k}Heʸᐟ²|≤k⁻⁹ᐟ²√W₈(H)/3`.
+The convergent series `ΣΛ(k)k⁻⁹ᐟ²` therefore bounds the prime functional.
+The other three dual weights have weighted squared masses `1/7`, `1/9`,
+and at most `1`. The last uses `x=e²ʸ` and `∫₀¹log²(1−x)dx=2`.
+
+Strong local `L²` convergence with bounded `W₈` would preserve this source
+by tail truncation. Equivalently its kernel is
+`s(y)=e⁻ʸᐟ²[1−eʸψ(e⁻ʸ)−eʸ(log(2π)+½log(1−e²ʸ))]`, `y<0`.
+Lean status: identity, continuity, and discrete moving-source transfer pending.

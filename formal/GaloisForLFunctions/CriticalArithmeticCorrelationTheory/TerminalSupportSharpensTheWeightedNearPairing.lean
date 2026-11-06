@@ -48,11 +48,11 @@ private theorem log_two_mul_near_radius_le {c : ℝ} (hc1 : 1 ≤ c) :
 
 /-- Terminal support retains an extra logarithmic denominator in the weighted
 quadratic near pairing, without a new arithmetic cancellation assumption. -/
-theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight {φ : ℝ → ℝ}
+theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight_of_four_log {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM : 0 < ∫ t, φ t ^ 2) :
     ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
-      2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      2 ≤ R → R * R ≤ N → 4 * Real.log R + 18 ≤ Real.log N →
       1 ≤ c → c / N ≤ 1 / 3 →
       ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
       ∀ a : ℕ → ℝ,
@@ -62,7 +62,7 @@ theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight {φ 
           ((1 + Real.log c) ^ 2 / (Real.log N) ^ 2 +
             (R : ℝ) ^ 2 * (1 + Real.log c) / N) *
           (∑ m ∈ Icc 1 R, (1 + Real.log m) * a m ^ 2) * ‖u‖ ^ 2 := by
-  obtain ⟨C₀, hC₀, hnorm⟩ := exists_overlap_sub_downward_sq_le_logarithmic_weight hφ hsupp hM
+  obtain ⟨C₀, hC₀, hnorm⟩ := exists_overlap_sub_downward_sq_le_logarithmic_weight_of_four_log hφ hsupp hM
   refine ⟨20 * C₀, by positivity, ?_⟩
   intro R N c hR hRN hlog hc1 hw hsize a
   let u := ∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N
@@ -107,7 +107,7 @@ theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight {φ 
       dsimp only [T, linearNearRowRadius]
       have hh : 0 ≤ 2 * c * Real.exp 2 := by positivity
       linarith only [hh]
-    have ht := sum_quotient_tail_sq_le_of_mem_conductorSubspace hR hT1 hsize hlog hu
+    have ht := sum_quotient_tail_sq_le_of_mem_conductorSubspace_of_four_log hR hT1 hsize hlog hu
     have hlogT := log_two_mul_near_radius_le hc1
     calc
       _ ≤ (2 * (Real.log (2 * T) + 3) * ‖u‖ ^ 2) / Real.log N :=
@@ -132,5 +132,25 @@ theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight {φ 
     ((1 + Real.log c) ^ 2 / (Real.log N) ^ 2 + (R : ℝ) ^ 2 * (1 + Real.log c) / N) *
     (∑ m ∈ Icc 1 R, (1 + Real.log m) * a m ^ 2) * ‖u‖ ^ 2
   field_simp [hL.ne', hN.ne']
+
+/-- The terminal near pairing in the range `18 (1 + log R) ≤ log N`. -/
+theorem exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hM : 0 < ∫ t, φ t ^ 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
+      2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      1 ≤ c → c / N ≤ 1 / 3 →
+      ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ a : ℕ → ℝ,
+      let u := ∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N
+      |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u - downwardPrimeVector φ c N u, u⟫| ^ 2 ≤
+        C * c ^ 4 * (1 + Real.log R) *
+          ((1 + Real.log c) ^ 2 / (Real.log N) ^ 2 +
+            (R : ℝ) ^ 2 * (1 + Real.log c) / N) *
+          (∑ m ∈ Icc 1 R, (1 + Real.log m) * a m ^ 2) * ‖u‖ ^ 2 := by
+  obtain ⟨C, hC, h⟩ := exists_overlap_sub_downward_inner_sq_le_logarithmic_terminal_weight_of_four_log
+    hφ hsupp hM
+  exact ⟨C, hC, fun hR hRN hlog hc1 hw hsize a =>
+    h hR hRN (four_log_add_eighteen_le_of_log_le hlog) hc1 hw hsize a⟩
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

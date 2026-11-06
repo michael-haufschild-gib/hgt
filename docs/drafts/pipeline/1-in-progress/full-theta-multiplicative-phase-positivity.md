@@ -49,26 +49,35 @@ mixed-difference conjecture remains open.
 
 ## Candidate obstruction to independent phases
 
-Test the positive frequency average with weight `cosh(ηb)`, `η<π/2`.
-Schläfli inversion should replace `K_ib(2q)` by
-`π exp(−2q cos η)`. Set `N=(cos η)⁻¹`. Prescribe phase `−1` on
+The [positive frequency-average theorem](../3-formalized/bessel-cosh-frequency-average.md)
+replaces `K_ib(2q)` by `π exp(−2q cos η)` under weight `cosh(ηb)`,
+`0≤η<π/2`, including absolute convergence and the actual weighted Bessel
+tails. Set `N=(cos η)⁻¹`. Prescribe phase `−1` on
 every prime above `Y≈N^γ`, where `1/2<γ<1`, and average the small-prime
-phases. The corpus largest-prime decomposition isolates the prospective
-head mean, for `X<Y²` and product amplitude `A(k)`:
+phases. The [frozen-prime finite-head theorem](../3-formalized/frozen-prime-divisor-head.md)
+proves the exact mean, for `X<Y²` and arbitrary product amplitude `A(k)`:
 
 `Σ_(d²≤X) A(d²)−2Σ_(Y<p≤X, p prime) Σ_(pd²≤X) A(pd²)`.
 
-The diagonal survives; every large-prime channel is negative. The
-remaining product tail starts at `Y²` and should be exponentially
-suppressed after frequency averaging. The prime block up to `N` alone
-would supply the needed negative mass.
+The diagonal survives; every large-prime channel has coefficient `−2`.
+The [product-tail theorem](../3-formalized/product-exponential-tail.md) proves
+`Σ_(nm≥L)exp(−qnm)≤64q^(−2)exp(−qL/2)` for `0<q≤4`, with absolute
+summability. Applying this bound to the signed infinite spectrum still
+requires the frequency and aperture interchanges. The prime block up to
+`N` alone is the proposed source of negative mass.
 
 For fixed `0<a<1/2`, the expected diagonal scale is
 `N^(9/2+a) log N`; the negative prime scale is `N^5/log N`.
-If justified uniformly through all sums and integrals, this would
+The [radial square identity](../3-formalized/exponential-tail-square-profile.md)
+and [exponential aperture bounds](../3-formalized/theta-exponential-aperture-bounds.md)
+are formalized, including absolute center integrability and upper and lower
+bounds for the averaged radial profile.
+
+If justified uniformly through all sums and integrals, the scale comparison would
 disprove independence of phase and radial frequency, forcing a producer
-that retains their physical relation. The transform, asymptotics, phase
-average and suppression estimates are not yet proved together.
+that retains their physical relation. The finite phase mean is proved.
+Prime-mass asymptotics, infinite sum/integral interchanges, and the connection
+to the full signed spectrum remain unproved.
 
 Corpus anchors for this test: `besselFirstAtomTailDensity`,
 `modifiedBesselKOrder_imaginary_re_integral`,

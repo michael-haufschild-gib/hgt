@@ -169,11 +169,11 @@ private theorem finiteDownwardPrimeMatrix_apply {φ : ℝ → ℝ}
   exact sum_congr rfl fun k _ => sum_congr rfl fun j _ => by ring
 
 /-- The near cross norm retains individual conductor logarithms. -/
-theorem exists_overlap_sub_downward_sq_le_logarithmic_weight {φ : ℝ → ℝ}
+theorem exists_overlap_sub_downward_sq_le_logarithmic_weight_of_four_log {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hφM : 0 < ∫ t, φ t ^ 2) :
     ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
-      2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      2 ≤ R → R * R ≤ N → 4 * Real.log R + 18 ≤ Real.log N →
       1 ≤ c → c / N ≤ 1 / 3 →
       ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N → ∀ a : ℕ → ℝ,
       ‖Matrix.toEuclideanLin (overlapMatrix φ c N)
@@ -183,7 +183,7 @@ theorem exists_overlap_sub_downward_sq_le_logarithmic_weight {φ : ℝ → ℝ}
         C * c ^ 4 * (1 + Real.log R) *
           ((1 + Real.log c) / Real.log N + (R : ℝ) ^ 2 * (Real.log N / N)) *
             ∑ m ∈ Icc 1 R, (1 + Real.log m) * a m ^ 2 := by
-  obtain ⟨C₀, hC₀, hbound⟩ := exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace hφ hsupp hφM
+  obtain ⟨C₀, hC₀, hbound⟩ := exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace_of_four_log hφ hsupp hφM
   refine ⟨256 * C₀ ^ 2, by positivity, ?_⟩
   intro R N c hR hRN hlog hc hw hrad a
   have hc0 : 0 < c := zero_lt_one.trans_le hc
@@ -207,14 +207,14 @@ theorem exists_overlap_sub_downward_sq_le_logarithmic_weight {φ : ℝ → ℝ}
     have hMM : M * M ≤ N := (Nat.mul_le_mul hMR hMR).trans hRN
     have hlM : Real.log M ≤ Real.log R := Real.log_le_log
       (by exact_mod_cast (show 0 < M by omega)) (by exact_mod_cast hMR)
-    have hlogM : 18 * (1 + Real.log M) ≤ Real.log N := by linarith only [hlM, hlog]
+    have hlogM : 4 * Real.log M + 18 ≤ Real.log N := by linarith only [hlM, hlog]
     have hMrad : ((M * M : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N := by
       apply le_trans _ hrad
       apply mul_le_mul_of_nonneg_right _ (by unfold linearNearRowRadius; positivity)
       exact_mod_cast Nat.add_le_add_right (Nat.mul_le_mul hMR hMR) 1
     have hraw := hbound hM hMM hlogM hc hw hMrad
       (sum_normalizedRamanujanHorizonVector_mem_conductorSubspace M N b)
-    have hframe := (half_and_three_halves_riesz_of_log_le hM hMM hlogM b).2
+    have hframe := (half_and_three_halves_riesz_of_four_log_le hM hMM hlogM b).2
     have hH1 : 1 ≤ 1 + Real.log M := by linarith only [Real.log_natCast_nonneg M]
     have hcoef : C₀ * (c ^ 2 * (1 + Real.log M) * s + c ^ 2 * (M : ℝ) * r) ≤
         (C / 2) * (1 + Real.log M) := by
@@ -251,6 +251,25 @@ theorem exists_overlap_sub_downward_sq_le_logarithmic_weight {φ : ℝ → ℝ}
   have hm := mul_le_mul_of_nonneg_left hsum hfactor
   dsimp only [C]
   nlinarith only [hm]
+
+/-- The weighted overlap-minus-downward bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem exists_overlap_sub_downward_sq_le_logarithmic_weight {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hφM : 0 < ∫ t, φ t ^ 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
+      2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      1 ≤ c → c / N ≤ 1 / 3 →
+      ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N → ∀ a : ℕ → ℝ,
+      ‖Matrix.toEuclideanLin (overlapMatrix φ c N)
+          (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N) -
+        downwardPrimeVector φ c N
+          (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N)‖ ^ 2 ≤
+        C * c ^ 4 * (1 + Real.log R) *
+          ((1 + Real.log c) / Real.log N + (R : ℝ) ^ 2 * (Real.log N / N)) *
+            ∑ m ∈ Icc 1 R, (1 + Real.log m) * a m ^ 2 := by
+  obtain ⟨C, hC, h⟩ := exists_overlap_sub_downward_sq_le_logarithmic_weight_of_four_log hφ hsupp hφM
+  exact ⟨C, hC, fun hR hRN hlog hc hw hrad a =>
+    h hR hRN (four_log_add_eighteen_le_of_log_le hlog) hc hw hrad a⟩
 
 end GaloisForLFunctions.CompletedArithmeticForms
 

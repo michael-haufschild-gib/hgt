@@ -1,8 +1,8 @@
 # Truncated Möbius collar dichotomy, $\ell^2$-blindness, and the shifted-inverse countermodel on $\mathbb{N}$
 
 - **ID:** APR-COLLAR-AND-BLINDNESS-LAWS
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0511/route-wd.md` §1 · `ArithmeticProduction/PrefixCancellationAmplifiesTheZeroFloor.lean`
 - **Statement:** For $c_X(n) = \sum_{d \mid n, d \le X} \mu(d)$, on $(X, X^2]$ every composite integer with a prime factor $> X$ has $c_X(n) = 0$ (while primes $p > X$ satisfy $c_X(p) = 1$ and $n \in (X, 2X]$ satisfy $c_X(n) = -\mu(n)$), every collar polynomial $\sum_{X < n \le X R} c_X(n) n^{-s}$ factors as $-\sum_{r=1}^R r^{-s} \sum_{X < m \le X R / r} \mu(m) m^{-s}$, prefix-vanishing unit-sign sequences with $\sum_{n \le M} c_n^2 \le M$ still admit critical-line moments $\ge \frac{X}{100\log(2X)}$ on $[1, T]$, and the multiplicative shifted-inverse pair $(a_\delta, b_\delta)$ on $\mathbb{N}$ satisfies $(a_\delta * b_\delta) = \delta_1$, $\|a_\delta\|, \|b_\delta\| \le 1$, and $\sum_{d \ge 1} \frac{\|b_\delta(d)\|^2}{d} < \infty$ yet blows up as $\frac{\kappa_\delta X^{2\delta}}{\log(2X)}$ on $[1, T]$.
 
@@ -12,7 +12,7 @@ Establish the exact arithmetic support and collar factorization laws of $c_X(n)$
 ## Gates
 - [x] 0 → 1  in-progress: smooth–prime dichotomy, complementary divisor flip, $\ell^2$-blindness construction, gauge equivariance, and shifted-inverse $\mathbb{N}$-countermodel formulated
 - [x] 1 → 2  fully-proven: `[PROVED HERE]`, complete unconditional paper proofs
-- [ ] 2 → 3  formalized: `formal/GaloisForLFunctions/ArithmeticProduction/TruncatedMoebiusCollarAndBlindnessLaws.lean`
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/ArithmeticProduction/TruncatedMoebiusCollarAndBlindnessLaws.lean` (`truncatedMoebiusDivisorSum`, `truncatedMoebiusDivisorSum_of_mem_Icc`, `truncatedMoebiusDivisorSum_eq_neg_sum_gt`, `truncatedMoebiusDivisorSum_eq_neg_moebius_of_mem_Ioc`, `truncatedMoebiusDivisorSum_prime_of_gt`, `truncatedMoebiusDivisorSum_eq_zero_of_composite_rough_le_sq`, `collar_dirichletPoly_eq_neg_sum_pureMoebius`, `integral_normSq_collar_le_harmonic_mul_sum_pureMoebius`, `divisorSum_mul_completelyMultiplicative`, `norm_divisorSum_mul_completelyMultiplicative_eq`, `exists_prefix_zero_unit_sign_criticalMoment_ge`, `shiftedInverseOffset`, `shiftedInverseCoeff`, `shiftedZetaCoeff`, `shiftedInverseFn`, `isMultiplicative_shiftedZetaCoeff`, `isMultiplicative_shiftedInverseCoeff`, `shiftedInverseCoeff_mul_shiftedZetaCoeff`, `norm_shiftedZetaCoeff_le_one`, `norm_shiftedInverseCoeff_le_one`, `summable_normSq_shiftedZetaCoeff_div`, `lSeries_shiftedInverseCoeff`, `continuousOn_shiftedInverseFn_Icc_one_three`, `exists_shiftedInverse_countermodel_blowup`)
 
 ## Theorems and complete paper proofs `[PROVED HERE]`
 
@@ -46,4 +46,4 @@ For every $\delta \in (0, \frac{1}{2})$, set $s_\delta := (\frac{1}{2} - \delta)
 *Proof.* Property (1) is immediate since $\|b_\delta(d)\|^2 / d = d^{-(2 - 2\delta)}$ with $2 - 2\delta > 1$. On $t \in [1, 3]$, $\frac{1}{2} + it + s_\delta = (1 - \delta) + i(t - 2)$ has real part $1 - \delta \in (\frac{1}{2}, 1)$ and $|t - 2| \le 1 \le \frac{9}{2}$, so $\xi((1-\delta)+i(t-2)) \ne 0$ (`xi_ne_zero_of_abs_im_le_nine_halves`), hence $\zeta((1-\delta)+i(t-2)) \ne 0$ (`riemannZeta_ne_zero_of_xi_ne_zero`) and $F_\delta(\frac{1}{2}+it)$ is continuous on $[1, 3]$. By continuity at $t = 2$, $\|F_\delta(\frac{1}{2}+it)\| \ge c_1 > 0$ for $|t - 2| \le r_\delta$ with $r_\delta \in (0, \frac{1}{2}]$. Meanwhile $b_\delta(d) d^{-1/2-2i} = d^{-(1-\delta)} \ge X^{-(1-\delta)}$ for $1 \le d \le X$, so $S(2) := \sum_{d=1}^X d^{-(1-\delta)} \ge X \cdot X^{-(1-\delta)} = X^\delta$. For $|t - 2| \le \eta := \frac{r_\delta}{\log(2X)}$, $\|d^{-i(t-2)} - 1\| \le |t - 2|\log d \le r_\delta \le \frac{1}{2}$, so $\|\sum_{d=1}^X b_\delta(d) d^{-1/2-it} - S(2)\| \le \frac{1}{2} S(2)$ and $\|\sum_{d=1}^X b_\delta(d) d^{-1/2-it}\| \ge \frac{1}{2} X^\delta$ across $[2 - \eta, 2 + \eta] \subseteq [1, 3]$, giving $\int_1^3 \ge \frac{c_1^2 r_\delta}{2} \frac{X^{2\delta}}{\log(2X)}$ and monotonicity on $(1, 3] \subseteq (1, T]$ for all $T \ge 3$. $\square$
 
 ## Log
-- 2026-11-06 — complete unconditional paper proofs recorded in `2-fully-proven`.
+- 2026-11-06 — formalized in `ArithmeticProduction/TruncatedMoebiusCollarAndBlindnessLaws.lean` and wired into `ArithmeticProduction.lean`.

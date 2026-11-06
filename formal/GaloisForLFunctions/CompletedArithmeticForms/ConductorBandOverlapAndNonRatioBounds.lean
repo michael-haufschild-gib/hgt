@@ -206,7 +206,7 @@ private theorem log_two_mul_linearNearRowRadius_le {c : ℝ} (hc1 : 1 ≤ c) :
 /-- Shared `L²` row-sum bound for any kernel supported on `nearRowIndices c N n` acting on a
 vector in `conductorSubspace R N`. -/
 private theorem sum_nearBand_sq_le_of_mem_conductorSubspace
-    {R N : ℕ} {c M : ℝ} (hR : 2 ≤ R) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {R N : ℕ} {c M : ℝ} (hR : 2 ≤ R) (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     (hc1 : 1 ≤ c) (hw : c / N ≤ 1) (hM0 : 0 ≤ M)
     (hRNT : ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N)
     (K : ℕ → ℕ → ℝ)
@@ -277,7 +277,7 @@ private theorem sum_nearBand_sq_le_of_mem_conductorSubspace
       rw [sum_filter]
       exact sum_congr rfl fun j _ => by dsimp only [vTop]; split_ifs <;> simp
     rw [hfilt, div_mul_eq_mul_div, le_div_iff₀' hL]
-    have hq := sum_quotient_tail_sq_le_of_mem_conductorSubspace hR hT1 hRNT hlog hv
+    have hq := sum_quotient_tail_sq_le_of_mem_conductorSubspace_of_four_log hR hT1 hRNT hlog hv
     have hlogT := log_two_mul_linearNearRowRadius_le hc1
     exact hq.trans (mul_le_mul_of_nonneg_right (by linarith only [hlogT]) (sq_nonneg _))
   rw [sum_congr rfl fun n hn => by rw [hrow_eq n hn]]
@@ -343,7 +343,7 @@ private theorem downwardPrimeVector_packet_apply (φ : ℝ → ℝ) {c : ℝ} (h
 private theorem sum_exterior_packet_sq_le {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) {R N : ℕ} {c : ℝ}
-    (hR : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hR : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     (hc1 : 1 ≤ c) (hw1 : c / N ≤ 1 / 3) (a : ℕ → ℝ) :
     (∑ n ∈ Icc 1 N,
       (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
@@ -487,7 +487,7 @@ private theorem sum_exterior_packet_sq_le {φ : ℝ → ℝ}
     have hcs := Finset.sum_mul_sq_le_sq_mul_sq (Icc 1 R) (fun m => |a m|) (fun _ => (1 : ℝ))
     simp only [mul_one, sq_abs, one_pow, sum_const, Nat.card_Icc, Nat.add_sub_cancel,
       nsmul_eq_mul] at hcs
-    have hriesz := (half_and_three_halves_riesz_of_log_le hR hRN hlog a).1
+    have hriesz := (half_and_three_halves_riesz_of_four_log_le hR hRN hlog a).1
     nlinarith only [hcs, hriesz, Nat.cast_nonneg (α := ℝ) R]
   have hpt_S : ∀ n ∈ S_ext,
       (∑ m ∈ Icc 1 R, a m * ((Real.sqrt (m.totient : ℝ))⁻¹ *
@@ -593,12 +593,12 @@ private theorem quad_four_combine {K_nb K_ext M_nc M_2a C_jet X Y U S1 S2 S3 S4 
 
 /-- Collective `L²` norm bound on `overlapMatrix u - downwardPrimeVector u` for any
 `u ∈ conductorSubspace R N`. -/
-theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ → ℝ}
+theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace_of_four_log {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C_od : ℝ, 0 < C_od ∧
       ∀ {R N : ℕ} {c : ℝ},
-        2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+        2 ≤ R → R * R ≤ N → 4 * Real.log R + 18 ≤ Real.log N →
         1 ≤ c → c / N ≤ 1 / 3 →
         ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
       ∀ {u : EuclideanSpace ℝ (PrimeHorizonIndex N)},
@@ -607,7 +607,7 @@ theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ �
           C_od * (c ^ 2 * (1 + Real.log R) * Real.sqrt ((1 + Real.log c) / Real.log N) +
             c ^ 2 * (R : ℝ) * Real.sqrt (Real.log N / N)) * ‖u‖ := by
   obtain ⟨K_pair, hK_pair0, hpair⟩ := exists_abs_atomArchPair_near_sub_le hφ hsupp hM
-  obtain ⟨C_jet, hC_jet_pos, hC_jet⟩ := exists_divisorJetHorizonVector_norm_le
+  obtain ⟨C_jet, hC_jet_pos, hC_jet⟩ := exists_divisorJetHorizonVector_norm_le_of_four_log
   let M_nc : ℝ := 1 + Real.exp (1 / 2)
   let M_2a : ℝ := K_pair + 2 * Real.exp 2 + 1
   let K_nb : ℝ := 80 * (2 * Real.exp 2) ^ 2
@@ -817,7 +817,7 @@ theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ �
     divisorJetHorizonVector_mem_conductorSubspace R N a
   have hvJet_norm : ‖vJet‖ ≤ 2 * C_jet * (1 + Real.log R) * ‖u‖ := by
     have h1 := hC_jet hR hRN hlog a
-    have hr := (half_and_three_halves_riesz_of_log_le hR hRN hlog a).1
+    have hr := (half_and_three_halves_riesz_of_four_log_le hR hRN hlog a).1
     rw [← hu_eq] at hr
     have hs : Real.sqrt (∑ m ∈ Icc 1 R, a m ^ 2) ≤ 2 * ‖u‖ := by
       calc
@@ -951,6 +951,25 @@ theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ �
   nlinarith only [hnorm_sq,
     norm_nonneg (Matrix.toEuclideanLin (overlapMatrix φ c N) u -
       downwardPrimeVector φ c N u), hrhs0]
+
+/-- The overlap-minus-downward norm in the range `18 (1 + log R) ≤ log N`. -/
+theorem exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ C_od : ℝ, 0 < C_od ∧
+      ∀ {R N : ℕ} {c : ℝ},
+        2 ≤ R → R * R ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+        1 ≤ c → c / N ≤ 1 / 3 →
+        ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N →
+      ∀ {u : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+        u ∈ conductorSubspace R N →
+        ‖Matrix.toEuclideanLin (overlapMatrix φ c N) u - downwardPrimeVector φ c N u‖ ≤
+          C_od * (c ^ 2 * (1 + Real.log R) * Real.sqrt ((1 + Real.log c) / Real.log N) +
+            c ^ 2 * (R : ℝ) * Real.sqrt (Real.log N / N)) * ‖u‖ := by
+  obtain ⟨C, hC, h⟩ := exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace_of_four_log
+    hφ hsupp hM
+  exact ⟨C, hC, fun hR hRN hlog hc1 hw1 hRNT _ hu =>
+    h hR hRN (four_log_add_eighteen_le_of_log_le hlog) hc1 hw1 hRNT hu⟩
 
 /-! ### 3. Conductor-independent `L²` norm bound for `upwardPrimeVector` -/
 
@@ -1373,7 +1392,7 @@ theorem exists_overlapMatrix_inner_le_of_mem_conductorSubspace {φ : ℝ → ℝ
         exact add_le_add (add_le_add hrem (mul_le_mul hlog_inv hq (abs_nonneg _) hL0.le)) hnc
       _ ≤ M_ov * Real.log N := by
         dsimp only [M_ov]; nlinarith only [hL1, hK_pair0]
-  have hsqA := sum_nearBand_sq_le_of_mem_conductorSubspace hRA hlogA hc1 hw
+  have hsqA := sum_nearBand_sq_le_of_mem_conductorSubspace hRA (four_log_add_eighteen_le_of_log_le hlogA) hc1 hw
     (by dsimp only [M_ov]; positivity) hRNTA K_ov hKov_le hvA
   have hvB_sq : (∑ n ∈ Icc 1 N, vB_top n ^ 2) ≤
       20 * (1 + Real.log c) / Real.log N * ‖v_B‖ ^ 2 := by
@@ -1965,7 +1984,7 @@ private theorem exists_midBand_subKernel_sum_le {φ : ℝ → ℝ}
       unfold midBandSubKernel; ring
     rw [hid]
     exact (abs_add_le _ _).trans ((add_le_add hrem hnc).trans (by nlinarith only [hc1, hK_pair0]))
-  have hsqA := sum_nearBand_sq_le_of_mem_conductorSubspace hR₂ hlog hc1 hw
+  have hsqA := sum_nearBand_sq_le_of_mem_conductorSubspace hR₂ (four_log_add_eighteen_le_of_log_le hlog) hc1 hw
     (by positivity) hRNT (midBandSubKernel φ c N) hKsub_le hu_mem
   have huTop_sq :
       (∑ n ∈ Icc 1 N,

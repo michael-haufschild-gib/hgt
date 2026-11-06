@@ -551,11 +551,11 @@ theorem poleDefect_ge_of_norm_sub_starProjection_gt {Q N : ℕ} (hQ : 2 ≤ Q) (
 /-! ### 3. Polarized harmonic Gram bounds and band decoupling -/
 
 /-- Uniform squared-norm Gram discrepancy below the square-root horizon `Q * Q ≤ N`. -/
-theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
+theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le_two_log {Q N : ℕ}
     (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N) (a : ℕ → ℝ) :
     |‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 -
         ∑ m ∈ Icc 1 Q, a m ^ 2| ≤
-      9 * (1 + Real.log Q) / Real.log N * ∑ m ∈ Icc 1 Q, a m ^ 2 := by
+      (2 * Real.log Q + 9) / Real.log N * ∑ m ∈ Icc 1 Q, a m ^ 2 := by
   have hN4 : 4 ≤ N := (Nat.mul_le_mul hQ hQ).trans hQN
   have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
   have hsq_eq : (∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * ramanujanPoleProfile m n) ^ 2) =
@@ -567,7 +567,7 @@ theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
       rw [sum_div]
       exact sum_congr rfl fun m _ => by rw [ramanujanPoleProfile, mul_div_assoc]
     rw [hs, div_pow, Real.sq_sqrt hn0.le]
-  have hgram := abs_harmonicGram_sub_log_mass_le hQ (by omega : 1 ≤ N) a
+  have hgram := abs_harmonicGram_sub_log_mass_le_two_log hQ (by omega : 1 ≤ N) a
   have hdiv : |‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 -
       ∑ m ∈ Icc 1 Q, a m ^ 2| =
       |(∑ n ∈ Icc 1 N, (∑ m ∈ Icc 1 Q, a m * normalizedRamanujanMode m n) ^ 2 / (n : ℝ)) -
@@ -597,12 +597,25 @@ theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
     rw [div_le_one (by positivity)]
     nlinarith only [h, Nat.cast_nonneg (α := ℝ) Q]
   have hinvN : 1 / (N : ℝ) ≤ 1 := div_le_self zero_le_one (by exact_mod_cast (show 1 ≤ N by omega))
-  have hcoef : |Real.eulerMascheroniConstant| + 4 * Real.log Q + (Real.log 4 + 4) +
-      (Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1) + 1 / N ≤ 9 * (1 + Real.log Q) := by
-    linarith only [hγ, hlog4, hquad, hinvN, Real.log_natCast_nonneg Q]
+  have hcoef : |Real.eulerMascheroniConstant| + 2 * Real.log Q + (Real.log 4 + 4) +
+      (Q : ℝ) * ((Q : ℝ) - 1) / ((N : ℝ) + 1) + 1 / N ≤ 2 * Real.log Q + 9 := by
+    linarith only [hγ, hlog4, hquad, hinvN]
   have hM : 0 ≤ ∑ m ∈ Icc 1 Q, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   exact (div_le_div_of_nonneg_right
     (hgram.trans (mul_le_mul_of_nonneg_right hcoef hM)) hL.le).trans_eq (by ring)
+
+/-- The coarser relative Gram bound `9 (1 + log Q) / log N`. -/
+theorem abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le {Q N : ℕ}
+    (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N) (a : ℕ → ℝ) :
+    |‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 -
+        ∑ m ∈ Icc 1 Q, a m ^ 2| ≤
+      9 * (1 + Real.log Q) / Real.log N * ∑ m ∈ Icc 1 Q, a m ^ 2 := by
+  have hN4 : 4 ≤ N := (Nat.mul_le_mul hQ hQ).trans hQN
+  have hL : 0 < Real.log N := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
+  have hM : 0 ≤ ∑ m ∈ Icc 1 Q, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
+  refine (abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le_two_log hQ hQN a).trans
+    (mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right ?_ hL.le) hM)
+  linarith only [Real.log_natCast_nonneg Q]
 
 /-- Polarized off-diagonal Gram bound: any two conductor combinations over `Icc 1 Q` (`Q * Q ≤ N`)
 with orthogonal coefficient sequences have inner product bounded by `9 (1 + log Q) / log N` times
@@ -714,9 +727,9 @@ theorem abs_inner_sum_normalizedRamanujanHorizonVector_of_orthog_le {Q N : ℕ}
     _ = 9 * (1 + Real.log Q) / Real.log N * Real.sqrt A * Real.sqrt B := by ring
 
 /-- Two-sided Riesz bounds `(1/2) ∑ a_m^2 ≤ ‖u‖^2 ≤ (3/2) ∑ a_m^2` once
-`18 * (1 + log Q) ≤ log N` and `Q * Q ≤ N`. -/
-theorem half_and_three_halves_riesz_of_log_le {Q N : ℕ} (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N)
-    (hlog : 18 * (1 + Real.log Q) ≤ Real.log N) (a : ℕ → ℝ) :
+`4 * log Q + 18 ≤ log N` and `Q * Q ≤ N`. This is the whole range `Q ≤ N^θ`, `θ < 1/4`. -/
+theorem half_and_three_halves_riesz_of_four_log_le {Q N : ℕ} (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N)
+    (hlog : 4 * Real.log Q + 18 ≤ Real.log N) (a : ℕ → ℝ) :
     (1 / 2 : ℝ) * (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
         ‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 ∧
       ‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
@@ -724,20 +737,34 @@ theorem half_and_three_halves_riesz_of_log_le {Q N : ℕ} (hQ : 2 ≤ Q) (hQN : 
   have hL : 0 < Real.log N := by
     have hQ0 : 0 ≤ Real.log (Q : ℝ) := Real.log_natCast_nonneg Q
     linarith only [hlog, hQ0]
-  have hfrac : 9 * (1 + Real.log Q) / Real.log N ≤ 1 / 2 := by
+  have hfrac : (2 * Real.log Q + 9) / Real.log N ≤ 1 / 2 := by
     rw [div_le_iff₀ hL]
     linarith only [hlog]
   have hM : 0 ≤ ∑ m ∈ Icc 1 Q, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
-  have habs := (abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le hQ hQN a).trans
+  have habs := (abs_norm_sum_normalizedRamanujanHorizonVector_sq_sub_le_two_log hQ hQN a).trans
     (mul_le_mul_of_nonneg_right hfrac hM)
   rcases abs_le.mp habs with ⟨hlo, hhi⟩
   exact ⟨by linarith only [hlo], by linarith only [hhi]⟩
 
+/-- The range `18 (1 + log Q) ≤ log N` lies inside the Riesz range. -/
+theorem four_log_add_eighteen_le_of_log_le {Q N : ℕ}
+    (hlog : 18 * (1 + Real.log Q) ≤ Real.log N) : 4 * Real.log Q + 18 ≤ Real.log N := by
+  linarith only [hlog, Real.log_natCast_nonneg Q]
+
+/-- Two-sided Riesz bounds once `18 * (1 + log Q) ≤ log N` and `Q * Q ≤ N`. -/
+theorem half_and_three_halves_riesz_of_log_le {Q N : ℕ} (hQ : 2 ≤ Q) (hQN : Q * Q ≤ N)
+    (hlog : 18 * (1 + Real.log Q) ≤ Real.log N) (a : ℕ → ℝ) :
+    (1 / 2 : ℝ) * (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
+        ‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 ∧
+      ‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
+        (3 / 2 : ℝ) * ∑ m ∈ Icc 1 Q, a m ^ 2 :=
+  half_and_three_halves_riesz_of_four_log_le hQ hQN (four_log_add_eighteen_le_of_log_le hlog) a
+
 /-- Low-band leak bound: if `u = ∑_{m=1}^R a_m v_m` is orthogonal to `conductorSubspace Q N`
-(`1 ≤ Q ≤ R`, `2 ≤ R`, `R * R ≤ N`, `18 * (1 + log R) ≤ log N`), then both its low-band `ℓ²`
+(`1 ≤ Q ≤ R`, `2 ≤ R`, `R * R ≤ N`, `4 * log R + 18 ≤ log N`), then both its low-band `ℓ²`
 coefficient norm and Euclidean low-band norm `‖∑_{m=1}^Q a_m v_m‖` are `O((1 + log R) / log N) ‖u‖`. -/
-theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (_hQ1 : 1 ≤ Q) (hQR : Q ≤ R)
-    (hR2 : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+theorem low_band_norm_le_of_mem_orthogonal_of_four_log {Q R N : ℕ} (_hQ1 : 1 ≤ Q) (hQR : Q ≤ R)
+    (hR2 : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {a : ℕ → ℝ}
     (horth : (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N) ∈
       (conductorSubspace Q N)ᗮ) :
@@ -787,8 +814,8 @@ theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (_hQ1 : 1 ≤ Q) (hQR :
     rw [inner_add_right, real_inner_self_eq_norm_sq] at h1
     linarith only [h1]
   have hoff := abs_inner_sum_normalizedRamanujanHorizonVector_of_orthog_le hR2 hRN hdisj
-  have hrieszLow := half_and_three_halves_riesz_of_log_le hR2 hRN hlog aLow
-  have hrieszU := half_and_three_halves_riesz_of_log_le hR2 hRN hlog a
+  have hrieszLow := half_and_three_halves_riesz_of_four_log_le hR2 hRN hlog aLow
+  have hrieszU := half_and_three_halves_riesz_of_four_log_le hR2 hRN hlog a
   have hHigh_le : (∑ m ∈ Icc 1 R, aHigh m ^ 2) ≤ 2 * ‖u‖ ^ 2 := by
     have hle : (∑ m ∈ Icc 1 R, aHigh m ^ 2) ≤ ∑ m ∈ Icc 1 R, a m ^ 2 :=
       sum_le_sum fun m _ => by dsimp only [aHigh]; split_ifs <;> simp [sq_nonneg]
@@ -853,6 +880,21 @@ theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (_hQ1 : 1 ≤ Q) (hQR :
     _ ≤ (3 / 2 : ℝ) * (36 * (1 + Real.log R) / Real.log N * ‖u‖) :=
       mul_le_mul_of_nonneg_left hsLow (by norm_num)
     _ = 54 * (1 + Real.log R) / Real.log N * ‖u‖ := by ring
+
+/-- The low-band leak bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem low_band_norm_le_of_mem_orthogonal {Q R N : ℕ} (hQ1 : 1 ≤ Q) (hQR : Q ≤ R)
+    (hR2 : 2 ≤ R) (hRN : R * R ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {a : ℕ → ℝ}
+    (horth : (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N) ∈
+      (conductorSubspace Q N)ᗮ) :
+    Real.sqrt (∑ m ∈ Icc 1 Q, a m ^ 2) ≤
+        36 * (1 + Real.log R) / Real.log N *
+          ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ∧
+      ‖∑ m ∈ Icc 1 Q, a m • normalizedRamanujanHorizonVector m N‖ ≤
+        54 * (1 + Real.log R) / Real.log N *
+          ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ :=
+  low_band_norm_le_of_mem_orthogonal_of_four_log hQ1 hQR hR2 hRN
+    (four_log_add_eighteen_le_of_log_le hlog) horth
 
 /-- Reverse defect gap on any conductor packet `y = ∑_{m=1}^R a_m v_m` whose coefficients vanish
 on `Icc 1 Q` (`2 ≤ Q ≤ R`, `R * R ≤ N`, `36 * (1 + log R) ≤ log N`). -/
@@ -1010,9 +1052,9 @@ theorem sum_Ioc_packet_sq_le {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K) (h
   linarith only [hN, hK]
 
 /-- Top-band Euclidean tail bound on `Ioc K N` for any `u ∈ conductorSubspace R N` whenever
-`R * R ≤ K ≤ N` and `18 * (1 + log R) ≤ log N`. -/
-theorem sum_Ioc_sq_le_of_mem_conductorSubspace {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K)
-    (hKN : K ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+`R * R ≤ K ≤ N` and `4 * log R + 18 ≤ log N`. -/
+theorem sum_Ioc_sq_le_of_mem_conductorSubspace_of_four_log {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K)
+    (hKN : K ≤ N) (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     Real.log N * (∑ n ∈ Ioc K N, primeHorizonExtension u n ^ 2) ≤
       2 * (Real.log ((N : ℝ) / K) + 3) * ‖u‖ ^ 2 := by
@@ -1042,7 +1084,7 @@ theorem sum_Ioc_sq_le_of_mem_conductorSubspace {R K N : ℕ} (hR : 2 ≤ R) (hRK
     field_simp [hL.ne']
   rw [mul_sum, sum_congr rfl hval]
   have hpack := sum_Ioc_packet_sq_le hR hRK hKN a
-  have hriesz := (half_and_three_halves_riesz_of_log_le hR (hRK.trans hKN) hlog a).1
+  have hriesz := (half_and_three_halves_riesz_of_four_log_le hR (hRK.trans hKN) hlog a).1
   have hHN : (harmonic N : ℝ) ≤ 1 + Real.log N := harmonic_le_one_add_log N
   have hHK : Real.log K ≤ (harmonic K : ℝ) :=
     (Real.log_le_log hK0 (by exact_mod_cast Nat.le_succ K)).trans (log_add_one_le_harmonic K)
@@ -1064,12 +1106,21 @@ theorem sum_Ioc_sq_le_of_mem_conductorSubspace {R K N : ℕ} (hR : 2 ≤ R) (hRK
     _ = 2 * (Real.log ((N : ℝ) / K) + 3) *
         ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by ring
 
+/-- The top-band tail bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem sum_Ioc_sq_le_of_mem_conductorSubspace {R K N : ℕ} (hR : 2 ≤ R) (hRK : R * R ≤ K)
+    (hKN : K ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
+    Real.log N * (∑ n ∈ Ioc K N, primeHorizonExtension u n ^ 2) ≤
+      2 * (Real.log ((N : ℝ) / K) + 3) * ‖u‖ ^ 2 :=
+  sum_Ioc_sq_le_of_mem_conductorSubspace_of_four_log hR hRK hKN
+    (four_log_add_eighteen_le_of_log_le hlog) hu
+
 /-- Quotient-cutoff form of the top-band tail bound: on `{n ∈ Icc 1 N | N / n < T}` with `1 ≤ T`
 and `(R * R + 1) * T ≤ N`, the Euclidean mass of `u ∈ conductorSubspace R N` is at most
 `2 * (log (2 T) + 3) / log N * ‖u‖^2`. -/
-theorem sum_quotient_tail_sq_le_of_mem_conductorSubspace {R N : ℕ} {T : ℝ}
+theorem sum_quotient_tail_sq_le_of_mem_conductorSubspace_of_four_log {R N : ℕ} {T : ℝ}
     (hR : 2 ≤ R) (hT : 1 ≤ T) (hRNT : ((R * R : ℕ) + 1 : ℝ) * T ≤ N)
-    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     Real.log N *
         (∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T),
@@ -1116,9 +1167,21 @@ theorem sum_quotient_tail_sq_le_of_mem_conductorSubspace {R N : ℕ} {T : ℝ}
       mul_le_mul_of_nonneg_left
         (sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => sq_nonneg _) hL0
     _ ≤ 2 * (Real.log ((N : ℝ) / K) + 3) * ‖u‖ ^ 2 :=
-      sum_Ioc_sq_le_of_mem_conductorSubspace hR hRK hKN hlog hu
+      sum_Ioc_sq_le_of_mem_conductorSubspace_of_four_log hR hRK hKN hlog hu
     _ ≤ 2 * (Real.log (2 * T) + 3) * ‖u‖ ^ 2 :=
       mul_le_mul_of_nonneg_right (by linarith only [hlog_le]) (sq_nonneg _)
+
+/-- The quotient-cutoff tail bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem sum_quotient_tail_sq_le_of_mem_conductorSubspace {R N : ℕ} {T : ℝ}
+    (hR : 2 ≤ R) (hT : 1 ≤ T) (hRNT : ((R * R : ℕ) + 1 : ℝ) * T ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
+    Real.log N *
+        (∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T),
+          primeHorizonExtension u n ^ 2) ≤
+      2 * (Real.log (2 * T) + 3) * ‖u‖ ^ 2 :=
+  sum_quotient_tail_sq_le_of_mem_conductorSubspace_of_four_log hR hT hRNT
+    (four_log_add_eighteen_le_of_log_le hlog) hu
 
 /-- Linear-moment bound `∑_{n=1}^N (n / N) u_n^2 ≤ (2 log log N + 11) / log N · ‖u‖^2` on
 `conductorSubspace R N`. -/

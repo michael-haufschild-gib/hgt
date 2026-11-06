@@ -106,11 +106,11 @@ private theorem overlapMatrix_inner_eq (φ : ℝ → ℝ) (c : ℝ) (N : ℕ)
 
 /-- The overlap quadratic form costs only `Oφ(c)` on a conductor packet.
 The finite-period linear moment removes the logarithm from terminal-mass bounds. -/
-theorem exists_overlapMatrix_self_inner_le_linear {φ : ℝ → ℝ}
+theorem exists_overlapMatrix_self_inner_le_linear_of_four_log {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
-      2 ≤ R → R ^ 4 ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      2 ≤ R → R ^ 4 ≤ N → 4 * Real.log R + 18 ≤ Real.log N →
       1 ≤ c → c ≤ Real.log N → c / N ≤ 1 / 3 →
       ∀ {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}, u ∈ conductorSubspace R N →
         |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u, u⟫| ≤ C * c * ‖u‖ ^ 2 := by
@@ -205,7 +205,7 @@ theorem exists_overlapMatrix_self_inner_le_linear {φ : ℝ → ℝ}
     exact sum_le_sum fun n hn =>
       (mul_le_mul_of_nonneg_right (card_nearRowIndices_le_relative_radius hc0 hn hw)
         (sq_nonneg _)).trans_eq (by ring)
-  have hmoment := sum_linear_moment_sq_le_four_div_log hR hR4 hlog hu
+  have hmoment := sum_linear_moment_sq_le_four_div_log_of_four_log hR hR4 hlog hu
   calc
     _ ≤ (M_ov * Real.log N) *
         ((2 * linearNearRowRadius c) * ∑ n ∈ Icc 1 N, ((n : ℝ) / N) * f n ^ 2) :=
@@ -215,5 +215,18 @@ theorem exists_overlapMatrix_self_inner_le_linear {φ : ℝ → ℝ}
     _ ≤ (2 * linearNearRowRadius c * M_ov) * (4 * ‖u‖ ^ 2) :=
       mul_le_mul_of_nonneg_left hmoment (by unfold linearNearRowRadius; positivity)
     _ = _ := by unfold linearNearRowRadius; ring
+
+/-- The linear overlap bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem exists_overlapMatrix_self_inner_le_linear {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hM : 0 < ∫ u, φ u ^ 2) :
+    ∃ C : ℝ, 0 < C ∧ ∀ {R N : ℕ} {c : ℝ},
+      2 ≤ R → R ^ 4 ≤ N → 18 * (1 + Real.log R) ≤ Real.log N →
+      1 ≤ c → c ≤ Real.log N → c / N ≤ 1 / 3 →
+      ∀ {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}, u ∈ conductorSubspace R N →
+        |⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u, u⟫| ≤ C * c * ‖u‖ ^ 2 := by
+  obtain ⟨C, hC, h⟩ := exists_overlapMatrix_self_inner_le_linear_of_four_log hφ hsupp hM
+  exact ⟨C, hC, fun hR hR4 hlog hc1 hcL hw1 _ hu =>
+    h hR hR4 (four_log_add_eighteen_le_of_log_le hlog) hc1 hcL hw1 hu⟩
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

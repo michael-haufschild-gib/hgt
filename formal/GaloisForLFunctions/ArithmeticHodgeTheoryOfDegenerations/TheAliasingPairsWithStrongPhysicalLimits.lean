@@ -115,17 +115,17 @@ theorem tendsto_integrable_logarithmic_tilted_aliasDensity {F : ℝ → ℝ} {a 
   exact h
 
 /-- Strong L¹ convergence also preserves the aliasing mean in logarithmic coordinates. -/
-theorem tendsto_logarithmic_tilted_aliasDensity_of_L1_convergence {F : ℝ → ℝ}
-    {Fₙ : ℕ → ℝ → ℝ} {a : ℝ} (hF : Integrable F) (hFₙ : ∀ n, Integrable (Fₙ n))
+theorem tendsto_logarithmic_tilted_aliasDensity_of_L1_convergence {ι : Type*} {l : Filter ι} {F : ℝ → ℝ}
+    {Fₙ : ι → ℝ → ℝ} {a : ℝ} (hF : Integrable F) (hFₙ : ∀ n, Integrable (Fₙ n))
     (hs : ∀ y, y < a → F y = 0) (hsₙ : ∀ n y, y < a → Fₙ n y = 0)
-    (hL1 : Tendsto (fun n => ∫ y, ‖Fₙ n y - F y‖) atTop (𝓝 0))
-    {c : ℕ → ℝ} (hc : Tendsto c atTop atTop) :
+    (hL1 : Tendsto (fun n => ∫ y, ‖Fₙ n y - F y‖) l (𝓝 0))
+    {c : ι → ℝ} (hc : Tendsto c l atTop) :
     Tendsto (fun n => ∫ y, Fₙ n y *
-      (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * Real.exp y))) atTop
+      (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * Real.exp y))) l
       (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ y, F y * Real.exp (-(8 * y)))) := by
   have hd : Tendsto (fun n => ∫ x, ‖expDensity (Fₙ n) x - expDensity F x‖)
-      atTop (𝓝 0) := by
+      l (𝓝 0) := by
     simpa only [Real.norm_eq_abs, integral_abs_expDensity_sub] using hL1
   have h := tendsto_tilted_aliasDensity_of_L1_convergence (integrable_expDensity hF)
     (fun n => integrable_expDensity (hFₙ n)) (Real.exp_pos a) (expDensity_supported hs)
@@ -252,13 +252,13 @@ private theorem integrable_mul_bounded {F g : ℝ → ℝ} (hF : Integrable F)
   rw [norm_mul, Real.norm_eq_abs (g y)]
   exact mul_le_mul_of_nonneg_left (hB y) (norm_nonneg _)
 
-private theorem tendsto_L1_mul_bounded {F : ℝ → ℝ} {Fₙ : ℕ → ℝ → ℝ}
+private theorem tendsto_L1_mul_bounded {ι : Type*} {l : Filter ι} {F : ℝ → ℝ} {Fₙ : ι → ℝ → ℝ}
     (hF : Integrable F) (hFₙ : ∀ n, Integrable (Fₙ n))
-    (hL1 : Tendsto (fun n => ∫ y, ‖Fₙ n y - F y‖) atTop (𝓝 0))
+    (hL1 : Tendsto (fun n => ∫ y, ‖Fₙ n y - F y‖) l (𝓝 0))
     {g : ℝ → ℝ} (hg : Continuous g) {B : ℝ} (hB : ∀ y, |g y| ≤ B) :
-    Tendsto (fun n => ∫ y, ‖Fₙ n y * g y - F y * g y‖) atTop (𝓝 0) := by
+    Tendsto (fun n => ∫ y, ‖Fₙ n y * g y - F y * g y‖) l (𝓝 0) := by
   have hi := integrable_mul_bounded hF hg hB
-  have hin (n : ℕ) := integrable_mul_bounded (hFₙ n) hg hB
+  have hin (n : ι) := integrable_mul_bounded (hFₙ n) hg hB
   refine squeeze_zero (fun n => integral_nonneg fun y => norm_nonneg _) (fun n => ?_)
     (by simpa only [mul_zero] using hL1.const_mul B)
   rw [← integral_const_mul]
@@ -288,19 +288,20 @@ private theorem integrable_normalized_tilted_atomicTest {c : ℝ} (hc : 0 < c)
 
 /-- The discrete tilted-spline aliasing pairs with a strong physical limit.
 The synthesis error permits oscillatory multipliers on every critical schedule. -/
-theorem tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate
+theorem tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate_along_filter
+    {l : Filter ℕ} (hl : l ≤ atTop)
     {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
-    (hc : Tendsto c atTop atTop)
+    (hc : Tendsto c l atTop)
     (hrate : Tendsto (fun N : ℕ => c N ^ 10 / N *
-      Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2)) atTop (𝓝 0))
+      Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2)) l (𝓝 0))
     {F g : ℝ → ℝ} (hF : Integrable F)
     (hL1 : Tendsto (fun N => ∫ y,
-      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) atTop (𝓝 0))
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) l (𝓝 0))
     {A : ℝ} (hA : 0 ≤ A) (hs : ∀ y, y ∉ Icc (-A) 0 → g y = 0)
     {Lg : NNReal} (hg : LipschitzWith Lg g) {Bg : ℝ} (hBg : ∀ y, |g y| ≤ Bg) :
     Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) / Real.sqrt N *
       ∑ n ∈ Icc 1 N, x N n * g (Real.log n - Real.log N) *
-        (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) atTop
+        (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) l
       (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
   let Fₙ := fun N => normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N
@@ -319,10 +320,10 @@ theorem tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate
       (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))
   have herror : Tendsto (fun N =>
       (∫ y, (Fₙ N y * g y) * (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * Real.exp y))) -
-        S N) atTop (𝓝 0) := by
+        S N) l (𝓝 0) := by
     refine squeeze_zero_norm' ?_ (by
       simpa only [mul_zero] using hrate.const_mul ((∫ u, |tiltedUnitSpline u|) * C))
-    filter_upwards [eventually_ge_atTop 1] with N hN
+    filter_upwards [(eventually_ge_atTop 1).filter_mono hl] with N hN
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
     have hcn : 0 < c N := zero_lt_one.trans_le (hc1 N)
     have h := abs_integral_normalizedCentredAtomicTest_mul_sub_le
@@ -353,6 +354,25 @@ theorem tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate
     refine h.trans (le_of_eq ?_)
     ring
   simpa only [sub_sub_cancel, sub_zero] using hmain.sub herror
+
+/-- The synthesis-rate pairing along the full sequence of horizons. -/
+theorem tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate
+    {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
+    (hc : Tendsto c atTop atTop)
+    (hrate : Tendsto (fun N : ℕ => c N ^ 10 / N *
+      Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2)) atTop (𝓝 0))
+    {F g : ℝ → ℝ} (hF : Integrable F)
+    (hL1 : Tendsto (fun N => ∫ y,
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) atTop (𝓝 0))
+    {A : ℝ} (hA : 0 ≤ A) (hs : ∀ y, y ∉ Icc (-A) 0 → g y = 0)
+    {Lg : NNReal} (hg : LipschitzWith Lg g) {Bg : ℝ} (hBg : ∀ y, |g y| ≤ Bg) :
+    Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) / Real.sqrt N *
+      ∑ n ∈ Icc 1 N, x N n * g (Real.log n - Real.log N) *
+        (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) atTop
+      (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+        ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
+  exact tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate_along_filter le_rfl
+    hc1 hc hrate hF hL1 hA hs hg hBg
 
 /-- The discrete pairing limit for coefficient vectors with bounded Euclidean norm. -/
 theorem tendsto_discrete_tilted_aliasing_pair_of_L1_convergence
@@ -402,6 +422,38 @@ theorem tendsto_criticalCurve_discrete_aliasing_pair_of_L1_convergence
     (criticalCurve_facts hc1 hR hcrit).1 hrate hB hF hL1 hA hs hg hBg
 
 /-- Polynomial growth of the coefficient norm is absorbed by the critical clock. -/
+theorem tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound_along_filter
+    {l : Filter ℕ} (hl : l ≤ atTop)
+    {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
+    {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    {B : ℝ} {m : ℕ}
+    (hB : ∀ N, Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2) ≤ B * c N ^ m)
+    {F g : ℝ → ℝ} (hF : Integrable F)
+    (hL1 : Tendsto (fun N => ∫ y,
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) l (𝓝 0))
+    {A : ℝ} (hA : 0 ≤ A) (hs : ∀ y, y ∉ Icc (-A) 0 → g y = 0)
+    {Lg : NNReal} (hg : LipschitzWith Lg g) {Bg : ℝ} (hBg : ∀ y, |g y| ≤ Bg) :
+    Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) / Real.sqrt N *
+      ∑ n ∈ Icc 1 N, x N n * g (Real.log n - Real.log N) *
+        (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) l
+      (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+        ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
+  have hrate : Tendsto (fun N : ℕ => c N ^ (10 + m) / N) atTop (𝓝 0) := by
+    simpa only [pow_zero, mul_one] using criticalCurve_pow_log_div_natCast hc1 hR hcrit (10 + m) 0
+  have hweighted : Tendsto (fun N : ℕ => c N ^ 10 / N *
+      Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2)) atTop (𝓝 0) := by
+    refine squeeze_zero (fun N => by have := hc1 N; positivity) (fun N => ?_)
+      (by simpa only [mul_zero] using hrate.const_mul B)
+    have hn := hc1 N
+    calc
+      _ ≤ c N ^ 10 / N * (B * c N ^ m) :=
+        mul_le_mul_of_nonneg_left (hB N) (by positivity)
+      _ = B * (c N ^ (10 + m) / N) := by rw [pow_add]; ring
+  exact tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate_along_filter hl hc1
+    ((criticalCurve_facts hc1 hR hcrit).1.mono_left hl) (hweighted.mono_left hl) hF hL1 hA hs hg hBg
+
+/-- Polynomial coefficient growth preserves the aliasing limit along all horizons. -/
 theorem tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound
     {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
     {R : ℝ} (hR : 0 < R)
@@ -418,19 +470,8 @@ theorem tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound
         (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) atTop
       (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
-  have hrate : Tendsto (fun N : ℕ => c N ^ (10 + m) / N) atTop (𝓝 0) := by
-    simpa only [pow_zero, mul_one] using criticalCurve_pow_log_div_natCast hc1 hR hcrit (10 + m) 0
-  have hweighted : Tendsto (fun N : ℕ => c N ^ 10 / N *
-      Real.sqrt (∑ n ∈ Icc 1 N, x N n ^ 2)) atTop (𝓝 0) := by
-    refine squeeze_zero (fun N => by have := hc1 N; positivity) (fun N => ?_)
-      (by simpa only [mul_zero] using hrate.const_mul B)
-    have hn := hc1 N
-    calc
-      _ ≤ c N ^ 10 / N * (B * c N ^ m) :=
-        mul_le_mul_of_nonneg_left (hB N) (by positivity)
-      _ = B * (c N ^ (10 + m) / N) := by rw [pow_add]; ring
-  exact tendsto_discrete_tilted_aliasing_pair_of_synthesis_rate hc1
-    (criticalCurve_facts hc1 hR hcrit).1 hweighted hF hL1 hA hs hg hBg
+  exact tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound_along_filter le_rfl
+    hc1 hR hcrit hB hF hL1 hA hs hg hBg
 
 #print axioms tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound
 

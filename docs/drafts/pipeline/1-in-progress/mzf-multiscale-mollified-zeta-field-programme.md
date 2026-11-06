@@ -55,12 +55,13 @@ not independent (a prime block at bounded height is nearly one rotating phase), 
 
 - Size detection cannot separate holes (`|E| ≥ 1`) from zeros: the model `exp(f)` has holes and no zeros, `1+f` has zeros at the last scale. The union over `≈ log V` independent cells at fixed `A` is unavoidable for size methods.
 - Rate-one wall: any `ζ`-involving `k`-th moment needs `2kθ ≤ 1`, so `N(a) ≪ T L e^{−a}` and the occupancy threshold is `A ≈ log log V`.
-- Near-line second moment: a bound `∫_T^{2T}(Σ_ρ m_ρ/(1+δ²(γ_ρ−t)²))² ≪ T/c²` would carry `exists_card_zeros_without_deep_companions_le` from rate one to rate two. The camera at centre `0` bounds the positive kernel `Σ m v̂(δ(γ−t))` in `L²` by `T/c²`, and dyadic widths give the Lorentzian, but camera weights of deep zeros at centre `0` have no sign, and their `L¹` bound only returns rate one.
+- Green potential of deep zeros (sketch): for separated `S` at depth `x/L`, the far part of `Σ_{ρ'} log 1/ϱ(ρ,ρ')` sums to `≪` the number of zeros deeper than `x/(2L)`, and mean square plus Jensen at `½+b+it` gives it an exponential tail at rate `2`, cut off at `2θ`. Balancing against the camera returns rate `min(1, 2θ)`: the same wall, so the camera does not lift the unconditional rate for all zeros.
+- Occupancy: at fixed `A` the count `T L e^{−rA}` exceeds `T`. Under independence of the `L` cells of a unit window the occupancy tends to one; `ε(A) → 0` needs clustering of deep zeros or a saving of the factor `L`.
 - Newton ladder `E → E²` is Vaughan's identity, `E_{X²} = E_X² + ζ·(bilinear sawtooth)`; neutral for the slope.
 - The window second moment is the bilinear Möbius correlation `Σ μ(m)μ(n)(mn)^{−½} ŵ(log m/n)`.
 - Torus against Cauchy flow: `∫ log⁺|P_X| dHaar = O(log log X)` on the torus; on the flow measure RH iff `o(log X)`.
 - At a zero `E_X(ρ) = −1`, `E_X′(ρ) = ζ′(ρ) M_X(ρ)`, and `M_X(ρ) ≈ log X/ζ′(ρ)` above the window: the link to negative moments.
-- Jentzsch–Szegő: zeros of `M_X` should condense on `Re s = Θ`; the Hurwitz half is easy, the rest open.
+- Szegő: the height distribution of the zeros of `M_X` near `Re s = Θ` is open; the condensation itself is proved (survivor 8).
 
 ## Proved in Lean
 
@@ -85,12 +86,16 @@ The route barrier → `D_win` fails as an implication. Survivors:
 2. **Prime camera.** `Z_{y,δ}(t) + C(t) = O(1 + log t/δ)`, mean square `≪ T/c²`, uniform in width and centre. Separated dominant zeros: `≪ T L (4+α) e^{−2α}`.
 3. **Turán camera.** Clusters of at most `N` zeros in the sector, with small outside mass: `≪_{c,N} T L e^{−2(1−4c)α}`.
 4. **Near-line zeros cannot block.** Competitors at most `N` in the sector and small mass deeper than `A/L`: `≪_{c,N} T L e^{A−(1−4c)α}`, rate above `22/25`.
+5. **Hyperbolic density theorem.** Separated zeros at depth `[α,α+1]/L`, `x = (1−3c)α ≤ (3/2)cL`, `c ≤ 1/28800`, with `Π ϱ(ρ,ρ') ≥ B₀ ≥ e^{−x/8}` over the zeros deeper than `x/(2L)`: `≪_c (α+1) T L e^{−2x}/B₀² + L³T^{1/2}`.
+6. **The derivative reads the Blaschke factor.** `N(ρ) = 2b(|ρ−1|/|ρ|)|ζ′(ρ)| exp(−∫P_ρ log|ζ|) ≤ Π_{a∈D} ϱ(ρ,a)`. Zeros with `N(ρ) ≥ B₀` obey the count of 5, and so does the Möbius mollified field. A family with mean `N^{−2}` at most `J` has size `≪_c J (α+1) T L e^{−2x} + L³T^{1/2}`.
+7. **No separation.** The counts of 5 and 6 hold for all zeros at `α ≥ 2(1 + 1/c)`, with an extra factor `α + 1`: a shell in a short window with Blaschke product `≥ e^{−x/8}` has at most `1 + x/8` members.
+8. **Condensation.** Every disc on `Re s = ½ + zetaZeroWidth` holds a zero of `M_X` for arbitrarily large `X`; compact sets right of it avoiding `s = 1` hold none for large `X`. RH iff the zeros of `M_X` do not accumulate in `Re s > ½` away from `s = 1`.
 
 Paper proofs: the module docstrings carry them in full; each is formalized.
 
 ## Open
 
-Fixed-depth `ε(A)`. Second moment of the Lorentzian mass. Comparably deep pairs at scale `1/(cL)`. Sharp second-moment rate. Barrier at the last scale. Closing the slope is RH.
+Fixed-depth `ε(A)`. Negative moments of `N(ρ)` off the line. Comparably deep clusters at hyperbolic distance `O(1)`. Sharp second-moment rate. Barrier at the last scale. Closing the slope is RH.
 
 ## Log
 - 2026-11-05 — created; README first draft written.

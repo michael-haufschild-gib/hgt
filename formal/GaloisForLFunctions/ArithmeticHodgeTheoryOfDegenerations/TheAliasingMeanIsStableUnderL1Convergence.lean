@@ -334,19 +334,19 @@ private theorem scaled_aliasIntegral_sub {F G : ℝ → ℝ} {δ c : ℝ}
 
 /-- Strong L¹ convergence of weights preserves the actual aliasing limit even
 when the weight and overlap vary together. -/
-theorem tendsto_tilted_aliasDensity_of_L1_convergence {F : ℝ → ℝ}
-    {Fₙ : ℕ → ℝ → ℝ} {δ : ℝ} (hF : Integrable F) (hFₙ : ∀ n, Integrable (Fₙ n))
+theorem tendsto_tilted_aliasDensity_of_L1_convergence {ι : Type*} {l : Filter ι} {F : ℝ → ℝ}
+    {Fₙ : ι → ℝ → ℝ} {δ : ℝ} (hF : Integrable F) (hFₙ : ∀ n, Integrable (Fₙ n))
     (hδ : 0 < δ) (hs : ∀ x, x < δ → F x = 0)
     (hsₙ : ∀ n x, x < δ → Fₙ n x = 0)
-    (hL1 : Tendsto (fun n => ∫ x, ‖Fₙ n x - F x‖) atTop (𝓝 0))
-    {c : ℕ → ℝ} (hc : Tendsto c atTop atTop) :
+    (hL1 : Tendsto (fun n => ∫ x, ‖Fₙ n x - F x‖) l (𝓝 0))
+    {c : ι → ℝ} (hc : Tendsto c l atTop) :
     Tendsto (fun n => ∫ x, Fₙ n x * (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * x)))
-      atTop (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+      l (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ x, F x * (x ^ 8)⁻¹)) := by
   obtain ⟨B, hB, hbound⟩ := exists_integrable_tilted_aliasDensity_bound hδ
   have herror : Tendsto (fun n =>
       (∫ x, Fₙ n x * (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * x))) -
-      (∫ x, F x * (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * x)))) atTop (𝓝 0) := by
+      (∫ x, F x * (c n ^ 8 * aliasDensity tiltedUnitSpline (c n * x)))) l (𝓝 0) := by
     refine squeeze_zero_norm' ?_ (by simpa only [mul_zero] using hL1.const_mul B)
     filter_upwards [hc.eventually_gt_atTop 0] with n hcn
     rw [scaled_aliasIntegral_sub (hFₙ n) hF hδ (hsₙ n) hs hcn]

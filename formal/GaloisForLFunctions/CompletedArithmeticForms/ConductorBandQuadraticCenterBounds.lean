@@ -166,126 +166,6 @@ private theorem abs_sum_far_erase_div_abs_sub_le {g : ℕ → ℝ} {B : ℝ} {n 
     _ ≤ B / D + B / D := add_le_add hlo_bound hhi_bound
     _ = 2 * B / D := by ring
 
-private def collarKernel (N : ℕ) (n j : ℕ) : ℝ :=
-  (1 / (N : ℝ)) * archimedeanCenterKernel n j
-
-private def collarNearKernel (D : ℕ) (n j : ℕ) : ℝ :=
-  if n ≠ j ∧ |(n : ℝ) - j| ≤ D then (1 / 2 : ℝ) / |(n : ℝ) - j| else 0
-
-private def collarRowSumHalf (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  ∑ j ∈ (Icc 1 N).erase n,
-    (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
-      primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j
-
-private def collarRowNear (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  Real.sqrt ((n : ℝ) / N) * ∑ j ∈ Icc 1 N, collarNearKernel (R ^ 4) n j *
-    (Real.sqrt ((j : ℝ) / N) *
-      primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j)
-
-private def collarRowFar (R N : ℕ) (b : ℕ → ℝ) (n : ℕ) : ℝ :=
-  (Real.sqrt n / (2 * (N : ℝ) * Real.sqrt (Real.log N))) *
-    ∑ j ∈ (Icc 1 N).filter (fun j : ℕ => ((R ^ 4 : ℕ) : ℝ) < |(n : ℝ) - j|),
-      (∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) / |(n : ℝ) - j|
-
-private theorem collarRow_eq_sum_three {R N : ℕ} (hR : 2 ≤ R) (hN1 : 1 ≤ N)
-    (hL : 0 < Real.log N) (b : ℕ → ℝ) {n : ℕ} (hn : n ∈ Icc 1 N) :
-    (∑ j ∈ Icc 1 N, collarKernel N n j *
-        primeHorizonExtension (∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N) j) =
-      collarRowSumHalf R N b n + collarRowNear R N b n + collarRowFar R N b n := by
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
-  have hsL : 0 < Real.sqrt (Real.log N) := Real.sqrt_pos.mpr hL
-  have hD0 : 0 < R ^ 4 := pow_pos (by omega : 0 < R) 4
-  set uTilde := ∑ m ∈ Icc 1 R, b m • normalizedRamanujanHorizonVector m N
-  have huTilde_ext : ∀ j ∈ Icc 1 N, primeHorizonExtension uTilde j =
-      (Real.sqrt (Real.log N))⁻¹ * ((∑ m ∈ Icc 1 R, b m * normalizedRamanujanMode m j) / Real.sqrt j) := by
-    intro j hj
-    rw [primeHorizonExtension_coe _ ⟨j, hj⟩]
-    change (PiLp.projₗ (𝕜 := ℝ) 2 (fun _ : PrimeHorizonIndex N => ℝ) ⟨j, hj⟩) uTilde = _
-    dsimp only [uTilde]
-    rw [map_sum, sum_div, mul_sum]
-    refine sum_congr rfl fun m _ => ?_
-    change b m * ((Real.sqrt (Real.log N))⁻¹ * (normalizedRamanujanMode m j / Real.sqrt j)) = _
-    ring
-  rw [← sum_erase_add (Icc 1 N) (fun j => collarKernel N n j * primeHorizonExtension uTilde j) hn]
-  have hdiag : collarKernel N n n * primeHorizonExtension uTilde n = 0 := by
-    unfold collarKernel; rw [archimedeanCenterKernel_self, mul_zero, zero_mul]
-  rw [hdiag, add_zero]
-  have hterm_erase : ∀ j ∈ (Icc 1 N).erase n,
-      collarKernel N n j * primeHorizonExtension uTilde j =
-        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * ((n : ℝ) + j))) *
-          primeHorizonExtension uTilde j +
-        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-          primeHorizonExtension uTilde j := by
-    intro j hj
-    obtain ⟨hjn, hjI⟩ := mem_erase.mp hj
-    have h := archimedeanCenterKernel_div_sqrt_mul (mem_Icc.mp hn).1
-      (mem_Icc.mp hjI).1 (Ne.symm hjn)
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
-    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
-    have hsn := (Real.sqrt_pos.mpr hn0).ne'
-    have hsj := (Real.sqrt_pos.mpr hj0).ne'
-    unfold collarKernel
-    have hker : archimedeanCenterKernel n j =
-        (1 / 2 : ℝ) * (1 / |(n : ℝ) - j| + 1 / ((n : ℝ) + j)) *
-          (Real.sqrt n * Real.sqrt j) :=
-      (div_eq_iff (mul_ne_zero hsn hsj)).mp h
-    have hadd_ne : (n : ℝ) + j ≠ 0 := by positivity
-    have hsub_ne : |(n : ℝ) - j| ≠ 0 :=
-      abs_ne_zero.mpr (sub_ne_zero.mpr (by exact_mod_cast Ne.symm hjn))
-    rw [hker]
-    field_simp [hN0.ne', hadd_ne, hsub_ne]
-    ring
-  rw [sum_congr rfl hterm_erase, sum_add_distrib]
-  change collarRowSumHalf R N b n + _ =
-    collarRowSumHalf R N b n + collarRowNear R N b n + collarRowFar R N b n
-  rw [add_assoc]
-  congr 1
-  have near_eq : collarRowNear R N b n =
-      ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)),
-        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-          primeHorizonExtension uTilde j := by
-    unfold collarRowNear collarNearKernel
-    rw [mul_sum]
-    have hsub : ((Icc 1 N).erase n).filter (fun j : ℕ => |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) ⊆ Icc 1 N :=
-      fun j hj => (mem_erase.mp (mem_filter.mp hj).1).2
-    rw [← sum_subset hsub]
-    · refine sum_congr rfl fun j hj => ?_
-      obtain ⟨hje, hle⟩ := mem_filter.mp hj
-      have hne : n ≠ j := Ne.symm (mem_erase.mp hje).1
-      rw [if_pos ⟨hne, hle⟩, Real.sqrt_div (Nat.cast_nonneg n),
-        Real.sqrt_div (Nat.cast_nonneg j)]
-      field_simp [hN0.ne', (Real.sqrt_pos.mpr hN0).ne']
-      rw [Real.sq_sqrt hN0.le]
-      dsimp only [uTilde]
-      ring
-    · intro j hjI hnot
-      have hfalse : ¬(n ≠ j ∧ |(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) := by
-        rintro ⟨hne, hle⟩
-        exact hnot (mem_filter.mpr ⟨mem_erase.mpr ⟨hne.symm, hjI⟩, hle⟩)
-      rw [if_neg hfalse, zero_mul, mul_zero]
-  have far_eq : collarRowFar R N b n =
-      ∑ j ∈ ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ (R ^ 4 : ℕ)),
-        (Real.sqrt n * Real.sqrt j / (2 * (N : ℝ) * |(n : ℝ) - j|)) *
-          primeHorizonExtension uTilde j := by
-    unfold collarRowFar
-    have hf_eq : ((Icc 1 N).erase n).filter (fun j : ℕ => ¬|(n : ℝ) - j| ≤ (R ^ 4 : ℕ)) =
-        (Icc 1 N).filter (fun j : ℕ => ((R ^ 4 : ℕ) : ℝ) < |(n : ℝ) - j|) := by
-      ext j; simp only [mem_filter, mem_erase, not_le]
-      constructor
-      · rintro ⟨⟨_, hj⟩, hlt⟩; exact ⟨hj, hlt⟩
-      · rintro ⟨hj, hlt⟩
-        refine ⟨⟨?_, hj⟩, hlt⟩
-        intro h; subst h; simp only [sub_self, abs_zero] at hlt
-        linarith [show (0 : ℝ) < (R ^ 4 : ℕ) by exact_mod_cast hD0]
-    rw [hf_eq, mul_sum]
-    refine sum_congr rfl fun j hj => ?_
-    have hjI := (mem_filter.mp hj).1
-    have hj0 : (0 : ℝ) < j := by exact_mod_cast (mem_Icc.mp hjI).1
-    have hsj := (Real.sqrt_pos.mpr hj0).ne'
-    rw [huTilde_ext j hjI]
-    field_simp [hN0.ne', hsL.ne', hsj]
-  rw [near_eq, far_eq, sum_filter_add_sum_filter_not]
-
 private theorem collar_v1_row_le {N n : ℕ} (hN1 : 1 ≤ N)
     (hL1 : 1 ≤ Real.log N) (hn : n ∈ Icc 1 N) :
     (∑ j ∈ Icc 1 N, collarKernel N n j *
@@ -550,7 +430,7 @@ private theorem sum_abs_hilbert_pair_le (S : Finset ℕ) (a b : ℕ → ℝ) :
     simpa only [Nat.cast_add, Nat.cast_one, one_div, div_eq_mul_inv, mul_inv_rev, one_mul, mul_comm] using h
 
 private theorem sum_sqrt_mul_abs_packet_le {R N : ℕ} (hR : 2 ≤ R)
-    (hRN4 : R ^ 4 ≤ N) (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hRN4 : R ^ 4 ≤ N) (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     (∑ n ∈ Icc 1 N, Real.sqrt n / N * |primeHorizonExtension u n|) ≤
       2 / Real.sqrt (Real.log N) * ‖u‖ := by
@@ -559,7 +439,7 @@ private theorem sum_sqrt_mul_abs_packet_le {R N : ℕ} (hR : 2 ≤ R)
   have hL0 : 0 < Real.log N := by
     have hR0 := Real.log_natCast_nonneg R
     linarith only [hlog, hR0]
-  have hlin := sum_linear_moment_sq_le_four_div_log hR hRN4 hlog hu
+  have hlin := sum_linear_moment_sq_le_four_div_log_of_four_log hR hRN4 hlog hu
   have hlin' : (∑ n ∈ Icc 1 N, ((n : ℝ) / N) * primeHorizonExtension u n ^ 2) ≤
       4 / Real.log N * ‖u‖ ^ 2 := by
     rw [div_mul_eq_mul_div]
@@ -680,7 +560,7 @@ private theorem collar_near_pair_le {R N : ℕ} (b x : ℕ → ℝ) :
     10 * (1 + Real.log R) by ring] using hbound.trans hrows
 
 private theorem collar_v1_inner_le {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
-    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     |⟪Matrix.toEuclideanLin (horizonKernelMatrix (collarKernel N) N)
       (normalizedRamanujanHorizonVector 1 N), u⟫| ≤ 6 * ‖u‖ := by
@@ -733,9 +613,9 @@ private theorem collar_v1_inner_le {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ 
       ring
 
 /-- Testing both collar arguments against their linear moment gives full logarithmic decay. -/
-theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : ℝ)
+theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace_of_four_log (α : ℝ)
     {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
-    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}
     (hu : u ∈ conductorSubspace R N) (hu1 : u ∈ (conductorSubspace 1 N)ᗮ) :
     |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α N) u, u⟫| ≤
@@ -786,7 +666,7 @@ theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : �
     have hm1 : m ≠ 1 := (mem_erase.mp hm).1
     simp [aTilde, hm1]
   have ha1_le : |a 1| ≤ 36 * (1 + Real.log R) / Real.log N * ‖u‖ := by
-    have hlow := (low_band_norm_le_of_mem_orthogonal (by omega : 1 ≤ 1) (by omega : 1 ≤ R)
+    have hlow := (low_band_norm_le_of_mem_orthogonal_of_four_log (by omega : 1 ≤ 1) (by omega : 1 ≤ R)
       hR hRN2 hlog (hu_eq ▸ hu1)).1
     rw [← hu_eq] at hlow
     have h1sq : Real.sqrt (∑ m ∈ Icc 1 1, a m ^ 2) = |a 1| := by
@@ -795,13 +675,13 @@ theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : �
   have ha_sq : (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ 2 * ‖u‖ ^ 2 := by
     have hle : (∑ m ∈ Icc 1 R, aTilde m ^ 2) ≤ ∑ m ∈ Icc 1 R, a m ^ 2 :=
       sum_le_sum fun m _ => by dsimp only [aTilde]; split_ifs <;> simp [sq_nonneg]
-    have hr := (half_and_three_halves_riesz_of_log_le hR hRN2 hlog a).1
+    have hr := (half_and_three_halves_riesz_of_four_log_le hR hRN2 hlog a).1
     rw [← hu_eq] at hr
     linarith only [hle, hr]
   have huTilde_mem : uTilde ∈ conductorSubspace R N :=
     sum_normalizedRamanujanHorizonVector_mem_conductorSubspace R N aTilde
   have huTilde_norm : ‖uTilde‖ ≤ 2 * ‖u‖ := by
-    have hr := (half_and_three_halves_riesz_of_log_le hR hRN2 hlog aTilde).2
+    have hr := (half_and_three_halves_riesz_of_four_log_le hR hRN2 hlog aTilde).2
     have hsq : ‖uTilde‖ ^ 2 ≤ (2 * ‖u‖) ^ 2 := by
       calc
         ‖uTilde‖ ^ 2 ≤ (3 / 2 : ℝ) * ∑ m ∈ Icc 1 R, aTilde m ^ 2 := hr
@@ -810,7 +690,7 @@ theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : �
     nlinarith only [hsq, norm_nonneg uTilde, norm_nonneg u]
   have hlin_uTilde : (∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension uTilde j ^ 2) ≤
       16 / Real.log N * ‖u‖ ^ 2 := by
-    have hm := sum_linear_moment_sq_le_four_div_log hR hRN4 hlog huTilde_mem
+    have hm := sum_linear_moment_sq_le_four_div_log_of_four_log hR hRN4 hlog huTilde_mem
     have h4 : ‖uTilde‖ ^ 2 ≤ 4 * ‖u‖ ^ 2 := by
       nlinarith only [huTilde_norm, norm_nonneg uTilde, norm_nonneg u]
     rw [div_mul_eq_mul_div, le_div_iff₀' hL]
@@ -818,7 +698,7 @@ theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : �
   have hlin_u : (∑ n ∈ Icc 1 N, ((n : ℝ) / N) * primeHorizonExtension u n ^ 2) ≤
       4 / Real.log N * ‖u‖ ^ 2 := by
     rw [div_mul_eq_mul_div]
-    exact (le_div_iff₀' hL).mpr (sum_linear_moment_sq_le_four_div_log hR hRN4 hlog hu)
+    exact (le_div_iff₀' hL).mpr (sum_linear_moment_sq_le_four_div_log_of_four_log hR hRN4 hlog hu)
   have hhalf : |∑ n ∈ Icc 1 N, primeHorizonExtension u n * collarRowSumHalf R N aTilde n| ≤
       (40 * Real.pi) / Real.log N * ‖u‖ ^ 2 := by
     calc
@@ -909,6 +789,17 @@ theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : �
     _ ≤ |α| * (600 * (1 + Real.log R) / Real.log N * ‖u‖ ^ 2) :=
       mul_le_mul_of_nonneg_left hcol (abs_nonneg _)
     _ = _ := by ring
+
+/-- The collar bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace (α : ℝ)
+    {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hu : u ∈ conductorSubspace R N) (hu1 : u ∈ (conductorSubspace 1 N)ᗮ) :
+    |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α N) u, u⟫| ≤
+      600 * |α| * (1 + Real.log R) / Real.log N * ‖u‖ ^ 2 :=
+  abs_fullWeilCenterMatrix_self_inner_le_of_mem_conductorSubspace_of_four_log α hR hRN4
+    (four_log_add_eighteen_le_of_log_le hlog) hu hu1
 
 end GaloisForLFunctions.CompletedArithmeticForms
 

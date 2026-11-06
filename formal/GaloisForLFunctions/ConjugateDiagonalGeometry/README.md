@@ -114,6 +114,13 @@ amplitudes and their first moments — with explicit error certificates. The com
 
 ## 6. Tools
 
+`LogScaleHeckeDefect/LogPowerExceptionalWindows.lean` proves exceptional measure
+`O(U/(log U)^η)` for the corridor `b log log T/log T`, whenever `b>1` and
+`0<η<b−1` (`eventually_volume_badLogLogWindows_le_logPower`). For `b>2`,
+almost every `x∈[1,2]` satisfies this strict corridor in every sufficiently late
+unit window at `T=e^n x` (`ae_eventually_geometric_unitWindow_corridor`).
+The mean depth bound and Borel–Cantelli supply the conclusion; all-height control remains open.
+
 **Developed**
 - Kernel and Green calculus: `depthKernel_double`, `laplacian_radialLogPotential`, `laplacian_real_holomorphic_comp`,
   `source_green_identity`, `laplacian_normSq_holomorphic`, `source_laplacian_mul`.

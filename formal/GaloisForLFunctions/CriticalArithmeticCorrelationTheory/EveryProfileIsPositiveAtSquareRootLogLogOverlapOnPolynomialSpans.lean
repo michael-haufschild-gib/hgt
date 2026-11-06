@@ -19,7 +19,7 @@ of the polynomial conductor exponent. -/
 theorem exists_universal_sqrt_loglog_polynomial_span_coercivity :
     ∃ B : ℝ, 0 < B ∧ ∀ φ : ℝ → ℝ, ContDiff ℝ 2 φ →
       (∀ x : ℝ, x ∉ Set.Icc 0 1 → φ x = 0) → (0 < ∫ x, φ x ^ 2) →
-      ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ ∀ θ : ℝ, 0 < θ → θ < 1 / 1080 →
+      ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ ∀ θ : ℝ, 0 < θ → θ < 1 / 4 →
       ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
         c ≤ b * Real.sqrt (Real.log (Real.log (N : ℝ))) →
       ∀ x ∈ conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N,

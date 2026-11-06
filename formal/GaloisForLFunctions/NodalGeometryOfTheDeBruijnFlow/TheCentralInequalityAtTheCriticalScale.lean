@@ -10,7 +10,7 @@ The crystal forms at the scale of the zeros, on almost all heights. There is an 
 
 `(x′ − x)² ≥ c min(t, 1/log²(2 + |x|))`
 
-for all real zeros `x < x′` of `H_t` with `|x − X| ≤ κ/(2 log T)` and `7κ/log T ≤ t log(x/2π) ≤ 1/8` (`exists_central_inequality_at_critical_scale`). In terms of `τ = t log²X` the range is `τ ≳ κ`: the crystal is reached at a bounded normalized time on a set of density arbitrarily close to one, and the window contains `≍ κ` zeros. The time `τ ≍ 1` is the scale of the local statistics, so the range cannot be improved beyond a constant by an estimate of this kind.
+for all real zeros `x < x′` of `H_t` with `|x − X| ≤ κ/(2 log T)` and `7κ/log T ≤ t log(x/2π) ≤ 1/8` (`exists_central_inequality_at_critical_scale`). In terms of `τ = t log²X` the range is `τ ≳ κ`: the crystal is reached at a bounded normalized time on a set of density arbitrarily close to one, and the window contains `≍ κ` zeros. The time `τ ≍ 1` is the scale of the local statistics.
 
 **Inputs.** Two typical properties at the critical scale `R ≍ κ/log T`, both from Selberg's zero-density and mean-value method: zeros of depth `a ≥ R₀` keep at distance `> 5a` from `X` outside measure `≪ T/κ` (`exists_volume_zetaZeroShadowScaled_le`), and `|ζ′/ζ| ≤ B` on the box at scale `R` outside measure `≪ T(1/(BR)² + …)` (`exists_volume_not_zetaLogDerivScaleData_le_uniform_level`). With `q = κ^{1/4}` and dyadic scales `R_j = 3κ 2^j/log T`, the choice `B_j R_j = q (5/4)^j` makes the exceptional measures summable, while `B_j² τ ≪ 1/q²` for `τ ≍ R_j/log T`.
 
@@ -85,6 +85,34 @@ theorem norm_xiLineDeriv_sub_le_of_data {X R B Y r : ℝ} (hR : 0 < R) (hR16 : R
 
 /-! ## The transform at a height -/
 
+/-- The source hypotheses of the half-Gauss transform, from the two typical properties. -/
+theorem source_hyps_of_data {X R₀ R B Y u : ℝ} (hR₀ : 0 < R₀) (hR16 : R ≤ 1 / 16) (hR₀R : 3 * R₀ ≤ R)
+    (hK : ZeroKeeping X R₀) (hdata : ZetaLogDerivScaleData X R B) (hY : |Y - X| < R₀) (hY200 : 200 ≤ Y)
+    (hu1 : 9 * R / 4 ≤ u) (hu3 : u ≤ 24 * R / 5) :
+    (∀ w ∈ Icc (u / 3) (5 * u / 4), ‖xiLineDeriv Y w - horizontalSlope Y * xiLine Y w‖ ≤ (B + 1) * ‖xiLine Y w‖) ∧
+    (∀ w ∈ Icc (0 : ℝ) (u / 3), ‖xiLine Y w‖ ≤ ‖xiLine Y (u / 3)‖) ∧
+    (∀ w, 5 * u / 4 ≤ w → ‖xiLine Y w‖ ≤ ‖xiLine Y (5 * u / 4)‖ *
+      Real.exp (((horizontalSlope Y).re + (B + 1)) * (w ^ 2 - (5 * u / 4) ^ 2) / (2 * (5 * u / 4)))) := by
+  have hR : 0 < R := by linarith only [hR₀, hR₀R]
+  have hu : 0 < u := by linarith only [hR, hu1]
+  have hY6 : |Y - X| ≤ 6 * R := by linarith only [hY, hR₀R, hR₀]
+  have hbox (w : ℝ) (hw : w ∈ Icc (u / 3) (5 * u / 4)) : 3 * R / 4 ≤ w ∧ w ≤ 6 * R :=
+    ⟨by linarith only [hw.1, hu1], by linarith only [hw.2, hu3]⟩
+  have h2R₀ : 2 * R₀ ≤ u / 3 := by linarith only [hu1, hR₀R, hR₀]
+  have hub : 2 * R₀ ≤ 5 * u / 4 := by linarith only [h2R₀, hu]
+  refine ⟨?_, ?_, ?_⟩
+  · intro w hw
+    exact norm_xiLineDeriv_sub_le_of_data hR hR16 hdata hY6 hY200 (hbox w hw).1 (hbox w hw).2
+  · intro w hw
+    exact norm_xiLine_le_of_keeping hR₀ hK hY hw.1 hw.2 h2R₀
+  · intro w hw
+    refine norm_xiLine_le_growth hR₀ (hK.keepsAway hY.le) hub hw ?_
+    obtain ⟨-, hd⟩ := norm_logDeriv_xi_sub_le_of_data hR hR16 hdata hY6 hY200
+      (hbox _ ⟨by linarith only [hu], le_rfl⟩).1 (hbox _ ⟨by linarith only [hu], le_rfl⟩).2
+    have h1 := Complex.re_le_norm (logDeriv xi (linePt Y (5 * u / 4)) - horizontalSlope Y)
+    rw [Complex.sub_re] at h1
+    linarith only [h1, hd]
+
 /-- The half-Gauss estimates from the two typical properties. -/
 theorem source_estimates {X R₀ R B τ Y v u : ℝ} (hR₀ : 0 < R₀) (hR16 : R ≤ 1 / 16) (hR₀R : 3 * R₀ ≤ R)
     (hK : ZeroKeeping X R₀) (hdata : ZetaLogDerivScaleData X R B) (hY : |Y - X| < R₀) (hY200 : 200 ≤ Y)
@@ -103,23 +131,25 @@ theorem source_estimates {X R₀ R B τ Y v u : ℝ} (hR₀ : 0 < R₀) (hR16 : 
           60 * (horizontalSlope Y).re * Real.exp (-(u * (horizontalSlope Y).re / 40))) := by
   have hR : 0 < R := by linarith only [hR₀, hR₀R]
   have hu : 0 < u := by linarith only [hR, hu1]
-  have hY6 : |Y - X| ≤ 6 * R := by linarith only [hY, hR₀R, hR₀]
-  have hbox (w : ℝ) (hw : w ∈ Icc (u / 3) (5 * u / 4)) : 3 * R / 4 ≤ w ∧ w ≤ 6 * R :=
-    ⟨by linarith only [hw.1, hu1], by linarith only [hw.2, hu3]⟩
-  have h2R₀ : 2 * R₀ ≤ u / 3 := by linarith only [hu1, hR₀R, hR₀]
-  have hub : 2 * R₀ ≤ 5 * u / 4 := by linarith only [h2R₀, hu]
-  refine halfGauss_estimates_of_source hτ hβ1 hu hrel hv hB0 hB hΛ ?_ ?_ ?_
-  · intro w hw
-    exact norm_xiLineDeriv_sub_le_of_data hR hR16 hdata hY6 hY200 (hbox w hw).1 (hbox w hw).2
-  · intro w hw
-    exact norm_xiLine_le_of_keeping hR₀ hK hY hw.1 hw.2 h2R₀
-  · intro w hw
-    refine norm_xiLine_le_growth hR₀ (hK.keepsAway hY.le) hub hw ?_
-    obtain ⟨-, hd⟩ := norm_logDeriv_xi_sub_le_of_data hR hR16 hdata hY6 hY200
-      (hbox _ ⟨by linarith only [hu], le_rfl⟩).1 (hbox _ ⟨by linarith only [hu], le_rfl⟩).2
-    have h1 := Complex.re_le_norm (logDeriv xi (linePt Y (5 * u / 4)) - horizontalSlope Y)
-    rw [Complex.sub_re] at h1
-    linarith only [h1, hd]
+  obtain ⟨h1, h2, h3⟩ := source_hyps_of_data (B := B) hR₀ hR16 hR₀R hK hdata hY hY200 hu1 hu3
+  exact halfGauss_estimates_of_source hτ hβ1 hu hrel hv hB0 hB hΛ h1 h2 h3
+
+/-- The Gaussian model error is at most `1/10` when `B√τ ≤ 1/200`. -/
+theorem model_le_tenth {B τ : ℝ} (hB : 0 ≤ B) (hτ : 0 < τ) (hq : B * Real.sqrt τ ≤ 1 / 200) :
+    gaussianSaddleModelError B τ ≤ 1 / 10 := by
+  have h1 := gaussianSaddleModelError_le_of_sqrt_le hτ hB hq
+  refine h1.trans ?_
+  have h2 : Real.exp ((1 + 1 / 200 : ℝ) ^ 2) ≤ Real.exp 2 := Real.exp_le_exp.mpr (by norm_num)
+  have h3 : Real.exp 2 ≤ 9 := by
+    have h4 : Real.exp 2 = Real.exp 1 ^ 2 := by
+      rw [← Real.exp_nat_mul]
+      norm_num
+    rw [h4]
+    have h5 := Real.exp_one_lt_d9
+    have h6 : Real.exp 1 ^ 2 ≤ 3 ^ 2 := pow_le_pow_left₀ (Real.exp_pos 1).le (by linarith only [h5]) 2
+    linarith only [h6]
+  have h7 := h2.trans h3
+  nlinarith only [h7]
 
 /-! ## The gap -/
 
@@ -142,20 +172,7 @@ theorem gap_ge_of_critical_data {X R₀ R B τ x x' : ℝ} (hR₀ : 0 < R₀) (h
   have hα0 : 0 < α := by linarith only [hα]
   have h1α : 1 / α ≤ 1 / 1000 := one_div_le_one_div_of_le (by norm_num) hα
   -- the model error
-  have hmodel : gaussianSaddleModelError (B + 1) τ ≤ 1 / 10 := by
-    have h1 := gaussianSaddleModelError_le_of_sqrt_le hτ hB1.le hq
-    refine h1.trans ?_
-    have h2 : Real.exp ((1 + 1 / 200 : ℝ) ^ 2) ≤ Real.exp 2 := Real.exp_le_exp.mpr (by norm_num)
-    have h3 : Real.exp 2 ≤ 9 := by
-      have h4 : Real.exp 2 = Real.exp 1 ^ 2 := by
-        rw [← Real.exp_nat_mul]
-        norm_num
-      rw [h4]
-      have h5 := Real.exp_one_lt_d9
-      have h6 : Real.exp 1 ^ 2 ≤ 3 ^ 2 := pow_le_pow_left₀ (Real.exp_pos 1).le (by linarith only [h5]) 2
-      linarith only [h6]
-    have h7 := h2.trans h3
-    nlinarith only [h7]
+  have hmodel : gaussianSaddleModelError (B + 1) τ ≤ 1 / 10 := model_le_tenth hB1.le hτ hq
   have hmodel0 := gaussianSaddleModelError_nonneg (t := τ) hB1.le
   -- the facts at each nearby height
   have hpt (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * (1 / α)) :
@@ -585,6 +602,118 @@ theorem exists_volume_not_criticalGood_le :
   have h15 : 0 ≤ C₁ * (ε * T) := by positivity
   nlinarith only [hJsum, h3, h4, h6, h7, h8, h10, h11, h12, h13, h14, h15, hεT]
 
+/-- **The scale of a saddle.** A saddle `u ≥ 2τα` in the range `6.9 q⁴/L ≤ u ≤ 1/7` lies at a dyadic scale at which the slope error is admissible. -/
+theorem exists_scale_of_saddle {q L α τ u : ℝ} (hq : (10 : ℝ) ^ 4 ≤ q) (hlog : (10 : ℝ) ^ 6 ≤ L) (hαL : L / 8 ≤ α)
+    (hτ : 0 < τ) (hτu : 2 * τ * α ≤ u) (hu7 : 69 / 10 * (q ^ 4 / L) ≤ u) (hu : u ≤ 1 / 7) :
+    ∃ j : ℕ, critR q L j ≤ 1 / 16 ∧ 3 * (q ^ 4 / L) ≤ critR q L j ∧ 23 * critR q L j / 10 ≤ u ∧
+      u ≤ 46 * critR q L j / 10 ∧ 0 ≤ critB q L j ∧ 400 * (critB q L j + 1) ≤ α - 1 ∧
+      (critB q L j + 1) * Real.sqrt τ ≤ 1 / 200 ∧ 10 ^ 6 ≤ critR q L j * α := by
+  have hq0 : 0 < q := lt_of_lt_of_le (by positivity) hq
+  have hL0 : 0 < L := lt_of_lt_of_le (by positivity) hlog
+  have hq4 : ((10 : ℝ) ^ 4) ^ 4 ≤ q ^ 4 := pow_le_pow_left₀ (by positivity) hq 4
+  have hq3 : ((10 : ℝ) ^ 4) ^ 3 ≤ q ^ 3 := pow_le_pow_left₀ (by positivity) hq 3
+  have hq2 : ((10 : ℝ) ^ 4) ^ 2 ≤ q ^ 2 := pow_le_pow_left₀ (by positivity) hq 2
+  have hL4 : 1 / L ≤ 1 / 10 ^ 6 := one_div_le_one_div_of_le (by positivity) hlog
+  set R₀ := q ^ 4 / L with hR₀
+  have hR₀pos : 0 < R₀ := by positivity
+  have hα0 : 0 < α := lt_of_lt_of_le (by positivity) hαL
+  set a := 69 / 10 * R₀ with ha
+  have ha0 : 0 < a := by positivity
+  have hau : 1 ≤ u / a := by
+    rw [le_div_iff₀ ha0, one_mul]
+    exact hu7
+  obtain ⟨j, hj1, hj2⟩ := exists_nat_pow_near hau (by norm_num : (1 : ℝ) < 2)
+  rw [le_div_iff₀ ha0] at hj1
+  rw [div_lt_iff₀ ha0] at hj2
+  set R := critR q L j with hRdef
+  set B := critB q L j with hBdef
+  have hRval : R = 3 * 2 ^ j * R₀ := by
+    rw [hRdef, hR₀]
+    unfold critR
+    ring
+  have h2j : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
+  have hu₁ : 23 * R / 10 ≤ u := by
+    rw [hRval]
+    have : (2 : ℝ) ^ j * a = 69 / 10 * (2 ^ j * R₀) := by
+      rw [ha]
+      ring
+    linarith only [hj1, this]
+  have hu₂ : u ≤ 46 * R / 10 := by
+    rw [hRval]
+    have : (2 : ℝ) ^ (j + 1) * a = 69 / 5 * (2 ^ j * R₀) := by
+      rw [ha, pow_succ]
+      ring
+    linarith only [hj2, this]
+  have hRpos : 0 < R := by
+    rw [hRval]
+    positivity
+  have hR16 : R ≤ 1 / 16 := by linarith only [hu₁, hu]
+  have hR₀R : 3 * R₀ ≤ R := by
+    rw [hRval]
+    nlinarith only [h2j, hR₀pos]
+  have hB0 : 0 ≤ B := by
+    rw [hBdef]
+    unfold critB
+    positivity
+  have hBle : B ≤ L / (3 * q ^ 3) := by
+    rw [hBdef]
+    unfold critB
+    refine div_le_div_of_nonneg_right ?_ (by positivity)
+    have h3 : (5 / 8 : ℝ) ^ j ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+    nlinarith only [h3, hL0]
+  have hR₀α : q ^ 4 / 8 ≤ R₀ * α := by
+    have h3 := mul_le_mul_of_nonneg_left hαL hR₀pos.le
+    refine le_trans (le_of_eq ?_) h3
+    rw [hR₀]
+    field_simp
+  have hRα : 10 ^ 6 ≤ R * α := by
+    have h3 := mul_le_mul_of_nonneg_right hR₀R hα0.le
+    norm_num at hq4
+    nlinarith only [h3, hR₀α, hq4, mul_pos hR₀pos hα0]
+  have hB400 : 400 * (B + 1) ≤ α - 1 := by
+    have h3 : L / (3 * q ^ 3) ≤ L / 3000000000000 := by
+      refine div_le_div_of_nonneg_left hL0.le (by norm_num) ?_
+      norm_num at hq3
+      linarith only [hq3]
+    linarith only [hBle, h3, hαL, hlog]
+  -- the model error
+  have ht2 : τ ≤ 92 / 5 * (R / L) := by
+    have h3 : τ * α ≤ 23 * R / 10 := by linarith only [hu₂, hτu]
+    have h4 : τ * (L / 8) ≤ τ * α := mul_le_mul_of_nonneg_left hαL hτ.le
+    have h5 : τ * L ≤ 92 / 5 * R := by linarith only [h3, h4]
+    rw [mul_div_assoc', le_div_iff₀ hL0]
+    exact h5
+  have hq' : (B + 1) * Real.sqrt τ ≤ 1 / 200 := by
+    have h3 : ((B + 1) * Real.sqrt τ) ^ 2 ≤ (1 / 200) ^ 2 := by
+      rw [mul_pow, Real.sq_sqrt hτ.le]
+      have hB2R : B ^ 2 * (R / L) = (25 / 32) ^ j / (3 * q ^ 2) := by
+        have h4 : ((5 / 8 : ℝ) ^ j) ^ 2 * 2 ^ j = (25 / 32) ^ j := by
+          rw [← pow_mul, mul_comm j 2, pow_mul, ← mul_pow]
+          norm_num
+        rw [hBdef, hRdef, ← h4]
+        unfold critB critR
+        field_simp
+      have h5 : (25 / 32 : ℝ) ^ j ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
+      have h6 : B ^ 2 * τ ≤ 92 / 5 * ((25 / 32) ^ j / (3 * q ^ 2)) := by
+        have h7 := mul_le_mul_of_nonneg_left ht2 (sq_nonneg B)
+        rw [← hB2R]
+        linarith only [h7]
+      have h8 : (25 / 32 : ℝ) ^ j / (3 * q ^ 2) ≤ 1 / 300000000 := by
+        rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+        norm_num at hq2
+        nlinarith only [h5, hq2]
+      have h9 : τ ≤ 2 / 1000000 := by
+        have h10 : R / L ≤ (1 / 16) * (1 / L) := by
+          rw [div_eq_mul_one_div]
+          exact mul_le_mul_of_nonneg_right hR16 (by positivity)
+        norm_num at hL4
+        norm_num at h10
+        nlinarith only [ht2, h10, hL4]
+      nlinarith only [h6, h8, h9, sq_nonneg (B - 1), hτ, mul_nonneg (sq_nonneg (B - 1)) hτ.le]
+    have h4 : 0 ≤ (B + 1) * Real.sqrt τ := by positivity
+    exact (pow_le_pow_iff_left₀ h4 (by norm_num) (by norm_num)).mp h3
+  exact ⟨j, hR16, hR₀R, hu₁, hu₂, hB0, hB400, hq', hRα⟩
+
 /-! ## The theorem -/
 
 /-- **The central inequality at the critical scale.** There is an absolute `c > 0` such that for every `δ > 0` there is `κ > 0` with: for all large `T`, outside a set of `X ∈ [T, 2T]` of measure at most `δT`, all real zeros `x < x'` of `H_t` with `|x − X| ≤ κ/(2 log T)` and `7κ/log T ≤ t log(x/2π) ≤ 1/8` satisfy `(x' − x)² ≥ c min(t, 1/log²(2 + |x|))`. -/
@@ -614,7 +743,7 @@ theorem exists_central_inequality_at_critical_scale :
     Real.tendsto_log_atTop.eventually_ge_atTop (10 ^ 6 : ℝ)] with T hvol hT hlog
   refine (measure_mono ?_).trans (hvol.trans (ENNReal.ofReal_le_ofReal ?_))
   swap
-  · rw [mul_div_assoc', div_le_iff₀ (by positivity)]
+  · rw [div_le_iff₀ (by positivity)]
     have hT0 : 0 < T := by linarith only [hT]
     nlinarith only [mul_le_mul_of_nonneg_right hqA hT0.le]
   rintro X ⟨hXT, hprop⟩
@@ -626,13 +755,10 @@ theorem exists_central_inequality_at_critical_scale :
   set R₀ := q ^ 4 / L with hR₀
   have hR₀pos : 0 < R₀ := by positivity
   have hq4 : ((10 : ℝ) ^ 4) ^ 4 ≤ q ^ 4 := pow_le_pow_left₀ (by positivity) hq1 4
-  have hq3 : ((10 : ℝ) ^ 4) ^ 3 ≤ q ^ 3 := pow_le_pow_left₀ (by positivity) hq1 3
-  have hq2 : ((10 : ℝ) ^ 4) ^ 2 ≤ q ^ 2 := pow_le_pow_left₀ (by positivity) hq1 2
   have hx' : |x - X| ≤ R₀ / 2 := by
     refine hx.trans (le_of_eq ?_)
     rw [hR₀]
     field_simp
-  have hL4 : 1 / L ≤ 1 / 10 ^ 6 := one_div_le_one_div_of_le (by positivity) hlog
   set u₀ := t * Real.log (x / (2 * Real.pi)) with hu₀
   have h7R₀ : 7 * R₀ ≤ u₀ := by
     rw [hR₀, mul_div_assoc'] 
@@ -654,105 +780,18 @@ theorem exists_central_inequality_at_critical_scale :
   set α := (horizontalSlope x).re with hα
   have hαL : L / 8 ≤ α := by linarith only [hα1, hscale]
   have hα0 : 0 < α := by linarith only [hαL, hL0]
-  -- the dyadic scale of the saddle
-  set a := 69 / 10 * R₀ with ha
-  have ha0 : 0 < a := by positivity
-  have hau : 1 ≤ u₀ / a := by
-    rw [le_div_iff₀ ha0, one_mul, ha]
+  have h69 : 69 / 10 * (q ^ 4 / L) ≤ u₀ := by
+    rw [← hR₀]
     linarith only [h7R₀, hR₀pos]
-  obtain ⟨j, hj1, hj2⟩ := exists_nat_pow_near hau (by norm_num : (1 : ℝ) < 2)
-  rw [le_div_iff₀ ha0] at hj1
-  rw [div_lt_iff₀ ha0] at hj2
-  set R := critR q L j with hRdef
-  set B := critB q L j with hBdef
-  have hRval : R = 3 * 2 ^ j * R₀ := by
-    rw [hRdef, hR₀]
-    unfold critR
-    ring
-  have h2j : (1 : ℝ) ≤ 2 ^ j := one_le_pow₀ (by norm_num)
-  have hu₁ : 23 * R / 10 ≤ 2 * t * α := by
-    rw [hslope, hRval]
-    have : (2 : ℝ) ^ j * a = 69 / 10 * (2 ^ j * R₀) := by
-      rw [ha]
-      ring
-    linarith only [hj1, this]
-  have hu₂ : 2 * t * α ≤ 46 * R / 10 := by
-    rw [hslope, hRval]
-    have : (2 : ℝ) ^ (j + 1) * a = 69 / 5 * (2 ^ j * R₀) := by
-      rw [ha, pow_succ]
-      ring
-    linarith only [hj2, this]
-  have hRpos : 0 < R := by
-    rw [hRval]
-    positivity
-  have hR16 : R ≤ 1 / 16 := by
-    rw [hslope] at hu₁
-    linarith only [hu₁, ht1]
-  have hR₀R : 3 * R₀ ≤ R := by
-    rw [hRval]
-    nlinarith only [h2j, hR₀pos]
-  have hB0 : 0 ≤ B := by
-    rw [hBdef]
-    unfold critB
-    positivity
-  have hBle : B ≤ L / (3 * q ^ 3) := by
-    rw [hBdef]
-    unfold critB
-    refine div_le_div_of_nonneg_right ?_ (by positivity)
-    have h3 : (5 / 8 : ℝ) ^ j ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
-    nlinarith only [h3, hL0]
-  -- the size of the products
+  obtain ⟨j, hR16, hR₀R, hu₁, hu₂, hB0, hB400, hq', hRα⟩ := exists_scale_of_saddle (τ := t) (u := u₀) hq1 hlog hαL ht
+    (by rw [hslope]) h69 (by linarith only [ht1])
+  rw [← hR₀] at hR₀R
+  rw [← hslope] at hu₁ hu₂
   have hR₀α : q ^ 4 / 8 ≤ R₀ * α := by
     have h3 := mul_le_mul_of_nonneg_left hαL hR₀pos.le
     refine le_trans (le_of_eq ?_) h3
     rw [hR₀]
     field_simp
-  have hRα : 10 ^ 6 ≤ R * α := by
-    have h3 := mul_le_mul_of_nonneg_right hR₀R hα0.le
-    norm_num at hq4
-    nlinarith only [h3, hR₀α, hq4, mul_pos hR₀pos hα0]
-  have hB400 : 400 * (B + 1) ≤ α - 1 := by
-    have h3 : L / (3 * q ^ 3) ≤ L / 3000000000000 := by
-      refine div_le_div_of_nonneg_left hL0.le (by norm_num) ?_
-      norm_num at hq3
-      linarith only [hq3]
-    linarith only [hBle, h3, hαL, hlog]
-  -- the model error
-  have ht2 : t ≤ 92 / 5 * (R / L) := by
-    have h3 : t * α ≤ 23 * R / 10 := by linarith only [hu₂]
-    have h4 : t * (L / 8) ≤ t * α := mul_le_mul_of_nonneg_left hαL ht.le
-    have h5 : t * L ≤ 92 / 5 * R := by linarith only [h3, h4]
-    rw [mul_div_assoc', le_div_iff₀ hL0]
-    exact h5
-  have hq' : (B + 1) * Real.sqrt t ≤ 1 / 200 := by
-    have h3 : ((B + 1) * Real.sqrt t) ^ 2 ≤ (1 / 200) ^ 2 := by
-      rw [mul_pow, Real.sq_sqrt ht.le]
-      have hB2R : B ^ 2 * (R / L) = (25 / 32) ^ j / (3 * q ^ 2) := by
-        have h4 : ((5 / 8 : ℝ) ^ j) ^ 2 * 2 ^ j = (25 / 32) ^ j := by
-          rw [← pow_mul, mul_comm j 2, pow_mul, ← mul_pow]
-          norm_num
-        rw [hBdef, hRdef, ← h4]
-        unfold critB critR
-        field_simp
-      have h5 : (25 / 32 : ℝ) ^ j ≤ 1 := pow_le_one₀ (by norm_num) (by norm_num)
-      have h6 : B ^ 2 * t ≤ 92 / 5 * ((25 / 32) ^ j / (3 * q ^ 2)) := by
-        have h7 := mul_le_mul_of_nonneg_left ht2 (sq_nonneg B)
-        rw [← hB2R]
-        linarith only [h7]
-      have h8 : (25 / 32 : ℝ) ^ j / (3 * q ^ 2) ≤ 1 / 300000000 := by
-        rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-        norm_num at hq2
-        nlinarith only [h5, hq2]
-      have h9 : t ≤ 2 / 1000000 := by
-        have h10 : R / L ≤ (1 / 16) * (1 / L) := by
-          rw [div_eq_mul_one_div]
-          exact mul_le_mul_of_nonneg_right hR16 (by positivity)
-        norm_num at hL4
-        norm_num at h10
-        nlinarith only [ht2, h10, hL4]
-      nlinarith only [h6, h8, h9, sq_nonneg (B - 1), ht, mul_nonneg (sq_nonneg (B - 1)) ht.le]
-    have h4 : 0 ≤ (B + 1) * Real.sqrt t := by positivity
-    exact (pow_le_pow_iff_left₀ h4 (by norm_num) (by norm_num)).mp h3
   have hX1100 : 1100 ≤ X := hT.trans hXT.1
   have hg := gap_ge_of_critical_data hR₀pos hR16 hR₀R hK (hdata j hR16) hB0 hX1100 hx'
     (by linarith only [hαL, hlog]) ht hu₁ hu₂ hRα (by norm_num at hq4; linarith only [hR₀α, hq4]) hB400 hq'

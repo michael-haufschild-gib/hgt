@@ -1,7 +1,7 @@
 # Positive frequency averaging of the radial Bessel density
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Σ6
 
 For `x>0` and `0≤η<π/2`,
@@ -40,3 +40,16 @@ the signed first-atom combination.
 
 These identities concern positive averaging in frequency. They do not
 assert positivity of the full arithmetic aperture spectrum.
+
+## Lean
+
+`CompletedArithmeticForms/BesselOrderCoshMoment.lean`:
+`integral_cosh_besselOrder`, `integrable_cosh_besselOrder`.
+
+`CompletedArithmeticForms/BesselTailCoshMoment.lean`:
+`integral_cosh_besselPowerTail`, `integrable_cosh_besselPowerTail`,
+`integral_cosh_besselFirstAtomTailDensity`,
+`integrable_cosh_besselFirstAtomTailDensity`.
+
+Both canonical modules checked. Capstone dependency audits use only
+`propext`, `Classical.choice`, `Quot.sound`.

@@ -41,12 +41,13 @@ private theorem eventually_log_power_times_nat_power_le_nat (C a : ℝ) {p : ℝ
     _ = (N : ℝ) := by rw [← Real.rpow_add hN, sub_add_cancel, Real.rpow_one]
 
 private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
-    (hθ : 0 < θ) (hθlt : θ < 1 / 1080) (_hb : 0 < b) (hb1 : b ≤ 1)
-    (hbγ : b ≤ γ) (hC : 0 < C) (hCb : C * b ≤ 1 / 128) :
+    (hθ : 0 < θ) (hθlt : θ < 1 / 4) (_hb : 0 < b) (hb1 : b ≤ 1)
+    (hbγ : b ≤ γ) (hC : 0 < C) (hCb : C * b ≤ 1 / 512) :
     ∀ᶠ N : ℕ in atTop,
       let Q := ⌊Real.log (N : ℝ) ^ (1 / 8 : ℝ)⌋₊
       let R := ⌊(N : ℝ) ^ θ⌋₊
-      2 ≤ Q ∧ Q ≤ R ∧ R ^ 6 ≤ N ∧ 1080 * (1 + Real.log R) ≤ Real.log N ∧
+      2 ≤ Q ∧ Q ≤ R ∧ R ^ 4 ≤ N ∧ 4 * Real.log R + 18 ≤ Real.log N ∧
+      18 * (1 + Real.log Q) ≤ Real.log N ∧
       ∀ c : ℝ, 1 ≤ c → c ≤ b * Real.log (Real.log (N : ℝ)) →
         c ≤ γ * Real.log (Real.log (N : ℝ)) ∧ c ≤ Real.log N ∧ c / N ≤ 1 / 3 ∧
         ((R * R : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N ∧
@@ -55,10 +56,10 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
           ((1 + Real.log c) ^ 2 / (Real.log N) ^ 2 +
             (R : ℝ) ^ 2 * (1 + Real.log c) / N) ≤ 1 ∧
         4 * (Real.exp 1 + 3) ^ 2 * c ^ 2 ≤ (N : ℝ) ∧
-        C * c + 1 ≤ (1 / 4 : ℝ) * Real.log Q := by
+        C * c + 1 ≤ (1 / 16 : ℝ) * Real.log Q := by
   have h2θ : 2 * θ < 1 := by linarith only [hθlt]
-  have h6θ : 6 * θ ≤ 1 := by linarith only [hθlt]
-  have hframeDen : 0 < 1 - 1080 * θ := by linarith only [hθlt]
+  have h4θ : 4 * θ ≤ 1 := by linarith only [hθlt]
+  have hframeDen : 0 < 1 - 4 * θ := by linarith only [hθlt]
   have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have htlim := Real.tendsto_log_atTop.comp hLlim
@@ -88,16 +89,18 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
   filter_upwards [eventually_ge_atTop 2, hLlim.eventually_ge_atTop 1,
     htlim.eventually_ge_atTop 1, hQlim.eventually_ge_atTop 2,
     hQRlim.eventually (ge_mem_nhds zero_lt_one),
-    hLlim.eventually_ge_atTop (1080 / (1 - 1080 * θ)),
+    hLlim.eventually_ge_atTop (18 / (1 - 4 * θ)),
     eventually_log_power_times_nat_power_le_nat 3 1 (by norm_num : (0 : ℝ) < 1),
     eventually_log_power_times_nat_power_le_nat (2 * Cnear) 1 h2θ,
     eventually_log_power_times_nat_power_le_nat (2 * Cup) 1 h2θ,
     eventually_log_power_times_nat_power_le_nat (4 * (Real.exp 1 + 3) ^ 2) 2
       (by norm_num : (0 : ℝ) < 1),
     hterminalLim.eventually (ge_mem_nhds zero_lt_one),
-    htlim.eventually_ge_atTop (64 * (1 + Real.log 2 / 4))]
+    htlim.eventually_ge_atTop (256 * (1 + Real.log 2 / 16)),
+    hLlim.eventually (Real.isLittleO_log_id_atTop.def (by norm_num : (0 : ℝ) < 1 / 36)),
+    hLlim.eventually_ge_atTop 36]
     with N hN2 hL1 ht1 hQpow2 hQRsmall hframeN hwidthN hnearN hupN hrawN
-      hterminalN hgapN
+      hterminalN hgapN hlogSmall hL36
   let L := Real.log (N : ℝ)
   let t := Real.log L
   let Q := ⌊L ^ (1 / 8 : ℝ)⌋₊
@@ -114,23 +117,23 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
   have hQR : Q ≤ R := Nat.le_floor
     (hQpow.trans ((div_le_one (Real.rpow_pos_of_pos hN θ)).mp hQRsmall))
   have hR1 : (1 : ℝ) ≤ R := by exact_mod_cast (show 1 ≤ R by omega)
-  have hR6 : R ^ 6 ≤ N := by
-    have hh : (R : ℝ) ^ 6 ≤ (N : ℝ) := by
+  have hR4 : R ^ 4 ≤ N := by
+    have hh : (R : ℝ) ^ 4 ≤ (N : ℝ) := by
       calc
-        _ ≤ ((N : ℝ) ^ θ) ^ 6 := pow_le_pow_left₀ (Nat.cast_nonneg _) hRpow 6
-        _ = (N : ℝ) ^ (6 * θ) := by
+        _ ≤ ((N : ℝ) ^ θ) ^ 4 := pow_le_pow_left₀ (Nat.cast_nonneg _) hRpow 4
+        _ = (N : ℝ) ^ (4 * θ) := by
           rw [← Real.rpow_natCast, ← Real.rpow_mul hN.le]
           norm_num only [Nat.cast_ofNat]
           rw [mul_comm θ]
         _ ≤ _ := by simpa only [Real.rpow_one] using
-          Real.rpow_le_rpow_of_exponent_le hN1 h6θ
+          Real.rpow_le_rpow_of_exponent_le hN1 h4θ
     exact_mod_cast hh
   have hlogR : Real.log (R : ℝ) ≤ θ * L := by
     have hh := Real.log_le_log (zero_lt_one.trans_le hR1) hRpow
     rwa [Real.log_rpow hN] at hh
-  have hframe : 1080 * (1 + Real.log R) ≤ L := by
+  have hframe : 4 * Real.log R + 18 ≤ L := by
     have hh := (div_le_iff₀ hframeDen).mp hframeN
-    change 1080 ≤ L * (1 - 1080 * θ) at hh
+    change 18 ≤ L * (1 - 4 * θ) at hh
     linarith only [hh, hlogR]
   have hQlower : L ^ (1 / 8 : ℝ) / 2 ≤ (Q : ℝ) := by
     have hh := Nat.lt_floor_add_one (L ^ (1 / 8 : ℝ))
@@ -148,7 +151,18 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
     have hp : 1 ≤ (N : ℝ) ^ (2 * θ) := Real.one_le_rpow hN1 (by positivity)
     push_cast
     nlinarith only [hRtwo, hp]
-  refine ⟨hQ2, hQR, hR6, hframe, ?_⟩
+  have hlogQFrame : 18 * (1 + Real.log (Q : ℝ)) ≤ L := by
+    have hQL : (Q : ℝ) ≤ L := hQpow.trans (by
+      simpa only [Real.rpow_one] using
+        Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num : (1 / 8 : ℝ) ≤ 1))
+    have h1 : Real.log (Q : ℝ) ≤ t := Real.log_le_log hQ0 hQL
+    have h2 : t ≤ L / 36 := by
+      have h3 := (le_abs_self (Real.log L)).trans hlogSmall
+      rw [id, Real.norm_eq_abs, abs_of_pos hL] at h3
+      linarith only [h3]
+    change (36 : ℝ) ≤ L at hL36
+    linarith only [h1, h2, hL36]
+  refine ⟨hQ2, hQR, hR4, hframe, hlogQFrame, ?_⟩
   intro c hc1 hcpow
   have hc : 0 < c := zero_lt_one.trans_le hc1
   have hcT : c ≤ t := hcpow.trans (mul_le_of_le_one_left ht.le hb1)
@@ -199,12 +213,12 @@ private theorem eventually_loglog_polynomial_span_horizon {θ b γ C : ℝ}
   have hraw : 4 * (Real.exp 1 + 3) ^ 2 * c ^ 2 ≤ (N : ℝ) :=
     (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hc.le hcL 2) (by positivity)).trans
       (by simpa only [Real.rpow_two, Real.rpow_zero, mul_one] using hrawN)
-  have hcost : C * c ≤ t / 128 := by
+  have hcost : C * c ≤ t / 512 := by
     have hcC := mul_le_mul_of_nonneg_left hcpow hC.le
     have hbC := mul_le_mul_of_nonneg_right hCb ht.le
     nlinarith only [hcC, hbC]
-  have hgap : C * c + 1 ≤ (1 / 4 : ℝ) * Real.log Q := by
-    change 64 * (1 + Real.log 2 / 4) ≤ t at hgapN
+  have hgap : C * c + 1 ≤ (1 / 16 : ℝ) * Real.log Q := by
+    change 256 * (1 + Real.log 2 / 16) ≤ t at hgapN
     linarith only [hcost, hgapN, hlogQ, ht.le]
   exact ⟨hcγ, hcL, hcN, hnearSize, hupSize, hterminal, hraw, hgap⟩
 
@@ -225,12 +239,13 @@ private theorem profile_energy_add (φ : ℝ → ℝ) (c : ℝ) {N : ℕ}
   rw [hsym, real_inner_comm y (Matrix.toEuclideanLin (completeWeilMatrix φ c N) x)]
   ring
 
-/-- A profile-dependent log-log interval is uniformly coercive on every polynomial
-conductor span of exponent below `1/1080`. The exponential rate is universal. -/
+/-- **General profiles on polynomial spans.** A profile-dependent log-log interval is uniformly
+coercive on every polynomial conductor span of exponent below `1/4`. The exponential rate is
+universal. -/
 theorem exists_universal_loglog_polynomial_span_coercivity :
     ∃ B : ℝ, 0 < B ∧ ∀ φ : ℝ → ℝ, ContDiff ℝ 2 φ →
       (∀ x : ℝ, x ∉ Set.Icc 0 1 → φ x = 0) → (0 < ∫ x, φ x ^ 2) →
-      ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ ∀ θ : ℝ, 0 < θ → θ < 1 / 1080 →
+      ∃ a b : ℝ, 0 < a ∧ 0 < b ∧ ∀ θ : ℝ, 0 < θ → θ < 1 / 4 →
       ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c →
         c ≤ b * Real.log (Real.log (N : ℝ)) →
       ∀ x ∈ conductorSubspace ⌊(N : ℝ) ^ θ⌋₊ N,
@@ -251,15 +266,15 @@ theorem exists_universal_loglog_polynomial_span_coercivity :
   have ha1 : a ≤ 1 := min_le_right _ _
   have haa₀ : a ≤ a₀ := min_le_left _ _
   obtain ⟨C, hC, hhigh⟩ := exists_profile_highConductor_linear_loss_of_terminal_budget hφ hsupp hM
-  let b := min 1 (min γ (1 / (128 * (C + 1))))
-  have hden : 0 < 128 * (C + 1) := by positivity
+  let b := min 1 (min γ (1 / (512 * (C + 1))))
+  have hden : 0 < 512 * (C + 1) := by positivity
   have hb : 0 < b := lt_min zero_lt_one (lt_min hγ (one_div_pos.mpr hden))
   have hb1 : b ≤ 1 := min_le_left _ _
   have hbγ : b ≤ γ := (min_le_right _ _).trans (min_le_left _ _)
-  have hbDen : b ≤ 1 / (128 * (C + 1)) := (min_le_right _ _).trans (min_le_right _ _)
-  have hCb : C * b ≤ 1 / 128 := by
+  have hbDen : b ≤ 1 / (512 * (C + 1)) := (min_le_right _ _).trans (min_le_right _ _)
+  have hCb : C * b ≤ 1 / 512 := by
     have hh := mul_le_mul_of_nonneg_left hbDen hC.le
-    have hratio : C * (1 / (128 * (C + 1))) ≤ 1 / 128 := by
+    have hratio : C * (1 / (512 * (C + 1))) ≤ 1 / 512 := by
       rw [← mul_div_assoc, mul_one]
       apply (div_le_iff₀ hden).mpr
       linarith only
@@ -272,22 +287,18 @@ theorem exists_universal_loglog_polynomial_span_coercivity :
     with N hlowN hrawN hhorN
   let Q := ⌊Real.log (N : ℝ) ^ (1 / 8 : ℝ)⌋₊
   let R := ⌊(N : ℝ) ^ θ⌋₊
-  obtain ⟨hQ2, hQR, hR6, hlogR, hhor⟩ := hhorN
+  obtain ⟨hQ2, hQR, hR4, hlogR, hlogQ, hhor⟩ := hhorN
   change 2 ≤ Q at hQ2
   change Q ≤ R at hQR
-  change R ^ 6 ≤ N at hR6
+  change R ^ 4 ≤ N at hR4
   have hL1 : 1 ≤ Real.log (N : ℝ) := by linarith only [hlogR, Real.log_natCast_nonneg R]
   have hQ0 : (0 : ℝ) < Q := by exact_mod_cast (show 0 < Q by omega)
   have hQpow : (Q : ℝ) ≤ Real.log (N : ℝ) ^ (1 / 8 : ℝ) :=
     Nat.floor_le (Real.rpow_nonneg (Real.log_natCast_nonneg N) _)
   have hRR : R * R ≤ N := by
-    have hh := (Nat.pow_le_pow_right (by omega : 0 < R) (by norm_num : 2 ≤ 6)).trans hR6
+    have hh := (Nat.pow_le_pow_right (by omega : 0 < R) (by norm_num : 2 ≤ 4)).trans hR4
     simpa only [sq] using hh
   have hQQ : Q * Q ≤ N := (Nat.mul_le_mul hQR hQR).trans hRR
-  have hlogQ : 18 * (1 + Real.log Q) ≤ Real.log N := by
-    have hQRreal : (Q : ℝ) ≤ R := by exact_mod_cast hQR
-    have hh := Real.log_le_log hQ0 hQRreal
-    linarith only [hh, hlogR, Real.log_natCast_nonneg R]
   intro c hc hcpow x hx
   obtain ⟨hcγ, _hcL, hw, hsizeNear, _hsizeUp, htail, hresWidth, hgap⟩ := hhor c hc hcpow
   have hct : c ≤ α * Real.log (Real.log (N : ℝ)) := hcγ.trans
@@ -320,7 +331,7 @@ theorem exists_universal_loglog_polynomial_span_coercivity :
       rw [norm_smul, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hzNorm), inv_mul_cancel₀ hzNorm.ne']
     obtain ⟨b, -, hby⟩ := (mem_conductorSubspace_iff (M := R) (N := N) (x := y)).mp hyR
     rw [hby] at hyQ hyNorm
-    have hh := hhigh hQ2 hQR hR6 hlogR hc hw hsizeNear htail b hyQ hyNorm
+    have hh := hhigh hQ2 hQR hR4 hlogR hc hw hsizeNear htail b hyQ hyNorm
     rw [← hby] at hh
     have hWy : 1 ≤ completeWeilEnergy φ c N y := by
       linarith only [hh, hgap, primeAdjunctionMass_nonneg R b]

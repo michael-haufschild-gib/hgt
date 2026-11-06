@@ -232,6 +232,27 @@ theorem abs_normalized_synthesis_mixed_mass_sub_le {φ h : ℝ → ℝ} {A : ℝ
   field_simp
 
 /-- Unit physical mass supplies the coefficient control required by discrete aliasing. -/
+theorem tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass_along_filter
+    {l : Filter ℕ} (hl : l ≤ atTop)
+    {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
+    {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    (hmass : ∀ N, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u ^ 2) ≤ 1)
+    {F g : ℝ → ℝ} (hF : Integrable F)
+    (hL1 : Tendsto (fun N => ∫ y,
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) l (𝓝 0))
+    {A : ℝ} (hA : 0 ≤ A) (hs : ∀ y, y ∉ Set.Icc (-A) 0 → g y = 0)
+    {Lg : NNReal} (hg : LipschitzWith Lg g) {Bg : ℝ} (hBg : ∀ y, |g y| ≤ Bg) :
+    Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) / Real.sqrt N *
+      ∑ n ∈ Icc 1 N, x N n * g (Real.log n - Real.log N) *
+        (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) l
+      (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+        ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
+  obtain ⟨B, hB, hb⟩ := exists_normalized_tilted_synthesis_coefficient_bound
+  exact tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound_along_filter hl hc1 hR hcrit
+    (m := 4) (fun N => hb (c N) (hc1 N) N (x N) (hmass N)) hF hL1 hA hs hg hBg
+
+/-- Unit physical mass supplies the full-sequence aliasing pairing. -/
 theorem tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass
     {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
     {R : ℝ} (hR : 0 < R)
@@ -247,20 +268,20 @@ theorem tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass
         (c N ^ 8 * aliasDensity tiltedUnitSpline (c N * n / N))) atTop
       (𝓝 ((7 / 2 : ℝ) * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ y, (F y * g y) * Real.exp (-(8 * y)))) := by
-  obtain ⟨B, hB, hb⟩ := exists_normalized_tilted_synthesis_coefficient_bound
-  exact tendsto_criticalCurve_aliasing_pair_of_polynomial_norm_bound hc1 hR hcrit
-    (m := 4) (fun N => hb (c N) (hc1 N) N (x N) (hmass N)) hF hL1 hA hs hg hBg
+  exact tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass_along_filter le_rfl
+    hc1 hR hcrit hmass hF hL1 hA hs hg hBg
 
 /-- Against a smooth recovery vector, the rescaled physical mass defect converges to
 its sharp weighted aliasing pairing. -/
-theorem tendsto_criticalCurve_mixed_mass_defect
+theorem tendsto_criticalCurve_mixed_mass_defect_along_filter
+    {l : Filter ℕ} (hl : l ≤ atTop)
     {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
     {R : ℝ} (hR : 0 < R)
     (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
     (hmass : ∀ N, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u ^ 2) ≤ 1)
     {F h : ℝ → ℝ} (hF : Integrable F)
     (hL1 : Tendsto (fun N => ∫ y,
-      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) atTop (𝓝 0))
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) l (𝓝 0))
     {A : ℝ} (hA : 0 ≤ A) (hh : ContDiff ℝ 2 h)
     (hs : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) :
     Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) * c N ^ 8 *
@@ -268,7 +289,7 @@ theorem tendsto_criticalCurve_mixed_mass_defect
         normalizedCentredAtomicTest tiltedUnitSpline (horizonWeights h N) (c N) N u) -
        (∫ u, tiltedUnitSpline u) * ∫ u,
          normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u * halfWeight h u))
-      atTop (𝓝 (7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+      l (𝓝 (7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
         ∫ y, (F y * halfWeight h y) * Real.exp (-(8 * y)))) := by
   let m := ∫ u, tiltedUnitSpline u
   let U := fun N => normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N
@@ -288,8 +309,8 @@ theorem tendsto_criticalCurve_mixed_mass_defect
   have hDs : ∀ y, |halfWeight h y| ≤ D := fun y => by simpa only [Real.norm_eq_abs] using hD y
   have hHs : ∀ y, y ∉ Set.Icc (-A) 0 → halfWeight h y = 0 :=
     fun y hy => by simp only [halfWeight, hs y hy, mul_zero]
-  have hPlim := tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass
-    hc1 hR hcrit hmass hF hL1 hA hHs hL hDs
+  have hPlim := tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass_along_filter
+    hl hc1 hR hcrit hmass hF hL1 hA hHs hL hDs
   obtain ⟨B, hB, hcoef⟩ := exists_normalized_tilted_synthesis_coefficient_bound
   have hcoef' (N : ℕ) := hcoef (c N) (hc1 N) N (x N) (hmass N)
   have hpow (k : ℕ) : Tendsto (fun N : ℕ => c N ^ k / N) atTop (𝓝 0) := by
@@ -347,9 +368,31 @@ theorem tendsto_criticalCurve_mixed_mass_defect
       intro n hn
       ring
     linear_combination hQ
-  have hlim := ((hrowlim.const_mul m).sub (hadjlim.const_mul (m ^ 2))).add (hPlim.const_mul 2)
+  have hlim := (((hrowlim.mono_left hl).const_mul m).sub
+    ((hadjlim.mono_left hl).const_mul (m ^ 2))).add (hPlim.const_mul 2)
   have hlim' := hlim.congr fun N => (hid N).symm
   convert hlim' using 1; ring
+
+/-- The mixed physical mass defect along the full horizon sequence. -/
+theorem tendsto_criticalCurve_mixed_mass_defect
+    {x : ℕ → ℕ → ℝ} {c : ℕ → ℝ} (hc1 : ∀ N, 1 ≤ c N)
+    {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R))
+    (hmass : ∀ N, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u ^ 2) ≤ 1)
+    {F h : ℝ → ℝ} (hF : Integrable F)
+    (hL1 : Tendsto (fun N => ∫ y,
+      ‖normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N y - F y‖) atTop (𝓝 0))
+    {A : ℝ} (hA : 0 ≤ A) (hh : ContDiff ℝ 2 h)
+    (hs : ∀ y, y ∉ Set.Icc (-A) 0 → h y = 0) :
+    Tendsto (fun N : ℕ => (∫ u, tiltedUnitSpline u) * c N ^ 8 *
+      ((∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u *
+        normalizedCentredAtomicTest tiltedUnitSpline (horizonWeights h N) (c N) N u) -
+       (∫ u, tiltedUnitSpline u) * ∫ u,
+         normalizedCentredAtomicTest tiltedUnitSpline (x N) (c N) N u * halfWeight h u))
+      atTop (𝓝 (7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne *
+        ∫ y, (F y * halfWeight h y) * Real.exp (-(8 * y)))) := by
+  exact tendsto_criticalCurve_mixed_mass_defect_along_filter le_rfl
+    hc1 hR hcrit hmass hF hL1 hA hh hs
 
 #print axioms tendsto_criticalCurve_mixed_mass_defect
 #print axioms tendsto_criticalCurve_aliasing_pair_of_unit_physical_mass

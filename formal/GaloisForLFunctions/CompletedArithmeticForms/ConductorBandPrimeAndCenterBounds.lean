@@ -207,8 +207,8 @@ theorem sum_Icc_packet_mode_sq_le (R N : ℕ) (a : ℕ → ℝ) :
 
 /-- `log log N`-free linear-moment bound `∑_{j=1}^N (j / N) u_j^2 ≤ (4 / log N) ‖u‖^2` on
 `conductorSubspace R N` whenever `R ^ 4 ≤ N`. -/
-theorem sum_linear_moment_sq_le_four_div_log {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
-    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+theorem sum_linear_moment_sq_le_four_div_log_of_four_log {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
+    (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     Real.log N * (∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension u j ^ 2) ≤
       4 * ‖u‖ ^ 2 := by
@@ -243,7 +243,7 @@ theorem sum_linear_moment_sq_le_four_div_log {R N : ℕ} (hR : 2 ≤ R) (hRN4 : 
   rw [mul_sum, sum_congr rfl hterm, ← mul_sum]
   have hpack := sum_Icc_packet_mode_sq_le R N a
   have hRN4R : (R : ℝ) ^ 4 ≤ N := by exact_mod_cast hRN4
-  have hriesz := (half_and_three_halves_riesz_of_log_le hR hRN2 hlog a).1
+  have hriesz := (half_and_three_halves_riesz_of_four_log_le hR hRN2 hlog a).1
   have hsum0 : 0 ≤ ∑ m ∈ Icc 1 R, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   calc
     (1 / (N : ℝ)) * (∑ j ∈ Icc 1 N, (∑ m ∈ Icc 1 R, a m * normalizedRamanujanMode m j) ^ 2) ≤
@@ -255,6 +255,15 @@ theorem sum_linear_moment_sq_le_four_div_log {R N : ℕ} (hR : 2 ≤ R) (hRN4 : 
     _ = 2 * ∑ m ∈ Icc 1 R, a m ^ 2 := by field_simp [hN0.ne']
     _ ≤ 4 * ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N‖ ^ 2 := by
       linarith only [hriesz]
+
+/-- The linear-moment bound in the range `18 (1 + log R) ≤ log N`. -/
+theorem sum_linear_moment_sq_le_four_div_log {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
+    Real.log N * (∑ j ∈ Icc 1 N, ((j : ℝ) / N) * primeHorizonExtension u j ^ 2) ≤
+      4 * ‖u‖ ^ 2 :=
+  sum_linear_moment_sq_le_four_div_log_of_four_log hR hRN4
+    (four_log_add_eighteen_le_of_log_le hlog) hu
 
 /-! ### 2. Pole annihilation and center-matrix bilinear bound -/
 
@@ -1308,11 +1317,11 @@ theorem norm_separatedCrossErrorMatrix_le {φ : ℝ → ℝ}
 
 /-- Subspace `O(c^2 / log N)` quadratic bound for `separatedCrossErrorMatrix φ c N` on
 `conductorSubspace R N` (`R ^ 4 ≤ N`). -/
-theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : ℝ → ℝ}
+theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace_of_four_log {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
     (hM_int : 0 < ∫ t, φ t ^ 2) {c : ℝ} (hc0 : 0 < c)
     {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
-    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    (hlog : 4 * Real.log R + 18 ≤ Real.log N)
     {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
     |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) u, u⟫| ≤
       36 * (152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)) * c ^ 2 / Real.log N * ‖u‖ ^ 2 := by
@@ -1371,7 +1380,7 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
       rw [mul_pow, sq_abs]
       have hsq : ((n : ℝ) / N) ^ 2 ≤ (n : ℝ) / N := by nlinarith only [hnN, hn0]
       exact mul_le_mul_of_nonneg_right hsq (sq_nonneg _)
-    have hm := sum_linear_moment_sq_le_four_div_log hR hRN4 hlog hu
+    have hm := sum_linear_moment_sq_le_four_div_log_of_four_log hR hRN4 hlog hu
     rw [div_mul_eq_mul_div, le_div_iff₀' hL]
     exact (mul_le_mul_of_nonneg_left (sum_le_sum hpt) hL.le).trans hm
   have hpart1 :
@@ -1448,6 +1457,18 @@ theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : �
         (by ring : 36 * K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2 =
           36 * (K₀ * c ^ 2 / Real.log N * ‖u‖ ^ 2))]
 
+/-- The separated cross error in the range `18 (1 + log R) ≤ log N`. -/
+theorem abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ t, t ∉ Set.Icc 0 1 → φ t = 0)
+    (hM_int : 0 < ∫ t, φ t ^ 2) {c : ℝ} (hc0 : 0 < c)
+    {R N : ℕ} (hR : 2 ≤ R) (hRN4 : R ^ 4 ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N)
+    {u : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hu : u ∈ conductorSubspace R N) :
+    |⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) u, u⟫| ≤
+      36 * (152 * (∫ t, |φ t|) ^ 2 / (∫ t, φ t ^ 2)) * c ^ 2 / Real.log N * ‖u‖ ^ 2 :=
+  abs_separatedCrossErrorMatrix_inner_le_of_mem_conductorSubspace_of_four_log hφ hsupp hM_int hc0
+    hR hRN4 (four_log_add_eighteen_le_of_log_le hlog) hu
+
 /-! ### 4. Logarithmic divisor-jet packet and orthogonal prime cross-pairing -/
 
 /-- Conductor coefficient of `k ∈ Icc 1 M` in the collective logarithmic divisor jet of `a`. -/
@@ -1516,9 +1537,9 @@ theorem divisorJetHorizonVector_apply (M N : ℕ) (a : ℕ → ℝ) (n : PrimeHo
   field_simp [hsφk]
 
 /-- Uniform `O(1 + log M)` `L²` norm bound on `divisorJetHorizonVector M N a`. -/
-theorem exists_divisorJetHorizonVector_norm_le :
+theorem exists_divisorJetHorizonVector_norm_le_of_four_log :
     ∃ C_jet : ℝ, 0 < C_jet ∧
-      ∀ {M N : ℕ}, 2 ≤ M → M * M ≤ N → 18 * (1 + Real.log M) ≤ Real.log N →
+      ∀ {M N : ℕ}, 2 ≤ M → M * M ≤ N → 4 * Real.log M + 18 ≤ Real.log N →
       ∀ a : ℕ → ℝ,
         ‖divisorJetHorizonVector M N a‖ ≤
           C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2) := by
@@ -1752,7 +1773,7 @@ theorem exists_divisorJetHorizonVector_norm_le :
           4 * (C_mert + 1) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 :=
         add_le_add hdiag_sum hoff_sum
       _ = (2 + 4 * C_mert + 4) * (1 + Real.log M) ^ 2 * ∑ m ∈ Icc 1 M, a m ^ 2 := by ring
-  have hriesz := (half_and_three_halves_riesz_of_log_le hM hMN hlog (divisorJetCoeff M a)).2
+  have hriesz := (half_and_three_halves_riesz_of_four_log_le hM hMN hlog (divisorJetCoeff M a)).2
   have hSa0 : 0 ≤ ∑ m ∈ Icc 1 M, a m ^ 2 := sum_nonneg fun _ _ => sq_nonneg _
   have hLM1 : 0 ≤ 1 + Real.log M := by have := Real.log_natCast_nonneg M; linarith
   have hconst_le : (3 / 2 : ℝ) * (2 + 4 * C_mert + 4) ≤ C_jet ^ 2 := by
@@ -1775,6 +1796,16 @@ theorem exists_divisorJetHorizonVector_norm_le :
   have hrhs0 : 0 ≤ C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2) := by
     dsimp only [C_jet]; positivity
   nlinarith only [hnorm_sq, norm_nonneg (divisorJetHorizonVector M N a), hrhs0]
+
+/-- The jet norm bound in the range `18 (1 + log M) ≤ log N`. -/
+theorem exists_divisorJetHorizonVector_norm_le :
+    ∃ C_jet : ℝ, 0 < C_jet ∧
+      ∀ {M N : ℕ}, 2 ≤ M → M * M ≤ N → 18 * (1 + Real.log M) ≤ Real.log N →
+      ∀ a : ℕ → ℝ,
+        ‖divisorJetHorizonVector M N a‖ ≤
+          C_jet * (1 + Real.log M) * Real.sqrt (∑ m ∈ Icc 1 M, a m ^ 2) := by
+  obtain ⟨C, hC, h⟩ := exists_divisorJetHorizonVector_norm_le_of_four_log
+  exact ⟨C, hC, fun hM hMN hlog a => h hM hMN (four_log_add_eighteen_le_of_log_le hlog) a⟩
 
 private theorem sum_Icc_dvd_vonMangoldt_mul_le {g : ℕ} (hg : 2 ≤ g) (B : ℕ) :
     (∑ t ∈ Icc 2 B, if g ∣ t then (Λ t / (t : ℝ)) * (g : ℝ) else 0) ≤ 2 * Λ g := by
