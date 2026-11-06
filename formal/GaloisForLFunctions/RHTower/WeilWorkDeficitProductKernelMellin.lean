@@ -218,7 +218,7 @@ private theorem scale_factor (s ν : ℂ) {c x : ℝ} (hc : 0 < c) (hx : 0 < x) 
       Complex.cpow_zero]
   rw [← mul_assoc, he, one_mul]
 
-private theorem scaled_integrable {s ν : ℂ} (h : |ν.re| < s.re) {c : ℝ} (hc : 0 < c) :
+theorem scaled_integrable {s ν : ℂ} (h : |ν.re| < s.re) {c : ℝ} (hc : 0 < c) :
     IntegrableOn (fun x : ℝ => (x:ℂ)^(s-1)*modifiedBesselKOrder (c*x) ν) (Ioi 0) := by
   let f : ℝ → ℂ := fun x => (x:ℂ)^(s-1)*modifiedBesselKOrder x ν
   have hi : IntegrableOn (fun x => f (c*x)) (Ioi 0) :=
@@ -227,7 +227,7 @@ private theorem scaled_integrable {s ν : ℂ} (h : |ν.re| < s.re) {c : ℝ} (h
   refine IntegrableOn.congr_fun (hi.const_mul ((c:ℂ)^(1-s))) (fun x hx => ?_) measurableSet_Ioi
   simpa only [f, mul_assoc] using (scale_factor s ν hc hx).symm
 
-private theorem scaled_mellin {s ν : ℂ} (h : |ν.re| < s.re) {c : ℝ} (hc : 0 < c) :
+theorem scaled_mellin {s ν : ℂ} (h : |ν.re| < s.re) {c : ℝ} (hc : 0 < c) :
     (∫ x in Ioi (0:ℝ), (x:ℂ)^(s-1)*modifiedBesselKOrder (c*x) ν) =
       (c:ℂ)^(-s)*((2:ℂ)^(s-2)*Complex.Gamma ((s+ν)/2)*Complex.Gamma ((s-ν)/2)) := by
   let f : ℝ → ℂ := fun x => (x:ℂ)^(s-1)*modifiedBesselKOrder x ν

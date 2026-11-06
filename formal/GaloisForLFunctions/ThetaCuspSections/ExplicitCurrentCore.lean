@@ -71,7 +71,7 @@ private theorem log_four_pi : Real.log (4 * Real.pi) = 2 * Real.log 2 + Real.log
   norm_num
 
 /-- The lower bound of the zero sum. -/
-theorem le_poleSharpConstant : (0.0457 : ℝ) ≤ poleSharpConstant := by
+theorem le_poleSharpConstant : (0.0456 : ℝ) ≤ poleSharpConstant := by
   unfold poleSharpConstant
   rw [log_four_pi]
   have h1 := gamma_lower
@@ -197,7 +197,7 @@ theorem second_moment_le :
       11 / 10 * poleSharpConstant := by
     refine (Complex.re_le_norm _).trans ((norm_tsum_le_tsum_norm hsum).trans ?_)
     simp_rw [hnorm]
-    exact tsum_inv_normSq_spectralPoint_le
+    exact WeilDeletion.tsum_inv_normSq_spectralPoint_le
   have h5 : 2 * ∫ x in Ioi (0 : ℝ), x ^ 2 * thetaCuspFullSource x =
       Xi 0 * (∑' q : XiZeroCopy, xiZeroCopyReciprocalSquare q).re := by
     linarith only [h2, h3]
@@ -254,21 +254,20 @@ theorem hasDerivAt_normSq_XiC (a b : ℝ) :
   obtain ⟨z, hz⟩ : ∃ z : ℂ, z = (b : ℂ) - (a : ℂ) * I := ⟨_, rfl⟩
   have hinner : HasDerivAt (fun y : ℂ => (b : ℂ) - y * I) (-I) (a : ℂ) := by
     simpa using ((hasDerivAt_id (a : ℂ)).mul_const I).const_sub (b : ℂ)
+  have hout : HasDerivAt XiC (deriv XiC z) ((b : ℂ) - (a : ℂ) * I) := by
+    rw [← hz]
+    exact (XiC_differentiable z).hasDerivAt
   have hcomp : HasDerivAt (fun y : ℂ => XiC ((b : ℂ) - y * I)) (deriv XiC z * -I) (a : ℂ) := by
-    have h := (XiC_differentiable ((b : ℂ) - (a : ℂ) * I)).hasDerivAt
-    rw [← hz] at h
-    rw [← hz] at hinner
-    have := HasDerivAt.comp (a : ℂ) (h₂ := XiC) (h := fun y : ℂ => (b : ℂ) - y * I)
-      (by rw [hz] at h ⊢; exact h) (by rw [hz] at hinner ⊢; exact hinner)
-    simpa [Function.comp_def, hz] using this
+    have := HasDerivAt.comp (h₂ := XiC) (h := fun y : ℂ => (b : ℂ) - y * I) (a : ℂ) hout hinner
+    exact this
   have hreal : HasDerivAt (fun a' : ℝ => XiC ((b : ℂ) - (a' : ℂ) * I)) (deriv XiC z * -I) a :=
     hcomp.comp_ofReal
   obtain ⟨g', hg'⟩ : ∃ g', g' = deriv XiC z * -I := ⟨_, rfl⟩
   rw [← hg'] at hreal
-  have hre : HasDerivAt (fun a' : ℝ => (XiC ((b : ℂ) - (a' : ℂ) * I)).re) g'.re a := by
-    simpa using Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hreal
-  have him : HasDerivAt (fun a' : ℝ => (XiC ((b : ℂ) - (a' : ℂ) * I)).im) g'.im a := by
-    simpa using Complex.imCLM.hasFDerivAt.comp_hasDerivAt a hreal
+  have hre : HasDerivAt (fun a' : ℝ => (XiC ((b : ℂ) - (a' : ℂ) * I)).re) g'.re a :=
+    Complex.reCLM.hasFDerivAt.comp_hasDerivAt a hreal
+  have him : HasDerivAt (fun a' : ℝ => (XiC ((b : ℂ) - (a' : ℂ) * I)).im) g'.im a :=
+    Complex.imCLM.hasFDerivAt.comp_hasDerivAt a hreal
   have hsum := (hre.mul hre).add (him.mul him)
   have hcur : current a b = 2 * ((starRingEnd ℂ) (XiC z) * (-I * deriv XiC z)).re := by
     rw [hz]
@@ -373,8 +372,7 @@ theorem pair_floor {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 5)
         rw [hδ, h]
         ring
       have hfar : (67 : ℝ) < |γ| := by
-        have hzero : xi (q.1 : ℂ) = 0 := by
-          exact xi_eq_zero_of_mem_xi_divisor_support q.1
+        have hzero : xi (q.1 : ℂ) = 0 := xi_xiZeroCopy_eq_zero q
         rw [hγ]
         exact lt_abs_im_of_rhVerifiedThrough rhVerifiedThrough_sixtySeven hzero
           (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q) hqoff
@@ -459,7 +457,7 @@ theorem re_logDeriv_xi_ge {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b|
       positivity
     · refine le_trans ?_ (hfloor q)
       have hr : 0 ≤ ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re := by
-        have := inv_normSq_spectralPoint_le q
+        have := WeilDeletion.inv_normSq_spectralPoint_le q
         have hp : 0 ≤ 1 / ‖xiSpectralPoint q‖ ^ (2 : ℕ) := by positivity
         linarith only [this, hp]
       positivity
@@ -478,7 +476,7 @@ theorem re_logDeriv_xi_ge {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b|
   have hP := le_poleSharpConstant
   have h1 := mul_le_mul_of_nonneg_left hP (by positivity : 0 ≤ 9 / 20 * a)
   norm_num at h1 ⊢
-  linarith only [h1, hmain]
+  linarith only [h1, hmain, ha]
 
 /-! ## The floor -/
 

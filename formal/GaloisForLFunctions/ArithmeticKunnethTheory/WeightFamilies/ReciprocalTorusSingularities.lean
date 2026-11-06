@@ -241,7 +241,8 @@ theorem normalizedDoubleZeroTorus_critical_iff {m : ℕ} (x : MomentTorus F m)
       ∀ j, (x j : F) = 1 ∨ (x j : F) = -1 := by
   have hs := (mem_filter.mp (mem_filter.mp hx).1).2
   have hr := (mem_filter.mp hx).2
-  have hne : ∀ i : Fin (m + 1), Fin.cons 1 (fun j => (x j : F)) i ≠ 0 := by
+  have hne : ∀ i : Fin (m + 1),
+      (Fin.cons (1 : F) (fun j => (x j : F)) : Fin (m + 1) → F) i ≠ 0 := by
     intro i
     exact Fin.cases one_ne_zero (fun j => (x j).property) i
   rw [reciprocal_projective_critical_iff _ 0 hne rfl

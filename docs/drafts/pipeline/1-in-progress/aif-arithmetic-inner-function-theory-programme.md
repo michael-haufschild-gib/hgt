@@ -12,9 +12,9 @@ Develop the field: objects, language, mechanisms, questions, tools, test cases o
 and foundational `README.md`. Unconditional only; RH appears only inside equivalences.
 
 ## Work plan (each line is a module family; tick when it compiles and is wired)
-- [ ] A. Poisson–Jensen identity at every centre; inner field `I(w)`; no singular part; `N(ρ) = Π ϱ` exactly.
-- [ ] B. Helson–Lowdenslager form of Szegő; `exp(2I) = inf` of mollified Poisson second moments (second expression).
-- [ ] C. Function-field chain: inner mass = Mahler measure; Castelnuovo ⇔ Carathéodory ⇔ trivial inner factor; golden.
+- [x] A. Poisson–Jensen identity at every centre; inner field `I(w)`; no singular part; `N(ρ) = Π ϱ` exactly.
+- [x] B. Helson–Lowdenslager form of Szegő; `exp(2I) = inf` of mollified Poisson second moments (second expression).
+- [x] C. Function-field chain: inner mass = Mahler measure; Castelnuovo ⇔ Carathéodory ⇔ trivial inner factor; golden.
 - [ ] D. Euler columns and fakes: closed-form inner mass; selectivity battery.
 - [ ] E. Prime insertion: Chebyshev–Poisson kernel, Sato–Tate orthogonality, Hecke–Hankel cone, Kronecker locking, Laplace cone, Turán break, `S = Σ τ_b(N) A(N)`.
 - [ ] F. Anchor flow: hyperbolic coordinate `κ' = q − sinh 2κ`, coming down from infinity, energy identity, Darboux pair, kicks, Szegő sum rule; literal `K` flow of the Weil chain.
@@ -25,3 +25,5 @@ and foundational `README.md`. Unconditional only; RH appears only inside equival
 
 ## Log
 - 2026-11-06 — created; read §2.7 and neighbours (FADF, CHT, CSTW, MZF, AKL, GWZ).
+- 2026-11-06 — modules compile: ThePoissonJensenIdentity, TheInnerFieldOfZeta, TheSzegoInfimum, TheInnerMassIsAMollifierInfimum, TheDerivativeIsTheBlaschkeProduct, TheInsertionConeOfExponentiallyConvexAmplitudes, TheAnchorFlow, TheCurveChainOfTheInnerFactor. Uncheck: wire into umbrella at the end.
+- Existing work not to redo: GWZ has Levinson, Szegő–Verblunsky, lattice anchor flow (`artanh` form), curve flow, no slack; CompletedArithmeticForms has `eulerPartial`, `S = Π T_p A`, `thetaApertureAmplitude_not_laplaceMixture`.

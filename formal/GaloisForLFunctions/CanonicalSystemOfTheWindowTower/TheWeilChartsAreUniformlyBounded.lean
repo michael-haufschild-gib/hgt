@@ -25,8 +25,8 @@ theorem criticalMellinAtomWeight_nonneg_chart (n : ℕ) : 0 ≤ criticalMellinAt
 
 /-- The split bound with a pointwise majorant. -/
 theorem norm_logarithmicBackwardConvolution_le_of_majorant {f : ℝ → ℂ}
-    (hf : AEStronglyMeasurable f volume) {g : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
-    (hg0 : ∀ y, 0 ≤ g y) {A B ρ : ℝ} (hA : 0 ≤ A) (hgA : ∀ y, g y ≤ A) (hB : 0 ≤ B) (hρ : 0 < ρ)
+    {g : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hg0 : ∀ y, 0 ≤ g y) {A B ρ : ℝ} (hA : 0 ≤ A) (hgA : ∀ y, g y ≤ A) (hρ : 0 < ρ)
     (hb : ∀ᵐ y ∂volume, ‖f y‖ ≤ g y + B) (x : ℝ) :
     ‖logarithmicBackwardConvolution f x‖ ≤ A * V ρ + (∫ y, g y) / ρ + B := by
   have hgC : AEStronglyMeasurable (fun y => (g y : ℂ)) volume :=
@@ -288,7 +288,7 @@ theorem integral_chartMajorant_le (N : Finset ℕ) {S : ℝ → ℂ} (hi : Integ
 
 /-- **The readout of a forcing in chart form.** The sup norm of the source enters with the small
 factor `V(ρ)`, its `L¹` norm with `1/ρ`. -/
-theorem norm_readout_le_of_chart_form {f : ℝ → ℂ} (hf : AEStronglyMeasurable f volume)
+theorem norm_readout_le_of_chart_form {f : ℝ → ℂ}
     {S E : ℝ → ℂ} (hS : Continuous S) (hc : HasCompactSupport S) (C : ChartCutoff) (N : Finset ℕ)
     {R T e M L ρ : ℝ} (hR0 : 0 ≤ R) (hC : ∀ x, R ≤ x → C.toFun x = 0)
     (hS0 : ∀ t, t ≤ 0 → S t = 0) (hST : ∀ t, T ≤ t → S t = 0) (he0 : 0 ≤ e)
@@ -332,7 +332,8 @@ theorem norm_readout_le_of_chart_form {f : ℝ → ℂ} (hf : AEStronglyMeasurab
   have hcomm (y : ℝ) : ‖C.commutatorIntegral S y‖ ≤ C.lip / 2 * L :=
     (C.norm_commutatorIntegral_le hi y).trans
       (mul_le_mul_of_nonneg_left hL (div_nonneg C.lip_nonneg (by norm_num)))
-  have hmain := norm_logarithmicBackwardConvolution_le_of_majorant hf hgm hgi hg0 hA hgA hBL hρ
+  have hmain := norm_logarithmicBackwardConvolution_le_of_majorant (f := f) (B := C.lip / 2 * L)
+    hgm hgi hg0 hA hgA hρ
     (by
       filter_upwards [hf0, hf1] with y h0 h1
       by_cases hy : y < 0
@@ -445,7 +446,9 @@ theorem integral_norm_chartSource_le {a c : PrecontactAperture} (hac : a.1.1 ≤
   have hsq : Integrable (fun x => ‖U x‖ ^ 2) :=
     (hUc.norm.pow 2).integrable_of_hasCompactSupport
       (HasCompactSupport.intro (isCompact_Icc (a := -a.1.1) (b := a.1.1)) fun x hx => by
-        simp only [hzero x hx, norm_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow])
+        change ‖U x‖ ^ 2 = 0
+        rw [hzero x hx, norm_zero]
+        norm_num)
   have hle : ∫ x, ‖U x‖ ≤ ∫ x, ((Icc (-a.1.1) a.1.1).indicator (fun _ => (1 : ℝ) / 2) x +
       ‖U x‖ ^ 2 / 2) := by
     apply integral_mono hU.norm
@@ -555,7 +558,7 @@ theorem exists_uniform_chartSource_bound (a₁ a₂ : PrecontactAperture) (z : �
         (e + K * M + B * L) * V ρ + (R * e + K * L + R * (B * L)) / ρ + C.lip / 2 * L := by
     refine norm_readout_le_of_chart_form
       (S := chartSource a ζ) (E := fun y => Complex.exp (-I * star ζ * ((y - a.1.1 : ℝ) : ℂ)))
-      (Lp.stronglyMeasurable _).aestronglyMeasurable (continuous_chartSource a ζ)
+      (continuous_chartSource a ζ)
       (hasCompactSupport_chartSource a ζ) C N (T := R) hR hCR
       (fun t ht => chartSource_eq_zero a ζ (Or.inl ht))
       (fun t ht => chartSource_eq_zero a ζ (Or.inr (by

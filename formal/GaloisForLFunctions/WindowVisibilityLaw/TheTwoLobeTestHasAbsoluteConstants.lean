@@ -524,7 +524,7 @@ theorem windowPositiveAt_cluster_absolute_bound (Z : ZeroConfig) {A₀ : ℝ} (h
       congr 1
       push_cast
       ring
-    rw [he2]
+    rw [he2, ← hxd]
     have hex := Real.exp_one_lt_d9
     have hx2 : 0 < Real.exp x ^ 2 := by positivity
     have hprod := mul_le_mul_of_nonneg_left hex.le hx2.le
@@ -789,7 +789,7 @@ theorem windowPositiveAt_cluster_absolute_bound (Z : ZeroConfig) {A₀ : ℝ} (h
       _ = (96 * (Real.exp 1 * π)) * (A₀ * Λ) * Eσ * (b * Nw) := by ring
       _ ≤ 823 * (A₀ * Λ) * Eσ * (b * Nw) := by
           have hprod : Real.exp 1 * π ≤ 2.72 * 3.15 :=
-            mul_le_mul (by linarith only [he]) hpi Real.pi_pos.le (by norm_num)
+            mul_le_mul (by linarith only [he]) hpi.le Real.pi_pos.le (by norm_num)
           have hle : 96 * (Real.exp 1 * π) ≤ 823 := by
             norm_num at hprod ⊢
             linarith only [hprod]
