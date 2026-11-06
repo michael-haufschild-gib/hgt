@@ -191,10 +191,16 @@ theorem gaussianEchoSymbol_resonance_order {σ : ℝ} (hσ : 0 < σ) (q : XiZero
     gaussianResponse_meromorphicOrderAt]
   exact causalSymbol_resonance_order 0 q
 
+theorem gaussianEchoSymbol_resonance_isPole {σ : ℝ} (hσ : 0 < σ) (q : XiZeroCopy) :
+    meromorphicOrderAt (gaussianEchoSymbol σ) (resonanceFrequency 0 (xiSpectralPoint q)) < 0 := by
+  rw [gaussianEchoSymbol_resonance_order hσ, ← causalSymbol_resonance_order 0 q]
+  exact causalSymbol_resonance_isPole 0 q
+
 #print axioms gaussianEcho_sub_mean
 #print axioms integrable_weighted_gaussianEcho
 #print axioms laplace_gaussianEcho
 #print axioms retardedTransform_gaussianEcho
 #print axioms gaussianEchoSymbol_resonance_order
+#print axioms gaussianEchoSymbol_resonance_isPole
 
 end GaloisForLFunctions.BlackHoleRingdown

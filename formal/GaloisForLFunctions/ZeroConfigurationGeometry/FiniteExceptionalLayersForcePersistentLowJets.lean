@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.ZetaWeakRecurrenceLadderCollapse
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import GaloisForLFunctions.RHTower.XiCollapseDirichletLeg
 import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationHalfPlane
+import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionAllZeros
 
 /-!
 # A finite exceptional layer forces persistent low-height jets
@@ -234,5 +235,33 @@ theorem not_asymptoticAbscissaLaw_has_prime_only_jet_limit :
 
 #print axioms tendsto_normalized_higher_prime_power_jets
 #print axioms not_asymptoticAbscissaLaw_has_prime_only_jet_limit
+
+/-- At the unit horizontal shift the pole correction vanishes: the uncorrected
+von Mangoldt moments themselves tend to a negative integer. -/
+theorem not_asymptoticAbscissaLaw_has_raw_prime_moment_limit :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧ Tendsto (fun k : ℕ =>
+          LSeries (LSeries.logMul^[k]
+            (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) /
+            (k.factorial : ℂ)) atTop (𝓝 (-(m : ℂ))) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, hlim⟩ :=
+    not_asymptoticAbscissaLaw_has_prime_moment_limit hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, ?_⟩
+  have hγ := four_le_abs_im_of_zeta_zero (by linarith only [hρhalf]) hρone hζ
+  have hnorm : 1 < ‖ρ‖ := lt_of_lt_of_le (by norm_num : (1 : ℝ) < 4)
+    (hγ.trans (Complex.abs_im_le_norm ρ))
+  have hinv : ‖ρ⁻¹‖ < 1 := by
+    rw [norm_inv]
+    exact inv_lt_one_of_one_lt₀ hnorm
+  have hpowers : Tendsto (fun k : ℕ => (ρ⁻¹) ^ (k + 1)) atTop (𝓝 0) := by
+    simpa only [pow_succ, zero_mul] using
+      (tendsto_pow_atTop_nhds_zero_of_norm_lt_one hinv).mul_const (ρ⁻¹)
+  have ht := hlim 1 (by linarith only [hρhalf])
+  simp only [Complex.ofReal_one, one_pow, one_mul, add_sub_cancel_right, one_div] at ht
+  simpa only [sub_add_cancel, add_zero] using ht.add hpowers
+
+#print axioms not_asymptoticAbscissaLaw_has_raw_prime_moment_limit
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

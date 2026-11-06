@@ -44,5 +44,5 @@ The corrected von Mangoldt moment has a negative integer limit. A contradiction 
 | Positivity of `Λ` | Absolute values restore the real-axis pole radius `σ−1`, smaller than the detection radius `σ−β`. They do not bound the corrected moment at the required scale. |
 | Selberg / integer-counting convolution | Multiplication by `ζ` cancels the selected zero's logarithmic-derivative pole. The exact logarithmic commutator retains the prime kernel (`LogarithmicCommutatorsExposeThePrimeKernel`). |
 | Quantitative phase recurrence | The radius gain has the parameter ceiling `η log((η+1−β₁)/(η+1−β)) < β−β₁ < 1/2`. Its sharp envelope is being formalized; this compares candidate bounds, not actual return times. |
-| Proper prime powers | Their current is analytic on `Re s>1/2`; normalized jets vanish when `d<σ−1/2`. The surviving target is the corrected prime-only current. Lean application in progress. |
+| Proper prime powers | `tendsto_normalized_higher_prime_power_jets` proves decay when `d<σ−1/2`. `not_asymptoticAbscissaLaw_has_prime_only_jet_limit` retains the exact nonzero limit for the corrected prime-only current. Both audited: standard three axioms only. |
 | Fixed-height mean square | A diagonal estimate alone leaves the signed off-diagonal arithmetic term uncontrolled. Typical-height bounds permit bounded-height exceptional signals. |
