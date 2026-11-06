@@ -48,6 +48,19 @@ Three consistency laws must be distinguished: restriction of characters along `S
 
 Simon Thomas, [Characters and invariant random subgroups of the finitary symmetric group](https://ow3.math.rutgers.edu/~sthomas/Fin-chars.pdf), §1: fixed-point probabilities give characters; the pure row Thoma character is the product of color power sums. These are classical foundations, not novelty claims.
 
+## Geometric test family: proof mechanism under formalization
+
+For `p_n=t^n`, the Hankel matrix is the outer product `(t^r_i)(t^r_j)`, and its
+diagonal is at most one when `|t|≤1`. To test the missing character constraints,
+sum the class function against the sign character. For a fixed word, the signed
+stabilizer sum is one if its letters are distinct and zero otherwise: exchange two
+equal letters to pair stabilizer elements with opposite signs. A uniform alphabet
+of `m` letters therefore gives `m(m−1)…(m−n+1)/m^n`. Polynomial interpolation at
+`t=1/m` should identify the general alternating sum with `Π_(j<n)(1−jt)`.
+If `t>0` is not a reciprocal integer, the first negative factor makes one such
+projection negative. Sign twist should give the negative-parameter boundary.
+These steps remain separate proof obligations until their Lean declarations pass.
+
 ## Exact character-to-moment receiver
 
 Cycles with a common pivot and otherwise disjoint supports have a product cycle of combined length minus one. Replicating each arm gives a Gram matrix

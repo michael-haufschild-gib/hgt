@@ -228,4 +228,31 @@ theorem reciprocalHessian_transverse_nondegenerate (h₂ : (2 : K) ≠ 0)
   simp only [reciprocalSeries_quadratic x _ hx, reciprocalQuadratic_polarization] at h
   exact (mul_eq_zero.mp h).resolve_left h₂
 
+section FiniteField
+
+variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+
+/-- The critical-point classification applies to the actual normalized tuples
+whose point count occurs in the Kloosterman moment identity. -/
+theorem normalizedDoubleZeroTorus_critical_iff {m : ℕ} (x : MomentTorus F m)
+    (hx : x ∈ normalizedDoubleZeroTorus (F := F) m) :
+    (∀ v : Fin (m + 1) → F, (∑ i, v i) = 0 → v 0 = 0 →
+      reciprocalLinear (Fin.cons 1 (fun j => (x j : F))) v = 0) ↔
+      ∀ j, (x j : F) = 1 ∨ (x j : F) = -1 := by
+  have hs := (mem_filter.mp (mem_filter.mp hx).1).2
+  have hr := (mem_filter.mp hx).2
+  have hne : ∀ i : Fin (m + 1), Fin.cons 1 (fun j => (x j : F)) i ≠ 0 := by
+    intro i
+    exact Fin.cases one_ne_zero (fun j => (x j).property) i
+  rw [reciprocal_projective_critical_iff _ 0 hne rfl
+    (by simpa only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ] using hs)
+    (by simpa only [Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ, inv_one] using hr)]
+  constructor
+  · intro h j
+    exact h j.succ
+  · intro h i
+    exact Fin.cases (Or.inl rfl) h i
+
+end FiniteField
+
 end GaloisForLFunctions.ArithmeticKunnethTheory.WeightFamilies

@@ -154,12 +154,12 @@ theorem le_one_of_posLog_eq_zero {y : ℝ} (h : Real.posLog y = 0) : y ≤ 1 := 
   by_contra hlt
   push Not at hlt
   have h1 := Real.log_pos hlt
-  rw [Real.posLog_def] at h
+  change max 0 (Real.log y) = 0 at h
   have h2 := le_max_right 0 (Real.log y)
   linarith
 
 theorem posLog_eq_zero_of_le_one {y : ℝ} (h0 : 0 ≤ y) (h : y ≤ 1) : Real.posLog y = 0 := by
-  rw [Real.posLog_def]
+  change max 0 (Real.log y) = 0
   exact max_eq_left (Real.log_nonpos h0 h)
 
 /-- `I(D) = 0` iff the datum is unitary; the functional equation forces both inequalities. -/
