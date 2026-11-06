@@ -64,8 +64,9 @@ theorem tendsto_levelCutoff : Tendsto levelCutoff atTop atTop :=
 theorem levelCutoff_pow_le (K : ℕ) : (levelCutoff K : ℝ) ^ 4 ≤ K := by
   have h0 : (0 : ℝ) ≤ (K : ℝ) ^ (1 / 4 : ℝ) := by positivity
   have h1 : (levelCutoff K : ℝ) ≤ (K : ℝ) ^ (1 / 4 : ℝ) := Nat.floor_le h0
-  calc (levelCutoff K : ℝ) ^ 4 ≤ ((K : ℝ) ^ (1 / 4 : ℝ)) ^ 4 := by gcongr
-    _ = K := by
+  calc ((levelCutoff K : ℕ) : ℝ) ^ 4 ≤ ((K : ℝ) ^ (1 / 4 : ℝ)) ^ 4 :=
+        pow_le_pow_left₀ (Nat.cast_nonneg _) h1 4
+    _ = (K : ℝ) := by
         rw [← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg K)]
         norm_num
 

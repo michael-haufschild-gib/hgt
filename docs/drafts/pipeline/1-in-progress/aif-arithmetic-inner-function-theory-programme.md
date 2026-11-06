@@ -21,16 +21,22 @@ and foundational `README.md`. Unconditional only; RH appears only inside equival
 - [x] G. Frustrated forms at zero slack: outer predictor certificate, window RH, Allegretto–Piepenbrink as the sign-definite face.
 - [x] H. Carleson/crowd geometry: shadows, balayage, exponential moment, large deviations of crowds.
 - [x] I. Finite inner factors: zero–one law, datum as Szegő threshold, echo trains on independent reflectors, inverse scattering with prime data, no decoupling.
-- [x] J. Questions of the field: `question_one` … `question_six` in `TheQuestionsOfTheField`.
+- [x] J. Questions of the field: `question_one` … `question_ten` in `TheQuestionsOfTheField`.
+- [x] K. Near-extremal mollifiers: Hardy calculus of the disc, rigidity law, forced limit and coefficient; Abel mollifiers on a curve, Castelnuovo as the domination.
+- [x] L. Forward map from primes to reflectors; potential past the Born regime.
+- [x] M. Arithmetic Carleson measure and embedding; inner mass at infinity as depth density and Abel log-mean; `log log` bound at large width.
+- [x] N. Restoring bound of the actual chain; passivity certified on arithmetic windows; causal certificate at one critical ratio.
+- [x] O. Profile decomposition over Bohr space on the energy space, on-line configurations, RH iff at tests.
+- [x] P. Calculus of signed Euler columns, Gamma base; correlated amplitudes; local onset field.
 
 ## Status
-Questions Q1–Q6 answered by theorems; tools T1–T5 developed, with the profile decomposition of T3 open. Modules and pillars are in `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md`; open research topics in its §11. No sign for `ζ` is produced.
+Questions Q1–Q10 answered by theorems, with RH-strength answers stated as equivalences; tools T1–T7 developed. Modules, pillars and open topics are in `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md`. No sign for `ζ` is produced.
 
 ## Open core
-The opposite sign (`riemannHypothesis_iff_exists_budget_lt`), amplitude–height correlation in `S(a, b)`, the zero–one law for `ζ`, inner mass at infinity of `ζ`.
+The opposite sign (a mollifier family, or its dilation bound over `ℤ`), oscillation of the amplitude in `S(a, b)`, the zero–one law for `ζ`, depth density `o(T)`, the profile decomposition at atomic tests (B6), the height of alignment, the onset field at fixed `λ`.
 
 ## Do not redo
 GWZ has Levinson, Szegő–Verblunsky, lattice anchor flow, curve flow, no slack, causality and single kicks. CSTW has the literal Weil flow. CompletedArithmeticForms has `eulerPartial`, `S = Π T_p A`, `thetaApertureAmplitude_not_laplaceMixture`. FADF has frustration of the Weil kernel in every sign gauge.
 
 ## Log
-- 2026-11-06 — created; programme developed and formalized in 23 modules, wired into the umbrella and `MainTheorems`.
+- 2026-11-06 — created; programme developed and formalized in 37 modules, wired into the umbrella and `MainTheorems`.
