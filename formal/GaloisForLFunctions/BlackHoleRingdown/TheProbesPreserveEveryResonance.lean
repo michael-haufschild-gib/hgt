@@ -59,9 +59,11 @@ theorem gaussianResponse_analyticAt_iff (σ D : ℝ) (ω : ℂ) :
   constructor
   · intro h
     have hd := h.div (gaussianSpectralProbe_analyticAt σ ω) (gaussianSpectralProbe_ne_zero σ ω)
-    convert hd using 1
-    funext w
-    simp [gaussianResponse, gaussianSpectralProbe_ne_zero, mul_div_cancel_left₀]
+    have hfun : gaussianResponse σ D / gaussianSpectralProbe σ = causalSymbol D := by
+      funext w
+      exact mul_div_cancel_left₀ _ (gaussianSpectralProbe_ne_zero σ w)
+    rw [hfun] at hd
+    exact hd
   · intro h
     exact (gaussianSpectralProbe_analyticAt σ ω).mul h
 

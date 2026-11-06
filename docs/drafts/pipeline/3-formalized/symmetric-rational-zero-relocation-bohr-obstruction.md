@@ -1,8 +1,8 @@
 # Symmetric Rational Zero-Relocation Preserves the Functional Equation but Destroys Vertical Bohr Almost Periodicity
 
 - **ID:** symmetric-rational-zero-relocation-bohr-obstruction
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** docs/drafts/pipeline/1-in-progress/pnt-error-single-finite-oscillation.md
 - **Statement:** Multiplying a continuous Bohr almost-periodic function `F` by a continuous asymptotically unitary factor `m` (`m(t) → 1` as `t → +∞`) preserves Bohr almost periodicity if and only if `F(t)(m(t) - 1) = 0` identically; consequently, multiplying `ζ(s)` by the `s ↔ 1 - s` symmetric rational zero-relocation factor `R(s)` preserves the exact Riemann functional equation while strictly destroying vertical Bohr almost periodicity (and every absolutely convergent ordinary Dirichlet series representation) on every vertical line `Re s = σ > 1`.
 
@@ -12,7 +12,7 @@ Establish a sharp firewall theorem separating the exact Riemann functional equat
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven: complete paper proof below, no open dependency
-- [ ] 2 → 3  formalized: `GaloisForLFunctions.ArithmeticPositiveDuality.SymmetricRationalZeroRelocationBohrObstruction`
+- [x] 2 → 3  formalized: `GaloisForLFunctions.ArithmeticPositiveDuality.SymmetricRationalZeroRelocationBohrObstruction` (`isBohrAlmostPeriodic_mul_iff_eq_zero_of_tendsto_one`, `not_isBohrAlmostPeriodic_mul_of_tendsto_one`, `isBohrAlmostPeriodic_riemannZeta_vertical`, `not_isBohrAlmostPeriodic_riemannZeta_mul_vertical`, `no_summable_LSeries_eq_riemannZeta_mul_vertical`, `zeroRelocationFactor`, `zeroRelocationFactor_one_sub`, `completedRiemannZeta_mul_zeroRelocationFactor_one_sub`, `zeroRelocationFactor_conj`, `im_zeroRelocationFactor_criticalLine`, `zeroRelocationFactor_eq_zero_iff_of_half_lt_re`, `tendsto_zeroRelocationFactor_vertical_atTop`, `exists_vertical_zeroRelocationFactor_ne_one`, `zeroRelocationFactor_two_mul_sub_one_eq_zero`, `zeroRelocation_destroys_vertical_bohr_and_LSeries`)
 
 ## Proof
 1. **Asymptotically unitary multiplier rigidity for Bohr almost-periodic functions.** Let `F, m : ℝ → ℂ` be continuous with `F` Bohr almost periodic and `m(t) → 1` as `t → +∞`. By `exists_bound_of_isBohrAlmostPeriodic`, `‖F(t)‖ ≤ C` globally, so `H(t) := F(t) m(t) - F(t) = F(t)(m(t) - 1) → 0` as `t → +∞`. If `F · m` is Bohr almost periodic, `H` is Bohr almost periodic (`isBohrAlmostPeriodic_sub`), so Bohr's vanishing lemma (`eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero`) forces `H(t) = 0` for all `t ∈ ℝ`. The converse is immediate since `F · m = F`.

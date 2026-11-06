@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import GaloisForLFunctions.RHTower.XiCollapseDirichletLeg
 import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationHalfPlane
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionAllZeros
+import GaloisForLFunctions.ZeroConfigurationGeometry.VonMangoldtMomentDiagonalsVanish
 
 /-!
 # A finite exceptional layer forces persistent low-height jets
@@ -15,6 +16,7 @@ The cofactor and its analytic remainder are constructed from the actual function
 -/
 
 open Complex Filter Metric Set Topology RHTower
+open ComplexConjugate
 
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 
@@ -263,5 +265,102 @@ theorem not_asymptoticAbscissaLaw_has_raw_prime_moment_limit :
   simpa only [sub_add_cancel, add_zero] using ht.add hpowers
 
 #print axioms not_asymptoticAbscissaLaw_has_raw_prime_moment_limit
+
+/-- Failure of AAL forces a nonzero raw moment limit at a point where the
+complete coefficient-square diagonal vanishes unconditionally. -/
+theorem not_asymptoticAbscissaLaw_has_nonzero_moment_and_vanishing_diagonal :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧
+        Tendsto (fun k : ℕ =>
+          LSeries (LSeries.logMul^[k]
+            (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) /
+            (k.factorial : ℂ)) atTop (𝓝 (-(m : ℂ))) ∧
+        Tendsto (fun k : ℕ => ∑' n : ℕ,
+          ‖LSeries.term (LSeries.logMul^[k]
+            (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
+            (k.factorial : ℂ)‖ ^ 2) atTop (𝓝 0) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, hlim⟩ :=
+    not_asymptoticAbscissaLaw_has_raw_prime_moment_limit hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, hlim, ?_⟩
+  apply tendsto_normalizedMangoldtTermDiagonal_zero
+  simp only [Complex.add_re, Complex.one_re]
+  linarith only [hρhalf]
+
+#print axioms not_asymptoticAbscissaLaw_has_nonzero_moment_and_vanishing_diagonal
+
+/-- Removing equal indices from an absolutely convergent correlation sum subtracts
+exactly the coefficient-square diagonal. -/
+theorem tsum_offDiagonal_re {a : ℕ → ℂ} (ha : Summable (fun n => ‖a n‖)) :
+    (∑' n : ℕ, ∑' j : ℕ, if j = n then 0 else a n * conj (a j)).re =
+      ‖∑' n : ℕ, a n‖ ^ 2 - ∑' n : ℕ, ‖a n‖ ^ 2 := by
+  have ha' : Summable a := ha.of_norm
+  have hconj : Summable (fun n => conj (a n)) := Complex.summable_conj.mpr ha'
+  have hconjNorm : Summable (fun n => ‖conj (a n)‖) := by
+    simpa only [Complex.norm_conj] using ha
+  have hprod := summable_mul_of_summable_norm ha hconjNorm
+  have hdiag : Summable (fun n => a n * conj (a n)) :=
+    hprod.comp_injective (i := fun n : ℕ => (n, n))
+      (fun _ _ h => congrArg Prod.fst h)
+  have hrow (n : ℕ) : (∑' j : ℕ, if j = n then 0 else a n * conj (a j)) =
+      a n * conj (∑' j : ℕ, a j) - a n * conj (a n) := by
+    have hsingle : Summable (fun j : ℕ => if j = n then a n * conj (a n) else 0) := by
+      apply (ha.mul_left ‖a n‖).of_norm_bounded
+      intro j
+      by_cases h : j = n
+      · subst j
+        simp only [ite_true, norm_mul, Complex.norm_conj, le_refl]
+      · simp only [if_neg h, norm_zero]
+        exact mul_nonneg (norm_nonneg _) (norm_nonneg _)
+    have heq : (fun j : ℕ => if j = n then 0 else a n * conj (a j)) =
+        fun j => a n * conj (a j) - if j = n then a n * conj (a n) else 0 := by
+      funext j
+      by_cases h : j = n <;> simp [h]
+    rw [heq, (hconj.mul_left (a n)).tsum_sub hsingle, tsum_mul_left,
+      ← Complex.conj_tsum, tsum_ite_eq]
+  simp_rw [hrow]
+  rw [(ha'.mul_right _).tsum_sub hdiag, tsum_mul_right]
+  simp only [Complex.mul_conj', ← Complex.ofReal_pow, ← Complex.ofReal_tsum,
+    Complex.sub_re, Complex.ofReal_re]
+
+/-- The entire surviving squared moment is an explicit off-diagonal arithmetic
+correlation, whose limit is the square of the selected zero's multiplicity. -/
+theorem not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧
+        let a : ℕ → ℕ → ℂ := fun k n =>
+          LSeries.term (LSeries.logMul^[k]
+            (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
+            (k.factorial : ℂ)
+        Tendsto (fun k : ℕ =>
+          (∑' n : ℕ, ∑' j : ℕ, if j = n then 0 else a k n * conj (a k j)).re)
+          atTop (𝓝 ((m : ℝ) ^ 2)) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, hlim, hdiag⟩ :=
+    not_asymptoticAbscissaLaw_has_nonzero_moment_and_vanishing_diagonal hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, ?_⟩
+  dsimp only
+  have hs : 1 < (ρ + 1).re := by
+    simp only [Complex.add_re, Complex.one_re]
+    linarith only [hρhalf]
+  have htotal := (hlim.norm.pow 2).sub hdiag
+  simp only [norm_neg, Complex.norm_natCast, sub_zero] at htotal
+  refine htotal.congr' (Filter.Eventually.of_forall fun k => ?_)
+  have hslog : LSeriesSummable (LSeries.logMul^[k]
+      (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) := by
+    apply LSeriesSummable_of_abscissaOfAbsConv_lt_re
+    rw [LSeries.absicssaOfAbsConv_logPowMul]
+    exact lt_of_le_of_lt abscissaOfAbsConv_vonMangoldt_le (by exact_mod_cast hs)
+  have hsum : Summable (fun n =>
+      ‖LSeries.term (LSeries.logMul^[k]
+        (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) n /
+        (k.factorial : ℂ)‖) :=
+    summable_norm_iff.mpr (hslog.div_const (k.factorial : ℂ))
+  rw [tsum_offDiagonal_re hsum, tsum_div_const]
+  rfl
+
+#print axioms not_asymptoticAbscissaLaw_has_positive_offDiagonal_limit
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

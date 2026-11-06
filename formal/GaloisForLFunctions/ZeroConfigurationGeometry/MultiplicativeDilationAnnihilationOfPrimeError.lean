@@ -590,7 +590,9 @@ theorem differentiableAt_dilationClearedNumerator {b σ₀ C x₀ : ℝ} (hb : 0
       (locallyIntegrableOn_dilationRemainder hb P) hbigO_top (by simpa using hs) hbigO_zero
       (by linarith)
   exact ((differentiableAt_const _).sub (hdslope s)).add
-    (differentiableAt_id.mul (hm.comp s (differentiable_neg s)))
+    (differentiableAt_id.mul
+      (DifferentiableAt.comp (g := mellin (dilationRemainder b P)) (f := fun w : ℂ => -w) s hm
+        (differentiable_neg s)))
 
 /-- **Exact holomorphic clearing identity on `Re s > σ₀`.** -/
 theorem neg_dilationSymbol_mul_deriv_zetaResidueUnit_eq {b σ₀ C x₀ : ℝ} (hb : 1 ≤ b)

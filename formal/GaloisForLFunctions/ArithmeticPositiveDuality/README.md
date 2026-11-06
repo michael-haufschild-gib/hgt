@@ -114,6 +114,7 @@ positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 | Quantitative Hamburger: off-lattice mass ≤ (6/π)‖g‖₁ | `integral_sinc_sq_le_of_critical_line_defect` | proved |
 | Tent masses within (18/π + 4κ/π²)‖g‖₁ of 2Re β | `abs_integral_unitTent_sub_le_of_critical_line_defect` | proved |
 | Approximate FE fixes integers and primes up to height ≍ ‖g‖₁^{−1/2} | `beurling_primes_of_critical_line_defect` | proved |
+| Integrable FE defect, pole residue ≤1, and discrete atom masses ≥1 force the ordinary integer spectrum | `integer_spectrum_of_integrable_critical_line_defect` | proved |
 | Poisson rigidity: positive self-dual with unit gap ⇔ comb; unit gap sharp; one-sided gap ⇒ density only | `tentSelfDual_iff_eq_smul_diracComb`, `exists_tentSelfDual_not_comb`, `measure_Icc_le_of_poissonPair` | proved |
 | Integer PD functions are sign characters; isolation forces δ₀ ⇔ no 2-torsion | `intValued_posDef_iff_signCharacter`, `isolation_forces_dirac_iff` | proved |
 | Fibre barrier 2cos(π/(K+2)); independent channels add nothing | `multiFrequency_purchase_le_fibre_fejer`, `independentChannel_purchase_le_fejer`, `twoChannel_joint_barrier_attained` | proved |

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.CompletedArithmeticForms.ThePrefixSchurCostIsThePrefixResidual
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.PolynomialConductorComplementCoercivityAndSharpenedOverlap
 import GaloisForLFunctions.TransMetzlerWeilPositivity.TransMetzlerYoungOptimization
+import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TelescopedConductorSplitAndOneNinthWeilPositivity
+import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.Conductor.CoprimeFourierOrder
 
 /-!
 # The Schur debit is paid on growing blocks and full tails
@@ -186,11 +188,12 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
       (by norm_num : (0 : ℝ) < 1 / 256) 1),
     eventually_log_nat_le_rpow_36_one_ninth,
     hLlim.eventually_ge_atTop 2000,
-    tendsto_natCast_atTop_atTop.eventually_ge_atTop 1]
-    with N hfl hres hξbig hpoly hLX hL2000 hN1 M hMM₀ hMN c hc1 hcb hcMN hlogM Q hQ z hz
+    eventually_ge_atTop 1]
+    with N hfl hres hξbig hpoly hLX hL2000 hN1' M hMM₀ hMN c hc1 hcb hcMN hlogM Q hQ z hz
   -- the scale `ξ = L^{1/256}`
   obtain ⟨L, hLd⟩ : ∃ L, L = Real.log (N : ℝ) := ⟨_, rfl⟩
   rw [← hLd] at hfl hres hξbig hpoly hLX hL2000 hcb hlogM hQ
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN1'
   have hN0 : (0 : ℝ) < N := by linarith only [hN1]
   have hL0 : 0 < L := by linarith only [hL2000]
   have hL1 : 1 ≤ L := by linarith only [hL2000]
@@ -221,9 +224,8 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
   rw [hξ8] at hQ
   rw [hξ128] at hlogM
   have hlogL : Real.log L ≤ ξ := by
-    have h : 1 * (1 + Real.log L) ^ 1 ≤ L ^ (1 / 256 : ℝ) := hpoly
+    have h : 1 + Real.log L ≤ L ^ (1 / 256 : ℝ) := by simpa only [one_mul, pow_one] using hpoly
     rw [← hξd] at h
-    simp only [one_mul, pow_one] at h
     linarith only [h]
   have hlogL0 : 0 ≤ Real.log L := Real.log_nonneg hL1
   have hc0 : 0 < c := by linarith only [hc1]
@@ -334,7 +336,7 @@ theorem exists_plateauPrefixSchur_floor_on_growing_blocks :
   have hinv := (hAinv N hMN c hc0 hcMN r).2
   -- the residual of a conductor vector on the prefix
   obtain ⟨a, -, hza⟩ := (mem_conductorSubspace_iff (M := Q') (N := N) (x := z)).mp hzQ'
-  have hriesz := (half_and_three_halves_riesz_of_four_log_le hQ'2 hQQN (hLd ▸ hlogN) a).1
+  have hriesz := (half_and_three_halves_riesz_of_four_log_le hQ'2 hQQN (by rw [← hLd]; exact hlogN) a).1
   rw [← hza] at hriesz
   let E : ℕ → ℝ := completedConductorEnergy transMetzlerProfile c
   let C : ℕ → ℝ := fun m => ∑ j : PrimeHorizonIndex M, ramanujanPoleProfile m j ^ 2

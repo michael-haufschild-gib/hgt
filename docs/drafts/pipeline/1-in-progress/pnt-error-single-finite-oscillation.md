@@ -46,3 +46,30 @@ The corrected von Mangoldt moment has a negative integer limit. A contradiction 
 | Quantitative phase recurrence | The radius gain has the parameter ceiling `η log((η+1−β₁)/(η+1−β)) < β−β₁ < 1/2`. Its sharp envelope is being formalized; this compares candidate bounds, not actual return times. |
 | Proper prime powers | `tendsto_normalized_higher_prime_power_jets` proves decay when `d<σ−1/2`. `not_asymptoticAbscissaLaw_has_prime_only_jet_limit` retains the exact nonzero limit for the corrected prime-only current. Both audited: standard three axioms only. |
 | Fixed-height mean square | A diagonal estimate alone leaves the signed off-diagonal arithmetic term uncontrolled. Typical-height bounds permit bounded-height exceptional signals. |
+| Bohr prime inequality | `sum_norm_prime_coeff_le` needs uniform boundedness on a whole strip. The high-height `log t` bound does not supply it. Prime-phase alignment still requires quantitative height control. |
+| Short-interval variance | Gallagher's dictionary converts the desired second-moment bound to a prime variance bound; it does not prove that variance bound. |
+| Integer shifts in `s` | For `ΔF(s)=F(s)−F(s+1)`, the prime kernel of `Δ^k F` is `(1−1/n)^k`. This replaces exponential integer scales by polynomial scales. A centered cancellation estimate is still missing; the pole and off-line contributions must both be retained. |
+
+### Unit-shift moment and diagonal
+
+At `s₀=ρ+1`, the pole correction is `ρ^(-k-1)`. The unconditional bound
+`4≤|Im ρ|` makes it vanish. Thus `¬AAL` forces the **raw** limit
+
+`M_k = (1/k!) Σ_n Λ(n)(log n)^k n^(-ρ-1) → −mρ`.
+
+The arithmetic coefficient diagonal has the opposite behavior. For
+`a_k(n)=d^(k+1)Λ(n)(log n)^k n^(-σ)/k!` and `0≤d<R<σ−1/2`,
+
+`Σ_n a_k(n)^2 ≤ d²(d/R)^(2k) Σ_n Λ(n)^2 n^(-2(σ−R)) → 0`.
+
+The final series converges by `Λ(n)≤log n`; exponential domination bounds the
+factorial moment. At `σ=Re ρ+1`, `d=1` is admissible. This isolates distinct-integer
+correlations as the remaining contribution to `|M_k|²`.
+`tendsto_normalizedMangoldtTermDiagonal_zero` formalizes this unconditional diagonal
+bound; its audit contains only the standard three axioms. The raw-limit application
+is under audit. Neither statement supplies off-diagonal cancellation.
+
+The low-height jet argument only needs an attained rightmost zero. A bound that
+forces these moments to vanish at every ordinate would discard the finite-layer
+information and impose a stronger zero-exclusion statement. Any gap-based
+contradiction must use the high-height zero-free region quantitatively.

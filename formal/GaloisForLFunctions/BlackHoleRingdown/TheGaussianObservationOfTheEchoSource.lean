@@ -34,7 +34,9 @@ theorem integral_gaussian_mul_exponential {σ : ℝ} (hσ : 0 < σ) (b t : ℝ) 
     field_simp [hσ.ne']
     <;> ring
   simp_rw [he]
-  rw [integral_mul_const, integral_sub_right_eq_self, integral_gaussian]
+  rw [integral_mul_const,
+    integral_sub_right_eq_self (fun u : ℝ => Real.exp (-σ * u ^ 2)) (t + b / (2 * σ)),
+    integral_gaussian]
 
 theorem integrable_gaussian_mul_exponential {σ : ℝ} (hσ : 0 < σ) (b t : ℝ) :
     Integrable (fun u : ℝ => Real.exp (-σ * (t - u) ^ 2) * Real.exp (b * u)) := by
@@ -126,13 +128,13 @@ def gaussianEchoSymbol (σ : ℝ) (ω : ℂ) : ℂ :=
 
 /-- The literal observed echo source reads the same Gaussian-probed causal symbol, including
 the elementary kinematic factor removed by normalization. -/
-theorem retardedTransform_gaussianEcho {σ : ℝ} (hσ : 0 < σ) {ω : ℂ}
+theorem fourierLaplaceTransform_gaussianEcho {σ : ℝ} (hσ : 0 < σ) {ω : ℂ}
     (hω : 1 / 2 < ω.im) :
     (∫ t : ℝ, Complex.exp (I * ω * t) * (gaussianEcho σ t : ℂ)) =
       gaussianEchoSymbol σ ω := by
   have hw : 1 / 2 < (-I * ω).re := by simpa using hω
   have hk : Integrable (fun t : ℝ => Complex.exp (I * ω * t) * (echoKernel t : ℂ)) := by
-    simpa only [neg_mul, neg_neg] using integrable_cexp_mul_echoKernel hw
+    simpa only [neg_mul, neg_neg] using integrable_cexp_mul_echoKernel (w := -I * ω) hw
   have hg : Integrable (fun t : ℝ => Complex.exp (I * ω * t) *
       Complex.exp (-(σ : ℂ) * (t : ℂ) ^ 2)) := by
     simpa only [neg_mul, neg_neg] using integrable_weighted_gaussian hσ (-I * ω)
@@ -145,7 +147,7 @@ theorem retardedTransform_gaussianEcho {σ : ℝ} (hσ : 0 < σ) {ω : ℂ}
   have hK : (∫ t : ℝ, Complex.exp (I * ω * t) * (echoKernel t : ℂ)) =
       ((1 / 2 - I * ω) / (1 / 2 - I * ω - 1)) * causalSymbol 0 ω := by
     simpa only [neg_zero, zero_mul, Real.exp_zero, one_mul, ofReal_zero, zero_add] using
-      retardedTransform_dampedEchoKernel (D := 0) (by simpa using hω)
+      retardedTransform_dampedEchoKernel (D := 0) (ω := ω) (by simpa using hω)
   simp_rw [he]
   rw [integral_convolution (ContinuousLinearMap.mul ℂ ℂ) hk hg,
     ContinuousLinearMap.mul_apply', hK, gaussianPulse_transform hσ ω,
@@ -199,7 +201,7 @@ theorem gaussianEchoSymbol_resonance_isPole {σ : ℝ} (hσ : 0 < σ) (q : XiZer
 #print axioms gaussianEcho_sub_mean
 #print axioms integrable_weighted_gaussianEcho
 #print axioms laplace_gaussianEcho
-#print axioms retardedTransform_gaussianEcho
+#print axioms fourierLaplaceTransform_gaussianEcho
 #print axioms gaussianEchoSymbol_resonance_order
 #print axioms gaussianEchoSymbol_resonance_isPole
 

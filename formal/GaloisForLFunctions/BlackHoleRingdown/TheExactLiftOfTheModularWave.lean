@@ -241,8 +241,12 @@ theorem differentiableAt_neumannLift_space {f f₁ : ℝ → ℂ} (hf : ∀ τ, 
 theorem differentiableAt_deriv_neumannLift_space {f f₁ f₂ : ℝ → ℂ}
     (hf : ∀ τ, HasDerivAt f (f₁ τ) τ) (hf₁ : ∀ τ, HasDerivAt f₁ (f₂ τ) τ) (t X : ℝ) :
     DifferentiableAt ℝ (deriv (neumannLift f t)) X := by
-  have hG := fun τ => hasDerivAt_dampedProfile (1 / 2) (hf τ)
-  have hG₁ := fun τ => hasDerivAt_dampedProfile (1 / 2) ((hf₁ τ).sub ((hf τ).const_mul (1 / 2 : ℂ)))
+  have hG : ∀ τ, HasDerivAt (dampedProfile (1 / 2) f)
+      (dampedProfile (1 / 2) (fun s => f₁ s - (1 / 2) * f s) τ) τ :=
+    fun τ => hasDerivAt_dampedProfile _ (hf τ)
+  have hG₁ : ∀ τ, HasDerivAt (dampedProfile (1 / 2) (fun s => f₁ s - (1 / 2) * f s))
+      (dampedProfile (1 / 2) (fun s => (f₂ s - (1 / 2) * f₁ s) - (1 / 2) * (f₁ s - (1 / 2) * f s)) τ) τ :=
+    fun τ => hasDerivAt_dampedProfile _ ((hf₁ τ).sub ((hf τ).const_mul (1 / 2 : ℂ)))
   have h : deriv (neumannLift f t) = fun y => -(Real.tanh y : ℂ) *
       dampedProfile (1 / 2) (fun s => f₁ s - (1 / 2) * f s) (hyperboloidalTime t y) :=
     funext fun y => (hasDerivAt_space_slice hG t y).deriv
@@ -259,8 +263,12 @@ theorem differentiableAt_dirichletLift_space {f f₁ : ℝ → ℂ} (hf : ∀ τ
 theorem differentiableAt_deriv_dirichletLift_space {f f₁ f₂ : ℝ → ℂ}
     (hf : ∀ τ, HasDerivAt f (f₁ τ) τ) (hf₁ : ∀ τ, HasDerivAt f₁ (f₂ τ) τ) (t X : ℝ) :
     DifferentiableAt ℝ (deriv (dirichletLift f t)) X := by
-  have hG := fun τ => hasDerivAt_dampedProfile (3 / 2) (hf τ)
-  have hG₁ := fun τ => hasDerivAt_dampedProfile (3 / 2) ((hf₁ τ).sub ((hf τ).const_mul (3 / 2 : ℂ)))
+  have hG : ∀ τ, HasDerivAt (dampedProfile (3 / 2) f)
+      (dampedProfile (3 / 2) (fun s => f₁ s - (3 / 2) * f s) τ) τ :=
+    fun τ => hasDerivAt_dampedProfile _ (hf τ)
+  have hG₁ : ∀ τ, HasDerivAt (dampedProfile (3 / 2) (fun s => f₁ s - (3 / 2) * f s))
+      (dampedProfile (3 / 2) (fun s => (f₂ s - (3 / 2) * f₁ s) - (3 / 2) * (f₁ s - (3 / 2) * f s)) τ) τ :=
+    fun τ => hasDerivAt_dampedProfile _ ((hf₁ τ).sub ((hf τ).const_mul (3 / 2 : ℂ)))
   have h : deriv (dirichletLift f t) = fun y =>
       (1 - (Real.tanh y : ℂ) ^ 2) * dampedProfile (3 / 2) f (hyperboloidalTime t y) +
         (Real.tanh y : ℂ) * (-(Real.tanh y : ℂ) *

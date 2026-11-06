@@ -294,7 +294,7 @@ theorem oscillationCoeff_zero_eq_zero {β η C x₀ : ℝ} {S : Finset ℝ} {c :
   rw [oscillationCoeff_eq_neg_zeta_order_div hβ hη hne hC 0]
   simp only [Complex.ofReal_zero, mul_zero, add_zero]
   have hne0 : riemannZeta (β : ℂ) ≠ 0 :=
-    ZetaRealStrip.riemannZeta_real_strip_ne_zero (by linarith) hβ1
+    RHTower.riemannZeta_real_strip_ne_zero (by linarith) hβ1
   have hs1 : (β : ℂ) ≠ 1 := by exact_mod_cast hβ1.ne
   have hord0 : analyticOrderAt riemannZeta (β : ℂ) = 0 :=
     (analyticOn_riemannZeta _ hs1).analyticOrderAt_eq_zero.mpr hne0

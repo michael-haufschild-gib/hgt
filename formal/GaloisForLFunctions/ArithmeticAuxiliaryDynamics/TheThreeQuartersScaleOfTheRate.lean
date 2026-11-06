@@ -190,111 +190,98 @@ theorem exists_uncertainty_constant :
   intro c m B hP hr
   exact (min_le_right _ _).trans (hP.le_rate_mul_peakRatio hr hρ hβ hβ1)
 
+/-- The real core of the floor: with `K = R⁴`, the laws force `c₀² ≤ 2016 c₁` once `ε R³ ≤ c₁ ≤ 1`. -/
+private lemma floor_core {R ε x L c₀ c₁ : ℝ} (hR : 1 ≤ R) (hL : 1 + L ≤ 5 * R) (hL0 : 0 ≤ L)
+    (hε : 0 < ε) (hc₁0 : 0 < c₁) (hc₁1 : c₁ ≤ 1) (hεR : ε * R ^ 3 ≤ c₁) (hc₀ : 0 ≤ c₀)
+    (hU : c₀ ≤ ε * x) (hmv : x ^ 2 ≤ 288 * ε * R ^ 8 * (1 + L + (R ^ 4 + 1) * ε)) :
+    c₀ ^ 2 ≤ 2016 * c₁ := by
+  have hR0 : 0 < R := by linarith
+  have hεR0 : 0 ≤ ε * R ^ 3 := by positivity
+  have hc₀sq : c₀ ^ 2 ≤ ε ^ 2 * x ^ 2 := by
+    have := pow_le_pow_left₀ hc₀ hU 2
+    rwa [mul_pow] at this
+  have hR4 : R ^ 4 + 1 ≤ 2 * R ^ 4 := by
+    have : 1 ≤ R ^ 4 := one_le_pow₀ hR
+    linarith
+  have h3 : (ε * R ^ 3) ^ 3 ≤ c₁ ^ 3 := pow_le_pow_left₀ hεR0 hεR 3
+  have h4 : (ε * R ^ 3) ^ 4 ≤ c₁ ^ 4 := pow_le_pow_left₀ hεR0 hεR 4
+  have hterm1 : ε ^ 3 * R ^ 8 * (1 + L) ≤ 5 * c₁ ^ 3 := by
+    calc ε ^ 3 * R ^ 8 * (1 + L) ≤ ε ^ 3 * R ^ 8 * (5 * R) := by gcongr
+      _ = 5 * (ε * R ^ 3) ^ 3 := by ring
+      _ ≤ 5 * c₁ ^ 3 := by gcongr
+  have hterm2 : ε ^ 4 * R ^ 8 * (R ^ 4 + 1) ≤ 2 * c₁ ^ 4 := by
+    calc ε ^ 4 * R ^ 8 * (R ^ 4 + 1) ≤ ε ^ 4 * R ^ 8 * (2 * R ^ 4) := by gcongr
+      _ = 2 * (ε * R ^ 3) ^ 4 := by ring
+      _ ≤ 2 * c₁ ^ 4 := by gcongr
+  have hexp : ε ^ 2 * x ^ 2 ≤ 288 * (ε ^ 3 * R ^ 8 * (1 + L)) + 288 * (ε ^ 4 * R ^ 8 * (R ^ 4 + 1)) := by
+    calc ε ^ 2 * x ^ 2 ≤ ε ^ 2 * (288 * ε * R ^ 8 * (1 + L + (R ^ 4 + 1) * ε)) := by gcongr
+      _ = _ := by ring
+  have hc3 : c₁ ^ 3 ≤ c₁ := by
+    calc c₁ ^ 3 ≤ c₁ ^ 1 := pow_le_pow_of_le_one hc₁0.le hc₁1 (by norm_num)
+      _ = c₁ := pow_one c₁
+  have hc4 : c₁ ^ 4 ≤ c₁ := by
+    calc c₁ ^ 4 ≤ c₁ ^ 1 := pow_le_pow_of_le_one hc₁0.le hc₁1 (by norm_num)
+      _ = c₁ := pow_one c₁
+  linarith
+
 /-- **The three-quarters floor.** There is an absolute `c₁ > 0` such that every producer on an
 alphabet in `[1, K]` has rate at least `c₁ K^{-3/4}`. -/
 theorem exists_three_quarters_floor :
     ∃ c₁ : ℝ, 0 < c₁ ∧ ∀ (K : ℕ) (c : ℕ →₀ ℤ) (m B : ℕ), 1 ≤ K → IsProducer c m B →
       AlphabetLE c K → c₁ * (K : ℝ) ^ (-(3 / 4) : ℝ) ≤ rate c m B := by
   obtain ⟨c₀, hc₀, hc₀1, hU⟩ := exists_uncertainty_constant
-  refine ⟨c₀ ^ 2 / 4032, by positivity, fun K c m B hK1 hP hK => ?_⟩
+  have hc₁0 : 0 < c₀ ^ 2 / 4032 := by positivity
+  have hc₁1 : c₀ ^ 2 / 4032 ≤ 1 := by
+    rw [div_le_one (by norm_num)]
+    nlinarith
+  refine ⟨c₀ ^ 2 / 4032, hc₁0, fun K c m B hK1 hP hK => ?_⟩
   have hKR : (1 : ℝ) ≤ K := by exact_mod_cast hK1
   have hK0 : (0 : ℝ) < K := by linarith
-  set P : ℝ := (K : ℝ) ^ (-(3 / 4) : ℝ) with hP'
-  have hP0 : 0 < P := Real.rpow_pos_of_pos hK0 _
-  have hP1 : P ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hKR (by norm_num)
-  set c₁ : ℝ := c₀ ^ 2 / 4032 with hc₁
-  have hc₁0 : 0 < c₁ := by positivity
-  have hc₁1 : c₁ ≤ 1 := by
-    rw [hc₁, div_le_one (by norm_num)]
-    nlinarith
+  have hP0 : 0 < (K : ℝ) ^ (-(3 / 4) : ℝ) := Real.rpow_pos_of_pos hK0 _
+  have hP1 : (K : ℝ) ^ (-(3 / 4) : ℝ) ≤ 1 :=
+    Real.rpow_le_one_of_one_le_of_nonpos hKR (by norm_num)
   by_contra hlt
   push Not at hlt
   have hε := hP.rate_pos
-  set ε := rate c m B with hεdef
-  have hε1 : ε ≤ 1 := by nlinarith
+  have hprod1 : c₀ ^ 2 / 4032 * (K : ℝ) ^ (-(3 / 4) : ℝ) ≤ 1 := by nlinarith
+  have hε1 : rate c m B ≤ 1 := by linarith
   have hUc := hU c m B hP hε1
-  set x := IsProducer.peakRatio c m with hxdef
-  have hx1 : 1 ≤ x := hP.one_le_peakRatio
-  by_cases hx4 : x < 4
+  by_cases hx4 : IsProducer.peakRatio c m < 4
   · -- A small peak: the uncertainty principle alone gives a constant floor.
-    have h1 : c₀ ≤ 4 * ε := by nlinarith
+    have h1 : c₀ ≤ 4 * rate c m B := by nlinarith
     have h2 : c₀ ^ 2 / 4032 ≤ c₀ / 4 := by nlinarith
     nlinarith
   push Not at hx4
   have hmv := hP.peakRatio_sq_le hK hx4
   have hlogK : 0 ≤ Real.log (K : ℝ) := Real.log_nonneg hKR
-  -- `ε K^{3/4} < c₁`, in the two forms that enter the mean-value bound.
-  have hK34 : P * (K : ℝ) ^ (3 / 4 : ℝ) = 1 := by
-    rw [hP', ← Real.rpow_add hK0]
-    norm_num
-  set R : ℝ := (K : ℝ) ^ (1 / 4 : ℝ) with hR
-  have hR1 : 1 ≤ R := Real.one_le_rpow hKR (by norm_num)
+  obtain ⟨R, hRdef⟩ : ∃ R, R = (K : ℝ) ^ (1 / 4 : ℝ) := ⟨_, rfl⟩
+  have hR1 : 1 ≤ R := hRdef ▸ Real.one_le_rpow hKR (by norm_num)
   have hR4 : R ^ 4 = K := by
-    rw [hR, ← Real.rpow_natCast, ← Real.rpow_mul hK0.le]
+    rw [hRdef, ← Real.rpow_natCast, ← Real.rpow_mul hK0.le]
     norm_num
-  have hPR : P * R ^ 3 = 1 := by
-    rw [← hK34, hR, ← Real.rpow_natCast, ← Real.rpow_mul hK0.le]
+  have hPR : (K : ℝ) ^ (-(3 / 4) : ℝ) * R ^ 3 = 1 := by
+    rw [hRdef, ← Real.rpow_natCast, ← Real.rpow_mul hK0.le, ← Real.rpow_add hK0]
     norm_num
   have hlogR : 1 + Real.log (K : ℝ) ≤ 5 * R := by
     have h := Real.log_le_rpow_div hK0.le (show (0 : ℝ) < 1 / 4 by norm_num)
     have h' : Real.log (K : ℝ) ≤ 4 * R := by
-      rw [hR]
+      rw [hRdef]
       calc Real.log (K : ℝ) ≤ (K : ℝ) ^ (1 / 4 : ℝ) / (1 / 4) := h
         _ = 4 * (K : ℝ) ^ (1 / 4 : ℝ) := by ring
     linarith
-  have hεR : ε * R ^ 3 < c₁ := by
-    have := mul_lt_mul_of_pos_right hlt (by positivity : 0 < R ^ 3)
-    calc ε * R ^ 3 < c₁ * P * R ^ 3 := this
-      _ = c₁ * (P * R ^ 3) := by ring
-      _ = c₁ := by rw [hPR, mul_one]
-  have hc₀sq : c₀ ^ 2 ≤ ε ^ 2 * x ^ 2 := by
-    have := pow_le_pow_left₀ hc₀.le hUc 2
-    rwa [mul_pow] at this
-  have hKsq : (K : ℝ) ^ 2 = R ^ 8 := by rw [← hR4]; ring
-  have hK1' : (K : ℝ) + 1 ≤ 2 * R ^ 4 := by rw [hR4]; linarith
-  have hεR0 : 0 ≤ ε * R ^ 3 := by positivity
-  have hεRle : ε * R ^ 3 ≤ c₁ := hεR.le
-  -- Main estimate: both terms of the mean-value bound are `≤ 7 c₁`.
-  have hterm1 : 288 * ε ^ 3 * (K : ℝ) ^ 2 * (1 + Real.log K) ≤ 288 * c₁ ^ 3 * 5 := by
-    rw [hKsq]
-    have h3 : (ε * R ^ 3) ^ 3 ≤ c₁ ^ 3 := pow_le_pow_left₀ hεR0 hεRle 3
-    have hid : ε ^ 3 * R ^ 8 * R = (ε * R ^ 3) ^ 3 := by ring
-    have hb : ε ^ 3 * R ^ 8 * (1 + Real.log K) ≤ c₁ ^ 3 * 5 := by
-      calc ε ^ 3 * R ^ 8 * (1 + Real.log K) ≤ ε ^ 3 * R ^ 8 * (5 * R) := by gcongr
-        _ = 5 * (ε ^ 3 * R ^ 8 * R) := by ring
-        _ = 5 * (ε * R ^ 3) ^ 3 := by rw [hid]
-        _ ≤ 5 * c₁ ^ 3 := by gcongr
-        _ = c₁ ^ 3 * 5 := by ring
-    nlinarith
-  have hterm2 : 288 * ε ^ 4 * (K : ℝ) ^ 2 * ((K : ℝ) + 1) ≤ 288 * c₁ ^ 4 * 2 := by
-    rw [hKsq]
-    have h4 : (ε * R ^ 3) ^ 4 ≤ c₁ ^ 4 := pow_le_pow_left₀ hεR0 hεRle 4
-    have hid : ε ^ 4 * R ^ 8 * R ^ 4 = (ε * R ^ 3) ^ 4 := by ring
-    have hb : ε ^ 4 * R ^ 8 * ((K : ℝ) + 1) ≤ c₁ ^ 4 * 2 := by
-      calc ε ^ 4 * R ^ 8 * ((K : ℝ) + 1) ≤ ε ^ 4 * R ^ 8 * (2 * R ^ 4) := by gcongr
-        _ = 2 * (ε ^ 4 * R ^ 8 * R ^ 4) := by ring
-        _ = 2 * (ε * R ^ 3) ^ 4 := by rw [hid]
-        _ ≤ 2 * c₁ ^ 4 := by gcongr
-        _ = c₁ ^ 4 * 2 := by ring
-    nlinarith
-  have hexp : ε ^ 2 * x ^ 2 ≤ 288 * ε ^ 3 * (K : ℝ) ^ 2 * (1 + Real.log K) +
-      288 * ε ^ 4 * (K : ℝ) ^ 2 * ((K : ℝ) + 1) := by
-    have := mul_le_mul_of_nonneg_left hmv (by positivity : 0 ≤ ε ^ 2)
-    calc ε ^ 2 * x ^ 2 ≤ _ := this
-      _ = _ := by ring
-  have hc₁3 : c₁ ^ 3 ≤ c₁ := by
-    have : c₁ ^ 3 = c₁ * c₁ ^ 2 := by ring
-    rw [this]
-    have h2 : c₁ ^ 2 ≤ 1 := pow_le_one₀ hc₁0.le hc₁1
-    nlinarith
-  have hc₁4 : c₁ ^ 4 ≤ c₁ := by
-    have : c₁ ^ 4 = c₁ * c₁ ^ 3 := by ring
-    rw [this]
-    have h2 : c₁ ^ 3 ≤ 1 := pow_le_one₀ hc₁0.le hc₁1
-    nlinarith
-  have hfinal : c₀ ^ 2 ≤ 2016 * c₁ := by nlinarith
-  rw [hc₁] at hfinal
-  nlinarith [sq_nonneg c₀, pow_pos hc₀ 2]
+  have hεR : rate c m B * R ^ 3 ≤ c₀ ^ 2 / 4032 := by
+    have h := mul_le_mul_of_nonneg_right hlt.le (by positivity : 0 ≤ R ^ 3)
+    calc rate c m B * R ^ 3 ≤ c₀ ^ 2 / 4032 * (K : ℝ) ^ (-(3 / 4) : ℝ) * R ^ 3 := h
+      _ = c₀ ^ 2 / 4032 * ((K : ℝ) ^ (-(3 / 4) : ℝ) * R ^ 3) := by ring
+      _ = c₀ ^ 2 / 4032 := by rw [hPR, mul_one]
+  have hmv' : IsProducer.peakRatio c m ^ 2 ≤ 288 * rate c m B * R ^ 8 *
+      (1 + Real.log (K : ℝ) + (R ^ 4 + 1) * rate c m B) := by
+    have hK2 : (K : ℝ) ^ 2 = R ^ 8 := by rw [← hR4]; ring
+    rw [← hK2, hR4]
+    exact hmv
+  have hfinal := floor_core hR1 hlogR hlogK hε hc₁0 hc₁1 hεR hc₀.le hUc hmv'
+  have hlin : c₀ ^ 2 ≤ c₀ ^ 2 / 2 := by linarith
+  nlinarith [pow_pos hc₀ 2]
 
 /-- A rate faster than `K^{-3/4}` does not exist. -/
 theorem not_hasRate_rpow_of_three_quarters_lt {a : ℝ} (ha : 3 / 4 < a) :

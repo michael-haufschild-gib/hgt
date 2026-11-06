@@ -42,13 +42,14 @@ theorem continuous_gaussianAmplitude_real (ε ξ₀ : ℝ) :
 theorem norm_gaussianAmplitude_real_le {ε : ℝ} (hε : 0 < ε) (ξ₀ ξ : ℝ) :
     ‖gaussianAmplitude ε ξ₀ (ξ : ℂ)‖ ≤ Real.exp (ε * ξ₀ ^ 2) * Real.exp (-(ε / 2) * ξ ^ 2) := by
   rw [gaussianAmplitude, Complex.norm_exp, ← Real.exp_add]
-  refine Real.exp_le_exp.mpr (le_of_eq_of_le ?_ ?_)
-  · exact -ε * (ξ - ξ₀) ^ 2
-  · have : (-(ε : ℂ) * ((ξ : ℂ) - (ξ₀ : ℂ)) ^ 2) = ((-ε * (ξ - ξ₀) ^ 2 : ℝ) : ℂ) := by
+  have hre : (-(ε : ℂ) * ((ξ : ℂ) - (ξ₀ : ℂ)) ^ 2).re = -ε * (ξ - ξ₀) ^ 2 := by
+    have h : (-(ε : ℂ) * ((ξ : ℂ) - (ξ₀ : ℂ)) ^ 2) = ((-ε * (ξ - ξ₀) ^ 2 : ℝ) : ℂ) := by
       push_cast
       ring
-    rw [this, Complex.ofReal_re]
-  · nlinarith [mul_nonneg hε.le (sq_nonneg (ξ - 2 * ξ₀))]
+    rw [h, Complex.ofReal_re]
+  rw [hre]
+  refine Real.exp_le_exp.mpr ?_
+  nlinarith [mul_nonneg hε.le (sq_nonneg (ξ - 2 * ξ₀))]
 
 /-! ### The packet transform -/
 
@@ -72,7 +73,7 @@ theorem measurable_packet_integrand (ε ξ₀ : ℝ) {J : ℝ → ℂ} (hJ : Mea
   exact ((continuous_gaussianAmplitude_real ε ξ₀).measurable.mul hJ).mul h.measurable
 
 /-- The dominating Gaussian of a symbol. -/
-theorem norm_packet_integrand_le {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ → ℂ} {C : ℝ} (hC : 0 ≤ C)
+theorem norm_packet_integrand_le {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ → ℂ} {C : ℝ}
     (hJ : ∀ ξ : ℝ, ‖J ξ‖ ≤ C * Real.exp (ε / 4 * ξ ^ 2)) (τ ξ : ℝ) :
     ‖gaussianAmplitude ε ξ₀ (ξ : ℂ) * J ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ))‖ ≤
       Real.exp (ε * ξ₀ ^ 2) * C * Real.exp (-(ε / 4) * ξ ^ 2) := by
@@ -95,10 +96,10 @@ theorem PacketSymbol.integrable {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ
     (τ : ℝ) :
     Integrable fun ξ : ℝ =>
       gaussianAmplitude ε ξ₀ (ξ : ℂ) * J ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ)) := by
-  obtain ⟨C, hC, hb⟩ := hJ.bound
+  obtain ⟨C, -, hb⟩ := hJ.bound
   refine (integrable_gaussian_quarter hε (Real.exp (ε * ξ₀ ^ 2) * C)).mono'
     (measurable_packet_integrand ε ξ₀ hJ.measurable τ).aestronglyMeasurable
-    (Eventually.of_forall fun ξ => norm_packet_integrand_le hε ξ₀ hC hb τ ξ)
+    (Eventually.of_forall fun ξ => norm_packet_integrand_le hε ξ₀ hb τ ξ)
 
 theorem packet_add {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J₁ J₂ : ℝ → ℂ} (h₁ : PacketSymbol ε J₁)
     (h₂ : PacketSymbol ε J₂) (τ : ℝ) :
@@ -130,8 +131,8 @@ theorem hasDerivAt_packet_time {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ 
   have hderivMeas : Measurable fun ξ : ℝ => J ξ * (I * (ξ : ℂ)) :=
     hJ.measurable.mul hline.measurable
   refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (F := fun s ξ => gaussianAmplitude ε ξ₀ (ξ : ℂ) * J ξ * Complex.exp (I * (ξ : ℂ) * (s : ℂ)))
-    (F' := fun s ξ => gaussianAmplitude ε ξ₀ (ξ : ℂ) * (J ξ * (I * (ξ : ℂ))) *
+    (F := fun (s ξ : ℝ) => gaussianAmplitude ε ξ₀ (ξ : ℂ) * J ξ * Complex.exp (I * (ξ : ℂ) * (s : ℂ)))
+    (F' := fun (s ξ : ℝ) => gaussianAmplitude ε ξ₀ (ξ : ℂ) * (J ξ * (I * (ξ : ℂ))) *
       Complex.exp (I * (ξ : ℂ) * (s : ℂ)))
     (x₀ := τ) (s := Set.univ) (bound := G) univ_mem
     (Eventually.of_forall fun s => (measurable_packet_integrand ε ξ₀ hJ.measurable s).aestronglyMeasurable)
@@ -184,20 +185,20 @@ theorem hasDerivAt_packet_time {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J : ℝ 
 /-- **Parameter derivative of a packet.** -/
 theorem hasDerivAt_packet_param {ε : ℝ} (hε : 0 < ε) (ξ₀ : ℝ) {J K : ℝ → ℝ → ℂ} {v₀ : ℝ}
     {s : Set ℝ} (hs : s ∈ 𝓝 v₀) (hJmeas : ∀ᶠ v in 𝓝 v₀, Measurable (J v))
-    (hJ₀ : PacketSymbol ε (J v₀)) (hKmeas : Measurable (K v₀)) {C : ℝ} (hC : 0 ≤ C)
+    (hJ₀ : PacketSymbol ε (J v₀)) (hKmeas : Measurable (K v₀)) {C : ℝ}
     (hKb : ∀ v ∈ s, ∀ ξ : ℝ, ‖K v ξ‖ ≤ C * Real.exp (ε / 4 * ξ ^ 2))
     (hdiff : ∀ v ∈ s, ∀ ξ : ℝ, HasDerivAt (fun w => J w ξ) (K v ξ) v) (τ : ℝ) :
     HasDerivAt (fun v => packet ε ξ₀ (J v) τ) (packet ε ξ₀ (K v₀) τ) v₀ := by
   refine (hasDerivAt_integral_of_dominated_loc_of_deriv_le
-    (F := fun v ξ => gaussianAmplitude ε ξ₀ (ξ : ℂ) * J v ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ)))
-    (F' := fun v ξ => gaussianAmplitude ε ξ₀ (ξ : ℂ) * K v ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ)))
+    (F := fun (v ξ : ℝ) => gaussianAmplitude ε ξ₀ (ξ : ℂ) * J v ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ)))
+    (F' := fun (v ξ : ℝ) => gaussianAmplitude ε ξ₀ (ξ : ℂ) * K v ξ * Complex.exp (I * (ξ : ℂ) * (τ : ℂ)))
     (x₀ := v₀) (s := s) (bound := fun ξ => Real.exp (ε * ξ₀ ^ 2) * C * Real.exp (-(ε / 4) * ξ ^ 2)) hs
     (hJmeas.mono fun v hv => (measurable_packet_integrand ε ξ₀ hv τ).aestronglyMeasurable)
     (hJ₀.integrable hε ξ₀ τ)
     (measurable_packet_integrand ε ξ₀ hKmeas τ).aestronglyMeasurable
     (Eventually.of_forall fun ξ v hv => ?_) (integrable_gaussian_quarter hε _)
     (Eventually.of_forall fun ξ v hv => ?_)).2
-  · exact norm_packet_integrand_le hε ξ₀ hC (fun η => hKb v hv η) τ ξ
+  · exact norm_packet_integrand_le hε ξ₀ (fun η => hKb v hv η) τ ξ
   · exact ((hdiff v hv ξ).const_mul _).mul_const _
 
 /-! ### The symbols of the Eisenstein function -/
@@ -315,43 +316,43 @@ theorem hasDerivAt_wavePacketT_time :
 
 theorem hasDerivAt_wavePacket_x :
     HasDerivAt (fun q => wavePacket ε ξ₀ τ q Y) (wavePacketX ε ξ₀ τ x Y) x := by
-  obtain ⟨C, hC, h⟩ := exists_jets_le_quarter hε hY
+  obtain ⟨C, -, h⟩ := exists_jets_le_quarter hε hY
   exact hasDerivAt_packet_param hε ξ₀ (J := fun q ξ => normalizedEisenstein ((ξ : ℂ) * I) q Y)
     (K := fun q ξ => eisensteinX ((ξ : ℂ) * I) q Y) (s := Set.univ) univ_mem
     (Eventually.of_forall fun q => measurable_normalizedEisenstein_line hY q)
-    (packetSymbol_eisenstein hε x hY) (measurable_eisensteinX_line hY x) hC
+    (packetSymbol_eisenstein hε x hY) (measurable_eisensteinX_line hY x)
     (fun q _ ξ => (h ξ q Y (mem_window_self hY)).2.1)
     (fun q _ ξ => hasDerivAt_eisenstein_x _ q hY) τ
 
 theorem hasDerivAt_wavePacketX_x :
     HasDerivAt (fun q => wavePacketX ε ξ₀ τ q Y) (wavePacketXX ε ξ₀ τ x Y) x := by
-  obtain ⟨C, hC, h⟩ := exists_jets_le_quarter hε hY
+  obtain ⟨C, -, h⟩ := exists_jets_le_quarter hε hY
   exact hasDerivAt_packet_param hε ξ₀ (J := fun q ξ => eisensteinX ((ξ : ℂ) * I) q Y)
     (K := fun q ξ => eisensteinXX ((ξ : ℂ) * I) q Y) (s := Set.univ) univ_mem
     (Eventually.of_forall fun q => measurable_eisensteinX_line hY q)
-    (packetSymbol_eisensteinX hε x hY) (measurable_eisensteinXX_line hY x) hC
+    (packetSymbol_eisensteinX hε x hY) (measurable_eisensteinXX_line hY x)
     (fun q _ ξ => (h ξ q Y (mem_window_self hY)).2.2.1)
     (fun q _ ξ => hasDerivAt_eisensteinX_x _ q hY) τ
 
 theorem hasDerivAt_wavePacket_y :
     HasDerivAt (fun q => wavePacket ε ξ₀ τ x q) (wavePacketY ε ξ₀ τ x Y) Y := by
-  obtain ⟨C, hC, h⟩ := exists_jets_le_quarter hε hY
+  obtain ⟨C, -, h⟩ := exists_jets_le_quarter hε hY
   have hmem : Ioo (Y / 2) (2 * Y) ∈ 𝓝 Y := Ioo_mem_nhds (by linarith) (by linarith)
   exact hasDerivAt_packet_param hε ξ₀ (J := fun q ξ => normalizedEisenstein ((ξ : ℂ) * I) x q)
     (K := fun q ξ => eisensteinY ((ξ : ℂ) * I) x q) hmem
     ((lt_mem_nhds hY).mono fun q hq => measurable_normalizedEisenstein_line hq x)
-    (packetSymbol_eisenstein hε x hY) (measurable_eisensteinY_line hY x) hC
+    (packetSymbol_eisenstein hε x hY) (measurable_eisensteinY_line hY x)
     (fun q hq ξ => (h ξ x q (Ioo_subset_Icc_self hq)).2.2.2.1)
     (fun q hq ξ => hasDerivAt_eisenstein_y _ x (by linarith [hq.1])) τ
 
 theorem hasDerivAt_wavePacketY_y :
     HasDerivAt (fun q => wavePacketY ε ξ₀ τ x q) (wavePacketYY ε ξ₀ τ x Y) Y := by
-  obtain ⟨C, hC, h⟩ := exists_jets_le_quarter hε hY
+  obtain ⟨C, -, h⟩ := exists_jets_le_quarter hε hY
   have hmem : Ioo (Y / 2) (2 * Y) ∈ 𝓝 Y := Ioo_mem_nhds (by linarith) (by linarith)
   exact hasDerivAt_packet_param hε ξ₀ (J := fun q ξ => eisensteinY ((ξ : ℂ) * I) x q)
     (K := fun q ξ => eisensteinYY ((ξ : ℂ) * I) x q) hmem
     ((lt_mem_nhds hY).mono fun q hq => measurable_eisensteinY_line hq x)
-    (packetSymbol_eisensteinY hε x hY) (measurable_eisensteinYY_line hY x) hC
+    (packetSymbol_eisensteinY hε x hY) (measurable_eisensteinYY_line hY x)
     (fun q hq ξ => (h ξ x q (Ioo_subset_Icc_self hq)).2.2.2.2)
     (fun q hq ξ => hasDerivAt_eisensteinY_y _ x (by linarith [hq.1])) τ
 
@@ -388,6 +389,7 @@ theorem wavePacket_wave :
   rw [← hadd, ← hmul, hsplit, hquarter]
   ring
 
+omit hε hY in
 /-- **Modular invariance of the packet.** -/
 theorem wavePacket_smul (γ : SL(2, ℤ)) (z : ℍ) :
     wavePacket ε ξ₀ τ (γ • z : ℍ).re (γ • z : ℍ).im = wavePacket ε ξ₀ τ z.re z.im := by
@@ -453,16 +455,13 @@ theorem setIntegral_wavePacket {ε : ℝ} (hε : 0 < ε) (ξ₀ τ : ℝ) {Y : �
       fun_prop
     have hE := (measurable_normalizedEisenstein_pair hY).comp (measurable_swap (α := ℝ) (β := ℝ))
     exact (hg.measurable.mul hE).mul he.measurable
-  have hfin : volume (Ioc (0 : ℝ) 1) ≠ ⊤ := by
-    rw [Real.volume_Ioc]
-    exact ENNReal.ofReal_ne_top
-  haveI : IsFiniteMeasure (volume.restrict (Ioc (0 : ℝ) 1)) := ⟨by simpa using hfin.lt_top⟩
+  haveI : IsFiniteMeasure (volume.restrict (Ioc (0 : ℝ) 1)) := ⟨by simp⟩
   have hint : Integrable (Function.uncurry F) ((volume.restrict (Ioc (0 : ℝ) 1)).prod volume) := by
     have hG : Integrable (fun p : ℝ × ℝ => Real.exp (ε * ξ₀ ^ 2) * C * Real.exp (-(ε / 4) * p.2 ^ 2))
         ((volume.restrict (Ioc (0 : ℝ) 1)).prod volume) :=
       (integrable_gaussian_quarter hε (Real.exp (ε * ξ₀ ^ 2) * C)).comp_snd _
     refine hG.mono' hmeasF.aestronglyMeasurable (Eventually.of_forall fun p => ?_)
-    exact norm_packet_integrand_le hε ξ₀ hC (fun ξ => (h ξ p.1 Y (mem_window_self hY)).1) τ p.2
+    exact norm_packet_integrand_le hε ξ₀ (fun ξ => (h ξ p.1 Y (mem_window_self hY)).1) τ p.2
   have hswap := integral_integral_swap (f := F) hint
   simp only [wavePacket, packet]
   rw [hswap]

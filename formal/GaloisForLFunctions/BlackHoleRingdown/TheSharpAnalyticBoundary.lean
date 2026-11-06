@@ -11,7 +11,7 @@ above any horizontal frequency line is exactly a lower bound on all resonance da
 Functional-equation partners have a fixed sum of damping rates. Their slower rate is the
 critical rate minus half the absolute transverse displacement. Thus a one-sided quarter-line
 bound already forces equality and is equivalent to RH. Ordinary stability follows from the
-open critical strip and leaves this transverse displacement unrestricted.
+open critical strip.
 -/
 
 open Complex Filter Topology

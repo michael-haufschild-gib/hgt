@@ -103,7 +103,7 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.05217
+- https://arxiv.org/abs/2502.02661v2
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -496,7 +496,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0611/obstacles-summary.md
 
-under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "Arithmetic inner-function theory".
+under "## 2.8 If positivity, Weil positivity and spectral methods are excluded: which field?" it describes a new field/research programme called "Arithmetic auxiliary dynamics".
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -614,7 +614,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0611/obstacles-summary.md (more details in docs/reports/review-0611/route-obstacles.md)
 
-under "## 2.1 Tasks that are just work" -> "### Continuation and near-line" it lists tasks which are likely to be doable.
+under "## 2.1 Tasks that are just work" -> "### Continuation, near-line, production" it lists tasks which are likely to be doable.
 
 your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -650,10 +650,10 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0611/obstacles-summary.md
 
-under "## 2.9 The question with the largest impact" it ask a question: 
-"**Can an off-line zero be a one-off?** Formally, the asymptotic abscissa law (AAL): for every `h≥0`, if only finitely many zeros lie right of `½+h`, then none does. Equivalently, `limsup(Re ρ−½)` along growing heights equals `sup(Re ρ−½)`. The zero–one law of 2.8 is the case `h=0`.
+under "## 2.9 The one question" it ask a question: 
+"**Can the error in the prime number theorem be a single finite oscillation?** Formally: are there `β>½`, `η>0` and a nonzero finite trigonometric polynomial `T` with
 
-A sufficient form is weak recurrence around off-line zeros: for every zero `ρ₀` with `½<Re ρ₀<1`, every disc around it and every `ε>0`, there are arbitrarily high `τ` with `sup|ζ(s+iτ)−ζ(s)|<ε` on the disc. A return moves the zero to a new height at nearly the same depth [L]."
+`ψ(x)−x=x^{β}T(log x)+O(x^{β−η})`?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 

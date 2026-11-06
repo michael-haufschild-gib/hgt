@@ -9,7 +9,7 @@ pointwise exponential bound. This obstruction is independent of zeta zero locati
 
 The surviving estimate is an integrable one: every Laplace weight beyond `1/2` controls the echo
 mass. Gaussian observation is therefore absolutely convergent and has an explicit global
-majorant obtained by completing the square. Sharp decay after mean subtraction remains open.
+majorant obtained by completing the square.
 -/
 
 open Filter Topology Set MeasureTheory
@@ -78,7 +78,7 @@ theorem echoKernel_nonneg (τ : ℝ) : 0 ≤ echoKernel τ :=
 theorem integrable_cexp_mul_echoKernel {w : ℂ} (hw : 1 / 2 < w.re) :
     Integrable (fun τ : ℝ => Complex.exp (-w * (τ : ℂ)) * (echoKernel τ : ℂ)) := by
   have hne (s : ℂ) (hs : 1 < s.re) : completedRiemannZeta s ≠ 0 := by
-    have hs0 : s ≠ 0 := by intro h; simp [h] at hs
+    have hs0 : s ≠ 0 := by intro h; rw [h] at hs; norm_num at hs
     intro hz
     apply riemannZeta_ne_zero_of_one_le_re hs.le
     rw [riemannZeta_def_of_ne_zero hs0, hz, zero_div]
@@ -98,9 +98,9 @@ theorem integrable_cexp_mul_echoKernel {w : ℂ} (hw : 1 / 2 < w.re) :
 /-- Every exponential weight beyond the half-line controls the absolute echo mass. -/
 theorem integrable_exp_mul_echoKernel {a : ℝ} (ha : 1 / 2 < a) :
     Integrable (fun τ : ℝ => Real.exp (-a * τ) * echoKernel τ) := by
-  have hi := (integrable_cexp_mul_echoKernel (w := (a : ℂ)) ha).re
-  simpa only [← Complex.ofReal_neg, ← Complex.ofReal_mul, ← Complex.ofReal_exp,
-    ← Complex.ofReal_mul, Complex.ofReal_re] using hi
+  have hi := Complex.reCLM.integrable_comp (integrable_cexp_mul_echoKernel (w := (a : ℂ)) ha)
+  simpa only [Complex.reCLM_apply, ← Complex.ofReal_neg, ← Complex.ofReal_mul,
+    ← Complex.ofReal_exp, Complex.ofReal_re] using hi
 
 theorem integrable_exp_neg_mul_echoKernel :
     Integrable (fun τ : ℝ => Real.exp (-τ) * echoKernel τ) := by
@@ -138,8 +138,9 @@ theorem exists_echoKernel_gt {c : ℕ} (hc : 0 < c) {ε : ℝ} (hε : 0 < ε) (M
   have hlarge := (echoKernel_tendsto_atTop_at_echo hc).eventually (eventually_gt_atTop M)
   have hsmall : ∀ᶠ v : ℝ in 𝓝[>] 0, v < ε :=
     (eventually_lt_nhds hε).filter_mono nhdsWithin_le_nhds
-  exact (hlarge.and (self_mem_nhdsWithin.and hsmall)).exists.imp
-    (fun v h => ⟨h.2.1, h.2.2, h.1⟩)
+  have hpos : ∀ᶠ v : ℝ in 𝓝[>] 0, 0 < v := self_mem_nhdsWithin
+  obtain ⟨v, hv⟩ := (hlarge.and (hpos.and hsmall)).exists
+  exact ⟨v, hv.2.1, hv.2.2, hv.1⟩
 
 /-- Removing an exponential mean cannot give a global pointwise exponential remainder bound:
 arbitrarily late echo arrivals violate every such bound. -/
@@ -190,10 +191,11 @@ private theorem gaussian_weight_bound {σ : ℝ} (hσ : 0 < σ) (a t τ : ℝ) :
 theorem integrable_gaussian_mul_echoKernel {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
     Integrable (fun τ : ℝ => Real.exp (-σ * (t - τ) ^ 2) * echoKernel τ) := by
   have hf : Continuous (fun τ : ℝ => Real.exp (-σ * (t - τ) ^ 2 + τ)) := by fun_prop
-  have hi := integrable_exp_neg_mul_echoKernel.bdd_mul hf.aestronglyMeasurable
+  have hi := integrable_exp_neg_mul_echoKernel.bdd_mul
+    (c := Real.exp (t + 1 / (4 * σ))) hf.aestronglyMeasurable
     (Filter.Eventually.of_forall (fun τ => by
       rw [Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
-      simpa using gaussian_weight_bound hσ 1 t τ))
+      simpa only [one_mul, one_pow] using gaussian_weight_bound hσ 1 t τ))
   convert hi using 1
   funext τ
   rw [← mul_assoc, ← Real.exp_add]
@@ -208,12 +210,18 @@ theorem gaussianEcho_le {σ a : ℝ} (hσ : 0 < σ) (ha : 1 / 2 < a) (t : ℝ) :
   apply integral_mono (integrable_gaussian_mul_echoKernel hσ t)
     ((integrable_exp_mul_echoKernel ha).const_mul _)
   intro τ
-  have h := mul_le_mul_of_nonneg_right (gaussian_weight_bound hσ a t τ)
-    (mul_nonneg (Real.exp_pos (-a * τ)).le (echoKernel_nonneg τ))
-  convert h using 1
-  rw [← mul_assoc, ← Real.exp_add]
-  congr 2
-  ring
+  change Real.exp (-σ * (t - τ) ^ 2) * echoKernel τ ≤
+    Real.exp (a * t + a ^ 2 / (4 * σ)) * (Real.exp (-a * τ) * echoKernel τ)
+  have he : Real.exp (-σ * (t - τ) ^ 2) =
+      Real.exp (-σ * (t - τ) ^ 2 + a * τ) * Real.exp (-a * τ) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  calc
+    _ = Real.exp (-σ * (t - τ) ^ 2 + a * τ) *
+        (Real.exp (-a * τ) * echoKernel τ) := by rw [he]; ring
+    _ ≤ _ := mul_le_mul_of_nonneg_right (gaussian_weight_bound hσ a t τ)
+      (mul_nonneg (Real.exp_pos (-a * τ)).le (echoKernel_nonneg τ))
 
 #print axioms echoKernel_sub_mean_exceeds_every_exponential
 #print axioms integrable_gaussian_mul_echoKernel

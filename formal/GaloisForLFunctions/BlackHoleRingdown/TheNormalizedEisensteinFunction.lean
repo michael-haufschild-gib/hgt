@@ -288,9 +288,11 @@ theorem norm_scatteringPhase_line (ξ : ℝ) : ‖scatteringPhase ((ξ : ℂ) * 
     rw [norm_eq_zero] at h0
     rw [h0] at this
     simp at this
-  rw [scatteringPhase, norm_mul, norm_div, norm_div, hden, hxi, ← hs]
-  rw [hs] at hdne ⊢
-  rw [div_self hdne, div_self (norm_ne_zero_iff.mpr (by rw [← hs]; exact hne)), one_mul]
+  have hdne' : ‖s‖ ≠ 0 := by
+    rw [hs]
+    exact hdne
+  rw [scatteringPhase, norm_mul, norm_div, norm_div, hden, hxi, ← hs, div_self hdne',
+    div_self (norm_ne_zero_iff.mpr hne), one_mul]
 
 /-- `1/ξ` on the line `Re s = 1` is dominated by any Gaussian. -/
 theorem exists_norm_inv_xi_line_le_gaussian {c : ℝ} (hc : 0 < c) :
@@ -392,6 +394,309 @@ theorem exists_norm_tailWeight_line_le_gaussian {c : ℝ} (hc : 0 < c) :
 
 /-! ### Jets of `E` on the line -/
 
+/-- A constant dominating the three powers of `Y` that occur on a height window. -/
+def windowPowerBound (Y₀ : ℝ) : ℝ :=
+  (2 * Y₀) ^ (1 / 2 : ℝ) + (Y₀ / 2) ^ (-(1 / 2) : ℝ) + (Y₀ / 2) ^ (-(3 / 2) : ℝ)
+
+theorem windowPowerBound_nonneg {Y₀ : ℝ} (hY₀ : 0 < Y₀) : 0 ≤ windowPowerBound Y₀ := by
+  unfold windowPowerBound
+  positivity
+
+theorem window_powers_le {Y₀ Y : ℝ} (hY₀ : 0 < Y₀) (hY : Y ∈ Icc (Y₀ / 2) (2 * Y₀)) :
+    Y ^ (1 / 2 : ℝ) ≤ windowPowerBound Y₀ ∧ Y ^ (-(1 / 2) : ℝ) ≤ windowPowerBound Y₀ ∧
+      Y ^ (-(3 / 2) : ℝ) ≤ windowPowerBound Y₀ := by
+  have hA : 0 < Y₀ / 2 := by positivity
+  have hYpos : 0 < Y := window_pos hY₀ hY
+  have ha : 0 ≤ (2 * Y₀) ^ (1 / 2 : ℝ) := by positivity
+  have hb : 0 ≤ (Y₀ / 2) ^ (-(1 / 2) : ℝ) := by positivity
+  have hc : 0 ≤ (Y₀ / 2) ^ (-(3 / 2) : ℝ) := by positivity
+  have h1 : Y ^ (1 / 2 : ℝ) ≤ (2 * Y₀) ^ (1 / 2 : ℝ) :=
+    Real.rpow_le_rpow hYpos.le hY.2 (by norm_num)
+  have h2 : Y ^ (-(1 / 2) : ℝ) ≤ (Y₀ / 2) ^ (-(1 / 2) : ℝ) :=
+    Real.rpow_le_rpow_of_nonpos hA hY.1 (by norm_num)
+  have h3 : Y ^ (-(3 / 2) : ℝ) ≤ (Y₀ / 2) ^ (-(3 / 2) : ℝ) :=
+    Real.rpow_le_rpow_of_nonpos hA hY.1 (by norm_num)
+  unfold windowPowerBound
+  exact ⟨by linarith, by linarith, by linarith⟩
+
+theorem norm_line (ξ : ℝ) : ‖(ξ : ℂ) * I‖ = |ξ| := by
+  rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+
+theorem norm_half_add_line_le (ξ : ℝ) : ‖(1 / 2 + (ξ : ℂ) * I : ℂ)‖ ≤ 1 + |ξ| := by
+  refine (norm_add_le _ _).trans ?_
+  rw [norm_line]
+  have h : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
+  rw [h]
+  linarith
+
+theorem norm_half_sub_line_le (ξ : ℝ) : ‖(1 / 2 - (ξ : ℂ) * I : ℂ)‖ ≤ 1 + |ξ| := by
+  refine (norm_sub_le _ _).trans ?_
+  rw [norm_line]
+  have h : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
+  rw [h]
+  linarith
+
+/-- Absorbing a sum into the common shape `K p² (1 + W)`. -/
+theorem jet_shape_le {A B K p2 W : ℝ} (hA : A ≤ K) (hB : B ≤ K) (hp : 0 ≤ p2) (hW : 0 ≤ W) :
+    A * p2 + B * (p2 * W) ≤ K * p2 * (1 + W) := by
+  have h1 : A * p2 ≤ K * p2 := mul_le_mul_of_nonneg_right hA hp
+  have h2 : B * (p2 * W) ≤ K * (p2 * W) := mul_le_mul_of_nonneg_right hB (mul_nonneg hp hW)
+  calc A * p2 + B * (p2 * W) ≤ K * p2 + K * (p2 * W) := add_le_add h1 h2
+    _ = K * p2 * (1 + W) := by ring
+
+/-- The bound for `∂_Y²` of a one-sided tail on the line. -/
+theorem norm_weightedTailYY_line_le {Y₀ Y C₀ : ℝ} (hY₀ : 0 < Y₀) (hC₀ : 0 ≤ C₀)
+    (hY : Y ∈ Icc (Y₀ / 2) (2 * Y₀)) (ξ : ℝ) (negative : Bool) (x : ℝ)
+    (hT : ‖weightedTail ((ξ : ℂ) * I) negative x Y‖ ≤ C₀)
+    (hXX : ‖weightedTailXX ((ξ : ℂ) * I) negative x Y‖ ≤ C₀) :
+    ‖weightedTailYY ((ξ : ℂ) * I) negative x Y‖ ≤ C₀ * (4 / Y₀ ^ 2 + 1) * (1 + |ξ|) ^ 2 := by
+  have hYpos : 0 < Y := window_pos hY₀ hY
+  rw [weightedTailYY_eq _ negative x hYpos]
+  have hYsq : 1 / Y ^ 2 ≤ 4 / Y₀ ^ 2 := window_inv_sq_le hY₀ hY
+  set p2 := (1 + |ξ|) ^ 2 with hp2
+  have hξ := abs_nonneg ξ
+  have hp2one : 1 ≤ p2 := by
+    rw [hp2]
+    exact one_le_pow₀ (by linarith)
+  have huNorm : ‖(((ξ : ℂ) * I) ^ 2 - 1 / 4 : ℂ)‖ ≤ p2 := by
+    refine (norm_sub_le _ _).trans ?_
+    have h2 : ‖(1 / 4 : ℂ)‖ = 1 / 4 := by simp
+    rw [norm_pow, norm_line, h2, hp2]
+    nlinarith
+  have hquot : ‖(((ξ : ℂ) * I) ^ 2 - 1 / 4) * weightedTail ((ξ : ℂ) * I) negative x Y / (Y : ℂ) ^ 2‖ ≤
+      p2 * C₀ * (4 / Y₀ ^ 2) := by
+    rw [norm_div, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hYpos,
+      div_eq_mul_one_div]
+    exact mul_le_mul (mul_le_mul huNorm hT (norm_nonneg _) (by positivity)) hYsq (by positivity)
+      (by positivity)
+  refine (norm_sub_le _ _).trans ?_
+  have hC : C₀ ≤ C₀ * p2 := le_mul_of_one_le_right hC₀ hp2one
+  calc _ ≤ p2 * C₀ * (4 / Y₀ ^ 2) + C₀ := add_le_add hquot hXX
+    _ ≤ p2 * C₀ * (4 / Y₀ ^ 2) + C₀ * p2 := by linarith
+    _ = C₀ * (4 / Y₀ ^ 2 + 1) * p2 := by ring
+
+/-- The polynomial `(1+|ξ|)²(1 + ‖χ‖)` is dominated by any Gaussian. -/
+theorem exists_jet_shape_le_gaussian {c : ℝ} (hc : 0 < c) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ ξ : ℝ,
+      (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) ≤ C * Real.exp (c * ξ ^ 2) := by
+  obtain ⟨C₁, hC₁, hχ⟩ := exists_norm_tailWeight_line_le_gaussian (c := c / 2) (by positivity)
+  obtain ⟨C₂, hC₂, hcmp⟩ := exists_one_add_pow_mul_exp_le_gaussian 2 (b := 0) (c := c / 2)
+    (by positivity)
+  refine ⟨(1 + C₁) * C₂, by positivity, fun ξ => ?_⟩
+  have hE1 : 1 ≤ Real.exp (c / 2 * ξ ^ 2) := Real.one_le_exp (by positivity)
+  have hW : 1 + ‖tailWeight ((ξ : ℂ) * I)‖ ≤ (1 + C₁) * Real.exp (c / 2 * ξ ^ 2) := by
+    have := hχ ξ
+    rw [add_mul, one_mul]
+    linarith
+  have hp := hcmp |ξ| (abs_nonneg ξ)
+  simp only [zero_mul, Real.exp_zero, mul_one, sq_abs] at hp
+  have hprod : Real.exp (c / 2 * ξ ^ 2) * Real.exp (c / 2 * ξ ^ 2) = Real.exp (c * ξ ^ 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  calc (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖)
+      ≤ (C₂ * Real.exp (c / 2 * ξ ^ 2)) * ((1 + C₁) * Real.exp (c / 2 * ξ ^ 2)) :=
+        mul_le_mul hp hW (by positivity) (by positivity)
+    _ = (1 + C₁) * C₂ * (Real.exp (c / 2 * ξ ^ 2) * Real.exp (c / 2 * ξ ^ 2)) := by ring
+    _ = _ := by rw [hprod]
+
+section JetShapes
+
+variable {Y₀ Y C₀ : ℝ} (hY₀ : 0 < Y₀) (hC₀ : 0 ≤ C₀) (hY : Y ∈ Icc (Y₀ / 2) (2 * Y₀)) (ξ x : ℝ)
+
+/-- Abbreviation: the common constant of the jet shapes. -/
+def jetShapeConstant (Y₀ C₀ : ℝ) : ℝ :=
+  2 * windowPowerBound Y₀ + 2 * C₀ * (4 / Y₀ ^ 2 + 1) + 2 * C₀
+
+theorem le_jetShapeConstant_left (hY₀ : 0 < Y₀) (hC₀ : 0 ≤ C₀) :
+    2 * windowPowerBound Y₀ ≤ jetShapeConstant Y₀ C₀ := by
+  have : 0 ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) := by positivity
+  unfold jetShapeConstant
+  linarith
+
+theorem le_jetShapeConstant_mid (hY₀ : 0 < Y₀) (hC₀ : 0 ≤ C₀) :
+    2 * C₀ * (4 / Y₀ ^ 2 + 1) ≤ jetShapeConstant Y₀ C₀ := by
+  have := windowPowerBound_nonneg hY₀
+  unfold jetShapeConstant
+  linarith
+
+theorem le_jetShapeConstant_right (hY₀ : 0 < Y₀) (hC₀ : 0 ≤ C₀) :
+    2 * C₀ ≤ jetShapeConstant Y₀ C₀ := by
+  have := windowPowerBound_nonneg hY₀
+  have : 0 ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) := by positivity
+  unfold jetShapeConstant
+  linarith
+
+include hY₀ hC₀ hY
+
+theorem norm_eisenstein_shape (hT : ‖eisTail ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀) :
+    ‖normalizedEisenstein ((ξ : ℂ) * I) x Y‖ ≤
+      jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) := by
+  have hYpos := window_pos hY₀ hY
+  obtain ⟨hP, -, -⟩ := window_powers_le hY₀ hY
+  set W := ‖tailWeight ((ξ : ℂ) * I)‖ with hW
+  have hWnn : 0 ≤ W := norm_nonneg _
+  set p2 := (1 + |ξ|) ^ 2 with hp2
+  have hp2one : 1 ≤ p2 := one_le_pow₀ (by linarith [abs_nonneg ξ])
+  have hreA : (1 / 2 + (ξ : ℂ) * I).re = 1 / 2 := by simp
+  have hreB : (1 / 2 - (ξ : ℂ) * I).re = 1 / 2 := by simp
+  have h1 : ‖(Y : ℂ) ^ (1 / 2 + (ξ : ℂ) * I)‖ ≤ windowPowerBound Y₀ := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreA]
+    exact hP
+  have h2 : ‖scatteringPhase ((ξ : ℂ) * I) * (Y : ℂ) ^ (1 / 2 - (ξ : ℂ) * I)‖ ≤ windowPowerBound Y₀ := by
+    rw [norm_mul, norm_scatteringPhase_line, one_mul, Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreB]
+    exact hP
+  have h3 : ‖tailWeight ((ξ : ℂ) * I) * eisTail ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀ * W := by
+    rw [norm_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right hT hWnn
+  have hM := windowPowerBound_nonneg hY₀
+  have hshape := jet_shape_le (le_jetShapeConstant_left (C₀ := C₀) hY₀ hC₀)
+    (le_jetShapeConstant_right (C₀ := C₀) hY₀ hC₀) (by linarith : 0 ≤ p2) hWnn
+  refine le_trans ?_ hshape
+  rw [normalizedEisenstein]
+  refine (norm_add₃_le).trans ?_
+  have hA : 2 * windowPowerBound Y₀ ≤ 2 * windowPowerBound Y₀ * p2 :=
+    le_mul_of_one_le_right (by linarith) hp2one
+  have hB : 2 * C₀ * W ≤ 2 * C₀ * (p2 * W) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+    exact le_mul_of_one_le_left hWnn hp2one
+  linarith
+
+omit hY in
+theorem norm_eisensteinX_shape (hT : ‖eisTailX ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀) :
+    ‖eisensteinX ((ξ : ℂ) * I) x Y‖ ≤
+      jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) := by
+  set W := ‖tailWeight ((ξ : ℂ) * I)‖ with hW
+  have hWnn : 0 ≤ W := norm_nonneg _
+  set p2 := (1 + |ξ|) ^ 2 with hp2
+  have hp2one : 1 ≤ p2 := one_le_pow₀ (by linarith [abs_nonneg ξ])
+  have hM := windowPowerBound_nonneg hY₀
+  have hshape := jet_shape_le (le_jetShapeConstant_left (C₀ := C₀) hY₀ hC₀)
+    (le_jetShapeConstant_right (C₀ := C₀) hY₀ hC₀) (by linarith : 0 ≤ p2) hWnn
+  refine le_trans ?_ hshape
+  rw [eisensteinX, norm_mul, mul_comm]
+  have h1 : ‖eisTailX ((ξ : ℂ) * I) x Y‖ * W ≤ 2 * C₀ * W := mul_le_mul_of_nonneg_right hT hWnn
+  have hB : 2 * C₀ * W ≤ 2 * C₀ * (p2 * W) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+    exact le_mul_of_one_le_left hWnn hp2one
+  have hA : 0 ≤ 2 * windowPowerBound Y₀ * p2 := by positivity
+  linarith
+
+omit hY in
+theorem norm_eisensteinXX_shape (hT : ‖eisTailXX ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀) :
+    ‖eisensteinXX ((ξ : ℂ) * I) x Y‖ ≤
+      jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) := by
+  set W := ‖tailWeight ((ξ : ℂ) * I)‖ with hW
+  have hWnn : 0 ≤ W := norm_nonneg _
+  set p2 := (1 + |ξ|) ^ 2 with hp2
+  have hp2one : 1 ≤ p2 := one_le_pow₀ (by linarith [abs_nonneg ξ])
+  have hM := windowPowerBound_nonneg hY₀
+  have hshape := jet_shape_le (le_jetShapeConstant_left (C₀ := C₀) hY₀ hC₀)
+    (le_jetShapeConstant_right (C₀ := C₀) hY₀ hC₀) (by linarith : 0 ≤ p2) hWnn
+  refine le_trans ?_ hshape
+  rw [eisensteinXX, norm_mul, mul_comm]
+  have h1 : ‖eisTailXX ((ξ : ℂ) * I) x Y‖ * W ≤ 2 * C₀ * W := mul_le_mul_of_nonneg_right hT hWnn
+  have hB : 2 * C₀ * W ≤ 2 * C₀ * (p2 * W) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+    exact le_mul_of_one_le_left hWnn hp2one
+  have hA : 0 ≤ 2 * windowPowerBound Y₀ * p2 := by positivity
+  linarith
+
+theorem norm_eisensteinY_shape (hT : ‖eisTailY ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀) :
+    ‖eisensteinY ((ξ : ℂ) * I) x Y‖ ≤
+      jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) := by
+  have hYpos := window_pos hY₀ hY
+  obtain ⟨-, hP, -⟩ := window_powers_le hY₀ hY
+  set W := ‖tailWeight ((ξ : ℂ) * I)‖ with hW
+  have hWnn : 0 ≤ W := norm_nonneg _
+  set p := 1 + |ξ| with hp
+  have hp1 : 1 ≤ p := by linarith [abs_nonneg ξ]
+  have hp2one : 1 ≤ p ^ 2 := one_le_pow₀ hp1
+  have hpp : p ≤ p ^ 2 := by nlinarith
+  have hreA : (1 / 2 + (ξ : ℂ) * I - 1).re = -(1 / 2) := by
+    simp
+    norm_num
+  have hreB : (1 / 2 - (ξ : ℂ) * I - 1).re = -(1 / 2) := by
+    simp
+    norm_num
+  have hM := windowPowerBound_nonneg hY₀
+  have h1 : ‖(1 / 2 + (ξ : ℂ) * I) * (Y : ℂ) ^ (1 / 2 + (ξ : ℂ) * I - 1)‖ ≤ p * windowPowerBound Y₀ := by
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreA]
+    exact mul_le_mul (norm_half_add_line_le ξ) hP (by positivity) (by linarith)
+  have h2 : ‖scatteringPhase ((ξ : ℂ) * I) *
+      ((1 / 2 - (ξ : ℂ) * I) * (Y : ℂ) ^ (1 / 2 - (ξ : ℂ) * I - 1))‖ ≤ p * windowPowerBound Y₀ := by
+    rw [norm_mul, norm_scatteringPhase_line, one_mul, norm_mul,
+      Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreB]
+    exact mul_le_mul (norm_half_sub_line_le ξ) hP (by positivity) (by linarith)
+  have h3 : ‖tailWeight ((ξ : ℂ) * I) * eisTailY ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀ * W := by
+    rw [norm_mul, mul_comm]
+    exact mul_le_mul_of_nonneg_right hT hWnn
+  have hshape := jet_shape_le (le_jetShapeConstant_left (C₀ := C₀) hY₀ hC₀)
+    (le_jetShapeConstant_right (C₀ := C₀) hY₀ hC₀) (by linarith : 0 ≤ p ^ 2) hWnn
+  refine le_trans ?_ hshape
+  rw [eisensteinY]
+  refine (norm_add₃_le).trans ?_
+  have hA : p * windowPowerBound Y₀ ≤ p ^ 2 * windowPowerBound Y₀ :=
+    mul_le_mul_of_nonneg_right hpp hM
+  have hB : 2 * C₀ * W ≤ 2 * C₀ * (p ^ 2 * W) := by
+    refine mul_le_mul_of_nonneg_left ?_ (by linarith)
+    exact le_mul_of_one_le_left hWnn hp2one
+  have hexp : 2 * windowPowerBound Y₀ * p ^ 2 = p ^ 2 * windowPowerBound Y₀ + p ^ 2 * windowPowerBound Y₀ := by
+    ring
+  linarith
+
+theorem norm_eisensteinYY_shape
+    (hT : ‖eisTailYY ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) * (1 + |ξ|) ^ 2) :
+    ‖eisensteinYY ((ξ : ℂ) * I) x Y‖ ≤
+      jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) := by
+  have hYpos := window_pos hY₀ hY
+  obtain ⟨-, -, hP⟩ := window_powers_le hY₀ hY
+  set W := ‖tailWeight ((ξ : ℂ) * I)‖ with hW
+  have hWnn : 0 ≤ W := norm_nonneg _
+  set p := 1 + |ξ| with hp
+  have hp1 : 1 ≤ p := by linarith [abs_nonneg ξ]
+  have hreA : (1 / 2 + (ξ : ℂ) * I - 1 - 1).re = -(3 / 2) := by
+    simp
+    norm_num
+  have hreB : (1 / 2 - (ξ : ℂ) * I - 1 - 1).re = -(3 / 2) := by
+    simp
+    norm_num
+  have hM := windowPowerBound_nonneg hY₀
+  have hplus1 : ‖(1 / 2 + (ξ : ℂ) * I - 1 : ℂ)‖ ≤ p := by
+    have h : (1 / 2 + (ξ : ℂ) * I - 1 : ℂ) = -(1 / 2 - (ξ : ℂ) * I) := by ring
+    rw [h, norm_neg]
+    exact norm_half_sub_line_le ξ
+  have hminus1 : ‖(1 / 2 - (ξ : ℂ) * I - 1 : ℂ)‖ ≤ p := by
+    have h : (1 / 2 - (ξ : ℂ) * I - 1 : ℂ) = -(1 / 2 + (ξ : ℂ) * I) := by ring
+    rw [h, norm_neg]
+    exact norm_half_add_line_le ξ
+  have h1 : ‖(1 / 2 + (ξ : ℂ) * I) * ((1 / 2 + (ξ : ℂ) * I - 1) *
+      (Y : ℂ) ^ (1 / 2 + (ξ : ℂ) * I - 1 - 1))‖ ≤ p ^ 2 * windowPowerBound Y₀ := by
+    rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreA, sq, mul_assoc]
+    exact mul_le_mul (norm_half_add_line_le ξ) (mul_le_mul hplus1 hP (by positivity) (by linarith))
+      (by positivity) (by linarith)
+  have h2 : ‖scatteringPhase ((ξ : ℂ) * I) * ((1 / 2 - (ξ : ℂ) * I) * ((1 / 2 - (ξ : ℂ) * I - 1) *
+      (Y : ℂ) ^ (1 / 2 - (ξ : ℂ) * I - 1 - 1)))‖ ≤ p ^ 2 * windowPowerBound Y₀ := by
+    rw [norm_mul, norm_scatteringPhase_line, one_mul, norm_mul, norm_mul,
+      Complex.norm_cpow_eq_rpow_re_of_pos hYpos, hreB, sq, mul_assoc]
+    exact mul_le_mul (norm_half_sub_line_le ξ) (mul_le_mul hminus1 hP (by positivity) (by linarith))
+      (by positivity) (by linarith)
+  have h3 : ‖tailWeight ((ξ : ℂ) * I) * eisTailYY ((ξ : ℂ) * I) x Y‖ ≤
+      2 * C₀ * (4 / Y₀ ^ 2 + 1) * (p ^ 2 * W) := by
+    rw [norm_mul, mul_comm]
+    calc _ ≤ (2 * C₀ * (4 / Y₀ ^ 2 + 1) * p ^ 2) * W := mul_le_mul_of_nonneg_right hT hWnn
+      _ = _ := by ring
+  have hshape := jet_shape_le (le_jetShapeConstant_left (C₀ := C₀) hY₀ hC₀)
+    (le_jetShapeConstant_mid (C₀ := C₀) hY₀ hC₀) (by positivity : 0 ≤ p ^ 2) hWnn
+  refine le_trans ?_ hshape
+  rw [eisensteinYY]
+  refine (norm_add₃_le).trans ?_
+  have hexp : 2 * windowPowerBound Y₀ * p ^ 2 = p ^ 2 * windowPowerBound Y₀ + p ^ 2 * windowPowerBound Y₀ := by
+    ring
+  linarith
+
+end JetShapes
+
 /-- **All jets of `E` on the line are dominated by any Gaussian**, uniformly in `x` and on a height
 window. -/
 theorem exists_eisenstein_jets_le_gaussian {Y₀ : ℝ} (hY₀ : 0 < Y₀) {c : ℝ} (hc : 0 < c) :
@@ -402,203 +707,37 @@ theorem exists_eisenstein_jets_le_gaussian {Y₀ : ℝ} (hY₀ : 0 < Y₀) {c : 
       ‖eisensteinY ((ξ : ℂ) * I) x Y‖ ≤ C * Real.exp (c * ξ ^ 2) ∧
       ‖eisensteinYY ((ξ : ℂ) * I) x Y‖ ≤ C * Real.exp (c * ξ ^ 2) := by
   obtain ⟨C₀, hC₀, htail⟩ := exists_weightedTail_jets_le hY₀ (le_refl (0 : ℝ))
-  obtain ⟨C₁, hC₁, hχ⟩ := exists_norm_tailWeight_line_le_gaussian (c := c / 2) (by positivity)
-  obtain ⟨C₂, hC₂, hcmp⟩ := exists_one_add_pow_mul_exp_le_gaussian 2 (b := 0) (c := c / 2) (by positivity)
-  set A := Y₀ / 2 with hA
-  have hApos : 0 < A := by positivity
-  set M : ℝ := (2 * Y₀) ^ (1 / 2 : ℝ) + A ^ (-(1 / 2) : ℝ) + A ^ (-(3 / 2) : ℝ) with hM
-  have hMnn : 0 ≤ M := by positivity
-  set K : ℝ := 2 * M + 2 * C₀ * (4 / Y₀ ^ 2 + 1) + 2 * C₀ with hK
-  have hKnn : 0 ≤ K := by positivity
-  refine ⟨K * (1 + C₁) * C₂, by positivity, fun ξ x Y hY => ?_⟩
-  set u : ℂ := (ξ : ℂ) * I with hu
-  have hure : u.re = 0 := by simp [hu]
-  have huabs : |u.re| ≤ 0 := by rw [hure, abs_zero]
-  have hYpos : 0 < Y := window_pos hY₀ hY
-  have hnorm : ∀ w : ℂ, ‖(Y : ℂ) ^ w‖ = Y ^ w.re := fun w =>
-    Complex.norm_cpow_eq_rpow_re_of_pos hYpos w
-  have hP1 : Y ^ (1 / 2 : ℝ) ≤ M := by
-    have h : Y ^ (1 / 2 : ℝ) ≤ (2 * Y₀) ^ (1 / 2 : ℝ) :=
-      Real.rpow_le_rpow hYpos.le hY.2 (by norm_num)
-    have h1 : 0 ≤ A ^ (-(1 / 2) : ℝ) := by positivity
-    have h2 : 0 ≤ A ^ (-(3 / 2) : ℝ) := by positivity
-    linarith
-  have hP2 : Y ^ (-(1 / 2) : ℝ) ≤ M := by
-    have h : Y ^ (-(1 / 2) : ℝ) ≤ A ^ (-(1 / 2) : ℝ) :=
-      Real.rpow_le_rpow_of_nonpos hApos hY.1 (by norm_num)
-    have h1 : 0 ≤ (2 * Y₀) ^ (1 / 2 : ℝ) := by positivity
-    have h2 : 0 ≤ A ^ (-(3 / 2) : ℝ) := by positivity
-    linarith
-  have hP3 : Y ^ (-(3 / 2) : ℝ) ≤ M := by
-    have h : Y ^ (-(3 / 2) : ℝ) ≤ A ^ (-(3 / 2) : ℝ) :=
-      Real.rpow_le_rpow_of_nonpos hApos hY.1 (by norm_num)
-    have h1 : 0 ≤ (2 * Y₀) ^ (1 / 2 : ℝ) := by positivity
-    have h2 : 0 ≤ A ^ (-(1 / 2) : ℝ) := by positivity
-    linarith
-  have hphase : ‖scatteringPhase u‖ = 1 := norm_scatteringPhase_line ξ
-  have hχξ := hχ ξ
-  rw [← hu] at hχξ
-  obtain ⟨hT1, hX1, hXX1, hY1⟩ := htail u false x Y huabs hY
-  obtain ⟨hT2, hX2, hXX2, hY2⟩ := htail u true x Y huabs hY
-  have hTsum : ‖eisTail u x Y‖ ≤ 2 * C₀ := (norm_add_le _ _).trans (by linarith)
-  have hXsum : ‖eisTailX u x Y‖ ≤ 2 * C₀ := (norm_add_le _ _).trans (by linarith)
-  have hXXsum : ‖eisTailXX u x Y‖ ≤ 2 * C₀ := (norm_add_le _ _).trans (by linarith)
-  have hYsum : ‖eisTailY u x Y‖ ≤ 2 * C₀ := (norm_add_le _ _).trans (by linarith)
-  set p : ℝ := 1 + |ξ| with hp
-  have hp1 : 1 ≤ p := by
-    have := abs_nonneg ξ
-    linarith
-  have hpsq : 1 ≤ p ^ 2 := by nlinarith
-  have hYY1 : ∀ negative : Bool, ‖weightedTailYY u negative x Y‖ ≤ C₀ * (4 / Y₀ ^ 2 + 1) * p ^ 2 := by
-    intro negative
-    obtain ⟨hT, -, hXX, -⟩ := htail u negative x Y huabs hY
-    rw [weightedTailYY_eq u negative x hYpos]
-    have hYsq : 1 / Y ^ 2 ≤ 4 / Y₀ ^ 2 := window_inv_sq_le hY₀ hY
-    have huNorm : ‖(u ^ 2 - 1 / 4 : ℂ)‖ ≤ p ^ 2 := by
-      refine (norm_sub_le _ _).trans ?_
-      have h1 : ‖u ^ 2‖ = |ξ| ^ 2 := by
-        rw [norm_pow, hu, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-      have h2 : ‖(1 / 4 : ℂ)‖ = 1 / 4 := by simp
-      rw [h1, h2, hp]
-      nlinarith [abs_nonneg ξ]
-    have hquot : ‖(u ^ 2 - 1 / 4) * weightedTail u negative x Y / (Y : ℂ) ^ 2‖ ≤
-        p ^ 2 * C₀ * (4 / Y₀ ^ 2) := by
-      rw [norm_div, norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hYpos,
-        div_eq_mul_one_div]
-      exact mul_le_mul (mul_le_mul huNorm hT (norm_nonneg _) (by positivity)) hYsq (by positivity)
-        (by positivity)
-    refine (norm_sub_le _ _).trans ?_
-    have : C₀ ≤ C₀ * p ^ 2 := le_mul_of_one_le_right hC₀ hpsq
-    nlinarith
-  have hYYsum : ‖eisTailYY u x Y‖ ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) * p ^ 2 := by
+  obtain ⟨C₁, hC₁, hshape⟩ := exists_jet_shape_le_gaussian hc
+  have hK : 0 ≤ jetShapeConstant Y₀ C₀ := by
+    have := windowPowerBound_nonneg hY₀
+    unfold jetShapeConstant
+    positivity
+  refine ⟨jetShapeConstant Y₀ C₀ * C₁, by positivity, fun ξ x Y hY => ?_⟩
+  have hu : |((ξ : ℂ) * I).re| ≤ 0 := by simp
+  obtain ⟨hT1, hX1, hXX1, hY1⟩ := htail ((ξ : ℂ) * I) false x Y hu hY
+  obtain ⟨hT2, hX2, hXX2, hY2⟩ := htail ((ξ : ℂ) * I) true x Y hu hY
+  have hsum : ∀ {a b : ℂ}, ‖a‖ ≤ C₀ → ‖b‖ ≤ C₀ → ‖a + b‖ ≤ 2 * C₀ := fun ha hb =>
+    (norm_add_le _ _).trans (by linarith)
+  have hYY : ‖eisTailYY ((ξ : ℂ) * I) x Y‖ ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) * (1 + |ξ|) ^ 2 := by
     refine (norm_add_le _ _).trans ?_
-    have h1 := hYY1 false
-    have h2 := hYY1 true
+    have h1 := norm_weightedTailYY_line_le hY₀ hC₀ hY ξ false x hT1 hXX1
+    have h2 := norm_weightedTailYY_line_le hY₀ hC₀ hY ξ true x hT2 hXX2
     linarith
-  have hplus : ‖(1 / 2 + u : ℂ)‖ ≤ p := by
-    refine (norm_add_le _ _).trans ?_
-    have h1 : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
-    have h2 : ‖u‖ = |ξ| := by
-      rw [hu, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-    rw [h1, h2, hp]
-    linarith
-  have hminus : ‖(1 / 2 - u : ℂ)‖ ≤ p := by
-    refine (norm_sub_le _ _).trans ?_
-    have h1 : ‖(1 / 2 : ℂ)‖ = 1 / 2 := by simp
-    have h2 : ‖u‖ = |ξ| := by
-      rw [hu, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
-    rw [h1, h2, hp]
-    linarith
-  have hplus1 : ‖(1 / 2 + u - 1 : ℂ)‖ ≤ p := by
-    have h : (1 / 2 + u - 1 : ℂ) = -(1 / 2 - u) := by ring
-    rw [h, norm_neg]
-    exact hminus
-  have hminus1 : ‖(1 / 2 - u - 1 : ℂ)‖ ≤ p := by
-    have h : (1 / 2 - u - 1 : ℂ) = -(1 / 2 + u) := by ring
-    rw [h, norm_neg]
-    exact hplus
-  have hreA : (1 / 2 + u).re = 1 / 2 := by simp [hure]
-  have hreB : (1 / 2 - u).re = 1 / 2 := by simp [hure]
-  have hreC : (1 / 2 + u - 1).re = -(1 / 2) := by
-    simp [hure]
-    norm_num
-  have hreD : (1 / 2 - u - 1).re = -(1 / 2) := by
-    simp [hure]
-    norm_num
-  have hreE : (1 / 2 + u - 1 - 1).re = -(3 / 2) := by
-    simp [hure]
-    norm_num
-  have hreF : (1 / 2 - u - 1 - 1).re = -(3 / 2) := by
-    simp [hure]
-    norm_num
-  set W := ‖tailWeight u‖ with hW
-  have hWnn : 0 ≤ W := norm_nonneg _
-  -- a common bound for the jets
-  have hmain : ∀ J : ℝ, J ≤ K * p ^ 2 * (1 + W) → J ≤ K * (1 + C₁) * C₂ * Real.exp (c * ξ ^ 2) := by
+  have hfinal : ∀ J : ℝ,
+      J ≤ jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖) →
+      J ≤ jetShapeConstant Y₀ C₀ * C₁ * Real.exp (c * ξ ^ 2) := by
     intro J hJ
-    have hE1 : 1 ≤ Real.exp (c / 2 * ξ ^ 2) := Real.one_le_exp (by positivity)
-    have hW' : 1 + W ≤ (1 + C₁) * Real.exp (c / 2 * ξ ^ 2) := by nlinarith
-    have hpC := hcmp |ξ| (abs_nonneg ξ)
-    simp only [zero_mul, Real.exp_zero, mul_one, sq_abs] at hpC
-    have hprod : Real.exp (c / 2 * ξ ^ 2) * Real.exp (c / 2 * ξ ^ 2) = Real.exp (c * ξ ^ 2) := by
-      rw [← Real.exp_add]
-      congr 1
-      ring
-    calc J ≤ K * p ^ 2 * (1 + W) := hJ
-      _ ≤ K * (C₂ * Real.exp (c / 2 * ξ ^ 2)) * ((1 + C₁) * Real.exp (c / 2 * ξ ^ 2)) :=
-          mul_le_mul (mul_le_mul_of_nonneg_left hpC hKnn) hW' (by positivity) (by positivity)
-      _ = K * (1 + C₁) * C₂ * Real.exp (c * ξ ^ 2) := by
-          rw [← hprod]
-          ring
-  have hKM : 2 * M ≤ K := by
-    rw [hK]
-    have : 0 ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) := by positivity
-    linarith
-  have hKC : 2 * C₀ ≤ K := by
-    rw [hK]
-    have : 0 ≤ 2 * C₀ * (4 / Y₀ ^ 2 + 1) := by positivity
-    linarith
-  have hKY : 2 * C₀ * (4 / Y₀ ^ 2 + 1) ≤ K := by
-    rw [hK]
-    linarith
-  have hp0 : 0 ≤ p := by linarith
-  refine ⟨hmain _ ?_, hmain _ ?_, hmain _ ?_, hmain _ ?_, hmain _ ?_⟩
-  · -- `E`
-    rw [normalizedEisenstein]
-    refine (norm_add₃_le).trans ?_
-    rw [norm_mul, norm_mul, hphase, one_mul, hnorm, hnorm, hreA, hreB]
-    have h3 : W * ‖eisTail u x Y‖ ≤ W * (2 * C₀) := mul_le_mul_of_nonneg_left hTsum hWnn
-    have h4 : 2 * M + 2 * C₀ * W ≤ K * (1 + W) := by nlinarith
-    have h5 : K * (1 + W) ≤ K * p ^ 2 * (1 + W) := by
-      have : 0 ≤ K * (1 + W) := by positivity
-      nlinarith
-    nlinarith
-  · -- `∂ₓE`
-    rw [eisensteinX, norm_mul]
-    have h3 : W * ‖eisTailX u x Y‖ ≤ W * (2 * C₀) := mul_le_mul_of_nonneg_left hXsum hWnn
-    have h5 : K * (1 + W) ≤ K * p ^ 2 * (1 + W) := by
-      have : 0 ≤ K * (1 + W) := by positivity
-      nlinarith
-    nlinarith
-  · -- `∂ₓ²E`
-    rw [eisensteinXX, norm_mul]
-    have h3 : W * ‖eisTailXX u x Y‖ ≤ W * (2 * C₀) := mul_le_mul_of_nonneg_left hXXsum hWnn
-    have h5 : K * (1 + W) ≤ K * p ^ 2 * (1 + W) := by
-      have : 0 ≤ K * (1 + W) := by positivity
-      nlinarith
-    nlinarith
-  · -- `∂_Y E`
-    rw [eisensteinY]
-    refine (norm_add₃_le).trans ?_
-    rw [norm_mul, norm_mul, norm_mul, norm_mul, hphase, one_mul, hnorm, hnorm, hreC, hreD]
-    have h1 : ‖(1 / 2 + u : ℂ)‖ * Y ^ (-(1 / 2) : ℝ) ≤ p * M :=
-      mul_le_mul hplus hP2 (by positivity) hp0
-    have h2 : ‖(1 / 2 - u : ℂ)‖ * Y ^ (-(1 / 2) : ℝ) ≤ p * M :=
-      mul_le_mul hminus hP2 (by positivity) hp0
-    have h3 : W * ‖eisTailY u x Y‖ ≤ W * (2 * C₀) := mul_le_mul_of_nonneg_left hYsum hWnn
-    have hpp : p ≤ p ^ 2 := by nlinarith
-    have hMp : M * p ≤ M * p ^ 2 := mul_le_mul_of_nonneg_left hpp hMnn
-    have h6 : 2 * M * p ^ 2 ≤ K * p ^ 2 := mul_le_mul_of_nonneg_right hKM (by positivity)
-    have h7 : 2 * C₀ * W ≤ K * W := mul_le_mul_of_nonneg_right hKC hWnn
-    have h8 : K * W ≤ K * p ^ 2 * W := by
-      have : 0 ≤ K * W := by positivity
-      nlinarith
-    nlinarith
-  · -- `∂_Y²E`
-    rw [eisensteinYY]
-    refine (norm_add₃_le).trans ?_
-    rw [norm_mul, norm_mul, norm_mul, norm_mul, norm_mul, norm_mul, hphase, one_mul, hnorm, hnorm,
-      hreE, hreF]
-    have h1 : ‖(1 / 2 + u : ℂ)‖ * (‖(1 / 2 + u - 1 : ℂ)‖ * Y ^ (-(3 / 2) : ℝ)) ≤ p * (p * M) :=
-      mul_le_mul hplus (mul_le_mul hplus1 hP3 (by positivity) hp0) (by positivity) hp0
-    have h2 : ‖(1 / 2 - u : ℂ)‖ * (‖(1 / 2 - u - 1 : ℂ)‖ * Y ^ (-(3 / 2) : ℝ)) ≤ p * (p * M) :=
-      mul_le_mul hminus (mul_le_mul hminus1 hP3 (by positivity) hp0) (by positivity) hp0
-    have h3 : W * ‖eisTailYY u x Y‖ ≤ W * (2 * C₀ * (4 / Y₀ ^ 2 + 1) * p ^ 2) :=
-      mul_le_mul_of_nonneg_left hYYsum hWnn
-    have h6 : 2 * M * p ^ 2 ≤ K * p ^ 2 := mul_le_mul_of_nonneg_right hKM (by positivity)
-    have h7 : 2 * C₀ * (4 / Y₀ ^ 2 + 1) * (W * p ^ 2) ≤ K * (W * p ^ 2) :=
-      mul_le_mul_of_nonneg_right hKY (by positivity)
-    nlinarith
+    refine hJ.trans ?_
+    calc jetShapeConstant Y₀ C₀ * (1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖)
+        = jetShapeConstant Y₀ C₀ * ((1 + |ξ|) ^ 2 * (1 + ‖tailWeight ((ξ : ℂ) * I)‖)) := by ring
+      _ ≤ jetShapeConstant Y₀ C₀ * (C₁ * Real.exp (c * ξ ^ 2)) :=
+          mul_le_mul_of_nonneg_left (hshape ξ) hK
+      _ = _ := by ring
+  exact ⟨hfinal _ (norm_eisenstein_shape hY₀ hC₀ hY ξ x (hsum hT1 hT2)),
+    hfinal _ (norm_eisensteinX_shape hY₀ hC₀ ξ x (hsum hX1 hX2)),
+    hfinal _ (norm_eisensteinXX_shape hY₀ hC₀ ξ x (hsum hXX1 hXX2)),
+    hfinal _ (norm_eisensteinY_shape hY₀ hC₀ hY ξ x (hsum hY1 hY2)),
+    hfinal _ (norm_eisensteinYY_shape hY₀ hC₀ hY ξ x hYY)⟩
 
 /-! ### Measurability on the line -/
 

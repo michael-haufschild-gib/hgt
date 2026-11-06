@@ -230,7 +230,7 @@ theorem exists_rightResidual_cut {a b : PrecontactAperture} (hab : a.1.1 ≤ b.1
   obtain ⟨u₀, hu₀⟩ : ∃ u₀, u₀ = toForm b (rightResidual hab ζ) := ⟨_, rfl⟩
   have hφ := physical_rightResidual_ae hab ζ
   rw [← hu₀] at hφ
-  rw [← hh] at hφ ⊢
+  rw [← hh]
   have hs₁ : Ico (2 * h - b.1.1) b.1.1 ⊆ centralInterval b.1.1 := fun x hx =>
     ⟨by linarith only [hx.1, hh0], hx.2.le⟩
   have hs₂ : Ico (-b.1.1) (2 * h - b.1.1) ⊆ centralInterval b.1.1 := fun x hx =>
@@ -288,8 +288,9 @@ theorem exists_rightResidual_cut {a b : PrecontactAperture} (hab : a.1.1 ≤ b.1
     have hT : ccmArchimedeanFormEmbedding b.1 (toForm b (rightTranslate hab ((toForm a).symm w))) =
         ccmArchimedeanFormEmbedding b.1 wb := by
       have hp := physical_translate (-(b.1.1 - a.1.1)) (fit_neg hab) ((toForm a).symm w)
-      rw [LinearEquiv.apply_symm_apply, hwcoe, hfw, ← hh] at hp
+      rw [LinearEquiv.apply_symm_apply, hwcoe, hfw] at hp
       refine hp.trans ?_
+      rw [← hh]
       exact congrArg (fun T : SoninL2 →L[ℂ] SoninL2 => T (ccmArchimedeanFormEmbedding b.1 wb))
         (logTranslationCLM_neg_mul h)
     rw [hT]
@@ -542,7 +543,9 @@ theorem integral_norm_chartIncrement_le_split {a b : PrecontactAperture} (hab : 
       rw [this]
       exact add_nonneg (indicator_nonneg (fun _ _ => by rw [hF]; exact norm_nonneg _) _)
         (indicator_nonneg (fun _ _ => hM0) _)
-  have hint := integral_mono hFi (h1i.add h2i) hpt
+  have hint : ∫ t, F t ≤ ∫ t, ((Ioc 0 (2 * a.1.1)).indicator F t +
+      (Ioc (2 * a.1.1) (2 * b.1.1)).indicator (fun _ => M) t) :=
+    integral_mono hFi (h1i.add h2i) hpt
   rw [integral_add h1i h2i] at hint
   have hc2 : (∫ t, (Ioc (2 * a.1.1) (2 * b.1.1)).indicator (fun _ => M) t) = 2 * (b.1.1 - a.1.1) * M := by
     rw [integral_indicator measurableSet_Ioc, setIntegral_const,
@@ -616,7 +619,7 @@ theorem exists_chartIncrement_lipschitz (a₁ a₂ : PrecontactAperture) (z : �
   obtain ⟨g, hg1, hgv⟩ := exists_signSource a.1 (fun x => chartIncrement a b z (a.1.1 - x))
     ((continuous_chartIncrement a b z).comp (by fun_prop))
   have hI := hgv (ccmArchimedeanFormToAperture a.1 (toForm a wv)) hwv
-  obtain ⟨hUL, hUM, hFM⟩ := hAu a h1 hb g hg1
+  obtain ⟨hUL, hUM, hFM⟩ := hAu a h1 (hab.trans hb) g hg1
   obtain ⟨U, hU⟩ : ∃ U, U = sourcePhysical a g := ⟨_, rfl⟩
   obtain ⟨F, hF⟩ : ∃ F, F = sourceForcing a g := ⟨_, rfl⟩
   rw [← hU] at hUL hUM
@@ -713,7 +716,7 @@ theorem exists_chartIncrement_lipschitz (a₁ a₂ : PrecontactAperture) (z : �
     rw [hz]
     by_cases hm : x ∈ Ico 0 τ
     · rw [indicator_of_mem hm, indicator_of_mem (show x + -b.1.1 ∈ Ico (-b.1.1) (τ - b.1.1) from
-        ⟨by linarith only [hm.1], by linarith only [hm.2]⟩), neg_add_cancel_comm]
+        ⟨by linarith only [hm.1], by linarith only [hm.2]⟩), neg_add_cancel_right]
     · rw [indicator_of_notMem hm, indicator_of_notMem (fun hn : x + -b.1.1 ∈ Ico (-b.1.1) (τ - b.1.1) =>
         hm ⟨by linarith only [hn.1], by linarith only [hn.2]⟩)]
   have hcdb : 2 * b.1.1 - c < 2 * b.1.1 - c / 2 := by linarith only [hc]
@@ -798,6 +801,10 @@ theorem exists_chartIncrement_lipschitz (a₁ a₂ : PrecontactAperture) (z : �
       (ccmArchimedeanFormEmbedding b.1 (toForm b bv)) = logarithmicFullForm p (B : RealLineL2) := by
     have := logarithmicFullForm_translation (-b.1.1) hTuE hJbE
     rw [← hpTu, ← hB] at this
+    have hJbc : (Jb : RealLineL2) = ccmArchimedeanFormEmbedding b.1 (toForm b bv) := by
+      rw [hJb]
+      rfl
+    rw [← hJbc]
     exact this.symm
   -- The commutator.
   have hpi : Integrable (p : ℝ → ℂ) := by
@@ -838,13 +845,15 @@ theorem exists_chartIncrement_lipschitz (a₁ a₂ : PrecontactAperture) (z : �
     exact mul_le_mul_of_nonneg_left hBL (by positivity)
   have hEB : ‖logarithmicFullForm p (B : RealLineL2)‖ ≤ τ * (A₁ * A₂) + Lp₀ / 2 * Au * (τ * Ab) := by
     have hc := logarithmicFullForm_conj p (B : RealLineL2)
-    rw [← hc, norm_star]
+    have hnorm : ‖logarithmicFullForm p (B : RealLineL2)‖ = ‖logarithmicFullForm (B : RealLineL2) p‖ := by
+      rw [← hc, norm_star]
+    rw [hnorm]
     have he : logarithmicFullForm (B : RealLineL2) p =
         logarithmicFullForm (B : RealLineL2) (Cb.mult p) - inner ℂ (B : RealLineL2) (Cb.comm.op p) := by
       rw [← hid]
       ring
     rw [he]
-    exact (norm_sub_le _ _).trans (add_le_add (by rw [hτd]; exact hen) hcomm)
+    exact (norm_sub_le _ _).trans (add_le_add hen hcomm)
   -- The bounded adjustment.
   have hadj : ‖inner ℂ ((logarithmicDirichletAdjustment b.1 - ccmRestrictedWeilBoundedRemainder b.1)
       (ccmArchimedeanFormToAperture b.1 (toForm b Tu))) Jb‖ ≤ K₃ * Au * (τ * Ab) := by

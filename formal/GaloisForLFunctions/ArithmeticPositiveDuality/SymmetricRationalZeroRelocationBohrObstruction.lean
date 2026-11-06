@@ -63,7 +63,7 @@ theorem isBohrAlmostPeriodic_mul_iff_eq_zero_of_tendsto_one {F m : ℝ → ℂ}
     have hH_ap : IsBohrAlmostPeriodic (fun t => F t * m t - F t) :=
       GaloisForLFunctions.isBohrAlmostPeriodic_sub (hFc.mul hmc) hG hFc hFa
     have hsub0 : Tendsto (fun t => ‖m t - 1‖) atTop (𝓝 0) := by
-      simpa using (continuous_norm.tendsto (0 : ℂ)).comp (tendsto_sub_nhds_zero_iff.mpr hlim)
+      simpa using (tendsto_sub_nhds_zero_iff.mpr hlim).norm
     have hH_lim : Tendsto (fun t => F t * m t - F t) atTop (𝓝 0) := by
       refine squeeze_zero_norm (a := fun t => max C 0 * ‖m t - 1‖) (fun t => ?_) ?_
       · rw [show F t * m t - F t = F t * (m t - 1) by ring, norm_mul]
@@ -95,7 +95,7 @@ theorem not_isBohrAlmostPeriodic_mul_of_tendsto_one {F m : ℝ → ℂ}
 theorem isBohrAlmostPeriodic_riemannZeta_vertical {σ : ℝ} (hσ : 1 < σ) :
     IsBohrAlmostPeriodic (fun t : ℝ => riemannZeta ((σ : ℂ) + (t : ℂ) * I)) := by
   have hsum : LSeriesSummable 1 (σ : ℂ) := LSeriesSummable_one_iff.mpr (by simpa using hσ)
-  have hap := RHTower.isBohrAlmostPeriodic_LSeries_vertical hsum
+  have hap := RHTower.AbelianTwist.isBohrAlmostPeriodic_LSeries_vertical hsum
   have heq : (fun y : ℝ => LSeries 1 ((σ : ℂ) + (y : ℂ) * I)) =
       fun t : ℝ => riemannZeta ((σ : ℂ) + (t : ℂ) * I) := by
     funext t
@@ -111,7 +111,7 @@ theorem continuous_riemannZeta_vertical {σ : ℝ} (hσ : 1 < σ) :
     linarith
   have hd : DifferentiableAt ℂ riemannZeta ((σ : ℂ) + (t : ℂ) * I) :=
     differentiableAt_riemannZeta hne1
-  exact hd.continuousAt.comp (by fun_prop)
+  exact hd.continuousAt.comp (f := fun y : ℝ => (σ : ℂ) + (y : ℂ) * I) (by fun_prop)
 
 /-- Multiplying `riemannZeta` on `Re s = σ > 1` by any continuous factor `m(t) → 1` not identically
 `1` destroys Bohr almost periodicity. -/
@@ -132,7 +132,7 @@ theorem no_summable_LSeries_eq_riemannZeta_mul_vertical {σ : ℝ} (hσ : 1 < σ
     ¬ ∀ t : ℝ, LSeries a ((σ : ℂ) + (t : ℂ) * I) =
         riemannZeta ((σ : ℂ) + (t : ℂ) * I) * m t := by
   intro heq
-  have hap := RHTower.isBohrAlmostPeriodic_LSeries_vertical ha
+  have hap := RHTower.AbelianTwist.isBohrAlmostPeriodic_LSeries_vertical ha
   rw [funext heq] at hap
   exact not_isBohrAlmostPeriodic_riemannZeta_mul_vertical hσ hmc hlim hne hap
 
@@ -274,16 +274,21 @@ theorem tendsto_zeroRelocationFactor_vertical_atTop (ρ₀ : ℂ) (γ₁ γ₂ �
         ((tendsto_vertical_sub_div_self σ a₃).mul (tendsto_vertical_sub_div_self σ a₄))
     refine h4.congr' ?_
     filter_upwards [eventually_gt_atTop (0 : ℝ)] with t _
-    ring
-  have hnum := hprod4 ρ₀ (starRingEnd ℂ ρ₀) (1 - ρ₀) (1 - starRingEnd ℂ ρ₀)
-  have hden := hprod4 (1 / 2 + I * γ₁) (1 / 2 - I * γ₁) (1 / 2 + I * γ₂) (1 / 2 - I * γ₂)
-  have hquot : Tendsto (fun t : ℝ =>
-      (zeroRelocationNum ρ₀ ((σ : ℂ) + (t : ℂ) * I) / ((σ : ℂ) + (t : ℂ) * I) ^ 4) /
-        (zeroRelocationDen γ₁ γ₂ ((σ : ℂ) + (t : ℂ) * I) / ((σ : ℂ) + (t : ℂ) * I) ^ 4))
-      atTop (𝓝 1) := by
-    simpa using hnum.div hden one_ne_zero
-  refine hquot.congr' ?_
+    simp only [div_mul_div_comm]
+    congr 1 <;> ring
+  have hnum : Tendsto (fun t : ℝ =>
+      zeroRelocationNum ρ₀ ((σ : ℂ) + (t : ℂ) * I) / ((σ : ℂ) + (t : ℂ) * I) ^ 4)
+      atTop (𝓝 1) :=
+    hprod4 ρ₀ (starRingEnd ℂ ρ₀) (1 - ρ₀) (1 - starRingEnd ℂ ρ₀)
+  have hden : Tendsto (fun t : ℝ =>
+      zeroRelocationDen γ₁ γ₂ ((σ : ℂ) + (t : ℂ) * I) / ((σ : ℂ) + (t : ℂ) * I) ^ 4)
+      atTop (𝓝 1) :=
+    hprod4 (1 / 2 + I * γ₁) (1 / 2 - I * γ₁) (1 / 2 + I * γ₂) (1 / 2 - I * γ₂)
+  have hquot := hnum.div hden one_ne_zero
+  rw [div_one] at hquot
+  refine Filter.Tendsto.congr' ?_ hquot
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+  simp only [Pi.div_apply]
   have hne : (σ : ℂ) + (t : ℂ) * I ≠ 0 := fun h => by
     have := congrArg Complex.im h
     simp at this
@@ -326,8 +331,9 @@ theorem exists_vertical_zeroRelocationFactor_ne_one {ρ₀ : ℂ} (hρ₀ : 1 / 
         Complex.ofReal_re, mul_one, mul_zero, add_zero, zero_add] at him
       have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := by positivity
       linarith
-  have hzero_all := hP_analytic.eqOn_zero_of_preconnected_of_frequently_eq_zero
-    isPreconnected_univ (mem_univ (σ : ℂ)) hfreq (mem_univ ρ₀)
+  have hzero_all : zeroRelocationNum ρ₀ ρ₀ - zeroRelocationDen γ₁ γ₂ ρ₀ = 0 :=
+    hP_analytic.eqOn_zero_of_preconnected_of_frequently_eq_zero
+      isPreconnected_univ (mem_univ (σ : ℂ)) hfreq (mem_univ ρ₀)
   have hnum0 : zeroRelocationNum ρ₀ ρ₀ = 0 := by simp [zeroRelocationNum]
   have hden_ne : zeroRelocationDen γ₁ γ₂ ρ₀ ≠ 0 :=
     zeroRelocationDen_ne_zero_of_re_ne_half γ₁ γ₂ hρ₀.ne'
@@ -370,7 +376,8 @@ theorem zeroRelocation_destroys_vertical_bohr_and_LSeries {ρ₀ : ℂ} (hρ₀_
   have hmc : Continuous (fun t : ℝ => zeroRelocationFactor ρ₀ γ₁ γ₂ ((σ : ℂ) + (t : ℂ) * I)) := by
     refine continuous_iff_continuousAt.mpr fun t => ?_
     exact (differentiableAt_zeroRelocationFactor ρ₀ γ₁ γ₂
-      (by simp; linarith)).continuousAt.comp (by fun_prop)
+      (by simp; linarith)).continuousAt.comp
+      (f := fun y : ℝ => (σ : ℂ) + (y : ℂ) * I) (by fun_prop)
   have hlim := tendsto_zeroRelocationFactor_vertical_atTop ρ₀ γ₁ γ₂ σ
   have hne := exists_vertical_zeroRelocationFactor_ne_one hρ₀_gt γ₁ γ₂ (by linarith : σ ≠ 1 / 2)
   exact ⟨completedRiemannZeta_mul_zeroRelocationFactor_one_sub ρ₀ γ₁ γ₂,
