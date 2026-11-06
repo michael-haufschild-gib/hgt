@@ -9,7 +9,7 @@
 
 Every `SL₂(ℂ)`-invariant multilinear form of degree `2k` transforms under an invertible matrix `A` by `det(A)^k`. Conversely, this transformation law characterizes invariance. Odd-degree invariant forms vanish. Every even degree has a nonzero invariant.
 
-**Proof.** Choose `c² = det(A)` and write `A = c g`, where `det(g)=1`. Multilinearity gives `c^(2k) = det(A)^k`. Conversely specialize to determinant one. For odd degree, invariance under `−I` gives `f=−f`. Products of `k` determinants of consecutive pairs are invariant and evaluate to one on repeated standard bases.
+**Proof.** Choose `c² = det(A)` and write `A = c g`, where `det(g)=1`. Multilinearity gives `c^(2k) = det(A)^k`. Conversely specialize to determinant one. For odd degree, invariance under `−I` gives `f=−f`. Products of `k` determinants of disjoint pairs are invariant and evaluate to one on repeated standard bases.
 
 Lean: `invariant_even_det`, `mem_invariantForms_even_iff`, `invariant_odd_eq_zero` in `WeightFamilies/InvariantForms.lean`; `determinantPairs_mulVec`, `exists_nonzero_even_invariant` in `WeightFamilies/PairingForms.lean`.
 

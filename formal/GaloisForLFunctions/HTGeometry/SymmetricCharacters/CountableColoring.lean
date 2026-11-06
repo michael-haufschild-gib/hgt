@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.SymmetricCharacters.CyclicTrace
 import GaloisForLFunctions.HTGeometry.SymmetricCharacters.WordProducts
+import Mathlib.Analysis.Normed.Module.FiniteDimension
 
 /-!
 # Independent-color characters for summable alphabets
@@ -41,10 +42,15 @@ private theorem wordWeight_summable_and_tsum (w : A → NNReal)
 theorem summable_fixedWordWeight (w : A → NNReal)
     (hw : Summable (fun a => (w a : ℝ))) (σ : Equiv.Perm X) :
     Summable (fun x : X → A => if x ∘ σ = x then wordWeight w x else 0) := by
-  apply Summable.of_nonneg_of_le
-    (fun x => by split_ifs <;> exacts [wordWeight_nonneg w x, le_rfl])
-    (fun x => by split_ifs <;> exacts [le_rfl, wordWeight_nonneg w x])
-    (wordWeight_summable_and_tsum (X := X) w hw).1
+  refine Summable.of_nonneg_of_le ?_ ?_ (wordWeight_summable_and_tsum (X := X) w hw).1
+  · intro x
+    split_ifs
+    · exact wordWeight_nonneg w x
+    · exact le_rfl
+  · intro x
+    split_ifs
+    · exact le_rfl
+    · exact wordWeight_nonneg w x
 
 theorem wordCharacter_one (w : A → NNReal)
     (hw : Summable (fun a => (w a : ℝ))) :
@@ -65,7 +71,8 @@ private theorem positiveKernel_tsum {B : Type*} [Fintype J]
     apply tendsto_nhds_unique hstar
     apply (hs i j).hasSum.congr'
     filter_upwards with s
-    simp only [star_sum]
+    change (∑ b ∈ s, K b i j) = star (∑ b ∈ s, K b j i)
+    rw [star_sum]
     exact Finset.sum_congr rfl (fun b _ => ((hK b).isHermitian.apply i j).symm)
   · intro v
     have hquad : Tendsto
@@ -81,8 +88,11 @@ private theorem positiveKernel_tsum {B : Type*} [Fintype J]
       exact tendsto_const_nhds.mul ((hs i j).hasSum.mul_const (v j))
     apply ge_of_tendsto hquad
     exact Filter.Eventually.of_forall fun s => by
-      simpa only [Matrix.sum_apply] using
-        (Matrix.posSemidef_sum s (fun b _ => hK b)).dotProduct_mulVec_nonneg v
+      have heq : (∑ b ∈ s, K b) = (fun i j => ∑ b ∈ s, K b i j) := by
+        ext i j
+        simp only [Matrix.sum_apply]
+      rw [← heq]
+      exact (Matrix.posSemidef_sum s (fun b _ => hK b)).dotProduct_mulVec_nonneg v
 
 /-- Every finite test matrix of a summable independent-color character is positive. -/
 theorem wordCharacter_posSemidef [Fintype J] (w : A → NNReal)
@@ -136,8 +146,9 @@ theorem wordCharacter_conj (w : A → NNReal) (σ τ : Equiv.Perm X) :
         simpa using congrFun h (τ⁻¹ i)
     change (if x ∘ (τ * σ * τ⁻¹) = x then wordWeight w x else 0) =
       (if (x ∘ τ) ∘ σ = x ∘ τ then wordWeight w x else 0)
-    rw [hfix]
-  exact (tsum_congr he).trans (e.tsum_eq _)
+    simp only [hfix]
+  exact (tsum_congr he).trans (e.tsum_eq
+    (fun x : X → A => if x ∘ σ = x then wordWeight w x else 0))
 
 /-- Disjoint blocks use independent letters, including for infinite summable alphabets. -/
 theorem wordCharacter_sumCongr (w : A → NNReal)
@@ -167,10 +178,10 @@ theorem wordCharacter_sumCongr (w : A → NNReal)
     split_ifs <;> simp_all
   unfold wordCharacter
   refine (tsum_congr hterm).trans ?_
-  rw [(Equiv.sumPiEquivProdPi (fun _ => A)).tsum_eq
+  refine ((Equiv.sumPiEquivProdPi (fun _ => A)).tsum_eq
     (fun xy : (X → A) × (Y → A) =>
       (if xy.1 ∘ σ = xy.1 then wordWeight w xy.1 else 0) *
-      (if xy.2 ∘ τ = xy.2 then wordWeight w xy.2 else 0))]
+      (if xy.2 ∘ τ = xy.2 then wordWeight w xy.2 else 0))).trans ?_
   exact (tsum_mul_tsum_of_summable_norm
     (summable_fixedWordWeight w hw σ).norm (summable_fixedWordWeight w hw τ).norm).symm
 
@@ -198,10 +209,44 @@ theorem wordCharacter_optionCongr (w : A → NNReal)
     split_ifs <;> simp
   unfold wordCharacter
   refine (tsum_congr hterm).trans ?_
-  rw [(Equiv.piOptionEquivProd : (Option X → A) ≃ A × (X → A)).tsum_eq
+  refine ((Equiv.piOptionEquivProd : (Option X → A) ≃ A × (X → A)).tsum_eq
     (fun ax : A × (X → A) => (w ax.1 : ℝ) *
-      (if ax.2 ∘ σ = ax.2 then wordWeight w ax.2 else 0))]
+      (if ax.2 ∘ σ = ax.2 then wordWeight w ax.2 else 0))).trans ?_
   exact (tsum_mul_tsum_of_summable_norm hw.norm
     (summable_fixedWordWeight w hw σ).norm).symm
+
+/-- A nonempty cycle has a single color, so its trace is the corresponding power sum. -/
+theorem wordCharacter_finRotate (w : A → NNReal) (n : ℕ) :
+    wordCharacter w (finRotate (n + 1)) = ∑' a, (w a : ℝ) ^ (n + 1) := by
+  let c : A → (Fin (n + 1) → A) := fun a _ => a
+  have hc : Function.Injective c := fun a b h => congrFun h 0
+  let f : (Fin (n + 1) → A) → ℝ :=
+    fun x => if x ∘ finRotate (n + 1) = x then wordWeight w x else 0
+  have hs : Function.support f ⊆ Set.range c := by
+    intro x hx
+    have hfix : x ∘ finRotate (n + 1) = x := by
+      by_contra h
+      exact hx (if_neg h)
+    exact ⟨x 0, ((fixed_finRotate_iff n x).mp hfix).symm⟩
+  change (∑' x, f x) = _
+  rw [← hc.tsum_eq hs]
+  apply tsum_congr
+  intro a
+  simp [f, c, wordWeight, Function.comp_def]
+
+/-- Complete cycle-product formula for a summable infinite alphabet. -/
+theorem wordCharacter_cyclePermutation (w : A → NNReal)
+    (hw : Summable (fun a => (w a : ℝ))) (ns : List ℕ) :
+    wordCharacter w (cyclePermutation ns) =
+      (ns.map fun n => ∑' a, (w a : ℝ) ^ (n + 1)).prod := by
+  induction ns with
+  | nil =>
+    change wordCharacter w (1 : Equiv.Perm Empty) = 1
+    rw [wordCharacter_one w hw]
+    simp
+  | cons n ns ih =>
+    change wordCharacter w (Equiv.sumCongr (finRotate (n + 1)) (cyclePermutation ns)) = _
+    rw [wordCharacter_sumCongr w hw, wordCharacter_finRotate, ih]
+    rfl
 
 end GaloisForLFunctions.SymmetricCharacters

@@ -19,12 +19,14 @@ Known constraints: logarithmic Carlson growth after removing the zeta divisor; d
 3. Full multiplicity capacity: a nonzero double-exponential source carrying `Ξ^k` must satisfy `kb≤2`. `ExactExtremal/PowerDivisorCapacity.lean` passes Lean. For `k=2`, the theta self-convolution attains equality; formalized in `ExactExtremal/ThetaSquareBoundary.lean`. This supplies a boundary model, not integer blindness.
 4. Scalar factorization of the existing twisted-arc blind mixture. `twistedArcMinimumPrinciple_holds` supplies an annihilating probability measure; `shiftedGamma_blind_of_twistedArc` supplies nonnegative weights with all required integer cosine moments zero. `arcGammaMultiplier` is holomorphic on a strip and strictly positive on the real spectral axis. Construct one analytic factor with controlled strip growth; do not assume a square root across complex zeros. `TwistedArcNullLaplacePositivity` additionally proves positivity on the imaginary segment `|y|≤3/2`, but not zero-freeness throughout that strip.
 5. Positive-real strip: the multiplier has positive real part on `|Im z|≤501/1000`. Paper proof: `2-fully-proven/w3-arc-multiplier-positive-strip.md`. Near the origin the constant term dominates the factorial tail. Outside `|Re z|<7/5`, integral comparison bounds the total change of the normalized quadratic factors by `7/5`, forcing every product's real part positive. Formalize this estimate, then construct the principal square root and discharge the exact receiver.
+6. Single exact null test: choose the annihilating arc measure, set `Φ=Ξsqrt(R)`, and invert its Fourier transform. Paper proof: `2-fully-proven/w3-single-exact-blind-test.md`. The universal scalarization preserves the arc mixture's entire autocorrelation. Lean assembly remains pending.
+7. Sharp tail of the actual blind correlation: test whether its double-exponential exponent is exactly one. The corpus's shifted-Gamma source envelope (`TheTwistedArcFamilyIsNearNull.abs_mul_exp_le_of_tail`) and the full autocorrelation identity supply the upper-bound mechanism. Strip analyticity of `R`, Fourier inversion, and the full `Ξ²` divisor supply the obstruction to every larger exponent. This strengthens the theta-square boundary model to the constructed blind object; no formal claim yet.
 
 ## Completion gates
 
 - [ ] Explicit construction with unconditional analytic bounds and all integer moments.
 - [ ] Full Xi divisibility and real zero-faithfulness.
 - [ ] Exact receiver hypotheses discharged in Lean.
-- [ ] New modules wired into owning umbrella; individual foreground Lean audits and transitive axiom checks.
+- [ ] New modules wired into owning umbrella; individual foreground Lean checks.
 
-No existence claim or RH claim established.
+No formal existence claim or RH claim established.

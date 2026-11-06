@@ -1,5 +1,4 @@
 import GaloisForLFunctions.RHTower.Deninger.DeningerDivisorSchwarzMonodromy
-import GaloisForLFunctions.HTGeometry.Arxiv2607PiecewiseSymmetric
 
 /-!
 # Pure compression and the missing invariant restriction
@@ -12,7 +11,7 @@ Preservation of the even subspace, however, is equivalent to the Riemann hypothe
 
 noncomputable section
 open Complex
-open RHTower GaloisForLFunctions.HTGeometry
+open RHTower
 
 namespace GaloisForLFunctions.ArithmeticKunnethTheory.WeightFamilies
 
@@ -47,6 +46,33 @@ theorem divisorMonodromy_involutive (x : DeningerDivisorH1) :
         (xiZeroCopyConjEquiv (xiZeroCopyReflectEquiv q))) = q from
           monodromyIndex_involutive q]
 
+theorem divisorMonodromy_apply (x : DeningerDivisorH1) (q : XiZeroCopy) :
+    deningerDivisorMonodromy x q = x (monodromyIndex q) := by
+  classical
+  induction x using Finsupp.induction with
+  | zero => simp
+  | single_add r c x _ _ ih =>
+      rw [map_add, Finsupp.add_apply, ih, deningerDivisorMonodromy_single,
+        Finsupp.add_apply]
+      congr 1
+      change Finsupp.single (monodromyIndex r) c q = Finsupp.single r c (monodromyIndex q)
+      have he : monodromyIndex r = q ↔ r = monodromyIndex q :=
+        ⟨fun h => by rw [← h, monodromyIndex_involutive],
+          fun h => by rw [h, monodromyIndex_involutive]⟩
+      simp only [Finsupp.single_apply, he]
+
+/-- Projection onto the fixed subspace of the canonical divisor monodromy. -/
+def canonicalProjection : Module.End ℂ DeningerDivisorH1 :=
+  (2 : ℂ)⁻¹ • (LinearMap.id + deningerDivisorMonodromy)
+
+theorem canonicalProjection_apply (x : DeningerDivisorH1) :
+    canonicalProjection x = (2 : ℂ)⁻¹ • (x + deningerDivisorMonodromy x) := rfl
+
+theorem canonicalProjection_fixed (x : DeningerDivisorH1) :
+    deningerDivisorMonodromy (canonicalProjection x) = canonicalProjection x := by
+  rw [canonicalProjection_apply, map_smul, map_add, divisorMonodromy_involutive]
+  rw [add_comm]
+
 /-- Even and odd orbit vectors retain both members of a functional-equation pair. -/
 def orbitEven (q : XiZeroCopy) : DeningerDivisorH1 :=
   Finsupp.single q 1 + Finsupp.single (monodromyIndex q) 1
@@ -54,21 +80,32 @@ def orbitEven (q : XiZeroCopy) : DeningerDivisorH1 :=
 def orbitOdd (q : XiZeroCopy) : DeningerDivisorH1 :=
   Finsupp.single q 1 - Finsupp.single (monodromyIndex q) 1
 
+theorem orbitEven_ne_zero (q : XiZeroCopy) : orbitEven q ≠ 0 := by
+  classical
+  intro h
+  have hv := congrArg (fun x : DeningerDivisorH1 => x q) h
+  simp only [orbitEven, Finsupp.add_apply, Finsupp.single_apply,
+    Finsupp.zero_apply] at hv
+  split_ifs at hv <;> norm_num at hv
+
 /-- The diagonal of the orbit compression. -/
 def orbitCenter (q : XiZeroCopy) : ℂ :=
-  (deningerDivisorThetaEigen q + (1 - conj (deningerDivisorThetaEigen q))) / 2
+  (deningerDivisorThetaEigen q + (1 - (starRingEnd ℂ) (deningerDivisorThetaEigen q))) / 2
 
 /-- The coupling between even and odd orbit coordinates. -/
 def orbitCoupling (q : XiZeroCopy) : ℂ :=
-  (deningerDivisorThetaEigen q - (1 - conj (deningerDivisorThetaEigen q))) / 2
+  (deningerDivisorThetaEigen q - (1 - (starRingEnd ℂ) (deningerDivisorThetaEigen q))) / 2
 
 theorem orbitCenter_eq (q : XiZeroCopy) :
     orbitCenter q = 1 / 2 + (deningerDivisorThetaEigen q).im * I := by
-  apply Complex.ext <;> simp [orbitCenter] <;> ring
+  apply Complex.ext <;> simp [orbitCenter]
 
 theorem orbitCoupling_eq (q : XiZeroCopy) :
     orbitCoupling q = ((deningerDivisorThetaEigen q).re - 1 / 2 : ℝ) := by
-  apply Complex.ext <;> simp [orbitCoupling] <;> ring
+  apply Complex.ext
+  · simp [orbitCoupling]
+    ring
+  · simp [orbitCoupling]
 
 theorem monodromy_orbitEven (q : XiZeroCopy) :
     deningerDivisorMonodromy (orbitEven q) = orbitEven q := by
@@ -110,16 +147,58 @@ theorem theta_orbitOdd (q : XiZeroCopy) :
 
 /-- The invariant compression has pure diagonal even when Frobenius leaves the invariant space. -/
 theorem compressed_theta_orbitEven (q : XiZeroCopy) :
-    involutionSymPart deningerDivisorMonodromy (deningerDivisorTheta (orbitEven q)) =
+    canonicalProjection (deningerDivisorTheta (orbitEven q)) =
       orbitCenter q • orbitEven q := by
-  rw [theta_orbitEven]
-  simp only [involutionSymPart, map_add, map_smul, monodromy_orbitEven,
+  rw [theta_orbitEven, canonicalProjection_apply]
+  simp only [map_add, map_smul, monodromy_orbitEven,
     monodromy_orbitOdd, smul_neg]
   module
 
 theorem orbitCenter_re (q : XiZeroCopy) : (orbitCenter q).re = 1 / 2 := by
   rw [orbitCenter_eq]
   simp
+
+/-- On every invariant vector, compression discards exactly the displacement coupling. -/
+theorem compressed_theta_on_invariants (x : DeningerDivisorH1)
+    (hx : deningerDivisorMonodromy x = x) :
+    canonicalProjection (deningerDivisorTheta x) = finsuppDiagonal orbitCenter x := by
+  ext q
+  have hxq := congrArg (fun y : DeningerDivisorH1 => y q) hx
+  rw [divisorMonodromy_apply] at hxq
+  simp only [canonicalProjection_apply, Finsupp.smul_apply, Finsupp.add_apply,
+    smul_eq_mul, divisorMonodromy_apply, deningerDivisorTheta, finsuppDiagonal_apply]
+  rw [hxq]
+  simp only [monodromyIndex, deningerDivisorThetaEigen_monodromy, orbitCenter]
+  ring
+
+/-- The compressed point spectrum is exactly the critical-line projection of the Xi divisor. -/
+theorem compressed_eigenvalue_iff (lam : ℂ) :
+    (∃ x : DeningerDivisorH1, x ≠ 0 ∧ deningerDivisorMonodromy x = x ∧
+      canonicalProjection (deningerDivisorTheta x) = lam • x) ↔
+        ∃ q : XiZeroCopy, orbitCenter q = lam := by
+  constructor
+  · rintro ⟨x, hx0, hx, heig⟩
+    obtain ⟨q, hq⟩ : ∃ q : XiZeroCopy, x q ≠ 0 := by
+      by_contra h
+      push Not at h
+      exact hx0 (Finsupp.ext h)
+    rw [compressed_theta_on_invariants x hx] at heig
+    have heq := congrArg (fun y : DeningerDivisorH1 => y q) heig
+    simp only [finsuppDiagonal_apply, Finsupp.smul_apply, smul_eq_mul] at heq
+    refine ⟨q, ?_⟩
+    have hdiv := congrArg (fun z : ℂ => z / x q) heq
+    simpa [hq] using hdiv
+  · rintro ⟨q, rfl⟩
+    exact ⟨orbitEven q, orbitEven_ne_zero q, monodromy_orbitEven q,
+      compressed_theta_orbitEven q⟩
+
+/-- All compressed eigenvalues are pure, independently of stability under Frobenius. -/
+theorem compressed_eigenvalues_pure (lam : ℂ) :
+    (∃ x : DeningerDivisorH1, x ≠ 0 ∧ deningerDivisorMonodromy x = x ∧
+      canonicalProjection (deningerDivisorTheta x) = lam • x) → lam.re = 1 / 2 := by
+  rw [compressed_eigenvalue_iff]
+  rintro ⟨q, rfl⟩
+  exact orbitCenter_re q
 
 /-- Frobenius preserves the canonical invariant subspace exactly when RH holds. -/
 theorem invariant_subspace_stable_iff_riemannHypothesis :

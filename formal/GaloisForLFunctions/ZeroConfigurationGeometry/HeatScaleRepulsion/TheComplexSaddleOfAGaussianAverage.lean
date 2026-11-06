@@ -18,7 +18,7 @@ an abstract `F`:
 * `integral_eq_shift_add_edges`: the contour shift;
 * `integral_gaussDensity_mul_exp_sq`, `gaussExcess_le`: the Gaussian integral of `exp(Bv²)`;
 * `SaddleData.norm_integral_sub_main_le`: `S = F(u) e^{−τℓ²} (1 + small)`;
-* `SaddleData.norm_integral_slope_le`: the first moment about `u` is small, i.e. `S′ = ℓ S + small`.
+* `SaddleData.norm_integral_moment_le`: the first moment about `u` is small, i.e. `S′ = ℓ S + small`.
 -/
 
 set_option autoImplicit false
@@ -110,7 +110,7 @@ theorem integrable_gaussDensity {t : ℝ} (ht : 0 < t) : Integrable (gaussDensit
 
 theorem integral_gaussDensity_eq_one {t : ℝ} (ht : 0 < t) : (∫ v : ℝ, gaussDensity t v) = 1 := by
   have h := integral_gaussDensity_mul_exp_sq (B := 0) ht (by norm_num)
-  simpa only [zero_mul, Real.exp_zero, mul_one, sub_zero, Real.sqrt_one, inv_one] using h
+  simpa only [zero_mul, Real.exp_zero, mul_one, mul_zero, sub_zero, Real.sqrt_one, inv_one] using h
 
 /-- The excess integrand of a quadratic exponent. -/
 theorem integrable_gaussExcess {t B : ℝ} (ht : 0 < t) (hB : 4 * t * B < 1) :
@@ -138,8 +138,7 @@ theorem gaussExcess_le {t B : ℝ} (ht : 0 < t) (hB0 : 0 ≤ B) (hB : 4 * t * B 
   have hsq : 1 - q ≤ Real.sqrt (1 - q) := by
     have h01 : 0 ≤ 1 - q := by linarith only [hq]
     have h1 : 1 - q ≤ 1 := by linarith only [hq0]
-    rw [Real.le_sqrt h01]
-    nlinarith only [h01, h1]
+    exact (le_abs_self _).trans (Real.abs_le_sqrt (by nlinarith only [h01, h1]))
   have hs0 : 0 < 1 - q := by linarith only [hq]
   have hinv : (Real.sqrt (1 - q))⁻¹ ≤ (1 - q)⁻¹ := inv_anti₀ hs0 hsq
   have h2 : (1 - q)⁻¹ ≤ 1 + 2 * q := by
@@ -190,9 +189,8 @@ theorem integral_gaussDensity_compl_le {τ ρ : ℝ} (hτ : 0 < τ) (hρ : 0 ≤
   refine hmono.trans (hall.trans ?_)
   rw [integral_const_mul, hval, hBq, mul_comm]
   refine mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le
-  have hs : (1 : ℝ) / 2 ≤ Real.sqrt (1 - 1 / 2) := by
-    rw [Real.le_sqrt (by norm_num)]
-    norm_num
+  have hs : (1 : ℝ) / 2 ≤ Real.sqrt (1 - 1 / 2) :=
+    (le_abs_self _).trans (Real.abs_le_sqrt (by norm_num))
   calc
     _ ≤ ((1 : ℝ) / 2)⁻¹ := inv_anti₀ (by norm_num) hs
     _ = 2 := by norm_num
@@ -376,10 +374,15 @@ theorem gaussKernel_saddle (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) (v
     ring
   rw [hk, ← gaussKernel_ofReal]
   unfold gaussKernel
-  rw [mul_assoc, ← Complex.exp_add]
-  congr 2
-  push_cast
-  field_simp
+  have he : Complex.exp (-((2 * (τ : ℂ) * ℓ + (v : ℂ)) ^ 2 / ((4 * τ : ℝ) : ℂ))) =
+      Complex.exp (-((v : ℂ) ^ 2 / ((4 * τ : ℝ) : ℂ))) * Complex.exp (-((τ : ℂ) * ℓ ^ 2)) *
+        Complex.exp (-((v : ℂ) * ℓ)) := by
+    rw [← Complex.exp_add, ← Complex.exp_add]
+    congr 1
+    push_cast
+    field_simp
+    ring
+  rw [he]
   ring
 
 /-- **On the window, the integrand follows the Gaussian with a quadratic relative error.** -/
@@ -398,7 +401,7 @@ theorem norm_window_sub_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) {v
     rw [h.gaussKernel_saddle v]
     have he : Complex.exp (-((v : ℂ) * ℓ)) * Complex.exp ((v : ℂ) * ℓ) = 1 := by
       rw [← Complex.exp_add, neg_add_cancel, Complex.exp_zero]
-    linear_combination (-(gaussDensity τ v : ℂ) * Complex.exp (-((τ : ℂ) * ℓ ^ 2)) *
+    linear_combination ((gaussDensity τ v : ℂ) * Complex.exp (-((τ : ℂ) * ℓ ^ 2)) *
       F ((a : ℂ) + (δ : ℂ) * I)) * he
   have hre : (-((τ : ℂ) * ℓ ^ 2)).re = -(τ * (ℓ.re ^ 2 - ℓ.im ^ 2)) := by
     rw [Complex.neg_re, Complex.re_ofReal_mul, sq]
@@ -584,7 +587,7 @@ theorem norm_window_moment_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K)
   have hm := mass_nonneg F τ a δ ℓ
   calc
     _ ≤ mass F τ a δ ℓ * (2 / Real.sqrt τ) * (8 * (2 * τ) * B) :=
-      mul_le_mul_of_nonneg_left hE (by positivity)
+      mul_le_mul_of_nonneg_left hE (mul_nonneg hm (by positivity))
     _ = mass F τ a δ ℓ * (32 * (τ / Real.sqrt τ) * B) := by ring
     _ = _ := by
       have : τ / Real.sqrt τ = Real.sqrt τ := by
@@ -602,6 +605,7 @@ theorem norm_sub_window_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) {�
             F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ)))‖ ≤
       mass F τ a δ ℓ * (Ω * (K * ((4 * Real.pi * τ) ^ (-(1 / 2 : ℝ)) *
         Real.exp (-(ρ ^ 2 / (8 * τ))))) * (x₂ + 2 * |δ|)) := by
+  have hτ := h.hτ
   have hρ := h.hρ
   have hlow := h.hlow
   have hhigh := h.hhigh
@@ -646,7 +650,6 @@ theorem norm_sub_window_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) {�
     rw [show a + -ρ = a - ρ by ring] at hs
     rw [← hs]
     refine intervalIntegral.integral_congr fun v _ => ?_
-    dsimp only
     congr 1
     push_cast
     ring
@@ -710,6 +713,63 @@ theorem norm_sub_window_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) {�
   have hpos : Bd * ρ * 2 ≥ 0 := by positivity
   rw [hBd] at hpos ⊢
   nlinarith only [hpos]
+
+theorem continuous_window (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) :
+    Continuous fun v : ℝ => gaussKernel τ ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - (y : ℂ)) *
+      F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ)) :=
+  ((differentiable_gaussKernel τ).continuous.comp (by fun_prop)).mul
+    (h.hF.continuous.comp (by fun_prop))
+
+/-- **The saddle value.** `∫_0^{x₂} g_τ(x − y) F(x) dx = F(u) e^{−τℓ²} (1 + small)`. -/
+theorem norm_integral_sub_main_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) :
+    ‖(∫ x in (0 : ℝ)..x₂, gaussKernel τ ((x : ℂ) - (y : ℂ)) * F (x : ℂ)) -
+        F ((a : ℂ) + (δ : ℂ) * I) * Complex.exp (-((τ : ℂ) * ℓ ^ 2))‖ ≤
+      mass F τ a δ ℓ * (8 * τ * B + 2 * Real.exp (-(ρ ^ 2 / (8 * τ))) +
+        K * ((4 * Real.pi * τ) ^ (-(1 / 2 : ℝ)) * Real.exp (-(ρ ^ 2 / (8 * τ)))) * (x₂ + 2 * |δ|)) := by
+  have hs := h.norm_sub_window_le (ω := fun _ => 1) (Ω := 1) (differentiable_const _) zero_le_one
+    (fun _ _ _ _ => by simp)
+  simp only [one_mul] at hs
+  have hw := h.norm_window_integral_sub_le h.continuous_window
+  refine (norm_sub_le_norm_sub_add_norm_sub _ (∫ v in (-ρ)..ρ,
+    gaussKernel τ ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - (y : ℂ)) *
+      F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ))) _).trans ?_
+  calc
+    _ ≤ mass F τ a δ ℓ * (K * ((4 * Real.pi * τ) ^ (-(1 / 2 : ℝ)) *
+          Real.exp (-(ρ ^ 2 / (8 * τ)))) * (x₂ + 2 * |δ|)) +
+        mass F τ a δ ℓ * (8 * τ * B + 2 * Real.exp (-(ρ ^ 2 / (8 * τ)))) := add_le_add hs hw
+    _ = _ := by ring
+
+/-- **The first moment about the saddle.** `∫_0^{x₂} ((x − u)/(2τ)) g_τ(x − y) F(x) dx` is small, which says
+`S′ = ℓ S + small`. -/
+theorem norm_integral_moment_le (h : SaddleData F τ y a δ ℓ α Λ ρ x₂ B K) {Ω : ℝ} (hΩ : 0 ≤ Ω)
+    (hΩb : ∀ x ∈ Icc 0 x₂, ∀ v ∈ [[(0 : ℝ), δ]],
+      ‖((x : ℂ) + (v : ℂ) * I - ((a : ℂ) + (δ : ℂ) * I)) / (2 * (τ : ℂ))‖ ≤ Ω) :
+    ‖∫ x in (0 : ℝ)..x₂, ((x : ℂ) - ((a : ℂ) + (δ : ℂ) * I)) / (2 * (τ : ℂ)) *
+        (gaussKernel τ ((x : ℂ) - (y : ℂ)) * F (x : ℂ))‖ ≤
+      mass F τ a δ ℓ * (32 * Real.sqrt τ * B + Ω * (K * ((4 * Real.pi * τ) ^ (-(1 / 2 : ℝ)) *
+        Real.exp (-(ρ ^ 2 / (8 * τ))))) * (x₂ + 2 * |δ|)) := by
+  have hs := h.norm_sub_window_le (ω := fun z => (z - ((a : ℂ) + (δ : ℂ) * I)) / (2 * (τ : ℂ)))
+    (by fun_prop) hΩ hΩb
+  have hw := h.norm_window_moment_le h.continuous_window
+  have hwe : (∫ v in (-ρ)..ρ, ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - ((a : ℂ) + (δ : ℂ) * I)) /
+        (2 * (τ : ℂ)) * (gaussKernel τ ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - (y : ℂ)) *
+          F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ)))) =
+      ∫ v in (-ρ)..ρ, ((v / (2 * τ) : ℝ) : ℂ) *
+        (gaussKernel τ ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - (y : ℂ)) *
+          F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ))) := by
+    refine intervalIntegral.integral_congr fun v _ => ?_
+    simp only [add_sub_cancel_left]
+    push_cast
+    rfl
+  rw [hwe] at hs
+  refine (norm_le_norm_sub_add _ (∫ v in (-ρ)..ρ, ((v / (2 * τ) : ℝ) : ℂ) *
+    (gaussKernel τ ((a : ℂ) + (δ : ℂ) * I + (v : ℂ) - (y : ℂ)) *
+      F ((a : ℂ) + (δ : ℂ) * I + (v : ℂ))))).trans ?_
+  calc
+    _ ≤ mass F τ a δ ℓ * (Ω * (K * ((4 * Real.pi * τ) ^ (-(1 / 2 : ℝ)) *
+          Real.exp (-(ρ ^ 2 / (8 * τ))))) * (x₂ + 2 * |δ|)) +
+        mass F τ a δ ℓ * (32 * Real.sqrt τ * B) := add_le_add hs hw
+    _ = _ := by ring
 
 end SaddleData
 

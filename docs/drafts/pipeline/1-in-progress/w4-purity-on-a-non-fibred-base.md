@@ -25,7 +25,7 @@ Consequently `diag(√5 φ, √5/φ)` and `√5 I` act identically on every inva
 
 This does not refute W4. Identifying ζ's actual spectrum with a pure invariant part would be a new arithmetic input. The obstruction concerns inference from invariant tensor weights to purity of a fibre without that identification or a global trace identity.
 
-**Positive survivor:** exact determinant-character classification in every even degree, with nonzero paired-volume forms. [Paper proofs and checked Lean declarations](../3-formalized/w4-invariant-characters-and-tensor-growth.md). The combined Golden obstruction is under verification.
+**Positive survivor:** exact determinant-character classification in every even degree, with nonzero paired-volume forms. [Paper proofs and checked Lean declarations](../3-formalized/w4-invariant-characters-and-tensor-growth.md). The [Golden obstruction](../5-failed/w4-invariant-weights-alone.md), including its sharp tensor rate `φ^m`, is also formalized.
 
 ## Global obligation
 
@@ -43,8 +43,10 @@ Thus one `B` working for all even degrees, with unrestricted constants `C_k`, is
 
 ## Canonical arithmetic symmetry
 
-The existing divisor monodromy `ρ ↦ 1 − conj(ρ)` commutes with Frobenius exactly when RH holds (`deningerDivisorMonodromy_comm_iff_riemannHypothesis`). The [invariant-compression question](w4-canonical-monodromy-compression.md) asks whether merely preserving its invariant subspace already has the same strength, and isolates the coupling lost by compression.
+For divisor monodromy `ρ ↦ 1 − conj(ρ)`, [canonical compression](../3-formalized/w4-canonical-monodromy-compression.md) has exactly the pure point spectrum `1/2 + i Im(ρ)` unconditionally. Merely preserving its invariant subspace under Frobenius is already equivalent to RH. The lost off-diagonal coupling is exactly `Re(ρ)−1/2`. A pure compression therefore does not supply the required invariant restriction.
 
 ## Next conjecture
 
-Construct the arithmetic-base trace identity that produces the common `B` from cohomological degrees rather than from the unknown spectrum. The algebraic tensor data above cannot supply it. The ζ family, its spectral identification, and recovery from a constructed function-field family remain open.
+The [split Weil-group model](w4-split-weil-model.md) tests whether Frobenius normalization of full `SL₂` monodromy adds any restriction: its degree-one image should be every matrix of the prescribed determinant.
+
+The arithmetic target remains a trace identity producing the common `B` from cohomological degrees rather than from the unknown spectrum. The ζ family, its spectral identification, and recovery from a constructed function-field family remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.

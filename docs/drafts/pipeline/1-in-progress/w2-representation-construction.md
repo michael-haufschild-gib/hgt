@@ -17,6 +17,7 @@ Three consistency laws must be distinguished: restriction of characters along `S
 3. Test the sorted-multiplicity Young producer against branching at sizes two and three. Extract the correct representation-theoretic replacement if it fails.
 4. Construct arithmetic coloring frequencies or an equivalent positive representation independently of zeros. Match every cycle value to the arithmetic logarithmic coefficients; finite-rank tests alone do not establish this identity.
 5. Audit the coordinate and sign conventions connecting W2's `1/(ρ(1−ρ))` to the corpus centre PF criterion. Formalize the exact bridge, then the RH capstone only when its source input is proved.
+6. Extend independent coloring to summable countable alphabets: finite-word products have total mass `(Σw)^n`; fixed-word sums are dominated by this mass; finite sums of stabilizer kernels are positive and their entrywise limit remains positive. Apply the construction to normalized positive endpoint real parts and identify its exact transposition discrepancy.
 
 ## Current evidence
 
@@ -33,19 +34,30 @@ Three consistency laws must be distinguished: restriction of characters along `S
 - **Occupancy versus Young branching:** for letter weights `w`, let `R = Σ_(a≠b) w_a² w_b`. The occupancy mass of `(2,1)` is `3R`; Young down-transition assigns half to `(2)`. Its row discrepancy is `R/2`, zero only when at most one letter has positive weight. `MultiplicityBranching.lean` is kernel-checked. The positive survivor is the independent-color character, not the sorted occupancy law.
 - **Cycle formula:** a cycle of length `k` fixes precisely constant words, giving `Σ_a w_a^k`. `CyclicTrace.lean` also proves the product formula for disjoint cycle representatives.
 - **Endpoint real-part candidate:** `RHTower/Representation/EndpointCharacterDefect.lean` is kernel-checked: absolute convergence, positive mass `2+γ−log(4π)`, exact gap `Σ(Re α)² − Re Σα² = Σ(Im α)²`, and equality iff RH. Dividing by the squared mass gives the exact normalized transposition defect.
-- **Curve branch test:** `endpointCoordinate_im_eq_zero_iff` proves that `1/(s(1−s))` is real exactly on the critical line or real axis. Golden principal zeros lie on the exceptional real locus; nonzero periodic copies expose their defect. `ArithmeticCastelnuovoSeveri/Representation/EndpointCalibration.lean` states the exact purity classification; verification pending.
+- **Curve branch test:** `endpointCoordinate_im_eq_zero_iff` proves that `1/(s(1−s))` is real exactly on the critical line or real axis. `ArithmeticCastelnuovoSeveri/Representation/EndpointCalibration.lean` is kernel-checked: positive real endpoint weights over all periodic copies iff Frobenius purity; one first-period representative per eigenvalue suffices. `golden_endpoint_period_test` proves every principal golden weight is positive real while the first-period test fails.
+- **Infinite alphabet:** `CountableColoring.lean` is kernel-checked: absolute convergence, normalized identity and restriction, conjugation, positivity, disjoint-block multiplication, and the complete cycle-product formula. `WordProducts.lean` supplies the independent-word mass identity.
 
 ## Primary-source check
 
 Simon Thomas, [Characters and invariant random subgroups of the finitary symmetric group](https://ow3.math.rutgers.edu/~sthomas/Fin-chars.pdf), §1: fixed-point probabilities give characters; the pure row Thoma character is the product of color power sums. These are classical foundations, not novelty claims.
+
+## Character-to-moment receiver under investigation
+
+Cycles with a common pivot and otherwise disjoint supports have a product cycle of combined length minus one. Replicating each arm gives a Gram matrix
+`G_N((i,a),(j,b)) = H_ij + δ_((i,a),(j,b))(1−H_ii)`, where `H_ij = p_(r_i+r_j+1)`.
+Conjectured exact classification: every `G_N` is positive semidefinite iff `H` is positive semidefinite and `H_ii≤1`. Averaging over replicas gives `H + diag(1−H_ii)/N`; vectors summing to zero within one block give the diagonal upper bound. The permutation realization and transfer to the actual endpoint moment criterion remain unproved. This would supply a receiver for character positivity, not its arithmetic producer.
+
+The existing `riemannHypothesis_iff_forall_xiResolventHankelMatrix_posSemidef` applies at shift `1/4`: its reciprocal spectral coordinate is exactly `xiStripEdgeWeight`. Normalization of cycle values is an invertible positive diagonal congruence of these Hankel matrices. `ReplicatedKernel.lean` contains the classification proof, awaiting its leaf check; actual common-pivot permutation realization remains separate.
 
 ## Completion gates
 
 - [x] Finite coloring representation, positivity, restriction, cycle formula.
 - [x] Mixture covariance and deterministic survivor.
 - [ ] Young-shape producer audited and corrected.
-- [ ] Curves and fake models tested symbolically.
+- [x] Curves and fake models tested symbolically.
+- [ ] Countable coloring character and actual positive endpoint application.
+- [ ] Canonical arithmetic cycle function: positivity implies the existing RH moment criterion.
 - [ ] Arithmetic source representation and exact character identification.
-- [ ] RH conclusion kernel-checked, dependencies audited, imports wired.
+- [ ] RH conclusion kernel-checked; direct leaf checks and imports complete.
 
 No numerical experiments are used. No RH-strength input may enter a theorem as an unproved premise.

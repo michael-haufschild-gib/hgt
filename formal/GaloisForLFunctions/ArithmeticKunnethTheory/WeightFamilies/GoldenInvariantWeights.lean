@@ -42,7 +42,9 @@ theorem goldenFrobenius_det : goldenFrobenius.det = 5 := by
 theorem goldenFrobenius_trace : goldenFrobenius.trace = 5 := by
   have hs := sqrt_five_pow_sum 1
   simp only [pow_one, goldenLucas] at hs
-  simp only [Matrix.trace, Fin.sum_univ_two, goldenFrobenius, Matrix.smul_apply,
+  simp only [Matrix.trace, Fin.sum_univ_two]
+  change goldenFrobenius 0 0 + goldenFrobenius 1 1 = 5
+  simp only [goldenFrobenius, Matrix.smul_apply,
     sl2Torus_apply_00, sl2Torus_apply_11, smul_eq_mul]
   exact_mod_cast hs
 
@@ -103,13 +105,17 @@ theorem golden_tensor_rate_iff (m : ℕ) (hm : m ≠ 0) {B : ℝ} (hB : 0 ≤ B)
   simp only [htrace] at h
   rw [h]
   have h0 : ‖goldenDatum.β 0‖ = goldenRatio := by
-    simp [goldenDatum, Complex.norm_real, abs_of_pos goldenRatio_pos]
+    change ‖(goldenRatio : ℂ)‖ = goldenRatio
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos goldenRatio_pos]
   have h1 : ‖goldenDatum.β 1‖ = goldenRatio⁻¹ := by
-    simp [goldenDatum, Complex.norm_real, abs_of_pos (inv_pos.mpr goldenRatio_pos)]
+    change ‖((goldenRatio⁻¹ : ℝ) : ℂ)‖ = goldenRatio⁻¹
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr goldenRatio_pos)]
   refine ⟨fun hb => by simpa only [h0] using hb 0, fun hb i => ?_⟩
   fin_cases i
-  · simpa only [h0] using hb
-  · rw [h1]
+  · change ‖goldenDatum.β 0‖ ^ m ≤ B
+    simpa only [h0] using hb
+  · change ‖goldenDatum.β 1‖ ^ m ≤ B
+    rw [h1]
     exact (pow_le_pow_left₀ (inv_nonneg.mpr goldenRatio_pos.le)
       (((inv_le_one₀ goldenRatio_pos).mpr one_lt_goldenRatio.le).trans one_lt_goldenRatio.le) m).trans hb
 

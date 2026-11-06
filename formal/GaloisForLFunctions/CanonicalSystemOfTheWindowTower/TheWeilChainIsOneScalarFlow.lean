@@ -525,7 +525,7 @@ theorem diagonalEvalGram_le_of_anchor (z : ℂ) {a b : ℝ} (hab : a ≤ b)
   linarith only [hint]
 
 private theorem Icc_subset_precontact {a b : PrecontactAperture} :
-    Icc a.1.1 b.1.1 ⊆ precontactSet := fun x hx =>
+    Icc a.1.1 b.1.1 ⊆ precontactSet := fun _ hx =>
   ⟨a.1.2.trans_le hx.1, (EReal.coe_le_coe_iff.mpr hx.2).trans_lt b.2⟩
 
 private theorem diagonal_eq (z : ℂ) (a : PrecontactAperture) :
@@ -720,5 +720,92 @@ theorem riemannHypothesis_of_contact_potential_integrable
   have hlog := (Real.lt_log_iff_exp_lt (anchorKernel_pos ⟨b.1.2, b.2⟩)).mpr hb
   exact absurd (hbound ⟨hbase, hba⟩) (not_le.mpr hlog)
 
+
+/-! ### Contact scaling -/
+
+/-- **The contact scaling law.** At a contact of order `γ`, that is `(c−x)m(x) → γ/2` and `r → σ = ±1`,
+one has `1−r² ≈ 4(c−x)/γ`, the anchor kernel gains `γ log(1/λ)` on each block `[c−d, c−λd]`, and the
+potential moves by `σ((γ+1)/2)log(1/λ)`. So on blocks `|q| ≈ (γ+1)/(2d) = (1+1/γ)m`, which is `2m`
+at a simple contact. -/
+theorem contact_scaling {c γ σ lam : ℝ} {base : PrecontactAperture}
+    (hc : (c : EReal) = onsetAperture zetaZeroConfig) (hbc : base.1.1 < c) (hγ : 0 < γ)
+    (hσ : σ ^ 2 = 1) (hlam : lam ∈ Ioo (0 : ℝ) 1)
+    (hm : Tendsto (fun x => (c - x) * anchorMassRatio x) (𝓝[<] c) (𝓝 (γ / 2)))
+    (hr : Tendsto anchorReflection (𝓝[<] c) (𝓝 σ)) :
+    Tendsto (fun x => (c - x) / (1 - anchorReflection x ^ 2)) (𝓝[<] c) (𝓝 (γ / 4)) ∧
+    Tendsto (fun d => Real.log (diagonalEvalGram I (c - lam * d)) -
+      Real.log (diagonalEvalGram I (c - d))) (𝓝[>] (0 : ℝ)) (𝓝 (γ * Real.log (1 / lam))) ∧
+    Tendsto (fun d => canonicalPotential base.1.1 (c - lam * d) -
+      canonicalPotential base.1.1 (c - d)) (𝓝[>] (0 : ℝ))
+      (𝓝 (σ * ((γ + 1) / 2) * Real.log (1 / lam))) := by
+  have hpre {t : ℝ} (ht : t ∈ Ico base.1.1 c) : Icc base.1.1 t ⊆ precontactSet := fun y hy =>
+    ⟨base.1.2.trans_le hy.1, by
+      rw [← hc]
+      exact EReal.coe_lt_coe_iff.mpr (hy.2.trans_lt ht.2)⟩
+  have hmem {x y : ℝ} (hx : x ∈ Ico base.1.1 c) (hy : y ∈ Ico base.1.1 c) :
+      max x y ∈ Ico base.1.1 c ∧ uIcc x y ⊆ uIcc base.1.1 (max x y) := by
+    have hm' : max x y ∈ Ico base.1.1 c := ⟨hx.1.trans (le_max_left _ _), max_lt hx.2 hy.2⟩
+    refine ⟨hm', ?_⟩
+    rw [uIcc_of_le hm'.1]
+    exact uIcc_subset_Icc ⟨hx.1, le_max_left _ _⟩ ⟨hy.1, le_max_right _ _⟩
+  have hmi : ∀ x ∈ Ico base.1.1 c, ∀ y ∈ Ico base.1.1 c,
+      IntervalIntegrable (fun t => (1 + anchorReflection t ^ 2) / (1 - anchorReflection t ^ 2))
+        volume x y := by
+    intro x hx y hy
+    obtain ⟨ht, hsub⟩ := hmem hx hy
+    exact (integral_two_mul_anchorMassRatio ht.1 (hpre ht)).1.mono_set hsub
+  have hsi : ∀ x ∈ Ico base.1.1 c, ∀ y ∈ Ico base.1.1 c,
+      IntervalIntegrable (fun t => 2 * anchorReflection t / (1 - anchorReflection t ^ 2))
+        volume x y := by
+    intro x hx y hy
+    obtain ⟨ht, hsub⟩ := hmem hx hy
+    have hi := (intervalIntegrable_precontactCanonicalDrift ht.1 (hpre ht)).mono_set hsub
+    refine hi.congr_ae ?_
+    rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_uIoc]
+    refine Eventually.of_forall fun t ht' => ?_
+    have htt := hsub (uIoc_subset_uIcc ht')
+    rw [uIcc_of_le ht.1] at htt
+    exact precontactCanonicalDrift_eq (hpre ht htt)
+  obtain ⟨h1, h2, h3, h4⟩ := reflection_scaling hbc hγ hσ hlam
+    (fun x hx => anchorReflection_mem (hpre hx (right_mem_Icc.mpr hx.1))) hmi hsi hm hr
+  have hsmall : ∀ᶠ d : ℝ in 𝓝[>] (0 : ℝ), 0 < d ∧ d < c - base.1.1 := by
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds (sub_pos.mpr hbc)).filter_mono nhdsWithin_le_nhds] with d hd hdb
+      using ⟨hd, hdb⟩
+  have hpts {d : ℝ} (hd : 0 < d ∧ d < c - base.1.1) :
+      c - d ∈ Ico base.1.1 c ∧ c - lam * d ∈ Ico base.1.1 c ∧ c - d ≤ c - lam * d := by
+    have hld : lam * d ≤ d := by nlinarith only [hlam.2, hd.1]
+    have hl : 0 < lam * d := mul_pos hlam.1 hd.1
+    exact ⟨⟨by linarith only [hd.2], by linarith only [hd.1]⟩,
+      ⟨by linarith only [hd.2, hld], by linarith only [hl]⟩, by linarith only [hld]⟩
+  refine ⟨h1, ?_, ?_⟩
+  · have hv : 2 * (γ / 2 * Real.log (1 / lam)) = γ * Real.log (1 / lam) := by ring
+    rw [← hv]
+    refine (h2.const_mul 2).congr' ?_
+    filter_upwards [hsmall] with d hd
+    obtain ⟨hL, hR, hLR⟩ := hpts hd
+    have hs : Icc (c - d) (c - lam * d) ⊆ precontactSet :=
+      (Icc_subset_Icc hL.1 le_rfl).trans (hpre hR)
+    have he := (integral_two_mul_anchorMassRatio hLR hs).2
+    rw [← he, intervalIntegral.integral_const_mul]
+    rfl
+  · have hv : σ * (1 / 2) * Real.log (1 / lam) + σ * (γ / 2) * Real.log (1 / lam) =
+        σ * ((γ + 1) / 2) * Real.log (1 / lam) := by ring
+    rw [← hv]
+    refine (h4.add h3).congr' ?_
+    filter_upwards [hsmall] with d hd
+    obtain ⟨hL, hR, hLR⟩ := hpts hd
+    have hs := hpre hR
+    have he := artanh_anchorReflection_sub (l := base.1.1) (h := c - lam * d) (base := base.1.1)
+      (x := c - d) (y := c - lam * d) hs (left_mem_Icc.mpr hR.1) ⟨hL.1, hLR⟩
+      (right_mem_Icc.mpr hR.1)
+    have hint : (∫ t in (c - d)..(c - lam * d), precontactCanonicalDrift t) =
+        ∫ t in (c - d)..(c - lam * d), 2 * anchorReflection t / (1 - anchorReflection t ^ 2) := by
+      apply intervalIntegral.integral_congr
+      intro t ht
+      rw [uIcc_of_le hLR] at ht
+      exact precontactCanonicalDrift_eq (hs ⟨hL.1.trans ht.1, ht.2⟩)
+    rw [hint] at he
+    linarith only [he]
 
 end GaloisForLFunctions.CanonicalSystemOfTheWindowTower.WeilHilbertBeforeContact

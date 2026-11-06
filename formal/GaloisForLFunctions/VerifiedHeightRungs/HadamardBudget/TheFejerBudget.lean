@@ -866,7 +866,7 @@ theorem two_mul_fejerLaplace_le_of_offLine {a : ℝ} (ha : 1 / 2 < a) (hL : 0 < 
       (C := ∑' n, primeCoeff σ n) fun τ => abs_primeSeries_le hσ _
   have hK0 : Integrable fun τ => fejerK L τ * B₀ := (integrable_fejerK hL).mul_const _
   have hind : Integrable (Set.indicator (Icc (-γ) γ) fun _ => (1 : ℝ)) :=
-    (integrable_const (1 : ℝ)).integrableOn.integrable_indicator measurableSet_Icc
+    (continuous_const.integrableOn_Icc).integrable_indicator measurableSet_Icc
   have hindI : ∫ τ, Set.indicator (Icc (-γ) γ) (fun _ => (1 : ℝ)) τ = 2 * γ := by
     rw [integral_indicator measurableSet_Icc, setIntegral_const, smul_eq_mul, mul_one,
       Real.volume_real_Icc_of_le (by linarith only [hγ])]
@@ -889,9 +889,22 @@ theorem two_mul_fejerLaplace_le_of_offLine {a : ℝ} (ha : 1 / 2 < a) (hL : 0 < 
     1 / (Real.pi * L * Real.sqrt γ) * tailFn γ τ +
     (4 / (Real.pi * L * γ ^ 2) * (x / (x ^ 2 + (γ + τ) ^ 2)) +
       4 / (Real.pi * L * γ ^ 2) * (x / (x ^ 2 + (γ - τ) ^ 2)))
-  have hMajInt : Integrable Maj := by
-    exact (((hK0.sub (hS1.const_mul _)).sub (hS2.const_mul _)).add (hind.const_mul _)).add
-      (htail.const_mul _) |>.add ((hL1.const_mul _).add (hL3.const_mul _))
+  have h1 : Integrable fun τ => fejerK L τ * B₀ - 1 / 2 * (fejerK L τ * primeSeries σ (γ + τ)) :=
+    hK0.sub (hS1.const_mul _)
+  have h2 : Integrable fun τ => fejerK L τ * B₀ - 1 / 2 * (fejerK L τ * primeSeries σ (γ + τ)) -
+      1 / 2 * (fejerK L τ * primeSeries σ (γ - τ)) := h1.sub (hS2.const_mul _)
+  have h3 : Integrable fun τ => fejerK L τ * B₀ - 1 / 2 * (fejerK L τ * primeSeries σ (γ + τ)) -
+      1 / 2 * (fejerK L τ * primeSeries σ (γ - τ)) +
+      1 / (4 * Real.pi * L * γ ^ 2) * Set.indicator (Icc (-γ) γ) (fun _ => (1 : ℝ)) τ :=
+    h2.add (hind.const_mul _)
+  have h4 : Integrable fun τ => fejerK L τ * B₀ - 1 / 2 * (fejerK L τ * primeSeries σ (γ + τ)) -
+      1 / 2 * (fejerK L τ * primeSeries σ (γ - τ)) +
+      1 / (4 * Real.pi * L * γ ^ 2) * Set.indicator (Icc (-γ) γ) (fun _ => (1 : ℝ)) τ +
+      1 / (Real.pi * L * Real.sqrt γ) * tailFn γ τ := h3.add (htail.const_mul _)
+  have h5 : Integrable fun τ => 4 / (Real.pi * L * γ ^ 2) * (x / (x ^ 2 + (γ + τ) ^ 2)) +
+      4 / (Real.pi * L * γ ^ 2) * (x / (x ^ 2 + (γ - τ) ^ 2)) :=
+    (hL1.const_mul _).add (hL3.const_mul _)
+  have hMajInt : Integrable Maj := h4.add h5
   -- The pointwise inequality.
   have hpoint : ∀ τ, fejerK L τ * xiLinePairRe a δ τ ≤ Maj τ := by
     intro τ
@@ -932,21 +945,16 @@ theorem two_mul_fejerLaplace_le_of_offLine {a : ℝ} (ha : 1 / 2 < a) (hL : 0 < 
     have hsq : Real.sqrt γ * Real.sqrt γ = γ := Real.mul_self_sqrt hγ.le
     have hsq0 : 0 < Real.sqrt γ := Real.sqrt_pos.mpr hγ
     simp only [Maj]
-    rw [integral_add ((((hK0.sub (hS1.const_mul _)).sub (hS2.const_mul _)).add
-        (hind.const_mul _)).add (htail.const_mul _)) ((hL1.const_mul _).add (hL3.const_mul _)),
-      integral_add (((hK0.sub (hS1.const_mul _)).sub (hS2.const_mul _)).add (hind.const_mul _))
-        (htail.const_mul _),
-      integral_add ((hK0.sub (hS1.const_mul _)).sub (hS2.const_mul _)) (hind.const_mul _),
-      integral_sub (hK0.sub (hS1.const_mul _)) (hS2.const_mul _),
-      integral_sub hK0 (hS1.const_mul _),
-      integral_add (hL1.const_mul _) (hL3.const_mul _),
+    rw [integral_add h4 h5, integral_add h3 (htail.const_mul _),
+      integral_add h2 (hind.const_mul _), integral_sub h1 (hS2.const_mul _),
+      integral_sub hK0 (hS1.const_mul _), integral_add (hL1.const_mul _) (hL3.const_mul _),
       integral_const_mul, integral_const_mul, integral_const_mul, integral_const_mul,
       integral_const_mul, integral_const_mul,
       integral_mul_const, integral_fejerK hL, integral_fejerK_mul_primeSeries hL hσ,
       integral_fejerK_mul_primeSeries_sub hL hσ, hindI, integral_tailFn hγ, hL2, hL4]
     have e1 : 1 / (Real.pi * L * Real.sqrt γ) * (4 / Real.sqrt γ) = 4 / (Real.pi * L * γ) := by
-      rw [← hsq]
-      field_simp
+      calc _ = 4 / (Real.pi * L * (Real.sqrt γ * Real.sqrt γ)) := by field_simp
+        _ = _ := by rw [hsq]
     rw [e1]
     field_simp
     ring

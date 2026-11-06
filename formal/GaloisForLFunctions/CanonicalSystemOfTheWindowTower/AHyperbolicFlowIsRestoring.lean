@@ -3,6 +3,7 @@ import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
 # The real analysis of a hyperbolic reflection flow
@@ -353,7 +354,7 @@ theorem tendsto_integral_block_of_mul_tendsto {f : ℝ → ℝ} {b c ℓ lam : �
       obtain ⟨htu, -⟩ := hmem ht'
       have hpos : 0 < c - t := sub_pos.mpr htu.2
       have hd1 := hsub htu
-      simp only [mem_setOf_eq, mem_preimage, Metric.mem_ball, Real.dist_eq] at hd1
+      simp only [mem_setOf_eq, Real.dist_eq] at hd1
       have hrew : f t - ℓ * (1 / (c - t)) = ((c - t) * f t - ℓ) * (1 / (c - t)) := by
         field_simp
       rw [hrew, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (one_div_pos.mpr hpos)]
@@ -450,8 +451,9 @@ theorem reflection_scaling {r : ℝ → ℝ} {b c γ σ lam : ℝ} (hbc : b < c)
     have hne : 1 - r x ^ 2 ≠ 0 := by nlinarith only [h.1, h.2]
     have hf : (1 - σ * r x) * (1 + σ * r x) = 1 - r x ^ 2 := by linear_combination -hsq
     have hne1 : 1 - σ * r x ≠ 0 := fun h0 => hne (by rw [← hf, h0, zero_mul])
+    have hne2 : 1 + σ * r x ≠ 0 := fun h0 => hne (by rw [← hf, h0, mul_zero])
+    rw [← hf]
     field_simp
-    linear_combination -(c - x) * hf
   have hc0 := (hminus.comp hx₀)
   have hc1 := (hminus.comp hx₁)
   have hγ2 : γ / 2 ≠ 0 := by positivity
@@ -475,11 +477,12 @@ theorem reflection_scaling {r : ℝ → ℝ} {b c γ σ lam : ℝ} (hbc : b < c)
       nlinarith only [hsq, hy.1, hy.2]
     have h1' := hnz _ ha0
     have h2' := hnz _ ha1
-    simp only [Function.comp_apply]
     have hd0 : d ≠ 0 := hd'.ne'
     have hl0 : lam ≠ 0 := hlam.1.ne'
     have e1 : c - (c - d) = d := by ring
     have e2 : c - (c - lam * d) = lam * d := by ring
+    change lam * (((c - (c - d)) / (1 - σ * r (c - d))) /
+      ((c - (c - lam * d)) / (1 - σ * r (c - lam * d)))) = _
     rw [e1, e2]
     field_simp
   have hplus0 := hplus.comp hx₀
@@ -491,8 +494,8 @@ theorem reflection_scaling {r : ℝ → ℝ} {b c γ σ lam : ℝ} (hbc : b < c)
     refine ((Tendsto.log (hplus1.div hplus0 (by norm_num)) (by norm_num)).sub
       (hdefect.log hlam.1.ne')).const_mul _
   have hv : σ * (1 / 2) * (Real.log (2 / 2) - Real.log lam) = σ * (1 / 2) * Real.log (1 / lam) := by
-    rw [div_self (by norm_num : (2 : ℝ) ≠ 0), Real.log_one, one_div, Real.log_inv]
-    ring
+    rw [div_self (by norm_num : (2 : ℝ) ≠ 0), Real.log_one, Real.log_div one_ne_zero hlam.1.ne',
+      Real.log_one]
   rw [hv] at hlog
   refine hlog.congr' ?_
   filter_upwards [hx₀.eventually hnear, hx₁.eventually hnear] with d h0 h1

@@ -256,6 +256,7 @@ Each mechanism below avoids Σ payment, Π precision and Γ selection as stated.
 - **Why the walls differ.** Sign comes from a weight filtration on a family, not from a window.
 - **First test.** Reproduce the function-field window receivers from such a family.
 - **Risk.** No such base is known; the Golden fake shows Euler data plus FE alone are not enough [L].
+- **Formal boundary.** Golden Frobenius also has every `SL₂`-invariant tensor weight and nonnegative even-tensor Euler coefficients, but its optimal degree-`m` growth rate is `φ^m` ([obstruction and positive survivor](../../drafts/pipeline/5-failed/w4-invariant-weights-alone.md)) [L]. A common rate across all even degrees is equivalent to curve purity and the spectrum-window receiver [L]. Canonical divisor compression is pure, but Frobenius preserves its invariant subspace iff RH ([exact decomposition](../../drafts/pipeline/3-formalized/w4-canonical-monodromy-compression.md)) [L]. The arithmetic family and global trace bound remain open.
 
 ### Tested and rejected form
 **Lee–Yang lift on the prime torus.** `Ξ=A+A^#` lifts to `w²Π_p(z_p−a_p)/(z_p(1−a_pz_p))=−1` with `a_p=p^{−½}` and `w` the Gamma phase. Each Euler factor has winding 0, so all drift comes from `w`. A stable lift on the product torus requires Gamma speed above the total Euler speed, which diverges [D]. This agrees with the forced Euler drift `θ_S/2` [L]. A lift must correlate torus position with height; a product-torus Lee–Yang route does not exist in this form.

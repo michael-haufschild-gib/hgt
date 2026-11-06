@@ -116,14 +116,15 @@ theorem quarter_shift_reciprocal_sum_le {d : ℝ} (hd : 0 < d) (j : ℕ) :
       (continuous_const.intervalIntegrable 0 (1 / 4) :
         IntervalIntegrable (fun _ : ℝ => f (1 / 4)) volume 0 (1 / 4))
       (hc.intervalIntegrable 0 (1 / 4)) (fun t ht => hanti ht.1 (by norm_num) ht.2)
-    simpa only [integral_const, sub_zero, smul_eq_mul, div_eq_mul_inv, mul_comm] using h
+    simpa only [intervalIntegral.integral_const, sub_zero, smul_eq_mul, div_eq_mul_inv,
+      one_mul, mul_comm] using h
   cases j with
   | zero => simp only [Finset.range_zero, sum_empty]; positivity
   | succ n =>
     have ha : AntitoneOn f (Icc (1 / 4) (1 / 4 + (n : ℝ))) :=
       hanti.mono (fun t ht => by change 0 ≤ t; linarith [ht.1])
     have hsum := ha.sum_le_integral
-    have hadd := integral_add_adjacent_intervals
+    have hadd := integral_add_adjacent_intervals (μ := volume)
       (hc.intervalIntegrable 0 (1 / 4))
       (hc.intervalIntegrable (1 / 4) (1 / 4 + (n : ℝ)))
     have hi := hInt (1 / 4 + (n : ℝ))
