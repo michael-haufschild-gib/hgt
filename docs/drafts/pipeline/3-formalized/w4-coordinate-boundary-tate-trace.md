@@ -1,7 +1,7 @@
 # W4 — the coordinate boundary has an explicit Tate trace
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** In `n` homogeneous coordinates, stratify the nonzero coordinate boundary of `Σx_i=Σ_iΠ_{j≠i}x_j=0` by support size `r`. Exactly one zero is impossible; every support with `1≤r≤n−2` contributes the torus hyperplane count. The projective boundary count is therefore `Σ_{r=1}^{n−2} binom(n,r) B_{r−1}(q)`, where `qB_m(q)=(q−1)^m−(−1)^m`.
 
 ## Proof mechanism
@@ -17,3 +17,15 @@ For `n≥2`, an equivalent projective formula is `D_n(q)=Σ_{j=0}^{n−2}q^j−B
 ## Role
 
 This determines the complete coordinate boundary contribution without resolving its singularities. It does not establish the compactification's middle-cohomology weight bound or construct the ζ family.
+
+## Lean
+
+[`BoundaryTateTrace.lean`](../../../../formal/GaloisForLFunctions/ArithmeticKunnethTheory/WeightFamilies/BoundaryTateTrace.lean), namespace `ArithmeticKunnethTheory.WeightFamilies`:
+
+- `supportZeroSum_card`, `supportSizeZeroSum_card`: exact support restriction and the binomial stratum factor.
+- `mem_coordinateBoundaryCone_iff`: the support model is exactly the nonzero coordinate boundary of the homogeneous equations.
+- `projectiveSupportFiberEquiv`, `projectiveCoordinateBoundary_card`: actual scalar quotients and the complete stratum count.
+- `projectiveCoordinateBoundary_card_closed`: the closed projective formula, stated with addition to avoid truncated natural subtraction.
+- `boundaryTateTrace_extension_count`, `boundaryTateTrace_weight_bound`: the finite signed trace over every finite extension, with eigenvalues bounded by `q^(n−4)`.
+
+Direct Lean check passed.

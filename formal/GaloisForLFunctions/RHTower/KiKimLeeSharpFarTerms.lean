@@ -9,7 +9,8 @@ hypothesis, `‖F(W)‖ ≤ e^b ‖F(u)‖ e^{(W−u)(α+1/8)}`. The conclusions
 `‖F(u)‖` replaced by `e^b ‖F(u)‖`. The near-window argument supplies the hypothesis with
 `b = (9/2)(1/η + 3)` through the split model (`norm_xiLine_le_split_model`), so the far-region
 errors stay `kklRC`, `kklRB` up to a constant factor. The proofs are the corpus proofs with this
-one change.
+one change. They use only the growth of `F` beyond `W`, so they hold for any `f` with that growth
+(`far_terms_le_of_growth`) and any constant `N` in place of `e^b ‖F(u)‖`.
 -/
 
 open Complex MeasureTheory Filter Topology Set
@@ -18,29 +19,27 @@ namespace RHTower.DeBruijn
 
 noncomputable section
 
-/-- **The far integrand.** -/
-theorem far_integrand_le_of_bound {b t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (hX : 200 ≤ X)
-    (hy : |y| ≤ 1 / 2) (hα : 0 ≤ (horizontalSlope X).re)
+/-- **The far integrand**, for any `f` with the growth of `F` beyond `W`. -/
+theorem far_integrand_le_of_growth {f : ℝ → ℂ} {N t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8)
+    (hX : 200 ≤ X) (hy : |y| ≤ 1 / 2) (hα : 0 ≤ (horizontalSlope X).re) (hN0 : 0 ≤ N)
     (hW9 : 9 / 2 ≤ W)
-    (hFWb : ‖xiLine X W‖ ≤ (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+    (hFWb : ‖f W‖ ≤ N *
       Real.exp ((W - (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8)))
+    (hFw : ‖f w‖ ≤ ‖f W‖ *
+      Real.exp (((horizontalSlope X).re + 2 + (w + 1 / 2) / (2 * X)) * (w - W)))
     (hw : W < w) :
-    (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖xiLine X w‖ ≤
+    (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖f w‖ ≤
       2 * Real.exp 1 * (1 / (2 * t) + (horizontalSlope X).re + 1) *
-        ((Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
-          Real.exp ((W - (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8))) *
+        (N * Real.exp ((W - (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8))) *
         (gaussDensity (2 * t) (w - y) *
           Real.exp ((w - y) + (w - W) * ((horizontalSlope X).re + 2))) := by
   set α := (horizontalSlope X).re with hαdef
   set u := y + 2 * t * α with hudef
-  set N := Real.exp b * ‖xiLine X u‖ with hN
   have hy1 := (abs_le.mp hy).1
   have hy2 := (abs_le.mp hy).2
   have hwy : 0 ≤ w - y := by linarith
   -- `F` at `W` and beyond
-  have hFW : ‖xiLine X W‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) := hFWb
-  have hFw := norm_xiLine_le_far hX hW9 hw.le
-  rw [← horizontalSlope_re, ← hαdef] at hFw
+  have hFW : ‖f W‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) := hFWb
   have hexpo : (α + 2 + (w + 1 / 2) / (2 * X)) * (w - W) ≤
       (α + 2) * (w - W) + (w - y) ^ 2 / (8 * t) + 1 := by
     have hA : (w + 1 / 2) * (w - W) ≤ 2 * (w - y) ^ 2 + 2 := by
@@ -57,11 +56,11 @@ theorem far_integrand_le_of_bound {b t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 
       have : 1 / X ≤ 1 := by rw [div_le_one hX0]; linarith
       linarith
     nlinarith
-  have hFw' : ‖xiLine X w‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) *
+  have hFw' : ‖f w‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) *
       (Real.exp ((α + 2) * (w - W)) * Real.exp ((w - y) ^ 2 / (8 * t)) * Real.exp 1) := by
     refine hFw.trans ?_
     rw [← Real.exp_add, ← Real.exp_add]
-    calc ‖xiLine X W‖ * Real.exp ((α + 2 + (w + 1 / 2) / (2 * X)) * (w - W))
+    calc ‖f W‖ * Real.exp ((α + 2 + (w + 1 / 2) / (2 * X)) * (w - W))
         ≤ N * Real.exp ((W - u) * (α + 1 / 8)) *
             Real.exp ((α + 2) * (w - W) + (w - y) ^ 2 / (8 * t) + 1) := by
           gcongr
@@ -79,7 +78,7 @@ theorem far_integrand_le_of_bound {b t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 
   have hGabs := gaussDensity_mul_exp_le ht (w - y)
   have hG0 := (gaussDensity_pos ht (w - y)).le
   have hA0 : 0 ≤ |(w - y) / (2 * t)| + ‖horizontalSlope X‖ := by positivity
-  calc (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖xiLine X w‖
+  calc (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖f w‖
       ≤ ((1 / (2 * t) + α + 1) * Real.exp (w - y)) * gaussDensity t (w - y) *
           (N * Real.exp ((W - u) * (α + 1 / 8)) *
             (Real.exp ((α + 2) * (w - W)) * Real.exp ((w - y) ^ 2 / (8 * t)) * Real.exp 1)) := by
@@ -95,35 +94,51 @@ theorem far_integrand_le_of_bound {b t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 
         rw [← Real.exp_add, show w - y + (α + 2) * (w - W) = (w - y) + (w - W) * (α + 2) by ring]
         ring
 
-/-- **The far terms and the boundary value at `W = 2tα + α²`.** -/
-theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (hX : 200 ≤ X) (hy : |y| ≤ 1 / 2)
-    (hα1 : 1 ≤ (horizontalSlope X).re)
+/-- **The far integrand.** -/
+theorem far_integrand_le_of_bound {b t X y W w : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (hX : 200 ≤ X)
+    (hy : |y| ≤ 1 / 2) (hα : 0 ≤ (horizontalSlope X).re)
+    (hW9 : 9 / 2 ≤ W)
+    (hFWb : ‖xiLine X W‖ ≤ (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+      Real.exp ((W - (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8)))
+    (hw : W < w) :
+    (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖xiLine X w‖ ≤
+      2 * Real.exp 1 * (1 / (2 * t) + (horizontalSlope X).re + 1) *
+        ((Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+          Real.exp ((W - (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8))) *
+        (gaussDensity (2 * t) (w - y) *
+          Real.exp ((w - y) + (w - W) * ((horizontalSlope X).re + 2))) := by
+  have hg := norm_xiLine_le_far hX hW9 hw.le
+  rw [← horizontalSlope_re] at hg
+  exact far_integrand_le_of_growth ht ht8 hX hy hα (by positivity) hW9 hFWb hg hw
+
+/-- **The far terms and the boundary value at `W = 2tα + α²`**, for any `f` with the growth of `F`
+beyond `W`. -/
+theorem far_terms_le_of_growth {f : ℝ → ℂ} {N t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8)
+    (hX : 200 ≤ X) (hy : |y| ≤ 1 / 2) (hα1 : 1 ≤ (horizontalSlope X).re) (hN0 : 0 ≤ N)
     (hW9 : 9 / 2 ≤ 2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)
-    (hFWb : ‖xiLine X (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
-      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
-        Real.exp ((2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 -
-          (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8))) :
+    (hFWb : ‖f (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
+      N * Real.exp ((2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 -
+          (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8)))
+    (hgrow : ∀ w : ℝ, 2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 < w →
+      ‖f w‖ ≤ ‖f (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ *
+        Real.exp (((horizontalSlope X).re + 2 + (w + 1 / 2) / (2 * X)) *
+          (w - (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)))) :
     (∫ w in Ioi (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2),
-        (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖xiLine X w‖) ≤
-      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
-        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
+        (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖f w‖) ≤
+      N * Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
     (∫ w in Ioi (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2),
-        gaussDensity t (w - y) * ‖xiLine X w‖) ≤
-      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
-        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
+        gaussDensity t (w - y) * ‖f w‖) ≤
+      N * Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
     gaussDensity t (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 - y) *
-        ‖xiLine X (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
-      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
-        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRB t (horizontalSlope X).re := by
+        ‖f (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
+      N * Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRB t (horizontalSlope X).re := by
   have hα : 0 ≤ (horizontalSlope X).re := by linarith
   set α := (horizontalSlope X).re with hαdef
   set u := y + 2 * t * α with hudef
-  set N := Real.exp b * ‖xiLine X u‖ with hN
   set W := 2 * t * α + α ^ 2 with hWdef
   have hy1 := (abs_le.mp hy).1
   have hy2 := (abs_le.mp hy).2
   have hWu : u ≤ W := by rw [hudef, hWdef]; nlinarith
-  have hN0 : 0 ≤ N := by positivity
   set C := 2 * Real.exp 1 * (1 / (2 * t) + α + 1) * (N * Real.exp ((W - u) * (α + 1 / 8)))
     with hC
   have hC0 : 0 ≤ C := by positivity
@@ -175,8 +190,8 @@ theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (
           linarith
       _ = _ := by ring
   have hpoint : ∀ w ∈ Ioi W, (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) *
-      gaussDensity t (w - y) * ‖xiLine X w‖ ≤ m w := fun w hw =>
-    far_integrand_le_of_bound ht ht8 hX hy hα hW9 hFWb hw
+      gaussDensity t (w - y) * ‖f w‖ ≤ m w := fun w hw =>
+    far_integrand_le_of_growth ht ht8 hX hy hα hN0 hW9 hFWb (hgrow w hw) hw
   have hone : ∀ w, 1 ≤ |(w - y) / (2 * t)| + ‖horizontalSlope X‖ := by
     intro w
     have := le_norm_horizontalSlope X
@@ -193,16 +208,16 @@ theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (
     refine integral_mono_of_nonneg (Eventually.of_forall fun w =>
       mul_nonneg (gaussDensity_pos ht _).le (norm_nonneg _)) hm_int.integrableOn
       ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun w hw => ?_))
-    have hGF : 0 ≤ gaussDensity t (w - y) * ‖xiLine X w‖ :=
+    have hGF : 0 ≤ gaussDensity t (w - y) * ‖f w‖ :=
       mul_nonneg (gaussDensity_pos ht _).le (norm_nonneg _)
     have := hpoint w hw
     have h1 := hone w
-    calc gaussDensity t (w - y) * ‖xiLine X w‖
-        ≤ (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * (gaussDensity t (w - y) * ‖xiLine X w‖) :=
+    calc gaussDensity t (w - y) * ‖f w‖
+        ≤ (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * (gaussDensity t (w - y) * ‖f w‖) :=
           le_mul_of_one_le_left hGF h1
       _ = _ := by ring
       _ ≤ m w := this
-  · have hFW : ‖xiLine X W‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) := hFWb
+  · have hFW : ‖f W‖ ≤ N * Real.exp ((W - u) * (α + 1 / 8)) := hFWb
     have hWy : α ^ 2 - 1 / 2 ≤ W - y := by rw [hWdef]; nlinarith
     have hα2 : 0 ≤ α ^ 2 - 1 / 2 := by nlinarith
     unfold gaussDensity
@@ -219,7 +234,7 @@ theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (
       have : (W - u) * (α + 1 / 8) ≤ (α ^ 2 + 1 / 2) * (α + 1 / 8) := by
         gcongr
       linarith
-    calc (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * Real.exp (-((W - y) ^ 2 / (4 * t))) * ‖xiLine X W‖
+    calc (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * Real.exp (-((W - y) ^ 2 / (4 * t))) * ‖f W‖
         ≤ (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * Real.exp (-((W - y) ^ 2 / (4 * t))) *
             (N * Real.exp ((W - u) * (α + 1 / 8))) := by gcongr
       _ = (4 * Real.pi * t) ^ (-(1 / 2 : ℝ)) * N * (Real.exp (-((W - y) ^ 2 / (4 * t))) *
@@ -228,6 +243,30 @@ theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (
             Real.exp (-((α ^ 2 - 1 / 2) ^ 2 / (4 * t)) + (α ^ 2 + 1 / 2) * (α + 1 / 8) +
               t * α ^ 2)) := by gcongr
       _ = _ := by ring
+
+/-- **The far terms and the boundary value at `W = 2tα + α²`.** -/
+theorem far_terms_le_of_bound {b t X y : ℝ} (ht : 0 < t) (ht8 : t ≤ 1 / 8) (hX : 200 ≤ X) (hy : |y| ≤ 1 / 2)
+    (hα1 : 1 ≤ (horizontalSlope X).re)
+    (hW9 : 9 / 2 ≤ 2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)
+    (hFWb : ‖xiLine X (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
+      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+        Real.exp ((2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 -
+          (y + 2 * t * (horizontalSlope X).re)) * ((horizontalSlope X).re + 1 / 8))) :
+    (∫ w in Ioi (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2),
+        (|(w - y) / (2 * t)| + ‖horizontalSlope X‖) * gaussDensity t (w - y) * ‖xiLine X w‖) ≤
+      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
+    (∫ w in Ioi (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2),
+        gaussDensity t (w - y) * ‖xiLine X w‖) ≤
+      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRC t (horizontalSlope X).re ∧
+    gaussDensity t (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 - y) *
+        ‖xiLine X (2 * t * (horizontalSlope X).re + (horizontalSlope X).re ^ 2)‖ ≤
+      (Real.exp b * ‖xiLine X (y + 2 * t * (horizontalSlope X).re)‖) *
+        Real.exp (-(t * (horizontalSlope X).re ^ 2)) * kklRB t (horizontalSlope X).re := by
+  refine far_terms_le_of_growth ht ht8 hX hy hα1 (by positivity) hW9 hFWb fun w hw => ?_
+  have hg := norm_xiLine_le_far hX hW9 hw.le
+  rwa [← horizontalSlope_re] at hg
 
 end
 

@@ -28328,3 +28328,4 @@ import GaloisForLFunctions.RHTower.Representation.EndpointArithmeticMoments
 import GaloisForLFunctions.RHTower.Representation.EndpointCycleReality
 import GaloisForLFunctions.RHTower.Representation.EndpointHankelReceiver
 import GaloisForLFunctions.RHTower.Representation.EndpointCharacterCriterion
+import GaloisForLFunctions.RHTower.Representation.EndpointMixtureDefect

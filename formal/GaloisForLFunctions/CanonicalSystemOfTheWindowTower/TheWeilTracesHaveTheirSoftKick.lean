@@ -2107,7 +2107,6 @@ theorem tendsto_canonicalPotential_right_kick {base : ℝ} (hbase : base ∈ pre
   rw [add_zero] at hsum
   refine hsum.congr' ?_
   filter_upwards [mem_nhdsWithin_of_mem_nhds (precontactSet_mem_nhds a)] with x hx
-  beta_reduce
   rw [canonicalPotential_sub_eq hbase hap hx]
   ring
 
@@ -2156,7 +2155,6 @@ theorem tendsto_canonicalPotential_left_kick {base : ℝ} (hbase : base ∈ prec
   rw [add_zero] at hsum
   refine hsum.congr' ?_
   filter_upwards [mem_nhdsWithin_of_mem_nhds (precontactSet_mem_nhds b)] with x hx
-  beta_reduce
   rw [canonicalPotential_sub_eq hbase hx hbp]
   ring
 

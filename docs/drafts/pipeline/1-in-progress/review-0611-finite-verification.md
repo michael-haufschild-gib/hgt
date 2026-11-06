@@ -10,8 +10,11 @@
 
 | Task | Status | Lean |
 |---|---|---|
-| A1 | in progress | `VerifiedHeightRungs/HadamardBudget/` |
-| A2–A9 | open | |
+| A1 | `T = 67` done; `T ≈ 10²` needs phases, a computation | `VerifiedHeightRungs/HadamardBudget/`: `rhVerifiedThrough_sixtySeven` |
+| A4 | done | `ThetaCuspSections/TheTenthSectionFromHeightSixtySeven.lean`: `thetaCuspCenterMixedSignedHankel_ten_posDef`, `0 < a ≤ ½` |
+| A5 | done | `xi_centre_pfSeq_twoHundred`, `xiSliceCoeff_nonneg_of_abs_le_band` (`\|t\| ≤ 133/2`), `re_xiLiPaired_nonneg_of_le` |
+| A8 | boundary done; finite side below `27/5` open | `WindowTowerOfSpecZ/FiniteTemplatesEndAtTwentySevenFifths.lean` |
+| A2, A3, A6, A7, A9 | open | |
 
 ## A1: the Hadamard budget replaces Turing's method
 
@@ -39,5 +42,5 @@ Past `295`: subtract certified on-line zeros at the close pairs (`hardyZ` sign c
 
 - **A1:** `HadamardBudget/TheVerifiedHeightSixtySeven.lean`: `rhVerifiedThrough_sixtySeven`, by hand, no zero or value of `ζ` located. The worst-phase budget (Kronecker limit) cannot pass `T ≈ 80`. Past it, phase information is needed: that is a finite computation, excluded by the goal's rule.
 - **A5:** `xi_centre_pfSeq_twoHundred` (`PF_200`), `xiSliceCoeff_nonneg_of_abs_le_band` (`|t| ≤ 133/2`), `re_xiLiPaired_nonneg_of_le` (`n ≤ 314`).
-- **A4 (plan):** rank 10 from height 66. Cubic `D(N+1)³` is an artifact of factorial Hankel bounds. Replace by: parity reduces rank 10 to polynomials of degree `≤ 4` in `t = b²`; Legendre reproducing kernel on `t ∈ [1, 25]`; explicit tail `|current a b| ≤ C a e^{−(7/5)|b|}`; core floor on `1 ≤ |b| ≤ 5` from `poleSharpConstant` and `Ξ(b) ≥ Ξ(0) − (b²/2)∫Φx²`.
+- **A4:** rank 10 from height 66. Cubic `D(N+1)³` is an artifact of factorial Hankel bounds. Replaced by: parity reduces rank 10 to polynomials of degree `≤ 4` in `t = b²`; Legendre reproducing kernel on `t ∈ [1, 25]`; explicit tail `|current a b| ≤ 6.05·10⁹ a e^{−(7/5)|b|}`; core floor `≥ 6·10⁻⁴ a` on `|b| ≤ 5` from `2 + γ − log 4π` and `Ξ(b) ≥ Ξ(0)(1 − (b²/2)Σ1/|ρ−½|²)`. Same method: `T_N = O(N log N)` should replace `D(N+1)³` for general `N`.
 - **A8 (finding):** finite templates end at spread `27/5`, not `6`. Moves `q ↦ 81q/80` (`q < 16/15`), `q ↦ 15q/16` (`q ≥ 16/15`) stay in `[1, 27/25)`, are paths of ratio-2,3,5 edges inside `[1, 27/5)`, and lower `v₂` by 4 each. Stages accumulate at `27/5`, so stage-by-stage exact horizons cannot reach it.

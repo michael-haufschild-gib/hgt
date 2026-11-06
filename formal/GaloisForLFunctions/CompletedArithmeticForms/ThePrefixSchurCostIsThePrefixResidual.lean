@@ -28,6 +28,7 @@ namespace GaloisForLFunctions.CompletedArithmeticForms
 
 open TransMetzlerWeilPositivity SpacingScaleHarmonicAnalysis
   CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
+  RenormalizedArithmeticPotentialTheory.CompletedShell
 
 /-- The prefix coordinates of a vector. -/
 def prefixPart {M N : ℕ} (hMN : M ≤ N) (x : PrimeHorizonIndex N → ℝ) : PrimeHorizonIndex M → ℝ :=
@@ -89,9 +90,12 @@ theorem quadratic_prefix_split {M N : ℕ} (hMN : M ≤ N) (c : ℝ) (x : PrimeH
     exact (Equiv.sum_comp (horizonPrefixSplit hMN) fun j =>
       x j * (completeWeilMatrix transMetzlerProfile c N *ᵥ x) j).symm
   rw [h1, hblocks, hz, Matrix.fromBlocks_mulVec]
-  have hinl : Sum.elim (prefixPart hMN x) (tailPart x) ∘ Sum.inl = prefixPart hMN x := rfl
-  have hinr : Sum.elim (prefixPart hMN x) (tailPart x) ∘ Sum.inr = tailPart x := rfl
-  rw [hinl, hinr, Matrix.sum_elim_dotProduct_sum_elim, dotProduct_add, dotProduct_add,
+  have hinl : Sum.elim (prefixPart hMN x) (tailPart (M := M) x) ∘ Sum.inl = prefixPart hMN x := rfl
+  have hinr : Sum.elim (prefixPart hMN x) (tailPart (M := M) x) ∘ Sum.inr = tailPart (M := M) x := rfl
+  have helim : ∀ (a u : PrimeHorizonIndex M → ℝ) (b v : HorizonTail M N → ℝ),
+      Sum.elim a b ⬝ᵥ Sum.elim u v = a ⬝ᵥ u + b ⬝ᵥ v := fun a u b v => by
+    simp only [dotProduct, Fintype.sum_sum_type, Sum.elim_inl, Sum.elim_inr]
+  rw [hinl, hinr, helim, dotProduct_add, dotProduct_add,
     adjoint_pair, dotProduct_comm (plateauMixedBlock hMN c *ᵥ tailPart x) (prefixPart hMN x)]
   ring
 
@@ -203,14 +207,15 @@ theorem exists_plateauPrefixSchur_floor_on_conductor_block :
       intro m hm
       have hm0 : 0 < m := (mem_Icc.mp hm).1
       have h1 : Tendsto (fun N : ℕ => 2 * E m ^ 2 * (C m * (Real.log N)⁻¹)) atTop (𝓝 0) := by
-        simpa only [mul_zero] using (hLlim.inv_tendsto_atTop.const_mul (C m)).const_mul (2 * E m ^ 2)
+        simpa only [mul_zero, Pi.inv_apply] using
+          (hLlim.inv_tendsto_atTop.const_mul (C m)).const_mul (2 * E m ^ 2)
       have h2 : Tendsto (fun N : ℕ => 2 * resid m N ^ 2) atTop (𝓝 0) := by
         have h := (tendsto_completeWeilMatrix_completedConductor_residual_norm hφ hsupp hmass hc0
           hm0).pow 2
         simpa only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero] using
           h.const_mul 2
       simpa only [add_zero] using h1.add h2
-    have := tendsto_finset_sum (Icc 1 Q') hterm
+    have := tendsto_finsetSum (Icc 1 Q') hterm
     simpa only [Finset.sum_const_zero] using this
   have hα : 2 * B * (1 / (4 * B)) < 1 := by
     have : 2 * B * (1 / (4 * B)) = 1 / 2 := by field_simp; norm_num
@@ -241,7 +246,6 @@ theorem exists_plateauPrefixSchur_floor_on_conductor_block :
       z.ofLp ⬝ᵥ completeWeilMatrix transMetzlerProfile c N *ᵥ z.ofLp := by
     unfold completeWeilEnergy
     simp only [EuclideanSpace.inner_eq_star_dotProduct, Matrix.toLpLin_apply, star_trivial]
-    rfl
   rw [henergy] at hfl
   -- The exact Schur identity and the inverse bound.
   have hA := hApos N hMN c hc0 hcMN
@@ -294,8 +298,9 @@ theorem exists_plateauPrefixSchur_floor_on_conductor_block :
           simp only [resid]
           rw [← hres, EuclideanSpace.real_norm_sq_eq]
         rw [hnorm]
-        have hinj : Function.Injective (horizonPrefixMap hMN) := fun i j h =>
-          Subtype.ext (congrArg Subtype.val h)
+        have hinj : Function.Injective (horizonPrefixMap hMN) := fun i j h => by
+          have hv : (horizonPrefixMap hMN i).val = (horizonPrefixMap hMN j).val := congrArg _ h
+          exact Subtype.ext hv
         rw [← Finset.sum_image (f := fun i => (res.ofLp i) ^ 2)
           (s := (Finset.univ : Finset (PrimeHorizonIndex M))) (g := horizonPrefixMap hMN)
           (fun i _ j _ h => hinj h)]

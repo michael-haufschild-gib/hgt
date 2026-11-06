@@ -376,8 +376,10 @@ theorem projectiveSupportZeroSum_card_top (m : ℕ) :
     omega
   have hc := boundedSupportZeroSum_card_orbits (F := F) (ι := Fin (m + 1)) (m + 1)
   rw [boundedSupportZeroSum_card_top] at hc
-  have hg := geom_sum_mul_add (Fintype.card F - 1) m
-  rw [Nat.sub_add_cancel (Fintype.card_pos (α := F))] at hg
+  have hg : (∑ j ∈ range m, Fintype.card F ^ j) * (Fintype.card F - 1) + 1 =
+      Fintype.card F ^ m := by
+    have hqone : Fintype.card F - 1 + 1 = Fintype.card F := by omega
+    simpa only [hqone] using geom_sum_mul_add (R := ℕ) (Fintype.card F - 1) m
   have hp : 0 < Fintype.card F ^ m := pow_pos Fintype.card_pos _
   apply mul_right_cancel₀ hq
   omega
