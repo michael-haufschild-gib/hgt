@@ -29,8 +29,43 @@ excludes this channel. A cosmological realization needs a justified even boundar
 ## Open core
 
 No source-derived quarter-line estimate is known here. Positivity of the undamped echo train,
-causality, and ordinary mode stability do not establish that estimate. Existing full-field packet
-and contour work remains in `modular-horizon-full-field-ringdown.md`.
+causality, and ordinary mode stability do not establish that estimate.
+
+The concrete time-domain target is the Gaussian observation
+`G_σ(t) = ∫ exp(-σ(t-u)²) K(u) du`, with its pole-at-one mean removed:
+
+`R_σ(t) = G_σ(t) - (3/π) sqrt(π/σ) exp(1/(16σ)) exp(t/2)`.
+
+The desired estimate is `R_σ(t) = O_ε(exp((-1/4+ε)t))` as `t → +∞`, for a fixed `σ > 0`
+and every `ε > 0`. Both the source estimate and its full time-domain equivalence to the sharp
+analytic criterion require proof. The exact source, its smoothing, and the spectral probe must
+not be replaced by a chosen zero distribution. Gaussian pulses are bilateral; no compact causal
+support is asserted.
+
+Existing full-field packet and contour work remains in `modular-horizon-full-field-ringdown.md`.
+
+## Pointwise obstruction and positive replacement
+
+The raw target `K(t)-A exp(t/2) ≤ B exp(bt)` eventually, uniformly in time, fails for every
+`A,B,b`: at each positive denominator `c`, the right-hand echo dominates
+`(ϕ(c)/c) v^(-1/2)` at `t=2 log c+v`. Echo delays are unbounded.
+
+The replacement is Gaussian observation. Its source integral is absolutely convergent and admits
+an exponential majorant from every Laplace weight `a>1/2`. Its spectral multiplier has no zeros,
+so smoothing preserves every resonance and its multiplicity. Lean verification is pending.
+
+The source-to-observation transform to verify, for `Re w>1/2`, is
+
+`∫ exp(-wt) G_σ(t) dt = (π/σ)^(1/2) exp(w²/(4σ)) Λ(2w)/Λ(2w+1)`.
+
+Exponential weighting converts the observation into a convolution of two integrable functions.
+The mean term follows from the exact identity
+`∫ exp(-σ(t-u)²) exp(bu) du = sqrt(π/σ) exp(bt+b²/(4σ))`.
+These bridges retain the original totient source; no spectral source is substituted.
+
+The positive invariant behind the sharp threshold is
+`rate(q)+rate(reflect q)=2(D+1/4)`, with slower rate
+`D+1/4-|Im z(q)|/2`. A one-sided lower bound therefore already forces RH.
 
 ## Verification
 

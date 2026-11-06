@@ -30,5 +30,19 @@ Resolve §2.9 of `obstacles-summary.md`:
 
 - **Lean:** `not_asymptoticAbscissaLaw_has_high_jet_bounds` supplies the high zero-free region and Cauchy bounds for every derivative of the actual logarithmic derivative, from `¬AAL` alone.
 - **Lean:** `scaled_norm_finitePoleJet_le_uniform_in_order` proves that the finite low-height pole contribution vanishes at distant centres, uniformly in the derivative order. `tendsto_finitePoleJet_at_unique_nearest` recovers a residue at a fixed centre with a unique nearest pole.
-- **Remaining:** extend residue recovery to the actual logarithmic derivative; force comparable prime-side jets at quantitatively controlled high ordinates. Qualitative recurrence (`∀k ∃t`) does not supply the required relation between `k` and `t`.
+- **Lean:** `tendsto_logDeriv_jets_at_rightmost_zero` recovers the exact multiplicity of a rightmost zero of an entire function. Global peeling and compactness produce a zero-free cofactor on a disk larger than the tangent disk; Cauchy's estimate removes its normalized jets. Finiteness of the zero set is unnecessary.
+- **Lean:** `not_asymptoticAbscissaLaw_has_prime_moment_limit` proves that for an actual rightmost zeta zero `ρ`, `s₀=ρ+d`, `Re s₀>1`, the corrected moments `d^(k+1)/k! · Σ Λ(n)(log n)^k n^(-s₀) − (d/(s₀−1))^(k+1)` tend to `−mρ < 0`. The only premise is `¬AAL`; multiplicity, factorization, and the analytic remainder are discharged for the actual zeta function. Axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+- **Remaining:** force comparable prime-side jets at quantitatively controlled high ordinates, or prove an unconditional arithmetic theorem conflicting with this moment limit. Qualitative recurrence (`∀k ∃t`) does not supply the required relation between `k` and `t`.
 - No contradiction to `¬AAL` established. The finite-oscillation question remains undecided here.
+
+## Arithmetic bound target
+
+The corrected von Mangoldt moment has a negative integer limit. A contradiction must bound this same corrected quantity, including its pole subtraction and normalization.
+
+| Candidate input | Exact issue / retained target |
+|---|---|
+| Positivity of `Λ` | Absolute values restore the real-axis pole radius `σ−1`, smaller than the detection radius `σ−β`. They do not bound the corrected moment at the required scale. |
+| Selberg / integer-counting convolution | Multiplication by `ζ` cancels the selected zero's logarithmic-derivative pole. The exact logarithmic commutator retains the prime kernel (`LogarithmicCommutatorsExposeThePrimeKernel`). |
+| Quantitative phase recurrence | The radius gain has the parameter ceiling `η log((η+1−β₁)/(η+1−β)) < β−β₁ < 1/2`. Its sharp envelope is being formalized; this compares candidate bounds, not actual return times. |
+| Proper prime powers | Their current is analytic on `Re s>1/2`; normalized jets vanish when `d<σ−1/2`. The surviving target is the corrected prime-only current. Lean application in progress. |
+| Fixed-height mean square | A diagonal estimate alone leaves the signed off-diagonal arithmetic term uncontrolled. Typical-height bounds permit bounded-height exceptional signals. |

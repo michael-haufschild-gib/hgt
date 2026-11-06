@@ -218,19 +218,23 @@ theorem halfLineForm_shift_green_cut (f₁ f₂ : LogarithmicHalfLineL2) (τ : �
     halfShift_coeFn τ hτ g₁, logarithmicCausalOperator_adjoint_coeFn (halfShift τ hτ f₁),
     logarithmicCausalOperator_adjoint_coeFn f₂, hg₁'] with p h1 h2 h3 h4 h5
   rw [h1, Pi.sub_apply, h2, h3, hg₂, h4, hg₁]
-  rw [h5, logarithmicBackwardConvolution_halfShift]
+  have hfn : logarithmicBackwardConvolution ((halfShift τ hτ f₁ : LogarithmicHalfLineL2) : RealLineL2) =
+      fun q => logarithmicBackwardConvolution (f₁ : RealLineL2) (q - τ) :=
+    funext (logarithmicBackwardConvolution_halfShift τ hτ f₁)
+  rw [h5, hfn]
   simp only [RCLike.inner_apply]
   by_cases hp0 : 0 ≤ p
   · rw [indicator_of_mem (s := Ici (0 : ℝ)) hp0, indicator_of_mem (s := Ici (0 : ℝ)) hp0]
     by_cases hpτ : p < τ
-    · rw [indicator_of_notMem (s := Ici (0 : ℝ)) (fun h => absurd h (by
-        simpa only [mem_Ici, not_le, sub_neg] using hpτ)),
-        indicator_of_mem (show p ∈ Ico (0 : ℝ) τ from ⟨hp0, hpτ⟩), zero_sub, map_neg]
+    · have hn : p - τ ∉ Ici (0 : ℝ) := by
+        simpa only [mem_Ici, not_le, sub_neg] using hpτ
+      rw [indicator_of_notMem hn, indicator_of_mem (show p ∈ Ico (0 : ℝ) τ from ⟨hp0, hpτ⟩), zero_sub,
+        map_neg]
       ring
-    · rw [indicator_of_mem (s := Ici (0 : ℝ)) (show p - τ ∈ Ici (0 : ℝ) from by
-        simpa only [mem_Ici, sub_nonneg] using not_lt.mp hpτ),
-        indicator_of_notMem (s := Ico (0 : ℝ) τ) (fun h => hpτ h.2), sub_self, map_zero, mul_zero,
-        neg_zero]
+    · have hm : p - τ ∈ Ici (0 : ℝ) := by
+        simpa only [mem_Ici, sub_nonneg] using not_lt.mp hpτ
+      rw [indicator_of_mem hm, indicator_of_notMem (s := Ico (0 : ℝ) τ) (fun h => hpτ h.2), sub_self,
+        map_zero, mul_zero, neg_zero]
   · rw [indicator_of_notMem (s := Ici (0 : ℝ)) hp0, indicator_of_notMem (s := Ico (0 : ℝ) τ)
       (fun h => hp0 h.1), zero_mul, neg_zero]
 

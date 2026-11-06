@@ -1,8 +1,8 @@
 # Nonrepelling zeta values have dimension zero
 
 - **ID:** exceptional-zeta-values-dimension-zero
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Γ49
 - **Statement:** `dimH zetaNonrepellingValues = 0`, hence the dense residual set of exponentially close equal-value pairs also has dimension zero.
 
@@ -20,6 +20,12 @@ For completeness, avoiding all covers at scales `n≥n₀≥6` implies polynomia
 
 Zeta's established polynomial strip bound supplies the analytic input. The residual exponential-pair set is already proved to lie in `zetaNonrepellingValues`.
 
-## Lean status
+## Lean
 
-Formalization pending: polynomial critical-value cover, uniform Taylor approximation, and tail cover. Membership of the particular value zero remains undecided; dimension zero does not prove zero repulsion.
+- `PolynomialCriticalValuesControlSmallDerivatives.lean`: `exists_polynomialCriticalCentre_near`, finite cover independent of coefficient lower bounds.
+- `HigherTaylorPolynomialsCoverNearCoincidences.lean`: `close_pair_value_near_taylorCriticalCentre`, degree-`k` Taylor cover with radius `C_k M h^(k+1)`.
+- `TheExceptionalValuesHaveDimensionZero.lean`: `hausdorffMeasure_nonrepellingValues_eq_zero_of_pos`, every positive-dimensional Hausdorff measure vanishes under polynomial strip growth; `dimH_zetaNonrepellingValues_eq_zero` and `dimH_exceptional_values_of_riemannZeta_eq_zero`, unconditional ζ conclusions.
+
+All declarations lie in namespace `GaloisForLFunctions.ArithmeticDiscreteness`. Dependency checks and direct `lake --old env lean GaloisForLFunctions/ArithmeticDiscreteness/TheExceptionalValuesHaveDimensionZero.lean` passed. Modules are wired into the umbrella.
+
+Membership of the particular value zero remains undecided; dimension zero does not prove zero repulsion. Γ49 remains partially solved.

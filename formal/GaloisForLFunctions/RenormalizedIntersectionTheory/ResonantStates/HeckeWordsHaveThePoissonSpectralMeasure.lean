@@ -23,8 +23,8 @@ the Fourier transform of the Poisson kernel.
 
 set_option autoImplicit false
 
-open Complex Filter MeasureTheory Set UpperHalfPlane ModularGroup
-open scoped ComplexConjugate
+open Complex Filter MeasureTheory Set ModularGroup
+open scoped ComplexConjugate UpperHalfPlane
 open GaloisForLFunctions.HTGeometry RHTower
 open GaloisForLFunctions.ArithmeticCorrespondencePositivity
 
@@ -126,7 +126,7 @@ theorem heckeOp_shiftedLeg {p : ℕ} (hp : p.Prime) {u : ℂ} (hAu : msA u = 0) 
 /-- **A Hecke word on the truncated state is a sum of translations.** -/
 theorem heckeWord_truncatedLeg {u : ℂ} (hAu : msA u = 0) (Y : ℝ) {w : List ℕ}
     (hw : ∀ p ∈ w, p.Prime) (a : ℝ) {b : ℝ} (hb : 0 < b) :
-    heckeWord w (truncatedLeg u Y) a b = ((heckeLogs w).map fun x => shiftedLeg u Y x a b).sum := by
+    heckeWord w (truncatedLeg u Y) a b = ((heckeLogs w).map fun x : ℝ => shiftedLeg u Y x a b).sum := by
   induction w generalizing a b with
   | nil =>
     simp [heckeWord, heckeLogs, shiftedLeg]
@@ -134,7 +134,7 @@ theorem heckeWord_truncatedLeg {u : ℂ} (hAu : msA u = 0) (Y : ℝ) {w : List �
     have hp : p.Prime := hw p List.mem_cons_self
     have hw' : ∀ q ∈ w, q.Prime := fun q hq => hw q (List.mem_cons_of_mem p hq)
     have hstep : heckeOp p (heckeWord w (truncatedLeg u Y)) a b
-        = heckeOp p (fun a b => ((heckeLogs w).map fun x => shiftedLeg u Y x a b).sum) a b :=
+        = heckeOp p (fun a b => ((heckeLogs w).map fun x : ℝ => shiftedLeg u Y x a b).sum) a b :=
       heckeOp_congr hp.pos (fun a b hb => ih hw' a hb) hb
     change heckeOp p (heckeWord w (truncatedLeg u Y)) a b = _
     rw [hstep, heckeOp_list_sum]
@@ -151,8 +151,7 @@ theorem one_le_prod_of_prime {w : List ℕ} (hw : ∀ p ∈ w, p.Prime) : (1 : �
   | cons p w ih =>
     have hp : (1 : ℝ) ≤ p := by exact_mod_cast (hw p List.mem_cons_self).one_lt.le
     have h := ih fun q hq => hw q (List.mem_cons_of_mem p hq)
-    rw [List.prod_cons]
-    push_cast
+    rw [List.prod_cons, Nat.cast_mul]
     nlinarith
 
 /-- Every shift of a word is at least `−log Π w`. -/
@@ -168,8 +167,7 @@ theorem neg_log_prod_le_of_mem_heckeLogs {w : List ℕ} (hw : ∀ p ∈ w, p.Pri
     have hprod := one_le_prod_of_prime hw'
     have hlogp : 0 ≤ Real.log p := Real.log_nonneg hp
     have hsplit : Real.log ((p :: w).prod : ℕ) = Real.log p + Real.log (w.prod : ℕ) := by
-      rw [List.prod_cons]
-      push_cast
+      rw [List.prod_cons, Nat.cast_mul]
       exact Real.log_mul (by linarith) (by linarith)
     rw [hsplit]
     simp only [heckeLogs, List.mem_append, List.mem_map] at hx
@@ -200,20 +198,18 @@ theorem exp_gram_exponent (u : ℂ) (x x' : ℝ) :
     cexp (u * x + conj u * x' + (min x x' : ℝ) * (-u - conj u)) = poissonCovariance u (x - x') := by
   rw [poissonCovariance]
   congr 1
-  have hu : u = (u.re : ℂ) + I * (u.im : ℂ) := by
+  set a : ℝ := u.re with ha
+  set b : ℝ := u.im with hb
+  have hu : u = (a : ℂ) + I * (b : ℂ) := by
     rw [mul_comm]
     exact (Complex.re_add_im u).symm
-  have huc : conj u = (u.re : ℂ) - I * (u.im : ℂ) := by
-    conv_lhs => rw [hu]
-    simp only [map_add, map_mul, Complex.conj_ofReal, Complex.conj_I]
-    ring
+  have huc : conj u = (a : ℂ) - I * (b : ℂ) := by
+    apply Complex.ext <;> simp [ha, hb]
   rcases le_total x' x with h | h
-  · rw [min_eq_right h, abs_of_nonneg (sub_nonneg.mpr h), huc]
-    conv_lhs => rw [hu]
+  · rw [min_eq_right h, abs_of_nonneg (sub_nonneg.mpr h), huc, hu]
     push_cast
     ring
-  · rw [min_eq_left h, abs_of_nonpos (sub_nonpos.mpr h), huc]
-    conv_lhs => rw [hu]
+  · rw [min_eq_left h, abs_of_nonpos (sub_nonpos.mpr h), huc, hu]
     push_cast
     ring
 
@@ -269,7 +265,7 @@ theorem integral_shifted_mul_conj {u : ℂ} (hu : u ∈ eisensteinLineDomain) (h
 
 /-- The tempered eigenvalue `Π_{p∈w} 2 cos(t log p)` of a word. -/
 def wordSymbol (w : List ℕ) (t : ℝ) : ℝ :=
-  (w.map fun p => 2 * Real.cos (t * Real.log p)).prod
+  (w.map fun p : ℕ => 2 * Real.cos (t * Real.log p)).prod
 
 theorem wordSymbol_neg (w : List ℕ) (t : ℝ) : wordSymbol w (-t) = wordSymbol w t := by
   unfold wordSymbol
@@ -277,17 +273,19 @@ theorem wordSymbol_neg (w : List ℕ) (t : ℝ) : wordSymbol w (-t) = wordSymbol
   refine List.map_congr_left fun p _ => ?_
   rw [neg_mul, Real.cos_neg]
 
+theorem exp_add_exp_neg_eq_two_cos (L t : ℝ) :
+    cexp (I * (L : ℂ) * t) + cexp (-(I * (L : ℂ) * t)) = ((2 * Real.cos (t * L) : ℝ) : ℂ) := by
+  rw [Complex.ofReal_mul, Complex.ofReal_cos, Complex.ofReal_mul, Complex.cos, Complex.ofReal_ofNat,
+    show (t : ℂ) * (L : ℂ) * I = I * L * t by ring,
+    show -((t : ℂ) * (L : ℂ)) * I = -(I * L * t) by ring]
+  ring
+
 theorem sum_exp_heckeLogs (w : List ℕ) (t : ℝ) :
-    ((heckeLogs w).map fun x => cexp (I * (x : ℂ) * (t : ℂ))).sum = (wordSymbol w t : ℂ) := by
+    ((heckeLogs w).map fun x : ℝ => cexp (I * (x : ℂ) * (t : ℂ))).sum = (wordSymbol w t : ℂ) := by
   induction w with
   | nil => simp [heckeLogs, wordSymbol]
   | cons p w ih =>
-    have hcos : cexp (I * (Real.log p : ℂ) * t) + cexp (-(I * (Real.log p : ℂ) * t))
-        = ((2 * Real.cos (t * Real.log p) : ℝ) : ℂ) := by
-      push_cast
-      rw [Complex.cos, show (t : ℂ) * (Real.log p : ℂ) * I = I * (Real.log p : ℂ) * t by ring,
-        show -((t : ℂ) * (Real.log p : ℂ)) * I = -(I * (Real.log p : ℂ) * t) by ring]
-      ring
+    have hcos := exp_add_exp_neg_eq_two_cos (Real.log p) t
     have hmap1 : (heckeLogs w).map (fun x : ℝ => cexp (I * ((x + Real.log p : ℝ) : ℂ) * t))
         = (heckeLogs w).map (fun x : ℝ =>
             cexp (I * (Real.log p : ℂ) * t) * cexp (I * (x : ℂ) * t)) :=
@@ -305,17 +303,15 @@ theorem sum_exp_heckeLogs (w : List ℕ) (t : ℝ) :
         push_cast
         ring
     simp only [heckeLogs, List.map_append, List.map_map, List.sum_append, Function.comp_def]
-    rw [hmap1, hmap2, List.sum_map_mul_left, List.sum_map_mul_left, ih, ← add_mul, hcos, wordSymbol,
-      List.map_cons, List.prod_cons]
-    push_cast
-    rfl
+    rw [hmap1, hmap2, List.sum_map_mul_left, List.sum_map_mul_left, ih, ← add_mul, hcos]
+    simp only [wordSymbol, List.map_cons, List.prod_cons, Complex.ofReal_mul]
 
 /-- The Poisson mixture of the shifts of two words. -/
 theorem integral_poisson_mul_wordSymbol {u : ℂ} (hur : u.re < 0) (w w' : List ℕ) :
     ∫ t : ℝ, (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
         ((wordSymbol w t : ℂ) * (wordSymbol w' t : ℂ))
       = ((heckeLogs w).map fun x =>
-          ((heckeLogs w').map fun x' => poissonCovariance u (x - x')).sum).sum := by
+          ((heckeLogs w').map fun x' : ℝ => poissonCovariance u (x - x')).sum).sum := by
   have hσ : 0 < -u.re := neg_pos.mpr hur
   have hint : ∀ y : ℝ, Integrable (fun t : ℝ =>
       (halfPlanePoisson (-u.re) (t - u.im) : ℂ) * cexp (I * (y : ℂ) * (t : ℂ))) :=
@@ -326,21 +322,25 @@ theorem integral_poisson_mul_wordSymbol {u : ℂ} (hur : u.re < 0) (w w' : List 
     integral_halfPlanePoisson_shift_mul_cexp hσ u.im y
   have hfun : (fun t : ℝ => (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
       ((wordSymbol w t : ℂ) * (wordSymbol w' t : ℂ)))
-      = fun t : ℝ => ((heckeLogs w).map fun x => ((heckeLogs w').map fun x' =>
+      = fun t : ℝ => ((heckeLogs w).map fun x : ℝ => ((heckeLogs w').map fun x' =>
           (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
             cexp (I * ((x - x' : ℝ) : ℂ) * (t : ℂ))).sum).sum := by
     funext t
     have h2 : (wordSymbol w' t : ℂ)
-        = ((heckeLogs w').map fun x' => cexp (I * (x' : ℂ) * ((-t : ℝ) : ℂ))).sum := by
+        = ((heckeLogs w').map fun x' : ℝ => cexp (I * (x' : ℂ) * ((-t : ℝ) : ℂ))).sum := by
       rw [sum_exp_heckeLogs, wordSymbol_neg]
-    rw [← sum_exp_heckeLogs w t, h2]
-    rw [← List.sum_map_mul_left, ← List.sum_map_mul_right]
+    have key : ∀ (a : ℂ) (f g : ℝ → ℂ) (l l' : List ℝ), a * ((l.map f).sum * (l'.map g).sum)
+        = (l.map fun x : ℝ => (l'.map fun x' : ℝ => a * (f x * g x')).sum).sum := by
+      intro a f g l l'
+      rw [← List.sum_map_mul_right, ← List.sum_map_mul_left]
+      congr 1
+      refine List.map_congr_left fun x _ => ?_
+      rw [← List.sum_map_mul_left, ← List.sum_map_mul_left]
+    rw [← sum_exp_heckeLogs w t, h2, key]
     congr 1
     refine List.map_congr_left fun x _ => ?_
-    rw [← List.sum_map_mul_left, ← List.sum_map_mul_left]
     congr 1
     refine List.map_congr_left fun x' _ => ?_
-    rw [mul_assoc]
     congr 1
     rw [← Complex.exp_add]
     congr 1
@@ -353,7 +353,7 @@ theorem integral_poisson_mul_wordSymbol {u : ℂ} (hur : u.re < 0) (w w' : List 
       ∫ t : ℝ, ((heckeLogs w').map fun x' =>
           (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
             cexp (I * ((x - x' : ℝ) : ℂ) * (t : ℂ))).sum
-        = ((heckeLogs w').map fun x' => poissonCovariance u (x - x')).sum := by
+        = ((heckeLogs w').map fun x' : ℝ => poissonCovariance u (x - x')).sum := by
     intro x
     obtain ⟨h1, h2⟩ := integrable_and_integral_list_sum (μ := volume) (heckeLogs w')
       (fun x' t => (halfPlanePoisson (-u.re) (t - u.im) : ℂ) *
@@ -382,16 +382,14 @@ theorem integral_heckeWord_mul_conj_heckeWord {u : ℂ} (hu : u ∈ eisensteinLi
   have hY1 : 1 ≤ Y := (one_le_prod_of_prime hw).trans hY
   set S : ℝ → ℍ → ℂ := fun x z => cexp (u * x) * truncatedLineModel u (Y * Real.exp x) z with hS
   have hpoint : ∀ (v : List ℕ), (∀ p ∈ v, p.Prime) → ∀ z : ℍ,
-      heckeWord v (truncatedLeg u Y) z.re z.im = ((heckeLogs v).map fun x => S x z).sum := by
+      heckeWord v (truncatedLeg u Y) z.re z.im = ((heckeLogs v).map fun x : ℝ => S x z).sum := by
     intro v hv z
     rw [heckeWord_truncatedLeg hAu Y hv z.re z.im_pos]
     congr 1
-    refine List.map_congr_left fun x _ => ?_
-    rw [shiftedLeg, hS, truncatedLineModel_eq_truncatedLeg]
   have hfun : (fun z : ℍ => heckeWord w (truncatedLeg u Y) z.re z.im *
       conj (heckeWord w' (truncatedLeg u Y) z.re z.im))
       = fun z : ℍ => ((heckeLogs w).map fun x =>
-          ((heckeLogs w').map fun x' => S x z * conj (S x' z)).sum).sum := by
+          ((heckeLogs w').map fun x' : ℝ => S x z * conj (S x' z)).sum).sum := by
     funext z
     rw [hpoint w hw z, hpoint w' hw' z, map_list_sum, List.map_map]
     rw [← List.sum_map_mul_right]
@@ -409,11 +407,11 @@ theorem integral_heckeWord_mul_conj_heckeWord {u : ℂ} (hu : u ∈ eisensteinLi
     simp only [hS, map_mul]
     ring
   have hinner : ∀ x ∈ heckeLogs w,
-      Integrable (fun z : ℍ => ((heckeLogs w').map fun x' => S x z * conj (S x' z)).sum)
+      Integrable (fun z : ℍ => ((heckeLogs w').map fun x' : ℝ => S x z * conj (S x' z)).sum)
         (volume.restrict fd) ∧
-      ∫ z in fd, ((heckeLogs w').map fun x' => S x z * conj (S x' z)).sum
+      ∫ z in fd, ((heckeLogs w').map fun x' : ℝ => S x z * conj (S x' z)).sum
         = (∫ z in fd, truncatedLineModel u Y z * conj (truncatedLineModel u Y z)) *
-          ((heckeLogs w').map fun x' => poissonCovariance u (x - x')).sum := by
+          ((heckeLogs w').map fun x' : ℝ => poissonCovariance u (x - x')).sum := by
     intro x hx
     obtain ⟨h1, h2⟩ := integrable_and_integral_list_sum (μ := volume.restrict fd) (heckeLogs w')
       (fun x' z => S x z * conj (S x' z)) (fun x' hx' => hintS x hx x' hx')
@@ -424,7 +422,7 @@ theorem integral_heckeWord_mul_conj_heckeWord {u : ℂ} (hu : u ∈ eisensteinLi
     exact integral_shifted_mul_conj hu hur hAu hY1 (one_le_mul_exp_of_mem_heckeLogs hw hY hx)
       (one_le_mul_exp_of_mem_heckeLogs hw' hY' hx')
   obtain ⟨-, houter⟩ := integrable_and_integral_list_sum (μ := volume.restrict fd) (heckeLogs w)
-    (fun x z => ((heckeLogs w').map fun x' => S x z * conj (S x' z)).sum)
+    (fun x z => ((heckeLogs w').map fun x' : ℝ => S x z * conj (S x' z)).sum)
     (fun x hx => (hinner x hx).1)
   rw [hfun, houter, integral_poisson_mul_wordSymbol hur, ← List.sum_map_mul_left]
   congr 1
@@ -438,11 +436,8 @@ theorem whittakerCoeff_I_mul_prime {p : ℕ} (hp : p.Prime) (t : ℝ) :
   have hpC : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
   rw [whittakerCoeff_prime _ hp, Complex.cpow_neg, Complex.cpow_def_of_ne_zero hpC,
     show (p : ℂ) = ((p : ℝ) : ℂ) by norm_cast, ← Complex.ofReal_log hpR.le,
-    ← Complex.exp_neg]
-  push_cast
-  rw [Complex.cos, show (t : ℂ) * (Real.log p : ℂ) * I = (Real.log p : ℂ) * (I * t) by ring,
-    show -((t : ℂ) * (Real.log p : ℂ)) * I = -((Real.log p : ℂ) * (I * t)) by ring]
-  ring
+    ← Complex.exp_neg, ← exp_add_exp_neg_eq_two_cos,
+    show ((Real.log p : ℝ) : ℂ) * (I * (t : ℂ)) = I * (Real.log p : ℝ) * t by ring]
 
 /-- On a product of pairwise coprime primes the symbol is the Whittaker eigenvalue. -/
 theorem whittakerCoeff_I_mul_prod {w : List ℕ} (hw : ∀ p ∈ w, p.Prime)
@@ -454,8 +449,39 @@ theorem whittakerCoeff_I_mul_prod {w : List ℕ} (hw : ∀ p ∈ w, p.Prime)
     have hp := hw p List.mem_cons_self
     have hw' : ∀ q ∈ w, q.Prime := fun q hq => hw q (List.mem_cons_of_mem p hq)
     have hco' := List.pairwise_cons.mp hco
-    have hcop : p.Coprime w.prod := Nat.Coprime.prod_right_of_list? hco'.1
-    sorry
+    have hcop : p.Coprime w.prod := Nat.coprime_list_prod_right_iff.mpr hco'.1
+    rw [List.prod_cons, whittakerCoeff_mul_coprime _ hcop, whittakerCoeff_I_mul_prime hp t,
+      ih hw' hco'.2, wordSymbol, wordSymbol, List.map_cons, List.prod_cons]
+    push_cast
+    rfl
+
+/-- **Squarefree words read the formal all-`n` moment.** -/
+theorem integral_heckeWord_mul_conj_eq_resonantHeckeMoment {u : ℂ} (hu : u ∈ eisensteinLineDomain)
+    (hur : u.re < 0) (hAu : msA u = 0) {w : List ℕ} (hw : ∀ p ∈ w, p.Prime)
+    (hco : w.Pairwise Nat.Coprime) {Y : ℝ} (hY : ((w.prod : ℕ) : ℝ) ≤ Y) :
+    ∫ z in fd, heckeWord w (truncatedLeg u Y) z.re z.im * conj (truncatedLineModel u Y z)
+      = (∫ z in fd, truncatedLineModel u Y z * conj (truncatedLineModel u Y z)) *
+        resonantHeckeMoment u (w.prod : ℕ) := by
+  have hY1 : (1 : ℝ) ≤ Y := (one_le_prod_of_prime hw).trans hY
+  have hmain := integral_heckeWord_mul_conj_heckeWord hu hur hAu hw (w' := [])
+    (by simp) hY (by simpa using hY1)
+  have hne : (w.prod : ℕ) ≠ 0 := by
+    have h := one_le_prod_of_prime hw
+    intro h0
+    rw [h0] at h
+    norm_num at h
+  have hfun : (fun z : ℍ => heckeWord w (truncatedLeg u Y) z.re z.im *
+      conj (truncatedLineModel u Y z))
+      = fun z : ℍ => heckeWord w (truncatedLeg u Y) z.re z.im *
+        conj (heckeWord [] (truncatedLeg u Y) z.re z.im) := by
+    funext z
+    rw [truncatedLineModel_eq_truncatedLeg]
+    rfl
+  rw [hfun, hmain, resonantHeckeMoment_eq_poisson_integral hur hne]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  simp only [wordSymbol, List.map_nil, List.prod_nil, Complex.ofReal_one, mul_one]
+  rw [whittakerCoeff_I_mul_prod hw hco t, wordSymbol]
 
 end
 

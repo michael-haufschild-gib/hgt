@@ -135,7 +135,9 @@ theorem exists_tangent_disk_logDeriv_remainder {f : ℂ → ℂ} {ρ : ℂ} {m :
       (((differentiableAt_id.sub_const ρ).pow m)) (hu z).differentiableAt,
       logDeriv_fun_pow (by fun_prop) m]
     have hlinear : logDeriv (fun w : ℂ => w - ρ) z = (z - ρ)⁻¹ := by
-      rw [logDeriv_apply, ((hasDerivAt_id z).sub_const ρ).deriv, one_div]
+      have hlinearDeriv : HasDerivAt (fun w : ℂ => w - ρ) 1 z :=
+        (hasDerivAt_id z).sub_const ρ
+      rw [logDeriv_apply, hlinearDeriv.deriv, one_div]
     rw [hlinear, div_eq_mul_inv]
 
 /-- High logarithmic-derivative jets recover the multiplicity of a rightmost zero

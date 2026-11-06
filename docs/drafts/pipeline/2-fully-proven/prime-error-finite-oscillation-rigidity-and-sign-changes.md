@@ -1,0 +1,25 @@
+# Canonical Rigidity, Sharp Gap Bifurcation, and Sign Changes of a Finite Prime-Error Oscillation
+
+- **ID:** prime-error-finite-oscillation-rigidity-and-sign-changes
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Source:** docs/drafts/pipeline/1-in-progress/pnt-error-single-finite-oscillation.md
+- **Statement:** Every finite-oscillation expansion `|ψ(x) - x - x^β T(log x)| ≤ C x^{β - η}` (`β > 1/2`, `η > 0`, `T ≠ 0`) forces `β = Θ`, uniquely determines `T` with Fourier coefficients `d(μ) = -ord_{s = Θ + iμ}(ζ)/(Θ + iμ)` and `d(0) = 0`, obeys the exact exponent threshold `η ≤ Θ - Θ₂` (achievable for every `0 < η < Θ - Θ₂` under `¬AAL`), forces bounded-logarithmic-gap sign changes `± δ e^{Θ u}` of `ψ(e^u) - e^u`, and transfers unchanged to the alternating sum `∑_{n ≤ x} (-1)^n Λ(n) + x`.
+
+## Goal
+Establish the complete canonical rigidity, multiplicity quantization, sharp secondary-abscissa power-saving threshold, bounded-gap bidirectional oscillation law, and parity-twist transfer of `PrimeErrorIsFiniteOscillation`.
+
+## Gates
+- [x] 0 → 1  in-progress
+- [x] 1 → 2  fully-proven: complete paper proof below, no open dependency
+- [ ] 2 → 3  formalized: `GaloisForLFunctions.ZeroConfigurationGeometry.PrimeErrorFiniteOscillationRigidityAndSignChanges`
+
+## Proof
+1. **Unconditional `1/2` barrier (`1/2 ≤ σ₀`).** Suppose `‖oscillationError β S d x‖ ≤ C x^{σ₀}` for `x ≥ x₀` and `σ₀ < 1/2`. Every strip zero `q : XiZeroCopy` satisfies either `Re q ≥ 1/2 > σ₀` or `Re(1 - q) > 1/2 > σ₀`. Applying `eq_of_zeta_eq_zero_of_expansion` to `q` or `xiZeroCopyReflectEquiv q` confines `|Im q|` to `∑_{ω ∈ S} |ω|`, contradicting infinitude of `XiZeroCopy` (`xiOrderedPositiveZeroCopyEquiv : ℕ ≃ XiPositiveZeroCopy`) via `finite_abs_im_le`. Hence `1/2 ≤ σ₀`.
+2. **Exact multiplicity quantization (`d(ω₀) = -ord_{s = s₀}(ζ)/s₀`).** Let `σ₀ < β`, `0 < β`, `ω₀ ∈ S`, `s₀ = β + iω₀`, and `m = (analyticOrderAt zetaResidueUnit s₀).toNat`. Since `zetaResidueUnit` is entire and non-identically-zero, it is nonzero on a punctured neighborhood `𝓝[≠] s₀`, where `neg_mul_deriv_eq` divides to
+   `-(∏_{μ ∈ S.erase ω₀} (w - β - iμ)) · ((w - s₀) logDeriv zetaResidueUnit w) = oscillationNumerator β S d w`.
+   Passing to `w → s₀` in `𝓝[≠] s₀` via `AnalyticAt.tendsto_sub_mul_logDeriv_of_analyticOrderAt_eq_natCast_complex` and canceling the nonzero Vandermonde product `∏_{μ ≠ ω₀} i(ω₀ - μ)` and `s₀ ≠ 0` yields `d(ω₀) = -m / s₀`. Whenever `s₀ ≠ 1`, `analyticOrderAt_zetaResidueUnit_eq_zeta` identifies `m` with `(analyticOrderAt riemannZeta s₀).toNat`.
+3. **Abscissa pinning, global Fourier law, zero constant mode, and uniqueness.** Given `1/2 < β`, `0 < η`, `T = finiteOscillation S c ≠ 0`, and `|ψ(x) - x - x^β T(log x)| ≤ C x^{β - η}`, let `S' = oscillationFrequencies S`, `d = oscillationCoeff S c`, and `σ₀ = max (β - η) ((β + 1/2)/2) ∈ (1/2, β)`. A nonzero mode `d(μ₀) ≠ 0` gives `ζ(β + iμ₀) = 0`, so `β < 1` and `β ≤ Θ`. Conversely, every `q : XiZeroCopy` with `Re q > σ₀` has `Re q = β`, so `Θ ≤ β`, giving `β = Θ`. For `μ ∈ S'`, Step 2 gives `d(μ) = -ord_{Θ + iμ}(ζ)/(Θ + iμ)`; for `μ ∉ S'`, `d(μ) = 0` by definition while `ζ(Θ + iμ) ≠ 0` by `eq_of_zeta_eq_zero_of_expansion`, so `ord_{Θ + iμ}(ζ) = 0`. Thus the formula holds for all `μ ∈ ℝ`. Since `ζ(Θ) ≠ 0` for `Θ ∈ (1/2, 1)` (`riemannZeta_real_strip_ne_zero`), `d(0) = 0`. Expanding any two witnesses over `S'_1 ∪ S'_2` via `finiteOscillation_eq_sum` proves pointwise equality `T_1 = T_2`.
+4. **Sharp secondary-abscissa threshold.** Define `Θ₂ = sSup ({1/2} ∪ {Re q : q : XiZeroCopy, Re q < Θ})`. Any expansion at exponent `β - η` forces `1/2 ≤ β - η` (Step 1) and `Re q ≤ β - η` for every `q` with `Re q < Θ = β` (`eq_of_zeta_eq_zero_of_expansion`), hence `Θ₂ ≤ β - η` (`η ≤ Θ - Θ₂`) and `Θ_∞ ≤ β - η`. Conversely, if `¬AAL`, `{Re q > σ₀}` is finite for some `σ₀ < Θ`, so `Θ₂ < Θ` and `{Re q = Θ}` is a nonempty finite set `top`; for every `E ∈ (Θ₂, Θ)` (i.e., `0 < η = Θ - E < Θ - Θ₂`), choosing `H = x^E` and `θ = min ((E - Θ₂)/2) 1` in `abs_psi_sub_add_re_topSum_le` yields `|ψ(x) - x - x^Θ T_*(log x)| ≤ C x^E`.
+5. **Bounded-logarithmic-gap sign changes.** Applying `exists_dense_sign_changes_of_tendsto_add_tsum` to the continuous real polynomial `T` against `-∑_{μ ∈ S'} d(μ) e^{iμu}` (`d(0) = 0`, `d(μ₀) ≠ 0`) produces `L, ε > 0` such that every late interval `[u₀, u₀ + L]` contains points with `T(u₁) > ε` and `T(u₂) < -ε`. Since `|(ψ(e^u) - e^u)e^{-Θu} - T(u)| ≤ C e^{-ηu} → 0`, late windows contain `u₁, u₂ ∈ [u₀, u₀ + L]` with `ψ(e^{u₁}) - e^{u₁} > (ε/2) e^{Θ u₁}` and `ψ(e^{u₂}) - e^{u₂} < -(ε/2) e^{Θ u₂}`.
+6. **Alternating von Mangoldt parity identity.** For `N = ⌊x⌋₊ ≥ 1`, `((-1)^n + 1) Λ(n)` vanishes for odd `n` and equals `2 Λ(n)` for even `n`. Since `Λ(n) ≠ 0 ↔ IsPrimePow n` and an even prime power is `2^k` (`1 ≤ k ≤ Nat.log 2 N`) with `Λ(2^k) = log 2`, summing over `1 ≤ n ≤ N` yields `∑_{1 ≤ n ≤ ⌊x⌋₊} (-1)^n Λ(n) = 2 (Nat.log 2 ⌊x⌋₊) log 2 - ψ(x)`. Since `1/2 ≤ β - η` (Step 1) and `2 (Nat.log 2 ⌊x⌋₊) log 2 ≤ 2 log x ≤ 4 x^{1/2} ≤ 4 x^{β - η}` for `x ≥ 1`, the finite oscillation transfers with identical saving exponent `β - η`.

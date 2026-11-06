@@ -232,6 +232,52 @@ theorem dirichletLift_modular_wave {f f₁ f₂ L : ℝ → ℂ} (hf : ∀ τ, H
   rw [hwave]
   ring
 
+/-! ### Regularity in the tortoise coordinate -/
+
+theorem differentiableAt_neumannLift_space {f f₁ : ℝ → ℂ} (hf : ∀ τ, HasDerivAt f (f₁ τ) τ)
+    (t X : ℝ) : DifferentiableAt ℝ (neumannLift f t) X :=
+  (hasDerivAt_space_slice (fun τ => hasDerivAt_dampedProfile (1 / 2) (hf τ)) t X).differentiableAt
+
+theorem differentiableAt_deriv_neumannLift_space {f f₁ f₂ : ℝ → ℂ}
+    (hf : ∀ τ, HasDerivAt f (f₁ τ) τ) (hf₁ : ∀ τ, HasDerivAt f₁ (f₂ τ) τ) (t X : ℝ) :
+    DifferentiableAt ℝ (deriv (neumannLift f t)) X := by
+  have hG := fun τ => hasDerivAt_dampedProfile (1 / 2) (hf τ)
+  have hG₁ := fun τ => hasDerivAt_dampedProfile (1 / 2) ((hf₁ τ).sub ((hf τ).const_mul (1 / 2 : ℂ)))
+  have h : deriv (neumannLift f t) = fun y => -(Real.tanh y : ℂ) *
+      dampedProfile (1 / 2) (fun s => f₁ s - (1 / 2) * f s) (hyperboloidalTime t y) :=
+    funext fun y => (hasDerivAt_space_slice hG t y).deriv
+  rw [h]
+  have hneg : HasDerivAt (fun y : ℝ => -(Real.tanh y : ℂ)) (-(1 - (Real.tanh X : ℂ) ^ 2)) X :=
+    (hasDerivAt_tanh_complex X).neg
+  exact (hneg.mul (hasDerivAt_space_slice hG₁ t X)).differentiableAt
+
+theorem differentiableAt_dirichletLift_space {f f₁ : ℝ → ℂ} (hf : ∀ τ, HasDerivAt f (f₁ τ) τ)
+    (t X : ℝ) : DifferentiableAt ℝ (dirichletLift f t) X :=
+  ((hasDerivAt_tanh_complex X).mul (hasDerivAt_space_slice
+    (fun τ => hasDerivAt_dampedProfile (3 / 2) (hf τ)) t X)).differentiableAt
+
+theorem differentiableAt_deriv_dirichletLift_space {f f₁ f₂ : ℝ → ℂ}
+    (hf : ∀ τ, HasDerivAt f (f₁ τ) τ) (hf₁ : ∀ τ, HasDerivAt f₁ (f₂ τ) τ) (t X : ℝ) :
+    DifferentiableAt ℝ (deriv (dirichletLift f t)) X := by
+  have hG := fun τ => hasDerivAt_dampedProfile (3 / 2) (hf τ)
+  have hG₁ := fun τ => hasDerivAt_dampedProfile (3 / 2) ((hf₁ τ).sub ((hf τ).const_mul (3 / 2 : ℂ)))
+  have h : deriv (dirichletLift f t) = fun y =>
+      (1 - (Real.tanh y : ℂ) ^ 2) * dampedProfile (3 / 2) f (hyperboloidalTime t y) +
+        (Real.tanh y : ℂ) * (-(Real.tanh y : ℂ) *
+          dampedProfile (3 / 2) (fun s => f₁ s - (3 / 2) * f s) (hyperboloidalTime t y)) :=
+    funext fun y => ((hasDerivAt_tanh_complex y).mul (hasDerivAt_space_slice hG t y)).deriv
+  rw [h]
+  have hT := hasDerivAt_tanh_complex X
+  have hS : HasDerivAt (fun y : ℝ => 1 - (Real.tanh y : ℂ) ^ 2)
+      (-(2 * (Real.tanh X : ℂ) * (1 - (Real.tanh X : ℂ) ^ 2))) X := by
+    have := (hT.pow 2).const_sub (1 : ℂ)
+    refine this.congr_deriv ?_
+    push_cast
+    ring
+  have hneg : HasDerivAt (fun y : ℝ => -(Real.tanh y : ℂ)) (-(1 - (Real.tanh X : ℂ) ^ 2)) X := hT.neg
+  exact ((hS.mul (hasDerivAt_space_slice hG t X)).add
+    (hT.mul (hneg.mul (hasDerivAt_space_slice hG₁ t X)))).differentiableAt
+
 /-! ### Boundary data -/
 
 /-- The Dirichlet lift vanishes at the AdS boundary. -/

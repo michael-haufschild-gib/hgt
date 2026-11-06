@@ -35,13 +35,15 @@ private lemma rate_law_mono {K : ℕ} (hK : 1 ≤ K) {ε f : ℝ} (hε : 0 < ε)
       (2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * f)) ^ (1 - β) * f ^ β := by
   have hKR : (0 : ℝ) < K := by exact_mod_cast hK
   have hlog : 0 ≤ Real.log (K : ℝ) := Real.log_natCast_nonneg K
-  have hbase : 0 ≤ 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) := by positivity
+  have hpos1 : 0 ≤ ((K : ℝ) + 1) * ε := mul_nonneg (by positivity) hε.le
+  have hbase : 0 ≤ 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) :=
+    mul_nonneg (by positivity) (by linarith)
   have hle : 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) ≤
       2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * f) := by
     gcongr
   have h1 := Real.rpow_le_rpow hbase hle (by linarith : 0 ≤ 1 - β)
   have h2 := Real.rpow_le_rpow hε.le hf hβ0.le
-  exact mul_le_mul h1 h2 (by positivity) (by positivity)
+  exact mul_le_mul h1 h2 (by positivity) (Real.rpow_nonneg (hbase.trans hle) _)
 
 /-- **A polynomial rate gives a zero-free strip.** A rate `K^{-a}`, `0 < a ≤ 1`, forces
 `Re ρ ≤ 1 − a/2` for every zero of `ζ`. -/
@@ -75,9 +77,7 @@ theorem re_le_of_hasRate_rpow {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1)
     have := (hlim.comp tendsto_natCast_atTop_atTop).const_mul (48 * ‖ρ‖)
     simpa using this
   have hev := hlimK.eventually (gt_mem_nhds (zero_lt_one))
-  obtain ⟨K, hK2, hKlt, c, m, B, hP, hKa, hr⟩ :=
-    ((eventually_ge_atTop 2).and (hev.and h)).exists.imp fun K hK => ⟨hK.1, hK.2.1, hK.2.2⟩
-      |> fun h' => h'
+  obtain ⟨K, hK2, hKlt, c, m, B, hP, hKa, hr⟩ := ((eventually_ge_atTop 2).and (hev.and h)).exists
   have hK1 : 1 ≤ K := by omega
   have hKR : (1 : ℝ) ≤ K := by exact_mod_cast hK1
   have hK0 : (0 : ℝ) < K := by linarith
@@ -153,6 +153,91 @@ theorem riemannHypothesis_of_hasRate (h : ∀ a : ℝ, 0 < a → a < 1 → HasRa
     (h _ (by linarith) (by linarith)) hzero
   linarith
 
+/-- The size of the law at height `L`: `W ≤ exp (5 + 2L)` when `exp L ≤ K ≤ 2 exp L`, `ε ≤ 1`. -/
+private lemma base_le_exp {K : ℕ} {L ε : ℝ} (hL : 1 ≤ L) (hKge : Real.exp L ≤ K)
+    (hKle : (K : ℝ) ≤ 2 * Real.exp L) (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1) :
+    2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) ≤ Real.exp (5 + 2 * L) := by
+  have hexpL1 : 1 ≤ Real.exp L := Real.one_le_exp (by linarith)
+  have hKR : (1 : ℝ) ≤ K := hexpL1.trans hKge
+  have hK0 : (0 : ℝ) < K := by linarith
+  have hlogKle : Real.log (K : ℝ) ≤ K := Real.log_le_self hK0.le
+  have h32 : (32 : ℝ) ≤ Real.exp 5 := by
+    have h2 := Real.add_one_le_exp (1 : ℝ)
+    calc (32 : ℝ) = 2 ^ 5 := by norm_num
+      _ ≤ Real.exp 1 ^ 5 := by
+          gcongr
+          linarith
+      _ = Real.exp 5 := by
+          rw [← Real.exp_nat_mul]
+          norm_num
+  have h1 : 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) ≤ 8 * (K : ℝ) ^ 2 := by
+    have hε : ((K : ℝ) + 1) * ε ≤ (K : ℝ) + 1 := by
+      have : 0 ≤ (K : ℝ) + 1 := by linarith
+      nlinarith
+    have hsum : 1 + Real.log K + ((K : ℝ) + 1) * ε ≤ 4 * (K : ℝ) := by linarith
+    have := mul_le_mul_of_nonneg_left hsum (by positivity : 0 ≤ 2 * (K : ℝ))
+    nlinarith
+  have h2 : (K : ℝ) ^ 2 ≤ 4 * Real.exp (2 * L) := by
+    have hsq : (K : ℝ) ^ 2 ≤ (2 * Real.exp L) ^ 2 := by gcongr
+    have hexp2 : Real.exp (2 * L) = Real.exp L ^ 2 := by
+      rw [two_mul, Real.exp_add]; ring
+    rw [hexp2]
+    nlinarith
+  have h4 : 32 * Real.exp (2 * L) ≤ Real.exp 5 * Real.exp (2 * L) :=
+    mul_le_mul_of_nonneg_right h32 (Real.exp_pos _).le
+  rw [Real.exp_add]
+  linarith
+
+/-- The law turned into a linear inequality in the logarithms. -/
+private lemma log_ineq_of_law {Λ L β ε W : ℝ} (hΛ1 : 1 ≤ Λ) (hL : 1 ≤ L) (hβ : 1 / 2 ≤ β)
+    (hβ1 : β ≤ 1) (hε0 : 0 < ε) (hεle : ε ≤ Real.exp (-(4 * Λ))) (hW0 : 0 ≤ W)
+    (hWle : W ≤ Real.exp (5 + 2 * L)) (hlaw : 1 ≤ Real.exp Λ * (W ^ (1 - β) * ε ^ β)) :
+    Λ ≤ 7 * L * (1 - β) := by
+  have hβ0 : 0 < β := by linarith
+  have h1β : 0 ≤ 1 - β := by linarith
+  have hpow1 : W ^ (1 - β) ≤ Real.exp ((5 + 2 * L) * (1 - β)) := by
+    rw [Real.exp_mul]
+    exact Real.rpow_le_rpow hW0 hWle h1β
+  have hpow2 : ε ^ β ≤ Real.exp (-(2 * Λ)) := by
+    have h1 : ε ^ β ≤ Real.exp (-(4 * Λ)) ^ β := Real.rpow_le_rpow hε0.le hεle hβ0.le
+    rw [← Real.exp_mul] at h1
+    refine h1.trans (Real.exp_le_exp.mpr ?_)
+    nlinarith
+  have hchain : 1 ≤ Real.exp (Λ + (5 + 2 * L) * (1 - β) + -(2 * Λ)) := by
+    rw [Real.exp_add, Real.exp_add, mul_assoc]
+    refine hlaw.trans (mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le)
+    exact mul_le_mul hpow1 hpow2 (by positivity) (Real.exp_pos _).le
+  have hineq : Λ ≤ (5 + 2 * L) * (1 - β) := by
+    have := (Real.one_le_exp_iff).mp hchain
+    linarith
+  nlinarith
+
+/-- The algebra of the exponent. -/
+private lemma coef_le_of_ineq {α Λ β : ℝ} (hΛ0 : 0 < Λ)
+    (h : Λ ≤ 7 * (4 * Λ) ^ (1 / α) * (1 - β)) :
+    (1 / (7 * (4 : ℝ) ^ (1 / α))) * Λ ^ (1 - 1 / α) ≤ 1 - β := by
+  have hΛpos : 0 < Λ ^ (1 / α) := Real.rpow_pos_of_pos hΛ0 _
+  have h4pos : 0 < (4 : ℝ) ^ (1 / α) := by positivity
+  rw [Real.mul_rpow (by norm_num) hΛ0.le] at h
+  rw [Real.rpow_sub hΛ0, Real.rpow_one]
+  generalize Λ ^ (1 / α) = P at *
+  generalize (4 : ℝ) ^ (1 / α) = A at *
+  have hid : 1 / (7 * A) * (Λ / P) = Λ / (7 * (A * P)) := by field_simp
+  rw [hid, div_le_iff₀ (by positivity)]
+  linarith
+
+/-- Trivial range of the region: the coefficient is at most `1/2`. -/
+private lemma coef_le_half {α Λ : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1) (hΛ1 : 1 ≤ Λ) :
+    (1 / (7 * (4 : ℝ) ^ (1 / α))) * Λ ^ (1 - 1 / α) ≤ 1 / 2 := by
+  have hinv : 1 ≤ 1 / α := by rw [le_div_iff₀ hα0]; linarith
+  have h4pow : 1 ≤ (4 : ℝ) ^ (1 / α) := Real.one_le_rpow (by norm_num) (by linarith)
+  have hΛpow : Λ ^ (1 - 1 / α) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hΛ1 (by linarith)
+  have hΛpow0 : 0 ≤ Λ ^ (1 - 1 / α) := by positivity
+  have h1 : 1 / (7 * (4 : ℝ) ^ (1 / α)) ≤ 1 / 7 :=
+    one_div_le_one_div_of_le (by norm_num) (by linarith)
+  calc _ ≤ 1 / 7 * 1 := mul_le_mul h1 hΛpow hΛpow0 (by norm_num)
+    _ ≤ 1 / 2 := by norm_num
+
 /-- **A subpolynomial rate gives a zero-free region of Vinogradov–Korobov shape.** A rate
 `exp(−(log K)^α)`, `0 < α ≤ 1`, forces `Re ρ ≤ 1 − c Λ^{1 − 1/α}` with `Λ = log (24 ‖ρ‖)`, for zeros
 of large modulus. At `α = 3/5` the exponent is `−2/3`. -/
@@ -167,46 +252,38 @@ theorem exists_re_le_of_hasRate_exp {α : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1)
     rw [div_le_iff₀ (by norm_num)] at hT
     linarith
   have h24pos : 0 < 24 * ‖ρ‖ := lt_of_lt_of_le hexp_pos h24
-  set Λ : ℝ := Real.log (24 * ‖ρ‖) with hΛ
+  obtain ⟨Λ, hΛ⟩ : ∃ Λ, Λ = Real.log (24 * ‖ρ‖) := ⟨_, rfl⟩
+  rw [← hΛ]
   have hΛmax : max 1 (K₀ : ℝ) ≤ Λ := by
     rw [hΛ, Real.le_log_iff_exp_le h24pos]
     exact h24
   have hΛ1 : 1 ≤ Λ := (le_max_left _ _).trans hΛmax
   have hΛK : (K₀ : ℝ) ≤ Λ := (le_max_right _ _).trans hΛmax
   have hΛ0 : 0 < Λ := by linarith
-  have hexpΛ : Real.exp Λ = 24 * ‖ρ‖ := Real.exp_log h24pos
-  have hinv : 1 ≤ 1 / α := by rw [le_div_iff₀ hα0]; linarith
-  have h4pow : 1 ≤ (4 : ℝ) ^ (1 / α) := Real.one_le_rpow (by norm_num) (by linarith)
-  have hΛpow : Λ ^ (1 - 1 / α) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hΛ1 (by linarith)
-  have hΛpow0 : 0 ≤ Λ ^ (1 - 1 / α) := by positivity
-  have hcoef : (1 / (7 * (4 : ℝ) ^ (1 / α))) * Λ ^ (1 - 1 / α) ≤ 1 / 2 := by
-    have h1 : 1 / (7 * (4 : ℝ) ^ (1 / α)) ≤ 1 / 7 :=
-      one_div_le_one_div_of_le (by norm_num) (by linarith)
-    have h2 : 0 ≤ 1 / (7 * (4 : ℝ) ^ (1 / α)) := by positivity
-    calc _ ≤ 1 / 7 * 1 := mul_le_mul h1 hΛpow hΛpow0 (by norm_num)
-      _ ≤ 1 / 2 := by norm_num
+  have hexpΛ : Real.exp Λ = 24 * ‖ρ‖ := by rw [hΛ]; exact Real.exp_log h24pos
   by_cases hβ : ρ.re < 1 / 2
-  · linarith
+  · linarith [coef_le_half (Λ := Λ) hα0 hα1 hΛ1]
   push Not at hβ
   have hβ1 : ρ.re ≤ 1 := by
     by_contra hgt
     push Not at hgt
     exact riemannZeta_ne_zero_of_one_le_re hgt.le hρ
-  set β := ρ.re with hβdef
-  have hβ0 : 0 < β := by linarith
-  set L : ℝ := (4 * Λ) ^ (1 / α) with hL
+  have hinv : 1 ≤ 1 / α := by rw [le_div_iff₀ hα0]; linarith
   have h4Λ : 1 ≤ 4 * Λ := by linarith
+  obtain ⟨L, hL⟩ : ∃ L, L = (4 * Λ) ^ (1 / α) := ⟨_, rfl⟩
   have hLα : L ^ α = 4 * Λ := by
     rw [hL, ← Real.rpow_mul (by linarith), one_div, inv_mul_cancel₀ hα0.ne', Real.rpow_one]
   have hLge : 4 * Λ ≤ L := by
+    rw [hL]
     calc 4 * Λ = (4 * Λ) ^ (1 : ℝ) := (Real.rpow_one _).symm
-      _ ≤ L := Real.rpow_le_rpow_of_exponent_le h4Λ hinv
+      _ ≤ _ := Real.rpow_le_rpow_of_exponent_le h4Λ hinv
   have hL1 : 1 ≤ L := by linarith
   have hexpL1 : 1 ≤ Real.exp L := Real.one_le_exp (by linarith)
-  set K : ℕ := ⌈Real.exp L⌉₊ with hK
-  have hKge : Real.exp L ≤ K := Nat.le_ceil _
+  obtain ⟨K, hK⟩ : ∃ K, K = ⌈Real.exp L⌉₊ := ⟨_, rfl⟩
+  have hKge : Real.exp L ≤ K := hK ▸ Nat.le_ceil _
   have hKle : (K : ℝ) ≤ 2 * Real.exp L := by
     have := Nat.ceil_lt_add_one (show 0 ≤ Real.exp L by linarith)
+    rw [hK]
     linarith
   have hKR : (1 : ℝ) ≤ K := hexpL1.trans hKge
   have hK0 : (0 : ℝ) < K := by linarith
@@ -224,74 +301,16 @@ theorem exists_re_le_of_hasRate_exp {α : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1)
       rw [← hLα]
       exact Real.rpow_le_rpow (by linarith) hlogK hα0.le
     linarith
-  have hexp1 : Real.exp (-(4 * Λ)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
-  have hr1 : rate c m B ≤ 1 := hrate.trans hexp1
+  have hr1 : rate c m B ≤ 1 := hrate.trans (Real.exp_le_one_iff.mpr (by linarith))
   have hεpos := hP.rate_pos
   have hlaw := hP.rate_law hKa hr1 hρ hβ hβ1
-  rw [← hβdef] at hlaw
-  set ε := rate c m B with hεdef
-  set W : ℝ := 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * ε) with hWdef
-  have hlogKle : Real.log (K : ℝ) ≤ K := Real.log_le_self hK0.le
-  have hlogK0 : 0 ≤ Real.log (K : ℝ) := Real.log_nonneg hKR
-  have hW0 : 0 ≤ W := by positivity
-  have h32 : (32 : ℝ) ≤ Real.exp 5 := by
-    have h2 := Real.add_one_le_exp (1 : ℝ)
-    calc (32 : ℝ) = 2 ^ 5 := by norm_num
-      _ ≤ Real.exp 1 ^ 5 := by
-          gcongr
-          linarith
-      _ = Real.exp 5 := by
-          rw [← Real.exp_nat_mul]
-          norm_num
-  have hWle : W ≤ Real.exp (5 + 2 * L) := by
-    have h1 : W ≤ 8 * (K : ℝ) ^ 2 := by
-      rw [hWdef]
-      have hfac : (K : ℝ) + 1 ≤ 2 * K := by linarith
-      have hε : ((K : ℝ) + 1) * ε ≤ (K : ℝ) + 1 := by
-        have : 0 ≤ (K : ℝ) + 1 := by linarith
-        nlinarith
-      have hsum : 1 + Real.log K + ((K : ℝ) + 1) * ε ≤ 4 * (K : ℝ) := by linarith
-      have := mul_le_mul_of_nonneg_left hsum (by positivity : 0 ≤ 2 * (K : ℝ))
-      nlinarith
-    have h2 : (K : ℝ) ^ 2 ≤ 4 * Real.exp (2 * L) := by
-      have hsq : (K : ℝ) ^ 2 ≤ (2 * Real.exp L) ^ 2 := by gcongr
-      have hexp2 : Real.exp (2 * L) = Real.exp L ^ 2 := by
-        rw [two_mul, Real.exp_add]; ring
-      rw [hexp2]
-      nlinarith
-    have h3 : 8 * (K : ℝ) ^ 2 ≤ 32 * Real.exp (2 * L) := by linarith
-    have h4 : 32 * Real.exp (2 * L) ≤ Real.exp 5 * Real.exp (2 * L) :=
-      mul_le_mul_of_nonneg_right h32 (Real.exp_pos _).le
-    rw [Real.exp_add]
-    linarith
-  have hpow1 : W ^ (1 - β) ≤ Real.exp ((5 + 2 * L) * (1 - β)) := by
-    rw [Real.exp_mul]
-    exact Real.rpow_le_rpow hW0 hWle (by linarith)
-  have hpow2 : ε ^ β ≤ Real.exp (-(2 * Λ)) := by
-    have h1 : ε ^ β ≤ Real.exp (-(4 * Λ)) ^ β := Real.rpow_le_rpow hεpos.le hrate hβ0.le
-    rw [← Real.exp_mul] at h1
-    refine h1.trans (Real.exp_le_exp.mpr ?_)
-    nlinarith
-  have hchain : 1 ≤ Real.exp (Λ + (5 + 2 * L) * (1 - β) + -(2 * Λ)) := by
-    rw [Real.exp_add, Real.exp_add, hexpΛ, mul_assoc]
-    refine hlaw.trans (mul_le_mul_of_nonneg_left ?_ h24pos.le)
-    exact mul_le_mul hpow1 hpow2 (by positivity) (Real.exp_pos _).le
-  have hineq : Λ ≤ (5 + 2 * L) * (1 - β) := by
-    have := (Real.one_le_exp_iff).mp hchain
-    linarith
-  have h1β : 0 ≤ 1 - β := by linarith
-  have hineq2 : Λ ≤ 7 * L * (1 - β) := by nlinarith
-  have hLsplit : L = (4 : ℝ) ^ (1 / α) * Λ ^ (1 / α) := by
-    rw [hL, Real.mul_rpow (by norm_num) hΛ0.le]
-  have hΛsplit : Λ ^ (1 - 1 / α) = Λ / Λ ^ (1 / α) := by
-    rw [Real.rpow_sub hΛ0, Real.rpow_one]
-  have hΛpos : 0 < Λ ^ (1 / α) := Real.rpow_pos_of_pos hΛ0 _
-  have h4pos : 0 < (4 : ℝ) ^ (1 / α) := by positivity
-  have hfinal : (1 / (7 * (4 : ℝ) ^ (1 / α))) * Λ ^ (1 - 1 / α) ≤ 1 - β := by
-    rw [hΛsplit, hLsplit] at *
-    rw [show 1 / (7 * (4 : ℝ) ^ (1 / α)) * (Λ / Λ ^ (1 / α)) =
-      Λ / (7 * ((4 : ℝ) ^ (1 / α) * Λ ^ (1 / α))) by field_simp, div_le_iff₀ (by positivity)]
-    linarith
-  linarith
+  have hW0 : 0 ≤ 2 * (K : ℝ) * (1 + Real.log K + ((K : ℝ) + 1) * rate c m B) := by
+    have hlogK0 : 0 ≤ Real.log (K : ℝ) := Real.log_nonneg hKR
+    have h1 : 0 ≤ ((K : ℝ) + 1) * rate c m B := mul_nonneg (by linarith) hεpos.le
+    exact mul_nonneg (by positivity) (by linarith)
+  have hineq := log_ineq_of_law hΛ1 hL1 hβ hβ1 hεpos hrate hW0
+    (base_le_exp hL1 hKge hKle hεpos.le hr1) (by rw [hexpΛ]; exact hlaw)
+  rw [hL] at hineq
+  linarith [coef_le_of_ineq (α := α) hΛ0 hineq]
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.HighDerivativesRecoverARightmostZero
 import GaloisForLFunctions.RHTower.ZetaWeakRecurrenceLadderCollapse
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
+import GaloisForLFunctions.RHTower.XiCollapseDirichletLeg
+import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationHalfPlane
 
 /-!
 # A finite exceptional layer forces persistent low-height jets
@@ -55,6 +57,7 @@ theorem not_asymptoticAbscissaLaw_has_persistent_low_jets :
   obtain ⟨q₀, hq₀, hqmax⟩ := hfin.exists_maximalFor
     (fun q : XiZeroCopy => (q.1 : ℂ).re)
     {q : XiZeroCopy | 1 / 2 + h < (q.1 : ℂ).re} ⟨q, hq⟩
+  change 1 / 2 + h < (q₀.1 : ℂ).re at hq₀
   have hmax : ∀ q' : XiZeroCopy, (q'.1 : ℂ).re ≤ (q₀.1 : ℂ).re := by
     intro q'
     by_cases hmem : 1 / 2 + h < (q'.1 : ℂ).re
@@ -62,7 +65,7 @@ theorem not_asymptoticAbscissaLaw_has_persistent_low_jets :
       exact (not_le.mpr (lt_of_not_ge hgt)) (hqmax hmem (lt_of_not_ge hgt).le)
     · exact (le_of_not_gt hmem).trans (le_of_lt hq₀)
   let ρ : ℂ := (q₀.1 : ℂ)
-  have hρhalf : 1 / 2 < ρ.re := by dsimp [ρ]; linarith
+  have hρhalf : 1 / 2 < ρ.re := by dsimp [ρ]; linarith only [hh, hq₀]
   have hρone : ρ.re < 1 := (xi_divisor_support_re_mem_open_unit q₀.1).2
   have hζ : riemannZeta ρ = 0 := riemannZeta_eq_zero_of_xiZeroCopy q₀
   have hρ1 : ρ ≠ 1 := by intro h; rw [h] at hρone; norm_num at hρone
@@ -117,11 +120,119 @@ theorem not_asymptoticAbscissaLaw_has_corrected_zeta_jet_limit :
   have hdpos : 0 < d := by linarith
   have hs : 1 < (ρ + (d : ℂ)).re := by simp only [Complex.add_re, Complex.ofReal_re]; linarith
   refine (hlim d hdpos).congr' (Filter.Eventually.of_forall fun k => ?_)
+  dsimp only
   rw [iteratedDeriv_logDeriv_zetaResidueUnit hs k, div_pow]
   have hfac : (k.factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
+  have hs1 : ρ + (d : ℂ) - 1 ≠ 0 := by
+    apply sub_ne_zero.mpr
+    intro h
+    rw [h] at hs
+    norm_num at hs
   field_simp
 
 #print axioms not_asymptoticAbscissaLaw_has_persistent_low_jets
 #print axioms not_asymptoticAbscissaLaw_has_corrected_zeta_jet_limit
+
+/-- The same residue is isolated by logarithmic moments of the actual von Mangoldt series.
+The geometric correction is exactly the pole at `1`. -/
+theorem not_asymptoticAbscissaLaw_has_prime_moment_limit :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧ ∀ d : ℝ, 1 - ρ.re < d →
+          Tendsto (fun k : ℕ =>
+            (d : ℂ) ^ (k + 1) *
+              LSeries (LSeries.logMul^[k] (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)))
+                (ρ + (d : ℂ)) / (k.factorial : ℂ) -
+            ((d : ℂ) / (ρ + (d : ℂ) - 1)) ^ (k + 1)) atTop (𝓝 (-(m : ℂ))) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, hlim⟩ :=
+    not_asymptoticAbscissaLaw_has_corrected_zeta_jet_limit hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, ?_⟩
+  intro d hd
+  have hs : 1 < (ρ + (d : ℂ)).re := by
+    simp only [Complex.add_re, Complex.ofReal_re]
+    linarith
+  refine (hlim d hd).neg.congr' (Filter.Eventually.of_forall fun k => ?_)
+  dsimp only
+  have hderiv := iteratedDeriv_zetaLogDeriv_eq_LSeries k hs
+  change iteratedDeriv k (logDeriv riemannZeta) (ρ + (d : ℂ)) = _ at hderiv
+  rw [hderiv, pow_succ (-1 : ℂ)]
+  have hfac : (k.factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero k
+  field_simp
+  ring
+
+#print axioms not_asymptoticAbscissaLaw_has_prime_moment_limit
+
+/-- Proper prime powers have no normalized jet mass at any radius strictly inside
+the half-plane of absolute convergence `Re s > 1/2`. -/
+theorem tendsto_normalized_higher_prime_power_jets {s a : ℂ}
+    (ha : ‖a‖ < s.re - 1 / 2) :
+    Tendsto (fun k : ℕ => a ^ (k + 1) *
+      iteratedDeriv k xiPrimeLogHigherValuation s /
+      ((-1 : ℂ) ^ k * (k.factorial : ℂ))) atTop (𝓝 0) := by
+  let R : ℝ := (‖a‖ + s.re - 1 / 2) / 2
+  have hR : ‖a‖ < R := by dsimp [R]; linarith only [ha]
+  have hRhalf : R < s.re - 1 / 2 := by dsimp [R]; linarith only [ha]
+  have han : AnalyticOnNhd ℂ xiPrimeLogHigherValuation {z : ℂ | 1 / 2 < z.re} :=
+    differentiableOn_xiPrimeLogHigherValuation_halfPlane.analyticOnNhd
+      (isOpen_lt continuous_const Complex.continuous_re)
+  apply tendsto_normalized_analytic_jets (R := R) ?_ hR
+  intro z hz
+  have hn : ‖z - s‖ ≤ R := by simpa only [mem_closedBall, dist_eq_norm] using hz
+  have hre := (abs_le.mp ((Complex.abs_re_le_norm (z - s)).trans hn)).1
+  simp only [Complex.sub_re] at hre
+  exact han z (by dsimp only [mem_setOf_eq]; linarith only [hre, hRhalf])
+
+/-- The nonzero limit survives removal of every proper prime power: it is already
+present in the corrected prime-only logarithmic series. -/
+theorem not_asymptoticAbscissaLaw_has_prime_only_jet_limit :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (ρ : ℂ) (m : ℕ), 1 / 2 < ρ.re ∧ ρ.re < 1 ∧ riemannZeta ρ = 0 ∧
+        0 < m ∧ ∀ d : ℝ, 1 - ρ.re < d →
+          Tendsto (fun k : ℕ => (d : ℂ) ^ (k + 1) *
+            iteratedDeriv k (fun z => xiPrimeLogDirichlet z - (z - 1)⁻¹)
+              (ρ + (d : ℂ)) / ((-1 : ℂ) ^ k * (k.factorial : ℂ)))
+            atTop (𝓝 (-(m : ℂ))) := by
+  intro hnot
+  obtain ⟨ρ, m, hρhalf, hρone, hζ, hm, _, hlim⟩ :=
+    not_asymptoticAbscissaLaw_has_persistent_low_jets hnot
+  refine ⟨ρ, m, hρhalf, hρone, hζ, hm, ?_⟩
+  intro d hd
+  have hdpos : 0 < d := by linarith only [hd, hρone]
+  have hs : 1 < (ρ + (d : ℂ)).re := by
+    simp only [Complex.add_re, Complex.ofReal_re]
+    linarith only [hd]
+  have hscale : ‖(d : ℂ)‖ < (ρ + (d : ℂ)).re - 1 / 2 := by
+    simp only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos hdpos,
+      Complex.add_re, Complex.ofReal_re]
+    linarith only [hρhalf]
+  have hhigh := tendsto_normalized_higher_prime_power_jets hscale
+  have hlocal : (fun z => xiPrimeLogDirichlet z - (z - 1)⁻¹) =ᶠ[𝓝 (ρ + (d : ℂ))]
+      fun z => (-1 : ℂ) * (logDeriv zetaResidueUnit z + xiPrimeLogHigherValuation z) := by
+    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with z hz
+    rw [xiPrimeLogDirichlet_eq_pole_add_regular_sub_higherValuation hz,
+      RHTower.Sieve.zetaLogDerivReg]
+    ring
+  have hs1 : ρ + (d : ℂ) ≠ 1 := by intro h; rw [h] at hs; norm_num at hs
+  have hunit : zetaResidueUnit (ρ + (d : ℂ)) ≠ 0 := by
+    rw [(zetaResidueUnit_eventuallyEq hs1).eq_of_nhds]
+    exact mul_ne_zero (sub_ne_zero.mpr hs1) (riemannZeta_ne_zero_of_one_le_re hs.le)
+  have hlog : AnalyticAt ℂ (logDeriv zetaResidueUnit) (ρ + (d : ℂ)) :=
+    (analyticAt_zetaResidueUnit _).deriv.div (analyticAt_zetaResidueUnit _) hunit
+  have hH : AnalyticAt ℂ xiPrimeLogHigherValuation (ρ + (d : ℂ)) :=
+    differentiableOn_xiPrimeLogHigherValuation_halfPlane.analyticOnNhd
+      (isOpen_lt continuous_const Complex.continuous_re) _ (by
+        change 1 / 2 < (ρ + (d : ℂ)).re
+        linarith only [hs])
+  have ht := ((hlim d hdpos).add hhigh).neg
+  rw [add_zero] at ht
+  refine ht.congr' (Filter.Eventually.of_forall fun k => ?_)
+  dsimp only
+  rw [hlocal.iteratedDeriv_eq, _root_.iteratedDeriv_const_mul_field,
+    iteratedDeriv_fun_add hlog.contDiffAt hH.contDiffAt]
+  ring
+
+#print axioms tendsto_normalized_higher_prime_power_jets
+#print axioms not_asymptoticAbscissaLaw_has_prime_only_jet_limit
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

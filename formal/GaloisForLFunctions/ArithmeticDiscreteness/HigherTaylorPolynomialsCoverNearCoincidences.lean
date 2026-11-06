@@ -67,7 +67,10 @@ theorem originTaylorPolynomial_error_le {f : ℂ → ℂ}
           ≤ (M / (1 / 4 : ℝ) ^ (n + (k + 1))) * (4 * h) ^ (n + (k + 1)) :=
         mul_le_mul (hcoef _) (pow_le_pow_left₀ (norm_nonneg _) hz _) (by positivity)
           (div_nonneg hM0 (by positivity))
-      _ = M * ((4 * h) / (1 / 4)) ^ (n + (k + 1)) := by rw [div_pow]; ring
+      _ = M * ((4 * h) / (1 / 4)) ^ (n + (k + 1)) := by
+        conv_rhs => rw [div_pow]
+        simp only [div_eq_mul_inv]
+        ac_rfl
       _ = M * q ^ (k + 1) * q ^ n := by
         rw [show (4 * h) / (1 / 4) = q by dsimp [q]; ring, pow_add]
         ring
@@ -116,7 +119,7 @@ theorem originTaylorPolynomial_derivative_error_le {f : ℂ → ℂ}
     ‖deriv f z - P.derivative.eval z‖
         ≤ ((2 * 16 ^ (k + 1)) * M * h ^ (k + 1)) / h := hd
     _ = (2 * 16 ^ (k + 1)) * M * h ^ k := by
-      rw [pow_succ]
+      rw [pow_succ h]
       field_simp
 
 /-- The constant in the high-order cover of common values of nearby pairs. -/
@@ -157,7 +160,8 @@ theorem close_pair_value_near_taylorCriticalCentre {f : ℂ → ℂ}
   rw [← heq, sub_self, zero_sub, norm_neg, norm_mul] at ht
   have hderiv : ‖deriv f u‖ ≤ 128 * M * h ^ k := by
     have ht' : ‖deriv f u‖ * ‖v - u‖ ≤ (128 * M * ‖v - u‖) * ‖v - u‖ := by
-      convert ht using 1 <;> ring
+      convert ht using 1
+      ring
     exact ((mul_le_mul_iff_left₀ hd0).mp ht').trans
       (mul_le_mul_of_nonneg_left hclose (by positivity))
   have hMsmall : ∀ z ∈ closedBall (0 : ℂ) (1 / 4), ‖f z‖ ≤ M :=

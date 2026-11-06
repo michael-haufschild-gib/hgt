@@ -295,7 +295,7 @@ theorem abs_deriv_tiltedUnitSpline_le (t : ℝ) : |deriv tiltedUnitSpline t| ≤
   rw [abs_mul, show ((1 : ℝ) / (1 / 8)) = 8 by norm_num, abs_of_pos (by norm_num : (0 : ℝ) < 8)]
   by_cases hbig : 4 < |v|
   · rw [cubicSpline_eq_zero hbig, deriv_cubicSpline_eq_zero hbig]
-    simp only [mul_zero, add_zero, abs_zero]
+    simp only [mul_zero, add_zero, abs_zero, zero_mul]
     exact (by positivity : (0 : ℝ) ≤ 6 * Real.exp 4)
   · have hv4 : v ≤ 4 := (le_abs_self v).trans (not_lt.mp hbig)
     have h1 : Real.exp v ≤ Real.exp 4 := Real.exp_le_exp.mpr hv4

@@ -318,12 +318,13 @@ theorem hausdorffMeasure_nonrepellingValues_eq_zero
 def zetaNonrepellingValues : Set ℂ :=
   {a | ¬ PolynomialValueRepulsion riemannZeta 0 1 a}
 
-/-- The exceptional set for polynomial repulsion of ζ-values has Hausdorff dimension at most
-one, although it contains a dense residual subset of the complex plane. -/
-theorem dimH_zetaNonrepellingValues_le_one : dimH zetaNonrepellingValues ≤ 1 := by
+/-- Polynomial strip growth bounds ζ on every comparison disc used for equal-value pairs. -/
+theorem exists_riemannZeta_repulsion_strip_bound :
+    ∃ A : ℝ, ∃ N : ℕ, 0 ≤ A ∧
+      ∀ c : ℂ, (0 : ℝ) - 1 ≤ c.re → c.re ≤ 1 + 1 → 2 ≤ |c.im| →
+        closedBall c (1 / 2) ⊆ {s : ℂ | s ≠ 1} ∧
+          ∀ z ∈ closedBall c (1 / 2), ‖riemannZeta z‖ ≤ A * (2 + |c.im|) ^ N := by
   obtain ⟨A, N, hA, hbd⟩ := RHTower.exists_bound_norm_riemannZeta_strip 3
-  have hfU : DifferentiableOn ℂ riemannZeta {s : ℂ | s ≠ 1} := fun s hs =>
-    (differentiableAt_riemannZeta hs).differentiableWithinAt
   have hM : ∀ c : ℂ, (0 : ℝ) - 1 ≤ c.re → c.re ≤ 1 + 1 → 2 ≤ |c.im| →
       closedBall c (1 / 2) ⊆ {s : ℂ | s ≠ 1} ∧
         ∀ z ∈ closedBall c (1 / 2), ‖riemannZeta z‖ ≤ A * (2 + |c.im|) ^ N := by
@@ -349,7 +350,14 @@ theorem dimH_zetaNonrepellingValues_le_one : dimH zetaNonrepellingValues ≤ 1 :
       rw [Complex.re_add_im] at h
       refine h.trans ?_
       gcongr
+  exact ⟨A, N, hA, hM⟩
 
+/-- The exceptional set for polynomial repulsion of ζ-values has Hausdorff dimension at most
+one, although it contains a dense residual subset of the complex plane. -/
+theorem dimH_zetaNonrepellingValues_le_one : dimH zetaNonrepellingValues ≤ 1 := by
+  obtain ⟨A, N, hA, hM⟩ := exists_riemannZeta_repulsion_strip_bound
+  have hfU : DifferentiableOn ℂ riemannZeta {s : ℂ | s ≠ 1} := fun s hs =>
+    (differentiableAt_riemannZeta hs).differentiableWithinAt
   apply dimH_le
   intro d hd
   by_contra hle

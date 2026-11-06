@@ -3,6 +3,7 @@ import GaloisForLFunctions.ArithmeticOrientationGeometry.TheSplineOrbitDecidesTh
 import GaloisForLFunctions.ArithmeticOrientationGeometry.EventualHasseWeilIsHasseWeil
 import GaloisForLFunctions.SquareRootThreshold.AttainedDepthIsVisible
 import GaloisForLFunctions.GrowingWindowsOfSpecZ.SpecZIsACurveOnEveryLattice
+import GaloisForLFunctions.ZeroConfigurationGeometry.FiniteModificationsAreSeenAtEveryAperture
 
 /-!
 # The Bohr profile decomposition
@@ -158,7 +159,7 @@ theorem tendsto_tsum_re_zero {v : ι → ℂ} {r : ℕ → ι → ℂ} {C : ℝ}
   obtain ⟨N, hN⟩ := eventually_atTop.mp (hhead.eventually (Metric.ball_mem_nhds _ (half_pos hε)))
   refine ⟨N, fun k hk => ?_⟩
   have h1 := hN k hk
-  rw [Metric.mem_ball, Real.dist_eq, sub_zero] at h1
+  rw [Real.dist_eq, sub_zero] at h1
   set f : ι → ℝ := fun i => (conj (v i) * r k i).re with hf
   set b : ι → ℝ := fun i => ‖v i‖ ^ 2 / (2 * δ) + δ * ‖r k i‖ ^ 2 / 2 with hb
   have hbs : Summable b := (hv.div_const _).add (((hr k).mul_left δ).div_const 2)
@@ -311,7 +312,7 @@ theorem re_W_eq_energy {Z : ZeroConfig} (hZ : TemperedConfig Z) (hline : ∀ ρ 
     (cx_contDiff hf.1) (cx_hasCompactSupport hf.2)
   have hsr : Summable fun ρ : Z.carrier => ‖spectralVector Z f ρ‖ ^ 2 := by
     refine (hs.mapL Complex.reCLM).congr fun ρ => ?_
-    simp [Wsummand_of_onLine Z f (hline ρ ρ.2)]
+    simp only [Complex.reCLM_apply, Wsummand_of_onLine Z f (hline ρ ρ.2), Complex.ofReal_re]
   refine ⟨hsr, ?_⟩
   rw [ZeroConfig.W, Complex.re_tsum hs, energy]
   refine tsum_congr fun ρ => ?_
@@ -367,6 +368,116 @@ theorem paperFT_bubbleTest {n : ℕ} (c : Fin n → ℝ) {f : Fin n → ℝ → 
       rw [hz0, paperFT_cx_scaleShift_apply]
       ring
   exact hgen Finset.univ
+
+/-- The spectral vector of a bubble family. -/
+theorem spectralVector_bubbleTest (Z : ZeroConfig) {n : ℕ} (c : Fin n → ℝ) {f : Fin n → ℝ → ℝ}
+    (hf : ∀ j, f j ∈ realTests) (t : Fin n → ℝ) (ρ : Z.carrier) :
+    spectralVector Z (bubbleTest c f t) ρ =
+      ∑ j, (c j : ℂ) * cexp ((((ρ : ℂ).im * t j : ℝ) : ℂ) * I) * spectralVector Z (f j) ρ := by
+  rw [spectralVector, paperFT_bubbleTest c hf, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have e : ((t j : ℝ) : ℂ) * (I * (((ρ : ℂ).im : ℝ) : ℂ)) = (((ρ : ℂ).im * t j : ℝ) : ℂ) * I := by
+    push_cast
+    ring
+  rw [e, spectralVector]
+  ring
+
+/-- **The energy of moving bubbles on an on-line configuration converges to the Bohr energy** along a subsequence. -/
+theorem tendsto_configEnergy_bubbles {Z : ZeroConfig} (hZ : TemperedConfig Z)
+    (hline : ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) {n : ℕ} (c : Fin n → ℝ) {f : Fin n → ℝ → ℝ}
+    (hf : ∀ j, f j ∈ realTests) (t : Fin n → ℕ → ℝ) :
+    ∃ (χ : Fin n → Z.carrier → Circle) (ψ : ℕ → ℕ), StrictMono ψ ∧
+      Tendsto (fun k => (Z.W (cx (bubbleTest c f fun j => t j (ψ k)))
+        (cx (bubbleTest c f fun j => t j (ψ k)))).re) atTop
+        (𝓝 (energy fun ρ => ∑ j, (c j : ℂ) * (χ j ρ : ℂ) * spectralVector Z (f j) ρ)) := by
+  haveI : Countable Z.carrier := (carrier_countable Z).to_subtype
+  obtain ⟨χ, ψ, hψ, hχ⟩ := exists_bohr_subseq (fun ρ : Z.carrier => (ρ : ℂ).im) t
+  refine ⟨χ, ψ, hψ, ?_⟩
+  have h := tendsto_energy_bubbles (fun j => (c j : ℂ))
+    (a := fun j => spectralVector Z (f j)) (fun j => (re_W_eq_energy hZ hline (hf j)).1)
+    (z := fun j k ρ => cexp ((((ρ : ℂ).im * t j (ψ k) : ℝ) : ℂ) * I))
+    (χ := fun j ρ => (χ j ρ : ℂ)) (fun j k ρ => Complex.norm_exp_ofReal_mul_I _)
+    (fun j ρ => tendsto_coe_exp (hχ j ρ))
+  refine h.congr fun k => ?_
+  rw [(re_W_eq_energy hZ hline (bubbleTest_mem c hf _)).2]
+  simp only [energy, spectralVector_bubbleTest Z c hf]
+
+/-! ### `Spec ℤ` -/
+
+/-- **RH is the relative compactness of every orbit correlation at infinity.** -/
+theorem riemannHypothesis_iff_orbit_relativelyCompact :
+    RiemannHypothesis ↔ ∀ φ ∈ realTests, ∀ t : ℕ → ℝ, ∃ ψ : ℕ → ℕ, StrictMono ψ ∧ ∃ L : ℝ,
+      Tendsto (fun k => weilOrbitCorr φ (t (ψ k))) atTop (𝓝 L) := by
+  constructor
+  · intro hRH φ hφ t
+    haveI : Countable zetaZeroConfig.carrier := (carrier_countable zetaZeroConfig).to_subtype
+    obtain ⟨χ, ψ, hψ, hχ⟩ := exists_bohr_subseq (J := Unit)
+      (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ).im) fun _ => t
+    refine ⟨ψ, hψ, ∑' ρ, _root_.RHTower.WeilConditional.zeroTerm (cx φ) ρ * ((χ () ρ : Circle) : ℂ).re, ?_⟩
+    have hsum := _root_.RHTower.WeilConditional.summable_zeroTerm hRH (cx_contDiff hφ.1) (cx_hasCompactSupport hφ.2)
+    simp only [weilOrbitCorr_eq_tsum hRH hφ]
+    refine tendsto_tsum_of_dominated_convergence hsum (fun ρ => ?_) (Eventually.of_forall fun k ρ => ?_)
+    · refine Tendsto.const_mul _ ?_
+      have h1 := Complex.continuous_re.continuousAt.tendsto.comp (tendsto_coe_exp (hχ () ρ))
+      refine h1.congr fun k => ?_
+      simp only [Function.comp]
+      exact Complex.exp_ofReal_mul_I_re _
+    · rw [norm_mul, Real.norm_eq_abs, Real.norm_eq_abs,
+        abs_of_nonneg (_root_.RHTower.WeilConditional.zeroTerm_nonneg _ _)]
+      exact mul_le_of_le_one_right (_root_.RHTower.WeilConditional.zeroTerm_nonneg _ _) (Real.abs_cos_le_one _)
+  · intro h
+    set x := splineCycle with hx
+    have hφ : (x.2.2 : ℝ → ℝ) ∈ realTests := x.2.2.2
+    obtain ⟨K, hK⟩ : ∃ K : ℝ, ∀ s : ℝ, 0 ≤ s → |weilOrbitCorr x.2.2 s| ≤ K := by
+      by_contra hne
+      push Not at hne
+      choose t ht0 ht using fun k : ℕ => hne (k : ℝ)
+      obtain ⟨ψ, hψ, L, hL⟩ := h _ hφ t
+      have h1 := hL.abs
+      obtain ⟨N, hN⟩ := eventually_atTop.mp (h1.eventually (gt_mem_nhds (lt_add_one |L|)))
+      obtain ⟨m, hm⟩ := exists_nat_gt (|L| + 1)
+      have h2 := hN (max N m) (le_max_left _ _)
+      have h3 := ht (ψ (max N m))
+      have h4 : (m : ℝ) ≤ ψ (max N m) := by
+        exact_mod_cast (le_max_right N m).trans (hψ.id_le _)
+      linarith
+    refine riemannHypothesis_iff_splineOrbit_hasseWeil.mpr fun t => (zeta_hasseWeilAt_iff _ _).mpr ?_
+    refine hasseWeilAt_of_eventually_bounded zetaZeroConfig temperedConfig_zetaZeroConfig
+      fesSymmetric_zetaZeroConfig x (T := 0) (K := K) (fun s hs => ?_) t
+    rw [configScalingDatum_zeta_orbitCorr, zeta_orbitCorr_eq]
+    exact hK s hs
+
+/-- **RH is the relative compactness of the energy of moving bubbles, with nonnegative limits.** -/
+theorem riemannHypothesis_iff_bubbles_relativelyCompact :
+    RiemannHypothesis ↔ ∀ (n : ℕ) (c : Fin n → ℝ) (f : Fin n → ℝ → ℝ), (∀ j, f j ∈ realTests) →
+      ∀ t : Fin n → ℕ → ℝ, ∃ ψ : ℕ → ℕ, StrictMono ψ ∧ ∃ L : ℝ, 0 ≤ L ∧
+        Tendsto (fun k => weilQuad (bubbleTest c f fun j => t j (ψ k))) atTop (𝓝 L) := by
+  constructor
+  · intro hRH n c f hf t
+    have hline : ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re = 1 / 2 := fun ρ hρ => by
+      have h1 := _root_.RHTower.WeilConditional.eq_half_add_im hRH ⟨ρ, hρ⟩
+      have h2 := congrArg Complex.re h1
+      simpa using h2
+    obtain ⟨χ, ψ, hψ, hE⟩ := tendsto_configEnergy_bubbles temperedConfig_zetaZeroConfig hline c hf t
+    refine ⟨ψ, hψ, _, energy_nonneg _, hE.congr fun k => ?_⟩
+    have hm := bubbleTest_mem c hf fun j => t j (ψ k)
+    exact (LogCells.weilQuad_eq_zetaW hm.1 hm.2).symm
+  · intro h
+    refine riemannHypothesis_iff_orbit_relativelyCompact.mpr fun φ hφ t => ?_
+    obtain ⟨ψ, hψ, L, -, hL⟩ := h 2 ![1, -1] ![φ, φ] (fun j => by fin_cases j <;> exact hφ)
+      ![fun _ => 0, fun k => -t k]
+    refine ⟨ψ, hψ, weilQuad φ - L / 2, ?_⟩
+    have hlim := (hL.div_const 2).const_sub (weilQuad φ)
+    refine hlim.congr fun k => ?_
+    have h2 := two_mul_weilSeq_sub hφ (t (ψ k)) 1
+    have h0 : weilSeq φ (t (ψ k)) 0 = weilQuad φ := by rw [weilSeq, latticeTranslate_zero]; rfl
+    rw [h0, weilSeq_one] at h2
+    have e : bubbleTest ![1, -1] ![φ, φ] (fun j => (![fun _ => 0, fun k => -t k] : Fin 2 → ℕ → ℝ) j (ψ k)) =
+        fun u => 1 * φ u + -1 * latticeTranslate φ (t (ψ k)) 1 u := by
+      funext u
+      simp [bubbleTest, Fin.sum_univ_two, scaleShift, latticeTranslate]
+    rw [e, ← h2]
+    ring
 
 end
 

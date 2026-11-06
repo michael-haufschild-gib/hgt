@@ -10,8 +10,11 @@
 
 | Task | Status | Lean / note |
 |---|---|---|
-| A31 | in progress | `ZeroConfigurationGeometry/`: `¬AAL ⇔ ψ(x)−x = x^β T(log x) + O(x^{β−η})`. Upper direction: Mellin + identity theorem. Lower direction: lag windows + convergence exponent 1 |
-| A19–A30, A32 | open | triage in progress |
+| A20 | done | `HeatScaleRepulsion/TheExceptionalExponentIsCubic.lean`: `θ(κ)=1−κ³/41943040000` for `κ≤8`; large values at level `η³/40000` are the only binding term, shadows save `η/3` |
+| A28 | done | `TheScatteringMatrixIsABlaschkeProduct.lean`: `S=φ(s)(s−1)/s=ξ(2s−1)/ξ(2s)`, `−log|S(w)|=Σ_ρ G(w,(1+ρ)/2)`, no singular part; zeros are reflected resonances; Gram = Szegő kernel. `ResonantStates/HeckeWordsHaveThePoissonSpectralMeasure.lean`: physical `⟨T_w t_Y,T_{w'} t_Y⟩=‖t_Y‖²∫P_{−Re u}(t−Im u)W_wW_{w'}` for all prime words; squarefree `=μ_n(u)` |
+| A31 | done | `ZeroConfigurationGeometry/ThePrimeErrorExpansionLocatesZeros.lean`, `TheOneOffsAreFiniteOscillationsOfThePrimeError.lean`: `not_asymptoticAbscissaLaw_iff_primeErrorIsFiniteOscillation` |
+| A29 | done | `ArithmeticKunnethTheory/WeightFamilies/ReciprocalQuadricTrace.lean`: exceptional directions `X³ ∣ reciprocalSeries ⇔ Q=0`; `#P(Q=0)=Σ_{j≤2k}q^j+χ((−1)^{k+r})q^k`; over degree `d` the eigenvalue is `α^d`, `α=χ((−1)^{k+r})q^k` |
+| A19, A21–A27, A30, A32 | open | A32: peer AAD programme works on stencil cost (`TheParityProducerHasAQuantitativeCost`) |
 
 ## Log
 - 2026-11-06 — table renumbered to the current report; older numbering closed tasks (exceptional set, Gauss–Mayer boundary, sharp depth law, EGC contour, aperture Euler product) are in Lean already.
