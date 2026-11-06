@@ -23,11 +23,26 @@ Three consistency laws must be distinguished: restriction of characters along `S
 - `riemannHypothesis_iff_forall_pfSeq_centre` is an equivalence, not a positivity producer.
 - `cycleWeight_eq_geometric_of_shapeBlind` concerns random-permutation deletion.
 - Existing prime–theta Young and colored-cycle cards leave positive source weights, branching, and exact Xi identification open.
+- `HTGeometry/SymmetricCharacters/FiniteColoring.lean`: positive-definite finite coloring characters, conjugation invariance, identity mass, disjoint-block multiplication, and normalized restriction are kernel-checked.
+- `HTGeometry/SymmetricCharacters/MixtureRigidity.lean`: the exact variance defect and equality classification by positive-support alphabets are kernel-checked. The all-moment version includes moment zero; normalized character applications must separately account for moments zero and one.
+- `HTGeometry/SymmetricCharacters/CharacterMixtures.lean`: positivity, restriction, exact double-cycle covariance, and alphabet rigidity are kernel-checked. Fixed alphabet cardinality supplies moment zero; cycle values supply every positive moment.
+- The centered real-part construction already occurs in `PrimeArchThermalKrylovEquivalence`: its second moment exceeds the source by `xiThermalOrientationEnergy`, zero exactly under RH. The endpoint analogue must use `xiStripEdgeWeight` and its existing first and second sum rules; it is not a new positivity mechanism.
+
+## Exact source tests
+
+- **Occupancy versus Young branching:** for letter weights `w`, let `R = Σ_(a≠b) w_a² w_b`. The occupancy mass of `(2,1)` is `3R`; Young down-transition assigns half to `(2)`. Its row discrepancy is `R/2`, zero only when at most one letter has positive weight. `MultiplicityBranching.lean` is kernel-checked. The positive survivor is the independent-color character, not the sorted occupancy law.
+- **Cycle formula:** a cycle of length `k` fixes precisely constant words, giving `Σ_a w_a^k`. `CyclicTrace.lean` also proves the product formula for disjoint cycle representatives.
+- **Endpoint real-part candidate:** `RHTower/Representation/EndpointCharacterDefect.lean` is kernel-checked: absolute convergence, positive mass `2+γ−log(4π)`, exact gap `Σ(Re α)² − Re Σα² = Σ(Im α)²`, and equality iff RH. Dividing by the squared mass gives the exact normalized transposition defect.
+- **Curve branch test:** `endpointCoordinate_im_eq_zero_iff` proves that `1/(s(1−s))` is real exactly on the critical line or real axis. Golden principal zeros lie on the exceptional real locus; nonzero periodic copies expose their defect. `ArithmeticCastelnuovoSeveri/Representation/EndpointCalibration.lean` states the exact purity classification; verification pending.
+
+## Primary-source check
+
+Simon Thomas, [Characters and invariant random subgroups of the finitary symmetric group](https://ow3.math.rutgers.edu/~sthomas/Fin-chars.pdf), §1: fixed-point probabilities give characters; the pure row Thoma character is the product of color power sums. These are classical foundations, not novelty claims.
 
 ## Completion gates
 
-- [ ] Finite coloring representation, positivity, restriction, cycle formula.
-- [ ] Mixture covariance and deterministic survivor.
+- [x] Finite coloring representation, positivity, restriction, cycle formula.
+- [x] Mixture covariance and deterministic survivor.
 - [ ] Young-shape producer audited and corrected.
 - [ ] Curves and fake models tested symbolically.
 - [ ] Arithmetic source representation and exact character identification.

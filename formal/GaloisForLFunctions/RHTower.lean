@@ -28322,3 +28322,4 @@ import GaloisForLFunctions.RHTower.ThetaCusp.SourceActions.SpectralEisensteinFor
 import GaloisForLFunctions.RHTower.ThetaCusp.SourceActions.ModularWeakResponseRegularity
 import GaloisForLFunctions.RHTower.ThetaCusp.SourceActions.SpectralEisensteinSourceFamily
 import GaloisForLFunctions.RHTower.ThetaCusp.SourceActions.SpectralOpticalCriticality
+import GaloisForLFunctions.RHTower.Representation.EndpointCharacterDefect

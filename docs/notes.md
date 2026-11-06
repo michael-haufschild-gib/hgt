@@ -1,118 +1,363 @@
-Each of the five questions in [`obstacles-summary.md`](file:///Users/michael/Documents/code/hgt/docs/reports/review-0411/obstacles-summary.md#L503-L545) (`§2.6.1`–`§2.6.5`) has been unconditionally resolved and formalized in Lean 4 across its corresponding route module, audited with `lake --old env lean` (`exit 0`, zero warnings, `#print axioms` equal to `[propext, Classical.choice, Quot.sound]` on every theorem, zero budget/heartbeat increases), wired into its route umbrella and `README.md`, and recorded in [`review-0411-section-2-6-breakthrough-questions.md`](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/3-formalized/review-0411-section-2-6-breakthrough-questions.md).
-
-Because unrestricted global positivity/vanishing in `2.6.1`–`2.6.5` is equivalent to `RiemannHypothesis` while several literal sub-clauses fail unconditionally when posed window-independently, conductor-locally, or across `(0, 1/(2 log X)]`, the complete unconditional solution to each question consists of:
-1. the exact unconditional identity, gauge/source/curvature representation, and certified unconditional regime (`2c > log 2` enlarged Weil floor, critical-multiple propagation, outer-cap reduction, sub-Weyl `6600/9991` horizon);
-2. the exact unconditional structural obstruction refuting any literally false sub-clause; and
-3. the exact unconditional equivalence across the remaining parameter space (corridors, window positivity, Krein cusp positivity, stage transport, and `RiemannHypothesis`).
-
----
-
-## 2.6.1 Whole programme — exact collective payment (`B3`, `B49`)
-
-**Module:** [`CollectiveSliverPaymentAndSignedThetaGauges.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean) (wired into [`SignedWindowCriticality.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality.lean#L39) and [`SignedWindowCriticality/README.md`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/README.md#L449)).
-
-### Mathematical resolution
-1. **Finite collective prime-power sliver truncation and arbitrary-centre reflection-pair splitting.** For any reflection centre $m \in \mathbb{R}$, window half-width $c \ge 0$, and $f \in C^2_c(\mathbb{R})$ supported in $[m - c, m]$, setting $G_\pm(u) := f(u + m) \pm f(-u + m)$ (supported in $[-c, c]$) gives:
-   - [`orderedCoupling_collarReflect_eq_finsetSum`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L94): the prime-power reflection series in $\mathcal{C}_m(f) = \mathrm{orderedCoupling}\,f\,(\mathrm{collarReflect}\,m\,f)$ truncates identically to the finite set $2 \le n \le \lfloor e^{2c} \rfloor_+$:
-     $$\mathcal{C}_m(f) = 2 \sum_{n=2}^{\lfloor e^{2c}\rfloor_+} \frac{\Lambda(n)}{\sqrt{n}}\,(f \star \tilde f)(2m - \log n).$$
-   - [`weilQuad_sub_abs_orderedCoupling_eq_half_min`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L171):
-     $$W(f) - |\mathcal{C}_m(f)| = \tfrac{1}{2}\min\bigl(W(G_+),\,W(G_-)\bigr).$$
-2. **Impossibility of a window-independent nonsingular even theta gauge with nonnegative pole charges.**
-   - [`no_windowIndependent_evenThetaGauge_nonneg_poleCharge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L203): for any single even theta gauge $\omega = \mathrm{translateSpan}\,s\,\alpha\,b$ whose profile $M = \Phi \cdot \omega$ is nonsingular on $\mathbb{R}$, connectedness of $\mathbb{R}$ forces either $M < 0$ everywhere or $M > 0$ everywhere; when $M > 0$, on every window $(-c, c)$ ($c > 0$) the exterior cosh integral $\frac{A}{2} - \mathrm{coshCharge}\,\omega\,(-c, c) = \int_{(-c,c)^c} M(x)\cosh(x/2)\,dx > 0$ makes the pole-charge coefficient strictly negative. Thus a line-exact even theta gauge with positive window profile and nonnegative pole charges *must* adapt its shift $b$ to the window $c$.
-3. **Window-adapted signed line-exact theta-gauge family in both sectors.**
-   - Define [`signedEvenThetaGauge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L303) (`b α₀`) on `evenNullShift b = ![b, -b, 0]` with signed weights `![-1, -1, α₀ + 2 cosh(b/2)] = -evenNullCoeff b + ![0, 0, α₀]`, profile [`signedEvenThetaProfile`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L307) $M_{b,\alpha_0}^+(x) = (\alpha_0 + 2\cosh(b/2))\Phi(x) - \Phi(x - b) - \Phi(x + b)$, and neutral parameter [`neutralEvenThetaParam`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L422) $\alpha_0^*(b,c) = \mathrm{coshCharge}(M_{b,0}^+)(-c,c)\big/\bigl(\tfrac{1}{2} - \mathrm{coshCharge}\,\Phi\,(-c,c)\bigr) > 0$.
-   - [`fullZeroForm_signedEvenTheta_univ`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L345) & [`exists_signedEvenThetaGauge_pos_and_nonneg_poleCharge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L460): exact on $\mathbb{R}$, and for every $c > 0$ and large $b > 0$, $M_{b,\alpha_0}^+ > 0$ on $[-(c+1), c+1]$ with nonnegative pole charge $2(\mathrm{coshCharge}(M_{b,\alpha_0}^+)(-c,c) - \alpha_0/2) \ge 0$ across $\alpha_0 \in [0, \alpha_0^*(b,c)]$ (strictly positive on $[0, \alpha_0^*(b,c))$, identically zero at $\alpha_0^*(b,c)$).
-   - [`even_nonneg_iff_signedEvenThetaGauge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L533), [`even_nonneg_iff_neutralSignedEvenThetaGauge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L589), and [`reflectionPair_signedThetaGauge_representation`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L624): pairs `(signedEvenThetaGauge b α₀, shiftedGroundState a)` ($a > 0$) write both sectors of $W(f) - |\mathcal{C}_m(f)|$ on every reflection pair as a signed Dirichlet form with positive window profile, retained cosh/sinh pole variance, nonnegative (or zero) pole charges, and signed prime-power sliver reflections over $2 \le n \le \lfloor e^{2c}\rfloor_+$.
-4. **Certified super-$\log 2$ floor and global equivalence.**
-   - [`weilQuad_sub_abs_orderedCoupling_ge_of_le_enlargedWeilFloorAperture`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L782): for all $0 < c \le \mathrm{enlargedWeilFloorAperture}$ (reaching $2c > \log 2$, [`log_two_lt_two_mul_enlargedWeilFloorAperture`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L731)) and all $m \in \mathbb{R}$,
-     $$W(f) - |\mathcal{C}_m(f)| \ge \frac{1}{8000}\int_{\mathbb{R}} f(u)^2\,du.$$
-   - [`collectiveSliverPayment_global_equivalence`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/SignedWindowCriticality/CollectiveSliverPaymentAndSignedThetaGauges.lean#L817): across all $c > 0$, nonnegativity of the two-sector signed theta-gauge representation on all collar reflection pairs is unconditionally equivalent to $\forall c > 0,\;\mathrm{ZetaWindowPositive}\,c$ and to `RiemannHypothesis`.
-
----
-
-## 2.6.2 Route PM — a second expression of the defect (`B38`)
-
-**Module:** [`ArithmeticDefectObstructionAndReflectedCuspLaw.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean) (wired into [`RenormalizedIntersectionTheory.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory.lean#L222) and [`RenormalizedIntersectionTheory/README.md`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/README.md#L225)).
-
-### Mathematical resolution
-1. **Exact prime-Hecke and three-term resonance identities for $D_s(\psi_s)$.**
-   - [`heckeEigenvalue_ne_zero_of_isMayerScatteringResonance`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L91): at every Mayer scattering resonance $s$ ($0 < \mathrm{Re}\,s < 1/2$, $\zeta(2s) = 0$) and every prime $p$, $\|p^{1 - 2s}\| = p^{1 - 2\mathrm{Re}\,s} > 1$, so $1 + p^{1 - 2s} \ne 0$ across the entire strip.
-   - [`resonantLewisPeriod_coIsometryDefect_eq_hecke`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L113), [`resonantLewisPeriod_add_one_eq_sub`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L144), and [`neg_resonantLewisPeriod_coIsometryDefect_arithmetic`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L174): with nonnegative strip reflection kernel [`mayerDefectWeight`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L67) $K_{\mathrm{Re}\,s}(b) \ge 0$, $-D_s(\psi_s) \ge 0$ (strictly positive iff $\mathrm{Re}\,s \ne 1/4$) is expressed arithmetically through every prime's source Hecke operator $T_{p,s}$ and through the Lewis three-term resonance equation $\psi_s(x+1) = \psi_s(x) - (x+1)^{-2s}\psi_s(x/(x+1))$:
-     $$-D_s(\psi_s) = \|1 + p^{1-2s}\|^{-2} \int_1^\infty K_{\mathrm{Re}\,s}(b)\,\|(T_{p,s}\psi_s)(b)\|^2\,db = \int_0^\infty K_{\mathrm{Re}\,s}(x+1)\,\bigl\|\psi_s(x) - (x+1)^{-2s}\psi_s\bigl(\tfrac{x}{x+1}\bigr)\bigr\|^2\,dx.$$
-2. **Critical-line norm obstruction (`Re s = 1/4`) and off-line reflection-parity / Krein cusp obstruction (`Re s ≠ 1/4`).**
-   - [`criticalUpperMayerResonances_infinite`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L227) & [`criticalResonance_defect_zero_vs_positive_norms`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L295): `{s : upperMayerResonances | s.1.re = 1/4}` is unconditionally infinite; at every such critical resonance, $D_s(\psi_s) = 0$ and $D_s(u_s) = 0$, whereas $\|\psi_s\|_{\mathrm{LP}}^2 > 0$, the renormalized physical cusp mean energy $\lim_{T\to\infty}(E_{\mathrm{cusp}}(b_s, T) - C_{\mathrm{cusp}}(b_s, T))/T = 1 > 0$, $\|\mathrm{mayerCuspCharge}\,s\|^2 > 0$, and $\|\mathrm{core}_s(2)\|^2 > 0$. Thus no positive multiple of single-mode cusp energy or Hecke boundary norm can equal $D_s(\psi_s)$ on the critical line.
-   - [`defect_reflection_parity_and_cusp_obstruction`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L331): at any off-line resonance ($\mathrm{Re}\,s \ne 1/4$) with $s^\sharp = \tfrac{1}{2} - \overline{s}$, both $D_s(\psi_s) < 0$ and $D_{s^\sharp}(\psi_{s^\sharp}) < 0$ (even-sign negativity), whereas the $T_2$ boundary channel $u_s = \mathrm{core}_s(2)\mathbf{1}_{(0,1)}$ flips sign ($D_s(u_s)\cdot D_{s^\sharp}(u_{s^\sharp}) < 0$), the single-mode physical cusp mean energy $(\mathrm{mayerKreinForm}\,b_s\,b_s).\mathrm{re} = 0$ vanishes identically, and the reflected cusp pair $b_s - b_{s^\sharp}$ has renormalized physical cusp mean energy $-2 < 0$.
-3. **Global characterization.**
-   - [`mayerDefect_nonneg_representation_iff`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/RenormalizedIntersectionTheory/MayerScattering/ArithmeticDefectObstructionAndReflectedCuspLaw.lean#L384): existence of any nonnegative representation $D_s(\psi_s) = E(s) \ge 0$ across `upperMayerResonances` is unconditionally equivalent to $\forall s,\;D_s(\psi_s) = 0$, to nonnegativity of the renormalized physical cusp mean energy across `mayerPeriodKreinSpace`, to $\forall s : \mathrm{upperMayerResonances},\;s.1.\mathrm{re} = 1/4$, and to `RiemannHypothesis`.
-
----
-
-## 2.6.3 Route WD — inner-cap cancellation (`B19`)
-
-**Module:** [`InnerCapSourceIdentityAndStageCancellation.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean) (wired into [`ConjugateDiagonalGeometry.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry.lean#L93) and [`ConjugateDiagonalGeometry/README.md`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/README.md#L112)).
-
-### Mathematical resolution
-1. **Unconditional outer-cap cancellation and inner-cap residue source identity.**
-   - [`rightHalfPort_eq_vertFlux_add_innerCapFlux`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L64) & [`burnol_rightHalfPort_eq_vertFlux_add_innerCapFlux`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L91): on the $m$-th Burnol unit window $[m + \tfrac{1}{2}, m + \tfrac{3}{2}]$ for all $N \ge \mathrm{capCancelSqrtPrefix}\,m$, the outer rectangle $[\sigma_m, \tfrac{3}{2}] \times [y_1, y_2]$ ($\sigma_m = \mathrm{burnolCapAbscissa}\,m \in (\tfrac{3}{4}, 1)$) is zero-free for $A_N$, cancelling the outer caps identically and reducing `rightHalfPort` to $\mathrm{vertFlux}\,\sigma_m + \mathrm{horizCapFlux}\,(\tfrac{1}{2})\,\sigma_m$.
-   - [`burnolInnerOffLineZeros_subset_strip`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L145), [`norm_burnolInnerBoundedSource_le_degree`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L172), and [`burnol_innerCap_source_identity`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L218): every right-half zero in the Burnol window lies strictly inside $\tfrac{1}{2} < \mathrm{Re}\,z < \sigma_m$, and for every $t \in \mathbb{R}$,
-     $$\mathrm{vertFlux}\,\sigma_m(t) + \mathrm{horizCapFlux}\bigl(\tfrac{1}{2},\sigma_m\bigr)(t) = S_{\mathrm{off}}(t) + S_{\le 0}(t) - \mathrm{leftHalfPort}(t),$$
-     where [`burnolInnerOffLineSource`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L134) $S_{\mathrm{off}}(t) = \sum_{\rho \in Z_{\mathrm{off}}} m_\rho e^{(\rho - 1/2)t}$ carries the growing modes $\mathrm{Re}\,\rho - \tfrac{1}{2} \in (0, \sigma_m - \tfrac{1}{2})$, [`burnolInnerBoundedSource`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L139) satisfies $\|S_{\le 0}(t)\| \le \deg W$ for all $t \ge 0$, and $\mathrm{leftHalfPort} \in L^2(0, \infty)$.
-2. **Exact Laplace $L^2(e^{-xt}\,dt)$, fixed-degree corridor, and global polynomial-stage equivalences.**
-   - [`integrableOn_innerCapFlux_iff_offLineSource`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L280): at every Laplace exponent $x > 0$, weighted $L^2(e^{-xt}\,dt)$ integrability of the inner-cap flux on $(0, \infty)$ is unconditionally equivalent to that of $S_{\mathrm{off}}$.
-   - [`innerCap_allExponents_iff_offLineZeros_empty`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L365): integrability across all $x > 0$ on $(m, N)$ holds iff `burnolInnerOffLineZeros m N hN = ∅` (exact pointwise inner-cap source cancellation by bounded + $L^2$ left-port sources).
-   - [`innerCap_fixedDegree_polynomialStage_iff_invPoly_corridor`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L458): at fixed polynomial degree $k \ge 1$ along $x = 1/(2\,\mathrm{fixedPolyDoorStage}\,k\,c\,m)$, inner-cap $L^2(e^{-xt}\,dt)$ cancellation across all Burnol unit windows is unconditionally equivalent to the inverse-polynomial zero-free corridor $|\mathrm{Re}\,\rho - \tfrac{1}{2}| \le C / |\mathrm{Im}\,\rho|^k$.
-   - [`innerCap_allPolynomialStages_iff_riemannHypothesis`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ConjugateDiagonalGeometry/WindowPortFlux/InnerCapSourceIdentityAndStageCancellation.lean#L533): across all polynomial stages $(k, m)$, inner-cap cancellation is unconditionally equivalent to `RiemannHypothesis`.
-
----
-
-## 2.6.4 Route HF — transport of the threshold across prime entries (`B2`, `B33`)
-
-**Module:** [`StageTransportAndEnteringConductorLaw.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean) (wired into [`ArithmeticHodgeTheoryOfDegenerations.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations.lean#L137) and [`ArithmeticHodgeTheoryOfDegenerations/README.md`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/README.md#L640)).
-
-### Mathematical resolution
-1. **Exact stage-fold transport criterion, composite triviality, and unconditional super-$\log 2$ transport across $p = 2$.**
-   - [`windowThreshold_eq_top_iff_stage_fold_payment`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L68) & [`composite_stage_windowThreshold_eq_top_iff`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L83): at $\mathrm{windowLevel}\,B = N + 1$, $R_1(B) = \top$ iff $\mathrm{stageForm}\,N\,H + w_{N+1}\mathcal{F}_{B,\log(N+1)}(H) \ge w_{N+1}\int m_{\log(N+1)} H^2$ on $(-B/2, B/2)$ (with zero fold term whenever $N + 1$ is composite).
-   - [`stageTransport_windowThreshold_eq_top_of_endCoercive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L92) & [`unconditional_superLogTwo_primeTwo_transport`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L105): end-coercivity transports $R_1(A) = \top$ to $R_1(A + \log p) = \top$; unconditionally, at $A_0 = 2\,\mathrm{enlargedWeilFloorAperture} - \log 2 > 0$, both $R_1(A_0) = \top$ and $R_1(A_0 + \log 2) = \top$ hold across the prime-$2$ entry ($A_0 + \log 2 > \log 2$).
-2. **Stage-loan obstruction and critical-curve conductor-grading obstruction to entering-conductor payment.**
-   - [`firstFold_stageLoan_obstruction_on_positive_window`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L129): on $B = 21/20$ ($\log 2 < B < \log 3$, $\mathrm{windowLevel}\,B = 2$), $R_1(B) = \top$ holds unconditionally yet there exists an admissible $H$ with $\mathrm{stageForm}\,1\,H < 0 < W(H)$ — refuting uncoupled stage-loan payment.
-   - [`conductorGrading_obstruction_to_enteringConductor_payment`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L167): along any critical curve $c_N^8 / \log N \to K > 0$, the rescaled complete Weil energy of $\mathrm{horizonWeights}\,h\,N + \mathrm{twistedWeights}\,g\,(\mathrm{primeTwist}\,p)\,N$ converges to $\kappa\,W(\mathrm{halfWeight}\,h) + \bigl(7 J_1 M_8(\mathrm{halfWeight}\,h) + 7(p-1)J(p)M_8(\mathrm{halfWeight}\,g)\bigr)/K$. Whenever an untwisted mode on $[-(A+\log p)/2, (A+\log p)/2]$ has $W(\mathrm{halfWeight}\,h) < 0$, for *every* entering-conductor Ramanujan corrector $g$ there exists an explicit $K_* > 0$ above which the combined energy is eventually strictly negative as $N \to \infty$. Thus conductor-2 / conductor-$p$ orthogonal twists cannot pay a negative untwisted Weil mode at large critical multiple $K$.
-3. **Unconditional fixed-multiple propagation and single-prime RH equivalence.**
-   - [`exists_uniform_criticalMultiple_across_all_primeEntries`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L268): a uniform positive critical-curve threshold $\mathrm{apertureIndependentThreshold} > 0$ and growing critical overlap $2 K_1 (\log N)^{1/8}$ propagate unconditionally across all apertures and prime entries.
-   - [`stageTransport_across_prime_iff_riemannHypothesis`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/StageTransportAndEnteringConductorLaw.lean#L291): for *any* fixed prime $p$, propagating $R_1(A) = \top \implies R_1(A + \log p) = \top$ across all $A \ge 0$ is unconditionally equivalent (by induction on $k \mapsto k\log p$ and antitonicity of $R_1$) to $\forall A \ge 0,\;R_1(A) = \top$ and to `RiemannHypothesis`.
-
----
-
-## 2.6.5 Route ZCG — reality at near-coincidences (`B14`, `B44`)
-
-**Module:** [`NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean) (wired into [`ZeroConfigurationGeometry.lean`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry.lean#L64) and [`ZeroConfigurationGeometry/README.md`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md#L263)).
-
-### Mathematical resolution
-1. **Exact height-modulated second-moment explicit formula via $(\log n)^2$-weighted primes and pair sign dichotomy.**
-   - [`secondMomentKernel`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L81), [`neg_primeChannel_secondMomentKernel`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L100), and [`zeta_secondMoment_explicit_primeCurvature`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L124): for any aperture-$r$ windows $f, g$ and height $T \in \mathbb{R}$, the height-centred second moment across all nontrivial zeros of $\zeta$ converges absolutely and equals
-     $$\sum_\rho m_\rho\,M_2(f \star \tilde g,\,\gamma_\rho - T) = M_2\bigl(f \star \tilde g,\tfrac{i}{2}-T\bigr) + M_2\bigl(f \star \tilde g,-\tfrac{i}{2}-T\bigr) + \frac{d^2}{dT^2}P_\Lambda(f_T \star \tilde g_T) + \frac{1}{2\pi}\int_{\mathbb{R}} M_2(f \star \tilde g, u - T)\,\Gamma_{\mathrm{br}}(u)\,du,$$
-     where $\frac{d^2}{dT^2}P_\Lambda(f_T \star \tilde g_T)$ is the finite $-(\log n)^2$-weighted prime-power sum over $n \le e^{2r}$.
-   - [`pair_secondOrder_sign_dichotomy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L186): around height $T$, a real pair $T \pm \Delta$ has squared gap $+\Delta^2 \ge 0$ and enters `pairSignal` with $-\Delta^2 M_2(f \star \tilde g, 0)$, whereas an off-line FE pair $T \pm i\delta$ has squared gap $-\delta^2 \le 0$ ($< 0$ for $\delta \ne 0$) and enters with $+\delta^2 M_2(f \star \tilde g, 0)$, separated by $-2\Delta^2 M_2(f \star \tilde g, 0)$ up to $\frac{5}{24}\Delta^4 (2r)^4 \int |f \star \tilde g|$.
-2. **Bounded-aperture Euler-column obstruction and strip collision obstruction across $(0, \tfrac{1}{2}/\log X]$.**
-   - [`bounded_aperture_primeCurvature_obstruction`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L251): at every bounded aperture $r$, any weight matching $\Lambda$ on `primeRange r` has identical $(\log n)^2$-weighted prime curvature at all heights $T$, while an off-line Euler column at a prime $p > e^{2|r|}$ has strictly negative squared gap $-\delta^2 < 0$ ($\delta \in (0, 1/2]$) yet produces the exact same modulated zero-side pairing as an on-line lattice across all heights $T$.
-   - [`strip_saddle_and_pairModel_collision_obstruction`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L299): for every $X > \max(2\pi, e)$, the Stirling–Gaussian saddle abscissa $\tfrac{1}{2} + t\log(X/2\pi)$ satisfies $\le 1$ across $(0, \tfrac{1}{2}/\log(X/2\pi)]$ and strictly $< 1$ across all of $(0, \tfrac{1}{2}/\log X]$ (never entering the Euler-product convergence half-plane $\mathrm{Re}\,s > 1$), while the Lindelöf-bounded Riemann-density strip model `pairModel (log X) δ` undergoes a nondegenerate order-2 real collision strictly inside $(0, \tfrac{1}{2}/\log X)$.
-3. **Unconditional sub-Weyl pincer and global equivalence.**
-   - [`offLine_squaredGap_and_subWeyl_pincer`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L344): every zero $\rho$ of $\xi$ at $\mathrm{Im}\,\rho \ge X_0$ with negative FE-pair squared gap $((i\,\mathrm{depth}\,\rho)^2).\mathrm{re} < 0$ forces $0 < c\,(\mathrm{depth}\,\rho)^2 / \log(\mathrm{Im}\,\rho) \le \Lambda_{\mathrm{Im}\,\rho}$, while unconditionally $\Lambda_X \le (6600/9991 + \varepsilon)/\log X$ eventually (where $6600/9991 \approx 0.6606 > 1/2$, so collisions *are* unconditionally excluded above $(6600/9991 + \delta)/\log X$!).
-   - [`riemannHypothesis_iff_xi_fePair_squaredGap_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L376) & [`nearCoincidence_and_stripCollision_global_equivalence`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ZeroConfigurationGeometry/NearCoincidencePrimeCurvatureAndStripCollisionLaw.lean#L415): nonnegativity of FE-pair squared gaps across all zeros of $\xi$, `WeilPositiveFull Λ`, $\forall X,\;\Lambda_X = 0$, absence of positive-time real collisions of $H_t$, absence of symmetric-half collisions on $(0, (6600/9991 + 1/20000)/\log X]$ ($X \ge X_1$) plus the compact low-height box, and `RiemannHypothesis` are unconditionally equivalent.
-
-All five routes converge on a single mathematical phenomenon: nonlocal arithmetic criticality with boundary-singular / growing-aperture coupling. Local, uncoupled, or conductor-orthogonal mechanisms fail for exact structural reasons (
-𝑂
+The integral of 
+∣
+𝐸
+′
+∣
+2
+∣E
+′
+∣
+2
+ yields a key equation involving Bessel functions and the divisor function, 
+𝑑
 (
-1
-/
-𝐾
+𝑛
 )
-O(1/K) twist decoupling in HF, parity mismatch in PM, bounded-aperture Euler columns and pairModel collisions below 
+d(n). A complete computation of 
+𝑃
+1
+(
+𝑤
+,
+𝑠
+)
+P
+1
+	​
+
+(w,s) spectral expansion is now needed to see how the Poincaré series connects to both Maass forms and Eisenstein series. The analysis must connect the divisor correlations and spectral decompositions of Estermann to the Rankin-Selberg identity. The key spectral integral to check is 
+⟨
+∣
+𝐸
+′
+(
+⋅
+,
 1
 /
+2
+)
+∣
+2
+,
+𝐸
+(
+⋅
+,
+1
+/
+2
++
+𝑖
+𝑟
+)
+⟩
+⟨∣E
+′
+(⋅,1/2)∣
+2
+,E(⋅,1/2+ir)⟩.
+
+Calculating the inner products using spectral theory requires carefully tracking normalization. Unfolding the Eisenstein series doesn't introduce a normalization factor, 
+1
+/
+𝜃
 (
 2
-log
-⁡
-𝑋
+𝜈
 )
-1/(2logX) in ZCG, exterior cosh leakage in nonsingular window-independent theta gauges in SWC). Zooming in deeper on collective prime-power sliver cancellation in window-adapted signed gauges with controlled boundary singularities (2.6.1) or multiscale non-orthogonal coupling between untwisted and prime-twisted modes along super-critical schedules (2.6.4) directly targets the surviving core.
+1/θ(2ν), and the gamma factors and zeta factors are essential to verify pole locations. The Fourier Expansion of the Eisenstein Series does introduce a 
+Γ
+(
+1
+/
+2
+−
+𝑖
+𝑟
+)
+𝜃
+(
+1
+−
+2
+𝑖
+𝑟
+)
+θ(1−2ir)
+Γ(1/2−ir)
+	​
+
+ to the integral, when 
+𝑢
+=
+1
+/
+2
++
+𝑖
+𝑟
+u=1/2+ir.
+
+The continuous spectrum integrand of the Estermann function's spectral decomposition, 
+𝐷
+(
+𝑠
+;
+1
+)
+D(s;1), now appears: 
+𝜁
+(
+1
+/
+2
++
+𝑧
+)
+2
+𝜁
+(
+1
+/
+2
+−
+𝑧
+)
+2
+𝜁
+(
+1
++
+2
+𝑧
+)
+𝜁
+(
+1
+−
+2
+𝑧
+)
+ζ(1+2z)ζ(1−2z)
+ζ(1/2+z)
+2
+ζ(1/2−z)
+2
+	​
+
+ multiplied by a Gamma factor. This expression matches Motohashi's formula exactly. The inner products, when unfolded, precisely reconstruct the integrand: the inner product with the Eisenstein series derivative provides the numerator, while the Poincaré series' inner product gives the denominator, yielding this exact form.
+
+The Estermann function integral's poles require careful evaluation. The Gamma factors' analyticity, coupled with 
+𝜁
+(
+1
+±
+2
+𝑧
+)
+ζ(1±2z) vanishing to second order at z=0, ensures the contour's initial analyticity. The critical constraint on 
+𝑠
+s and 
+𝑧
+z arises from examining these locations where 
+𝜁
+(
+1
+±
+2
+𝑧
+)
+ζ(1±2z) is not holomorphic. Shifting the z-contour requires attention to the poles and zeros of 
+𝜁
+(
+𝑠
+)
+ζ(s).
+
+The continuous spectrum integral, 
+𝐼
+cont
+(
+𝑠
+)
+I
+cont
+	​
+
+(s), appears free of poles in 
+1
+/
+2
+<
+Re
+⁡
+𝑠
+<
+1
+1/2<Res<1. Observing the integrand along 
+Re
+⁡
+𝑧
+=
+0
+Rez=0 reveals no poles for 
+Γ
+(
+𝑠
+−
+1
+/
+2
++
+𝑖
+𝑟
+)
+Γ
+(
+𝑠
+−
+1
+/
+2
+−
+𝑖
+𝑟
+)
+Γ(s−1/2+ir)Γ(s−1/2−ir) when 
+Re
+⁡
+𝑠
+>
+1
+/
+2
+Res>1/2. Additionally, the absolute value term is independent of 
+𝑠
+s. The rapid decay of the Gamma function product further indicates the integral's completeness. Therefore, 
+𝐼
+cont
+(
+𝑠
+)
+I
+cont
+	​
+
+(s) has no poles in that range. This result immediately impacts the Estermann function's spectral decomposition.
+
+The continuous spectrum integral is entirely holomorphic on 
+Re
+⁡
+𝑠
+>
+1
+/
+2
+Res>1/2. A critical issue arises when 
+Re
+⁡
+𝑠
+Res decreases past 
+1
+/
+2
+1/2. As Re 
+𝑠
+s decreases below 
+1
+/
+2
+1/2, the poles of the Gamma functions pinch the 
+𝑧
+z-contour, and a residue from the zeta terms appears: 
+𝜁
+(
+1
+−
+𝑠
+)
+2
+𝜁
+(
+𝑠
+)
+2
+𝜁
+(
+2
+−
+2
+𝑠
+)
+𝜁
+(
+2
+𝑠
+)
+Γ
+(
+2
+𝑠
+−
+1
+)
+𝐻
+(
+𝑠
+,
+1
+/
+2
+−
+𝑠
+)
+ζ(2−2s)ζ(2s)
+ζ(1−s)
+2
+ζ(s)
+2
+	​
+
+Γ(2s−1)H(s,1/2−s). This integrand has a zero where 
+2
+𝑠
+=
+𝜌
+2s=ρ. These zeros at 
+𝑠
+=
+𝜌
+/
+2
+s=ρ/2 arise due to the pinch and residues, contradicting the countermodels because they do not have these poles. The poles at 
+𝑠
+=
+𝜌
+/
+2
+s=ρ/2 invalidate all countermodels.
+
+The continuous spectrum integral for the Estermann function is holomorphic for 
+Re
+⁡
+𝑠
+>
+1
+/
+2
+Res>1/2. Crucially, for 
+Re
+⁡
+𝑠
+<
+1
+/
+2
+Res<1/2, poles appear at 
+𝑠
+=
+𝜌
+/
+2
+s=ρ/2 due to residues from the Gamma function's pinch.

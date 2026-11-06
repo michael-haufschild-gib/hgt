@@ -110,6 +110,3 @@ end
 
 end GaloisForLFunctions.BiScaleUncertainty.ExactExtremal
 
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.mul_xiSymmetricMass_le_divisor
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.ae_eq_zero_of_doubleExp_XiC_pow_divisor
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.mul_exponent_le_two

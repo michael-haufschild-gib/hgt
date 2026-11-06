@@ -47,10 +47,11 @@ theorem continuous_thetaSquareSource : Continuous thetaSquareSource :=
 private theorem integrable_theta_product (x : ℝ) :
     Integrable (fun t => thetaSourceC t * thetaSourceC (x - t)) := by
   obtain ⟨A, hA⟩ := theta_bounded
+  have hc : Continuous (fun t => thetaSourceC t * thetaSourceC (x - t)) :=
+    expMomentSource_thetaSourceC.continuous.mul
+      (expMomentSource_thetaSourceC.continuous.comp (continuous_const.sub continuous_id))
   refine (expMomentSource_thetaSourceC.integrable.norm.mul_const A).mono'
-    ((expMomentSource_thetaSourceC.continuous.mul
-      (expMomentSource_thetaSourceC.continuous.comp (continuous_const.sub continuous_id)))
-      .aestronglyMeasurable) (Eventually.of_forall fun t => ?_)
+    hc.aestronglyMeasurable (Eventually.of_forall fun t => ?_)
   rw [norm_mul]
   exact mul_le_mul_of_nonneg_left (hA (mem_range_self (x - t))) (norm_nonneg _)
 
@@ -71,7 +72,8 @@ theorem thetaSquareSource_re_pos (x : ℝ) : 0 < (thetaSquareSource x).re := by
   have hre := integral_re hi
   simp only [RCLike.re_eq_complex_re, thetaSourceC, ← Complex.ofReal_mul,
     Complex.ofReal_re] at hre
-  simpa only [thetaSquareSource, convolution_def, ContinuousLinearMap.mul_apply', thetaSourceC]
+  simpa only [thetaSquareSource, convolution_def, ContinuousLinearMap.mul_apply', thetaSourceC,
+    Complex.ofReal_mul]
     using hmass.trans_eq hre
 
 /-- Exponential twisting commutes with convolution, so the transform is exactly `Ξ²`. -/
@@ -133,7 +135,7 @@ theorem exists_thetaSquareSource_bound : ∃ C : ℝ, ∀ x,
             (A * Real.exp (-Real.exp (2 * |x - t|))) :=
         mul_le_mul (hbound t) (hbound (x - t)) (norm_nonneg _) (by positivity)
       _ = A ^ 2 * Real.exp (-Real.exp (2 * |t|) - Real.exp (2 * |x - t|)) := by
-        rw [sub_eq_add_neg, Real.exp_add]
+        simp only [Real.exp_sub, Real.exp_neg]
         ring
       _ ≤ A ^ 2 * Real.exp (-Real.exp |x| - Real.exp (2 * |t|) / 2) :=
         mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (sq_nonneg A)
@@ -169,13 +171,9 @@ theorem not_faster_thetaSquareSource {a b C : ℝ} (ha : 0 < a) (hb : 1 < b) :
       rw [hfun])
   have heq : thetaSquareSource = 0 :=
     (continuous_thetaSquareSource.ae_eq_iff_eq volume continuous_const).mp hz
-  exact thetaSquareSource_log_ne_zero 1 (congrFun heq (Real.log 1))
+  exact thetaSquareSource_log_ne_zero 1 (by simpa using congrFun heq (Real.log 1))
 
 end
 
 end GaloisForLFunctions.BiScaleUncertainty.ExactExtremal
 
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.sourceTransform_thetaSquareSource
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.thetaSquareSource_re_pos
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.exists_thetaSquareSource_bound
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ExactExtremal.not_faster_thetaSquareSource

@@ -1,7 +1,7 @@
 # W3: the squared-divisor boundary is attained
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** The self-convolution `K=k*k` of the literal theta source has transform `Ξ²`, is strictly positive everywhere, and satisfies `|K(x)|≤C exp(−exp|x|)`. It admits no double-exponential bound with exponent greater than one.
 
 ## Proof [PROVED HERE]
@@ -17,3 +17,11 @@ Integrating proves the exponent-one bound. The full squared-divisor capacity exc
 ## Consequence
 
 The capacity boundary is sharp even for a nonnegative real spectral square with the exact Xi divisor. Integer blindness is the missing property: `K(log n)>0` for every integer. Neither divisor saturation nor spectral positivity alone supplies an extremal blind function.
+
+## Lean
+
+`BiScaleUncertainty/ExactExtremal/ThetaSquareBoundary.lean`:
+`sourceTransform_thetaSquareSource`, `thetaSquareSource_re_pos`,
+`exists_thetaSquareSource_bound`, `thetaSquareSource_log_ne_zero`,
+`not_faster_thetaSquareSource`. Individual `lake --old env lean` check passed;
+imported by `BiScaleUncertainty.lean`.

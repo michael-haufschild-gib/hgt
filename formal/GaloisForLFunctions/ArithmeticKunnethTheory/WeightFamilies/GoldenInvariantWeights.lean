@@ -39,6 +39,22 @@ theorem goldenFrobenius_det : goldenFrobenius.det = 5 := by
   rw [Real.sq_sqrt (by norm_num)]
   norm_num
 
+theorem goldenFrobenius_trace : goldenFrobenius.trace = 5 := by
+  have hs := sqrt_five_pow_sum 1
+  simp only [pow_one, goldenLucas] at hs
+  simp only [Matrix.trace, Fin.sum_univ_two, goldenFrobenius, Matrix.smul_apply,
+    sl2Torus_apply_00, sl2Torus_apply_11, smul_eq_mul]
+  exact_mod_cast hs
+
+/-- The local characteristic factor has rational coefficients despite impurity. -/
+theorem golden_euler_polynomial (t : ℂ) :
+    Matrix.det (1 - t • goldenFrobenius) = 1 - 5 * t + 5 * t ^ 2 := by
+  have h (A : Matrix (Fin 2) (Fin 2) ℂ) :
+      Matrix.det (1 - t • A) = 1 - A.trace * t + A.det * t ^ 2 := by
+    simp [Matrix.det_fin_two, Matrix.trace, Fin.sum_univ_two]
+    ring
+  rw [h, goldenFrobenius_det, goldenFrobenius_trace]
+
 /-- The two Frobenius operators agree on every invariant tensor, in every degree. -/
 theorem golden_eq_pure_on_invariants (n : ℕ) (f : invariantForms n) (v : Fin n → Plane) :
     f.val (fun i => goldenFrobenius.mulVec (v i)) =
@@ -76,6 +92,26 @@ theorem golden_no_fixed_base_rate :
       |goldenDatum.trace n| ^ (2 * (k + 1)) ≤ C * B ^ n := by
   rw [curve_fixed_base_tensor_bound_iff]
   exact goldenDatum_not_unitary
+
+/-- The exact base rate in degree `m` is `φ^m`; the coefficient constant cannot reduce it. -/
+theorem golden_tensor_rate_iff (m : ℕ) (hm : m ≠ 0) {B : ℝ} (hB : 0 ≤ B) :
+    (∃ C : ℝ, ∀ n : ℕ, |goldenDatum.trace n| ^ m ≤ C * B ^ n) ↔ goldenRatio ^ m ≤ B := by
+  have htrace (n : ℕ) : ‖∑ i, goldenDatum.β i ^ n‖ = |goldenDatum.trace n| := by
+    change ‖goldenDatum.powerSum n‖ = _
+    rw [goldenDatum.powerSum_eq_trace, Complex.norm_real, Real.norm_eq_abs]
+  have h := tensor_moment_bound_iff goldenDatum.β m hm hB
+  simp only [htrace] at h
+  rw [h]
+  have h0 : ‖goldenDatum.β 0‖ = goldenRatio := by
+    simp [goldenDatum, Complex.norm_real, abs_of_pos goldenRatio_pos]
+  have h1 : ‖goldenDatum.β 1‖ = goldenRatio⁻¹ := by
+    simp [goldenDatum, Complex.norm_real, abs_of_pos (inv_pos.mpr goldenRatio_pos)]
+  refine ⟨fun hb => by simpa only [h0] using hb 0, fun hb i => ?_⟩
+  fin_cases i
+  · simpa only [h0] using hb
+  · rw [h1]
+    exact (pow_le_pow_left₀ (inv_nonneg.mpr goldenRatio_pos.le)
+      (((inv_le_one₀ goldenRatio_pos).mpr one_lt_goldenRatio.le).trans one_lt_goldenRatio.le) m).trans hb
 
 /-- The obstruction persists at every even degree and concerns the global growth estimate. -/
 theorem golden_weight_and_coefficient_countermodel :

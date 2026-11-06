@@ -22,7 +22,7 @@ def tensorEigenvalue (z : ι → ℂ) (m : ℕ) (a : Fin m → ι) : ℂ := ∏ 
 theorem tensor_powerSum (z : ι → ℂ) (m n : ℕ) :
     ∑ a : Fin m → ι, tensorEigenvalue z m a ^ n = (∑ i, z i ^ n) ^ m := by
   simp only [tensorEigenvalue, ← Finset.prod_pow]
-  rw [← Fintype.prod_sum]
+  rw [← Fintype.prod_sum (fun (_ : Fin m) (i : ι) => z i ^ n)]
   simp
 
 /-- Exponential trace control bounds each tensor eigenvalue, including repeated words. -/

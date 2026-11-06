@@ -47,7 +47,7 @@ theorem hookContentMass_eq (w : A → NNReal) :
     · subst b
       by_cases hac : a = c
       · subst c; simp
-      · simp [hac, Ne.symm hac, pow_two]
+      · simp [hac, pow_two]
     · by_cases hac : a = c
       · subst c; simp [hab, Ne.symm hab]; ring
       · by_cases hbc : b = c

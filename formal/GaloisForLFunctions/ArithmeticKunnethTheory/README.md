@@ -1,6 +1,6 @@
 # Arithmetic Künneth Theory (AKT)
 
-Namespace `GaloisForLFunctions.ArithmeticKunnethTheory`; umbrella `ArithmeticKunnethTheory.lean`; 3 modules. All results
+Namespace `GaloisForLFunctions.ArithmeticKunnethTheory`; umbrella `ArithmeticKunnethTheory.lean`. All results
 unconditional.
 
 ## 1. Motivation
@@ -55,6 +55,13 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | Beyond threshold: diagonal + nonnegative near-coincidence part | `integral_normSq_pow_eq_diag_add_offDiag_nonneg` | proved |
 | $N_n\ge0$ ⇔ Künneth–Adams counts ≥ 0 ⇔ all Künneth–Adams zeta coefficients ≥ 0 | `kunneth_positivity_tfae` | proved |
 | Golden datum: Künneth-positive, impure, fails Hodge index on its Frobenius span | `goldenDatum_kunneth_positive_not_pure` | proved |
+| Every even `SL₂` invariant transforms by the determinant character; odd invariants vanish | `invariant_even_det`, `invariant_odd_eq_zero` | proved |
+| Nonzero invariant forms exist in every even degree | `exists_nonzero_even_invariant` | proved |
+| Degree-`m` trace moment has exponential rate at most `B` iff every eigenvalue satisfies `‖zᵢ‖^m≤B` | `tensor_moment_bound_iff` | proved |
+| One rate across all even degrees ⇔ unit disk; for curve data ⇔ purity ⇔ spectrum-window positivity | `fixed_base_tensor_bound_iff`, `curve_tensor_bound_iff_spectrum_window` | proved |
+
+The last four rows belong to `WeightFamilies/`. They classify the algebraic input and the required
+global estimate; they do not construct an arithmetic family or prove a new purity bound for ζ.
 
 ## 6. Tools
 

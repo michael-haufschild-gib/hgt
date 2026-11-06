@@ -332,7 +332,10 @@ theorem thetaFullApertureTail_eq_tsum_trace {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 
 theorem thetaCenterTail_eq_tsum_trace {r : ℝ} (hr : 0 ≤ r) (b : ℝ) :
     (∫ s in Ioi r, (thetaWignerDistribution thetaCuspComplexSource (s / 2) b).re) =
       ∑' N : ℕ, eisensteinTrace b N * thetaPairCenterTailAmplitude N 1 r b := by
-  have hs := summable_thetaPairCenterTailSpectrum hr b
+  have hs : Summable fun p : ℕ × ℕ => thetaPairCenterTailSpectrum (p.1 + 1) (p.2 + 1) r b := by
+    have h := summable_abs_thetaPairCenterTailSpectrum hr b
+    simp only [← Real.norm_eq_abs] at h
+    exact h.of_norm
   rw [← thetaPairCenterTailSum_eq_fullSource, thetaPairCenterTailSum,
     tsum_eq_tsum_thetaPositiveFactorPairs _ hs]
   refine tsum_congr fun k => ?_
@@ -406,7 +409,8 @@ theorem thetaCuspWignerProductFiber_eq_trace_mul_bessel {N : ℕ} (hN : 0 < N) (
               HTGeometry.modifiedBesselKOrder (2 * Real.pi * N * Real.exp (2 * u))
                 ((b : ℂ) * Complex.I) +
             6 * ((2 * Real.pi * N * Real.exp (2 * u) : ℝ) : ℂ) *
-              besselArgDeriv ((b : ℂ) * Complex.I) (2 * Real.pi * N * Real.exp (2 * u)))) := by
+              HTGeometry.besselArgDeriv ((b : ℂ) * Complex.I)
+                (2 * Real.pi * N * Real.exp (2 * u)))) := by
   have hNR : (0 : ℝ) < N := by exact_mod_cast hN
   have ha : 0 < 2 * Real.pi * N * Real.exp (2 * u) := by positivity
   rw [thetaCuspWignerProductFiber_eq_divisorTrace_mul_radial,
@@ -474,7 +478,7 @@ theorem eulerPartial_insert (b : ℝ) {p : ℕ} (hp : p.Prime) {P : Finset ℕ} 
   let G : Nat.factoredNumbers (insert p P) → ℝ :=
     fun m => eisensteinTrace b m * f (x + Real.log (m : ℕ))
   have hG : Summable G := (summable_trace_mul_of_bound b hf hC hx).subtype _
-  have hG' : Summable (G ∘ e) := e.summable_iff.mpr hG
+  have hG' : Summable fun c => G (e c) := e.summable_iff.mpr hG
   unfold eulerPartial primeInsertion
   rw [← e.tsum_eq G, hG'.tsum_prod]
   refine tsum_congr fun k => ?_
@@ -541,7 +545,8 @@ theorem primeInsertion_second_difference (b : ℝ) {p : ℕ} (hp : p.Prime) {f :
       push_cast
       ring)
     (by
-      have := summable_insertion b hp hf hC (add_nonneg hx (mul_nonneg (by norm_num) hlogp))
+      have := summable_insertion b hp hf hC
+        (add_nonneg hx (show 0 ≤ 2 * Real.log p from mul_nonneg (by norm_num) hlogp))
       refine this.congr fun k => ?_
       congr 2
       push_cast
@@ -579,7 +584,9 @@ theorem tendsto_eulerPartial_primesBelow (b : ℝ) {f : ℝ → ℝ} {C : ℝ} (
   refine tendsto_tsum_of_dominated_convergence hs.norm (fun n => ?_)
     (Eventually.of_forall fun N n => ?_)
   · rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
+    · refine tendsto_const_nhds.congr fun N => ?_
+      rw [Set.indicator_of_notMem fun h => Nat.ne_zero_of_mem_factoredNumbers h rfl]
+      simp
     refine tendsto_const_nhds.congr' ?_
     filter_upwards [eventually_gt_atTop n] with N hN
     have hmem : n ∈ Nat.factoredNumbers N.primesBelow := by
@@ -615,9 +622,10 @@ private theorem exp_shift_eq (s x : ℝ) {n : ℕ} (hn : n ≠ 0) :
 /-- The multiplicative function whose Euler product computes the eigenvalue. -/
 private def tiltedTrace (b s : ℝ) (n : ℕ) : ℝ := eisensteinTrace b n * (n : ℝ) ^ (-s)
 
-private theorem tiltedTrace_prime_pow (b s : ℝ) {p : ℕ} (hp : p.Prime) (k : ℕ) :
+private theorem tiltedTrace_prime_pow (b s : ℝ) {p : ℕ} (_hp : p.Prime) (k : ℕ) :
     tiltedTrace b s (p ^ k) = eisensteinTrace b (p ^ k) * ((p : ℝ) ^ (-s)) ^ k := by
   unfold tiltedTrace
+  congr 1
   push_cast
   rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity), ← Real.rpow_natCast,
     ← Real.rpow_mul (by positivity), mul_comm]
@@ -683,9 +691,11 @@ private theorem mixture_log_convex {μ : Measure ℝ} {A : ℝ → ℝ}
   have h0 := hμ x hx
   have h1 := hμ (x + 1) (by linarith only [hx])
   have h2 := hμ (x + 2) (by linarith only [hx])
+  have hsub : Integrable (fun s => Real.exp (-s * x) - 2 * l * Real.exp (-s * (x + 1))) μ :=
+    h0.sub (h1.const_mul _)
   rw [hA x hx, hA (x + 1) (by linarith only [hx]), hA (x + 2) (by linarith only [hx]),
     ← integral_const_mul, ← integral_const_mul,
-    ← integral_sub h0 (h1.const_mul _), ← integral_add (h0.sub (h1.const_mul _)) (h2.const_mul _)]
+    ← integral_sub h0 (h1.const_mul _), ← integral_add hsub (h2.const_mul _)]
   refine integral_nonneg fun s => ?_
   have he : Real.exp (-s * x) - 2 * l * Real.exp (-s * (x + 1)) + l ^ 2 * Real.exp (-s * (x + 2)) =
       Real.exp (-s * x) * (1 - l * Real.exp (-s)) ^ 2 := by
@@ -795,7 +805,7 @@ theorem thetaApertureAmplitude_not_laplaceMixture {a : ℝ} (ha0 : 0 < a) (ha : 
         refine hh.congr fun x => ?_
         ring
       exact hq.comp tendsto_natCast_atTop_atTop
-    simpa only [mul_zero] using (Real.tendsto_exp_atBot.comp hexp).const_mul
+    simpa only [mul_zero, Function.comp_def] using (Real.tendsto_exp_atBot.comp hexp).const_mul
       (thetaApertureEnvelope a / A 0)
   have hsmall := hlim.eventually (gt_mem_nhds (zero_lt_one : (0 : ℝ) < 1))
   obtain ⟨n, hn⟩ := hsmall.exists
@@ -806,13 +816,3 @@ theorem thetaApertureAmplitude_not_laplaceMixture {a : ℝ} (ha0 : 0 < a) (ha : 
 end
 
 end GaloisForLFunctions.CompletedArithmeticForms
-
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.thetaFullApertureTail_eq_tsum_trace
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.thetaCenterTail_eq_tsum_trace
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.signedSqrtWhittakerTail_eq_tsum_trace
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.thetaCuspWignerProductFiber_eq_trace_mul_bessel
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.eulerPartial_insert
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.primeInsertion_second_difference
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.tendsto_eulerPartial_thetaApertureAmplitude
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.eulerPartial_exp
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.thetaApertureAmplitude_not_laplaceMixture

@@ -11,7 +11,7 @@
 2. Prove the tensor-power weight bound from the constructed family; direct tensor amplification alone does not produce a bound.
 3. Identify the invariant spectrum and prove its purity.
 4. Recover `CurveDatum` window receivers from a function-field family.
-5. Formalize each dependency-closed result; audit transitive axioms and wire modules into their mathematical owner's umbrella.
+5. Formalize each dependency-closed result and wire modules into their mathematical owner's umbrella.
 
 ## Current frontier
 
@@ -23,7 +23,9 @@ For the standard complex plane, every `SL₂`-invariant multilinear form of degr
 
 Consequently `diag(√5 φ, √5/φ)` and `√5 I` act identically on every invariant form. The former is the impure Golden spectrum. Invariant weights alone cannot select local purity, even when invariance is imposed under the entire group `SL₂`. This is an algebraic countermodel, not a sheaf over an arithmetic base.
 
-**Positive survivor:** exact determinant-character classification in every even degree, with nonzero paired-volume forms. Lean: `WeightFamilies/InvariantForms.lean` checked; concrete Golden and nonvanishing modules under verification.
+This does not refute W4. Identifying ζ's actual spectrum with a pure invariant part would be a new arithmetic input. The obstruction concerns inference from invariant tensor weights to purity of a fibre without that identification or a global trace identity.
+
+**Positive survivor:** exact determinant-character classification in every even degree, with nonzero paired-volume forms. [Paper proofs and checked Lean declarations](../3-formalized/w4-invariant-characters-and-tensor-growth.md). The combined Golden obstruction is under verification.
 
 ## Global obligation
 
@@ -37,7 +39,11 @@ For a finite spectrum `z_i`, positive tensor degree `m`, and `B ≥ 0`,
 
 Expand `(Σ_i z_i^n)^m` as the power sum of `∏_{j<m} z_{a_j}`. Finite power-sum rigidity bounds every tensor eigenvalue; the constant word gives `|z_i|^m ≤ B`. Conversely choose an eigenvalue of largest modulus and apply the triangle inequality, with `C = (#ι)^m`. This also handles the empty spectrum when `m > 0`.
 
-Thus one `B` working for all even degrees, with unrestricted constants `C_k`, is equivalent to confinement to the unit disk. Reciprocal symmetry upgrades this to purity for `CurveDatum`, hence to the existing spectrum-window receiver. The global bound remains an equivalent input, not a proved estimate for a new family. Lean verification pending.
+Thus one `B` working for all even degrees, with unrestricted constants `C_k`, is equivalent to confinement to the unit disk (`fixed_base_tensor_bound_iff`). Reciprocal symmetry upgrades this to purity for `CurveDatum`, hence to the existing spectrum-window receiver (`curve_tensor_bound_iff_spectrum_window`). Both are Lean-checked. The global bound remains an equivalent input, not a proved estimate for a new family.
+
+## Canonical arithmetic symmetry
+
+The existing divisor monodromy `ρ ↦ 1 − conj(ρ)` commutes with Frobenius exactly when RH holds (`deningerDivisorMonodromy_comm_iff_riemannHypothesis`). The [invariant-compression question](w4-canonical-monodromy-compression.md) asks whether merely preserving its invariant subspace already has the same strength, and isolates the coupling lost by compression.
 
 ## Next conjecture
 

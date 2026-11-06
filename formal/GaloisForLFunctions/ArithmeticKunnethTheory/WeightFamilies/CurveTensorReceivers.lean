@@ -33,7 +33,9 @@ theorem curve_fixed_base_tensor_bound_iff (D : CurveDatum ι) :
   rw [norm_mul, norm_one] at hfe
   have hi := hb i
   have hj := hb (D.fePerm i)
-  nlinarith only [hfe, hi, hj, norm_nonneg (D.β i)]
+  have hlow := mul_le_mul_of_nonneg_right hj (norm_nonneg (D.β i))
+  rw [hfe, one_mul] at hlow
+  exact le_antisymm hi hlow
 
 /-- The tensor growth criterion reproduces exactly the deciding window receiver. -/
 theorem curve_tensor_bound_iff_spectrum_window (D : CurveDatum ι) :

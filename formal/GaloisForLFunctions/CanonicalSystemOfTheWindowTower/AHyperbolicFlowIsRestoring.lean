@@ -2,6 +2,7 @@ import Mathlib.Analysis.SpecialFunctions.Artanh
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.AbsolutelyContinuousFun
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
+import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 
 /-!
 # The real analysis of a hyperbolic reflection flow
@@ -49,7 +50,6 @@ theorem traceReflection_algebra {u v K : ℝ} (hK : 0 < K) (h : u ^ 2 - v ^ 2 = 
     field_simp
   · rw [h1, hK']
     field_simp
-    ring
   · rw [h2, h3, hK']
     field_simp
     ring
@@ -95,10 +95,11 @@ theorem hasDerivAt_tanh (x : ℝ) : HasDerivAt Real.tanh (1 - Real.tanh x ^ 2) x
   have h := (Real.hasDerivAt_sinh x).div (Real.hasDerivAt_cosh x) hc
   have hf : Real.tanh = fun y => Real.sinh y / Real.cosh y :=
     funext Real.tanh_eq_sinh_div_cosh
-  rw [hf]
-  convert h using 1
-  simp only
-  field_simp
+  have h' : HasDerivAt Real.tanh ((Real.cosh x * Real.cosh x - Real.sinh x * Real.sinh x) /
+      Real.cosh x ^ 2) x := by
+    rw [hf]
+    exact h
+  exact h'.congr_deriv (by rw [Real.tanh_eq_sinh_div_cosh]; field_simp)
 
 /-- The derivative of `artanh` on `(−1,1)`. -/
 theorem hasDerivAt_artanh {r : ℝ} (hr : r ∈ Ioo (-1 : ℝ) 1) :
@@ -117,9 +118,7 @@ theorem hasDerivAt_artanh {r : ℝ} (hr : r ∈ Ioo (-1 : ℝ) 1) :
   have h3 : 1 - r ^ 2 ≠ 0 := by
     rw [show 1 - r ^ 2 = (1 - r) * (1 + r) by ring]
     exact mul_ne_zero h1 h2
-  convert hd.congr_of_eventuallyEq he.symm using 1
-  field_simp
-  ring
+  exact (hd.congr_of_eventuallyEq he.symm).congr_deriv (by field_simp; ring)
 
 private theorem le_of_restoring {L q s : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
     (hL : ContinuousOn L (Icc a b)) (hq : IntervalIntegrable q volume a b)
@@ -179,16 +178,11 @@ theorem abs_le_of_restoring {L q s : ℝ → ℝ} {a b : ℝ} (hab : a ≤ b)
     · simp only [abs_neg] at h
       linarith only [h]
     · intro x hx y hy hxy
-      have he := heq x hx y hy hxy
-      have hsub : uIcc x y ⊆ uIcc a b := by
-        rw [uIcc_of_le hxy, uIcc_of_le hab]
-        exact Icc_subset_Icc hx.1 hy.2
-      have hq' := hq.mono_set hsub
-      have hs' := hs.mono_set hsub
-      rw [intervalIntegral.integral_sub hq' hs'] at he
-      rw [intervalIntegral.integral_sub hq'.neg hs'.neg, intervalIntegral.integral_neg,
-        intervalIntegral.integral_neg]
-      linarith only [he]
+      have hc : (∫ t in x..y, (-q t - -s t)) = -∫ t in x..y, (q t - s t) := by
+        rw [← intervalIntegral.integral_neg]
+        exact intervalIntegral.integral_congr fun t _ => by ring
+      rw [hc, ← heq x hx y hy hxy]
+      ring
     · intro x hx hLx
       have := hneg x hx (by linarith only [hLx])
       linarith only [this]
@@ -199,7 +193,7 @@ theorem absolutelyContinuousOnInterval_exp {f : ℝ → ℝ} {a b : ℝ}
     (hf : AbsolutelyContinuousOnInterval f a b) :
     AbsolutelyContinuousOnInterval (fun x => Real.exp (f x)) a b := by
   obtain ⟨M, hM⟩ := hf.exists_bound
-  obtain ⟨K, hK⟩ := (Real.contDiff_exp.contDiffOn (s := Icc (-M) M)).exists_lipschitzOnWith
+  obtain ⟨K, hK⟩ := ((Real.contDiff_exp (n := 1)).contDiffOn (s := Icc (-M) M)).exists_lipschitzOnWith
     (by norm_num) (convex_Icc _ _) isCompact_Icc
   have hmem : ∀ x ∈ uIcc a b, f x ∈ Icc (-M) M := fun x hx =>
     abs_le.mp (by simpa only [Real.norm_eq_abs] using hM x hx)
@@ -267,9 +261,7 @@ theorem hasDerivAt_norm_sq {f : ℝ → ℂ} {f' : ℂ} {x : ℝ} (hf : HasDeriv
     funext t
     simp only [Pi.add_apply, Pi.mul_apply, Complex.sq_norm, Complex.normSq_apply]
   rw [he]
-  convert h using 1
-  simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im]
-  ring
+  exact h.congr_deriv (by simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im]; ring)
 
 /-- **The integrating factor bound.** An absolutely continuous function with `n′ ≤ g′ n` almost
 everywhere satisfies `n(b) e^{−g(b)} ≤ n(a) e^{−g(a)}`. -/
@@ -287,18 +279,246 @@ theorem mul_exp_neg_le_of_ae_deriv_le {n g : ℝ → ℝ} {a b : ℝ} (hab : a �
     filter_upwards [h, volume.ae_ne b] with x hx hxb hxI
     obtain ⟨n', g', hn', hg', hle⟩ := hx ⟨hxI.1, lt_of_le_of_ne hxI.2 hxb⟩
     have hd := hn'.mul hg'.neg.exp
-    rw [show (fun x => n x * Real.exp ((-g) x)) = (fun x => n x) * (fun x => Real.exp (-g x)) by
-      funext t; simp only [Pi.mul_apply, Pi.neg_apply]]
-    rw [hd.deriv]
-    have hprod : Real.exp (-g x) * (n' - g' * n x) ≤ 0 :=
+    have hdv : deriv (fun x => n x * Real.exp ((-g) x)) x =
+        n' * Real.exp ((-g) x) + n x * (Real.exp ((-g) x) * -g') := hd.deriv
+    change deriv (fun x => n x * Real.exp ((-g) x)) x ≤ 0
+    rw [hdv]
+    have hprod : Real.exp ((-g) x) * (n' - g' * n x) ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le (sub_nonpos.mpr hle)
-    simp only [Pi.zero_apply]
     nlinarith only [hprod]
   simp only [Pi.neg_apply] at hint hnonpos
   linarith only [hint, hnonpos]
 
-#print axioms traceReflection_algebra
-#print axioms abs_le_of_restoring
-#print axioms mul_exp_neg_le_of_ae_deriv_le
+
+/-! ### Scaling at a finite-order singularity -/
+
+private theorem integral_one_div_sub {c l h : ℝ} (hl : 0 < l) (hlh : l ≤ h) :
+    ∫ t in (c - h)..(c - l), 1 / (c - t) = Real.log (h / l) := by
+  have h1 := intervalIntegral.integral_comp_sub_left (a := c - h) (b := c - l)
+    (fun u : ℝ => 1 / u) c
+  have h2 : c - (c - l) = l := by ring
+  have h3 : c - (c - h) = h := by ring
+  rw [h2, h3] at h1
+  rw [h1, integral_one_div_of_pos hl (hl.trans_le hlh)]
+
+/-- If `(c−x) f(x) → ℓ` as `x ↑ c`, then `f` integrates to `ℓ log(1/λ)` over each dyadic-type
+block `[c−d, c−λd]` as `d ↓ 0`. -/
+theorem tendsto_integral_block_of_mul_tendsto {f : ℝ → ℝ} {b c ℓ lam : ℝ} (hbc : b < c)
+    (hlam : lam ∈ Ioo (0 : ℝ) 1)
+    (hi : ∀ x ∈ Ico b c, ∀ y ∈ Ico b c, IntervalIntegrable f volume x y)
+    (hf : Tendsto (fun x => (c - x) * f x) (𝓝[<] c) (𝓝 ℓ)) :
+    Tendsto (fun d => ∫ t in (c - d)..(c - lam * d), f t) (𝓝[>] (0 : ℝ))
+      (𝓝 (ℓ * Real.log (1 / lam))) := by
+  have hlog : 0 < Real.log (1 / lam) := Real.log_pos ((one_lt_div hlam.1).mpr hlam.2)
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  have hε' : 0 < ε / (Real.log (1 / lam) + 1) := div_pos hε (by linarith only [hlog])
+  have hev := (Metric.tendsto_nhds.mp hf) _ hε'
+  obtain ⟨u, hu, hsub⟩ := (mem_nhdsLT_iff_exists_Ioo_subset' hbc).mp hev
+  have hd0 : ∀ᶠ d : ℝ in 𝓝[>] (0 : ℝ), 0 < d ∧ d < c - u := by
+    filter_upwards [self_mem_nhdsWithin,
+      (eventually_lt_nhds (sub_pos.mpr (mem_Iio.mp hu))).filter_mono nhdsWithin_le_nhds]
+      with d hd hdu using ⟨hd, hdu⟩
+  have hub : ∀ᶠ d : ℝ in 𝓝[>] (0 : ℝ), d < c - b :=
+    (eventually_lt_nhds (sub_pos.mpr hbc)).filter_mono nhdsWithin_le_nhds
+  filter_upwards [hd0, hub] with d hd hdb
+  obtain ⟨hdpos, hdu⟩ := hd
+  have hl : 0 < lam * d := mul_pos hlam.1 hdpos
+  have hld : lam * d ≤ d := by nlinarith only [hlam.2, hdpos]
+  have hmem {t : ℝ} (ht : t ∈ Icc (c - d) (c - lam * d)) : t ∈ Ioo u c ∧ t ∈ Ico b c :=
+    ⟨⟨by linarith only [ht.1, hdu], by linarith only [ht.2, hl]⟩,
+      by linarith only [ht.1, hdb], by linarith only [ht.2, hl]⟩
+  have hab : c - d ≤ c - lam * d := by linarith only [hld]
+  have hL : c - d ∈ Ico b c := ⟨by linarith only [hdb], by linarith only [hdpos]⟩
+  have hR : c - lam * d ∈ Ico b c := ⟨by linarith only [hdb, hld], by linarith only [hl]⟩
+  have hfi := hi _ hL _ hR
+  have hkernel : ContinuousOn (fun t : ℝ => 1 / (c - t)) (uIcc (c - d) (c - lam * d)) := by
+    rw [uIcc_of_le hab]
+    refine continuousOn_const.div (continuousOn_const.sub continuousOn_id) fun t ht => ?_
+    have := ht.2
+    exact (by linarith only [this, hl] : (0 : ℝ) < c - t).ne'
+  have hki := hkernel.intervalIntegrable (μ := volume)
+  have hval := integral_one_div_sub (c := c) hl hld
+  have hratio : d / (lam * d) = 1 / lam := by field_simp
+  rw [hratio] at hval
+  have hsplit : (∫ t in (c - d)..(c - lam * d), f t) - ℓ * Real.log (1 / lam) =
+      ∫ t in (c - d)..(c - lam * d), (f t - ℓ * (1 / (c - t))) := by
+    rw [intervalIntegral.integral_sub hfi (hki.const_mul ℓ), intervalIntegral.integral_const_mul,
+      hval]
+  have hbound : ‖∫ t in (c - d)..(c - lam * d), (f t - ℓ * (1 / (c - t)))‖ ≤
+      ∫ t in (c - d)..(c - lam * d), ε / (Real.log (1 / lam) + 1) * (1 / (c - t)) := by
+    apply intervalIntegral.norm_integral_le_of_norm_le hab
+    · refine Eventually.of_forall fun t ht => ?_
+      have ht' : t ∈ Icc (c - d) (c - lam * d) := ⟨ht.1.le, ht.2⟩
+      obtain ⟨htu, -⟩ := hmem ht'
+      have hpos : 0 < c - t := sub_pos.mpr htu.2
+      have hd1 := hsub htu
+      simp only [mem_setOf_eq, mem_preimage, Metric.mem_ball, Real.dist_eq] at hd1
+      have hrew : f t - ℓ * (1 / (c - t)) = ((c - t) * f t - ℓ) * (1 / (c - t)) := by
+        field_simp
+      rw [hrew, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (one_div_pos.mpr hpos)]
+      exact mul_le_mul_of_nonneg_right hd1.le (one_div_pos.mpr hpos).le
+    · exact hki.const_mul _
+  rw [intervalIntegral.integral_const_mul, hval] at hbound
+  rw [Real.dist_eq, ← Real.norm_eq_abs, hsplit]
+  refine hbound.trans_lt ?_
+  rw [div_mul_eq_mul_div, div_lt_iff₀ (by linarith only [hlog])]
+  nlinarith only [hε, hlog]
+
+/-- The scale law of a reflection at a finite-order singularity: if `(c−x)m(x) → γ/2` and
+`r → σ = ±1`, then `(c−x)/(1−r²) → γ/4`, the mass and drift integrate on blocks to `(γ/2)log(1/λ)`
+and `σ(γ/2)log(1/λ)`, and `artanh r` moves by `σ(1/2)log(1/λ)`. -/
+theorem reflection_scaling {r : ℝ → ℝ} {b c γ σ lam : ℝ} (hbc : b < c) (hγ : 0 < γ)
+    (hσ : σ ^ 2 = 1) (hlam : lam ∈ Ioo (0 : ℝ) 1)
+    (hr : ∀ x ∈ Ico b c, r x ∈ Ioo (-1 : ℝ) 1)
+    (hmi : ∀ x ∈ Ico b c, ∀ y ∈ Ico b c,
+      IntervalIntegrable (fun t => (1 + r t ^ 2) / (1 - r t ^ 2)) volume x y)
+    (hsi : ∀ x ∈ Ico b c, ∀ y ∈ Ico b c,
+      IntervalIntegrable (fun t => 2 * r t / (1 - r t ^ 2)) volume x y)
+    (hm : Tendsto (fun x => (c - x) * ((1 + r x ^ 2) / (1 - r x ^ 2))) (𝓝[<] c) (𝓝 (γ / 2)))
+    (hlim : Tendsto r (𝓝[<] c) (𝓝 σ)) :
+    Tendsto (fun x => (c - x) / (1 - r x ^ 2)) (𝓝[<] c) (𝓝 (γ / 4)) ∧
+    Tendsto (fun d => ∫ t in (c - d)..(c - lam * d), (1 + r t ^ 2) / (1 - r t ^ 2)) (𝓝[>] (0 : ℝ))
+      (𝓝 (γ / 2 * Real.log (1 / lam))) ∧
+    Tendsto (fun d => ∫ t in (c - d)..(c - lam * d), 2 * r t / (1 - r t ^ 2)) (𝓝[>] (0 : ℝ))
+      (𝓝 (σ * (γ / 2) * Real.log (1 / lam))) ∧
+    Tendsto (fun d => Real.artanh (r (c - lam * d)) - Real.artanh (r (c - d))) (𝓝[>] (0 : ℝ))
+      (𝓝 (σ * (1 / 2) * Real.log (1 / lam))) := by
+  have hnear : ∀ᶠ x in 𝓝[<] c, x ∈ Ico b c := Ico_mem_nhdsLT hbc
+  have hcx : Tendsto (fun x => c - x) (𝓝[<] c) (𝓝 0) := by
+    have h : Tendsto (fun x => c - x) (𝓝 c) (𝓝 (c - c)) := tendsto_const_nhds.sub tendsto_id
+    simpa only [sub_self] using h.mono_left nhdsWithin_le_nhds
+  have hone : Tendsto (fun x => (c - x) / (1 - r x ^ 2)) (𝓝[<] c) (𝓝 (γ / 4)) := by
+    have ht := (hm.add hcx).div_const 2
+    have hv : (γ / 2 + 0) / 2 = γ / 4 := by ring
+    rw [hv] at ht
+    refine ht.congr' ?_
+    filter_upwards [hnear] with x hx
+    have hne : 1 - r x ^ 2 ≠ 0 := by
+      have h := hr x hx
+      nlinarith only [h.1, h.2]
+    field_simp
+    ring
+  have hratio : Tendsto (fun x => 2 * r x / (1 + r x ^ 2)) (𝓝[<] c) (𝓝 σ) := by
+    have hn := (hlim.const_mul 2).div (tendsto_const_nhds.add (hlim.pow 2))
+      (by rw [hσ]; norm_num : (1 : ℝ) + σ ^ 2 ≠ 0)
+    have hv : 2 * σ / (1 + σ ^ 2) = σ := by rw [hσ]; ring
+    rw [hv] at hn
+    exact hn
+  have hdrift : Tendsto (fun x => (c - x) * (2 * r x / (1 - r x ^ 2))) (𝓝[<] c)
+      (𝓝 (σ * (γ / 2))) := by
+    have ht := hratio.mul hm
+    refine ht.congr' ?_
+    filter_upwards [hnear] with x hx
+    have hne : 1 - r x ^ 2 ≠ 0 := by
+      have h := hr x hx
+      nlinarith only [h.1, h.2]
+    have hne' : 1 + r x ^ 2 ≠ 0 := by positivity
+    field_simp
+  refine ⟨hone, tendsto_integral_block_of_mul_tendsto hbc hlam hmi hm,
+    tendsto_integral_block_of_mul_tendsto hbc hlam hsi hdrift, ?_⟩
+  -- The two arguments of the block approach `c` from the left.
+  have hx₀ : Tendsto (fun d : ℝ => c - d) (𝓝[>] (0 : ℝ)) (𝓝[<] c) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have h : Tendsto (fun d : ℝ => c - d) (𝓝 0) (𝓝 (c - 0)) := tendsto_const_nhds.sub tendsto_id
+      simpa only [sub_zero] using h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with d hd
+      exact sub_lt_self c hd
+  have hx₁ : Tendsto (fun d : ℝ => c - lam * d) (𝓝[>] (0 : ℝ)) (𝓝[<] c) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have h : Tendsto (fun d : ℝ => c - lam * d) (𝓝 0) (𝓝 (c - lam * 0)) :=
+        tendsto_const_nhds.sub (tendsto_id.const_mul lam)
+      simpa only [mul_zero, sub_zero] using h.mono_left nhdsWithin_le_nhds
+    · filter_upwards [self_mem_nhdsWithin] with d hd
+      exact sub_lt_self c (mul_pos hlam.1 hd)
+  have hσne : σ ≠ 0 := by
+    rintro rfl
+    norm_num at hσ
+  have hplus : Tendsto (fun x => 1 + σ * r x) (𝓝[<] c) (𝓝 2) := by
+    have h := (hlim.const_mul σ).const_add 1
+    have hv : 1 + σ * σ = 2 := by nlinarith only [hσ]
+    rwa [hv] at h
+  -- `(c−x)/(1−σ r)` has the limit `γ/2`.
+  have hminus : Tendsto (fun x => (c - x) / (1 - σ * r x)) (𝓝[<] c) (𝓝 (γ / 2)) := by
+    have ht := hplus.mul hone
+    have hv : 2 * (γ / 4) = γ / 2 := by ring
+    rw [hv] at ht
+    refine ht.congr' ?_
+    filter_upwards [hnear] with x hx
+    have h := hr x hx
+    have hsq : (σ * r x) ^ 2 = r x ^ 2 := by rw [mul_pow, hσ, one_mul]
+    have hne : 1 - r x ^ 2 ≠ 0 := by nlinarith only [h.1, h.2]
+    have hf : (1 - σ * r x) * (1 + σ * r x) = 1 - r x ^ 2 := by linear_combination -hsq
+    have hne1 : 1 - σ * r x ≠ 0 := fun h0 => hne (by rw [← hf, h0, zero_mul])
+    field_simp
+    linear_combination -(c - x) * hf
+  have hc0 := (hminus.comp hx₀)
+  have hc1 := (hminus.comp hx₁)
+  have hγ2 : γ / 2 ≠ 0 := by positivity
+  -- The ratio of the two reflection defects tends to `λ`.
+  have hdefect : Tendsto (fun d : ℝ => (1 - σ * r (c - lam * d)) / (1 - σ * r (c - d)))
+      (𝓝[>] (0 : ℝ)) (𝓝 lam) := by
+    have ht := (hc0.div hc1 hγ2).const_mul lam
+    have hv : lam * ((γ / 2) / (γ / 2)) = lam := by rw [div_self hγ2, mul_one]
+    rw [hv] at ht
+    refine ht.congr' ?_
+    filter_upwards [self_mem_nhdsWithin, (hx₀.eventually hnear), (hx₁.eventually hnear)]
+      with d hd h0 h1
+    have hd' : 0 < d := hd
+    have ha0 := hr _ h0
+    have ha1 := hr _ h1
+    have hnz (y : ℝ) (hy : r y ∈ Ioo (-1 : ℝ) 1) : 1 - σ * r y ≠ 0 := by
+      have hsq : (σ * r y) ^ 2 = r y ^ 2 := by rw [mul_pow, hσ, one_mul]
+      intro h0'
+      have h' : σ * r y = 1 := by linarith only [h0']
+      rw [h'] at hsq
+      nlinarith only [hsq, hy.1, hy.2]
+    have h1' := hnz _ ha0
+    have h2' := hnz _ ha1
+    simp only [Function.comp_apply]
+    have hd0 : d ≠ 0 := hd'.ne'
+    have hl0 : lam ≠ 0 := hlam.1.ne'
+    have e1 : c - (c - d) = d := by ring
+    have e2 : c - (c - lam * d) = lam * d := by ring
+    rw [e1, e2]
+    field_simp
+  have hplus0 := hplus.comp hx₀
+  have hplus1 := hplus.comp hx₁
+  have hlog : Tendsto (fun d : ℝ => σ * (1 / 2) *
+      (Real.log ((1 + σ * r (c - lam * d)) / (1 + σ * r (c - d))) -
+        Real.log ((1 - σ * r (c - lam * d)) / (1 - σ * r (c - d))))) (𝓝[>] (0 : ℝ))
+      (𝓝 (σ * (1 / 2) * (Real.log (2 / 2) - Real.log lam))) := by
+    refine ((Tendsto.log (hplus1.div hplus0 (by norm_num)) (by norm_num)).sub
+      (hdefect.log hlam.1.ne')).const_mul _
+  have hv : σ * (1 / 2) * (Real.log (2 / 2) - Real.log lam) = σ * (1 / 2) * Real.log (1 / lam) := by
+    rw [div_self (by norm_num : (2 : ℝ) ≠ 0), Real.log_one, one_div, Real.log_inv]
+    ring
+  rw [hv] at hlog
+  refine hlog.congr' ?_
+  filter_upwards [hx₀.eventually hnear, hx₁.eventually hnear] with d h0 h1
+  have ha0 := hr _ h0
+  have ha1 := hr _ h1
+  -- `artanh r = σ (1/2) log((1+σ r)/(1−σ r))`, on either sign of `σ`.
+  have hart (y : ℝ) (hy : r y ∈ Ioo (-1 : ℝ) 1) : 0 < 1 + σ * r y ∧ 0 < 1 - σ * r y ∧
+      Real.artanh (r y) = σ * (1 / 2) * (Real.log (1 + σ * r y) - Real.log (1 - σ * r y)) := by
+    have hs : σ = 1 ∨ σ = -1 := by
+      have : (σ - 1) * (σ + 1) = 0 := by linear_combination hσ
+      rcases mul_eq_zero.mp this with h | h
+      · exact Or.inl (by linarith only [h])
+      · exact Or.inr (by linarith only [h])
+    have hbase : Real.artanh (r y) = 1 / 2 * (Real.log (1 + r y) - Real.log (1 - r y)) := by
+      rw [Real.artanh_eq_half_log (Ioo_subset_Icc_self hy),
+        Real.log_div (by linarith only [hy.1]) (by linarith only [hy.2])]
+    rcases hs with rfl | rfl
+    · refine ⟨by linarith only [hy.1], by linarith only [hy.2], ?_⟩
+      rw [hbase]
+      ring_nf
+    · refine ⟨by linarith only [hy.2], by linarith only [hy.1], ?_⟩
+      rw [hbase]
+      ring_nf
+  obtain ⟨p0, m0, e0⟩ := hart _ ha0
+  obtain ⟨p1, m1, e1⟩ := hart _ ha1
+  rw [e0, e1, Real.log_div p1.ne' p0.ne', Real.log_div m1.ne' m0.ne']
+  ring
 
 end GaloisForLFunctions.CanonicalSystemOfTheWindowTower

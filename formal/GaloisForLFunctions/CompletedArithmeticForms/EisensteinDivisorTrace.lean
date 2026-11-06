@@ -375,8 +375,3 @@ theorem eisensteinTrace_eq_cpow_sum (b : ℝ) {N : ℕ} (hN : N ≠ 0) :
 end
 
 end GaloisForLFunctions.CompletedArithmeticForms
-
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.eisensteinTrace_prime_pow
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.LSeries_eisensteinTrace
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.tsum_trace_mul_pow
-#print axioms GaloisForLFunctions.CompletedArithmeticForms.eisensteinTrace_eq_cpow_sum
