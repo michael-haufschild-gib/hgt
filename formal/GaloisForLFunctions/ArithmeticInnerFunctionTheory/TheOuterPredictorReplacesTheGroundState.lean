@@ -32,7 +32,7 @@ open scoped ComplexConjugate
 
 namespace GaloisForLFunctions.ArithmeticInnerFunctionTheory
 
-open GrowingWindowsOfSpecZ
+open GrowingWindowsOfSpecZ ArithmeticCastelnuovoSeveri SpacingScaleHarmonicAnalysis
 
 noncomputable section
 
@@ -184,7 +184,7 @@ theorem predRev_zero (b : Fin (n + 1) → ℝ) : predRev b 0 = b (Fin.last n) :=
   rw [Fin.sum_univ_castSucc]
   simp [Fin.rev_castSucc, Fin.rev_last]
 
-/-- The polynomial is nonconstant if `A^* = cA` on the disc, `b` nonzero size: no outer `A` is self-reciprocal. -/
+/-- **Schur–Cohn.** The last coefficient of an outer predictor lies in `(−1, 1)`: at the boundary `A^*/A` would be constant by the maximum principle, and `A` would have no zeros in `ℂ`. -/
 theorem abs_last_lt_one {b : Fin (n + 1) → ℝ} (h : ∀ z : ℂ, ‖z‖ ≤ 1 → predPoly b z ≠ 0) :
     |b (Fin.last n)| < 1 := by
   have hle : |b (Fin.last n)| ≤ 1 := by
@@ -246,7 +246,8 @@ theorem abs_last_lt_one {b : Fin (n + 1) → ℝ} (h : ∀ z : ℂ, ‖z‖ ≤ 
     exact hall z (by rw [← hev]; exact hz)
   · have hP := Polynomial.eq_C_of_degree_le_zero (not_lt.mp hdeg)
     have hone : ∀ z, predPoly b z = 1 := fun z => by
-      rw [← hev, hP, Polynomial.eval_C, ← predPoly_zero b, ← hev 0, hP, Polynomial.eval_C]
+      rw [← predPoly_zero b, ← hev, ← hev, hP]
+      simp only [Polynomial.eval_C]
     have hw : ‖(2⁻¹ : ℂ)‖ < 1 := by norm_num
     have e := predRev_eq_pow_mul b (z := 2⁻¹) (by norm_num)
     rw [hS _ hw, hone, hone, mul_one, mul_one] at e
@@ -315,7 +316,7 @@ theorem predErr_stepDown (hκ : IsEvenSeq κ) {b : Fin (n + 1) → ℝ} (hb : Is
   have hrow := hb (Fin.last n)
   rw [Fin.sum_univ_castSucc] at hrow
   simp only [Fin.val_castSucc, Fin.val_last, sub_self] at hrow
-  have hrev := sum_rev_eq κ (fun k : Fin n => b k.castSucc)
+  have hrev := sum_rev_eq (κ := κ) (fun k : Fin n => b k.castSucc)
   simp only [predErr]
   rw [Fin.sum_univ_castSucc]
   simp only [Fin.val_castSucc, Fin.val_last]
@@ -437,16 +438,16 @@ theorem paraPoly_reciprocal (a : Fin n → ℝ) {ε : ℝ} (hε : ε ^ 2 = 1) {z
   have h4 : z * z⁻¹ = 1 := mul_inv_cancel₀ hz
   simp only [paraPoly]
   rw [h2, h1]
-  linear_combination (-(ε : ℂ) * z * z⁻¹ * predPoly a z) * h3 +
-    (-(ε : ℂ) * predPoly a z) * h4 + (z * z ^ n * predPoly a z⁻¹) * hεC
+  linear_combination (-(ε : ℂ) * predPoly a z * z * z⁻¹) * h3 +
+    (-(ε : ℂ) * predPoly a z) * h4 + (-(z * z ^ n) * predPoly a z⁻¹) * hεC
 
 /-- **A Riemann hypothesis in every window.** If `A` is outer, every zero of the self-reciprocal `A ∓ zA^*` lies on the unit circle:
 functional equation plus passivity is reality of the zeros. -/
 theorem paraPoly_zero_on_circle {a : Fin n → ℝ} (h : ∀ z : ℂ, ‖z‖ ≤ 1 → predPoly a z ≠ 0) {ε : ℝ}
     (hε : ε ^ 2 = 1) {z : ℂ} (hz : paraPoly a ε z = 0) : ‖z‖ = 1 := by
   have hε1 : |ε| = 1 := by
-    have := (sq_eq_one_iff_of_ne_zero' ε).1
-    rcases sq_eq_one_iff_of_side_cond ε hε with h | h <;> simp [h]
+    have h2 : |ε| ^ 2 = 1 := by rw [sq_abs, hε]
+    exact (pow_eq_one_iff_of_nonneg (abs_nonneg ε) two_ne_zero).mp h2
   have hin : ∀ w : ℂ, ‖w‖ < 1 → paraPoly a ε w ≠ 0 := by
     intro w hw h0
     have hA : predPoly a w = ε * w * predRev a w := sub_eq_zero.mp h0
@@ -611,11 +612,14 @@ theorem exists_sum_sq_certificate (hκ : IsEvenSeq κ) :
     have hx : x = Fin.cons (x 0) (Fin.tail x) := (Fin.cons_self_tail x).symm
     have hc := toeplitzForm_cons hκ ha (x 0) (Fin.tail x)
     rw [← hx] at hc
-    rw [hc, hv, Fin.sum_univ_castSucc, hE]
+    rw [hc, hv, hE, Fin.sum_univ_castSucc]
     simp only [Fin.lastCases_castSucc, Fin.lastCases_last, Fin.val_castSucc, Fin.val_last]
-    congr 1
-    · refine sum_congr rfl fun m _ => ?_
-      congr 2
+    have hlast : ∑ i : Fin (n + 1), (Fin.cons 1 0 : Fin (n + 1) → ℝ) i * x i = x 0 := by
+      rw [Fin.sum_univ_succ]
+      simp
+    have hrow : ∀ m : Fin n, ∑ i : Fin (n + 1),
+        (Fin.cons (-∑ i : Fin n, v m i * a i) (v m) : Fin (n + 1) → ℝ) i * x i =
+          ∑ i : Fin n, v m i * (Fin.tail x i - x 0 * a i) := fun m => by
       rw [Fin.sum_univ_succ]
       simp only [Fin.cons_zero, Fin.cons_succ, Fin.tail]
       have e : ∑ i : Fin n, v m i * (x i.succ - x 0 * a i) =
@@ -625,9 +629,8 @@ theorem exists_sum_sq_certificate (hκ : IsEvenSeq κ) :
         ring
       rw [e]
       ring
-    · rw [Fin.sum_univ_succ]
-      simp
-      ring
+    simp only [hlast, hrow]
+    ring
 
 end
 

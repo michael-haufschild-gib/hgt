@@ -380,10 +380,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier today we created these documents:
-- docs/reports/review-0511/walls-ledger.md
-- docs/reports/review-0511/route-obstacles.md
-- docs/reports/review-0511/route-unification-ledger.md
-- docs/reports/review-0511/obstacles-summary.md
+- docs/reports/review-0611/walls-ledger.md
+- docs/reports/review-0611/route-obstacles.md
+- docs/reports/review-0611/route-unification-ledger.md
+- docs/reports/review-0611/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -404,16 +404,10 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.5.5 route TH
    2.5.6 route RW
    2.6.7 route ZCG
-   2.6 ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
-   2.6.1 our RH proof research as a whole
-   2.6.2 route PM
-   2.6.3 route WD
-   2.6.4 route HF
-   2.6.5 route TH
-   2.6.6 route TH
-   2.6.7 route ZCG
-   2.7 ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
-   2.8 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
+   2.6 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof.
+   2.7 ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.8 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.9 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -424,7 +418,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-0611/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0611/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -500,9 +494,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0511/obstacles-summary.md
+read and understand docs/reports/review-0611/obstacles-summary.md
 
-under "### 2.7.2 A programme for route WD: multiscale analysis of the mollified zeta field" it describes a new field/research programme.
+under "## 2.7 Does closing RH need a new field?" it describes a new field/research programme called "Arithmetic inner-function theory".
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -583,13 +577,13 @@ always look at the big picture, try to understand what all our research is tryin
 
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
-## argon do breakthrough
+## new route
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0511/obstacles-summary.md
+read: docs/reports/review-0611/obstacles-summary.md
 
-the document suggests under "## 2.4 A wildly different route" a new route approach. 
+the document suggests under "### W4. Purity by a weight argument on a non-fibred base" a new route approach. 
 
 your task: develop and formalize this new route fully.
 
@@ -618,9 +612,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0511/obstacles-summary.md (more details in docs/reports/review-0511/route-obstacles.md)
+read and understand docs/reports/review-0611/obstacles-summary.md (more details in docs/reports/review-0611/route-obstacles.md)
 
-under "## 2.1 Auxiliary tasks; difficulty not certified" it lists tasks which are likely to be doable.
+under "## 2.1 Tasks that are just work" -> "### Continuation and near-line" it lists tasks which are likely to be doable.
 
 your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -654,13 +648,16 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0511/obstacles-summary.md
+read and understand docs/reports/review-0611/obstacles-summary.md
 
-under "## 2.5 Breakthrough questions below RH and quasi-RH" it asks several questions.
+under "## 2.9 The question with the largest impact" it ask a question: 
+"**Can an off-line zero be a one-off?** Formally, the asymptotic abscissa law (AAL): for every `h≥0`, if only finitely many zeros lie right of `½+h`, then none does. Equivalently, `limsup(Re ρ−½)` along growing heights equals `sup(Re ρ−½)`. The zero–one law of 2.8 is the case `h=0`.
 
-your task: answer the questions, find a complete solution for each and unconditionally formalize it and its implications and collaries in lean.
+A sufficient form is weak recurrence around off-line zeros: for every zero `ρ₀` with `½<Re ρ₀<1`, every disc around it and every `ε>0`, there are arbitrarily high `τ` with `sup|ζ(s+iτ)−ζ(s)|<ε` on the disc. A return moves the zero to a new height at nearly the same depth [L]."
 
-We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to each posed question.
+your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
+
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -691,7 +688,7 @@ Goal is met when there are no more open or partially solved or sharpened walls.
 
 Do not use the hgtl7 skill.
 
-read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0511/walls-ledger.md
+read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0611/walls-ledger.md
 
 on every turn:
 conjecture, derive, formalize a way to either

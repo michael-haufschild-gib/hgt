@@ -347,7 +347,7 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
       refine integral_congr_ae (Filter.Eventually.of_forall fun w => ?_)
       dsimp only
       have heven : halfPlanePoisson 1 (-w) = halfPlanePoisson 1 w := by
-        unfold halfPlanePoisson; ring
+        unfold halfPlanePoisson; rw [neg_sq]
       have hexp_w : Complex.exp (I * (y : ℂ) * ((-w : ℝ) : ℂ)) =
           Complex.exp (I * ((-y : ℝ) : ℂ) * (w : ℂ)) := by
         congr 1
@@ -369,7 +369,10 @@ theorem integral_halfPlanePoisson_shift_mul_cexp {σ : ℝ} (hσ : 0 < σ) (t₀
         have hσ0 : σ ≠ 0 := hσ.ne'
         have hpi0 : Real.pi ≠ 0 := Real.pi_ne_zero
         field_simp
-      rw [hp]
+      have hexp_σ : Complex.exp (I * (x : ℂ) * ((σ * w : ℝ) : ℂ)) =
+          Complex.exp (I * ((σ * x : ℝ) : ℂ) * (w : ℂ)) := by
+        congr 1; push_cast; ring
+      rw [hp, hexp_σ]
       push_cast
       ring
     simp_rw [hpt] at hsub
