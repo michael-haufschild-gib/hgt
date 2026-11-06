@@ -215,6 +215,25 @@ theorem abs_primeSum_sub_le {f g : ℝ → ℝ} (hf : WeightedTwo f) (hg : Weigh
   rw [tsum_mul_right, tsum_mul_left]
   rfl
 
+/-- The prime sum of a weighted source is bounded by its weighted mass. -/
+theorem abs_primeSum_le {f : ℝ → ℝ} (hf : WeightedTwo f) :
+    |primeSum f| ≤ 2 * vonMangoldtThreeHalvesMass * exponentialSourceMass f := by
+  have hs := summable_primePairTerm hf hf
+  have hP : primeSum f = ∑' n, primePairTerm f f n := rfl
+  have hle (n : ℕ) : |primePairTerm f f n| ≤
+      (2 * (ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ (3 / 2 : ℝ))) *
+        exponentialSourceMass f := by
+    have h := abs_primePairTerm_le hf hf n
+    rwa [Real.mul_self_sqrt (exponentialSourceMass_nonneg f)] at h
+  have hsumB := (summable_vonMangoldt_div_threeHalves.mul_left 2).mul_right
+    (exponentialSourceMass f)
+  rw [hP]
+  have hnorm := norm_tsum_le_tsum_norm hs.norm
+  simp only [Real.norm_eq_abs] at hnorm
+  refine hnorm.trans ((hs.abs.tsum_le_tsum hle hsumB).trans_eq ?_)
+  rw [tsum_mul_right, tsum_mul_left]
+  rfl
+
 /-- The mass of the kernel weight `e^{−|u|}`. -/
 theorem integrable_exp_neg_abs' : Integrable (fun u : ℝ => Real.exp (-|u|)) := by
   rw [← integrableOn_univ, ← Set.Iic_union_Ioi (a := (0 : ℝ))]

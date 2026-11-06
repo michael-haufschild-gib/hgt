@@ -207,19 +207,19 @@ AIF is on the receiver side of the sign block. The production side, square-root 
 
 | Programme | Interface |
 |---|---|
-| MZF | Derivative law and camera: `MultiscaleMollifiedZetaField.normalDerivative` becomes an equality; second moments enter through `integrable_and_log_norm_le_poisson` |
+| MZF (`MultiscaleMollifiedZetaField`) | Derivative law and camera: `MultiscaleMollifiedZetaField.normalDerivative` becomes an equality; second moments enter through `integrable_and_log_norm_le_poisson` |
 | BSY/CTF | `I(1)` is the Balazard–Saias–Yor mass; `isGLB_budget_one` is its variational form |
-| GWZ | Lattice Schur–Levinson system: predictors, margins, causality, kicks. AIF adds outer predictors, free coordinates, the weight dictionary and the Szegő threshold |
-| CSTW | The literal Weil chain (`TheWeilChainIsOneScalarFlow`, `TheWeilTracesHaveTheirSoftKick`); `TheAnchorFlow` is its abstract layered-medium form |
-| CHT | Datum plane and window cone (`datum_classification`); AIF reads the datum as an absolutely continuous density |
+| GWZ (`GrowingWindowsOfSpecZ`) | Lattice Schur–Levinson system: predictors, margins, causality, kicks. AIF adds outer predictors, free coordinates, the weight dictionary and the Szegő threshold |
+| CSTW (`CanonicalSystemOfTheWindowTower`) | The literal Weil chain (`TheWeilChainIsOneScalarFlow`, `TheWeilTracesHaveTheirSoftKick`); `TheAnchorFlow` is its abstract layered-medium form |
+| CHT (`CriticalHardyTheoryOfTheWindowCone`) | Datum plane and window cone (`datum_classification`); AIF reads the datum as an absolutely continuous density |
 | CompletedArithmeticForms | `eulerPartial`, `S = Π T_p A`, `thetaApertureAmplitude_not_laplaceMixture`; AIF gives the cone, the walls and the classification |
-| FADF, ACT | Frustration past `log ρ` in every sign gauge, Doob gauges, Hardy weights; AIF gives the causal certificate that survives frustration |
-| AKL | The Krein–Langer index reads the inner degree; the zero–one law says when finite degree is possible |
-| ACS, AOG | Curve data and orientation; T3 rests on `blindAbove_of_orbitCorr_le` |
-| ZCG | Blindness density (`eq_zero_of_blind_of_unbounded_density`) and the camera; ZCG is sign-free, and AIF's budgets are the same zeros read through second moments |
-| AHD | Critical ratios of windows, the third test case |
-| ADO | Baker repulsion for Euler carriers, the height of locking |
-| HT | Kronecker density, simultaneous Dirichlet approximation |
+| FADF (`FrustratedArithmeticDirichletForms`), ACT (`ArithmeticCriticalityTheory`) | Frustration past `log ρ` in every sign gauge, Doob gauges, Hardy weights; AIF gives the causal certificate that survives frustration |
+| AKL (`ArithmeticKreinLangerTheory`) | The Krein–Langer index reads the inner degree; the zero–one law says when finite degree is possible |
+| ACS (`ArithmeticCastelnuovoSeveri`), AOG (`ArithmeticOrientationGeometry`) | Curve data and orientation; T3 rests on `blindAbove_of_orbitCorr_le` |
+| ZCG (`ZeroConfigurationGeometry`) | Blindness density (`eq_zero_of_blind_of_unbounded_density`) and the camera; ZCG is sign-free, and AIF's budgets are the same zeros read through second moments |
+| AHD (`ArithmeticHodgeTheoryOfDegenerations`) | Critical ratios of windows, the third test case |
+| ADO (`ArithmeticDiscreteness`) | Baker repulsion for Euler carriers, the height of locking |
+| HT (`HTGeometry`) | Kronecker density, simultaneous Dirichlet approximation |
 
 ## 13. Success criteria
 

@@ -1,7 +1,7 @@
 # Five consecutive simple critical zeros
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Σ100
 - **Statement:** For all sufficiently large `T`, at least `N(T)/5000` starting positions give five consecutive occupied ordinates, each carrying exactly one simple critical zero.
 
@@ -34,6 +34,11 @@ enumeration of every occupied ordinate ensures no zero is skipped.
 `formal/GaloisForLFunctions/IncommensurableGaborPinching/ConsecutiveSimpleCriticalZeros.lean`:
 `xi_ordinate_census`, `xi_five_runs_finite`, `xi_five_runs_positive_proportion`,
 `xi_five_runs_one_five_thousandth`, `runStart_has_block`,
-`IsSingletonBlock.simple_critical`.
+`IsSingletonBlock.simple_critical`, `IsSingletonBlock.simple_zeta`,
+`eventually_exists_five_simple_critical_block`.
 
-Verification pending. Arbitrarily long runs remain open.
+Direct check passed:
+`lake --old env lean GaloisForLFunctions/IncommensurableGaborPinching/ConsecutiveSimpleCriticalZeros.lean`.
+Imported by `IncommensurableGaborPinching.lean`. Axiom checks omitted as requested.
+
+Arbitrarily long runs remain open.

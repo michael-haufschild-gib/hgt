@@ -11,19 +11,26 @@ Develop the field: objects, language, mechanisms, questions, tools, test cases o
 `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/` with umbrella `ArithmeticInnerFunctionTheory.lean`
 and foundational `README.md`. Unconditional only; RH appears only inside equivalences.
 
-## Work plan (each line is a module family; tick when it compiles and is wired)
+## Work plan
 - [x] A. Poisson–Jensen identity at every centre; inner field `I(w)`; no singular part; `N(ρ) = Π ϱ` exactly.
-- [x] B. Helson–Lowdenslager form of Szegő; `exp(2I) = inf` of mollified Poisson second moments (second expression).
+- [x] B. Helson–Lowdenslager form of Szegő; `exp(2I) = inf` of mollified Poisson second moments.
 - [x] C. Function-field chain: inner mass = Mahler measure; Castelnuovo ⇔ Carathéodory ⇔ trivial inner factor; golden.
-- [ ] D. Euler columns and fakes: closed-form inner mass; selectivity battery.
-- [ ] E. Prime insertion: Chebyshev–Poisson kernel, Sato–Tate orthogonality, Hecke–Hankel cone, Kronecker locking, Laplace cone, Turán break, `S = Σ τ_b(N) A(N)`.
-- [ ] F. Anchor flow: hyperbolic coordinate `κ' = q − sinh 2κ`, coming down from infinity, energy identity, Darboux pair, kicks, Szegő sum rule; literal `K` flow of the Weil chain.
-- [ ] G. Frustrated forms at zero slack: causal certificate replacing Allegretto–Piepenbrink, slack = Schur product, Perron special case, deterministic orbits.
-- [ ] H. Carleson/crowd geometry: shadows, balayage embedding, exponential moment of the inner field, big-cluster rate.
-- [ ] I. Finite inner factors: almost-periodic zero–one law, classes table, datum (β,s) criticality via a.c. spectral density.
-- [ ] J. Questions of the field: one theorem per question of §2.7.
+- [x] D. Euler columns: closed-form inner mass, mass at infinity = Mahler; fakes table in the README.
+- [x] E. Prime insertion: Sato–Tate orthogonality, Hecke–Bessel, log-concavity wall, size floor, Kronecker locking, arithmetic Bernstein classification, `{2,3}` rung.
+- [x] F. Anchor flow: `κ' = q − sinh 2κ`, coming down from infinity, energy identity, Darboux pair, kicks; Born medium at `½ log n`.
+- [x] G. Frustrated forms at zero slack: outer predictor certificate, window RH, Allegretto–Piepenbrink as the sign-definite face.
+- [x] H. Carleson/crowd geometry: shadows, balayage, exponential moment, large deviations of crowds.
+- [x] I. Finite inner factors: zero–one law, datum as Szegő threshold, echo trains on independent reflectors, inverse scattering with prime data, no decoupling.
+- [x] J. Questions of the field: `question_one` … `question_six` in `TheQuestionsOfTheField`.
+
+## Status
+Questions Q1–Q6 answered by theorems; tools T1–T5 developed, with the profile decomposition of T3 open. Modules and pillars are in `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md`; open research topics in its §11. No sign for `ζ` is produced.
+
+## Open core
+The opposite sign (`riemannHypothesis_iff_exists_budget_lt`), amplitude–height correlation in `S(a, b)`, the zero–one law for `ζ`, inner mass at infinity of `ζ`.
+
+## Do not redo
+GWZ has Levinson, Szegő–Verblunsky, lattice anchor flow, curve flow, no slack, causality and single kicks. CSTW has the literal Weil flow. CompletedArithmeticForms has `eulerPartial`, `S = Π T_p A`, `thetaApertureAmplitude_not_laplaceMixture`. FADF has frustration of the Weil kernel in every sign gauge.
 
 ## Log
-- 2026-11-06 — created; read §2.7 and neighbours (FADF, CHT, CSTW, MZF, AKL, GWZ).
-- 2026-11-06 — modules compile: ThePoissonJensenIdentity, TheInnerFieldOfZeta, TheSzegoInfimum, TheInnerMassIsAMollifierInfimum, TheDerivativeIsTheBlaschkeProduct, TheInsertionConeOfExponentiallyConvexAmplitudes, TheAnchorFlow, TheCurveChainOfTheInnerFactor. Uncheck: wire into umbrella at the end.
-- Existing work not to redo: GWZ has Levinson, Szegő–Verblunsky, lattice anchor flow (`artanh` form), curve flow, no slack; CompletedArithmeticForms has `eulerPartial`, `S = Π T_p A`, `thetaApertureAmplitude_not_laplaceMixture`.
+- 2026-11-06 — created; programme developed and formalized in 23 modules, wired into the umbrella and `MainTheorems`.

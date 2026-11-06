@@ -22,12 +22,11 @@ all of `Re s > σ₀` by the identity theorem.  Two consequences:
 
 open Complex Filter Topology MeasureTheory Set Asymptotics
 open ArithmeticFunction (vonMangoldt)
+open RHTower
 
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 
 noncomputable section
-
-open RHTower
 
 /-- The prime error minus a complex oscillation. -/
 def oscillationError (β : ℝ) (S : Finset ℝ) (d : ℝ → ℂ) (x : ℝ) : ℂ :=
@@ -133,15 +132,14 @@ theorem mul_mellin_oscillationRemainder {s : ℂ} (h1 : 1 < s.re) (hβ : β < s.
       rw [← Complex.cpow_add _ _ ht0]
       congr 1
       ring
+    have e3 : ∑ ω ∈ S, d ω * (t : ℂ) ^ ((β : ℂ) + I * ω - s - 1)
+        = (t : ℂ) ^ (-s - 1) * ∑ ω ∈ S, d ω * (t : ℂ) ^ ((β : ℂ) + I * ω) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun ω _ => by rw [e2 ω]; ring
     rw [oscillationError, criticalCumulative_vonMangoldt_eq_psi, e1,
-      show -(s + 1) = -s - 1 by ring, Finset.sum_congr rfl fun ω _ => by rw [e2 ω],
-      mul_sub, Finset.mul_sum]
+      show -(s + 1) = -s - 1 by ring, e3]
     push_cast
-    rw [mul_sub]
-    congr 1
-    · ring
-    · refine Finset.sum_congr rfl fun ω _ => ?_
-      ring
+    ring
   have hre1 : (-s).re < -1 := by
     simp only [Complex.neg_re]
     linarith
@@ -168,8 +166,11 @@ theorem mul_mellin_oscillationRemainder {s : ℂ} (h1 : 1 < s.re) (hβ : β < s.
       = (∫ t in Ioi (1 : ℝ), (criticalCumulative (fun n => vonMangoldt n) t : ℂ) *
             (t : ℂ) ^ (-(s + 1)))
         - 1 / (s - 1) - ∑ ω ∈ S, d ω * (1 / (s - ((β : ℂ) + I * ω))) := by
+    have hi01 : Integrable (fun t : ℝ =>
+        (criticalCumulative (fun n => vonMangoldt n) t : ℂ) * (t : ℂ) ^ (-(s + 1))
+          - (t : ℂ) ^ (-s)) (volume.restrict (Ioi 1)) := hi0.sub hi1
     rw [setIntegral_congr_fun measurableSet_Ioi hpt,
-      integral_sub (hi0.sub hi1) (integrable_finset_sum _ hi2), integral_sub hi0 hi1,
+      integral_sub hi01 (integrable_finsetSum _ hi2), integral_sub hi0 hi1,
       integral_finset_sum _ hi2, hA]
     congr 1
     exact Finset.sum_congr rfl fun ω _ => hB ω
@@ -364,7 +365,9 @@ theorem zeta_eq_zero_of_coeff_ne_zero
     rw [oscillationNumerator, hP, zero_mul, zero_add]
     refine Finset.sum_eq_single ω₀ (fun ω hω hne => ?_) (fun h => absurd hω₀ h)
     have hmem : ω₀ ∈ S.erase ω := Finset.mem_erase.mpr ⟨hne.symm, hω₀⟩
-    rw [Finset.prod_eq_zero hmem (sub_self _), mul_zero]
+    have hz : ∏ μ ∈ S.erase ω, (s₀ - ((β : ℂ) + I * μ)) = 0 :=
+      Finset.prod_eq_zero hmem (sub_self _)
+    rw [hz, mul_zero]
   have hQ0 : oscillationNumerator β S d s₀ ≠ 0 := by
     rw [hQ]
     refine mul_ne_zero (mul_ne_zero hd hs₀0) (Finset.prod_ne_zero_iff.mpr fun μ hμ => ?_)

@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheUnivariateIntegerCheby
 import GaloisForLFunctions.ArithmeticKreinLangerTheory.FinitePrimeHeckeAuxiliaryObstructions
 import GaloisForLFunctions.BezoutValuationIncidence.CoprimeMertensSawtoothCancellation
 import GaloisForLFunctions.RHTower.Sieve.MoebiusLogarithmicNormalization
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.TheMobiusNormalizationHasARate
 
 /-!
 # Multivariate parity-selective integer auxiliaries reach the PNT main term
@@ -242,7 +243,7 @@ theorem finset_farkas {ι α : Type*} (I : Finset ι) (J : Finset α)
 on `J = (Nat.divisors L').erase 1` (`2 ≤ B ≤ L'`) with slope `≤ (1 + ε₀)(1 - 1/B)`, dominance `≥ 1`
 on `[1, B)`, and nonnegativity `≥ 0` on `[B, L')`, upward rational rounding and denominator
 clearing construct a balanced integer stencil `(c, m, B)` achieving normalized slope `< 1 + 2 ε₀`. -/
-theorem exists_stencil_of_real_lp {B L' : ℕ} {ε₀ : ℝ} (hB : 2 ≤ B) (hBL : B ≤ L')
+theorem exists_stencil_of_real_lp_with_support {B L' : ℕ} {ε₀ : ℝ} (hB : 2 ≤ B) (hBL : B ≤ L')
     (hε₀ : 0 < ε₀) {x : ℕ → ℝ}
     (hx_slope : ∑ k ∈ (Nat.divisors L').erase 1, Real.log k * x k ≤
       (1 + ε₀) * (1 - 1 / (B : ℝ)))
@@ -254,7 +255,8 @@ theorem exists_stencil_of_real_lp {B L' : ℕ} {ε₀ : ℝ} (hB : 2 ≤ B) (hBL
       c 0 = 0 ∧ IsBalanced c ∧ 1 ≤ m ∧
         (∀ r : ℕ, 0 ≤ stepWeight c r) ∧
         (∀ r ∈ Ico 1 B, (m : ℤ) ≤ stepWeight c r) ∧
-        stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) < 1 + 2 * ε₀ := by
+        stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) < 1 + 2 * ε₀ ∧
+        (∀ k ∈ c.support, k ∣ L') := by
   classical
   have hL'_pos : 0 < L' := by omega
   have hB0 : (0 : ℝ) < B := by exact_mod_cast (by omega : 0 < B)
@@ -424,7 +426,28 @@ theorem exists_stencil_of_real_lp {B L' : ℕ} {ε₀ : ℝ} (hB : 2 ≤ B) (hBL
     have hmul := mul_lt_mul_of_pos_left hq_slope hD_real_pos
     linarith [show (D : ℝ) * ((1 + 2 * ε₀) * (1 - 1 / (B : ℝ))) =
       (1 + 2 * ε₀) * ((D : ℝ) * (1 - 1 / (B : ℝ))) by ring]
-  exact ⟨c, D, hc0, hbal, hD_ge1, hstep_nonneg, hwin_c, hslope_lt⟩
+  refine ⟨c, D, hc0, hbal, hD_ge1, hstep_nonneg, hwin_c, hslope_lt, ?_⟩
+  intro k hk
+  rcases mem_insert.mp (hc_supp hk) with rfl | hkJ
+  · exact one_dvd _
+  · exact hJ_dvd k hkJ
+
+/-- Rational rounding preserves residue inequalities and produces a balanced integer stencil. -/
+theorem exists_stencil_of_real_lp {B L' : ℕ} {ε₀ : ℝ} (hB : 2 ≤ B) (hBL : B ≤ L')
+    (hε₀ : 0 < ε₀) {x : ℕ → ℝ}
+    (hx_slope : ∑ k ∈ (Nat.divisors L').erase 1, Real.log k * x k ≤
+      (1 + ε₀) * (1 - 1 / (B : ℝ)))
+    (hx_win : ∀ r ∈ Ico 1 B,
+      (1 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k)
+    (hx_nonneg : ∀ r ∈ Ico B L',
+      (0 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k) :
+    ∃ (c : ℕ →₀ ℤ) (m : ℕ), c 0 = 0 ∧ IsBalanced c ∧ 1 ≤ m ∧
+      (∀ r : ℕ, 0 ≤ stepWeight c r) ∧
+      (∀ r ∈ Ico 1 B, (m : ℤ) ≤ stepWeight c r) ∧
+      stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) < 1 + 2 * ε₀ := by
+  obtain ⟨c, m, h0, hb, hm, hn, hw, hs, _⟩ :=
+    exists_stencil_of_real_lp_with_support hB hBL hε₀ hx_slope hx_win hx_nonneg
+  exact ⟨c, m, h0, hb, hm, hn, hw, hs⟩
 
 /-! ### Exact Möbius identities and elementary dyadic estimates -/
 
@@ -1261,35 +1284,39 @@ private lemma abs_sum_dual_reg3_le {T B L₀ M k_top L' : ℕ} {ε₀ : ℝ} {u 
         have hm := (div_lt_iff₀ hε₀).mp hm₁_ceil
         linarith [show (ε₀ / 8) * (m₁ : ℝ) = ((m₁ : ℝ) * ε₀) / 8 by ring]
 
-/-- **Unconditional feasibility of the real divisor LP at dyadic scales.** For every `ε₀ > 0`,
-there exist `B ≥ 2` and `L' ≥ B` such that the divisor residue LP on `(Nat.divisors L').erase 1`
-admits a primal solution with slope cap `(1 + ε₀)(1 - 1/B)`. -/
-theorem exists_real_lp_solution {ε₀ : ℝ} (hε₀ : 0 < ε₀) :
-    ∃ (B L' : ℕ) (x : ℕ → ℝ), 2 ≤ B ∧ B ≤ L' ∧
+/-- A common period for the divisor-residue producer at dyadic cutoff `2^ℓ`. -/
+def producerPeriod (ε : ℝ) (ℓ : ℕ) : ℕ :=
+  2 ^ max (4 * ℓ + 2)
+    (Nat.ceil (24 * (2 + Real.log (((2 ^ ℓ + 1).factorial : ℕ) : ℝ)) / ε) + 6) *
+      (2 ^ ℓ + 1).factorial
+
+/-- Explicit finite scale at which the Möbius test excludes every Farkas dual witness. -/
+theorem exists_real_lp_solution_at {ε₀ K₁ K₂ : ℝ} (hε₀ : 0 < ε₀)
+    (hK₁0 : 0 ≤ K₁) (hK₂0 : 0 ≤ K₂)
+    (hK₁ : ∀ f c M X t : ℕ, f ≠ 0 → 1 ≤ c → M / c = t → 256 ≤ t →
+      |∑ b ∈ Icc 1 X, BezoutValuationIncidence.coprimeMoebiusWeight f b *
+        Int.fract ((M : ℝ) / ((c * b : ℕ) : ℝ))| ≤
+          K₁ * BezoutValuationIncidence.rankinProduct f * t /
+            (1 + Real.log t) ^ 3 + Real.sqrt t)
+    (hK₂ : ∀ f : ℕ, f ≠ 0 → ∀ Y : ℕ, 1 ≤ Y →
+      |BezoutValuationIncidence.coprimeMoebiusHarmonicSum f Y| ≤
+        K₂ * BezoutValuationIncidence.rankinProduct f / (1 + Real.log Y) ^ 4)
+    {ℓ : ℕ} (hℓ10 : 10 ≤ ℓ)
+    (hscale : 8 * (48 * K₁ + 128 * K₂ + 140 + (1 + ε₀)) / ε₀ + 16 * K₂ < (ℓ : ℝ))
+    (hnormal : _root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) < 1 + ε₀ / 8) :
+    ∃ (B L' : ℕ) (x : ℕ → ℝ), B = 2 ^ ℓ + 1 ∧ L' = producerPeriod ε₀ ℓ ∧
+      2 ≤ B ∧ B ≤ L' ∧
       (∑ k ∈ (Nat.divisors L').erase 1, Real.log k * x k ≤
         (1 + ε₀) * (1 - 1 / (B : ℝ))) ∧
       (∀ r ∈ Ico 1 B,
         (1 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k) ∧
       (∀ r ∈ Ico B L',
         (0 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k) := by
-  obtain ⟨K₁, hK₁0, hK₁⟩ :=
-    GaloisForLFunctions.BezoutValuationIncidence.exists_abs_sum_coprime_moebius_fract_le
-  obtain ⟨K₂, hK₂0, hK₂⟩ :=
-    GaloisForLFunctions.BezoutValuationIncidence.exists_abs_coprimeMoebiusHarmonicSum_le_four
-  have hlim := (tendsto_order.mp _root_.RHTower.Sieve.tendsto_moebiusLogHarmonicPartial_one).2
-    (1 + ε₀ / 8) (by linarith)
-  obtain ⟨N₁, hN₁⟩ := Filter.eventually_atTop.mp hlim
-  obtain ⟨C_all, hC_all⟩ : ∃ C_all : ℝ, C_all = 48 * K₁ + 128 * K₂ + 140 + (1 + ε₀) := ⟨_, rfl⟩
+  obtain ⟨C_all, hC_all⟩ : ∃ C_all : ℝ,
+      C_all = 48 * K₁ + 128 * K₂ + 140 + (1 + ε₀) := ⟨_, rfl⟩
   have hC_all_pos : 0 < C_all := by rw [hC_all]; positivity
-  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ : ℕ, ℓ = max (max 10 N₁) (Nat.ceil (8 * C_all / ε₀ + 16 * K₂) + 1) :=
-    ⟨_, rfl⟩
-  have hℓ10 : 10 ≤ ℓ := by rw [hℓ]; exact le_trans (le_max_left 10 N₁) (le_max_left _ _)
-  have hℓN₁ : N₁ ≤ ℓ := by rw [hℓ]; exact le_trans (le_max_right 10 N₁) (le_max_left _ _)
   have hℓ_ceil : 8 * C_all / ε₀ + 16 * K₂ < (ℓ : ℝ) := by
-    have h1 : 8 * C_all / ε₀ + 16 * K₂ ≤ Nat.ceil (8 * C_all / ε₀ + 16 * K₂) := Nat.le_ceil _
-    have h2 : (Nat.ceil (8 * C_all / ε₀ + 16 * K₂) : ℝ) + 1 ≤ ℓ := by
-      rw [hℓ]; exact_mod_cast le_max_right (max 10 N₁) _
-    linarith
+    simpa only [hC_all] using hscale
   have hℓ_pos : (0 : ℝ) < ℓ := by exact_mod_cast (by omega : 0 < ℓ)
   obtain ⟨T, hT⟩ : ∃ T : ℕ, T = 2 ^ ℓ := ⟨_, rfl⟩
   have hT_ge256 : 256 ≤ T := by
@@ -1320,7 +1347,9 @@ theorem exists_real_lp_solution {ε₀ : ℝ} (hε₀ : 0 < ε₀) :
       _ < 2 * B := Nat.mul_lt_mul_of_pos_right (by norm_num) (by omega)
       _ ≤ 2 ^ M * L₀ := Nat.mul_le_mul h2M hB_le_L₀
   rcases exists_real_lp_or_dual (ε₀ := ε₀) hB2 hBL' with ⟨x, hx1, hx2, hx3⟩ | ⟨u, hu0, hu_eq, hu_win⟩
-  · exact ⟨B, L', x, hB2, hBL'.le, hx1, hx2, hx3⟩
+  · refine ⟨B, L', x, ?_, ?_, hB2, hBL'.le, hx1, hx2, hx3⟩
+    · omega
+    · simp only [producerPeriod, hL', hL₀, hM, hj₀, hB, hT]
   · exfalso
     obtain ⟨δ_T, hδ_T⟩ : ∃ δ_T : ℝ,
         δ_T = GaloisForLFunctions.BezoutValuationIncidence.coprimeMoebiusHarmonicSum 1 T := ⟨_, rfl⟩
@@ -1423,7 +1452,7 @@ theorem exists_real_lp_solution {ε₀ : ℝ} (hε₀ : 0 < ε₀) :
       rw [hmain]
       ring
     have hmoeb_lt : _root_.RHTower.Sieve.moebiusLogHarmonicPartial T < 1 + ε₀ / 8 :=
-      hN₁ T (le_trans hℓN₁ hT_gt_ℓ.le)
+      by simpa only [hT] using hnormal
     have hB_disc : (1 + ε₀) / (B : ℝ) ≤ (1 + ε₀) / (ℓ : ℝ) :=
       div_le_div_of_nonneg_left (by positivity) hℓ_pos
         (by exact_mod_cast (by omega : ℓ ≤ B))
@@ -1460,6 +1489,122 @@ theorem exists_real_lp_solution {ε₀ : ℝ} (hε₀ : 0 < ε₀) :
       linarith [hpair_global, hsplit_all]
     have hdisc_eq : (1 + ε₀) * (1 - 1 / (B : ℝ)) = 1 + ε₀ - (1 + ε₀) / (B : ℝ) := by ring
     linarith
+
+/-- **Unconditional feasibility of the real divisor LP at dyadic scales.** For every `ε₀ > 0`,
+there exist `B ≥ 2` and `L' ≥ B` such that the divisor residue LP on `(Nat.divisors L').erase 1`
+admits a primal solution with slope cap `(1 + ε₀)(1 - 1/B)`. -/
+theorem exists_real_lp_solution {ε₀ : ℝ} (hε₀ : 0 < ε₀) :
+    ∃ (B L' : ℕ) (x : ℕ → ℝ), 2 ≤ B ∧ B ≤ L' ∧
+      (∑ k ∈ (Nat.divisors L').erase 1, Real.log k * x k ≤
+        (1 + ε₀) * (1 - 1 / (B : ℝ))) ∧
+      (∀ r ∈ Ico 1 B,
+        (1 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k) ∧
+      (∀ r ∈ Ico B L',
+        (0 : ℝ) ≤ ∑ k ∈ (Nat.divisors L').erase 1, ((r % k : ℕ) : ℝ) * x k) := by
+  obtain ⟨K₁, hK₁0, hK₁⟩ :=
+    GaloisForLFunctions.BezoutValuationIncidence.exists_abs_sum_coprime_moebius_fract_le
+  obtain ⟨K₂, hK₂0, hK₂⟩ :=
+    GaloisForLFunctions.BezoutValuationIncidence.exists_abs_coprimeMoebiusHarmonicSum_le_four
+  have hlim := (tendsto_order.mp _root_.RHTower.Sieve.tendsto_moebiusLogHarmonicPartial_one).2
+    (1 + ε₀ / 8) (by linarith)
+  obtain ⟨N₁, hN₁⟩ := Filter.eventually_atTop.mp hlim
+  obtain ⟨C_all, hC_all⟩ : ∃ C_all : ℝ, C_all = 48 * K₁ + 128 * K₂ + 140 + (1 + ε₀) := ⟨_, rfl⟩
+  have hC_all_pos : 0 < C_all := by rw [hC_all]; positivity
+  obtain ⟨ℓ, hℓ⟩ : ∃ ℓ : ℕ, ℓ = max (max 10 N₁) (Nat.ceil (8 * C_all / ε₀ + 16 * K₂) + 1) :=
+    ⟨_, rfl⟩
+  have hℓ10 : 10 ≤ ℓ := by rw [hℓ]; exact le_trans (le_max_left 10 N₁) (le_max_left _ _)
+  have hℓN₁ : N₁ ≤ ℓ := by rw [hℓ]; exact le_trans (le_max_right 10 N₁) (le_max_left _ _)
+  have hℓ_ceil : 8 * C_all / ε₀ + 16 * K₂ < (ℓ : ℝ) := by
+    have h1 : 8 * C_all / ε₀ + 16 * K₂ ≤ Nat.ceil (8 * C_all / ε₀ + 16 * K₂) := Nat.le_ceil _
+    have h2 : (Nat.ceil (8 * C_all / ε₀ + 16 * K₂) : ℝ) + 1 ≤ ℓ := by
+      rw [hℓ]; exact_mod_cast le_max_right (max 10 N₁) _
+    linarith
+  obtain ⟨B, L', x, _, _, hB, hBL, hs, hw, hn⟩ :=
+    exists_real_lp_solution_at hε₀ hK₁0 hK₂0 hK₁ hK₂ hℓ10
+      (by simpa only [hC_all] using hℓ_ceil)
+      (hN₁ (2 ^ ℓ) (hℓN₁.trans (Nat.lt_two_pow_self.le)))
+  exact ⟨B, L', x, hB, hBL, hs, hw, hn⟩
+
+/-- One absolute scale constant suffices for every slope excess. The alphabet is contained
+in the divisors of an explicit factorial period, with dyadic exponent `O(1/ε)`. -/
+theorem exists_producer_with_quantitative_support :
+    ∃ K : ℝ, 0 < K ∧ ∀ ε : ℝ, 0 < ε → ε ≤ 1 →
+      ∃ (c : ℕ →₀ ℤ) (m B : ℕ),
+        c 0 = 0 ∧ IsBalanced c ∧ 1 ≤ m ∧ 2 ≤ B ∧
+        (∀ r : ℕ, 0 ≤ stepWeight c r) ∧
+        (∀ r ∈ Ico 1 B, (m : ℤ) ≤ stepWeight c r) ∧
+        stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) < 1 + ε ∧
+        B = 2 ^ (Nat.ceil (K / ε) + 10) + 1 ∧
+        (∀ k ∈ c.support, k ∣ producerPeriod (ε / 2) (Nat.ceil (K / ε) + 10)) := by
+  obtain ⟨K₁, hK₁0, hK₁⟩ :=
+    BezoutValuationIncidence.exists_abs_sum_coprime_moebius_fract_le
+  obtain ⟨K₂, hK₂0, hK₂⟩ :=
+    BezoutValuationIncidence.exists_abs_coprimeMoebiusHarmonicSum_le_four
+  obtain ⟨K₃, hK₃0, hK₃⟩ := exists_abs_moebiusLogHarmonicPartial_sub_one_le
+  let K : ℝ := 16 * (48 * K₁ + 128 * K₂ + 142) + 32 * K₂ + 128 * K₃ + 10
+  have hK0 : 0 < K := by dsimp [K]; positivity
+  refine ⟨K, hK0, fun ε hε hε1 => ?_⟩
+  let ℓ : ℕ := Nat.ceil (K / ε) + 10
+  have hℓ10 : 10 ≤ ℓ := by dsimp [ℓ]; omega
+  have hℓ0 : (0 : ℝ) < ℓ := by exact_mod_cast (by omega : 0 < ℓ)
+  have hℓ1 : (1 : ℝ) ≤ ℓ := by exact_mod_cast (by omega : 1 ≤ ℓ)
+  have hscaleK : K / ε < (ℓ : ℝ) := by
+    have h := Nat.le_ceil (K / ε)
+    dsimp only [ℓ]
+    push_cast
+    linarith
+  have hKε : K < (ℓ : ℝ) * ε := (div_lt_iff₀ hε).mp hscaleK
+  have hscale : 8 * (48 * K₁ + 128 * K₂ + 140 + (1 + ε / 2)) / (ε / 2) +
+      16 * K₂ < (ℓ : ℝ) := by
+    have hK2ε : 16 * K₂ * ε ≤ 16 * K₂ :=
+      mul_le_of_le_one_right (by positivity) hε1
+    have hnum : 16 * (48 * K₁ + 128 * K₂ + 140 + (1 + ε / 2)) + 16 * K₂ * ε <
+        (ℓ : ℝ) * ε := by
+      dsimp [K] at hKε
+      linarith
+    have heq : 8 * (48 * K₁ + 128 * K₂ + 140 + (1 + ε / 2)) / (ε / 2) +
+        16 * K₂ =
+        (16 * (48 * K₁ + 128 * K₂ + 140 + (1 + ε / 2)) + 16 * K₂ * ε) / ε := by
+      field_simp
+      ring
+    rw [heq, div_lt_iff₀ hε]
+    exact hnum
+  have hT3 : 3 ≤ 2 ^ ℓ := by
+    calc 3 ≤ 2 ^ 2 := by norm_num
+      _ ≤ 2 ^ ℓ := Nat.pow_le_pow_right zero_lt_two (by omega)
+  have hlog : (ℓ : ℝ) / 2 ≤ Real.log (2 ^ ℓ : ℕ) := by
+    rw [Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
+    have hlog2 : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
+    nlinarith [mul_le_mul_of_nonneg_left hlog2 hℓ0.le]
+  have hnormal : _root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) < 1 + (ε / 2) / 8 := by
+    have hcube : (ℓ : ℝ) ≤ (ℓ : ℝ) ^ 3 := by
+      calc (ℓ : ℝ) = (ℓ : ℝ) ^ 1 := (pow_one _).symm
+        _ ≤ (ℓ : ℝ) ^ 3 := pow_le_pow_right₀ hℓ1 (by omega)
+    have hlog0 : 0 < Real.log (2 ^ ℓ : ℕ) := lt_of_lt_of_le (by positivity) hlog
+    have hden : (ℓ : ℝ) ^ 3 / 8 ≤ (Real.log (2 ^ ℓ : ℕ)) ^ 3 := by
+      convert pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ (ℓ : ℝ) / 2) hlog 3 using 1 <;> ring
+    have herror : |_root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) - 1| ≤
+        8 * K₃ / (ℓ : ℝ) := by
+      calc |_root_.RHTower.Sieve.moebiusLogHarmonicPartial (2 ^ ℓ) - 1|
+          ≤ K₃ / (Real.log (2 ^ ℓ : ℕ)) ^ 3 := hK₃ _ hT3
+        _ ≤ K₃ / ((ℓ : ℝ) ^ 3 / 8) :=
+          div_le_div_of_nonneg_left hK₃0.le (by positivity) hden
+        _ = 8 * K₃ / (ℓ : ℝ) ^ 3 := by ring
+        _ ≤ 8 * K₃ / (ℓ : ℝ) := div_le_div_of_nonneg_left (by positivity) hℓ0 hcube
+    have hsmall : 8 * K₃ / (ℓ : ℝ) < ε / 16 := by
+      rw [div_lt_iff₀ hℓ0]
+      dsimp [K] at hKε
+      nlinarith
+    have := (abs_le.mp herror).2
+    linarith
+  obtain ⟨B, L', x, hB, hL, hB2, hBL, hs, hw, hn⟩ :=
+    exists_real_lp_solution_at (by linarith : 0 < ε / 2) hK₁0 hK₂0 hK₁ hK₂
+      hℓ10 hscale hnormal
+  obtain ⟨c, m, hc0, hbal, hm, hnonneg, hwin, hslope, hsupp⟩ :=
+    exists_stencil_of_real_lp_with_support hB2 hBL (by linarith : 0 < ε / 2) hs hw hn
+  refine ⟨c, m, B, hc0, hbal, hm, hB2, hnonneg, hwin, ?_, hB, ?_⟩
+  · linarith
+  · simpa only [hL] using hsupp
 
 /-! ### Main theorems and corollaries -/
 
@@ -1645,15 +1790,5 @@ theorem multivariate_parity_resolution_of_chebyshev_ceiling :
    isGLB_producerSlopeSet,
    one_notMem_producerSlopeSet,
    psi_le_one_add_eps_of_vanishing_order⟩
-
-#print axioms finset_farkas
-#print axioms exists_multivariate_parity_producer
-#print axioms exists_mvPolynomial_parity_producer
-#print axioms psi_le_one_add_eps_of_vanishing_order
-#print axioms theta_le_one_add_eps_of_vanishing_order
-#print axioms isGLB_producerSlopeSet
-#print axioms one_notMem_producerSlopeSet
-#print axioms exists_producer_escaping_prime_finset
-#print axioms multivariate_parity_resolution_of_chebyshev_ceiling
 
 end GaloisForLFunctions.ArithmeticKreinLangerTheory

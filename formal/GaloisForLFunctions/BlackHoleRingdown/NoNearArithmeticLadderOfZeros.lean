@@ -20,11 +20,11 @@ Consequently no sequence of zeros lies within an `ℓ²` perturbation of an arit
 perturbation may be complex, so the zeros need not lie on the critical line.
 -/
 
-open Complex MeasureTheory Set Filter Topology HTGeometry
+open Complex MeasureTheory Set Filter Topology HTGeometry RHTower
 
 noncomputable section
 
-namespace RHTower
+namespace GaloisForLFunctions.BlackHoleRingdown
 
 /-! ### Divergence along a progression -/
 
@@ -1169,11 +1169,12 @@ theorem not_eventually_riemannZeta_critical_eq_zero_of_eikonal {ω : ℕ → ℝ
   intro h
   refine not_eventually_riemannZeta_critical_eq_zero_of_sq_summable (a := b) hΩ hε ?_
   filter_upwards [h] with l hl
-  rw [← hl]
-  congr 3
-  rw [hεdef]
-  ring
+  have hsum : b + Ω * (l : ℝ) + ε l = ω l := by
+    change b + Ω * l + (ω l - (b + Ω * l)) = ω l
+    ring
+  rw [hsum]
+  exact hl
 
-end RHTower
+end GaloisForLFunctions.BlackHoleRingdown
 
 end
