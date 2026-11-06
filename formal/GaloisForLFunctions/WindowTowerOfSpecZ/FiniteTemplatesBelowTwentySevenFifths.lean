@@ -646,6 +646,11 @@ theorem exists_finite_hecke_template_iff (X : ℚ) :
 
 /-! ## The exact horizon -/
 
+private theorem rat_lt_of_cast_lt {q : ℚ} (h : (q : ℝ) < 27 / 5) : q < 27 / 5 := by
+  have e : ((27 / 5 : ℚ) : ℝ) = 27 / 5 := by norm_num
+  rw [← e] at h
+  exact Rat.cast_lt.mp h
+
 /-- A closed template inside an aperture below `log(27/5)`. -/
 theorem exists_aperture_template {A : ℝ} (hA0 : 0 < A) (hA : A < Real.log (27 / 5)) :
     ∃ T : Finset ℚ, 1 ∈ T ∧ (∀ q ∈ T, 1 ≤ q ∧ (q : ℝ) < Real.exp A) ∧
@@ -654,7 +659,7 @@ theorem exists_aperture_template {A : ℝ} (hA0 : 0 < A) (hA : A < Real.log (27 
   classical
   have hexp : Real.exp A < 27 / 5 := (Real.lt_log_iff_exp_lt (by norm_num)).mp hA
   obtain ⟨R, hR1, hR2⟩ := exists_rat_btwn hexp
-  have hR2' : R < 27 / 5 := by exact_mod_cast hR2
+  have hR2' : R < 27 / 5 := rat_lt_of_cast_lt hR2
   obtain ⟨T₀, h1, hT⟩ := exists_finite_hecke_template hR2'
   have hone : ((1 : ℚ) : ℝ) < Real.exp A := by
     rw [Rat.cast_one]
@@ -700,9 +705,9 @@ theorem rationalHeckePositive_iff_template {A : ℝ} (hA0 : 0 < A) (hA : A < Rea
         have hsX : (s : ℝ) < Real.exp A := by
           have : (s : ℝ) < R := by exact_mod_cast hsR
           exact this.trans h2R
-        have hs5 : s < 27 / 5 := by exact_mod_cast hsX.trans hexp
+        have hs5 : s < 27 / 5 := rat_lt_of_cast_lt (hsX.trans hexp)
         obtain ⟨hq1, hqX⟩ := hwin q hq
-        have hq5 : q < 27 / 5 := by exact_mod_cast hqX.trans hexp
+        have hq5 : q < 27 / 5 := rat_lt_of_cast_lt (hqX.trans hexp)
         have hn2 : 2 ≤ n := (Finset.mem_Icc.mp hn).1
         have hn5 : n ≤ 5 := by
           by_contra hc

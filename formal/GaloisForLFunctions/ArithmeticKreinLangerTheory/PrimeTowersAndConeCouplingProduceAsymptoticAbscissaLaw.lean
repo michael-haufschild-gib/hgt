@@ -324,7 +324,7 @@ theorem riemannHypothesis_iff_negIndex_zetaKernel_lt_top_of_asymptoticAbscissaLa
     (hAAL : AsymptoticAbscissaLaw) :
     RiemannHypothesis ↔ negIndex zetaKernel < ⊤ := by
   rw [riemannHypothesis_iff_finiteOffLine_of_asymptoticAbscissaLaw hAAL]
-  exact ((zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 2 0).symm
+  exact (zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)).out 2 0
 
 /-- **Under `AsymptoticAbscissaLaw`, RH is equivalent to bounded de Bruijn–Newman nonreal zero
 counts.** -/
