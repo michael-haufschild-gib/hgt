@@ -48,10 +48,14 @@ For divisor monodromy `ρ ↦ 1 − conj(ρ)`, [canonical compression](../3-form
 
 The [split Weil-group model](../3-formalized/w4-split-weil-model.md) realizes every prescribed-determinant matrix in degree one, with full `SL₂` degree-zero image and Frobenius normalization. Golden Frobenius has such a lift. Abstract compatibility therefore adds no local purity restriction beyond the determinant.
 
-## Next conjecture
+## Concrete function-field source
 
 The [Kloosterman moment hypersurface](../3-formalized/w4-kloosterman-moment-hypersurface.md) gives a concrete source: every degree-`m` family moment equals `#F` times a character sum on `Σxⱼ=0` in `(F×)^m`, with an exact correction for the singular parameter. Even moments are nonnegative without invoking purity. The remaining cancellation on this hypersurface is not supplied by the fixed factor `#F`.
 
 The [Kloosterman window calibration](../3-formalized/w4-kloosterman-window-receiver.md) constructs a pure `CurveDatum` for every nonzero parameter over an odd prime field, identifies all extension-field traces, and proves every finite window form nonnegative. Its arithmetic estimate is the existing Artin–Schreier–Stepanov proof; a monodromy weight proof remains distinct.
 
-The arithmetic target remains a trace identity producing the common `B` from cohomological degrees rather than from the unknown spectrum. The ζ family and its spectral identification remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.
+The [projective count identity](../3-formalized/w4-kloosterman-moments-are-point-counts.md) removes the character sum: every positive-degree moment is exactly `q(qA−B)`, where `A,B` count normalized torus tuples satisfying two or one vanishing-sum equations. Even degrees give the unconditional incidence bound `B≤qA` over every finite field.
+
+## Next conjecture
+
+Realize the difference of these explicit counts cohomologically, with its positive spectrum bounded by the invariant tensor weights and fixed base loss. The positive global trace theorem then controls the negative spectrum automatically. The ζ family and its spectral identification remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.

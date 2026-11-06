@@ -52,8 +52,8 @@ def powerFar (K B τ α : ℝ) : ℝ :=
   K ^ 2 * Real.exp (τ * B ^ 2) * kklRC τ α
 
 /-- The parameters and the complex saddle at one base point. -/
-structure PowerSaddle (η E T t X τ y a δ : ℝ) (ℓ : ℂ) : Prop where
-  typ : zetaTypicalHeight η E T t
+structure PowerSaddle (d η E T t X τ y a δ : ℝ) (ℓ : ℂ) : Prop where
+  typ : DepthTypical d η E T t
   hη : 0 < η
   hη8 : η ≤ 1 / 8
   hT : 8 ≤ T
@@ -66,21 +66,22 @@ structure PowerSaddle (η E T t X τ y a δ : ℝ) (ℓ : ℂ) : Prop where
   hτ8 : τ ≤ 1 / 8
   hc1 : 16 * η ≤ 2 * τ * (horizontalSlope X).re
   hc2 : 2 * τ * (horizontalSlope X).re ≤ 1
-  hy1 : -(4 * η) ≤ y
+  hy1 : -(1 / 2) ≤ y
   hy2 : y ≤ 1 / 2
+  hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re
   hB : powerSlopeError E η T ≤ η * (horizontalSlope X).re / 400
   data : SaddleData (xiF X) τ y a δ ℓ (horizontalSlope X).re (powerSlopeError E η T) η (9 / 2)
     (4 * powerSlopeError E η T / η) (powerRatio E η T)
   hℓ : ‖ℓ - horizontalSlope X‖ ≤ powerSlopeError E η T
-  ha1 : 11 * η ≤ a
+  ha1 : d + 11 * η ≤ a
   ha2 : a ≤ 2
   hδ : |δ| ≤ η / 4
 
 /-- The window hypothesis of the saddle, from the second-order model of `ξ`. -/
-private theorem hwin_of_box {η E T t X a δ : ℝ} {ℓ : ℂ} (typ : zetaTypicalHeight η E T t)
+private theorem hwin_of_box {d η E T t X a δ : ℝ} {ℓ : ℂ} (typ : DepthTypical d η E T t)
     (hη : 0 < η) (hη8 : η ≤ 1 / 8) (hT : 8 ≤ T) (hE : 0 ≤ E) (hX : 1000 ≤ X)
     (hXt : |X - t| ≤ η / 2) (hℓ : ℓ = lineLogDeriv X ((a : ℂ) + (δ : ℂ) * I))
-    (ha1 : 4 * η ≤ a) (ha2 : a ≤ 2) (hδ : |δ| ≤ η / 4) {v : ℝ} (hv : v ∈ Icc (-η) η) :
+    (ha1 : d + 4 * η ≤ a) (ha2 : a ≤ 2) (hδ : |δ| ≤ η / 4) {v : ℝ} (hv : v ∈ Icc (-η) η) :
     ‖xiF X ((a : ℂ) + (δ : ℂ) * I + (v : ℂ)) -
         xiF X ((a : ℂ) + (δ : ℂ) * I) * Complex.exp ((v : ℂ) * ℓ)‖ ≤
       ‖xiF X ((a : ℂ) + (δ : ℂ) * I)‖ * Real.exp (v * ℓ.re) *
@@ -102,17 +103,18 @@ private theorem hwin_of_box {η E T t X a δ : ℝ} {ℓ : ℂ} (typ : zetaTypic
     exact hδ
 
 /-- **The saddle exists at every base point of the range.** -/
-theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E T t)
+theorem exists_powerSaddle {d η E T t X τ y : ℝ} (typ : DepthTypical d η E T t)
     (hη : 0 < η) (hη8 : η ≤ 1 / 8) (hT : 8 ≤ T) (hE : 0 ≤ E) (hX : 1000 ≤ X)
     (hα : 8 ≤ (horizontalSlope X).re) (hαη : 8 ≤ η * (horizontalSlope X).re)
     (hXt : |X - t| ≤ η / 2) (hτ : 0 < τ) (hτ8 : τ ≤ 1 / 8)
     (hc1 : 16 * η ≤ 2 * τ * (horizontalSlope X).re) (hc2 : 2 * τ * (horizontalSlope X).re ≤ 1)
-    (hy1 : -(4 * η) ≤ y) (hy2 : y ≤ 1 / 2)
+    (hy1 : -(1 / 2) ≤ y) (hy2 : y ≤ 1 / 2)
+    (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re)
     (hB : powerSlopeError E η T ≤ η * (horizontalSlope X).re / 400) :
-    ∃ (a δ : ℝ) (ℓ : ℂ), PowerSaddle η E T t X τ y a δ ℓ ∧
+    ∃ (a δ : ℝ) (ℓ : ℂ), PowerSaddle d η E T t X τ y a δ ℓ ∧
       ℓ = lineLogDeriv X ((a : ℂ) + (δ : ℂ) * I) := by
   obtain ⟨α, hαdef⟩ : ∃ α, α = (horizontalSlope X).re := ⟨_, rfl⟩
-  rw [← hαdef] at hα hαη hc1 hc2 hB
+  rw [← hαdef] at hα hαη hc1 hc2 hyc hB
   obtain ⟨B, hBdef⟩ : ∃ B, B = powerSlopeError E η T := ⟨_, rfl⟩
   rw [← hBdef] at hB
   have hBpos : 0 < B := hBdef ▸ powerSlopeError_pos (η := η) hE (by linarith only [hT])
@@ -152,11 +154,11 @@ theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E
     · linarith only [him.1, him00, hη]
     · linarith only [him.2, him0]
   have hsub : closedBall ((y : ℂ) + 2 * (τ : ℂ) * horizontalSlope X) (2 * τ * powerSlopeError E η T) ⊆
-      innerBox η := by
+      innerBox d η := by
     rw [← hBdef]
     intro w hw
     obtain ⟨h1, h2, h3⟩ := hball w hw
-    refine ⟨by linarith only [h1, hy1, hc1, hη], by linarith only [h2, hy2, hc2, hη8], ?_⟩
+    refine ⟨by linarith only [h1, hyc, hη], by linarith only [h2, hy2, hc2, hη8], ?_⟩
     exact h3.trans (by linarith only [hη])
   have hlip : 2 * τ * (4 * powerSlopeError E η T / η) ≤ 1 / 2 := by
     rw [← hBdef]
@@ -167,10 +169,10 @@ theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E
   rw [← hBdef] at hu
   obtain ⟨hu1, hu2, hu3⟩ := hball u hu
   have hu_eq : (u.re : ℂ) + (u.im : ℂ) * I = u := Complex.re_add_im u
-  have hreg : u ∈ saddleRegion η t X := by
+  have hreg : u ∈ saddleRegion d η t X := by
     have h3' := abs_le.mp hu3
     have hXt'' := abs_le.mp hXt
-    refine ⟨by linarith only [hu1, hy1, hc1, hη], by linarith only [hu2, hy2, hc2, hη8],
+    refine ⟨by linarith only [hu1, hyc, hη], by linarith only [hu2, hy2, hc2, hη8],
       abs_le.mpr ⟨?_, ?_⟩⟩
     · linarith only [h3'.1, hXt''.1, hη]
     · linarith only [h3'.2, hXt''.2, hη]
@@ -178,7 +180,7 @@ theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E
   have hℓB : ‖lineLogDeriv X u - horizontalSlope X‖ ≤ B := by
     rw [hBdef]
     exact norm_lineLogDeriv_sub_le typ hη (by linarith only [hη8]) hT hE hX hXt' hreg
-  have ha1 : 11 * η ≤ u.re := by linarith only [hu1, hy1, hc1, hη]
+  have ha1 : d + 11 * η ≤ u.re := by linarith only [hu1, hyc, hη]
   have ha2 : u.re ≤ 2 := by linarith only [hu2, hy2, hc2, hη8]
   have hδ : |u.im| ≤ η / 4 := hu3.trans (by linarith only [hη])
   have hℓ' : lineLogDeriv X u = lineLogDeriv X ((u.re : ℂ) + (u.im : ℂ) * I) := by rw [hu_eq]
@@ -239,12 +241,12 @@ theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E
   refine
     { typ := typ, hη := hη, hη8 := hη8, hT := hT, hE := hE, hX := hX,
       hα := hαdef ▸ hα, hαη := hαdef ▸ hαη, hXt := hXt, hτ := hτ, hτ8 := hτ8,
-      hc1 := hαdef ▸ hc1, hc2 := hαdef ▸ hc2, hy1 := hy1, hy2 := hy2,
+      hc1 := hαdef ▸ hc1, hc2 := hαdef ▸ hc2, hy1 := hy1, hy2 := hy2, hyc := hαdef ▸ hyc,
       hB := by rw [← hBdef, ← hαdef]; exact hB, data := ?_, hℓ := by rw [← hBdef]; exact hℓB,
       ha1 := ha1, ha2 := ha2, hδ := hδ }
   refine
     { hF := differentiable_xiF X, hτ := hτ, hu := by rw [hu_eq]; exact hfix,
-      hA := ?_, hΛ := ?_, hρ := hη, hlow := by linarith only [ha1, hη],
+      hA := ?_, hΛ := ?_, hρ := hη, hlow := by linarith only [ha1, hη, typ.hd],
       hhigh := by linarith only [ha2, hη8],
       hB0 := ?_, hB := ?_, hK := powerRatio_nonneg (by linarith only [hT]),
       hwin := fun v hv => hwin_of_box typ hη hη8 hT hE hX hXt hℓ'
@@ -264,32 +266,32 @@ theorem exists_powerSaddle {η E T t X τ y : ℝ} (typ : zetaTypicalHeight η E
 
 namespace PowerSaddle
 
-variable {η E T t X τ y a δ : ℝ} {ℓ : ℂ}
+variable {d η E T t X τ y a δ : ℝ} {ℓ : ℂ}
 
-theorem hB_pos (h : PowerSaddle η E T t X τ y a δ ℓ) : 0 < powerSlopeError E η T :=
+theorem hB_pos (h : PowerSaddle d η E T t X τ y a δ ℓ) : 0 < powerSlopeError E η T :=
   powerSlopeError_pos (η := η) h.hE (by linarith only [h.hT])
 
-theorem hK_pos (h : PowerSaddle η E T t X τ y a δ ℓ) : 0 < powerRatio E η T := by
+theorem hK_pos (h : PowerSaddle d η E T t X τ y a δ ℓ) : 0 < powerRatio E η T := by
   have hT0 : 0 < T := by linarith only [h.hT]
   have := Real.rpow_pos_of_pos hT0 E
   unfold powerRatio
   positivity
 
-theorem hτ_small (h : PowerSaddle η E T t X τ y a δ ℓ) : τ ≤ η / 16 := by
+theorem hτ_small (h : PowerSaddle d η E T t X τ y a δ ℓ) : τ ≤ η / 16 := by
   have h1 := mul_le_mul_of_nonneg_left h.hαη (show 0 ≤ 2 * τ by linarith only [h.hτ])
   have h2 := mul_le_mul_of_nonneg_left h.hc2 h.hη.le
   nlinarith only [h1, h2]
 
-theorem hτB (h : PowerSaddle η E T t X τ y a δ ℓ) : 2 * τ * powerSlopeError E η T ≤ η / 400 := by
+theorem hτB (h : PowerSaddle d η E T t X τ y a δ ℓ) : 2 * τ * powerSlopeError E η T ≤ η / 400 := by
   have h1 := mul_le_mul_of_nonneg_left h.hB (show 0 ≤ 2 * τ by linarith only [h.hτ])
   have h2 := mul_le_mul_of_nonneg_left h.hc2 h.hη.le
   nlinarith only [h1, h2]
 
-theorem hy_abs (h : PowerSaddle η E T t X τ y a δ ℓ) : |y| ≤ 1 / 2 :=
-  abs_le.mpr ⟨by linarith only [h.hy1, h.hη8], h.hy2⟩
+theorem hy_abs (h : PowerSaddle d η E T t X τ y a δ ℓ) : |y| ≤ 1 / 2 :=
+  abs_le.mpr ⟨h.hy1, h.hy2⟩
 
 /-- The right end of the Gaussian range. -/
-theorem hW (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem hW (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     (9 / 2 : ℝ) ≤ 2 * τ * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 ∧
       2 * τ * (horizontalSlope X).re + (horizontalSlope X).re ^ 2 ≤ X / 32 - 1 / 2 := by
   have hα := h.hα
@@ -301,7 +303,7 @@ theorem hW (h : PowerSaddle η E T t X τ y a δ ℓ) :
   exact window_fits h.hτ8 h.hτ (by linarith only [h.hX]) (by linarith only [hα])
 
 /-- The value at `9/2`, relative to the saddle. -/
-theorem norm_nine_halves_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem norm_nine_halves_le (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     ‖xiLine X (9 / 2)‖ ≤ powerRatio E η T * ‖xiF X ((a : ℂ) + (δ : ℂ) * I)‖ *
       Real.exp ((9 / 2 - a) * (horizontalSlope X).re) := by
   have hs := h.data.hsrc (9 / 2) ⟨by norm_num, le_rfl⟩ 0 left_mem_uIcc
@@ -310,7 +312,7 @@ theorem norm_nine_halves_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
   exact hs
 
 /-- Right of `9/2`, the slope rises by at most `1/8`. -/
-theorem norm_right_le (h : PowerSaddle η E T t X τ y a δ ℓ) {w : ℝ} (hw : 9 / 2 ≤ w)
+theorem norm_right_le (h : PowerSaddle d η E T t X τ y a δ ℓ) {w : ℝ} (hw : 9 / 2 ≤ w)
     (hwX : w ≤ X / 32 - 1 / 2) :
     ‖xiLine X w‖ ≤ powerRatio E η T * ‖xiF X ((a : ℂ) + (δ : ℂ) * I)‖ *
       Real.exp ((w - a) * ((horizontalSlope X).re + 1 / 8)) := by
@@ -338,7 +340,7 @@ theorem norm_right_le (h : PowerSaddle η E T t X τ y a δ ℓ) {w : ℝ} (hw :
       nlinarith only [ha2, hw]
 
 /-- The mass of a real point right of the saddle window, relative to the mass of the saddle. -/
-theorem gauss_mul_norm_right_le (h : PowerSaddle η E T t X τ y a δ ℓ) {w : ℝ} (hw : 9 / 2 ≤ w)
+theorem gauss_mul_norm_right_le (h : PowerSaddle d η E T t X τ y a δ ℓ) {w : ℝ} (hw : 9 / 2 ≤ w)
     (hwX : w ≤ X / 32 - 1 / 2) :
     gaussDensity τ (w - y) * ‖xiLine X w‖ ≤
       SaddleData.mass (xiF X) τ a δ ℓ * powerTail (powerRatio E η T) η τ := by
@@ -379,19 +381,19 @@ theorem gauss_mul_norm_right_le (h : PowerSaddle η E T t X τ y a δ ℓ) {w : 
       ring
 
 /-- The value at the real saddle, relative to the complex saddle. -/
-theorem norm_real_saddle_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem norm_real_saddle_le (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     ‖xiLine X (y + 2 * τ * (horizontalSlope X).re)‖ ≤
       powerRatio E η T * ‖xiF X ((a : ℂ) + (δ : ℂ) * I)‖ *
         Real.exp ((y + 2 * τ * (horizontalSlope X).re - a) * (horizontalSlope X).re) := by
   have hs := h.data.hsrc (y + 2 * τ * (horizontalSlope X).re)
-    ⟨by linarith only [h.hy1, h.hc1, h.hη], by linarith only [h.hy2, h.hc2]⟩ 0 left_mem_uIcc
+    ⟨by linarith only [h.hyc, h.hη, h.typ.hd], by linarith only [h.hy2, h.hc2]⟩ 0 left_mem_uIcc
   have he : (((y + 2 * τ * (horizontalSlope X).re : ℝ) : ℂ) + ((0 : ℝ) : ℂ) * I) =
       ((y + 2 * τ * (horizontalSlope X).re : ℝ) : ℂ) := by simp
   rw [he, xiF_ofReal] at hs
   exact hs
 
 /-- The value at the real saddle controls `9/2` against the same anchor, with the same ratio. -/
-theorem norm_nine_halves_le_real (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem norm_nine_halves_le_real (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     ‖xiLine X (9 / 2)‖ ≤ powerRatio E η T * ‖xiLine X (y + 2 * τ * (horizontalSlope X).re)‖ *
       Real.exp ((9 / 2 - (y + 2 * τ * (horizontalSlope X).re)) * (horizontalSlope X).re) := by
   have hXt := abs_le.mp h.hXt
@@ -399,7 +401,7 @@ theorem norm_nine_halves_le_real (h : PowerSaddle η E T t X τ y a δ ℓ) :
   have hη8 := h.hη8
   have hval := norm_xi_le_anchor (s₀ := (1 / 2 + ((y + 2 * τ * (horizontalSlope X).re : ℝ) : ℂ) + I * X : ℂ))
     (s₁ := (1 / 2 + ((9 / 2 : ℝ) : ℂ) + I * X : ℂ)) h.typ hη (by linarith only [hη8]) h.hT h.hE h.hX
-    (by rw [re_point, Complex.ofReal_re]; linarith only [h.hy1, h.hc1, hη])
+    (by rw [re_point, Complex.ofReal_re]; linarith only [h.hyc, hη])
     (by rw [re_point, Complex.ofReal_re]; linarith only [h.hy2, h.hc2])
     (by
       rw [im_point, Complex.ofReal_im, add_zero]
@@ -418,7 +420,7 @@ theorem norm_nine_halves_le_real (h : PowerSaddle η E T t X τ y a δ ℓ) :
   exact hval
 
 /-- **The far terms.** Beyond the Gaussian range, both masses are `P K² e^{τB²}` times the corpus far term. -/
-theorem far_terms_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem far_terms_le (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     (∫ w in Ioi (2 * τ * (horizontalSlope X).re + (horizontalSlope X).re ^ 2),
         (|(w - y) / (2 * τ)| + ‖horizontalSlope X‖) * gaussDensity τ (w - y) * ‖xiLine X w‖) ≤
       SaddleData.mass (xiF X) τ a δ ℓ *
@@ -501,7 +503,7 @@ theorem far_terms_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
       _ = _ := by ring
   exact ⟨h1.trans hcomp, h2.trans hcomp⟩
 
-theorem gauss_integrable (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem gauss_integrable (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     Integrable (fun w => (gaussDensity τ (w - y) : ℂ) * xiLine X w) :=
   integrable_gaussDensity_sub_mul h.hτ (continuous_xiLine X) (integrable_exp_mul_norm_xiLine h.hτ X) y
 
@@ -543,7 +545,7 @@ private theorem head_eq (y : ℝ) (X τ : ℝ) :
   rw [← Complex.ofReal_sub, gaussKernel_ofReal, xiF_ofReal]
 
 /-- **The saddle value of the half transform.** -/
-theorem norm_halfGauss_sub_main_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem norm_halfGauss_sub_main_le (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     ‖halfGaussTransform τ (xiLine X) y -
         xiF X ((a : ℂ) + (δ : ℂ) * I) * Complex.exp (-((τ : ℂ) * ℓ ^ 2))‖ ≤
       SaddleData.mass (xiF X) τ a δ ℓ * (8 * τ * (4 * powerSlopeError E η T / η) +
@@ -616,7 +618,7 @@ theorem norm_halfGauss_sub_main_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
       gcongr
 
 /-- The first moment about the saddle is the slope of the half transform. -/
-private theorem slope_sub_eq (h : PowerSaddle η E T t X τ y a δ ℓ) :
+private theorem slope_sub_eq (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     (∫ w in Ioi (0 : ℝ), (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * xiLine X w) -
         ℓ * halfGaussTransform τ (xiLine X) y =
       ∫ w in Ioi (0 : ℝ), ((w : ℂ) - ((a : ℂ) + (δ : ℂ) * I)) / (2 * (τ : ℂ)) *
@@ -632,7 +634,7 @@ private theorem slope_sub_eq (h : PowerSaddle η E T t X τ y a δ ℓ) :
   ring
 
 /-- **The slope of the half transform.** `Q′(y) − ℓ Q(y)` is small against the saddle mass. -/
-theorem norm_halfGauss_slope_sub_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem norm_halfGauss_slope_sub_le (h : PowerSaddle d η E T t X τ y a δ ℓ) :
     ‖(∫ w in Ioi (0 : ℝ), (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * xiLine X w) -
         ℓ * halfGaussTransform τ (xiLine X) y‖ ≤
       SaddleData.mass (xiF X) τ a δ ℓ * (32 * Real.sqrt τ * (4 * powerSlopeError E η T / η) +
@@ -671,7 +673,7 @@ theorem norm_halfGauss_slope_sub_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
   have hδa := abs_le.mp h.hδ
   have hη8 := h.hη8
   have hηp := h.hη
-  have ha1 := h.ha1
+  have ha1 : 11 * η ≤ a := by linarith only [h.ha1, h.typ.hd]
   have ha2 := h.ha2
   -- The weight on the head rectangle.
   have hΩb : ∀ x ∈ Icc (0 : ℝ) (9 / 2), ∀ v ∈ [[(0 : ℝ), δ]],
@@ -797,7 +799,7 @@ theorem norm_halfGauss_slope_sub_le (h : PowerSaddle η E T t X τ y a δ ℓ) :
       gcongr
 
 /-- **The opposite half.** Reflection gains `e^{−2yα}` over the whole Gaussian range. -/
-theorem norm_halfGauss_opposite_le (h : PowerSaddle η E T t X τ y a δ ℓ) (hy : 0 ≤ y) :
+theorem norm_halfGauss_opposite_le (h : PowerSaddle d η E T t X τ y a δ ℓ) (hy : 0 ≤ y) :
     ‖halfGaussTransform τ (xiLine X) (-y)‖ ≤
       SaddleData.mass (xiF X) τ a δ ℓ * (powerRatio E η T * Real.exp 1 *
         Real.exp (-(2 * y * (horizontalSlope X).re) +
@@ -809,7 +811,6 @@ theorem norm_halfGauss_opposite_le (h : PowerSaddle η E T t X τ y a δ ℓ) (h
   rw [← hWdef] at hW9 hWX
   obtain ⟨c, hcdef⟩ : ∃ c, c = (horizontalSlope X).re + 1 / 8 := ⟨_, rfl⟩
   have hα := h.hα
-  have ha1 := h.ha1
   have ha2 := h.ha2
   have hηp := h.hη
   obtain ⟨N, hNdef⟩ : ∃ N, N = ‖xiF X ((a : ℂ) + (δ : ℂ) * I)‖ := ⟨_, rfl⟩

@@ -84,3 +84,4 @@ the window zeta operator; the exit-charge inequality, the universal end profile 
 payment of short windows; the Arakelov bundle of a window. See
 `WindowTowerOfSpecZ/README.md`.
 -/
+import GaloisForLFunctions.WindowTowerOfSpecZ.FiniteTemplatesEndAtTwentySevenFifths

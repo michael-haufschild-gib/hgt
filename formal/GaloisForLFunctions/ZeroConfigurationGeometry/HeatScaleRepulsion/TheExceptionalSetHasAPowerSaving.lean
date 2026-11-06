@@ -3,10 +3,14 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.HeatScaleRepulsion.TypicalH
 import GaloisForLFunctions.RHTower.XiSliceTypicalOrderPowerSaving
 
 /-!
-# The exceptional set of the heat flow has a power saving
+# The exceptional set of the heat flow has a power saving, and the sharp depth law
 
 For every `κ > 0` the heights `X ∈ [T, 2T]` with `Λ_X log X > κ` have measure at most `T^θ`, some `θ = θ(κ) < 1`
 (`exists_volume_localNewman_scaled_gt_le_rpow`).
+
+Outside crowds, the depth falls at least at the sharp rate `log X`: near a height of depth `d`, every zero of `H_τ` has
+`|Im z| ≤ max(4η, d + 12η − τ log(X/2π))` (`eventually_abs_im_le_of_depth`), and `Λ_X log X ≲ d + 16η`
+(`eventually_localNewmanConstant_le_of_depthWindow`).
 
 Polylogarithmic typical heights only give density zero. A power saving needs the level `T^E`, where `ζ′/ζ` may be as
 large as `θ log T` and the real saddle of the half-Gauss transform fails. The complex saddle (`PowerSaddle`) handles this
@@ -25,8 +29,8 @@ namespace GaloisForLFunctions.ZeroConfigurationGeometry
 noncomputable section
 
 /-- All the parameters and error bounds of one heat time and one height. -/
-structure PowerRange (η E T t X τ : ℝ) : Prop where
-  typ : zetaTypicalHeight η E T t
+structure PowerRange (d η E T t X τ : ℝ) : Prop where
+  typ : DepthTypical d η E T t
   hη : 0 < η
   hη8 : η ≤ 1 / 8
   hT : 8 ≤ T
@@ -57,20 +61,21 @@ structure PowerRange (η E T t X τ : ℝ) : Prop where
 
 namespace PowerRange
 
-variable {η E T t X τ : ℝ}
+variable {d η E T t X τ : ℝ}
 
-theorem saddle (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : -(4 * η) ≤ y) (hy2 : y ≤ 1 / 2) :
-    ∃ (a δ : ℝ) (ℓ : ℂ), PowerSaddle η E T t X τ y a δ ℓ ∧
+theorem saddle (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : -(1 / 2) ≤ y) (hy2 : y ≤ 1 / 2)
+    (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
+    ∃ (a δ : ℝ) (ℓ : ℂ), PowerSaddle d η E T t X τ y a δ ℓ ∧
       ℓ = lineLogDeriv X ((a : ℂ) + (δ : ℂ) * I) :=
-  exists_powerSaddle h.typ h.hη h.hη8 h.hT h.hE h.hX h.hα h.hαη h.hXt h.hτ h.hτ8 h.hc1 h.hc2 hy1 hy2 h.hB
+  exists_powerSaddle h.typ h.hη h.hη8 h.hT h.hE h.hX h.hα h.hαη h.hXt h.hτ h.hτ8 h.hc1 h.hc2 hy1 hy2 hyc h.hB
 
 /-- The saddle has positive mass: `ξ` does not vanish at it. -/
-theorem mass_pos (h : PowerRange η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
-    (hs : PowerSaddle η E T t X τ y a δ ℓ) : 0 < SaddleData.mass (xiF X) τ a δ ℓ := by
+theorem mass_pos (h : PowerRange d η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
+    (hs : PowerSaddle d η E T t X τ y a δ ℓ) : 0 < SaddleData.mass (xiF X) τ a δ ℓ := by
   have hη := h.hη
   have hXt := abs_le.mp h.hXt
   have hδ := abs_le.mp hs.hδ
-  have hreg : (a : ℂ) + (δ : ℂ) * I ∈ saddleRegion η t X := by
+  have hreg : (a : ℂ) + (δ : ℂ) * I ∈ saddleRegion d η t X := by
     refine ⟨?_, ?_, ?_⟩
     · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
         Complex.I_im, mul_zero, mul_one, sub_self, add_zero]
@@ -86,8 +91,8 @@ theorem mass_pos (h : PowerRange η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
   exact mul_pos (norm_pos_iff.mpr hne) (Real.exp_pos _)
 
 /-- `|Q(y)|` stays comparable to the saddle mass. -/
-theorem lower (h : PowerRange η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
-    (hs : PowerSaddle η E T t X τ y a δ ℓ) :
+theorem lower (h : PowerRange d η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
+    (hs : PowerSaddle d η E T t X τ y a δ ℓ) :
     4 / 5 * SaddleData.mass (xiF X) τ a δ ℓ ≤ ‖halfGaussTransform τ (xiLine X) y‖ := by
   have hP := h.mass_pos hs
   have hb := (hs.norm_halfGauss_sub_main_le).trans (mul_le_mul_of_nonneg_left h.he0 hP.le)
@@ -98,10 +103,11 @@ theorem lower (h : PowerRange η E T t X τ) {y a δ : ℝ} {ℓ : ℂ}
   linarith only [hb, hn]
 
 /-- **Slope positivity near the axis.** -/
-theorem re_slope_pos (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : -(4 * η) ≤ y) (hy2 : y ≤ 1 / 2) :
+theorem re_slope_pos (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : -(1 / 2) ≤ y) (hy2 : y ≤ 1 / 2)
+    (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
     0 < ((∫ w in Ioi (0 : ℝ), (((w - y) / (2 * τ) * gaussDensity τ (w - y) : ℝ) : ℂ) * xiLine X w) *
       starRingEnd ℂ (halfGaussTransform τ (xiLine X) y)).re := by
-  obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle hy1 hy2
+  obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle hy1 hy2 hyc
   have hP := h.mass_pos hs
   have hq := h.lower hs
   have hR := (hs.norm_halfGauss_slope_sub_le).trans (mul_le_mul_of_nonneg_left h.he1 hP.le)
@@ -138,10 +144,11 @@ theorem re_slope_pos (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : -(4 * η) �
   nlinarith only [hprod, hn]
 
 /-- **The opposite half is smaller away from the axis.** -/
-theorem norm_opposite_lt (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : 4 * η ≤ y) (hy2 : y ≤ 1 / 2) :
+theorem norm_opposite_lt (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : 4 * η ≤ y) (hy2 : y ≤ 1 / 2)
+    (hyc : d + 12 * η ≤ y + 2 * τ * (horizontalSlope X).re) :
     ‖halfGaussTransform τ (xiLine X) (-y)‖ < ‖halfGaussTransform τ (xiLine X) y‖ := by
   have hη := h.hη
-  obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle (y := y) (by linarith only [hy1, hη]) hy2
+  obtain ⟨a, δ, ℓ, hs, _⟩ := h.saddle (y := y) (by linarith only [hy1, hη]) hy2 hyc
   have hP := h.mass_pos hs
   have hq := h.lower hs
   have hb := hs.norm_halfGauss_opposite_le (by linarith only [hy1, hη])
@@ -160,8 +167,9 @@ theorem norm_opposite_lt (h : PowerRange η E T t X τ) {y : ℝ} (hy1 : 4 * η 
   have hb2 := hb.trans (mul_le_mul_of_nonneg_left he hP.le)
   nlinarith only [hb2, hq, hP]
 
-/-- **No non-real zero at this heat time.** -/
-theorem riemannHeat_ne_zero (h : PowerRange η E T t X τ) {y : ℝ} (hy : y ≠ 0) (hy2 : |y| ≤ 1 / 2) :
+/-- **Reality at this heat time, once the saddle has cleared the depth.** -/
+theorem riemannHeat_ne_zero (h : PowerRange d η E T t X τ)
+    (hc : d + 16 * η ≤ 2 * τ * (horizontalSlope X).re) {y : ℝ} (hy : y ≠ 0) (hy2 : |y| ≤ 1 / 2) :
     riemannHeat τ ((X : ℂ) + I * y) ≠ 0 := by
   have hη := h.hη
   have hη8 := h.hη8
@@ -173,8 +181,9 @@ theorem riemannHeat_ne_zero (h : PowerRange η E T t X τ) {y : ℝ} (hy : y ≠
     · exact norm_lt_norm_of_re_mul_conj_pos (b := 4 * η)
         (fun v _ => hasDerivAt_halfGaussTransform hτ (continuous_xiLine X)
           (integrable_exp_mul_norm_xiLine hτ X) v)
-        (fun v hv => h.re_slope_pos hv.1 (by linarith only [hv.2, hη8])) hy0 hnear
-    · exact h.norm_opposite_lt hfar.le hy2
+        (fun v hv => h.re_slope_pos (by linarith only [hv.1, hη8]) (by linarith only [hv.2, hη8])
+          (by linarith only [hv.1, hc])) hy0 hnear
+    · exact h.norm_opposite_lt hfar.le hy2 (by linarith only [hy0, hc])
   rw [riemannHeat_eq_halfGaussAverage hτ X y]
   apply add_conj_ne_zero_of_norm_ne
   rcases lt_or_gt_of_ne hy with hneg | hpos
@@ -182,6 +191,22 @@ theorem riemannHeat_ne_zero (h : PowerRange η E T t X τ) {y : ℝ} (hy : y ≠
     rw [neg_neg] at hn
     exact ne_of_gt hn
   · exact ne_of_lt (hlt y hpos (abs_le.mp hy2).2)
+
+/-- **The depth of the flow at this heat time.** No zero lies at depth `|y| ≥ 4η` with `|y| + 2τα ≥ d + 12η`. -/
+theorem riemannHeat_ne_zero_of_deep (h : PowerRange d η E T t X τ) {y : ℝ} (hy1 : 4 * η ≤ |y|)
+    (hy2 : |y| ≤ 1 / 2) (hyc : d + 12 * η ≤ |y| + 2 * τ * (horizontalSlope X).re) :
+    riemannHeat τ ((X : ℂ) + I * y) ≠ 0 := by
+  have hτ := h.hτ
+  rw [riemannHeat_eq_halfGaussAverage hτ X y]
+  apply add_conj_ne_zero_of_norm_ne
+  have hη := h.hη
+  rcases le_or_gt 0 y with hpos | hneg
+  · rw [abs_of_nonneg hpos] at hy1 hy2 hyc
+    exact ne_of_lt (h.norm_opposite_lt hy1 hy2 hyc)
+  · rw [abs_of_neg hneg] at hy1 hy2 hyc
+    have hn := h.norm_opposite_lt hy1 hy2 hyc
+    rw [neg_neg] at hn
+    exact ne_of_gt hn
 
 end PowerRange
 
@@ -402,16 +427,16 @@ theorem eventually_power_conditions {η : ℝ} (hη : 0 < η) :
 /-- **The range of the complex saddle.** Above a uniform dyadic height, at every height near a typical height of
 level `η³/40000`, the half-Gauss errors are uniformly small for `16η ≤ 2τα ≤ 1`. -/
 theorem eventually_powerRange {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
-    ∀ᶠ T : ℝ in atTop, ∀ t : ℝ, zetaTypicalHeight η (powerLevel η) T t →
+    ∀ᶠ T : ℝ in atTop, ∀ d t : ℝ, DepthTypical d η (powerLevel η) T t →
       ∀ X : ℝ, |X - t| ≤ η / 2 → ∀ τ : ℝ, 0 < τ → τ ≤ 1 / 8 →
       16 * η ≤ 2 * τ * (horizontalSlope X).re → 2 * τ * (horizontalSlope X).re ≤ 1 →
-      PowerRange η (powerLevel η) T t X τ := by
+      PowerRange d η (powerLevel η) T t X τ := by
   obtain ⟨A, hA⟩ := eventually_atTop.mp (eventually_power_conditions hη)
   obtain ⟨X₀, hX₀⟩ := eventually_atTop.mp (tendsto_horizontalSlope_re.eventually_ge_atTop A)
   filter_upwards [eventually_ge_atTop (max X₀ 1000 + 2), eventually_ge_atTop (8 : ℝ)] with T hTbig hT
-  intro t htyp X hXt τ hτ hτ8 hc1 hc2
+  intro d t htyp X hXt τ hτ hτ8 hc1 hc2
   have hXt' := abs_le.mp hXt
-  have hTX : T - 1 ≤ X := by linarith only [htyp.1.1, hXt'.1, hη8]
+  have hTX : T - 1 ≤ X := by linarith only [htyp.mem.1, hXt'.1, hη8]
   have hXm : max X₀ 1000 ≤ X := by linarith only [hTbig, hTX]
   have hX : 1000 ≤ X := (le_max_right _ _).trans hXm
   have hX0 : 0 < X := by linarith only [hX]
@@ -574,24 +599,26 @@ theorem eventually_powerRange {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
     linarith only [hslope, hT2, hfar1', hα8]
   · linarith only [hrefl, hfar2']
 
-/-- **Reality at every later heat time, near a typical height of power level.** -/
-theorem eventually_riemannHeat_zeros_real_of_power_typical {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
-    ∀ᶠ T : ℝ in atTop, ∀ t : ℝ, zetaTypicalHeight η (powerLevel η) T t →
+/-- **Reality at every later heat time, near a height of depth `d`.** Once `2τα ≥ d + 16η`, every zero over the height is
+real. -/
+theorem eventually_riemannHeat_zeros_real_of_depth {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
+    ∀ᶠ T : ℝ in atTop, ∀ d t : ℝ, DepthTypical d η (powerLevel η) T t →
       ∀ X : ℝ, |X - t| ≤ η / 2 → ∀ τ : ℝ, 0 < τ →
-      8 * η ≤ τ * (horizontalSlope X).re →
+      d + 16 * η ≤ 2 * τ * (horizontalSlope X).re →
       ∀ z : ℂ, z.re = X → riemannHeat τ z = 0 → z.im = 0 := by
   obtain ⟨X₀, hglobal⟩ := riemannHeat_zeros_real_twoThirds (ε := 1 / 3) (by norm_num)
   filter_upwards [eventually_powerRange hη hη8, eventually_ge_atTop (|X₀| + 202)] with T hrange hT
-  intro t h X hXt τ hτ hprod z hre hz
+  intro d t h X hXt τ hτ hprod z hre hz
   have hXt' := (abs_le.mp hXt).1
-  have hXbig : |X₀| + 200 ≤ X := by linarith only [hT, h.1.1, hXt', hη8]
+  have hXbig : |X₀| + 200 ≤ X := by linarith only [hT, h.mem.1, hXt', hη8]
   have hX : 0 < X := by linarith only [hXbig, abs_nonneg X₀]
   have hzabs : |z.re| = X := by rw [hre, abs_of_pos hX]
+  have hc1 : 16 * η ≤ 2 * τ * (horizontalSlope X).re := by linarith only [hprod, h.hd]
   rcases le_or_gt (1 / 8) τ with h8 | h8
   · exact ((mem_realRootedTimes_iff hτ.le).mpr (newmanConstant_lt_eighth.le.trans h8)).2 z hz
   by_cases hc2 : 2 * τ * (horizontalSlope X).re ≤ 1
   · by_contra him
-    have hne := (hrange t h X hXt τ hτ h8.le (by linarith only [hprod]) hc2).riemannHeat_ne_zero him
+    have hne := (hrange d t h X hXt τ hτ h8.le hc1 hc2).riemannHeat_ne_zero hprod him
       (abs_im_le_half_of_riemannHeat_eq_zero_of_nonneg hτ.le hz)
     have hrepr : (X : ℂ) + I * z.im = z := by
       apply Complex.ext <;> simp [← hre]
@@ -608,9 +635,81 @@ theorem eventually_riemannHeat_zeros_real_of_power_typical {η : ℝ} (hη : 0 <
         _ = X := (height_eq hX).symm
         _ = |z.re| := hzabs.symm
 
+/-- **The linear depth law, lower side, with the sharp constant.** Near a height of depth `d`, every zero of `H_τ` has
+`|Im z| ≤ max(4η, d + 12η − τ log(X/2π))`: outside crowds, depth falls at least at rate `log X`. -/
+theorem eventually_abs_im_le_of_depth {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
+    ∀ᶠ T : ℝ in atTop, ∀ d t : ℝ, DepthTypical d η (powerLevel η) T t →
+      ∀ X : ℝ, |X - t| ≤ η / 2 → ∀ τ : ℝ, 0 < τ → τ ≤ 1 / 8 →
+      16 * η ≤ τ * Real.log (X / (2 * Real.pi)) → τ * Real.log (X / (2 * Real.pi)) ≤ 1 →
+      ∀ z : ℂ, z.re = X → riemannHeat τ z = 0 →
+        |z.im| ≤ max (4 * η) (d + 12 * η - τ * Real.log (X / (2 * Real.pi))) := by
+  filter_upwards [eventually_powerRange hη hη8] with T hrange
+  intro d t h X hXt τ hτ hτ8 hc1 hc2 z hre hz
+  have hslope : 2 * τ * (horizontalSlope X).re = τ * Real.log (X / (2 * Real.pi)) := by
+    rw [horizontalSlope_re]
+    ring
+  rw [← hslope] at hc1 hc2 ⊢
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨h1, h2⟩ := max_lt_iff.mp hcon
+  have hhalf := abs_im_le_half_of_riemannHeat_eq_zero_of_nonneg hτ.le hz
+  have hne := (hrange d t h X hXt τ hτ hτ8 hc1 hc2).riemannHeat_ne_zero_of_deep (y := z.im) h1.le hhalf
+    (by linarith only [h2])
+  have hrepr : (X : ℂ) + I * z.im = z := by
+    apply Complex.ext <;> simp [← hre]
+  exact hne (by rw [hrepr]; exact hz)
+
+/-- Every height of the unit window is near a height of depth `d`. -/
+def depthWindow (d η T X : ℝ) : Prop :=
+  ∀ Y : ℝ, |Y - X| ≤ 1 → ∃ t : ℝ, DepthTypical d η (powerLevel η) T t ∧ |Y - t| ≤ η / 2
+
+/-- **The local constant at depth `d`.** On a unit window of depth `d`, outside crowds,
+`Λ_X log((X−1)/2π) ≤ d + 16η`. -/
+theorem eventually_localNewmanConstant_le_of_depthWindow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
+    ∀ᶠ T : ℝ in atTop, ∀ d X : ℝ, X ∈ Icc T (2 * T) → depthWindow d η T X → 0 ≤ d →
+      localNewmanConstant X ≤ (d + 16 * η) / Real.log ((X - 1) / (2 * Real.pi)) := by
+  filter_upwards [eventually_riemannHeat_zeros_real_of_depth hη hη8,
+    eventually_ge_atTop (2 * Real.pi * Real.exp 1 + 2)] with T hfuture hT
+  intro d X hXT hwindow hd
+  let L := Real.log ((X - 1) / (2 * Real.pi))
+  let s := (d + 16 * η) / L
+  have hπ : 0 < 2 * Real.pi := by positivity
+  have hratio : Real.exp 1 ≤ (X - 1) / (2 * Real.pi) := by
+    rw [le_div_iff₀ hπ]
+    linarith only [hT, hXT.1]
+  have hratio0 : 0 < (X - 1) / (2 * Real.pi) := (Real.exp_pos 1).trans_le hratio
+  have hL1 : 1 ≤ L := by
+    have hh := Real.log_le_log (Real.exp_pos 1) hratio
+    simpa only [Real.log_exp] using hh
+  have hL : 0 < L := by linarith only [hL1]
+  have hs : 0 < s := by dsimp only [s]; positivity
+  have hsL : s * L = d + 16 * η := by dsimp only [s]; rw [div_mul_cancel₀ _ hL.ne']
+  apply localNewmanConstant_le
+  refine ⟨hs.le, ?_⟩
+  intro τ hsτ z hz hzx
+  obtain ⟨t, htyp, hnear⟩ := hwindow z.re hzx
+  have hY : X - 1 ≤ z.re := by linarith only [(abs_le.mp hzx).1]
+  have hα : L ≤ 2 * (horizontalSlope z.re).re := by
+    have hh := Real.log_le_log hratio0 (div_le_div_of_nonneg_right hY hπ.le)
+    rw [horizontalSlope_re]
+    dsimp only [L] at hh ⊢
+    linarith only [hh]
+  have hα0 : 0 ≤ (horizontalSlope z.re).re := by linarith only [hα, hL1]
+  have hstart : d + 16 * η ≤ 2 * s * (horizontalSlope z.re).re := by
+    have hh := mul_le_mul_of_nonneg_left hα hs.le
+    nlinarith only [hh, hsL]
+  have hprod : d + 16 * η ≤ 2 * τ * (horizontalSlope z.re).re :=
+    hstart.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsτ (by norm_num)) hα0)
+  exact hfuture d t htyp z.re hnear τ (hs.trans_le hsτ) hprod z rfl hz
+
 /-- Every height of the unit window is near a typical height of power level. -/
 def powerTypicalWindow (η T X : ℝ) : Prop :=
   ∀ Y : ℝ, |Y - X| ≤ 1 → ∃ t : ℝ, zetaTypicalHeight η (powerLevel η) T t ∧ |Y - t| ≤ η / 2
+
+theorem powerTypicalWindow.depthWindow {η T X : ℝ} (h : powerTypicalWindow η T X) (hT : 1 ≤ T) :
+    depthWindow 0 η T X := fun Y hY => by
+  obtain ⟨t, ht, hYt⟩ := h Y hY
+  exact ⟨t, ht.depthTypical hT, hYt⟩
 
 private theorem exists_unit_interval_net {η : ℝ} (hη : 0 < η) :
     ∃ s : Finset ℝ, (∀ v ∈ s, |v| ≤ 1) ∧ ∀ w : ℝ, |w| ≤ 1 → ∃ v ∈ s, |w - v| ≤ η := by
@@ -714,39 +813,11 @@ theorem exists_volume_not_powerTypicalWindow_le_rpow {η : ℝ} (hη : 0 < η) (
 theorem eventually_localNewmanConstant_le_of_powerTypicalWindow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :
     ∀ᶠ T : ℝ in atTop, ∀ X ∈ Icc T (2 * T), powerTypicalWindow η T X →
       localNewmanConstant X ≤ 16 * η / Real.log ((X - 1) / (2 * Real.pi)) := by
-  filter_upwards [eventually_riemannHeat_zeros_real_of_power_typical hη hη8,
-    eventually_ge_atTop (2 * Real.pi * Real.exp 1 + 2)] with T hfuture hT
+  filter_upwards [eventually_localNewmanConstant_le_of_depthWindow hη hη8,
+    eventually_ge_atTop (1 : ℝ)] with T hb hT
   intro X hXT hwindow
-  let L := Real.log ((X - 1) / (2 * Real.pi))
-  let s := 16 * η / L
-  have hπ : 0 < 2 * Real.pi := by positivity
-  have hratio : Real.exp 1 ≤ (X - 1) / (2 * Real.pi) := by
-    rw [le_div_iff₀ hπ]
-    linarith only [hT, hXT.1]
-  have hratio0 : 0 < (X - 1) / (2 * Real.pi) := (Real.exp_pos 1).trans_le hratio
-  have hL1 : 1 ≤ L := by
-    have hh := Real.log_le_log (Real.exp_pos 1) hratio
-    simpa only [Real.log_exp] using hh
-  have hL : 0 < L := by linarith only [hL1]
-  have hs : 0 < s := by dsimp only [s]; positivity
-  have hsL : s * L = 16 * η := by dsimp only [s]; rw [div_mul_cancel₀ _ hL.ne']
-  apply localNewmanConstant_le
-  refine ⟨hs.le, ?_⟩
-  intro τ hsτ z hz hzx
-  obtain ⟨t, htyp, hnear⟩ := hwindow z.re hzx
-  have hY : X - 1 ≤ z.re := by linarith only [(abs_le.mp hzx).1]
-  have hα : L ≤ 2 * (horizontalSlope z.re).re := by
-    have hh := Real.log_le_log hratio0 (div_le_div_of_nonneg_right hY hπ.le)
-    rw [horizontalSlope_re]
-    dsimp only [L] at hh ⊢
-    linarith only [hh]
-  have hα0 : 0 ≤ (horizontalSlope z.re).re := by linarith only [hα, hL1]
-  have hstart : 8 * η ≤ s * (horizontalSlope z.re).re := by
-    have hh := mul_le_mul_of_nonneg_left hα hs.le
-    nlinarith only [hh, hsL]
-  have hprod : 8 * η ≤ τ * (horizontalSlope z.re).re :=
-    hstart.trans (mul_le_mul_of_nonneg_right hsτ hα0)
-  exact hfuture t htyp z.re hnear τ (hs.trans_le hsτ) hprod z rfl hz
+  have h := hb 0 X hXT (hwindow.depthWindow hT) le_rfl
+  rwa [zero_add] at h
 
 private theorem eventually_log_le_twice_window_log :
     ∀ᶠ X : ℝ in atTop, 0 < Real.log ((X - 1) / (2 * Real.pi)) ∧

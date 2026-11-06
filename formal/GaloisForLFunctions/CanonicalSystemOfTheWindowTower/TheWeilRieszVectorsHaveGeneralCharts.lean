@@ -321,6 +321,7 @@ theorem logarithmicBackwardConvolution_chartForcing_zero (C : ChartCutoff)
       one_mul]
     rfl
   have hlim := tendsto_nhds_unique (hl.congr' he) hr
+  rw [evalVectorLeftTrace]
   simpa only [logarithmicBackwardConvolution, sub_zero] using hlim
 
 private theorem inner_polar_chartPhysical (a : PrecontactAperture) (z : ℂ) (σ : ℝ) :
@@ -422,6 +423,7 @@ theorem logarithmicForcing_ae (a : PrecontactAperture) (z : ℂ) :
     filter_upwards [chartPhysical_ae a z] with y hy
     rw [show (u : SoninL2) y = _ from hy]
   rw [hint, hr hcentral]
+  exact (add_sub_assoc _ _ _).symm
 
 /-- **The literal forcing formula.** On the positive half-line the chart forcing is the cutoff times
 the exponential, mass, bounded and prime terms, plus the commutator. `N` may be any finite set
@@ -448,11 +450,11 @@ theorem chartForcing_ae (C : ChartCutoff) (a : PrecontactAperture)
     with y hi hadd hm ht hk hg hy
   change (indicatorCutoff (Ici (0 : ℝ)) measurableSet_Ici (C.mult τg + C.comm.op τu)) y = _
   rw [hi, indicator_of_mem (show y ∈ Ici (0 : ℝ) from hy), hadd, Pi.add_apply, hm, hk]
-  have hcomm : (∫ t : ℝ, C.comm.toFun y t * τu t) = C.commutatorIntegral (chartSource a z) y := by
+  have hcomm : C.comm.apply (τu : ℝ → ℂ) y = C.commutatorIntegral (chartSource a z) y := by
+    change (∫ t : ℝ, logarithmicCutoffKernel C.toFun y t * τu t) = _
     apply integral_congr_ae
     filter_upwards [hu0] with t ht
     rw [ht]
-    rfl
   rw [hcomm]
   congr 1
   by_cases hya : y < 2 * a.1.1
@@ -467,7 +469,9 @@ theorem chartForcing_ae (C : ChartCutoff) (a : PrecontactAperture)
     at hg
   rw [show (g : RealLineL2) (y + -a.1.1) = ((g : suzukiApertureHilbert a.1) : ℝ → ℂ) (y + -a.1.1)
     from rfl, hg hx, continuousWeilRemainderProfile]
-  rw [← sub_eq_add_neg y a.1.1]
+  have hshift : (MellinL2.realTranslationEquiv (-a.1.1)) y = y - a.1.1 :=
+    (sub_eq_add_neg y a.1.1).symm
+  simp only [hshift]
   -- The polar moments in the left-endpoint coordinate.
   have hm1 : inner ℂ (ccmPolarApertureVector a.1 (-1 / 2)) u =
       (Real.exp (-((-1 / 2) * a.1.1)) : ℂ) *
@@ -477,7 +481,6 @@ theorem chartForcing_ae (C : ChartCutoff) (a : PrecontactAperture)
       (Real.exp (-((1 / 2) * a.1.1)) : ℂ) *
         ∫ t : ℝ, (Real.exp ((1 / 2) * t) : ℂ) * chartSource a z t := by
     rw [inner_polar_chartPhysical, moment_shift]
-  change _ = _ + _ * evalVectorContinuousRepresentative a z (y - a.1.1) + _ + _
   rw [show inner ℂ (ccmPolarApertureVector a.1 (-1 / 2)) (chartPhysical a z) = _ from hm1,
     show inner ℂ (ccmPolarApertureVector a.1 (1 / 2)) (chartPhysical a z) = _ from hm2,
     convolution_shift]

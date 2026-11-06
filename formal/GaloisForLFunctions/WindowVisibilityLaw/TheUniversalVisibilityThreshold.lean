@@ -346,15 +346,18 @@ theorem exp_two_mul_le_of_windowPositiveAt_of_cellCount {Z : ZeroConfig} (hZ : T
   have h := pairEnergy_le_of_windowPositiveAt_of_cellCount hZ ha hℓ hδ hσ hρ₀ hre him hsea hcell hpos
   obtain ⟨E, hEd⟩ : ∃ E, E = (K / 2 : ℝ) * ℓ * Real.exp (2 * (2 * π / ℓ + σ) * a) := ⟨_, rfl⟩
   rw [← hEd] at h ⊢
-  have hk0 : (0 : ℝ) < Z.mult ρ₀ := by exact_mod_cast Nat.pos_of_ne_zero
-    (by have := Z.one_le_mult ρ₀ hρ₀; omega)
+  have hk0 : (0 : ℝ) < Z.mult ρ₀ := by
+    have h1 : 0 < Z.mult ρ₀ := Z.one_le_mult ρ₀ hρ₀
+    exact_mod_cast h1
   have hS : pairEnergy δ a ≤ E / (Z.mult ρ₀ : ℝ) := by
     rw [le_div_iff₀ hk0]
     linarith only [h]
   unfold pairEnergy at hS
   have hsinh : Real.sinh (2 * δ * a) ≤ 2 * δ * (E / (Z.mult ρ₀ : ℝ) + a) := by
     have h1 : Real.sinh (2 * δ * a) / (2 * δ) ≤ E / (Z.mult ρ₀ : ℝ) + a := by linarith only [hS]
-    rwa [div_le_iff₀ (by positivity), mul_comm] at h1
+    calc Real.sinh (2 * δ * a) ≤ (E / (Z.mult ρ₀ : ℝ) + a) * (2 * δ) :=
+          (div_le_iff₀ (by positivity)).mp h1
+      _ = _ := by ring
   have hsmall : Real.exp (-(2 * δ * a)) ≤ 1 := by
     rw [Real.exp_le_one_iff]
     have : 0 ≤ 2 * δ * a := by positivity

@@ -142,9 +142,10 @@ theorem ofReal_insertion_eq_tsum_pairs (hκ : 0 < κ) (hℓ : 0 < ℓ)
         (f (x + ((p.1 + p.2 : ℕ) : ℝ) * ℓ) : ℂ) =
       Complex.exp ((((p.1 : ℝ) - (p.2 : ℝ)) * θ : ℝ) * I) * (f (x + (k : ℝ) * ℓ) : ℂ) := by
     intro p hp
-    rw [Finset.mem_antidiagonal.mp hp]
+    rw [Finset.HasAntidiagonal.mem_antidiagonal.mp hp]
   rw [Finset.sum_congr rfl e, ← Finset.sum_mul, ← ofReal_cosSum_eq_sum_antidiagonal]
   push_cast
+  rfl
 
 theorem summable_insertion (hκ : 0 < κ) (hℓ : 0 < ℓ)
     (hC : ∀ x, x₀ ≤ x → |f x| ≤ C * Real.exp (-κ * x)) {x : ℝ} (hx : x₀ ≤ x) (θ : ℝ) :

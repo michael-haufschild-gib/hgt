@@ -111,7 +111,9 @@ theorem positive_xiEndpointCycleFamily_iff_rh :
       ∑' q, (xiEndpointColor q : ℝ) ^ (n + 1) := by
     rw [← xiEndpointCharacter_all_cycles_eq_source_iff_rh.mpr hRH n,
       xiEndpointCharacter, wordCharacter_finRotate]
-  simpa only [he] using wordCharacter_positiveCycleFamily xiEndpointColor
+  rw [show xiEndpointSourceCycle =
+    (fun n => ∑' q, (xiEndpointColor q : ℝ) ^ (n + 1)) from funext he]
+  exact wordCharacter_positiveCycleFamily xiEndpointColor
     summable_xiEndpointColor tsum_xiEndpointColor
 
 /-- The arithmetic response jets prescribe a positive cycle family exactly under RH. -/
