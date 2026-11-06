@@ -6,6 +6,19 @@ import GaloisForLFunctions.BlackHoleRingdown.TheSharpAnalyticBoundary
 import GaloisForLFunctions.BlackHoleRingdown.TheProbesPreserveEveryResonance
 import GaloisForLFunctions.BlackHoleRingdown.TheEchoSpikesAndTheirGaussianObservation
 import GaloisForLFunctions.BlackHoleRingdown.TheGaussianObservationOfTheEchoSource
+import GaloisForLFunctions.BlackHoleRingdown.TheExactLiftOfTheModularWave
+import GaloisForLFunctions.BlackHoleRingdown.TheVerticalBoundsOfTheEisensteinTail
+import GaloisForLFunctions.BlackHoleRingdown.TheInverseXiContour
+import GaloisForLFunctions.BlackHoleRingdown.TheNormalizedEisensteinFunction
+import GaloisForLFunctions.BlackHoleRingdown.TheEisensteinWavePacket
+import GaloisForLFunctions.BlackHoleRingdown.TheMetricOfTheModularHorizon
+import GaloisForLFunctions.BlackHoleRingdown.TheFieldIsSmoothAcrossTheHorizon
+import GaloisForLFunctions.BlackHoleRingdown.TheRingdownExpansion
+import GaloisForLFunctions.BlackHoleRingdown.TheExpansionIsUniformAtLateTimes
+import GaloisForLFunctions.BlackHoleRingdown.TheModesOfTheRingdown
+import GaloisForLFunctions.BlackHoleRingdown.TheConvolutionOfThePulseWithTheEchoes
+import GaloisForLFunctions.BlackHoleRingdown.TheReflectedSignalIsTheEchoTrain
+import GaloisForLFunctions.BlackHoleRingdown.TheFieldCarriesTheCausalSymbol
 
 /-!
 # Black-hole ringdown and the zeros of zeta
@@ -19,4 +32,10 @@ RH is equivalent to analyticity above the sharp quarter-line damping boundary. F
 partners have a fixed sum of damping rates. The raw echo train has unbounded arrival spikes;
 Gaussian observation integrals converge absolutely, retain the exact source transform, and preserve every
 arithmetic pole with its multiplicity.
+
+On the massless topological AdS black hole with horizon `PSL₂(ℤ)\ℍ`, an Eisenstein wave packet lifts to
+exact solutions of the conformally coupled wave equation of the metric, smooth across the future horizon.
+Their expansion in damped modes has one mode per zero, on the minus branch only, with a remainder that
+decays faster than every exponential, uniformly at late times. The reflected signal is the pulse convolved
+with the echo train minus its mean growth, and the causal symbol is the transfer function of the field.
 -/

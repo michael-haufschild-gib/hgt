@@ -46,8 +46,8 @@ Folder `formal/GaloisForLFunctions/BlackHoleRingdown/`, umbrella `BlackHoleRingd
 **Echo train.** For Re s > 1: the Beta integral with x = e^{−v} gives ∫₀^∞e^{−(s−½)v}(1−e^{−v})^{−½}dv = B(s−½,½) = √πΓ(s−½)/Γ(s). Translating by L_c = 2 log c multiplies by c^{−(2s−1)}, so summing with weights ϕ(c)/c gives √πΓ(s−½)/Γ(s)·Σϕ(c)c^{−2s} = Λ(2s−1)/Λ(2s), with Fubini justified by ϕ(c) ≤ c. Taking s = D+½−iω, this is the retarded transform of e^{−Dt}K(t) for Im ω > ½−D, and it equals (s/(s−1))·S_cusp(z).
 
 ## Not formalized
-- **Radial reduction.** `topologicalPotential` and `nariaiPotential` are defined by their standard formulas. Reducing the wave operator on each metric to these potentials is on paper only.
-- **Full-field selection.** For a horizon packet in the Eisenstein channel, the n-th radial residue carries e^{∓iξt}, paired with φ(½∓iξ) in the reflected term. Closing the ξ contour gives poles only where φ(D+½−iω) has them, so ω₋ is excited and ω₊ is not. This is a paper sketch: it needs Eisenstein continuation and growth bounds. Lean proves the divisor of the symbol and its retarded-transform identity, not that the full field carries this symbol.
+- **Radial reduction, Nariai.** `nariaiPotential` is defined by its standard formula; reducing the wave operator on that metric is on paper only. The hyperbolic case is formalized in `modular-horizon-full-field-ringdown.md`.
+- **Full-field selection.** Formalized on the modular horizon for Gaussian Eisenstein packets in `modular-horizon-full-field-ringdown.md`.
 - **Real black holes.** The law ω_l = Ωl+b+O(1/l) for Schwarzschild and fixed-(m,n) Kerr bands is literature input. Hawking's horizon topology theorem, which excludes hyperbolic horizons for asymptotically flat black holes, is also literature input.
 
 ## Limits of the no-go
