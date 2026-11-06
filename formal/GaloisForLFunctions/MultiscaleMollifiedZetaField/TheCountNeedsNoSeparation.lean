@@ -23,23 +23,25 @@ namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 variable {v : ℝ → ℝ}
 
 /-- A maximal separated subfamily: every member of the family lies within `r` of it. -/
-theorem exists_maximal_separated {ι : Type*} [DecidableEq ι] (S : Finset ι) (g : ι → ℝ) {r : ℝ} (hr : 0 < r) :
+theorem exists_maximal_separated {ι : Type*} (S : Finset ι) (g : ι → ℝ) {r : ℝ} (hr : 0 < r) :
     ∃ S₀ ⊆ S, (∀ a ∈ S₀, ∀ b ∈ S₀, a ≠ b → r ≤ |g a - g b|) ∧ ∀ a ∈ S, ∃ b ∈ S₀, |g a - g b| < r := by
   classical
-  obtain ⟨S₀, hS₀, hmax⟩ := Finset.exists_max_image
-    (S.powerset.filter fun P => ∀ a ∈ P, ∀ b ∈ P, a ≠ b → r ≤ |g a - g b|) Finset.card
-    ⟨∅, Finset.mem_filter.mpr ⟨Finset.empty_mem_powerset _, by simp⟩⟩
-  obtain ⟨hsub, hsep⟩ := Finset.mem_filter.mp hS₀
+  obtain ⟨Sep, hSep⟩ : ∃ Sep : Finset ι → Prop,
+      ∀ P, Sep P ↔ ∀ a ∈ P, ∀ b ∈ P, a ≠ b → r ≤ |g a - g b| := ⟨_, fun _ => Iff.rfl⟩
+  obtain ⟨S₀, hS₀, hmax⟩ := Finset.exists_max_image (S.powerset.filter Sep) Finset.card
+    ⟨∅, Finset.mem_filter.mpr ⟨Finset.empty_mem_powerset _, (hSep _).2 (by simp)⟩⟩
+  obtain ⟨hsub, hsep0⟩ := Finset.mem_filter.mp hS₀
+  have hsep := (hSep _).1 hsep0
   have hsub' := Finset.mem_powerset.mp hsub
   refine ⟨S₀, hsub', hsep, fun a ha => ?_⟩
   by_contra hno
-  push_neg at hno
+  push Not at hno
   have haS₀ : a ∉ S₀ := fun h => by
     have := hno a h
     rw [sub_self, abs_zero] at this
     linarith
-  have hins : insert a S₀ ∈ S.powerset.filter fun P => ∀ a ∈ P, ∀ b ∈ P, a ≠ b → r ≤ |g a - g b| := by
-    refine Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr (Finset.insert_subset ha hsub'), ?_⟩
+  have hins : insert a S₀ ∈ S.powerset.filter Sep := by
+    refine Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr (Finset.insert_subset ha hsub'), (hSep _).2 ?_⟩
     intro x hx y hy hxy
     rcases Finset.mem_insert.mp hx with hx' | hx'
     · rcases Finset.mem_insert.mp hy with hy' | hy'
@@ -163,7 +165,7 @@ theorem exists_card_hyperbolic_zeros_unseparated_le (hv : ContDiff ℝ 2 v)
     (fun ρ : zetaZeroConfig.carrier => (ρ : ℂ).im) hr
   have hcount := hT α B₀ hα0.le hxL hB₀low hB₀1 S₀ (fun ρ hρ => hS ρ (hS₀ hρ)) hsep
   -- the groups around the separated family
-  obtain ⟨G, hGdef⟩ : ∃ G : zetaZeroConfig.carrier → Finset zetaZeroConfig.carrier, G = fun b =>
+  obtain ⟨G, hGdef⟩ : ∃ G : zetaZeroConfig.carrier → Finset zetaZeroConfig.carrier, G = fun b : zetaZeroConfig.carrier =>
       S.filter fun a : zetaZeroConfig.carrier => |(a : ℂ).im - (b : ℂ).im| < 1 / (5 * (c * Real.log T)) :=
     ⟨_, rfl⟩
   have hGmem : ∀ b a, a ∈ G b ↔ a ∈ S ∧ |(a : ℂ).im - (b : ℂ).im| < 1 / (5 * (c * Real.log T)) := by

@@ -271,8 +271,7 @@ theorem interpolation_exponent_bounds {r : ℝ} (hr : 0 < r) :
   exact ⟨div_nonneg (by linarith) h3.le, by rw [div_lt_one h3]; linarith⟩
 
 /-- An interpolation below exponent one is eventually beaten by a linear function. -/
-theorem eventually_interpolation_le {M₁ K θ ε : ℝ} (hM₁ : 0 ≤ M₁) (hK : 0 ≤ K) (hθ0 : 0 ≤ θ) (hθ1 : θ < 1)
-    (hε : 0 < ε) : ∀ᶠ y : ℝ in atTop, M₁ ^ (1 - θ) * (K * y) ^ θ ≤ ε * y := by
+theorem eventually_interpolation_le {M₁ K θ ε : ℝ} (hK : 0 ≤ K) (hθ1 : θ < 1) (hε : 0 < ε) : ∀ᶠ y : ℝ in atTop, M₁ ^ (1 - θ) * (K * y) ^ θ ≤ ε * y := by
   have hθ : 0 < 1 - θ := by linarith
   filter_upwards [(tendsto_rpow_atTop hθ).eventually_ge_atTop (M₁ ^ (1 - θ) * K ^ θ / ε),
     eventually_gt_atTop 0] with y hy hy0
@@ -330,7 +329,7 @@ theorem exists_bounds_near {c : ℂ} {r : ℝ} (hr : 0 < r) (hcre : c.re = 1 / 2
     linarith [hB z hz]
 
 /-- The size of the logarithm on the large circle is linear in `log X`. -/
-theorem eventually_large_circle_le {m : ℝ} (hm : 0 < m) :
+theorem eventually_large_circle_le (m : ℝ) :
     ∀ᶠ y : ℝ in atTop, 0 ≤ 18 * (y - Real.log m + 1) ∧ 18 * (y - Real.log m + 1) ≤ 19 * y := by
   filter_upwards [eventually_ge_atTop (18 * (|Real.log m| + 1))] with y hy
   have h0 := abs_nonneg (Real.log m)
@@ -354,8 +353,8 @@ theorem exists_section_bound_of_zero_free {c s₀ : ℂ} {r : ℝ} (hr : 0 < r) 
     rw [hM₁]
     exact le_max_right _ _
   have hlogX : Tendsto (fun X : ℕ => Real.log (X : ℝ)) atTop atTop := tendsto_log_natCast_atTop
-  have hev := hlogX.eventually (eventually_interpolation_le (M₁ := M₁) (K := 19) hM₁0 (by norm_num) hθ0 hθ1 hε)
-  have hev2 := hlogX.eventually (eventually_large_circle_le hm)
+  have hev := hlogX.eventually (eventually_interpolation_le (M₁ := M₁) (K := 19) (by norm_num) hθ1 hε)
+  have hev2 := hlogX.eventually (eventually_large_circle_le m)
   obtain ⟨X₁, hX₁⟩ := eventually_atTop.mp ((hbounds.and (hev.and hev2)).and
     ((eventually_ge_atTop X₀).and (eventually_ge_atTop 1)))
   have hs₁re : 0 ≤ (c - ((r / 2 : ℝ) : ℂ)).re := by
@@ -414,7 +413,8 @@ theorem exists_section_bound_of_zero_free {c s₀ : ℂ} {r : ℝ} (hr : 0 < r) 
     rw [hval, norm_mul, Complex.norm_exp]
     calc ‖moebiusPoly X c‖ * Real.exp (g (c - ((r / 2 : ℝ) : ℂ))).re ≤ A₀ * (X : ℝ) ^ ε :=
           mul_le_mul hA₀c hexp (Real.exp_pos _).le hA₀0
-      _ ≤ (A₀ + X₁) * (X : ℝ) ^ ε := mul_le_mul_of_nonneg_right (by positivity) (by positivity)
+      _ ≤ (A₀ + X₁) * (X : ℝ) ^ ε :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_right (Nat.cast_nonneg _)) (by positivity)
 
 /-- Subpower sections at `s₁` put every zero of `ζ` at or left of `s₁`. -/
 theorem zero_re_le_of_section_bound {s₁ : ℂ}
@@ -439,7 +439,7 @@ theorem zero_re_le_of_section_bound {s₁ : ℂ}
 theorem exists_zero_moebiusPoly_near {s₀ : ℂ} (hs₀ : s₀.re = 1 / 2 + zetaZeroWidth) {R : ℝ} (hR : 0 < R) (X₀ : ℕ) :
     ∃ X : ℕ, X₀ ≤ X ∧ ∃ z ∈ ball s₀ R, moebiusPoly X z = 0 := by
   by_contra hno
-  push_neg at hno
+  push Not at hno
   obtain ⟨r, hr⟩ : ∃ r : ℝ, r = min R 1 := ⟨_, rfl⟩
   have hr0 : 0 < r := by
     rw [hr]
@@ -501,8 +501,8 @@ theorem exists_mollified_error_eq_neg_one_near {s₀ : ℂ} (hs₀ : s₀.re = 1
 
 /-! ### The zeros of the Möbius polynomials read the width -/
 
-/-- **The zeros of `M_X` read the width.** `zetaZeroWidth ≤ β`, `β ≥ 0`, iff each compact set in `Re s > ½ + β` avoiding `s = 1` holds no zero of `M_X` for large `X`. -/
-theorem zetaZeroWidth_le_iff_moebiusPoly_zero_free {β : ℝ} (hβ : 0 ≤ β) :
+/-- **The zeros of `M_X` read the width.** `zetaZeroWidth ≤ β` iff each compact set in `Re s > ½ + β` avoiding `s = 1` holds no zero of `M_X` for large `X`. -/
+theorem zetaZeroWidth_le_iff_moebiusPoly_zero_free {β : ℝ} :
     zetaZeroWidth ≤ β ↔ ∀ K : Set ℂ, IsCompact K → (∀ z ∈ K, 1 / 2 + β < z.re) → (1 : ℂ) ∉ K →
       ∀ᶠ X : ℕ in atTop, ∀ z ∈ K, moebiusPoly X z ≠ 0 := by
   refine ⟨fun hw K hK hre h1 => eventually_moebiusPoly_ne_zero hK (fun z hz => by linarith [hre z hz]) h1, fun h => ?_⟩
@@ -545,7 +545,7 @@ theorem zetaZeroWidth_le_iff_moebiusPoly_zero_free {β : ℝ} (hβ : 0 ≤ β) :
 theorem riemannHypothesis_iff_moebiusPoly_zero_free :
     RiemannHypothesis ↔ ∀ K : Set ℂ, IsCompact K → (∀ z ∈ K, 1 / 2 < z.re) → (1 : ℂ) ∉ K →
       ∀ᶠ X : ℕ in atTop, ∀ z ∈ K, moebiusPoly X z ≠ 0 := by
-  have h := zetaZeroWidth_le_iff_moebiusPoly_zero_free (β := 0) le_rfl
+  have h := zetaZeroWidth_le_iff_moebiusPoly_zero_free (β := 0)
   simp only [add_zero] at h
   rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero, ← h]
   exact ⟨fun e => e.le, fun e => le_antisymm e zetaZeroWidth_nonneg⟩

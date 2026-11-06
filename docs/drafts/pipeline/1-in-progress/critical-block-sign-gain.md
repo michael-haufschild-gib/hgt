@@ -75,45 +75,33 @@ convergence for possible negative vectors remains open.
 Let `L=linearDefectCutoff c`, `M=N/L`,
 `P=Σ_{n≤M}x_n²`, and `S₇=Σ_{M<n≤N}(N/n)⁷x_n²`.
 
-Retain the raw far reserve before imposing a small-multiple restriction.
-The required fixed-`R` extension is
-`Q_N(w)≥(7/8)D_M(w)−C_R cS₇−o(log N/(log log N)^B)P`.
-Orthogonality to a growing conductor packet is essential. With
-`q=N^(1/(1+log log N)^5)` and controlled terminal leakage, the prefix
-floor would give `P=O(c(log log N)^5/log N)S₇` for negative far vectors.
-The fixed-ratio reserve is formalized below. The growing-packet absorption
-estimate remains open.
-
-The window-pole prefactor is at most `16(1+2e)c⁸/(g log N)` and its
-pole term at most `8e²cS₇`. Thus `c⁸/log N≤2R` gives total pole cost
-at most `256(1+2e)e² splineWindowConstant R cS₇/g`, without smallness of `R`.
-
-For compactness, split the top archimedean form into one quarter of the
+Split the top archimedean form into one quarter of the
 dyadic aliasing bound, one half of the high-frequency bound, and one
 unpaid quarter. The existing cross payment spends one eighth of the
 aliasing bound. This leaves one eighth of that reserve and one quarter
-of the original archimedean form. Public inputs:
-`prefix_block_ge`, `archForm_prefix_top_split_ge`,
-`primeSum_prefix_top_split`, `translate_masses_le`,
-`exists_top_archForm_dyadic_seventh_reserve`.
-The fixed-ratio reserve is, for `c≤(log N)^(9/64)` and `c⁸≤R log N`,
+of the original archimedean form.
+For every fixed `R,κ>0` and `B∈ℕ`, eventually in `N`, all
+`1≤c≤(log N)^(9/64)` with `c⁸≤R log N` and `w⊥V₁` satisfy
 
 `Q_N(w)≥(7/8)D_M(w)+(g/8c⁷)(log N)S₇−(C_S+C_*R)cS₇
           −κ(log N)/(1+log log N)^B P+archForm(top)/(4G)`,
 
 where `G=(c/N)Mφ`, `g=dyadicTopMassConstant`, and
-`C_*=128(1+2e)e² splineWindowConstant/g`. The free prefix tolerance `κ>0`
-can be absorbed using a growing conductor packet. Parameter choices use
+`C_*=128(1+2e)e² splineWindowConstant/g`. Parameter choices use
 `9/64<1/7` and `13/7<2`; no smallness condition on `R` is needed.
 
-After prefix absorption, negative vectors with `S₇=1` would have bounded
-archimedean energy. The logarithmic Gamma floor controls Fourier tails.
-A crude pole-cost bound suffices here; the signed limit still needs the
-sharp source. The raw and fixed-ratio reserves are formalized in
+The raw and fixed-ratio reserves are formalized in
 `CriticalArithmeticCorrelationTheory/TheFarReserveRetainsArchimedeanEnergy.lean`:
 `exists_prefix_top_window_reserve_retaining_archForm` and
 `exists_fixed_ratio_far_reserve_retaining_archForm`. Their actual-path audits
 passed with only standard axioms.
+
+The remaining absorption step requires a growing conductor packet. With
+`q=N^(1/(1+log log N)^5)` and controlled terminal leakage, its prefix floor
+would give `P=O(c(log log N)^5/log N)S₇` for negative far vectors. This is
+unproved. It would absorb the free prefix tolerance `κ>0` and bound the
+archimedean energy when `S₇=1`; the logarithmic Gamma floor would then
+control Fourier tails. The signed limit still needs the sharp source.
 
 Two spatial estimates complete the proposed compactness mechanism:
 

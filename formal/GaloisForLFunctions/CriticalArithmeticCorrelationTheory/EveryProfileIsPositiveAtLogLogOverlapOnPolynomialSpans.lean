@@ -374,3 +374,5 @@ theorem exists_universal_loglog_polynomial_span_coercivity :
 
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+
+#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_universal_loglog_polynomial_span_coercivity

@@ -42,7 +42,7 @@ theorem exists_saddle_core_card_lower :
   have ha0 : 0 < s - w / 10 := by linarith only [hs0, hws]
   have hb0 : 0 < s + w / 10 := by linarith only [hs0, hw1]
   have hlogs : 0 ≤ Real.log s := Real.log_nonneg (by linarith only [hsT, hT₀])
-  have ha := abs_le.mp (hrem (s - w / 10) (by linarith only [hsT, hws]))
+  have ha := abs_le.mp (hrem (s - w / 10) (by linarith only [hsT, hws, hs0]))
   have hb := abs_le.mp (hrem (s + w / 10) (by linarith only [hsT, hw1, hT₀]))
   have hlogπ : 2 * Real.log (4 * Real.pi) ≤ Real.log s := by
     have h := Real.log_le_log (by positivity) hsπ
@@ -53,7 +53,7 @@ theorem exists_saddle_core_card_lower :
     rw [show (4 : ℝ) * Real.pi = 2 * (2 * Real.pi) by ring,
       Real.log_mul (by norm_num) (by positivity)]
   have hloghalf := Real.log_le_log (by positivity : 0 < s / 2)
-    (show s / 2 ≤ s - w / 10 by linarith only [hws])
+    (show s / 2 ≤ s - w / 10 by linarith only [hws, hs0])
   rw [Real.log_div hs0.ne' (by norm_num)] at hloghalf
   have hhalf : Real.log s / 2 ≤ Real.log (s - w / 10) - Real.log (2 * Real.pi) := by
     linarith only [hloghalf, hlogπ, hlog4π]
@@ -75,7 +75,8 @@ theorem exists_saddle_core_card_lower :
     have heq : (w / 5 * (Real.log s / 2)) / (2 * Real.pi) =
         w * Real.log s / (20 * Real.pi) := by ring
     rw [heq] at h'
-    exact h'.trans (by convert hmain using 1 <;> ring)
+    rw [show s + w / 10 - (s - w / 10) = w / 5 by ring] at hmain
+    exact h'.trans hmain
   have hcost : 4 * C * Real.log s ≤ w * Real.log s / (40 * Real.pi) := by
     rw [le_div_iff₀ (by positivity : 0 < 40 * Real.pi)]
     have h := mul_le_mul_of_nonneg_right hwC hlogs
@@ -128,5 +129,21 @@ theorem exists_saddle_window_card_upper :
   have hwc := mul_le_mul_of_nonneg_left hw (show 0 ≤ 4 * C * Real.log s by positivity)
   rw [card_band_eq_twice_count ha0.le hab]
   nlinarith only [hN, hm, hc, hwc]
+
+/-- The total number of copies below height `T` is at most `2T log T` eventually. -/
+theorem exists_total_card_upper :
+    ∃ S : ℝ, 4 ≤ S ∧ ∀ T : ℝ, S ≤ T → ∀ F : Finset XiZeroCopy,
+      (∀ q ∈ F, |(q.1 : ℂ).im| ≤ T) → (F.card : ℝ) ≤ 2 * T * Real.log T := by
+  obtain ⟨S, hS, hclose⟩ := exists_xiSymmetricMass_close 1 (by norm_num)
+  refine ⟨S, hS, ?_⟩
+  intro T hT F hF
+  have hT0 : 0 ≤ T := by linarith only [hT, hS]
+  have hlog : 0 ≤ Real.log T := Real.log_nonneg (by linarith only [hT, hS])
+  have hmass := (abs_le.mp (hclose T hT)).2
+  have hπ : 1 / Real.pi ≤ 1 := (div_le_one Real.pi_pos).mpr
+    (by linarith only [Real.pi_gt_three])
+  have h := mul_le_mul_of_nonneg_right hπ (mul_nonneg hT0 hlog)
+  have hc := card_le_xiSymmetricMass_of_forall_abs_im_le hT0 hF
+  linarith only [hmass, h, hc]
 
 end GaloisForLFunctions.SquareRootThreshold.HausdorffSaddle
