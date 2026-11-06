@@ -138,7 +138,7 @@ theorem tendsto_gamma_ratio (σ : ℝ) {lam : ℝ} (hlam : 0 < lam) (μ : ℂ) :
   have hw : (lam : ℂ) * linePoint σ t + μ = (a : ℂ) + (τ : ℂ) * I := by
     apply Complex.ext <;> simp [linePoint, ha, hτdef]
   have hw' : (lam : ℂ) * (1 - linePoint σ t) + star μ = conj ((a' : ℂ) + (τ : ℂ) * I) := by
-    apply Complex.ext <;> simp [linePoint, ha', hτdef] <;> ring
+    apply Complex.ext <;> (simp [linePoint, ha', hτdef]; try ring)
   rw [hw, hw', Complex.Gamma_conj]
   have hS := stirlingShape_ne_zero a hτt
   have hS' : conj (stirlingShape a' τ) ≠ 0 :=
