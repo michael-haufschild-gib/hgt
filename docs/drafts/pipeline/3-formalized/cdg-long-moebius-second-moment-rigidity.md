@@ -1,8 +1,8 @@
 # Exact slope rigidity, quantifier collapse, and pure-Möbius equivalence for long critical-line moments
 
 - **ID:** CDG-LONG-MOEBIUS-RIGIDITY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0511/route-wd.md` §1 · `ConjugateDiagonalGeometry/NearLineLogMean/TwoSidedThetaMollifierTrap.lean`
 - **Statement:** For $M_X(s) = \sum_{1 \le n \le X} \mu(n) n^{-s}$ and $w = \mathrm{zetaZeroWidth}$, the coupled $[1, T]$ second moments at $X = \lfloor T^\theta \rfloor$ obey the unconditional slope law $\int_1^T |\zeta M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C_\theta T^{6 + 2w\theta}$ (and $\int_1^T |M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C_\theta T^{4 + 2w\theta}$) for all $\theta > 0, T \ge 1$ without zero-simplicity assumptions, while any cofinal-$\theta$, sparse-$T$ bound of growth $C_\theta T^{K + 2\beta\theta}$ (for either $|\zeta M_{\lfloor T^\theta \rfloor}|^2$ or $|M_{\lfloor T^\theta \rfloor}|^2$) forces $w \le \beta$, collapsing all quantifiers and fixed exponents $K \ge 0$ to universal $K = 6$ (resp. $K = 4$) and forbidding $\theta$-uniform constants $C$.
 
@@ -12,7 +12,7 @@ Resolve the exact $\theta$-slope, quantifier structure, pure-Möbius reduction, 
 ## Gates
 - [x] 0 → 1  in-progress: exact $2w\theta$ upper/lower slope, quantifier collapse, pure-Möbius equivalence, and $\theta$-uniformity no-go stated
 - [x] 1 → 2  fully-proven: `[PROVED HERE]`, complete unconditional paper proofs with zero unproved premises
-- [ ] 2 → 3  formalized: `formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean`
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean` (`riemannZeta_ne_zero_of_mem_Ioo_zero_one`, `exists_pure_moebius_moment_le_zetaZeroWidth`, `exists_moebius_mollifier_moment_le_zetaZeroWidth`, `zetaZeroWidth_le_of_cofinal_moebius_mollifier_slope`, `zetaZeroWidth_le_of_cofinal_pure_moebius_slope`, `zetaZeroWidth_le_iff_cofinal_moebius_mollifier_slope`, `cofinal_moebius_mollifier_slope_iff_forall`, `riemannHypothesis_iff_cofinal_moebius_mollifier`, `cofinal_moebius_mollifier_self_improves_to_all`, `riemannHypothesis_of_width_slope_saving`, `riemannHypothesis_iff_cofinal_pure_moebius_moment`, `cofinal_pure_moebius_moment_iff_cofinal_moebius_mollifier`, `eventually_exists_theta_pure_moebius_moment_gt`, `not_exists_theta_uniform_pure_moebius_moment`)
 
 ## Theorems and complete paper proofs `[PROVED HERE]`
 
@@ -40,8 +40,8 @@ for arbitrarily large $T$ (hence arbitrarily large $X$). By Markov's inequality 
 1. **Two-sided equivalence for `route-wd.md` §1 (`riemannHypothesis_iff_cofinal_moebius_mollifier`):** `RiemannHypothesis` holds if and only if there exists $K \ge 0$ such that for arbitrarily large $\theta > 0$, some $C_\theta \ge 0$ satisfies $\exists^\infty T,\ \int_1^T |\zeta M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C_\theta T^K$.
 2. **Total quantifier and exponent collapse (`cofinal_moebius_mollifier_slope_iff_forall`):** For every $\beta \ge 0$, the sparse/cofinal condition with existential $K \ge 0$ is unconditionally equivalent to the universal bound with $K = 6$, all $\theta > 0$, and all $T \ge 1$.
 3. **Self-improving width bootstrap (`riemannHypothesis_of_width_slope_saving`):** Any strict slope saving $2w - \Delta$ ($\Delta > 0$) below $2w$ forces $w = 0$, hence `RiemannHypothesis` and universal $K = 6$.
-4. **Pure-Möbius equivalence (`riemannHypothesis_iff_cofinal_pure_moebius_moment`):** `RiemannHypothesis` (and `route-wd.md` §1) is unconditionally equivalent to cofinal-$\theta$, sparse-$T$ polynomial boundedness $\int_1^T |M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C_\theta T^{K_0}$ (collapsing to $K_0 = 4$ for all $\theta > 0, T \ge 1$).
-5. **Unconditional $\theta$-nonuniformity (`not_exists_theta_uniform_pure_moebius_moment`):** For no $K \ge 0$ and $C \ge 0$ can $\int_1^T |M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C T^K$ hold for all $\theta > 0$ and all large $T$: fixing a large height $T_0 \ge 2$ from `eventually_not_uniform_moebius` and varying $\theta = \frac{\log m}{\log(2 T_0)}$ across all $m \ge 2$ realizes every integer length $\lfloor (2 T_0)^\theta \rfloor_+ = m$ on $[T_0, 2 T_0] \subseteq [1, 2 T_0]$, contradicting unboundedness in $m$. Thus $C_\theta \to \infty$ as $\theta \to \infty$ is unconditionally forced. $\square$
+4. **Pure-Möbius equivalence (`riemannHypothesis_iff_cofinal_pure_moebius_moment`, `cofinal_pure_moebius_moment_iff_cofinal_moebius_mollifier`):** `RiemannHypothesis` (and `route-wd.md` §1) is unconditionally equivalent to cofinal-$\theta$, sparse-$T$ polynomial boundedness $\int_1^T |M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)|^2\,dt \le C_\theta T^{K_0}$ (collapsing to $K_0 = 4$ for all $\theta > 0, T \ge 1$).
+5. **Unconditional $\theta$-nonuniformity (`eventually_exists_theta_pure_moebius_moment_gt`, `not_exists_theta_uniform_pure_moebius_moment`):** For every height-only bound $f : \mathbb{R} \to \mathbb{R}$, all sufficiently large $T \ge 2$ admit $m \ge 1$ with $\int_{T/2}^T \|M_m(\frac{1}{2}+it)\|^2 dt > f(T)$ by `eventually_not_uniform_moebius`; setting $\theta = \frac{\log(m + 1/2)}{\log T} > 0$ gives $\lfloor T^\theta \rfloor_+ = m$ and $\int_1^T \|M_{\lfloor T^\theta \rfloor}(\frac{1}{2}+it)\|^2 dt > f(T)$. In particular no $\theta$-independent constant $C$ can bound the pure Möbius moment across all $\theta > 0$ and $T \ge 1$. $\square$
 
 ## Log
-- 2026-11-06 — complete unconditional paper proofs recorded in `2-fully-proven`.
+- 2026-11-06 — formalized in `ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean` and wired into `ConjugateDiagonalGeometry.lean`.

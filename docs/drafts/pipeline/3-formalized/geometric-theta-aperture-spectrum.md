@@ -1,7 +1,7 @@
 # Positive aperture spectrum of the complete geometric theta chain
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Σ6
 
 For every integer `q≥2`, `0<a<1/2`, and real `b`,
@@ -38,3 +38,13 @@ This proves absolute convergence of every ordered-pair contribution.
 The statement covers infinitely many unequal atoms on one multiplicative
 chain. It does not yet assert literal all-rank source jets or positivity
 when distinct prime chains interact.
+
+## Lean
+
+`CompletedArithmeticForms/GeometricAtomApertureSpectrum.lean` proves
+`geometricAperturePhaseSum_pos`, `integral_geometricAperturePhaseSum_pos`,
+`summable_geometricPairApertureBlock_abs`,
+`geometricPairApertureBlock_eq_integral` and
+`geometricThetaApertureSpectrum_pos`.
+Direct source check passed. All five capstone dependency audits contain
+only `propext`, `Classical.choice`, `Quot.sound`.

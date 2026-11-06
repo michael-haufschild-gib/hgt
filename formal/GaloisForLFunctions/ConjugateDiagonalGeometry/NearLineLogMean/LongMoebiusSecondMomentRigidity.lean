@@ -532,11 +532,11 @@ theorem zetaZeroWidth_le_of_cofinal_moebius_mollifier_slope {β K : ℝ} (hβ : 
           RHTower.edPoly moebiusMollifierCoeff (Finset.Icc 1 X)
             (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
     have h1 := intervalIntegral.integral_add_adjacent_intervals
-      (hcontZ.intervalIntegrable volume 1 (γ - 1))
-      (hcontZ.intervalIntegrable volume (γ - 1) (γ + 1))
+      (hcontZ.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (γ - 1))
+      (hcontZ.intervalIntegrable _ _ : IntervalIntegrable _ volume (γ - 1) (γ + 1))
     have h2 := intervalIntegral.integral_add_adjacent_intervals
-      (hcontZ.intervalIntegrable volume 1 (γ + 1))
-      (hcontZ.intervalIntegrable volume (γ + 1) T)
+      (hcontZ.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (γ + 1))
+      (hcontZ.intervalIntegrable _ _ : IntervalIntegrable _ volume (γ + 1) T)
     have hnn1 : 0 ≤ ∫ u in (1 : ℝ)..(γ - 1),
         ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I) *
           RHTower.edPoly moebiusMollifierCoeff (Finset.Icc 1 X)
@@ -621,11 +621,11 @@ theorem zetaZeroWidth_le_of_cofinal_pure_moebius_slope {β K : ℝ} (hβ : 0 ≤
         ‖RHTower.edPoly moebiusMollifierCoeff (Finset.Icc 1 X)
           (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
     have h1 := intervalIntegral.integral_add_adjacent_intervals
-      (hcontM.intervalIntegrable volume 1 (γ - 1))
-      (hcontM.intervalIntegrable volume (γ - 1) (γ + 1))
+      (hcontM.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (γ - 1))
+      (hcontM.intervalIntegrable _ _ : IntervalIntegrable _ volume (γ - 1) (γ + 1))
     have h2 := intervalIntegral.integral_add_adjacent_intervals
-      (hcontM.intervalIntegrable volume 1 (γ + 1))
-      (hcontM.intervalIntegrable volume (γ + 1) T)
+      (hcontM.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (γ + 1))
+      (hcontM.intervalIntegrable _ _ : IntervalIntegrable _ volume (γ + 1) T)
     have hnn1 : 0 ≤ ∫ u in (1 : ℝ)..(γ - 1),
         ‖RHTower.edPoly moebiusMollifierCoeff (Finset.Icc 1 X)
           (((1 / 2 : ℝ) : ℂ) + (u : ℂ) * I)‖ ^ 2 :=
@@ -865,7 +865,8 @@ theorem eventually_exists_theta_pure_moebius_moment_gt (f : ℝ → ℝ) :
   have h1_half : 1 ≤ T / 2 := by linarith
   have hhalf_T : T / 2 ≤ T := by linarith
   have hadj := intervalIntegral.integral_add_adjacent_intervals
-    (hcont.intervalIntegrable volume 1 (T / 2)) (hcont.intervalIntegrable volume (T / 2) T)
+    (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (T / 2))
+    (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume (T / 2) T)
   have hnn : 0 ≤ ∫ t in (1 : ℝ)..(T / 2),
       ‖RHTower.edPoly moebiusMollifierCoeff (Finset.Icc 1 m)
         (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 :=

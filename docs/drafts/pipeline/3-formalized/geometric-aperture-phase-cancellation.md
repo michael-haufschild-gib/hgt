@@ -1,7 +1,7 @@
 # Strict aperture cancellation on a geometric phase chain
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Σ6
 
 Let `a>0`, `h≥0`, `0≤p<1`, `s>0`, `|z|=1`, and choose `N` with
@@ -30,6 +30,15 @@ of `f` nonnegative. At `k=0` it is strictly positive because
 The exact geometric-phase summation-by-parts theorem now gives strict
 positivity. [PROVED HERE]
 
-This is a common-center cancellation theorem. Its identification with the
-infinite literal aperture spectrum, and the interaction of distinct prime
-chains, remain separate obligations.
+The [infinite-spectrum theorem](geometric-theta-aperture-spectrum.md)
+identifies its radial integral with the literal ordinary-pair chain.
+Interaction of distinct prime chains remains open.
+
+## Lean
+
+`CompletedArithmeticForms/GeometricAtomApertureWeight.lean` proves
+`thetaCenterTailWeight_chain_reserve`,
+`geometricApertureWeight_secondDifference`,
+`geometricAperture_phase_sum_pos` and `geometricAperture_cosine_sum_pos`.
+Direct source check passed; capstone dependency audits contain only
+`propext`, `Classical.choice`, `Quot.sound`.

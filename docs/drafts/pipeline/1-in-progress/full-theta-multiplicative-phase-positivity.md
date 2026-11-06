@@ -13,8 +13,9 @@ spectrum, so the conjecture would settle the full signed inequality.
 The radial frequency and the multiplicative phase are independent in the
 conjecture; this strengthening requires its own proof or counterexample.
 
-The geometric-chain cancellation identity proves the relevant phase sign
-for support `1,q,q²,…`, after the literal integral bridge is completed.
+The [geometric-chain spectrum theorem](../3-formalized/geometric-theta-aperture-spectrum.md)
+proves the relevant phase sign for support `1,q,q²,…`, including the
+literal integral bridge and absolute pair summability.
 For general support, grouping ratios by coprime `n,m` gives the coefficient
 `Σ_(d≥1) B_(dn,dm)(a,b)` on the prime torus. The first target is the
 interaction of two independent prime chains, with every diagonal counted
@@ -39,3 +40,31 @@ bridge is a multivariate Fejér expansion on finite rectangular sets of
 prime exponents, followed by the proved absolute pair remainder.
 Both the mixed-difference sign and this multivariate bridge require proof.
 Repeated occurrences of the same prime are not included in the conjecture.
+
+The [two-prime center obstruction](../3-formalized/two-prime-center-cancellation-boundary.md)
+rules out proving the mixed-difference sign before radial integration:
+the two actual shifts `log 2`, `log 3` already give a negative clipped
+weight at center `log 6` for small positive apertures. The integrated
+mixed-difference conjecture remains open.
+
+## Candidate obstruction to independent phases
+
+Test the positive frequency average with weight `cosh(ηb)`, `η<π/2`.
+Schläfli inversion should replace `K_ib(2q)` by
+`π exp(−2q cos η)`. Set `N=(cos η)⁻¹`. Prescribe phase `−1` on
+primes in `[N^γ,N]`, where `1/2<γ<1`, and average all other prime
+phases. The diagonal survives; the pairs `(1,p)` are negative, while
+terms involving two prescribed prime occurrences have product at least
+`N^(2γ)` and should be exponentially suppressed.
+
+For fixed `0<a<1/2`, the expected diagonal scale is
+`N^(9/2+a) log N`; the negative prime scale is `N^5/log N`.
+If justified uniformly through all sums and integrals, this would
+disprove independence of phase and radial frequency, forcing a producer
+that retains their physical relation. The transform, asymptotics, phase
+average and suppression estimates are not yet proved together.
+
+Corpus anchors for this test: `besselFirstAtomTailDensity`,
+`modifiedBesselKOrder_imaginary_re_integral`,
+`strip_axis_eq_ofReal`, `integral_cosh_stripDensity`, and
+`SteinhausModel`.

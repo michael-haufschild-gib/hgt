@@ -337,8 +337,8 @@ theorem integral_normSq_collar_le_harmonic_mul_sum_pureMoebius {X R : ℕ} (hX :
             ‖∑ m ∈ Finset.Ioc X ((X * R) / r),
               (ArithmeticFunction.moebius m : ℂ) *
                 (m : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 :=
-        intervalIntegral.integral_mono_on hT (hcontL.intervalIntegrable volume 1 T)
-          ((hint_sum.const_mul _).intervalIntegrable volume 1 T) (fun t _ => hpt t)
+        intervalIntegral.integral_mono_on hT (hcontL.intervalIntegrable _ _)
+          ((hint_sum.const_mul _).intervalIntegrable _ _) (fun t _ => hpt t)
     _ = (1 + Real.log R) * ∑ r ∈ Finset.Icc 1 R,
           ∫ t in (1 : ℝ)..T,
             ‖∑ m ∈ Finset.Ioc X ((X * R) / r),
@@ -346,7 +346,7 @@ theorem integral_normSq_collar_le_harmonic_mul_sum_pureMoebius {X R : ℕ} (hX :
                 (m : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 := by
         rw [intervalIntegral.integral_const_mul,
           intervalIntegral.integral_finset_sum fun r hr =>
-            (hcontR r hr).intervalIntegrable volume 1 T]
+            (hcontR r hr).intervalIntegrable _ _]
 
 /-! ## §2. Multiplicative gauge-twist equivariance -/
 
@@ -669,7 +669,7 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
           ‖∑ n ∈ Finset.Ioc X (2 * X),
             (c n : ℂ) * (n : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 := by
       have hmono := intervalIntegral.integral_mono_on hlow_high intervalIntegrable_const
-        (hcont.intervalIntegrable volume (t₀ - η) (t₀ + η)) hpt_band
+        (hcont.intervalIntegrable _ _) hpt_band
       rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
       refine le_trans (le_of_eq ?_) hmono
       have hlen : (t₀ + η) - (t₀ - η) = 2 * η := by ring
@@ -678,11 +678,11 @@ theorem exists_prefix_zero_unit_sign_criticalMoment_ge {X : ℕ} (hX : 2 ≤ X)
       ring
     refine hband_int.trans ?_
     have hadj1 := intervalIntegral.integral_add_adjacent_intervals
-      (hcont.intervalIntegrable volume 1 (t₀ - η))
-      (hcont.intervalIntegrable volume (t₀ - η) (t₀ + η))
+      (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (t₀ - η))
+      (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume (t₀ - η) (t₀ + η))
     have hadj2 := intervalIntegral.integral_add_adjacent_intervals
-      (hcont.intervalIntegrable volume 1 (t₀ + η))
-      (hcont.intervalIntegrable volume (t₀ + η) T)
+      (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume 1 (t₀ + η))
+      (hcont.intervalIntegrable _ _ : IntervalIntegrable _ volume (t₀ + η) T)
     have hnn1 : 0 ≤ ∫ t in (1 : ℝ)..(t₀ - η),
         ‖∑ n ∈ Finset.Ioc X (2 * X),
           (c n : ℂ) * (n : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I))‖ ^ 2 :=
@@ -726,16 +726,18 @@ theorem isMultiplicative_shiftedZetaCoeff (δ : ℝ) :
 
 theorem isMultiplicative_shiftedInverseCoeff (δ : ℝ) :
     (shiftedInverseCoeff δ).IsMultiplicative := by
-  have heq : shiftedInverseCoeff δ =
-      ((ArithmeticFunction.moebius : ArithmeticFunction ℤ) : ArithmeticFunction ℂ).pmul
-        (shiftedZetaCoeff δ) := by
-    ext n
-    rcases eq_or_ne n 0 with rfl | hn
-    · simp [shiftedInverseCoeff]
-    · simp [shiftedInverseCoeff, shiftedZetaCoeff, hn]
-  rw [heq]
-  exact ArithmeticFunction.isMultiplicative_moebius.intCast.pmul
-    (isMultiplicative_shiftedZetaCoeff δ)
+  refine ⟨by simp [shiftedInverseCoeff], fun {m n} hcop => ?_⟩
+  rcases eq_or_ne m 0 with rfl | hm
+  · simp [shiftedInverseCoeff]
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [shiftedInverseCoeff]
+  have hμ := ArithmeticFunction.isMultiplicative_moebius.2 hcop
+  have hz := (isMultiplicative_shiftedZetaCoeff δ).2 hcop
+  simp only [shiftedZetaCoeff, ArithmeticFunction.coe_mk, mul_eq_zero, hm, hn, or_self,
+    ↓reduceIte] at hz
+  simp only [shiftedInverseCoeff, ArithmeticFunction.coe_mk, mul_eq_zero, hm, hn, or_self,
+    ↓reduceIte, hμ, Int.cast_mul, hz]
+  ring
 
 /-- Exact Dirichlet convolution identity `a_δ * b_δ = 1` in `ArithmeticFunction ℂ`. -/
 theorem shiftedInverseCoeff_mul_shiftedZetaCoeff (δ : ℝ) :
@@ -1142,5 +1144,14 @@ theorem exists_shiftedInverse_countermodel_blowup {δ : ℝ} (hδ0 : 0 < δ) (h�
     ofReal_integral_eq_lintegral_ofReal hint_13.1
       (Eventually.of_forall fun _ => sq_nonneg _)] at hofReal
   exact hofReal.trans (lintegral_mono_set (Set.Ioc_subset_Ioc_right hT))
+
+#print axioms truncatedMoebiusDivisorSum_eq_neg_moebius_of_mem_Ioc
+#print axioms truncatedMoebiusDivisorSum_prime_of_gt
+#print axioms truncatedMoebiusDivisorSum_eq_zero_of_composite_rough_le_sq
+#print axioms collar_dirichletPoly_eq_neg_sum_pureMoebius
+#print axioms integral_normSq_collar_le_harmonic_mul_sum_pureMoebius
+#print axioms norm_divisorSum_mul_completelyMultiplicative_eq
+#print axioms exists_prefix_zero_unit_sign_criticalMoment_ge
+#print axioms exists_shiftedInverse_countermodel_blowup
 
 end GaloisForLFunctions.ArithmeticProduction

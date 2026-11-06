@@ -1,9 +1,9 @@
-# Geometric-chain cancellation for theta aperture pairs
+# Literal all-rank jets of a geometric theta source
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Wall:** Σ6
-- **Statement:** For every integer `q≥2`, `0<a<1/2` and real frequency `b`, the aperture spectrum of the complete ordinary source supported on `1,q,q²,…` is strictly positive.
+- **Statement:** For every integer `q≥2`, every finite rank and `0<a<1/2`, the literal aperture-weighted signed mixed-jet Hankel matrix of the ordinary source supported on `1,q,q²,…` is positive definite.
 
 The corpus identity `thetaPairApertureSpectrum_eq_shifted` turns the pair
 `(q^i,q^j)` into a common positive radial density times
@@ -12,11 +12,15 @@ The corpus identity `thetaPairApertureSpectrum_eq_shifted` turns the pair
 Grouping by `i+j=k` gives the Chebyshev coefficient
 `U_k(cos θ)=Σ_(i=0)^k cos((2i−k)θ)`.
 
-**Proposed cancellation:** the twice-cumulative coefficients
-`C_k=Σ_(j=0)^k(k+1−j)U_j(cos θ)` are nonnegative. The finite sequence
-`f_k=p^k w_a((s−kh)₊)` has nonnegative second differences. Two discrete
-summations by parts would express the entire common-center sum as
-`Σ C_k(f_k−2f_(k+1)+f_(k+2))`, paying each diagonal once.
+The [complete-chain spectrum](../3-formalized/geometric-theta-aperture-spectrum.md)
+is strictly positive, with absolute convergence before cancellation inside
+each total-exponent block. The proof uses nonnegative twice-cumulative
+phase coefficients and strictly convex damped aperture weights.
+
+**Remaining bridge:** construct the infinite masked source, identify its
+literal Fourier transform and mixed derivatives with the proved pair
+series, and apply the positive-density moment theorem. Spectrum positivity
+alone does not discharge these regularity and reassembly obligations.
 
 **Full-source issue:** distinct prime chains interact. Positivity of each
 chain alone does not prove positivity after multiplicative convolution.
@@ -26,5 +30,3 @@ essential for that interaction.
 
 Corpus anchors: `TwoAtomApertureSpectrum`, `TwoAtomApertureWeight`,
 `ThetaPairCenterTailSeries`, `BesselRadialSlice`.
-The cumulative-coefficient identity, strictness, infinite-source reassembly
-and literal all-rank bridge remain to be proved and formalized.

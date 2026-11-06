@@ -26,7 +26,7 @@ line `ε = 0` (`σ = 1/2`)** at prime core `r = 2`, together with the sharp sawt
 2. **Euler-2 critical-line minorant and unweighted `[1, T]` moment majorant
    (`four_div_twentyFive_le_normSq_pmRamanujanMellinSymbol_two`,
    `integral_normSq_zeta_moebius_le_sizeHypercubeForm_zero`):**
-   On `Re s = 1/2`, `‖1 - 2^{1 - s}‖ ≥ √2 - 1 > 2/5`, giving `‖1 - 2^{1/2 - it}‖² ≥ 4/25` for all
+   On `Re s = 1/2`, `‖2^{1 - s} - 1‖ ≥ √2 - 1 > 2/5`, giving `‖2^{1/2 - it} - 1‖² ≥ 4/25` for all
    `t ∈ ℝ`. Combining `sizeHypercubeForm_eq_integral` at `ε = 0` with the Mellin formula for
    `stepSpectralWeight` yields, for every `T ≥ 1` and `D : ℕ`,
    `∫_1^T ‖ζ(½ + it) M_D(½ + it)‖² dt ≤ (25 π / 2) (1/4 + T²) · sizeHypercubeForm_{r=2}(0, D)`
@@ -97,7 +97,10 @@ theorem naturalDilationPrimitive_zero_two_eq {D n : ℕ} (hn1 : 1 ≤ n) (hnD : 
     have hmod : 2 * (((n / 2) / d : ℕ) : ℝ) + (((n / d) % 2 : ℕ) : ℝ) = ((n / d : ℕ) : ℝ) := by
       rw [← hdiv]
       exact_mod_cast Nat.div_add_mod (n / d) 2
-    linarith
+    have hmod' : -(((n / d) % 2 : ℕ) : ℝ) =
+        2 * (((n / 2) / d : ℕ) : ℝ) - ((n / d : ℕ) : ℝ) := by linarith
+    rw [hmod']
+    ring
   rw [Finset.sum_congr rfl hterm, Finset.sum_sub_distrib, ← Finset.mul_sum,
     sum_Icc_moebiusReal_floor_eq ((Nat.div_le_self n 2).trans hnD),
     sum_Icc_moebiusReal_floor_eq hnD, if_neg (by omega : n ≠ 0)]
@@ -122,10 +125,11 @@ theorem pronicNorm_naturalDilationPrimitive_zero_two_sq_eq (D : ℕ) :
     rw [naturalDilationPrimitive_zero_two_eq hn1 hnD]
     split_ifs <;> norm_num
   rw [hsq]
+  clear hsq
   induction D with
   | zero => simp
   | succ k ih =>
-    rw [Finset.sum_Icc_succ_top (by omega), ih]
+    rw [Finset.sum_Icc_succ_top (Nat.succ_pos k), ih]
     have hk1 : ((k : ℝ) + 1) ≠ 0 := by positivity
     have hk2 : ((k : ℝ) + 1 + 1) ≠ 0 := by positivity
     push_cast
@@ -143,42 +147,48 @@ theorem sizeHypercubeForm_zero_two_eq_one_sub_inv_add_tail (D : ℕ) :
 
 /-! ## §2. Euler-2 critical-line minorant and unweighted `[1, T]` moment majorant -/
 
-/-- Explicit evaluation of `pmRamanujanMellinSymbol` at `r = 2`: `1 - 2^{1 - s}`. -/
+/-- Explicit evaluation of `pmRamanujanMellinSymbol` at `r = 2`: `2^{1 - s} - 1`. -/
 theorem pmRamanujanMellinSymbol_two_eq (s : ℂ) :
-    pmRamanujanMellinSymbol 2 s = 1 - (2 : ℂ) ^ (1 - s) := by
+    pmRamanujanMellinSymbol 2 s = (2 : ℂ) ^ (1 - s) - 1 := by
   unfold pmRamanujanMellinSymbol
   rw [Nat.sum_divisorsAntidiagonal (fun a b => (ArithmeticFunction.moebius b : ℂ) * (a : ℂ) ^ (1 - s)),
-    Nat.Prime.divisors Nat.prime_two, Finset.sum_pair (by norm_num : (1 : ℕ) ≠ 2)]
-  simp [Nat.prime_two.ne_zero]
+    Nat.Prime.divisors Nat.prime_two, Finset.sum_pair (by norm_num : (1 : ℕ) ≠ 2),
+    ArithmeticFunction.moebius_apply_prime Nat.prime_two]
+  simp
   ring
 
 /-- **Pointwise lower bound for the Euler-2 Mellin symbol on the critical line.**
-For every `t ∈ ℝ`, `‖1 - 2^{1/2 - it}‖² ≥ 4 / 25`. -/
+For every `t ∈ ℝ`, `‖2^{1/2 - it} - 1‖² ≥ 4 / 25`. -/
 theorem four_div_twentyFive_le_normSq_pmRamanujanMellinSymbol_two (t : ℝ) :
     (4 / 25 : ℝ) ≤ ‖pmRamanujanMellinSymbol 2 ((1 / 2 : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
   rw [pmRamanujanMellinSymbol_two_eq]
   set z : ℂ := (2 : ℂ) ^ (1 - ((1 / 2 : ℂ) + (t : ℂ) * I))
   have hz_norm : ‖z‖ = Real.sqrt 2 := by
     dsimp [z]
-    have h2 : (2 : ℂ) = ((2 : ℝ) : ℂ) := by norm_num
-    rw [h2, Complex.norm_cpow_eq_rpow_re_of_pos two_pos]
-    have hre : (1 - ((1 / 2 : ℂ) + (t : ℂ) * I)).re = 1 / 2 := by simp; norm_num
-    rw [hre, Real.sqrt_eq_rpow]
+    rw [Complex.cpow_def_of_ne_zero two_ne_zero, Complex.norm_exp]
+    have hlog : Complex.log (2 : ℂ) = ((Real.log 2 : ℝ) : ℂ) := by
+      rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.ofReal_log zero_le_two]
+    rw [hlog]
+    have h1 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
+    have h2 : (((t : ℝ) : ℂ) * I).re = 0 := by simp
+    have hre : (((Real.log 2 : ℝ) : ℂ) * (1 - ((1 / 2 : ℂ) + (t : ℂ) * I))).re =
+        Real.log 2 * (1 / 2) := by
+      rw [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero,
+        Complex.sub_re, Complex.one_re, Complex.add_re, h1, h2, add_zero]
+      ring
+    rw [hre, ← Real.rpow_def_of_pos two_pos, ← Real.sqrt_eq_rpow]
   have hsqrt : (7 / 5 : ℝ) ≤ Real.sqrt 2 := by
     rw [Real.le_sqrt (by norm_num) (by norm_num)]
     norm_num
-  have hrev : 2 / 5 ≤ ‖(1 : ℂ) - z‖ := by
-    have htri := norm_sub_le z (1 : ℂ)
-    have hsymm : ‖z - 1‖ = ‖(1 : ℂ) - z‖ := norm_sub_rev z 1
-    rw [hsymm, norm_one, hz_norm] at htri
-    have : ‖z‖ ≤ ‖(1 : ℂ) - z‖ + 1 := by
+  have hrev : 2 / 5 ≤ ‖z - (1 : ℂ)‖ := by
+    have : ‖z‖ ≤ ‖z - (1 : ℂ)‖ + 1 := by
       calc ‖z‖ = ‖(z - 1) + 1‖ := by ring_nf
         _ ≤ ‖z - 1‖ + ‖(1 : ℂ)‖ := norm_add_le _ _
-        _ = ‖(1 : ℂ) - z‖ + 1 := by rw [norm_sub_rev, norm_one]
+        _ = ‖z - (1 : ℂ)‖ + 1 := by rw [norm_one]
     rw [hz_norm] at this
     linarith
   calc (4 / 25 : ℝ) = (2 / 5 : ℝ) ^ 2 := by norm_num
-    _ ≤ ‖(1 : ℂ) - z‖ ^ 2 := pow_le_pow_left₀ (by norm_num) hrev 2
+    _ ≤ ‖z - (1 : ℂ)‖ ^ 2 := pow_le_pow_left₀ (by norm_num) hrev 2
 
 private theorem sqrt_exp_eq_half_local (x : ℝ) : Real.sqrt (Real.exp x) = Real.exp (x / 2) := by
   have h : Real.exp x = Real.exp (x / 2) * Real.exp (x / 2) := by
@@ -267,7 +277,12 @@ theorem stepSpectralWeight_eq_ae_mellin_normSq {r : ℕ} (hr : 1 < r) :
       (1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * I := by
     push_cast; ring
   rw [hs_eq]
-  exact (hasMellin_pmRamanujanPrimitiveSource hr (by simp) (by simp; norm_num)).2
+  have hs_re : ((1 / 2 : ℂ) + ((2 * Real.pi * ξ : ℝ) : ℂ) * I).re = 1 / 2 := by
+    have h1 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
+    have h2 : (((2 * Real.pi * ξ : ℝ) : ℂ) * I).re = 0 := by simp
+    rw [Complex.add_re, h1, h2, add_zero]
+  exact congrArg norm (hasMellin_pmRamanujanPrimitiveSource hr
+    (by rw [hs_re]; norm_num) (by rw [hs_re]; norm_num)).2
 
 /-- `moebiusPolySq (1/2) t D` coincides identically with the critical-line squared norm of `M_D`. -/
 theorem moebiusPolySq_half_eq_normSq_edPoly (t : ℝ) (D : ℕ) :
@@ -278,20 +293,17 @@ theorem moebiusPolySq_half_eq_normSq_edPoly (t : ℝ) (D : ℕ) :
     (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)
   have hterm : ∀ d ∈ Finset.Icc 1 D,
       NearLineLogMean.moebiusMollifierCoeff d *
-        ((d : ℝ) : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) =
+        (d : ℂ) ^ (-(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)) =
       ((moebiusReal d * (d : ℝ) ^ (-(1 / 2 : ℝ)) * Real.cos (t * Real.log d) : ℝ) : ℂ) -
         ((moebiusReal d * (d : ℝ) ^ (-(1 / 2 : ℝ)) * Real.sin (t * Real.log d) : ℝ) : ℂ) * I := by
     intro d hd
     have hd_pos : (0 : ℝ) < d := by exact_mod_cast (Finset.mem_Icc.mp hd).1
-    have hd_ne : ((d : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hd_pos.ne'
-    rw [Complex.cpow_def_of_ne_zero hd_ne, ← Complex.ofReal_log hd_pos.le]
+    have hd_ne : (d : ℂ) ≠ 0 := by exact_mod_cast hd_pos.ne'
+    rw [Complex.cpow_def_of_ne_zero hd_ne, ← Complex.ofReal_natCast d, ← Complex.ofReal_log hd_pos.le]
     have hexp_arg : (↑(Real.log (d : ℝ)) * -(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) : ℂ) =
         ((-(1 / 2 : ℝ) * Real.log d : ℝ) : ℂ) + ((-(t * Real.log d) : ℝ) : ℂ) * I := by
       push_cast; ring
-    rw [hexp_arg, Complex.exp_add, Complex.exp_ofReal_mul_I, ← Complex.ofReal_exp,
-      ← Real.rpow_def_of_pos hd_pos]
-    have hre_part : (d : ℝ) ^ (-(1 / 2 : ℝ) * Real.log d / Real.log d) = (d : ℝ) ^ (-(1 / 2 : ℝ)) :=
-      rfl
+    rw [hexp_arg, Complex.exp_add, Complex.exp_ofReal_mul_I, ← Complex.ofReal_exp]
     have hrpow_eq : Real.exp (-(1 / 2 : ℝ) * Real.log d) = (d : ℝ) ^ (-(1 / 2 : ℝ)) := by
       rw [Real.rpow_def_of_pos hd_pos]; ring_nf
     rw [hrpow_eq, NearLineLogMean.moebiusMollifierCoeff]
@@ -300,7 +312,6 @@ theorem moebiusPolySq_half_eq_normSq_edPoly (t : ℝ) (D : ℕ) :
     rw [hμ]
     push_cast
     rw [Complex.cos_neg, Complex.sin_neg]
-    push_cast
     ring
   have hP : P = ((∑ d ∈ Finset.Icc 1 D,
         moebiusReal d * (d : ℝ) ^ (-(1 / 2 : ℝ)) * Real.cos (t * Real.log d) : ℝ) : ℂ) -
@@ -375,7 +386,14 @@ theorem integral_normSq_zeta_moebius_le_sizeHypercubeForm_zero {T : ℝ} (hT : 1
     set t : ℝ := 2 * Real.pi * ξ
     have hcast : ((1 / 2 : ℂ) + ((t : ℝ) : ℂ) * I) = (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) := by
       norm_num
-    rw [hcast, norm_mul, norm_div, mul_pow, div_pow]
+    rw [hcast]
+    have hrhs : ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) / (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+        pmRamanujanMellinSymbol 2 (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 =
+        ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 /
+          ‖(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 *
+          ‖pmRamanujanMellinSymbol 2 (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
+      rw [norm_mul, norm_div, mul_pow, div_pow]
+    rw [hrhs]
     have hden_eq : ‖(((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2 = 1 / 4 + t ^ 2 := by
       rw [Complex.sq_norm, Complex.normSq_apply]
       simp
@@ -411,10 +429,10 @@ theorem integral_normSq_zeta_moebius_le_sizeHypercubeForm_zero {T : ℝ} (hT : 1
     have h := (integrable_comp_mul_left_iff g hπ_pos.ne').mp hg_comp_int
     exact h
   have hint_R : (1 / (2 * Real.pi)) * (∫ t : ℝ, g t) ≤ sizeHypercubeForm Nat.one_lt_two 0 D := by
-    rw [sizeHypercubeForm_eq_integral Nat.one_lt_two 0 D, zero_add]
+    rw [sizeHypercubeForm_eq_integral Nat.one_lt_two 0 D, add_zero]
     have hchg := Measure.integral_comp_mul_left g (2 * Real.pi)
-    rw [abs_of_pos hπ_pos, smul_eq_mul, one_div] at hchg ⊢
-    rw [← hchg]
+    rw [abs_of_pos (inv_pos.mpr hπ_pos), smul_eq_mul] at hchg
+    rw [one_div, ← hchg]
     exact integral_mono_ae hg_comp_int hF_int hae_le
   have hsub_int : (∫ t in (1 : ℝ)..T, g t) ≤ ∫ t : ℝ, g t := by
     rw [intervalIntegral.integral_of_le hT]
@@ -454,14 +472,14 @@ theorem integral_normSq_zeta_moebius_le_sizeHypercubeForm_zero {T : ℝ} (hT : 1
     have hZM_nn : 0 ≤ Z_M t := sq_nonneg _
     change Z_M t ≤ (25 / 4) * (1 / 4 + T ^ 2) * ((4 / 25) * Z_M t / (1 / 4 + t ^ 2))
     calc Z_M t = (25 / 4) * (1 / 4 + t ^ 2) * ((4 / 25) * Z_M t / (1 / 4 + t ^ 2)) := by
-          field_simp [hden_pos.ne']; ring
+          field_simp [hden_pos.ne']
       _ ≤ (25 / 4) * (1 / 4 + T ^ 2) * ((4 / 25) * Z_M t / (1 / 4 + t ^ 2)) := by
           refine mul_le_mul_of_nonneg_right
             (mul_le_mul_of_nonneg_left ht_sq (by norm_num)) (by positivity)
   have hmono_T : (∫ t in (1 : ℝ)..T, Z_M t) ≤
       ∫ t in (1 : ℝ)..T, (25 / 4) * (1 / 4 + T ^ 2) * g t :=
-    intervalIntegral.integral_mono_on hT (hZM_cont.intervalIntegrable volume 1 T)
-      ((hg_cont.const_mul _).intervalIntegrable volume 1 T) hpt_T
+    intervalIntegral.integral_mono_on hT (hZM_cont.intervalIntegrable _ _)
+      ((hg_cont.const_mul _).intervalIntegrable _ _) hpt_T
   rw [intervalIntegral.integral_const_mul] at hmono_T
   have hscale : (∫ t : ℝ, g t) ≤ 2 * Real.pi * sizeHypercubeForm Nat.one_lt_two 0 D := by
     have := mul_le_mul_of_nonneg_left hint_R hπ_pos.le
@@ -523,11 +541,12 @@ theorem abs_forwardDilatedPrimitive_two_zero_le {D : ℕ} (hD : 1 ≤ D) (x : �
         have hmod : ((⌊(d : ℝ) * x⌋₊ % 2 : ℕ) : ℝ) ≤ 1 := by
           exact_mod_cast Nat.le_of_lt_succ (Nat.mod_lt _ two_pos)
         rw [sub_zero, Real.rpow_neg_one, abs_mul, abs_mul,
-          abs_of_pos (inv_pos.mpr hd_pos), abs_of_nonneg (Nat.cast_nonneg _), one_div]
+          abs_of_pos (inv_pos.mpr hd_pos),
+          abs_of_nonneg (Nat.cast_nonneg (α := ℝ) (⌊(d : ℝ) * x⌋₊ % 2)), one_div]
         calc |moebiusReal d| * (d : ℝ)⁻¹ * ((⌊(d : ℝ) * x⌋₊ % 2 : ℕ) : ℝ)
             ≤ 1 * (d : ℝ)⁻¹ * 1 :=
               mul_le_mul (mul_le_mul_of_nonneg_right hμ (inv_nonneg.mpr hd_pos.le))
-                hmod (Nat.cast_nonneg _) (inv_nonneg.mpr hd_pos.le)
+                hmod (Nat.cast_nonneg _) (by positivity)
           _ = (d : ℝ)⁻¹ := by ring
     _ ≤ 1 + Real.log D := sum_Icc_inv_le_one_add_log hD
 
@@ -591,7 +610,7 @@ theorem integral_Ioi_sq_sawtoothDefect_sharpCoeff_le_four {X : ℕ} (hX : 1 ≤ 
       calc ∑ n ∈ Finset.Icc 1 X, |ArithmeticProduction.sharpCoeff n * Int.fract (x / n)|
           ≤ ∑ _n ∈ Finset.Icc 1 X, (1 : ℝ) := by
             refine Finset.sum_le_sum fun n _ => ?_
-            rw [abs_mul, abs_of_nonneg (Int.fract_nonneg _)]
+            rw [abs_mul, abs_of_nonneg (Int.fract_nonneg (x / (n : ℝ)))]
             have hμ : |ArithmeticProduction.sharpCoeff n| ≤ 1 := by
               unfold ArithmeticProduction.sharpCoeff
               exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := n)
@@ -605,7 +624,7 @@ theorem integral_Ioi_sq_sawtoothDefect_sharpCoeff_le_four {X : ℕ} (hX : 1 ≤ 
     unfold ArithmeticProduction.sawtoothDefect
     refine (Measurable.ite measurableSet_Ici measurable_const measurable_const).add ?_
     refine Finset.measurable_sum _ fun n _ => Measurable.const_mul ?_ _
-    exact Int.measurable_fract.comp (measurable_id.div_const _)
+    exact measurable_fract.comp (measurable_id.div_const _)
   have hint_dom : IntegrableOn (fun x : ℝ => (2 * (X : ℝ)) ^ 2 * x ^ (-2 : ℝ))
       (Set.Ioi ((X : ℝ) ^ 2)) :=
     (integrableOn_Ioi_rpow_of_lt (by norm_num) hX2_pos).const_mul _
@@ -687,7 +706,7 @@ private theorem cofinal_moebius_moment_of_discrete_majorant {Φ : ℕ → ℝ} {
     have hmax_pos : 0 < max 1 T_min := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
     have hle_D : (max 1 T_min) ^ (m : ℝ) ≤ (D : ℝ) := by
       calc (max 1 T_min) ^ (m : ℝ) ≤ (⌈(max 1 T_min) ^ (m : ℝ)⌉₊ : ℝ) := Nat.le_ceil _
-        _ ≤ (D_min : ℝ) := by exact_mod_cast (Nat.le_succ _)
+        _ ≤ (D_min : ℝ) := by dsimp [D_min]; exact_mod_cast (Nat.le_succ _)
         _ ≤ (D : ℝ) := by exact_mod_cast hD_ge
     calc T_min ≤ max 1 T_min := le_max_right _ _
       _ = ((max 1 T_min) ^ (m : ℝ)) ^ (1 / (m : ℝ)) := by
@@ -799,22 +818,40 @@ theorem cofinal_moebius_mollifier_of_frequently_alternating_moebius_zero_Ioo
   obtain ⟨C, hC0, hfreq⟩ := h η hη
   have hlog_sub : ∀ᶠ D : ℕ in atTop, 1 ≤ D ∧ (1 + Real.log D) ^ 2 ≤ (D : ℝ) ^ η := by
     refine (eventually_ge_atTop 1).and ?_
-    have htend : Tendsto (fun x : ℝ => Real.log x / x ^ (η / 2)) atTop (nhds 0) :=
-      Real.tendsto_log_div_rpow_atTop (η / 2) (by positivity)
-    have hev_x : ∀ᶠ x : ℝ in atTop, 1 ≤ x ∧ Real.log x / x ^ (η / 2) < 1 / 2 :=
-      (eventually_ge_atTop (1 : ℝ)).and (htend.eventually (gt_mem_nhds (by norm_num)))
-    have hev_D := tendsto_natCast_atTop_atTop.eventually hev_x
-    have hev_pow : ∀ᶠ D : ℕ in atTop, (4 : ℝ) ≤ (D : ℝ) ^ (η / 2) :=
-      ((tendsto_rpow_atTop (by positivity : 0 < η / 2)).comp
-        tendsto_natCast_atTop_atTop).eventually_ge_atTop 4
-    filter_upwards [hev_D, hev_pow] with D ⟨hD1, hquot⟩ hD4
-    have hD_pos : (0 : ℝ) < D := by linarith
-    have hrpow_pos : 0 < (D : ℝ) ^ (η / 2) := Real.rpow_pos_of_pos hD_pos _
-    have hlog_le : Real.log D ≤ (1 / 2) * (D : ℝ) ^ (η / 2) := by
-      exact ((div_lt_iff₀ hrpow_pos).mp hquot).le
-    have hsum_le : 1 + Real.log D ≤ (D : ℝ) ^ (η / 2) := by linarith
-    have hnn : 0 ≤ 1 + Real.log D := add_nonneg zero_le_one (Real.log_nonneg hD1)
-    calc (1 + Real.log D) ^ 2 ≤ ((D : ℝ) ^ (η / 2)) ^ 2 := pow_le_pow_left₀ hnn hsum_le 2
+    have hev_pow : ∀ᶠ D : ℕ in atTop, max 2 (8 / η) ≤ (D : ℝ) ^ (η / 4) :=
+      ((tendsto_rpow_atTop (by positivity : 0 < η / 4)).comp
+        tendsto_natCast_atTop_atTop).eventually_ge_atTop (max 2 (8 / η))
+    filter_upwards [eventually_ge_atTop 1, hev_pow] with D hD1 hD_pow
+    have hD1R : (1 : ℝ) ≤ D := by exact_mod_cast hD1
+    have hD_pos : (0 : ℝ) < D := lt_of_lt_of_le zero_lt_one hD1R
+    set u : ℝ := (D : ℝ) ^ (η / 4)
+    have hu_pos : 0 < u := Real.rpow_pos_of_pos hD_pos _
+    have hu2 : 2 ≤ u := (le_max_left 2 (8 / η)).trans hD_pow
+    have hu8 : 8 / η ≤ u := (le_max_right 2 (8 / η)).trans hD_pow
+    have hlog_u : Real.log u ≤ u := by
+      have hexp := Real.add_one_le_exp (Real.log u)
+      rw [Real.exp_log hu_pos] at hexp
+      linarith
+    have hlog_D : (η / 4) * Real.log D ≤ u := by
+      have hlr : Real.log u = (η / 4) * Real.log D := Real.log_rpow hD_pos (η / 4)
+      linarith
+    have hηu : 8 ≤ u * η := (div_le_iff₀ hη).mp hu8
+    have hlog_le : Real.log D ≤ u ^ 2 / 2 := by
+      have hmul : η * Real.log D ≤ η * (u ^ 2 / 2) := by
+        calc η * Real.log D = 4 * ((η / 4) * Real.log D) := by ring
+          _ ≤ 4 * u := by linarith
+          _ = (8 * u) / 2 := by ring
+          _ ≤ ((u * η) * u) / 2 := by nlinarith
+          _ = η * (u ^ 2 / 2) := by ring
+      exact le_of_mul_le_mul_left hmul hη
+    have hsum_le : 1 + Real.log D ≤ u ^ 2 := by nlinarith
+    have hu_sq : u ^ 2 = (D : ℝ) ^ (η / 2) := by
+      dsimp [u]
+      rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hD_pos.le]
+      congr 1; push_cast; ring
+    have hnn : 0 ≤ 1 + Real.log D := add_nonneg zero_le_one (Real.log_nonneg hD1R)
+    calc (1 + Real.log D) ^ 2 ≤ (u ^ 2) ^ 2 := pow_le_pow_left₀ hnn hsum_le 2
+      _ = ((D : ℝ) ^ (η / 2)) ^ 2 := by rw [hu_sq]
       _ = (D : ℝ) ^ η := by
           rw [← Real.rpow_natCast _ 2, ← Real.rpow_mul hD_pos.le]
           congr 1; push_cast; ring
@@ -865,19 +902,19 @@ theorem cofinal_moebius_mollifier_of_frequently_sharpDefect_subpolynomial
       have hs : (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) = (1 / 2 + t * I) := by norm_num
       rw [hs]
       congr 2
-      unfold RHTower.edPoly RHTower.realDirichletPoly NearLineLogMean.moebiusMollifierCoeff
-        ArithmeticProduction.sharpCoeff
-      refine Finset.sum_congr rfl fun d _ => ?_
-      push_cast
-      rfl
     rw [heq_int]
     refine hplanch.trans ?_
     have hdef_nn : 0 ≤
         ArithmeticProduction.mollifierDefect (Finset.Icc 1 D) ArithmeticProduction.sharpCoeff := by
       unfold ArithmeticProduction.mollifierDefect
       exact integral_nonneg fun _ => sq_nonneg _
-    have hπ := Real.pi_pos
-    have h1 : 4 * Real.pi * (1 / 4 + T ^ 2) ≤ 5 * Real.pi * T ^ 2 := by nlinarith
+    have hT2 : 1 ≤ T ^ 2 := by nlinarith [hT]
+    have hsub : 1 / 4 + T ^ 2 ≤ (5 / 4) * T ^ 2 := by linarith
+    have h1 : 4 * Real.pi * (1 / 4 + T ^ 2) ≤ 5 * Real.pi * T ^ 2 := by
+      calc 4 * Real.pi * (1 / 4 + T ^ 2)
+          ≤ 4 * Real.pi * ((5 / 4) * T ^ 2) :=
+            mul_le_mul_of_nonneg_left hsub (by positivity)
+        _ = 5 * Real.pi * T ^ 2 := by ring
     have h2 : 4 * Real.pi * (1 / 4 + T ^ 2) *
         ArithmeticProduction.mollifierDefect (Finset.Icc 1 D) ArithmeticProduction.sharpCoeff ≤
         5 * Real.pi * T ^ 2 *

@@ -120,6 +120,18 @@ the mixed-row expansion, with error `O(c/N)‖x‖₂`. Writing `m=∫φ`,
 for unit physical mass and strong `L¹` convergence `U_N→F`.
 The direct audit passed with only standard axioms.
 
+`TheHighFourierMassHasADualLowerBound.lean` supplies the audited Fourier
+duality step: `2m B_high(f,g)−E_high(g)≤m²E_high(f)`. Its comparison with
+`∫fg−m∫fH` has squared error at most
+`‖f‖₂²/(2π) ∫|1_low ĝ−m Ĥ|²`. Together with below-grid recovery, this
+identifies the high-frequency mixed limit; the application is being formalized.
+
+`SmoothTerminalTestsRecoverWeightedMass.lean` proves that smooth tests
+supported in `[-A,0]` attain every strict lower bound below
+`∫_{(-A,0)}F²e⁻⁸ʸ` through `2∫FHe⁻⁸ʸ−∫H²e⁻⁸ʸ`.
+Expanding smooth cutoffs and exponential conjugation give the density;
+the direct audit passed with only standard axioms.
+
 For global confinement, retain the raw far reserve before imposing its
 small-multiple restriction. The required extension at fixed critical ratio
 `R` is `Q_N(z) ≥ (7/8)D_M(z)−C_R c S₇(z)−o(log N/(log log N)^B)P(z)`.
@@ -142,3 +154,21 @@ and `O(e⁻⁴ᴬ√S₇)` for the collar below depth `−A`. They follow from t
 synthesis triangle inequality and weighted Cauchy–Schwarz:
 `N⁻¹Σ_{n≤Ne⁻ᴬ}(n/N)⁷=O(e⁻⁸ᴬ)`.
 These bounds remain to be formalized and combined with local compactness.
+
+For a physical profile `H` supported in `(-∞,0]`, write
+`W₈(H)=∫e⁻⁸ʸH²`. Weighted Cauchy–Schwarz gives
+`|bumpCorr H (log k)|≤k⁻⁴W₈(H)`. The tail
+`Σ_{k>K}Λ(k)k⁻⁹ᐟ²` tends to zero, while the finite head is bounded by
+`C_K‖H‖₂²`. Hence the prime form costs at most
+`εW₈(H)+C_ε‖H‖₂²`. This physical confinement bound remains to be
+formalized. Its discrete use requires separate prefix control; replacing
+every window-pole cost by `C_R S₇` loses the compactness needed here.
+
+The terminal polar source has the candidate aperture-independent kernel
+`s(y)=e⁻ʸᐟ²[1−eʸψ(e⁻ʸ)−eʸ(log(2π)+½log(1−e²ʸ))]`, `y<0`:
+`generalTerminalPolarSource(A,h)=aφ∫H(y)s(y)dy`.
+Finite prime-sum interchange gives the identity. The bound `ψ(x)=O(x)`
+and square-integrability of the endpoint logarithm give `∫e⁸ʸs(y)²dy<∞`.
+Thus strong local `L²` convergence with a uniform `W₈` bound would preserve
+the polar source. The identity and its discrete moving-source transfer
+remain to be formalized.

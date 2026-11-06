@@ -45,8 +45,11 @@ theorem two_mul_scalar_highFourierPair_sub_le {f g : ℝ → ℝ}
       (hfg.integrableOn.const_mul (2 * m)) hgi.integrableOn,
     integral_const_mul, integral_const_mul] at hi
   have hm := mul_le_mul_of_nonneg_left hi (by positivity : 0 ≤ 1 / (2 * Real.pi))
+  change 1 / (2 * Real.pi) *
+      (2 * m * (∫ t in highFrequencies T, (paperFT (cx f) t * conj (paperFT (cx g) t)).re) -
+        ∫ t in highFrequencies T, ‖paperFT (cx g) t‖ ^ 2) ≤
+    1 / (2 * Real.pi) * (m ^ 2 * ∫ t in highFrequencies T, ‖paperFT (cx f) t‖ ^ 2) at hm
   unfold highFourierPair highFourierMass
-  simp only [cx] at hm ⊢
   convert hm using 1 <;> ring
 
 /-- A fixed frequency boundary has zero Lebesgue measure. -/

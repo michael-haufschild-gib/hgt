@@ -67,22 +67,43 @@ theorem sub_le_norm_of_main {A Mn : ℂ} {P E e : ℝ} (h1 : ‖A - Mn‖ ≤ P 
   rw [sub_sub_cancel, norm_sub_rev Mn, h2] at h
   linarith only [h, h1]
 
-/-- **The gap from the data at one height.** Suppose the errors of the half-Gauss transform are small at all slopes near `α = Re a(x)`, and every height within `2/α` of `x` is `η`-close to a typical box. Then at a real zero `x` of `H_τ` with `17η ≤ 2τα ≤ 1`, the next real zero lies at distance at least `1/(20 e⁷ α)`. Nothing here depends on how `η` relates to `T`. -/
-theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) (hT1000 : 1002 ≤ T)
-    (hTη : 2 / η ≤ T) (hxlo : T - 1 / 2 ≤ x) (hα101 : 101 ≤ (horizontalSlope x).re)
-    (hαη : 1 / η + 4 ≤ (horizontalSlope x).re)
-    (hA : ∀ β : ℝ, (horizontalSlope x).re - 1 ≤ β → β ≤ (horizontalSlope x).re + 1 →
-      1 + Real.log (4 * T) ≤ 8 * β → 16 * η ≤ 2 * τ * β → 2 * τ * β ≤ 2 →
-      typicalHalfGaussError η T τ β ≤ 1 / 5 ∧ typicalHalfGaussSlopeError η T τ β ≤ β / 100 ∧
-        typicalXiSlopeError η T ≤ 2 / 9 * β)
-    (hwin : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → ∃ t : ℝ,
-      zetaTypicalHeight η (zetaPolylogLevel T) T t ∧ |ξ - t| ≤ η)
-    (hτ : 0 < τ) (hc1 : 17 * η ≤ 2 * τ * (horizontalSlope x).re) (hc2 : 2 * τ * (horizontalSlope x).re ≤ 1)
+/-- The exponential model on an interval on which the slope error is at most `B`. -/
+theorem norm_xiLine_le_model_of_slope {ξ B w₁ w₂ u w : ℝ} (hB : 0 < B)
+    (h : ∀ s ∈ Icc w₁ w₂, ‖xiLineDeriv ξ s - horizontalSlope ξ * xiLine ξ s‖ ≤ B * ‖xiLine ξ s‖)
+    (hu : u ∈ Icc w₁ w₂) (hw : w ∈ Icc w₁ w₂) :
+    ‖xiLine ξ w‖ ≤ ‖xiLine ξ u‖ * Real.exp ((w - u) * (horizontalSlope ξ).re) * Real.exp (B * |w - u|) := by
+  have hsub : uIcc u w ⊆ Icc w₁ w₂ := uIcc_subset_Icc hu hw
+  have hm := GaloisForLFunctions.HTGeometry.norm_sub_mul_exp_le (a := horizontalSlope ξ) hB
+    (fun s _ => hasDerivAt_xiLine ξ s) (fun s hs => h s (hsub hs))
+  have hn := norm_sub_norm_le (xiLine ξ w)
+    (xiLine ξ u * Complex.exp (((w - u : ℝ) : ℂ) * horizontalSlope ξ))
+  rw [norm_mul, Complex.norm_exp, Complex.re_ofReal_mul] at hn
+  nlinarith only [hm, hn]
+
+/-- **The gap from quadrature data.** Let `x` be a real zero of `H_τ`, `α = Re a(x)`, `2τα ≤ 1`. Suppose that at every height within `2/α` of `x` the slope error of the source is at most `B ≤ (2/9) Re a`, on an interval containing the saddles, and the half-Gauss transform is its saddle model up to `1/5`, with slope `a` up to `α/100` at `x`. Then the next real zero lies at distance at least `1/(20 e⁷ α)`.
+
+This is the two-quadrature mechanism: `H_τ` and `H_τ′/α` are the real and imaginary parts of the amplitude, so at a zero the amplitude sits in the derivative, and Cauchy's estimate on a disc of radius `1/α` spaces the zeros. -/
+theorem gap_ge_of_quadrature_data {τ x x' B w₁ w₂ : ℝ} (hx : 1001 ≤ x) (hα101 : 101 ≤ (horizontalSlope x).re)
+    (hτ : 0 < τ) (hc2 : 2 * τ * (horizontalSlope x).re ≤ 1) (hBpos : 0 < B)
+    (hBβ : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → B ≤ 2 / 9 * (horizontalSlope ξ).re)
+    (hrange : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → ∀ v : ℝ, |v| ≤ 2 * (1 / (horizontalSlope x).re) →
+      w₁ ≤ v + 2 * τ * (horizontalSlope ξ).re ∧ v + 2 * τ * (horizontalSlope ξ).re ≤ w₂)
+    (hslope : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → ∀ w ∈ Icc w₁ w₂,
+      ‖xiLineDeriv ξ w - horizontalSlope ξ * xiLine ξ w‖ ≤ B * ‖xiLine ξ w‖)
+    (hmainb : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → ∀ v : ℝ, |v| ≤ 2 * (1 / (horizontalSlope x).re) →
+      ‖halfGaussTransform τ (xiLine ξ) v -
+        xiLine ξ (v + 2 * τ * (horizontalSlope ξ).re) *
+          Complex.exp (-((v + 2 * τ * (horizontalSlope ξ).re : ℝ) * horizontalSlope ξ)) *
+          Complex.exp (v * horizontalSlope ξ + τ * horizontalSlope ξ ^ 2)‖ ≤
+        (‖xiLine ξ (v + 2 * τ * (horizontalSlope ξ).re)‖ * Real.exp (-(τ * (horizontalSlope ξ).re ^ 2))) * (1 / 5))
+    (hslopeT : ‖(∫ w in Ioi (0 : ℝ), (((w - 0) / (2 * τ) * gaussDensity τ (w - 0) : ℝ) : ℂ) * xiLine x w) -
+        horizontalSlope x * halfGaussTransform τ (xiLine x) 0‖ ≤
+      (‖xiLine x (2 * τ * (horizontalSlope x).re)‖ * Real.exp (-(τ * (horizontalSlope x).re ^ 2))) *
+        ((horizontalSlope x).re / 100))
+    (hne : xiLine x (2 * τ * (horizontalSlope x).re) ≠ 0)
     (hxx' : x < x') (hx0 : riemannHeat τ (x : ℂ) = 0) (hx'0 : riemannHeat τ (x' : ℂ) = 0) :
     1 / (20 * Real.exp 7) / (horizontalSlope x).re ≤ x' - x := by
-  have hT8 : 8 ≤ T := by linarith only [hT1000]
-  have hη1 : η ≤ 1 := by linarith only [hη8]
-  have hxpos : 0 < x := by linarith only [hxlo, hT1000]
+  have hxpos : 0 < x := by linarith only [hx]
   set α := (horizontalSlope x).re with hα
   have hα100 : 100 ≤ α := by linarith only [hα101]
   have hα0 : 0 < α := by linarith only [hα100]
@@ -95,79 +116,52 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
   have hR100 : R ≤ 1 / 100 := by
     rw [hR]
     exact one_div_le_one_div_of_le (by norm_num) hα100
-  have hRη : R ≤ η := by
-    rw [hR, div_le_iff₀ hα0]
-    have := mul_le_mul_of_nonneg_left hαη hη.le
-    have h2 : η * (1 / η + 4) = 1 + 4 * η := by
-      field_simp
-    linarith only [this, h2, hη]
   -- the facts at each nearby height
   have hpt (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * R) :
-      |ξ - x| ≤ 2 * R ∧ T - 1 ≤ ξ ∧ 400 ≤ ξ ∧ |(horizontalSlope ξ).re - α| ≤ 2 * R * (2 / T) ∧
-        16 * η ≤ 2 * τ * (horizontalSlope ξ).re ∧ 2 * τ * (horizontalSlope ξ).re ≤ 2 ∧
+      x - 1 ≤ ξ ∧ 400 ≤ ξ ∧ |(horizontalSlope ξ).re - α| ≤ 2 * R * (2 / x) ∧
         α - 1 ≤ (horizontalSlope ξ).re ∧ (horizontalSlope ξ).re ≤ α + 1 := by
     have h2R : 2 * R ≤ 1 / 50 := by linarith only [hR100]
     have h1 := abs_le.mp hξ
-    have hξlo : T - 1 ≤ ξ := by linarith only [hxlo, h1.1, h2R]
-    have hξpos : 0 < ξ := by linarith only [hξlo, hT1000]
-    have hslope : |(horizontalSlope ξ).re - α| ≤ 2 * R * (2 / T) := by
+    have hξlo : x - 1 ≤ ξ := by linarith only [h1.1, h2R]
+    have hξpos : 0 < ξ := by linarith only [hξlo, hx]
+    have hslope' : |(horizontalSlope ξ).re - α| ≤ 2 * R * (2 / x) := by
       have h3 := abs_horizontalSlope_re_sub_le hxpos hξpos
       refine h3.trans ?_
-      have hmin : T / 2 ≤ min x ξ := le_min (by linarith only [hxlo, hT1000]) (by linarith only [hξlo, hT1000])
-      have hTpos : 0 < T := by linarith only [hT1000]
-      have hTinv : |ξ - x| / min x ξ ≤ 2 * R / (T / 2) :=
+      have hmin : x / 2 ≤ min x ξ := le_min (by linarith only [hx]) (by linarith only [hξlo, hx])
+      have hTinv : |ξ - x| / min x ξ ≤ 2 * R / (x / 2) :=
         div_le_div₀ (by positivity) hξ (by positivity) hmin
       refine hTinv.trans (le_of_eq ?_)
       field_simp
-    have hsmall : 2 * R * (2 / T) ≤ 1 / T := by
-      have hTpos : 0 < T := by linarith only [hT1000]
-      have h3 : 2 * R * (2 / T) = (4 * R) * (1 / T) := by ring
+    have hsmall : 2 * R * (2 / x) ≤ 1 / x := by
+      have h3 : 2 * R * (2 / x) = (4 * R) * (1 / x) := by ring
       rw [h3]
       have h4 : 4 * R ≤ 1 := by linarith only [hR100]
-      have h5 : 0 < 1 / T := by positivity
+      have h5 : 0 < 1 / x := by positivity
       nlinarith only [h4, h5]
-    have hT1 : 1 / T ≤ η / 2 := by
-      have hTpos : 0 < T := by linarith only [hT1000]
-      rw [div_le_div_iff₀ hTpos (by norm_num)]
-      have h3 := (div_le_iff₀ hη).mp hTη
-      nlinarith only [h3]
-    have hT2' : 1 / T ≤ 1 := by
-      rw [div_le_one (by linarith only [hT1000])]
-      linarith only [hT1000]
-    have hs := abs_le.mp (hslope.trans hsmall)
-    refine ⟨hξ, hξlo, by linarith only [hξlo, hT1000], hslope, ?_, ?_, by linarith only [hs.1, hT2'],
-      by linarith only [hs.2, hT2']⟩
-    · have h3 : 2 * τ * (-(η / 2)) ≤ 2 * τ * ((horizontalSlope ξ).re - α) :=
-        mul_le_mul_of_nonneg_left (by linarith only [hs.1, hT1]) (by positivity)
-      have h4 : 2 * τ * (η / 2) ≤ η := by nlinarith only [hτ8, hη, hτ]
-      nlinarith only [h3, h4, hc1]
-    · have h3 : 2 * τ * ((horizontalSlope ξ).re - α) ≤ 2 * τ * 1 :=
-        mul_le_mul_of_nonneg_left (by linarith only [hs.2, hT2']) (by positivity)
-      nlinarith only [h3, hc2, hτ8]
+    have hT2' : 1 / x ≤ 1 := by
+      rw [div_le_one hxpos]
+      linarith only [hx]
+    have hs := abs_le.mp (hslope'.trans hsmall)
+    exact ⟨hξlo, by linarith only [hξlo, hx], hslope', by linarith only [hs.1, hT2'], by linarith only [hs.2, hT2']⟩
   set P := horizonAmp τ x with hPdef
   have hxX₁ : |x - x| ≤ 2 * R := by
     rw [sub_self, abs_zero]
     positivity
-  -- the typical data at the point `x`
-  obtain ⟨tx, htx, hxt⟩ := hwin x hxX₁
-  have hpx := hpt x hxX₁
-  have hx200 : 200 ≤ x := by linarith only [hpx.2.2.1]
+  have h0abs : |(0 : ℝ)| ≤ 2 * R := by
+    rw [abs_zero]
+    positivity
+  have hux : 2 * τ * α ∈ Icc w₁ w₂ := by
+    have h1 := hrange x hxX₁ 0 h0abs
+    rw [← hα, zero_add] at h1
+    exact h1
   have hP0 : 0 < P := by
     rw [hPdef]
     unfold horizonAmp
     rw [← hα]
-    refine mul_pos (norm_pos_iff.mpr (xiLine_ne_zero_of_typical htx hη hη1 hx200 hxt ?_)) (Real.exp_pos _)
-    have := hpx.2.2.2.2.1
-    rw [← hα] at *
-    linarith only [hc1, hη]
-  have hscalex : 1 + Real.log (4 * T) ≤ 8 * α :=
-    dyadic_log_le_horizontalSlope hT8 (by linarith only [hxlo, hT1000]) hxpos (by rw [← hα]; linarith only [hα100])
-  have hc16 : 16 * η ≤ 2 * τ * α := by linarith only [hc1, hη]
-  obtain ⟨hEx, hSx, hBx⟩ := hA α (by linarith only) (by linarith only) hscalex hc16 (by linarith only [hc2])
-  set B := typicalXiSlopeError η T with hB
-  have hBpos : 0 < B := typicalXiSlopeError_pos (by linarith only [hT8])
-  set ux := 2 * τ * α with hux
-  have hux2η : 2 * η ≤ ux := by linarith only [hc16, hη]
+    exact mul_pos (norm_pos_iff.mpr hne) (Real.exp_pos _)
+  have hBx : B ≤ 2 / 9 * α := hBβ x hxX₁
+  have hx200 : 200 ≤ x := by linarith only [hx]
+  set ux := 2 * τ * α with hux'
   -- comparison along the segment of heights
   have hseg (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * R) : ‖xiLine ξ ux‖ ≤ ‖xiLine x ux‖ * Real.exp 1 := by
     have hmem (s : ℝ) (hs : s ∈ uIcc x ξ) : |s - x| ≤ 2 * R := by
@@ -182,11 +176,8 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
     have hb : ∀ s ∈ uIcc x ξ, ‖I * xiLineDeriv s ux - (I * horizontalSlope x) * xiLine s ux‖ ≤
         (B + 1) * ‖xiLine s ux‖ := by
       intro s hs
-      obtain ⟨h1, -, h3, h4, -, -, -, -⟩ := hpt s (hmem s hs)
-      obtain ⟨t', ht', hst⟩ := hwin s h1
-      have hs200 : 200 ≤ s := by linarith only [h3]
-      have hd := norm_xiLineDeriv_sub_le_of_typical ht' hη hη1 hT8 hs200 hst hux2η
-        (by linarith only [hc2, hs200])
+      obtain ⟨-, -, h4, -, -⟩ := hpt s (hmem s hs)
+      have hd := hslope s (hmem s hs) ux hux
       have h2 : ‖horizontalSlope s - horizontalSlope x‖ ≤ 1 := by
         have h5 : horizontalSlope s - horizontalSlope x =
             (((horizontalSlope s).re - (horizontalSlope x).re : ℝ) : ℂ) := by
@@ -195,14 +186,13 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
           · simp [horizontalSlope_im]
         rw [h5, Complex.norm_real, Real.norm_eq_abs, ← hα]
         refine h4.trans ?_
-        have hTpos : 0 < T := by linarith only [hT1000]
-        have h6 : 2 * R * (2 / T) = (4 * R) * (1 / T) := by ring
+        have h6 : 2 * R * (2 / x) = (4 * R) * (1 / x) := by ring
         rw [h6]
         have h7 : 4 * R ≤ 1 := by linarith only [hR100]
-        have h8 : 1 / T ≤ 1 := by
-          rw [div_le_one hTpos]
-          linarith only [hT1000]
-        have h9 : 0 < 1 / T := by positivity
+        have h8 : 1 / x ≤ 1 := by
+          rw [div_le_one hxpos]
+          linarith only [hx]
+        have h9 : 0 < 1 / x := by positivity
         nlinarith only [h7, h8, h9, hRpos]
       have h4' : I * xiLineDeriv s ux - (I * horizontalSlope x) * xiLine s ux =
           I * ((xiLineDeriv s ux - horizontalSlope s * xiLine s ux) +
@@ -249,27 +239,26 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
   have hamp (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * R) :
       ‖xiLine ξ (2 * τ * (horizontalSlope ξ).re)‖ * Real.exp (-(τ * (horizontalSlope ξ).re ^ 2)) ≤
         P * Real.exp 3 := by
-    obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩ := hpt ξ hξ
-    obtain ⟨t', ht', hξt⟩ := hwin ξ h1
-    have hξ200 : 200 ≤ ξ := by linarith only [h3]
+    obtain ⟨-, -, -, h7, h8⟩ := hpt ξ hξ
+    have hrg := hrange ξ hξ 0 h0abs
+    rw [zero_add] at hrg
     set β := (horizontalSlope ξ).re with hβ
     have hβα : |β - α| ≤ 1 := abs_le.mpr ⟨by linarith only [h7], by linarith only [h8]⟩
-    have hmodel := norm_xiLine_le_model_of_typical ht' hη hη1 hT8 hξ200 hξt (u := ux) (w := 2 * τ * β)
-      ⟨hux2η, by linarith only [hc2, hξ200]⟩ ⟨by linarith only [h5, hη], by linarith only [h6, hξ200]⟩
-    rw [← hβ, ← hB] at hmodel
+    have hmodel := norm_xiLine_le_model_of_slope (u := ux) (w := 2 * τ * β) hBpos (hslope ξ hξ) hux hrg
+    rw [← hβ] at hmodel
     have hdiff : |2 * τ * β - ux| ≤ 2 * τ * |β - α| := by
-      rw [hux, show 2 * τ * β - 2 * τ * α = 2 * τ * (β - α) by ring, abs_mul, abs_of_pos (by positivity : 0 < 2 * τ)]
+      rw [hux', show 2 * τ * β - 2 * τ * α = 2 * τ * (β - α) by ring, abs_mul, abs_of_pos (by positivity : 0 < 2 * τ)]
     have hB1 : B * |2 * τ * β - ux| ≤ 1 := by
       have h9 : B * |2 * τ * β - ux| ≤ (2 / 9 * α) * (2 * τ * 1) := by
         refine mul_le_mul hBx (hdiff.trans (mul_le_mul_of_nonneg_left hβα (by positivity))) (abs_nonneg _) (by positivity)
       have h10 : (2 / 9 * α) * (2 * τ * 1) = 2 / 9 * ux := by
-        rw [hux]
+        rw [hux']
         ring
       rw [h10] at h9
       linarith only [h9, hc2]
     have hexpo : (2 * τ * β - ux) * β - τ * β ^ 2 ≤ -(τ * α ^ 2) + 1 := by
       have h9 : (2 * τ * β - ux) * β - τ * β ^ 2 + τ * α ^ 2 = τ * (β - α) ^ 2 := by
-        rw [hux]
+        rw [hux']
         ring
       have h10 : (β - α) ^ 2 ≤ 1 := by
         rw [← sq_abs]
@@ -297,22 +286,14 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
   -- the amplitude and the transform at each nearby height
   have hstep (ξ v : ℝ) (hξ : |ξ - x| ≤ 2 * R) (hv : |v| ≤ 2 * R) :
       ‖halfGaussTransform τ (xiLine ξ) v‖ ≤ 6 / 5 * Real.exp 7 * P := by
-    obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8⟩ := hpt ξ hξ
-    obtain ⟨t', ht', hξt⟩ := hwin ξ h1
-    have hξ200 : 200 ≤ ξ := by linarith only [h3]
-    have hξpos : 0 < ξ := by linarith only [hξ200]
+    obtain ⟨-, -, -, h7, h8⟩ := hpt ξ hξ
+    have hrg0 := hrange ξ hξ 0 h0abs
+    have hrgv := hrange ξ hξ v hv
+    rw [zero_add] at hrg0
     set β := (horizontalSlope ξ).re with hβ
     have hβ100 : 100 ≤ β := by linarith only [h7, hα101]
-    have hβ8 : 8 ≤ (horizontalSlope ξ).re := by rw [← hβ]; linarith only [hβ100]
-    have hscale := dyadic_log_le_horizontalSlope hT8 (by linarith only [h2, hT1000]) hξpos hβ8
-    rw [← hβ] at hscale
-    obtain ⟨hE, -, hB⟩ := hA β h7 h8 hscale h5 h6
-    obtain ⟨hvl, hvu⟩ := abs_le.mp hv
-    have hv2R : 2 * R ≤ 2 * η := by linarith only [hRη]
-    have hWX := window_fits hτ8 hτ hξpos (by rw [← hβ]; linarith only [hβ100])
-    have hmain := norm_halfGauss_sub_main_le_of_typical ht' hη hη8 hT8 hξ200 hξt hτ hτ8
-      (by rw [← hβ]; linarith only [hβ100]) (by rw [← hβ]; exact h5) (by rw [← hβ]; exact h6)
-      (y := v) (by linarith only [hvl, hv2R, hη]) (by linarith only [hvu, hR100]) hWX
+    have hB' : B ≤ 2 / 9 * β := hBβ ξ hξ
+    have hmain := hmainb ξ hξ v hv
     rw [← hβ] at hmain
     have hmn := norm_main_eq (t := τ) (X := ξ) (y := v) (xiLine ξ (v + 2 * τ * β))
     rw [← hβ] at hmn
@@ -334,14 +315,12 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
         (xiLine ξ (v + 2 * τ * β) * Complex.exp (-(((v + 2 * τ * β : ℝ) : ℂ) * horizontalSlope ξ)) *
           Complex.exp (v * horizontalSlope ξ + τ * horizontalSlope ξ ^ 2))
       rw [sub_add_cancel] at htri
-      have h9 := hmain.trans (mul_le_mul_of_nonneg_left hE hPv0)
+      have h9 := hmain
       linarith only [htri, h9, hmn', hPv0]
     -- the shift in the source
-    have hmodel := norm_xiLine_le_model_of_typical ht' hη hη1 hT8 hξ200 hξt (u := 2 * τ * β) (w := v + 2 * τ * β)
-      ⟨by linarith only [h5, hη], by linarith only [h6, hξ200]⟩
-      ⟨by linarith only [h5, hη, hvl, hv2R], by linarith only [h6, hξ200, hvu, hR100]⟩
+    have hmodel := norm_xiLine_le_model_of_slope (u := 2 * τ * β) (w := v + 2 * τ * β) hBpos (hslope ξ hξ) hrg0 hrgv
     rw [← hβ, add_sub_cancel_right] at hmodel
-    have hexpv : Real.exp (v * β) * Real.exp (typicalXiSlopeError η T * |v|) ≤ Real.exp 4 := by
+    have hexpv : Real.exp (v * β) * Real.exp (B * |v|) ≤ Real.exp 4 := by
       rw [← Real.exp_add]
       apply Real.exp_le_exp.mpr
       have hβ0 : 0 < β := by linarith only [hβ100]
@@ -351,8 +330,8 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
           _ ≤ 2 * R * (α + 1) := mul_le_mul hv h8 hβ0.le (by positivity)
       have h10 : 2 * R * (α + 1) = 2 * (α * R) + 2 * R := by ring
       rw [h10, hαR] at h9
-      have h11 : typicalXiSlopeError η T * |v| ≤ (2 / 9 * β) * (2 * R) :=
-        mul_le_mul hB hv (abs_nonneg _) (by positivity)
+      have h11 : B * |v| ≤ (2 / 9 * β) * (2 * R) :=
+        mul_le_mul hB' hv (abs_nonneg _) (by positivity)
       have h12 : (2 / 9 * β) * (2 * R) ≤ (2 / 9 * (α + 1)) * (2 * R) :=
         mul_le_mul_of_nonneg_right (by linarith only [h8]) (by positivity)
       have h13 : (2 / 9 * (α + 1)) * (2 * R) = 4 / 9 * (α * R) + 4 / 9 * R := by ring
@@ -361,10 +340,10 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
     have hPv2 : Pv ≤ (‖xiLine ξ (2 * τ * β)‖ * Real.exp (-(τ * β ^ 2))) * Real.exp 4 := by
       rw [hPv]
       calc ‖xiLine ξ (v + 2 * τ * β)‖ * Real.exp (-(τ * β ^ 2))
-          ≤ (‖xiLine ξ (2 * τ * β)‖ * Real.exp (v * β) * Real.exp (typicalXiSlopeError η T * |v|)) *
+          ≤ (‖xiLine ξ (2 * τ * β)‖ * Real.exp (v * β) * Real.exp (B * |v|)) *
               Real.exp (-(τ * β ^ 2)) := mul_le_mul_of_nonneg_right hmodel (Real.exp_pos _).le
         _ = ‖xiLine ξ (2 * τ * β)‖ * Real.exp (-(τ * β ^ 2)) *
-              (Real.exp (v * β) * Real.exp (typicalXiSlopeError η T * |v|)) := by ring
+              (Real.exp (v * β) * Real.exp (B * |v|)) := by ring
         _ ≤ _ := mul_le_mul_of_nonneg_left hexpv (by positivity)
     have hA3 := hamp ξ hξ
     rw [← hβ] at hA3
@@ -403,15 +382,10 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
     linarith only [h1, h2]
   have hmin := gap_ge_of_disc_bound (differentiable_riemannHeat hτ.le) hRpos hMpos hxx' hx0 hx'0 hdisc
   -- the derivative at the zero
-  have hWX := window_fits hτ8 hτ hxpos (by rw [← hα]; linarith only [hα100])
-  have hmain := norm_halfGauss_sub_main_le_of_typical htx hη hη8 hT8 hx200 hxt hτ hτ8
-    (by rw [← hα]; linarith only [hα100]) (by rw [← hα]; exact hc16) (by rw [← hα]; linarith only [hc2])
-    (y := 0) (by linarith only [hη]) (by norm_num) hWX
-  have hslopex := norm_halfGauss_slope_sub_le_of_typical htx hη hη8 hT8 hx200 hxt hτ hτ8
-    (by rw [← hα]; linarith only [hα100]) (by rw [← hα]; exact hc16) (by rw [← hα]; linarith only [hc2])
-    (y := 0) (by linarith only [hη]) (by norm_num) hWX
+  have hmain := hmainb x hxX₁ 0 h0abs
+  have hslopex := hslopeT
   have hmn := norm_main_eq (t := τ) (X := x) (y := 0) (xiLine x (0 + 2 * τ * α))
-  rw [← hα, zero_add] at hmn hmain hslopex
+  rw [← hα, zero_add] at hmn hmain
   have hPeq : ‖xiLine x ux‖ * Real.exp (-(τ * α ^ 2)) = P := by
     rw [hPdef]
     unfold horizonAmp
@@ -421,9 +395,8 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
   have hAlow : 18 / 25 * P ≤ ‖Ax‖ := by
     have hphase := gaussPhase_ge hτ8 hτ
     have h1 := mul_le_mul_of_nonneg_left hphase hP0.le
-    have h2 := mul_le_mul_of_nonneg_left hEx hP0.le
     have h3 := sub_le_norm_of_main hmain hmn
-    linarith only [h1, h2, h3]
+    linarith only [h1, h3]
   have hH := riemannHeat_ofReal_eq_two_re_halfGauss hτ x
   rw [hx0] at hH
   have hAre : Ax.re = 0 := by
@@ -438,8 +411,7 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
     (hasDerivAt_halfGaussTransform hτ (continuous_xiLine x) (integrable_exp_mul_norm_xiLine hτ x) 0).deriv
   rw [← hD'eq] at hslopex
   set Ex := D' - horizontalSlope x * Ax with hEx'
-  have hEn : |Ex.im| ≤ P * (α / 100) :=
-    (Complex.abs_im_le_norm Ex).trans (hslopex.trans (mul_le_mul_of_nonneg_left hSx hP0.le))
+  have hEn : |Ex.im| ≤ P * (α / 100) := (Complex.abs_im_le_norm Ex).trans hslopex
   have hDim : D'.im = α * Ax.im + Ex.im := by
     have h1 : D' = horizontalSlope x * Ax + Ex := by rw [hEx']; ring
     rw [h1, Complex.add_im, Complex.mul_im, horizontalSlope_im, hAre, ← hα]
@@ -479,6 +451,130 @@ theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η �
       have h3 : 0 < α * (α * P) := by positivity
       nlinarith only [h2, h3]
   exact hcoef.trans hmin
+
+/-- **The gap from the data at one height.** Suppose the errors of the half-Gauss transform are small at all slopes near `α = Re a(x)`, and every height within `2/α` of `x` is `η`-close to a typical box. Then at a real zero `x` of `H_τ` with `17η ≤ 2τα ≤ 1`, the next real zero lies at distance at least `1/(20 e⁷ α)`. Nothing here depends on how `η` relates to `T`. -/
+theorem gap_ge_of_typical_data {η T τ x x' : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) (hT1000 : 1002 ≤ T)
+    (hTη : 2 / η ≤ T) (hxlo : T - 1 / 2 ≤ x) (hα101 : 101 ≤ (horizontalSlope x).re)
+    (hαη : 1 / η + 4 ≤ (horizontalSlope x).re)
+    (hA : ∀ β : ℝ, (horizontalSlope x).re - 1 ≤ β → β ≤ (horizontalSlope x).re + 1 →
+      1 + Real.log (4 * T) ≤ 8 * β → 16 * η ≤ 2 * τ * β → 2 * τ * β ≤ 2 →
+      typicalHalfGaussError η T τ β ≤ 1 / 5 ∧ typicalHalfGaussSlopeError η T τ β ≤ β / 100 ∧
+        typicalXiSlopeError η T ≤ 2 / 9 * β)
+    (hwin : ∀ ξ : ℝ, |ξ - x| ≤ 2 * (1 / (horizontalSlope x).re) → ∃ t : ℝ,
+      zetaTypicalHeight η (zetaPolylogLevel T) T t ∧ |ξ - t| ≤ η)
+    (hτ : 0 < τ) (hc1 : 17 * η ≤ 2 * τ * (horizontalSlope x).re) (hc2 : 2 * τ * (horizontalSlope x).re ≤ 1)
+    (hxx' : x < x') (hx0 : riemannHeat τ (x : ℂ) = 0) (hx'0 : riemannHeat τ (x' : ℂ) = 0) :
+    1 / (20 * Real.exp 7) / (horizontalSlope x).re ≤ x' - x := by
+  have hT8 : 8 ≤ T := by linarith only [hT1000]
+  have hη1 : η ≤ 1 := by linarith only [hη8]
+  have hxpos : 0 < x := by linarith only [hxlo, hT1000]
+  have hx1003 : 1001 ≤ x := by linarith only [hxlo, hT1000]
+  set α := (horizontalSlope x).re with hα
+  have hα100 : 100 ≤ α := by linarith only [hα101]
+  have hα0 : 0 < α := by linarith only [hα100]
+  have hτ8 : τ ≤ 1 / 8 := by nlinarith only [hc2, hα100, hτ]
+  set R := 1 / α with hR
+  have hRpos : 0 < R := by positivity
+  have hR100 : R ≤ 1 / 100 := by
+    rw [hR]
+    exact one_div_le_one_div_of_le (by norm_num) hα100
+  have hαR : α * R = 1 := by
+    rw [hR]
+    field_simp
+  have hRη : R ≤ η := by
+    rw [hR, div_le_iff₀ hα0]
+    have := mul_le_mul_of_nonneg_left hαη hη.le
+    have h2 : η * (1 / η + 4) = 1 + 4 * η := by
+      field_simp
+    linarith only [this, h2, hη]
+  -- the facts at each nearby height
+  have hpt (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * R) :
+      T - 1 ≤ ξ ∧ 400 ≤ ξ ∧ 16 * η ≤ 2 * τ * (horizontalSlope ξ).re ∧ 2 * τ * (horizontalSlope ξ).re ≤ 2 ∧
+        α - 1 ≤ (horizontalSlope ξ).re ∧ (horizontalSlope ξ).re ≤ α + 1 := by
+    have h2R : 2 * R ≤ 1 / 50 := by linarith only [hR100]
+    have h1 := abs_le.mp hξ
+    have hξlo : T - 1 ≤ ξ := by linarith only [hxlo, h1.1, h2R]
+    have hξpos : 0 < ξ := by linarith only [hξlo, hT1000]
+    have hslope : |(horizontalSlope ξ).re - α| ≤ 2 * R * (2 / T) := by
+      have h3 := abs_horizontalSlope_re_sub_le hxpos hξpos
+      refine h3.trans ?_
+      have hmin : T / 2 ≤ min x ξ := le_min (by linarith only [hxlo, hT1000]) (by linarith only [hξlo, hT1000])
+      have hTpos : 0 < T := by linarith only [hT1000]
+      have hTinv : |ξ - x| / min x ξ ≤ 2 * R / (T / 2) :=
+        div_le_div₀ (by positivity) hξ (by positivity) hmin
+      refine hTinv.trans (le_of_eq ?_)
+      field_simp
+    have hsmall : 2 * R * (2 / T) ≤ 1 / T := by
+      have hTpos : 0 < T := by linarith only [hT1000]
+      have h3 : 2 * R * (2 / T) = (4 * R) * (1 / T) := by ring
+      rw [h3]
+      have h4 : 4 * R ≤ 1 := by linarith only [hR100]
+      have h5 : 0 < 1 / T := by positivity
+      nlinarith only [h4, h5]
+    have hT1 : 1 / T ≤ η / 2 := by
+      have hTpos : 0 < T := by linarith only [hT1000]
+      rw [div_le_div_iff₀ hTpos (by norm_num)]
+      have h3 := (div_le_iff₀ hη).mp hTη
+      nlinarith only [h3]
+    have hT2' : 1 / T ≤ 1 := by
+      rw [div_le_one (by linarith only [hT1000])]
+      linarith only [hT1000]
+    have hs := abs_le.mp (hslope.trans hsmall)
+    refine ⟨hξlo, by linarith only [hξlo, hT1000], ?_, ?_, by linarith only [hs.1, hT2'],
+      by linarith only [hs.2, hT2']⟩
+    · have h3 : 2 * τ * (-(η / 2)) ≤ 2 * τ * ((horizontalSlope ξ).re - α) :=
+        mul_le_mul_of_nonneg_left (by linarith only [hs.1, hT1]) (by positivity)
+      have h4 : 2 * τ * (η / 2) ≤ η := by nlinarith only [hτ8, hη, hτ]
+      nlinarith only [h3, h4, hc1]
+    · have h3 : 2 * τ * ((horizontalSlope ξ).re - α) ≤ 2 * τ * 1 :=
+        mul_le_mul_of_nonneg_left (by linarith only [hs.2, hT2']) (by positivity)
+      nlinarith only [h3, hc2, hτ8]
+  -- the errors at each nearby height
+  have herr (ξ : ℝ) (hξ : |ξ - x| ≤ 2 * R) :
+      typicalHalfGaussError η T τ (horizontalSlope ξ).re ≤ 1 / 5 ∧
+        typicalHalfGaussSlopeError η T τ (horizontalSlope ξ).re ≤ (horizontalSlope ξ).re / 100 ∧
+        typicalXiSlopeError η T ≤ 2 / 9 * (horizontalSlope ξ).re := by
+    obtain ⟨h2, h3, h5, h6, h7, h8⟩ := hpt ξ hξ
+    have hξpos : 0 < ξ := by linarith only [h3]
+    have hβ8 : 8 ≤ (horizontalSlope ξ).re := by linarith only [h7, hα101]
+    exact hA _ h7 h8 (dyadic_log_le_horizontalSlope hT8 (by linarith only [h2, hT1000]) hξpos hβ8) h5 h6
+  have hxX₁ : |x - x| ≤ 2 * R := by
+    rw [sub_self, abs_zero]
+    positivity
+  refine gap_ge_of_quadrature_data (B := typicalXiSlopeError η T) (w₁ := 2 * η) (w₂ := 3) ?_ hα101 hτ hc2
+    (typicalXiSlopeError_pos (by linarith only [hT8])) (fun ξ hξ => (herr ξ hξ).2.2) ?_ ?_ ?_ ?_ ?_ hxx' hx0 hx'0
+  · exact hx1003
+  · intro ξ hξ v hv
+    obtain ⟨-, -, h5, h6, -, -⟩ := hpt ξ hξ
+    have hv' := abs_le.mp hv
+    have h2R : 2 * R ≤ 2 * η := by linarith only [hRη]
+    exact ⟨by linarith only [h5, hv'.1, h2R, hη], by linarith only [h6, hv'.2, hR100]⟩
+  · intro ξ hξ w hw
+    obtain ⟨t', ht', hξt⟩ := hwin ξ hξ
+    obtain ⟨-, h3, -, -, -, -⟩ := hpt ξ hξ
+    exact norm_xiLineDeriv_sub_le_of_typical ht' hη hη1 hT8 (by linarith only [h3]) hξt hw.1
+      (by linarith only [hw.2, h3])
+  · intro ξ hξ v hv
+    obtain ⟨t', ht', hξt⟩ := hwin ξ hξ
+    obtain ⟨-, h3, h5, h6, h7, -⟩ := hpt ξ hξ
+    have hξpos : 0 < ξ := by linarith only [h3]
+    have hβ100 : 100 ≤ (horizontalSlope ξ).re := by linarith only [h7, hα101]
+    have hv' := abs_le.mp hv
+    have h2R : 2 * R ≤ 2 * η := by linarith only [hRη]
+    have hmain := norm_halfGauss_sub_main_le_of_typical ht' hη hη8 hT8 (by linarith only [h3]) hξt hτ hτ8
+      (by linarith only [hβ100]) h5 h6 (y := v) (by linarith only [hv'.1, h2R, hη])
+      (by linarith only [hv'.2, hR100]) (window_fits hτ8 hτ hξpos (by linarith only [hβ100]))
+    exact hmain.trans (mul_le_mul_of_nonneg_left (herr ξ hξ).1 (by positivity))
+  · obtain ⟨t', ht', hξt⟩ := hwin x hxX₁
+    obtain ⟨-, h3, h5, h6, -, -⟩ := hpt x hxX₁
+    have hslopex := norm_halfGauss_slope_sub_le_of_typical ht' hη hη8 hT8 (by linarith only [h3]) hξt hτ hτ8
+      (by rw [← hα]; linarith only [hα100]) h5 h6 (y := 0) (by linarith only [hη]) (by norm_num)
+      (window_fits hτ8 hτ hxpos (by rw [← hα]; linarith only [hα100]))
+    rw [zero_add] at hslopex
+    exact hslopex.trans (mul_le_mul_of_nonneg_left (herr x hxX₁).2.1 (by positivity))
+  · obtain ⟨t', ht', hξt⟩ := hwin x hxX₁
+    obtain ⟨-, h3, h5, -, -, -⟩ := hpt x hxX₁
+    exact xiLine_ne_zero_of_typical ht' hη hη1 (by linarith only [h3]) hξt (by linarith only [h5, hη])
 
 /-- **The gaps at typical heights.** In the unit window of a typical height, for every heat time with `17η ≤ 2tα ≤ 1`, real zeros `x < x'` have `x' − x ≥ c/α`, with an absolute `c`. -/
 theorem eventually_gap_ge_of_typicalWindow {η : ℝ} (hη : 0 < η) (hη8 : η ≤ 1 / 8) :

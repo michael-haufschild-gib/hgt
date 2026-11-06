@@ -37,3 +37,17 @@ uniform Gaussian error at some finite rank. Even the first-atom head is
 strictly positive definite at every finite Gaussian rank without a positive
 rank-uniform margin. The full current's signed lower bound, and the
 full-theta all-rank theorem, remain unproved.
+
+The [geometric-chain theorem](../3-formalized/geometric-theta-aperture-spectrum.md)
+proves strict positivity of the complete ordinary-pair aperture spectrum
+on `1,q,q²,…` for every integer `q≥2`, with absolute convergence before
+block cancellation. Twice-cumulative phase positivity and damped aperture
+convexity control infinitely many unequal atoms on each such chain.
+Distinct-prime cross terms remain uncontrolled; the chain spectrum's
+identification with literal infinite-source mixed jets is also open.
+
+The [two-prime boundary](../3-formalized/two-prime-center-cancellation-boundary.md)
+rules out pointwise iteration of these payments: shifts `log 2`, `log 3`
+already give a negative common-center weight at `log 6` for small positive
+apertures. The exact angular minimum and positive initial center interval
+are formalized; any full-source producer must retain radial integration.

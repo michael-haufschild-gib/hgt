@@ -38,3 +38,20 @@ The central inequality at `t log X → 0` on density-one heights; control of the
 
 ## Log
 - 2026-11-06 — formalized
+
+## Next target: the central inequality at the critical scale
+
+**Claim.** For every `δ > 0` there is `κ₀` such that for large `T`, outside a set of `X ∈ [T, 2T]` of measure `≤ δT`: for `κ₀/log²X ≤ t ≲ 1/log X`, real zeros near `X` are `≫ 1/log X` apart. So the crystal is formed at `τ = t log²X ≥ κ₀`, the scale of GUE relaxation, on a density-one set.
+
+**Inputs in the corpus.**
+- `ZetaLogDerivScaleData t R B`, `exists_volume_not_zetaLogDerivScaleData_le_uniform_level`: exceptional measure `≪ T((log T/B) e^{−κ/120000} + 1/(BR)²)`, `κ = R log T`. Take `BR = κ^{1/4}`: then `B√τ ≍ κ^{−1/4}` and `B/α ≍ κ^{−3/4}`.
+- `exists_volume_zetaZeroShadowScaled_le`: heights within `κ′(Re ρ − ½)` of a zero of depth `≥ a`, measure `≪ κ′ T/(a log T)`, all depths at once.
+- `two_mul_re_logDeriv_xi_eq_tsum_pair`: `2 Re ξ′/ξ = Σ P(r, a, u)`, `P = (r−a)/((r−a)²+u²) + (r+a)/((r+a)²+u²)`.
+
+**Mechanism.** Put `ZeroKeeping`: every zero of depth `|a| > R₀` has `|u| > 4|a|`.
+1. `P = 2r v/(v² + e²)`, `v = r² + u² − a²`, `e = 2|a||u|`. Under `ZeroKeeping`, for `r ≥ √2 R₀`: `v ≥ e`, so `P ≥ 0` and `P/r` is nonincreasing. Hence `Re ξ′/ξ(r₂) ≤ (r₂/r₁) Re ξ′/ξ(r₁)`: the slope at a single scale bounds all larger scales (upper tail, no dyadic chain).
+2. `g(q) = (q + c)² + e²` is convex in `q = r²` and `g(R²) ≥ g(0)` when `R² + 2u² ≥ 2a²`: so `|ξ(½ + w + iY)| ≤ |ξ(½ + R + iY)|` for `0 ≤ w ≤ R` (lower strip, tail factor `1`). Proof: finite near set `N`, tail of the pair sum nonnegative, compare `log|ξ|` with `½ Σ_N ψ_q`; zero on the segment by density of generic `Y` and continuity.
+3. Half-Gauss with `u = v + 2τβ`: box `[u/3, 5u/4]` inside `[3R/4, 6R]` for `u ∈ [9R/4, 9R/2]`. Relative errors: lower tail `e^{−(2/9)uα}`, upper tail `e^{−uα/32}`, strip `e^{−uα/6 + small}`, top `e^{−c uα}`, model `2B√τ e^{…}`.
+4. Abstract gap theorem `gap_ge_of_quadrature_data`, the typical version as a corollary.
+5. Exceptional set: shadow at `(R₀, κ′ = 5)` plus scale data at all dyadic `R_j = 2^j R₀ ≤ 1/16` with `BR = κ_j^{1/4}`: total `≪ T(1/κ₀ + κ₀^{−1/2})`.
+Modules: `TheSlopeOfXiIsAPoissonSum`, `TheHalfGaussAtTheCriticalScale`, `TheCentralInequalityAtTheCriticalScale`.

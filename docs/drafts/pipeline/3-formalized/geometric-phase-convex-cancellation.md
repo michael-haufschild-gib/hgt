@@ -1,7 +1,7 @@
 # Convex cancellation of multiplicative-chain phases
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Wall:** Σ6
 
 For `|z|=1`, set `U_n=Σ_(j=0)^n z^j conjugate(z)^(n−j)` and
@@ -36,3 +36,13 @@ The corpus anchors are `HTGeometry.fejerKernel_eq_double_sum` and
 `thetaPairApertureSpectrum_eq_shifted`. This theorem controls a complete
 geometric phase chain. Distinct-prime interaction and the full-source
 signed inequality are not conclusions of this theorem.
+
+## Lean
+
+`HTGeometry/GeometricPhaseConvexity.lean` proves
+`geometricDiagonalCumulative_nonneg`,
+`geometricDiagonal_weighted_eq_secondDifference`,
+`geometricDiagonal_weighted_nonneg` and
+`geometricDiagonal_weighted_pos` in namespace `HTGeometry`.
+Direct source check passed; capstone dependency audits contain only
+`propext`, `Classical.choice`, `Quot.sound`.

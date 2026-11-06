@@ -10,12 +10,14 @@ the honest theta determinants transfers this bound to every late Schur packet.
 -/
 
 noncomputable section
+set_option autoImplicit false
 open Complex Filter Metric Set Topology Matrix
 open scoped BigOperators Matrix
 
 namespace GaloisForLFunctions.SquareRootThreshold
 
-open RHTower RHTower.HedenmalmThetaSource HTGeometry HedenmalmHilbertSchmidt
+open _root_.RHTower _root_.RHTower.HedenmalmThetaSource
+open GaloisForLFunctions.HTGeometry _root_.RHTower.HedenmalmHilbertSchmidt
 
 private theorem spectral_im_sq (q : XiZeroCopy) :
     (xiSpectralPoint q).im ^ 2 = ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
@@ -27,7 +29,7 @@ private theorem spectral_im_sq (q : XiZeroCopy) :
 private theorem spectral_normSq (q : XiZeroCopy) :
     Complex.normSq (xiSpectralPoint q) =
       (q.1 : ℂ).im ^ 2 + ((q.1 : ℂ).re - 1 / 2) ^ 2 := by
-  rw [Complex.normSq_apply, spectral_im_sq]
+  simp only [Complex.normSq_apply, ← pow_two, spectral_im_sq]
   have h : (xiSpectralPoint q).re = (q.1 : ℂ).im := by
     simp [xiSpectralPoint, Complex.mul_re]
   rw [h]
@@ -120,7 +122,7 @@ theorem xi_reciprocal_charge_le_sixth {z : ℂ} (hz : XiC z = 0) :
       150 * Complex.normSq (z⁻¹) ^ 3 + (425 / 4 : ℝ) * Complex.normSq (z⁻¹) ^ 4 := by
   have h := (xi_reciprocal_transverse_bounds hz).1
   have h1 := mul_le_mul_of_nonneg_left h
-    (mul_nonneg (by norm_num : (0 : ℝ) ≤ 600) (Complex.normSq_nonneg _))
+    (mul_nonneg (by norm_num : (0 : ℝ) ≤ 600) (Complex.normSq_nonneg (z⁻¹)))
   have h2 := pow_le_pow_left₀ (sq_nonneg (z⁻¹).im) h 2
   rw [charge_eq]
   nlinarith only [h1, h2]
@@ -143,7 +145,8 @@ private theorem eventually_charge_le_coefficient
     (hzf : ∀ z : ℂ, XiC z = 0 →
       sourcePairPositiveQuarticCharge (z⁻¹).re (z⁻¹).im <
         f (Complex.normSq (z⁻¹)) * Complex.normSq (z⁻¹)) :
-    ∀ᶠ k in atTop, ∀ (S : ThetaSourceStageSchurPacket k) i,
+    ∀ᶠ k : ℕ in atTop, ∀ (S : ThetaSourceStageSchurPacket k)
+      (i : Fin (Fintype.card ↥(thetaSourceSignedCutoff k))),
       sourcePairPositiveQuarticCharge (S.T i i).re (S.T i i).im ≤
         f (Complex.normSq (S.T i i)) * Complex.normSq (S.T i i) := by
   let δ : ℝ := ε / 4600

@@ -162,6 +162,13 @@ the negative Gamma constant and both line-conjugate resolvent terms gives zero-d
 these cover the order-54 cone (`EffectiveHorizons/LowHeightGammaPF54`, primary namespace).
 All-order centre positivity remains open.
 
+Reciprocal Xi zeros satisfy `q(w)≤150|w|⁶+425|w|⁸/4` for the positive Schur quartic
+charge. Compact determinant convergence transfers this parabolic localization to the actual
+theta stages: eventually every Schur packet has charge at most its stage Hilbert–Schmidt mass
+divided by 400. At squared-norm cutoff `δ≥0`, the small-spectrum charge is eventually at most
+`(150δ²+425δ³/4+ε)C²` for every `ε>0`, where `C` is the fixed Hilbert–Schmidt ceiling
+(`EffectiveHorizons/ThetaSchurParabolicCharge`). Total-charge vanishing remains open.
+
 ### D. Prime side
 25. **Localized explicit formula** $W_\zeta(S_\xi f)=A_f(\xi)-\Pi_f(\xi)$; $\Pi_f$ is real; windowed mean of
     $\Pi_f$ is exactly 0 for window $2r\le\log2$ at any aperture; excursions balance exactly.

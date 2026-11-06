@@ -1,7 +1,7 @@
 # RH proof-route frontier
 
 **RH open · 38 live route formulations · 9 candidates.**
-**Corpus checkpoint:** `e0d985d915d47fd4204514366cb45ff72bfbddc6`.
+**Corpus checkpoint:** `c8277d54bf3876aa297c9d5b29b09720e91d2369`.
 
 Live = source observable + proved RH-sufficient receiver + explicit open estimate. Candidate = missing independent source mechanism/landing.
 Formulations need not be independent: HJ→PA, BSH→CDC; FEL's BSY criterion→CTF. Source construction does not discharge zero-selective sign/vanishing.
@@ -86,7 +86,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Actual Möbius/Liouville half-power cancellation → RH.
 - **Established:** Damped centered energy E_ε: arbitrarily small ε>0 with sup_T E_ε(T)<∞⇔RH. At any fixed t₀, sharp M_N(1/2+it₀)=O_ε(N^ε) for every ε>0 and all N⇔RH. Undamped Hilbert energy≤CTexp(−c·vkScale(T)), uniformly N≤T; vkScale(T)=(logT)^(3/5)(loglogT)^(−5/3) [L]. Explicit exponent-1/2 gauge outside finite Dirichlet/vertical modifications; pole-preserving flips have exponent max(θ,Θ) [K].
-- **Open:** Actual trivial-gauge cancellation; signed long-modulus energy including harmonic tail. [Bounded undamped Hilbert form is impossible](rh-killed-routes.md#mobius-hilbert-endpoint); cofinal damped bounds remain open. Constructed half-power gauges and [pole matching](rh-killed-routes.md#pole-matching-half-power) do not discharge them.
+- **Open:** Actual trivial-gauge cancellation; signed long-modulus energy including harmonic tail. [Bounded undamped Hilbert form is impossible](rh-killed-routes.md#mobius-hilbert-endpoint); cofinal damped bounds remain open. Constructed half-power gauges, [pole matching](rh-killed-routes.md#pole-matching-half-power) and [coefficient-norm/local-inverse control](rh-killed-routes.md#moebius-coefficient-blindness) do not supply cancellation.
 - **Sources:** R:MobiusHilbertFormEquivalence; ADT:TheMertensFunctionIsAGluingDeterminant; C:{TheDampedMobiusCriticalEnergy,MobiusHilbertVinogradovKorobov,LongModulusExactDecomposition}; MZF:TheWidthIsReadInOneWindow [L]; AGT:{AnExplicitPointHasExponentOneHalf,TheFlipPointsBreakTheMoebiusHalfPowerLaw} [K].
 
 <a id="tt"></a>
@@ -110,7 +110,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 
 - **Path:** Actual ξ half-Gaussian source → exclusion of positive-time heat collisions → RH.
 - **Established:** No positive-time real collisions⇔RH. All-height large-X horizon (6600/9991+ε)/logX. On one density-one set, Λ_XlogX→0; central gap g²≥c·min(t,log⁻²(2+abs(x))) holds eventually for each fixed κ>0 when κ≤tlog(x/2π)≤1 [L]. Quantitative refinement: Λ_XlogX≤32L^(−1/5) outside measure O(TL^(−14/5)), L=1+log4T [S]. Prime cameras control dominant/bounded clusters with explicit outside-noise hypotheses; precontact positive ζ-image mimics exist [L].
-- **Open:** All-height collision exclusion down to arbitrarily small t, including bounded/exceptional heights. Need actual frequency<1 at each putative collision, or global central-gap control; the latter also forces uniformly bounded multiplicity. Local Dyson/maximum-principle laws retain crowd/lateral-boundary inputs; [heat structure alone cannot select time0](rh-killed-routes.md#heat-time-shift). Cameras still need deep-cluster separation/noise control; [atom counts need a weight floor](rh-killed-routes.md#weighted-image-count).
+- **Open:** All-height collision exclusion down to arbitrarily small t, including bounded/exceptional heights. Need actual frequency<1 at each putative collision, or global central-gap control; the latter also forces uniformly bounded multiplicity. Dyson/maximum-principle laws retain crowd/lateral inputs; [heat structure alone cannot select time0](rh-killed-routes.md#heat-time-shift). Hyperbolic cameras retain deep-cluster Blaschke separation and very-deep low-centre mass bounds; [atom counts need a weight floor](rh-killed-routes.md#weighted-image-count).
 - **Sources:** ZCG:HeatScaleRepulsion/{SubWeylCollisionFreeHorizon,SymmetricHalfCollisionLaw,LocalNewmanDensityOne}; NGF:{TheCentralInequalityOnAlmostAllHeights,TheCentralInequalityIsStrongerThanRH,TheGapsObeyAMaximumPrinciple}; MZF:{TheTuranCameraSeesBoundedClusters,TheNearLineZerosCannotBlockTheCamera}; CSTW:TheSamplingAtomsArePositiveMimicsOfZeta [L]; NGF:TheCentralInequalityAtAPowerOfTheLogarithm [S].
 
 <a id="tg"></a>
@@ -141,9 +141,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### TH — Theta moment positivity
 
 - **Path:** Signed center-mixed theta jets → all-rank Hankel positivity → RH.
-- **Established:** Full source ranks≤9 positive throughout 0<a<1/2; all finite ranks positive in a critical collar of width ≍(logN)^(−2/3)(loglogN)^(−5/3). Exact two-atom source has positive literal aperture-weighted Hankel sections at every rank, including cross terms. Pair jets/interchanges and rank-uniform Gaussian-relative remainder O(ae^(−πM)) closed. Rank-N full-source sign follows from current≥0 on a cubic frequency window [L].
-- **Open:** Full-source rank10+ throughout 0<a<1/2: signed aggregate/remainder payment. [Every fixed finite head lacks a positive all-rank Gaussian margin](rh-killed-routes.md#theta-finite-head-margin); a uniform error bound cannot complete that producer. [Unequal pairs change sign](rh-killed-routes.md#theta-pairwise-positive); [fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
-- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:StrictEighthSection [K]; TCS:{StrictNinthSection,VinogradovKorobovCriticalCollar,AllApertureFiniteRankCriterion}; CAF:{TwoAtomAllRankAperture,ThetaPairApertureJets,ThetaPairGaussianRemainder,ThetaPairGaussianCoercivityBoundary} [L].
+- **Established:** Full source ranks≤9 positive throughout 0<a<1/2; all ranks positive in a collar of width ≍(logN)^(−2/3)(loglogN)^(−5/3). Two-atom aperture Hankel sections positive at every rank; remainder O(ae^(−πM)) uniform in rank. Convex weights control the signed geometric-chain phase sum; complete q^n-chain aperture spectrum>0, q≥2, with absolute summation/integral exchange. Rank-N full-source sign follows from current≥0 on a cubic frequency window [L].
+- **Open:** Full-source rank10+ throughout 0<a<1/2: signed aggregate/remainder payment, including cross-chain terms omitted by a single q^n chain. [Fixed finite heads lack a positive all-rank Gaussian margin](rh-killed-routes.md#theta-finite-head-margin). [Unequal pairs change sign](rh-killed-routes.md#theta-pairwise-positive); [fixed quartic repairs fail](rh-killed-routes.md#theta-fixed-cross-load).
+- **Sources:** R:ThetaCusp/ThetaCuspCenterMixedSignedJetCompleteness; TCS:StrictEighthSection [K]; TCS:{StrictNinthSection,VinogradovKorobovCriticalCollar,AllApertureFiniteRankCriterion}; CAF:{TwoAtomAllRankAperture,ThetaPairApertureJets,ThetaPairGaussianRemainder,ThetaPairGaussianCoercivityBoundary,GeometricAtomApertureWeight,GeometricAtomApertureSpectrum}; H:GeometricPhaseConvexity [L].
 
 <a id="rn"></a>
 ### RN — Theta renewal and singular comparison
@@ -157,9 +157,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### WD — Ward orientation and horizontal collision
 
 - **Path:** Source current/window energy → collision-charge bound, all-resolution sectoriality or cofinal long-mollifier moment control → RH.
-- **Established:** Attained extrema and collision/window receivers. RH⇔fixed-[0,1] moment ∫abs(ζM_N)²=O_ε(N^(2ε)) for every ε>0, all N; cofinal long-prefix O_θ(T^K), fixed K/unbounded θ also suffices. Actual occupied-window proportion vanishes at depth ≍loglogT/logT [L]. Long-moment width-slope equivalence and reduction to pure Möbius moments [S]; neither supplies the fixed-K bound. Sparse all-window receiver: [CTF](#ctf).
-- **Open:** Produce the fixed-window subpolynomial bound, `hcofinal` with θ-independent K, collision bounds, or shifted-detector logarithmic saving. Weighted-defect transfer retains T². [Last-scale defect survives short Dirichlet weights](rh-killed-routes.md#short-weight-defect); stronger central O(logT) energy also requires bounded inverse-ζ′ residue mass. Finite/shallow exceptions and vanishing cluster tail remain uncontrolled.
-- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:NearLineLogMean/{TwoSidedThetaMollifierTrap,DiscCorridorDivergenceAndDetectorSharpness}; APR:{LongMollifiersImplyCriticalClustering,PrefixCancellationAmplifiesTheZeroFloor}; MZF:{TheWidthIsReadInOneWindow,TheOccupiedWindowsLoseOneLogarithm,TheLastScaleSurvivesEveryShortWeight,TheLongMollifierPaysForNegativeMoments} [L]; CDG:NearLineLogMean/LongMoebiusSecondMomentRigidity [S].
+- **Established:** Attained extrema/collision receivers; RH⇔fixed-[0,1] ζM_N second moment subpolynomial in N. Cofinal long-prefix O_θ(T^K), fixed K/unbounded θ, suffices. Occupied-window proportion vanishes at depth ≍loglogT/logT [L]. Long-moment width slope=2w and pure-Möbius equivalence; r=2 zero-damping head=1−1/(D+1), leaving only the pronic tail. Sparse subpolynomial compact parity energy or sharp defect gives the long-moment receiver with K=3 [S].
+- **Open:** Produce a fixed-window subpolynomial bound, `hcofinal` with θ-independent K (constant C_θ may vary), or sparse subpolynomial compact parity energy; alternatively collision bounds/shifted-detector saving. Transfer retains T². [Coefficient norms/local inverses are insufficient](rh-killed-routes.md#moebius-coefficient-blindness); [short weights retain the last-scale defect](rh-killed-routes.md#short-weight-defect). Stronger central O(logT) energy needs bounded inverse-ζ′ residue mass. Finite/shallow exceptions remain.
+- **Sources:** CDG:LogScaleHeckeDefect/UnitWindowMinimumAndOscillation; CDG:NearLineLogMean/{TwoSidedThetaMollifierTrap,DiscCorridorDivergenceAndDetectorSharpness}; APR:{LongMollifiersImplyCriticalClustering,PrefixCancellationAmplifiesTheZeroFloor}; MZF:{TheWidthIsReadInOneWindow,TheOccupiedWindowsLoseOneLogarithm,TheLastScaleSurvivesEveryShortWeight,TheLongMollifierPaysForNegativeMoments} [L]; CDG:NearLineLogMean/LongMoebiusSecondMomentRigidity; SSA:PoleFreeHypercubeBridgesToLongMollifiers; APR:TruncatedMoebiusCollarAndBlindnessLaws [S].
 
 <a id="li"></a>
 ### LI — Paired Li and prime–Gamma balances
@@ -205,7 +205,7 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### CTF — Chronological tail / Báez–Duarte approximation
 
 - **Path:** Finite-row approximation / averaged-current control / Möbius defect / BSY sign → RH.
-- **Established:** RH⇔real unit-bounded rows reach every error tolerance. Dyadic linear-taper subpolynomial defect⇒RH. Sharp μ defect D_y≥c_ρy^(2Reρ−1); sparse subpolynomial D_y⇒RH. BSY sign I≤0⇔RH. For E_N=ζM_N−1 on the line, RH⇔∃ν>0∀τ∈ℝ∀ε>0, arbitrarily large N give meas{t∈[τ−1,τ+1]:abs(E_N(t))≤N^ε}≥ν [L].
+- **Established:** RH⇔real unit-bounded rows reach every error tolerance. Dyadic linear-taper subpolynomial defect⇒RH. Sharp μ defect D_y≥c_ρy^(2Reρ−1); sparse subpolynomial D_y⇒RH. BSY sign I≤0⇔RH. For E_N=ζM_N−1 on the line, RH⇔∃ν>0∀τ∈ℝ∀ε>0, arbitrarily large N give meas{t∈[τ−1,τ+1]:abs(E_N(t))≤N^ε}≥ν [L]. Sharp-defect/compact-parity bridge to [WD](#wd), with fixed K=3 [S].
 - **Open:** Produce one approximation/sign/upper-bound criterion: vanishing-error rows, sparse subpolynomial D_y or linear-taper defect, BSY sign, or the uniform positive-proportion condition above. Lengths may depend on τ,ε. Averaged-current branch needs arbitrarily large X with M>X and abs(Re current(X,M,ρ))≤BX^ε for each ρ,ε>0. [Full sharp-sequence decay fails](rh-killed-routes.md#sharp-mobius-defect); [restricting to good heights retains the zero-forced exponent](rh-killed-routes.md#mollifier-good-set).
 - **Sources:** R:{ChronologicalRiemannEquivalence,EulerDeletionCutoffAverage,BalazardSaiasYorCriterionEquivalence}; APR:{TheMollifierDefectIsASawtoothForm,TheLinearMollifierIsTheChebyshevError,PrefixCancellationAmplifiesTheZeroFloor}; MZF:TheExponentOfTheMollifiedErrorIsRigid [L].
 
@@ -245,9 +245,9 @@ Evidence: [L] integrated, source-reviewed; [S] unfinished/unintegrated, unverifi
 ### GTA — Transverse Schur charge
 
 - **Path:** Actual theta-stage quartic charge → arbitrarily small cofinal packets / compact full-mode operator → RH.
-- **Established:** Canonical Schur family, nonnegative charge and unconditional strong finite-prefix convergence. Full-mode compactness and finite-prefix operator-norm convergence each⇔RH. Arbitrarily small charges at arbitrarily late stages already suffice [L].
-- **Open:** For every ε>0,N, some k≥N admits a Schur packet with charge<ε. [Ordinary skew-adjoint energy does not decay](rh-killed-routes.md#theta-skew-floor); its positive limit kills that producer, not quartic-charge/compactness receivers.
-- **Sources:** R:{PaperThetaSchurModeCharge,PaperThetaSchurIdealClassification,PaperThetaSchurFiniteStageLimit}; R:Hedenmalm/HedenmalmThetaSchurQuarticAsymptoticZeroTransfer [L].
+- **Established:** Canonical Schur family, strong finite-prefix convergence; full-mode compactness and finite-prefix operator-norm convergence each⇔RH. Cofinal arbitrarily small charge suffices [L]. Late packets have charge≤stage Hilbert–Schmidt mass/400; small-spectrum charge≤(150δ²+425δ³/4+ε)·HS-ceiling², δ cuts squared spectral size [S].
+- **Open:** For every ε>0,N, some k≥N admits charge<ε. The fixed 1/400 ceiling does not vanish; small-spectrum suppression leaves the large spectral nodes. [Ordinary skew-adjoint energy does not decay](rh-killed-routes.md#theta-skew-floor).
+- **Sources:** R:{PaperThetaSchurModeCharge,PaperThetaSchurIdealClassification,PaperThetaSchurFiniteStageLimit}; R:Hedenmalm/HedenmalmThetaSchurQuarticAsymptoticZeroTransfer [L]; S:EffectiveHorizons/ThetaSchurParabolicCharge [S].
 
 <a id="owu"></a>
 ### OWU — Odd Weil-weight uniqueness
@@ -362,7 +362,7 @@ Critical ratio R=c⁸/logN; tilted spline has spectral order7. Other profile lim
 
 | Established | Open / scope | Sources |
 |---|---|---|
-| Atomic adjoint recovers Lipschitz tests with error O(c/N)‖x‖₂; tilted-alias pairing passes to strong physical L¹ limits. Fixed smooth profiles have below-grid error²≤C(c²r³/N²+1/r) [L]. Mixed-mass aliasing limit under the same compactness input [S]. | Strong L¹ compactness, varying-profile tails and full complementary sign are not supplied. | AHD:{AtomicSynthesisRecoversLipschitzTests,TheAliasingPairsWithStrongPhysicalLimits,TheSynthesizedProfileIsRecoveredBelowTheGrid} [L]; AHD:AtomicSynthesisRetainsItsMixedMass [S] |
+| Atomic adjoint error O(c/N)‖x‖₂; unit physical mass gives ‖x‖₂=O(c⁴). Exact rescaled mixed-mass/aliasing limit under strong L¹ convergence; fixed-profile below-grid error²≤C(c²r³/N²+1/r) [L]. Dual high-Fourier lower bound retains squared recovery error [S]. | Strong L¹ compactness, varying-profile tails and full complementary sign are not supplied. | AHD:{AtomicSynthesisRecoversLipschitzTests,TheAliasingPairsWithStrongPhysicalLimits,TheSynthesizedProfileIsRecoveredBelowTheGrid,AtomicSynthesisRetainsItsMixedMass} [L]; CACT:TheHighFourierMassHasADualLowerBound [S] |
 | Full tilted-spline matrix positive for every subcritical exponent<1/8 [L], and through one fixed small multiple c≤2K₀(logN)^(1/8), with complete Schur payment [K]. | Every K>0. Losses R and R² persist; increasing N does not pay them. | CACT:{TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot,CriticalMultipleCompleteWeilPositivity}; SSHA:EveryEighthRootMultipleReceivesTheTiltedSpline |
 | Every fixed independent mean-zero periodic joint family eventually PD at every ratio. Distinct primitive conductors>1 decouple at critical second order for common profiles, without parity restriction [L]. | Growing families/periods, coalescing frequencies and untwisted sign. Fixed-family positivity is not a full-space floor. | AHD:{JointPeriodicWindowsInheritThePolarization,PrimitiveCharacterConductorGrading,EveryFrequencySectorInheritsThePolarization} |
 | Critical pencil=κWeil+(7J/R)weighted Gram. Tower windows A≤2a_k positive at every R. Exact-clock inertia=(n₊,n₋+n₀,0); null directions enter negatively [L]. | All apertures and growing complements; actual nullvector existence. This specific tower has a_∞<0.3621, not aperture exhaustion [L]. | AHD:{EveryCriticalRatioIsPositiveOnALargerWindow,TheCriticalBoundaryAddsItsNullDirections}; I:{MultiPrimeDilationModulusAndIteratedWeilFloors,TheWeilFloorTowerIsFrozen} [L] |
@@ -381,6 +381,8 @@ Critical ratio R=c⁸/logN; tilted spline has spectral order7. Other profile lim
 Assuming `RHVerifiedThrough T`: Li n≤4.7T; Hausdorff k+1≤1.5(T−1), r≤RT³; heat-grid degree+1≤T/4800; Jensen degree d with 2·10⁷d⁴≤TlogT; central PF k+1≤3T. Each retains its stated lower-height threshold. Theta rank N, all 0<a≤3/4, follows from verification through D(N+1)³+1 [L]. **These transfers do not prove the verification input.** Independently, centre PF₅₄ is unconditional [L].
 
 Sources: VHR:{LiAndHausdorffEntries,HeatGridEntries,JensenEntries,PolyaFrequencyEntries,ThetaEntries}; S:EffectiveHorizons/LowHeightGammaPF54 [L].
+
+RW/SRT support: a locally verified-line band forces a zero within prescribed σ∈(0,1] above an explicit height; separated nodes recover compact-test transforms with exponentially small Taylor error [S]. Actual verification and all-window sign remain open. VHR:{ZeroGapsFromVerifiedZeros,SeparatedNodesControlTheTransform} [S].
 
 <a id="external-literature"></a>
 ### Scope guards
@@ -404,9 +406,9 @@ WTZ/DZG/ATD: RW/HF/ACS/PM support. Tate-positive dimensions=[0,κ(A)], κ(A)>0 a
 
 GWZ/CSTW: [RW](#rw)/AIP support. At log2<A<log3, exact first-stage Schur complement reduces complete-Weil sign to one two-collar inequality [L]; its sign remains open. Mixed precontact Gram trace identity: [RW](#rw). Source: GWZ:TheFirstStageComplementIsASchurComplement [L].
 
-MZF: [WD](#wd)/[CTF](#ctf)/[ZCG](#zcg) support. Actual Selberg CLT and short-block twisted moments closed [L]; neither gives all-window purity. Prime cameras remove near-line competitors but retain deep-cluster/noise inputs [L]; hyperbolic-cluster extension [S]. Sources: MZF:{SelbergsCentralLimitTheorem,TheTwistedMomentFactorsOverBlocks,TheNearLineZerosCannotBlockTheCamera} [L]; MZF:TheHyperbolicCameraSeesIsolatedZeros [S].
+MZF: [WD](#wd)/[CTF](#ctf)/[ZCG](#zcg) support. Selberg CLT, short-block twisted moments and near-line camera bounds [L]. Lorentz mass has an exponential exceptional-set tail. Under deep Blaschke separation and very-deep low-centre mass bounds, shallow noise is removed: separated depth-α/logT count≤C_c(α+1)TlogT·e^(−2(1−3c)α)/B₀²+O_c(log²T√T), with stated A,B₀ ranges [S]. Deep geometry/all-window purity remain open. Sources: MZF:{SelbergsCentralLimitTheorem,TheTwistedMomentFactorsOverBlocks,TheNearLineZerosCannotBlockTheCamera} [L]; MZF:{TheHyperbolicCameraSeesIsolatedZeros,TheLorentzianMassHasAnExponentialTail,OnlyComparablyDeepZerosCompete} [S].
 
-NGF: [ZCG](#zcg) support. Monotone Fock frequency N=σD/F≥k/2 at order k; Hermite collision profiles; buffered zero-count and depth-moment dissipation [L]. Finite-speed lateral-energy estimate [S] bounds, but does not exclude, tiny nonreal pairs. Exact mesh/cluster exclusion still needs boundary/crowd control; [time-shift obstruction](rh-killed-routes.md#heat-time-shift). Sources: NGF:{TheFrequencyIsAChaosLevel,CollisionsBlowUpToHermiteProfiles,TheZeroNumberDropsOnlyAtCollisions,TheDepthMomentsAreDissipated,TheGapsObeyAMaximumPrinciple} [L]; NGF:NonrealZerosEnterAtFiniteSpeed [S].
+NGF: [ZCG](#zcg) support. Monotone Fock frequency N=σD/F≥k/2 at order k; Hermite collisions; buffered zero-count/depth dissipation [L]. Finite-speed lateral energy has a factorial tail but permits tiny nonreal pairs; isolated-pair opening requires separation/far-energy control [S]. [An adjacent pair can close beside a clump](rh-killed-routes.md#adjacent-dyson-gap); [flow structure cannot select time0](rh-killed-routes.md#heat-time-shift). Sources: NGF:{TheFrequencyIsAChaosLevel,CollisionsBlowUpToHermiteProfiles,TheZeroNumberDropsOnlyAtCollisions,TheDepthMomentsAreDissipated,TheGapsObeyAMaximumPrinciple} [L]; NGF:{NonrealZerosEnterAtFiniteSpeed,TheCompressionAwayFromTheMesh} [S].
 
 FFP: LA/TH support. Exact zero-piece reality⇔RH. Genus-one stability⇔upper-half-plane zeros and drift D≥0; sharp margin −D. ξ drift0; reversed Jensen roots approach Im0 for σ≥1. At scale½log d, G_d(iθ)→1/(iθ+i), σ≥1/2, θ>0. Full upper-half-plane transform convergence for σ≥1, or given zero-freeness right ofσ [L]; critical-line stability/all-root control open. [Strict-margin obstruction](rh-killed-routes.md#xi-stability-margin). Sources: FFP:{ZeroPieceRealization,GenusOneStabilityClassification,StabilityBoundaryOfXi,CauchyLimitLaw} [L].
 
