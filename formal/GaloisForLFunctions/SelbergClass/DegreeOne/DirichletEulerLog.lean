@@ -117,7 +117,6 @@ theorem term_dirichletLogCoeff_prime_pow {p : ℕ} (hp : p.Prime) (s : ℂ) (k :
   have hpow : ∀ w : ℂ, ((p : ℂ) ^ (k + 1)) ^ w = (p : ℂ) ^ (((k + 1 : ℕ) : ℂ) * w) := by
     intro w
     rw [← Complex.natCast_cpow_natCast_mul]
-    norm_cast
   have hmulpow : ∀ w : ℂ, ((p : ℂ) ^ w) ^ (k + 1) = (p : ℂ) ^ (((k + 1 : ℕ) : ℂ) * w) := by
     intro w
     rw [← Complex.cpow_nat_mul]

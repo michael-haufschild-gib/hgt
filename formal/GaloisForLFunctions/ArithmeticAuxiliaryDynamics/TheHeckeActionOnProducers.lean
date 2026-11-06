@@ -102,12 +102,10 @@ private lemma stencilSlope_add (c d : ℕ →₀ ℤ) :
 /-- **Positive Hecke combinations stay in the cone.** -/
 theorem IsProducer.add_dilate {c : ℕ →₀ ℤ} {m B j : ℕ} (hP : IsProducer c m B) (hj : 0 < j) (a : ℕ) :
     IsProducer (c + a • dilate j c) m B := by
+  have hinj : Function.Injective (j * ·) := fun _ _ h => Nat.eq_of_mul_eq_mul_left hj h
   have hdil0 : dilate j c 0 = 0 := by
-    rw [dilate, Finsupp.mapDomain_notin_range]
-    rintro ⟨k, hk, hk'⟩
-    have hk0 : k ≠ 0 := fun h => by subst h; exact Finsupp.mem_support_iff.mp hk hP.zero
-    simp only at hk'
-    rcases Nat.mul_eq_zero.mp hk' with h | h <;> omega
+    have h := Finsupp.mapDomain_apply hinj c 0
+    simpa [dilate, hP.zero] using h
   have hweight : ∀ r, stepWeight (c + a • dilate j c) r =
       stepWeight c r + (a : ℤ) * stepWeight c (r / j) := by
     intro r
@@ -128,12 +126,11 @@ theorem IsProducer.add_dilate {c : ℕ →₀ ℤ} {m B j : ℕ} (hP : IsProduce
     exact isBalanced_add hP.balanced hbal
   · rw [hweight]
     have h1 := hP.nonneg r
-    have h2 := hP.nonneg (r / j)
-    positivity
+    have h3 := mul_nonneg (Int.natCast_nonneg a) (hP.nonneg (r / j))
+    linarith
   · rw [hweight]
     have h1 := hP.window r hr
-    have h2 := hP.nonneg (r / j)
-    have h3 : (0 : ℤ) ≤ (a : ℤ) * stepWeight c (r / j) := by positivity
+    have h3 := mul_nonneg (Int.natCast_nonneg a) (hP.nonneg (r / j))
     linarith
 
 /-- **No positive amplification.** Adding a positive dilation multiplies the normalized slope by

@@ -209,7 +209,7 @@ theorem norm_modifiedBesselKOrder_sharp_of_nonneg {x : ℝ} (hx : 0 < x) {ν : �
 
 /-- **Sharp decay in the order.**  For `|Re ν| ≤ R`, `x > 0`, with `ξ = |Im ν|`,
 `‖K_x(ν)‖ ≤ C ((1+ξ)/x)^B exp(-x/(π(1+ξ))) exp(-πξ/2)`. -/
-theorem exists_norm_modifiedBesselKOrder_sharp {R : ℝ} (hR : 0 ≤ R) :
+theorem exists_norm_modifiedBesselKOrder_sharp (R : ℝ) :
     ∃ (C : ℝ) (B : ℕ), 0 ≤ C ∧ ∀ (x : ℝ) (ν : ℂ), 0 < x → |ν.re| ≤ R →
       ‖modifiedBesselKOrder x ν‖ ≤
         C * ((1 + |ν.im|) / x) ^ B * Real.exp (-(x / (Real.pi * (1 + |ν.im|)))) *
