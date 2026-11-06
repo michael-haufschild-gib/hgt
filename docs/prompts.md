@@ -396,20 +396,17 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.2 lists the open mathematical obstacles/research topics nobody has a solution to
    2.3 suggest if you see any opportunity for a "frankenstein" route that creates an RH proof by assembling building blocks from different routes and allowing this way to circumvent the blockers in a single route
    2.4 suggest if you see any opportunity for a wildy different route that is not at all like all the routes we have and does not face the same walls our existing routes and candidates face. say if you see none. the wildly different route does not have to be closed yet, just show that there could possibly be a wildly different route to the rh proof far away from our current routes.
-   2.5 ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
-   2.5.1 our RH proof research as a whole
-   2.5.2 route PM
-   2.5.3 route WD
-   2.5.4 route HF
-   2.5.5 route TH
-   2.5.6 route RW
-   2.6.7 route ZCG
+   2.5 ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough to our RH proof research as a whole.
    2.6 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof.
-   2.7 ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.8 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
-   2.9 What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
-3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
-4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
+   2.7 assume that RH is the mathematical face of a physical phenomen in Anti-DeSitter space with modular horizon. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof.
+   2.8 assume that RH is a problem of topology or geometry. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof.
+   2.8 ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.9 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.10 assume that RH is the mathematical face of a physical phenomen in Anti-DeSitter space with modular horizon. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.11 assume that RH is a problem of topology or geometry. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+3. What is the one big question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+4. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
+5. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
 do not read other markdown files, only the ones i mentioned.
 do not rely only on these markdown files which are partly outdated. use the search tool for our lean corpus to research what our research currently shows. 

@@ -81,3 +81,5 @@ import GaloisForLFunctions.VerifiedHeightRungs
 import GaloisForLFunctions.ArithmeticDiscreteness
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory
 import GaloisForLFunctions.BlackHoleRingdown
+import GaloisForLFunctions.HeckeKreinToeplitz
+import GaloisForLFunctions.ArithmeticKreinLangerTheory

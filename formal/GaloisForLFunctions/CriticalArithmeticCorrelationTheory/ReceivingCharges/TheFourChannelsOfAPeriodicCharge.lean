@@ -226,10 +226,6 @@ theorem exists_gcdTwistedCharge_four_channels {φ : ℝ → ℝ}
       ((abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)) le_rfl)) le_rfl)
   refine hsum.trans ?_
   unfold chargeChannelRate
-  have hexpand : (144 * completeWeilPoleShift φ c * (1 + Real.log ((M * Q : ℕ) : ℝ)) /
-      Real.sqrt (Real.log N)) * ‖u‖ * ‖y‖ =
-      144 * completeWeilPoleShift φ c * (1 + Real.log ((M * Q : ℕ) : ℝ)) /
-        Real.sqrt (Real.log N) * ‖u‖ * ‖y‖ := rfl
   nlinarith only [hcenter, t1, t2, t3, t4, m1, m2, m3, m4]
 
 /-! ### The common window -/

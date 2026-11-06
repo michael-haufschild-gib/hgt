@@ -1,5 +1,5 @@
 import GaloisForLFunctions.BlackHoleRingdown.TheRingdownExpansion
-import GaloisForLFunctions.BlackHoleRingdown.TheEchoTrainOfTheCusp
+import GaloisForLFunctions.BlackHoleRingdown.TheEchoSpikesAndTheirGaussianObservation
 
 /-!
 # The convolution of the pulse with the echo train
@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.BlackHoleRingdown
 
 open _root_.RHTower HTGeometry
 
-/-! ### The echo train is locally integrable with exponential weight -/
+/-! ### Measurability of the echo train -/
 
 theorem measurable_bounceKernel : Measurable bounceKernel := by
   unfold bounceKernel
@@ -34,21 +34,6 @@ theorem measurable_echoTerm (c : ℕ) : Measurable (echoTerm c) := by
 
 theorem measurable_echoKernel : Measurable echoKernel :=
   Measurable.tsum (f := fun c τ => echoTerm c τ) measurable_echoTerm
-
-/-- The weighted echo train is integrable: otherwise its Bochner integral would vanish, while its value
-is `(Γ_ℝ(2w)/Γ_ℝ(2w+1)) (ζ(2w)/ζ(2w+1)) ≠ 0`. -/
-theorem integrable_cexp_mul_echoKernel {w : ℂ} (hw : 1 / 2 < w.re) :
-    Integrable fun τ : ℝ => Complex.exp (-w * (τ : ℂ)) * ((echoKernel τ : ℝ) : ℂ) := by
-  by_contra h
-  have h0 := integral_undef h
-  rw [integral_cexp_mul_echoKernel hw, ← gammaR_div_eq_betaIntegral (by linarith)] at h0
-  have hre1 : (2 * w).re = 2 * w.re := by simp
-  have hre2 : (2 * w + 1).re = 2 * w.re + 1 := by simp
-  have hG1 := Complex.Gammaℝ_ne_zero_of_re_pos (s := 2 * w) (by rw [hre1]; linarith)
-  have hG2 := Complex.Gammaℝ_ne_zero_of_re_pos (s := 2 * w + 1) (by rw [hre2]; linarith)
-  have hz1 := riemannZeta_ne_zero_of_one_le_re (s := 2 * w) (by rw [hre1]; linarith)
-  have hz2 := riemannZeta_ne_zero_of_one_le_re (s := 2 * w + 1) (by rw [hre2]; linarith)
-  exact (mul_ne_zero (div_ne_zero hG1 hG2) (div_ne_zero hz1 hz2)) h0
 
 /-- On `Re w > ½` the quotient of completed zeta values is the scattering coefficient. -/
 theorem completed_div_eq_scatteringPhase {w : ℂ} (hw : 1 / 2 < w.re) :

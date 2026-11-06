@@ -1,7 +1,7 @@
 # Review-0611 §2.1 Canonical flow and integration (A15–A18)
 
 - **ID:** review-0611-a15-a18
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean), one per task
 - **Source:** [Obstacles summary §2.1](../../../reports/review-0611/obstacles-summary.md), table "Canonical flow and integration"
 - **Statement:** A15 `Ψ∈AC_loc` before contact and `L¹` convergence `q_y→q`; A16 numerical `r,m,q` (no computations allowed); A17 weight-specific bounded window solutions; A18 integration of [S] modules.
@@ -10,10 +10,25 @@
 
 | Task | Status | Note |
 |---|---|---|
-| A18 | in progress | AIF wired by its owner; HKT, AKLT umbrellas need their missing oleans checked and `MainTheorems` wiring |
-| A17 | open | specialize `window_edge_law` to `W_λ` |
-| A15 | proof below, formalization in progress | modules `TheWeilGreenOperatorIsBoundedOnBoundedForcing` … |
-| A16 | not done | numerics; the user forbids computations |
+| A15 | formalized | `Ψ` absolutely continuous on compact precontact intervals, `q=Ψ′∈L¹`, `∫_a^b|q_y−q|→0` |
+| A17 | formalized | bounded solutions, exact edge law, ground states and Riesz vectors for the weighted form `W_λ` |
+| A18 | done | `MainTheorems` imports the AIF, HKT and AKLT umbrellas; the umbrellas are not compiled. All HKT modules have oleans. The AKLT index modules `TheIndexIsContinuousOffTheDiscriminant`, `TheIndexIsTheNumberOfExceptionalWaves` and `ThePolarDivisorCountsTheIndex` check. Four non-index modules of the AKLT umbrella, outside A18, have no olean and were not checked: `TheFunctionFieldCeilingIsExact`, `FineTowersHaveUnboundedNyquistWindows`, `ChebyshevsProducerPassesTheIntegerChebyshevCap`, `PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw` |
+| A16 | not done | numerics; excluded by the no-computations rule |
+
+## Lean
+
+In `formal/GaloisForLFunctions/CanonicalSystemOfTheWindowTower/`:
+
+| Step | Module | Declarations |
+|---|---|---|
+| 1 | `TheWeilGreenOperatorIsUniformlyBoundedOnBoundedForcing` | `exists_uniform_source_bound` |
+| 2 | `TheHalfLineGreenOperatorHasAShiftIdentity` | `halfLineForm_shift_green_cut`, `norm_halfLineForm_shift_green_cut_le` |
+| 2 | `TheWeilRieszIncrementsAreLipschitzInL1` | `exists_chartIncrement_lipschitz` |
+| 3 | `TheWeilTracesAreAbsolutelyContinuous` | `exists_partial_variation_bound` |
+| 4 | `TheWeilTracesAreAbsolutelyContinuous` | `absolutelyContinuousOnInterval_leftTraceAt`, `absolutelyContinuousOnInterval_anchorReflection`, `absolutelyContinuousOnInterval_canonicalPotential`, `integral_deriv_canonicalPotential` |
+| 5 | `TheSpectralDriftConvergesInL1` | `integral_abs_spectralDrift_sub_const_le`, `tendsto_integral_abs_spectralDrift_sub_deriv` |
+
+A17, in `formal/GaloisForLFunctions/CriticalHardyTheoryOfTheWindowCone/`: `TheWindowBoundIsExplicit` (`ae_norm_le_of_window_equation_explicit`), `TheCompletedWeightedFormHasBoundedExtremals` (`weighted_window_bounded_and_edge_law`, `exists_weightedGroundState`, `weightedGroundState_bounded_and_edge_law`, `exists_weightedRiesz`, `weightedRiesz_bounded_and_edge_law`).
 
 ## A15 — paper proof
 
@@ -40,5 +55,3 @@ Summing over `i`, for every `t`:
 **Step 5 (`q_y→q` in `L¹`).** `L_y=artanh r_y` is absolutely continuous with `L_y′=q−y sinh 2L_y` (`artanh_spectralReflection_sub`), `q_y=y sinh 2L_y`. For a constant `c`, let `L*=½asinh(c/y)`, so `y sinh 2L*=c`. Kato's inequality for `D=L_y−L*` gives on an interval `I=[x₀,x₁]`:
 `y∫_I|sinh 2L_y−sinh 2L*|≤∫_I|q−c|+|D(x₀)|`, i.e. `∫_I|q_y−c|≤∫_I|q−c|+|L_y(x₀)|+|L*|`.
 Sum over a step function `q̃`: `‖q_y−q̃‖₁≤‖q−q̃‖₁+Σ_j(|L_y(x_j)|+|L*_j|)`. As `y→∞` the sum vanishes (`tendsto_artanh_spectralReflection_zero`), so `limsup‖q_y−q‖₁≤2‖q−q̃‖₁`, and step functions are dense in `L¹`.
-
-## Log
