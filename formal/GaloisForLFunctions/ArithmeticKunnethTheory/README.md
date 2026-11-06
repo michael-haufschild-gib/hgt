@@ -67,6 +67,7 @@ spectrum are depth-homogeneous; the non-scaling term must come from corresponden
 | All Kloosterman moments equal character sums on `Σxⱼ=0` in a torus, with one factor `#F`; even moments are nonnegative | `kloosterman_moment_hypersurface`, `kloosterman_punctured_moment_hypersurface`, `kloosterman_even_moment_nonneg` | proved |
 | Actual Kloosterman extension traces determine pure curve data and nonnegative window forms via the Stepanov estimate | `exists_pure_kloosterman_pair`, `exists_kloosterman_curve_receiver` | proved |
 | Positive-degree Kloosterman moments are exactly `q(qA−B)` for normalized torus counts; even degrees give `B≤qA` over every finite field | `kloosterman_moment_projective_counts`, `normalized_even_incidence` | proved |
+| The hyperplane count is an explicit integral polynomial and Tate trace over every finite extension | `normalizedCoordinateZeroTorus_card_formula`, `hyperplaneTateTrace_extension_count`, `hyperplaneTateTrace_weight_bound` | proved |
 
 The `WeightFamilies/` results classify the algebraic input, prove the finite global
 trace step, and calibrate the receiver on the Kloosterman family. They do not

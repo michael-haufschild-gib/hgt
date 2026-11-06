@@ -88,4 +88,94 @@ theorem kloosterman_moment_double_count {ψ : AddChar F ℂ} (hψ : ψ.IsPrimiti
   rw [kloosterman_moment_projective_counts hψ hb, mul_sub, hB]
   ring
 
+/-- The integral polynomial counting a normalized torus hyperplane. -/
+def hyperplanePolynomial : ℕ → Polynomial ℤ
+  | 0 => 0
+  | m + 1 => (Polynomial.X - 1) ^ m - hyperplanePolynomial m
+
+/-- Multiplication by the field-size variable removes the apparent denominator. -/
+theorem hyperplanePolynomial_mul_X (m : ℕ) :
+    Polynomial.X * hyperplanePolynomial m =
+      (Polynomial.X - 1) ^ m - (-1 : Polynomial ℤ) ^ m := by
+  induction m with
+  | zero => simp [hyperplanePolynomial]
+  | succ m ih =>
+      rw [hyperplanePolynomial, mul_sub, ih, pow_succ, pow_succ]
+      ring
+
+/-- A hyperplane in an `(m+1)`-dimensional torus has a count polynomial of degree at most `m`. -/
+theorem hyperplanePolynomial_natDegree_succ_le (m : ℕ) :
+    (hyperplanePolynomial (m + 1)).natDegree ≤ m := by
+  induction m with
+  | zero => simp [hyperplanePolynomial]
+  | succ m ih =>
+      rw [hyperplanePolynomial]
+      apply (Polynomial.natDegree_sub_le _ _).trans
+      apply max_le
+      · rw [Polynomial.natDegree_pow]
+        have hlin : (Polynomial.X - 1 : Polynomial ℤ).natDegree = 1 := by
+          simpa using Polynomial.natDegree_X_sub_C (1 : ℤ)
+        rw [hlin, mul_one]
+      · exact ih.trans (Nat.le_succ m)
+
+/-- Only Tate exponents strictly below the number of torus coordinates occur. -/
+theorem hyperplanePolynomial_support_lt {m j : ℕ}
+    (hj : j ∈ (hyperplanePolynomial m).support) : j < m := by
+  cases m with
+  | zero => simp [hyperplanePolynomial] at hj
+  | succ m =>
+      exact Nat.lt_succ_iff.mpr ((Polynomial.le_natDegree_of_mem_supp j hj).trans
+        (hyperplanePolynomial_natDegree_succ_le m))
+
+/-- Evaluation of the count polynomial is the actual finite-field point count. -/
+theorem hyperplanePolynomial_eval_count (m : ℕ) :
+    (hyperplanePolynomial m).eval (Fintype.card F : ℤ) =
+      (normalizedCoordinateZeroTorus (F := F) m).card := by
+  have h : (Fintype.card F : ℤ) * (hyperplanePolynomial m).eval (Fintype.card F : ℤ) =
+      ((Fintype.card F : ℤ) - 1) ^ m - (-1) ^ m := by
+    simpa using congrArg (Polynomial.eval (Fintype.card F : ℤ)) (hyperplanePolynomial_mul_X m)
+  have hq : (Fintype.card F : ℤ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero (α := F)
+  exact mul_left_cancel₀ hq (h.trans (normalizedCoordinateZeroTorus_card_formula (F := F) m).symm)
+
+private theorem hyperplanePolynomial_eval₂_count (m : ℕ) :
+    (hyperplanePolynomial m).eval₂ (Int.castRingHom ℂ) (Fintype.card F : ℂ) =
+      ((normalizedCoordinateZeroTorus (F := F) m).card : ℂ) := by
+  calc (hyperplanePolynomial m).eval₂ (Int.castRingHom ℂ) (Fintype.card F : ℂ)
+      = (Int.castRingHom ℂ) ((hyperplanePolynomial m).eval (Fintype.card F : ℤ)) :=
+        Polynomial.eval₂_at_apply (Int.castRingHom ℂ) (Fintype.card F : ℤ)
+    _ = _ := by rw [hyperplanePolynomial_eval_count]; rfl
+
+/-- A finite signed trace whose eigenvalues are integral powers of the field size. -/
+def hyperplaneTateTrace (m : ℕ) (q : ℂ) (n : ℕ) : ℂ :=
+  ∑ j ∈ (hyperplanePolynomial m).support,
+    ((hyperplanePolynomial m).coeff j : ℂ) * (q ^ j) ^ n
+
+theorem hyperplaneTateTrace_eq_eval₂ (m : ℕ) (q : ℂ) (n : ℕ) :
+    hyperplaneTateTrace m q n = (hyperplanePolynomial m).eval₂ (Int.castRingHom ℂ) (q ^ n) := by
+  rw [Polynomial.eval₂_eq_sum, Polynomial.sum_def]
+  apply sum_congr rfl
+  intro j _
+  change ((hyperplanePolynomial m).coeff j : ℂ) * (q ^ j) ^ n =
+    ((hyperplanePolynomial m).coeff j : ℂ) * (q ^ n) ^ j
+  rw [← pow_mul, ← pow_mul, Nat.mul_comm j n]
+
+omit [DecidableEq F] in
+/-- The explicit signed trace recovers the point count over every finite extension. -/
+theorem hyperplaneTateTrace_extension_count (m : ℕ) (E : Type*) [Field E] [Fintype E]
+    [DecidableEq E] [Algebra F E] :
+    hyperplaneTateTrace m (Fintype.card F : ℂ) (Module.finrank F E) =
+      ((normalizedCoordinateZeroTorus (F := E) m).card : ℂ) := by
+  rw [hyperplaneTateTrace_eq_eval₂, ← Nat.cast_pow,
+    ← Module.card_eq_pow_finrank (K := F) (V := E)]
+  exact hyperplanePolynomial_eval₂_count (F := E) m
+
+omit [DecidableEq F] in
+/-- Every eigenvalue in the hyperplane trace has the explicit geometric weight bound. -/
+theorem hyperplaneTateTrace_weight_bound {m j : ℕ}
+    (hj : j ∈ (hyperplanePolynomial m).support) :
+    ‖(Fintype.card F : ℂ) ^ j‖ ≤ (Fintype.card F : ℝ) ^ (m - 1) := by
+  rw [norm_pow, Complex.norm_natCast]
+  have hjm := hyperplanePolynomial_support_lt hj
+  exact pow_le_pow_right₀ (by exact_mod_cast Fintype.card_pos (α := F)) (by omega)
+
 end GaloisForLFunctions.ArithmeticKunnethTheory.WeightFamilies

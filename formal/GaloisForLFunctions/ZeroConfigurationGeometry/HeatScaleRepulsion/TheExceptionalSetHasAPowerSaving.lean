@@ -183,7 +183,7 @@ theorem riemannHeat_ne_zero (h : PowerRange d η E T t X τ)
           (integrable_exp_mul_norm_xiLine hτ X) v)
         (fun v hv => h.re_slope_pos (by linarith only [hv.1, hη8]) (by linarith only [hv.2, hη8])
           (by linarith only [hv.1, hc])) hy0 hnear
-    · exact h.norm_opposite_lt hfar.le hy2 (by linarith only [hy0, hc])
+    · exact h.norm_opposite_lt hfar.le hy2 (by linarith only [hy0, hc, hη])
   rw [riemannHeat_eq_halfGaussAverage hτ X y]
   apply add_conj_ne_zero_of_norm_ne
   rcases lt_or_gt_of_ne hy with hneg | hpos

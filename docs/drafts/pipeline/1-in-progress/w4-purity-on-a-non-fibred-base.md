@@ -58,4 +58,6 @@ The [projective count identity](../3-formalized/w4-kloosterman-moments-are-point
 
 ## Next conjecture
 
+The [hyperplane contribution](../3-formalized/w4-hyperplane-trace-is-explicit.md) is now an explicit Tate trace: `qB_m=(q−1)^m−(−1)^m`, hence `M_{m+1}=q²A_m−(q−1)^m+(−1)^m`. Its extension-field spectrum consists of integral powers of `q`. Only the double-zero locus remains geometrically unresolved. Its [critical points and transverse quadratic form](w4-reciprocal-torus-singularities.md) are the next local geometric target.
+
 Realize the difference of these explicit counts cohomologically, with its positive spectrum bounded by the invariant tensor weights and fixed base loss. The positive global trace theorem then controls the negative spectrum automatically. The ζ family and its spectral identification remain open. The existing ζ result `riemannHypothesis_of_sublinear_tensor_loss` already covers sublinear losses; weakening a fixed loss to a sublinear one does not supply the missing estimate.

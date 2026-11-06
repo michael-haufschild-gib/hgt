@@ -8,6 +8,8 @@ Preserving an unmarked partition allows whole blocks to be exchanged. It gives a
 function at each rank, but its restriction from rank three to rank two loses exactly twice the
 ordered repeated-letter mass. Fixing every block individually restores the coloring character
 and its restriction law for arbitrary probability alphabets.
+For infinite occupied blocks, finite support already forces an unmarked stabilizer to fix each
+block: an exchanged block would be contained in the finite support.
 -/
 
 open scoped BigOperators Classical ComplexOrder
@@ -169,6 +171,26 @@ theorem blockwiseFixed_iff (x : X → A) (σ : Equiv.Perm X) :
     exact funext fun i => h i i rfl
   · intro h i j hij
     exact (congrFun h i).trans hij
+
+omit [Fintype A] [Fintype X] in
+/-- A finitely supported permutation cannot exchange infinite occupied blocks. -/
+theorem partition_fixed_iff_of_infinite_blocks (x : X → A)
+    (hx : ∀ i, Set.Infinite {j | x j = x i})
+    (σ : Equiv.Perm X) (hσ : Set.Finite {i | σ i ≠ i}) :
+    wordRelation (x ∘ σ) = wordRelation x ↔ x ∘ σ = x := by
+  constructor
+  · intro h
+    funext i
+    by_contra hne
+    have hsub : {j | x j = x i} ⊆ {j | σ j ≠ j} := by
+      intro j hj hjfix
+      have hp := congrFun (congrFun h j) i
+      have he : x (σ j) = x (σ i) := (Iff.of_eq hp).mpr hj
+      rw [hjfix] at he
+      exact hne (he.symm.trans hj)
+    exact (hx i).not_finite (hσ.subset hsub)
+  · intro h
+    rw [h]
 
 /-- The identity has the full independent-word mass. -/
 theorem partitionCharacter_one (w : A → NNReal) :

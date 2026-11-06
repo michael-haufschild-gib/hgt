@@ -66,7 +66,7 @@ theorem cos_seven_fifths_ge : (0.169 : ℝ) ≤ Real.cos (7 / 5) := by
   have hmono : Real.sin 0.1707 ≤ Real.sin (Real.pi / 2 - 7 / 5) :=
     Real.sin_le_sin_of_le_of_le_pi_div_two (by norm_num; linarith only [Real.pi_gt_three])
       (by linarith only [Real.pi_gt_three]) hpos
-  have hs := Real.sin_gt_sub_cube (x := 0.1707) (by norm_num) (by norm_num)
+  have hs := Real.sin_gt_sub_cube (x := 0.1707) (by norm_num)
   norm_num at hs
   linarith only [hmono, hs]
 
@@ -92,16 +92,19 @@ private theorem exp_neg_three_le : Real.exp (-(3 : ℝ)) ≤ 0.05 := by
 
 private theorem quartic_le {X : ℝ} (hX : 0 ≤ X) : X ^ 4 * Real.exp (-(0.53 * X)) ≤ 60 := by
   have h := pow_mul_exp_neg_le (β := 0.53) (by norm_num) hX (m := 4) (by norm_num)
-  have h4 := exp_neg_four_le
-  norm_num at h h4 ⊢
-  have hc : (4 / (53 / 100) : ℝ) ^ 4 = 1600000000 / 493039 := by norm_num
-  nlinarith only [h, h4, Real.exp_pos (-(4 : ℝ))]
+  rw [show ((4 : ℕ) : ℝ) = 4 by norm_num] at h
+  refine h.trans ?_
+  calc (4 / 0.53 : ℝ) ^ 4 * Real.exp (-4)
+      ≤ (4 / 0.53 : ℝ) ^ 4 * 0.0184 := mul_le_mul_of_nonneg_left exp_neg_four_le (by positivity)
+    _ ≤ 60 := by norm_num
 
 private theorem cubic_le {X : ℝ} (hX : 0 ≤ X) : X ^ 3 * Real.exp (-(0.53 * X)) ≤ 10 := by
   have h := pow_mul_exp_neg_le (β := 0.53) (by norm_num) hX (m := 3) (by norm_num)
-  have h3 := exp_neg_three_le
-  norm_num at h h3 ⊢
-  nlinarith only [h, h3, Real.exp_pos (-(3 : ℝ))]
+  rw [show ((3 : ℕ) : ℝ) = 3 by norm_num] at h
+  refine h.trans ?_
+  calc (3 / 0.53 : ℝ) ^ 3 * Real.exp (-3)
+      ≤ (3 / 0.53 : ℝ) ^ 3 * 0.05 := mul_le_mul_of_nonneg_left exp_neg_three_le (by positivity)
+    _ ≤ 10 := by norm_num
 
 /-- One term of the source on the line, paid by `n⁻⁴`. -/
 theorem norm_term_le {z : ℂ} (him : |z.im| ≤ 7 / 10) (hre : 0 ≤ z.re) {n : ℕ} (hn : 1 ≤ n) :
@@ -187,7 +190,6 @@ theorem norm_term_le {z : ℂ} (him : |z.im| ≤ 7 / 10) (hre : 0 ≤ z.re) {n :
         mul_le_mul_of_nonneg_right hfront hbrack
     _ = (2 * Real.pi * (2 * Real.pi * (X ^ 4 * g) + 3 * (X ^ 3 * g))) * (1 / (n : ℝ) ^ 4) := by
         field_simp
-        ring
     _ ≤ (2 * Real.pi * (2 * Real.pi * 60 + 3 * 10)) * (1 / (n : ℝ) ^ 4) := by
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         refine mul_le_mul_of_nonneg_left ?_ (by positivity)
@@ -486,12 +488,12 @@ theorem abs_current_le_explicit {a : ℝ} (ha : |a| ≤ 1 / 2) (b : ℝ) :
   have hU : ‖XiC z - XiC (b : ℂ)‖ ≤ 38860 * g * |a| := by
     rw [hz]
     refine norm_sub_vertical_le XiC_differentiable fun a' ha' => ?_
-    rw [← hg]
+    rw [hg]
     exact norm_deriv_XiC_le b a' (ha'.trans (ha.trans (by norm_num)))
   have hV : ‖deriv XiC z - deriv XiC (b : ℂ)‖ ≤ 340726 * g * |a| := by
     rw [hz]
     refine norm_sub_vertical_le hd fun a' ha' => ?_
-    rw [← hg]
+    rw [hg]
     exact norm_deriv_deriv_XiC_le b a' (ha'.trans ha)
   have hv : ‖deriv XiC z‖ ≤ 38860 * g := by
     rw [hzform, hg]

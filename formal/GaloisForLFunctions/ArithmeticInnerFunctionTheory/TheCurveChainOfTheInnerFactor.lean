@@ -68,7 +68,7 @@ theorem circleAverage_log_norm_one_sub_mul (β : ℂ) :
 theorem circleIntegrable_log_norm_one_sub_mul (β : ℂ) :
     CircleIntegrable (fun v => Real.log ‖1 - β * v‖) 0 1 :=
   MeromorphicOn.circleIntegrable_log_norm (f := fun v : ℂ => 1 - β * v)
-    (fun v _ => (analyticAt_const.sub (analyticAt_const.mul analyticAt_id)).meromorphicAt)
+    (fun _ _ => (analyticAt_const.sub (analyticAt_const.mul analyticAt_id)).meromorphicAt)
 
 theorem measurable_log_norm_one_sub_mul (β : ℂ) :
     Measurable (fun v : ℂ => Real.log ‖1 - β * v‖) :=
@@ -105,7 +105,7 @@ theorem circleAverage_log_norm_lPoly :
     refine norm_ne_zero_iff.mpr fun h0 => hx ?_
     exact Finset.prod_eq_zero (Finset.mem_univ i) h0
   rw [← integral_haar_circleZ (fun v => Real.log ‖lPoly D v‖), integral_congr_ae hae,
-    integral_finset_sum]
+    integral_finsetSum]
   · refine Finset.sum_congr rfl fun i _ => ?_
     rw [integral_haar_circleZ (fun v => Real.log ‖1 - D.β i * v‖),
       circleAverage_log_norm_one_sub_mul]
@@ -133,16 +133,34 @@ theorem isGLB_curve_budget :
     filter_upwards [ae_circleZ_notMem_of_countable (countable_lPoly_zeros D)] with x hx
     exact pow_pos (norm_pos_iff.mpr hx) 2
   have hint : CircleIntegrable (fun v => ‖lPoly D v‖ ^ 2) 0 1 :=
-    ((hcont.norm.pow 2).continuousOn).circleIntegrable zero_le_one
+    ((hcont.norm.pow 2).comp (continuous_circleMap 0 1)).intervalIntegrable _ _
   have hlog : CircleIntegrable (fun v => Real.log (‖lPoly D v‖ ^ 2)) 0 1 := by
-    simp only [Real.log_pow]
-    exact (circleIntegrable_log_norm_lPoly D).const_smul (2 : ℝ) |>.congr_simp (by simp)
+    have hf : (fun v => Real.log (‖lPoly D v‖ ^ 2)) = fun v => (2 : ℝ) * Real.log ‖lPoly D v‖ := by
+      funext v
+      rw [Real.log_pow]
+      norm_num
+    rw [hf]
+    exact (circleIntegrable_log_norm_lPoly D).const_mul (2 : ℝ)
   have h := isGLB_circleAverage hG hpos hint hlog
   have e : Real.circleAverage (fun v => Real.log (‖lPoly D v‖ ^ 2)) 0 1 = 2 * innerMass D := by
-    simp only [Real.log_pow]
-    rw [Real.circleAverage_fun_smul (2 : ℝ) ?_ |>.trans ?_] <;> sorry
+    rw [← circleAverage_log_norm_lPoly D, Real.circleAverage_def, Real.circleAverage_def]
+    simp only [Real.log_pow, smul_eq_mul, Nat.cast_ofNat]
+    rw [intervalIntegral.integral_const_mul]
+    ring
   rw [e] at h
   exact h
+
+theorem le_one_of_posLog_eq_zero {y : ℝ} (h : Real.posLog y = 0) : y ≤ 1 := by
+  by_contra hlt
+  push Not at hlt
+  have h1 := Real.log_pos hlt
+  rw [Real.posLog_def] at h
+  have h2 := le_max_right 0 (Real.log y)
+  linarith
+
+theorem posLog_eq_zero_of_le_one {y : ℝ} (h0 : 0 ≤ y) (h : y ≤ 1) : Real.posLog y = 0 := by
+  rw [Real.posLog_def]
+  exact max_eq_left (Real.log_nonpos h0 h)
 
 /-- `I(D) = 0` iff the datum is unitary; the functional equation forces both inequalities. -/
 theorem innerMass_eq_zero_iff : innerMass D = 0 ↔ ∀ i, ‖D.β i‖ = 1 := by
@@ -150,10 +168,7 @@ theorem innerMass_eq_zero_iff : innerMass D = 0 ↔ ∀ i, ‖D.β i‖ = 1 := b
   rw [innerMass, Finset.sum_eq_zero_iff_of_nonneg hnn]
   constructor
   · intro h i
-    have hle : ∀ j, ‖D.β j‖ ≤ 1 := fun j => by
-      have := h j (Finset.mem_univ j)
-      rcases Real.posLog_eq_zero_iff.mp this with h1
-      simpa [abs_of_nonneg (norm_nonneg _)] using h1
+    have hle : ∀ j, ‖D.β j‖ ≤ 1 := fun j => le_one_of_posLog_eq_zero (h j (Finset.mem_univ j))
     have hfe : ‖D.β (D.fePerm i)‖ * ‖D.β i‖ = 1 := by
       rw [← norm_mul, D.β_fePerm i, norm_one]
     have h1 := hle i
@@ -190,16 +205,30 @@ theorem re_caratheodory_nonneg_of_unitary (hU : ∀ i, ‖D.β i‖ = 1) {v : �
 /-- **The curve chain.** Trivial inner factor, unitarity, Castelnuovo on the Frobenius span, and the
 reflection coefficients are one statement. -/
 theorem curve_inner_tfae [Nonempty ι] :
-    List.TFAE [innerMass D = 0, ∀ i, ‖D.β i‖ = 1, D.HodgeIndexOnSpan,
+    List.TFAE [innerMass D = 0, ∀ i, ‖D.β i‖ = 1, ∀ S d, 0 ≤ D.spanDefect S d,
       ∀ k, k + 1 < D.spectrum.card → reflCoeff (curveLattice D) k ^ 2 < 1] := by
   tfae_have 1 ↔ 2 := innerMass_eq_zero_iff D
   tfae_have 3 ↔ 2 := D.hodgeIndexOnSpan_iff_unitary
-  tfae_have 2 ↔ 4 := unitary_iff_reflCoeff_sq_lt D
+  tfae_have 2 ↔ 4 := unitary_iff_reflCoeff_sq_lt (D := D)
   tfae_finish
 
 /-- **Golden.** The fake curve has inner mass `log φ`. -/
 theorem innerMass_goldenDatum : innerMass goldenDatum = Real.log Real.goldenRatio := by
-  sorry
+  have h1 : (1 : ℝ) ≤ Real.goldenRatio := Real.one_lt_goldenRatio.le
+  have h0 : (0 : ℝ) < Real.goldenRatio := Real.goldenRatio_pos
+  have e0 : ‖goldenDatum.β 0‖ = Real.goldenRatio := by
+    change ‖((Real.goldenRatio : ℝ) : ℂ)‖ = _
+    rw [Complex.norm_real, Real.norm_of_nonneg h0.le]
+  have e1 : ‖goldenDatum.β 1‖ = Real.goldenRatio⁻¹ := by
+    change ‖((Real.goldenRatio⁻¹ : ℝ) : ℂ)‖ = _
+    rw [Complex.norm_real, Real.norm_of_nonneg (inv_pos.mpr h0).le]
+  rw [innerMass, Fin.sum_univ_two, e0, e1, Real.posLog_eq_log (by rwa [abs_of_pos h0]),
+    posLog_eq_zero_of_le_one (inv_pos.mpr h0).le (inv_le_one_of_one_le₀ h1), add_zero]
+
+/-- The fake curve has a nontrivial inner factor. -/
+theorem innerMass_goldenDatum_pos : 0 < innerMass goldenDatum := by
+  rw [innerMass_goldenDatum]
+  exact Real.log_pos Real.one_lt_goldenRatio
 
 end
 

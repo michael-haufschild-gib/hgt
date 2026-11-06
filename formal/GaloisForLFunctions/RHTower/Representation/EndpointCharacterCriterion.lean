@@ -32,6 +32,25 @@ theorem xiEndpointArithmeticCharacter_conj {X : Type*} [Fintype X]
     xiEndpointArithmeticCharacter (τ * σ * τ⁻¹) = xiEndpointArithmeticCharacter σ := by
   simp only [xiEndpointArithmeticCharacter, cycleMomentCharacter_conj]
 
+/-- A cycle evaluates to its prescribed arithmetic response jet. -/
+theorem xiEndpointArithmeticCharacter_formPerm {X : Type*} [Fintype X]
+    (l : List X) (hl : l.Nodup) (hne : l ≠ []) :
+    xiEndpointArithmeticCharacter l.formPerm =
+      (xiEndpointArithmeticCycle (l.length - 1) : ℂ) := by
+  rw [xiEndpointArithmeticCharacter, cycleMomentCharacter_formPerm
+    xiEndpointArithmeticCycle
+    (by rw [xiEndpointArithmeticCycle_eq_source, xiEndpointSourceCycle_zero]) l hl hne]
+
+/-- The same cycle value is the full normalized complex endpoint power sum. -/
+theorem xiEndpointArithmeticCharacter_formPerm_eq_moment {X : Type*} [Fintype X]
+    (l : List X) (hl : l.Nodup) (hne : l ≠ []) :
+    xiEndpointArithmeticCharacter l.formPerm =
+      (∑' q, xiStripEdgeWeight q ^ l.length) / (xiEndpointColorMass : ℂ) ^ l.length := by
+  rw [xiEndpointArithmeticCharacter_formPerm l hl hne, xiEndpointArithmeticCycle_complex]
+  have hlen : l.length - 1 + 1 = l.length := by
+    cases l <;> simp_all
+  rw [hlen]
+
 /-- The same arithmetic class function restricts along every inclusion by fixed positions. -/
 theorem xiEndpointArithmeticCharacter_extendDomain {X Y : Type*}
     [Fintype X] [Fintype Y] (s : Y → Prop) [DecidablePred s]
