@@ -38,3 +38,4 @@ and its wedge of spheres indexed by odd squarefree integers in the upper half-wi
 See `HodgeTheoryWithoutVarieties/README.md`.
 -/
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheDepthLawIsEffective
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.ThePrimitiveDepthLawIsEffective

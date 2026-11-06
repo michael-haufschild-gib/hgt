@@ -179,7 +179,7 @@ theorem uncertainty_law (hP : IsProducer c m B) {ρ : ℂ} (hρ : riemannZeta ρ
     (m : ℝ) * ‖1 - ((B : ℝ) : ℂ) ^ (-ρ)‖ ≤
       ‖ρ‖ * ((4 + 1 / ρ.re) * ((peak c : ℝ) ^ (1 - ρ.re) * excess c m B ^ ρ.re)) := by
   set β := ρ.re with hβ
-  set w : ℝ := peak c with hwdef
+  set w : ℝ := (peak c : ℝ) with hwdef
   set T := excess c m B with hTdef
   have hT : 0 < T := hP.excess_pos
   have hw : 0 < w := hP.peak_pos
@@ -212,7 +212,7 @@ theorem uncertainty_law (hP : IsProducer c m B) {ρ : ℂ} (hρ : riemannZeta ρ
       rw [← Real.rpow_add hT, show 1 - β + β = 1 by ring, Real.rpow_one]
     have hne : T ^ (1 - β) ≠ 0 := (Real.rpow_pos_of_pos hT _).ne'
     field_simp
-    rw [mul_assoc, mul_comm (T ^ β), hTT]
+    linarith [hTT]
   have hmass2 : w * y ^ (-β) = w ^ (1 - β) * T ^ β := by
     rw [hy, Real.div_rpow hw.le hT.le, Real.rpow_neg hw.le, Real.rpow_neg hT.le]
     have hwT : w ^ β ≠ 0 := (Real.rpow_pos_of_pos hw _).ne'

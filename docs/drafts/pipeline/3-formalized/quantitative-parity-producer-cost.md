@@ -1,11 +1,11 @@
 # Quantitative cost of parity producers
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Wall:** Π3
 - **Statement:** There is an absolute `C>0` such that, for every `0<ε≤1`, a balanced nonnegative integer factorial producer has normalized slope `<1+ε`, alphabet radius at most `exp(exp(C/ε))`, and normalized Stirling error at most `exp(exp(C/ε))`.
 
-## Proof [PROVED HERE]
+## Proof
 
 Write `m(N)=Σ_{n≤N}μ(n)/n` and `S(N)=−Σ_{n≤N}μ(n)log(n)/n`. The corpus gives `|m(N)|≤C₀/(1+log N)⁴` and `S(N)→1`. Abel summation gives
 
@@ -17,10 +17,17 @@ Choose `ℓ=⌈K₀/ε⌉+10`, `B=2^ℓ+1`, `M=max(4ℓ+2,⌈48(2+log(B!))/ε⌉
 
 Let `g` be its step weight and `S` its unnormalized slope. The positive pronic expansion gives `g(r)≤Sr(r+1)`. Therefore `|g(r)−g(r−1)|≤Sr(r+1)`. Möbius inversion and `Σ_{d|k}d(d+1)≤4k²` give `|c(k)|≤4Sk²`. Summing the Stirling errors yields `E≤4SP³(5+log P)`. Since `S/m≤2`, `E/m≤8P³(5+log P)`; no denominator cost remains.
 
-Finally `ℓ=O(1/ε)`, `log(B!)≤B log B`, and `M=O(log(B!)/ε+ℓ)`, so `log P≤exp(C₁/ε)`. Increasing the absolute constant absorbs the polynomial factor in `P`. The geometric telescoping prime-count bound consequently has the form `ψ(x)≤(1+ε)x+exp(exp(C/ε))log²x`, `x≥2`.
+Finally `ℓ=O(1/ε)`, `log(B!)≤B²`, and `M=O(log(B!)/ε+ℓ)`, so `log P≤exp(C₁/ε)`. Increasing the absolute constant absorbs the polynomial factor in `P`. Geometric telescoping gives `ψ(x),θ(x)≤(1+ε)x+12 exp(exp(C/ε))log²x`, `x≥2`.
 
-## Lean obligations
+## Lean
 
-- `ArithmeticKreinLangerTheory/TheMobiusNormalizationHasARate.lean`: normalization bound written; check pending.
-- `MultivariateParityAuxiliariesReachTheMainTerm.lean`: expose support in rational rounding, fixed-scale Farkas feasibility, and `exists_producer_with_quantitative_support`; checks pending.
-- Finish the period growth estimate and combine with the polynomial alphabet cost. Ledger unchanged until the complete cost theorem passes.
+- `ArithmeticKreinLangerTheory/TheMobiusNormalizationHasARate.lean`: `exists_abs_moebiusLogHarmonicPartial_sub_one_le`.
+- `ArithmeticKreinLangerTheory/MultivariateParityAuxiliariesReachTheMainTerm.lean`: `exists_producer_with_quantitative_support`.
+- `ArithmeticKreinLangerTheory/TheParityProducerHasAQuantitativeCost.lean`: `exists_producer_with_double_exp_cost`, `exists_psi_le_double_exp_producer_cost`, `exists_theta_le_double_exp_producer_cost`, and `exists_parity_producer_with_quantitative_cost`.
+- Coefficient input: `ArithmeticAuxiliaryDynamics.IsProducer.stencilErrorConst_le`.
+
+All three modules checked individually; wired into `ArithmeticKreinLangerTheory.lean`.
+
+## Remaining wall
+
+Polynomial cost in `1/ε` remains open. This theorem gives a uniform upper rate, without a matching lower rate; Π3 remains partially solved.

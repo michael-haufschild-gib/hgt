@@ -288,8 +288,8 @@ theorem mul_harmonicVar_le_poleDefect_of_horizon {ε : ℝ} (hε : 0 < ε) (hε1
       exact_mod_cast h4b
     have hb4 : b ^ 4 ≤ (X : ℝ) := (Real.log_le_log_iff (by positivity) hX0).mp hle
     refine Real.le_sqrt_of_sq_le (Real.le_sqrt_of_sq_le ?_)
-    calc (b ^ 2) ^ 2 = b ^ 4 := by ring
-      _ ≤ X := hb4
+    calc ((b ^ 2) ^ 2 : ℝ) = b ^ 4 := by ring
+      _ ≤ (X : ℝ) := hb4
   -- the dyadic condition
   have hdyadic : (1 / 2 : ℝ) ^ X ≤ (ε / 2) / (4 * (2 * Real.log 2)) := by
     have h2X : (X : ℝ) ≤ (2 : ℝ) ^ X := by exact_mod_cast (Nat.lt_two_pow_self (n := X)).le

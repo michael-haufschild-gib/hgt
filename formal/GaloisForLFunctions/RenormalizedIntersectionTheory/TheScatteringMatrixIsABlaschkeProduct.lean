@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.XiHadamardGrowth
 import GaloisForLFunctions.RHTower.LagExplicitFormula
 import GaloisForLFunctions.RHTower.XiOrderedZeroCopyEnumeration
+import GaloisForLFunctions.RHTower.ZetaLocalZeroCount
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.ThePoissonJensenIdentity
 import GaloisForLFunctions.RenormalizedIntersectionTheory.GaussMayerScatteringNormalization
 import GaloisForLFunctions.RenormalizedIntersectionTheory.ResonantStates.CutoffGramKernel
@@ -35,7 +36,9 @@ open scoped ComplexConjugate
 open RHTower
 open GaloisForLFunctions.ArithmeticInnerFunctionTheory (greenKernel)
 open GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScatteringNormalization
-  (scatteringEntry archimedeanFactor)
+  (scatteringEntry)
+
+set_option autoImplicit false
 
 namespace GaloisForLFunctions.RenormalizedIntersectionTheory
 
@@ -53,7 +56,7 @@ theorem xi_two_mul_ne_zero {s : ℂ} (hs : 1 / 2 < s.re) : xi (2 * s) ≠ 0 := b
 
 /-- `Γ_ℝ(2s − 1) = A(s) Γ_ℝ(2s)` with the archimedean factor `A(s) = √π Γ(s − ½)/Γ(s)`. -/
 theorem gammaR_two_mul_sub_one {s : ℂ} (hs : 0 < s.re) :
-    Gammaℝ (2 * s - 1) = archimedeanFactor s * Gammaℝ (2 * s) := by
+    Gammaℝ (2 * s - 1) = MayerScatteringNormalization.archimedeanFactor s * Gammaℝ (2 * s) := by
   have hΓ : Complex.Gamma s ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hs
   have hπ : ((Real.pi : ℝ) : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   have hexp : ((Real.pi : ℝ) : ℂ) ^ (-(2 * s - 1) / 2)
@@ -61,7 +64,7 @@ theorem gammaR_two_mul_sub_one {s : ℂ} (hs : 0 < s.re) :
     rw [← Complex.cpow_add _ _ hπ]
     congr 1
     ring
-  rw [Complex.Gammaℝ_def, Complex.Gammaℝ_def, archimedeanFactor, hexp,
+  rw [Complex.Gammaℝ_def, Complex.Gammaℝ_def, MayerScatteringNormalization.archimedeanFactor, hexp,
     show (2 * s - 1) / 2 = s - 1 / 2 by ring, show 2 * s / 2 = s by ring]
   field_simp
 
@@ -90,13 +93,19 @@ theorem sub_one_div_mul_scatteringEntry {s : ℂ} (hs : 1 / 2 < s.re) (hs1 : s �
   rw [scatteringInner, scatteringEntry, xi_eq_xiUnit_mul_zeta h20 h21 h2pos,
     xi_eq_xiUnit_mul_zeta h30 h31 h3pos, xiUnit, xiUnit,
     gammaR_two_mul_sub_one (by linarith : 0 < s.re)]
-  generalize archimedeanFactor s = A
+  generalize MayerScatteringNormalization.archimedeanFactor s = A
   generalize riemannZeta (2 * s - 1) = z₁ at *
   generalize riemannZeta (2 * s) = z₂ at *
   generalize Gammaℝ (2 * s) = g at *
-  have h1' : 2 * s - 1 ≠ 0 := h20
+  have hX : (2 * s - 1) * g ≠ 0 := mul_ne_zero h20 hG
+  have e : (2 * s - 1) * (2 * s - 1 - 1) / 2 * (A * g) * z₁ / (2 * s * (2 * s - 1) / 2 * g * z₂)
+      = ((s - 1) * A * z₁) / (s * z₂) := by
+    rw [show (2 * s - 1) * (2 * s - 1 - 1) / 2 * (A * g) * z₁
+        = ((s - 1) * A * z₁) * ((2 * s - 1) * g) by ring,
+      show 2 * s * (2 * s - 1) / 2 * g * z₂ = (s * z₂) * ((2 * s - 1) * g) by ring,
+      mul_div_mul_right _ _ hX]
+  rw [e]
   field_simp
-  ring
 
 /-! ### The Hadamard product in logarithmic form -/
 
@@ -106,8 +115,8 @@ theorem eventually_le_norm_xiSpectralPoint {M : ℝ} (hM : 0 < M) :
   have hε : 0 < 1 / M ^ (2 : ℕ) := by positivity
   filter_upwards [hs.tendsto_cofinite_zero.eventually (gt_mem_nhds hε)] with q hq
   have hq0 : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-  have hlt : ‖xiSpectralPoint q‖ ^ (2 : ℕ) > M ^ (2 : ℕ) := by
-    rwa [gt_iff_lt, one_div_lt_one_div (by positivity) (by positivity)] at hq
+  have hlt : M ^ (2 : ℕ) < ‖xiSpectralPoint q‖ ^ (2 : ℕ) :=
+    (one_div_lt_one_div (by positivity) (by positivity)).mp hq
   exact (lt_of_pow_lt_pow_left₀ 2 hq0.le hlt).le
 
 /-- `|log |(1 − x)e^x|| ≤ |x|²` for `|x| ≤ ½`. -/
@@ -160,10 +169,12 @@ theorem hasSum_log_norm_weierstrassE1 {z : ℂ} (hz : XiC z ≠ 0) :
     field_simp
   have hmul := xiCanonicalProduct_multipliable z
   have hnormprod := hmul.hasProd.map (normHom : ℂ →*₀ ℝ) continuous_norm
+  have hXz : XiC z = XiC 0 * xiCanonicalProduct z := by
+    simpa only [Pi.mul_apply] using congrFun XiC_eq_constant_mul_canonicalProduct z
   have hprodne : xiCanonicalProduct z ≠ 0 := by
     intro h0
     apply hz
-    rw [XiC_eq_constant_mul_canonicalProduct, Pi.mul_apply, h0, mul_zero]
+    rw [hXz, h0, mul_zero]
   have hne : ∀ q : XiZeroCopy,
       weierstrassE1 (z / xiSpectralPoint q) ≠ 0 := by
     intro q h0
@@ -191,8 +202,6 @@ theorem hasSum_log_norm_weierstrassE1 {z : ℂ} (hz : XiC z ≠ 0) :
   have hval : Real.log ‖XiC z‖ - Real.log ‖XiC 0‖ = ∑' q : XiZeroCopy,
       Real.log ‖weierstrassE1 (z / xiSpectralPoint q)‖ := by
     have hX0 : XiC 0 ≠ 0 := XiC_zero_ne
-    have hXz : XiC z = XiC 0 * xiCanonicalProduct z := by
-      rw [XiC_eq_constant_mul_canonicalProduct, Pi.mul_apply]
     have hnorm : ‖xiCanonicalProduct z‖ = Real.exp (∑' q : XiZeroCopy,
         Real.log ‖weierstrassE1 (z / xiSpectralPoint q)‖) :=
       hunique.symm
@@ -293,6 +302,7 @@ theorem summable_log_norm_add_real_sub (α : ℂ) (δ : ℝ) :
   have hxy : ‖y + δ‖ ^ 2 = ‖y‖ ^ 2 * (1 + v) := by
     rw [hxsq, hv]
     field_simp
+    ring
   have hv1 : 0 < 1 + v := by
     have := abs_le.mp hv4
     linarith [this.1]
@@ -376,7 +386,7 @@ theorem log_norm_weierstrassE1_spectral (c : ℂ) (q : XiZeroCopy) (hc : (q.1 : 
     field_simp
   have hone : (1 : ℂ) - (c - 1 / 2) * ((q.1 : ℂ) - 1 / 2)⁻¹
       = ((q.1 : ℂ) - c) / ((q.1 : ℂ) - 1 / 2) := by
-    field_simp
+    rw [eq_div_iff hne, sub_mul, one_mul, mul_assoc, inv_mul_cancel₀ hne, mul_one]
     ring
   rw [hdiv, weierstrassE1, hone, norm_mul, Complex.norm_exp,
     Real.log_mul (norm_ne_zero_iff.mpr (div_ne_zero hc hne)) (Real.exp_ne_zero _), Real.log_exp,
@@ -416,9 +426,163 @@ theorem hasSum_greenKernel_scatteringInner {w : ℂ} (hw : 1 / 2 < w.re) (hne : 
         (norm_ne_zero_iff.mpr hne2)]
       ring
     rw [hval] at h
-    refine h.congr_fun ?_ |> fun h' => h'
-    sorry
-  sorry
+    have hfun : (fun q : XiZeroCopy =>
+        Real.log ‖(q.1 : ℂ) - (2 * w - 1)‖ - Real.log ‖(q.1 : ℂ) - 2 * w‖)
+        = fun q : XiZeroCopy =>
+          Real.log ‖weierstrassE1 (((2 * w - 1 - 1 / 2) * (-I)) / xiSpectralPoint q)‖
+            - Real.log ‖weierstrassE1 (((2 * w - 1 / 2) * (-I)) / xiSpectralPoint q)‖
+            + (((q.1 : ℂ) - 1 / 2)⁻¹).re := by
+      funext q
+      rw [log_norm_weierstrassE1_spectral _ q (hA q), log_norm_weierstrassE1_spectral _ q (hB q)]
+      set X : ℂ := ((q.1 : ℂ) - 1 / 2)⁻¹
+      have e : ((2 * w - 1 - 1 / 2) * X).re - ((2 * w - 1 / 2) * X).re + X.re = 0 := by
+        rw [← Complex.sub_re, ← Complex.add_re,
+          show (2 * w - 1 - 1 / 2) * X - (2 * w - 1 / 2) * X + X = 0 by ring, Complex.zero_re]
+      linarith only [e]
+    rw [hfun]
+    exact h
+  -- `|ρ − 2w|` and `|ρ + 2w̄ − 1|` are exchanged by the involution
+  have hBC : HasSum (fun q : XiZeroCopy =>
+      Real.log ‖(q.1 : ℂ) - 2 * w‖ - Real.log ‖(q.1 : ℂ) + (2 * conj w - 1)‖) 0 := by
+    have hs : Summable (fun q : XiZeroCopy =>
+        Real.log ‖(q.1 : ℂ) - 2 * w‖ - Real.log ‖(q.1 : ℂ) + (2 * conj w - 1)‖) := by
+      refine (summable_log_norm_add_real_sub (2 * conj w - 1) (1 - 4 * w.re)).congr fun q => ?_
+      have hc : conj w = 2 * (w.re : ℂ) - w := by
+        have h := Complex.add_conj w
+        push_cast at h
+        linear_combination h
+      have e : (q.1 : ℂ) + (2 * conj w - 1) + ((1 - 4 * w.re : ℝ) : ℂ) = (q.1 : ℂ) - 2 * w := by
+        rw [hc]
+        push_cast
+        ring
+      rw [e]
+    have hodd : ∀ q : XiZeroCopy,
+        Real.log ‖((xiZeroCopyStar q).1 : ℂ) - 2 * w‖
+            - Real.log ‖((xiZeroCopyStar q).1 : ℂ) + (2 * conj w - 1)‖
+          = -(Real.log ‖(q.1 : ℂ) - 2 * w‖ - Real.log ‖(q.1 : ℂ) + (2 * conj w - 1)‖) := by
+      intro q
+      rw [xiZeroCopyStar_val]
+      have e1 : (1 - conj (q.1 : ℂ)) - 2 * w = -conj ((q.1 : ℂ) + (2 * conj w - 1)) := by
+        simp only [map_add, map_sub, map_mul, map_one, map_ofNat, Complex.conj_conj]
+        ring
+      have e2 : (1 - conj (q.1 : ℂ)) + (2 * conj w - 1) = -conj ((q.1 : ℂ) - 2 * w) := by
+        simp only [map_sub, map_mul, map_ofNat]
+        ring
+      rw [e1, e2, norm_neg, norm_neg, Complex.norm_conj, Complex.norm_conj]
+      ring
+    have h0 := tsum_eq_zero_of_star_odd (g := fun q : XiZeroCopy =>
+      Real.log ‖(q.1 : ℂ) - 2 * w‖ - Real.log ‖(q.1 : ℂ) + (2 * conj w - 1)‖) hodd
+    rw [← h0]
+    exact hs.hasSum
+  have hAC := (hAB.add hBC).neg
+  rw [add_zero] at hAC
+  have hfun : (fun q : XiZeroCopy => greenKernel w ((1 + (q.1 : ℂ)) / 2))
+      = fun q : XiZeroCopy =>
+        -(Real.log ‖(q.1 : ℂ) - (2 * w - 1)‖ - Real.log ‖(q.1 : ℂ) - 2 * w‖
+          + (Real.log ‖(q.1 : ℂ) - 2 * w‖ - Real.log ‖(q.1 : ℂ) + (2 * conj w - 1)‖)) := by
+    funext q
+    have hC : (q.1 : ℂ) + (2 * conj w - 1) ≠ 0 := by
+      intro h
+      have hre := congrArg Complex.re h
+      simp only [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+        Complex.one_re, Complex.zero_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
+        at hre
+      have := xiZeroCopy_re_pos q
+      linarith
+    have e1 : (1 + (q.1 : ℂ)) / 2 + conj w - 1 = ((q.1 : ℂ) + (2 * conj w - 1)) / 2 := by ring
+    have e2 : (1 + (q.1 : ℂ)) / 2 - w = ((q.1 : ℂ) - (2 * w - 1)) / 2 := by ring
+    rw [greenKernel, e1, e2, norm_div, norm_div, div_div_div_cancel_right₀ (by norm_num),
+      Real.log_div (norm_ne_zero_iff.mpr hC) (norm_ne_zero_iff.mpr (hA q))]
+    ring
+  rw [hfun]
+  exact hAC
+
+/-- `S` is contractive on `Re s > ½`. -/
+theorem norm_scatteringInner_le_one {w : ℂ} (hw : 1 / 2 < w.re) : ‖scatteringInner w‖ ≤ 1 := by
+  by_cases hne : xi (2 * w - 1) = 0
+  · rw [scatteringInner, hne, zero_div, norm_zero]
+    exact zero_le_one
+  have hS : scatteringInner w ≠ 0 := div_ne_zero hne (xi_two_mul_ne_zero hw)
+  have hsum := hasSum_greenKernel_scatteringInner hw hne
+  have hnn : 0 ≤ -Real.log ‖scatteringInner w‖ := by
+    refine hsum.nonneg fun q => ?_
+    have h0 := xiZeroCopy_re_pos q
+    have ha : 1 / 2 < ((1 + (q.1 : ℂ)) / 2).re := by
+      have : ((1 + (q.1 : ℂ)) / 2).re = (1 + (q.1 : ℂ).re) / 2 := by simp
+      rw [this]
+      linarith
+    have hanew : (1 + (q.1 : ℂ)) / 2 ≠ w := by
+      intro h
+      apply hne
+      rw [← h, show 2 * ((1 + (q.1 : ℂ)) / 2) - 1 = (q.1 : ℂ) by ring]
+      exact xi_xiZeroCopy_eq_zero q
+    exact (ArithmeticInnerFunctionTheory.greenKernel_pos hw ha hanew).le
+  have hle : Real.log ‖scatteringInner w‖ ≤ 0 := by linarith
+  have hpos : 0 < ‖scatteringInner w‖ := norm_pos_iff.mpr hS
+  exact (Real.log_nonpos_iff hpos.le).mp hle
+
+/-- **Unit modulus on the line**, from the functional equation. -/
+theorem norm_scatteringInner_line (t : ℝ) : ‖scatteringInner (1 / 2 + t * I)‖ = 1 := by
+  have e1 : 2 * ((1 : ℂ) / 2 + t * I) - 1 = 2 * (t * I) := by ring
+  have e2 : 2 * ((1 : ℂ) / 2 + t * I) = 1 + 2 * (t * I) := by ring
+  have hconj : xi (2 * (t * I)) = conj (xi (1 + 2 * (t * I))) := by
+    rw [← xi_conj, ← xi_one_sub (2 * (t * I))]
+    congr 1
+    simp only [map_add, map_mul, map_one, map_ofNat, Complex.conj_ofReal, Complex.conj_I]
+    ring
+  have hne : xi (1 + 2 * (t * I)) ≠ 0 := by
+    intro h
+    have hstrip := xi_zero_re_mem_open_unit h
+    have hre : (1 + 2 * ((t : ℂ) * I)).re = 1 := by simp
+    rw [hre] at hstrip
+    exact lt_irrefl _ hstrip.2
+  rw [scatteringInner, e1, e2, hconj, norm_div, Complex.norm_conj,
+    div_self (norm_ne_zero_iff.mpr hne)]
+
+/-- **The zeros of `S` are the reflected resonances.** -/
+theorem scatteringInner_eq_zero_of_msA {u : ℂ} (hu : u ∈ eisensteinLineDomain) (hAu : msA u = 0) :
+    scatteringInner (1 / 2 - u) = 0 := by
+  have hre : -1 / 2 < u.re := hu.1
+  have him : 0 < u.im := hu.2
+  have e1 : 2 * ((1 : ℂ) / 2 - u) - 1 = -(2 * u) := by ring
+  have hxi : xi (1 + 2 * u) = 0 := by
+    have hz0 : 1 + 2 * u ≠ 0 := fun h => by
+      have := congrArg Complex.im h
+      simp at this
+      exact him.ne' this
+    have hz1 : 1 + 2 * u ≠ 1 := fun h => by
+      have := congrArg Complex.im h
+      simp at this
+      exact him.ne' this
+    have hzre : 0 < (1 + 2 * u).re := by
+      have : (1 + 2 * u).re = 1 + 2 * u.re := by simp
+      rw [this]
+      linarith
+    rw [xi_eq_xiUnit_mul_zeta hz0 hz1 hzre, xiUnit]
+    have hA : Gammaℝ (1 + 2 * u) * riemannZeta (1 + 2 * u) = 0 := hAu
+    linear_combination ((1 + 2 * u) * (1 + 2 * u - 1) / 2) * hA
+  have hrefl : xi (-(2 * u)) = xi (1 + 2 * u) := by
+    rw [← xi_one_sub (1 + 2 * u)]
+    congr 1
+    ring
+  rw [scatteringInner, e1, hrefl, hxi, zero_div]
+
+/-- The Szegő kernel of the half-plane `Re s > ½`. -/
+def szegoKernel (a b : ℂ) : ℂ := 1 / (a + conj b - 1)
+
+/-- **The Gram matrix of resonant states is the Szegő kernel at the zeros of `S`.** -/
+theorem integral_resonant_gram_eq_szego {u v : ℂ}
+    (hu : u ∈ eisensteinLineDomain) (hv : v ∈ eisensteinLineDomain)
+    (hur : u.re < 0) (hvr : v.re < 0) (hAu : msA u = 0) (hAv : msA v = 0) :
+    (∫ z in ModularGroup.fd, truncatedLineModel u 1 z * conj (truncatedLineModel v 1 z)) =
+      msB u * conj (msB v) * szegoKernel (1 / 2 - u) (1 / 2 - v) := by
+  rw [ResonantStates.resonant_cutoff_gram hu hv hur hvr hAu hAv le_rfl le_rfl, min_self,
+    Complex.ofReal_one, one_cpow, mul_one, szegoKernel]
+  have hb : (1 : ℂ) / 2 - u + conj (1 / 2 - v) - 1 = -(u + conj v) := by
+    simp only [map_sub, map_div₀, map_one, map_ofNat]
+    ring
+  rw [hb, one_div, inv_neg, ← one_div]
+  ring
 
 end
 

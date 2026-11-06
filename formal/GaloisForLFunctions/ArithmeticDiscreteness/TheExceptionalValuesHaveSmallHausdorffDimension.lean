@@ -30,8 +30,8 @@ private theorem ediam_closedBall_le_ofReal (c : ℂ) (r : ℝ) :
     _ = 2 * r := by ring
 
 /-- Summable diameter costs of shrinking tail covers force zero Hausdorff measure. -/
-private theorem hausdorffMeasure_eq_zero_of_tail_covers
-    {ι : Type*} [Countable ι] (S : Set ℂ) (G : ℕ → Finset ι) (c : ℕ → ι → ℂ)
+theorem hausdorffMeasure_eq_zero_of_tail_covers
+    {ι : Type*} (S : Set ℂ) (G : ℕ → Finset ι) (c : ℕ → ι → ℂ)
     (r w : ℕ → ℝ) (s : ℝ) (hs : 0 < s)
     (hr : ∀ k, 0 ≤ r k) (hrmono : Antitone r) (hrlim : Tendsto r atTop (𝓝 0))
     (hw : ∀ k, 0 ≤ w k) (hwsum : Summable w)
@@ -160,7 +160,7 @@ theorem polynomialValueRepulsion_of_eventually_notMem_badValues
       _ ≤ 1 / 2 ^ (k + 1) := one_div_le_one_div_of_le (by positivity) h2pow
       _ ≤ d := hdk0.le
 
-private theorem heightCap_le_exp (D k : ℕ) :
+theorem heightCap_le_exp (D k : ℕ) :
     (heightCap D k : ℝ) ≤ Real.exp (Real.log 2 / D * k) := by
   rw [heightCap, Nat.cast_pow, Nat.cast_ofNat]
   rw [show (2 : ℝ) ^ (k / D) = Real.exp ((k / D : ℕ) * Real.log 2) by
@@ -172,7 +172,7 @@ private theorem heightCap_le_exp (D k : ℕ) :
     _ = Real.log 2 / D * k := by ring
 
 /-- The rectangular mesh has quadratic scale growth and one additional height factor. -/
-private theorem gridIdx_card_le_exp {α β : ℝ} (hαβ : α ≤ β) (D k : ℕ) :
+theorem gridIdx_card_le_exp {α β : ℝ} (hαβ : α ≤ β) (D k : ℕ) :
     ((gridIdx α β D k).card : ℝ) ≤
       (3 * (β - α + 4)) * Real.exp ((2 * Real.log 2 + Real.log 2 / D) * k) := by
   have hk1 : (1 : ℝ) ≤ 2 ^ k := one_le_pow₀ (by norm_num)
@@ -369,8 +369,5 @@ theorem dimH_exceptional_values_of_riemannZeta_le_one :
   obtain ⟨s, s', hs, hs', hne, hre0, hre1, him, hd⟩ :=
     exists_superpolynomial_pair ha hκ D
   exact (not_le.mpr hd) (hrep s s' hs hs' hne hre0 hre1 him)
-
-#print axioms dimH_zetaNonrepellingValues_le_one
-#print axioms dimH_exceptional_values_of_riemannZeta_le_one
 
 end GaloisForLFunctions.ArithmeticDiscreteness

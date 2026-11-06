@@ -132,7 +132,8 @@ theorem integrable_and_circleAverage_mollified (Q : Polynomial ℂ) :
     rw [← hu] at hb
     simp only [hF]
     rw [hb, ← hs, mollified_eq hu0 hu1, norm_mul, norm_mul, hun, one_mul, mul_pow]
-  have hP := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num) F _ hg
+  have hP := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num) F
+    (fun z => ‖mollified Q z‖ ^ 2) hg
   obtain ⟨C, hC0, hC⟩ := exists_exp_bound Q
   have hi := integrable_norm_sq_zeta_poisson (w := 1) (by norm_num)
   have hne : ∀ τ : ℝ, (1 / 2 + τ * I : ℂ) ≠ 0 := fun τ h => by
@@ -154,7 +155,6 @@ theorem integrable_and_circleAverage_mollified (Q : Polynomial ℂ) :
         hC _ (norm_blaschkeCoord_one_line τ).le
       have hb2 := pow_le_pow_left₀ (norm_nonneg _) hb 2
       rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)) hP0)]
-      simp only [hF]
       calc ‖riemannZeta (1 / 2 + τ * I)‖ ^ 2 * ‖Complex.exp (Q.eval (blaschkeCoord 1 (1 / 2 + τ * I)))‖ ^ 2 *
             halfPlanePoissonKernel 1 τ
           ≤ ‖riemannZeta (1 / 2 + τ * I)‖ ^ 2 * C ^ 2 * halfPlanePoissonKernel 1 τ :=
@@ -340,9 +340,10 @@ theorem norm_coeff_one_add_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
     ‖Q.coeff 1 - (1 - (Real.eulerMascheroniConstant : ℂ))‖ ^ 2 ≤ budget 1 Q - 1 := by
   have h := sum_taylorCoeff_le hQ 1
   rw [Finset.sum_range_one] at h
-  have e : taylorCoeff (mollified Q) 1 = Q.coeff 1 - (1 - (Real.eulerMascheroniConstant : ℂ)) := by
-    have h1 : taylorCoeff (mollified Q) 1 = deriv (mollified Q) 0 := by
-      rw [taylorCoeff, zero_add ,peel_succ, peel_zero, dslope_same]
+  have e : taylorCoeff (mollified Q) (0 + 1) =
+      Q.coeff 1 - (1 - (Real.eulerMascheroniConstant : ℂ)) := by
+    have h1 : taylorCoeff (mollified Q) (0 + 1) = deriv (mollified Q) 0 := by
+      rw [taylorCoeff, peel_succ, peel_zero, dslope_same]
     rw [h1]
     have hinv : HasDerivAt (fun u : ℂ => (1 - u)⁻¹) 1 0 := by
       have h2 : HasDerivAt (fun u : ℂ => 1 - u) (-1) 0 := by
@@ -352,7 +353,9 @@ theorem norm_coeff_one_add_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
     have hz : HasDerivAt (fun u : ℂ => zetaEntire (1 - u)⁻¹) (Real.eulerMascheroniConstant : ℂ) 0 := by
       have h4 : HasDerivAt zetaEntire (Real.eulerMascheroniConstant : ℂ) ((1 - (0 : ℂ))⁻¹) := by
         simpa using hasDerivAt_zetaEntire_one
-      simpa using h4.comp (0 : ℂ) hinv
+      have h5 := h4.comp (0 : ℂ) hinv
+      rw [mul_one] at h5
+      exact h5
     have hl : HasDerivAt (fun u : ℂ => 1 - u) (-1) 0 := by
       simpa using (hasDerivAt_id (0 : ℂ)).const_sub 1
     have hF := hl.fun_mul hz
@@ -392,7 +395,7 @@ theorem sq_sub_one_le {x : ℝ} (hx : 0 < x) : (x - 1) ^ 2 ≤ 2 * (x - 1 - Real
   rcases le_total 1 x with h1 | h1
   · have hmono : MonotoneOn k (Ici 1) := by
       refine monotoneOn_of_deriv_nonneg (convex_Ici 1)
-        (hcont.mono fun y hy => lt_of_lt_of_le one_pos hy)
+        (hcont.mono fun y hy => mem_Ioi.mpr (lt_of_lt_of_le one_pos (mem_Ici.mp hy)))
         (fun y hy => ?_) (fun y hy => ?_)
       · rw [interior_Ici] at hy
         have hy0 : 0 < y := lt_trans one_pos hy
@@ -462,8 +465,11 @@ theorem integral_abs_div_sub_one_le {X : Type*} [MeasurableSpace X] {μ : Measur
     intro t ht
     set a := (1 / t + t / 2) / A with ha
     set c := (Real.log A - 1) / t + t / 2 with hc
+    have h1 : Integrable (fun x => a * U x) μ := hint.const_mul a
+    have h2 : Integrable (fun x => (-(1 / t)) * Real.log (U x)) μ := hlog.const_mul _
+    have h12 : Integrable (fun x => a * U x + (-(1 / t)) * Real.log (U x)) μ := h1.add h2
     have hR : Integrable (fun x => a * U x + (-(1 / t)) * Real.log (U x) + c) μ :=
-      ((hint.const_mul a).add (hlog.const_mul _)).add (integrable_const c)
+      h12.add (integrable_const c)
     have hle : ∫ x, |U x / A - 1| ∂μ ≤ ∫ x, a * U x + (-(1 / t)) * Real.log (U x) + c ∂μ := by
       refine integral_mono_ae hint1 hR ?_
       filter_upwards [hpos] with x hx
@@ -474,9 +480,8 @@ theorem integral_abs_div_sub_one_le {X : Type*} [MeasurableSpace X] {μ : Measur
       field_simp
       ring
     refine hle.trans (le_of_eq ?_)
-    rw [integral_add ((hint.const_mul a).add (hlog.const_mul _)) (integrable_const c),
-      integral_add (hint.const_mul a) (hlog.const_mul _), integral_const_mul, integral_const_mul,
-      integral_const, ← hA, ← hL, ha, hc]
+    rw [integral_add h12 (integrable_const c), integral_add h1 h2, integral_const_mul,
+      integral_const_mul, integral_const, ← hA, ← hL, ha, hc]
     simp
     field_simp
     ring
@@ -529,7 +534,6 @@ theorem integral_abs_flatten_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
         rw [discChart_one, ← hu] at hs
         have hb := blaschkeCoord_line (w := 1) hw t
         rw [← hu] at hb
-        simp only
         rw [hb, ← hs, mollified_eq hu0 hu1, norm_mul, norm_mul, hun, one_mul, mul_pow])
     exact h2.1.mp h1
   have hUi : Integrable (fun x : 𝕋 => G (circleZ x)) AddCircle.haarAddCircle :=
@@ -549,7 +553,8 @@ theorem integral_abs_flatten_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
       Real.log (chartWeight 1 (circleZ x)) + circleValue Q x := by
     filter_upwards [hpos0] with x hx
     simp only [hG, circleValue]
-    rw [Real.log_mul hx.ne' (by positivity), Real.log_pow, Complex.norm_exp, Real.log_exp]
+    rw [Real.log_mul hx.ne' (pow_ne_zero 2 (norm_ne_zero_iff.mpr (Complex.exp_ne_zero _))),
+      Real.log_pow, Complex.norm_exp, Real.log_exp]
     norm_num
   have hUl : Integrable (fun x : 𝕋 => Real.log (G (circleZ x))) AddCircle.haarAddCircle := by
     have hb : Integrable (circleValue Q) AddCircle.haarAddCircle :=
@@ -557,7 +562,7 @@ theorem integral_abs_flatten_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
     exact (hlogW.add hb).congr (hlogU.mono fun x hx => hx.symm)
   have hpos : ∀ᵐ x : 𝕋 ∂AddCircle.haarAddCircle, 0 < G (circleZ x) := by
     filter_upwards [hpos0] with x hx
-    exact mul_pos hx (by positivity)
+    exact mul_pos hx (pow_pos (norm_pos_iff.mpr (Complex.exp_ne_zero _)) 2)
   have hS := integral_abs_div_sub_one_le hpos hUi hUl
   have eA : ∫ x : 𝕋, G (circleZ x) ∂AddCircle.haarAddCircle = budget 1 Q := by
     rw [integral_haar_circleZ, hB]
@@ -568,8 +573,9 @@ theorem integral_abs_flatten_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
     have hl := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num)
       (fun τ : ℝ => 2 * Real.log ‖riemannZeta (1 / 2 + τ * I)‖) (fun z => Real.log (chartWeight 1 z))
       (fun t => by simp only [chartWeight, discChart_circleMap, Real.log_pow]; norm_num)
-    rw [hl.2, innerField, norm_one, Real.log_one, zetaEntire_eval_one, norm_one, Real.log_one, ← integral_const_mul]
+    rw [hl.2, innerField, norm_one, Real.log_one, zetaEntire_eval_one, norm_one, Real.log_one]
     simp only [add_zero, sub_zero]
+    rw [← integral_const_mul]
     refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
     simp only
     ring
@@ -578,7 +584,6 @@ theorem integral_abs_flatten_le {Q : Polynomial ℂ} (hQ : Q.coeff 0 = 0) :
   have hA := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num) (fun τ : ℝ =>
     |‖riemannZeta (1 / 2 + τ * I)‖ ^ 2 * ‖Complex.exp (Q.eval (blaschkeCoord 1 (1 / 2 + τ * I)))‖ ^ 2 /
       budget 1 Q - 1|) (fun z => |G z / budget 1 Q - 1|) (fun t => by
-        simp only
         rw [hline t])
   rw [← hA.2, integral_haar_circleZ fun z => |G z / budget 1 Q - 1|]
 

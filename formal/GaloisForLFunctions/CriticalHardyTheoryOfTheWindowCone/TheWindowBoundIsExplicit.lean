@@ -57,7 +57,7 @@ theorem ae_enorm_le_causalGamma_explicit (a : SuzukiPositiveAperture) (u g : suz
   have hmass : ∫⁻ z, ‖(ur : RealLineL2) z‖ₑ = ∫⁻ z, ‖(u : RealLineL2) z‖ₑ := by
     calc
       _ = ∫⁻ z, ‖(u : RealLineL2) (-z)‖ₑ := lintegral_congr_ae (hur'.mono fun z hz => by rw [hz])
-      _ = _ := lintegral_neg_eq_self (fun z => ‖(u : RealLineL2) z‖ₑ) volume
+      _ = _ := lintegral_neg_eq_self (fun z => ‖(u : RealLineL2) z‖ₑ)
   have hsame : ∀ x, causalGamma (fun z => ‖(gr : RealLineL2) z‖ₑ) (-x) =
       causalGamma (fun z => ‖(g : RealLineL2) z‖ₑ) x := by
     intro x
@@ -71,9 +71,9 @@ theorem ae_enorm_le_causalGamma_explicit (a : SuzukiPositiveAperture) (u g : suz
     exact causalGamma_reflect hgm x
   have hconst : ENNReal.ofReal (2 / a.1 / 2) * (∫⁻ z, ‖(u : RealLineL2) z‖ₑ) ≤
       ENNReal.ofReal (2 / a.1) * (∫⁻ z, ‖(u : RealLineL2) z‖ₑ) := by
-    gcongr
     have hpos : 0 < 2 / a.1 := div_pos two_pos a.2
-    linarith only [hpos]
+    have hle : 2 / a.1 / 2 ≤ 2 / a.1 := by linarith only [hpos]
+    gcongr
   filter_upwards [hL, hneg hR, hneg hur'] with x h1 h2 h3
   rcases le_total x 0 with hx | hx
   · refine (h1 hx).trans ?_
@@ -122,7 +122,8 @@ theorem fwdAvg_causalDensity_le {h : ℝ → ℝ≥0∞} (hh : Measurable h) {S 
     _ = (∫⁻ r, (Ioc (0 : ℝ) ρ).indicator causalDensity r) * S +
         ENNReal.ofReal (1 / ρ) * ∫⁻ r, h (y + r) := by
       rw [lintegral_add_left (hind.mul_const S), lintegral_mul_const _ hind,
-        lintegral_const_mul _ (hh.comp (measurable_const_add y))]
+        lintegral_const_mul (ENNReal.ofReal (1 / ρ))
+          (show Measurable fun r => h (y + r) from hh.comp (measurable_const_add y))]
     _ = _ := by
       rw [hmass, lintegral_add_left_eq_self h y]
 
@@ -251,8 +252,9 @@ theorem ae_norm_le_of_window_equation_explicit {ι : Type*} (a : SuzukiPositiveA
     gcongr
     · rw [hSs]
   have hreal : s ≤ 2 / a.1 * L + (C₀ + (V ρ * (K * s) + 1 / ρ * (K * L))) := by
-    rw [hs]
-    exact ENNReal.toReal_le_of_le_ofReal (by positivity) hbound
+    have hnn : 0 ≤ 2 / a.1 * L + (C₀ + (V ρ * (K * s) + 1 / ρ * (K * L))) := by positivity
+    have h := ENNReal.toReal_le_of_le_ofReal hnn hbound
+    rwa [← hs] at h
   have habs : V ρ * (K * s) ≤ 1 / 2 * s := by
     have := mul_le_mul_of_nonneg_right hsmall hs0
     linarith only [this]
