@@ -10,11 +10,13 @@ import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheWindowReadsTheR
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheForwardMapFromPrimesToReflectors
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.NearExtremalMollifiersAreRigid
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheCalculusOfEulerColumns
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.CastelnuovoConstructsTheMollifierOfACurve
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.ThePotentialPastTheBornRegime
 
 /-!
 # The questions of the field
 
-The six questions of the programme, each with the theorem that answers it. None of them produces a sign for `Spec ℤ`: each equivalence with RH is
+The questions of the programme, each with the theorem that answers it. None of them produces a sign for `Spec ℤ`: each equivalence with RH is
 stated as an equivalence.
 
 * **When is a frustrated form nonnegative at zero slack?** (`question_one`, `question_one_specZ`) Exactly when, for every positive slack, its windows have outer predictors with positive margins. At slack zero
@@ -29,8 +31,9 @@ stated as an equivalence.
   and `s = 0` is the threshold, which is RH for all lattices. `β ≠ 1` loses the rigidity of the weights.
 * **Can an arithmetic inner factor be finite and nontrivial?** (`question_six`) For a polynomial yes, for a Dirichlet polynomial never, and for `ζ` the answer is the second half of RH: inner field vanishing at infinity and recurrence.
 * **How do reflectors depend on primes past the first echo?** (`question_seven`) Through the autocorrelation of the predictor test at `log n₀`: the tangent of the forward map is exact at every stage.
-* **What plays the role of Castelnuovo?** (`question_eight`) Not the construction of a mollifier: its limit is forced to be `1/E`, with first coefficient `1 − γ`. What Castelnuovo gives over a curve is the finiteness and smallness of the excess of this one candidate.
+* **What plays the role of Castelnuovo?** (`question_eight`, `question_eight_curve`) Not the construction of a mollifier: its limit is forced to be `1/E`, with first coefficient `1 − γ`. Over a curve the family is the Euler logarithm damped by `ρ^k`, and Castelnuovo is the uniform bound on the dilation quotient that makes it near-extremal. Over `ℤ` that bound is the missing input.
 * **How does the Gamma base pay the columns?** (`question_nine`) By size up to `log(b/2π) > 14√P log P`, and at each height of alignment `[B, BQ^{|S|}]` it has to exceed the aligned mass.
+* **How does the potential depend on the data past the Born regime?** (`question_ten`) At the vacuum each reflector reads its own echo. In general the defect is bounded by the accumulated reflection `Π(1 + |γ_k|) − 1`, and the tangent of `q_n = −artanh γ_n` is exact at every positive stage.
 -/
 
 open Finset Filter Topology Set
@@ -240,6 +243,28 @@ theorem question_nine {a : ℝ} (ha : 0 ≤ a) {S : Finset ℕ} (hS : ∀ p ∈ 
       ∃ b : ℝ, B ≤ b ∧ b ≤ B * (Q : ℝ) ^ S.card ∧ columnCurrent a S b < 0) :=
   ⟨fun _ hb => columnCurrent_pos_of_mass_lt ha hS hb,
     fun hB hQ hlt => exists_columnCurrent_neg ha hS hB hQ hlt⟩
+
+/-- **Q8 over a curve.** Castelnuovo holds iff the damped Euler logarithms are near-extremal. -/
+theorem question_eight_curve {ι : Type*} [Fintype ι] (D : CurveDatum ι) :
+    (∀ S d, 0 ≤ D.spanDefect S d) ↔
+      ∀ ε : ℝ, 0 < ε → ∃ ρ : ℝ, 0 ≤ ρ ∧ ρ < 1 ∧ ∃ N : ℕ, abelBudget D ρ N < 1 + ε :=
+  hodgeIndex_iff_abelMollifiers D
+
+/-- **Q10. The potential past the Born regime.** The Born tangent at the vacuum; the defect by the accumulated reflection; and the exact tangent of the potential at every positive stage. -/
+theorem question_ten :
+    (∀ (κ₀ : ℝ) (η : ℤ → ℝ) (n : ℕ), 0 < κ₀ → IsEvenSeq η →
+      HasDerivAt (fun t => reflCoeff (tiltSeq (vacuum κ₀) η t) n) (η ((n : ℤ) + 1) / κ₀) 0) ∧
+    (∀ (κ : ℤ → ℝ) (K : ℝ) (n : ℕ), 0 ≤ K → (∀ k : ℕ, k < n → |κ ((k : ℤ) + 1)| ≤ K) →
+      |schurParam κ n - κ ((n : ℤ) + 1)| ≤ K * (∏ k ∈ Finset.range n, (1 + |reflCoeff κ k|) - 1)) ∧
+    (∀ (κ η : ℤ → ℝ) (n : ℕ), IsEvenSeq κ → IsEvenSeq η → ToeplitzPosDef κ (n + 1) →
+      reflCoeff κ n ∈ Set.Ioo (-1 : ℝ) 1 →
+      HasDerivAt (fun t => latticeKick (tiltSeq κ η t) n)
+        (-(((toeplitzForm η (n + 2) (collarVec κ n 1) - toeplitzForm η (n + 2) (collarVec κ n (-1))) / 4 -
+          reflCoeff κ n * toeplitzForm η (n + 1) (levinsonVec κ n)) / levinsonErr κ n /
+            (1 - reflCoeff κ n ^ 2))) 0) :=
+  ⟨fun _ _ n h0 hη => hasDerivAt_reflCoeff_vacuum h0 hη n,
+    fun _ _ _ hK0 hK => abs_schurParam_sub_le hK0 hK,
+    fun _ _ _ hκ hη h hγ => hasDerivAt_latticeKick hκ hη h hγ⟩
 
 end
 

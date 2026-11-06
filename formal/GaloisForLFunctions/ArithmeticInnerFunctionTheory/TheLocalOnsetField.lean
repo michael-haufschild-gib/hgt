@@ -15,7 +15,7 @@ Taking `a = λ · ½ log X` gives the aperture scale of the field. The transform
 `Ω_ψ(a, X) = Σ_ρ m_ρ a² ψ̂(a(γ_ρ + X)) conj ψ̂(a(γ̄_ρ + X))`.
 
 * An on-line zero contributes `m_ρ a² |ψ̂(a(γ_ρ + X))|² ≥ 0` (`onsetSummand_of_onLine`), so all sign is in the off-line pairs.
-* **The cost of depth** (`re_onsetPair_ge`, `re_onsetPair_ge_of_small`). A pair at depth `δ` costs at most `2 S(δ, a) · a‖ψ‖²`, with `S(δ, a) = ∫_{−a}^{a} sinh²(δu) du` the pair energy, at every height. Since `(2/3)δ²a³ ≤ S(δ, a) ≤ (8/9)δ²a³` for `δa ≤ ½` (`two_thirds_le_pairEnergy`, `pairEnergy_le`), the cost is at most `(16/9)δ²a⁴‖ψ‖²`. Against an on-line mass of order `a‖ψ‖² log X`, a pair of depth `A/log X` is invisible up to `a³ ≲ log³X/A²`, which is `λ ≲ A^{−2/3}` at aperture `a = λ · ½ log X`.
+* **The cost of depth** (`re_onsetPair_ge`, `re_onsetPair_ge_of_small`). A pair at depth `δ` costs at most `2 S(δ, a) · a‖ψ‖²`, with `S(δ, a) = ∫_{−a}^{a} sinh²(δu) du` the pair energy, at every height. Since `(2/3)δ²a³ ≤ S(δ, a) ≤ (8/9)δ²a³` for `δa ≤ ½` (`two_thirds_le_pairEnergy`, `pairEnergy_le`), the cost is at most `(16/9)δ²a⁴‖ψ‖²`. If the on-line mass has its Landau size `a‖ψ‖² log X` (this comparison is not proved here), a pair of depth `A/log X` stays invisible up to `a³ ≲ log³X/A²`, which is `λ ≲ A^{−2/3}` at aperture `a = λ · ½ log X`.
 * **Bounded apertures are positive at every height** (`onsetEnergy_nonneg_of_le`). Below the certified aperture the field is nonnegative for every profile and height, unconditionally: at aperture scale this is `λ ≲ 1/log X`.
 * RH is the nonnegativity of the field at every profile, aperture and height (`riemannHypothesis_iff_onsetEnergy_nonneg`).
 

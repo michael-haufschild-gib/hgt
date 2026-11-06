@@ -2,6 +2,7 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.ReceivingCharges.
 import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.MixedChannelDecomposition
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.SharpenedMidBandAndCrossBounds
 import GaloisForLFunctions.RenormalizedArithmeticPotentialTheory.GcdProfilesHaveFiniteRamanujanExpansions
+import GaloisForLFunctions.RHTower.MertensVonMangoldtEulerConstant
 
 /-!
 # The four channels of a periodic coherent charge
@@ -15,11 +16,16 @@ So its mixed error against the dilation form splits into four literal channels, 
 * **cross**, `C c²/√log N`;
 * **center**, `C c (1 + log R)/√log N`.
 
-The last three are multiples of `‖u‖`; the Mertens remainder costs `log 8 + 4` per unit of `‖u‖`.
+The last three are multiples of `‖u‖`.
+
+The Mertens remainder is `−γ` times the identity up to a multiplier that is small off the top rows. On an
+orthogonal pair the identity drops out, and the top rows carry mass `O(log T / log N)` uniformly in the
+conductor (`abs_mertens_inner_le_of_mem_conductorSubspace`).
 
 With `B ≈ e c` and `W ≈ log c`, upward needs `log Q ≫ c² log² c` and overlap needs `c² log R ≪ √log N`.
 Their common window `c² ≪ log Q ≪ √log N / c²` is nonempty exactly for `c⁴ ≪ √log N`, that is, below the
-eighth root (`eventually_four_channels_small`).
+eighth root (`eventually_four_channels_small`). On that window the complete form is its jump pairing up to
+`ε (V|t| + ‖u‖) ‖y‖` (`eventually_gcdTwistedCharge_mixed_error_small`).
 -/
 
 noncomputable section
@@ -132,9 +138,11 @@ theorem exists_gcdTwistedCharge_four_channels {φ : ℝ → ℝ}
           jumpPairing N (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) G| ≤
         (K * ((linearPrimeStrip c : ℝ) * V * literalMultiplierWidth c) * |t| *
             (1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q) +
-          (chargeChannelRate φ C c (M * Q) N + (Real.log 8 + 4)) *
+          chargeChannelRate φ C c (M * Q) N *
             ‖packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N‖) *
-          ‖packetVector G N‖ := by
+          ‖packetVector G N‖ +
+        |⟪mertensHorizonRemainder N
+            (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j), packetVector G N⟫| := by
   obtain ⟨Q₀, K, hK, hup⟩ := exists_literal_coherent_channel_law hφ hsupp hφ0 hmass
   obtain ⟨C, hC, hover⟩ :=
     exists_overlap_sub_downward_norm_le_of_mem_conductorSubspace_of_four_log hφ hsupp hmass
@@ -200,8 +208,6 @@ theorem exists_gcdTwistedCharge_four_channels {φ : ℝ → ℝ}
     rw [hud, hFd, ← packetVector_const_mul]
     rfl
   rw [← hupu] at hupward
-  have hmert := mertens_remainder_norm N F
-  rw [← hud] at hmert
   -- assemble
   have hy0 := norm_nonneg y
   have hu0 := norm_nonneg u
@@ -209,11 +215,9 @@ theorem exists_gcdTwistedCharge_four_channels {φ : ℝ → ℝ}
   have t2 := abs_real_inner_le_norm (Matrix.toEuclideanLin (overlapMatrix φ c N) u -
     downwardPrimeVector φ c N u) y
   have t3 := abs_real_inner_le_norm (upwardPrimeVector φ c N u) y
-  have t4 := abs_real_inner_le_norm (mertensHorizonRemainder N F) y
   have m1 := mul_le_mul_of_nonneg_right hcross hy0
   have m2 := mul_le_mul_of_nonneg_right hoverlap hy0
   have m3 := mul_le_mul_of_nonneg_right hupward hy0
-  have m4 := mul_le_mul_of_nonneg_right hmert hy0
   have hsum : |⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c) N) u, y⟫ -
       ⟪Matrix.toEuclideanLin (separatedCrossErrorMatrix φ c N) u, y⟫ +
       ⟪Matrix.toEuclideanLin (overlapMatrix φ c N) u - downwardPrimeVector φ c N u, y⟫ -
@@ -226,7 +230,7 @@ theorem exists_gcdTwistedCharge_four_channels {φ : ℝ → ℝ}
       ((abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)) le_rfl)) le_rfl)
   refine hsum.trans ?_
   unfold chargeChannelRate
-  nlinarith only [hcenter, t1, t2, t3, t4, m1, m2, m3, m4]
+  nlinarith only [hcenter, t1, t2, t3, m1, m2, m3]
 
 /-! ### The common window -/
 
@@ -519,5 +523,438 @@ theorem eventually_four_channels_small {φ : ℝ → ℝ} (C : ℝ) {α β ε : 
           C * (c ^ 2 * ((M * Q : ℕ) : ℝ) * Real.sqrt (L / N)) := by ring
     rw [hq]
     linarith only [hcenter, hcross, hoverlap, hover2, hsum, hε]
+
+/-! ### The Mertens channel -/
+
+/-- The Mertens row multiplier tends to `−γ` as the quotient `N/n` grows. -/
+theorem exists_abs_mertensRow_add_gamma_le {ε : ℝ} (hε : 0 < ε) :
+    ∃ T : ℝ, 1 ≤ T ∧ ∀ N n : ℕ, 1 ≤ n → 1 ≤ N → T ≤ (N : ℝ) / n →
+      |ArithmeticCouplingTheory.mertensSum (N / n) + Real.log n - Real.log N +
+        Real.eulerMascheroniConstant| ≤ ε := by
+  obtain ⟨T₀, hT₀⟩ := mem_atTop_sets.mp (tendsto_def.mp
+    _root_.RHTower.tendsto_real_sum_vonMangoldt_div_sub_log _ (Metric.closedBall_mem_nhds _ hε))
+  refine ⟨max 1 T₀, le_max_left _ _, fun N n hn hN hT => ?_⟩
+  have hx : dist ((∑ k ∈ Icc 0 ⌊(N : ℝ) / n⌋₊, ArithmeticFunction.vonMangoldt k / (k : ℝ)) -
+      Real.log ((N : ℝ) / n)) (-Real.eulerMascheroniConstant) ≤ ε :=
+    hT₀ _ ((le_max_right _ _).trans hT)
+  have hsum : ∑ k ∈ Icc 0 (N / n), ArithmeticFunction.vonMangoldt k / (k : ℝ) =
+      ArithmeticCouplingTheory.mertensSum (N / n) := by
+    unfold ArithmeticCouplingTheory.mertensSum
+    symm
+    refine sum_subset (fun k hk => mem_Icc.mpr ⟨Nat.zero_le _, (mem_Icc.mp hk).2⟩) fun k hk hk' => ?_
+    have hk0 : k = 0 := by
+      by_contra h
+      exact hk' (mem_Icc.mpr ⟨Nat.pos_of_ne_zero h, (mem_Icc.mp hk).2⟩)
+    simp [hk0]
+  have hn0 : (n : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hN0 : (N : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  rw [Real.dist_eq, sub_neg_eq_add, Nat.floor_div_eq_div, hsum, Real.log_div hN0 hn0] at hx
+  refine le_trans (le_of_eq ?_) hx
+  congr 1
+  ring
+
+/-- The uniform ceiling of the centered Mertens row multiplier. -/
+def mertensRowCeiling : ℝ := Real.log 8 + 4 + Real.eulerMascheroniConstant
+
+theorem mertensRowCeiling_pos : 0 < mertensRowCeiling := by
+  have h8 := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 8)
+  have hγ := Real.one_half_lt_eulerMascheroniConstant
+  unfold mertensRowCeiling
+  linarith only [h8, hγ]
+
+/-- **On orthogonal pairs the Mertens channel is small, uniformly in the conductor.** The identity part `−γ`
+drops out; what remains is at most `ε` off the rows `N/n < T`, whose mass is `O(log T / log N)`. -/
+theorem abs_mertens_inner_le_of_mem_conductorSubspace {ε T : ℝ} (hε : 0 ≤ ε) (hT : 1 ≤ T)
+    (hrow : ∀ N n : ℕ, 1 ≤ n → 1 ≤ N → T ≤ (N : ℝ) / n →
+      |ArithmeticCouplingTheory.mertensSum (N / n) + Real.log n - Real.log N +
+        Real.eulerMascheroniConstant| ≤ ε)
+    {R N : ℕ} (hR : 2 ≤ R) (hRNT : ((R * R : ℕ) + 1 : ℝ) * T ≤ N)
+    (hlog : 18 * (1 + Real.log R) ≤ Real.log N) (F : ℕ → ℝ)
+    (hu : packetVector F N ∈ conductorSubspace R N)
+    (y : EuclideanSpace ℝ (PrimeHorizonIndex N)) (hort : ⟪packetVector F N, y⟫ = 0) :
+    |⟪mertensHorizonRemainder N F, y⟫| ≤
+      (ε + mertensRowCeiling * Real.sqrt (2 * (Real.log (2 * T) + 3) / Real.log N)) *
+        ‖packetVector F N‖ * ‖y‖ := by
+  have hL : 0 < Real.log N := by
+    have h0 := Real.log_natCast_nonneg R
+    linarith only [hlog, h0]
+  obtain ⟨r, hrd⟩ : ∃ r : ℕ → ℝ, r = fun n =>
+      ArithmeticCouplingTheory.mertensSum (N / n) + Real.log n - Real.log N +
+        Real.eulerMascheroniConstant := ⟨_, rfl⟩
+  obtain ⟨w, hwd⟩ : ∃ w, w = packetVector (fun n => r n * F n) N := ⟨_, rfl⟩
+  obtain ⟨u, hud⟩ : ∃ u, u = packetVector F N := ⟨_, rfl⟩
+  have hsplit : mertensHorizonRemainder N F = w - Real.eulerMascheroniConstant • u := by
+    rw [hwd, hud, hrd]
+    ext n
+    change (ArithmeticCouplingTheory.mertensSum (N / n) + Real.log n - Real.log N) * F n /
+        Real.sqrt n =
+      (ArithmeticCouplingTheory.mertensSum (N / n) + Real.log n - Real.log N +
+        Real.eulerMascheroniConstant) * F n / Real.sqrt n -
+        Real.eulerMascheroniConstant * (F n / Real.sqrt n)
+    ring
+  rw [← hud] at hort hu ⊢
+  have hinner : ⟪mertensHorizonRemainder N F, y⟫ = ⟪w, y⟫ := by
+    rw [hsplit, inner_sub_left, real_inner_smul_left, hort, mul_zero, sub_zero]
+  rw [hinner]
+  have hθ0 : 0 ≤ 2 * (Real.log (2 * T) + 3) / Real.log N := by
+    have h2T := Real.log_nonneg (by linarith only [hT] : (1 : ℝ) ≤ 2 * T)
+    positivity
+  obtain ⟨θ, hθd⟩ : ∃ θ, θ = 2 * (Real.log (2 * T) + 3) / Real.log N := ⟨_, rfl⟩
+  rw [← hθd] at hθ0 ⊢
+  -- the mass of the top rows
+  have htop : ∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T), F n ^ 2 / (n : ℝ) ≤
+      θ * ‖u‖ ^ 2 := by
+    have h := sum_quotient_tail_sq_le_of_mem_conductorSubspace hR hT hRNT hlog hu
+    have hcongr : ∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T),
+        primeHorizonExtension u n ^ 2 =
+        ∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T), F n ^ 2 / (n : ℝ) := by
+      refine sum_congr rfl fun n hn => ?_
+      have hnI := (mem_filter.mp hn).1
+      rw [primeHorizonExtension_coe u ⟨n, hnI⟩, hud]
+      change (F n / Real.sqrt n) ^ 2 = _
+      rw [div_pow, Real.sq_sqrt (Nat.cast_nonneg n)]
+    rw [hcongr] at h
+    rw [hθd, div_mul_eq_mul_div, le_div_iff₀ hL]
+    linarith only [h]
+  obtain ⟨S, hSd⟩ : ∃ S, S = ∑ n ∈ (Icc 1 N).filter (fun n : ℕ => (N : ℝ) / n < T),
+      F n ^ 2 / (n : ℝ) := ⟨_, rfl⟩
+  rw [← hSd] at htop
+  have hC := mertensRowCeiling_pos
+  have hrowle : ∀ n ∈ Icc 1 N, (r n * F n) ^ 2 / (n : ℝ) ≤
+      ε ^ 2 * (F n ^ 2 / (n : ℝ)) +
+        (if (N : ℝ) / n < T then mertensRowCeiling ^ 2 * (F n ^ 2 / (n : ℝ)) else 0) := by
+    intro n hn
+    obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+    have hfrac : 0 ≤ F n ^ 2 / (n : ℝ) := by positivity
+    rw [mul_pow, mul_div_assoc]
+    split_ifs with hbad
+    · have hb := mertens_horizon_row_bound hn
+      have hγ := Real.one_half_lt_eulerMascheroniConstant
+      have habs : |r n| ≤ mertensRowCeiling := by
+        rw [hrd]
+        unfold mertensRowCeiling
+        refine (abs_add_le _ _).trans (add_le_add hb (le_of_eq ?_))
+        exact abs_of_pos (by linarith only [hγ])
+      have hsq : r n ^ 2 ≤ mertensRowCeiling ^ 2 := by
+        rw [← sq_abs (r n)]
+        exact pow_le_pow_left₀ (abs_nonneg _) habs 2
+      have h1 := mul_le_mul_of_nonneg_right hsq hfrac
+      have h2 : 0 ≤ ε ^ 2 * (F n ^ 2 / (n : ℝ)) := by positivity
+      linarith only [h1, h2]
+    · have hgood := hrow N n hn1 (hn1.trans hnN) (not_lt.mp hbad)
+      have hsq : r n ^ 2 ≤ ε ^ 2 := by
+        rw [← sq_abs (r n), hrd]
+        exact pow_le_pow_left₀ (abs_nonneg _) hgood 2
+      have h1 := mul_le_mul_of_nonneg_right hsq hfrac
+      linarith only [h1]
+  have hw2 : ‖w‖ ^ 2 ≤ (ε ^ 2 + mertensRowCeiling ^ 2 * θ) * ‖u‖ ^ 2 := by
+    have hnormu : ‖u‖ ^ 2 = ∑ n ∈ Icc 1 N, F n ^ 2 / (n : ℝ) := by
+      rw [hud, packetVector_norm_sq]
+    have hsum : ∑ n ∈ Icc 1 N, (ε ^ 2 * (F n ^ 2 / (n : ℝ)) +
+        (if (N : ℝ) / n < T then mertensRowCeiling ^ 2 * (F n ^ 2 / (n : ℝ)) else 0)) =
+        ε ^ 2 * ‖u‖ ^ 2 + mertensRowCeiling ^ 2 * S := by
+      rw [sum_add_distrib, ← mul_sum, ← hnormu, ← sum_filter, ← mul_sum, ← hSd]
+    have hle := sum_le_sum hrowle
+    rw [hsum, ← packetVector_norm_sq, ← hwd] at hle
+    have hS := mul_le_mul_of_nonneg_left htop (sq_nonneg mertensRowCeiling)
+    linarith only [hle, hS]
+  have hsθ : Real.sqrt θ ^ 2 = θ := Real.sq_sqrt hθ0
+  have hsθ0 := Real.sqrt_nonneg θ
+  have hwle : ‖w‖ ≤ (ε + mertensRowCeiling * Real.sqrt θ) * ‖u‖ := by
+    refine (abs_le_of_sq_le_sq' (hw2.trans ?_) (by positivity)).2
+    have hexpand : ((ε + mertensRowCeiling * Real.sqrt θ) * ‖u‖) ^ 2 =
+        (ε ^ 2 + 2 * ε * (mertensRowCeiling * Real.sqrt θ) +
+          mertensRowCeiling ^ 2 * Real.sqrt θ ^ 2) * ‖u‖ ^ 2 := by ring
+    rw [hexpand, hsθ]
+    refine mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+    have h2 : 0 ≤ 2 * ε * (mertensRowCeiling * Real.sqrt θ) := by positivity
+    linarith only [h2]
+  exact (abs_real_inner_le_norm w y).trans (mul_le_mul_of_nonneg_right hwle (norm_nonneg y))
+
+/-! ### The mixed law on the window -/
+
+/-- **On the window below the eighth root the complete form is its jump pairing.** For gcd-twisted coherent
+charges, with vectors orthogonal to `V₁` and to each other, all five channels together cost at most
+`ε (V|t| + ‖u‖) ‖y‖`, uniformly in the overlap, the period, the band, the twist and the amplitude. -/
+theorem eventually_gcdTwistedCharge_mixed_error_small {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
+    (hφ0 : ∀ u, 0 ≤ φ u) (hmass : 0 < ∫ u, φ u ^ 2) {α β ε : ℝ} (hα : 0 < α)
+    (h1 : 2 * α < β) (h2 : β + 2 * α < 1 / 2) (hε : 0 < ε) :
+    ∀ᶠ N : ℕ in atTop, ∀ c : ℝ, 1 ≤ c → c ≤ Real.log N ^ α → ∀ M Q : ℕ, 0 < M →
+      Real.log N ^ β ≤ Real.log Q → Real.log Q ≤ 2 * Real.log N ^ β →
+      Real.log M ≤ Real.log N ^ β →
+      (periodBandDivisors Q M : ℝ) ≤ Real.sqrt (Real.log Q) →
+      ∀ (g : ℕ → ℝ) (t V : ℝ), 0 ≤ V → (∀ d, |g d| ≤ V) → ∀ G : ℕ → ℝ,
+      packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N ∈
+        (conductorSubspace 1 N)ᗮ →
+      packetVector G N ∈ (conductorSubspace 1 N)ᗮ →
+      ⟪packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N,
+        packetVector G N⟫ = 0 →
+      |⟪Matrix.toEuclideanLin (completeWeilMatrix φ c N)
+          (packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N),
+          packetVector G N⟫ -
+        jumpPairing N (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) G| ≤
+      ε * (V * |t| +
+        ‖packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N‖) *
+        ‖packetVector G N‖ := by
+  obtain ⟨Q₀, K, C, hK, hC, hlaw⟩ := exists_gcdTwistedCharge_four_channels hφ hsupp hφ0 hmass
+  have hK1 : 0 < K + 1 := by linarith only [hK]
+  obtain ⟨ε', hε'd⟩ : ∃ ε', ε' = ε / (3 * (K + 1)) := ⟨_, rfl⟩
+  have hε' : 0 < ε' := by rw [hε'd]; positivity
+  have hKε : (K + 1) * ε' = ε / 3 := by rw [hε'd]; field_simp
+  obtain ⟨T, hT1, hrow⟩ := exists_abs_mertensRow_add_gamma_le (ε := ε / 3) (by positivity)
+  have hβ : 0 < β := by linarith only [h1, hα]
+  have hβ1 : β < 1 / 2 := by linarith only [h2, hα]
+  have hA0 : 0 ≤ 2 * (Real.log (2 * T) + 3) := by
+    have h2T := Real.log_nonneg (by linarith only [hT1] : (1 : ℝ) ≤ 2 * T)
+    positivity
+  have hCM := mertensRowCeiling_pos
+  have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hrat : ∀ᶠ L : ℝ in atTop, (120 : ℝ) ≤ L ^ (1 - β) :=
+    (tendsto_rpow_atTop (by linarith only [hβ1])).eventually_ge_atTop 120
+  have hfour : ∀ᶠ L : ℝ in atTop, (4 : ℝ) ≤ L ^ (β / 2 - α) :=
+    (tendsto_rpow_atTop (by linarith only [h1])).eventually_ge_atTop 4
+  have hexpQ : ∀ᶠ L : ℝ in atTop, (Q₀ : ℝ) ≤ Real.exp (L ^ β) :=
+    (Real.tendsto_exp_atTop.comp (tendsto_rpow_atTop hβ)).eventually_ge_atTop _
+  have hexp2 : ∀ᶠ L : ℝ in atTop, (24 : ℝ) ≤ Real.exp (L / 2) / (L / 2) ^ 2 :=
+    ((Real.tendsto_exp_div_pow_atTop 2).comp
+      (tendsto_id.atTop_div_const (by norm_num : (0 : ℝ) < 2))).eventually_ge_atTop 24
+  have hexpT : ∀ᶠ L : ℝ in atTop, 2 * T ≤ Real.exp (L / 2) :=
+    (Real.tendsto_exp_atTop.comp
+      (tendsto_id.atTop_div_const (by norm_num : (0 : ℝ) < 2))).eventually_ge_atTop _
+  filter_upwards [eventually_four_channels_small (φ := φ) C hα h1 h2 hε' hC,
+    hLlim.eventually hrat, hLlim.eventually hfour, hLlim.eventually hexpQ, hLlim.eventually hexp2,
+    hLlim.eventually hexpT,
+    hLlim.eventually_ge_atTop (2 * (Real.log (2 * T) + 3) * (3 * mertensRowCeiling / ε) ^ 2),
+    hLlim.eventually_ge_atTop 36] with N hs hr hf hq he ht hth hL36
+  intro c hc1 hcα M Q hM hQlo hQhi hMhi hω g t V hV hg G hu1 hy1 hort
+  obtain ⟨hup, hrate⟩ := hs c hc1 hcα M Q hM hQlo hQhi hMhi hω
+  obtain ⟨L, hLd⟩ : ∃ L, L = Real.log (N : ℝ) := ⟨_, rfl⟩
+  rw [← hLd] at hr hf hq he ht hth hL36 hcα hQlo hQhi hMhi
+  have hL1 : 1 ≤ L := by linarith only [hL36]
+  have hL0 : 0 < L := by linarith only [hL36]
+  have hN0 : (0 : ℝ) < N := by
+    rcases Nat.eq_zero_or_pos N with h | h
+    · rw [h, Nat.cast_zero, Real.log_zero] at hLd
+      linarith only [hL0, hLd]
+    · exact_mod_cast h
+  have hNexp : (N : ℝ) = Real.exp L := by rw [hLd, Real.exp_log hN0]
+  have hc0 : 0 < c := by linarith only [hc1]
+  obtain ⟨a, had⟩ : ∃ a, a = L ^ α := ⟨_, rfl⟩
+  obtain ⟨b, hbd⟩ : ∃ b, b = L ^ β := ⟨_, rfl⟩
+  rw [← had] at hcα
+  rw [← hbd] at hQlo hQhi hMhi hq
+  have hb1 : 1 ≤ b := by rw [hbd]; exact Real.one_le_rpow hL1 hβ.le
+  have hb0 : 0 < b := by linarith only [hb1]
+  have ha0 : 0 < a := by linarith only [hcα, hc1]
+  have haL : a ≤ L := by
+    rw [had]
+    calc L ^ α ≤ L ^ (1 : ℝ) :=
+          Real.rpow_le_rpow_of_exponent_le hL1 (by linarith only [h1, h2])
+      _ = L := Real.rpow_one L
+  have hcL : c ≤ L := hcα.trans haL
+  have hsplit : L = L ^ (1 - β) * b := by
+    rw [hbd, ← Real.rpow_add hL0]
+    norm_num
+  have h120 : 120 * b ≤ L := by
+    have h := mul_le_mul_of_nonneg_right hr hb0.le
+    rw [← hsplit] at h
+    exact h
+  -- the band and the period
+  have hlogQ1 : 1 ≤ Real.log Q := hb1.trans hQlo
+  have hQ0 : (0 : ℝ) < Q := by
+    rcases Nat.eq_zero_or_pos Q with h | h
+    · rw [h, Nat.cast_zero, Real.log_zero] at hlogQ1
+      linarith only [hlogQ1]
+    · exact_mod_cast h
+  have hM0 : (0 : ℝ) < M := by exact_mod_cast hM
+  have hQlow : Real.exp b ≤ Q := by
+    calc Real.exp b ≤ Real.exp (Real.log Q) := Real.exp_le_exp.mpr hQlo
+      _ = Q := Real.exp_log hQ0
+  have hQle : (Q : ℝ) ≤ Real.exp (2 * b) := by
+    calc (Q : ℝ) = Real.exp (Real.log Q) := (Real.exp_log hQ0).symm
+      _ ≤ _ := Real.exp_le_exp.mpr hQhi
+  have hMle : (M : ℝ) ≤ Real.exp b := by
+    calc (M : ℝ) = Real.exp (Real.log M) := (Real.exp_log hM0).symm
+      _ ≤ _ := Real.exp_le_exp.mpr hMhi
+  have hQ₀Q : Q₀ ≤ Q := by exact_mod_cast hq.trans hQlow
+  have hQ2 : 2 ≤ Q := by
+    have h2e : (2 : ℝ) ≤ Real.exp b := by
+      have h := Real.add_one_le_exp b
+      linarith only [h, hb1]
+    exact_mod_cast h2e.trans hQlow
+  have hR2 : 2 ≤ M * Q := hQ2.trans (Nat.le_mul_of_pos_left Q hM)
+  have hMQ : (M : ℝ) * Q ≤ Real.exp (3 * b) := by
+    calc (M : ℝ) * Q ≤ Real.exp b * Real.exp (2 * b) :=
+          mul_le_mul hMle hQle hQ0.le (Real.exp_pos _).le
+      _ = Real.exp (3 * b) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+  have hMQ0 : 0 ≤ (M : ℝ) * Q := by positivity
+  -- polynomial factors against half the exponent
+  have h6L : 6 * L ^ 2 ≤ Real.exp (L / 2) := by
+    have h := (le_div_iff₀ (by positivity)).mp he
+    linarith only [h, sq L]
+  have h3L : 3 * L * (L + 1) ≤ Real.exp (L / 2) := by nlinarith only [h6L, hL1]
+  have h34L : 34 * L ≤ Real.exp (L / 2) := by nlinarith only [h6L, hL36]
+  have hhalf : Real.exp (L / 2) * Real.exp (L / 2) = (N : ℝ) := by
+    rw [hNexp, ← Real.exp_add]
+    congr 1
+    ring
+  have hexp6 : Real.exp (6 * b) ≤ Real.exp (L / 2) :=
+    Real.exp_le_exp.mpr (by linarith only [h120, hb0])
+  have hsq : (((M * Q) * (M * Q) : ℕ) : ℝ) ≤ Real.exp (6 * b) := by
+    push_cast
+    calc (M : ℝ) * Q * ((M : ℝ) * Q) ≤ Real.exp (3 * b) * Real.exp (3 * b) :=
+          mul_le_mul hMQ hMQ hMQ0 (Real.exp_pos _).le
+      _ = Real.exp (6 * b) := by
+          rw [← Real.exp_add]
+          congr 1
+          ring
+  have hone : (1 : ℝ) ≤ Real.exp (6 * b) := Real.one_le_exp (by positivity)
+  have hsqone : (((M * Q) * (M * Q) : ℕ) + 1 : ℝ) ≤ 2 * Real.exp (6 * b) := by
+    linarith only [hsq, hone]
+  have hsqone0 : (0 : ℝ) ≤ (((M * Q) * (M * Q) : ℕ) + 1 : ℝ) := by positivity
+  -- the side conditions of the law
+  have hB : (linearPrimeStrip c : ℝ) ≤ Real.sqrt (Real.log Q) := by
+    have hsqrtb : Real.sqrt b = a * L ^ (β / 2 - α) := by
+      rw [Real.sqrt_eq_rpow, had, hbd, ← Real.rpow_mul hL0.le, ← Real.rpow_add hL0]
+      congr 1
+      ring
+    have h4 : 4 * a ≤ Real.sqrt b := by
+      rw [hsqrtb]
+      nlinarith only [mul_le_mul_of_nonneg_left hf ha0.le]
+    have hstrip : (linearPrimeStrip c : ℝ) < c * Real.exp 1 + 1 := by
+      unfold linearPrimeStrip
+      exact Nat.ceil_lt_add_one (by positivity)
+    have he3 : Real.exp 1 ≤ 3 := by linarith only [Real.exp_one_lt_d9]
+    have hc3 : c * Real.exp 1 ≤ c * 3 := mul_le_mul_of_nonneg_left he3 hc0.le
+    have hmono := Real.sqrt_le_sqrt hQlo
+    linarith only [hstrip, hc3, hcα, hc1, h4, hmono]
+  have hlog1 : 1 ≤ Real.log (N : ℝ) := by rw [← hLd]; exact hL1
+  have hscale : c * Real.exp 1 * M * (Q : ℝ) ^ 5 * ⌈Real.log N⌉₊ ≤ N := by
+    rw [← hLd]
+    have he3 : Real.exp 1 ≤ 3 := by linarith only [Real.exp_one_lt_d9]
+    have hceil : (⌈L⌉₊ : ℝ) ≤ L + 1 := (Nat.ceil_lt_add_one hL0.le).le
+    have hQ5 : (Q : ℝ) ^ 5 ≤ Real.exp (2 * b) ^ 5 := pow_le_pow_left₀ hQ0.le hQle 5
+    have hE : Real.exp b * Real.exp (2 * b) ^ 5 = Real.exp (11 * b) := by
+      rw [← Real.exp_nat_mul, ← Real.exp_add]
+      congr 1
+      push_cast
+      ring
+    calc c * Real.exp 1 * M * (Q : ℝ) ^ 5 * ⌈L⌉₊
+        ≤ L * 3 * Real.exp b * Real.exp (2 * b) ^ 5 * (L + 1) := by
+          gcongr
+      _ = 3 * L * (L + 1) * Real.exp (11 * b) := by
+          rw [← hE]
+          ring
+      _ ≤ Real.exp (L / 2) * Real.exp (L / 2) :=
+          mul_le_mul h3L (Real.exp_le_exp.mpr (by linarith only [h120, hb0]))
+            (Real.exp_pos _).le (Real.exp_pos _).le
+      _ = N := hhalf
+  have hR6 : (M * Q) ^ 6 ≤ N := by
+    have h6 : ((M : ℝ) * Q) ^ 6 ≤ Real.exp (18 * b) := by
+      calc ((M : ℝ) * Q) ^ 6 ≤ Real.exp (3 * b) ^ 6 := pow_le_pow_left₀ hMQ0 hMQ 6
+        _ = Real.exp (18 * b) := by
+            rw [← Real.exp_nat_mul]
+            congr 1
+            push_cast
+            ring
+    have hle : ((M : ℝ) * Q) ^ 6 ≤ N := by
+      rw [hNexp]
+      exact h6.trans (Real.exp_le_exp.mpr (by linarith only [h120, hb0]))
+    exact_mod_cast hle
+  have hR18 : 18 * (1 + Real.log ((M * Q : ℕ) : ℝ)) ≤ Real.log N := by
+    have hlogR : Real.log ((M * Q : ℕ) : ℝ) ≤ 3 * b := by
+      push_cast
+      rw [Real.log_mul hM0.ne' hQ0.ne']
+      linarith only [hMhi, hQhi]
+    rw [← hLd]
+    linarith only [hlogR, h120, hL36, hb0]
+  have hNL : 3 * L ≤ (N : ℝ) := by
+    have h1' : Real.exp (L / 2) ≤ (N : ℝ) := by
+      rw [hNexp]
+      exact Real.exp_le_exp.mpr (by linarith only [hL0])
+    linarith only [h34L, h1', hL0]
+  have hwidth : c / N ≤ 1 / 3 := by
+    rw [div_le_iff₀ hN0]
+    linarith only [hcL, hNL]
+  have hrowN : (((M * Q) * (M * Q) : ℕ) + 1 : ℝ) * (linearNearRowRadius c + 1) ≤ N := by
+    have he2 : Real.exp 2 ≤ 8 := by
+      have h := Real.exp_one_lt_d9
+      have he0 := Real.exp_pos 1
+      have hsplit2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by
+        rw [← Real.exp_add]
+        norm_num
+      rw [hsplit2]
+      nlinarith only [h, he0]
+    have hrad : linearNearRowRadius c + 1 ≤ 17 * L := by
+      unfold linearNearRowRadius
+      have h2c : 2 * c * Real.exp 2 ≤ 2 * L * 8 :=
+        mul_le_mul (by linarith only [hcL]) he2 (Real.exp_pos _).le (by positivity)
+      linarith only [h2c, hL1]
+    calc _ ≤ 2 * Real.exp (6 * b) * (17 * L) :=
+          mul_le_mul hsqone hrad (by
+            unfold linearNearRowRadius
+            positivity) (by positivity)
+      _ = Real.exp (6 * b) * (34 * L) := by ring
+      _ ≤ Real.exp (L / 2) * Real.exp (L / 2) :=
+          mul_le_mul hexp6 h34L (by positivity) (Real.exp_pos _).le
+      _ = N := hhalf
+  have hRNT : (((M * Q) * (M * Q) : ℕ) + 1 : ℝ) * T ≤ N := by
+    calc _ ≤ 2 * Real.exp (6 * b) * T :=
+          mul_le_mul_of_nonneg_right hsqone (by linarith only [hT1])
+      _ = Real.exp (6 * b) * (2 * T) := by ring
+      _ ≤ Real.exp (L / 2) * Real.exp (L / 2) :=
+          mul_le_mul hexp6 ht (by linarith only [hT1]) (Real.exp_pos _).le
+      _ = N := hhalf
+  have hmain := hlaw c hc1 N M Q hQ₀Q hB hM hlog1 hscale hR2 hR6 hR18 hwidth hrowN g t V hV hg G
+    hu1 hy1 hort
+  have hmert := abs_mertens_inner_le_of_mem_conductorSubspace (ε := ε / 3) (by positivity) hT1 hrow
+    hR2 hRNT hR18 _ (packetVector_gcdTwistedCharge_mem g hM t N) _ hort
+  -- the Mertens top rows
+  have hθ : mertensRowCeiling * Real.sqrt (2 * (Real.log (2 * T) + 3) / Real.log N) ≤ ε / 3 := by
+    rw [← hLd]
+    have hsq' : 2 * (Real.log (2 * T) + 3) / L ≤ (ε / (3 * mertensRowCeiling)) ^ 2 := by
+      rw [div_le_iff₀ hL0]
+      have h := mul_le_mul_of_nonneg_left hth (sq_nonneg (ε / (3 * mertensRowCeiling)))
+      refine le_trans (le_of_eq ?_) h
+      field_simp
+    have hs' := Real.sqrt_le_iff.mpr ⟨(by positivity : 0 ≤ ε / (3 * mertensRowCeiling)), hsq'⟩
+    have h := mul_le_mul_of_nonneg_left hs' hCM.le
+    refine h.trans_eq ?_
+    field_simp
+  -- assembly
+  obtain ⟨U, hU⟩ : ∃ U, U =
+      ‖packetVector (fun j => (Real.sqrt (Real.log N))⁻¹ * gcdTwistedCharge g M Q t j) N‖ := ⟨_, rfl⟩
+  obtain ⟨Y, hY⟩ : ∃ Y, Y = ‖packetVector G N‖ := ⟨_, rfl⟩
+  have hU0 : 0 ≤ U := by rw [hU]; exact norm_nonneg _
+  have hY0 : 0 ≤ Y := by rw [hY]; exact norm_nonneg _
+  rw [← hU, ← hY] at hmain hmert ⊢
+  obtain ⟨D, hD⟩ : ∃ D, D = 1 / Real.sqrt (Real.log Q) + periodBandDivisors Q M / Real.log Q :=
+    ⟨_, rfl⟩
+  rw [← hD] at hmain hup
+  have hVt : 0 ≤ V * |t| := mul_nonneg hV (abs_nonneg t)
+  have hε'3 : ε' ≤ ε / 3 := by nlinarith only [hKε, hK, hε']
+  have hKε' : K * ε' ≤ ε / 3 := by nlinarith only [hKε, hε']
+  have hupward : K * ((linearPrimeStrip c : ℝ) * V * literalMultiplierWidth c) * |t| * D ≤
+      ε / 3 * (V * |t|) := by
+    have e : K * ((linearPrimeStrip c : ℝ) * V * literalMultiplierWidth c) * |t| * D =
+        K * (V * |t|) * ((linearPrimeStrip c : ℝ) * literalMultiplierWidth c * D) := by ring
+    rw [e]
+    have h' := mul_le_mul_of_nonneg_left hup (mul_nonneg hK hVt)
+    have h'' := mul_le_mul_of_nonneg_right hKε' hVt
+    nlinarith only [h', h'']
+  have hrateU : chargeChannelRate φ C c (M * Q) N * U ≤ ε / 3 * U :=
+    mul_le_mul_of_nonneg_right (hrate.trans hε'3) hU0
+  have hfirst := mul_le_mul_of_nonneg_right (add_le_add hupward hrateU) hY0
+  have hsecond : (ε / 3 + mertensRowCeiling *
+      Real.sqrt (2 * (Real.log (2 * T) + 3) / Real.log N)) * U * Y ≤ 2 * ε / 3 * U * Y := by
+    refine mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right ?_ hU0) hY0
+    linarith only [hθ]
+  have hpos : 0 ≤ ε * (V * |t|) * Y := by positivity
+  nlinarith only [hmain, hmert, hfirst, hsecond, hpos]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
