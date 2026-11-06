@@ -50,6 +50,8 @@ The corrected von Mangoldt moment has a negative integer limit. A contradiction 
 | Short-interval variance | Gallagher's dictionary converts the desired second-moment bound to a prime variance bound; it does not prove that variance bound. |
 | Integer shifts in `s` | For `ΔF(s)=F(s)−F(s+1)`, the prime kernel of `Δ^k F` is `(1−1/n)^k`. This replaces exponential integer scales by polynomial scales. A centered cancellation estimate is still missing; the pole and off-line contributions must both be retained. |
 | Multiplicative bilinear splitting | The phase `(ab)^(-iτ)=a^(-iτ)b^(-iτ)` separates exactly. Splitting the convolution supplies no new oscillatory interaction; cancellation in the arithmetic coefficients remains necessary. |
+| Prime-pair upper sieve | `RHTower.Sieve.sum_card_primePair_le` bounds unsigned pair counts by a main term proportional to `K Y` with two logarithmic savings and an explicit remainder. It does not bound the signed, factorially normalized correlation. |
+| Integrable FE-defect rigidity | `beurlingSystem_rigidity_of_small_critical_line_defect` requires a countable positive Beurling spectrum and a small integrable uncompleted defect. No such spectral representation has been constructed for the rationally deflated zeta function. |
 
 ### Unit-shift moment and diagonal
 
@@ -84,9 +86,18 @@ dilations obey the same bound. For the actual normalized von Mangoldt terms,
 `Σ_(1≤h≤floor(r^k)) |Σ_n a_k(n) conj(a_k(n+h))| → 0`.
 
 The proof bounds this sum by `C (r/R²)^k`, with the convergent constant
-`C=Σ Λ(n)² n^(-2(Re s−R))`. The Lean scratch proof and axiom audit passed;
-production audit and the exact `¬AAL` consequence are pending. This controls
-exponentially many shifts, not the full off-diagonal sum.
+`C=Σ Λ(n)² n^(-2(Re s−R))`. The Lean module and its dependency build passed with
+standard axioms; final source audit and the exact `¬AAL` consequence are pending.
+This controls exponentially many shifts, not the full off-diagonal sum.
+
+### Real-pole calibration
+
+At `s=2`, the same raw moments tend to `+1` while their diagonal tends to zero.
+Indeed `(s−1)ζ(s)` is zero-free on `closedBall(2,3/2)` by the unconditional
+ordinate bound `|Im ρ|≥4`; its normalized jets vanish. The pole at `1` contributes
+exactly `1` at every order. Lean source is written; audit pending. Thus a bound
+deduced solely from diagonal decay cannot distinguish the proposed negative
+zero residue from an actual nonzero moment of the same arithmetic sequence.
 
 The low-height jet argument only needs an attained rightmost zero. A bound that
 forces these moments to vanish at every ordinate would discard the finite-layer

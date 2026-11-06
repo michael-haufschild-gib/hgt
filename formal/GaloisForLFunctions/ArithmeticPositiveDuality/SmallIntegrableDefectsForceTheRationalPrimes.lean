@@ -40,7 +40,7 @@ theorem beurlingSystem_rigidity_of_small_critical_line_defect
         ∀ l : B.Label, B.labelNorm l = ((e l : ℕ) : ℝ)} := by
   classical
   have hsmall4 : 400 * (4 : ℝ) ^ 2 * ∫ t, ‖g t‖ ≤ 1 := by
-    convert hsmall using 1 <;> norm_num
+    convert hsmall using 1; norm_num
   obtain ⟨-, hU, -⟩ := beurling_primes_of_critical_line_defect B hBsum hEc hEd hdecay hR hC
     hgm hgb hgi (N := 4) (by omega) hsmall4
   obtain ⟨x₂, hx₂, -⟩ := hU 2 (by omega) (by omega)

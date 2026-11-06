@@ -402,7 +402,7 @@ theorem not_asymptoticAbscissaLaw_has_positive_limit_after_short_shifts :
           (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))) (ρ + 1) (n + (h + 1)) /
             (k.factorial : ℂ))) atTop (𝓝 0) :=
     squeeze_zero_norm (fun k => norm_sum_le _ _) hnorm
-  have hre := hshort.re.const_mul 2
+  have hre := ((Complex.continuous_re.tendsto 0).comp hshort).const_mul 2
   simp only [Complex.zero_re, mul_zero] at hre
   simpa only [sub_zero] using htotal.sub hre
 
@@ -424,10 +424,10 @@ theorem tendsto_mangoldt_moments_at_two_one :
       simpa only [mem_closedBall, dist_eq_norm] using hz
     have hre : 1 / 2 ≤ z.re := by
       have h := (abs_le.mp ((Complex.abs_re_le_norm (z - 2)).trans hn)).1
-      norm_num only [Complex.sub_re, Complex.ofNat_re] at h
+      norm_num [Complex.sub_re] at h
       linarith only [h]
     have him : |z.im| ≤ 3 / 2 := by
-      simpa only [Complex.sub_im, Complex.ofNat_im, sub_zero] using
+      simpa [Complex.sub_im] using
         (Complex.abs_im_le_norm (z - 2)).trans hn
     have hζ : riemannZeta z ≠ 0 := by
       by_cases h1 : 1 ≤ z.re

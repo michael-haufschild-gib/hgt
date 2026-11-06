@@ -25,7 +25,7 @@ private theorem first_tent_le_of_two_unique_atoms
   have hzero : (0 : B.Integer) = x₁ := hu₁ 0 (by simp [B.intNorm_zero])
   have hone : ∀ x : B.Integer, |B.intNorm x - 1| ≤ 1 / 8 → x = 0 := by
     intro x hx
-    exact (hu₁ x hx).trans hzero.symm
+    exact (hu₁ x (by simpa only [Nat.cast_one] using hx)).trans hzero.symm
   obtain ⟨x₂, hx₂, hu₂⟩ := hU 2 (by omega) (by omega)
   have hx₂0 : x₂ ≠ 0 := by
     intro h
@@ -51,8 +51,9 @@ private theorem first_tent_le_of_two_unique_atoms
     apply max_le (by norm_num)
     rw [abs_of_nonneg (by linarith only [hl])]
     linarith only [hl]
-  simp only [Finset.sum_insert (by simpa using hx₂0.symm), Finset.sum_singleton,
-    B.intNorm_zero]
+  have hnot : (0 : B.Integer) ∉ ({x₂} : Finset B.Integer) := by
+    simpa only [Finset.mem_singleton] using hx₂0.symm
+  rw [Finset.sum_insert hnot, Finset.sum_singleton, B.intNorm_zero]
   have ht1 : unitTent 1 1 = 1 := by simp [unitTent]
   rw [ht1]
   linarith only [ht]
@@ -74,7 +75,7 @@ theorem pole_residue_le_of_small_critical_line_defect
     2 * β.re ≤ 19 / 16 := by
   have hM0 : 0 ≤ ∫ t, ‖g t‖ := integral_nonneg fun _ => norm_nonneg _
   have hsmall4 : 400 * (4 : ℝ) ^ 2 * ∫ t, ‖g t‖ ≤ 1 := by
-    convert hsmall using 1 <;> norm_num
+    convert hsmall using 1; norm_num
   obtain ⟨hnear, hU, -⟩ := beurling_primes_of_critical_line_defect B hBsum hEc hEd hdecay hR hC
     hgm hgb hgi (N := 4) (by omega) hsmall4
   have hroot : Real.sqrt (3 * Real.pi / 2 * ∫ t, ‖g t‖) ≤ 1 / 16 := by
