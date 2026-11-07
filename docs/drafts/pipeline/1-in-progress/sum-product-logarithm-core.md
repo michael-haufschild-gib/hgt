@@ -32,9 +32,11 @@ constant prime precision into vanishing precision.
 
 The [balanced smooth × prime count](../3-formalized/logarithm-smooth-prime-determinant-gcd.md)
 now bounds fine energy by its exact diagonal plus disjoint gcd-class costs
-for differences up to `ceil(4X²/T)`. This retains actual prime-column
-coprimality beyond diagonal collisions. A random-scale bound for the
-remaining arithmetic sum, and control of winding cells, are still missing.
+for differences up to `floor(4X²/T)`. The
+[cumulative incidence bound](../3-formalized/logarithm-cumulative-collision-gcd-cancellation.md)
+cancels the gcd loss, giving `E≤#A #P+2 floor(4X²/T)#A²`, with exact
+diagonal energy when `T>4X²`. Prime-density savings at random scale and
+control of winding cells are still missing.
 
 ## Independent finite-zero target
 
@@ -85,7 +87,10 @@ is `1/(4 log 3)`, formalized for the actual integral count.
 [Effective profile averaging](../3-formalized/logarithm-effective-profile-average.md)
 now gives uniform error `O(log log n/log n)` and actual integral-count
 coefficient error `O(log log log x/log log x)`, with explicit constants and
-cutoffs. These averaged rates do not close the pointwise distance gap.
+cutoffs. The [proved two-prime Baker transfer](../3-formalized/logarithm-polynomial-return-profile-rate.md) further supplies polynomial
+half-turn returns and a fixed positive exponent `η`: uniform profile error
+`O(n^(−η))` and actual coefficient error `O((log x)^(−η))`.
+These averaged rates do not close the pointwise distance gap.
 
 Finite-field calibration must retain the precise odd-degree hyperelliptic
 scope of existing Stepanov and descent results over finite fields of odd

@@ -138,6 +138,7 @@ theorem integral_exp_neg_mul_farKernel {n : ℕ} (hn : 2 ≤ n) (A : ℝ) :
   have hL2 : Real.log 2 ≤ L := Real.log_le_log two_pos (by exact_mod_cast hn)
   have hk := two_mul_kerRad_lt_log_two
   have hk0 := kerRad_pos
+  have hkl := kerRad_le
   set g : ℝ → ℝ := fun x => Real.exp ((x - L) / 2) * farKernel x with hg
   have hgc : Continuous g := (by fun_prop : Continuous fun x : ℝ => Real.exp ((x - L) / 2)).mul
     continuous_farKernel
@@ -146,7 +147,7 @@ theorem integral_exp_neg_mul_farKernel {n : ℕ} (hn : 2 ≤ n) (A : ℝ) :
   rw [e1, intervalIntegral.integral_comp_sub_mul g (by norm_num : (2 : ℝ) ≠ 0) L, mul_zero,
     sub_zero]
   have hsplit := intervalIntegral.integral_add_adjacent_intervals
-    (hgc.intervalIntegrable (L - 2 * A) L) (hgc.intervalIntegrable L 1)
+    (hgc.intervalIntegrable (μ := volume) (L - 2 * A) L) (hgc.intervalIntegrable (μ := volume) L 1)
   have hzero : ∫ x in L..1, g x = 0 := by
     rw [intervalIntegral.integral_congr (g := fun _ => (0 : ℝ)) fun u hu => ?_,
       intervalIntegral.integral_zero]
@@ -164,7 +165,8 @@ theorem integral_exp_neg_mul_farKernel {n : ℕ} (hn : 2 ≤ n) (A : ℝ) :
     rw [← mul_assoc, ← Real.exp_add]; congr 2; ring
   have hstep : ∫ x in (L - 2 * A)..1, Real.exp (x / 2) * farKernel x =
       farJ ^ 2 * farStep (L - 2 * A) := by
-    unfold farStep; field_simp [farJ_sq_pos.ne']
+    unfold farStep
+    rw [mul_div_assoc', mul_div_right_comm, div_self farJ_sq_pos.ne', one_mul]
   rw [hzero, add_zero] at hsplit
   rw [hsplit, hfac, hstep, exp_neg_half_log (by omega), smul_eq_mul]
   ring
@@ -207,28 +209,31 @@ theorem smoothedMertens_mem_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} 
   have hJ := farJ_sq_pos
   set F : ℝ → ℝ := fun a =>
     ∑ n ∈ Finset.Icc 2 M, lam n / Real.sqrt n * farKernel (Real.log n - 2 * a) with hF
-  have hFc : Continuous F := continuous_finset_sum _ fun n _ =>
-    continuous_const.mul (continuous_farKernel.comp (continuous_const.sub (continuous_mul_left 2)))
-  have hcont : Continuous fun a => Real.exp (-a) * F a := (by fun_prop : Continuous fun a : ℝ =>
-    Real.exp (-a)).mul hFc
+  have hkc : Continuous fun a : ℝ => Real.exp (-a) := Real.continuous_exp.comp continuous_neg
+  have hlk : ∀ n : ℕ, Continuous fun a : ℝ => farKernel (Real.log n - 2 * a) := fun n =>
+    continuous_farKernel.comp (continuous_const.sub (continuous_const_mul 2))
+  have hFc : Continuous F := continuous_finsetSum _ fun n _ => continuous_const.mul (hlk n)
+  have hcont : Continuous fun a => Real.exp (-a) * F a := hkc.mul hFc
   -- the integral of the local sums
   have hkey : ∫ a in (0 : ℝ)..A, Real.exp (-a) * F a =
       farJ ^ 2 / 2 * ∑ n ∈ Finset.Icc 2 M, lam n / n * farStep (Real.log n - 2 * A) := by
     have e : (fun a => Real.exp (-a) * F a) = fun a => ∑ n ∈ Finset.Icc 2 M,
         lam n / Real.sqrt n * (Real.exp (-a) * farKernel (Real.log n - 2 * a)) := by
       funext a; simp only [hF, Finset.mul_sum]; refine Finset.sum_congr rfl fun n _ => by ring
-    rw [e, intervalIntegral.integral_finsetSum fun n _ =>
-      ((continuous_const.mul ((by fun_prop : Continuous fun a : ℝ => Real.exp (-a)).mul
-        (continuous_farKernel.comp (continuous_const.sub (continuous_mul_left 2))))).intervalIntegrable
-        0 A), Finset.mul_sum]
+    have hint : ∀ n ∈ Finset.Icc 2 M, IntervalIntegrable
+        (fun a => lam n / Real.sqrt n * (Real.exp (-a) * farKernel (Real.log n - 2 * a))) volume 0 A :=
+      fun n _ => (continuous_const.mul (hkc.mul (hlk n))).intervalIntegrable 0 A
+    rw [e, intervalIntegral.integral_finsetSum hint, Finset.mul_sum]
     refine Finset.sum_congr rfl fun n hn => ?_
     have hn2 := (Finset.mem_Icc.mp hn).1
     have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
     rw [intervalIntegral.integral_const_mul, integral_exp_neg_mul_farKernel hn2 A]
-    have hsq : Real.sqrt n * Real.sqrt n = n := Real.mul_self_sqrt hn0.le
-    have hs0 : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
-    field_simp
-    rw [← hsq]; ring
+    have hsq : lam n / Real.sqrt n * (1 / Real.sqrt n) = lam n / n := by
+      rw [div_mul_div_comm, mul_one, Real.mul_self_sqrt hn0.le]
+    calc lam n / Real.sqrt n * (1 / 2 * (1 / Real.sqrt n) * farJ ^ 2 * farStep (Real.log n - 2 * A))
+        = farJ ^ 2 / 2 * (lam n / Real.sqrt n * (1 / Real.sqrt n) *
+            farStep (Real.log n - 2 * A)) := by ring
+      _ = _ := by rw [hsq]
   -- pointwise bounds on `[0, A]`
   have hpt : ∀ a ∈ Icc (0 : ℝ) A,
       β * farJ ^ 2 - (2 * β * farJ ^ 2 + D) * Real.exp (-a) ≤ Real.exp (-a) * F a ∧
@@ -266,23 +271,23 @@ theorem smoothedMertens_mem_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} 
   rw [intervalIntegral.integral_add intervalIntegrable_const (hci _),
     intervalIntegral.integral_const, intervalIntegral.integral_const_mul, hexp, hkey] at hup
   simp only [sub_zero, smul_eq_mul] at hlow hup
-  set Σ' := ∑ n ∈ Finset.Icc 2 M, lam n / n * farStep (Real.log n - 2 * A) with hΣ
+  set T := ∑ n ∈ Finset.Icc 2 M, lam n / n * farStep (Real.log n - 2 * A) with hTdef
   have hK1 : 0 ≤ 2 * β * farJ ^ 2 + D := by positivity
   have hK2 : 0 ≤ 3 * β * farJ ^ 2 + D := by positivity
   have h1 : (2 * β * farJ ^ 2 + D) * (1 - Real.exp (-A)) ≤ 2 * β * farJ ^ 2 + D :=
     mul_le_of_le_one_right hK1 (by linarith)
   have h2 : (3 * β * farJ ^ 2 + D) * (1 - Real.exp (-A)) ≤ 3 * β * farJ ^ 2 + D :=
     mul_le_of_le_one_right hK2 (by linarith)
-  have e3 : 2 * D / farJ ^ 2 * farJ ^ 2 = 2 * D := by field_simp
+  have hJne : farJ ≠ 0 := farJ_pos.ne'
   constructor
-  · have : (2 * β * A - (4 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) ≤ Σ' * (farJ ^ 2 / 2) := by
+  · have : (2 * β * A - (4 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) ≤ T * (farJ ^ 2 / 2) := by
       have e : (2 * β * A - (4 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) =
-          A * (β * farJ ^ 2) - (2 * β * farJ ^ 2 + D) := by field_simp; ring
+          A * (β * farJ ^ 2) - (2 * β * farJ ^ 2 + D) := by field_simp [hJne]; ring
       rw [e]; nlinarith
     exact le_of_mul_le_mul_right this (by positivity)
-  · have : Σ' * (farJ ^ 2 / 2) ≤ (2 * β * A + (6 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) := by
+  · have : T * (farJ ^ 2 / 2) ≤ (2 * β * A + (6 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) := by
       have e : (2 * β * A + (6 * β + 2 * D / farJ ^ 2)) * (farJ ^ 2 / 2) =
-          A * (β * farJ ^ 2) + (3 * β * farJ ^ 2 + D) := by field_simp; ring
+          A * (β * farJ ^ 2) + (3 * β * farJ ^ 2 + D) := by field_simp [hJne]; ring
       rw [e]; nlinarith
     exact le_of_mul_le_mul_right this (by positivity)
 
@@ -338,7 +343,7 @@ theorem re_sum_stepCoeff {N n : ℕ} (hn : 2 ≤ n) (S : Finset ℕ) (hS : ∀ m
   · rw [farStep_eq_zero h]; ring
   · rw [farStep_eq_one (t := Real.log m - Real.log N) (by linarith)]
     field_simp
-    rw [hsm]
+    rw [Real.sq_sqrt hm0.le]; ring
 
 /-- On the cone of `(β, s)` at conductor `s ≤ 0`, the narrow pole-free resonator at level `L` with any
 coefficients is nonnegative for the finite-atom symbol. -/
@@ -368,11 +373,42 @@ theorem integral_weilAtomSymbol_resonator_nonneg {β s c : ℝ} (hs : s ≤ 0) {
   have hE := h R hd (hsupp.trans (Icc_subset_Icc (by linarith) hLc))
   rw [datumEnergy_eq] at hE
   have hP : (weilPoleTerm (EF.weilTest R R)).re = 0 := by
-    rw [weilPoleTerm_weilTest_eq hd.continuous hRc, show (-I / 2 : ℂ) = -(I / 2) by ring, hp1, hp2]
+    rw [weilPoleTerm_weilTest_eq hd.continuous hRc, show (-Complex.I / 2 : ℂ) = -(Complex.I / 2) by ring, hp1, hp2]
     simp
   have hm : 0 ≤ ∫ u, ‖R u‖ ^ 2 := integral_nonneg fun _ => by positivity
   rw [hP, mul_zero, add_zero] at hE
   nlinarith
+
+/-- The left side of the Toeplitz bound for the smoothed coefficients, as a superposition of smoothed Mertens
+sums. -/
+theorem toeplitz_lhs_stepCoeff (lam : ℕ → ℝ) (N L : ℕ) :
+    ∑ n ∈ Finset.Icc 2 L, lam n / Real.sqrt n *
+        (∑ m ∈ Finset.Icc 1 L, stepCoeff N (n * m) * conj (stepCoeff N m)).re =
+      ∑ m ∈ Finset.Icc 1 L, 1 / (m : ℝ) * ∑ n ∈ Finset.Icc 2 L,
+        lam n / n * farStep (Real.log n + Real.log m - Real.log N) := by
+  have step : ∀ n ∈ Finset.Icc 2 L, lam n / Real.sqrt n *
+      (∑ m ∈ Finset.Icc 1 L, stepCoeff N (n * m) * conj (stepCoeff N m)).re =
+      ∑ m ∈ Finset.Icc 1 L, 1 / (m : ℝ) *
+        (lam n / n * farStep (Real.log n + Real.log m - Real.log N)) := by
+    intro n hn
+    have hn0 : (0 : ℝ) < n := by
+      have := (Finset.mem_Icc.mp hn).1; exact_mod_cast (show 0 < n by omega)
+    have hsq : lam n / Real.sqrt n * (1 / Real.sqrt n) = lam n / n := by
+      rw [div_mul_div_comm, mul_one, Real.mul_self_sqrt hn0.le]
+    rw [re_sum_stepCoeff (Finset.mem_Icc.mp hn).1 _ fun m hm => (Finset.mem_Icc.mp hm).1,
+      ← mul_assoc, hsq, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun m _ => by ring
+  rw [Finset.sum_congr rfl step, Finset.sum_comm]
+  exact Finset.sum_congr rfl fun m _ => by rw [Finset.mul_sum]
+
+theorem oddProfileRatio_nonneg : 0 ≤ oddProfileRatio := by
+  unfold oddProfileRatio
+  exact div_nonneg (by positivity) integral_d3_sq_pos.le
+
+theorem log_two_mul_nat {N : ℕ} (hN : 1 ≤ N) :
+    Real.log (2 * N : ℕ) = Real.log 2 + Real.log N := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  push_cast; exact Real.log_mul (by norm_num) hN0.ne'
 
 /-- **The archimedean ceiling with smoothed coefficients.** On the cone of `(β, s)`, `s ≤ 0`, for `N ≥ 1` with
 `½ log 2N + 1 ≤ c`:
@@ -390,7 +426,6 @@ theorem smoothed_toeplitz_le {β s c : ℝ} (hs : s ≤ 0) {lam : ℕ → ℝ} (
   have hw : 0 < w := by positivity
   have hw1 : w ≤ 1 := by
     rw [hw_def, div_le_one hL1]; have : (0 : ℝ) ≤ L := Nat.cast_nonneg L; linarith
-  have hw4 : w / 4 ≤ 1 := by linarith
   have hc : ∀ m, L < m → stepCoeff N m = 0 := fun m hm => stepCoeff_eq_zero hN hm
   have hq0 : 0 < ∫ u, gR' w u ^ 2 :=
     lt_of_lt_of_le (div_pos integral_d3_sq_pos (by positivity)) (integral_gR'_sq_ge hw)
@@ -399,34 +434,15 @@ theorem smoothed_toeplitz_le {β s c : ℝ} (hs : s ≤ 0) {lam : ℕ → ℝ} (
   have hW := integral_weilAtomSymbol_resonator_nonneg hs h (L := L) (by linarith) (stepCoeff N)
   have hb := weil_multiplicativeToeplitz_bound_of_profile hL (stepCoeff N) hc (contDiff_gR' w 3)
     (fun u hu => gR'_eq_zero hw hu) hq0 hK hW
-  -- the left side
-  have hlhs : ∑ n ∈ Finset.Icc 2 L, lam n / Real.sqrt n *
-      (∑ m ∈ Finset.Icc 1 L, stepCoeff N (n * m) * conj (stepCoeff N m)).re =
-      ∑ m ∈ Finset.Icc 1 L, 1 / (m : ℝ) * ∑ n ∈ Finset.Icc 2 L,
-        lam n / n * farStep (Real.log n + Real.log m - Real.log N) := by
-    rw [Finset.sum_congr rfl fun n hn => by
-      rw [re_sum_stepCoeff (Finset.mem_Icc.mp hn).1 _ fun m hm => (Finset.mem_Icc.mp hm).1]]
-    simp_rw [Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun m _ => Finset.sum_congr rfl fun n hn => ?_
-    have hn0 : (0 : ℝ) < n := by
-      have := (Finset.mem_Icc.mp hn).1; exact_mod_cast (show 0 < n by omega)
-    have hsq : Real.sqrt n * Real.sqrt n = n := Real.mul_self_sqrt hn0.le
-    have hs0 : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
-    field_simp
-    rw [← hsq]; ring
-  -- the right side
+  rw [toeplitz_lhs_stepCoeff] at hb
   have hrhs : ∑ m ∈ Finset.Icc 1 L, ‖stepCoeff N m‖ ^ 2 ≤ 1 + Real.log L :=
     (Finset.sum_le_sum fun m hm => norm_stepCoeff_sq_le (Finset.mem_Icc.mp hm).1).trans
       (RHTower.sum_Icc_inv_le_one_add_log L)
   have hC₀ : 0 ≤ Real.log L + (Real.log 2 + 9 / 2 + oddProfileRatio / 2) := by
-    have h1 : 0 ≤ oddProfileRatio := by
-      unfold oddProfileRatio
-      exact div_nonneg (by positivity) integral_d3_sq_pos.le
+    have h1 := oddProfileRatio_nonneg
     have h2 := Real.log_natCast_nonneg L
     have h3 := Real.log_two_gt_d9
     linarith
-  rw [hlhs] at hb
   exact hb.trans (mul_le_mul_of_nonneg_left hrhs hC₀)
 
 /-! ### Floor against ceiling -/
@@ -493,41 +509,92 @@ theorem sum_log_sub_div_ge {N : ℕ} (hN : 1 ≤ N) :
     mul_le_mul_of_nonneg_left (hle.trans hH) hl0
   nlinarith
 
-/-- **Floor against ceiling.** On the cone of `(β, s)`, `s ≤ 0`, `β ≥ 0`, for `N ≥ 1` with
-`½ log 2N + 1 ≤ c`, writing `ℓ = log N`, `B = 4β + 2D_s/J²`, `C₀ = log 2 + 9/2 + K/2`:
-`β(ℓ² − 2) − 2B(1 + ℓ) ≤ (ℓ + log 2 + C₀)(1 + log 2 + ℓ)`. -/
-theorem floor_le_ceiling {β s c : ℝ} (hs : s ≤ 0) {lam : ℕ → ℝ} (h : lam ∈ datumCone β s c)
-    (hβ : 0 ≤ β) {N : ℕ} (hN : 1 ≤ N) (hNc : Real.log (2 * N : ℕ) / 2 + 1 ≤ c) :
+/-- **The density floor of the Toeplitz sum.** On the cone of `(β, s)`, `β ≥ 0`, for `N ≥ 1` with
+`½ log N + 1 ≤ c`, writing `ℓ = log N` and `B = 4β + 2D_s/J²`:
+`β(ℓ² − 2) − 2B(1 + ℓ) ≤ 2 Σ_{m ≤ 2N} m⁻¹ Σ_{2 ≤ n ≤ 2N} (λ(n)/n) h(log n + log m − log N)`. -/
+theorem floor_le_toeplitz_sum {β s c : ℝ} {lam : ℕ → ℝ} (h : lam ∈ datumCone β s c) (hβ : 0 ≤ β)
+    {N : ℕ} (hN : 1 ≤ N) (hNc : Real.log N / 2 + 1 ≤ c) :
     β * (Real.log N ^ 2 - 2) - 2 * (4 * β + 2 * localDensityConst s / farJ ^ 2) * (1 + Real.log N) ≤
-      (Real.log N + Real.log 2 + (Real.log 2 + 9 / 2 + oddProfileRatio / 2)) *
-        (1 + Real.log 2 + Real.log N) := by
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
-  have hl2 : Real.log (2 * N : ℕ) = Real.log 2 + Real.log N := by
-    push_cast; exact Real.log_mul (by norm_num) hN0.ne'
-  have hNc' : Real.log N / 2 + 1 ≤ c := by
-    have := Real.log_two_gt_d9; rw [hl2] at hNc; linarith
-  have hT := smoothed_toeplitz_le hs h hN hNc
-  have hF := sum_floor_le_toeplitz h hβ hN hNc'
+      2 * ∑ m ∈ Finset.Icc 1 (2 * N), 1 / (m : ℝ) * ∑ n ∈ Finset.Icc 2 (2 * N),
+        lam n / n * farStep (Real.log n + Real.log m - Real.log N) := by
+  have hF := sum_floor_le_toeplitz h hβ hN hNc
   set B := 4 * β + 2 * localDensityConst s / farJ ^ 2 with hB
   have hB0 : 0 ≤ B := by
     have := localDensityConst_nonneg s; have := farJ_sq_pos; positivity
   have hS := sum_log_sub_div_ge hN
-  have hHu : ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / m ≤ 1 + Real.log N := RHTower.sum_Icc_inv_le_one_add_log N
+  have hHu : ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / m ≤ 1 + Real.log N :=
+    RHTower.sum_Icc_inv_le_one_add_log N
   have e : ∑ m ∈ Finset.Icc 1 N, 1 / (m : ℝ) * (β * (Real.log N - Real.log m) - B) =
       β * ∑ m ∈ Finset.Icc 1 N, 1 / (m : ℝ) * (Real.log N - Real.log m) -
         B * ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / m := by
     rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun m _ => by ring
   rw [e] at hF
-  rw [hl2] at hT
   have h1 : β * (Real.log N ^ 2 / 2 - 1) ≤
       β * ∑ m ∈ Finset.Icc 1 N, 1 / (m : ℝ) * (Real.log N - Real.log m) :=
     mul_le_mul_of_nonneg_left hS hβ
   have h2 : B * ∑ m ∈ Finset.Icc 1 N, (1 : ℝ) / m ≤ B * (1 + Real.log N) :=
     mul_le_mul_of_nonneg_left hHu hB0
-  nlinarith
+  linarith
+
+/-- **Floor against ceiling** at conductor `s ≤ 0`. -/
+theorem floor_le_ceiling {β s c : ℝ} (hs : s ≤ 0) {lam : ℕ → ℝ} (h : lam ∈ datumCone β s c)
+    (hβ : 0 ≤ β) {N : ℕ} (hN : 1 ≤ N) (hNc : Real.log (2 * N : ℕ) / 2 + 1 ≤ c) :
+    β * (Real.log N ^ 2 - 2) - 2 * (4 * β + 2 * localDensityConst s / farJ ^ 2) * (1 + Real.log N) ≤
+      (Real.log N + Real.log 2 + (Real.log 2 + 9 / 2 + oddProfileRatio / 2)) *
+        (1 + Real.log 2 + Real.log N) := by
+  have hl2 := log_two_mul_nat hN
+  have hNc' : Real.log N / 2 + 1 ≤ c := by
+    have := Real.log_two_gt_d9; rw [hl2] at hNc; linarith
+  have hT := smoothed_toeplitz_le hs h hN hNc
+  rw [hl2] at hT
+  have hF := floor_le_toeplitz_sum h hβ hN hNc'
+  linarith
 
 /-! ### The residue from above -/
+
+/-- The arithmetic of the reading: `β(X² − 8X − 10) ≤ X² + PX + Q` with `X ≥ 18`, `0 < c ≤ X` gives
+`β ≤ 1 + 2(P + Q + 18)/c`. -/
+theorem le_one_add_div_of_quadratic {β X c P Q : ℝ} (hP : 0 ≤ P) (hQ : 0 ≤ Q) (hX : 18 ≤ X)
+    (hc : 0 < c) (hcX : c ≤ X) (h : β * (X ^ 2 - 8 * X - 10) ≤ X ^ 2 + P * X + Q) :
+    β ≤ 1 + 2 * (P + Q + 18) / c := by
+  have hK : 0 < 2 * (P + Q + 18) / c := div_pos (by linarith) hc
+  rcases le_or_gt β 1 with hβ | hβ
+  · linarith
+  have h2 : (β - 1) * (X ^ 2 - 8 * X - 10) ≤ (P + 8) * X + Q + 10 := by linarith
+  have h3 : (P + 8) * X + Q + 10 ≤ (P + Q + 18) * X := by
+    have := mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ X by linarith) (show 0 ≤ Q + 10 by linarith)
+    linarith
+  have hden : X ^ 2 / 2 ≤ X ^ 2 - 8 * X - 10 := by nlinarith
+  have h4 : (β - 1) * (X ^ 2 / 2) ≤ (β - 1) * (X ^ 2 - 8 * X - 10) :=
+    mul_le_mul_of_nonneg_left hden (by linarith)
+  have hX0 : 0 < X := by linarith
+  have h5 : ((β - 1) * X) * X ≤ (2 * (P + Q + 18)) * X := by nlinarith
+  have h6 : (β - 1) * X ≤ 2 * (P + Q + 18) := le_of_mul_le_mul_right h5 hX0
+  have h7 : β - 1 ≤ 2 * (P + Q + 18) / X := by rw [le_div_iff₀ hX0]; linarith
+  have h8 : 2 * (P + Q + 18) / X ≤ 2 * (P + Q + 18) / c :=
+    div_le_div_of_nonneg_left (by linarith) hc hcX
+  linarith
+
+/-- The level `N = ⌈e^{2c−3}⌉`: `2c − 3 ≤ log N` and `½ log 2N + 1 ≤ c`, for `c ≥ 3`. -/
+theorem exists_level {c : ℝ} (hc : 3 ≤ c) :
+    ∃ N : ℕ, 1 ≤ N ∧ 2 * c - 3 ≤ Real.log N ∧ Real.log (2 * N : ℕ) / 2 + 1 ≤ c := by
+  set E : ℝ := Real.exp (2 * c - 3) with hE
+  have hE4 : 4 ≤ E := by have := Real.add_one_le_exp (2 * c - 3); linarith
+  have hceil := Nat.le_ceil E
+  refine ⟨⌈E⌉₊, ?_, ?_, ?_⟩
+  · exact_mod_cast (show (1 : ℝ) ≤ ⌈E⌉₊ by linarith)
+  · rw [Real.le_log_iff_exp_le (by linarith)]; exact hceil
+  · have hlt : (⌈E⌉₊ : ℝ) < E + 1 := Nat.ceil_lt_add_one (by linarith)
+    have he : (27 / 10 : ℝ) ≤ Real.exp 1 := by have := Real.exp_one_gt_d9; linarith
+    have hE2 : Real.exp (2 * c - 2) = E * Real.exp 1 := by
+      rw [hE, ← Real.exp_add]; congr 1; ring
+    have h2N : (((2 * ⌈E⌉₊ : ℕ)) : ℝ) ≤ Real.exp (2 * c - 2) := by
+      push_cast; rw [hE2]; nlinarith
+    have hpos : (0 : ℝ) < ((2 * ⌈E⌉₊ : ℕ) : ℝ) := by
+      push_cast; linarith
+    have := (Real.log_le_iff_le_exp hpos).mpr h2N
+    linarith
 
 /-- **The window reads the residue from above.** There are `K > 0` and `c₀` such that every nonempty cone of the
 datum `(β, 0)` at a window `c ≥ c₀` has `β ≤ 1 + K/c`, whatever the weights. -/
@@ -536,67 +603,23 @@ theorem exists_le_one_add_div_of_datumCone :
   set C₀ : ℝ := Real.log 2 + 9 / 2 + oddProfileRatio / 2 with hC₀
   set b : ℝ := 2 * localDensityConst 0 / farJ ^ 2 with hb
   have hb0 : 0 ≤ b := by have := localDensityConst_nonneg 0; have := farJ_sq_pos; positivity
-  have hr0 : 0 ≤ oddProfileRatio := by
-    unfold oddProfileRatio; exact div_nonneg (by positivity) integral_d3_sq_pos.le
   have hl2 := Real.log_two_gt_d9
-  have hl2' := Real.log_two_lt_d9
-  have hC0 : 0 ≤ C₀ := by rw [hC₀]; linarith
-  set P : ℝ := 2 * Real.log 2 + C₀ + 2 + 2 * b + 8 with hP
-  set Q : ℝ := (Real.log 2 + C₀) * (1 + Real.log 2) + 2 * b + 10 with hQ
+  have hC0 : 0 ≤ C₀ := by have := oddProfileRatio_nonneg; rw [hC₀]; linarith
+  set P : ℝ := 1 + 2 * Real.log 2 + C₀ + 2 * b with hP
+  set Q : ℝ := (Real.log 2 + C₀) * (1 + Real.log 2) + 2 * b with hQ
   have hP0 : 0 ≤ P := by rw [hP]; linarith
-  have hQ0 : 0 ≤ Q := by rw [hQ]; nlinarith
-  refine ⟨4 * (P + Q) + 4, 12 + 2 * (P + Q), by positivity, fun c β hc hne => ?_⟩
+  have hQ0 : 0 ≤ Q := by rw [hQ]; positivity
+  refine ⟨2 * (P + Q + 18), 11, by positivity, fun c β hc hne => ?_⟩
   obtain ⟨lam, hlam⟩ := hne
   rcases le_or_gt β 0 with hβ | hβ
-  · have : 0 < (4 * (P + Q) + 4) / c := div_pos (by positivity) (by linarith)
+  · have : 0 < 2 * (P + Q + 18) / c := div_pos (by positivity) (by linarith)
     linarith
-  -- the level `N = ⌈e^{2c−3}⌉`
-  set N : ℕ := ⌈Real.exp (2 * c - 3)⌉₊ with hNdef
-  have hE1 : 1 ≤ Real.exp (2 * c - 3) := Real.one_le_exp (by linarith)
-  have hNge : Real.exp (2 * c - 3) ≤ N := Nat.le_ceil _
-  have hNle : (N : ℝ) < Real.exp (2 * c - 3) + 1 := Nat.ceil_lt_add_one (by linarith)
-  have hN : 1 ≤ N := by exact_mod_cast (hE1.trans hNge)
-  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
-  have hlo : 2 * c - 3 ≤ Real.log N := by
-    rw [Real.le_log_iff_exp_le hN0]; exact hNge
-  have hhi : Real.log N ≤ 2 * c - 2 - Real.log 2 := by
-    rw [Real.log_le_iff_le_exp hN0]
-    have hsplit : Real.exp (2 * c - 2 - Real.log 2) = Real.exp (2 * c - 3) * (Real.exp 1 / 2) := by
-      rw [show 2 * c - 2 - Real.log 2 = (2 * c - 3) + (1 - Real.log 2) by ring, Real.exp_add,
-        Real.exp_sub, Real.exp_log two_pos]
-    rw [hsplit]
-    have he : (27 / 10 : ℝ) ≤ Real.exp 1 := by have := Real.exp_one_gt_d9; linarith
-    nlinarith
-  have hNc : Real.log (2 * N : ℕ) / 2 + 1 ≤ c := by
-    have : Real.log (2 * N : ℕ) = Real.log 2 + Real.log N := by
-      push_cast; exact Real.log_mul (by norm_num) hN0.ne'
-    rw [this]; linarith
+  obtain ⟨N, hN, hlo, hNc⟩ := exists_level (c := c) (by linarith)
   have hmain := floor_le_ceiling le_rfl hlam hβ.le hN hNc
   rw [← hC₀, ← hb] at hmain
-  set ℓ := Real.log N with hℓ
-  have hℓ0 : 2 * (P + Q) + 21 ≤ ℓ := by linarith
-  have hℓ1 : 1 ≤ ℓ := by linarith
-  -- `β ℓ² ≤ ℓ² + (P + 8β) ℓ + Q + 10β`, hence `β ≤ 1 + 4(P + Q + 1)/ℓ`
-  have hineq : β * (ℓ ^ 2 - 8 * ℓ - 10) ≤ ℓ ^ 2 + P * ℓ + Q := by
-    rw [hP, hQ]; nlinarith
-  have hden : ℓ ^ 2 / 2 ≤ ℓ ^ 2 - 8 * ℓ - 10 := by nlinarith
-  have hβle : β ≤ 1 + 2 * (P + Q + 8) / ℓ := by
-    have hpos : 0 < ℓ ^ 2 - 8 * ℓ - 10 := by nlinarith
-    have h1 : β ≤ (ℓ ^ 2 + P * ℓ + Q) / (ℓ ^ 2 - 8 * ℓ - 10) := by
-      rw [le_div_iff₀ hpos]; exact hineq
-    have h2 : (ℓ ^ 2 + P * ℓ + Q) / (ℓ ^ 2 - 8 * ℓ - 10) ≤ 1 + 2 * (P + Q + 8) / ℓ := by
-      rw [div_le_iff₀ hpos]
-      have e : (1 + 2 * (P + Q + 8) / ℓ) * (ℓ ^ 2 - 8 * ℓ - 10) =
-          ℓ ^ 2 - 8 * ℓ - 10 + 2 * (P + Q + 8) * (ℓ - 8 - 10 / ℓ) := by
-        field_simp; ring
-      rw [e]
-      have h10 : 10 / ℓ ≤ 10 := by rw [div_le_iff₀ (by linarith)]; nlinarith
-      nlinarith
-    linarith
-  have hℓc : c ≤ ℓ := by linarith
-  have hfin : 2 * (P + Q + 8) / ℓ ≤ (4 * (P + Q) + 4) / c := by
-    rw [div_le_div_iff₀ (by linarith) (by linarith)]
-    nlinarith
+  refine le_one_add_div_of_quadratic hP0 hQ0 (X := Real.log N) (by linarith) (by linarith)
+    (by linarith) ?_
+  rw [hP, hQ]
   linarith
 
 /-- **The window reads the residue on both sides.** From a finite window on, every nonempty cone of `(β, 0)` has

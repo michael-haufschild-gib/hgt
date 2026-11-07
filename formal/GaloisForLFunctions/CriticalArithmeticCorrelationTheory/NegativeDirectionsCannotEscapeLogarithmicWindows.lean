@@ -1268,8 +1268,9 @@ private lemma far_garding_window_beta_psi_le {N : ℕ} {c C_ψ c₀ t₀ h : ℝ
     have hν0 : 0 ≤ ν := div_nonneg hnum0 hc₀.le
     have hν2 : ν ^ 2 ≤ (36 / c₀ ^ 2) * L ^ (3 / 8 : ℝ) := by
       have hp := pow_le_pow_left₀ hν0 hν_ub 2
-      rw [mul_pow, div_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
-      exact hp.trans_eq (by push_cast; norm_num)
+      rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le,
+        show (3 / 16 : ℝ) * (2 : ℕ) = 3 / 8 by norm_num] at hp
+      exact hp.trans_eq (by ring)
     have hL38_1 : 1 ≤ L ^ (3 / 8 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
     dsimp only [β, C_β]
     nlinarith only [hν2, hL38_1, abs_nonneg (Real.log t₀)]
@@ -1491,7 +1492,7 @@ private lemma far_garding_windowSum_le {N K' : ℕ} {c R_max K_c θ_P c_W0 C_ψ 
         rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
         exact hp.trans_eq (by norm_num)
       have hc_mul : c * ΛK ^ 2 ≤ K_c * (C_β + 1 + (Real.log 4 + 4)) ^ 2 * L ^ (7 / 8 : ℝ) := by
-        have hm := mul_le_mul hc_up hΛK2_ub (sq_nonneg _) (by positivity)
+        have hm := mul_le_mul hc_up hΛK2_ub (sq_nonneg _) (hc0.le.trans hc_up)
         have hadd : L ^ (1 / 8 : ℝ) * L ^ (3 / 4 : ℝ) = L ^ (7 / 8 : ℝ) := by
           rw [← Real.rpow_add hL0]; norm_num
         exact hm.trans_eq (by rw [show K_c * L ^ (1 / 8 : ℝ) *
@@ -4999,7 +5000,7 @@ private lemma collar_bridge_offPole_prefix_scalar
       exact hp.trans_eq (by norm_num)
     have hc_mul : L ^ (1 / 32 : ℝ) * (c * ΛK ^ 2) ≤
         K_c * (C_β + 1 + (Real.log 4 + 4)) ^ 2 * L ^ (29 / 32 : ℝ) := by
-      have hm := mul_le_mul hc_up hΛK2_ub (sq_nonneg _) (by positivity)
+      have hm := mul_le_mul hc_up hΛK2_ub (sq_nonneg _) (hc0.le.trans hc_up)
       have hm2 := mul_le_mul_of_nonneg_left hm (Real.rpow_nonneg hL0.le (1 / 32))
       have hadd : L ^ (1 / 32 : ℝ) * (L ^ (1 / 8 : ℝ) * L ^ (3 / 4 : ℝ)) =
           L ^ (29 / 32 : ℝ) := by

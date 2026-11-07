@@ -27,6 +27,8 @@ import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PolynomialLogarith
 
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountPowerRate
 
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.CumulativeSmoothPrimeEnergy
+
 /-!
 # Sum-product arithmetic of the logarithm
 

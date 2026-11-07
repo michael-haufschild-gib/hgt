@@ -29,7 +29,7 @@ theorem legendreLead_pos (n : ℕ) : 0 < legendreLead n := by
 theorem legP_nonneg_le_succ {x : ℝ} (hx : 1 ≤ x) (n : ℕ) :
     0 ≤ legP n x ∧ legP n x ≤ legP (n + 1) x := by
   induction n with
-  | zero => simpa only [legP_zero, legP_one] using And.intro (by norm_num : (0 : ℝ) ≤ 1) hx
+  | zero => simpa only [Nat.zero_add, legP_zero, legP_one] using And.intro (by norm_num : (0 : ℝ) ≤ 1) hx
   | succ n ih =>
     have hcur : 0 ≤ legP (n + 1) x := ih.1.trans ih.2
     refine ⟨hcur, ?_⟩
@@ -74,7 +74,8 @@ theorem legP_le_lead_mul_pow {x : ℝ} (hx : 1 ≤ x) (n : ℕ) :
             ((n : ℝ) + 2) :=
               div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hcur hfactor) (by positivity)
         _ = legendreLead (n + 2) * x ^ (n + 2) := by
-              rw [legendreLead, pow_succ]
+              conv_rhs => rw [legendreLead]
+              rw [pow_succ]
               push_cast
               ring
 
@@ -87,9 +88,9 @@ theorem pow_mul_legP_mem_span (N r d : ℕ) (h : r + d < N) :
     (fun x : ℝ => x ^ r * legP d x) ∈ legendreSpan N := by
   induction r generalizing d with
   | zero =>
-    simpa only [pow_zero, one_mul] using
-      (Submodule.subset_span (Set.mem_range.mpr ⟨⟨d, by omega⟩, rfl⟩) :
-        legP d ∈ legendreSpan N)
+    simp only [pow_zero, one_mul]
+    change legP d ∈ legendreSpan N
+    exact Submodule.subset_span (Set.mem_range.mpr ⟨⟨d, by omega⟩, rfl⟩)
   | succ r ih =>
     cases d with
     | zero =>
@@ -162,7 +163,6 @@ theorem integral_legendre_sum_sq {N : ℕ} (c : Fin N → ℝ) :
     have hi : (i : ℝ) + 1 / 2 ≠ 0 := by positivity
     have hi' : 2 * (i : ℝ) + 1 ≠ 0 := by positivity
     field_simp
-    ring
   · intro j _ hji
     rw [legP_orthog (fun h => hji (Fin.ext h.symm)), mul_zero]
   · intro hi
@@ -183,7 +183,6 @@ theorem legendre_sum_sq_le_kernel {N : ℕ} (c : Fin N → ℝ) (x : ℝ) :
     have hj : (j : ℝ) + 1 / 2 ≠ 0 := by positivity
     apply le_of_eq
     field_simp
-    ring
 
 /-- Polynomial evaluation is bounded by its interval energy at every degree. -/
 theorem polynomial_sq_le_legendreKernel (N : ℕ) (p : Polynomial ℝ)
@@ -201,7 +200,6 @@ private theorem sum_even_powers_le {x : ℝ} (hx : 4 ≤ x) (n : ℕ) :
     rw [Finset.sum_range_succ]
     have he : x ^ (2 * (n + 1)) = x ^ (2 * n) * x ^ 2 := by
       rw [Nat.mul_add, pow_add]
-      norm_num
     have hx2 : 16 ≤ x ^ 2 := by nlinarith only [hx]
     have hp := mul_le_mul_of_nonneg_left hx2 (by positivity : 0 ≤ x ^ (2 * n))
     rw [he]
@@ -212,7 +210,8 @@ theorem legendreKernel_le {x : ℝ} (hx : 4 ≤ x) (n : ℕ) :
     legendreKernel (n + 1) x ≤
       16 / 15 * ((n : ℝ) + 1 / 2) * legendreLead n ^ 2 * x ^ (2 * n) := by
   unfold legendreKernel
-  rw [Fin.sum_univ_eq_sum_range]
+  change (∑ j : Fin (n + 1), ((j.val : ℝ) + 1 / 2) * legP j.val x ^ 2) ≤ _
+  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ => ((j : ℝ) + 1 / 2) * legP j x ^ 2)]
   have hx1 : 1 ≤ x := by linarith only [hx]
   have hsum : (∑ j ∈ Finset.range (n + 1), ((j : ℝ) + 1 / 2) * legP j x ^ 2) ≤
       ((n : ℝ) + 1 / 2) * legendreLead n ^ 2 *
@@ -220,8 +219,9 @@ theorem legendreKernel_le {x : ℝ} (hx : 4 ≤ x) (n : ℕ) :
     rw [Finset.mul_sum]
     refine Finset.sum_le_sum fun j hj => ?_
     have hjn : j ≤ n := by have := Finset.mem_range.mp hj; omega
-    have hw : (j : ℝ) + 1 / 2 ≤ (n : ℝ) + 1 / 2 :=
-      add_le_add_right (by exact_mod_cast hjn) _
+    have hw : (j : ℝ) + 1 / 2 ≤ (n : ℝ) + 1 / 2 := by
+      have hjn' : (j : ℝ) ≤ n := by exact_mod_cast hjn
+      linarith only [hjn']
     have hP := pow_le_pow_left₀ (legP_nonneg_le_succ hx1 j).1
       (legP_le_lead_mul_pow hx1 j) 2
     have hC := pow_le_pow_left₀ (legendreLead_pos j).le (legendreLead_mono hjn) 2

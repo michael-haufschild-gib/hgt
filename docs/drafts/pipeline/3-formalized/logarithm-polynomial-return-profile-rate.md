@@ -1,7 +1,7 @@
 # Polynomial logarithmic returns and power convergence
 
 - **ID:** SPL-polynomial-return-profile-rate
-- **Stage:** 2-fully-proven; Lean verification in progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Corpus input:** `RHTower.Matveev.effectiveBakerBound_holds`, the proved
   profile modulus, complementary pairing, and actual-count bridge.
@@ -58,3 +58,24 @@ Constants and exponents depend only on the fixed scales two and three.
 The earlier elementary bounds retain their explicit constants.
 No many-prime uniform exponent, pointwise discrepancy improvement,
 prime-energy asymptotic, or exceptional-zero exclusion follows.
+
+## Lean declarations
+
+`PolynomialLogarithmicReturns.lean`:
+- `exists_two_three_polynomial_separation`
+- `exists_three_four_polynomial_gap`
+- `exists_polynomial_three_four_half_turn`
+- `exists_polynomial_half_turn_precision_bound`
+
+`PositiveNearCountPowerRate.lean`, namespace `PositiveNearCount`:
+- `profile_average_of_half_turn`
+- `resolutionError_le_half_power`
+- `exists_resolution_polynomial_rate`
+- `exists_polynomial_profile_remainders`
+- `exists_profile_and_count_power_rate`
+
+All nine capstones pass transitive axiom audits with only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+Both production modules pass direct `lake --old env lean` checks and are wired
+into the programme umbrella.

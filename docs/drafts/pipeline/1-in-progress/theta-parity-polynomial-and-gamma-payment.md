@@ -27,7 +27,12 @@ Native tails have positive Gamma/Hermite reserves at every rank beyond explicit 
 
 The squared parabolic core `(a/300)(1-b²/36)²` on `[-6,6]` and the general Legendre exterior bound have dependency-closed paper proofs. For `deg p≤11`, write `E=∫₋₆⁶((1-b²/36)p(b))²`. The exterior bound `(5300000/6²²)|b|²²E` and existing height-67 verification give `∫p² current ≥ aE/1200`. Exact Lean formalization is in progress in `ParabolicCurrentCore`, `LegendrePolynomialKernel`, and `TheTwelfthSectionFromHeightSixtySeven`; rank twelve is not yet counted as formalized.
 
-## Subsequent conjectures
+## Further payment estimates
 
-- Retaining the common contour phase in the product defining the current should improve its tail constant. The derivative of the squared transform involves a coupled source moment; separately bounding the two Xi derivatives loses this cancellation. Actual source-profile moment bounds must pay the proposed improvement.
-- For all-rank Gamma payment, retain the full Hermite tail energy and the discrepancy between the global minimizing polynomial and local native minimizers. The terminal Gamma reserve alone discards those positive terms. The unresolved inequality is domination of the complete compact-band loss by this aggregate tail energy, uniformly over degree; the existing mixture identity does not establish it.
+- Real reciprocal-square comparison improves the pole factor from `11/10` to `82/81`. It gives `∫₀∞x²Φ≤4Ξ(0)/169` and the current floor `(a/275)(1−4b²/169)²` on `|b|≤13/2`. Paper proof complete; `PoleBudgetCurvature.lean` and the widened pair bound await Lean validation.
+- The even product `ΞC(b−iz)ΞC(b+iz)` retains its aperture factor in Cauchy's formula. The resulting tail bound is `1125000|a|exp(−7|b|/5)`, a factor `32` improvement. Paper proof complete; `CoupledCurrentTail.lean` awaits Lean validation.
+- Rank-thirteen candidate: for `deg p≤12`, use `E=∫₋₁₃/₂¹³/₂((1−4b²/169)p(b))²` and exterior coefficient `14600000/(13/2)^24`. The proposed tail payment is `aE/277`, below the core `aE/275`; exact rational and Lean checks remain pending.
+
+## All-rank question
+
+Retain the full Hermite tail energy and the discrepancy between the global minimizing polynomial and local native minimizers. The terminal Gamma reserve alone discards those positive terms. The unresolved inequality is domination of the complete compact-band loss by this aggregate tail energy, uniformly over degree; the existing mixture identity does not establish it. The local Gaussian horizon grows quadratically in rank, so moving the radial cutoff outward alone discards the region where the integrated Gamma mass is concentrated. Radial integration must precede that loss estimate.

@@ -57,7 +57,8 @@ theorem Xi_ge_parabolic {b : ℝ} (hb : |b| ≤ 6) :
   exact (mul_le_mul_of_nonneg_right hz hw).trans (Xi_ge_center_parabola b)
 
 /-- Every zero contributes to the pair sum at least its share of `2 + γ − log 4π`. -/
-theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) (q : XiZeroCopy) :
+theorem pair_floor_thirteen_halves {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2)
+    (hb : |b| ≤ 13 / 2) (q : XiZeroCopy) :
     1 / 3 * a * ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re ≤
       xiLinePairRe a ((q.1 : ℂ).re - 1 / 2) (b - (q.1 : ℂ).im) := by
   obtain ⟨δ, hδ⟩ : ∃ δ, δ = (q.1 : ℂ).re - 1 / 2 := ⟨_, rfl⟩
@@ -93,11 +94,11 @@ theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| �
   -- The pair.
   obtain ⟨u, hu⟩ : ∃ u, u = b - γ := ⟨_, rfl⟩
   rw [← hu]
-  have habsu : |u| ≤ |γ| + 6 := by
+  have habsu : |u| ≤ |γ| + 13 / 2 := by
     rw [hu]
     have := abs_sub b γ
     linarith only [this, hb]
-  have hu2 : u ^ 2 ≤ γ ^ 2 + 12 * |γ| + 36 := by
+  have hu2 : u ^ 2 ≤ γ ^ 2 + 13 * |γ| + 169 / 4 := by
     rw [← sq_abs u]
     have h1 := pow_le_pow_left₀ (abs_nonneg u) habsu 2
     have h2 := sq_abs γ
@@ -132,12 +133,12 @@ theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| �
         rw [hγ]
         exact lt_abs_im_of_rhVerifiedThrough rhVerifiedThrough_sixtySeven hzero
           (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q) hqoff
-      have habslow : |γ| - 6 ≤ |u| := by
+      have habslow : |γ| - 13 / 2 ≤ |u| := by
         rw [hu]
         have := abs_sub_abs_le_abs_sub γ b
         rw [abs_sub_comm γ b] at this
         linarith only [this, hb]
-      have hX : (61 : ℝ) ^ 2 ≤ u ^ 2 := by
+      have hX : (60 : ℝ) ^ 2 ≤ u ^ 2 := by
         rw [← sq_abs u]
         exact pow_le_pow_left₀ (by norm_num) (by linarith only [habslow, hfar]) 2
       have hδabs : |δ| ≤ 1 / 2 := by
@@ -179,8 +180,15 @@ theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| �
   refine le_trans ?_ hgoal
   exact mul_le_mul_of_nonneg_left hr (by positivity)
 
-/-- **The floor of the logarithmic derivative.** -/
-theorem re_logDeriv_xi_ge_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) :
+/-- The radius-six pair floor is a restriction of the wider window estimate. -/
+theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) (q : XiZeroCopy) :
+    1 / 3 * a * ((1 : ℂ) / ((q.1 : ℂ) * (1 - (q.1 : ℂ)))).re ≤
+      xiLinePairRe a ((q.1 : ℂ).re - 1 / 2) (b - (q.1 : ℂ).im) :=
+  pair_floor_thirteen_halves ha ha2 (hb.trans (by norm_num)) q
+
+/-- The logarithmic derivative retains its floor throughout radius `13/2`. -/
+theorem re_logDeriv_xi_ge_thirteen_halves {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2)
+    (hb : |b| ≤ 13 / 2) :
     0.0076 * a ≤ (logDeriv xi (1 / 2 + ((b : ℂ) - (a : ℂ) * I) * I)).re ∧
       xi (1 / 2 + ((b : ℂ) - (a : ℂ) * I) * I) ≠ 0 := by
   obtain ⟨s, hs⟩ : ∃ s : ℂ, s = 1 / 2 + ((b : ℂ) - (a : ℂ) * I) * I := ⟨_, rfl⟩
@@ -202,7 +210,7 @@ theorem re_logDeriv_xi_ge_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb :
       linarith only [h, hb]
   refine ⟨?_, hxi⟩
   have hsa : s.re - 1 / 2 = a := by rw [hre]; ring
-  have hfloor (q : XiZeroCopy) := pair_floor_six ha ha2 hb q
+  have hfloor (q : XiZeroCopy) := pair_floor_thirteen_halves ha ha2 hb q
   have hpair (q : XiZeroCopy) :
       0 ≤ xiLinePairRe (s.re - 1 / 2) ((q.1 : ℂ).re - 1 / 2) (s.im - (q.1 : ℂ).im) := by
     rw [hsa, him]
@@ -233,6 +241,12 @@ theorem re_logDeriv_xi_ge_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb :
   have h1 := mul_le_mul_of_nonneg_left hP (by positivity : 0 ≤ 1 / 3 * a)
   norm_num at h1 ⊢
   linarith only [h1, hmain, ha]
+
+/-- The logarithmic derivative floor on the radius-six window. -/
+theorem re_logDeriv_xi_ge_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) :
+    0.0076 * a ≤ (logDeriv xi (1 / 2 + ((b : ℂ) - (a : ℂ) * I) * I)).re ∧
+      xi (1 / 2 + ((b : ℂ) - (a : ℂ) * I) * I) ≠ 0 :=
+  re_logDeriv_xi_ge_thirteen_halves ha ha2 (hb.trans (by norm_num))
 
 /-- The complete current retains a squared parabolic core at every critical aperture. -/
 theorem current_ge_parabolic {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) :

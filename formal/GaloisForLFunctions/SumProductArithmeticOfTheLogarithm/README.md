@@ -64,7 +64,8 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Winding occupation | If `M` integers have their own and their successor's phases in prescribed radius-`ε` arcs, their pair-winding signatures number at least `M²/2` when `4ε(N+1)²<|t|`. | [`card_sq_le_two_mul_windingSignatures`](WindingOccupancy.lean) |
 | Optimal resolution order | Pairs `(n+1,n+4)` and `(n+2,n+3)` are distinct but their translated products differ by two at every nonnegative integer shift. Corresponding logarithms differ by at most `2/(n+1)²`. | [`neighbouring_pair_log_gap`, `neighbouring_pair_signatures_ne`](SharpnessOfProductResolution.lean) |
 | Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
-| Fine smooth × prime energy | For `y`-smooth rows `A` and primes `P>y`, all in `(X,2X]`, energy at width `1/T`, `T>0`, is at most `#A #P + 2 Σ_(1≤h≤ceil(4X²/T)) Σ_(d∣h) d #A_d(h)²`, where `A_d(h)={m∈A:gcd(m,h)=d}`. | [`smoothPrimeLogEnergy_le_at_height`](SmoothPrimeCollisionClasses.lean) |
+| Fine smooth × prime energy | For `y`-smooth rows `A` and primes `P>y`, all in `(X,2X]`, energy at width `1/T`, `T>0`, is at most `#A #P + 2 Σ_(1≤h≤floor(4X²/T)) Σ_(d∣h) d #A_d(h)²`, where `A_d(h)={m∈A:gcd(m,h)=d}`. | [`smoothPrimeLogEnergy_le_floor_gcd_classes`](CumulativeSmoothPrimeEnergy.lean) |
+| Cumulative incidence envelope | Energy at width `1/T` is at most `#A #P+2 floor(4X²/T)#A²`. It is exactly diagonal for `T>4X²`. Summing compatible differences cancels the gcd loss. | [`smoothPrimeLogEnergy_le_floor_at_height`, `smoothPrimeLogEnergy_eq_diagonal_of_height`](CumulativeSmoothPrimeEnergy.lean) |
 | Finite recurrence | Every finite set `A` aligns to precision `2π/(Q+1)` at some height in `[L,L(Q+1)^|A|]`, for every `L>0`. There is no last aligned height. | [`exists_alignment_in_scaled_interval`, `not_exists_last_alignment`](FiniteAlignmentReturns.lean) |
 | Effective discrete half-turn | For `α=log 3/log 4` and `Q≥2`, some integer `1≤k≤Q4^Q log 4/2` satisfies `|kα−ℓ−1/2|<1/Q`. Integer-log separation controls the size of the preceding homogeneous return. | [`exists_effective_three_four_half_turn`, `threeFourRotation_gap`](EffectiveLogarithmicHalfTurn.lean) |
 | Initial-index exclusion | Every discrete half-turn has error at least `1/((3^k+1)log 4)`. Precision `1/Q` forces `k>(log Q−log(2 log 4))/log 3`; an attained return also satisfies the upper bound above. | [`threeFourRotation_half_turn_gap`, `exists_three_four_half_turn_window`](DiscreteLogarithmicHalfTurnSeparation.lean) |
@@ -93,8 +94,11 @@ factors of `m,m'` are at most `y` and primes `p,p'` exceed `y`, then
 each fixed-row fibre has at most this gcd many column pairs. Summing within
 the disjoint exact gcd classes gives the fine-energy bound above, with an
 exact diagonal from smooth/rough product uniqueness. A logarithmic window
-contains only differences at most `ceil(4X²/T)`. Estimating this arithmetic
-sum at a random-energy scale remains open.
+contains only differences at most `floor(4X²/T)`. For fixed rows of gcd `g`,
+only multiples of `g` contribute, each with at most `g` column pairs. Summing
+to `H` costs `g floor(H/g)≤H`, giving the uniform envelope above. A cutoff
+below one leaves the exact diagonal. Recovering the prime-density factors
+needed for random energy remains open.
 
 At the discrete scale ratio `log 3/log 4`, oddness supplies a complementary
 exclusion: half a power of three is a half-integer, separated from every
