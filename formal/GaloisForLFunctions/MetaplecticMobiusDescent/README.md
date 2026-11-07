@@ -249,6 +249,10 @@ therefore have finite support and transform by the actual cubic character.
 Laplacian defect. Its height support is compact, and each height value
 is entire in the spectral parameter.
 
+`SmoothCubicCuspSeeds.lean` constructs the actual smooth equivariant seed
+and its exact Laplace defect. Both descend through the cubic character
+kernel to the quotient and are entire pointwise in the spectral parameter.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

@@ -278,3 +278,7 @@ The height-product obstruction and cusp stabilizer are locally checked.
 CubicIncomingHeightProfiles adapts logarithmic powers from OpenAI
 CubicSieve/TwistedProfiles.lean and cutoff differentiation and defect
 regularity from Eisenstein/SmoothCuspCutoffs.lean and SeedDefects.lean.
+SmoothCubicCuspSeeds adapts the locally finite height-profile sums and
+seed equations from OpenAI Eisenstein/SmoothCuspCutoffs.lean,
+SeedDefects.lean, and FundamentalDomain.lean. Local finiteness uses
+the locally checked integral-row bound and actual spatial chart.

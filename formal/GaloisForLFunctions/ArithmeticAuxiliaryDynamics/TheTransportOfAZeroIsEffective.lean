@@ -164,7 +164,7 @@ theorem norm_sub_le_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 1 ≤ N) (h : IsH
   exact le_of_tendsto hlim (Eventually.of_forall hpart)
 
 /-- The geometric interpolation is monotone in its exponent. -/
-private lemma interp_mono {a b s t : ℝ} (ha : 0 < a) (hab : a ≤ b) (hst : s ≤ t) :
+theorem interp_mono {a b s t : ℝ} (ha : 0 < a) (hab : a ≤ b) (hst : s ≤ t) :
     a ^ (1 - s) * b ^ s ≤ a ^ (1 - t) * b ^ t := by
   have hb : 0 < b := lt_of_lt_of_le ha hab
   have hform : ∀ x : ℝ, a ^ (1 - x) * b ^ x = a * (b / a) ^ x := by
@@ -176,7 +176,7 @@ private lemma interp_mono {a b s t : ℝ} (ha : 0 < a) (hab : a ≤ b) (hst : s 
   exact Real.rpow_le_rpow_of_exponent_le ((one_le_div ha).mpr hab) hst
 
 /-- The arithmetic of the interpolated bound. -/
-private lemma interp_value {N A t : ℝ} (hN : 1 ≤ N) (ht0 : 0 < t) (ht1 : t < 1)
+theorem interp_value {N A t : ℝ} (hN : 1 ≤ N) (ht0 : 0 < t) (ht1 : t < 1)
     (hAt : A * t = (1 - t) / 2) :
     (4 / N) ^ (1 - t) * (2 * N ^ A) ^ t ≤ 8 * N ^ (-((1 - t) / 2)) := by
   have hN0 : 0 < N := by linarith
@@ -203,7 +203,7 @@ private lemma interp_value {N A t : ℝ} (hN : 1 ≤ N) (ht0 : 0 < t) (ht1 : t <
         ring
 
 /-- The disc about `3 + iγ` of radius `31/10`, for `γ ≥ 3`, avoids the pole, and so does each translate by `τ ≥ 1`. -/
-private lemma transport_disc_ne_one {γ : ℝ} (hγ : 3 ≤ γ) {w : ℂ} (hw : ‖w‖ ≤ 31 / 10) :
+theorem transport_disc_ne_one {γ : ℝ} (hγ : 3 ≤ γ) {w : ℂ} (hw : ‖w‖ ≤ 31 / 10) :
     w + ((3 : ℂ) + (γ : ℂ) * I) ≠ 1 := by
   intro h
   have hw' : w = 1 - ((3 : ℂ) + (γ : ℂ) * I) := by rw [← h]; ring
@@ -214,7 +214,7 @@ private lemma transport_disc_ne_one {γ : ℝ} (hγ : 3 ≤ γ) {w : ℂ} (hw : 
   have hle : ‖w‖ ^ 2 ≤ (31 / 10 : ℝ) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hw 2
   nlinarith
 
-private lemma transport_disc_translate_ne_one {γ τ : ℝ} (hγ : 3 ≤ γ) (hτ : 1 ≤ τ) {w : ℂ}
+theorem transport_disc_translate_ne_one {γ τ : ℝ} (hγ : 3 ≤ γ) (hτ : 1 ≤ τ) {w : ℂ}
     (hw : ‖w‖ ≤ 31 / 10) : w + ((3 : ℂ) + (γ : ℂ) * I) + (τ : ℂ) * I ≠ 1 := by
   intro h
   have him := congrArg Complex.im h

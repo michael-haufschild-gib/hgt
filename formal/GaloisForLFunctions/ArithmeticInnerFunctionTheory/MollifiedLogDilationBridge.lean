@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheDilationQuotientReadsTheInnerMass
+import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheEulerColumnsOfTheInnerField
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.TheFixedBaseConeAndCriticalBernstein
 import GaloisForLFunctions.HTGeometry.HalfPlanePoissonBoundedReproduction
 import GaloisForLFunctions.RHTower.ZetaCriticalLineWeightedSecondMoment
@@ -73,7 +74,7 @@ theorem norm_shiftedFractLogPull (δ u : ℝ) :
   rw [shiftedFractLogPull, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
 
-theorem norm_shiftedFractLogPull_le {δ : ℝ} (hδ_lo : -1 / 2 < δ) (hδ_hi : δ < 1 / 2) (u : ℝ) :
+theorem norm_shiftedFractLogPull_le (δ u : ℝ) :
     ‖shiftedFractLogPull δ u‖ ≤ Real.exp (-min (1 / 2 + δ) (1 / 2 - δ) * |u|) := by
   rw [norm_shiftedFractLogPull]
   set η : ℝ := min (1 / 2 + δ) (1 / 2 - δ)
@@ -106,10 +107,11 @@ theorem integrable_shiftedFractLogPull {δ : ℝ} (hδ_lo : -1 / 2 < δ) (hδ_hi
     Integrable (shiftedFractLogPull δ) := by
   set η : ℝ := min (1 / 2 + δ) (1 / 2 - δ)
   have hη : 0 < η := lt_min (by linarith) (by linarith)
-  have h := (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hη).congr
-    (Eventually.of_forall fun u => by simp)
+  have h : Integrable (fun u : ℝ => Real.exp (-η * |u|)) :=
+    (_root_.HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hη).congr
+      (Eventually.of_forall fun u => by simp)
   exact h.mono' (measurable_shiftedFractLogPull δ).aestronglyMeasurable
-    (Eventually.of_forall fun u => norm_shiftedFractLogPull_le hδ_lo hδ_hi u)
+    (Eventually.of_forall fun u => norm_shiftedFractLogPull_le δ u)
 
 theorem memLp_two_shiftedFractLogPull {δ : ℝ} (hδ_lo : -1 / 2 < δ) (hδ_hi : δ < 1 / 2) :
     MemLp (shiftedFractLogPull δ) 2 := by
@@ -118,7 +120,7 @@ theorem memLp_two_shiftedFractLogPull {δ : ℝ} (hδ_lo : -1 / 2 < δ) (hδ_hi 
     ((measurable_shiftedFractLogPull δ).norm.pow_const 2).aestronglyMeasurable
     (Eventually.of_forall fun u => ?_)
   have hub : ‖shiftedFractLogPull δ u‖ ≤ 1 := by
-    refine (norm_shiftedFractLogPull_le hδ_lo hδ_hi u).trans (Real.exp_le_one_iff.mpr ?_)
+    refine (norm_shiftedFractLogPull_le δ u).trans (Real.exp_le_one_iff.mpr ?_)
     have hη : 0 < min (1 / 2 + δ) (1 / 2 - δ) := lt_min (by linarith) (by linarith)
     have := abs_nonneg u
     nlinarith
@@ -145,7 +147,8 @@ theorem integral_norm_sq_shiftedFractLogPull_pos {δ : ℝ} (hδ_lo : -1 / 2 < �
       rw [← Real.exp_log (by norm_num : (0 : ℝ) < 3 / 2)]; exact Real.exp_lt_exp.mpr hu.1
     have hexp_hi : Real.exp u < 7 / 4 := by
       rw [← Real.exp_log (by norm_num : (0 : ℝ) < 7 / 4)]; exact Real.exp_lt_exp.mpr hu.2
-    have hfl : ⌊Real.exp u⌋ = 1 := Int.floor_eq_iff.mpr ⟨by norm_num; linarith, by norm_num; linarith⟩
+    have hfl : ⌊Real.exp u⌋ = 1 :=
+      Int.floor_eq_iff.mpr ⟨by push_cast; linarith, by push_cast; linarith⟩
     have hfr_pos : 0 < Int.fract (Real.exp u) := by
       unfold Int.fract; rw [hfl]; push_cast; linarith
     have hn_pos : 0 < ‖shiftedFractLogPull δ u‖ := by
@@ -154,7 +157,8 @@ theorem integral_norm_sq_shiftedFractLogPull_pos {δ : ℝ} (hδ_lo : -1 / 2 < �
   have hvol_pos : 0 < volume (Ioo a b) := by
     rw [Real.volume_Ioo]
     exact ENNReal.ofReal_pos.mpr (sub_pos.mpr hab)
-  exact absurd (hvol_pos.trans_le (measure_mono hsub)) (by simp [hvol0])
+  have hle0 : volume (Ioo a b) ≤ 0 := (measure_mono hsub).trans_eq hvol0
+  exact lt_irrefl (0 : ℝ≥0∞) (hvol_pos.trans_le hle0)
 
 /-- **Shifted Mellin–Fourier identity inside the critical strip (`δ ∈ (−½, ½)`).** -/
 theorem fourier_shiftedFractLogPull {δ : ℝ} (hδ_lo : -1 / 2 < δ) (hδ_hi : δ < 1 / 2) (t : ℝ) :
@@ -207,9 +211,8 @@ theorem integrable_norm_sq_zeta_shifted_poisson {δ : ℝ} (hδ_lo : -1 / 2 < δ
     Integrable (fun τ : ℝ =>
       ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 * halfPlanePoissonKernel w τ) := by
   obtain ⟨C, hC0, hC⟩ := exists_poissonKernel_le_one hw
-  set c_δ : ℝ := min 1 (4 * (1 / 2 + δ) ^ 2)
-  have hc_pos : 0 < c_δ := lt_min one_pos (by have : 0 < 1 / 2 + δ := by linarith; positivity)
-  have h1 := (integrable_norm_sq_zeta_shiftedLine hδ_lo hδ_hi).mul_const (C * (2 * π)⁻¹ / c_δ)
+  set K_δ : ℝ := max 1 (4 * (1 / 2 + δ) ^ 2)
+  have h1 := (integrable_norm_sq_zeta_shiftedLine hδ_lo hδ_hi).mul_const (C * (2 * π)⁻¹ * K_δ)
   refine h1.mono' ?_ (Eventually.of_forall fun τ => ?_)
   · have hk : Measurable (fun τ : ℝ => halfPlanePoissonKernel w τ) := by
       unfold halfPlanePoissonKernel; fun_prop
@@ -220,29 +223,27 @@ theorem integrable_norm_sq_zeta_shifted_poisson {δ : ℝ} (hδ_lo : -1 / 2 < δ
     have hP0 := (halfPlanePoissonKernel_pos hw τ).le
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _) hP0)]
     rw [halfPlanePoissonKernel_one] at hP
-    have hden_cmp : c_δ * (1 / 4 + τ ^ 2) ≤ (1 / 2 + δ) ^ 2 + τ ^ 2 := by
-      have hc1 : c_δ ≤ 1 := min_le_left _ _
-      have hc2 : c_δ ≤ 4 * (1 / 2 + δ) ^ 2 := min_le_right _ _
+    have hden_cmp : (1 / 2 + δ) ^ 2 + τ ^ 2 ≤ K_δ * (1 / 4 + τ ^ 2) := by
+      have hK1 : 1 ≤ K_δ := le_max_left _ _
+      have hK2 : 4 * (1 / 2 + δ) ^ 2 ≤ K_δ := le_max_right _ _
       nlinarith [sq_nonneg τ]
-    have hinv_cmp : 1 / (1 / 4 + τ ^ 2) ≤ c_δ⁻¹ / ((1 / 2 + δ) ^ 2 + τ ^ 2) := by
+    have hinv_cmp : 1 / (1 / 4 + τ ^ 2) ≤ K_δ / ((1 / 2 + δ) ^ 2 + τ ^ 2) := by
       have hd1 : 0 < 1 / 4 + τ ^ 2 := by positivity
-      have hd2 : 0 < (1 / 2 + δ) ^ 2 + τ ^ 2 := by
-        have : 0 < 1 / 2 + δ := by linarith
-        positivity
-      rw [div_le_div_iff₀ hd1 hd2, one_mul, inv_eq_one_div, one_div_mul_eq_div,
-        le_div_iff₀ hc_pos]
-      rwa [mul_comm]
+      have h12 : 0 < 1 / 2 + δ := by linarith
+      have hd2 : 0 < (1 / 2 + δ) ^ 2 + τ ^ 2 := by positivity
+      rw [div_le_div_iff₀ hd1 hd2, one_mul]
+      exact hden_cmp
     calc ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 * halfPlanePoissonKernel w τ
         ≤ ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 *
             (C * ((2 * π)⁻¹ * (1 / (1 / 4 + τ ^ 2)))) :=
           mul_le_mul_of_nonneg_left hP (sq_nonneg _)
       _ ≤ ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 *
-            (C * ((2 * π)⁻¹ * (c_δ⁻¹ / ((1 / 2 + δ) ^ 2 + τ ^ 2)))) :=
+            (C * ((2 * π)⁻¹ * (K_δ / ((1 / 2 + δ) ^ 2 + τ ^ 2)))) :=
           mul_le_mul_of_nonneg_left
             (mul_le_mul_of_nonneg_left
-              (mul_le_mul_of_nonneg_left hinv_cmp (by positivity)) hC0.le) (sq_nonneg _)
+              (mul_le_mul_of_nonneg_left hinv_cmp (by positivity)) hC0) (sq_nonneg _)
       _ = ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 / ((1 / 2 + δ) ^ 2 + τ ^ 2) *
-            (C * (2 * π)⁻¹ / c_δ) := by ring
+            (C * (2 * π)⁻¹ * K_δ) := by ring
 
 /-- Shifted mollifier budget on `Re s = ½ + δ` against `exp Q(φ_w(½ + iτ))`. -/
 def shiftedBudget (δ : ℝ) (w : ℂ) (Q : Polynomial ℂ) : ℝ :=
@@ -368,11 +369,12 @@ theorem exp_two_dilation_drop_eq_szego_ratio {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : 
   have h1δ_re : 1 ≤ ((1 : ℂ) + (δ : ℂ)).re := by simp; linarith
   have hzeta_pos : 0 < ‖riemannZeta (1 + (δ : ℂ))‖ :=
     norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re h1δ_re)
+  have h1δ_ne : 1 - δ ≠ 0 := by linarith
   have hfac_pos : 0 < (δ * ‖riemannZeta (1 + (δ : ℂ))‖ / (1 - δ)) ^ 2 :=
     pow_pos (div_pos (mul_pos hδ0 hzeta_pos) (by linarith)) 2
   have hexpδ_pos : 0 < Real.exp (2 * shiftedInnerField δ 1) := Real.exp_pos _
   rw [hs0, hsδ, mul_sub, Real.exp_sub]
-  field_simp [hfac_pos.ne', hexpδ_pos.ne']
+  field_simp [hfac_pos.ne', hexpδ_pos.ne', h1δ_ne]
 
 /-- **Single-shift Szegő `L²` variational RH equivalence (`δ ∈ (0, ½)`).** -/
 theorem riemannHypothesis_iff_szego_budget_ratio_eq {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1 / 2) :
@@ -407,7 +409,7 @@ theorem riemannHypothesis_iff_szego_budget_ratio_eq {δ : ℝ} (hδ0 : 0 < δ) (
       field_simp [ha_pos.ne', hb_pos.ne']
     rw [hprod_one] at hratio
     have h2 : 2 * (innerField 1 - shiftedInnerField δ 1) = 0 :=
-      Real.exp_eq_one_iff.mp hratio
+      Real.exp_injective (hratio.trans Real.exp_zero.symm)
     linarith
 
 /-! ### 2. Outer Euler-prefix mollification and prime cancellation -/
@@ -451,8 +453,8 @@ theorem integral_log_eulerMollifier_shifted {S : Finset ℕ} (hS : ∀ p ∈ S, 
   classical
   induction S using Finset.induction_on with
   | empty =>
-    simp only [eulerMollifier, Finset.prod_empty, norm_one, Real.log_one, zero_mul,
-      integrable_zero, integral_zero, and_self]
+    simp only [eulerMollifier, Finset.prod_empty, norm_one, Real.log_one, zero_mul]
+    exact ⟨integrable_zero _ _ _, integral_zero _ _⟩
   | @insert p S hp_not ih =>
     have hp2 : 2 ≤ p := hS p (Finset.mem_insert_self p S)
     have hS' : ∀ q ∈ S, 2 ≤ q := fun q hq => hS q (Finset.mem_insert_of_mem hq)
@@ -460,7 +462,8 @@ theorem integral_log_eulerMollifier_shifted {S : Finset ℕ} (hS : ∀ p ∈ S, 
     have hp1 : (1 : ℝ) < p := by exact_mod_cast hp2
     set c_p : ℂ := (((p : ℝ) ^ (-δ) : ℝ) : ℂ)
     have hsmall : ‖c_p‖ * (p : ℝ) ^ (-(1 / 2 : ℝ)) < 1 := by
-      simp only [c_p, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
+      simp only [c_p, Complex.norm_real]
+      rw [Real.norm_of_nonneg (by positivity)]
       have h1 : (p : ℝ) ^ (-δ) ≤ 1 := Real.rpow_le_one_of_one_le_of_nonpos hp1.le (by linarith)
       have h2 : (p : ℝ) ^ (-(1 / 2 : ℝ)) < 1 := Real.rpow_lt_one_of_one_lt_of_neg hp1 (by norm_num)
       nlinarith [Real.rpow_pos_of_pos (by linarith : (0 : ℝ) < p) (-(1 / 2 : ℝ))]
@@ -546,8 +549,12 @@ theorem eulerMollified_log_dilation_quotient_eq {S : Finset ℕ} (hS : ∀ p ∈
   have hint_Zdiff : Integrable (fun τ : ℝ =>
       (Real.log ‖riemannZeta (1 / 2 + τ * I)‖ -
         Real.log ‖riemannZeta (1 / 2 + (δ : ℂ) + τ * I)‖) * halfPlanePoissonKernel 1 τ) :=
-    (hint_Z0.sub hint_Zδ).congr (Eventually.of_forall fun τ => by simp only; ring)
-  rw [integral_congr_ae hae_congr, integral_add hint_Zdiff (hint_M0.sub hint_Mδ),
+    (hint_Z0.sub hint_Zδ).congr (Eventually.of_forall fun _ => (sub_mul _ _ _).symm)
+  have hint_Mdiff : Integrable (fun τ : ℝ =>
+      Real.log ‖eulerMollifier S (1 / 2 + τ * I)‖ * halfPlanePoissonKernel 1 τ -
+        Real.log ‖eulerMollifier S (1 / 2 + (δ : ℂ) + τ * I)‖ * halfPlanePoissonKernel 1 τ) :=
+    hint_M0.sub hint_Mδ
+  rw [integral_congr_ae hae_congr, integral_add hint_Zdiff hint_Mdiff,
     integral_sub hint_M0 hint_Mδ, hid_zeta, hval_M0, hval_Mδ]
   -- Evaluate `‖eulerMollifier S 1‖ = ∏_{p ∈ S} (1 − p⁻¹)` and combine logarithms
   have hnorm_M1 : ‖eulerMollifier S 1‖ = ∏ p ∈ S, (1 - (p : ℝ)⁻¹) := by
@@ -614,7 +621,7 @@ theorem integral_cos_mul_halfPlanePoissonKernel_one (ξ : ℝ) :
   have hre_uhp : ∫ x : ℝ, halfPlanePoisson 1 x * Real.cos (y * x) = Real.exp (-y) := by
     have hre := (Complex.reCLM.integral_comp_comm hPF_int).symm
     rw [hrep, Complex.reCLM_apply, Complex.ofReal_re] at hre
-    rw [← hre]
+    rw [hre]
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
     rw [Complex.reCLM_apply]
     symm
@@ -642,34 +649,39 @@ theorem integral_cos_mul_halfPlanePoissonKernel_one (ξ : ℝ) :
       field_simp; ring
     rw [hcos_eq, hk]; ring
   simp_rw [hkern_eq]
-  dsimp only at hscale
-  rw [integral_const_mul, hscale]
-  simp only [y]; ring
+  rw [integral_const_mul, hscale, show -y = -|ξ| / 2 by simp only [y]; ring]
+  ring
 
-/-- Finite Dirichlet polynomial `∑_{m=1}^M b_m m^{−s}`. -/
-def dirichletPoly (M : ℕ) (b : ℕ → ℝ) (s : ℂ) : ℂ :=
+/-- Finite real-coefficient Dirichlet polynomial `∑_{m=1}^M b_m m^{−s}`. -/
+def realDirichletPoly (M : ℕ) (b : ℕ → ℝ) (s : ℂ) : ℂ :=
   ∑ m ∈ Finset.Icc 1 M, (b m : ℂ) * (m : ℂ) ^ (-s)
 
 /-- **Exact shifted Poisson Gram matrix of a Dirichlet polynomial (`Re s = ½ + δ`).** -/
 theorem integral_dirichletPoly_norm_sq_poisson (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) :
-    (∫ τ : ℝ, ‖dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 *
+    (∫ τ : ℝ, ‖realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 *
         halfPlanePoissonKernel 1 τ) =
       ∑ m ∈ Finset.Icc 1 M, ∑ n ∈ Finset.Icc 1 M,
         (b m * (m : ℝ) ^ (-δ)) * (b n * (n : ℝ) ^ (-δ)) / (max m n : ℝ) := by
-  have hw1 : (1 / 2 : ℝ) < (1 : ℂ).re := by simp; norm_num
-  have hP_int := (integrable_and_integral_poisson hw1).1
-  -- Pointwise expansion of `‖dirichletPoly M b (1/2 + δ + iτ)‖²`
+  have hP_int : Integrable (halfPlanePoissonKernel 1) := by
+    refine (integrable_halfPlanePoisson (by norm_num : (0 : ℝ) < 1 / 2)).congr
+      (Eventually.of_forall fun τ => ?_)
+    rw [halfPlanePoissonKernel_one, halfPlanePoisson]
+    have h1 : (0 : ℝ) < 1 / 4 + τ ^ 2 := by positivity
+    have h2 : (0 : ℝ) < (1 / 2) ^ (2 : ℕ) + τ ^ (2 : ℕ) := by positivity
+    have hπ : (0 : ℝ) < π := Real.pi_pos
+    field_simp; ring
+  -- Pointwise expansion of `‖realDirichletPoly M b (1/2 + δ + iτ)‖²`
   have hpt_sq : ∀ τ : ℝ,
-      ‖dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 * halfPlanePoissonKernel 1 τ =
+      ‖realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 * halfPlanePoissonKernel 1 τ =
         ∑ m ∈ Finset.Icc 1 M, ∑ n ∈ Finset.Icc 1 M,
           ((b m * (m : ℝ) ^ (-δ)) * (b n * (n : ℝ) ^ (-δ)) *
             ((m : ℝ) ^ (-(1 / 2 : ℝ)) * (n : ℝ) ^ (-(1 / 2 : ℝ)))) *
             (Real.cos ((Real.log n - Real.log m) * τ) * halfPlanePoissonKernel 1 τ) := by
     intro τ
     let w_m : ℕ → ℝ := fun m => b m * (m : ℝ) ^ (-δ) * (m : ℝ) ^ (-(1 / 2 : ℝ))
-    have hdir_eq : dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I) =
+    have hdir_eq : realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I) =
         ∑ m ∈ Finset.Icc 1 M, (w_m m : ℂ) * Complex.exp (((-Real.log m * τ : ℝ) : ℂ) * I) := by
-      unfold dirichletPoly
+      unfold realDirichletPoly
       refine Finset.sum_congr rfl fun m hm => ?_
       have hm_pos : (0 : ℝ) < m := by exact_mod_cast (Finset.mem_Icc.mp hm).1
       have hm_ne : (m : ℂ) ≠ 0 := by exact_mod_cast hm_pos.ne'
@@ -681,9 +693,9 @@ theorem integral_dirichletPoly_norm_sq_poisson (M : ℕ) (b : ℕ → ℝ) (δ :
       rw [hexp_arg, Complex.exp_add, ← Complex.ofReal_exp, Real.exp_add,
         ← Real.rpow_def_of_pos hm_pos, ← Real.rpow_def_of_pos hm_pos]
       dsimp only [w_m]; push_cast; ring
-    have hnorm_re : ‖dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 =
-        (dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I) *
-          conj (dirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I))).re := by
+    have hnorm_re : ‖realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I)‖ ^ 2 =
+        (realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I) *
+          conj (realDirichletPoly M b (1 / 2 + (δ : ℂ) + τ * I))).re := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, Complex.ofReal_re]
     rw [hnorm_re, hdir_eq, map_sum, Finset.sum_mul_sum, Complex.re_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun m _ => ?_
@@ -770,19 +782,25 @@ theorem dirichletGram_eq_abel_squares : ∀ {M : ℕ} (_ : 1 ≤ M) (w : ℕ →
         ∑ k ∈ Finset.Icc 1 M',
           (((k : ℝ)⁻¹ - ((k + 1 : ℕ) : ℝ)⁻¹) * (∑ m ∈ Finset.Icc 1 k, w m) ^ 2)
     set S_M : ℝ := ∑ m ∈ Finset.Icc 1 M', w m
-    have hborder_r : (∑ m ∈ Finset.Icc 1 M', w m * w (M' + 1) / (max m (M' + 1) : ℝ)) =
+    have hborder_r : (∑ m ∈ Finset.Icc 1 M',
+          w m * w (M' + 1) / max (m : ℝ) ((M' + 1 : ℕ) : ℝ)) =
         S_M * w (M' + 1) / ((M' + 1 : ℕ) : ℝ) := by
       have hcongr : ∀ m ∈ Finset.Icc 1 M',
-          w m * w (M' + 1) / (max m (M' + 1) : ℝ) =
+          w m * w (M' + 1) / max (m : ℝ) ((M' + 1 : ℕ) : ℝ) =
             w m * (w (M' + 1) / ((M' + 1 : ℕ) : ℝ)) := fun m hm => by
-        rw [max_eq_right (by linarith [(Finset.mem_Icc.mp hm).2] : m ≤ M' + 1)]; ring
+        have hm_le : (m : ℝ) ≤ ((M' + 1 : ℕ) : ℝ) := by
+          exact_mod_cast Nat.le_succ_of_le (Finset.mem_Icc.mp hm).2
+        rw [max_eq_right hm_le]; ring
       rw [Finset.sum_congr rfl hcongr, ← Finset.sum_mul, mul_div_assoc]
-    have hborder_l : (∑ n ∈ Finset.Icc 1 M', w (M' + 1) * w n / (max (M' + 1) n : ℝ)) =
+    have hborder_l : (∑ n ∈ Finset.Icc 1 M',
+          w (M' + 1) * w n / max ((M' + 1 : ℕ) : ℝ) (n : ℝ)) =
         w (M' + 1) * S_M / ((M' + 1 : ℕ) : ℝ) := by
       have hcongr : ∀ n ∈ Finset.Icc 1 M',
-          w (M' + 1) * w n / (max (M' + 1) n : ℝ) =
+          w (M' + 1) * w n / max ((M' + 1 : ℕ) : ℝ) (n : ℝ) =
             (w (M' + 1) / ((M' + 1 : ℕ) : ℝ)) * w n := fun n hn => by
-        rw [max_eq_left (by linarith [(Finset.mem_Icc.mp hn).2] : n ≤ M' + 1)]; ring
+        have hn_le : (n : ℝ) ≤ ((M' + 1 : ℕ) : ℝ) := by
+          exact_mod_cast Nat.le_succ_of_le (Finset.mem_Icc.mp hn).2
+        rw [max_eq_left hn_le]; ring
       rw [Finset.sum_congr rfl hcongr, ← Finset.mul_sum]; ring
     have hgrid : (∑ m ∈ Finset.Icc 1 (M' + 1), ∑ n ∈ Finset.Icc 1 (M' + 1),
           w m * w n / (max m n : ℝ)) =
@@ -790,9 +808,9 @@ theorem dirichletGram_eq_abel_squares : ∀ {M : ℕ} (_ : 1 ≤ M) (w : ℕ →
           (2 * S_M * w (M' + 1) + w (M' + 1) ^ 2) / ((M' + 1 : ℕ) : ℝ) := by
       rw [hins_top, Finset.sum_insert hmem_top]
       have hin_split : ∀ m ∈ Finset.Icc 1 M',
-          (∑ n ∈ insert (M' + 1) (Finset.Icc 1 M'), w m * w n / (max m n : ℝ)) =
-            w m * w (M' + 1) / (max m (M' + 1) : ℝ) +
-              ∑ n ∈ Finset.Icc 1 M', w m * w n / (max m n : ℝ) :=
+          (∑ n ∈ insert (M' + 1) (Finset.Icc 1 M'), w m * w n / max (m : ℝ) (n : ℝ)) =
+            w m * w (M' + 1) / max (m : ℝ) ((M' + 1 : ℕ) : ℝ) +
+              ∑ n ∈ Finset.Icc 1 M', w m * w n / max (m : ℝ) (n : ℝ) :=
         fun _ _ => Finset.sum_insert hmem_top
       rw [Finset.sum_insert hmem_top, Finset.sum_congr rfl hin_split, Finset.sum_add_distrib,
         max_self, hborder_l, hborder_r]
@@ -800,12 +818,8 @@ theorem dirichletGram_eq_abel_squares : ∀ {M : ℕ} (_ : 1 ≤ M) (w : ℕ →
     rw [hgrid, ih]
     have hsum_top : (∑ m ∈ Finset.Icc 1 (M' + 1), w m) = w (M' + 1) + S_M := by
       rw [hins_top, Finset.sum_insert hmem_top]
-    rw [hsum_top]
-    nth_rw 2 [hins_k]
-    rw [Finset.sum_insert hmem_k]
-    change S_M ^ 2 / (M' : ℝ) + _ + _ =
-      (w (M' + 1) + S_M) ^ 2 / ((M' + 1 : ℕ) : ℝ) +
-        (((M' : ℝ)⁻¹ - ((M' + 1 : ℕ) : ℝ)⁻¹) * S_M ^ 2 + _)
+    rw [hsum_top, hins_k, Finset.sum_insert hmem_k,
+      show (∑ m ∈ Finset.Icc 1 M', w m) = S_M from rfl]
     have hM'_pos : (0 : ℝ) < M' := by exact_mod_cast hM'1
     have hM'1_pos : (0 : ℝ) < ((M' + 1 : ℕ) : ℝ) := by positivity
     have halg : S_M ^ 2 / (M' : ℝ) + (2 * S_M * w (M' + 1) + w (M' + 1) ^ 2) / ((M' + 1 : ℕ) : ℝ) =
@@ -994,7 +1008,7 @@ theorem dirichletHankel_eulerAmpl_ge_selberg {n : ℕ} {p : Fin n → ℕ} (hp :
     Finset.prod_pos fun i _ => by
       have hp0 : (0 : ℝ) < p i := by exact_mod_cast hp i
       positivity
-  rw [← Finset.prod_inv_distrib, inv_le_iff_one_le_mul₀' hprod_pos]
+  rw [Finset.prod_inv_distrib, inv_le_iff_one_le_mul₀' hprod_pos]
   exact hcs.trans (mul_le_mul_of_nonneg_left hL_mono hprod_pos.le)
 
 /-- **Exact Selberg attainment at every height `N ≥ 2`.** -/
@@ -1030,31 +1044,36 @@ theorem dirichletHankel_selbergArray_eq {n : ℕ} {p : Fin n → ℕ} (hp : ∀ 
         hu_not (mem_piBox.mpr fun i => lt_of_le_of_lt (Nat.le_add_left _ _) (mem_piBox.mp hdu i))
       simp [selbergArray, hdu_not]
     rw [hrest]
+    let F_d : Fin n → ℕ → ℝ := fun i r =>
+      (if d i + r < 2 then
+          if d i + r = 0 then (1 : ℝ)
+          else -(p i : ℝ) ^ (-σ) / (1 + (p i : ℝ) ^ (-2 * σ))
+        else 0) * ((p i : ℝ) ^ (-σ)) ^ r
     have hpt : ∀ u ∈ piBox n 2,
         selbergArray p σ (d + u) * eulerAmpl p σ u =
-          ∏ i : Fin n,
-            ((if d i + u i < 2 then
-                if d i + u i = 0 then (1 : ℝ)
-                else -(p i : ℝ) ^ (-σ) / (1 + (p i : ℝ) ^ (-2 * σ))
-              else 0) * ((p i : ℝ) ^ (-σ)) ^ (u i)) := by
+          ∏ i : Fin n, F_d i (u i) := by
       intro u _
-      rw [eulerAmpl_eq_prod hp σ u, ← Finset.prod_mul_distrib]
+      rw [eulerAmpl_eq_prod hp σ u]
       unfold selbergArray
       split_ifs with hdu
-      · refine Finset.prod_congr rfl fun i _ => ?_
-        rw [if_pos (mem_piBox.mp hdu i)]; rfl
+      · rw [← Finset.prod_mul_distrib]
+        refine Finset.prod_congr rfl fun i _ => ?_
+        dsimp only [F_d]
+        rw [if_pos (mem_piBox.mp hdu i)]
+        rfl
       · have hex : ∃ i₀ : Fin n, ¬ (d i₀ + u i₀ < 2) := by
           by_contra hall; push Not at hall
           exact hdu (mem_piBox.mpr hall)
         obtain ⟨i₀, hi₀⟩ := hex
         rw [zero_mul]
         symm
-        exact Finset.prod_eq_zero (Finset.mem_univ i₀) (by simp [hi₀])
+        exact Finset.prod_eq_zero (Finset.mem_univ i₀) (by simp [F_d, hi₀])
     rw [Finset.sum_congr rfl hpt]
     unfold piBox
     rw [← Finset.prod_univ_sum, eulerAmpl_eq_prod hp σ d,
       ← Finset.prod_mul_distrib, ← Finset.prod_mul_distrib]
     refine Finset.prod_congr rfl fun i _ => ?_
+    dsimp only [F_d]
     have hp0 : (0 : ℝ) < p i := by exact_mod_cast hp i
     have hd_lt : d i < 2 := mem_piBox.mp hd i
     have h2σ : (p i : ℝ) ^ (-σ) * (p i : ℝ) ^ (-σ) = (p i : ℝ) ^ (-2 * σ) := by
@@ -1081,7 +1100,7 @@ theorem dirichletHankel_selbergArray_eq {n : ℕ} {p : Fin n → ℕ} (hp : ∀ 
     (Finset.prod_pos fun i _ => by
       have hp0 : (0 : ℝ) < p i := by exact_mod_cast hp i
       positivity).ne'
-  rw [← Finset.prod_inv_distrib, sq, ← mul_assoc, mul_inv_cancel₀ hprod_ne, one_mul]
+  rw [Finset.prod_inv_distrib, sq, ← mul_assoc, mul_inv_cancel₀ hprod_ne, one_mul]
 
 /-- **Uniform positive Selberg–Hankel floor at fixed shift `δ > 0`.**
 For every `δ > 0`, `exp(−∑'_m m^{−(1+2δ)}) > 0` bounds `dirichletHankelForm (eulerAmpl p (½ + δ)) N c`
@@ -1208,7 +1227,7 @@ theorem hasDerivAt_log_eulerHankel_min {n : ℕ} {p : Fin n → ℕ} (hp : ∀ i
   rw [hexp0]
   have hd1 : (1 + (p i : ℝ)⁻¹) ≠ 0 := by positivity
   have hd2 : ((p i : ℝ) + 1) ≠ 0 := by positivity
-  field_simp [hp0.ne', hd1, hd2]; ring
+  field_simp [hp0.ne', hd1, hd2]
 
 /-- **Divergence of the prime logarithmic cancellation-defect slope `∑_p log p / (p + 1) = ∞`.** -/
 theorem not_summable_primes_log_div_add_one :
@@ -1218,36 +1237,35 @@ theorem not_summable_primes_log_div_add_one :
   have hmaj : Summable (fun q : Nat.Primes => 2 * (Real.log (q : ℝ) / ((q : ℝ) + 1))) :=
     hsum.mul_left 2
   let g : Nat.Primes → ℝ := fun q =>
-    2 * (Real.log (q : ℝ) / ((q : ℝ) + 1)) + if (q : ℕ) = 2 then 1 else 0
+    2 * (Real.log (q : ℝ) / ((q : ℝ) + 1)) + if q.1 = 2 then 1 else 0
   have hg_sum : Summable g :=
     hmaj.add (summable_of_ne_finset_zero (s := {⟨2, Nat.prime_two⟩}) fun q hq => by
-      have hne : (q : ℕ) ≠ 2 := fun h2 => hq (Finset.mem_singleton.mpr (Subtype.ext h2))
+      have hne : q.1 ≠ 2 := fun h2 => hq (Finset.mem_singleton.mpr (Subtype.ext h2))
       simp [hne])
   refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun q => ?_) hg_sum
   dsimp only [g]
-  by_cases hq2 : (q : ℕ) = 2
-  · simp only [hq2, ↓reduceIte, Nat.cast_ofNat]
-    have hlog2_nn : 0 ≤ Real.log (2 : ℝ) := Real.log_nonneg (by norm_num)
-    have : (1 / 2 : ℝ) ≤ 1 := by norm_num
-    linarith [div_nonneg hlog2_nn (show (0 : ℝ) ≤ 2 + 1 by norm_num)]
-  · simp only [hq2, ↓reduceIte, add_zero]
-    have hq3 : 3 ≤ (q : ℕ) := by have := q.2.two_le; omega
-    have hq_pos : (0 : ℝ) < (q : ℕ) := by positivity
-    have hlog_gt1 : 1 ≤ Real.log (q : ℝ) := by
-      have he3 : Real.exp 1 ≤ (q : ℝ) := by
-        have := Real.exp_one_lt_d9
-        have : (3 : ℝ) ≤ (q : ℕ) := by exact_mod_cast hq3
-        linarith
+  set x : ℝ := (q : ℝ)
+  have hx_eq : x = (q.1 : ℝ) := rfl
+  split_ifs with hq2
+  · have hx2 : x = 2 := by rw [hx_eq, hq2]; norm_num
+    have hlog2_nn : 0 ≤ Real.log x := by rw [hx2]; exact Real.log_nonneg (by norm_num)
+    have hdiv_nn : 0 ≤ Real.log x / (x + 1) := div_nonneg hlog2_nn (by linarith)
+    have h12 : 1 / x ≤ 1 := by rw [hx2]; norm_num
+    linarith
+  · have hq3 : 3 ≤ q.1 := by have := q.2.two_le; omega
+    have hx3 : (3 : ℝ) ≤ x := by rw [hx_eq]; exact_mod_cast hq3
+    have hx_pos : 0 < x := by linarith
+    have hx1_pos : 0 < x + 1 := by linarith
+    have hlog_gt1 : 1 ≤ Real.log x := by
+      have he3 : Real.exp 1 ≤ x := by linarith [Real.exp_one_lt_d9]
       have := Real.log_le_log (Real.exp_pos 1) he3
       rwa [Real.log_exp] at this
-    have hden_le : (q : ℝ) + 1 ≤ 2 * (q : ℝ) := by
-      have : (3 : ℝ) ≤ (q : ℕ) := by exact_mod_cast hq3
+    have h1 : 1 / x ≤ 2 * (1 / (x + 1)) := by
+      rw [mul_one_div, div_le_div_iff₀ hx_pos hx1_pos]
       linarith
-    calc 1 / (q : ℝ) = 2 / (2 * (q : ℝ)) := by field_simp [hq_pos.ne']
-      _ ≤ 2 / ((q : ℝ) + 1) := div_le_div_of_nonneg_left (by norm_num) (by positivity) hden_le
-      _ ≤ 2 * (Real.log (q : ℝ) / ((q : ℝ) + 1)) := by
-          rw [mul_div_assoc]
-          exact div_le_div_of_nonneg_right (by linarith) (by positivity)
+    have h2 : 1 / (x + 1) ≤ Real.log x / (x + 1) :=
+      div_le_div_of_nonneg_right hlog_gt1 hx1_pos.le
+    linarith
 
 #print axioms integrable_norm_sq_zeta_shifted_poisson
 #print axioms isGLB_shiftedBudget_innerField

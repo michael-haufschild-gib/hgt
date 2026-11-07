@@ -165,8 +165,11 @@ theorem one_le_compCount (hc : IsCompensation y d) (s : ℕ) : 1 ≤ compCount y
   rw [compCount]
   have : 0 ≤ ∑ P ∈ largePrimes y, ((if P ≤ s then (1 : ℝ) else 0) - (if d P ≤ s then (1 : ℝ) else 0)) := by
     refine sum_nonneg fun P hP => ?_
-    have := hc.lt P hP
-    split_ifs with h1 h2 h2 <;> first | norm_num | omega
+    have h3 := hc.lt P hP
+    by_cases h1 : d P ≤ s
+    · rw [if_pos (by omega), if_pos h1, sub_self]
+    · rw [if_neg h1, sub_zero]
+      split_ifs <;> norm_num
   linarith
 
 /-- The Möbius floor identity below `a`. -/

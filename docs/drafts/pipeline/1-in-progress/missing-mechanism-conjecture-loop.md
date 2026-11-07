@@ -21,6 +21,9 @@ All in `PrimeTorusTheory/`. `L = log|t|`, `ℓ = log L`, `‖·‖` = distance t
 | `norm_sum_le_of_large`, `norm_sum_ap_le_of_large`, `norm_sum_le_of_length` | `TheSupBoundOfIntegerPowers` | `‖Σ_{1≤n<N} n^{it}‖ ≤ N(1−1/(10⁹L⁸ℓ⁴))` for `N≥48L²ℓ`; same on every progression `r+qm`, `1≤r≤q`, of length `≥48L²ℓ`, uniformly in `q`; `N(1−exp(−L^β))` for `N≥7L^A`, `1<A≤2`, `β>2−A` |
 | `totient_div_le_sum_primes_coprime_of_large`, `le_sum_primes_critical_coprime_of_large` | `TheSavingAwayFromSmallPrimes` | `Σ_{p∤q,p<qK}‖t log p/2π‖/p ≥ (φ(q)/q)/(10⁵L⁴ℓ²)` for `K≥48L²ℓ`; if `q` contains all primes `≤P`, the critical sum on `p∤q` is `≥4√P((φ(q)/q)/(10⁵L⁴ℓ²))²` |
 | `norm_zeta_le_of_large` | `ZetaStaysBelowItsSupremum` | `σ>1`, large `|t|`: `|ζ(σ+it)| ≤ ζ(σ) exp(−(log|t|)^{−(3σ+13)})` |
+| `exists_lowEnergy_word`, `energy_eq`, `sum_powerset_four` | `TheEnergyOfASquaredWord` | word of order `k`, `c_0≠0`, with `Σ_n r(n)² ≤ 12(M+1)²` once `Π_{j≤k}(C(M+1,j+1)+1)<2^M`; `r=c∗c`. The energy is a fourth power mean of the transform, so the difference of two low energy sign patterns has low energy |
+| `sq_le_energy_mul_sum`, `norm_sum_le_of_large_energy`, `norm_sum_ap_le_of_large_energy`, `le_sum_primes_sq_phaseDist`, `le_sum_primes_critical_energy` | `TheSavingOfALowEnergyWord` | precision is the energy, not the mass: `‖Σ_{n<N} n^{it}‖ ≤ N(1−1/(10⁷L⁶ℓ³))` for `N≥48L²ℓ`, uniformly on progressions; `Σ_{p<N}‖t log p/2π‖²/p ≥ 1/(10⁹L⁶ℓ⁴)`; `Σ_{p<N}(1−cos(t log p))/√p ≥ 8/(10⁹L⁶ℓ⁴)` |
+| `card_letters_ge`, `mem_range_of_consecutive`, `card_nonintegers_ge`, `card_filter_halfChoose`, `sum_exp_halfChoose` | `TheFloorOfAPolynomialPhase` | a word of order `k` has `≥k+2` letters. A degree `k` phase integer at `k+1` consecutive points is integer valued, otherwise it misses the integers once per window of `k+1`. Sharp: `C(a,2^m−1)/2` misses exactly on `a≡−1 mod 2^m`, sum `N−2⌊N/2^m⌋`, so one block saves at most `2/(k+1)` without excluding binomial denominators |
 | `exists_not_aligned_of_large`, `exists_prime_not_near_torsion` | `NonAlignmentAtEveryLargeHeight`, `TheOrbitAvoidsTorsionPoints` | earlier route without squares: length `exp(√L ℓ^{3/2})`, precision `ℓ²/L`; torsion points by height dilation |
 
 **Mechanism.** Square an integer word `W` of small `ℓ¹` mass with a high zero at `z=1`. The phase `F(x)=(|t|/2π)Σ(−c_ac_b)log(x+a+b)` is positive, decreasing and log-convex, so there is no cancellation between Taylor terms. `|c_0|=1` keeps `F≥½` up to `x≍L`, the zero at `1` makes `F` small from `x≍M`, and log-convexity bounds the crossing step by a factor `16`. Mass-zero makes this dilation invariant: every progression `x+h(a+b)` with `x/h` in the band carries misalignment.
@@ -32,6 +35,11 @@ All in `PrimeTorusTheory/`. `L = log|t|`, `ℓ = log L`, `‖·‖` = distance t
 **Paper remarks, not formalized.**
 - Precision by words cannot be constant below `Y ≍ L` (`N = exp Y`): a word of order `J` has `ℓ¹` mass at least `2J` (Prouhet–Tarry–Escott size bound).
 - VK exponent: a word of order `k = L/Y` has about `k²` letters. Roughness of all letters costs a sieve of dimension `k²`, giving `N^{1/k²}`. A dense aligned set contains `x+S+S` with `|S| ≈ k²` only when `log N ≳ k²`. Both thresholds are `Y ≈ L^{2/3}`.
+
+- Limits of the energy: `E≥(Σc_a²)²≥(k+2)²`, so one squared word gives mean square at most `≈1/k⁴` at length `M≈k²`. Placements with `W` consecutive shifts in the band would gain a factor `W` (operator norm `sup|Ŵ|⁴` replaces `E·M`), up to `1/M²` at `W≈M`. That needs the crossing `u₁` of the band to be `≳LW`; only `u₁≳L` is proved, because a pigeonhole word may be exponentially small on `e^{−z}`, `1/M≪z≪1/L`.
+- Duality for exotic returns: with `V` the polynomials of degree `≤k` on `[0,M]` and `Λ=ℤ^{M+1}∩V^⊥` the words, Poisson summation gives `Σ_{a∈ℤ^{M+1}/(V∩ℤ^{M+1})} exp(−π dist(a,V)²/s²) = covol(V∩ℤ^{M+1})·s^{M−k}·Σ_{w∈Λ} exp(−πs²‖w‖²)`. No exotic return below `s` is the same as the Gaussian word count being its volume prediction to relative precision about `exp(−ck²)`.
+- Where VK comes from: Markov at the critical moment `s≈k²/2` saves `exp(−Y/k²)`, which is macroscopic only at `Y≈k²`. A better constant in the mean value theorem does not change this exponent. Going below needs the exceptional set itself, not its measure.
+- Words and depth: a zero of depth `d` needs amplitude `≲1/L` at length `L^{1/d}`, not `1−o(1)`. Word savings feed only the sign plane, and even there stop at `≈1/k²`, against the constant required at `y≈L²`.
 
 ## Tested and rejected
 
@@ -60,6 +68,12 @@ All in `PrimeTorusTheory/`. `L = log|t|`, `ℓ = log L`, `‖·‖` = distance t
 | Top primes via Heath-Brown factorization of `Λ` into integer sums | Pieces lose powers of `log N`; a saving `L^{−8}` cannot pay that. Would need `|Σ n^{it}|≲X/(log X)^A` at the same length |
 | Prime-free tests `A(log n)=0` built as `sin(2πqe^{|u|})`: `Φ≈√(2π/t) Im[e^{2iϑ(t)}B(t)]`, off-line zeros amplified by `(T/2πq)^δ` | Exact and prime-free because `e(nq)=1`, and it is the functional equation restated. With `B=DG`, approximate FE at zeros removes `χ` and returns Landau–Gonek. Against the Cauchy bound on on-line zeros the amplification `T^{¼+δ/2}` only reaches `T^{½}log T` at `δ=½`: no zero-free range |
 | Prime-free tests as Bernoulli products `Π cos²(πu/2log n)` | Positive definite and vanish on `log ℕ`, but `A` has width `≈log N/√N`, so `Φ` only counts zeros in windows `√N/log N` |
+| Log-energy product formula `Σ_v log|m−n|_v=0` with each local form positive definite (Arakelov energy) on integers | The identity is the large sieve at logarithmic scale; on `n^{it}` points the energy needs a lower bound for `|1−(m/n)^{it}|` at one `t`, which is the problem itself |
+| Mahler measure: `∫log|P(p^{it})|≥0` for integer polynomials in prime variables | True by Kronecker–Weyl, and a mean over `t`. It does not see one height |
+| Hilbert–Carleman: `−Σv_mv_n log(m+n)=½∫|Σv_n n^{it}|²/(t sinh πt)dt` for mass zero, and `η(ρ)=0` makes `(−1)^n n^{−ρ}` an infinite mass-zero word | Exact, and it explains why words have no reach in `t` by positivity alone. Rotating the ray cancels the `Γ` factor but gives only a local mean square of `ζ`. Parseval, blind |
+| Top primes by first level balancing mod all `p≤L` (`Σp≈L²/2ℓ` constraints fit in the budget) | Second moment drops the weight of small primes to `1/max(L,p²)`, but they still supply the deficit with amplitude `≈1/√L`. Prime powers need `(1−z^Q)` factors, cost `4^{π(P)}` |
+| Height descent by Dirichlet returns on primes `≤y` | Reduces height only to `exp(π(y)log(1/ε))`, above the reach `exp(√y)` of words at that length |
+| Determinant method (Bombieri–Pila) as a nonlinear test | Needs precision below the size of the rounded phases, about `1/t` |
 | Pure products of `k` primes near `y`, window `log(A/B)≈1/t` by pigeonhole | Clusters at `(2π/t)ℤ` are exactly the aligned scenario; cluster width needs primes in short intervals of length `X^{1/A}`. Equivalent to near-diagonal energy |
 
 ## Open
@@ -72,4 +86,4 @@ All in `PrimeTorusTheory/`. `L = log|t|`, `ℓ = log L`, `‖·‖` = distance t
   - **Scale coincidence.** The word threshold `M≈k²log k` with `k≍L` is the size horizon `y≈L²` up to logarithms. No explanation is known.
 
 ## Log
-- 2026-11-07 — created; squared words, band, prime mass, every-length saving, sup bound, deletion of small primes formalized
+- 2026-11-07 — created; squared words, band, prime mass, every-length saving, sup bound, deletion of small primes, floor of a word, energy of a word formalized

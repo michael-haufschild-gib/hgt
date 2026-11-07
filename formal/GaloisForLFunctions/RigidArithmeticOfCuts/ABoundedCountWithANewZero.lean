@@ -53,24 +53,24 @@ theorem cubicMass_mul {m n : ℕ} (h : Nat.Coprime m n) : cubicMass (m * n) = cu
       constructor
       · intro hd
         exact (Nat.Prime.dvd_mul Nat.prime_two).mp hd |>.resolve_left hm
-      · exact Dvd.dvd.mul_left · m
+      · exact fun hd => Dvd.dvd.mul_left hd m
     have h8 : (8 ∣ m * n) ↔ 8 ∣ n := by
       have hc : Nat.Coprime 8 m := by
         have : Nat.Coprime 2 m := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr hm
         exact Nat.Coprime.pow_left 3 this
-      exact ⟨fun hd => hc.dvd_of_dvd_mul_left hd, Dvd.dvd.mul_left · m⟩
+      exact ⟨fun hd => hc.dvd_of_dvd_mul_left hd, fun hd => Dvd.dvd.mul_left hd m⟩
     rw [cubicMass_of_odd hm, one_mul, cubicMass, cubicMass]
     simp only [h2, h8]
   · have h2 : (2 ∣ m * n) ↔ 2 ∣ m := by
       constructor
       · intro hd
         exact (Nat.Prime.dvd_mul Nat.prime_two).mp hd |>.resolve_right hn
-      · exact Dvd.dvd.mul_right · n
+      · exact fun hd => Dvd.dvd.mul_right hd n
     have h8 : (8 ∣ m * n) ↔ 8 ∣ m := by
       have hc : Nat.Coprime 8 n := by
         have : Nat.Coprime 2 n := (Nat.Prime.coprime_iff_not_dvd Nat.prime_two).mpr hn
         exact Nat.Coprime.pow_left 3 this
-      exact ⟨fun hd => hc.dvd_of_dvd_mul_right hd, Dvd.dvd.mul_right · n⟩
+      exact ⟨fun hd => hc.dvd_of_dvd_mul_right hd, fun hd => Dvd.dvd.mul_right hd n⟩
     rw [cubicMass_of_odd hn, mul_one, cubicMass, cubicMass]
     simp only [h2, h8]
 
@@ -129,26 +129,23 @@ private lemma hasSum_dvd {d : ℕ} (hd : 1 ≤ d) {s : ℂ} (hs : 1 < s.re) :
     rw [Nat.sub_add_cancel hq0, ← hq]
     simp
   refine (hinj.hasSum_iff hzero).mp ?_
-  convert hbase using 1
-  funext k
-  simp only [Function.comp]
-  have hdvd : d ∣ g k + 1 := by
-    rw [hg1]
-    exact dvd_mul_right _ _
-  rw [if_pos hdvd]
-  have hcast : (((g k : ℕ) : ℝ) + 1) = (d : ℝ) * ((k : ℝ) + 1) := by
-    have := hg1 k
-    have h2 : (((g k + 1 : ℕ)) : ℝ) = ((d * (k + 1) : ℕ) : ℝ) := by rw [this]
-    push_cast at h2
-    exact h2
-  rw [hcast]
-  have hk : (0 : ℝ) ≤ (k : ℝ) + 1 := by positivity
-  push_cast
-  rw [ArithmeticAuxiliaryDynamics.zetaTerm]
-  push_cast
-  have := Complex.mul_cpow_ofReal_nonneg hd0.le hk (-s)
-  push_cast at this
-  exact this
+  have hfun : (fun m : ℕ => if d ∣ m + 1 then (((m : ℝ) + 1 : ℝ) : ℂ) ^ (-s) else 0) ∘ g =
+      fun k => ((d : ℝ) : ℂ) ^ (-s) * ArithmeticAuxiliaryDynamics.zetaTerm s k := by
+    funext k
+    simp only [Function.comp]
+    have hdvd : d ∣ g k + 1 := by
+      rw [hg1]
+      exact dvd_mul_right _ _
+    rw [if_pos hdvd, ArithmeticAuxiliaryDynamics.zetaTerm]
+    have hcast : (((g k : ℕ) : ℝ) + 1) = (d : ℝ) * ((k : ℝ) + 1) := by
+      have h2 : (((g k + 1 : ℕ)) : ℝ) = ((d * (k + 1) : ℕ) : ℝ) := by rw [hg1 k]
+      push_cast at h2
+      exact h2
+    rw [hcast]
+    have hk : (0 : ℝ) ≤ (k : ℝ) + 1 := by positivity
+    exact_mod_cast Complex.mul_cpow_ofReal_nonneg hd0.le hk (-s)
+  rw [hfun]
+  exact hbase
 
 private lemma cpow_eight (s : ℂ) : (((8 : ℕ) : ℝ) : ℂ) ^ (-s) = (((2 : ℝ) : ℂ) ^ (-s)) ^ 3 := by
   have hl : Real.log 8 = 3 * Real.log 2 := by
@@ -208,7 +205,10 @@ theorem exists_cubicFactor_eq_zero : ∃ ρ : ℂ, 1 / 2 < ρ.re ∧ ρ.re < 1 �
   have hw2 : w ^ 2 = 3 / 4 * r ^ 2 - 1 / 4 := Real.sq_sqrt (by linarith)
   set X : ℂ := ((-r / 2 : ℝ) : ℂ) + (w : ℂ) * I with hX
   have hI : I ^ 2 = -1 := Complex.I_sq
-  have hW : (w : ℂ) ^ 2 = 3 / 4 * (r : ℂ) ^ 2 - 1 / 4 := by exact_mod_cast hw2
+  have hW : (w : ℂ) ^ 2 = 3 / 4 * (r : ℂ) ^ 2 - 1 / 4 := by
+    have := congrArg (fun x : ℝ => (x : ℂ)) hw2
+    push_cast at this
+    exact this
   have hR : 4 * (r : ℂ) ^ 3 - (r : ℂ) + 1 = 0 := by exact_mod_cast hroot
   have hquad : 4 * X ^ 2 + 4 * (r : ℂ) * X + (4 * (r : ℂ) ^ 2 - 1) = 0 := by
     rw [hX]
@@ -272,6 +272,7 @@ theorem cubicFactor_shift (s : ℂ) (k : ℤ) :
         ((Real.log 2 : ℝ) : ℂ) * -s + ((-k : ℤ) : ℂ) * (2 * Real.pi * I) := by
       push_cast
       field_simp
+      ring
     rw [hsplit, Complex.exp_add, Complex.exp_int_mul_two_pi_mul_I, mul_one]
   rw [cubicFactor, cubicFactor, hshift]
 

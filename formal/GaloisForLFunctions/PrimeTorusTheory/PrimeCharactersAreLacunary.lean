@@ -324,7 +324,7 @@ theorem primesBelow_subset {P N : ℕ} (h : P ≤ N) : P.primesBelow ⊆ N.prime
 /-- A sum over all primes is the limit of the sums over `primesBelow`. -/
 theorem tendsto_sum_primesBelow {F : Type*} [NormedAddCommGroup F] [CompleteSpace F] {g : ℕ → F}
     (h : Summable fun p : Nat.Primes => g p) :
-    Tendsto (fun N => ∑ p ∈ N.primesBelow, g p) atTop (𝓝 (∑' p : Nat.Primes, g p)) := by
+    Tendsto (fun N : ℕ => ∑ p ∈ N.primesBelow, g p) atTop (𝓝 (∑' p : Nat.Primes, g p)) := by
   classical
   have h1 := h.hasSum
   have h2 : HasSum ({p : ℕ | p.Prime}.indicator g) (∑' p : Nat.Primes, g p) :=
@@ -376,13 +376,17 @@ theorem continuous_primeSum (N : ℕ) (s : ℂ) : Continuous (primeSum N s) :=
 theorem norm_primeSum_le (P : ℕ) {s : ℂ} (hs : 0 < s.re) (x : GaugeTorus) :
     ‖primeSum P s x‖ ≤ (P.primesBelow.card : ℝ) := by
   unfold primeSum twistSum
-  refine (norm_sum_le_of_le _ fun p hp => ?_).trans (by simp)
-  · exact (1 : ℝ)
-  · have hp' := (Nat.mem_primesBelow.mp hp).2
+  have h : ∀ p ∈ P.primesBelow, ‖powCoeff s p * twist x p‖ ≤ 1 := by
+    intro p hp
+    have hp' := (Nat.mem_primesBelow.mp hp).2
     rw [norm_mul, norm_twist, mul_one]
     unfold powCoeff
     rw [Complex.norm_natCast_cpow_of_pos hp'.pos, Complex.neg_re]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hp'.one_lt.le) (by linarith)
+  calc
+    ‖∑ p ∈ P.primesBelow, powCoeff s p * twist x p‖ ≤ ∑ _p ∈ P.primesBelow, (1 : ℝ) :=
+      norm_sum_le_of_le _ h
+    _ = (P.primesBelow.card : ℝ) := by simp
 
 theorem norm_sub_sub_sub_sq_le (a b c d : ℂ) :
     ‖a - b - c - d‖ ^ 2 ≤ 4 * (‖a‖ ^ 2 + ‖b‖ ^ 2 + ‖c‖ ^ 2 + ‖d‖ ^ 2) := by
@@ -422,8 +426,7 @@ theorem setLIntegral_ofReal_le {f r e : GaugeTorus → ℝ} {c B₁ B₂ : ℝ}
           rw [lintegral_add_right _ measurable_const, setLIntegral_const]
     _ ≤ ∫⁻ x, (ENNReal.ofReal 4 * ENNReal.ofReal (r x) + ENNReal.ofReal 4 * ENNReal.ofReal (e x)) ∂gaugeHaar +
           ENNReal.ofReal c * 1 := by
-          gcongr
-          exact setLIntegral_le_lintegral _ _
+          exact add_le_add (setLIntegral_le_lintegral _ _) (by gcongr)
     _ = ENNReal.ofReal 4 * ∫⁻ x, ENNReal.ofReal (r x) ∂gaugeHaar +
           ENNReal.ofReal 4 * ∫⁻ x, ENNReal.ofReal (e x) ∂gaugeHaar + ENNReal.ofReal c := by
           rw [lintegral_add_left' (hrm.ennreal_ofReal.const_mul _), lintegral_const_mul' _ _ h4,
@@ -446,8 +449,8 @@ theorem not_bounded_sum_primes_inv (R : ℝ) :
     rw [Finset.sum_filter]
     refine Finset.sum_congr rfl fun m _ => ?_
     by_cases hm : m.Prime
-    · simp [Set.indicator_apply, hm]
-    · simp [Set.indicator_apply, hm]
+    · simp [hm]
+    · simp [hm]
 
 /-- **Zygmund's theorem on the torus.** Let `Re s_j → ½` from the right. The sums `Σ_p p^{−s_j} x_p`, perturbed by functions bounded in `L²` uniformly in `j`, stay bounded only on a null set. -/
 theorem measure_bounded_prime_sums_eq_zero {s : ℕ → ℂ} (hs : ∀ j, 1 / 2 < (s j).re)
@@ -476,7 +479,7 @@ theorem measure_bounded_prime_sums_eq_zero {s : ℕ → ℂ} (hs : ∀ j, 1 / 2 
     show ‖v j x‖ ≤ M
     rw [← hx j]
     exact hZ j hj
-  refine le_antisymm ((measure_mono_ae hsub).trans (le_of_eq ?_)) (zero_le _)
+  refine le_antisymm ((measure_mono_ae hsub).trans (le_of_eq ?_)) zero_le
   by_contra hne
   set m : ℝ := (gaugeHaar E).toReal with hm
   have hm0 : 0 < m := ENNReal.toReal_pos hne (measure_ne_top _ _)
@@ -568,7 +571,7 @@ theorem measure_bounded_prime_sums_eq_zero {s : ℕ → ℂ} (hs : ∀ j, 1 / 2 
     nlinarith
   have hLim : ∀ N : ℕ, Tendsto (fun j => S j N) atTop (𝓝 (∑ p ∈ N.primesBelow, (1 : ℝ) / p)) := by
     intro N
-    refine tendsto_finset_sum _ fun p hp => ?_
+    refine tendsto_finsetSum _ fun p hp => ?_
     have hp0 : (p : ℝ) ≠ 0 := by exact_mod_cast (Nat.mem_primesBelow.mp hp).2.ne_zero
     have h1 : Tendsto (fun j => (p : ℝ) ^ (-(2 * (s j).re))) atTop (𝓝 ((p : ℝ) ^ (-(2 * (1 / 2 : ℝ))))) :=
       (Real.continuousAt_const_rpow hp0).tendsto.comp (hlim.const_mul 2).neg
