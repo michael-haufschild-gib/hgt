@@ -1,0 +1,235 @@
+Arithmetic and Gaussian proofs adapted from OpenAI's mathematics formalization.
+Upstream: https://github.com/openai/math
+Commit: fd4aeeb2ee4fc729c18d98444fed42fd0529eeeb
+License: Apache-2.0; reproduced in LICENSE.
+
+Relevant sources:
+lean/OAI/NumberTheory/DirichletL/QuadraticSieve/HighKernelGeometry.lean
+lean/OAI/NumberTheory/DirichletL/Reciprocity/CubicJacobi.lean
+lean/OAI/NumberTheory/DirichletL/Reciprocity/RamifiedSymbol.lean
+lean/OAI/NumberTheory/DirichletL/CubicSieve/RayCoefficients.lean
+lean/OAI/NumberTheory/DirichletL/Arithmetic/EisensteinCoordinates.lean
+lean/OAI/NumberTheory/DirichletL/Cusp/MatrixPhases.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/CubicNormalization.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/FiniteFourier.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/CubicTrace.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/QuadraticTrace.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/SquarePhaseFactorization.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/SecondPoissonScale.lean
+lean/OAI/NumberTheory/DirichletL/Poisson/BinaryGaussian.lean
+lean/OAI/NumberTheory/DirichletL/Poisson/GaussianMoments.lean
+lean/OAI/NumberTheory/DirichletL/Poisson/OscillatoryGaussian.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/GaussianFiberMass.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/GaussianDualLimit.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/QuadraticNormalization.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/RamifiedTracePhase.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/AbelPhaseLimit.lean
+lean/OAI/NumberTheory/DirichletL/GaussSum/ThetaLocalRows.lean
+lean/OAI/NumberTheory/DirichletL/PrimeRows/RationalApproximation.lean
+
+Changes: standalone character-conversion API, factorization without
+nontriviality restrictions, explicit exceptional values, and norm preservation.
+The Gauss norm theorem is reused from this project's ArithmeticEffectivityTheory.
+
+The primary-prime proof was read from the Kontorovich mirror, commit
+d26d846d6f3129017f06b6fd3f78dd72d361d60b. The local adaptation derives the
+unit multiplier from equality of principal ideals, exposes the canonical
+primary generator, and gives the normalized identity for every primitive
+additive character.
+
+The composite Gauss-sum module factors arbitrary primitive additive characters
+through the actual CRT isomorphism. Its prime-product Möbius proof is adapted
+from SecondPoissonScale; its character factorization and construction are local.
+
+The Hasse–Davenport proof in MobiusBecomesACubicGaussCoefficient is adapted
+from the JacobiQuadratic namespace in CubicNormalization. Its actual-prime
+and CRT endpoints, explicit conversion factor, and modulus proof use the
+local primary-generator and product-character APIs.
+
+CubicReciprocityFromFrobenius adapts the Frobenius argument from CubicTrace
+and injectivity on cubic roots from QuadraticTrace. The canonical-generator
+endpoint uses the local primary-generator construction.
+
+TheCubicPhaseLivesModuloTwo adapts the fixed-two reciprocity specialization
+from SquarePhaseFactorization. Its proof of inertness uses ideal norms and
+the existing cubic-root cardinality relation, avoiding prime-factor classification.
+
+EisensteinCoordinates adapts the integral coordinate basis and rational
+quotient parametrization. Its intrinsic field-trace formulas and embedding
+independent norm proof use the local cyclotomic field and conjugation APIs.
+
+BinaryGaussianPoisson extracts the two successive Gaussian transforms,
+positive-real-part summability proofs, square-root branch calculation, and
+explicit oscillatory inverse form from the listed Poisson sources.
+
+ShiftedEisensteinGaussianMass adapts the affine Gaussian transform and
+dominated-convergence Abel limit from BinaryGaussian, QuadraticNormalization,
+GaussianDualLimit, and GaussianFiberMass. It uses the local binary transform.
+
+QuadraticTraceCoordinates derives the actual trace pairing and identifies
+the dual phase intrinsically through the modulus-four character. Its finite
+residue evaluation follows the quadratic phase argument in RamifiedTracePhase.
+
+EisensteinResidueGaussianMass adapts the residue-fibre partition and lattice
+Abel limit from GaussianFiberMass and QuadraticNormalization. It uses the
+intrinsic trace character and coordinate equivalence proved locally.
+
+TheDualGaussianPhaseFreezes extracts the Gaussian moment domination,
+vanishing normalized phase error, and dual-scale limit from GaussianMoments,
+OscillatoryGaussian, AbelPhaseLimit, and RationalApproximation.
+
+TheQuadraticGaussPhaseLivesModuloFour assembles the Abel-limit comparison
+from ThetaLocalRows. The local proof keeps the varying dual phase on the
+integer lattice and reindexes only the fixed phase into actual residue classes.
+
+TheAnalyticConversionHasAFixedRayPhase adapts the finite square-sum
+factorization from SquarePhaseFactorization. Its analytic character bridge,
+explicit finite ray factor, and angular decomposition use the local trace
+normalization and quadratic Gauss evaluation.
+
+CubicReciprocityAtACommonCharacteristic adapts the primary factorization
+and auxiliary negative-sum argument from SquarePhaseFactorization. Its
+prime-cover bound uses mathlib's ramification-inertia degree identity.
+
+CubicJacobiSymbols adapts ideal-factor symbol definitions and congruence from
+CubicJacobi and coprime cubic-root identities from RayCoefficients. Composite
+reciprocity uses the local primary element factorization directly; numerator
+multiplicativity is proved for every ideal denominator, including zero.
+
+TheRamifiedCubicSupplement adapts the auxiliary-prime comparison and nine
+primary coordinate cases from CubicJacobi. The local proof derives residue
+cardinalities directly from the intrinsic integral norm and Jacobi identity.
+
+TheRamifiedCubicPhaseLivesModuloNine adapts the multiplicative coordinate
+phases and denominator-congruence proof from RamifiedSymbol. It uses the
+local composite symbol and prime supplementary laws.
+
+TheCubicKubotaMultiplier adapts the coprime shift and matrix product law
+from RayCoefficients and the finite-index kernel construction from
+HighKernelGeometry. The explicit primitive-valued matrix, surjectivity onto
+the integral cubic roots, and exact relative kernel index are local extensions.
+
+TheCubicMultiplierExtendsOverRationalMatrices adapts rational conjugation,
+Euclidean symbol reduction, and character extension from
+lean/OAI/NumberTheory/DirichletL/Reciprocity/KubotaCharacter.lean. The local
+finite-index normal-kernel endpoint uses the previously constructed actual kernel.
+
+EisensteinNearestPoint adapts nearest-neighbor comparison from
+QuadraticSieve/HighKernelGeometry.lean. The local proof obtains the nearest
+point from finite coordinate sublevels and does not choose the sign of the
+complex embedding.
+
+HyperbolicThreeSpace adapts row energy and quotient height from
+Eisenstein/Rows.lean and Eisenstein/HyperbolicSpace.lean; Iwasawa factorization
+from QuadraticSieve/HighKernelGeometry.lean; quotient topology and coordinates
+from Eisenstein/QuotientTopology.lean, QuadraticSieve/GlobalBinLoss.lean,
+and QuadraticSieve/SelectedExponents.lean.
+
+BianchiReductionAndCompactCore adapts integral row bounds from Eisenstein/Rows.lean,
+Ford reduction from QuadraticSieve/HighKernelGeometry.lean, and the finite-index
+orbit-quotient cover from Eisenstein/QuotientTopology.lean. The nearest-point
+input is the embedding-independent theorem proved locally.
+
+TheCubicEisensteinSeries adapts the bottom-row quotient, lattice majorant,
+normal convergence, and automorphy from Eisenstein/Rows.lean and
+Eisenstein/HyperbolicSpace.lean. It uses the locally constructed cubic
+character and hyperbolic quotient, without an assumed analytic continuation.
+
+TheCubicKernelHasAMeasurableFundamentalDomain adapts the Gram embedding from
+QuadraticSieve/GlobalBinLoss.lean and the free action and lexicographic
+selector from Eisenstein/FundamentalDomain.lean. The local endpoint exposes
+pointwise uniqueness and applies to every Borel measure.
+
+HyperbolicVolumeIsInvariant adapts the Euclidean Jacobian argument from
+CubicSieve/ArithmeticBins.lean and the Möbius coordinates, Bruhat
+factorization, and invariant pushforward from Eisenstein/HyperbolicVolume.lean.
+
+TheCubicQuotientHasFiniteVolume adapts quotient measure and descent from
+Eisenstein/FundamentalDomain.lean, the height integral from
+QuadraticSieve/CuspCoercivity.lean, and the finite cusp-box cover bound from
+QuadraticSieve/SelectedExponents.lean. Its positive finite volume endpoint
+uses the actual kernel and invariant measure constructed locally.
+
+TheCubicQuotientHasLocalMeasureCharts adapts Frobenius displacement bounds,
+proper discontinuity, covering projections, and local measure transport from
+CubicSieve/LiteralSources.lean. The local second-countability result applies
+to every integral subgroup quotient.
+
+SmoothCutoffsOnTheCubicQuotient adapts Euclidean coordinates and local measure
+transport from MeanSquare/TransformedColumns.lean, GaussSum/ReflectedBranches.lean,
+and Eisenstein/LocalCutoffs.lean. The local endpoint constructs a cutoff at
+every actual quotient point without assuming a smooth quotient atlas.
+
+Euclidean Sobolev proofs adapted from Adam Benenson's rellich-kondrachov.
+Upstream: https://github.com/abenenson/rellich-kondrachov
+Commit: 70f85d4c1bf99c6e7d61e8be4daa6f3664d08d23
+Copyright (c) 2026 Adam Benenson. Apache-2.0.
+EuclideanEnergy adapts Analysis/FunctionalSpaces/Sobolev/Euclidean/H1.lean.
+The local formulation distinguishes the mass projection from an injective
+embedding for an arbitrary measure and records the maximum product norm.
+EuclideanTranslations adapts Euclidean/Translation.lean and
+Euclidean/TranslationEstimate.lean from the same rellich-kondrachov source.
+TranslationEnergyBound adapts Euclidean/TranslationEstimateL2.lean and
+Euclidean/TranslationEstimateH1.lean. The closure argument is reduced to a
+closed inequality in the ambient product of the two L² spaces.
+LpZeroExtension adapts MeasureTheory/Function/LpSpace/Restrict.lean, reducing
+the linearity proofs to pointwise indicator identities and preserving the
+full Lp norm. The declarations remain in the project-owned Sobolev namespace.
+ConvolutionSmoothing adapts Euclidean/L2Compactness/Smoothing.lean. It uses
+the local extension isometry directly, avoiding duplicate L² representatives.
+ConvolutionApproximation adapts Euclidean/L2Compactness/Approximation.lean.
+The local probability proof is supplied explicitly, rather than registered
+as an instance with uninferable analytic arguments.
+SmallProbabilityKernels adapts Euclidean/L2Compactness/Kernels.lean.
+SmoothedTranslationBound adapts Euclidean/L2Compactness/TranslationIntegral.lean.
+SmoothingCompactnessCriterion adapts Euclidean/L2Compactness/FrechetKolmogorov.lean.
+Its fixed-kernel input is the local corpus-based CompactConvolution theorem.
+EuclideanRellich adapts Euclidean/Rellich.lean. Its compact C¹-family
+corollary also follows OpenAI CubicSieve/RadialWindows.lean. The local
+unit-ball proof applies the constructed kernels and gradient translation
+estimate directly, without raised elaboration limits.
+CompactCutoffCharts adapts the finite cutoff cover from OpenAI
+Eisenstein/CompactEnergyFamilies.lean and combines it with the local
+Euclidean Rellich theorem and exact restricted quotient measure charts.
+TheCubicQuotientHasASmoothAtlas adapts Möbius coordinate charts and deck
+transitions from OpenAI CubicSieve/RowCaps.lean, coordinates from
+MeanSquare/TransformedColumns.lean, and manifold instances and smooth
+projection from Eisenstein/SmoothTests.lean.
+SmoothTestsOnTheCubicQuotient adapts full support from OpenAI
+MeanSquare/TransformedColumns.lean and smooth test density from
+Eisenstein/SmoothTests.lean, using the locally constructed finite quotient
+volume and smooth atlas.
+HyperbolicActionPreservesEnergy adapts the differential norm and cotangent
+energy identities from OpenAI GaussSum/ReflectedBranches.lean. It uses the
+local inversion derivative and Bruhat decomposition.
+ComplexWeakGradientGraph adapts the complex distributional gradient graph
+and Hilbert norm from OpenAI MeanSquare/SourceTransfer.lean. Distributional
+injectivity and Schwartz density come from the installed mathlib.
+TheCubicDirichletForm adapts the descended energy density from OpenAI
+GaussSum/ReflectedBranches.lean and polarization from Eisenstein/DirichletForm.lean.
+It uses the actual smooth quotient atlas and the locally proved invariance
+of the hyperbolic cotangent energy.
+TheCubicEnergyGraph adapts the smooth gradient graph from OpenAI
+CubicSieve/RadialWindows.lean and its Hilbert completion from
+CubicSieve/PaddedPassage.lean. Its norm identity uses the actual quotient
+Dirichlet form and fundamental-domain measure constructed locally.
+LocalizingTheCubicEnergy adapts the cutoff Leibniz estimate and chart mass
+comparison from OpenAI Eisenstein/LocalCutoffs.lean, and the Hilbert energy
+bound from CubicSieve/PaddedPassage.lean. It uses the locally constructed
+distributional gradient space and actual quotient measure charts.
+LocalizingTheCompletedCubicEnergy adapts continuous extension of the energy
+and mass localizations from OpenAI CubicSieve/PaddedPassage.lean. The norm
+bounds are discharged by the locally proved cutoff and measure estimates.
+TheCubicGradientIsClosable adapts reverse localization, cutoff faithfulness,
+and gradient closability from OpenAI Eisenstein/VariationalLaplacian.lean.
+It uses the local cutoff cover and actual weak-gradient localization.
+CompactCubicEnergyLocalizations adapts real and imaginary Rellich localization
+from OpenAI CubicSieve/ReopenedFibers.lean. It uses the local Euclidean Rellich
+theorem and explicit Borel transport, then extends compactness by density.
+CompactRestrictionOfTheCubicEnergy adapts the finite-chart estimate from
+OpenAI Eisenstein/CompactEnergyFamilies.lean. Restriction uses the corpus
+Lp cutoff map, and compact domination uses its canonical-system theorem.
+TheCubicVariationalLaplacian adapts the coercive variational solution and
+resolvent graph from OpenAI Eisenstein/VariationalLaplacian.lean. The local
+mass embedding is proved injective and dense; these facts discharge the
+closed, densely defined, nonnegative self-adjoint operator construction.

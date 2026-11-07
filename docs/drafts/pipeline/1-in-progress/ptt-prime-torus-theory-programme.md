@@ -11,28 +11,39 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven: every statement below
+- [x] 2 → 3  formalized: every statement below compiles
+- The programme stays open for the topics of README §9.
 
-## Paper proofs (status column is the only thing to update)
+## Status
 
-| # | Statement | Status |
+| # | Statement | Lean |
 |---|---|---|
-| P1 | `√D_a` subadditive; `D_a(nt) ≤ n²D_a(t)`; `|P_a(t) − P_a(s)|² ≤ 2S_a D_a(t−s)`; `D₊(2t) ≤ 4D₋(t)` | paper |
-| P2 | Halász–Montgomery: `P_a(t_i) ≥ θS` for `i<N` ⇒ `Σ_{i,j} P_a(t_i−t_j) ≥ θ²N²S` | paper |
-| P3 | Finite-time Bohr: Fejér product on `P` = `|R|²/|A|`, `R` unimodular on divisors of `D=Πp^m`; window `L ≫ |A|²|P|·max p·D` ⇒ every direction entered at level `(m/(m+1))S` | paper |
-| P4 | Pigeonhole non-alignment: `C(d+k,k) ≥ k t log y + 1` ⇒ `max_p ‖t log p‖ ≥ t/(2k y^k)`; half-space saving `S − sup P ≥ S·T^{−2/(2K−1)−o(1)}` | paper |
-| P5 | Energy = Fejér moment; diagonal through `k₀`; Cauchy lower bound; start of orbit is the mixing term; returns add | paper |
-| P6 | Rounded orbit: `ℓ̃_p ∈ (2π/T)ℤ`, `|ℓ̃_p−log p| ≤ π/T`: exact return at `T`, agrees to `cT`, diagonal through `k₀` preserved | paper |
-| P7 | Agler wall, two-point inequality: `|S₁−S₂| ≤ |G₁|√((1−|S₁|²)/(1−|G₁|²)) + |G₂|/√(1−|G₂|²) + √(Σ|δ_k|²/(1−r_k²)²)`; along returns with `S,G→0`: `|S| ≤ |G|` | paper |
-| P8 | Fejér positivity: `∫₀^T(1−t/T)P_a(t)dt = Σ a_i(1−cos Tℓ_i)/(Tℓ_i²) ≥ 0`, sign flips on the twin | paper |
-| P9 | Hull table: finite modification, Liouville fibre `ζ(2s)/ζ(s)`, identity fibre pole, typical fibre zero-free | paper |
-| P10 | Pole payment: `Σ_p p^{−σ}cos(u log p) ≤ log|ζ(σ+iu)| + c`, separated large values | paper |
-| P11 | SOS: column outer factor `b−c_p = |(u−vω)/(1−rω)|²`; allocation ⇔ size; frozen coefficient ⇒ torus positive ⇒ size; graph lift tautological | paper |
-| P12 | Critical coupling: both `½` are one pole | open |
+| P1 | Group closure, transport, corners, Halász–Montgomery | `TheOrbitOfAPhaseSystem` |
+| P2 | Bohr sets, clusters, large-value pairs, descent | `LargeValueHeightsFormAnApproximateGroup` |
+| P3 | Finite-time Bohr isometry; Kronecker scale | `TheFiniteTimeBohrIsometry` |
+| P4 | Pigeonhole non-alignment; saving `T^{−2/(A−1)−δ}`; any set of primes; top of the column | `UniqueFactorizationPaysForNonAlignment`, `TheSavingAgainstSize`, `TheSavingOnAnySetOfPrimes` |
+| P5 | Moment = energy; start of the orbit; diagonal range; last-moment bound | `TheEnergyOfTheOrbit`, `TheDiagonalRange` |
+| P6 | Rounded orbit: diagonal data cannot exclude a return | `TheRoundedOrbit` |
+| P7 | Agler wall, finite and all primes; first and second test; sharpness | `PrimeByPrimePaymentCannotUseTheGammaFactor`, `TheWallForAllPrimes` |
+| P8 | Fejér sign at the start; twin; start is extremal | `TheCornersOfTheOrbit` |
+| P9 | Hull: finite type, Liouville ⇔ RH, typical zero-free, limits ⇔ RH | `TheHullOverTheTorus` |
+| P10 | Pole price; large values counted through the pole | `TheReturnsThePoleMustPay` |
+| P11 | Graph lift; frozen = size; outer factor; allocation | `CertificatesOnTheOrbit` |
+| P12 | Critical coupling: theta counts integers | `TheCriticalCouplingOfTheBase` |
+| P13 | Rank law; continuous systems have no torus; Pick certificate at rank one | `TheRankLaw`, `TheCertificateAtRankOne` |
+| P14 | Character discrepancy; box count | `TheDiscrepancyOfTheOrbit` |
+| P15 | Tarry–Escott and squared words; saving at every length; polylogarithmic saving past the horizon; sup of integer powers | `TarryEscottWords`, `TarryEscottWordsForbidAlignment`, `NonAlignmentAtEveryLargeHeight`, `TheOrbitAvoidsTorsionPoints`, `TheLogarithmicHankelForm`, `SquaredWordsForbidAlignment`, `TheMisalignmentBand`, `TheMassOfMisalignedPrimes`, `TheSavingAtEveryLength`, `TheSupBoundOfIntegerPowers` |
+| P16 | The six questions, one statement each | `TheQuestionsOfTheField` |
 
-## Approach
-Module list follows the paper proofs; umbrella `PrimeTorusTheory.lean`, wired into `MainTheorems.lean`.
+## Open
+Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Transfer of the polylogarithmic saving to the top; oscillating energy past the diagonal; boxes at the mixing time; non-returning coordinates; hull beyond finite type.
+
+## No-go closure
+- **Exact killing theorem/mechanism:** the kernel-valued Agler form of §2.8b dies on two points: `agler_wall`, `agler_wall_all_primes`, `no_decomposition_euler`, `euler_test`.
+- **Strongest positive survivor:** `two_point_inequality` for arbitrary coordinates, and `norm_sub_sq_le_of_general` for a general archimedean term; the positive side `aglerDecompositionMulTwo`, `selfDecomposition`, and at rank one `exists_certificate_iff`.
+- **New insight:** a passing certificate must use coordinates that see absolute height.
+- **Status:** Lean, as named.
 
 ## Log
 - 2026-11-07 — created

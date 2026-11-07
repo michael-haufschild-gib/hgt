@@ -3,33 +3,28 @@
 - **ID:** AAD
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (Lean)
-- **Source:** docs/reports/review-0611/obstacles-summary.md §2.8
+- **Source:** docs/reports/review-0611/obstacles-summary.md, the field section "If positivity, Weil positivity and spectral methods are excluded"
 - **Statement:** how the rational integers force zeros of ζ by construction and transport, with no sign.
 
 ## Goal
-Develop the field: objects, tools, answers to the five questions of §2.8.
-Lean folder: `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/`, umbrella `ArithmeticAuxiliaryDynamics.lean`.
+Develop the field: objects, tools, answers to its questions. Lean folder `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/`, umbrella `ArithmeticAuxiliaryDynamics.lean`, foundational document `ArithmeticAuxiliaryDynamics/README.md`.
 
-## Working mathematics (paper targets; each is formalized before it counts)
+## Status
+All results below are Lean theorems, unconditional. Paper targets are closed.
 
-For a balanced stencil `c` with `g = stepWeight c ≥ 0`, `g ≥ m` on `[1,B)`:
+- Scale: floor `c₁/(√K (1+log K))` (`exists_half_floor`); `K^{-a}` reads `Re ρ ≤ 1−a`; rates for all `a<1/2` give RH; `a>1/2` impossible. Peak law `w ≤ 100 (1+log K)² (K T + m)`.
+- Construction: VK rate on polynomial alphabets (`hasRate_vk`); RH gives every `a<1/5`, strip `Θ` gives `a<(1−Θ)/(3−Θ)` (`hasRate_of_zeroFree_sharp`); polynomial rate ⇔ strip.
+- Exact LP duality, extremal fake prime measure and its distance from the pronic one (`exists_extremal_bracket`).
+- Parity: factor 2 is one Hecke factor; parity neutral producers at the Mertens level (`hasParityNeutralRate_vk`, `exists_hasParityNeutralRate_rpow_iff`).
+- Curves: linear stencil window is `|a| ≤ q+1`; purity is the upper bound for curve and twist (`isPure_iff_upper_bound`).
+- Ledger ladder: order law for all analytic `f`, generating function, twin gap.
+- Transport: phase returns exist; a bounded one at a zero gives infinitely many zeros; one at each zero gives AAL (`asymptoticAbscissaLaw_of_boundedReturns`).
+- Tools: multiplicity and zero estimates on the gauge torus, Siegel with parity, effective Kronecker, Hurwitz limit set in the torus, transport count, return exponent.
 
-- W1 Increment and Möbius rigidity: `h = c*1`, `c = μ*h`; constant windows force `c = mμ`.
-- W2 Reflection: on a common period `L`, `g(L−1−j) + g(j) = w`, `w = −Σc(k) = sup g`, mean `w/2`.
-- W3 Forced jumps: `h(r) = c(1)` when `gcd(r,L) = 1`, so `g(r) ≥ m` at rough `r`.
-- W4 Floor: `T := slope − m(1−1/B) ≥ m Σ_{r>1 rough} 1/(r(r+1))`, hence `A(K)−1 ≥ c/(K log K)`.
-- W5 Coefficient bound: `|h(d)| ≤ slope·d(d+1)`, `|c(k)| ≲ slope·k²`, so `C_ε` of the producer is polynomial in `K`.
-- W6 Mellin: `D_c(s)ζ(s) = Σ g(r)(r^{−s} − (r+1)^{−s})`, `Re s > 0`.
-- W7 Mollifier on `Re s = 1`: `|D_cζ(1+iτ)/m − (1−B^{−1−iτ})| ≤ |1+iτ| T/m`.
-- W8 Uncertainty: at a zero `ρ`, `m|1−B^{−ρ}|/|ρ| ≤ (1+1/β) w^{1−β} T^{β}`.
-- W9 Reading: `ε(K) ≤ K^{−a}` gives `Θ < 1`; `ε(K) ≤ exp(−(log K)^α)` gives a zero-free region of exponent `(1−α)/α`.
-- W10 Parity: `1_{λ=−1} = (1−λ)/2` moves the factor 2 of a nonnegative `h` to `Σ c(k)λ(k)L(x/k)`.
-- W11 `h ≥ 0` is never balanced: the sieve cone and the producer cone meet trivially.
+## Open core
+Certificate of a rate not through `M(x)`; exponent under RH in `[1/5, 1/2]`; parity through the primes; arithmetic input for a nonlinear ledger (RigidArithmeticOfCuts); bounded phase returns at a zero; Stepanov's twist over `ℤ`; explicit extremal measure.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
+- [ ] 1 → 2  fully-proven (programme stays open on the core above)
 - [ ] 2 → 3  formalized
-
-## Log
-- 2026-11-06 — created; first README draft written.

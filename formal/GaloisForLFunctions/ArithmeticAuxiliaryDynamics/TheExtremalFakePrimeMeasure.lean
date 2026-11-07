@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheDualOfTheRateIsAFakePrimeMeasure
+import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheHalfScaleOfTheRate
 import Mathlib.Analysis.LocallyConvex.Separation
 
 /-!
@@ -16,6 +17,10 @@ to the true one, in the only sense the producers can read: no other consistent m
 
 The excess of a producer is the integral of its slack against any fake prime measure, so an extremal measure
 lives on the set where the multiplicity sits at its lower bound.
+
+**How close it is.** The window mass of the true measure is `1 − 1/B`. At the best window the extremal mass is within a factor
+`1 + exp(−(log K)^α)` of it, for `α < 3/5`, and at every window it exceeds it by a factor at least `1 + c/(√K (1 + log K))`. So a fake prime
+measure of level `K` can be told apart from the truth, and only by very little.
 
 The proof separates the point `(log k, value)` from the cone of attainable moments. The cone is closed because
 the moments control the mass: every residue off the period has a letter that does not divide it.
@@ -58,7 +63,7 @@ theorem exists_letter_mod {K r : ℕ} (h1 : 1 ≤ r) (h2 : r < lcmUpTo K) : ∃ 
   by_contra hall
   push Not at hall
   have hdvd : lcmUpTo K ∣ r := Finset.lcm_dvd fun k hk =>
-    Nat.dvd_of_mod_eq_zero (by have := hall k hk; omega)
+    Nat.dvd_of_mod_eq_zero (Nat.lt_one_iff.mp (hall k hk))
   have := Nat.le_of_dvd (by omega) hdvd
   omega
 
@@ -140,8 +145,8 @@ private lemma sum_Icc_two_eq (g : ℕ → ℝ) (K : ℕ) :
 
 /-- The moment map of the program: `(u, t) ↦ (Σ u(r) (r mod k), mass on the window − t)`. -/
 private def phi (K B : ℕ) (z : (Fin (lcmUpTo K - 1) → ℝ) × ℝ) : (Fin (K - 1) → ℝ) × ℝ :=
-  (fun i => ∑ j, z.1 j * ((((j : ℕ) + 1) % ((i : ℕ) + 2) : ℕ) : ℝ),
-    (∑ j, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * z.1 j) - z.2)
+  (fun i : Fin (K - 1) => ∑ j : Fin (lcmUpTo K - 1), z.1 j * ((((j : ℕ) + 1) % ((i : ℕ) + 2) : ℕ) : ℝ),
+    (∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * z.1 j) - z.2)
 
 private lemma phi_add (K B : ℕ) (z w : (Fin (lcmUpTo K - 1) → ℝ) × ℝ) :
     phi K B (z + w) = phi K B z + phi K B w := by
@@ -181,8 +186,10 @@ private lemma le_sum_moments (K B : ℕ) {u : Fin (lcmUpTo K - 1) → ℝ} (hu :
   obtain ⟨k, hk, hkr⟩ := exists_letter_mod (K := K) (r := (j : ℕ) + 1) (by omega) (by omega)
   have hk' := mem_Icc.mp hk
   have hi : k - 2 < K - 1 := by omega
-  have hterm : ∀ i : Fin (K - 1), 0 ≤ (phi K B (u, 0)).1 i := fun i =>
-    sum_nonneg fun j _ => mul_nonneg (hu j) (Nat.cast_nonneg _)
+  have hterm : ∀ i : Fin (K - 1), 0 ≤ (phi K B (u, 0)).1 i := by
+    intro i
+    change 0 ≤ ∑ j : Fin (lcmUpTo K - 1), u j * ((((j : ℕ) + 1) % ((i : ℕ) + 2) : ℕ) : ℝ)
+    exact sum_nonneg fun j _ => mul_nonneg (hu j) (Nat.cast_nonneg _)
   have h1 : (phi K B (u, 0)).1 ⟨k - 2, hi⟩ ≤ ∑ i, (phi K B (u, 0)).1 i :=
     single_le_sum (fun i _ => hterm i) (mem_univ _)
   have h2 : u j ≤ (phi K B (u, 0)).1 ⟨k - 2, hi⟩ := by
@@ -197,7 +204,7 @@ private lemma le_sum_moments (K B : ℕ) {u : Fin (lcmUpTo K - 1) → ℝ} (hu :
     calc u j = u j * 1 := (mul_one _).symm
       _ ≤ u j * ((((j : ℕ) + 1) % ((k - 2) + 2) : ℕ) : ℝ) :=
           mul_le_mul_of_nonneg_left hcast (hu j)
-      _ ≤ _ := hsingle
+      _ ≤ ∑ j' : Fin (lcmUpTo K - 1), u j' * ((((j' : ℕ) + 1) % ((k - 2) + 2) : ℕ) : ℝ) := hsingle
   exact h2.trans h1
 
 /-- **The cone of moments is closed.** -/
@@ -205,7 +212,7 @@ private lemma momentCone_closed (K B : ℕ) : IsClosed (momentCone K B) := by
   refine IsSeqClosed.isClosed fun x a hx hlim => ?_
   choose z hz hphi using hx
   have hs : Tendsto (fun n => ∑ i, (x n).1 i) atTop (𝓝 (∑ i, a.1 i)) :=
-    tendsto_finset_sum _ fun i _ =>
+    tendsto_finsetSum _ fun i _ =>
       ((continuous_apply i).comp continuous_fst).tendsto a |>.comp hlim
   have ht : Tendsto (fun n => -(x n).2) atTop (𝓝 (-a.2)) :=
     (continuous_snd.neg.tendsto a).comp hlim
@@ -222,9 +229,9 @@ private lemma momentCone_closed (K B : ℕ) : IsClosed (momentCone K B) := by
     exact h1.trans (hs1 n)
   set N : ℝ := ((lcmUpTo K - 1 : ℕ) : ℝ) with hN
   have hN0 : 0 ≤ N := Nat.cast_nonneg _
-  have hC₁0 : ∀ n, 0 ≤ C₁ → ∑ j, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j ≤ N * C₁ := by
+  have hC₁0 : ∀ n, 0 ≤ C₁ → ∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j ≤ N * C₁ := by
     intro n _
-    calc ∑ j, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j
+    calc ∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j
         ≤ ∑ _j : Fin (lcmUpTo K - 1), C₁ := by
           refine sum_le_sum fun j _ => ?_
           have h0 := (hz n).1 j
@@ -246,11 +253,11 @@ private lemma momentCone_closed (K B : ℕ) : IsClosed (momentCone K B) := by
   set C₃ : ℝ := N * |C₁| + C₂ with hC₃
   have htn : ∀ n, (z n).2 ≤ C₃ := by
     intro n
-    have hsnd : (phi K B (z n)).2 = (∑ j, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j) -
+    have hsnd : (phi K B (z n)).2 = (∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j) -
         (z n).2 := rfl
     rw [hphi n] at hsnd
     have h1 := ht1 n
-    have h2 : ∑ j, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j ≤ N * |C₁| := by
+    have h2 : ∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * (z n).1 j ≤ N * |C₁| := by
       refine le_trans (sum_le_sum (g := fun _ => |C₁|) fun j _ => ?_) ?_
       · have h0 := (hz n).1 j
         have h3 := hu n j
@@ -330,14 +337,13 @@ private lemma exists_dual_point {K B : ℕ} (hBL : B ≤ lcmUpTo K) :
   have hqi : ∀ i : Fin (K - 1), q ((i : ℕ) + 2) = -y i := by
     intro i
     have hi : (i : ℕ) + 2 - 2 < K - 1 := by simpa using i.2
-    simp only [hq, dif_pos hi]
-    congr 2
-    exact Fin.ext (by simp)
-  have hsaw : ∀ r, saw q K r = -∑ i, ((r % ((i : ℕ) + 2) : ℕ) : ℝ) * y i := by
+    have hfin : (⟨(i : ℕ) + 2 - 2, hi⟩ : Fin (K - 1)) = i := Fin.ext (by simp)
+    simp only [hq, dif_pos hi, hfin]
+  have hsaw : ∀ r, saw q K r = -∑ i : Fin (K - 1), ((r % ((i : ℕ) + 2) : ℕ) : ℝ) * y i := by
     intro r
     rw [saw, sum_Icc_two_eq, ← sum_neg_distrib]
     exact sum_congr rfl fun i _ => by rw [hqi]; ring
-  have hobj : objective q K = -∑ i, Real.log ((i : ℕ) + 2 : ℕ) * y i := by
+  have hobj : objective q K = -∑ i : Fin (K - 1), Real.log ((i : ℕ) + 2 : ℕ) * y i := by
     rw [objective, sum_Icc_two_eq, ← sum_neg_distrib]
     exact sum_congr rfl fun i _ => by rw [hqi]; ring
   -- Each residue gives one inequality.
@@ -504,8 +510,8 @@ theorem exists_producer_of_feasible {K B : ℕ} {q : ℕ → ℝ} (hK : 2 ≤ K)
             mul_le_mul_of_nonneg_right h3 hlog
         _ = _ := by ring
     refine (sum_le_sum hterm).trans (le_of_eq ?_)
-    rw [sum_add_distrib, sum_add_distrib, ← mul_sum, ← mul_sum, ← mul_sum]
-    rfl
+    rw [hW]
+    simp only [objective, sum_add_distrib, mul_sum]
   have hfinal : η * (objective q K + 2 * W + 1) = δ := by
     rw [hη]
     field_simp
@@ -523,9 +529,10 @@ theorem exists_extremal_fake_measure {K B : ℕ} (hK : 2 ≤ K) (hB : 2 ≤ B) (
         stencilSlope c ≤ (m : ℝ) * (∑ j ∈ range (B - 1), u j + δ) := by
   classical
   obtain ⟨⟨w, t⟩, ⟨hw, ht⟩, hphi⟩ := exists_dual_point (K := K) (B := B) hBL
-  set n := lcmUpTo K - 1 with hn
-  set u : ℕ → ℝ := fun j => if h : j < n then w ⟨j, h⟩ else 0 with hu
-  have huval : ∀ j : Fin n, u j = w j := fun j => by
+  change 0 ≤ w at hw
+  change 0 ≤ t at ht
+  set u : ℕ → ℝ := fun j => if h : j < lcmUpTo K - 1 then w ⟨j, h⟩ else 0 with hu
+  have huval : ∀ j : Fin (lcmUpTo K - 1), u j = w j := fun j => by
     simp only [hu, dif_pos j.2]
   have hu0 : ∀ j, 0 ≤ u j := by
     intro j
@@ -538,9 +545,9 @@ theorem exists_extremal_fake_measure {K B : ℕ} (hK : 2 ≤ K) (hB : 2 ≤ B) (
     have hL := lcmUpTo_pos K
     simp only [hu]
     rw [dif_neg (by omega)]
-  have hsumFin : ∀ g : ℕ → ℝ, ∑ j : Fin n, w j * g j = ∑ j ∈ range n, u j * g j := by
+  have hsumFin : ∀ g : ℕ → ℝ, ∑ j : Fin (lcmUpTo K - 1), w j * g j = ∑ j ∈ range (lcmUpTo K - 1), u j * g j := by
     intro g
-    rw [← Fin.sum_univ_eq_sum_range (fun j => u j * g j) n]
+    rw [← Fin.sum_univ_eq_sum_range (fun j => u j * g j) (lcmUpTo K - 1)]
     exact sum_congr rfl fun j _ => by rw [huval]
   have hfake : IsFakePrimeMeasure K u := by
     refine ⟨hu0, fun k hk => ?_⟩
@@ -548,7 +555,6 @@ theorem exists_extremal_fake_measure {K B : ℕ} (hK : 2 ≤ K) (hB : 2 ≤ B) (
     rcases eq_or_lt_of_le hk1 with h1 | h2
     · subst h1
       simp [Nat.mod_one]
-      exact hasSum_zero
     · have hi : k - 2 < K - 1 := by omega
       have hmom := congrFun (congrArg Prod.fst hphi) ⟨k - 2, hi⟩
       simp only [phi] at hmom
@@ -558,14 +564,14 @@ theorem exists_extremal_fake_measure {K B : ℕ} (hK : 2 ≤ K) (hB : 2 ≤ B) (
       rw [hmom] at hval
       rw [hval]
       refine hasSum_sum_of_ne_finset_zero fun j hj => ?_
-      have hjn : ¬ j < n := fun h => hj (mem_range.mpr h)
+      have hjn : ¬ j < lcmUpTo K - 1 := fun h => hj (mem_range.mpr h)
       simp only [hu, dif_neg hjn, zero_mul]
   -- The window mass dominates the value.
-  have hBn : B - 1 ≤ n := by omega
-  have hmass : (∑ j : Fin n, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * w j) =
+  have hBn : B - 1 ≤ lcmUpTo K - 1 := by omega
+  have hmass : (∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * w j) =
       ∑ j ∈ range (B - 1), u j := by
-    have h1 : ∑ j : Fin n, (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * w j =
-        ∑ j ∈ range n, u j * (if j + 1 < B then (1 : ℝ) else 0) := by
+    have h1 : ∑ j : Fin (lcmUpTo K - 1), (if (j : ℕ) + 1 < B then (1 : ℝ) else 0) * w j =
+        ∑ j ∈ range (lcmUpTo K - 1), u j * (if j + 1 < B then (1 : ℝ) else 0) := by
       rw [← hsumFin]
       exact sum_congr rfl fun j _ => by ring
     rw [h1, ← sum_subset (range_subset_range.mpr hBn) (fun j _ hj => by
@@ -605,15 +611,95 @@ theorem IsFakePrimeMeasure.hasSum_slack {K : ℕ} {u : ℕ → ℝ} (hu : IsFake
   have h1 := hu.hasSum_slope hP hK
   have h2 : HasSum (fun j => u j * (if j ∈ range (B - 1) then (m : ℝ) else 0))
       ((m : ℝ) * ∑ j ∈ range (B - 1), u j) := by
-    have h3 := hasSum_sum_of_ne_finset_zero (s := range (B - 1))
-      (f := fun j => u j * (if j ∈ range (B - 1) then (m : ℝ) else 0))
-      (fun j hj => by simp [hj])
+    have h3 : HasSum (fun j : ℕ => u j * (if j ∈ range (B - 1) then (m : ℝ) else 0))
+        (∑ j ∈ range (B - 1), u j * (if j ∈ range (B - 1) then (m : ℝ) else 0)) :=
+      hasSum_sum_of_ne_finset_zero fun j hj => by simp [hj]
     have h4 : ∑ j ∈ range (B - 1), u j * (if j ∈ range (B - 1) then (m : ℝ) else 0) =
         (m : ℝ) * ∑ j ∈ range (B - 1), u j := by
       rw [mul_sum]
       exact sum_congr rfl fun j hj => by rw [if_pos hj]; ring
     rwa [h4] at h3
   have h5 := h1.sub h2
-  refine h5.congr_fun?
+  have hfun : (fun j => u j * ((stepWeight c (j + 1) : ℝ) - if j ∈ range (B - 1) then (m : ℝ) else 0)) =
+      fun j => u j * (stepWeight c (j + 1) : ℝ) - u j * (if j ∈ range (B - 1) then (m : ℝ) else 0) := by
+    funext j
+    ring
+  rw [hfun]
+  exact h5
+/-- A producer's window lies inside one period of its alphabet. -/
+theorem IsProducer.le_lcmUpTo {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B) (hK : AlphabetLE c K) :
+    B ≤ lcmUpTo K := by
+  by_contra hlt
+  push Not at hlt
+  have hL := lcmUpTo_pos K
+  have hw := hP.window (lcmUpTo K) (mem_Ico.mpr ⟨hL, hlt⟩)
+  have h0 : stepWeight c (lcmUpTo K) = 0 := by
+    have hR : (stepWeight c (lcmUpTo K) : ℝ) = 0 := by
+      rw [stepWeight_eq_sum_mod hP.zero hP.balanced]
+      refine sum_eq_zero fun k hk => ?_
+      have hk0 : k ≠ 0 := fun h => by
+        subst h
+        exact Finsupp.mem_support_iff.mp hk hP.zero
+      by_cases h1 : k = 1
+      · subst h1
+        simp [Nat.mod_one]
+      · have hd := dvd_lcmUpTo (K := K) (mem_Icc.mpr ⟨by omega, hK k hk⟩)
+        rw [Nat.mod_eq_zero_of_dvd hd]
+        simp
+    exact_mod_cast hR
+  rw [h0] at hw
+  have := hP.one_le_m
+  omega
+
+/-- **No fake prime measure of level `K` is extremal near the truth.** A measure whose window mass is approached by integer producers
+exceeds the pronic mass `1 − 1/B` by a factor at least `1 + c₁/(√K (1 + log K))`. -/
+theorem exists_extremal_gap :
+    ∃ c₁ : ℝ, 0 < c₁ ∧ ∀ (K B : ℕ) (u : ℕ → ℝ), 1 ≤ K → 2 ≤ B →
+      (∀ δ > 0, ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m B ∧ AlphabetLE c K ∧
+        stencilSlope c ≤ (m : ℝ) * (∑ j ∈ range (B - 1), u j + δ)) →
+      (1 - 1 / (B : ℝ)) * (1 + c₁ / (√(K : ℝ) * (1 + Real.log K))) ≤ ∑ j ∈ range (B - 1), u j := by
+  obtain ⟨c₁, hc₁, hfloor⟩ := exists_half_floor
+  refine ⟨c₁, hc₁, fun K B u hK hB hprod => le_of_forall_pos_le_add fun δ hδ => ?_⟩
+  obtain ⟨c, m, hP, hal, hs⟩ := hprod δ hδ
+  have hm := hP.m_pos
+  have hd := hP.one_sub_pos
+  have hf := hfloor K c m B hK hP hal
+  have hrate : rate c m B = stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) - 1 := rfl
+  have h1 : 1 + c₁ / (√(K : ℝ) * (1 + Real.log K)) ≤ stencilSlope c / ((m : ℝ) * (1 - 1 / (B : ℝ))) := by
+    rw [hrate] at hf
+    linarith
+  rw [le_div_iff₀ (mul_pos hm hd)] at h1
+  have h2 := h1.trans hs
+  have h3 : (m : ℝ) * ((1 - 1 / (B : ℝ)) * (1 + c₁ / (√(K : ℝ) * (1 + Real.log K)))) ≤
+      (m : ℝ) * (∑ j ∈ range (B - 1), u j + δ) := by
+    calc _ = (1 + c₁ / (√(K : ℝ) * (1 + Real.log K))) * ((m : ℝ) * (1 - 1 / (B : ℝ))) := by ring
+      _ ≤ _ := h2
+  exact le_of_mul_le_mul_left h3 hm
+
+/-- **How close the extremal measure is.** For `0 < α < 3/5` and all large `K` there is a window at which the extremal fake prime measure has
+window mass between `(1 − 1/B)(1 + c₁/(√K (1 + log K)))` and `(1 − 1/B)(1 + exp(−(log K)^α))`. -/
+theorem exists_extremal_bracket {α : ℝ} (hα0 : 0 < α) (hα : α < 3 / 5) :
+    ∃ c₁ : ℝ, 0 < c₁ ∧ ∀ᶠ K : ℕ in atTop, ∃ (B : ℕ) (u : ℕ → ℝ), 2 ≤ B ∧ IsFakePrimeMeasure K u ∧
+      (∀ v : ℕ → ℝ, IsFakePrimeMeasure K v → ∑ j ∈ range (B - 1), v j ≤ ∑ j ∈ range (B - 1), u j) ∧
+      (1 - 1 / (B : ℝ)) * (1 + c₁ / (√(K : ℝ) * (1 + Real.log K))) ≤ ∑ j ∈ range (B - 1), u j ∧
+      ∑ j ∈ range (B - 1), u j ≤ (1 - 1 / (B : ℝ)) * (1 + Real.exp (-(Real.log (K : ℝ) ^ α))) := by
+  obtain ⟨c₁, hc₁, hgap⟩ := exists_extremal_gap
+  refine ⟨c₁, hc₁, ?_⟩
+  filter_upwards [hasRate_vk hα0 hα, eventually_ge_atTop 2] with K hK hK2
+  obtain ⟨c, m, B, hP, hal, hr⟩ := hK
+  have hB := hP.two_le_B
+  obtain ⟨u, hu, _, hmax, hprod⟩ := exists_extremal_fake_measure hK2 hB (hP.le_lcmUpTo hal)
+  refine ⟨B, u, hB, hu, hmax, hgap K B u (by omega) hB hprod, ?_⟩
+  have hd := hP.one_sub_pos
+  have h1 := hu.le_normSlope hP hal
+  rw [div_le_iff₀ hd] at h1
+  have h2 : normSlope c m B = 1 + rate c m B := by
+    rw [rate]
+    ring
+  calc ∑ j ∈ range (B - 1), u j ≤ normSlope c m B * (1 - 1 / (B : ℝ)) := h1
+    _ = (1 + rate c m B) * (1 - 1 / (B : ℝ)) := by rw [h2]
+    _ ≤ (1 + Real.exp (-(Real.log (K : ℝ) ^ α))) * (1 - 1 / (B : ℝ)) :=
+        mul_le_mul_of_nonneg_right (by linarith) hd.le
+    _ = _ := by ring
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

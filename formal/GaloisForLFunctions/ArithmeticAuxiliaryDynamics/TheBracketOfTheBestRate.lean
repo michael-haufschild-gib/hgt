@@ -8,15 +8,8 @@ import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheStencilRateReachesVino
 
 `c₁ K^{-3/4} ≤ bestRate K ≤ exp(−(log K)^α)`.
 
-The scale of exponents is now complete:
-
-* polynomial rate `K^{-a}` for some `a > 0` ⇔ a zero-free strip;
-* a zero-free strip at `Θ` gives the rate `K^{-(1−Θ)/32}`, so the Riemann hypothesis gives `K^{-1/64}`;
-* a rate `K^{-a}` gives `Re ρ ≤ 1 − 2a/3`, and rates up to `K^{-3/4}` give the Riemann hypothesis;
-* no rate is faster than `K^{-3/4}`.
-
-**Necessary alphabet.** Certifying `ζ(1 + iτ) ≠ 0` through a producer needs `ε ‖s‖ < 1`, hence an
-alphabet of size at least `c |τ|^{4/3}`: certificates at height `τ` are long.
+A zero-free strip at `Θ` gives a polynomial rate, and certifying `ζ(1 + iτ) ≠ 0` through a producer needs a long alphabet.
+These first forms use the sharp mean value and a crude cutoff. The half scale and the harmonic letters sharpen all of them.
 -/
 
 open Finset Filter Topology

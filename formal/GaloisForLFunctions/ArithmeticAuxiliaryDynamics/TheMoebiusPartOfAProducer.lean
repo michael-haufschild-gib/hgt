@@ -23,16 +23,13 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics
 
-/-- **Rational sawtooth weights give an integer producer.** Weights `q k` on letters `k ≥ 2`, with
-nonnegative sum `f(r) = Σ q_k (r mod k)` and `f ≥ 1` on `[1, B)`, clear to an integer producer whose
-slope is `m Σ q_k log k`. -/
-theorem exists_producer_of_weights_coeff {J : Finset ℕ} (q : ℕ → ℚ) {B K : ℕ}
-    (hJ2 : ∀ k ∈ J, 2 ≤ k) (hJK : ∀ k ∈ J, k ≤ K) (hK : 1 ≤ K) (hB : 2 ≤ B)
-    (hnn : ∀ r, 0 ≤ ∑ k ∈ J, (q k : ℝ) * ((r % k : ℕ) : ℝ))
-    (hwin : ∀ r ∈ Ico 1 B, 1 ≤ ∑ k ∈ J, (q k : ℝ) * ((r % k : ℕ) : ℝ)) :
-    ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m B ∧ AlphabetLE c K ∧
-      stencilSlope c = (m : ℝ) * ∑ k ∈ J, (q k : ℝ) * Real.log k ∧
-      c.support ⊆ insert 1 J ∧ ∀ k ∈ J, (c k : ℝ) = -(m : ℝ) * k * (q k : ℝ) := by
+/-- **Rational sawtooth weights clear to an integer stencil.** Weights `q k` on letters `k ≥ 2` give a balanced
+integer stencil with multiplicity `D Σ q_k (r mod k)` and slope `D Σ q_k log k`, with no rounding error. -/
+theorem exists_stencil_of_weights {J : Finset ℕ} (q : ℕ → ℚ) (hJ2 : ∀ k ∈ J, 2 ≤ k) :
+    ∃ (c : ℕ →₀ ℤ) (D : ℕ), 0 < D ∧ c 0 = 0 ∧ IsBalanced c ∧
+      (∀ r : ℕ, (stepWeight c r : ℝ) = (D : ℝ) * ∑ k ∈ J, (q k : ℝ) * ((r % k : ℕ) : ℝ)) ∧
+      stencilSlope c = (D : ℝ) * ∑ k ∈ J, (q k : ℝ) * Real.log k ∧
+      c.support ⊆ insert 1 J ∧ ∀ k ∈ J, (c k : ℝ) = -(D : ℝ) * k * (q k : ℝ) := by
   classical
   set D : ℕ := ∏ k ∈ J, (q k).den with hD
   have hD_pos : 0 < D := prod_pos fun k _ => (q k).pos
@@ -110,23 +107,7 @@ theorem exists_producer_of_weights_coeff {J : Finset ℕ} (q : ℕ → ℚ) {B K
       ring
     rw [hdiv, hz_real k hk]
     ring
-  have hP : IsProducer c D B := by
-    refine ⟨hc0, hbal, fun r => ?_, hD_pos, hB, fun r hr => ?_⟩
-    · have hR : (0 : ℝ) ≤ (stepWeight c r : ℝ) := by
-        rw [hstep_formula r]
-        exact mul_nonneg hD_real_pos.le (hnn r)
-      exact_mod_cast hR
-    · have hR : ((D : ℤ) : ℝ) ≤ (stepWeight c r : ℝ) := by
-        rw [hstep_formula r]
-        push_cast
-        calc (D : ℝ) = (D : ℝ) * 1 := (mul_one _).symm
-          _ ≤ _ := mul_le_mul_of_nonneg_left (hwin r hr) hD_real_pos.le
-      exact_mod_cast hR
-  refine ⟨c, D, hP, fun k hk => ?_, ?_, hc_supp, fun k hk => ?_⟩
-  · have := hc_supp hk
-    rcases mem_insert.mp this with h | h
-    · omega
-    · exact hJK k h
+  refine ⟨c, D, hD_pos, hc0, hbal, hstep_formula, ?_, hc_supp, fun k hk => ?_⟩
   · rw [stencilSlope,
       sum_subset hc_supp (fun k _ hk => by
         rw [Finsupp.notMem_support_iff.mp hk, Int.cast_zero, neg_zero, zero_mul, zero_div]),
@@ -144,6 +125,34 @@ theorem exists_producer_of_weights_coeff {J : Finset ℕ} (q : ℕ → ℚ) {B K
     push_cast
     rw [hz_real k hk]
     ring
+
+/-- A nonnegative rational sawtooth sum with value at least `1` on a window clears to an integer producer, with the
+letters and the slope read from the weights. -/
+theorem exists_producer_of_weights_coeff {J : Finset ℕ} (q : ℕ → ℚ) {B K : ℕ}
+    (hJ2 : ∀ k ∈ J, 2 ≤ k) (hJK : ∀ k ∈ J, k ≤ K) (hK : 1 ≤ K) (hB : 2 ≤ B)
+    (hnn : ∀ r, 0 ≤ ∑ k ∈ J, (q k : ℝ) * ((r % k : ℕ) : ℝ))
+    (hwin : ∀ r ∈ Ico 1 B, 1 ≤ ∑ k ∈ J, (q k : ℝ) * ((r % k : ℕ) : ℝ)) :
+    ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m B ∧ AlphabetLE c K ∧
+      stencilSlope c = (m : ℝ) * ∑ k ∈ J, (q k : ℝ) * Real.log k ∧
+      c.support ⊆ insert 1 J ∧ ∀ k ∈ J, (c k : ℝ) = -(m : ℝ) * k * (q k : ℝ) := by
+  obtain ⟨c, D, hD, hc0, hbal, hstep, hslope, hsupp, hletter⟩ := exists_stencil_of_weights q hJ2
+  have hDR : (0 : ℝ) < D := by exact_mod_cast hD
+  have hP : IsProducer c D B := by
+    refine ⟨hc0, hbal, fun r => ?_, hD, hB, fun r hr => ?_⟩
+    · have hR : (0 : ℝ) ≤ (stepWeight c r : ℝ) := by
+        rw [hstep r]
+        exact mul_nonneg hDR.le (hnn r)
+      exact_mod_cast hR
+    · have hR : ((D : ℤ) : ℝ) ≤ (stepWeight c r : ℝ) := by
+        rw [hstep r]
+        push_cast
+        calc (D : ℝ) = (D : ℝ) * 1 := (mul_one _).symm
+          _ ≤ _ := mul_le_mul_of_nonneg_left (hwin r hr) hDR.le
+      exact_mod_cast hR
+  refine ⟨c, D, hP, fun k hk => ?_, hslope, hsupp, hletter⟩
+  rcases mem_insert.mp (hsupp hk) with h | h
+  · omega
+  · exact hJK k h
 
 /-- **Exact clearing of rational sawtooth weights.** Nonnegative rational sawtooth sums with value at
 least `1` on a window clear to an integer producer, with no rounding error in the slope. -/

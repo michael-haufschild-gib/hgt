@@ -19,6 +19,31 @@ import GaloisForLFunctions.BlackHoleRingdown.TheModesOfTheRingdown
 import GaloisForLFunctions.BlackHoleRingdown.TheConvolutionOfThePulseWithTheEchoes
 import GaloisForLFunctions.BlackHoleRingdown.TheReflectedSignalIsTheEchoTrain
 import GaloisForLFunctions.BlackHoleRingdown.TheFieldCarriesTheCausalSymbol
+import GaloisForLFunctions.BlackHoleRingdown.TheSharpDecayOfTheBesselKernel
+import GaloisForLFunctions.BlackHoleRingdown.TheSharpBoundsOfTheEisensteinFunction
+import GaloisForLFunctions.BlackHoleRingdown.ThePolynomialGrowthOfTheEisensteinFunction
+import GaloisForLFunctions.BlackHoleRingdown.TheLiftOfAnyModularWave
+import GaloisForLFunctions.BlackHoleRingdown.TheImageFieldOfAPulse
+import GaloisForLFunctions.BlackHoleRingdown.ThePulseAmplitude
+import GaloisForLFunctions.BlackHoleRingdown.TheEisensteinFunctionOnContours
+import GaloisForLFunctions.BlackHoleRingdown.TheSpectrumOfTheImageField
+import GaloisForLFunctions.BlackHoleRingdown.TheContourPackage
+import GaloisForLFunctions.BlackHoleRingdown.TheRingdownOfAPulse
+import GaloisForLFunctions.BlackHoleRingdown.TheEchoesOfAPulse
+import GaloisForLFunctions.BlackHoleRingdown.TheVolumeOfTheModularHorizon
+import GaloisForLFunctions.BlackHoleRingdown.TheEisensteinChannel
+import GaloisForLFunctions.BlackHoleRingdown.TheCuspFormsVanishAtTheCusp
+import GaloisForLFunctions.BlackHoleRingdown.TheCuspChannel
+import GaloisForLFunctions.BlackHoleRingdown.TheCosineFamilyOfTheHorizon
+import GaloisForLFunctions.BlackHoleRingdown.TheGeneralHorizonData
+import GaloisForLFunctions.BlackHoleRingdown.TheVectorModesOfTheMetric
+import GaloisForLFunctions.BlackHoleRingdown.TheGravitationalModesOfTheZeros
+import GaloisForLFunctions.BlackHoleRingdown.TheLinearityOfTheEinsteinOperator
+import GaloisForLFunctions.BlackHoleRingdown.TheMetricOfARow
+import GaloisForLFunctions.BlackHoleRingdown.TheMetricOfAPulse
+import GaloisForLFunctions.BlackHoleRingdown.TheMetricRingdown
+import GaloisForLFunctions.BlackHoleRingdown.TheScalarWaveOfAPulse
+import GaloisForLFunctions.BlackHoleRingdown.TheWaveOnTheQuotient
 
 /-!
 # Black-hole ringdown and the zeros of zeta
@@ -38,4 +63,11 @@ exact solutions of the conformally coupled wave equation of the metric, smooth a
 Their expansion in damped modes has one mode per zero, on the minus branch only, with a remainder that
 decays faster than every exponential, uniformly at late times. The reflected signal is the pulse convolved
 with the echo train minus its mean growth, and the causal symbol is the transfer function of the field.
+
+Every compact pulse gives an exact solution by the method of images, with the same echo identity and ringdown. Every
+square-integrable function on the horizon is a constant plus a limit of such fields plus a cusp form, and the wave evolution
+is a contractive cosine family on the complement of the constants. Cusp forms have `λ ≥ ¼` and undamped horizon modes, at the
+universal rate of the boundary condition. The scalar wave of a pulse carries an exact vacuum perturbation of the metric, in the
+vector and in the scalar sector, in closed form and covariant under `SL₂(ℤ)`; each zero is a gravitational quasinormal mode, and
+each component of the metric rings down in these modes.
 -/

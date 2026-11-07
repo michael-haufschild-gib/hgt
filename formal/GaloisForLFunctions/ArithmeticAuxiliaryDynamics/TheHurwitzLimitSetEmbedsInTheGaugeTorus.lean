@@ -163,7 +163,7 @@ theorem exists_tendsto_phase {τ : ℕ → ℝ} {G : ℂ → ℂ}
         simpa using this
       have h2 : Tendsto (fun j => ∑ n ∈ Finset.range N, ‖phaseAt (τ j) (n + 1) - ω n‖)
           atTop (𝓝 0) := by
-        have := tendsto_finset_sum (Finset.range N) fun n hn =>
+        have := tendsto_finsetSum (Finset.range N) fun n hn =>
           ((hω n (Finset.mem_range.mp hn)).sub_const (ω n)).norm
         simpa using this
       have := h1.add h2

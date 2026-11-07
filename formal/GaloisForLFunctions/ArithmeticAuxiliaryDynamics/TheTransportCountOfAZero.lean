@@ -72,8 +72,10 @@ theorem volume_returnSet_le_zeroCount {ρ₀ : ℂ} {r m T : ℝ} (hr : 0 < r)
     rw [Real.volume_Ioo]
     congr 1
     ring
-  rw [Finset.sum_congr rfl hvol, Finset.sum_const, nsmul_eq_mul, ENNReal.ofReal_mul (by positivity),
-    ENNReal.ofReal_natCast, mul_comm]
+  refine le_of_eq ?_
+  have hcard : (Z.card : ENNReal) = ENNReal.ofReal (Z.card : ℝ) := (ENNReal.ofReal_natCast _).symm
+  rw [Finset.sum_congr rfl hvol, Finset.sum_const, nsmul_eq_mul, hcard, mul_comm,
+    ← ENNReal.ofReal_mul (by positivity)]
 
 /-- **The return exponent reads the zero.** A point of the strip is a zero iff on every disc with doubled
 closure in the strip some tolerance has return exponent below `1`. -/

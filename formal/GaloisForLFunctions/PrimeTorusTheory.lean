@@ -1,0 +1,43 @@
+import GaloisForLFunctions.PrimeTorusTheory.TheOrbitOfAPhaseSystem
+import GaloisForLFunctions.PrimeTorusTheory.LargeValueHeightsFormAnApproximateGroup
+import GaloisForLFunctions.PrimeTorusTheory.TheFiniteTimeBohrIsometry
+import GaloisForLFunctions.PrimeTorusTheory.UniqueFactorizationPaysForNonAlignment
+import GaloisForLFunctions.PrimeTorusTheory.TheSavingAgainstSize
+import GaloisForLFunctions.PrimeTorusTheory.TheSavingOnAnySetOfPrimes
+import GaloisForLFunctions.PrimeTorusTheory.TheEnergyOfTheOrbit
+import GaloisForLFunctions.PrimeTorusTheory.TheDiagonalRange
+import GaloisForLFunctions.PrimeTorusTheory.TheRoundedOrbit
+import GaloisForLFunctions.PrimeTorusTheory.TheDiscrepancyOfTheOrbit
+import GaloisForLFunctions.PrimeTorusTheory.TheCornersOfTheOrbit
+import GaloisForLFunctions.PrimeTorusTheory.TheRankLaw
+import GaloisForLFunctions.PrimeTorusTheory.PrimeByPrimePaymentCannotUseTheGammaFactor
+import GaloisForLFunctions.PrimeTorusTheory.TheWallForAllPrimes
+import GaloisForLFunctions.PrimeTorusTheory.TheCertificateAtRankOne
+import GaloisForLFunctions.PrimeTorusTheory.CertificatesOnTheOrbit
+import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTheTorus
+import GaloisForLFunctions.PrimeTorusTheory.TheReturnsThePoleMustPay
+import GaloisForLFunctions.PrimeTorusTheory.TheCriticalCouplingOfTheBase
+import GaloisForLFunctions.PrimeTorusTheory.TheQuestionsOfTheField
+import GaloisForLFunctions.PrimeTorusTheory.IteratedDifferencesOfTheLogarithm
+import GaloisForLFunctions.PrimeTorusTheory.TarryEscottWords
+import GaloisForLFunctions.PrimeTorusTheory.TarryEscottWordsForbidAlignment
+import GaloisForLFunctions.PrimeTorusTheory.NonAlignmentAtEveryLargeHeight
+import GaloisForLFunctions.PrimeTorusTheory.TheOrbitAvoidsTorsionPoints
+import GaloisForLFunctions.PrimeTorusTheory.TheLogarithmicHankelForm
+import GaloisForLFunctions.PrimeTorusTheory.SquaredWordsForbidAlignment
+import GaloisForLFunctions.PrimeTorusTheory.TheMisalignmentBand
+import GaloisForLFunctions.PrimeTorusTheory.TheMassOfMisalignedPrimes
+import GaloisForLFunctions.PrimeTorusTheory.TheSavingAtEveryLength
+import GaloisForLFunctions.PrimeTorusTheory.TheSupBoundOfIntegerPowers
+import GaloisForLFunctions.PrimeTorusTheory.ZetaStaysBelowItsSupremum
+import GaloisForLFunctions.PrimeTorusTheory.TheSavingAwayFromSmallPrimes
+
+/-!
+# Prime Torus Theory
+
+Umbrella for the theory of the pair `(t, ω_t)` at finite time: the metric and additive structure of the orbit; the finite-time Bohr
+isometry; non-alignment from integrality, unique factorization and Tarry–Escott words; the saving against size at every length and on
+any set of primes; the near-diagonal energy and its diagonal range; the rounded orbit; discrepancy; corners and parity; the rank law and
+the test systems; the Agler wall for kernel-valued certificates and its rank-one reduction to Schwarz–Pick; the hull over the torus; the
+pole's price; and the critical coupling of the Gamma base.
+-/

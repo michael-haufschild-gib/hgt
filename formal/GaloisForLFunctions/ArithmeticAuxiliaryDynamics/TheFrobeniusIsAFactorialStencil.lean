@@ -16,7 +16,7 @@ ratio `D_n / D_{n−1}^q`. This is the factorial stencil of the two-term Dirichl
 This is the answer in the function field to "what replaces Frobenius?". Over `𝔽_q` the inverse of the
 zeta function is a polynomial, and norms are quantized, so a stencil is only ever cut at a degree
 boundary and there is no sawtooth. Over `ℤ` the inverse of `ζ` is an infinite Dirichlet series, every
-integer is a cut, and the rate is at least `c K^{-3/4}`.
+integer is a cut, and the rate is at least `c / (√K (1 + log K))`.
 -/
 
 open Polynomial Finset

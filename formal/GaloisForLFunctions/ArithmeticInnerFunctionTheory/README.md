@@ -1,7 +1,7 @@
 # Arithmetic Inner-Function Theory (AIF)
 
 Namespace `GaloisForLFunctions.ArithmeticInnerFunctionTheory`; umbrella
-`ArithmeticInnerFunctionTheory.lean`; 37 modules. Every theorem is unconditional. A statement about RH is an
+`ArithmeticInnerFunctionTheory.lean`; 40 modules. Every theorem is unconditional. A statement about RH is an
 equivalence with RH, and no theorem has RH as a premise.
 
 ## 1. Motivation
@@ -37,6 +37,7 @@ The field gives the second expression, exact certificates, classifications, tang
 | Hardy functions of the disc | `IsHardyDisc`, `taylorCoeff`, `mollified` | functions with `|Φ| ≤ A/|1 − w|²` and bounded means, with Parseval and no boundary limit theory; `E M_Q` in the coordinate `u = (s − 1)/s` |
 | Curve inner mass | `innerMass`, `lPoly` | `Σ log⁺|β_i|`, the Mahler measure of the normalized `L`-polynomial |
 | Abel mollifier of a curve | `frobTrace`, `abelPoly`, `abelBudget`, `abelRatio` | `Q = Σ_{k≤N} ρ^k a_k v^k/k`, the Euler logarithm damped and truncated; the dilation quotient `|P(v)/P(ρv)|²` |
+| Dilation projections, shifted field | `factorQuotient`, `modelPart`, `shiftedInnerField`, `greenSlopeTerm` | Beurling–Sarason–Hardy split of `(1 − βv)/(1 − ρβv)`; `I_δ(w)` on `Re s = ½ + δ` and its divided Green slope |
 | Euler column | `column`, `colShape`, `colRadius`, `signedMin` | `1 − c p^{−s}`; `log p · Re(x/(1 − x))`, `|x| = p^{−½−a}`, with its extreme values `r/(1 − r)` and `−r/(1 + r)` |
 | Gamma base and current | `columnMass`, `columnsAt`, `columnCurrent`, `alignedMass` | `½ log(b/2π)` against the columns of a prime set |
 | Crowd geometry | `InBox`, `shadow`, `crowd` | box of ratio `θ` at `w`; the shadow `[γ − b, γ + b]`; the shadow count |
@@ -52,6 +53,7 @@ The field gives the second expression, exact certificates, classifications, tang
 | Prime insertion | `insertion`, `insertAll`, `cosSum` | `T_{θ,ℓ}f(x) = Σ_k U_k(cos θ) f(x + kℓ)` |
 | Torus sum, characters | `torusSum`, `chiProd`, `ampl`, `heckeOne`, `satoTate` | sum of `n` insertions at free phases; the Hecke form of level one |
 | Exponentially convex cone | `IsExpConvexFrom` | Hermitian Hankel forms `Σ c_i c̄_j f(x₀ + t_i + t_j) ≥ 0` |
+| Dirichlet-dilated Hankel form | `dirichletHankelForm`, `tentBump` | `Σ_{d,u,v} c(d + u) c(d + v) a(u + v)`, the dual cone of fixed-base torus positivity; compact bump on `(log 3, log 5)` |
 | Locked phases | `IsKroneckerFamily`, `isKroneckerFamily_log_primes` | `θ_i = bℓ_i`, dense in the torus for `ℓ_i = log p_i` |
 | Slack | `withSlack` | `κ_s(d) = κ(d) + sδ_{d,0}`: an absolutely continuous density `s` |
 
@@ -93,7 +95,7 @@ aperture, and the obstruction to an alternating predictor.
    equality, so no information is lost by mollifying. The proof uses no boundary limits of outer functions, only exponentials of polynomials in the Blaschke coordinate
    (`isGLB_circle`).
 2. **Near-extremal mollifiers are rigid.** In the disc coordinate `E M_Q` is a Hardy function with value `1` at the origin, so Parseval bounds its distance to `1` by the excess (`norm_sub_one_sq_le`). There is one target, `1/E`.
-3. **Castelnuovo supplies holomorphic convergence and domination.** Purity makes the damped Euler-log series converge to `1/P(ρv)` and bounds each quotient factor by two. Boundary quotient convergence alone is nonselective: every finite datum has quotient mean tending to one (`tendsto_circleAverage_abelRatio_unconditional`), while the golden Abel budgets stay uniformly separated from that mean (`eventually_golden_budget_sub_quotient_ge`).
+3. **Castelnuovo supplies holomorphic convergence and domination; Sarason projections and log-means read the mass.** Purity makes the damped Euler-log series converge to `1/P(ρv)` and bounds each quotient factor by two. Raw `L²` boundary quotient means forget inner mass (`tendsto_circleAverage_abelRatio_unconditional`, `eventually_golden_budget_sub_quotient_ge`) because across `ρ = ‖β‖⁻¹` an exterior root transfers exact mass `1 − ‖β‖⁻²` out of `b_α H²(𝔻)` into the Sarason model space `K_{b_α}` (`supercritical_pythagorean_split`, `tendsto_circleAverage_modelPart_sq`). For `ζ`, logarithmic Poisson means of boundary dilation quotients read `I(1) − I_δ(1)` at every shift `δ ∈ (0, ½)` (`riemannHypothesis_iff_log_dilation_quotient_eq`) and extract the right-zero Li–Herglotz jet at `δ → 0⁺` (`tendsto_firstOrder_dilation_jet`), while unshadowed off-line zeros blow up the `L²` quotient at `δ = Re ρ₀ − ½` (`not_integrable_zeta_dilationQuotient_sq`).
 4. **Causality replaces positivity.** A frustrated form has no positive ground state in any gauge. Its causal solution, the predictor, exists anyway. Positivity of the
    solution is replaced by zero-freeness in the closed disc, and the mechanism is Schur's: `A^*/A` is holomorphic and unimodular on the circle, so contractive
    (`norm_predRev_le`). Off Toeplitz forms the certificate survives as a triangular sum of squares (`exists_causal_certificate`).
@@ -125,6 +127,9 @@ aperture, and the obstruction to an alternating predictor.
 | `exists_innerField_le_loglog`, `exists_sum_depth_le` | Unconditionally, `I(½ + x + it) ≤ log(1 + log 5x) + C` and `Σ_{|γ−t|≤T} m_ρ b_ρ ≤ (5/2) T (log(1 + log 5T) + C)` |
 | `zero_free_or_infinite_of_recurrent`, `dirichletPoly_zero_free_or_infinite` | Recurrence: zeros in a strip are absent or infinite |
 | `riemannHypothesis_iff_tendsto_innerField_and_recurrent` | RH ⇔ field vanishing at infinity on each vertical line ∧ weak recurrence |
+| `hasSum_shiftedInnerField`, `riemannHypothesis_iff_log_dilation_quotient_eq` | `I_δ(w)` sums right zeros past `½ + δ`; every single shift `δ ∈ (0, ½)` decides RH via the Poisson log-dilation mean |
+| `tendsto_firstOrder_dilation_jet`, `riemannHypothesis_iff_firstOrder_jet_eq` | As `δ → 0⁺`, `δ⁻¹ ∫ log(|ζ(½+iτ)|/|ζ(½+δ+iτ)|) P₁ → −(1 + γ) + Σ_ρ m_ρ Re(ρ⁻¹ + (1−ρ)⁻¹)`; equals `−(1 + γ)` iff RH |
+| `not_integrable_zeta_dilationQuotient_sq` | An off-line zero `ρ₀` unshadowed on `Re s = ½` makes `(|ζ(½+iτ)|/|ζ(½+δ+iτ)|)² P₁` non-integrable at `δ = Re ρ₀ − ½` |
 
 ### Mollifiers
 
@@ -137,6 +142,7 @@ aperture, and the obstruction to an alternating predictor.
 | `integral_abs_flatten_le` | Near-extremal mollifiers flatten: `∫ | |ζM|²/B − 1 | P₁ ≤ 2√(log B − 2I(1))` |
 | `hodgeIndex_iff_abelMollifiers` | Castelnuovo on the Frobenius span holds iff the Abel mollifiers reach budget `1` |
 | `sq_goldenRatio_le_abelBudget` | The golden curve has budget at least `φ²` for every Abel mollifier |
+| `sq_norm_le_circleAverage_subcritical`, `supercritical_pythagorean_split`, `tendsto_circleAverage_modelPart_sq` | Exterior root `‖β‖ > 1`: subcritical floor `‖β‖²`, orthogonal split across `b_α H² ⊕ K_{b_α} ⊕ H²_-` past `‖β‖⁻¹`, defect limit `1 − ‖β‖⁻²` (`φ⁻¹` on `goldenDatum`) |
 
 ### Forms, cones and media
 
@@ -149,6 +155,8 @@ aperture, and the obstruction to an alternating predictor.
 | `exists_certificate_at_critical_ratio` | At a ratio below the threshold of a window the pencil has a triangular certificate, with no Toeplitz structure |
 | `lattice_trichotomy`, `riemannHypothesis_iff_every_lattice_is_at_threshold` | `s > 0` Szegő, `s < 0` empty, `s = 0` threshold; every lattice at threshold iff RH |
 | `torusPositive_iff_hankel_nonneg` | **Arithmetic Bernstein.** For left exponent `κ < ½`, torus positivity at all prime sets and base points is exponential convexity |
+| `torusPositiveAt_iff_dirichletHankel_nonneg`, `cosSum_mul_cosSum` | Fixed base `x`: torus positivity at all prime sets is positivity of the Dirichlet-dilated Hankel form `Σ_{d,u,v} c(d+u)c(d+v)a(u+v)` |
+| `exists_supercritical_not_expConvex`, `exists_prime_set_torusSum_neg_of_le_one`, `euler_abscissa_perturbation_dichotomy` | Above `α > 1`, `e^{−αy} − ε φ(y)` is strictly torus-positive at all `x ∈ ℝ` yet not exponentially convex; on `(0, 1]`, every positive dip below `log 5` fails at `x = 0` |
 | `torusSum_nonneg_iff_locked`, `torusSum_nonneg_of_locked_of_tendsto` | Locking is torus positivity at a fixed amplitude, and at an amplitude with a limit at height infinity |
 | `exists_correlated_train` | An amplitude oscillating with the height has nonnegative locked sums and negative torus values |
 | `hecke_level_one`, `sum_sq_le_of_logConcave`, `torusSum_ge_of_geometric` | Hecke–Bessel; the log-concavity wall; the size floor |
@@ -233,7 +241,7 @@ Periodic data admit finite impurity per period. The theory sees this: for a colu
 | Trap | Truth |
 |---|---|
 | A mollifier loses information about the zeros | The infimum over mollifiers is exactly `e^{2I}` |
-| Boundary dilation quotients control holomorphic mollifiers | Every finite datum has quotient mean tending to one; the golden datum still has Abel budgets at least `φ²`. Euler-log convergence must be justified separately |
+| Boundary dilation quotients control holomorphic mollifiers | Raw `L²` means tend to `1` on every finite datum by moving mass `1 − ‖β‖⁻²` out of `b_α H²` into `K_{b_α}` past `ρ = ‖β‖⁻¹`, while golden Abel budgets stay above `φ²`. Projecting onto `K_{b_α}` (curves) or taking logarithmic Poisson means (`ζ`) reads the inner mass; holomorphic Euler-log convergence requires separate justification |
 | A rigidity law makes a mollifier | It holds for every `Q`, with the excess on the right. It produces no family with small excess |
 | `N(ρ) ≤ Πϱ` is lossy | It is an equality over all other zeros |
 | Phase locking is a free extra source of positivity | At a fixed amplitude, and at an amplitude with a limit at height infinity, it is torus positivity. It can act only through an amplitude oscillating with the height |
@@ -241,7 +249,7 @@ Periodic data admit finite impurity per period. The theory sees this: for a colu
 | An outer predictor is RH | It certifies one window; the content is all windows of all lattices |
 | Zero slack means vanishing innovation | Not in general: a density may vanish at a point with `E_∞ > 0`. For `Spec ℤ` under RH, `E_n → 0`: the spectral measure is singular |
 | The Laplace cone is forced on small prime sets | Only by all primes together with base points to the left. The Gaussian is in the `{2, 3}` cone |
-| The Bernstein theorem kills the theta amplitude | It needs base points to the left and left exponent below `½`, where the diagonal `Σ_p p^{−2s}` converges. `S` reads the amplitude only from `x = 0`, where it decays doubly exponentially, and its formula continued to `x < 0` has left exponent `½ + a` |
+| The Bernstein theorem kills the theta amplitude | It needs base points to the left and left exponent below `½`, where the diagonal `Σ_p p^{−2s}` converges; above `κ = 1` even positivity at all base points fails to force `IsExpConvexFrom 0` (`exists_supercritical_not_expConvex`), and at fixed `x = 0` torus positivity is `dirichletHankelForm ≥ 0`. `S` reads the amplitude only from `x = 0`, where it decays doubly exponentially, and its formula continued to `x < 0` has left exponent `½ + a` |
 | Reflectors sit on `½ log n` | Only to first order. The second reflector is the Laguerre form and is present at an echo-free site |
 | The Born approximation holds at large `n` | It holds while `Π(1 + |γ_k|) − 1` is small. For `Spec ℤ` under RH the reflection data are not square-summable (`question_one_specZ`), so this quantity is unbounded and the defect bound says nothing at large `n` |
 | Far bubbles decouple, as in the Euclidean case | Never, for any nonzero test: the orbit correlation does not tend to `0` |
@@ -252,9 +260,9 @@ Periodic data admit finite impurity per period. The theory sees this: for a colu
 
 ## 11. Open research topics
 
-1. **The opposite sign.** A holomorphic mollifier family with budget tending to `1` at one centre (`riemannHypothesis_iff_exists_budget_lt`). This is RH. Over a curve, purity gives Euler-log convergence as well as quotient domination. Over `ℤ` both the holomorphic family and its budget must be controlled.
+1. **The opposite sign.** A holomorphic mollifier family with budget tending to `1` at one centre (`riemannHypothesis_iff_exists_budget_lt`), or equivalently zero excess in the Poisson log-dilation identity at a shift `δ ∈ (0, ½)` (`riemannHypothesis_iff_log_dilation_quotient_eq`) or at `δ → 0⁺` (`riemannHypothesis_iff_firstOrder_jet_eq`). Over a curve, purity gives Euler-log convergence while `modelPart` reads the defect past `‖β‖⁻¹`; over `ℤ`, bounding the holomorphic family or the log-dilation excess from prime data remains open.
 2. **Oscillating amplitudes.** `S(a, b) = Σ_N τ_b(N) A(N; a, b)` has an amplitude depending on the same `b` as the phases. Amplitudes with a limit gain nothing, and oscillating ones can. Does `A` oscillate at the rate tied to the phases?
-3. **The Bernstein theorem at a fixed base point.** Is the exponent `½` sharp? What does torus positivity at all prime sets force when the base point is fixed at `x = 0`, the form in which `S` reads its amplitude? There the Hecke form sees only primes up to `e^{y/2}`, and the diagonal does not vanish.
+3. **The critical strip `[½, 1]` of Arithmetic Bernstein.** At a fixed base point `x = 0`, torus positivity across all prime sets is nonnegativity of `dirichletHankelForm` (`torusPositiveAt_iff_dirichletHankel_nonneg`); for perturbations of `e^{−αy}`, `α > 1` survives at all base points without exponential convexity (`exists_supercritical_not_expConvex`) while `0 < α ≤ 1` collapses at `x = 0` (`exists_prime_set_torusSum_neg_of_le_one`). Whether all-base torus positivity forces exponential convexity throughout the window `κ ∈ [½, 1]` — and what arithmetic amplitudes inside `dirichletHankelForm ≥ 0` lie outside `IsExpConvexFrom 0` at `κ ≤ 1` — remains open.
 4. **The zero–one law for `ζ`.** A lower bound on returns around an off-line zero (`ZetaZeroDiscWeaklyRecurrent`). Corpus: return shifts have density zero, no lower bound.
 5. **Inner mass at infinity of `ζ`.** It tends to `0` iff the depth density is `o(T)` iff the Abel log-mean of `ζ` on the line tends to `0`. Moment data give `log log x` (`exists_innerField_le_loglog`). Boundedness is the depth density `O(T)`, and vanishing is below RH.
 6. **The profile decomposition at atomic tests.** For `R > R₀`, does every sequence of atomic tests with bounded complete energy split as a strong physical `L¹` limit plus profiles over Bohr space, with nonnegative asymptotic energy? The energy-space theorem and the tail tightness are in place, and the nonnegative energy at infinity is the gap.

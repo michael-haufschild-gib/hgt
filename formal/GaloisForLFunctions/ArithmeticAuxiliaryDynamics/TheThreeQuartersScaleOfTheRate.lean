@@ -12,14 +12,9 @@ Three laws bound a producer with rate `ε`, peak ratio `x = w/m`, on an alphabet
 * **mean value:** `x² ≤ 144 ε E/m` when `x ≥ 4`;
 * **coefficient mass:** `E/m ≤ 2K² (1 + log K + (K + 1) ε)`.
 
-Together they give a floor valid for every producer, whatever its alphabet of size `K`:
-
-`ε ≥ c₁ K^{-3/4}`.
-
-They also sharpen the reading of a rate. With `ε ≤ K^{-a}` the law at a zero has exponent
-`(3/2 − a)(1 − β) − aβ`, so `Re ρ ≤ 1 − 2a/3`. The scale of `a` runs over `(0, 3/4]`: any `a > 0`
-gives a zero-free strip, `a ↑ 3/4` gives the Riemann hypothesis, and `a > 3/4` is impossible. The end
-of the scale and the bound `Θ ≥ ½` are the same statement.
+Together they give the floor `ε ≥ c₁ K^{-3/4}`. The law at a zero and the uncertainty constant proved here are the
+inputs of every floor. The loss to `3/4` is in the sharp mean value, whose error is the first moment `E`: smoothing removes
+it, and the true end of the scale is `1/2`.
 -/
 
 open Finset Filter Topology

@@ -18,7 +18,8 @@ It is not a barrier. Mixing `c₁` with a dilated `c₂` gives the normalized sl
 is the case `x = y`. A Möbius producer has parity balance at least `2 m Σ_{P ≤ T} 1/P`, unbounded against
 its slope `≈ m`. Taking `c₂` at a much larger level sends the cost to zero: **parity-neutral producers
 exist at every rate above zero.** A linear parity constraint on the coefficients costs nothing in the
-limit, so parity is not read by the balance of a stencil. Its rate is a separate question.
+limit, so parity is not read by the balance of a stencil. A difference of adjacent dilates does better still,
+and reaches the Mertens level.
 -/
 
 open Finset Filter Topology

@@ -9,8 +9,8 @@ Insert the mean-value law into the law at a zero. A rate `ε ≤ K^{-a}` has pea
 
 `Re ρ ≤ 1 − 2a/3`.
 
-The scale is now exact at both ends. Any `a > 0` gives a zero-free strip. Rates for all `a < 3/4`
-give the Riemann hypothesis. No rate with `a > 3/4` exists, by the floor.
+This is the reading available from the sharp mean value. Any `a > 0` gives a zero-free strip, which is all that the
+equivalence with zero-free strips uses. The smooth mean value improves the reading to `Re ρ ≤ 1 − a`.
 -/
 
 open Finset Filter Topology

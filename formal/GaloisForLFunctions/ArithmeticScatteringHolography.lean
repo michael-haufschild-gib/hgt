@@ -1,0 +1,42 @@
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheEllipticBlackHole
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheRegularSolution
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheExactRingdown
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheFluxLaw
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheScatteringMatrix
+import GaloisForLFunctions.ArithmeticScatteringHolography.HeckeAtASecondPlace
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheKreinFluxLaw
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheHasseWindow
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheHorocycleIsTheWave
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheRigidityOfHeckeOnResonances
+import GaloisForLFunctions.ArithmeticScatteringHolography.HeckeAtAPlaceOfDegreeTwo
+import GaloisForLFunctions.ArithmeticScatteringHolography.ThePropagatorCoefficients
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheWavePropagatorIsPositive
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheCuspidalSector
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheFullHeckeFamily
+import GaloisForLFunctions.ArithmeticScatteringHolography.ThePhysicalPositivitiesAreBlind
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheBaseChangeTower
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheCurveDatumOfABlackHole
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheKreinLawAtEveryGenus
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheBlackHoleOfACurve
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheOneClockOfTheModularHorizon
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheKreinLawOfTheModularHorizon
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheBulkReadingOfTheLogMean
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheRankBarrier
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheCountLawOfTheProbes
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheKMSStripOfTheHorizon
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheIntegerProbesOfTheHorizon
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfABlackHole
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheLaxPhillipsSemigroup
+
+/-!
+# Arithmetic scattering holography
+
+Wave dynamics on arithmetic quotients of AdS, with the finite places included as trees. The function-field black
+hole is solved exactly for every `(q, G, D)`, including data no curve realizes: scattering matrix, ringdown, flux,
+Hecke operators. Universal damping is not a law of these dynamics, since fakes with commuting Hecke operators have
+off-line resonances. What survives is the Krein flux law: a form that decays at exactly the universal rate on every
+system, and is a dissipated energy exactly under RH. The law carries over to every genus and to the modular horizon,
+where Hecke at `p` is modular time translation by `log p`. The Hecke algebra exists at all degrees on the fakes, with positivity.
+What excludes them is a count law for the probes, the parallelogram law for the number of points of `y - x π`, whose first instance
+is the conservation of channels. See `ArithmeticScatteringHolography/README.md`.
+-/

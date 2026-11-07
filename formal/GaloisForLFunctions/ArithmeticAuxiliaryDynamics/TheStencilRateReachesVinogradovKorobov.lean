@@ -147,14 +147,11 @@ theorem isMertensLevel_vk {β : ℝ} (hβ0 : 0 < β) (hβ : β < 3 / 5) :
     rw [Real.exp_neg, inv_mul_le_iff₀ hE]
     nlinarith
 
-/-- **Integer producers reach the Vinogradov–Korobov rate.** For every `0 < α < 3/5`, for all large
-`K` there is an integer producer on an alphabet in `[1, K]` of rate at most `exp(−(log K)^α)`. -/
-theorem hasRate_vk {α : ℝ} (hα0 : 0 < α) (hα : α < 3 / 5) :
+/-- **A stretched exponential Mertens level gives the rate at every smaller exponent.** -/
+theorem hasRate_of_level_exp {α β : ℝ} (hα0 : 0 < α) (hαβ : α < β)
+    (hlevel : IsMertensLevel fun T => Real.exp (-(Real.log (T : ℝ) ^ β))) :
     HasRate fun K => Real.exp (-(Real.log (K : ℝ) ^ α)) := by
-  set β : ℝ := (α + 3 / 5) / 2 with hβdef
-  have hβ0 : 0 < β := by rw [hβdef]; linarith
-  have hβ : β < 3 / 5 := by rw [hβdef]; linarith
-  have hαβ : α < β := by rw [hβdef]; linarith
+  have hβ0 : 0 < β := by linarith
   set c : ℝ := (1 / 5 : ℝ) ^ β with hc
   have hc0 : 0 < c := by rw [hc]; positivity
   have hlogK : Tendsto (fun K : ℕ => Real.log (K : ℝ)) atTop atTop :=
@@ -164,7 +161,7 @@ theorem hasRate_vk {α : ℝ} (hα0 : 0 < α) (hα : α < 3 / 5) :
   have hp2 : ∀ᶠ K : ℕ in atTop, 2 / c ≤ Real.log (K : ℝ) ^ (β - α) :=
     (hlogK.comp tendsto_id).eventually
       ((tendsto_rpow_atTop (by linarith : 0 < β - α)).eventually_ge_atTop (2 / c))
-  filter_upwards [eventually_producer_of_level (isMertensLevel_vk hβ0 hβ),
+  filter_upwards [eventually_producer_of_level hlevel,
     tendsto_levelCutoff.eventually_ge_atTop 1, hp1, hp2, hlogK.eventually_ge_atTop 20,
     eventually_ge_atTop 1] with K hK hT1 h1 h2 h3 hK1
   obtain ⟨c', m, B, hP, ha, hr⟩ := hK
@@ -241,6 +238,13 @@ theorem hasRate_vk {α : ℝ} (hα0 : 0 < α) (hα : α < 3 / 5) :
         congr 1
         ring
     _ ≤ _ := Real.exp_le_exp.mpr (by linarith)
+
+/-- **Integer producers reach the Vinogradov–Korobov rate.** For every `0 < α < 3/5`, for all large
+`K` there is an integer producer on an alphabet in `[1, K]` of rate at most `exp(−(log K)^α)`. -/
+theorem hasRate_vk {α : ℝ} (hα0 : 0 < α) (hα : α < 3 / 5) :
+    HasRate fun K => Real.exp (-(Real.log (K : ℝ) ^ α)) :=
+  hasRate_of_level_exp hα0 (by linarith : α < (α + 3 / 5) / 2)
+    (isMertensLevel_vk (by linarith) (by linarith))
 
 /-- **The region the stencils read.** For every `0 < α < 3/5` the Möbius producers read back a
 zero-free region `Re ρ ≤ 1 − c Λ^{1 − 1/α}`, `Λ = log (24 ‖ρ‖)`. This is the Vinogradov–Korobov shape,
