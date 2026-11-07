@@ -335,3 +335,5 @@ CubicCuspConstantAverages adapts Eisenstein/CuspResidues.lean compact cusp avera
 TheCubicResidueIsNonzero adapts Eisenstein/CuspResidues.lean residual-vector nonvanishing, with the local initial resolvent matching theorem discharging the source identity.
 TheCubicResidualCharacter adapts Eisenstein/ConjugateLevelAction.lean quotient actions and continuation of the cubic character.
 CubicWhittakerAverages adapts Eisenstein/ScatteringCoefficients.lean Whittaker parameter-integral bounds and differentiation.
+CubicFourierBesselKernel adapts Eisenstein/HyperbolicSpace.lean Gamma-integral, Gaussian Fourier, and Bessel-kernel arguments.
+CubicResidualFourierTests adapts Eisenstein/ScatteringCoefficients.lean bounded Fourier tests and initial scattering identities.

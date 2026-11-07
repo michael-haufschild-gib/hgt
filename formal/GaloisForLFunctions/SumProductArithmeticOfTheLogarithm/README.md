@@ -65,12 +65,14 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Optimal resolution order | Pairs `(n+1,n+4)` and `(n+2,n+3)` are distinct but their translated products differ by two at every nonnegative integer shift. Corresponding logarithms differ by at most `2/(n+1)²`. | [`neighbouring_pair_log_gap`, `neighbouring_pair_signatures_ne`](SharpnessOfProductResolution.lean) |
 | Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
 | Finite recurrence | Every finite set `A` aligns to precision `2π/(Q+1)` at some height in `[L,L(Q+1)^|A|]`, for every `L>0`. There is no last aligned height. | [`exists_alignment_in_scaled_interval`, `not_exists_last_alignment`](FiniteAlignmentReturns.lean) |
+| Effective discrete half-turn | For `α=log 3/log 4` and `Q≥2`, some integer `1≤k≤Q4^Q log 4/2` satisfies `|kα−ℓ−1/2|<1/Q`. Integer-log separation controls the size of the preceding homogeneous return. | [`exists_effective_three_four_half_turn`, `threeFourRotation_gap`](EffectiveLogarithmicHalfTurn.lean) |
 | Collision amplification | Distinct factorizations of norm `m` give at least `k+1` factorizations of `m^k`. Uniformly bounded multiplicities force injective norm. | [`intCount_pow_ge_of_collision`, `bounded_intCount_iff_norm_injective`](NormCollisionAmplification.lean) |
 | Count-distance trichotomy | A locally finite positive integer-norm system is classical, has `k≤|D(m^k)|+|D(m^k−1)|` for some `m≥2`, or has `N(m(4k+1))+k≤m(4k+1)` for some `m≥2`. | [`count_distance_trichotomy`](CountDistanceRigidity.lean) |
 | Logarithmic isolation | Every nonclassical such system has `|D(n)|≥c log n` arbitrarily far out, for some `c>0`. Error `o(log n)` forces a norm-preserving equivalence of labels with rational primes. | [`primes_or_logarithmic_count_distance`, `primes_of_sublogarithmic_count_error`](LogarithmicCountFloor.lean) |
 | Positive-generator near-count model | Odd primes together with extra norm-three and norm-four labels give a nonclassical positive system with `|N(x)−x|≤(log x/log 3+1)(log x/log 4+1)/2+2` for `x≥1`. | [`PositiveNearCount.count_error_log_bound`, `PositiveNearCount.count_error_log_sq`, `PositiveNearCount.not_prime_equiv`](PositiveNearCountEstimate.lean) |
 | Signed carry excursions | The model satisfies `2(N(n)+N(⌊n/2⌋))+s₃(n)=3n`. Arbitrarily large `n` have `N(n)≤n−log n/(2 log 3)`. | [`PositiveNearCount.count_add_half_digit_sum`, `PositiveNearCount.negative_log_excursions`](PositiveNearCountCarries.lean) |
 | Sharp averaged deficit | For the same model, `R(x)=∫₀ˣN(t)dt` satisfies `x log x/(12 log 3)≤x²/2−R(x)≤(2/3)x(log x/log 3+1)+x/2` for `x≥1`. | [`PositiveNearCount.riesz_log_bound`, `PositiveNearCount.integral_count_deficit`](PositiveNearCountRiesz.lean) |
+| Exact averaged coefficient | `(x²/2−∫₀ˣN(t)dt)/(x log x) → 1/(4 log 3)` for the actual positive model. Its norm-four profile has uniform orbit average `1/4`. | [`PositiveNearCount.tendsto_integral_count_deficit`, `PositiveNearCount.uniform_profile_average`](PositiveNearCountExactAverage.lean) |
 | Euler continuation and zero divisor | The actual model series is `ζ(s)/((1+2^(−s))(1−3^(−s)))` for `Re s>1`; its continuation has residue one and the same zeros, with multiplicities, as `ζ` on `Re s>0` away from one. | [`PositiveNearCount.zetaSeriesC_eq_continuation`, `PositiveNearCount.analyticOrderAt_zetaContinuation`, `PositiveNearCount.zetaContinuation_residue_one`](PositiveNearCountEuler.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
@@ -112,8 +114,14 @@ Its first count average has a sharper description. Odd-integer midpoint
 rounding and the omitted norm-four geometric tail force a deficit between
 `x/12` and `2x/3` at every retained norm-three exponent. Consequently the
 integrated count deficit has exact order `x log x`, with explicit constants.
-This identifies logarithmic distance after averaging while leaving the
-pointwise logarithmic-to-quadratic-logarithmic gap open.
+Its leading coefficient is exactly `1/(4 log 3)`. The normalized norm-four
+deficit converges along powers of four to a continuous profile `P` with
+`P(x)+P(x/2)=1/2`. Rotation by `log 3` on the circle of length `log 4` has a
+dense orbit. Pairing a finite orbit with an approximate half-period translate
+forces its average to `1/4`, uniformly in its starting scale. The actual count
+differs from the profile sum by a bounded normalized error. This identifies
+logarithmic distance after averaging while leaving the pointwise
+logarithmic-to-quadratic-logarithmic gap open.
 
 The model’s Dirichlet series is also identified from its actual generalized
 integers. Absolute convergence and the coordinate bijection produce its

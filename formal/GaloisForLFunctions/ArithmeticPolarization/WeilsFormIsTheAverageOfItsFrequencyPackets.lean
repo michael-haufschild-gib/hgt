@@ -189,6 +189,3 @@ theorem volume_neg_frequencyPacket_pos {f φ : ℝ → ℂ} {A b : ℝ} (hA : 0 
   exact (not_lt.mpr (integral_nonneg_of_ae hae)) hlt
 
 end GaloisForLFunctions.ArithmeticPolarization
-
-#print axioms GaloisForLFunctions.ArithmeticPolarization.integral_re_W_frequencyPacket
-#print axioms GaloisForLFunctions.ArithmeticPolarization.volume_neg_frequencyPacket_pos

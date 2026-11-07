@@ -80,7 +80,7 @@ theorem whittakerCoeff_neg (s : ℂ) {n : ℕ} (hn : n ≠ 0) :
     whittakerCoeff (-s) n = whittakerCoeff s n := by
   rw [← sum_cexp_representativeShift s hn, whittakerCoeff_eq_sum_antidiagonal _ hn, neg_neg]
   refine sum_congr rfl fun ad had => ?_
-  rw [cexp_mul_representativeShift s had]
+  rw [cexp_mul_representativeShift s had, mul_comm]
 
 /-- The normalization of a representative: `(ad)^{-1/2} d = e^{ℓ/2}`, `ℓ = log d − log a`. -/
 theorem sqrt_inv_mul_eq_exp {a d : ℕ} (ha : 0 < a) (hd : 0 < d) :
@@ -227,9 +227,9 @@ theorem integral_poisson_mul_whittaker {u : ℂ} (hur : u.re < 0) {n m : ℕ} (h
       (halfPlanePoisson (-u.re) (t - u.im) : ℂ) * cexp (I * (y : ℂ) * (t : ℂ))) :=
     fun y => integrable_halfPlanePoisson_shift_mul_cexp hσ u.im y
   rw [integral_congr_ae (Eventually.of_forall hexpand),
-    integral_finset_sum _ fun ad _ => integrable_finset_sum _ fun ad' _ => hint _]
+    integral_finsetSum _ fun ad _ => integrable_finsetSum _ fun ad' _ => hint _]
   refine sum_congr rfl fun ad _ => ?_
-  rw [integral_finset_sum _ fun ad' _ => hint _]
+  rw [integral_finsetSum _ fun ad' _ => hint _]
   exact sum_congr rfl fun ad' _ => integral_halfPlanePoisson_shift_mul_cexp hσ u.im _
 
 /-- **Physical Hecke moments for the whole Hecke algebra.** For `n, m ≥ 1` and `Y ≥ n, m`,
@@ -266,10 +266,10 @@ theorem integral_heckeN_mul_conj_heckeN {u : ℂ} (hu : u ∈ eisensteinLineDoma
     simp only [hS, map_mul]
     ring
   rw [integral_congr_ae (Eventually.of_forall hfun),
-    integral_finset_sum _ fun ad had => integrable_finset_sum _ fun ad' had' => hintS ad had ad' had',
+    integral_finsetSum _ fun ad had => integrable_finsetSum _ fun ad' had' => hintS ad had ad' had',
     integral_poisson_mul_whittaker hur hn hm, mul_sum]
   refine sum_congr rfl fun ad had => ?_
-  rw [integral_finset_sum _ fun ad' had' => hintS ad had ad' had', mul_sum]
+  rw [integral_finsetSum _ fun ad' had' => hintS ad had ad' had', mul_sum]
   exact sum_congr rfl fun ad' had' => integral_shifted_mul_conj hu hur hAu hY1
     (one_le_mul_exp_representativeShift hYn had) (one_le_mul_exp_representativeShift hYm had')
 
@@ -324,7 +324,7 @@ theorem integral_heckeN_mul_conj_heckeN_eq_sum_gcd {u : ℂ} (hu : u ∈ eisenst
       congr 2
       ring
     rw [hexp]
-    exact integrable_finset_sum _ fun ad _ =>
+    exact integrable_finsetSum _ fun ad _ =>
       integrable_halfPlanePoisson_shift_mul_cexp hσ u.im _
   rw [integral_heckeN_mul_conj_heckeN hu hur hAu hn hm hYn hYm]
   congr 1
@@ -335,7 +335,7 @@ theorem integral_heckeN_mul_conj_heckeN_eq_sum_gcd {u : ℂ} (hu : u ∈ eisenst
     intro t
     rw [whittakerCoeff_mul_eq_sum_gcd_divisors _ hn hm, mul_sum]
   rw [integral_congr_ae (Eventually.of_forall hprod),
-    integral_finset_sum _ fun d hd => hintW _ (hne d hd)]
+    integral_finsetSum _ fun d hd => hintW _ (hne d hd)]
   exact sum_congr rfl fun d hd => (resonantHeckeMoment_eq_poisson_integral hur (hne d hd)).symm
 
 end

@@ -1,8 +1,8 @@
 # Exact coefficient of the positive model's averaged deficit
 
 - **ID:** SPL-positive-model-exact-average
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization incomplete
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For the positive odd-prime model with extra norms three and
   four, `(x²/2−R(x))/(x log x) → 1/(4 log 3)`, where `R(x)=∫₀ˣN(t)dt`.
 
@@ -60,14 +60,22 @@ The accumulated replacement error has magnitude at most
 Uniform convergence of the averages and `(A+1)/log x→1/log 3` prove
 the stated limit.
 
-## Lean status and boundary
+## Lean declarations and boundary
 
-`PositiveNearCountProfile.lean` formalizes the continuous profile, its
-period-four law, complementary half-period identity, and `1/12` approximation
-bound. `ComplementaryRotationAverages.lean` proves the required uniform
-averaging principle. `PositiveNearCountProfileBridge.lean` connects the
-actual weighted norm count to this profile with normalized error at most `5/8`.
-Direct checks and axiom audits pass for these modules. The logarithmic-circle
-specialization and limiting coefficient remain in progress. The existing
-two-sided `Θ(x log x)` estimate alone does not establish this coefficient. No pointwise `O(log x)` count
-bound or exceptional-zero conclusion follows. No external novelty claim.
+Namespace `GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCount`:
+
+- `PositiveNearCountProfile.lean`: `fourProfile_approx`, `fourProfile_four`,
+  `fourProfile_half`, `continuousAt_fourProfile`.
+- `PositiveNearCountProfileBridge.lean`: `sum_normBall_eq_rectangle`,
+  `rieszCount_eq_three_sum`, `normalized_deficit_profile_error`.
+- `PositiveNearCountExactAverage.lean`: `uniform_profile_average`,
+  `riesz_deficit_converges`, `tendsto_riesz_deficit`,
+  `tendsto_integral_count_deficit`.
+
+`ComplementaryRotationAverages.lean` supplies the general uniform averaging
+principle. All mathematical inputs are discharged for the concrete model.
+Direct source checks pass; capstone axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+No pointwise `O(log x)` count bound or exceptional-zero conclusion follows.
+No external novelty claim.

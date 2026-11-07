@@ -412,6 +412,14 @@ actual nonzero residual vector transforms by the cubic character.
 averages throughout Re s > 1 by a product-integral majorant that absorbs the
 parameter derivative logarithm.
 
+`CubicFourierBesselKernel.lean` computes the hyperbolic Fourier kernel through
+its Gamma integral and Gaussian transform, identifies the exact Bessel factor,
+and specializes the formula at s = 4/3.
+
+`CubicResidualFourierTests.lean` constructs bounded cusp Fourier tests on the
+actual quotient L² family, proves meromorphy and residue limits, and
+identifies their initial arithmetic scattering formula using source matching.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

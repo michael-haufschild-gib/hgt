@@ -33,7 +33,7 @@ modulus is at most `(16 log Q+64 log 4+4/3)/Q`.
 
 ## Pairing and arithmetic input
 
-The [effective half-turn](logarithm-effective-half-turn.md) provides a shift
+The [effective half-turn](../3-formalized/logarithm-effective-half-turn.md) provides a shift
 `k≤Q·4^Q·log 4/2` approximating the complementary translate. Pairing orbit
 sums gives half the modulus plus `k/(2n)`, since `0≤P≤1/2` and shifting
 the sum changes only its two boundary blocks.

@@ -13,7 +13,7 @@
 ## Status
 | # | Task | Status | Lean |
 |---|---|---|---|
-| A25 | Physical all-`n` Hecke moments | in progress | — |
+| A25 | Physical all-`n` Hecke moments | done | `ResonantStates/EveryHeckeOperatorIsDiagonalOnEisenstein`, `ResonantStates/TheHeckeAlgebraHasThePoissonSpectralMeasure`; card `3-formalized/pm-every-hecke-operator-has-the-poisson-spectral-measure.md` |
 | A26 | Weyl law; metric of `L²` data; regularity at `r=1`; scalar sector | open | — |
 | A27 | Local AdS₄ isometry; modular Lax–Phillips; Zagier–Sarnak; Kramers–Kronig | open | — |
 | A28 | Reciprocal quadric traces = vanishing-cycle traces | open | — |

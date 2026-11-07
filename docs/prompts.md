@@ -380,10 +380,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier we created these documents:
-- docs/reports/review-0611/walls-ledger.md
-- docs/reports/review-0611/route-obstacles.md
-- docs/reports/review-0611/route-unification-ledger.md
-- docs/reports/review-0611/obstacles-summary.md
+- docs/reports/review-0711/walls-ledger.md
+- docs/reports/review-0711/route-obstacles.md
+- docs/reports/review-0711/route-unification-ledger.md
+- docs/reports/review-0711/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -415,7 +415,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-0711/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0711/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -451,39 +451,29 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-0311/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-0511/route-obstacles.md
-5. A summary by another ai model: docs/reports/review-0511/obstacles-summary.md
-6. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0511/walls-ledger.md
+3. Unification of the routes: docs/reports/review-0711/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-0711/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0711/walls-ledger.md
    
 and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
     
 Only read these documents, no other markdown files.
 
-Use the search tool for our lean corpus to research what we have proven and not proven. Do not assume, our research is far ahead of your training data. Take the time to search and understand. 
+Do not rely only on these markdown files which are partly outdated. Use the search tool for our lean corpus to research what our research currently shows. Do not assume, our research is far ahead of your training data - our lean corpus is the Sota research. Take the time to search and understand. We are expected an accurate, in-depth research and report, not superficial ai-slop that is useless to our frontier research.
 
 Keep a log file in logs/ for your research to note down facts and findings, since this research will go over multiple context window compactions that otherwise may lose information.
 
 The questions for you to answer:
-1. Do you see any opportunity for a new proof mechanism or route that circumvents the walls or destroy a wall?
-2. Do you see any approach for an RH proof that is wildly different to all the routes and candidates we have so far, going a wildly different way not even touching the walls the existing routes face?
-3. ideate and describe a breakthrough question that is less "hard" than proving RH or quasi-RH and would bring a real advance and breakthrough in:
-   3.1 our RH proof research as a whole
-   3.2 route PM
-   3.3 route MC
-   3.4 route WD
-   3.5 route HF
-4. ideate and describe a breakthrough question that would clearly open wide the path to the RH proof for:
-   4.1 our RH proof research as a whole
-   4.2 route PM
-   4.3 route MC
-   4.4 route WD
-   4.5 route HF
-5. What are the 3 open questions we should focus our research on to make the most progress to make a real breakthrough and progress towards the RH proof?
-6. What is the one question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough and push the door wide open for us for finding the RH proof?
+1. What is the big picture of our research? What hard obstacles have we solved? What hard obstacles are still standing between us and an RH proof/falsificiation?
+2. Do you see any opportunity to overcome one or more obstacles or significantly solve them partially?
+3. Do you see a clear path towards proving quasi-RH?
+4. Do you see a clear path towards proving that at least 70% of the zeros of the riemann zeta function lie on the critical line?
+5. What is the one big question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+6. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then what is the one big question the is less hard than proving RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
+8. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then you can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-0511/fable.md
+Write a report in docs docs/reports/review-0711/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -609,9 +599,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0611/obstacles-summary.md (more details in docs/reports/review-0611/route-obstacles.md)
+read and understand docs/reports/review-0711/obstacles-summary.md (more details in docs/reports/review-0711/route-obstacles.md)
 
-under "## 2.1 Tasks that are just work" -> "### Continuation, near-line, production" it lists tasks which are likely to be doable.
+under "## 2.1 Tasks that are just work" -> "### Theta, reflection, weights, production, descent" it lists tasks which are likely to be doable.
 
 your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -645,12 +635,12 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0611/obstacles-summary.md
+read and understand docs/reports/review-0711/obstacles-summary.md
 
-under "## 3. The one question" it ask a question: 
-"**Can a negative direction of the complete Weil matrix at a fixed critical ratio escape every window of length of order `log R`?** Let `R=c⁸/log N` be fixed and let `R_c(ζ)` be the largest ratio below which the matrix is eventually positive definite. Is `log R_c(ζ)≳a*(ζ)`? The inequality that decides it is a Gårding bound at each fixed `R` (A10):
+under "## 3. The one question" it asks one question: 
+"**Does the prefix decouple from the top collar at a fixed critical ratio?** Let `R=c⁸/log N` be fixed, `y` the top-collar part of `U` and `p` the prefix. Is the Schur cost of the prefix and low packet against the collar negligible:
 
-`Q(U)+B_R‖U‖²≥a_RW₈(U)` on normalized atomic sources, with `a_R>0`."
+`|B(U_y,U_p)|²≤o(1)·Q(U_p)·(Q(U_y)+B_R‖U_y‖²)`, on the complement of a low packet whose signed polar part is retained?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 
