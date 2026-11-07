@@ -21,12 +21,16 @@ does not fulfill these requirements.
 
 ## Mathematical development
 
-- [Prime-height filtration](esg-prime-height-filtration.md): explicit coning
-  after doubling the height; compatibility and persistence are the precise
-  additions sought beyond the known levelwise sphere bouquet.
-- [Finite-radius torsion](hhac-finite-radius-torsion.md): separate divergent
+- [Prime-height filtration](../3-formalized/esg-prime-height-filtration.md): explicit coning
+  after doubling the height and the exact interval law for actual inclusion
+  maps between the known sphere bouquets.
+- [Finite-radius torsion](../3-formalized/hhac-finite-radius-torsion.md): separate divergent
   diagonal, universal radial term and inverse-chord remainder. The comparison
   with the archimedean reserve remains an independent open inequality.
+- [Conductor control](../3-formalized/hhac-conductor-controlled-regularization.md): bound the
+  remainder for arbitrary signed finite pairings by conductors and totients.
+- [Exact chord energy](hhac-torsion-chord-energy.md): sharpen that cost using
+  the full root-of-unity energy and the least common multiple of conductors.
 
 The programme definitions are
 [EffectiveScalingGeometry/README.md](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md)

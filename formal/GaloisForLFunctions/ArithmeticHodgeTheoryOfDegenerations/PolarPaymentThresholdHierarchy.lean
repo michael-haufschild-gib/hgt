@@ -50,7 +50,7 @@ theorem criticalNonnegativityThreshold_le_polarPaymentCriticalThreshold :
   refine le_of_forall_lt fun c hc => ?_
   rcases le_or_gt c 0 with hc0 | hc0
   · exact lt_of_le_of_lt hc0 polarPaymentCriticalThreshold_pos
-  · lift c to ℝ using ⟨(lt_trans EReal.bot_lt_zero hc0).ne', (hc.trans (EReal.coe_lt_top R)).ne⟩
+  · lift c to ℝ using ⟨(hc.trans (EReal.coe_lt_top R)).ne, (lt_trans EReal.bot_lt_zero hc0).ne'⟩
     have hc_pos : 0 < c := EReal.coe_pos.mp hc0
     have hcR : c < R := EReal.coe_lt_coe_iff.mp hc
     set r : ℝ := (c + R) / 2

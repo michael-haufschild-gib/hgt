@@ -77,7 +77,7 @@ private theorem puncturedTerm_pos (s : ℂ) (k : ℕ) (d : ℤ) :
 
 private theorem puncturedTerm_axis_pos (s : ℂ) (k : ℕ) :
     puncturedTerm s (0, (k : ℤ) + 1) = 1 / ((k : ℂ) + 1) ^ (2 * s) := by
-  have h : (0, (k : ℤ) + 1) ≠ (0, 0) := by
+  have h : ((0 : ℤ), (k : ℤ) + 1) ≠ (0, 0) := by
     intro h; have := congrArg Prod.snd h; dsimp at this; omega
   have hn : latNorm (0, (k : ℤ) + 1) = (k + 1) ^ 2 := by
     apply Int.ofNat_inj.mp
@@ -103,8 +103,7 @@ private theorem lattice_halfPlane_split {s : ℂ} (hs : 1 < s.re) :
       (f := fun d : ℤ => puncturedTerm s (0, d)) hap han]
     simp only [puncturedTerm_axis_neg, puncturedTerm_axis_pos]
     rw [← zeta_eq_tsum_one_div_nat_add_one_cpow (by simp; linarith)]
-    simp only [puncturedTerm, Set.indicator_apply, Set.mem_setOf_eq,
-      not_true_eq_false, if_false, add_zero]
+    simp [puncturedTerm]
     ring
   have hr : Summable (fun c : ℤ => ∑' d : ℤ, puncturedTerm s (c, d)) := h.prod
   have hp : Summable (fun k : ℕ => ∑' d : ℤ, puncturedTerm s ((k : ℤ) + 1, d)) :=
@@ -218,9 +217,21 @@ theorem scalarDirichlet_eq_lattice_square {s : ℂ} (hs : 1 < s.re) :
   linear_combination (2 * riemannZeta (2 * s) - (∑' p, latTerm s p)) * hg -
     riemannZeta (2 * s) * (∑' a, primitiveTerm s a) * hh
 
+/-- The scalar charge sum has the normalization `2ζ(2s)E(i,s)²`. -/
+theorem scalarDirichlet_eq_eisenstein_square {s : ℂ} (hs : 1 < s.re) :
+    ∑' q, scalarDirichletTerm s q = 2 * riemannZeta (2 * s) *
+      d4BMRawEisensteinPoincareSeries zI ⟨s, hs⟩ ^ 2 := by
+  have hz : riemannZeta (2 * s) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_lt_re (by simp; linarith)
+  rw [scalarDirichlet_eq_lattice_square hs, latticeSum_eq_zeta_mul_primitive hs,
+    d4BMRawEisensteinPoincareSeries]
+  simp_rw [seed_zI]
+  field_simp
+
 end
 
 end GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap
 
 #print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.summable_scalarDirichletTerm
 #print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.scalarDirichlet_eq_lattice_square
+#print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.scalarDirichlet_eq_eisenstein_square

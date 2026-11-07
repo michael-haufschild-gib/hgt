@@ -65,3 +65,7 @@ import GaloisForLFunctions.SelbergClass.Primon.LocalDuality
 import GaloisForLFunctions.SelbergClass.Primon.KestenMcKay
 import GaloisForLFunctions.SelbergClass.Primon.ChargedOscillators
 import GaloisForLFunctions.SelbergClass.Primon.PhaseMomentKernel
+import GaloisForLFunctions.SelbergClass.Primon.LogarithmicAverage
+import GaloisForLFunctions.SelbergClass.Primon.ThermalLocalFactor
+import GaloisForLFunctions.SelbergClass.Primon.CharacterMoments
+import GaloisForLFunctions.SelbergClass.Primon.ArithmeticAverage

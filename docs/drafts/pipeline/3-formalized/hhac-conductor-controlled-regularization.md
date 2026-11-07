@@ -1,8 +1,8 @@
 # Conductor control of radial regularization
 
 - **ID:** hhac-conductor-controlled-regularization
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 
 ## Exact target
 
@@ -36,5 +36,23 @@ It does not control the diagonal self-energy or prove a global positive height.
 The corpus already proves a sharper trigonometric root-separation bound in
 `RHTower.RootOfUnityIntervalCompletion.norm_exp_sub_one_ge`.
 The elementary geometric-sum argument here avoids angular parametrization;
-its application to the new radial remainder is the proposed tool.
-Lean formalization remains required.
+its application gives the conductor certificate for the radial remainder.
+
+Root-of-unity Riesz energies are classical; see Brauchart–Hardin–Saff,
+[The Riesz energy of the N-th roots of unity](https://arxiv.org/abs/0808.1291).
+No priority claim is made for root separation or root energy. The additional result
+is the uniform certificate for the corpus's primitive-orbit regulator.
+
+## Lean formalization
+
+Module: `HeightHomotopyArithmeticCounts.ConductorControlledRegularization`.
+Namespace: `GaloisForLFunctions.HeightHomotopyArithmeticCounts`.
+
+- `root_chord_conductor_bound`, `inverse_chord_le_conductor_sq`: geometric-sum separation.
+- `torsionPairCount_self`, `torsionPairCount_of_ne`: exact totient coefficients.
+- `torsionInverseChordCost_le`: conductor control of the actual punctured orbit sum.
+- `torsionRadialError_conductor_bound`, `finite_radius_conductor_certificate`:
+  scalar and signed-pairing certificates, with all separation premises discharged.
+
+The module passes a direct `lake --old env lean` check. The capstone axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.

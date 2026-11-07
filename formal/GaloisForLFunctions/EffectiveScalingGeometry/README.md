@@ -6,7 +6,7 @@ for effectivity, rather than rename the Weil quadratic form as a count.
 The motivating specification is §2.11 of
 [the first obstacles report](../../../docs/reports/review-0611/obstacles-summary.md).
 
-The intended namespace is `GaloisForLFunctions.EffectiveScalingGeometry`;
+The namespace is `GaloisForLFunctions.EffectiveScalingGeometry`;
 the programme umbrella is `EffectiveScalingGeometry.lean`.
 
 ## Motivation and position
@@ -71,7 +71,7 @@ to Lean theorems.
 The first geometric construction is a prime-height filtration in a fixed
 ambient simplex. Its faces are prime supports of product at most `N`.
 Coning to vertex `2` gives an explicit nullhomotopy of the actual inclusion
-from height `N` to `2N`, compatible with increasing height. This is
+from height `N≥1` to `2N`, compatible with increasing height. This is
 [`PrimeHeightFiltration.lean`](PrimeHeightFiltration.lean).
 
 [`ConeFiltrationPersistence.lean`](ConeFiltrationPersistence.lean) supplies
@@ -80,6 +80,22 @@ facet remains outside the larger star survives by a pointed homotopy to
 its unchanged inclusion. A facet entering the larger star maps identically
 to the basepoint. Thus the construction controls inclusion maps, beyond
 the known homotopy type of each individual prime complex.
+
+[`PrimePersistenceIntervals.lean`](PrimePersistenceIntervals.lean) proves
+the arithmetic specialization. A prime support of product `m` is a
+complementary facet precisely at heights `m≤N<2m`; its label is odd and
+squarefree, and its cardinality is `ω(m)`. The actual filtration map preserves
+its boundary sphere up to an explicit homotopy while the target height is
+below `2m`, and maps it constantly to the basepoint thereafter. The finite
+ambient model contains every face of the original prime nerve once the
+ambient labels extend beyond the height.
+
+This is a geometric interval law for inclusion maps. A separate persistent
+homology object and barcode isomorphism are not constructed here. The common
+logarithmic lifespan `log 2` gives no parity information to lifespan-only
+weights; birth locations and sphere dimensions retain arithmetic information.
+The law therefore identifies what a richer weighting must use without
+claiming an Euler-cancellation bound.
 
 ## Mechanisms and tools
 

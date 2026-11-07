@@ -29,8 +29,9 @@ Namespace: `GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap`
 `lake --old env lean GaloisForLFunctions/ArithmeticScatteringHolography/ModularBootstrap/ScalarChargeCoordinates.lean` passes. Transitive `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`. Imported by the programme umbrella; no umbrella build.
 
 This is the arithmetic parametrization underlying the classical central-charge-two
-Narain transform, not a novelty claim or a proved transform identity. The zero-winding
-sector, summability and infinite-sum reindexing remain in the programme card.
+Narain transform, not a novelty claim or a proved overlap integral. The
+[square-target Dirichlet identity](ads3-square-torus-dirichlet.md) supplies
+the zero-winding sector, summability and infinite-sum reindexing.
 
 ## Gates
 

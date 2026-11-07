@@ -1,29 +1,33 @@
 # Finite-radius torsion self-energy
 
 - **ID:** hhac-finite-radius-torsion
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** review-0711 §2.11, B88
 - **Statement:** After removing diagonal self-energy and the universal radial
   term, a finite torsion cloud has a quadratic, explicitly bounded radial error.
 
 ## Exact target
 
-For distinct unit complex numbers `z_i`, real charges `a_i`, and `0<r<1`,
+For distinct unit complex numbers `z_i` and `0<r<1`,
 put `d_ij=|z_i−z_j|²`, `u=(1−r)²/r`. The identity
 
 `|1−r z_i conjugate(z_j)|² = r d_ij+(1−r)²`
 
 implies that the off-diagonal kernel, after adding `log r/2`, differs from
 `−log|z_i−z_j|` by `−log(1+u/d_ij)/2`. Its magnitude is at most
-`u/(2d_ij)`. Summing against signed charges gives an explicit inverse-chord
-cost; the universal radial term is determined by total charge and square mass.
+`u/(2d_ij)`. On primitive torsion orbits, summing against arbitrary signed
+pair coefficients gives an explicit inverse-chord cost.
+
+For the primitive-orbit formulation below, its coefficient is the exact
+punctured-pair count `c(m,n)`. Conductor-uniform control of its inverse-chord
+cost is developed in [the conductor certificate](hhac-conductor-controlled-regularization.md).
 
 ## Mechanism and scope
 
 Use the unit-circle norm identity and `0≤log(1+t)≤t` for `t≥0`.
 The existing Abel-energy theorem proves positivity and a limiting
-renormalization but supplies no finite-radius error modulus. This target
+renormalization but supplies no finite-radius error modulus. The finite-radius decomposition
 retains the exact divergent diagonal and quantifies the remaining error.
 
 It does not prove payment of self-energy by the archimedean reserve, and
@@ -33,7 +37,7 @@ does not construct a global arithmetic height. Those remain open.
 
 `ArithmeticEffectivityTheory.TheWeilPrimeKernelIsARenormalizedTorsionEnergy`
 defines the actual torsion energies and their limiting prime kernel.
-Check for existing quantitative radial estimates before claiming a new tool.
+The additional result is an explicit finite-radius modulus for that regulator.
 
 ## Paper proof
 
@@ -68,5 +72,19 @@ by `(1−r)²/(2r)` times the sum of absolute coefficients weighted by
 `ArithmeticIntersectionTheory.TheSpacingRegulatorRemovesTheAnomaly`
 already constructs positive spacing-dependent regulators and identifies
 their indefinite limits. The additional target here is a finite-radius
-error formula, not another limiting positivity claim. Uniform conductor
-estimates for `C(m,n)` and payment of the diagonal remain open.
+error formula, not another limiting positivity claim. The conductor certificate bounds `C(m,n)` arithmetically. Sharp conductor
+estimates and payment of the diagonal remain open.
+
+## Lean formalization
+
+Namespace: `GaloisForLFunctions.HeightHomotopyArithmeticCounts`.
+
+- `RadialLogarithmicKernel.lean`: `radial_chord_sq`,
+  `radialChordError_bounds`, `radial_log_chord`.
+- `FiniteRadiusTorsionEnergy.lean`: `puncturedTorsionEnergy_decomposition`,
+  `torsionRadialError_bounds`, `torsionEnergy_finite_radius`,
+  `torsion_finite_radius_certificate`, `abs_weighted_torsionRadialError_le`,
+  `finite_radius_signed_pairing_bound`.
+
+Both modules pass direct `lake --old env lean` checks. All listed axiom
+closures contain only `propext`, `Classical.choice`, and `Quot.sound`.

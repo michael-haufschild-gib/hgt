@@ -13,7 +13,7 @@ the horocycle mean, does not see these modes.
 On the whole cuspidal space `C(τ) f = Σ cos(t_j τ) ⟨u_j, f⟩ u_j` is a strongly continuous contractive cosine
 family: d'Alembert's law holds, and each coefficient solves `c'' = (¼ - λ_j) c`.
 
-The corpus has no Weyl law, so it does not show that the level-one eigenbasis is nonempty.
+The eigenbasis is infinite, with infinitely many distinct eigenvalues (`TheCuspFormsExist`).
 -/
 
 open Complex MeasureTheory Set Filter Topology

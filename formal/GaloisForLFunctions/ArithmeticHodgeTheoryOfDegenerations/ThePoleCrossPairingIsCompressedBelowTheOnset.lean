@@ -108,8 +108,6 @@ theorem ccmWeilRealPolar_pole_realInteriorSource (a : SuzukiPositiveAperture) {F
     change inner ℂ ((centralInterval a.1).indicator _ x) (F x : ℂ) = _
     by_cases hx : x ∈ centralInterval a.1
     · rw [indicator_of_mem hx, indicator_of_mem hx]
-      have hre : (realInteriorSource a hF hFc hFs : ℝ → ℂ) x = (F x : ℂ) := rfl
-      rw [hre]
       unfold ccmPolarBoundaryArithmeticProfile poleCrossProfile
       rw [← Complex.ofReal_add, RCLike.inner_apply, Complex.conj_ofReal, ← Complex.ofReal_mul]
       congr 1
@@ -144,7 +142,7 @@ aperture `a ≥ 1` with `max(a₁, K(2a + 2)) ≤ a*(ζ)` and every real smooth 
 theorem exists_sq_integral_poleCrossProfile_le_sharp :
     ∃ K a₁ C : ℝ, 0 < K ∧ 0 ≤ C ∧ ∀ a : SuzukiPositiveAperture, 1 ≤ a.1 →
       ((max a₁ (K * (2 * a.1 + 2)) : ℝ) : EReal) ≤ onsetAperture zetaZeroConfig →
-      ∀ {F : ℝ → ℝ} (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hFc : HasCompactSupport F),
+      ∀ {F : ℝ → ℝ}, ContDiff ℝ (⊤ : ℕ∞) F → HasCompactSupport F →
         tsupport F ⊆ Ioo (-a.1) a.1 →
         (∫ x, (centralInterval a.1).indicator (poleCrossProfile a.1) x * F x) ^ 2 ≤
           Real.exp a.1 * (poleSharpConstant + C * Real.exp (-(a.1 / 2))) * fullZeroForm F := by

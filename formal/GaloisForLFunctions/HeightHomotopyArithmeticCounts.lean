@@ -1,3 +1,5 @@
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.RadialLogarithmicKernel
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.FiniteRadiusTorsionEnergy
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.ConductorControlledRegularization
 
 /-! Local heights, torsion regularization and homotopy invariants of arithmetic counts. -/

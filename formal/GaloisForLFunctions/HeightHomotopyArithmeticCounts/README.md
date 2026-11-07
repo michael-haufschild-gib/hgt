@@ -6,14 +6,14 @@ field: an addition law, a fixed-point formula, and a polarization. Its motivatin
 specification is §2.11 of
 [the second obstacles report](../../../docs/reports/review-0711/obstacles-summary.md).
 
-The intended namespace is `GaloisForLFunctions.HeightHomotopyArithmeticCounts`;
+The namespace is `GaloisForLFunctions.HeightHomotopyArithmeticCounts`;
 the programme umbrella is `HeightHomotopyArithmeticCounts.lean`.
 
 ## Motivation and position
 
 An integer probe should carry local contributions whose product formula yields
 a nonnegative height. An addition law should make its asymptotic height
-quadratic. Independently, the Euler characteristic of the nerve of prime stars
+quadratic. Independently, the reduced Euler characteristic of the nerve of prime stars
 is `−M(N)`: its small expected size concerns cancellation among linearly many
 homology classes. A fixed-point construction could explain that cancellation
 without pretending those classes disappear.
@@ -79,6 +79,38 @@ Consequently the logarithmic kernel has a universal first-order correction
 identity and bound. These are estimates on the actual circle kernel,
 independent of the Weil form. They isolate the geometric cost of regularizing
 distinct torsion points; coincident points require a separate diagonal term.
+
+[`FiniteRadiusTorsionEnergy.lean`](FiniteRadiusTorsionEnergy.lean) applies
+this identity to the existing primitive torsion orbits. Writing `T°_r` for
+energy with coincident pairs removed, `c(m,n)` for their number, and
+`C(m,n)=Σ_{z≠w}|z−w|⁻²`, it proves
+
+`T°_r(m,n)+c(m,n)log(r)/2 = −I(m,n)−R_r(m,n)`,
+
+`0 ≤ R_r(m,n) ≤ (1−r)² C(m,n)/(2r)`.
+
+For a self-orbit, the removed energy is exactly `−φ(n)log|1−r|`.
+For any finite signed pairing, the absolute remainder is bounded by the
+same radial factor times `Σ |a(m,n)| C(m,n)`. This is a finite-radius
+certificate, stronger than a boundary-limit identity. It provides no sign
+for the renormalized pairing and leaves diagonal payment open.
+
+[`ConductorControlledRegularization.lean`](ConductorControlledRegularization.lean)
+removes the separation constant from this certificate:
+
+`C(m,n) ≤ (mn)² c(m,n)`.
+
+Here `c(m,n)=φ(m)φ(n)` for `m≠n`, and
+`c(n,n)=φ(n)(φ(n)−1)`. The proof uses a vanishing geometric sum to separate
+distinct torsion points, then sums the pointwise estimate. Thus
+
+`|Σ a(m,n)(T°_r(m,n)+c(m,n)log(r)/2+I(m,n))|`
+`≤ (1−r)²/(2r) Σ |a(m,n)|(mn)²c(m,n)`.
+
+This is uniform in the finite conductors with an explicit polynomial cost.
+Sharper chord-energy formulas and uniform control under the arithmetic
+spacing regulator remain research topics. Neither this bound nor its
+quadratic radial rate pays for the divergent diagonal.
 
 ## Mechanisms and tools
 

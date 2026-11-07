@@ -31,23 +31,6 @@ def narainMassSq (ρ σ : D4BMUpperHalfPlaneCoordinate)
 theorem targetQuadratic_nonneg (σ : D4BMUpperHalfPlaneCoordinate) (v : ℝ × ℝ) :
     0 ≤ targetQuadratic σ v := add_nonneg (sq_nonneg _) (sq_nonneg _)
 
-theorem targetQuadratic_eq_zero (σ : D4BMUpperHalfPlaneCoordinate) (v : ℝ × ℝ) :
-    targetQuadratic σ v = 0 ↔ v = (0, 0) := by
-  constructor
-  · intro h
-    change (σ.y * v.1) ^ 2 + (v.2 - σ.x * v.1) ^ 2 = 0 at h
-    have h₁ : σ.y * v.1 = 0 :=
-      pow_eq_zero (le_antisymm (by nlinarith only [h, sq_nonneg (v.2 - σ.x * v.1)])
-        (sq_nonneg _))
-    have hv : v.1 = 0 := (mul_eq_zero.mp h₁).resolve_left σ.y_pos.ne'
-    have hv₂ : v.2 = 0 := by
-      simp only [targetQuadratic, hv, mul_zero, zero_pow (by decide : 2 ≠ 0),
-        sub_zero, zero_add] at h
-      exact pow_eq_zero h
-    exact Prod.ext hv hv₂
-  · rintro rfl
-    simp [targetQuadratic]
-
 /-- The target quadratic form uses the Eisenstein convention after one sign change. -/
 theorem targetQuadratic_poincare (σ : D4BMUpperHalfPlaneCoordinate) (p : ℤ × ℤ) :
     targetQuadratic σ ((p.1 : ℝ), (p.2 : ℝ)) =
@@ -55,34 +38,6 @@ theorem targetQuadratic_poincare (σ : D4BMUpperHalfPlaneCoordinate) (p : ℤ ×
   dsimp only [targetQuadratic, d4BMPoincareQuadratic]
   push_cast
   ring
-
-/-- Every nonvacuum charge has strictly positive conformal dimension. -/
-theorem narainMassSq_pos (ρ σ : D4BMUpperHalfPlaneCoordinate)
-    {q : (ℤ × ℤ) × (ℤ × ℤ)} (hq : q ≠ ((0, 0), (0, 0))) :
-    0 < narainMassSq ρ σ q := by
-  apply div_pos _ (mul_pos ρ.y_pos σ.y_pos)
-  have h₁ := targetQuadratic_nonneg σ
-    ((q.1.1 : ℝ) + ρ.x * q.2.2, (q.1.2 : ℝ) - ρ.x * q.2.1)
-  have h₂ := targetQuadratic_nonneg σ ((q.2.2 : ℝ), -(q.2.1 : ℝ))
-  have hy : 0 < ρ.y ^ 2 := sq_pos_of_pos ρ.y_pos
-  have hprod := mul_nonneg hy.le h₂
-  by_contra h
-  have hle := le_of_not_gt h
-  have hprod_zero : ρ.y ^ 2 * targetQuadratic σ ((q.2.2 : ℝ), -(q.2.1 : ℝ)) = 0 :=
-    le_antisymm (by linarith only [hle, h₁]) hprod
-  have hw := (mul_eq_zero.mp hprod_zero).resolve_left hy.ne'
-  have hw' := (targetQuadratic_eq_zero σ _).mp hw
-  have hw₁ : q.2.1 = 0 := by exact_mod_cast neg_eq_zero.mp (congrArg Prod.snd hw')
-  have hw₂ : q.2.2 = 0 := by exact_mod_cast congrArg Prod.fst hw'
-  have hzero : targetQuadratic σ
-      ((q.1.1 : ℝ) + ρ.x * q.2.2, (q.1.2 : ℝ) - ρ.x * q.2.1) = 0 := by
-    linarith only [hle, h₁, hprod]
-  have hn : targetQuadratic σ ((q.1.1 : ℝ), (q.1.2 : ℝ)) = 0 := by
-    simpa only [hw₁, hw₂, Int.cast_zero, mul_zero, add_zero, sub_zero] using hzero
-  have hn' := (targetQuadratic_eq_zero σ _).mp hn
-  exact hq (Prod.ext
-    (Prod.ext (by exact_mod_cast congrArg Prod.fst hn')
-      (by exact_mod_cast congrArg Prod.snd hn')) (Prod.ext hw₁ hw₂))
 
 /-- The positive-spin chiral mass is explicitly a sum of two squares. -/
 theorem narainMassSq_add_spin (ρ σ : D4BMUpperHalfPlaneCoordinate)
@@ -95,7 +50,7 @@ theorem narainMassSq_add_spin (ρ σ : D4BMUpperHalfPlaneCoordinate)
   dsimp only [narainMassSq, targetQuadratic, chargeSpin]
   push_cast
   field_simp [ρ.y_pos.ne', σ.y_pos.ne']
-  <;> ring
+  ring
 
 /-- The negative-spin chiral mass is explicitly a sum of two squares. -/
 theorem narainMassSq_sub_spin (ρ σ : D4BMUpperHalfPlaneCoordinate)
@@ -108,7 +63,7 @@ theorem narainMassSq_sub_spin (ρ σ : D4BMUpperHalfPlaneCoordinate)
   dsimp only [narainMassSq, targetQuadratic, chargeSpin]
   push_cast
   field_simp [ρ.y_pos.ne', σ.y_pos.ne']
-  <;> ring
+  ring
 
 /-- Both left and right conformal weights are nonnegative at every target modulus. -/
 theorem narain_chiral_nonneg (ρ σ : D4BMUpperHalfPlaneCoordinate)
@@ -146,6 +101,123 @@ theorem narainMassSq_square (q : (ℤ × ℤ) × (ℤ × ℤ)) :
   dsimp only [narainMassSq, targetQuadratic, zI]
   ring
 
+/-- An explicit inverse bound for the target quadratic form. -/
+def targetCoercivityConstant (σ : D4BMUpperHalfPlaneCoordinate) : ℝ :=
+  (2 * σ.y ^ 2 + 1 + 2 * σ.x ^ 2) / σ.y ^ 2
+
+theorem targetCoercivityConstant_pos (σ : D4BMUpperHalfPlaneCoordinate) :
+    0 < targetCoercivityConstant σ :=
+  div_pos (by positivity) (sq_pos_of_pos σ.y_pos)
+
+theorem targetQuadratic_coercive (σ : D4BMUpperHalfPlaneCoordinate) (v : ℝ × ℝ) :
+    v.1 ^ 2 + v.2 ^ 2 ≤ targetCoercivityConstant σ * targetQuadratic σ v := by
+  rw [targetCoercivityConstant, div_mul_eq_mul_div]
+  apply (le_div_iff₀ (sq_pos_of_pos σ.y_pos)).mpr
+  apply sub_nonneg.mp
+  calc
+    (2 * σ.y ^ 2 + 1 + 2 * σ.x ^ 2) * targetQuadratic σ v -
+        (v.1 ^ 2 + v.2 ^ 2) * σ.y ^ 2 =
+      2 * (σ.y ^ 2 * v.1) ^ 2 + σ.y ^ 2 * (2 * σ.x * v.1 - v.2) ^ 2 +
+        (1 + 2 * σ.x ^ 2) * (v.2 - σ.x * v.1) ^ 2 := by
+          dsimp only [targetQuadratic]
+          ring
+    _ ≥ 0 := by positivity
+
+/-- Euclidean size of an integer momentum-winding charge. -/
+def chargeEuclideanSq (q : (ℤ × ℤ) × (ℤ × ℤ)) : ℝ :=
+  (q.1.1 : ℝ) ^ 2 + (q.1.2 : ℝ) ^ 2 + (q.2.1 : ℝ) ^ 2 + (q.2.2 : ℝ) ^ 2
+
+/-- A uniform inverse mass bound at fixed target moduli. -/
+def massCoercivityConstant (ρ σ : D4BMUpperHalfPlaneCoordinate) : ℝ :=
+  ρ.y * σ.y * targetCoercivityConstant σ * (2 + (2 * ρ.x ^ 2 + 1) / ρ.y ^ 2)
+
+theorem massCoercivityConstant_pos (ρ σ : D4BMUpperHalfPlaneCoordinate) :
+    0 < massCoercivityConstant ρ σ := by
+  apply mul_pos (mul_pos (mul_pos ρ.y_pos σ.y_pos) (targetCoercivityConstant_pos σ))
+  have h : 0 ≤ (2 * ρ.x ^ 2 + 1) / ρ.y ^ 2 :=
+    div_nonneg (by positivity) (sq_nonneg _)
+  linarith only [h]
+
+/-- The mass controls all four integer charges, uniformly at fixed moduli. -/
+theorem chargeEuclideanSq_le_mass (ρ σ : D4BMUpperHalfPlaneCoordinate)
+    (q : (ℤ × ℤ) × (ℤ × ℤ)) :
+    chargeEuclideanSq q ≤ massCoercivityConstant ρ σ * narainMassSq ρ σ q := by
+  let u : ℝ × ℝ :=
+    ((q.1.1 : ℝ) + ρ.x * q.2.2, (q.1.2 : ℝ) - ρ.x * q.2.1)
+  let w : ℝ × ℝ := ((q.2.2 : ℝ), -(q.2.1 : ℝ))
+  have hu := targetQuadratic_coercive σ u
+  have hw := targetQuadratic_coercive σ w
+  have hU := targetQuadratic_nonneg σ u
+  have hW := targetQuadratic_nonneg σ w
+  have hD := (targetCoercivityConstant_pos σ).le
+  have hB : 0 ≤ 2 * ρ.x ^ 2 + 1 := by positivity
+  have hshift : chargeEuclideanSq q ≤
+      2 * (u.1 ^ 2 + u.2 ^ 2) + (2 * ρ.x ^ 2 + 1) * (w.1 ^ 2 + w.2 ^ 2) := by
+    apply sub_nonneg.mp
+    calc
+      2 * (u.1 ^ 2 + u.2 ^ 2) + (2 * ρ.x ^ 2 + 1) * (w.1 ^ 2 + w.2 ^ 2) -
+          chargeEuclideanSq q =
+        ((q.1.1 : ℝ) + 2 * ρ.x * q.2.2) ^ 2 +
+          ((q.1.2 : ℝ) - 2 * ρ.x * q.2.1) ^ 2 := by
+            dsimp only [u, w, chargeEuclideanSq]
+            ring
+      _ ≥ 0 := add_nonneg (sq_nonneg _) (sq_nonneg _)
+  have hscale : 2 * targetQuadratic σ u + (2 * ρ.x ^ 2 + 1) * targetQuadratic σ w ≤
+      (2 + (2 * ρ.x ^ 2 + 1) / ρ.y ^ 2) *
+        (targetQuadratic σ u + ρ.y ^ 2 * targetQuadratic σ w) := by
+    apply sub_nonneg.mp
+    calc
+      (2 + (2 * ρ.x ^ 2 + 1) / ρ.y ^ 2) *
+          (targetQuadratic σ u + ρ.y ^ 2 * targetQuadratic σ w) -
+          (2 * targetQuadratic σ u + (2 * ρ.x ^ 2 + 1) * targetQuadratic σ w) =
+        2 * ρ.y ^ 2 * targetQuadratic σ w +
+          ((2 * ρ.x ^ 2 + 1) / ρ.y ^ 2) * targetQuadratic σ u := by
+            field_simp [ρ.y_pos.ne']
+            ring
+      _ ≥ 0 := add_nonneg (mul_nonneg (by positivity) hW)
+        (mul_nonneg (div_nonneg hB (sq_nonneg _)) hU)
+  calc
+    chargeEuclideanSq q ≤
+        2 * (u.1 ^ 2 + u.2 ^ 2) + (2 * ρ.x ^ 2 + 1) * (w.1 ^ 2 + w.2 ^ 2) := hshift
+    _ ≤ 2 * (targetCoercivityConstant σ * targetQuadratic σ u) +
+        (2 * ρ.x ^ 2 + 1) * (targetCoercivityConstant σ * targetQuadratic σ w) :=
+      add_le_add (mul_le_mul_of_nonneg_left hu (by norm_num))
+        (mul_le_mul_of_nonneg_left hw hB)
+    _ = targetCoercivityConstant σ *
+        (2 * targetQuadratic σ u + (2 * ρ.x ^ 2 + 1) * targetQuadratic σ w) := by ring
+    _ ≤ targetCoercivityConstant σ * ((2 + (2 * ρ.x ^ 2 + 1) / ρ.y ^ 2) *
+        (targetQuadratic σ u + ρ.y ^ 2 * targetQuadratic σ w)) :=
+      mul_le_mul_of_nonneg_left hscale hD
+    _ = massCoercivityConstant ρ σ * narainMassSq ρ σ q := by
+      dsimp only [massCoercivityConstant, narainMassSq, u, w]
+      field_simp [ρ.y_pos.ne', σ.y_pos.ne']
+
+private theorem one_le_chargeEuclideanSq {q : (ℤ × ℤ) × (ℤ × ℤ)}
+    (hq : q ≠ ((0, 0), (0, 0))) : 1 ≤ chargeEuclideanSq q := by
+  by_cases hn : q.1 = (0, 0)
+  · have hw : q.2 ≠ (0, 0) := fun hw => hq (Prod.ext hn hw)
+    have hh := d4BM_one_le_sq_add_sq_of_int_pair_ne_zero q.2 hw
+    simpa only [chargeEuclideanSq, hn, Int.cast_zero, zero_pow (by decide : 2 ≠ 0),
+      zero_add] using hh
+  · have hh := d4BM_one_le_sq_add_sq_of_int_pair_ne_zero q.1 hn
+    dsimp only [chargeEuclideanSq]
+    linarith only [hh, sq_nonneg (q.2.1 : ℝ), sq_nonneg (q.2.2 : ℝ)]
+
+/-- Nonvacuum masses have a positive uniform gap at fixed target moduli. -/
+theorem narainMassSq_gap (ρ σ : D4BMUpperHalfPlaneCoordinate)
+    {q : (ℤ × ℤ) × (ℤ × ℤ)} (hq : q ≠ ((0, 0), (0, 0))) :
+    1 / massCoercivityConstant ρ σ ≤ narainMassSq ρ σ q := by
+  apply (div_le_iff₀ (massCoercivityConstant_pos ρ σ)).mpr
+  simpa only [mul_comm] using (one_le_chargeEuclideanSq hq).trans
+    (chargeEuclideanSq_le_mass ρ σ q)
+
+/-- Every nonvacuum charge has strictly positive conformal dimension. -/
+theorem narainMassSq_pos (ρ σ : D4BMUpperHalfPlaneCoordinate)
+    {q : (ℤ × ℤ) × (ℤ × ℤ)} (hq : q ≠ ((0, 0), (0, 0))) :
+    0 < narainMassSq ρ σ q :=
+  lt_of_lt_of_le (one_div_pos.mpr (massCoercivityConstant_pos ρ σ))
+    (narainMassSq_gap ρ σ hq)
+
 end
 
 end GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap
@@ -153,3 +225,4 @@ end GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap
 #print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.narainMassSq_pos
 #print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.narain_chiral_nonneg
 #print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.narainMassSq_scalarParameters
+#print axioms GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.narainMassSq_gap

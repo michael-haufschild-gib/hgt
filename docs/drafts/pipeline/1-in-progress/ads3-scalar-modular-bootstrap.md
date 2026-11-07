@@ -53,25 +53,16 @@ For the square two-torus, scalar charges are `n,w∈ℤ²` with `n·w=0`.
 For `w≠0`, the unique parametrization is
 `n=d(a,b)`, `w=c(−b,a)`, `c>0`, `gcd(a,b)=1`.
 The energy factors as `(c²+d²)(a²+b²)`. The `w=0` contribution is separate.
-This suggests the exact Dirichlet identity
+The exact square-target Dirichlet identity is now formalized:
 
 `Σ'_{n·w=0} (|n|²+|w|²)^(−s) = L(s)²/(2ζ(2s))`,
 
 where `L(s)=Σ'_{(a,b)∈ℤ²}(a²+b²)^(−s)` and `Re s>1`.
-The factor `1/2` comes from choosing `c>0`; the omitted vertical axis
-contributes `ζ(2s)`, cancelling the separate `w=0` term.
-The corpus supplies `HeckeFactorization.gcdEquiv`,
-`latticeSum_eq_zeta_mul_primitive`, and `latticeSum_eq`.
 The [orthogonal-charge bijection and energy factorization](../3-formalized/ads3-scalar-charge-coordinates.md)
 are formalized in `ModularBootstrap/ScalarChargeCoordinates.lean`.
-Still required: the zero-winding split, summability, and infinite-sum reindexing.
-
-For this identity, write `P` for the primitive sum and `H` for the sum over
-`c>0,d∈ℤ`. Absolute convergence follows by restricting the convergent Epstein
-series; the nonzero-winding series is the product of the two restrictions.
-The exact decompositions are `L=ζ(2s)P`, `L=2H+2ζ(2s)` and `S=L+HP`.
-Their combination gives the displayed square-torus identity. Its Lean check
-is pending in `ModularBootstrap/SquareTorusDirichlet.lean`.
+The [zero-winding split, absolute convergence and infinite-sum reindexing](../3-formalized/ads3-square-torus-dirichlet.md)
+are formalized in `ModularBootstrap/SquareTorusDirichlet.lean`, including
+the normalization `S(s)=2ζ(2s)E(i,s)²`.
 
 For general moduli `σ=x+iy`, `ρ=B+iV`, set
 `Qσ(v)=(yv₁)²+(v₂−xv₁)²` and `Jw=(w₂,−w₁)`. The source mass is
@@ -80,11 +71,18 @@ Primitive scalar coordinates give
 `M²=Qσ(a,b)[(d+Bc)²+(Vc)²]/(Vy)`.
 This reduces the general-modulus source identity to the same decomposition;
 negative `c` is paired with `(-c,-d)`, rather than changing `c` alone.
-The identities `M²±2(n·w)=[(A₁∓VC₂)²+(A₂±VC₁)²]/(Vy)`,
-where `A=(y(n₁+Bw₂), n₂−Bw₁−x(n₁+Bw₂))` and
-`C=(yw₂,−w₁−xw₂)`, prove both chiral weights nonnegative.
-`NarainMass.lean` contains the pending Lean proofs of these identities,
-strict mass positivity away from the vacuum, and the scalar factorization.
+For normalized full, primitive and positive-first-coordinate sums `L_z,P_z,H_z`,
+the required identities are
+`L_z=ζ(2s)P_z=2H_z+2(Im z)^sζ(2s)` and
+`S_(ρ,σ)=(Im ρ)^sL_σ+H_ρP_σ=2ζ(2s)E_s(ρ)E_s(σ)`.
+`Sieve.ofReal_div_cpow_eq_mul_cpow_neg` handles the positive-real powers;
+`d4BMPrimitiveIntegerPairReflectEquiv` matches the sign convention in `Qσ`.
+The [general mass identities and bounds](../3-formalized/ads3-narain-mass-bounds.md)
+are formalized in `NarainMass.lean`: chiral positivity `M²≥2|n·w|`,
+the scalar factorization, and
+`|n|²+|w|²≤KM²`, where
+`D=(2y²+1+2x²)/y²`, `K=VyD[2+(2B²+1)/V²]>0`.
+Every nonvacuum mass satisfies `M²≥1/K`.
 
 **Selection boundary.** Corpus theorem
 `LatticeSectionTheory.exists_epsteinLambda_eq_zero` gives real off-line zeros
@@ -96,11 +94,16 @@ proved horocycle family, not such a zero-freeness claim.
 For the partition-function bridge, the corpus supplies
 `IntegerLatticePoisson.summable_norm_gaussian_affine_lattice` and
 `gaussian_theta_characteristics` in `HTGeometry/GaussianThetaCharacteristics.lean`.
-The real charge map
-`(n,w) ↦ (A₁,A₂,VC₁,VC₂)/√(Vy)` has squared norm `M²` and determinant one.
-Its lattice Gaussian gives absolute convergence. Poisson summation in momentum
-then gives the Lagrangian expression, where modular inversion is an integer
-reindexing of the two winding columns. These identifications remain to be proved.
+The coercive bound dominates the actual partition terms by four Gaussian
+series. `NarainPartition.lean` contains the pending proof of this absolute
+convergence. The corpus's `HTGeometry.integral_fourierChar` and
+`integral_tsum_eq_tsum_integral_of_summable_integral_norm` supply the tools
+for the next scalar-projection identity, with all hypotheses discharged by
+the Gaussian bound. Poisson summation in momentum gives the Lagrangian
+expression, where modular inversion is an integer reindexing of the two
+winding columns; that identification remains open.
+The gap controls the large-worldsheet-height cusp. It does not supply the
+small-height scalar remainder required for RH.
 
 ## External audit
 
@@ -115,4 +118,4 @@ reindexing of the two winding columns. These identifications remain to be proved
 - [ ] 1 → 2: dependency-closed paper proof of the partition identity and source estimate.
 - [ ] 2 → 3: exact source theorems checked with `lake --old env lean`, transitive axiom audit, umbrella imports.
 
-No RH bound, physical unitarity implication, or complete route is claimed.
+No RH bound, unitarity-to-RH implication, or complete route is claimed.

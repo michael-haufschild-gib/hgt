@@ -88,7 +88,7 @@ theorem integral_poisson_evenPhaseLog (s u : ℝ) :
   have hrep := circleAverage_poissonKernel_log_norm ha hzero hw
   rw [RHTower.circleAverage_zero_one_eq_unitInterval,
     intervalIntegral.integral_of_le zero_le_one, integral_Ioc_eq_integral_Ioo] at hrep
-  simp only [Pi.smul_apply, smul_eq_mul] at hrep
+  simp only [smul_eq_mul, Pi.mul_apply] at hrep
   have hpos : 0 < 1 - r ^ 2 * q := by
     have hq : q ≤ 1 := (le_abs_self q).trans (abs_cavityDiskCoordinate_lt_one u).le
     have hm := mul_le_mul_of_nonneg_left hq (sq_nonneg r)
@@ -152,9 +152,10 @@ theorem cavityDiskCoordinate_prime_inverse (p : Nat.Primes) :
     cavityDiskCoordinate ((p : ℝ) - 1)⁻¹ = (p : ℝ)⁻¹ := by
   have hp : (1 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.one_lt
   have hs : 0 < (p : ℝ) - 1 := by linarith
+  have hp0 : (p : ℝ) ≠ 0 := ne_of_gt (by linarith)
   rw [cavityDiskCoordinate, abs_of_pos (inv_pos.mpr hs)]
-  field_simp
-  <;> ring
+  field_simp [hs.ne', hp0]
+  ring
 
 /-- Exact Kesten–McKay averaging of the even logarithmic factor. -/
 theorem integral_kesten_evenPhaseLog (p : Nat.Primes) (s : ℝ) :
@@ -202,13 +203,13 @@ theorem integral_kesten_log_local_factor (p : Nat.Primes) (s : ℝ) :
       ((p : ℝ) - 1) / 2 * Real.log (1 - cavityDiskCoordinate s ^ 2 / (p : ℝ)) := by
   have hi : IntegrableOn (fun t => kestenMcKayDensity p t * phaseLogDenominator s t)
       (Ioo (0 : ℝ) 1) :=
-    ((continuous_kestenMcKayDensity p).mul (continuous_phaseLogDenominator s)).continuousOn
-      .integrableOn_Icc.mono_set Ioo_subset_Icc_self
+    ((continuous_kestenMcKayDensity p).mul (continuous_phaseLogDenominator s)).continuousOn.integrableOn_Icc.mono_set
+      Ioo_subset_Icc_self
   have hj : IntegrableOn (fun t => kestenMcKayDensity p t * phaseLogDenominator s (1 - t))
       (Ioo (0 : ℝ) 1) :=
     ((continuous_kestenMcKayDensity p).mul
-      ((continuous_phaseLogDenominator s).comp (by fun_prop))).continuousOn
-      .integrableOn_Icc.mono_set Ioo_subset_Icc_self
+      ((continuous_phaseLogDenominator s).comp (by fun_prop))).continuousOn.integrableOn_Icc.mono_set
+        Ioo_subset_Icc_self
   have hsum : (∫ t in Ioo (0 : ℝ) 1, kestenMcKayDensity p t * evenPhaseLogDenominator s t) =
       2 * (∫ t in Ioo (0 : ℝ) 1, kestenMcKayDensity p t * phaseLogDenominator s t) := by
     have he : (fun t => kestenMcKayDensity p t * evenPhaseLogDenominator s t) =

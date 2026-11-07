@@ -145,7 +145,7 @@ theorem abs_weighted_torsionRadialError_le (r : Set.Ioo (0 : ℝ) 1)
       calc |a m n| * torsionRadialError r m n ≤
           |a m n| * ((1-(r:ℝ))^2/(2*r)*torsionInverseChordCost m n) :=
             mul_le_mul_of_nonneg_left hb.2 (abs_nonneg _)
-        _ = (1-(r:ℝ))^2/(2*r) * (|a m n|*torsionInverseChordCost m n) := by ring
+        _ = (1-(r:ℝ))^2/(2*r) * (|a m n| * torsionInverseChordCost m n) := by ring
 
 /-- A uniform finite-sum estimate for the regularized torsion pairing. -/
 theorem finite_radius_signed_pairing_bound (r : Set.Ioo (0 : ℝ) 1)
@@ -154,7 +154,7 @@ theorem finite_radius_signed_pairing_bound (r : Set.Ioo (0 : ℝ) 1)
       (puncturedTorsionEnergy r m n + (torsionPairCount m n : ℝ)*Real.log r/2 +
         orbitIntersection m n)| ≤
       (1-(r:ℝ))^2/(2*r) *
-        ∑ m ∈ S, ∑ n ∈ S, |a m n|*torsionInverseChordCost m n := by
+        ∑ m ∈ S, ∑ n ∈ S, |a m n| * torsionInverseChordCost m n := by
   have hterm (m n : ℕ) : puncturedTorsionEnergy r m n +
       (torsionPairCount m n : ℝ)*Real.log r/2 + orbitIntersection m n =
         -torsionRadialError r m n := by

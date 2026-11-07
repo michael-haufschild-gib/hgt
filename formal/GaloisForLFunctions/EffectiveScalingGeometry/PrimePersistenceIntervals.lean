@@ -23,19 +23,19 @@ theorem primeHeightFaces_iff_primeSets {B N : ℕ} {S : Finset (Fin (B+3))} :
   rw [mem_primeHeightFaces, HTGeometry.mem_primeSets_iff]
   simp only [Finset.forall_mem_map, Fin.valEmbedding_apply, Finset.prod_map]
 
-/-- With ambient labels through `N+2`, every face of the full prime nerve occurs. -/
-theorem primeSets_iff_exists_heightFace (N : ℕ) (S : Finset ℕ) :
+/-- Every face of the full prime nerve occurs in any sufficiently large ambient simplex. -/
+theorem primeSets_iff_exists_heightFace_of_le (B N : ℕ) (hNB : N ≤ B) (S : Finset ℕ) :
     S ∈ _root_.RHTower.primeSets N ↔
-      ∃ T ∈ primeHeightFaces N N, T.map Fin.valEmbedding = S := by
+      ∃ T ∈ primeHeightFaces B N, T.map Fin.valEmbedding = S := by
   constructor
   · intro hS
     have hs := HTGeometry.mem_primeSets_iff.mp hS
-    have hbound : ∀ p ∈ S, p < N+3 := by
+    have hbound : ∀ p ∈ S, p < B+3 := by
       intro p hp
       have hle := Nat.le_of_dvd (Finset.prod_pos fun q hq => (hs.1 q hq).pos)
         (Finset.dvd_prod_of_mem (fun q : ℕ => q) hp)
       omega
-    let e : S ↪ Fin (N+3) := ⟨fun p => ⟨p.val, hbound p.val p.property⟩,
+    let e : S ↪ Fin (B+3) := ⟨fun p => ⟨p.val, hbound p.val p.property⟩,
       fun p q h => Subtype.ext (congrArg Fin.val h)⟩
     let T := S.attach.map e
     have hmap : T.map Fin.valEmbedding = S := by
@@ -45,6 +45,12 @@ theorem primeSets_iff_exists_heightFace (N : ℕ) (S : Finset ℕ) :
     rwa [hmap]
   · rintro ⟨T, hT, rfl⟩
     exact primeHeightFaces_iff_primeSets.mp hT
+
+/-- The arithmetic prime nerve has a faithful finite-ambient face model at every height. -/
+theorem primeSets_iff_exists_heightFace (N : ℕ) (S : Finset ℕ) :
+    S ∈ _root_.RHTower.primeSets N ↔
+      ∃ T ∈ primeHeightFaces N N, T.map Fin.valEmbedding = S :=
+  primeSets_iff_exists_heightFace_of_le N N le_rfl S
 
 theorem primeHeightFaces_down_closed (B N : ℕ) :
     ∀ S ∈ primeHeightFaces B N, ∀ T ⊆ S, T ∈ primeHeightFaces B N := by
@@ -81,6 +87,7 @@ theorem not_mem_primeHeightStar_iff {B N : ℕ} {S : Finset (Fin (B+3))}
       · exact (mem_primeHeightFaces.mp hS).1 p hp
     rw [and_iff_right hp, prod_insert h2, not_le]
     simp only [h2, not_false_eq_true, true_and]
+    rfl
 
 /-- Exact arithmetic birth and death heights of each complementary facet. -/
 theorem prime_complement_lifetime (B N : ℕ) (S : Finset (Fin (B+3))) :
