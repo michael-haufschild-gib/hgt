@@ -53,7 +53,8 @@ theorem integral_weightedLegendre_sum_sq (r : ℕ) {N : ℕ} (c : Fin N → ℝ)
       ∑ i, ∑ j, (c i * c j) * ((1 - x ^ 2) ^ r *
         (legendreDerivative ((i : ℕ) + r) r).eval x *
         (legendreDerivative ((j : ℕ) + r) r).eval x) := by
-    rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+    simp only [sq]
+    rw [Finset.sum_mul_sum, Finset.mul_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
@@ -92,7 +93,6 @@ theorem polynomial_sq_le_weightedLegendreKernel (r N : ℕ) (P : ℝ[X])
     have hne := (weightedLegendreEnergy_self_pos (n := (j : ℕ) + r) (r := r) (by omega)).ne'
     apply le_of_eq
     field_simp
-    <;> ring
 
 private theorem sum_even_powers_le {x : ℝ} (hx : 4 ≤ x) (n : ℕ) :
     (∑ j ∈ Finset.range (n + 1), x ^ (2 * j)) ≤ 16 / 15 * x ^ (2 * n) := by
@@ -134,7 +134,56 @@ theorem weightedLegendreKernel_le {x : ℝ} (hx : 4 ≤ |x|) (r n : ℕ) :
     (weightedLegendreLeadRatio_pos r n).le
   exact hsum.trans (hgeo.trans_eq (by ring))
 
+/-- The natural weighted basis gives a degree-preserving bound for every power core. -/
+theorem polynomial_sq_le_exact_power_core {R : ℝ} (hR : 0 < R) (m : ℕ)
+    {P : ℝ[X]} {n : ℕ} (hdeg : P.degree < ((n + 1 : ℕ) : WithBot ℕ))
+    {b : ℝ} (hb : 4 * R ≤ |b|) :
+    P.eval b ^ 2 ≤ (16 / 15 * weightedLegendreLeadRatio (2 * m) n / R) *
+      (|b| / R) ^ (2 * n) * parabolicPowerEnergy R m P := by
+  by_cases hP : P = 0
+  · subst P
+    simp [parabolicPowerEnergy]
+  let Q : ℝ[X] := P.comp (C R * X)
+  have hQeval (x : ℝ) : Q.eval x = P.eval (R * x) := by
+    simp only [Q, eval_comp, eval_mul, eval_C, eval_X]
+  have hQdeg : Q.degree < ((n + 1 : ℕ) : WithBot ℕ) := by
+    have hlin : (C R * X).natDegree = 1 := by simp [hR.ne']
+    have hQN : Q.natDegree = P.natDegree := by
+      dsimp only [Q]
+      rw [natDegree_comp, hlin, mul_one]
+    have hPN := (natDegree_lt_iff_degree_lt hP).mpr hdeg
+    exact (degree_le_natDegree (p := Q)).trans_lt (by exact_mod_cast (hQN.trans_lt hPN))
+  have hcov := intervalIntegral.mul_integral_comp_mul_add
+    (f := fun b : ℝ => ((1 - b ^ 2 / R ^ 2) ^ m * P.eval b) ^ 2)
+    (a := -1) (b := 1) (c := R) (d := 0)
+  have hscaled (x : ℝ) :
+      ((1 - (R * x + 0) ^ 2 / R ^ 2) ^ m * P.eval (R * x + 0)) ^ 2 =
+        (1 - x ^ 2) ^ (2 * m) * Q.eval x ^ 2 := by
+    simp only [hQeval, add_zero, mul_pow, mul_div_cancel_left₀ _ (pow_ne_zero 2 hR.ne')]
+    rw [← pow_mul, Nat.mul_comm m 2]
+  simp_rw [hscaled] at hcov
+  simp only [mul_neg, mul_one, add_zero] at hcov
+  have hI : (∫ x in (-1 : ℝ)..1, (1 - x ^ 2) ^ (2 * m) * Q.eval x ^ 2) =
+      parabolicPowerEnergy R m P / R := by
+    apply (eq_div_iff hR.ne').mpr
+    rw [mul_comm]
+    exact hcov
+  have hpoint := polynomial_sq_le_weightedLegendreKernel (2 * m) (n + 1) Q hQdeg (b / R)
+  rw [hQeval, show R * (b / R) = b by field_simp [hR.ne'], hI] at hpoint
+  have habs : |b / R| = |b| / R := by rw [abs_div, abs_of_pos hR]
+  have hk := weightedLegendreKernel_le (x := b / R)
+    (by rw [habs]; exact (le_div_iff₀ hR).mpr hb) (2 * m) n
+  rw [habs] at hk
+  have hE := parabolicPowerEnergy_nonneg hR.le m P
+  calc
+    _ ≤ _ := hpoint
+    _ ≤ (16 / 15 * weightedLegendreLeadRatio (2 * m) n * (|b| / R) ^ (2 * n)) *
+        (parabolicPowerEnergy R m P / R) :=
+      mul_le_mul_of_nonneg_right hk (by positivity)
+    _ = _ := by ring
+
 #print axioms polynomial_sq_le_weightedLegendreKernel
 #print axioms weightedLegendreKernel_le
+#print axioms polynomial_sq_le_exact_power_core
 
 end GaloisForLFunctions.ThetaCuspSections

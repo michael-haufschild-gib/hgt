@@ -36,7 +36,11 @@ theorem integrableOn_besselPowerIntegrand_zero {p : ℝ} (hp : -1 < p) (τ : ℝ
     IntegrableOn (fun u : ℝ => u ^ p * besselRadialValue τ u) (Ioi 0) := by
   have hi := _root_.RHTower.WeilWorkDeficitMellin.scaled_integrable
     (mellin_chamber hp τ) (by norm_num : (0 : ℝ) < 2)
-  refine (Complex.reCLM.integrable_comp hi).congr_fun (fun u hu => ?_) measurableSet_Ioi
+  have hr : IntegrableOn (fun u : ℝ =>
+      ((u : ℂ) ^ (((p : ℂ) + 1) - 1) *
+        modifiedBesselKOrder (2 * u) (((2 * τ : ℝ) : ℂ) * I)).re) (Ioi 0) :=
+    Complex.reCLM.integrable_comp hi
+  refine hr.congr_fun (fun u hu => ?_) measurableSet_Ioi
   exact (radial_integrand_eq_re hu p τ).symm
 
 /-- The full radial Mellin mass has exactly the natural Gamma frequency scale. -/
@@ -48,6 +52,7 @@ theorem besselPowerTail_zero_eq_gamma {p : ℝ} (hp : -1 < p) (τ : ℝ) :
     (mellin_chamber hp τ) (by norm_num : (0 : ℝ) < 2)
   have hm := _root_.RHTower.WeilWorkDeficitMellin.scaled_mellin
     (mellin_chamber hp τ) (by norm_num : (0 : ℝ) < 2)
+  norm_num only [Complex.ofReal_ofNat] at hm
   have hplus : (((p : ℂ) + 1) + (((2 * τ : ℝ) : ℂ) * I)) / 2 = z := by
     dsimp only [z]
     push_cast

@@ -28,7 +28,8 @@ theorem coreEscapePolynomial_core_le {R : ℝ} (hR : 0 < R) (m n : ℕ) :
     parabolicPowerEnergy R m (coreEscapePolynomial R n) ≤ 2 * R := by
   have hpoint (b : ℝ) (hb : b ∈ Icc (-R) R) :
       ((1 - b ^ 2 / R ^ 2) ^ m * (coreEscapePolynomial R n).eval b) ^ 2 ≤ 1 := by
-    have hb2 : b ^ 2 ≤ R ^ 2 := by nlinarith only [hb.1, hb.2]
+    have hb2 : b ^ 2 ≤ R ^ 2 := by
+      simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg b) (abs_le.mpr hb) 2
     have hratio : b ^ 2 / R ^ 2 ≤ 1 :=
       (div_le_iff₀ (sq_pos_of_pos hR)).mpr (by simpa only [one_mul] using hb2)
     have hr0 : 0 ≤ b ^ 2 / R ^ 2 := div_nonneg (sq_nonneg _) (sq_nonneg _)
@@ -65,6 +66,7 @@ theorem coreEscapePolynomial_gamma_ge {R : ℝ} (hR : 0 < R) (n : ℕ) :
       rw [← pow_mul, Nat.mul_comm n 2, pow_mul]
       norm_num
     rw [he, ← coreEscapePolynomial_eval] at hsq
+    have hb0 : 0 ≤ b := by linarith only [hb.1, hR]
     have hcosh : Real.cosh (Real.pi * b / 2) ≤ Real.cosh (3 * Real.pi * R / 2) := by
       apply Real.cosh_le_cosh.mpr
       rw [abs_of_nonneg (by positivity : 0 ≤ Real.pi * b / 2),

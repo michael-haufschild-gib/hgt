@@ -42,7 +42,7 @@ open Filter Topology
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
-open _root_.RHTower GaloisForLFunctions.SquareRootThreshold GaloisForLFunctions.WindowVisibilityLaw
+open _root_.Zeta23 _root_.RHTower GaloisForLFunctions.SquareRootThreshold GaloisForLFunctions.WindowVisibilityLaw
   GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
   GaloisForLFunctions.ConjugateDiagonalGeometry.LogScaleHeckeDefect
 
@@ -81,7 +81,7 @@ theorem exists_abs_re_sub_half_lt_quarter_of_hodgeIndex :
     Real.exp 6 + 4 + (2 * (10 ^ 5 * A₂ * 408)) ^ 2, by positivity,
     fun a ha hH ρ hρ hsize => ?_⟩
   by_contra hge
-  push_neg at hge
+  push Not at hge
   have h3 := three_lt_abs_im_of_mem_zetaZeroConfig hρ
   have he6 : Real.exp 6 ≤ a := by nlinarith [sq_nonneg (2 * (10 ^ 5 * A₂ * 408))]
   have h4 : (4 : ℝ) ≤ a := by nlinarith [Real.exp_pos 6, sq_nonneg (2 * (10 ^ 5 * A₂ * 408))]

@@ -33,6 +33,7 @@ import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfEveryLength
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheTrivialZerosOfACusp
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheBlackHoleOfGenusTwo
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheLaxPhillipsSemigroup
+import GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.ScalarChargeCoordinates
 
 /-!
 # Arithmetic scattering holography

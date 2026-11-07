@@ -1,0 +1,131 @@
+# Height and homotopy theory of arithmetic counts
+
+This programme seeks arithmetic nonnegativity from local heights and cancellation
+from topology. It asks for the structures supplied by a variety over a finite
+field: an addition law, a fixed-point formula, and a polarization. Its motivating
+specification is §2.11 of
+[the second obstacles report](../../../docs/reports/review-0711/obstacles-summary.md).
+
+The intended namespace is `GaloisForLFunctions.HeightHomotopyArithmeticCounts`;
+the programme umbrella is `HeightHomotopyArithmeticCounts.lean`.
+
+## Motivation and position
+
+An integer probe should carry local contributions whose product formula yields
+a nonnegative height. An addition law should make its asymptotic height
+quadratic. Independently, the Euler characteristic of the nerve of prime stars
+is `−M(N)`: its small expected size concerns cancellation among linearly many
+homology classes. A fixed-point construction could explain that cancellation
+without pretending those classes disappear.
+
+[Arithmetic orientation geometry](../ArithmeticOrientationGeometry/README.md)
+provides count and height principles;
+[Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) provides
+polar surfaces and primitive-sign receivers. This programme seeks the arithmetic
+objects needed by those principles. Its companion
+[effective scaling geometry](../EffectiveScalingGeometry/README.md) seeks
+sections, divisors and geometric effectivity. Horocycle and counting-holography
+programmes provide geometric comparison targets, not a presumed positive count.
+
+## Objects and language
+
+| Object | Intended role |
+|---|---|
+| Integer probe or window correspondence | Argument of the arithmetic height |
+| Local height `λ_v`, `deg p = log p` | Contribution of each place |
+| Naive height and Tate limit | Finite arithmetic count and its quadratic limit |
+| Torsion cycle and resultant | Finite-radius self-energy with arithmetic normalization |
+| Arakelov bundle `⊕𝒪(½ log m)` and theta `h⁰` | Existing arithmetic section-count models |
+| Prime complex and nerve of prime stars | Simplicial models for Möbius cancellation |
+| Farey points and closed horocycles | Candidate realization in cusp geometry |
+| Polar surface and Hecke similitude | Signature and scaling of a quadratic refinement |
+
+A local height must come from arithmetic data, not a decomposition of `Q`
+chosen after its sign is known. A Tate limit requires a proved growth law and
+proved error control. “Homotopic to the identity” must be realized by an actual
+map or chain homotopy. Fixed-point indices must be bounded by a geometric
+argument, not by the desired bound on the Euler characteristic.
+
+## Foundational pillars
+
+The reports identify these existing foundations; they are not new claims here.
+
+1. Manin's construction gives the elliptic calibration from heights; Stepanov
+   supplies a hyperelliptic calibration by a different arithmetic mechanism.
+2. The nerve Euler characteristic reads the Möbius sum, while the prime complex
+   has Betti mass of order `N`. A homotopy reduction cannot remove that mass.
+3. The expected square-root cancellation has a matching square-root lower
+   obstruction infinitely often. Any localization estimate must respect it.
+4. Golden, complex fakes, and graph models distinguish counts from spectral
+   or functional-equation data.
+
+New pillars sought are an actual arithmetic addition law, finite-radius
+self-energy regularization, a controlled approximate parallelogram, a
+fixed-point localization theorem for a natural nerve action, and a quadratic
+refinement with arithmetic polarization. Their existence is not assumed.
+
+## Mechanisms and tools
+
+The height mechanism is
+
+`local arithmetic data → product formula → nonnegative naive height
+→ controlled parallelogram defect → quadratic Tate limit`.
+
+The topology mechanism is
+
+`prime-star nerve → natural self-map → homotopy invariance
+→ local fixed-point indices → cancellation bound`.
+
+The two mechanisms should meet in a quadratic refinement whose signature reads
+primitive geometry. Geodesic renormalization of horocycles may compare this
+refinement with modular cusp counts; that comparison itself requires proof.
+
+Tools to build are a nonnegative arithmetic function on correspondences,
+regularized torsion self-energy at finite radius, an approximate parallelogram
+for a log-count, a self-map homotopic to the identity with controlled fixed-point
+indices, a cusp realization of the nerve, and its polarized quadratic refinement.
+
+## Questions and open research topics
+
+1. What group carries the probes, or what replaces a group?
+2. What arithmetic addition law produces a quasi-parallelogram over `ℤ`?
+3. Which local term absorbs torsion self-energy, with what normalization?
+4. Which natural map localizes the nerve Euler characteristic to a fixed set
+   of square-root size?
+5. How can linear Betti mass coexist with square-root Euler cancellation,
+   and which differential or action explains that cancellation?
+6. Can the nerve be realized in the modular surface with the required modular
+   action on cells?
+7. Do Hecke correspondences generate the ample cone of the refinement?
+
+These are open construction and estimate problems. No square-root upper bound
+for `M(N)`, global arithmetic height, or nerve localization is asserted here.
+
+## Calibration and traps
+
+The height construction must recover Hasse–Weil for curves without taking a
+positive form as input. It must fail on Golden and on shifted data with
+nonnegative Tate coefficients. The prime complex over `𝔽_q[T]` tests the
+fixed-point language; elliptic and hyperelliptic curves test arithmetic heights;
+the complex fake and genus-two graph test false positivity mechanisms.
+
+The integer construction must use torsion through `ℤ ⊂ ℝ`, detect a source
+beyond its two degrees, and have infinite rank in the limit. A finite-dimensional
+norm realization on a window cannot supply it. Ordinary matchings cannot
+explain away genuine homology. Natural Frobenius candidates and connected-link
+arguments have existing obstructions. A modular-surface analogy must account
+for the distinction between cuspidal and Eisenstein contributions.
+
+## Success and contribution criteria
+
+Success means constructing all six named tools, answering the seven questions,
+and verifying the curve and countermodel calibrations. It includes the stated
+Betti and square-root lower laws, not only an Euler-characteristic identity.
+A height defined through `Q`, a conditional height principle, or a reformulation
+of RH is not completion.
+
+Contributions must prove unconditional statements about explicitly constructed
+arithmetic or topological objects, improve a named foundation or resolve an
+open mechanism, and survive Lean's kernel and transitive axiom audit. A no-go
+must extract its strongest nontrivial positive statement. Paper proofs and
+conjectures must remain distinguishable from formalized theorems.

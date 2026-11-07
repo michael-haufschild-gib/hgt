@@ -6,11 +6,11 @@
 
 The current power energy uses weight `(1−x²)^8`. Embedding `(1−x²)^4P` in the unweighted degree-`n+8` Legendre space discards its endpoint constraints.
 
-Candidate replacement: orthogonal degree-`n` polynomials for weight `(1−x²)^s`. A Rodrigues construction should give squared leading coefficient divided by squared norm
+The shifted Legendre derivative basis is orthogonal for weight `(1−x²)^s`. Its squared leading coefficient divided by squared norm is
 
 `(n+s+1/2)c_(n+s)² · ((n+s)!)²/[n!(n+2s)!]`,
 
-where `c_j` is the existing Legendre leading coefficient. The factorial ratio retains the constraints lost by the embedding. Required proofs: weighted orthogonality and norm, a degree-preserving expansion, and an exterior bound with this coefficient. No new rank is claimed from this candidate. The resulting explicit tail charge must still be paid by the complete current core.
+where `c_j` is the existing Legendre leading coefficient. The factorial ratio retains the constraints lost by the embedding. `WeightedLegendreNorms.lean` has verified this identity and monotonicity in degree using only standard axioms; its final individual audit remains pending. Required remaining proofs: degree-preserving expansion and the exterior kernel bound. Any resulting tail charge still requires payment by the actual source.
 
 The proposed recurrence is
 `I_(r+1)(n,m)=(m(m+1)−r(r+1))I_r(n,m)`,

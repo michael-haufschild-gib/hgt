@@ -182,7 +182,8 @@ theorem besselFirstWeightedTail_exp_lower_of_pos {q u : ℝ}
   rw [integral_const_mul, ← two_pi_mul_firstTail_eq_square_integral_of_pos hq τ,
     ← two_pi_mul_firstTail_eq_square_integral_of_pos (hq.trans_le hqu) τ] at hi
   apply (mul_le_mul_iff_right₀ (by positivity : 0 < 2 * Real.pi)).mp
-  convert hi using 1 <;> ring
+  convert hi using 1
+  ring
 
 #print axioms besselFirstWeightedTail_pos_of_pos
 #print axioms besselFirstWeightedTail_exp_lower_of_pos

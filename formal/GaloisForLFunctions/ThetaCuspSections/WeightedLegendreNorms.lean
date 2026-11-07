@@ -15,9 +15,9 @@ namespace GaloisForLFunctions.ThetaCuspSections
 private theorem factorial_step {n r : ℕ} (hr : r < n) :
     ((n - r).factorial : ℝ) = (n - r : ℕ) * ((n - (r + 1)).factorial : ℝ) := by
   have he : n - r = n - (r + 1) + 1 := by omega
-  conv_lhs => rw [he, Nat.factorial_succ]
-  push_cast
-  rw [← he]
+  have hh := Nat.factorial_succ (n - (r + 1))
+  rw [← he] at hh
+  exact_mod_cast hh
 
 /-- The leading derivative product is the exact falling factorial. -/
 theorem legendreDerivativeLead_mul_factorial {n r : ℕ} (hr : r ≤ n) :
@@ -60,7 +60,7 @@ theorem weightedLegendreEnergy_self_factorial {n r : ℕ} (hr : r ≤ n) :
   apply (eq_div_iff (mul_ne_zero hf hn)).mpr
   calc
     _ = 2 * ((∏ j ∈ Finset.range r, legendreDerivativeEigen n j) *
-        ((n - r).factorial : ℝ)) := by field_simp; ring
+        ((n - r).factorial : ℝ)) := by field_simp
     _ = _ := by rw [legendreEigenProduct_mul_factorial hr]
 
 theorem weightedLegendreEnergy_self_pos {n r : ℕ} (hr : r ≤ n) :
@@ -93,7 +93,6 @@ theorem weightedLegendreLeadRatio_factorial (r n : ℕ) :
     (eq_div_iff hf).mpr hL
   rw [weightedLegendreLeadRatio, weightedLegendreEnergy_self_factorial hnr, hsub, hadd, hL']
   field_simp
-  <;> ring
 
 /-- The weighted leading scale has an explicit positive consecutive ratio. -/
 theorem weightedLegendreLeadRatio_succ (r n : ℕ) :
@@ -111,7 +110,7 @@ theorem weightedLegendreLeadRatio_succ (r n : ℕ) :
   have hnr2 : (n : ℝ) + 2 * r + 1 ≠ 0 := by positivity
   push_cast
   field_simp
-  <;> ring
+  ring
 
 /-- Higher degree increases the leading coefficient relative to its weighted norm. -/
 theorem weightedLegendreLeadRatio_mono (r : ℕ) : Monotone (weightedLegendreLeadRatio r) := by
@@ -122,8 +121,8 @@ theorem weightedLegendreLeadRatio_mono (r : ℕ) : Monotone (weightedLegendreLea
   have hfactor : 1 ≤ (2 * (n : ℝ) + 2 * r + 3) * (2 * (n : ℝ) + 2 * r + 1) /
       (((n : ℝ) + 1) * ((n : ℝ) + 2 * r + 1)) := by
     rw [le_div_iff₀ hden]
-    nlinarith only [Nat.cast_nonneg (R := ℝ) n, Nat.cast_nonneg (R := ℝ) r,
-      mul_nonneg (Nat.cast_nonneg (R := ℝ) n) (Nat.cast_nonneg (R := ℝ) r),
+    nlinarith only [Nat.cast_nonneg (α := ℝ) n, Nat.cast_nonneg (α := ℝ) r,
+      mul_nonneg (Nat.cast_nonneg (α := ℝ) n) (Nat.cast_nonneg (α := ℝ) r),
       sq_nonneg (n : ℝ), sq_nonneg (r : ℝ)]
   simpa only [one_mul] using mul_le_mul_of_nonneg_right hfactor
     (weightedLegendreLeadRatio_pos r n).le
@@ -144,7 +143,7 @@ theorem shiftedLegendreLead_succ (r n : ℕ) :
       (2 * (n : ℝ) + 2 * r + 1) * (legendreLead (n + r) * ((n + r).factorial : ℝ)) := by
     calc
       _ = _ := h1
-      _ = _ := by field_simp; ring
+      _ = _ := by field_simp
   rw [← h0] at he
   rw [show n + 1 + r = n + r + 1 by omega]
   apply (mul_right_cancel₀ hN)

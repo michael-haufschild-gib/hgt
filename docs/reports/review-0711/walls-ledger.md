@@ -358,7 +358,7 @@ Notation. Windows `[−a,a]`; `c_ψ(t)=W(ψ(·−t),ψ)`; `w_n=Λ(n)n^{−1/2}`;
 | Γ65 Cutoff line law | Solved (edge) | sub | [L]. |
 | Γ66 Scattering Blaschke product | Solved | — | `φ(s)(s−1)/s` Blaschke over `(1+ρ)/2` [L]. |
 | Γ67 Abscissa split | Solved (identity) | RH | RH ⇔ ZAL ∧ AAL; RH ⇔ ZAL ∧ zero-disc weak recurrence; under AAL eight RH-level statements coincide; `qRH ∨ AAL` [L/D]. |
-| Γ68 Asymptotic abscissa law | Open | sub | ¬AAL ⇔ an attained top excess ⇔ finite top and bottom layers ⇔ `ψ(x)−x=x^βT(log x)+O(x^{β−η})` [L]. |
+| Γ68 Asymptotic abscissa law | Open | sub | ¬AAL ⇔ finite top and bottom layers, so the top excess is attained ⇔ `ψ(x)−x=x^βT(log x)+O(x^{β−η})` [L]. |
 | Γ69 AAL producers | Partially solved | sub | Not-attained top; bounded lag on one progression; lag `≤Me^{aL}` off a set of lower Abel density zero; polar ground energy `μ₀(B)≥−C_εe^{εB}`; one generic discrete prime-window grid subexponential; log-dense integer lag bounded above; twisted plateaux; JAS dressed PSD; typical JAS positivity; bounded towers; one bounded cone; shell positivity; weak recurrence; infinitely many zeros near each right zero; slow aligned returns on right discs [L]. Each retains its source bound. |
 | Γ70 Zero–one law of recurrence | Classified | — | [L]. |
 | Γ71 Pair recurrence | Partially solved | sub | At density-`(1−δ)` base heights [L]. |
@@ -414,7 +414,7 @@ Notation. Windows `[−a,a]`; `c_ψ(t)=W(ψ(·−t),ψ)`; `w_n=Λ(n)n^{−1/2}`;
 | Γ121 Horocycle rate = zero-free region | Solved (Zagier) | RH (rate `¾`); ≥qRH (interior) | Mellin of the horocycle mean of a pseudo-Eisenstein series: `2ψ̃(s−1)+2(Λ(2s−1)/Λ(2s))ψ̃(−s)`. All-profile rate `y^α` ⇒ every zero has `Re ρ≤2−2α` [L]; zero-free `Re>θ` with polynomial `1/ζ` ⇒ rate `y^{1−θ/2−ε}`; rate `y^{1/2−ε}` unconditional; RH ⇔ rate `y^{3/4−ε}` for every profile [S]. |
 | Γ122 Lax–Phillips decay on the modular surface | Solved (identity) | RH | Resonances `u=(ρ−1)/2`; truncated resonant states are `L²` eigenvectors of the Lax–Phillips semigroup, `Z(t)t_u=e^{ut}t_u`, `Z(t)` contracts and exhausts the interaction space; RH ⇔ every resonant mode decays at `e^{−t/4}` [S]. |
 | Γ123 Recurrence dichotomy of the tail | Solved | sub | On the universal disc about every strip point, nonvanishing targets are approached at positive lower density; targets with an interior zero only at heights tail-bad at every cut, tolerance `m/4` [L]. |
-| Γ124 One-offs stop at the critical line | Classified | method | Discrete one-offs blow up at `s=½` (`Σ1/p_k=∞`); continuous one-offs carry an FE defect above the rigidity threshold; FE defect `≤1/6400` forces the rational primes [L/D]. The property of ζ no countermodel shares is continuation across `Re s=½` with the functional equation. |
+| Γ124 One-offs stop at the critical line | Classified | method | Discrete one-offs blow up at `s=½` (`Σ1/p_k=∞`); in a countable system any displacement of primes or integers from the rational ones forces an explicit positive FE defect, and defect `≤1/6400` forces the rational primes; the continuous one-offs carry no FE [L/D]. The property of ζ no countermodel shares is continuation across `Re s=½` with the functional equation. |
 
 ## Scoped no-gos and surviving replacements
 
@@ -456,7 +456,7 @@ Notation. Windows `[−a,a]`; `c_ψ(t)=W(ψ(·−t),ψ)`; `w_n=Λ(n)n^{−1/2}`;
 | Isolation = Carleson separation; `N(ρ)=Πϱ^m`; rate 2 isolated, `2θ` otherwise | MZF, AIF [L/D] |
 | Causal certificate ⇔ Schur band; over `𝔽_q` ⇔ Castelnuovo ⇔ Abel budgets reach 1 | GWZ, AIF [L] |
 | Abel log-mean ⇔ `I` at infinity ⇔ depth density `o(T)` ⇔ density-zero damping deficits | AIF, ASH [L] |
-| ¬AAL ⇔ finite oscillation of `ψ(x)−x` ⇔ two-prime dilation annihilation ⇔ attained top excess | ZCG, RHTower [L] |
+| ¬AAL ⇔ finite oscillation of `ψ(x)−x` ⇔ two-prime dilation annihilation; ¬AAL ⇒ attained top excess | ZCG, RHTower [L] |
 | Zeros = power-law kernel of the cut system; finite-energy kernel mass decides RH | RAC [L] |
 | Λ = intersection number of torsion cycles; prime form = −renormalized positive torsion energy | AE [L] |
 | Power-saving Liouville bound = zero-free strip; exact floor identity pins `λ`; twin pairs carry a quarter floor | RAC, AAD, AGT [L] |

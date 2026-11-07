@@ -20,7 +20,7 @@ Corpus checkpoint: commit `bf10668155` plus the working tree of 2026-11-07.
 |---|---|---|
 | RH ⇔ ZAL ∧ AAL; ZAL ⇒ qRH; ¬AAL ⇒ `Θ<1`; `qRH ∨ AAL` | [L]/[D] | one half is at least quasi-RH, the other sits below it |
 | Under AAL: RH ⇔ ZAL ⇔ finite off-line support ⇔ `κ(K_ζ)<∞` ⇔ bounded heat count ⇔ finite critical energy ⇔ eventual Hadamard ⇔ eventual central-gap budget | [L] | every large-height receiver reads RH once one-offs are gone |
-| ¬AAL ⇔ attained top excess ⇔ `ψ(x)−x=x^ΘT(log x)+O(x^{Θ−η})`, `T` a unique nonzero trigonometric polynomial ⇔ two-prime dilation annihilation | [L] | failure of AAL is one rigid object |
+| ¬AAL ⇔ finite top layer (attained top excess) ⇔ `ψ(x)−x=x^ΘT(log x)+O(x^{Θ−η})`, `T` a unique nonzero trigonometric polynomial ⇔ two-prime dilation annihilation | [L] | failure of AAL is one rigid object |
 | Positive Euler products with integer norms, or with rational-prime labels and multiplicative linear counting, carry a finite top layer; none continues to `Re s=½` | [L]/[S]/[D] | an AAL proof must use the critical line (FE, critical regularity), not positivity or counting |
 | RH ⇔ `a*(ζ)=⊤` ⇔ `λ*(c)→0` ⇔ two-site PD ⇔ `Q(a)≥0` on every integer probe ⇔ `Ψ` locally bounded | [L] | every window route measures one number |
 | At the critical curve `R_high=⨅_A windowThreshold(A)≥c₀e^{6a*(ζ)}`; all critical thresholds `=⊤` ⇔ RH | [S] | the complete matrix at ratio `R` is a window rung |

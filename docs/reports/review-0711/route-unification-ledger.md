@@ -11,7 +11,7 @@ Corpus checkpoint: commit `bf10668155` plus the working tree of 2026-11-07. Evid
 ## 0. Unifying statements
 
 - **One split [L].** RH ⇔ ZAL ∧ AAL ⇔ ZAL ∧ zero-disc weak recurrence ⇔ ZAL ∧ subexponential polar ground energy. ZAL ⇒ qRH. Under AAL eight RH-level statements coincide. `qRH ∨ AAL` [D].
-- **One rigid alternative [L].** ¬AAL ⇔ an attained top excess ⇔ finite top and bottom layers ⇔ `ψ(x)−x` is one finite oscillation at leading order ⇔ two-prime dilation annihilation of `ψ`.
+- **One rigid alternative [L].** ¬AAL ⇔ finite top and bottom layers (so the top excess is attained) ⇔ `ψ(x)−x` is one finite oscillation at leading order ⇔ two-prime dilation annihilation of `ψ`.
 - **One countermodel boundary [L/S/D].** Positive Euler products — continuous, discrete, integer-norm, rational-prime with multiplicative linear counting — carry a finite top layer; none continues to `Re s=½` with a small functional-equation defect, and defect `≤1/6400` forces the rational primes. The AAL half is a critical-line statement.
 - **One scalar [L].** Every window route measures `a*(ζ)`. Contact is `Ψ=½log H₁` blowing up; RH ⇔ `Ψ` locally bounded.
 - **The critical curve is the window [S/L].** At ratio `R`, positivity on the high-conductor complement holds exactly below `⨅_A windowThreshold(A)`, and `log R_high≥6a*(ζ)+log c₀` [S]; the low-packet payment at every ratio is RH [L]. The critical-curve problem of HF, SRT, AIP and ACS is the window problem of RW.
