@@ -17,7 +17,7 @@ noncomputable section
 open scoped BigOperators
 namespace GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein
 
-local instance : Algebra ℤ K := Ring.toIntAlgebra K
+local instance traceIntAlgebra : Algebra ℤ K := Ring.toIntAlgebra K
 
 private instance intTowerO :
     @IsScalarTower ℤ O K (Algebra.toSMul : SMul ℤ O) (Algebra.toSMul : SMul O K) (Algebra.toSMul : SMul ℤ K) :=

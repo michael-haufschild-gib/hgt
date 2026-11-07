@@ -54,7 +54,7 @@ theorem exists_sparse_extremal_of_target {K : ℕ} {S : Finset ℕ} (hK : 2 ≤ 
       (∀ v : ℕ → ℝ, IsFakePrimeMeasure K v → targetMass v S ≤ targetMass u S) ∧
       ((range (lcmUpTo K - 1)).filter fun j => u j ≠ 0).card ≤ K := by
   classical
-  obtain ⟨u, hu, hoff, hmax, -⟩ := exists_extremal_of_target hK hS
+  obtain ⟨u, hu, hoff, hmax, -, -⟩ := exists_extremal_of_target hK hS
   obtain ⟨L, hL⟩ : ∃ L, L = lcmUpTo K := ⟨_, rfl⟩
   rw [← hL] at hoff hS ⊢
   obtain ⟨F, hF⟩ : ∃ F, F = (range (L - 1)).filter fun j => 0 < u j := ⟨_, rfl⟩

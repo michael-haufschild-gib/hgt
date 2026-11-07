@@ -54,6 +54,19 @@ free label monoid and consecutive-integer cancellation give the
 [logarithmic floor](../3-formalized/logarithm-count-distance-floor.md). This does not determine
 the smallest distance carrying an exceptional zero.
 
+The [positive-generator model](../3-formalized/logarithm-positive-generator-near-count-model.md)
+has nonclassical labels and slope-one count error `O((log x)²)`, with an
+explicit bound. It brackets the nonclassical count-distance problem between
+logarithmic and quadratic logarithmic scales. Its finite Euler modification
+does not supply an exceptional right zero.
+Its [carry recurrence](../3-formalized/logarithm-positive-model-carry-recurrence.md)
+gives an exact ternary-digit formula under dyadic dilation and signed
+logarithmic deficits. These are quantitative statements about the actual
+model count; they do not settle the finite-right-zero target.
+The [first count average](../3-formalized/logarithm-positive-model-averaged-deficit.md)
+has a deficit of exact order `x log x`, with explicit two-sided bounds.
+Pointwise optimality and exceptional-zero distance remain open.
+
 Finite-field calibration must retain the precise split-hyperelliptic scope
 of existing Stepanov results. Any power-saving parity output must include
 its zero-free-strip consequence. None of these requirements is discharged

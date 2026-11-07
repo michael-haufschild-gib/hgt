@@ -48,6 +48,7 @@ import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
 import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
 import GaloisForLFunctions.PrimeTorusTheory.TheLogarithmOfAFibre
 import GaloisForLFunctions.PrimeTorusTheory.TheHullOverOrderTwoPoints
+import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOverOrderTwoPoints
 
 /-!
 # Prime Torus Theory

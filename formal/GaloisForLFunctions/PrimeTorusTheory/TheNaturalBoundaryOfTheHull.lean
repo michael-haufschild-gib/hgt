@@ -264,51 +264,47 @@ theorem ae_ray_unbounded :
 
 /-! ### The boundary -/
 
-/-- **The natural boundary of the hull.** For almost every torus point, the fibre extends to a zero-free analytic function on `Re s > ½`, with no analytic continuation across any point of `Re s = ½`. -/
-theorem ae_natural_boundary :
-    ∀ᵐ x ∂gaugeHaar, ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F rightHalf ∧
-      (∀ s, 1 < s.re → F s = gaugeFibre x s) ∧ (∀ s ∈ rightHalf, F s ≠ 0) ∧
-      ∀ (τ₀ r : ℝ) (H : ℂ → ℂ), 0 < r → AnalyticOnNhd ℂ H (ball (⟨1 / 2, τ₀⟩ : ℂ) r) →
-        ¬ ∀ s ∈ ball (⟨1 / 2, τ₀⟩ : ℂ) r, s ∈ rightHalf → H s = F s := by
-  filter_upwards [ae_exists_primeLimit, ae_ray_unbounded] with x hx hray
-  obtain ⟨P, hPa, hP⟩ := hx
-  set W : ℂ → ℂ := fun s => P s + hullRem s (twist x) with hW
-  have hWa : AnalyticOnNhd ℂ W rightHalf := hPa.add (analyticOnNhd_hullRem (norm_twist_prime x))
-  refine ⟨fun s => Complex.exp (W s), fun s hs => (hWa s hs).cexp, fun s hs => ?_,
-    fun s _ => Complex.exp_ne_zero _, ?_⟩
-  · have hmem : s ∈ rightHalf := by
-      show 1 / 2 < s.re
+/-- A rational point near `τ₀`, different from `τ₀` and from `0`. -/
+theorem exists_rat_near_ne_zero (τ₀ : ℝ) {δ : ℝ} (hδ : 0 < δ) :
+    ∃ q : ℚ, q ≠ 0 ∧ (q : ℝ) ≠ τ₀ ∧ |(q : ℝ) - τ₀| < δ := by
+  rcases le_or_gt 0 τ₀ with h | h
+  · obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show τ₀ < τ₀ + δ by linarith)
+    refine ⟨q, fun h0 => ?_, ne_of_gt hq1, ?_⟩
+    · have : (q : ℝ) = 0 := by exact_mod_cast h0
       linarith
-    have hz := summable_eulerVar (norm_twist_prime x) hs
-    have h1 : P s = ∑' p : Nat.Primes, eulerVar s (twist x) p :=
-      tendsto_nhds_unique (hP s hmem) (tendsto_sum_primesBelow (g := eulerVar s (twist x)) hz)
-    simp only [hW]
-    rw [h1]
-    exact exp_tsum_eq_gaugeFibre x hs
-  intro τ₀ r H hr hH hEq
+    · rw [abs_of_pos (by linarith)]
+      linarith
+  · obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show τ₀ - δ < τ₀ by linarith)
+    refine ⟨q, fun h0 => ?_, ne_of_lt hq2, ?_⟩
+    · have : (q : ℝ) = 0 := by exact_mod_cast h0
+      linarith
+    · rw [abs_of_neg (by linarith)]
+      linarith
+
+/-- **Unbounded rays forbid continuation.** If `W` is analytic on `Re s > ½` and unbounded along every horizontal ray ending at a nonzero rational point of the line, then `exp W` continues across no point of the line. -/
+theorem no_continuation_of_rays {W : ℂ → ℂ} (hWa : AnalyticOnNhd ℂ W rightHalf)
+    (hray : ∀ q : ℚ, q ≠ 0 → ∀ M J : ℕ, ¬ ∀ j, J ≤ j → ‖W (rayPoint q j)‖ ≤ M)
+    {τ₀ r : ℝ} {H : ℂ → ℂ} (hr : 0 < r) (hH : AnalyticOnNhd ℂ H (ball (⟨1 / 2, τ₀⟩ : ℂ) r)) :
+    ¬ ∀ s ∈ ball (⟨1 / 2, τ₀⟩ : ℂ) r, s ∈ rightHalf → H s = Complex.exp (W s) := by
+  intro hEq
   set z₀ : ℂ := ⟨1 / 2, τ₀⟩ with hz₀
   -- A rational point of the line where the continuation does not vanish.
-  have hne : ∃ q : ℚ, (⟨1 / 2, (q : ℝ)⟩ : ℂ) ∈ ball z₀ r ∧ H ⟨1 / 2, (q : ℝ)⟩ ≠ 0 := by
+  have hne : ∃ q : ℚ, q ≠ 0 ∧ (⟨1 / 2, (q : ℝ)⟩ : ℂ) ∈ ball z₀ r ∧ H ⟨1 / 2, (q : ℝ)⟩ ≠ 0 := by
     by_contra hcon
     push Not at hcon
     have hfreq : ∃ᶠ z in 𝓝[≠] z₀, H z = 0 := by
       intro hev
       rw [eventually_nhdsWithin_iff, Metric.eventually_nhds_iff_ball] at hev
       obtain ⟨ε, hε, hball⟩ := hev
-      obtain ⟨q, hq1, hq2⟩ := exists_rat_btwn (show τ₀ < τ₀ + min ε r by
-        have := lt_min hε hr
-        linarith)
+      obtain ⟨q, hq0, hqτ, hq⟩ := exists_rat_near_ne_zero τ₀ (lt_min hε hr)
       have hdist : dist (⟨1 / 2, (q : ℝ)⟩ : ℂ) z₀ < min ε r := by
         rw [Complex.dist_of_re_eq (z := (⟨1 / 2, (q : ℝ)⟩ : ℂ)) (w := z₀) rfl, Real.dist_eq]
-        show |(q : ℝ) - τ₀| < min ε r
-        rw [abs_of_pos (sub_pos.mpr hq1)]
-        linarith
-      have hne' : (⟨1 / 2, (q : ℝ)⟩ : ℂ) ≠ z₀ := fun h => by
+        exact hq
+      have hne' : (⟨1 / 2, (q : ℝ)⟩ : ℂ) ≠ z₀ := fun h => hqτ (by
         have := congrArg Complex.im h
-        simp only [hz₀] at this
-        linarith
+        simpa [hz₀] using this)
       exact hball _ (mem_ball.mpr (hdist.trans_le (min_le_left _ _))) hne'
-        (hcon q (mem_ball.mpr (hdist.trans_le (min_le_right _ _))))
+        (hcon q hq0 (mem_ball.mpr (hdist.trans_le (min_le_right _ _))))
     have hzero := hH.eqOn_zero_of_preconnected_of_frequently_eq_zero
       (convex_ball z₀ r).isPreconnected (mem_ball_self hr) hfreq
     have hw : (⟨1 / 2 + r / 2, τ₀⟩ : ℂ) ∈ ball z₀ r := by
@@ -322,7 +318,7 @@ theorem ae_natural_boundary :
     have h1 := hEq _ hw hw'
     rw [hzero hw] at h1
     exact Complex.exp_ne_zero _ h1.symm
-  obtain ⟨q, hqB, hq0⟩ := hne
+  obtain ⟨q, hqz, hqB, hq0⟩ := hne
   set z₁ : ℂ := ⟨1 / 2, (q : ℝ)⟩ with hz₁
   -- The logarithmic derivative of the continuation is bounded near `z₁`.
   set G : ℂ → ℂ := fun z => deriv H z / H z with hG
@@ -366,7 +362,7 @@ theorem ae_natural_boundary :
     rw [show (1 / 2 + 1 / ((j : ℝ) + 1) - 1 / 2 : ℝ) = 1 / ((j : ℝ) + 1) by ring, abs_of_pos h2]
     linarith
   obtain ⟨M, hM⟩ := exists_nat_ge (‖W (rayPoint q J)‖ + K * (2 * ρ))
-  refine hray q M J fun j hj => ?_
+  refine hray q hqz M J fun j hj => ?_
   have h1 := hDc.norm_image_sub_le_of_norm_deriv_le
     (fun z hz => (hWa z hz.2).differentiableAt) hderiv (hraymem J le_rfl) (hraymem j hj)
   have h2 : ‖rayPoint q j - rayPoint q J‖ ≤ 2 * ρ := by
@@ -375,17 +371,42 @@ theorem ae_natural_boundary :
     rw [← dist_eq_norm]
     have h5 := dist_triangle_right (rayPoint q j) (rayPoint q J) z₁
     linarith
-  have h6 : W (rayPoint q j) = primeLim (rayPoint q j) x + hullRem (rayPoint q j) (twist x) := by
-    simp only [hW]
-    unfold primeLim
-    rw [(hP _ (half_lt_rayPoint_re _ j)).limUnder_eq]
-  rw [← h6]
   have h7 : ‖W (rayPoint q j)‖ ≤ ‖W (rayPoint q J)‖ + ‖W (rayPoint q j) - W (rayPoint q J)‖ := by
     have := norm_add_le (W (rayPoint q J)) (W (rayPoint q j) - W (rayPoint q J))
     rwa [add_sub_cancel] at this
   have h8 : K * ‖rayPoint q j - rayPoint q J‖ ≤ K * (2 * ρ) :=
     mul_le_mul_of_nonneg_left h2 hK0.le
   linarith
+
+/-- **The natural boundary of the hull.** For almost every torus point, the fibre extends to a zero-free analytic function on `Re s > ½`, with no analytic continuation across any point of `Re s = ½`. -/
+theorem ae_natural_boundary :
+    ∀ᵐ x ∂gaugeHaar, ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F rightHalf ∧
+      (∀ s, 1 < s.re → F s = gaugeFibre x s) ∧ (∀ s ∈ rightHalf, F s ≠ 0) ∧
+      ∀ (τ₀ r : ℝ) (H : ℂ → ℂ), 0 < r → AnalyticOnNhd ℂ H (ball (⟨1 / 2, τ₀⟩ : ℂ) r) →
+        ¬ ∀ s ∈ ball (⟨1 / 2, τ₀⟩ : ℂ) r, s ∈ rightHalf → H s = F s := by
+  filter_upwards [ae_exists_primeLimit, ae_ray_unbounded] with x hx hray
+  obtain ⟨P, hPa, hP⟩ := hx
+  set W : ℂ → ℂ := fun s => P s + hullRem s (twist x) with hW
+  have hWa : AnalyticOnNhd ℂ W rightHalf := hPa.add (analyticOnNhd_hullRem (norm_twist_prime x))
+  refine ⟨fun s => Complex.exp (W s), fun s hs => (hWa s hs).cexp, fun s hs => ?_,
+    fun s _ => Complex.exp_ne_zero _, ?_⟩
+  · have hmem : s ∈ rightHalf := by
+      show 1 / 2 < s.re
+      linarith
+    have hz := summable_eulerVar (norm_twist_prime x) hs
+    have h1 : P s = ∑' p : Nat.Primes, eulerVar s (twist x) p :=
+      tendsto_nhds_unique (hP s hmem) (tendsto_sum_primesBelow (g := eulerVar s (twist x)) hz)
+    simp only [hW]
+    rw [h1]
+    exact exp_tsum_eq_gaugeFibre x hs
+  intro τ₀ r H hr hH hEq
+  refine no_continuation_of_rays hWa (fun q _ M J h => hray q M J fun j hj => ?_) hr hH hEq
+  have h6 : W (rayPoint q j) = primeLim (rayPoint q j) x + hullRem (rayPoint q j) (twist x) := by
+    simp only [hW]
+    unfold primeLim
+    rw [(hP _ (half_lt_rayPoint_re _ j)).limUnder_eq]
+  rw [← h6]
+  exact h j hj
 
 end
 

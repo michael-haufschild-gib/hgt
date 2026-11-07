@@ -651,7 +651,7 @@ theorem exists_shape_producer {S : Finset ℕ} (hS : ∀ r ∈ S, 1 ≤ r) {η :
     have hd := dvd_lcmUpTo (K := K) (k := S.sup id + 2) (mem_Icc.mpr ⟨by omega, hK2⟩)
     have h2 := Nat.le_of_dvd (lcmUpTo_pos K) hd
     exact ⟨hS r hr, by omega⟩
-  obtain ⟨u, hu, -, -, hprod⟩ := exists_extremal_of_target (by omega : 2 ≤ K) hSL
+  obtain ⟨u, hu, -, -, hprod, -⟩ := exists_extremal_of_target (by omega : 2 ≤ K) hSL
   have hmass := hK₀ K hK0 u hu
   obtain ⟨c, m, hP, hal, hs⟩ := hprod (η / 2) (by positivity)
   refine ⟨c, m, K, hP, hal, hs.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg m))⟩

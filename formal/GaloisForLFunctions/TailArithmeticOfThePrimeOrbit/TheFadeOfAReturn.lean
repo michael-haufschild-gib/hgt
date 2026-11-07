@@ -54,7 +54,7 @@ theorem tendsto_spikePoint (τ : ℝ) :
   rw [Complex.ofReal_one] at h3
   exact h3
 
-theorem fadeLength_pos {τ : ℝ} (hτ : τ ≠ 0) : 0 < fadeLength τ := by
+theorem fadeLength_pos (τ : ℝ) : 0 < fadeLength τ := by
   unfold fadeLength
   refine norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_le_re ?_)
   simp
@@ -70,7 +70,7 @@ theorem tendsto_log_norm_zeta_spikePoint {τ : ℝ} (hτ : τ ≠ 0) :
   have hcont : ContinuousAt riemannZeta (1 + (τ : ℂ) * Complex.I) :=
     (differentiableAt_riemannZeta hne1).continuousAt
   have h1 := (hcont.tendsto.comp (tendsto_spikePoint τ)).norm
-  exact (Real.continuousAt_log (fadeLength_pos hτ).ne').tendsto.comp h1
+  exact (Real.continuousAt_log (fadeLength_pos τ).ne').tendsto.comp h1
 
 /-- **The fade is forced.** -/
 theorem eventually_abs_harmonicDefect_sub_le {τ : ℝ} (hτ : τ ≠ 0) :
@@ -79,7 +79,7 @@ theorem eventually_abs_harmonicDefect_sub_le {τ : ℝ} (hτ : τ ≠ 0) :
   have h := tendsto_log_norm_zeta_spikePoint hτ
   filter_upwards [h.eventually (Metric.closedBall_mem_nhds _ one_pos), eventually_ge_atTop 3] with N hN hN3
   have hd := abs_harmonicDefect_sub_le hN3 τ
-  rw [Metric.mem_closedBall, Real.dist_eq] at hN
+  rw [Real.dist_eq] at hN
   calc |harmonicDefect N τ - RHTower.Sieve.logLog N + Real.log (fadeLength τ)|
       = |(harmonicDefect N τ - (RHTower.Sieve.logLog N - Real.log ‖riemannZeta (spikePoint N τ)‖)) -
           (Real.log ‖riemannZeta (spikePoint N τ)‖ - Real.log (fadeLength τ))| := by ring_nf

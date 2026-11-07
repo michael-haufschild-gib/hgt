@@ -582,8 +582,8 @@ measure, supported on one period, of largest mass on the target, and that mass i
 theorem exists_extremal_of_target {K : ℕ} {S : Finset ℕ} (hK : 2 ≤ K) (hS : ∀ r ∈ S, 1 ≤ r ∧ r < lcmUpTo K) :
     ∃ u : ℕ → ℝ, IsFakePrimeMeasure K u ∧ (∀ j, lcmUpTo K ≤ j + 1 → u j = 0) ∧
       (∀ v : ℕ → ℝ, IsFakePrimeMeasure K v → targetMass v S ≤ targetMass u S) ∧
-      ∀ δ > 0, ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsShapeProducer c m S ∧ AlphabetLE c K ∧
-        stencilSlope c ≤ (m : ℝ) * (targetMass u S + δ) := by
+      (∀ δ > 0, ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsShapeProducer c m S ∧ AlphabetLE c K ∧
+        stencilSlope c ≤ (m : ℝ) * (targetMass u S + δ)) ∧ targetMass u S = lpValue K S := by
   classical
   obtain ⟨⟨w, t⟩, ⟨hw, ht⟩, hphi⟩ := exists_dual_point (K := K) hS
   change 0 ≤ w at hw
@@ -655,7 +655,7 @@ theorem exists_extremal_of_target {K : ℕ} {S : Finset ℕ} (hK : 2 ≤ K) (hS 
   have hvalue : lpValue K S ≤ targetMass u S := by linarith
   have hne : {x | ∃ q, IsFeasible K S q ∧ objective q K = x}.Nonempty :=
     ⟨_, _, isFeasible_const hS, rfl⟩
-  refine ⟨u, hfake, hoff, fun v hv => ?_, fun δ hδ => ?_⟩
+  refine ⟨u, hfake, hoff, fun v hv => ?_, fun δ hδ => ?_, ?_⟩
   · -- Any consistent measure has mass at most every cost, hence at most the value.
     have hbound : ∀ x ∈ {x | ∃ q, IsFeasible K S q ∧ objective q K = x}, targetMass v S ≤ x := by
       rintro x ⟨q, hq, rfl⟩
@@ -666,6 +666,10 @@ theorem exists_extremal_of_target {K : ℕ} {S : Finset ℕ} (hK : 2 ≤ K) (hS 
     obtain ⟨c, m, hP, hal, hs⟩ := exists_shape_of_feasible hK hS hq (half_pos hδ)
     refine ⟨c, m, hP, hal, hs.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg m))⟩
     linarith
+  · -- The mass is the value of the program.
+    refine le_antisymm (le_csInf hne ?_) hvalue
+    rintro x ⟨q, hq, rfl⟩
+    exact hq.mass_le (fun r hr => (hS r hr).1) hfake
 
 /-- **The extremal fake prime measure.** For an alphabet `[2, K]` and a window with `B` at most the period,
 there is a fake prime measure, supported on one period, whose window mass is approached by the slopes of integer
@@ -677,7 +681,7 @@ theorem exists_extremal_fake_measure {K B : ℕ} (hK : 2 ≤ K) (hB : 2 ≤ B) (
         ∑ j ∈ range (B - 1), v j ≤ ∑ j ∈ range (B - 1), u j) ∧
       ∀ δ > 0, ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m B ∧ AlphabetLE c K ∧
         stencilSlope c ≤ (m : ℝ) * (∑ j ∈ range (B - 1), u j + δ) := by
-  obtain ⟨u, hu, hoff, hmax, hprod⟩ := exists_extremal_of_target hK (mem_window hBL)
+  obtain ⟨u, hu, hoff, hmax, hprod, -⟩ := exists_extremal_of_target hK (mem_window hBL)
   refine ⟨u, hu, hoff, fun v hv => ?_, fun δ hδ => ?_⟩
   · have := hmax v hv
     rwa [targetMass_Ico, targetMass_Ico] at this

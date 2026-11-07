@@ -319,6 +319,39 @@ domain unfolds absolutely integrable periodizations over the complex plane.
 inverse different, the actual cusp-frequency period law, and Fourier unfolding
 of integrable periodizations.
 
+`CubicCuspAverages.lean` constructs a bounded quotient L² functional by
+integrating over a high-cusp period strip. Exact measure transport preserves
+the locally corrected family’s meromorphy and spectral residue limit.
+
+`CubicCuspVolumeCoordinates.lean` expresses actual cusp-strip integrals as
+horizontal period-domain integrals with vertical density v⁻³. Continuous tests
+are integrable on the compact height strip and bounded period domain.
+
+`PrimitiveCubicEisensteinRows.lean` identifies cusp cosets with primitive
+level-three rows and the inverse Kubota character with the actual cubic row
+symbol. The original Eisenstein series and its absolute convergence transfer
+through this bijection.
+
+`CubicEisensteinResidueSeries.lean` reindexes the actual Eisenstein series
+into denominator residue classes and horizontal lattice translates, preserving
+the cubic row symbol.
+
+`CubicEisensteinFourierInterchange.lean` justifies Fourier integration term by
+term in the actual Eisenstein series for Re s > 2 using a uniform summable
+majorant on the cusp fundamental domain.
+
+`CubicHyperbolicFourierKernel.lean` proves integrability of the hyperbolic
+kernel for Re s > 1, its zero-mode integral π/(s−1), and the exact trace-to-
+Euclidean Fourier normalization.
+
+`CubicCuspFourierKernels.lean` factors primitive rows into shifted hyperbolic
+kernels, computes their Fourier scaling, and proves orthogonality of the
+actual cusp characters.
+
+`TheCubicEisensteinFourierCoefficients.lean` unfolds the actual Fourier
+coefficients into finite arithmetic residue sums and an absolutely convergent
+scattering Dirichlet series for Re s > 2, including the exact constant mode.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

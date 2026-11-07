@@ -47,6 +47,7 @@ theorem le_sub_of_step {f : ℕ → ℝ} {a b : ℕ} {μ : ℝ} (hstep : ∀ n, 
     rw [show n + (d + 1) = n + d + 1 by omega]
     linarith
 
+open Classical in
 /-- **A moving sequence meets a lattice rarely.** If `f` decreases by at least `μ > 0` per step on `[a, b]`, then the
 `n ∈ [a, b]` with `f n` within `η` of `c + ℤ` number at most `(f a − f b + 2)(2η/μ + 1)`. -/
 theorem card_near_lattice_le {f : ℕ → ℝ} {a b : ℕ} (hab : a ≤ b) {μ η : ℝ} (hμ : 0 < μ) (hη : 0 ≤ η)
@@ -202,9 +203,10 @@ theorem logDiffMass_le (j : ℕ) {x : ℝ} (hx : 0 < x) : logDiffMass j x ≤ (j
   rw [← abs_fwdDiff_iter_log_eq j hx]
   exact PrimeTorusTheory.abs_fwdDiff_iter_log_le hx
 
+open Classical in
 /-- **Exotic blocks are isolated.** -/
 theorem card_exotic_le {t : ℝ} (ht : 0 < t) (j : ℕ) {X H : ℕ} (hX : 1 ≤ X) (c : ℝ) {η : ℝ} (hη : 0 ≤ η) :
-    (((Icc X (X + H)).filter fun x => ∃ m : ℤ, |t * logDiffMass j x / (2 * π) - c - m| ≤ η).card : ℝ) ≤
+    (((Icc X (X + H)).filter fun x : ℕ => ∃ m : ℤ, |t * logDiffMass j (x : ℝ) / (2 * π) - c - m| ≤ η).card : ℝ) ≤
       (t * j.factorial / (2 * π * (X : ℝ) ^ (j + 1)) + 2) *
         (2 * η * (2 * π * ((X : ℝ) + H + j + 2) ^ (j + 2) / (t * (j + 1).factorial)) + 1) := by
   set f : ℕ → ℝ := fun n => t * logDiffMass j n / (2 * π) with hf
@@ -231,14 +233,22 @@ theorem card_exotic_le {t : ℝ} (ht : 0 < t) (j : ℕ) {X H : ℕ} (hX : 1 ≤ 
       le_trans (div_le_div_of_nonneg_left (by positivity) (by positivity) hpow) hlow
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
     rw [div_le_iff₀ (by positivity)] at hk
-    nlinarith [Real.pi_pos]
+    have htp : 0 ≤ t * (2 * π) := by positivity
+    calc t * ((j + 1).factorial : ℝ) * (2 * π) = (t * (2 * π)) * (j + 1).factorial := by ring
+      _ ≤ (t * (2 * π)) * (logDiffMass (j + 1) n * ((X : ℝ) + H + j + 2) ^ (j + 2)) :=
+          mul_le_mul_of_nonneg_left hk htp
+      _ = t * logDiffMass (j + 1) n * (2 * π * ((X : ℝ) + H + j + 2) ^ (j + 2)) := by ring
   have h := card_near_lattice_le (f := f) (by omega : X ≤ X + H) hμ0 hη hstep c
   have hfa : f X ≤ t * j.factorial / (2 * π * (X : ℝ) ^ (j + 1)) := by
     simp only [hf]
     rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    have := logDiffMass_le j hX0
-    rw [le_div_iff₀ (by positivity)] at this
-    nlinarith [Real.pi_pos]
+    have hM := logDiffMass_le j hX0
+    rw [le_div_iff₀ (by positivity)] at hM
+    have htp : 0 ≤ t * (2 * π) := by positivity
+    calc t * logDiffMass j X * (2 * π * (X : ℝ) ^ (j + 1)) = (t * (2 * π)) * (logDiffMass j X * (X : ℝ) ^ (j + 1)) := by
+          ring
+      _ ≤ (t * (2 * π)) * j.factorial := mul_le_mul_of_nonneg_left hM htp
+      _ = t * j.factorial * (2 * π) := by ring
   have hfb : 0 ≤ f (X + H) := by
     simp only [hf]
     have : (0 : ℝ) < ((X + H : ℕ) : ℝ) := by exact_mod_cast (by omega : 0 < X + H)

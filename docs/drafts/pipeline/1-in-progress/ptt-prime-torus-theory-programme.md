@@ -27,9 +27,9 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 | P6 | Rounded orbit: diagonal data cannot exclude a return | `TheRoundedOrbit` |
 | P7 | Agler wall, finite and all primes; first and second test; sharpness; coordinates that see the height | `PrimeByPrimePaymentCannotUseTheGammaFactor`, `TheWallForAllPrimes`, `CoordinatesThatSeeTheHeight` |
 | P8 | Fejér sign at the start; twin; start is extremal | `TheCornersOfTheOrbit` |
-| P9 | Hull: finite type, characters, Liouville ⇔ RH, typical zero-free, limits ⇔ RH; a zero forces an entry; prime characters lacunary (Zygmund); natural boundary of typical fibres | `TheHullOverTheTorus`, `TheHullOverTorsionPoints`, `AnIsolatedZeroForcesAnEntry`, `PrimeCharactersAreLacunary`, `TheNaturalBoundaryOfTheHull` |
+| P9 | Hull: finite type, characters, Liouville ⇔ RH, typical zero-free, limits ⇔ RH; a zero forces an entry; prime characters lacunary (Zygmund); natural boundary of typical fibres; logarithm of a fibre; typical order-two points extend zero-free with the line as natural boundary; Zygmund for every lacunary family | `TheHullOverTheTorus`, `TheHullOverTorsionPoints`, `AnIsolatedZeroForcesAnEntry`, `PrimeCharactersAreLacunary`, `TheLogarithmOfAFibre`, `TheNaturalBoundaryOfTheHull`, `TheHullOverOrderTwoPoints`, `TheNaturalBoundaryOverOrderTwoPoints` |
 | P10 | Pole price; large values counted through the pole | `TheReturnsThePoleMustPay` |
-| P11 | Graph lift; frozen = size; outer factor; allocation | `CertificatesOnTheOrbit` |
+| P11 | Graph lift; frozen = size; outer factor; allocation; the lift of the Ξ-current, fibre minimum at the pole, torus positivity = size | `CertificatesOnTheOrbit`, `TheLiftOfTheXiCurrent` |
 | P12 | Critical coupling: theta counts integers | `TheCriticalCouplingOfTheBase` |
 | P13 | Rank law; continuous systems have no torus; Pick certificate at rank one | `TheRankLaw`, `TheCertificateAtRankOne` |
 | P14 | Character discrepancy; box count | `TheDiscrepancyOfTheOrbit` |

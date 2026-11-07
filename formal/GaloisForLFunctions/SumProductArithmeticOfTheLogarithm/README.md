@@ -68,6 +68,9 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Collision amplification | Distinct factorizations of norm `m` give at least `k+1` factorizations of `m^k`. Uniformly bounded multiplicities force injective norm. | [`intCount_pow_ge_of_collision`, `bounded_intCount_iff_norm_injective`](NormCollisionAmplification.lean) |
 | Count-distance trichotomy | A locally finite positive integer-norm system is classical, has `k≤|D(m^k)|+|D(m^k−1)|` for some `m≥2`, or has `N(m(4k+1))+k≤m(4k+1)` for some `m≥2`. | [`count_distance_trichotomy`](CountDistanceRigidity.lean) |
 | Logarithmic isolation | Every nonclassical such system has `|D(n)|≥c log n` arbitrarily far out, for some `c>0`. Error `o(log n)` forces a norm-preserving equivalence of labels with rational primes. | [`primes_or_logarithmic_count_distance`, `primes_of_sublogarithmic_count_error`](LogarithmicCountFloor.lean) |
+| Positive-generator near-count model | Odd primes together with extra norm-three and norm-four labels give a nonclassical positive system with `|N(x)−x|≤(log x/log 3+1)(log x/log 4+1)/2+2` for `x≥1`. | [`PositiveNearCount.count_error_log_bound`, `PositiveNearCount.count_error_log_sq`, `PositiveNearCount.not_prime_equiv`](PositiveNearCountEstimate.lean) |
+| Signed carry excursions | The model satisfies `2(N(n)+N(⌊n/2⌋))+s₃(n)=3n`. Arbitrarily large `n` have `N(n)≤n−log n/(2 log 3)`. | [`PositiveNearCount.count_add_half_digit_sum`, `PositiveNearCount.negative_log_excursions`](PositiveNearCountCarries.lean) |
+| Sharp averaged deficit | For the same model, `R(x)=∫₀ˣN(t)dt` satisfies `x log x/(12 log 3)≤x²/2−R(x)≤(2/3)x(log x/log 3+1)+x/2` for `x≥1`. | [`PositiveNearCount.riesz_log_bound`, `PositiveNearCount.integral_count_deficit`](PositiveNearCountRiesz.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
 Tuple reconstruction recovers the monic polynomial `∏ᵢ(X+nᵢ)` by interpolation.
@@ -86,6 +89,30 @@ primes among systems with count error `o(log n)`, with the leading coefficient
 fixed at one. Bounded-error rigidity is a corollary. They do not determine the
 distance needed for an exceptional zero or settle the corresponding question
 for generators of arbitrary real norm.
+
+The near-count model supplies an upper construction with genuine nonnegative
+generator multiplicities. Its generalized integers have unique coordinates
+`(u,a,b)`, where `u` is positive odd, and norm `u 3^a4^b`. The odd-integer
+density and the two geometric factors multiply to one. Summing the half-unit
+rounding errors over the exponent rectangle gives `O((log x)²)` discrepancy.
+The smallest possible nonclassical count distance therefore lies between
+the logarithmic lower obstruction and this quadratic logarithmic construction.
+The model does not insert a new zero in the right half-plane; the distance
+required for an exceptional zero remains a separate question.
+
+The model also tests actual integer carries. Adding its counts at `n` and
+`⌊n/2⌋` telescopes the norm-four exponent and exposes the ternary digit sum
+`s₃(n)`. At `n=3^k−1`, its discrepancy obeys `D(n)+D(n/2)=−k`, forcing a
+negative logarithmic excursion at one of those two thresholds. Controlling
+alternating ternary digit sums along the dyadic orbit remains necessary
+to improve the pointwise upper bound.
+
+Its first count average has a sharper description. Odd-integer midpoint
+rounding and the omitted norm-four geometric tail force a deficit between
+`x/12` and `2x/3` at every retained norm-three exponent. Consequently the
+integrated count deficit has exact order `x log x`, with explicit constants.
+This identifies logarithmic distance after averaging while leaving the
+pointwise logarithmic-to-quadratic-logarithmic gap open.
 
 ## Tools and open research topics
 

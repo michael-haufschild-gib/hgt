@@ -33,5 +33,5 @@ the centre terms exactly.
 - **Lean:** `conformal_normalized_log_dilation_eq_zero` in `ConformalDirichletGram.lean`;
   survivors are `hasSum_laguerre_abel`, `dirichlet_projection_remainder_tendsto_zero`,
   `hasSum_polyMollifier_dirichlet`, and `budget_conformal_projection_remainder` in
-  `GaloisForLFunctions.ArithmeticInnerFunctionTheory`. Kernel checks pass;
+  `GaloisForLFunctions.ArithmeticInnerFunctionTheory`. Final per-file `lake --old env lean` checks pass;
   transitive axioms are only `propext`, `Classical.choice`, `Quot.sound`.

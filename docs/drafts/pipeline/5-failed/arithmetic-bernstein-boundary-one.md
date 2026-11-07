@@ -7,7 +7,8 @@
 
 ## Statement audit
 
-`IsAllBaseTorusPositive` is defined using an unconditional `tsum`; no convergence or right-decay assumption occurs in its definition. Existing Bernstein implications separately require right decay. First decide whether the proposed statement survives this distinction.
+`IsAllBaseTorusPositive` is defined using an unrestricted `tsum`; no convergence or right-decay
+assumption occurs in its definition. Existing Bernstein implications separately require right decay.
 
 ## Counterexample and positive survivor
 

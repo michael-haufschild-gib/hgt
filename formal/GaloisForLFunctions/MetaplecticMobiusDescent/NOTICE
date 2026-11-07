@@ -313,3 +313,11 @@ BoundedSmoothCubicOperatorDomain adapts the compact cutoff approximation from Op
 TheCubicInitialResolventMatching adapts initial resolvent matching from OpenAI Eisenstein/CutoffApproximation.lean. Local bounded remainder and gradient estimates, operator-domain approximation, and nonreal resolvent uniqueness identify the actual source series.
 TheCubicCuspPeriodLattice adapts cusp-lattice periodization from OpenAI CubicSieve/RowMajorants.lean. Integral Eisenstein coordinates, the local complex embedding, and Mathlib fundamental-domain integration establish the exact covolume and unfolding formulas.
 CubicTraceFourierPeriodization adapts trace-normalized Fourier periodization from OpenAI Eisenstein/FourierCoefficients.lean. The local different, complex embedding, and cusp lattice fix the actual character normalization.
+CubicCuspAverages adapts high-cusp strip injectivity and bounded averaging from OpenAI Eisenstein/CuspResidues.lean. The actual quotient measure, period lattice, and locally corrected seed family are locally constructed.
+CubicCuspVolumeCoordinates adapts cusp-coordinate integration from OpenAI Eisenstein/CuspResidues.lean. The locally checked Euclidean measure transport and exact coordinate split give the actual hyperbolic volume formula.
+PrimitiveCubicEisensteinRows adapts primitive-row completion and source reindexing from OpenAI Eisenstein/PrimitiveRows.lean. The locally proved cubic denominator congruence identifies the inverse character with the row symbol.
+CubicEisensteinResidueSeries adapts CubicSieve/RowMajorants.lean residue-class reindexing.
+CubicEisensteinFourierInterchange adapts Eisenstein/FourierCoefficients.lean dominated Fourier interchange.
+CubicHyperbolicFourierKernel adapts Eisenstein/HyperbolicSpace.lean radial integration and Fourier normalization.
+CubicCuspFourierKernels adapts Eisenstein/FourierCoefficients.lean shifted-kernel integrals and character orthogonality.
+TheCubicEisensteinFourierCoefficients adapts Eisenstein/FourierCoefficients.lean arithmetic unfolding and convergence.

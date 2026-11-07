@@ -30,8 +30,9 @@ theorem compCoeff_eq_zero (hc : IsCompensation y d) {P k : ℕ} (hP : P ∈ larg
   have hb : b < 2 * y + 2 := by
     by_contra hge
     push Not at hge
-    have : (2 * y + 2) * (2 * y + 2) ≤ P * b := Nat.mul_le_mul hP1.le hge
-    nlinarith
+    have h1 : (2 * y + 2) * (2 * y + 2) ≤ P * b := Nat.mul_le_mul hP1.le hge
+    have h2 : y * y < (2 * y + 2) * (2 * y + 2) := Nat.mul_self_lt_mul_self (by omega)
+    omega
   have hbP : ¬ P ∣ b := fun h => by
     have := Nat.le_of_dvd hb0 h
     omega
@@ -338,7 +339,10 @@ theorem IsCompensation.le_two_mul (hc : IsCompensation y d) (hy : 4 ≤ y) {P : 
     rw [div_le_one (by linarith)]
     exact hyR
   have hPR : (0 : ℝ) ≤ P := Nat.cast_nonneg P
-  have h3 : (d P : ℝ) ≤ 2 * P := by nlinarith
+  have h3 : (d P : ℝ) ≤ 2 * P := by
+    calc (d P : ℝ) ≤ P * (1 + 4 / (y : ℝ)) := h1
+      _ ≤ P * 2 := mul_le_mul_of_nonneg_left (by linarith) hPR
+      _ = 2 * P := mul_comm _ _
   exact_mod_cast h3
 
 /-- The sum of `1/d_P`. -/
@@ -422,7 +426,7 @@ theorem compWeighted_le (hc : IsCompensation y d) (hy : 4 ≤ y) : compWeighted 
         (Nat.mul_le_mul_left 2 (mem_largePrimes.mp hP).1.2)
       have hmono := Nat.log_mono_right (b := 2) hle
       have hstep : Nat.log 2 (2 * (y * y)) = Nat.log 2 (y * y) + 1 := by
-        rw [mul_comm, Nat.log_mul_base (by norm_num) (by nlinarith)]
+        rw [mul_comm, Nat.log_mul_base (by norm_num) (Nat.mul_pos (by omega) (by omega)).ne']
       omega
     have h4 : ((Nat.log 2 (d P) : ℕ) : ℝ) ≤ l + 1 := by
       rw [hl]
@@ -433,7 +437,8 @@ theorem compWeighted_le (hc : IsCompensation y d) (hy : 4 ≤ y) : compWeighted 
       exact mul_le_mul_of_nonneg_right h4 hl0
     have h6 : (((compPairs y).filter fun x => x.1 ∣ d P).card : ℝ) * b ≤ (l + 1) * l * b :=
       mul_le_mul_of_nonneg_right h5 hb0
-    nlinarith
+    calc _ ≤ b * l + (l + 1) * l * b := by linarith
+      _ = b * l * (l + 2) := by ring
   -- The sum over pairs.
   have hstep : compWeighted y d ≤ T * (b * l) + ∑ P ∈ largePrimes y, T * (b * l * (l + 2)) / d P := by
     rw [compWeighted]
@@ -472,15 +477,23 @@ theorem compWeighted_le (hc : IsCompensation y d) (hy : 4 ≤ y) : compWeighted 
   have hX : 0 ≤ T * b := by positivity
   have hmain : T * (b * l) + T * (b * l * (l + 2)) * (1 + Real.log T) ≤
       T * b * (l + 1) * (l + 3) * (2 + Real.log T) := by
-    have h1 : l * (l + 2) ≤ (l + 1) * (l + 3) := by nlinarith
-    have h2 : l ≤ (l + 1) * (l + 3) := by nlinarith
+    have h1 : l * (l + 2) ≤ (l + 1) * (l + 3) := by
+      have e : (l + 1) * (l + 3) = l * (l + 2) + (2 * l + 3) := by ring
+      linarith
+    have h2 : l ≤ (l + 1) * (l + 3) := by
+      have e : (l + 1) * (l + 3) = l + (l * l + 3 * l + 3) := by ring
+      have := mul_self_nonneg l
+      linarith
     have h3 : T * b * l * (1 : ℝ) ≤ T * b * ((l + 1) * (l + 3)) * 1 := by
-      have := mul_le_mul_of_nonneg_left h2 hX
-      nlinarith
+      rw [mul_one, mul_one]
+      exact mul_le_mul_of_nonneg_left h2 hX
     have h4 : T * b * (l * (l + 2)) * (1 + Real.log T) ≤ T * b * ((l + 1) * (l + 3)) * (1 + Real.log T) := by
       have h5 := mul_le_mul_of_nonneg_left h1 hX
       exact mul_le_mul_of_nonneg_right h5 (by linarith)
-    nlinarith
+    calc T * (b * l) + T * (b * l * (l + 2)) * (1 + Real.log T)
+        = T * b * l * 1 + T * b * (l * (l + 2)) * (1 + Real.log T) := by ring
+      _ ≤ T * b * ((l + 1) * (l + 3)) * 1 + T * b * ((l + 1) * (l + 3)) * (1 + Real.log T) := add_le_add h3 h4
+      _ = _ := by ring
   linarith
 
 /-- **The mass of the letters is about `y²`.** -/
@@ -525,7 +538,8 @@ theorem compMass_le (hc : IsCompensation y d) (hy : 4 ≤ y) : compMass y d ≤ 
     exact_mod_cast (by omega : 1 ≤ 2 * y + 2)
   have hl0 : (0 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) := Nat.cast_nonneg _
   have hprod : (1 : ℝ) ≤ ((2 * y + 2 : ℕ) : ℝ) * ((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3) := by
-    have h5 : (1 : ℝ) ≤ ((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3) := by nlinarith
+    have h5 : (1 : ℝ) ≤ ((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3) :=
+      one_le_mul_of_one_le_of_one_le (by linarith) (by linarith)
     calc (1 : ℝ) = 1 * 1 := by ring
       _ ≤ ((2 * y + 2 : ℕ) : ℝ) * (((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3)) :=
           mul_le_mul hb h5 zero_le_one (by linarith)
