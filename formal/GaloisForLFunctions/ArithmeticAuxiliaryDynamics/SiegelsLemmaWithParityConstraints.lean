@@ -60,13 +60,13 @@ theorem exists_stencil_of_constraints {B K : ℕ} {ι : Type*} [Fintype ι] [Non
   set c : ℕ →₀ ℤ := Finsupp.onFinset (Ioc B K)
     (fun k => if h : k ∈ Ioc B K then t ⟨k, h⟩ else 0) (fun k hk => by
       by_contra hnot
-      simp [hnot] at hk) with hc
+      exact hk (dif_neg hnot)) with hc
   have hval : ∀ k : Ioc B K, c k = t k := by
     intro k
-    simp [hc]
+    rw [hc, Finsupp.onFinset_apply, dif_pos k.2]
   have hout : ∀ k, k ∉ Ioc B K → c k = 0 := by
     intro k hk
-    simp [hc, hk]
+    rw [hc, Finsupp.onFinset_apply, dif_neg hk]
   refine ⟨c, ?_, ?_, fun i => ?_, fun k => ?_⟩
   · intro h0
     apply ht0
@@ -119,14 +119,13 @@ theorem exists_parity_stencil {B K : ℕ} (hBK : B + 2 < K) :
     have hk0 : k ≠ 0 := by omega
     have hle : (((K.factorial / k : ℕ) : ℝ)) ≤ K.factorial := by
       exact_mod_cast Nat.div_le_self _ _
+    have h0 : (0 : ℝ) ≤ ((K.factorial / k : ℕ) : ℝ) := Nat.cast_nonneg _
     simp only [hA]
-    push_cast
-    rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg (K.factorial / k))]
+    rw [Int.cast_mul, Int.cast_natCast, abs_mul, abs_of_nonneg h0]
     by_cases hi : i = 0
-    · simp only [hi, if_true, Int.cast_one, abs_one, one_mul]
+    · rw [if_pos hi, Int.cast_one, abs_one, one_mul]
       exact hle
-    · simp only [hi, if_false]
-      rw [hlam k hk0, one_mul]
+    · rw [if_neg hi, hlam k hk0, one_mul]
       exact hle
   have hlt : Fintype.card (Fin 2) < K - B := by
     rw [Fintype.card_fin]
@@ -151,20 +150,28 @@ theorem exists_parity_stencil {B K : ℕ} (hBK : B + 2 < K) :
     exact (mul_eq_zero.mp h2).resolve_left hFne
   refine ⟨c, hc0, hsupp, ?_, ?_, ?_, fun r hr => ?_⟩
   · have h := hclear (fun _ => 1) (by
-      have h0 := hcons 0
-      have hR : ((∑ k ∈ Ioc B K, c k * A 0 k : ℤ) : ℝ) = 0 := by rw [h0]; simp
+      have hR := congrArg (Int.cast : ℤ → ℝ) (hcons 0)
+      rw [Int.cast_sum, Int.cast_zero] at hR
       rw [← hR]
-      push_cast
       refine sum_congr rfl fun k _ => ?_
-      simp [hA])
-    simpa [IsBalanced] using h
+      have hA0 : A 0 k = ((K.factorial / k : ℕ) : ℤ) := by
+        change (if (0 : Fin 2) = 0 then (1 : ℤ) else lam k) * _ = _
+        rw [if_pos rfl, one_mul]
+      rw [hA0, Int.cast_mul, Int.cast_natCast, mul_one])
+    have hb : ∑ k ∈ c.support, (c k : ℝ) / k = 0 := by
+      rw [← h]
+      refine sum_congr rfl fun k _ => ?_
+      rw [mul_one]
+    exact hb
   · have h := hclear (fun k => (lam k : ℝ)) (by
-      have h0 := hcons 1
-      have hR : ((∑ k ∈ Ioc B K, c k * A 1 k : ℤ) : ℝ) = 0 := by rw [h0]; simp
+      have hR := congrArg (Int.cast : ℤ → ℝ) (hcons 1)
+      rw [Int.cast_sum, Int.cast_zero] at hR
       rw [← hR]
-      push_cast
       refine sum_congr rfl fun k _ => ?_
-      simp [hA])
+      have hA1 : A 1 k = lam k * ((K.factorial / k : ℕ) : ℤ) := by
+        change (if (1 : Fin 2) = 0 then (1 : ℤ) else lam k) * _ = _
+        rw [if_neg (by decide)]
+      rw [hA1, Int.cast_mul, Int.cast_mul, Int.cast_natCast, mul_assoc])
     exact h
   · intro k
     have h := hheight k

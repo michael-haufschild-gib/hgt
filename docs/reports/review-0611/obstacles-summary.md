@@ -396,16 +396,18 @@ All of Σ falls, with PM's Krein branch, TH, W2, W3 and the index routes.
 
 **The natural door under this exclusion is closed.** Over `𝔽_q` a proof with this profile exists: Stepanov's, producer → count → purity. Over ℤ the Stepanov object is a stencil, and its rate is the Mertens level in both directions at exponent scale [L]; a constant window is Möbius [L]; floor-sum ledgers are blind to every zero [L] and to the Liouville twin below `w√n` [L]; positive Hecke action never improves it [L]. So the Stepanov template yields a restatement of cancellation, unless something other than a linear floor identity enters. The one thing Frobenius gives over `𝔽_q`, quantized norms with no sawtooth, has no analogue here [L].
 
-**The question.** *Is there an identity at the zeros of ξ that relates two rotated values with equal modulus?* Precisely: with `z=(s−½)²`, `F(z)=Ξ(√z)`, are there `q` on the unit circle, `q≠±1`, and arithmetically defined entire `a,b,T` with `|a|=|b|` on a sector containing the zeros, such that `TF(z)=a(z)F(qz)+b(z)F(q̄z)`?
+**The question.** *Is there an identity at the zeros of ξ that relates two rotated values with equal modulus?* Precisely: with `w=−(s−½)²`, `Q(α²)=XiC α`, are there `q` on the unit circle with `Im q>0`, and arithmetically defined entire `a,b,T` with `|a|=|b|` on a sector containing the zeros and `a(w)≠0` at those zeros, such that `TQ(w)=a(w)Q(qw)+b(w)Q(q̄w)`?
+
+**Necessary correction [K].** Without coefficient nonvanishing, every entire `F` satisfies the relation with `a=b=F`, `T=F(q·)+F(q̄·)`. Even `F(0)=a(0)=b(0)=1` permits an off-axis zero with unequal rotated moduli. The exact local alternative and quantitative residual bound are formalized in `RAC:RotatedRelationsNeedNonvanishingCoefficients`; see [the scoped refutation](../../drafts/pipeline/5-failed/rotated-relations-with-unrestricted-balanced-coefficients.md).
 
 **Why it opens the path.**
-- One line: at the zero of maximal angle, which always exists under ¬RH, each Hadamard factor makes `|F(qz_k)|>|F(q̄z_k)|` [D], and the relation makes them equal. So RH follows.
+- At a zero of maximal positive angle, Hadamard factors compare weakly in the same direction, with a strict factor, giving `|Q(qw_k)|>|Q(q̄w_k)|` [D]. Balanced nonzero coefficients would force equality. The factor identity is oriented: its squared-modulus difference is `4 Im(q) Im(w_k/w_n)` [K].
 - No form, no sign of an energy, no spectrum, no estimate on primes. It uses Hadamard's product and an identity. It is the only proof shape for real zeros without a positive form, besides Stepanov [C].
-- Its failure is informative. A refutation in a named class of coefficients shows that reality of zeros has no second-order mechanism.
+- A refutation in a named coefficient class excludes only that class of rotated identities.
 
-**Tests.** T1 is not of that form: the relation implies RH and is stronger, so it is not an RH restatement. T2: construct or refute in a stated coefficient class. T3: RH. T4: passes. T5: fails on every fake with off-line zeros. T6: Hadamard strict inequality [D]; `AlgebraicDilationThetaGammaIndependence` [L] bounds the classes. T7: passes. Bare modulus equality at zeros is RH itself, so the content is the arithmetic source of `a,b`.
+**Tests.** The repaired relation is RH-sufficient by the extremal-product argument [D]; the unrestricted relation is not. Construct or refute it in a specified coefficient class, including nonvanishing. `AlgebraicDilationThetaGammaIndependence` [L] constrains some classes. Bare modulus equality at zeros is RH itself, so the content must be an arithmetic construction of the coefficients and proof of their nonvanishing.
 
-**Limit.** Hecke relations act in `z∈ℍ` at fixed `s`. Rotation in `(s−½)²` has no known arithmetic meaning. The first test on polynomials already excludes constant coefficients [D]. If the exclusion also covers Hadamard's order argument, this door closes too and only the second door remains.
+**Limit.** Hecke relations act in `z∈ℍ` at fixed `s`. Rotation in `−(s−½)²` has no known arithmetic meaning. Exclusions for a particular coefficient class do not exclude arbitrary arithmetic identities.
 
 **Second door.** AAL (B83) is sign-free in its prime-side form. It covers the half that a count cannot reach.
 

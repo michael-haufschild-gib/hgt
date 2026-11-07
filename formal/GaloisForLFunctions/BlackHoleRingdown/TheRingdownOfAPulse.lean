@@ -125,12 +125,13 @@ theorem contourData_pulse {A : ℝ} (hA : 1 ≤ A) : ContourData A (pulseNumerat
       have hb := hbound (u := u) (B := A) hne (abs_le.mpr ⟨h1, h2.trans hAnn⟩) ha₂ hg.1 hC₂
       rwa [him] at hb
 
+omit hY in
 /-- The field of the contour package is the packet. -/
 theorem contourField_pulse (h : ℝ → ℂ) (τ x Y : ℝ) :
     contourField (pulseNumerator h x Y) τ = pulsePacket h τ x Y := by
   rw [contourField, pulsePacket]
   refine integral_congr_ae (Eventually.of_forall fun y => ?_)
-  simp only
+  dsimp only
   rw [inverseXiQuotient, timeNumerator, pulseNumerator, normalizedEisenstein_eq_numerator_div
     (xi_line_ne_zero y)]
   have harg : -I * ((y : ℂ) * I) = y := by linear_combination (-(y : ℂ)) * I_sq
@@ -183,34 +184,42 @@ theorem exists_pulseMode (h : CompactPulse) (x : ℝ) {Y : ℝ} (hY : 0 < Y) {p 
     (analyticAt_pulseNumerator h x hY (re_neg_of_xi_shift_eq_zero hp).le) hp
   exact ⟨n, c, h1, by rw [h2, pulseNumerator, mul_eq_zero], h3⟩
 
+/-- The unit bump. -/
+def unitBump : ContDiffBump (0 : ℝ) := ⟨1, 2, one_pos, one_lt_two⟩
+
 /-- A pulse that excites a prescribed point: a bump times `e^{pS}`. -/
 def excitingPulse (p : ℂ) : CompactPulse where
-  toFun := fun S => ((ContDiffBump.mk (c := (0 : ℝ)) 1 2 one_pos one_lt_two : ContDiffBump (0 : ℝ)) S : ℂ) *
-    Complex.exp (p * (S : ℂ))
+  toFun := fun S => ((unitBump S : ℝ) : ℂ) * Complex.exp (p * (S : ℂ))
   smooth := by
-    have h1 := (ContDiffBump.mk (c := (0 : ℝ)) 1 2 one_pos one_lt_two).contDiff (n := ∞)
-    exact (Complex.ofRealCLM.contDiff.comp h1).mul (by fun_prop)
+    have h1 : ContDiff ℝ ∞ (unitBump : ℝ → ℝ) := unitBump.contDiff
+    have h2 : ContDiff ℝ ∞ fun S : ℝ => ((unitBump S : ℝ) : ℂ) :=
+      Complex.ofRealCLM.contDiff.comp h1
+    have h3 : ContDiff ℝ ∞ fun S : ℝ => p * (S : ℂ) :=
+      contDiff_const.mul Complex.ofRealCLM.contDiff
+    exact h2.mul h3.cexp
   compact := by
-    have h1 := (ContDiffBump.mk (c := (0 : ℝ)) 1 2 one_pos one_lt_two).hasCompactSupport
+    have h1 := unitBump.hasCompactSupport
     exact (h1.comp_left (g := fun t : ℝ => (t : ℂ)) (by simp)).mul_right
 
 /-- **Every point is excited by some pulse.** -/
 theorem pulseAmplitude_excitingPulse_ne_zero (p : ℂ) :
     pulseAmplitude (excitingPulse p) (-I * p) ≠ 0 := by
-  set b : ContDiffBump (0 : ℝ) := ContDiffBump.mk (c := (0 : ℝ)) 1 2 one_pos one_lt_two with hb
   have hpi : (2 * Real.pi : ℂ) ≠ 0 := by
     exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
-  have hkey : (2 * Real.pi : ℂ) * pulseAmplitude (excitingPulse p) (-I * p) = ((∫ S : ℝ, b S : ℝ) : ℂ) := by
-    rw [← (excitingPulse p).integral_mul_cexp_eq p, ← integral_ofReal]
+  have hco : (∫ S : ℝ, ((unitBump S : ℝ) : ℂ)) = ((∫ S : ℝ, unitBump S : ℝ) : ℂ) := integral_ofReal
+  have hkey : (2 * Real.pi : ℂ) * pulseAmplitude (excitingPulse p) (-I * p) =
+      ((∫ S : ℝ, unitBump S : ℝ) : ℂ) := by
+    rw [← (excitingPulse p).integral_mul_cexp_eq p, ← hco]
     refine integral_congr_ae (Eventually.of_forall fun S => ?_)
-    show ((b S : ℝ) : ℂ) * Complex.exp (p * (S : ℂ)) * Complex.exp (-p * (S : ℂ)) = ((b S : ℝ) : ℂ)
+    show ((unitBump S : ℝ) : ℂ) * Complex.exp (p * (S : ℂ)) * Complex.exp (-p * (S : ℂ)) =
+      ((unitBump S : ℝ) : ℂ)
     rw [mul_assoc, ← Complex.exp_add]
     have : p * (S : ℂ) + -p * (S : ℂ) = 0 := by ring
     rw [this, Complex.exp_zero, mul_one]
   intro h0
   rw [h0, mul_zero] at hkey
-  have hpos : 0 < ∫ S : ℝ, b S := b.integral_pos
-  have : (∫ S : ℝ, b S) = 0 := by exact_mod_cast hkey.symm
+  have hpos : 0 < ∫ S : ℝ, unitBump S := unitBump.integral_pos
+  have : (∫ S : ℝ, unitBump S) = 0 := by exact_mod_cast hkey.symm
   linarith
 
 /-- **Every zero is excited by some pulse at some point of each horocycle.** -/

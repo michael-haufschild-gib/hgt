@@ -343,7 +343,7 @@ Status: **Solved** (the face is a theorem), **Partially solved**, **Sharpened** 
 | Γ87 Raw echo decay | No-go | — | Every arrival has an inverse-square-root spike; no pointwise exponential bound, independent of RH; Gaussian observation absolutely convergent [L]. Sharp decay of the smoothed resonant sum open. |
 | Γ88 Near-arithmetic ladders | No-go | — | `Σ\|ζ(½+i(a+dn))\|/\|½+i(a+dn)\|=∞`; no `ℓ²`-perturbed progression consists of zeros; round and Nariai ladders excluded [L]. Sparse subsequences outside. |
 | Γ89 Blindness of modular positivity | Classified | — | KMS, reflection and Tomita positivity of the Hartle–Hawking state on the quotient are positivity of a density `1/\|ξ(1+2iν)\|²` on real `ν`, the shape proved blind for `C*`-Hecke moments [D]. |
-| Γ90 Maximal-angle zero | Classified | RH | `z=(s−½)²`, `F(z)=Ξ(√z)`: under ¬RH `arg z` attains a maximum; `\|F(qz)\|>\|F(q̄z)\|` there for `\|q\|=1`, `q≠±1`; RH ⇔ equality at zeros [D]. Producer of equality open. |
+| Γ90 Maximal-angle zero | Classified | RH | `w=−(s−½)²`, `Q(α²)=XiC α`: under ¬RH a maximal positive argument is attained; `\|Q(qw)\|>\|Q(q̄w)\|` there for `\|q\|=1`, `Im q>0`; RH ⇔ equality at zeros [D]. Unrestricted balanced coefficients are vacuous; nonvanishing at the tested zero is necessary [K]. Arithmetic producer open. |
 | Γ91 Lefschetz ratios | Solved | RH | `c_m=W(T_{mℓ}g,g)`: for every right zero one test has `c_{m+1}/c_m→p^{ρ−½}`, `\|c_m\|→∞`, at every prime; two primes determine `ρ` [L]. |
 
 ## Scoped no-gos and surviving replacements

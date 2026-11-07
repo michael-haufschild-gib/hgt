@@ -45,7 +45,7 @@ Corpus checkpoint: commit `a079423f8d` plus the working tree of 2026-11-07. Evid
 - **Returns are prime returns [L].** A return on a disc forces `n^{−iτ_j}→1` and a spike near the pole. Phases never obstruct; the tail does. Limits of translates embed in the gauge torus, and a return is the fibre over the identity.
 - **Repulsion is Diophantine and sign-free [L/D].** Finite carriers repel by Baker; a.e. value repels; `0∉E` bears on no real part.
 - **Stepanov order [L/D].** Over `𝔽_q` producer → count → unitarity, with Carlitz stencil of rate 0. Over ℤ the same words read the Mertens level.
-- **One maximal-angle zero [D].** In `z=(s−½)²`, under ¬RH, `arg z` attains a maximum, and Hadamard's product makes `|F(qz)|>|F(q̄z)|` there. RH ⇔ equality at zeros.
+- **One maximal-angle zero [D].** In `w=−(s−½)²`, write `Q(α²)=XiC α`. Under ¬RH, a maximal positive argument is attained; for `|q|=1`, `Im q>0`, Hadamard's product gives `|Q(qw)|>|Q(q̄w)|` there. RH ⇔ equality at zeros. A balanced rotated identity enforces equality only where its coefficients are nonzero; unrestricted coefficients admit every function [K].
 
 ## 1. Faces of the one object
 
@@ -93,7 +93,7 @@ Corpus checkpoint: commit `a079423f8d` plus the working tree of 2026-11-07. Evid
 | Source criteria | Fock bound, repair equality, co-shift class | RHTower [L] |
 | Bezout | source-energy sign | ACS [L] |
 | Characters | complex Gram positivity of central class functions | Representation [L] |
-| Modulus balance | `\|F(qz)\|=\|F(q̄z)\|` at zeros | [D] |
+| Modulus balance | `\|Q(qw)\|=\|Q(q̄w)\|` at zeros, `Q(α²)=XiC α`, `\|q\|=1`, `Im q>0`; any identity producing this must have nonzero coefficients there | [D]; coefficient alternative [K] |
 
 ## 2. Axes
 
