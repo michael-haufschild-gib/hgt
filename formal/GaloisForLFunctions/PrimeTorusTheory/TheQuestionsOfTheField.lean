@@ -19,6 +19,7 @@ import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTorsionPoints
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
 import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
 import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
+import GaloisForLFunctions.PrimeTorusTheory.TheHullOverOrderTwoPoints
 
 /-!
 # The questions of the field
@@ -141,7 +142,7 @@ theorem question_four :
     fun hq hd hm => (rank_one_law hq hd hm).1⟩
 
 open ArithmeticCorrelationGeometry in
-/-- **Question 5.** The Liouville fibre extends to `Re s > ½` if and only if RH holds; a Haar-typical fibre extends, is zero-free, and has the critical line as natural boundary; a finite modification of an orbit point carries exactly the translated zeros of `ζ`; and RH is the zero-freeness of every
+/-- **Question 5.** The Liouville fibre extends to `Re s > ½` if and only if RH holds; a Haar-typical fibre extends, is zero-free, and has the critical line as natural boundary; so does almost every order-two point, short of the boundary; a finite modification of an orbit point carries exactly the translated zeros of `ζ`; and RH is the zero-freeness of every
 nonzero limit of vertical translates. -/
 theorem question_five :
     (RiemannHypothesis ↔ ∃ F : ℂ → ℂ, DifferentiableOn ℂ F rightHalf ∧ ∀ s, 1 < s.re → F s = liouvilleFibre s) ∧
@@ -149,6 +150,10 @@ theorem question_five :
         (∀ s, 1 < s.re → F s = gaugeFibre x s) ∧ (∀ s ∈ rightHalf, F s ≠ 0) ∧
         ∀ (τ₀ r : ℝ) (H : ℂ → ℂ), 0 < r → AnalyticOnNhd ℂ H (Metric.ball (⟨1 / 2, τ₀⟩ : ℂ) r) →
           ¬ ∀ s ∈ Metric.ball (⟨1 / 2, τ₀⟩ : ℂ) r, s ∈ rightHalf → H s = F s) ∧
+      (∀ᵐ ω ∂signMeasure, (∀ p, p.Prime → _root_.RHTower.SteinhausModel.X p ω = 1 ∨
+          _root_.RHTower.SteinhausModel.X p ω = -1) ∧
+        ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F rightHalf ∧
+          (∀ s, 1 < s.re → F s = ∑' n, signHom ω n * (n : ℂ) ^ (-s)) ∧ ∀ s ∈ rightHalf, F s ≠ 0) ∧
       (∀ {g : ℕ →*₀ ℂ}, (∀ n, ‖g n‖ ≤ 1) → ∀ (u : ℝ) (F : Finset Nat.Primes) {s : ℂ}, 0 < s.re →
         (riemannZeta (s + (u : ℂ) * Complex.I) *
           ∏ p ∈ F, ((1 - orbitPoint u p * ((p : ℕ) : ℂ) ^ (-s)) * (1 - g p * ((p : ℕ) : ℂ) ^ (-s))⁻¹) = 0 ↔
@@ -157,7 +162,7 @@ theorem question_five :
         U ⊆ rightHalf → (∀ j, ∀ s ∈ U, s + (τ j : ℂ) * Complex.I ≠ 1) →
         TendstoLocallyUniformlyOn (fun j s => riemannZeta (s + (τ j : ℂ) * Complex.I)) F atTop U →
         (∃ a ∈ U, F a ≠ 0) → ∀ s ∈ U, F s ≠ 0) :=
-  ⟨riemannHypothesis_iff_liouvilleFibre_extends, ae_natural_boundary,
+  ⟨riemannHypothesis_iff_liouvilleFibre_extends, ae_natural_boundary, ae_signFibre_extends_zeroFree,
     fun hg u F _ hs => fibre_zero_iff hg u F hs, riemannHypothesis_iff_limits_zeroFree⟩
 
 /-- **Question 6.** Heights at level `θ` have differences at level `θ²` on average, and at weights `1/p` the pole prices every level: a height at level `θ` lies above `exp(c (log z)^θ)`. Rare heights are counted by the first return. -/

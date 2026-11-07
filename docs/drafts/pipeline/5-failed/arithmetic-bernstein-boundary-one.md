@@ -13,6 +13,8 @@
 
 Take `f(y)=1+cos(y)/2`. Then `1/2 ≤ f ≤ 3/2`, so the proposed left bound holds.
 At `t₁=π/2`, `t₂=3π/2`, coefficients `(1,-1)` give Hankel form `-2`.
+Indeed `exp(-κy)≥1` for every `κ≥0`, `y≤0`: the same counterexample satisfies all
+nonnegative left growth bounds. This obstruction concerns convergence, not a special endpoint.
 
 For `Uₖ=cosSum θ k`, the recurrence conserves
 `Uₖ₊₁²+Uₖ²−2 cos(θ) Uₖ₊₁Uₖ=1`. Hence `Uₖ₊₁²+Uₖ²≥1/2`; the characters cannot tend to zero.
@@ -23,6 +25,9 @@ Any amplitude with `|f|≥c>0` therefore makes every nonempty torus series nonsu
 The stronger damping consequence distinguishes this degeneration from the convergent cone:
 `exp(-αy) f(y)` fails torus positivity for every `0<α≤1`. For each `α>1`, sufficiently small
 positive cosine perturbations re-enter the cone, by the existing oscillatory dichotomy.
+Re-entry is strictly positive on every prime torus, hence its series must be summable:
+nonsummability would make its totalized value zero. This supplies an explicitly convergent
+positive survivor, beyond the degenerate zero-damping class.
 
 ## No-go closure
 
@@ -40,3 +45,6 @@ positive cosine perturbations re-enter the cone, by the existing oscillatory dic
   `propext`, `Classical.choice`, `Quot.sound`.
 
 The endpoint classification with genuine convergence/right decay remains a distinct open question.
+
+The all-exponent strengthening and explicit strict, summable re-entry conclusion await their
+final audit in the same module.

@@ -48,16 +48,20 @@ remain useful. For the actual critical product `H_Q=mollified Q`, projection giv
 For the shifted budget the weight is `|ζ((1−z)⁻¹+δ)|²`, with `exp Q(z)` still in the fixed chart.
 An unweighted Abel estimate is not a bound for this weighted problem.
 
-## Completeness conjecture
+## Complete factorization
 
-The Laguerre moments should give a complete, rather than merely contractive, factorization:
+The Laguerre moments give a complete, rather than merely contractive, factorization:
 `Σₖ |[zᵏ]F|²=Σₘ,ₙwₘwₙ/max(m,n)` and finite projection residuals should tend to zero.
-Corpus route: `HardyDiskSpace.hasSum_circleAverage_normSq_diskCoeff` gives the interior identity;
-boundedness of each finite Dirichlet sum permits dominated convergence to the boundary.
+`HardyDiskSpace.hasSum_circleAverage_normSq_diskCoeff` gives the interior identity.
+Bessel bounds the total coefficient energy `S` by boundary energy `E`. At radius `r<1`,
+Gutzmer bounds the mean by `S`, since `r^(2k)≤1`. Boundedness permits dominated convergence
+to the boundary, outside the null point `z=1`, giving `E≤S`. Thus `E=S`, and the exact
+finite residual tends to zero.
 
 ## Lean status
 
 `ArithmeticInnerFunctionTheory/ConformalDirichletProjection.lean` compiles; five main transitive
 axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
-Full Gram identities in `ArithmeticInnerFunctionTheory/ConformalDirichletGram.lean` and the
-completeness extension await verification.
+The bounded Parseval theorem also passes a scratch-file kernel/axiom check. Full Gram identities
+in `ArithmeticInnerFunctionTheory/ConformalDirichletGram.lean` and concrete corollaries in
+`ArithmeticInnerFunctionTheory/LaguerreFactorizationOfTheAbelKernel.lean` await final verification.

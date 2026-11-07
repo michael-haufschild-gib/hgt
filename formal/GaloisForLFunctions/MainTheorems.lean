@@ -89,3 +89,4 @@ import GaloisForLFunctions.ArithmeticKreinLangerTheory
 import GaloisForLFunctions.RigidArithmeticOfCuts
 import GaloisForLFunctions.MetaplecticMobiusDescent
 import GaloisForLFunctions.PrimeTorusTheory
+import GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

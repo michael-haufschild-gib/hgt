@@ -42,7 +42,8 @@ theorem shiftedBudget_eq_circleAverage (δ : ℝ) (Q : Polynomial ℂ) :
       simp only [shiftedChartWeight, discChart_circleMap]
       norm_num
       rw [hb]
-      congr 4 <;> ring)
+      congr 4
+      ring)
   exact hc.2.symm
 
 /-- A shifted Dirichlet polynomial expressed on the fixed unit disc. -/
@@ -120,8 +121,12 @@ theorem taylorCoeff_dirichletDiscPoly (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) (k 
     apply Finset.sum_congr rfl
     intro m _
     ring
-  rw [he, Real.circleAverage_fun_sum (fun m hm =>
-    ((isHardyDisc_dirichletDisc (hlog m hm)).circleIntegrable_conj_pow_mul k).const_smul)]
+  have hint (m : ℕ) (hm : m ∈ Finset.Icc 1 M) :
+      CircleIntegrable (fun z => ((b m * (m : ℝ) ^ (-δ) : ℝ) : ℂ) *
+        (conj (z ^ k) * dirichletDisc (Real.log m) z)) 0 1 :=
+    ((isHardyDisc_dirichletDisc (hlog m hm)).circleIntegrable_conj_pow_mul k).const_smul
+      (a := ((b m * (m : ℝ) ^ (-δ) : ℝ) : ℂ))
+  rw [he, Real.circleAverage_fun_sum hint]
   refine Finset.sum_congr rfl fun m hm => ?_
   change Real.circleAverage (fun z => ((b m * (m : ℝ) ^ (-δ) : ℝ) : ℂ) •
     (conj (z ^ k) * dirichletDisc (Real.log m) z)) 0 1 = _
@@ -172,7 +177,10 @@ theorem conformalDiscExp_larger_disc (Q : Polynomial ℂ) {η : ℝ} (hη : 0 �
   let R : ℝ≥0 := ⟨r, by linarith⟩
   refine ⟨R, hr, ?_⟩
   intro z hz
-  have hzre : z.re ≤ r := (Complex.re_le_norm z).trans (by simpa [R] using hz)
+  have hzre : z.re ≤ r := by
+    change z.re ≤ (R : ℝ)
+    exact (Complex.re_le_norm z).trans (by
+      simpa only [mem_closedBall, dist_zero_right] using hz)
   have hden : 1 + (η : ℂ) - (η : ℂ) * z ≠ 0 := by
     intro he
     have heR := congrArg Complex.re he
@@ -184,8 +192,11 @@ theorem conformalDiscExp_larger_disc (Q : Polynomial ℂ) {η : ℝ} (hη : 0 �
     have hfrac : η / d < 1 := (div_lt_one hd).mpr (by dsimp [d]; linarith)
     linarith
   have hψ : DifferentiableAt ℂ (translatedDiscCoord η) z := by
-    unfold translatedDiscCoord
-    apply DifferentiableAt.div (by fun_prop) (by fun_prop) hden
+    have hnum : DifferentiableAt ℂ (fun u : ℂ => (η : ℂ) + (1 - (η : ℂ)) * u) z := by
+      fun_prop
+    have hden' : DifferentiableAt ℂ (fun u : ℂ => 1 + (η : ℂ) - (η : ℂ) * u) z := by
+      fun_prop
+    exact hnum.div hden' hden
   exact (Complex.differentiable_exp.differentiableAt.comp z
     (Q.differentiable.differentiableAt.comp z hψ)).differentiableWithinAt
 
@@ -257,10 +268,9 @@ theorem hasSum_polyMollifier_dirichlet (Q : Polynomial ℂ) {η t : ℝ}
     rw [dirichletLineMode_shift]
     ring
   rw [he, integral_const_mul]
-  convert hs.mul_left (Real.exp (-δ * t) : ℂ) using 1
-  funext k
-  rw [taylorCoeff_dirichletDisc]
-  ring
+  exact (hs.mul_left (Real.exp (-δ * t) : ℂ)).congr_fun fun k => by
+    rw [taylorCoeff_dirichletDisc]
+    ring
 
 /-- Outer conformal factors change the logarithmic dilation integral only by their centre values. -/
 theorem conformal_log_dilation_eq_centres (Q : Polynomial ℂ) {δ : ℝ} (hδ : 0 ≤ δ) :

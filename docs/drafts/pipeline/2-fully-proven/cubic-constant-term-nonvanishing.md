@@ -36,7 +36,7 @@ Integrating the constant mode over heights `5≤v≤6`, with volume density
 The incoming height term is analytic there. This compact cusp average is
 a bounded functional on the local `L²` family.
 
-[Initial source matching](cubic-initial-resolvent-matching.md) identifies
+[Initial source matching](../3-formalized/cubic-initial-resolvent-matching.md) identifies
 the two averages for `Re s>4`, `Im s>0`. Analytic uniqueness extends the
 identity to `Re s>4/3`, `Im s>0`. The isolated spectral pole permits passage
 to the real boundary near `4/3`; uniqueness of the residue limit therefore

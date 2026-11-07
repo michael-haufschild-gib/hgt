@@ -306,7 +306,6 @@ theorem sum_sum_sum_mul (A B : Finset ℕ) (f g : ℕ → ℝ) (C : ℝ) :
   rw [Finset.sum_mul (s := A), Finset.mul_sum (s := A)]
   refine Finset.sum_congr rfl fun m' _ => ?_
   rw [Finset.mul_sum (s := B), Finset.mul_sum (s := B)]
-  exact Finset.sum_congr rfl fun n _ => by ring
 
 /-- **The conditional mean of the tail vanishes.** If the tail integers exceed `1`, the head-weighted integral of the
 tail is at most `2N (Σ|r_m|)² Σ|b_n|`, for every window. -/

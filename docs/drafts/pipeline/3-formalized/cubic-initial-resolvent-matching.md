@@ -1,8 +1,8 @@
 # Initial matching with the cubic Eisenstein series
 
 - **ID:** cubic-initial-resolvent-matching
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** For `Re s>4`, `Im s>0`, and cutoff heights `1<a<b`, the actual quotient Eisenstein series minus its incoming seed equals `R(s(2−s))F(s)` in `L²`.
 
@@ -37,12 +37,11 @@ with `Δ(E−seed)=F+s(2−s)(E−seed)`. Since `s(2−s)` is nonreal in the
 stated region, the established resolvent uniqueness identifies the two
 `L²` vectors.
 
-Lean target: `CubicEisenstein.kernelEisensteinL2Correction_initial_overlap`
-in `TheCubicInitialResolventMatching.lean`. Spatial smoothness for `Re s>2`
-is checked in `SpatialSmoothnessOfTheCubicEisensteinSeries.lean`, using
-`Sobolev/CompactSmoothParameterSums.lean`; the audited endpoints use only
-`propext`, `Classical.choice`, and `Quot.sound`. The actual Laplace equation,
-uniform remainder and gradient bounds, and cutoff convergence await local checks.
+Formalized as `CubicEisenstein.kernelEisensteinL2Correction_initial_overlap`
+in `TheCubicInitialResolventMatching.lean`. Spatial derivatives, the actual
+Laplace equation, uniform remainder and gradient bounds, and compact cutoff
+approximation are kernel-checked. The operator-graph and matching endpoints
+use only `propext`, `Classical.choice`, and `Quot.sound`.
 This establishes an initial source identity; it supplies neither residue
 nonvanishing nor arithmetic cancellation.
 

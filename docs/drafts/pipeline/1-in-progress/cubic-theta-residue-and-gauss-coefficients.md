@@ -60,8 +60,11 @@ The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.
 is constructed globally in `L²` and locally for the corrected incoming family.
 Its nonvanishing is not yet established.
 
-Open inputs: [source matching](../2-fully-proven/cubic-initial-resolvent-matching.md),
-[residue nonvanishing](../2-fully-proven/cubic-constant-term-nonvanishing.md), Fourier
+[Initial source matching](../3-formalized/cubic-initial-resolvent-matching.md)
+identifies the actual Eisenstein remainder with the resolvent correction
+for `Re s>4`, `Im s>0`, with all analytic premises discharged.
+
+Open inputs: [residue nonvanishing](../2-fully-proven/cubic-constant-term-nonvanishing.md), Fourier
 identification, and nonvanishing of `C∞`. None is supplied as an assumption
 in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.

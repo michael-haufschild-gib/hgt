@@ -34,7 +34,8 @@ The field gives the second expression, exact certificates, classifications, tang
 | Inner field of a datum | `innerOf` | `I_E(w) = ∫ log|E| P_w − log|E(w)|` |
 | Inner field of `ζ` | `innerField`, `ZetaRightZero`, `zeroMult` | `I(w) = Σ_ρ m_ρ G(w, ρ)` over the right zeros |
 | Budget | `budget`, `shiftedBudget`, `polyMollifier`, `eulerMollifier`, `realDirichletPoly` | `∫ |ζ e^{Q∘φ_w}|² P_w` and its `Re s = ½ + δ` counterpart; outer Euler prefixes `Π_{p∈S}(1 − p^{−s})` and Dirichlet polynomials |
-| Hardy functions of the disc | `IsHardyDisc`, `taylorCoeff`, `mollified` | functions with `|Φ| ≤ A/|1 − w|²` and bounded means, with Parseval and no boundary limit theory; `E M_Q` in the coordinate `u = (s − 1)/s` |
+| Hardy functions of the disc | `IsHardyDisc`, `taylorCoeff`, `mollified` | functions with `|Φ| ≤ A/|1 − w|²` and bounded means; finite Parseval identities, and full boundary Parseval for bounded data; `E M_Q` in the coordinate `u = (s − 1)/s` |
+| Conformal–Dirichlet coordinates | `dirichletDisc`, `translatedDiscCoord`, `laguerreJetPoly`, `conformalDiscExp` | `D_t(z)=exp(-t/(1-z))`, the translated chart `ψ_η`, finite derivative polynomials, and `exp Q(ψ_η(z))` |
 | Curve inner mass | `innerMass`, `lPoly` | `Σ log⁺|β_i|`, the Mahler measure of the normalized `L`-polynomial |
 | Abel mollifier of a curve | `frobTrace`, `abelPoly`, `abelBudget`, `abelRatio` | `Q = Σ_{k≤N} ρ^k a_k v^k/k`, the Euler logarithm damped and truncated; the dilation quotient `|P(v)/P(ρv)|²` |
 | Dilation projections, shifted field | `factorQuotient`, `modelPart`, `shiftedInnerField`, `greenSlopeTerm` | Beurling–Sarason–Hardy split of `(1 − βv)/(1 − ρβv)`; `I_δ(w)` on `Re s = ½ + δ` and its divided Green slope |
@@ -145,6 +146,11 @@ aperture, and the obstruction to an alternating predictor.
 | `sq_norm_le_circleAverage_subcritical`, `supercritical_pythagorean_split`, `tendsto_circleAverage_modelPart_sq` | Exterior root `‖β‖ > 1`: subcritical floor `‖β‖²`, orthogonal split across `b_α H² ⊕ K_{b_α} ⊕ H²_-` past `‖β‖⁻¹`, defect limit `1 − ‖β‖⁻²` (`φ⁻¹` on `goldenDatum`) |
 | `isGLB_shiftedBudget_innerField`, `exp_two_dilation_drop_eq_szego_ratio`, `riemannHypothesis_iff_szego_budget_ratio_eq` | Shifted Szegő infimum on `Re s = ½ + δ` (`δ ∈ (0, ½)`); `e^{2(I(1)−I_δ(1))}` as normalized critical-to-shifted budget ratio; single-shift `L²` variational RH criterion |
 | `eulerMollified_log_dilation_quotient_eq`, `integral_dirichletPoly_norm_sq_poisson`, `dirichletGram_eq_abel_squares` | Outer Euler-prefix prime cancellation leaving `I(1) − I_δ(1)` invariant; exact `1/max(m,n)` Poisson Gram matrix of Dirichlet polynomials and its Abel sum-of-squares coercivity |
+| `integral_conformal_dirichlet_mode_eq_laguerre`, `hasSum_polyMollifier_gram`, `hasSum_polyMollifier_dirichlet` | Exact conformal/Dirichlet Poisson Gram entries from finite Laguerre jets and absolutely convergent conformal coefficient pairings; chart and Dirichlet shifts are independent |
+| `dirichletGram_minus_conformal_squares`, `conformal_squares_le_abel` | Conformal projection subtracts exactly its coefficient squares from the Dirichlet Gram form; Abel partial-sum energy bounds every finite set of these moments |
+| `hasSum_laguerre_abel`, `dirichlet_projection_remainder_tendsto_zero` | Complete factorization: total squared Laguerre moments equal Abel partial-sum energy, and finite conformal projection residuals tend to zero |
+| `budget_conformal_projection_remainder`, `shiftedBudget_eq_circleAverage` | Critical budget equals coefficient energy plus squared residual of the actual zeta product. Shifted budgets retain the fixed chart and translate only the zeta weight |
+| `conformal_normalized_log_dilation_eq_zero` | Centre normalization cancels the full logarithmic contribution of every conformal polynomial exponential; changes in quadratic correlations do not change this invariant |
 | `dirichletHankel_eulerAmpl_ge_selberg`, `dirichletHankel_selbergArray_eq`, `eulerHankel_pos_floor_of_pos`, `exists_eulerHankel_lt_of_critical`, `hasDerivAt_log_eulerHankel_min` | Exact Selberg minimum `Π_i (1 + p_i^{−2σ})⁻¹` of `dirichletHankelForm (eulerAmpl p σ)`: uniform positive floor for `δ > 0`, collapse to `0` at `δ = 0`, divergent slope `2 Σ_p log p/(p+1)` |
 
 ### Forms, cones and media

@@ -8,10 +8,10 @@ Cut `ζ` at `y`: `ζ = E_y · (ζ M_y)`, with the head `E_y = Π_{p≤y}(1 − p
 `M_y = Π_{p≤y}(1 − p^{−s})`. On `Re s > 0` the head never vanishes (`eulerMollifier_ne_zero`), so the zeros of `ζ` are
 exactly the zeros of the **tail** `ζ M_y` (`eulerTail_eq_zero_iff`), at every cut.
 
-* **The tail of a bounded return** (`IsPhaseReturn.tendsto_eulerTail`). Along a phase return the head converges to the
-  head (`IsPhaseReturn.tendsto_eulerMollifier`): its phases return. With bounded translates on a domain joining a point to
+* **The tail of a bounded return** (`tendsto_eulerTail_of_phaseReturn`). Along a phase return the head converges to the
+  head (`tendsto_eulerMollifier_of_phaseReturn`): its phases return. With bounded translates on a domain joining a point to
   `Re s > 1`, `ζ(s + iτ_j) → ζ(s)` there, so the tail converges to `ζ M_y`, which vanishes at the zero: the zero is
-  carried by the tail at every cut, and the head stays at its nonzero value (`IsPhaseReturn.tendsto_zero_tail`). The
+  carried by the tail at every cut, and the head stays at its nonzero value (`tendsto_zero_tail_of_phaseReturn`). The
   tail-bad amplitude `|ζ − E_y|` at the transported zero tends to `|E_y(ρ)|`.
 * **A return at a zero is tail-bad at every cut** (`zetaReturnSet_subset_eulerDiscTailBadSet`). Let `|ζ| ≥ m` on a circle
   about a zero `ρ`. If `ζ(· + iτ)` returns to `ζ` within `m/2` on the disc, the translate has a zero inside. If it were
@@ -54,7 +54,7 @@ theorem one_sub_cpow_ne_zero {n : ℕ} (hn : 2 ≤ n) {s : ℂ} (hs : 0 < s.re) 
   linarith
 
 theorem eulerMollifier_ne_zero (y : ℕ) {s : ℂ} (hs : 0 < s.re) : eulerMollifier y s ≠ 0 :=
-  Finset.prod_ne_zero_iff.mpr fun n hn => one_sub_cpow_ne_zero (Finset.mem_filter.mp hn).2.two_le hs
+  Finset.prod_ne_zero_iff.mpr fun _ hn => one_sub_cpow_ne_zero (Finset.mem_filter.mp hn).2.two_le hs
 
 theorem eulerHead_ne_zero (y : ℕ) {s : ℂ} (hs : 0 < s.re) : RHTower.eulerHead y s ≠ 0 := by
   rw [eulerHead_eq_inv]
@@ -91,7 +91,7 @@ theorem cpow_neg_add_mul_I {n : ℕ} (hn : n ≠ 0) (s : ℂ) (τ : ℝ) :
   rw [neg_add, Complex.cpow_add _ _ (by exact_mod_cast hn)]
 
 /-- **The head returns along a phase return.** -/
-theorem IsPhaseReturn.tendsto_eulerMollifier {τ : ℕ → ℝ} (h : IsPhaseReturn τ) (y : ℕ) (s : ℂ) :
+theorem tendsto_eulerMollifier_of_phaseReturn {τ : ℕ → ℝ} (h : IsPhaseReturn τ) (y : ℕ) (s : ℂ) :
     Tendsto (fun j => eulerMollifier y (s + τ j * I)) atTop (𝓝 (eulerMollifier y s)) := by
   unfold eulerMollifier
   refine tendsto_finsetProd _ fun n hn => ?_
@@ -118,26 +118,26 @@ theorem IsPhaseReturn.tendsto_eulerMollifier {τ : ℕ → ℝ} (h : IsPhaseRetu
   rw [cpow_neg_add_mul_I hn0]
 
 /-- **The tail of a bounded return** converges to the tail. -/
-theorem IsPhaseReturn.tendsto_eulerTail {τ : ℕ → ℝ} (h : IsPhaseReturn τ) {U : Set ℂ} (hUo : IsOpen U)
+theorem tendsto_eulerTail_of_phaseReturn {τ : ℕ → ℝ} (h : IsPhaseReturn τ) {U : Set ℂ} (hUo : IsOpen U)
     (hUc : IsPreconnected U) (hUim : ∀ z ∈ U, 0 < z.im) {s₀ : ℂ} (hs₀ : s₀ ∈ U) (hs₀1 : 1 < s₀.re)
     (hbd : TranslatesBoundedOn τ U) (y : ℕ) {s : ℂ} (hs : s ∈ U) :
     Tendsto (fun j => eulerTail y (s + τ j * I)) atTop (𝓝 (eulerTail y s)) := by
   have hζ := (h.tendstoLocallyUniformlyOn hUo hUc hUim hs₀ hs₀1 hbd).tendsto_at hs
-  exact hζ.mul (h.tendsto_eulerMollifier y s)
+  exact hζ.mul (tendsto_eulerMollifier_of_phaseReturn h y s)
 
 /-- **The tail carries the zero, the head does not.** At a zero `ρ` of `ζ` in the domain, with `Re ρ > 0`, the tail of
 the translate tends to `0` at every cut while the head tends to `E_y(ρ) ≠ 0`; the tail-bad amplitude `|ζ − E_y|` at the
 transported point tends to `|E_y(ρ)|`. -/
-theorem IsPhaseReturn.tendsto_zero_tail {τ : ℕ → ℝ} (h : IsPhaseReturn τ) {U : Set ℂ} (hUo : IsOpen U)
+theorem tendsto_zero_tail_of_phaseReturn {τ : ℕ → ℝ} (h : IsPhaseReturn τ) {U : Set ℂ} (hUo : IsOpen U)
     (hUc : IsPreconnected U) (hUim : ∀ z ∈ U, 0 < z.im) {s₀ : ℂ} (hs₀ : s₀ ∈ U) (hs₀1 : 1 < s₀.re)
     (hbd : TranslatesBoundedOn τ U) (y : ℕ) {ρ : ℂ} (hρU : ρ ∈ U) (hρ : riemannZeta ρ = 0) (hρ0 : 0 < ρ.re) :
     Tendsto (fun j => eulerTail y (ρ + τ j * I)) atTop (𝓝 0) ∧
       Tendsto (fun j => RHTower.eulerHead y (ρ + τ j * I)) atTop (𝓝 (RHTower.eulerHead y ρ)) ∧
       RHTower.eulerHead y ρ ≠ 0 ∧
       Tendsto (fun j => ‖RHTower.eulerTailFun y (ρ + τ j * I)‖) atTop (𝓝 ‖RHTower.eulerHead y ρ‖) := by
-  have ht := h.tendsto_eulerTail hUo hUc hUim hs₀ hs₀1 hbd y hρU
+  have ht := tendsto_eulerTail_of_phaseReturn h hUo hUc hUim hs₀ hs₀1 hbd y hρU
   rw [show eulerTail y ρ = 0 from (eulerTail_eq_zero_iff y hρ0).mpr hρ] at ht
-  have hM := h.tendsto_eulerMollifier y ρ
+  have hM := tendsto_eulerMollifier_of_phaseReturn h y ρ
   have hhead : Tendsto (fun j => RHTower.eulerHead y (ρ + τ j * I)) atTop (𝓝 (RHTower.eulerHead y ρ)) := by
     simp_rw [eulerHead_eq_inv]
     exact hM.inv₀ (eulerMollifier_ne_zero y hρ0)
@@ -239,7 +239,7 @@ theorem exists_returns_tailBad_and_rare {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h
   have hre : ∀ s ∈ closedBall ρ r, s.re < 1 := fun s hs => by linarith [(hball s hs).2]
   have hsub := fun y => zetaReturnSet_subset_eulerDiscTailBadSet hr hpos hre hρ hm y
   refine ⟨r, m, hr, hm0, hsub, fun δ hδ => ?_⟩
-  obtain ⟨y, hy⟩ := (RHTower.eventually_eventually_volume_eulerDiscTailBadSet_le hr (by linarith) (by linarith)
+  obtain ⟨y, hy⟩ := (RHTower.eventually_eventually_volume_eulerDiscTailBadSet_le (c := ρ) hr (by linarith) (by linarith)
     (ε := m / 4) (by positivity) hδ).exists
   filter_upwards [hy] with T hT
   exact (measure_mono (Set.inter_subset_inter_left _ (hsub y))).trans hT

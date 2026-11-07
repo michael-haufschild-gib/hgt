@@ -311,6 +311,14 @@ remainder with the constructed L² resolvent correction for Re s > 4 and Im s >
 0. The actual coordinate equation, bounded gradient, and cutoff approximation
 discharge all operator-domain inputs.
 
+`TheCubicCuspPeriodLattice.lean` identifies the actual cusp translation
+lattice with basis 3, 3ω and proves its covolume is 9√3/2. Its fundamental
+domain unfolds absolutely integrable periodizations over the complex plane.
+
+`CubicTraceFourierPeriodization.lean` proves trace-character triviality on the
+inverse different, the actual cusp-frequency period law, and Fourier unfolding
+of integrable periodizations.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

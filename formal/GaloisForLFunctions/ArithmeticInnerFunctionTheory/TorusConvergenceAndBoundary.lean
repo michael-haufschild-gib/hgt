@@ -134,18 +134,31 @@ theorem boundaryOscillation_not_expConvex : ¬ IsExpConvexFrom 0 boundaryOscilla
     zero_add, hπ, h2π, h2π', h3π] at hh
   norm_num [Real.cos_add] at hh
 
+/-- The same oscillation satisfies every nonnegative left exponential growth bound. -/
+theorem boundaryOscillation_left_bound {κ : ℝ} (hκ : 0 ≤ κ) {y : ℝ} (hy : y ≤ 0) :
+    |boundaryOscillation y| ≤ (3 / 2) * Real.exp (-κ * y) := by
+  have hb := boundaryOscillation_bounds y
+  rw [abs_of_nonneg (by linarith : 0 ≤ boundaryOscillation y)]
+  have he : 1 ≤ Real.exp (-κ * y) := Real.one_le_exp_iff.mpr
+    (mul_nonneg_of_nonpos_of_nonpos (neg_nonpos.mpr hκ) hy)
+  nlinarith only [hb.2, he]
+
+/-- Without convergence, no nonnegative left growth exponent forces exponential convexity. -/
+theorem exists_torusPositive_not_expConvex_all_nonneg_left_exponents :
+    ∃ f : ℝ → ℝ, Continuous f ∧ IsAllBaseTorusPositive f ∧
+      (∀ κ : ℝ, 0 ≤ κ → ∀ y : ℝ, y ≤ 0 → |f y| ≤ (3 / 2) * Real.exp (-κ * y)) ∧
+      ¬ IsExpConvexFrom 0 f := by
+  exact ⟨boundaryOscillation, by unfold boundaryOscillation; fun_prop,
+    boundaryOscillation_torusPositive, fun _ hκ _ hy => boundaryOscillation_left_bound hκ hy,
+    boundaryOscillation_not_expConvex⟩
+
 /-- The endpoint conjecture without a convergence requirement is false. -/
 theorem exists_boundary_torusPositive_not_expConvex :
     ∃ f : ℝ → ℝ, Continuous f ∧ IsAllBaseTorusPositive f ∧
       (∀ y, y ≤ 0 → |f y| ≤ (3 / 2) * Real.exp (-y)) ∧
       ¬ IsExpConvexFrom 0 f := by
-  refine ⟨boundaryOscillation, by unfold boundaryOscillation; fun_prop,
-    boundaryOscillation_torusPositive, ?_, boundaryOscillation_not_expConvex⟩
-  intro y hy
-  have hb := boundaryOscillation_bounds y
-  rw [abs_of_nonneg (by linarith : 0 ≤ boundaryOscillation y)]
-  have he : 1 ≤ Real.exp (-y) := Real.one_le_exp_iff.mpr (neg_nonneg.mpr hy)
-  nlinarith only [hb.2, he]
+  obtain ⟨f, hc, hp, hb, hn⟩ := exists_torusPositive_not_expConvex_all_nonneg_left_exponents
+  exact ⟨f, hc, hp, by simpa only [neg_mul, one_mul] using hb 1 zero_le_one, hn⟩
 
 /-- Exponential damping can destroy unrestricted torus positivity at every rate in `(0,1]`.
 The convergence hypothesis in the positive-kernel multiplication law is necessary. -/
@@ -163,6 +176,12 @@ theorem exists_oscillation_damping_reentry {α : ℝ} (hα : 1 < α) :
       (∀ β : ℝ, 0 < β → β ≤ 1 →
         ¬ IsAllBaseTorusPositive (fun y => Real.exp (-β * y) * (1 + ε * Real.cos y))) ∧
       IsAllBaseTorusPositive (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y)) ∧
+      (∀ (n : ℕ) (p : Fin n → ℕ), (∀ i, (p i).Prime) → Function.Injective p →
+        ∀ (x : ℝ) (θ : Fin n → ℝ),
+          Summable (fun k => ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y))
+            (fun i => Real.log (p i)) x k * chiProd θ k) ∧
+          0 < torusSum (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y))
+            (fun i => Real.log (p i)) x) θ) ∧
       ¬ IsExpConvexFrom 0 (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y)) := by
   have hd := oscillatory_bernstein_dichotomy (ω := 1) one_ne_zero
   obtain ⟨ε₀, hε₀, hsuper⟩ := hd.2 α hα
@@ -177,16 +196,29 @@ theorem exists_oscillation_damping_reentry {α : ℝ} (hα : 1 < α) :
   have hfloor (y : ℝ) : 1 - ε ≤ 1 + ε * Real.cos y := by
     nlinarith only [Real.neg_one_le_cos y, hε]
   have hnonneg (y : ℝ) : 0 ≤ 1 + ε * Real.cos y := by linarith [hfloor y]
-  refine ⟨ε, hε, hε1, ?_, ?_, ?_, ?_⟩
+  refine ⟨ε, hε, hε1, ?_, ?_, ?_, ?_, ?_⟩
   · exact (allBaseTorusPositive_iff_nonneg_of_abs_floor (by linarith : 0 < 1 - ε)
       (fun y => by rw [abs_of_nonneg (hnonneg y)]; exact hfloor y)).mpr hnonneg
   · intro β hβ hβ1
     simpa only [one_mul] using hd.1 β hβ hβ1 ε hε.ne'
   · intro n p hp hinj x θ
     simpa only [one_mul] using (hpositive n p hp hinj x θ).le
+  · intro n p hp hinj x θ
+    have hpos : 0 < torusSum
+        (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y))
+          (fun i => Real.log (p i)) x) θ := by
+      simpa only [one_mul] using hpositive n p hp hinj x θ
+    refine ⟨?_, hpos⟩
+    by_contra hnot
+    have hz : torusSum
+        (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y))
+          (fun i => Real.log (p i)) x) θ = 0 := tsum_eq_zero_of_not_summable hnot
+    rw [hz] at hpos
+    exact (lt_irrefl 0) hpos
   · simpa only [one_mul] using hnot
 
 #print axioms exists_boundary_torusPositive_not_expConvex
+#print axioms exists_torusPositive_not_expConvex_all_nonneg_left_exponents
 #print axioms allBaseTorusPositive_iff_nonneg_of_abs_floor
 #print axioms boundaryOscillation_damping_not_positive
 #print axioms exists_oscillation_damping_reentry

@@ -46,6 +46,8 @@ import GaloisForLFunctions.PrimeTorusTheory.PrimeCharactersAreLacunary
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
 import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
 import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
+import GaloisForLFunctions.PrimeTorusTheory.TheLogarithmOfAFibre
+import GaloisForLFunctions.PrimeTorusTheory.TheHullOverOrderTwoPoints
 
 /-!
 # Prime Torus Theory
