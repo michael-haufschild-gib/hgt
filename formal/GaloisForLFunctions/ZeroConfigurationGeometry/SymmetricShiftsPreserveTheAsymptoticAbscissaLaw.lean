@@ -1,7 +1,8 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.AsymptoticAbscissaSpectralGapAndTopAnnihilator
 import GaloisForLFunctions.RHTower.SymmetricShiftFunctionalEquation
 
-/-!+# Symmetric shifts preserve the asymptotic abscissa law
+/-!
+# Symmetric shifts preserve the asymptotic abscissa law
 
 The zeros of `F(s+a)F(s-a)` are the two real translates of the zeros of `F`.
 For `a≥0`, both a global right bound and a right bound beyond any fixed height

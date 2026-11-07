@@ -168,7 +168,7 @@ theorem abs_trace_le_of_unitary (D : CurveDatum ι) (hU : ∀ i, ‖D.β i‖ = 
     |D.trace n| ≤ Fintype.card ι := by
   rw [← Real.norm_eq_abs, ← Complex.norm_real, ← D.powerSum_eq_trace]
   calc ‖D.powerSum n‖ ≤ ∑ i, ‖D.β i ^ n‖ := norm_sum_le _ _
-    _ = Fintype.card ι := by simp [norm_pow, hU]
+    _ = Fintype.card ι := by simp [hU]
 
 /-- **Power-sum elimination.** Traces bounded by the number of modes at every level put every mode on
 the circle. -/
@@ -207,7 +207,7 @@ theorem exists_levelCountLaw_iff (D : CurveDatum ι) {g Q : ℕ} (hg : Fintype.c
       push_cast
       ring
     refine exists_congr fun K => and_congr Iff.rfl ?_
-    refine and_congr (by exact_mod_cast Iff.rfl) (and_congr (by push_cast; exact_mod_cast Iff.rfl) ?_)
+    refine and_congr (by exact_mod_cast Iff.rfl) (and_congr (by exact_mod_cast Iff.rfl) ?_)
     rw [← e11]
     exact_mod_cast Iff.rfl
   rw [hlaw, exists_genusCountLaw_iff (by exact_mod_cast hg0)]
@@ -259,7 +259,10 @@ def goldenCount (n : ℕ) : ℕ := ((5 : ℤ) ^ n + 1 - goldenLucas n).toNat
 
 theorem goldenCount_cast (n : ℕ) : (goldenCount n : ℝ) = goldenDatum.pointCount n := by
   have hnn : (0 : ℤ) ≤ (5 : ℤ) ^ n + 1 - goldenLucas n := by
-    have h := goldenDatum_pointCount_nonneg n
+    have h : 0 ≤ goldenDatum.pointCount n := by
+      rcases Nat.eq_zero_or_pos n with rfl | hn
+      · rw [CurveDatum.pointCount_zero]; simp
+      · linarith [one_le_goldenDatum_pointCount hn]
     rw [goldenDatum_pointCount_eq] at h
     exact_mod_cast h
   rw [goldenDatum_pointCount_eq, goldenCount]
@@ -278,7 +281,7 @@ theorem golden_counts_without_law :
   · have h1 := one_le_goldenDatum_pointCount hn
     rw [← goldenCount_cast] at h1
     exact_mod_cast h1
-  · have hlev := (goldenDatum.exists_levelCountLaw_iff (g := 1) (by simp) one_pos hq
+  · have hlev := (exists_levelCountLaw_iff goldenDatum (g := 1) (by simp) one_pos hq
       (goldenCount_cast 1)).mp h
     rw [goldenDatum_trace, Fintype.card_fin, pow_one, pow_one] at hlev
     have hφ := Real.one_lt_goldenRatio

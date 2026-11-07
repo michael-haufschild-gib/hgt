@@ -19,7 +19,7 @@ theorem gammaQuarterReserve_pos : 0 < gammaQuarterReserve := by
   unfold gammaQuarterReserve
   exact div_pos (sq_pos_of_pos (Real.Gamma_pos_of_pos (by norm_num))) (by norm_num)
 
-/-- Two Gamma recurrences retain at least two powers before squaring. -/
+/-- Two Gamma recurrences retain a linear frequency reserve before squaring. -/
 theorem norm_Gamma_nine_quarters_ge {τ : ℝ} (hτ : 1 ≤ τ) :
     Real.Gamma (1 / 4) / 5 * τ * Real.exp (-(Real.pi / 2 * τ)) ≤
       ‖Complex.Gamma ((9 / 4 : ℂ) + (τ : ℂ) * I)‖ := by

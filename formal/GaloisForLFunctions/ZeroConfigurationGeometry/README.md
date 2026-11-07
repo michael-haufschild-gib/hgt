@@ -266,6 +266,7 @@ same input as every route: cancellation of the prime sum below the mean spacing.
 | Ramanujan is reality | `localFactor_zero_depth`, `localFactor_zero_re_eq_half_iff`, `curveDatum_pure_iff_tracePoints` | unconditional |
 | Euler columns hide exactly below their prime | `eulerColumn_mimics_onLineLattice`, `no_bounded_aperture_excludes_eulerColumns`, `offLineLattice_mimic_iff`, `eulerColumn_mimic_iff` | unconditional |
 | The twins are seen exactly at their prime (data) | `twinData_firstDisagreement`, `twinData_mimic_iff` | unconditional |
+| Symmetric real shifts preserve AAL: global and eventual zero bounds both translate by `a≥0` | `symmetricShiftProduct_heightBound_iff`, `asymptoticAbscissaLaw_iff_symmetricShift_eventualToGlobal` | unconditional equivalence; does not decide AAL |
 | **Deformation and repulsion** | | |
 | Collision exit; function-field purity exit | `eventually_splits_of_simple`, `isClosed_splits`, `exists_first_collision`, `isPure_iff_circle`, `exists_first_frobenius_collision` | unconditional |
 | Heat-time spread law; bounded backward exit | `coeff_heatFlow_sub_two`, `spread_roots_heatFlow`, `exists_nonreal_root_heatFlow` | unconditional |

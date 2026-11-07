@@ -1,7 +1,7 @@
 # Symmetric shifts preserve the asymptotic abscissa law
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** LEAN THEOREM
 - **Statement:** For `a≥0`, the high-height-to-all-height zero-bound law for
   `ξ(s+a)ξ(s−a)` is equivalent to AAL for `ζ`.
 
@@ -29,4 +29,13 @@ does not prove AAL for the original configuration.
 
 ## Verification
 
-Lean formalization pending. No unconditional AAL decision claimed.
+`ZeroConfigurationGeometry/SymmetricShiftsPreserveTheAsymptoticAbscissaLaw.lean`:
+
+- `symmetricShiftProduct_heightBound_iff`: exact translation of every height bound.
+- `symmetricShiftProduct_eventualToGlobal_iff`: invariance for any complex function.
+- `asymptoticAbscissaLaw_iff_xi_eventualToGlobal`: identification with actual AAL.
+- `asymptoticAbscissaLaw_iff_symmetricShift_eventualToGlobal`: shifted-ξ equivalence.
+
+Direct `lake --old env lean` check passed without warnings. The capstone's
+transitive axioms are exactly `propext`, `Classical.choice`, and `Quot.sound`.
+Module is wired into its umbrella. No unconditional AAL decision claimed.

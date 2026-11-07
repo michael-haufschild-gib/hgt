@@ -52,7 +52,7 @@ theorem sq_ccmWeilRealPolar_le_of_groundEnergy_nonneg (a : SuzukiPositiveApertur
   have hQ : ∀ w : CCMArchimedeanFormDomain a, 0 ≤ ccmRestrictedWeilSourceQuadratic a w :=
     fun w => (mul_nonneg hμ (sq_nonneg _)).trans
       (ccmRestrictedWeilGroundEnergy_mul_formNorm_sq_le_source a w)
-  have hquad : ∀ t : ℝ, 0 ≤ ccmRestrictedWeilSourceQuadratic a u * t * t +
+  have hquad : ∀ t : ℝ, 0 ≤ ccmRestrictedWeilSourceQuadratic a u * (t * t) +
       2 * ccmWeilRealPolar a u v * t + ccmRestrictedWeilSourceQuadratic a v := by
     intro t
     have h := hQ ((t : ℂ) • u + ((1 : ℝ) : ℂ) • v + ((0 : ℝ) : ℂ) • u)
@@ -107,10 +107,12 @@ theorem ccmWeilRealPolar_pole_realInteriorSource (a : SuzukiPositiveAperture) {F
     rw [h1, h2]
     change inner ℂ ((centralInterval a.1).indicator _ x) (F x : ℂ) = _
     by_cases hx : x ∈ centralInterval a.1
-    · simp only [indicator_of_mem hx, RCLike.inner_apply, ccmPolarBoundaryArithmeticProfile,
-        poleCrossProfile]
-      push_cast
-      simp only [map_add, map_sub, map_mul, Complex.conj_ofReal]
+    · rw [indicator_of_mem hx, indicator_of_mem hx]
+      have hre : (realInteriorSource a hF hFc hFs : ℝ → ℂ) x = (F x : ℂ) := rfl
+      rw [hre]
+      unfold ccmPolarBoundaryArithmeticProfile poleCrossProfile
+      rw [← Complex.ofReal_add, RCLike.inner_apply, Complex.conj_ofReal, ← Complex.ofReal_mul]
+      congr 1
       ring
     · simp [indicator_of_notMem hx]
   rw [integral_congr_ae hcongr, integral_complex_ofReal, Complex.ofReal_re]
@@ -119,7 +121,7 @@ theorem ccmWeilRealPolar_pole_realInteriorSource (a : SuzukiPositiveAperture) {F
 theorem ccmRestrictedWeilSourceQuadratic_pole (a : SuzukiPositiveAperture) :
     ccmRestrictedWeilSourceQuadratic a (ccmPolarFormVector a (1 / 2)) = ccmWeilPoleDiagonal a := by
   have h := ccmWeilPoleCompression_quadratic a 1 0
-  simp only [one_smul, zero_smul, add_zero, norm_one, norm_zero, one_pow, map_one, one_mul,
+  simp only [one_smul, zero_smul, add_zero, norm_one, norm_zero, one_pow, map_one,
     Complex.zero_re, mul_zero, ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow] at h
   simpa using h
 
@@ -147,17 +149,24 @@ theorem exists_sq_integral_poleCrossProfile_le_sharp :
         (∫ x, (centralInterval a.1).indicator (poleCrossProfile a.1) x * F x) ^ 2 ≤
           Real.exp a.1 * (poleSharpConstant + C * Real.exp (-(a.1 / 2))) * fullZeroForm F := by
   obtain ⟨K, a₁, C, hK, hC, hsharp⟩ := exists_abs_poleDiagonal_sharp_of_le_onsetAperture
-  refine ⟨K, a₁, C, hK, hC, fun a ha hle F hF hFc hFs => ?_⟩
+  set K' : ℝ := max 1 K
+  have hK'1 : 1 ≤ K' := le_max_left 1 K
+  have hK'K : K ≤ K' := le_max_right 1 K
+  refine ⟨K', a₁, C, by positivity, hC, fun a ha hle F hF hFc hFs => ?_⟩
   have h1 : (1 : ℝ) ≤ a.1 := ha
+  have hKK' : max a₁ (K * (2 * a.1 + 2)) ≤ max a₁ (K' * (2 * a.1 + 2)) :=
+    max_le_max_left a₁ (mul_le_mul_of_nonneg_right hK'K (by linarith))
+  have hleK : ((max a₁ (K * (2 * a.1 + 2)) : ℝ) : EReal) ≤ onsetAperture zetaZeroConfig :=
+    (EReal.coe_le_coe_iff.mpr hKK').trans hle
   -- window positivity at the aperture itself
-  have ha0 : 0 ≤ max a₁ (K * (2 * a.1 + 2)) :=
-    (by positivity : (0 : ℝ) ≤ K * (2 * a.1 + 2)).trans (le_max_right _ _)
-  have hWbig : ZetaWindowPositive (max a₁ (K * (2 * a.1 + 2))) :=
+  have ha0 : 0 ≤ max a₁ (K' * (2 * a.1 + 2)) :=
+    (by positivity : (0 : ℝ) ≤ K' * (2 * a.1 + 2)).trans (le_max_right _ _)
+  have hWbig : ZetaWindowPositive (max a₁ (K' * (2 * a.1 + 2))) :=
     (windowPositiveAt_zeta_iff _).mp
       ((windowPositiveAt_iff_le_onsetAperture temperedConfig_zetaZeroConfig ha0).mpr hle)
-  have haK : a.1 ≤ max a₁ (K * (2 * a.1 + 2)) := by
+  have haK : a.1 ≤ max a₁ (K' * (2 * a.1 + 2)) := by
     refine le_trans ?_ (le_max_right _ _)
-    nlinarith [hK]
+    nlinarith [hK'1, h1]
   have hW : ZetaWindowPositive a.1 := zetaWindowPositive_antitone haK hWbig
   have hcomp := sq_integral_poleCrossProfile_le a hW hF hFc hFs
   have hZ : 0 ≤ fullZeroForm F :=
@@ -165,7 +174,7 @@ theorem exists_sq_integral_poleCrossProfile_le_sharp :
       image_eq_zero_of_notMem_tsupport fun hmem => by
         have := hFs hmem
         exact absurd (abs_lt.mpr this) (not_lt.mpr hx.le)
-  have hD := hsharp a h1 hle
+  have hD := hsharp a h1 hleK
   have he := Real.exp_pos a.1
   have hDle : ccmWeilPoleDiagonal a ≤
       Real.exp a.1 * (poleSharpConstant + C * Real.exp (-(a.1 / 2))) := by

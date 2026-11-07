@@ -43,14 +43,15 @@ theorem primonHamiltonian_vacuum (p : Nat.Primes) :
 theorem primonHamiltonian_create (p : Nat.Primes) :
     primonHamiltonian p * pairCreate - pairCreate * primonHamiltonian p =
       (2 * (Real.log (p : ℝ) : ℂ)) • pairCreate := by
-  unfold primonHamiltonian
-  generalize (Real.log (p : ℝ) : ℂ) = c
-  simp only [smul_mul_assoc, mul_smul_comm,
-    sub_mul, mul_sub, one_mul, mul_one]
-  have h : (pairCartan * pairCreate - pairCreate) -
-      (pairCreate * pairCartan - pairCreate) =
-      pairCartan * pairCreate - pairCreate * pairCartan := by abel
-  rw [← smul_sub, h, pairCartan_create, smul_smul, mul_comm]
+  apply LinearMap.ext
+  intro v
+  have h := congrArg (fun A : FockEnd => A v) pairCartan_create
+  change pairCartan (pairCreate v) - pairCreate (pairCartan v) =
+    (2 : ℂ) • pairCreate v at h
+  simp only [primonHamiltonian, LinearMap.sub_apply, LinearMap.smul_apply,
+    Module.End.mul_apply, Module.End.one_apply, map_smul, map_sub]
+  simp only [MvPolynomial.smul_eq_C_mul, map_mul, map_ofNat] at h ⊢
+  linear_combination (MvPolynomial.C (Real.log (p : ℝ) : ℂ)) * h
 
 /-- Chemical-potential weighting remains diagonal in the concrete charge basis. -/
 theorem primon_grandCanonical_state (p : Nat.Primes) (β θ : ℝ) (d n : ℕ) :

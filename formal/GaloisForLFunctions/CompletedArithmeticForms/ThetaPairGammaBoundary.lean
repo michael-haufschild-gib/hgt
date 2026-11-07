@@ -31,7 +31,7 @@ theorem thetaPairGammaCoefficient_factor (n m : ℕ) :
     thetaPairGammaCoefficient n m = 4 * Real.pi ^ (-(1 / 2 : ℝ)) *
       (n : ℝ) ^ (-(1 / 2 : ℝ)) * (m : ℝ) ^ (-(1 / 2 : ℝ)) := by
   unfold thetaPairGammaCoefficient
-  rw [Real.mul_rpow (by positivity) (Nat.cast_nonneg m),
+  rw [Real.mul_rpow (mul_nonneg Real.pi_pos.le (Nat.cast_nonneg n)) (Nat.cast_nonneg m),
     Real.mul_rpow Real.pi_pos.le (Nat.cast_nonneg n)]
   ring
 
@@ -83,7 +83,7 @@ theorem not_summable_absolute_pair_gamma_majorant {r : ℝ} (hr : 0 ≤ r) :
     apply (le_div_iff₀ hA).mpr
     simpa only [div_eq_mul_inv, mul_comm] using hdiag n
   exact GaloisForLFunctions.HTGeometry.not_summable_inv_of_le_linear
-    (c := 1) (by norm_num) (fun n => by positivity)
+    (γ := fun n => (n : ℝ) + 1) (c := 1) (by norm_num) (fun n => by positivity)
       (Eventually.of_forall fun n => by simp) hinv
 
 /-- The logarithmic phase vector of a finite initial atom head. -/
@@ -174,7 +174,8 @@ theorem tendsto_thetaFinitePairHead_div_gamma_sub_leading (M : ℕ)
           Real.cos (2 * τ * (Real.log ((i : ℕ) + 1) - Real.log ((j : ℕ) + 1))) *
             thetaPairGammaCoefficient ((i : ℕ) + 1) ((j : ℕ) + 1))
     (fun i _ => finite_sum_tendsto_zero Finset.univ _
-      (fun j _ => fixed_pair_error_tendsto (Nat.succ_pos _) (Nat.succ_pos _) hr))
+      (fun j _ => fixed_pair_error_tendsto (n := (i : ℕ) + 1) (m := (j : ℕ) + 1)
+        (Nat.succ_pos _) (Nat.succ_pos _) hr))
   convert hh using 1
   funext τ
   rw [thetaFiniteGammaLeading_eq_cosine_sum]

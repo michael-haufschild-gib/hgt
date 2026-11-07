@@ -19,7 +19,9 @@ homology classes. A fixed-point construction could explain that cancellation
 without pretending those classes disappear.
 
 [Arithmetic orientation geometry](../ArithmeticOrientationGeometry/README.md)
-provides count and height principles;
+provides arithmetic correspondences and orientation;
+[arithmetic effectivity theory](../ArithmeticEffectivityTheory/README.md)
+provides Tate limits, height principles and the torsion-energy model;
 [Arithmetic Castelnuovo–Severi](../ArithmeticCastelnuovoSeveri/README.md) provides
 polar surfaces and primitive-sign receivers. This programme seeks the arithmetic
 objects needed by those principles. Its companion
@@ -63,6 +65,20 @@ New pillars sought are an actual arithmetic addition law, finite-radius
 self-energy regularization, a controlled approximate parallelogram, a
 fixed-point localization theorem for a natural nerve action, and a quadratic
 refinement with arithmetic polarization. Their existence is not assumed.
+
+The first proved analytic pillar is the radial chord identity. For a unit
+complex number `w`,
+
+`|1−rw|² = r|1−w|²+(1−r)²`.
+
+Consequently the logarithmic kernel has a universal first-order correction
+`−log(r)/2` and a nonnegative remainder
+`R = log(1+(1−r)²/(r|1−w|²))/2`, bounded by
+`(1−r)²/(2r|1−w|²)` for `r>0`, `w≠1`.
+[`RadialLogarithmicKernel.lean`](RadialLogarithmicKernel.lean) proves the
+identity and bound. These are estimates on the actual circle kernel,
+independent of the Weil form. They isolate the geometric cost of regularizing
+distinct torsion points; coincident points require a separate diagonal term.
 
 ## Mechanisms and tools
 

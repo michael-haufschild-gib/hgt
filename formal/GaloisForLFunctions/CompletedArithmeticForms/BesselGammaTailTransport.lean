@@ -191,8 +191,6 @@ theorem besselFirstAtomTailDensity_naturalGamma_lower {q : ℝ} (hq : 3 ≤ q) (
   have ht := besselPowerTail_completeGamma_lower
     (by linarith only [hq] : 0 < q) (by norm_num : (1 : ℝ) < 7 / 2) τ
   norm_num only [Complex.ofReal_div, Complex.ofReal_ofNat] at ht
-  have harg : (((7 / 2 : ℂ) + 1) / 2) = 9 / 4 := by norm_num
-  rw [harg] at ht
   have hb := besselFirstAtomTailDensity_ge_half_upperTail hq τ
   linarith only [ht, hb]
 

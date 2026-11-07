@@ -28,12 +28,13 @@ theorem abs_besselRadialValue_sharp {u τ : ℝ} (hu : 0 < u) (hτ : 0 ≤ τ) :
   rw [hνim] at hh
   norm_num only [Nat.factorial_one, Nat.cast_one, one_mul, mul_one, pow_one] at hh
   rw [show Real.pi * (2 * τ) / 2 = Real.pi * τ by ring] at hh
+  rw [show -(Real.pi * τ) = -Real.pi * τ by ring] at hh
   have he : Real.exp (-(2 * u / (Real.pi * (1 + 2 * τ)))) ≤ 1 :=
     Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))
   have hpay := mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left he
       (by positivity : 0 ≤ Real.exp 1 * (2 * Real.pi) * ((1 + 2 * τ) / (2 * u))))
-    (Real.exp_pos (-(Real.pi * τ))).le
+    (Real.exp_pos (-Real.pi * τ)).le
   calc
     _ ≤ ‖modifiedBesselKOrder (2 * u) ν‖ := Complex.abs_re_le_norm _
     _ ≤ _ := hh

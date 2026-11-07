@@ -3460,7 +3460,13 @@ private theorem completeWeilEnergy_collar_spike_approx {c : ℝ} (hc1 : 1 ≤ c)
         ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫ -
         ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ cq Nq) x_q, x_q⟫ +
         ⟪Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ cq Nq) x_q, x_q⟫ := by
-    linarith only [hdec, mul_eq_mul_right_iff.mpr (Or.inl hself_log)]
+    have hlin : Real.log (Nq : ℝ) =
+        Real.log (N : ℝ) - Real.log c + completeWeilSelfFinitePart φ 1 -
+          completeWeilSelfFinitePart φ cq := by
+      linarith only [hself_log]
+    dsimp only [φ, Nq] at hlin ⊢
+    rw [hdec, hlin]
+    ring
   rw [hdiff]
   have hself_mul : |completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2| ≤ 2 * ‖x_q‖ ^ 2 := by
     rw [abs_mul, abs_of_nonneg (sq_nonneg ‖x_q‖)]
@@ -6016,20 +6022,20 @@ private theorem primeBilin_f_low_high_le
       hc_R₀.trans (mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)) hR₀0.le)
     have h1 := mul_le_mul_of_nonneg_left hF_scale (sq_nonneg (T * h))
-    rw [hTh_eq] at h1
+    rw [hTh_eq] at h1 ⊢
+    have hq : ((1 + L) * (1 + Real.log c)) / L ^ 2 ≤ 4 :=
+      (div_le_iff₀ (by positivity)).mpr hprod_4L2
+    have hstep : C_tr * c * (((1 + L) * (1 + Real.log c)) / L ^ 2) ≤
+        C_tr * (R₀ * L ^ (31 / 32 : ℝ)) * 4 :=
+      mul_le_mul (mul_le_mul_of_nonneg_left hc_31 hCtr0) hq
+        (div_nonneg (mul_nonneg (by linarith only [hL1]) h1_add_logc_nn) (sq_nonneg L))
+        (by positivity)
     calc (1 / L) ^ 2 * F_scaled
         ≤ (1 / L) ^ 2 * (((I₂ / c) * P) * (C_tr * c * (1 + L) * (1 + Real.log c))) := h1
       _ = ((I₂ / c) * P) * (C_tr * c * (((1 + L) * (1 + Real.log c)) / L ^ 2)) := by
           field_simp [hL0.ne']
-      _ ≤ ((I₂ / c) * P) * (C_tr * (R₀ * L ^ (31 / 32 : ℝ)) * 4) := by
-          refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg (div_nonneg hI₂.le hc0.le) hP0)
-          have hq : ((1 + L) * (1 + Real.log c)) / L ^ 2 ≤ 4 :=
-            (div_le_iff₀ (by positivity)).mpr hprod_4L2
-          calc C_tr * c * (((1 + L) * (1 + Real.log c)) / L ^ 2)
-              ≤ C_tr * (R₀ * L ^ (31 / 32 : ℝ)) * 4 :=
-                mul_le_mul (mul_le_mul_of_nonneg_left hc_31 hCtr0) hq
-                  (div_nonneg (mul_nonneg (by linarith only [hL1]) h1_add_logc_nn) (sq_nonneg L))
-                  (by positivity)
+      _ ≤ ((I₂ / c) * P) * (C_tr * (R₀ * L ^ (31 / 32 : ℝ)) * 4) :=
+          mul_le_mul_of_nonneg_left hstep (mul_nonneg (div_nonneg hI₂.le hc0.le) hP0)
       _ = 4 * R₀ * C_tr * L ^ (31 / 32 : ℝ) * ((I₂ / c) * P) := by ring
   · have hlogc_132 : 1 + Real.log c ≤ L ^ (1 / 32 : ℝ) := by
       have h1 : 1 + Real.log L ≤ L ^ (1 / 32 : ℝ) := by
@@ -6046,20 +6052,21 @@ private theorem primeBilin_f_low_high_le
               hlogc_132 h1_add_logc_nn (by positivity)
         _ = 2 * R₀ * (L ^ (1 / 8 : ℝ) * L * L ^ (1 / 32 : ℝ)) := by ring
         _ = 2 * R₀ * L ^ (31 / 32 : ℝ) * lam := by rw [hexp_id]; ring
+    have hstep2 : C_tr * c * (1 + L) * (1 + Real.log c) ≤
+        C_tr * (2 * R₀ * L ^ (31 / 32 : ℝ) * lam) := by
+      rw [show C_tr * c * (1 + L) * (1 + Real.log c) =
+        C_tr * (c * (1 + L) * (1 + Real.log c)) by ring]
+      exact mul_le_mul_of_nonneg_left hnum hCtr0
     have h1 := mul_le_mul_of_nonneg_left hF_scale (by positivity : 0 ≤ 8 * C_high / lam)
     calc (8 * C_high / lam) * F_scaled
         ≤ (8 * C_high / lam) * (((I₂ / c) * P) * (C_tr * c * (1 + L) * (1 + Real.log c))) := h1
       _ ≤ (8 * C_high / lam) * (((I₂ / c) * P) *
-            (C_tr * (2 * R₀ * L ^ (31 / 32 : ℝ) * lam))) := by
-          refine mul_le_mul_of_nonneg_left
-            (mul_le_mul_of_nonneg_left ?_ (mul_nonneg (div_nonneg hI₂.le hc0.le) hP0))
+            (C_tr * (2 * R₀ * L ^ (31 / 32 : ℝ) * lam))) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_left hstep2 (mul_nonneg (div_nonneg hI₂.le hc0.le) hP0))
             (by positivity)
-          calc C_tr * c * (1 + L) * (1 + Real.log c)
-              = C_tr * (c * (1 + L) * (1 + Real.log c)) := by ring
-            _ ≤ C_tr * (2 * R₀ * L ^ (31 / 32 : ℝ) * lam) :=
-                mul_le_mul_of_nonneg_left hnum hCtr0
       _ = 16 * C_high * R₀ * C_tr * L ^ (31 / 32 : ℝ) * ((I₂ / c) * P) := by
-          field_simp [hlam0.ne']
+          field_simp [hlam0.ne']; ring
 
 private theorem primeBilin_prefix_collar_sq_le
     {C_ψ c₀ R₀ C_β Qy c h T lam β : ℝ} {N K' : ℕ}
@@ -6339,7 +6346,6 @@ theorem exists_far_prefix_collar_schur_decoupling_below_ratio {R_max : ℝ} (hR 
       rw [← mul_assoc, mul_one_div_cancel hHcut.ne', one_mul] at hm
       exact hm.le
     have h2Lc : (2 * linearDefectCutoff c : ℝ) ≤ N := by
-      push_cast
       have h1 : 2 * (linearDefectCutoff c : ℝ) ≤ H_cut * c := by
         dsimp only [H_cut]; linarith only [hLcup]
       have h2 : H_cut * c ≤ H_cut * L := mul_le_mul_of_nonneg_left hcL hHcut.le
@@ -6598,8 +6604,3 @@ theorem exists_far_prefix_collar_schur_decoupling {c : ℕ → ℝ} {R : ℝ} (h
   exact hN hcN ((div_lt_iff₀ hL0).mp hrat).le p y hp_orth hp_supp hy_supp
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
-
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.tendsto_prime_quasimode_prefix_collar_schur_ratio
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.not_naive_physical_prefix_collar_schur_decoupling
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_far_prefix_collar_schur_decoupling_below_ratio
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.exists_far_prefix_collar_schur_decoupling

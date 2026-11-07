@@ -68,6 +68,19 @@ gluing, negative-degree vanishing, and a count or index formula independent of
 the Weil form. These remain construction problems, not assumptions available
 to Lean theorems.
 
+The first geometric construction is a prime-height filtration in a fixed
+ambient simplex. Its faces are prime supports of product at most `N`.
+Coning to vertex `2` gives an explicit nullhomotopy of the actual inclusion
+from height `N` to `2N`, compatible with increasing height. This is
+[`PrimeHeightFiltration.lean`](PrimeHeightFiltration.lean).
+
+[`ConeFiltrationPersistence.lean`](ConeFiltrationPersistence.lean) supplies
+the compatible map calculation for conical-star bouquets. A sphere whose
+facet remains outside the larger star survives by a pointed homotopy to
+its unchanged inclusion. A facet entering the larger star maps identically
+to the basepoint. Thus the construction controls inclusion maps, beyond
+the known homotopy type of each individual prime complex.
+
 ## Mechanisms and tools
 
 The desired chain is
@@ -97,7 +110,8 @@ with window restriction and growth of rank.
 5. Do Hecke correspondences generate an ample cone, and in which topology?
 6. How do section spaces glue across windows without assuming a global sign?
 
-All six questions remain open at programme inception. In particular, no
+The filtration construction addresses part of question 4; it supplies no
+cancellation estimate. All six construction questions remain open. No
 independent global section construction or arithmetic curvature sign is claimed.
 
 ## Calibration and traps

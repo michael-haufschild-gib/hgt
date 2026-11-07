@@ -11,11 +11,12 @@
 The scalar projection kills cusp forms. It does not kill Eisenstein resonances automatically.
 At radius-dependent central charge one, the completed Eisenstein factor cancels the zeta denominator: this family cannot detect RH. Central charge two instead has a product of completed Eisenstein functions divided by a completed zeta factor. Noncancellation must be proved, including multiple zeros.
 
-The corpus already proves that every zero is detected by the Eisenstein numerator on every horocycle (`BlackHoleRingdown.exists_eisensteinNumerator_ne_zero`). The next question is whether the product kernel retains the full zero multiplicity, and whether averaging over both target moduli gives an explicit nonzero detector.
+The corpus's single-Eisenstein detection theorem now extends to the product:
+[full pole multiplicity survives both pointwise detection and double horocycle averaging](../3-formalized/ads3-eisenstein-product-detection.md).
 
 ## Conjectures and obligations
 
-1. **Product-kernel coverage.** At every zero of `ξ(1+2u)`, the product kernel has a pole of the full multiplicity for some pair of moduli on each prescribed pair of horocycles. Its double horocycle numerator average is explicitly nonzero.
+1. **Product-kernel coverage — proved in Lean.** At every zero of `ξ(1+2u)`, the product kernel has a pole of the full multiplicity for some pair of moduli on each prescribed pair of horocycles. Its double horocycle numerator average is explicitly nonzero.
 2. **Actual partition identity.** Identify this kernel, with all normalization factors, as the Eisenstein overlap of the central-charge-two Narain lattice partition function. Establish convergence, regularization and the scalar projection in Lean.
 3. **Source estimate.** For every pair of central-charge-two target moduli, derive
    `yΣ_scalar exp(−2πΔy) − [y−(3/π)log y+B] = O_ε(y^(3/4−ε))`
@@ -24,7 +25,7 @@ The corpus already proves that every zero is detected by the Eisenstein numerato
    Prove the Mellin bridge from this family of bounds to RH using full pole
    coverage. The bound itself is an open target, not an input.
 
-## Product detector: proof to formalize
+## Product detector: formalized
 
 Put `D(u)=ξ(1+2u)`, `N(u;x,Y)=D(u)E(1/2+u;x+iY)` and
 `K(u;z,w)=N(u;z)N(u;w)/D(u)`. These use the corpus's actual Eisenstein function.
@@ -64,6 +65,42 @@ The corpus supplies `HeckeFactorization.gcdEquiv`,
 The [orthogonal-charge bijection and energy factorization](../3-formalized/ads3-scalar-charge-coordinates.md)
 are formalized in `ModularBootstrap/ScalarChargeCoordinates.lean`.
 Still required: the zero-winding split, summability, and infinite-sum reindexing.
+
+For this identity, write `P` for the primitive sum and `H` for the sum over
+`c>0,d∈ℤ`. Absolute convergence follows by restricting the convergent Epstein
+series; the nonzero-winding series is the product of the two restrictions.
+The exact decompositions are `L=ζ(2s)P`, `L=2H+2ζ(2s)` and `S=L+HP`.
+Their combination gives the displayed square-torus identity. Its Lean check
+is pending in `ModularBootstrap/SquareTorusDirichlet.lean`.
+
+For general moduli `σ=x+iy`, `ρ=B+iV`, set
+`Qσ(v)=(yv₁)²+(v₂−xv₁)²` and `Jw=(w₂,−w₁)`. The source mass is
+`M²=[Qσ(n+BJw)+V²Qσ(Jw)]/(Vy)`.
+Primitive scalar coordinates give
+`M²=Qσ(a,b)[(d+Bc)²+(Vc)²]/(Vy)`.
+This reduces the general-modulus source identity to the same decomposition;
+negative `c` is paired with `(-c,-d)`, rather than changing `c` alone.
+The identities `M²±2(n·w)=[(A₁∓VC₂)²+(A₂±VC₁)²]/(Vy)`,
+where `A=(y(n₁+Bw₂), n₂−Bw₁−x(n₁+Bw₂))` and
+`C=(yw₂,−w₁−xw₂)`, prove both chiral weights nonnegative.
+`NarainMass.lean` contains the pending Lean proofs of these identities,
+strict mass positivity away from the vacuum, and the scalar factorization.
+
+**Selection boundary.** Corpus theorem
+`LatticeSectionTheory.exists_epsteinLambda_eq_zero` gives real off-line zeros
+for rectangular Epstein functions with aspect ratio greater than `e²`.
+Positive lattice counting and Poisson duality therefore cannot justify
+zero-freeness of a fixed-modulus numerator. Universal detection uses the
+proved horocycle family, not such a zero-freeness claim.
+
+For the partition-function bridge, the corpus supplies
+`IntegerLatticePoisson.summable_norm_gaussian_affine_lattice` and
+`gaussian_theta_characteristics` in `HTGeometry/GaussianThetaCharacteristics.lean`.
+The real charge map
+`(n,w) ↦ (A₁,A₂,VC₁,VC₂)/√(Vy)` has squared norm `M²` and determinant one.
+Its lattice Gaussian gives absolute convergence. Poisson summation in momentum
+then gives the Lagrangian expression, where modular inversion is an integer
+reindexing of the two winding columns. These identifications remain to be proved.
 
 ## External audit
 

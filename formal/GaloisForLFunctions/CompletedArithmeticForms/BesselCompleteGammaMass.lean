@@ -91,6 +91,7 @@ theorem besselPowerTail_zero_eq_gamma {p : ℝ} (hp : -1 < p) (τ : ℝ) :
     _ = _ := by
       rw [hmass]
       norm_num [Complex.normSq_eq_norm_sq, z]
+      norm_cast
 
 /-- No mass is lost when the lower endpoint tends to zero from the positive ray. -/
 theorem tendsto_besselPowerTail_zero {p : ℝ} (hp : -1 < p) (τ : ℝ) :
