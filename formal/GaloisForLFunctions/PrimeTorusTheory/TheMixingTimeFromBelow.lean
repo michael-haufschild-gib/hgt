@@ -128,9 +128,12 @@ theorem le_abs_zero_sub_arc {J a : ℕ} (ha : a ≤ J) (k : ℕ) (n : ℤ) :
   have hJ : J + 2 = a + d + 1 := by omega
   set N : ℤ := (2 * n + 1) * 2 ^ d - (2 * k + 1) with hN
   have hN0 : N ≠ 0 := by
+    have hpow2 : (2 : ℤ) ^ d = 2 * 2 ^ (d - 1) := by
+      rw [← pow_succ']
+      congr 1
+      omega
     have hQ : (2 * n + 1) * (2 : ℤ) ^ d = 2 * ((2 * n + 1) * 2 ^ (d - 1)) := by
-      rw [show d = d - 1 + 1 by omega, pow_succ]
-      simp only [Nat.add_sub_cancel]
+      rw [hpow2]
       ring
     set Q : ℤ := (2 * n + 1) * 2 ^ (d - 1)
     omega
@@ -141,7 +144,6 @@ theorem le_abs_zero_sub_arc {J a : ℕ} (ha : a ≤ J) (k : ℕ) (n : ℤ) :
     rw [hN, hpow]
     push_cast
     field_simp
-    ring
   rw [he, abs_mul, abs_of_pos (by positivity)]
   have h0 : 0 < 2 ^ a * Real.pi / 2 ^ (J + 2) := by positivity
   nlinarith
@@ -180,41 +182,26 @@ theorem pos_cos_iff_of_near {J a k : ℕ} (ha : a ≤ J) {z : ℝ} {m : ℤ}
   have h2a : (0 : ℝ) < 2 ^ a := by positivity
   -- `w` is within `2^a |ε|` of `2^a c_k`.
   have h1 : |w - 2 ^ a * arcCentre J k| ≤ 2 ^ a * |ε| := by
-    rw [← abs_of_pos h2a, ← abs_mul]
-    rcases Set.mem_uIcc.mp hw with ⟨h3, h4⟩ | ⟨h3, h4⟩
-    · rw [abs_le]
-      constructor
-      · rcases le_total 0 (2 ^ a * ε) with h5 | h5
-        · rw [abs_of_nonneg h5]; linarith
-        · rw [abs_of_nonpos h5]; linarith
-      · rcases le_total 0 (2 ^ a * ε) with h5 | h5
-        · rw [abs_of_nonneg h5]; linarith
-        · rw [abs_of_nonpos h5]; linarith
-    · rw [abs_le]
-      constructor
-      · rcases le_total 0 (2 ^ a * ε) with h5 | h5
-        · rw [abs_of_nonneg h5]; linarith
-        · rw [abs_of_nonpos h5]; linarith
-      · rcases le_total 0 (2 ^ a * ε) with h5 | h5
-        · rw [abs_of_nonneg h5]; linarith
-        · rw [abs_of_nonpos h5]; linarith
+    have h3 := Set.abs_sub_right_of_mem_uIcc hw
+    rw [abs_sub_comm] at h3
+    have e : 2 ^ a * arcCentre J k - (2 ^ a * arcCentre J k + 2 ^ a * ε) = -(2 ^ a * ε) := by ring
+    rw [e, abs_neg, abs_mul, abs_of_pos h2a] at h3
+    exact h3
   have h2 := le_abs_zero_sub_arc ha k n
-  rw [hn] at h2
+  rw [hn] at h1
   have h3 : 2 ^ a * |ε| < 2 ^ a * Real.pi / 2 ^ (J + 2) := by
     have h4 : 2 ^ a * |ε| < 2 ^ a * (Real.pi / 2 ^ (J + 3)) := mul_lt_mul_of_pos_left hz h2a
     have h5 : (2 : ℝ) ^ a * (Real.pi / 2 ^ (J + 3)) ≤ 2 ^ a * Real.pi / 2 ^ (J + 2) := by
-      rw [pow_succ, mul_div_assoc]
-      have h6 : Real.pi / (2 ^ (J + 2) * 2) ≤ Real.pi / 2 ^ (J + 2) :=
-        div_le_div_of_nonneg_left Real.pi_pos.le (by positivity) (by nlinarith [pow_pos (two_pos (α := ℝ)) (J + 2)])
-      have h7 := mul_le_mul_of_nonneg_left h6 h2a.le
-      rw [← mul_div_assoc] at h7
-      exact h7
+      have h6 : Real.pi / 2 ^ (J + 3) ≤ Real.pi / 2 ^ (J + 2) :=
+        div_le_div_of_nonneg_left Real.pi_pos.le (by positivity) (pow_le_pow_right₀ (by norm_num) (by omega))
+      calc (2 : ℝ) ^ a * (Real.pi / 2 ^ (J + 3)) ≤ 2 ^ a * (Real.pi / 2 ^ (J + 2)) :=
+            mul_le_mul_of_nonneg_left h6 h2a.le
+        _ = 2 ^ a * Real.pi / 2 ^ (J + 2) := by ring
     linarith
   linarith
 
-/-- If `cos x > cos ρ` with `0 ≤ ρ ≤ π`, then `x` is within `ρ` of `2πℤ`. -/
-theorem exists_int_near_of_cos_lt {x ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ : ρ ≤ Real.pi)
-    (h : Real.cos ρ < Real.cos x) : ∃ m : ℤ, |x - m * (2 * Real.pi)| < ρ := by
+/-- If `cos x > cos ρ` with `0 ≤ ρ`, then `x` is within `ρ` of `2πℤ`. -/
+theorem exists_int_near_of_cos_lt {x ρ : ℝ} (hρ0 : 0 ≤ ρ) (h : Real.cos ρ < Real.cos x) : ∃ m : ℤ, |x - m * (2 * Real.pi)| < ρ := by
   have hpi := Real.pi_pos
   set m : ℤ := ⌊(x + Real.pi) / (2 * Real.pi)⌋ with hm
   refine ⟨m, ?_⟩
@@ -256,8 +243,6 @@ theorem exists_box_missed_dyadic {y J : ℕ} {T : ℝ}
     exact Iff.of_eq (congrFun h (p, ⟨a, by omega⟩))
   set θ : (Y → Fin (2 ^ (J + 1))) → ℕ → ℝ :=
     fun κ p => if h : p ∈ Y then arcCentre J (κ ⟨p, h⟩) else 0 with hθ
-  have hρ : Real.pi / 2 ^ (J + 3) ≤ Real.pi :=
-    div_le_self Real.pi_pos.le (one_le_pow₀ (by norm_num))
   by_contra hcon
   push Not at hcon
   choose! τ hτ1 hτ2 using fun κ => hcon (θ κ)
@@ -269,7 +254,7 @@ theorem exists_box_missed_dyadic {y J : ℕ} {T : ℝ}
     obtain ⟨p, a⟩ := i
     have h1 := hτ2 κ p p.2
     simp only [hθ, dif_pos p.2, Subtype.coe_eta] at h1
-    obtain ⟨m, hm⟩ := exists_int_near_of_cos_lt (by positivity) hρ h1
+    obtain ⟨m, hm⟩ := exists_int_near_of_cos_lt (by positivity) h1
     show 0 < Real.cos (τ κ * (2 ^ (a : ℕ) * Real.log p)) ↔ dyadicSign a (arcCentre J (κ p))
     rw [show τ κ * (2 ^ (a : ℕ) * Real.log p) = 2 ^ (a : ℕ) * (τ κ * Real.log p) by ring]
     exact pos_cos_iff_of_near (by omega) hm

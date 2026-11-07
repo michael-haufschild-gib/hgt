@@ -71,6 +71,7 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Positive-generator near-count model | Odd primes together with extra norm-three and norm-four labels give a nonclassical positive system with `|N(x)−x|≤(log x/log 3+1)(log x/log 4+1)/2+2` for `x≥1`. | [`PositiveNearCount.count_error_log_bound`, `PositiveNearCount.count_error_log_sq`, `PositiveNearCount.not_prime_equiv`](PositiveNearCountEstimate.lean) |
 | Signed carry excursions | The model satisfies `2(N(n)+N(⌊n/2⌋))+s₃(n)=3n`. Arbitrarily large `n` have `N(n)≤n−log n/(2 log 3)`. | [`PositiveNearCount.count_add_half_digit_sum`, `PositiveNearCount.negative_log_excursions`](PositiveNearCountCarries.lean) |
 | Sharp averaged deficit | For the same model, `R(x)=∫₀ˣN(t)dt` satisfies `x log x/(12 log 3)≤x²/2−R(x)≤(2/3)x(log x/log 3+1)+x/2` for `x≥1`. | [`PositiveNearCount.riesz_log_bound`, `PositiveNearCount.integral_count_deficit`](PositiveNearCountRiesz.lean) |
+| Euler continuation and zero divisor | The actual model series is `ζ(s)/((1+2^(−s))(1−3^(−s)))` for `Re s>1`; its continuation has residue one and the same zeros, with multiplicities, as `ζ` on `Re s>0` away from one. | [`PositiveNearCount.zetaSeriesC_eq_continuation`, `PositiveNearCount.analyticOrderAt_zetaContinuation`, `PositiveNearCount.zetaContinuation_residue_one`](PositiveNearCountEuler.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
 Tuple reconstruction recovers the monic polynomial `∏ᵢ(X+nᵢ)` by interpolation.
@@ -113,6 +114,13 @@ rounding and the omitted norm-four geometric tail force a deficit between
 integrated count deficit has exact order `x log x`, with explicit constants.
 This identifies logarithmic distance after averaging while leaving the
 pointwise logarithmic-to-quadratic-logarithmic gap open.
+
+The model’s Dirichlet series is also identified from its actual generalized
+integers. Absolute convergence and the coordinate bijection produce its
+finite Euler quotient. The correction is analytic and nonzero throughout
+the open right half-plane, and equals one at the pole. Thus the count
+deformation preserves both the residue and the complete zero divisor there.
+Count distance alone does not measure insertion of new right zeros.
 
 ## Tools and open research topics
 

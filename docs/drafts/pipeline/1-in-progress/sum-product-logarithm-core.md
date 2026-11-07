@@ -65,7 +65,12 @@ logarithmic deficits. These are quantitative statements about the actual
 model count; they do not settle the finite-right-zero target.
 The [first count average](../3-formalized/logarithm-positive-model-averaged-deficit.md)
 has a deficit of exact order `x log x`, with explicit two-sided bounds.
-Pointwise optimality and exceptional-zero distance remain open.
+Its [Euler continuation](../3-formalized/logarithm-positive-model-euler-continuation.md)
+is identified from the actual series and preserves zeta’s complete
+right-half-plane zero divisor and residue one.
+Pointwise optimality and exceptional-zero distance remain open. The
+[exact averaged coefficient](../2-fully-proven/logarithm-positive-model-exact-average.md)
+has a paper proof; its Lean formalization remains in progress.
 
 Finite-field calibration must retain the precise split-hyperelliptic scope
 of existing Stepanov results. Any power-saving parity output must include

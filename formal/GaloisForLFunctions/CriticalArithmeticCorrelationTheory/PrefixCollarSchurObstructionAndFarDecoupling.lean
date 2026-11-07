@@ -1,4 +1,5 @@
 import Mathlib.NumberTheory.Bertrand
+import GaloisForLFunctions.RHTower.Sieve.HarmonicDyadicBlock
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.AtomicSynthesisRecoversLipschitzTests
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.UnrestrictedAtomicGardingFailsAndCollarGardingHolds
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.TheFarComplementHasAnExplicitRatioInterval
@@ -36,7 +37,7 @@ synthesis and `M = N / linearDefectCutoff c_N` the overlapping top-collar bounda
 set_option autoImplicit false
 noncomputable section
 
-open MeasureTheory Finset Filter Topology RHTower Zeta23 ArithmeticFunction
+open MeasureTheory Finset Filter Topology RHTower Zeta23
 open scoped Classical BigOperators RealInnerProductSpace Matrix CompactlySupported
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
@@ -288,7 +289,7 @@ def lowPacketOrthogonalPrimeQuasimode (N : ℕ) : EuclideanSpace ℝ (PrimeHoriz
 theorem lowPacketOrthogonalPrimeQuasimode_mem (N : ℕ) :
     lowPacketOrthogonalPrimeQuasimode N ∈ (conductorSubspace (lowPacketCutoff N) N)ᗮ := by
   dsimp only [lowPacketOrthogonalPrimeQuasimode]
-  exact Submodule.sub_starProjection_mem_orthogonal _ _
+  exact Submodule.sub_starProjection_mem_orthogonal _
 
 /-- Euclidean vector restricting `x` to `[1, M]`. -/
 def horizonPrefixVector {N : ℕ} (M : ℕ) (x : EuclideanSpace ℝ (PrimeHorizonIndex N)) :
@@ -523,7 +524,9 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
     exact (mul_le_mul_of_nonneg_left hc2 hpos.le).trans h1
   have hcN_third : c / (N : ℝ) ≤ 1 / 3 := by
     have he1 : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp zero_le_one
-    have hw1 : 64 * c ^ 2 ≤ (N : ℝ) := by nlinarith only [hwidth, he1]
+    have h16 : (64 : ℝ) ≤ 4 * (Real.exp 1 + 3) ^ 2 := by nlinarith only [he1]
+    have hw1 : 64 * c ^ 2 ≤ (N : ℝ) :=
+      (mul_le_mul_of_nonneg_right h16 (sq_nonneg c)).trans hwidth
     have hc_le : 3 * c ≤ (N : ℝ) := by nlinarith only [hw1, hc1]
     exact (div_le_div_iff₀ hNR (by norm_num)).mpr (by linarith)
   have hlog2_18 : 18 * (1 + Real.log (2 : ℕ)) ≤ Real.log (N : ℝ) := by
@@ -598,7 +601,7 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
     have hE1_norm : ‖completedConductorEnergy tiltedUnitSpline c 1 • v1‖ ≤ 2 * C_E1 * c ^ 3 := by
       rw [norm_smul, Real.norm_eq_abs]
       have hc23 : c ^ 2 ≤ c ^ 3 := pow_le_pow_right₀ hc1 (by omega)
-      have hb := (hE1 hc1).trans (mul_le_mul_of_nonneg_left hc23 hC_E1.le)
+      have hb := (hE1 c hc1).trans (mul_le_mul_of_nonneg_left hc23 hC_E1.le)
       calc |completedConductorEnergy tiltedUnitSpline c 1| * ‖v1‖
           ≤ (C_E1 * c ^ 3) * 2 := mul_le_mul hb hv1_norm_le (norm_nonneg _) (by positivity)
         _ = 2 * C_E1 * c ^ 3 := by ring
@@ -632,8 +635,11 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
       refine sum_congr rfl fun n hn => ?_
       have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
       dsimp only [F]
-      rw [div_eq_mul_inv (Real.sqrt n * _), ← Real.sq_sqrt hn0.le]
-      field_simp [(Real.sqrt_pos.mpr hn0).ne']
+      rw [div_eq_iff hn0.ne']
+      calc Real.sqrt n * primeHorizonExtension z n
+          = primeHorizonExtension z n / Real.sqrt n * (Real.sqrt n * Real.sqrt n) := by
+              field_simp [(Real.sqrt_pos.mpr hn0).ne']
+        _ = primeHorizonExtension z n / Real.sqrt n * n := by rw [Real.mul_self_sqrt hn0.le]
     have hb := hneut N c hN1 hc1 hcN_third F hzero
     rwa [hpack] at hb
   have hquad_half : ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
@@ -642,7 +648,8 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
     intro x
     let u1 := (conductorSubspace 1 N).starProjection x
     let x0 := x - u1
-    have hx0_mem : x0 ∈ (conductorSubspace 1 N)ᗮ := Submodule.sub_starProjection_mem_orthogonal _ _
+    have hx0_mem : x0 ∈ (conductorSubspace 1 N)ᗮ :=
+      Submodule.sub_starProjection_mem_orthogonal x
     have hpyth := norm_starProjection_sq_add_sub_sq (conductorSubspace 1 N) x
     change ‖u1‖ ^ 2 + ‖x0‖ ^ 2 = ‖x‖ ^ 2 at hpyth
     have hu1_le : ‖u1‖ ≤ ‖x‖ := by nlinarith only [hpyth, sq_nonneg ‖x0‖, norm_nonneg u1, norm_nonneg x]
@@ -661,12 +668,15 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
         completeWeilEnergy tiltedUnitSpline c N x0 +
           2 * (b 1) * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) v1, x0⟫ +
           (b 1) ^ 2 * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) v1, v1⟫ := by
-      have hx_eq : x = x0 + b 1 • v1 := by rw [← hu1_eq]; abel
+      have hx_eq : x = x0 + b 1 • v1 := by
+        dsimp only [x0, u1, v1] at hu1_eq ⊢
+        rw [← hu1_eq]
+        abel
       nth_rw 1 [hx_eq]
       unfold completeWeilEnergy
       rw [map_add, map_smul, inner_add_left, inner_add_right, inner_add_right,
         inner_smul_left, inner_smul_right, inner_smul_left, inner_smul_right,
-        hsym v1 x0, real_inner_comm x0]
+        hsym x0 v1, real_inner_comm x0]
       simp only [conj_trivial]
       ring
     have h1 : |completeWeilEnergy tiltedUnitSpline c N x0| ≤
@@ -702,13 +712,14 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
         |2 * (b 1) * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) v1, x0⟫| +
         |(b 1) ^ 2 * ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c N) v1, v1⟫| := by
       rw [hsplit]
-      exact (abs_add_le _ _).trans (add_le_add_right (abs_add_le _ _) _)
+      exact (abs_add_le _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
     have hsum_le : C_neut * c ^ 3 * (Real.log (N : ℝ) + 1) * ‖x‖ ^ 2 +
         8 * C_v * c ^ 3 * ‖x‖ ^ 2 ≤ (C_q / 2) * c ^ 3 * (Real.log (N : ℝ) + 1) * ‖x‖ ^ 2 := by
-      have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hc3_L (by positivity : 0 ≤ 8 * C_v))
-        (sq_nonneg ‖x‖)
+      have h8 := mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hc3_L (by positivity : 0 ≤ 8 * C_v)) (sq_nonneg ‖x‖)
+      have hprod : 0 ≤ c ^ 3 * (Real.log (N : ℝ) + 1) * ‖x‖ ^ 2 := by positivity
       dsimp only [C_q]
-      nlinarith only [this, hC_neut, hL0, hc3_L, sq_nonneg ‖x‖]
+      nlinarith only [h8, hprod, hC_neut, hCv]
     linarith only [htri, h1, h2, h3, hsum_le]
   refine ⟨fun x => (hquad_half x).trans (mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (by linarith) (by positivity))
@@ -717,7 +728,7 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
   · rcases hxy0 with hx0 | hy0
     · rw [norm_eq_zero.mp hx0, map_zero, inner_zero_left, abs_zero, norm_zero, mul_zero, zero_mul]
     · rw [norm_eq_zero.mp hy0, inner_zero_right, abs_zero, norm_zero, mul_zero]
-  push_neg at hxy0
+  rw [not_or] at hxy0
   have hx_pos : 0 < ‖x‖ := lt_of_le_of_ne (norm_nonneg x) (Ne.symm hxy0.1)
   have hy_pos : 0 < ‖y‖ := lt_of_le_of_ne (norm_nonneg y) (Ne.symm hxy0.2)
   let x' := ‖x‖⁻¹ • x
@@ -731,7 +742,7 @@ private theorem exists_completeWeilMatrix_global_norm_cost :
         completeWeilEnergy tiltedUnitSpline c N (x' - y') := by
     unfold completeWeilEnergy
     rw [map_add, map_sub, inner_add_left, inner_add_right, inner_add_right,
-      inner_sub_left, inner_sub_right, inner_sub_right, hsym y' x', real_inner_comm x']
+      inner_sub_left, inner_sub_right, inner_sub_right, hsym y' x', real_inner_comm y']
     ring
   have hadd_sq : ‖x' + y'‖ ^ 2 + ‖x' - y'‖ ^ 2 = 4 := by
     have h1 := norm_add_sq_real x' y'
@@ -803,7 +814,6 @@ private theorem tendsto_log_primeAboveLowPacket_div_log_log :
       rw [Real.log_div (by positivity) two_ne_zero, Real.log_rpow hL0] at h
       exact h
     have hlog24 : Real.log 2 ≤ Real.log 4 := Real.log_le_log zero_lt_two (by norm_num)
-    rw [sub_div]
     have : (13 / 32 : ℝ) * Real.log (Real.log (N : ℝ)) / Real.log (Real.log (N : ℝ)) = 13 / 32 :=
       mul_div_cancel_right₀ _ hLL0.ne'
     rw [← this, ← sub_div]
@@ -817,7 +827,7 @@ private theorem tendsto_log_primeAboveLowPacket_div_log_log :
       have h1 : (lowPacketCutoff N : ℝ) ≤ Real.log (N : ℝ) ^ (13 / 32 : ℝ) :=
         Nat.floor_le (by positivity)
       have h2 : (max 2 (lowPacketCutoff N) : ℝ) ≤ Real.log (N : ℝ) ^ (13 / 32 : ℝ) := by
-        push_cast
+        rw [Nat.cast_max, Nat.cast_ofNat]
         exact max_le hQ2 h1
       have h3 : (primeAboveLowPacket N : ℝ) ≤ 2 * (max 2 (lowPacketCutoff N) : ℝ) := by
         exact_mod_cast hq_le
@@ -828,7 +838,6 @@ private theorem tendsto_log_primeAboveLowPacket_div_log_log :
       have h := Real.log_le_log (by exact_mod_cast hq_pr.pos) hQ_le
       rw [Real.log_mul (by norm_num) (by positivity), Real.log_rpow hL0] at h
       linarith
-    rw [add_div]
     have : (13 / 32 : ℝ) * Real.log (Real.log (N : ℝ)) / Real.log (Real.log (N : ℝ)) = 13 / 32 :=
       mul_div_cancel_right₀ _ hLL0.ne'
     rw [← this, ← add_div]
@@ -858,6 +867,206 @@ private theorem abs_norm_normalizedRamanujanHorizonVector_sq_sub_one_le {m X : �
 
 /-- Uniform vector-norm comparison between separated overlap `c' ∈ (0, 1/2]` and unit overlap `1`
 on a prime Ramanujan mode `v_q` (`q` prime, `2 ≤ q`, `q^4 ≤ M`). -/
+private theorem center_action_prime_mode_le {M q : ℕ} {α : ℝ}
+    (hLM0 : 0 < Real.log (M : ℝ)) (hq : q.Prime) (hqL : (q : ℝ) ≤ Real.log (M : ℝ))
+    (hα0 : 0 ≤ α) (hα1 : α ≤ 1) :
+    ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M)
+      (normalizedRamanujanHorizonVector q M)‖ ≤ 36 := by
+  have hq_pos : 0 < q := hq.pos
+  have hqR_pos : (0 : ℝ) < q := by exact_mod_cast hq_pos
+  have hq1_ne : q ≠ 1 := hq.one_lt.ne'
+  let A_q : ℝ := ∑ j ∈ range q, |normalizedRamanujanMode q j|
+  have hA_q0 : 0 ≤ A_q := sum_nonneg fun _ _ => abs_nonneg _
+  have hA_q_le : A_q ≤ 2 * Real.sqrt (q : ℝ) := sum_abs_normalizedRamanujanMode_prime_le hq
+  have hA_div_LM : A_q ^ 2 / Real.log (M : ℝ) ≤ 4 := by
+    rw [div_le_iff₀ hLM0]
+    have hsq : A_q ^ 2 ≤ 4 * (q : ℝ) := by
+      have h1 := pow_le_pow_left₀ hA_q0 hA_q_le 2
+      rw [mul_pow, Real.sq_sqrt hqR_pos.le] at h1
+      linarith only [h1]
+    linarith only [hsq, hqL]
+  have hper : ∑ j ∈ range q, normalizedRamanujanMode q j = 0 := by
+    have hm1 : normalizedRamanujanMode 1 = fun _ => 1 := funext fun _ => by
+      simp only [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one,
+        Nat.cast_one, Real.sqrt_one, div_one]
+    have h := periodMean_normalizedRamanujanMode_mul hq_pos zero_lt_one dvd_rfl (one_dvd q) hq_pos
+    simp only [hm1, mul_one, if_neg hq1_ne, periodMean] at h
+    exact (div_eq_zero_iff.mp h).resolve_right hqR_pos.ne'
+  have hB : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, normalizedRamanujanMode q j| ≤ 2 * A_q :=
+    abs_sum_Ico_le_of_periodic hq_pos (normalizedRamanujanMode_periodic hq_pos) hper
+  have hunnorm : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M)
+      (ramanujanHorizonVector q M)‖ ^ 2 ≤ α ^ 2 * (9 * A_q) ^ 2 := by
+    change ‖Matrix.toEuclideanLin
+      (horizonKernelMatrix (fun n j => (α / M) *
+        (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n - archimedeanCenterKernel n j)) M)
+      (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
+    rw [horizonKernelMatrix_profile_norm_sq]
+    have hb := sum_sq_centerCorrection_poleProfile_le hA_q0
+      (abs_normalizedRamanujanMode_le hq_pos) hB α M
+    refine (le_of_eq ?_).trans (hb.trans (by ring_nf; exact le_rfl))
+    simp only [ramanujanPoleProfile, mul_assoc, ← mul_sum]
+  have hnorm_sq : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M)
+      (normalizedRamanujanHorizonVector q M)‖ ^ 2 ≤ 36 ^ 2 := by
+    rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
+      sq_abs, inv_pow, Real.sq_sqrt hLM0.le]
+    have hα_sq : α ^ 2 ≤ 1 := by nlinarith only [hα0, hα1]
+    have h1 : (Real.log (M : ℝ))⁻¹ * (α ^ 2 * (9 * A_q) ^ 2) ≤ 36 ^ 2 := by
+      calc (Real.log (M : ℝ))⁻¹ * (α ^ 2 * (9 * A_q) ^ 2)
+          ≤ (Real.log (M : ℝ))⁻¹ * (1 * (81 * A_q ^ 2)) :=
+            mul_le_mul_of_nonneg_left (by nlinarith only [hα_sq, sq_nonneg A_q])
+              (inv_nonneg.mpr hLM0.le)
+        _ = 81 * (A_q ^ 2 / Real.log (M : ℝ)) := by rw [div_eq_mul_inv]; ring
+        _ ≤ 81 * 4 := mul_le_mul_of_nonneg_left hA_div_LM (by norm_num)
+        _ = 36 ^ 2 := by norm_num
+    exact (mul_le_mul_of_nonneg_left hunnorm (inv_nonneg.mpr hLM0.le)).trans h1
+  have hnn := norm_nonneg (Matrix.toEuclideanLin (fullWeilCenterMatrix α M)
+    (normalizedRamanujanHorizonVector q M))
+  nlinarith only [hnorm_sq, hnn]
+
+private theorem cross_action_prime_mode_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM_int : 0 < ∫ u, φ u ^ 2)
+    {M q : ℕ} {c' : ℝ} (hM1 : 1 ≤ M) (hLM0 : 0 < Real.log (M : ℝ))
+    (hq : q.Prime) (hqL : (q : ℝ) ≤ Real.log (M : ℝ))
+    (hc'0 : 0 < c') (hc'hi : c' ≤ 1 / 2) :
+    ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M)
+      (normalizedRamanujanHorizonVector q M)‖ ≤ 18 * atomCrossErrorConstant φ (1 / 2) := by
+  have hc'1 : c' < 1 := by linarith
+  have hq_pos : 0 < q := hq.pos
+  have hqR_pos : (0 : ℝ) < q := by exact_mod_cast hq_pos
+  let A_q : ℝ := ∑ j ∈ range q, |normalizedRamanujanMode q j|
+  have hA_q0 : 0 ≤ A_q := sum_nonneg fun _ _ => abs_nonneg _
+  have hA_q_le : A_q ≤ 2 * Real.sqrt (q : ℝ) := sum_abs_normalizedRamanujanMode_prime_le hq
+  have hA_div_LM : A_q ^ 2 / Real.log (M : ℝ) ≤ 4 := by
+    rw [div_le_iff₀ hLM0]
+    have hsq : A_q ^ 2 ≤ 4 * (q : ℝ) := by
+      have h1 := pow_le_pow_left₀ hA_q0 hA_q_le 2
+      rw [mul_pow, Real.sq_sqrt hqR_pos.le] at h1
+      linarith only [h1]
+    linarith only [hsq, hqL]
+  have hunnorm : ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M)
+      (ramanujanHorizonVector q M)‖ ^ 2 ≤
+      (36 * atomCrossErrorConstant φ c' * A_q * c' ^ 2) ^ 2 := by
+    change ‖Matrix.toEuclideanLin
+      (horizonKernelMatrix (atomCrossErrorKernel (atomDilate φ (c' / M))) M)
+      (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
+    rw [horizonKernelMatrix_profile_norm_sq]
+    exact sum_sq_atomCrossError_at_spacing_le hφ hsupp hM_int hc'0 hc'1 hM1 hA_q0
+      (fun j _ => abs_normalizedRamanujanMode_le hq_pos j)
+  have hconst_le : atomCrossErrorConstant φ c' * c' ^ 2 ≤
+      atomCrossErrorConstant φ (1 / 2) * (1 / 4 : ℝ) := by
+    unfold atomCrossErrorConstant
+    have h2 : c' ^ 2 ≤ 1 / 4 := by nlinarith only [hc'0, hc'hi]
+    have hdiv : 1 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2) ≤
+        1 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2) :=
+      one_div_le_one_div_of_le (by positivity)
+        (mul_le_mul_of_nonneg_left (by nlinarith only [hc'0, hc'hi]) hM_int.le)
+    have hnum0 : 0 ≤ 38 * (∫ u, |φ u|) ^ 2 := by positivity
+    calc 38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2) * c' ^ 2
+        = 38 * (∫ u, |φ u|) ^ 2 * (1 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2)) * c' ^ 2 := by ring
+      _ ≤ 38 * (∫ u, |φ u|) ^ 2 * (1 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2)) * (1 / 4) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hdiv hnum0) h2 (sq_nonneg _) (by positivity)
+      _ = 38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2) * (1 / 4) := by ring
+  have hsq : ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M)
+      (normalizedRamanujanHorizonVector q M)‖ ^ 2 ≤
+      (18 * atomCrossErrorConstant φ (1 / 2)) ^ 2 := by
+    rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
+      sq_abs, inv_pow, Real.sq_sqrt hLM0.le]
+    have hsub : 36 * atomCrossErrorConstant φ c' * A_q * c' ^ 2 ≤
+        9 * atomCrossErrorConstant φ (1 / 2) * A_q := by
+      have h1 := mul_le_mul_of_nonneg_right hconst_le hA_q0
+      linarith only [h1]
+    have hpow := pow_le_pow_left₀ (by have := atomCrossErrorConstant_nonneg φ c'; positivity) hsub 2
+    calc (Real.log (M : ℝ))⁻¹ *
+          ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M) (ramanujanHorizonVector q M)‖ ^ 2
+        ≤ (Real.log (M : ℝ))⁻¹ * (9 * atomCrossErrorConstant φ (1 / 2) * A_q) ^ 2 :=
+          mul_le_mul_of_nonneg_left (hunnorm.trans hpow) (inv_nonneg.mpr hLM0.le)
+      _ = 81 * atomCrossErrorConstant φ (1 / 2) ^ 2 * (A_q ^ 2 / Real.log (M : ℝ)) := by ring
+      _ ≤ 81 * atomCrossErrorConstant φ (1 / 2) ^ 2 * 4 :=
+          mul_le_mul_of_nonneg_left hA_div_LM (by positivity)
+      _ = (18 * atomCrossErrorConstant φ (1 / 2)) ^ 2 := by ring
+  have hc_nn : 0 ≤ 18 * atomCrossErrorConstant φ (1 / 2) := by
+    have := atomCrossErrorConstant_nonneg φ (1 / 2); positivity
+  have hnn := norm_nonneg (Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M)
+    (normalizedRamanujanHorizonVector q M))
+  nlinarith only [hsq, hc_nn, hnn]
+
+private theorem pole_action_prime_mode_le {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+    (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0) (hM_int : 0 < ∫ u, φ u ^ 2)
+    {M q : ℕ} {c_p : ℝ} (hM1 : 1 ≤ M) (hLM0 : 0 < Real.log (M : ℝ))
+    (hq : q.Prime) (hqL : (q : ℝ) ≤ Real.log (M : ℝ))
+    (hcp0 : 0 < c_p) (hcp1 : c_p ≤ 1) :
+    ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M)
+      (normalizedRamanujanHorizonVector q M)‖ ≤ 4 * atomPoleMomentErrorConstant φ := by
+  have hMR : (0 : ℝ) < M := by exact_mod_cast hM1
+  have hq_pos : 0 < q := hq.pos
+  have hqR_pos : (0 : ℝ) < q := by exact_mod_cast hq_pos
+  let A_q : ℝ := ∑ j ∈ range q, |normalizedRamanujanMode q j|
+  have hA_q0 : 0 ≤ A_q := sum_nonneg fun _ _ => abs_nonneg _
+  have hA_q_le : A_q ≤ 2 * Real.sqrt (q : ℝ) := sum_abs_normalizedRamanujanMode_prime_le hq
+  have hA_div_LM : A_q ^ 2 / Real.log (M : ℝ) ≤ 4 := by
+    rw [div_le_iff₀ hLM0]
+    have hsq : A_q ^ 2 ≤ 4 * (q : ℝ) := by
+      have h1 := pow_le_pow_left₀ hA_q0 hA_q_le 2
+      rw [mul_pow, Real.sq_sqrt hqR_pos.le] at h1
+      linarith only [h1]
+    linarith only [hsq, hqL]
+  have hd := abs_atomPoleErrorCoefficient_le_at_touching hφ hsupp hM_int hcp0 hcp1 hM1
+  have hs := mul_self_le_mul_self (abs_nonneg _) hd
+  rw [← sq, sq_abs, ← sq] at hs
+  have hunnorm : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M)
+      (ramanujanHorizonVector q M)‖ ^ 2 ≤
+      4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4 := by
+    change ‖Matrix.toEuclideanLin
+      (horizonKernelMatrix (fun n j => atomPoleErrorCoefficient φ c_p M *
+        (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n)) M)
+      (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
+    rw [horizonKernelMatrix_profile_norm_sq]
+    have hprof : ∀ j ∈ Icc 1 M, |normalizedRamanujanMode q j| ≤ A_q :=
+      fun j _ => abs_normalizedRamanujanMode_le hq_pos j
+    calc (∑ n ∈ Icc 1 M, (∑ j ∈ Icc 1 M, atomPoleErrorCoefficient φ c_p M *
+          (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) * ramanujanPoleProfile q j) ^ 2)
+        = ∑ n ∈ Icc 1 M, (atomPoleMomentErrorConstant φ * 0 + atomPoleErrorCoefficient φ c_p M *
+            ∑ j ∈ Icc 1 M, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
+              (normalizedRamanujanMode q j / Real.sqrt j)) ^ 2 := by
+          refine sum_congr rfl fun n _ => ?_
+          rw [mul_zero, zero_add, mul_sum]
+          congr 1
+          refine sum_congr rfl fun j _ => ?_
+          simp only [ramanujanPoleProfile]; ring
+      _ = ∑ n ∈ Icc 1 M, (atomPoleErrorCoefficient φ c_p M *
+            ∑ j ∈ Icc 1 M, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
+              (normalizedRamanujanMode q j / Real.sqrt j)) ^ 2 := by simp only [mul_zero, zero_add]
+      _ ≤ 4 * (atomPoleErrorCoefficient φ c_p M) ^ 2 * A_q ^ 2 * (M : ℝ) ^ 4 :=
+          sum_sq_twoPoleKernel_poleProfile_le hA_q0 M hprof _
+      _ ≤ 4 * (atomPoleMomentErrorConstant φ * (c_p / M) ^ 2) ^ 2 * A_q ^ 2 * (M : ℝ) ^ 4 := by
+          apply mul_le_mul_of_nonneg_right _ (by positivity)
+          apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
+          exact mul_le_mul_of_nonneg_left hs (by norm_num)
+      _ = 4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4 := by
+          field_simp [hMR.ne']
+  have hcp4 : c_p ^ 4 ≤ 1 := pow_le_one₀ hcp0.le hcp1
+  have hsq : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M)
+      (normalizedRamanujanHorizonVector q M)‖ ^ 2 ≤
+      (4 * atomPoleMomentErrorConstant φ) ^ 2 := by
+    rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
+      sq_abs, inv_pow, Real.sq_sqrt hLM0.le]
+    calc (Real.log (M : ℝ))⁻¹ *
+          ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M) (ramanujanHorizonVector q M)‖ ^ 2
+        ≤ (Real.log (M : ℝ))⁻¹ * (4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4) :=
+          mul_le_mul_of_nonneg_left hunnorm (inv_nonneg.mpr hLM0.le)
+      _ = 4 * (atomPoleMomentErrorConstant φ) ^ 2 * (A_q ^ 2 / Real.log (M : ℝ)) * c_p ^ 4 := by ring
+      _ ≤ 4 * (atomPoleMomentErrorConstant φ) ^ 2 * 4 * 1 :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hA_div_LM (by positivity)) hcp4
+            (by positivity) (by positivity)
+      _ = (4 * atomPoleMomentErrorConstant φ) ^ 2 := by ring
+  have hc_nn : 0 ≤ 4 * atomPoleMomentErrorConstant φ := by
+    have := atomPoleMomentErrorConstant_nonneg φ; positivity
+  have hnn := norm_nonneg (Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M)
+    (normalizedRamanujanHorizonVector q M))
+  nlinarith only [hsq, hc_nn, hnn]
+
+/-- Uniform vector-norm comparison between separated overlap `c' ∈ (0, 1/2]` and unit overlap `1`
+on a prime Ramanujan mode `v_q` (`q` prime, `q ≤ log M`). -/
 private theorem exists_prime_mode_separated_sub_one_norm_le :
     ∃ C_sep : ℝ, 0 < C_sep ∧ ∀ᶠ M : ℕ in atTop, ∀ {q : ℕ} {c' : ℝ},
       q.Prime → (q : ℝ) ≤ Real.log (M : ℝ) →
@@ -879,15 +1088,15 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
   obtain ⟨C_up, hC_up, hup⟩ := exists_upwardPrimeVector_norm_le_of_mem_conductorSubspace
     hφ hsupp hM_int
   let K_sep1 := 4 * (152 * (∫ u, |φ u|) ^ 2 / (∫ u, φ u ^ 2))
+  have hlog512_nn : 0 ≤ Real.log (512 * Real.exp 2) :=
+    Real.log_nonneg (by have := Real.one_le_exp (zero_le_two (α := ℝ)); linarith)
   let C_total : ℝ := 2 * (Real.log (512 * Real.exp 2) + 4) +
-    144 + 18 * atomCrossErrorConstant φ (1 / 2) + 8 * atomPoleMomentErrorConstant φ +
+    72 + 18 * atomCrossErrorConstant φ (1 / 2) + 8 * atomPoleMomentErrorConstant φ +
     2 * K_sep1 + 4 * C_od + 2 * C_up + 10
   have hC_tot : 0 < C_total := by
     have := atomCrossErrorConstant_nonneg φ (1 / 2)
     have := atomPoleMomentErrorConstant_nonneg φ
     have : 0 ≤ K_sep1 := by dsimp only [K_sep1]; positivity
-    have : 0 ≤ Real.log (512 * Real.exp 2) :=
-      Real.log_nonneg (by have := Real.one_le_exp (zero_le_two (α := ℝ)); linarith)
     dsimp only [C_total]; positivity
   refine ⟨C_total, hC_tot, ?_⟩
   have hLM : Tendsto (fun M : ℕ => Real.log (M : ℝ)) atTop atTop :=
@@ -901,20 +1110,26 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       have h1 : Tendsto (fun x : ℝ => 1 / x ^ (1 / 2 : ℝ)) atTop (𝓝 0) :=
         tendsto_const_nhds.div_atTop (tendsto_rpow_atTop (by norm_num))
       have h2 : Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 2 : ℝ)) atTop (𝓝 0) := by
-        have := Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
-        have hcomp := this.comp (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2))
+        have hbase := Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
+        have hcomp := (hbase.comp (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2))).const_mul 2
+        rw [mul_zero] at hcomp
         refine hcomp.congr' ?_
         filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
         dsimp only [Function.comp_def]
-        rw [Real.log_rpow hx]
-        simp; ring
-      simpa using (h1.add h2).congr fun x => by rw [add_div]
+        rw [Real.log_rpow hx, pow_one]
+        ring
+      simpa only [add_zero] using (h1.add h2).congr fun x => by rw [add_div]
     exact (hsub.comp hLM).congr fun M => by
       dsimp only [Function.comp_def]; rw [Real.sqrt_eq_rpow]
+  have hrad_nn : 0 ≤ linearNearRowRadius 1 := by
+    unfold linearNearRowRadius
+    positivity
+  have hrad_pos : (0 : ℝ) < 2 * (linearNearRowRadius 1 + 1) := by linarith
   filter_upwards [eventually_ge_atTop 8, hLM.eventually_ge_atTop 64,
-    hL4M.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (64 * (Real.exp 1 + 4) ^ 2))),
+    hL4M.eventually (gt_mem_nhds (div_pos one_pos hrad_pos)),
+    hL4M.eventually (gt_mem_nhds zero_lt_one),
     hlogL_div.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 36))]
-    with M hM8 hLM64 hL4M_small hLL_small
+    with M hM8 hLM64 hL4M_rad hL4M_one hLL_small
   intro q c' hq hqL hc'_lo hc'_hi
   have hM1 : 1 ≤ M := by omega
   have hMR : (0 : ℝ) < M := by exact_mod_cast hM1
@@ -925,9 +1140,10 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
     apply lt_of_lt_of_le _ (inv_succ_le_atomSpacing hM1)
     rw [div_lt_div_iff₀ hMR (by positivity)]
     have hM8R : (8 : ℝ) ≤ M := by exact_mod_cast hM8
+    have hc'M : c' * ((M : ℝ) + 1) ≤ (1 / 2) * ((M : ℝ) + 1) :=
+      mul_le_mul_of_nonneg_right hc'_hi (by positivity)
     linarith
   have hq2 : 2 ≤ q := hq.two_le
-  have hq1_ne : q ≠ 1 := by omega
   have hq_pos : 0 < q := hq.pos
   have hqR_pos : (0 : ℝ) < q := by exact_mod_cast hq_pos
   have hq4_M : ((q * q : ℕ) + 1 : ℝ) * (linearNearRowRadius 1 + 1) ≤ (M : ℝ) := by
@@ -936,28 +1152,26 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
         push_cast; nlinarith only [hqL, hqR_pos]
       have hL2_L4 : Real.log (M : ℝ) ^ 2 ≤ Real.log (M : ℝ) ^ 4 :=
         pow_le_pow_right₀ (by linarith) (by omega)
+      have h1L4 : (1 : ℝ) ≤ Real.log (M : ℝ) ^ 4 := one_le_pow₀ (by linarith)
       linarith
-    have hrad : linearNearRowRadius 1 + 1 ≤ 32 * (Real.exp 1 + 4) ^ 2 := by
-      unfold linearNearRowRadius
-      have he1 : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp zero_le_one
-      have hceil := Nat.ceil_lt_add_one (by positivity : (0 : ℝ) ≤ 1 * Real.exp 1)
-      nlinarith only [he1, hceil]
-    have hlt := (div_lt_iff₀ hMR).mp hL4M_small
-    nlinarith only [hq2_le, hrad, hlt, Real.exp_pos 1]
+    have hlt := (div_lt_iff₀ hMR).mp hL4M_rad
+    have hlt' : 2 * (linearNearRowRadius 1 + 1) * Real.log (M : ℝ) ^ 4 < (M : ℝ) := by
+      have := (lt_div_iff₀ hrad_pos).mp (by
+        calc Real.log (M : ℝ) ^ 4 < 1 / (2 * (linearNearRowRadius 1 + 1)) * (M : ℝ) := hlt
+          _ = (M : ℝ) / (2 * (linearNearRowRadius 1 + 1)) := by ring)
+      linarith
+    have hmul := mul_le_mul_of_nonneg_right hq2_le (by linarith : 0 ≤ linearNearRowRadius 1 + 1)
+    linarith
   have hqM : q * q ≤ M := by
     have h1 : ((q * q : ℕ) : ℝ) ≤ ((q * q : ℕ) + 1 : ℝ) * (linearNearRowRadius 1 + 1) := by
-      unfold linearNearRowRadius
-      have : (1 : ℝ) ≤ (⌈(1 : ℝ) * Real.exp 1⌉₊ : ℝ) + 1 + 1 := by positivity
-      nlinarith only [this, Nat.cast_nonneg (q * q)]
+      have hrad1 : (1 : ℝ) ≤ linearNearRowRadius 1 + 1 := by linarith
+      nlinarith only [hrad1, Nat.cast_nonneg (q * q)]
     exact_mod_cast h1.trans hq4_M
   have hlog_18 : 18 * (1 + Real.log (q : ℝ)) ≤ Real.log (M : ℝ) := by
     have hlogq : Real.log (q : ℝ) ≤ Real.log (Real.log (M : ℝ)) := Real.log_le_log hqR_pos hqL
-    have hs : 1 + Real.log (Real.log (M : ℝ)) < Real.sqrt (Real.log (M : ℝ)) / 36 :=
-      (div_lt_iff₀ (Real.sqrt_pos.mpr hLM0)).mp hLL_small
-    have hsq_le : Real.sqrt (Real.log (M : ℝ)) ≤ Real.log (M : ℝ) := by
-      have := Real.sqrt_le_iff.mpr ⟨hLM0.le, show Real.log (M : ℝ) ≤ Real.log (M : ℝ) ^ 2 by
-        nlinarith only [hLM64]⟩
-      exact this
+    have hs := (div_lt_iff₀ (Real.sqrt_pos.mpr hLM0)).mp hLL_small
+    have hsq_le : Real.sqrt (Real.log (M : ℝ)) ≤ Real.log (M : ℝ) :=
+      Real.sqrt_le_iff.mpr ⟨hLM0.le, by nlinarith only [hLM64]⟩
     linarith
   let v := normalizedRamanujanHorizonVector q M
   have hv_mem : v ∈ conductorSubspace q M :=
@@ -968,7 +1182,6 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       rw [div_le_one hLM0]; linarith [Real.log_natCast_nonneg q]
     have hsq : ‖v‖ ^ 2 ≤ 2 ^ 2 := by linarith [(abs_le.mp hb).2, hfrac]
     nlinarith only [hsq, norm_nonneg v]
-  -- Exact decompositions at `c'` and at `1` cancel `fullPrimeMatrix M v` identically.
   have hdec_c' := congrArg (fun A => Matrix.toEuclideanLin A v)
     (completeWeilMatrix_eq_decomposition hφ hsupp hM_int hc'0 hM1 hsep)
   have hdec_1 := congrArg (fun A => Matrix.toEuclideanLin A v)
@@ -990,24 +1203,25 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       (Matrix.toEuclideanLin (overlapMatrix φ 1 M) v - downwardPrimeVector φ 1 M v) +
       upwardPrimeVector φ 1 M v := by
     rw [hdec_c', hdec_1, fullWeilNonRatioMatrix_eq_downward_add_upward hφ hsupp hM_int one_pos hM1 v]
-    abel
-  -- Bound each of the 9 pieces.
+    module
   have hself_fp : |completeWeilSelfFinitePart φ c' - completeWeilSelfFinitePart φ 1| ≤
       Real.log (512 * Real.exp 2) := by
     rw [completeWeilSelfFinitePart_eq_at_one_sub_log φ hc'0]
     ring_nf
     rw [abs_neg, abs_of_nonpos (Real.log_nonpos hc'0.le hc'1.le)]
-    have hlog := Real.log_le_log hc'0 hc'_lo
-    rw [Real.log_one_div] at hlog
+    have hlog := Real.log_le_log (by positivity) hc'_lo
+    rw [one_div, Real.log_inv] at hlog
     linarith
   have hself_c' : |completeWeilSelfError φ c' M| ≤ 2 := by
     have hb := abs_completeWeilSelfError_le hφ hsupp hM_int hc'0 hc'1 hM1
-    have he1 : Real.exp (1 / 2 : ℝ) ≤ 3 := by
+    have he1 : Real.exp (1 / 2 : ℝ) / 2 ≤ 3 / 2 := by
       have := Real.exp_one_lt_d9
       have hle := Real.exp_le_exp.mpr (by norm_num : (1 / 2 : ℝ) ≤ 1)
       linarith
-    have hdiv : c' / (M : ℝ) ≤ 1 := (div_le_one hMR).mpr (by linarith [show (1 : ℝ) ≤ M by exact_mod_cast hM1])
-    nlinarith
+    have hdiv : c' / (M : ℝ) ≤ 1 :=
+      (div_le_one hMR).mpr (by linarith [show (1 : ℝ) ≤ M by exact_mod_cast hM1])
+    have hm := mul_le_mul he1 hdiv (by positivity) (by norm_num)
+    linarith
   have hself_1 : |completeWeilSelfError φ 1 M| ≤ 2 := by
     have hw0 : 0 < (1 : ℝ) / M := div_pos one_pos hMR
     have hw1 : (1 : ℝ) / M ≤ 1 := (div_le_one hMR).mpr (by exact_mod_cast hM1)
@@ -1022,11 +1236,12 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       field_simp [hG.ne']; ring
     have hb : |completeWeilSelfError φ 1 M| ≤ Real.exp (1 / 2) / 2 * ((1 : ℝ) / M) := by
       rw [heq, abs_div, abs_of_pos hG, div_le_iff₀ hG]; exact hlev
-    have he1 : Real.exp (1 / 2 : ℝ) ≤ 3 := by
+    have he1 : Real.exp (1 / 2 : ℝ) / 2 ≤ 3 / 2 := by
       have := Real.exp_one_lt_d9
       have hle := Real.exp_le_exp.mpr (by norm_num : (1 / 2 : ℝ) ≤ 1)
       linarith
-    nlinarith
+    have hm := mul_le_mul he1 hw1 (by positivity) (by norm_num)
+    linarith
   have h1_norm : ‖(completeWeilSelfFinitePart φ c' - completeWeilSelfFinitePart φ 1 +
       completeWeilSelfError φ c' M - completeWeilSelfError φ 1 M) • v‖ ≤
       2 * (Real.log (512 * Real.exp 2) + 4) := by
@@ -1039,187 +1254,31 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       have t2 := abs_sub (completeWeilSelfFinitePart φ c' - completeWeilSelfFinitePart φ 1 +
         completeWeilSelfError φ c' M) (completeWeilSelfError φ 1 M)
       linarith
+    have hc_pos : 0 ≤ Real.log (512 * Real.exp 2) + 4 := by linarith
     calc _ ≤ (Real.log (512 * Real.exp 2) + 4) * 2 :=
-          mul_le_mul habs hv_norm (norm_nonneg _) (by positivity)
+          mul_le_mul habs hv_norm (norm_nonneg _) hc_pos
       _ = _ := by ring
-  -- Mode sum `A ≤ 2 √q`, so `A^2 / log M ≤ 4`.
-  let A_q : ℝ := ∑ j ∈ range q, |normalizedRamanujanMode q j|
-  have hA_q0 : 0 ≤ A_q := sum_nonneg fun _ _ => abs_nonneg _
-  have hA_q_le : A_q ≤ 2 * Real.sqrt (q : ℝ) := sum_abs_normalizedRamanujanMode_prime_le hq
-  have hA_div_LM : A_q ^ 2 / Real.log (M : ℝ) ≤ 4 := by
-    rw [div_le_iff₀ hLM0]
-    have hsq : A_q ^ 2 ≤ 4 * (q : ℝ) := by
-      have := pow_le_pow_left₀ hA_q0 hA_q_le 2
-      rw [mul_pow, Real.sq_sqrt hqR_pos.le] at this
-      linarith
-    linarith
-  -- Center residual at any `α` with `0 ≤ α ≤ 1`.
-  have hcent_bound : ∀ α : ℝ, 0 ≤ α → α ≤ 1 →
-      ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M) v‖ ≤ 36 := by
-    intro α hα0 hα1
-    have hper : ∑ j ∈ range q, normalizedRamanujanMode q j = 0 := by
-      have hm1 : normalizedRamanujanMode 1 = fun _ => 1 := funext fun n => by
-        simp only [normalizedRamanujanMode, ramanujanMode_one, Nat.totient_one,
-          Nat.cast_one, Real.sqrt_one, div_one]
-      have h := periodMean_normalizedRamanujanMode_mul hq_pos zero_lt_one dvd_rfl (one_dvd q) hq_pos
-      simp only [hm1, mul_one, if_neg hq1_ne, periodMean] at h
-      exact (div_eq_zero_iff.mp h).resolve_right hqR_pos.ne'
-    have hB : ∀ l k : ℕ, l ≤ k → |∑ j ∈ Ico l k, normalizedRamanujanMode q j| ≤ 2 * A_q :=
-      abs_sum_Ico_le_of_periodic hq_pos (normalizedRamanujanMode_periodic hq_pos) hper
-    have hunnorm : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M) (ramanujanHorizonVector q M)‖ ^ 2 ≤
-        α ^ 2 * (9 * A_q) ^ 2 := by
-      change ‖Matrix.toEuclideanLin
-        (horizonKernelMatrix (fun n j => (α / M) *
-          (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n - archimedeanCenterKernel n j)) M)
-        (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
-      rw [horizonKernelMatrix_profile_norm_sq]
-      have hb := sum_sq_centerCorrection_poleProfile_le hA_q0
-        (abs_normalizedRamanujanMode_le hq_pos) hB α M
-      refine (le_of_eq ?_).trans (hb.trans (by ring_nf; exact le_rfl))
-      simp only [ramanujanPoleProfile, mul_assoc, ← mul_sum]
-    have hnorm_sq : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M) v‖ ^ 2 ≤ 36 ^ 2 := by
-      dsimp only [v]
-      rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
-        sq_abs, inv_pow, Real.sq_sqrt hLM0.le, div_eq_inv_mul]
-      have hα_sq : α ^ 2 ≤ 1 := by nlinarith
-      have h1 : α ^ 2 * (9 * A_q) ^ 2 / Real.log (M : ℝ) ≤ 81 * 4 := by
-        calc α ^ 2 * (9 * A_q) ^ 2 / Real.log (M : ℝ)
-            ≤ 1 * (81 * A_q ^ 2) / Real.log (M : ℝ) := by
-              apply div_le_div_of_nonneg_right _ hLM0.le
-              nlinarith [sq_nonneg A_q]
-          _ = 81 * (A_q ^ 2 / Real.log (M : ℝ)) := by ring
-          _ ≤ 81 * 4 := mul_le_mul_of_nonneg_left hA_div_LM (by norm_num)
-      have h2 : (Real.log (M : ℝ))⁻¹ *
-          ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M) (ramanujanHorizonVector q M)‖ ^ 2 =
-          ‖Matrix.toEuclideanLin (fullWeilCenterMatrix α M) (ramanujanHorizonVector q M)‖ ^ 2 /
-            Real.log (M : ℝ) := by ring
-      rw [h2]
-      exact (div_le_div_of_nonneg_right hunnorm hLM0.le).trans (by linarith)
-    nlinarith [norm_nonneg (Matrix.toEuclideanLin (fullWeilCenterMatrix α M) v)]
   have h2_norm : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ c') M) v‖ ≤ 36 :=
-    hcent_bound _ (completeWeilPoleShift_nonneg φ hc'0.le)
+    center_action_prime_mode_le hLM0 hq hqL (completeWeilPoleShift_nonneg φ hc'0.le)
       ((completeWeilPoleShift_le hφ.continuous hsupp hM_int hc'0.le).trans hc'1.le)
   have h3_norm : ‖Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ 1) M) v‖ ≤ 36 :=
-    hcent_bound _ (completeWeilPoleShift_nonneg φ zero_le_one)
+    center_action_prime_mode_le hLM0 hq hqL (completeWeilPoleShift_nonneg φ zero_le_one)
       (completeWeilPoleShift_le hφ.continuous hsupp hM_int zero_le_one)
-  -- Cross error at `c' ≤ 1/2`.
   have h4_norm : ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M) v‖ ≤
-      18 * atomCrossErrorConstant φ (1 / 2) := by
-    have hunnorm : ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M)
-        (ramanujanHorizonVector q M)‖ ^ 2 ≤
-        (36 * atomCrossErrorConstant φ c' * A_q * c' ^ 2) ^ 2 := by
-      change ‖Matrix.toEuclideanLin
-        (horizonKernelMatrix (atomCrossErrorKernel (atomDilate φ (c' / M))) M)
-        (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
-      rw [horizonKernelMatrix_profile_norm_sq]
-      exact sum_sq_atomCrossError_at_spacing_le hφ hsupp hM_int hc'0 hc'1 hM1 hA_q0
-        (fun j _ => abs_normalizedRamanujanMode_le hq_pos j)
-    have hconst_le : atomCrossErrorConstant φ c' * c' ^ 2 ≤
-        atomCrossErrorConstant φ (1 / 2) * (1 / 4 : ℝ) := by
-      unfold atomCrossErrorConstant
-      have h2 : c' ^ 2 ≤ 1 / 4 := by nlinarith
-      have hdiv : 1 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2) ≤
-          1 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2) :=
-        one_div_le_one_div_of_le (by positivity)
-          (mul_le_mul_of_nonneg_left (by nlinarith) hM_int.le)
-      have hnum0 : 0 ≤ 38 * (∫ u, |φ u|) ^ 2 := by positivity
-      calc 38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2) * c' ^ 2
-          = 38 * (∫ u, |φ u|) ^ 2 * (1 / ((∫ u, φ u ^ 2) * (1 - c') ^ 2)) * c' ^ 2 := by ring
-        _ ≤ 38 * (∫ u, |φ u|) ^ 2 * (1 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2)) * (1 / 4) :=
-            mul_le_mul (mul_le_mul_of_nonneg_left hdiv hnum0) h2 (sq_nonneg _) (by positivity)
-        _ = 38 * (∫ u, |φ u|) ^ 2 / ((∫ u, φ u ^ 2) * (1 - (1 / 2 : ℝ)) ^ 2) * (1 / 4) := by ring
-    have hsq : ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M) v‖ ^ 2 ≤
-        (18 * atomCrossErrorConstant φ (1 / 2)) ^ 2 := by
-      dsimp only [v]
-      rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
-        sq_abs, inv_pow, Real.sq_sqrt hLM0.le]
-      have hsub : 36 * atomCrossErrorConstant φ c' * A_q * c' ^ 2 ≤
-          9 * atomCrossErrorConstant φ (1 / 2) * A_q := by
-        have := mul_le_mul_of_nonneg_right hconst_le hA_q0
-        linarith
-      have hpow := pow_le_pow_left₀ (by have := atomCrossErrorConstant_nonneg φ c'; positivity) hsub 2
-      calc (Real.log (M : ℝ))⁻¹ *
-            ‖Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M) (ramanujanHorizonVector q M)‖ ^ 2
-          ≤ (Real.log (M : ℝ))⁻¹ * (9 * atomCrossErrorConstant φ (1 / 2) * A_q) ^ 2 :=
-            mul_le_mul_of_nonneg_left (hunnorm.trans hpow) (inv_nonneg.mpr hLM0.le)
-        _ = 81 * atomCrossErrorConstant φ (1 / 2) ^ 2 * (A_q ^ 2 / Real.log (M : ℝ)) := by ring
-        _ ≤ 81 * atomCrossErrorConstant φ (1 / 2) ^ 2 * 4 :=
-            mul_le_mul_of_nonneg_left hA_div_LM (by positivity)
-        _ = (18 * atomCrossErrorConstant φ (1 / 2)) ^ 2 := by ring
-    have hc_nn : 0 ≤ 18 * atomCrossErrorConstant φ (1 / 2) := by
-      have := atomCrossErrorConstant_nonneg φ (1 / 2); positivity
-    nlinarith only [hsq, hc_nn,
-      norm_nonneg (Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ c' M) v)]
-  -- Separated cross error at `1`.
+      18 * atomCrossErrorConstant φ (1 / 2) :=
+    cross_action_prime_mode_le hφ hsupp hM_int hM1 hLM0 hq hqL hc'0 hc'_hi
   have h5_norm : ‖Matrix.toEuclideanLin (separatedCrossErrorMatrix φ 1 M) v‖ ≤ 2 * K_sep1 := by
     have hb := norm_separatedCrossErrorMatrix_le hφ hsupp hM_int one_pos hM1 v
     have hK0 : 0 ≤ K_sep1 := by dsimp only [K_sep1]; positivity
     change ‖Matrix.toEuclideanLin (separatedCrossErrorMatrix φ 1 M) v‖ ≤
       K_sep1 * 1 ^ 2 * ‖v‖ at hb
     nlinarith only [hb, hv_norm, hK0]
-  -- Pole error at any `c_p ∈ (0, 1]`.
-  have hpole_bound : ∀ c_p : ℝ, 0 < c_p → c_p ≤ 1 →
-      ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M) v‖ ≤
-        4 * atomPoleMomentErrorConstant φ := by
-    intro c_p hcp0 hcp1
-    have hd := abs_atomPoleErrorCoefficient_le_at_touching hφ hsupp hM_int hcp0 hcp1 hM1
-    have hs := mul_self_le_mul_self (abs_nonneg _) hd
-    rw [← sq, sq_abs, ← sq] at hs
-    have hunnorm : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M)
-        (ramanujanHorizonVector q M)‖ ^ 2 ≤
-        4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4 := by
-      change ‖Matrix.toEuclideanLin
-        (horizonKernelMatrix (fun n j => atomPoleErrorCoefficient φ c_p M *
-          (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n)) M)
-        (horizonProfileVector (ramanujanPoleProfile q) M)‖ ^ 2 ≤ _
-      rw [horizonKernelMatrix_profile_norm_sq]
-      have hprof : ∀ j ∈ Icc 1 M, |normalizedRamanujanMode q j| ≤ A_q :=
-        fun j _ => abs_normalizedRamanujanMode_le hq_pos j
-      calc (∑ n ∈ Icc 1 M, (∑ j ∈ Icc 1 M, atomPoleErrorCoefficient φ c_p M *
-            (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) * ramanujanPoleProfile q j) ^ 2)
-          = ∑ n ∈ Icc 1 M, (atomPoleMomentErrorConstant φ * 0 + atomPoleErrorCoefficient φ c_p M *
-              ∑ j ∈ Icc 1 M, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
-                (normalizedRamanujanMode q j / Real.sqrt j)) ^ 2 := by
-            refine sum_congr rfl fun n _ => ?_
-            rw [zero_mul, zero_add, mul_sum]
-            congr 1
-            refine sum_congr rfl fun j _ => ?_
-            simp only [ramanujanPoleProfile]; ring
-        _ = ∑ n ∈ Icc 1 M, (atomPoleErrorCoefficient φ c_p M *
-              ∑ j ∈ Icc 1 M, (Real.sqrt n / Real.sqrt j + Real.sqrt j / Real.sqrt n) *
-                (normalizedRamanujanMode q j / Real.sqrt j)) ^ 2 := by simp only [mul_zero, zero_add]
-        _ ≤ 4 * (atomPoleErrorCoefficient φ c_p M) ^ 2 * A_q ^ 2 * (M : ℝ) ^ 4 :=
-            sum_sq_twoPoleKernel_poleProfile_le hA_q0 M hprof _
-        _ ≤ 4 * (atomPoleMomentErrorConstant φ * (c_p / M) ^ 2) ^ 2 * A_q ^ 2 * (M : ℝ) ^ 4 := by
-            apply mul_le_mul_of_nonneg_right _ (by positivity)
-            apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
-            exact mul_le_mul_of_nonneg_left hs (by norm_num)
-        _ = 4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4 := by
-            field_simp [hMR.ne']
-    have hcp4 : c_p ^ 4 ≤ 1 := pow_le_one₀ hcp0.le hcp1
-    have hsq : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M) v‖ ^ 2 ≤
-        (4 * atomPoleMomentErrorConstant φ) ^ 2 := by
-      dsimp only [v]
-      rw [normalizedRamanujanHorizonVector, map_smul, norm_smul, mul_pow, Real.norm_eq_abs,
-        sq_abs, inv_pow, Real.sq_sqrt hLM0.le]
-      calc (Real.log (M : ℝ))⁻¹ *
-            ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M) (ramanujanHorizonVector q M)‖ ^ 2
-          ≤ (Real.log (M : ℝ))⁻¹ * (4 * (atomPoleMomentErrorConstant φ) ^ 2 * A_q ^ 2 * c_p ^ 4) :=
-            mul_le_mul_of_nonneg_left hunnorm (inv_nonneg.mpr hLM0.le)
-        _ = 4 * (atomPoleMomentErrorConstant φ) ^ 2 * (A_q ^ 2 / Real.log (M : ℝ)) * c_p ^ 4 := by ring
-        _ ≤ 4 * (atomPoleMomentErrorConstant φ) ^ 2 * 4 * 1 :=
-            mul_le_mul (mul_le_mul_of_nonneg_left hA_div_LM (by positivity)) hcp4
-              (by positivity) (by positivity)
-        _ = (4 * atomPoleMomentErrorConstant φ) ^ 2 := by ring
-    have hc_nn : 0 ≤ 4 * atomPoleMomentErrorConstant φ := by
-      have := atomPoleMomentErrorConstant_nonneg φ; positivity
-    nlinarith only [hsq, hc_nn,
-      norm_nonneg (Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c_p M) v)]
   have h6_norm : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ c' M) v‖ ≤
-      4 * atomPoleMomentErrorConstant φ := hpole_bound c' hc'0 hc'1.le
+      4 * atomPoleMomentErrorConstant φ :=
+    pole_action_prime_mode_le hφ hsupp hM_int hM1 hLM0 hq hqL hc'0 hc'1.le
   have h7_norm : ‖Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ 1 M) v‖ ≤
-      4 * atomPoleMomentErrorConstant φ := hpole_bound 1 one_pos le_rfl
-  -- Overlap-minus-downward and upward at `1`.
+      4 * atomPoleMomentErrorConstant φ :=
+    pole_action_prime_mode_le hφ hsupp hM_int hM1 hLM0 hq hqL one_pos le_rfl
   have hw1_third : (1 : ℝ) / M ≤ 1 / 3 := by
     rw [div_le_div_iff₀ hMR (by norm_num)]
     have : (8 : ℝ) ≤ M := by exact_mod_cast hM8
@@ -1237,9 +1296,8 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
       linarith
     have hterm2 : (q : ℝ) * Real.sqrt (Real.log (M : ℝ) / M) ≤ 1 := by
       have hLM4_M : Real.log (M : ℝ) ^ 4 ≤ M := by
-        have hlt := (div_lt_iff₀ hMR).mp hL4M_small
-        have he1 : (1 : ℝ) ≤ Real.exp 1 := Real.one_le_exp zero_le_one
-        nlinarith only [hlt, he1]
+        have hlt := (div_lt_iff₀ hMR).mp hL4M_one
+        linarith
       have hLM3_M : Real.log (M : ℝ) ^ 3 ≤ M := by
         have : Real.log (M : ℝ) ^ 3 ≤ Real.log (M : ℝ) ^ 4 :=
           pow_le_pow_right₀ (by linarith) (by omega)
@@ -1260,13 +1318,13 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
     have hq4_e : ((q * q : ℕ) + 1 : ℝ) * (1 * Real.exp 1 + 1) ≤ M := by
       refine le_trans (mul_le_mul_of_nonneg_left ?_ (by positivity)) hq4_M
       unfold linearNearRowRadius
-      have hceil : (1 : ℝ) * Real.exp 1 ≤ ⌈(1 : ℝ) * Real.exp 1⌉₊ := Nat.le_ceil _
+      have he12 : Real.exp 1 ≤ Real.exp 2 := Real.exp_le_exp.mpr (by norm_num)
+      have he2_pos : 0 ≤ Real.exp 2 := (Real.exp_pos 2).le
       linarith
     have hb := hup hq2 hlog_18 le_rfl hw1_third hq4_e hv_mem
     rw [Real.log_one, add_zero, Real.sqrt_one, mul_one, mul_one] at hb
     calc _ ≤ C_up * 2 := hb.trans (mul_le_mul_of_nonneg_left hv_norm hC_up.le)
       _ = 2 * C_up := by ring
-  -- Assemble the 9-piece triangle bound.
   rw [hdiff]
   have t1 := norm_add_le
     ((completeWeilSelfFinitePart φ c' - completeWeilSelfFinitePart φ 1 +
@@ -1331,3 +1389,5 @@ private theorem exists_prime_mode_separated_sub_one_norm_le :
   dsimp only [C_total]
   linarith only [t1, t2, t3, t4, t5, t6, t7, t8,
     h1_norm, h2_norm, h3_norm, h4_norm, h5_norm, h6_norm, h7_norm, h8_norm, h9_norm]
+
+end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

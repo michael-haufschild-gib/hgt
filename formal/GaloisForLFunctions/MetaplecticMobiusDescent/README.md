@@ -352,6 +352,28 @@ actual cusp characters.
 coefficients into finite arithmetic residue sums and an absolutely convergent
 scattering Dirichlet series for Re s > 2, including the exact constant mode.
 
+`CubicConstantResidueCharacters.lean` uses multiplicative symmetry of
+admissible residues to force triviality of the cubic character whenever the
+constant sum is nonzero, then proves divisibility by three of every unramified
+prime exponent.
+
+`TheCubicConstantTermIsSupportedOnCubes.lean` classifies the constant residue
+sum: for each nonzero level denominator it is nonzero exactly for cubes, and
+then equals the number of admissible residue classes. The proof includes
+ramified and unit rigidity.
+
+`CubicAdmissibleResidueCounts.lean` counts admissible residues by affine
+quotient-ring units and Chinese remainders, giving 3^n times the ideal totient
+for a ramified power times an unramified modulus.
+
+`CubicIdealTotients.lean` proves ideal-totient power laws for nonzero ideals,
+multiplicativity on coprime products, and the resulting exact cubic residue
+counts via quotient-unit fibers.
+
+`CubicIdealMobiusInversion.lean` proves ideal Möbius divisor inversion, the
+totient convolution formula, and the corresponding multiplicative-fiber
+identity from squarefree prime support.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

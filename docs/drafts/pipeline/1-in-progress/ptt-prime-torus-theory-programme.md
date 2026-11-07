@@ -21,7 +21,7 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 |---|---|---|
 | P1 | Group closure, transport, corners, Halász–Montgomery | `TheOrbitOfAPhaseSystem` |
 | P2 | Bohr sets, clusters, large-value pairs, descent | `LargeValueHeightsFormAnApproximateGroup` |
-| P3 | Finite-time Bohr isometry; Kronecker scale; boxes and the mixing bracket; boxes at Chernoff cost `exp(10 y √(log y log log y/δ))` | `TheFiniteTimeBohrIsometry`, `TheBoxesOfTheTorus`, `TheBoxesAtSquareRootCost` |
+| P3 | Finite-time Bohr isometry; Kronecker scale; boxes and the mixing bracket; boxes at Chernoff cost `exp(10 y √(log y log log y/δ))`; boxes of radius `ρ` missed below `exp(π(y) log(π/4ρ))/θ(y)` | `TheFiniteTimeBohrIsometry`, `TheBoxesOfTheTorus`, `TheBoxesAtSquareRootCost`, `TheMixingTimeFromBelow` |
 | P4 | Pigeonhole non-alignment; saving `T^{−2/(A−1)−δ}`; any set of primes; top of the column | `UniqueFactorizationPaysForNonAlignment`, `TheSavingAgainstSize`, `TheSavingOnAnySetOfPrimes` |
 | P5 | Moment = energy; start of the orbit; diagonal range; energy at every order; oscillating energy | `TheEnergyOfTheOrbit`, `TheDiagonalRange`, `TheEnergyPastTheDiagonal` |
 | P6 | Rounded orbit: diagonal data cannot exclude a return | `TheRoundedOrbit` |
@@ -40,7 +40,7 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 | P16 | The six questions, one statement each | `TheQuestionsOfTheField` |
 
 ## Open
-Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Polylogarithmic precision above the primes up to `log y`; smooth numbers in short intervals; exact mixing exponent (gap `(log y)^{3/2}√(log log y)`, from the union bound); certificate coordinates tied to `p^{−s}`; zero-carrying set of the hull. README §9.
+Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Polylogarithmic precision above the primes up to `log y`; smooth numbers in short intervals; exact mixing exponent (`½ π(y) log(1/δ) ≲ log T_mix ≲ 10 y √(log y log log y/δ)`); certificate coordinates tied to `p^{−s}`; zero-carrying set of the hull. README §9.
 
 ## No-go closure
 - **Exact killing theorem/mechanism:** the kernel-valued Agler form of §2.8b dies on two points: `agler_wall`, `agler_wall_all_primes`, `no_decomposition_euler`, `euler_test`.

@@ -1375,9 +1375,9 @@ theorem exists_all_ratio_far_garding :
       have hid2 : (dyadicTopMassConstant / 2) * (L / c ^ 7) =
           (dyadicTopMassConstant / (2 * c ^ 7)) * L := by ring
       have hid3 : (dyadicTopMassConstant / c ^ 7) * L =
-          2 * ((dyadicTopMassConstant / (2 * c ^ 7)) * L) := by field_simp [hc0.ne'] <;> ring
+          2 * ((dyadicTopMassConstant / (2 * c ^ 7)) * L) := by ring
       have hid4 : (dyadicTopMassConstant / (2 * R_max)) * c =
-          2 * ((dyadicTopMassConstant / (4 * R_max)) * c) := by field_simp [hR.ne'] <;> ring
+          2 * ((dyadicTopMassConstant / (4 * R_max)) * c) := by ring
       linarith only [hm, hid1, hid2, hid3, hid4, herr_c]
     have hrate_S7 : G * ((dyadicTopMassConstant / (4 * c ^ 7)) * L * S7) +
         G * ((dyadicTopMassConstant / (8 * R_max)) * c * S7) ≤
@@ -1387,8 +1387,7 @@ theorem exists_all_ratio_far_garding :
       have hid_l : G / 2 * (((dyadicTopMassConstant / (2 * c ^ 7)) * L +
           (dyadicTopMassConstant / (4 * R_max)) * c) * S7) =
           G * ((dyadicTopMassConstant / (4 * c ^ 7)) * L * S7) +
-            G * ((dyadicTopMassConstant / (8 * R_max)) * c * S7) := by
-        field_simp [hc0.ne', hR.ne'] <;> ring
+            G * ((dyadicTopMassConstant / (8 * R_max)) * c * S7) := by ring
       have hid_r : G / 2 * (((dyadicTopMassConstant / c ^ 7) * L - C_err * (c ^ 2 / N)) * S7) =
           (1 / 2 : ℝ) * (G * (((dyadicTopMassConstant / c ^ 7) * L - C_err * (c ^ 2 / N)) * S7)) := by
         ring
@@ -1411,11 +1410,9 @@ theorem exists_all_ratio_far_garding :
     have hid1 : (1 / 4 : ℝ) * (G * ((c / I₂) *
         (2 * gammaHardyPhaseRate 0 * (∫ u, U_y u ^ 2) + levyEnergy U_y))) =
         G * ((c / (4 * I₂)) * levyEnergy U_y) +
-          gammaHardyPhaseRate 0 * (G * (c / (2 * I₂)) * ∫ u, U_y u ^ 2) := by
-      field_simp [hI₂.ne'] <;> ring
+          gammaHardyPhaseRate 0 * (G * (c / (2 * I₂)) * ∫ u, U_y u ^ 2) := by ring
     have hid2 : -|gammaHardyPhaseRate 0| * (G * (c / (2 * I₂)) * ∫ u, U_y u ^ 2) =
-        -(G * ((|gammaHardyPhaseRate 0| / (2 * I₂)) * c * ∫ u, U_y u ^ 2)) := by
-      field_simp [hI₂.ne'] <;> ring
+        -(G * ((|gammaHardyPhaseRate 0| / (2 * I₂)) * c * ∫ u, U_y u ^ 2)) := by ring
     linarith only [hm, hid1, hid2]
   set G₀ := factorialSpanGammaOffset
   have hG₀ : 0 ≤ G₀ := factorialSpanGammaOffset_nonneg
@@ -1434,23 +1431,22 @@ theorem exists_all_ratio_far_garding :
   have hpr_top : primeSum f_y ≤
       G * ((c * c_W0 / (4 * R_max)) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) +
         (B_pr / I₂) * c * ∫ u, U_y u ^ 2) := by
-    rw [hfy_prime]
+    rw [hfy_prime, ← mul_assoc]
     have hp := (le_abs_self _).trans
       (abs_primeSum_le_exponential_mass_of_le_one_explicit hε_pr hUy_cd.continuous hUy_cs hUy_le1)
     have hpeq : (2 * vonMangoldtThreeHalvesMass +
-        (2 * vonMangoldtThreeHalvesMass) ^ 2 * Real.exp 8 / ε_pr) = B_pr := by
-      rw [hB_pr_def]; rfl
+        (2 * vonMangoldtThreeHalvesMass) ^ 2 * Real.exp 8 / ε_pr) = B_pr := hB_pr_def.symm
     rw [hpeq] at hp
-    have hm := mul_le_mul_of_nonneg_left hp (by positivity : 0 ≤ G * (c / I₂))
+    have hm := mul_le_mul_of_nonneg_left hp (mul_nonneg hG0.le (div_nonneg hc0.le hI₂.le))
     refine hm.trans_eq ?_
     dsimp only [ε_pr]
     field_simp [hI₂.ne', hR.ne']
     ring
   -- 5. Prime cross via `two_mul_abs_integral_mul_atomicTest_le` at `η = 1`, `lam = (1/4) L^(3/16)`
   set h := 1 / (T * L)
-  have hh0 : 0 < h := by positivity
-  have hT1 : 1 ≤ T := Real.one_le_exp (by positivity)
-  have hh1 : h ≤ 1 := (div_le_one (by positivity)).mpr (one_le_mul_of_one_le_of_one_le hT1 hL1)
+  have hh0 : 0 < h := div_pos zero_lt_one (mul_pos hT0 hL0)
+  have hT1 : 1 ≤ T := Real.one_le_exp (add_nonneg hG₀ (Real.rpow_nonneg hL0.le _))
+  have hh1 : h ≤ 1 := (div_le_one (mul_pos hT0 hL0)).mpr (one_le_mul_of_one_le_of_one_le hT1 hL1)
   have hTh : T * h = 1 / L := by dsimp only [h]; field_simp [hT0.ne', hL0.ne']
   set ν := (2 * Real.log (1 / h) + Real.log (4 * C_ψ + 1)) / c₀
   set β := 1 + ν ^ 2 + |Real.log t₀|
@@ -1460,7 +1456,7 @@ theorem exists_all_ratio_far_garding :
   set Bn := ⌊(N : ℝ) * Real.exp w⌋₊
   set V : ℕ → ℝ := fun n => topWeight ((M : ℝ) / 2) Bn n * primeConv (primeOrderCutoff N w) M x n
   set lam : ℝ := (1 / 4 : ℝ) * L ^ (3 / 16 : ℝ)
-  have hlam0 : 0 < lam := by positivity
+  have hlam0 : 0 < lam := mul_pos (by norm_num) (Real.rpow_pos_of_pos hL0 _)
   have hX := two_mul_abs_integral_mul_atomicTest_le (f := f_y) hfy_cd hfy_cs hg_cd hg_supp
     Bn V (T := T) hh0 zero_lt_one hlam0
   rw [inv_one, one_mul, one_mul, one_mul] at hX
@@ -1490,7 +1486,7 @@ theorem exists_all_ratio_far_garding :
     have hcoef_ub : (T * h) ^ 2 + lam⁻¹ * 4 ≤ 17 / L ^ (3 / 16 : ℝ) := by
       rw [hTh]
       have hlam_inv : lam⁻¹ * 4 = 16 / L ^ (3 / 16 : ℝ) := by
-        dsimp only [lam]; field_simp [(Real.rpow_pos_of_pos hL0 _).ne'] <;> ring
+        dsimp only [lam]; field_simp [(Real.rpow_pos_of_pos hL0 _).ne']; ring
       have h1L2 : (1 / L) ^ 2 ≤ 1 / L ^ (3 / 16 : ℝ) := by
         rw [one_div_pow, one_div_le_one_div (by positivity) (by positivity)]
         calc L ^ (3 / 16 : ℝ) ≤ L ^ (2 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
@@ -2289,7 +2285,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
       have hm := mul_le_mul hlR hmid
         (by positivity) (div_nonneg (by positivity) (pow_pos hℓ0 5).le)
       refine hm.trans_eq ?_
-      field_simp [hL0.ne', hℓ0.ne'] <;> ring
+      field_simp [hL0.ne', hℓ0.ne']; ring
     have hG0 : 0 ≤ bandFarBudgetG R N c Sg₁ := by unfold bandFarBudgetG; rw [← hLdef]; positivity
     have hid : 32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) =
         32 * C_np * (bandFarBudgetG R N c Sg₁ * (c ^ 7 / (b * k))) := by ring
@@ -2465,7 +2461,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     rw [hid]
     have hm := mul_le_mul_of_nonneg_left
       (mul_le_mul hUA_ub hbk_ub hbk0 (mul_nonneg hCcoef0 (pow_nonneg hℓ0.le 3)))
-      (mul_nonneg (by norm_num) hCnp)
+      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 32) hCnp)
     refine hm.trans ?_
     have hid2 : 32 * C_np * (((8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) *
         ℓ ^ 3) * (M_bk * ℓ / L ^ (1 / 8 : ℝ))) =
@@ -2484,7 +2480,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     have hm1 := mul_le_mul hc2_up h1c_ℓ h1c0
       (mul_nonneg (sq_nonneg K_c) (Real.rpow_nonneg hL0.le _))
     have hm2 := mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left hm1 (mul_nonneg (by norm_num) hCup))
+      (mul_le_mul_of_nonneg_left hm1 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 128) hCup))
       (div_nonneg (mul_nonneg (mul_nonneg zero_le_two hD.le) (pow_nonneg hℓ0.le 6)) hL0.le)
     have hsplit : L ^ (1 / 4 : ℝ) * L ^ (3 / 4 : ℝ) = L := by
       rw [← Real.rpow_add hL0]; norm_num [Real.rpow_one]
@@ -2530,7 +2526,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     have hm := mul_le_mul_of_nonneg_left
       (mul_le_mul hnum hbk_ub hbk0
         (mul_nonneg (mul_nonneg (mul_nonneg zero_le_two hKexp0) (pow_nonneg hKc0.le 3)) hℓ0.le))
-      (mul_nonneg (by norm_num) hCupT)
+      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 128) hCupT)
     have hℓ2_7 : ℓ ^ 2 ≤ ℓ ^ 7 := pow_le_pow_right₀ hℓ1 (by norm_num)
     refine hm.trans ?_
     have hid2 : 128 * C_upT * ((2 * (256 * Real.exp 2 + 4) * K_c ^ 3 * ℓ) *
@@ -2580,7 +2576,7 @@ private lemma all_ratio_band0_band1_scalars {N Q₁ R₀ : ℕ}
     {c L Lh K_c κ₀ C_small0 C_coerc0 C_band1 C_cross01 : ℝ}
     (hc1 : 1 ≤ c) (hKc1 : 1 ≤ K_c) (hc_up : c ≤ K_c * L ^ (1 / 8 : ℝ))
     (hL1 : 1 ≤ L) (hLh_eq : Lh = L ^ (1 / 2 : ℝ))
-    (hκ₀ : 0 < κ₀) (hC_small0 : 0 < C_small0) (hC_cross01 : 0 < C_cross01)
+    (_hκ₀ : 0 < κ₀) (hC_small0 : 0 < C_small0) (hC_cross01 : 0 < C_cross01)
     (hVc : 1 + Real.log c ≤ L ^ (1 / 128 : ℝ))
     (hsqrtQ : (1 / 2 : ℝ) * L ^ ((13 / 32 : ℝ) / 2) ≤ Real.sqrt Q₁)
     (hlogQ_lb : (13 / 32 : ℝ) * Real.log L - 1 ≤ Real.log (Q₁ : ℝ))
@@ -2787,9 +2783,9 @@ private lemma all_ratio_three_band_assembly {Q₁ R₀ R₁ N : ℕ}
     (hb_le_b0 : b ≤ (g₀ * D / 4) * ℓ ^ 5)
     (hband0 : ∀ a₀ : ℕ → ℝ,
       (∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N) ∈ (conductorSubspace Q₁ N)ᗮ →
-      ((3 / 4 : ℝ) * Real.log (Q₁ : ℝ) - Real.log c - C_coerc0) *
-          ‖∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N‖ ^ 2 +
-        (1 / 8 : ℝ) * primeAdjunctionMass R₀ a₀ ≤
+      (1 / 8 : ℝ) * primeAdjunctionMass R₀ a₀ +
+        ((3 / 4 : ℝ) * Real.log (Q₁ : ℝ) - Real.log c - C_coerc0) *
+          ‖∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N‖ ^ 2 ≤
         completeWeilEnergy tiltedUnitSpline c N
           (∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N))
     (hband1 : ∀ a₁ : ℕ → ℝ,

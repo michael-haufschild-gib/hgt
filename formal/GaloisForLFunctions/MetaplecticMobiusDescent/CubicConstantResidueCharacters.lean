@@ -1,0 +1,219 @@
+/-
+Cubic constant-term arithmetic adapted from OpenAI's formalization,
+Apache-2.0. See LICENSE and NOTICE for source attribution.
+-/
+import GaloisForLFunctions.MetaplecticMobiusDescent.TheCubicEisensteinFourierCoefficients
+
+/-!
+# Multiplicative symmetry of the cubic constant term
+
+Multiplication by admissible denominators permutes the finite residue
+sum. A nonzero constant sum therefore forces its cubic symbol to be
+trivial. Cubic reciprocity and a prescribed prime residue show that every
+unramified prime exponent in its modulus is divisible by three.
+-/
+noncomputable section
+open MeasureTheory Set Filter
+open scoped BigOperators Classical
+namespace GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
+open Eisenstein CubicJacobi CubicKubota CubicRamified
+
+private instance cubicConstantCyclotomic : IsCyclotomicExtension {3} ℚ K :=
+  CyclotomicField.isCyclotomicExtension 3 ℚ
+private instance cubicConstantPID : IsPrincipalIdealRing O :=
+  IsCyclotomicExtension.Rat.three_pid K
+
+lemma symbol_cube_numerator (a d : O) (hd : denominatorCondition (a^3) d) :
+    symbol (a^3) d=1 := by
+  have hprimary : lambda^2 ∣ d-1 := lambda_sq_dvd_three.trans hd.2
+  rw [symbol_pow_numerator a d hprimary 3]
+  apply symbol_cube_of_isCoprime a d hprimary
+  exact hd.1.of_isCoprime_of_dvd_left ⟨a^2,by ring⟩
+
+theorem arithmeticResidueSum_cube (a : O) (ha : a ≠ 0) :
+    arithmeticResidueSum 0 (a^3)=(Nat.card (AdmissibleResidue (a^3)):ℂ) := by
+  let : Finite (AdmissibleResidue (a^3)) := finite_admissibleResidue _ (pow_ne_zero 3 ha)
+  let : Fintype (AdmissibleResidue (a^3)) := Fintype.ofFinite _
+  rw [arithmeticResidueSum,tsum_fintype]
+  have hterm (r : AdmissibleResidue (a^3)) :
+      ringComplex (symbol (a^3) (denominatorRep (a^3) r.1))*
+        tracePhase (cuspFrequency 0*ringComplex (denominatorRep (a^3) r.1)/
+          ringComplex (a^3))=1 := by
+    rw [symbol_cube_numerator a _ r.2,map_one]
+    simp [cuspFrequency]
+  simp only [hterm,Finset.sum_const,Finset.card_univ,nsmul_eq_mul,mul_one,Nat.card_eq_fintype_card]
+
+lemma admissibleResidue_nonempty (c : O) (hc : c ≠ 0) : Nonempty (AdmissibleResidue c) := by
+  let d : AdmissibleDenominator c := ⟨1,isCoprime_one_right,by simp⟩
+  exact ⟨((residueDenominatorEquiv c hc).symm d).1⟩
+
+theorem arithmeticResidueSum_cube_ne_zero (a : O) (ha : a ≠ 0) :
+    arithmeticResidueSum 0 (a^3) ≠ 0 := by
+  rw [arithmeticResidueSum_cube a ha]
+  let : Finite (AdmissibleResidue (a^3)) := finite_admissibleResidue _ (pow_ne_zero 3 ha)
+  let : Nonempty (AdmissibleResidue (a^3)) := admissibleResidue_nonempty _ (pow_ne_zero 3 ha)
+  exact Nat.cast_ne_zero.mpr (Nat.card_pos (α := AdmissibleResidue (a^3))).ne'
+
+lemma denominatorCondition_congr (c d e : O) (h : 3*c ∣ d-e) :
+    denominatorCondition c d ↔ denominatorCondition c e := by
+  obtain ⟨n,hn⟩ := h
+  have hd : d=e+3*c*n := by linear_combination hn
+  rw [hd]
+  exact denominatorCondition_shift c e n
+
+lemma denominatorCondition_mul (c d t : O) (hd : denominatorCondition c d)
+    (ht : denominatorCondition c t) : denominatorCondition c (d*t) := by
+  refine ⟨hd.1.mul_right ht.1,?_⟩
+  convert dvd_add (hd.2.mul_right t) ht.2 using 1 ; ring
+
+lemma row_symbol_congr_modulus (c d e : O) (hlevel : (3:O) ∣ c)
+    (he : (3:O) ∣ e-1) (h : 3*c ∣ d-e) : symbol c d=symbol c e := by
+  obtain ⟨n,hn⟩ := h
+  have hd : d=e+3*c*n := by linear_combination hn
+  rw [hd]
+  exact row_symbol_shift c e n hlevel he
+
+lemma denominatorRep_product_congr (c t : O) (r : DenominatorResidue c) :
+    3*c ∣ denominatorRep c (Ideal.Quotient.mk (Ideal.span {3*c}) t*r)-t*denominatorRep c r := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  rw [denominatorRep_spec,map_mul,denominatorRep_spec]
+
+def residueMultiplication (c t : O) (ht : denominatorCondition c t)
+    (r : AdmissibleResidue c) : AdmissibleResidue c :=
+  ⟨Ideal.Quotient.mk (Ideal.span {3*c}) t*r.1,
+    (denominatorCondition_congr c _ _ (denominatorRep_product_congr c t r.1)).2
+      (denominatorCondition_mul c t _ ht r.2)⟩
+
+lemma denominatorCondition_coprime_modulus (c t : O) (ht : denominatorCondition c t) :
+    IsCoprime (3*c) t := by
+  obtain ⟨n,hn⟩ := ht.2
+  have h3 : IsCoprime (3:O) t := ⟨-n,1,by linear_combination hn⟩
+  exact h3.mul_left ht.1
+
+lemma residueMultiplication_injective (c t : O) (ht : denominatorCondition c t) :
+    Function.Injective (residueMultiplication c t ht) := by
+  have hunit : IsUnit (Ideal.Quotient.mk (Ideal.span {3*c}) t) := by
+    have hh := (denominatorCondition_coprime_modulus c t ht).map
+      (Ideal.Quotient.mk (Ideal.span {3*c}))
+    have hz : Ideal.Quotient.mk (Ideal.span {3*c}) (3*c)=0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span (by simp))
+    simpa only [hz,isCoprime_zero_left] using hh
+  intro r q heq
+  apply Subtype.ext
+  exact hunit.mul_left_cancel (congrArg Subtype.val heq)
+
+def residueMultiplicationEquiv (c : O) (hc : c ≠ 0) (t : O)
+    (ht : denominatorCondition c t) : AdmissibleResidue c ≃ AdmissibleResidue c := by
+  letI : Finite (AdmissibleResidue c) := finite_admissibleResidue c hc
+  exact Equiv.ofBijective (residueMultiplication c t ht)
+    ⟨residueMultiplication_injective c t ht,
+      Finite.surjective_of_injective (residueMultiplication_injective c t ht)⟩
+
+lemma residueMultiplication_phase (c : O) (hlevel : (3:O) ∣ c) (t : O)
+    (ht : denominatorCondition c t) (r : AdmissibleResidue c) :
+    symbol c (denominatorRep c (residueMultiplication c t ht r).1)=
+      symbol c t*symbol c (denominatorRep c r.1) := by
+  change symbol c (denominatorRep c (Ideal.Quotient.mk (Ideal.span {3*c}) t*r.1))=
+    symbol c t*symbol c (denominatorRep c r.1)
+  rw [row_symbol_congr_modulus c _ (t*denominatorRep c r.1) hlevel
+    (denominatorCondition_mul c t _ ht r.2).2 (denominatorRep_product_congr c t r.1)]
+  exact symbol_mul_denominator c t (denominatorRep c r.1)
+
+lemma arithmeticResidueSum_zero (c : O) :
+    arithmeticResidueSum 0 c=∑' r : AdmissibleResidue c,
+      ringComplex (symbol c (denominatorRep c r.1)) := by
+  simp only [arithmeticResidueSum,cuspFrequency,map_zero,zero_div,zero_mul,
+    AddChar.map_zero_eq_one,mul_one]
+
+theorem arithmeticResidueSum_constant_eigen (c : O) (hc : c ≠ 0) (hlevel : (3:O) ∣ c)
+    (t : O) (ht : denominatorCondition c t) :
+    ringComplex (symbol c t)*arithmeticResidueSum 0 c=arithmeticResidueSum 0 c := by
+  rw [arithmeticResidueSum_zero]
+  have heq := (residueMultiplicationEquiv c hc t ht).tsum_eq
+    (fun r : AdmissibleResidue c => ringComplex (symbol c (denominatorRep c r.1)))
+  calc
+    _ = ∑' r : AdmissibleResidue c,ringComplex (symbol c t*symbol c (denominatorRep c r.1)) := by
+      simp only [map_mul,tsum_mul_left]
+    _ = _ := by
+      convert heq using 1
+      apply tsum_congr
+      intro r
+      exact congrArg ringComplex (residueMultiplication_phase c hlevel t ht r).symm
+
+theorem arithmeticResidueSum_ne_zero_forces_trivial (c : O) (hc : c ≠ 0)
+    (hlevel : (3:O) ∣ c) (hA : arithmeticResidueSum 0 c ≠ 0) :
+    ∀ t : O, denominatorCondition c t → symbol c t=1 := by
+  intro t ht
+  apply ringComplex_injective
+  rw [map_one]
+  apply (mul_right_cancel₀ hA)
+  rw [arithmeticResidueSum_constant_eigen c hc hlevel t ht,one_mul]
+
+
+lemma coprime_of_dvd_sub_one (a b : O) (h : a ∣ b-1) : IsCoprime a b := by
+  obtain ⟨r,hr⟩ := h
+  exact ⟨-r,1,by linear_combination hr⟩
+
+lemma primary_coprime_three (p : O) (hp : lambda^2 ∣ p-1) : IsCoprime p (3:O) :=
+  (coprime_of_dvd_sub_one 3 p (three_dvd_primary_sub_one p hp)).symm
+
+lemma exists_one_mod_and_prescribed (p m x : O) (hpm : IsCoprime p m) :
+    ∃ t : O, m ∣ t-1 ∧ p ∣ t-x := by
+  obtain ⟨r,u,hu⟩ := hpm
+  refine ⟨1+m*u*(x-1),⟨u*(x-1),by ring⟩,⟨-r*(x-1),?_⟩⟩
+  linear_combination (x-1)*hu
+
+theorem constant_coefficient_primary_prime_exponent (c p b : O) (n : ℕ)
+    (hc : c ≠ 0) (hlevel : (3:O) ∣ c) (hp : Prime p) (hprimary : lambda^2 ∣ p-1)
+    (hpb : ¬p ∣ b) (hfactor : c=p^n*b) (hA : arithmeticResidueSum 0 c ≠ 0) :
+    3 ∣ n := by
+  by_contra hn
+  let P : Ideal O := Ideal.span {p}
+  let : P.IsMaximal := PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  have hg : lambda ∉ P := primary_maximal_divisor_good p hprimary P (Ideal.subset_span (by simp []))
+  have hchar : (cubicChar P hg)^n ≠ 1 := by
+    intro heq
+    have hd := orderOf_dvd_of_pow_eq_one heq
+    rw [cubicChar_order P hg] at hd
+    exact hn hd
+  obtain ⟨u,hu⟩ := MulChar.ne_one_iff.mp hchar
+  rw [MulChar.pow_apply_coe] at hu
+  obtain ⟨x,hx⟩ := Ideal.Quotient.mk_surjective (u : O ⧸ P)
+  have hp9 : IsCoprime p (9:O) := by
+    simpa only [show (3:O)^2=9 by norm_num] using (primary_coprime_three p hprimary).pow_right (n := 2)
+  have hpm : IsCoprime p (9*b) := hp9.mul_right (hp.coprime_iff_not_dvd.mpr hpb)
+  obtain ⟨t,htm,htp⟩ := exists_one_mod_and_prescribed p (9*b) x hpm
+  have h9 : (9:O) ∣ t-1 := (dvd_mul_right 9 b).trans htm
+  have hb : b ∣ t-1 := (dvd_mul_left b 9).trans htm
+  have h3 : (3:O) ∣ t-1 := (show (3:O) ∣ 9 from ⟨3,by norm_num⟩).trans h9
+  have htprimary : lambda^2 ∣ t-1 := lambda_sq_dvd_three.trans h3
+  have htu : Ideal.Quotient.mk P t=(u : O ⧸ P) := by
+    rw [← hx]
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr (Ideal.mem_span_singleton.mpr htp)
+  have hpt : IsCoprime p t := hp.coprime_iff_not_dvd.mpr (by
+    intro hdiv
+    have hz : Ideal.Quotient.mk P t=0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hdiv)
+    rw [htu] at hz
+    exact Units.ne_zero u hz)
+  have hbt : IsCoprime b t := coprime_of_dvd_sub_one b t hb
+  have hct : IsCoprime c t := by
+    rw [hfactor]
+    exact hpt.pow_left.mul_left hbt
+  have htriv := arithmeticResidueSum_ne_zero_forces_trivial c hc hlevel hA t ⟨hct,h3⟩
+  have hbsym : symbol b t=1 := by
+    have hh := symbol_denominator_congr b t 1 htprimary (by simp) h9 hb
+    simpa only [symbol_one] using hh
+  have hpsym : symbol p t=cubicChar P hg (u : O ⧸ P) := by
+    rw [symbol_reciprocity p t hprimary htprimary]
+    change idealSymbol P t=_
+    rw [idealSymbol_prime P hg,htu]
+  rw [hfactor,symbol_mul_numerator _ _ t,symbol_pow_numerator p t htprimary,
+    hbsym,mul_one,hpsym] at htriv
+  exact hu htriv
+
+
+#print axioms arithmeticResidueSum_constant_eigen
+#print axioms constant_coefficient_primary_prime_exponent
+end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

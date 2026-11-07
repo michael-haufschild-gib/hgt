@@ -321,3 +321,8 @@ CubicEisensteinFourierInterchange adapts Eisenstein/FourierCoefficients.lean dom
 CubicHyperbolicFourierKernel adapts Eisenstein/HyperbolicSpace.lean radial integration and Fourier normalization.
 CubicCuspFourierKernels adapts Eisenstein/FourierCoefficients.lean shifted-kernel integrals and character orthogonality.
 TheCubicEisensteinFourierCoefficients adapts Eisenstein/FourierCoefficients.lean arithmetic unfolding and convergence.
+CubicConstantResidueCharacters adapts CubicSieve/FixedProfiles.lean multiplicative residue symmetry and prime-exponent rigidity.
+TheCubicConstantTermIsSupportedOnCubes adapts Eisenstein/ConstantTermSupport.lean cube-support classification.
+CubicAdmissibleResidueCounts adapts CubicSieve/ConjugateProfiles.lean affine residue counts and ramified quotient norms.
+CubicIdealTotients adapts Eisenstein/RamifiedNormWeights.lean ideal-totient cardinality identities.
+CubicIdealMobiusInversion adapts Arithmetic/IdealMobius.lean and Eisenstein/RamifiedNormWeights.lean divisor inversion and totient convolution.
