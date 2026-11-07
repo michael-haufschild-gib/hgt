@@ -110,6 +110,7 @@ import GaloisForLFunctions.ArithmeticCouplingTheory.TheCouplingInterfaces
 import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.WeightedIncidenceMoments
 import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.MixedChannelDecomposition
 import GaloisForLFunctions.ArithmeticCouplingTheory.ReceivingCharges.MixedChannelBounds
+import GaloisForLFunctions.ArithmeticCouplingTheory.ChargesBeyondTheGcdProfilesAreCoercive
 /-!
 # Arithmetic Coupling Theory
 

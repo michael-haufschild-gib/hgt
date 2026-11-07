@@ -123,7 +123,6 @@ theorem jumpEnergy_ge_of_progression {M d X : ℕ} (hM : 0 < M) (hd : 1 ≤ d) (
     have hY0 : (0 : ℝ) < ((Y + 1 : ℕ) : ℝ) := by positivity
     have hl := Real.log_le_log hN0 hltR
     rw [Real.log_mul hXM0.ne' hY0.ne'] at hl
-    rw [Nat.cast_add_one] at hl
     rw [sum_inv_eq_harmonic_real]
     have hh := log_add_one_le_harmonic Y
     linarith only [hl, hh]
@@ -235,37 +234,38 @@ theorem mertensProgressionThreshold_spec {q : ℕ} (hq : 0 < q) {x : ℝ}
   rw [dif_neg hq.ne'] at hx
   exact Classical.choose_spec (exists_mertens_progression_threshold q) x hx a ha
 
-open scoped Classical in
-/-- **The admissible period scale** `M₀(N)`: the largest `Q ≤ N` with `Q ≤ log log N` whose moduli
-`q ≤ Q` are all past their Mertens thresholds at `√N`. -/
-def admissiblePeriod (N : ℕ) : ℕ :=
-  Nat.findGreatest (fun Q : ℕ => (Q : ℝ) ≤ Real.log (Real.log N) ∧
-    ∀ q ∈ Finset.Icc 1 Q, mertensProgressionThreshold q ≤ Real.sqrt N) N
+/-- The admissibility of a period scale `Q` at `N`: `Q ≤ log log N`, and every modulus `q ≤ Q`
+is past its Mertens threshold at `√N`. -/
+def admissiblePredicate (N Q : ℕ) : Prop :=
+  (Q : ℝ) ≤ Real.log (Real.log N) ∧ ∀ q ∈ Finset.Icc 1 Q, mertensProgressionThreshold q ≤ Real.sqrt N
 
-open scoped Classical in
+noncomputable instance (N : ℕ) : DecidablePred (admissiblePredicate N) := Classical.decPred _
+
+/-- **The admissible period scale** `M₀(N)`: the largest admissible `Q ≤ N`. -/
+def admissiblePeriod (N : ℕ) : ℕ := Nat.findGreatest (admissiblePredicate N) N
+
 theorem admissiblePeriod_spec {N M : ℕ} (hM : 0 < M) (hMN : M ≤ admissiblePeriod N) :
     (M : ℝ) ≤ Real.log (Real.log N) ∧
       ∀ q ∈ Finset.Icc 1 M, mertensProgressionThreshold q ≤ Real.sqrt N := by
   have hne : admissiblePeriod N ≠ 0 := by omega
-  unfold admissiblePeriod at hne hMN
-  obtain ⟨h1, h2⟩ := Nat.findGreatest_of_ne_zero rfl hne
+  have h : admissiblePredicate N (admissiblePeriod N) := Nat.findGreatest_of_ne_zero rfl hne
+  obtain ⟨h1, h2⟩ := h
   refine ⟨le_trans (by exact_mod_cast hMN) h1, fun q hq => h2 q ?_⟩
   exact Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp hq).1, (Finset.mem_Icc.mp hq).2.trans hMN⟩
 
-open scoped Classical in
 /-- **The admissible period scale is unbounded.** -/
 theorem tendsto_admissiblePeriod_atTop : Tendsto admissiblePeriod atTop atTop := by
   refine tendsto_atTop.mpr fun Q => ?_
   have hlog : Tendsto (fun N : ℕ => Real.log (Real.log N)) atTop atTop :=
     Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
-  have hthr : ∀ᶠ N : ℕ in atTop, ∀ q ∈ Finset.Icc 1 Q, mertensProgressionThreshold q ≤ Real.sqrt N := by
+  have hthr : ∀ᶠ N : ℕ in atTop,
+      ∀ q ∈ Finset.Icc 1 Q, mertensProgressionThreshold q ≤ Real.sqrt N := by
     refine (Filter.eventually_all_finset _).mpr fun q _ => ?_
     filter_upwards [(tendsto_natCast_atTop_atTop (R := ℝ)).eventually_ge_atTop
       (mertensProgressionThreshold q ^ 2)] with N hN
     exact (le_abs_self _).trans (Real.abs_le_sqrt hN)
   filter_upwards [eventually_ge_atTop Q, hlog.eventually_ge_atTop (Q : ℝ), hthr] with N hQN hQ hq
-  unfold admissiblePeriod
-  exact Nat.le_findGreatest hQN ⟨hQ, hq⟩
+  exact Nat.le_findGreatest hQN (show admissiblePredicate N Q from ⟨hQ, hq⟩)
 
 /-! ### The quantitative jump energy beyond the gcd profiles -/
 
@@ -529,9 +529,10 @@ theorem eventually_completeWeilEnergy_ge_beyond_gcd {φ : ℝ → ℝ}
   rw [← packetVector_norm_sq] at hrem
   have hsq := sum_sq_neutralCharge_le hV hN1 hL0
   have hc3 : c ^ 3 ≤ Real.log N ^ (3 / 4 : ℝ) := by
-    have h := pow_le_pow_left₀ (by linarith only [hc1]) hcL 3
-    rwa [← Real.rpow_natCast, ← Real.rpow_mul hL0.le, show (1 / 4 : ℝ) * ((3 : ℕ) : ℝ) = 3 / 4 by
-      norm_num] at h
+    have hpow : (Real.log N ^ (1 / 4 : ℝ)) ^ 3 = Real.log N ^ (3 / 4 : ℝ) := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      norm_num
+    exact (pow_le_pow_left₀ (by linarith only [hc1]) hcL 3).trans_eq hpow
   have hc23 : c ^ 2 ≤ c ^ 3 := by
     have := mul_le_mul_of_nonneg_left hc1 (sq_nonneg c)
     nlinarith only [this]

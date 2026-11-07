@@ -43,7 +43,7 @@ set_option autoImplicit false
 noncomputable section
 
 open MeasureTheory Finset Filter Topology RHTower Zeta23 ArithmeticFunction
-open scoped Classical BigOperators RealInnerProductSpace Matrix
+open scoped Classical BigOperators RealInnerProductSpace Matrix ComplexConjugate
 
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
@@ -3673,5 +3673,1066 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
       0 ≤ (κ₀ + 3) * ‖u₀‖ ^ 2 + (κ₀ + 2 + Real.log (N : ℝ) ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 := by
     positivity
   exact ⟨by linarith only [hgarding_raw, hnorm_fl, hE_def], by linarith only [hbridge_raw, hu01_nn]⟩
+
+/-! ### 5. Signed PNT pole-cancellation bridge and high-conductor window confinement -/
+
+private lemma weighted_archForm_add_ge_of_ordered {f g : ℝ → ℝ} {b α : ℝ}
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g)
+    (hleft : ∀ u, b ≤ u → f u = 0) (hright : ∀ u, u ≤ b → g u = 0) (hα : 0 < α) :
+    archForm f + archForm g - 2 * Real.pi * (α * (∫ u, f u ^ 2) + α⁻¹ * (∫ u, g u ^ 2)) ≤
+      archForm (fun u => f u + g u) := by
+  set s := Real.sqrt α
+  have hs : 0 < s := Real.sqrt_pos.mpr hα
+  have hs2 : s ^ 2 = α := Real.sq_sqrt hα.le
+  set f₁ : ℝ → ℝ := fun u => s * f u
+  set g₁ : ℝ → ℝ := fun u => s⁻¹ * g u
+  have hf₁ : ContDiff ℝ 2 f₁ := contDiff_const.mul hf
+  have hf₁c : HasCompactSupport f₁ := hfc.mul_left
+  have hg₁ : ContDiff ℝ 2 g₁ := contDiff_const.mul hg
+  have hg₁c : HasCompactSupport g₁ := hgc.mul_left
+  have hleft₁ : ∀ u, b ≤ u → f₁ u = 0 := fun u hu => by
+    dsimp only [f₁]; rw [hleft u hu, mul_zero]
+  have hright₁ : ∀ u, u ≤ b → g₁ u = 0 := fun u hu => by
+    dsimp only [g₁]; rw [hright u hu, mul_zero]
+  have h := ArithmeticIndexDescent.abs_archCross_le_of_ordered hf₁ hf₁c hg₁ hg₁c hleft₁ hright₁
+  have hcx1 : cx f₁ = fun u => (s : ℂ) * cx f u := funext fun u => by simp [cx, f₁]
+  have hcx2 : cx g₁ = fun u => ((s⁻¹ : ℝ) : ℂ) * cx g u := funext fun u => by simp [cx, g₁]
+  have hint_eq :
+      (∫ r : ℝ, (paperFT (cx f₁) r * conj (paperFT (cx g₁) r)).re * EF.gammaBracket r) =
+        ∫ r : ℝ, (paperFT (cx f) r * conj (paperFT (cx g) r)).re * EF.gammaBracket r := by
+    refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+    dsimp only
+    rw [hcx1, hcx2, paperFT_const_mul, paperFT_const_mul, map_mul, Complex.conj_ofReal]
+    have hsc : ((s : ℂ) * paperFT (cx f) r) * (((s⁻¹ : ℝ) : ℂ) * conj (paperFT (cx g) r)) =
+        paperFT (cx f) r * conj (paperFT (cx g) r) := by
+      calc ((s : ℂ) * paperFT (cx f) r) * (((s⁻¹ : ℝ) : ℂ) * conj (paperFT (cx g) r))
+          = ((s * s⁻¹ : ℝ) : ℂ) * (paperFT (cx f) r * conj (paperFT (cx g) r)) := by
+            push_cast; ring
+        _ = paperFT (cx f) r * conj (paperFT (cx g) r) := by
+            rw [mul_inv_cancel₀ hs.ne', Complex.ofReal_one, one_mul]
+    rw [hsc]
+  change |(1 / (2 * Real.pi)) * ∫ r : ℝ,
+      (paperFT (cx f₁) r * conj (paperFT (cx g₁) r)).re * EF.gammaBracket r| ≤
+    Real.pi * ((∫ u, f₁ u ^ 2) + ∫ u, g₁ u ^ 2) at h
+  have hm1 : (∫ u, f₁ u ^ 2) = α * ∫ u, f u ^ 2 := by
+    dsimp only [f₁]; simp_rw [mul_pow]; rw [integral_const_mul, hs2]
+  have hm2 : (∫ u, g₁ u ^ 2) = α⁻¹ * ∫ u, g u ^ 2 := by
+    dsimp only [g₁]; simp_rw [mul_pow]; rw [integral_const_mul, inv_pow, hs2]
+  rw [hint_eq, hm1, hm2] at h
+  have hlow := (abs_le.mp h).1
+  rw [archForm_add_eq hf hfc hg hgc]
+  linarith only [hlow]
+
+private lemma weighted_archForm_prefix_top_split_ge {c α : ℝ} (hc1 : 1 ≤ c) (hα : 0 < α) {N : ℕ}
+    (hLN : linearDefectCutoff c ≤ N) (hM : 1 ≤ N / linearDefectCutoff c) (x : ℕ → ℝ) :
+    let w := c / (N : ℝ)
+    let g := atomDilate tiltedUnitSpline w
+    let I₂ := ∫ u, tiltedUnitSpline u ^ 2
+    let G := w * I₂
+    let M := N / linearDefectCutoff c
+    let y := atomicTailCoefficients M x
+    let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
+    archForm (atomicTest M x g) + archForm (atomicTest N y g) -
+        2 * Real.pi * (α * (G * ∑ n ∈ Icc 1 M, x n ^ 2) +
+          α⁻¹ * (G * ((c / I₂) * ∫ u, U_y u ^ 2))) ≤
+      archForm (atomicTest N x g) := by
+  intro w g I₂ G M y U_y
+  obtain ⟨hL3, h4c, -, -⟩ := linearDefectCutoff_bounds hc1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hL1 : 1 ≤ linearDefectCutoff c := by omega
+  have hN1 : 1 ≤ N := hL1.trans hLN
+  have hMN : M ≤ N := Nat.div_le_self N _
+  have hML : (M : ℝ) * linearDefectCutoff c ≤ N := by
+    dsimp only [M]; exact_mod_cast Nat.div_mul_le_self N _
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hLR : (0 : ℝ) < linearDefectCutoff c := by exact_mod_cast hL1
+  have hM1R : (1 : ℝ) ≤ M := by exact_mod_cast hM
+  have hw : 0 < w := div_pos hc0 hNR
+  have hwN : w * N = c := by dsimp only [w]; field_simp [hNR.ne']
+  have hwM : w * M ≤ c / linearDefectCutoff c := by
+    apply (le_div_iff₀ hLR).mpr
+    calc w * M * linearDefectCutoff c = w * ((M : ℝ) * linearDefectCutoff c) := by ring
+      _ ≤ w * N := mul_le_mul_of_nonneg_left hML hw.le
+      _ = c := hwN
+  have hsep : w < atomSpacing M := by
+    have hfour : 4 * w * M ≤ 1 := by
+      have hl : 4 * (c / (linearDefectCutoff c : ℝ)) ≤ 1 := by
+        rw [← mul_div_assoc, div_le_one hLR]; exact h4c
+      nlinarith only [hwM, hl]
+    have hbound : w ≤ (1 / ((M : ℝ) + 1)) / 2 := by
+      apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 2)).mpr
+      apply (le_div_iff₀ (by positivity : (0 : ℝ) < M + 1)).mpr
+      nlinarith only [hfour, mul_nonneg hw.le (sub_nonneg.mpr hM1R)]
+    linarith only [hbound, (atomSpacing_bounds hM).1, atomSpacing_pos hM]
+  have hg : ContDiff ℝ 2 g := contDiff_tiltedUnitSpline.comp (contDiff_id.div_const _)
+  have hgc : HasCompactSupport g :=
+    hasCompactSupport_atomDilate hw.ne' hasCompactSupport_tiltedUnitSpline
+  have hsupp := tiltedUnitSpline_atom_support hw
+  have hmass : (∫ u, g u ^ 2) = G := integral_atomDilate_sq hw
+  obtain ⟨_, hleft, hright⟩ := atomicTest_prefix_tail_ordered hsupp hM hsep N x
+  have hcrossA := weighted_archForm_add_ge_of_ordered
+    (contDiff_atomicTest hg M x) (hasCompactSupport_atomicTest hsupp M x)
+    (contDiff_atomicTest hg N y) (hasCompactSupport_atomicTest hsupp N y) hleft hright hα
+  rw [← atomicTest_eq_prefix_add_tail hMN x g] at hcrossA
+  have hloMass : (∫ u, atomicTest M x g u ^ 2) = G * ∑ n ∈ Icc 1 M, x n ^ 2 := by
+    rw [integral_atomicTest_sq hg hgc hsupp hsep, hmass, mul_comm]
+  obtain ⟨_, _, _, hhiMass, _, _⟩ := normalizedCentredAtomicTest_scaling hc0 hN1 y
+  dsimp only [w, g, I₂, G, y, U_y] at hhiMass hcrossA hloMass ⊢
+  rw [hloMass, hhiMass] at hcrossA
+  exact hcrossA
+
+private lemma two_mul_cosh_sq_sub_sinh_sq_collar {f : ℝ → ℝ}
+    (hf : Continuous f) (hfc : HasCompactSupport f) :
+    2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2 =
+      2 * (∫ u, f u * Real.exp (-(u / 2))) * (∫ u, f u * Real.exp (u / 2)) := by
+  have ip : Integrable fun u => f u * Real.exp (u / 2) :=
+    (hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right
+  have im : Integrable fun u => f u * Real.exp (-(u / 2)) :=
+    (hf.mul (by fun_prop)).integrable_of_hasCompactSupport hfc.mul_right
+  have hcosh : coshHalfMoment f =
+      ((∫ u, f u * Real.exp (u / 2)) + ∫ u, f u * Real.exp (-(u / 2))) / 2 := by
+    unfold coshHalfMoment
+    rw [← integral_add ip im, ← integral_div]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    dsimp only; rw [Real.cosh_eq]; ring
+  have hsinh : sinhHalfMoment f =
+      ((∫ u, f u * Real.exp (u / 2)) - ∫ u, f u * Real.exp (-(u / 2))) / 2 := by
+    unfold sinhHalfMoment
+    rw [← integral_sub ip im, ← integral_div]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    dsimp only; rw [Real.sinh_eq]; ring
+  rw [hcosh, hsinh]; ring
+
+private lemma weilQuad_collar_scaling {N : ℕ} {c : ℝ} (hc0 : 0 < c) (hN1 : 1 ≤ N) (y : ℕ → ℝ) :
+    let w := c / (N : ℝ)
+    let g := atomDilate tiltedUnitSpline w
+    let I₂ := ∫ u, tiltedUnitSpline u ^ 2
+    let G := w * I₂
+    let f_y := atomicTest N y g
+    let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
+    archForm f_y - primeSum f_y +
+        2 * (∫ u, f_y u * Real.exp (-(u / 2))) * (∫ u, f_y u * Real.exp (u / 2)) =
+      G * ((c / I₂) * weilQuad U_y) ∧
+    2 * (∫ u, f_y u * Real.exp (-(u / 2))) * (∫ u, f_y u * Real.exp (u / 2)) =
+      G * ((c / I₂) *
+        (2 * (∫ u, U_y u * Real.exp (-(u / 2))) * (∫ u, U_y u * Real.exp (u / 2)))) := by
+  intro w g I₂ G f_y U_y
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hI₂ : 0 < I₂ := integral_tiltedUnitSpline_sq_pos
+  obtain ⟨hUy_cd, hUy_cs, _, _, hfy_arch, hfy_prime⟩ :=
+    normalizedCentredAtomicTest_scaling hc0 hN1 y
+  have hexp_sqrt : Real.sqrt N = Real.exp (Real.log (N : ℝ) / 2) := by
+    rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hN0]; congr 1; ring
+  have hUm : ∫ u, U_y u * Real.exp (-(u / 2)) =
+      ((N : ℝ) / c) * ∫ v, f_y v * Real.exp (-(v / 2)) := by
+    have hfn : (fun u => U_y u * Real.exp (-(u / 2))) =
+        fun u => ((N : ℝ) / c) * (f_y (u + Real.log N) * Real.exp (-((u + Real.log N) / 2))) := by
+      funext u
+      dsimp only [U_y, normalizedCentredAtomicTest, centredAtomicTest, f_y, g, w]
+      have h1 : Real.sqrt N * Real.exp (-((u + Real.log N) / 2)) = Real.exp (-(u / 2)) := by
+        rw [hexp_sqrt, ← Real.exp_add]; congr 1; ring
+      have h2 : (N : ℝ) = Real.sqrt N * Real.sqrt N := (Real.mul_self_sqrt hN0.le).symm
+      calc Real.sqrt N / c * atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+              Real.exp (-(u / 2))
+          = (Real.sqrt N / c) * (Real.sqrt N * Real.exp (-((u + Real.log N) / 2))) *
+              atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) := by
+            rw [h1]; ring
+        _ = ((Real.sqrt N * Real.sqrt N) / c) *
+              (atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+                Real.exp (-((u + Real.log N) / 2))) := by ring
+        _ = ((N : ℝ) / c) *
+              (atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+                Real.exp (-((u + Real.log N) / 2))) := by rw [← h2]
+    rw [hfn, integral_const_mul,
+      integral_add_right_eq_self (μ := volume) (fun v => f_y v * Real.exp (-(v / 2))) (Real.log N)]
+  have hUp : ∫ u, U_y u * Real.exp (u / 2) =
+      (1 / c) * ∫ v, f_y v * Real.exp (v / 2) := by
+    have hfn : (fun u => U_y u * Real.exp (u / 2)) =
+        fun u => (1 / c) * (f_y (u + Real.log N) * Real.exp ((u + Real.log N) / 2)) := by
+      funext u
+      dsimp only [U_y, normalizedCentredAtomicTest, centredAtomicTest, f_y, g, w]
+      have h1 : Real.sqrt N * Real.exp (u / 2) = Real.exp ((u + Real.log N) / 2) := by
+        rw [hexp_sqrt, ← Real.exp_add]; congr 1; ring
+      calc Real.sqrt N / c * atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+              Real.exp (u / 2)
+          = (1 / c) * (atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+              (Real.sqrt N * Real.exp (u / 2))) := by ring
+        _ = (1 / c) * (atomicTest N y (atomDilate tiltedUnitSpline (c / N)) (u + Real.log N) *
+              Real.exp ((u + Real.log N) / 2)) := by rw [h1]
+    rw [hfn, integral_const_mul,
+      integral_add_right_eq_self (μ := volume) (fun v => f_y v * Real.exp (v / 2)) (Real.log N)]
+  have hpole_scale :
+      2 * (∫ u, f_y u * Real.exp (-(u / 2))) * (∫ u, f_y u * Real.exp (u / 2)) =
+        G * ((c / I₂) *
+          (2 * (∫ u, U_y u * Real.exp (-(u / 2))) * (∫ u, U_y u * Real.exp (u / 2)))) := by
+    rw [hUm, hUp]
+    dsimp only [G, w]
+    field_simp [hc0.ne', hN0.ne', hI₂.ne']
+  refine ⟨?_, hpole_scale⟩
+  rw [weilQuad_eq hUy_cd hUy_cs, archForm_eq_levyEnergy hUy_cd hUy_cs,
+    two_mul_cosh_sq_sub_sinh_sq_collar hUy_cd.continuous hUy_cs]
+  dsimp only [w, g, I₂, G, f_y, U_y] at hfy_arch hfy_prime hpole_scale ⊢
+  linarith only [hfy_arch, hfy_prime, hpole_scale,
+    (by ring : G * ((c / I₂) * (archForm U_y - primeSum U_y +
+      2 * (∫ u, U_y u * Real.exp (-(u / 2))) * (∫ u, U_y u * Real.exp (u / 2)))) =
+      G * ((c / I₂) * archForm U_y) - G * ((c / I₂) * primeSum U_y) +
+        G * ((c / I₂) *
+          (2 * (∫ u, U_y u * Real.exp (-(u / 2))) * (∫ u, U_y u * Real.exp (u / 2)))))]
+
+private lemma one_sub_div_exp_neg_bounds {h : ℝ} (hh : 0 < h) :
+    0 ≤ 1 - (1 - Real.exp (-h)) / h ∧ 1 - (1 - Real.exp (-h)) / h ≤ h := by
+  have h1 := Real.add_one_le_exp (-h)
+  have h_le : (1 - Real.exp (-h)) / h ≤ 1 := (div_le_one hh).mpr (by linarith only [h1])
+  have h2 := mul_le_mul_of_nonneg_right (Real.add_one_le_exp h) (Real.exp_pos (-h)).le
+  have h_inv : Real.exp h * Real.exp (-h) = 1 := by
+    rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+  have h3 : h * (1 - h) ≤ h * Real.exp (-h) :=
+    mul_le_mul_of_nonneg_left (by linarith only [h1]) hh.le
+  have h_ge : 1 - h ≤ (1 - Real.exp (-h)) / h :=
+    (le_div_iff₀ hh).mpr (by linarith only [h2, h_inv, h3])
+  exact ⟨by linarith only [h_le], by linarith only [h_ge]⟩
+
+private lemma two_mul_abs_collar_pole_le {U : ℝ → ℝ}
+    (hU : ContDiff ℝ 2 U) (hUc : HasCompactSupport U) (hs : ∀ u, 1 < u → U u = 0) :
+    2 * |(∫ u, U u * Real.exp (-(u / 2))) * (∫ u, U u * Real.exp (u / 2))| ≤
+      (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + 10 * ∫ u, U u ^ 2 := by
+  have hm := sq_exp_neg_half_moment_le_exponential_mass one_pos hU.continuous hUc hs
+  have hp := sq_exp_pos_half_moment_le_l2 hU.continuous hUc hs
+  set Im := ∫ u, U u * Real.exp (-(u / 2))
+  set Ip := ∫ u, U u * Real.exp (u / 2)
+  have ham : 2 * |Im * Ip| ≤ Im ^ 2 + Ip ^ 2 := by
+    rw [abs_mul]
+    nlinarith only [sq_nonneg (|Im| - |Ip|), sq_abs Im, sq_abs Ip]
+  have h6 : 1 * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + (4 + 2 / (1 : ℝ)) * (∫ u, U u ^ 2) =
+      (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + 6 * ∫ u, U u ^ 2 := by ring
+  linarith only [ham, hm, hp, h6]
+
+private def coherentWindow (a b h σ s : ℝ) : ℝ :=
+  (Set.Icc a b).indicator (fun s => Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * σ) s
+
+private def smoothedCoherent (g : ℝ → ℝ) (a b h σ u : ℝ) : ℝ :=
+  h⁻¹ * ∫ t, g t * coherentWindow a b h σ (u - t)
+
+private def offPoleWindowSumBound (C c₀ A : ℝ) (B M K' : ℕ) (x : ℕ → ℝ) (h : ℝ) : ℝ :=
+  8 * (h ^ 2 * (prefixMass M x * (1 + Real.log (2 * K'))) +
+      (4 * C * pntRate c₀ K' + h ^ 2) ^ 2 * (prefixMass M x * prefixHarmonic M)) *
+      (B * Real.exp h) +
+    8 * (h ^ 2 * (prefixMass M x * prefixHarmonic M)) *
+      ((A * Real.exp h - A) + (B * Real.exp h - B)) +
+    2 * shortOrderWeight K' * ∑ k ∈ range K', (Λ k : ℝ) * (h * (B * Real.exp h) / k + 1) *
+      (h * prefixMass M x)
+
+private lemma integral_tail_mul_smoothedCoherent_eq {N : ℕ} {c h : ℝ}
+    (hc1 : 1 ≤ c) (h2LN : 2 * linearDefectCutoff c ≤ N)
+    (hh0 : 0 < h) (hh_quarter : h ≤ 1 / 4)
+    {z : EuclideanSpace ℝ (PrimeHorizonIndex N)} (hz : z ∈ (conductorSubspace 1 N)ᗮ) :
+    let w := c / (N : ℝ)
+    let g := atomDilate tiltedUnitSpline w
+    let x := primeHorizonExtension z
+    let M := N / linearDefectCutoff c
+    let y := atomicTailCoefficients M x
+    let f_y := atomicTest N y g
+    let F_coh := smoothedCoherent g (Real.log ((M : ℝ) / 2) + h) (Real.log (N : ℝ) + w) h
+      (prefixPoleMoment M x)
+    Integrable (fun u => f_y u * F_coh u) ∧
+      -2 * (∫ u, f_y u * F_coh u) =
+        2 * ((1 - Real.exp (-h)) / h) *
+          (∫ u, f_y u * Real.exp (-(u / 2))) * (∫ u, f_y u * Real.exp (u / 2)) := by
+  intro w g x M y f_y F_coh
+  obtain ⟨hL3, h4c, h256, -⟩ := linearDefectCutoff_bounds hc1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hLN : linearDefectCutoff c ≤ N := by omega
+  have hN2 : 2 ≤ N := by omega
+  have hN1 : 1 ≤ N := by omega
+  have hM2 : 2 ≤ M := (Nat.le_div_iff_mul_le (by omega : 0 < linearDefectCutoff c)).mpr (by omega)
+  have hM1 : 1 ≤ M := by omega
+  have hMN : M ≤ N := Nat.div_le_self N _
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hMR : (0 : ℝ) < M := by exact_mod_cast hM1
+  have hw0 : 0 < w := div_pos hc0 hNR
+  have hwN : w * N = c := by dsimp only [w]; field_simp [hNR.ne']
+  have hw256 : w * 256 ≤ 1 := by
+    have hLNR : (linearDefectCutoff c : ℝ) ≤ N := by exact_mod_cast hLN
+    have h1 : w * (256 * Real.exp 2 * c) ≤ c := by
+      have := mul_le_mul_of_nonneg_left (h256.trans hLNR) hw0.le
+      linarith only [this, hwN]
+    have h2 : w * 256 * Real.exp 2 ≤ 1 :=
+      le_of_mul_le_mul_right (by rw [one_mul]; linarith only [h1]) hc0
+    exact (le_mul_of_one_le_right (by positivity) (Real.one_le_exp (by norm_num))).trans h2
+  have hwh_log2 : w + h ≤ Real.log 2 := by
+    linarith only [hw256, hh_quarter, Real.log_two_gt_d9]
+  have hg : ContDiff ℝ 2 g := contDiff_tiltedUnitSpline.comp (contDiff_id.div_const _)
+  have hsupp := tiltedUnitSpline_atom_support hw0
+  have hfy : ContDiff ℝ 2 f_y := contDiff_atomicTest hg N y
+  have hfyc : HasCompactSupport f_y := hasCompactSupport_atomicTest hsupp N y
+  have hfy_vanish : ∀ u, u ∉ Set.Icc (Real.log (M : ℝ)) (Real.log (N : ℝ) + w) → f_y u = 0 := by
+    intro u hu
+    dsimp only [f_y]
+    unfold atomicTest
+    refine sum_eq_zero fun n hn => ?_
+    by_cases hnM : n ≤ M
+    · have hy0 : y n = 0 := if_neg (Nat.not_lt.mpr hnM)
+      rw [hy0, zero_mul]
+    · push Not at hnM
+      have hn1 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+      have hMn : Real.log (M : ℝ) ≤ Real.log (n : ℝ) :=
+        Real.log_le_log hMR (by exact_mod_cast hnM.le)
+      have hnN : Real.log (n : ℝ) ≤ Real.log (N : ℝ) :=
+        Real.log_le_log hn1 (by exact_mod_cast (mem_Icc.mp hn).2)
+      have hnot : u - Real.log (n : ℝ) ∉ Set.Icc 0 w := fun hm =>
+        hu ⟨by linarith only [hm.1, hMn], by linarith only [hm.2, hnN]⟩
+      rw [hsupp _ hnot, mul_zero]
+  set Ig := ∫ t, g t * Real.exp (-(t / 2))
+  set σ := prefixPoleMoment M x
+  have hFcoh_on : ∀ u ∈ Set.Icc (Real.log (M : ℝ)) (Real.log (N : ℝ) + w),
+      F_coh u = ((1 - Real.exp (-h)) / h) * (Ig * σ) * Real.exp (u / 2) := by
+    intro u hu
+    dsimp only [F_coh, smoothedCoherent]
+    have hpt : (fun t => g t * coherentWindow (Real.log ((M : ℝ) / 2) + h)
+          (Real.log (N : ℝ) + w) h σ (u - t)) =
+        fun t => ((1 - Real.exp (-h)) * σ * Real.exp (u / 2)) * (g t * Real.exp (-(t / 2))) := by
+      funext t
+      by_cases ht : t ∈ Set.Icc 0 w
+      · have hlogM2 : Real.log ((M : ℝ) / 2) = Real.log (M : ℝ) - Real.log 2 :=
+          Real.log_div hMR.ne' two_ne_zero
+        have hmem : u - t ∈ Set.Icc (Real.log ((M : ℝ) / 2) + h) (Real.log (N : ℝ) + w) :=
+          ⟨by linarith only [hu.1, ht.2, hwh_log2, hlogM2], by linarith only [hu.2, ht.1]⟩
+        dsimp only [coherentWindow]
+        rw [Set.indicator_of_mem hmem]
+        have hsq : Real.sqrt (Real.exp (u - t)) = Real.exp (u / 2) * Real.exp (-(t / 2)) := by
+          rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp, ← Real.exp_add]
+          congr 1; ring
+        rw [hsq]; ring
+      · rw [hsupp t ht, zero_mul, zero_mul, mul_zero]
+    rw [hpt, integral_const_mul]
+    dsimp only [Ig]
+    field_simp [hh0.ne']
+  have hprod_eq : (fun u => f_y u * F_coh u) =
+      fun u => (((1 - Real.exp (-h)) / h) * (Ig * σ)) * (f_y u * Real.exp (u / 2)) := by
+    funext u
+    by_cases hu : u ∈ Set.Icc (Real.log (M : ℝ)) (Real.log (N : ℝ) + w)
+    · rw [hFcoh_on u hu]; ring
+    · rw [hfy_vanish u hu, zero_mul, zero_mul, mul_zero]
+  have i_base : Integrable fun u => f_y u * Real.exp (u / 2) :=
+    (hfy.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hfyc.mul_right
+  have i_prod : Integrable fun u => f_y u * F_coh u := by
+    rw [hprod_eq]; exact i_base.const_mul _
+  refine ⟨i_prod, ?_⟩
+  have hpole := poleFunctional_eq_zero_of_mem_conductorSubspace_one_orthogonal hN2 hz
+  change ∑ n ∈ Icc 1 N, x n / Real.sqrt n = 0 at hpole
+  have hsplit_pole : ∑ n ∈ Icc 1 N, x n / Real.sqrt n =
+      prefixPoleMoment M x + ∑ n ∈ Icc 1 N, y n / Real.sqrt n := by
+    have hdisj : Icc 1 N = Icc 1 M ∪ Ioc M N := by
+      ext n; simp only [mem_union, mem_Icc, mem_Ioc]; omega
+    have hy_sum : ∑ n ∈ Icc 1 N, y n / Real.sqrt n = ∑ n ∈ Ioc M N, x n / Real.sqrt n := by
+      rw [hdisj, sum_union (disjoint_left.mpr fun n h1 h2 => by
+        simp only [mem_Icc] at h1; simp only [mem_Ioc] at h2; omega)]
+      have h0 : ∑ n ∈ Icc 1 M, y n / Real.sqrt n = 0 :=
+        sum_eq_zero fun n hn => by
+          have hy0 : y n = 0 := if_neg (Nat.not_lt.mpr (mem_Icc.mp hn).2)
+          rw [hy0, zero_div]
+      have h1 : ∑ n ∈ Ioc M N, y n / Real.sqrt n = ∑ n ∈ Ioc M N, x n / Real.sqrt n :=
+        sum_congr rfl fun n hn => by
+          have hy1 : y n = x n := if_pos (mem_Ioc.mp hn).1
+          rw [hy1]
+      rw [h0, h1, zero_add]
+    rw [hy_sum, hdisj, sum_union (disjoint_left.mpr fun n h1 h2 => by
+      simp only [mem_Icc] at h1; simp only [mem_Ioc] at h2; omega)]
+    rfl
+  have hσ_eq : σ = -∑ n ∈ Icc 1 N, y n / Real.sqrt n := by
+    dsimp only [σ]; linarith only [hpole, hsplit_pole]
+  have hIg_σ : Ig * σ = -(∫ u, f_y u * Real.exp (-(u / 2))) := by
+    have hm := integral_atomicTest_mul_exp_neg_half hg.continuous hsupp N y
+    change ∫ u, f_y u * Real.exp (-(u / 2)) = Ig * ∑ n ∈ Icc 1 N, y n / Real.sqrt n at hm
+    rw [hσ_eq, mul_neg, ← hm]
+  rw [hprod_eq, integral_const_mul, hIg_σ]
+  ring
+
+private lemma abs_windowSum_sub_coherentWindow_le {C c₀ t₀ : ℝ} (hC : 0 ≤ C) (hc₀ : 0 < c₀)
+    (hpnt : ∀ ⦃h X Y : ℝ⦄, 0 < h → h ≤ 1 → Y = X * Real.exp (-h) → t₀ ≤ Y →
+      |∑ k ∈ Ioc ⌊Y⌋₊ ⌊X⌋₊, vonMangoldtAtom k - Real.sqrt X * (1 - Real.exp (-h))| ≤
+        Real.sqrt X * (4 * C * Real.exp (-c₀ * Real.sqrt (Real.log Y)) + h ^ 2))
+    {A w : ℝ} {B K M N K' : ℕ} {h s : ℝ} (hh : 0 < h) (hh1 : h ≤ 1)
+    (hA1 : 1 ≤ A) (hM : 1 ≤ M) (hMA : (M : ℝ) ≤ 2 * A) (hAB : A ≤ B) (hBK : B < K)
+    (hN1 : 1 ≤ N) (hBNw : (B : ℝ) ≤ N * Real.exp w)
+    (hK' : 1 ≤ K') (ht₀ : t₀ ≤ K' * Real.exp (-1)) (hAs : A ≤ Real.exp s) (x : ℕ → ℝ) :
+    |windowSum B (fun n => topWeight A B n * primeConv K M x n) h s -
+        coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h (prefixPoleMoment M x) s| ≤
+      Real.sqrt (Real.exp s) *
+        ((Set.Icc (Real.log (B : ℝ)) (Real.log (N : ℝ) + w)).indicator (fun _ => (1 : ℝ)) s *
+            h * |prefixPoleMoment M x| +
+          h * Real.sqrt (prefixMass M x * (1 + Real.log (2 * K'))) +
+          (4 * C * pntRate c₀ K' + h ^ 2) * Real.sqrt (prefixMass M x * prefixHarmonic M) +
+          (if A ≤ Real.exp (s - h) ∧ Real.exp s ≤ B then 0 else 1) * h *
+            Real.sqrt (prefixMass M x * prefixHarmonic M)) +
+      ∑ k ∈ range K', vonMangoldtAtom k *
+        ∑ m ∈ Icc 1 M, |x m| * windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) := by
+  have hA0 : 0 < A := by linarith
+  have hB0 : (0 : ℝ) < B := hA0.trans_le hAB
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  rw [windowSum_topWeight_primeConv hA1 x h s]
+  set P := prefixMass M x
+  set H := prefixHarmonic M
+  set σ := prefixPoleMoment M x
+  set ε := pntRate c₀ K'
+  set E := Real.sqrt (Real.exp s)
+  set ψ := fun m => windowPrimeSum A B K h s m
+  set Ψa := fun m : ℕ => ∑ k ∈ Ioc ⌊Real.exp (s - h) / m⌋₊ ⌊Real.exp s / m⌋₊, vonMangoldtAtom k
+  set Ψ₀ := fun m : ℕ => E * (1 - Real.exp (-h)) / Real.sqrt m
+  set shortS := (Icc 1 M).filter (fun m : ℕ => Real.exp s < K' * m)
+  set longS := (Icc 1 M).filter (fun m : ℕ => ¬ Real.exp s < K' * m)
+  have hE : 0 < E := Real.sqrt_pos.mpr (Real.exp_pos s)
+  have hP : 0 ≤ P := sum_nonneg fun _ _ => sq_nonneg _
+  have hH : 0 ≤ H := sum_nonneg fun m _ => by positivity
+  have heh := one_sub_exp_neg_le h
+  have heh0 := one_sub_exp_neg_nonneg hh.le
+  have hK'0 : (0 : ℝ) < K' := by exact_mod_cast hK'
+  have hsubS : shortS ⊆ Icc 1 M := filter_subset _ _
+  have hsubL : longS ⊆ Icc 1 M := filter_subset _ _
+  have hψ0 : ∀ m, 0 ≤ ψ m := fun m => windowPrimeSum_nonneg A B K h s m
+  have hψa : ∀ m ∈ Icc 1 M, ψ m ≤ Ψa m := fun m hm => windowPrimeSum_le_all (mem_Icc.mp hm).1
+  have hΨ₀ : ∀ m, 0 ≤ Ψ₀ m := fun m => div_nonneg (mul_nonneg hE.le heh0) (Real.sqrt_nonneg _)
+  have hlong : ∀ m ∈ longS, |Ψa m - Ψ₀ m| ≤ (4 * C * ε + h ^ 2) * (1 / Real.sqrt m) * E := by
+    intro m hm
+    obtain ⟨hmI, hml⟩ := mem_filter.mp hm
+    have hm1 := (mem_Icc.mp hmI).1
+    have hm0 : (0 : ℝ) < m := by exact_mod_cast hm1
+    push Not at hml
+    set X := Real.exp s / m
+    set Y := Real.exp (s - h) / m
+    have hYX : Y = X * Real.exp (-h) := by
+      dsimp only [X, Y]; rw [Real.exp_sub, Real.exp_neg]; ring
+    have hXK : (K' : ℝ) ≤ X := (le_div_iff₀ hm0).mpr hml
+    have hYK : (K' : ℝ) * Real.exp (-1) ≤ Y := by
+      rw [hYX]
+      exact mul_le_mul hXK (Real.exp_le_exp.mpr (by linarith)) (Real.exp_pos _).le
+        (hK'0.le.trans hXK)
+    have hb := hpnt hh hh1 hYX (ht₀.trans hYK)
+    have hεY : Real.exp (-c₀ * Real.sqrt (Real.log Y)) ≤ ε := by
+      apply Real.exp_le_exp.mpr
+      have : Real.sqrt (Real.log (K' * Real.exp (-1))) ≤ Real.sqrt (Real.log Y) :=
+        Real.sqrt_le_sqrt (Real.log_le_log (by positivity) hYK)
+      dsimp only [ε, pntRate]; nlinarith
+    have hsX : Real.sqrt X = E * (1 / Real.sqrt m) := by
+      dsimp only [X, E]; rw [Real.sqrt_div (Real.exp_pos s).le]; ring
+    have hΨ₀m : Ψ₀ m = Real.sqrt X * (1 - Real.exp (-h)) := by
+      dsimp only [Ψ₀]; rw [hsX]; ring
+    have hΨam : Ψa m = ∑ k ∈ Ioc ⌊Y⌋₊ ⌊X⌋₊, vonMangoldtAtom k := rfl
+    rw [hΨam, hΨ₀m]
+    refine hb.trans ?_
+    rw [hsX]
+    have hle : 4 * C * Real.exp (-c₀ * Real.sqrt (Real.log Y)) + h ^ 2 ≤ 4 * C * ε + h ^ 2 := by
+      nlinarith
+    calc E * (1 / Real.sqrt m) * (4 * C * Real.exp (-c₀ * Real.sqrt (Real.log Y)) + h ^ 2)
+        ≤ E * (1 / Real.sqrt m) * (4 * C * ε + h ^ 2) :=
+          mul_le_mul_of_nonneg_left hle (by positivity)
+      _ = (4 * C * ε + h ^ 2) * (1 / Real.sqrt m) * E := by ring
+  have hcoh : ∑ m ∈ Icc 1 M, x m * Ψ₀ m = E * (1 - Real.exp (-h)) * σ := by
+    dsimp only [Ψ₀, σ, prefixPoleMoment]; rw [mul_sum]
+    exact sum_congr rfl fun m _ => by ring
+  have hCS : ∀ S' ⊆ Icc 1 M, ∑ m ∈ S', |x m| * (1 / Real.sqrt m) ≤ Real.sqrt (P * H) := by
+    intro S' hS'
+    have := sum_abs_div_sqrt_le S' x
+    simp only [mul_one_div]
+    exact this.trans (sqrt_mul_sum_le_of_subset hS' x)
+  have hshortH : ∑ m ∈ shortS, (1 : ℝ) / m ≤ 1 + Real.log (2 * K') := by
+    have hsub : shortS ⊆ (Icc 1 M).filter (fun m : ℕ => (M : ℝ) / (2 * K') < m) := by
+      intro m hm
+      obtain ⟨hmI, hms⟩ := mem_filter.mp hm
+      refine mem_filter.mpr ⟨hmI, ?_⟩
+      rw [div_lt_iff₀ (by positivity)]
+      nlinarith
+    exact (sum_le_sum_of_subset_of_nonneg hsub fun m _ _ => by positivity).trans
+      (sum_inv_filter_gt_le hM (by exact_mod_cast hK'))
+  have hshortCS : ∑ m ∈ shortS, |x m| * (1 / Real.sqrt m) ≤
+      Real.sqrt (P * (1 + Real.log (2 * K'))) := by
+    have := sum_abs_div_sqrt_le shortS x
+    simp only [mul_one_div]
+    refine this.trans (Real.sqrt_le_sqrt (mul_le_mul
+      (sum_le_sum_of_subset_of_nonneg hsubS fun m _ _ => sq_nonneg _) hshortH
+      (sum_nonneg fun m _ => by positivity) hP))
+  have hshort : ∑ m ∈ shortS, |x m| * ψ m ≤ ∑ k ∈ range K', vonMangoldtAtom k *
+      ∑ m ∈ Icc 1 M, |x m| * windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) := by
+    calc ∑ m ∈ shortS, |x m| * ψ m
+        ≤ ∑ m ∈ shortS, |x m| * ∑ k ∈ range K', vonMangoldtAtom k *
+            windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) :=
+          sum_le_sum fun m hm => mul_le_mul_of_nonneg_left
+            (windowPrimeSum_le_short (mem_Icc.mp (mem_filter.mp hm).1).1 (mem_filter.mp hm).2)
+            (abs_nonneg _)
+      _ ≤ ∑ m ∈ Icc 1 M, |x m| * ∑ k ∈ range K', vonMangoldtAtom k *
+            windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) :=
+          sum_le_sum_of_subset_of_nonneg hsubS fun m _ _ => mul_nonneg (abs_nonneg _)
+            (sum_nonneg fun k _ => mul_nonneg (SpacingScaleHarmonicAnalysis.vonMangoldtAtom_nonneg' k)
+              (windowKernel_nonneg _ _))
+      _ = _ := by
+          simp_rw [mul_sum]; rw [sum_comm]
+          exact sum_congr rfl fun k _ => sum_congr rfl fun m _ => by ring
+  have hshortΨ₀ : ∑ m ∈ shortS, |x m| * Ψ₀ m ≤
+      E * h * Real.sqrt (P * (1 + Real.log (2 * K'))) := by
+    have e : ∀ m, |x m| * Ψ₀ m = E * (1 - Real.exp (-h)) * (|x m| * (1 / Real.sqrt m)) :=
+      fun m => by dsimp only [Ψ₀]; ring
+    simp_rw [e]; rw [← mul_sum]
+    exact mul_le_mul (mul_le_mul_of_nonneg_left heh hE.le) hshortCS
+      (sum_nonneg fun m _ => by positivity) (by positivity)
+  have hlongB : ∑ m ∈ longS, |x m| * |Ψa m - Ψ₀ m| ≤
+      E * (4 * C * ε + h ^ 2) * Real.sqrt (P * H) := by
+    calc ∑ m ∈ longS, |x m| * |Ψa m - Ψ₀ m|
+        ≤ ∑ m ∈ longS, |x m| * ((4 * C * ε + h ^ 2) * (1 / Real.sqrt m) * E) :=
+          sum_le_sum fun m hm => mul_le_mul_of_nonneg_left (hlong m hm) (abs_nonneg _)
+      _ = E * (4 * C * ε + h ^ 2) * ∑ m ∈ longS, |x m| * (1 / Real.sqrt m) := by
+          rw [mul_sum]; exact sum_congr rfl fun m _ => by ring
+      _ ≤ E * (4 * C * ε + h ^ 2) * Real.sqrt (P * H) :=
+          mul_le_mul_of_nonneg_left (hCS longS hsubL) (by positivity)
+  have hallΨ₀ : ∑ m ∈ Icc 1 M, |x m| * Ψ₀ m ≤ E * h * Real.sqrt (P * H) := by
+    have e : ∀ m, |x m| * Ψ₀ m = E * (1 - Real.exp (-h)) * (|x m| * (1 / Real.sqrt m)) :=
+      fun m => by dsimp only [Ψ₀]; ring
+    simp_rw [e]; rw [← mul_sum]
+    exact mul_le_mul (mul_le_mul_of_nonneg_left heh hE.le) (hCS _ subset_rfl)
+      (sum_nonneg fun m _ => by positivity) (by positivity)
+  have hsplit := sum_filter_add_sum_filter_not (Icc 1 M) (fun m : ℕ => Real.exp s < K' * m)
+    (fun m => x m * ψ m)
+  have habsShort : |∑ m ∈ shortS, x m * ψ m| ≤ ∑ m ∈ shortS, |x m| * ψ m := by
+    refine (abs_sum_le_sum_abs _ _).trans (le_of_eq (sum_congr rfl fun m _ => ?_))
+    rw [abs_mul, abs_of_nonneg (hψ0 m)]
+  by_cases hint : A ≤ Real.exp (s - h) ∧ Real.exp s ≤ B
+  · rw [if_pos hint, zero_mul, zero_mul, add_zero]
+    have hs1 : Real.log A + h ≤ s := by
+      have := Real.log_le_log hA0 hint.1
+      rw [Real.log_exp] at this; linarith only [this]
+    have hs2 : s ≤ Real.log (N : ℝ) + w := by
+      have := Real.log_le_log (Real.exp_pos s) (hint.2.trans hBNw)
+      rw [Real.log_exp, Real.log_mul hN0.ne' (Real.exp_pos w).ne', Real.log_exp] at this
+      exact this
+    have hWc_eq : coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h σ s =
+        E * (1 - Real.exp (-h)) * σ :=
+      Set.indicator_of_mem (Set.mem_Icc.mpr ⟨hs1, hs2⟩) _
+    rw [hWc_eq]
+    have heq : ∀ m ∈ Icc 1 M, ψ m = Ψa m := fun m hm =>
+      windowPrimeSum_eq_all (mem_Icc.mp hm).1 hint.1 hint.2 hBK
+    have hdec : ∑ m ∈ Icc 1 M, x m * ψ m - E * (1 - Real.exp (-h)) * σ =
+        -(∑ m ∈ shortS, x m * Ψ₀ m) + ∑ m ∈ shortS, x m * ψ m +
+          ∑ m ∈ longS, x m * (Ψa m - Ψ₀ m) := by
+      have hs2' := sum_filter_add_sum_filter_not (Icc 1 M) (fun m : ℕ => Real.exp s < K' * m)
+        (fun m => x m * Ψ₀ m)
+      have hlongeq : ∑ m ∈ longS, x m * ψ m = ∑ m ∈ longS, x m * Ψa m :=
+        sum_congr rfl fun m hm => by rw [heq m (hsubL hm)]
+      have hlongsub : ∑ m ∈ longS, x m * (Ψa m - Ψ₀ m) =
+          ∑ m ∈ longS, x m * Ψa m - ∑ m ∈ longS, x m * Ψ₀ m := by
+        rw [← sum_sub_distrib]; exact sum_congr rfl fun m _ => by ring
+      rw [← hcoh]
+      dsimp only [shortS, longS] at hs2' hlongeq hlongsub hsplit ⊢
+      linarith only [hsplit, hs2', hlongeq, hlongsub]
+    rw [hdec]
+    have h2 : |∑ m ∈ shortS, x m * Ψ₀ m| ≤ E * h * Real.sqrt (P * (1 + Real.log (2 * K'))) := by
+      refine (abs_sum_le_sum_abs _ _).trans ?_
+      refine le_trans (le_of_eq (sum_congr rfl fun m _ => ?_)) hshortΨ₀
+      rw [abs_mul, abs_of_nonneg (hΨ₀ m)]
+    have h3 : |∑ m ∈ longS, x m * (Ψa m - Ψ₀ m)| ≤ E * (4 * C * ε + h ^ 2) * Real.sqrt (P * H) := by
+      refine (abs_sum_le_sum_abs _ _).trans ?_
+      refine le_trans (le_of_eq (sum_congr rfl fun m _ => ?_)) hlongB
+      rw [abs_mul]
+    have htri : |-(∑ m ∈ shortS, x m * Ψ₀ m) + ∑ m ∈ shortS, x m * ψ m +
+        ∑ m ∈ longS, x m * (Ψa m - Ψ₀ m)| ≤
+        |∑ m ∈ shortS, x m * Ψ₀ m| + |∑ m ∈ shortS, x m * ψ m| +
+          |∑ m ∈ longS, x m * (Ψa m - Ψ₀ m)| := by
+      have t1 := abs_add_le (-(∑ m ∈ shortS, x m * Ψ₀ m) + ∑ m ∈ shortS, x m * ψ m)
+        (∑ m ∈ longS, x m * (Ψa m - Ψ₀ m))
+      have t2 := abs_add_le (-(∑ m ∈ shortS, x m * Ψ₀ m)) (∑ m ∈ shortS, x m * ψ m)
+      rw [abs_neg] at t2
+      linarith only [t1, t2]
+    have hind0 : 0 ≤ E * ((Set.Icc (Real.log (B : ℝ)) (Real.log (N : ℝ) + w)).indicator
+        (fun _ => (1 : ℝ)) s * h * |σ|) :=
+      mul_nonneg hE.le (mul_nonneg (mul_nonneg
+        (Set.indicator_nonneg (fun _ _ => zero_le_one) s) hh.le) (abs_nonneg _))
+    linarith [htri, h2, h3, habsShort, hshort, hind0]
+  · rw [if_neg hint, one_mul]
+    have hlongψ : |∑ m ∈ longS, x m * ψ m| ≤ E * h * Real.sqrt (P * H) +
+        E * (4 * C * ε + h ^ 2) * Real.sqrt (P * H) := by
+      refine (abs_sum_le_sum_abs _ _).trans ?_
+      have hpt : ∀ m ∈ longS, |x m * ψ m| ≤ |x m| * Ψ₀ m + |x m| * |Ψa m - Ψ₀ m| := by
+        intro m hm
+        rw [abs_mul, abs_of_nonneg (hψ0 m), ← mul_add]
+        refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+        linarith [hψa m (hsubL hm), le_abs_self (Ψa m - Ψ₀ m)]
+      refine (sum_le_sum hpt).trans ?_
+      rw [sum_add_distrib]
+      exact add_le_add
+        ((sum_le_sum_of_subset_of_nonneg hsubL fun m _ _ =>
+          mul_nonneg (abs_nonneg _) (hΨ₀ m)).trans hallΨ₀) hlongB
+    have htotW : |∑ m ∈ Icc 1 M, x m * ψ m| ≤
+        |∑ m ∈ shortS, x m * ψ m| + |∑ m ∈ longS, x m * ψ m| := by
+      dsimp only [shortS, longS]; rw [← hsplit]; exact abs_add_le _ _
+    have hWc_edge : |coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h σ s| ≤
+        E * ((Set.Icc (Real.log (B : ℝ)) (Real.log (N : ℝ) + w)).indicator
+          (fun _ => (1 : ℝ)) s * h * |σ|) := by
+      dsimp only [coherentWindow]
+      by_cases hm : s ∈ Set.Icc (Real.log A + h) (Real.log (N : ℝ) + w)
+      · rw [Set.indicator_of_mem hm]
+        have hAs_h : A ≤ Real.exp (s - h) := by
+          rw [← Real.exp_log hA0]; exact Real.exp_le_exp.mpr (by linarith only [hm.1])
+        have hBs : (B : ℝ) < Real.exp s := by
+          by_contra hle; exact hint ⟨hAs_h, not_lt.mp hle⟩
+        have hlogB : Real.log (B : ℝ) ≤ s :=
+          (Real.log_lt_log hB0 hBs).le.trans_eq (Real.log_exp s)
+        rw [Set.indicator_of_mem (Set.mem_Icc.mpr ⟨hlogB, hm.2⟩), one_mul,
+          abs_mul, abs_mul, abs_of_pos hE, abs_of_nonneg heh0]
+        exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left heh hE.le) (abs_nonneg _)
+      · rw [Set.indicator_of_notMem hm, abs_zero]
+        exact mul_nonneg hE.le (mul_nonneg (mul_nonneg
+          (Set.indicator_nonneg (fun _ _ => zero_le_one) s) hh.le) (abs_nonneg _))
+    have hsub_abs := abs_sub (∑ m ∈ Icc 1 M, x m * ψ m)
+      (coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h σ s)
+    have hE1 : 0 ≤ E * h * Real.sqrt (P * (1 + Real.log (2 * K'))) :=
+      mul_nonneg (mul_nonneg hE.le hh.le) (Real.sqrt_nonneg _)
+    linarith [hsub_abs, htotW, habsShort, hshort, hlongψ, hWc_edge, hE1]
+
+private lemma integral_windowSum_sub_coherentWindow_sq_le {C c₀ t₀ : ℝ} (hC : 0 ≤ C) (hc₀ : 0 < c₀)
+    (hpnt : ∀ ⦃h X Y : ℝ⦄, 0 < h → h ≤ 1 → Y = X * Real.exp (-h) → t₀ ≤ Y →
+      |∑ k ∈ Ioc ⌊Y⌋₊ ⌊X⌋₊, vonMangoldtAtom k - Real.sqrt X * (1 - Real.exp (-h))| ≤
+        Real.sqrt X * (4 * C * Real.exp (-c₀ * Real.sqrt (Real.log Y)) + h ^ 2))
+    {A w : ℝ} {M N K' : ℕ} {h : ℝ} (hh : 0 < h) (hh1 : h ≤ 1) (hw0 : 0 ≤ w)
+    (hA1 : 1 ≤ A) (hM : 1 ≤ M) (hMA : (M : ℝ) ≤ 2 * A)
+    (hN1 : 1 ≤ N) (hAB : A ≤ ⌊(N : ℝ) * Real.exp w⌋₊) (hNh : 1 ≤ (N : ℝ) * h)
+    (hK' : 1 ≤ K') (ht₀ : t₀ ≤ K' * Real.exp (-1)) (x : ℕ → ℝ) :
+    let B := ⌊(N : ℝ) * Real.exp w⌋₊
+    let K := primeOrderCutoff N w
+    ∫ s, (windowSum B (fun n => topWeight A B n * primeConv K M x n) h s -
+        coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h (prefixPoleMoment M x) s) ^ 2 ≤
+      8 * h ^ 2 * prefixPoleMoment M x ^ 2 + offPoleWindowSumBound C c₀ A B M K' x h := by
+  intro B K
+  have hA0 : 0 < A := by linarith
+  have hB0 : (0 : ℝ) < B := hA0.trans_le hAB
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hBK : B < K := Nat.lt_succ_of_le (Nat.floor_le_ceil _)
+  have hBNw : (B : ℝ) ≤ N * Real.exp w := Nat.floor_le (by positivity)
+  have hNB : (N : ℝ) ≤ B :=
+    by exact_mod_cast Nat.le_floor (le_mul_of_one_le_right hN0.le (Real.one_le_exp hw0))
+  have hNw_Bh : (N : ℝ) * Real.exp w ≤ B * Real.exp h := by
+    have hlt : (N : ℝ) * Real.exp w < (B : ℝ) + 1 := Nat.lt_floor_add_one _
+    have hBh1 : 1 ≤ (B : ℝ) * h :=
+      hNh.trans (mul_le_mul_of_nonneg_right hNB hh.le)
+    have heh := Real.add_one_le_exp h
+    have hm := mul_le_mul_of_nonneg_left heh hB0.le
+    linarith only [hlt, hBh1, hm]
+  have htop_le : Real.log (N : ℝ) + w ≤ Real.log (B : ℝ) + h := by
+    have := Real.log_le_log (by positivity) hNw_Bh
+    rwa [Real.log_mul hN0.ne' (Real.exp_pos w).ne', Real.log_exp,
+      Real.log_mul hB0.ne' (Real.exp_pos h).ne', Real.log_exp] at this
+  set I := Set.Icc (Real.log A) (Real.log (B : ℝ) + h)
+  set W := windowSum B (fun n => topWeight A B n * primeConv K M x n) h
+  set Wc := coherentWindow (Real.log A + h) (Real.log (N : ℝ) + w) h (prefixPoleMoment M x)
+  have hzero : ∀ s ∉ I, W s - Wc s = 0 := by
+    intro s hs
+    have hW0 : W s = 0 := by
+      dsimp only [W]; rw [windowSum_topWeight_primeConv hA1 x h s]
+      refine sum_eq_zero fun m _ => ?_
+      unfold windowPrimeSum; rw [sum_eq_zero, mul_zero]
+      intro k _
+      by_cases ht : topWeight A B (k * m) = 0
+      · rw [ht]; ring
+      by_cases hwk : windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) = 0
+      · rw [hwk]; ring
+      exfalso; apply hs
+      unfold topWeight at ht
+      split_ifs at ht with hAB'
+      · obtain ⟨h1, h2⟩ := hAB'
+        have hkm0 : (0 : ℝ) < ((k * m : ℕ) : ℝ) := hA0.trans_le h1
+        have hmem : s - Real.log ((k * m : ℕ) : ℝ) ∈ Set.Ico 0 h := by
+          by_contra hn; exact hwk (Set.indicator_of_notMem hn _)
+        have hl1 : Real.log A ≤ Real.log ((k * m : ℕ) : ℝ) := Real.log_le_log hA0 h1
+        have hl2 : Real.log ((k * m : ℕ) : ℝ) ≤ Real.log B :=
+          Real.log_le_log hkm0 (by exact_mod_cast h2)
+        exact ⟨by linarith [hmem.1], by linarith [hmem.2]⟩
+      · exact absurd rfl ht
+    have hWc0 : Wc s = 0 :=
+      Set.indicator_of_notMem (fun hm => hs ⟨by linarith [hm.1], by linarith [hm.2, htop_le]⟩) _
+    rw [hW0, hWc0, sub_zero]
+  have hWc2_int : Integrable fun s => Wc s ^ 2 := by
+    have heq : (fun s => Wc s ^ 2) =
+        (Set.Icc (Real.log A + h) (Real.log (N : ℝ) + w)).indicator
+          (fun s => (Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * prefixPoleMoment M x) ^ 2) := by
+      funext s; dsimp only [Wc, coherentWindow]
+      by_cases hs : s ∈ Set.Icc (Real.log A + h) (Real.log (N : ℝ) + w)
+      · rw [Set.indicator_of_mem hs, Set.indicator_of_mem hs]
+      · rw [Set.indicator_of_notMem hs, Set.indicator_of_notMem hs, sq, zero_mul]
+    rw [heq]
+    exact (integrable_indicator_iff measurableSet_Icc).mpr
+      ((Continuous.pow (by fun_prop) 2).integrableOn_Icc)
+  have hWc_meas : Measurable Wc :=
+    ((by fun_prop : Continuous fun s =>
+      Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * prefixPoleMoment M x).measurable).indicator
+      measurableSet_Icc
+  have hRW2_int : Integrable fun s => (W s - Wc s) ^ 2 := by
+    refine (((integrable_windowSum_sq B _ h).const_mul 2).add (hWc2_int.const_mul 2)).mono'
+      (((measurable_windowSum B _ h).sub hWc_meas).pow_const 2).aestronglyMeasurable
+      (Eventually.of_forall fun s => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    nlinarith only [sq_nonneg (W s + Wc s)]
+  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := I) (fun s hs => by
+    rw [hzero s hs]; ring)]
+  set P := prefixMass M x
+  set Hm := prefixHarmonic M
+  set σ := prefixPoleMoment M x
+  set ε := pntRate c₀ K'
+  set LK := shortOrderWeight K'
+  have hP : 0 ≤ P := sum_nonneg fun _ _ => sq_nonneg _
+  have hHm : 0 ≤ Hm := sum_nonneg fun m _ => by positivity
+  have hLK : 0 ≤ LK := sum_nonneg fun k _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
+  have hlog2K : 0 ≤ 1 + Real.log (2 * K') := by
+    have h1 : (1 : ℝ) ≤ K' := by exact_mod_cast hK'
+    linarith [Real.log_nonneg (show (1 : ℝ) ≤ 2 * K' by linarith)]
+  set c₀_pole := h ^ 2 * σ ^ 2
+  set c₁ := h ^ 2 * (P * (1 + Real.log (2 * K'))) + (4 * C * ε + h ^ 2) ^ 2 * (P * Hm)
+  set c₂ := h ^ 2 * (P * Hm)
+  set J_pole := Set.Icc (Real.log (B : ℝ)) (Real.log (N : ℝ) + w)
+  set J₁ := Set.Icc (Real.log A) (Real.log A + h)
+  set J₂ := Set.Icc (Real.log (B : ℝ)) (Real.log B + h)
+  set F_maj : ℝ → ℝ := fun s =>
+    8 * J_pole.indicator Real.exp s * c₀_pole +
+      8 * Real.exp s * c₁ +
+      8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂ +
+      2 * LK * shortWindowSq K' M x (B * Real.exp h) h s
+  have hpt : ∀ s ∈ I, (W s - Wc s) ^ 2 ≤ F_maj s := by
+    intro s hs
+    have hAs : A ≤ Real.exp s := by
+      rw [← Real.exp_log hA0]; exact Real.exp_le_exp.mpr hs.1
+    have hsB : Real.exp s ≤ B * Real.exp h := by
+      rw [← Real.exp_log hB0, ← Real.exp_add]; exact Real.exp_le_exp.mpr hs.2
+    have hmaj := abs_windowSum_sub_coherentWindow_le hC hc₀ hpnt hh hh1 hA1 hM hMA hAB hBK
+      hN1 hBNw hK' ht₀ hAs x
+    have hsq := sq_le_of_abs_le_four_add hmaj
+    have hT := sq_shortOrders_le (K' := K') (M := M) x hh.le hsB
+    have hE : Real.sqrt (Real.exp s) ^ 2 = Real.exp s := Real.sq_sqrt (Real.exp_pos s).le
+    set L_e : ℝ := if A ≤ Real.exp (s - h) ∧ Real.exp s ≤ B then 0 else 1 with hLdef
+    have hLL : L_e ^ 2 = L_e := by
+      rw [hLdef]; split_ifs <;> norm_num
+    set Ip : ℝ := J_pole.indicator (fun _ => (1 : ℝ)) s
+    have hIp_exp : Ip ^ 2 * Real.exp s = J_pole.indicator Real.exp s := by
+      dsimp only [Ip]; by_cases hm : s ∈ J_pole
+      · rw [Set.indicator_of_mem hm, Set.indicator_of_mem hm]; ring
+      · rw [Set.indicator_of_notMem hm, Set.indicator_of_notMem hm]; ring
+    have hedge := edge_mul_exp_le (h := h) (A := A) hB0 hs.1 hs.2
+    rw [← hLdef] at hedge
+    have h2 := mul_le_mul_of_nonneg_right hedge (by positivity : 0 ≤ c₂)
+    have hsum : Real.exp s * ((Ip * h * |σ|) ^ 2 +
+        (h * Real.sqrt (P * (1 + Real.log (2 * K')))) ^ 2 +
+        ((4 * C * ε + h ^ 2) * Real.sqrt (P * Hm)) ^ 2 +
+        (L_e * h * Real.sqrt (P * Hm)) ^ 2) =
+        J_pole.indicator Real.exp s * c₀_pole + Real.exp s * c₁ + L_e * Real.exp s * c₂ := by
+      rw [mul_pow, mul_pow, sq_abs, mul_pow, Real.sq_sqrt (mul_nonneg hP hlog2K),
+        mul_pow, Real.sq_sqrt (mul_nonneg hP hHm), mul_pow, mul_pow,
+        Real.sq_sqrt (mul_nonneg hP hHm), hLL]
+      linear_combination (h ^ 2 * σ ^ 2) * hIp_exp
+    rw [hE] at hsq
+    have hsq' : (W s - Wc s) ^ 2 ≤
+        8 * (J_pole.indicator Real.exp s * c₀_pole + Real.exp s * c₁ + L_e * Real.exp s * c₂) +
+          2 * LK * shortWindowSq K' M x (B * Real.exp h) h s := by
+      dsimp only [W, Wc, P, Hm, σ, ε, LK, Ip] at hsq hsum hT ⊢
+      linarith [hsq, hsum, hT]
+    dsimp only [F_maj]
+    linarith [hsq', h2]
+  have hexpI : IntegrableOn Real.exp I := Real.continuous_exp.integrableOn_Icc
+  have hwin : ∀ k m : ℕ, Integrable fun s => windowKernel h (s - Real.log ((k * m : ℕ) : ℝ)) :=
+    fun k m => (integrable_windowKernel h).comp_sub_right _
+  have hSWS : Integrable fun s => shortWindowSq K' M x (B * Real.exp h) h s := by
+    unfold shortWindowSq
+    refine integrable_finsetSum _ fun k _ => Integrable.const_mul ?_ _
+    exact integrable_finsetSum _ fun m _ => (hwin k m).const_mul _
+  have hf0 : IntegrableOn (fun s => 8 * J_pole.indicator Real.exp s * c₀_pole) I :=
+    ((hexpI.indicator measurableSet_Icc).const_mul 8).mul_const c₀_pole
+  have hf1 : IntegrableOn (fun s => 8 * Real.exp s * c₁) I :=
+    (hexpI.const_mul 8).mul_const c₁
+  have hf2 : IntegrableOn (fun s => 8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂) I :=
+    (((hexpI.indicator measurableSet_Icc).add (hexpI.indicator measurableSet_Icc)).const_mul
+      8).mul_const c₂
+  have hf3 : IntegrableOn (fun s => 2 * LK * shortWindowSq K' M x (B * Real.exp h) h s) I :=
+    (hSWS.const_mul _).integrableOn
+  have hFi : IntegrableOn F_maj I := ((hf0.add hf1).add hf2).add hf3
+  refine (setIntegral_mono_on hRW2_int.integrableOn hFi measurableSet_Icc hpt).trans ?_
+  have hlogB_Nw : Real.log (B : ℝ) ≤ Real.log (N : ℝ) + w := by
+    have := Real.log_le_log hB0 hBNw
+    rwa [Real.log_mul hN0.ne' (Real.exp_pos w).ne', Real.log_exp] at this
+  have i0 : ∫ s in I, 8 * J_pole.indicator Real.exp s * c₀_pole ≤ 8 * c₀_pole := by
+    have e : (fun s => 8 * J_pole.indicator Real.exp s * c₀_pole) =
+        fun s => (8 * c₀_pole) * J_pole.indicator Real.exp s := funext fun s => by ring
+    rw [e, integral_const_mul]
+    have b0 := setIntegral_indicator_exp_le (I := I) hlogB_Nw
+    rw [Real.exp_add, Real.exp_log hN0, Real.exp_log hB0] at b0
+    have hfl : (N : ℝ) * Real.exp w - B ≤ 1 := by
+      linarith [Nat.lt_floor_add_one ((N : ℝ) * Real.exp w)]
+    exact (mul_le_mul_of_nonneg_left (b0.trans hfl) (by positivity)).trans_eq (mul_one _)
+  have hlogAB : Real.log A ≤ Real.log B + h := by
+    have := Real.log_le_log hA0 hAB; linarith
+  have i1 : ∫ s in I, 8 * Real.exp s * c₁ ≤ 8 * c₁ * (B * Real.exp h) := by
+    have e : (fun s => 8 * Real.exp s * c₁) = fun s => (8 * c₁) * Real.exp s := funext fun s => by ring
+    rw [e, integral_const_mul, integral_exp_Icc hlogAB, Real.exp_add, Real.exp_log hB0,
+      Real.exp_log hA0]
+    exact mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  have i2 : ∫ s in I, 8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂ ≤
+      8 * c₂ * ((A * Real.exp h - A) + (B * Real.exp h - B)) := by
+    have e : (fun s => 8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂) =
+        fun s => (8 * c₂) * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) := funext fun s => by ring
+    rw [e, integral_const_mul, integral_add (hexpI.indicator measurableSet_Icc)
+      (hexpI.indicator measurableSet_Icc)]
+    have b1 := setIntegral_indicator_exp_le (I := I) (show Real.log A ≤ Real.log A + h by linarith)
+    have b2 := setIntegral_indicator_exp_le (I := I) (show Real.log (B : ℝ) ≤ Real.log B + h by linarith)
+    rw [Real.exp_add, Real.exp_log hA0] at b1
+    rw [Real.exp_add, Real.exp_log hB0] at b2
+    exact mul_le_mul_of_nonneg_left (add_le_add b1 b2) (by positivity)
+  have i3 : ∫ s in I, 2 * LK * shortWindowSq K' M x (B * Real.exp h) h s ≤
+      2 * LK * ∑ k ∈ range K', (Λ k : ℝ) * (h * (B * Real.exp h) / k + 1) * (h * P) := by
+    rw [integral_const_mul]
+    refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+    refine (setIntegral_le_integral hSWS (Eventually.of_forall fun s =>
+      sum_nonneg fun k _ => mul_nonneg (mul_nonneg vonMangoldt_nonneg (by positivity))
+        (sum_nonneg fun m _ => mul_nonneg (sq_nonneg _) (windowKernel_nonneg _ _)))).trans
+      (le_of_eq ?_)
+    unfold shortWindowSq
+    rw [integral_finsetSum _ fun k _ => Integrable.const_mul
+      (integrable_finsetSum _ fun m _ => (hwin k m).const_mul _) _]
+    refine sum_congr rfl fun k _ => ?_
+    rw [integral_const_mul, integral_finsetSum _ fun m _ => (hwin k m).const_mul _]
+    congr 1; simp only [P, prefixMass, mul_sum]
+    refine sum_congr rfl fun m _ => ?_
+    rw [integral_const_mul, integral_windowKernel_sub hh.le]; ring
+  have hf01 : IntegrableOn (fun s =>
+      8 * J_pole.indicator Real.exp s * c₀_pole + 8 * Real.exp s * c₁) I := hf0.add hf1
+  have hf012 : IntegrableOn (fun s =>
+      (8 * J_pole.indicator Real.exp s * c₀_pole + 8 * Real.exp s * c₁) +
+        8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂) I := hf01.add hf2
+  have hsplitF : ∫ s in I, F_maj s =
+      (∫ s in I, 8 * J_pole.indicator Real.exp s * c₀_pole) +
+        (∫ s in I, 8 * Real.exp s * c₁) +
+        (∫ s in I, 8 * (J₁.indicator Real.exp s + J₂.indicator Real.exp s) * c₂) +
+        (∫ s in I, 2 * LK * shortWindowSq K' M x (B * Real.exp h) h s) := by
+    dsimp only [F_maj]
+    rw [integral_add hf012 hf3, integral_add hf01 hf2, integral_add hf0 hf1]
+  rw [hsplitF]
+  unfold offPoleWindowSumBound
+  dsimp only [c₀_pole, c₁, c₂, P, Hm, σ, ε, LK] at i0 i1 i2 i3 ⊢
+  linarith [i0, i1, i2, i3]
+
+private lemma offPoleWindowSumBound_div_le {C c₀ A w h c ΛK ΨK : ℝ} {B M K' : ℕ} (x : ℕ → ℝ)
+    (hh : 0 < h) (hh1 : h ≤ 1) (hC : 0 ≤ C) (hε : 4 * C * pntRate c₀ K' ≤ h ^ 2)
+    (hw : 0 ≤ w) (hc : 0 ≤ c) (hwB : w * B ≤ Real.exp 1 * c) (hA0 : 0 ≤ A) (hAB : A ≤ B)
+    (hLK : shortOrderWeight K' ≤ ΛK) (hΨK : ∑ k ∈ range K', (Λ k : ℝ) ≤ ΨK) :
+    (w / h ^ 2) * offPoleWindowSumBound C c₀ A B M K' x h ≤
+      (8 * Real.exp 2 * c * (1 + Real.log (2 * K') + 4 * h ^ 2 * prefixHarmonic M) +
+        48 * Real.exp 1 * c * h * prefixHarmonic M +
+        2 * ΛK * (Real.exp 2 * c * ΛK + (w / h) * ΨK)) * prefixMass M x := by
+  set P := prefixMass M x
+  set H := prefixHarmonic M
+  set ε := pntRate c₀ K'
+  have hP : 0 ≤ P := sum_nonneg fun _ _ => sq_nonneg _
+  have hH : 0 ≤ H := sum_nonneg fun m _ => by positivity
+  have hε0 : 0 ≤ ε := (Real.exp_pos _).le
+  have hLK0 : 0 ≤ shortOrderWeight K' :=
+    sum_nonneg fun k _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg k)
+  have heh : Real.exp h ≤ Real.exp 1 := Real.exp_le_exp.mpr hh1
+  have heh1 : Real.exp h - 1 ≤ 3 * h := by
+    have h1 : Real.exp h - 1 ≤ h * Real.exp h := by
+      have h2 := mul_le_mul_of_nonneg_right (Real.add_one_le_exp (-h)) (Real.exp_pos h).le
+      have h3 : Real.exp (-h) * Real.exp h = 1 := by rw [← Real.exp_add]; simp
+      linarith only [h2, h3]
+    nlinarith only [h1, heh, Real.exp_one_lt_d9, hh.le]
+  have heh0 : 0 ≤ Real.exp h - 1 := by linarith only [Real.add_one_le_exp h, hh.le]
+  have hwBh : w * (B * Real.exp h) ≤ Real.exp 2 * c := by
+    have he2 : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+    rw [he2]
+    calc w * (B * Real.exp h) = (w * B) * Real.exp h := by ring
+      _ ≤ (Real.exp 1 * c) * Real.exp 1 := mul_le_mul hwB heh (Real.exp_pos h).le (by positivity)
+      _ = Real.exp 1 * Real.exp 1 * c := by ring
+  have hdev : (4 * C * ε + h ^ 2) ^ 2 ≤ 4 * h ^ 2 * h ^ 2 := by
+    have := pow_le_pow_left₀ (by positivity : 0 ≤ 4 * C * ε + h ^ 2)
+      (show 4 * C * ε + h ^ 2 ≤ 2 * h ^ 2 by linarith only [hε]) 2
+    nlinarith only [this]
+  have hK1 : 0 ≤ 1 + Real.log (2 * K') := by
+    rcases Nat.eq_zero_or_pos K' with h0 | h0
+    · rw [h0]; simp
+    · have h1 : (1 : ℝ) ≤ K' := by exact_mod_cast h0
+      linarith [Real.log_nonneg (show (1 : ℝ) ≤ 2 * K' by linarith)]
+  have t1 : (w / h ^ 2) * (8 * (h ^ 2 * (P * (1 + Real.log (2 * K'))) +
+      (4 * C * ε + h ^ 2) ^ 2 * (P * H)) * (B * Real.exp h)) ≤
+      8 * Real.exp 2 * c * (1 + Real.log (2 * K') + 4 * h ^ 2 * H) * P := by
+    have hin : h ^ 2 * (P * (1 + Real.log (2 * K'))) + (4 * C * ε + h ^ 2) ^ 2 * (P * H) ≤
+        h ^ 2 * ((1 + Real.log (2 * K') + 4 * h ^ 2 * H) * P) := by
+      have := mul_le_mul_of_nonneg_right hdev (mul_nonneg hP hH)
+      nlinarith only [this]
+    calc (w / h ^ 2) * (8 * (h ^ 2 * (P * (1 + Real.log (2 * K'))) +
+            (4 * C * ε + h ^ 2) ^ 2 * (P * H)) * (B * Real.exp h))
+        ≤ (w / h ^ 2) * (8 * (h ^ 2 * ((1 + Real.log (2 * K') + 4 * h ^ 2 * H) * P)) *
+            (B * Real.exp h)) :=
+          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hin (by norm_num)) (by positivity)) (by positivity)
+      _ = 8 * (w * (B * Real.exp h)) * ((1 + Real.log (2 * K') + 4 * h ^ 2 * H) * P) := by
+          field_simp [hh.ne']
+      _ ≤ 8 * (Real.exp 2 * c) * ((1 + Real.log (2 * K') + 4 * h ^ 2 * H) * P) :=
+          mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hwBh (by norm_num)) (by positivity)
+      _ = _ := by ring
+  have t2 : (w / h ^ 2) * (8 * (h ^ 2 * (P * H)) * ((A * Real.exp h - A) + (B * Real.exp h - B))) ≤
+      48 * Real.exp 1 * c * h * H * P := by
+    have hAB2 : (A * Real.exp h - A) + (B * Real.exp h - B) ≤ 2 * B * (3 * h) := by
+      calc (A * Real.exp h - A) + (B * Real.exp h - B) = (A + B) * (Real.exp h - 1) := by ring
+        _ ≤ (2 * B) * (3 * h) := mul_le_mul (by linarith only [hAB]) heh1 heh0 (by positivity)
+        _ = 2 * B * (3 * h) := by ring
+    calc (w / h ^ 2) * (8 * (h ^ 2 * (P * H)) * ((A * Real.exp h - A) + (B * Real.exp h - B)))
+        ≤ (w / h ^ 2) * (8 * (h ^ 2 * (P * H)) * (2 * B * (3 * h))) :=
+          mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_left hAB2 (by positivity)) (by positivity)
+      _ = 48 * (w * B) * h * H * P := by field_simp [hh.ne']; ring
+      _ ≤ 48 * (Real.exp 1 * c) * h * H * P := by
+          have := mul_le_mul_of_nonneg_right hwB (by positivity : 0 ≤ 48 * h * H * P)
+          linarith only [this]
+      _ = _ := by ring
+  have t3 : (w / h ^ 2) * (2 * shortOrderWeight K' *
+      ∑ k ∈ range K', (Λ k : ℝ) * (h * (B * Real.exp h) / k + 1) * (h * P)) ≤
+      2 * ΛK * (Real.exp 2 * c * ΛK + (w / h) * ΨK) * P := by
+    have hsum_eq : ∑ k ∈ range K', (Λ k : ℝ) * (h * (B * Real.exp h) / k + 1) * (h * P) =
+        h * P * (h * (B * Real.exp h) * shortOrderWeight K' + ∑ k ∈ range K', (Λ k : ℝ)) := by
+      unfold shortOrderWeight
+      rw [mul_add, mul_sum, mul_sum, ← sum_add_distrib]
+      exact sum_congr rfl fun k _ => by ring
+    rw [hsum_eq]
+    have hΛ0 : 0 ≤ ΛK := hLK0.trans hLK
+    have hΨ0 : 0 ≤ ∑ k ∈ range K', (Λ k : ℝ) := sum_nonneg fun _ _ => vonMangoldt_nonneg
+    calc (w / h ^ 2) * (2 * shortOrderWeight K' *
+            (h * P * (h * (B * Real.exp h) * shortOrderWeight K' + ∑ k ∈ range K', (Λ k : ℝ))))
+        = 2 * shortOrderWeight K' *
+            ((w * (B * Real.exp h)) * shortOrderWeight K' + (w / h) * ∑ k ∈ range K', (Λ k : ℝ)) *
+            P := by field_simp [hh.ne']
+      _ ≤ 2 * ΛK * (Real.exp 2 * c * ΛK + (w / h) * ΨK) * P := by
+          refine mul_le_mul_of_nonneg_right ?_ hP
+          refine mul_le_mul (mul_le_mul_of_nonneg_left hLK zero_le_two) ?_
+            (by positivity) (by positivity)
+          exact add_le_add (mul_le_mul hwBh hLK hLK0 (by positivity))
+            (mul_le_mul_of_nonneg_left hΨK (by positivity))
+  unfold offPoleWindowSumBound
+  dsimp only [P, H, ε] at t1 t2 t3 ⊢
+  linarith [t1, t2, t3]
+
+private lemma two_mul_abs_integral_mul_le_of_integrable_sq {f k : ℝ → ℝ}
+    (hf2 : Integrable fun u => f u ^ 2) (hk2 : Integrable fun u => k u ^ 2)
+    (hfk : Integrable fun u => f u * k u) {η : ℝ} (hη : 0 < η) :
+    2 * |∫ u, f u * k u| ≤ η * (∫ u, f u ^ 2) + η⁻¹ * ∫ u, k u ^ 2 := by
+  set s := Real.sqrt η
+  have hs : 0 < s := Real.sqrt_pos.mpr hη
+  have hs2 : s ^ 2 = η := Real.sq_sqrt hη.le
+  have hsc : s * s⁻¹ = 1 := mul_inv_cancel₀ hs.ne'
+  have irhs : Integrable fun u => η * f u ^ 2 + η⁻¹ * k u ^ 2 :=
+    (hf2.const_mul η).add (hk2.const_mul η⁻¹)
+  have hpt1 : ∀ u, 2 * (f u * k u) ≤ η * f u ^ 2 + η⁻¹ * k u ^ 2 := fun u => by
+    have hsq := sq_nonneg (s * f u - s⁻¹ * k u)
+    rw [sub_sq, mul_pow, mul_pow, hs2, inv_pow, hs2] at hsq
+    have hc : 2 * (s * f u) * (s⁻¹ * k u) = 2 * (f u * k u) := by
+      linear_combination (2 * f u * k u) * hsc
+    linarith only [hsq, hc]
+  have hpt2 : ∀ u, -(2 * (f u * k u)) ≤ η * f u ^ 2 + η⁻¹ * k u ^ 2 := fun u => by
+    have hsq := sq_nonneg (s * f u + s⁻¹ * k u)
+    rw [add_sq, mul_pow, mul_pow, hs2, inv_pow, hs2] at hsq
+    have hc : 2 * (s * f u) * (s⁻¹ * k u) = 2 * (f u * k u) := by
+      linear_combination (2 * f u * k u) * hsc
+    linarith only [hsq, hc]
+  have i1 := integral_mono (hfk.const_mul 2) irhs hpt1
+  have i2 := integral_mono (hfk.const_mul 2).neg irhs hpt2
+  rw [integral_const_mul, integral_add (hf2.const_mul η) (hk2.const_mul η⁻¹),
+    integral_const_mul, integral_const_mul] at i1
+  rw [integral_neg, integral_const_mul, integral_add (hf2.const_mul η) (hk2.const_mul η⁻¹),
+    integral_const_mul, integral_const_mul] at i2
+  rcases le_or_gt 0 (∫ u, f u * k u) with h0 | h0
+  · rw [abs_of_nonneg h0]; exact i1
+  · rw [abs_of_neg h0]; linarith only [i2]
+
+private lemma integral_sq_smoothedBump_sub_smoothedCoherent_le {g : ℝ → ℝ} {w h : ℝ}
+    (hg : ContDiff ℝ 2 g) (hgsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
+    (hg0 : ∀ u, 0 ≤ g u) (hh : 0 < h) (B : ℕ) (V : ℕ → ℝ) (a b σ : ℝ) :
+    Integrable (fun u =>
+        (atomicTest B V (smoothedBump g h) u - smoothedCoherent g a b h σ u) ^ 2) ∧
+      (∫ u, (atomicTest B V (smoothedBump g h) u - smoothedCoherent g a b h σ u) ^ 2) ≤
+        ((∫ t, g t) ^ 2 / h ^ 2) *
+          ∫ s, (windowSum B V h s - coherentWindow a b h σ s) ^ 2 := by
+  have hgc := hasCompactSupport_of_support_Icc hgsupp
+  have hgi : Integrable g := hg.continuous.integrable_of_hasCompactSupport hgc
+  set W := windowSum B V h
+  set Wc := coherentWindow a b h σ
+  set RW : ℝ → ℝ := fun s => W s - Wc s
+  have hWc_int : Integrable Wc :=
+    (integrable_indicator_iff measurableSet_Icc).mpr
+      ((by fun_prop : Continuous fun s =>
+        Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * σ).integrableOn_Icc)
+  have hWc2_int : Integrable fun s => Wc s ^ 2 := by
+    have heq : (fun s => Wc s ^ 2) = (Set.Icc a b).indicator
+        (fun s => (Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * σ) ^ 2) := by
+      funext s; dsimp only [Wc, coherentWindow]
+      by_cases hs : s ∈ Set.Icc a b
+      · rw [Set.indicator_of_mem hs, Set.indicator_of_mem hs]
+      · rw [Set.indicator_of_notMem hs, Set.indicator_of_notMem hs, sq, zero_mul]
+    rw [heq]
+    exact (integrable_indicator_iff measurableSet_Icc).mpr
+      ((Continuous.pow (by fun_prop) 2).integrableOn_Icc)
+  have hWc_meas : Measurable Wc :=
+    ((by fun_prop : Continuous fun s =>
+      Real.sqrt (Real.exp s) * (1 - Real.exp (-h)) * σ).measurable).indicator measurableSet_Icc
+  have hWc_bd : ∀ s, |Wc s| ≤ Real.sqrt (Real.exp (max a b)) * |1 - Real.exp (-h)| * |σ| := by
+    intro s; dsimp only [Wc, coherentWindow]
+    by_cases hs : s ∈ Set.Icc a b
+    · rw [Set.indicator_of_mem hs, abs_mul, abs_mul,
+        abs_of_pos (Real.sqrt_pos.mpr (Real.exp_pos s))]
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
+        (Real.sqrt_le_sqrt (Real.exp_le_exp.mpr (hs.2.trans (le_max_right a b))))
+        (abs_nonneg _)) (abs_nonneg _)
+    · rw [Set.indicator_of_notMem hs, abs_zero]; positivity
+  have hRW_meas : Measurable RW := (measurable_windowSum B V h).sub hWc_meas
+  set C_RW := (∑ n ∈ Icc 1 B, |V n|) +
+    Real.sqrt (Real.exp (max a b)) * |1 - Real.exp (-h)| * |σ|
+  have hRW_bd : ∀ s, |RW s| ≤ C_RW := fun s =>
+    (abs_sub _ _).trans (add_le_add (abs_windowSum_le B V h s) (hWc_bd s))
+  have hRW2_int : Integrable fun s => RW s ^ 2 := by
+    refine (((integrable_windowSum_sq B V h).const_mul 2).add (hWc2_int.const_mul 2)).mono'
+      (hRW_meas.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun s => ?_)
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    dsimp only [RW]; nlinarith only [sq_nonneg (W s + Wc s)]
+  have hFcoh_eq : smoothedCoherent g a b h σ =
+      fun u => h⁻¹ * convolution g Wc (ContinuousLinearMap.mul ℝ ℝ) volume u :=
+    funext fun u => by rw [smoothedCoherent, convolution_def]; rfl
+  have hFcoh_int : Integrable (smoothedCoherent g a b h σ) := by
+    rw [hFcoh_eq]
+    exact (hgi.integrable_convolution (ContinuousLinearMap.mul ℝ ℝ) hWc_int).const_mul h⁻¹
+  have hFh : ContDiff ℝ 2 (atomicTest B V (smoothedBump g h)) :=
+    contDiff_atomicTest (contDiff_smoothedBump hg hgc h) B V
+  set RF : ℝ → ℝ := fun u => atomicTest B V (smoothedBump g h) u - smoothedCoherent g a b h σ u
+  have hRF_aesm : AEStronglyMeasurable RF :=
+    hFh.continuous.aestronglyMeasurable.sub hFcoh_int.aestronglyMeasurable
+  have hRF_eq : ∀ u, RF u = h⁻¹ * ∫ t, g t * RW (u - t) := by
+    intro u; dsimp only [RF]
+    rw [atomicTest_smoothedBump_eq hg.continuous hgc, smoothedCoherent, ← mul_sub]
+    congr 1
+    have iW := integrable_mul_comp_sub hgi (measurable_windowSum B V h) (abs_windowSum_le B V h) u
+    have iWc := integrable_mul_comp_sub hgi hWc_meas hWc_bd u
+    rw [← integral_sub iW iWc]
+    exact integral_congr_ae (Eventually.of_forall fun t => by dsimp only [RW]; ring)
+  set I := ∫ t, g t
+  have hcs : ∀ u, (∫ t, g t * RW (u - t)) ^ 2 ≤ I * ∫ t, g t * RW (u - t) ^ 2 := fun u =>
+    sq_integral_mul_le_weighted hg0 hgi (hRW_meas.comp (measurable_const.sub measurable_id))
+      (fun t => hRW_bd (u - t))
+  have hci : Integrable (convolution g (fun s => RW s ^ 2) (ContinuousLinearMap.mul ℝ ℝ) volume) :=
+    hgi.integrable_convolution (ContinuousLinearMap.mul ℝ ℝ) hRW2_int
+  have hpt : ∀ u, RF u ^ 2 ≤
+      h⁻¹ ^ 2 * I * convolution g (fun s => RW s ^ 2) (ContinuousLinearMap.mul ℝ ℝ) volume u := by
+    intro u
+    rw [hRF_eq u, mul_pow, convolution_def, mul_assoc]
+    exact mul_le_mul_of_nonneg_left (hcs u) (sq_nonneg _)
+  have hRF2_int : Integrable fun u => RF u ^ 2 :=
+    (hci.const_mul (h⁻¹ ^ 2 * I)).mono' (by simpa only [sq] using hRF_aesm.mul hRF_aesm)
+      (Eventually.of_forall fun u => by rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]; exact hpt u)
+  refine ⟨hRF2_int, ?_⟩
+  calc ∫ u, RF u ^ 2
+      ≤ ∫ u, h⁻¹ ^ 2 * I *
+          convolution g (fun s => RW s ^ 2) (ContinuousLinearMap.mul ℝ ℝ) volume u :=
+        integral_mono hRF2_int (hci.const_mul _) hpt
+    _ = h⁻¹ ^ 2 * I * (I * ∫ s, RW s ^ 2) := by
+        rw [integral_const_mul, integral_convolution (ContinuousLinearMap.mul ℝ ℝ) hgi hRW2_int]
+        rfl
+    _ = I ^ 2 / h ^ 2 * ∫ s, RW s ^ 2 := by field_simp
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
