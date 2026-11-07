@@ -62,6 +62,7 @@ them; occupation across distinct winding cells remains a separate question.
 | Winding occupation | If `M` integers have their own and their successor's phases in prescribed radius-`ε` arcs, their pair-winding signatures number at least `M²/2` when `4ε(N+1)²<|t|`. | [`card_sq_le_two_mul_windingSignatures`](WindingOccupancy.lean) |
 | Optimal resolution order | Pairs `(n+1,n+4)` and `(n+2,n+3)` are distinct but their translated products differ by two at every nonnegative integer shift. Corresponding logarithms differ by at most `2/(n+1)²`. | [`neighbouring_pair_log_gap`, `neighbouring_pair_signatures_ne`](SharpnessOfProductResolution.lean) |
 | Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
+| Finite recurrence | Every finite set `A` aligns to precision `2π/(Q+1)` at some height in `[L,L(Q+1)^|A|]`, for every `L>0`. There is no last aligned height. | [`exists_alignment_in_scaled_interval`, `not_exists_last_alignment`](FiniteAlignmentReturns.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
 Tuple reconstruction recovers the monic polynomial `∏ᵢ(X+nᵢ)` by interpolation.

@@ -13,7 +13,7 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven
-- [x] 2 → 3  formalized: 39 modules, each checked with `lake --old env lean`
+- [x] 2 → 3  formalized: 41 modules, each checked with `lake --old env lean`
 
 ## Answers
 
@@ -77,6 +77,8 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 | Parity source at a power saving | Equivalence with zero-free strips; VK-level source | Lean: `zeroFree_iff_liouville_power`, `exists_abs_parityLedger_le_log` |
 | Pointwise bounds below VK at all heights | Square-root cancellation off a small set; first return above the length | Lean: `exists_cancellation_off_small_set`, `no_prime_return` |
 | Bounded count forces the line | Explicit nonnegative multiplicative model | Lean: `cubicCount_sub_mem`, `exists_cubicFactor_eq_zero` |
+| Extremal law contradicts ¬RH | A real quadratic with an off-axis extremal zero satisfies the whole inequality | Lean: `norm_model_conj_lt` |
+| Parity is missing information | The exact cut identity determines `λ` | Lean: `eq_liouville_of_floorSum` |
 | Unrestricted rotated coefficients | Exact local alternative; see `5-failed/rotated-relations-with-unrestricted-balanced-coefficients.md` | Lean: `balanced_relation_zero_or_modulus_eq` |
 | Stencil near `ζ` in FE distance | Bohr coefficients on the line; mean law of the defect | Lean: `tendsto_critical_average_log`, `tendsto_stencilDefect_average` |
 | New zeros by added generators | Exact factorization right of the count exponent | Lean: `exists_numerator_eq_mul` |
@@ -84,7 +86,7 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 
 ## Open
 
-Parity at a power saving for stencils whose twists vanish at a zero; parity on all integers through cuts; genuine Beurling one-offs; the Báez-Duarte–Bagchi converse for the energy kernel; coefficients between `exp(C√|w|)` and `Q`; second-order extremal law; the exceptional set between `log T` and VK; FE defect of a one-off outside stencils. See the README, §9.
+The size of `L` between VK and a power saving (the identity itself determines `λ`); parity readings through stencils; genuine Beurling one-offs; the Báez-Duarte–Bagchi converse for the energy kernel; coefficients between `exp(C√|w|)` and `Q`; which property of `Q` beyond extremal position contradicts the extremal law; the exceptional set between `log T` and VK; FE defect of a one-off outside stencils. See the README, §9.
 
 ## Log
 - 2026-11-07 — created in 1-in-progress

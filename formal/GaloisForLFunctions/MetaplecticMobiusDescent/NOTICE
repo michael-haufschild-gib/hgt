@@ -301,3 +301,8 @@ give termwise iterated differentiation through Mathlib's smooth-series theorem.
 SpatialSmoothnessOfTheCubicEisensteinSeries adapts normalized-row kernels
 and positive height regularization from OpenAI Eisenstein/SeedHeight.lean.
 The local compact-family derivative theorem gives the regularized jet sums.
+CubicEisensteinDerivatives extends the normalized-row argument from OpenAI
+Eisenstein/SeedHeight.lean to every spatial derivative by local equality
+with compact regularizations. The summand equation from SmoothSummands.lean
+is proved using the local height-profile Laplacian identity.
+TheCubicEisensteinEquation adapts spatial differentiation and summation from OpenAI Eisenstein/SmoothSummands.lean and SeedHeight.lean. The actual derivative sums and height-profile equation are locally checked.

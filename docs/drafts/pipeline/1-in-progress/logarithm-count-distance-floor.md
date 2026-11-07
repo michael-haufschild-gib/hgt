@@ -21,7 +21,9 @@ Write `a(n)` for the finite number of generalized integers of norm `n`, and
 3. **Injective and surjective norm.** The existing exact-factorization theorem
    identifies the labels, with multiplicities, with rational primes.
 
-Lean verification of both bounds and the assembled dichotomy remains required.
+Both finite bounds and the assembled trichotomy pass a scratch Lean check,
+with axiom set `{propext, Classical.choice, Quot.sound}`. Production module
+checks and the explicit logarithmic asymptotic consequence remain required.
 
 ## Argument for the missing-integer bound
 
@@ -44,4 +46,4 @@ real-norm conjecture recorded by [Erdős, 1977, pp. 68–69](https://www.renyi.h
 
 No claim of a sharp upper construction or of the smallest distance supporting
 one exceptional zero is made. The logarithmic floor must be formalized before
-it is used as an input. Novelty remains unaudited.
+it is used as an input. No claim of external novelty is made.

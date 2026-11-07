@@ -6,7 +6,7 @@
 - **Target:** A locally finite Beurling system with integer generator norms
   and `N(x)=⌊x⌋+O(1)` is the rational-prime system, including multiplicities.
 
-## Proposed proof
+## Proof
 
 Bounded count error bounds every jump, hence every norm-fibre cardinality.
 If distinct generalized integers `u,v` share norm `m`, the `k+1` multisets
@@ -20,18 +20,24 @@ finishes the argument.
 
 ## Significance and boundary
 
-This would extend the corpus's vanishing-error isolation gap to every bounded
-error at slope one. The free commutative monoid of positive generators is
+This extends the corpus's vanishing-error isolation gap to every bounded
+error at slope one: the bounded sup-count-distance component of the rational
+primes contains only that system. The free commutative monoid of positive generators is
 essential: arbitrary nonnegative integral multiplicative coefficients admit
 bounded-error counterexamples. The result would not classify unbounded
 subpower errors or determine the distance needed for one exceptional zero.
 
-## Audit required
+## Lean evidence
 
-Formalize collision amplification, derive the fibre bound from actual finite
-counts, and prove eventual exact factorization. Do not use `Set.ncard` without
-finiteness: infinite fibres have `ncard=0`. Check prior literature before any
-novelty claim. Lean proof not yet established.
+The complete proof passes a scratch Lean check, including actual finite balls
+and the label equivalence. Its capstone axiom set is
+`{propext, Classical.choice, Quot.sound}`. Production modules
+`NormCollisionAmplification` and `CountDistanceRigidity` are written;
+their direct source checks remain required. The latter derives bounded-error
+rigidity from the stronger count-distance trichotomy.
+
+All norm-fibre `ncard` comparisons explicitly establish finiteness. No external
+novelty claim is made.
 
 ## Stronger question exposed
 

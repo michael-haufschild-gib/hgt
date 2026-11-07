@@ -21,13 +21,13 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 |---|---|---|
 | P1 | Group closure, transport, corners, Halász–Montgomery | `TheOrbitOfAPhaseSystem` |
 | P2 | Bohr sets, clusters, large-value pairs, descent | `LargeValueHeightsFormAnApproximateGroup` |
-| P3 | Finite-time Bohr isometry; Kronecker scale; boxes and the mixing bracket | `TheFiniteTimeBohrIsometry`, `TheBoxesOfTheTorus` |
+| P3 | Finite-time Bohr isometry; Kronecker scale; boxes and the mixing bracket; boxes at Chernoff cost `exp(10 y √(log y log log y/δ))` | `TheFiniteTimeBohrIsometry`, `TheBoxesOfTheTorus`, `TheBoxesAtSquareRootCost` |
 | P4 | Pigeonhole non-alignment; saving `T^{−2/(A−1)−δ}`; any set of primes; top of the column | `UniqueFactorizationPaysForNonAlignment`, `TheSavingAgainstSize`, `TheSavingOnAnySetOfPrimes` |
 | P5 | Moment = energy; start of the orbit; diagonal range; energy at every order; oscillating energy | `TheEnergyOfTheOrbit`, `TheDiagonalRange`, `TheEnergyPastTheDiagonal` |
 | P6 | Rounded orbit: diagonal data cannot exclude a return | `TheRoundedOrbit` |
 | P7 | Agler wall, finite and all primes; first and second test; sharpness; coordinates that see the height | `PrimeByPrimePaymentCannotUseTheGammaFactor`, `TheWallForAllPrimes`, `CoordinatesThatSeeTheHeight` |
 | P8 | Fejér sign at the start; twin; start is extremal | `TheCornersOfTheOrbit` |
-| P9 | Hull: finite type, characters, Liouville ⇔ RH, typical zero-free, limits ⇔ RH; a zero forces an entry | `TheHullOverTheTorus`, `TheHullOverTorsionPoints`, `AnIsolatedZeroForcesAnEntry` |
+| P9 | Hull: finite type, characters, Liouville ⇔ RH, typical zero-free, limits ⇔ RH; a zero forces an entry; prime characters lacunary (Zygmund); natural boundary of typical fibres | `TheHullOverTheTorus`, `TheHullOverTorsionPoints`, `AnIsolatedZeroForcesAnEntry`, `PrimeCharactersAreLacunary`, `TheNaturalBoundaryOfTheHull` |
 | P10 | Pole price; large values counted through the pole | `TheReturnsThePoleMustPay` |
 | P11 | Graph lift; frozen = size; outer factor; allocation | `CertificatesOnTheOrbit` |
 | P12 | Critical coupling: theta counts integers | `TheCriticalCouplingOfTheBase` |
@@ -35,10 +35,12 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 | P14 | Character discrepancy; box count | `TheDiscrepancyOfTheOrbit` |
 | P15 | Tarry–Escott and squared words; saving at every length; polylogarithmic saving past the horizon; away from small primes; sup of integer powers; `ζ` below its supremum | `TarryEscottWords`, `TarryEscottWordsForbidAlignment`, `NonAlignmentAtEveryLargeHeight`, `TheOrbitAvoidsTorsionPoints`, `TheLogarithmicHankelForm`, `SquaredWordsForbidAlignment`, `TheMisalignmentBand`, `TheMassOfMisalignedPrimes`, `TheSavingAtEveryLength`, `TheSavingAwayFromSmallPrimes`, `TheSupBoundOfIntegerPowers`, `ZetaStaysBelowItsSupremum` |
 | P17 | Escape from low-rank progressions; every rotation; many misaligned primes; modulus below size | `TheOrbitEscapesProgressions` |
+| P18 | Where the words stop: full progressions need the primorial in the step; squared-word patterns | `WhereTheWordsStop` |
+| P19 | Transfer by translation: one large value generates `m` in a window of the Kronecker scale | `TheTransferToRareHeights` |
 | P16 | The six questions, one statement each | `TheQuestionsOfTheField` |
 
 ## Open
-Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Polylogarithmic precision above the primes up to `log y`; smooth numbers in short intervals; exact mixing exponent; certificate coordinates tied to `p^{−s}`; natural boundary of the hull. README §9.
+Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Polylogarithmic precision above the primes up to `log y`; smooth numbers in short intervals; exact mixing exponent (gap `(log y)^{3/2}√(log log y)`, from the union bound); certificate coordinates tied to `p^{−s}`; zero-carrying set of the hull. README §9.
 
 ## No-go closure
 - **Exact killing theorem/mechanism:** the kernel-valued Agler form of §2.8b dies on two points: `agler_wall`, `agler_wall_all_primes`, `no_decomposition_euler`, `euler_test`.

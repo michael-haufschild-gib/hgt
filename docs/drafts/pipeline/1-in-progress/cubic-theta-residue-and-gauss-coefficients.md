@@ -61,7 +61,7 @@ is constructed globally in `L²` and locally for the corrected incoming family.
 Its nonvanishing is not yet established.
 
 Open inputs: [source matching](../2-fully-proven/cubic-initial-resolvent-matching.md),
-[residue nonvanishing](cubic-constant-term-nonvanishing.md), Fourier
+[residue nonvanishing](../2-fully-proven/cubic-constant-term-nonvanishing.md), Fourier
 identification, and nonvanishing of `C∞`. None is supplied as an assumption
 in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.

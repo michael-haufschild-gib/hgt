@@ -48,7 +48,7 @@ theorem cosSum_not_tendsto_zero (θ : ℝ) :
   have h1 : Tendsto (fun k => cosSum θ (k + 1)) atTop (𝓝 0) :=
     (tendsto_add_atTop_iff_nat 1).mpr h
   have he := (h1.pow 2).add (h.pow 2)
-  have hh := le_of_tendsto' he (cosSum_adjacent_energy θ)
+  have hh := ge_of_tendsto' he (cosSum_adjacent_energy θ)
   norm_num at hh
 
 /-- A character series with coefficients bounded away from zero cannot converge. -/
@@ -99,7 +99,9 @@ theorem allBaseTorusPositive_iff_nonneg_of_abs_floor {f : ℝ → ℝ} {c : ℝ}
     haveI : Unique (Fin 0 → ℕ) := Pi.uniqueOfIsEmpty _
     simpa [torusSum, tsum_fintype, ampl, chiProd] using h x
   | succ n =>
-    rw [torusSum_eq_zero_of_abs_floor (Nat.succ_pos n) hc (fun k => hf _) θ]
+    have he := torusSum_eq_zero_of_abs_floor (Nat.succ_pos n)
+      (a := ampl f (fun i => Real.log (p i)) x) hc (fun k => hf _) θ
+    rw [he]
 
 /-- A bounded positive oscillation satisfying the proposed left endpoint bound. -/
 def boundaryOscillation (y : ℝ) : ℝ := 1 + Real.cos y / 2
@@ -121,16 +123,16 @@ theorem boundaryOscillation_not_expConvex : ¬ IsExpConvexFrom 0 boundaryOscilla
   have ht : ∀ i ∈ (Finset.univ : Finset (Fin 2)),
       0 ≤ (![Real.pi / 2, 3 * Real.pi / 2] : Fin 2 → ℝ) i := by
     intro i _
-    fin_cases i <;> simp only [Matrix.cons_val_zero, Matrix.cons_val_one] <;>
-      positivity
+    fin_cases i <;> dsimp <;> positivity
   have hh := h (Fin 2) Finset.univ ![Real.pi / 2, 3 * Real.pi / 2]
     (![1, -1] : Fin 2 → ℂ) ht
   have hπ : Real.pi / 2 + Real.pi / 2 = Real.pi := by ring
   have h2π : Real.pi / 2 + 3 * Real.pi / 2 = 2 * Real.pi := by ring
   have h2π' : 3 * Real.pi / 2 + Real.pi / 2 = 2 * Real.pi := by ring
   have h3π : 3 * Real.pi / 2 + 3 * Real.pi / 2 = Real.pi + 2 * Real.pi := by ring
-  norm_num [Fin.sum_univ_two, boundaryOscillation, hπ, h2π, h2π', h3π,
-    Real.cos_add] at hh
+  simp only [Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one, boundaryOscillation,
+    zero_add, hπ, h2π, h2π', h3π] at hh
+  norm_num [Real.cos_add] at hh
 
 /-- The endpoint conjecture without a convergence requirement is false. -/
 theorem exists_boundary_torusPositive_not_expConvex :
@@ -151,7 +153,7 @@ theorem boundaryOscillation_damping_not_positive {α : ℝ} (hα : 0 < α) (hα1
     ¬ IsAllBaseTorusPositive (fun y => boundaryOscillation y * Real.exp (-α * y)) := by
   have h := (oscillatory_bernstein_dichotomy (ω := 1) one_ne_zero).1 α hα hα1
     (1 / 2) (by norm_num)
-  simpa only [boundaryOscillation, one_mul, div_eq_mul_inv, mul_comm] using h
+  simpa only [boundaryOscillation, one_mul, mul_one, div_eq_mul_inv, mul_comm] using h
 
 /-- Positive oscillations can leave the unrestricted cone under small damping and re-enter
 above the Euler abscissa. The re-entering amplitudes have genuine convergent character series. -/

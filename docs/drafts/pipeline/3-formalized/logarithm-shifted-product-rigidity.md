@@ -1,20 +1,20 @@
 # Shifted products and logarithmic winding
 
 - **ID:** SPL-shifted-products
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** [§2.9](../../../reports/review-0711/obstacles-summary.md)
 - **Statement:** Classify simultaneous product coincidences under translation;
   determine which quantitative information survives reduction of logarithms modulo a period.
 
-## Mathematical targets
+## Results and remaining question
 
 1. For natural numbers, equality of `ab` and `(a+1)(b+1)` determines
    the unordered pair `{a,b}`. Obtain the exact mixed collision count on any finite set.
 2. Extend from pairs to tuples using translated product polynomials.
 3. Transfer integer-product separation to real logarithms, retaining all nonzero
    winding cells. Determine the range where a common cell forces a diagonal collision.
-4. Bound the number or occupation of nonzero cells for actual phase level sets.
+4. **Open:** bound the number or occupation of nonzero cells for actual phase level sets.
    This last estimate, not exact algebra, is the proposed input beyond diagonal moments.
 
 ## Scope
@@ -69,9 +69,16 @@ the multiset, including multiplicities.
 
 ## Lean evidence
 
-Direct Lean checks pass for `ShiftedProductRigidity`, `WindingOccupancy`,
-`SharpnessOfProductResolution`, and `TranslatedTupleReconstruction`.
-`LogarithmicCollisionCells` passes its dependency build; final direct check
-remains required. Classification, collision count, and real-cell bound have
-axiom set `{propext, Classical.choice, Quot.sound}`. Axiom audits for winding,
-sharpness, and tuple reconstruction remain required.
+Direct Lean checks pass for all five modules in
+`GaloisForLFunctions/SumProductArithmeticOfTheLogarithm/`:
+
+* `ShiftedProductRigidity`: `pairSignature_eq_iff`, `mixedCollisionCount_add_card`.
+* `LogarithmicCollisionCells`: `card_logPairCell_le_two`.
+* `WindingOccupancy`: `card_sq_le_two_mul_windingSignatures`.
+* `SharpnessOfProductResolution`: `neighbouring_pair_log_gap`,
+  `neighbouring_pair_signatures_ne`.
+* `TranslatedTupleReconstruction`: `translated_products_complete`.
+
+Each audited declaration has axiom set `{propext, Classical.choice, Quot.sound}`.
+The open occupation estimate belongs to
+[the core problem](../1-in-progress/sum-product-logarithm-core.md).

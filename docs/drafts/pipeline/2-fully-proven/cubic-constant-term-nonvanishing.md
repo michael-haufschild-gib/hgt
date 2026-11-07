@@ -1,9 +1,9 @@
 # Nonvanishing from the cubic constant term
 
 - **ID:** cubic-constant-term-nonvanishing
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual incoming residue at `s=4/3` is a nonzero quotient `L²` eigenvector of the Laplacian with eigenvalue `8/9`.
 
 Let `V=9√3/2` be the covolume of the period lattice `3ℤ[ω]`, and let
@@ -36,7 +36,7 @@ Integrating the constant mode over heights `5≤v≤6`, with volume density
 The incoming height term is analytic there. This compact cusp average is
 a bounded functional on the local `L²` family.
 
-[Initial source matching](../2-fully-proven/cubic-initial-resolvent-matching.md) identifies
+[Initial source matching](cubic-initial-resolvent-matching.md) identifies
 the two averages for `Re s>4`, `Im s>0`. Analytic uniqueness extends the
 identity to `Re s>4/3`, `Im s>0`. The isolated spectral pole permits passage
 to the real boundary near `4/3`; uniqueness of the residue limit therefore

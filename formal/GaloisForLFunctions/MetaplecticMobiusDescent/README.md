@@ -279,8 +279,15 @@ a compact unit-energy sphere. The convergent base-point series supplies
 the scalar weights, proving spatial smoothness of the actual series for
 `Re s>2` and termwise derivatives of its compact regularizations.
 
+`CubicEisensteinDerivatives.lean` identifies each regularized family with
+the actual series near a positive-height point. Every spatial derivative
+therefore commutes with its row sum. The height-profile equation gives
+the Laplace eigenvalue of each individual summand.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.
 
 The arithmetic and quotient analysis draw on the [OpenAI metaplectic argument](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf). Source attribution is in `NOTICE`; license is in `LICENSE`.
+
+`TheCubicEisensteinEquation.lean` proves the actual Eisenstein series is smooth and satisfies its Laplace equation for Re s > 2. Termwise first and second axis derivatives follow from the summable multilinear jets.

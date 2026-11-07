@@ -36,223 +36,219 @@ private lemma compensated_excess {Y₀ Yn Lx lT lG lK Z FW Mg s4 : ℝ} (hY₀ :
       _ ≤ _ := mul_le_mul_of_nonneg_right hYn (by linarith)
   nlinarith
 
+/-- The bound is at least `2 y²`. -/
+private lemma compBound_two_le {y : ℕ} (hy : 4 ≤ y) : 2 * ((y * y : ℕ) : ℝ) ≤ compBound y := by
+  have hT0 : (0 : ℝ) ≤ ((y * y : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hb : (1 : ℝ) ≤ ((2 * y + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ 2 * y + 2)
+  have hl0 : (0 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) := Nat.cast_nonneg _
+  have h1 : (1 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) + 1 := by linarith
+  have h2 : (1 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) + 3 := by linarith
+  have h3 : (2 : ℝ) ≤ 2 + Real.log ((y * y : ℕ) : ℝ) := by
+    have := Real.log_natCast_nonneg (y * y)
+    linarith
+  have h4 : (2 : ℝ) ≤ ((2 * y + 2 : ℕ) : ℝ) * ((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3) *
+      (2 + Real.log ((y * y : ℕ) : ℝ)) := by
+    calc (2 : ℝ) = 1 * 1 * 1 * 2 := by ring
+      _ ≤ _ := by gcongr
+  rw [compBound]
+  calc 2 * ((y * y : ℕ) : ℝ) = ((y * y : ℕ) : ℝ) * 2 := by ring
+    _ ≤ ((y * y : ℕ) : ℝ) * (((2 * y + 2 : ℕ) : ℝ) * ((Nat.log 2 (y * y) : ℝ) + 1) *
+        ((Nat.log 2 (y * y) : ℝ) + 3) * (2 + Real.log ((y * y : ℕ) : ℝ))) := mul_le_mul_of_nonneg_left h4 hT0
+    _ = _ := by ring
+
+/-- A power of two between `A` and `2A`. -/
+private lemma exists_two_pow_between {A : ℝ} (hA : 1 ≤ A) :
+    ∃ g : ℕ, A ≤ ((2 ^ g : ℕ) : ℝ) ∧ ((2 ^ g : ℕ) : ℝ) ≤ 2 * A := by
+  have hfl : 1 ≤ ⌊A⌋₊ := Nat.le_floor (by simpa using hA)
+  refine ⟨Nat.log 2 ⌊A⌋₊ + 1, ?_, ?_⟩
+  · have h1 : ⌊A⌋₊ < 2 ^ (Nat.log 2 ⌊A⌋₊ + 1) := Nat.lt_pow_succ_log_self (by norm_num) _
+    have h2 := Nat.lt_floor_add_one A
+    have h3 : ((⌊A⌋₊ : ℕ) : ℝ) + 1 ≤ ((2 ^ (Nat.log 2 ⌊A⌋₊ + 1) : ℕ) : ℝ) := by exact_mod_cast h1
+    linarith
+  · have h1 : 2 ^ Nat.log 2 ⌊A⌋₊ ≤ ⌊A⌋₊ := Nat.pow_log_le_self 2 (by omega)
+    have h2 : ((⌊A⌋₊ : ℕ) : ℝ) ≤ A := Nat.floor_le (by linarith)
+    have h3 : ((2 ^ Nat.log 2 ⌊A⌋₊ : ℕ) : ℝ) ≤ ((⌊A⌋₊ : ℕ) : ℝ) := by exact_mod_cast h1
+    rw [pow_succ]
+    push_cast at h3 ⊢
+    linarith
+
+/-- A slope `m (1 − 1/B + E)` is a rate at most `2E`. -/
+private lemma IsProducer.rate_le_of_slope_le {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) {E : ℝ}
+    (hE : 0 ≤ E) (h : stencilSlope c ≤ (m : ℝ) * (1 - 1 / (B : ℝ) + E)) : rate c m B ≤ 2 * E := by
+  have hm := hP.m_pos
+  have hd := hP.one_sub_pos
+  have hB2 : (2 : ℝ) ≤ B := by exact_mod_cast hP.two_le_B
+  have hd2 : 1 / 2 ≤ 1 - 1 / (B : ℝ) := by
+    have : 1 / (B : ℝ) ≤ 1 / 2 := one_div_le_one_div_of_le (by norm_num) hB2
+    linarith
+  have hE2 : E ≤ 2 * E * (1 - 1 / (B : ℝ)) := by
+    have h1 := mul_le_mul_of_nonneg_left (show (1 : ℝ) ≤ 2 * (1 - 1 / (B : ℝ)) by linarith) hE
+    linarith
+  rw [rate, normSlope, sub_le_iff_le_add, div_le_iff₀ (mul_pos hm hd)]
+  calc stencilSlope c ≤ (m : ℝ) * (1 - 1 / (B : ℝ) + E) := h
+    _ ≤ (m : ℝ) * (1 - 1 / (B : ℝ) + 2 * E * (1 - 1 / (B : ℝ))) :=
+        mul_le_mul_of_nonneg_left (by linarith) hm.le
+    _ = (2 * E + 1) * ((m : ℝ) * (1 - 1 / (B : ℝ))) := by ring
+
+private lemma compWeighted_nonneg {y : ℕ} {d : ℕ → ℕ} : 0 ≤ compWeighted y d := by
+  unfold compWeighted
+  exact sum_nonneg fun x _ => by positivity
+
+/-- The near law at a scale `2^g`, with the drift and the mass absorbed. -/
+private lemma compNear_bound_at_scale {y : ℕ} {d : ℕ → ℕ} (hc : IsCompensation y d) (hy : 4 ≤ y) {η Y₀ : ℝ}
+    (hY₀0 : 0 ≤ Y₀) (hM : ∀ x, y * y ≤ x → |mertens x| ≤ η * x) {X g : ℕ}
+    (hY₀ : η + 5 * (1 + Real.log X) / y ≤ Y₀) (hX1 : 1 ≤ X) (hGX : 2 ^ g ≤ X) (h2T : 2 * (y * y) < 2 ^ g)
+    (hB : (1 + compBound y) / ((2 ^ g : ℕ) : ℝ) ≤ Y₀) :
+    ∀ s, 1 ≤ s → s < 2 ^ g → |compNear y d s - compCount y d s| ≤ (s : ℝ) * (Y₀ * (5 + 2 * Real.log X)) := by
+  intro s hs hsG
+  have hn : ∀ P ∈ largePrimes y, d P ≤ 2 ^ g := by
+    intro P hP
+    have h1 := hc.le_two_mul hy hP
+    have h2 := (mem_largePrimes.mp hP).1.2
+    omega
+  have h := abs_compNear_sub_le hc (by omega) hY₀0 hM hGX (Nat.one_le_two_pow) hX1 hn hY₀ hs (by omega)
+  refine h.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg s))
+  have hG0 : (0 : ℝ) < ((2 ^ g : ℕ) : ℝ) := by positivity
+  have h1 : (1 + compMass y d) / ((2 ^ g : ℕ) : ℝ) ≤ Y₀ := by
+    refine le_trans (div_le_div_of_nonneg_right ?_ hG0.le) hB
+    have := compMass_le hc hy
+    linarith
+  have e : Y₀ * (5 + 2 * Real.log X) = 2 * Y₀ * (2 + Real.log X) + Y₀ := by ring
+  rw [e]
+  linarith
+
+/-- The compensated producer at a scale `2^g`. -/
+private lemma exists_compensated_producer_at_scale {y : ℕ} {d : ℕ → ℕ} (hc : IsCompensation y d) (hy : 4 ≤ y)
+    {Y₀ : ℝ} {g X : ℕ} (hY₀0 : 0 < Y₀) (h4y : 4 / (y : ℝ) ≤ Y₀) (h2T : 2 * (y * y) < 2 ^ g)
+    (hGX : 2 ^ g * 3 ≤ X) (hB : (1 + compBound y) / ((2 ^ g : ℕ) : ℝ) ≤ Y₀)
+    (hnear : ∀ s, 1 ≤ s → s < 2 ^ g →
+      |compNear y d s - compCount y d s| ≤ (s : ℝ) * (Y₀ * (5 + 2 * Real.log X))) :
+    ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m (2 ^ g) ∧ AlphabetLE c (2 ^ g * 3) ∧
+      rate c m (2 ^ g) ≤ 8 * (Y₀ * (5 + 2 * Real.log X)) * (1 + Real.log X) := by
+  have hg1 : 1 ≤ 2 ^ g := Nat.one_le_two_pow
+  have hy16 : 16 ≤ y * y := by nlinarith
+  have hTG : y * y < 2 ^ g := by omega
+  have hG2n : 2 ≤ 2 ^ g := by omega
+  have hGR0 : (0 : ℝ) < ((2 ^ g : ℕ) : ℝ) := by positivity
+  have hX1 : 1 ≤ X := by omega
+  have hLx : 0 ≤ Real.log (X : ℝ) := Real.log_natCast_nonneg X
+  obtain ⟨Yn, hYndef⟩ : ∃ Yn, Yn = Y₀ * (5 + 2 * Real.log X) := ⟨_, rfl⟩
+  rw [← hYndef] at hnear ⊢
+  have hYL : 0 ≤ Y₀ * Real.log X := mul_nonneg hY₀0.le hLx
+  have hYn5 : 5 * Y₀ ≤ Yn := by
+    have e : Yn = 5 * Y₀ + 2 * (Y₀ * Real.log X) := by rw [hYndef]; ring
+    linarith
+  have hYn0 : 0 ≤ Yn := by linarith
+  obtain ⟨Z, hZ1, hZ2⟩ := exists_rat_btwn (by linarith : Yn + Y₀ < Yn + 2 * Y₀)
+  have hZ0 : (0 : ℝ) ≤ (Z : ℝ) := by linarith
+  have hW0 : 0 ≤ compWeighted y d := compWeighted_nonneg
+  have hWG : compWeighted y d / ((2 ^ g : ℕ) : ℝ) ≤ Y₀ := by
+    refine le_trans (div_le_div_of_nonneg_right ?_ hGR0.le) hB
+    have := compWeighted_le hc hy
+    linarith
+  have hK3 : 2 * compWeighted y d / ((2 ^ g * 3 : ℕ) : ℝ) ≤ Y₀ := by
+    have e : 2 * compWeighted y d / ((2 ^ g * 3 : ℕ) : ℝ) = (2 / 3) * (compWeighted y d / ((2 ^ g : ℕ) : ℝ)) := by
+      push_cast
+      field_simp
+    rw [e]
+    have : 0 ≤ compWeighted y d / ((2 ^ g : ℕ) : ℝ) := div_nonneg hW0 hGR0.le
+    linarith
+  have hZY : Yn + 2 * compWeighted y d / ((2 ^ g * 3 : ℕ) : ℝ) ≤ (Z : ℝ) := by linarith
+  obtain ⟨c, m, hP, hal, hslope⟩ := exists_compensated_producer hc hy hTG hZ0 hnear hZY
+  refine ⟨c, m, hP, hal, ?_⟩
+  have hslope2 := compSlope_le hc hy hG2n hYn0 hnear
+  have hfar := sum_far_weight_le (d := d) hy hTG
+  have hFW0 : 0 ≤ ∑ x ∈ compPairs y, (compDefect y d (x.1 ^ x.2) : ℝ) / farModulus g (2 ^ g * 3) (x.1 ^ x.2) :=
+    sum_nonneg fun x _ => by positivity
+  have hX3 : (((2 ^ g * 3 : ℕ) : ℝ)) ≤ X := by exact_mod_cast hGX
+  have hlogT : Real.log ((y * y : ℕ) : ℝ) ≤ Real.log X :=
+    Real.log_le_log (by positivity) (by exact_mod_cast (hTG.le.trans (by omega : 2 ^ g ≤ X)))
+  have hlogG : Real.log ((2 ^ g : ℕ) : ℝ) ≤ Real.log X :=
+    Real.log_le_log hGR0 (by exact_mod_cast (by omega : 2 ^ g ≤ X))
+  have hlogK : Real.log ((2 ^ g * 3 : ℕ) : ℝ) ≤ Real.log X := Real.log_le_log (by positivity) hX3
+  have hlogK0 : 0 ≤ Real.log ((2 ^ g * 3 : ℕ) : ℝ) := Real.log_natCast_nonneg _
+  have hlogG0 : 0 ≤ Real.log ((2 ^ g : ℕ) : ℝ) := Real.log_natCast_nonneg _
+  have hMg : compMass y d / ((2 ^ g : ℕ) : ℝ) ≤ Y₀ := by
+    refine le_trans (div_le_div_of_nonneg_right ?_ hGR0.le) hB
+    have := compMass_le hc hy
+    linarith
+  have h4y' : 4 / (y : ℝ) * (1 + Real.log ((y * y : ℕ) : ℝ)) ≤ Y₀ * (1 + Real.log ((y * y : ℕ) : ℝ)) :=
+    mul_le_mul_of_nonneg_right h4y (by have := Real.log_natCast_nonneg (y * y); linarith)
+  have hFW : ∑ x ∈ compPairs y, (compDefect y d (x.1 ^ x.2) : ℝ) / farModulus g (2 ^ g * 3) (x.1 ^ x.2) ≤ 2 * Y₀ := by
+    linarith
+  have hexc := compensated_excess hY₀0.le hLx hYn5 hlogT hlogG hlogK hlogK0 hlogG0 hZ2.le hZ0 hFW hFW0 hMg h4y'
+  have hfinal : stencilSlope c ≤ (m : ℝ) * (1 - 1 / ((2 ^ g : ℕ) : ℝ) + 4 * (Yn * (1 + Real.log X))) := by
+    refine hslope.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg m))
+    linarith
+  have hE0 : 0 ≤ 4 * (Yn * (1 + Real.log X)) := by
+    have : 0 ≤ 1 + Real.log (X : ℝ) := by linarith
+    positivity
+  have hrate := hP.rate_le_of_slope_le hE0 hfinal
+  have e : 2 * (4 * (Yn * (1 + Real.log X))) = 8 * Yn * (1 + Real.log X) := by ring
+  rw [e] at hrate
+  exact hrate
+
 /-- **The compensated producer at a level.** With `|M(x)| ≤ η x` on `x ≥ y²` and `η + 5 (1 + log X)/y ≤ Y₀ ≤ 1`, there is an integer producer on an alphabet in
 `[1, 6 (1 + B)/Y₀]`, `B = compBound y`, of rate at most `8 Y₀ (5 + 2 log X)(1 + log X)`, provided the alphabet lies below `X`. -/
-theorem exists_compensated_producer_of_level {y : ℕ} (hy : 4 ≤ y) {η Y₀ : ℝ} {X : ℕ}
+theorem exists_compensated_producer_of_level {y : ℕ} (hy : 4 ≤ y) {η Y₀ : ℝ} {X : ℕ} (hη : 0 ≤ η)
     (hM : ∀ x, y * y ≤ x → |mertens x| ≤ η * x)
-    (hY₀ : η + 5 * (1 + Real.log X) / y ≤ Y₀) (hY₀1 : Y₀ ≤ 1)
+    (hY₀ : η + 5 * (1 + Real.log X) / y ≤ Y₀) (hY₀1 : Y₀ ≤ 1) (hX1 : 1 ≤ X)
     (hX : 6 * (1 + compBound y) / Y₀ ≤ X) :
     ∃ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B ∧ AlphabetLE c ⌊6 * (1 + compBound y) / Y₀⌋₊ ∧
       rate c m B ≤ 8 * (Y₀ * (5 + 2 * Real.log X)) * (1 + Real.log X) := by
   obtain ⟨d, hc⟩ := exists_isCompensation (by omega : 1 ≤ y)
-  have hy1 : 1 ≤ y := by omega
   have hyR : (4 : ℝ) ≤ y := by exact_mod_cast hy
-  have hy0 : (0 : ℝ) < y := by linarith
-  have hT : 16 ≤ y * y := by nlinarith
-  have hTR : (16 : ℝ) ≤ ((y * y : ℕ) : ℝ) := by exact_mod_cast hT
-  have hlT0 : 0 ≤ Real.log ((y * y : ℕ) : ℝ) := Real.log_natCast_nonneg _
-  -- The bound is large.
-  have hlog0 : (0 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) := Nat.cast_nonneg _
-  have hb : (10 : ℝ) ≤ ((2 * y + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : 10 ≤ 2 * y + 2)
-  have hB2 : 2 * ((y * y : ℕ) : ℝ) ≤ compBound y := by
-    rw [compBound]
-    have h1 : (1 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) + 1 := by linarith
-    have h2 : (1 : ℝ) ≤ (Nat.log 2 (y * y) : ℝ) + 3 := by linarith
-    have h3 : (2 : ℝ) ≤ 2 + Real.log ((y * y : ℕ) : ℝ) := by linarith
-    have h4 : (1 : ℝ) ≤ ((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3) := by nlinarith
-    have h5 : (2 : ℝ) ≤ ((2 * y + 2 : ℕ) : ℝ) * (((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3)) *
-        (2 + Real.log ((y * y : ℕ) : ℝ)) := by nlinarith
-    calc 2 * ((y * y : ℕ) : ℝ) = ((y * y : ℕ) : ℝ) * 2 := by ring
-      _ ≤ ((y * y : ℕ) : ℝ) * (((2 * y + 2 : ℕ) : ℝ) * (((Nat.log 2 (y * y) : ℝ) + 1) * ((Nat.log 2 (y * y) : ℝ) + 3)) *
-          (2 + Real.log ((y * y : ℕ) : ℝ))) := mul_le_mul_of_nonneg_left h5 (by linarith)
-      _ = _ := by ring
-  obtain ⟨B, hBdef⟩ : ∃ B, B = compBound y := ⟨_, rfl⟩
-  rw [← hBdef] at hB2 hX ⊢
-  have hB0 : 0 < B := by linarith
-  -- `η ≥ 0` and `Y₀ > 0`.
-  have hη : 0 ≤ η := by
-    have h1 := hM (y * y) le_rfl
-    have h2 := abs_nonneg (mertens (y * y))
-    have h3 : (0 : ℝ) < ((y * y : ℕ) : ℝ) := by linarith
-    by_contra hneg
-    push Not at hneg
-    nlinarith
-  have hXpos : (6 : ℝ) ≤ X := by
-    have hY₀pos0 : 0 < Y₀ ∨ Y₀ ≤ 0 := lt_or_ge 0 Y₀
-    rcases hY₀pos0 with h | h
-    · refine le_trans ?_ hX
-      rw [le_div_iff₀ h]
-      nlinarith
-    · exfalso
-      have h1 : 0 ≤ 5 * (1 + Real.log X) / y ∨ True := Or.inr trivial
-      rcases Nat.eq_zero_or_pos X with h0 | h0
-      · subst h0
-        have h2 : (5 : ℝ) / y > 0 := by positivity
-        simp only [Nat.cast_zero, Real.log_zero, add_zero, mul_one] at hY₀
-        linarith
-      · have h3 : 0 ≤ Real.log (X : ℝ) := Real.log_natCast_nonneg X
-        have h2 : 0 < 5 * (1 + Real.log X) / y := by positivity
-        linarith
-  have hXone : 1 ≤ X := by
-    have : (1 : ℝ) ≤ X := by linarith
-    exact_mod_cast this
   have hLx : 0 ≤ Real.log (X : ℝ) := Real.log_natCast_nonneg X
-  have hgap : 5 / (y : ℝ) ≤ 5 * (1 + Real.log X) / y := by
+  have h5y : 5 / (y : ℝ) ≤ 5 * (1 + Real.log X) / y := by
     gcongr
     linarith
-  have hY₀0 : 0 < Y₀ := by
-    have : 0 < 5 / (y : ℝ) := by positivity
+  have h5y0 : 0 < 5 / (y : ℝ) := by positivity
+  have hY₀0 : 0 < Y₀ := by linarith
+  have h4y : 4 / (y : ℝ) ≤ Y₀ := by
+    have : 4 / (y : ℝ) ≤ 5 / y := by gcongr; norm_num
     linarith
-  -- The power of two.
-  obtain ⟨A, hAdef⟩ : ∃ A, A = (1 + B) / Y₀ := ⟨_, rfl⟩
-  have hAB : 1 + B ≤ A := by
+  have hB2 := compBound_two_le hy
+  obtain ⟨A, hAdef⟩ : ∃ A, A = (1 + compBound y) / Y₀ := ⟨_, rfl⟩
+  have hT0 : (0 : ℝ) ≤ ((y * y : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hAB : 1 + compBound y ≤ A := by
     rw [hAdef, le_div_iff₀ hY₀0]
-    nlinarith
-  have hA1 : 1 ≤ A := by linarith
-  have hfl : 1 ≤ ⌊A⌋₊ := Nat.le_floor (by simpa using hA1)
-  obtain ⟨g, hg⟩ : ∃ g, g = Nat.log 2 ⌊A⌋₊ + 1 := ⟨_, rfl⟩
-  have hG1 : A ≤ ((2 ^ g : ℕ) : ℝ) := by
-    have h1 : ⌊A⌋₊ < 2 ^ g := by
-      rw [hg]
-      exact Nat.lt_pow_succ_log_self (by norm_num) _
-    have h2 := Nat.lt_floor_add_one A
-    have h3 : ((⌊A⌋₊ : ℕ) : ℝ) + 1 ≤ ((2 ^ g : ℕ) : ℝ) := by exact_mod_cast h1
-    linarith
-  have hG2 : ((2 ^ g : ℕ) : ℝ) ≤ 2 * A := by
-    have h1 : 2 ^ Nat.log 2 ⌊A⌋₊ ≤ ⌊A⌋₊ := Nat.pow_log_le_self 2 (by omega)
-    have h2 : ((⌊A⌋₊ : ℕ) : ℝ) ≤ A := Nat.floor_le (by linarith)
-    have h3 : ((2 ^ Nat.log 2 ⌊A⌋₊ : ℕ) : ℝ) ≤ ((⌊A⌋₊ : ℕ) : ℝ) := by exact_mod_cast h1
-    rw [hg, pow_succ]
-    push_cast at h3 ⊢
-    linarith
-  obtain ⟨G, hGdef⟩ : ∃ G : ℕ, G = 2 ^ g := ⟨_, rfl⟩
-  have hG1' : A ≤ (G : ℝ) := by rw [hGdef]; exact hG1
-  have hG2' : (G : ℝ) ≤ 2 * A := by rw [hGdef]; exact hG2
-  have hGR0 : (0 : ℝ) < G := by linarith
-  have hTG' : (((y * y : ℕ) : ℝ)) < G := by linarith
-  have hTG : y * y < G := by exact_mod_cast hTG'
-  have hG2n : 2 ≤ G := by omega
-  have hK : ((G * 3 : ℕ) : ℝ) ≤ 6 * A := by
-    push_cast
-    linarith
-  have hAX : 6 * A ≤ X := by
-    have e : 6 * A = 6 * (1 + B) / Y₀ := by
-      rw [hAdef]
-      ring
-    rw [e]
-    exact hX
-  have hGX : G ≤ X := by
-    have : (G : ℝ) ≤ X := by linarith
-    exact_mod_cast this
-  -- The near law.
-  have hmass := compMass_le hc hy
-  have hweight := compWeighted_le hc hy
-  rw [← hBdef] at hmass hweight
-  have hY₀G : (1 + B) / (G : ℝ) ≤ Y₀ := by
+    have h1 : 0 ≤ 1 + compBound y := by linarith
+    calc (1 + compBound y) * Y₀ ≤ (1 + compBound y) * 1 := mul_le_mul_of_nonneg_left hY₀1 h1
+      _ = _ := mul_one _
+  obtain ⟨g, hg1, hg2⟩ := exists_two_pow_between (by linarith : 1 ≤ A)
+  have hGR0 : (0 : ℝ) < ((2 ^ g : ℕ) : ℝ) := by positivity
+  have hB : (1 + compBound y) / ((2 ^ g : ℕ) : ℝ) ≤ Y₀ := by
     rw [div_le_iff₀ hGR0]
-    have h1 : 1 + B = A * Y₀ := by
+    have h1 : 1 + compBound y = A * Y₀ := by
       rw [hAdef]
       field_simp
     rw [h1]
-    calc A * Y₀ ≤ (G : ℝ) * Y₀ := mul_le_mul_of_nonneg_right hG1' hY₀0.le
+    calc A * Y₀ ≤ ((2 ^ g : ℕ) : ℝ) * Y₀ := mul_le_mul_of_nonneg_right hg1 hY₀0.le
       _ = _ := mul_comm _ _
-  have hn : ∀ P ∈ largePrimes y, d P ≤ G := by
-    intro P hP
-    have h1 := hc.le_two_mul hy hP
-    have h2 := (mem_largePrimes.mp hP).1.2
-    have h3 : (((2 * (y * y) : ℕ) : ℝ)) < G := by
-      push_cast
-      push_cast at hB2
+  have h2T : 2 * (y * y) < 2 ^ g := by
+    have h1 : ((2 * (y * y) : ℕ) : ℝ) < ((2 ^ g : ℕ) : ℝ) := by
+      have e : ((2 * (y * y) : ℕ) : ℝ) = 2 * ((y * y : ℕ) : ℝ) := by push_cast; ring
+      rw [e]
       linarith
-    have h4 : 2 * (y * y) < G := by exact_mod_cast h3
-    omega
-  obtain ⟨Yn, hYndef⟩ : ∃ Yn, Yn = Y₀ * (5 + 2 * Real.log X) := ⟨_, rfl⟩
-  have hYn5 : 5 * Y₀ ≤ Yn := by
-    rw [hYndef]
-    nlinarith
-  have hYn0 : 0 ≤ Yn := by linarith
-  have hnear : ∀ s, 1 ≤ s → s < G → |compNear y d s - compCount y d s| ≤ (s : ℝ) * Yn := by
-    intro s hs hsG
-    have h := abs_compNear_sub_le hc hy1 hY₀0.le hM hGX (by omega : 1 ≤ G) hXone hn hY₀ hs (by omega : s ≤ X)
-    refine h.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg s))
-    have h1 : (1 + compMass y d) / (G : ℝ) ≤ Y₀ := by
-      refine le_trans ?_ hY₀G
-      gcongr
-    rw [hYndef]
-    nlinarith
-  -- The linear weight.
-  obtain ⟨Z, hZ1, hZ2⟩ := exists_rat_btwn (by linarith : Yn + Y₀ < Yn + 2 * Y₀)
-  have hZ0 : (0 : ℝ) ≤ (Z : ℝ) := by linarith
-  have hWG : compWeighted y d / (G : ℝ) ≤ Y₀ := by
-    refine le_trans ?_ hY₀G
-    gcongr
-    linarith
-  have hK3 : 2 * compWeighted y d / ((G * 3 : ℕ) : ℝ) ≤ Y₀ := by
+    exact_mod_cast h1
+  have h6A : 6 * A ≤ X := by
+    have e : 6 * A = 6 * (1 + compBound y) / Y₀ := by rw [hAdef]; ring
+    rw [e]
+    exact hX
+  have hK : (((2 ^ g * 3 : ℕ) : ℝ)) ≤ 6 * A := by
     push_cast
-    have e : 2 * compWeighted y d / ((G : ℝ) * 3) = (2 / 3) * (compWeighted y d / G) := by
-      field_simp
-    rw [e]
-    have hW0 : 0 ≤ compWeighted y d := by
-      refine sum_nonneg fun x _ => by positivity
-    have : 0 ≤ compWeighted y d / (G : ℝ) := by positivity
+    push_cast at hg2
     linarith
-  have hZY : Yn + 2 * compWeighted y d / ((G * 3 : ℕ) : ℝ) ≤ (Z : ℝ) := by linarith
-  subst hGdef
-  obtain ⟨c, m, hP, hal, hslope⟩ := exists_compensated_producer hc hy hTG hZ0 hnear hZY
-  have hG2R : (2 : ℝ) ≤ ((2 ^ g : ℕ) : ℝ) := by exact_mod_cast hG2n
-  refine ⟨c, m, 2 ^ g, hP, fun k hk => (hal k hk).trans (Nat.le_floor ?_), ?_⟩
-  · have e : 6 * (1 + B) / Y₀ = 6 * A := by
-      rw [hAdef]
-      ring
-    rw [e]
-    exact hK
-  -- The rate.
-  have hslope2 := compSlope_le hc hy hG2n hYn0 hnear
-  have hfar := sum_far_weight_le (d := d) hy hTG
-  have hFW : ∑ x ∈ compPairs y, (compDefect y d (x.1 ^ x.2) : ℝ) / farModulus g (2 ^ g * 3) (x.1 ^ x.2) ≤ 2 * Y₀ := by
-    linarith
-  have hFW0 : 0 ≤ ∑ x ∈ compPairs y, (compDefect y d (x.1 ^ x.2) : ℝ) / farModulus g (2 ^ g * 3) (x.1 ^ x.2) :=
-    sum_nonneg fun x _ => by positivity
-  have hm := hP.m_pos
-  have hd := hP.one_sub_pos
-  have hd2 : 1 / 2 ≤ 1 - 1 / ((2 ^ g : ℕ) : ℝ) := by
-    have : 1 / ((2 ^ g : ℕ) : ℝ) ≤ 1 / 2 := one_div_le_one_div_of_le (by norm_num) hG2R
-    linarith
-  have hlogT : Real.log ((y * y : ℕ) : ℝ) ≤ Real.log X :=
-    Real.log_le_log (by linarith) (by exact_mod_cast hTG.le.trans hGX)
-  have hlogG : Real.log ((2 ^ g : ℕ) : ℝ) ≤ Real.log X :=
-    Real.log_le_log hGR0 (by exact_mod_cast hGX)
-  have hlogK : Real.log ((2 ^ g * 3 : ℕ) : ℝ) ≤ Real.log X :=
-    Real.log_le_log (by positivity) (by linarith)
-  have hlogK0 : 0 ≤ Real.log ((2 ^ g * 3 : ℕ) : ℝ) := Real.log_natCast_nonneg _
-  have hlogG0 : 0 ≤ Real.log ((2 ^ g : ℕ) : ℝ) := Real.log_natCast_nonneg _
-  have hMg : compMass y d / ((2 ^ g : ℕ) : ℝ) ≤ Y₀ := by
-    refine le_trans ?_ hY₀G
-    gcongr
-    linarith
-  have h4y : 4 / (y : ℝ) * (1 + Real.log ((y * y : ℕ) : ℝ)) ≤ Y₀ * (1 + Real.log ((y * y : ℕ) : ℝ)) := by
-    refine mul_le_mul_of_nonneg_right ?_ (by linarith)
-    have h1 : 4 / (y : ℝ) ≤ 5 / y := by gcongr; norm_num
-    linarith
-  have hexc := compensated_excess hY₀0.le hLx hYn5 hlogT hlogG hlogK hlogK0 hlogG0 hZ2.le hZ0 hFW hFW0 hMg h4y
-  have hratio : stencilSlope c ≤ (m : ℝ) * (1 - 1 / ((2 ^ g : ℕ) : ℝ) + 4 * (Yn * (1 + Real.log X))) := by
-    refine hslope.trans (mul_le_mul_of_nonneg_left ?_ hm.le)
-    linarith
-  rw [rate, normSlope, sub_le_iff_le_add, div_le_iff₀ (mul_pos hm hd)]
-  refine hratio.trans ?_
-  rw [hYndef] at hexc ⊢
-  have hE0 : 0 ≤ Y₀ * (5 + 2 * Real.log X) * (1 + Real.log X) := by positivity
-  have hkey : 4 * (Y₀ * (5 + 2 * Real.log X) * (1 + Real.log X)) ≤
-      8 * (Y₀ * (5 + 2 * Real.log X)) * (1 + Real.log X) * (1 - 1 / ((2 ^ g : ℕ) : ℝ)) := by
-    have e : 8 * (Y₀ * (5 + 2 * Real.log X)) * (1 + Real.log X) =
-        8 * (Y₀ * (5 + 2 * Real.log X) * (1 + Real.log X)) := by ring
-    rw [e]
-    nlinarith
-  calc (m : ℝ) * (1 - 1 / ((2 ^ g : ℕ) : ℝ) + 4 * (Y₀ * (5 + 2 * Real.log X) * (1 + Real.log X)))
-      ≤ (m : ℝ) * (1 - 1 / ((2 ^ g : ℕ) : ℝ) +
-          8 * (Y₀ * (5 + 2 * Real.log X)) * (1 + Real.log X) * (1 - 1 / ((2 ^ g : ℕ) : ℝ))) :=
-        mul_le_mul_of_nonneg_left (by linarith) hm.le
-    _ = _ := by ring
+  have hGX3 : 2 ^ g * 3 ≤ X := by
+    have : (((2 ^ g * 3 : ℕ) : ℝ)) ≤ X := hK.trans h6A
+    exact_mod_cast this
+  have hGX : 2 ^ g ≤ X := by omega
+  have hnear := compNear_bound_at_scale hc hy hY₀0.le hM hY₀ hX1 hGX h2T hB
+  obtain ⟨c, m, hP, hal, hr⟩ := exists_compensated_producer_at_scale hc hy hY₀0 h4y h2T hGX3 hB hnear
+  refine ⟨c, m, 2 ^ g, hP, fun k hk => (hal k hk).trans (Nat.le_floor ?_), hr⟩
+  have e : 6 * (1 + compBound y) / Y₀ = 6 * A := by rw [hAdef]; ring
+  rw [e]
+  exact hK
 
 /-- A cube of a logarithm against a power. -/
 private lemma eventually_cube_log_le {A γ : ℝ} (hA : 0 ≤ A) (hγ : 0 < γ) :
@@ -345,6 +341,93 @@ private lemma compBound_le {y : ℕ} (hy : 4 ≤ y) :
         have : 0 ≤ (y : ℝ) ^ 3 * (1 + u) ^ 3 := by positivity
         nlinarith
 
+/-- A power bound on `M` is a level at `y²`. -/
+private lemma mertens_level_of_power {C σ : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ)
+    (hM : ∀ n : ℕ, 1 ≤ n → |mertens n| ≤ C * (n : ℝ) ^ (1 - σ)) {y : ℕ} (hy : 1 ≤ y) :
+    ∀ x, y * y ≤ x → |mertens x| ≤ C * (y : ℝ) ^ (-(2 * σ)) * x := by
+  intro x hx
+  have hy0 : (0 : ℝ) < y := by exact_mod_cast hy
+  have hx1 : 1 ≤ x := le_trans (Nat.mul_pos hy hy) hx
+  have hxR : (0 : ℝ) < x := by exact_mod_cast hx1
+  refine (hM x hx1).trans ?_
+  have hsplit : (x : ℝ) ^ (1 - σ) = (x : ℝ) * (x : ℝ) ^ (-σ) := by
+    rw [sub_eq_add_neg, Real.rpow_add hxR, Real.rpow_one]
+  have hle : (y : ℝ) ^ (2 : ℝ) ≤ x := by
+    rw [Real.rpow_two]
+    have : ((y * y : ℕ) : ℝ) ≤ x := by exact_mod_cast hx
+    push_cast at this
+    nlinarith
+  have hmono : (x : ℝ) ^ (-σ) ≤ (y : ℝ) ^ (-(2 * σ)) := by
+    calc (x : ℝ) ^ (-σ) ≤ ((y : ℝ) ^ (2 : ℝ)) ^ (-σ) :=
+          Real.rpow_le_rpow_of_nonpos (by positivity) hle (by linarith)
+      _ = _ := by
+          rw [← Real.rpow_mul hy0.le]
+          congr 1
+          ring
+  rw [hsplit]
+  calc C * ((x : ℝ) * (x : ℝ) ^ (-σ)) ≤ C * ((x : ℝ) * (y : ℝ) ^ (-(2 * σ))) := by gcongr
+    _ = _ := by ring
+
+/-- The alphabet at `y` is at most `y^{3 + 2σ + κ}`. -/
+private lemma compAlphabet_le {y : ℕ} (hy : 4 ≤ y) {σ κ Y₀ : ℝ} (hY₀ : (y : ℝ) ^ (-(2 * σ)) ≤ Y₀)
+    (hpoly : 1000 * (1 + Real.log y) ^ 3 ≤ (y : ℝ) ^ κ) :
+    6 * (1 + compBound y) / Y₀ ≤ (y : ℝ) ^ (3 + 2 * σ + κ) := by
+  have hyR : (4 : ℝ) ≤ y := by exact_mod_cast hy
+  have hy0 : (0 : ℝ) < y := by linarith
+  have hy1 : (1 : ℝ) ≤ y := by linarith
+  have hu0 : 0 ≤ Real.log (y : ℝ) := Real.log_nonneg hy1
+  have hcube : 1 ≤ (1 + Real.log (y : ℝ)) ^ 3 := one_le_pow₀ (by linarith)
+  have hpow3 : (1 : ℝ) ≤ (y : ℝ) ^ 3 := one_le_pow₀ hy1
+  have hB := compBound_le hy
+  have hneg : 0 < (y : ℝ) ^ (-(2 * σ)) := Real.rpow_pos_of_pos hy0 _
+  have h1B : 6 * (1 + compBound y) ≤ (y : ℝ) ^ κ * (y : ℝ) ^ 3 := by
+    have h2 : 1 ≤ (y : ℝ) ^ 3 * (1 + Real.log (y : ℝ)) ^ 3 := one_le_mul_of_one_le_of_one_le hpow3 hcube
+    have h3 : 6 * (1 + compBound y) ≤ 1000 * (1 + Real.log (y : ℝ)) ^ 3 * (y : ℝ) ^ 3 := by nlinarith
+    exact h3.trans (mul_le_mul_of_nonneg_right hpoly (by positivity))
+  have hnum : 0 ≤ 6 * (1 + compBound y) := by
+    have : 0 ≤ compBound y := by
+      rw [compBound]
+      have := Real.log_natCast_nonneg (y * y)
+      positivity
+    linarith
+  calc 6 * (1 + compBound y) / Y₀ ≤ 6 * (1 + compBound y) / (y : ℝ) ^ (-(2 * σ)) :=
+        div_le_div_of_nonneg_left hnum hneg hY₀
+    _ ≤ (y : ℝ) ^ κ * (y : ℝ) ^ 3 / (y : ℝ) ^ (-(2 * σ)) := div_le_div_of_nonneg_right h1B hneg.le
+    _ = _ := by
+        have h3 : (y : ℝ) ^ (3 : ℝ) = (y : ℝ) ^ 3 := by
+          rw [show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
+        rw [Real.rpow_neg hy0.le, div_inv_eq_mul, Real.rpow_add hy0, Real.rpow_add hy0, h3]
+        ring
+
+/-- The rate bound at `K`, from the rate at `y`. -/
+private lemma compRate_tail_le {yp Kb Kg Ka A C u w : ℝ} (hA : 0 < A) (hu0 : 0 ≤ u) (huw : u ≤ w)
+    (hAC : C + 45 ≤ A) (hC : 0 ≤ C) (hyp : yp ≤ 2 * Kb) (hyp0 : 0 ≤ yp) (hKb : Kb = Kg * Ka) (hKa : 0 < Ka)
+    (hKg0 : 0 ≤ Kg) (hK3 : 2100 * A * (1 + w) ^ 3 * Kg ≤ 1) :
+    yp * (8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u)) ≤ Ka := by
+  have hw0 : 0 ≤ w := hu0.trans huw
+  have h4 : C + 5 * (1 + 8 * u) ≤ A * (1 + w) := by nlinarith
+  have h5 : 5 + 2 * (8 * u) ≤ 16 * (1 + w) := by linarith
+  have h6 : 1 + 8 * u ≤ 8 * (1 + w) := by linarith
+  have h7 : 0 ≤ C + 5 * (1 + 8 * u) := by positivity
+  have hpoly : 8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u) ≤ 1024 * A * (1 + w) ^ 3 := by
+    calc 8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u)
+        ≤ 8 * (A * (1 + w)) * (16 * (1 + w)) * (8 * (1 + w)) := by gcongr
+      _ = _ := by ring
+  have hw3 : 0 ≤ (1 + w) ^ 3 := by positivity
+  calc yp * (8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u))
+      ≤ (2 * Kb) * (1024 * A * (1 + w) ^ 3) := by
+        have h8 : 0 ≤ 5 + 2 * (8 * u) := by linarith
+        have h9 : 0 ≤ 1 + 8 * u := by linarith
+        exact mul_le_mul hyp hpoly (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) h7) h8) h9)
+          (hyp0.trans hyp)
+    _ = (2048 * A * (1 + w) ^ 3 * Kg) * Ka := by rw [hKb]; ring
+    _ ≤ (2100 * A * (1 + w) ^ 3 * Kg) * Ka := by
+        refine mul_le_mul_of_nonneg_right ?_ hKa.le
+        refine mul_le_mul_of_nonneg_right ?_ hKg0
+        nlinarith
+    _ ≤ 1 * Ka := mul_le_mul_of_nonneg_right hK3 hKa.le
+    _ = Ka := one_mul _
+
 /-- **A power bound on the Mertens function gives a rate at the compensated exponent.** With `|M(n)| ≤ C n^{1−σ}`, `0 < σ ≤ ½`, there are integer producers of rate
 `K^{-a}` for every `a < 2σ/(3 + 2σ)`. -/
 theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (hσ : σ ≤ 1 / 2)
@@ -365,10 +448,10 @@ theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (
   obtain ⟨D, hDdef⟩ : ∃ D, D = 3 + 2 * σ + κ := ⟨_, rfl⟩
   have hD0 : 0 < D := by rw [hDdef]; linarith
   have hD1 : 1 ≤ D := by rw [hDdef]; linarith
-  have hD5 : D ≤ 5 := by rw [hDdef]; linarith
+  have hD8 : D ≤ 8 := by rw [hDdef]; linarith
   have haD : a * D < 2 * σ := by
-    rw [hDdef]
-    nlinarith
+    have e : a * D = a * (3 + 2 * σ) + a * κ := by rw [hDdef]; ring
+    linarith
   obtain ⟨e, hedef⟩ : ∃ e : ℝ, e = 1 / D := ⟨_, rfl⟩
   have he0 : 0 < e := by rw [hedef]; positivity
   have he1 : e ≤ 1 := by
@@ -402,34 +485,8 @@ theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (
   have hu0 : 0 ≤ u := by
     rw [hu]
     exact Real.log_nonneg hy1
-  rw [← hu] at hK1 hK2
-  have h1u : 1 ≤ 1 + u := by linarith
-  have hcube : 1 ≤ (1 + u) ^ 3 := one_le_pow₀ h1u
   have hypow : 0 < (y : ℝ) ^ (-(2 * σ)) := Real.rpow_pos_of_pos hy0 _
-  -- The level.
-  obtain ⟨η, hηdef⟩ : ∃ η, η = C * (y : ℝ) ^ (-(2 * σ)) := ⟨_, rfl⟩
-  have hM' : ∀ x, y * y ≤ x → |mertens x| ≤ η * x := by
-    intro x hx
-    have hx1 : 1 ≤ x := le_trans (Nat.mul_pos (by omega) (by omega)) hx
-    have hxR : (0 : ℝ) < x := by exact_mod_cast hx1
-    refine (hM x hx1).trans ?_
-    have hsplit : (x : ℝ) ^ (1 - σ) = (x : ℝ) * (x : ℝ) ^ (-σ) := by
-      rw [sub_eq_add_neg, Real.rpow_add hxR, Real.rpow_one]
-    have hmono : (x : ℝ) ^ (-σ) ≤ (y : ℝ) ^ (-(2 * σ)) := by
-      have hle : (y : ℝ) ^ (2 : ℝ) ≤ x := by
-        rw [Real.rpow_two]
-        have : ((y * y : ℕ) : ℝ) ≤ x := by exact_mod_cast hx
-        push_cast at this
-        nlinarith
-      calc (x : ℝ) ^ (-σ) ≤ ((y : ℝ) ^ (2 : ℝ)) ^ (-σ) :=
-            Real.rpow_le_rpow_of_nonpos (by positivity) hle (by linarith)
-        _ = _ := by
-            rw [← Real.rpow_mul hy0.le]
-            congr 1
-            ring
-    rw [hsplit, hηdef]
-    calc C * ((x : ℝ) * (x : ℝ) ^ (-σ)) ≤ C * ((x : ℝ) * (y : ℝ) ^ (-(2 * σ))) := by gcongr
-      _ = _ := by ring
+  have hM' := mertens_level_of_power hC hσ0 hM (y := y) (by omega)
   obtain ⟨X, hXdef⟩ : ∃ X : ℕ, X = y ^ 8 := ⟨_, rfl⟩
   have hlogX : Real.log (X : ℝ) = 8 * u := by
     rw [hXdef]
@@ -437,65 +494,40 @@ theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (
     rw [Real.log_pow, hu]
     norm_num
   obtain ⟨Y₀, hY₀def⟩ : ∃ Y₀, Y₀ = (y : ℝ) ^ (-(2 * σ)) * (C + 5 * (1 + 8 * u)) := ⟨_, rfl⟩
-  have hY₀0 : 0 < Y₀ := by
-    rw [hY₀def]
-    positivity
   have hinvy : 1 / (y : ℝ) ≤ (y : ℝ) ^ (-(2 * σ)) := by
     have h4 : (y : ℝ) ^ (-1 : ℝ) ≤ (y : ℝ) ^ (-(2 * σ)) :=
       Real.rpow_le_rpow_of_exponent_le hy1 (by linarith)
     rwa [Real.rpow_neg_one, ← one_div] at h4
-  have hY₀ge : η + 5 * (1 + Real.log X) / y ≤ Y₀ := by
-    rw [hlogX, hηdef, hY₀def]
+  have hY₀ge : C * (y : ℝ) ^ (-(2 * σ)) + 5 * (1 + Real.log X) / y ≤ Y₀ := by
+    rw [hlogX, hY₀def]
     have e : 5 * (1 + 8 * u) / (y : ℝ) = 5 * (1 + 8 * u) * (1 / (y : ℝ)) := by ring
     rw [e]
     have h5 := mul_le_mul_of_nonneg_left hinvy (by positivity : 0 ≤ 5 * (1 + 8 * u))
+    have e2 : (y : ℝ) ^ (-(2 * σ)) * (C + 5 * (1 + 8 * u)) =
+        C * (y : ℝ) ^ (-(2 * σ)) + 5 * (1 + 8 * u) * (y : ℝ) ^ (-(2 * σ)) := by ring
+    rw [e2]
+    linarith
+  have hY₀low : (y : ℝ) ^ (-(2 * σ)) ≤ Y₀ := by
+    rw [hY₀def]
+    refine le_mul_of_one_le_right hypow.le ?_
     nlinarith
-  -- `C + 5 (1 + 8 u) ≤ A (1 + u)`.
-  have hAu : C + 5 * (1 + 8 * u) ≤ A * (1 + u) := by
-    rw [hAdef]
-    nlinarith
-  have hAu3 : C + 5 * (1 + 8 * u) ≤ A * (1 + u) ^ 3 := by
-    refine hAu.trans (mul_le_mul_of_nonneg_left ?_ hA0.le)
-    calc 1 + u = (1 + u) ^ 1 := (pow_one _).symm
-      _ ≤ (1 + u) ^ 3 := pow_le_pow_right₀ h1u (by norm_num)
   have hinvpow : (y : ℝ) ^ (-(2 * σ)) * (y : ℝ) ^ (2 * σ) = 1 := by
     rw [← Real.rpow_add hy0]
     simp
   have hY₀1 : Y₀ ≤ 1 := by
     rw [hY₀def]
-    have h6 : C + 5 * (1 + 8 * u) ≤ (y : ℝ) ^ (2 * σ) := hAu3.trans hK2
+    have hcube : 1 ≤ (1 + u) ^ 3 := one_le_pow₀ (by linarith)
+    have h6 : C + 5 * (1 + 8 * u) ≤ A * (1 + u) ^ 3 := by
+      have h7 : C + 5 * (1 + 8 * u) ≤ A * (1 + u) := by rw [hAdef]; nlinarith
+      refine h7.trans (mul_le_mul_of_nonneg_left ?_ hA0.le)
+      calc 1 + u = (1 + u) ^ 1 := (pow_one _).symm
+        _ ≤ (1 + u) ^ 3 := pow_le_pow_right₀ (by linarith) (by norm_num)
+    rw [← hu] at hK2
     calc (y : ℝ) ^ (-(2 * σ)) * (C + 5 * (1 + 8 * u)) ≤ (y : ℝ) ^ (-(2 * σ)) * (y : ℝ) ^ (2 * σ) :=
-          mul_le_mul_of_nonneg_left h6 hypow.le
+          mul_le_mul_of_nonneg_left (h6.trans hK2) hypow.le
       _ = 1 := hinvpow
-  -- The alphabet.
-  have hB := compBound_le hy4
-  rw [← hu] at hB
-  have hBpow : 6 * (1 + compBound y) / Y₀ ≤ (y : ℝ) ^ D := by
-    have hpow3 : (1 : ℝ) ≤ (y : ℝ) ^ 3 := one_le_pow₀ hy1
-    have h1B : 1 + compBound y ≤ 73 * (y : ℝ) ^ 3 * (1 + u) ^ 3 := by
-      have : 1 ≤ (y : ℝ) ^ 3 * (1 + u) ^ 3 := one_le_mul_of_one_le_of_one_le hpow3 hcube
-      nlinarith
-    have hY₀low : (y : ℝ) ^ (-(2 * σ)) ≤ Y₀ := by
-      rw [hY₀def]
-      refine le_mul_of_one_le_right hypow.le ?_
-      nlinarith
-    have hsplitD : (y : ℝ) ^ D = (y : ℝ) ^ 3 * (y : ℝ) ^ (2 * σ) * (y : ℝ) ^ κ := by
-      rw [hDdef, Real.rpow_add hy0, Real.rpow_add hy0, Real.rpow_natCast_three hy0]
-    rw [div_le_iff₀ hY₀0]
-    have h7 : 6 * (1 + compBound y) ≤ 438 * (1 + u) ^ 3 * (y : ℝ) ^ 3 := by nlinarith
-    have h8 : 438 * (1 + u) ^ 3 ≤ (y : ℝ) ^ κ := by
-      have : 438 * (1 + u) ^ 3 ≤ 1000 * (1 + u) ^ 3 := by nlinarith
-      linarith
-    have hp : 0 ≤ (y : ℝ) ^ 3 * (y : ℝ) ^ (2 * σ) := by positivity
-    calc 6 * (1 + compBound y) ≤ (y : ℝ) ^ κ * (y : ℝ) ^ 3 := by
-          refine h7.trans (mul_le_mul_of_nonneg_right h8 (by positivity))
-      _ = (y : ℝ) ^ 3 * (y : ℝ) ^ (2 * σ) * (y : ℝ) ^ κ * ((y : ℝ) ^ (-(2 * σ))) := by
-          have e2 : (y : ℝ) ^ 3 * (y : ℝ) ^ (2 * σ) * (y : ℝ) ^ κ * ((y : ℝ) ^ (-(2 * σ))) =
-              (y : ℝ) ^ κ * (y : ℝ) ^ 3 * ((y : ℝ) ^ (-(2 * σ)) * (y : ℝ) ^ (2 * σ)) := by ring
-          rw [e2, hinvpow, mul_one]
-      _ ≤ (y : ℝ) ^ D * Y₀ := by
-          rw [hsplitD]
-          exact mul_le_mul_of_nonneg_left hY₀low (by positivity)
+  have hBpow := compAlphabet_le hy4 hY₀low hK1
+  rw [← hDdef] at hBpow
   have hKe : 0 ≤ (K : ℝ) ^ e := by positivity
   have hyle : (y : ℝ) ≤ (K : ℝ) ^ e := hydef ▸ Nat.floor_le hKe
   have hylt : (K : ℝ) ^ e < (y : ℝ) + 1 := hydef ▸ Nat.lt_floor_add_one _
@@ -506,19 +538,20 @@ theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (
   have hXle : (y : ℝ) ^ D ≤ X := by
     rw [hXdef]
     push_cast
-    calc (y : ℝ) ^ D ≤ (y : ℝ) ^ (8 : ℝ) := Real.rpow_le_rpow_of_exponent_le hy1 (by linarith)
+    calc (y : ℝ) ^ D ≤ (y : ℝ) ^ (8 : ℝ) := Real.rpow_le_rpow_of_exponent_le hy1 hD8
       _ = _ := by
           rw [← Real.rpow_natCast]
           norm_num
-  obtain ⟨c, m, B, hP, hal, hr⟩ := exists_compensated_producer_of_level hy4 hM' hY₀ge hY₀1 (hBpow.trans hXle)
+  have hX1 : 1 ≤ X := by
+    rw [hXdef]
+    exact Nat.one_le_pow _ _ (by omega)
+  obtain ⟨c, m, B, hP, hal, hr⟩ := exists_compensated_producer_of_level hy4 (by positivity) hM' hY₀ge hY₀1 hX1
+    (hBpow.trans hXle)
   refine ⟨c, m, B, hP, fun k hk => (hal k hk).trans (Nat.floor_le_of_le (hBpow.trans hyD)), hr.trans ?_⟩
   -- The rate.
-  rw [hlogX]
+  rw [hlogX, hY₀def]
   obtain ⟨w, hw⟩ : ∃ w, w = Real.log (K : ℝ) := ⟨_, rfl⟩
   rw [← hw] at hK3
-  have hw0 : 0 ≤ w := by
-    rw [hw]
-    exact Real.log_nonneg hKR
   have hTK : (y : ℝ) ≤ K := by
     refine hyle.trans ?_
     calc (K : ℝ) ^ e ≤ (K : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hKR he1
@@ -544,41 +577,19 @@ theorem hasRate_of_power_quarter {C σ a : ℝ} (hC : 0 ≤ C) (hσ0 : 0 < σ) (
     rw [← Real.rpow_add hK0R, hgapdef]
     congr 1
     ring
-  have hKa : 0 < (K : ℝ) ^ (-a) := Real.rpow_pos_of_pos hK0R _
   have hKg : (K : ℝ) ^ (-gap) * (K : ℝ) ^ gap = 1 := by
     rw [← Real.rpow_add hK0R]
     simp
   have hKgpos : 0 < (K : ℝ) ^ (-gap) := Real.rpow_pos_of_pos hK0R _
-  -- The polylogarithm.
-  have hpoly : 8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u) ≤ 1024 * A * (1 + w) ^ 3 := by
-    have h4 : (C + 5 * (1 + 8 * u)) ≤ A * (1 + w) := hAu.trans (mul_le_mul_of_nonneg_left (by linarith) hA0.le)
-    have h5 : 5 + 2 * (8 * u) ≤ 16 * (1 + w) := by linarith
-    have h6 : 1 + 8 * u ≤ 8 * (1 + w) := by linarith
-    have h7 : 0 ≤ C + 5 * (1 + 8 * u) := by positivity
-    calc 8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u)
-        ≤ 8 * (A * (1 + w)) * (16 * (1 + w)) * (8 * (1 + w)) := by gcongr
-      _ = _ := by ring
-  rw [hY₀def]
-  have e1 : 8 * ((y : ℝ) ^ (-(2 * σ)) * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u))) * (1 + 8 * u) =
-      (y : ℝ) ^ (-(2 * σ)) * (8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u)) := by ring
-  rw [e1]
   have hK3' : 2100 * A * (1 + w) ^ 3 * (K : ℝ) ^ (-gap) ≤ 1 := by
     have h8 := mul_le_mul_of_nonneg_right hK3 hKgpos.le
     rw [mul_comm ((K : ℝ) ^ gap), hKg] at h8
     exact h8
-  have hw3 : 0 ≤ (1 + w) ^ 3 := by positivity
-  calc (y : ℝ) ^ (-(2 * σ)) * (8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u))
-      ≤ (2 * (K : ℝ) ^ (-b)) * (1024 * A * (1 + w) ^ 3) :=
-        mul_le_mul hpow hpoly (by positivity) (by positivity)
-    _ = (2048 * A * (1 + w) ^ 3 * (K : ℝ) ^ (-gap)) * (K : ℝ) ^ (-a) := by
-        rw [hsplitK]
-        ring
-    _ ≤ (2100 * A * (1 + w) ^ 3 * (K : ℝ) ^ (-gap)) * (K : ℝ) ^ (-a) := by
-        refine mul_le_mul_of_nonneg_right ?_ hKa.le
-        refine mul_le_mul_of_nonneg_right ?_ hKgpos.le
-        nlinarith
-    _ ≤ 1 * (K : ℝ) ^ (-a) := mul_le_mul_of_nonneg_right hK3' hKa.le
-    _ = _ := one_mul _
+  have e1 : 8 * ((y : ℝ) ^ (-(2 * σ)) * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u))) * (1 + 8 * u) =
+      (y : ℝ) ^ (-(2 * σ)) * (8 * (C + 5 * (1 + 8 * u)) * (5 + 2 * (8 * u)) * (1 + 8 * u)) := by ring
+  rw [e1]
+  exact compRate_tail_le hA0 hu0 huw (by rw [hAdef]) hC hpow hypow.le hsplitK
+    (Real.rpow_pos_of_pos hK0R _) hKgpos.le hK3'
 
 /-- **The rate from a zero-free strip.** If `ζ ≠ 0` on `Re s > Θ`, `½ ≤ Θ < 1`, there are integer producers of rate `K^{-a}` for every `a < 2(1 − Θ)/(5 − 2Θ)`. -/
 theorem hasRate_of_zeroFree_quarter {Θ a : ℝ} (hΘh : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1)
@@ -607,8 +618,7 @@ theorem hasRate_of_zeroFree_quarter {Θ a : ℝ} (hΘh : 1 / 2 ≤ Θ) (hΘ1 : �
   · rw [lt_div_iff₀ (by linarith : 0 < 3 + 2 * σ)]
     have h3 : 3 * a < σ * (2 - 2 * a) := by
       have : σ₁ * (2 - 2 * a) = 3 * a := by
-        rw [hσ₁]
-        field_simp
+        rw [hσ₁, div_mul_cancel₀ _ h1a.ne']
       nlinarith
     linarith
 

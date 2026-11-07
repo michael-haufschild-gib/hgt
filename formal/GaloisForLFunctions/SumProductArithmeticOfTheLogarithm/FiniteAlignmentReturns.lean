@@ -39,7 +39,6 @@ theorem exists_alignment_in_scaled_interval (A : Finset ℕ) (Q : ℕ)
     have he : (q : ℝ) * L * Real.log n - 2 * Real.pi * m =
         (2 * Real.pi) * ((q : ℝ) * (L * Real.log n / (2 * Real.pi)) - m) := by
       field_simp
-      <;> ring
     rw [he, abs_mul, abs_of_pos hpi]
     calc
       _ < (2 * Real.pi) * (1 / ((Q + 1 : ℕ) : ℝ)) := mul_lt_mul_of_pos_left hm hpi

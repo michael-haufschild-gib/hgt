@@ -1,6 +1,6 @@
 # Rigid Arithmetic of Cuts (RAC)
 
-Namespace `GaloisForLFunctions.RigidArithmeticOfCuts`; umbrella `RigidArithmeticOfCuts.lean`; 39 modules.
+Namespace `GaloisForLFunctions.RigidArithmeticOfCuts`; umbrella `RigidArithmeticOfCuts.lean`; 41 modules.
 Every theorem is unconditional. RH and zero-free regions appear only inside implications and equivalences.
 
 ## 1. Motivation
@@ -141,11 +141,15 @@ they are carried by zeros (`superposition_kernel_iff`).
 | Adding generators | no new zero right of the count exponent | `numerator_eq_zero_iff` |
 | Exchange of summable exponent `σ` | a holomorphic zero-free factor on `Re s > σ` | `differentiableOn_exchangeLog`, `exchange_eq_zero_iff` |
 | A count within `O(1)` of `x`, nonnegative and multiplicative | consistent with zeros at `Re s ≈ 0.80` | `cubicCount_sub_mem`, `exists_cubicFactor_eq_zero` |
+| The exact cut identity of `λ` | determines `λ` on every integer | `eq_liouville_of_floorSum` |
 | A power bound on the parity ledger | equivalent to a zero-free strip, up to zeros a twist absorbs | `zeroFree_iff_liouville_power`, `twistPoly_eq_zero_of_parity_bound` |
+| The extremal modulus inequality at every order | satisfied by a real quadratic with an off-axis zero | `norm_model_conj_lt` |
 | Energy-space kernel of mass zero | implies RH | `riemannHypothesis_of_energy_kernel` |
 
-The arithmetic input the question asks for is a parity bound. At log powers it exists (`exists_abs_parityLedger_le_log`). At a power saving it is the
-zero-free strip itself (`zeroFree_iff_liouville_power`, `riemannHypothesis_iff_liouville_power`).
+The arithmetic input the question asks for is a parity bound. Parity is not missing information: the exact identity
+`Σ_{k ≤ x} L(x/k) = ⌊√x⌋` determines `λ` on every integer (`eq_liouville_of_floorSum`). What is missing is the size of `L`. At log powers it is known
+(`exists_abs_parityLedger_le_log`). At a power saving it is the zero-free strip itself (`zeroFree_iff_liouville_power`,
+`riemannHypothesis_iff_liouville_power`).
 
 **Q5. What is the fake prime measure closest to the true one, for each `K`?** At infinite level there is one fake, the pronic measure
 `1/((j+1)(j+2))` (`eq_pronic_of_forall_isFakePrimeMeasure`). Tight fakes of levels tending to infinity converge to it (`tendsto_pronic_of_tight`). At
@@ -164,12 +168,12 @@ with balanced coefficients nonzero at the zeros implies RH (`riemannHypothesis_o
 | Tool | State | Lean |
 |---|---|---|
 | Ledgers that are not blind | built: orders, residues, sharp filter law, every degree | `TheHierarchyOfLedgers`, `TheQuadraticGapIsTheHarmonicMass`, `EveryLevelIsSeen`, `TheTwinAtEveryDegree` |
-| Parity input | built: the exact identity, the Type I form, the VK-level source, the equivalence with zero-free strips at power savings | `TheLiouvilleChebyshevIdentity`, `AParityBoundConfinesTheZeros`, `TheParityExponentIsTheZeroAbscissa` |
+| Parity input | built: the exact identity and its rigidity, the Type I form, the VK-level source, the equivalence with zero-free strips at power savings | `TheLiouvilleChebyshevIdentity`, `TheExactIdentityDeterminesTheParity`, `AParityBoundConfinesTheZeros`, `TheParityExponentIsTheZeroAbscissa` |
 | Passing the filters | built: twin, Type I, Type II | `TheSelbergReadingPassesTheFilters` |
 | Effective Kronecker | built: explicit threshold `4(D+1) R^{2D+1}`, every window, positive density, no return below the length | `EffectiveKroneckerAtArithmeticScale`, `ZerosOfADirichletPolynomialRecurEffectively`, `TheTailFailsAtAZero`, `TheFirstReturnIsAboveTheLength` |
 | Pointwise bounds below VK | built at both ends: no cancellation at some height up to `y ≍ log T`; square-root cancellation at all dyadic lengths up to `T/log T` off a set of measure `≪ T Y^{-2ε}` | `TheShortSumBarrierHasALeftEndpoint`, `CancellationAtAlmostEveryHeight` |
 | Metric geometry of Beurling systems | built: exact count rigidity, count law, Hamming law, added generators, stencil defect, bounded-count model | `AnExactCountForcesTheRationalPrimes`, `TheExchangeLaw`, `AddingGeneratorsAddsNoZeros`, `StencilSystemsHaveInfiniteDefect`, `ABoundedCountWithANewZero` |
-| Extremal calculus | built: max angle, Hermite–Biehler modulus, Stieltjes sign, dominance, coefficient boundary | `TheZeroOfMaximalAngle`, `TheStieltjesSignOfTheExtremalZero`, `RotatedRelationsNeedCoefficientsOfTheSizeOfQ` |
+| Extremal calculus | built: max angle, Hermite–Biehler modulus, Stieltjes sign, the model, dominance, coefficient boundary | `TheZeroOfMaximalAngle`, `TheStieltjesSignOfTheExtremalZero`, `TheExtremalLawHasAModel`, `RotatedRelationsNeedCoefficientsOfTheSizeOfQ` |
 | Kernel calculus | built: `ℤ` and curves, superpositions, energy space | `ZerosAreTheKernelOfTheCutSystem`, `ACutVectorWithAMonotoneTailVanishes`, `TheCutSystemOverACurve`, `TheKernelBeyondPowerLaws` |
 | Fake calculus | built: uniqueness, tight limits, finite-level radius | `TheFakePrimeMeasureIsUnique`, `TightFakesConvergeToThePronicMeasure`, `TheFiniteLevelRadius` |
 
@@ -214,21 +218,24 @@ with balanced coefficients nonzero at the zeros implies RH (`riemannHypothesis_o
 | Order in the cut system reaches into the strip | The homogeneous bound `v ≥ −1/(r(r+1))` is the edge, and nothing passes it (`eq_zero_of_homogeneous_of_ge`) |
 | Balanced rotated coefficients force equal moduli | Only when nonzero: `a = b = F` is an identity for every entire `F` |
 | Small coefficients might carry a rotated relation | Coefficients of growth `exp(C √|w|)` carry none |
-| The extremal law is a contradiction | It is a necessary law of a counterexample, vacuous under RH. Nothing proved here contradicts it |
+| The extremal law is a contradiction | It is a necessary law of a counterexample, and the real quadratic `w² − 2w + 2` with zeros `1 ± i` satisfies the whole inequality (`norm_model_conj_lt`) |
+| Parity is missing information | The exact cut identity determines `λ` on every integer; only the size of `L` is missing |
 | The twin is a fake for zero location | `ζ(s)/ζ(2s)` has the zeros of `ζ` right of `½` |
 
 ## 9. Open research topics
 
-1. **A parity source at a power saving.** By `zeroFree_iff_liouville_power` this is a zero-free strip for `L`. For a stencil whose twist `D_{cλ}`
-   vanishes at a prospective zero, a parity bound is weaker than a zero-free strip. Which stencils have twists with zeros where they are needed?
-2. **Parity on all integers.** Every reading of `Λ` sees the twin only through even prime powers. What reads `λ` on the integers through the cut system?
-   Long integer polynomials do, away from the pole (`eventually_not_uniform_liouville`, ArithmeticProduction).
+1. **The size of `L` beyond VK.** The exact identity determines `λ` (`eq_liouville_of_floorSum`), and a power saving for `L` is a zero-free strip
+   (`zeroFree_iff_liouville_power`). The open question is the size of `L` between the VK saving and a power, through the cut system. For a stencil whose twist `D_{cλ}` vanishes at a
+   prospective zero, a parity bound is weaker than a zero-free strip: which stencils have twists with zeros where they are needed?
+2. **Parity through stencils, not through `Λ`.** Every reading of `Λ` sees the twin only through even prime powers (`tendsto_sub_pow_twinSymbol_at_zero`). Long integer
+   polynomials see `λ` away from the pole (`eventually_not_uniform_liouville`, ArithmeticProduction). Is there a cut-system reading of that kind?
 3. **Genuine Beurling one-offs.** The bounded-count model has negative generators at powers of `2`. Does a system with nonnegative integer generators, count
    `x + O(x^θ)`, have a new zero at `β > θ`? It must delete primes, with exchange exponent `≥ β`.
 4. **Kernel beyond well-ordered superpositions.** Is every kernel vector of finite energy a limit of zero modes? The converse of
    `riemannHypothesis_of_energy_kernel` is the Báez-Duarte–Bagchi direction of Nyman–Beurling.
 5. **Coefficient classes between `exp(C√|w|)` and `Q`.** Coefficients of order `½` with `log` in the exponent: is a non-vacuous rotated relation possible there?
-6. **The extremal law.** Combine the Stieltjes sign with the structure of `Q`. Is it violated at second order, or for multiple zeros?
+6. **The extremal law with more structure.** The inequality alone has a model (`norm_model_conj_lt`). Which further property of `Q`, its order `½`, the log-concavity
+   of its coefficients, or its functional equation, contradicts it together with the extremal position?
 7. **Pointwise bounds at all heights.** Between `y ≍ log T` and the VK length, how large is the exceptional set of `CancellationAtAlmostEveryHeight` allowed to be?
 8. **The smallest FE defect of a one-off.** Stencils are excluded (`eq_zero_of_defect_sublinear`), and a prime mismatch at `N` costs `1/(400 N²)`
    (`critical_line_defect_gt_of_not_prime_equiv`). Which classes outside stencils carry a one-off at finite defect?
@@ -273,6 +280,8 @@ with balanced coefficients nonzero at the zeros implies RH (`riemannHypothesis_o
 | Extremal modulus | At the maximal-angle zero, `‖Q(t̄ w₀)‖ < ‖Q(t w₀)‖` for `Im t > 0` | `exists_zero_of_maximal_angle`, `norm_squaredXi_conj_lt` |
 | Equal modulus | RH iff `‖Q(tw)‖ = ‖Q(t̄w)‖` at all zeros, for one `t` off the axis | `riemannHypothesis_iff_forall_norm_eq` |
 | Stieltjes sign | At a simple extremal zero, `Im(w₀ Q″(w₀)/Q′(w₀)) ≤ 0` | `im_stieltjes_nonpos` |
+| Extremal model | A real quadratic with an off-axis extremal zero satisfies the whole inequality | `norm_model_conj_lt` |
+| Exact parity identity | The cut identity of `L` determines `λ` | `eq_liouville_of_floorSum` |
 | Dominance | `‖Q(ϑ(−r²))‖ ≤ e^{−Kr} ‖Q(−r²)‖` for every `K`, `ϑ ≠ 1` | `exists_norm_squaredXi_rot_le` |
 | Coefficient boundary | Rotated relations with coefficients of growth `exp(C√|w|)` are trivial | `rotated_relation_trivial` |
 

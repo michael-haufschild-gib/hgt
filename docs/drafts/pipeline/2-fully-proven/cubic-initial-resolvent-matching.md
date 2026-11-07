@@ -38,8 +38,11 @@ stated region, the established resolvent uniqueness identifies the two
 `L²` vectors.
 
 Lean target: `CubicEisenstein.kernelEisensteinL2Correction_initial_overlap`
-in `TheCubicInitialResolventMatching.lean`. Spatial smoothness, uniform
-remainder and gradient bounds, and cutoff convergence await local checks.
+in `TheCubicInitialResolventMatching.lean`. Spatial smoothness for `Re s>2`
+is checked in `SpatialSmoothnessOfTheCubicEisensteinSeries.lean`, using
+`Sobolev/CompactSmoothParameterSums.lean`; the audited endpoints use only
+`propext`, `Classical.choice`, and `Quot.sound`. The actual Laplace equation,
+uniform remainder and gradient bounds, and cutoff convergence await local checks.
 This establishes an initial source identity; it supplies neither residue
 nonvanishing nor arithmetic cancellation.
 
