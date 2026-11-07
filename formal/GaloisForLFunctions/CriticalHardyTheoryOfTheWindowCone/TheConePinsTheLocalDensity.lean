@@ -146,8 +146,6 @@ theorem farSum_mem_Icc_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} (h : 
     nlinarith [abs_nonneg s]
   constructor
   · -- the odd far bump
-    have hc := continuous_farBump.comp (continuous_id.sub continuous_const) |>.sub
-      (continuous_farBump.comp (continuous_id.add continuous_const))
     have hcont : Continuous (oddFarBump a) := (contDiff_oddFarBump a).continuous
     have hE := h _ (contDiff_ofReal_comp (contDiff_oddFarBump a))
       (tsupport_ofReal_oddFarBump_subset ha hac)
@@ -156,7 +154,8 @@ theorem farSum_mem_Icc_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} (h : 
     have hodd : ∀ x, (fun u => ((oddFarBump a u : ℝ) : ℂ)) (-x) =
         -(fun u => ((oddFarBump a u : ℝ) : ℂ)) x := fun x => by
       simp only [oddFarBump_neg]; push_cast; ring
-    rw [re_weilPoleTerm_weilTest_of_odd (Complex.continuous_ofReal.comp hcont)
+    rw [re_weilPoleTerm_weilTest_of_odd (f := fun u => ((oddFarBump a u : ℝ) : ℂ))
+      (Complex.continuous_ofReal.comp hcont)
       ((hasCompactSupport_oddFarBump a).comp_left Complex.ofReal_zero) hodd,
       paperFT_ofRealFun_I_div_two, integral_oddFarBump_mul_exp, Complex.norm_real,
       Real.norm_eq_abs, sq_abs] at hE
@@ -237,11 +236,13 @@ theorem abs_farSum_sub_le_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} (h
   have k1 : |β * farJ ^ 2 * (Real.exp (-a) - 2)| ≤ 3 * |β| * farJ ^ 2 := by
     rw [abs_mul, abs_mul, abs_of_nonneg hJ]
     have : |Real.exp (-a) - 2| ≤ 3 := abs_le.mpr ⟨by linarith, by linarith⟩
-    nlinarith [abs_nonneg β]
+    have := mul_le_mul_of_nonneg_left this (mul_nonneg (abs_nonneg β) hJ)
+    linarith
   have k2 : |β * farJ ^ 2 * (Real.exp (-a) + 2)| ≤ 3 * |β| * farJ ^ 2 := by
     rw [abs_mul, abs_mul, abs_of_nonneg hJ]
     have : |Real.exp (-a) + 2| ≤ 3 := abs_le.mpr ⟨by linarith, by linarith⟩
-    nlinarith [abs_nonneg β]
+    have := mul_le_mul_of_nonneg_left this (mul_nonneg (abs_nonneg β) hJ)
+    linarith
   rw [abs_le]
   constructor
   · linarith [(abs_le.mp k1).1]
@@ -319,10 +320,11 @@ theorem datumCone_inter_eq_empty {β β' s s' : ℝ} (hne : β ≠ β') :
   set R : ℝ := 3 * (|β| + |β'|) * farJ ^ 2 + localDensityConst s + localDensityConst s' with hR
   have hd : 0 < |β - β'| * farJ ^ 2 := mul_pos (abs_pos.mpr (sub_ne_zero.mpr hne)) farJ_sq_pos
   obtain ⟨c₁, hc₁⟩ : ∃ c₁ : ℝ, R < |β - β'| * farJ ^ 2 * Real.exp (c₁ - 1) := by
-    obtain ⟨x, hx⟩ := Real.exists_exp_gt_of_pos (R / (|β - β'| * farJ ^ 2) + 1)
+    set x : ℝ := R / (|β - β'| * farJ ^ 2) + 1 with hx
     refine ⟨x + 1, ?_⟩
     rw [add_sub_cancel_right]
-    have hRx : R / (|β - β'| * farJ ^ 2) < Real.exp x := by linarith
+    have hRx : R / (|β - β'| * farJ ^ 2) < Real.exp x := by
+      linarith [Real.add_one_le_exp x]
     rw [div_lt_iff₀ hd] at hRx
     linarith
   refine ⟨max c₁ 1, fun c hc => Set.eq_empty_of_forall_notMem fun lam ⟨h, h'⟩ => ?_⟩

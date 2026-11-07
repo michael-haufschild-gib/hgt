@@ -19,7 +19,7 @@
 | A28 | Reciprocal quadric traces = vanishing-cycle traces | open | — |
 | A29 | Mixed Young projections at small rank | open | — |
 | A30 | Best stencil exponent under RH | open | — |
-| A31 | Discrete Beurling one-off and FE defect | open | — |
+| A31 | Discrete Beurling one-off and FE defect | done | `ArithmeticPositiveDuality/ADiscreteBeurlingOneOff`; card `3-formalized/apd-a-discrete-beurling-one-off.md` |
 | A32 | Manin at higher genus | open | — |
 | A33 | Cubic residue `R≠0`, cubic theta, Gauss-sum coefficients | owned elsewhere | — |
 

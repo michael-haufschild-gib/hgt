@@ -1921,9 +1921,11 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
       exact hc8_le.trans (mul_le_mul_of_nonneg_right
         (le_self_pow₀ (by linarith) (by norm_num)) hL0.le)
     exact (pow_le_pow_iff_left₀ (sq_nonneg _) (by positivity) (by norm_num)).mp hp4
+  have hKR_nn : 0 ≤ K_res * 8 * (R + 1) := by positivity
+  have hCR_nn : 0 ≤ C_q * (R + 1) := by positivity
+  have hS0_nn : 0 ≤ |completeWeilSelfFinitePart tiltedUnitSpline 1| := abs_nonneg _
   have hR1_64 : R + 1 ≤ L ^ (1 / 64 : ℝ) := by
-    linarith only [hL_rpow, hR, hK_res, hC_q,
-      abs_nonneg (completeWeilSelfFinitePart tiltedUnitSpline 1)]
+    linarith only [hL_rpow, hKR_nn, hCR_nn, hS0_nn]
   have hc_le_9 : c N ≤ L ^ (9 / 32 : ℝ) := by
     have hc2_9 : c N ^ 2 ≤ (L ^ (9 / 32 : ℝ)) ^ 2 := by
       rw [← Real.rpow_natCast (L ^ (9 / 32 : ℝ)) 2, ← Real.rpow_mul hL0.le]
@@ -1997,58 +1999,72 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
     have hr0 := hresN q hq_prime.pos hq_le_15 (c N) hcN hN_width
     have ht1 : K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) *
         (c N ^ 2 * (1 + Real.log (c N)) ^ 3 * L ^ (1 / (16 : ℝ)) / L) ≤ 1 / 2 := by
-      have hp2 : (1 + Real.log q) ^ 2 ≤ 65 ^ 2 * L ^ (2 / 64 : ℝ) := by
-        have hp := pow_le_pow_left₀ (by linarith [Real.log_natCast_nonneg q]) h1q_64 2
+      have h1q_nn : 0 ≤ 1 + Real.log (q : ℝ) := by linarith [Real.log_natCast_nonneg q]
+      have h1c_nn : 0 ≤ 1 + Real.log (c N) := by linarith [Real.log_nonneg hcN]
+      have hp2 : (1 + Real.log q) ^ 2 ≤ 4225 * L ^ (1 / 32 : ℝ) := by
+        have hp := pow_le_pow_left₀ h1q_nn h1q_64 2
         rw [mul_pow, ← Real.rpow_natCast (L ^ (1 / 64 : ℝ)) 2, ← Real.rpow_mul hL0.le] at hp
         norm_num at hp; exact hp
-      have hp3 : (1 + Real.log (c N)) ^ 3 ≤ 65 ^ 3 * L ^ (3 / 64 : ℝ) := by
-        have hp := pow_le_pow_left₀ (by linarith [Real.log_nonneg hcN]) h1c_64 3
+      have hp3 : (1 + Real.log (c N)) ^ 3 ≤ 274625 * L ^ (3 / 64 : ℝ) := by
+        have hp := pow_le_pow_left₀ h1c_nn h1c_64 3
         rw [mul_pow, ← Real.rpow_natCast (L ^ (1 / 64 : ℝ)) 3, ← Real.rpow_mul hL0.le] at hp
         norm_num at hp; exact hp
       have hKR_64 : K_res * (R + 1) ≤ L ^ (1 / 64 : ℝ) := by
-        linarith only [hL_rpow, hR, hK_res, hC_q,
-          abs_nonneg (completeWeilSelfFinitePart tiltedUnitSpline 1)]
+        have hKR1_nn : 0 ≤ K_res * (R + 1) := by positivity
+        have hKR_le8 : K_res * (R + 1) ≤ K_res * 8 * (R + 1) := by linarith only [hKR1_nn]
+        linarith only [hL_rpow, hKR_le8, hR, hCR_nn, hS0_nn]
       calc K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) *
             (c N ^ 2 * (1 + Real.log (c N)) ^ 3 * L ^ (1 / 16 : ℝ) / L)
-          ≤ K_res * (4 * L ^ (13 / 32 : ℝ) * (65 ^ 2 * L ^ (2 / 64 : ℝ))) *
-            ((R + 1) * L ^ (1 / 4 : ℝ) * (65 ^ 3 * L ^ (3 / 64 : ℝ)) * L ^ (1 / 16 : ℝ) / L) :=
+          ≤ K_res * (4 * L ^ (13 / 32 : ℝ) * (4225 * L ^ (1 / 32 : ℝ))) *
+            ((R + 1) * L ^ (1 / 4 : ℝ) * (274625 * L ^ (3 / 64 : ℝ)) * L ^ (1 / 16 : ℝ) / L) :=
             mul_le_mul
-              (mul_le_mul_of_nonneg_left (mul_le_mul hq_le_4rpow hp2 (by positivity) (by positivity))
-                hK_res.le)
+              (mul_le_mul_of_nonneg_left
+                (mul_le_mul hq_le_4rpow hp2 (sq_nonneg _) (by positivity)) hK_res.le)
               (div_le_div_of_nonneg_right
-                (mul_le_mul_of_nonneg_right (mul_le_mul hc2_le hp3 (by positivity) (by positivity))
+                (mul_le_mul_of_nonneg_right
+                  (mul_le_mul hc2_le hp3 (pow_nonneg h1c_nn 3) (by positivity))
                   (by positivity)) hL0.le)
-              (by positivity) (by positivity)
-        _ = (4 * 65 ^ 5) * (K_res * (R + 1)) *
-            (L ^ (13 / 32 : ℝ) * L ^ (2 / 64 : ℝ) * L ^ (1 / 4 : ℝ) *
+              (div_nonneg (mul_nonneg (mul_nonneg (sq_nonneg _) (pow_nonneg h1c_nn 3))
+                (by positivity)) hL0.le)
+              (by positivity)
+        _ = (4 * 4225 * 274625) * (K_res * (R + 1)) *
+            (L ^ (13 / 32 : ℝ) * L ^ (1 / 32 : ℝ) * L ^ (1 / 4 : ℝ) *
               L ^ (3 / 64 : ℝ) * L ^ (1 / 16 : ℝ) / L) := by ring
-        _ ≤ (4 * 65 ^ 5) * L ^ (1 / 64 : ℝ) *
-            (L ^ (13 / 32 : ℝ) * L ^ (2 / 64 : ℝ) * L ^ (1 / 4 : ℝ) *
+        _ ≤ (4 * 4225 * 274625) * L ^ (1 / 64 : ℝ) *
+            (L ^ (13 / 32 : ℝ) * L ^ (1 / 32 : ℝ) * L ^ (1 / 4 : ℝ) *
               L ^ (3 / 64 : ℝ) * L ^ (1 / 16 : ℝ) / L) :=
             mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hKR_64 (by norm_num))
               (by positivity)
-        _ = (4 * 65 ^ 5) / L ^ (3 / 16 : ℝ) := by
-            rw [show (4 * 65 ^ 5 : ℝ) * L ^ (1 / 64 : ℝ) *
-                (L ^ (13 / 32 : ℝ) * L ^ (2 / 64 : ℝ) * L ^ (1 / 4 : ℝ) *
+        _ = (4 * 4225 * 274625) / L ^ (3 / 16 : ℝ) := by
+            rw [show (4 * 4225 * 274625 : ℝ) * L ^ (1 / 64 : ℝ) *
+                (L ^ (13 / 32 : ℝ) * L ^ (1 / 32 : ℝ) * L ^ (1 / 4 : ℝ) *
                   L ^ (3 / 64 : ℝ) * L ^ (1 / 16 : ℝ) / L) =
-              (4 * 65 ^ 5) * (L ^ (1 / 64 : ℝ) * L ^ (13 / 32 : ℝ) * L ^ (2 / 64 : ℝ) *
+              (4 * 4225 * 274625) * (L ^ (1 / 64 : ℝ) * L ^ (13 / 32 : ℝ) * L ^ (1 / 32 : ℝ) *
                 L ^ (1 / 4 : ℝ) * L ^ (3 / 64 : ℝ) * L ^ (1 / 16 : ℝ) / L) by ring,
               ← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_add hL0,
               ← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
-            have hexp : (1 / 64 + 13 / 32 + 2 / 64 + 1 / 4 + 3 / 64 + 1 / 16 - 1 : ℝ) =
+            have hexp : (1 / 64 + 13 / 32 + 1 / 32 + 1 / 4 + 3 / 64 + 1 / 16 - 1 : ℝ) =
                 -(3 / 16) := by norm_num
-            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+            rw [hexp, Real.rpow_neg hL0.le]
+            ring
         _ ≤ 1 / 2 := by
             rw [div_le_iff₀ (Real.rpow_pos_of_pos hL0 _)]
-            have hnum : (4 * 65 ^ 5 : ℝ) ≤ (1 / 2 : ℝ) * (4 : ℝ) ^ (18 : ℝ) := by norm_num
-            nlinarith only [hnum, hL_3_16]
+            have hnum : (4 * 4225 * 274625 : ℝ) ≤ (1 / 2 : ℝ) * (4 : ℝ) ^ (18 : ℝ) := by norm_num
+            linarith only [hnum, hL_3_16]
+    have hN_L4_split : 2 * K_res * (R + 1) ^ 5 * L ^ 4 + 32 * L ^ 4 ≤ N := by
+      have hrest0 : 0 ≤ 8 * (Real.exp 1 + 3) ^ 2 * (R + 1) * L ^ 4 := by positivity
+      linarith only [hN_L4, hrest0,
+        (by ring : (2 * (K_res * (R + 1) ^ 5 + 4 * (Real.exp 1 + 3) ^ 2 * (R + 1) + 16)) * L ^ 4 =
+          2 * K_res * (R + 1) ^ 5 * L ^ 4 + 8 * (Real.exp 1 + 3) ^ 2 * (R + 1) * L ^ 4 + 32 * L ^ 4)]
+    have hK5L4_nn : 0 ≤ 2 * K_res * (R + 1) ^ 5 * L ^ 4 := by positivity
+    have hL4_nn : 0 ≤ L ^ 4 := pow_nonneg hL0.le 4
     have ht2 : K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) * (c N ^ 10 * (L / N) ^ 2) ≤ 1 / 2 := by
       have h1q_L : 1 + Real.log q ≤ L := by
         have h65_63 : (65 : ℝ) ≤ L ^ (63 / 64 : ℝ) :=
           (by norm_num : (65 : ℝ) ≤ (4 : ℝ) ^ (42 : ℝ)).trans
             (hL_7_16.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
         have hm := mul_le_mul_of_nonneg_right h65_63 (Real.rpow_nonneg hL0.le (1 / 64 : ℝ))
-        rw [← Real.rpow_add hL0] at hm; norm_num at hm; rw [Real.rpow_one] at hm
+        rw [← Real.rpow_add hL0, show (63 / 64 + 1 / 64 : ℝ) = 1 by norm_num, Real.rpow_one] at hm
         exact h1q_64.trans hm
       have hq_L3 : (q : ℝ) * (1 + Real.log q) ^ 2 ≤ L ^ 3 := by
         have hp2 : (1 + Real.log q) ^ 2 ≤ L ^ 2 :=
@@ -2066,13 +2082,13 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
           (by positivity))
       have hL4_N : L ^ 4 / N ≤ 1 / (2 * K_res * (R + 1) ^ 5) := by
         rw [div_le_div_iff₀ hN0 (by positivity)]
-        have hpos_rest : 0 ≤ 4 * (Real.exp 1 + 3) ^ 2 * (R + 1) + 16 := by positivity
-        nlinarith [hN_L4, hpos_rest, pow_pos hL0 4]
+        linarith only [hN_L4_split, hL4_nn,
+          (by ring : L ^ 4 * (2 * K_res * (R + 1) ^ 5) = 2 * K_res * (R + 1) ^ 5 * L ^ 4),
+          (by ring : 1 * (N : ℝ) = N)]
       have hL3_N : L ^ 3 / N ≤ 1 := by
         rw [div_le_one hN0]
         have h34 : L ^ 3 ≤ L ^ 4 := pow_le_pow_right₀ hL1 (by omega)
-        have hpos_rest : 0 ≤ K_res * (R + 1) ^ 5 + 4 * (Real.exp 1 + 3) ^ 2 * (R + 1) := by positivity
-        nlinarith [h34, hN_L4, hpos_rest, pow_pos hL0 4]
+        linarith only [h34, hN_L4_split, hK5L4_nn, hL4_nn]
       calc K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) * (c N ^ 10 * (L / N) ^ 2)
           ≤ K_res * L ^ 3 * ((R + 1) ^ 5 * L ^ 2 * (L ^ 2 / N ^ 2)) := by
             rw [div_pow]
@@ -2093,16 +2109,22 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
         simpa only [Nat.cast_ofNat] using hr0
       rw [mul_add] at hr0'
       linarith only [hr0', ht1, ht2]
-    nlinarith only [hrsq,
-      norm_nonneg (Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) v - E_q • v)]
+    have hnr_nn := norm_nonneg (Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) v - E_q • v)
+    nlinarith only [hrsq, hnr_nn]
   have hqqN : q * q ≤ N := by
     have hq2_L4 : ((q * q : ℕ) : ℝ) ≤ L ^ 4 := by
       rw [Nat.cast_mul]
       have h24 : L ^ 2 ≤ L ^ 4 := pow_le_pow_right₀ hL1 (by omega)
       nlinarith only [hq_le_L, h24, Nat.cast_nonneg (α := ℝ) q]
     have hL4_le_N : L ^ 4 ≤ N := by
-      have hpos_rest : 0 ≤ K_res * (R + 1) ^ 5 + 4 * (Real.exp 1 + 3) ^ 2 * (R + 1) := by positivity
-      nlinarith [hN_L4, hpos_rest, pow_pos hL0 4]
+      have hN_L4_split : 2 * K_res * (R + 1) ^ 5 * L ^ 4 + 32 * L ^ 4 ≤ N := by
+        have hrest0 : 0 ≤ 8 * (Real.exp 1 + 3) ^ 2 * (R + 1) * L ^ 4 := by positivity
+        linarith only [hN_L4, hrest0,
+          (by ring : (2 * (K_res * (R + 1) ^ 5 + 4 * (Real.exp 1 + 3) ^ 2 * (R + 1) + 16)) * L ^ 4 =
+            2 * K_res * (R + 1) ^ 5 * L ^ 4 + 8 * (Real.exp 1 + 3) ^ 2 * (R + 1) * L ^ 4 + 32 * L ^ 4)]
+      have hK5L4_nn : 0 ≤ 2 * K_res * (R + 1) ^ 5 * L ^ 4 := by positivity
+      have hL4_nn : 0 ≤ L ^ 4 := pow_nonneg hL0.le 4
+      linarith only [hN_L4_split, hK5L4_nn, hL4_nn]
     exact_mod_cast hq2_L4.trans hL4_le_N
   have hv_rpow : |‖v‖ ^ 2 - 1| ≤ 137 / L ^ (63 / 64 : ℝ) := by
     have hv0 := abs_norm_normalizedRamanujanHorizonVector_sq_sub_one_le hq_prime.two_le hqqN
@@ -2180,7 +2202,7 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
       rw [abs_of_nonneg (Real.log_natCast_nonneg q), abs_of_nonneg (Real.log_nonneg hcN)] at a2
       linarith only [a1, a2]
     have hS1 : |completeWeilSelfFinitePart tiltedUnitSpline 1| + 4 ≤ (1 / 200 : ℝ) * L ^ (1 / 64 : ℝ) := by
-      linarith only [hL_rpow, hR, hK_res, hC_q]
+      linarith only [hL_rpow, hR, hKR_nn, hCR_nn]
     have hsum1 : |E_q| ≤ (|completeWeilSelfFinitePart tiltedUnitSpline 1| + 4) * (130 * L ^ (1 / 64 : ℝ)) := by
       have hm := mul_le_mul_of_nonneg_left h1_64
         (show 0 ≤ |completeWeilSelfFinitePart tiltedUnitSpline 1| + 2 by positivity)
@@ -2255,8 +2277,7 @@ private theorem tendsto_quasimode_full_energy_div_log_log {c : ℕ → ℝ} {R :
       norm_num at hp; exact hp.trans_eq (by norm_num)
     have hCR_rpow : C_q * (R + 1) ^ 2 ≤ L ^ (2 / 64 : ℝ) := by
       have h1 : C_q * (R + 1) ≤ L ^ (1 / 64 : ℝ) := by
-        linarith only [hL_rpow, hR, hC_q, hK_res,
-          abs_nonneg (completeWeilSelfFinitePart tiltedUnitSpline 1)]
+        linarith only [hL_rpow, hR, hKR_nn, hS0_nn]
       calc C_q * (R + 1) ^ 2 = (C_q * (R + 1)) * (R + 1) := by ring
         _ ≤ L ^ (1 / 64 : ℝ) * L ^ (1 / 64 : ℝ) := mul_le_mul h1 hR1_64 (by positivity) (by positivity)
         _ = L ^ (2 / 64 : ℝ) := by rw [← Real.rpow_add hL0]; norm_num
@@ -2431,9 +2452,10 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
       exact hc8_le.trans (mul_le_mul_of_nonneg_right
         (le_self_pow₀ (by linarith) (by norm_num)) hL0.le)
     exact (pow_le_pow_iff_left₀ (sq_nonneg _) (by positivity) (by norm_num)).mp hp4
+  have hCR_nn : 0 ≤ C_q * (R + 1) := by positivity
+  have hS0_nn : 0 ≤ |completeWeilSelfFinitePart φ 1| := abs_nonneg _
   have hR1_64 : R + 1 ≤ L ^ (1 / 64 : ℝ) := by
-    linarith only [hL_rpow, hR, hC_q, hK_res, hC_sep, hlog2H_nn,
-      abs_nonneg (completeWeilSelfFinitePart φ 1)]
+    linarith only [hL_rpow, hCR_nn, hK_res, hC_sep, hlog2H_nn, hS0_nn]
   have hc_le_L : c N ≤ L := by
     have hc2_L2 : c N ^ 2 ≤ L ^ 2 := by
       calc c N ^ 2 ≤ (R + 1) * L ^ (1 / 4 : ℝ) := hc2_le
@@ -2464,6 +2486,14 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
   have hLc_le_HL : (Lc : ℝ) ≤ H * L := hLcup.trans (mul_le_mul_of_nonneg_left hc_le_L hH_pos.le)
   have hNLc_lt : (N : ℝ) < ((M : ℝ) + 1) * Lc := by
     exact_mod_cast (by simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc))
+  have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
+  have hKM_L3_ge : 2 * K_M * L ^ 3 ≤ (2 * (R + 1) * K_M) * L ^ 3 := by
+    have hpos : 0 ≤ 2 * K_M * L ^ 3 := by positivity
+    have hm := mul_le_mul_of_nonneg_right (show (1 : ℝ) ≤ R + 1 by linarith only [hR]) hpos
+    linarith only [hm, (by ring : (R + 1) * (2 * K_M * L ^ 3) = (2 * (R + 1) * K_M) * L ^ 3),
+      (by ring : 1 * (2 * K_M * L ^ 3) = 2 * K_M * L ^ 3)]
+  have h2KM_le_L3 : 2 * K_M ≤ 2 * K_M * L ^ 3 :=
+    le_mul_of_one_le_right (by positivity) hL3
   have hM_ge_L3 : (2 * (R + 1) * K_M) * L ^ 3 ≤ M := by
     have hdiv_ge : (4 * (R + 1) * K_M) * L ^ 3 ≤ (M : ℝ) + 1 := by
       have h1 : (4 * (R + 1) * K_M) * L ^ 3 * (H * L) ≤ N :=
@@ -2472,31 +2502,31 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
         mul_le_mul_of_nonneg_left hLc_le_HL (by positivity)
       exact le_of_mul_le_mul_right (h1.trans (hNLc_lt.le.trans h2)) (mul_pos hH_pos hL0)
     have h1_le : 1 ≤ (2 * (R + 1) * K_M) * L ^ 3 := by
-      have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
-      nlinarith [hR, hK_M_pos, hL3]
+      linarith only [hK_M_pos, h2KM_le_L3, hKM_L3_ge]
     linarith only [hdiv_ge, h1_le]
+  have h2KM_le_M : 2 * K_M ≤ M := h2KM_le_L3.trans (hKM_L3_ge.trans hM_ge_L3)
+  have h2KML3_le_M : 2 * K_M * L ^ 3 ≤ M := hKM_L3_ge.trans hM_ge_L3
   have hM_sep : M₀_sep ≤ M := by
-    have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
     have hM0R : (M₀_sep : ℝ) ≤ M := by
       have hm : (M₀_sep : ℝ) ≤ (max 1 M₀_sep : ℝ) := by exact_mod_cast le_max_right 1 M₀_sep
       have hpos_rest : 0 ≤ (max 1 M₀_res : ℝ) + K_res + 4 * (Real.exp 1 + 3) ^ 2 + 100 := by
         positivity
-      dsimp only [K_M] at hM_ge_L3
-      nlinarith [hR, hL3, hm, hpos_rest, hM_ge_L3]
+      have hK_nn : 0 ≤ K_M := by linarith only [hK_M_pos]
+      dsimp only [K_M] at h2KM_le_M hK_nn
+      linarith only [hm, hpos_rest, hK_nn, h2KM_le_M]
     exact_mod_cast hM0R
   have hM_res : M₀_res ≤ M := by
-    have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
     have hM0R : (M₀_res : ℝ) ≤ M := by
       have hm : (M₀_res : ℝ) ≤ (max 1 M₀_res : ℝ) := by exact_mod_cast le_max_right 1 M₀_res
       have hpos_rest : 0 ≤ (max 1 M₀_sep : ℝ) + K_res + 4 * (Real.exp 1 + 3) ^ 2 + 100 := by
         positivity
-      dsimp only [K_M] at hM_ge_L3
-      nlinarith [hR, hL3, hm, hpos_rest, hM_ge_L3]
+      have hK_nn : 0 ≤ K_M := by linarith only [hK_M_pos]
+      dsimp only [K_M] at h2KM_le_M hK_nn
+      linarith only [hm, hpos_rest, hK_nn, h2KM_le_M]
     exact_mod_cast hM0R
   have hM2 : 2 ≤ M := by
-    have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
-    have : (100 : ℝ) ≤ M := by nlinarith [hR, hK_M_pos, hL3, hM_ge_L3]
-    exact_mod_cast (show (2 : ℝ) ≤ M by linarith)
+    have : (100 : ℝ) ≤ M := by linarith only [hK_M_pos, h2KM_le_M]
+    exact_mod_cast (show (2 : ℝ) ≤ M by linarith only [this])
   have hM1 : 1 ≤ M := by omega
   have hMN : M ≤ N := Nat.div_le_self N Lc
   have hM0 : (0 : ℝ) < M := by exact_mod_cast hM1
@@ -2517,7 +2547,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
   have h2HL_rpow : Real.log (2 * H * L) ≤ 65 * L ^ (1 / 64 : ℝ) := by
     rw [Real.log_mul (by positivity) hL0.ne']
     have hl2H : Real.log (2 * H) ≤ L ^ (1 / 64 : ℝ) := by
-      linarith only [hL_rpow, hR, hC_q, hK_res, hC_sep, abs_nonneg (completeWeilSelfFinitePart φ 1)]
+      linarith only [hL_rpow, hR, hCR_nn, hK_res, hC_sep, hS0_nn]
     linarith only [hl2H, hlogL_64]
   have hLM_ge_half : L / 2 ≤ L_M := by
     have h65 : 65 * L ^ (1 / 64 : ℝ) ≤ L / 2 := by
@@ -2525,7 +2555,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
         (by norm_num : (130 : ℝ) ≤ (4 : ℝ) ^ (14 : ℝ)).trans
           (hL_7_16.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
       have hm := mul_le_mul_of_nonneg_right h130 (Real.rpow_nonneg hL0.le (1 / 64 : ℝ))
-      rw [← Real.rpow_add hL0] at hm; norm_num at hm; rw [Real.rpow_one] at hm
+      rw [← Real.rpow_add hL0, show (63 / 64 + 1 / 64 : ℝ) = 1 by norm_num, Real.rpow_one] at hm
       linarith only [hm]
     linarith only [hLM_lower, h2HL_rpow, h65]
   have hLM_31 : (4 : ℝ) ^ (31 : ℝ) ≤ L_M := by
@@ -2642,17 +2672,18 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
     nlinarith only [hsq_eq, hpu_u, norm_nonneg p'_u, norm_nonneg p_u, norm_nonneg u]
   have hsep_v' := hM₀_sep M hM_sep hq_prime hq_le_LM hc'_lo hc'_hi
   have hM_width1 : 4 * (Real.exp 1 + 3) ^ 2 * (1 : ℝ) ^ 2 ≤ M := by
-    have hL3 : 1 ≤ L ^ 3 := one_le_pow₀ hL1
-    dsimp only [K_M] at hM_ge_L3
-    nlinarith [hR, hK_res, hL3, hM_ge_L3]
+    have hpos_rest : 0 ≤ (max 1 M₀_sep : ℝ) + (max 1 M₀_res : ℝ) + K_res + 100 := by positivity
+    have hK_nn : 0 ≤ K_M := by linarith only [hK_M_pos]
+    dsimp only [K_M] at h2KM_le_M hK_nn
+    linarith only [hpos_rest, hK_nn, h2KM_le_M, (by ring : 4 * (Real.exp 1 + 3) ^ 2 * (1 : ℝ) ^ 2 =
+      4 * (Real.exp 1 + 3) ^ 2)]
   let E1_q := completedConductorEnergy φ 1 q
   let r1 := Matrix.toEuclideanLin (completeWeilMatrix φ 1 M) v' - E1_q • v'
   have hr1_norm : ‖r1‖ ≤ 1 := by
     have hr0 := hM₀_res M hM_res q hq_prime.pos hq_le_LM_half 1 le_rfl hM_width1
     have hK_LM : K_res ≤ 2 * L_M ^ (1 / 64 : ℝ) := by
       have hKL1 : K_res ≤ L ^ (1 / 64 : ℝ) := by
-        linarith only [hL_rpow, hR, hC_q, hC_sep, hlog2H_nn,
-          abs_nonneg (completeWeilSelfFinitePart φ 1)]
+        linarith only [hL_rpow, hR, hCR_nn, hC_sep, hlog2H_nn, hS0_nn]
       have hp := Real.rpow_le_rpow hL0.le (show L ≤ 2 * L_M by linarith only [hLM_ge_half])
         (by norm_num : (0 : ℝ) ≤ 1 / 64)
       rw [Real.mul_rpow zero_le_two hLM0.le] at hp
@@ -2666,30 +2697,32 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
     have ht1 : K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) *
         ((1 : ℝ) ^ 2 * (1 + Real.log (1 : ℝ)) ^ 3 * L_M ^ (1 / (16 : ℝ)) / L_M) ≤ 1 / 2 := by
       rw [Real.log_one]
-      have hp2 : (1 + Real.log q) ^ 2 ≤ 65 ^ 2 * L_M ^ (2 / 64 : ℝ) := by
-        have hp := pow_le_pow_left₀ (by linarith [Real.log_natCast_nonneg q]) hlogq_LM 2
+      have h1q_nn : 0 ≤ 1 + Real.log (q : ℝ) := by linarith [Real.log_natCast_nonneg q]
+      have hp2 : (1 + Real.log q) ^ 2 ≤ 4225 * L_M ^ (1 / 32 : ℝ) := by
+        have hp := pow_le_pow_left₀ h1q_nn hlogq_LM 2
         rw [mul_pow, ← Real.rpow_natCast (L_M ^ (1 / 64 : ℝ)) 2, ← Real.rpow_mul hLM0.le] at hp
         norm_num at hp; exact hp
       calc K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) *
             ((1 : ℝ) ^ 2 * (1 + 0) ^ 3 * L_M ^ (1 / 16 : ℝ) / L_M)
-          ≤ (2 * L_M ^ (1 / 64 : ℝ)) * (L_M ^ (1 / 2 : ℝ) * (65 ^ 2 * L_M ^ (2 / 64 : ℝ))) *
+          ≤ (2 * L_M ^ (1 / 64 : ℝ)) * (L_M ^ (1 / 2 : ℝ) * (4225 * L_M ^ (1 / 32 : ℝ))) *
             (L_M ^ (1 / 16 : ℝ) / L_M) :=
             mul_le_mul
-              (mul_le_mul hK_LM (mul_le_mul hq_le_LM_half hp2 (by positivity) (by positivity))
-                (by positivity) (by positivity))
+              (mul_le_mul hK_LM (mul_le_mul hq_le_LM_half hp2 (sq_nonneg _) (by positivity))
+                (mul_nonneg (Nat.cast_nonneg _) (sq_nonneg _)) (by positivity))
               (le_of_eq (by ring)) (by positivity) (by positivity)
-        _ = (2 * 65 ^ 2) *
-            (L_M ^ (1 / 64 : ℝ) * L_M ^ (1 / 2 : ℝ) * L_M ^ (2 / 64 : ℝ) *
+        _ = (2 * 4225) *
+            (L_M ^ (1 / 64 : ℝ) * L_M ^ (1 / 2 : ℝ) * L_M ^ (1 / 32 : ℝ) *
               L_M ^ (1 / 16 : ℝ) / L_M) := by ring
-        _ = (2 * 65 ^ 2) / L_M ^ (25 / 64 : ℝ) := by
+        _ = (2 * 4225) / L_M ^ (25 / 64 : ℝ) := by
             rw [← Real.rpow_add hLM0, ← Real.rpow_add hLM0, ← Real.rpow_add hLM0,
               ← Real.rpow_sub_one hLM0.ne']
-            have hexp : (1 / 64 + 1 / 2 + 2 / 64 + 1 / 16 - 1 : ℝ) = -(25 / 64) := by norm_num
-            rw [hexp, Real.rpow_neg hLM0.le, div_eq_mul_inv]
+            have hexp : (1 / 64 + 1 / 2 + 1 / 32 + 1 / 16 - 1 : ℝ) = -(25 / 64) := by norm_num
+            rw [hexp, Real.rpow_neg hLM0.le]
+            ring
         _ ≤ 1 / 2 := by
             rw [div_le_iff₀ (Real.rpow_pos_of_pos hLM0 _)]
-            have hnum : (2 * 65 ^ 2 : ℝ) ≤ (1 / 2 : ℝ) * (4 : ℝ) ^ (12 : ℝ) := by norm_num
-            nlinarith only [hnum, hLM_25]
+            have hnum : (2 * 4225 : ℝ) ≤ (1 / 2 : ℝ) * (4 : ℝ) ^ (12 : ℝ) := by norm_num
+            linarith only [hnum, hLM_25]
     have ht2 : K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) * ((1 : ℝ) ^ 10 * (L_M / M) ^ 2) ≤ 1 / 2 := by
       have hq_log_LM3 : (q : ℝ) * (1 + Real.log q) ^ 2 ≤ L_M ^ 3 := by
         have hlq_LM1 : 1 + Real.log q ≤ L_M := by
@@ -2698,7 +2731,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
               (by norm_num : (65 : ℝ) ≤ (4 : ℝ) ^ (12 : ℝ)).trans
                 (hLM_25.trans (Real.rpow_le_rpow_of_exponent_le hLM1 (by norm_num)))
             have hm := mul_le_mul_of_nonneg_right h65 (Real.rpow_nonneg hLM0.le (1 / 64 : ℝ))
-            rw [← Real.rpow_add hLM0] at hm; norm_num at hm; rwa [Real.rpow_one] at hm
+            rwa [← Real.rpow_add hLM0, show (63 / 64 + 1 / 64 : ℝ) = 1 by norm_num, Real.rpow_one] at hm
           exact hlogq_LM.trans h65_LM
         have hp2 : (1 + Real.log q) ^ 2 ≤ L_M ^ 2 :=
           pow_le_pow_left₀ (by linarith [Real.log_natCast_nonneg q]) hlq_LM1 2
@@ -2706,17 +2739,25 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
               mul_le_mul hq_le_LM hp2 (by positivity) hLM0.le
           _ = L_M ^ 3 := by ring
       have hM_ge_2K : 2 * K_res * L ^ 3 ≤ M := by
-        dsimp only [K_M] at hM_ge_L3
-        have hpos_rest : 0 ≤ (max 1 M₀_sep : ℝ) + (max 1 M₀_res : ℝ) +
-          4 * (Real.exp 1 + 3) ^ 2 + 100 := by positivity
-        nlinarith [hR, hK_res, pow_pos hL0 3, hpos_rest, hM_ge_L3]
+        have hrest_nn : 0 ≤ 2 * ((max 1 M₀_sep : ℝ) + (max 1 M₀_res : ℝ) +
+          4 * (Real.exp 1 + 3) ^ 2 + 100) * L ^ 3 := by positivity
+        dsimp only [K_M] at h2KML3_le_M
+        linarith only [hrest_nn, h2KML3_le_M,
+          (by ring : 2 * ((max 1 M₀_sep : ℝ) + (max 1 M₀_res : ℝ) + K_res +
+              4 * (Real.exp 1 + 3) ^ 2 + 100) * L ^ 3 =
+            2 * K_res * L ^ 3 + 2 * ((max 1 M₀_sep : ℝ) + (max 1 M₀_res : ℝ) +
+              4 * (Real.exp 1 + 3) ^ 2 + 100) * L ^ 3)]
       have hLM_M_le : L_M ^ 3 / M ≤ 1 / (2 * K_res) := by
         rw [div_le_div_iff₀ hM0 (by positivity)]
         have hLM3_L3 : L_M ^ 3 ≤ L ^ 3 := pow_le_pow_left₀ hLM0.le hLM_le_L 3
-        nlinarith only [hLM3_L3, hM_ge_2K, hK_res]
+        have hm := mul_le_mul_of_nonneg_left hLM3_L3 (show 0 ≤ 2 * K_res by positivity)
+        linarith only [hm, hM_ge_2K, (by ring : L_M ^ 3 * (2 * K_res) = 2 * K_res * L_M ^ 3),
+          (by ring : 1 * (M : ℝ) = M)]
+      have hM_ge_L3_1 : L ^ 3 ≤ M := by
+        have hm := mul_le_mul_of_nonneg_right hK_M_pos (pow_nonneg hL0.le 3)
+        linarith only [hm, h2KML3_le_M, pow_nonneg hL0.le 3]
       have hLM2_M : L_M ^ 2 / M ≤ 1 := by
         have h23 : L_M ^ 2 ≤ L_M ^ 3 := pow_le_pow_right₀ hLM1 (by omega)
-        have hM_ge_L3_1 : L ^ 3 ≤ M := by nlinarith [hR, hK_M_pos, pow_pos hL0 3, hM_ge_L3]
         rw [div_le_one hM0]
         exact h23.trans ((pow_le_pow_left₀ hLM0.le hLM_le_L 3).trans hM_ge_L3_1)
       calc K_res * ((q : ℝ) * (1 + Real.log q) ^ 2) * ((1 : ℝ) ^ 10 * (L_M / M) ^ 2)
@@ -2742,10 +2783,12 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
       rw [Nat.cast_mul]
       calc (q : ℝ) * q ≤ L_M ^ (1 / 2 : ℝ) * L_M ^ (1 / 2 : ℝ) :=
             mul_le_mul hq_le_LM_half hq_le_LM_half (by positivity) (by positivity)
-        _ = L_M := by rw [← Real.rpow_add hLM0]; norm_num; exact Real.rpow_one _
+        _ = L_M := by rw [← Real.rpow_add hLM0, show (1 / 2 + 1 / 2 : ℝ) = 1 by norm_num, Real.rpow_one]
     have hLM_le_M : L_M ≤ M := by
       have hL_L3 : L ≤ L ^ 3 := le_self_pow₀ hL1 (by norm_num)
-      have hL3_M : L ^ 3 ≤ M := by nlinarith [hR, hK_M_pos, pow_pos hL0 3, hM_ge_L3]
+      have hL3_M : L ^ 3 ≤ M := by
+        have hm := mul_le_mul_of_nonneg_right hK_M_pos (pow_nonneg hL0.le 3)
+        linarith only [hm, h2KML3_le_M, pow_nonneg hL0.le 3]
       exact hLM_le_L.trans (hL_L3.trans hL3_M)
     exact_mod_cast hq2_LM.trans hLM_le_M
   have hv'_rpow : |‖v'‖ ^ 2 - 1| ≤ 8 / L_M ^ (1 / 2 : ℝ) := by
@@ -2804,7 +2847,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
     have hlq_64 : Real.log (q : ℝ) ≤ 64 * L ^ (1 / 64 : ℝ) :=
       (Real.log_le_log (by exact_mod_cast hq_prime.pos) (hq_le_LM.trans hLM_le_L)).trans hlogL_64
     have hS1 : |completeWeilSelfFinitePart φ 1| + 4 ≤ (1 / 72 : ℝ) * L ^ (1 / 64 : ℝ) := by
-      linarith only [hL_rpow, hR, hC_q, hK_res, hC_sep, hlog2H_nn]
+      linarith only [hL_rpow, hR, hCR_nn, hK_res, hC_sep, hlog2H_nn]
     have h1_64 : 1 ≤ L ^ (1 / 64 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
     calc |E1_q| ≤ (|completeWeilSelfFinitePart φ 1| + 4) * (65 * L ^ (1 / 64 : ℝ)) := by
           have := mul_le_mul_of_nonneg_left h1_64
@@ -2901,8 +2944,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
           _ = 4 * L ^ (2 / 64 : ℝ) := by ring
       have h2 : C_sep + 1 ≤ 2 * L ^ (2 / 64 : ℝ) := by
         have hCs : C_sep + 1 ≤ L ^ (1 / 64 : ℝ) := by
-          linarith only [hL_rpow, hR, hC_q, hK_res, hlog2H_nn,
-            abs_nonneg (completeWeilSelfFinitePart φ 1)]
+          linarith only [hL_rpow, hR, hCR_nn, hK_res, hlog2H_nn, hS0_nn]
         have h12 : L ^ (1 / 64 : ℝ) ≤ L ^ (2 / 64 : ℝ) :=
           Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
         linarith [Real.rpow_nonneg hL0.le (2 / 64 : ℝ)]
@@ -2941,8 +2983,7 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
       norm_num at hp; exact hp.trans_eq (by norm_num)
     have hCR_rpow : C_q * (R + 1) ^ 2 ≤ L ^ (2 / 64 : ℝ) := by
       have h1 : C_q * (R + 1) ≤ L ^ (1 / 64 : ℝ) := by
-        linarith only [hL_rpow, hR, hC_q, hK_res, hC_sep, hlog2H_nn,
-          abs_nonneg (completeWeilSelfFinitePart φ 1)]
+        linarith only [hL_rpow, hR, hK_res, hC_sep, hlog2H_nn, hS0_nn]
       calc C_q * (R + 1) ^ 2 = (C_q * (R + 1)) * (R + 1) := by ring
         _ ≤ L ^ (1 / 64 : ℝ) * L ^ (1 / 64 : ℝ) := mul_le_mul h1 hR1_64 (by positivity) (by positivity)
         _ = L ^ (2 / 64 : ℝ) := by rw [← Real.rpow_add hL0]; norm_num
@@ -2968,6 +3009,1193 @@ private theorem tendsto_quasimode_prefix_energy_div_log_log {c : ℕ → ℝ} {R
   exact (abs_prefix_quasimode_energy_sub_le hφ hsupp hM_int hc0 hM1 hMN hC_sep.le hp_sub hvan_pv
     hvan_pu hpv_eq hα_nn hα_le1 hrc'_norm hv'_norm_le2 hE1_sub hα_sub1 hE1_v'_sq hBv'_u hEpu_abs).trans_eq
     (by ring)
+
+/-! #### 2c. Collar energy asymptotic `(1 / 8) log log N` and the `4 / 13` Schur limit -/
+
+private theorem completeWeilEnergy_collar_spike_approx {c : ℝ} (hc1 : 1 ≤ c) {N q : ℕ}
+    (hq : q.Prime) (h2LN : 2 * linearDefectCutoff c ≤ N) (hNq1 : 1 ≤ N / q)
+    (hMq1 : 1 ≤ (N / linearDefectCutoff c) / q)
+    (hMq_lt : (N / linearDefectCutoff c) / q < N / q)
+    (hcq_quarter : c * ((N / q : ℕ) : ℝ) / (N : ℝ) ≤ 1 / 4) (A : ℝ) :
+    let φ := tiltedUnitSpline
+    let M := N / linearDefectCutoff c
+    let Nq := N / q
+    let cq := c * (Nq : ℝ) / (N : ℝ)
+    let y_sp := horizonProfileVector
+      (fun n => if M < n ∧ q ∣ n then A * Real.sqrt q / Real.sqrt n else 0) N
+    |completeWeilEnergy φ c N y_sp -
+        (Real.log (N : ℝ) - Real.log c + completeWeilSelfFinitePart φ 1 -
+          Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2| ≤
+      (topPrimeConstant * c * (1 + Real.log c) +
+        cq * (3 * Real.log (N : ℝ) + 7) +
+        4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+        2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2) * ‖y_sp‖ ^ 2 := by
+  intro φ M Nq cq y_sp
+  have hφ := contDiff_tiltedUnitSpline
+  have hsupp := tiltedUnitSpline_eq_zero
+  have hM_int := integral_tiltedUnitSpline_sq_pos
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  obtain ⟨hLc3, h4c, -, -⟩ := linearDefectCutoff_bounds hc1
+  have hLN : linearDefectCutoff c ≤ N := by omega
+  have hN1 : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hNq0 : (0 : ℝ) < Nq := by exact_mod_cast hNq1
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq.pos
+  have hcq0 : 0 < cq := div_pos (mul_pos hc0 hNq0) hN0
+  have hcq1 : cq < 1 := by linarith only [hcq_quarter]
+  have hcq_le_Nq : cq ≤ Nq := by linarith only [hcq1, (show (1 : ℝ) ≤ Nq by exact_mod_cast hNq1)]
+  have hw_eq : cq / (Nq : ℝ) = c / (N : ℝ) := by
+    dsimp only [cq]; field_simp [hNq0.ne', hN0.ne']
+  have hsep_q : cq / (Nq : ℝ) < atomSpacing Nq := by
+    have h4 : 4 * (cq / (Nq : ℝ)) * Nq ≤ 1 := by
+      rw [div_mul_cancel₀ _ hNq0.ne']
+      linarith only [hcq_quarter]
+    have hb : cq / (Nq : ℝ) ≤ (1 / ((Nq : ℝ) + 1)) / 2 := by
+      apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 2)).mpr
+      apply (le_div_iff₀ (by positivity : (0 : ℝ) < Nq + 1)).mpr
+      have hNq1R : (1 : ℝ) ≤ Nq := by exact_mod_cast hNq1
+      nlinarith only [h4, mul_nonneg hcq0.le (sub_nonneg.mpr hNq1R)]
+    exact hb.trans_lt (by
+      linarith only [(atomSpacing_bounds hNq1).1, atomSpacing_pos hNq1])
+  set Mq := M / q
+  set x_q := horizonProfileVector (fun k => if Mq < k then A / Real.sqrt k else 0) Nq
+  have hred := completeWeilEnergy_collar_spike_eq hφ hsupp hM_int hc0 hq.pos hNq1 A
+  change completeWeilEnergy φ c N y_sp = completeWeilEnergy φ cq Nq x_q at hred
+  have hnorm_eq : ‖y_sp‖ ^ 2 = ‖x_q‖ ^ 2 := by
+    rw [← sum_primeHorizonExtension_sq y_sp, ← sum_primeHorizonExtension_sq x_q]
+    have himg : (Icc 1 Nq).image (q * ·) ⊆ Icc 1 N := by
+      intro n hn
+      obtain ⟨k, hk, rfl⟩ := mem_image.mp hn
+      obtain ⟨hk1, hkN⟩ := mem_Icc.mp hk
+      exact mem_Icc.mpr ⟨Nat.mul_pos hq.pos hk1,
+        by rw [mul_comm]; exact (Nat.le_div_iff_mul_le hq.pos).mp hkN⟩
+    have hzero_off : ∀ n ∈ Icc 1 N, n ∉ (Icc 1 Nq).image (q * ·) →
+        primeHorizonExtension y_sp n ^ 2 = 0 := by
+      intro n hn hnot
+      rw [primeHorizonExtension_coe y_sp ⟨n, hn⟩]
+      change (if M < n ∧ q ∣ n then A * Real.sqrt q / Real.sqrt n else 0) ^ 2 = 0
+      have hndvd : ¬(q ∣ n) := by
+        intro ⟨k, hnk⟩
+        apply hnot
+        refine mem_image.mpr ⟨k, mem_Icc.mpr ⟨?_, ?_⟩, hnk.symm⟩
+        · by_contra hk0
+          have hk0' : k = 0 := by omega
+          rw [hk0', mul_zero] at hnk
+          have := (mem_Icc.mp hn).1
+          omega
+        · exact (Nat.le_div_iff_mul_le hq.pos).mpr (by rw [mul_comm, ← hnk]; exact (mem_Icc.mp hn).2)
+      rw [if_neg (fun h => hndvd h.2), zero_pow (by norm_num)]
+    rw [← sum_subset himg hzero_off,
+      sum_image (fun k₁ _ k₂ _ heq => Nat.eq_of_mul_eq_mul_left hq.pos heq)]
+    refine sum_congr rfl fun k hk => ?_
+    have hkN : q * k ∈ Icc 1 N := himg (mem_image_of_mem _ hk)
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
+    rw [primeHorizonExtension_coe y_sp ⟨q * k, hkN⟩, primeHorizonExtension_coe x_q ⟨k, hk⟩]
+    change (if M < q * k ∧ q ∣ q * k then A * Real.sqrt q / Real.sqrt ((q * k : ℕ) : ℝ) else 0) ^ 2 =
+      (if Mq < k then A / Real.sqrt k else 0) ^ 2
+    have hiff : (M < q * k ∧ q ∣ q * k) ↔ Mq < k :=
+      ⟨fun h => (Nat.div_lt_iff_lt_mul hq.pos).mpr (by rw [mul_comm]; exact h.1),
+       fun h => ⟨by rw [mul_comm]; exact (Nat.div_lt_iff_lt_mul hq.pos).mp h, dvd_mul_right q k⟩⟩
+    by_cases hcond : Mq < k
+    · rw [if_pos (hiff.mpr hcond), if_pos hcond, Nat.cast_mul, Real.sqrt_mul hq0.le]
+      field_simp [(Real.sqrt_pos.mpr hq0).ne', (Real.sqrt_pos.mpr hk0).ne']
+    · rw [if_neg (fun h => hcond (hiff.mp h)), if_neg hcond]
+  have hdec := completeWeilEnergy_eq_decomposition hφ hsupp hM_int hcq0 hNq1 hsep_q x_q
+  rw [renormalizedPrimeEnergy, ← atomicWeilForm_primeHorizonExtension] at hdec
+  have hself_log : Real.log (Nq : ℝ) + completeWeilSelfFinitePart φ cq =
+      Real.log (N : ℝ) - Real.log c + completeWeilSelfFinitePart φ 1 := by
+    rw [completeWeilSelfFinitePart_eq_at_one_sub_log φ hcq0]
+    have hrat : (Nq : ℝ) / cq = (N : ℝ) / c := by
+      dsimp only [cq]; field_simp [hc0.ne', hNq0.ne', hN0.ne']
+    have hlog_eq : Real.log (Nq : ℝ) - Real.log cq = Real.log (N : ℝ) - Real.log c := by
+      rw [← Real.log_div hNq0.ne' hcq0.ne', hrat, Real.log_div hN0.ne' hc0.ne']
+    linarith only [hlog_eq]
+  have hself_err : |completeWeilSelfError φ cq Nq| ≤ 2 := by
+    have hb := abs_completeWeilSelfError_le_of_width_le_one hφ hsupp hM_int hcq0 hNq1 hcq_le_Nq
+    have hdiv : cq / (Nq : ℝ) ≤ 1 := (div_le_one hNq0).mpr hcq_le_Nq
+    have hexp : Real.exp (1 / 2 : ℝ) ≤ 2 := by
+      have he1 : Real.exp 1 < 4 := by have := Real.exp_one_lt_d9; linarith
+      have hsq : Real.exp (1 / 2 : ℝ) * Real.exp (1 / 2 : ℝ) = Real.exp 1 := by
+        rw [← Real.exp_add]; norm_num
+      nlinarith only [he1, hsq, Real.exp_pos (1 / 2 : ℝ)]
+    have hm := mul_le_mul hexp hdiv (by positivity) zero_le_two
+    linarith only [hb, hm]
+  have hprime_bd : |atomicWeilForm Nq (primeHorizonExtension x_q)| ≤
+      topPrimeConstant * c * (1 + Real.log c) * ‖x_q‖ ^ 2 := by
+    set w := c / (N : ℝ)
+    set g := atomDilate φ w
+    have hw : 0 < w := div_pos hc0 hN0
+    have hcN_le : c ≤ N := by
+      have hLNR : (linearDefectCutoff c : ℝ) ≤ N := by exact_mod_cast hLN
+      linarith only [h4c, hLNR, hc0]
+    have hw1 : w ≤ 1 := (div_le_one hN0).mpr hcN_le
+    have hg : ContDiff ℝ 2 g := hφ.comp (contDiff_id.div_const _)
+    have hgc : HasCompactSupport g := hasCompactSupport_atomDilate hw.ne' hasCompactSupport_tiltedUnitSpline
+    have hgs := tiltedUnitSpline_atom_support hw
+    have hG : 0 < ∫ u, g u ^ 2 := by rw [integral_atomDilate_sq hw]; exact mul_pos hw hM_int
+    have hnr0 : nonRatioForm g Nq (primeHorizonExtension x_q) = 0 := by
+      apply SuccessorShellArithmetic.nonRatioForm_eq_zero_of_shellRange_eq_zero hgs
+      unfold SuccessorShellArithmetic.shellRange
+      apply Nat.floor_eq_zero.mpr
+      have he1 : Real.exp w - 1 ≤ w * Real.exp w := by
+        have h := mul_le_mul_of_nonneg_right (Real.add_one_le_exp (-w)) (Real.exp_pos w).le
+        have h2 : Real.exp (-w) * Real.exp w = 1 := by rw [← Real.exp_add]; simp
+        linarith only [h, h2]
+      have hew : Real.exp w ≤ 3 :=
+        (Real.exp_le_exp.mpr hw1).trans (by have := Real.exp_one_lt_d9; linarith)
+      have hprod : (Nq : ℝ) * w = cq := by
+        dsimp only [w, cq]; field_simp [hN0.ne']
+      calc (Nq : ℝ) * (Real.exp w - 1) ≤ (Nq : ℝ) * (w * Real.exp w) :=
+            mul_le_mul_of_nonneg_left he1 hNq0.le
+        _ = cq * Real.exp w := by rw [← mul_assoc, hprod]
+        _ ≤ (1 / 4) * 3 := mul_le_mul hcq_quarter hew (Real.exp_pos w).le (by norm_num)
+        _ < 1 := by norm_num
+    have hpr_eq : (∫ u, g u ^ 2) * atomicWeilForm Nq (primeHorizonExtension x_q) =
+        primeSum (atomicTest Nq (primeHorizonExtension x_q) g) := by
+      have h1 := primeSum_atomicTest_eq_ratio_add hg.continuous hgc hgs hw.le Nq
+        (primeHorizonExtension x_q)
+      rw [hnr0, add_zero] at h1
+      exact h1.symm
+    have hshift : (fun u => atomicTest N (primeHorizonExtension y_sp) g (u + Real.log q)) =
+        atomicTest Nq (primeHorizonExtension x_q) g := by
+      funext u
+      unfold atomicTest
+      have himg : (Icc 1 Nq).image (q * ·) ⊆ Icc 1 N := by
+        intro n hn
+        obtain ⟨k, hk, rfl⟩ := mem_image.mp hn
+        obtain ⟨hk1, hkN⟩ := mem_Icc.mp hk
+        exact mem_Icc.mpr ⟨Nat.mul_pos hq.pos hk1,
+          by rw [mul_comm]; exact (Nat.le_div_iff_mul_le hq.pos).mp hkN⟩
+      have hzero_off : ∀ n ∈ Icc 1 N, n ∉ (Icc 1 Nq).image (q * ·) →
+          primeHorizonExtension y_sp n * g (u + Real.log q - Real.log n) = 0 := by
+        intro n hn hnot
+        rw [primeHorizonExtension_coe y_sp ⟨n, hn⟩]
+        change (if M < n ∧ q ∣ n then A * Real.sqrt q / Real.sqrt n else 0) * _ = 0
+        have hndvd : ¬(q ∣ n) := by
+          intro ⟨k, hnk⟩
+          apply hnot
+          refine mem_image.mpr ⟨k, mem_Icc.mpr ⟨?_, ?_⟩, hnk.symm⟩
+          · by_contra hk0
+            have hk0' : k = 0 := by omega
+            rw [hk0', mul_zero] at hnk
+            have := (mem_Icc.mp hn).1
+            omega
+          · exact (Nat.le_div_iff_mul_le hq.pos).mpr (by rw [mul_comm, ← hnk]; exact (mem_Icc.mp hn).2)
+        rw [if_neg (fun h => hndvd h.2), zero_mul]
+      rw [← sum_subset himg hzero_off,
+        sum_image (fun k₁ _ k₂ _ heq => Nat.eq_of_mul_eq_mul_left hq.pos heq)]
+      refine sum_congr rfl fun k hk => ?_
+      have hkN : q * k ∈ Icc 1 N := himg (mem_image_of_mem _ hk)
+      have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
+      rw [primeHorizonExtension_coe y_sp ⟨q * k, hkN⟩, primeHorizonExtension_coe x_q ⟨k, hk⟩]
+      change (if M < q * k ∧ q ∣ q * k then A * Real.sqrt q / Real.sqrt ((q * k : ℕ) : ℝ) else 0) *
+          g (u + Real.log q - Real.log ((q * k : ℕ) : ℝ)) =
+        (if Mq < k then A / Real.sqrt k else 0) * g (u - Real.log k)
+      have hiff : (M < q * k ∧ q ∣ q * k) ↔ Mq < k :=
+        ⟨fun h => (Nat.div_lt_iff_lt_mul hq.pos).mpr (by rw [mul_comm]; exact h.1),
+         fun h => ⟨by rw [mul_comm]; exact (Nat.div_lt_iff_lt_mul hq.pos).mp h, dvd_mul_right q k⟩⟩
+      have hlog : u + Real.log q - Real.log ((q * k : ℕ) : ℝ) = u - Real.log k := by
+        rw [Nat.cast_mul, Real.log_mul hq0.ne' hk0.ne']; ring
+      rw [hlog]
+      by_cases hcond : Mq < k
+      · rw [if_pos (hiff.mpr hcond), if_pos hcond]; congr 1
+        rw [Nat.cast_mul, Real.sqrt_mul hq0.le]
+        field_simp [(Real.sqrt_pos.mpr hq0).ne', (Real.sqrt_pos.mpr hk0).ne']
+      · rw [if_neg (fun h => hcond (hiff.mp h)), if_neg hcond, zero_mul]
+    have hpr_sp : primeSum (atomicTest Nq (primeHorizonExtension x_q) g) =
+        primeSum (atomicTest N (primeHorizonExtension y_sp) g) := by
+      rw [← hshift, primeSum_comp_add_right]
+    have hMltN : M < N := Nat.div_lt_self (by omega) (by omega)
+    have hy0 : ∀ n ∈ Icc 1 M, primeHorizonExtension y_sp n = 0 := by
+      intro n hn
+      have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨(mem_Icc.mp hn).1,
+        (mem_Icc.mp hn).2.trans (Nat.div_le_self N _)⟩
+      rw [primeHorizonExtension_coe y_sp ⟨n, hnN⟩]
+      exact if_neg (fun h => Nat.not_lt.mpr (mem_Icc.mp hn).2 h.1)
+    have htop := abs_primeSum_top_le hg.continuous hgc hgs hw.le hMltN
+      (primeHorizonExtension y_sp) hy0
+    have hrow := topPrimeRow_le hc1 hLN
+    rw [sum_primeHorizonExtension_sq, hnorm_eq] at htop
+    have hprod_bd : (∫ u, g u ^ 2) * |atomicWeilForm Nq (primeHorizonExtension x_q)| ≤
+        (∫ u, g u ^ 2) * (topPrimeConstant * c * (1 + Real.log c) * ‖x_q‖ ^ 2) := by
+      rw [← abs_of_pos hG, ← abs_mul, hpr_eq, hpr_sp, abs_of_pos hG]
+      exact htop.trans (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hrow hG.le) (sq_nonneg _))
+    exact le_of_mul_le_mul_left hprod_bd hG
+  have hcent_bd : |⟪Matrix.toEuclideanLin
+      (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫| ≤
+      cq * (3 * Real.log (N : ℝ) + 7) * ‖x_q‖ ^ 2 := by
+    set α := completeWeilPoleShift φ cq
+    have hα0 : 0 ≤ α := completeWeilPoleShift_nonneg φ hcq0.le
+    have hα_le : α ≤ cq := completeWeilPoleShift_le hφ.continuous hsupp hM_int hcq0.le
+    set a := primeHorizonExtension x_q
+    have hexp_cent : ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix α Nq) x_q, x_q⟫ =
+        (α / Nq) * (∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * arithmeticPoleKernel n j) -
+        α * ((∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq) := by
+      change ⟪Matrix.toEuclideanLin
+        (horizonKernelMatrix (fun n j => (α / Nq) *
+          (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) Nq) x_q, x_q⟫ = _
+      rw [horizonKernelMatrix_inner]
+      have hterm (n j : ℕ) :
+          a n * a j * ((α / Nq) * (arithmeticPoleKernel n j - archimedeanCenterKernel n j)) =
+            (α / Nq) * (a n * a j * arithmeticPoleKernel n j) -
+            (α / Nq) * (a n * a j * archimedeanCenterKernel n j) := by ring
+      simp only [hterm, sum_sub_distrib, ← mul_sum]
+      ring
+    have hpole_abs : |∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * arithmeticPoleKernel n j| ≤
+        2 * (Nq : ℝ) * (Real.log (Nq : ℝ) + 2) * ‖x_q‖ ^ 2 := by
+      rw [arithmeticPoleKernel_quadratic_eq, abs_mul, abs_mul, abs_two]
+      have hcs1 : |SelectiveMultiscaleArithmeticPositivity.harmonicSum Nq a| ≤
+          Real.sqrt (1 + Real.log (Nq : ℝ)) * ‖x_q‖ := by
+        unfold SelectiveMultiscaleArithmeticPositivity.harmonicSum
+        have hsq : (∑ k ∈ Icc 1 Nq, |a k| * (1 / Real.sqrt k)) ^ 2 ≤
+            (∑ k ∈ Icc 1 Nq, a k ^ 2) * ∑ k ∈ Icc 1 Nq, (1 / Real.sqrt (k : ℝ)) ^ 2 := by
+          simpa only [sq_abs] using sum_mul_sq_le_sq_mul_sq (Icc 1 Nq)
+            (fun k => |a k|) (fun k => 1 / Real.sqrt (k : ℝ))
+        have h1k : (∑ k ∈ Icc 1 Nq, (1 / Real.sqrt (k : ℝ)) ^ 2) ≤ 1 + Real.log (Nq : ℝ) := by
+          have heq : (∑ k ∈ Icc 1 Nq, (1 / Real.sqrt (k : ℝ)) ^ 2) =
+              ∑ k ∈ Icc 1 Nq, 1 / (k : ℝ) := by
+            refine sum_congr rfl fun k hk => ?_
+            have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
+            rw [div_pow, one_pow, Real.sq_sqrt hk0.le]
+          rw [heq]
+          exact RHTower.sum_Icc_one_div_le hNq1
+        have habs_sum : |∑ k ∈ Icc 1 Nq, a k / Real.sqrt k| ≤
+            ∑ k ∈ Icc 1 Nq, |a k| * (1 / Real.sqrt k) := by
+          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun k _ => ?_)
+          rw [div_eq_mul_one_div, abs_mul, abs_of_nonneg (by positivity)]
+        rw [sum_primeHorizonExtension_sq] at hsq
+        have hle_rhs : (∑ k ∈ Icc 1 Nq, |a k| * (1 / Real.sqrt k)) ^ 2 ≤
+            (Real.sqrt (1 + Real.log (Nq : ℝ)) * ‖x_q‖) ^ 2 := by
+          rw [mul_pow, Real.sq_sqrt (by linarith [Real.log_natCast_nonneg Nq]), mul_comm]
+          exact hsq.trans (mul_le_mul_of_nonneg_left h1k (sq_nonneg _))
+        exact habs_sum.trans ((sq_le_sq₀ (sum_nonneg fun _ _ => by positivity)
+          (by positivity)).mp hle_rhs)
+      have hcs2 : |∑ k ∈ Icc 1 Nq, a k * Real.sqrt k| ≤ (Nq : ℝ) * ‖x_q‖ := by
+        have hsq : (∑ k ∈ Icc 1 Nq, |a k| * Real.sqrt k) ^ 2 ≤
+            (∑ k ∈ Icc 1 Nq, a k ^ 2) * ∑ k ∈ Icc 1 Nq, (Real.sqrt (k : ℝ)) ^ 2 := by
+          simpa only [sq_abs] using sum_mul_sq_le_sq_mul_sq (Icc 1 Nq)
+            (fun k => |a k|) (fun k => Real.sqrt (k : ℝ))
+        have hks : (∑ k ∈ Icc 1 Nq, (Real.sqrt (k : ℝ)) ^ 2) ≤ (Nq : ℝ) ^ 2 := by
+          calc (∑ k ∈ Icc 1 Nq, (Real.sqrt (k : ℝ)) ^ 2)
+              ≤ ∑ _k ∈ Icc 1 Nq, (Nq : ℝ) := by
+                refine sum_le_sum fun k hk => ?_
+                rw [Real.sq_sqrt (Nat.cast_nonneg k)]
+                exact_mod_cast (mem_Icc.mp hk).2
+            _ = (Nq : ℝ) ^ 2 := by
+                rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, sq]
+        have habs_sum : |∑ k ∈ Icc 1 Nq, a k * Real.sqrt k| ≤
+            ∑ k ∈ Icc 1 Nq, |a k| * Real.sqrt k := by
+          refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun k _ => ?_)
+          rw [abs_mul, abs_of_nonneg (Real.sqrt_nonneg _)]
+        rw [sum_primeHorizonExtension_sq] at hsq
+        have hle_rhs : (∑ k ∈ Icc 1 Nq, |a k| * Real.sqrt k) ^ 2 ≤ ((Nq : ℝ) * ‖x_q‖) ^ 2 := by
+          rw [mul_pow, mul_comm ((Nq : ℝ) ^ 2)]
+          exact hsq.trans (mul_le_mul_of_nonneg_left hks (sq_nonneg _))
+        exact habs_sum.trans ((sq_le_sq₀ (sum_nonneg fun _ _ => by positivity)
+          (by positivity)).mp hle_rhs)
+      have hsqrt_le : Real.sqrt (1 + Real.log (Nq : ℝ)) ≤ Real.log (Nq : ℝ) + 2 := by
+        have hl0 : 0 ≤ Real.log (Nq : ℝ) := Real.log_natCast_nonneg Nq
+        have hsq_in : 1 + Real.log (Nq : ℝ) ≤ (Real.log (Nq : ℝ) + 2) ^ 2 := by
+          nlinarith only [hl0, sq_nonneg (Real.log (Nq : ℝ))]
+        exact (Real.sqrt_le_sqrt hsq_in).trans_eq (Real.sqrt_sq (by linarith only [hl0]))
+      calc 2 * |SelectiveMultiscaleArithmeticPositivity.harmonicSum Nq a| *
+            |∑ k ∈ Icc 1 Nq, a k * Real.sqrt k|
+          ≤ 2 * (Real.sqrt (1 + Real.log (Nq : ℝ)) * ‖x_q‖) * ((Nq : ℝ) * ‖x_q‖) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left hcs1 zero_le_two) hcs2
+              (abs_nonneg _) (by positivity)
+        _ ≤ 2 * ((Real.log (Nq : ℝ) + 2) * ‖x_q‖) * ((Nq : ℝ) * ‖x_q‖) :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left
+                (mul_le_mul_of_nonneg_right hsqrt_le (norm_nonneg _)) zero_le_two)
+              (by positivity)
+        _ = 2 * (Nq : ℝ) * (Real.log (Nq : ℝ) + 2) * ‖x_q‖ ^ 2 := by ring
+    have harch_abs : |(∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq| ≤
+        (Real.log (Nq : ℝ) + 3) * ‖x_q‖ ^ 2 := by
+      calc |(∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq|
+          = |∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j| / Nq := by
+            rw [abs_div, abs_of_pos hNq0]
+        _ ≤ (∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, |a n| * |a j| * archimedeanCenterKernel n j) / Nq := by
+            refine div_le_div_of_nonneg_right ?_ hNq0.le
+            refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun n _ => ?_)
+            refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
+            rw [abs_mul, abs_mul, abs_of_nonneg (archimedeanCenterKernel_nonneg n j)]
+        _ ≤ (∑ n ∈ Icc 1 Nq, (n : ℝ) / Nq * Real.log n * |a n| ^ 2) +
+              3 * ∑ n ∈ Icc 1 Nq, |a n| ^ 2 :=
+            collar_quadratic_div_horizon_le hNq1 (fun n => |a n|)
+        _ ≤ Real.log (Nq : ℝ) * (∑ n ∈ Icc 1 Nq, a n ^ 2) + 3 * ∑ n ∈ Icc 1 Nq, a n ^ 2 := by
+            simp_rw [sq_abs]
+            rw [mul_sum]
+            refine add_le_add_right (sum_le_sum fun n hn => ?_) _
+            have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+            have hnNq : (n : ℝ) ≤ Nq := by exact_mod_cast (mem_Icc.mp hn).2
+            have hr1 : (n : ℝ) / Nq ≤ 1 := (div_le_one hNq0).mpr hnNq
+            have hln : Real.log (n : ℝ) ≤ Real.log (Nq : ℝ) := Real.log_le_log hn0 hnNq
+            have hprod : (n : ℝ) / Nq * Real.log n ≤ Real.log (Nq : ℝ) :=
+              (mul_le_mul hr1 hln (Real.log_natCast_nonneg n) zero_le_one).trans_eq (one_mul _)
+            exact mul_le_mul_of_nonneg_right hprod (sq_nonneg _)
+        _ = (Real.log (Nq : ℝ) + 3) * ‖x_q‖ ^ 2 := by
+            rw [sum_primeHorizonExtension_sq]; ring
+    have hlogNq_le : Real.log (Nq : ℝ) ≤ Real.log (N : ℝ) :=
+      Real.log_le_log hNq0 (by exact_mod_cast Nat.div_le_self N q)
+    rw [hexp_cent]
+    have htri := abs_sub
+      ((α / Nq) * ∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * arithmeticPoleKernel n j)
+      (α * ((∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq))
+    have ht1 : |(α / Nq) * ∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * arithmeticPoleKernel n j| ≤
+        cq * (2 * Real.log (N : ℝ) + 4) * ‖x_q‖ ^ 2 := by
+      rw [abs_mul, abs_div, abs_of_nonneg hα0, abs_of_pos hNq0]
+      calc (α / Nq) * |∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * arithmeticPoleKernel n j|
+          ≤ (cq / Nq) * (2 * (Nq : ℝ) * (Real.log (Nq : ℝ) + 2) * ‖x_q‖ ^ 2) :=
+            mul_le_mul (div_le_div_of_nonneg_right hα_le hNq0.le) hpole_abs
+              (abs_nonneg _) (by positivity)
+        _ = cq * (2 * Real.log (Nq : ℝ) + 4) * ‖x_q‖ ^ 2 := by
+            field_simp [hNq0.ne']; ring
+        _ ≤ cq * (2 * Real.log (N : ℝ) + 4) * ‖x_q‖ ^ 2 :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left (by linarith only [hlogNq_le]) hcq0.le)
+              (sq_nonneg _)
+    have ht2 : |α * ((∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq)| ≤
+        cq * (Real.log (N : ℝ) + 3) * ‖x_q‖ ^ 2 := by
+      rw [abs_mul, abs_of_nonneg hα0]
+      calc α * |(∑ n ∈ Icc 1 Nq, ∑ j ∈ Icc 1 Nq, a n * a j * archimedeanCenterKernel n j) / Nq|
+          ≤ cq * ((Real.log (Nq : ℝ) + 3) * ‖x_q‖ ^ 2) :=
+            mul_le_mul hα_le harch_abs (abs_nonneg _) hcq0.le
+        _ ≤ cq * ((Real.log (N : ℝ) + 3) * ‖x_q‖ ^ 2) :=
+            mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_right (by linarith only [hlogNq_le]) (sq_nonneg _))
+              hcq0.le
+        _ = cq * (Real.log (N : ℝ) + 3) * ‖x_q‖ ^ 2 := by ring
+    linarith only [htri, ht1, ht2]
+  have hcross_bd := abs_fullWeilCrossErrorMatrix_inner_le hφ hsupp hM_int hcq0 hcq1 hNq1 x_q
+  have hpole_err_bd := abs_fullWeilPoleErrorMatrix_inner_le hφ hsupp hM_int hcq0 hcq1 hNq1 x_q
+  rw [hred, hnorm_eq]
+  have hdiff : completeWeilEnergy φ cq Nq x_q -
+      (Real.log (N : ℝ) - Real.log c + completeWeilSelfFinitePart φ 1 -
+        Real.eulerMascheroniConstant) * ‖x_q‖ ^ 2 =
+      -atomicWeilForm Nq (primeHorizonExtension x_q) +
+        completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2 +
+        ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫ -
+        ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ cq Nq) x_q, x_q⟫ +
+        ⟪Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ cq Nq) x_q, x_q⟫ := by
+    linarith only [hdec, mul_eq_mul_right_iff.mpr (Or.inl hself_log)]
+  rw [hdiff]
+  have hself_mul : |completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2| ≤ 2 * ‖x_q‖ ^ 2 := by
+    rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+    exact mul_le_mul_of_nonneg_right hself_err (sq_nonneg _)
+  have a1 := abs_add_le
+    (-atomicWeilForm Nq (primeHorizonExtension x_q) +
+      completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2 +
+      ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫ -
+      ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ cq Nq) x_q, x_q⟫)
+    ⟪Matrix.toEuclideanLin (fullWeilPoleErrorMatrix φ cq Nq) x_q, x_q⟫
+  have a2 := abs_sub
+    (-atomicWeilForm Nq (primeHorizonExtension x_q) +
+      completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2 +
+      ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫)
+    ⟪Matrix.toEuclideanLin (fullWeilCrossErrorMatrix φ cq Nq) x_q, x_q⟫
+  have a3 := abs_add_le
+    (-atomicWeilForm Nq (primeHorizonExtension x_q) +
+      completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2)
+    ⟪Matrix.toEuclideanLin (fullWeilCenterMatrix (completeWeilPoleShift φ cq) Nq) x_q, x_q⟫
+  have a4 := abs_add_le (-atomicWeilForm Nq (primeHorizonExtension x_q))
+    (completeWeilSelfError φ cq Nq * ‖x_q‖ ^ 2)
+  rw [abs_neg] at a4
+  linarith only [a1, a2, a3, a4, hprime_bd, hself_mul, hcent_bd, hcross_bd, hpole_err_bd]
+
+private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R : ℝ} (hR : 0 < R)
+    (hc1 : ∀ᶠ N in atTop, 1 ≤ c N)
+    (htend : Tendsto (fun N : ℕ => c N ^ 8 / Real.log (N : ℝ)) atTop (𝓝 R)) :
+    Tendsto (fun N : ℕ =>
+      completeWeilEnergy tiltedUnitSpline (c N) N
+        (horizonCollarVector (N / linearDefectCutoff (c N))
+          (lowPacketOrthogonalPrimeQuasimode N)) /
+        Real.log (Real.log (N : ℝ))) atTop (𝓝 (1 / 8 : ℝ)) := by
+  let φ := tiltedUnitSpline
+  have hφ := contDiff_tiltedUnitSpline
+  have hsupp := tiltedUnitSpline_eq_zero
+  have hM_int := integral_tiltedUnitSpline_sq_pos
+  obtain ⟨C_q, hC_q, hglob⟩ := exists_completeWeilMatrix_global_norm_cost
+  obtain ⟨B_g, _, _, hBg0, _, _, hgard⟩ :=
+    exists_collar_atomic_garding_along_critical_curve hR hc1 htend
+  let H_cut : ℝ := 256 * Real.exp 2 + 4
+  have hH_pos : 0 < H_cut := by dsimp only [H_cut]; positivity
+  have h4H_ge1 : 1 ≤ 4 * H_cut := by dsimp only [H_cut]; linarith [Real.exp_pos 2]
+  have hlog4H_nn : 0 ≤ Real.log (4 * H_cut) := Real.log_nonneg h4H_ge1
+  let B_col : ℝ := (B_g + 1) * (1 + 2 * Real.exp 1)
+  have hBcol_pos : 0 < B_col := by dsimp only [B_col]; positivity
+  let C_top_abs : ℝ := |topPrimeConstant| + 1
+  have hCtop_pos : 0 < C_top_abs := by dsimp only [C_top_abs]; positivity
+  let C_self_abs : ℝ := |completeWeilSelfFinitePart φ 1 - Real.eulerMascheroniConstant| + 1
+  have hCself_pos : 0 < C_self_abs := by dsimp only [C_self_abs]; positivity
+  let C_err_half : ℝ := 4 * atomCrossErrorConstant φ (1 / 2) + 2 * atomPoleMomentErrorConstant φ + 4
+  have hCerr_pos : 0 < C_err_half := by
+    dsimp only [C_err_half]
+    have h1 := atomCrossErrorConstant_nonneg φ (1 / 2)
+    have h2 : 0 ≤ atomPoleMomentErrorConstant φ := by
+      unfold atomPoleMomentErrorConstant
+      positivity
+    linarith
+  have hL_tend : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hrat_lt : ∀ᶠ N in atTop, c N ^ 8 / Real.log (N : ℝ) < R + 1 :=
+    htend.eventually (gt_mem_nhds (by linarith))
+  have hL_pow4 : Tendsto (fun N : ℕ => Real.log (N : ℝ) ^ 4 / (N : ℝ)) atTop (𝓝 0) :=
+    ((Real.tendsto_pow_log_div_mul_add_atTop 1 0 4 one_ne_zero).comp
+      tendsto_natCast_atTop_atTop).congr fun N => by dsimp only [Function.comp_def]; ring
+  have hlog_rpow : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ)) /
+      Real.log (N : ℝ) ^ (1 / 256 : ℝ)) atTop (𝓝 0) := by
+    have hsub : Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 256 : ℝ)) atTop (𝓝 0) :=
+      (tendsto_log_div_rpow_atTop (1 / 256 : ℝ) (by norm_num)).congr' (by
+        filter_upwards [eventually_gt_atTop (0 : ℝ)] with x _
+        rfl)
+    exact hsub.comp hL_tend
+  refine tendsto_div_log_log_of_abs_sub_le (g := fun N => Real.log (c N))
+    (tendsto_log_c_div_log_log hR hc1 htend)
+    (C := Real.log (4 * H_cut) + 12) ?_
+  filter_upwards [hc1, hrat_lt, hglob, hgard, norm_lowPacketProjection_primeAboveLowPacket_le,
+    eventually_ge_atTop 16,
+    hL_tend.eventually_ge_atTop ((4 : ℝ) ^ (1280 : ℕ)),
+    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 256)).comp hL_tend).eventually_ge_atTop
+      (R + 1 + C_q * (R + 1) + B_col * (R + 1) + C_top_abs * (R + 1) +
+        C_self_abs + C_err_half + 4 * H_cut + Real.log (4 * H_cut) + 4096),
+    hL_pow4.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (64 * H_cut ^ 2 * (R + 1)))),
+    hlog_rpow.eventually (gt_mem_nhds zero_lt_one)]
+    with N hcN hratN hglobN hgardN hu_bd hN16 hL_big hL_256 hL4_N hlogL_rpow
+  dsimp only [Function.comp_def] at hL_big hL_256 hlogL_rpow
+  set L := Real.log (N : ℝ)
+  have hL1 : 1 ≤ L := by
+    have : (1 : ℝ) ≤ (4 : ℝ) ^ (1280 : ℕ) := one_le_pow₀ (by norm_num)
+    linarith only [this, hL_big]
+  have hL0 : 0 < L := zero_lt_one.trans_le hL1
+  have hN1 : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hc0 : 0 < c N := zero_lt_one.trans_le hcN
+  have hCR_nn : 0 ≤ C_q * (R + 1) := by positivity
+  have hBR_nn : 0 ≤ B_col * (R + 1) := by positivity
+  have hTR_nn : 0 ≤ C_top_abs * (R + 1) := by positivity
+  have h1_64_ge : L ^ (1 / 256 : ℝ) ≤ L ^ (1 / 64 : ℝ) :=
+    Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
+  have hL_rpow : R + 1 + C_q * (R + 1) + B_col * (R + 1) + C_top_abs * (R + 1) +
+      C_self_abs + C_err_half + 4 * H_cut + Real.log (4 * H_cut) + 4096 ≤ L ^ (1 / 64 : ℝ) :=
+    hL_256.trans h1_64_ge
+  have hL_3_256 : (4 : ℝ) ^ (15 : ℝ) ≤ L ^ (3 / 256 : ℝ) := by
+    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
+    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 3 / 256)
+    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
+    norm_num at hrp ⊢
+    exact hrp
+  have hL_256_big : (4 : ℝ) ^ (14 : ℝ) ≤ L ^ (7 / 32 : ℝ) :=
+    (by norm_num : (4 : ℝ) ^ (14 : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans
+      (hL_3_256.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
+  have hc8_le : c N ^ 8 ≤ (R + 1) * L := (div_lt_iff₀ hL0).mp hratN |>.le
+  have hR1_256 : R + 1 ≤ L ^ (1 / 256 : ℝ) := by
+    linarith only [hL_256, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
+  have hR1_64 : R + 1 ≤ L ^ (1 / 64 : ℝ) := hR1_256.trans h1_64_ge
+  have hc_le_9_64 : c N ≤ L ^ (9 / 64 : ℝ) := by
+    have hp8 : c N ^ 8 ≤ (L ^ (9 / 64 : ℝ)) ^ 8 := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      have hexp2 : (1 / 64 : ℝ) + 1 = 65 / 64 := by norm_num
+      have h65_72 : L ^ (65 / 64 : ℝ) ≤ L ^ (9 / 8 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
+      calc c N ^ 8 ≤ (R + 1) * L := hc8_le
+        _ ≤ L ^ (1 / 64 : ℝ) * L := mul_le_mul_of_nonneg_right hR1_64 hL0.le
+        _ = L ^ (65 / 64 : ℝ) := by rw [← Real.rpow_add_one hL0.ne', hexp2]
+        _ ≤ L ^ ((9 / 64 : ℝ) * (8 : ℕ)) := by norm_num; exact h65_72
+    exact (pow_le_pow_iff_left₀ hc0.le (Real.rpow_nonneg hL0.le _) (by omega)).mp hp8
+  have hc3_rpow : c N ^ 3 ≤ L ^ (97 / 256 : ℝ) := by
+    have hp8 : (c N ^ 3) ^ 8 ≤ (L ^ (97 / 256 : ℝ)) ^ 8 := by
+      have h83 : (c N ^ 3) ^ 8 = (c N ^ 8) ^ 3 := by ring
+      rw [h83, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      have hc8_257 : c N ^ 8 ≤ L ^ (257 / 256 : ℝ) := by
+        calc c N ^ 8 ≤ (R + 1) * L := hc8_le
+          _ ≤ L ^ (1 / 256 : ℝ) * L := mul_le_mul_of_nonneg_right hR1_256 hL0.le
+          _ = L ^ (257 / 256 : ℝ) := by rw [← Real.rpow_add_one hL0.ne']; norm_num
+      have h3 : (c N ^ 8) ^ 3 ≤ (L ^ (257 / 256 : ℝ)) ^ 3 :=
+        pow_le_pow_left₀ (by positivity) hc8_257 3
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le] at h3
+      exact h3.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num))
+    exact (pow_le_pow_iff_left₀ (by positivity) (Real.rpow_nonneg hL0.le _) (by omega)).mp hp8
+  have hc_le_L : c N ≤ L :=
+    hc_le_9_64.trans ((Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L))
+  have hlogL_256 : Real.log L ≤ L ^ (1 / 256 : ℝ) :=
+    (div_lt_iff₀ (Real.rpow_pos_of_pos hL0 _)).mp hlogL_rpow |>.le.trans_eq (one_mul _)
+  have hlogc_256 : Real.log (c N) ≤ L ^ (1 / 256 : ℝ) :=
+    (Real.log_le_log hc0 hc_le_L).trans hlogL_256
+  have hlogL_64 : Real.log L ≤ L ^ (1 / 64 : ℝ) := hlogL_256.trans h1_64_ge
+  have hlogc_64 : Real.log (c N) ≤ L ^ (1 / 64 : ℝ) := hlogc_256.trans h1_64_ge
+  set Q₁ := lowPacketCutoff N
+  set q := primeAboveLowPacket N
+  obtain ⟨hq_prime, hq_gt, hq_le⟩ := primeAboveLowPacket_spec N
+  have hq2 : 2 ≤ q := hq_prime.two_le
+  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq_prime.pos
+  have hqm1_pos : (0 : ℝ) < (q : ℝ) - 1 := by
+    have : (2 : ℝ) ≤ q := by exact_mod_cast hq2
+    linarith
+  have hQ₁_ge4 : 4 ≤ Q₁ := by
+    dsimp only [Q₁, lowPacketCutoff]
+    refine Nat.le_floor ?_
+    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
+    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 13 / 32)
+    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
+    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ ((1280 : ℝ) * (13 / 32))).trans hrp
+  have hq_ge : L ^ (13 / 32 : ℝ) ≤ q := by
+    have hlt : Q₁ < q := (le_max_right 2 Q₁).trans_lt hq_gt
+    have hfl := (Nat.lt_floor_add_one (L ^ (13 / 32 : ℝ))).le
+    have hle : (Q₁ : ℝ) + 1 ≤ q := by exact_mod_cast hlt
+    exact hfl.trans hle
+  have hq_le_2 : (q : ℝ) ≤ 2 * L ^ (13 / 32 : ℝ) := by
+    have hmax : max 2 Q₁ = Q₁ := max_eq_right (by omega)
+    rw [hmax] at hq_le
+    have hQ_le : (Q₁ : ℝ) ≤ L ^ (13 / 32 : ℝ) := Nat.floor_le (Real.rpow_nonneg hL0.le _)
+    have hq_cast : (q : ℝ) ≤ 2 * Q₁ := by exact_mod_cast hq_le
+    linarith only [hq_cast, hQ_le]
+  set Lc := linearDefectCutoff (c N)
+  obtain ⟨hLc3, h4c, h256c, hLc_up⟩ := linearDefectCutoff_bounds hcN
+  have hLc_le_Hc : (Lc : ℝ) ≤ H_cut * c N := by
+    dsimp only [H_cut]; linarith only [hLc_up, hcN]
+  have hLc_pos : (0 : ℝ) < Lc := by exact_mod_cast (show 0 < Lc by omega)
+  have hN_L4_split : 64 * H_cut ^ 2 * (R + 1) * L ^ 4 ≤ (N : ℝ) := by
+    have hlt := (div_lt_iff₀ hN0).mp hL4_N
+    have hpos : 0 < 64 * H_cut ^ 2 * (R + 1) := by positivity
+    have h1 := (lt_div_iff₀ hpos).mp (by
+      calc L ^ 4 < 1 / (64 * H_cut ^ 2 * (R + 1)) * (N : ℝ) := hlt
+        _ = (N : ℝ) / (64 * H_cut ^ 2 * (R + 1)) := by ring)
+    linarith only [h1]
+  have h2LN : 2 * Lc ≤ N := by
+    have h1 : (2 * (Lc : ℝ)) ≤ 2 * H_cut * L := by
+      have hm := mul_le_mul_of_nonneg_left hc_le_L hH_pos.le
+      linarith only [hLc_le_Hc, hm]
+    have h2 : 2 * H_cut * L ≤ 64 * H_cut ^ 2 * (R + 1) * L ^ 4 := by
+      have hL14 : L ≤ L ^ 4 := le_self_pow₀ hL1 (by omega)
+      have hcoef : 2 * H_cut ≤ 64 * H_cut ^ 2 * (R + 1) := by
+        have hH1 : 1 ≤ H_cut := by dsimp only [H_cut]; linarith [Real.exp_pos 2]
+        have hHH : H_cut ≤ H_cut ^ 2 := le_self_pow₀ hH1 (by omega)
+        have hm := mul_le_mul (show (2 : ℝ) ≤ 64 * (R + 1) by linarith) hHH zero_le_two (by positivity)
+        linarith only [hm]
+      exact (mul_le_mul hcoef hL14 hL0.le (by positivity)).trans_eq (by ring)
+    exact_mod_cast (show ((2 * Lc : ℕ) : ℝ) ≤ N by push_cast; exact (h1.trans h2).trans hN_L4_split)
+  have hcN_le_N : c N ≤ N := by
+    have hLNR : (Lc : ℝ) ≤ N := by exact_mod_cast (show Lc ≤ N by omega)
+    linarith only [h4c, hLNR, hc0]
+  set M := N / Lc
+  have hMN : M ≤ N := Nat.div_le_self N Lc
+  set Nq := N / q
+  set Mq := M / q
+  have hqLc_le_N : 4 * q * Lc ≤ N := by
+    have hq_2L : (q : ℝ) ≤ 2 * L :=
+      hq_le_2.trans (mul_le_mul_of_nonneg_left
+        ((Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)) zero_le_two)
+    have h1 : 4 * (q : ℝ) * Lc ≤ 8 * H_cut * L ^ 2 := by
+      calc 4 * (q : ℝ) * Lc ≤ 4 * (2 * L) * (H_cut * L) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left hq_2L (by norm_num))
+              (hLc_le_Hc.trans (mul_le_mul_of_nonneg_left hc_le_L hH_pos.le))
+              hLc_pos.le (by positivity)
+        _ = 8 * H_cut * L ^ 2 := by ring
+    have h2 : 8 * H_cut * L ^ 2 ≤ 64 * H_cut ^ 2 * (R + 1) * L ^ 4 := by
+      have hL24 : L ^ 2 ≤ L ^ 4 := pow_le_pow_right₀ hL1 (by omega)
+      have hH1 : 1 ≤ H_cut := by dsimp only [H_cut]; linarith [Real.exp_pos 2]
+      have hHH : H_cut ≤ H_cut ^ 2 := le_self_pow₀ hH1 (by omega)
+      have hcoef : 8 * H_cut ≤ 64 * H_cut ^ 2 * (R + 1) := by
+        have hm := mul_le_mul (show (8 : ℝ) ≤ 64 * (R + 1) by linarith) hHH (by norm_num) (by positivity)
+        linarith only [hm]
+      exact (mul_le_mul hcoef hL24 (sq_nonneg _) (by positivity)).trans_eq (by ring)
+    exact_mod_cast (show ((4 * q * Lc : ℕ) : ℝ) ≤ N by push_cast; exact (h1.trans h2).trans hN_L4_split)
+  have hMq4 : 4 ≤ Mq := by
+    dsimp only [Mq, M]
+    rw [Nat.div_div_eq_div_mul]
+    exact (Nat.le_div_iff_mul_le (Nat.mul_pos (by omega) hq_prime.pos)).mpr
+      (by linarith [Nat.mul_comm Lc q])
+  have hMq1 : 1 ≤ Mq := by omega
+  have hMq_lt_Nq : Mq < Nq := by
+    have h3M_le_N : 3 * M ≤ N := by
+      have hMLc : M * Lc ≤ N := Nat.div_mul_le_self N Lc
+      have h3 : M * 3 ≤ M * Lc := Nat.mul_le_mul_left M hLc3
+      linarith
+    have hqMq_le_M : q * Mq ≤ M := Nat.mul_div_le M q
+    have hN_lt : N < q * (Nq + 1) := by
+      simpa only [Nq, Nat.mul_comm] using Nat.lt_mul_div_succ N hq_prime.pos
+    have hlt_mul : q * (Mq + 1) ≤ q * Nq := by
+      have hlt : q * (Mq + 1) < q * (Nq + 1) := by
+        calc q * (Mq + 1) = q * Mq + q := by ring
+          _ ≤ 2 * (q * Mq) := by have := Nat.mul_le_mul_left q hMq1; omega
+          _ ≤ 2 * M := by omega
+          _ < 3 * M := by omega
+          _ ≤ N := h3M_le_N
+          _ < q * (Nq + 1) := hN_lt
+      have h1 : Mq + 1 < Nq + 1 := Nat.lt_of_mul_lt_mul_left hlt
+      exact Nat.mul_le_mul_left q (by omega)
+    exact Nat.lt_of_succ_le (Nat.le_of_mul_le_mul_left hlt_mul hq_prime.pos)
+  have hNq1 : 1 ≤ Nq := by omega
+  set cq := c N * (Nq : ℝ) / N
+  have hcq_le_cq_div : cq ≤ c N / q := by
+    dsimp only [cq]
+    have hNq_le : (Nq : ℝ) ≤ (N : ℝ) / q :=
+      (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self N q)
+    calc c N * (Nq : ℝ) / N ≤ c N * ((N : ℝ) / q) / N :=
+          div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hNq_le hc0.le) hN0.le
+      _ = c N / q := by field_simp [hN0.ne', hq0.ne']
+  have hcq_rpow : cq ≤ 1 / L ^ (17 / 64 : ℝ) := by
+    calc cq ≤ c N / q := hcq_le_cq_div
+      _ ≤ L ^ (9 / 64 : ℝ) / L ^ (13 / 32 : ℝ) :=
+          div_le_div₀ (Real.rpow_nonneg hL0.le _) hc_le_9_64 (Real.rpow_pos_of_pos hL0 _) hq_ge
+      _ = 1 / L ^ (17 / 64 : ℝ) := by
+          rw [← Real.rpow_sub hL0]
+          have hexp : (9 / 64 - 13 / 32 : ℝ) = -(17 / 64) := by norm_num
+          rw [hexp, Real.rpow_neg hL0.le, one_div]
+  have hcq_quarter : cq ≤ 1 / 4 := by
+    refine hcq_rpow.trans ?_
+    rw [div_le_div_iff₀ (Real.rpow_pos_of_pos hL0 _) (by norm_num), one_mul, one_mul]
+    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
+    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 17 / 64)
+    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
+    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ ((1280 : ℝ) * (17 / 64))).trans hrp
+  -- Decompose `y_z = y_sp - y_rem` on `Ioc M N`.
+  set v := normalizedRamanujanHorizonVector q N
+  set u := (conductorSubspace Q₁ N).starProjection v
+  set z := lowPacketOrthogonalPrimeQuasimode N
+  set y_z := horizonCollarVector M z
+  set A_sp : ℝ := Real.sqrt ((q : ℝ) / (((q : ℝ) - 1) * L))
+  set B_bg : ℝ := 1 / Real.sqrt (((q : ℝ) - 1) * L)
+  set y_sp := horizonProfileVector
+    (fun n => if M < n ∧ q ∣ n then A_sp * Real.sqrt q / Real.sqrt n else 0) N
+  set y_bg := horizonProfileVector (fun n => if M < n then B_bg / Real.sqrt n else 0) N
+  set y_u := horizonCollarVector M u
+  set y_rem := y_bg + y_u
+  have hy_decomp : y_z = y_sp - y_rem := by
+    have hqt : (q.totient : ℝ) = (q : ℝ) - 1 := by
+      rw [Nat.totient_prime hq_prime, Nat.cast_sub hq_prime.one_lt.le, Nat.cast_one]
+    ext ⟨n, hn⟩
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+    change (if M < n then primeHorizonExtension (v - u) n else 0) =
+      (if M < n ∧ q ∣ n then A_sp * Real.sqrt q / Real.sqrt n else 0) -
+        ((if M < n then B_bg / Real.sqrt n else 0) +
+          (if M < n then primeHorizonExtension u n else 0))
+    rw [primeHorizonExtension_coe (v - u) ⟨n, hn⟩, primeHorizonExtension_coe u ⟨n, hn⟩, PiLp.sub_apply]
+    by_cases hMn : M < n
+    · rw [if_pos hMn, if_pos hMn, if_pos hMn]
+      change v ⟨n, hn⟩ - u ⟨n, hn⟩ = _
+      change normalizedRamanujanMode q n / Real.sqrt (Real.log N * n) - u ⟨n, hn⟩ = _
+      rw [normalizedRamanujanMode_eq_coefficient hq_prime.pos,
+        ramanujanLagCoefficient_of_prime hq_prime n, hqt,
+        Real.sqrt_mul hL0.le]
+      by_cases hdvd : q ∣ n
+      · rw [if_pos ⟨hMn, hdvd⟩, if_pos hdvd]
+        dsimp only [A_sp, B_bg]
+        rw [Real.sqrt_div hq0.le, Real.sqrt_mul hqm1_pos.le,
+          Real.mul_self_sqrt hq0.le, Real.mul_self_sqrt hqm1_pos.le]
+        field_simp [(Real.sqrt_pos.mpr hqm1_pos).ne', (Real.sqrt_pos.mpr hL0).ne',
+          (Real.sqrt_pos.mpr hn0).ne']
+        ring
+      · rw [if_neg (fun h => hdvd h.2), if_neg hdvd]
+        dsimp only [B_bg]
+        rw [Real.sqrt_mul hqm1_pos.le]
+        field_simp [(Real.sqrt_pos.mpr hqm1_pos).ne', (Real.sqrt_pos.mpr hL0).ne',
+          (Real.sqrt_pos.mpr hn0).ne']
+        ring
+    · rw [if_neg hMn, if_neg (fun h => hMn h.1), if_neg hMn, if_neg hMn]; ring
+  -- Harmonic sum bounds for `‖y_sp‖ ^ 2`.
+  have hharm_lo : Real.log (c N) ≤ ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ) := by
+    have hlo := RHTower.Sieve.log_sub_le_sum_Icc_one_div (m := Mq + 1) (n := Nq)
+      (by omega) (by omega)
+    refine le_trans ?_ hlo
+    have hNq_succ : (N : ℝ) / q ≤ (Nq : ℝ) + 1 := by
+      rw [div_le_iff₀ hq0]
+      have hlt : N < q * (Nq + 1) := by
+        simpa only [Nq, Nat.mul_comm] using Nat.lt_mul_div_succ N hq_prime.pos
+      have : (N : ℝ) ≤ ((q * (Nq + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
+      push_cast at this
+      linarith only [this]
+    have hMq_succ : (((Mq + 1 : ℕ) : ℝ)) * c N ≤ (N : ℝ) / q := by
+      have hMq_le : (Mq : ℝ) ≤ (M : ℝ) / q :=
+        (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self M q)
+      have hM_le : (M : ℝ) ≤ (N : ℝ) / (2 * c N) := by
+        have hMLc : (M : ℝ) * Lc ≤ N := by exact_mod_cast Nat.div_mul_le_self N Lc
+        have h2c_Lc : 2 * c N ≤ Lc := by
+          have := Real.one_le_exp (zero_le_two (α := ℝ))
+          linarith only [h256c, this, hc0]
+        rw [le_div_iff₀ (by positivity)]
+        exact (mul_le_mul_of_nonneg_left h2c_Lc (Nat.cast_nonneg M)).trans hMLc
+      have h1_le : 1 ≤ (N : ℝ) / (2 * c N * q) := by
+        rw [one_le_div (by positivity)]
+        have h2cq : 2 * c N * q ≤ 4 * (q : ℝ) * Lc := by
+          have := Real.one_le_exp (zero_le_two (α := ℝ))
+          have h2c_Lc : 2 * c N ≤ Lc := by linarith only [h256c, this, hc0]
+          nlinarith only [h2c_Lc, hq0, hLc_pos]
+        exact h2cq.trans (by exact_mod_cast hqLc_le_N)
+      push_cast
+      calc ((Mq : ℝ) + 1) * c N ≤ ((M : ℝ) / q + 1) * c N :=
+            mul_le_mul_of_nonneg_right (by linarith only [hMq_le]) hc0.le
+        _ ≤ ((N : ℝ) / (2 * c N) / q + (N : ℝ) / (2 * c N * q)) * c N :=
+            mul_le_mul_of_nonneg_right
+              (add_le_add (div_le_div_of_nonneg_right hM_le hq0.le) h1_le) hc0.le
+        _ = (N : ℝ) / q := by field_simp [hc0.ne', hq0.ne']; ring
+    have hlog_le := Real.log_le_log (by positivity) (hMq_succ.trans hNq_succ)
+    rw [Real.log_mul (by positivity) hc0.ne'] at hlog_le
+    linarith only [hlog_le]
+  have hharm_hi : ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ) ≤
+      Real.log (c N) + Real.log (4 * H_cut) := by
+    have hhi := RHTower.Sieve.sum_Icc_one_div_le_log_sub (m := Mq + 1) (n := Nq)
+      (by omega) (by omega)
+    have hsub1 : (((Mq + 1 : ℕ) : ℝ) - 1) = (Mq : ℝ) := by push_cast; ring
+    rw [hsub1] at hhi
+    refine hhi.trans ?_
+    have hNq_le : (Nq : ℝ) ≤ 4 * H_cut * c N * Mq := by
+      have hNq_div : (Nq : ℝ) ≤ (N : ℝ) / q :=
+        (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self N q)
+      have hN_le_2M : (N : ℝ) ≤ 2 * H_cut * c N * M := by
+        have hlt : N < Lc * (M + 1) := by
+          simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc)
+        have hM1_2M : ((M + 1 : ℕ) : ℝ) ≤ 2 * (M : ℝ) := by
+          have hM_ge1 : 1 ≤ M := le_trans hMq1 (Nat.div_le_self M q)
+          push_cast; exact_mod_cast (show M + 1 ≤ 2 * M by omega)
+        have h1 : (N : ℝ) ≤ (Lc : ℝ) * (2 * M) := by
+          have hc : (N : ℝ) ≤ ((Lc * (M + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
+          rw [Nat.cast_mul] at hc
+          exact hc.trans (mul_le_mul_of_nonneg_left hM1_2M hLc_pos.le)
+        calc (N : ℝ) ≤ (Lc : ℝ) * (2 * M) := h1
+          _ ≤ (H_cut * c N) * (2 * M) :=
+              mul_le_mul_of_nonneg_right hLc_le_Hc (by positivity)
+          _ = 2 * H_cut * c N * M := by ring
+      have hM_le_2qMq : (M : ℝ) ≤ 2 * q * Mq := by
+        have hlt : M < q * (Mq + 1) := by
+          simpa only [Mq, Nat.mul_comm] using Nat.lt_mul_div_succ M hq_prime.pos
+        have hMq1_2 : ((Mq + 1 : ℕ) : ℝ) ≤ 2 * (Mq : ℝ) := by
+          push_cast; exact_mod_cast (show Mq + 1 ≤ 2 * Mq by omega)
+        have hc : (M : ℝ) ≤ ((q * (Mq + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
+        rw [Nat.cast_mul] at hc
+        exact hc.trans ((mul_le_mul_of_nonneg_left hMq1_2 hq0.le).trans_eq (by ring))
+      calc (Nq : ℝ) ≤ (N : ℝ) / q := hNq_div
+        _ ≤ (2 * H_cut * c N * M) / q := div_le_div_of_nonneg_right hN_le_2M hq0.le
+        _ ≤ (2 * H_cut * c N * (2 * q * Mq)) / q :=
+            div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hM_le_2qMq (by positivity)) hq0.le
+        _ = 4 * H_cut * c N * Mq := by field_simp [hq0.ne']; ring
+    have hMq0 : (0 : ℝ) < Mq := by exact_mod_cast hMq1
+    have hlog := Real.log_le_log hNq0 hNq_le
+    rw [Real.log_mul (by positivity) hMq0.ne', Real.log_mul (by positivity) hc0.ne'] at hlog
+    linarith only [hlog]
+  have hysp_sq_eq : ‖y_sp‖ ^ 2 =
+      ((q : ℝ) / (((q : ℝ) - 1) * L)) * ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ) := by
+    set x_q := horizonProfileVector (fun k => if Mq < k then A_sp / Real.sqrt k else 0) Nq
+    have hnorm_eq : ‖y_sp‖ ^ 2 = ‖x_q‖ ^ 2 := by
+      rw [← sum_primeHorizonExtension_sq y_sp, ← sum_primeHorizonExtension_sq x_q]
+      have himg : (Icc 1 Nq).image (q * ·) ⊆ Icc 1 N := by
+        intro n hn
+        obtain ⟨k, hk, rfl⟩ := mem_image.mp hn
+        obtain ⟨hk1, hkN⟩ := mem_Icc.mp hk
+        exact mem_Icc.mpr ⟨Nat.mul_pos hq_prime.pos hk1,
+          by rw [mul_comm]; exact (Nat.le_div_iff_mul_le hq_prime.pos).mp hkN⟩
+      have hzero_off : ∀ n ∈ Icc 1 N, n ∉ (Icc 1 Nq).image (q * ·) →
+          primeHorizonExtension y_sp n ^ 2 = 0 := by
+        intro n hn hnot
+        rw [primeHorizonExtension_coe y_sp ⟨n, hn⟩]
+        change (if M < n ∧ q ∣ n then A_sp * Real.sqrt q / Real.sqrt n else 0) ^ 2 = 0
+        have hndvd : ¬(q ∣ n) := by
+          intro ⟨k, hnk⟩
+          apply hnot
+          refine mem_image.mpr ⟨k, mem_Icc.mpr ⟨?_, ?_⟩, hnk.symm⟩
+          · by_contra hk0
+            have hk0' : k = 0 := by omega
+            rw [hk0', mul_zero] at hnk
+            have := (mem_Icc.mp hn).1
+            omega
+          · exact (Nat.le_div_iff_mul_le hq_prime.pos).mpr
+              (by rw [mul_comm, ← hnk]; exact (mem_Icc.mp hn).2)
+        rw [if_neg (fun h => hndvd h.2), zero_pow (by norm_num)]
+      rw [← sum_subset himg hzero_off,
+        sum_image (fun k₁ _ k₂ _ heq => Nat.eq_of_mul_eq_mul_left hq_prime.pos heq)]
+      refine sum_congr rfl fun k hk => ?_
+      have hkN : q * k ∈ Icc 1 N := himg (mem_image_of_mem _ hk)
+      have hk0 : (0 : ℝ) < k := by exact_mod_cast (mem_Icc.mp hk).1
+      rw [primeHorizonExtension_coe y_sp ⟨q * k, hkN⟩, primeHorizonExtension_coe x_q ⟨k, hk⟩]
+      change (if M < q * k ∧ q ∣ q * k then A_sp * Real.sqrt q / Real.sqrt ((q * k : ℕ) : ℝ) else 0) ^ 2 =
+        (if Mq < k then A_sp / Real.sqrt k else 0) ^ 2
+      have hiff : (M < q * k ∧ q ∣ q * k) ↔ Mq < k :=
+        ⟨fun h => (Nat.div_lt_iff_lt_mul hq_prime.pos).mpr (by rw [mul_comm]; exact h.1),
+         fun h => ⟨by rw [mul_comm]; exact (Nat.div_lt_iff_lt_mul hq_prime.pos).mp h, dvd_mul_right q k⟩⟩
+      by_cases hcond : Mq < k
+      · rw [if_pos (hiff.mpr hcond), if_pos hcond, Nat.cast_mul, Real.sqrt_mul hq0.le]
+        field_simp [(Real.sqrt_pos.mpr hq0).ne', (Real.sqrt_pos.mpr hk0).ne']
+      · rw [if_neg (fun h => hcond (hiff.mp h)), if_neg hcond]
+    rw [hnorm_eq, ← sum_primeHorizonExtension_sq x_q]
+    have hsplit : Icc 1 Nq = Icc 1 Mq ∪ Icc (Mq + 1) Nq := by
+      ext k; simp only [mem_union, mem_Icc]; omega
+    rw [hsplit, sum_union (disjoint_left.mpr fun k h1 h2 => by
+      simp only [mem_Icc] at h1 h2; omega)]
+    have hz1 : ∑ k ∈ Icc 1 Mq, primeHorizonExtension x_q k ^ 2 = 0 := by
+      refine sum_eq_zero fun k hk => ?_
+      have hkN : k ∈ Icc 1 Nq := mem_Icc.mpr ⟨(mem_Icc.mp hk).1, (mem_Icc.mp hk).2.trans hMq_lt_Nq.le⟩
+      rw [primeHorizonExtension_coe x_q ⟨k, hkN⟩]
+      change (if Mq < k then A_sp / Real.sqrt k else 0) ^ 2 = 0
+      rw [if_neg (Nat.not_lt.mpr (mem_Icc.mp hk).2), zero_pow (by norm_num)]
+    rw [hz1, zero_add, mul_sum]
+    refine sum_congr rfl fun k hk => ?_
+    have hkN : k ∈ Icc 1 Nq := mem_Icc.mpr ⟨by omega, (mem_Icc.mp hk).2⟩
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast (show 1 ≤ k by omega)
+    rw [primeHorizonExtension_coe x_q ⟨k, hkN⟩]
+    change (if Mq < k then A_sp / Real.sqrt k else 0) ^ 2 = _
+    rw [if_pos (show Mq < k by omega), div_pow, Real.sq_sqrt hk0.le]
+    dsimp only [A_sp]
+    rw [Real.sq_sqrt (by positivity), div_eq_mul_one_div (_ / _)]
+  have hysp_sq_le : ‖y_sp‖ ^ 2 ≤ 4 * L ^ (1 / 64 : ℝ) / L := by
+    have hqqm1 : (q : ℝ) / ((q : ℝ) - 1) ≤ 2 := by
+      rw [div_le_iff₀ hqm1_pos]
+      have : (2 : ℝ) ≤ q := by exact_mod_cast hq2
+      linarith
+    have hS_le : ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ) ≤ 2 * L ^ (1 / 64 : ℝ) := by
+      have hlog4H_64 : Real.log (4 * H_cut) ≤ L ^ (1 / 64 : ℝ) := by
+        linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos]
+      linarith only [hharm_hi, hlogc_64, hlog4H_64]
+    rw [hysp_sq_eq, show (q : ℝ) / (((q : ℝ) - 1) * L) = ((q : ℝ) / ((q : ℝ) - 1)) / L by ring]
+    calc ((q : ℝ) / ((q : ℝ) - 1)) / L * ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ)
+        ≤ (2 / L) * (2 * L ^ (1 / 64 : ℝ)) :=
+          mul_le_mul (div_le_div_of_nonneg_right hqqm1 hL0.le) hS_le
+            (sum_nonneg fun _ _ => by positivity) (by positivity)
+      _ = 4 * L ^ (1 / 64 : ℝ) / L := by ring
+  -- Evaluate `completeWeilEnergy φ (c N) N y_sp` up to `Real.log (4 * H_cut) + 6`.
+  have hEsp_approx : |completeWeilEnergy φ (c N) N y_sp - Real.log (c N)| ≤
+      Real.log (4 * H_cut) + 6 := by
+    have hsp := completeWeilEnergy_collar_spike_approx hcN hq_prime h2LN hNq1 hMq1 hMq_lt_Nq
+      hcq_quarter A_sp
+    dsimp only at hsp
+    have hmain_sub : |(L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+        Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 - Real.log (c N)| ≤
+        Real.log (4 * H_cut) + 3 := by
+      set S_h := ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ)
+      have hS_nn : 0 ≤ S_h := sum_nonneg fun _ _ => by positivity
+      have hL_ysp : L * ‖y_sp‖ ^ 2 = S_h + S_h / ((q : ℝ) - 1) := by
+        rw [hysp_sq_eq]
+        field_simp [hqm1_pos.ne', hL0.ne']
+        ring
+      have hSh_sub : |S_h - Real.log (c N)| ≤ Real.log (4 * H_cut) := by
+        rw [abs_le]
+        exact ⟨by linarith only [hharm_lo, hlog4H_nn], by linarith only [hharm_hi]⟩
+      have hSh_qm1 : |S_h / ((q : ℝ) - 1)| ≤ 1 := by
+        rw [abs_of_nonneg (div_nonneg hS_nn hqm1_pos.le), div_le_one hqm1_pos]
+        have hS_le : S_h ≤ 2 * L ^ (1 / 64 : ℝ) := by
+          have hlog4H_64 : Real.log (4 * H_cut) ≤ L ^ (1 / 64 : ℝ) := by
+            linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos]
+          linarith only [hharm_hi, hlogc_64, hlog4H_64]
+        have hqm1_ge : (q : ℝ) / 2 ≤ (q : ℝ) - 1 := by
+          have : (2 : ℝ) ≤ q := by exact_mod_cast hq2
+          linarith
+        have h2_le_q2 : 2 * L ^ (1 / 64 : ℝ) ≤ (q : ℝ) / 2 := by
+          have h4_le : 4 * L ^ (1 / 64 : ℝ) ≤ L ^ (13 / 32 : ℝ) := by
+            calc 4 * L ^ (1 / 64 : ℝ)
+                ≤ L ^ (1 / 64 : ℝ) * L ^ (1 / 64 : ℝ) :=
+                  mul_le_mul_of_nonneg_right
+                    (by linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos,
+                      hCerr_pos, hH_pos, hlog4H_nn])
+                    (Real.rpow_nonneg hL0.le _)
+              _ = L ^ (2 / 64 : ℝ) := by rw [← Real.rpow_add hL0]; norm_num
+              _ ≤ L ^ (13 / 32 : ℝ) := Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
+          linarith only [h4_le, hq_ge]
+        linarith only [hS_le, h2_le_q2, hqm1_ge]
+      have hrem_ysp : |(-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+          Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2| ≤ 2 := by
+        rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+        have hc_abs : |-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+            Real.eulerMascheroniConstant| ≤ 2 * L ^ (1 / 64 : ℝ) := by
+          have htri : |-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+              Real.eulerMascheroniConstant| ≤
+              |Real.log (c N)| + |completeWeilSelfFinitePart φ 1 - Real.eulerMascheroniConstant| := by
+            rw [show -Real.log (c N) + completeWeilSelfFinitePart φ 1 - Real.eulerMascheroniConstant =
+              -Real.log (c N) + (completeWeilSelfFinitePart φ 1 - Real.eulerMascheroniConstant) by ring]
+            exact (abs_add_le _ _).trans_eq (by rw [abs_neg])
+          rw [abs_of_nonneg (Real.log_nonneg hcN)] at htri
+          have hCs_64 : C_self_abs ≤ L ^ (1 / 64 : ℝ) := by
+            linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCerr_pos, hH_pos, hlog4H_nn]
+          dsimp only [C_self_abs] at hCs_64
+          linarith only [htri, hlogc_64, hCs_64]
+        calc |-Real.log (c N) + completeWeilSelfFinitePart φ 1 - Real.eulerMascheroniConstant| * ‖y_sp‖ ^ 2
+            ≤ (2 * L ^ (1 / 64 : ℝ)) * (4 * L ^ (1 / 64 : ℝ) / L) :=
+              mul_le_mul hc_abs hysp_sq_le (sq_nonneg _) (by positivity)
+          _ = 8 / L ^ (31 / 32 : ℝ) := by
+              rw [show (2 * L ^ (1 / 64 : ℝ)) * (4 * L ^ (1 / 64 : ℝ) / L) =
+                8 * (L ^ (1 / 64 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
+                ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
+              have hexp : (1 / 64 + 1 / 64 - 1 : ℝ) = -(31 / 32) := by norm_num
+              rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+          _ ≤ 2 := by
+              have h1 : 8 / L ^ (31 / 32 : ℝ) ≤ 1 := by
+                rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
+                exact (by norm_num : (8 : ℝ) ≤ (4 : ℝ) ^ (14 : ℝ)).trans
+                  (hL_256_big.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
+              linarith
+      have hrew : (L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+          Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 - Real.log (c N) =
+          (S_h - Real.log (c N)) + S_h / ((q : ℝ) - 1) +
+            (-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+              Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 := by
+        calc (L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+              Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 - Real.log (c N)
+            = L * ‖y_sp‖ ^ 2 + (-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+              Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 - Real.log (c N) := by ring
+          _ = _ := by rw [hL_ysp]; ring
+      rw [hrew]
+      have b1 := abs_add_le ((S_h - Real.log (c N)) + S_h / ((q : ℝ) - 1))
+        ((-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+          Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2)
+      have b2 := abs_add_le (S_h - Real.log (c N)) (S_h / ((q : ℝ) - 1))
+      linarith only [b1, b2, hSh_sub, hSh_qm1, hrem_ysp]
+    have herr_sp : (topPrimeConstant * c N * (1 + Real.log (c N)) +
+        cq * (3 * L + 7) +
+        4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+        2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2) * ‖y_sp‖ ^ 2 ≤ 3 := by
+      have ht_top : topPrimeConstant * c N * (1 + Real.log (c N)) ≤ 2 * L ^ (11 / 64 : ℝ) := by
+        have hCt : topPrimeConstant ≤ C_top_abs := by
+          dsimp only [C_top_abs]; linarith [le_abs_self topPrimeConstant]
+        have hCt_64 : C_top_abs ≤ L ^ (1 / 64 : ℝ) := by
+          linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
+        have h1lc : 1 + Real.log (c N) ≤ 2 * L ^ (1 / 64 : ℝ) := by
+          have h1 : 1 ≤ L ^ (1 / 64 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
+          linarith only [h1, hlogc_64]
+        calc topPrimeConstant * c N * (1 + Real.log (c N))
+            ≤ L ^ (1 / 64 : ℝ) * L ^ (9 / 64 : ℝ) * (2 * L ^ (1 / 64 : ℝ)) := by
+              have h1 := mul_le_mul (hCt.trans hCt_64) hc_le_9_64 hc0.le (Real.rpow_nonneg hL0.le _)
+              by_cases htp : 0 ≤ topPrimeConstant
+              · exact mul_le_mul h1 h1lc (by linarith [Real.log_nonneg hcN]) (by positivity)
+              · have hneg : topPrimeConstant * c N * (1 + Real.log (c N)) ≤ 0 :=
+                  mul_nonpos_of_nonpos_of_nonneg
+                    (mul_nonpos_of_nonpos_of_nonneg (le_of_not_ge htp) hc0.le)
+                    (by linarith [Real.log_nonneg hcN])
+                exact hneg.trans (by positivity)
+          _ = 2 * L ^ (11 / 64 : ℝ) := by
+              rw [show L ^ (1 / 64 : ℝ) * L ^ (9 / 64 : ℝ) * (2 * L ^ (1 / 64 : ℝ)) =
+                2 * (L ^ (1 / 64 : ℝ) * L ^ (9 / 64 : ℝ) * L ^ (1 / 64 : ℝ)) by ring,
+                ← Real.rpow_add hL0, ← Real.rpow_add hL0]
+              norm_num
+      have ht_cent : cq * (3 * L + 7) ≤ 10 * L ^ (47 / 64 : ℝ) := by
+        have h3L7 : 3 * L + 7 ≤ 10 * L := by linarith only [hL1]
+        calc cq * (3 * L + 7)
+            ≤ (1 / L ^ (17 / 64 : ℝ)) * (10 * L) :=
+              mul_le_mul hcq_rpow h3L7 (by positivity) (by positivity)
+          _ = 10 * L ^ (47 / 64 : ℝ) := by
+              rw [show (1 / L ^ (17 / 64 : ℝ)) * (10 * L) =
+                10 * (L ^ (1 : ℝ) / L ^ (17 / 64 : ℝ)) by rw [Real.rpow_one]; ring,
+                ← Real.rpow_sub hL0]
+              norm_num
+      have ht_err : 4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+          2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2 ≤ L ^ (1 / 64 : ℝ) := by
+        have hcq0 : 0 < cq := div_pos (mul_pos hc0 (by exact_mod_cast hNq1)) hN0
+        have hcross_mono : atomCrossErrorConstant φ cq ≤ atomCrossErrorConstant φ (1 / 2) := by
+          unfold atomCrossErrorConstant
+          refine div_le_div_of_nonneg_left (by positivity) (by positivity)
+            (mul_le_mul_of_nonneg_left ?_ hM_int.le)
+          exact pow_le_pow_left₀ (by norm_num) (by linarith only [hcq_quarter]) 2
+        have hcq2_1 : cq ^ 2 ≤ 1 := by nlinarith only [hcq0, hcq_quarter]
+        have hpm_nn : 0 ≤ atomPoleMomentErrorConstant φ := by
+          unfold atomPoleMomentErrorConstant; positivity
+        have hsum_le : 4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+            2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2 ≤ C_err_half := by
+          dsimp only [C_err_half]
+          have k1 : 4 * atomCrossErrorConstant φ cq * cq ^ 2 ≤
+              4 * atomCrossErrorConstant φ (1 / 2) := by
+            calc 4 * atomCrossErrorConstant φ cq * cq ^ 2
+                ≤ 4 * atomCrossErrorConstant φ (1 / 2) * 1 :=
+                  mul_le_mul (mul_le_mul_of_nonneg_left hcross_mono (by norm_num)) hcq2_1
+                    (sq_nonneg _) (mul_nonneg (by norm_num) (atomCrossErrorConstant_nonneg _ _))
+              _ = _ := mul_one _
+          have k2 : 2 * atomPoleMomentErrorConstant φ * cq ^ 2 ≤
+              2 * atomPoleMomentErrorConstant φ :=
+            (mul_le_mul_of_nonneg_left hcq2_1 (by positivity)).trans_eq (mul_one _)
+          linarith only [k1, k2]
+        exact hsum_le.trans (by
+          linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hH_pos, hlog4H_nn])
+      have h11_47 : L ^ (11 / 64 : ℝ) ≤ L ^ (47 / 64 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
+      have h1_47 : L ^ (1 / 64 : ℝ) ≤ L ^ (47 / 64 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
+      have hcoef_tot : topPrimeConstant * c N * (1 + Real.log (c N)) +
+          cq * (3 * L + 7) +
+          4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+          2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2 ≤ 13 * L ^ (47 / 64 : ℝ) := by
+        linarith only [ht_top, ht_cent, ht_err, h11_47, h1_47]
+      calc (topPrimeConstant * c N * (1 + Real.log (c N)) +
+            cq * (3 * L + 7) +
+            4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+            2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2) * ‖y_sp‖ ^ 2
+          ≤ (13 * L ^ (47 / 64 : ℝ)) * (4 * L ^ (1 / 64 : ℝ) / L) := by
+            by_cases hpos_c : 0 ≤ topPrimeConstant * c N * (1 + Real.log (c N)) +
+                cq * (3 * L + 7) + 4 * atomCrossErrorConstant φ cq * cq ^ 2 +
+                2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2
+            · exact mul_le_mul hcoef_tot hysp_sq_le (sq_nonneg _) (by positivity)
+            · exact (mul_nonpos_of_nonpos_of_nonneg (le_of_not_ge hpos_c) (sq_nonneg _)).trans
+                (by positivity)
+        _ = 52 / L ^ (1 / 4 : ℝ) := by
+            rw [show (13 * L ^ (47 / 64 : ℝ)) * (4 * L ^ (1 / 64 : ℝ) / L) =
+              52 * (L ^ (47 / 64 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
+              ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
+            have hexp : (47 / 64 + 1 / 64 - 1 : ℝ) = -(1 / 4) := by norm_num
+            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+        _ ≤ 3 := by
+            have h1 : 52 / L ^ (1 / 4 : ℝ) ≤ 1 := by
+              rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
+              exact (by norm_num : (52 : ℝ) ≤ (4 : ℝ) ^ (14 : ℝ)).trans
+                (hL_256_big.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
+            linarith
+    have htri := abs_add_le
+      (completeWeilEnergy φ (c N) N y_sp -
+        (L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+          Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2)
+      ((L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
+        Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2 - Real.log (c N))
+    rw [sub_add_sub_cancel] at htri
+    linarith only [htri, hsp, herr_sp, hmain_sub]
+  -- Bound `y_rem = y_bg + y_u` and transfer `y_sp` to `y_z` via Collar Gårding.
+  have hybg_sq : ‖y_bg‖ ^ 2 ≤ 4 / L ^ (359 / 256 : ℝ) := by
+    rw [← sum_primeHorizonExtension_sq y_bg]
+    have hsub_sum : ∑ n ∈ Icc 1 N, primeHorizonExtension y_bg n ^ 2 =
+        B_bg ^ 2 * ∑ n ∈ Ioc M N, 1 / (n : ℝ) := by
+      have hsplit : Icc 1 N = Icc 1 M ∪ Ioc M N := by
+        ext n; simp only [mem_union, mem_Icc, mem_Ioc]; omega
+      rw [hsplit, sum_union (disjoint_left.mpr fun n h1 h2 => by
+        simp only [mem_Icc] at h1; simp only [mem_Ioc] at h2; omega)]
+      have hz1 : ∑ n ∈ Icc 1 M, primeHorizonExtension y_bg n ^ 2 = 0 := by
+        refine sum_eq_zero fun n hn => ?_
+        have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨(mem_Icc.mp hn).1, (mem_Icc.mp hn).2.trans hMN⟩
+        rw [primeHorizonExtension_coe y_bg ⟨n, hnN⟩]
+        change (if M < n then B_bg / Real.sqrt n else 0) ^ 2 = 0
+        rw [if_neg (Nat.not_lt.mpr (mem_Icc.mp hn).2), zero_pow (by norm_num)]
+      rw [hz1, zero_add, mul_sum]
+      refine sum_congr rfl fun n hn => ?_
+      have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨by omega, (mem_Ioc.mp hn).2⟩
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 1 ≤ n by omega)
+      rw [primeHorizonExtension_coe y_bg ⟨n, hnN⟩]
+      change (if M < n then B_bg / Real.sqrt n else 0) ^ 2 = _
+      rw [if_pos (mem_Ioc.mp hn).1, div_pow, Real.sq_sqrt hn0.le, div_eq_mul_one_div]
+    have hinv_le : ∑ n ∈ Ioc M N, 1 / (n : ℝ) ≤ 2 * L ^ (1 / 256 : ℝ) := by
+      have h1 := sum_inv_Ioc_le hMN hN1
+      have hNM1 : (N : ℝ) / ((M : ℝ) + 1) ≤ H_cut * c N := by
+        rw [div_le_iff₀ (by positivity)]
+        have hlt : N < Lc * (M + 1) := by
+          simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc)
+        have hc : (N : ℝ) ≤ ((Lc * (M + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
+        rw [Nat.cast_mul, Nat.cast_add, Nat.cast_one] at hc
+        exact hc.trans (mul_le_mul_of_nonneg_right hLc_le_Hc (by positivity))
+      have hlog_diff : Real.log (N : ℝ) - Real.log ((M : ℝ) + 1) ≤
+          Real.log H_cut + Real.log (c N) := by
+        rw [← Real.log_div hN0.ne' (by positivity), ← Real.log_mul hH_pos.ne' hc0.ne']
+        exact Real.log_le_log (by positivity) hNM1
+      have h1H : 1 + Real.log H_cut ≤ L ^ (1 / 256 : ℝ) := by
+        have hH_le_4H : Real.log H_cut ≤ Real.log (4 * H_cut) :=
+          Real.log_le_log hH_pos (by linarith only [hH_pos])
+        linarith only [hL_256, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hH_le_4H]
+      linarith only [h1, hlog_diff, h1H, hlogc_256]
+    have hB_sq : B_bg ^ 2 ≤ 2 / L ^ (45 / 32 : ℝ) := by
+      dsimp only [B_bg]
+      rw [div_pow, one_pow, Real.sq_sqrt (by positivity)]
+      have hqm1_ge : L ^ (13 / 32 : ℝ) / 2 ≤ (q : ℝ) - 1 := by
+        have hq_half : (q : ℝ) / 2 ≤ (q : ℝ) - 1 := by
+          have : (2 : ℝ) ≤ q := by exact_mod_cast hq2
+          linarith
+        linarith only [hq_ge, hq_half]
+      calc 1 / (((q : ℝ) - 1) * L)
+          ≤ 1 / ((L ^ (13 / 32 : ℝ) / 2) * L) :=
+            div_le_div_of_nonneg_left zero_le_one (by positivity)
+              (mul_le_mul_of_nonneg_right hqm1_ge hL0.le)
+        _ = 2 / L ^ (45 / 32 : ℝ) := by
+            rw [show (L ^ (13 / 32 : ℝ) / 2) * L = (L ^ (13 / 32 : ℝ) * L) / 2 by ring,
+              one_div_div, ← Real.rpow_add_one hL0.ne']
+            norm_num
+    rw [hsub_sum]
+    calc B_bg ^ 2 * ∑ n ∈ Ioc M N, 1 / (n : ℝ)
+        ≤ (2 / L ^ (45 / 32 : ℝ)) * (2 * L ^ (1 / 256 : ℝ)) :=
+          mul_le_mul hB_sq hinv_le (sum_nonneg fun _ _ => by positivity) (by positivity)
+      _ = 4 / L ^ (359 / 256 : ℝ) := by
+          rw [show (2 / L ^ (45 / 32 : ℝ)) * (2 * L ^ (1 / 256 : ℝ)) =
+            4 * (L ^ (1 / 256 : ℝ) / L ^ (45 / 32 : ℝ)) by ring, ← Real.rpow_sub hL0]
+          have hexp : (1 / 256 - 45 / 32 : ℝ) = -(359 / 256) := by norm_num
+          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+  have hyu_sq : ‖y_u‖ ^ 2 ≤ 1170 ^ 2 / L ^ (63 / 32 : ℝ) := by
+    have h1q : 1 + Real.log q ≤ 65 * L ^ (1 / 64 : ℝ) := by
+      have hq_2L : (q : ℝ) ≤ 2 * L :=
+        hq_le_2.trans (mul_le_mul_of_nonneg_left
+          ((Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)) zero_le_two)
+      have hlq : Real.log (q : ℝ) ≤ Real.log (2 * L) := Real.log_le_log hq0 hq_2L
+      rw [Real.log_mul two_ne_zero hL0.ne'] at hlq
+      have hlog2 : Real.log (2 : ℝ) ≤ 1 := by
+        have := Real.log_two_lt_d9; linarith
+      have h1_64 : 1 ≤ L ^ (1 / 64 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
+      linarith only [hlq, hlog2, hlogL_64, h1_64]
+    have hu_rpow : ‖u‖ ≤ 1170 / L ^ (63 / 64 : ℝ) := by
+      calc ‖u‖ ≤ 18 * (1 + Real.log q) / L := hu_bd
+        _ ≤ 18 * (65 * L ^ (1 / 64 : ℝ)) / L :=
+            div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left h1q (by norm_num)) hL0.le
+        _ = 1170 / L ^ (63 / 64 : ℝ) := by
+            rw [show 18 * (65 * L ^ (1 / 64 : ℝ)) / L = 1170 * (L ^ (1 / 64 : ℝ) / L) by ring,
+              ← Real.rpow_sub_one hL0.ne']
+            have hexp : (1 / 64 - 1 : ℝ) = -(63 / 64) := by norm_num
+            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+    have hp := pow_le_pow_left₀ (norm_nonneg y_u)
+      ((norm_horizonCollarVector_le M u).trans hu_rpow) 2
+    rw [div_pow, ← Real.rpow_natCast (L ^ (63 / 64 : ℝ)) 2, ← Real.rpow_mul hL0.le] at hp
+    norm_num at hp; exact hp
+  have hyrem_sq : ‖y_rem‖ ^ 2 ≤ (8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ) := by
+    have htri : ‖y_rem‖ ^ 2 ≤ 2 * ‖y_bg‖ ^ 2 + 2 * ‖y_u‖ ^ 2 := by
+      have h1 := norm_add_le y_bg y_u
+      have h2 : (‖y_bg‖ + ‖y_u‖) ^ 2 ≤ 2 * ‖y_bg‖ ^ 2 + 2 * ‖y_u‖ ^ 2 := by
+        nlinarith only [sq_nonneg (‖y_bg‖ - ‖y_u‖)]
+      exact (pow_le_pow_left₀ (norm_nonneg _) h1 2).trans h2
+    have hu' : 1170 ^ 2 / L ^ (63 / 32 : ℝ) ≤ 1170 ^ 2 / L ^ (359 / 256 : ℝ) :=
+      div_le_div_of_nonneg_left (by norm_num) (Real.rpow_pos_of_pos hL0 _)
+        (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num))
+    calc ‖y_rem‖ ^ 2 ≤ 2 * (4 / L ^ (359 / 256 : ℝ)) + 2 * (1170 ^ 2 / L ^ (359 / 256 : ℝ)) := by
+          linarith only [htri, hybg_sq, hyu_sq, hu']
+      _ = (8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ) := by ring
+  have hEyrem_rpow : |completeWeilEnergy φ (c N) N y_rem| ≤ 1 / L ^ (2 / 256 : ℝ) := by
+    have hg := (hglobN hcN hc_le_L).1 y_rem
+    refine hg.trans ?_
+    have hL1_le : L + 1 ≤ 2 * L := by linarith only [hL1]
+    have hCq_256 : C_q ≤ L ^ (1 / 256 : ℝ) := by
+      have h1 : C_q ≤ C_q * (R + 1) := le_mul_of_one_le_right hC_q.le (by linarith)
+      linarith only [h1, hL_256, hR, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
+    calc C_q * c N ^ 3 * (L + 1) * ‖y_rem‖ ^ 2
+        ≤ L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
+            ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) :=
+          mul_le_mul
+            (mul_le_mul (mul_le_mul hCq_256 hc3_rpow (by positivity) (by positivity))
+              hL1_le (by positivity) (by positivity))
+            hyrem_sq (sq_nonneg _) (by positivity)
+      _ = (2 * (8 + 2 * 1170 ^ 2)) / L ^ (5 / 256 : ℝ) := by
+          rw [show L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
+              ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) =
+            (2 * (8 + 2 * 1170 ^ 2)) *
+              (L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * L / L ^ (359 / 256 : ℝ)) by ring,
+            ← Real.rpow_add hL0, ← Real.rpow_add_one hL0.ne', ← Real.rpow_sub hL0]
+          have hexp : (1 / 256 + 97 / 256 + 1 - 359 / 256 : ℝ) = -(5 / 256) := by norm_num
+          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+      _ = ((2 * (8 + 2 * 1170 ^ 2)) / L ^ (3 / 256 : ℝ)) * (1 / L ^ (2 / 256 : ℝ)) := by
+          rw [div_mul_div_comm, mul_one, ← Real.rpow_add hL0]
+          norm_num
+      _ ≤ 1 * (1 / L ^ (2 / 256 : ℝ)) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
+          exact (by norm_num : (2 * (8 + 2 * 1170 ^ 2) : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans hL_3_256
+      _ = 1 / L ^ (2 / 256 : ℝ) := one_mul _
+  have hgard_col : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+      (∀ n, n ≤ M → primeHorizonExtension w n = 0) →
+      0 ≤ completeWeilEnergy φ (c N) N w + B_col * c N * ‖w‖ ^ 2 := by
+    intro w hw0
+    have htail_eq : atomicTailCoefficients M (primeHorizonExtension w) = primeHorizonExtension w := by
+      funext n
+      unfold atomicTailCoefficients
+      by_cases h : M < n
+      · rw [if_pos h]
+      · rw [if_neg h, hw0 n (Nat.not_lt.mp h)]
+    have hg0 := hgardN (primeHorizonExtension w)
+    dsimp only at hg0
+    rw [htail_eq] at hg0
+    have hpos_lhs : 0 ≤ _ := add_nonneg
+      (mul_nonneg (by
+        have := topCollarSeventhMass_nonneg M N (primeHorizonExtension w)
+        -- Note `hgardN` has `0 < κ_R` and `0 < a_R`; even simpler, examine `hg0`:
+        linarith only [hg0] -- wait: let's unpack `κ_R, a_R` explicitly from `exists_collar_atomic_garding_along_critical_curve`!
+        ) sorry)
+    sorry
+
+
 
 
 

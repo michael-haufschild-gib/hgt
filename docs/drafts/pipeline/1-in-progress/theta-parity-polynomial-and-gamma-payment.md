@@ -25,4 +25,9 @@ Native tails have positive Gamma/Hermite reserves at every rank beyond explicit 
 
 ## Active payment
 
-The squared parabolic core `(a/300)(1-b²/36)²` on `[-6,6]` has a dependency-closed paper proof; exact Lean formalization is in progress. Multiplying a degree-eleven polynomial by `1-b²/36` reduces rank-twelve payment to a degree-thirteen Legendre exterior estimate. The existing height-67 verification and current tail remain unchanged.
+The squared parabolic core `(a/300)(1-b²/36)²` on `[-6,6]` and the general Legendre exterior bound have dependency-closed paper proofs. For `deg p≤11`, write `E=∫₋₆⁶((1-b²/36)p(b))²`. The exterior bound `(5300000/6²²)|b|²²E` and existing height-67 verification give `∫p² current ≥ aE/1200`. Exact Lean formalization is in progress in `ParabolicCurrentCore`, `LegendrePolynomialKernel`, and `TheTwelfthSectionFromHeightSixtySeven`; rank twelve is not yet counted as formalized.
+
+## Subsequent conjectures
+
+- Retaining the common contour phase in the product defining the current should improve its tail constant. The derivative of the squared transform involves a coupled source moment; separately bounding the two Xi derivatives loses this cancellation. Actual source-profile moment bounds must pay the proposed improvement.
+- For all-rank Gamma payment, retain the full Hermite tail energy and the discrepancy between the global minimizing polynomial and local native minimizers. The terminal Gamma reserve alone discards those positive terms. The unresolved inequality is domination of the complete compact-band loss by this aggregate tail energy, uniformly over degree; the existing mixture identity does not establish it.

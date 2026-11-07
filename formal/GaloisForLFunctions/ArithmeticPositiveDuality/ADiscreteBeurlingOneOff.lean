@@ -1,29 +1,31 @@
 import GaloisForLFunctions.RHTower.BeurlingOverRegularIntegersOffLineZeros
 import GaloisForLFunctions.HTGeometry.HalfLineLaplaceL2
 import Mathlib.Analysis.SpecialFunctions.NonIntegrable
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.Analysis.PSeries
 
 /-!
 # A discrete Beurling one-off
 
 Let `w ≥ 0` be the logarithmic prime density of the continuous one-off `overRegularZeta`
-(`1/3 < μ < 1/2`, `0 < ν < 3μ − 1`, `γ ≠ 0`), `W(x) = ∫_{(0,x]} w`, and let `t_k` be the point with
+(`1/3 < μ < 1/2`, `0 < ν < 3μ − 1`), `W(x) = ∫_{(0,x]} w`, and let `t_k` be the point with
 `W(t_k) = k + 1`. The discrete primes `p_k = e^{t_k}` follow the continuous ones to within one:
-`#{k : t_k ≤ x} = ⌊W(x)⌋`.
+`#{k : t_k ≤ x} = ⌊W(x)⌋` (`atomCount_eq`).
 
 * **Laplace transforms of counting functions** (`tsum_cexp_atoms`, `integral_cexp_density`):
   `Σ_k e^{-s t_k} = s ∫ e^{-sx} N(x) dx` and `∫ e^{-su} w(u) du = s ∫ e^{-sx} W(x) dx`, by Fubini.
-* **Continuation** (`discreteZeta_eq`, `differentiableOn_discreteContinuation`). With
-  `Λ(s) = ∫ e^{-sx}(N − W)(x) dx`, holomorphic on `Re s > 0` because `|N − W| ≤ 1`, and the
-  prime-power remainder `R(s) = Σ_k (−log(1 − e^{-st_k}) − e^{-st_k})`, holomorphic on `Re s > 1/2`,
-  the Euler product `Π_k (1 − p_k^{-s})^{-1}` equals `ζ_c(s) e^{sΛ(s) + R(s)}` on `Re s > 1`.
-* **One-off** (`discreteContinuation_eq_zero_iff`). On `Re s > 1/2`, `s ≠ 1`, the continuation
-  vanishes exactly at `(1 − μ) ± iγ`: finitely many zeros right of `1/2 + h` for `h < 1/2 − μ`, and
-  at least one.
-* **No functional-equation defect** (`tendsto_norm_discreteContinuation_half`). The prime squares
-  give `R(σ) ≥ ½ Σ_k p_k^{-2σ} → ∞` as `σ → 1/2⁺`, because `Σ 1/p_k = ∞`; so the continuation
-  blows up at `s = 1/2` and does not extend continuously to the critical line, where a
-  functional-equation defect would be measured. A discrete one-off reaching the line must carry the
-  correction `−½ W(x/2)` of Riemann's formula in its prime count.
+* **Continuation** (`discreteZeta_eq_tprod`, `discreteZeta_eq_continuation`,
+  `differentiableOn_continuation`). With `Λ(s) = ∫ e^{-sx}(N − W)(x) dx`, holomorphic on
+  `Re s > 0` because `|N − W| ≤ 1`, and the prime-power remainder
+  `R(s) = Σ_k (−log(1 − e^{-st_k}) − e^{-st_k})`, holomorphic on `Re s > 1/2`, the Euler product
+  `Π_k (1 − p_k^{-s})^{-1}` equals `ζ_c(s) e^{sΛ(s) + R(s)}` on `Re s > 1`.
+* **One-off** (`continuation_eq_zero_iff`, `zeros_right_of_eq_pair`). On `Re s > 1/2`, `s ≠ 1`,
+  the continuation vanishes exactly at `(1 − μ) ± iγ`: finitely many zeros right of `1/2 + h` for
+  `h < 1/2 − μ`, and at least one.
+* **No functional-equation defect** (`not_summable_exp_neg_atom`,
+  `tendsto_norm_continuation_half`). The prime squares give `R(σ) ≥ ½ Σ_k p_k^{-2σ} → ∞` as
+  `σ → 1/2⁺`, because `Σ 1/p_k = ∞`. So the continuation blows up at `s = 1/2` and has no
+  continuous extension to the critical line, where a functional-equation defect is measured.
 -/
 
 set_option autoImplicit false
@@ -299,12 +301,11 @@ theorem differentiableOn_primePowerRemainder {t : ℕ → ℝ} (ht : ∀ k, 0 < 
   have hD := differentiableOn_tsum_of_summable_norm hsumU hdiff hUo hbound
   exact (hD.differentiableAt (hUo.mem_nhds hsU)).differentiableWithinAt
 
-/-- **The Euler logarithm splits** into the prime sum and the prime-power remainder on `Re s > 1`. -/
-theorem tsum_neg_log_eq {t : ℕ → ℝ} (ht : ∀ k, 0 < t k) (hmono : ∀ k, t 0 ≤ t k)
+/-- The Euler logarithm converges absolutely on `Re s > 1`. -/
+theorem summable_neg_log {t : ℕ → ℝ} (ht : ∀ k, 0 < t k) (hmono : ∀ k, t 0 ≤ t k)
     (hsum : ∀ a : ℝ, 1 < a → Summable fun k => Real.exp (-(a * t k))) {s : ℂ} (hs : 1 < s.re) :
-    ∑' k, -Complex.log (1 - cexp (-(s * t k))) =
-      ∑' k, cexp (-(s * t k)) + primePowerRemainder t s := by
-  have hs0 : 0 < s.re := by linarith
+    Summable (fun k => cexp (-(s * t k))) ∧
+      Summable (fun k => -Complex.log (1 - cexp (-(s * t k))) - cexp (-(s * t k))) := by
   have h1 : Summable fun k => cexp (-(s * t k)) := by
     refine Summable.of_norm ?_
     simp_rw [norm_cexp_neg_mul]
@@ -314,13 +315,19 @@ theorem tsum_neg_log_eq {t : ℕ → ℝ} (ht : ∀ k, 0 < t k) (hmono : ∀ k, 
     rw [hq, Real.exp_lt_one_iff]
     have := ht 0
     nlinarith
-  have h2 : Summable fun k => -Complex.log (1 - cexp (-(s * t k))) - cexp (-(s * t k)) := by
-    refine Summable.of_norm_bounded ((((hsum (2 * s.re) (by linarith)).mul_right
-      ((1 - q)⁻¹)).div_const 2)) fun k => ?_
-    have hle : Real.exp (-(s.re * t k)) ≤ q := by
-      rw [hq]
-      exact Real.exp_le_exp.mpr (by nlinarith [hmono k])
-    exact norm_primePowerTerm_le (ht k) le_rfl hle hq1
+  refine ⟨h1, Summable.of_norm_bounded ((((hsum (2 * s.re) (by linarith)).mul_right
+    ((1 - q)⁻¹)).div_const 2)) fun k => ?_⟩
+  have hle : Real.exp (-(s.re * t k)) ≤ q := by
+    rw [hq]
+    exact Real.exp_le_exp.mpr (by nlinarith [hmono k])
+  exact norm_primePowerTerm_le (ht k) le_rfl hle hq1
+
+/-- **The Euler logarithm splits** into the prime sum and the prime-power remainder on `Re s > 1`. -/
+theorem tsum_neg_log_eq {t : ℕ → ℝ} (ht : ∀ k, 0 < t k) (hmono : ∀ k, t 0 ≤ t k)
+    (hsum : ∀ a : ℝ, 1 < a → Summable fun k => Real.exp (-(a * t k))) {s : ℂ} (hs : 1 < s.re) :
+    ∑' k, -Complex.log (1 - cexp (-(s * t k))) =
+      ∑' k, cexp (-(s * t k)) + primePowerRemainder t s := by
+  obtain ⟨h1, h2⟩ := summable_neg_log ht hmono hsum hs
   rw [primePowerRemainder, ← h1.tsum_add h2]
   congr 1
   funext k
@@ -480,6 +487,7 @@ theorem integrableOn_w_Ioc (b : ℝ) : IntegrableOn P.w (Ioc 0 b) := by
   have hc : ContinuousOn (fun u : ℝ => Real.exp (2 * u)) (Icc 0 b) := by fun_prop
   have h2 := (hIcc.mul_continuousOn hc isCompact_Icc).mono_set Ioc_subset_Icc_self
   refine h2.congr_fun (fun u _ => ?_) measurableSet_Ioc
+  show Real.exp (-(2 * u)) * P.w u * Real.exp (2 * u) = P.w u
   rw [mul_right_comm, ← Real.exp_add]
   simp
 
@@ -625,6 +633,11 @@ theorem atom_strictMono : StrictMono P.atom := by
   have : (j : ℝ) < k := by exact_mod_cast hjk
   linarith
 
+theorem atom_le_iff_lt_floor (k : ℕ) {x : ℝ} (hx : 0 ≤ x) : P.atom k ≤ x ↔ k < ⌊P.W x⌋₊ := by
+  rw [P.atom_le_iff k hx, Nat.lt_iff_add_one_le, Nat.le_floor_iff (P.W_nonneg x)]
+  push_cast
+  rfl
+
 /-- **The discrete primes follow the continuous ones**: `#{k : t_k ≤ x} = ⌊W(x)⌋`. -/
 theorem atomCount_eq (x : ℝ) : atomCount P.atom x = (⌊P.W x⌋₊ : ℝ) := by
   rcases lt_or_ge x 0 with hx | hx
@@ -632,11 +645,7 @@ theorem atomCount_eq (x : ℝ) : atomCount P.atom x = (⌊P.W x⌋₊ : ℝ) := 
     simp only [Nat.floor_zero, Nat.cast_zero]
     convert tsum_zero with k
     rw [if_neg (not_le.mpr (lt_trans hx (P.atom_pos k)))]
-  · have hiff : ∀ k : ℕ, P.atom k ≤ x ↔ k < ⌊P.W x⌋₊ := by
-      intro k
-      rw [P.atom_le_iff k hx, Nat.lt_iff_add_one_le, Nat.le_floor_iff (P.W_nonneg x)]
-      push_cast
-      rfl
+  · have hiff : ∀ k : ℕ, P.atom k ≤ x ↔ k < ⌊P.W x⌋₊ := fun k => P.atom_le_iff_lt_floor k hx
     rw [atomCount, tsum_eq_sum (s := Finset.range ⌊P.W x⌋₊) fun k hk => by
       rw [if_neg (by rw [hiff]; simpa using hk)]]
     rw [Finset.sum_congr rfl fun k hk => if_pos ((hiff k).mpr (Finset.mem_range.mp hk))]
@@ -680,6 +689,459 @@ theorem summable_exp_atom {a : ℝ} (ha : 1 < a) : Summable fun k => Real.exp (-
         Real.rpow_le_rpow (Real.exp_pos _).le (hk k) (by positivity)
     _ = C ^ (a / b) * ((k : ℝ) + 1) ^ (-(a / b)) := by
         rw [Real.div_rpow hC0 (by positivity), Real.rpow_neg (by positivity), div_eq_mul_inv]
+
+/-! ### The discrete one-off -/
+
+theorem atom_zero_le (k : ℕ) : P.atom 0 ≤ P.atom k := P.atom_strictMono.monotone (Nat.zero_le k)
+
+/-- The discrepancy `N − W` between the discrete and the continuous prime counts. -/
+def discrepancy (x : ℝ) : ℝ := atomCount P.atom x - P.W x
+
+theorem measurable_discrepancy : Measurable P.discrepancy := by
+  have hW : Monotone P.W := fun a b h => P.W_le_W h
+  have hF : Monotone fun x => (⌊P.W x⌋₊ : ℝ) := fun a b h =>
+    Nat.cast_le.mpr (Nat.floor_le_floor (P.W_le_W h))
+  have heq : P.discrepancy = fun x => (⌊P.W x⌋₊ : ℝ) - P.W x := by
+    funext x
+    rw [discrepancy, P.atomCount_eq]
+  rw [heq]
+  exact hF.measurable.sub hW.measurable
+
+theorem abs_discrepancy_le (x : ℝ) : |P.discrepancy x| ≤ 1 := P.abs_atomCount_sub_W_le x
+
+/-- The Euler logarithm `Σ_k −log(1 − p_k^{-s})` of the discrete primes `p_k = e^{t_k}`. -/
+def eulerLog (s : ℂ) : ℂ := ∑' k, -Complex.log (1 - cexp (-(s * P.atom k)))
+
+/-- **The zeta function of the discrete primes**, `exp` of the Euler logarithm. -/
+def discreteZeta (s : ℂ) : ℂ := cexp (P.eulerLog s)
+
+/-- **It is the Euler product** `Π_k (1 − p_k^{-s})^{-1}` on `Re s > 1`. -/
+theorem discreteZeta_eq_tprod {s : ℂ} (hs : 1 < s.re) :
+    P.discreteZeta s = ∏' k, (1 - cexp (-(s * P.atom k)))⁻¹ := by
+  have hre : ∀ k, 0 < (1 - cexp (-(s * P.atom k))).re := by
+    intro k
+    have h1 : (cexp (-(s * P.atom k))).re ≤ ‖cexp (-(s * P.atom k))‖ := Complex.re_le_norm _
+    have h2 : ‖cexp (-(s * P.atom k))‖ < 1 := by
+      rw [norm_cexp_neg_mul, Real.exp_lt_one_iff]
+      have := P.atom_pos k
+      nlinarith
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  have hlog : ∀ k, Complex.log (1 - cexp (-(s * P.atom k)))⁻¹ =
+      -Complex.log (1 - cexp (-(s * P.atom k))) := by
+    intro k
+    refine Complex.log_inv _ fun h => ?_
+    have := (Complex.arg_eq_pi_iff.mp h).1
+    linarith [hre k]
+  have hne : ∀ k, (1 - cexp (-(s * P.atom k)))⁻¹ ≠ 0 := by
+    intro k
+    refine inv_ne_zero fun h => ?_
+    have := hre k
+    rw [h] at this
+    simp at this
+  obtain ⟨h1, h2⟩ := summable_neg_log P.atom_pos P.atom_zero_le
+    (fun a ha => P.summable_exp_atom ha) hs
+  have hsum : Summable fun k => Complex.log (1 - cexp (-(s * P.atom k)))⁻¹ := by
+    simp_rw [hlog]
+    exact (h1.add h2).congr fun k => by ring
+  rw [discreteZeta, eulerLog, ← Complex.cexp_tsum_eq_tprod hne hsum]
+  simp_rw [hlog]
+
+/-- **The continuation** `ζ_c(s) e^{sΛ(s) + R(s)}`, with `Λ` the Laplace transform of `N − W`
+and `R` the prime-power remainder. -/
+def continuation (s : ℂ) : ℂ :=
+  overRegularZeta P.μ P.ν P.γ s *
+    cexp (s * boundedLaplace P.discrepancy s + primePowerRemainder P.atom s)
+
+/-- **The discrete zeta function is the continuation on `Re s > 1`.** -/
+theorem discreteZeta_eq_continuation {s : ℂ} (hs : 1 < s.re) :
+    P.discreteZeta s = P.continuation s := by
+  have hs0 : 0 < s.re := by linarith
+  have hsplit := tsum_neg_log_eq P.atom_pos P.atom_zero_le (fun a ha => P.summable_exp_atom ha) hs
+  have hdisc := tsum_cexp_atoms P.atom_pos hs0 (P.summable_exp_atom hs)
+  have hint : IntegrableOn (fun u => Real.exp (-(s.re * u)) * P.w u) (Ioi 0) :=
+    P.integrableOn_exp_mul_w hs
+  obtain ⟨hWint, hcont⟩ := integral_cexp_density P.measurable_w (fun u hu => (P.w_pos hu).le)
+    hs0 hint
+  have hEint : IntegrableOn (fun x : ℝ => cexp (-(s * x)) * (P.discrepancy x : ℂ)) (Ioi 0) := by
+    have hb : IntegrableOn (fun x : ℝ => Real.exp (-s.re * x)) (Ioi 0) :=
+      integrableOn_exp_mul_Ioi (by linarith) 0
+    refine hb.mono' ?_ (Eventually.of_forall fun x => ?_)
+    · exact ((by fun_prop : Continuous fun x : ℝ => cexp (-(s * x))).measurable.mul
+        (Complex.measurable_ofReal.comp P.measurable_discrepancy)).aestronglyMeasurable
+    · rw [norm_mul, norm_cexp_neg_mul, Complex.norm_real, Real.norm_eq_abs]
+      have := P.abs_discrepancy_le x
+      have he := Real.exp_pos (-(s.re * x))
+      rw [show -s.re * x = -(s.re * x) by ring]
+      nlinarith
+  have hN : ∫ x in Ioi (0 : ℝ), cexp (-(s * x)) * (atomCount P.atom x : ℂ) =
+      boundedLaplace P.discrepancy s +
+        ∫ x in Ioi (0 : ℝ), cexp (-(s * x)) * (distribution P.w x : ℂ) := by
+    rw [boundedLaplace, ← integral_add hEint hWint]
+    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+    simp only [discrepancy, W]
+    push_cast
+    ring
+  have hlog : P.eulerLog s = (∫ u in Ioi (0 : ℝ), cexp (-(s * u)) * (P.w u : ℂ)) +
+      (s * boundedLaplace P.discrepancy s + primePowerRemainder P.atom s) := by
+    rw [eulerLog, hsplit, hdisc, hN, hcont]
+    ring
+  rw [discreteZeta, hlog, Complex.exp_add, continuation]
+  congr 1
+  exact cexp_integral_primeDensity P.hlow P.hhigh P.h4 hs
+
+theorem overRegularZeta_denom_ne {s : ℂ} (hs : 1 / 2 < s.re) (hs1 : s ≠ 1) :
+    (s - 1) * (s + (3 * P.μ - 1 - P.ν)) * (s + (3 * P.μ - 1 + P.ν)) ≠ 0 :=
+  overRegularZeta_denom_ne_zero P.hν0.le (by linarith [P.hν]) hs1
+
+/-- **The continuation is holomorphic on `Re s > 1/2`, away from the pole `s = 1`.** -/
+theorem differentiableOn_continuation :
+    DifferentiableOn ℂ P.continuation {s : ℂ | 1 / 2 < s.re ∧ s ≠ 1} := by
+  rintro s ⟨hs, hs1⟩
+  have hζ : DifferentiableAt ℂ (overRegularZeta P.μ P.ν P.γ) s := by
+    unfold overRegularZeta
+    exact DifferentiableAt.div (by fun_prop) (by fun_prop) (P.overRegularZeta_denom_ne hs hs1)
+  have hΛ : DifferentiableAt ℂ (boundedLaplace P.discrepancy) s :=
+    (differentiableOn_boundedLaplace P.measurable_discrepancy P.abs_discrepancy_le).differentiableAt
+      ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by show 0 < s.re; linarith))
+  have hR : DifferentiableAt ℂ (primePowerRemainder P.atom) s :=
+    (differentiableOn_primePowerRemainder P.atom_pos P.atom_zero_le
+      (fun a ha => P.summable_exp_atom ha)).differentiableAt
+      ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs)
+  exact (hζ.mul ((differentiableAt_id.mul hΛ).add hR).cexp).differentiableWithinAt
+
+/-- **The zeros right of `1/2` are exactly the off-line pair `(1 − μ) ± iγ`.** -/
+theorem continuation_eq_zero_iff {s : ℂ} (hs : 1 / 2 < s.re) (hs1 : s ≠ 1) :
+    P.continuation s = 0 ↔
+      s = ((1 - P.μ : ℝ) : ℂ) + (P.γ : ℂ) * I ∨ s = ((1 - P.μ : ℝ) : ℂ) - (P.γ : ℂ) * I := by
+  have hden := P.overRegularZeta_denom_ne hs hs1
+  have h4 : s + (4 * P.μ - 1) ≠ 0 := by
+    intro h
+    have := congrArg Complex.re h
+    simp at this
+    linarith [P.hμ1]
+  have hfac : (s - (1 - P.μ)) ^ 2 + (P.γ : ℂ) ^ 2 =
+      (s - (((1 - P.μ : ℝ) : ℂ) + (P.γ : ℂ) * I)) * (s - (((1 - P.μ : ℝ) : ℂ) - (P.γ : ℂ) * I)) := by
+    push_cast
+    linear_combination ((P.γ : ℂ) ^ 2) * Complex.I_sq
+  rw [continuation, mul_eq_zero, or_iff_left (Complex.exp_ne_zero _), overRegularZeta,
+    div_eq_zero_iff, or_iff_left hden, mul_eq_zero, or_iff_left h4, hfac, mul_eq_zero,
+    sub_eq_zero, sub_eq_zero]
+
+/-- **The one-off.** For `0 ≤ h < 1/2 − μ` the zeros of the continuation with real part
+`> 1/2 + h` are exactly the pair `(1 − μ) ± iγ`: finitely many, and not none. -/
+theorem zeros_right_of_eq_pair {h : ℝ} (hh : h < 1 / 2 - P.μ) (h0 : 0 ≤ h) :
+    {s : ℂ | 1 / 2 + h < s.re ∧ s ≠ 1 ∧ P.continuation s = 0} =
+      {((1 - P.μ : ℝ) : ℂ) + (P.γ : ℂ) * I, ((1 - P.μ : ℝ) : ℂ) - (P.γ : ℂ) * I} := by
+  ext s
+  simp only [mem_setOf_eq, mem_insert_iff, mem_singleton_iff]
+  constructor
+  · rintro ⟨hs, hs1, hz⟩
+    exact (P.continuation_eq_zero_iff (by linarith) hs1).mp hz
+  · intro hz
+    have hre : s.re = 1 - P.μ := by rcases hz with rfl | rfl <;> simp
+    have hs1 : s ≠ 1 := by
+      intro h1
+      rw [h1] at hre
+      simp at hre
+      linarith [P.hμ1]
+    exact ⟨by rw [hre]; linarith, hs1, (P.continuation_eq_zero_iff (by rw [hre]; linarith [P.hμ2])
+      hs1).mpr hz⟩
+
+/-! ### The singularity at `s = 1/2` -/
+
+/-- `W(j + 1) − W(j) ≥ c₀ e^j/(j + 1)` for `j ≥ 1`. -/
+theorem W_succ_sub_ge {j : ℝ} (hj : 1 ≤ j) :
+    (1 - Real.exp (-P.μ)) ^ 3 * Real.exp j / (j + 1) ≤ P.W (j + 1) - P.W j := by
+  have hj0 : 0 ≤ j := by linarith
+  have h0j := P.intervalIntegrable_wt le_rfl hj0
+  have hj1 := P.intervalIntegrable_wt hj0 (by linarith : j ≤ j + 1)
+  have hadd := intervalIntegral.integral_add_adjacent_intervals h0j hj1
+  rw [P.W_eq_intervalIntegral hj0, P.W_eq_intervalIntegral (by linarith), ← hadd]
+  have hc := P.c₀_pos
+  have hmono : ∫ _u in j..j + 1, (1 - Real.exp (-P.μ)) ^ 3 * Real.exp j / (j + 1) ≤
+      ∫ u in j..j + 1, P.wt u := by
+    refine intervalIntegral.integral_mono_on (by linarith) intervalIntegrable_const hj1
+      fun u hu => ?_
+    have hu1 : 1 ≤ u := le_trans hj hu.1
+    have hu0 : 0 < u := by linarith
+    simp only [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu0)]
+    refine le_trans ?_ (P.w_ge hu1)
+    calc (1 - Real.exp (-P.μ)) ^ 3 * Real.exp j / (j + 1)
+        ≤ (1 - Real.exp (-P.μ)) ^ 3 * Real.exp u / (j + 1) := by
+          gcongr
+          exact hu.1
+      _ ≤ (1 - Real.exp (-P.μ)) ^ 3 * Real.exp u / u :=
+          div_le_div_of_nonneg_left (by positivity) hu0 hu.2
+  rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
+  linarith
+
+/-- `e^{-(j+2)} ≤ (1/2)^j`. -/
+theorem exp_neg_le_half_pow (j : ℕ) : Real.exp (-((j : ℝ) + 2)) ≤ (1 / 2) ^ j := by
+  have he : (2 : ℝ) ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+  have h1 : (2 : ℝ) ^ j ≤ Real.exp (j : ℝ) := by
+    rw [show (j : ℝ) = j * 1 by ring, Real.exp_nat_mul]
+    exact pow_le_pow_left₀ (by norm_num) he j
+  have h2 : Real.exp (j : ℝ) ≤ Real.exp ((j : ℝ) + 2) := Real.exp_le_exp.mpr (by linarith)
+  rw [Real.exp_neg, one_div, inv_pow]
+  exact inv_anti₀ (by positivity) (h1.trans h2)
+
+/-- **The discrete primes have `Σ_k 1/p_k = ∞`.** Layer `t_k ∈ (j, j+1]` holds at least
+`W(j+1) − W(j) − 1 ≥ c₀ e^j/(j+1) − 1` atoms, each contributing at least `e^{-(j+1)}`. -/
+theorem not_summable_exp_neg_atom : ¬ Summable fun k => Real.exp (-(P.atom k)) := by
+  intro hsum
+  set f : ℕ → ℝ := fun k => Real.exp (-(P.atom k)) with hf
+  have hf0 : ∀ k, 0 ≤ f k := fun k => (Real.exp_pos _).le
+  set N : ℕ → ℕ := fun j => ⌊P.W j⌋₊ with hN
+  have hNmono : Monotone N := fun a b h =>
+    Nat.floor_le_floor (P.W_le_W (by exact_mod_cast h))
+  set c : ℝ := (1 - Real.exp (-P.μ)) ^ 3 * Real.exp (-1) with hc
+  have hc0 : 0 < c := mul_pos P.c₀_pos (Real.exp_pos _)
+  have hlayer : ∀ j : ℕ, 1 ≤ j →
+      c / ((j : ℝ) + 1) - Real.exp (-((j : ℝ) + 1)) ≤ ∑ k ∈ Finset.Ico (N j) (N (j + 1)), f k := by
+    intro j hj
+    have hj' : (1 : ℝ) ≤ j := by exact_mod_cast hj
+    have hk : ∀ k ∈ Finset.Ico (N j) (N (j + 1)), Real.exp (-((j : ℝ) + 1)) ≤ f k := by
+      intro k hk
+      have hlt : k < ⌊P.W ((j + 1 : ℕ) : ℝ)⌋₊ := (Finset.mem_Ico.mp hk).2
+      have hle := (P.atom_le_iff_lt_floor k (by positivity)).mpr hlt
+      push_cast at hle
+      exact Real.exp_le_exp.mpr (by linarith)
+    have hcard := Finset.card_nsmul_le_sum _ _ _ hk
+    rw [Nat.card_Ico, nsmul_eq_mul, Nat.cast_sub (hNmono (Nat.le_succ j))] at hcard
+    have hN1 : P.W ((j + 1 : ℕ) : ℝ) - 1 < (N (j + 1) : ℝ) := by
+      have := Nat.lt_floor_add_one (P.W ((j + 1 : ℕ) : ℝ))
+      simp only [hN]
+      linarith
+    have hN0 : (N j : ℝ) ≤ P.W j := Nat.floor_le (P.W_nonneg _)
+    have hgap := P.W_succ_sub_ge hj'
+    push_cast at hN1
+    have hpos := Real.exp_pos (-((j : ℝ) + 1))
+    have hprod : Real.exp j / ((j : ℝ) + 1) * Real.exp (-((j : ℝ) + 1)) =
+        Real.exp (-1) / ((j : ℝ) + 1) := by
+      rw [div_mul_eq_mul_div, ← Real.exp_add]
+      congr 2
+      ring
+    have hkey : ((1 - Real.exp (-P.μ)) ^ 3 * Real.exp j / (j + 1) - 1) *
+        Real.exp (-((j : ℝ) + 1)) ≤ ((N (j + 1) : ℝ) - N j) * Real.exp (-((j : ℝ) + 1)) :=
+      mul_le_mul_of_nonneg_right (by linarith) hpos.le
+    have hexpand : ((1 - Real.exp (-P.μ)) ^ 3 * Real.exp j / (j + 1) - 1) *
+        Real.exp (-((j : ℝ) + 1)) = c / ((j : ℝ) + 1) - Real.exp (-((j : ℝ) + 1)) := by
+      rw [hc, sub_mul, one_mul, mul_div_assoc, mul_assoc, hprod]
+      ring
+    linarith
+  have hpartial : ∀ J : ℕ, ∑ j ∈ Finset.range J, (c / ((j : ℝ) + 2) - Real.exp (-((j : ℝ) + 2))) ≤
+      ∑ k ∈ Finset.range (N (J + 1)), f k := by
+    intro J
+    induction J with
+    | zero =>
+      simp only [Finset.range_zero, Finset.sum_empty]
+      exact Finset.sum_nonneg fun k _ => hf0 k
+    | succ J ih =>
+      rw [Finset.sum_range_succ, ← Finset.sum_range_add_sum_Ico f (hNmono (Nat.le_succ (J + 1)))]
+      have hl := hlayer (J + 1) (by omega)
+      push_cast at hl
+      have : (J : ℝ) + 1 + 1 = J + 2 := by ring
+      rw [this] at hl
+      linarith
+  have hharm := Real.tendsto_sum_range_one_div_nat_succ_atTop
+  obtain ⟨J₀, hJ₀⟩ := Filter.eventually_atTop.mp ((tendsto_atTop.mp hharm) ((∑' k, f k + 3) / c + 1))
+  have hJ := hJ₀ (J₀ + 1) (by omega)
+  have hshift : ∑ i ∈ Finset.range (J₀ + 1), (1 / ((i : ℝ) + 1)) =
+      ∑ j ∈ Finset.range J₀, (1 / ((j : ℝ) + 2)) + 1 := by
+    rw [Finset.sum_range_succ']
+    congr 1
+    · refine Finset.sum_congr rfl fun j _ => ?_
+      push_cast
+      ring_nf
+    · simp
+  have hgeom : ∑ j ∈ Finset.range J₀, Real.exp (-((j : ℝ) + 2)) ≤ 2 :=
+    (Finset.sum_le_sum fun j _ => exp_neg_le_half_pow j).trans (sum_geometric_two_le J₀)
+  have hsplit : ∑ j ∈ Finset.range J₀, (c / ((j : ℝ) + 2) - Real.exp (-((j : ℝ) + 2))) =
+      c * ∑ j ∈ Finset.range J₀, (1 / ((j : ℝ) + 2)) -
+        ∑ j ∈ Finset.range J₀, Real.exp (-((j : ℝ) + 2)) := by
+    rw [Finset.sum_sub_distrib, Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  have hle := (hpartial J₀).trans (hsum.sum_le_tsum _ (fun k _ => hf0 k))
+  rw [hsplit] at hle
+  have hH : (∑' k, f k + 3) / c ≤ ∑ j ∈ Finset.range J₀, (1 / ((j : ℝ) + 2)) := by
+    linarith
+  have := (div_le_iff₀ hc0).mp hH
+  linarith
+
+/-- `−log(1 − x) − x ≥ x²/2` on `[0, 1)`. -/
+theorem neg_log_one_sub_sub_ge {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x < 1) :
+    x ^ 2 / 2 ≤ -Real.log (1 - x) - x := by
+  have h := Real.hasSum_pow_div_log_of_abs_lt_one (by rw [abs_of_nonneg hx0]; exact hx1)
+  have hle := sum_le_hasSum (Finset.range 2) (fun n _ => by positivity) h
+  simp [Finset.sum_range_succ] at hle
+  linarith
+
+/-- On the real axis each prime-power term is real. -/
+theorem primePowerTerm_ofReal {σ : ℝ} (hσ : 0 ≤ σ) (k : ℕ) :
+    -Complex.log (1 - cexp (-((σ : ℂ) * P.atom k))) - cexp (-((σ : ℂ) * P.atom k)) =
+      ((-Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k)) : ℝ) : ℂ) := by
+  have he : cexp (-((σ : ℂ) * (P.atom k : ℂ))) = ((Real.exp (-(σ * P.atom k)) : ℝ) : ℂ) := by
+    rw [Complex.ofReal_exp]
+    push_cast
+    ring_nf
+  have hpos : 0 ≤ 1 - Real.exp (-(σ * P.atom k)) := by
+    have := Real.exp_le_one_iff.mpr (by nlinarith [P.atom_pos k] : -(σ * P.atom k) ≤ 0)
+    linarith
+  rw [he, show (1 : ℂ) - ((Real.exp (-(σ * P.atom k)) : ℝ) : ℂ) =
+      ((1 - Real.exp (-(σ * P.atom k)) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_log hpos]
+  push_cast
+  ring
+
+/-- On the real axis the prime-power remainder is real. -/
+theorem primePowerRemainder_ofReal {σ : ℝ} (hσ : 0 ≤ σ) :
+    primePowerRemainder P.atom σ =
+      ((∑' k, (-Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k))) : ℝ) :
+        ℂ) := by
+  rw [primePowerRemainder, Complex.ofReal_tsum]
+  exact congrArg tsum (funext fun k => P.primePowerTerm_ofReal hσ k)
+
+theorem primePowerTerm_real_ge {σ : ℝ} (hσ : 0 < σ) (k : ℕ) :
+    Real.exp (-(2 * σ * P.atom k)) / 2 ≤
+      -Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k)) := by
+  have hx1 : Real.exp (-(σ * P.atom k)) < 1 :=
+    Real.exp_lt_one_iff.mpr (by nlinarith [P.atom_pos k])
+  have h := neg_log_one_sub_sub_ge (Real.exp_pos _).le hx1
+  have hsq : Real.exp (-(σ * P.atom k)) ^ 2 = Real.exp (-(2 * σ * P.atom k)) := by
+    rw [← Real.exp_nat_mul]
+    congr 1
+    push_cast
+    ring
+  rw [hsq] at h
+  exact h
+
+/-- The real prime-power terms are summable for `σ > 1/2`. -/
+theorem summable_primePowerTerm_real {σ : ℝ} (hσ : 1 / 2 < σ) :
+    Summable fun k =>
+      -Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k)) := by
+  have hσ0 : 0 < σ := by linarith
+  set q : ℝ := Real.exp (-(σ * P.atom 0)) with hq
+  have hq1 : q < 1 := Real.exp_lt_one_iff.mpr (by nlinarith [P.atom_pos 0])
+  refine Summable.of_nonneg_of_le (fun k => le_trans (by positivity) (P.primePowerTerm_real_ge hσ0 k))
+    (fun k => ?_) (((P.summable_exp_atom (a := 2 * σ) (by linarith)).mul_right
+      ((1 - q)⁻¹)).div_const 2)
+  have hle : Real.exp (-(σ * P.atom k)) ≤ q := by
+    rw [hq]
+    exact Real.exp_le_exp.mpr (by nlinarith [P.atom_zero_le k])
+  have h := norm_primePowerTerm_le (P.atom_pos k) (z := (σ : ℂ)) (by simp) hle hq1
+  rw [P.primePowerTerm_ofReal hσ0.le k, Complex.norm_real, Real.norm_eq_abs] at h
+  exact (le_abs_self _).trans (by simpa [mul_assoc] using h)
+
+/-- **The continuation blows up at `s = 1/2`.** Along the real axis `‖ζ_P(σ)‖ → ∞` as
+`σ → 1/2⁺`: the prime squares give `R(σ) ≥ ½ Σ_k p_k^{-2σ}`, which diverges since `Σ 1/p_k = ∞`,
+while `ζ_c(1/2) ≠ 0` and `sΛ(s)` is continuous at `1/2`. So the discrete zeta function has no
+continuous extension to the critical line and admits no functional-equation defect there. -/
+theorem tendsto_norm_continuation_half :
+    Tendsto (fun σ : ℝ => ‖P.continuation σ‖) (𝓝[>] (1 / 2)) atTop := by
+  set ζc := overRegularZeta P.μ P.ν P.γ with hζc
+  set F : ℂ → ℂ := fun s => s * boundedLaplace P.discrepancy s with hF
+  have hhalf : ((1 / 2 : ℝ) : ℂ) = 1 / 2 := by push_cast; ring
+  -- continuity of `ζ_c` and `F` at `1/2`
+  have hden : ((1 / 2 : ℂ) - 1) * ((1 / 2 : ℂ) + (3 * P.μ - 1 - P.ν)) *
+      ((1 / 2 : ℂ) + (3 * P.μ - 1 + P.ν)) ≠ 0 :=
+    overRegularZeta_denom_ne_zero P.hν0.le (by norm_num; linarith [P.hν]) (by norm_num)
+  have hζd : DifferentiableAt ℂ ζc (1 / 2) := by
+    rw [hζc]
+    unfold overRegularZeta
+    exact DifferentiableAt.div (by fun_prop) (by fun_prop) hden
+  have hζ0 : ζc (1 / 2) ≠ 0 := by
+    rw [hζc, overRegularZeta]
+    refine div_ne_zero (mul_ne_zero ?_ ?_) hden
+    · have : ((1 / 2 : ℂ) - (1 - P.μ)) ^ 2 + (P.γ : ℂ) ^ 2 =
+          (((P.μ - 1 / 2) ^ 2 + P.γ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+      rw [this]
+      have : 0 < (P.μ - 1 / 2) ^ 2 + P.γ ^ 2 := by nlinarith [P.hμ2, sq_nonneg P.γ]
+      exact_mod_cast this.ne'
+    · have : (1 / 2 : ℂ) + (4 * P.μ - 1) = ((4 * P.μ - 1 / 2 : ℝ) : ℂ) := by push_cast; ring
+      rw [this]
+      have : 0 < 4 * P.μ - 1 / 2 := by linarith [P.hμ1]
+      exact_mod_cast this.ne'
+  have hζc_cont : ContinuousAt (fun σ : ℝ => ζc σ) (1 / 2) := by
+    have := hζd.continuousAt
+    rw [← hhalf] at this
+    exact this.comp Complex.continuous_ofReal.continuousAt
+  have hFd : DifferentiableAt ℂ F (1 / 2) := by
+    have hΛ := (differentiableOn_boundedLaplace P.measurable_discrepancy
+      P.abs_discrepancy_le).differentiableAt
+      ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
+        (by show (0 : ℝ) < (1 / 2 : ℂ).re; norm_num))
+    exact differentiableAt_id.mul hΛ
+  have hF_cont : ContinuousAt (fun σ : ℝ => (F σ).re) (1 / 2) := by
+    have := hFd.continuousAt
+    rw [← hhalf] at this
+    exact Complex.continuous_re.continuousAt.comp (this.comp Complex.continuous_ofReal.continuousAt)
+  set A := ‖ζc (1 / 2)‖ / 2 with hA
+  have hA0 : 0 < A := by rw [hA]; exact half_pos (norm_pos_iff.mpr hζ0)
+  set B := (F (1 / 2)).re - 1 with hB
+  have hζev : ∀ᶠ σ : ℝ in 𝓝 (1 / 2), A < ‖ζc σ‖ := by
+    have h := hζc_cont.norm
+    have hval : ‖ζc ((1 / 2 : ℝ) : ℂ)‖ = ‖ζc (1 / 2)‖ := by rw [hhalf]
+    refine h.eventually (Ioi_mem_nhds ?_)
+    show A < ‖ζc ((1 / 2 : ℝ) : ℂ)‖
+    rw [hval, hA]
+    exact half_lt_self (norm_pos_iff.mpr hζ0)
+  have hFev : ∀ᶠ σ : ℝ in 𝓝 (1 / 2), B < (F σ).re := by
+    have hval : (F ((1 / 2 : ℝ) : ℂ)).re = (F (1 / 2)).re := by rw [hhalf]
+    refine hF_cont.eventually (Ioi_mem_nhds ?_)
+    show B < (F ((1 / 2 : ℝ) : ℂ)).re
+    rw [hval, hB]
+    linarith
+  rw [tendsto_atTop]
+  intro M
+  set M' := max M 1 with hM'
+  have hM'0 : 0 < M' := lt_of_lt_of_le one_pos (le_max_right _ _)
+  set T := Real.log M' - Real.log A - B with hT
+  -- partial sums of `1/p_k` are unbounded
+  have hdiv := (not_summable_iff_tendsto_nat_atTop_of_nonneg (fun k => (Real.exp_pos _).le)).mp
+    P.not_summable_exp_neg_atom
+  obtain ⟨K, hK⟩ := Filter.eventually_atTop.mp ((tendsto_atTop.mp hdiv) (2 * T + 1))
+  have hKK := hK K le_rfl
+  set g : ℝ → ℝ := fun σ => ∑ k ∈ Finset.range K, Real.exp (-(2 * σ * P.atom k)) with hg
+  have hg_cont : ContinuousAt g (1 / 2) := by
+    rw [hg]
+    fun_prop
+  have hg_half : g (1 / 2) = ∑ k ∈ Finset.range K, Real.exp (-(P.atom k)) := by
+    rw [hg]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    congr 1
+    ring
+  have hgev : ∀ᶠ σ : ℝ in 𝓝 (1 / 2), 2 * T < g σ :=
+    hg_cont.eventually (Ioi_mem_nhds (by rw [hg_half]; linarith))
+  have hall := (hζev.and (hFev.and hgev))
+  filter_upwards [nhdsWithin_le_nhds hall, self_mem_nhdsWithin] with σ hσ hσ12
+  obtain ⟨h1, h2, h3⟩ := hσ
+  have hσ' : 1 / 2 < σ := hσ12
+  have hσ0 : 0 < σ := by linarith
+  -- `R(σ) ≥ g(σ)/2`
+  set r := ∑' k, (-Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k)))
+    with hr
+  have hr_ge : g σ / 2 ≤ r := by
+    have hsumm := P.summable_primePowerTerm_real hσ'
+    have hpart := hsumm.sum_le_tsum (Finset.range K) (fun k _ =>
+      le_trans (by positivity) (P.primePowerTerm_real_ge hσ0 k))
+    have hterm : g σ / 2 ≤ ∑ k ∈ Finset.range K,
+        (-Real.log (1 - Real.exp (-(σ * P.atom k))) - Real.exp (-(σ * P.atom k))) := by
+      rw [hg, Finset.sum_div]
+      exact Finset.sum_le_sum fun k _ => P.primePowerTerm_real_ge hσ0 k
+    linarith
+  have hnorm : ‖P.continuation σ‖ = ‖ζc σ‖ * Real.exp ((F σ).re + r) := by
+    rw [continuation, norm_mul, Complex.norm_exp, P.primePowerRemainder_ofReal hσ0.le, Complex.add_re,
+      Complex.ofReal_re]
+  rw [hnorm]
+  have hexp : Real.exp (Real.log M' - Real.log A) ≤ Real.exp ((F σ).re + r) :=
+    Real.exp_le_exp.mpr (by linarith)
+  rw [Real.exp_sub, Real.exp_log hM'0, Real.exp_log hA0] at hexp
+  calc M ≤ M' := le_max_left _ _
+    _ = A * (M' / A) := by field_simp
+    _ ≤ ‖ζc σ‖ * Real.exp ((F σ).re + r) :=
+        mul_le_mul h1.le hexp (by positivity) (norm_nonneg _)
 
 end Params
 

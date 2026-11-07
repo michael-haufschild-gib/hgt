@@ -1,8 +1,8 @@
 # Gcd classes of smooth × prime near-collisions
 
 - **ID:** SPL-smooth-prime-determinant-gcd
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Question:** Which arithmetic restrictions survive on a nonzero shifted-product fibre?
 
 Let `m,m'` have only prime factors at most `y`, and let primes `p,p'>y`.
@@ -47,5 +47,14 @@ bound, doubled and added to the exact diagonal, controls the full energy.
 At height resolution `δ=1/T`, the integer-difference cutoff is
 `ceil(4X²/T)`.
 
-Lean verification remains open. No prime-pair
-asymptotic, random-energy law, or exponential-sum saving is claimed.
+## Formalization
+
+`SmoothPrimeCollisionClasses.lean` proves `smooth_prime_determinant_gcd`,
+`smoothPrimeCollisionCount_le_gcd_classes`,
+`smoothPrimeUpperLogCount_le_gcd_classes`, `smoothPrimeCollisionCount_zero`,
+`smoothPrimeLogEnergy_eq_diagonal_add_twice`,
+`smoothPrimeLogEnergy_le_gcd_classes`, and `smoothPrimeLogEnergy_le_at_height`.
+The direct source check passes; all seven capstone axiom audits contain
+only `propext`, `Classical.choice`, and `Quot.sound`.
+
+No prime-pair asymptotic, random-energy law, or exponential-sum saving is claimed.

@@ -30,6 +30,12 @@ and the actual prime weights, rather than only count the signatures of a
 finite set. It must also avoid a loss proportional to word length that turns
 constant prime precision into vanishing precision.
 
+The [balanced smooth × prime count](../3-formalized/logarithm-smooth-prime-determinant-gcd.md)
+now bounds fine energy by its exact diagonal plus disjoint gcd-class costs
+for differences up to `ceil(4X²/T)`. This retains actual prime-column
+coprimality beyond diagonal collisions. A random-scale bound for the
+remaining arithmetic sum, and control of winding cells, are still missing.
+
 ## Independent finite-zero target
 
 Decide whether the exact integer count and its carries contradict the finite

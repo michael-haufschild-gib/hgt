@@ -47,9 +47,14 @@ theorem Xi_ge_parabolic {b : ℝ} (hb : |b| ≤ 6) :
     (49 / 100 : ℝ) * (1 - b ^ 2 / 36) ≤ Xi b := by
   have hb2 : b ^ 2 ≤ 36 := by
     have h := pow_le_pow_left₀ (abs_nonneg b) hb 2
-    simpa only [sq_abs] using h
+    norm_num only [sq_abs, show (6 : ℝ) ^ 2 = 36 by norm_num] at h
+    exact h
   have hw : 0 ≤ 1 - b ^ 2 / 36 := by linarith only [hb2]
-  exact (mul_le_mul_of_nonneg_right Xi_zero_ge hw).trans (Xi_ge_center_parabola b)
+  have hz : (49 / 100 : ℝ) ≤ Xi 0 := by
+    have hh := Xi_zero_ge
+    norm_num at hh ⊢
+    exact hh
+  exact (mul_le_mul_of_nonneg_right hz hw).trans (Xi_ge_center_parabola b)
 
 /-- Every zero contributes to the pair sum at least its share of `2 + γ − log 4π`. -/
 theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| ≤ 6) (q : XiZeroCopy) :
@@ -82,7 +87,7 @@ theorem pair_floor_six {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : |b| �
     rw [hρ, one_div, Complex.inv_re, Complex.normSq_apply, ← hA]
     simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, Complex.I_re,
       Complex.I_im, mul_zero, mul_one, sub_self, add_zero, Complex.add_im, Complex.mul_im,
-      zero_add, sub_zero, zero_mul]
+      zero_add]
     rw [div_le_div_iff₀ (by nlinarith only [hA0, mul_self_nonneg (2 * δ * γ)]) hA0]
     nlinarith only [mul_self_nonneg (2 * δ * γ)]
   -- The pair.
@@ -238,11 +243,13 @@ theorem current_ge_parabolic {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : 
     simpa using hlog
   have hnn : ∀ a' ∈ Ioo 0 a, 0 ≤ current a' b := fun a' ha' =>
     current_nonneg_of_rhVerifiedThrough (T := 66) ha'.1 (by
-      simpa using rhVerifiedThrough_sixtySeven) (hb.trans (by norm_num))
+      norm_num
+      exact rhVerifiedThrough_sixtySeven) (hb.trans (by norm_num))
   have hN := sq_Xi_le_normSq ha.le hnn
   have hb2 : b ^ 2 ≤ 36 := by
     have h := pow_le_pow_left₀ (abs_nonneg b) hb 2
-    simpa only [sq_abs] using h
+    norm_num only [sq_abs, show (6 : ℝ) ^ 2 = 36 by norm_num] at h
+    exact h
   have hw : 0 ≤ (49 / 100 : ℝ) * (1 - b ^ 2 / 36) := by
     have : 0 ≤ 1 - b ^ 2 / 36 := by linarith only [hb2]
     positivity
@@ -255,5 +262,8 @@ theorem current_ge_parabolic {a b : ℝ} (ha : 0 < a) (ha2 : a ≤ 1 / 2) (hb : 
     (Complex.normSq_nonneg (XiC ((b : ℂ) - (a : ℂ) * I)))
   have hp := mul_nonneg ha.le (sq_nonneg (1 - b ^ 2 / 36))
   nlinarith only [h1, hp]
+
+#print axioms Xi_ge_center_parabola
+#print axioms current_ge_parabolic
 
 end GaloisForLFunctions.ThetaCuspSections.ExplicitCollar
