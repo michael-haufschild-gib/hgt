@@ -7,7 +7,7 @@
 
 ## Established boundary
 
-Rank eleven is positive for `0<a≤1/2`. Its polynomial splits into an even quintic and odd quartic in `b²`. Current is nonnegative through `|b|≤66`, bounded below by `0.0006a` on `|b|≤5`, and bounded in absolute value by `3.6·10⁷a exp(-7|b|/5)`. The general verified-height transfer requires `41+6(N+2)log(N+2)`; arbitrary-height verification is not available.
+Rank twelve is positive for `0<a≤1/2`, with quantitative complete-source payment `∫p² current≥aE/1200` for `deg p≤11` and `E=∫₋₆⁶((1−b²/36)p(b))²`. Current is nonnegative through `|b|≤66`. The general verified-height transfer requires `41+6(N+2)log(N+2)`; arbitrary-height verification is not available.
 
 Native tails have positive Gamma/Hermite reserves at every rank beyond explicit rank-dependent horizons. Fixed diagonal repairs, a fixed finite-head Gaussian margin, and a fixed successor/diagonal fraction cannot close every rank.
 
@@ -25,7 +25,7 @@ Native tails have positive Gamma/Hermite reserves at every rank beyond explicit 
 
 ## Active payment
 
-The squared parabolic core `(a/300)(1-b²/36)²` on `[-6,6]` and the general Legendre exterior bound have dependency-closed paper proofs. For `deg p≤11`, write `E=∫₋₆⁶((1-b²/36)p(b))²`. The exterior bound `(5300000/6²²)|b|²²E` and existing height-67 verification give `∫p² current ≥ aE/1200`. Exact Lean formalization is in progress in `ParabolicCurrentCore`, `LegendrePolynomialKernel`, and `TheTwelfthSectionFromHeightSixtySeven`; rank twelve is not yet counted as formalized.
+`ParabolicCurrentCore`, `LegendrePolynomialKernel`, and `TheTwelfthSectionFromHeightSixtySeven` supply the radius-six payment. Rank twelve passed its final individual Lean check and transitive axiom audit. The general kernel preserves every degree cutoff without rank-specific coefficient expansions.
 
 ## Further payment estimates
 

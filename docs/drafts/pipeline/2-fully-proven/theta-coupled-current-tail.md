@@ -26,4 +26,5 @@ Real symmetry of `ΞC` identifies `H(a)=|ΞC(b−ia)|²` and `H′(a)=current(a,
 The factor `32` improvement retains the common contour phase and evenness
 before taking absolute values. No new zero verification is used.
 
-Exact formalization target: `ThetaCuspSections/CoupledCurrentTail.lean`.
+Exact formalization: `ThetaCuspSections/EvenCauchyBound.lean` and
+`ThetaCuspSections/CoupledCurrentTail.lean`.

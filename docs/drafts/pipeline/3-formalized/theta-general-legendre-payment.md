@@ -1,7 +1,7 @@
 # General Legendre exterior payment
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean formalization in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean verified)
 - **Source:** Corpus `legP_bonnet`, `legP_orthog`, `legP_sq_integral`.
 - **Lean target:** `ThetaCuspSections/LegendrePolynomialKernel.lean`.
 
@@ -20,11 +20,18 @@ Here `Σ_{j≤n}|x|^(2j)≤(16/15)|x|^(2n)` follows by induction; parity handles
 
 The degree cutoff is preserved: Bonnet's recurrence expresses `x^r P_d` using modes of degree at most `r+d`. Thus the kernel applies to arbitrary polynomials, without rank-specific coefficient formulas.
 
-## Rank-twelve payment [DERIVED; formalization pending]
+## Rank-twelve payment [LEAN VERIFIED]
 
 For `deg p≤11`, set `q(b)=(1−b²/36)p(b)` and `E=∫₋₆⁶q²`. Apply the degree-thirteen estimate to `q(6x)`. The recurrence gives `c₁₃≤1300`. For `|b|≥66`, put `x=|b|/6≥11`; then `(x²−1)²≥(15/16)²x⁴`. These inequalities yield
 `p(b)²≤(5300000/6²²)|b|²² E`.
 
 The existing exponential tail estimate and `66²⁰ exp(−92.4)≤1.85·10⁻⁴` imply total exterior loss at most `aE/400`. The parabolic core supplies `aE/300`; the intervening region is nonnegative by verified height 67. Therefore every nonzero polynomial of degree at most eleven has strictly positive current energy. Nonzero energy follows from the kernel inequality and polynomial uniqueness.
 
-No stronger-rank or all-rank payment is claimed.
+`TheTwelfthSectionFromHeightSixtySeven.lean` proves the quantitative bound
+`form12_lower` and `thetaCuspCenterMixedSignedHankel_twelve_posDef` for every
+`0<a≤1/2`. Final individual check passed with `lake --old env lean`.
+Both declarations and the general kernel have only `propext`,
+`Classical.choice`, and `Quot.sound` in their transitive axiom audits.
+The finished modules are imported by `ThetaCuspSections.lean`.
+
+No all-rank payment is claimed.

@@ -276,20 +276,26 @@ our current research programmes:
 __ LIST README FILES FROM ## review HERE __
 
 research, derive, formalize a significant contribution to either:
-- overcome an open hard obstacle in a route docs/reports/review-2610/hard-obstacles.md
-- finds a solution for removing a wall in docs/reports/review-2610/walls-ledger.md
+- overcome an open hard obstacle in a route docs/reports/review-0711/hard-obstacles.md
+- finds a solution for removing a wall in docs/reports/review-0711/walls-ledger.md
 - find an answer to an open question in a research programme
 - gain one of the mathematical tools a research programme is missing
 - gain a deeper insight about the problem the field is exploring and the nature of the field itself 
 - prove a significant theorem that significantly advances our research about the RH as a whole 
   
 Not valid are improvements of numbers, nogos, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
-
+    
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
-read fully:
-formal/GaloisForLFunctions/SignedWindowCriticality/README.md
-
+read these research programmes:
+- formal/GaloisForLFunctions/PrimeTorusTheory/README.md
+- formal/GaloisForLFunctions/TailArithmeticOfThePrimeOrbit/README.md
+- formal/GaloisForLFunctions/ZeroConfigurationGeometry/README.md
+- formal/GaloisForLFunctions/RigidArithmeticOfCuts/README.md
+- formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/README.md
+- formal/GaloisForLFunctions/ArithmeticGaugeTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticScatteringHolography/README.md
+            
 on every turn: 
 research, derive, formalize a significant contribution to the field that significantly helps to either:
 - find an answer to an open question in the research programme
@@ -635,16 +641,13 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0711/obstacles-summary.md
+read and understand docs/reports/review-0711/aal.md
 
-under "## 3. The one question" it asks one question: 
-"**Does the prefix decouple from the top collar at a fixed critical ratio?** Let `R=c⁸/log N` be fixed, `y` the top-collar part of `U` and `p` the prefix. Is the Schur cost of the prefix and low packet against the collar negligible:
+it describes what AAL is, what we know about it, and what a proof/disprove must be.
 
-`|B(U_y,U_p)|²≤o(1)·Q(U_p)·(Q(U_y)+B_R‖U_y‖²)`, on the complement of a low packet whose signed polar part is retained?"
+your task: proof or disprove AAL, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 
-your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
-
-We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
+We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question - an unconditional proof or disprove of AAL.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -666,6 +669,8 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
+Keep your own working log in logs/ to document findings. Do not edit the aal.md file.
 
 Do not use the wall ledger as diary. Only update status, do not add more.
 

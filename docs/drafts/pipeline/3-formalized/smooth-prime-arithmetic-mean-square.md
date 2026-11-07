@@ -1,17 +1,17 @@
 # Smooth–prime mean square with arithmetic off-diagonal cost
 
 - **ID:** TAPO-smooth-prime-arithmetic-mean-square
-- **Stage:** 2-fully-proven; Lean verification in progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Scope:** Broader RH research; uses the proved Fourier triangular majorant.
 
 For `y`-smooth rows `A` and prime columns `P>y`, all in `(X,2X]`, and
-coefficients `|c(m,p)|≤1`, seek a uniform bound on every centered interval:
+coefficients `|c(m,p)|≤1`, every centered interval satisfies:
 
 `∫_{−T}^T |Σ_(m∈A,p∈P) c(m,p)(mp)^(−i(U+t))|² dt`
 `≤(5π/2)(T #A #P+8X² #A²)`.
 
-The intended off-diagonal cost scales with the square of the number of
+The off-diagonal cost scales with the square of the number of
 smooth rows. Generic product-frequency separation instead charges the
 number of product terms. This is useful when the smooth support is sparse.
 
@@ -74,3 +74,14 @@ The same bound divided by `V²` controls the smooth-head mass restricted to
 `|B(U+t)|≥V`, for every `V>0`: on this set,
 `|R|²≤|R|²|B|²/V²`. Integrate this pointwise inequality and enlarge the
 integration set. Continuity gives all needed measurability and integrability.
+
+## Lean status
+
+`TailArithmeticOfThePrimeOrbit/TheSmoothPrimeMeanSquareHasAnArithmeticCost.lean`
+proves `balancedSmoothPrimeEnergy_le`, `integral_balancedSmoothPrimePoly_le`,
+`integral_balancedSmoothPrimePoly_shift_le`, `integral_fullSmoothPrimePoly_shift_le`,
+`integral_balancedHead_primeTail_sq_le`, and
+`setIntegral_balancedHead_on_large_primeTail_le`.
+
+Direct source check passed. All six capstones and the imported Fourier kernel
+were audited with `#print axioms`: only `propext`, `Classical.choice`, `Quot.sound`.

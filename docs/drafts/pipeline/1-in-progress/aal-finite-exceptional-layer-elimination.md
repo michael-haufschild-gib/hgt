@@ -17,7 +17,9 @@ Under negated AAL, the existing spectral-gap theorem isolates finitely many zero
 
 No unconditional decision established. The existing transport theorem requires locally bounded translates; the spectral-gap theorem does not supply this bound. No Lean theorem is claimed here.
 
-The two-prime annihilator theorem proves finiteness, not emptiness. The affine Haar obstruction requires an additional kernel extension not supplied by finite zero support. The next candidate couples the finite prime-error profile to a head-conditioned Euler-tail mean at critical resonator length; its required arithmetic inequality is unproved.
+The two-prime annihilator theorem proves finiteness, not emptiness. The affine Haar obstruction requires an additional kernel extension not supplied by finite zero support. The head-conditioned Euler-tail mean at critical resonator length still lacks its required arithmetic inequality.
+
+`IntegerNormOneOff.exists_integer_norm_euler_one_off` now constructs a positive Euler product with natural-number generator norms and exactly the zero pair `3/5 ± iγ` on `Re s > 1/2`, away from `1`. Integer norms alone are therefore insufficient. Its counting error and functional equation are not controlled. The actual zeta problem must retain stronger arithmetic information, such as its exact counting function or full functional equation.
 
 ## Gates
 

@@ -193,12 +193,14 @@ theorem hasProd_euler {t : ℕ → ℝ} (ht : ∀ k, 0 < t k)
     exact lt_irrefl _ hlt
   have h := (Complex.continuous_exp.tendsto _).comp hlog.hasSum
   change Tendsto (fun J : Finset ℕ => ∏ k ∈ J, (1 - cexp (-(s * t k)))⁻¹)
-    atTop (𝓝 _) 
+    atTop (𝓝 _)
   convert h using 1
-  funext J
-  dsimp only [Function.comp_def]
-  rw [Complex.exp_sum]
-  exact Finset.prod_congr rfl fun k _ => by rw [Complex.exp_neg, Complex.exp_log (hne k)]
+  · funext J
+    dsimp only [Function.comp_def]
+    rw [Complex.exp_sum]
+    exact Finset.prod_congr rfl fun k _ => by
+      rw [Complex.exp_neg (Complex.log (1 - cexp (-(s * t k)))), Complex.exp_log (hne k)]
+  · rfl
 
 theorem roundedZeta_eq_continuation (P : Params) {s : ℂ} (hs : 1 < s.re) :
     roundedZeta P s = roundedContinuation P s := by
@@ -263,7 +265,7 @@ def fixedParams (γ : ℝ) : Params where
   hν := by norm_num
 
 /-- At every prescribed ordinate, an Euler product with integer prime norms has exactly
-the zero pair `3/5 ± iγ` to the right of the critical line, excluding its pole at `1`. -/
+the zero pair `3/5 ± iγ` on `Re s > 1/2` away from `1`. -/
 theorem exists_integer_norm_euler_one_off (γ : ℝ) :
     ∃ q : ℕ → ℕ, (∀ k, 2 ≤ q k) ∧ ∃ F : ℂ → ℂ,
       (∀ s : ℂ, 1 < s.re →

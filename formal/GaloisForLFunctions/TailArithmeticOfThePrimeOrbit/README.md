@@ -1,6 +1,6 @@
 # Tail Arithmetic of the Prime Orbit (TAPO)
 
-Namespace `GaloisForLFunctions.TailArithmeticOfThePrimeOrbit`; umbrella `TailArithmeticOfThePrimeOrbit.lean`; 15 modules.
+Namespace `GaloisForLFunctions.TailArithmeticOfThePrimeOrbit`; umbrella `TailArithmeticOfThePrimeOrbit.lean`.
 
 Throughout, `t` is a height, `L = log t`, `ω_t = (p^{−it})_p` is the point of the prime orbit at time `t`, and `y` is a
 *cut*: the primes up to `y` are the **head**, the primes above `y` the **tail**. `E_y = Π_{p≤y}(1 − p^{−s})^{−1}` is the
@@ -110,6 +110,7 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | The fade is forced | `eventually_abs_harmonicDefect_sub_le`, `tendsto_harmonicDefect`, `logLog_le_of_isWeakReturn` | `TheFadeOfAReturn` |
 | Head–tail decoupling | `smooth_mul_rough_injective`, `indexed_meanValue`, `integral_head_mul_tail`, `abs_conditional_second_moment_sub_le`, `norm_integral_head_sq_mul_tail_le` | `TheTailDecouplesFromTheHead` |
 | Gaussian conditional moments | `headPoly_pow`, `powNorm_le`, `integral_head_mul_tail_pow_le`, `setIntegral_head_on_large_tail_le` | `TheConditionalMomentsOfTheTail` |
+| Arithmetic smooth–prime second moment | `integral_balancedHead_primeTail_sq_le`, `setIntegral_balancedHead_on_large_primeTail_le` | `TheSmoothPrimeMeanSquareHasAnArithmeticCost` |
 | The head is frozen | `abs_log_norm_eulerMollifier_sub_le`, `abs_log_norm_eulerHead_sub_le_of_one_le`, `norm_zeta_eq_head_mul_tail` | `TheHeadIsFrozenAtItsResolution` |
 | The tail carries the zero | `eulerTail_eq_zero_iff`, `tendsto_eulerTail_of_phaseReturn`, `tendsto_zero_tail_of_phaseReturn`, `zetaReturnSet_subset_eulerDiscTailBadSet`, `exists_returns_tailBad_and_rare` | `TheTailOfAReturnCarriesTheZero` |
 | The recurrence dichotomy of the tail | `exists_tailBad_of_zero`, `zetaTargetReturnSet_subset_eulerDiscTailBadSet`, `tail_recurrence_dichotomy` | `TheRecurrenceDichotomyOfTheTail` |
@@ -119,6 +120,13 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | The comb | `dist01_mul_le`, `dist01_le_of_isReturn`, `card_comb_le`, `comb_inequality` | `TheCombOfAReturn` |
 | The questions and the tools | `question_one` … `question_six`, `the_tools` | `TheQuestionsOfTheField` |
 
+For arbitrary smooth rows `A` and prime columns `B>y` in `(X,2X]`, coefficients of modulus at most one,
+all centers `U` and `T>0`, the actual product polynomial satisfies
+`∫_[−T,T]|R(U+t)|²|B(U+t)|²≤(5π/2)(T #A #B+8X² #A²)`.
+Summing compatible integer differences cancels the gcd cost; a triangular Fourier majorant transfers
+the count without a harmonic logarithm. Restricting head mass to `|B|≥V` costs `V⁻²`.
+This gives a sparse-head arithmetic error, without a prime-density saving or control of infinite exceptional tails.
+
 ## 7. Tools
 
 | Tool | Reaches | Stops at |
@@ -126,6 +134,7 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | Proportional non-alignment past Kronecker | B46 is exactly the absence of heavy returns of weight `1 − c/η` (and excludes heavy returns with `ηS + 2κ < cS`); proportional saving on a window bounds the first return of the column; the precision law converts every absolute saving into a first-return bound | constant precision in the dark range: the heavy first return there is the open problem |
 | A moment past the last diagonal scale that sees smooth-number density | the comb: at a return the smooth integers lie on `exp((2π/t)ℤ)` with teeth `k√(η/8)`, and past `X ≍ t` the comb has density `O(δ)` | below `X ≍ t` the comb is not an interval structure; seeing it there is a count of smooth numbers in intervals of length `X/t` with polylogarithmic smoothness |
 | Conditional mean values on Bohr sets | exact head–tail factorization of all conditional moments, Gaussian moments and large deviations of the tail | the Kronecker scale: the head resonator must be shorter than the height, `log max A + k log Z ≪ log T` |
+| Arithmetic second moments for sparse smooth heads | every centered interval; error `8X² #A²` for balanced smooth–prime supports and bounded coefficients | prime-density savings, growing heads and infinite exceptional tails |
 | A lower bound for atypical members of a Bohr set | nonvanishing tail shapes occur at positive density (universality); shapes with a zero only at tail-bad heights of density zero | a lower bound for tail-bad heights *at a zero*: that is B89 |
 | A sum–product theorem for the height orbit | the comb is a multiplicative approximate group and, past `X ≍ t`, locally an interval structure; the comb inequality gives polynomial first returns at precision `≲ 1/k` | the comb has both structures, so sum–product inequalities do not exclude it; below `X ≍ t` it is the dark range |
 | Agler-type certificates past the abscissa | head–tail certificates wherever the tail coordinate is Schur | Euler coordinates, prime by prime or perturbed summably, diverge on `½ < Re s ≤ 1` |

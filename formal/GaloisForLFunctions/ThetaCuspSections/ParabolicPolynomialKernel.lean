@@ -50,7 +50,7 @@ theorem polynomial_sq_le_parabolicEnergy {R : ℝ} (hR : 0 < R) {P : ℝ[X]}
     (a := -1) (b := 1) (c := R) (d := 0)
   have hscaled (x : ℝ) : ((1 - (R * x + 0) ^ 2 / R ^ 2) * P.eval (R * x + 0)) ^ 2 =
       Q.eval x ^ 2 := by
-    rw [hQeval, add_zero, mul_pow, mul_div_cancel_left₀ _ (pow_ne_zero 2 hR.ne')]
+    simp only [hQeval, add_zero, mul_pow, mul_div_cancel_left₀ _ (pow_ne_zero 2 hR.ne')]
   simp_rw [hscaled] at hcov
   simp only [mul_neg, mul_one, add_zero] at hcov
   have hI : (∫ x in (-1 : ℝ)..1, Q.eval x ^ 2) = parabolicEnergyAt R P / R := by
@@ -58,7 +58,7 @@ theorem polynomial_sq_le_parabolicEnergy {R : ℝ} (hR : 0 < R) {P : ℝ[X]}
     rw [mul_comm]
     exact hcov
   have hval : Q.eval (b / R) = (1 - b ^ 2 / R ^ 2) * P.eval b := by
-    rw [hQeval, show R * (b / R) = b by field_simp [hR.ne'] <;> ring, div_pow]
+    rw [hQeval, show R * (b / R) = b by field_simp [hR.ne'], div_pow]
   have hpoint := polynomial_sq_le_legendreKernel (n + 3) Q hQdeg (b / R)
   rw [hval, mul_pow, hI] at hpoint
   let x : ℝ := |b| / R

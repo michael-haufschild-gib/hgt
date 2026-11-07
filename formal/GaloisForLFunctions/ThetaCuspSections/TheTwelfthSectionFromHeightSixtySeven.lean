@@ -68,7 +68,8 @@ theorem degree_eleven_parabolic_exterior {P : ℝ[X]} (hdeg : P.degree < 12)
   let x : ℝ := |b| / 6
   have hx : 11 ≤ x := by dsimp only [x]; linarith only [hb]
   have hx0 : 0 < x := by linarith only [hx]
-  have habs : |b / 6| = x := by simp only [abs_div, abs_ofNat, x]
+  have habs : |b / 6| = x := by
+    simp only [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 6), x]
   have hx2 : x ^ 2 = b ^ 2 / 36 := by
     dsimp only [x]
     rw [div_pow, sq_abs]

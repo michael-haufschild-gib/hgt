@@ -26,7 +26,7 @@ What this does not say about `ζ`: the region is a property of the archimedean d
 `(1, 0) ∈ 𝒟` is RH.
 -/
 
-open MeasureTheory Filter Topology Set intervalIntegral
+open MeasureTheory Filter Topology Set
 open scoped Nat Real ComplexConjugate
 
 noncomputable section
@@ -40,10 +40,9 @@ open _root_.RHTower.ResonatorProfile _root_.Zeta23
 /-! ### The Weil–Toeplitz bound with a conductor slack -/
 
 /-- Polar positivity with slack: `Re W(f) ≥ −σ` gives `∫ |f̂|² S ≥ −2πσ` for the finite-atom symbol. -/
-open Complex in
 theorem integral_weilAtomSymbol_ge_of_polar {lam : ℕ → ℝ} {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℂ}
-    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) (hp : paperFT f (I / 2) = 0)
-    (hm : paperFT f (-(I / 2)) = 0) {σ : ℝ}
+    (hf : ContDiff ℝ 2 f) (hfs : tsupport f ⊆ Icc (-a) a) (hp : paperFT f (Complex.I / 2) = 0)
+    (hm : paperFT f (-(Complex.I / 2)) = 0) {σ : ℝ}
     (hW : -σ ≤ (weilFullFunctional lam (EF.weilTest f f)).re) :
     -(2 * π * σ) ≤ ∫ τ : ℝ, ‖paperFT f τ‖ ^ 2 * weilAtomSymbol lam ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) := by
   have hfc : HasCompactSupport f :=
@@ -99,12 +98,12 @@ theorem integral_weilAtomSymbol_ge_of_polar {lam : ℕ → ℝ} {a : ℝ} (ha : 
   nlinarith
 
 /-- **The Weil–Toeplitz bound with slack.** If the finite-atom symbol energy of the resonator is at least
-`−σ ∫ |R̂|²`, `σ ≥ 0`, the bound of `weil_multiplicativeToeplitz_bound_of_profile` holds with `log N` raised by `σ`. -/
+`−σ ∫ |R̂|²`, the bound of `weil_multiplicativeToeplitz_bound_of_profile` holds with `log N` raised by `σ`. -/
 theorem toeplitz_bound_of_profile_slack {lam : ℕ → ℝ} {N : ℕ} (hN : 1 ≤ N)
     (c : ℕ → ℂ) (hc : ∀ m, N < m → c m = 0) {q : ℝ → ℝ} (hq : ContDiff ℝ 3 q)
     (hqv : ∀ u, 1 / ((N : ℝ) + 1) / 4 < |u| → q u = 0) (hq0 : 0 < ∫ u, q u ^ 2) {K : ℝ}
     (hK : (1 / ((N : ℝ) + 1)) ^ 2 * ∫ u, deriv q u ^ 2 ≤ K * ∫ u, q u ^ 2)
-    {σ : ℝ} (hσ : 0 ≤ σ)
+    {σ : ℝ}
     (hW : -(σ * ∫ τ : ℝ, ‖paperFT (profileResonator N c q) τ‖ ^ 2) ≤
       ∫ τ : ℝ, ‖paperFT (profileResonator N c q) τ‖ ^ 2 * weilAtomSymbol lam
         ⌊Real.exp (2 * (Real.log N / 2 + 1 / ((N : ℝ) + 1) / 4))⌋₊ (τ / (2 * π))) :
@@ -269,8 +268,8 @@ theorem toeplitz_bound_of_profile_slack {lam : ℕ → ℝ} {N : ℕ} (hN : 1 �
         ≤ ∫ τ : ℝ, (α * ‖paperFT F τ‖ ^ 2 + β * ‖paperFT F' τ‖ ^ 2) :=
           integral_mono hint1 ((hint2.const_mul α).add (hint3.const_mul β)) hpt
       _ = α * (∫ τ : ℝ, ‖paperFT F τ‖ ^ 2) + β * ∫ τ : ℝ, ‖paperFT F' τ‖ ^ 2 := by
-          rw [integral_add (hint2.const_mul α) (hint3.const_mul β), integral_const_mul,
-            integral_const_mul]
+          rw [integral_add (hint2.const_mul α) (hint3.const_mul β),
+            MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul]
       _ = α * (2 * π * k0r * sumc) + β * (2 * π * k1r * sumc) := by rw [hmass0, hmass1]
   have hratio : β * k1r ≤ K / 2 * k0r := by
     rw [hβ, hk1r, hk0r]; nlinarith
@@ -284,7 +283,7 @@ theorem toeplitz_bound_of_profile_slack {lam : ℕ → ℝ} {N : ℕ} (hN : 1 �
     have h1 : β * (2 * π * k1r * sumc) ≤ 2 * π * sumc * (K / 2 * k0r) := by
       have := mul_le_mul_of_nonneg_left hratio (show 0 ≤ 2 * π * sumc by positivity)
       linarith
-    nlinarith
+    linarith
   have h2T : 2 * T ≤ (α + K / 2 + σ) * sumc := le_of_mul_le_mul_left hmain hk2
   calc 2 * T ≤ (α + K / 2 + σ) * sumc := h2T
     _ ≤ (Real.log N + (Real.log 2 + 9 / 2 + K / 2) + σ) * sumc := by
@@ -358,7 +357,7 @@ theorem smoothed_toeplitz_le_conductor {β s c : ℝ} {lam : ℕ → ℝ} (h : l
     rw [deriv_gR']; exact sq_mul_integral_gR''_le hw hw1
   have hW := integral_weilAtomSymbol_resonator_ge h (L := L) (by linarith) (stepCoeff N)
   have hb := toeplitz_bound_of_profile_slack hL (stepCoeff N) hc (contDiff_gR' w 3)
-    (fun u hu => gR'_eq_zero hw hu) hq0 hK (abs_nonneg s) hW
+    (fun u hu => gR'_eq_zero hw hu) hq0 hK hW
   rw [toeplitz_lhs_stepCoeff] at hb
   have hrhs : ∑ m ∈ Finset.Icc 1 L, ‖stepCoeff N m‖ ^ 2 ≤ 1 + Real.log L :=
     (Finset.sum_le_sum fun m hm => norm_stepCoeff_sq_le (Finset.mem_Icc.mp hm).1).trans
@@ -400,7 +399,7 @@ theorem exists_le_one_add_mul_div_of_datumCone :
   have hκ0 : 0 ≤ κ := by positivity
   have hb₀0 : 0 ≤ b₀ := by have := localDensityConst_nonneg 0; positivity
   have hbs : ∀ s : ℝ, 2 * localDensityConst s / farJ ^ 2 = b₀ + κ * |s| := fun s => by
-    rw [hb₀, hκ]; unfold localDensityConst; simp only [abs_zero, mul_zero, add_zero]; ring
+    rw [hb₀, hκ]; unfold localDensityConst; simp only [abs_zero, mul_zero]; ring
   set R₀ : ℝ := (1 + 2 * Real.log 2 + C₀ + 2 * b₀) +
     ((Real.log 2 + C₀) * (1 + Real.log 2) + 2 * b₀) + 18 with hR₀
   set κ' : ℝ := 1 + 2 * κ + (1 + Real.log 2) + 2 * κ with hκ'
@@ -422,8 +421,8 @@ theorem exists_le_one_add_mul_div_of_datumCone :
   obtain ⟨N, hN, hlo, hNc⟩ := exists_level (c := c) (by linarith)
   have hmain := floor_le_ceiling_conductor hlam hβ.le hN hNc
   rw [← hC₀, ← hb] at hmain
-  have key := le_one_add_div_of_quadratic hP0 hQ0 (X := Real.log N) (by linarith) (by linarith)
-    (by linarith) (by rw [hP, hQ]; linarith)
+  have key := le_one_add_div_of_quadratic (β := β) (c := c) hP0 hQ0 (X := Real.log N) (by linarith)
+    (by linarith) (by linarith) (by rw [hP, hQ]; linarith)
   rw [hPQ] at key
   have hcpos : 0 < c := by linarith
   have hnum : 2 * (R₀ + κ' * |s|) ≤ 2 * (R₀ + κ') * (1 + |s|) := by nlinarith
@@ -461,7 +460,8 @@ theorem datumEnergy_affine {β β' s s' a b : ℝ} (hab : a + b = 1) (x y : ℕ 
       a * datumEnergy β s x f + b * datumEnergy β' s' y f := by
   have hk := EF.weilTest_hasCompactSupport hfc hfc
   obtain ⟨N, hN⟩ := exists_forall_log_eq_zero hk
-  simp only [datumEnergy_eq, re_weilFullFunctional_eq_affine _ hN]
+  rw [datumEnergy_eq, datumEnergy_eq, datumEnergy_eq, re_weilFullFunctional_eq_affine (a • x + b • y) hN,
+    re_weilFullFunctional_eq_affine x hN, re_weilFullFunctional_eq_affine y hN]
   have hsum : ∑ n ∈ Finset.range N, (if 2 ≤ n then (a • x + b • y) n / Real.sqrt n else 0) *
       (EF.weilTest f f (Real.log n) + EF.weilTest f f (-Real.log n)).re =
       a * ∑ n ∈ Finset.range N, (if 2 ≤ n then x n / Real.sqrt n else 0) *
