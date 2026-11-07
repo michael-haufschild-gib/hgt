@@ -24,12 +24,16 @@ private def latticeReflect : {p : ℤ × ℤ // p ≠ (0, 0)} ≃
     {p : ℤ × ℤ // p ≠ (0, 0)} where
   toFun p := ⟨(p.val.1, -p.val.2), by
     intro h
+    have h₁ := congrArg Prod.fst h
+    have h₂ := congrArg Prod.snd h
     apply p.property
-    exact Prod.ext (congrArg Prod.fst h) (by simpa using congrArg Prod.snd h)⟩
+    exact Prod.ext h₁ (by simpa using h₂)⟩
   invFun p := ⟨(p.val.1, -p.val.2), by
     intro h
+    have h₁ := congrArg Prod.fst h
+    have h₂ := congrArg Prod.snd h
     apply p.property
-    exact Prod.ext (congrArg Prod.fst h) (by simpa using congrArg Prod.snd h)⟩
+    exact Prod.ext h₁ (by simpa using h₂)⟩
   left_inv p := by apply Subtype.ext; simp
   right_inv p := by apply Subtype.ext; simp
 
@@ -54,11 +58,14 @@ private theorem zeroWindingTerm (ρ σ : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
     (p : {p : ℤ × ℤ // p ≠ (0, 0)}) :
     narainDirichletTerm ρ σ s (windingSplit (Sum.inl p)) =
       (ρ.y : ℂ) ^ s * epsteinTerm σ s (latticeReflect p) := by
+  have hp : (p.val.1, -p.val.2) ≠ (0, 0) := (latticeReflect p).property
   change (narainMassSq ρ σ (p.val, (0, 0)) : ℂ) ^ (-s) = _
   rw [mass_zeroWinding, Sieve.ofReal_div_cpow_eq_mul_cpow_neg
-    (div_pos (d4BMPoincareQuadratic_pos σ (latticeReflect p).val
-      (latticeReflect p).property) σ.y_pos) ρ.y_pos, neg_neg]
-  rw [epsteinTerm, epsteinWeight_eq_div_cpow σ s _ (latticeReflect p).property]
+    (div_pos (d4BMPoincareQuadratic_pos σ (p.val.1, -p.val.2) hp) σ.y_pos)
+      ρ.y_pos, neg_neg]
+  change ((d4BMPoincareQuadratic σ (p.val.1, -p.val.2) / σ.y : ℝ) : ℂ) ^ (-s) *
+      (ρ.y : ℂ) ^ s = (ρ.y : ℂ) ^ s * epsteinWeight σ s (p.val.1, -p.val.2)
+  rw [epsteinWeight_eq_div_cpow σ s _ hp]
   exact mul_comm _ _
 
 private theorem scalarTerm_parameters (ρ σ : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
@@ -84,14 +91,20 @@ private theorem scalarTerm_parameters (ρ σ : D4BMUpperHalfPlaneCoordinate) (s 
   rw [halfEpsteinTerm, epsteinWeight_eq_div_cpow ρ s _ hp,
     epsteinWeight_eq_div_cpow σ s _ ha]
 
+private theorem summable_reflectedSeed (σ : D4BMUpperHalfPlaneCoordinate)
+    {s : ℂ} (hs : 1 < s.re) :
+    Summable (fun a => d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv a)) := by
+  have h : Summable (d4BMPoincareSeed σ s) := summable_d4BMPoincareSeed σ ⟨s, hs⟩
+  exact h.comp_injective (i := fun a => d4BMPrimitiveIntegerPairReflectEquiv a)
+    d4BMPrimitiveIntegerPairReflectEquiv.injective
+
 private theorem summable_scalarWindingTerm (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :
     Summable (fun q : ScalarCharge => (narainMassSq ρ σ q.val : ℂ) ^ (-s)) := by
   apply scalarParameterOrder.summable_iff.mp
   simp only [Function.comp_def, scalarTerm_parameters]
   exact summable_mul_of_summable_norm (summable_halfEpsteinTerm ρ hs).norm
-    ((summable_d4BMPoincareSeed σ ⟨s, hs⟩).comp_injective
-      d4BMPrimitiveIntegerPairReflectEquiv.injective).norm
+    (summable_reflectedSeed σ hs).norm
 
 private theorem scalarWindingTerm_sum (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :
@@ -100,10 +113,13 @@ private theorem scalarWindingTerm_sum (ρ σ : D4BMUpperHalfPlaneCoordinate)
   rw [← scalarParameterOrder.tsum_eq
     (fun q : ScalarCharge => (narainMassSq ρ σ q.val : ℂ) ^ (-s))]
   simp only [scalarTerm_parameters]
-  rw [← tsum_mul_tsum_of_summable_norm (summable_halfEpsteinTerm ρ hs).norm
-    ((summable_d4BMPoincareSeed σ ⟨s, hs⟩).comp_injective
-      d4BMPrimitiveIntegerPairReflectEquiv.injective).norm,
-    d4BMPrimitiveIntegerPairReflectEquiv.tsum_eq (d4BMPoincareSeed σ s)]
+  calc
+    _ = (∑' t, halfEpsteinTerm ρ s t) *
+        ∑' a, d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv a) :=
+      (tsum_mul_tsum_of_summable_norm (summable_halfEpsteinTerm ρ hs).norm
+        (summable_reflectedSeed σ hs).norm).symm
+    _ = _ := congrArg ((∑' t, halfEpsteinTerm ρ s t) * ·)
+      (d4BMPrimitiveIntegerPairReflectEquiv.tsum_eq (d4BMPoincareSeed σ s))
 
 private theorem summable_narainZeroWinding (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :

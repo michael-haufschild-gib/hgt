@@ -63,7 +63,7 @@ The exact energy identity bounds their difference by the displayed maximum.
 
 This is classical root-of-unity energy, not a novelty claim. The intended
 contribution is a sharp conductor estimate for the primitive-orbit regulator.
-The exact identity and its application both require Lean formalization.
+The primitive-orbit and spacing estimates are the arithmetic application targets.
 
 ## Lean status
 
