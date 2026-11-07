@@ -38,7 +38,7 @@ theorem powerTail_factorial_lower {q : ℝ} (hq : 0 < q) (k : ℕ) :
       positivity
     have hstep : ((k : ℝ) + 1) / 2 * powerTail ((k : ℝ) + 3 / 2) q ≤
         powerTail (((k + 1 : ℕ) : ℝ) + 3 / 2) q := by
-      push_cast at hr
+      push_cast at hr hbd ⊢
       nlinarith only [hr, hnn, hbd]
     calc
       _ = ((k : ℝ) + 1) / 2 *
@@ -73,6 +73,33 @@ theorem integratedGaussianEvenMoment_normalized_lower {q : ℝ} (hq : 0 < q) (k 
   unfold integratedGaussianEvenMoment
   field_simp [hf2]
 
+/-- The complete actual moments lose the Gaussian mixture by an explicit geometric factor. -/
+theorem besselFirstAtomEvenMoment_le_integratedGaussian {q : ℝ} (hq : 3 ≤ q) (k : ℕ) :
+    besselFirstAtomEvenMoment q k ≤
+      (besselFirstAtomMomentCost q / powerTail (3 / 2) q) * (8 / 9 : ℝ) ^ k *
+        integratedGaussianEvenMoment q k := by
+  have hq0 : 0 < q := by linarith only [hq]
+  have hM := powerTail_three_halves_pos hq0
+  have hC : 0 ≤ besselFirstAtomMomentCost q := by
+    have hh := (besselFirstAtomGammaRatio_nonneg hq 0).trans
+      (besselFirstAtomGammaRatio_le hq 0)
+    simpa only [pow_zero, mul_one] using hh
+  have hfactor : 0 ≤ (besselFirstAtomMomentCost q / powerTail (3 / 2) q) * (8 / 9 : ℝ) ^ k := by
+    positivity
+  have hlo := mul_le_mul_of_nonneg_left
+    (integratedGaussianEvenMoment_normalized_lower hq0 k) hfactor
+  have hcancel : (besselFirstAtomMomentCost q / powerTail (3 / 2) q) *
+      (8 / 9 : ℝ) ^ k * powerTail (3 / 2) q = besselFirstAtomMomentCost q * (8 / 9 : ℝ) ^ k := by
+    field_simp [hM.ne']
+  rw [hcancel] at hlo
+  have hh := (besselFirstAtomGammaRatio_le hq k).trans hlo
+  unfold besselFirstAtomGammaRatio at hh
+  have hf : 0 < (2 : ℝ) ^ k / (2 * k).factorial := by positivity
+  apply (mul_le_mul_iff_right₀ hf).mp
+  calc
+    _ ≤ _ := hh
+    _ = _ := by ring
+
 /-- No positive fraction of the integrated Gaussian comparison pays every actual moment. -/
 theorem not_uniform_integratedGaussian_fraction {q : ℝ} (hq : 3 ≤ q) :
     ¬ ∃ c : ℝ, 0 < c ∧ ∀ k : ℕ,
@@ -93,6 +120,7 @@ theorem not_uniform_integratedGaussian_fraction {q : ℝ} (hq : 3 ≤ q) :
 
 #print axioms powerTail_factorial_lower
 #print axioms integratedGaussianEvenMoment_normalized_lower
+#print axioms besselFirstAtomEvenMoment_le_integratedGaussian
 #print axioms not_uniform_integratedGaussian_fraction
 
 end GaloisForLFunctions.CompletedArithmeticForms

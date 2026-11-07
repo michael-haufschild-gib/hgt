@@ -2,7 +2,7 @@
 
 - **Stage:** 1-in-progress.
 - **Goal:** Pay rank fourteen through a radius-twelve core.
-- **Inputs:** The proposed `FourthTraceZeroGap` and the existing bound `Σ|λ⁻²|≤(11/10)poleSharpConstant<1/18`.
+- **Inputs:** Lean-checked `FourthTraceZeroGap` and the existing bound `Σ|λ⁻²|≤(11/10)poleSharpConstant<1/18`.
 
 For `0≤b<12`, the paired resolvent gives
 
@@ -18,4 +18,4 @@ With every zero ordinate greater than twelve, the on-line pair denominator satis
 
 Retain `E=∫₋₁₂¹²((1−b²/144)^4 p(b))²`. For `deg p≤13`, multiply by the fourth power of the parabolic weight and use the degree-21 Legendre kernel. Candidate exterior coefficient: `220000000000/12^26`. Together with the coupled current tail, the proposed tail charge is at most `aE/1000`, leaving at least `aE/250`.
 
-The zero-gap formalization, power minorant, general weighted kernel, and exact rational payment remain to be validated. No rank-fourteen conclusion is yet claimed.
+Lean proofs are written in `FourthTraceZeroGap`, `ZeroGapResolventBound`, `XiPowerCore`, `PowerPolynomialKernel`, `PowerCurrentCore`, and `TheFourteenthSectionFromHeightSixtySeven`; dependency checks remain pending. No rank-fourteen conclusion is yet claimed.

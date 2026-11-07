@@ -48,7 +48,7 @@ theorem polynomial_sq_le_parabolicPowerEnergy {R : ℝ} (hR : 0 < R) (m : ℕ)
       have hh := natDegree_mul_le (p := (1 - X ^ 2 : ℝ[X]) ^ m)
         (q := P.comp (C R * X))
       rw [natDegree_pow, natDegree_comp, hlin, mul_one] at hh
-      have hw := Nat.mul_le_mul_right m hW
+      have hw := Nat.mul_le_mul_left m hW
       dsimp only [Q]
       omega
     exact (degree_le_natDegree (p := Q)).trans_lt

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheLiouvilleTwinInequality
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheDirichletPointsCancelThroughPeriodicity
 import GaloisForLFunctions.RHTower.DirichletUniformAbel
 import GaloisForLFunctions.RHTower.DirichletPolyBoundedAbel
 import GaloisForLFunctions.RHTower.DirichletLSeriesBridge
@@ -27,6 +28,14 @@ at `ρ/2` for every zero `ρ`. Hence
 The Liouville translation lowers the Möbius exponent of an order-two point below `1/2` only at the
 price of its twin: the pair together must carry the poles of `1/ζ(2s)` on `Re s = Θ/2`. This is the
 lower companion of the twin inequality `θ_μ(y) ≤ (1 + 2θ_1(x) + θ_μ(2x)/2)/3`.
+
+For the constant source the same doubling law reads `L_x(s) L_y(s) = L_{2x}(2s)` for the fibres
+(`oneLSeries_mul_twin`); at order-two points the product is `ζ(2s)`, whose pole at `s = 1/2` gives
+
+* **the half floor** (`half_le_max_gaugeExponent_one`): `max(θ_1(x), θ_1(y)) ≥ 1/2`.
+
+At a real Dirichlet point `θ_1 = 0`, so its Liouville twin has constant-source exponent at least the
+typical value `1/2`: twin duality holds for the constant source with the sides exchanged.
 -/
 
 open Finset Filter Topology Complex
@@ -149,24 +158,26 @@ theorem moebiusLSeries_zero_mul_riemannZeta {s : ℂ} (hs : 1 < s.re) :
 /-! ### Continuation from a power bound -/
 
 /-- **A power bound continues the twisted series.** If `‖Σ_{n ≤ N} a(n) χ_x(n)‖ ≤ C (N+1)^θ` with
-`a(0) = 0` and `‖a‖ ≤ 1`, the series `Σ a(n) χ_x(n) n^{−s}` continues holomorphically to `Re s > θ`. -/
-theorem exists_continuation_of_gaugePowerBound {a : ℕ → ℂ} (ha : ∀ n, ‖a n‖ ≤ 1) (ha0 : a 0 = 0)
+`‖a‖ ≤ 1`, the series `Σ a(n) χ_x(n) n^{−s}` continues holomorphically to `Re s > θ`. -/
+theorem exists_continuation_of_gaugePowerBound {a : ℕ → ℂ} (ha : ∀ n, ‖a n‖ ≤ 1)
     {x : GaugeTorus} {θ : ℝ} (hθ : 0 ≤ θ) (hθ1 : θ < 1) (h : GaugePowerBound a x θ) :
     ∃ F : ℂ → ℂ, DifferentiableOn ℂ F {s : ℂ | θ < s.re} ∧
       ∀ s : ℂ, 1 < s.re → F s = LSeries (fun n => a n * twist x n) s := by
   obtain ⟨C, hC, hb⟩ := h
   set b : ℕ → ℂ := fun n => a n * twist x n with hbdef
   set c : ℕ → ℂ := fun n => b (n + 1) with hcdef
-  have hbound : ∀ N : ℕ, ‖∑ n ∈ range N, c n‖ ≤ C * ((N : ℝ) + 1) ^ θ := by
+  have hb0 : ‖b 0‖ ≤ 1 := by rw [hbdef]; simp only [norm_mul, norm_twist, mul_one]; exact ha 0
+  have hbound : ∀ N : ℕ, ‖∑ n ∈ range N, c n‖ ≤ (C + 1) * ((N : ℝ) + 1) ^ θ := by
     intro N
     have hsplit := Finset.sum_range_succ' b N
-    have hb0 : b 0 = 0 := by simp [hbdef, ha0]
-    rw [hb0, add_zero] at hsplit
-    have : ∑ n ∈ range N, c n = ∑ n ∈ range (N + 1), b n := hsplit.symm
+    have : ∑ n ∈ range N, c n = ∑ n ∈ range (N + 1), b n - b 0 := by rw [hsplit]; ring
     rw [this]
-    exact hb N
+    have hone : (1 : ℝ) ≤ ((N : ℝ) + 1) ^ θ := Real.one_le_rpow (by linarith [N.cast_nonneg (α := ℝ)]) hθ
+    calc ‖∑ n ∈ range (N + 1), b n - b 0‖ ≤ ‖∑ n ∈ range (N + 1), b n‖ + ‖b 0‖ := norm_sub_le _ _
+      _ ≤ C * ((N : ℝ) + 1) ^ θ + 1 * ((N : ℝ) + 1) ^ θ := add_le_add (hb N) (by linarith)
+      _ = (C + 1) * ((N : ℝ) + 1) ^ θ := by ring
   have hconv : ∀ s : ℂ, θ < s.re → RHTower.DirichletConvergesAt c s := fun s hs =>
-    RHTower.tendsto_dirichlet_partialSum_of_poly_bounded hC hθ hbound hs
+    RHTower.tendsto_dirichlet_partialSum_of_poly_bounded (by linarith) hθ hbound hs
   refine ⟨RHTower.dirichletSum c, ?_, ?_⟩
   · intro s hs
     have hs' : θ < s.re := hs
@@ -198,10 +209,8 @@ theorem exists_continuation_double {x y z : GaugeTorus}
     (hby : GaugePowerBound moebiusSource y θ) :
     ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | θ < s.re} ∧
       ∀ s : ℂ, 1 < s.re → G s = moebiusLSeries z (2 * s) := by
-  obtain ⟨Fx, hFx, hFxeq⟩ := exists_continuation_of_gaugePowerBound norm_moebiusSource_le
-    (by simp [moebiusSource]) hθ hθ1 hbx
-  obtain ⟨Fy, hFy, hFyeq⟩ := exists_continuation_of_gaugePowerBound norm_moebiusSource_le
-    (by simp [moebiusSource]) hθ hθ1 hby
+  obtain ⟨Fx, hFx, hFxeq⟩ := exists_continuation_of_gaugePowerBound norm_moebiusSource_le hθ hθ1 hbx
+  obtain ⟨Fy, hFy, hFyeq⟩ := exists_continuation_of_gaugePowerBound norm_moebiusSource_le hθ hθ1 hby
   refine ⟨fun s => Fx s * Fy s, hFx.mul hFy, fun s hs => ?_⟩
   show Fx s * Fy s = _
   rw [hFxeq s hs, hFyeq s hs]
@@ -282,6 +291,144 @@ theorem quarter_le_max_gaugeExponent {x y : GaugeTorus}
     1 / 4 ≤ max (gaugeExponent moebiusSource x) (gaugeExponent moebiusSource y) := by
   have h := zetaZeroAbscissa_le_two_mul_max_gaugeExponent hx hy
   linarith [RHTower.half_le_zetaZeroAbscissa]
+
+/-! ### The constant source: the half floor -/
+
+/-- The fibre `n ↦ χ_x(n) n^{−s}` as a completely multiplicative function. -/
+private def fibreHom (x : GaugeTorus) (s : ℂ) : ℕ →*₀ ℂ where
+  toFun n := if n = 0 then 0 else twist x n * (n : ℂ) ^ (-s)
+  map_zero' := by simp
+  map_one' := by simp
+  map_mul' m n := by
+    by_cases hm : m = 0
+    · simp [hm]
+    by_cases hn : n = 0
+    · simp [hn]
+    simp only [mul_eq_zero, hm, hn, or_self, if_false, Nat.cast_mul]
+    rw [twist_mul x hm hn, Complex.natCast_mul_natCast_cpow]
+    ring
+
+private theorem fibreHom_eq_term (x : GaugeTorus) (s : ℂ) (n : ℕ) :
+    fibreHom x s n = LSeries.term (fun n => oneSource n * twist x n) s n := by
+  rcases eq_or_ne n 0 with rfl | hn
+  · simp [fibreHom]
+  · show (if n = 0 then 0 else twist x n * (n : ℂ) ^ (-s)) = _
+    rw [if_neg hn, LSeries.term_of_ne_zero hn, oneSource, one_mul, Complex.cpow_neg, div_eq_mul_inv]
+
+/-- **The Euler product of the fibre**: `L_x(s) = Π_p (1 − χ_x(p) p^{−s})^{−1}` on `Re s > 1`. -/
+theorem hasProd_oneLSeries (x : GaugeTorus) {s : ℂ} (hs : 1 < s.re) :
+    HasProd (fun p : Nat.Primes => (1 - twist x p * ((p : ℕ) : ℂ) ^ (-s))⁻¹)
+      (LSeries (fun n => oneSource n * twist x n) s) := by
+  have hsum0 := LSeriesSummable_of_bounded_of_one_lt_re (m := 1)
+    (f := fun n => oneSource n * twist x n) (fun n _ => by simp [oneSource, norm_twist]) hs
+  have hsum : Summable (‖fibreHom x s ·‖) := by
+    have : (fun n => ‖fibreHom x s n‖) = fun n => ‖LSeries.term (fun n => oneSource n * twist x n) s n‖ :=
+      funext fun n => by rw [fibreHom_eq_term]
+    rw [this]
+    exact (summable_norm_iff (E := ℂ)).mpr hsum0
+  have h := EulerProduct.eulerProduct_completely_multiplicative_hasProd hsum
+  have hval : ∑' n, fibreHom x s n = LSeries (fun n => oneSource n * twist x n) s :=
+    tsum_congr fun n => fibreHom_eq_term x s n
+  have hfac : (fun p : Nat.Primes => (1 - fibreHom x s p)⁻¹) =
+      fun p : Nat.Primes => (1 - twist x p * ((p : ℕ) : ℂ) ^ (-s))⁻¹ := by
+    funext p
+    show (1 - (if (p : ℕ) = 0 then 0 else twist x p * ((p : ℕ) : ℂ) ^ (-s)))⁻¹ = _
+    rw [if_neg p.prop.ne_zero]
+  rw [hval, hfac] at h
+  exact h
+
+/-- **The doubling law for the fibres.** `L_x(s) L_y(s) = L_z(2s)` on `Re s > 1`. -/
+theorem oneLSeries_mul_twin {x y z : GaugeTorus}
+    (hy : ∀ p, p.Prime → twist y p = -twist x p) (hz : ∀ p, p.Prime → twist z p = twist x p ^ 2)
+    {s : ℂ} (hs : 1 < s.re) :
+    LSeries (fun n => oneSource n * twist x n) s * LSeries (fun n => oneSource n * twist y n) s =
+      LSeries (fun n => oneSource n * twist z n) (2 * s) := by
+  have hs2 : 1 < (2 * s).re := by
+    rw [show (2 * s).re = 2 * s.re by simp]; linarith
+  have hprod := (hasProd_oneLSeries x hs).mul (hasProd_oneLSeries y hs)
+  have hfac : (fun p : Nat.Primes => (1 - twist x p * ((p : ℕ) : ℂ) ^ (-s))⁻¹ *
+      (1 - twist y p * ((p : ℕ) : ℂ) ^ (-s))⁻¹) =
+      fun p : Nat.Primes => (1 - twist z p * ((p : ℕ) : ℂ) ^ (-(2 * s)))⁻¹ := by
+    funext p
+    have hp0 : ((p : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr p.prop.ne_zero
+    have hpow : ((p : ℕ) : ℂ) ^ (-(2 * s)) = ((p : ℕ) : ℂ) ^ (-s) * ((p : ℕ) : ℂ) ^ (-s) := by
+      rw [← Complex.cpow_add _ _ hp0]; ring_nf
+    rw [hy p p.prop, hz p p.prop, hpow, ← mul_inv]
+    ring_nf
+  rw [hfac] at hprod
+  exact hprod.unique (hasProd_oneLSeries z hs2)
+
+private theorem zetaEntire_one : RHTower.zetaEntire 1 = 1 := by
+  simp [RHTower.zetaEntire, Complex.Gammaℝ_one]
+
+/-- **The half floor.** At an order-two gauge point `x` with Liouville twin `y`, the constant-source
+exponents satisfy `max(θ_1(x), θ_1(y)) ≥ 1/2`: the product of the two fibres is `ζ(2s)`, whose pole at
+`s = 1/2` no pair of series bounded below `1/2` can carry. -/
+theorem half_le_max_gaugeExponent_one {x y : GaugeTorus}
+    (hx : ∀ p, p.Prime → twist x p ^ 2 = 1) (hy : ∀ p, p.Prime → twist y p = -twist x p) :
+    1 / 2 ≤ max (gaugeExponent oneSource x) (gaugeExponent oneSource y) := by
+  by_contra hlt
+  push Not at hlt
+  set m := max (gaugeExponent oneSource x) (gaugeExponent oneSource y) with hm
+  have hm0 : 0 ≤ m := (gaugeExponent_nonneg norm_oneSource_le).trans (le_max_left _ _)
+  set θ : ℝ := (m + 1 / 2) / 2 with hθdef
+  have hθ0 : 0 ≤ θ := by rw [hθdef]; linarith
+  have hθm : m < θ := by rw [hθdef]; linarith
+  have hθh : θ < 1 / 2 := by rw [hθdef]; linarith
+  obtain ⟨Fx, hFx, hFxeq⟩ := exists_continuation_of_gaugePowerBound norm_oneSource_le hθ0
+    (by linarith) (gaugePowerBound_of_gaugeExponent_lt norm_oneSource_le ((le_max_left _ _).trans_lt hθm))
+  obtain ⟨Fy, hFy, hFyeq⟩ := exists_continuation_of_gaugePowerBound norm_oneSource_le hθ0
+    (by linarith) (gaugePowerBound_of_gaugeExponent_lt norm_oneSource_le ((le_max_right _ _).trans_lt hθm))
+  -- `(2s − 1) Fx Fy` and `(2s − 1) ζ(2s)` agree on `Re s > 1`, hence on `Re s > θ`; at `s = 1/2` the first
+  -- vanishes and the second is the residue `1`.
+  set U : Set ℂ := {s : ℂ | θ < s.re} with hU
+  have hUopen : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  set H : ℂ → ℂ := fun s => (2 * s - 1) * (Fx s * Fy s) with hH
+  have hHd : DifferentiableOn ℂ H U :=
+    (((differentiable_id.const_mul 2).sub_const 1).differentiableOn).mul (hFx.mul hFy)
+  have hZd : DifferentiableOn ℂ (fun s : ℂ => RHTower.zetaEntire (2 * s)) U :=
+    (RHTower.differentiable_zetaEntire.comp (differentiable_id.const_mul 2)).differentiableOn
+  have hright : ∀ s : ℂ, 1 < s.re → H s = RHTower.zetaEntire (2 * s) := by
+    intro s hs
+    have hne : 2 * s ≠ 1 := by
+      intro h; have := congrArg Complex.re h; simp at this; linarith
+    simp only [hH]
+    rw [RHTower.zetaEntire_eq hne, hFxeq s hs, hFyeq s hs,
+      oneLSeries_mul_twin hy (z := 0) (fun p hp => by rw [twist_zero, hx p hp]) hs]
+    have hs2 : 1 < (2 * s).re := by rw [show (2 * s).re = 2 * s.re by simp]; linarith
+    have hz : LSeries (fun n => oneSource n * twist 0 n) (2 * s) = riemannZeta (2 * s) := by
+      rw [← (hasProd_oneLSeries 0 hs2).tprod_eq, ← (riemannZeta_eulerProduct_hasProd hs2).tprod_eq]
+      exact tprod_congr fun p => by rw [twist_zero, one_mul]
+    rw [hz]
+  have h2 : (2 : ℂ) ∈ U := by show θ < (2 : ℂ).re; simp; linarith
+  have hev : H =ᶠ[𝓝 (2 : ℂ)] fun s => RHTower.zetaEntire (2 * s) := by
+    have hopen1 : IsOpen {s : ℂ | 1 < s.re} := isOpen_lt continuous_const Complex.continuous_re
+    filter_upwards [hopen1.mem_nhds (show (1 : ℝ) < (2 : ℂ).re by simp)] with s hs
+    exact hright s hs
+  have hEq := (hHd.analyticOnNhd hUopen).eqOn_of_preconnected_of_eventuallyEq
+    (hZd.analyticOnNhd hUopen) (convex_halfSpace_re_gt θ).isPreconnected h2 hev
+  have hhalf : (1 / 2 : ℂ) ∈ U := by show θ < (1 / 2 : ℂ).re; norm_num; linarith
+  have hval := hEq hhalf
+  simp only [hH] at hval
+  rw [show (2 : ℂ) * (1 / 2) = 1 by norm_num, zetaEntire_one] at hval
+  norm_num at hval
+
+/-- **Twin duality for the constant source.** At a real nonprincipal Dirichlet point the constant
+source has exponent `0`; its Liouville twin has exponent at least the typical value `1/2`. -/
+theorem half_le_gaugeExponent_one_liouvilleTwin {q : ℕ} [NeZero q] {χ : DirichletCharacter ℂ q}
+    (hχ : χ ≠ 1) (hχ2 : χ ^ 2 = 1) {y : GaugeTorus}
+    (hy : ∀ p, p.Prime → twist y p = -twist (dirichletGauge χ) p) :
+    1 / 2 ≤ gaugeExponent oneSource y := by
+  have hx : ∀ p, p.Prime → twist (dirichletGauge χ) p ^ 2 = 1 := by
+    intro p hp
+    by_cases hcop : Nat.Coprime p q
+    · rw [twist_dirichletGauge χ hp.ne_zero hcop, sq, ← Pi.mul_apply, ← MulChar.coeToFun_mul, ← sq,
+        hχ2, MulChar.one_apply ((ZMod.isUnit_iff_coprime p q).mpr hcop)]
+    · rw [twist_prime _ hp, show dirichletGauge χ p = 0 from if_neg hcop]
+      simp
+  have h := half_le_max_gaugeExponent_one hx hy
+  rwa [gaugeExponent_one_dirichletGauge χ hχ, max_eq_right (gaugeExponent_nonneg norm_oneSource_le)]
+    at h
 
 end GaloisForLFunctions.ArithmeticGaugeTheory
 

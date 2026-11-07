@@ -16,9 +16,11 @@ formats on the cone, transport, data beyond ζ). Working log: logs/cht-250-contr
 - [ ] 2 → 3  per contribution
 
 ## State
-- Proved: local density law on datum cones (`TheConePinsTheLocalDensity`).
-- Open queue: effective residue reading from above; finite-window Chebyshev ceiling; local law at the top of the box
-  (a ∈ (c−1, c)); bands at the top of the box; transport of the local law across prime steps.
+- Proved (Lean): local density law; residue read from above at rate `1/c`; datum region left of `β = 1` for every
+  conductor; short-interval law and no gaps `≫ √X log X`; second moment and positive support density `X/(log X)²`.
+- Open queue: odd-multiplier blind family (doubly exponential upper residue reading?); upper bound on support
+  (`≲ X/log X`?); local law near the top of the box; bands at the top; transport across prime steps; no-pole critical
+  conductor below Beckner's constant.
 
 ## Log
-- 2026-11-07 — created; contribution 1 formalized.
+- 2026-11-07 — created; contributions 1–5 formalized.

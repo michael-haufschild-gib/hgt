@@ -48,6 +48,15 @@ and columns in `[1,Z]`. In broader RH work, TAPO transfers these counts through
 a triangular Fourier majorant to actual weighted mean squares, higher prime-tail
 moments, and large-tail bounds. This analytic transfer uses positivity and is
 kept outside the restricted arithmetic programme.
+The [primitive-step extension](../3-formalized/unrestricted-smooth-head-arithmetic-moments.md)
+removes the dyadic restriction on rows. Each pair retains the cost
+`Z(2Z+m/gcd(m,n)+n/gcd(m,n))`; weighted moments on arbitrary finite smooth
+heads pay its coefficient-weighted sum, bounded by `2Z²R₁²+2ZR₁M₁`.
+The [normalized moment bound](../3-formalized/primitive-head-normalized-tail-moments.md)
+uses reduced ratio height `H=max(1,max m/gcd(m,n))`, invariant under common
+dilation. Actual head mass is at least `(2T−52H)R₂`; at `T≥52H` and `R₂>0`,
+normalized prime-tail moments retain the primitive error divided by `T R₂`.
+The same invariant gives `C(A,r,Z)≤2Z(Z+H)R₁²`.
 
 ## Independent finite-zero target
 

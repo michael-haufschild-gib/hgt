@@ -34,6 +34,7 @@ import GaloisForLFunctions.ArithmeticGaugeTheory.AnExplicitPointHasExponentOneHa
 import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleDoesNotDecideTheHalfPowerLaw
 import GaloisForLFunctions.ArithmeticGaugeTheory.ThePoleSubtractedSpectrumIsAnInterval
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheFlipPointsBreakTheMoebiusHalfPowerLaw
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheTwinPairsHaveAQuarterFloor
 
 /-!
 # Arithmetic Gauge Theory of the ring ℤ

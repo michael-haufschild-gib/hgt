@@ -16,6 +16,4 @@ For a zero with displacement δ and ordinate γ, compare its reflected logarithm
 Verified height 67 makes the current nonnegative throughout the aperture segment at every `|b|≤6`. Thus `|Ξ(b-ia)|²≥Ξ(b)²`. The current identity gives
 `current(a,b)≥2·0.0076·(49/100)²·a(1-b²/36)²`, whose coefficient exceeds `1/300`.
 
-## Payment consequence to investigate
-
-For degree-eleven `p`, use the degree-thirteen polynomial `(1-b²/36)p(b)` on `[-6,6]`. A general Legendre kernel controls its exterior values while retaining the parabolic core weight. Rank-twelve payment remains to be proved.
+For degree-eleven `p`, the general Legendre kernel applied to `(1-b²/36)p(b)` retains this weighted energy. The resulting complete-source rank-twelve payment is formalized in `TheTwelfthSectionFromHeightSixtySeven`.

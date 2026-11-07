@@ -143,7 +143,6 @@ theorem form13_lower {a : ℝ} (ha0 : 0 < a) (ha : a ≤ 1 / 2)
     dsimp only [E, parabolicEnergyAt]
     apply intervalIntegral.integral_congr
     intro b _
-    congr 2
     ring
   have hval : (∫ b, Lo b) = a / 275 * E - Z * (2 * Real.exp (-66)) := by
     dsimp only [Lo]

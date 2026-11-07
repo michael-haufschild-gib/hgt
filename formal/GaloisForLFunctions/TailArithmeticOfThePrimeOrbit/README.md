@@ -112,6 +112,8 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | Gaussian conditional moments | `headPoly_pow`, `powNorm_le`, `integral_head_mul_tail_pow_le`, `setIntegral_head_on_large_tail_le` | `TheConditionalMomentsOfTheTail` |
 | Arithmetic smooth–prime second moment | `integral_balancedHead_primeTail_sq_le`, `setIntegral_balancedHead_on_large_primeTail_le` | `TheSmoothPrimeMeanSquareHasAnArithmeticCost` |
 | Rectangular arithmetic moments | `integral_rectangular_head_tail_le`, `integral_rectangular_head_prime_tail_pow_le`, `setIntegral_rectangular_head_on_large_prime_tail_le`, `integral_rectangular_full_prime_tail_pow_le` | `TheRectangularMomentsHaveAnArithmeticCost` |
+| Unrestricted smooth-head moments | `integral_smooth_head_prime_tail_pow_le_primitive`, `primitiveHeadCost_le_first_moment`, `integral_full_smooth_head_prime_tail_pow_le`, `setIntegral_smooth_head_on_large_prime_tail_le` | `TheSmoothHeadNeedsNoDyadicRestriction` |
+| Normalized arithmetic moments | `integral_head_sq_ge_primitiveSupportHeight`, `normalized_prime_tail_moment_le_primitive`, `normalized_large_prime_tail_mass_le`, `normalized_full_smooth_prime_tail_moment_le` | `TheNormalizedMomentsRetainTheArithmeticCost` |
 | The head is frozen | `abs_log_norm_eulerMollifier_sub_le`, `abs_log_norm_eulerHead_sub_le_of_one_le`, `norm_zeta_eq_head_mul_tail` | `TheHeadIsFrozenAtItsResolution` |
 | The tail carries the zero | `eulerTail_eq_zero_iff`, `tendsto_eulerTail_of_phaseReturn`, `tendsto_zero_tail_of_phaseReturn`, `zetaReturnSet_subset_eulerDiscTailBadSet`, `exists_returns_tailBad_and_rare` | `TheTailOfAReturnCarriesTheZero` |
 | The recurrence dichotomy of the tail | `exists_tailBad_of_zero`, `zetaTargetReturnSet_subset_eulerDiscTailBadSet`, `tail_recurrence_dichotomy` | `TheRecurrenceDichotomyOfTheTail` |
@@ -137,6 +139,23 @@ its `k`th power has coefficient supremum `≤k!` and squared coefficient sum
 The literal smooth interval and prime tail satisfy this bound; restriction to
 `|tail|≥V` divides it by `V^(2k)`. Sparse heads can improve the finite-moment
 range through this arithmetic error. Exceptional infinite tails remain open.
+
+For an arbitrary finite smooth head, the dyadic restriction disappears. Its intrinsic
+cost is `C(A,r,Z)=Σ_{m,n∈A}|r_m r_n|Z(2Z+m/gcd(m,n)+n/gcd(m,n))`.
+Every centered rough-tail mean square is at most `(5π/2)(T R₂ B₂+C K²)`.
+With `M₁=Σm|r_m|`, the simpler envelope is `C≤2Z²R₁²+2ZR₁M₁`.
+Prime-tail powers substitute `Z=Y^k`, `K=k!` and diagonal `k!B₂^k`;
+large-tail head mass divides by `V^(2k)`. The generic logarithmic-energy
+transfer is public and applies to arbitrary positive integer supports.
+
+Reduced ratio height `H(A)=max(1,max_{m,n∈A}m/gcd(m,n))` controls actual
+head mass: `∫_[−T,T]|R(U+t)|²≥(2T−52H(A))R₂`. It is unchanged by a
+common positive integer dilation. At `T≥52H(A)` and `R₂>0`, division by
+actual head mass gives normalized `2k`th moment at most
+`(5π/2)(k!B₂^k+C(A,r,Y^k)(k!)²/(T R₂))`, with
+`C(A,r,Z)≤2Z(Z+H(A))R₁²`. Normalized large-tail mass pays `V^(−2k)`.
+For the unit full smooth head below `M≥1`, the error inside parentheses
+is at most `2Y^k(Y^k+M)#A(k!)²/T` when `T≥52M`.
 
 ## 7. Tools
 

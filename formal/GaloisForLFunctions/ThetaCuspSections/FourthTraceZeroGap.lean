@@ -37,11 +37,11 @@ theorem xiZeroCopy_twelve_lt_abs_im (q : XiZeroCopy) : 12 < |(q.1 : ℂ).im| := 
     have hfar := lt_abs_im_of_rhVerifiedThrough rhVerifiedThrough_sixtySeven
       (xi_xiZeroCopy_eq_zero q) (xiZeroCopy_re_pos q) (xiZeroCopy_re_lt_one q) hoff
     linarith only [hb, hfar]
-  have hλ : xiSpectralPoint q = (((q.1 : ℂ).im : ℝ) : ℂ) := by
+  have hLambda : xiSpectralPoint q = (((q.1 : ℂ).im : ℝ) : ℂ) := by
     apply Complex.ext <;> simp [xiSpectralPoint, hline]
   have hatom : (xiZeroCopyReciprocalSquare q ^ (2 : ℕ)).re =
       ((q.1 : ℂ).im ^ (4 : ℕ))⁻¹ := by
-    simp only [xiZeroCopyReciprocalSquare, hλ, ← Complex.ofReal_inv,
+    simp only [xiZeroCopyReciprocalSquare, hLambda, ← Complex.ofReal_inv,
       ← Complex.ofReal_pow, Complex.ofReal_re, ← pow_mul, inv_pow]
   have hγ := xi_divisor_support_im_ne_zero q.1
   have hpow : (q.1 : ℂ).im ^ (4 : ℕ) ≤ 12 ^ (4 : ℕ) := by

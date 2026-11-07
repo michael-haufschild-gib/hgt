@@ -19,6 +19,8 @@ No unconditional decision established. The existing transport theorem requires l
 
 The two-prime annihilator theorem proves finiteness, not emptiness. The affine Haar obstruction requires an additional kernel extension not supplied by finite zero support. The head-conditioned Euler-tail mean at critical resonator length still lacks its required arithmetic inequality.
 
+`PositiveAnnihilator.exists_xi_zero_annihilator_with_multiplicities` gives every finite set of actual xi zeros, with arbitrary prescribed finite orders, a nonnegative finite Dirichlet annihilator supported on powers of 2 and 3, with constant coefficient 1 and arbitrarily small uniform error from 1 on `Re s ≥ 1`. Positivity and right-half-plane accuracy of finite deflation therefore add no exclusion of a finite layer.
+
 `IntegerNormOneOff.exists_integer_norm_linear_count_one_off` constructs an Euler product with natural-number generator norms, natural Dirichlet coefficients, positive linear counting `N(x) ∼ A x`, and exactly the zero pair `3/5 ± iγ` on `Re s > 1/2`, away from `1`. These properties together are insufficient. A power-saving counting error and the functional equation remain uncontrolled. The actual zeta problem must retain stronger arithmetic information, such as its exact counting function or full functional equation.
 
 ## Gates

@@ -143,6 +143,7 @@ positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 | Spectral synthesis closure(E_k ⊔ R) = I_k; critical jets dense in source ⇔ RH | `closure_orderJetSpan_sup_poissonBoundary`, `closure_criticalJetSpan_sup_poissonBoundary_eq_univ_iff` | proved |
 | Coupled positivity ⇒ isotropy at off-line pairs; one channel ⇒ half-blind | `coupled_isotropy`, `positive_ideal_halfBlind` | proved |
 | Integer Euler norms, natural Dirichlet coefficients and linear counting coexist with exactly the zero pair 3/5 ± iγ on Re s > 1/2 away from 1 | `IntegerNormOneOff.exists_integer_norm_linear_count_one_off` | proved |
+| Every finite xi-zero set with prescribed multiplicities has a nonnegative two-prime Dirichlet annihilator, constant coefficient 1, arbitrarily close to 1 uniformly on Re s ≥ 1 | `PositiveAnnihilator.exists_xi_zero_annihilator_with_multiplicities` | proved |
 | Left-blind ideal is positive, strictly larger than the blind ideal unless RH | `meyerSourceTrace_nonneg_of_mem_leftBlindIdeal`, `meyerTraceBoundedIdeal_lt_leftBlindIdeal` | proved |
 
 ## 6. Tools
@@ -197,6 +198,7 @@ positivity + an exact self-dual identity + an integer ⇒ rigidity. APD asks:
 | Positivity on a convolution ideal forces blindness | Forces isotropy/half-blindness; left-blind ideal is positive |
 | Integer point counts force RH over 𝔽_q | Golden datum |
 | Integer Euler norms and linear integer counting exclude a finite right zero layer | The rounded Beurling one-off has both; no Riemann functional equation is established |
+| Positive finite deflating coefficients, arbitrarily close to the unit on Re s ≥ 1, exclude a finite zero layer | Every finite set of actual xi zeros admits such a two-prime annihilator |
 | The adelic Haar state is "near" Weil's correlation | Its spectrum is Haar-singular and Kronecker-null |
 
 ## 9. Context

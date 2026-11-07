@@ -73,7 +73,8 @@ theorem norm_logDeriv_XiC_le_twelve {z : ℂ} (hz : ‖z‖ < 12) :
       _ ≤ _ := div_le_div_of_nonneg_right tsum_norm_reciprocalSquare_le_one_over_eighteen hw.le
   rw [logDeriv_XiC_eq_relativeResolventTrace hne,
     xiRelativeResolventTrace_eq_reciprocalSquareResolvent hne, norm_mul, norm_neg]
-  exact (mul_le_mul_of_nonneg_left hsum (norm_nonneg z)).trans_eq (by ring)
+  exact (mul_le_mul_of_nonneg_left hsum (norm_nonneg z)).trans_eq (by
+    field_simp [hw.ne'])
 
 #print axioms XiC_ne_zero_of_norm_le_twelve
 #print axioms tsum_norm_reciprocalSquare_le_one_over_eighteen

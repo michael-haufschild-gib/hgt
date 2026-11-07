@@ -53,11 +53,12 @@ set_option autoImplicit false
 noncomputable section
 
 open MeasureTheory Set Filter Topology Finset Zeta23 RHTower
-open scoped RealInnerProductSpace ENNReal Convolution
+open scoped RealInnerProductSpace ENNReal Convolution Classical
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
-open CriticalArithmeticCorrelationTheory RenormalizedArithmeticPotentialTheory
+open CriticalArithmeticCorrelationTheory ArithmeticDegenerationTheory CompletedArithmeticForms
+  RenormalizedArithmeticPotentialTheory
   RenormalizedArithmeticPotentialTheory.CompletedShell SpacingScaleHarmonicAnalysis
   ArithmeticElectrostatics CohomologyOfWindowsOfSpecZ WindowTowerOfSpecZ
   WindowVisibilityLaw SquareRootThreshold ArithmeticCastelnuovoSeveri
@@ -167,7 +168,7 @@ theorem eventuallyHighConductorPosDef_of_poleOrthogonal {R : ℝ}
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   filter_upwards [h, hlog.eventually_ge_atTop 1] with N hN hL1 c hc1 hc8 z hz hzne
   have hQ1 : 1 ≤ ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ :=
-    Nat.le_floor (Real.one_le_rpow hL1 (by norm_num))
+    Nat.le_floor (by exact_mod_cast Real.one_le_rpow hL1 (by norm_num : (0 : ℝ) ≤ 13 / 32))
   have horth1 : z ∈ (conductorSubspace 1 N)ᗮ := fun v hv =>
     hz v (conductorSubspace_mono hQ1 N hv)
   exact hN hc1 hc8 horth1 hzne
@@ -240,7 +241,7 @@ theorem criticalPositivityThreshold_pos : (0 : EReal) < criticalPositivityThresh
   obtain ⟨R₀, hR₀, hpos⟩ := exists_pos_eventuallyCriticalPosDef
   exact (EReal.coe_pos.mpr hR₀).trans_le (le_sSup ⟨R₀, ⟨hR₀, hpos⟩, rfl⟩)
 
-theorem eventuallyCriticalNonneg_of_lt_threshold {R : ℝ} (hR : 0 < R)
+theorem eventuallyCriticalNonneg_of_lt_threshold {R : ℝ} (_hR : 0 < R)
     (hlt : (R : EReal) < criticalNonnegativityThreshold) : EventuallyCriticalNonneg R := by
   obtain ⟨y, ⟨R', ⟨_, hR'⟩, rfl⟩, hy⟩ := lt_sSup_iff.mp hlt
   exact eventuallyCriticalNonneg_antitone (EReal.coe_lt_coe_iff.mp hy).le hR'
@@ -343,7 +344,8 @@ def leftSplineMollifier (δ s : ℝ) : ℝ :=
 
 theorem leftSplineMollifier_nonneg {δ : ℝ} (hδ : 0 < δ) (s : ℝ) :
     0 ≤ leftSplineMollifier δ s := by
-  have hm : 0 < ∫ u, tiltedUnitSpline u := integral_tiltedUnitSpline_pos
+  have hm : 0 < ∫ u, tiltedUnitSpline u :=
+    CriticalArithmeticCorrelationTheory.integral_tiltedUnitSpline_pos
   exact mul_nonneg (inv_nonneg.mpr (mul_pos hδ hm).le) (tiltedUnitSpline_nonneg _)
 
 theorem leftSplineMollifier_eq_zero {δ : ℝ} (hδ : 0 < δ) {s : ℝ} (hs : s ∉ Set.Icc (-δ) 0) :
@@ -372,12 +374,13 @@ theorem integrable_leftSplineMollifier {δ : ℝ} (hδ : 0 < δ) :
 
 theorem integral_leftSplineMollifier {δ : ℝ} (hδ : 0 < δ) :
     (∫ s, leftSplineMollifier δ s) = 1 := by
-  have hm : 0 < ∫ u, tiltedUnitSpline u := integral_tiltedUnitSpline_pos
+  have hm : 0 < ∫ u, tiltedUnitSpline u :=
+    CriticalArithmeticCorrelationTheory.integral_tiltedUnitSpline_pos
   unfold leftSplineMollifier
   rw [integral_const_mul]
   have hneg : (∫ s : ℝ, tiltedUnitSpline (-(s / δ))) = ∫ s : ℝ, tiltedUnitSpline (s / δ) := by
     simpa only [neg_div] using
-      MeasureTheory.integral_neg_eq_self (fun s : ℝ => tiltedUnitSpline (s / δ))
+      MeasureTheory.integral_neg_eq_self (fun s : ℝ => tiltedUnitSpline (s / δ)) volume
   have hdiv := MeasureTheory.Measure.integral_comp_div tiltedUnitSpline δ
   simp only [smul_eq_mul, abs_of_pos hδ] at hdiv
   rw [hneg, hdiv, inv_mul_cancel₀ (mul_pos hδ hm).ne']
@@ -387,6 +390,7 @@ theorem norm_paperFT_leftSplineMollifier_le {δ : ℝ} (hδ : 0 < δ) (r : ℝ) 
   refine (norm_paperFT_le (leftSplineMollifier δ) r).trans ?_
   have habs : (∫ s, ‖leftSplineMollifier δ s‖) = ∫ s, leftSplineMollifier δ s :=
     integral_congr_ae (Eventually.of_forall fun s => by
+      dsimp only
       rw [Real.norm_eq_abs, abs_of_nonneg (leftSplineMollifier_nonneg hδ s)])
   rw [habs, integral_leftSplineMollifier hδ]
 
@@ -398,17 +402,24 @@ theorem norm_one_sub_paperFT_leftSplineMollifier_le {δ : ℝ} (hδ : 0 < δ) (r
       cx (leftSplineMollifier δ) s * Complex.exp (Complex.I * (r : ℂ) * (s : ℂ)) :=
     WeilHerglotz.integrable_mul_cexp hic
       ((hasCompactSupport_leftSplineMollifier hδ).comp_left Complex.ofReal_zero) r
-  have hone : (1 : ℂ) = ∫ s, cx (leftSplineMollifier δ) s := by
+  have h1 : (∫ s, cx (leftSplineMollifier δ) s) = 1 := by
     unfold cx
     rw [integral_complex_ofReal, integral_leftSplineMollifier hδ, Complex.ofReal_one]
   have hsub : (1 : ℂ) - paperFT (cx (leftSplineMollifier δ)) r =
       ∫ s, cx (leftSplineMollifier δ) s * (1 - Complex.exp (Complex.I * (r : ℂ) * (s : ℂ))) := by
-    rw [hone, paperFT_def, ← integral_sub hic hker]
-    exact integral_congr_ae (Eventually.of_forall fun s => by ring)
+    calc (1 : ℂ) - paperFT (cx (leftSplineMollifier δ)) r
+        = (∫ s, cx (leftSplineMollifier δ) s) -
+            ∫ s, cx (leftSplineMollifier δ) s * Complex.exp (Complex.I * (r : ℂ) * (s : ℂ)) := by
+          rw [h1, paperFT_def]
+      _ = ∫ s, (cx (leftSplineMollifier δ) s -
+            cx (leftSplineMollifier δ) s * Complex.exp (Complex.I * (r : ℂ) * (s : ℂ))) :=
+          (integral_sub hic hker).symm
+      _ = _ := integral_congr_ae (Eventually.of_forall fun s => by dsimp only; ring)
   rw [hsub]
   refine (norm_integral_le_of_norm_le (hi.mul_const (|r| * δ))
     (Eventually.of_forall fun s => ?_)).trans ?_
-  · rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+  · dsimp only [cx]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
       abs_of_nonneg (leftSplineMollifier_nonneg hδ s)]
     by_cases hs : s ∈ Set.Icc (-δ) 0
     · refine mul_le_mul_of_nonneg_left ?_ (leftSplineMollifier_nonneg hδ s)
@@ -426,7 +437,7 @@ private theorem cx_lineConvolution_eq {ρ G : ℝ → ℝ} (x : ℝ) :
       convolution (cx ρ) (cx G) (ContinuousLinearMap.mul ℝ ℂ) volume x := by
   simp only [cx, HTGeometry.lineConvolution, convolution_def, ContinuousLinearMap.mul_apply']
   rw [← integral_complex_ofReal]
-  exact integral_congr_ae (Eventually.of_forall fun s => by push_cast; rfl)
+  exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; push_cast; rfl)
 
 private theorem paperFT_lineConvolution_leftSplineMollifier {δ : ℝ} (hδ : 0 < δ) {G : ℝ → ℝ}
     (hGi : Integrable G) (hGc : HasCompactSupport G) (r : ℝ) :
@@ -444,7 +455,7 @@ private theorem paperFT_lineConvolution_leftSplineMollifier {δ : ℝ} (hδ : 0 
 kernel of `L¹` mass at most `e^{4 δ}`, giving an explicit `e^{8 δ}` bound on the eighth exponential
 mass. -/
 private theorem integral_exp8_lineConvolution_leftSplineMollifier_le {δ : ℝ} (hδ : 0 < δ)
-    {G : ℝ → ℝ} (hGm : Measurable G) (hG2 : Integrable fun u => G u ^ 2)
+    {G : ℝ → ℝ} (hGm : Measurable G) (_hG2 : Integrable fun u => G u ^ 2)
     (hG8 : Integrable fun u => G u ^ 2 * Real.exp (-(8 * u))) :
     Integrable (fun x => HTGeometry.lineConvolution (leftSplineMollifier δ) G x ^ 2 *
         Real.exp (-(8 * x))) ∧
@@ -529,7 +540,8 @@ private theorem tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub {F :
   have hFg_sq : (∫ x, (F x - g x) ^ 2) ≤ ε / 16 := by
     refine le_trans (le_of_eq ?_) hg_dist
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
-    rw [Real.norm_eq_abs, ← Real.rpow_natCast, Nat.cast_two, sq_abs]
+    dsimp only
+    rw [← sq_abs, Real.norm_eq_abs, ← Real.rpow_natCast, Nat.cast_two]
   obtain ⟨Rg, hRg_sub⟩ := hgc.isCompact.isBounded.subset_closedBall 0
   set R₁ : ℝ := max Rg 1
   have hR₁_pos : 0 < R₁ := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
@@ -587,6 +599,7 @@ private theorem tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub {F :
     have hc0 : HTGeometry.lineConvolution (leftSplineMollifier δ) g x = 0 := by
       unfold HTGeometry.lineConvolution
       refine integral_eq_zero_of_ae (Eventually.of_forall fun s => ?_)
+      dsimp only [Pi.zero_apply]
       by_cases hs : s ∈ Set.Icc (-δ) 0
       · have hs_abs : |s| ≤ 1 := abs_le.mpr ⟨by linarith [hs.1], hs.2.trans zero_le_one⟩
         have hxs : R₁ < |x - s| := by
@@ -599,14 +612,18 @@ private theorem tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub {F :
     intro x
     have hid : HTGeometry.lineConvolution (leftSplineMollifier δ) g x - g x =
         ∫ s, leftSplineMollifier δ s * (g (x - s) - g x) := by
-      unfold HTGeometry.lineConvolution
-      have hone : g x = ∫ s, leftSplineMollifier δ s * g x := by
+      have h1 : (∫ s, leftSplineMollifier δ s * g x) = g x := by
         rw [integral_mul_const, integral_leftSplineMollifier hδ, one_mul]
       have hint1 := HTGeometry.integrable_kernel_mul_sq hρ_cont.aestronglyMeasurable hρ2
         hg_cont.aestronglyMeasurable hg2 x
       have hint2 := (integrable_leftSplineMollifier hδ).mul_const (g x)
-      rw [hone, ← integral_sub hint1 hint2]
-      exact integral_congr_ae (Eventually.of_forall fun s => by ring)
+      calc HTGeometry.lineConvolution (leftSplineMollifier δ) g x - g x
+          = (∫ s, leftSplineMollifier δ s * g (x - s)) -
+              ∫ s, leftSplineMollifier δ s * g x := by
+            rw [HTGeometry.lineConvolution, h1]
+        _ = ∫ s, (leftSplineMollifier δ s * g (x - s) - leftSplineMollifier δ s * g x) :=
+            (integral_sub hint1 hint2).symm
+        _ = _ := integral_congr_ae (Eventually.of_forall fun s => by dsimp only; ring)
     rw [hid, ← Real.norm_eq_abs]
     refine (norm_integral_le_of_norm_le ((integrable_leftSplineMollifier hδ).mul_const η_g)
       (Eventually.of_forall fun s => ?_)).trans ?_
@@ -658,12 +675,12 @@ private theorem tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub {F :
           HTGeometry.lineConvolution (leftSplineMollifier δ) g x := by
       unfold HTGeometry.lineConvolution
       rw [← integral_sub hintF hintg]
-      exact integral_congr_ae (Eventually.of_forall fun s => by ring)
+      exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; ring)
     linarith only [hsub]
   have hgF2 : Integrable fun x => (g x - F x) ^ 2 := by
-    refine hFg2.congr (Eventually.of_forall fun x => by ring)
+    refine hFg2.congr (Eventually.of_forall fun x => by dsimp only; ring)
   have hgF_sq : (∫ x, (g x - F x) ^ 2) = ∫ x, (F x - g x) ^ 2 :=
-    integral_congr_ae (Eventually.of_forall fun x => by ring)
+    integral_congr_ae (Eventually.of_forall fun x => by dsimp only; ring)
   have hdom_tot : Integrable fun x =>
       3 * HTGeometry.lineConvolution (leftSplineMollifier δ) (fun t => F t - g t) x ^ 2 +
         3 * (HTGeometry.lineConvolution (leftSplineMollifier δ) g x - g x) ^ 2 +
@@ -690,9 +707,11 @@ private theorem tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub {F :
       set b := HTGeometry.lineConvolution (leftSplineMollifier δ) g x - g x
       set c := g x - F x
       nlinarith only [sq_nonneg (a - b), sq_nonneg (a - c), sq_nonneg (b - c)]
-    rw [integral_add ((hconv_Fg_int.const_mul 3).add (hmid_int.const_mul 3)) (hgF2.const_mul 3),
-      integral_add (hconv_Fg_int.const_mul 3) (hmid_int.const_mul 3),
-      integral_const_mul, integral_const_mul, integral_const_mul, hgF_sq] at hm
+    have hadd1 := integral_add ((hconv_Fg_int.const_mul 3).add (hmid_int.const_mul 3))
+      (hgF2.const_mul 3)
+    have hadd2 := integral_add (hconv_Fg_int.const_mul 3) (hmid_int.const_mul 3)
+    dsimp only [Pi.add_apply] at hadd1 hadd2
+    rw [hadd1, hadd2, integral_const_mul, integral_const_mul, integral_const_mul, hgF_sq] at hm
     linarith only [hm, hcontr, hmid_le, hFg_sq]
   have h0 : 0 ≤ ∫ x, (HTGeometry.lineConvolution (leftSplineMollifier δ) F x - F x) ^ 2 :=
     integral_nonneg fun _ => sq_nonneg _
@@ -782,6 +801,7 @@ private theorem totallyBounded_toLp_of_bounded_weilQuad {V : ℕ → ℝ → ℝ
     intro k x hx
     dsimp only [W, HTGeometry.lineConvolution]
     refine integral_eq_zero_of_ae (Eventually.of_forall fun s => ?_)
+    dsimp only [Pi.zero_apply]
     by_cases hs : s ∈ Set.Icc (-η) 0
     · rw [hsupp1 k (x - s) (by linarith only [hx, hs.2]), mul_zero]
     · rw [leftSplineMollifier_eq_zero hη hs, zero_mul]
@@ -821,13 +841,17 @@ private theorem totallyBounded_toLp_of_bounded_weilQuad {V : ℕ → ℝ → ℝ
           exact Real.one_le_exp (by linarith only [hxR])
         have hm := mul_le_mul_of_nonneg_left hexp_ge (sq_nonneg (W k x))
         linarith only [hm]
+    have hW8_int' : Integrable fun x => W k x ^ 2 * Real.exp (-(8 * x)) := hW8_int
     have htail_le : (∫ x in {x : ℝ | R < |x|}, W k x ^ 2) ≤
         Real.exp (-8 * R) * C_t := by
       have hm := setIntegral_mono_on hW2_int.integrableOn
-        (hW8_int.const_mul (Real.exp (-8 * R))).integrableOn hmeas_abs hpt
-      have htot := setIntegral_le_integral (hW8_int.const_mul (Real.exp (-8 * R)))
-        (Eventually.of_forall fun _ => by positivity)
-      rw [integral_const_mul] at htot
+        (hW8_int'.const_mul (Real.exp (-8 * R))).integrableOn hmeas_abs hpt
+      have htot : (∫ x in {x : ℝ | R < |x|},
+          Real.exp (-8 * R) * (W k x ^ 2 * Real.exp (-(8 * x)))) ≤
+          Real.exp (-8 * R) * ∫ x, W k x ^ 2 * Real.exp (-(8 * x)) := by
+        refine (setIntegral_le_integral (hW8_int'.const_mul (Real.exp (-8 * R)))
+          (Eventually.of_forall fun _ => by positivity)).trans_eq ?_
+        exact MeasureTheory.integral_const_mul (Real.exp (-8 * R)) _
       exact (hm.trans htot).trans (mul_le_mul_of_nonneg_left hW8_bd (Real.exp_pos _).le)
     refine htail_le.trans ?_
     have hR_log : Real.log (C_t / ε_t) / 8 + 1 ≤ R := le_max_right _ _
@@ -853,7 +877,7 @@ private theorem totallyBounded_toLp_of_bounded_weilQuad {V : ℕ → ℝ → ℝ
     have hDk_cs : HasCompactSupport Dk := (hVc k).sub (hW_cs k)
     have hVki : Integrable (V k) := (hVd k).continuous.integrable_of_hasCompactSupport (hVc k)
     have hWki : Integrable (W k) := (hW_cd k).continuous.integrable_of_hasCompactSupport (hW_cs k)
-    have hft_Dk : ∀ r, paperFT (cx Dk) r =
+    have hft_Dk : ∀ r : ℝ, paperFT (cx Dk) r =
         (1 - paperFT (cx (leftSplineMollifier η)) r) * paperFT (cx (V k)) r := by
       intro r
       rw [paperFT_cx_sub hVki hWki r, paperFT_lineConvolution_leftSplineMollifier hη hVki (hVc k) r]
@@ -933,26 +957,28 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
     have hfn : (fun y : ℝ => (Set.Ioi (-a)).indicator (fun x => Real.exp (-8 * x)) (-y)) =
         (Set.Iio a).indicator fun y => Real.exp (8 * y) := by
       funext y
-      by_cases hy : y < a
-      · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr (by linarith only [hy])),
+      by_cases hy : y ∈ Set.Iio a
+      · have hy_lt : y < a := hy
+        rw [Set.indicator_of_mem (Set.mem_Ioi.mpr (by linarith only [hy_lt])),
           Set.indicator_of_mem hy]
         congr 1; ring
-      · rw [Set.indicator_of_notMem (fun h => hy (by rw [Set.mem_Ioi] at h; linarith only [h])),
+      · rw [Set.indicator_of_notMem (fun h => hy (by rw [Set.mem_Ioi] at h; rw [Set.mem_Iio]; linarith only [h])),
           Set.indicator_of_notMem hy]
     have hint : Integrable ((Set.Iio a).indicator fun y => Real.exp (8 * y)) :=
       hfn ▸ (hon.integrable_indicator measurableSet_Ioi).comp_neg
     refine ⟨hint, ?_⟩
     have hneg := MeasureTheory.integral_neg_eq_self
-      ((Set.Ioi (-a)).indicator fun x : ℝ => Real.exp (-8 * x))
+      ((Set.Ioi (-a)).indicator fun x : ℝ => Real.exp (-8 * x)) volume
     rw [hfn] at hneg
-    rw [← hneg, MeasureTheory.integral_indicator measurableSet_Ioi,
+    refine hneg.trans ?_
+    rw [MeasureTheory.integral_indicator measurableSet_Ioi,
       integral_exp_mul_Ioi (by norm_num : (-8 : ℝ) < 0) (-a)]
     ring
   have hexp4_sq : ∀ (a y : ℝ),
       ((Set.Iio a).indicator (fun t => Real.exp (4 * t)) y) ^ 2 =
         (Set.Iio a).indicator (fun t => Real.exp (8 * t)) y := by
     intro a y
-    by_cases hy : y < a
+    by_cases hy : y ∈ Set.Iio a
     · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy, ← Real.exp_nat_mul]
       congr 1; push_cast; ring
     · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy, sq, mul_zero]
@@ -973,12 +999,12 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
       hg₁m.aestronglyMeasurable hg₂m.aestronglyMeasurable hg₁2 hg₂2
     refine hprod.mono' hFm.aestronglyMeasurable ?_
     filter_upwards [hF_supp1] with y hy1
-    by_cases hy2 : y < 2
+    by_cases hy2 : y ∈ Set.Iio (2 : ℝ)
     · dsimp only [g₁, g₂]
       rw [Set.indicator_of_mem hy2, Real.norm_eq_abs, mul_assoc, ← Real.exp_add,
         show -(4 * y) + 4 * y = 0 by ring, Real.exp_zero, mul_one]
-    · push Not at hy2
-      rw [hy1 (by linarith only [hy2]), norm_zero]
+    · have hy2_ge : 2 ≤ y := not_lt.mp hy2
+      rw [hy1 (by linarith only [hy2_ge]), norm_zero]
       exact mul_nonneg (mul_nonneg (abs_nonneg _) (Real.exp_pos _).le)
         (Set.indicator_nonneg (fun _ _ => (Real.exp_pos _).le) y)
   refine ⟨hFi, ?_⟩
@@ -1010,8 +1036,9 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
       (HTGeometry.hasCompactSupport_sq (hVc j)).mul_right
   set d : ℝ → ℝ := fun y => |V j y - F y|
   have hdm : Measurable d := ((hVd j).continuous.measurable.sub hFm).abs
-  have hdi : Integrable d := by
-    simpa only [d, Real.norm_eq_abs] using (hVj_i.sub hFi).norm
+  have hdi : Integrable d :=
+    (hVj_i.sub hFi).norm.congr (Eventually.of_forall fun y => by
+      simp only [d, Pi.sub_apply, Real.norm_eq_abs])
   have hd2 : Integrable fun y => d y ^ 2 := by
     have hdom : Integrable fun y => 2 * V j y ^ 2 + 2 * F y ^ 2 :=
       (hVj2.const_mul 2).add (hF2.const_mul 2)
@@ -1039,8 +1066,8 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
         nlinarith only [sq_nonneg (V j y + F y)]
       have hm' := mul_le_mul_of_nonneg_right h1 (Real.exp_pos (-(8 * y))).le
       linarith only [hm']
-    rw [integral_add (hVj8.const_mul 2) (hF8.const_mul 2), integral_const_mul,
-      integral_const_mul] at hm
+    have hadd := integral_add (hVj8.const_mul 2) (hF8.const_mul 2)
+    rw [hadd, integral_const_mul, integral_const_mul] at hm
     linarith only [hm, hM₈ j, hF8_le]
   have hmid_le : (∫ y, (Set.Icc (-Y) 1).indicator d y) ≤ ε / 3 := by
     set ind_mid : ℝ → ℝ := (Set.Icc (-Y) 1).indicator fun _ => 1
@@ -1072,8 +1099,8 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
       have hid : (Y + 2) * η_mid = (ε / 3) ^ 2 := by
         dsimp only [η_mid]; field_simp [(by linarith only [hY1] : Y + 2 ≠ 0)]
       linarith only [hcs, hm, hid]
-    have hnn := integral_nonneg fun y =>
-      Set.indicator_nonneg (fun _ _ => abs_nonneg _) y
+    have hnn : 0 ≤ ∫ y, (Set.Icc (-Y) 1).indicator d y :=
+      integral_nonneg fun y => Set.indicator_nonneg (fun x _ => abs_nonneg (V j x - F x)) y
     nlinarith only [hsq_le, hnn, hε]
   have htail_le : (∫ y, (Set.Iio (-Y)).indicator d y) ≤ ε / 3 := by
     set g₁ : ℝ → ℝ := fun y => d y * Real.exp (-(4 * y))
@@ -1098,7 +1125,7 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
       hg₂m.aestronglyMeasurable hg₁2 hg₂2
     have hmul_eq : (fun y => g₁ y * g₂ y) = (Set.Iio (-Y)).indicator d := by
       funext y; dsimp only [g₁, g₂]
-      by_cases hy : y < -Y
+      by_cases hy : y ∈ Set.Iio (-Y)
       · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy, mul_assoc, ← Real.exp_add,
           show -(4 * y) + 4 * y = 0 by ring, Real.exp_zero, mul_one]
       · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy, mul_zero]
@@ -1110,22 +1137,25 @@ private theorem integrable_and_tendsto_L1_of_L2_and_exp8 {V : ℕ → ℝ → �
       have hid : (4 * M₈ + 1) * ((1 / 8 : ℝ) * Real.exp (-8 * Y)) = C_tail * Real.exp (-8 * Y) := by
         dsimp only [C_tail]; ring
       linarith only [hcs, hm, hid, htail_exp]
-    have hnn := integral_nonneg fun y =>
-      Set.indicator_nonneg (fun _ _ => abs_nonneg _) y
+    have hnn : 0 ≤ ∫ y, (Set.Iio (-Y)).indicator d y :=
+      integral_nonneg fun y => Set.indicator_nonneg (fun x _ => abs_nonneg (V j x - F x)) y
     nlinarith only [hsq_le, hnn, hε]
   have hsplit_ae : d =ᵐ[volume]
       fun y => (Set.Iio (-Y)).indicator d y + (Set.Icc (-Y) 1).indicator d y := by
     filter_upwards [hF_supp1] with y hyF
     rcases lt_or_ge y (-Y) with hy1 | hy1
-    · rw [Set.indicator_of_mem hy1,
-        Set.indicator_of_notMem (fun h => not_le.mpr hy1 h.1), add_zero]
+    · have hm1 : y ∈ Set.Iio (-Y) := hy1
+      have hm2 : y ∉ Set.Icc (-Y) 1 := fun h => not_le.mpr hy1 h.1
+      rw [Set.indicator_of_mem hm1, Set.indicator_of_notMem hm2, add_zero]
     · rcases le_or_gt y 1 with hy2 | hy2
-      · rw [Set.indicator_of_notMem (not_lt.mpr hy1),
-          Set.indicator_of_mem ⟨hy1, hy2⟩, zero_add]
-      · dsimp only [d]
-        rw [hsupp1 j y hy2, hyF hy2, sub_self, abs_zero,
-          Set.indicator_of_notMem (not_lt.mpr (hy1.trans (by linarith only [hY1, hy2]))),
-          Set.indicator_of_notMem (fun h => not_le.mpr hy2 h.2), add_zero]
+      · have hm1 : y ∉ Set.Iio (-Y) := not_lt.mpr hy1
+        have hm2 : y ∈ Set.Icc (-Y) 1 := ⟨hy1, hy2⟩
+        rw [Set.indicator_of_notMem hm1, Set.indicator_of_mem hm2, zero_add]
+      · have hm1 : y ∉ Set.Iio (-Y) := not_lt.mpr (hy1.trans (by linarith only [hY1, hy2]))
+        have hm2 : y ∉ Set.Icc (-Y) 1 := fun h => not_le.mpr hy2 h.2
+        rw [Set.indicator_of_notMem hm1, Set.indicator_of_notMem hm2, add_zero]
+        dsimp only [d]
+        rw [hsupp1 j y hy2, hyF hy2, sub_self, abs_zero]
   have hi_tail : Integrable ((Set.Iio (-Y)).indicator d) := hdi.indicator measurableSet_Iio
   have hi_mid : Integrable ((Set.Icc (-Y) 1).indicator d) := hdi.indicator measurableSet_Icc
   have htot : (∫ y, ‖V j y - F y‖) ≤ 2 * ε / 3 := by
@@ -1155,6 +1185,7 @@ theorem isWindowTest_windowMollify {F : ℝ → ℝ} {A δ : ℝ} (_hA : 0 < A) 
   · intro x hx
     unfold windowMollify HTGeometry.lineConvolution
     refine integral_eq_zero_of_ae (Eventually.of_forall fun s => ?_)
+    dsimp only [Pi.zero_apply]
     by_cases hs : s ∈ Set.Icc (-δ) 0
     · have hnot : x - s ∉ Set.Ioo (-A) 0 := by
         intro hm
@@ -1190,7 +1221,8 @@ private theorem exponentialMass_windowMollify_le {F : ℝ → ℝ} {A δ : ℝ} 
     refine integral_mono hG8 (hF8.indicator measurableSet_Iio) fun u => ?_
     dsimp only [G]
     by_cases hu : u ∈ Set.Ioo (-A) 0
-    · rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu.2]
+    · have hu0 : u ∈ Set.Iio (0 : ℝ) := hu.2
+      rw [Set.indicator_of_mem hu, Set.indicator_of_mem hu0]
     · rw [Set.indicator_of_notMem hu, sq, zero_mul, zero_mul]
       exact Set.indicator_nonneg (fun _ _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le) u
   have hexp_eq : exponentialMass 8 (windowMollify F A δ) =
@@ -1202,18 +1234,18 @@ private theorem exponentialMass_windowMollify_le {F : ℝ → ℝ} {A δ : ℝ} 
 
 /-- Dominated-convergence upper bound on `archForm (windowMollify F₀ ((n : ℝ) + 1) δ)` from the
 critical `Γ`-liminf inequality on `F₀`. -/
-private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → ℝ} {R_* : ℝ}
+private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → ℝ} {Rstar : ℝ}
     (hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
     (hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
     (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
     (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
-      truncatedWeilForm F₀ T + criticalAliasCoefficient R_* *
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
         (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0) :
     ∃ C_arch : ℝ, 0 ≤ C_arch ∧
       ∀ {δ : ℝ}, 0 < δ → ∀ N_min : ℕ, ∃ n : ℕ, N_min ≤ n ∧
         archForm (windowMollify F₀ ((n : ℝ) + 1) δ) ≤
           primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-            criticalAliasCoefficient R_* * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+            criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
             (C_arch + 1) * δ := by
   set T₀ : ℝ := Real.exp factorialSpanGammaOffset
   have hT₀_pos : 0 < T₀ := Real.exp_pos _
@@ -1250,24 +1282,22 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
     have htot_eq : (∫ u in Set.Iio 0, ‖F₀ u‖) = ∫ u, ‖F₀ u‖ := by
       rw [← MeasureTheory.integral_indicator measurableSet_Iio]
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-      by_cases hu : u < 0
+      dsimp only
+      by_cases hu : u ∈ Set.Iio (0 : ℝ)
       · rw [Set.indicator_of_mem hu]
-      · push Not at hu
-        rw [Set.indicator_of_notMem (not_lt.mpr hu), hF₀_zero u hu, norm_zero]
+      · have hu0 : 0 ≤ u := not_lt.mp hu
+        rw [Set.indicator_of_notMem hu, hF₀_zero u hu0, norm_zero]
     rw [htot_eq] at hmon
-    have hsub := tendsto_const_nhds.sub hmon
+    have hsub := (tendsto_const_nhds (α := ℕ) (x := ∫ u, ‖F₀ u‖)).sub hmon
     rw [sub_self] at hsub
     refine hsub.congr fun n => ?_
-    have hpt : ∀ u, (∫ u, ‖F₀ u‖) - (∫ u in Set.Ioo (-((n : ℝ) + 1)) 0, ‖F₀ u‖) =
-        ∫ u, ‖G n u - F₀ u‖ := fun _ => by
-      rw [← MeasureTheory.integral_indicator measurableSet_Ioo,
-        ← integral_sub hF₀i.norm (hF₀i.norm.indicator measurableSet_Ioo)]
-      refine integral_congr_ae (Eventually.of_forall fun v => ?_)
-      dsimp only [G]
-      by_cases hv : v ∈ Set.Ioo (-((n : ℝ) + 1)) 0
-      · simp [hv]
-      · simp [hv]
-    exact hpt 0
+    rw [← MeasureTheory.integral_indicator measurableSet_Ioo,
+      ← integral_sub hF₀i.norm (hF₀i.norm.indicator measurableSet_Ioo)]
+    refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+    dsimp only [Pi.sub_apply, G]
+    by_cases hv : v ∈ Set.Ioo (-((n : ℝ) + 1)) 0
+    · rw [Set.indicator_of_mem hv, Set.indicator_of_mem hv, sub_self, sub_self, norm_zero]
+    · rw [Set.indicator_of_notMem hv, Set.indicator_of_notMem hv, sub_zero, zero_sub, norm_neg]
   set q : ℝ → ℝ := fun r =>
     ‖paperFT (cx ρ) r‖ ^ 2 * ‖paperFT (cx F₀) r‖ ^ 2 * EF.gammaBracket r
   have hq_meas : AEStronglyMeasurable q volume :=
@@ -1280,39 +1310,45 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
     have hft := norm_paperFT_le F₀ r
     have hsq : ‖paperFT (cx F₀) r‖ ^ 2 ≤ C_F ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) hft 2
-    rw [mul_right_comm, norm_mul, Real.norm_of_nonneg (sq_nonneg _)]
+    rw [mul_right_comm, norm_mul, Real.norm_of_nonneg (sq_nonneg _), mul_comm]
     exact mul_le_mul_of_nonneg_right hsq (norm_nonneg _)
   have hq_int : Integrable q := hρ_γ_int.mono' hq_meas (Eventually.of_forall hq_dom)
   have harch_tendsto : Tendsto (fun n : ℕ => archForm (windowMollify F₀ ((n : ℝ) + 1) δ)) atTop
       (𝓝 ((1 / (2 * Real.pi)) * ∫ r, q r)) := by
     have hint_lim : Tendsto (fun n : ℕ =>
-        ∫ r, ‖paperFT (cx (windowMollify F₀ ((n : ℝ) + 1) δ)) r‖ ^ 2 * EF.gammaBracket r)
+        ∫ r : ℝ, ‖paperFT (cx (windowMollify F₀ ((n : ℝ) + 1) δ)) r‖ ^ 2 * EF.gammaBracket r)
         atTop (𝓝 (∫ r, q r)) := by
       refine tendsto_integral_of_dominated_convergence
-        (fun r => C_F ^ 2 * ‖‖paperFT (cx ρ) r‖ ^ 2 * EF.gammaBracket r‖) ?_ hρ_γ_int ?_ ?_
+        (fun r : ℝ => C_F ^ 2 * ‖‖paperFT (cx ρ) r‖ ^ 2 * EF.gammaBracket r‖) ?_ hρ_γ_int ?_ ?_
       · intro n
         have hH := isWindowTest_windowMollify (by positivity : (0 : ℝ) < (n : ℝ) + 1) hδ hF₀i
         exact (integrable_normSq_paperFT_mul_gammaBracket hH.contDiff
           hH.hasCompactSupport).aestronglyMeasurable
       · intro n
         refine Eventually.of_forall fun r => ?_
-        have hft_conv := paperFT_lineConvolution_leftSplineMollifier hδ (hG_i n) (hG_cs n) r
+        have hft_conv : paperFT (cx (HTGeometry.lineConvolution ρ (G n))) r =
+            paperFT (cx ρ) r * paperFT (cx (G n)) r :=
+          paperFT_lineConvolution_leftSplineMollifier hδ (hG_i n) (hG_cs n) r
         change ‖‖paperFT (cx (HTGeometry.lineConvolution ρ (G n))) r‖ ^ 2 *
           EF.gammaBracket r‖ ≤ _
-        rw [hft_conv, norm_mul, mul_pow, mul_right_comm, norm_mul,
-          Real.norm_of_nonneg (sq_nonneg _)]
+        rw [hft_conv, Complex.norm_mul, mul_pow, mul_right_comm, norm_mul,
+          Real.norm_of_nonneg (sq_nonneg _), mul_comm]
         have hG_norm : ‖paperFT (cx (G n)) r‖ ≤ C_F := by
           refine (norm_paperFT_le (G n) r).trans ?_
           refine integral_mono (hG_i n).norm hF₀i.norm fun u => ?_
           dsimp only [G]
-          by_cases hu : u ∈ Set.Ioo (-((n : ℝ) + 1)) 0 <;> simp [hu]
+          by_cases hu : u ∈ Set.Ioo (-((n : ℝ) + 1)) 0
+          · rw [Set.indicator_of_mem hu]
+          · rw [Set.indicator_of_notMem hu, norm_zero]
+            exact norm_nonneg _
         exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) hG_norm 2)
           (norm_nonneg _)
       · refine Eventually.of_forall fun r => ?_
         have hpt : Tendsto (fun n => paperFT (cx (G n)) r) atTop (𝓝 (paperFT (cx F₀) r)) := by
           rw [tendsto_iff_norm_sub_tendsto_zero]
           exact squeeze_zero (fun _ => norm_nonneg _)
-            (fun n => norm_paperFT_sub_le (hG_i n) hF₀i r) hG_L1_lim
+            (fun n => CriticalArithmeticCorrelationTheory.norm_paperFT_sub_le (hG_i n) hF₀i r)
+            hG_L1_lim
         have hmul := ((hpt.const_mul (paperFT (cx ρ) r)).norm.pow 2).mul_const (EF.gammaBracket r)
         refine (hmul.congr fun n => ?_).trans ?_
         · have hft_conv := paperFT_lineConvolution_leftSplineMollifier hδ (hG_i n) (hG_cs n) r
@@ -1323,7 +1359,7 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
     exact hint_lim.const_mul (1 / (2 * Real.pi))
   have hL_ub : (1 / (2 * Real.pi)) * (∫ r, q r) ≤
       primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-        criticalAliasCoefficient R_* * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+        criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
         C_arch * δ := by
     have htrunc_lim : Tendsto (fun m : ℕ =>
         (1 / (2 * Real.pi)) * ∫ r in (highFrequencies (T₀ + (m : ℝ)))ᶜ, q r)
@@ -1346,7 +1382,7 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
       rw [MeasureTheory.integral_indicator (measurableSet_highFrequencies _).compl]
     refine le_of_tendsto htrunc_lim (Eventually.of_forall fun m => ?_)
     set Tm : ℝ := T₀ + (m : ℝ)
-    have hTm_ge : T₀ ≤ Tm := by dsimp only [Tm]; positivity
+    have hTm_ge : T₀ ≤ Tm := by dsimp only [Tm]; linarith [Nat.cast_nonneg (α := ℝ) m]
     have hHm := (measurableSet_highFrequencies Tm).compl
     have hvol_Tm : volume (highFrequencies Tm)ᶜ ≠ ⊤ :=
       ((measure_mono (compl_highFrequencies_subset Tm)).trans_lt isCompact_Icc.measure_lt_top).ne
@@ -1385,11 +1421,12 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
           pow_le_pow_left₀ (norm_nonneg _) (norm_paperFT_le F₀ r) 2
         have hγ_bd : |EF.gammaBracket r| ≤ |B_γ| + 1 := by
           have h1 := (hB_γ r hr_icc).trans (le_abs_self B_γ)
+          rw [Real.norm_eq_abs] at h1
           linarith only [h1]
         have hprod_le : |(‖paperFT (cx ρ) r‖ ^ 2 - 1) *
             (‖paperFT (cx F₀) r‖ ^ 2 * EF.gammaBracket r)| ≤
             2 * T₀ * C_F ^ 2 * (|B_γ| + 1) * δ := by
-          rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg _)]
+          rw [abs_mul, abs_mul, abs_of_nonneg (sq_nonneg ‖paperFT (cx F₀) r‖)]
           have hm1 := mul_le_mul hF_sq hγ_bd (abs_nonneg _) (sq_nonneg _)
           have hm2 := mul_le_mul hsq_diff hm1 (by positivity) (by positivity)
           linarith only [hm2,
@@ -1415,13 +1452,16 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
         have hm := mul_le_mul_of_nonneg_right hρ_sq
           (mul_nonneg (sq_nonneg ‖paperFT (cx F₀) r‖) hγ_nn)
         linarith only [hm]
-    have hint_mono := setIntegral_mono_on hq_int.integrableOn
-      (hpF_on.add herr_int.integrableOn) hHm hpt_m
-    rw [integral_add hpF_on herr_int.integrableOn] at hint_mono
+    have hint_mono : (∫ x in (highFrequencies Tm)ᶜ, q x) ≤
+        ∫ a in (highFrequencies Tm)ᶜ, (pF a + err a) :=
+      setIntegral_mono_on hq_int.integrableOn (hpF_on.add herr_int.integrableOn) hHm hpt_m
+    have hadd_on := integral_add hpF_on herr_int.integrableOn
+    rw [hadd_on] at hint_mono
     have herr_ub : (∫ r in (highFrequencies Tm)ᶜ, err r) ≤
         (2 * T₀) * (2 * T₀ * C_F ^ 2 * (|B_γ| + 1) * δ) := by
-      have htot := setIntegral_le_integral herr_int
-        (Eventually.of_forall fun r => Set.indicator_nonneg (fun _ _ => by positivity) r)
+      have htot : (∫ r in (highFrequencies Tm)ᶜ, err r) ≤ ∫ r, err r :=
+        setIntegral_le_integral herr_int
+          (Eventually.of_forall fun r => Set.indicator_nonneg (fun _ _ => by positivity) r)
       have hsub : (∫ r, err r) ≤
           ∫ _r in Set.Icc (-T₀) T₀, 2 * T₀ * C_F ^ 2 * (|B_γ| + 1) * δ := by
         rw [MeasureTheory.integral_indicator (measurableSet_highFrequencies T₀).compl]
@@ -1434,10 +1474,10 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
     have hlow_eq : (1 / (2 * Real.pi)) * (∫ r in (highFrequencies Tm)ᶜ, pF r) =
         lowGammaForm F₀ Tm := rfl
     have hpi_nn : 0 ≤ 1 / (2 * Real.pi) := by positivity
-    have hm1 := mul_le_mul_of_nonneg_left (hint_mono.trans (add_le_add_left herr_ub _)) hpi_nn
+    have hm1 := mul_le_mul_of_nonneg_left (hint_mono.trans (add_le_add le_rfl herr_ub)) hpi_nn
     have hid_err : (1 / (2 * Real.pi)) * ((2 * T₀) * (2 * T₀ * C_F ^ 2 * (|B_γ| + 1) * δ)) =
         C_arch * δ := by
-      dsimp only [C_arch]; field_simp [Real.pi_pos.ne']; ring
+      dsimp only [C_arch]; field_simp [Real.pi_pos.ne']
     have hlim_m := hliminf Tm hTm_ge
     unfold truncatedWeilForm at hlim_m
     linarith only [hm1, hlow_eq, hid_err, hlim_m]
@@ -1449,37 +1489,38 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
   exact ⟨n, hn_ge, by linarith only [hn_lt, hL_ub]⟩
 
 /-- A unit-norm `L²` profile `F₀` vanishing on `[0, ∞)` that satisfies the critical `Γ`-liminf
-inequality at `R_*` cannot coexist with `∀ A ≥ 0, (R₁ : EReal) < windowThreshold A` for any
-`R₁ > R_*`. -/
-private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ : ℝ}
-    (hR_* : 0 < R_*) (hR_lt : R_* < R₁)
+inequality at `Rstar` cannot coexist with `∀ A ≥ 0, (R₁ : EReal) < windowThreshold A` for any
+`R₁ > Rstar`. -/
+private theorem contradiction_of_limit_profile_below_windowThreshold {Rstar R₁ : ℝ}
+    (hRstar : 0 < Rstar) (hR_lt : Rstar < R₁)
     (hR₁_win : ∀ A : ℝ, 0 ≤ A → (R₁ : EReal) < windowThreshold A)
     {F₀ : ℝ → ℝ} (hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
     (hF₀2 : Integrable fun u => F₀ u ^ 2) (hF₀_norm : (∫ u, F₀ u ^ 2) = 1)
-    {M₈ : ℝ} (hM₈0 : 0 ≤ M₈) (hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
+    {M₈ : ℝ} (_hM₈0 : 0 ≤ M₈) (hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
     (hF₀8_le : (∫ u, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
     (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
     (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
-      truncatedWeilForm F₀ T + criticalAliasCoefficient R_* *
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
         (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0) : False := by
-  have hR₁ : 0 < R₁ := hR_*.trans hR_lt
+  have hR₁ : 0 < R₁ := hRstar.trans hR_lt
   obtain ⟨C_arch, _hC_arch, hex_n⟩ :=
     exists_archForm_windowMollify_le_of_gammaLiminf hF₀m hF₀i hF₀8 hF₀_zero hliminf
   set δ : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
   have hδ_pos : ∀ k, 0 < δ k := fun k => by dsimp only [δ]; positivity
   have hδ_le1 : ∀ k, δ k ≤ 1 := fun k => by
-    dsimp only [δ]; exact div_le_one_of_le₀ (by positivity) (by positivity)
+    dsimp only [δ]
+    exact div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity)
   have hδ_lim : Tendsto δ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
   have hex_k : ∀ k : ℕ, ∃ n : ℕ, k ≤ n ∧
       archForm (windowMollify F₀ ((n : ℝ) + 1) (δ k)) ≤
         primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-          criticalAliasCoefficient R_* * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+          criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
           (C_arch + 1) * δ k := fun k => hex_n (hδ_pos k) k
   set n_seq : ℕ → ℕ := fun k => Classical.choose (hex_k k)
   have hn_ge : ∀ k, k ≤ n_seq k := fun k => (Classical.choose_spec (hex_k k)).1
   have hn_arch : ∀ k, archForm (windowMollify F₀ ((n_seq k : ℝ) + 1) (δ k)) ≤
       primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-        criticalAliasCoefficient R_* * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+        criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
         (C_arch + 1) * δ k := fun k => (Classical.choose_spec (hex_k k)).2
   set A_seq : ℕ → ℝ := fun k => (n_seq k : ℝ) + 1
   set H : ℕ → ℝ → ℝ := fun k => windowMollify F₀ (A_seq k) (δ k)
@@ -1515,10 +1556,11 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
     have htot_eq : (∫ u, F₀ u ^ 2) = ∫ u in Set.Iio 0, F₀ u ^ 2 := by
       rw [← MeasureTheory.integral_indicator measurableSet_Iio]
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-      by_cases hu : u < 0
+      dsimp only
+      by_cases hu : u ∈ Set.Iio (0 : ℝ)
       · rw [Set.indicator_of_mem hu]
-      · push Not at hu
-        rw [Set.indicator_of_notMem (not_lt.mpr hu), hF₀_zero u hu, sq, mul_zero]
+      · have hu0 : 0 ≤ u := not_lt.mp hu
+        rw [Set.indicator_of_notMem hu, hF₀_zero u hu0, sq, mul_zero]
     rw [htot_eq]
     refine setIntegral_mono_on hF₀2.integrableOn hF₀8.integrableOn measurableSet_Iio fun u hu => ?_
     rw [Set.mem_Iio] at hu
@@ -1541,9 +1583,13 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
         2 * ∫ y, (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2)
         atTop (𝓝 0) := by
       have hexp_z : Tendsto (fun k : ℕ => M₈ * Real.exp (-8 * ((k : ℝ) + 1))) atTop (𝓝 0) := by
-        simpa only [mul_zero] using (Real.tendsto_exp_atBot.comp
-          (tendsto_neg_atTop_atBot.comp ((tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds).const_mul_atTop
-            (by norm_num : (0 : ℝ) < 8)))).const_mul M₈
+        have hlin : Tendsto (fun k : ℕ => -8 * ((k : ℝ) + 1)) atTop atBot :=
+          (Filter.tendsto_neg_atTop_atBot.comp
+            ((tendsto_natCast_atTop_atTop.atTop_add (tendsto_const_nhds (x := (1 : ℝ)))).const_mul_atTop
+              (by norm_num : (0 : ℝ) < 8))).congr fun k => by
+            dsimp only [Function.comp_def]; ring
+        simpa only [Function.comp_def, mul_zero] using
+          (Real.tendsto_exp_atBot.comp hlin).const_mul M₈
       simpa only [mul_zero, add_zero] using (hexp_z.const_mul 2).add (hmoll_lim.const_mul 2)
     refine squeeze_zero (fun _ => integral_nonneg fun _ => sq_nonneg _) (fun k => ?_) htail_lim
     set Gk : ℝ → ℝ := (Set.Ioo (-A_seq k) 0).indicator F₀
@@ -1589,8 +1635,9 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
             have hm := mul_le_mul_of_nonneg_left hexp1 (sq_nonneg (F₀ y))
             linarith only [hm]
       exact (integral_mono hGF2 (hF₀8.const_mul _) hpt).trans
-        (by rw [integral_const_mul, mul_comm]; exact mul_le_mul_of_nonneg_right hF₀8_le
-          (Real.exp_pos _).le)
+        (by
+          rw [integral_const_mul, mul_comm]
+          exact mul_le_mul_of_nonneg_right hF₀8_le (Real.exp_pos _).le)
     have hmoll_F_int : Integrable fun y =>
         (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2 := by
       have hc_int := HTGeometry.integrable_sq_lineConvolution hρ_cont hρ_cs hF₀m hF₀2
@@ -1624,16 +1671,27 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
           HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y := by
         dsimp only [H, windowMollify, HTGeometry.lineConvolution]
         rw [← integral_sub hintG hintF]
-        exact integral_congr_ae (Eventually.of_forall fun s => by ring)
+        exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; ring)
       set a := HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y
       set b := HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y
       have hab : H k y - F₀ y = a + b := by dsimp only [a, b]; linarith only [hsub]
       rw [hab]
       nlinarith only [sq_nonneg (a - b)]
-    have hm := integral_mono hHF_int ((hconv_diff_int.const_mul 2).add (hmoll_F_int.const_mul 2))
-      hsplit_pt
-    rw [integral_add (hconv_diff_int.const_mul 2) (hmoll_F_int.const_mul 2),
-      integral_const_mul, integral_const_mul] at hm
+    have hm : (∫ y, (H k y - F₀ y) ^ 2) ≤
+        ∫ y, (2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+          (fun t => Gk t - F₀ t) y ^ 2 +
+          2 * (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2) :=
+      integral_mono hHF_int ((hconv_diff_int.const_mul 2).add (hmoll_F_int.const_mul 2))
+        hsplit_pt
+    have hadd_m : (∫ y, (2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+        (fun t => Gk t - F₀ t) y ^ 2 +
+        2 * (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2)) =
+        2 * (∫ y, HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+          (fun t => Gk t - F₀ t) y ^ 2) +
+        2 * ∫ y, (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2 := by
+      rw [integral_add (hconv_diff_int.const_mul 2) (hmoll_F_int.const_mul 2),
+        integral_const_mul, integral_const_mul]
+    rw [hadd_m] at hm
     have hcontr' : (∫ y, HTGeometry.lineConvolution (leftSplineMollifier (δ k))
         (fun t => Gk t - F₀ t) y ^ 2) ≤ M₈ * Real.exp (-8 * ((k : ℝ) + 1)) :=
       hcontr.trans hGF_tail
@@ -1649,38 +1707,43 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
     hF₀m.aestronglyMeasurable hF₀2 hF₀8 hH_exp8 (Eventually.of_forall hH_supp1) hF₀_supp1 hstrong
   obtain ⟨hP, hC, hS⟩ := tendsto_prime_and_pole_of_strong_limit (fun k => (hH_cd k).continuous)
     hH_cs hF₀W hH_mass hH_exp8 (Eventually.of_forall hH_supp1) hd
-  have hkappa_alias : splineAtom * criticalAliasCoefficient R_* = 7 * tiltedJordanOne / R_* := by
+  have hkappa_alias : splineAtom * criticalAliasCoefficient Rstar = 7 * tiltedJordanOne / Rstar := by
     unfold splineAtom criticalAliasCoefficient
-    have hm_ne : (∫ u, tiltedUnitSpline u) ^ 2 ≠ 0 :=
-      pow_ne_zero 2 integral_tiltedUnitSpline_ne_zero
+    have hm1_ne : (∫ u, tiltedUnitSpline u) ≠ 0 := integral_tiltedUnitSpline_ne_zero
+    have hm_ne : (∫ u, tiltedUnitSpline u) ^ 2 ≠ 0 := pow_ne_zero 2 hm1_ne
     have hsq_ne : (∫ u, tiltedUnitSpline u ^ 2) ≠ 0 := integral_tiltedUnitSpline_sq_pos.ne'
-    field_simp [hm_ne, hsq_ne, hR_*.ne']
-  set gap : ℝ := (7 * tiltedJordanOne / R_* - 7 * tiltedJordanOne / R₁) * I₈
+    field_simp [hm1_ne, hm_ne, hsq_ne, hRstar.ne']
+  set gap : ℝ := (7 * tiltedJordanOne / Rstar - 7 * tiltedJordanOne / R₁) * I₈
   have hgap_pos : 0 < gap := by
     have hJ : 0 < 7 * tiltedJordanOne := by have := tiltedJordanOne_pos; positivity
-    have hdiv_lt : 7 * tiltedJordanOne / R₁ < 7 * tiltedJordanOne / R_* :=
-      div_lt_div_of_pos_left hJ hR_* hR_lt
+    have hdiv_lt : 7 * tiltedJordanOne / R₁ < 7 * tiltedJordanOne / Rstar :=
+      div_lt_div_of_pos_left hJ hRstar hR_lt
     exact mul_pos (by linarith only [hdiv_lt]) (zero_lt_one.trans_le hI₈_ge1)
   have hub_lim : Tendsto (fun k : ℕ =>
       splineAtom * (primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-        criticalAliasCoefficient R_* * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
+        criticalAliasCoefficient Rstar * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
         (2 * coshHalfMoment (H k) ^ 2 - 2 * sinhHalfMoment (H k) ^ 2)) +
       (7 * tiltedJordanOne / R₁) * (Real.exp (8 * δ k) * I₈))
       atTop (𝓝 (-gap)) := by
+    have h8δ : Tendsto (fun k : ℕ => 8 * δ k) atTop (𝓝 0) := by
+      simpa only [mul_zero] using hδ_lim.const_mul 8
     have hexp_lim : Tendsto (fun k : ℕ => Real.exp (8 * δ k)) atTop (𝓝 1) := by
-      simpa only [mul_zero, Real.exp_zero] using
-        (Real.continuous_exp.tendsto 0).comp (hδ_lim.const_mul 8)
-    have h1 := (((tendsto_const_nhds.add (hδ_lim.const_mul (C_arch + 1))).sub hP).add
+      simpa only [Function.comp_def, Real.exp_zero] using
+        (Real.continuous_exp.tendsto 0).comp h8δ
+    have h1 := ((((tendsto_const_nhds (x := primeSum F₀ -
+        (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
+        criticalAliasCoefficient Rstar * I₈)).add
+        (hδ_lim.const_mul (C_arch + 1))).sub hP).add
       (((hC.pow 2).const_mul 2).sub ((hS.pow 2).const_mul 2))).const_mul splineAtom
     have h2 := (hexp_lim.mul_const I₈).const_mul (7 * tiltedJordanOne / R₁)
     refine (h1.add h2).trans (le_of_eq ?_)
     congr 1
     dsimp only [gap]
     have hlin : splineAtom * (primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-        criticalAliasCoefficient R_* * I₈ + (C_arch + 1) * 0 - primeSum F₀ +
+        criticalAliasCoefficient Rstar * I₈ + (C_arch + 1) * 0 - primeSum F₀ +
         (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2)) +
         7 * tiltedJordanOne / R₁ * (1 * I₈) =
-        -(splineAtom * criticalAliasCoefficient R_*) * I₈ + (7 * tiltedJordanOne / R₁) * I₈ := by
+        -(splineAtom * criticalAliasCoefficient Rstar) * I₈ + (7 * tiltedJordanOne / R₁) * I₈ := by
       ring
     rw [hlin, hkappa_alias]
     ring
@@ -1689,6 +1752,7 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
     intro h0
     have heq : (∫ y, (H k y - F₀ y) ^ 2) = ∫ y, F₀ y ^ 2 := by
       refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+      dsimp only
       rw [h0, Pi.zero_apply, zero_sub, neg_sq]
     rw [heq, hF₀_norm] at hk
     linarith only [hk]
@@ -1696,7 +1760,7 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
     hH_norm_pos).exists
   have hpen_ub : windowPencil R₁ (H k) ≤
       splineAtom * (primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-        criticalAliasCoefficient R_* * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
+        criticalAliasCoefficient Rstar * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
         (2 * coshHalfMoment (H k) ^ 2 - 2 * sinhHalfMoment (H k) ^ 2)) +
       (7 * tiltedJordanOne / R₁) * (Real.exp (8 * δ k) * I₈) := by
     unfold windowPencil
@@ -1705,7 +1769,7 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {R_* R₁ :
       (show archForm (H k) - primeSum (H k) +
           (2 * coshHalfMoment (H k) ^ 2 - 2 * sinhHalfMoment (H k) ^ 2) ≤
         primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
-          criticalAliasCoefficient R_* * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
+          criticalAliasCoefficient Rstar * I₈ + (C_arch + 1) * δ k - primeSum (H k) +
           (2 * coshHalfMoment (H k) ^ 2 - 2 * sinhHalfMoment (H k) ^ 2) by
         linarith only [hn_arch k])
       splineAtom_pos.le
@@ -1748,16 +1812,16 @@ private theorem normalizedCentredAtomicTest_eq_zero_of_gt {c : ℝ} (hc : 0 < c)
 
 /-- **Every ratio below `⨅ A ≥ 0, windowThreshold A` is eventually positive definite on the
 high-conductor complement `(conductorSubspace ⌊(log N)^{13/32}⌋₊ N)ᗮ`.** -/
-theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR_* : 0 < R_*)
-    (hlt : (R_* : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) :
-    EventuallyHighConductorPosDef R_* := by
-  have hex_R₁ : ∃ R₁ : ℝ, R_* < R₁ ∧ ∀ A : ℝ, 0 ≤ A → (R₁ : EReal) < windowThreshold A := by
+theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (hRstar : 0 < Rstar)
+    (hlt : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) :
+    EventuallyHighConductorPosDef Rstar := by
+  have hex_R₁ : ∃ R₁ : ℝ, Rstar < R₁ ∧ ∀ A : ℝ, 0 ≤ A → (R₁ : EReal) < windowThreshold A := by
     cases hinf : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) with
     | bot =>
       rw [hinf] at hlt
       exact absurd hlt not_lt_bot
     | top =>
-      refine ⟨R_* + 1, by linarith, fun A hA => ?_⟩
+      refine ⟨Rstar + 1, by linarith, fun A hA => ?_⟩
       have hle : (⨅ (B : ℝ) (_ : 0 ≤ B), windowThreshold B) ≤ windowThreshold A :=
         iInf_le_of_le A (iInf_le _ hA)
       rw [hinf, top_le_iff] at hle
@@ -1765,7 +1829,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
       exact EReal.coe_lt_top _
     | coe M =>
       rw [hinf, EReal.coe_lt_coe_iff] at hlt
-      refine ⟨(R_* + M) / 2, by linarith, fun A hA => ?_⟩
+      refine ⟨(Rstar + M) / 2, by linarith, fun A hA => ?_⟩
       have hle : ((M : ℝ) : EReal) ≤ windowThreshold A := by
         rw [← hinf]
         exact iInf_le_of_le A (iInf_le _ hA)
@@ -1774,10 +1838,10 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
   by_contra hnot_pos
   obtain ⟨R₀, hR₀, hpos_R₀⟩ := exists_pos_eventuallyCriticalPosDef
   obtain ⟨c_W, hc_W, hbridge_gen⟩ := eventually_complement_collar_weilQuad_bridge
-  obtain ⟨B_far, hB_far, hbridge_ev⟩ := hbridge_gen hR_*
+  obtain ⟨B_far, hB_far, hbridge_ev⟩ := hbridge_gen hRstar
   let BadAt (N : ℕ) : Prop :=
     ∃ (c : ℝ) (z : EuclideanSpace ℝ (PrimeHorizonIndex N)),
-      1 ≤ c ∧ c ^ 8 ≤ R_* * Real.log (N : ℝ) ∧
+      1 ≤ c ∧ c ^ 8 ≤ Rstar * Real.log (N : ℝ) ∧
         z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ ∧
         z ≠ 0 ∧ completeWeilEnergy tiltedUnitSpline c N z ≤ 0
   have hfreq_bad : ∃ᶠ N : ℕ in atTop, BadAt N := by
@@ -1788,11 +1852,11 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     exact ⟨c, z, hc1, hc8, hz, hzne, hle⟩
   let GoodAt (k N : ℕ) : Prop :=
     3 ≤ N ∧ ((k : ℝ) + 1) ≤ (N : ℝ) ∧
-      ((k : ℝ) + 1) * (R_* + 1) * Real.log (N : ℝ) ≤ (N : ℝ) ∧
+      ((k : ℝ) + 1) * (Rstar + 1) * Real.log (N : ℝ) ≤ (N : ℝ) ∧
       (∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R₀ * Real.log (N : ℝ) →
         ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)}, z ≠ 0 →
           0 < completeWeilEnergy tiltedUnitSpline c N z) ∧
-      (∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_* * Real.log (N : ℝ) →
+      (∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ Rstar * Real.log (N : ℝ) →
         ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
           z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ →
           completeWeilEnergy tiltedUnitSpline c N z ≤ 0 →
@@ -1803,7 +1867,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
             (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 ≤
                 (c * B_far) * (∫ u, U_w u ^ 2) ∧
               (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) ≤
-                (R_* * B_far / c_W) * (∫ u, U_w u ^ 2) ∧
+                (Rstar * B_far / c_W) * (∫ u, U_w u ^ 2) ∧
               levyEnergy U_w ≤
                 (4 * (∫ u, tiltedUnitSpline u ^ 2) * B_far) * (∫ u, U_w u ^ 2) ∧
               weilQuad U_w ≤ (1 / ((k : ℝ) + 1)) * ∫ u, U_w u ^ 2)
@@ -1811,7 +1875,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
   have hgood_ev : ∀ k : ℕ, ∀ᶠ N : ℕ in atTop, GoodAt k N := by
     intro k
-    have hK_pos : 0 < ((k : ℝ) + 1) * (R_* + 1) := by positivity
+    have hK_pos : 0 < ((k : ℝ) + 1) * (Rstar + 1) := by positivity
     have hev_log := (hLN_zero.comp tendsto_natCast_atTop_atTop).eventually
       (gt_mem_nhds (inv_pos.mpr hK_pos))
     filter_upwards [eventually_ge_atTop (max 3 (k + 1)), hev_log, hpos_R₀,
@@ -1820,10 +1884,10 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     have hkN : (k : ℝ) + 1 ≤ (N : ℝ) := by exact_mod_cast (le_max_right 3 (k + 1)).trans hN_ge
     have hN0 : (0 : ℝ) < N := by positivity
     dsimp only [Function.comp_def] at hlt_log
-    have hlog_le : ((k : ℝ) + 1) * (R_* + 1) * Real.log (N : ℝ) ≤ (N : ℝ) := by
+    have hlog_le : ((k : ℝ) + 1) * (Rstar + 1) * Real.log (N : ℝ) ≤ (N : ℝ) := by
       have hm := (div_lt_iff₀ hN0).mp hlt_log
       have hm2 := mul_lt_mul_of_pos_left hm hK_pos
-      have hid : ((k : ℝ) + 1) * (R_* + 1) * ((((k : ℝ) + 1) * (R_* + 1))⁻¹ * (N : ℝ)) =
+      have hid : ((k : ℝ) + 1) * (Rstar + 1) * ((((k : ℝ) + 1) * (Rstar + 1))⁻¹ * (N : ℝ)) =
           (N : ℝ) := by field_simp [hK_pos.ne']
       linarith only [hm2, hid]
     exact ⟨hN3, hkN, hlog_le, hR₀N, hbrN⟩
@@ -1846,46 +1910,35 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
   have hN_strict : StrictMono N_seq :=
     strictMono_nat_of_lt_succ fun k =>
       Nat.lt_of_succ_le (Classical.choose_spec (hex_step (k + 1) (N_seq k + 1))).1
-  let c_seq : ℕ → ℝ := fun k => Classical.choose (hN_step k).2
-  have hc_spec : ∀ k : ℕ, ∃ z : EuclideanSpace ℝ (PrimeHorizonIndex (N_seq k)),
-      1 ≤ c_seq k ∧ c_seq k ^ 8 ≤ R_* * Real.log (N_seq k : ℝ) ∧
-        z ∈ (conductorSubspace ⌊Real.log (N_seq k : ℝ) ^ (13 / 32 : ℝ)⌋₊ (N_seq k))ᗮ ∧
-        z ≠ 0 ∧ completeWeilEnergy tiltedUnitSpline (c_seq k) (N_seq k) z ≤ 0 :=
-    fun k => Classical.choose_spec (hN_step k).2
-  let z_seq : ∀ k : ℕ, EuclideanSpace ℝ (PrimeHorizonIndex (N_seq k)) :=
-    fun k => Classical.choose (hc_spec k)
-  have hz_spec : ∀ k : ℕ,
-      1 ≤ c_seq k ∧ c_seq k ^ 8 ≤ R_* * Real.log (N_seq k : ℝ) ∧
-        z_seq k ∈ (conductorSubspace ⌊Real.log (N_seq k : ℝ) ^ (13 / 32 : ℝ)⌋₊ (N_seq k))ᗮ ∧
-        z_seq k ≠ 0 ∧ completeWeilEnergy tiltedUnitSpline (c_seq k) (N_seq k) (z_seq k) ≤ 0 :=
-    fun k => Classical.choose_spec (hc_spec k)
+  have hbad_seq : ∀ k : ℕ, BadAt (N_seq k) := fun k => (hN_step k).2
+  choose c_seq z_seq hz_spec using hbad_seq
   have hN3_seq : ∀ k, 3 ≤ N_seq k := fun k => (hN_step k).1.1
-  have hL_pos : ∀ k, 0 < Real.log (N_seq k : ℝ) := fun k =>
-    Real.log_pos (by exact_mod_cast (show 1 < N_seq k by have := hN3_seq k; omega))
-  have hratio_mem : ∀ k, c_seq k ^ 8 / Real.log (N_seq k : ℝ) ∈ Set.Icc R₀ R_* := by
+  have hL_pos : ∀ k, 0 < Real.log (Nat.cast (N_seq k)) := fun k =>
+    Real.log_pos (Nat.one_lt_cast.mpr (by have := hN3_seq k; omega))
+  have hratio_mem : ∀ k, c_seq k ^ 8 / Real.log (Nat.cast (N_seq k)) ∈ Set.Icc R₀ Rstar := by
     intro k
     obtain ⟨hc1, hc8, _, hzne, hle0⟩ := hz_spec k
     refine ⟨?_, (div_le_iff₀ (hL_pos k)).mpr hc8⟩
     by_contra hlt_R₀
     push Not at hlt_R₀
-    have hc8_R₀ : c_seq k ^ 8 ≤ R₀ * Real.log (N_seq k : ℝ) :=
+    have hc8_R₀ : c_seq k ^ 8 ≤ R₀ * Real.log (Nat.cast (N_seq k)) :=
       ((div_lt_iff₀ (hL_pos k)).mp hlt_R₀).le
     have hpos := (hN_step k).1.2.2.2.1 hc1 hc8_R₀ hzne
     linarith only [hpos, hle0]
-  have hc_width : ∀ k, c_seq k / (N_seq k : ℝ) ≤ 1 / ((k : ℝ) + 1) := by
+  have hc_width : ∀ k, c_seq k / Nat.cast (N_seq k) ≤ 1 / ((k : ℝ) + 1) := by
     intro k
     obtain ⟨hc1, hc8, _, _, _⟩ := hz_spec k
     obtain ⟨hN3, hkN, hlog_le, _, _⟩ := (hN_step k).1
-    have hN0 : (0 : ℝ) < N_seq k := by exact_mod_cast (show 0 < N_seq k by omega)
-    have hc_le : ((k : ℝ) + 1) * c_seq k ≤ (N_seq k : ℝ) := by
-      by_cases hcL : c_seq k ≤ (R_* + 1) * Real.log (N_seq k : ℝ)
+    have hN0 : (0 : ℝ) < Nat.cast (N_seq k) := Nat.cast_pos.mpr (by omega)
+    have hc_le : ((k : ℝ) + 1) * c_seq k ≤ Nat.cast (N_seq k) := by
+      by_cases hcL : c_seq k ≤ (Rstar + 1) * Real.log (Nat.cast (N_seq k))
       · calc ((k : ℝ) + 1) * c_seq k
-            ≤ ((k : ℝ) + 1) * ((R_* + 1) * Real.log (N_seq k : ℝ)) :=
+            ≤ ((k : ℝ) + 1) * ((Rstar + 1) * Real.log (Nat.cast (N_seq k))) :=
               mul_le_mul_of_nonneg_left hcL (by positivity)
-          _ = ((k : ℝ) + 1) * (R_* + 1) * Real.log (N_seq k : ℝ) := (mul_assoc _ _ _).symm
-          _ ≤ (N_seq k : ℝ) := hlog_le
+          _ = ((k : ℝ) + 1) * (Rstar + 1) * Real.log (Nat.cast (N_seq k)) := (mul_assoc _ _ _).symm
+          _ ≤ Nat.cast (N_seq k) := hlog_le
       · push Not at hcL
-        have hc8_gt : (R_* + 1) * Real.log (N_seq k : ℝ) < c_seq k ^ 8 :=
+        have hc8_gt : (Rstar + 1) * Real.log (Nat.cast (N_seq k)) < c_seq k ^ 8 :=
           hcL.trans_le (le_self_pow₀ hc1 (by norm_num))
         linarith only [hc8_gt, hc8, hL_pos k]
     rw [div_le_div_iff₀ hN0 (by positivity)]
@@ -1897,7 +1950,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
       (tiltedSplineSpectralFloorConstant + 2) * ‖z_seq k‖ ^ 2 ≤
           (c_seq k * B_far) * (∫ u, U_w u ^ 2) ∧
         (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) ≤
-          (R_* * B_far / c_W) * (∫ u, U_w u ^ 2) ∧
+          (Rstar * B_far / c_W) * (∫ u, U_w u ^ 2) ∧
         weilQuad U_w ≤ (1 / ((k : ℝ) + 1)) * ∫ u, U_w u ^ 2 := by
     intro k
     obtain ⟨hc1, hc8, hz_orth, _, hle0⟩ := hz_spec k
@@ -1940,7 +1993,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     rw [hV_eq k]
     simp_rw [mul_pow]
     rw [integral_const_mul, inv_pow, ← hν_sq k, inv_mul_cancel₀ (pow_ne_zero 2 (hν_pos k).ne')]
-  set M₈ : ℝ := R_* * B_far / c_W
+  set M₈ : ℝ := Rstar * B_far / c_W
   have hM₈_pos : 0 < M₈ := by dsimp only [M₈]; positivity
   have hV_M₈ : ∀ k, (∫ u, V k u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
     intro k
@@ -1948,7 +2001,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     have heq : (∫ u, V k u ^ 2 * Real.exp (-(8 * u))) =
         (ν k)⁻¹ ^ 2 * ∫ u, U_raw k u ^ 2 * Real.exp (-(8 * u)) := by
       rw [hV_eq k, ← integral_const_mul]
-      exact integral_congr_ae (Eventually.of_forall fun u => by ring)
+      exact integral_congr_ae (Eventually.of_forall fun u => by dsimp only; ring)
     rw [heq]
     have hm := mul_le_mul_of_nonneg_left hb2 (sq_nonneg (ν k)⁻¹)
     have hid : (ν k)⁻¹ ^ 2 * (M₈ * ∫ u, U_raw k u ^ 2) = M₈ := by
@@ -1974,7 +2027,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
   obtain ⟨R_lim, hR_lim_mem, φ₁, hφ₁_mono, hφ₁_lim⟩ :=
     isCompact_Icc.isSeqCompact hratio_mem
   have hR_lim_pos : 0 < R_lim := hR₀.trans_le hR_lim_mem.1
-  have hR_lim_le : R_lim ≤ R_* := hR_lim_mem.2
+  have hR_lim_le : R_lim ≤ Rstar := hR_lim_mem.2
   have hS_tb := totallyBounded_toLp_of_bounded_weilQuad hVd hVc (fun k => (hV_norm k).le)
     hM₈_pos.le hV_M₈ hV_supp1 hV_wq1 hV_mem
   have hS_seq : IsSeqCompact (closure (Set.range fun k : ℕ => (hV_mem k).toLp (V k))) :=
@@ -2026,14 +2079,14 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     exact (tendsto_nhds_unique hn1 (by simpa only [hn2] using tendsto_const_nhds)).symm
   have hF_pos_ae : ∀ᵐ u : ℝ, 0 < u → F u = 0 := by
     filter_upwards [hφ₃_ae] with u hu_lim hu_pos
-    have hex_j : ∃ j₀ : ℕ, 1 / ((s j₀ : ℝ) + 1) < u := by
-      have hz : Tendsto (fun j : ℕ => 1 / ((s j : ℝ) + 1)) atTop (𝓝 0) :=
+    have hex_j : ∃ j₀ : ℕ, 1 / (Nat.cast (s j₀) + 1) < u := by
+      have hz : Tendsto (fun j : ℕ => 1 / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
         tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop
       exact (hz.eventually (gt_mem_nhds hu_pos)).exists
     obtain ⟨j₀, hj₀⟩ := hex_j
     have hev0 : ∀ᶠ j : ℕ in atTop, V (s j) u = 0 := by
       filter_upwards [eventually_ge_atTop j₀] with j hj
-      have hle : 1 / ((s j : ℝ) + 1) ≤ 1 / ((s j₀ : ℝ) + 1) :=
+      have hle : 1 / (Nat.cast (s j) + 1) ≤ 1 / (Nat.cast (s j₀) + 1) :=
         div_le_div_of_nonneg_left zero_le_one (by positivity)
           (by exact_mod_cast Nat.add_le_add_right (hs_mono.monotone hj) 1)
       exact hV_supp_k (s j) u (hle.trans_lt hj₀)
@@ -2061,16 +2114,17 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
   set F₀ : ℝ → ℝ := (Set.Iio (0 : ℝ)).indicator F
   have hF₀m : Measurable F₀ := hFm.indicator measurableSet_Iio
   have hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0 := fun u hu =>
-    Set.indicator_of_notMem (not_lt.mpr hu)
+    Set.indicator_of_notMem (not_lt.mpr hu) F
   have hF₀_ae : F₀ =ᵐ[volume] F := by
     have hnot0 : ∀ᵐ u : ℝ, u ≠ 0 := by
       rw [ae_iff]
       simpa only [Classical.not_not] using measure_singleton (0 : ℝ)
     filter_upwards [hF_pos_ae, hnot0] with u hu_pos hne
     rcases lt_trichotomy u 0 with hlt | rfl | hgt
-    · exact Set.indicator_of_mem hlt
+    · exact Set.indicator_of_mem hlt F
     · exact absurd rfl hne
-    · rw [Set.indicator_of_notMem (not_lt.mpr hgt.le), hu_pos hgt]
+    · dsimp only [F₀]
+      rw [Set.indicator_of_notMem (not_lt.mpr hgt.le), hu_pos hgt]
   have hF₀2 : Integrable fun u => F₀ u ^ 2 :=
     hF_mem.integrable_sq.congr (hF₀_ae.symm.mono fun _ h => by rw [h])
   have hF₀_norm : (∫ u, F₀ u ^ 2) = 1 := by
@@ -2089,10 +2143,8 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
   let N_sub : ℕ → ℕ := fun j => N_seq (s j)
   have hN_sub : StrictMono N_sub := hN_strict.comp hs_mono
   let c_full : ℕ → ℝ := fun N =>
-    open Classical in
     if h : ∃ j : ℕ, N_sub j = N then c_seq (s (Classical.choose h)) else localCriticalCurve R_lim N
   let x_full : ℕ → ℕ → ℝ := fun N =>
-    open Classical in
     if h : ∃ j : ℕ, N_sub j = N then y_norm (s (Classical.choose h)) else 0
   have hc_full_sub : ∀ j : ℕ, c_full (N_sub j) = c_seq (s j) := by
     intro j
@@ -2137,7 +2189,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
       rw [hx0, normalizedCentredAtomicTest_zero]
       simpa using hM₈_pos.le
   have hcrit_full : Tendsto (fun N : ℕ => c_full N ^ 8 / Real.log (N : ℝ)) atTop (𝓝 R_lim) := by
-    have hsub_ratio : Tendsto (fun j : ℕ => c_seq (s j) ^ 8 / Real.log (N_sub j : ℝ))
+    have hsub_ratio : Tendsto (fun j : ℕ => c_seq (s j) ^ 8 / Real.log (Nat.cast (N_sub j)))
         atTop (𝓝 R_lim) :=
       hφ₁_lim.comp (hφ₂_mono.comp hφ₃_mono).tendsto_atTop
     have hloc_ratio := tendsto_localCriticalCurve_ratio hR_lim_pos
@@ -2163,7 +2215,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
     dsimp only [Function.comp_def]
     rw [hU_full_sub j]
   have hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
-      truncatedWeilForm F₀ T + criticalAliasCoefficient R_* *
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
         (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0 := by
     intro T hT
     have hlim_Rlim : truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
@@ -2180,13 +2232,13 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
       rw [Filter.eventually_map] at hev_gt
       have hev_gt' : ∀ᶠ j : ℕ in atTop, b_half < weilQuad (V (s j)) :=
         hev_gt.mono fun j hj => by rwa [hU_full_sub j] at hj
-      have hz_inv : Tendsto (fun j : ℕ => 1 / ((s j : ℝ) + 1)) atTop (𝓝 0) :=
+      have hz_inv : Tendsto (fun j : ℕ => 1 / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
         tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop
       obtain ⟨j, hj_gt, hj_lt⟩ :=
         (hev_gt'.and (hz_inv.eventually (gt_mem_nhds hb_pos))).exists
       have hwq_j := hV_wq (s j)
       linarith only [hj_gt, hj_lt, hwq_j]
-    have halias_le : criticalAliasCoefficient R_* ≤ criticalAliasCoefficient R_lim := by
+    have halias_le : criticalAliasCoefficient Rstar ≤ criticalAliasCoefficient R_lim := by
       unfold criticalAliasCoefficient
       have hnum : 0 ≤ 7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne := by
         have := integral_tiltedUnitSpline_sq_pos
@@ -2200,7 +2252,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {R_* : ℝ} (hR
       setIntegral_nonneg measurableSet_Iio fun _ _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
     have hm := mul_le_mul_of_nonneg_right halias_le hI₈_nn
     linarith only [hlim_Rlim, hm]
-  exact contradiction_of_limit_profile_below_windowThreshold hR_* hR_lt hR₁_win hF₀m hF₀i hF₀2
+  exact contradiction_of_limit_profile_below_windowThreshold hRstar hR_lt hR₁_win hF₀m hF₀i hF₀2
     hF₀_norm hM₈_pos.le hF₀8 hF₀8_le hF₀_zero hliminf
 
 /-! ### 5. Exact high-conductor threshold identity and exponential lower bounds -/
@@ -2237,17 +2289,19 @@ theorem iInf_windowThreshold_le_highConductorCriticalThreshold :
         rw [hT] at hnot_le
         exact not_top_lt hnot_le
       | coe T =>
-        rw [hT, EReal.coe_lt_coe_iff] at hnot_le hpos_thr
-        set R_* : ℝ := (T + M) / 2
-        have hR_* : 0 < R_* := by dsimp only [R_*]; linarith
-        have hlt_W : (R_* : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A := by
-          rw [hW, EReal.coe_lt_coe_iff]; dsimp only [R_*]; linarith
-        have hle_T : (R_* : EReal) ≤ (T : EReal) := by
+        rw [hT, EReal.coe_lt_coe_iff] at hnot_le
+        rw [hT, EReal.coe_pos] at hpos_thr
+        set Rstar : ℝ := (T + M) / 2
+        have hRstar : 0 < Rstar := by dsimp only [Rstar]; linarith
+        have hlt_W : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A := by
+          rw [hW, EReal.coe_lt_coe_iff]; dsimp only [Rstar]; linarith
+        have hle_T : (Rstar : EReal) ≤ (T : EReal) := by
           rw [← hT]
           exact le_sSup
-            ⟨R_*, ⟨hR_*, eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold hR_* hlt_W⟩, rfl⟩
-        have hRT : R_* ≤ T := EReal.coe_le_coe_iff.mp hle_T
-        dsimp only [R_*] at hRT
+            ⟨Rstar, ⟨hRstar, eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold hRstar hlt_W⟩,
+              rfl⟩
+        have hRT : Rstar ≤ T := EReal.coe_le_coe_iff.mp hle_T
+        dsimp only [Rstar] at hRT
         linarith
 
 /-- **Exact high-conductor critical threshold law (`R_c^{high}(ζ) = ⨅_{A ≥ 0} R₁(A)`).**
@@ -2343,7 +2397,7 @@ theorem eventually_lowConductorProjection_and_topWindow_ne_zero_of_nonpos :
               ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
                 z ≠ 0 → completeWeilEnergy tiltedUnitSpline c N z ≤ 0 →
                   (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N).starProjection z ≠ 0 ∧
-                    ∃ n ∈ Ioc (N / S_R) N, primeHorizonExtension z n ≠ 0 := by
+                    ∃ n ∈ Finset.Ioc (N / S_R) N, primeHorizonExtension z n ≠ 0 := by
   obtain ⟨C₀, hC₀, hwin⟩ := eventually_nonpos_completeWeilEnergy_not_escape_log_window
   refine ⟨C₀, hC₀, fun {a R} ha0 ha hR hlt => ?_⟩
   obtain ⟨S_R, hSR2, hSR_ub, hev_win⟩ := hwin hR

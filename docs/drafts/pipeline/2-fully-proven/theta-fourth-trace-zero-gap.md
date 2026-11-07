@@ -1,6 +1,6 @@
 # Fourth-trace payment of a wider zero gap
 
-- **Stage:** 2-fully-proven; Lean validation pending.
+- **Stage:** 2-fully-proven; final ordinary Lean audit pending.
 - **Statement:** Every multiplicity copy of a zero of Xi satisfies `12<|Im ρ|`.
 - **Source:** The corpus fourth reciprocal trace is below `9/100000`; its individual atoms are nonnegative and invariant under conjugation.
 
@@ -8,4 +8,4 @@ Conjugation pairs distinct zero copies because no Xi zero has zero ordinate. Thu
 
 This strengthens the interval available for a product-based Xi minorant. It does not yet provide that minorant or a further rank payment.
 
-Lean: `ThetaCuspSections/FourthTraceZeroGap.lean`; final validation and transitive axiom audit pending.
+Lean: `ThetaCuspSections/FourthTraceZeroGap.lean`. The module check passed; transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`. The final ordinary audit remains pending.

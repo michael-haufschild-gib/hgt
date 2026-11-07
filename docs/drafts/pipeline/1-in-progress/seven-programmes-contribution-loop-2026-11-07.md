@@ -24,7 +24,9 @@ the seven programmes, supplies a listed missing tool, or exposes a structural la
 
 | # | Programme | Statement | Status |
 |---|---|---|---|
-| C1 | AGT Q1 | For every gauge point `x`, `θ_μ(x) ∨ θ_μ(x+ℓ)` is at least half the holomorphy abscissa of the Möbius series at `2x`; at order-two points this is `≥ Θ/2 ≥ 1/4` | in progress |
+| C1 | AGT Q1 | Doubling law `F_x F_{x+ℓ} = F_{2x}(2s)`; order-two twin pairs: `Θ ≤ 2 max θ_μ`, so `max ≥ 1/4` | formalized |
+| C2 | AGT | Constant source: `max(θ_1(x), θ_1(x+ℓ)) ≥ 1/2` at order-two points; real Dirichlet twins have `θ_1 ≥ 1/2` | formalized |
+| C3 | PTT §9.8 | A.e. order-two fibre and its antipode both have natural boundary `Re s = ½`; their product is `ζ(2s)` | formalized |
 
 ## Log
-- 2026-11-07 — created.
+- 2026-11-07 — created; C1–C3 formalized and wired (AGT, PTT umbrellas); loop paused by the user.

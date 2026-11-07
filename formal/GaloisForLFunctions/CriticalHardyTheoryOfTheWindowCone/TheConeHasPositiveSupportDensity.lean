@@ -38,7 +38,7 @@ namespace GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone
 
 open _root_.RHTower _root_.RHTower.WeilSpectral _root_.RHTower.WeilOneSided
 open _root_.RHTower.WeilPoleWeight _root_.RHTower.OddSector _root_.RHTower.EvenSector
-open _root_.RHTower.ResonatorProfile _root_.Zeta23
+open _root_.RHTower.ResonatorProfile _root_.RHTower.WeilMeanSquare _root_.Zeta23
 
 /-! ### The Toeplitz inequality on the cone -/
 
@@ -221,8 +221,8 @@ theorem isPrimitiveSet_posSupport (lam : ℕ → ℝ) (a : ℝ) (M : ℕ) :
   intro m hm m' hm' k hk heq
   rw [posSupport, Finset.mem_filter, Finset.mem_Icc] at hm hm'
   have hm0 : (0 : ℝ) < m' := by exact_mod_cast (show 0 < m' by omega)
-  have hk2 : (2 : ℝ) * m' ≤ m := by rw [heq]; push_cast; exact mul_le_mul_of_nonneg_right
-    (by exact_mod_cast hk) hm0.le
+  have hk' : (2 : ℝ) ≤ k := by exact_mod_cast hk
+  have hk2 : (2 : ℝ) * m' ≤ m := by rw [heq]; push_cast; nlinarith
   have hlog : Real.log 2 + Real.log m' ≤ Real.log m := by
     rw [← Real.log_mul (by norm_num) hm0.ne']
     exact Real.log_le_log (by positivity) hk2
@@ -319,7 +319,8 @@ theorem local_floor_le_card_mul {β s c : ℝ} {lam : ℕ → ℝ} (h : lam ∈ 
     have hnle : (n : ℝ) ≤ Real.exp (2 * a + 1 / 6) := by
       rw [← Real.exp_log hn0]; exact Real.exp_le_exp.mpr (by linarith [(abs_lt.mp hlog).2])
     rw [mul_div_assoc', le_div_iff₀ hn0]
-    exact mul_le_mul_of_nonneg_left hnle (sq_nonneg _)
+    have := mul_le_mul_of_nonneg_left hnle (sq_nonneg (lam n))
+    linarith
   have hCS : (∑ n ∈ P, lam n) ^ 2 ≤ (P.card : ℝ) * ∑ n ∈ P, lam n ^ 2 := by
     have := Finset.sum_mul_sq_le_sq_mul_sq P (fun _ => (1 : ℝ)) lam
     simpa using this
@@ -427,7 +428,10 @@ theorem exists_card_pos_ge :
   rw [Real.sq_sqrt hP0] at h4
   calc (J / 2 / Y) ^ 2 * Real.exp (2 * a) / (a + 1) ^ 2
       = (J / 2 / Y * Real.exp a / (a + 1)) ^ 2 := by
-        rw [div_pow, mul_pow, ← Real.exp_nat_mul]; push_cast; ring_nf
+        rw [show Real.exp (2 * a) = Real.exp a ^ 2 by rw [← Real.exp_nat_mul]; norm_num]
+        have : a + 1 ≠ 0 := ha1.ne'
+        have : Y ≠ 0 := hY0.ne'
+        field_simp
     _ ≤ P := h4
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone
