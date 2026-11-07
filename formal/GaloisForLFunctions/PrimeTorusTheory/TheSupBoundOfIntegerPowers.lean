@@ -21,16 +21,15 @@ namespace GaloisForLFunctions.PrimeTorusTheory
 noncomputable section
 
 /-- A lower bound for the distances against every rotation bounds the sum of the phases. -/
-theorem norm_sum_le_of_rotDist {ι : Type*} (s : Finset ι) (n : ι → ℕ) (hn : ∀ i ∈ s, n i ≠ 0) {t C : ℝ}
-    {K : ℕ} (hC : 0 ≤ C) (hcard : s.card ≤ K) (hK : 0 < K)
-    (hmean : ∀ φ : ℝ, (K : ℝ) * C ≤ ∑ i ∈ s, rotDist t φ (n i)) :
-    ‖∑ i ∈ s, Complex.exp (Complex.I * (t * Real.log (n i)))‖ ≤ (K : ℝ) * (1 - 8 * C ^ 2) := by
+theorem exists_phase_norm_sum_le {ι : Type*} (s : Finset ι) (n : ι → ℕ) (hn : ∀ i ∈ s, n i ≠ 0)
+    (t : ℝ) :
+    ∃ φ : ℝ, ‖∑ i ∈ s, Complex.exp (Complex.I * (t * Real.log (n i)))‖ ≤
+      (s.card : ℝ) - 8 * ∑ i ∈ s, rotDist t φ (n i) ^ 2 := by
   classical
   set T : ℂ := ∑ i ∈ s, Complex.exp (Complex.I * (t * Real.log (n i))) with hT
   set α : ℝ := Complex.arg T with hα
   set φ : ℝ := α / (2 * π) with hφ
   have hπ := Real.pi_pos
-  have hNr : (0 : ℝ) < K := by exact_mod_cast hK
   have hnorm : ‖T‖ = ∑ i ∈ s, Real.cos (2 * π * (t * Real.log (n i) / (2 * π) - φ)) := by
     have h1 : ((‖T‖ : ℝ) : ℂ) = T * Complex.exp (-(Complex.I * (α : ℂ))) := by
       have h2 := Complex.norm_mul_exp_arg_mul_I T
@@ -61,6 +60,20 @@ theorem norm_sum_le_of_rotDist {ι : Type*} (s : Finset ι) (n : ι → ℕ) (hn
     unfold rotDist
     rw [if_neg (hn i hi)]
     linarith
+  refine ⟨φ, ?_⟩
+  rw [hnorm]
+  calc ∑ i ∈ s, Real.cos (2 * π * (t * Real.log (n i) / (2 * π) - φ))
+      ≤ ∑ i ∈ s, (1 - 8 * rotDist t φ (n i) ^ 2) := Finset.sum_le_sum hd
+    _ = (s.card : ℝ) - 8 * ∑ i ∈ s, rotDist t φ (n i) ^ 2 := by
+        rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, mul_one, Finset.mul_sum]
+
+theorem norm_sum_le_of_rotDist {ι : Type*} (s : Finset ι) (n : ι → ℕ) (hn : ∀ i ∈ s, n i ≠ 0) {t C : ℝ}
+    {K : ℕ} (hC : 0 ≤ C) (hcard : s.card ≤ K) (hK : 0 < K)
+    (hmean : ∀ φ : ℝ, (K : ℝ) * C ≤ ∑ i ∈ s, rotDist t φ (n i)) :
+    ‖∑ i ∈ s, Complex.exp (Complex.I * (t * Real.log (n i)))‖ ≤ (K : ℝ) * (1 - 8 * C ^ 2) := by
+  classical
+  obtain ⟨φ, hφ⟩ := exists_phase_norm_sum_le s n hn t
+  have hNr : (0 : ℝ) < K := by exact_mod_cast hK
   have hmean2 := hmean φ
   have hcard' : (s.card : ℝ) ≤ K := by exact_mod_cast hcard
   have hcs := sq_sum_le_card_mul_sum_sq (s := s) (f := fun i => rotDist t φ (n i))
@@ -74,11 +87,7 @@ theorem norm_sum_le_of_rotDist {ι : Type*} (s : Finset ι) (n : ι → ℕ) (hn
       calc (K : ℝ) * ((K : ℝ) * C ^ 2) = ((K : ℝ) * C) ^ 2 := by ring
         _ ≤ _ := h1.trans h2
     exact le_of_mul_le_mul_left h3 hNr
-  rw [hnorm]
-  calc ∑ i ∈ s, Real.cos (2 * π * (t * Real.log (n i) / (2 * π) - φ))
-      ≤ ∑ i ∈ s, (1 - 8 * rotDist t φ (n i) ^ 2) := Finset.sum_le_sum hd
-    _ = (s.card : ℝ) - 8 * ∑ i ∈ s, rotDist t φ (n i) ^ 2 := by
-        rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, mul_one, Finset.mul_sum]
+  calc _ ≤ (s.card : ℝ) - 8 * ∑ i ∈ s, rotDist t φ (n i) ^ 2 := hφ
     _ ≤ (K : ℝ) - 8 * ((K : ℝ) * C ^ 2) := by linarith
     _ = _ := by ring
 

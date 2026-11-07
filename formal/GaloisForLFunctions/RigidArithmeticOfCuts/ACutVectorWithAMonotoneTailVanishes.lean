@@ -176,9 +176,9 @@ theorem summable_of_cut_kernel (hW0 : W 0 = 0) (hnn : ∀ r, 1 ≤ r → 0 ≤ W
     · rw [range_eq_Ico, sum_eq_sum_Ico_succ_bot hn, hW0, zero_add]
       exact sum_Ico_one_le_two hW1 hmono hcut hn
 
-/-- A summable kernel vector has uniform multiples. -/
-theorem uniform_multiples_of_cut_kernel (hW : Summable W) (hW0 : W 0 = 0) (hcut : IsCutKernel W)
-    {k : ℕ} (hk : 1 ≤ k) : (k : ℝ) * ∑' t, W (k * t) = ∑' t, W t := by
+/-- One vanishing cut defect gives one uniform multiple. -/
+theorem uniform_multiple_of_tendsto (hW : Summable W) (hW0 : W 0 = 0) {k : ℕ} (hk : 1 ≤ k)
+    (hcut : Tendsto (cutDefect W k) atTop (𝓝 0)) : (k : ℝ) * ∑' t, W (k * t) = ∑' t, W t := by
   have hk0 : 0 < k := hk
   have hsk : Summable fun t => W (k * t) :=
     hW.comp_injective fun _ _ h => Nat.eq_of_mul_eq_mul_left hk0 h
@@ -193,8 +193,13 @@ theorem uniform_multiples_of_cut_kernel (hW : Summable W) (hW0 : W 0 = 0) (hcut 
     simp only [Function.comp]
     rw [sum_range_succ', sum_Icc_one_eq_sum_range, Nat.mul_zero, hW0, add_zero]
   have h3 := h1.sub (h2.const_mul (k : ℝ))
-  have h4 := tendsto_nhds_unique h3 (hcut k hk)
+  have h4 := tendsto_nhds_unique h3 hcut
   linarith
+
+/-- A summable kernel vector has uniform multiples. -/
+theorem uniform_multiples_of_cut_kernel (hW : Summable W) (hW0 : W 0 = 0) (hcut : IsCutKernel W)
+    {k : ℕ} (hk : 1 ≤ k) : (k : ℝ) * ∑' t, W (k * t) = ∑' t, W t :=
+  uniform_multiple_of_tendsto hW hW0 hk (hcut k hk)
 
 /-- **A nonnegative kernel vector with a monotone tail is zero.** -/
 theorem eq_zero_of_cut_kernel (hW0 : W 0 = 0) (hnn : ∀ r, 1 ≤ r → 0 ≤ W r)

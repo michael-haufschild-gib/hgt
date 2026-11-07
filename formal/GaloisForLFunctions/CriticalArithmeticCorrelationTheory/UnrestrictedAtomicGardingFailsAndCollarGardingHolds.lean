@@ -124,21 +124,75 @@ theorem primeSum_comp_add_right (H : ℝ → ℝ) (w : ℝ) :
     exact integral_add_right_eq_self (fun u => H u * H (u + Real.log n)) w
   rw [h1, h2]
 
-/-- Any compactly supported continuous source vanishing above `1` has its prime form absorbed by
-an arbitrarily small fraction of `∫ H(y)² e^{−8y} dy` plus an `L²` remainder. -/
-theorem exists_abs_primeSum_le_exponential_mass_of_le_one {ε : ℝ} (hε : 0 < ε) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ {H : ℝ → ℝ}, Continuous H → HasCompactSupport H →
-      (∀ y, 1 < y → H y = 0) →
-      |primeSum H| ≤ ε * (∫ y, H y ^ 2 * Real.exp (-(8 * y))) + B * ∫ y, H y ^ 2 := by
-  have hε' : 0 < ε / Real.exp 8 := div_pos hε (Real.exp_pos 8)
-  obtain ⟨B, hB0, hB⟩ := exists_abs_primeSum_le_exponential_mass hε'
-  refine ⟨B, hB0, ?_⟩
-  intro H hH hHc hs
+/-- Explicit linear-in-`1/ε` remainder bound absorbing `|primeSum H|` into `ε ∫ H(y)² e^{−8y} dy`
+for any compactly supported continuous source vanishing above `1`. -/
+theorem abs_primeSum_le_exponential_mass_of_le_one_explicit {ε : ℝ} (hε : 0 < ε)
+    {H : ℝ → ℝ} (hH : Continuous H) (hHc : HasCompactSupport H) (hs : ∀ y, 1 < y → H y = 0) :
+    let C := 2 * vonMangoldtThreeHalvesMass
+    |primeSum H| ≤ ε * (∫ y, H y ^ 2 * Real.exp (-(8 * y))) +
+      (C + C ^ 2 * Real.exp 8 / ε) * ∫ y, H y ^ 2 := by
+  intro C
+  have hC : 0 ≤ C := mul_nonneg (by norm_num) vonMangoldtThreeHalvesMass_nonneg
+  let ε' : ℝ := ε / Real.exp 8
+  have hε' : 0 < ε' := div_pos hε (Real.exp_pos 8)
+  let M : ℝ := 1 + C / ε'
+  have hM1 : 1 ≤ M := le_add_of_nonneg_right (div_nonneg hC hε'.le)
+  have hCM : C ≤ ε' * M := by
+    have h1 : C = ε' * (C / ε') := (mul_div_cancel₀ C hε'.ne').symm
+    linarith [mul_nonneg hε'.le zero_le_one]
+  have hpoly : ∀ t : ℝ, 0 ≤ t → C * t ≤ ε' * t ^ 4 + C * M := fun t ht => by
+    by_cases hsmall : t ≤ M
+    · exact (mul_le_mul_of_nonneg_left hsmall hC).trans
+        (le_add_of_nonneg_left (mul_nonneg hε'.le (pow_nonneg ht 4)))
+    · have ht1 : 1 ≤ t := hM1.trans (le_of_not_ge hsmall)
+      have hCt : C ≤ ε' * t := hCM.trans (mul_le_mul_of_nonneg_left (le_of_not_ge hsmall) hε'.le)
+      have ht2 : 1 ≤ t ^ 2 := one_le_pow₀ ht1
+      have ht24 : t ^ 2 ≤ t ^ 4 := by
+        have h := mul_le_mul_of_nonneg_left ht2 (sq_nonneg t)
+        nlinarith only [h]
+      have h := mul_le_mul_of_nonneg_right hCt ht
+      have h' := mul_le_mul_of_nonneg_left ht24 hε'.le
+      have hBM : 0 ≤ C * M := mul_nonneg hC (zero_le_one.trans hM1)
+      nlinarith only [h, h', hBM]
   let H₁ : ℝ → ℝ := fun t => H (t + 1)
   have hH₁ : Continuous H₁ := hH.comp (continuous_add_const 1)
   have hH₁c : HasCompactSupport H₁ := hHc.comp_homeomorph (Homeomorph.addRight 1)
   have hs₁ : ∀ t, 0 < t → H₁ t = 0 := fun t ht => hs (t + 1) (by linarith)
-  have hbound := hB hH₁ hH₁c hs₁
+  have hH₁2c : HasCompactSupport (fun y => H₁ y ^ 2) := by
+    rw [hasCompactSupport_iff_eventuallyEq] at hH₁c ⊢
+    exact hH₁c.mono fun y hy => by
+      change H₁ y = 0 at hy; change H₁ y ^ 2 = 0; rw [hy, zero_pow (by decide : (2 : ℕ) ≠ 0)]
+  have hic : HasCompactSupport (fun y => (Real.exp |y| * H₁ y) ^ 2) := by
+    rw [hasCompactSupport_iff_eventuallyEq] at hH₁2c ⊢
+    exact hH₁2c.mono fun y hy => by
+      change H₁ y ^ 2 = 0 at hy; change (Real.exp |y| * H₁ y) ^ 2 = 0; rw [mul_pow, hy, mul_zero]
+  have hi : Integrable (fun y => (Real.exp |y| * H₁ y) ^ 2) :=
+    (((Real.continuous_exp.comp continuous_abs).mul hH₁).pow 2).integrable_of_hasCompactSupport hic
+  have hi8 : Integrable (fun y => H₁ y ^ 2 * Real.exp (-(8 * y))) :=
+    ((hH₁.pow 2).mul (by fun_prop)).integrable_of_hasCompactSupport hH₁2c.mul_right
+  have hi0 : Integrable (fun y => H₁ y ^ 2) :=
+    (hH₁.pow 2).integrable_of_hasCompactSupport hH₁2c
+  have hpoint : ∀ y : ℝ, C * (Real.exp |y| * H₁ y) ^ 2 ≤
+      ε' * (H₁ y ^ 2 * Real.exp (-(8 * y))) + (C * M) * H₁ y ^ 2 := fun y => by
+    by_cases hy : y ≤ 0
+    · have he2 : (Real.exp |y|) ^ 2 = Real.exp (-(2 * y)) := by
+        rw [abs_of_nonpos hy, ← Real.exp_nat_mul]; congr 1; push_cast; ring
+      have he4 : (Real.exp (-(2 * y))) ^ 4 = Real.exp (-(8 * y)) := by
+        rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+      have h := mul_le_mul_of_nonneg_right
+        (hpoly (Real.exp (-(2 * y))) (Real.exp_pos _).le) (sq_nonneg (H₁ y))
+      rw [he4] at h
+      rw [mul_pow, he2]
+      nlinarith only [h]
+    · simp only [hs₁ y (lt_of_not_ge hy), mul_zero, zero_pow (by norm_num : 2 ≠ 0),
+        zero_mul, add_zero, le_refl]
+  have hmono := integral_mono (hi.const_mul C) ((hi8.const_mul ε').add (hi0.const_mul (C * M))) hpoint
+  simp only [Pi.add_apply] at hmono
+  rw [integral_const_mul, integral_add (hi8.const_mul ε') (hi0.const_mul (C * M)),
+    integral_const_mul, integral_const_mul] at hmono
+  have hbound : |primeSum H₁| ≤
+      ε' * (∫ t, H₁ t ^ 2 * Real.exp (-(8 * t))) + (C * M) * ∫ t, H₁ t ^ 2 :=
+    (abs_primeSum_le_two_threeHalvesMass_mul_exponentialSourceMass hH₁ hH₁c).trans hmono
   have hp : primeSum H₁ = primeSum H := primeSum_comp_add_right H 1
   have hsq : (∫ t, H₁ t ^ 2) = ∫ y, H y ^ 2 :=
     integral_add_right_eq_self (fun y => H y ^ 2) 1
@@ -157,10 +211,27 @@ theorem exists_abs_primeSum_le_exponential_mass_of_le_one {ε : ℝ} (hε : 0 < 
     rw [hpt, integral_const_mul,
       integral_add_right_eq_self (fun y => H y ^ 2 * Real.exp (-(8 * y))) 1]
   rw [hp, hsq, hexp] at hbound
-  have hcancel : ε / Real.exp 8 * (Real.exp 8 * ∫ y, H y ^ 2 * Real.exp (-(8 * y))) =
+  have hcancel : ε' * (Real.exp 8 * ∫ y, H y ^ 2 * Real.exp (-(8 * y))) =
       ε * ∫ y, H y ^ 2 * Real.exp (-(8 * y)) := by
+    dsimp only [ε']
     field_simp [(Real.exp_pos 8).ne']
+  have hBM_eq : C * M = C + C ^ 2 * Real.exp 8 / ε := by
+    dsimp only [M, ε']
+    field_simp [hε.ne', (Real.exp_pos 8).ne']
+  rw [hBM_eq] at hbound
   linarith only [hbound, hcancel]
+
+/-- Any compactly supported continuous source vanishing above `1` has its prime form absorbed by
+an arbitrarily small fraction of `∫ H(y)² e^{−8y} dy` plus an `L²` remainder. -/
+theorem exists_abs_primeSum_le_exponential_mass_of_le_one {ε : ℝ} (hε : 0 < ε) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ {H : ℝ → ℝ}, Continuous H → HasCompactSupport H →
+      (∀ y, 1 < y → H y = 0) →
+      |primeSum H| ≤ ε * (∫ y, H y ^ 2 * Real.exp (-(8 * y))) + B * ∫ y, H y ^ 2 := by
+  let C := 2 * vonMangoldtThreeHalvesMass
+  have hC : 0 ≤ C := mul_nonneg (by norm_num) vonMangoldtThreeHalvesMass_nonneg
+  refine ⟨C + C ^ 2 * Real.exp 8 / ε, by positivity, ?_⟩
+  intro H hH hHc hs
+  exact abs_primeSum_le_exponential_mass_of_le_one_explicit hε hH hHc hs
 
 private theorem exp_half_le_two : Real.exp (1 / 2 : ℝ) ≤ 2 := by
   have he1 : Real.exp 1 < 4 := by
@@ -172,21 +243,18 @@ private theorem exp_half_le_two : Real.exp (1 / 2 : ℝ) ≤ 2 := by
   nlinarith [Real.exp_pos (1 / 2 : ℝ)]
 
 /-- Any compactly supported continuous source vanishing above `1` has `2 sinhHalfMoment(U)²`
-absorbed by `ε ∫ U(u)² e^{−8u} du + B ∫ U(u)² du`. -/
-theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0 < ε) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ {U : ℝ → ℝ}, Continuous U → HasCompactSupport U →
-      (∀ u, 1 < u → U u = 0) →
-      2 * sinhHalfMoment U ^ 2 ≤
-        ε * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + B * ∫ u, U u ^ 2 := by
-  let B₀ : ℝ := max 6 (2 / ε)
-  have hB₆ : 6 ≤ B₀ := le_max_left _ _
-  have hBε : 2 / ε ≤ B₀ := le_max_right _ _
+absorbed by `ε ∫ U(u)² e^{−8u} du + (6 + 2 / ε) ∫ U(u)² du`. -/
+theorem two_mul_sinhHalfMoment_sq_le_exponential_mass_explicit {ε : ℝ} (hε : 0 < ε)
+    {U : ℝ → ℝ} (hU : Continuous U) (hUc : HasCompactSupport U) (hs : ∀ u, 1 < u → U u = 0) :
+    2 * sinhHalfMoment U ^ 2 ≤
+      ε * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + (6 + 2 / ε) * ∫ u, U u ^ 2 := by
+  let B₀ : ℝ := 6 + 2 / ε
+  have hB₆ : 6 ≤ B₀ := by dsimp only [B₀]; linarith [div_pos zero_lt_two hε]
+  have hBε : 2 / ε ≤ B₀ := by dsimp only [B₀]; linarith
   have hB0 : 0 < B₀ := by linarith
   have hεB : 1 ≤ (ε / 2) * B₀ := by
     have hm := (div_le_iff₀ hε).mp hBε
     linarith
-  refine ⟨B₀, hB0.le, ?_⟩
-  intro U hU hUc hs
   let W : ℝ → ℝ := fun u => (ε / 2) * Real.exp (-(8 * u)) + B₀
   have hW_pos : ∀ u, 0 < W u := fun u => by dsimp only [W]; positivity
   let Φ : ℝ → ℝ := fun u =>
@@ -377,6 +445,7 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
     dsimp only [A]
     rw [hpt, integral_add (hi8.const_mul _) (hi0.const_mul _),
       integral_const_mul, integral_const_mul]
+  dsimp only [B₀] at hA_eq
   have hε0 : 0 ≤ ∫ u, U u ^ 2 * Real.exp (-(8 * u)) :=
     integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
   nlinarith only [hsq, hA_eq, hε, hε0]
@@ -2225,39 +2294,68 @@ theorem exists_top_archForm_dyadic_seventh_reserve_garding :
 
 /-! ### 5. Collar atomic Gårding at every critical ratio -/
 
-/-- **Scale-uniform collar atomic Gårding below any critical ratio `R_max > 0`.**
-On the overlapping top collar `Ioc (N / linearDefectCutoff c) N`, uniformly across `1 ≤ c` with
-`c⁸ ≤ R_max log N`, `weilQuad U_y + B_R ∫ U_y²` simultaneously dominates both a fixed positive
-multiple of `topCollarSeventhMass` and a fixed positive multiple `a_R > 0` of `∫ U_y(u)² e^{−8u} du`. -/
-theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) :
-    ∃ B_R a_R κ_R : ℝ, 0 ≤ B_R ∧ 0 < a_R ∧ 0 < κ_R ∧
-      ∀ᶠ N : ℕ in atTop,
-        ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) → ∀ x : ℕ → ℝ,
-          let y := atomicTailCoefficients (N / linearDefectCutoff c) x
-          let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
-          κ_R * topCollarSeventhMass (N / linearDefectCutoff c) N x +
-              a_R * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
-            weilQuad U_y + B_R * ∫ u, U_y u ^ 2 := by
+/-- **Scale-uniform collar atomic Gårding with explicit polynomial `R`-dependence.**
+There exist universal ratio-independent constants `C_B > 0`, `c_a > 0`, and `c_κ > 0` such that
+for every `R_max > 0`, with `B_R = C_B * (R_max + 1)` (linear growth in `R_max`) and
+`a_R = c_a / R_max`, `κ_R = c_κ / R_max` (inverse-linear floor in `R_max`), `weilQuad U_y + B_R ∫ U_y²`
+uniformly dominates `κ_R * topCollarSeventhMass + a_R * W₈(U_y)` across `1 ≤ c` with
+`c⁸ ≤ R_max log N`. In particular `B_R / a_R = O(R_max (R_max + 1))`, so `log(B_R / a_R + 1) = O(log R_max + 1)`. -/
+theorem exists_collar_atomic_garding_polynomial_rate :
+    ∃ C_B c_a c_κ : ℝ, 0 < C_B ∧ 0 < c_a ∧ 0 < c_κ ∧
+      ∀ {R_max : ℝ}, 0 < R_max →
+        ∀ᶠ N : ℕ in atTop,
+          ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) → ∀ x : ℕ → ℝ,
+            let y := atomicTailCoefficients (N / linearDefectCutoff c) x
+            let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
+            (c_κ / R_max) * topCollarSeventhMass (N / linearDefectCutoff c) N x +
+                (c_a / R_max) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+              weilQuad U_y + (C_B * (R_max + 1)) * ∫ u, U_y u ^ 2 := by
   obtain ⟨B_arch, C_err, hB_arch0, hC_err0, harch_g⟩ :=
     exists_top_archForm_dyadic_seventh_reserve_garding
   set I₂ := ∫ u, tiltedUnitSpline u ^ 2
   have hI₂ : 0 < I₂ := integral_tiltedUnitSpline_sq_pos
   set C₈ := (256 * Real.exp 2 + 4 + 2 * Real.exp 1) * I₂
   have hC₈ : 0 < C₈ := by positivity
-  set c₀ := I₂ * dyadicTopMassConstant / R_max
-  have hc₀ : 0 < c₀ := by
-    have := dyadicTopMassConstant_pos
-    positivity
-  set ε := c₀ / (12 * C₈)
-  have hε : 0 < ε := by positivity
-  obtain ⟨B_prime, hBp0, hprime⟩ := exists_abs_primeSum_le_exponential_mass_of_le_one hε
-  obtain ⟨B_pole, hBpole0, hpole⟩ := exists_two_mul_sinhHalfMoment_sq_le_exponential_mass hε
-  set B_R := B_arch + B_prime + B_pole
-  set a_R := ε
-  set κ_R := c₀ / 4
-  refine ⟨B_R, a_R, κ_R, by positivity, hε, by positivity, ?_⟩
-  have hL_lim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
-    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  set c_num := I₂ * dyadicTopMassConstant
+  have hc_num : 0 < c_num := mul_pos hI₂ dyadicTopMassConstant_pos
+  set c_a := c_num / (12 * C₈)
+  have hc_a : 0 < c_a := div_pos hc_num (by positivity)
+  set c_κ := c_num / 4
+  have hc_κ : 0 < c_κ := div_pos hc_num (by norm_num)
+  set C_pr := 2 * vonMangoldtThreeHalvesMass
+  have hC_pr0 : 0 ≤ C_pr := mul_nonneg (by norm_num) vonMangoldtThreeHalvesMass_nonneg
+  set C_B := (B_arch + C_pr + 6 + 1) + (C_pr ^ 2 * Real.exp 8 + 2) / c_a
+  have hC_B : 0 < C_B := by positivity
+  refine ⟨C_B, c_a, c_κ, hC_B, hc_a, hc_κ, ?_⟩
+  intro R_max hR
+  set c₀ := c_num / R_max
+  have hc₀ : 0 < c₀ := div_pos hc_num hR
+  set ε := c_a / R_max
+  have hε : 0 < ε := div_pos hc_a hR
+  have hε_eq : ε = c₀ / (12 * C₈) := by
+    dsimp only [ε, c_a, c₀]; exact div_right_comm _ _ _
+  set B_prime := C_pr + C_pr ^ 2 * Real.exp 8 / ε
+  set B_pole := 6 + 2 / ε
+  have hB_le : B_arch + B_prime + B_pole ≤ C_B * (R_max + 1) := by
+    have hinv : 1 / ε = R_max / c_a := by
+      dsimp only [ε]; field_simp [hc_a.ne', hR.ne']
+    have h1 : B_prime = C_pr + (C_pr ^ 2 * Real.exp 8 / c_a) * R_max := by
+      dsimp only [B_prime]
+      rw [show C_pr ^ 2 * Real.exp 8 / ε = C_pr ^ 2 * Real.exp 8 * (1 / ε) by ring, hinv]
+      ring
+    have h2 : B_pole = 6 + (2 / c_a) * R_max := by
+      dsimp only [B_pole]
+      rw [show 2 / ε = 2 * (1 / ε) by ring, hinv]
+      ring
+    have hconst_nn : 0 ≤ (B_arch + C_pr + 6 + 1) * R_max := by positivity
+    have hslope_nn : 0 ≤ (C_pr ^ 2 * Real.exp 8 + 2) / c_a := by positivity
+    rw [h1, h2]
+    dsimp only [C_B]
+    linarith only [hconst_nn, hslope_nn,
+      (by ring : ((B_arch + C_pr + 6 + 1) + (C_pr ^ 2 * Real.exp 8 + 2) / c_a) * (R_max + 1) =
+        B_arch + C_pr + 6 + 1 + (B_arch + C_pr + 6 + 1) * R_max +
+          (C_pr ^ 2 * Real.exp 8 / c_a) * R_max + (2 / c_a) * R_max +
+          (C_pr ^ 2 * Real.exp 8 + 2) / c_a)]
   have hLN_zero : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
     simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
   have hev_L2N : ∀ᶠ N : ℕ in atTop,
@@ -2347,7 +2445,6 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
     have hnot : u + Real.log N - Real.log n ∉ Set.Icc 0 w := fun hm => by linarith [hm.2, hw1]
     dsimp only [g]
     rw [hgs _ hnot, mul_zero]
-  -- Scale archimedean Gårding reserve from `f_y` to `U_y`
   have hUy_arch_scale : archForm U_y + B_arch * (∫ u, U_y u ^ 2) =
       ((N : ℝ) / c ^ 2) * (archForm f_y + B_arch * ∫ u, f_y u ^ 2) := by
     have harch_cent : archForm (centredAtomicTest tiltedUnitSpline y c N) = archForm f_y := by
@@ -2397,19 +2494,23 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
         (div_le_div_iff₀ hR (pow_pos hc0_pos 8)).mpr (by linarith)
       have hm := mul_le_mul_of_nonneg_left hrat
         (mul_nonneg hI₂.le dyadicTopMassConstant_pos.le)
-      exact hm.trans_eq' (by dsimp only [c₀]; ring)
+      exact hm.trans_eq' (by dsimp only [c₀, c_num]; ring)
     have herr_c : I₂ * C_err * (c / N) ≤ c₀ / 2 := by
       have hc_le : c / N ≤ (R_max + 1) * Real.log (N : ℝ) / N := by
         refine div_le_div_of_nonneg_right ?_ hN_pos.le
         exact (le_self_pow₀ hc1 (by norm_num : 2 ≠ 0)).trans (by linarith)
       exact (mul_le_mul_of_nonneg_left hc_le (mul_nonneg hI₂.le hC_err0)).trans herr_b
     linarith
-  -- Combine with W₈ collar bound, prime absorption, and sinh absorption
   have hW8_le : (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤ C₈ * topCollarSeventhMass M N x :=
     normalized_tail_exponential_mass_le contDiff_tiltedUnitSpline.continuous
       tiltedUnitSpline_eq_zero hc1 hLN_nat x
-  have hpr_Uy := (neg_le_abs _).trans (hprime hUy_cd.continuous hUy_cs hUy_le1)
-  have hpo_Uy := hpole hUy_cd.continuous hUy_cs hUy_le1
+  have hpr_Uy : primeSum U_y ≤
+      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_prime * ∫ u, U_y u ^ 2 :=
+    (le_abs_self _).trans
+      (abs_primeSum_le_exponential_mass_of_le_one_explicit hε hUy_cd.continuous hUy_cs hUy_le1)
+  have hpo_Uy : 2 * sinhHalfMoment U_y ^ 2 ≤
+      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_pole * ∫ u, U_y u ^ 2 :=
+    two_mul_sinhHalfMoment_sq_le_exponential_mass_explicit hε hUy_cd.continuous hUy_cs hUy_le1
   have hweil_Uy : weilQuad U_y = archForm U_y - primeSum U_y +
       (2 * coshHalfMoment U_y ^ 2 - 2 * sinhHalfMoment U_y ^ 2) := by
     have h1 := weilQuad_eq hUy_cd hUy_cs
@@ -2422,42 +2523,47 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
         ≤ 3 * ε * (C₈ * topCollarSeventhMass M N x) :=
           mul_le_mul_of_nonneg_left hW8_le (by positivity)
       _ = (c₀ / 4) * topCollarSeventhMass M N x := by
-          dsimp only [ε]; field_simp [hC₈.ne']; ring
-  change (c₀ / 4) * topCollarSeventhMass M N x +
-      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
-    weilQuad U_y + (B_arch + B_prime + B_pole) * ∫ u, U_y u ^ 2
-  change -primeSum U_y ≤
-      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_prime * ∫ u, U_y u ^ 2 at hpr_Uy
-  change 2 * sinhHalfMoment U_y ^ 2 ≤
-      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_pole * ∫ u, U_y u ^ 2 at hpo_Uy
+          rw [hε_eq]; field_simp [hC₈.ne']; ring
   set S_M : ℝ := topCollarSeventhMass M N x
   set W_U : ℝ := ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))
   set I_U : ℝ := ∫ u, U_y u ^ 2
-  have hstep1 : (c₀ / 4) * S_M + ε * W_U ≤ (c₀ / 2) * S_M - 2 * (ε * W_U) := by
-    have h4 : ε * W_U + 2 * (ε * W_U) ≤ (c₀ / 4) * S_M :=
-      (le_of_eq (by ring : ε * W_U + 2 * (ε * W_U) = 3 * ε * W_U)).trans h3ε
-    exact le_sub_iff_add_le.mpr
-      ((le_of_eq (by ring : (c₀ / 4 * S_M + ε * W_U) + 2 * (ε * W_U) =
-          c₀ / 4 * S_M + (ε * W_U + 2 * (ε * W_U)))).trans
-        ((add_le_add_left h4 (c₀ / 4 * S_M)).trans_eq (by ring)))
-  have hstep2 : (c₀ / 2) * S_M - 2 * (ε * W_U) ≤
-      (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
-        (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) := by
-    have hp1 : -(ε * W_U) ≤ -primeSum U_y + B_prime * I_U :=
-      neg_le_iff_add_nonneg.mpr (sub_nonneg.mpr hpr_Uy |>.trans_eq (by ring))
-    have hp2 : -(ε * W_U) ≤ -(2 * sinhHalfMoment U_y ^ 2) + B_pole * I_U :=
-      neg_le_iff_add_nonneg.mpr (sub_nonneg.mpr hpo_Uy |>.trans_eq (by ring))
-    exact (le_of_eq (by ring : c₀ / 2 * S_M - 2 * (ε * W_U) =
-        c₀ / 2 * S_M + -(ε * W_U) + -(ε * W_U))).trans
-      ((add_le_add (add_le_add harch_Uy hp1) hp2).trans_eq (by ring))
+  have hI_U0 : 0 ≤ I_U := integral_nonneg fun _ => sq_nonneg _
+  have hκ_eq : c_κ / R_max = c₀ / 4 := by dsimp only [c_κ, c₀]; ring
+  change (c_κ / R_max) * S_M + ε * W_U ≤ weilQuad U_y + (C_B * (R_max + 1)) * I_U
+  rw [hκ_eq]
+  have hp1 : -(ε * W_U) ≤ -primeSum U_y + B_prime * I_U := by
+    linarith only [hpr_Uy]
+  have hp2 : -(ε * W_U) ≤ -(2 * sinhHalfMoment U_y ^ 2) + B_pole * I_U := by
+    linarith only [hpo_Uy]
   calc (c₀ / 4) * S_M + ε * W_U
-      ≤ (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
-          (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) := hstep1.trans hstep2
-    _ ≤ (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
-          (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) + 2 * coshHalfMoment U_y ^ 2 :=
+      = (c₀ / 4) * S_M + (3 * ε * W_U) - 2 * (ε * W_U) := by ring
+    _ ≤ (c₀ / 4) * S_M + (c₀ / 4) * S_M - 2 * (ε * W_U) := by
+        linarith only [h3ε]
+    _ = (c₀ / 2) * S_M + -(ε * W_U) + -(ε * W_U) := by ring
+    _ ≤ (archForm U_y + B_arch * I_U) + (-primeSum U_y + B_prime * I_U) +
+          (-(2 * sinhHalfMoment U_y ^ 2) + B_pole * I_U) :=
+        add_le_add (add_le_add harch_Uy hp1) hp2
+    _ ≤ (archForm U_y + B_arch * I_U) + (-primeSum U_y + B_prime * I_U) +
+          (-(2 * sinhHalfMoment U_y ^ 2) + B_pole * I_U) + 2 * coshHalfMoment U_y ^ 2 :=
         le_add_of_nonneg_right hcosh0
     _ = weilQuad U_y + (B_arch + B_prime + B_pole) * I_U := by
         rw [hweil_Uy]; ring
+    _ ≤ weilQuad U_y + (C_B * (R_max + 1)) * I_U := by
+        linarith only [mul_le_mul_of_nonneg_right hB_le hI_U0]
+
+/-- **Scale-uniform collar atomic Gårding below any critical ratio `R_max > 0`.** -/
+theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) :
+    ∃ B_R a_R κ_R : ℝ, 0 ≤ B_R ∧ 0 < a_R ∧ 0 < κ_R ∧
+      ∀ᶠ N : ℕ in atTop,
+        ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) → ∀ x : ℕ → ℝ,
+          let y := atomicTailCoefficients (N / linearDefectCutoff c) x
+          let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
+          κ_R * topCollarSeventhMass (N / linearDefectCutoff c) N x +
+              a_R * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+            weilQuad U_y + B_R * ∫ u, U_y u ^ 2 := by
+  obtain ⟨C_B, c_a, c_κ, hCB, hca, hcκ, hpol⟩ := exists_collar_atomic_garding_polynomial_rate
+  exact ⟨C_B * (R_max + 1), c_a / R_max, c_κ / R_max, by positivity, div_pos hca hR,
+    div_pos hcκ hR, hpol hR⟩
 
 /-- **Collar atomic Gårding along any critical curve `c_N⁸ / log N → R > 0`.** -/
 theorem exists_collar_atomic_garding_along_critical_curve
@@ -2482,6 +2588,7 @@ theorem exists_collar_atomic_garding_along_critical_curve
 #print axioms not_unrestricted_unitL2_atomic_garding_on_poleOrthogonal
 #print axioms levyEnergy_le_interpolated
 #print axioms exists_top_archForm_dyadic_seventh_reserve_garding
+#print axioms exists_collar_atomic_garding_polynomial_rate
 #print axioms exists_collar_atomic_garding_below_ratio
 #print axioms exists_collar_atomic_garding_along_critical_curve
 

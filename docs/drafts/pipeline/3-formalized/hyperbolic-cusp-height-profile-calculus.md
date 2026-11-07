@@ -3,7 +3,7 @@
 - **ID:** hyperbolic-cusp-height-profile-calculus
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [exterior coercivity](../1-in-progress/cubic-quotient-exterior-coercivity.md)
+- **Parent:** [exterior coercivity](cubic-quotient-exterior-coercivity.md)
 - **Statement:** For every nonzero complex row and smooth profile on positive heights, the negative hyperbolic Laplacian satisfies `Δ_axis F(h)=h²F″(h)−hF′(h)`. The row height is the actual transformed cusp height.
 
 Write the denominator as
@@ -26,7 +26,7 @@ Lean: `MetaplecticMobiusDescent/HyperbolicLogarithmicHeight.lean` and
 
 Direct source and transitive audits pass with only `propext`,
 `Classical.choice`, and `Quot.sound`. The positive Laplacian is the
-negative of `Δ_axis`, so it sends height to height. The invariant barrier
-and exterior coercivity remain open. Adapted from OpenAI
+negative of `Δ_axis`, so it sends height to height. The [invariant barrier and its actual equation](cubic-invariant-cusp-barrier.md)
+and [exterior coercivity](cubic-quotient-exterior-coercivity.md) are formalized. Adapted from OpenAI
 `CubicSieve/TwistedProfiles.lean`, `QuadraticSieve/SpatialDerivatives.lean`,
 and `Eisenstein/SmoothCuspCutoffs.lean`.

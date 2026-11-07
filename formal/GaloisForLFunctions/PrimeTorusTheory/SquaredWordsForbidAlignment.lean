@@ -344,9 +344,10 @@ theorem abs_wordForm_le {M k : ℕ} {c : ℕ → ℤ} {H : ℝ} (hH : 0 ≤ H) (
         rw [e]
 
 /-- Stripping leading zeros keeps the vanishing moments and makes the constant coefficient nonzero. -/
-theorem exists_shift_zero_ne {M k : ℕ} {c : ℕ → ℤ} (hsup : ∀ a, M < a → c a = 0)
+theorem exists_shift_zero_ne_min {M k : ℕ} {c : ℕ → ℤ} (hsup : ∀ a, M < a → c a = 0)
     (hne : ∃ a, c a ≠ 0) (hm : ∀ j ≤ k, binomMoment M c j = 0) :
-    ∃ ν : ℕ, c (0 + ν) ≠ 0 ∧ ∀ j ≤ k, binomMoment M (fun a => c (a + ν)) j = 0 := by
+    ∃ ν : ℕ, (∀ a < ν, c a = 0) ∧ c (0 + ν) ≠ 0 ∧
+      ∀ j ≤ k, binomMoment M (fun a => c (a + ν)) j = 0 := by
   classical
   set ν := Nat.find hne with hνdef
   have hν : c ν ≠ 0 := Nat.find_spec hne
@@ -384,7 +385,7 @@ theorem exists_shift_zero_ne {M k : ℕ} {c : ℕ → ℤ} (hsup : ∀ a, M < a 
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl fun q _ => ?_
     ring
-  refine ⟨ν, by simpa using hν, ?_⟩
+  refine ⟨ν, hmin, by simpa using hν, ?_⟩
   intro j
   induction j using Nat.strong_induction_on with
   | _ j ih =>
@@ -401,6 +402,12 @@ theorem exists_shift_zero_ne {M k : ℕ} {c : ℕ → ℤ} (hsup : ∀ a, M < a 
       rw [ih q.1 hlt (by omega), mul_zero]
     · intro hnot
       exact absurd (Finset.HasAntidiagonal.mem_antidiagonal.mpr (by simp)) hnot
+
+theorem exists_shift_zero_ne {M k : ℕ} {c : ℕ → ℤ} (hsup : ∀ a, M < a → c a = 0)
+    (hne : ∃ a, c a ≠ 0) (hm : ∀ j ≤ k, binomMoment M c j = 0) :
+    ∃ ν : ℕ, c (0 + ν) ≠ 0 ∧ ∀ j ≤ k, binomMoment M (fun a => c (a + ν)) j = 0 := by
+  obtain ⟨ν, -, h1, h2⟩ := exists_shift_zero_ne_min hsup hne hm
+  exact ⟨ν, h1, h2⟩
 
 /-- A word with vanishing low moments and nonzero constant coefficient. -/
 theorem exists_normalized_word {M k : ℕ}

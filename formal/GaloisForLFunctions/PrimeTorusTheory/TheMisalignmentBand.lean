@@ -262,15 +262,15 @@ theorem le_abs_sub_int' {F R : ℝ} (hR : 1 ≤ R) (h1 : 1 / (2 * R) ≤ F) (h2 
     linarith
 
 /-- **Every progression in the band is misaligned.** -/
-theorem one_div_le_sum_dist {M : ℕ} {c : ℕ → ℤ} {H R : ℝ} (hR : 1 ≤ R)
-    (hc : ∀ a, |(c a : ℝ)| ≤ H) (hm : binomMoment M c 0 = 0) {t x h : ℝ} (hx : 0 < x) (hh : 0 < h)
+theorem one_div_le_abs_sum_err {M : ℕ} {c : ℕ → ℤ} {R : ℝ} (hR : 1 ≤ R)
+    (hm : binomMoment M c 0 = 0) {t x h : ℝ} (hx : 0 < x) (hh : 0 < h)
     (htpos : 0 < |t|) (h1 : π / |t| / R ≤ -wordForm M c (x / h))
     (h2 : -wordForm M c (x / h) ≤ π / |t|) (φ : ℝ) :
-    1 / (2 * R) ≤ H ^ 2 * ∑ a ∈ range (M + 1), ∑ b ∈ range (M + 1),
-      dist01 (t * Real.log (x + h * ((a : ℝ) + b)) / (2 * π) - φ) := by
+    1 / (2 * R) ≤ |∑ a ∈ range (M + 1), ∑ b ∈ range (M + 1), (c a : ℝ) * (c b : ℝ) *
+      (t * Real.log (x + h * ((a : ℝ) + b)) / (2 * π) - φ -
+        round (t * Real.log (x + h * ((a : ℝ) + b)) / (2 * π) - φ))| := by
   have hπ : 0 < π := Real.pi_pos
   have hR0 : 0 < R := by linarith
-  have hH0 : 0 ≤ H := (abs_nonneg _).trans (hc 0)
   set θ : ℕ → ℕ → ℝ := fun a b => t * Real.log (x + h * ((a : ℝ) + b)) / (2 * π) - φ with hθ
   set JJ : ℤ := ∑ a ∈ range (M + 1), ∑ b ∈ range (M + 1), c a * c b * round (θ a b) with hJJ
   have hc2 : 0 < |t| / (2 * π) := by positivity
@@ -318,8 +318,18 @@ theorem one_div_le_sum_dist {M : ℕ} {c : ℕ → ℤ} {H R : ℝ} (hR : 1 ≤ 
         ring
       rw [e]
       exact le_abs_sub_int' hR hF1 hF2 _
-  refine hdist.trans ?_
-  rw [hsum, Finset.mul_sum]
+  rw [hsum] at hdist
+  exact hdist
+
+theorem one_div_le_sum_dist {M : ℕ} {c : ℕ → ℤ} {H R : ℝ} (hR : 1 ≤ R)
+    (hc : ∀ a, |(c a : ℝ)| ≤ H) (hm : binomMoment M c 0 = 0) {t x h : ℝ} (hx : 0 < x) (hh : 0 < h)
+    (htpos : 0 < |t|) (h1 : π / |t| / R ≤ -wordForm M c (x / h))
+    (h2 : -wordForm M c (x / h) ≤ π / |t|) (φ : ℝ) :
+    1 / (2 * R) ≤ H ^ 2 * ∑ a ∈ range (M + 1), ∑ b ∈ range (M + 1),
+      dist01 (t * Real.log (x + h * ((a : ℝ) + b)) / (2 * π) - φ) := by
+  have hH0 : 0 ≤ H := (abs_nonneg _).trans (hc 0)
+  refine (one_div_le_abs_sum_err hR hm hx hh htpos h1 h2 φ).trans ?_
+  rw [Finset.mul_sum]
   refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun a _ => ?_)
   rw [Finset.mul_sum]
   refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun b _ => ?_)

@@ -118,29 +118,29 @@ theorem card_support_ge {M k : ℕ} {c : ℕ → ℤ} (hm : ∀ j ≤ k, binomMo
   have hker : (fun i : Fin s => c (e i : ℕ)) ᵥ* (Matrix.of fun i j : Fin s => (descPochhammer ℤ j).eval (v i)) = 0 := by
     funext j
     simp only [Matrix.vecMul, dotProduct, Matrix.of_apply, Pi.zero_apply]
-    have hval : ∀ a : ℕ, (descPochhammer ℤ j).eval (a : ℤ) = (j.factorial : ℤ) * (a.choose j : ℤ) := by
+    have hval : ∀ a : ℕ, (descPochhammer ℤ j).eval (a : ℤ) = ((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ) := by
       intro a
       rw [descPochhammer_eval_eq_descFactorial, Nat.descFactorial_eq_factorial_mul_choose]
       push_cast
       rfl
     have hsum : ∑ i : Fin s, c (e i : ℕ) * (descPochhammer ℤ j).eval (v i) =
-        ∑ a ∈ S, c a * ((j.factorial : ℤ) * (a.choose j : ℤ)) := by
-      rw [← Finset.sum_coe_sort S fun a => c a * ((j.factorial : ℤ) * (a.choose j : ℤ))]
-      rw [← Equiv.sum_comp e fun a : S => c (a : ℕ) * ((j.factorial : ℤ) * ((a : ℕ).choose j : ℤ))]
+        ∑ a ∈ S, c a * (((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ)) := by
+      rw [← Finset.sum_coe_sort S fun a => c a * (((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ))]
+      rw [← Equiv.sum_comp e fun a : S => c (a : ℕ) * (((j : ℕ).factorial : ℤ) * ((a : ℕ).choose (j : ℕ) : ℤ))]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [show v i = (((e i : S) : ℕ) : ℤ) from rfl, hval]
     rw [hsum]
-    have hmom := hm j (hsk j)
-    have hsub : ∑ a ∈ S, c a * ((j.factorial : ℤ) * (a.choose j : ℤ)) =
-        ∑ a ∈ range (M + 1), c a * ((j.factorial : ℤ) * (a.choose j : ℤ)) := by
+    have hmom := hm (j : ℕ) (hsk j)
+    have hsub : ∑ a ∈ S, c a * (((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ)) =
+        ∑ a ∈ range (M + 1), c a * (((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ)) := by
       refine Finset.sum_subset (Finset.filter_subset _ _) fun a ha hnot => ?_
       have : c a = 0 := by
         by_contra h0
         exact hnot (Finset.mem_filter.mpr ⟨ha, h0⟩)
       rw [this, zero_mul]
     rw [hsub]
-    have e2 : ∑ a ∈ range (M + 1), c a * ((j.factorial : ℤ) * (a.choose j : ℤ)) =
-        (j.factorial : ℤ) * binomMoment M c j := by
+    have e2 : ∑ a ∈ range (M + 1), c a * (((j : ℕ).factorial : ℤ) * (a.choose (j : ℕ) : ℤ)) =
+        ((j : ℕ).factorial : ℤ) * binomMoment M c (j : ℕ) := by
       unfold binomMoment
       rw [Finset.mul_sum]
       exact Finset.sum_congr rfl fun a _ => by ring

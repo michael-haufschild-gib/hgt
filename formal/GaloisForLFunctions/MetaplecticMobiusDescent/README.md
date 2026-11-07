@@ -223,6 +223,28 @@ defect is continuous and compactly supported on the actual quotient.
 `TheCubicCuspProfileEquation.lean` proves the actual Laplace equation for
 locally finite invariant sums of smooth height profiles.
 
+`TheCubicBarrierPotential.lean` identifies the actual barrier equation
+`Δφ=Vφ`, with continuous `V≥1−C1_K` for compact `K`. It also proves the
+pointwise square-completion inequality for the ground-state transform.
+
+`TheCubicExteriorCoercivity.lean` integrates the ground-state inequality
+and extends by density: `‖Mu‖₂²≤‖Gu‖₂²+C‖1_KMu‖₂²` for every completed
+energy vector, with compact `K` and compact restriction map.
+
+`TheCubicSpectralPencilIsFredholm.lean` proves that
+`T(λ)=Id−(λ+1)M*M` is Fredholm throughout `0≤λ<1`, in particular at
+`λ=8/9`. The compact-error estimate feeds the corpus closed-range theorem;
+self-adjointness identifies the finite-dimensional cokernel.
+
+`TheCubicMeromorphicResolvent.lean` splits the pencil at `8/9` into its
+finite nullspace and analytic regular inverse. It constructs the actual
+meromorphic quotient resolvent and its inverse identities; composition
+with `s(2−s)` is meromorphic at `4/3`.
+
+`CharacterEquivariantCubicCuspProfiles.lean` proves that distinct principal
+cusp cosets cannot both have height above one. High-cusp profile sums
+therefore have finite support and transform by the actual cubic character.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

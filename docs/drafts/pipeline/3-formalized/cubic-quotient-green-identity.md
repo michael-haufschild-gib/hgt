@@ -3,7 +3,7 @@
 - **ID:** cubic-quotient-green-identity
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [exterior coercivity](../1-in-progress/cubic-quotient-exterior-coercivity.md)
+- **Parent:** [exterior coercivity](cubic-quotient-exterior-coercivity.md)
 - **Statement:** The quotient Dirichlet form satisfies Green's identity for the positive coordinate expression `−v²(∂ₓ²+∂ᵧ²+∂ᵥ²)+v∂ᵥ`. A square-integrable global coordinate equation represents the actual variational Laplacian graph and action.
 
 In an injective chart, extend compact smooth tests by zero and integrate
@@ -30,6 +30,6 @@ Lean: `MetaplecticMobiusDescent/GreenIdentityOnTheCubicQuotient.lean`
 Direct source and transitive audits pass with only `propext`,
 `Classical.choice`, and `Quot.sound`. The conditional graph representation
 does not supply an unproved coordinate equation. The actual cusp barrier
-and exterior coercivity remain open. Adapted from OpenAI
+and [exterior coercivity](cubic-quotient-exterior-coercivity.md) are formalized. Adapted from OpenAI
 `CubicSieve/RadialProfiles.lean`, `Eisenstein/CoordinateLaplacian.lean`,
 and `MeanSquare/UnitRows.lean`.

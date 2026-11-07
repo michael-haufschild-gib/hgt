@@ -54,9 +54,7 @@ theorem exists_isHeadReturn_le {N : ℕ} (hN : 1 ≤ N) :
     push_cast
     field_simp
     ring
-  rw [phaseDefect_eq]
-  simp only
-  rw [hkey]
+  rw [phaseDefect_eq, hkey]
   have hexp : exp (((-(2 * Real.pi * e) + (-m : ℤ) * (2 * Real.pi) : ℝ) : ℂ) * I) =
       exp (((-(2 * Real.pi * e) : ℝ) : ℂ) * I) := by
     push_cast
@@ -66,7 +64,7 @@ theorem exists_isHeadReturn_le {N : ℕ} (hN : 1 ≤ N) :
       ring
     rw [h1, Complex.exp_int_mul_two_pi_mul_I, mul_one]
   rw [hexp, mul_comm _ I]
-  refine (Complex.norm_exp_I_mul_ofReal_sub_one_le).trans ?_
+  refine (Real.norm_exp_I_mul_ofReal_sub_one_le).trans ?_
   rw [Real.norm_eq_abs, abs_neg, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
   have hpi2 := Real.pi_lt_d2
   have hQ : (0 : ℝ) < ((7 * N : ℕ) : ℝ) := by positivity

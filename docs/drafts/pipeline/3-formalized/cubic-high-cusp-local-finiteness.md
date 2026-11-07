@@ -3,7 +3,7 @@
 - **ID:** cubic-high-cusp-local-finiteness
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [exterior coercivity](../1-in-progress/cubic-quotient-exterior-coercivity.md)
+- **Parent:** [exterior coercivity](cubic-quotient-exterior-coercivity.md)
 - **Statement:** Near every hyperbolic point, only finitely many principal cusp rows have height at least one. An integral matrix with nonzero lower-left entry satisfies `h(Mw)h(w)≤1`; upper triangular integral matrices preserve height.
 
 Choose the continuous upper triangular representative `g(w)`. The inverse
@@ -29,4 +29,4 @@ namespace `CubicEisenstein`:
 Direct source and transitive audits pass with only `propext`,
 `Classical.choice`, and `Quot.sound`. The local proof uses the corpus
 row-coordinate bound, continuous triangular section, and integral norm
-lower bound. The [invariant barrier](cubic-invariant-cusp-barrier.md) is formalized; exterior coercivity remains open.
+lower bound. The [invariant barrier](cubic-invariant-cusp-barrier.md) and [exterior coercivity](cubic-quotient-exterior-coercivity.md) are formalized.

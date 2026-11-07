@@ -57,24 +57,24 @@ variable {W : ℕ → ℝ}
 def primePart (W : ℕ → ℝ) (n : ℕ) (P : Finset ℕ) (t : ℕ) : ℝ :=
   if 0 < t ∧ ∀ p ∈ P, ¬ p ∣ t then W (n * t) else 0
 
-private lemma summable_mul_left (hW : Summable W) {n : ℕ} (hn : 1 ≤ n) :
+theorem summable_mul_left (hW : Summable W) {n : ℕ} (hn : 1 ≤ n) :
     Summable fun t => W (n * t) :=
   hW.comp_injective fun _ _ h => Nat.eq_of_mul_eq_mul_left (by omega : 0 < n) h
 
-private lemma abs_primePart_le (W : ℕ → ℝ) (n : ℕ) (P : Finset ℕ) (t : ℕ) :
+theorem abs_primePart_le (W : ℕ → ℝ) (n : ℕ) (P : Finset ℕ) (t : ℕ) :
     ‖primePart W n P t‖ ≤ ‖W (n * t)‖ := by
   unfold primePart
   split_ifs
   · exact le_rfl
   · simp
 
-private lemma summable_primePart (hW : Summable W) {n : ℕ} (hn : 1 ≤ n) (P : Finset ℕ) :
+theorem summable_primePart (hW : Summable W) {n : ℕ} (hn : 1 ≤ n) (P : Finset ℕ) :
     Summable (primePart W n P) :=
   Summable.of_norm_bounded (summable_mul_left hW hn).norm (abs_primePart_le W n P)
 
 /-- Peeling one prime from `P`. The multiples of `p` among the integers prime to `P` are `p` times the
 integers prime to `P`. -/
-private lemma tsum_primePart_insert (hW : Summable W) {n p : ℕ} (hn : 1 ≤ n) (hp : p.Prime)
+theorem tsum_primePart_insert (hW : Summable W) {n p : ℕ} (hn : 1 ≤ n) (hp : p.Prime)
     {P : Finset ℕ} (hpP : p ∉ P) (hPr : ∀ q ∈ P, q.Prime) :
     ∑' t, primePart W n (insert p P) t =
       ∑' t, primePart W n P t - ∑' t, primePart W (n * p) P t := by

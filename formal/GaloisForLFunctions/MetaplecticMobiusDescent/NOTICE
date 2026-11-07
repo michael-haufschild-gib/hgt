@@ -257,3 +257,21 @@ bounded-row theorem; the chart reconstruction is from SmoothTests.lean.
 TheCubicCuspProfileEquation adapts the locally finite row-profile equation
 from OpenAI Eisenstein/CuspHeight.lean. The proof uses the locally checked
 height calculus and finite-sum axis identities.
+TheCubicBarrierPotential adapts the potential, coordinate equation, and
+scalar ground-state square completion from OpenAI Eisenstein/BarrierPotential.lean.
+All barrier and Laplace inputs are locally constructed and checked.
+TheCubicExteriorCoercivity adapts compact testing, ground-state integration,
+and density extension from OpenAI CubicSieve/CutoffOrders.lean. The actual
+barrier equation, support-local Green identity, and compact restriction
+are all supplied by locally checked modules.
+TheCubicSpectralPencilIsFredholm adapts spectral estimates from OpenAI
+Eisenstein/FredholmAlternative.lean. Closed range and finite kernel use
+the existing corpus ConstitutiveCompactCofinalFusion theorem; finite
+cokernel follows from self-adjointness and orthogonal decomposition.
+TheCubicMeromorphicResolvent adapts finite-nullspace splitting, analytic
+regular inversion, and the actual resolvent identities from OpenAI
+Eisenstein/MeromorphicResolvent.lean. Its Fredholm and variational
+inputs are supplied by locally checked modules.
+CharacterEquivariantCubicCuspProfiles adapts high-cusp uniqueness and
+character-equivariant profile sums from OpenAI Poisson/LatticeEnvelopes.lean.
+The height-product obstruction and cusp stabilizer are locally checked.

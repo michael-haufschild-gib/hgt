@@ -44,8 +44,16 @@ is closed, densely defined, nonnegative, and self-adjoint.
 The [global Green identity](../3-formalized/cubic-quotient-green-identity.md)
 identifies its action with the positive coordinate Laplacian.
 
-Open inputs: [exterior coercivity](cubic-quotient-exterior-coercivity.md),
-spectral continuation, Fourier identification, and nonvanishing
+The [actual exterior coercivity estimate](../3-formalized/cubic-quotient-exterior-coercivity.md)
+is formalized on the completed energy graph, with compact error map.
+
+The [spectral pencil is Fredholm](../3-formalized/cubic-spectral-pencil-fredholm.md)
+for `0≤λ<1`, including `λ=8/9`; nonzero kernel is not yet proved.
+
+The [actual resolvent is meromorphic](../3-formalized/cubic-meromorphic-resolvent.md)
+at `z=8/9` and after composition at `s=4/3`, with explicit finite-rank singular part.
+
+Open inputs: source matching, Fourier identification, and nonvanishing
 of `C∞`. None is supplied as an assumption in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.
 

@@ -1,7 +1,7 @@
 # Arithmetic Scattering Holography (ASH)
 
 Namespace `GaloisForLFunctions.ArithmeticScatteringHolography`; umbrella
-`ArithmeticScatteringHolography.lean`; 29 modules.
+`ArithmeticScatteringHolography.lean`; 33 modules.
 
 ## 1. Motivation
 
@@ -23,7 +23,8 @@ every such system, true or fake, and is a dissipated energy exactly under RH.
 
 The fakes carry a Hecke algebra at places of all degrees, with positivity, so that does not exclude them either. What excludes them is a **count law**: the
 parallelogram law for the number of points of the probes `y - x π`. Its first instance is the conservation of channels, `#G + #G' = 2(q+1)`, which holds on every black hole. The
-law at all probes is equivalent to universal damping.
+law at all probes is equivalent to universal damping. On a true curve the law is a theorem: the height on the twisted curve over `𝔽_q(T)` obeys the exact parallelogram law, and this reproves Hasse's theorem
+from the conservation of channels at all probes, independently of Stepanov.
 
 ## 2. Objects
 
@@ -47,12 +48,17 @@ law at all probes is equivalent to universal damping.
 | Translation of the second group | `thetaOp` | `Λ_w`: the second difference of the shadow |
 | Cusp forms | `thetaField` | `ψ + ψ⁻¹` on dead ends, `1` on the pin, `1 - q` on the cap: compact support, eigenvalue `0` |
 | Hecke family at even degree | `heckeFull` | `P_{2m}(T_Q) + (-q)^m Λ_w`, with `heckeTwo` at `m = 1` |
+| Hecke at every class | `heckeClass` | `S(1,Q) = T_Q`, `S(2,Q) = T_{Q,0}`, `S(d+2,Q) = A S(d+1,Q) - q S(d,Q)` |
+| Twisted curve | `twistCurve`, `xPair`, `height` | `h(T) Y² = h(X)` over `F(T)`; the height is the degree of `X` |
+| Generic and Frobenius points | `genericPoint`, `frobeniusPoint` | `(T, 1)` and `(T^q, h^{(q-1)/2})` |
+| Three biquadratic forms | `formA`, `formB`, `formC` | the quadratic with roots `X(P+Q)`, `X(P-Q)` |
 | Ring of a black hole | `probeMatrix`, `probeLattice`, `probeCount` | `ℤ[π] = ℤ[x]/(x² - tx + q)`, the ideal `(y - xπ)`, and its index |
 | Count law | `CountLaw` | the parallelogram law for a function `K` on probes |
 | Tower of groups | `powA`, `powB`, `powV` | `π^n = a_n π + b_n` and the group `ℤ[π]/(1 - π^n)` |
 | Lax–Phillips semigroup | `lpMatrix`, `shiftPair` | the companion `Z` of the denominator, on the state `(R_n, R_{n+1})` |
 | Metric of the model space | `kreinHerm` | the Hermitian Krein form `q\|x\|² - t Re(x̄y) + \|y\|²` |
 | Throat | `throatOp`, `throatMass`, `throatPoly` | a one-cusp tree lattice with two free edge indices `a, b` |
+| Throat of every length | `chainOp`, `chainMass`, `thPoly`, `thDen` | a path with one cusp and free indices `c_j`, with its denominator |
 | KMS correlator | `kmsCorrelator` | `G(z) = F(1 + iz)` on the strip `0 ≤ Re s ≤ 1` |
 | Fake horizon | `fakeKernel`, `fakeXi` | the transform of `e^{-x²}(e cosh b + cosh 2x) > 0` |
 | Integer probes over `ℤ` | `atomGram`, `integerProbe` | the Gram form of `B(· - log n)` on integer vectors |
@@ -84,6 +90,7 @@ make it a tree lattice quotient by Bass–Kulkarni [C].
 - **Propagator**: `P_d(A)`, the solution at time `d` with the initial data of Chebyshev.
 - **Shadow**: the part of a function that only the second group sees.
 - **Count of a probe**: the number of points of `ℤ[π]/(y - xπ)`; **count law**: the parallelogram law for it.
+- **Height**: the degree of the `X`-coordinate of a point of the twisted curve.
 - **Krein signature**: the value `H(1, z) = 2 (Im z)²` of the metric on a mode; **neutral**: zero signature.
 - **KMS strip**: `0 ≤ Re s ≤ 1` with reflection `s ↦ 1 - s`; **midpoint**: the critical line.
 
@@ -131,42 +138,51 @@ make it a tree lattice quotient by Bass–Kulkarni [C].
 14. **The full family.** `P_{2m}(T_Q) + (-q)^m Λ_w` commutes with `A` and with itself (`heckeFull_comm_waveOp`, `heckeFull_comm`), has `q^{2m}+1` edges (`heckeFull_one`), is symmetric on
     compactly supported functions (`heckeFull_symmetric`), has the arithmetic eigenvalue on cusp forms (`heckeFull_thetaField`), and has nonnegative coefficients for `w ≠ 0`, `q ≥ 7`
     (`heckeFull_nonneg`). All of `heckeDeg`, `heckeTwo`, `Λ_w` are symmetric (`heckeDeg_symmetric`, `heckeTwo_symmetric`, `truncSum_thetaOp_green`).
-15. Over `ℤ`: `T_p 𝓕(τ) = 𝓕(τ + log p) + 𝓕(τ - log p)` on Eisenstein packets (`heckeOp_wavePacket`), and the rescaled
+15. **Every class.** `S(d, Q)` has class `Q` at degree `d`, for every `Q`. It is a polynomial in `A`, `T_Q` and `T_{Q,0}`, so the family commutes (`heckeClass_comm`); it has the Hecke shape in the cusps and `q^d + 1` edges (`heckeClass_ray`,
+    `heckeClass_one`). Off the rays it is the propagator of the function with translated cusps (`heckeClass_off_ray`), so it is positive for `d ≥ 3` (`heckeClass_nonneg`), also with the correction `(-q)^m Λ_w`
+    (`heckeClass_add_theta_nonneg`).
+16. Over `ℤ`: `T_p 𝓕(τ) = 𝓕(τ + log p) + 𝓕(τ - log p)` on Eisenstein packets (`heckeOp_wavePacket`), and the rescaled
     packet solves the wave equation of the tree at `p` for every `p` (`treeWave_isWave`).
 
 **Krein.**
-16. `𝒬(y, ty - qx) = q 𝒬(x,y)` for every `t` (`kreinSquare_step`). `𝒬` is the Turán determinant of three echoes
+17. `𝒬(y, ty - qx) = q 𝒬(x,y)` for every `t` (`kreinSquare_step`). `𝒬` is the Turán determinant of three echoes
     (`kreinSquare_eq_turan`). The Wronskian is multiplied by `q` (`wronskian_step`).
-17. `𝒬(x,y) = deg(y - xF)`, half the Castelnuovo–Severi defect of the graph class
+18. `𝒬(x,y) = deg(y - xF)`, half the Castelnuovo–Severi defect of the graph class
     (`kreinSquare_eq_endDeg`, `krein_eq_half_defect`). A two-term probe multiplies `𝒬` by the degree form
     (`kreinSquare_probe`).
-18. A pulse has `𝒬 = q^{n+2} h'` with `h' > 0` (`kreinSquare_ringSignal`): positive on every black hole. A probe can make it
+19. A pulse has `𝒬 = q^{n+2} h'` with `h' > 0` (`kreinSquare_ringSignal`): positive on every black hole. A probe can make it
     negative exactly on a fake (`probe_krein_nonneg_iff`).
-19. Over `ℤ`, translation is an isometry of the Weil form, so `𝒬_f(τ) = e^{-τ/2} W_Z(f,f)` on every tempered configuration
+20. Over `ℤ`, translation is an isometry of the Weil form, so `𝒬_f(τ) = e^{-τ/2} W_Z(f,f)` on every tempered configuration
     (`physicalKrein_eq`). At every genus the form is the Toeplitz form of the traces (`curveKrein_step`).
 
 **Counts.**
-20. `𝒬(x,y)` is the norm of the probe, and `ℤ[π]/(y - xπ)` has `|𝒬(x,y)|` elements on every black hole (`det_probeMatrix`, `card_quotient_probeLattice`). The tower of a fake is a tower of
+21. `𝒬(x,y)` is the norm of the probe, and `ℤ[π]/(y - xπ)` has `|𝒬(x,y)|` elements on every black hole (`det_probeMatrix`, `card_quotient_probeLattice`). The tower of a fake is a tower of
     groups of order `q^n + 1 - V_n` (`card_quotient_tower`).
-21. A function with the parallelogram law and `K(1) = 1`, `K(π) = q`, `K(1 - π) = q + 1 - t` is `𝒬` (`CountLaw.eq_kreinSquare`), so such a `K ≥ 0` exists exactly under universal damping
+22. A function with the parallelogram law and `K(1) = 1`, `K(π) = q`, `K(1 - π) = q + 1 - t` is `𝒬` (`CountLaw.eq_kreinSquare`), so such a `K ≥ 0` exists exactly under universal damping
     (`exists_countLaw_iff`, `Channels.universal_iff_countLaw`). The counts of the ring obey the first instance always (`first_conservation`), and the law exactly under universal damping
     (`probeCount_law_iff`). A fake with three cusps breaks it at the second probe (`fake_violates_second_probe`).
 
+23. **The law holds on a true curve.** `X(P+Q)` and `X(P-Q)` are the roots of a quadratic whose coefficients are biquadratic forms in `X(P)`, `X(Q)` (`crossRelations`). These forms have no common zero, since a common zero would be a double
+    root of the cubic (`forms_no_common_zero`), so they generate the unit ideal and lose no degree at infinity (`forms_bezout`, `forms_top`). With Gauss for the product of two linear forms (`pair_bezout`, `pair_top`), this gives the exact law
+    `ht(P+Q) + ht(P-Q) = 2 ht(P) + 2 ht(Q)` (`height_parallelogram`). The function `K(x,y) = ht(y P₀ - x P₁)` has `K(0,1) = 1`, `K(1,0) = q`, and `X(P₀ - P₁) = N/(T^q - T)²` loses `1 - χ(h(c))` powers of `T - c` at each rational `c`
+    (`xCoord_sub`, `reduced_coprime`), so `K(1,1) = #E(𝔽_q)` (`height_sub_eq`, `elliptic_has_countLaw`). Then `hasse_of_countLaw` is Hasse's theorem, by Manin's argument.
+
 **The strip and the reflection.**
-22. The functional equation is a KMS condition at `β = 1`, and the critical line is the midpoint of the strip (`kms_condition`, `kms_reflection`, `kms_midpoint`). A positive kernel gives KMS
+24. The functional equation is a KMS condition at `β = 1`, and the critical line is the midpoint of the strip (`kms_condition`, `kms_reflection`, `kms_midpoint`). A positive kernel gives KMS
     positivity (`kernel_positive`).
-23. A throat has flux for all edge indices (`throat_green`), and its modes multiply to `(b-1)q` (`throat_resonance`, `throat_partner_law`), so the functional equation is the condition `b = 2`
-    (`throat_functional_equation_iff`).
+25. A throat has flux for all edge indices (`throat_green`), and its modes multiply to `(b-1)q` (`throat_resonance`, `throat_partner_law`), so the functional equation is the condition `b = 2`
+    (`throat_functional_equation_iff`). In every length the denominator is monic with constant term `q^{m+2}(1 - c₀)` and the root `q²` (`thDen_monic_natDegree`, `thDen_eval_zero`, `thDen_eval_ground`), each root is a resonance (`chain_resonance`), and
+    the functional equation is impossible from genus two on (`chain_no_functional_equation`): a path quotient has it only at genus at most one.
 
 **The semigroup and the phase.**
-24. The Hankel operator of the echo train has rank two (`hankel_det_eq_zero`, `recurrence_shift`), and its compression is the semigroup `Z` with `det Z = q` and spectrum the modes (`lpMatrix_det`,
+26. The Hankel operator of the echo train has rank two (`hankel_det_eq_zero`, `recurrence_shift`), and its compression is the semigroup `Z` with `det Z = q` and spectrum the modes (`lpMatrix_det`,
     `lpMatrix_charpoly`, `lpMatrix_mode`). `Z` multiplies the metric of the model space by `q` for every `t` (`kreinHerm_step`, `kreinHerm_semigroup`); the metric is positive exactly under universal
     damping (`kreinHerm_nonneg_iff`), and a mode has signature `2 (Im z)²` (`kreinHerm_mode`). Two resonant states pair as a Szegő kernel (`gram_law`).
-25. On a disc free of zeros of the causal symbol, log-modulus and phase determine each other (`kramers_kronig`, `causal_symbol_kramers_kronig`). The Bode integral is the term at frequency zero on the
+27. On a disc free of zeros of the causal symbol, log-modulus and phase determine each other (`kramers_kronig`, `causal_symbol_kramers_kronig`). The Bode integral is the term at frequency zero on the
     universal circle.
 
 **Horocycles.**
-26. The horospheres of a tree satisfy the wave equation with depth as time (`horosphere_isWave`). The mean over a closed
+28. The horospheres of a tree satisfy the wave equation with depth as time (`horosphere_isWave`). The mean over a closed
     horocycle obeys `H[T_p F](y) = p^{-½} H[F](py) + p^{½} H[F](y/p)` (`horoMean_heckeOp`).
 
 ## 5. Questions the programme answers
@@ -174,12 +190,15 @@ make it a tree lattice quotient by Bass–Kulkarni [C].
 **Can universal damping on the function-field black hole be derived from wave dynamics, without Weil?** No
 (`universal_damping_not_forced_one_cusp`, `_three_cusps`, `_many_cusps`). For every `q ≥ 5`, there are tree lattices with flux, unitarity, causality, commuting positive Hecke operators and
 resonances off the circle. For `q ≥ 8` they carry commuting positive operators at all degrees, with the arithmetic eigenvalues on their cusp forms
-(`universal_damping_not_forced_with_degree_two`, `universal_damping_not_forced_at_every_degree`, `universal_damping_not_forced_by_the_full_algebra`). The physical reading is a reformulation,
-unless new input is brought.
+(`universal_damping_not_forced_with_degree_two`, `universal_damping_not_forced_at_every_degree`, `universal_damping_not_forced_by_the_full_algebra`, `universal_damping_not_forced_at_every_class`). The physical reading is a
+reformulation, unless new input is brought.
 
 **Is there a law on the graph that excludes the fakes?** Yes: the count law (`Channels.universal_iff_countLaw`). It uses only `q` and the number of cusps, and its first instance is the
-local count that defines the graph. On a curve it is the theorem of the cube for the degree. A fake has counts, positive at every level of its tower, and they are not quadratic. So
-wave dynamics supplies one instance of the law, and the sharp rate is the law at all probes.
+local count that defines the graph. A fake has counts, positive at every level of its tower, and they are not quadratic. So wave dynamics supplies one instance of the law, and the sharp rate is the law at all probes.
+
+**Does the sharp rate over curves follow from such a law?** Yes, and on a true curve the law is proved here (`elliptic_has_countLaw`), with Hasse's theorem as a consequence (`hasse_of_countLaw`) and universal damping after it
+(`elliptic_universal_damping_of_countLaw`). The proof does not use Stepanov's argument or any character sum bound. Its input beyond wave dynamics is the addition law of the curve, and that is exactly what a fake does not have: the parallelogram law comes
+from `h` having no double root, and the count at `1 - π` from the Frobenius point.
 
 **What quantity decays at exactly the universal rate, and what is the proof in the graph model?** The Krein square. The
 proof is the algebraic identity above, for every `t` (`normalizedKrein_step`). The signal itself decays at the universal
@@ -237,6 +256,10 @@ with no information about mode positions.
 | KMS strip and fake horizon | `kms_midpoint`, `xi_kms_positive`, `fake_horizon` | unconditional |
 | Lax–Phillips semigroup and Krein signature | `hankel_det_eq_zero`, `lpMatrix_det`, `kreinHerm_step`, `kreinHerm_nonneg_iff`, `kreinHerm_mode` | unconditional |
 | Kramers–Kronig for the causal symbol | `kramers_kronig`, `causal_symbol_kramers_kronig` | unconditional |
+| Exact parallelogram law of heights | `crossRelations`, `forms_no_common_zero`, `height_parallelogram` | unconditional, odd characteristic |
+| Count law on a true curve, and Hasse | `elliptic_has_countLaw`, `hasse_of_countLaw`, `elliptic_universal_damping_of_countLaw` | unconditional, odd characteristic |
+| Hecke at every class on fakes | `heckeClass_comm`, `heckeClass_nonneg`, `heckeClass_resonance`, `universal_damping_not_forced_at_every_class` | unconditional, odd groups, `q ≥ 7` |
+| Path quotients and the functional equation | `chain_green`, `chain_resonance`, `chain_no_functional_equation` | unconditional |
 | Partner law is independent of flux | `throat_green`, `throat_partner_law`, `throat_functional_equation_iff` | unconditional |
 | Integer probes over `ℤ` | `riemannHypothesis_iff_integerProbes`, `integerProbe_parallelogram`, `posSemidef_of_integer_nonneg` | equivalence |
 | Universal damping is not forced | `exists_slow_resonance`, `universal_damping_not_forced_*` | unconditional |
@@ -249,7 +272,7 @@ with no information about mode positions.
 | Physical positivities are blind | `schur_bound_iff`, `Channels.coreMoment_psd`, `ramanujan_for_every_black_hole` | unconditional |
 | One clock over `ℤ` | `heckeOp_normalizedEisenstein`, `heckeOp_wavePacket`, `treeWave_isWave` | unconditional |
 | Rank barrier | `ringSignal_silenced`, `infinite_excited_modes` | unconditional |
-| Calibration on true curves | `ellipticChannels`, `elliptic_universal_damping` | through Hasse |
+| Calibration on true curves | `ellipticChannels`, `elliptic_universal_damping`, `elliptic_universal_damping_of_countLaw` | by Stepanov, and independently by the count law |
 | Tower | `abs_towerTrace_lt`, `towerTrace_overdamped`, `tower_bound_iff` | unconditional |
 
 ## 7. Tools
@@ -264,15 +287,11 @@ with no information about mode positions.
 - *Causal, compactly supported probes*: `kreinSquare_probe`, `ringSignal_silenced`. A finite probe silences a curve; no probe
   silences the horizon (`infinite_excited_modes`).
 - *Horocycle renormalization*: `horosphere_isWave`, `horoMean_heckeOp`.
-- *Exact models*: `oddChannels`, `oddPairChannels`, `Channels.ofGroup`, `ellipticChannels`, `datumOfRoots`, `throatOp`, `fakeXi`.
+- *Exact models*: `oddChannels`, `oddPairChannels`, `Channels.ofGroup`, `ellipticChannels`, `datumOfRoots`, `throatOp`, `chainOp`, `fakeXi`.
+- *Height calculus*: the three forms, the Top calculus for degrees at infinity, and `eq_const_mul_of_cross`, on any curve over a rational function field.
 - *Closed forms of the propagator*: `even_closed`, `odd_closed`, `root_formula`, with the coefficient calculus of `ThePropagatorCoefficients`.
 - *Functional model*: the semigroup `lpMatrix`, the metric `kreinHerm`, and the Szegő pairing `gram_law`.
 - *Integer positivity*: a real Hermitian matrix nonnegative on integer vectors is positive semidefinite (`posSemidef_of_integer_nonneg`).
-
-**To build.**
-- The degree of `y - xF` on a Weierstrass curve as a count with the parallelogram law, independently of Hasse. This is the theorem of the cube, and with `exists_countLaw_iff` it gives Hasse from a
-  conservation law.
-- Hecke operators at odd degree `d` of a class outside `d·G`; `heckeDeg` reaches exactly the classes `d Q`.
 
 ## 8. Traps
 
@@ -289,6 +308,8 @@ with no information about mode positions.
 | `P₂(A)` is Hecke of degree two | It has the entry `1 - q` on a dead end; the operator at a place is `P₂(T_Q) - q Λ_w`, with `w ≠ 0` |
 | The fake has no point counts | `ℤ[π]/(1 - π^n)` is a group of order `q^n + 1 - V_n` at every level (`card_quotient_tower`); it is the count law that fails |
 | Conservation of channels is the whole law | It is the first instance; a fake breaks the second (`fake_violates_second_probe`) |
+| The count law is Hasse in other words | It has an independent proof, by the addition law of the curve (`height_parallelogram`), and Hasse follows |
+| Long throats generalize the curve | Their partner product is `q^m (c₀ - 1)`, so they miss the functional equation from genus two on |
 | KMS positivity places the zeros | It holds for `ξ` unconditionally, and on a fake horizon with no zero on the line (`fake_horizon`) |
 | A slow mode is a resonance of negative norm | It is neutral: `H(1, z) = 0` on a real mode (`kreinHerm_mode`). Negative states are the combinations of two modes |
 | Unitarity gives the functional equation | A throat has flux and unitarity for all `b`, and the functional equation only at `b = 2` |
@@ -321,7 +342,7 @@ quadratic order: its norm form is indefinite, its tower is a tower of honest gro
 
 | | `K` is a count | `K` is quadratic |
 |---|---|---|
-| a curve | yes: the degree | yes: the theorem of the cube |
+| a curve | yes: the degree | yes (`height_parallelogram`) |
 | a fake | yes: `K = \|𝒬\|` | no (`probeCount_law_iff`) |
 | `ℤ` | not known | yes (`integerProbe_parallelogram`) |
 
@@ -330,9 +351,8 @@ So positivity is what happens when both hold, which is the argument of Cassels a
 ## 10. Success criteria, and what a contribution must be
 
 **Criteria from the review.**
-- Recovers the edge theorem from flux: done (`Channels.norm_resonance_lt`). The sharp rate over curves: impossible from flux, unitarity and Hecke. It is equivalent to the count law, whose first
-  instance is the conservation of channels (`Channels.universal_iff_countLaw`). The rate on true curves is proved here through Hasse (`elliptic_universal_damping`, `elliptic_has_countLaw`), since the
-  theorem of the cube is not formalized.
+- Recovers the edge theorem from flux: done (`Channels.norm_resonance_lt`). The sharp rate over curves: impossible from flux, unitarity and Hecke. It is equivalent to the count law, whose first instance is the conservation of channels
+  (`Channels.universal_iff_countLaw`), and the law on a true curve is proved from the addition law (`elliptic_has_countLaw`), which gives the rate (`elliptic_universal_damping_of_countLaw`).
 - Fails for non-arithmetic `Γ`: the fakes are exact non-arithmetic examples.
 - Explains why KMS, Schur and `C*` positivity are blind: they hold on the fakes (`ThePhysicalPositivitiesAreBlind`), and KMS positivity holds for `ξ` and for a fake horizon alike
   (`xi_kms_positive`, `fake_horizon`).
@@ -348,9 +368,11 @@ degree. Over `ℤ` none is known, which is the door of the effective geometry pr
 
 ## 11. Open research topics
 
-1. The count law on a true curve without Hasse: the degree of `y - xF` on a Weierstrass curve, its parallelogram law, and so Hasse from the conservation of channels at all probes.
-2. Over `ℤ`: a count equal to the Krein square of the integer probes.
-3. Throats of every length: which denominators occur, which satisfy the functional equation, and what replaces the partner law. The true quotient `Γ\T` for a curve of genus two.
-4. The small fields: positivity of `P_d(A)` fails at `q = 2`, `h = 5`, `d = 3`, where the curve has no place of degree three. Which entries of the family need a place to exist?
-5. The cuspidal sectors of the adelic bulk: Maass forms, where Hecke is independent of the wave group and there are no resonances, as `thetaField` is on the graph.
-6. The Bode integral at finite height over `ℤ`, with an exceptional set.
+1. Over `ℤ`: a count equal to the Krein square of the integer probes. By `riemannHypothesis_of_count` this is a proof of RH, so it is the open problem itself, not a task of this programme.
+2. The true quotient `Γ\T` for a curve of genus two, with its branching, and the partner law as a statement about the lattice. By `chain_no_functional_equation` it cannot be a path.
+3. The small fields: `P_d(A)` has a negative entry at `q = 2`, `h = 5`, `d = 3` (paper computation), where the curve has no place of degree three. Which entries of the family need a place to exist?
+4. The cuspidal sectors of the adelic bulk: Maass forms, where Hecke is independent of the wave group and there are no resonances, as `thetaField` is on the graph.
+5. The Bode integral at finite height over `ℤ`, with an exceptional set.
+6. Characteristic two, where the height law needs the general Weierstrass form.
+
+**Cited, not formalized.** Takahashi's identification of the graph with `Γ\T` for `G = E(𝔽_q)`, and Bass–Kulkarni for the existence of the lattice. They give the graph its geometric meaning. No theorem here uses them.

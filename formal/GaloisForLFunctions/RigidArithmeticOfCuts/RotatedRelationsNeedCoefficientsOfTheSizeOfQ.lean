@@ -419,7 +419,7 @@ theorem exists_norm_squaredXi_rot_le {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠
     rw [mul_assoc, ← Real.exp_add]
     calc _ ≤ Real.exp r * Real.exp (δ * r * Real.log Real.pi + K * r) :=
           mul_le_mul_of_nonneg_right hpoly (Real.exp_pos _).le
-      _ = Real.exp (r + (δ * r * Real.log Real.pi + K * r)) := by rw [Real.exp_add]
+      _ = Real.exp (r + (δ * r * Real.log Real.pi + K * r)) := by rw [Real.exp_add r]
       _ ≤ _ := by
           refine Real.exp_le_exp.mpr ?_
           have hK : K * r ≤ |K| * r := mul_le_mul_of_nonneg_right (le_abs_self K) hr0.le

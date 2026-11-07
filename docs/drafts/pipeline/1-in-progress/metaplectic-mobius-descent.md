@@ -76,7 +76,8 @@ for `Re s>2`, with character automorphy. The cubic quotient now has a
 measurable fundamental selector and positive finite invariant volume.
 Its completed energy space has a closed gradient, faithful mass embedding,
 and [compact mass restriction](../3-formalized/cubic-kernel-local-sobolev-compactness.md)
-to every compact quotient set. Exterior coercivity is still open.
+to every compact quotient set. The [actual exterior coercivity estimate](../3-formalized/cubic-quotient-exterior-coercivity.md)
+is formalized with compact error map.
 
 Cubic theta identification, cube removal, and uniform transfer estimates
 remain open locally.

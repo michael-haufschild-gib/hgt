@@ -13,6 +13,7 @@ import GaloisForLFunctions.ArithmeticScatteringHolography.ThePropagatorCoefficie
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheWavePropagatorIsPositive
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheCuspidalSector
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheFullHeckeFamily
+import GaloisForLFunctions.ArithmeticScatteringHolography.EveryClassOfHecke
 import GaloisForLFunctions.ArithmeticScatteringHolography.ThePhysicalPositivitiesAreBlind
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheBaseChangeTower
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheCurveDatumOfABlackHole
@@ -23,9 +24,12 @@ import GaloisForLFunctions.ArithmeticScatteringHolography.TheKreinLawOfTheModula
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheBulkReadingOfTheLogMean
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheRankBarrier
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheCountLawOfTheProbes
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheParallelogramLawOfHeights
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheCountLawOfATrueCurve
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheKMSStripOfTheHorizon
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheIntegerProbesOfTheHorizon
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfABlackHole
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfEveryLength
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheLaxPhillipsSemigroup
 
 /-!
@@ -38,5 +42,6 @@ off-line resonances. What survives is the Krein flux law: a form that decays at 
 system, and is a dissipated energy exactly under RH. The law carries over to every genus and to the modular horizon,
 where Hecke at `p` is modular time translation by `log p`. The Hecke algebra exists at all degrees on the fakes, with positivity.
 What excludes them is a count law for the probes, the parallelogram law for the number of points of `y - x π`, whose first instance
-is the conservation of channels. See `ArithmeticScatteringHolography/README.md`.
+is the conservation of channels. It holds on true curves by the exact parallelogram law of heights on the twisted curve, which reproves
+Hasse's theorem without Stepanov. See `ArithmeticScatteringHolography/README.md`.
 -/

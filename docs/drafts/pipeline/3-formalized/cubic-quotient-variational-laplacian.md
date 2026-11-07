@@ -26,5 +26,5 @@ namespace `CubicEisenstein`:
 Direct source and transitive audits pass with only `propext`,
 `Classical.choice`, and `Quot.sound`. No analytic property is assumed.
 The [coordinate Green identity](cubic-quotient-green-identity.md) is formalized;
-exterior coercivity remains open.
+[exterior coercivity](cubic-quotient-exterior-coercivity.md) is also formalized.
 Adapted from OpenAI `Eisenstein/VariationalLaplacian.lean`.

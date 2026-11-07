@@ -23,7 +23,8 @@ at `x = 0`. This module resolves what happens across the critical strip `κ ∈ 
    multiplicative correlations keep the full Euler-torus cone rigid across `[½, 1]`.
 
 2. **`SU(2)` Poisson–Szegő kernel and complete-monotonicity module law
-   (`hasSum_cosSum_mul_cosSum_geom`, `torusPositive_scale_geom`, `isAllBaseTorusPositive_mul_exp_neg`).**
+   (`hasSum_cosSum_mul_cosSum_geom`, `torusSum_mul_geom_eq_integral`,
+   `IsAllBaseTorusPositive.mul_exp_neg`).**
    For `|r| < 1`, `∑'_{k : ℕ} r^k U_k(cos θ) U_k(cos φ)` sums to the positive kernel
    `(1 − r²) / ((1 − 2r cos(θ − φ) + r²)(1 − 2r cos(θ + φ) + r²)) > 0`. Pairing against Sato–Tate
    measure proves that both fixed-base and all-base torus-positive cones are closed under
@@ -174,10 +175,11 @@ theorem hankel_nonneg_of_heckePositive {f : ℝ → ℝ} (hc : Continuous f) {κ
   have hcardpos : ∀ v ∈ T, 0 < (P v).card := fun v hv => by
     have h0 : 0 < c₁ * (X v / (u + v)) := mul_pos hc₁ (div_pos (hXpos v) (hlogX v hv))
     exact_mod_cast lt_of_lt_of_le h0 (hcard v hv)
-  set dd : ℕ → ℝ := fun q => ∑ v ∈ T, if q ∈ P v then c v / (P v).card else 0 with hdd
+  set dd : ℕ → ℝ := fun q => ∑ v ∈ T, if q ∈ P v then c v / (P v).card else 0
   have hddP : ∀ v ∈ T, ∀ q ∈ P v, dd q = c v / (P v).card := by
     intro v hv q hq
-    rw [hdd, Finset.sum_eq_single v]
+    dsimp only [dd]
+    rw [Finset.sum_eq_single v]
     · simp [hq]
     · intro w hw hwv
       rw [if_neg]
@@ -381,7 +383,7 @@ theorem abs_tentBump_prime_double_sum_le {n : ℕ} {p : Fin n → ℕ} (hp : ∀
           |d i| * |d j| * ind i j := fun i j => by
       by_cases hle : (p i : ℝ) * (p j : ℝ) ≤ 5 * W
       · simp only [ind, if_pos hle, mul_one, abs_mul, abs_of_nonneg (tentBump_nonneg _)]
-        exact mul_le_mul_of_nonneg_left (tentBump_le_one _) (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+        exact mul_le_of_le_one_right (mul_nonneg (abs_nonneg _) (abs_nonneg _)) (tentBump_le_one _)
       · push Not at hle
         have hgt5 : Real.log 5 ≤ x + Real.log (p i) + Real.log (p j) := by
           have hpi0 : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos
@@ -392,8 +394,8 @@ theorem abs_tentBump_prime_double_sum_le {n : ℕ} {p : Fin n → ℕ} (hp : ∀
           have h5 : (5 : ℝ) ≤ Real.exp x * ((p i : ℝ) * (p j : ℝ)) := by
             have he1 : Real.exp x * W = 1 := by simp only [W, ← Real.exp_add]; simp
             nlinarith [Real.exp_pos x, hle]
-          rw [← Real.log_le_iff_le_exp (by norm_num)] at *
-          rwa [hexp_eq]
+          rw [Real.log_le_iff_le_exp (by norm_num : (0 : ℝ) < 5), hexp_eq]
+          exact h5
         simp [ind, if_neg (not_le.mpr hle), tentBump_eq_zero_of_ge_log_five hgt5]
     have hsum1 : |∑ i, ∑ j, d i * d j * tentBump (x + Real.log (p i) + Real.log (p j))| ≤
         ∑ i, ∑ j, |d i| * |d j| * ind i j := by
@@ -421,12 +423,22 @@ theorem abs_tentBump_prime_double_sum_le {n : ℕ} {p : Fin n → ℕ} (hp : ∀
           (d i ^ 2 * (p i : ℝ) + d j ^ 2 * (p j : ℝ)) / (Real.sqrt (p i : ℝ) * Real.sqrt (p j : ℝ)) := by
         rw [le_div_iff₀ (mul_pos hsi hsj)]; linarith
       refine hdiv.trans_eq ?_
-      have h1 : (p i : ℝ) = Real.sqrt (p i : ℝ) * Real.sqrt (p i : ℝ) :=
-        (Real.mul_self_sqrt (Nat.cast_nonneg _)).symm
-      have h2 : (p j : ℝ) = Real.sqrt (p j : ℝ) * Real.sqrt (p j : ℝ) :=
-        (Real.mul_self_sqrt (Nat.cast_nonneg _)).symm
-      rw [h1, h2]
-      field_simp [hsi.ne', hsj.ne']
+      rw [div_eq_iff (mul_pos hsi hsj).ne']
+      have h1 : Real.sqrt (p i : ℝ) * Real.sqrt (p i : ℝ) = (p i : ℝ) :=
+        Real.mul_self_sqrt (Nat.cast_nonneg _)
+      have h2 : Real.sqrt (p j : ℝ) * Real.sqrt (p j : ℝ) = (p j : ℝ) :=
+        Real.mul_self_sqrt (Nat.cast_nonneg _)
+      have hi_inv : (Real.sqrt (p i : ℝ))⁻¹ * Real.sqrt (p i : ℝ) = 1 := inv_mul_cancel₀ hsi.ne'
+      have hj_inv : (Real.sqrt (p j : ℝ))⁻¹ * Real.sqrt (p j : ℝ) = 1 := inv_mul_cancel₀ hsj.ne'
+      calc d i ^ 2 * (p i : ℝ) + d j ^ 2 * (p j : ℝ)
+          = d i ^ 2 * (Real.sqrt (p i : ℝ) * Real.sqrt (p i : ℝ)) *
+                ((Real.sqrt (p j : ℝ))⁻¹ * Real.sqrt (p j : ℝ)) +
+              d j ^ 2 * (Real.sqrt (p j : ℝ) * Real.sqrt (p j : ℝ)) *
+                ((Real.sqrt (p i : ℝ))⁻¹ * Real.sqrt (p i : ℝ)) := by
+            rw [h1, h2, hi_inv, hj_inv]; ring
+        _ = (d i ^ 2 * Real.sqrt (p i : ℝ) * (Real.sqrt (p j : ℝ))⁻¹ +
+              d j ^ 2 * Real.sqrt (p j : ℝ) * (Real.sqrt (p i : ℝ))⁻¹) *
+            (Real.sqrt (p i : ℝ) * Real.sqrt (p j : ℝ)) := by ring
     have hind_symm : ∀ i j : Fin n, ind j i = ind i j := fun i j => by
       simp only [ind, mul_comm (p j : ℝ) (p i : ℝ)]
     have hsum_symm : ∑ i, ∑ j, |d i| * |d j| * ind i j ≤
@@ -471,13 +483,14 @@ theorem abs_tentBump_prime_double_sum_le {n : ℕ} {p : Fin n → ℕ} (hp : ∀
       have hsum_K : ∑ j ∈ S_i, (Real.sqrt (p j : ℝ))⁻¹ ≤ 2 * Real.sqrt (K : ℝ) := by
         have hinj_sum : ∑ j ∈ S_i, (Real.sqrt (p j : ℝ))⁻¹ =
             ∑ m ∈ S_i.image p, (Real.sqrt (m : ℝ))⁻¹ :=
-          (Finset.sum_image fun a _ b _ hab => hinj hab).symm
+          (Finset.sum_image (f := fun m : ℕ => (Real.sqrt (m : ℝ))⁻¹)
+            fun a _ b _ hab => hinj hab).symm
         rw [hinj_sum]
         exact (Finset.sum_le_sum_of_subset_of_nonneg himg_sub fun _ _ _ => by positivity).trans
           (sum_inv_sqrt_Icc_le K)
-      have hK_le : (K : ℝ) ≤ 5 * W / (p i : ℝ) :=
-        Nat.floor_le (by have : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos; positivity)
       have hpi0 : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos
+      have hK_le : (K : ℝ) ≤ 5 * W / (p i : ℝ) :=
+        Nat.floor_le (div_nonneg (mul_nonneg (by norm_num) hW_pos.le) hpi0.le)
       rw [hfilter]
       calc Real.sqrt (p i : ℝ) * ∑ j ∈ S_i, (Real.sqrt (p j : ℝ))⁻¹
           ≤ Real.sqrt (p i : ℝ) * (2 * Real.sqrt (5 * W / (p i : ℝ))) :=
@@ -585,8 +598,14 @@ theorem exists_heckePositive_not_torusPositive_ge_half {κ : ℝ} (hκ : 1 / 2 �
           ∑ i, ∑ j, d i * d j * Real.exp (-κ * (x + Real.log (p i) + Real.log (p j)))) -
         ε * (tentBump x * ∑ i, d i ^ 2 +
           ∑ i, ∑ j, d i * d j * tentBump (x + Real.log (p i) + Real.log (p j))) := by
-      simp only [f, sub_mul, mul_sub, Finset.sum_sub_distrib, Finset.mul_sum]
-      ring
+      have hsum_f : (∑ i, ∑ j, d i * d j * f (x + Real.log (p i) + Real.log (p j))) =
+          (∑ i, ∑ j, d i * d j * Real.exp (-κ * (x + Real.log (p i) + Real.log (p j)))) -
+            ε * ∑ i, ∑ j, d i * d j * tentBump (x + Real.log (p i) + Real.log (p j)) := by
+        rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
+        exact Finset.sum_congr rfl fun j _ => by dsimp only [f]; ring
+      rw [hsum_f]; dsimp only [f]; ring
     rw [hsplit_f]
     have hεK : ε * K_κ ≤ 1 / 2 := by
       have : ε ≤ (2 * K_κ)⁻¹ := hε_le
@@ -611,12 +630,13 @@ theorem exists_heckePositive_not_torusPositive_ge_half {κ : ℝ} (hκ : 1 / 2 �
     have hform := hconv (Fin 2) Finset.univ t c fun i _ => by
       fin_cases i <;> exact Real.log_nonneg (by norm_num)
     have ht_22 : f (0 + t 0 + t 0) = Real.exp (-κ * (2 * Real.log 2)) - ε := by
-      simp [f, t, two_mul, tentBump_two_log_two]
+      simp only [f, t, Matrix.cons_val_zero, zero_add, ← two_mul, tentBump_two_log_two, mul_one]
     have ht_23 : f (0 + t 0 + t 1) = Real.exp (-κ * (Real.log 2 + Real.log 3)) := by
       have hge5 : Real.log 5 ≤ Real.log 2 + Real.log 3 := by
         rw [← Real.log_mul (by norm_num) (by norm_num)]
         exact Real.log_le_log (by norm_num) (by norm_num)
-      simp [f, t, tentBump_eq_zero_of_ge_log_five hge5]
+      simp only [f, t, Matrix.cons_val_zero, Matrix.cons_val_one, zero_add,
+        tentBump_eq_zero_of_ge_log_five hge5, mul_zero, sub_zero]
     have ht_32 : f (0 + t 1 + t 0) = Real.exp (-κ * (Real.log 2 + Real.log 3)) := by
       rw [show 0 + t 1 + t 0 = 0 + t 0 + t 1 by ring, ht_23]
     have ht_33 : f (0 + t 1 + t 1) = Real.exp (-κ * (2 * Real.log 3)) := by
@@ -624,9 +644,10 @@ theorem exists_heckePositive_not_torusPositive_ge_half {κ : ℝ} (hκ : 1 / 2 �
         have : 2 * Real.log 3 = Real.log 9 := by
           rw [show (9 : ℝ) = 3 ^ 2 by norm_num, Real.log_pow]; push_cast; ring
         rw [this]; exact Real.log_le_log (by norm_num) (by norm_num)
-      simp [f, t, two_mul, tentBump_eq_zero_of_ge_log_five hge5]
+      simp only [f, t, Matrix.cons_val_one, Matrix.cons_val_zero, zero_add, ← two_mul,
+        tentBump_eq_zero_of_ge_log_five hge5, mul_zero, sub_zero]
     rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two] at hform
-    simp only [c, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    simp only [c, Matrix.cons_val_zero, Matrix.cons_val_one,
       map_neg, Complex.conj_ofReal, ht_22, ht_23, ht_32, ht_33] at hform
     have heq_re : (((Real.exp (-κ * Real.log 3) : ℂ) * (Real.exp (-κ * Real.log 3) : ℂ) *
           ((Real.exp (-κ * (2 * Real.log 2)) - ε : ℝ) : ℂ) +
@@ -649,9 +670,8 @@ theorem exists_heckePositive_not_torusPositive_ge_half {κ : ℝ} (hκ : 1 / 2 �
           Real.exp (-κ * (2 * Real.log 3)) =
           Real.exp (-2 * κ * (Real.log 2 + Real.log 3)) := by
         rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
-      push_cast
-      simp only [Complex.add_re, Complex.mul_re, Complex.neg_re, Complex.sub_re, Complex.ofReal_re,
-        Complex.ofReal_im, Complex.neg_im, Complex.sub_im, mul_zero, sub_zero, zero_mul, neg_zero]
+      simp only [← Complex.ofReal_neg, ← Complex.ofReal_mul,
+        ← Complex.ofReal_add, Complex.ofReal_re]
       linarith [hprod1, hprod2, hprod3, sq (Real.exp (-κ * Real.log 3))]
     rw [heq_re] at hform
     have hneg : -ε * Real.exp (-κ * Real.log 3) ^ 2 < 0 := by
@@ -679,7 +699,11 @@ private theorem quad_cos_pos {r α : ℝ} (hr : |r| < 1) :
   have hr2 := (abs_lt.mp hr).2
   have hc1 := Real.neg_one_le_cos α
   have hc2 := Real.cos_le_one α
-  nlinarith [sq_nonneg (1 - r * Real.cos α), sq_nonneg (r - Real.cos α)]
+  rcases le_or_gt 0 r with hr0 | hr0
+  · have hsq : 0 < (1 - r) ^ 2 := sq_pos_of_ne_zero (by linarith)
+    nlinarith
+  · have hsq : 0 < (1 + r) ^ 2 := sq_pos_of_ne_zero (by linarith)
+    nlinarith
 
 theorem su2PoissonKernel_pos {r : ℝ} (hr : |r| < 1) (θ φ : ℝ) :
     0 < su2PoissonKernel r θ φ := by
@@ -695,7 +719,7 @@ theorem hasSum_cosSum_mul_cosSum_geom {r : ℝ} (hr : |r| < 1) (θ φ : ℝ) :
   set c₁ := 2 * Real.cos θ
   set c₂ := 2 * Real.cos φ
   set u : ℕ → ℝ := fun k => cosSum θ k * cosSum φ k
-  have hnorm : ‖r‖ < 1 := by rwa [Real.norm_eq_abs]
+  have hnorm : ‖(‖r‖ : ℝ)‖ < 1 := by simpa [Real.norm_eq_abs] using hr
   have hsum_u : Summable (fun k : ℕ => r ^ k * u k) := by
     have h0 := summable_geometric_of_norm_lt_one hnorm
     have h1 := summable_pow_mul_geometric_of_norm_lt_one 1 hnorm
@@ -798,7 +822,7 @@ theorem hasSum_cosSum_mul_cosSum_geom {r : ℝ} (hr : |r| < 1) (θ φ : ℝ) :
     have hs3' : Summable (fun k => r ^ k * (c₁ * c₂ * u (k + 3))) :=
       (hs3.mul_left (c₁ * c₂)).congr fun k => by ring
     have hs2' : Summable (fun k => r ^ k * ((c₁ ^ 2 + c₂ ^ 2 - 2) * u (k + 2))) :=
-      (hs2.mul_left _).congr fun k => by ring
+      (hs2.mul_left (c₁ ^ 2 + c₂ ^ 2 - 2)).congr fun k => by ring
     have hs1' : Summable (fun k => r ^ k * (c₁ * c₂ * u (k + 1))) :=
       (hs1.mul_left (c₁ * c₂)).congr fun k => by ring
     change (∑' k, r ^ k * u (k + 4)) - c₁ * c₂ * S₃ + (c₁ ^ 2 + c₂ ^ 2 - 2) * S₂ -
@@ -813,10 +837,11 @@ theorem hasSum_cosSum_mul_cosSum_geom {r : ℝ} (hr : |r| < 1) (θ φ : ℝ) :
   have hD_fact : (1 - 2 * r * Real.cos (θ - φ) + r ^ 2) * (1 - 2 * r * Real.cos (θ + φ) + r ^ 2) =
       1 - c₁ * c₂ * r + (c₁ ^ 2 + c₂ ^ 2 - 2) * r ^ 2 - c₁ * c₂ * r ^ 3 + r ^ 4 := by
     rw [Real.cos_sub, Real.cos_add]
-    have hsθ : Real.sin θ ^ 2 = 1 - Real.cos θ ^ 2 := Real.sin_sq θ
-    have hsφ : Real.sin φ ^ 2 = 1 - Real.cos φ ^ 2 := Real.sin_sq φ
+    have hss : (Real.sin θ * Real.sin φ) ^ 2 =
+        (1 - Real.cos θ ^ 2) * (1 - Real.cos φ ^ 2) := by
+      rw [mul_pow, Real.sin_sq, Real.sin_sq]
     dsimp only [c₁, c₂]
-    linear_combination -4 * r ^ 2 * Real.sin φ ^ 2 * hsθ - 4 * r ^ 2 * Real.cos θ ^ 2 * hsφ
+    linear_combination -4 * r ^ 2 * hss
   have hDS : ((1 - 2 * r * Real.cos (θ - φ) + r ^ 2) *
       (1 - 2 * r * Real.cos (θ + φ) + r ^ 2)) * S = 1 - r ^ 2 := by
     rw [hD_fact]
@@ -841,8 +866,7 @@ theorem hasSum_cosSum_mul_cosSum_geom {r : ℝ} (hr : |r| < 1) (θ φ : ℝ) :
   rwa [hS_eq] at hsum_u'
 
 /-- Multi-index product of norm-summable series over `Fin n → ℕ`. -/
-theorem hasSum_pi_prod_of_summable_norm {α : Type*} [CommSemiring α] [UniformSpace α]
-    [IsUniformAddGroup α] [T0Space α] [CompleteSpace α] [NormedRing α]
+theorem hasSum_pi_prod_of_summable_norm {α : Type*} [NormedCommRing α] [CompleteSpace α]
     {n : ℕ} (g : Fin n → ℕ → α) (s : Fin n → α)
     (hnorm : ∀ i, Summable fun k => ‖g i k‖) (hs : ∀ i, HasSum (g i) (s i)) :
     Summable (fun k : Fin n → ℕ => ‖∏ i, g i (k i)‖) ∧
@@ -869,7 +893,7 @@ theorem hasSum_pi_prod_of_summable_norm {α : Type*} [CommSemiring α] [UniformS
       have hsm : Summable (fun x : ℕ × (Fin n → ℕ) =>
           g 0 x.1 * ∏ i : Fin n, g i.succ (x.2 i)) :=
         Summable.of_norm_bounded hmn_norm fun x => norm_mul_le _ _
-      rw [← (hs 0).tsum_eq, ← hih.tsum_eq, ← tsum_mul_tsum_of_summable_norm (hnorm 0) hihn]
+      rw [← (hs 0).tsum_eq, ← hih.tsum_eq, tsum_mul_tsum_of_summable_norm (hnorm 0) hihn]
       exact hsm.hasSum
     have h2 := (consEquiv n).hasSum_iff.mpr hmul_sum
     have e1 : (fun k : Fin (n + 1) → ℕ => ∏ i, g i (k i)) =
@@ -907,10 +931,10 @@ theorem torusSum_mul_geom_eq_integral {n : ℕ} {a : (Fin n → ℕ) → ℝ} (h
       have h1 := summable_pow_mul_geometric_of_norm_lt_one 1 hn
       have h2 := summable_pow_mul_geometric_of_norm_lt_one 2 hn
       refine ((h2.add (h1.mul_left 2)).add h0).congr fun m => ?_
-      rw [Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (abs_nonneg _), pow_one]; ring
+      rw [Real.norm_of_nonneg (by positivity), pow_one]; ring
     obtain ⟨hbn, -⟩ := hasSum_pi_prod_of_summable_norm
       (fun i m => |r i| ^ m * ((m : ℝ) + 1) ^ 2)
-      (fun i => ∑' m, |r i| ^ m * ((m : ℝ) + 1) ^ 2) hg (fun i => (hg i).of_norm.hasSum)
+      (fun i => ∑' m : ℕ, |r i| ^ m * ((m : ℝ) + 1) ^ 2) hg (fun i => (hg i).of_norm.hasSum)
     refine Summable.of_nonneg_of_le (fun _ => mul_nonneg (abs_nonneg _) (chiSize_nonneg _))
       (fun k => ?_) hbn
     dsimp only [b]
@@ -929,7 +953,7 @@ theorem torusSum_mul_geom_eq_integral {n : ℕ} {a : (Fin n → ℕ) → ℝ} (h
       torusSum b φ = ∏ i, su2PoissonKernel (r i) (θ i) (φ i) := fun φ => by
     have hg_norm : ∀ i : Fin n,
         Summable (fun m : ℕ => ‖r i ^ m * cosSum (θ i) m * cosSum (φ i) m‖) := fun i => by
-      have hn : ‖r i‖ < 1 := by rwa [Real.norm_eq_abs]
+      have hn : ‖(‖r i‖ : ℝ)‖ < 1 := by simpa [Real.norm_eq_abs] using hr i
       have h0 := summable_geometric_of_norm_lt_one hn
       have h1 := summable_pow_mul_geometric_of_norm_lt_one 1 hn
       have h2 := summable_pow_mul_geometric_of_norm_lt_one 2 hn
@@ -949,7 +973,6 @@ theorem torusSum_mul_geom_eq_integral {n : ℕ} {a : (Fin n → ℕ) → ℝ} (h
     rw [torusSum, ← hprod.tsum_eq]
     refine tsum_congr fun k => ?_
     simp only [b, chiProd, ← Finset.prod_mul_distrib]
-    exact Finset.prod_congr rfl fun i _ => by ring
   refine ⟨hts_ar, ?_⟩
   have hpair := integral_torusSum_mul_torusSum ha hts_b
   simp_rw [hb_sum] at hpair
@@ -1004,13 +1027,14 @@ theorem hasSum_cosSum_mul_pow_complex {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
       HasSum (fun k : ℕ => (cosSum θ k : ℂ) * z ^ k)
         ((1 - z * Complex.exp ((θ : ℂ) * I))⁻¹ * (1 - z * Complex.exp (-((θ : ℂ) * I)))⁻¹) := by
   have hnorm_sum : Summable (fun k : ℕ => ‖(cosSum θ k : ℂ) * z ^ k‖) := by
-    have h0 := summable_geometric_of_norm_lt_one hz
-    have h1 := summable_pow_mul_geometric_of_norm_lt_one 1 hz
+    have hzn : ‖(‖z‖ : ℝ)‖ < 1 := by simpa using hz
+    have h0 := summable_geometric_of_norm_lt_one hzn
+    have h1 := summable_pow_mul_geometric_of_norm_lt_one 1 hzn
     refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun k => ?_) (h1.add h0)
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_pow, pow_one]
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, norm_pow]
     calc |cosSum θ k| * ‖z‖ ^ k ≤ ((k : ℝ) + 1) * ‖z‖ ^ k :=
           mul_le_mul_of_nonneg_right (abs_cosSum_le θ k) (pow_nonneg (norm_nonneg z) k)
-      _ = (k : ℝ) * ‖z‖ ^ k + ‖z‖ ^ k := by ring
+      _ = (k : ℝ) ^ 1 * ‖z‖ ^ k + ‖z‖ ^ k := by rw [pow_one]; ring
   refine ⟨hnorm_sum, ?_⟩
   set u : ℂ := z * Complex.exp ((θ : ℂ) * I)
   set v : ℂ := z * Complex.exp (-((θ : ℂ) * I))
@@ -1034,7 +1058,14 @@ theorem hasSum_cosSum_mul_pow_complex {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
     have eq1 := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ)).tsum_eq
       (fun p : ℕ × ℕ => u ^ p.1 * v ^ p.2)
     have hs' := (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd (A := ℕ)).summable_iff.mpr hs_pair
-    rw [← eq1, Summable.tsum_sigma' (fun _ => (hasSum_fintype _).summable) hs']
+    have hsig : (∑' c : (n : ℕ) × ↥(Finset.HasAntidiagonal.antidiagonal n),
+        u ^ (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd c).1 *
+          v ^ (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd c).2) =
+        ∑' k : ℕ, ∑' c : ↥(Finset.HasAntidiagonal.antidiagonal k),
+          u ^ (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd ⟨k, c⟩).1 *
+            v ^ (Finset.HasAntidiagonal.sigmaAntidiagonalEquivProd ⟨k, c⟩).2 :=
+      Summable.tsum_sigma' (fun _ => (hasSum_fintype _).summable) hs'
+    rw [← eq1, hsig]
     refine tsum_congr fun k => ?_
     rw [tsum_fintype]
     change _ = ∑ c : ↥(Finset.HasAntidiagonal.antidiagonal k), u ^ (c : ℕ × ℕ).1 * v ^ (c : ℕ × ℕ).2
@@ -1067,15 +1098,14 @@ theorem hasSum_chiProd_mul_pow_complex {n : ℕ} {z : Fin n → ℂ} (hz : ∀ i
   simp only [chiProd, Complex.ofReal_prod, Finset.prod_mul_distrib]
 
 private theorem sum_inv_Icc_ge_log (m₀ : ℕ) : ∀ K : ℕ,
-    Real.log (((m₀ + K + 1 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) ≤
+    Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) ≤
       ∑ m ∈ Finset.Icc m₀ (m₀ + K), ((m : ℝ) + 1)⁻¹
   | 0 => by
     simp only [add_zero, Finset.Icc_self, Finset.sum_singleton]
     have hpos : (0 : ℝ) < (m₀ : ℝ) + 1 := by positivity
-    have h := Real.log_le_sub_one_of_pos (show 0 < ((m₀ + 2 : ℝ) / (m₀ + 1 : ℝ)) by positivity)
-    have hsub : ((m₀ : ℝ) + 2) / ((m₀ : ℝ) + 1) - 1 = ((m₀ : ℝ) + 1)⁻¹ := by
-      field_simp [hpos.ne']; ring
-    push_cast
+    have h := Real.log_le_sub_one_of_pos (show 0 < ((m₀ + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ) by positivity)
+    have hsub : ((m₀ + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ) - 1 = ((m₀ : ℝ) + 1)⁻¹ := by
+      push_cast; field_simp [hpos.ne']; ring
     linarith
   | K + 1 => by
     have hmem : m₀ + (K + 1) ∉ Finset.Icc m₀ (m₀ + K) := by simp
@@ -1083,19 +1113,1590 @@ private theorem sum_inv_Icc_ge_log (m₀ : ℕ) : ∀ K : ℕ,
       ext m; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
     rw [hins, Finset.sum_insert hmem]
     have ih := sum_inv_Icc_ge_log m₀ K
-    have hstep : Real.log (((m₀ + (K + 1) + 1 : ℕ) : ℝ) / ((m₀ + K + 1 : ℕ) : ℝ)) ≤
+    have hpos1 : (0 : ℝ) < ((m₀ + K + 2 : ℕ) : ℝ) := by positivity
+    have hpos0 : (0 : ℝ) < ((m₀ + 1 : ℕ) : ℝ) := by positivity
+    have hpos2 : (0 : ℝ) < ((m₀ + (K + 1) + 2 : ℕ) : ℝ) := by positivity
+    have hstep : Real.log (((m₀ + (K + 1) + 2 : ℕ) : ℝ) / ((m₀ + K + 2 : ℕ) : ℝ)) ≤
         (((m₀ + (K + 1) : ℕ) : ℝ) + 1)⁻¹ := by
-      set d : ℝ := ((m₀ + (K + 1) : ℕ) : ℝ) + 1
-      have hd_pos : 0 < d := by positivity
-      have h1 : (((m₀ + K + 1 : ℕ) : ℝ)) = d - 1 := by simp only [d]; push_cast; ring
-      -- Simpler direct bound: `((m₀ + (K + 1) + 1) / (m₀ + K + 1)) - 1 = 1 / (m₀ + K + 1) ≥ ...`
-      -- Wait: `1 / (m₀ + K + 2) = 1 - (m₀ + K + 1) / (m₀ + K + 2)`!
-      -- Use `-log(1 - u) ...` -> `log(A / B) = -log(B / A) ≥ ...`? We want UPPER bound on `log`!
-      -- `log(((m₀ + K + 2) / (m₀ + K + 1))) ≤ 1 / (m₀ + K + 1)` has `K + 1`, whereas our new term is `1 / (m₀ + K + 2)`!
-      -- Wait: shift the log index by 1 (`log((m₀ + K + 1) / (m₀ + 1))`)!
-      sorry
-    sorry
+      have h := Real.log_le_sub_one_of_pos (div_pos hpos2 hpos1)
+      have hsub : ((m₀ + (K + 1) + 2 : ℕ) : ℝ) / ((m₀ + K + 2 : ℕ) : ℝ) - 1 =
+          (((m₀ + (K + 1) : ℕ) : ℝ) + 1)⁻¹ := by
+        have hd : (((m₀ + K + 2 : ℕ) : ℝ)) = ((m₀ + (K + 1) : ℕ) : ℝ) + 1 := by push_cast; ring
+        have hn : (((m₀ + (K + 1) + 2 : ℕ) : ℝ)) = (((m₀ + (K + 1) : ℕ) : ℝ) + 1) + 1 := by
+          push_cast; ring
+        rw [hd, hn]
+        have hdp : (0 : ℝ) < ((m₀ + (K + 1) : ℕ) : ℝ) + 1 := by positivity
+        field_simp [hdp.ne']; ring
+      linarith
+    have hlog_add : Real.log (((m₀ + (K + 1) + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) =
+        Real.log (((m₀ + (K + 1) + 2 : ℕ) : ℝ) / ((m₀ + K + 2 : ℕ) : ℝ)) +
+          Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) := by
+      rw [← Real.log_mul (div_pos hpos2 hpos1).ne' (div_pos hpos1 hpos0).ne']
+      congr 1
+      field_simp [hpos1.ne', hpos0.ne']
+    linarith
 
-/-! Let's stop before writing `sorry`! Look how clean shifting the log index by 1 is:
-`Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ))` at `K = 0` is `log((m₀ + 2)/(m₀ + 1)) ≤ 1/(m₀ + 1)`,
-and at `K + 1` the new term is `1 / (m₀ + K + 2) ≥ log((m₀ + K + 3)/(m₀ + K + 2))`! -/
+/-- On disjoint oscillatory prime windows where `cos(t log p) ≤ −½`, the product `∏_i (1 − p_i^{−α})`
+becomes arbitrarily small for every `α ∈ (0, 1]` and `t ≠ 0`. -/
+theorem exists_primes_cos_le_neg_half_prod_lt {α t δ : ℝ} (hα0 : 0 < α) (hα1 : α ≤ 1)
+    (ht : t ≠ 0) (hδ : 0 < δ) :
+    ∃ (n : ℕ) (p : Fin n → ℕ), (∀ i, (p i).Prime) ∧ Function.Injective p ∧
+      (∀ i, Real.cos (t * Real.log (p i)) ≤ -1 / 2) ∧
+      (∏ i, (1 - (p i : ℝ) ^ (-α))) < δ := by
+  classical
+  set τ : ℝ := |t|
+  have hτ0 : 0 < τ := abs_pos.mpr ht
+  set ε : ℝ := 2 * π / (3 * τ)
+  have hε0 : 0 < ε := by positivity
+  obtain ⟨c₁, hc₁, X₀, hX₀, hwin⟩ := exists_card_primes_window_ge hε0
+  set X : ℕ → ℝ := fun m => Real.exp ((2 * π * (m : ℝ) + 2 * π / 3) / τ)
+  have hX_pos : ∀ m, 0 < X m := fun _ => Real.exp_pos _
+  obtain ⟨m₀, hm₀⟩ := exists_nat_gt (τ * |Real.log X₀| / (2 * π) + 1)
+  have hXm₀ : ∀ m, m₀ ≤ m → X₀ ≤ X m ∧ 0 < Real.log (X m) ∧
+      Real.log (X m) ≤ (2 * π / τ) * ((m : ℝ) + 1) := fun m hm => by
+    have hm_cast : (m₀ : ℝ) ≤ m := Nat.cast_le.mpr hm
+    have hlog_eq : Real.log (X m) = (2 * π * (m : ℝ) + 2 * π / 3) / τ := Real.log_exp _
+    have hπ0 : 0 < 2 * π := by positivity
+    have hgt : |Real.log X₀| < (2 * π * (m : ℝ) + 2 * π / 3) / τ := by
+      have h1 : τ * |Real.log X₀| < 2 * π * (m₀ : ℝ) := by
+        have := (mul_lt_mul_of_pos_left hm₀ hπ0)
+        have heq : 2 * π * (τ * |Real.log X₀| / (2 * π) + 1) = τ * |Real.log X₀| + 2 * π := by
+          field_simp [hπ0.ne']
+        linarith
+      rw [lt_div_iff₀ hτ0]
+      have hm_mul := mul_le_mul_of_nonneg_left hm_cast hπ0.le
+      linarith [Real.pi_pos, show |Real.log X₀| * τ = τ * |Real.log X₀| by ring]
+    have hX0_le : X₀ ≤ X m := by
+      rw [← Real.exp_log (by linarith : 0 < X₀)]
+      exact Real.exp_le_exp.mpr ((le_abs_self _).trans hgt.le)
+    refine ⟨hX0_le, ?_, ?_⟩
+    · rw [hlog_eq]; positivity
+    · rw [hlog_eq, div_mul_eq_mul_div]
+      refine div_le_div_of_nonneg_right ?_ hτ0.le
+      linarith [Real.pi_pos]
+  set W : ℕ → Finset ℕ := fun m => primesInIoc ⌊X m⌋₊ ⌊Real.exp ε * X m⌋₊
+  have hper : ∀ (x : ℝ) (k : ℕ), Real.cos (x + 2 * π * (k : ℝ)) = Real.cos x := by
+    intro x k; induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [Nat.cast_succ, show x + 2 * π * ((k : ℝ) + 1) = (x + 2 * π * (k : ℝ)) + 2 * π by ring,
+        Real.cos_add_two_pi, ih]
+  have hmemW : ∀ m q, q ∈ W m → q.Prime ∧
+      (2 * π * (m : ℝ) + 2 * π / 3) / τ < Real.log q ∧
+      Real.log q ≤ (2 * π * (m : ℝ) + 4 * π / 3) / τ ∧
+      (q : ℝ) ≤ Real.exp ε * X m ∧
+      Real.cos (t * Real.log q) ≤ -1 / 2 := fun m q hq => by
+    have hq' := Finset.mem_filter.mp hq
+    have hI := Finset.mem_Ioc.mp hq'.1
+    have h1 : X m < q := Nat.lt_of_floor_lt hI.1
+    have h2 : (q : ℝ) ≤ Real.exp ε * X m :=
+      (Nat.cast_le.mpr hI.2).trans (Nat.floor_le (by positivity))
+    have hq0 : (0 : ℝ) < q := lt_trans (hX_pos m) h1
+    have hlo : (2 * π * (m : ℝ) + 2 * π / 3) / τ < Real.log q :=
+      (Real.lt_log_iff_exp_lt hq0).mpr h1
+    have hhi : Real.log q ≤ (2 * π * (m : ℝ) + 4 * π / 3) / τ := by
+      have hexp_eq : Real.exp ε * X m = Real.exp ((2 * π * (m : ℝ) + 4 * π / 3) / τ) := by
+        simp only [X, ε, ← Real.exp_add]
+        congr 1; field_simp [hτ0.ne']; ring
+      exact ((Real.log_le_iff_le_exp hq0).mpr (h2.trans_eq hexp_eq))
+    have hlo' : 2 * π * (m : ℝ) + 2 * π / 3 < τ * Real.log q := by
+      linarith [(div_lt_iff₀ hτ0).mp hlo]
+    have hhi' : τ * Real.log q ≤ 2 * π * (m : ℝ) + 4 * π / 3 := by
+      linarith [(le_div_iff₀ hτ0).mp hhi]
+    set v : ℝ := τ * Real.log q - 2 * π * (m : ℝ) - π
+    have hv_abs : |v| ≤ π / 3 := abs_le.mpr ⟨by simp only [v]; linarith, by simp only [v]; linarith⟩
+    have hcos_v : 1 / 2 ≤ Real.cos v := by
+      have hv_eq : Real.cos v = Real.cos |v| := by
+        rcases le_or_gt 0 v with hv0 | hv0
+        · rw [abs_of_nonneg hv0]
+        · rw [abs_of_neg hv0, Real.cos_neg]
+      rw [hv_eq, ← Real.cos_pi_div_three]
+      exact Real.antitoneOn_cos ⟨abs_nonneg v, by linarith [Real.pi_pos]⟩
+        ⟨by positivity, by linarith [Real.pi_pos]⟩ hv_abs
+    have hcos_τ : Real.cos (τ * Real.log q) ≤ -1 / 2 := by
+      have he : τ * Real.log q = (v + π) + 2 * π * (m : ℝ) := by simp only [v]; ring
+      rw [he, hper, Real.cos_add_pi]
+      linarith
+    have hcos_t : Real.cos (t * Real.log q) = Real.cos (τ * Real.log q) := by
+      simp only [τ]
+      rcases le_or_gt 0 t with ht0 | ht0
+      · rw [abs_of_nonneg ht0]
+      · rw [abs_of_neg ht0, show (-t) * Real.log q = -(t * Real.log q) by ring, Real.cos_neg]
+    exact ⟨hq'.2, hlo, hhi, h2, hcos_t ▸ hcos_τ⟩
+  have hdisj : ∀ m₁ m₂ : ℕ, m₁ ≠ m₂ → Disjoint (W m₁) (W m₂) := by
+    intro m₁ m₂ hne
+    rw [Finset.disjoint_left]
+    intro q hq1 hq2
+    obtain ⟨-, hlo1, hhi1, -, -⟩ := hmemW m₁ q hq1
+    obtain ⟨-, hlo2, hhi2, -, -⟩ := hmemW m₂ q hq2
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have hm12 : (m₁ : ℝ) + 1 ≤ m₂ := by exact_mod_cast hlt
+      have hcmp : (2 * π * (m₁ : ℝ) + 4 * π / 3) / τ < (2 * π * (m₂ : ℝ) + 2 * π / 3) / τ :=
+        div_lt_div_of_pos_right (by nlinarith [Real.pi_pos]) hτ0
+      linarith
+    · have hm21 : (m₂ : ℝ) + 1 ≤ m₁ := by exact_mod_cast hgt
+      have hcmp : (2 * π * (m₂ : ℝ) + 4 * π / 3) / τ < (2 * π * (m₁ : ℝ) + 2 * π / 3) / τ :=
+        div_lt_div_of_pos_right (by nlinarith [Real.pi_pos]) hτ0
+      linarith
+  set γ : ℝ := c₁ * Real.exp (-ε) * (τ / (2 * π))
+  have hγ_pos : 0 < γ := by positivity
+  have hW_sum : ∀ m, m₀ ≤ m → γ * ((m : ℝ) + 1)⁻¹ ≤ ∑ q ∈ W m, (q : ℝ) ^ (-α) := fun m hm => by
+    obtain ⟨hX0_le, hlog_pos, hlog_le⟩ := hXm₀ m hm
+    have hcard := hwin (X m) hX0_le
+    have hterm_ge : ∀ q ∈ W m, (Real.exp ε * X m)⁻¹ ≤ (q : ℝ) ^ (-α) := fun q hq => by
+      obtain ⟨hqp, -, -, hq_le, -⟩ := hmemW m q hq
+      have hq_pos : (0 : ℝ) < q := by exact_mod_cast hqp.pos
+      have hq1 : (1 : ℝ) ≤ q := by exact_mod_cast hqp.pos
+      have hinv_le : (Real.exp ε * X m)⁻¹ ≤ (q : ℝ)⁻¹ := inv_anti₀ hq_pos hq_le
+      have hrpow_ge : (q : ℝ)⁻¹ ≤ (q : ℝ) ^ (-α) := by
+        rw [← Real.rpow_neg_one]
+        exact Real.rpow_le_rpow_of_exponent_le hq1 (by linarith)
+      exact hinv_le.trans hrpow_ge
+    have hsum1 : ((W m).card : ℝ) * (Real.exp ε * X m)⁻¹ ≤ ∑ q ∈ W m, (q : ℝ) ^ (-α) := by
+      have := Finset.sum_le_sum hterm_ge
+      rwa [Finset.sum_const, nsmul_eq_mul] at this
+    have hlog_inv : (τ / (2 * π)) * ((m : ℝ) + 1)⁻¹ ≤ (Real.log (X m))⁻¹ := by
+      have hpos_rhs : 0 < (2 * π / τ) * ((m : ℝ) + 1) := by positivity
+      have := inv_anti₀ hlog_pos hlog_le
+      refine le_trans ?_ this
+      rw [mul_inv, inv_div]
+    calc γ * ((m : ℝ) + 1)⁻¹
+        = (c₁ * X m * ((τ / (2 * π)) * ((m : ℝ) + 1)⁻¹)) * (Real.exp ε * X m)⁻¹ := by
+          simp only [γ, Real.exp_neg]
+          have hXm_ne := (hX_pos m).ne'
+          have he_ne := (Real.exp_pos ε).ne'
+          field_simp [hXm_ne, he_ne]
+      _ ≤ (c₁ * X m * (Real.log (X m))⁻¹) * (Real.exp ε * X m)⁻¹ :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left hlog_inv (by positivity)) (by positivity)
+      _ = (c₁ * (X m / Real.log (X m))) * (Real.exp ε * X m)⁻¹ := by ring
+      _ ≤ ((W m).card : ℝ) * (Real.exp ε * X m)⁻¹ :=
+          mul_le_mul_of_nonneg_right hcard (by positivity)
+      _ ≤ ∑ q ∈ W m, (q : ℝ) ^ (-α) := hsum1
+  obtain ⟨K, hK⟩ := exists_nat_gt (((m₀ + 1 : ℕ) : ℝ) * Real.exp ((|Real.log δ| + 1) / γ))
+  set I_K := Finset.Icc m₀ (m₀ + K)
+  set Z := I_K.biUnion W
+  have hPd : (I_K : Set ℕ).PairwiseDisjoint W := fun a _ b _ hab => hdisj a b hab
+  let e : Fin Z.card ≃ Z := Z.equivFin.symm
+  let p : Fin Z.card → ℕ := fun i => (e i : ℕ)
+  have hp : ∀ i, (p i).Prime := fun i => by
+    obtain ⟨m, -, hqm⟩ := Finset.mem_biUnion.mp (e i).2
+    exact (hmemW m _ hqm).1
+  have hinj : Function.Injective p := fun i j hij => e.injective (Subtype.ext hij)
+  have hcos : ∀ i, Real.cos (t * Real.log (p i)) ≤ -1 / 2 := fun i => by
+    obtain ⟨m, -, hqm⟩ := Finset.mem_biUnion.mp (e i).2
+    exact (hmemW m _ hqm).2.2.2.2
+  refine ⟨Z.card, p, hp, hinj, hcos, ?_⟩
+  have hprod_exp : (∏ i, (1 - (p i : ℝ) ^ (-α))) ≤ Real.exp (-∑ i, (p i : ℝ) ^ (-α)) := by
+    have hfac : ∀ i : Fin Z.card,
+        0 ≤ 1 - (p i : ℝ) ^ (-α) ∧ 1 - (p i : ℝ) ^ (-α) ≤ Real.exp (-(p i : ℝ) ^ (-α)) := fun i => by
+      have hp1 : (1 : ℝ) < p i := by exact_mod_cast (hp i).one_lt
+      have hr_lt : (p i : ℝ) ^ (-α) < 1 := Real.rpow_lt_one_of_one_lt_of_neg hp1 (by linarith)
+      exact ⟨by linarith, by linarith [Real.add_one_le_exp (-(p i : ℝ) ^ (-α))]⟩
+    rw [← Finset.sum_neg_distrib, Real.exp_sum]
+    exact Finset.prod_le_prod (fun i _ => (hfac i).1) (fun i _ => (hfac i).2)
+  have hsum_Z : (∑ i, (p i : ℝ) ^ (-α)) = ∑ m ∈ I_K, ∑ q ∈ W m, (q : ℝ) ^ (-α) := by
+    rw [Equiv.sum_comp e (fun z : Z => ((z : ℕ) : ℝ) ^ (-α)),
+      Finset.sum_coe_sort Z (fun q : ℕ => (q : ℝ) ^ (-α)), Finset.sum_biUnion hPd]
+  have hsum_big : |Real.log δ| + 1 < ∑ i, (p i : ℝ) ^ (-α) := by
+    rw [hsum_Z]
+    have h1 : γ * ∑ m ∈ I_K, ((m : ℝ) + 1)⁻¹ ≤ ∑ m ∈ I_K, ∑ q ∈ W m, (q : ℝ) ^ (-α) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_le_sum fun m hm => hW_sum m (Finset.mem_Icc.mp hm).1
+    have h2 : γ * Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) ≤
+        γ * ∑ m ∈ I_K, ((m : ℝ) + 1)⁻¹ :=
+      mul_le_mul_of_nonneg_left (sum_inv_Icc_ge_log m₀ K) hγ_pos.le
+    have hK' : ((m₀ + 1 : ℕ) : ℝ) * Real.exp ((|Real.log δ| + 1) / γ) < ((m₀ + K + 2 : ℕ) : ℝ) := by
+      have : (K : ℝ) ≤ ((m₀ + K + 2 : ℕ) : ℝ) := by exact_mod_cast (by omega : K ≤ m₀ + K + 2)
+      linarith
+    have hm0_pos : (0 : ℝ) < ((m₀ + 1 : ℕ) : ℝ) := by positivity
+    have hdiv_gt : Real.exp ((|Real.log δ| + 1) / γ) <
+        ((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ) := (lt_div_iff₀ hm0_pos).mpr (by linarith)
+    have hlog_gt : (|Real.log δ| + 1) / γ <
+        Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) := by
+      have := Real.log_lt_log (Real.exp_pos _) hdiv_gt
+      rwa [Real.log_exp] at this
+    have hmul_gt : |Real.log δ| + 1 <
+        γ * Real.log (((m₀ + K + 2 : ℕ) : ℝ) / ((m₀ + 1 : ℕ) : ℝ)) := by
+      have := mul_lt_mul_of_pos_left hlog_gt hγ_pos
+      rwa [mul_div_cancel₀ _ hγ_pos.ne'] at this
+    linarith
+  have hexp_lt : Real.exp (-∑ i, (p i : ℝ) ^ (-α)) < δ := by
+    rw [← Real.exp_log hδ]
+    refine Real.exp_lt_exp.mpr ?_
+    have := neg_le_abs (Real.log δ)
+    linarith
+  exact hprod_exp.trans_lt hexp_lt
+
+/-- Phase-locked single-prime Euler factor estimate when `cos ψ ≤ −½` and `0 ≤ r < 1`. -/
+private theorem euler_factor_phaseLock_bounds {r ψ : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
+    (hcos : Real.cos ψ ≤ -1 / 2) :
+    1 + r ≤ ‖(1 : ℂ) - (r : ℂ) * Complex.exp ((ψ : ℂ) * I)‖ ^ 2 ∧
+    1 + r ≤ ‖(1 : ℂ) - (r : ℂ) * Complex.exp ((-ψ : ℝ) * I)‖ ^ 2 ∧
+    ‖((1 : ℂ) - (r : ℂ)) * ((1 : ℂ) - (r : ℂ) * Complex.exp ((2 * ψ : ℝ) * I))‖ ≤
+      (1 - r) * (1 + r) ∧
+    ‖((1 : ℂ) - (r : ℂ)) * ((1 : ℂ) - (r : ℂ) * Complex.exp ((-2 * ψ : ℝ) * I))‖ ≤
+      (1 - r) * (1 + r) := by
+  have hsq : ∀ α : ℝ, Real.cos α ≤ -1 / 2 →
+      1 + r ≤ ‖(1 : ℂ) - (r : ℂ) * Complex.exp ((α : ℂ) * I)‖ ^ 2 := fun α hα => by
+    rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+    simp only [Complex.sub_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
+      Complex.ofReal_im, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im,
+      Complex.sub_im, Complex.one_im, Complex.mul_im, zero_mul, sub_zero, add_zero, zero_sub]
+    have htrig := Real.sin_sq_add_cos_sq α
+    have hcalc : (1 - r * Real.cos α) * (1 - r * Real.cos α) +
+        -(r * Real.sin α) * -(r * Real.sin α) = 1 - 2 * r * Real.cos α + r ^ 2 := by
+      linear_combination r ^ 2 * htrig
+    rw [hcalc]
+    nlinarith [sq_nonneg r]
+  have hprod : ∀ β : ℝ,
+      ‖((1 : ℂ) - (r : ℂ)) * ((1 : ℂ) - (r : ℂ) * Complex.exp ((β : ℂ) * I))‖ ≤
+        (1 - r) * (1 + r) := fun β => by
+    rw [norm_mul]
+    have h1 : ‖(1 : ℂ) - (r : ℂ)‖ = 1 - r := by
+      rw [← Complex.ofReal_one, ← Complex.ofReal_sub, Complex.norm_real,
+        Real.norm_of_nonneg (by linarith)]
+    have h2 : ‖(1 : ℂ) - (r : ℂ) * Complex.exp ((β : ℂ) * I)‖ ≤ 1 + r := by
+      refine (norm_sub_le _ _).trans ?_
+      rw [norm_one, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real,
+        Real.norm_of_nonneg hr0]
+    rw [h1]
+    exact mul_le_mul_of_nonneg_left h2 (by linarith)
+  refine ⟨hsq ψ hcos, ?_, ?_, ?_⟩
+  · simpa using hsq (-ψ) (by rwa [Real.cos_neg])
+  · simpa using hprod (2 * ψ)
+  · simpa using hprod (-2 * ψ)
+
+/-! ### 5. Critical-strip Mellin–Kronecker exponent collapse (`κ < min(1, κ₀)`) -/
+
+/-- **Critical-strip Mellin–Kronecker exponent collapse.**
+Any continuous all-base torus-positive amplitude `f` with right decay `ExpDecayFrom 0 κ₀ f` (`κ₀ > 0`)
+and left growth `|f y| ≤ C e^{−κy}` on `(−∞, 0]` at any exponent `κ < min(1, κ₀)` (covering every
+`κ ∈ [½, 1)` whenever `κ₀ > κ`) vanishes identically. -/
+theorem eq_zero_of_torusPositive_of_lt_min_one {f : ℝ → ℝ} (hc : Continuous f)
+    (hpos : IsAllBaseTorusPositive f) {κ₀ : ℝ} (hκ₀ : 0 < κ₀) (hd : ExpDecayFrom 0 κ₀ f)
+    {κ C : ℝ} (hκ : κ < min 1 κ₀) (hL : ∀ y, y ≤ 0 → |f y| ≤ C * Real.exp (-κ * y)) :
+    f = 0 := by
+  have hf_nn : ∀ y, 0 ≤ f y := hpos.nonneg
+  have hmin_pos : 0 < min 1 κ₀ := lt_min one_pos hκ₀
+  have hmax_lt : max κ 0 < min 1 κ₀ := max_lt hκ hmin_pos
+  set σ : ℝ := (max κ 0 + min 1 κ₀) / 2
+  have hσ_pos : 0 < σ := by simp only [σ]; linarith [le_max_right κ 0]
+  have hσ_lt_one : σ < 1 := by simp only [σ]; linarith [min_le_left 1 κ₀]
+  have hσ_lt_κ₀ : σ < κ₀ := by simp only [σ]; linarith [min_le_right 1 κ₀]
+  have hκ_lt_σ : κ < σ := by simp only [σ]; linarith [le_max_left κ 0]
+  obtain ⟨C₀, hC₀_pos, hC₀⟩ := hd
+  have hC_nn : 0 ≤ C := by simpa using (abs_nonneg (f 0)).trans (hL 0 le_rfl)
+  set η : ℝ := min (κ₀ - σ) (σ - κ)
+  have hη_pos : 0 < η := lt_min (by linarith) (by linarith)
+  set M_bd : ℝ := C₀ + C + 1
+  have hM_pos : 0 < M_bd := by positivity
+  -- Integrability of `y ↦ f y * e^{σ y}` via two-sided exponential domination
+  have hdom_pt : ∀ y : ℝ, f y * Real.exp (σ * y) ≤ M_bd * Real.exp (-η * |y|) := fun y => by
+    rcases le_or_gt 0 y with hy | hy
+    · rw [abs_of_nonneg hy]
+      have hf_le : f y ≤ C₀ * Real.exp (-κ₀ * y) := (le_abs_self _).trans (hC₀ y hy)
+      have hexp_le : Real.exp (-κ₀ * y) * Real.exp (σ * y) ≤ Real.exp (-η * y) := by
+        rw [← Real.exp_add]; refine Real.exp_le_exp.mpr ?_
+        have : η ≤ κ₀ - σ := min_le_left _ _
+        nlinarith
+      calc f y * Real.exp (σ * y)
+          ≤ C₀ * (Real.exp (-κ₀ * y) * Real.exp (σ * y)) := by
+            simpa only [mul_assoc] using mul_le_mul_of_nonneg_right hf_le (Real.exp_pos _).le
+        _ ≤ C₀ * Real.exp (-η * y) := mul_le_mul_of_nonneg_left hexp_le hC₀_pos
+        _ ≤ M_bd * Real.exp (-η * y) :=
+            mul_le_mul_of_nonneg_right (by simp only [M_bd]; linarith) (Real.exp_pos _).le
+    · rw [abs_of_neg hy]
+      have hf_le : f y ≤ C * Real.exp (-κ * y) := (le_abs_self _).trans (hL y hy.le)
+      have hexp_le : Real.exp (-κ * y) * Real.exp (σ * y) ≤ Real.exp (-η * -y) := by
+        rw [← Real.exp_add]; refine Real.exp_le_exp.mpr ?_
+        have : η ≤ σ - κ := min_le_right _ _
+        nlinarith
+      calc f y * Real.exp (σ * y)
+          ≤ C * (Real.exp (-κ * y) * Real.exp (σ * y)) := by
+            simpa only [mul_assoc] using mul_le_mul_of_nonneg_right hf_le (Real.exp_pos _).le
+        _ ≤ C * Real.exp (-η * -y) := mul_le_mul_of_nonneg_left hexp_le hC_nn
+        _ ≤ M_bd * Real.exp (-η * -y) :=
+            mul_le_mul_of_nonneg_right (by simp only [M_bd]; linarith) (Real.exp_pos _).le
+  have hint_maj : Integrable (fun y : ℝ => M_bd * Real.exp (-η * |y|)) := by
+    have h := (HTGeometry.integrable_abs_pow_mul_exp_neg_abs 0 hη_pos).const_mul M_bd
+    exact h.congr (Eventually.of_forall fun y => by simp)
+  have hint_real : Integrable (fun y : ℝ => f y * Real.exp (σ * y)) := by
+    refine hint_maj.mono' (hc.mul (Real.continuous_exp.comp
+      (continuous_const.mul continuous_id))).aestronglyMeasurable (Eventually.of_forall fun y => ?_)
+    rw [Real.norm_of_nonneg (mul_nonneg (hf_nn y) (Real.exp_pos _).le)]
+    exact hdom_pt y
+  -- Fourier–Laplace transform `Φ t = ∫ y, (f y : ℂ) * exp((σ + i t) y)`
+  let Φ : ℝ → ℂ := fun t =>
+    ∫ y : ℝ, (f y : ℂ) * Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (y : ℂ))
+  have hint_Φ : ∀ t : ℝ,
+      Integrable (fun y : ℝ => (f y : ℂ) * Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (y : ℂ))) ∧
+      (∀ y : ℝ, ‖(f y : ℂ) * Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (y : ℂ))‖ =
+        f y * Real.exp (σ * y)) := fun t => by
+    have hnorm_eq : ∀ y : ℝ,
+        ‖(f y : ℂ) * Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (y : ℂ))‖ =
+          f y * Real.exp (σ * y) := fun y => by
+      rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (hf_nn y), Complex.norm_exp]
+      congr 2
+      simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.mul_im,
+        Complex.I_re, Complex.I_im, Complex.add_im, Complex.ofReal_im]
+      ring
+    refine ⟨hint_real.mono' ?_ (Eventually.of_forall fun y => (hnorm_eq y).le), hnorm_eq⟩
+    exact ((Complex.continuous_ofReal.comp hc).mul
+      (Complex.continuous_exp.comp (continuous_const.mul Complex.continuous_ofReal))).aestronglyMeasurable
+  set I₀ : ℝ := ∫ y : ℝ, f y * Real.exp (σ * y)
+  have hI₀_nn : 0 ≤ I₀ := integral_nonneg fun y => mul_nonneg (hf_nn y) (Real.exp_pos _).le
+  -- Vanishing of `Φ t` for all `t ≠ 0`
+  have hΦ_zero_ne : ∀ t : ℝ, t ≠ 0 → Φ t = 0 := fun t ht => by
+    apply norm_eq_zero.mp
+    apply le_antisymm _ (norm_nonneg _)
+    refine le_of_forall_pos_le_add fun ε hε => ?_
+    rw [zero_add]
+    obtain ⟨n, p, hp, hinj, hcos, hprod_lt⟩ :=
+      exists_primes_cos_le_neg_half_prod_lt hσ_pos hσ_lt_one.le ht (div_pos hε (by positivity : 0 < I₀ + 1))
+    set ℓ : Fin n → ℝ := fun i => Real.log (p i)
+    have hℓ : ∀ i, 0 < ℓ i := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    set θ : Fin n → ℝ := fun i => t * ℓ i
+    -- Fubini-Tonelli evaluation of `∫ torusSum(ampl f ℓ x) θ * exp((σ + i s) x) dx`
+    have hf_sigma_bd : ∀ y : ℝ, |f y| ≤ M_bd * Real.exp (-σ * y) := fun y => by
+      rw [abs_of_nonneg (hf_nn y)]
+      have h1 := hdom_pt y
+      have h2 : Real.exp (-η * |y|) ≤ 1 := Real.exp_le_one_iff.mpr (by
+        have := abs_nonneg y; nlinarith)
+      have h3 : f y * Real.exp (σ * y) ≤ M_bd :=
+        h1.trans (mul_le_of_le_one_right hM_pos.le h2)
+      calc f y = (f y * Real.exp (σ * y)) * Real.exp (-σ * y) := by
+            rw [mul_assoc, ← Real.exp_add]; simp
+        _ ≤ M_bd * Real.exp (-σ * y) := mul_le_mul_of_nonneg_right h3 (Real.exp_pos _).le
+    have hts_σ : TraceSummable (fun k : Fin n → ℕ => Real.exp (-σ * ∑ i, (k i : ℝ) * ℓ i)) := by
+      have h0 : TraceSummable (ampl (fun y => Real.exp (-σ * y)) ℓ 0) :=
+        traceSummable_ampl hσ_pos
+          (fun y (_ : 0 ≤ y) => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ (le_rfl : (0 : ℝ) ≤ 0)
+      exact h0.congr fun k => by simp [ampl]
+    have hmellin_ident : ∀ s : ℝ,
+        (∫ x : ℝ, (torusSum (ampl f ℓ x) θ : ℂ) *
+            Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ))) =
+          Φ s * ∏ i, ((1 - Complex.exp (-(((σ : ℂ) + (s : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp ((θ i : ℂ) * I))⁻¹ *
+            (1 - Complex.exp (-(((σ : ℂ) + (s : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp (-((θ i : ℂ) * I)))⁻¹) := fun s => by
+      let F_k : (Fin n → ℕ) → ℝ → ℂ := fun k x =>
+        (f (x + ∑ i, (k i : ℝ) * ℓ i) * chiProd θ k : ℝ) *
+          Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ))
+      let z : Fin n → ℂ := fun i => Complex.exp (-(((σ : ℂ) + (s : ℂ) * I) * (ℓ i : ℂ)))
+      have hz : ∀ i, ‖z i‖ < 1 := fun i => by
+        simp only [z, Complex.norm_exp, Complex.neg_re, Complex.mul_re, Complex.add_re,
+          Complex.ofReal_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.add_im,
+          Complex.ofReal_im, mul_zero, add_zero, sub_zero]
+        exact Real.exp_lt_one_iff.mpr (by have := hℓ i; nlinarith)
+      have hFk_eq : ∀ (k : Fin n → ℕ) (x : ℝ),
+          F_k k x = ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)) *
+            ((f (x + ∑ i, (k i : ℝ) * ℓ i) : ℂ) *
+              Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * ((x + ∑ i, (k i : ℝ) * ℓ i : ℝ) : ℂ))) := by
+        intro k x
+        simp only [F_k, z, ← Complex.exp_nat_mul, ← Complex.exp_sum]
+        push_cast
+        have hexp : Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ)) =
+            (Complex.exp (∑ i, (k i : ℂ) * -(((σ : ℂ) + (s : ℂ) * I) * (ℓ i : ℂ)))) *
+              Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * ((x : ℂ) + ∑ i, (k i : ℂ) * (ℓ i : ℂ))) := by
+          rw [← Complex.exp_add]
+          congr 1
+          rw [mul_add, mul_sum]
+          have hsum_neg : (∑ i, (k i : ℂ) * -(((σ : ℂ) + (s : ℂ) * I) * (ℓ i : ℂ))) +
+              ∑ i, (((σ : ℂ) + (s : ℂ) * I)) * ((k i : ℂ) * (ℓ i : ℂ)) = 0 := by
+            rw [← Finset.sum_add_distrib]
+            exact Finset.sum_eq_zero fun i _ => by ring
+          linear_combination -hsum_neg
+        rw [hexp]; ring
+      have hFk_int : ∀ k, Integrable (F_k k) := fun k => by
+        have hi := ((hint_Φ s).1.comp_add_right (∑ i, (k i : ℝ) * ℓ i)).const_mul
+          ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i))
+        exact hi.congr (Eventually.of_forall fun x => (hFk_eq k x).symm)
+      have hFk_int_val : ∀ k, (∫ x, F_k k x) =
+          Φ s * ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)) := fun k => by
+        simp_rw [hFk_eq k]
+        rw [integral_const_mul,
+          integral_add_right_eq_self
+            (fun y : ℝ => (f y : ℂ) * Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (y : ℂ)))
+            (∑ i, (k i : ℝ) * ℓ i), mul_comm]
+      have hFk_norm_sum : Summable (fun k => ∫ x, ‖F_k k x‖) := by
+        have hnorm_val : ∀ k, (∫ x, ‖F_k k x‖) =
+            |chiProd θ k| * Real.exp (-σ * ∑ i, (k i : ℝ) * ℓ i) * I₀ := fun k => by
+          have hpt : ∀ x : ℝ, ‖F_k k x‖ =
+              (|chiProd θ k| * Real.exp (-σ * ∑ i, (k i : ℝ) * ℓ i)) *
+                (f (x + ∑ i, (k i : ℝ) * ℓ i) * Real.exp (σ * (x + ∑ i, (k i : ℝ) * ℓ i))) := fun x => by
+            dsimp only [F_k]
+            rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_nonneg (hf_nn _),
+              Complex.norm_exp]
+            have hre_exp : ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ)).re = σ * x := by
+              simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.mul_im,
+                Complex.I_re, Complex.I_im, Complex.add_im, Complex.ofReal_im]
+              ring
+            rw [hre_exp]
+            have hexp_split : Real.exp (σ * x) =
+                Real.exp (-σ * ∑ i, (k i : ℝ) * ℓ i) *
+                  Real.exp (σ * (x + ∑ i, (k i : ℝ) * ℓ i)) := by
+              rw [← Real.exp_add]; congr 1; ring
+            rw [hexp_split]; ring
+          simp_rw [hpt]
+          rw [integral_const_mul,
+            integral_add_right_eq_self (fun y : ℝ => f y * Real.exp (σ * y))]
+        simp_rw [hnorm_val]
+        refine Summable.mul_right I₀ ?_
+        refine Summable.of_nonneg_of_le (fun _ => by positivity) (fun k => ?_) hts_σ
+        dsimp only
+        rw [abs_of_pos (Real.exp_pos _), mul_comm |chiProd θ k|]
+        exact mul_le_mul_of_nonneg_left (abs_chiProd_le θ k) (Real.exp_pos _).le
+      have hFub := hasSum_integral_of_summable_integral_norm hFk_int hFk_norm_sum
+      have htsum_pt : ∀ x : ℝ,
+          (∑' k, F_k k x) =
+            (torusSum (ampl f ℓ x) θ : ℂ) *
+              Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ)) := fun x => by
+        have hts_x : TraceSummable (ampl f ℓ x) :=
+          traceSummable_ampl hσ_pos (fun y _ => hf_sigma_bd y) hℓ le_rfl
+        have hsum_r : HasSum (fun k => ampl f ℓ x k * chiProd θ k) (torusSum (ampl f ℓ x) θ) :=
+          (summable_term hts_x θ).hasSum
+        have hsum_c : HasSum (fun k => F_k k x)
+            ((torusSum (ampl f ℓ x) θ : ℂ) *
+              Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ))) := by
+          have := (Complex.hasSum_ofReal.mpr hsum_r).mul_right
+            (Complex.exp ((((σ : ℂ) + (s : ℂ) * I)) * (x : ℂ)))
+          exact this.congr_fun fun k => by simp [F_k, ampl]
+        exact hsum_c.tsum_eq
+      simp_rw [hFk_int_val, htsum_pt] at hFub
+      have hchi := (hasSum_chiProd_mul_pow_complex hz θ).mul_left (Φ s)
+      exact hFub.unique hchi
+    -- Compare `s = t` against `s = 0` using `torusSum ≥ 0`
+    have hid_t := hmellin_ident t
+    have hid_0 := hmellin_ident 0
+    set W_t : ℂ := ∏ i, ((1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+        Complex.exp ((θ i : ℂ) * I)) *
+      (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+        Complex.exp (-((θ i : ℂ) * I))))
+    have hWt_inv : (∏ i, ((1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+          Complex.exp ((θ i : ℂ) * I))⁻¹ *
+        (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+          Complex.exp (-((θ i : ℂ) * I)))⁻¹)) * W_t = 1 := by
+      simp only [W_t, ← Finset.prod_mul_distrib]
+      refine Finset.prod_eq_one fun i _ => ?_
+      have hne : ∀ sgn : ℂ, ‖sgn‖ = 1 →
+          1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) * sgn ≠ 0 := fun sgn hsgn h0 => by
+        have h1 : ‖Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) * sgn‖ < 1 := by
+          rw [norm_mul, hsgn, mul_one, Complex.norm_exp]
+          simp only [Complex.neg_re, Complex.mul_re, Complex.add_re, Complex.ofReal_re,
+            Complex.mul_im, Complex.I_re, Complex.I_im, Complex.add_im, Complex.ofReal_im,
+            mul_zero, add_zero, sub_zero]
+          exact Real.exp_lt_one_iff.mpr (by have := hℓ i; nlinarith)
+        have h2 : (1 : ℝ) = ‖Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) * sgn‖ := by
+          have := sub_eq_zero.mp h0; rw [← this, norm_one]
+        linarith
+      have hne1 := hne _ (Complex.norm_exp_ofReal_mul_I (θ i))
+      have hne2 := hne _ (by simpa using Complex.norm_exp_ofReal_mul_I (-θ i))
+      calc (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp ((θ i : ℂ) * I))⁻¹ *
+            (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp (-((θ i : ℂ) * I)))⁻¹ *
+            ((1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp ((θ i : ℂ) * I)) *
+              (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp (-((θ i : ℂ) * I))))
+          = ((1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp ((θ i : ℂ) * I))⁻¹ *
+              (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp ((θ i : ℂ) * I))) *
+            ((1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp (-((θ i : ℂ) * I)))⁻¹ *
+              (1 - Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+                Complex.exp (-((θ i : ℂ) * I)))) := by ring
+        _ = 1 * 1 := by rw [inv_mul_cancel₀ hne1, inv_mul_cancel₀ hne2]
+        _ = 1 := mul_one 1
+    have hΦt_eq : Φ t = W_t * ∫ x : ℝ, (torusSum (ampl f ℓ x) θ : ℂ) *
+        Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (x : ℂ)) := by
+      have := congrArg (· * W_t) hid_t
+      rw [mul_assoc, hWt_inv, mul_one, mul_comm] at this
+      exact this.symm
+    have hint_le : ‖∫ x : ℝ, (torusSum (ampl f ℓ x) θ : ℂ) *
+        Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (x : ℂ))‖ ≤
+        I₀ * ∏ i, ‖(1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2 := by
+      refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
+      have hpt_n : ∀ x : ℝ, ‖(torusSum (ampl f ℓ x) θ : ℂ) *
+          Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (x : ℂ))‖ =
+          torusSum (ampl f ℓ x) θ * Real.exp (σ * x) := fun x => by
+        have hnn_G : 0 ≤ torusSum (ampl f ℓ x) θ := hpos n p hp hinj x θ
+        rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hnn_G, Complex.norm_exp]
+        congr 2
+        simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.mul_im,
+          Complex.I_re, Complex.I_im, Complex.add_im, Complex.ofReal_im]
+        ring
+      simp_rw [hpt_n]
+      have h0_eq : ∀ x : ℝ, ((torusSum (ampl f ℓ x) θ * Real.exp (σ * x) : ℝ) : ℂ) =
+          (torusSum (ampl f ℓ x) θ : ℂ) *
+            Complex.exp ((((σ : ℂ) + ((0 : ℝ) : ℂ) * I)) * (x : ℂ)) := fun x => by
+        simp [Complex.ofReal_mul, Complex.ofReal_exp]
+      have hre0 := congrArg Complex.re hid_0
+      simp_rw [← h0_eq] at hre0
+      rw [integral_complex_ofReal, Complex.ofReal_re] at hre0
+      rw [hre0]
+      have hΦ0 : Φ 0 = (I₀ : ℂ) := by
+        simp only [Φ, I₀]
+        rw [← integral_complex_ofReal]
+        refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+        simp [Complex.ofReal_mul, Complex.ofReal_exp]
+      have hprod0 : (∏ i, ((1 - Complex.exp (-(((σ : ℂ) + ((0 : ℝ) : ℂ) * I) * (ℓ i : ℂ))) *
+            Complex.exp ((θ i : ℂ) * I))⁻¹ *
+          (1 - Complex.exp (-(((σ : ℂ) + ((0 : ℝ) : ℂ) * I) * (ℓ i : ℂ))) *
+            Complex.exp (-((θ i : ℂ) * I)))⁻¹)) =
+          ((∏ i, ‖(1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2 : ℝ) : ℂ) := by
+        rw [Complex.ofReal_prod]
+        refine Finset.prod_congr rfl fun i _ => ?_
+        set w_i : ℂ := (1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) * Complex.exp ((θ i : ℂ) * I)
+        have hconj : (1 - Complex.exp (-(((σ : ℂ) + ((0 : ℝ) : ℂ) * I) * (ℓ i : ℂ))) *
+            Complex.exp (-((θ i : ℂ) * I))) = conj w_i := by
+          simp only [w_i, Complex.ofReal_zero, zero_mul, add_zero, map_sub, map_one, map_mul,
+            Complex.conj_ofReal, ← Complex.exp_conj]
+          congr 2
+          · rw [← Complex.ofReal_mul, ← Complex.ofReal_neg, neg_mul, ← Complex.ofReal_exp]
+          · simp [Complex.conj_I]
+        have hw1 : (1 - Complex.exp (-(((σ : ℂ) + ((0 : ℝ) : ℂ) * I) * (ℓ i : ℂ))) *
+            Complex.exp ((θ i : ℂ) * I)) = w_i := by
+          simp only [w_i, Complex.ofReal_zero, zero_mul, add_zero]
+          rw [← Complex.ofReal_mul, ← Complex.ofReal_neg, neg_mul, ← Complex.ofReal_exp]
+        rw [hw1, hconj, ← mul_inv, Complex.mul_conj, Complex.normSq_eq_norm_sq,
+          ← Complex.ofReal_inv, inv_pow]
+      rw [hΦ0, hprod0, ← Complex.ofReal_mul, Complex.ofReal_re]
+    -- Phase-locked cancellation bound `‖W_t‖ * ∏_i ‖...‖⁻² ≤ ∏_i (1 - p_i^{−σ})`
+    have hratio_le : ‖W_t‖ * (∏ i, ‖(1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) *
+        Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2) ≤ ∏ i, (1 - (p i : ℝ) ^ (-σ)) := by
+      rw [norm_prod, ← Finset.prod_mul_distrib]
+      refine Finset.prod_le_prod (fun _ _ => by positivity) fun i _ => ?_
+      set r_i : ℝ := (p i : ℝ) ^ (-σ)
+      have hp_pos : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos
+      have hp1 : (1 : ℝ) < p i := by exact_mod_cast (hp i).one_lt
+      have hr0 : 0 ≤ r_i := by positivity
+      have hr1 : r_i < 1 := Real.rpow_lt_one_of_one_lt_of_neg hp1 (by linarith)
+      have hexp_r : Real.exp (-σ * ℓ i) = r_i := by
+        simp only [r_i, ℓ]; rw [Real.rpow_def_of_pos hp_pos]; congr 1; ring
+      obtain ⟨hd1, -, -, hn2⟩ := euler_factor_phaseLock_bounds hr0 hr1 (hcos i)
+      have hfac1 : Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+          Complex.exp ((θ i : ℂ) * I) = (r_i : ℂ) := by
+        rw [← Complex.exp_add]
+        have he : -(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ)) + (θ i : ℂ) * I =
+            ((-σ * ℓ i : ℝ) : ℂ) := by simp only [θ]; push_cast; ring
+        rw [he, ← Complex.ofReal_exp, hexp_r]
+      have hfac2 : Complex.exp (-(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ))) *
+          Complex.exp (-((θ i : ℂ) * I)) = (r_i : ℂ) * Complex.exp ((-2 * θ i : ℝ) * I) := by
+        rw [← Complex.exp_add]
+        have he : -(((σ : ℂ) + (t : ℂ) * I) * (ℓ i : ℂ)) + -((θ i : ℂ) * I) =
+            ((-σ * ℓ i : ℝ) : ℂ) + ((-2 * θ i : ℝ) : ℂ) * I := by simp only [θ]; push_cast; ring
+        rw [he, Complex.exp_add, ← Complex.ofReal_exp, hexp_r]
+      rw [hfac1, hfac2, hexp_r, inv_pow]
+      have hinv_le : (‖(1 : ℂ) - (r_i : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ ^ 2)⁻¹ ≤ (1 + r_i)⁻¹ :=
+        inv_anti₀ (by linarith) (by simpa [θ, ℓ] using hd1)
+      have hn2' : ‖((1 : ℂ) - (r_i : ℂ)) * ((1 : ℂ) - (r_i : ℂ) *
+          Complex.exp ((-2 * θ i : ℝ) * I))‖ ≤ (1 - r_i) * (1 + r_i) := by
+        simpa [θ, ℓ] using hn2
+      calc ‖((1 : ℂ) - (r_i : ℂ)) * ((1 : ℂ) - (r_i : ℂ) * Complex.exp ((-2 * θ i : ℝ) * I))‖ *
+              (‖(1 : ℂ) - (r_i : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ ^ 2)⁻¹
+          ≤ ((1 - r_i) * (1 + r_i)) * (1 + r_i)⁻¹ :=
+            mul_le_mul hn2' hinv_le (by positivity) (by nlinarith)
+        _ = 1 - r_i := by field_simp [show (1 + r_i : ℝ) ≠ 0 by linarith]
+    calc ‖Φ t‖ = ‖W_t‖ * ‖∫ x : ℝ, (torusSum (ampl f ℓ x) θ : ℂ) *
+            Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (x : ℂ))‖ := by rw [hΦt_eq, norm_mul]
+      _ ≤ ‖W_t‖ * (I₀ * ∏ i, ‖(1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) *
+            Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2) := mul_le_mul_of_nonneg_left hint_le (norm_nonneg _)
+      _ = I₀ * (‖W_t‖ * ∏ i, ‖(1 : ℂ) - (Real.exp (-σ * ℓ i) : ℂ) *
+            Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2) := by ring
+      _ ≤ I₀ * ∏ i, (1 - (p i : ℝ) ^ (-σ)) := mul_le_mul_of_nonneg_left hratio_le hI₀_nn
+      _ ≤ (I₀ + 1) * ∏ i, (1 - (p i : ℝ) ^ (-σ)) := by
+          refine mul_le_mul_of_nonneg_right (by linarith) (Finset.prod_nonneg fun i _ => ?_)
+          have hp1 : (1 : ℝ) < p i := by exact_mod_cast (hp i).one_lt
+          linarith [Real.rpow_lt_one_of_one_lt_of_neg hp1 (show -σ < 0 by linarith)]
+      _ ≤ ε := by
+          have := mul_lt_mul_of_pos_left hprod_lt (show 0 < I₀ + 1 by positivity)
+          rw [mul_div_cancel₀ _ (by positivity)] at this
+          exact this.le
+  -- Continuity of `Φ` along `t_k = (k + 1)⁻¹ → 0` forces `I₀ = 0` and hence `f = 0`
+  have hΦ0_zero : Φ 0 = 0 := by
+    let F_seq : ℕ → ℝ → ℂ := fun k y =>
+      (f y : ℂ) * Complex.exp ((((σ : ℂ) + ((((k : ℝ) + 1)⁻¹ : ℝ) : ℂ) * I)) * (y : ℂ))
+    have htend_inv : Tendsto (fun k : ℕ => ((k : ℝ) + 1)⁻¹) atTop (𝓝 0) :=
+      tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop.atTop_add tendsto_const_nhds)
+    have hmeas : ∀ k, AEStronglyMeasurable (F_seq k) volume := fun k =>
+      (hint_Φ (((k : ℝ) + 1)⁻¹)).1.aestronglyMeasurable
+    have hbd : ∀ k, ∀ᵐ y ∂volume, ‖F_seq k y‖ ≤ f y * Real.exp (σ * y) := fun k =>
+      Eventually.of_forall fun y => ((hint_Φ (((k : ℝ) + 1)⁻¹)).2 y).le
+    have hlim : ∀ᵐ y ∂volume, Tendsto (fun k => F_seq k y) atTop
+        (𝓝 ((f y : ℂ) * Complex.exp ((((σ : ℂ) + ((0 : ℝ) : ℂ) * I)) * (y : ℂ)))) := by
+      refine Eventually.of_forall fun y => ?_
+      have hc_t : Continuous (fun t : ℝ =>
+          (f y : ℂ) * Complex.exp ((((σ : ℂ) + (t : ℂ) * I)) * (y : ℂ))) := by fun_prop
+      exact (hc_t.tendsto 0).comp htend_inv
+    have hdom := tendsto_integral_of_dominated_convergence (fun y => f y * Real.exp (σ * y))
+      hmeas hint_real hbd hlim
+    have hseq_zero : (fun k : ℕ => ∫ y, F_seq k y) = fun _ => 0 := by
+      funext k
+      exact hΦ_zero_ne (((k : ℝ) + 1)⁻¹) (by positivity)
+    rw [hseq_zero] at hdom
+    exact tendsto_nhds_unique hdom tendsto_const_nhds
+  have hI₀_eq : I₀ = 0 := by
+    have hΦ0 : Φ 0 = (I₀ : ℂ) := by
+      simp only [Φ, I₀]
+      rw [← integral_complex_ofReal]
+      refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+      simp [Complex.ofReal_mul, Complex.ofReal_exp]
+    rw [hΦ0] at hΦ0_zero
+    exact Complex.ofReal_eq_zero.mp hΦ0_zero
+  have hae : (fun y : ℝ => f y * Real.exp (σ * y)) =ᵐ[volume] 0 :=
+    (integral_eq_zero_iff_of_nonneg_ae
+      (Eventually.of_forall fun y => mul_nonneg (hf_nn y) (Real.exp_pos _).le) hint_real).mp hI₀_eq
+  have hfeq : (fun y : ℝ => f y * Real.exp (σ * y)) = 0 :=
+    Measure.eq_of_ae_eq hae (hc.mul (Real.continuous_exp.comp (continuous_const.mul continuous_id)))
+      continuous_zero
+  funext y
+  have hy := congrFun hfeq y
+  simp only [Pi.zero_apply, mul_eq_zero] at hy
+  exact hy.resolve_right (Real.exp_pos _).ne'
+
+/-! ### 6. Oscillatory Bernstein dichotomy at `α = 1` -/
+
+/-- Exact torus evaluation of the damped oscillatory mode `y ↦ e^{−αy} cos(ωy)` (`α > 0`). -/
+theorem torusSum_ampl_exp_neg_mul_cos {n : ℕ} {α : ℝ} (hα : 0 < α) (ω : ℝ) {ℓ : Fin n → ℝ}
+    (hℓ : ∀ i, 0 < ℓ i) (x : ℝ) (θ : Fin n → ℝ) :
+    torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y)) ℓ x) θ =
+      Real.exp (-α * x) *
+        (Complex.exp (((ω * x : ℝ) : ℂ) * I) *
+          ∏ i, ((1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp ((θ i : ℂ) * I))⁻¹ *
+            (1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ))) *
+              Complex.exp (-((θ i : ℂ) * I)))⁻¹)).re := by
+  let z : Fin n → ℂ := fun i => Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ)))
+  have hz : ∀ i, ‖z i‖ < 1 := fun i => by
+    simp only [z, Complex.norm_exp, Complex.mul_re, Complex.add_re, Complex.neg_re,
+      Complex.ofReal_re, Complex.mul_im, Complex.I_re, Complex.I_im, Complex.add_im,
+      Complex.neg_im, Complex.ofReal_im, mul_zero, add_zero, sub_zero, neg_zero]
+    exact Real.exp_lt_one_iff.mpr (by have := hℓ i; nlinarith)
+  have hc := ((hasSum_chiProd_mul_pow_complex hz θ).mul_left
+    (Complex.exp (((ω * x : ℝ) : ℂ) * I))).mul_left ((Real.exp (-α * x) : ℝ) : ℂ)
+  have hre : HasSum
+      (fun k : Fin n → ℕ =>
+        (((Real.exp (-α * x) : ℝ) : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) *
+          ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)))).re)
+      (((Real.exp (-α * x) : ℝ) : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) *
+        ∏ i, ((1 - z i * Complex.exp ((θ i : ℂ) * I))⁻¹ *
+          (1 - z i * Complex.exp (-((θ i : ℂ) * I)))⁻¹))).re := by
+    simpa only [HasSum, Function.comp_def, Complex.re_sum] using
+      (Complex.continuous_re.tendsto _).comp hc
+  rw [Complex.re_ofReal_mul] at hre
+  have hterm : ∀ k : Fin n → ℕ,
+      (((Real.exp (-α * x) : ℝ) : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) *
+        ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)))).re =
+        ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y)) ℓ x k * chiProd θ k := fun k => by
+    set y_k : ℝ := x + ∑ i, (k i : ℝ) * ℓ i
+    have hz_prod : (Complex.exp (((ω * x : ℝ) : ℂ) * I) * ∏ i, z i ^ (k i)) =
+        ((Real.exp (-α * ∑ i, (k i : ℝ) * ℓ i) : ℝ) : ℂ) *
+          Complex.exp (((ω * y_k : ℝ) : ℂ) * I) := by
+      simp only [z, ← Complex.exp_nat_mul, ← Complex.exp_sum, ← Complex.exp_add]
+      rw [Complex.ofReal_exp, ← Complex.exp_add]
+      congr 1
+      simp only [y_k]
+      push_cast
+      rw [mul_add, add_mul, Finset.mul_sum, Finset.mul_sum, Finset.sum_mul]
+      have hs : (∑ i, (k i : ℂ) * (((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ))) -
+          (∑ i, -(α : ℂ) * ((k i : ℂ) * (ℓ i : ℂ)) +
+            ∑ i, (ω : ℂ) * ((k i : ℂ) * (ℓ i : ℂ)) * I) = 0 := by
+        rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
+        exact Finset.sum_eq_zero fun i _ => by ring
+      linear_combination hs
+    have h1 : (((Real.exp (-α * x) : ℝ) : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) *
+        ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)))) =
+        ((Real.exp (-α * y_k) * chiProd θ k : ℝ) : ℂ) *
+          Complex.exp (((ω * y_k : ℝ) : ℂ) * I) := by
+      rw [show Complex.exp (((ω * x : ℝ) : ℂ) * I) * ((chiProd θ k : ℂ) * ∏ i, z i ^ (k i)) =
+          (chiProd θ k : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * ∏ i, z i ^ (k i)) by ring,
+        hz_prod]
+      have hexp_yk : Real.exp (-α * y_k) = Real.exp (-α * x) *
+          Real.exp (-α * ∑ i, (k i : ℝ) * ℓ i) := by
+        simp only [y_k]; rw [← Real.exp_add]; congr 1; ring
+      rw [hexp_yk]; push_cast; ring
+    rw [h1, Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
+    simp only [ampl, y_k]; ring
+  simp_rw [hterm] at hre
+  exact hre.tsum_eq
+
+/-- Uniform positive lower bound on `torusSum` of `e^{−αy}` for `α > 1`, independent of `n, p, θ`. -/
+theorem torusSum_exp_neg_ge_euler_floor {α : ℝ} (hα : 1 < α) {n : ℕ} {p : Fin n → ℕ}
+    (hp : ∀ i, (p i).Prime) (hinj : Function.Injective p) (x : ℝ) (θ : Fin n → ℝ) :
+    Real.exp (-2 * ∑' m : ℕ, ((m : ℝ) ^ α)⁻¹) * Real.exp (-α * x) ≤
+      torusSum (ampl (fun y => Real.exp (-α * y)) (fun i => Real.log (p i)) x) θ := by
+  have hα0 : 0 < α := by linarith
+  have hsum_α : Summable (fun m : ℕ => ((m : ℝ) ^ α)⁻¹) := by
+    simpa [Real.rpow_neg (Nat.cast_nonneg _)] using Real.summable_nat_rpow_inv.mpr hα
+  have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+  rw [torusSum_ampl_exp_neg hα0 hℓ x θ, mul_comm _ (Real.exp (-α * x))]
+  refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+  have hterm_ge : ∀ i : Fin n,
+      Real.exp (-2 * (((p i : ℝ) ^ α)⁻¹)) ≤
+        ‖1 - (Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2 := fun i => by
+    have hp_pos : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos
+    have hexp_p : Real.exp (-α * Real.log (p i)) = ((p i : ℝ) ^ α)⁻¹ := by
+      rw [← Real.rpow_neg hp_pos.le, Real.rpow_def_of_pos hp_pos]; congr 1; ring
+    have hnorm_le : ‖1 - (Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ ≤
+        Real.exp (((p i : ℝ) ^ α)⁻¹) := by
+      calc ‖1 - (Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖
+          ≤ ‖(1 : ℂ)‖ + ‖(Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ :=
+            norm_sub_le _ _
+        _ = 1 + ((p i : ℝ) ^ α)⁻¹ := by
+            rw [norm_one, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real,
+              Real.norm_of_nonneg (Real.exp_pos _).le, hexp_p]
+        _ ≤ Real.exp (((p i : ℝ) ^ α)⁻¹) := by linarith [Real.add_one_le_exp (((p i : ℝ) ^ α)⁻¹)]
+    have hnorm_pos : 0 < ‖1 - (Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ := by
+      have hsub := norm_sub_norm_le (1 : ℂ)
+        ((Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I))
+      rw [norm_one, norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real,
+        Real.norm_of_nonneg (Real.exp_pos _).le] at hsub
+      have hexp_lt : Real.exp (-α * Real.log (p i)) < 1 :=
+        Real.exp_lt_one_iff.mpr (by have := hℓ i; nlinarith)
+      linarith
+    have hinv := pow_le_pow_left₀ (by positivity) (inv_anti₀ hnorm_pos hnorm_le) 2
+    have hexp2 : (Real.exp (((p i : ℝ) ^ α)⁻¹))⁻¹ ^ 2 = Real.exp (-2 * (((p i : ℝ) ^ α)⁻¹)) := by
+      rw [← Real.exp_neg, ← Real.exp_nat_mul]; congr 1; push_cast; ring
+    rwa [hexp2] at hinv
+  have hprod_exp : Real.exp (-2 * ∑ i : Fin n, ((p i : ℝ) ^ α)⁻¹) ≤
+      ∏ i : Fin n, ‖1 - (Real.exp (-α * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2 := by
+    rw [mul_sum, Real.exp_sum]
+    exact Finset.prod_le_prod (fun _ _ => (Real.exp_pos _).le) fun i _ => hterm_ge i
+  have hsum_le : (∑ i : Fin n, ((p i : ℝ) ^ α)⁻¹) ≤ ∑' m : ℕ, ((m : ℝ) ^ α)⁻¹ := by
+    rw [(Finset.sum_image (f := fun m : ℕ => ((m : ℝ) ^ α)⁻¹) fun i _ j _ hij => hinj hij).symm]
+    exact hsum_α.sum_le_tsum (Finset.univ.image p) fun m _ => by positivity
+  exact (Real.exp_le_exp.mpr (by linarith)).trans hprod_exp
+
+/-- Uniform upper bound on complex Euler reciprocal factors `(1 − z)⁻¹` for `α > 1`, `p_i` prime. -/
+private theorem norm_inv_sub_prime_exp_le {α : ℝ} (hα : 1 < α) {q : ℕ} (hq : q.Prime)
+    {w : ℂ} (hw : ‖w‖ = Real.exp (-α * Real.log q)) :
+    ‖(1 - w)⁻¹‖ ≤ Real.exp (2 * ((q : ℝ) ^ α)⁻¹) := by
+  set u : ℝ := ((q : ℝ) ^ α)⁻¹
+  have hq_pos : (0 : ℝ) < q := by exact_mod_cast hq.pos
+  have hq2 : (2 : ℝ) ≤ q := by exact_mod_cast hq.two_le
+  have hexp_u : Real.exp (-α * Real.log q) = u := by
+    simp only [u]; rw [← Real.rpow_neg hq_pos.le, Real.rpow_def_of_pos hq_pos]; congr 1; ring
+  have hu0 : 0 ≤ u := by positivity
+  have hu_half : u ≤ 1 / 2 := by
+    simp only [u]
+    have h2pow : (2 : ℝ) ≤ (q : ℝ) ^ α := by
+      calc (2 : ℝ) = (2 : ℝ) ^ (1 : ℝ) := (Real.rpow_one 2).symm
+        _ ≤ (2 : ℝ) ^ α := Real.rpow_le_rpow_of_exponent_le (by norm_num) hα.le
+        _ ≤ (q : ℝ) ^ α := Real.rpow_le_rpow (by norm_num) hq2 (by linarith)
+    rw [one_div]
+    exact inv_anti₀ (by norm_num) h2pow
+  have hsub : 1 - u ≤ ‖1 - w‖ := by
+    have h := norm_sub_norm_le (1 : ℂ) w
+    rwa [norm_one, hw, hexp_u] at h
+  have h1u_pos : 0 < 1 - u := by linarith
+  rw [norm_inv]
+  refine (inv_anti₀ h1u_pos hsub).trans ?_
+  rw [inv_le_iff_one_le_mul₀' h1u_pos]
+  have hexp_2u : 1 + 2 * u ≤ Real.exp (2 * u) := by linarith [Real.add_one_le_exp (2 * u)]
+  have hquad : 1 ≤ (1 - u) * (1 + 2 * u) := by nlinarith
+  exact hquad.trans (mul_le_mul_of_nonneg_left hexp_2u h1u_pos.le)
+
+/-- **Oscillatory Bernstein dichotomy at `α = 1`.**
+For `f(y) = e^{−αy}(1 + ε cos(ωy))` (`ω ≠ 0`), every `ε ≠ 0` violates all-base torus positivity
+throughout `0 < α ≤ 1` (including `α = ½` and `α = 1`), whereas for every `α > 1` small `|ε| > 0`
+gives strict all-base torus positivity while violating `IsExpConvexFrom 0`. -/
+theorem oscillatory_bernstein_dichotomy {ω : ℝ} (hω : ω ≠ 0) :
+    (∀ α : ℝ, 0 < α → α ≤ 1 → ∀ ε : ℝ, ε ≠ 0 →
+      ¬ IsAllBaseTorusPositive (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y)))) ∧
+    (∀ α : ℝ, 1 < α → ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, ε ≠ 0 → |ε| ≤ ε₀ →
+      (∀ (n : ℕ) (p : Fin n → ℕ), (∀ i, (p i).Prime) → Function.Injective p →
+        ∀ (x : ℝ) (θ : Fin n → ℝ),
+          0 < torusSum (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y)))
+            (fun i => Real.log (p i)) x) θ) ∧
+      ¬ IsExpConvexFrom 0 (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y)))) := by
+  -- Shared linearity of `torusSum` for `e^{−αy}(1 + ε cos(ωy))` when `α > 0`
+  have hlin_osc : ∀ {α : ℝ} (hα0 : 0 < α) (ε : ℝ) {n : ℕ} {p : Fin n → ℕ}
+      (hp : ∀ i, (p i).Prime) (x : ℝ) (θ : Fin n → ℝ),
+      torusSum (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y)))
+          (fun i => Real.log (p i)) x) θ =
+        torusSum (ampl (fun y => Real.exp (-α * y)) (fun i => Real.log (p i)) x) θ +
+          ε * torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+            (fun i => Real.log (p i)) x) θ := by
+    intro α hα0 ε n p hp x θ
+    have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    have hts1 : TraceSummable (ampl (fun y => Real.exp (-α * y)) (fun i => Real.log (p i)) x) :=
+      traceSummable_ampl hα0 (fun y _ => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ le_rfl
+    have hts2 : TraceSummable (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+        (fun i => Real.log (p i)) x) :=
+      traceSummable_ampl hα0 (fun y _ => by
+        rw [abs_mul, abs_of_pos (Real.exp_pos _), one_mul]
+        exact mul_le_of_le_one_right (Real.exp_pos _).le (Real.abs_cos_le_one _)) hℓ le_rfl
+    have hpt : ∀ k,
+        ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y))) (fun i => Real.log (p i)) x k *
+            chiProd θ k =
+          ampl (fun y => Real.exp (-α * y)) (fun i => Real.log (p i)) x k * chiProd θ k +
+            ε * (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+              (fun i => Real.log (p i)) x k * chiProd θ k) := fun k => by
+      simp only [ampl]; ring
+    rw [torusSum, torusSum, torusSum]
+    simp_rw [hpt]
+    rw [Summable.tsum_add (summable_term hts1 θ) ((summable_term hts2 θ).mul_left ε), tsum_mul_left]
+  refine ⟨fun α hα0 hα1 ε hε hpos => ?_, fun α hα => ?_⟩
+  · -- Part 1: `0 < α ≤ 1`, `ε ≠ 0`
+    have hε_abs : 0 < |ε| := abs_pos.mpr hε
+    obtain ⟨n, p, hp, hinj, hcos, hprod_lt⟩ :=
+      exists_primes_cos_le_neg_half_prod_lt hα0 hα1 hω (half_pos hε_abs)
+    set ℓ : Fin n → ℝ := fun i => Real.log (p i)
+    have hℓ : ∀ i, 0 < ℓ i := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    set θ : Fin n → ℝ := fun i => -ω * ℓ i
+    let z : Fin n → ℂ := fun i => Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ)))
+    set W : ℂ := ∏ i, ((1 - z i * Complex.exp ((θ i : ℂ) * I)) *
+      (1 - z i * Complex.exp (-((θ i : ℂ) * I))))
+    set Z : ℂ := ∏ i, ((1 - z i * Complex.exp ((θ i : ℂ) * I))⁻¹ *
+      (1 - z i * Complex.exp (-((θ i : ℂ) * I)))⁻¹)
+    have hWZ : W * Z = 1 := by
+      simp only [W, Z, ← Finset.prod_mul_distrib]
+      refine Finset.prod_eq_one fun i _ => ?_
+      have hne : ∀ sgn : ℂ, ‖sgn‖ = 1 → 1 - z i * sgn ≠ 0 := fun sgn hsgn h0 => by
+        have h1 : ‖z i * sgn‖ < 1 := by
+          rw [norm_mul, hsgn, mul_one]; simp only [z, Complex.norm_exp, Complex.mul_re,
+            Complex.add_re, Complex.neg_re, Complex.ofReal_re, Complex.mul_im, Complex.I_re,
+            Complex.I_im, Complex.add_im, Complex.neg_im, Complex.ofReal_im, mul_zero, add_zero,
+            sub_zero, neg_zero]
+          exact Real.exp_lt_one_iff.mpr (by have := hℓ i; nlinarith)
+        have h2 : (1 : ℝ) = ‖z i * sgn‖ := by have := sub_eq_zero.mp h0; rw [← this, norm_one]
+        linarith
+      have hne1 := hne _ (Complex.norm_exp_ofReal_mul_I (θ i))
+      have hne2 := hne _ (by simpa using Complex.norm_exp_ofReal_mul_I (-θ i))
+      field_simp [hne1, hne2]
+    have hZ_ne : Z ≠ 0 := right_ne_zero_of_mul_eq_one hWZ
+    have hZ_pos : 0 < ‖Z‖ := norm_pos_iff.mpr hZ_ne
+    have hWZ_norm : ‖W‖ * ‖Z‖ = 1 := by rw [← norm_mul, hWZ, norm_one]
+    set A₀ : ℝ := ∏ i, ‖(1 : ℂ) - (Real.exp (-α * ℓ i) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2
+    have hWA₀_le : ‖W‖ * A₀ ≤ ∏ i, (1 - (p i : ℝ) ^ (-α)) := by
+      simp only [W, A₀]
+      rw [norm_prod, ← Finset.prod_mul_distrib]
+      refine Finset.prod_le_prod (fun _ _ => by positivity) fun i _ => ?_
+      set r_i : ℝ := (p i : ℝ) ^ (-α)
+      have hp_pos : (0 : ℝ) < p i := by exact_mod_cast (hp i).pos
+      have hp1 : (1 : ℝ) < p i := by exact_mod_cast (hp i).one_lt
+      have hr0 : 0 ≤ r_i := by positivity
+      have hr1 : r_i < 1 := Real.rpow_lt_one_of_one_lt_of_neg hp1 (by linarith)
+      have hexp_r : Real.exp (-α * ℓ i) = r_i := by
+        simp only [r_i, ℓ]; rw [Real.rpow_def_of_pos hp_pos]; congr 1; ring
+      obtain ⟨-, hd2, hn1, -⟩ := euler_factor_phaseLock_bounds hr0 hr1 (hcos i)
+      have hfac1 : z i * Complex.exp ((θ i : ℂ) * I) = (r_i : ℂ) := by
+        simp only [z, θ]; rw [← Complex.exp_add]
+        have he : (((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ)) + ((-ω * ℓ i : ℝ) : ℂ) * I =
+            ((-α * ℓ i : ℝ) : ℂ) := by push_cast; ring
+        rw [he, ← Complex.ofReal_exp, hexp_r]
+      have hfac2 : z i * Complex.exp (-((θ i : ℂ) * I)) =
+          (r_i : ℂ) * Complex.exp ((2 * (ω * ℓ i) : ℝ) * I) := by
+        simp only [z, θ]; rw [← Complex.exp_add]
+        have he : (((-α : ℂ) + (ω : ℂ) * I) * (ℓ i : ℂ)) + -(((-ω * ℓ i : ℝ) : ℂ) * I) =
+            ((-α * ℓ i : ℝ) : ℂ) + ((2 * (ω * ℓ i) : ℝ) : ℂ) * I := by push_cast; ring
+        rw [he, Complex.exp_add, ← Complex.ofReal_exp, hexp_r]
+      rw [hfac1, hfac2, hexp_r, inv_pow]
+      have hinv_le : (‖(1 : ℂ) - (r_i : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ ^ 2)⁻¹ ≤ (1 + r_i)⁻¹ :=
+        inv_anti₀ (by linarith) (by simpa [θ, ℓ] using hd2)
+      have hn1' : ‖((1 : ℂ) - (r_i : ℂ)) * ((1 : ℂ) - (r_i : ℂ) *
+          Complex.exp ((2 * (ω * ℓ i) : ℝ) * I))‖ ≤ (1 - r_i) * (1 + r_i) := by
+        simpa [ℓ] using hn1
+      calc ‖((1 : ℂ) - (r_i : ℂ)) * ((1 : ℂ) - (r_i : ℂ) * Complex.exp ((2 * (ω * ℓ i) : ℝ) * I))‖ *
+              (‖(1 : ℂ) - (r_i : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ ^ 2)⁻¹
+          ≤ ((1 - r_i) * (1 + r_i)) * (1 + r_i)⁻¹ :=
+            mul_le_mul hn1' hinv_le (by positivity) (by nlinarith)
+        _ = 1 - r_i := by field_simp [show (1 + r_i : ℝ) ≠ 0 by linarith]
+    have hA₀_lt : A₀ < |ε| * ‖Z‖ := by
+      have h1 : A₀ ≤ (∏ i, (1 - (p i : ℝ) ^ (-α))) * ‖Z‖ := by
+        calc A₀ = A₀ * (‖W‖ * ‖Z‖) := by rw [hWZ_norm, mul_one]
+          _ = (‖W‖ * A₀) * ‖Z‖ := by ring
+          _ ≤ (∏ i, (1 - (p i : ℝ) ^ (-α))) * ‖Z‖ :=
+            mul_le_mul_of_nonneg_right hWA₀_le hZ_pos.le
+      have h2 : (∏ i, (1 - (p i : ℝ) ^ (-α))) * ‖Z‖ < (|ε| / 2) * ‖Z‖ :=
+        mul_lt_mul_of_pos_right hprod_lt hZ_pos
+      linarith [mul_pos hε_abs hZ_pos]
+    -- Choose base point `x` to anti-align `exp(i ω x)` with `(ε : ℂ) * Z`
+    set u_c : ℂ := (ε : ℂ) * Z
+    set x : ℝ := (π - Complex.arg u_c) / ω
+    have hphase_re : ε * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re = -(|ε| * ‖Z‖) := by
+      have hωx : ω * x = π - Complex.arg u_c := mul_div_cancel₀ _ hω
+      have hre1 : ε * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re =
+          (Complex.exp (((ω * x : ℝ) : ℂ) * I) * u_c).re := by
+        simp only [u_c]
+        rw [show Complex.exp (((ω * x : ℝ) : ℂ) * I) * ((ε : ℂ) * Z) =
+            (ε : ℂ) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z) by ring, Complex.re_ofReal_mul]
+      rw [hre1, hωx]
+      have hpolar := Complex.norm_mul_exp_arg_mul_I u_c
+      have hprod_u : Complex.exp (((π - Complex.arg u_c : ℝ) : ℂ) * I) * u_c = -(‖u_c‖ : ℂ) := by
+        calc Complex.exp (((π - Complex.arg u_c : ℝ) : ℂ) * I) * u_c
+            = Complex.exp (((π - Complex.arg u_c : ℝ) : ℂ) * I) *
+                ((‖u_c‖ : ℂ) * Complex.exp ((Complex.arg u_c : ℂ) * I)) := by rw [hpolar]
+          _ = (‖u_c‖ : ℂ) * (Complex.exp (((π - Complex.arg u_c : ℝ) : ℂ) * I) *
+                Complex.exp ((Complex.arg u_c : ℂ) * I)) := by ring
+          _ = (‖u_c‖ : ℂ) * Complex.exp ((π : ℂ) * I) := by
+              rw [← Complex.exp_add]; congr 2; push_cast; ring
+          _ = -(‖u_c‖ : ℂ) := by rw [Complex.exp_pi_mul_I]; ring
+      rw [hprod_u, Complex.neg_re, Complex.ofReal_re]
+      simp only [u_c, norm_mul, Complex.norm_real, Real.norm_eq_abs]
+    have hval : torusSum (ampl (fun y => Real.exp (-α * y) * (1 + ε * Real.cos (ω * y)))
+        ℓ x) θ < 0 := by
+      rw [hlin_osc hα0 ε hp x θ, torusSum_ampl_exp_neg hα0 hℓ x θ,
+        torusSum_ampl_exp_neg_mul_cos hα0 ω hℓ x θ]
+      have heq : Real.exp (-α * x) * A₀ +
+          ε * (Real.exp (-α * x) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re) =
+          Real.exp (-α * x) * (A₀ - |ε| * ‖Z‖) := by
+        calc Real.exp (-α * x) * A₀ +
+              ε * (Real.exp (-α * x) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re)
+            = Real.exp (-α * x) * (A₀ + ε * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re) := by ring
+          _ = Real.exp (-α * x) * (A₀ - |ε| * ‖Z‖) := by rw [hphase_re]; ring
+      change Real.exp (-α * x) * A₀ +
+          ε * (Real.exp (-α * x) * (Complex.exp (((ω * x : ℝ) : ℂ) * I) * Z).re) < 0
+      rw [heq]
+      exact mul_neg_of_pos_of_neg (Real.exp_pos _) (by linarith)
+    exact absurd (hpos n p hp hinj x θ) (not_le.mpr hval)
+  · -- Part 2: `α > 1`
+    have hα0 : 0 < α := by linarith
+    have hsum_α : Summable (fun m : ℕ => ((m : ℝ) ^ α)⁻¹) := by
+      simpa [Real.rpow_neg (Nat.cast_nonneg _)] using Real.summable_nat_rpow_inv.mpr hα
+    set S_α : ℝ := ∑' m : ℕ, ((m : ℝ) ^ α)⁻¹
+    set c_α : ℝ := Real.exp (-2 * S_α)
+    set K_α : ℝ := Real.exp (4 * S_α)
+    set ε₀ : ℝ := c_α / (2 * K_α)
+    have hε₀ : 0 < ε₀ := by positivity
+    refine ⟨ε₀, hε₀, fun ε hε hε_le => ⟨fun n p hp hinj x θ => ?_, ?_⟩⟩
+    · have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+      have hfloor := torusSum_exp_neg_ge_euler_floor hα hp hinj x θ
+      have hosc_bd : |torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+          (fun i => Real.log (p i)) x) θ| ≤ K_α * Real.exp (-α * x) := by
+        rw [torusSum_ampl_exp_neg_mul_cos hα0 ω hℓ x θ, abs_mul, abs_of_pos (Real.exp_pos _),
+          mul_comm K_α]
+        refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+        refine (Complex.abs_re_le_norm _).trans ?_
+        rw [norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul, norm_prod]
+        have hfac_le : ∀ i : Fin n,
+            ‖(1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (Real.log (p i) : ℂ))) *
+                Complex.exp ((θ i : ℂ) * I))⁻¹ *
+              (1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (Real.log (p i) : ℂ))) *
+                Complex.exp (-((θ i : ℂ) * I)))⁻¹‖ ≤
+              Real.exp (4 * ((p i : ℝ) ^ α)⁻¹) := fun i => by
+          rw [norm_mul]
+          have hw_n : ∀ sgn : ℂ, ‖sgn‖ = 1 →
+              ‖Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (Real.log (p i) : ℂ))) * sgn‖ =
+                Real.exp (-α * Real.log (p i)) := fun sgn hsgn => by
+            rw [norm_mul, hsgn, mul_one, Complex.norm_exp]
+            simp only [Complex.mul_re, Complex.add_re, Complex.neg_re, Complex.ofReal_re,
+              Complex.mul_im, Complex.I_re, Complex.I_im, Complex.add_im, Complex.neg_im,
+              Complex.ofReal_im, mul_zero, zero_mul, add_zero, sub_zero, neg_zero]
+          have hb1 := norm_inv_sub_prime_exp_le hα (hp i) (hw_n _ (Complex.norm_exp_ofReal_mul_I (θ i)))
+          have hb2 := norm_inv_sub_prime_exp_le hα (hp i)
+            (hw_n _ (by simpa using Complex.norm_exp_ofReal_mul_I (-θ i)))
+          calc _ ≤ Real.exp (2 * ((p i : ℝ) ^ α)⁻¹) * Real.exp (2 * ((p i : ℝ) ^ α)⁻¹) :=
+                mul_le_mul hb1 hb2 (norm_nonneg _) (Real.exp_pos _).le
+            _ = Real.exp (4 * ((p i : ℝ) ^ α)⁻¹) := by rw [← Real.exp_add]; congr 1; ring
+        have hprod_le : (∏ i, ‖(1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (Real.log (p i) : ℂ))) *
+              Complex.exp ((θ i : ℂ) * I))⁻¹ *
+            (1 - Complex.exp ((((-α : ℂ) + (ω : ℂ) * I) * (Real.log (p i) : ℂ))) *
+              Complex.exp (-((θ i : ℂ) * I)))⁻¹‖) ≤
+            Real.exp (4 * ∑ i : Fin n, ((p i : ℝ) ^ α)⁻¹) := by
+          rw [mul_sum, Real.exp_sum]
+          exact Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun i _ => hfac_le i
+        have hsum_le : (∑ i : Fin n, ((p i : ℝ) ^ α)⁻¹) ≤ S_α := by
+          rw [(Finset.sum_image (f := fun m : ℕ => ((m : ℝ) ^ α)⁻¹) fun i _ j _ hij => hinj hij).symm]
+          exact hsum_α.sum_le_tsum (Finset.univ.image p) fun m _ => by positivity
+        exact hprod_le.trans (Real.exp_le_exp.mpr (by linarith))
+      rw [hlin_osc hα0 ε hp x θ]
+      have hK_ne : K_α ≠ 0 := (Real.exp_pos (4 * S_α)).ne'
+      have hpert_abs : |ε * torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+          (fun i => Real.log (p i)) x) θ| ≤ (c_α / 2) * Real.exp (-α * x) := by
+        rw [abs_mul]
+        calc |ε| * |torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+                (fun i => Real.log (p i)) x) θ|
+            ≤ ε₀ * (K_α * Real.exp (-α * x)) :=
+              mul_le_mul hε_le hosc_bd (abs_nonneg _) hε₀.le
+          _ = (c_α / 2) * Real.exp (-α * x) := by
+              simp only [ε₀]; field_simp [hK_ne]
+      have hlow : -((c_α / 2) * Real.exp (-α * x)) ≤
+          ε * torusSum (ampl (fun y => Real.exp (-α * y) * Real.cos (ω * y))
+            (fun i => Real.log (p i)) x) θ := by
+        linarith [(abs_le.mp hpert_abs).1]
+      change c_α * Real.exp (-α * x) ≤ _ at hfloor
+      have hpos_half : 0 < (c_α / 2) * Real.exp (-α * x) := by positivity
+      linarith
+    · -- Failure of `IsExpConvexFrom 0` via a `2 × 2` Hankel form
+      intro hEC
+      set Ω : ℝ := |ω|
+      have hΩ : 0 < Ω := abs_pos.mpr hω
+      have hcos_Ω : ∀ y : ℝ, Real.cos (ω * y) = Real.cos (Ω * y) := fun y => by
+        simp only [Ω]
+        rcases le_or_gt 0 ω with h0 | h0
+        · rw [abs_of_nonneg h0]
+        · rw [abs_of_neg h0, show (-ω) * y = -(ω * y) by ring, Real.cos_neg]
+      rcases lt_or_gt_of_ne hε with hε_neg | hε_pos
+      · -- `ε < 0`: test at `t = (0, π / |ω|)` with `c = (1, −e^{α π / |ω|})`
+        let t : Fin 2 → ℝ := ![0, π / Ω]
+        let c : Fin 2 → ℂ := ![1, -(Real.exp (α * (π / Ω)) : ℂ)]
+        have hval := hEC (Fin 2) Finset.univ t c fun i _ => by
+          fin_cases i <;> simp [t]; positivity
+        rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two] at hval
+        simp only [t, c, Matrix.cons_val_zero, Matrix.cons_val_one,
+          zero_add, add_zero, map_one, map_neg, Complex.conj_ofReal, hcos_Ω] at hval
+        have hc0 : Real.cos (Ω * 0) = 1 := by simp
+        have hc1 : Real.cos (Ω * (π / Ω)) = -1 := by
+          rw [mul_div_cancel₀ _ hΩ.ne', Real.cos_pi]
+        have hc2 : Real.cos (Ω * (π / Ω + π / Ω)) = 1 := by
+          have : Ω * (π / Ω + π / Ω) = 2 * π := by field_simp [hΩ.ne']; ring
+          rw [this, Real.cos_two_pi]
+        have hexp1 : Real.exp (α * (π / Ω)) * Real.exp (-α * (π / Ω)) = 1 := by
+          rw [← Real.exp_add]; simp
+        have hexp2 : Real.exp (α * (π / Ω)) * Real.exp (α * (π / Ω)) *
+            Real.exp (-α * (π / Ω + π / Ω)) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_zero]; congr 1; ring
+        rw [hc0, hc1, hc2] at hval
+        simp only [mul_zero, Real.exp_zero, one_mul, mul_one, mul_neg,
+          ← Complex.ofReal_neg, ← Complex.ofReal_mul, ← Complex.ofReal_add,
+          Complex.ofReal_re] at hval
+        nlinarith [hexp1, hexp2]
+      · -- `ε > 0`: test at `t = (π / (2|ω|), 3π / (2|ω|))` with `c = (e^{α t₀}, −e^{α t₁})`
+        let t : Fin 2 → ℝ := ![π / (2 * Ω), 3 * π / (2 * Ω)]
+        let c : Fin 2 → ℂ := ![(Real.exp (α * (π / (2 * Ω))) : ℂ),
+          -(Real.exp (α * (3 * π / (2 * Ω))) : ℂ)]
+        have hval := hEC (Fin 2) Finset.univ t c fun i _ => by
+          fin_cases i <;> simp [t] <;> positivity
+        rw [Fin.sum_univ_two, Fin.sum_univ_two, Fin.sum_univ_two] at hval
+        simp only [t, c, Matrix.cons_val_zero, Matrix.cons_val_one,
+          zero_add, map_neg, Complex.conj_ofReal, hcos_Ω] at hval
+        have hc00 : Real.cos (Ω * (π / (2 * Ω) + π / (2 * Ω))) = -1 := by
+          have : Ω * (π / (2 * Ω) + π / (2 * Ω)) = π := by field_simp [hΩ.ne']; ring
+          rw [this, Real.cos_pi]
+        have hc01 : Real.cos (Ω * (π / (2 * Ω) + 3 * π / (2 * Ω))) = 1 := by
+          have : Ω * (π / (2 * Ω) + 3 * π / (2 * Ω)) = 2 * π := by field_simp [hΩ.ne']; ring
+          rw [this, Real.cos_two_pi]
+        have hc10 : Real.cos (Ω * (3 * π / (2 * Ω) + π / (2 * Ω))) = 1 := by
+          have : Ω * (3 * π / (2 * Ω) + π / (2 * Ω)) = 2 * π := by field_simp [hΩ.ne']; ring
+          rw [this, Real.cos_two_pi]
+        have hc11 : Real.cos (Ω * (3 * π / (2 * Ω) + 3 * π / (2 * Ω))) = -1 := by
+          have : Ω * (3 * π / (2 * Ω) + 3 * π / (2 * Ω)) = π + 2 * π := by
+            field_simp [hΩ.ne']; ring
+          rw [this, Real.cos_add_two_pi, Real.cos_pi]
+        have hexp00 : Real.exp (α * (π / (2 * Ω))) * Real.exp (α * (π / (2 * Ω))) *
+            Real.exp (-α * (π / (2 * Ω) + π / (2 * Ω))) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_zero]; congr 1; ring
+        have hexp01 : Real.exp (α * (π / (2 * Ω))) * Real.exp (α * (3 * π / (2 * Ω))) *
+            Real.exp (-α * (π / (2 * Ω) + 3 * π / (2 * Ω))) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_zero]; congr 1; ring
+        have hexp10 : Real.exp (α * (3 * π / (2 * Ω))) * Real.exp (α * (π / (2 * Ω))) *
+            Real.exp (-α * (3 * π / (2 * Ω) + π / (2 * Ω))) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_zero]; congr 1; ring
+        have hexp11 : Real.exp (α * (3 * π / (2 * Ω))) * Real.exp (α * (3 * π / (2 * Ω))) *
+            Real.exp (-α * (3 * π / (2 * Ω) + 3 * π / (2 * Ω))) = 1 := by
+          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_zero]; congr 1; ring
+        rw [hc00, hc01, hc10, hc11] at hval
+        simp only [mul_one, mul_neg, ← Complex.ofReal_neg, ← Complex.ofReal_mul,
+          ← Complex.ofReal_add, Complex.ofReal_re] at hval
+        nlinarith [hexp00, hexp01, hexp10, hexp11]
+
+/-! ### 7. Signed finite Laplace mixture dichotomy at `α = 1` -/
+
+/-- Arbitrarily large partial sums of prime reciprocals on `{q prime | 5 ≤ q}`. -/
+theorem exists_finset_primes_ge_five_sum_gt (B : ℝ) :
+    ∃ S : Finset ℕ, (∀ q ∈ S, q.Prime ∧ 5 ≤ q) ∧ B < ∑ q ∈ S, (q : ℝ)⁻¹ := by
+  classical
+  have hdiv : ¬ Summable (fun p : Nat.Primes => (1 / (p : ℝ))) := Nat.Primes.not_summable_one_div
+  have hunb : ∃ T : Finset Nat.Primes, B + 2 < ∑ p ∈ T, (1 / (p : ℝ)) := by
+    by_contra hle
+    push Not at hle
+    exact hdiv (summable_of_sum_le (fun p => by positivity) hle)
+  obtain ⟨T, hT⟩ := hunb
+  let S₀ : Finset ℕ := T.image Subtype.val
+  have hsum_eq : (∑ p ∈ T, (1 / (p : ℝ))) = ∑ q ∈ S₀, (q : ℝ)⁻¹ := by
+    rw [Finset.sum_image (f := fun q : ℕ => (q : ℝ)⁻¹) fun a _ b _ hab => Subtype.ext hab]
+    exact Finset.sum_congr rfl fun p _ => one_div _
+  rw [hsum_eq] at hT
+  set S := S₀.filter (fun q => 5 ≤ q)
+  have hS_prop : ∀ q ∈ S, q.Prime ∧ 5 ≤ q := fun q hq => by
+    obtain ⟨hq0, h5⟩ := Finset.mem_filter.mp hq
+    obtain ⟨p, _, rfl⟩ := Finset.mem_image.mp hq0
+    exact ⟨p.2, h5⟩
+  have hsmall : ∑ q ∈ S₀.filter (fun q => ¬(5 ≤ q)), (q : ℝ)⁻¹ ≤ 2 := by
+    have hsub : S₀.filter (fun q => ¬(5 ≤ q)) ⊆ ({2, 3} : Finset ℕ) := by
+      intro q hq
+      obtain ⟨hq0, hlt⟩ := Finset.mem_filter.mp hq
+      obtain ⟨p, _, rfl⟩ := Finset.mem_image.mp hq0
+      have hp2 := p.2.two_le
+      have hp4 : p.1 ≠ 4 := fun h4 => by
+        have hp_pr := p.2; rw [h4] at hp_pr; exact absurd hp_pr (by decide)
+      simp only [Finset.mem_insert, Finset.mem_singleton]
+      omega
+    refine (Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity).trans ?_
+    rw [Finset.sum_pair (by decide)]
+    norm_num
+  have hsplit := Finset.sum_filter_add_sum_filter_not S₀ (fun q => 5 ≤ q) (fun q : ℕ => (q : ℝ)⁻¹)
+  exact ⟨S, hS_prop, by linarith⟩
+
+private theorem antitoneOn_Icc_of_hasDerivAt_nonpos {a b : ℝ} {f f' : ℝ → ℝ}
+    (hf : ∀ x ∈ Icc a b, HasDerivAt f (f' x) x) (hf' : ∀ x ∈ Icc a b, f' x ≤ 0) :
+    AntitoneOn f (Icc a b) := by
+  have hmono : MonotoneOn (fun z => -f z) (Icc a b) := by
+    refine monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc a b) (f' := fun z => -f' z)
+      (fun z hz => ((hf z hz).continuousAt.neg).continuousWithinAt) ?_ ?_
+    · intro z hz
+      rw [interior_Icc] at hz
+      exact ((hf z (Ioo_subset_Icc_self hz)).neg).hasDerivWithinAt
+    · intro z hz
+      rw [interior_Icc] at hz
+      linarith [hf' z (Ioo_subset_Icc_self hz)]
+  intro x hx y hy hxy
+  have := hmono hx hy hxy
+  linarith
+
+/-- Uniform quadratic concavity bound for `t ↦ −2 log(1 + q^{−t})` on `[0, 1]` when `q ≥ 5`. -/
+private theorem log_euler_pi_concavity_le {q : ℕ} (hq5 : 5 ≤ q) {s t : ℝ}
+    (hs : s ∈ Icc (0 : ℝ) 1) (ht : t ∈ Icc (0 : ℝ) 1) :
+    (-2 * Real.log (1 + Real.exp (-t * Real.log q))) -
+      (-2 * Real.log (1 + Real.exp (-s * Real.log q))) -
+        (2 * Real.log q / (Real.exp (s * Real.log q) + 1)) * (t - s) ≤
+      -(t - s) ^ 2 / (4 * (q : ℝ)) := by
+  set L : ℝ := Real.log q
+  have hq_pos : (0 : ℝ) < q := by positivity
+  have hL_ge_one : 1 ≤ L := by
+    have he5 : Real.exp 1 ≤ (q : ℝ) := by
+      have := Real.exp_one_lt_d9
+      have : (5 : ℝ) ≤ q := by exact_mod_cast hq5
+      linarith
+    have := Real.log_le_log (Real.exp_pos 1) he5
+    rwa [Real.log_exp] at this
+  set u : ℝ → ℝ := fun x => -2 * Real.log (1 + Real.exp (-x * L))
+  set u' : ℝ → ℝ := fun x => 2 * L * (Real.exp (x * L) + 1)⁻¹
+  set u'' : ℝ → ℝ := fun x => -2 * L ^ 2 * Real.exp (x * L) / (Real.exp (x * L) + 1) ^ 2
+  let g : ℝ → ℝ := fun x => u x - u s - u' s * (x - s) + (x - s) ^ 2 / (4 * (q : ℝ))
+  let g' : ℝ → ℝ := fun x => u' x - u' s + (x - s) / (2 * (q : ℝ))
+  let g'' : ℝ → ℝ := fun x => u'' x + 1 / (2 * (q : ℝ))
+  have hu_deriv : ∀ x : ℝ, HasDerivAt u (u' x) x := fun x => by
+    have h1 : HasDerivAt (fun x => -x * L) (-L) x := by
+      simpa using (hasDerivAt_id x).neg.mul_const L
+    have h2 : HasDerivAt (fun x => 1 + Real.exp (-x * L)) (Real.exp (-x * L) * (-L)) x := by
+      simpa using (Real.hasDerivAt_exp (-x * L)).comp x h1 |>.const_add 1
+    have h3 : HasDerivAt (fun x => Real.log (1 + Real.exp (-x * L)))
+        ((Real.exp (-x * L) * (-L)) / (1 + Real.exp (-x * L))) x :=
+      h2.log (by positivity)
+    have h4 := h3.const_mul (-2 : ℝ)
+    refine h4.congr_deriv ?_
+    dsimp only [u']
+    have he_inv : Real.exp (-x * L) * Real.exp (x * L) = 1 := by rw [← Real.exp_add]; simp
+    have hd2 : (Real.exp (x * L) + 1) ≠ 0 := by positivity
+    have hden : (Real.exp (x * L) + 1) * Real.exp (-x * L) = 1 + Real.exp (-x * L) := by
+      linear_combination he_inv
+    rw [← hden]
+    field_simp [hd2, (Real.exp_pos (-x * L)).ne']
+  have hu'_deriv : ∀ x : ℝ, HasDerivAt u' (u'' x) x := fun x => by
+    have h1 : HasDerivAt (fun x => x * L) L x := by simpa using (hasDerivAt_id x).mul_const L
+    have h2 : HasDerivAt (fun x => Real.exp (x * L) + 1) (Real.exp (x * L) * L) x := by
+      simpa [Function.comp_def] using ((Real.hasDerivAt_exp (x * L)).comp x h1).add_const 1
+    have h3 : HasDerivAt (fun x => (Real.exp (x * L) + 1)⁻¹)
+        (-(Real.exp (x * L) * L) / (Real.exp (x * L) + 1) ^ 2) x :=
+      h2.inv (by positivity)
+    refine (h3.const_mul (2 * L)).congr_deriv ?_
+    dsimp only [u'']; ring
+  have hg_deriv : ∀ x : ℝ, HasDerivAt g (g' x) x := fun x => by
+    have hlin : HasDerivAt (fun x => u' s * (x - s)) (u' s) x := by
+      simpa using ((hasDerivAt_id x).sub_const s).const_mul (u' s)
+    have hquad : HasDerivAt (fun x => (x - s) ^ 2 / (4 * (q : ℝ))) ((x - s) / (2 * (q : ℝ))) x := by
+      have hsub : HasDerivAt (fun x => x - s) 1 x := (hasDerivAt_id x).sub_const s
+      have hp := (hsub.pow 2).div_const (4 * (q : ℝ))
+      refine hp.congr_deriv ?_
+      field_simp [hq_pos.ne']; ring
+    exact (((hu_deriv x).sub_const (u s)).sub hlin).add hquad
+  have hg'_deriv : ∀ x : ℝ, HasDerivAt g' (g'' x) x := fun x => by
+    have hlin : HasDerivAt (fun x => (x - s) / (2 * (q : ℝ))) (1 / (2 * (q : ℝ))) x :=
+      (((hasDerivAt_id x).sub_const s).div_const (2 * (q : ℝ))).congr_deriv (by ring)
+    exact ((hu'_deriv x).sub_const (u' s)).add hlin
+  have hg''_nonpos : ∀ x ∈ Icc (0 : ℝ) 1, g'' x ≤ 0 := fun x hx => by
+    set Z : ℝ := Real.exp (x * L)
+    have hZ_lo : 1 ≤ Z := Real.one_le_exp (mul_nonneg hx.1 (by linarith))
+    have hZ_hi : Z ≤ q := by
+      rw [← Real.exp_log hq_pos]
+      exact Real.exp_le_exp.mpr (by nlinarith [hx.2])
+    have hq1 : (1 : ℝ) ≤ q := by linarith
+    have hquad_Z : (Z + 1) ^ 2 ≤ 4 * (q : ℝ) * Z := by
+      have hid : 4 * (q : ℝ) * Z - (Z + 1) ^ 2 =
+          Z * ((q : ℝ) - Z) + (Z - 1) * (3 * (q : ℝ) - 2) + 3 * ((q : ℝ) - 1) := by ring
+      nlinarith
+    have hL2 : 1 ≤ L ^ 2 := by nlinarith
+    have hnum_ge : (Z + 1) ^ 2 ≤ 4 * (q : ℝ) * (L ^ 2 * Z) := by
+      calc (Z + 1) ^ 2 ≤ 4 * (q : ℝ) * Z := hquad_Z
+        _ ≤ 4 * (q : ℝ) * (L ^ 2 * Z) := by nlinarith
+    dsimp only [g'', u'']
+    change -2 * L ^ 2 * Z / (Z + 1) ^ 2 + 1 / (2 * (q : ℝ)) ≤ 0
+    have hd_pos : 0 < (Z + 1) ^ 2 * (2 * (q : ℝ)) := by positivity
+    have hcomb : -2 * L ^ 2 * Z / (Z + 1) ^ 2 + 1 / (2 * (q : ℝ)) =
+        ((Z + 1) ^ 2 - 4 * (q : ℝ) * (L ^ 2 * Z)) / ((Z + 1) ^ 2 * (2 * (q : ℝ))) := by
+      field_simp [(show Z + 1 ≠ 0 by positivity), hq_pos.ne']; ring
+    rw [hcomb]
+    exact div_nonpos_of_nonpos_of_nonneg (by linarith) hd_pos.le
+  have hg'_anti : AntitoneOn g' (Icc (0 : ℝ) 1) :=
+    antitoneOn_Icc_of_hasDerivAt_nonpos (fun x hx => hg'_deriv x) hg''_nonpos
+  have hg_s : g s = 0 := by simp [g]
+  have hg'_s : g' s = 0 := by simp [g']
+  have hg_le : g t ≤ 0 := by
+    rcases le_total s t with hst | hts
+    · have hsub : Icc s t ⊆ Icc (0 : ℝ) 1 := fun x hx => ⟨hs.1.trans hx.1, hx.2.trans ht.2⟩
+      have hanti := antitoneOn_Icc_of_hasDerivAt_nonpos (a := s) (b := t)
+        (fun x hx => hg_deriv x) (fun x hx => by
+          have := hg'_anti hs (hsub hx) hx.1
+          linarith [hg'_s])
+      simpa [hg_s] using hanti ⟨le_rfl, hst⟩ ⟨hst, le_rfl⟩ hst
+    · have hsub : Icc t s ⊆ Icc (0 : ℝ) 1 := fun x hx => ⟨ht.1.trans hx.1, hx.2.trans hs.2⟩
+      have hanti := antitoneOn_Icc_of_hasDerivAt_nonpos (a := t) (b := s)
+        (f := fun x => -g x) (f' := fun x => -g' x)
+        (fun x _ => (hg_deriv x).neg) (fun x hx => by
+          have := hg'_anti (hsub hx) hs hx.2
+          linarith [hg'_s])
+      have := hanti ⟨le_rfl, hts⟩ ⟨hts, le_rfl⟩ hts
+      linarith [hg_s]
+  dsimp only [g, u, u'] at hg_le
+  rw [div_eq_mul_inv (2 * L), neg_div]
+  linarith
+
+/-- **Signed finite Laplace mixture dichotomy on `(0, 1]`.**
+For strictly increasing exponents `0 < α₀ < … < α_{m−1} ≤ 1`, a finite linear combination
+`∑_r c_r e^{−α_r y}` is all-base torus-positive if and only if every coefficient `c_r` is
+nonnegative (and hence if and only if it is exponentially convex). -/
+theorem laplaceMixture_torusPositive_iff_nonneg {m : ℕ} {α c : Fin m → ℝ}
+    (hmono : StrictMono α) (hα0 : ∀ r, 0 < α r) (hα1 : ∀ r, α r ≤ 1) :
+    IsAllBaseTorusPositive (fun y => ∑ r, c r * Real.exp (-α r * y)) ↔ ∀ r, 0 ≤ c r := by
+  -- Shared torus-sum evaluation of `∑_r c_r e^{−α_r y}`
+  have htorus_sum : ∀ {n : ℕ} {p : Fin n → ℕ} (hp : ∀ i, (p i).Prime) (x : ℝ) (θ : Fin n → ℝ),
+      torusSum (ampl (fun y => ∑ r, c r * Real.exp (-α r * y)) (fun i => Real.log (p i)) x) θ =
+        ∑ r, c r * torusSum (ampl (fun y => Real.exp (-α r * y)) (fun i => Real.log (p i)) x) θ := by
+    intro n p hp x θ
+    have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    have hsum_r : ∀ r : Fin m,
+        Summable (fun k => c r * (ampl (fun y => Real.exp (-α r * y))
+          (fun i => Real.log (p i)) x k * chiProd θ k)) := fun r =>
+      (summable_term (traceSummable_ampl (hα0 r)
+        (fun y _ => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ le_rfl) θ).mul_left (c r)
+    rw [torusSum]
+    have hpt : ∀ k, ampl (fun y => ∑ r, c r * Real.exp (-α r * y)) (fun i => Real.log (p i)) x k *
+          chiProd θ k =
+        ∑ r, c r * (ampl (fun y => Real.exp (-α r * y)) (fun i => Real.log (p i)) x k *
+          chiProd θ k) := fun k => by
+      simp only [ampl, Finset.sum_mul]
+      exact Finset.sum_congr rfl fun r _ => by ring
+    simp_rw [hpt]
+    rw [Summable.tsum_finsetSum fun r _ => hsum_r r]
+    exact Finset.sum_congr rfl fun r _ => by rw [tsum_mul_left, ← torusSum]
+  constructor
+  · intro hpos r₁
+    by_contra hneg_r₁
+    push Not at hneg_r₁
+    by_cases hother : ∀ r, r ≠ r₁ → c r = 0
+    · -- Single nonzero mode: evaluate `hpos.nonneg 0`
+      have h0 := hpos.nonneg 0
+      rw [Finset.sum_eq_single r₁ (fun r _ hr => by simp [hother r hr])
+        (fun h => absurd (Finset.mem_univ r₁) h)] at h0
+      simp only [mul_zero, Real.exp_zero, mul_one] at h0
+      linarith
+    · push Not at hother
+      obtain ⟨r₂, hr₂_ne, _⟩ := hother
+      set U_other := Finset.univ.erase r₁
+      have hU_nonempty : U_other.Nonempty := ⟨r₂, Finset.mem_erase.mpr ⟨hr₂_ne, Finset.mem_univ _⟩⟩
+      obtain ⟨r_min, hr_min_mem, hr_min_le⟩ :=
+        U_other.exists_min_image (fun r => (α r - α r₁) ^ 2) hU_nonempty
+      set gap : ℝ := (α r_min - α r₁) ^ 2
+      have hgap_pos : 0 < gap := by
+        have hne : r_min ≠ r₁ := (Finset.mem_erase.mp hr_min_mem).1
+        have hα_ne : α r_min ≠ α r₁ := hmono.injective.ne hne
+        exact sq_pos_of_ne_zero (sub_ne_zero.mpr hα_ne)
+      set C_tot : ℝ := ∑ r ∈ U_other, |c r| + 1
+      have hC_pos : 0 < C_tot := by
+        have : 0 ≤ ∑ r ∈ U_other, |c r| := Finset.sum_nonneg fun _ _ => abs_nonneg _
+        simp only [C_tot]; linarith
+      set B : ℝ := (4 / gap) * (|Real.log (-c r₁ / (2 * C_tot))| + 1)
+      obtain ⟨S, hS, hB⟩ := exists_finset_primes_ge_five_sum_gt B
+      let e : Fin S.card ≃ S := S.equivFin.symm
+      let p : Fin S.card → ℕ := fun i => (e i : ℕ)
+      have hp : ∀ i, (p i).Prime := fun i => (hS _ (e i).2).1
+      have hinj : Function.Injective p := fun i j hij => e.injective (Subtype.ext hij)
+      have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+      let θ : Fin S.card → ℝ := fun _ => π
+      -- Evaluate `torusSum` of `e^{−α y}` at `θ = π` as `exp(L_S(α, x))`
+      let L_S : ℝ → ℝ → ℝ := fun β x =>
+        -β * x + ∑ q ∈ S, (-2 * Real.log (1 + Real.exp (-β * Real.log q)))
+      have htorus_pi : ∀ (β : ℝ), 0 < β → ∀ x : ℝ,
+          torusSum (ampl (fun y => Real.exp (-β * y)) (fun i => Real.log (p i)) x) θ =
+            Real.exp (L_S β x) := fun β hβ x => by
+        rw [torusSum_ampl_exp_neg hβ hℓ x θ]
+        simp only [L_S, Real.exp_add, Real.exp_sum]
+        congr 1
+        have hprod_pt : (∏ i, ‖1 - (Real.exp (-β * Real.log (p i)) : ℂ) *
+            Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2) =
+            ∏ i, Real.exp (-2 * Real.log (1 + Real.exp (-β * Real.log (e i : ℕ)))) := by
+          refine Finset.prod_congr rfl fun i _ => ?_
+          simp only [θ, p, Complex.exp_pi_mul_I, mul_neg, mul_one, sub_neg_eq_add]
+          have hnorm : ‖(1 : ℂ) + (Real.exp (-β * Real.log (e i : ℕ)) : ℂ)‖ =
+              1 + Real.exp (-β * Real.log (e i : ℕ)) := by
+            rw [← Complex.ofReal_one, ← Complex.ofReal_add, Complex.norm_real,
+              Real.norm_of_nonneg (by positivity)]
+          rw [hnorm]
+          have hd_pos : 0 < 1 + Real.exp (-β * Real.log (e i : ℕ)) := by positivity
+          rw [show -2 * Real.log (1 + Real.exp (-β * Real.log (e i : ℕ))) =
+              -(2 * Real.log (1 + Real.exp (-β * Real.log (e i : ℕ)))) by ring,
+            Real.exp_neg, show (2 : ℝ) * Real.log (1 + Real.exp (-β * Real.log (e i : ℕ))) =
+              Real.log ((1 + Real.exp (-β * Real.log (e i : ℕ))) ^ 2) by
+              rw [Real.log_pow]; norm_num,
+            Real.exp_log (pow_pos hd_pos 2), inv_pow]
+        rw [hprod_pt, Equiv.prod_comp e (fun z : S =>
+          Real.exp (-2 * Real.log (1 + Real.exp (-β * Real.log (z : ℕ))))),
+          Finset.prod_coe_sort S (fun q : ℕ =>
+            Real.exp (-2 * Real.log (1 + Real.exp (-β * Real.log q))))]
+      set x_S : ℝ := ∑ q ∈ S, 2 * Real.log q / (Real.exp (α r₁ * Real.log q) + 1)
+      have hdiff_le : ∀ r ∈ U_other,
+          L_S (α r) x_S - L_S (α r₁) x_S ≤ -(gap / 4) * ∑ q ∈ S, (q : ℝ)⁻¹ := fun r hr => by
+        have hgap_r : gap ≤ (α r - α r₁) ^ 2 := hr_min_le r hr
+        have hrewrite : L_S (α r) x_S - L_S (α r₁) x_S =
+            ∑ q ∈ S, ((-2 * Real.log (1 + Real.exp (-α r * Real.log q))) -
+              (-2 * Real.log (1 + Real.exp (-α r₁ * Real.log q))) -
+              (2 * Real.log q / (Real.exp (α r₁ * Real.log q) + 1)) * (α r - α r₁)) := by
+          simp only [L_S, x_S]
+          have hlin_x : -α r * (∑ q ∈ S, 2 * Real.log q / (Real.exp (α r₁ * Real.log q) + 1)) -
+              (-α r₁ * (∑ q ∈ S, 2 * Real.log q / (Real.exp (α r₁ * Real.log q) + 1))) =
+              -∑ q ∈ S, (2 * Real.log q / (Real.exp (α r₁ * Real.log q) + 1)) * (α r - α r₁) := by
+            rw [← sub_mul, Finset.mul_sum, ← Finset.sum_neg_distrib]
+            exact Finset.sum_congr rfl fun q _ => by ring
+          rw [Finset.sum_sub_distrib, Finset.sum_sub_distrib]
+          linarith
+        rw [hrewrite, Finset.mul_sum]
+        refine Finset.sum_le_sum fun q hq => ?_
+        have hq5 : 5 ≤ q := (hS q hq).2
+        have hconc := log_euler_pi_concavity_le hq5
+          ⟨(hα0 r₁).le, hα1 r₁⟩ ⟨(hα0 r).le, hα1 r⟩
+        have hstep : -(α r - α r₁) ^ 2 / (4 * (q : ℝ)) ≤ -(gap / 4) * (q : ℝ)⁻¹ := by
+          have hq_pos : (0 : ℝ) < q := by positivity
+          rw [show -(gap / 4) * (q : ℝ)⁻¹ = -gap / (4 * (q : ℝ)) by ring]
+          exact div_le_div_of_nonneg_right (by linarith) (by positivity)
+        exact hconc.trans hstep
+      have hexp_small : ∀ r ∈ U_other,
+          Real.exp (L_S (α r) x_S - L_S (α r₁) x_S) < -c r₁ / (2 * C_tot) := fun r hr => by
+        have h1 := hdiff_le r hr
+        have h2 : -(gap / 4) * ∑ q ∈ S, (q : ℝ)⁻¹ < -(gap / 4) * B := by
+          have := mul_lt_mul_of_pos_left hB (div_pos hgap_pos (by norm_num : (0 : ℝ) < 4))
+          linarith
+        have h3 : -(gap / 4) * B = -(|Real.log (-c r₁ / (2 * C_tot))| + 1) := by
+          simp only [B]; field_simp [hgap_pos.ne']
+        have hpos_rhs : 0 < -c r₁ / (2 * C_tot) := div_pos (by linarith) (by positivity)
+        rw [← Real.exp_log hpos_rhs]
+        refine Real.exp_lt_exp.mpr ?_
+        have := neg_le_abs (Real.log (-c r₁ / (2 * C_tot)))
+        linarith
+      -- Assemble `torusSum < 0`
+      have hval_neg : torusSum (ampl (fun y => ∑ r, c r * Real.exp (-α r * y))
+          (fun i => Real.log (p i)) x_S) θ < 0 := by
+        rw [htorus_sum hp x_S θ]
+        have hpt_r : ∀ r : Fin m,
+            c r * torusSum (ampl (fun y => Real.exp (-α r * y)) (fun i => Real.log (p i)) x_S) θ =
+              Real.exp (L_S (α r₁) x_S) *
+                (c r * Real.exp (L_S (α r) x_S - L_S (α r₁) x_S)) := fun r => by
+          rw [htorus_pi (α r) (hα0 r) x_S]
+          have : Real.exp (L_S (α r) x_S) =
+              Real.exp (L_S (α r₁) x_S) * Real.exp (L_S (α r) x_S - L_S (α r₁) x_S) := by
+            rw [← Real.exp_add]; congr 1; ring
+          rw [this]; ring
+        simp_rw [hpt_r, ← Finset.mul_sum]
+        refine mul_neg_of_pos_of_neg (Real.exp_pos _) ?_
+        rw [← Finset.add_sum_erase _ _ (Finset.mem_univ r₁)]
+        simp only [sub_self, Real.exp_zero, mul_one]
+        have hsum_other : (∑ r ∈ U_other, c r * Real.exp (L_S (α r) x_S - L_S (α r₁) x_S)) ≤
+            -c r₁ / 2 := by
+          calc (∑ r ∈ U_other, c r * Real.exp (L_S (α r) x_S - L_S (α r₁) x_S))
+              ≤ ∑ r ∈ U_other, |c r| * Real.exp (L_S (α r) x_S - L_S (α r₁) x_S) := by
+                refine Finset.sum_le_sum fun r _ => ?_
+                exact mul_le_mul_of_nonneg_right (le_abs_self _) (Real.exp_pos _).le
+            _ ≤ ∑ r ∈ U_other, |c r| * (-c r₁ / (2 * C_tot)) := by
+                refine Finset.sum_le_sum fun r hr => ?_
+                exact mul_le_mul_of_nonneg_left (hexp_small r hr).le (abs_nonneg _)
+            _ = (∑ r ∈ U_other, |c r|) * (-c r₁ / (2 * C_tot)) := (Finset.sum_mul _ _ _).symm
+            _ ≤ C_tot * (-c r₁ / (2 * C_tot)) :=
+                mul_le_mul_of_nonneg_right (by simp only [C_tot]; linarith)
+                  (div_nonneg (by linarith) (by positivity))
+            _ = -c r₁ / 2 := by field_simp [hC_pos.ne']
+        linarith
+      exact absurd (hpos S.card p hp hinj x_S θ) (not_le.mpr hval_neg)
+  · intro hc_nn n p hp _ x θ
+    rw [htorus_sum hp x θ]
+    have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    refine Finset.sum_nonneg fun r _ => mul_nonneg (hc_nn r) ?_
+    rw [torusSum_ampl_exp_neg (hα0 r) hℓ x θ]
+    exact mul_nonneg (Real.exp_pos _).le (Finset.prod_nonneg fun _ _ => by positivity)
+
+/-- **Supercritical failure of Laplace-mixture Bernstein (`1 < α₀ < α₁ < α₂`).**
+Above `1`, subtracting a small middle exponential `e^{−α₀ y} − ε e^{−α₁ y} + e^{−α₂ y}` remains
+strictly all-base torus-positive while violating `IsExpConvexFrom 0`. -/
+theorem exists_supercritical_laplaceMixture_not_expConvex {α₀ α₁ α₂ : ℝ}
+    (h1 : 1 < α₀) (h01 : α₀ < α₁) (h12 : α₁ < α₂) :
+    ∃ ε₀ : ℝ, 0 < ε₀ ∧ ∀ ε : ℝ, 0 < ε → ε ≤ ε₀ →
+      (∀ (n : ℕ) (p : Fin n → ℕ), (∀ i, (p i).Prime) → Function.Injective p →
+        ∀ (x : ℝ) (θ : Fin n → ℝ),
+          0 < torusSum (ampl (fun y => Real.exp (-α₀ * y) - ε * Real.exp (-α₁ * y) +
+            Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x) θ) ∧
+      ¬ IsExpConvexFrom 0 (fun y => Real.exp (-α₀ * y) - ε * Real.exp (-α₁ * y) +
+        Real.exp (-α₂ * y)) := by
+  have hα₀_pos : 0 < α₀ := by linarith
+  have hα₁_gt1 : 1 < α₁ := by linarith
+  have hα₁_pos : 0 < α₁ := by linarith
+  have hα₂_gt1 : 1 < α₂ := by linarith
+  have hα₂_pos : 0 < α₂ := by linarith
+  have hsum_α₁ : Summable (fun m : ℕ => ((m : ℝ) ^ α₁)⁻¹) := by
+    simpa [Real.rpow_neg (Nat.cast_nonneg _)] using Real.summable_nat_rpow_inv.mpr hα₁_gt1
+  set c_min : ℝ := min (Real.exp (-2 * ∑' m : ℕ, ((m : ℝ) ^ α₀)⁻¹))
+    (Real.exp (-2 * ∑' m : ℕ, ((m : ℝ) ^ α₂)⁻¹))
+  have hc_pos : 0 < c_min := lt_min (Real.exp_pos _) (Real.exp_pos _)
+  set K₁ : ℝ := Real.exp (4 * ∑' m : ℕ, ((m : ℝ) ^ α₁)⁻¹)
+  have hK₁_pos : 0 < K₁ := Real.exp_pos _
+  set ε₀ : ℝ := c_min / (2 * K₁)
+  have hε₀ : 0 < ε₀ := by positivity
+  refine ⟨ε₀, hε₀, fun ε hε0 hε_le => ⟨fun n p hp hinj x θ => ?_, ?_⟩⟩
+  · have hℓ : ∀ i, 0 < Real.log (p i) := fun i => Real.log_pos (by exact_mod_cast (hp i).one_lt)
+    have hts0 : TraceSummable (ampl (fun y => Real.exp (-α₀ * y)) (fun i => Real.log (p i)) x) :=
+      traceSummable_ampl hα₀_pos (fun y _ => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ le_rfl
+    have hts1 : TraceSummable (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x) :=
+      traceSummable_ampl hα₁_pos (fun y _ => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ le_rfl
+    have hts2 : TraceSummable (ampl (fun y => Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x) :=
+      traceSummable_ampl hα₂_pos (fun y _ => by rw [abs_of_pos (Real.exp_pos _), one_mul]) hℓ le_rfl
+    have hlin : torusSum (ampl (fun y => Real.exp (-α₀ * y) - ε * Real.exp (-α₁ * y) +
+          Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x) θ =
+        torusSum (ampl (fun y => Real.exp (-α₀ * y)) (fun i => Real.log (p i)) x) θ -
+          ε * torusSum (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x) θ +
+          torusSum (ampl (fun y => Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x) θ := by
+      have hpt : ∀ k, ampl (fun y => Real.exp (-α₀ * y) - ε * Real.exp (-α₁ * y) +
+            Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x k * chiProd θ k =
+          (ampl (fun y => Real.exp (-α₀ * y)) (fun i => Real.log (p i)) x k * chiProd θ k -
+            ε * (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x k * chiProd θ k)) +
+            ampl (fun y => Real.exp (-α₂ * y)) (fun i => Real.log (p i)) x k * chiProd θ k :=
+        fun k => by simp only [ampl]; ring
+      rw [torusSum, torusSum, torusSum, torusSum]
+      simp_rw [hpt]
+      rw [Summable.tsum_add ((summable_term hts0 θ).sub ((summable_term hts1 θ).mul_left ε))
+        (summable_term hts2 θ),
+        Summable.tsum_sub (summable_term hts0 θ) ((summable_term hts1 θ).mul_left ε),
+        tsum_mul_left]
+    rw [hlin]
+    have hmin0 : c_min ≤ Real.exp (-2 * ∑' m : ℕ, ((m : ℝ) ^ α₀)⁻¹) := min_le_left _ _
+    have hfloor0 := (mul_le_mul_of_nonneg_right hmin0 (Real.exp_pos (-α₀ * x)).le).trans
+      (torusSum_exp_neg_ge_euler_floor h1 hp hinj x θ)
+    have hmin2 : c_min ≤ Real.exp (-2 * ∑' m : ℕ, ((m : ℝ) ^ α₂)⁻¹) := min_le_right _ _
+    have hfloor2 := (mul_le_mul_of_nonneg_right hmin2 (Real.exp_pos (-α₂ * x)).le).trans
+      (torusSum_exp_neg_ge_euler_floor hα₂_gt1 hp hinj x θ)
+    -- Upper bound on `torusSum` of `e^{−α₁ y}`
+    have hceil1 : torusSum (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x) θ ≤
+        K₁ * Real.exp (-α₁ * x) := by
+      rw [torusSum_ampl_exp_neg hα₁_pos hℓ x θ, mul_comm K₁]
+      refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
+      have hfac_le : ∀ i : Fin n,
+          ‖1 - (Real.exp (-α₁ * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2 ≤
+            Real.exp (4 * ((p i : ℝ) ^ α₁)⁻¹) := fun i => by
+        have hw : ‖(Real.exp (-α₁ * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖ =
+            Real.exp (-α₁ * Real.log (p i)) := by
+          rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one, Complex.norm_real,
+            Real.norm_of_nonneg (Real.exp_pos _).le]
+        have hb := norm_inv_sub_prime_exp_le hα₁_gt1 (hp i) hw
+        rw [norm_inv] at hb
+        calc ‖1 - (Real.exp (-α₁ * Real.log (p i)) : ℂ) * Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2
+            ≤ Real.exp (2 * ((p i : ℝ) ^ α₁)⁻¹) ^ 2 := pow_le_pow_left₀ (by positivity) hb 2
+          _ = Real.exp (4 * ((p i : ℝ) ^ α₁)⁻¹) := by
+              rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+      have hprod_le : (∏ i, ‖1 - (Real.exp (-α₁ * Real.log (p i)) : ℂ) *
+          Complex.exp ((θ i : ℂ) * I)‖⁻¹ ^ 2) ≤
+          Real.exp (4 * ∑ i : Fin n, ((p i : ℝ) ^ α₁)⁻¹) := by
+        rw [mul_sum, Real.exp_sum]
+        exact Finset.prod_le_prod (fun _ _ => by positivity) fun i _ => hfac_le i
+      have hsum_le : (∑ i : Fin n, ((p i : ℝ) ^ α₁)⁻¹) ≤ ∑' m : ℕ, ((m : ℝ) ^ α₁)⁻¹ := by
+        rw [(Finset.sum_image (f := fun m : ℕ => ((m : ℝ) ^ α₁)⁻¹) fun i _ j _ hij => hinj hij).symm]
+        exact hsum_α₁.sum_le_tsum (Finset.univ.image p) fun m _ => by positivity
+      exact hprod_le.trans (Real.exp_le_exp.mpr (by linarith))
+    have hexp_mid : Real.exp (-α₁ * x) ≤ Real.exp (-α₀ * x) + Real.exp (-α₂ * x) := by
+      rcases le_or_gt 0 x with hx | hx
+      · have : Real.exp (-α₁ * x) ≤ Real.exp (-α₀ * x) := Real.exp_le_exp.mpr (by nlinarith)
+        linarith [Real.exp_pos (-α₂ * x)]
+      · have : Real.exp (-α₁ * x) ≤ Real.exp (-α₂ * x) := Real.exp_le_exp.mpr (by nlinarith)
+        linarith [Real.exp_pos (-α₀ * x)]
+    have hmid_le : ε * torusSum (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x) θ ≤
+        (c_min / 2) * (Real.exp (-α₀ * x) + Real.exp (-α₂ * x)) := by
+      calc ε * torusSum (ampl (fun y => Real.exp (-α₁ * y)) (fun i => Real.log (p i)) x) θ
+          ≤ ε₀ * (K₁ * Real.exp (-α₁ * x)) :=
+            mul_le_mul hε_le hceil1 (mul_nonneg (Real.exp_pos _).le
+              (Finset.prod_nonneg fun _ _ => by positivity) |>.trans
+              (torusSum_ampl_exp_neg hα₁_pos hℓ x θ).symm.le) hε₀.le
+        _ = (c_min / 2) * Real.exp (-α₁ * x) := by simp only [ε₀]; field_simp [hK₁_pos.ne']
+        _ ≤ (c_min / 2) * (Real.exp (-α₀ * x) + Real.exp (-α₂ * x)) :=
+            mul_le_mul_of_nonneg_left hexp_mid (by positivity)
+    have hpos_sum : 0 < (c_min / 2) * (Real.exp (-α₀ * x) + Real.exp (-α₂ * x)) := by positivity
+    linarith
+  · -- Failure of `IsExpConvexFrom 0` on `(0, 1, 2)` via Vandermonde annihilation of `α₀, α₂`
+    intro hEC
+    set r₀ : ℝ := Real.exp (-α₀)
+    set r₁ : ℝ := Real.exp (-α₁)
+    set r₂ : ℝ := Real.exp (-α₂)
+    let t : Fin 3 → ℝ := ![0, 1, 2]
+    let d : Fin 3 → ℝ := ![r₀ * r₂, -(r₀ + r₂), 1]
+    let c : Fin 3 → ℂ := fun i => (d i : ℂ)
+    have hval := hEC (Fin 3) Finset.univ t c fun i _ => by
+      fin_cases i <;> simp [t]
+    have hmode_sum : ∀ (β : ℝ),
+        (∑ i : Fin 3, ∑ j : Fin 3, d i * d j * Real.exp (-β * (0 + t i + t j))) =
+          ((Real.exp (-β) - r₀) * (Real.exp (-β) - r₂)) ^ 2 := fun β => by
+      rw [Fin.sum_univ_three]
+      simp only [Fin.sum_univ_three, t, d, Matrix.cons_val_zero, Matrix.cons_val_one,
+        Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons, zero_add, add_zero]
+      have he0 : Real.exp (-β * 0) = 1 := by simp
+      have he1 : Real.exp (-β * 1) = Real.exp (-β) := by simp
+      have he2 : Real.exp (-β * (1 + 1)) = Real.exp (-β) ^ 2 := by
+        rw [sq, ← Real.exp_add]; congr 1; ring
+      have he2' : Real.exp (-β * 2) = Real.exp (-β) ^ 2 := by
+        rw [sq, ← Real.exp_add]; congr 1; ring
+      have he3 : Real.exp (-β * (1 + 2)) = Real.exp (-β) ^ 3 := by
+        rw [pow_succ, sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+      have he3' : Real.exp (-β * (2 + 1)) = Real.exp (-β) ^ 3 := by
+        rw [pow_succ, sq, ← Real.exp_add, ← Real.exp_add]; congr 1; ring
+      have he4 : Real.exp (-β * (2 + 2)) = Real.exp (-β) ^ 4 := by
+        rw [show (4 : ℕ) = 2 + 2 by rfl, pow_add, sq, ← Real.exp_add, ← Real.exp_add]
+        congr 1; ring
+      rw [he0, he1, he2, he2', he3, he3', he4]
+      ring
+    have hre_eq : (∑ i : Fin 3, ∑ j : Fin 3, c i * conj (c j) *
+        ((Real.exp (-α₀ * (0 + t i + t j)) - ε * Real.exp (-α₁ * (0 + t i + t j)) +
+          Real.exp (-α₂ * (0 + t i + t j)) : ℝ) : ℂ)).re =
+        -ε * ((r₁ - r₀) * (r₁ - r₂)) ^ 2 := by
+      have h1 : (∑ i : Fin 3, ∑ j : Fin 3, c i * conj (c j) *
+          ((Real.exp (-α₀ * (0 + t i + t j)) - ε * Real.exp (-α₁ * (0 + t i + t j)) +
+            Real.exp (-α₂ * (0 + t i + t j)) : ℝ) : ℂ)).re =
+          (∑ i : Fin 3, ∑ j : Fin 3, d i * d j * Real.exp (-α₀ * (0 + t i + t j))) -
+            ε * (∑ i : Fin 3, ∑ j : Fin 3, d i * d j * Real.exp (-α₁ * (0 + t i + t j))) +
+            (∑ i : Fin 3, ∑ j : Fin 3, d i * d j * Real.exp (-α₂ * (0 + t i + t j))) := by
+        simp only [c, Complex.conj_ofReal, ← Complex.ofReal_mul, Complex.re_sum,
+          Complex.ofReal_re]
+        simp only [mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+          Finset.mul_sum]
+        congr 1
+        · congr 1
+          exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+      rw [h1, hmode_sum α₀, hmode_sum α₁, hmode_sum α₂]
+      simp only [r₀, r₁, r₂, sub_self, zero_mul, mul_zero, zero_pow (by decide : 2 ≠ 0)]
+      ring
+    rw [hre_eq] at hval
+    have hr₀_ne : r₁ - r₀ ≠ 0 := sub_ne_zero.mpr (Real.exp_injective.ne (by linarith))
+    have hr₂_ne : r₁ - r₂ ≠ 0 := sub_ne_zero.mpr (Real.exp_injective.ne (by linarith))
+    have hsq_pos : 0 < ((r₁ - r₀) * (r₁ - r₂)) ^ 2 := sq_pos_of_ne_zero (mul_ne_zero hr₀_ne hr₂_ne)
+    nlinarith
+
+#print axioms heckePositive_iff_expConvex_of_lt_half
+#print axioms exists_heckePositive_not_torusPositive_ge_half
+#print axioms hasSum_cosSum_mul_cosSum_geom
+#print axioms torusSum_mul_geom_eq_integral
+#print axioms IsAllBaseTorusPositive.mul_exp_neg
+#print axioms eq_zero_of_torusPositive_of_lt_min_one
+#print axioms oscillatory_bernstein_dichotomy
+#print axioms laplaceMixture_torusPositive_iff_nonneg
+#print axioms exists_supercritical_laplaceMixture_not_expConvex
+
+end
+
+end GaloisForLFunctions.ArithmeticInnerFunctionTheory
