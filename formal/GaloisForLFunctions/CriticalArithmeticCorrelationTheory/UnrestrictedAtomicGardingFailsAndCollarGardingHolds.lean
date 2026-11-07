@@ -2423,23 +2423,41 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
           mul_le_mul_of_nonneg_left hW8_le (by positivity)
       _ = (c₀ / 4) * topCollarSeventhMass M N x := by
           dsimp only [ε]; field_simp [hC₈.ne']; ring
-  change κ_R * topCollarSeventhMass M N x +
-      a_R * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
-    weilQuad U_y + B_R * ∫ u, U_y u ^ 2
-  have hB_def : B_R = B_arch + B_prime + B_pole := rfl
-  have ha_def : a_R = ε := rfl
-  have hκ_def : κ_R = c₀ / 4 := rfl
-  rw [hB_def, ha_def, hκ_def]
-  rw [ha_def] at hpr_Uy hpo_Uy
-  have h3ε' : 3 * (ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
-      (c₀ / 4) * topCollarSeventhMass M N x :=
-    (by ring : 3 * (ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) =
-      3 * ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))).trans_le h3ε
-  have hc0_split : c₀ / 2 * topCollarSeventhMass M N x =
-      2 * (c₀ / 4 * topCollarSeventhMass M N x) := by ring
-  linarith only [harch_Uy, hpr_Uy, hpo_Uy, hweil_Uy, hcosh0, h3ε', hc0_split,
-    (by ring : (B_arch + B_prime + B_pole) * (∫ u, U_y u ^ 2) =
-      B_arch * (∫ u, U_y u ^ 2) + B_prime * (∫ u, U_y u ^ 2) + B_pole * ∫ u, U_y u ^ 2)]
+  change (c₀ / 4) * topCollarSeventhMass M N x +
+      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+    weilQuad U_y + (B_arch + B_prime + B_pole) * ∫ u, U_y u ^ 2
+  change -primeSum U_y ≤
+      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_prime * ∫ u, U_y u ^ 2 at hpr_Uy
+  change 2 * sinhHalfMoment U_y ^ 2 ≤
+      ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) + B_pole * ∫ u, U_y u ^ 2 at hpo_Uy
+  set S_M : ℝ := topCollarSeventhMass M N x
+  set W_U : ℝ := ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))
+  set I_U : ℝ := ∫ u, U_y u ^ 2
+  have hstep1 : (c₀ / 4) * S_M + ε * W_U ≤ (c₀ / 2) * S_M - 2 * (ε * W_U) := by
+    have h4 : ε * W_U + 2 * (ε * W_U) ≤ (c₀ / 4) * S_M :=
+      (le_of_eq (by ring : ε * W_U + 2 * (ε * W_U) = 3 * ε * W_U)).trans h3ε
+    exact le_sub_iff_add_le.mpr
+      ((le_of_eq (by ring : (c₀ / 4 * S_M + ε * W_U) + 2 * (ε * W_U) =
+          c₀ / 4 * S_M + (ε * W_U + 2 * (ε * W_U)))).trans
+        ((add_le_add_left h4 (c₀ / 4 * S_M)).trans_eq (by ring)))
+  have hstep2 : (c₀ / 2) * S_M - 2 * (ε * W_U) ≤
+      (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
+        (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) := by
+    have hp1 : -(ε * W_U) ≤ -primeSum U_y + B_prime * I_U :=
+      neg_le_iff_add_nonneg.mpr (sub_nonneg.mpr hpr_Uy |>.trans_eq (by ring))
+    have hp2 : -(ε * W_U) ≤ -(2 * sinhHalfMoment U_y ^ 2) + B_pole * I_U :=
+      neg_le_iff_add_nonneg.mpr (sub_nonneg.mpr hpo_Uy |>.trans_eq (by ring))
+    exact (le_of_eq (by ring : c₀ / 2 * S_M - 2 * (ε * W_U) =
+        c₀ / 2 * S_M + -(ε * W_U) + -(ε * W_U))).trans
+      ((add_le_add (add_le_add harch_Uy hp1) hp2).trans_eq (by ring))
+  calc (c₀ / 4) * S_M + ε * W_U
+      ≤ (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
+          (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) := hstep1.trans hstep2
+    _ ≤ (archForm U_y + B_arch * I_U) - (primeSum U_y - B_prime * I_U) -
+          (2 * sinhHalfMoment U_y ^ 2 - B_pole * I_U) + 2 * coshHalfMoment U_y ^ 2 :=
+        le_add_of_nonneg_right hcosh0
+    _ = weilQuad U_y + (B_arch + B_prime + B_pole) * I_U := by
+        rw [hweil_Uy]; ring
 
 /-- **Collar atomic Gårding along any critical curve `c_N⁸ / log N → R > 0`.** -/
 theorem exists_collar_atomic_garding_along_critical_curve

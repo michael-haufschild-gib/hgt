@@ -23,6 +23,10 @@ Lean: `MetaplecticMobiusDescent/TheCubicCuspBarrier.lean`, namespace
 `kernelQuotientBarrier_contMDiff`, `kernelQuotientBarrier_fordCusp`,
 `kernelQuotientBarrierDefect_hasCompactSupport`.
 Transitive audits use only `propext`, `Classical.choice`, and `Quot.sound`.
+`TheCubicCuspProfileEquation.lean` proves `fullCuspProfileField_laplacian`:
+for smooth profiles with `F=LF=0` below height one, the positive Laplacian
+of `ΣF(h_x)` is `Σ(LF)(h_x)`. Local finiteness gives a common finite sum
+near each point, and the row-profile equation applies term by term.
 Identification of `D` with `Δφ−φ` and exterior coercivity remain open.
 Adapted from OpenAI's `Eisenstein/CuspHeight.lean`; local finiteness uses
 the locally proved integral row bound.

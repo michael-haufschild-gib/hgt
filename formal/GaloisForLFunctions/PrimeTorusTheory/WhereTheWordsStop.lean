@@ -16,6 +16,7 @@ So a squared word living on integers with only large prime factors is an admissi
 -/
 
 open Finset
+open scoped Pointwise Matrix
 
 namespace GaloisForLFunctions.PrimeTorusTheory
 
@@ -60,10 +61,10 @@ theorem sum_log_le_log_of_free {q r K z : ℕ} (hq : q ≠ 0) (hK : z ≤ K)
 /-- **The support of a squared word in a prime.** If the pattern `x + h(S + S)` avoids `p ∤ h`, then `S` occupies at most `p/2` classes modulo `p`. -/
 theorem two_mul_card_image_le {S : Finset ℕ} (hS : S.Nonempty) {p x h : ℕ} (hp : p.Prime) (hph : ¬ p ∣ h)
     (hfree : ∀ a ∈ S, ∀ b ∈ S, ¬ p ∣ x + h * (a + b)) :
-    2 * (S.image fun a => (a : ZMod p)).card ≤ p := by
+    2 * (S.image fun a : ℕ => (a : ZMod p)).card ≤ p := by
   classical
   haveI : Fact p.Prime := ⟨hp⟩
-  set A : Finset (ZMod p) := S.image fun a => (a : ZMod p) with hA
+  set A : Finset (ZMod p) := S.image fun a : ℕ => (a : ZMod p) with hA
   have hAne : A.Nonempty := hS.image _
   have hh0 : (h : ZMod p) ≠ 0 := by
     rwa [Ne, ZMod.natCast_eq_zero_iff]
@@ -107,8 +108,8 @@ theorem card_support_ge {M k : ℕ} {c : ℕ → ℤ} (hm : ∀ j ≤ k, binomMo
   set e : Fin s ≃ S := S.equivFin.symm with he
   set v : Fin s → ℤ := fun i => ((e i : ℕ) : ℤ) with hv
   have hinj : Function.Injective v := fun i j h => by
-    have h1 : ((e i : S) : ℕ) = ((e j : S) : ℕ) := by exact_mod_cast h
-    exact e.injective (Subtype.ext h1)
+    have h1 : (((e i : S) : ℕ) : ℤ) = (((e j : S) : ℕ) : ℤ) := h
+    exact e.injective (Subtype.ext (by exact_mod_cast h1))
   have hdet : (Matrix.of fun i j : Fin s => (descPochhammer ℤ j).eval (v i)).det ≠ 0 := by
     rw [← Matrix.det_eval_matrixOfPolynomials_eq_det_vandermonde v (fun j => descPochhammer ℤ j)
       (fun j => descPochhammer_natDegree ℤ j) (fun j => monic_descPochhammer ℤ j)]
@@ -164,7 +165,7 @@ theorem squared_word_pattern {M k : ℕ} {c : ℕ → ℤ} (hm : ∀ j ≤ k, bi
       ∀ {p x h : ℕ}, p.Prime → ¬ p ∣ h →
         (∀ a ∈ (range (M + 1)).filter (fun a => c a ≠ 0), ∀ b ∈ (range (M + 1)).filter (fun a => c a ≠ 0),
           ¬ p ∣ x + h * (a + b)) →
-        2 * (((range (M + 1)).filter fun a => c a ≠ 0).image fun a => (a : ZMod p)).card ≤ p := by
+        2 * (((range (M + 1)).filter fun a => c a ≠ 0).image fun a : ℕ => (a : ZMod p)).card ≤ p := by
   have hcard := card_support_ge hm hne
   have hS : ((range (M + 1)).filter fun a => c a ≠ 0).Nonempty := by
     rw [← Finset.card_pos]

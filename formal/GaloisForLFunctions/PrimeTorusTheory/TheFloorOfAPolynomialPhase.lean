@@ -34,7 +34,6 @@ def letters (M : ℕ) (c : ℕ → ℤ) : Finset ℕ := (range (M + 1)).filter f
 
 theorem mem_letters {M : ℕ} {c : ℕ → ℤ} {a : ℕ} : a ∈ letters M c ↔ a ≤ M ∧ c a ≠ 0 := by
   simp [letters]
-  omega
 
 /-- `a C(a,j) = (j+1) C(a,j+1) + j C(a,j)`. -/
 theorem cast_mul_choose (a j : ℕ) :
@@ -137,7 +136,7 @@ theorem mem_backward {k : ℕ} {f : ℕ → ℝ} (hf : ∀ n, (fwdDiff (1 : ℕ)
     (h : ∀ i ≤ k, f (n + (i + 1)) ∈ integers) : f n ∈ integers := by
   have h0 := hf n
   rw [fwdDiff_iter_eq_sum_shift, sum_range_succ'] at h0
-  simp only [Nat.choose_zero_right, Nat.cast_one, mul_one, zero_smul, add_zero, Nat.sub_zero,
+  simp only [Nat.choose_zero_right, Nat.cast_one, mul_one, add_zero, Nat.sub_zero,
     smul_eq_mul] at h0
   have hsum : ∑ i ∈ range (k + 1),
       ((-1 : ℤ) ^ (k + 1 - (i + 1)) * ((k + 1).choose (i + 1) : ℤ)) • f (n + (i + 1)) ∈ integers :=
@@ -263,7 +262,6 @@ theorem odd_choose_two_pow_sub_one (m a : ℕ) :
       have e : a + 1 = 2 * (a / 2 + 1) := by omega
       have hd : 2 ^ (m + 1) ∣ a + 1 ↔ 2 ^ m ∣ a / 2 + 1 := by
         rw [e, pow_succ, mul_comm (2 ^ m) 2, Nat.mul_dvd_mul_iff_left (by norm_num : 0 < 2)]
-        simp only [Nat.mul_add_div (by norm_num : 0 < 2)]
       rw [hd, ← ih, Nat.odd_iff, Nat.odd_iff]
       omega
 

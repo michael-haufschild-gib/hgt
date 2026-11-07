@@ -148,39 +148,26 @@ private lemma exists_exp_le_factorial {B δ : ℝ} (hB : 0 ≤ B) (hδ : 0 < δ)
   rw [hval]
   exact mul_le_mul_of_nonneg_right hmR (by positivity)
 
-/-- **`Q` dominates its rotations on the negative axis, faster than every exponential.** -/
-theorem exists_norm_squaredXi_rot_le {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠ 1) (K : ℝ) :
-    ∃ r₀ : ℝ, 0 ≤ r₀ ∧ ∀ r : ℝ, r₀ ≤ r →
-      ‖squaredXi (ϑ * -((r : ℂ) ^ 2))‖ ≤ Real.exp (-(K * r)) * ‖squaredXi (-((r : ℂ) ^ 2))‖ := by
-  set θ := Complex.arg ϑ with hθ
-  set ω : ℂ := Complex.exp (((θ / 2 : ℝ) : ℂ) * I) with hω
-  have hωsq : ω ^ 2 = ϑ := by
-    have h2 : ω ^ 2 = Complex.exp ((θ : ℂ) * I) := by
-      rw [hω, ← Complex.exp_nat_mul]
-      congr 1
-      push_cast
-      ring
+/-- A unit `ϑ ≠ 1` has a square root in the closed right half-plane, off the point `1`. -/
+private lemma exists_sqrt_unit {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠ 1) :
+    ∃ ω : ℂ, ω ^ 2 = ϑ ∧ ‖ω‖ = 1 ∧ 0 ≤ ω.re ∧ ω.re < 1 := by
+  obtain ⟨θ, hθ⟩ : ∃ θ : ℝ, θ = Complex.arg ϑ := ⟨_, rfl⟩
+  have hθ1 : -Real.pi < θ := hθ ▸ Complex.neg_pi_lt_arg ϑ
+  have hθ2 : θ ≤ Real.pi := hθ ▸ Complex.arg_le_pi ϑ
+  have hexp : Complex.exp ((θ : ℂ) * I) = ϑ := by
     have h3 := Complex.norm_mul_exp_arg_mul_I ϑ
-    rw [hn] at h3
-    simp only [Complex.ofReal_one, one_mul] at h3
-    rw [h2]
-    exact h3
-  have hωnorm : ‖ω‖ = 1 := Complex.norm_exp_ofReal_mul_I _
-  set c : ℝ := Real.cos (θ / 2) with hc
-  have hωre : ω.re = c := Complex.exp_ofReal_mul_I_re _
-  have hωim : ω.im = Real.sin (θ / 2) := Complex.exp_ofReal_mul_I_im _
-  have hθ1 := Complex.neg_pi_lt_arg ϑ
-  have hθ2 := Complex.arg_le_pi ϑ
-  have hc0 : 0 ≤ c := Real.cos_nonneg_of_mem_Icc ⟨by linarith, by linarith⟩
-  have hθne : θ ≠ 0 := by
-    intro h0
-    apply h1
-    have h3 := Complex.norm_mul_exp_arg_mul_I ϑ
-    rw [hn, ← hθ, h0] at h3
-    simpa using h3.symm
-  have hc1 : c < 1 := by
-    have hle := Real.cos_le_one (θ / 2)
-    refine lt_of_le_of_ne hle fun heq => hθne ?_
+    rw [hn, ← hθ] at h3
+    simpa using h3
+  have hθne : θ ≠ 0 := fun h0 => h1 (by rw [← hexp, h0]; simp)
+  refine ⟨Complex.exp (((θ / 2 : ℝ) : ℂ) * I), ?_, Complex.norm_exp_ofReal_mul_I _, ?_, ?_⟩
+  · rw [← hexp, ← Complex.exp_nat_mul]
+    congr 1
+    push_cast
+    ring
+  · rw [Complex.exp_ofReal_mul_I_re]
+    exact Real.cos_nonneg_of_mem_Icc ⟨by linarith, by linarith⟩
+  · rw [Complex.exp_ofReal_mul_I_re]
+    refine lt_of_le_of_ne (Real.cos_le_one _) fun heq => hθne ?_
     obtain ⟨n, hn'⟩ := (Real.cos_eq_one_iff (θ / 2)).mp heq
     have hbound : |θ / 2| < 2 * Real.pi := by
       rw [abs_lt]
@@ -188,24 +175,166 @@ theorem exists_norm_squaredXi_rot_le {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠
     have hn0 : n = 0 := by
       by_contra hne
       have h4 : (1 : ℝ) ≤ |(n : ℝ)| := by exact_mod_cast Int.one_le_abs hne
-      rw [← hn', abs_mul, abs_mul, abs_of_pos two_pos, abs_of_pos Real.pi_pos] at hbound
       have h5 : 0 < 2 * Real.pi := by positivity
+      rw [← hn', abs_mul, abs_of_pos h5] at hbound
       nlinarith
     rw [hn0] at hn'
     simp at hn'
     linarith
-  set δ : ℝ := (1 - c) / 2 with hδ
-  have hδ0 : 0 < δ := by rw [hδ]; linarith
+
+/-- On the rotated point `ζ` has polynomial size, either on the critical line or far to the right. -/
+private lemma norm_zeta_rot_le {r : ℝ} {ω : ℂ} (hω : ‖ω‖ = 1) (hr : 2 ≤ r)
+    (h : ω.re = 0 ∨ 3 ≤ 2 * (r * ω.re)) : ‖riemannZeta (1 / 2 + (r : ℂ) * ω)‖ ≤ 2 + 4 * r := by
+  have hr0 : 0 < r := by linarith
+  have hre : (1 / 2 + (r : ℂ) * ω).re = 1 / 2 + r * ω.re := by simp
+  have him : (1 / 2 + (r : ℂ) * ω).im = r * ω.im := by simp
+  rcases h with h0 | h3
+  · have hnsq : ω.re * ω.re + ω.im * ω.im = 1 := by
+      have := Complex.normSq_eq_norm_sq ω
+      rw [hω, Complex.normSq_apply] at this
+      linarith
+    rw [h0] at hnsq hre
+    have h3 : ω.im * ω.im = 1 := by linarith
+    have hsin : |ω.im| = 1 := by
+      rcases mul_self_eq_one_iff.mp h3 with h | h <;> simp [h]
+    obtain ⟨t, ht⟩ : ∃ t : ℝ, t = r * ω.im := ⟨_, rfl⟩
+    rw [← ht] at him
+    have hsplit : (1 / 2 + (r : ℂ) * ω) = (((1 / 2 : ℝ)) : ℂ) + (t : ℂ) * I := by
+      apply Complex.ext
+      · rw [hre]
+        simp
+      · rw [him]
+        simp
+    have htabs : |t| = r := by
+      rw [ht, abs_mul, hsin, mul_one, abs_of_pos hr0]
+    have h2 := _root_.RHTower.norm_riemannZeta_le_of_re_pos (σ := 1 / 2) (t := t)
+      (by norm_num) (by norm_num) (by rw [htabs]; exact hr)
+    rw [htabs, ← hsplit] at h2
+    have h4 : 2 + 2 * r / (1 / 2) = 2 + 4 * r := by ring
+    rwa [h4] at h2
+  · have h4 : 2 ≤ (1 / 2 + (r : ℂ) * ω).re := by
+      rw [hre]
+      linarith
+    have h5 := (_root_.RHTower.norm_riemannZeta_bounds_of_two_le_re h4).2
+    linarith
+
+/-- The numerator: `‖ξ(½ + rω)‖` through its Gamma factor. -/
+private lemma norm_xi_rot_le {r : ℝ} {ω : ℂ} (hr : 0 ≤ r) (hω : ‖ω‖ = 1)
+    (hpos : 0 < (1 / 2 + (r : ℂ) * ω).re) (hne1 : (1 / 2 + (r : ℂ) * ω) ≠ 1) :
+    ‖_root_.RHTower.xi (1 / 2 + (r : ℂ) * ω)‖ ≤ ((1 / 2 + r) ^ 2 / 2) *
+      ((Real.pi ^ (-((1 / 2 + (r : ℂ) * ω).re / 2)) * Real.Gamma ((1 / 2 + (r : ℂ) * ω).re / 2)) *
+        ‖riemannZeta (1 / 2 + (r : ℂ) * ω)‖) := by
+  have hne0 : (1 / 2 + (r : ℂ) * ω) ≠ 0 := fun h => by
+    rw [h] at hpos
+    simp at hpos
+  obtain ⟨s, hs⟩ : ∃ s : ℂ, s = 1 / 2 + (r : ℂ) * ω := ⟨_, rfl⟩
+  rw [← hs] at hpos hne1 hne0 ⊢
+  have hnorm : ‖s‖ ≤ 1 / 2 + r := by
+    rw [hs]
+    refine (norm_add_le _ _).trans ?_
+    rw [norm_mul, hω, mul_one, Complex.norm_real, Real.norm_of_nonneg hr]
+    norm_num
+  have hnorm2 : ‖s - 1‖ ≤ 1 / 2 + r := by
+    have h2 : s - 1 = -(1 / 2) + (r : ℂ) * ω := by
+      rw [hs]
+      ring
+    rw [h2]
+    refine (norm_add_le _ _).trans ?_
+    rw [norm_mul, hω, mul_one, Complex.norm_real, Real.norm_of_nonneg hr]
+    norm_num
+  rw [xi_eq_mul hne0 hne1 hpos, norm_mul, norm_mul, norm_div, norm_mul]
+  have h2 : ‖(2 : ℂ)‖ = 2 := by simp
+  rw [h2]
+  have h3 : ‖s‖ * ‖s - 1‖ / 2 ≤ (1 / 2 + r) ^ 2 / 2 := by
+    have := mul_le_mul hnorm hnorm2 (norm_nonneg _) (by positivity)
+    rw [sq]
+    linarith
+  have hG := norm_Gammaℝ_le hpos
+  exact mul_le_mul h3 (mul_le_mul_of_nonneg_right hG (norm_nonneg _)) (by positivity) (by positivity)
+
+/-- The denominator: `‖ξ(σ)‖` on the real axis. -/
+private lemma le_norm_xi_real {σ : ℝ} (hσ : 2 ≤ σ) :
+    (σ ^ 2 / 12) * (Real.pi ^ (-(σ / 2)) * Real.Gamma (σ / 2)) ≤ ‖_root_.RHTower.xi (σ : ℂ)‖ := by
+  have hσne0 : (σ : ℂ) ≠ 0 := by exact_mod_cast (by linarith : σ ≠ 0)
+  have hσne1 : (σ : ℂ) ≠ 1 := by exact_mod_cast (by linarith : σ ≠ 1)
+  have hσre : ((σ : ℂ)).re = σ := by simp
+  rw [xi_eq_mul hσne0 hσne1 (by rw [hσre]; linarith), norm_mul, norm_mul, norm_div, norm_mul]
+  have h2 : ‖(2 : ℂ)‖ = 2 := by simp
+  rw [h2, norm_Gammaℝ_ofReal (by linarith)]
+  have hz3 := (_root_.RHTower.norm_riemannZeta_bounds_of_two_le_re (s := (σ : ℂ)) (by rw [hσre]; exact hσ)).1
+  have hnorm1 : ‖(σ : ℂ)‖ = σ := by
+    rw [Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+  have hnorm2 : ‖(σ : ℂ) - 1‖ = σ - 1 := by
+    have : (σ : ℂ) - 1 = ((σ - 1 : ℝ) : ℂ) := by push_cast; ring
+    rw [this, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
+  rw [hnorm1, hnorm2]
+  have h3 : σ ^ 2 / 4 ≤ σ * (σ - 1) / 2 := by nlinarith
+  have hG : 0 < Real.Gamma (σ / 2) := Real.Gamma_pos_of_pos (by linarith)
+  have hP : 0 < Real.pi ^ (-(σ / 2)) := Real.rpow_pos_of_pos Real.pi_pos _
+  have hnn : 0 ≤ Real.pi ^ (-(σ / 2)) * Real.Gamma (σ / 2) := by positivity
+  calc (σ ^ 2 / 12) * (Real.pi ^ (-(σ / 2)) * Real.Gamma (σ / 2))
+      = (σ ^ 2 / 4) * ((Real.pi ^ (-(σ / 2)) * Real.Gamma (σ / 2)) * (1 / 3)) := by ring
+    _ ≤ (σ * (σ - 1) / 2) * ((Real.pi ^ (-(σ / 2)) * Real.Gamma (σ / 2)) * ‖riemannZeta (σ : ℂ)‖) :=
+        mul_le_mul h3 (mul_le_mul_of_nonneg_left hz3 hnn) (by positivity) (by nlinarith)
+
+/-- The Gamma ratio with its factorial gain, across a gap of at least `n ≥ 2`. -/
+private lemma Gamma_ratio_le {a b : ℝ} {n : ℕ} (ha : 1 / 4 ≤ a) (hn : 2 ≤ n) (hb : a + n ≤ b) :
+    Real.Gamma a * ((n - 1).factorial : ℝ) ≤ 4 * Real.Gamma b := by
+  have ha0 : 0 < a := by linarith
+  have hnR : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hcast : ((n - 1 : ℕ) : ℝ) + 1 = n := by
+    rw [Nat.cast_sub (by omega)]
+    simp
+  have h1 := Gamma_mul_factorial_le ha0 (n - 1)
+  have h2 : a + ((n - 1 : ℕ) : ℝ) + 1 = a + n := by linarith
+  rw [h2] at h1
+  have h3 : Real.Gamma (a + n) ≤ Real.Gamma b :=
+    Real.Gamma_strictMonoOn_Ici.monotoneOn (Set.mem_Ici.mpr (by linarith))
+      (Set.mem_Ici.mpr (by linarith)) hb
+  have hG := Real.Gamma_pos_of_pos ha0
+  have hfac : (0 : ℝ) ≤ ((n - 1).factorial : ℝ) := by positivity
+  have h4 : Real.Gamma a * (1 / 4) * ((n - 1).factorial : ℝ) ≤ Real.Gamma a * a * ((n - 1).factorial : ℝ) := by
+    gcongr
+  linarith
+
+/-- The final arithmetic of the dominance estimate. -/
+private lemma dominance_arith {X Y S Pb Eπ Ga Gb F r Ek E : ℝ} (hS : 0 ≤ S) (hPb : 0 < Pb) (hGa : 0 < Ga)
+    (hE0 : 0 < E) (hnum : X ≤ (S / 2) * (((Pb * Eπ) * Ga) * (2 + 4 * r))) (hden : (S / 12) * (Pb * Gb) ≤ Y)
+    (hG : Ga * F ≤ 4 * Gb) (hbig : 24 * (2 + 4 * r) * Eπ * Ek ≤ F) (hE : E * Ek = 1) : X ≤ E * Y := by
+  have h1 : 24 * (2 + 4 * r) * Eπ * Ga = E * ((24 * (2 + 4 * r) * Eπ * Ek) * Ga) := by
+    calc _ = (E * Ek) * (24 * (2 + 4 * r) * Eπ * Ga) := by rw [hE, one_mul]
+      _ = _ := by ring
+  have h2 : (24 * (2 + 4 * r) * Eπ * Ek) * Ga ≤ F * Ga := mul_le_mul_of_nonneg_right hbig hGa.le
+  have h3 : 24 * (2 + 4 * r) * Eπ * Ga ≤ E * (4 * Gb) := by
+    rw [h1]
+    refine mul_le_mul_of_nonneg_left ?_ hE0.le
+    linarith [mul_comm F Ga]
+  have h4 : (S / 2) * (((Pb * Eπ) * Ga) * (2 + 4 * r)) = (S / 48) * Pb * (24 * (2 + 4 * r) * Eπ * Ga) := by ring
+  rw [h4] at hnum
+  have h5 : (S / 48) * Pb * (24 * (2 + 4 * r) * Eπ * Ga) ≤ (S / 48) * Pb * (E * (4 * Gb)) :=
+    mul_le_mul_of_nonneg_left h3 (by positivity)
+  have h6 : (S / 48) * Pb * (E * (4 * Gb)) = E * ((S / 12) * (Pb * Gb)) := by ring
+  have h7 := mul_le_mul_of_nonneg_left hden hE0.le
+  linarith
+
+/-- **`Q` dominates its rotations on the negative axis, faster than every exponential.** -/
+theorem exists_norm_squaredXi_rot_le {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠ 1) (K : ℝ) :
+    ∃ r₀ : ℝ, 0 ≤ r₀ ∧ ∀ r : ℝ, r₀ ≤ r →
+      ‖squaredXi (ϑ * -((r : ℂ) ^ 2))‖ ≤ Real.exp (-(K * r)) * ‖squaredXi (-((r : ℂ) ^ 2))‖ := by
+  obtain ⟨ω, hωsq, hωn, hc0, hc1⟩ := exists_sqrt_unit hn h1
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = ω.re := ⟨_, rfl⟩
+  rw [← hc] at hc0 hc1
+  have hδ0 : 0 < (1 - c) / 2 := by linarith
+  obtain ⟨δ, hδ⟩ : ∃ δ : ℝ, δ = (1 - c) / 2 := ⟨_, rfl⟩
+  rw [← hδ] at hδ0
   have hlogπ : 0 ≤ Real.log Real.pi := Real.log_nonneg (by linarith [Real.pi_gt_three])
-  set B : ℝ := |K| + δ * Real.log Real.pi + 1 with hB
-  have hB0 : 0 ≤ B := by positivity
+  have hB0 : 0 ≤ |K| + δ * Real.log Real.pi + 1 := by positivity
   obtain ⟨r₁, hr₁0, hfac⟩ := exists_exp_le_factorial hB0 hδ0
-  -- Height at which the abscissa of `½ + r ω` is either `½` or at least `2`.
-  set r₀ : ℝ := max (max r₁ 400) (max (4 / δ) (3 / (2 * c))) with hr₀
-  have hr400 : (400 : ℝ) ≤ r₀ := (le_max_right _ _).trans (le_max_left _ _)
-  refine ⟨r₀, by linarith, fun r hr => ?_⟩
+  refine ⟨max (max r₁ 400) (max (4 / δ) (3 / (2 * c))), by
+    have := (le_max_right r₁ 400).trans (le_max_left (max r₁ 400) (max (4 / δ) (3 / (2 * c))))
+    linarith, fun r hr => ?_⟩
   have hr1 : r₁ ≤ r := ((le_max_left _ _).trans (le_max_left _ _)).trans hr
-  have hr4 : 400 ≤ r := hr400.trans hr
+  have hr4 : 400 ≤ r := ((le_max_right _ _).trans (le_max_left _ _)).trans hr
   have hr0 : 0 < r := by linarith
   have hδr : 4 ≤ δ * r := by
     have h2 : 4 / δ ≤ r := ((le_max_left _ _).trans (le_max_right _ _)).trans hr
@@ -214,227 +343,92 @@ theorem exists_norm_squaredXi_rot_le {ϑ : ℂ} (hn : ‖ϑ‖ = 1) (h1 : ϑ ≠
     rw [← squaredXi_neg_sq, mul_pow, hωsq]
     congr 1
     ring
-  have hval2 : squaredXi (-((r : ℂ) ^ 2)) = _root_.RHTower.xi (1 / 2 + (r : ℂ)) := by
-    have := squaredXi_neg_sq (r : ℂ) 1
-    simpa using this
-  rw [hval1, hval2]
-  -- The two points.
-  set s₁ : ℂ := 1 / 2 + (r : ℂ) * ω with hs₁
-  set σ₂ : ℝ := 1 / 2 + r with hσ₂
-  have hs₂ : (1 / 2 + (r : ℂ)) = (σ₂ : ℂ) := by
-    rw [hσ₂]
+  have hval2 : squaredXi (-((r : ℂ) ^ 2)) = _root_.RHTower.xi (((1 / 2 + r : ℝ)) : ℂ) := by
+    have h2 := squaredXi_neg_sq (r : ℂ) 1
+    rw [mul_one] at h2
+    rw [h2]
+    congr 1
     push_cast
     ring
-  have hσ₂2 : 2 ≤ σ₂ := by rw [hσ₂]; linarith
-  have hs₁re : s₁.re = 1 / 2 + r * c := by
-    rw [hs₁]
-    simp [hωre]
-  have hs₁im : s₁.im = r * Real.sin (θ / 2) := by
-    rw [hs₁]
-    simp [hωim]
-  have hs₁pos : 0 < s₁.re := by
-    rw [hs₁re]
-    positivity
-  have hs₁norm : ‖s₁‖ ≤ σ₂ := by
-    rw [hs₁, hσ₂]
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, hωnorm, mul_one, Complex.norm_real, Real.norm_of_nonneg hr0.le]
-    norm_num
-  have hs₁norm2 : ‖s₁ - 1‖ ≤ σ₂ := by
-    have h2 : s₁ - 1 = -(1 / 2) + (r : ℂ) * ω := by
-      rw [hs₁]
-      ring
-    rw [h2, hσ₂]
-    refine (norm_add_le _ _).trans ?_
-    rw [norm_mul, hωnorm, mul_one, Complex.norm_real, Real.norm_of_nonneg hr0.le]
-    norm_num
-  have hs₁ne0 : s₁ ≠ 0 := fun h => by
-    rw [h] at hs₁pos
-    simp at hs₁pos
-  -- `ζ` at the rotated point has polynomial size.
-  have hζ : ‖riemannZeta s₁‖ ≤ 2 + 4 * r := by
-    by_cases hc00 : c = 0
-    · have hsin : |Real.sin (θ / 2)| = 1 := by
-        have h2 := Real.sin_sq_add_cos_sq (θ / 2)
-        rw [← hc, hc00] at h2
-        have h3 : Real.sin (θ / 2) * Real.sin (θ / 2) = 1 := by nlinarith
-        rcases mul_self_eq_one_iff.mp h3 with h | h <;> simp [h]
-      obtain ⟨t, ht⟩ : ∃ t : ℝ, t = r * Real.sin (θ / 2) := ⟨_, rfl⟩
-      rw [← ht] at hs₁im
-      have hsplit : s₁ = (((1 / 2 : ℝ)) : ℂ) + (t : ℂ) * I := by
-        apply Complex.ext
-        · rw [hs₁re, hc00]
-          simp
-        · rw [hs₁im]
-          simp
-      have htabs : |t| = r := by
-        rw [ht, abs_mul, hsin, mul_one, abs_of_pos hr0]
-      have h2 := _root_.RHTower.norm_riemannZeta_le_of_re_pos (σ := 1 / 2) (t := t)
-        (by norm_num) (by norm_num) (by rw [htabs]; linarith)
-      rw [htabs, ← hsplit] at h2
-      have h3 : 2 + 2 * r / (1 / 2) = 2 + 4 * r := by ring
-      rwa [h3] at h2
-    · have hcpos : 0 < c := lt_of_le_of_ne hc0 (Ne.symm hc00)
-      have h2 : 3 / (2 * c) ≤ r := ((le_max_right _ _).trans (le_max_right _ _)).trans hr
-      rw [div_le_iff₀ (by positivity)] at h2
-      have h3 : 2 ≤ s₁.re := by
-        rw [hs₁re]
-        linarith
-      have h4 := (_root_.RHTower.norm_riemannZeta_bounds_of_two_le_re h3).2
-      linarith
-  have hs₁ne1 : s₁ ≠ 1 := by
-    intro h
-    have hre1 : s₁.re = 1 := by rw [h]; simp
-    rw [hs₁re] at hre1
-    by_cases hc00 : c = 0
-    · rw [hc00] at hre1
-      norm_num at hre1
-    · have hcpos : 0 < c := lt_of_le_of_ne hc0 (Ne.symm hc00)
-      have h2 : 3 / (2 * c) ≤ r := ((le_max_right _ _).trans (le_max_right _ _)).trans hr
-      rw [div_le_iff₀ (by positivity)] at h2
-      linarith
-  -- The Gamma factors.
-  set a : ℝ := s₁.re / 2 with ha
-  set b : ℝ := σ₂ / 2 with hb
-  have haval : a = 1 / 4 + r * c / 2 := by
-    rw [ha, hs₁re]
-    ring
-  have hbval : b = 1 / 4 + r / 2 := by
-    rw [hb, hσ₂]
-    ring
-  have ha4 : 1 / 4 ≤ a := by
-    rw [haval]
-    have : 0 ≤ r * c / 2 := by positivity
-    linarith
-  have ha0 : 0 < a := by linarith
-  have hb2 : 2 ≤ b := by
-    rw [hbval]
-    linarith
-  have hgap : b - a = δ * r := by
-    rw [haval, hbval, hδ]
-    ring
-  set n := ⌊δ * r⌋₊ with hn'
-  have hn4 : 4 ≤ n := Nat.le_floor (by exact_mod_cast hδr)
-  have hnle : (n : ℝ) ≤ δ * r := Nat.floor_le (by positivity)
-  set m := n - 1 with hm
-  have hmn : ((m : ℝ) + 1) = n := by
-    rw [hm, Nat.cast_sub (by omega)]
+  rw [hval1, hval2]
+  have hre : (1 / 2 + (r : ℂ) * ω).re = 1 / 2 + r * c := by
+    rw [hc]
     simp
-  have hGamma : Real.Gamma a * a * (m.factorial : ℝ) ≤ Real.Gamma b := by
-    refine (Gamma_mul_factorial_le ha0 m).trans ?_
-    have h2 : a + m + 1 = a + n := by linarith
-    rw [h2]
-    refine Real.Gamma_strictMonoOn_Ici.monotoneOn ?_ (Set.mem_Ici.mpr hb2) (by linarith)
-    rw [Set.mem_Ici]
-    have : (4 : ℝ) ≤ n := by exact_mod_cast hn4
+  have hrc0 : 0 ≤ r * c := by positivity
+  have hpos : 0 < (1 / 2 + (r : ℂ) * ω).re := by
+    rw [hre]
     linarith
-  have hGa := Real.Gamma_pos_of_pos ha0
-  have hGb := Real.Gamma_pos_of_pos (by linarith : 0 < b)
-  have hfacpos : (0 : ℝ) < (m.factorial : ℝ) := by exact_mod_cast Nat.factorial_pos m
-  have hGratio : Real.Gamma a * (m.factorial : ℝ) ≤ 4 * Real.Gamma b := by
-    have h2 : Real.Gamma a * (1 / 4) * (m.factorial : ℝ) ≤ Real.Gamma a * a * (m.factorial : ℝ) := by
-      gcongr
-    linarith
-  -- The numerator.
-  have hπ := Real.pi_pos
-  set Pb : ℝ := Real.pi ^ (-b) with hPb
-  have hPbpos : 0 < Pb := Real.rpow_pos_of_pos hπ _
-  set Eπ : ℝ := Real.exp (δ * r * Real.log Real.pi) with hEπ
-  have hPa : Real.pi ^ (-a) = Pb * Eπ := by
-    have h2 : -a = -b + δ * r := by linarith
-    rw [h2, Real.rpow_add hπ, hPb, hEπ, Real.rpow_def_of_pos hπ (δ * r)]
+  have hcase : ω.re = 0 ∨ 3 ≤ 2 * (r * ω.re) := by
+    rw [← hc]
+    by_cases hc00 : c = 0
+    · exact Or.inl hc00
+    · refine Or.inr ?_
+      have hcpos : 0 < c := lt_of_le_of_ne hc0 (Ne.symm hc00)
+      have h2 : 3 / (2 * c) ≤ r := ((le_max_right _ _).trans (le_max_right _ _)).trans hr
+      rw [div_le_iff₀ (by positivity)] at h2
+      linarith
+  have hne1 : (1 / 2 + (r : ℂ) * ω) ≠ 1 := by
+    intro h
+    have hre1 : (1 / 2 + (r : ℂ) * ω).re = 1 := by rw [h]; simp
+    rw [hre] at hre1
+    rw [← hc] at hcase
+    rcases hcase with h0 | h3
+    · rw [h0] at hre1
+      norm_num at hre1
+    · linarith
+  have hζ := norm_zeta_rot_le hωn (by linarith) hcase
+  have hnum := norm_xi_rot_le hr0.le hωn hpos hne1
+  rw [hre] at hnum
+  have hσ2 : 2 ≤ 1 / 2 + r := by linarith
+  have hden := le_norm_xi_real hσ2
+  have ha4 : 1 / 4 ≤ (1 / 2 + r * c) / 2 := by linarith
+  have hgap : (1 / 2 + r * c) / 2 + δ * r = (1 / 2 + r) / 2 := by
+    rw [hδ]
+    ring
+  have hn4 : 4 ≤ ⌊δ * r⌋₊ := Nat.le_floor (by exact_mod_cast hδr)
+  have hnle : (⌊δ * r⌋₊ : ℝ) ≤ δ * r := Nat.floor_le (by positivity)
+  have hG := Gamma_ratio_le ha4 (by omega : 2 ≤ ⌊δ * r⌋₊) (by linarith : (1 / 2 + r * c) / 2 + (⌊δ * r⌋₊ : ℝ) ≤ (1 / 2 + r) / 2)
+  have hPa : Real.pi ^ (-((1 / 2 + r * c) / 2)) =
+      Real.pi ^ (-((1 / 2 + r) / 2)) * Real.exp (δ * r * Real.log Real.pi) := by
+    have h2 : -((1 / 2 + r * c) / 2) = -((1 / 2 + r) / 2) + δ * r := by linarith
+    rw [h2, Real.rpow_add Real.pi_pos, Real.rpow_def_of_pos Real.pi_pos (δ * r)]
     congr 2
     ring
-  have hnum : ‖_root_.RHTower.xi s₁‖ ≤ (σ₂ ^ 2 / 2) * ((Pb * Eπ) * Real.Gamma a) * (2 + 4 * r) := by
-    rw [xi_eq_mul hs₁ne0 hs₁ne1 hs₁pos, norm_mul, norm_mul, norm_div, norm_mul]
-    have h2 : ‖(2 : ℂ)‖ = 2 := by simp
-    rw [h2]
-    have hG := norm_Gammaℝ_le hs₁pos
-    rw [hPa] at hG
-    have h3 : ‖s₁‖ * ‖s₁ - 1‖ / 2 ≤ σ₂ ^ 2 / 2 := by
-      have := mul_le_mul hs₁norm hs₁norm2 (norm_nonneg _) (by linarith)
-      rw [sq]
-      linarith
-    have hnn : 0 ≤ (Pb * Eπ) * Real.Gamma a := by positivity
-    calc _ ≤ (σ₂ ^ 2 / 2) * (((Pb * Eπ) * Real.Gamma a) * (2 + 4 * r)) :=
-          mul_le_mul h3 (mul_le_mul hG hζ (norm_nonneg _) hnn) (by positivity) (by positivity)
-      _ = _ := by ring
-  -- The denominator.
-  have hσne0 : (σ₂ : ℂ) ≠ 0 := by exact_mod_cast (by linarith : σ₂ ≠ 0)
-  have hσne1 : (σ₂ : ℂ) ≠ 1 := by exact_mod_cast (by linarith : σ₂ ≠ 1)
-  have hσre : ((σ₂ : ℂ)).re = σ₂ := by simp
-  have hden : (σ₂ ^ 2 / 12) * (Pb * Real.Gamma b) ≤ ‖_root_.RHTower.xi (σ₂ : ℂ)‖ := by
-    rw [xi_eq_mul hσne0 hσne1 (by rw [hσre]; linarith), norm_mul, norm_mul, norm_div, norm_mul]
-    have h2 : ‖(2 : ℂ)‖ = 2 := by simp
-    rw [h2, norm_Gammaℝ_ofReal (by linarith)]
-    have hz3 := (_root_.RHTower.norm_riemannZeta_bounds_of_two_le_re (s := (σ₂ : ℂ)) (by rw [hσre]; exact hσ₂2)).1
-    have hnorm1 : ‖(σ₂ : ℂ)‖ = σ₂ := by
-      rw [Complex.norm_real, Real.norm_of_nonneg (by linarith)]
-    have hnorm2 : ‖(σ₂ : ℂ) - 1‖ = σ₂ - 1 := by
-      have : (σ₂ : ℂ) - 1 = ((σ₂ - 1 : ℝ) : ℂ) := by push_cast; ring
-      rw [this, Complex.norm_real, Real.norm_of_nonneg (by linarith)]
-    rw [hnorm1, hnorm2]
-    have h3 : σ₂ ^ 2 / 4 ≤ σ₂ * (σ₂ - 1) / 2 := by nlinarith
-    have hnn : 0 ≤ Pb * Real.Gamma b := by positivity
-    calc (σ₂ ^ 2 / 12) * (Pb * Real.Gamma b) = (σ₂ ^ 2 / 4) * ((Pb * Real.Gamma b) * (1 / 3)) := by ring
-      _ ≤ (σ₂ * (σ₂ - 1) / 2) * ((Pb * Real.Gamma b) * ‖riemannZeta (σ₂ : ℂ)‖) :=
-          mul_le_mul h3 (mul_le_mul_of_nonneg_left hz3 hnn) (by positivity) (by nlinarith)
-  -- The factorial beats everything.
-  have hfacbig := hfac r hr1
-  rw [← hn', ← hm] at hfacbig
-  have hpoly : 24 * (2 + 4 * r) ≤ Real.exp r := by
-    have h2 : (1 + r / 2) ≤ Real.exp (r / 2) := by linarith [Real.add_one_le_exp (r / 2)]
-    have h3 : (1 + r / 2) ^ 2 ≤ Real.exp r := by
-      have h4 : Real.exp r = Real.exp (r / 2) ^ 2 := by
-        rw [← Real.exp_nat_mul]
-        congr 1
-        push_cast
-        ring
-      rw [h4]
-      exact pow_le_pow_left₀ (by linarith) h2 2
-    nlinarith
-  have hbig : 24 * (2 + 4 * r) * Eπ * Real.exp (K * r) ≤ (m.factorial : ℝ) := by
-    refine le_trans ?_ hfacbig
-    have h2 : Eπ * Real.exp (K * r) = Real.exp (δ * r * Real.log Real.pi + K * r) := by
-      rw [hEπ, ← Real.exp_add]
-    rw [mul_assoc, h2]
+  rw [hPa] at hnum
+  have hnum2 : ‖_root_.RHTower.xi (1 / 2 + (r : ℂ) * ω)‖ ≤ ((1 / 2 + r) ^ 2 / 2) *
+      (((Real.pi ^ (-((1 / 2 + r) / 2)) * Real.exp (δ * r * Real.log Real.pi)) *
+        Real.Gamma ((1 / 2 + r * c) / 2)) * (2 + 4 * r)) := by
+    refine hnum.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hζ ?_) (by positivity))
+    have := Real.Gamma_pos_of_pos (by linarith : 0 < (1 / 2 + r * c) / 2)
+    have hP := Real.rpow_pos_of_pos Real.pi_pos (-((1 / 2 + r) / 2))
+    positivity
+  have hbig : 24 * (2 + 4 * r) * Real.exp (δ * r * Real.log Real.pi) * Real.exp (K * r) ≤
+      ((⌊δ * r⌋₊ - 1).factorial : ℝ) := by
+    refine le_trans ?_ (hfac r hr1)
+    have hpoly : 24 * (2 + 4 * r) ≤ Real.exp r := by
+      have h2 : (1 + r / 2) ≤ Real.exp (r / 2) := by linarith [Real.add_one_le_exp (r / 2)]
+      have h3 : (1 + r / 2) ^ 2 ≤ Real.exp r := by
+        have h4 : Real.exp r = Real.exp (r / 2) ^ 2 := by
+          rw [← Real.exp_nat_mul]
+          congr 1
+          push_cast
+          ring
+        rw [h4]
+        exact pow_le_pow_left₀ (by linarith) h2 2
+      nlinarith
+    rw [mul_assoc, ← Real.exp_add]
     calc _ ≤ Real.exp r * Real.exp (δ * r * Real.log Real.pi + K * r) :=
           mul_le_mul_of_nonneg_right hpoly (Real.exp_pos _).le
       _ = Real.exp (r + (δ * r * Real.log Real.pi + K * r)) := by rw [Real.exp_add]
       _ ≤ _ := by
           refine Real.exp_le_exp.mpr ?_
           have hK : K * r ≤ |K| * r := mul_le_mul_of_nonneg_right (le_abs_self K) hr0.le
-          rw [hB]
           nlinarith
-  -- Assembly.
-  rw [hs₂]
-  refine hnum.trans (le_trans ?_ (mul_le_mul_of_nonneg_left hden (Real.exp_pos _).le))
   have hE : Real.exp (-(K * r)) * Real.exp (K * r) = 1 := by
     rw [← Real.exp_add]
     simp
-  have hmain : 24 * (2 + 4 * r) * Eπ * (Real.Gamma a) * (m.factorial : ℝ) * Real.exp (K * r) ≤
-      (m.factorial : ℝ) * (24 * (2 + 4 * r) * Eπ * Real.exp (K * r)) * Real.Gamma a := by
-    apply le_of_eq
-    ring
-  have hkey : 24 * (2 + 4 * r) * Eπ * Real.Gamma a ≤ Real.exp (-(K * r)) * (24 * Real.Gamma b) := by
-    have h2 : 24 * (2 + 4 * r) * Eπ * Real.exp (K * r) * Real.Gamma a ≤
-        (m.factorial : ℝ) * Real.Gamma a := mul_le_mul_of_nonneg_right hbig hGa.le
-    have h3 : (m.factorial : ℝ) * Real.Gamma a ≤ 4 * Real.Gamma b := by linarith
-    have h4 : 24 * (2 + 4 * r) * Eπ * Real.Gamma a =
-        Real.exp (-(K * r)) * (24 * (2 + 4 * r) * Eπ * Real.exp (K * r) * Real.Gamma a) := by
-      calc _ = (Real.exp (-(K * r)) * Real.exp (K * r)) * (24 * (2 + 4 * r) * Eπ * Real.Gamma a) := by
-            rw [hE, one_mul]
-        _ = _ := by ring
-    rw [h4]
-    refine mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le
-    nlinarith
-  have hfinal : (σ₂ ^ 2 / 2) * ((Pb * Eπ) * Real.Gamma a) * (2 + 4 * r) =
-      (σ₂ ^ 2 / 48) * Pb * (24 * (2 + 4 * r) * Eπ * Real.Gamma a) := by ring
-  rw [hfinal]
-  calc (σ₂ ^ 2 / 48) * Pb * (24 * (2 + 4 * r) * Eπ * Real.Gamma a)
-      ≤ (σ₂ ^ 2 / 48) * Pb * (Real.exp (-(K * r)) * (24 * Real.Gamma b)) :=
-        mul_le_mul_of_nonneg_left hkey (by positivity)
-    _ = _ := by ring
+  exact dominance_arith (by positivity) (Real.rpow_pos_of_pos Real.pi_pos _)
+    (Real.Gamma_pos_of_pos (by linarith)) (Real.exp_pos _) hnum2 hden hG hbig hE
 
 /-! ### The boundary -/
 
@@ -608,10 +602,12 @@ theorem rotated_relation_trivial {T A B : ℂ → ℂ} (hT : Differentiable ℂ 
     linear_combination h1
   refine ⟨hTz, ?_, ?_⟩
   · funext w
-    have h1 := congrFun hAz (ϑ * w)
-    simpa [← mul_assoc, hprod'] using h1
+    have h1 : A (star ϑ * (ϑ * w)) = 0 := congrFun hAz (ϑ * w)
+    rw [← mul_assoc, hprod', one_mul] at h1
+    exact h1
   · funext w
-    have h1 := congrFun hBz (star ϑ * w)
-    simpa [← mul_assoc, hprod] using h1
+    have h1 : B (ϑ * (star ϑ * w)) = 0 := congrFun hBz (star ϑ * w)
+    rw [← mul_assoc, hprod, one_mul] at h1
+    exact h1
 
 end GaloisForLFunctions.RigidArithmeticOfCuts

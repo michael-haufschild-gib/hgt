@@ -254,3 +254,6 @@ TheCubicCuspBarrier adapts the invariant cusp construction and compact
 defect from OpenAI Eisenstein/CuspHeight.lean, and smooth transitions from
 Eisenstein/SmoothCuspCutoffs.lean. Its local finiteness input is the local
 bounded-row theorem; the chart reconstruction is from SmoothTests.lean.
+TheCubicCuspProfileEquation adapts the locally finite row-profile equation
+from OpenAI Eisenstein/CuspHeight.lean. The proof uses the locally checked
+height calculus and finite-sum axis identities.

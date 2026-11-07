@@ -220,6 +220,9 @@ height and proves the eikonal and Laplace identities for its logarithm.
 to height in every sufficiently high integral cusp. Its height-profile
 defect is continuous and compactly supported on the actual quotient.
 
+`TheCubicCuspProfileEquation.lean` proves the actual Laplace equation for
+locally finite invariant sums of smooth height profiles.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

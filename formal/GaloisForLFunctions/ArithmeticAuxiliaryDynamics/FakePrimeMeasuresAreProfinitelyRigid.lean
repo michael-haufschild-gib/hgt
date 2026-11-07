@@ -15,8 +15,9 @@ for an elementary reason. If `r` is at least `N!` then `r mod m!` jumps at some 
 `m!`, which the moment `log (m+1)!` makes expensive. Hence no mass escapes to infinity. A limit along an ultrafilter is a fake prime
 measure of every level, and this is the pronic measure.
 
-**Every window is reached.** At a fixed window `B`, the extremal mass tends to `1 − 1/B` as `K → ∞`. By strong duality there are integer
-producers with window exactly `B` and rate tending to `0`, for every `B ≥ 2`.
+**Every shape is reached.** On a fixed finite set `S` of positive integers, the extremal mass tends at most to the pronic mass of `S` as `K → ∞`. By strong
+duality there are integer stencils with nonnegative multiplicity, at least `m` on `S`, of slope at most `m` times that mass, up to `η`. In particular
+every window `[1, B)` is reached, at rate tending to `0`, and there is a spike at every integer.
 
 So the fake prime measure closest to the true one differs from it only archimedeanly: on residues it is the truth, and its
 freedom lies in where along a class the mass is placed.
@@ -479,27 +480,27 @@ private lemma sum_range_pronic (n : ℕ) : ∑ j ∈ range n, pronicMeasure j = 
     field_simp
     ring
 
-/-- The classes `[1, B)` modulo `q ≥ B` have pronic mass at most `1 − 1/B + 1/q`. -/
-private lemma sum_classMass_pronic_le {B q : ℕ} (hB : 2 ≤ B) (hBq : B ≤ q) :
-    ∑ a ∈ Ico 1 B, classMass pronicMeasure q a ≤ 1 - 1 / (B : ℝ) + 1 / (q : ℝ) := by
-  have hq1 : 1 ≤ q := by omega
+/-- The classes of a target below `q` have pronic mass at most the pronic mass of the target, plus `1/q`. -/
+private lemma sum_classMass_pronic_le {S : Finset ℕ} {q : ℕ} (hS : ∀ r ∈ S, 1 ≤ r ∧ r < q) (hq1 : 1 ≤ q) :
+    ∑ a ∈ S, classMass pronicMeasure q a ≤ targetMass pronicMeasure S + 1 / (q : ℝ) := by
+  classical
   have hfake : IsFakePrimeMeasure q pronicMeasure := isFakePrimeMeasure_pronic q
   have hq : q ∈ Icc 1 q := mem_Icc.mpr ⟨hq1, le_rfl⟩
-  have hsum : HasSum (fun j => ∑ a ∈ Ico 1 B, if (j + 1) % q = a then pronicMeasure j else 0)
-      (∑ a ∈ Ico 1 B, classMass pronicMeasure q a) :=
-    hasSum_sum fun a ha => (hfake.summable_class hq (mem_Ico.mp ha).1).hasSum
+  have hsum : HasSum (fun j => ∑ a ∈ S, if (j + 1) % q = a then pronicMeasure j else 0)
+      (∑ a ∈ S, classMass pronicMeasure q a) :=
+    hasSum_sum fun a ha => (hfake.summable_class hq (hS a ha).1).hasSum
   rw [← hsum.tsum_eq]
   refine Real.tsum_le_of_sum_range_le (fun j => sum_nonneg fun a _ => ?_) fun n => ?_
   · split_ifs
     · exact pronicMeasure_nonneg j
     · exact le_rfl
-  -- A term is present only below `B` or at or above `q`.
-  have hterm : ∀ j, (∑ a ∈ Ico 1 B, if (j + 1) % q = a then pronicMeasure j else 0) ≤
-      (if j < B - 1 then pronicMeasure j else 0) + (if q - 1 ≤ j then pronicMeasure j else 0) := by
+  -- A term is present only if `j + 1` lies in the target or at or above `q`.
+  have hterm : ∀ j, (∑ a ∈ S, if (j + 1) % q = a then pronicMeasure j else 0) ≤
+      (if j + 1 ∈ S then pronicMeasure j else 0) + (if q - 1 ≤ j then pronicMeasure j else 0) := by
     intro j
     have hp := pronicMeasure_nonneg j
-    have hle : (∑ a ∈ Ico 1 B, if (j + 1) % q = a then pronicMeasure j else 0) ≤
-        if (j + 1) % q ∈ Ico 1 B then pronicMeasure j else 0 := by
+    have hle : (∑ a ∈ S, if (j + 1) % q = a then pronicMeasure j else 0) ≤
+        if (j + 1) % q ∈ S then pronicMeasure j else 0 := by
       split_ifs with hmem
       · rw [sum_eq_single_of_mem _ hmem fun a _ hne => by rw [if_neg hne.symm], if_pos rfl]
       · refine le_of_eq (sum_eq_zero fun a ha => ?_)
@@ -507,30 +508,26 @@ private lemma sum_classMass_pronic_le {B q : ℕ} (hB : 2 ≤ B) (hBq : B ≤ q)
         rintro rfl
         exact hmem ha
     refine hle.trans ?_
-    split_ifs with h1 h2 h3 h4 h5 h6 <;> try linarith
-    · -- `j + 1 < q` and the residue lies in `[1, B)`, so `j + 1 < B`.
-      exfalso
-      have hlt : j + 1 < q := by omega
-      rw [Nat.mod_eq_of_lt hlt] at h1
-      have := (mem_Ico.mp h1).2
-      omega
+    by_cases hlt : j + 1 < q
+    · rw [Nat.mod_eq_of_lt hlt]
+      split_ifs <;> linarith
+    · have h2 : q - 1 ≤ j := by omega
+      rw [if_pos h2]
+      split_ifs <;> linarith
   refine (sum_le_sum fun j _ => hterm j).trans ?_
   rw [sum_add_distrib, sum_ite, sum_ite]
   simp only [sum_const_zero, add_zero]
-  have hB1 : (1 : ℝ) ≤ B := by exact_mod_cast (by omega : 1 ≤ B)
   have hq0 : (0 : ℝ) < q := by exact_mod_cast hq1
-  -- The two pieces are prefixes and differences of the telescoping sum.
-  have hA : ∑ j ∈ (range n).filter (fun j => j < B - 1), pronicMeasure j ≤ 1 - 1 / (B : ℝ) := by
-    have hsub : (range n).filter (fun j => j < B - 1) ⊆ range (B - 1) := by
-      intro j hj
-      exact mem_range.mpr (mem_filter.mp hj).2
-    refine (sum_le_sum_of_subset_of_nonneg hsub fun j _ _ => pronicMeasure_nonneg j).trans ?_
-    rw [sum_range_pronic]
-    have : ((B - 1 : ℕ) : ℝ) + 1 = B := by
-      rw [Nat.cast_sub (by omega)]
-      push_cast
-      ring
-    rw [this]
+  have hA : ∑ j ∈ (range n).filter (fun j => j + 1 ∈ S), pronicMeasure j ≤ targetMass pronicMeasure S := by
+    have hinj : Set.InjOn (fun r : ℕ => r - 1) (S : Set ℕ) := by
+      intro a ha b hb hab
+      have h1 := (hS a ha).1
+      have h2 := (hS b hb).1
+      simp only at hab
+      omega
+    rw [targetMass, ← sum_image (f := pronicMeasure) hinj]
+    refine sum_le_sum_of_subset_of_nonneg (fun j hj => ?_) fun j _ _ => pronicMeasure_nonneg j
+    exact mem_image.mpr ⟨j + 1, (mem_filter.mp hj).2, by simp⟩
   have hC : ∑ j ∈ (range n).filter (fun j => q - 1 ≤ j), pronicMeasure j ≤ 1 / (q : ℝ) := by
     by_cases hnq : q - 1 ≤ n
     · have hset : (range n).filter (fun j => q - 1 ≤ j) = Ico (q - 1) n := by
@@ -554,14 +551,19 @@ private lemma sum_classMass_pronic_le {B q : ℕ} (hB : 2 ≤ B) (hBq : B ≤ q)
       positivity
   linarith
 
-/-- **The mass of a fixed window tends to the pronic mass.** -/
-theorem exists_level_window_mass_le {B : ℕ} (hB : 2 ≤ B) {η : ℝ} (hη : 0 < η) :
+/-- **The mass of a fixed target tends to its pronic mass from above, at most.** At high level no fake prime measure puts on a finite set
+more than its pronic mass, up to `η`. -/
+theorem exists_level_targetMass_le {S : Finset ℕ} (hS : ∀ r ∈ S, 1 ≤ r) {η : ℝ} (hη : 0 < η) :
     ∃ K₀ : ℕ, ∀ K, K₀ ≤ K → ∀ u : ℕ → ℝ, IsFakePrimeMeasure K u →
-      ∑ j ∈ range (B - 1), u j ≤ 1 - 1 / (B : ℝ) + η := by
-  -- A modulus with `1/q` small.
-  obtain ⟨q, hq⟩ : ∃ q : ℕ, q = max B (⌈2 / η⌉₊ + 1) := ⟨_, rfl⟩
-  have hBq : B ≤ q := hq ▸ le_max_left _ _
-  have hq1 : 1 ≤ q := by omega
+      targetMass u S ≤ targetMass pronicMeasure S + η := by
+  classical
+  -- A modulus above the target with `1/q` small.
+  obtain ⟨q, hq⟩ : ∃ q : ℕ, q = max (S.sup id + 1) (⌈2 / η⌉₊ + 1) := ⟨_, rfl⟩
+  have hSq : ∀ r ∈ S, 1 ≤ r ∧ r < q := fun r hr => by
+    have h1 : r ≤ S.sup id := Finset.le_sup (f := id) hr
+    have h2 : S.sup id + 1 ≤ q := hq ▸ le_max_left _ _
+    exact ⟨hS r hr, by omega⟩
+  have hq1 : 1 ≤ q := hq ▸ (Nat.le_add_left _ _).trans (le_max_left _ _)
   have hq0 : (0 : ℝ) < q := by exact_mod_cast hq1
   have hqη : 1 / (q : ℝ) ≤ η / 2 := by
     have h1 : 2 / η ≤ (q : ℝ) := by
@@ -574,54 +576,102 @@ theorem exists_level_window_mass_le {B : ℕ} (hB : 2 ≤ B) {η : ℝ} (hη : 0
     rw [div_le_iff₀ hη] at h1
     linarith
   -- Each class is close at high level.
-  have hcard : ((B - 1 : ℕ) : ℝ) + 1 > 0 := by positivity
-  obtain ⟨ξ, hξdef⟩ : ∃ ξ : ℝ, ξ = η / (2 * (((B - 1 : ℕ) : ℝ) + 1)) := ⟨_, rfl⟩
+  obtain ⟨ξ, hξdef⟩ : ∃ ξ : ℝ, ξ = η / (2 * ((S.card : ℝ) + 1)) := ⟨_, rfl⟩
   have hξ : 0 < ξ := by rw [hξdef]; positivity
-  have hclose : ∀ a ∈ Ico 1 B, ∃ K₀ : ℕ, ∀ K, K₀ ≤ K → ∀ u : ℕ → ℝ, IsFakePrimeMeasure K u →
-      |classMass u q a - classMass pronicMeasure q a| ≤ ξ := fun a ha => by
-    obtain ⟨h1, h2⟩ := mem_Ico.mp ha
-    exact exists_level_classMass_close h1 (by omega) hξ
+  have hclose : ∀ a ∈ S, ∃ K₀ : ℕ, ∀ K, K₀ ≤ K → ∀ u : ℕ → ℝ, IsFakePrimeMeasure K u →
+      |classMass u q a - classMass pronicMeasure q a| ≤ ξ := fun a ha =>
+    exists_level_classMass_close (hSq a ha).1 (hSq a ha).2 hξ
   choose! K₁ hK₁ using hclose
-  refine ⟨q + (Ico 1 B).sup K₁, fun K hK u hu => ?_⟩
+  refine ⟨q + S.sup K₁, fun K hK u hu => ?_⟩
   have hqK : q ∈ Icc 1 K := mem_Icc.mpr ⟨hq1, by omega⟩
-  -- The window sits inside the classes.
-  have hwin : ∑ j ∈ range (B - 1), u j ≤ ∑ a ∈ Ico 1 B, classMass u q a := by
-    rw [sum_Ico_eq_sum_range]
-    refine sum_le_sum fun j hj => ?_
-    have hjB := mem_range.mp hj
-    have hmod : (j + 1) % q = 1 + j := by
-      rw [Nat.mod_eq_of_lt (by omega)]
-      ring
-    have hs := hu.summable_class hqK (a := 1 + j) (by omega)
-    have hle := hs.le_tsum j (fun i _ => by
+  -- The target sits inside its classes.
+  have hwin : targetMass u S ≤ ∑ a ∈ S, classMass u q a := by
+    refine sum_le_sum fun a ha => ?_
+    obtain ⟨h1, h2⟩ := hSq a ha
+    have hmod : (a - 1 + 1) % q = a := by
+      rw [show a - 1 + 1 = a by omega, Nat.mod_eq_of_lt h2]
+    have hs := hu.summable_class hqK h1
+    have hle := hs.le_tsum (a - 1) (fun i _ => by
       split_ifs
       · exact hu.nonneg i
       · exact le_rfl)
     simp only [hmod, if_true] at hle
     exact hle
-  have hdiff : ∑ a ∈ Ico 1 B, classMass u q a ≤
-      ∑ a ∈ Ico 1 B, classMass pronicMeasure q a + ((B - 1 : ℕ) : ℝ) * ξ := by
-    have hterm : ∀ a ∈ Ico 1 B, classMass u q a ≤ classMass pronicMeasure q a + ξ := by
+  have hdiff : ∑ a ∈ S, classMass u q a ≤ ∑ a ∈ S, classMass pronicMeasure q a + (S.card : ℝ) * ξ := by
+    have hterm : ∀ a ∈ S, classMass u q a ≤ classMass pronicMeasure q a + ξ := by
       intro a ha
       have hle : K₁ a ≤ K := by
-        have h1 : K₁ a ≤ (Ico 1 B).sup K₁ := Finset.le_sup ha
+        have h1 : K₁ a ≤ S.sup K₁ := Finset.le_sup ha
         omega
       have := abs_le.mp (hK₁ a ha K hle u hu)
       linarith
     refine (sum_le_sum hterm).trans (le_of_eq ?_)
-    rw [sum_add_distrib, sum_const, Nat.card_Ico, nsmul_eq_mul]
-  have hP := sum_classMass_pronic_le hB hBq
-  have hξ2 : ((B - 1 : ℕ) : ℝ) * ξ ≤ η / 2 := by
+    rw [sum_add_distrib, sum_const, nsmul_eq_mul]
+  have hP := sum_classMass_pronic_le hSq hq1
+  have hξ2 : (S.card : ℝ) * ξ ≤ η / 2 := by
     rw [hξdef]
-    have hb : (0 : ℝ) ≤ ((B - 1 : ℕ) : ℝ) := Nat.cast_nonneg _
-    have e : ((B - 1 : ℕ) : ℝ) * (η / (2 * (((B - 1 : ℕ) : ℝ) + 1))) =
-        (η / 2) * (((B - 1 : ℕ) : ℝ) / (((B - 1 : ℕ) : ℝ) + 1)) := by
+    have hb : (0 : ℝ) ≤ (S.card : ℝ) := Nat.cast_nonneg _
+    have e : (S.card : ℝ) * (η / (2 * ((S.card : ℝ) + 1))) = (η / 2) * ((S.card : ℝ) / ((S.card : ℝ) + 1)) := by
       field_simp
     rw [e]
     refine mul_le_of_le_one_right (by positivity) ?_
     rw [div_le_one (by positivity)]
     linarith
   linarith
+
+/-- The pronic mass of a window. -/
+theorem targetMass_pronic_Ico {B : ℕ} (hB : 1 ≤ B) : targetMass pronicMeasure (Ico 1 B) = 1 - 1 / (B : ℝ) := by
+  rw [targetMass_Ico, sum_range_pronic]
+  have : ((B - 1 : ℕ) : ℝ) + 1 = B := by
+    rw [Nat.cast_sub hB]
+    push_cast
+    ring
+  rw [this]
+
+/-- **The mass of a fixed window tends to the pronic mass.** -/
+theorem exists_level_window_mass_le {B : ℕ} (hB : 2 ≤ B) {η : ℝ} (hη : 0 < η) :
+    ∃ K₀ : ℕ, ∀ K, K₀ ≤ K → ∀ u : ℕ → ℝ, IsFakePrimeMeasure K u →
+      ∑ j ∈ range (B - 1), u j ≤ 1 - 1 / (B : ℝ) + η := by
+  obtain ⟨K₀, h⟩ := exists_level_targetMass_le (S := Ico 1 B) (fun r hr => (mem_Ico.mp hr).1) hη
+  refine ⟨K₀, fun K hK u hu => ?_⟩
+  have := h K hK u hu
+  rwa [targetMass_Ico, targetMass_pronic_Ico (by omega)] at this
+
+/-- **Every finite shape is reached.** For every finite set `S` of positive integers there are integer shape producers, with multiplicity at least `m`
+on `S`, of slope at most `m` times the pronic mass of `S`, up to `η`. -/
+theorem exists_shape_producer {S : Finset ℕ} (hS : ∀ r ∈ S, 1 ≤ r) {η : ℝ} (hη : 0 < η) :
+    ∃ (c : ℕ →₀ ℤ) (m K : ℕ), IsShapeProducer c m S ∧ AlphabetLE c K ∧
+      stencilSlope c ≤ (m : ℝ) * (targetMass pronicMeasure S + η) := by
+  obtain ⟨K₀, hK₀⟩ := exists_level_targetMass_le hS (η := η / 2) (by positivity)
+  obtain ⟨K, hKdef⟩ : ∃ K, K = max K₀ (S.sup id + 2) := ⟨_, rfl⟩
+  have hK0 : K₀ ≤ K := hKdef ▸ le_max_left _ _
+  have hK2 : S.sup id + 2 ≤ K := hKdef ▸ le_max_right _ _
+  have hSL : ∀ r ∈ S, 1 ≤ r ∧ r < lcmUpTo K := fun r hr => by
+    have h1 : r ≤ S.sup id := Finset.le_sup (f := id) hr
+    have hd := dvd_lcmUpTo (K := K) (k := S.sup id + 2) (mem_Icc.mpr ⟨by omega, hK2⟩)
+    have h2 := Nat.le_of_dvd (lcmUpTo_pos K) hd
+    exact ⟨hS r hr, by omega⟩
+  obtain ⟨u, hu, -, -, hprod⟩ := exists_extremal_of_target (by omega : 2 ≤ K) hSL
+  have hmass := hK₀ K hK0 u hu
+  obtain ⟨c, m, hP, hal, hs⟩ := hprod (η / 2) (by positivity)
+  refine ⟨c, m, K, hP, hal, hs.trans (mul_le_mul_of_nonneg_left ?_ (Nat.cast_nonneg m))⟩
+  linarith
+
+/-- **A spike at every integer.** For each `n ≥ 1` there are integer shape producers with multiplicity at least `m` at `n` and slope at most
+`m (1/(n (n + 1)) + η)`. -/
+theorem exists_spike_producer {n : ℕ} (hn : 1 ≤ n) {η : ℝ} (hη : 0 < η) :
+    ∃ (c : ℕ →₀ ℤ) (m K : ℕ), IsShapeProducer c m {n} ∧ AlphabetLE c K ∧
+      stencilSlope c ≤ (m : ℝ) * (1 / ((n : ℝ) * ((n : ℝ) + 1)) + η) := by
+  obtain ⟨c, m, K, hP, hal, hs⟩ := exists_shape_producer (S := {n})
+    (fun r hr => by rw [mem_singleton.mp hr]; exact hn) hη
+  refine ⟨c, m, K, hP, hal, ?_⟩
+  have hval : targetMass pronicMeasure {n} = 1 / ((n : ℝ) * ((n : ℝ) + 1)) := by
+    rw [targetMass, sum_singleton, pronicMeasure, Nat.cast_sub hn]
+    push_cast
+    congr 2
+    · ring
+    · ring
+  rwa [hval] at hs
 
 /-- **Every window is reached.** For every `B ≥ 2` there are integer producers with window exactly `B` of arbitrarily small rate. -/
 theorem exists_producer_at_window {B : ℕ} (hB : 2 ≤ B) {η : ℝ} (hη : 0 < η) :

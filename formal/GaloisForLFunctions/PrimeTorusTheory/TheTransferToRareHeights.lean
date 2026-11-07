@@ -92,7 +92,6 @@ theorem le_column_add_of_defect_le {G : ℕ} (hG : 0 < G) {u : ℝ}
     have h1 := mul_le_mul_of_nonneg_left hu (by positivity : 0 ≤ 2 * S.size)
     refine h1.trans (le_of_eq ?_)
     field_simp
-    ring
   have habs := abs_le_of_sq_le_sq' hsq (by positivity)
   linarith [habs.1]
 
