@@ -1,11 +1,11 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.AnIntegerNormBeurlingOneOff
-import GaloisForLFunctions.RHTower.PrimeShortIntervalsSevenTwelfths
+import GaloisForLFunctions.RHTower.PrimeShortIntervalsSeventeenThirtiethsUnconditional
 
 /-!
 # A finite zero layer in an Euler product over rational primes
 
-Round the discrete Beurling generators to the next rational prime. The prime-gap exponent
-`59/100` makes the change of the prime sums holomorphic on `Re s > 59/100`. The resulting
+Round the discrete Beurling generators to the next rational prime. Prime-gap exponents above
+`17/30` make the change of the prime sums holomorphic on `Re s > 17/30`. The resulting
 nonvanishing correction preserves the prescribed zero pair at `3/5 ± iγ`.
 -/
 
@@ -78,16 +78,16 @@ theorem tendsto_atom (P : Params) : Tendsto P.atom atTop atTop := by
   exact (le_max_left b 0).trans ha.le
 
 /-- Prime gaps give an exponentially small displacement of logarithmic norms. -/
-theorem eventually_roundedAtom_sub_le (P : Params) :
+theorem eventually_roundedAtom_sub_le (P : Params) {α : ℝ}
+    (hα : 17 / 30 < α) (hα1 : α < 1) :
     ∀ᶠ k : ℕ in atTop,
-      roundedAtom P k - P.atom k ≤ Real.exp (-((41 / 100 : ℝ) * P.atom k)) := by
+      roundedAtom P k - P.atom k ≤ Real.exp (-((1 - α) * P.atom k)) := by
   have he := (Real.tendsto_exp_atTop.comp (tendsto_atom P)).eventually
-    (RHTower.eventually_exists_prime_short_interval_seven_twelfths
-      (α := (59 / 100 : ℝ)) (by norm_num) (by norm_num))
+    (RHTower.eventually_exists_prime_short_interval_seventeenThirtieths hα hα1)
   filter_upwards [he] with k hk
   obtain ⟨p, hp, hlow, hhigh⟩ := hk
   have hq : (primeNorm P k : ℝ) ≤ Real.exp (P.atom k) +
-      Real.exp (P.atom k) ^ (59 / 100 : ℝ) := by
+      Real.exp (P.atom k) ^ α := by
     have hqp : (primeNorm P k : ℝ) ≤ p := by exact_mod_cast nextPrime_le hp hlow.le
     exact hqp.trans hhigh
   have hp0 : (0 : ℝ) < primeNorm P k := by exact_mod_cast (primeNorm_prime P k).pos
@@ -95,12 +95,12 @@ theorem eventually_roundedAtom_sub_le (P : Params) :
   have hlog := Real.log_le_sub_one_of_pos (div_pos hp0 ht0)
   rw [Real.log_div hp0.ne' ht0.ne', Real.log_exp] at hlog
   have hratio : (primeNorm P k : ℝ) / Real.exp (P.atom k) - 1 ≤
-      Real.exp (P.atom k) ^ (59 / 100 : ℝ) / Real.exp (P.atom k) := by
+      Real.exp (P.atom k) ^ α / Real.exp (P.atom k) := by
     apply (sub_le_iff_le_add).2
     apply (div_le_iff₀ ht0).2
     simpa only [add_mul, one_mul, div_mul_cancel₀ _ ht0.ne', add_comm] using hq
-  have hexp : Real.exp (P.atom k) ^ (59 / 100 : ℝ) / Real.exp (P.atom k) =
-      Real.exp (-((41 / 100 : ℝ) * P.atom k)) := by
+  have hexp : Real.exp (P.atom k) ^ α / Real.exp (P.atom k) =
+      Real.exp (-((1 - α) * P.atom k)) := by
     rw [Real.rpow_def_of_pos ht0, Real.log_exp, ← Real.exp_sub]
     congr 1
     ring
@@ -144,16 +144,24 @@ theorem norm_primeTerm_sub_le_displacement {t u : ℝ} (htu : t ≤ u)
     ring
   rwa [he] at h
 
-theorem summable_displacement (P : Params) {a : ℝ} (ha : 59 / 100 < a) :
+theorem summable_displacement (P : Params) {a : ℝ} (ha : 17 / 30 < a) :
     Summable fun k => Real.exp (-(a * P.atom k)) * (roundedAtom P k - P.atom k) := by
-  apply (P.summable_exp_atom (a := a + 41 / 100) (by linarith only [ha])).of_norm_bounded_eventually_nat
-  filter_upwards [eventually_roundedAtom_sub_le P] with k hk
+  set α : ℝ := (17 / 30 + min a 1) / 2
+  have hmin : 17 / 30 < min a 1 := lt_min ha (by norm_num)
+  have hα : 17 / 30 < α ∧ α < min a 1 := by
+    dsimp only [α]
+    constructor <;> linarith only [hmin]
+  have hαa : α < a := hα.2.trans_le (min_le_left _ _)
+  have hα1 : α < 1 := hα.2.trans_le (min_le_right _ _)
+  apply (P.summable_exp_atom (a := a + 1 - α)
+    (by linarith only [hαa])).of_norm_bounded_eventually_nat
+  filter_upwards [eventually_roundedAtom_sub_le P hα.1 hα1] with k hk
   rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le
     (sub_nonneg.mpr (atom_le_roundedAtom P k)))]
   calc
-    _ ≤ Real.exp (-(a * P.atom k)) * Real.exp (-((41 / 100 : ℝ) * P.atom k)) :=
+    _ ≤ Real.exp (-(a * P.atom k)) * Real.exp (-((1 - α) * P.atom k)) :=
       mul_le_mul_of_nonneg_left hk (Real.exp_pos _).le
-    _ = Real.exp (-((a + 41 / 100) * P.atom k)) := by
+    _ = Real.exp (-((a + 1 - α) * P.atom k)) := by
       rw [← Real.exp_add]
       congr 1
       ring
@@ -161,12 +169,12 @@ theorem summable_displacement (P : Params) {a : ℝ} (ha : 59 / 100 < a) :
 /-- The prime-sum correction is holomorphic to the left of the prescribed zero pair. -/
 theorem differentiableOn_primeCorrection (P : Params) :
     DifferentiableOn ℂ (primeCorrection P.atom (roundedAtom P))
-      {s : ℂ | 59 / 100 < s.re} := by
+      {s : ℂ | 17 / 30 < s.re} := by
   intro s hs
-  change 59 / 100 < s.re at hs
-  set σ₀ : ℝ := (s.re + 59 / 100) / 2
+  change 17 / 30 < s.re at hs
+  set σ₀ : ℝ := (s.re + 17 / 30) / 2
   set M : ℝ := ‖s‖ + 1
-  have hσ₀ : 59 / 100 < σ₀ := by dsimp only [σ₀]; linarith only [hs]
+  have hσ₀ : 17 / 30 < σ₀ := by dsimp only [σ₀]; linarith only [hs]
   have hM : 0 < M := by dsimp only [M]; positivity
   set U : Set ℂ := {z : ℂ | σ₀ < z.re ∧ ‖z‖ < M}
   have hU : IsOpen U :=
@@ -224,10 +232,10 @@ theorem hasProd_continuation (P : Params) {s : ℂ} (hs : 1 < s.re) :
     (fun a ha => summable_exp_roundedAtom P ha) hs
 
 theorem differentiableOn_continuation (P : Params) :
-    DifferentiableOn ℂ (continuation P) {s : ℂ | 59 / 100 < s.re ∧ s ≠ 1} := by
+    DifferentiableOn ℂ (continuation P) {s : ℂ | 17 / 30 < s.re ∧ s ≠ 1} := by
   rintro s hs
   have hhalf : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
-  have hround : IsOpen {s : ℂ | 59 / 100 < s.re} :=
+  have hround : IsOpen {s : ℂ | 17 / 30 < s.re} :=
     isOpen_lt continuous_const Complex.continuous_re
   have hdomain : IsOpen {s : ℂ | 1 / 2 < s.re ∧ s ≠ 1} :=
     hhalf.inter isOpen_compl_singleton
@@ -246,19 +254,19 @@ theorem continuation_eq_zero_iff (P : Params) (s : ℂ) :
   rw [continuation, mul_eq_zero, or_iff_left (Complex.exp_ne_zero _)]
 
 /-- Rational-prime Euler factors can have exactly one prescribed conjugate zero pair
-on `Re s > 59/100`, away from the pole at `1`. Prime labels may repeat. -/
+on `Re s > 17/30`, away from the pole at `1`. Prime labels may repeat. -/
 theorem exists_rational_prime_euler_one_off (γ : ℝ) :
     ∃ q : ℕ → ℕ, (∀ k, (q k).Prime) ∧ ∃ F : ℂ → ℂ,
       (∀ s : ℂ, 1 < s.re →
         HasProd (fun k => (1 - cexp (-(s * Real.log (q k))))⁻¹) (F s)) ∧
-      DifferentiableOn ℂ F {s : ℂ | 59 / 100 < s.re ∧ s ≠ 1} ∧
-      {s : ℂ | 59 / 100 < s.re ∧ s ≠ 1 ∧ F s = 0} =
+      DifferentiableOn ℂ F {s : ℂ | 17 / 30 < s.re ∧ s ≠ 1} ∧
+      {s : ℂ | 17 / 30 < s.re ∧ s ≠ 1 ∧ F s = 0} =
         {(3 / 5 : ℂ) + (γ : ℂ) * I, (3 / 5 : ℂ) - (γ : ℂ) * I} := by
   let P := fixedParams γ
   refine ⟨primeNorm P, primeNorm_prime P, continuation P,
     fun s hs => hasProd_continuation P hs, differentiableOn_continuation P, ?_⟩
   simp only [continuation_eq_zero_iff]
-  have hz := P.zeros_right_of_eq_pair (h := (9 / 100 : ℝ))
+  have hz := P.zeros_right_of_eq_pair (h := (1 / 15 : ℝ))
     (by norm_num [P, fixedParams]) (by norm_num)
   norm_num [P, fixedParams] at hz ⊢
   exact hz

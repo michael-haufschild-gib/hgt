@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CompletedArithmeticForms.BesselWeightedTail
 
-/-!+# The upper-power reserve of the complete first atom
+/-!
+# The upper-power reserve of the complete first atom
 
 The signed endpoint and lower-power tail consume at most seven halves of
 the upper tail above radial scale three. Half the upper tail survives,

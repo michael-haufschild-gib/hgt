@@ -55,8 +55,10 @@ private theorem firstAtom_reserve_on_center_interval {r : ℝ} (hr : r ∈ Icc (
   simp only [Nat.cast_one, Real.log_one, sub_self, mul_zero, Real.cos_zero, one_mul,
     thetaPairCenterTailAmplitude, mul_one]
   dsimp only [firstAtomApertureGammaReserve, q] at hh ⊢
-  convert hh using 1
-  ring
+  calc
+    _ = (4 * Real.pi ^ (-(1 / 2 : ℝ))) *
+        (4 * Real.exp (-2 * (Real.pi * Real.exp 1 + 1)) / Real.cosh (Real.pi * b / 2)) := by ring
+    _ ≤ _ := hh
 
 /-- The actual aperture-weighted first atom retains a Gamma reserve at every frequency. -/
 theorem firstAtom_aperture_gamma_lower {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) (b : ℝ) :
@@ -84,8 +86,9 @@ theorem firstAtom_aperture_gamma_lower {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2
         (by positivity : 0 ≤ 4 * firstAtomApertureGammaReserve / Real.cosh (Real.pi * b / 2))
         (thetaCuspCenterTailWeight_nonneg ha0 hr0.le)
       dsimp only [L, f]
-      convert hh using 1
-      ring
+      calc
+        _ = (a / 2) * (4 * firstAtomApertureGammaReserve / Real.cosh (Real.pi * b / 2)) := by ring
+        _ ≤ _ := hh
     · rw [Set.indicator_of_notMem hr]
       by_cases hr0 : r ∈ Ioi (0 : ℝ)
       · rw [Set.indicator_of_mem hr0]
@@ -98,8 +101,9 @@ theorem firstAtom_aperture_gamma_lower {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2
     intervalIntegral.integral_const, integral_indicator measurableSet_Ioi] at hh
   change (1 - 1 / 2) * L ≤ thetaPairApertureSpectrum 1 1 a b at hh
   dsimp only [L] at hh
-  convert hh using 1
-  ring
+  calc
+    _ = (1 - 1 / 2) * (2 * a * firstAtomApertureGammaReserve / Real.cosh (Real.pi * b / 2)) := by ring
+    _ ≤ _ := hh
 
 /-- A uniform aperture coefficient for the existing rectangular remainder. -/
 def gammaPairTailCost : ℝ :=
@@ -118,9 +122,13 @@ def gammaPairBuffer : ℝ :=
 def gammaPairCutoff (b : ℝ) : ℕ := ⌈|b| / 2 + gammaPairBuffer⌉₊
 
 /-- The actual finite head at the frequency-dependent rectangular cutoff. -/
-def gammaAdaptivePairHead (a b : ℝ) : ℝ :=
-  ∑ p ∈ (Finset.range (gammaPairCutoff b) ×ˢ Finset.range (gammaPairCutoff b)),
+def gammaPairHead (M : ℕ) (a b : ℝ) : ℝ :=
+  ∑ p ∈ (Finset.range M ×ˢ Finset.range M),
     thetaPairApertureSpectrum (p.1 + 1) (p.2 + 1) a b
+
+/-- The retained ordinary-pair head uses its actual frequency at every cutoff. -/
+def gammaAdaptivePairHead (a b : ℝ) : ℝ :=
+  gammaPairHead (gammaPairCutoff b) a b
 
 private theorem buffer_payment :
     gammaPairTailCost * Real.exp (-Real.pi * gammaPairBuffer) ≤ firstAtomApertureGammaReserve / 2 := by
@@ -132,6 +140,8 @@ private theorem buffer_payment :
       Real.pi * gammaPairBuffer := by
     have hh := le_max_right (0 : ℝ)
       (Real.log (2 * (gammaPairTailCost + 1) / firstAtomApertureGammaReserve) / Real.pi)
+    change Real.log (2 * (gammaPairTailCost + 1) / firstAtomApertureGammaReserve) / Real.pi ≤
+      gammaPairBuffer at hh
     exact (div_le_iff₀ Real.pi_pos).mp hh |>.trans_eq (by ring)
   have he : Real.exp (-Real.pi * gammaPairBuffer) ≤
       firstAtomApertureGammaReserve / (2 * (gammaPairTailCost + 1)) := by
@@ -141,13 +151,11 @@ private theorem buffer_payment :
       rw [Real.exp_neg, Real.exp_log hR]
       field_simp
     rw [hr] at hh
-    convert hh using 1
-    congr 1
-    ring
+    simpa only [neg_mul] using hh
   have hf : gammaPairTailCost *
       (firstAtomApertureGammaReserve / (2 * (gammaPairTailCost + 1))) ≤
         firstAtomApertureGammaReserve / 2 := by
-    rw [mul_div_assoc, div_le_div_iff₀ (by positivity : 0 < 2 * (gammaPairTailCost + 1))
+    rw [← mul_div_assoc, div_le_div_iff₀ (by positivity : 0 < 2 * (gammaPairTailCost + 1))
       (by norm_num : (0 : ℝ) < 2)]
     nlinarith only [hC]
   exact (mul_le_mul_of_nonneg_left he hD).trans hf
@@ -157,7 +165,7 @@ private theorem exp_abs_le_sech (b : ℝ) :
   have ht : 0 ≤ Real.pi * |b| / 2 := by positivity
   have hc : Real.cosh (Real.pi * b / 2) ≤ Real.exp (Real.pi * |b| / 2) := by
     rw [← Real.cosh_abs, abs_div, abs_mul, abs_of_pos Real.pi_pos]
-    norm_num only [abs_ofNat]
+    rw [abs_of_pos (by norm_num : (0 : ℝ) < 2)]
     rw [Real.cosh_eq]
     have hh := Real.exp_le_exp.mpr (neg_le_self ht)
     linarith only [hh]
@@ -217,19 +225,31 @@ theorem firstAtom_pays_gammaAdaptivePair_remainder {a : ℝ} (ha0 : 0 ≤ a) (ha
   rw [he] at hfirst
   linarith only [hfirst, htail]
 
+private theorem measurable_gammaPairHead (M : ℕ) {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
+    Measurable (gammaPairHead M a) := by
+  have hc : Continuous (gammaPairHead M a) := by
+    unfold gammaPairHead
+    exact continuous_finsetSum (Finset.range M ×ˢ Finset.range M) fun p _ =>
+      (thetaPairApertureSpectrum_continuous_and_decay
+        (Nat.succ_pos p.1) (Nat.succ_pos p.2) ha0 ha).1
+  exact hc.measurable
+
+private theorem measurable_nat_choice {f : ℕ → ℝ → ℝ}
+    (hf : ∀ N, Measurable (f N)) {n : ℝ → ℕ} (hn : Measurable n) :
+    Measurable (fun t => f (n t) t) :=
+  (measurable_from_prod_countable_right (f := fun p : ℕ × ℝ => f p.1 p.2) hf).comp
+    (hn.prodMk measurable_id)
+
+private theorem measurable_gammaPairCutoff : Measurable gammaPairCutoff := by
+  unfold gammaPairCutoff
+  exact ((((measurable_id : Measurable (fun b : ℝ => b)).abs).div_const (2 : ℝ)).add_const
+    gammaPairBuffer).nat_ceil
+
 private theorem measurable_gammaAdaptivePairHead {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     Measurable (gammaAdaptivePairHead a) := by
-  let F : ℕ → ℝ → ℝ := fun M b =>
-    ∑ p ∈ (Finset.range M ×ˢ Finset.range M),
-      thetaPairApertureSpectrum (p.1 + 1) (p.2 + 1) a b
-  have hF (M : ℕ) : Measurable (F M) := by
-    exact Finset.measurable_sum _ fun p _ =>
-      (thetaPairApertureSpectrum_continuous_and_decay
-        (Nat.succ_pos p.1) (Nat.succ_pos p.2) ha0 ha).1.measurable
-  have hM : Measurable gammaPairCutoff :=
-    (((measurable_id.abs).div_const (2 : ℝ)).add_const gammaPairBuffer).nat_ceil
-  exact (measurable_from_prod_countable_right (f := fun p : ℕ × ℝ => F p.1 p.2) hF).comp
-    (hM.prodMk measurable_id)
+  unfold gammaAdaptivePairHead
+  exact measurable_nat_choice (f := fun M b => gammaPairHead M a b)
+    (fun M => measurable_gammaPairHead M ha0 ha) measurable_gammaPairCutoff
 
 private theorem continuous_thetaFullApertureTail {a : ℝ} (ha0 : 0 ≤ a) (ha : a < 1 / 2) :
     Continuous (thetaFullApertureTail a) := by

@@ -23,6 +23,8 @@ The two-prime annihilator theorem proves finiteness, not emptiness. The affine H
 
 `IntegerNormOneOff.exists_integer_norm_linear_count_one_off` constructs an Euler product with natural-number generator norms, natural Dirichlet coefficients, positive linear counting `N(x) ∼ A x`, and exactly the zero pair `3/5 ± iγ` on `Re s > 1/2`, away from `1`. These properties together are insufficient. A power-saving counting error and the functional equation remain uncontrolled. The actual zeta problem must retain stronger arithmetic information, such as its exact counting function or full functional equation.
 
+`RationalPrimeOneOff.exists_rational_prime_multiplicative_linear_count_one_off` gives a rational-prime analogue with ordinary multiplicative natural coefficients and positive linear counting. Its continuation has exactly the same pair on `Re s>17/30`, away from `1`. Prime labels may repeat; continuation throughout `Re s>1/2`, polynomial vertical growth, and the Riemann functional equation remain unproved for this model. See `3-formalized/rational-prime-beurling-one-off.md`.
+
 ## Gates
 
 - [x] Exact statement and existing reductions checked in Lean source.

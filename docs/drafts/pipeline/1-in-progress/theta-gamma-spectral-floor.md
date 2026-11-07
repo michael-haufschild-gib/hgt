@@ -23,3 +23,10 @@ The corpus's `WeilWorkDeficitMellin.scaled_mellin` suggests the exact zero-cutof
 The next conjecture is `B_q(2τ)≥c(q)(1+τ²)|Γ(5/4+iτ)|²` for some explicit `c(q)>0` and every `τ`. Proposed mechanism: extend the positive radial-square representation to positive cutoffs below one; transport the first weighted tail by its exponential slope bound; compare the higher weighted tails with their complete Mellin masses. The existing sech floor can handle the remaining compact frequency interval. Neither this stronger comparison nor the complete aggregate payment is yet proved.
 
 A sharper intermediate payment keeps the upper tail: `B_q(2τ)≥T_(7/2)(τ,q)/2` for `q≥3`. Indeed the endpoint costs at most `12q T_(3/2)`, while `T_(7/2)≥(q²+q+1/2)T_(3/2)` and `(7/2)(q²+q+1/2)≥12q+6`. This candidate avoids losing the two frequency powers in the natural Gamma scale; Lean verification is pending.
+
+Extending exponential transport to every positive cutoff would give
+`T_p(τ,q)≥exp(−2q)T_p(τ,0)` for `p>1`.
+The complete Mellin mass is `T_p(τ,0)=|Γ((p+1)/2+iτ)|²/4`.
+Together these yield the stronger candidate
+`B_q(2τ)≥exp(−2q)|Γ(9/4+iτ)|²/8` for `q≥3`.
+The positive-cutoff radial-square extension is drafted in `BesselPositiveCutoff.lean`; the upper-tail payment is drafted in `BesselUpperTailReserve.lean`. Neither draft has passed its audit yet.

@@ -47,6 +47,8 @@ import GaloisForLFunctions.BlackHoleRingdown.TheWaveOnTheQuotient
 import GaloisForLFunctions.BlackHoleRingdown.TheModularBlackHoleIsAQuotientOfAntiDeSitter
 import GaloisForLFunctions.BlackHoleRingdown.TheMetricOfAPulseIsRegularAcrossTheHorizon
 import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleReadsTheZeros
+import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleRateIsTheZeroFreeRegion
+import GaloisForLFunctions.BlackHoleRingdown.TheLaxPhillipsSemigroupOfTheModularSurface
 
 /-!
 # Black-hole ringdown and the zeros of zeta

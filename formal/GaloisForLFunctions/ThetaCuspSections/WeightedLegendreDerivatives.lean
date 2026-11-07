@@ -26,7 +26,7 @@ theorem legendrePoly_eval (n : ℕ) (x : ℝ) : (legendrePoly n).eval x = legP n
   | h n ih =>
     rcases n with _ | _ | n
     · simp only [legendrePoly, eval_one, legP_zero]
-    · simp only [legendrePoly, eval_X, legP_one]
+    · simp only [legendrePoly, eval_X, Nat.zero_add, legP_one]
     · simp only [legendrePoly, eval_mul, eval_sub, eval_C, eval_X,
         ih (n + 1) (by omega), ih n (by omega), legP_succ_succ]
       ring
@@ -100,7 +100,8 @@ theorem legendreDerivative_equation (n r : ℕ) (x : ℝ) :
     have hh := hd.unique (legendre_base_flux n x)
     simp only [legendreDerivativeEigen, Nat.cast_zero, zero_mul, sub_zero,
       zero_add, derivative_zero_eval, derivative_one_eval]
-    norm_num only [id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one, zero_sub] at hh
+    norm_num only [Pi.sub_apply, Pi.pow_apply, id_eq, Nat.cast_ofNat,
+      Nat.reduceSub, pow_one, mul_one, zero_sub] at hh
     nlinarith only [hh]
   | succ r ih =>
     have he : (fun t : ℝ => (1 - t ^ 2) * (legendreDerivative n (r + 2)).eval t -
@@ -123,7 +124,8 @@ theorem legendreDerivative_equation (n r : ℕ) (x : ℝ) :
         ring
     rw [he'] at hd
     have hh := hd.unique (hasDerivAt_const x (0 : ℝ))
-    norm_num only [id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one, zero_sub] at hh
+    norm_num only [Pi.sub_apply, Pi.pow_apply, id_eq, Nat.cast_ofNat,
+      Nat.reduceSub, pow_one, mul_one, zero_sub] at hh
     simp only [legendreDerivativeEigen, Nat.cast_add, Nat.cast_one] at hh ⊢
     linear_combination hh
 
@@ -135,7 +137,7 @@ theorem hasDerivAt_weighted_legendreFlux (n r : ℕ) (x : ℝ) :
   have hd := (hW.pow (r + 1)).mul (hasDerivAt_legendreDerivative n (r + 1) x)
   apply hd.congr_deriv
   norm_num only [id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one, zero_sub,
-    Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one, Pi.pow_apply]
+    Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one, Pi.pow_apply, Pi.sub_apply]
   rw [pow_succ]
   linear_combination (1 - x ^ 2) ^ r * legendreDerivative_equation n r x
 
@@ -204,7 +206,7 @@ theorem legendreDerivative_difference (n r : ℕ) (x : ℝ) :
       (2 * (n : ℝ) + 3) * (legendreDerivative (n + 1) r).eval x +
         (legendreDerivative n (r + 1)).eval x := by
   induction r generalizing x with
-  | zero => simp only [derivative_one_eval, derivative_zero_eval, legP']
+  | zero => simp only [Nat.zero_add, derivative_one_eval, derivative_zero_eval, legP']
   | succ r ih =>
     have he : (fun t : ℝ => (legendreDerivative (n + 2) (r + 1)).eval t) =
         fun t => (2 * (n : ℝ) + 3) * (legendreDerivative (n + 1) r).eval t +

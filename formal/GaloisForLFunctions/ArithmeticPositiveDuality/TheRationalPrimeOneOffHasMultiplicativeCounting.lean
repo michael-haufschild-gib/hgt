@@ -6,7 +6,7 @@ import GaloisForLFunctions.ArithmeticPositiveDuality.TheIntegerNormOneOffHasLine
 # Multiplicative coefficients and linear counting with a finite zero layer
 
 The rational-prime occupation product has multiplicative natural coefficients. Its numerator
-after removing the pole at `1` is holomorphic on `Re s > 59/100` and positive at `1`.
+after removing the pole at `1` is holomorphic on `Re s > 17/30` and positive at `1`.
 Wiener–Ikehara therefore gives positive linear counting, while the zero set remains exactly
 the prescribed pair `3/5 ± iγ`.
 -/
@@ -26,7 +26,7 @@ def integerCoeff (P : Params) : ℕ → ℕ := IntegerOccupation.coeff (primeNor
 theorem hasSum_integerCoeff (P : Params) {s : ℂ} (hs : 1 < s.re) :
     LSeriesHasSum (fun n => (integerCoeff P n : ℂ)) s (continuation P s) :=
   IntegerOccupation.hasSum_coeff (fun k => (primeNorm_prime P k).two_le)
-    (fun a ha => summable_exp_roundedAtom P ha) hs (hasProd_continuation P hs)
+    (fun _ ha => summable_exp_roundedAtom P ha) hs (hasProd_continuation P hs)
 
 /-- Quotient between prime rounding and integer rounding, expressed as an exponential. -/
 def logCorrection (P : Params) (s : ℂ) : ℂ :=
@@ -51,12 +51,12 @@ theorem continuation_eq_poleFactor (P : Params) (s : ℂ) :
   ring
 
 theorem differentiableOn_poleFactor (P : Params) :
-    DifferentiableOn ℂ (poleFactor P) {s : ℂ | 59 / 100 < s.re} := by
+    DifferentiableOn ℂ (poleFactor P) {s : ℂ | 17 / 30 < s.re} := by
   intro s hs
-  change 59 / 100 < s.re at hs
+  change 17 / 30 < s.re at hs
   have hhalf : IsOpen {s : ℂ | 1 / 2 < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hpos : IsOpen {s : ℂ | 0 < s.re} := isOpen_lt continuous_const Complex.continuous_re
-  have hround : IsOpen {s : ℂ | 59 / 100 < s.re} :=
+  have hround : IsOpen {s : ℂ | 17 / 30 < s.re} :=
     isOpen_lt continuous_const Complex.continuous_re
   have hsHalf : 1 / 2 < s.re := by linarith only [hs]
   have hH := (IntegerNormOneOff.differentiableOn_poleFactor P).differentiableAt
@@ -84,10 +84,9 @@ private theorem continuation_ofReal (P : Params) {σ : ℝ} (hσ : 1 < σ) :
       (hasProd_continuation P hσ)
   have he (n : ℕ) : (IntegerOccupation.coeff (primeNorm P) n : ℂ) *
       cexp (-((σ : ℂ) * Real.log n)) =
-        (((integerCoeff P n : ℝ) * Real.exp (-(σ * Real.log n))) : ℂ) := by
-    rw [← Complex.ofReal_mul, ← Complex.ofReal_neg, Complex.ofReal_exp,
-      Complex.ofReal_mul, Complex.ofReal_natCast]
-    rfl
+        (((integerCoeff P n : ℝ) * Real.exp (-(σ * Real.log n)) : ℝ) : ℂ) := by
+    simp only [integerCoeff, Complex.ofReal_mul, Complex.ofReal_neg, Complex.ofReal_exp,
+      Complex.ofReal_natCast]
   constructor
   · have hi := (Complex.hasSum_im h).tsum_eq.symm
     simpa only [he, Complex.ofReal_im, tsum_zero] using hi
@@ -117,10 +116,10 @@ def countingDensity (P : Params) : ℝ := (poleFactor P 1).re
 
 theorem poleFactor_one_real_pos (P : Params) :
     poleFactor P 1 = (countingDensity P : ℂ) ∧ 0 < countingDensity P := by
-  have hopen : IsOpen {s : ℂ | 59 / 100 < s.re} :=
+  have hopen : IsOpen {s : ℂ | 17 / 30 < s.re} :=
     isOpen_lt continuous_const Complex.continuous_re
   have hc := (differentiableOn_poleFactor P).differentiableAt
-    (hopen.mem_nhds (by norm_num : (1 : ℂ) ∈ {s : ℂ | 59 / 100 < s.re}))
+    (hopen.mem_nhds (by norm_num : (1 : ℂ) ∈ {s : ℂ | 17 / 30 < s.re}))
   have hlim : Tendsto (fun x : ℝ => poleFactor P (x : ℂ)) (𝓝[>] 1)
       (𝓝 (poleFactor P 1)) :=
     hc.continuousAt.tendsto.comp
@@ -148,14 +147,14 @@ theorem tendsto_integerCoeff_count (P : Params) :
     Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N, (integerCoeff P n : ℝ)) / N)
       atTop (𝓝 (countingDensity P)) := by
   let G := dslope (poleFactor P) 1
-  have hopen : IsOpen {s : ℂ | 59 / 100 < s.re} :=
+  have hopen : IsOpen {s : ℂ | 17 / 30 < s.re} :=
     isOpen_lt continuous_const Complex.continuous_re
-  have hn : {s : ℂ | 59 / 100 < s.re} ∈ 𝓝 (1 : ℂ) := hopen.mem_nhds (by norm_num)
+  have hn : {s : ℂ | 17 / 30 < s.re} ∈ 𝓝 (1 : ℂ) := hopen.mem_nhds (by norm_num)
   have hdiff := differentiableOn_poleFactor P
   have hG : ContinuousOn G {s : ℂ | 1 ≤ s.re} :=
     ((continuousOn_dslope hn).2
       ⟨hdiff.continuousOn, hdiff.differentiableAt hn⟩).mono
-      (fun s hs => by change 1 ≤ s.re at hs; change 59 / 100 < s.re; linarith only [hs])
+      (fun s hs => by change 1 ≤ s.re at hs; change 17 / 30 < s.re; linarith only [hs])
   have hG' : Set.EqOn G
       (fun s => LSeries (fun n => ((integerCoeff P n : ℝ) : ℂ)) s -
         (countingDensity P : ℂ) / (s - 1)) {s : ℂ | 1 < s.re} := by
@@ -181,7 +180,7 @@ theorem tendsto_integerCoeff_count (P : Params) :
     (fun n => Nat.cast_nonneg _) hf hG hG'
 
 /-- A rational-prime Euler product with multiplicative natural coefficients, positive linear
-counting, and exactly the prescribed zero pair on `Re s > 59/100`, away from `1`. -/
+counting, and exactly the prescribed zero pair on `Re s > 17/30`, away from `1`. -/
 theorem exists_rational_prime_multiplicative_linear_count_one_off (γ : ℝ) :
     ∃ q a : ℕ → ℕ, (∀ k, (q k).Prime) ∧ a 0 = 0 ∧ a 1 = 1 ∧
       (∀ m n : ℕ, m.Coprime n → a (m * n) = a m * a n) ∧
@@ -190,8 +189,8 @@ theorem exists_rational_prime_multiplicative_linear_count_one_off (γ : ℝ) :
           HasProd (fun k => (1 - cexp (-(s * Real.log (q k))))⁻¹) (F s) ∧
           LSeriesHasSum (fun n => (a n : ℂ)) s (F s)) ∧
         Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N, (a n : ℝ)) / N) atTop (𝓝 A) ∧
-        DifferentiableOn ℂ F {s : ℂ | 59 / 100 < s.re ∧ s ≠ 1} ∧
-        {s : ℂ | 59 / 100 < s.re ∧ s ≠ 1 ∧ F s = 0} =
+        DifferentiableOn ℂ F {s : ℂ | 17 / 30 < s.re ∧ s ≠ 1} ∧
+        {s : ℂ | 17 / 30 < s.re ∧ s ≠ 1 ∧ F s = 0} =
           {(3 / 5 : ℂ) + (γ : ℂ) * I, (3 / 5 : ℂ) - (γ : ℂ) * I} := by
   let P := IntegerNormOneOff.fixedParams γ
   refine ⟨primeNorm P, integerCoeff P, primeNorm_prime P,
@@ -202,7 +201,7 @@ theorem exists_rational_prime_multiplicative_linear_count_one_off (γ : ℝ) :
     fun s hs => ⟨hasProd_continuation P hs, hasSum_integerCoeff P hs⟩,
     tendsto_integerCoeff_count P, differentiableOn_continuation P, ?_⟩
   simp only [continuation_eq_zero_iff]
-  have hz := P.zeros_right_of_eq_pair (h := (9 / 100 : ℝ))
+  have hz := P.zeros_right_of_eq_pair (h := (1 / 15 : ℝ))
     (by norm_num [P, IntegerNormOneOff.fixedParams]) (by norm_num)
   norm_num [P, IntegerNormOneOff.fixedParams] at hz ⊢
   exact hz
