@@ -22,3 +22,7 @@ Native tails have positive Gamma/Hermite reserves at every rank beyond explicit 
 - Concrete unconditional source bounds and rank positivity, not a receiver with an unpaid verification premise.
 - Every completed paper theorem followed by its exact Lean formalization and transitive axiom audit.
 - New leaves in `ThetaCuspSections/` or `CompletedArithmeticForms/`; individual foreground Lean checks only.
+
+## Active payment
+
+The squared parabolic core `(a/300)(1-b²/36)²` on `[-6,6]` has a dependency-closed paper proof; exact Lean formalization is in progress. Multiplying a degree-eleven polynomial by `1-b²/36` reduces rank-twelve payment to a degree-thirteen Legendre exterior estimate. The existing height-67 verification and current tail remain unchanged.

@@ -461,8 +461,225 @@ theorem integrableOn_exp_mul_w {σ : ℝ} (hσ : 1 < σ) :
   have h : IntegrableOn (fun u : ℝ => RCLike.re (cexp (-((σ : ℂ) * u)) * (P.w u : ℂ))) (Ioi 0) :=
     (P.integrableOn_cexp_mul_w (s := (σ : ℂ)) (by simpa using hσ)).re
   refine h.congr_fun (fun u _ => ?_) measurableSet_Ioi
+  show RCLike.re (cexp (-((σ : ℂ) * u)) * (P.w u : ℂ)) = _
   rw [RCLike.re_to_complex, show -((σ : ℂ) * (u : ℂ)) = ((-(σ * u) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp,
     ← Complex.ofReal_mul, Complex.ofReal_re]
+
+/-! ### The distribution function and the atoms -/
+
+/-- The distribution function `W(x) = ∫_{(0,x]} w` of the continuous primes. -/
+def W (x : ℝ) : ℝ := distribution P.w x
+
+/-- `w` on `(0, ∞)`, zero elsewhere. -/
+def wt : ℝ → ℝ := (Ioi (0 : ℝ)).indicator P.w
+
+theorem integrableOn_w_Ioc (b : ℝ) : IntegrableOn P.w (Ioc 0 b) := by
+  have h := (P.integrableOn_exp_mul_w (σ := 2) (by norm_num)).mono_set (Ioc_subset_Ioi_self : Ioc (0 : ℝ) b ⊆ Ioi 0)
+  have hIcc : IntegrableOn (fun u => Real.exp (-(2 * u)) * P.w u) (Icc 0 b) :=
+    Iff.mpr integrableOn_Icc_iff_integrableOn_Ioc h
+  have hc : ContinuousOn (fun u : ℝ => Real.exp (2 * u)) (Icc 0 b) := by fun_prop
+  have h2 := (hIcc.mul_continuousOn hc isCompact_Icc).mono_set Ioc_subset_Icc_self
+  refine h2.congr_fun (fun u _ => ?_) measurableSet_Ioc
+  rw [mul_right_comm, ← Real.exp_add]
+  simp
+
+theorem integrableOn_wt_Icc (b : ℝ) : IntegrableOn P.wt (Icc 0 b) := by
+  refine Iff.mpr integrableOn_Icc_iff_integrableOn_Ioc ?_
+  refine (P.integrableOn_w_Ioc b).congr_fun (fun u hu => ?_) measurableSet_Ioc
+  simp [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu.1)]
+
+theorem W_eq_intervalIntegral {x : ℝ} (hx : 0 ≤ x) : P.W x = ∫ u in (0 : ℝ)..x, P.wt u := by
+  rw [intervalIntegral.integral_of_le hx, W, distribution]
+  refine setIntegral_congr_fun measurableSet_Ioc fun u hu => ?_
+  simp [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu.1)]
+
+theorem W_of_nonpos {x : ℝ} (hx : x ≤ 0) : P.W x = 0 := by
+  rw [W, distribution, Ioc_eq_empty (not_lt.mpr hx)]
+  simp
+
+theorem W_nonneg (x : ℝ) : 0 ≤ P.W x :=
+  setIntegral_nonneg measurableSet_Ioc fun _ hu => (P.w_pos hu.1).le
+
+theorem intervalIntegrable_wt {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) :
+    IntervalIntegrable P.wt volume a b :=
+  (intervalIntegrable_iff_integrableOn_Icc_of_le hab).mpr
+    ((P.integrableOn_wt_Icc b).mono_set (Icc_subset_Icc_left ha))
+
+theorem continuousOn_W {M : ℝ} (hM : 0 ≤ M) : ContinuousOn P.W (Icc 0 M) := by
+  have h := intervalIntegral.continuousOn_primitive_interval (μ := volume) (a := 0) (b := M)
+    (f := P.wt) (by rw [uIcc_of_le hM]; exact P.integrableOn_wt_Icc M)
+  rw [uIcc_of_le hM] at h
+  exact h.congr fun x hx => P.W_eq_intervalIntegral hx.1
+
+/-- `W` is strictly increasing on `[0, ∞)`. -/
+theorem W_lt {a b : ℝ} (ha : 0 ≤ a) (hab : a < b) : P.W a < P.W b := by
+  rw [P.W_eq_intervalIntegral ha, P.W_eq_intervalIntegral (ha.trans hab.le)]
+  have hpos : 0 < ∫ u in a..b, P.wt u := by
+    refine intervalIntegral.intervalIntegral_pos_of_pos_on (P.intervalIntegrable_wt ha hab.le)
+      (fun u hu => ?_) hab
+    have hu0 : 0 < u := lt_of_le_of_lt ha hu.1
+    simp only [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu0)]
+    exact P.w_pos hu0
+  have hadd := intervalIntegral.integral_add_adjacent_intervals
+    (P.intervalIntegrable_wt le_rfl ha) (P.intervalIntegrable_wt ha hab.le)
+  linarith
+
+theorem W_le_W {a b : ℝ} (hab : a ≤ b) : P.W a ≤ P.W b := by
+  rcases le_or_gt a 0 with ha | ha
+  · rw [P.W_of_nonpos ha]
+    exact P.W_nonneg b
+  · rcases hab.lt_or_eq with h | h
+    · exact (P.W_lt ha.le h).le
+    · rw [h]
+
+/-- The constant `c₀ = (1 − e^{-μ})³ > 0`. -/
+theorem c₀_pos : 0 < (1 - Real.exp (-P.μ)) ^ 3 := by
+  have : Real.exp (-P.μ) < 1 := Real.exp_lt_one_iff.mpr (by linarith [P.hμ1])
+  have : 0 < 1 - Real.exp (-P.μ) := by linarith
+  positivity
+
+/-- `W(x) ≥ c₀ (x − 1)` for `x ≥ 1`. -/
+theorem W_ge {x : ℝ} (hx : 1 ≤ x) : (1 - Real.exp (-P.μ)) ^ 3 * (x - 1) ≤ P.W x := by
+  have h01 := P.intervalIntegrable_wt (a := 0) (b := 1) le_rfl zero_le_one
+  have h1x := P.intervalIntegrable_wt (a := 1) (b := x) zero_le_one hx
+  have hadd := intervalIntegral.integral_add_adjacent_intervals h01 h1x
+  have hW1 : 0 ≤ ∫ u in (0 : ℝ)..1, P.wt u := by
+    rw [← P.W_eq_intervalIntegral zero_le_one]
+    exact P.W_nonneg 1
+  have hmono : ∫ u in (1 : ℝ)..x, (1 - Real.exp (-P.μ)) ^ 3 ≤ ∫ u in (1 : ℝ)..x, P.wt u := by
+    refine intervalIntegral.integral_mono_on hx intervalIntegrable_const h1x fun u hu => ?_
+    have hu0 : 0 < u := by linarith [hu.1]
+    simp only [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu0)]
+    refine le_trans ?_ (P.w_ge hu.1)
+    rw [le_div_iff₀ hu0]
+    have : u ≤ Real.exp u := by linarith [Real.add_one_le_exp u]
+    have := P.c₀_pos
+    nlinarith
+  rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
+  rw [P.W_eq_intervalIntegral (by linarith), ← hadd]
+  nlinarith
+
+/-- `W(x) ≤ e^{bx} ∫_{(0,∞)} e^{-bu} w(u) du` for `b > 1`, `x ≥ 0`. -/
+theorem W_le_exp {b : ℝ} (hb : 1 < b) (x : ℝ) :
+    P.W x ≤ Real.exp (b * x) * ∫ u in Ioi (0 : ℝ), Real.exp (-(b * u)) * P.w u := by
+  have hint := P.integrableOn_exp_mul_w hb
+  have hstep : P.W x ≤ ∫ u in Ioc 0 x, Real.exp (b * x) * (Real.exp (-(b * u)) * P.w u) := by
+    refine setIntegral_mono_on (P.integrableOn_w_Ioc x)
+      ((hint.mono_set Ioc_subset_Ioi_self).const_mul _) measurableSet_Ioc fun u hu => ?_
+    have hw := (P.w_pos hu.1).le
+    have he : 1 ≤ Real.exp (b * x) * Real.exp (-(b * u)) := by
+      rw [← Real.exp_add]
+      exact Real.one_le_exp (by nlinarith [hu.2])
+    nlinarith
+  rw [integral_const_mul] at hstep
+  refine hstep.trans (mul_le_mul_of_nonneg_left ?_ (Real.exp_pos _).le)
+  refine setIntegral_mono_set hint ?_ (Eventually.of_forall Ioc_subset_Ioi_self)
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with u hu
+  exact mul_nonneg (Real.exp_pos _).le (P.w_pos hu).le
+
+theorem exists_atom (k : ℕ) : ∃ x, 0 < x ∧ P.W x = k + 1 := by
+  set c := (1 - Real.exp (-P.μ)) ^ 3 with hc
+  have hc0 : 0 < c := P.c₀_pos
+  set M : ℝ := 1 + (k + 1) / c with hM
+  have hM1 : 1 ≤ M := by
+    have : 0 ≤ ((k : ℝ) + 1) / c := by positivity
+    linarith
+  have hWM : (k : ℝ) + 1 ≤ P.W M := by
+    have h := P.W_ge hM1
+    have : c * (M - 1) = (k : ℝ) + 1 := by rw [hM]; field_simp; ring
+    linarith
+  obtain ⟨x, hx, hWx⟩ := intermediate_value_Icc (by linarith : (0 : ℝ) ≤ M) (P.continuousOn_W (by linarith))
+    ⟨by rw [P.W_of_nonpos le_rfl]; positivity, hWM⟩
+  refine ⟨x, ?_, hWx⟩
+  rcases hx.1.lt_or_eq with h | h
+  · exact h
+  · rw [← h, P.W_of_nonpos le_rfl] at hWx
+    have : (0 : ℝ) < k + 1 := by positivity
+    linarith
+
+/-- The `k`-th discrete prime in logarithmic coordinate: `W(t_k) = k + 1`. -/
+def atom (k : ℕ) : ℝ := (P.exists_atom k).choose
+
+theorem atom_pos (k : ℕ) : 0 < P.atom k := (P.exists_atom k).choose_spec.1
+
+theorem W_atom (k : ℕ) : P.W (P.atom k) = k + 1 := (P.exists_atom k).choose_spec.2
+
+theorem atom_le_iff (k : ℕ) {x : ℝ} (hx : 0 ≤ x) : P.atom k ≤ x ↔ (k : ℝ) + 1 ≤ P.W x := by
+  constructor
+  · intro h
+    rw [← P.W_atom k]
+    exact P.W_le_W h
+  · intro h
+    by_contra hlt
+    push Not at hlt
+    have := P.W_lt hx hlt
+    rw [P.W_atom] at this
+    linarith
+
+theorem atom_strictMono : StrictMono P.atom := by
+  intro j k hjk
+  by_contra hle
+  push Not at hle
+  have h := P.W_le_W hle
+  rw [P.W_atom, P.W_atom] at h
+  have : (j : ℝ) < k := by exact_mod_cast hjk
+  linarith
+
+/-- **The discrete primes follow the continuous ones**: `#{k : t_k ≤ x} = ⌊W(x)⌋`. -/
+theorem atomCount_eq (x : ℝ) : atomCount P.atom x = (⌊P.W x⌋₊ : ℝ) := by
+  rcases lt_or_ge x 0 with hx | hx
+  · rw [P.W_of_nonpos hx.le, atomCount]
+    simp only [Nat.floor_zero, Nat.cast_zero]
+    convert tsum_zero with k
+    rw [if_neg (not_le.mpr (lt_trans hx (P.atom_pos k)))]
+  · have hiff : ∀ k : ℕ, P.atom k ≤ x ↔ k < ⌊P.W x⌋₊ := by
+      intro k
+      rw [P.atom_le_iff k hx, Nat.lt_iff_add_one_le, Nat.le_floor_iff (P.W_nonneg x)]
+      push_cast
+      rfl
+    rw [atomCount, tsum_eq_sum (s := Finset.range ⌊P.W x⌋₊) fun k hk => by
+      rw [if_neg (by rw [hiff]; simpa using hk)]]
+    rw [Finset.sum_congr rfl fun k hk => if_pos ((hiff k).mpr (Finset.mem_range.mp hk))]
+    simp
+
+/-- `|N(x) − W(x)| ≤ 1`. -/
+theorem abs_atomCount_sub_W_le (x : ℝ) : |atomCount P.atom x - P.W x| ≤ 1 := by
+  rw [P.atomCount_eq, abs_le]
+  have h1 := Nat.floor_le (P.W_nonneg x)
+  have h2 := Nat.lt_floor_add_one (P.W x)
+  constructor <;> linarith
+
+/-- The discrete prime sum `Σ_k e^{-a t_k}` converges for `a > 1`. -/
+theorem summable_exp_atom {a : ℝ} (ha : 1 < a) : Summable fun k => Real.exp (-(a * P.atom k)) := by
+  set b := (1 + a) / 2 with hb
+  have hb1 : 1 < b := by rw [hb]; linarith
+  have hab : 1 < a / b := by rw [lt_div_iff₀ (by linarith)]; linarith
+  set C := ∫ u in Ioi (0 : ℝ), Real.exp (-(b * u)) * P.w u with hC
+  have hC0 : 0 ≤ C := setIntegral_nonneg measurableSet_Ioi fun u hu =>
+    mul_nonneg (Real.exp_pos _).le (P.w_pos hu).le
+  have hk : ∀ k : ℕ, Real.exp (-(b * P.atom k)) ≤ C / ((k : ℝ) + 1) := by
+    intro k
+    have h := P.W_le_exp hb1 (P.atom k)
+    rw [P.W_atom] at h
+    rw [le_div_iff₀ (by positivity)]
+    have he : Real.exp (-(b * P.atom k)) * Real.exp (b * P.atom k) = 1 := by
+      rw [← Real.exp_add]; simp
+    nlinarith [Real.exp_pos (-(b * P.atom k))]
+  have hsum : Summable fun k : ℕ => C ^ (a / b) * ((k : ℝ) + 1) ^ (-(a / b)) := by
+    have h := (summable_nat_add_iff 1).mpr (Real.summable_nat_rpow.mpr (by linarith : -(a / b) < -1))
+    refine (h.mul_left (C ^ (a / b))).congr fun k => ?_
+    push_cast
+    rfl
+  refine Summable.of_nonneg_of_le (fun k => (Real.exp_pos _).le) (fun k => ?_) hsum
+  have hexp : Real.exp (-(a * P.atom k)) = Real.exp (-(b * P.atom k)) ^ (a / b) := by
+    rw [← Real.exp_mul]
+    congr 1
+    field_simp
+  rw [hexp]
+  calc Real.exp (-(b * P.atom k)) ^ (a / b) ≤ (C / ((k : ℝ) + 1)) ^ (a / b) :=
+        Real.rpow_le_rpow (Real.exp_pos _).le (hk k) (by positivity)
+    _ = C ^ (a / b) * ((k : ℝ) + 1) ^ (-(a / b)) := by
+        rw [Real.div_rpow hC0 (by positivity), Real.rpow_neg (by positivity), div_eq_mul_inv]
 
 end Params
 

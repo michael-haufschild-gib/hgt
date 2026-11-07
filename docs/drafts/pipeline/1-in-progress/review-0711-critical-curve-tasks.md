@@ -14,8 +14,13 @@
 | A11 finish CACT critical-ratio modules | owned by a non-Claude agent (both [S] files edited 13:42–14:35); not touched | — |
 | A10 compactness assembly | open | — |
 | A13 growing-period charges beyond gcd profiles | done (growth up to an ineffective unbounded scale) | `ArithmeticCouplingTheory/ChargesBeyondTheGcdProfilesAreCoercive.lean`: `jumpEnergy_ge_beyond_gcd` (`J_N(F) ≥ η²(log N)²/(16M²)` for `M`-periodic `F` with gcd defect `η`, every `M ≤ M₀(N)`), `tendsto_admissiblePeriod_atTop` (`M₀(N) → ∞`, `M₀ ≤ log log N`), `eventually_completeWeilEnergy_ge_beyond_gcd` (`W(u) ≥ (1−ε)J(u)` on `1 ≤ c ≤ (log N)^{1/4}`, all critical ratios), `eventually_completeWeilEnergy_coercive_beyond_gcd` (`W(u) ≥ η² log N/(256V²(log log N)²)‖u‖²`). Inputs: Mertens in progressions (`ArtinMertens`), two-moment bound. Open strengthening: periods `M ≤ (log N)^{β}` need Mertens in progressions uniform in the modulus (Siegel–Walfisz-type lower bounds for `L(1,χ)`), absent from corpus and Mathlib. Axioms: propext, choice, Quot.sound |
-| A12 low-packet polar Schur payment against the top window | open | — |
+| A12 low-packet polar Schur payment against the top window | classified: at every ratio it implies RH | `CriticalArithmeticCorrelationTheory/TheLowPacketPaymentAtEveryRatioIsTheRiemannHypothesis.lean`: `PolarPaymentAt R A` (`S(h)²/D(R) ≤ pencil_R(H)` on `[−A,0]`); `polarPaymentAt_of_eventually_nonneg` (PSD along one critical sequence of ratio `R` ⇒ payment on every window); `le_windowThreshold_of_polarPaymentAt` (payment ⇒ `R ≤ R₁(A)`); `le_windowThreshold_of_eventually_nonneg` (PSD at `R` ⇒ `R ≤ inf_A R₁(A)`); `riemannHypothesis_of_polarPayment_on_top_windows` (payment at every `R` on `(1/8)log(R+1)+C₀` ⇒ RH); `riemannHypothesis_of_eventually_nonneg_at_every_ratio`; survivor `exists_polarPaymentAt_on_every_window` (band `R ≤ (2K)⁸`). Axioms: propext, choice, Quot.sound |
 | A9 explicit `K₀`, horizon, profile, Beurling schedule | open | — |
+
+## A12 no-go closure
+- **Killing theorem:** payment at every ratio on windows of length `→ ∞` gives `R₁(A) = ⊤` for every `A`, i.e. RH (`riemannHypothesis_of_polarPayment_on_growing_windows`). A12 "at every ratio" is not finite work.
+- **Positive survivor:** at one ratio the payment is necessary for positivity and bounds the ratio, `R ≤ inf_A R₁(A)`; it holds on every window below `(2K)⁸`.
+- **Insight:** the positivity interval of the complete matrix along the critical curve is contained in `(0, inf_A R₁(A)]`, and `inf_A R₁(A) = ⊤ ⇔ RH`. The forward direction at one ratio (payment on the top window ⇒ PSD) is the A10 assembly.
 
 ## A14 plan
 

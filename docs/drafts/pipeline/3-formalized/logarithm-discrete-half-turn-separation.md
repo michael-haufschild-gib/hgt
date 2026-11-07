@@ -1,8 +1,8 @@
 # Lower separation of discrete logarithmic half-turns
 
 - **ID:** SPL-discrete-half-turn-separation
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** With `α=log 3/log 4`, every integer `k≥1` and `ℓ∈ℤ` obey
   `|kα−ℓ−1/2|≥1/((3^k+1)log 4)`.
   Consequently a return of precision `1/Q` requires `Q<(3^k+1)log 4`.
@@ -23,5 +23,13 @@ bound and at most `Q4^Q log 4/2`.
 
 This complements the upper return bound with an initial-index exclusion.
 It concerns one discrete two-scale rotation; the full many-prime
-first-return problem remains separate. Lean specialization and its
-transitive axiom audit are pending.
+first-return problem remains separate.
+
+## Formalization
+
+`DiscreteLogarithmicHalfTurnSeparation.lean` proves
+`threeFourRotation_half_turn_gap`, `threeFourRotation_half_turn_precision`,
+`threeFourRotation_half_turn_index_lower`, and
+`exists_three_four_half_turn_window`. The direct source check passes;
+all four transitive axiom audits contain only `propext`, `Classical.choice`,
+and `Quot.sound`.

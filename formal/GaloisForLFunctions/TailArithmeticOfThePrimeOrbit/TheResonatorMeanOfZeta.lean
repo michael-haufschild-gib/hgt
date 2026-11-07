@@ -16,6 +16,14 @@ theorem makes `ζ − D_N` small in mean square, uniformly against the bounded w
 (`abs_dyadicSquareMean_sub_le_split`); and `c^N → c` in `ℓ²` by dominated convergence
 (`tendsto_tsum_truncResonatorCoeff`). The resonator is fixed, so the head lies below the Kronecker scale
 as `T → ∞`.
+
+For a resonator on `y`-smooth integers, `c_{su} = u^{−σ} c_s` for `s` smooth and `u` rough, and unique
+factorization `k = s·u` splits the limit (`tsum_resonatorCoeff_eq_mul`,
+`tendsto_resonatorMean_zeta_smooth`):
+
+`(1/T) ∫_T^{2T} |R(t)|² |ζ(σ + it)|² dt → (Σ_{s smooth} |c_s|²) · Σ_{u rough} u^{−2σ}`.
+
+On the Bohr set selected by the head, the tail of `ζ` itself keeps its unconditional second moment.
 -/
 
 open Real Finset Filter Topology MeasureTheory
@@ -425,10 +433,9 @@ theorem isRough_roughPart (y k : ℕ) : IsRough y (roughPart y k) := by
   refine ⟨Finset.prod_ne_zero_iff.mpr fun p hp => pow_ne_zero _ (hS p hp).ne_zero, fun q hq hqd => ?_⟩
   exact not_lt.mp (Finset.mem_filter.mp (prime_mem_of_dvd_prod hS _ hq hqd)).2
 
-/-- **The coefficients factor.** For a smooth resonator, `c_{su} = u^{−σ} c_s` when `s` is smooth and
-`u` rough. -/
+/-- **The coefficients factor.** For a smooth resonator, `c_{su} = u^{−σ} c_s` when `u` is rough. -/
 theorem resonatorCoeff_mul {y : ℕ} {A : Finset ℕ} (hA : ∀ m ∈ A, m ∈ Nat.smoothNumbers y)
-    (r : ℕ → ℂ) (σ : ℝ) {s u : ℕ} (hs : s ∈ Nat.smoothNumbers y) (hu : IsRough y u) :
+    (r : ℕ → ℂ) (σ : ℝ) (s : ℕ) {u : ℕ} (hu : IsRough y u) :
     resonatorCoeff A r σ (s * u) = lineWeight σ u * resonatorCoeff A r σ s := by
   unfold resonatorCoeff
   rw [Finset.mul_sum, Finset.filter_congr (p := (· ∣ s * u)) (q := (· ∣ s)) fun m hm =>
@@ -477,7 +484,7 @@ theorem tsum_resonatorCoeff_eq_mul {y : ℕ} {A : Finset ℕ} (hA : ∀ m ∈ A,
   rw [← (smoothRoughMul_injective y).tsum_eq (f := fun k => ‖resonatorCoeff A r σ k‖ ^ 2)]
   · refine tsum_congr fun x => ?_
     simp only [smoothRoughMul]
-    rw [resonatorCoeff_mul hA r σ x.1.2 x.2.2, norm_mul, mul_pow, norm_lineWeight,
+    rw [resonatorCoeff_mul hA r σ x.1 x.2.2, norm_mul, mul_pow, norm_lineWeight,
       ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
     push_cast
     ring_nf

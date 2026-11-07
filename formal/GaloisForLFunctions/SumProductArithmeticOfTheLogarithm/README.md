@@ -66,6 +66,7 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
 | Finite recurrence | Every finite set `A` aligns to precision `2π/(Q+1)` at some height in `[L,L(Q+1)^|A|]`, for every `L>0`. There is no last aligned height. | [`exists_alignment_in_scaled_interval`, `not_exists_last_alignment`](FiniteAlignmentReturns.lean) |
 | Effective discrete half-turn | For `α=log 3/log 4` and `Q≥2`, some integer `1≤k≤Q4^Q log 4/2` satisfies `|kα−ℓ−1/2|<1/Q`. Integer-log separation controls the size of the preceding homogeneous return. | [`exists_effective_three_four_half_turn`, `threeFourRotation_gap`](EffectiveLogarithmicHalfTurn.lean) |
+| Initial-index exclusion | Every discrete half-turn has error at least `1/((3^k+1)log 4)`. Precision `1/Q` forces `k>(log Q−log(2 log 4))/log 3`; an attained return also satisfies the upper bound above. | [`threeFourRotation_half_turn_gap`, `exists_three_four_half_turn_window`](DiscreteLogarithmicHalfTurnSeparation.lean) |
 | Collision amplification | Distinct factorizations of norm `m` give at least `k+1` factorizations of `m^k`. Uniformly bounded multiplicities force injective norm. | [`intCount_pow_ge_of_collision`, `bounded_intCount_iff_norm_injective`](NormCollisionAmplification.lean) |
 | Count-distance trichotomy | A locally finite positive integer-norm system is classical, has `k≤|D(m^k)|+|D(m^k−1)|` for some `m≥2`, or has `N(m(4k+1))+k≤m(4k+1)` for some `m≥2`. | [`count_distance_trichotomy`](CountDistanceRigidity.lean) |
 | Logarithmic isolation | Every nonclassical such system has `|D(n)|≥c log n` arbitrarily far out, for some `c>0`. Error `o(log n)` forces a norm-preserving equivalence of labels with rational primes. | [`primes_or_logarithmic_count_distance`, `primes_of_sublogarithmic_count_error`](LogarithmicCountFloor.lean) |
@@ -82,6 +83,13 @@ Real-cell separation uses the integer gap between distinct products. Winding
 occupation applies this separation to sums of two phase remainders. The close
 neighbouring pairs show why exact interpolation alone does not remove the
 need for quantitative resolution.
+
+At the discrete scale ratio `log 3/log 4`, oddness supplies a complementary
+exclusion: half a power of three is a half-integer, separated from every
+integer power of four. The logarithm preserves an explicit lower gap.
+Together with the constructive half-turn return, this bounds an attained
+index from both sides. The logarithmic lower bound and exponential upper
+bound concern two fixed scales; they do not resolve many-prime first returns.
 
 The count-distance argument uses the free monoid of generator labels. A norm
 collision amplifies along powers. Without collisions, representations of
@@ -174,7 +182,10 @@ spectral receivers and impure models; their positivity mechanisms are outside
 this programme's allowed inputs.
 
 Finite-field calibration must recover Hasse–Weil in counting language through
-Stepanov, including the scope of the existing split-hyperelliptic theorem.
+Stepanov. The corpus already proves it for squarefree odd-degree hyperelliptic
+curves over every finite field of odd characteristic, using splitting-field
+descent; see [`abs_card_points_sub_le_oddHyperelliptic`](../RHTower/HyperellipticDescent.lean).
+Arbitrary curves remain a broader calibration requirement.
 Further tests are Burgess, smooth moduli and depth aspect, continuous Beurling
 systems without integer carries, and the Golden discrete model. A theorem about
 all integer sets alone cannot distinguish rational primes from a different

@@ -47,6 +47,11 @@ to these modes.
 * Count-distance geometry above the Beurling isolation gap, keeping nonnegative
   generator multiplicities and finite exceptional zero support explicit.
 
+The [discrete two-scale window](../3-formalized/logarithm-discrete-half-turn-separation.md)
+now bounds an attained half-turn index above and below at every precision.
+It supplies an initial-index exclusion for `log 3/log 4`; the many-prime
+cutoff/height problem remains open.
+
 [Bounded-count rigidity](../3-formalized/logarithm-bounded-count-rigidity.md) isolates a concrete
 advance on this last question: rational-prime rigidity extends from vanishing
 count error to `o(log n)` error at slope one. Collision amplification in the
@@ -76,7 +81,8 @@ now gives uniform error `O(log log n/log n)` and actual integral-count
 coefficient error `O(log log log x/log log x)`, with explicit constants and
 cutoffs. These averaged rates do not close the pointwise distance gap.
 
-Finite-field calibration must retain the precise split-hyperelliptic scope
-of existing Stepanov results. Any power-saving parity output must include
+Finite-field calibration must retain the precise odd-degree hyperelliptic
+scope of existing Stepanov and descent results over finite fields of odd
+characteristic. General curves remain beyond that scope. Any power-saving parity output must include
 its zero-free-strip consequence. None of these requirements is discharged
 by exact shifted-product reconstruction alone.

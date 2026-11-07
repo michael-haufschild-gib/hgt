@@ -1,8 +1,8 @@
 # Gcd classes of smooth × prime near-collisions
 
 - **ID:** SPL-smooth-prime-determinant-gcd
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE THEOREM
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper); Lean verification pending
 - **Question:** Which arithmetic restrictions survive on a nonzero shifted-product fibre?
 
 Let `m,m'` have only prime factors at most `y`, and let primes `p,p'>y`.
