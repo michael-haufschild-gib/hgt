@@ -11,6 +11,11 @@ import GaloisForLFunctions.PrimeTorusTheory.TheWallForAllPrimes
 import GaloisForLFunctions.PrimeTorusTheory.TheCertificateAtRankOne
 import GaloisForLFunctions.PrimeTorusTheory.TheSavingOnAnySetOfPrimes
 import GaloisForLFunctions.PrimeTorusTheory.TheSavingAtEveryLength
+import GaloisForLFunctions.PrimeTorusTheory.TheBoxesOfTheTorus
+import GaloisForLFunctions.PrimeTorusTheory.TheEnergyPastTheDiagonal
+import GaloisForLFunctions.PrimeTorusTheory.TheSavingAwayFromSmallPrimes
+import GaloisForLFunctions.PrimeTorusTheory.CoordinatesThatSeeTheHeight
+import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTorsionPoints
 
 /-!
 # The questions of the field
@@ -161,6 +166,50 @@ theorem question_six {ι : Type*} [Fintype ι] (S : PhaseSystem ι) :
         u ∉ (harmonicSystem z).largeValue θ) :=
   ⟨fun hθ hS hA => S.sum_sum_column_ge hθ hS hA, fun hr ht hu => S.sub_mem_bohr hr ht hu,
     fun hz hu h => le_log_of_mem_largeValue hz hu h, fun hθ => eventually_not_mem_largeValue hθ⟩
+
+/-- **Question 1, on boxes and rotations.** Every window of length `exp((20/δ) y log y)` enters every box on the primes up to `y`. Against every rotation, the modulus of the critical column stays below
+its size by a negative power of `log |t|`, the saving away from the primes dividing `q` grows like `√P` when `q` contains every prime up to `P`, and more than `d` primes up to `L^{9d + 6}` are misaligned at precision `L^{−(9d + 10)}`. -/
+theorem question_one_boxes_and_rotations {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
+    (∃ y₀ : ℕ, ∀ y : ℕ, y₀ ≤ y → ∀ (θ : ℕ → ℝ) (T : ℝ),
+      ∃ t ∈ Set.Icc T (T + Real.exp (20 / δ * y * Real.log y)),
+        ∀ q ∈ primesUpTo y, 1 - δ < bump (t * Real.log q - θ q)) ∧
+      (∃ T₀ : ℝ, 0 < T₀ ∧ ∀ t : ℝ, T₀ ≤ |t| → ∀ N : ℕ,
+        10 ^ 9 * Real.log |t| ^ 6 * Real.log (Real.log |t|) ^ 4 < N →
+        ‖∑ p ∈ N.primesBelow, ((1 / √(p : ℝ) : ℝ) : ℂ) * Complex.exp (Complex.I * (t * Real.log p))‖ ≤
+          (∑ p ∈ N.primesBelow, 1 / √(p : ℝ)) -
+            1 / (10 ^ 25 * Real.log |t| ^ 19 * Real.log (Real.log |t|) ^ 14)) ∧
+      (∃ T₀ : ℝ, 0 < T₀ ∧ ∀ t : ℝ, T₀ ≤ |t| → ∀ q K P : ℕ, 1 ≤ q → 1 ≤ P →
+        (∀ p : ℕ, p.Prime → p ≤ P → p ∣ q) →
+        48 * Real.log |t| ^ 2 * Real.log (Real.log |t|) ≤ K →
+        4 * √(P : ℝ) *
+            ((q.totient : ℝ) / q / (100000 * Real.log |t| ^ 4 * Real.log (Real.log |t|) ^ 2)) ^ 2 ≤
+          ∑ p ∈ coprimePrimes q (q * K), (1 - Real.cos (t * Real.log p)) / √(p : ℝ)) ∧
+      ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ t : ℝ, T₀ ≤ |t| → ∀ Ex : Finset ℕ, (Ex.card : ℝ) ≤ Real.log |t| →
+        ∃ p : ℕ, p.Prime ∧ p ∉ Ex ∧ (p : ℝ) ≤ Real.log |t| ^ (9 * Ex.card) * Real.log |t| ^ 6 ∧
+          1 / (Real.log |t| ^ (9 * Ex.card) * Real.log |t| ^ 10) < phaseDist t p :=
+  ⟨eventually_exists_mem_box hδ0 hδ1, norm_sum_primes_le, le_sum_primes_critical_coprime_of_large,
+    exists_prime_not_mem_of_large⟩
+
+open Classical in
+/-- **Question 2, past the diagonal.** At weights `r^{−σ}` the energy is bounded at every `k` and `H`, and the oscillating energy of the critical column is bounded by the modulus, which stays below size. -/
+theorem question_two_past_the_diagonal {Q : Finset ℕ} (hQ : ∀ r ∈ Q, r.Prime) {σ : ℝ} (hσ : 0 ≤ σ)
+    (ha : ∀ r ∈ Q, 0 ≤ powWeight σ r) (k : ℕ) {H : ℝ} (hH : 0 < H) :
+    (primeSystem Q (powWeight σ) ha).energy k H ≤
+      k.factorial * (∑ r ∈ Q, powWeight σ r ^ 2) ^ k +
+        24 * k.factorial * (∑ r ∈ Q, (r : ℝ) ^ (1 - 2 * σ)) ^ k / H +
+        32 * (∑ r ∈ Q, powWeight σ r) ^ (2 * k) / H ^ 2 :=
+  energy_le_past_diagonal hQ hσ ha k hH
+
+/-- **Question 4, with coordinates that see the height.** The function `E(s)/(s + 3)` has no decomposition in the returning coordinates, and it has one in coordinates that do not return. -/
+theorem question_four_height_coordinates :
+    IsEmpty (AglerDecompositionAll eulerTestS eulerTestG) ∧
+      (∀ n s, ‖heightCoord n s‖ ≤ 1) ∧
+      (∀ p : ℕ, p.Prime → ∀ s, Tendsto (fun τ => heightCoord p (vshift' s τ)) atTop (𝓝 0)) ∧
+      ∀ x y : Plane 2, HasSum (fun n => (1 - heightCoord n x * starRingEnd ℂ (heightCoord n y)) *
+        ((∏ m ∈ Finset.range n, heightCoord m x) * starRingEnd ℂ (∏ m ∈ Finset.range n, heightCoord m y)))
+        (1 - eulerTestS x * starRingEnd ℂ (eulerTestS y)) :=
+  ⟨euler_test.2.2, euler_test_has_height_certificate.1, euler_test_has_height_certificate.2.1,
+    euler_test_has_height_certificate.2.2.2⟩
 
 end
 

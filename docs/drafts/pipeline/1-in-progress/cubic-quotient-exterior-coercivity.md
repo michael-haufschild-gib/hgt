@@ -18,8 +18,12 @@ For the positive Laplacian, the intended potential is `V=Δφ/φ`, with
 give `∫V|f|²≤E(f)` by completing the square in `∇f−f∇φ/φ`.
 Density then passes the inequality to the completed energy graph.
 
-Open: barrier construction and defect equation, quotient Green identity,
-ground-state inequality, and passage to the completed graph. Compactness
+The local and global Green identities, including equations holding only
+on test support, are formalized. Coordinate equations identify the actual
+variational operator graph; see [Green identity](../3-formalized/cubic-quotient-green-identity.md).
+
+Open: barrier construction and defect equation, ground-state inequality,
+and passage to the completed graph. Compactness
 of `1_K` is tracked on [formalized local compactness](../3-formalized/cubic-kernel-local-sobolev-compactness.md).
 
 External argument: OpenAI `Eisenstein/CuspHeight.lean`,

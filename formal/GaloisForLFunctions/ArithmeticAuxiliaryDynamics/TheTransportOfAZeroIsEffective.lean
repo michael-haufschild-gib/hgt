@@ -1,5 +1,7 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport
 import GaloisForLFunctions.HTGeometry.ThreeCircles
+import GaloisForLFunctions.VerifiedHeightRungs.HadamardBudget.TheVerifiedHeightSixtySeven
+import GaloisForLFunctions.VerifiedHeightRungs.LiAndHausdorffEntries
 
 /-!
 # The transport of a zero is effective
@@ -91,10 +93,12 @@ theorem norm_sub_le_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 1 ≤ N) (h : IsH
         rw [if_pos (Finset.mem_Ico.mp hn).2]
       have h2 : ∑ n ∈ Finset.Ico 0 N, 1 / ((n : ℝ) + 1) ^ 2 ≤ 2 := by
         rw [← Finset.sum_Ico_consecutive _ (Nat.zero_le 1) hN]
-        have h3 := sum_Ico_inv_sq_le (N := 1) (m := N) le_rfl hN
+        have h3 : ∑ n ∈ Finset.Ico 1 N, 1 / ((n : ℝ) + 1) ^ 2 ≤ 1 - 1 / (N : ℝ) := by
+          have h5 := sum_Ico_inv_sq_le (N := 1) (m := N) le_rfl hN
+          rwa [Nat.cast_one, div_one] at h5
         have h4 : (0 : ℝ) ≤ 1 / (N : ℝ) := by positivity
-        simp only [Nat.Ico_succ_singleton, Finset.sum_singleton] at *
-        norm_num at h3 ⊢
+        have hone : ∑ n ∈ Finset.Ico 0 1, 1 / (((n : ℕ) : ℝ) + 1) ^ 2 = 1 := by simp
+        rw [hone]
         linarith
       rw [h1]
       calc _ ≤ 2 * (1 / (N : ℝ)) := mul_le_mul_of_nonneg_right h2 (by positivity)
@@ -364,5 +368,23 @@ theorem infinite_zeros_of_slow_returns {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0
   obtain ⟨N, hN, τ, hτ, hhead, hbd⟩ := hslow A hA N₀ H
   obtain ⟨s, hs, hlt⟩ := hall N hN τ hτ hhead
   exact absurd (hbd s hs) (not_le.mpr hlt)
+
+/-- **Slow aligned returns give the asymptotic abscissa law.** It is enough that, at each zero right of `½` in the upper half-plane and each exponent, aligned shifts of arbitrarily large
+length and height keep `ζ` below `N^A` on the disc. Zeros right of `½` lie above height `67`, so the disc avoids the pole. -/
+theorem asymptoticAbscissaLaw_of_slowReturns
+    (hslow : ∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im → ∀ A : ℝ, 0 < A →
+      ∀ (N₀ : ℕ) (H : ℝ), ∃ N, N₀ ≤ N ∧ ∃ τ : ℝ, H ≤ τ ∧ IsHeadReturn N τ ∧
+        ∀ s ∈ closedBall ((3 : ℂ) + (ρ.im : ℂ) * I) (31 / 10),
+          ‖riemannZeta (s + (τ : ℂ) * I)‖ ≤ (N : ℝ) ^ A) :
+    RHTower.AsymptoticAbscissaLaw := by
+  refine asymptoticAbscissaLaw_of_infinite_zeros fun ρ hρ h12 h1 him r hr => ?_
+  have hne1 : ρ ≠ 1 := fun h => by
+    rw [h, one_re] at h1
+    exact lt_irrefl _ h1
+  have hxi : RHTower.xi ρ = 0 := (RHTower.xi_eq_zero_iff (by linarith) hne1).mpr hρ
+  have hhigh := VerifiedHeightRungs.lt_abs_im_of_rhVerifiedThrough
+    VerifiedHeightRungs.HadamardBudget.rhVerifiedThrough_sixtySeven hxi (by linarith) h1 (ne_of_gt h12)
+  rw [abs_of_pos him] at hhigh
+  exact infinite_zeros_of_slow_returns hρ (by linarith) h1 (by linarith) (hslow ρ hρ h12 h1 him) hr
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

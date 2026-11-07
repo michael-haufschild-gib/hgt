@@ -31,13 +31,20 @@ import GaloisForLFunctions.PrimeTorusTheory.TheSavingAtEveryLength
 import GaloisForLFunctions.PrimeTorusTheory.TheSupBoundOfIntegerPowers
 import GaloisForLFunctions.PrimeTorusTheory.ZetaStaysBelowItsSupremum
 import GaloisForLFunctions.PrimeTorusTheory.TheSavingAwayFromSmallPrimes
+import GaloisForLFunctions.PrimeTorusTheory.TheBoxesOfTheTorus
+import GaloisForLFunctions.PrimeTorusTheory.TheOrbitEscapesProgressions
+import GaloisForLFunctions.PrimeTorusTheory.TheEnergyPastTheDiagonal
+import GaloisForLFunctions.PrimeTorusTheory.CoordinatesThatSeeTheHeight
+import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTorsionPoints
+import GaloisForLFunctions.PrimeTorusTheory.AnIsolatedZeroForcesAnEntry
 
 /-!
 # Prime Torus Theory
 
 Umbrella for the theory of the pair `(t, ω_t)` at finite time: the metric and additive structure of the orbit; the finite-time Bohr
-isometry; non-alignment from integrality, unique factorization and Tarry–Escott words; the saving against size at every length and on
-any set of primes; the near-diagonal energy and its diagonal range; the rounded orbit; discrepancy; corners and parity; the rank law and
-the test systems; the Agler wall for kernel-valued certificates and its rank-one reduction to Schwarz–Pick; the hull over the torus; the
-pole's price; and the critical coupling of the Gamma base.
+isometry, on half-spaces and on boxes; non-alignment from integrality, unique factorization and Tarry–Escott words; the escape from low-rank
+progressions and the modulus; the saving against size at every length, on any set of primes and above the small primes; the near-diagonal
+energy at every order; the rounded orbit; discrepancy; corners and parity; the rank law and the test systems; the Agler wall for kernel-valued
+certificates, its rank-one reduction to Schwarz–Pick, and certificates whose coordinates see the height; the hull over the torus; the pole's
+price; and the critical coupling of the Gamma base.
 -/

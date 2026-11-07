@@ -197,6 +197,14 @@ densely defined, nonnegative self-adjoint quotient Laplacian.
 partitions and proves weighted integration by parts with density `v⁻³`.
 Exact chart transport identifies that expression with the quotient form.
 
+`TheCubicLaplacianHasItsCoordinateExpression.lean` extends Green’s identity
+by a finite chart partition, including equations valid only on test support.
+Global square-integrable coordinate equations give the graph and action
+of the actual variational Laplacian.
+
+`HyperbolicAxisLaplacian.lean` identifies the positive Fréchet expression
+with minus the iterated coordinate-axis Laplacian on positive half-space.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

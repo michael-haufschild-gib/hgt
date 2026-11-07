@@ -231,12 +231,10 @@ theorem not_translatesBoundedOn_of_finite {σ : ℝ} (hfin : {w : ℂ | riemannZ
   rw [hset] at hinf
   exact hinf hfin
 
-/-- **Bounded phase returns give the asymptotic abscissa law.** If each zero right of `½` in the upper half-plane has a phase return with
-translates bounded on a connected domain joining it to `Re s > 1`, then finitely many zeros right of `½ + h` forces none. -/
-theorem asymptoticAbscissaLaw_of_boundedReturns
-    (hB : ∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im →
-      ∃ (τ : ℕ → ℝ) (U : Set ℂ) (s₀ : ℂ), IsPhaseReturn τ ∧ IsOpen U ∧ IsPreconnected U ∧
-        (∀ z ∈ U, 0 < z.im) ∧ ρ ∈ U ∧ s₀ ∈ U ∧ 1 < s₀.re ∧ TranslatesBoundedOn τ U) :
+/-- **Infinitely many zeros near each zero give the asymptotic abscissa law.** -/
+theorem asymptoticAbscissaLaw_of_infinite_zeros
+    (hI : ∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im → ∀ r : ℝ, 0 < r →
+      {w : ℂ | riemannZeta w = 0 ∧ ρ.re - r < w.re}.Infinite) :
     RHTower.AsymptoticAbscissaLaw := by
   intro h hh hF q₀
   by_contra hlt
@@ -259,10 +257,8 @@ theorem asymptoticAbscissaLaw_of_boundedReturns
       rw [hreal] at hζ
       exact RHTower.riemannZeta_real_strip_ne_zero (by linarith) hρ1 hζ
     · exact ⟨_, hζ, rfl, him⟩
-  obtain ⟨τ, U, s₀, hτ, hUo, hUc, hUim, hρU, hs₀, hs₀1, hbd⟩ :=
-    hB ρ hρ (by rw [hρre]; linarith) (by rw [hρre]; exact hρ1) hρim
   have hr : 0 < ρ.re - (1 / 2 + h) := by rw [hρre]; linarith
-  have hinf := hτ.infinite_zeros hUo hUc hUim hs₀ hs₀1 hbd hρU hρ (by rw [hρre]; exact hρ1) hr
+  have hinf := hI ρ hρ (by rw [hρre]; linarith) (by rw [hρre]; exact hρ1) hρim _ hr
   have hset : ρ.re - (ρ.re - (1 / 2 + h)) = 1 / 2 + h := by ring
   rw [hset] at hinf
   refine hinf ((hF.image fun q => (q.1 : ℂ)).subset ?_)
@@ -275,5 +271,16 @@ theorem asymptoticAbscissaLaw_of_boundedReturns
     show 1 / 2 + h < (q.1 : ℂ).re
     rw [hq]
     exact hwre, hq⟩
+
+/-- **Bounded phase returns give the asymptotic abscissa law.** If each zero right of `½` in the upper half-plane has a phase return with
+translates bounded on a connected domain joining it to `Re s > 1`, then finitely many zeros right of `½ + h` forces none. -/
+theorem asymptoticAbscissaLaw_of_boundedReturns
+    (hB : ∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im →
+      ∃ (τ : ℕ → ℝ) (U : Set ℂ) (s₀ : ℂ), IsPhaseReturn τ ∧ IsOpen U ∧ IsPreconnected U ∧
+        (∀ z ∈ U, 0 < z.im) ∧ ρ ∈ U ∧ s₀ ∈ U ∧ 1 < s₀.re ∧ TranslatesBoundedOn τ U) :
+    RHTower.AsymptoticAbscissaLaw := by
+  refine asymptoticAbscissaLaw_of_infinite_zeros fun ρ hρ hρ12 hρ1 hρim r hr => ?_
+  obtain ⟨τ, U, s₀, hτ, hUo, hUc, hUim, hρU, hs₀, hs₀1, hbd⟩ := hB ρ hρ hρ12 hρ1 hρim
+  exact hτ.infinite_zeros hUo hUc hUim hs₀ hs₀1 hbd hρU hρ hρ1 hr
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

@@ -237,3 +237,9 @@ GreenIdentityOnTheCubicQuotient adapts finite chart partitions and weighted
 Schwartz integration by parts from OpenAI CubicSieve/RadialProfiles.lean.
 The local proof uses the actual restricted quotient measure and explicit
 Euclidean coordinate-vector values for the weighted divergence identity.
+TheCubicLaplacianHasItsCoordinateExpression adapts global Green identities
+from OpenAI Eisenstein/CoordinateLaplacian.lean and support-local equations
+from MeanSquare/UnitRows.lean. Density of the locally constructed energy
+core identifies the coordinate equation with the actual operator graph.
+HyperbolicAxisLaplacian adapts affine axis differentiation from OpenAI
+MeanSquare/UnitRows.lean and the axis expression from Eisenstein/SmoothSummands.lean.
