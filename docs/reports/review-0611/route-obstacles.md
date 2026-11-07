@@ -2,7 +2,7 @@
 
 Scope: 38 live route formulations, 9 candidates and their supporting programmes. For each: path, what is established, obstacles that are **(a) just work**, obstacles that are **(b) open mathematics nobody has a solution to**.
 
-Corpus checkpoint: commit `45e38c6b30` plus the working tree of 2026-11-07.
+Corpus checkpoint: commit `a079423f8d` plus the working tree of 2026-11-07.
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means an independent source mechanism or landing is missing. Formulations are not independent mechanisms: HJ is PA, BSH is CDC, FEL's BSY criterion belongs to CTF. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -32,10 +32,10 @@ Corpus checkpoint: commit `45e38c6b30` plus the working tree of 2026-11-07.
 | RH through height 67 with no zero located; PF₂₀₀, slices `|t|≤133/2`, Li `n≤314`, rank ten | [L] | finite rungs are theorems; they decide nothing |
 | Every route with a saving carries the same Vinogradov–Korobov saving, stencils included: `A(K)−1≤exp(−(log K)^α)`, `α<3/5` | [L] | one width axis; interior values are zero-free strips |
 | Polynomial stencil rate ⇔ fixed zero-free strip; rate `K^{−a}` ⇒ `Re ρ≤1−2a/3`; floor `cK^{−3/4}` | [L] | production has no content independent of the Mertens level at exponent scale |
-| Complete ledger of a zero mode vanishes for every balanced stencil; ledgers against `Λ` and `−λΛ` differ `≤2wψ(√n)`; positive Hecke combinations never improve the rate | [L]/[S] | linear floor identities are blind to zeros and to parity at square-root scale |
+| Complete ledger of a zero mode vanishes for every balanced stencil; ledgers against `Λ` and `−λΛ` differ `≤2wψ(√n)`; positive Hecke combinations never improve the rate | [L] | linear floor identities are blind to zeros and to parity at square-root scale |
 | `T⁻¹∫_T^{2T}log‖ζ(½+it)‖dt→0` ⇔ `100%` critical-scale clustering ⇔ six further forms ⇔ `I(½+x+it)→0` ⇔ depth density `o(T)` | [L] | the near-line layer is one number |
 | Moment data bound `I` at width `x` by `log log x` | [L] | a mollifier is required for `O(T)`, and no moment suffices for `o(T)` |
-| Near-extremal mollifiers: `|EM_Q−1|²≤(B−1)|s−1|²/(2Re s−1)`; limit forced to `1/E`; every budget `≥|ρ|²/|ρ−1|²`. Over a curve Castelnuovo is the bound `|P(v)/P(ρv)|²≤4^{rank}` on the damped Euler logarithm | [L] | the mollifier is not unknown: its finite excess is the problem |
+| Near-extremal mollifiers: `|EM_Q−1|²≤(B−1)|s−1|²/(2Re s−1)`; limit forced to `1/E`; every budget `≥|ρ|²/|ρ−1|²`. Over a curve purity gives holomorphic Euler-log convergence and `|P(v)/P(ρv)|²≤4^{rank}` | [L] | actual holomorphic budget control is missing; boundary quotient means tend to 1 even for nonunitary data [K] |
 | Zero `L¹` FE defect, and any defect `≤1/6400`, forces the rational primes; pole residue `½` or `2β≥√2`; rational quartet surgery preserves FE and destroys Bohr almost periodicity | [L] | ζ is an isolated point of Beurling systems in FE defect |
 | Modular horizon: exact conformally coupled solutions, smooth across the horizon, one damped mode per zero, rate `D+(1−β)/2`, plus branch silent; reflected signal = pulse ∗ echo train; universal damping ⇔ RH | [L] | ringdown is an exact physical reading; it adds no estimate |
 | Returns on a disc in the upper quadrant force `n^{−iτ_j}→1` for every `n` and a spike near `1+iτ_j` | [L] | phases never obstruct recurrence; the tail does, at almost every Bohr time |
@@ -76,7 +76,7 @@ Established:
 
 Structure [D]:
 - `Q(U)≈Energy/c` in physical normalization, so the far balance reads `(3D/8R−C−C′R)M₇`. Below `R*` size gives coercivity. Above `R*` the natural statement is a Gårding bound `Q(U)+B_R‖U‖²≥a_RW₈(U)`, not coercivity.
-- A Gårding bound bounds `W₈` along negative sequences. Then a negative sequence has a strong limit `F≠0` with `Q_T(F)+α_R∫_{y<0}F²e^{−8y}≤0`. The limit pencil is a finite rung: far windows are paid by `e^{−8y}`. So HF at one ratio is a window of half-width `≈(1/8)log R`.
+- A Gårding bound bounds `W₈` along negative sequences. Then a negative sequence has a strong limit `F≠0` with `Q_T(F)+α_R∫_{y<0}F²e^{−8y}≤0`. The limit pencil is a finite rung: far windows are paid by `e^{−8y}`. So HF at one ratio is a window of half-width of order `log R`.
 - `C′R` is a Young trade on a rank-one prefix–collar pole cross term, and the prime term is infinitesimal in `W₈`. The localization commutator in `C` is the one piece with no proved replacement.
 
 | | Obstacle | Strength |
@@ -161,6 +161,7 @@ Established [L]:
 | B25 | Frequency `<1` at every putative collision | RH |
 | B26 | An arithmetic input distinguishing `Φ` among `Φe^{−τx²}` | method |
 | B27 | Runs of `k` simple critical zeros, every `k` | sub |
+| B64 | Signed pair information beyond bandwidth one | sub |
 | B47 | Multiplicity `o(log X)` by an all-height input not reducible to size | sub |
 | B22 | Outer-root control of `R_d(Ξ)` | RH |
 | B23 | `N_d` bounded | ≥qRH |
@@ -189,7 +190,7 @@ Structure [D]: Isolated means Carleson uniformly separated in `H²(Re s>½)`. Je
 | B60 | Exponential moments of the Green potential at deep zeros | sub |
 | B61 | A detector past the last scale | sub |
 | B62 | Cofinal long moment bound | RH |
-| B66 | Near-unit budgets: dilation-quotient domination for `E` | RH |
+| B66 | Near-unit holomorphic mollifier budgets; quotient limits alone are insufficient | RH |
 | B82 | Inner-field decay `I(½+h+it)→0` | ≥qRH |
 
 ### S6. Production and precision
@@ -203,16 +204,17 @@ Established [L unless marked]:
 - Explicit polynomial-alphabet Möbius producer from a Mertens level; `hasRate_vk`: rate `exp(−(log K)^α)`, `α<3/5`; polynomial rate ⇔ zero-free strip.
 - Ledger of a zero mode vanishes, truncation `≤w/β`. Sieve and producer cones disjoint; parity ledger `2c(1)#{K<p≤x}≤g(x)−Σc(k)λ(k)L(⌊x/k⌋)`.
 - Carlitz stencil over `𝔽_q[T]`: `T^{q^n}−T=D_n/D_{n−1}^q`, rate 0, exact ledger from size and multiplicity alone.
-- Dual: fake prime measures `Σu(r)(r mod k)=log k` bound the slope; the rate is not a capacity; positive Hecke combinations multiply the normalized slope by `1+a/j`; `Λ` and `−λΛ` ledgers differ `≤2wψ(√n)` [S].
+- Dual: fake prime measures `Σu(r)(r mod k)=log k` bound the slope; the rate is not a capacity; positive Hecke combinations multiply the normalized slope by `1+a/j`; `Λ` and `−λΛ` ledgers differ `≤2wψ(√n)` [L].
 
 Structure [D]: Under RH the Möbius producer reaches only a small exponent `a` (`σ/16` in Lean, `≈1/7` optimized), while the sharp reading needs `a↑3/4` for RH. So the scale `a∈(0,3/4]` is not known to be reached under RH: a stencil route to RH needs a better object than Möbius, which constant-window rigidity forbids on the window.
 
 | | Obstacle | Strength |
 |---|---|---|
-| A21, A22, A29, A30 | Chowla, Selberg degree-one integration, exponent optimization, discrete Beurling one-off | — |
+| A21, A29, A30 | Chowla, exponent optimization, discrete Beurling one-off | — |
 | B48 | A deciding input at square-root precision | RH |
 | B55 | Any polynomial stencil rate (is qRH); rates `a↑3/4` | ≥qRH to ≥RH |
 | B15 | Mertens level past VK, equivalently stencil rate `α>3/5` | sub |
+| B14 | Window negativity exponent `<½`; any interior width value | ≥qRH |
 | B56 | `Θ<1⇒Θ=½` | sub |
 | B67 | Parity input in a ledger: bound on `Σc(k)λ(k)L(⌊x/k⌋)` | method |
 
@@ -226,7 +228,7 @@ Established:
 - Height law `ν_Y`; uniform Hecke residual; mixed-prime one-step isometry; cutoff Gram kernel [L].
 - `V_p(ρ,Y)=2(1−p^{Re ρ−1})`, one-sided bound at one `p,Y` ⇔ RH; Poisson mixture positive for every `Re u<0`; prime-word moments identified with the Poisson spectral measure [L].
 - `S(s)=φ(s)(s−1)/s` is a Blaschke product over `(1+ρ)/2`, with Green potential and resonant Szegő Gram [L].
-- Horizon: echo train `K(τ)=Σ_{2log c<τ}(ϕ(c)/c)(1−e^{−(τ−2log c)})^{−1/2}`, transform `Λ(2w)/Λ(2w+1)`; causal symbol; exact lift; `R=−12`, coupling `+2`; `SL₂(ℤ)` invariance; smoothness across the horizon; ringdown uniform on `τ≥0` at a fixed point, remainder `O(e^{−Aτ})` all `A`; multiplicity `m` gives degree `≤m−1`; every zero excited; raw echo has no pointwise exponential bound, independent of RH; Gaussian probes keep every pole [L]. Whittaker tail and jets `O((1+|Im u|)^Me^{−π|Im u|/2})`; `E(iξ;x,Y)` polynomially bounded [S].
+- Horizon: echo train `K(τ)=Σ_{2log c<τ}(ϕ(c)/c)(1−e^{−(τ−2log c)})^{−1/2}`, transform `Λ(2w)/Λ(2w+1)`; causal symbol; exact lift; `R=−12`, coupling `+2`; `SL₂(ℤ)` invariance; smoothness across the horizon; ringdown uniform on `τ≥0` at a fixed point, remainder `O(e^{−Aτ})` all `A`; multiplicity `m` gives degree `≤m−1`; every zero excited; raw echo has no pointwise exponential bound, independent of RH; Gaussian probes keep every pole [L]. Whittaker tail and jets `O((1+|Im u|)^Me^{−π|Im u|/2})`; `E(iξ;x,Y)` polynomially bounded; jets polynomially bounded on the lines and edges contour arguments use [L]. Any modular wave lifts, with no spectral assumption [S].
 - No `ℓ²`-perturbed arithmetic progression of zeros; `Σ|ζ(½+i(a+dn))|/|½+i(a+dn)|=∞` [L].
 
 Structure [D]:
@@ -237,6 +239,7 @@ Structure [D]:
 | | Obstacle | Strength |
 |---|---|---|
 | A24–A26 | All-`n` physical moments; packets with rapidly decreasing amplitude, spin two; Lean dictionary for images, Lax–Phillips, Zagier | — |
+| A31 | Graph model of the horizon over a curve | — |
 | B68 | Independent `D_s≥0` or full Krein positivity | RH |
 | B69 | Positive physical carrier | producer |
 | B70 | Zero-free curve inside the strip from the carrier: lower bound for `V_p` | sub |
@@ -244,7 +247,7 @@ Structure [D]:
 
 ### S8. Index and support
 
-Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA. Established [L/S]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or height decay; window index counts critical lengths; `sup_dN_d` off-line multiplicity; `K_ζ^n` PD ⇔ RH; finite off-line support makes all but `(κ choose 2)` prime towers decide.
+Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA. Established [L]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or height decay; window index counts critical lengths; `sup_dN_d` off-line multiplicity; `K_ζ^n` PD ⇔ RH; finite off-line support makes all but `(κ choose 2)` prime towers decide.
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -261,7 +264,7 @@ Established:
 - Producers of AAL: bounded lags on one progression or a log-dense set; nonnegative twisted plateau energies; JAS at level one; off-line chain; infinitely many bounded prime towers; one bounded two-prime cone; shell positivity infinitely often. All retain their source bound [L].
 - ¬AAL: bilateral spectral gap, finite top and bottom layers [L]; finite oscillation of `ψ(x)−x`, uniqueness, quantization, remainder ceiling `η≤Θ−Θ₂` with sharp converse, remainder floor `½`, bounded-log-gap sign changes, alternating-`Λ` transfer [L]; two-prime dilation annihilation, single-base periodic pinning [L]; `Φ(mℓ)` unbounded on every progression; `K_ζ` bounded on finitely many towers; `|E_X|≥X^κ` off a vanishing set; annihilators nonvanishing on `Re s≤½`; twisted FE after Blaschke division [L].
 - Rightmost-zero jets: `Λ`-moments/`k!` at `ρ+1→−m`; coefficient-square diagonal `→0`; off-diagonal `→m²`; shifts `≤r^k`, `r<R²`, contribute `o(1)`; horizontal gain `<gap<½` [L].
-- Returns: transport of zeros; returns at a zero `≤T^θ`; threshold `≍|g|r^m`; pair recurrence at typical base with relatively dense shifts; returns on a disc force `n^{−iτ_j}→1` and a spike near `1+iτ_j`; dual `le_of_phase_return` from a producer [L].
+- Returns: transport of zeros; returns at a zero `≤T^θ`; threshold `≍|g|r^m`; pair recurrence at typical base with relatively dense shifts; returns on a disc force `n^{−iτ_j}→1` and a spike near `1+iτ_j`; limits of translates embed in the gauge torus, a return being the fibre over the identity; dual `le_of_phase_return` from a producer [L].
 - Countermodels: continuous Beurling systems with exactly one off-line pair, `N(x)−ρx−C→0`, no recurrence [L]. Rational quartet surgery: FE exact, not Bohr almost periodic, no Dirichlet series [L]. Golden `L`-function: periodic returns, zero right of the line, fails the count [L].
 - Rigidity: integrable defect at unit density forces integers; residue gap `½` or `2β≥√2`; defect `≤1/6400` forces the rational primes; mismatch at `N` costs `>1/(400N²)` [L].
 
@@ -269,6 +272,7 @@ Structure [D]: Exact integrality `N(x)=⌊x⌋` and exact FE specify one functio
 
 | | Obstacle | Strength |
 |---|---|---|
+| A22 | Hurwitz limit map onto the gauge torus and its fibres | — |
 | A30 | Discrete Beurling one-off and its FE defect | — |
 | B83 | AAL | sub |
 | B13 | Finite nonzero off-line support, the smallest instance | sub |
@@ -391,7 +395,7 @@ Structure [D]: Exact integrality `N(x)=⌊x⌋` and exact FE specify one functio
 ### PM — Gauss–Mayer physical model
 - **Path:** scattering source → Krein/Lewis positivity or one-prime dispersion bound → RH.
 - **Established:** block S7.
-- **(a)** A24–A26.
+- **(a)** A24–A26, A31.
 - **(b)** Independent `D_s≥0`, renormalized Krein positivity or the all-zero dispersion bound (B68); positive physical carrier (B69); interior zero-free curve (B70); sharp decay of the resonant sum (B71).
 
 ### PTR — Cosine source / photonic
@@ -486,8 +490,8 @@ Structure [D]: Exact integrality `N(x)=⌊x⌋` and exact FE specify one functio
 
 ### ACS — Castelnuovo–Severi
 - **Path:** source energy → all-aperture Bézout → RH.
-- **Established [L/K]:** source cone; RR at every aperture; Bézout ⇔ RH; primitive `h¹` coercive for `a≤181/500`; tensor-uniform growth ⇔ purity on curves; Kloosterman curves pure by Stepanov; compactified moments with signed Tate correction; reciprocal tangent quadrics counted over every finite extension; every column Young projection nonnegative; endpoint Toeplitz minors of order `≤200` nonnegative; character positivity ⇔ RH; typical-height local sign at `A=δ log T/(64M²)`; each right zero is a Lefschetz ratio, two primes determine it. Degree-one Selberg classification [S].
-- **(a)** A22, A27, A28.
+- **Established [L/K]:** source cone; RR at every aperture; Bézout ⇔ RH; primitive `h¹` coercive for `a≤181/500`; tensor-uniform growth ⇔ purity on curves; Kloosterman curves pure by Stepanov; compactified moments with signed Tate correction; reciprocal tangent quadrics counted over every finite extension; every column Young projection nonnegative; endpoint Toeplitz minors of order `≤200` nonnegative; character positivity ⇔ RH; typical-height local sign at `A=δ log T/(64M²)`; each right zero is a Lefschetz ratio, two primes determine it. Degree-one Selberg classification [L].
+- **(a)** A27, A28.
 - **(b)** Source-energy sign (B40, B1); independent count or Rosati producer (B78); arithmetic global trace (B85); mixed Young shapes (B86); genus, Serre duality, Epstein (B65); exceptional-height and unbounded-shape control in the modulated branch (B28).
 
 ### SEC — Seam / Fock
@@ -526,7 +530,7 @@ Each needs its independent mechanism first (B81).
 
 ## 5. Supporting programmes
 
-| Programme | Established [L/S] | (a) Just work | (b) Open mathematics |
+| Programme | Established [L] | (a) Just work | (b) Open mathematics |
 |---|---|---|---|
 | AIF | inner field, Poisson–Jensen, Szegő infimum, Hardy class of a disc datum, near-extremal rigidity, Carleson measure, log-mean at infinity, large-width bound, box budgets, crowd, curve chain, Abel mollifier of a curve, causal certificate, Szegő threshold, inverse scattering, forward map, potential past Born, restoring bound, Bohr profile decomposition, recurrence zero–one law, insertion cone, arithmetic Bernstein, torus walls, echo columns, column calculus, correlated amplitudes, local onset field, certified passivity, the questions of the field | A17 | B2, B57, B66, B82, B83 |
 | AAD | producers, Mellin transform, uncertainty, mean value, three-quarters floor, Möbius producer, VK rate, polynomial rate ⇔ strip, first-return bound, returns are prime returns, ledger blindness, parity ledger, Frobenius as stencil, fake prime measures, Hecke action, battery | A29 | B15, B55, B67 |
@@ -539,12 +543,12 @@ Each needs its independent mechanism first (B81).
 | ADO | carrier repulsion; a.e. value; exceptional set dimension zero; FE-pair flatness | none | B77 |
 | APR | necessary length, filters, prefix amplification, collar laws | A18 | B48 |
 | AKLT, ASRP, AE | Stepanov over `ℤ`, Nair lattice, Siegel and Liouville halves, stencil ceilings, Farkas producer at doubly exponential cost; AAL producers, tower detection | none | B48, B83 |
-| APD, SEL | Hamburger rigidity, unit-density rigidity, residue gap, defect `1/6400` isolation, one-off models, Bohr obstruction, Selberg rigidity, degree-one classification | A22, A30 | B80, B84 |
+| APD, SEL | Hamburger rigidity, unit-density rigidity, residue gap, defect `1/6400` isolation, one-off models, Bohr obstruction, Selberg rigidity, degree-one classification | A30 | B80, B84 |
 | PBAP, W3 | blind positivity, blind ζ dictionary, Carlson threshold, exact null blind test, sharp correlation tail | none | B18 |
 | WVL | universal threshold, two-lobe, cut crystal, sampling at a free window | none | none beyond B1 |
 | AHD/CACT | aliasing limits, Γ-liminf, dual floors, head reduction, polar capacity, far margin, certified ratio interval, tails, compactness | A9–A13 | B6–B8 |
 | CAF, TCS | two-atom, geometric chains, Euler product, explicit current core and tail, rank ten, section heights, growing-block Schur floor | A4, A5, A23 | B19–B21 |
-| BHR | modular wave, metric, smoothness, echo train, causal symbol, ringdown, modes, sharp analytic boundary, near-arithmetic ladder exclusion, sharp Bessel and Eisenstein bounds | A25, A26 | B71 |
+| BHR | modular wave, metric, smoothness, echo train, causal symbol, ringdown, modes, sharp analytic boundary, near-arithmetic ladder exclusion, sharp Bessel and Eisenstein bounds, lift of any modular wave [S] | A25, A26 | B71 |
 | AK, Representation | column Young projections, curve phase characters, positive endpoint character, canonical compression, Kloosterman receivers and traces, torus critical points, reciprocal quadric trace | A27, A28 | B85, B86 |
 
 ## 6. Decisive wall per route

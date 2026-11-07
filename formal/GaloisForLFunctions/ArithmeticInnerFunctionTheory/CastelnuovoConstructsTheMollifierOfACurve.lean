@@ -9,11 +9,14 @@ Let `a_k = Σ_i β_i^k` be the normalized traces of Frobenius, the prime-power d
 
 `Q_{ρ,N}(v) = Σ_{k≤N} ρ^k a_k v^k / k` (`abelPoly`).
 
-* **Each mollifier converges** (`tendsto_abelBudget`). As `N → ∞`, `e^{Q_{ρ,N}} → 1/P(ρv)`, so the budget tends to the mean of the dilation quotient `|P(v)/P(ρv)|²`.
+* **Under purity each mollifier converges** (`tendsto_abelBudget`). As `N → ∞`, `e^{Q_{ρ,N}} → 1/P(ρv)`, so the budget tends to the mean of the dilation quotient `|P(v)/P(ρv)|²`.
 * **Castelnuovo is a uniform bound on the quotient** (`norm_one_sub_le_two_mul`). If `|β| ≤ 1` and `|v| = 1`, then `|1 − βv| ≤ 2|1 − ρβv|`, uniformly in `ρ < 1`. So the quotient is dominated, it tends to `1` almost everywhere, and the budgets tend to `1` (`tendsto_circleAverage_abelRatio`).
 * **The equivalence** (`hodgeIndex_iff_abelMollifiers`). Castelnuovo's inequality on the Frobenius span holds iff the Abel mollifiers reach budget `1`. On a fake it fails with a floor: the golden curve has budget at least `φ²` for all `ρ` and `N` (`sq_goldenRatio_le_abelBudget`).
 
-So the mollifier is not what is hard to find: its coefficients are the prime data, damped. What Castelnuovo supplies is the a priori bound on the dilation quotient of `P`. Over `ℤ` the same family is the damped Euler logarithm, and the missing input is the same bound on `E(s)/E(s_ρ)`.
+The mollifier coefficients are the damped prime data. Castelnuovo supplies both convergence of
+the holomorphic Euler-log family and domination of its boundary quotient. The latter alone is
+insufficient: boundary quotient means tend to one for every finite datum, including nonunitary
+data. Over `ℤ` an estimate must retain the holomorphic family and its complete budget.
 -/
 
 open Complex Filter Topology MeasureTheory Set

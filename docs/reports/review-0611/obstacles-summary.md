@@ -1,6 +1,6 @@
 # Obstacles summary — status quo
 
-Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `45e38c6b30` plus the working tree of 2026-11-07.
+Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `a079423f8d` plus the working tree of 2026-11-07.
 
 Evidence: `[L]` Lean source; `[S]` Lean source unfinished, unintegrated or uncommitted; `[K]` Lean with transitive axiom audit; `[D]` deduction, not a Lean theorem; `[N]` numerical, uncertified; `[C]` classical, not formalized.
 
@@ -33,7 +33,7 @@ A window is PD iff it has a predictor with positive margin whose polynomial has 
 Slack `s>0` is Szegő's regime with square-summable reflectors; `s<0` has a finite negative witness; RH places every lattice at `s=0` with `Σγ²=∞` [L]. For every nonzero test `c_φ(t)↛0` [L]. In `ℓ²(zeros)` a profile decomposition is a theorem: bubbles interact through Bohr characters [L]. For ζ, RH ⇔ every orbit correlation is relatively compact ⇔ moving-bubble energies have nonnegative subsequential limits [L]. So Bohr compactness is an RH-level target, and the spectral side of compactness has no open content. RH is also existence of **any** real weight making each window nonnegative: the cone forces `Λ` afterwards [L]. So the sign can be stated with no primes in it, as a statement about Gamma, the pole and the set `log ℕ` [L].
 
 ### 1.6 One full-space problem reduces to one window
-At fixed `R=c⁸/log N`: Γ-liminf with weight `α_R>0` at every `R` [L]; bounded form and masses make `L¹` limits strong [L]; prime form `≤εW₈+B_ε‖H‖²` [L]; coercive far complement for `R<R*` [L]. What stops the assembly above `R*` is a `W₈` Gårding bound. The term `C′R` is a Young trade on a rank-one pole cross term [L], and the prime term is infinitesimal in `W₈` [L]. The localization commutator is the one piece with no replacement. With that bound, a negative sequence has a strong nonzero limit on which the limit pencil is negative, and the limit pencil is a finite window of half-width `≈(1/8)log R` [D]. So HF at each ratio is a rung of RW, and HF's all-ratio statement is `a*=⊤`.
+At fixed `R=c⁸/log N`: Γ-liminf with weight `α_R>0` at every `R` [L]; bounded form and masses make `L¹` limits strong [L]; prime form `≤εW₈+B_ε‖H‖²` [L]; coercive far complement for `R<R*` [L]. What stops the assembly above `R*` is a `W₈` Gårding bound. The term `C′R` is a Young trade on a rank-one pole cross term [L], and the prime term is infinitesimal in `W₈` [L]. The localization commutator is the one piece with no replacement. With that bound, a negative sequence has a strong nonzero limit on which the limit pencil is negative, and the limit pencil is a finite window of half-width of order `log R` [D]. So HF at each ratio is a rung of RW, and HF's all-ratio statement is `a*=⊤`.
 
 ### 1.7 The inner mass has a second expression, and its minimizer is forced
 On `Re s>½`, `E` has inner factor exactly the Blaschke product of right zeros [L]. `exp(2I(1))=inf_Q∫|ζ exp Q(φ₁)|²dP₁` [L]. Near-extremal families have no freedom: `|EM_Q−1|²≤(B−1)|s−1|²/(2Re s−1)`, limit `1/E`, first coefficient `|q₁−(1−γ)|²≤B−1`, Bessel on all Taylor coefficients, every budget `≥|ρ|²/|ρ−1|²`, flatten law `∫||ζM|²/B−1|P₁≤2√(log B−2I(1))` [L]. Over a curve the extremal family is the damped Euler logarithm, and Castelnuovo is exactly the uniform bound `|P(v)/P(ρv)|²≤4^{rank}` on the dilation quotient; the golden curve has floor `φ²` [L]. So the mollifier is not what is missing. The missing input over ℤ is domination of `E(s)/E(s_ρ)`.
@@ -45,7 +45,7 @@ RH through height 67 is proved with no zero located [L]. It gives PF₂₀₀, P
 AIP cost, SZ source, TT band, MC Hilbert form, WL energy, PTR depth, TH collar and integer stencils carry one VK saving and stop there [L]. `A(K)−1≤exp(−(log K)^α)` for every `α<3/5` at polynomial alphabet, read back as the VK zero-free region through the rate law [L]. Polynomial rate ⇔ fixed zero-free strip [L]. A constant window forces `c=mμ` there [L].
 
 ### 1.10 Linear exact identities are blind
-A producer is a mollifier on `Re s=1` [L]. Exact integrality loses nothing, and the Chebyshev bound has a constant polynomial in the alphabet [L]. Yet the complete ledger of a zero mode vanishes for every balanced stencil, truncation `≤w/β` [L]. Ledgers against `Λ` and `−λΛ` differ by at most `2wψ(√n)` [S]. Positive Hecke combinations multiply the normalized slope by `1+a/j` [S]. The dual variables are fake prime measures, and the rate is not a capacity [S]. Sieve and producer cones are disjoint, and the factor 2 is the stencil read against Liouville sums [L]. Over `𝔽_q[T]` the Carlitz stencil of `1−qX` has rate 0 because norms are quantized; over ℤ every integer is a cut, and the rate is `≥cK^{−3/4}` [L]. Under RH the Möbius producer reaches a small exponent, while RH needs `a↑3/4` [D].
+A producer is a mollifier on `Re s=1` [L]. Exact integrality loses nothing, and the Chebyshev bound has a constant polynomial in the alphabet [L]. Yet the complete ledger of a zero mode vanishes for every balanced stencil, truncation `≤w/β` [L]. Ledgers against `Λ` and `−λΛ` differ by at most `2wψ(√n)` [L]. Positive Hecke combinations multiply the normalized slope by `1+a/j` [L]. The dual variables are fake prime measures, and the rate is not a capacity [L]. Sieve and producer cones are disjoint, and the factor 2 is the stencil read against Liouville sums [L]. Over `𝔽_q[T]` the Carlitz stencil of `1−qX` has rate 0 because norms are quantized; over ℤ every integer is a cut, and the rate is `≥cK^{−3/4}` [L]. Under RH the Möbius producer reaches a small exponent, while RH needs `a↑3/4` [D].
 
 ### 1.11 The near-line layer is one number
 `T⁻¹∫_T^{2T}log|ζ(½+it)|dt→0` is equivalent to the Euler-mollified log-mean, the outer law, the dyadic moment, `100%` critical-scale clustering and three defect readings [L], and in Abel form to `I(½+x+it)→0` and to depth density `o(T)` [L]. Moment data alone give `I≤log(1+log 5x)+C` [L]. Selberg's mollifier gives `O(T)` [C]. Moments do not determine the log-mean, Jensen is sharp for moment data [L], and with polynomial mollifiers Jensen loses a positive constant [D]. Isolated zeros obey rate 2 without separation [L]. At simple right zeros `N(ρ)=exp(−Σ_{a≠ρ}m_aG(ρ,a))` [L]. The Carleson measure of ζ is controlled by `I` at every scale, with an embedding for coefficients of `A` [L]. The critical-scale crystal, reality and depth laws hold outside `δT` heights [L], with explicit exponent `1−κ³/41943040000` [L].
@@ -57,13 +57,13 @@ Slope is exactly `2wθ`. A cofinal bound at any fixed `K` self-improves to `K=6`
 `S(a,b)=Π_pT_pA` with Eisenstein coefficients [L]. `A` is not a positive Laplace mixture [L]. Torus-positive amplitudes with left growth `κ<½` are exactly the exponentially convex ones [L]; `{2,3}` alone is strictly larger [L]. Signed columns add, products of columns are rigid, and the cone lies in its own dual [L]. An amplitude with a limit at height infinity gains nothing from locking; only amplitudes oscillating with the height to the end can gain [L]. `current=2|Ξ|²Re ξ′/ξ` [L]. The Gamma base pays by size when `Σlog p/(p^{½+a}−1)<½log(b/2π)`, and alignment below the base fails the current within `[B,BQ^{|S|}]` [L].
 
 ### 1.14 PM reaches the edge by unitarity and rings at every zero
-Boundary norm gives `|ζ(1+it)|≥1/(6250t³log²t)` with no Euler-product inequality [L]. `V_p(ρ,Y)=2(1−p^{Re ρ−1})`, one-sided bound at one `p,Y` ⇔ RH [L]. `C*`-Hecke positivity and Schur positivity are blind to zero position [L]. `S(s)=φ(s)(s−1)/s` is a Blaschke product over `(1+ρ)/2` [L]. On the massless topological black hole with horizon `PSL₂(ℤ)\ℍ`, Eisenstein packets lift to exact solutions smooth across the horizon. Each zero gives one damped mode at rate `D+(1−β)/2`, the plus branch is silent, the reflected signal is pulse ∗ echo train, and universal damping ⇔ RH [L]. The geometry is locally AdS₄ in a Rindler wedge, the echo train is a cusp-channel image sum, and zeros enter only through the Eisenstein poles of the horizon [D]. Natural positivity of the Hartle–Hawking state is positivity of the density `1/|ξ(1+2iν)|²` on real `ν`, which is blind [D].
+Boundary norm gives `|ζ(1+it)|≥1/(6250t³log²t)` with no Euler-product inequality [L]. `V_p(ρ,Y)=2(1−p^{Re ρ−1})`, one-sided bound at one `p,Y` ⇔ RH [L]. `C*`-Hecke positivity and Schur positivity are blind to zero position [L]. `S(s)=φ(s)(s−1)/s` is a Blaschke product over `(1+ρ)/2` [L]. On the massless topological black hole with horizon `PSL₂(ℤ)\ℍ`, Eisenstein packets lift to exact solutions smooth across the horizon. Each zero gives one damped mode at rate `D+(1−β)/2`, the plus branch is silent, the reflected signal is pulse ∗ echo train, and universal damping ⇔ RH [L]. The geometry is locally AdS₄ in a Rindler wedge, the echo train is a cusp-channel image sum, and zeros enter only through the Eisenstein poles of the horizon [D]. Natural positivity of the Hartle–Hawking state is positivity of the density `1/|ξ(1+2iν)|²` on real `ν`, which is blind [D]. Any solution of the modular wave equation lifts to the black hole with no spectral assumption [S], and `E` and its jets grow polynomially on the lines and edges contour arguments use [L].
 
 ### 1.15 Recurrence and one-offs
-Returns transport zeros [L]. A return on a disc in the upper quadrant is a simultaneous Kronecker return of all primes, paid by a spike of ζ near `1+iτ_j` [L]. Pair recurrence holds at density-`(1−δ)` base heights [L]. At a zero, returns are `≤T^θ` [L]. Truncated Euler products cannot return to a zero (Hurwitz), so a return at an off-line zero lives in the gap between ζ and every truncated product, on a density-zero set of times [D]. Golden has exact periodic returns, a right zero and fails the count: transport alone proves nothing [L].
+Returns transport zeros [L]. A return on a disc in the upper quadrant is a simultaneous Kronecker return of all primes, paid by a spike of ζ near `1+iτ_j` [L]. A limit of translates on the upper quadrant fixes a point `ω` of the gauge torus, unitary and completely multiplicative, with `G=Σω(n)n^{−s}` on `Re s>1`: the limit set embeds in the torus and a return is the fibre over the identity [L]. Pair recurrence holds at density-`(1−δ)` base heights [L]. At a zero, returns are `≤T^θ` [L]. Truncated Euler products cannot return to a zero (Hurwitz), so a return at an off-line zero lives in the gap between ζ and every truncated product, on a density-zero set of times [D]. Golden has exact periodic returns, a right zero and fails the count: transport alone proves nothing [L].
 
 ### 1.16 ζ is isolated
-A Beurling system whose FE has `L¹` defect `≤1/6400`, with the stated analytic hypotheses, has exact rational primes [L]. Residue is `½` with integers, or `2β≥√2` [L]. So near ζ, in this metric, there are no fakes. Rational quartet surgery keeps FE exact and line reality, and it destroys vertical Bohr almost periodicity on `Re s>1` and every absolutely convergent Dirichlet representation [L]. Continuous positive Beurling systems with one off-line pair exist at finite defect [L]. Degree-one Selberg class is `L(s+iθ,χ)` [S].
+A Beurling system whose FE has `L¹` defect `≤1/6400`, with the stated analytic hypotheses, has exact rational primes [L]. Residue is `½` with integers, or `2β≥√2` [L]. So near ζ, in this metric, there are no fakes. Rational quartet surgery keeps FE exact and line reality, and it destroys vertical Bohr almost periodicity on `Re s>1` and every absolutely convergent Dirichlet representation [L]. Continuous positive Beurling systems with one off-line pair exist at finite defect [L]. Degree-one Selberg class is `L(s+iθ,χ)` [L].
 
 ### 1.17 What is ruled out
 | Mechanism | Verdict | Evidence |
@@ -85,9 +85,9 @@ A Beurling system whose FE has `L¹` defect `≤1/6400`, with the stated analyti
 | Positive primes plus smooth integer count as AAL | false for continuous models | [L] |
 | Invariant tensor weights; principal-branch endpoint signs; pure compression | false for Golden or RH-level | [L] |
 | Finite-template, separable, finite-realization, tensor, integrality shortcuts | stated classes refuted | [L] |
-| Integer stencils as a mechanism independent of Möbius | rate is the Mertens level; ledgers blind | [L]/[S] |
-| Positive Hecke amplification of stencils | multiplies the slope by `1+a/j` | [S] |
-| Capacity reading of the stencil rate | dual constraints are sawteeth | [S] |
+| Integer stencils as a mechanism independent of Möbius | rate is the Mertens level; ledgers blind | [L] |
+| Positive Hecke amplification of stencils | multiplies the slope by `1+a/j` | [L] |
+| Capacity reading of the stencil rate | dual constraints are sawteeth | [L] |
 | Raw echo decay | spikes defeat every pointwise exponential bound, independent of RH | [L] |
 | Near-arithmetic ladders of zeros | excluded, `ℓ²` perturbation allowed | [L] |
 | Rational relocation of zeros in the Dirichlet class | excluded | [L] |
@@ -112,7 +112,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | # | Task | Routes | Basis |
 |---|---|---|---|
 | A9 | Explicit `K₀`, eighth-root horizon, logarithmic profile, Beurling schedule | HF, SRT, AIP, ACS, SC | proved limits |
-| A10 | Uniform Gårding at each fixed `R`: `Q(U)+B_R‖U‖²≥a_RW₈(U)` on normalized atomic sources (unverified) | HF, SRT, AIP, ACS | prime form infinitesimal in `W₈`; pole cross term rank one; Γ-liminf has `α_R>0`; commutator is the unverified piece |
+| A10 | Uniform Gårding at each fixed `R`: `Q(U)+B_R‖U‖²≥a_RW₈(U)` on normalized atomic sources (unverified; the one question of section 3) | HF, SRT, AIP, ACS | prime form infinitesimal in `W₈`; pole cross term rank one; Γ-liminf has `α_R>0`; commutator is the unverified piece |
 | A11 | Compactness assembly: a negative sequence at ratio `R` has a strong nonzero limit with negative limit pencil, so sign at `R` follows from one window (given A10) | HF, SRT, AIP | Γ-liminf, strong-limit, tail, precompactness theorems |
 | A12 | Low-packet/complement Schur payment on `0<R≤min(1,5R*/6)` (unverified) | HF, AIP | certified complement, low packet, polar capacity |
 | A13 | Growing-period charges beyond gcd profiles; four-channel law at the critical scale (unverified) | AIP, HF | four channels close below the eighth root |
@@ -128,14 +128,14 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A19 | Heat horizon from `6600/9991` toward its method floor | ZCG | profile margin, best exponent pair |
 | A20 | Jensen rung toward saddle scale; constants in `300√(d log d)` (unverified) | LA, FFP | saddle identity |
 | A21 | Census items; logarithmic two-point Chowla [C]; Voronoi; Zwegers [C]; runs past five | MC, ACS, census | classical |
-| A22 | Integrate [S] modules: degree-one Selberg classification; AAD dual, Hecke and Liouville ledgers; BHR sharp bounds | ACS, SEL, WL, MC, PM | sources exist |
+| A22 | Hurwitz limit map: onto the torus on `Re s>1` by Kronecker [C]; uniqueness of the limit over a torus point on connected domains by the identity theorem | BAG, AAD | `exists_gauge_point` |
 
 ### Theta, reflection, weights, production
 | # | Task | Routes | Basis |
 |---|---|---|---|
 | A23 | Certified scans of `S_S`; brackets for `S*(a,b)` from the mass bound, the alignment height and column minima | TH | column calculus |
 | A24 | PM physical all-`n` Hecke moments beyond squarefree words (unverified) | PM, W1C | one-step isometry, prime-word moments |
-| A25 | Ringdown for rapidly decreasing amplitudes; spin two (unverified) | PM | sharp Bessel and Eisenstein bounds |
+| A25 | Ringdown for rapidly decreasing amplitudes, from polynomial jets on the contour lines at good heights; spin two (unverified) | PM | lift of any modular wave, polynomial growth of the Eisenstein function, sharp Bessel bounds |
 | A26 | Lean dictionary: local AdS₄ isometry, cusp image sum for `K`, Lax–Phillips semigroup, Zagier–Sarnak horocycle criterion [C] | PM | echo train, causal symbol |
 | A27 | Reciprocal quadric traces identified with vanishing-cycle Frobenius traces (unverified) | ACS, W4 | transverse form and quadric counts |
 | A28 | Mixed Young projections at small rank (unverified) | ACS, W2 | column projections and PF₂₀₀ |
@@ -261,10 +261,42 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | F10 | One verified height, all rungs | All finite rungs [L] | Nothing finite | Decides no all-rank statement |
 | F11 | VK savings of all routes | One width axis [L] | B15 | They share one input |
 | F12 | Attained-top consequences: finite oscillation, dilation annihilation, unbounded lags on every progression, unbounded towers, `|E_X|≥X^κ` off a vanishing set, top annihilators, twisted FE, zero-free strip, qRH | A contradiction search on one rigid world [L/D] | Any contradiction | Decides B83 if it succeeds |
-| F13 | APD isolation, Hamburger rigidity, Bohr obstruction, Selberg degree-one classification | Every class of Euler product plus small-defect FE is a singleton [L/S] | B84 | Any stable argument in that metric is about ζ alone |
+| F13 | APD isolation, Hamburger rigidity, Bohr obstruction, Selberg degree-one classification | Every class of Euler product plus small-defect FE is a singleton [L] | B84 | Any stable argument in that metric is about ζ alone |
 | F14 | Curve chain, Abel mollifier, near-extremal rigidity, Carleson measure | Over a curve: Castelnuovo ⇔ dilation bound ⇔ budgets reach 1 ⇔ unitary. Over ℤ: every piece except the dilation bound [L] | B66 | States exactly what a Castelnuovo over ℤ must assert |
 
 **Closest to the open core: F1, then F12.** F1 says what a two-route proof looks like. F12 is the only place where a proof may assume a zero-free strip. F2 and F9 are collapses: they remove independent problems and do not advance the core.
+
+### The hard half: what a contradiction search on ¬AAL may assume (F12, F13)
+
+AAL is the exact split of RH, it is below qRH, and it has no estimate. It is the one place where a proof may assume all of this at once:
+
+| In the world ¬AAL | Evidence |
+|---|---|
+| Zero-free strip `(β₁,Θ)` at all heights; `Θ<1`; finite top layer | [L] |
+| `ψ(x)−x=x^{Θ}T(log x)+O(x^{Θ−η})`, `T` unique, coefficients `−ord/(Θ+iμ)`, zero constant mode, `η≤Θ−Θ₂` | [L] |
+| `ψ(e^u)−e^u` changes sign at bounded log gap, amplitude `≥δe^{Θu}` | [L] |
+| Dilation operators at two primes reduce `ψ` to `κx+O(x^{β−η})` | [L] |
+| `Φ(mℓ)` unbounded above on every progression; `K_ζ` bounded on only finitely many prime towers | [L] |
+| `|E_X|≥X^κ` off a vanishing set in every bounded window, `κ<w` | [L] |
+| Finite annihilators nonvanishing on `Re s≤½`; twisted FE with phase `B²` | [L] |
+| No returns at the top zero beyond a finite height | [L] |
+| `Λ`-moments/`k!` at `ρ+1→−m`, diagonal `→0`, short shifts `→0`, long-shift correlation `→m²` | [L] |
+| Every right zero is a Lefschetz ratio, and two primes determine it | [L] |
+
+Exact form of the missing input [D]: suppose that at a zero `ρ` right of `½+h` one sequence `τ_j→∞` with `n^{−iτ_j}→1` for all `n` has translates bounded on a connected domain joining `ρ` to `Re s>1`. Then Montel, the identity theorem and Hurwitz copy `ρ` to unbounded heights, contradicting a finite layer. Kronecker supplies the phases, and boundedness along such a density-zero set of times is what is open.
+
+Which inputs carry a one-off:
+
+| Input class | Status | Evidence |
+|---|---|---|
+| Positive continuous prime measure, `N(x)−ρx−C→0` | one off-line pair, no recurrence | [L] |
+| Euler product with positive generalized primes, small reciprocal mass | one-off pair exists | [L] |
+| Discrete primes approximating a continuous measure; integer norms by rounding a smooth density | zeros right of `½` kept | [C]; [D] |
+| FE with a finite coefficient prefix | zeros placed at will | [L] |
+| Exact FE times a rational relocation | no Dirichlet series, not Bohr almost periodic | [L] |
+| Exact Euler product and exact Riemann FE | only ζ | [L] |
+| Euler product and FE with `L¹` defect `≤1/6400` | only ζ | [L] |
+| Euler product and FE with larger `L¹` defect | open | B84 |
 
 ## 2.4 Wildly different routes
 
@@ -311,10 +343,10 @@ Each mechanism below avoids Σ payment, Π precision and Γ selection as stated.
 |---|---|---|
 | Lee–Yang lift on the prime torus | requires Gamma speed above the total Euler speed, which diverges; agrees with forced drift `θ_S/2` and columns add | [D]/[L] |
 | Stable Dirichlet polynomial with critical zeros among ζ zeros | Herglotz carrier rigidity forbids it | [L] |
-| Arithmetic capacity for the stencil rate | dual constraints are sawteeth; the capacity ceiling `e^{−0.87n}` is passed by stencils | [S] |
+| Arithmetic capacity for the stencil rate | dual constraints are sawteeth; the capacity ceiling `e^{−0.87n}` is passed by stencils | [L] |
 | Newton polygon or tropical separation of zeros, as for Goss zeta [C] | Taylor ratio `a_k²/(a_{k−1}a_{k+1})→1`, while separation needs `4`; arithmetic spacing has no geometric gap | [D] |
 | Kac–Murdock–Szegő count of negative directions | symbol bandwidth equals test bandwidth, and `W_N<0` on a large set coexists with sign | [D] |
-| Comb or crystalline rigidity of the zero divisor | needs zero-side positivity, which is RH | [S] |
+| Comb or crystalline rigidity of the zero divisor | needs zero-side positivity, which is RH | [D] |
 
 ## 2.5 Breakthrough questions below RH and quasi-RH
 
@@ -362,7 +394,7 @@ Each mechanism below avoids Σ payment, Π precision and Γ selection as stated.
 
 All of Σ falls, with PM's Krein branch, TH, W2, W3 and the index routes.
 
-**The door that this exclusion used to point at is closed.** Over `𝔽_q` a proof with this profile exists: Stepanov's, producer → count → purity. Over ℤ the Stepanov object is a stencil, and its rate is the Mertens level in both directions at exponent scale [L]; a constant window is Möbius [L]; floor-sum ledgers are blind to every zero [L] and to the Liouville twin below `w√n` [S]; positive Hecke action never improves it [S]. So the Stepanov template yields a restatement of cancellation, unless something other than a linear floor identity enters. The one thing Frobenius gives over `𝔽_q`, quantized norms with no sawtooth, has no analogue here [L].
+**The natural door under this exclusion is closed.** Over `𝔽_q` a proof with this profile exists: Stepanov's, producer → count → purity. Over ℤ the Stepanov object is a stencil, and its rate is the Mertens level in both directions at exponent scale [L]; a constant window is Möbius [L]; floor-sum ledgers are blind to every zero [L] and to the Liouville twin below `w√n` [L]; positive Hecke action never improves it [L]. So the Stepanov template yields a restatement of cancellation, unless something other than a linear floor identity enters. The one thing Frobenius gives over `𝔽_q`, quantized norms with no sawtooth, has no analogue here [L].
 
 **The question.** *Is there an identity at the zeros of ξ that relates two rotated values with equal modulus?* Precisely: with `z=(s−½)²`, `F(z)=Ξ(√z)`, are there `q` on the unit circle, `q≠±1`, and arithmetically defined entire `a,b,T` with `|a|=|b|` on a sector containing the zeros, such that `TF(z)=a(z)F(qz)+b(z)F(q̄z)`?
 
@@ -375,7 +407,7 @@ All of Σ falls, with PM's Krein branch, TH, W2, W3 and the index routes.
 
 **Limit.** Hecke relations act in `z∈ℍ` at fixed `s`. Rotation in `(s−½)²` has no known arithmetic meaning. The first test on polynomials already excludes constant coefficients [D]. If the exclusion also covers Hadamard's order argument, this door closes too and only the second door remains.
 
-**Second door.** AAL (section 3) is sign-free in its prime-side form. It covers the half that a count cannot reach.
+**Second door.** AAL (B83) is sign-free in its prime-side form. It covers the half that a count cannot reach.
 
 ## 2.7 If RH is a physical phenomenon in AdS with a modular horizon
 
@@ -434,40 +466,67 @@ No theorem says so. The evidence is structural: every available tool stops for a
 | Unitarity, Schur, `C*` and KMS positivity | reach only the edge; blind to zero position |
 | Fixed-amplitude Euler positivity | Laplace cone; columns add |
 
-**What the field would be about.** *Arithmetic inner-function theory:* why a function with an Euler product and a functional equation has trivial inner factor right of its symmetry line, and why its critical causal system stays passive at zero slack. It exists as a Lean programme, in part, with its first questions answered in `TheQuestionsOfTheField` [L].
+**What is already built does not reach the remainder.** Arithmetic inner-function theory exists as a programme, and it is one-dimensional: one half-plane, one causal order by `log n`, one reflector per step. So are the canonical chain, lattice Schur theory, critical Hardy theory and the curve chain. The walls that remain concern many independent primes at finite height, and those theories cannot state them.
 
-| Aspect | Built | To build |
+**The proposal: prime torus theory.** Over `𝔽_q` the phases are one coordinate: `q^{−s}` is periodic, there is one column, and Schur parameters, Castelnuovo and the Carlitz stencil all close [L]. Over ℤ the coordinates `p^{−s}` are independent. The height `t` moves one point `ω_t=(p^{−it})_p` along a dense one-parameter subgroup of the infinite torus `𝕋^∞`, and the Gamma base sees only `t`. The field studies the pair `(t,ω_t)` **at finite time**. No programme has this as its object. The gauge torus spectrum, the Wiener monoid with its Bohr points, the torus scans of TH and multiplicative Bochner theory have no time coordinate. Recurrence and the first-return bound of auxiliary dynamics have one, for returns to the identity only.
+
+**The walls as statements about the orbit.**
+
+| Wall | Statement on the orbit | Evidence |
 |---|---|---|
-| Objects | inner field, box and crowd, Carleson measure, anchor flow, reflectors as free coordinates, outer predictors, insertion operators, echo columns, Euler columns, scattering Blaschke product, local onset field | an arithmetic dilation quotient; a measure of accumulated reflection at large `n` |
-| Language | budget, second expression, depth, shadow, crowd, causal in place of positive, slack threshold, Schur band, forced mollifier | a calculus of signed echo trains across columns |
-| Mechanisms | Poisson–Jensen, Szegő infimum, near-extremal rigidity, restoring flow, Schur recursion, envelope tangent of the forward map, Kato contraction | near-extremal mollifiers; passivity certified from arithmetic data at unbounded aperture |
-| Tools | restoring bound by oscillation; Hardy class from Poisson–Jensen; explicit edge law and sup bound for every weight; Carleson embedding at scale `x`; Bohr profile decomposition | a priori bound on `osc Ψ`; dilation domination; a log-mean theorem past moments |
+| Fixed-amplitude locking; columns add | For a fixed function the infimum over the orbit is the infimum over the torus. This is Bohr's isometry for bounded Dirichlet series. | [L]; [C] |
+| Arithmetic Bernstein | Torus-positive amplitudes are the exponentially convex ones below growth `κ=½`; `κ=½` is the density of the primes and `A` sits exactly there | [L] |
+| Base against columns | A race: the base `½log t` against the time the orbit needs to align. Above the horizon the base wins on the whole torus. | [L] |
+| Short-sum barrier | How long until the orbit enters `{Σ_{p≤y}p^{−½}Re ω_p≥V}`? Diagonal moments see nothing once `π(y)` passes `log T`. | [D] |
+| Parity | The Liouville twin is the orbit translated by the point `−1`, so an argument invariant under torus translation cannot separate the two. The asymmetry is the start of the orbit: `ω_0=1`, the pole. | [D]; flips [L] |
+| Mertens, zero-free regions | Halász: `M(x)` is small while the orbit stays far from `−1` in a weighted distance. `3+4cos+cos2` is doubling `ω↦ω²`, available because the orbit is a group. | [C] |
+| Returns, AAL | Limits of translates embed in the torus; a return is the fibre over the identity, paid by a spike near the pole | [L] |
+| Zeros in the hull | Haar-typical points carry no zero (Bohr–Jessen), so zeros sit over a Haar-null set | [C]; [D] |
+| Strip off the domain | Point evaluations of the Bohr lift exist on `𝔻^∞∩ℓ²`, which on the orbit is `Re s>1`. The strip exists by continuation only, and truncated products never vanish. | [C]; [D] |
+| Coupling frequencies | Several primes, heights or harmonics in one positive certificate never beat the single-frequency ratio: `a(γ)≤2a(0)` | [L] |
+| Castelnuovo | The dilation bound is `4^{rank}`, and the rank over ℤ is infinite | [L] |
+
+| Aspect | Content |
+|---|---|
+| Objects | `X=[1,∞)×𝕋^∞` with the orbit; truncated orbit `O_T(y)` on primes `≤y`; alignment time `τ_y(R)`; return Bohr sets; near-diagonal energy `E_k(y,T)`, the pairs of `k`-fold products of primes `≤y` with `|log(a/b)|≤1/T`; exceptional heights as approximate groups; the hull over the torus; amplitudes depending on `t` |
+| Language | alignment, race, corners `+1` and `−1`, fibre, time to reach, mixing time `e^{π(y)}`, below-mixing regime, height coupling |
+| Mechanisms | group closure (`ω_{t+t′}=ω_tω_{t′}`, so differences of large-value heights are partly aligned, as in Halász–Montgomery and Guth–Maynard [C]); the cost of a return [L]; off-diagonal energy past the diagonal range, which is `y`-smooth numbers in short intervals [C in part]; positivity with coefficients depending on `t` |
+| Tools to build | a non-alignment theorem below the mixing time; a bound on `E_k(y,T)` for `k≫log T/log y`; discrepancy of the orbit against Haar measure at time `T` for `y>log T`; a transfer from typical to rare heights; sum-of-squares certificates on `X` with kernel-valued prime conductances |
+| Test cases | curves (rank one, periodic flow); Golden (rank one, wrong weights); commensurable steps, which have unbounded room in one column [L]; continuous Beurling systems, which have no torus since `ζ_B→1` vertically [L]; integer-norm systems, which share the torus and differ in amplitude [D] |
+
+The last tool has a concrete first form [D, untested]. Frustration is a theorem about scalar conductances [L]. On the half-plane, `(1−p^{−x})/x` with `x=s+s̄′−1` is the Laplace transform of a delay line of length `log p`, and an Agler-type decomposition [C on the polydisc] would write the scattering kernel `(1−S(s)conj S(s′))/x` as `Σ_p((1−p^{−x})/x)K_p(s,s′)` plus an archimedean term, with `K_p` positive semidefinite. That is energy paid prime by prime, with kernel-valued weights where sign gauges fail. First test: two primes against a Gamma-like factor.
 
 **Criteria it must meet.**
-- False on every corpus fake: impure columns, Golden, FE twins, shifted products, heated kernels, continuous Beurling systems.
-- Parity-breaking and locally pure.
-- Unbounded aperture.
-- Recovers Weil's proof over `𝔽_q`, including Castelnuovo, as its curve chain [L].
-- Sees incommensurability of `log p`: commensurable steps have unbounded room in one column, independent columns allow only size [L], periodic data admits finite impurity [L].
+- Reduces to Schur, Castelnuovo and periodic flow at rank one.
+- Not invariant under torus translation: it must see the start of the orbit.
+- Pays past the Kronecker scale, at unbounded aperture and length.
+- Sees incommensurability: commensurable steps behave differently [L].
+- False on impure columns, Golden and heated kernels. Against integer-norm systems it must fail through the amplitude, since the torus is the same.
 
 **Questions it must answer.**
-- What is the size of the forward map at large `n`? Its tangent is known [L], its integral is not.
-- What dominates the dilation quotient of `E` when the rank is infinite?
-- Why does `H₁` stay finite: is there an a priori bound on `Ψ` over a unit interval?
-- Can an arithmetic inner factor be finite and nontrivial? Polynomials yes, Dirichlet polynomials no, for ζ this is the second half of RH [L].
-- How does the amplitude `A` oscillate with the height, and is that oscillation what locks the columns [L]?
+- How long does the orbit need to enter a half-space at length `y=(log T)^{2K}`, `K>½`? Is there any saving against size?
+- What is the near-diagonal energy past `k=log T/log y`?
+- Why does the Gamma coupling sit at exactly the critical growth `κ=½` of the Bernstein theorem?
+- Which functions on `X` restrict to the Ξ-current and have a sum-of-squares form with `t`-dependent coefficients?
+- Over which torus points does the hull extend into the strip, and which of those carry zeros?
+- Does a large-value set of heights have additive structure, and does its structure force returns that the pole must pay for?
 
-**Limits.** The closest existing pieces are de Branges theory, OPUC, Krein systems, Hardy space theory and critical Hardy inequalities. The Lyapunov exponent of OPUC is the log potential of the zero measure (Thouless) [C], which is Poisson–Jensen, and criticality of disordered chiral chains is an equality of log-means [C], which is B57's shape. What is new is the arithmetic forcing. The production side is not part of this field, since it has collapsed to Mertens.
+**Limits.**
+- For a Dirichlet series the supremum on the orbit equals the supremum on the torus, so every gain must come from finite time or from the Gamma coupling [C].
+- Sz.-Nagy already dilates the one-parameter flow. Ando–Varopoulos failures for three commuting contractions apply only to decoupled primes, not to the actual chain [C; D].
+- A non-alignment theorem speaks about large heights only. A one-off at fixed height is invisible to it, and a discrete system with integer norms built by rounding a smooth density shares the torus and can carry a one-off [D]. So this field does not reach AAL without an input from the amplitude or the functional equation.
+- Non-alignment gives the sign past size, which is a zero-free strip up to crystal shielding [D]. The field's first theorem would be qRH-strength; nothing below that is a test of it, apart from curves and models.
+- No mechanism past diagonal moments is known. Baker's bounds are exponentially too weak for the transference [D].
 
 ## 2.9 If positivity, Weil positivity and spectral methods are excluded: which field?
 
-If the exclusion holds, inner-function theory loses its core, since a Blaschke mass is a positive quantity and a passive medium is a positive form. Stepanov over ℤ, as a linear stencil theory, has closed. The field must be nonlinear in the primes.
+If the exclusion holds, inner-function theory and the positivity half of prime torus theory lose their core, since a Blaschke mass is a positive quantity and a passive medium is a positive form. Stepanov over ℤ, as a linear stencil theory, has closed. The field must be nonlinear in the primes.
 
 **What it would be about.** *Rigid arithmetic of cuts:* how an exact statement about one object, `N(x)=⌊x⌋`, forces its zeros, by operations that have no sign and are not linear floor identities. All multiplicity of a stencil lives in fractional parts [L]. Every integer is a cut. The object is single: within FE defect `1/6400` there is nothing else [L]. So this field has no deformation theory near its object, and its theorems concern one function.
 
 | Aspect | Content |
 |---|---|
-| Objects | sawteeth `r mod k`; fake prime measures [S]; ledgers; finite oscillations; dilation operators on `ψ`; return sets as Bohr sets; gauge torus with Adams operators; the Beurling space with the FE-defect metric; the zero of maximal angle |
+| Objects | sawteeth `r mod k`; fake prime measures; ledgers; finite oscillations; dilation operators on `ψ`; return sets as Bohr sets; gauge torus with Adams operators; the Beurling space with the FE-defect metric; the zero of maximal angle |
 | Language | cut; multiplicity against size; ledger; blindness; parity ledger; oscillation; annihilator; transport; isolation; extremal position in place of sign |
 | Mechanisms | exact identities; extremal-factor modulus at the maximal-angle zero; rigidity as uniqueness; transport by minimum modulus; Gamma speed as dominance; nonlinear ledgers mixing additive and multiplicative structure |
 | Tools to build | ledgers that are not blind: quantities nonlinear in `Λ`, since every linear floor functional annihilates zero modes [L]; a parity input in the term `Σc(k)λ(k)L(⌊x/k⌋)`; effective Kronecker at arithmetic scale; pointwise bounds below the VK length; a metric geometry of Beurling systems above the gap |
@@ -485,7 +544,7 @@ If the exclusion holds, inner-function theory loses its core, since a Blaschke m
 - What nonlinear functional of `Λ` sees a zero mode, and survives the Liouville twin? Selberg's `Λ∗Λ` sees it through a pole, consistent with any meromorphic world [D].
 - Why do primes recur at a zero, if they do? They must, on any bounded return [L]; the tail is what fails.
 - Is a single off-line zero a contradiction with `N(x)=⌊x⌋`? Analytic identities are consistent with one [D], so the contradiction, if any, needs arithmetic information not implied by meromorphy.
-- What is the fake prime measure closest to the true one, for each `K` [S]?
+- What is the fake prime measure closest to the true one, for each `K`?
 
 **Limits.**
 - Nothing in the corpus shows the exclusion is forced. Over `𝔽_q` both Hodge index and Stepanov prove the theorem.
@@ -550,107 +609,94 @@ If the exclusion holds, inner-function theory loses its core, since a Blaschke m
 
 ## 3. The one question
 
-**Can the error in the prime number theorem be a single finite oscillation?** Formally: are there `β>½`, `η>0` and a nonzero finite trigonometric polynomial `T` with
+**Can a negative direction of the complete Weil matrix at a fixed critical ratio escape every window of length of order `log R`?** Let `R=c⁸/log N` be fixed and let `R_c(ζ)` be the largest ratio below which the matrix is eventually positive definite. Is `log R_c(ζ)≳a*(ζ)`? The inequality that decides it is a Gårding bound at each fixed `R` (A10):
 
-`ψ(x)−x=x^{β}T(log x)+O(x^{β−η})`?
+`Q(U)+B_R‖U‖²≥a_RW₈(U)` on normalized atomic sources, with `a_R>0`.
 
-This is the failure of the asymptotic abscissa law, as a theorem [L]. The answer expected is **no**. Smallest instance: can all but finitely many zeros lie on the line, with at least one off it (B13)?
+The expected answer is yes. Then HF, SRT, the packet branch of AIP and the atomic branch of ACS stop being separate problems at every fixed ratio.
 
-### Why this question
+### Why this one
 
-**It is the exact split of RH [L].** `RH ⇔ ZAL ∧ AAL`, and `RH ⇔ ZAL ∧ zero-disc weak recurrence`. Failure of AAL implies `Θ<1`, so `qRH ∨ AAL` holds unconditionally [D].
+**This is a structural question, because no analytic estimate below quasi-RH is both reachable and consequential.** A statement below qRH must leave sparse deep zeros alive, and that leaves these kinds:
 
-**It is logically below quasi-RH.** AAL alone gives no strip. It is implied by RH. It is weaker than `Θ<1⇒Θ=½` (B56) [D].
+| Kind | Best form | Why it is out of reach | Evidence |
+|---|---|---|---|
+| One-offs | AAL (B83) | no estimate of any kind; means are blind since the oscillation has zero constant mode | [L]; [D] |
+| 100% near the line | depth density `o(T)` (B57) | moment `→1` needs `log N≥log²T/(6K₀)`: a superpolynomial mollifier with no off-diagonal theory | [L]; [D] |
+| Rate near `½` | cluster wall (B59) | isolated rate `2−2γ` against fourth-moment rarity `4γ` balances at `4/3`, Ingham's slope at `σ=½`; passing it is a classical barrier | [D]; [C] |
+| All-height sign | past size (B46) | depth `d` at height `X` is visible at `a≈(1/2d)log(4d log X)`, so sign at `a=K log log X`, `K>1`, is a zero-free strip up to crystal shielding | [L]; [D] |
+| Production | stencil rate (B55) | rate is the Mertens level | [L] |
+| **Reduction** | **this question** | **one named inequality, with its neighbours proved** | **[L]** |
 
-**It is the only half of RH where a proof may assume strong hypotheses.** A proof by contradiction may use all of the following at once:
+### What is proved around it
 
-| In the world ¬AAL | Evidence |
-|---|---|
-| Zero-free strip `(β₁,Θ)` at all heights; `Θ<1`; finite top layer | [L] |
-| `T` unique, `β=Θ`, coefficients `−ord/(Θ+iμ)`, zero constant mode, `η≤Θ−Θ₂` | [L] |
-| `ψ(e^u)−e^u` changes sign at bounded log gap, amplitude `≥δe^{Θu}` | [L] |
-| Dilation operators at two primes reduce `ψ` to `κx+O(x^{β−η})` | [L] |
-| Same oscillation for the alternating `Λ` sum | [L] |
-| `Φ(mℓ)` unbounded above on every progression | [L] |
-| `K_ζ` bounded on only finitely many prime towers | [L] |
-| `|E_X|≥X^κ` off a vanishing set in every bounded window, `κ<w` | [L] |
-| Finite annihilators nonvanishing on `Re s≤½`; twisted FE with phase `B²` | [L] |
-| No returns at the top zero beyond a finite height | [L] |
-| `Λ`-moments/`k!` at `ρ+1→−m`, diagonal `→0`, short shifts `→0`, long-shift correlation `→m²` | [L] |
-| Every right zero is a Lefschetz ratio, two primes determine it | [L] |
+A negative sequence can only escape through one of these channels.
 
-No other open statement on any route has this property.
+| Channel | Status | Module |
+|---|---|---|
+| Far tail `y→−∞` | Γ-liminf keeps `α_R∫_{y<0}F²e^{−8y}`, `α_R>0` at every `R`, on sequences with bounded `W₈` | `TheCriticalFormHasAGammaLiminf` |
+| High frequency | a bounded form keeps high frequencies small; `L¹` limits become strong | `BoundedWeilEnergyUpgradesL1LimitsToStrongLimits` |
+| Prime shifts | `|P|≤εW₈+B_ε‖H‖²` | `PrimeShiftsAreInfinitesimalInTheExponentialWeight` |
+| Precompactness | physical and Fourier tails; bounded collar mass | `PhysicalAndFourierTailsGiveCompactness`, `ThePhysicalCollarHasBoundedExponentialMass` |
+| Far conductors | coercive for `R<R*` | `TheFarComplementHasAnExplicitRatioInterval` |
+| Periodic charges | four channels below the eighth root; `J_N=O(log N)` iff gcd profile | `TheFourChannelsOfAPeriodicCharge`, `TheJumpEnergyDetectsTheGcdProfiles` |
+| Pole cross term | rank one | [D] |
+| Growing-period charges | open (A13) | — |
+| Localization commutator | inside `C` in `farMargin`; no replacement | — |
 
-**Everything else lands on it.** The most repeated limit in this document is "sparse off-line zeros survive".
+Coercivity at `R*` is not what is needed. `farMargin R=3D/(8R)−C−C′R` asks the reserve to beat `C` and `C′R` outright, while a Gårding bound lets them be paid by `εW₈+B_R‖U‖²`.
+
+### What makes it mathematics and not bookkeeping
+
+A Schur complement against the window margin fails. `λ*(c)` decays doubly exponentially [L] and the reserve `e^{8L}` only exponentially, so that route stops at bounded `R` [D]. The argument must use the `W₈` reserve on the near-kernel vectors of the window. The estimate is then an effective margin of about `(log R)^{O(1)}/R` and a tail paid from length `(2/7)log R`, so half-width `(1/7)log R` suffices [D, an estimate and not a proof].
 
 ### What an answer does
 
-**If AAL is proved:**
+| Answer | Effect |
+|---|---|
+| **Yes** | At each ratio HF, SRT, AIP packets and ACS atoms become a rung of RW; the all-ratio statement is `a*=⊤`. B6 becomes B1. |
+| **Yes** | A theorem on the critical curve: the complete matrix at exponent `1/8` is positive definite at every ratio with `log R≲a`, from one verified window, far past the proved multiple `2K₀`. |
+| **Yes** | The critical-curve content of CACT (228 modules), AHD, CAF, ACPL, RAPT, TM and ADT is finished, and A9, A12, A13 stop being route tasks. Effort moves to B2 and the zero-side walls. |
+| **Yes** | A template: Γ-liminf, Gårding and compactness turn a critical family into a window. |
+| **No** | A sequence with bounded form and `W₈→∞`, in Lean. That channel is then exactly the independent content of HF, and HF keeps a wall of its own. It is not a negative direction, so it does not touch RH. |
 
-| Effect | Routes | Evidence |
-|---|---|---|
-| RH ⇔ ZAL ⇔ finite off-line support ⇔ finite Weil index ⇔ bounded heat count ⇔ finite critical energy ⇔ eventual Hadamard positivity ⇔ eventual central-gap budget | LA, HF index, SC, CHMD, AIP, SRT, ZCG | [L] |
-| Any finite bound on off-line multiplicity gives RH: a count replaces a sign | all index and count routes | [L] |
-| Large-height receivers read the global abscissa | ZCG, SRT, LA, LI | [L] under weak recurrence |
-| Density and typical-height theorems gain an RH-level target | WD, MZF, NGF, census | [D] |
-| Bounded heights leave the proof; finite rungs stop being needed | RW, VHR, every rung | [D] |
-| TG's norm `<1` relaxes to a ceiling uniform in the rectangle | TG | [D] |
+`R_c<∞⇔a*<∞` either way: the limit pencil is negative once a negative window is available and `R` is large [D].
 
-**If a barrier is proved instead:** a refutation for ζ would refute RH. The realistic negative outcome is a near-fake in a named input class, which kills every argument using only that class.
+### First steps
 
-| Input class | Status | Evidence |
-|---|---|---|
-| Positive continuous prime measure, `N(x)−ρx−C→0` | one off-line pair, no recurrence | [L] |
-| Euler product with positive generalized primes, small reciprocal mass | one-off pair exists | [L] |
-| Discrete generalized primes approximating a continuous measure | zeros right of `½` kept | [C] |
-| FE with a finite coefficient prefix | zeros placed at will | [L] |
-| Exact FE times a rational relocation | no Dirichlet series, not Bohr almost periodic | [L] |
-| No arithmetic: `E=s−ρ` | finite inner factor `G(·,ρ)` | [L] |
-| Exact Euler product and exact Riemann FE | only ζ | [L] |
-| Euler product and FE with `L¹` defect `≤1/6400` | only ζ | [L] |
-| Euler product and FE with larger `L¹` defect | open | B84 |
-
-### The route it opens
-
-- **Path.** Assume the finite oscillation. Derive a contradiction from exact integrality of `N(x)=⌊x⌋` and exact FE.
-- **Established.** Transport by returns; pair returns at typical base; returns at a zero `≤T^θ`, threshold `≍|g|r^m`; returns are prime returns, paid by a spike near `1+iτ_j`; all AAL producers; the full structure of ¬AAL [L].
-- **Missing.** Any lower bound on returns at a zero; any contradiction in ¬AAL.
-- **Recurrence as the shadow of Frobenius [D].** Over `𝔽_q`, zeros are periodic in `Im s`, so AAL is automatic and Weil's content is ZAL. Golden obeys AAL and fails ZAL. Dirichlet polynomials and periodic data recur, so their zeros are absent or infinite [L]. Over ℤ the flow has no period, and AAL asks how much of periodicity survives.
-- **What cannot do it [D].** Mean-value methods see density only. Besicovitch almost periodicity of ζ on `½<σ<1` is proved [L], and returns at a zero are Bohr-level: AAL is the gap between the two. Truncated Euler products cannot return to a zero (Hurwitz). Analytic identities, Selberg's formula included, are consistent with a meromorphic world with one pole of `ζ′/ζ` at `ρ`. Size tests pass: the modulation of prime density has relative size `x^{Θ−1}`. So the contradiction must come from arithmetic information not implied by meromorphy.
-
-### Where the proof must be
-
-| Layer | Content | Status |
-|---|---|---|
-| Typical heights | crystal, real zeros at critical scale, rate 2 for isolated zeros, sign at `a≤δ log T/(64M²)` | closed to bounded `τ`; `τ→0` is B57 |
-| Rare large heights | ZAL | open, at least quasi-RH |
-| One-offs | AAL | open, no estimate |
-
-### First tests
-
-1. **Smallest defect (B84).** For a one-off system with hypotheses as in `SmallIntegrableDefectsForceTheRationalPrimes`, what is the least `L¹` FE defect? It is at least `1/6400`. A family near that value bars every defect-stable argument at that level. If `overRegularZeta` and its discretization (A30) have infinite defect, the class of fakes shrinks.
-2. **Integer norms.** Does a discrete Beurling system with integer-valued norms, `N(x)=⌊x⌋+o(x^{Θ})`, and a one-off pair exist, short of `N(x)=⌊x⌋`?
-3. **Smallest world.** Assume finite nonzero off-line support: every RH-level typical theorem holds, ξ·R has all zeros on the line, and `Q` is PSD minus finite rank [L]. Is that compatible with `K_ζ` on two primes, given that all but `(κ choose 2)` towers decide [L]?
-4. **Return lower bound in a model.** Prove returns for an off-line zero of an almost-periodic family with Gamma phase, then find where the Euler tail breaks the argument.
+1. Audit `farLinearConstant` term by term (collar, `dyadicArchConstant/4`, leak) and bound each by `εW₈+B‖U‖²`.
+2. Replace the Young trade on the pole window by the rank-one structure, using the signed polar part of the low packet.
+3. Bound `W₈` on near-kernel vectors of the window from below.
+4. Close the growing-period channel (A13).
+5. Assemble the compactness (A11) and state `log R_c≳a*`.
 
 ### Validation
 
-T1 passes: implied by RH; it does not imply quasi-RH. T2 passes: a stated expansion to prove or refute. T3 passes: the collapse table. T4 passes: no finite rung decides it. T5 passes: the expansion holds on continuous Beurling systems, so a proof must exclude them. T6 passes: transport, rigidity, spectral gap, annihilators. T7 passes: no theorem answers it, and the prime-side equivalence moved no wall.
+| Test | Verdict |
+|---|---|
+| T1 | Pass. Under RH no negative sequence exists, and the reduction says nothing about zeros. |
+| T2 | Pass. A stated inequality to prove or refute. |
+| T3 | Pass. The table above. |
+| T4 | Pass. Each window is a rung; the reduction is uniform in `R`. |
+| T5 | **Fails, by design.** It is a reduction, expected to hold on any Chebyshev-bounded datum, so it does not separate ζ from a fake. |
+| T6 | Pass. Every neighbouring channel is proved, and no input is refuted. |
+| T7 | Pass. It moves Σ1s, Σ87, Σ88 and Σ116. |
+
+**By the tests this is not a door to RH. I found no question below quasi-RH that passes all seven and also has a working tool.** The questions passing all seven, such as B57 and B59, are in the table of kinds above.
 
 ### Limits
 
-- The evidence leans against an independent proof. The random Euler model has no zeros, and Deuring–Heilbronn repulsion points the other way [C]: an exceptional zero in a non-RH world may well be a one-off.
-- No estimate of any kind exists on this side. The question is less hard only in the sense that a proof may assume strong hypotheses.
-- ZAL remains at least quasi-RH. Answering this question does not finish RH.
-- ζ is a single object here, with no deformation class. A proof cannot be perturbative.
-- Any statement that with known theorems implies RH is RH-equivalent. No below-RH question can close RH logically.
+- No sign wall moves. B1, B2 and every RH-level item stay as they are.
+- ZAL and AAL are untouched, and typical heights gain nothing.
+- The constant between `a*` and `log R` is only estimated, and A13 may hide a real channel.
+- The gain is architectural: fewer independent problems, one theorem on the critical curve, and one scalar left on the sign side.
 
 ### Why the others rank lower
 
-- **Log-mean (B57):** a classical advance that closes the typical layer, with no effect on rare heights or one-offs.
-- **Past VK (B15):** a historic advance on one axis. It moves every route's saving by the same amount and changes no receiver.
-- **Stepanov over ℤ:** closed as an independent mechanism: rate is the Mertens level.
-- **Gårding at every ratio (A10):** the most reachable. It removes HF as an independent problem and produces no sign.
-- **Cluster wall (B59):** confined to typical heights.
-- **All-height sign past size (B46):** amplifies every rung; still rungs.
-- **Near-extremal mollifier (B66), `D_s≥0` (B68), bounded `Ψ` (B2):** RH-strength; answering them is the proof.
+- **AAL (B83):** the exact split of RH with a rigid negative world, and no estimate to start from. Its table is in 2.3.
+- **Log-mean (B57), cluster wall (B59):** real advances on typical heights, blocked at the mollifier length and at Ingham's slope.
+- **All-height sign (B46), past VK (B15):** effectively qRH in the first case and a historic barrier in the second.
+- **Hecke dispersion floor (B70):** `V_p≥η` already follows from the formula for `V_p` and VK; the question asks only for a new proof.
+- **`{2,3}` torus positivity (B19):** a compact check at fixed primes, and the torus turns negative by `P=19` in scans [N].
+- **Smallest FE defect (B84):** a barrier for defect-stable arguments, with no gain on ζ.
+- **Near-extremal mollifier (B66), `D_s≥0` (B68), bounded `Ψ` (B2):** RH-strength.

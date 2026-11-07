@@ -88,64 +88,97 @@ theorem stencilSlope_dilate {j : ℕ} (hj : 0 < j) {c : ℕ →₀ ℤ} (hc0 : c
     show ∑ k ∈ c.support, (c k : ℝ) / k = 0 from hbal, mul_zero, zero_add]
   rfl
 
-private lemma isBalanced_add {c d : ℕ →₀ ℤ} (hc : IsBalanced c) (hd : IsBalanced d) :
+/-- Balance is additive. -/
+theorem isBalanced_add {c d : ℕ →₀ ℤ} (hc : IsBalanced c) (hd : IsBalanced d) :
     IsBalanced (c + d) := by
   rw [IsBalanced, balance_eq_sum, Finsupp.sum_add_index' (by simp) (by intro _ a b; push_cast; ring),
     ← balance_eq_sum, ← balance_eq_sum, show ∑ k ∈ c.support, (c k : ℝ) / k = 0 from hc,
     show ∑ k ∈ d.support, (d k : ℝ) / k = 0 from hd, add_zero]
 
-private lemma stencilSlope_add (c d : ℕ →₀ ℤ) :
+/-- The slope is additive. -/
+theorem stencilSlope_add (c d : ℕ →₀ ℤ) :
     stencilSlope (c + d) = stencilSlope c + stencilSlope d := by
   simp only [slope_eq_sum]
   exact Finsupp.sum_add_index' (by simp) (by intro _ a b; push_cast; ring)
 
+/-- Scaling keeps balance. -/
+theorem isBalanced_nsmul {c : ℕ →₀ ℤ} (hc : IsBalanced c) (a : ℕ) : IsBalanced (a • c) := by
+  induction a with
+  | zero =>
+    rw [zero_nsmul]
+    simp [IsBalanced]
+  | succ a ih =>
+    rw [succ_nsmul]
+    exact isBalanced_add ih hc
+
+/-- The slope scales. -/
+theorem stencilSlope_nsmul (c : ℕ →₀ ℤ) (a : ℕ) : stencilSlope (a • c) = (a : ℝ) * stencilSlope c := by
+  induction a with
+  | zero =>
+    rw [zero_nsmul]
+    simp [stencilSlope]
+  | succ a ih =>
+    rw [succ_nsmul, stencilSlope_add, ih]
+    push_cast
+    ring
+
+/-- The multiplicity scales. -/
+theorem stepWeight_nsmul (c : ℕ →₀ ℤ) (a r : ℕ) :
+    stepWeight (a • c) r = (a : ℤ) * stepWeight c r := by
+  rw [← natCast_zsmul, stepWeight_smul]
+
+/-- A nonnegative balanced stencil may be added to a producer: the window is unchanged. -/
+theorem IsProducer.add_of_nonneg {c d : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (hd0 : d 0 = 0)
+    (hdbal : IsBalanced d) (hdnn : ∀ r, 0 ≤ stepWeight d r) : IsProducer (c + d) m B := by
+  refine ⟨by simp [hP.zero, hd0], isBalanced_add hP.balanced hdbal, fun r => ?_, hP.one_le_m,
+    hP.two_le_B, fun r hr => ?_⟩
+  · rw [stepWeight_add]
+    have h1 := hP.nonneg r
+    have h2 := hdnn r
+    linarith
+  · rw [stepWeight_add]
+    have h1 := hP.window r hr
+    have h2 := hdnn r
+    linarith
+
+/-- A positive multiple of a producer is a producer, with the multiplicity scaled. -/
+theorem IsProducer.nsmul {c : ℕ →₀ ℤ} {m B N : ℕ} (hP : IsProducer c m B) (hN : 0 < N) :
+    IsProducer (N • c) (N * m) B := by
+  have hN' : (0 : ℤ) ≤ (N : ℤ) := Int.natCast_nonneg N
+  refine ⟨by simp [hP.zero], isBalanced_nsmul hP.balanced N, fun r => ?_,
+    Nat.mul_pos hN hP.one_le_m, hP.two_le_B, fun r hr => ?_⟩
+  · rw [stepWeight_nsmul]
+    exact mul_nonneg hN' (hP.nonneg r)
+  · rw [stepWeight_nsmul]
+    push_cast
+    exact mul_le_mul_of_nonneg_left (hP.window r hr) hN'
+
+/-- Dilation sends a stencil vanishing at `0` to one vanishing at `0`. -/
+theorem dilate_zero {j : ℕ} (hj : 0 < j) {c : ℕ →₀ ℤ} (hc0 : c 0 = 0) : dilate j c 0 = 0 := by
+  have hinj : Function.Injective (j * ·) := fun _ _ h => Nat.eq_of_mul_eq_mul_left hj h
+  have h := Finsupp.mapDomain_apply hinj c 0
+  simpa [dilate, hc0] using h
+
+/-- A nonnegative stencil stays nonnegative under dilation and scaling. -/
+theorem stepWeight_nsmul_dilate_nonneg {c : ℕ →₀ ℤ} (hc : ∀ r, 0 ≤ stepWeight c r) (j a r : ℕ) :
+    0 ≤ stepWeight (a • dilate j c) r := by
+  rw [stepWeight_nsmul, stepWeight_dilate]
+  exact mul_nonneg (Int.natCast_nonneg a) (hc _)
+
 /-- **Positive Hecke combinations stay in the cone.** -/
 theorem IsProducer.add_dilate {c : ℕ →₀ ℤ} {m B j : ℕ} (hP : IsProducer c m B) (hj : 0 < j) (a : ℕ) :
-    IsProducer (c + a • dilate j c) m B := by
-  have hinj : Function.Injective (j * ·) := fun _ _ h => Nat.eq_of_mul_eq_mul_left hj h
-  have hdil0 : dilate j c 0 = 0 := by
-    have h := Finsupp.mapDomain_apply hinj c 0
-    simpa [dilate, hP.zero] using h
-  have hweight : ∀ r, stepWeight (c + a • dilate j c) r =
-      stepWeight c r + (a : ℤ) * stepWeight c (r / j) := by
-    intro r
-    rw [stepWeight_add, ← natCast_zsmul, stepWeight_smul, stepWeight_dilate]
-  refine ⟨?_, ?_, fun r => ?_, hP.one_le_m, hP.two_le_B, fun r hr => ?_⟩
-  · simp [hP.zero, hdil0]
-  · rw [← natCast_zsmul]
-    have hbal : IsBalanced ((a : ℤ) • dilate j c) := by
-      have hdbal := isBalanced_dilate hj hP.balanced
-      rw [IsBalanced, balance_eq_sum, Finsupp.sum_smul_index (by simp)]
-      have h : (((dilate j c).sum fun k b => (((a : ℤ) * b : ℤ) : ℝ) / k)) =
-          (a : ℝ) * ∑ k ∈ (dilate j c).support, ((dilate j c) k : ℝ) / k := by
-        rw [balance_eq_sum, Finsupp.mul_sum]
-        refine Finsupp.sum_congr fun k _ => ?_
-        push_cast
-        ring
-      rw [h, show ∑ k ∈ (dilate j c).support, ((dilate j c) k : ℝ) / k = 0 from hdbal, mul_zero]
-    exact isBalanced_add hP.balanced hbal
-  · rw [hweight]
-    have h1 := hP.nonneg r
-    have h3 := mul_nonneg (Int.natCast_nonneg a) (hP.nonneg (r / j))
-    linarith
-  · rw [hweight]
-    have h1 := hP.window r hr
-    have h3 := mul_nonneg (Int.natCast_nonneg a) (hP.nonneg (r / j))
-    linarith
+    IsProducer (c + a • dilate j c) m B :=
+  hP.add_of_nonneg (by simp [dilate_zero hj hP.zero])
+    (isBalanced_nsmul (isBalanced_dilate hj hP.balanced) a)
+    (stepWeight_nsmul_dilate_nonneg hP.nonneg j a)
 
 /-- **No positive amplification.** Adding a positive dilation multiplies the normalized slope by
 `1 + a/j`. -/
 theorem IsProducer.normSlope_add_dilate {c : ℕ →₀ ℤ} {m B j : ℕ} (hP : IsProducer c m B) (hj : 0 < j)
     (a : ℕ) : normSlope (c + a • dilate j c) m B = normSlope c m B * (1 + (a : ℝ) / j) := by
   have hjR : (j : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hj.ne'
-  have hsmul : stencilSlope (a • dilate j c) = (a : ℝ) * stencilSlope (dilate j c) := by
-    induction a with
-    | zero => simp [stencilSlope]
-    | succ a ih =>
-      rw [succ_nsmul, stencilSlope_add, ih]
-      push_cast
-      ring
-  rw [normSlope, normSlope, stencilSlope_add, hsmul, stencilSlope_dilate hj hP.zero hP.balanced]
+  rw [normSlope, normSlope, stencilSlope_add, stencilSlope_nsmul,
+    stencilSlope_dilate hj hP.zero hP.balanced]
   field_simp
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

@@ -93,7 +93,7 @@ aperture, and the obstruction to an alternating predictor.
    equality, so no information is lost by mollifying. The proof uses no boundary limits of outer functions, only exponentials of polynomials in the Blaschke coordinate
    (`isGLB_circle`).
 2. **Near-extremal mollifiers are rigid.** In the disc coordinate `E M_Q` is a Hardy function with value `1` at the origin, so Parseval bounds its distance to `1` by the excess (`norm_sub_one_sq_le`). There is one target, `1/E`.
-3. **Castelnuovo is a domination.** Over a curve the family is the Euler logarithm damped by `ρ^k`, and `|β| ≤ 1` gives `|1 − βv| ≤ 2|1 − ρβv|` uniformly in `ρ` (`norm_one_sub_le_two_mul`). Dominated convergence does the rest (`tendsto_circleAverage_abelRatio`).
+3. **Castelnuovo supplies holomorphic convergence and domination.** Purity makes the damped Euler-log series converge to `1/P(ρv)` and bounds each quotient factor by two. Boundary quotient convergence alone is nonselective: every finite datum has quotient mean tending to one (`tendsto_circleAverage_abelRatio_unconditional`), while the golden Abel budgets stay uniformly separated from that mean (`eventually_golden_budget_sub_quotient_ge`).
 4. **Causality replaces positivity.** A frustrated form has no positive ground state in any gauge. Its causal solution, the predictor, exists anyway. Positivity of the
    solution is replaced by zero-freeness in the closed disc, and the mechanism is Schur's: `A^*/A` is holomorphic and unimodular on the circle, so contractive
    (`norm_predRev_le`). Off Toeplitz forms the certificate survives as a triangular sum of squares (`exists_causal_certificate`).
@@ -185,7 +185,7 @@ Each question has a theorem in `TheQuestionsOfTheField.lean`. Answers that are R
 | Q5 | Why is `(β, s) = (1, 0)` critical? | `s` is an absolutely continuous density over a measure with none. `s > 0` is Szegő, `s < 0` is empty, `s = 0` is the threshold. At `β = 0` the weights are not pinned (`question_five`) |
 | Q6 | Can an arithmetic inner factor be finite and nontrivial? | Without arithmetic, yes (`innerOf_linear`). For Dirichlet polynomials and periodic data, never. For positive generalized primes with small reciprocal mass, yes (`exists_small_reciprocalMass_zero_off_line`). For `ζ` it is open, and RH splits as field vanishing plus recurrence (`question_six`) |
 | Q7 | How do reflectors depend on primes past the first echo? | Through the autocorrelation of the predictor test at `log n₀`, exactly, at every stage; the margin is concave in the weights (`question_seven`, `hasDerivAt_reflCoeff_weight`, `levinsonErr_le_add`) |
-| Q8 | What plays the role of Castelnuovo? | The target is forced: `1/E`, with first coefficient `1 − γ` (`question_eight`). Over a curve the family is the damped Euler logarithm, and Castelnuovo is the uniform bound on the dilation quotient (`question_eight_curve`). Over `ℤ` no such bound is known, and the existence of the family is RH |
+| Q8 | What plays the role of Castelnuovo? | The target is forced: `1/E`, with first coefficient `1 − γ` (`question_eight`). Over a curve purity gives holomorphic Euler-log convergence and quotient domination (`question_eight_curve`). Over `ℤ` near-unit holomorphic budgets remain open; boundary quotient limits alone do not control them |
 | Q9 | How does the Gamma base pay the columns? | By size once `log(b/2π)` passes twice the mass, which is at most `14√P log P` for `S ⊆ [2, P]`. In each range `[B, BQ^{|S|}]` there is a height where the set aligns, and there the base has to exceed the aligned mass (`question_nine`). The true height of alignment is the open part |
 | Q10 | How does `q` depend on the data past the Born regime? | On a lattice `q_n = −artanh γ_n`. At the vacuum each reflector reads its own echo. In general the defect is at most `K(Π(1 + |γ_k|) − 1)`, and the tangent is exact at every positive stage (`question_ten`). The first correction is `κ₁²(κ₂ − κ₀)/(κ₀(κ₀² − κ₁²))` (`reflCoeff_one_sub_born`). Before contact `Ψ′` is an exact rational function of `r` and `r′` (`ae_canonicalPotential_eq_born_add`) |
 
@@ -233,7 +233,7 @@ Periodic data admit finite impurity per period. The theory sees this: for a colu
 | Trap | Truth |
 |---|---|
 | A mollifier loses information about the zeros | The infimum over mollifiers is exactly `e^{2I}` |
-| The problem is to find the right mollifier | The target is forced to be `1/E`, with coefficients bounded by the excess. On a curve the family is explicit, and the content is a bound on its dilation quotient |
+| Boundary dilation quotients control holomorphic mollifiers | Every finite datum has quotient mean tending to one; the golden datum still has Abel budgets at least `φ²`. Euler-log convergence must be justified separately |
 | A rigidity law makes a mollifier | It holds for every `Q`, with the excess on the right. It produces no family with small excess |
 | `N(ρ) ≤ Πϱ` is lossy | It is an equality over all other zeros |
 | Phase locking is a free extra source of positivity | At a fixed amplitude, and at an amplitude with a limit at height infinity, it is torus positivity. It can act only through an amplitude oscillating with the height |
@@ -252,7 +252,7 @@ Periodic data admit finite impurity per period. The theory sees this: for a colu
 
 ## 11. Open research topics
 
-1. **The opposite sign.** A family of mollifiers with budget tending to `1` at one centre (`riemannHypothesis_iff_exists_budget_lt`). This is RH. On a curve it follows from a uniform bound on the dilation quotient, and what replaces that bound over `ℤ` is the first question to ask of any candidate.
+1. **The opposite sign.** A holomorphic mollifier family with budget tending to `1` at one centre (`riemannHypothesis_iff_exists_budget_lt`). This is RH. Over a curve, purity gives Euler-log convergence as well as quotient domination. Over `ℤ` both the holomorphic family and its budget must be controlled.
 2. **Oscillating amplitudes.** `S(a, b) = Σ_N τ_b(N) A(N; a, b)` has an amplitude depending on the same `b` as the phases. Amplitudes with a limit gain nothing, and oscillating ones can. Does `A` oscillate at the rate tied to the phases?
 3. **The Bernstein theorem at a fixed base point.** Is the exponent `½` sharp? What does torus positivity at all prime sets force when the base point is fixed at `x = 0`, the form in which `S` reads its amplitude? There the Hecke form sees only primes up to `e^{y/2}`, and the diagonal does not vanish.
 4. **The zero–one law for `ζ`.** A lower bound on returns around an off-line zero (`ZetaZeroDiscWeaklyRecurrent`). Corpus: return shifts have density zero, no lower bound.
@@ -306,7 +306,7 @@ A contribution is an exact identity, an equivalence, a classification, a sharp l
 
 There is one object, the inner field. It has two expressions: a sum over zeros, nonnegative, and an infimum over mollifiers, an upper bound. RH is their meeting at `0`.
 
-On the side of mollifiers, the target is forced and the excess controls everything. Over a curve the family is the damped Euler logarithm, and Castelnuovo is the bound that makes it work.
+On the side of mollifiers, the target is forced and the excess controls everything. Over a curve the family is the damped Euler logarithm; Castelnuovo supplies its holomorphic convergence and boundary domination. Quotient limits alone forget the inner mass.
 
 On the side of forms, the exact certificate for frustrated positivity exists: a causal solution that is outer. Each positive window carries its own Riemann hypothesis, for the same reason as Hermite–Biehler. Positivity of all windows of all lattices is RH, and it sits exactly at the threshold of Szegő's regime, with no absolutely continuous density to spare. On certified windows and at critical ratios the certificate is a theorem.
 

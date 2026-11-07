@@ -28,6 +28,11 @@ def moebiusLetters (T G : ℕ) : Finset ℕ :=
 def moebiusWeights (T G k : ℕ) : ℚ :=
   if k ≤ T then -(ArithmeticFunction.moebius k : ℚ) / k else (T : ℚ) / G
 
+/-- The coefficient form of a Möbius producer on the letters `moebiusLetters T G`. -/
+structure IsMoebiusStencil (c : ℕ →₀ ℤ) (m T G : ℕ) : Prop where
+  support : c.support ⊆ insert 1 (moebiusLetters T G)
+  letter : ∀ k ∈ moebiusLetters T G, (c k : ℝ) = -(m : ℝ) * k * (moebiusWeights T G k : ℝ)
+
 private lemma mem_primesUpTo' {T P : ℕ} : P ∈ primesUpTo T ↔ P.Prime ∧ P ≤ T := by
   simp only [primesUpTo, mem_filter, mem_Icc]
   constructor
@@ -156,11 +161,12 @@ private lemma slope_sub_le {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : ℝ} (h
 /-- **The Möbius producer.** For `T ≥ 2`, `G > T`, under the near condition
 `|m(T)| + 2 η (1 + log G) ≤ Z`, there is an integer producer with window `[1, G)` on the alphabet
 `[1, G T]`, with rate at most `4 Z (1 + log (G T))`. -/
-theorem exists_moebius_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : ℝ} (hη : 0 ≤ η)
+theorem exists_moebius_producer_coeff {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : ℝ} (hη : 0 ≤ η)
     (hM : ∀ y, T ≤ y → |mertens y| ≤ η * y)
     (hZ : |mobiusHarmonic T| + 2 * η * (1 + Real.log G) ≤ nearCoefficient T G) :
     ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m G ∧ AlphabetLE c (G * T) ∧
-      rate c m G ≤ 4 * nearCoefficient T G * (1 + Real.log ((G * T : ℕ) : ℝ)) := by
+      rate c m G ≤ 4 * nearCoefficient T G * (1 + Real.log ((G * T : ℕ) : ℝ)) ∧
+      IsMoebiusStencil c m T G := by
   have hG2 : 2 ≤ G := by omega
   have hGT1 : 1 ≤ G * T := Nat.mul_pos (by omega) (by omega)
   have hJ2 : ∀ k ∈ moebiusLetters T G, 2 ≤ k := by
@@ -176,7 +182,8 @@ theorem exists_moebius_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : �
       exact hkT.trans (hG.le.trans (Nat.le_mul_of_pos_right G (by omega)))
     · obtain ⟨P, hP, rfl⟩ := mem_image.mp h
       exact Nat.mul_le_mul_left G (mem_primesUpTo'.mp hP).2
-  obtain ⟨c, m, hP, hal, hslope⟩ := exists_producer_of_weights (J := moebiusLetters T G)
+  obtain ⟨c, m, hP, hal, hslope, hsupp, hletter⟩ :=
+    exists_producer_of_weights_coeff (J := moebiusLetters T G)
     (moebiusWeights T G) hJ2 hJK hGT1 hG2
     (fun r => by
       rw [sum_moebiusLetters_mod hG]
@@ -184,7 +191,7 @@ theorem exists_moebius_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : �
     (fun r hr => by
       rw [sum_moebiusLetters_mod hG]
       exact one_le_moebiusWeight hG hη hM hZ hr)
-  refine ⟨c, m, hP, hal, ?_⟩
+  refine ⟨c, m, hP, hal, ?_, ⟨hsupp, hletter⟩⟩
   rw [sum_moebiusLetters_log hG] at hslope
   have hm := hP.m_pos
   have h1 := hP.one_sub_pos
@@ -209,15 +216,23 @@ theorem exists_moebius_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : �
     _ ≤ 2 * (2 * nearCoefficient T G * (1 + Real.log ((G * T : ℕ) : ℝ))) := by linarith
     _ = _ := by ring
 
+theorem exists_moebius_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : ℝ} (hη : 0 ≤ η)
+    (hM : ∀ y, T ≤ y → |mertens y| ≤ η * y)
+    (hZ : |mobiusHarmonic T| + 2 * η * (1 + Real.log G) ≤ nearCoefficient T G) :
+    ∃ (c : ℕ →₀ ℤ) (m : ℕ), IsProducer c m G ∧ AlphabetLE c (G * T) ∧
+      rate c m G ≤ 4 * nearCoefficient T G * (1 + Real.log ((G * T : ℕ) : ℝ)) := by
+  obtain ⟨c, m, h1, h2, h3, _⟩ := exists_moebius_producer_coeff hT hG hη hM hZ
+  exact ⟨c, m, h1, h2, h3⟩
+
 /-- **The optimal choice of `G`.** If `|M(y)| ≤ δ y` on `y ≥ T`, `|m(T)| ≤ δ`, and
 `δ (3 + 2 log (T²/δ)) ≤ ½`, there is an integer producer on an alphabet in `[1, T³/δ]` of rate at most
 `8 δ (3 + 2 log (T²/δ)) (1 + log (T³/δ))`. -/
-theorem exists_moebius_producer_of_level {T : ℕ} (hT : 2 ≤ T) {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1)
-    (hM : ∀ y, T ≤ y → |mertens y| ≤ δ * y) (hm : |mobiusHarmonic T| ≤ δ)
+theorem exists_moebius_producer_of_level_coeff {T : ℕ} (hT : 2 ≤ T) {δ : ℝ} (hδ : 0 < δ)
+    (hδ1 : δ ≤ 1) (hM : ∀ y, T ≤ y → |mertens y| ≤ δ * y) (hm : |mobiusHarmonic T| ≤ δ)
     (hsmall : δ * (3 + 2 * Real.log ((T : ℝ) ^ 2 / δ)) ≤ 1 / 2) :
-    ∃ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B ∧ AlphabetLE c ⌊(T : ℝ) ^ 3 / δ⌋₊ ∧
-      rate c m B ≤ 8 * (δ * (3 + 2 * Real.log ((T : ℝ) ^ 2 / δ))) *
-        (1 + Real.log ((T : ℝ) ^ 3 / δ)) := by
+    ∃ (c : ℕ →₀ ℤ) (m G : ℕ), T < G ∧ IsProducer c m G ∧ AlphabetLE c ⌊(T : ℝ) ^ 3 / δ⌋₊ ∧
+      rate c m G ≤ 8 * (δ * (3 + 2 * Real.log ((T : ℝ) ^ 2 / δ))) *
+        (1 + Real.log ((T : ℝ) ^ 3 / δ)) ∧ IsMoebiusStencil c m T G := by
   have hTR : (2 : ℝ) ≤ T := by exact_mod_cast hT
   have hT0 : (0 : ℝ) < T := by linarith
   obtain ⟨L, hL⟩ : ∃ L, L = Real.log ((T : ℝ) ^ 2 / δ) := ⟨_, rfl⟩
@@ -275,12 +290,12 @@ theorem exists_moebius_producer_of_level {T : ℕ} (hT : 2 ≤ T) {δ : ℝ} (h�
     refine le_trans ?_ hZ1
     rw [hA]
     nlinarith
-  obtain ⟨c, m, hP, hal, hr⟩ := exists_moebius_producer hT hGT hδ.le hM hcond
+  obtain ⟨c, m, hP, hal, hr, hst⟩ := exists_moebius_producer_coeff hT hGT hδ.le hM hcond
   have hGTle : ((G * T : ℕ) : ℝ) ≤ (T : ℝ) ^ 3 / δ := by
     push_cast
     calc (G : ℝ) * T ≤ (T : ℝ) ^ 2 / δ * T := mul_le_mul_of_nonneg_right hGupper hT0.le
       _ = _ := by ring
-  refine ⟨c, m, G, hP, fun k hk => ?_, ?_⟩
+  refine ⟨c, m, G, hGT, hP, fun k hk => ?_, ?_, hst⟩
   · refine (hal k hk).trans (Nat.le_floor hGTle)
   · have hGT1 : (1 : ℝ) ≤ ((G * T : ℕ) : ℝ) := by
       have : 1 ≤ G * T := Nat.mul_pos (by omega) (by omega)
@@ -294,5 +309,15 @@ theorem exists_moebius_producer_of_level {T : ℕ} (hT : 2 ≤ T) {δ : ℝ} (h�
           have hZnn : 0 ≤ nearCoefficient T G := by linarith
           exact mul_le_mul (by linarith) (by linarith) (by linarith) (by linarith)
       _ = _ := by ring
+
+/-- The optimal choice of `G`, without the coefficients. -/
+theorem exists_moebius_producer_of_level {T : ℕ} (hT : 2 ≤ T) {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ ≤ 1)
+    (hM : ∀ y, T ≤ y → |mertens y| ≤ δ * y) (hm : |mobiusHarmonic T| ≤ δ)
+    (hsmall : δ * (3 + 2 * Real.log ((T : ℝ) ^ 2 / δ)) ≤ 1 / 2) :
+    ∃ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B ∧ AlphabetLE c ⌊(T : ℝ) ^ 3 / δ⌋₊ ∧
+      rate c m B ≤ 8 * (δ * (3 + 2 * Real.log ((T : ℝ) ^ 2 / δ))) *
+        (1 + Real.log ((T : ℝ) ^ 3 / δ)) := by
+  obtain ⟨c, m, G, _, h1, h2, h3, _⟩ := exists_moebius_producer_of_level_coeff hT hδ hδ1 hM hm hsmall
+  exact ⟨c, m, G, h1, h2, h3⟩
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics
