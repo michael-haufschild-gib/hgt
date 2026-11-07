@@ -26,5 +26,7 @@ and `height_series_summable_norm`, all in namespace `CubicEisenstein`.
 Direct Lean check passes. All five transitive audits use only `propext`,
 `Classical.choice`, and `Quot.sound`. Umbrella wired.
 
-Continuation to `s=4/3`, residue nonvanishing, and Gauss coefficient
-identification remain separate obligations.
+[Continuation](cubic-incoming-spectral-residue.md),
+[initial source matching](cubic-initial-resolvent-matching.md), and
+[residue nonvanishing](cubic-constant-term-nonvanishing.md) are formalized.
+Gauss-coefficient identification remains open.

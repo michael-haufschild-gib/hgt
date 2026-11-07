@@ -1,8 +1,8 @@
 # Nonvanishing from the cubic constant term
 
 - **ID:** cubic-constant-term-nonvanishing
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual incoming residue at `s=4/3` is a nonzero quotient `L²` eigenvector of the Laplacian with eigenvalue `8/9`.
 
@@ -36,17 +36,22 @@ Integrating the constant mode over heights `5≤v≤6`, with volume density
 The incoming height term is analytic there. This compact cusp average is
 a bounded functional on the local `L²` family.
 
-[Initial source matching](../3-formalized/cubic-initial-resolvent-matching.md) identifies
+[Initial source matching](cubic-initial-resolvent-matching.md) identifies
 the two averages for `Re s>4`, `Im s>0`. Analytic uniqueness extends the
 identity to `Re s>4/3`, `Im s>0`. The isolated spectral pole permits passage
 to the real boundary near `4/3`; uniqueness of the residue limit therefore
 identifies the bounded functional of the actual residue with the nonzero
 constant above. The actual vector cannot vanish.
 
-Lean target: `CubicEisenstein.cubicEisensteinResidue_ne_zero` in
-`TheCubicResidueIsNonzero.lean`. Period-lattice unfolding, cube support,
-ideal totient series, constant-term residue, and source matching await local
-checks. Nonconstant Fourier identification and uniform descent remain open.
+Formalized in `TheCubicResidueIsNonzero.lean` as
+`CubicEisenstein.cubicEisensteinResidue_ne_zero` and
+`cubicEisensteinResidue_eigenvector`, for the actual family with cutoff heights
+`2,3`. The endpoint `cubicEisensteinResidue_cusp_average` identifies its
+nonzero detecting average. Period-lattice unfolding, cube support, ideal
+totient series, the constant-term residue, and initial source matching are
+kernel-checked. Direct endpoint audits use only `propext`, `Classical.choice`,
+and `Quot.sound`; no analytic premise remains. Nonconstant Gauss-coefficient
+identification and uniform descent remain open.
 
 Adapted from OpenAI's cubic constant-term, cusp-average, and residual-vector
 arguments; this is classical spectral input, not a new cancellation estimate.

@@ -62,6 +62,12 @@ the stated limit.
 
 ## Lean status and boundary
 
-Formalization is in progress. The existing two-sided `Θ(x log x)` estimate
-alone does not establish this coefficient. No pointwise `O(log x)` count
+`PositiveNearCountProfile.lean` formalizes the continuous profile, its
+period-four law, complementary half-period identity, and `1/12` approximation
+bound. `ComplementaryRotationAverages.lean` proves the required uniform
+averaging principle. `PositiveNearCountProfileBridge.lean` connects the
+actual weighted norm count to this profile with normalized error at most `5/8`.
+Direct checks and axiom audits pass for these modules. The logarithmic-circle
+specialization and limiting coefficient remain in progress. The existing
+two-sided `Θ(x log x)` estimate alone does not establish this coefficient. No pointwise `O(log x)` count
 bound or exceptional-zero conclusion follows. No external novelty claim.

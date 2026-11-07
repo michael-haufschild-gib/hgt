@@ -48,7 +48,7 @@ The [actual exterior coercivity estimate](../3-formalized/cubic-quotient-exterio
 is formalized on the completed energy graph, with compact error map.
 
 The [spectral pencil is Fredholm](../3-formalized/cubic-spectral-pencil-fredholm.md)
-for `0≤λ<1`, including `λ=8/9`; nonzero kernel is not yet proved.
+for `0≤λ<1`, including `λ=8/9`.
 
 The [actual resolvent is meromorphic](../3-formalized/cubic-meromorphic-resolvent.md)
 at `z=8/9` and after composition at `s=4/3`, with explicit finite-rank singular part.
@@ -58,15 +58,15 @@ is compactly supported on the quotient and entire as an `L²` family.
 
 The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.md)
 is constructed globally in `L²` and locally for the corrected incoming family.
-Its nonvanishing is not yet established.
+Its [nonvanishing](../3-formalized/cubic-constant-term-nonvanishing.md) and
+`8/9` eigenvalue equation are formalized, detected by a compact cusp average.
 
 [Initial source matching](../3-formalized/cubic-initial-resolvent-matching.md)
 identifies the actual Eisenstein remainder with the resolvent correction
 for `Re s>4`, `Im s>0`, with all analytic premises discharged.
 
-Open inputs: [residue nonvanishing](../2-fully-proven/cubic-constant-term-nonvanishing.md), Fourier
-identification, and nonvanishing of `C∞`. None is supplied as an assumption
-in a local endpoint.
+Open inputs: Gauss-coefficient identification and nonvanishing of `C∞`.
+Neither is supplied as an assumption in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.
 
 Sources: external OpenAI `Eisenstein/FredholmAlternative.lean`,

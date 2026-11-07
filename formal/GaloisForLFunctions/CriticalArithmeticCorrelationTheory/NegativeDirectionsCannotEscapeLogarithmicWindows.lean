@@ -2148,58 +2148,40 @@ private lemma all_ratio_c7_div_bk_le {c k b L ℓ D g₀ K_c : ℝ}
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right (by linarith) hℓ0.le) hL8_pos.le
     exact h1.trans h2
 
-private lemma all_ratio_band_far_budgets {R M N : ℕ}
-    {c ρ Sg₁ k b L ℓ D g₀ CB K_c M_bk C_pr C_up C_upT C_np K_tot K_res : ℝ}
+private lemma all_ratio_band_far_budget_E {R M N : ℕ}
+    {c Sg₁ k b L ℓ D CB K_c M_bk C_pr C_np K_tot : ℝ}
     (hLdef : L = Real.log (N : ℝ)) (hℓdef : ℓ = 1 + Real.log L)
     (hk_def : k = L / (2 * D * ℓ ^ 6))
     (hbk_ub : c ^ 7 / (b * k) ≤ M_bk * ℓ / L ^ (1 / 8 : ℝ))
-    (hD : 0 < D) (hCpr : 0 < C_pr) (hCup : 0 ≤ C_up) (hCupT : 0 ≤ C_upT)
-    (hCnp : 0 ≤ C_np) (hCB0 : 0 ≤ CB) (hKc1 : 1 ≤ K_c) (hMbk0 : 0 ≤ M_bk)
-    (hK_tot : 1 ≤ K_tot) (hK_res : 0 ≤ K_res)
+    (hD : 0 < D) (hCpr : 0 < C_pr) (hCnp : 0 ≤ C_np) (hCB0 : 0 ≤ CB)
+    (hKc1 : 1 ≤ K_c) (hMbk0 : 0 ≤ M_bk) (hK_tot : 1 ≤ K_tot)
     (hL1 : 1 ≤ L) (hc1 : 1 ≤ c) (hcL : c ≤ L) (hc_up : c ≤ K_c * L ^ (1 / 8 : ℝ))
     (hk_pos : 0 < k) (hb_pos : 0 < b)
     (hR1 : 1 ≤ R) (hMN : M ≤ N) (hRN : L ^ 18 * (R : ℝ) ^ 16 ≤ N)
     (hlR : 1 + Real.log (R : ℝ) ≤ 2 * L / ℓ ^ 5)
     (hTPC : terminalPacketCost R M N ≤ CB * (1 + Real.log c))
-    (hNM : (N : ℝ) / M ≤ 2 * (256 * Real.exp 2 + 4) * c)
     (hSg : Sg₁ ≤ 2 * K_tot * ℓ) (hSg0 : 0 ≤ Sg₁)
-    (hρ0 : 0 ≤ ρ) (hρ : ρ ≤ 2 * K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L))
     (hℓ_E : 128 * (1024 * D * C_pr + 32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) ≤ ℓ)
-    (hL8_E2 : 128 * (256 * C_pr * CB * M_bk) ≤ L ^ (1 / 8 : ℝ))
-    (hU_small :
-      (1024 * D * C_pr + 512 * C_pr * M_bk +
-        32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
-        256 * D * C_up * K_c ^ 2 +
-        256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk) * ℓ ^ 7 ≤
-      (1 / 8 : ℝ) * L ^ (1 / 8 : ℝ)) :
-    (128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (Real.log (N : ℝ) * k) +
+    (hL8_E2 : 128 * (256 * C_pr * CB * M_bk) ≤ L ^ (1 / 8 : ℝ)) :
+    128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (Real.log (N : ℝ) * k) +
       128 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N /
         (Real.log (N : ℝ) * b * k) +
-      32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤ 1 / 32) ∧
-    (256 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N : ℝ) * k) +
-      256 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N : ℝ) * b * k) +
-      32 * c ^ 7 * C_np * (bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetG R N c Sg₁ +
-        2 * bandFarBudgetA R N c) / (b * k) +
-      128 * C_up * c ^ 2 * (1 + Real.log c) / k +
-      128 * c ^ 7 * C_upT * c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) /
-        (Real.log (N : ℝ) * b * k) ≤ 1 / 4) := by
+      32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤ 1 / 32 := by
   rw [← hLdef]
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
   have hℓ1 : 1 ≤ ℓ := by rw [hℓdef]; linarith [Real.log_nonneg hL1]
   have hℓ0 : 0 < ℓ := zero_lt_one.trans_le hℓ1
   have hR1R : (1 : ℝ) ≤ R := by exact_mod_cast hR1
   have hN0 : (0 : ℝ) < N := lt_of_lt_of_le (by positivity) hRN
-  have hlR0 : 0 ≤ 1 + Real.log (R : ℝ) := by linarith [Real.log_natCast_nonneg R]
-  have hlR_2L : 1 + Real.log (R : ℝ) ≤ 2 * L :=
-    hlR.trans (div_le_self (by positivity) (one_le_pow₀ hℓ1))
   have h1c_ℓ : 1 + Real.log c ≤ ℓ := by rw [hℓdef]; linarith [Real.log_le_log hc0 hcL]
   have h1c0 : 0 ≤ 1 + Real.log c := by linarith [Real.log_nonneg hc1]
   have hL8_pos : 0 < L ^ (1 / 8 : ℝ) := Real.rpow_pos_of_pos hL0 _
   have hLk : L * k = L ^ 2 / (2 * D * ℓ ^ 6) := by rw [hk_def]; ring
-  have h1k : 1 / k = 2 * D * ℓ ^ 6 / L := by rw [hk_def]; field_simp [hL0.ne', hD.ne', hℓ0.ne']
-  -- Part 1: `hsE ≤ 1 / 32`
+  have hbk0 : 0 ≤ c ^ 7 / (b * k) := div_nonneg (pow_nonneg hc0.le 7) (mul_pos hb_pos hk_pos).le
   have hE1 : 128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (L * k) ≤ (1024 * D * C_pr) / ℓ := by
+    have hlR0 : 0 ≤ 1 + Real.log (R : ℝ) := by linarith [Real.log_natCast_nonneg R]
     have hsq : (1 + Real.log (R : ℝ)) ^ 2 ≤ (2 * L / ℓ ^ 5) ^ 2 := pow_le_pow_left₀ hlR0 hlR 2
     calc 128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (L * k)
         ≤ 128 * C_pr * (2 * L / ℓ ^ 5) ^ 2 / (L ^ 2 / (2 * D * ℓ ^ 6)) := by
@@ -2221,7 +2203,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
       linarith only [hlR, (le_div_iff₀ (pow_pos hℓ0 5)).mp hlR]
     rw [hid]
     have hm1 := mul_le_mul hRL hTPC_ℓ hTPC0 (by positivity)
-    have hm2 := mul_le_mul hm1 hbk_ub (by positivity) (by positivity)
+    have hm2 := mul_le_mul hm1 hbk_ub hbk0 (mul_nonneg (by positivity) (mul_nonneg hCB0 hℓ0.le))
     have hm3 := mul_le_mul_of_nonneg_left hm2 (by positivity : 0 ≤ 128 * C_pr)
     have hsimp : 128 * C_pr * ((2 / ℓ ^ 5) * (CB * ℓ) * (M_bk * ℓ / L ^ (1 / 8 : ℝ))) =
         (256 * C_pr * CB * M_bk / L ^ (1 / 8 : ℝ)) / ℓ ^ 3 := by
@@ -2234,7 +2216,8 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
               128 * C_pr * ((1 + Real.log (R : ℝ)) / L) * terminalPacketCost R M N *
                 (c ^ 7 / (b * k)))]
       _ = (256 * C_pr * CB * M_bk / L ^ (1 / 8 : ℝ)) / ℓ ^ 3 := hsimp
-      _ ≤ 256 * C_pr * CB * M_bk / L ^ (1 / 8 : ℝ) := div_le_self (by positivity) hℓ3
+      _ ≤ 256 * C_pr * CB * M_bk / L ^ (1 / 8 : ℝ) :=
+            div_le_self (div_nonneg (mul_nonneg (mul_nonneg (by positivity) hCB0) hMbk0) hL8_pos.le) hℓ3
       _ ≤ 1 / 128 := by rw [div_le_iff₀ hL8_pos]; linarith only [hL8_E2]
   have hE3 : 32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤
       (32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) / ℓ := by
@@ -2286,30 +2269,191 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
         (by positivity) (div_nonneg (by positivity) (pow_pos hℓ0 5).le)
       refine hm.trans_eq ?_
       field_simp [hL0.ne', hℓ0.ne']; ring
-    have hG0 : 0 ≤ bandFarBudgetG R N c Sg₁ := by unfold bandFarBudgetG; rw [← hLdef]; positivity
     have hid : 32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) =
         32 * C_np * (bandFarBudgetG R N c Sg₁ * (c ^ 7 / (b * k))) := by ring
     rw [hid]
     have hm := mul_le_mul_of_nonneg_left
-      (mul_le_mul hG_ub hbk_ub (by positivity) (by positivity))
-      (by positivity : 0 ≤ 32 * C_np)
+      (mul_le_mul hG_ub hbk_ub hbk0 (by positivity))
+      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 32) hCnp)
     refine hm.trans_eq ?_
     field_simp [hℓ0.ne', hL8_pos.ne']
-  have hsE : 128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (L * k) +
-      128 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N / (L * b * k) +
-      32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤ 1 / 32 := by
-    have h13 : (1024 * D * C_pr) / ℓ +
-        (32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) / ℓ ≤ 1 / 128 := by
-      rw [← add_div, div_le_iff₀ hℓ0]; linarith only [hℓ_E]
-    linarith only [hE1, hE2, hE3, h13]
-  refine ⟨hsE, ?_⟩
-  -- Part 2: `hsU ≤ 1 / 4`
+  have h13 : (1024 * D * C_pr) / ℓ +
+      (32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) / ℓ ≤ 1 / 128 := by
+    rw [← add_div, div_le_iff₀ hℓ0]; linarith only [hℓ_E]
+  linarith only [hE1, hE2, hE3, h13]
+
+private lemma all_ratio_band_far_budget_UA {R N : ℕ}
+    {c ρ Sg₁ L ℓ K_c K_tot K_res : ℝ}
+    (hLdef : L = Real.log (N : ℝ)) (hℓdef : ℓ = 1 + Real.log L)
+    (hKc1 : 1 ≤ K_c) (hK_tot : 1 ≤ K_tot) (hK_res : 0 ≤ K_res)
+    (hL1 : 1 ≤ L) (hc1 : 1 ≤ c) (hcL : c ≤ L) (hc_up : c ≤ K_c * L ^ (1 / 8 : ℝ))
+    (hR1 : 1 ≤ R) (hRN : L ^ 18 * (R : ℝ) ^ 16 ≤ N)
+    (hlR_2L : 1 + Real.log (R : ℝ) ≤ 2 * L)
+    (hSg : Sg₁ ≤ 2 * K_tot * ℓ)
+    (hρ0 : 0 ≤ ρ) (hρ : ρ ≤ 2 * K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L)) :
+    bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetA R N c ≤
+      (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) * ℓ ^ 3 := by
+  have hL0 : 0 < L := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
+  have hℓ1 : 1 ≤ ℓ := by rw [hℓdef]; linarith [Real.log_nonneg hL1]
+  have hℓ0 : 0 < ℓ := zero_lt_one.trans_le hℓ1
+  have hR1R : (1 : ℝ) ≤ R := by exact_mod_cast hR1
+  have hN0 : (0 : ℝ) < N := lt_of_lt_of_le (by positivity) hRN
+  have h1c_ℓ : 1 + Real.log c ≤ ℓ := by rw [hℓdef]; linarith [Real.log_le_log hc0 hcL]
+  have h1c0 : 0 ≤ 1 + Real.log c := by linarith [Real.log_nonneg hc1]
+  have hc2_up : c ^ 2 ≤ K_c ^ 2 * L ^ (1 / 4 : ℝ) := by
+    have hp := pow_le_pow_left₀ hc0.le hc_up 2
+    rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
+    exact hp.trans_eq (by congr 2; push_cast; ring)
+  have hc4_up : c ^ 4 ≤ K_c ^ 4 * L ^ (1 / 2 : ℝ) := by
+    have hp := pow_le_pow_left₀ hc0.le hc_up 4
+    rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
+    exact hp.trans_eq (by congr 2; push_cast; ring)
+  have hlRL_sq : ((1 + Real.log (R : ℝ)) / L) ^ 2 ≤ 4 :=
+    (pow_le_pow_left₀ (by positivity) ((div_le_iff₀ hL0).mpr hlR_2L) 2).trans_eq (by norm_num)
+  have hρ_le : ρ ≤ 2 * K_res * K_c ^ 2 * ℓ ^ 3 := by
+    have hm1 := mul_le_mul hc2_up (pow_le_pow_left₀ h1c0 h1c_ℓ 3) (by positivity) (by positivity)
+    have hpow : L ^ (1 / 4 : ℝ) * L ^ (1 / 16 : ℝ) ≤ L := by
+      rw [← Real.rpow_add hL0]
+      exact (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
+    have hdiv1 : c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L ≤ K_c ^ 2 * ℓ ^ 3 := by
+      rw [div_le_iff₀ hL0]
+      have hm2 := mul_le_mul_of_nonneg_right hm1 (Real.rpow_nonneg hL0.le (1 / 16))
+      have hm3 : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ℓ ^ 3 * L ^ (1 / 16 : ℝ) ≤
+          K_c ^ 2 * ℓ ^ 3 * L := by
+        have := mul_le_mul_of_nonneg_left hpow (by positivity : 0 ≤ K_c ^ 2 * ℓ ^ 3)
+        linarith only [this, (by ring : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ℓ ^ 3 * L ^ (1 / 16 : ℝ) =
+          K_c ^ 2 * ℓ ^ 3 * (L ^ (1 / 4 : ℝ) * L ^ (1 / 16 : ℝ)))]
+      exact hm2.trans hm3
+    exact hρ.trans ((mul_le_mul_of_nonneg_left hdiv1
+      (mul_nonneg zero_le_two hK_res)).trans_eq (by ring))
+  have ht1 : ((1 + Real.log (R : ℝ)) / L) ^ 2 * ρ ≤ 8 * K_res * K_c ^ 2 * ℓ ^ 3 :=
+    (mul_le_mul hlRL_sq hρ_le hρ0 (by norm_num)).trans_eq (by ring)
+  have hR15 : (R : ℝ) ^ 15 / N ≤ 1 := by
+    rw [div_le_one hN0]
+    have h1 : (R : ℝ) ^ 15 ≤ (R : ℝ) ^ 16 := pow_le_pow_right₀ hR1R (by norm_num)
+    have h2 : (R : ℝ) ^ 16 ≤ L ^ 18 * (R : ℝ) ^ 16 :=
+      le_mul_of_one_le_left (by positivity) (one_le_pow₀ hL1)
+    linarith only [h1, h2, hRN]
+  have ht2 : c ^ 2 * (24 + 780 * Sg₁ + 72 * (R : ℝ) ^ 15 / N) / L ≤
+      K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 := by
+    have hcoef : 24 + 780 * Sg₁ + 72 * (R : ℝ) ^ 15 / N ≤ (1560 * K_tot + 96) * ℓ := by
+      have h72 : 72 * (R : ℝ) ^ 15 / N ≤ 72 := by rw [mul_div_assoc]; linarith only [hR15]
+      linarith only [hSg, h72, hℓ1]
+    have hm := mul_le_mul hc2_up hcoef (by positivity) (by positivity)
+    have hL14 : L ^ (1 / 4 : ℝ) ≤ L :=
+      (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
+    have hℓ_3 : ℓ ≤ ℓ ^ 3 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 3)
+    rw [div_le_iff₀ hL0]
+    have hm2 := mul_le_mul hL14 hℓ_3 hℓ0.le hL0.le
+    have hm3 := mul_le_mul_of_nonneg_left hm2 (by positivity : 0 ≤ K_c ^ 2 * (1560 * K_tot + 96))
+    linarith only [hm, hm3,
+      (by ring : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ((1560 * K_tot + 96) * ℓ) =
+        K_c ^ 2 * (1560 * K_tot + 96) * (L ^ (1 / 4 : ℝ) * ℓ)),
+      (by ring : K_c ^ 2 * (1560 * K_tot + 96) * (L * ℓ ^ 3) =
+        K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 * L)]
+  have ht3 : c ^ 4 * (1 + Real.log c) / L ≤ K_c ^ 4 * ℓ ^ 3 := by
+    rw [div_le_iff₀ hL0]
+    have hm := mul_le_mul hc4_up h1c_ℓ h1c0 (by positivity)
+    have hL12 : L ^ (1 / 2 : ℝ) ≤ L :=
+      (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
+    have hℓ_3 : ℓ ≤ ℓ ^ 3 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 3)
+    have hm2 := mul_le_mul_of_nonneg_left (mul_le_mul hL12 hℓ_3 hℓ0.le hL0.le)
+      (by positivity : 0 ≤ K_c ^ 4)
+    linarith only [hm, hm2, (by ring : K_c ^ 4 * L ^ (1 / 2 : ℝ) * ℓ =
+      K_c ^ 4 * (L ^ (1 / 2 : ℝ) * ℓ)),
+      (by ring : K_c ^ 4 * (L * ℓ ^ 3) = K_c ^ 4 * ℓ ^ 3 * L)]
+  have ht4 : c ^ 3 * (R : ℝ) ^ 2 * (L / N) ≤ ℓ ^ 3 := by
+    have hc3 : c ^ 3 * (R : ℝ) ^ 2 * L / N ≤ 1 := by
+      rw [div_le_one hN0]
+      have hRN' : c ^ 3 * (R : ℝ) ^ 2 * L ≤ L ^ 18 * (R : ℝ) ^ 16 := by
+        have hc3L : c ^ 3 * L ≤ L ^ 18 := by
+          calc c ^ 3 * L ≤ L ^ 3 * L :=
+                mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hc0.le hcL 3) hL0.le
+            _ = L ^ 4 := by ring
+            _ ≤ L ^ 18 := pow_le_pow_right₀ hL1 (by norm_num)
+        have hR2 : (R : ℝ) ^ 2 ≤ (R : ℝ) ^ 16 := pow_le_pow_right₀ hR1R (by norm_num)
+        exact (by ring : c ^ 3 * (R : ℝ) ^ 2 * L = (c ^ 3 * L) * (R : ℝ) ^ 2).trans_le
+          (mul_le_mul hc3L hR2 (sq_nonneg _) (by positivity))
+      exact hRN'.trans hRN
+    have hid : c ^ 3 * (R : ℝ) ^ 2 * (L / N) = c ^ 3 * (R : ℝ) ^ 2 * L / N := by ring
+    rw [hid]; exact hc3.trans (one_le_pow₀ hℓ1)
+  have ht5 : 2 * bandFarBudgetA R N c ≤ 2 * ℓ ^ 3 := by
+    unfold bandFarBudgetA; rw [← hLdef]
+    have h1L_1 : 1 / L ≤ (1 : ℝ) := (div_le_one hL0).mpr hL1
+    have hb := cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN h1L_1 (i := 2) (j := 5)
+      (by norm_num) (by norm_num)
+    have hN1R : (1 : ℝ) ≤ N :=
+      le_trans (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hL1) (one_le_pow₀ hR1R)) hRN
+    have hden : (N : ℝ) ≤ (N : ℝ) ^ 2 * L :=
+      (le_self_pow₀ hN1R two_ne_zero).trans (le_mul_of_one_le_right (sq_nonneg _) hL1)
+    have hb' : c ^ 2 * (R : ℝ) ^ 5 / ((N : ℝ) ^ 2 * L) ≤ 1 :=
+      (div_le_div_of_nonneg_left (by positivity) hN0 hden).trans hb
+    linarith only [hb', one_le_pow₀ hℓ1 (n := 3)]
+  unfold bandFarBudgetU; rw [← hLdef]
+  linarith only [ht1, ht2, ht3, ht4, ht5,
+    (by ring : (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) * ℓ ^ 3 =
+      8 * K_res * K_c ^ 2 * ℓ ^ 3 + K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 +
+        K_c ^ 4 * ℓ ^ 3 + ℓ ^ 3 + 2 * ℓ ^ 3)]
+
+private lemma all_ratio_band_far_budgets {R M N : ℕ}
+    {c ρ Sg₁ k b L ℓ D CB K_c M_bk C_pr C_up C_upT C_np K_tot K_res : ℝ}
+    (hLdef : L = Real.log (N : ℝ)) (hℓdef : ℓ = 1 + Real.log L)
+    (hk_def : k = L / (2 * D * ℓ ^ 6))
+    (hbk_ub : c ^ 7 / (b * k) ≤ M_bk * ℓ / L ^ (1 / 8 : ℝ))
+    (hD : 0 < D) (hCpr : 0 < C_pr) (hCup : 0 ≤ C_up) (hCupT : 0 ≤ C_upT)
+    (hCnp : 0 ≤ C_np) (hCB0 : 0 ≤ CB) (hKc1 : 1 ≤ K_c) (hMbk0 : 0 ≤ M_bk)
+    (hK_tot : 1 ≤ K_tot) (hK_res : 0 ≤ K_res)
+    (hL1 : 1 ≤ L) (hc1 : 1 ≤ c) (hcL : c ≤ L) (hc_up : c ≤ K_c * L ^ (1 / 8 : ℝ))
+    (hk_pos : 0 < k) (hb_pos : 0 < b)
+    (hR1 : 1 ≤ R) (hMN : M ≤ N) (hRN : L ^ 18 * (R : ℝ) ^ 16 ≤ N)
+    (hlR : 1 + Real.log (R : ℝ) ≤ 2 * L / ℓ ^ 5)
+    (hTPC : terminalPacketCost R M N ≤ CB * (1 + Real.log c))
+    (hNM : (N : ℝ) / M ≤ 2 * (256 * Real.exp 2 + 4) * c)
+    (hSg : Sg₁ ≤ 2 * K_tot * ℓ) (hSg0 : 0 ≤ Sg₁)
+    (hρ0 : 0 ≤ ρ) (hρ : ρ ≤ 2 * K_res * (c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L))
+    (hℓ_E : 128 * (1024 * D * C_pr + 32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) ≤ ℓ)
+    (hL8_E2 : 128 * (256 * C_pr * CB * M_bk) ≤ L ^ (1 / 8 : ℝ))
+    (hU_small :
+      (1024 * D * C_pr + 512 * C_pr * M_bk +
+        32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
+        256 * D * C_up * K_c ^ 2 +
+        256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk) * ℓ ^ 7 ≤
+      (1 / 8 : ℝ) * L ^ (1 / 8 : ℝ)) :
+    (128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (Real.log (N : ℝ) * k) +
+      128 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N /
+        (Real.log (N : ℝ) * b * k) +
+      32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k) ≤ 1 / 32) ∧
+    (256 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N : ℝ) * k) +
+      256 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N : ℝ) * b * k) +
+      32 * c ^ 7 * C_np * (bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetG R N c Sg₁ +
+        2 * bandFarBudgetA R N c) / (b * k) +
+      128 * C_up * c ^ 2 * (1 + Real.log c) / k +
+      128 * c ^ 7 * C_upT * c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) /
+        (Real.log (N : ℝ) * b * k) ≤ 1 / 4) := by
+  have hsE_raw := all_ratio_band_far_budget_E hLdef hℓdef hk_def hbk_ub hD hCpr hCnp hCB0 hKc1
+    hMbk0 hK_tot hL1 hc1 hcL hc_up hk_pos hb_pos hR1 hMN hRN hlR hTPC hSg hSg0 hℓ_E hL8_E2
+  refine ⟨hsE_raw, ?_⟩
+  rw [← hLdef] at hsE_raw ⊢
+  have hL0 : 0 < L := zero_lt_one.trans_le hL1
+  have hc0 : 0 < c := zero_lt_one.trans_le hc1
+  have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
+  have hℓ1 : 1 ≤ ℓ := by rw [hℓdef]; linarith [Real.log_nonneg hL1]
+  have hℓ0 : 0 < ℓ := zero_lt_one.trans_le hℓ1
+  have hlR_2L : 1 + Real.log (R : ℝ) ≤ 2 * L :=
+    hlR.trans (div_le_self (by positivity) (one_le_pow₀ hℓ1))
+  have h1c_ℓ : 1 + Real.log c ≤ ℓ := by rw [hℓdef]; linarith [Real.log_le_log hc0 hcL]
+  have h1c0 : 0 ≤ 1 + Real.log c := by linarith [Real.log_nonneg hc1]
+  have hL8_pos : 0 < L ^ (1 / 8 : ℝ) := Real.rpow_pos_of_pos hL0 _
+  have hLk : L * k = L ^ 2 / (2 * D * ℓ ^ 6) := by rw [hk_def]; ring
+  have h1k : 1 / k = 2 * D * ℓ ^ 6 / L := by rw [hk_def]; field_simp [hL0.ne', hD.ne', hℓ0.ne']
   have hU3G : 32 * c ^ 7 * C_np * (2 * bandFarBudgetG R N c Sg₁) / (b * k) ≤ 1 / 16 := by
     have hTPC0 : 0 ≤ terminalPacketCost R M N := terminalPacketCost_nonneg R hMN
     have he1_0 : 0 ≤ 128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (L * k) := by positivity
     have he2_0 : 0 ≤ 128 * c ^ 7 * C_pr * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N /
         (L * b * k) := by positivity
-    linarith only [hsE, he1_0, he2_0,
+    linarith only [hsE_raw, he1_0, he2_0,
       (by ring : 32 * c ^ 7 * C_np * (2 * bandFarBudgetG R N c Sg₁) / (b * k) =
         2 * (32 * c ^ 7 * C_np * bandFarBudgetG R N c Sg₁ / (b * k)))]
   have hinvL_L8 : 1 / L ≤ 1 / L ^ (1 / 8 : ℝ) :=
@@ -2323,10 +2467,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     have hp := pow_le_pow_left₀ hc0.le hc_up 3
     rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
     exact hp.trans_eq (by congr 2; push_cast; ring)
-  have hc4_up : c ^ 4 ≤ K_c ^ 4 * L ^ (1 / 2 : ℝ) := by
-    have hp := pow_le_pow_left₀ hc0.le hc_up 4
-    rw [mul_pow, ← Real.rpow_natCast (L ^ _), ← Real.rpow_mul hL0.le] at hp
-    exact hp.trans_eq (by congr 2; push_cast; ring)
+  have hbk0 : 0 ≤ c ^ 7 / (b * k) := div_nonneg (pow_nonneg hc0.le 7) (mul_pos hb_pos hk_pos).le
   have hU1 : 256 * C_pr * (1 + Real.log (R : ℝ)) / (L * k) ≤
       1024 * D * C_pr * ℓ ^ 7 / L ^ (1 / 8 : ℝ) := by
     have hℓ6_7 : ℓ ^ 6 ≤ ℓ ^ 7 := pow_le_pow_right₀ hℓ1 (by norm_num)
@@ -2347,7 +2488,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     have hℓ1_7 : ℓ ≤ ℓ ^ 7 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 7)
     rw [hid]
     have hm := mul_le_mul_of_nonneg_left
-      (mul_le_mul hRL hbk_ub (by positivity) zero_le_two) (by positivity : 0 ≤ 256 * C_pr)
+      (mul_le_mul hRL hbk_ub hbk0 zero_le_two) (by positivity : 0 ≤ 256 * C_pr)
     calc 256 * C_pr * ((1 + Real.log (R : ℝ)) / L) * (c ^ 7 / (b * k))
         ≤ 256 * C_pr * (2 * (M_bk * ℓ / L ^ (1 / 8 : ℝ))) := by
             linarith only [hm, (by ring : 256 * C_pr * (((1 + Real.log (R : ℝ)) / L) *
@@ -2355,105 +2496,19 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
       _ = 512 * C_pr * M_bk * (ℓ / L ^ (1 / 8 : ℝ)) := by ring
       _ ≤ 512 * C_pr * M_bk * ℓ ^ 7 / L ^ (1 / 8 : ℝ) := by
             rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_left
-              (div_le_div_of_nonneg_right hℓ1_7 hL8_pos.le) (by positivity)
-  have hUA_ub : bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetA R N c ≤
-      (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) * ℓ ^ 3 := by
-    have hlRL_sq : ((1 + Real.log (R : ℝ)) / L) ^ 2 ≤ 4 :=
-      (pow_le_pow_left₀ (by positivity) ((div_le_iff₀ hL0).mpr hlR_2L) 2).trans_eq (by norm_num)
-    have hρ_le : ρ ≤ 2 * K_res * K_c ^ 2 * ℓ ^ 3 := by
-      have hm1 := mul_le_mul hc2_up (pow_le_pow_left₀ h1c0 h1c_ℓ 3) (by positivity) (by positivity)
-      have hpow : L ^ (1 / 4 : ℝ) * L ^ (1 / 16 : ℝ) ≤ L := by
-        rw [← Real.rpow_add hL0]
-        exact (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
-      have hdiv1 : c ^ 2 * (1 + Real.log c) ^ 3 * L ^ (1 / 16 : ℝ) / L ≤ K_c ^ 2 * ℓ ^ 3 := by
-        rw [div_le_iff₀ hL0]
-        have hm2 := mul_le_mul_of_nonneg_right hm1 (Real.rpow_nonneg hL0.le (1 / 16))
-        have hm3 : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ℓ ^ 3 * L ^ (1 / 16 : ℝ) ≤
-            K_c ^ 2 * ℓ ^ 3 * L := by
-          have := mul_le_mul_of_nonneg_left hpow (by positivity : 0 ≤ K_c ^ 2 * ℓ ^ 3)
-          linarith only [this, (by ring : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ℓ ^ 3 * L ^ (1 / 16 : ℝ) =
-            K_c ^ 2 * ℓ ^ 3 * (L ^ (1 / 4 : ℝ) * L ^ (1 / 16 : ℝ)))]
-        exact hm2.trans hm3
-      exact hρ.trans ((mul_le_mul_of_nonneg_left hdiv1 (by positivity : 0 ≤ 2 * K_res)).trans_eq (by ring))
-    have ht1 : ((1 + Real.log (R : ℝ)) / L) ^ 2 * ρ ≤ 8 * K_res * K_c ^ 2 * ℓ ^ 3 :=
-      (mul_le_mul hlRL_sq hρ_le hρ0 (by norm_num)).trans_eq (by ring)
-    have hR15 : (R : ℝ) ^ 15 / N ≤ 1 := by
-      rw [div_le_one hN0]
-      have h1 : (R : ℝ) ^ 15 ≤ (R : ℝ) ^ 16 := pow_le_pow_right₀ hR1R (by norm_num)
-      have h2 : (R : ℝ) ^ 16 ≤ L ^ 18 * (R : ℝ) ^ 16 :=
-        le_mul_of_one_le_left (by positivity) (one_le_pow₀ hL1)
-      linarith only [h1, h2, hRN]
-    have ht2 : c ^ 2 * (24 + 780 * Sg₁ + 72 * (R : ℝ) ^ 15 / N) / L ≤
-        K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 := by
-      have hcoef : 24 + 780 * Sg₁ + 72 * (R : ℝ) ^ 15 / N ≤ (1560 * K_tot + 96) * ℓ := by
-        have h72 : 72 * (R : ℝ) ^ 15 / N ≤ 72 := by rw [mul_div_assoc]; linarith only [hR15]
-        linarith only [hSg, h72, hℓ1]
-      have hm := mul_le_mul hc2_up hcoef (by positivity) (by positivity)
-      have hL14 : L ^ (1 / 4 : ℝ) ≤ L :=
-        (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
-      have hℓ_3 : ℓ ≤ ℓ ^ 3 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 3)
-      rw [div_le_iff₀ hL0]
-      have hm2 := mul_le_mul hL14 hℓ_3 hℓ0.le hL0.le
-      have hm3 := mul_le_mul_of_nonneg_left hm2 (by positivity : 0 ≤ K_c ^ 2 * (1560 * K_tot + 96))
-      linarith only [hm, hm3,
-        (by ring : K_c ^ 2 * L ^ (1 / 4 : ℝ) * ((1560 * K_tot + 96) * ℓ) =
-          K_c ^ 2 * (1560 * K_tot + 96) * (L ^ (1 / 4 : ℝ) * ℓ)),
-        (by ring : K_c ^ 2 * (1560 * K_tot + 96) * (L * ℓ ^ 3) =
-          K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 * L)]
-    have ht3 : c ^ 4 * (1 + Real.log c) / L ≤ K_c ^ 4 * ℓ ^ 3 := by
-      rw [div_le_iff₀ hL0]
-      have hm := mul_le_mul hc4_up h1c_ℓ h1c0 (by positivity)
-      have hL12 : L ^ (1 / 2 : ℝ) ≤ L :=
-        (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)).trans_eq (Real.rpow_one L)
-      have hℓ_3 : ℓ ≤ ℓ ^ 3 := by simpa only [pow_one] using pow_le_pow_right₀ hℓ1 (by norm_num : 1 ≤ 3)
-      have hm2 := mul_le_mul_of_nonneg_left (mul_le_mul hL12 hℓ_3 hℓ0.le hL0.le)
-        (by positivity : 0 ≤ K_c ^ 4)
-      linarith only [hm, hm2, (by ring : K_c ^ 4 * L ^ (1 / 2 : ℝ) * ℓ =
-        K_c ^ 4 * (L ^ (1 / 2 : ℝ) * ℓ)),
-        (by ring : K_c ^ 4 * (L * ℓ ^ 3) = K_c ^ 4 * ℓ ^ 3 * L)]
-    have ht4 : c ^ 3 * (R : ℝ) ^ 2 * (L / N) ≤ ℓ ^ 3 := by
-      have hc3 : c ^ 3 * (R : ℝ) ^ 2 * L / N ≤ 1 := by
-        rw [div_le_one hN0]
-        have hRN' : c ^ 3 * (R : ℝ) ^ 2 * L ≤ L ^ 18 * (R : ℝ) ^ 16 := by
-          have hc3L : c ^ 3 * L ≤ L ^ 18 := by
-            calc c ^ 3 * L ≤ L ^ 3 * L :=
-                  mul_le_mul_of_nonneg_right (pow_le_pow_left₀ hc0.le hcL 3) hL0.le
-              _ = L ^ 4 := by ring
-              _ ≤ L ^ 18 := pow_le_pow_right₀ hL1 (by norm_num)
-          have hR2 : (R : ℝ) ^ 2 ≤ (R : ℝ) ^ 16 := pow_le_pow_right₀ hR1R (by norm_num)
-          exact (by ring : c ^ 3 * (R : ℝ) ^ 2 * L = (c ^ 3 * L) * (R : ℝ) ^ 2).trans_le
-            (mul_le_mul hc3L hR2 (sq_nonneg _) (by positivity))
-        exact hRN'.trans hRN
-      have hid : c ^ 3 * (R : ℝ) ^ 2 * (L / N) = c ^ 3 * (R : ℝ) ^ 2 * L / N := by ring
-      rw [hid]; exact hc3.trans (one_le_pow₀ hℓ1)
-    have ht5 : 2 * bandFarBudgetA R N c ≤ 2 * ℓ ^ 3 := by
-      unfold bandFarBudgetA; rw [← hLdef]
-      have h1L_1 : 1 / L ≤ (1 : ℝ) := (div_le_one hL0).mpr hL1
-      have hb := cpow_Rpow_div_le hL1 hc0.le hcL hR1R hRN h1L_1 (i := 2) (j := 5)
-        (by norm_num) (by norm_num)
-      have hN1R : (1 : ℝ) ≤ N :=
-        le_trans (one_le_mul_of_one_le_of_one_le (one_le_pow₀ hL1) (one_le_pow₀ hR1R)) hRN
-      have hden : (N : ℝ) ≤ (N : ℝ) ^ 2 * L :=
-        (le_self_pow₀ hN1R two_ne_zero).trans (le_mul_of_one_le_right (sq_nonneg _) hL1)
-      have hb' : c ^ 2 * (R : ℝ) ^ 5 / ((N : ℝ) ^ 2 * L) ≤ 1 :=
-        (div_le_div_of_nonneg_left (by positivity) hN0 hden).trans hb
-      linarith only [hb', one_le_pow₀ hℓ1 (n := 3)]
-    unfold bandFarBudgetU; rw [← hLdef]
-    linarith only [ht1, ht2, ht3, ht4, ht5,
-      (by ring : (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) * ℓ ^ 3 =
-        8 * K_res * K_c ^ 2 * ℓ ^ 3 + K_c ^ 2 * (1560 * K_tot + 96) * ℓ ^ 3 +
-          K_c ^ 4 * ℓ ^ 3 + ℓ ^ 3 + 2 * ℓ ^ 3)]
+              (div_le_div_of_nonneg_right hℓ1_7 hL8_pos.le)
+              (mul_nonneg (by positivity) hMbk0)
+  have hUA_ub := all_ratio_band_far_budget_UA hLdef hℓdef hKc1 hK_tot hK_res hL1 hc1 hcL hc_up
+    hR1 hRN hlR_2L hSg hρ0 hρ
   have hU3UA : 32 * c ^ 7 * C_np * (bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetA R N c) /
       (b * k) ≤
       32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) *
         ℓ ^ 7 / L ^ (1 / 8 : ℝ) := by
-    have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
     have hCcoef0 : 0 ≤ 8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3 :=
       add_nonneg (add_nonneg (add_nonneg
-        (mul_nonneg (mul_nonneg (by norm_num) hK_res) (sq_nonneg K_c))
+        (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 8) hK_res) (sq_nonneg K_c))
         (mul_nonneg (sq_nonneg K_c) (by linarith only [hK_tot]))) (pow_nonneg hKc0.le 4))
         (by norm_num)
-    have hbk0 : 0 ≤ c ^ 7 / (b * k) := div_nonneg (pow_nonneg hc0.le 7) (mul_pos hb_pos hk_pos).le
     have hid : 32 * c ^ 7 * C_np * (bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetA R N c) /
         (b * k) = 32 * C_np * ((bandFarBudgetU R N c ρ Sg₁ + 2 * bandFarBudgetA R N c) *
           (c ^ 7 / (b * k))) := by ring
@@ -2470,10 +2525,10 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     rw [hid2]
     exact div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hℓ4_7
-        (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hCnp) hMbk0) hCcoef0)) hL8_pos.le
+        (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 32) hCnp) hMbk0) hCcoef0))
+      hL8_pos.le
   have hU4 : 128 * C_up * c ^ 2 * (1 + Real.log c) / k ≤
       256 * D * C_up * K_c ^ 2 * ℓ ^ 7 / L ^ (1 / 8 : ℝ) := by
-    have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
     have hid : 128 * C_up * c ^ 2 * (1 + Real.log c) / k =
         128 * C_up * (c ^ 2 * (1 + Real.log c)) * (1 / k) := by ring
     rw [hid, h1k]
@@ -2495,13 +2550,12 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
         (256 * D * C_up * K_c ^ 2 * ℓ ^ 7) * (L ^ (1 / 4 : ℝ) / L) := by ring
     rw [hid2]
     exact (mul_le_mul_of_nonneg_left hdiv
-      (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hD.le) hCup)
+      (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 256) hD.le) hCup)
         (sq_nonneg K_c)) (pow_nonneg hℓ0.le 7))).trans_eq (by ring)
   have hU5 : 128 * c ^ 7 * C_upT * c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) / (L * b * k) ≤
       256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk * ℓ ^ 7 / L ^ (1 / 8 : ℝ) := by
-    have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
-    have hKexp0 : 0 ≤ 256 * Real.exp 2 + 4 := add_nonneg (mul_nonneg (by norm_num) (Real.exp_pos 2).le) (by norm_num)
-    have hbk0 : 0 ≤ c ^ 7 / (b * k) := div_nonneg (pow_nonneg hc0.le 7) (mul_pos hb_pos hk_pos).le
+    have hKexp0 : 0 ≤ 256 * Real.exp 2 + 4 :=
+      add_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 256) (Real.exp_pos 2).le) (by norm_num)
     have hnum : c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) / L ≤
         2 * (256 * Real.exp 2 + 4) * K_c ^ 3 * ℓ := by
       have h1 : c ^ 2 * ((N : ℝ) / M) * (1 + Real.log c) ≤
@@ -2536,7 +2590,7 @@ private lemma all_ratio_band_far_budgets {R M N : ℕ}
     rw [hid2]
     exact div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hℓ2_7
-        (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hCupT) hKexp0)
+        (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 256) hCupT) hKexp0)
           (pow_nonneg hKc0.le 3)) hMbk0)) hL8_pos.le
   have hsplit3 : 32 * c ^ 7 * C_np * (bandFarBudgetU R N c ρ Sg₁ +
       2 * bandFarBudgetG R N c Sg₁ + 2 * bandFarBudgetA R N c) / (b * k) =
@@ -2769,7 +2823,7 @@ private lemma all_ratio_band0_band1_scalars {N Q₁ R₀ : ℕ}
           (by ring : C_band1 * c ^ 2 * (1 + Real.log c) = C_band1 * (c ^ 2 * (1 + Real.log c)))]
     have hκ_Lh : 8 * (κ₀ + 3) ≤ Lh := by
       have hsq : (8 * (κ₀ + 3)) ^ 2 ≤ Lh * Lh := hLh_sq ▸ hL_Lh_gap
-      nlinarith only [hsq, hLh0, hκ₀]
+      exact (abs_le.mp (abs_le_of_sq_le_sq' (hsq.trans_eq (sq Lh).symm) hLh0.le)).2
     linarith only [hc2_Lh, hκ_Lh, hlogR₀_lb]
   exact ⟨hout1, hout2, hout3, hout4⟩
 

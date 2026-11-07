@@ -25,9 +25,10 @@ namespace `CubicEisenstein`: `kernelSpectralFormOperator_isFredholm` and
 `kernel_theta_spectral_fredholm`. Direct source and transitive audits use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
-This does not assert a nonzero kernel at `8/9`.
-[Meromorphic inversion](cubic-meromorphic-resolvent.md) is formalized.
-Source matching, Fourier identification, and residue nonvanishing remain
-on the parent card. Spectral estimates adapt OpenAI's
+[Meromorphic inversion](cubic-meromorphic-resolvent.md),
+[initial source matching](cubic-initial-resolvent-matching.md), and the
+[nonzero residual eigenvector](cubic-constant-term-nonvanishing.md) are formalized.
+Gauss-coefficient identification remains on the parent card.
+Spectral estimates adapt OpenAI's
 `Eisenstein/FredholmAlternative.lean`; compact-operator closure reuses the
 existing local corpus theorem.

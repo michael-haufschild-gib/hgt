@@ -11,6 +11,10 @@ import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountM
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountEstimate
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountCarries
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountRiesz
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountEuler
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountProfile
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.ComplementaryRotationAverages
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountProfileBridge
 
 /-!
 # Sum-product arithmetic of the logarithm
@@ -19,4 +23,3 @@ Integer translation against multiplicative logarithmic phases: exact product
 collisions, finite-resolution reconstruction, and integer winding information.
 See `SumProductArithmeticOfTheLogarithm/README.md` for the mathematical programme.
 -/
-import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountEuler

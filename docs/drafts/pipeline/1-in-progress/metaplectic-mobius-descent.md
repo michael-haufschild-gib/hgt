@@ -93,10 +93,11 @@ to every compact quotient set. The [actual exterior coercivity estimate](../3-fo
 is formalized with compact error map.
 The [meromorphic resolvent](../3-formalized/cubic-meromorphic-resolvent.md)
 is constructed at spectral value `8/9`, hence at Eisenstein parameter
-`4/3`; its possible pole does not yet prove a nonzero theta residue.
-The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.md)
-is now identified as `(17/6)MPM*F(4/3)`, globally in `L²` and after compact
-restriction of the corrected seed. Nonvanishing remains unproved locally.
+`4/3`. The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.md)
+is identified as `(17/6)MPM*F(4/3)`, globally in `L²` and after compact
+restriction of the corrected seed. [Initial source matching](../3-formalized/cubic-initial-resolvent-matching.md)
+and [constant-term nonvanishing](../3-formalized/cubic-constant-term-nonvanishing.md)
+prove that the actual residue is a nonzero `8/9` Laplace eigenvector.
 
 Cubic theta identification, cube removal, and uniform transfer estimates
 remain open locally.

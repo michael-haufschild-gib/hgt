@@ -33,7 +33,7 @@ Corpus checkpoint: commit `1500534c93` plus the working tree of 2026-11-07.
 | Zeros are the power-law kernel of the cut system; finite-energy kernel mass annihilation ⇒ RH | [L] | the Nyman–Beurling criterion read from the dual side |
 | ζ is isolated: FE defect `≤1/6400`, count distance `o(log n)`, exact parity identity | [L] | any stable argument in these metrics is about ζ alone |
 | Universal damping is not forced by waves, flux, unitarity, Hecke, or the functional equation at genus two; the count law forces it at genus one | [L] | the separating property is a count |
-| Necessary mollifier length `exp(c log²T)` = Euler mollification over primes `≤c log²T` = start of absolute non-alignment | [L]/[D] | the near-line wall and the dark range are one wall |
+| Necessary mollifier length `exp(c log²T)` = length of an Euler mollifier over primes `≤c log²T`, where absolute non-alignment starts | [L]/[D] | the near-line wall and the dark range are one wall |
 
 ## 1. Mechanism classes
 
@@ -140,7 +140,7 @@ Routes: WD, CTF, MC, TG; census. Programmes: CDG, APR, MZF, AIF.
 
 Established [L]: Selberg CLT and prime field; cameras, hyperbolic density theorem, `N(ρ)=exp(−ΣG)`; box budgets and Carleson measure; eight-way log-mean equivalence, Abel form ⇔ depth density `o(T)`; necessary-length laws (near-unit moments need `log N≥log²T/(6K₀)`); last-scale floor; long-moment slope, one-window and positive-proportion forms; Möbius zero condensation; dilation identity: RH ⇔ zero surplus ⇔ Szegő budget ratio equality, Euler prefixes invariant, Dirichlet Gram = Abel squares = Laguerre energy.
 
-Structure [D]: an Euler mollifier over primes `≤y` has length `e^{θ(y)}`, so the necessary length is Euler mollification over primes up to `≈c log²T`, the same scale where prime phases become absolutely non-aligned (S11). The near-line wall is the dark range.
+Structure [D]: an Euler mollifier over primes `≤y` has length `e^{θ(y)}`, so the necessary length is that of an Euler mollifier over primes up to `≈c log²T`, the same scale where prime phases become absolutely non-aligned (S11). The near-line wall is the dark range.
 
 | | Obstacle | Strength |
 |---|---|---|

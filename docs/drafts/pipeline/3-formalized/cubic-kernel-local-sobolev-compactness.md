@@ -29,7 +29,9 @@ Both direct source audits and transitive theorem audits pass with only
 smooth cutoff cover, Euclidean Rellich theorem, and localization estimates
 are proved inputs. No compactness assumption remains in this endpoint.
 
-Exterior coercivity, residual theta, and arithmetic descent remain open.
+[Exterior coercivity](cubic-quotient-exterior-coercivity.md) and a
+[nonzero residual eigenvector](cubic-constant-term-nonvanishing.md) are formalized.
+Gauss-coefficient identification and arithmetic descent remain open.
 Adapted from OpenAI `CubicSieve/ReopenedFibers.lean` and
 `Eisenstein/CompactEnergyFamilies.lean`. The final compact domination and
 measurable restriction maps reuse corpus theorems.

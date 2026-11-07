@@ -327,3 +327,11 @@ CubicAdmissibleResidueCounts adapts CubicSieve/ConjugateProfiles.lean affine res
 CubicIdealTotients adapts Eisenstein/RamifiedNormWeights.lean ideal-totient cardinality identities.
 CubicIdealMobiusInversion adapts Arithmetic/IdealMobius.lean and Eisenstein/RamifiedNormWeights.lean divisor inversion and totient convolution.
 CubicPrimaryIdealGenerators adapts Arithmetic/IdealMobius.lean primary ideal generators and GaussSum/ReflectionBrackets.lean unramified support, reusing the local Jacobi-sum generators.
+CubicUnramifiedZetaSeries adapts Eisenstein/RamifiedNormWeights.lean unramified norm-weight convergence and Möbius inversion.
+CubicCubeDenominators adapts CubicSieve/FrequencyCutoffs.lean ramified factorization and cube-column parametrization.
+TheCubicConstantDirichletSeries adapts Eisenstein/ConstantDirichletSeries.lean cube-support summation and the constant-term zeta quotient.
+TheCubicConstantTermPole adapts QuadraticSieve/DyadicColumns.lean Dedekind-zeta comparison and constant scattering residue.
+CubicCuspConstantAverages adapts Eisenstein/CuspResidues.lean compact cusp averages and their nonzero residue.
+TheCubicResidueIsNonzero adapts Eisenstein/CuspResidues.lean residual-vector nonvanishing, with the local initial resolvent matching theorem discharging the source identity.
+TheCubicResidualCharacter adapts Eisenstein/ConjugateLevelAction.lean quotient actions and continuation of the cubic character.
+CubicWhittakerAverages adapts Eisenstein/ScatteringCoefficients.lean Whittaker parameter-integral bounds and differentiation.

@@ -31,4 +31,6 @@ Lean checks. The endpoints `kernelEisensteinResidueVector_limit`,
 `Classical.choice`, and `Quot.sound`; namespace `CubicEisenstein`.
 
 Adapted from OpenAI's meromorphic-resolvent and seed-height arguments.
-Source matching and residue nonvanishing remain open on the parent card.
+[Initial source matching](cubic-initial-resolvent-matching.md) and
+[nonvanishing of the canonical residue](cubic-constant-term-nonvanishing.md)
+are also formalized.

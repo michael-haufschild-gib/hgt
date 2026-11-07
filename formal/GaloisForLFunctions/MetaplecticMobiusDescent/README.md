@@ -378,6 +378,40 @@ identity from squarefree prime support.
 generators of unramified ideals from the actual Jacobi-sum prime generators,
 with span and norm identities and exact exclusion of ramified factors.
 
+`CubicUnramifiedZetaSeries.lean` proves absolute convergence and nonvanishing
+of the unramified ideal zeta series for Re s > 1 by its Möbius inverse, and
+expresses the totient series as Z₀(s−1)/Z₀(s) for Re s > 2.
+
+`CubicCubeDenominators.lean` parametrizes nonzero ideals by ramified valuation
+and unramified part, then classifies cube denominators by a sign, ramified
+exponent, and primary ideal generator, with exact residue and norm weights.
+
+`TheCubicConstantDirichletSeries.lean` proves absolute convergence of the
+constant scattering series for Re s > 4/3 and evaluates it as
+(2/V)/(3^(3s−3)−1) times Z₀(3s−3)/Z₀(3s−2), fixing the actual constant Fourier
+coefficient.
+
+`TheCubicConstantTermPole.lean` identifies the unramified zeta series with
+(1−3^(−s))ζ_K(s) and proves the nonzero one-sided residue of the constant
+scattering coefficient at 4/3 from the Dedekind-zeta residue.
+
+`CubicCuspConstantAverages.lean` computes the actual Eisenstein average over a
+compact cusp strip and proves its nonzero residue limit from the constant
+term, using the hyperbolic volume density and explicit height integrals.
+
+`TheCubicResidueIsNonzero.lean` proves that the actual cubic Eisenstein
+residue is nonzero and satisfies the 8/9 Laplace eigenvalue equation, by
+initial source matching, analytic uniqueness, and its nonzero compact cusp
+average.
+
+`TheCubicResidualCharacter.lean` constructs measure-preserving level-three
+actions on the kernel quotient and unitary L² pullbacks, then proves that the
+actual nonzero residual vector transforms by the cubic character.
+
+`CubicWhittakerAverages.lean` proves holomorphy of compact cusp Whittaker
+averages throughout Re s > 1 by a product-integral majorant that absorbs the
+parameter derivative logarithm.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.
