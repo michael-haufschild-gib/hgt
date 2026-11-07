@@ -458,10 +458,10 @@ theorem integrableOn_cexp_mul_w {s : ℂ} (hs : 1 < s.re) :
 /-- The real Laplace integrand `e^{-σu} w(u)` is integrable on `(0, ∞)` for `σ > 1`. -/
 theorem integrableOn_exp_mul_w {σ : ℝ} (hσ : 1 < σ) :
     IntegrableOn (fun u : ℝ => Real.exp (-(σ * u)) * P.w u) (Ioi 0) := by
-  have h := (P.integrableOn_cexp_mul_w (s := (σ : ℂ)) (by simpa using hσ)).re
+  have h : IntegrableOn (fun u : ℝ => RCLike.re (cexp (-((σ : ℂ) * u)) * (P.w u : ℂ))) (Ioi 0) :=
+    (P.integrableOn_cexp_mul_w (s := (σ : ℂ)) (by simpa using hσ)).re
   refine h.congr_fun (fun u _ => ?_) measurableSet_Ioi
-  simp only
-  rw [show -((σ : ℂ) * (u : ℂ)) = ((-(σ * u) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp,
+  rw [RCLike.re_to_complex, show -((σ : ℂ) * (u : ℂ)) = ((-(σ * u) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp,
     ← Complex.ofReal_mul, Complex.ofReal_re]
 
 end Params

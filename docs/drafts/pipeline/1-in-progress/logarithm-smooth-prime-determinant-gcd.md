@@ -44,6 +44,8 @@ The complete ordered logarithmic energy is exactly
 set. Smooth/rough product uniqueness gives the diagonal; swapping the two
 products exchanges the positive and negative orientations. Thus the same
 bound, doubled and added to the exact diagonal, controls the full energy.
+At height resolution `δ=1/T`, the integer-difference cutoff is
+`ceil(4X²/T)`.
 
 Lean verification remains open. No prime-pair
 asymptotic, random-energy law, or exponential-sum saving is claimed.
