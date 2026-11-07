@@ -117,8 +117,8 @@ theorem xiCurrent_eq_xiLift {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
     unfold xiCurrent
     have e : deriv RiemannGaussian.riemannXi s * starRingEnd ℂ (RiemannGaussian.riemannXi s) =
         logDeriv RiemannGaussian.riemannXi s * ((‖RiemannGaussian.riemannXi s‖ ^ 2 : ℝ) : ℂ) := by
-      rw [logDeriv_apply, Complex.ofReal_pow, ← Complex.mul_conj', div_mul_eq_mul_div, mul_assoc,
-        mul_div_assoc, mul_div_cancel_left₀ _ hξ]
+      rw [logDeriv_apply, Complex.ofReal_pow, ← Complex.mul_conj', div_mul_eq_mul_div, eq_div_iff hξ]
+      ring
     rw [e, Complex.re_mul_ofReal]
     ring
   rw [hcur, hlog, hζlog]

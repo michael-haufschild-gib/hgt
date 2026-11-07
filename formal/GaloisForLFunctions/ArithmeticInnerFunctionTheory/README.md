@@ -1,7 +1,7 @@
 # Arithmetic Inner-Function Theory (AIF)
 
 Namespace `GaloisForLFunctions.ArithmeticInnerFunctionTheory`; umbrella
-`ArithmeticInnerFunctionTheory.lean`; 42 modules. Every theorem is unconditional. A statement about RH is an
+`ArithmeticInnerFunctionTheory.lean`. Every theorem is unconditional. A statement about RH is an
 equivalence with RH, and no theorem has RH as a premise.
 
 ## 1. Motivation
@@ -81,7 +81,7 @@ sees exactly one weight reads it exactly (`weilSeqW_one_sub`).
 `(κ₀κ₂ − κ₁²)/(κ₀² − κ₁²)` (`reflCoeff_one_eq`). The same form is the wall of log-concavity (`sum_sq_le_of_logConcave`), the sign of the Turán test of the
 aperture, and the obstruction to an alternating predictor.
 
-**Multiplicative vectors.** A torus sum is the Hankel form `Σ_{a,b} f(x + log ab) χ(a) χ̄(b)` evaluated on one completely multiplicative unimodular vector `χ`
+**Multiplicative vectors.** Under the decay hypotheses ensuring convergence, a torus sum is the Hankel form `Σ_{a,b} f(x + log ab) χ(a) χ̄(b)` evaluated on one completely multiplicative unimodular vector `χ`
 (`ofReal_insertion_eq_tsum_pairs`, `torusSum_cons`). So torus positivity is positivity of a Hankel form on multiplicative vectors only, and the Bernstein theorem says when that is enough.
 
 **The calculus of signed echoes.** Across independent reflectors the three operations are exact. Sums: the infimum over the height of a signed sum of columns is the sum of the signed minima (`le_signedColumns_iff`). Products: a product of columns, each positive somewhere, is nonnegative at all heights iff each factor is (`prod_nonneg_iff`). Pairings: `∫ S_a S_b = Σ_k a_k b_k` (`integral_torusSum_mul_torusSum`). So a sign cannot be moved between independent columns.
@@ -157,11 +157,13 @@ aperture, and the obstruction to an alternating predictor.
 | `exists_outer_predictor_of_certified`, `paraPoly_zero_on_circle_of_certified`, `abs_schurParam_lt_of_certified` | Unconditional for `Spec ℤ` on certified windows, including the echoes that carry `Λ(2)` |
 | `exists_certificate_at_critical_ratio` | At a ratio below the threshold of a window the pencil has a triangular certificate, with no Toeplitz structure |
 | `lattice_trichotomy`, `riemannHypothesis_iff_every_lattice_is_at_threshold` | `s > 0` Szegő, `s < 0` empty, `s = 0` threshold; every lattice at threshold iff RH |
-| `torusPositive_iff_hankel_nonneg` | **Arithmetic Bernstein.** For left exponent `κ < ½`, torus positivity at all prime sets and base points is exponential convexity |
+| `torusPositive_iff_hankel_nonneg` | **Arithmetic Bernstein.** For continuous amplitudes with positive exponential decay at `+∞` and left exponent `κ < ½`, torus positivity at all prime sets and base points is exponential convexity |
 | `torusPositiveAt_iff_dirichletHankel_nonneg`, `cosSum_mul_cosSum` | Fixed base `x`: torus positivity at all prime sets is positivity of the Dirichlet-dilated Hankel form `Σ_{d,u,v} c(d+u)c(d+v)a(u+v)` |
 | `exists_supercritical_not_expConvex`, `exists_prime_set_torusSum_neg_of_le_one`, `euler_abscissa_perturbation_dichotomy` | Above `α > 1`, `e^{−αy} − ε φ(y)` is strictly torus-positive at all `x ∈ ℝ` yet not exponentially convex; on `(0, 1]`, every positive dip below `log 5` fails at `x = 0` |
 | `heckePositive_iff_expConvex_of_lt_half`, `exists_heckePositive_not_torusPositive_ge_half` | **First transition (`κ = ½`).** Below `κ < ½`, Level-1 Hecke positivity already forces exponential convexity; for all `κ ≥ ½` (including `κ = ½`), weighted Schur bounds make `e^{−κy} − ε tentBump y` Level-1 Hecke positive while higher prime powers break `IsAllBaseTorusPositive` on `[½, 1]` |
-| `hasSum_cosSum_mul_cosSum_geom`, `torusSum_mul_geom_eq_integral`, `IsAllBaseTorusPositive.mul_exp_neg` | `SU(2)` Poisson–Szegő kernel `> 0` and complete-monotonicity module law: multiplying a torus-positive amplitude by `e^{−βy}` (`β ≥ 0`) preserves torus positivity |
+| `hasSum_cosSum_mul_cosSum_geom`, `torusSum_mul_geom_eq_integral`, `IsAllBaseTorusPositive.mul_exp_neg` | `SU(2)` Poisson–Szegő kernel `> 0`; under the theorem's right-decay bound, multiplication by `e^{−βy}` (`β ≥ 0`) preserves torus positivity |
+| `allBaseTorusPositive_iff_nonneg_of_abs_floor`, `exists_boundary_torusPositive_not_expConvex` | Without convergence, every `|f|≥c>0` has zero totalized nonempty torus sums; positivity reduces to `f≥0`. The continuous `1+cos(y)/2` satisfies the left exponent-one bound but fails exponential convexity |
+| `boundaryOscillation_damping_not_positive`, `exists_oscillation_damping_reentry` | Positive oscillations in this unrestricted cone fail after every damping rate in `(0,1]`; sufficiently small oscillations re-enter above `1` with convergent character sums |
 | `eq_zero_of_torusPositive_of_lt_min_one`, `oscillatory_bernstein_dichotomy`, `laplaceMixture_torusPositive_iff_nonneg` | **Second transition (`κ = 1`).** Mellin–Kronecker exponent collapse `f = 0` for `κ < min(1, κ₀)`; sharp `α = 1` Bernstein threshold for oscillatory `e^{−αy}(1 + ε cos ωy)` and signed finite Laplace mixtures `Σ c_r e^{−α_r y}` |
 | `torusSum_nonneg_iff_locked`, `torusSum_nonneg_of_locked_of_tendsto` | Locking is torus positivity at a fixed amplitude, and at an amplitude with a limit at height infinity |
 | `exists_correlated_train` | An amplitude oscillating with the height has nonnegative locked sums and negative torus values |
@@ -194,7 +196,7 @@ Each question has a theorem in `TheQuestionsOfTheField.lean`. Answers that are R
 |---|---|---|
 | Q1 | When is a frustrated form nonnegative at zero slack? | Iff at every positive slack each window has an outer predictor with positive margin (`question_one`). For `Spec ℤ`: RH iff all windows have outer predictors, the reflection data are not square-summable, and negative slack is empty (`question_one_specZ`). The form of the answer is proved. Its producer is unconditional only on certified windows and at critical ratios |
 | Q2 | What replaces Allegretto–Piepenbrink? | The causal solution: outer instead of positive. It carries a Riemann hypothesis in every window, and on nonpositive couplings it is the positive supersolution (`question_two`, `toeplitzForm_eq_doob`, `toeplitzForm_nonneg_of_supersolution`). In the aperture variable the passive state itself gives a Darboux pair of positive Schrödinger solutions (`IsAnchorTraces.darboux`) |
-| Q3 | Which cones are invariant under prime insertion with locked phases? | The exponentially convex cone is invariant (`IsExpConvexFrom.torusSum`). Among amplitudes of left exponent below `½` it is the only one with nonnegative insertions at all prime sets, base points and locked phases (`question_three`). On a fixed prime set the cone is strictly larger (`gaussian_torus_positive`, `not_isExpConvexFrom_gaussian`) |
+| Q3 | Which cones are invariant under prime insertion with locked phases? | For continuous amplitudes with positive exponential decay at `+∞`, the exponentially convex cone is invariant (`IsExpConvexFrom.torusSum`). With left exponent below `½`, it is exactly the cone with nonnegative insertions at all prime sets, base points and locked phases (`question_three`). On a fixed prime set the cone is strictly larger (`gaussian_torus_positive`, `not_isExpConvexFrom_gaussian`) |
 | Q4 | When is an echo train passive? | When each echo lies in its Schur band; the bands are free coordinates. On independent reflectors only size counts; on commensurable ones the mass is unbounded (`question_four`) |
 | Q5 | Why is `(β, s) = (1, 0)` critical? | `s` is an absolutely continuous density over a measure with none. `s > 0` is Szegő, `s < 0` is empty, `s = 0` is the threshold. At `β = 0` the weights are not pinned (`question_five`) |
 | Q6 | Can an arithmetic inner factor be finite and nontrivial? | Without arithmetic, yes (`innerOf_linear`). For Dirichlet polynomials and periodic data, never. For positive generalized primes with small reciprocal mass, yes (`exists_small_reciprocalMass_zero_off_line`). For `ζ` it is open, and RH splits as field vanishing plus recurrence (`question_six`) |

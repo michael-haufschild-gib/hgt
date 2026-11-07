@@ -306,3 +306,8 @@ Eisenstein/SeedHeight.lean to every spatial derivative by local equality
 with compact regularizations. The summand equation from SmoothSummands.lean
 is proved using the local height-profile Laplacian identity.
 TheCubicEisensteinEquation adapts spatial differentiation and summation from OpenAI Eisenstein/SmoothSummands.lean and SeedHeight.lean. The actual derivative sums and height-profile equation are locally checked.
+BoundedCubicEisensteinRemainder adapts the uniform remainder bound from OpenAI Eisenstein/UnitNormalization.lean. The local Bianchi reduction, row injection, and incoming seed definitions supply all geometric inputs.
+SmoothCubicExhaustion adapts the barrier exhaustion from OpenAI RowCompletion/CubicReopening.lean. Local cutoff calculus and the logarithmic height eikonal identity prove the uniform gradient bound.
+BoundedCubicRemainderGradient adapts the remainder gradient argument from OpenAI RowCompletion/ThetaNonvanishing.lean. The local termwise derivative theorem, lattice majorant, and logarithmic eikonal bound discharge the analytic inputs.
+BoundedSmoothCubicOperatorDomain adapts the compact cutoff approximation from OpenAI Eisenstein/CutoffApproximation.lean. Locally constructed exhaustion cutoffs and the support-local Green identity establish the actual energy and operator-domain statements.
+TheCubicInitialResolventMatching adapts initial resolvent matching from OpenAI Eisenstein/CutoffApproximation.lean. Local bounded remainder and gradient estimates, operator-domain approximation, and nonreal resolvent uniqueness identify the actual source series.

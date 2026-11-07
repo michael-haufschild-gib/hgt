@@ -18,6 +18,7 @@ import GaloisForLFunctions.PrimeTorusTheory.CoordinatesThatSeeTheHeight
 import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTorsionPoints
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
 import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
+import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
 
 /-!
 # The questions of the field
@@ -27,7 +28,7 @@ Each of the six questions of prime torus theory, with its answer as one statemen
 1. How long does the orbit need to enter a half-space at length `y = (log T)^{2K}`, and is there any saving against size? (`question_one`)
 2. What is the near-diagonal energy past `k = log T / log y`? (`question_two`)
 3. Why does the Gamma coupling sit at the critical growth `½`? (`question_three`)
-4. Which functions on `X` have a sum-of-squares form with `t`-dependent coefficients? (`question_four`)
+4. Which functions on `X` restrict to the Ξ-current and have a sum-of-squares form with `t`-dependent coefficients? (`question_four`, `question_four_xi_current`)
 5. Over which torus points does the hull extend into the strip, and which of those carry zeros? (`question_five`)
 6. Does a large-value set of heights have additive structure, and does it force returns that the pole must pay for? (`question_six`)
 -/
@@ -203,6 +204,14 @@ theorem question_two_past_the_diagonal {Q : Finset ℕ} (hQ : ∀ r ∈ Q, r.Pri
         24 * k.factorial * (∑ r ∈ Q, (r : ℝ) ^ (1 - 2 * σ)) ^ k / H +
         32 * (∑ r ∈ Q, powWeight σ r) ^ (2 * k) / H ^ 2 :=
   energy_le_past_diagonal hQ hσ ha k hH
+
+/-- **Question 4, for the Ξ-current.** For `σ > 1` the current `2 Re(ξ' conj ξ)` is the restriction to the orbit of `𝒥_σ(t, ω) = 2|ξ|²(B − Σ_n Λ(n) n^{−σ} Re ω(n))`, whose worst point on every fibre is the pole, so `𝒥_σ` is nonnegative on the fibre over `t` exactly when the base pays `−ζ'/ζ(σ)`. -/
+theorem question_four_xi_current {σ : ℝ} (hσ : 1 < σ) (t : ℝ) :
+    xiCurrent ⟨σ, t⟩ = xiLift σ t (orbitPoint t) ∧
+      ((∀ ω : ℕ → ℂ, (∀ n, ‖ω n‖ ≤ 1) → 0 ≤ xiLift σ t ω) ↔
+        -(deriv riemannZeta σ / riemannZeta σ).re ≤ xiBase ⟨σ, t⟩) := by
+  rw [← lamColumn_pole_eq hσ]
+  exact ⟨xiCurrent_eq_xiLift hσ t, xiLift_nonneg_iff hσ t⟩
 
 /-- **Question 4, with coordinates that see the height.** The function `E(s)/(s + 3)` has no decomposition in the returning coordinates, and it has one in coordinates that do not return. -/
 theorem question_four_height_coordinates :

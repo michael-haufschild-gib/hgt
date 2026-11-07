@@ -27,7 +27,7 @@ theorem blaschkeCoord_one_translate {δ : ℝ} {z : ℂ} (hz : z ≠ 1) :
   have hz' : 1 - z ≠ 0 := sub_ne_zero.mpr hz.symm
   rw [blaschkeCoord_one, discChart_one, translatedDiscCoord]
   field_simp
-  <;> ring
+  ring
 
 @[simp] theorem translatedDiscCoord_zero (z : ℂ) : translatedDiscCoord 0 z = z := by
   simp [translatedDiscCoord]
@@ -95,13 +95,14 @@ theorem isHardyDisc_of_bounded {Φ : ℂ → ℂ} {M : ℝ}
     refine (intervalIntegrable_const : IntervalIntegrable (fun _ : ℝ => M ^ 2) volume 0
       (2 * Real.pi)).mono_fun hmeas.aestronglyMeasurable (Eventually.of_forall fun θ => ?_)
     have hn := hb _ (norm_circleMap_zero_one θ).le
-    change ‖‖Φ (circleMap 0 1 θ)‖ ^ 2‖ ≤ M ^ 2
-    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+    change ‖‖Φ (circleMap 0 1 θ)‖ ^ 2‖ ≤ ‖M ^ 2‖
+    rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _), Real.norm_eq_abs,
+      abs_of_nonneg (sq_nonneg _)]
     exact pow_le_pow_left₀ (norm_nonneg _) hn 2
 
 theorem isHardyDisc_dirichletDisc {t : ℝ} (ht : 0 ≤ t) : IsHardyDisc (dirichletDisc t) :=
   isHardyDisc_of_bounded
-    (fun z hz => (differentiableAt_dirichletDisc t hz).differentiableWithinAt)
+    (fun _ hz => (differentiableAt_dirichletDisc t hz).differentiableWithinAt)
     (measurable_dirichletDisc t) (fun _ hz => norm_dirichletDisc_le_one ht hz)
 
 /-- Peeling is an exact finite Taylor decomposition away from the origin. -/
@@ -133,6 +134,7 @@ theorem IsHardyDisc.projection_remainder {Φ : ℂ → ℂ} (h : IsHardyDisc Φ)
     have hd' : Φ z - ∑ k ∈ Finset.range n, z ^ k * taylorCoeff Φ k =
         z ^ n * ArithmeticInnerFunctionTheory.peel Φ n z := by
       linear_combination hd
+    dsimp only
     rw [hd', norm_mul, norm_pow, hn, one_pow, one_mul]
   rw [he, h.circleAverage_norm_sq_eq n]
   ring
@@ -171,6 +173,7 @@ theorem IsHardyDisc.circleAverage_conj_pow_mul {Φ : ℂ → ℂ} (h : IsHardyDi
       have hd : _root_.dslope Φ 0 z * z = Φ z - Φ 0 := by
         rw [dslope_of_ne _ hz0, slope_def_module, sub_zero, smul_eq_mul]
         field_simp
+      dsimp only
       rw [pow_succ, map_mul]
       linear_combination -(conj (z ^ n) * conj z) * hd +
         (conj (z ^ n) * _root_.dslope Φ 0 z) * hcz
@@ -184,7 +187,6 @@ theorem IsHardyDisc.circleAverage_conj_pow_mul {Φ : ℂ → ℂ} (h : IsHardyDi
     rw [hc, zero_add, ih h.dslope]
     unfold taylorCoeff ArithmeticInnerFunctionTheory.peel
     rw [Function.iterate_succ_apply]
-    rfl
 
 /-- Complex change of variables from the unit circle to the Poisson line. -/
 theorem circleAverage_complex_eq_poisson {F : ℝ → ℂ} {g : ℂ → ℂ}
@@ -195,10 +197,12 @@ theorem circleAverage_complex_eq_poisson {F : ℝ → ℂ} {g : ℂ → ℂ}
         ∫ τ : ℝ, F τ * (halfPlanePoissonKernel 1 τ : ℂ) := by
   have hr := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num)
     (fun τ => (F τ).re) (fun z => (g z).re) (fun τ => by
-      convert congrArg Complex.re (hline τ) using 1 <;> norm_num)
+      convert congrArg Complex.re (hline τ) using 1
+      norm_num)
   have hi := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num)
     (fun τ => (F τ).im) (fun z => (g z).im) (fun τ => by
-      convert congrArg Complex.im (hline τ) using 1 <;> norm_num)
+      convert congrArg Complex.im (hline τ) using 1
+      norm_num)
   have hgr : CircleIntegrable (fun z => (g z).re) 0 1 :=
     ⟨Complex.reCLM.integrable_comp hg.1, Complex.reCLM.integrable_comp hg.2⟩
   have hgi : CircleIntegrable (fun z => (g z).im) 0 1 :=
@@ -206,7 +210,7 @@ theorem circleAverage_complex_eq_poisson {F : ℝ → ℂ} {g : ℂ → ℂ}
   have hint : Integrable (fun τ : ℝ => F τ * (halfPlanePoissonKernel 1 τ : ℂ)) := by
     refine (((hr.1.mp hgr).ofReal).add (((hi.1.mp hgi).ofReal).mul_const I)).congr ?_
     exact Eventually.of_forall fun τ => by
-      apply Complex.ext <;> simp <;> ring
+      apply Complex.ext <;> simp
   refine ⟨hint, ?_⟩
   apply Complex.ext
   · have hc := Complex.reCLM.circleAverage_comp_comm hg
@@ -307,12 +311,15 @@ theorem differentiableOn_translatedDiscCoord {δ : ℝ} (hδ : 0 ≤ δ) :
   have hden : DifferentiableAt ℂ (fun u : ℂ => 1 + (δ : ℂ) - (δ : ℂ) * u) z := by fun_prop
   exact (hnum.div hden (translatedDiscCoord_den_ne_zero hδ hn)).differentiableWithinAt
 
-theorem translatedDiscCoord_circleMap {δ : ℝ} (hδ : 0 ≤ δ) (τ : ℝ) :
+theorem translatedDiscCoord_circleMap (δ τ : ℝ) :
     translatedDiscCoord δ (circleMap 0 1 (criticalLineAngle τ)) =
       blaschkeCoord 1 (1 / 2 + (δ : ℂ) + (τ : ℂ) * I) := by
   have h := blaschkeCoord_one_translate (δ := δ) (circleMap_criticalLineAngle_ne_one τ)
   rw [discChart_circleMap] at h
-  convert h.symm using 1 <;> norm_num <;> ring
+  norm_num at h
+  rw [show (1 / 2 : ℂ) + (τ : ℂ) * I + (δ : ℂ) =
+    1 / 2 + (δ : ℂ) + (τ : ℂ) * I by ring] at h
+  exact h.symm
 
 /-- Conformal polynomial exponentials are outer even on translated lines. Their Poisson
 logarithmic mean is exactly the value at the translated centre. -/
@@ -337,7 +344,7 @@ theorem integral_log_polyMollifier_shifted (Q : Polynomial ℂ) {δ : ℝ} (hδ 
   have hc := circleAverage_shift_eq_poisson (s0 := 1) (by norm_num)
     (fun τ => Real.log ‖polyMollifier 1 Q (1 / 2 + (δ : ℂ) + (τ : ℂ) * I)‖)
     (fun z => (g z).re) (fun τ => by
-      simp only [g, translatedDiscCoord_circleMap hδ, polyMollifier, Complex.norm_exp,
+      simp only [g, translatedDiscCoord_circleMap, polyMollifier, Complex.norm_exp,
         Real.log_exp]
       norm_num)
   refine ⟨hc.1.mp hgr, ?_⟩
@@ -362,8 +369,10 @@ def laguerreJetPoly (t : ℝ) : ℕ → Polynomial ℂ
 
 private theorem hasDerivAt_reciprocalCoord {z : ℂ} (hz : z ≠ 1) :
     HasDerivAt (fun u : ℂ => (1 - u)⁻¹) ((1 - z)⁻¹ ^ 2) z := by
-  have h := ((hasDerivAt_id z).const_sub 1).inv (sub_ne_zero.mpr hz.symm)
-  simpa only [Pi.inv_apply, id_eq, neg_neg, div_eq_mul_inv, one_mul, inv_pow] using h
+  have h : HasDerivAt (fun u : ℂ => (1 - u)⁻¹) (-(-(1 : ℂ)) / (1 - z) ^ 2) z :=
+    ((hasDerivAt_id z).const_sub 1).inv (sub_ne_zero.mpr hz.symm)
+  apply h.congr_deriv
+  simp only [neg_neg, one_div, inv_pow]
 
 theorem hasDerivAt_dirichletDisc (t : ℝ) {z : ℂ} (hz : z ≠ 1) :
     HasDerivAt (dirichletDisc t) (dirichletDisc t z * (-(t : ℂ) * (1 - z)⁻¹ ^ 2)) z := by
@@ -375,7 +384,7 @@ private theorem hasDerivAt_dirichletDisc_jet (t : ℝ) (n : ℕ) {z : ℂ} (hz :
   have h := (hasDerivAt_dirichletDisc t hz).mul
     (((laguerreJetPoly t n).hasDerivAt _).comp z (hasDerivAt_reciprocalCoord hz))
   apply h.congr_deriv
-  simp only [laguerreJetPoly, Polynomial.eval_mul, Polynomial.eval_pow,
+  simp only [Function.comp_apply, laguerreJetPoly, Polynomial.eval_mul, Polynomial.eval_pow,
     Polynomial.eval_X, Polynomial.eval_sub, Polynomial.eval_C]
   ring
 
@@ -431,7 +440,8 @@ theorem summable_taylor_of_larger_disc {g : ℂ → ℂ} {R : ℝ≥0} (hR : 1 <
     have hlt : (1 : ENNReal) < (R : ENNReal) := by exact_mod_cast hR
     simpa using hlt.trans_le hp.r_le
   refine ⟨?_, fun z hz => ?_⟩
-  · simpa only [hcoeff] using p.summable_norm_apply hmem
+  · simpa only [FormalMultilinearSeries.apply_eq_pow_smul_coeff, one_pow, one_smul,
+      hcoeff] using p.summable_norm_apply hmem
   · have hzR : z ∈ Metric.eball (0 : ℂ) R := by
       rw [Metric.eball_coe, Metric.mem_ball, dist_zero_right]
       exact hz.trans_lt hR
@@ -512,10 +522,17 @@ theorem circleAverage_conj_pow_mul_of_differentiableOn {g : ℂ → ℂ}
         have hi : z⁻¹ = conj z := by
           calc z⁻¹ = (conj z * z) * z⁻¹ := by rw [hcz, one_mul]
             _ = conj z := by rw [mul_assoc, mul_inv_cancel₀ hz0, mul_one]
+        dsimp only
         rw [hi, map_pow]
     _ = GaloisForLFunctions.HTGeometry.cauchyCoeff g 1 k :=
       (GaloisForLFunctions.HTGeometry.cauchyCoeff_eq_circleAverage g one_pos k).symm
     _ = taylorCoeff g k := hcoeff.symm
+
+#print axioms integral_conformal_dirichlet_mode_eq_laguerre
+#print axioms dirichletDisc_projection_remainder
+#print axioms integral_log_polyMollifier_shifted
+#print axioms summable_taylor_of_larger_disc
+#print axioms hasSum_circleAverage_conj_series_mul
 
 end
 

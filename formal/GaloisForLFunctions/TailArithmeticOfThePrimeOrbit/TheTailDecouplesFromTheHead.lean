@@ -46,6 +46,7 @@ def fiberCoeff {J : Type*} (E : Finset J) (k : J → ℕ) (c : J → ℂ) (N : �
 
 variable {J : Type*} [DecidableEq J]
 
+omit [DecidableEq J] in
 theorem sum_range_fiber {E : Finset J} {k : J → ℕ} {N : ℕ} (hk : ∀ j ∈ E, 1 ≤ k j ∧ k j ≤ N)
     (f : J → ℂ) : ∑ m ∈ range N, ∑ j ∈ E.filter (fun j => k j = m + 1), f j = ∑ j ∈ E, f j := by
   have h := Finset.sum_fiberwise_of_maps_to (s := E) (t := range N) (g := fun j => k j - 1)
@@ -60,6 +61,7 @@ theorem sum_range_fiber {E : Finset J} {k : J → ℕ} {N : ℕ} (hk : ∀ j ∈
   · rintro ⟨hj, h⟩; exact ⟨hj, by omega⟩
   · rintro ⟨hj, h⟩; have := hk j hj; exact ⟨hj, by omega⟩
 
+omit [DecidableEq J] in
 theorem dirPoly_fiberCoeff {E : Finset J} {k : J → ℕ} (c : J → ℂ) {N : ℕ} (hk : ∀ j ∈ E, 1 ≤ k j ∧ k j ≤ N)
     (t : ℝ) : RHTower.Sieve.dirPoly N (fiberCoeff E k c N) t = indexedPoly E k c t := by
   unfold RHTower.Sieve.dirPoly fiberCoeff indexedPoly
@@ -76,6 +78,7 @@ theorem dirPoly_fiberCoeff {E : Finset J} {k : J → ℕ} (c : J → ℂ) {N : �
     ring
   rw [hkj]
 
+omit [DecidableEq J] in
 theorem norm_sq_sum_of_card_le_one {F : Finset J} (hF : F.card ≤ 1) (c : J → ℂ) :
     ‖∑ j ∈ F, c j‖ ^ 2 = ∑ j ∈ F, ‖c j‖ ^ 2 := by
   rcases F.eq_empty_or_nonempty with h | ⟨j, hj⟩
@@ -84,6 +87,7 @@ theorem norm_sq_sum_of_card_le_one {F : Finset J} (hF : F.card ≤ 1) (c : J →
       Finset.eq_singleton_iff_unique_mem.mpr ⟨hj, fun b hb => Finset.card_le_one.mp hF b hb j hj⟩
     simp [hF1]
 
+omit [DecidableEq J] in
 theorem sum_norm_sq_fiberCoeff {E : Finset J} {k : J → ℕ} (c : J → ℂ) {N : ℕ}
     (hk : ∀ j ∈ E, 1 ≤ k j ∧ k j ≤ N) (hinj : Set.InjOn k E) :
     ∑ n : Fin N, ‖fiberCoeff E k c N n‖ ^ 2 = ∑ j ∈ E, ‖c j‖ ^ 2 := by
@@ -100,6 +104,7 @@ theorem sum_norm_sq_fiberCoeff {E : Finset J} {k : J → ℕ} (c : J → ℂ) {N
   obtain ⟨hbE, hkb⟩ := Finset.mem_filter.mp hb
   exact hinj haE hbE (hka.trans hkb.symm)
 
+omit [DecidableEq J] in
 /-- **The mean value theorem for indexed polynomials.** -/
 theorem indexed_meanValue {E : Finset J} {k : J → ℕ} (c : J → ℂ) {N : ℕ}
     (hk : ∀ j ∈ E, 1 ≤ k j ∧ k j ≤ N) (hinj : Set.InjOn k E) (T : ℝ) :
@@ -152,10 +157,10 @@ theorem headPoly_mul (A B : Finset ℕ) (r b : ℕ → ℂ) (hA : ∀ m ∈ A, m
   refine Finset.sum_congr rfl fun m hm => Finset.sum_congr rfl fun n hn => ?_
   have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast hA m hm
   have hn0 : (n : ℝ) ≠ 0 := by exact_mod_cast hB n hn
-  push_cast
-  rw [Real.log_mul hm0 hn0, mul_add]
-  push_cast
-  rw [add_mul, Complex.exp_add]
+  have hlog : Real.log ((m * n : ℕ) : ℝ) = Real.log m + Real.log n := by
+    rw [Nat.cast_mul, Real.log_mul hm0 hn0]
+  dsimp only
+  rw [hlog, mul_add, Complex.ofReal_add, add_mul, Complex.exp_add]
   ring
 
 theorem sum_norm_sq_tensor (A B : Finset ℕ) (r b : ℕ → ℂ) :
@@ -217,8 +222,12 @@ theorem abs_conditional_second_moment_sub_le {y : ℕ} {A B : Finset ℕ} (hA : 
       ∑ n ∈ B, ‖b n‖ ^ 2 := by ring
   calc _ ≤ |(∫ t in T..(2 * T), ‖headPoly A r t‖ ^ 2 * ‖headPoly B b t‖ ^ 2) -
           T * ((∑ m ∈ A, ‖r m‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2)| +
+        |T * ((∑ m ∈ A, ‖r m‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2) -
+          (∫ t in T..(2 * T), ‖headPoly A r t‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2| := abs_sub_le _ _ _
+    _ = |(∫ t in T..(2 * T), ‖headPoly A r t‖ ^ 2 * ‖headPoly B b t‖ ^ 2) -
+          T * ((∑ m ∈ A, ‖r m‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2)| +
         |(∫ t in T..(2 * T), ‖headPoly A r t‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2 -
-          T * ((∑ m ∈ A, ‖r m‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2)| := abs_sub_le _ _ _
+          T * ((∑ m ∈ A, ‖r m‖ ^ 2) * ∑ n ∈ B, ‖b n‖ ^ 2)| := by rw [abs_sub_comm (T * _)]
     _ ≤ _ := by
         rw [e]
         have hN0 : (0 : ℝ) ≤ 8 * N * (1 + Real.log N) := by
@@ -264,8 +273,6 @@ theorem normSq_headPoly_mul (A B : Finset ℕ) (r b : ℕ → ℂ) (t : ℝ) :
         Complex.exp (((t * (Real.log m - Real.log m' + Real.log n) : ℝ) : ℂ) * Complex.I) := by
   have hsq : ((‖headPoly A r t‖ ^ 2 : ℝ) : ℂ) = headPoly A r t * (starRingEnd ℂ) (headPoly A r t) := by
     rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-    push_cast
-    ring
   rw [hsq]
   unfold headPoly
   rw [map_sum, Finset.sum_mul_sum, Finset.sum_mul]
@@ -292,6 +299,15 @@ theorem normSq_headPoly_mul (A B : Finset ℕ) (r b : ℕ → ℂ) (t : ℝ) :
   rw [e]
   ring
 
+theorem sum_sum_sum_mul (A B : Finset ℕ) (f g : ℕ → ℝ) (C : ℝ) :
+    ∑ m ∈ A, ∑ m' ∈ A, ∑ n ∈ B, C * (f m * f m' * g n) = C * ((∑ m ∈ A, f m) ^ 2 * ∑ n ∈ B, g n) := by
+  rw [sq, Finset.sum_mul_sum (s := A) (t := A), Finset.sum_mul (s := A), Finset.mul_sum (s := A)]
+  refine Finset.sum_congr rfl fun m _ => ?_
+  rw [Finset.sum_mul (s := A), Finset.mul_sum (s := A)]
+  refine Finset.sum_congr rfl fun m' _ => ?_
+  rw [Finset.mul_sum (s := B), Finset.mul_sum (s := B)]
+  exact Finset.sum_congr rfl fun n _ => by ring
+
 /-- **The conditional mean of the tail vanishes.** If the tail integers exceed `1`, the head-weighted integral of the
 tail is at most `2N (Σ|r_m|)² Σ|b_n|`, for every window. -/
 theorem norm_integral_head_sq_mul_tail_le {y : ℕ} {A B : Finset ℕ} (hA : ∀ m ∈ A, m ∈ Nat.smoothNumbers y)
@@ -301,11 +317,18 @@ theorem norm_integral_head_sq_mul_tail_le {y : ℕ} {A B : Finset ℕ} (hA : ∀
       2 * N * ((∑ m ∈ A, ‖r m‖) ^ 2 * ∑ n ∈ B, ‖b n‖) := by
   have hA0 : ∀ m ∈ A, m ≠ 0 := fun m hm => Nat.ne_zero_of_mem_smoothNumbers (hA m hm)
   simp_rw [normSq_headPoly_mul]
-  have hint : ∀ m ∈ A, ∀ m' ∈ A, ∀ n ∈ B, IntervalIntegrable (fun t : ℝ => (r m * (starRingEnd ℂ) (r m') * b n) *
-      Complex.exp (((t * (Real.log m - Real.log m' + Real.log n) : ℝ) : ℂ) * Complex.I)) volume T₁ T₂ :=
-    fun _ _ _ _ _ _ => (continuous_const.mul (continuous_phase _)).intervalIntegrable _ _
-  rw [intervalIntegral.integral_finset_sum fun m hm => IntervalIntegrable.sum fun m' hm' =>
-    IntervalIntegrable.sum fun n hn => hint m hm m' hm' n hn]
+  have hc3 : ∀ m m' n : ℕ, Continuous fun t : ℝ => (r m * (starRingEnd ℂ) (r m') * b n) *
+      Complex.exp (((t * (Real.log m - Real.log m' + Real.log n) : ℝ) : ℂ) * Complex.I) :=
+    fun _ _ _ => continuous_const.mul (continuous_phase _)
+  have hc2 : ∀ m m' : ℕ, Continuous fun t : ℝ => ∑ n ∈ B, (r m * (starRingEnd ℂ) (r m') * b n) *
+      Complex.exp (((t * (Real.log m - Real.log m' + Real.log n) : ℝ) : ℂ) * Complex.I) :=
+    fun m m' => continuous_finsetSum _ fun n _ => hc3 m m' n
+  have hc1 : ∀ m : ℕ, Continuous fun t : ℝ => ∑ m' ∈ A, ∑ n ∈ B, (r m * (starRingEnd ℂ) (r m') * b n) *
+      Complex.exp (((t * (Real.log m - Real.log m' + Real.log n) : ℝ) : ℂ) * Complex.I) :=
+    fun m => continuous_finsetSum _ fun m' _ => hc2 m m'
+  rw [intervalIntegral.integral_finsetSum fun m _ => (hc1 m).intervalIntegrable _ _]
+  simp_rw [intervalIntegral.integral_finsetSum fun m' _ => (hc2 _ m').intervalIntegrable _ _]
+  simp_rw [intervalIntegral.integral_finsetSum fun n _ => (hc3 _ _ n).intervalIntegrable _ _]
   -- Each frequency is at least `1/N` by the integer gap.
   have hterm : ∀ m ∈ A, ∀ m' ∈ A, ∀ n ∈ B,
       ‖∫ t in T₁..T₂, (r m * (starRingEnd ℂ) (r m') * b n) *
@@ -357,13 +380,8 @@ theorem norm_integral_head_sq_mul_tail_le {y : ℕ} {A B : Finset ℕ} (hA : ∀
         refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun m' hm' => ?_)
         refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun n hn => ?_)
         exact hterm m hm m' hm' n hn
-    _ = 2 * N * ((∑ m ∈ A, ‖r m‖) ^ 2 * ∑ n ∈ B, ‖b n‖) := by
-        rw [sq, Finset.sum_mul_sum, Finset.sum_mul, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun m _ => ?_
-        rw [Finset.mul_sum, Finset.sum_mul]
-        refine Finset.sum_congr rfl fun m' _ => ?_
-        rw [Finset.mul_sum, Finset.mul_sum]
-        refine Finset.sum_congr rfl fun n _ => by ring
+    _ = 2 * N * ((∑ m ∈ A, ‖r m‖) ^ 2 * ∑ n ∈ B, ‖b n‖) :=
+        sum_sum_sum_mul A B (fun m => ‖r m‖) (fun n => ‖b n‖) (2 * N)
 
 end
 

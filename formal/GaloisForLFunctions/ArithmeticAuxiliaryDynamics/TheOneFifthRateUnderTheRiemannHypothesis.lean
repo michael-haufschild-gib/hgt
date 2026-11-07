@@ -16,7 +16,8 @@ The total weight drops from `π(T) T/G` to `(T/G) log log T`. A level `δ` at `T
 * a zero-free strip `Re s > Θ` gives every rate `K^{-a}`, `a < (1 − Θ)/(3 − Θ)`;
 * the Riemann hypothesis gives every rate `K^{-a}`, `a < 1/5`.
 
-Conversely, a rate `K^{-a}` forces `Re ρ ≤ 1 − a`. So under the Riemann hypothesis the exponent of the rate lies in `[1/5, 1/2]`.
+Conversely, a rate `K^{-a}` forces `Re ρ ≤ 1 − a`. Compensating the large primes by smooth products, instead of entangling them, raises the
+exponent under the Riemann hypothesis to `1/4`.
 -/
 
 open Finset Filter Topology

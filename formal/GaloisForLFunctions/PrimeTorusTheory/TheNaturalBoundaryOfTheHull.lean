@@ -1,4 +1,4 @@
-import GaloisForLFunctions.PrimeTorusTheory.PrimeCharactersAreLacunary
+import GaloisForLFunctions.PrimeTorusTheory.TheLogarithmOfAFibre
 
 /-!
 # The natural boundary of the hull
@@ -7,7 +7,7 @@ Haar-almost every torus point has a fibre holomorphic and zero-free on `Re s > �
 
 **Theorem** (`ae_natural_boundary`). For almost every `x`, the fibre extends to a zero-free analytic `F` on `Re s > ½`, and `F` has no analytic continuation across any point of `Re s = ½`.
 
-**Mechanism.** Write `F = exp W`, `W = P + h`, with `P = Σ_p x_p p^{−s}` and `h = Σ_p (−log(1 − z_p) − z_p)`, `z_p = x_p p^{−s}`. The series `P` converges on `Re s > ½` by the almost-sure square-root cancellation. The series `h` is the sum of a part bounded in `L²` uniformly up to the line, namely `Σ_p z_p²/2`, and a uniformly bounded part (`lintegral_hullRem_le`).
+**Mechanism.** Write `F = exp W`, `W = P + h`, with `P = Σ_p x_p p^{−s}` and `h = Σ_p (−log(1 − z_p) − z_p)`, `z_p = x_p p^{−s}` (`TheLogarithmOfAFibre`). The series `P` converges on `Re s > ½` by the almost-sure square-root cancellation. The series `h` is the sum of a part bounded in `L²` uniformly up to the line, namely `Σ_p z_p²/2`, and a uniformly bounded part (`lintegral_hullRem_le`).
 
 A continuation `H` across a point of the line does not vanish at some `½ + iq`, `q` rational, nearby. There `W' = H'/H` is bounded on a half-disc, so `W` stays bounded along the ray `σ + iq`, `σ ↓ ½`. Zygmund's theorem on the torus (`measure_bounded_prime_sums_eq_zero`) says this happens only on a null set, for each `q`.
 
@@ -22,164 +22,27 @@ open ArithmeticCorrelationGeometry
 
 noncomputable section
 
-/-- The Euler variable `z_p = x_p p^{−s}`. -/
-def eulerVar (s : ℂ) (x : GaugeTorus) (p : ℕ) : ℂ := powCoeff s p * twist x p
-
-theorem norm_eulerVar {p : ℕ} (hp : p.Prime) (s : ℂ) (x : GaugeTorus) :
-    ‖eulerVar s x p‖ = (p : ℝ) ^ (-s.re) := by
-  unfold eulerVar powCoeff
-  rw [norm_mul, norm_twist, mul_one, Complex.norm_natCast_cpow_of_pos hp.pos, Complex.neg_re]
-
-theorem norm_eulerVar_sq {p : ℕ} (hp : p.Prime) (s : ℂ) (x : GaugeTorus) :
-    ‖eulerVar s x p‖ ^ 2 = (p : ℝ) ^ (-(2 * s.re)) := by
-  unfold eulerVar
-  rw [norm_mul, norm_twist, mul_one, norm_powCoeff_sq hp.pos]
-
-theorem norm_eulerVar_le_half {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    ‖eulerVar s x p‖ ≤ (p : ℝ) ^ (-(1 / 2) : ℝ) := by
-  rw [norm_eulerVar hp]
-  exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hp.one_lt.le) (by linarith)
-
-theorem norm_eulerVar_le {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    ‖eulerVar s x p‖ ≤ 3 / 4 := by
-  refine (norm_eulerVar_le_half hp hs x).trans ?_
-  have h2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.two_le
-  have h3 : (4 / 3 : ℝ) ≤ √(p : ℝ) := Real.le_sqrt' (by norm_num) |>.mpr (by norm_num; linarith)
-  rw [Real.rpow_neg (by positivity), ← Real.sqrt_eq_rpow, inv_le_comm₀ (by linarith) (by norm_num)]
-  norm_num
-  linarith
-
-/-- The local remainder `−log(1 − z) − z`. -/
-def localRem (s : ℂ) (x : GaugeTorus) (p : ℕ) : ℂ :=
-  -Complex.log (1 - eulerVar s x p) - eulerVar s x p
-
-/-- The cubic remainder `−log(1 − z) − z − z²/2`. -/
-def cubicRem (s : ℂ) (x : GaugeTorus) (p : ℕ) : ℂ := localRem s x p - eulerVar s x p ^ 2 / 2
-
-theorem norm_localRem_le {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    ‖localRem s x p‖ ≤ 2 * (p : ℝ) ^ (-(2 * s.re)) := by
-  set z := eulerVar s x p with hz
-  have hle := norm_eulerVar_le hp hs x
-  have h1 := Complex.norm_log_one_add_sub_self_le (z := -z) (by rw [norm_neg]; linarith)
-  rw [norm_neg] at h1
-  have h2 : localRem s x p = -(Complex.log (1 + -z) - -z) := by
-    unfold localRem
-    rw [← hz, ← sub_eq_add_neg]
-    ring
-  rw [h2, norm_neg, ← norm_eulerVar_sq hp s x, ← hz]
-  refine h1.trans ?_
-  have h3 : (1 - ‖z‖)⁻¹ ≤ 4 := by
-    rw [inv_le_comm₀ (by linarith) (by norm_num)]
-    linarith
-  nlinarith [sq_nonneg ‖z‖]
-
-theorem norm_cubicRem_le {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    ‖cubicRem s x p‖ ≤ 2 * (p : ℝ) ^ (-(3 / 2) : ℝ) := by
-  set z := eulerVar s x p with hz
-  have hle := norm_eulerVar_le hp hs x
-  have h1 := Complex.norm_log_sub_logTaylor_le 2 (z := -z) (by rw [norm_neg]; linarith)
-  rw [norm_neg] at h1
-  have hT : Complex.logTaylor (2 + 1) (-z) = -z - z ^ 2 / 2 := by
-    simp [Complex.logTaylor, Finset.sum_range_succ]
-    ring
-  rw [hT] at h1
-  have h2 : cubicRem s x p = -(Complex.log (1 + -z) - (-z - z ^ 2 / 2)) := by
-    unfold cubicRem localRem
-    rw [← hz, ← sub_eq_add_neg]
-    ring
-  rw [h2, norm_neg]
-  refine h1.trans ?_
-  have h3 : (1 - ‖z‖)⁻¹ ≤ 4 := by
-    rw [inv_le_comm₀ (by linarith) (by norm_num)]
-    linarith
-  have h4 : ‖z‖ ^ 3 ≤ (p : ℝ) ^ (-(3 / 2) : ℝ) := by
-    have h5 := pow_le_pow_left₀ (norm_nonneg _) (norm_eulerVar_le_half hp hs x) 3
-    rwa [← Real.rpow_natCast ((p : ℝ) ^ (-(1 / 2) : ℝ)) 3,
-      ← Real.rpow_mul (by positivity), show (-(1 / 2) : ℝ) * ((3 : ℕ) : ℝ) = -(3 / 2) by norm_num] at h5
-  have h6 : ‖z‖ ^ (2 + 1) * (1 - ‖z‖)⁻¹ / (((2 : ℕ) : ℝ) + 1) ≤ 2 * ‖z‖ ^ 3 := by
-    push_cast
-    have h7 : 0 ≤ ‖z‖ ^ 3 := by positivity
-    norm_num
-    nlinarith
-  linarith
-
-theorem summable_primes_rpow {r : ℝ} (hr : r < -1) :
-    Summable fun p : Nat.Primes => ((p : ℕ) : ℝ) ^ r := Nat.Primes.summable_rpow.mpr hr
-
-theorem summable_localRem {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    Summable fun p : Nat.Primes => localRem s x p :=
-  Summable.of_norm_bounded ((summable_primes_rpow (r := -(2 * s.re)) (by linarith)).mul_left 2)
-    fun p => norm_localRem_le p.2 hs x
-
-theorem summable_cubicRem {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    Summable fun p : Nat.Primes => cubicRem s x p :=
-  Summable.of_norm_bounded ((summable_primes_rpow (r := -(3 / 2)) (by norm_num)).mul_left 2)
-    fun p => norm_cubicRem_le p.2 hs x
-
-theorem summable_quad {s : ℂ} (hs : 1 / 2 < s.re) (x : GaugeTorus) :
-    Summable fun p : Nat.Primes => eulerVar s x p ^ 2 / 2 := by
-  refine Summable.of_norm_bounded (summable_primes_rpow (r := -(2 * s.re)) (by linarith)) fun p => ?_
-  rw [norm_div, norm_pow, norm_eulerVar_sq p.2]
-  simp only [Complex.norm_ofNat]
-  have : (0 : ℝ) ≤ ((p : ℕ) : ℝ) ^ (-(2 * s.re)) := by positivity
-  linarith
-
-/-- The sum of the local remainders. -/
-def hullRem (s : ℂ) (x : GaugeTorus) : ℂ := ∑' p : Nat.Primes, localRem s x p
-
-theorem differentiableOn_localRem (x : GaugeTorus) {p : ℕ} (hp : p.Prime) :
-    DifferentiableOn ℂ (fun s => localRem s x p) {s : ℂ | 1 / 2 < s.re} := by
-  intro s hs
-  refine DifferentiableAt.differentiableWithinAt ?_
-  have hz : DifferentiableAt ℂ (fun s => eulerVar s x p) s := by
-    unfold eulerVar powCoeff
-    exact (DifferentiableAt.const_cpow (by fun_prop) (Or.inl (by exact_mod_cast hp.ne_zero))).mul_const _
-  have hsl : 1 - eulerVar s x p ∈ Complex.slitPlane := by
-    rw [sub_eq_add_neg]
-    refine Complex.mem_slitPlane_of_norm_lt_one ?_
-    rw [norm_neg]
-    linarith [norm_eulerVar_le hp hs x]
-  exact (((differentiableAt_const _).sub hz).clog hsl).neg.sub hz
-
-/-- The remainder is analytic in `s` on the half-plane. -/
-theorem analyticOnNhd_hullRem (x : GaugeTorus) : AnalyticOnNhd ℂ (fun s => hullRem s x) rightHalf := by
-  intro s hs
-  have hs' : 1 / 2 < s.re := hs
-  set η : ℝ := (s.re - 1 / 2) / 2 with hη
-  have hη0 : 0 < η := by rw [hη]; linarith
-  set U : Set ℂ := {w | 1 / 2 + η < w.re} with hU
-  have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
-  have hUs : U ⊆ {w : ℂ | 1 / 2 < w.re} := fun w hw => by
-    have : 1 / 2 + η < w.re := hw
-    show 1 / 2 < w.re
-    linarith
-  have hd : DifferentiableOn ℂ (fun w => ∑' p : Nat.Primes, localRem w x p) U := by
-    refine Complex.differentiableOn_tsum_of_summable_norm
-      ((summable_primes_rpow (r := -(1 + 2 * η)) (by linarith)).mul_left 2)
-      (fun p => (differentiableOn_localRem x p.2).mono hUs) hUo fun p w hw => ?_
-    have hw' : 1 / 2 + η < w.re := hw
-    refine (norm_localRem_le p.2 (hUs hw) x).trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
-    exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast p.2.one_lt.le) (by linarith)
-  exact hd.analyticAt (hUo.mem_nhds (by show 1 / 2 + η < s.re; rw [hη]; linarith))
+theorem norm_twist_prime (x : GaugeTorus) : ∀ p, p.Prime → ‖twist x p‖ = 1 := fun p _ => norm_twist x p
 
 /-- The remainder is continuous on the torus. -/
-theorem continuous_hullRem {s : ℂ} (hs : 1 / 2 < s.re) : Continuous (hullRem s) := by
+theorem continuous_hullRem {s : ℂ} (hs : 1 / 2 < s.re) :
+    Continuous fun x : GaugeTorus => hullRem s (twist x) := by
   refine continuous_tsum (fun p => ?_)
     ((summable_primes_rpow (r := -(2 * s.re)) (by linarith)).mul_left 2)
-    fun p x => norm_localRem_le p.2 hs x
-  have hz : Continuous fun x => eulerVar s x p := continuous_const.mul (continuous_twist _)
-  have hsl : ∀ x, 1 - eulerVar s x p ∈ Complex.slitPlane := fun x => by
+    fun p x => norm_localRem_le (norm_twist_prime x) p.2 hs
+  have hz : Continuous fun x : GaugeTorus => eulerVar s (twist x) p :=
+    continuous_const.mul (continuous_twist _)
+  have hsl : ∀ x : GaugeTorus, 1 - eulerVar s (twist x) p ∈ Complex.slitPlane := fun x => by
     rw [sub_eq_add_neg]
     refine Complex.mem_slitPlane_of_norm_lt_one ?_
     rw [norm_neg]
-    linarith [norm_eulerVar_le p.2 hs x]
+    linarith [norm_eulerVar_le (norm_twist_prime x) p.2 hs]
   exact ((continuous_const.sub hz).clog hsl).neg.sub hz
 
 /-! ### The square integral of the remainder -/
 
 /-- The quadratic part `Σ_p z_p²/2`. -/
-def quadPart (s : ℂ) (x : GaugeTorus) : ℂ := ∑' p : Nat.Primes, eulerVar s x p ^ 2 / 2
+def quadPart (s : ℂ) (x : GaugeTorus) : ℂ := ∑' p : Nat.Primes, eulerVar s (twist x) p ^ 2 / 2
 
 /-- The constant `Σ_p p^{−2}`. -/
 def primeSqSum : ℝ := ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-2 : ℝ)
@@ -220,41 +83,43 @@ theorem lintegral_quadPart_le {s : ℂ} (hs : 1 / 2 < s.re) :
       (fun p => by positivity) (summable_primes_rpow (by norm_num)) N
     unfold primeSqSum
     linarith
-  · refine (tendsto_sum_primesBelow (g := fun p : ℕ => eulerVar s x p ^ 2 / 2) (summable_quad hs x)).congr
+  · refine (tendsto_sum_primesBelow (g := fun p : ℕ => eulerVar s (twist x) p ^ 2 / 2)
+      (summable_quad (norm_twist_prime x) hs)).congr
       fun N => ?_
     unfold twistSum
     rw [Finset.sum_image (hinj N)]
     refine Finset.sum_congr rfl fun p hp => ?_
     have hp' := (Nat.mem_primesBelow.mp hp).2
-    show eulerVar s x p ^ 2 / 2 = (1 / 2 : ℂ) * ((p * p : ℕ) : ℂ) ^ (-s) * twist x (p * p)
+    show eulerVar s (twist x) p ^ 2 / 2 = (1 / 2 : ℂ) * ((p * p : ℕ) : ℂ) ^ (-s) * twist x (p * p)
     rw [natCast_cpow_neg_mul hp'.ne_zero hp'.ne_zero, twist_mul x hp'.ne_zero hp'.ne_zero]
     unfold eulerVar powCoeff
     ring
 
 /-- **The remainder is bounded in `L²`, uniformly up to the line.** -/
 theorem lintegral_hullRem_le : ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, 1 / 2 < s.re →
-    ∫⁻ x, ENNReal.ofReal (‖hullRem s x‖ ^ 2) ∂gaugeHaar ≤ ENNReal.ofReal C := by
+    ∫⁻ x, ENNReal.ofReal (‖hullRem s (twist x)‖ ^ 2) ∂gaugeHaar ≤ ENNReal.ofReal C := by
   set c : ℝ := ∑' p : Nat.Primes, 2 * ((p : ℕ) : ℝ) ^ (-(3 / 2) : ℝ) with hc
   have hsc : Summable fun p : Nat.Primes => 2 * ((p : ℕ) : ℝ) ^ (-(3 / 2) : ℝ) :=
     (summable_primes_rpow (by norm_num)).mul_left 2
   have hB : 0 ≤ primeSqSum := tsum_nonneg fun p => by positivity
   refine ⟨2 * (primeSqSum / 4) + 2 * c ^ 2, by positivity, fun s hs => ?_⟩
-  have hpt : ∀ x, ‖hullRem s x‖ ^ 2 ≤ 2 * ‖quadPart s x‖ ^ 2 + 2 * c ^ 2 := by
+  have hpt : ∀ x, ‖hullRem s (twist x)‖ ^ 2 ≤ 2 * ‖quadPart s x‖ ^ 2 + 2 * c ^ 2 := by
     intro x
-    have h1 : hullRem s x = quadPart s x + ∑' p : Nat.Primes, cubicRem s x p := by
+    have h1 : hullRem s (twist x) = quadPart s x + ∑' p : Nat.Primes, cubicRem s (twist x) p := by
       unfold quadPart
-      rw [← Summable.tsum_add (summable_quad hs x) (summable_cubicRem hs x)]
+      rw [← Summable.tsum_add (summable_quad (norm_twist_prime x) hs)
+        (summable_cubicRem (norm_twist_prime x) hs)]
       unfold hullRem cubicRem
       exact tsum_congr fun p => by ring
-    have h2 : ‖∑' p : Nat.Primes, cubicRem s x p‖ ≤ c :=
-      tsum_of_norm_bounded hsc.hasSum fun p => norm_cubicRem_le p.2 hs x
-    have h3 := norm_add_le (quadPart s x) (∑' p : Nat.Primes, cubicRem s x p)
+    have h2 : ‖∑' p : Nat.Primes, cubicRem s (twist x) p‖ ≤ c :=
+      tsum_of_norm_bounded hsc.hasSum fun p => norm_cubicRem_le (norm_twist_prime x) p.2 hs
+    have h3 := norm_add_le (quadPart s x) (∑' p : Nat.Primes, cubicRem s (twist x) p)
     rw [← h1] at h3
     have h4 := pow_le_pow_left₀ (norm_nonneg _) (h3.trans (add_le_add_right h2 _)) 2
     nlinarith [sq_nonneg (‖quadPart s x‖ - c)]
   have htwo : ENNReal.ofReal 2 ≠ ⊤ := ENNReal.ofReal_ne_top
   calc
-    ∫⁻ x, ENNReal.ofReal (‖hullRem s x‖ ^ 2) ∂gaugeHaar
+    ∫⁻ x, ENNReal.ofReal (‖hullRem s (twist x)‖ ^ 2) ∂gaugeHaar
         ≤ ∫⁻ x, (ENNReal.ofReal 2 * ENNReal.ofReal (‖quadPart s x‖ ^ 2) + ENNReal.ofReal (2 * c ^ 2)) ∂gaugeHaar := by
           refine lintegral_mono fun x => ?_
           rw [← ENNReal.ofReal_mul (by norm_num), ← ENNReal.ofReal_add (by positivity) (by positivity)]
@@ -291,38 +156,29 @@ theorem norm_twistHom_le (x : GaugeTorus) (n : ℕ) : ‖twistHom x n‖ ≤ 1 :
   · simp
   · exact (norm_twist x n).le
 
-theorem gaugeFibre_eq_tsum (x : GaugeTorus) {s : ℂ} (hs0 : s ≠ 0) :
-    gaugeFibre x s = ∑' n, twistedHom (twistHom x) hs0 n := by
+theorem gaugeFibre_eq_tsum (x : GaugeTorus) (s : ℂ) :
+    gaugeFibre x s = ∑' n, twistHom x n * (n : ℂ) ^ (-s) := by
   unfold gaugeFibre LSeries
   refine tsum_congr fun n => ?_
-  rw [twistedHom_apply, twistHom_apply]
+  rw [twistHom_apply]
   by_cases hn : n = 0
   · simp [hn]
   · rw [LSeries.term_of_ne_zero hn, if_neg hn, div_eq_mul_inv, ← Complex.cpow_neg]
 
 /-- On `Re s > 1` the fibre is the exponential of the prime sum and the remainder. -/
 theorem exp_tsum_eq_gaugeFibre (x : GaugeTorus) {s : ℂ} (hs : 1 < s.re) :
-    Complex.exp ((∑' p : Nat.Primes, eulerVar s x p) + hullRem s x) = gaugeFibre x s := by
-  have hs0 : s ≠ 0 := by
-    intro h
-    rw [h] at hs
-    simp at hs
-    linarith
-  have hhalf : 1 / 2 < s.re := by linarith
-  have h := EulerProduct.exp_tsum_primes_log_eq_tsum (f := twistedHom (twistHom x) hs0)
-    (summable_norm_twistedHom (norm_twistHom_le x) hs hs0)
-  have hz : Summable fun p : Nat.Primes => eulerVar s x p :=
-    Summable.of_norm_bounded (summable_primes_rpow (r := -s.re) (by linarith))
-      fun p => (norm_eulerVar p.2 s x).le
-  rw [gaugeFibre_eq_tsum x hs0, ← h]
-  congr 1
-  unfold hullRem
-  rw [← Summable.tsum_add hz (summable_localRem hhalf x)]
-  refine tsum_congr fun p => ?_
-  rw [twistedHom_apply, twistHom_apply, if_neg p.2.ne_zero]
-  unfold localRem eulerVar powCoeff
-  rw [mul_comm (twist x p)]
-  ring
+    Complex.exp ((∑' p : Nat.Primes, eulerVar s (twist x) p) + hullRem s (twist x)) = gaugeFibre x s := by
+  have e : ∀ p : Nat.Primes, twistHom x p = twist x p := fun p => by
+    rw [twistHom_apply, if_neg p.2.ne_zero]
+  have h := exp_tsum_eq_tsum (f := twistHom x) (norm_twistHom_le x)
+    (fun p hp => by rw [twistHom_apply, if_neg hp.ne_zero, norm_twist]) hs
+  have h1 : ∀ p : Nat.Primes, eulerVar s (twist x) p = eulerVar s (twistHom x) p := fun p => by
+    unfold eulerVar
+    rw [e p]
+  have h2 : hullRem s (twist x) = hullRem s (twistHom x) := by
+    unfold hullRem localRem
+    exact tsum_congr fun p => by rw [h1 p]
+  rw [gaugeFibre_eq_tsum, ← h, tsum_congr h1, h2]
 
 /-! ### The prime sums converge -/
 
@@ -385,14 +241,14 @@ theorem half_lt_rayPoint_re (τ : ℝ) (j : ℕ) : 1 / 2 < (rayPoint τ j).re :=
 /-- **Rays are unbounded.** For almost every point, the logarithm of the fibre is unbounded along every horizontal ray ending at a rational point of the line. -/
 theorem ae_ray_unbounded :
     ∀ᵐ x ∂gaugeHaar, ∀ (q : ℚ) (M J : ℕ), ¬ ∀ j, J ≤ j →
-      ‖primeLim (rayPoint q j) x + hullRem (rayPoint q j) x‖ ≤ M := by
+      ‖primeLim (rayPoint q j) x + hullRem (rayPoint q j) (twist x)‖ ≤ M := by
   obtain ⟨C, hC0, hC⟩ := lintegral_hullRem_le
   simp only [ae_all_iff]
   intro q M J
   rw [ae_iff]
   simp only [not_not]
   refine measure_bounded_prime_sums_eq_zero (s := rayPoint q) (fun j => half_lt_rayPoint_re _ j) ?_
-    (g := fun j x => primeLim (rayPoint q j) x) (e := fun j x => hullRem (rayPoint q j) x) (fun j => ?_)
+    (g := fun j x => primeLim (rayPoint q j) x) (e := fun j x => hullRem (rayPoint q j) (twist x)) (fun j => ?_)
     (fun j => (continuous_hullRem (half_lt_rayPoint_re _ j)).aemeasurable) hC0
     (fun j => hC _ (half_lt_rayPoint_re _ j)) (M : ℝ) J
   · have h1 : Tendsto (fun j : ℕ => (1 / 2 : ℝ) + 1 / ((j : ℝ) + 1)) atTop (𝓝 (1 / 2 + 0)) :=
@@ -416,18 +272,16 @@ theorem ae_natural_boundary :
         ¬ ∀ s ∈ ball (⟨1 / 2, τ₀⟩ : ℂ) r, s ∈ rightHalf → H s = F s := by
   filter_upwards [ae_exists_primeLimit, ae_ray_unbounded] with x hx hray
   obtain ⟨P, hPa, hP⟩ := hx
-  set W : ℂ → ℂ := fun s => P s + hullRem s x with hW
-  have hWa : AnalyticOnNhd ℂ W rightHalf := hPa.add (analyticOnNhd_hullRem x)
+  set W : ℂ → ℂ := fun s => P s + hullRem s (twist x) with hW
+  have hWa : AnalyticOnNhd ℂ W rightHalf := hPa.add (analyticOnNhd_hullRem (norm_twist_prime x))
   refine ⟨fun s => Complex.exp (W s), fun s hs => (hWa s hs).cexp, fun s hs => ?_,
     fun s _ => Complex.exp_ne_zero _, ?_⟩
   · have hmem : s ∈ rightHalf := by
       show 1 / 2 < s.re
       linarith
-    have hz : Summable fun p : Nat.Primes => eulerVar s x p :=
-      Summable.of_norm_bounded (summable_primes_rpow (r := -s.re) (by linarith))
-        fun p => (norm_eulerVar p.2 s x).le
-    have h1 : P s = ∑' p : Nat.Primes, eulerVar s x p :=
-      tendsto_nhds_unique (hP s hmem) (tendsto_sum_primesBelow (g := eulerVar s x) hz)
+    have hz := summable_eulerVar (norm_twist_prime x) hs
+    have h1 : P s = ∑' p : Nat.Primes, eulerVar s (twist x) p :=
+      tendsto_nhds_unique (hP s hmem) (tendsto_sum_primesBelow (g := eulerVar s (twist x)) hz)
     simp only [hW]
     rw [h1]
     exact exp_tsum_eq_gaugeFibre x hs
@@ -521,7 +375,7 @@ theorem ae_natural_boundary :
     rw [← dist_eq_norm]
     have h5 := dist_triangle_right (rayPoint q j) (rayPoint q J) z₁
     linarith
-  have h6 : W (rayPoint q j) = primeLim (rayPoint q j) x + hullRem (rayPoint q j) x := by
+  have h6 : W (rayPoint q j) = primeLim (rayPoint q j) x + hullRem (rayPoint q j) (twist x) := by
     simp only [hW]
     unfold primeLim
     rw [(hP _ (half_lt_rayPoint_re _ j)).limUnder_eq]

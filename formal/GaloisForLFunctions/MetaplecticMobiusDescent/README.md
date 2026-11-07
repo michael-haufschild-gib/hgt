@@ -284,10 +284,35 @@ the actual series near a positive-height point. Every spatial derivative
 therefore commutes with its row sum. The height-profile equation gives
 the Laplace eigenvalue of each individual summand.
 
+`TheCubicEisensteinEquation.lean` proves the actual Eisenstein series is
+smooth and satisfies its Laplace equation for `Re s > 2`. Termwise first
+and second axis derivatives follow from the summable multilinear jets.
+
+`BoundedCubicEisensteinRemainder.lean` proves the actual incoming remainder is
+uniformly bounded for Re s > 4 and belongs to quotient L². Bianchi reduction
+gives a summable majorant on integral row coordinates.
+
+`SmoothCubicExhaustion.lean` constructs compact smooth cutoffs from the proper
+cusp barrier. Their hyperbolic gradients are uniformly bounded, and each
+cutoff is eventually one near any fixed point.
+
+`BoundedCubicRemainderGradient.lean` bounds the actual incoming remainder and
+its hyperbolic gradient for Re s > 4. The logarithmic height identity compares
+each derivative with an auxiliary cutoff remainder; termwise differentiation
+supplies the actual gradient.
+
+`BoundedSmoothCubicOperatorDomain.lean` puts bounded smooth functions with
+bounded hyperbolic gradient in the actual energy domain. Compact cutoffs
+converge in mass and gradient; Green’s identity places their square-integrable
+coordinate Laplacian in the closed operator graph.
+
+`TheCubicInitialResolventMatching.lean` identifies the actual Eisenstein
+remainder with the constructed L² resolvent correction for Re s > 4 and Im s >
+0. The actual coordinate equation, bounded gradient, and cutoff approximation
+discharge all operator-domain inputs.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.
 
 The arithmetic and quotient analysis draw on the [OpenAI metaplectic argument](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf). Source attribution is in `NOTICE`; license is in `LICENSE`.
-
-`TheCubicEisensteinEquation.lean` proves the actual Eisenstein series is smooth and satisfies its Laplace equation for Re s > 2. Termwise first and second axis derivatives follow from the summable multilinear jets.

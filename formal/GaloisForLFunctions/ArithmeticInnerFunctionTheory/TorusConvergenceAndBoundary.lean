@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.CriticalStripArithmeticBernstein
 
-/-!+# Convergence is essential to arithmetic torus positivity
+/-! # Convergence is essential to arithmetic torus positivity
 
 The Chebyshev recurrence has a conserved quadratic form equal to one. Consequently its
 characters cannot tend to zero. An amplitude bounded away from zero makes every nonempty

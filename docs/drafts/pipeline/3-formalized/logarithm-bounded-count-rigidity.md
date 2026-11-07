@@ -1,8 +1,8 @@
 # Bounded count distance for positive integer-norm systems
 
 - **ID:** SPL-bounded-count
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Target:** A locally finite Beurling system with integer generator norms
   and `N(x)=⌊x⌋+O(1)` is the rational-prime system, including multiplicities.
 
@@ -24,35 +24,40 @@ This extends the corpus's vanishing-error isolation gap to every bounded
 error at slope one: the bounded sup-count-distance component of the rational
 primes contains only that system. The free commutative monoid of positive generators is
 essential: arbitrary nonnegative integral multiplicative coefficients admit
-bounded-error counterexamples. The result would not classify unbounded
-subpower errors or determine the distance needed for one exceptional zero.
+bounded-error counterexamples. The distance needed for one exceptional zero
+remains open.
 
 ## Lean evidence
 
-The complete proof passes a scratch Lean check, including actual finite balls
-and the label equivalence. Its capstone axiom set is
-`{propext, Classical.choice, Quot.sound}`. Production modules
-`NormCollisionAmplification` and `CountDistanceRigidity` are written;
-their direct source checks remain required. The latter derives bounded-error
-rigidity from the stronger count-distance trichotomy.
+`SumProductArithmeticOfTheLogarithm/NormCollisionAmplification.lean` and
+`CountDistanceRigidity.lean` pass direct Lean checks. Their namespace is
+`GaloisForLFunctions.SumProductArithmeticOfTheLogarithm`.
+
+* `bounded_intCount_iff_norm_injective`: bounded multiplicities force unique factorization.
+* `count_distance_trichotomy`: the exact collision/missing-integer alternatives.
+* `primes_of_bounded_count_error`: bounded error for actual finite balls forces
+  a norm-preserving equivalence of labels with rational primes.
+
+The capstones have axiom set `{propext, Classical.choice, Quot.sound}`.
 
 All norm-fibre `ncard` comparisons explicitly establish finiteness. No external
 novelty claim is made.
 
-## Stronger question exposed
+## Stronger result
 
-Does every nonclassical integer-norm system have count discrepancy
-`Ω(log x)` along some unbounded sequence? A collision at norm `m` gives a
-jump of at least `k+1` at `m^k`, already forcing this scale. With injective
-norms, a stronger linear deficit may hold whenever any integer is missing.
+The [count-distance floor](logarithm-count-distance-floor.md) gives every
+nonclassical integer-norm system discrepancy `Ω(log x)` along an unbounded
+sequence. A collision at norm `m` gives a
+jump of at least `k+1` at `m^k`, forcing this scale. With injective
+norms, a stronger linear deficit holds whenever any integer is missing.
 Indeed, if `r,r+1,mr,m(r+1)` are all represented, injectivity identifies the
 two factorizations of `mr(r+1)`. The representations of `r` and `r+1` have
 disjoint label support, since each label has integer norm at least two.
 Cancellation then represents `m`. Thus a missing `m` forces at least one
 missing element in each such quadruple, yielding a positive density of
-omissions. This stronger claim requires a separate proof and audit.
+omissions. The linked card records the exact bounds and Lean status.
 
 Erdős records Beurling's `N(x)=x+o(log x)` rigidity conjecture for real
 generator norms in [1977, pp. 68–69](https://www.renyi.hu/~p_erdos/1977-27.pdf).
-Integer support is a genuine restriction; proving the proposed integer case
+Integer support is a genuine restriction; proving the integer case
 must not be reported as settling that general conjecture.

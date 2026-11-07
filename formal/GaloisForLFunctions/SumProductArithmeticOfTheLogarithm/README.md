@@ -54,6 +54,8 @@ of actual integers, rather than arbitrary torus points.
 These results couple translation to multiplication without an analytic sign
 assumption. They classify exact fibres and the resolution needed to separate
 them; occupation across distinct winding cells remains a separate question.
+For Beurling counts, write `N(x)` for the number of generalized integers of
+norm at most `x`, and `D(n)=N(n)−n`.
 
 | Theorem | Exact content | Lean declaration |
 |---|---|---|
@@ -63,6 +65,9 @@ them; occupation across distinct winding cells remains a separate question.
 | Optimal resolution order | Pairs `(n+1,n+4)` and `(n+2,n+3)` are distinct but their translated products differ by two at every nonnegative integer shift. Corresponding logarithms differ by at most `2/(n+1)²`. | [`neighbouring_pair_log_gap`, `neighbouring_pair_signatures_ne`](SharpnessOfProductResolution.lean) |
 | Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
 | Finite recurrence | Every finite set `A` aligns to precision `2π/(Q+1)` at some height in `[L,L(Q+1)^|A|]`, for every `L>0`. There is no last aligned height. | [`exists_alignment_in_scaled_interval`, `not_exists_last_alignment`](FiniteAlignmentReturns.lean) |
+| Collision amplification | Distinct factorizations of norm `m` give at least `k+1` factorizations of `m^k`. Uniformly bounded multiplicities force injective norm. | [`intCount_pow_ge_of_collision`, `bounded_intCount_iff_norm_injective`](NormCollisionAmplification.lean) |
+| Count-distance trichotomy | A locally finite positive integer-norm system is classical, has `k≤|D(m^k)|+|D(m^k−1)|` for some `m≥2`, or has `N(m(4k+1))+k≤m(4k+1)` for some `m≥2`. | [`count_distance_trichotomy`](CountDistanceRigidity.lean) |
+| Logarithmic isolation | Every nonclassical such system has `|D(n)|≥c log n` arbitrarily far out, for some `c>0`. Error `o(log n)` forces a norm-preserving equivalence of labels with rational primes. | [`primes_or_logarithmic_count_distance`, `primes_of_sublogarithmic_count_error`](LogarithmicCountFloor.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
 Tuple reconstruction recovers the monic polynomial `∏ᵢ(X+nᵢ)` by interpolation.
@@ -70,6 +75,17 @@ Real-cell separation uses the integer gap between distinct products. Winding
 occupation applies this separation to sums of two phase remainders. The close
 neighbouring pairs show why exact interpolation alone does not remove the
 need for quantitative resolution.
+
+The count-distance argument uses the free monoid of generator labels. A norm
+collision amplifies along powers. Without collisions, representations of
+`r,r+1,mr,m(r+1)` force a representation of `m`: the first two factorizations
+have disjoint supports, and cancellation identifies the quotient. A missing
+integer therefore forces omissions in every such quadruple. Counting their
+incidences gives a linear deficit. These two alternatives isolate the rational
+primes among systems with count error `o(log n)`, with the leading coefficient
+fixed at one. Bounded-error rigidity is a corollary. They do not determine the
+distance needed for an exceptional zero or settle the corresponding question
+for generators of arbitrary real norm.
 
 ## Tools and open research topics
 

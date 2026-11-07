@@ -45,6 +45,7 @@ import GaloisForLFunctions.PrimeTorusTheory.TheTransferToRareHeights
 import GaloisForLFunctions.PrimeTorusTheory.PrimeCharactersAreLacunary
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
 import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
+import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
 
 /-!
 # Prime Torus Theory

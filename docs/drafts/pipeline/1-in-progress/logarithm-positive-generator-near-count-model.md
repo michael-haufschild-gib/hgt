@@ -38,3 +38,15 @@ answer the exceptional-zero distance question.
 Formalize the factorization bijection, local finiteness, finite count identity,
 and explicit error bound before using the construction. No Lean proof or
 external novelty claim is asserted.
+
+## Carry recurrence to investigate
+
+The Euler ratio also suggests the exact integer-threshold recurrence
+
+`N_B(n)+N_B(⌊n/2⌋)=Σ_{a≥0}⌊n/3^a⌋=(3n−s₃(n))/2`,
+
+where `s₃(n)` is the ternary digit sum. Thus its discrepancy should satisfy
+`D(n)+D(⌊n/2⌋)=(n mod 2−s₃(n))/2`.
+This would express the count error through ternary carries under dyadic
+dilation. Whether their cancellation improves the quadratic logarithmic
+upper bound is a separate question. The recurrence also requires formalization.

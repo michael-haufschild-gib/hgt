@@ -45,7 +45,7 @@ theorem sum_primesBelow_inv_sqrt_le (N : ℕ) : ∑ p ∈ N.primesBelow, 1 / √
     have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hp.2.two_le
     have hlog : Real.log 2 ≤ Real.log p := Real.log_le_log (by norm_num) hp2
     have hrpow : (p : ℝ) ^ (-(1 / 2 : ℝ)) = 1 / √(p : ℝ) := by
-      rw [Real.rpow_neg (by positivity), Real.sqrt_eq_rpow, one_div]
+      rw [Real.rpow_neg (by positivity), Real.sqrt_eq_rpow, inv_eq_one_div]
     rw [hrpow, le_div_iff₀ hl2]
     have h0 : 0 ≤ 1 / √(p : ℝ) := by positivity
     nlinarith

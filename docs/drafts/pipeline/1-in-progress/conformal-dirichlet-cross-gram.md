@@ -9,10 +9,6 @@
 
 `shiftedBudget δ 1 Q` evaluates the chart at `½+iτ`, not `½+δ+iτ`; only its zeta weight shifts. Distinguish this fixed chart from the translated chart before deriving a Gram formula.
 
-## Open claims
-
-Determine exact mixed moments, their finite Gram positivity and projection remainder, and which conclusions survive multiplication by the zeta weight.
-
 ## Exact formulas
 
 Write `z=(s-1)/s`, `t=log m`, and `Dₜ(z)=exp(-t/(1-z))`.
@@ -30,7 +26,38 @@ Conformal exponentials remain outer:
 At the fixed chart and `Q(0)=0`, the mean is zero. Unweighted cross Gram formulas alone do not
 evaluate the zeta-weighted variational budget.
 
+For independent chart shifts `η,ξ≥0`, set `A(Q,η;z)=exp Q(ψη(z))` and
+`aₖ(Q,η)=[zᵏ]A(Q,η;z)`. These Taylor series converge absolutely on the closed unit disc:
+the only possible chart pole is outside a larger disc of radius
+`1+[2(η+1)]⁻¹`. Consequently
+
+- `⟨A(Q,η),A(R,ξ)⟩=Σₖ conj(aₖ(Q,η))aₖ(R,ξ)`;
+- `⟨A(Q,η),m^{-(1/2+δ+iτ)}⟩=Σₖ conj(aₖ(Q,η))exp(-(1+δ)t)Pₖ(t,1)/k!`.
+
+For `wₘ=bₘm^{-δ}` and `F=Σ₁≤m≤M wₘD_log(m)`, its first `N` conformal coefficients remove
+exactly `Σₖ<N |[zᵏ]F|²` from `Σₘ,ₙwₘwₙ/max(m,n)`. The remainder is the squared norm of
+`F−Σₖ<N[zᵏ]F zᵏ`. Existing Abel diagonalization therefore bounds these coefficient squares by
+`S_M²/M+Σ₁≤j<M (1/j−1/(j+1))S_j²`, with `S_j=Σₘ≤j wₘ`.
+
+## Budget consequence and obstruction
+
+Conformal factors do **not** bypass normalized logarithmic invariance: their log-dilation mean
+is `Re Q(0)−Re Q(δ/(1+δ))`, exactly the difference of centre values. Their quadratic correlations
+remain useful. For the actual critical product `H_Q=mollified Q`, projection gives
+`budget 1 Q = Σₖ<N |[zᵏ]H_Q|² + ‖H_Q−Σₖ<N[zᵏ]H_Q zᵏ‖²`.
+For the shifted budget the weight is `|ζ((1−z)⁻¹+δ)|²`, with `exp Q(z)` still in the fixed chart.
+An unweighted Abel estimate is not a bound for this weighted problem.
+
+## Completeness conjecture
+
+The Laguerre moments should give a complete, rather than merely contractive, factorization:
+`Σₖ |[zᵏ]F|²=Σₘ,ₙwₘwₙ/max(m,n)` and finite projection residuals should tend to zero.
+Corpus route: `HardyDiskSpace.hasSum_circleAverage_normSq_diskCoeff` gives the interior identity;
+boundedness of each finite Dirichlet sum permits dominated convergence to the boundary.
+
 ## Lean status
 
-Core identities drafted in `ArithmeticInnerFunctionTheory/ConformalDirichletProjection.lean`;
-verification pending. Full exponential pairings and finite mixed Gram/Abel identities remain to be completed.
+`ArithmeticInnerFunctionTheory/ConformalDirichletProjection.lean` compiles; five main transitive
+axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
+Full Gram identities in `ArithmeticInnerFunctionTheory/ConformalDirichletGram.lean` and the
+completeness extension await verification.

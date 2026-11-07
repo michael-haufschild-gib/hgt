@@ -49,6 +49,14 @@ theorem shiftedBudget_eq_circleAverage (δ : ℝ) (Q : Polynomial ℂ) :
 def dirichletDiscPoly (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) (z : ℂ) : ℂ :=
   ∑ m ∈ Finset.Icc 1 M, ((b m * (m : ℝ) ^ (-δ) : ℝ) : ℂ) * dirichletDisc (Real.log m) z
 
+theorem norm_dirichletDiscPoly_le (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) {z : ℂ} (hz : ‖z‖ ≤ 1) :
+    ‖dirichletDiscPoly M b δ z‖ ≤ ∑ m ∈ Finset.Icc 1 M, |b m * (m : ℝ) ^ (-δ)| := by
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun m hm => ?_)
+  have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (Finset.mem_Icc.mp hm).1
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
+  exact mul_le_of_le_one_right (abs_nonneg _)
+    (norm_dirichletDisc_le_one (Real.log_nonneg hm1) hz)
+
 theorem isHardyDisc_dirichletDiscPoly (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) :
     IsHardyDisc (dirichletDiscPoly M b δ) := by
   apply isHardyDisc_of_bounded (M := ∑ m ∈ Finset.Icc 1 M, |b m * (m : ℝ) ^ (-δ)|)
@@ -59,12 +67,7 @@ theorem isHardyDisc_dirichletDiscPoly (M : ℕ) (b : ℕ → ℝ) (δ : ℝ) :
     exact (DifferentiableAt.fun_sum (fun m _ => hd m)).differentiableWithinAt
   · unfold dirichletDiscPoly
     exact Finset.measurable_fun_sum _ fun m _ => measurable_const.mul (measurable_dirichletDisc _)
-  · intro z hz
-    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun m hm => ?_)
-    have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast (Finset.mem_Icc.mp hm).1
-    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
-    exact mul_le_of_le_one_right (abs_nonneg _)
-      (norm_dirichletDisc_le_one (Real.log_nonneg hm1) hz)
+  · exact fun _ hz => norm_dirichletDiscPoly_le M b δ hz
 
 theorem dirichletLineMode_log_eq_cpow {m : ℕ} (hm : 1 ≤ m) (δ τ : ℝ) :
     dirichletLineMode (Real.log m) δ τ = (m : ℂ) ^ (-(1 / 2 + (δ : ℂ) + (τ : ℂ) * I)) := by
@@ -153,10 +156,10 @@ theorem conformal_squares_le_abel {M : ℕ} (hM : 1 ≤ M) (N : ℕ) (b : ℕ �
 def conformalDiscExp (Q : Polynomial ℂ) (η : ℝ) (z : ℂ) : ℂ :=
   Complex.exp (Q.eval (translatedDiscCoord η z))
 
-theorem conformalDiscExp_circleMap (Q : Polynomial ℂ) {η : ℝ} (hη : 0 ≤ η) (τ : ℝ) :
+theorem conformalDiscExp_circleMap (Q : Polynomial ℂ) (η τ : ℝ) :
     conformalDiscExp Q η (circleMap 0 1 (criticalLineAngle τ)) =
       polyMollifier 1 Q (1 / 2 + (η : ℂ) + (τ : ℂ) * I) := by
-  rw [conformalDiscExp, translatedDiscCoord_circleMap hη, polyMollifier]
+  rw [conformalDiscExp, translatedDiscCoord_circleMap, polyMollifier]
 
 /-- Each translated chart exponential is holomorphic on a disc strictly larger than the unit disc. -/
 theorem conformalDiscExp_larger_disc (Q : Polynomial ℂ) {η : ℝ} (hη : 0 ≤ η) :
@@ -213,10 +216,14 @@ theorem hasSum_polyMollifier_gram (Q R : Polynomial ℂ) {η ξ : ℝ} (hη : 0 
   obtain ⟨ha, hsum⟩ := conformalDiscExp_summable_taylor Q hη
   have hs := hasSum_circleAverage_conj_series_mul hiR ha (fun z hz => hsum z hz.le)
   simp only [circleAverage_conj_pow_mul_of_differentiableOn hdR] at hs
+  have hconj : ContinuousOn (fun z => conj (conformalDiscExp Q η z)) (sphere 0 1) :=
+    Complex.conjCLE.continuous.comp_continuousOn hcQ
   have hprod : CircleIntegrable (fun z => conj (conformalDiscExp Q η z) * conformalDiscExp R ξ z) 0 1 :=
-    hiR.mul_of_continuousOn (by simpa using Complex.conjCLE.continuous.comp_continuousOn hcQ)
-  have hchange := circleAverage_complex_eq_poisson hprod (fun τ => by
-    rw [conformalDiscExp_circleMap Q hη, conformalDiscExp_circleMap R hξ])
+    hiR.mul_of_continuousOn (by simpa only [abs_one] using hconj)
+  have hchange := circleAverage_complex_eq_poisson
+    (F := fun τ => conj (polyMollifier 1 Q (1 / 2 + (η : ℂ) + (τ : ℂ) * I)) *
+      polyMollifier 1 R (1 / 2 + (ξ : ℂ) + (τ : ℂ) * I)) hprod (fun τ => by
+    rw [conformalDiscExp_circleMap Q η, conformalDiscExp_circleMap R ξ])
   rwa [hchange.2] at hs
 
 /-- Exact conformal-exponential/Dirichlet cross Gram matrix. The chart shift `η` and the
@@ -232,10 +239,14 @@ theorem hasSum_polyMollifier_dirichlet (Q : Polynomial ℂ) {η t : ℝ}
   have hD := isHardyDisc_dirichletDisc ht
   have hs := hD.hasSum_conj_taylor_mul ha (fun z hz => hsum z hz.le)
   have hc := (conformalDiscExp_differentiableOn Q hη).continuousOn.mono sphere_subset_closedBall
+  have hconj : ContinuousOn (fun z => conj (conformalDiscExp Q η z)) (sphere 0 1) :=
+    Complex.conjCLE.continuous.comp_continuousOn hc
   have hprod : CircleIntegrable (fun z => conj (conformalDiscExp Q η z) * dirichletDisc t z) 0 1 :=
-    hD.circleIntegrable.mul_of_continuousOn (by simpa using Complex.conjCLE.continuous.comp_continuousOn hc)
-  have hchange := circleAverage_complex_eq_poisson hprod (fun τ => by
-    rw [conformalDiscExp_circleMap Q hη, dirichletDisc_circleMap])
+    hD.circleIntegrable.mul_of_continuousOn (by simpa only [abs_one] using hconj)
+  have hchange := circleAverage_complex_eq_poisson
+    (F := fun τ => conj (polyMollifier 1 Q (1 / 2 + (η : ℂ) + (τ : ℂ) * I)) *
+      dirichletLineMode t 0 τ) hprod (fun τ => by
+    rw [conformalDiscExp_circleMap Q η, dirichletDisc_circleMap])
   rw [hchange.2] at hs
   have he : (fun τ : ℝ => conj (polyMollifier 1 Q (1 / 2 + (η : ℂ) + (τ : ℂ) * I)) *
       dirichletLineMode t δ τ * (halfPlanePoissonKernel 1 τ : ℂ)) =
