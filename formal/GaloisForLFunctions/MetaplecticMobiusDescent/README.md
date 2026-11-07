@@ -245,6 +245,10 @@ with `s(2−s)` is meromorphic at `4/3`.
 cusp cosets cannot both have height above one. High-cusp profile sums
 therefore have finite support and transform by the actual cubic character.
 
+`CubicIncomingHeightProfiles.lean` computes the exact cutoff-power
+Laplacian defect. Its height support is compact, and each height value
+is entire in the spectral parameter.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.
