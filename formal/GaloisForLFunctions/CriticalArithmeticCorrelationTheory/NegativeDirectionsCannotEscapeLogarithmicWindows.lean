@@ -84,7 +84,12 @@ private lemma integral_sq_eq_Iic_add_Ioc {A : ℝ} (hA : 0 ≤ A) {U : ℝ → �
         rw [Set.indicator_of_notMem (fun hm => not_le.mpr h1 (Set.mem_Iic.mp hm)),
           Set.indicator_of_notMem (fun hm => not_le.mpr h2 hm.2), hs u h2]
         norm_num
-  rw [hpt, integral_add hi_le hi_oc, MeasureTheory.integral_indicator measurableSet_Ioc]
+  calc (∫ u, U u ^ 2)
+      = ∫ u, ((Set.Iic (-A)).indicator (fun v => U v ^ 2) u +
+          (Set.Ioc (-A) 1).indicator (fun v => U v ^ 2) u) := congrArg (fun f => ∫ u, f u) hpt
+    _ = (∫ u, (Set.Iic (-A)).indicator (fun v => U v ^ 2) u) +
+          ∫ u in Set.Ioc (-A) 1, U u ^ 2 := by
+        rw [integral_add hi_le hi_oc, MeasureTheory.integral_indicator measurableSet_Ioc]
 
 private lemma iic_mass_le_exponential_mass {C_B c_a R_max : ℝ}
     (hCB : 0 < C_B) (hca : 0 < c_a) (hR : 0 < R_max)
@@ -225,7 +230,9 @@ theorem exists_window_localized_collar_garding :
   have hsplit := integral_sq_eq_Iic_add_Ioc (zero_le_one.trans hAR1) hUy_cd.continuous hUy_cs hUy_le1
   have htail := iic_mass_le_exponential_mass hCB hca hR hUy_cd.continuous hUy_cs
   have hg_x := hg hc1 hc8 x
-  dsimp only at hg_x
+  change (c_κ / R_max) * topCollarSeventhMass M N x +
+      (c_a / R_max) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+    weilQuad U_y + C_B * (R_max + 1) * ∫ u, U_y u ^ 2 at hg_x
   change (c_κ / R_max) * topCollarSeventhMass M N x +
       (c_a / (2 * R_max)) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
     weilQuad U_y + (C_B * (R_max + 1)) * ∫ u in Set.Ioc (-A_R) 1, U_y u ^ 2
@@ -296,7 +303,9 @@ theorem collar_nonpos_weilQuad_concentrates_in_log_window :
     have hid : 1 / (R_max + 1) * (N : ℝ) = (N : ℝ) / (R_max + 1) := by field_simp
     exact ((le_div_iff₀ (by positivity)).mp (by linarith)).trans_eq' (mul_comm _ _)
   refine ⟨A_R, hAR1, hAR_ub, ?_⟩
-  filter_upwards [hpol hR, hev_cN, eventually_ge_atTop 3] with N hg hcN_b hN3 c hc1 hc8 x hle0
+  filter_upwards [hpol hR, hev_cN, eventually_ge_atTop 3] with N hg hcN_b hN3 c hc1 hc8 x
+  dsimp only
+  intro hle0
   set M := N / linearDefectCutoff c
   set y := atomicTailCoefficients M x
   set U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
@@ -334,9 +343,12 @@ theorem collar_nonpos_weilQuad_concentrates_in_log_window :
   have hsplit := integral_sq_eq_Iic_add_Ioc (zero_le_one.trans hAR1) hUy_cd.continuous hUy_cs hUy_le1
   have htail := iic_mass_le_exponential_mass hCB hca hR hUy_cd.continuous hUy_cs
   have hg_x := hg hc1 hc8 x
-  dsimp only at hg_x
+  change (c_κ / R_max) * topCollarSeventhMass M N x +
+      (c_a / R_max) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+    weilQuad U_y + C_B * (R_max + 1) * ∫ u, U_y u ^ 2 at hg_x
   have hS7_0 : 0 ≤ (c_κ / R_max) * topCollarSeventhMass M N x :=
     mul_nonneg (div_nonneg hcκ.le hR.le) (topCollarSeventhMass_nonneg M N x)
+  change (1 / 2 : ℝ) * (∫ u, U_y u ^ 2) ≤ ∫ u in Set.Ioc (-A_R) 1, U_y u ^ 2
   rw [hsplit] at hg_x ⊢
   have hB_pos : 0 < C_B * (R_max + 1) := by positivity
   set I_le := ∫ u, (Set.Iic (-A_R)).indicator (fun v => U_y v ^ 2) u
@@ -415,7 +427,7 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
     have hL0 : 0 < Real.log (N : ℝ) := Real.log_pos (by exact_mod_cast (show 1 < N by omega))
     have hSR_K : (S_R : ℝ) / K₁ ≤ Real.log (N : ℝ) ^ (1 / 8 : ℝ) := by
       have h8 : ((S_R : ℝ) / K₁) ^ 8 ≤ (Real.log (N : ℝ) ^ (1 / 8 : ℝ)) ^ 8 := by
-        rwa [← Real.rpow_natCast, ← Real.rpow_mul hL0.le,
+        rwa [← Real.rpow_natCast (Real.log (N : ℝ) ^ (1 / 8 : ℝ)), ← Real.rpow_mul hL0.le,
           show (1 / 8 : ℝ) * (8 : ℕ) = 1 by norm_num, Real.rpow_one]
       exact le_of_pow_le_pow_left₀ (by norm_num : 8 ≠ 0) (by positivity) h8
     have hc_up : c ≤ 2 * K₁ * Real.log (N : ℝ) ^ (1 / 8 : ℝ) := by
@@ -437,7 +449,11 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
     have hN_lt : N < S_R * (M_R + 1) := by
       simpa only [Nat.mul_comm] using Nat.lt_mul_div_succ N hSR_pos
     have hN_le_2SM : (N : ℝ) ≤ 2 * (S_R : ℝ) * (M_R : ℝ) := by
-      have hnat : N ≤ 2 * S_R * M_R := by omega
+      have hnat : N ≤ 2 * S_R * M_R := by
+        calc N ≤ S_R * (M_R + 1) := hN_lt.le
+          _ = S_R * M_R + S_R * 1 := by ring
+          _ ≤ S_R * M_R + S_R * M_R := Nat.add_le_add_left (Nat.mul_le_mul_left S_R hMR1) _
+          _ = 2 * S_R * M_R := by ring
       exact_mod_cast hnat
     have hSM_le_N : (M_R : ℝ) * (S_R : ℝ) ≤ N := by
       exact_mod_cast Nat.div_mul_le_self N S_R
@@ -468,9 +484,10 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
       linarith only [hlog1, hlog2, hL_half]
     have hR_SR8 : R_max ≤ K₁ ^ 8 * (S_R : ℝ) ^ 8 := by
       have h1 : (R_max + 1) ^ (1 / 8 : ℝ) ≤ K₁ * (S_R : ℝ) :=
-        (div_le_iff₀ hK₁_pos).mp hSR_ge
+        ((div_le_iff₀ hK₁_pos).mp hSR_ge).trans_eq (mul_comm _ _)
       have hp := pow_le_pow_left₀ (by positivity) h1 8
-      rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity : 0 ≤ R_max + 1),
+      rw [← Real.rpow_natCast ((R_max + 1) ^ (1 / 8 : ℝ)),
+        ← Real.rpow_mul (by positivity : 0 ≤ R_max + 1),
         show (1 / 8 : ℝ) * (8 : ℕ) = 1 by norm_num, Real.rpow_one, mul_pow] at hp
       linarith only [hp]
     have hc_sub_up : c_sub ≤ 2 * K₁ * Real.log (M_R : ℝ) ^ (1 / 8 : ℝ) := by
@@ -483,7 +500,7 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
           rw [div_le_iff₀ (by positivity)]
           calc R_max * Real.log (N : ℝ)
               ≤ (K₁ ^ 8 * (S_R : ℝ) ^ 8) * Real.log (N : ℝ) :=
-                mul_le_mul_of_nonneg_right hR_SR8 (by linarith only [hlogM_pos, hlogM_lb])
+                mul_le_mul_of_nonneg_right hR_SR8 (Real.log_nonneg (by exact_mod_cast hN1))
             _ = K₁ ^ 8 * Real.log (N : ℝ) * (S_R : ℝ) ^ 8 := by ring
         have h4 : K₁ ^ 8 * Real.log (N : ℝ) ≤ (2 * K₁) ^ 8 * Real.log (M_R : ℝ) := by
           have hm := mul_le_mul_of_nonneg_left hlogM_lb (by positivity : 0 ≤ K₁ ^ 8)
@@ -492,7 +509,8 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
           nlinarith only [hm, h256, hlogM_pos]
         have h5 : (2 * K₁) ^ 8 * Real.log (M_R : ℝ) =
             (2 * K₁ * Real.log (M_R : ℝ) ^ (1 / 8 : ℝ)) ^ 8 := by
-          rw [mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hlogM_pos.le,
+          rw [mul_pow (2 * K₁), ← Real.rpow_natCast (Real.log (M_R : ℝ) ^ (1 / 8 : ℝ)),
+            ← Real.rpow_mul hlogM_pos.le,
             show (1 / 8 : ℝ) * (8 : ℕ) = 1 by norm_num, Real.rpow_one]
         exact (h1.trans (h2.trans (h3.trans h4))).trans_eq h5
       exact le_of_pow_le_pow_left₀ (by norm_num : 8 ≠ 0) (by positivity) hc8_sub
@@ -510,9 +528,10 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
         (atomDilate tiltedUnitSpline (c_sub / M_R)) =
         atomicTest N (primeHorizonExtension x) (atomDilate tiltedUnitSpline (c / N)) := by
       rw [hw_eq, atomicTest_eq_of_vanish_above (Nat.div_le_self N S_R) hx_van]
+      funext u
       unfold atomicTest
       refine sum_congr rfl fun n hn => ?_
-      exact congrArg (· * atomDilate tiltedUnitSpline (c / N) (_ - Real.log n))
+      exact congrArg (· * atomDilate tiltedUnitSpline (c / N) (u - Real.log n))
         (primeHorizonExtension_coe x_sub ⟨n, hn⟩)
     have henergy_eq : completeWeilEnergy tiltedUnitSpline c N x =
         completeWeilEnergy tiltedUnitSpline c_sub M_R x_sub := by
@@ -524,6 +543,7 @@ theorem exists_completeWeilEnergy_floor_of_vanish_top_log_window :
         htest_eq, hw_eq]
     have hnorm_eq : ‖x‖ ^ 2 = ‖x_sub‖ ^ 2 := by
       rw [← sum_primeHorizonExtension_sq x, ← sum_primeHorizonExtension_sq x_sub]
+      have hMR_le_N : M_R ≤ N := Nat.div_le_self N S_R
       have hsub : Icc 1 N = Icc 1 M_R ∪ Ioc M_R N := by
         ext n; simp only [mem_union, mem_Icc, mem_Ioc]; omega
       rw [hsub, sum_union (disjoint_left.mpr fun n h1 h2 => by
@@ -734,7 +754,8 @@ theorem sq_exp_neg_half_moment_le_exponential_mass {ε : ℝ} (hε : 0 < ε)
         dsimp only [Φ]
         rw [Set.indicator_of_notMem hnot1, Set.indicator_of_notMem hnot2]
         norm_num
-    have hint_sum := integral_nonneg hpt
+    have hint_sum : 0 ≤ ∫ u, ((t * t) * (U u ^ 2 * W u) + 2 * t * (U u * Real.exp (-(u / 2))) + Φ u) :=
+      integral_nonneg hpt
     rw [integral_add ((hiUW.const_mul _).add (hiUE.const_mul _)) hiΦ,
       integral_add (hiUW.const_mul _) (hiUE.const_mul _),
       integral_const_mul, integral_const_mul] at hint_sum
@@ -770,22 +791,20 @@ theorem sq_exp_pos_half_moment_le_l2
         Set.indicator_of_mem (Set.mem_Ioc.mpr ⟨hu0, hu1⟩), zero_add]
       exact (Real.exp_le_exp.mpr hu1).trans (by linarith [Real.exp_one_lt_d9])
   have hi_Iic : Integrable ((Set.Iic (0 : ℝ)).indicator (fun v => Real.exp v)) := by
-    have hneg : IntegrableOn (fun v : ℝ => Real.exp (-v)) (Set.Ioi 0) := by
-      have h1 := integrableOn_exp_mul_Ioi (by norm_num : -(1 : ℝ) < 0) 0
-      change Integrable _ _
-      simpa only [neg_one_mul] using h1
+    have hneg : IntegrableOn (fun v : ℝ => Real.exp (-(1 : ℝ) * v)) (Set.Ioi 0) :=
+      integrableOn_exp_mul_Ioi (by norm_num : -(1 : ℝ) < 0) 0
     have hcomp : Integrable (fun v : ℝ =>
-        (Set.Ioi (0 : ℝ)).indicator (fun x => Real.exp (-x)) (-v)) :=
+        (Set.Ioi (0 : ℝ)).indicator (fun x => Real.exp (-(1 : ℝ) * x)) (-v)) :=
       (hneg.integrable_indicator measurableSet_Ioi).comp_neg
     refine hcomp.congr ?_
-    have hsub : {v : ℝ | ¬((Set.Ioi (0 : ℝ)).indicator (fun x => Real.exp (-x)) (-v) =
+    have hsub : {v : ℝ | ¬((Set.Ioi (0 : ℝ)).indicator (fun x => Real.exp (-(1 : ℝ) * x)) (-v) =
         (Set.Iic (0 : ℝ)).indicator (fun x => Real.exp x) v)} ⊆ {(0 : ℝ)} := by
       intro v hv
       by_contra hne
       apply hv
       rcases lt_trichotomy v 0 with hlt | rfl | hgt
       · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr (neg_pos.mpr hlt)),
-          Set.indicator_of_mem (Set.mem_Iic.mpr hlt.le), neg_neg]
+          Set.indicator_of_mem (Set.mem_Iic.mpr hlt.le)]; ring_nf
       · exact (hne rfl).elim
       · rw [Set.indicator_of_notMem (fun h => by simp at h; linarith),
           Set.indicator_of_notMem (fun h => by simp at h; linarith)]
@@ -847,7 +866,8 @@ theorem sq_exp_pos_half_moment_le_l2
         dsimp only [Φ]
         rw [Set.indicator_of_notMem hnot1, Set.indicator_of_notMem hnot2]
         norm_num
-    have hint_sum := integral_nonneg hpt
+    have hint_sum : 0 ≤ ∫ u, ((t * t) * U u ^ 2 + 2 * t * (U u * Real.exp (u / 2)) + Φ u) :=
+      integral_nonneg hpt
     rw [integral_add ((hi0.const_mul _).add (hiUE.const_mul _)) hiΦ,
       integral_add (hi0.const_mul _) (hiUE.const_mul _),
       integral_const_mul, integral_const_mul] at hint_sum
@@ -888,8 +908,9 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
   have hg_supp := tiltedUnitSpline_atom_support hw0
   have hg_cs := hasCompactSupport_atomDilate hw0.ne' hasCompactSupport_tiltedUnitSpline
   have hpole_z := poleFunctional_eq_zero_of_mem_conductorSubspace_one_orthogonal hN2 hz
-  have hpole_split : poleFunctional N x = prefixPoleMoment M x + poleFunctional N y := by
-    unfold poleFunctional prefixPoleMoment
+  have hpole_split : ArithmeticLorentzianGeometry.poleFunctional N x =
+      prefixPoleMoment M x + ArithmeticLorentzianGeometry.poleFunctional N y := by
+    unfold ArithmeticLorentzianGeometry.poleFunctional prefixPoleMoment
     have hdisj : Icc 1 N = Icc 1 M ∪ Ioc M N := by
       ext n; simp only [mem_union, mem_Icc, mem_Ioc]; omega
     rw [hdisj, sum_union (disjoint_left.mpr fun n h1 h2 => by
@@ -917,18 +938,18 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
       have hexp : Real.exp (-((v + Real.log N) / 2)) =
           Real.exp (-(v / 2)) * (1 / Real.sqrt N) := by
         rw [show -((v + Real.log N) / 2) = -(v / 2) + -(Real.log N / 2) by ring,
-          Real.exp_add, Real.exp_neg, ← Real.sqrt_eq_rpow]
+          Real.exp_add, Real.exp_neg]
         have hsq : Real.exp (Real.log N / 2) = Real.sqrt N := by
           apply ( sq_eq_sq₀ (Real.exp_pos _).le (Real.sqrt_nonneg _) ).mp
           rw [← Real.exp_nat_mul, Real.sq_sqrt hN0.le]
           have : (2 : ℕ) * (Real.log (N : ℝ) / 2) = Real.log (N : ℝ) := by push_cast; ring
           rw [this, Real.exp_log hN0]
         rw [hsq, one_div]
-      dsimp only [U_y, normalizedCentredAtomicTest, centredAtomicTest, w]
+      dsimp only [U_y, normalizedCentredAtomicTest, centredAtomicTest, w, g]
       rw [hexp]
       have hsqN : Real.sqrt N ≠ 0 := (Real.sqrt_pos.mpr hN0).ne'
       field_simp [hc0.ne', hN0.ne', hsqN]
-      rw [Real.sq_sqrt hN0.le]
+      rw [Real.sq_sqrt hN0.le]; ring
     rw [hfn, integral_const_mul]
   have hg_lb : Real.exp (-(1 / 2 : ℝ)) * w * (∫ u, tiltedUnitSpline u) ≤
       ∫ t, g t * Real.exp (-(t / 2)) := by
@@ -937,6 +958,7 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
       (hg_cd.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hg_cs.mul_right
     have hint_g : ∫ t, g t = w * ∫ u, tiltedUnitSpline u := by
       have h := Measure.integral_comp_div (fun u => tiltedUnitSpline u) w
+      dsimp only [g, atomDilate]
       simpa only [smul_eq_mul, abs_of_pos hw0] using h
     rw [mul_assoc, ← hint_g, ← integral_const_mul]
     refine integral_mono (hgi.const_mul _) hge fun t => ?_
@@ -947,7 +969,7 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
       calc Real.exp (-(1 / 2 : ℝ)) * g t ≤ Real.exp (-(t / 2)) * g t :=
             mul_le_mul_of_nonneg_right hexp_le hg0
         _ = g t * Real.exp (-(t / 2)) := mul_comm _ _
-    · rw [hg_supp t ht, mul_zero, zero_mul]
+    · dsimp only [g]; rw [hg_supp t ht, mul_zero, zero_mul]
   have hI₁ : 0 < ∫ u, tiltedUnitSpline u := integral_tiltedUnitSpline_pos
   have hg_pos : 0 < ∫ t, g t * Real.exp (-(t / 2)) :=
     lt_of_lt_of_le (by positivity) hg_lb
@@ -960,7 +982,6 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
     have hm : (Real.exp (-(1 / 2 : ℝ)) * w * ∫ u, tiltedUnitSpline u) * |prefixPoleMoment M x| ≤
         w * |∫ v, U_y v * Real.exp (-(v / 2))| :=
       (mul_le_mul_of_nonneg_right hg_lb (abs_nonneg _)).trans_eq habs_id
-    rw [le_div_iff₀' (by positivity : 0 < ∫ u, tiltedUnitSpline u)] at *
     have hw_cancel : (Real.exp (-(1 / 2 : ℝ)) * ∫ u, tiltedUnitSpline u) * |prefixPoleMoment M x| ≤
         |∫ v, U_y v * Real.exp (-(v / 2))| := by
       refine le_of_mul_le_mul_left ?_ hw0
@@ -986,7 +1007,7 @@ theorem prefixPoleMoment_sq_le_exponential_mass {N M : ℕ} {c ε : ℝ}
     have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
     have hlog : Real.log n ≤ Real.log N := Real.log_le_log hn1 hnN
     have hnot : u + Real.log N - Real.log n ∉ Set.Icc 0 w := fun hm => by linarith [hm.2, hw1]
-    rw [hg_supp _ hnot, mul_zero]
+    dsimp only [g]; rw [hg_supp _ hnot, mul_zero]
   have hsq_pole := sq_abs (prefixPoleMoment M x) ▸ pow_le_pow_left₀ (abs_nonneg _) hσ_abs 2
   have hexp_sq : (Real.exp (1 / 2 : ℝ) / ∫ u, tiltedUnitSpline u) ^ 2 =
       Real.exp 1 / (∫ u, tiltedUnitSpline u) ^ 2 := by
@@ -1096,6 +1117,7 @@ theorem exists_all_ratio_far_garding :
     dsimp only [Function.comp_def] at hlt
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
     have hm := (div_lt_iff₀ hN0).mp hlt
+    have hid : 1 / A * (N : ℝ) = (N : ℝ) / A := by field_simp
     exact ((le_div_iff₀ hA).mp (by linarith)).trans_eq' (mul_comm _ _)
   have hev_err : ∀ᶠ N : ℕ in atTop,
       C_err * ((R_max + 1) * Real.log (N : ℝ) / N) ≤ dyadicTopMassConstant / (4 * R_max) := by
@@ -1103,7 +1125,7 @@ theorem exists_all_ratio_far_garding :
     · set A := C_err * (R_max + 1)
       have hA : 0 < A := by positivity
       have hev := (hLN_zero.comp tendsto_natCast_atTop_atTop).eventually
-        (gt_mem_nhds (div_pos (div_pos hg₀ (by positivity)) hA))
+        (gt_mem_nhds (div_pos (div_pos hg₀ (mul_pos (by norm_num : (0 : ℝ) < 4) hR)) hA))
       filter_upwards [hev] with N hlt
       dsimp only [Function.comp_def] at hlt
       have hm := (lt_div_iff₀ hA).mp hlt
@@ -1130,7 +1152,6 @@ theorem exists_all_ratio_far_garding :
       (|Real.log (2 * (Real.log 4 + 4))| + 4 + factorialSpanGammaOffset + C_β)),
     eventually_ge_atTop 3] with
       N hL2N_b herr_b hL_ge hL316_C hlogL_316 hP_a hP_b hP_c hexp_b hN3
-  dsimp only [Function.comp_def] at hL316_C
   intro c hc1 hc8 z hz
   set L := Real.log (N : ℝ) with hL_eq
   set ℓ := 1 + Real.log L with hℓ_eq

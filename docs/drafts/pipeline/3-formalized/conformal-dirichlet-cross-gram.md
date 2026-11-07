@@ -1,7 +1,8 @@
 # Conformal–Dirichlet cross Gram and Poisson projection
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **ID:** conformal-dirichlet-cross-gram
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/notes.md`, Next-Cycle Conjecture Plan 1.
 - **Goal:** Exact conformal/Dirichlet Poisson pairings, projection identities, and consequences for mollifier budgets.
 
@@ -34,7 +35,7 @@ the only possible chart pole is outside a larger disc of radius
 - `⟨A(Q,η),A(R,ξ)⟩=Σₖ conj(aₖ(Q,η))aₖ(R,ξ)`;
 - `⟨A(Q,η),m^{-(1/2+δ+iτ)}⟩=Σₖ conj(aₖ(Q,η))exp(-(1+δ)t)Pₖ(t,1)/k!`.
 
-For `wₘ=bₘm^{-δ}` and `F=Σ₁≤m≤M wₘD_log(m)`, its first `N` conformal coefficients remove
+For real coefficients `bₘ`, put `wₘ=bₘm^{-δ}` and `F=Σ₁≤m≤M wₘD_log(m)`. Its first `N` conformal coefficients remove
 exactly `Σₖ<N |[zᵏ]F|²` from `Σₘ,ₙwₘwₙ/max(m,n)`. The remainder is the squared norm of
 `F−Σₖ<N[zᵏ]F zᵏ`. Existing Abel diagonalization therefore bounds these coefficient squares by
 `S_M²/M+Σ₁≤j<M (1/j−1/(j+1))S_j²`, with `S_j=Σₘ≤j wₘ`.
@@ -58,10 +59,15 @@ Gutzmer bounds the mean by `S`, since `r^(2k)≤1`. Boundedness permits dominate
 to the boundary, outside the null point `z=1`, giving `E≤S`. Thus `E=S`, and the exact
 finite residual tends to zero.
 
-## Lean status
+## Lean declarations
 
-`ArithmeticInnerFunctionTheory/ConformalDirichletProjection.lean` compiles; five main transitive
-axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
-The bounded Parseval theorem also passes a scratch-file kernel/axiom check. Full Gram identities
-in `ArithmeticInnerFunctionTheory/ConformalDirichletGram.lean` and concrete corollaries in
-`ArithmeticInnerFunctionTheory/LaguerreFactorizationOfTheAbelKernel.lean` await final verification.
+All modules are in `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/`.
+
+| Module | Main declarations |
+|---|---|
+| `ConformalDirichletProjection.lean` | `integral_conformal_dirichlet_mode_eq_laguerre`, `taylorCoeff_dirichletDisc`, `IsHardyDisc.projection_remainder`, `integral_log_polyMollifier_shifted` |
+| `ConformalDirichletGram.lean` | `hasSum_polyMollifier_gram`, `hasSum_polyMollifier_dirichlet`, `dirichletGram_minus_conformal_squares`, `conformal_squares_le_abel`, `budget_conformal_projection_remainder`, `shiftedBudget_eq_circleAverage`, `conformal_normalized_log_dilation_eq_zero` |
+| `LaguerreFactorizationOfTheAbelKernel.lean` | `IsHardyDisc.hasSum_norm_sq_of_bounded`, `hasSum_dirichletDisc_energy`, `hasSum_laguerre_abel`, `dirichlet_projection_remainder_tendsto_zero` |
+
+Kernel checks pass. Main transitive axiom sets contain only
+`propext`, `Classical.choice`, `Quot.sound`. Umbrella imports are wired.

@@ -26,6 +26,7 @@ All results below are Lean theorems, unconditional. Paper targets are closed.
 A proof of `g ≥ 0` for an explicit family without a bound on `M(x)`; exponent under RH in `[1/4, 1/2]`; parity through the primes; arithmetic input for a nonlinear ledger (RigidArithmeticOfCuts); slow aligned returns at a zero on a disc with left edge in `[½, β)`, a bound `(log τ)^{O(1)}` at the aligned heights (heuristic, unproved: at a generic aligned return the head `Σ_{p≤N} p^{-s}` makes `|ζ| ≈ exp(c N^{1−σ₀}/log N)` there, so only returns whose alignment fades smoothly past `N` can qualify); Stepanov's twist over `ℤ`; finite-`K` form of the extremal measure. The first, the second and the fifth are at or past the strength of RH or AAL: they are research problems, not remaining formalization.
 
 ## Beyond the quarter
+Compensation stops at `1/4`: a prime `P` compensated at distance `≥ 1` costs `≥ 1/P²`, so primes below `√T ≍ 1/δ` (which lie in the window anyway) stay letters and each needs its own far letter of size `≍ K`, giving `K ≳ √T·T/δ`. Grouping primes into one far letter costs more. Generalizing to multiplicative transport `n ↦ ι(n)` of `μ` on rough numbers works for the near law, but still needs `z ≥ √T`.
 The compensated producer pays a failure at a prime power `Q` with the full mass `D_Q ≈ T/Q` of the letters `Q` divides. The typical deficit is `√T`. A bound of the worst-case deficit by `T^{1/2+ε}` would give `G ≈ √T/δ` and the exponent `1/3`; no such bound is known, and it is a statement about sup norms of truncated Möbius sawteeth.
 
 ## Gates

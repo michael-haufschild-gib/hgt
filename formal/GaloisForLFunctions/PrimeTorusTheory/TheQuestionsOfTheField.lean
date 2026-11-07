@@ -142,7 +142,7 @@ theorem question_four :
     fun hq hd hm => (rank_one_law hq hd hm).1⟩
 
 open ArithmeticCorrelationGeometry in
-/-- **Question 5.** The Liouville fibre extends to `Re s > ½` if and only if RH holds; a Haar-typical fibre extends, is zero-free, and has the critical line as natural boundary; so does almost every order-two point, short of the boundary; a finite modification of an orbit point carries exactly the translated zeros of `ζ`; and RH is the zero-freeness of every
+/-- **Question 5.** The Liouville fibre extends to `Re s > ½` if and only if RH holds; a Haar-typical fibre extends, is zero-free, and has the critical line as natural boundary; almost every order-two point extends and is zero-free; a finite modification of an orbit point carries exactly the translated zeros of `ζ`; and RH is the zero-freeness of every
 nonzero limit of vertical translates. -/
 theorem question_five :
     (RiemannHypothesis ↔ ∃ F : ℂ → ℂ, DifferentiableOn ℂ F rightHalf ∧ ∀ s, 1 < s.re → F s = liouvilleFibre s) ∧

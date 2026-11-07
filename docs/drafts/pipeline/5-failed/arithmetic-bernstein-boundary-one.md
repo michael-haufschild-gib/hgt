@@ -31,10 +31,12 @@ positive survivor, beyond the degenerate zero-damping class.
 
 ## No-go closure
 
-- **Killing theorem:** `exists_boundary_torusPositive_not_expConvex`.
+- **Killing theorems:** `exists_boundary_torusPositive_not_expConvex` and
+  `exists_torusPositive_not_expConvex_all_nonneg_left_exponents`.
 - **Positive survivor:** `allBaseTorusPositive_iff_nonneg_of_abs_floor` classifies the entire
   nonvanishing class. `exists_oscillation_damping_reentry` exhibits passage out of and back into
-  the unrestricted cone; `cosSum_conserved_form` and `cosSum_adjacent_energy` identify the
+  the unrestricted cone, with explicit summability and strict positivity at re-entry;
+  `cosSum_conserved_form` and `cosSum_adjacent_energy` identify the
   exact recurrence obstruction.
 - **New insight:** A totalized torus inequality is not a convergence certificate. The omitted
   decay assumption cannot be removed from the positive-kernel damping law.
@@ -46,5 +48,3 @@ positive survivor, beyond the degenerate zero-damping class.
 
 The endpoint classification with genuine convergence/right decay remains a distinct open question.
 
-The all-exponent strengthening and explicit strict, summable re-entry conclusion await their
-final audit in the same module.
