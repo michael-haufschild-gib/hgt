@@ -193,6 +193,10 @@ on the actual completed energy space.
 solution as the adjoint mass map. Its resolvent defines the actual closed,
 densely defined, nonnegative self-adjoint quotient Laplacian.
 
+`GreenIdentityOnTheCubicQuotient.lean` constructs finite smooth chart
+partitions and proves weighted integration by parts with density `v⁻³`.
+Exact chart transport identifies that expression with the quotient form.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

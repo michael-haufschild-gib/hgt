@@ -77,7 +77,7 @@ theorem norm_sub_le_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 1 ≤ N) (h : IsH
     obtain ⟨M, hM⟩ : ∃ M, M = max m N := ⟨_, rfl⟩
     have hmM : m ≤ M := hM ▸ le_max_left _ _
     have hNM : N ≤ M := hM ▸ le_max_right _ _
-    have hnn : ∀ n, 0 ≤ 1 / ((n : ℝ) + 1) ^ 2 * (if n < N then 1 / (N : ℝ) else 2) := fun n => by
+    have hnn : ∀ n : ℕ, 0 ≤ 1 / ((n : ℝ) + 1) ^ 2 * (if n < N then 1 / (N : ℝ) else 2) := fun n => by
       split_ifs <;> positivity
     refine (Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_subset_range.mpr hmM)
       fun n _ _ => hnn n).trans ?_
@@ -131,7 +131,7 @@ private lemma interp_mono {a b s t : ℝ} (ha : 0 < a) (hab : a ≤ b) (hst : s 
   exact Real.rpow_le_rpow_of_exponent_le ((one_le_div ha).mpr hab) hst
 
 /-- The arithmetic of the interpolated bound. -/
-private lemma interp_value {N A t : ℝ} (hN : 1 ≤ N) (hA : 0 < A) (ht0 : 0 < t) (ht1 : t < 1)
+private lemma interp_value {N A t : ℝ} (hN : 1 ≤ N) (ht0 : 0 < t) (ht1 : t < 1)
     (hAt : A * t = (1 - t) / 2) :
     (4 / N) ^ (1 - t) * (2 * N ^ A) ^ t ≤ 8 * N ^ (-((1 - t) / 2)) := by
   have hN0 : 0 < N := by linarith
@@ -310,7 +310,7 @@ theorem exists_exponent_transport {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0 : 0 
         linarith
       linarith
     refine lt_of_le_of_lt (hthree.trans ((interp_mono (by positivity) h4N hs).trans ?_)) hNsmall
-    exact interp_value (by linarith) hA0 ht0 ht1 hAt
+    exact interp_value (by linarith) ht0 ht1 hAt
   have hre : ∀ s ∈ closedBall ρ r', s.re < 1 := by
     intro s hs
     have h2 : ‖s - ρ‖ ≤ r' := by

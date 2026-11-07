@@ -233,3 +233,7 @@ TheCubicVariationalLaplacian adapts the coercive variational solution and
 resolvent graph from OpenAI Eisenstein/VariationalLaplacian.lean. The local
 mass embedding is proved injective and dense; these facts discharge the
 closed, densely defined, nonnegative self-adjoint operator construction.
+GreenIdentityOnTheCubicQuotient adapts finite chart partitions and weighted
+Schwartz integration by parts from OpenAI CubicSieve/RadialProfiles.lean.
+The local proof uses the actual restricted quotient measure and explicit
+Euclidean coordinate-vector values for the weighted divergence identity.
