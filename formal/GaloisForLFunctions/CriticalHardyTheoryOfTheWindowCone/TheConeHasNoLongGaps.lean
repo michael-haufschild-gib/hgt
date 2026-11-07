@@ -96,45 +96,50 @@ theorem jKernel_neg (j : ℕ) (t : ℝ) : jKernel j (-t) = jKernel j t := crossC
 theorem crossCorr_jPair (j : ℕ) (σ a y : ℝ) :
     crossCorr (jPair j σ a) (jPair j σ a) y =
       (1 + σ ^ 2) * jKernel j y + σ * jKernel j (y - 2 * a) + σ * jKernel j (y + 2 * a) := by
-  set φ : ℝ → ℝ := nodeBump j with hφ
+  set ψb : ℝ → ℝ := ⇑(nodeBump j) with hψb
   unfold crossCorr jPair jKernel crossCorr
-  rw [← hφ]
+  rw [← hψb]
   have i0 := integrable_nodeBump_mul j
-  rw [← hφ] at i0
-  have i1 : Integrable fun t => φ (t - a) * φ (t - y - a) := by
+  rw [← hψb] at i0
+  have i1 : Integrable fun t => ψb (t - a) * ψb (t - y - a) := by
     refine ((i0 y).comp_sub_right a).congr (Eventually.of_forall fun t => ?_)
-    show φ (t - a) * φ (t - a - y) = _
+    show ψb (t - a) * ψb (t - a - y) = _
     rw [show t - a - y = t - y - a by ring]
-  have i2 : Integrable fun t => φ (t - a) * φ (t - y + a) := by
+  have i2 : Integrable fun t => ψb (t - a) * ψb (t - y + a) := by
     refine ((i0 (y - 2 * a)).comp_sub_right a).congr (Eventually.of_forall fun t => ?_)
-    show φ (t - a) * φ (t - a - (y - 2 * a)) = _
+    show ψb (t - a) * ψb (t - a - (y - 2 * a)) = _
     rw [show t - a - (y - 2 * a) = t - y + a by ring]
-  have i3 : Integrable fun t => φ (t + a) * φ (t - y - a) := by
+  have i3 : Integrable fun t => ψb (t + a) * ψb (t - y - a) := by
     refine ((i0 (y + 2 * a)).comp_add_right a).congr (Eventually.of_forall fun t => ?_)
-    show φ (t + a) * φ (t + a - (y + 2 * a)) = _
+    show ψb (t + a) * ψb (t + a - (y + 2 * a)) = _
     rw [show t + a - (y + 2 * a) = t - y - a by ring]
-  have i4 : Integrable fun t => φ (t + a) * φ (t - y + a) := by
+  have i4 : Integrable fun t => ψb (t + a) * ψb (t - y + a) := by
     refine ((i0 y).comp_add_right a).congr (Eventually.of_forall fun t => ?_)
-    show φ (t + a) * φ (t + a - y) = _
+    show ψb (t + a) * ψb (t + a - y) = _
     rw [show t + a - y = t - y + a by ring]
-  have e : (fun t => (φ (t - a) + σ * φ (t + a)) * (φ (t - y - a) + σ * φ (t - y + a))) =
-      fun t => φ (t - a) * φ (t - y - a) + σ * (φ (t - a) * φ (t - y + a)) +
-        σ * (φ (t + a) * φ (t - y - a)) + σ ^ 2 * (φ (t + a) * φ (t - y + a)) := by
+  have e : (fun t => (ψb (t - a) + σ * ψb (t + a)) * (ψb (t - y - a) + σ * ψb (t - y + a))) =
+      fun t => ψb (t - a) * ψb (t - y - a) + σ * (ψb (t - a) * ψb (t - y + a)) +
+        σ * (ψb (t + a) * ψb (t - y - a)) + σ ^ 2 * (ψb (t + a) * ψb (t - y + a)) := by
     funext t; ring
-  rw [e, integral_add ((i1.add (i2.const_mul σ)).add (i3.const_mul σ)) (i4.const_mul _),
-    integral_add (i1.add (i2.const_mul σ)) (i3.const_mul σ), integral_add i1 (i2.const_mul σ),
+  rw [e, integral_add (f := fun t => ψb (t - a) * ψb (t - y - a) + σ * (ψb (t - a) * ψb (t - y + a)) +
+      σ * (ψb (t + a) * ψb (t - y - a))) (g := fun t => σ ^ 2 * (ψb (t + a) * ψb (t - y + a)))
+      ((i1.add (i2.const_mul σ)).add (i3.const_mul σ)) (i4.const_mul _),
+    integral_add (f := fun t => ψb (t - a) * ψb (t - y - a) + σ * (ψb (t - a) * ψb (t - y + a)))
+      (g := fun t => σ * (ψb (t + a) * ψb (t - y - a))) (i1.add (i2.const_mul σ)) (i3.const_mul σ),
+    integral_add (f := fun t => ψb (t - a) * ψb (t - y - a))
+      (g := fun t => σ * (ψb (t - a) * ψb (t - y + a))) i1 (i2.const_mul σ),
     integral_const_mul, integral_const_mul, integral_const_mul]
-  have j1 : ∫ t, φ (t - a) * φ (t - y - a) = ∫ s, φ s * φ (s - y) := by
-    rw [← integral_sub_right_eq_self (fun s => φ s * φ (s - y)) a]
+  have j1 : ∫ t, ψb (t - a) * ψb (t - y - a) = ∫ s, ψb s * ψb (s - y) := by
+    rw [← integral_sub_right_eq_self (fun s => ψb s * ψb (s - y)) a]
     congr 1; funext t; congr 2; ring
-  have j2 : ∫ t, φ (t - a) * φ (t - y + a) = ∫ s, φ s * φ (s - (y - 2 * a)) := by
-    rw [← integral_sub_right_eq_self (fun s => φ s * φ (s - (y - 2 * a))) a]
+  have j2 : ∫ t, ψb (t - a) * ψb (t - y + a) = ∫ s, ψb s * ψb (s - (y - 2 * a)) := by
+    rw [← integral_sub_right_eq_self (fun s => ψb s * ψb (s - (y - 2 * a))) a]
     congr 1; funext t; congr 2; ring
-  have j3 : ∫ t, φ (t + a) * φ (t - y - a) = ∫ s, φ s * φ (s - (y + 2 * a)) := by
-    rw [← integral_add_right_eq_self (fun s => φ s * φ (s - (y + 2 * a))) a]
+  have j3 : ∫ t, ψb (t + a) * ψb (t - y - a) = ∫ s, ψb s * ψb (s - (y + 2 * a)) := by
+    rw [← integral_add_right_eq_self (fun s => ψb s * ψb (s - (y + 2 * a))) a]
     congr 1; funext t; congr 2; ring
-  have j4 : ∫ t, φ (t + a) * φ (t - y + a) = ∫ s, φ s * φ (s - y) := by
-    rw [← integral_add_right_eq_self (fun s => φ s * φ (s - y)) a]
+  have j4 : ∫ t, ψb (t + a) * ψb (t - y + a) = ∫ s, ψb s * ψb (s - y) := by
+    rw [← integral_add_right_eq_self (fun s => ψb s * ψb (s - y)) a]
     congr 1; funext t; congr 2; ring
   rw [j1, j2, j3, j4]
   ring
@@ -389,16 +394,17 @@ theorem abs_jSum_sub_le_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} (h :
 
 /-! ### No long gaps -/
 
-/-- **No long gaps.** On the cone of `(β, s)` with `β > 0`, for `0 ≤ a ≤ c − 1`, if
+/-- **No long gaps.** On the cone of `(β, s)` with `β ≥ 0`, for `0 ≤ a ≤ c − 1`, if
 `βJ_j²(e^a − 2) > D_{j,s}` then some `n ≥ 2` with `|log n − 2a| < 2r_j` has `λ(n) > 0`. -/
 theorem exists_pos_weight_of_mem_datumCone {β s c : ℝ} {lam : ℕ → ℝ} (h : lam ∈ datumCone β s c)
-    (j : ℕ) {a : ℝ} (ha : 0 ≤ a) (hac : a + 1 ≤ c)
+    (hβ : 0 ≤ β) (j : ℕ) {a : ℝ} (ha : 0 ≤ a) (hac : a + 1 ≤ c)
     (hgap : jConst j s < β * jJ j ^ 2 * (Real.exp a - 2)) :
     ∃ n : ℕ, 2 ≤ n ∧ |Real.log n - 2 * a| < 2 * (nodeBump j).rOut ∧ 0 < lam n := by
   have hl := jSum_bracket h j (σ := -1) (by norm_num) ha hac
   have he0 := Real.exp_pos (-a)
   have hpos : 0 < jSum j lam a := by
     have hJ := sq_nonneg (jJ j)
+    have := mul_nonneg (mul_nonneg hβ hJ) he0.le
     nlinarith
   by_contra hcon
   push Not at hcon
@@ -520,7 +526,7 @@ theorem jConst_lt_of_large {β s : ℝ} (hβ : 0 < β) (j : ℕ) {a : ℝ}
   have hfin : (4 / Real.pi * Y + |s|) / x < β * (1 / (64 * x ^ 2)) * (Real.exp a - 2) := by
     rw [div_lt_iff₀ hx0]
     have e : β * (1 / (64 * x ^ 2)) * (Real.exp a - 2) * x = β * (Real.exp a - 2) / (64 * x) := by
-      field_simp; ring
+      field_simp
     rw [e, lt_div_iff₀ (by positivity)]
     linarith
   calc jConst j s ≤ _ := hc
@@ -545,100 +551,114 @@ theorem exists_pos_weight_near_of_mem_windowCone :
     ∃ C X₀ : ℝ, 0 < C ∧ ∀ c : ℝ, ∀ lam ∈ windowCone c, ∀ X : ℝ, X₀ ≤ X →
       X ≤ Real.exp (2 * c - 2) →
         ∃ n : ℕ, 2 ≤ n ∧ |(n : ℝ) - X| ≤ C * Real.sqrt X * Real.log X ∧ 0 < lam n := by
-  set G := |gammaLogConst| with hG
-  set B₀ := |bumpMassConst| with hB₀
-  set B₁ := |bumpLogConst| with hB₁
-  set K : ℝ := 2 * (256 / Real.pi) * (G + B₀ + B₁) + 1 with hK
-  have hGBB : 0 ≤ G + B₀ + B₁ := by positivity
-  have hK1 : 1 ≤ K := by rw [hK]; have : 0 ≤ 2 * (256 / Real.pi) * (G + B₀ + B₁) := by positivity
-                         linarith
+  obtain ⟨G, hG⟩ : ∃ G : ℝ, G = |gammaLogConst| * |bumpMassConst| + |bumpMassConst| + |bumpLogConst| :=
+    ⟨_, rfl⟩
+  have hG0 : 0 ≤ G := by rw [hG]; positivity
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = 2 * (256 / Real.pi) * G + 1 := ⟨_, rfl⟩
+  have hKG : 2 * (256 / Real.pi * G) ≤ K := by rw [hK]; linarith
+  have hK1 : 1 ≤ K := by
+    have : 0 ≤ 2 * (256 / Real.pi) * G := by positivity
+    rw [hK]; linarith
   refine ⟨2 * K, max (Real.exp 1) ((20 * K) ^ 4), by positivity, fun c lam hlam X hX hXc => ?_⟩
   have hXe : Real.exp 1 ≤ X := (le_max_left _ _).trans hX
   have hX0 : 0 < X := lt_of_lt_of_le (Real.exp_pos 1) hXe
   have hlog1 : 1 ≤ Real.log X := by rw [Real.le_log_iff_exp_le hX0]; exact hXe
-  set q := Real.sqrt (Real.sqrt X) with hq
+  obtain ⟨q, hq⟩ : ∃ q : ℝ, q = Real.sqrt (Real.sqrt X) := ⟨_, rfl⟩
   have hsX : Real.sqrt X = q ^ 2 := by rw [hq, Real.sq_sqrt (Real.sqrt_nonneg X)]
   have hq20 : 20 * K ≤ q := by
     have h1 : ((20 * K) ^ 2) ^ 2 ≤ X := by rw [← pow_mul]; exact (le_max_right _ _).trans hX
-    have h2 : (20 * K) ^ 2 ≤ Real.sqrt X := Real.le_sqrt_of_sq_le h1
-    exact Real.le_sqrt_of_sq_le h2
-  have hlq := log_le_four_mul_sqrt_sqrt hX0
-  rw [← hq] at hlq
+    rw [hq]
+    exact Real.le_sqrt_of_sq_le (Real.le_sqrt_of_sq_le h1)
+  have hlq : Real.log X ≤ 4 * q := by rw [hq]; exact log_le_four_mul_sqrt_sqrt hX0
+  have hs1 : 1 ≤ Real.sqrt X := Real.one_le_sqrt.mpr (by linarith [Real.add_one_le_exp (1 : ℝ)])
+  have hsXX : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX0.le
   -- the resolution `x = 2j + 3 ≈ √X/(K log X)`
-  set y : ℝ := Real.sqrt X / (K * Real.log X) with hy
   have hKl : 0 < K * Real.log X := by positivity
+  have hKl1 : 1 ≤ K * Real.log X := by nlinarith
+  obtain ⟨y, hy⟩ : ∃ y : ℝ, y = Real.sqrt X / (K * Real.log X) := ⟨_, rfl⟩
+  have hyK : y * (K * Real.log X) = Real.sqrt X := by rw [hy]; field_simp
   have hy5 : 5 ≤ y := by
-    rw [hy, le_div_iff₀ hKl, hsX]
-    nlinarith
-  set j : ℕ := ⌊(y - 3) / 2⌋₊ with hj
-  have hjle : (j : ℝ) ≤ (y - 3) / 2 := Nat.floor_le (by linarith)
-  have hjgt : (y - 3) / 2 < j + 1 := Nat.lt_floor_add_one _
+    have h1 : 5 * (K * Real.log X) ≤ Real.sqrt X := by
+      rw [hsX]
+      have h2 : K * Real.log X ≤ K * (4 * q) := mul_le_mul_of_nonneg_left hlq (by linarith)
+      nlinarith
+    rw [hy, le_div_iff₀ hKl]; exact h1
+  obtain ⟨j, hj⟩ : ∃ j : ℕ, j = ⌊(y - 3) / 2⌋₊ := ⟨_, rfl⟩
+  have hjle : (j : ℝ) ≤ (y - 3) / 2 := by rw [hj]; exact Nat.floor_le (by linarith)
+  have hjgt : (y - 3) / 2 < j + 1 := by rw [hj]; exact Nat.lt_floor_add_one _
   have hxle : nodeScale j ≤ y := by unfold nodeScale; linarith
   have hxge : y / 2 ≤ nodeScale j := by unfold nodeScale; linarith
   have hx0 : 0 < nodeScale j := nodeScale_pos j
+  have hx1 := one_le_nodeScale j
   -- the gap condition
-  set a : ℝ := Real.log X / 2 with ha
+  obtain ⟨a, ha⟩ : ∃ a : ℝ, a = Real.log X / 2 := ⟨_, rfl⟩
   have ha0 : 0 ≤ a := by rw [ha]; linarith
   have hac : a + 1 ≤ c := by
     have := (Real.log_le_iff_le_exp hX0).mpr hXc
     rw [ha]; linarith
   have hea : Real.exp a = Real.sqrt X := by rw [ha, Real.exp_half, Real.exp_log hX0]
   have hsX4 : 4 < Real.sqrt X := by rw [hsX]; nlinarith
-  have hlogx : Real.log (nodeScale j) ≤ Real.log X := by
-    refine Real.log_le_log hx0 (hxle.trans ?_)
-    rw [hy, div_le_iff₀ hKl]
-    have hs1 : Real.sqrt X ≤ X := by
-      rw [Real.sqrt_le_left (by linarith)]
-      nlinarith [Real.sq_sqrt hX0.le]
-    nlinarith
-  have hlogx0 : 0 ≤ Real.log (nodeScale j) := Real.log_nonneg (one_le_nodeScale j)
+  have hyX : y ≤ X := by
+    have : Real.sqrt X ≤ X := by nlinarith
+    have h2 : y ≤ y * (K * Real.log X) := le_mul_of_one_le_right (by linarith) hKl1
+    linarith
+  have hlogx : Real.log (nodeScale j) ≤ Real.log X := Real.log_le_log hx0 (hxle.trans hyX)
+  have hlogx0 : 0 ≤ Real.log (nodeScale j) := Real.log_nonneg hx1
   have hY : (gammaLogConst + Real.log (nodeScale j)) * bumpMassConst + bumpLogConst ≤
-      (G + B₀ + B₁) * Real.log X := by
+      G * Real.log X := by
+    have hb0 := abs_nonneg bumpMassConst
     have e1 : (gammaLogConst + Real.log (nodeScale j)) * bumpMassConst ≤
-        (G + Real.log (nodeScale j)) * B₀ := by
+        |gammaLogConst| * |bumpMassConst| + Real.log X * |bumpMassConst| := by
       calc _ ≤ |(gammaLogConst + Real.log (nodeScale j)) * bumpMassConst| := le_abs_self _
-        _ = |gammaLogConst + Real.log (nodeScale j)| * B₀ := by rw [abs_mul]
-        _ ≤ (G + Real.log (nodeScale j)) * B₀ := by
-            refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
-            refine (abs_add_le _ _).trans ?_
-            rw [abs_of_nonneg hlogx0]
-    have e2 : bumpLogConst ≤ B₁ := le_abs_self _
-    have hG0 : 0 ≤ G := abs_nonneg _
-    have hB0 : 0 ≤ B₀ := abs_nonneg _
-    have hB1 : 0 ≤ B₁ := abs_nonneg _
-    nlinarith
+        _ = |gammaLogConst + Real.log (nodeScale j)| * |bumpMassConst| := abs_mul _ _
+        _ ≤ (|gammaLogConst| + Real.log X) * |bumpMassConst| := by
+            refine mul_le_mul_of_nonneg_right ((abs_add_le _ _).trans ?_) hb0
+            rw [abs_of_nonneg hlogx0]; linarith
+        _ = _ := by ring
+    have e2 : bumpLogConst ≤ |bumpLogConst| := le_abs_self _
+    have e3 : |gammaLogConst| * |bumpMassConst| + |bumpLogConst| ≤
+        (|gammaLogConst| * |bumpMassConst| + |bumpLogConst|) * Real.log X :=
+      le_mul_of_one_le_right (by positivity) hlog1
+    rw [hG]; nlinarith
   have hlarge : 64 * nodeScale j * (4 / Real.pi * ((gammaLogConst + Real.log (nodeScale j)) *
       bumpMassConst + bumpLogConst) + |(0 : ℝ)|) < 1 * (Real.exp a - 2) := by
     rw [abs_zero, add_zero, one_mul, hea]
     have hpi := Real.pi_pos
-    have h1 : 4 / Real.pi * ((gammaLogConst + Real.log (nodeScale j)) * bumpMassConst +
-        bumpLogConst) ≤ 4 / Real.pi * ((G + B₀ + B₁) * Real.log X) :=
+    set Z := (gammaLogConst + Real.log (nodeScale j)) * bumpMassConst + bumpLogConst with hZ
+    have h1 : 4 / Real.pi * Z ≤ 4 / Real.pi * (G * Real.log X) :=
       mul_le_mul_of_nonneg_left hY (by positivity)
-    have h2 : 64 * nodeScale j * (4 / Real.pi * ((gammaLogConst + Real.log (nodeScale j)) *
-        bumpMassConst + bumpLogConst)) ≤ 64 * y * (4 / Real.pi * ((G + B₀ + B₁) * Real.log X)) := by
-      have hpos : 0 ≤ 4 / Real.pi * ((G + B₀ + B₁) * Real.log X) := by positivity
-      calc _ ≤ 64 * nodeScale j * (4 / Real.pi * ((G + B₀ + B₁) * Real.log X)) :=
+    have h2 : 64 * nodeScale j * (4 / Real.pi * Z) ≤ 64 * y * (4 / Real.pi * (G * Real.log X)) := by
+      have hpos : 0 ≤ 4 / Real.pi * (G * Real.log X) := by positivity
+      calc 64 * nodeScale j * (4 / Real.pi * Z) ≤ 64 * nodeScale j * (4 / Real.pi * (G * Real.log X)) :=
             mul_le_mul_of_nonneg_left h1 (by positivity)
-        _ ≤ _ := by gcongr
-    have h3 : 64 * y * (4 / Real.pi * ((G + B₀ + B₁) * Real.log X)) =
-        (256 / Real.pi * (G + B₀ + B₁)) * Real.sqrt X / K := by
-      rw [hy]; field_simp
-    have h4 : (256 / Real.pi * (G + B₀ + B₁)) * Real.sqrt X / K ≤ Real.sqrt X / 2 := by
-      rw [div_le_div_iff₀ (by linarith) (by norm_num)]
-      have : 2 * (256 / Real.pi * (G + B₀ + B₁)) ≤ K := by rw [hK]; linarith
-      nlinarith [Real.sqrt_nonneg X]
+        _ ≤ 64 * y * (4 / Real.pi * (G * Real.log X)) :=
+            mul_le_mul_of_nonneg_right (by linarith) hpos
+    have h3 : 64 * y * (4 / Real.pi * (G * Real.log X)) * K = (256 / Real.pi * G) * Real.sqrt X := by
+      rw [← hyK]; ring
+    have h4 : (256 / Real.pi * G) * Real.sqrt X ≤ K * (Real.sqrt X / 2) := by
+      have := mul_le_mul_of_nonneg_right hKG (Real.sqrt_nonneg X)
+      linarith
+    have h5 : 64 * y * (4 / Real.pi * (G * Real.log X)) ≤ Real.sqrt X / 2 := by
+      have h6 : 64 * y * (4 / Real.pi * (G * Real.log X)) * K ≤ (Real.sqrt X / 2) * K := by
+        rw [h3]; linarith
+      exact le_of_mul_le_mul_right h6 (by linarith)
     linarith
   obtain ⟨n, hn2, hnlog, hpos⟩ := exists_pos_weight_of_mem_datumCone
-    (mem_datumCone_one_zero_of_mem_windowCone hlam) j ha0 hac (jConst_lt_of_large one_pos j hlarge)
+    (mem_datumCone_one_zero_of_mem_windowCone hlam) zero_le_one j ha0 hac
+    (jConst_lt_of_large one_pos j hlarge)
   refine ⟨n, hn2, ?_, hpos⟩
   -- from the logarithmic window to the interval
-  have hr : 2 * (nodeBump j).rOut = 1 / (2 * nodeScale j) := by rw [nodeBump_rOut]; unfold nodeScale; ring
+  have hr : 2 * (nodeBump j).rOut = 1 / (2 * nodeScale j) := by
+    rw [nodeBump_rOut]
+    show 2 * (1 / (4 * nodeScale j)) = 1 / (2 * nodeScale j)
+    rw [mul_one_div, div_eq_div_iff (by positivity) (by positivity)]
+    ring
   rw [hr, show 2 * a = Real.log X by rw [ha]; ring] at hnlog
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
-  set u := Real.log n - Real.log X with hu
+  obtain ⟨u, hu⟩ : ∃ u : ℝ, u = Real.log n - Real.log X := ⟨_, rfl⟩
+  rw [← hu] at hnlog
   have hu1 : |u| ≤ 1 := by
-    have : 1 / (2 * nodeScale j) ≤ 1 := by
-      rw [div_le_one (by positivity)]; linarith [one_le_nodeScale j]
+    have : 1 / (2 * nodeScale j) ≤ 1 := by rw [div_le_one (by positivity)]; linarith
     linarith
   have hexpu : Real.exp u * X = n := by
     rw [hu, Real.exp_sub, Real.exp_log hn0, Real.exp_log hX0]; field_simp
@@ -654,11 +674,11 @@ theorem exists_pos_weight_near_of_mem_windowCone :
     refine mul_le_mul_of_nonneg_left ?_ hX0.le
     rw [div_le_div_iff₀ hx0 (by linarith)]; linarith
   have h4 : X * (2 / y) = 2 * K * Real.sqrt X * Real.log X := by
-    rw [hy]
-    have hs : Real.sqrt X * Real.sqrt X = X := Real.mul_self_sqrt hX0.le
-    have hs0 : 0 < Real.sqrt X := Real.sqrt_pos.mpr hX0
-    field_simp
-    rw [← hs]; ring
+    have hy0 : 0 < y := by linarith
+    calc X * (2 / y) = 2 * (Real.sqrt X * Real.sqrt X) / y := by rw [hsXX]; ring
+      _ = 2 * Real.sqrt X * (y * (K * Real.log X)) / y := by rw [hyK]; ring
+      _ = (2 * K * Real.sqrt X * Real.log X) * y / y := by ring
+      _ = 2 * K * Real.sqrt X * Real.log X := mul_div_cancel_right₀ _ hy0.ne'
   linarith
 
 end GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone

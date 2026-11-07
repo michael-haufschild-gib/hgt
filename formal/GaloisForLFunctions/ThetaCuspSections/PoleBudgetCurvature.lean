@@ -27,8 +27,7 @@ private theorem reciprocal_real_comparison {z : ℂ} (hz : 81 / 4 ≤ z.re) :
   have hre : (z + 1 / 4).re = z.re + 1 / 4 := by norm_num
   have him : (z + 1 / 4).im = z.im := by norm_num
   rw [Complex.inv_re, Complex.inv_re, Complex.normSq_apply, Complex.normSq_apply, hre, him]
-  change z.re / (z.re ^ 2 + z.im ^ 2) ≤
-    82 / 81 * ((z.re + 1 / 4) / ((z.re + 1 / 4) ^ 2 + z.im ^ 2))
+  simp only [← sq]
   rw [← mul_div_assoc, div_le_div_iff₀ hD hD']
   nlinarith only [hpaid]
 
@@ -51,7 +50,7 @@ theorem reciprocalSquare_re_le_endpoint (q : XiZeroCopy) :
   have hreal : 81 / 4 ≤ (xiSpectralPoint q ^ 2).re := by
     rw [sq, Complex.mul_re]
     nlinarith only [hx2, hy2]
-  rw [xiZeroCopyReciprocalSquare, ← inv_pow, hprod, one_div]
+  rw [xiZeroCopyReciprocalSquare, inv_pow, hprod, one_div]
   exact reciprocal_real_comparison hreal
 
 /-- The complete theta source has a sharper quadratic curvature budget. -/

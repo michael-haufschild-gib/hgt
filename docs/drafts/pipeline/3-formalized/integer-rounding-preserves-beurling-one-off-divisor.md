@@ -21,7 +21,7 @@ The original continuation multiplied by `exp(C + R_u − R_t)` agrees with the r
 
 ## Scope and positive survivor
 
-Integer generator norms alone do not exclude a finite nonempty zero layer. The construction and its holomorphic perturbation law strengthen the discrete countermodel. No estimate for its generalized integer-count error, no ordinary multiplicativity of its Dirichlet coefficients, and no Riemann functional equation is asserted. AAL for the actual zeta function remains undecided.
+Integer generator norms alone do not exclude a finite nonempty zero layer. The construction and its holomorphic perturbation law strengthen the discrete countermodel. The continuation's natural Dirichlet coefficients and linear counting `N(x) ∼ A x`, with `A > 0`, are now formalized in [the counting extension](rounded-beurling-one-off-linear-count.md). No power-saving counting error, ordinary multiplicativity of the collected coefficients, or Riemann functional equation is asserted. AAL for the actual zeta function remains undecided.
 
 ## Lean
 

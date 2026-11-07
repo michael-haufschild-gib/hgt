@@ -111,6 +111,7 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | Head–tail decoupling | `smooth_mul_rough_injective`, `indexed_meanValue`, `integral_head_mul_tail`, `abs_conditional_second_moment_sub_le`, `norm_integral_head_sq_mul_tail_le` | `TheTailDecouplesFromTheHead` |
 | Gaussian conditional moments | `headPoly_pow`, `powNorm_le`, `integral_head_mul_tail_pow_le`, `setIntegral_head_on_large_tail_le` | `TheConditionalMomentsOfTheTail` |
 | Arithmetic smooth–prime second moment | `integral_balancedHead_primeTail_sq_le`, `setIntegral_balancedHead_on_large_primeTail_le` | `TheSmoothPrimeMeanSquareHasAnArithmeticCost` |
+| Rectangular arithmetic moments | `integral_rectangular_head_tail_le`, `integral_rectangular_head_prime_tail_pow_le`, `setIntegral_rectangular_head_on_large_prime_tail_le`, `integral_rectangular_full_prime_tail_pow_le` | `TheRectangularMomentsHaveAnArithmeticCost` |
 | The head is frozen | `abs_log_norm_eulerMollifier_sub_le`, `abs_log_norm_eulerHead_sub_le_of_one_le`, `norm_zeta_eq_head_mul_tail` | `TheHeadIsFrozenAtItsResolution` |
 | The tail carries the zero | `eulerTail_eq_zero_iff`, `tendsto_eulerTail_of_phaseReturn`, `tendsto_zero_tail_of_phaseReturn`, `zetaReturnSet_subset_eulerDiscTailBadSet`, `exists_returns_tailBad_and_rare` | `TheTailOfAReturnCarriesTheZero` |
 | The recurrence dichotomy of the tail | `exists_tailBad_of_zero`, `zetaTargetReturnSet_subset_eulerDiscTailBadSet`, `tail_recurrence_dichotomy` | `TheRecurrenceDichotomyOfTheTail` |
@@ -127,6 +128,16 @@ Summing compatible integer differences cancels the gcd cost; a triangular Fourie
 the count without a harmonic logarithm. Restricting head mass to `|B|≥V` costs `V⁻²`.
 This gives a sparse-head arithmetic error, without a prime-density saving or control of infinite exceptional tails.
 
+For smooth rows in `(X,2X]` and rough columns at most `Z`, write `R_j=Σ|r|^j`,
+`B₂=Σ|b|²`, and assume `|b|≤K`. Every centered mean square is at most
+`(5π/2)(T R₂ B₂+4Z(X+Z)R₁²K²)`. For a prime tail below `Y` with `|b|≤1`,
+its `k`th power has coefficient supremum `≤k!` and squared coefficient sum
+`≤k!B₂^k`. Thus its head-weighted `2k`th moment is at most
+`(5π/2)(T R₂ k!B₂^k+4Y^k(X+Y^k)R₁²(k!)²)`.
+The literal smooth interval and prime tail satisfy this bound; restriction to
+`|tail|≥V` divides it by `V^(2k)`. Sparse heads can improve the finite-moment
+range through this arithmetic error. Exceptional infinite tails remain open.
+
 ## 7. Tools
 
 | Tool | Reaches | Stops at |
@@ -135,6 +146,7 @@ This gives a sparse-head arithmetic error, without a prime-density saving or con
 | A moment past the last diagonal scale that sees smooth-number density | the comb: at a return the smooth integers lie on `exp((2π/t)ℤ)` with teeth `k√(η/8)`, and past `X ≍ t` the comb has density `O(δ)` | below `X ≍ t` the comb is not an interval structure; seeing it there is a count of smooth numbers in intervals of length `X/t` with polylogarithmic smoothness |
 | Conditional mean values on Bohr sets | exact head–tail factorization of all conditional moments, Gaussian moments and large deviations of the tail | the Kronecker scale: the head resonator must be shorter than the height, `log max A + k log Z ≪ log T` |
 | Arithmetic second moments for sparse smooth heads | every centered interval; error `8X² #A²` for balanced smooth–prime supports and bounded coefficients | prime-density savings, growing heads and infinite exceptional tails |
+| Rectangular conditional moments | exact coefficient diagonal and error `4Y^k(X+Y^k)R₁²(k!)²` for bounded prime tails, uniformly in interval center | the displayed arithmetic error must be small relative to `T R₂ k!B₂^k`; infinite exceptional tails remain uncontrolled |
 | A lower bound for atypical members of a Bohr set | nonvanishing tail shapes occur at positive density (universality); shapes with a zero only at tail-bad heights of density zero | a lower bound for tail-bad heights *at a zero*: that is B89 |
 | A sum–product theorem for the height orbit | the comb is a multiplicative approximate group and, past `X ≍ t`, locally an interval structure; the comb inequality gives polynomial first returns at precision `≲ 1/k` | the comb has both structures, so sum–product inequalities do not exclude it; below `X ≍ t` it is the dark range |
 | Agler-type certificates past the abscissa | head–tail certificates wherever the tail coordinate is Schur | Euler coordinates, prime by prime or perturbed summably, diverge on `½ < Re s ≤ 1` |

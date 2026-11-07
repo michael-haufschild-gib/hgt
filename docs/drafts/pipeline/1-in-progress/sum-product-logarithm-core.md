@@ -37,6 +37,17 @@ for differences up to `floor(4X²/T)`. The
 cancels the gcd loss, giving `E≤#A #P+2 floor(4X²/T)#A²`, with exact
 diagonal energy when `T>4X²`. Prime-density savings at random scale and
 control of winding cells are still missing.
+The [coprime-density refinement](../3-formalized/smooth-prime-coprime-difference-density.md)
+retains the reduced-row prime factors: each row pair costs at most
+`g #{1≤v≤H/g:gcd(v,(m/g)(n/g))=1}`, with a totient bound for every positive
+divisor of the reduced product. This improves the finite arithmetic envelope
+without proving the random-scale prime-density law.
+The [rectangular census](../3-formalized/rectangular-smooth-rough-arithmetic-moments.md)
+gives `(Z/X+1)floor(2XZδ)` per positive log fibre for rows in `(X,2X]`
+and columns in `[1,Z]`. In broader RH work, TAPO transfers these counts through
+a triangular Fourier majorant to actual weighted mean squares, higher prime-tail
+moments, and large-tail bounds. This analytic transfer uses positivity and is
+kept outside the restricted arithmetic programme.
 
 ## Independent finite-zero target
 

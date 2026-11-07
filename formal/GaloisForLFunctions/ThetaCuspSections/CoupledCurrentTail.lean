@@ -13,7 +13,7 @@ before taking norms. This pays a factor of thirty-two in the complete tail.
 open Complex MeasureTheory Set Metric Filter
 noncomputable section
 namespace GaloisForLFunctions.ThetaCuspSections.ExplicitCollar
-open _root_.RHTower
+open _root_.RHTower CriticalCollar
 
 /-- The two opposite aperture shifts retain a common decay envelope. -/
 def coupledXiProduct (b : ℝ) (z : ℂ) : ℂ :=
@@ -24,16 +24,20 @@ theorem coupledXiProduct_differentiable (b : ℝ) : Differentiable ℂ (coupledX
 
 theorem coupledXiProduct_even (b : ℝ) (z : ℂ) :
     coupledXiProduct b (-z) = coupledXiProduct b z := by
-  simp only [coupledXiProduct, neg_mul, sub_neg_eq_add, add_neg_eq_sub, mul_comm]
+  unfold coupledXiProduct
+  rw [show (b : ℂ) - -z * I = (b : ℂ) + z * I by ring,
+    show (b : ℂ) + -z * I = (b : ℂ) - z * I by ring]
+  exact mul_comm _ _
 
 /-- The complete coupled product has no loss from the common contour phase. -/
 theorem norm_coupledXiProduct_le {z : ℂ} (hz : ‖z‖ ≤ 3 / 2) (b : ℝ) :
     ‖coupledXiProduct b z‖ ≤ 1000000 * Real.exp (-(7 / 5 * |b|)) := by
   have hre : |z.re| ≤ 3 / 2 := (abs_re_le_norm z).trans hz
   have hm : (b : ℂ) - z * I = ((b + z.im : ℝ) : ℂ) + ((-z.re : ℝ) : ℂ) * I := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
   have hp : (b : ℂ) + z * I = ((b - z.im : ℝ) : ℂ) + (z.re : ℂ) * I := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
+    ring
   have h1 := norm_XiC_le_wide (b + z.im) (-z.re) (by rwa [abs_neg])
   have h2 := norm_XiC_le_wide (b - z.im) z.re hre
   have habs : 2 * |b| ≤ |b + z.im| + |b - z.im| := by

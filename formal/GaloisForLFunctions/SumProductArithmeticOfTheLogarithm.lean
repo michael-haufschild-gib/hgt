@@ -37,3 +37,5 @@ collisions, finite-resolution reconstruction, and integer winding information.
 See `SumProductArithmeticOfTheLogarithm/README.md` for the mathematical programme.
 -/
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.RectangularProductCollisions
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.CoprimeSmoothPrimeEnergy
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PrimitiveProductCollisionCosts

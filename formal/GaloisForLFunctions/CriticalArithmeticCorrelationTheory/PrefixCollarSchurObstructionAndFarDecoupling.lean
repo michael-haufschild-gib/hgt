@@ -3075,14 +3075,13 @@ private theorem completeWeilEnergy_collar_spike_approx {c : ℝ} (hc1 : 1 ≤ c)
   have hw_eq : cq / (Nq : ℝ) = c / (N : ℝ) := by
     dsimp only [cq]; field_simp [hNq0.ne', hN0.ne']
   have hsep_q : cq / (Nq : ℝ) < atomSpacing Nq := by
-    have h4 : 4 * (cq / (Nq : ℝ)) * Nq ≤ 1 := by
-      rw [div_mul_cancel₀ _ hNq0.ne']
-      linarith only [hcq_quarter]
     have hb : cq / (Nq : ℝ) ≤ (1 / ((Nq : ℝ) + 1)) / 2 := by
-      apply (le_div_iff₀ (by norm_num : (0 : ℝ) < 2)).mpr
-      apply (le_div_iff₀ (by positivity : (0 : ℝ) < Nq + 1)).mpr
+      rw [div_div, div_le_div_iff₀ hNq0 (by positivity)]
       have hNq1R : (1 : ℝ) ≤ Nq := by exact_mod_cast hNq1
-      nlinarith only [h4, mul_nonneg hcq0.le (sub_nonneg.mpr hNq1R)]
+      have h1 : 2 * cq ≤ 2 * cq * Nq := le_mul_of_one_le_right (by positivity) hNq1R
+      have h2 : 4 * cq * Nq ≤ 1 * Nq :=
+        mul_le_mul_of_nonneg_right (by linarith only [hcq_quarter]) hNq0.le
+      linarith only [h1, h2]
     exact hb.trans_lt (by
       linarith only [(atomSpacing_bounds hNq1).1, atomSpacing_pos hNq1])
   set Mq := M / q
@@ -3474,7 +3473,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hlog_rpow : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ)) /
       Real.log (N : ℝ) ^ (1 / 256 : ℝ)) atTop (𝓝 0) := by
     have hsub : Tendsto (fun x : ℝ => Real.log x / x ^ (1 / 256 : ℝ)) atTop (𝓝 0) :=
-      (tendsto_log_div_rpow_atTop (1 / 256 : ℝ) (by norm_num)).congr' (by
+      (tendsto_log_div_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 256)).congr' (by
         filter_upwards [eventually_gt_atTop (0 : ℝ)] with x _
         rfl)
     exact hsub.comp hL_tend
@@ -3483,18 +3482,17 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     (C := Real.log (4 * H_cut) + 12) ?_
   filter_upwards [hc1, hrat_lt, hglob, hgard, norm_lowPacketProjection_primeAboveLowPacket_le,
     eventually_ge_atTop 16,
-    hL_tend.eventually_ge_atTop ((4 : ℝ) ^ (1280 : ℕ)),
+    hL_tend.eventually_ge_atTop ((4 : ℝ) ^ (1280 : ℝ)),
     ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 256)).comp hL_tend).eventually_ge_atTop
       (R + 1 + C_q * (R + 1) + B_col * (R + 1) + C_top_abs * (R + 1) +
         C_self_abs + C_err_half + 4 * H_cut + Real.log (4 * H_cut) + 4096),
     hL_pow4.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (64 * H_cut ^ 2 * (R + 1)))),
     hlog_rpow.eventually (gt_mem_nhds zero_lt_one)]
     with N hcN hratN hglobN hgardN hu_bd hN16 hL_big hL_256 hL4_N hlogL_rpow
-  dsimp only [Function.comp_def] at hL_big hL_256 hlogL_rpow
+  dsimp only [Function.comp_def] at hL_256 hlogL_rpow
+  change (4 : ℝ) ^ (1280 : ℝ) ≤ Real.log (N : ℝ) at hL_big
   set L := Real.log (N : ℝ)
-  have hL1 : 1 ≤ L := by
-    have : (1 : ℝ) ≤ (4 : ℝ) ^ (1280 : ℕ) := one_le_pow₀ (by norm_num)
-    linarith only [this, hL_big]
+  have hL1 : 1 ≤ L := (Real.one_le_rpow (by norm_num) (by norm_num)).trans hL_big
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hN1 : 1 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
@@ -3507,14 +3505,10 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hL_rpow : R + 1 + C_q * (R + 1) + B_col * (R + 1) + C_top_abs * (R + 1) +
       C_self_abs + C_err_half + 4 * H_cut + Real.log (4 * H_cut) + 4096 ≤ L ^ (1 / 64 : ℝ) :=
     hL_256.trans h1_64_ge
-  have hL_3_256 : (4 : ℝ) ^ (15 : ℝ) ≤ L ^ (3 / 256 : ℝ) := by
-    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
-    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 3 / 256)
-    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
-    norm_num at hrp ⊢
-    exact hrp
-  have hL_256_big : (4 : ℝ) ^ (14 : ℝ) ≤ L ^ (7 / 32 : ℝ) :=
-    (by norm_num : (4 : ℝ) ^ (14 : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans
+  have hL_3_256 : (4 : ℝ) ^ (15 : ℕ) ≤ L ^ (3 / 256 : ℝ) :=
+    four_pow_nat_le_rpow 15 hL_big (by norm_num) (by norm_num)
+  have hL_256_big : (4 : ℝ) ^ (14 : ℕ) ≤ L ^ (7 / 32 : ℝ) :=
+    (by norm_num : (4 : ℝ) ^ (14 : ℕ) ≤ (4 : ℝ) ^ (15 : ℕ)).trans
       (hL_3_256.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
   have hc8_le : c N ^ 8 ≤ (R + 1) * L := (div_lt_iff₀ hL0).mp hratN |>.le
   have hR1_256 : R + 1 ≤ L ^ (1 / 256 : ℝ) := by
@@ -3522,7 +3516,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hR1_64 : R + 1 ≤ L ^ (1 / 64 : ℝ) := hR1_256.trans h1_64_ge
   have hc_le_9_64 : c N ≤ L ^ (9 / 64 : ℝ) := by
     have hp8 : c N ^ 8 ≤ (L ^ (9 / 64 : ℝ)) ^ 8 := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      rw [← Real.rpow_natCast (L ^ (9 / 64 : ℝ)) 8, ← Real.rpow_mul hL0.le]
       have hexp2 : (1 / 64 : ℝ) + 1 = 65 / 64 := by norm_num
       have h65_72 : L ^ (65 / 64 : ℝ) ≤ L ^ (9 / 8 : ℝ) :=
         Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)
@@ -3534,14 +3528,14 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hc3_rpow : c N ^ 3 ≤ L ^ (97 / 256 : ℝ) := by
     have hp8 : (c N ^ 3) ^ 8 ≤ (L ^ (97 / 256 : ℝ)) ^ 8 := by
       have h83 : (c N ^ 3) ^ 8 = (c N ^ 8) ^ 3 := by ring
-      rw [h83, ← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      rw [h83, ← Real.rpow_natCast (L ^ (97 / 256 : ℝ)) 8, ← Real.rpow_mul hL0.le]
       have hc8_257 : c N ^ 8 ≤ L ^ (257 / 256 : ℝ) := by
         calc c N ^ 8 ≤ (R + 1) * L := hc8_le
           _ ≤ L ^ (1 / 256 : ℝ) * L := mul_le_mul_of_nonneg_right hR1_256 hL0.le
           _ = L ^ (257 / 256 : ℝ) := by rw [← Real.rpow_add_one hL0.ne']; norm_num
       have h3 : (c N ^ 8) ^ 3 ≤ (L ^ (257 / 256 : ℝ)) ^ 3 :=
         pow_le_pow_left₀ (by positivity) hc8_257 3
-      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le] at h3
+      rw [← Real.rpow_natCast (L ^ (257 / 256 : ℝ)) 3, ← Real.rpow_mul hL0.le] at h3
       exact h3.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num))
     exact (pow_le_pow_iff_left₀ (by positivity) (Real.rpow_nonneg hL0.le _) (by omega)).mp hp8
   have hc_le_L : c N ≤ L :=
@@ -3563,10 +3557,8 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hQ₁_ge4 : 4 ≤ Q₁ := by
     dsimp only [Q₁, lowPacketCutoff]
     refine Nat.le_floor ?_
-    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
-    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 13 / 32)
-    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
-    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ ((1280 : ℝ) * (13 / 32))).trans hrp
+    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ (1 : ℕ)).trans
+      (four_pow_nat_le_rpow 1 hL_big (by norm_num) (by norm_num))
   have hq_ge : L ^ (13 / 32 : ℝ) ≤ q := by
     have hlt : Q₁ < q := (le_max_right 2 Q₁).trans_lt hq_gt
     have hfl := (Nat.lt_floor_add_one (L ^ (13 / 32 : ℝ))).le
@@ -3599,7 +3591,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       have hcoef : 2 * H_cut ≤ 64 * H_cut ^ 2 * (R + 1) := by
         have hH1 : 1 ≤ H_cut := by dsimp only [H_cut]; linarith [Real.exp_pos 2]
         have hHH : H_cut ≤ H_cut ^ 2 := le_self_pow₀ hH1 (by omega)
-        have hm := mul_le_mul (show (2 : ℝ) ≤ 64 * (R + 1) by linarith) hHH zero_le_two (by positivity)
+        have hm := mul_le_mul (show (2 : ℝ) ≤ 64 * (R + 1) by linarith) hHH hH_pos.le (by positivity)
         linarith only [hm]
       exact (mul_le_mul hcoef hL14 hL0.le (by positivity)).trans_eq (by ring)
     exact_mod_cast (show ((2 * Lc : ℕ) : ℝ) ≤ N by push_cast; exact (h1.trans h2).trans hN_L4_split)
@@ -3625,7 +3617,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       have hH1 : 1 ≤ H_cut := by dsimp only [H_cut]; linarith [Real.exp_pos 2]
       have hHH : H_cut ≤ H_cut ^ 2 := le_self_pow₀ hH1 (by omega)
       have hcoef : 8 * H_cut ≤ 64 * H_cut ^ 2 * (R + 1) := by
-        have hm := mul_le_mul (show (8 : ℝ) ≤ 64 * (R + 1) by linarith) hHH (by norm_num) (by positivity)
+        have hm := mul_le_mul (show (8 : ℝ) ≤ 64 * (R + 1) by linarith) hHH hH_pos.le (by positivity)
         linarith only [hm]
       exact (mul_le_mul hcoef hL24 (sq_nonneg _) (by positivity)).trans_eq (by ring)
     exact_mod_cast (show ((4 * q * Lc : ℕ) : ℝ) ≤ N by push_cast; exact (h1.trans h2).trans hN_L4_split)
@@ -3641,25 +3633,27 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       have h3 : M * 3 ≤ M * Lc := Nat.mul_le_mul_left M hLc3
       linarith
     have hqMq_le_M : q * Mq ≤ M := Nat.mul_div_le M q
+    have hM_ge1 : 1 ≤ M := le_trans hMq1 (Nat.div_le_self M q)
     have hN_lt : N < q * (Nq + 1) := by
       simpa only [Nq, Nat.mul_comm] using Nat.lt_mul_div_succ N hq_prime.pos
     have hlt_mul : q * (Mq + 1) ≤ q * Nq := by
       have hlt : q * (Mq + 1) < q * (Nq + 1) := by
         calc q * (Mq + 1) = q * Mq + q := by ring
-          _ ≤ 2 * (q * Mq) := by have := Nat.mul_le_mul_left q hMq1; omega
-          _ ≤ 2 * M := by omega
-          _ < 3 * M := by omega
+          _ ≤ 2 * (q * Mq) := by have := Nat.mul_le_mul_left q hMq1; linarith
+          _ ≤ 2 * M := by linarith
+          _ < 3 * M := by linarith
           _ ≤ N := h3M_le_N
           _ < q * (Nq + 1) := hN_lt
       have h1 : Mq + 1 < Nq + 1 := Nat.lt_of_mul_lt_mul_left hlt
       exact Nat.mul_le_mul_left q (by omega)
     exact Nat.lt_of_succ_le (Nat.le_of_mul_le_mul_left hlt_mul hq_prime.pos)
   have hNq1 : 1 ≤ Nq := by omega
+  have hNq0 : (0 : ℝ) < Nq := by exact_mod_cast hNq1
   set cq := c N * (Nq : ℝ) / N
   have hcq_le_cq_div : cq ≤ c N / q := by
     dsimp only [cq]
     have hNq_le : (Nq : ℝ) ≤ (N : ℝ) / q :=
-      (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self N q)
+      (le_div_iff₀ hq0).mpr (by exact_mod_cast Nat.mul_div_le N q)
     calc c N * (Nq : ℝ) / N ≤ c N * ((N : ℝ) / q) / N :=
           div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hNq_le hc0.le) hN0.le
       _ = c N / q := by field_simp [hN0.ne', hq0.ne']
@@ -3674,15 +3668,14 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hcq_quarter : cq ≤ 1 / 4 := by
     refine hcq_rpow.trans ?_
     rw [div_le_div_iff₀ (Real.rpow_pos_of_pos hL0 _) (by norm_num), one_mul, one_mul]
-    have hbase : (4 : ℝ) ^ (1280 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
-    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 17 / 64)
-    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
-    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ ((1280 : ℝ) * (17 / 64))).trans hrp
+    exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ (1 : ℕ)).trans
+      (four_pow_nat_le_rpow 1 hL_big (by norm_num) (by norm_num))
   -- Decompose `y_z = y_sp - y_rem` on `Ioc M N`.
   set v := normalizedRamanujanHorizonVector q N
   set u := (conductorSubspace Q₁ N).starProjection v
   set z := lowPacketOrthogonalPrimeQuasimode N
   set y_z := horizonCollarVector M z
+  change |completeWeilEnergy φ (c N) N y_z - Real.log (c N)| ≤ _
   set A_sp : ℝ := Real.sqrt ((q : ℝ) / (((q : ℝ) - 1) * L))
   set B_bg : ℝ := 1 / Real.sqrt (((q : ℝ) - 1) * L)
   set y_sp := horizonProfileVector
@@ -3703,10 +3696,10 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     by_cases hMn : M < n
     · rw [if_pos hMn, if_pos hMn, if_pos hMn]
       change v ⟨n, hn⟩ - u ⟨n, hn⟩ = _
-      change normalizedRamanujanMode q n / Real.sqrt (Real.log N * n) - u ⟨n, hn⟩ = _
+      change (Real.sqrt (Real.log (N : ℝ)))⁻¹ * (normalizedRamanujanMode q n / Real.sqrt n) -
+        u ⟨n, hn⟩ = _
       rw [normalizedRamanujanMode_eq_coefficient hq_prime.pos,
-        ramanujanLagCoefficient_of_prime hq_prime n, hqt,
-        Real.sqrt_mul hL0.le]
+        ramanujanLagCoefficient_of_prime hq_prime n, hqt]
       by_cases hdvd : q ∣ n
       · rw [if_pos ⟨hMn, hdvd⟩, if_pos hdvd]
         dsimp only [A_sp, B_bg]
@@ -3722,6 +3715,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
           (Real.sqrt_pos.mpr hn0).ne']
         ring
     · rw [if_neg hMn, if_neg (fun h => hMn h.1), if_neg hMn, if_neg hMn]; ring
+  clear_value y_z z v
   -- Harmonic sum bounds for `‖y_sp‖ ^ 2`.
   have hharm_lo : Real.log (c N) ≤ ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ) := by
     have hlo := RHTower.Sieve.log_sub_le_sum_Icc_one_div (m := Mq + 1) (n := Nq)
@@ -3736,19 +3730,19 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       linarith only [this]
     have hMq_succ : (((Mq + 1 : ℕ) : ℝ)) * c N ≤ (N : ℝ) / q := by
       have hMq_le : (Mq : ℝ) ≤ (M : ℝ) / q :=
-        (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self M q)
+        (le_div_iff₀ hq0).mpr (by exact_mod_cast Nat.mul_div_le M q)
       have hM_le : (M : ℝ) ≤ (N : ℝ) / (2 * c N) := by
         have hMLc : (M : ℝ) * Lc ≤ N := by exact_mod_cast Nat.div_mul_le_self N Lc
         have h2c_Lc : 2 * c N ≤ Lc := by
-          have := Real.one_le_exp (zero_le_two (α := ℝ))
-          linarith only [h256c, this, hc0]
+          have hm := mul_le_mul_of_nonneg_right (Real.one_le_exp (zero_le_two (α := ℝ))) hc0.le
+          linarith only [h256c, hm]
         rw [le_div_iff₀ (by positivity)]
         exact (mul_le_mul_of_nonneg_left h2c_Lc (Nat.cast_nonneg M)).trans hMLc
       have h1_le : 1 ≤ (N : ℝ) / (2 * c N * q) := by
         rw [one_le_div (by positivity)]
         have h2cq : 2 * c N * q ≤ 4 * (q : ℝ) * Lc := by
-          have := Real.one_le_exp (zero_le_two (α := ℝ))
-          have h2c_Lc : 2 * c N ≤ Lc := by linarith only [h256c, this, hc0]
+          have hm := mul_le_mul_of_nonneg_right (Real.one_le_exp (zero_le_two (α := ℝ))) hc0.le
+          have h2c_Lc : 2 * c N ≤ Lc := by linarith only [h256c, hm]
           nlinarith only [h2c_Lc, hq0, hLc_pos]
         exact h2cq.trans (by exact_mod_cast hqLc_le_N)
       push_cast
@@ -3770,7 +3764,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     refine hhi.trans ?_
     have hNq_le : (Nq : ℝ) ≤ 4 * H_cut * c N * Mq := by
       have hNq_div : (Nq : ℝ) ≤ (N : ℝ) / q :=
-        (le_div_iff₀ hq0).mpr (by rw [mul_comm]; exact_mod_cast Nat.div_mul_le_self N q)
+        (le_div_iff₀ hq0).mpr (by exact_mod_cast Nat.mul_div_le N q)
       have hN_le_2M : (N : ℝ) ≤ 2 * H_cut * c N * M := by
         have hlt : N < Lc * (M + 1) := by
           simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc)
@@ -3859,11 +3853,13 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       rw [if_neg (Nat.not_lt.mpr (mem_Icc.mp hk).2), zero_pow (by norm_num)]
     rw [hz1, zero_add, mul_sum]
     refine sum_congr rfl fun k hk => ?_
-    have hkN : k ∈ Icc 1 Nq := mem_Icc.mpr ⟨by omega, (mem_Icc.mp hk).2⟩
-    have hk0 : (0 : ℝ) < k := by exact_mod_cast (show 1 ≤ k by omega)
+    obtain ⟨hk_lo, hk_hi⟩ := mem_Icc.mp hk
+    have hk1 : 1 ≤ k := le_trans (Nat.le_add_left 1 Mq) hk_lo
+    have hkN : k ∈ Icc 1 Nq := mem_Icc.mpr ⟨hk1, hk_hi⟩
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast hk1
     rw [primeHorizonExtension_coe x_q ⟨k, hkN⟩]
     change (if Mq < k then A_sp / Real.sqrt k else 0) ^ 2 = _
-    rw [if_pos (show Mq < k by omega), div_pow, Real.sq_sqrt hk0.le]
+    rw [if_pos (Nat.lt_of_succ_le hk_lo), div_pow, Real.sq_sqrt hk0.le]
     dsimp only [A_sp]
     rw [Real.sq_sqrt (by positivity), div_eq_mul_one_div (_ / _)]
   have hysp_sq_le : ‖y_sp‖ ^ 2 ≤ 4 * L ^ (1 / 64 : ℝ) / L := by
@@ -3875,7 +3871,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       have hlog4H_64 : Real.log (4 * H_cut) ≤ L ^ (1 / 64 : ℝ) := by
         linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos]
       linarith only [hharm_hi, hlogc_64, hlog4H_64]
-    rw [hysp_sq_eq, show (q : ℝ) / (((q : ℝ) - 1) * L) = ((q : ℝ) / ((q : ℝ) - 1)) / L by ring]
+    rw [hysp_sq_eq, div_mul_eq_div_div]
     calc ((q : ℝ) / ((q : ℝ) - 1)) / L * ∑ k ∈ Icc (Mq + 1) Nq, 1 / (k : ℝ)
         ≤ (2 / L) * (2 * L ^ (1 / 64 : ℝ)) :=
           mul_le_mul (div_le_div_of_nonneg_right hqqm1 hL0.le) hS_le
@@ -3922,7 +3918,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
         linarith only [hS_le, h2_le_q2, hqm1_ge]
       have hrem_ysp : |(-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
           Real.eulerMascheroniConstant) * ‖y_sp‖ ^ 2| ≤ 2 := by
-        rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+        rw [abs_mul, abs_of_nonneg (sq_nonneg ‖y_sp‖)]
         have hc_abs : |-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
             Real.eulerMascheroniConstant| ≤ 2 * L ^ (1 / 64 : ℝ) := by
           have htri : |-Real.log (c N) + completeWeilSelfFinitePart φ 1 -
@@ -3944,11 +3940,11 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
                 8 * (L ^ (1 / 64 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
                 ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
               have hexp : (1 / 64 + 1 / 64 - 1 : ℝ) = -(31 / 32) := by norm_num
-              rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+              rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
           _ ≤ 2 := by
               have h1 : 8 / L ^ (31 / 32 : ℝ) ≤ 1 := by
                 rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
-                exact (by norm_num : (8 : ℝ) ≤ (4 : ℝ) ^ (14 : ℝ)).trans
+                exact (by norm_num : (8 : ℝ) ≤ (4 : ℝ) ^ (14 : ℕ)).trans
                   (hL_256_big.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
               linarith
       have hrew : (L - Real.log (c N) + completeWeilSelfFinitePart φ 1 -
@@ -3975,7 +3971,8 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
         have hCt : topPrimeConstant ≤ C_top_abs := by
           dsimp only [C_top_abs]; linarith [le_abs_self topPrimeConstant]
         have hCt_64 : C_top_abs ≤ L ^ (1 / 64 : ℝ) := by
-          linarith only [hL_rpow, hR, hCR_nn, hBR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
+          have h1 : C_top_abs ≤ C_top_abs * (R + 1) := le_mul_of_one_le_right hCtop_pos.le (by linarith)
+          linarith only [h1, hL_rpow, hR, hCR_nn, hBR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
         have h1lc : 1 + Real.log (c N) ≤ 2 * L ^ (1 / 64 : ℝ) := by
           have h1 : 1 ≤ L ^ (1 / 64 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
           linarith only [h1, hlogc_64]
@@ -4006,7 +4003,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
               norm_num
       have ht_err : 4 * atomCrossErrorConstant φ cq * cq ^ 2 +
           2 * atomPoleMomentErrorConstant φ * cq ^ 2 + 2 ≤ L ^ (1 / 64 : ℝ) := by
-        have hcq0 : 0 < cq := div_pos (mul_pos hc0 (by exact_mod_cast hNq1)) hN0
+        have hcq0 : 0 < cq := div_pos (mul_pos hc0 hNq0) hN0
         have hcross_mono : atomCrossErrorConstant φ cq ≤ atomCrossErrorConstant φ (1 / 2) := by
           unfold atomCrossErrorConstant
           refine div_le_div_of_nonneg_left (by positivity) (by positivity)
@@ -4056,11 +4053,11 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
               52 * (L ^ (47 / 64 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
               ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
             have hexp : (47 / 64 + 1 / 64 - 1 : ℝ) = -(1 / 4) := by norm_num
-            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+            rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
         _ ≤ 3 := by
             have h1 : 52 / L ^ (1 / 4 : ℝ) ≤ 1 := by
               rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
-              exact (by norm_num : (52 : ℝ) ≤ (4 : ℝ) ^ (14 : ℝ)).trans
+              exact (by norm_num : (52 : ℝ) ≤ (4 : ℝ) ^ (14 : ℕ)).trans
                 (hL_256_big.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
             linarith
     have htri := abs_add_le
@@ -4088,17 +4085,20 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
         rw [if_neg (Nat.not_lt.mpr (mem_Icc.mp hn).2), zero_pow (by norm_num)]
       rw [hz1, zero_add, mul_sum]
       refine sum_congr rfl fun n hn => ?_
-      have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨by omega, (mem_Ioc.mp hn).2⟩
-      have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 1 ≤ n by omega)
+      obtain ⟨hn_lo, hn_hi⟩ := mem_Ioc.mp hn
+      have hn1 : 1 ≤ n := Nat.succ_le_of_lt ((Nat.zero_le M).trans_lt hn_lo)
+      have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨hn1, hn_hi⟩
+      have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
       rw [primeHorizonExtension_coe y_bg ⟨n, hnN⟩]
       change (if M < n then B_bg / Real.sqrt n else 0) ^ 2 = _
-      rw [if_pos (mem_Ioc.mp hn).1, div_pow, Real.sq_sqrt hn0.le, div_eq_mul_one_div]
+      rw [if_pos hn_lo, div_pow, Real.sq_sqrt hn0.le, div_eq_mul_one_div]
     have hinv_le : ∑ n ∈ Ioc M N, 1 / (n : ℝ) ≤ 2 * L ^ (1 / 256 : ℝ) := by
       have h1 := sum_inv_Ioc_le hMN hN1
       have hNM1 : (N : ℝ) / ((M : ℝ) + 1) ≤ H_cut * c N := by
         rw [div_le_iff₀ (by positivity)]
+        have hLc0 : 0 < Lc := lt_of_lt_of_le (by norm_num) hLc3
         have hlt : N < Lc * (M + 1) := by
-          simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc)
+          simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N hLc0
         have hc : (N : ℝ) ≤ ((Lc * (M + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
         rw [Nat.cast_mul, Nat.cast_add, Nat.cast_one] at hc
         exact hc.trans (mul_le_mul_of_nonneg_right hLc_le_Hc (by positivity))
@@ -4135,7 +4135,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
           rw [show (2 / L ^ (45 / 32 : ℝ)) * (2 * L ^ (1 / 256 : ℝ)) =
             4 * (L ^ (1 / 256 : ℝ) / L ^ (45 / 32 : ℝ)) by ring, ← Real.rpow_sub hL0]
           have hexp : (1 / 256 - 45 / 32 : ℝ) = -(359 / 256) := by norm_num
-          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+          rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
   have hyu_sq : ‖y_u‖ ^ 2 ≤ 1170 ^ 2 / L ^ (63 / 32 : ℝ) := by
     have h1q : 1 + Real.log q ≤ 65 * L ^ (1 / 64 : ℝ) := by
       have hq_2L : (q : ℝ) ≤ 2 * L :=
@@ -4155,11 +4155,12 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
             rw [show 18 * (65 * L ^ (1 / 64 : ℝ)) / L = 1170 * (L ^ (1 / 64 : ℝ) / L) by ring,
               ← Real.rpow_sub_one hL0.ne']
             have hexp : (1 / 64 - 1 : ℝ) = -(63 / 64) := by norm_num
-            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+            rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
     have hp := pow_le_pow_left₀ (norm_nonneg y_u)
       ((norm_horizonCollarVector_le M u).trans hu_rpow) 2
     rw [div_pow, ← Real.rpow_natCast (L ^ (63 / 64 : ℝ)) 2, ← Real.rpow_mul hL0.le] at hp
-    norm_num at hp; exact hp
+    have hp' : ‖y_u‖ ^ 2 ≤ 1170 ^ 2 / L ^ (63 / 32 : ℝ) := by norm_num at hp ⊢; exact hp
+    exact hp'
   have hyrem_sq : ‖y_rem‖ ^ 2 ≤ (8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ) := by
     have htri : ‖y_rem‖ ^ 2 ≤ 2 * ‖y_bg‖ ^ 2 + 2 * ‖y_u‖ ^ 2 := by
       have h1 := norm_add_le y_bg y_u
@@ -4172,36 +4173,19 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     calc ‖y_rem‖ ^ 2 ≤ 2 * (4 / L ^ (359 / 256 : ℝ)) + 2 * (1170 ^ 2 / L ^ (359 / 256 : ℝ)) := by
           linarith only [htri, hybg_sq, hyu_sq, hu']
       _ = (8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ) := by ring
-  have hEyrem_rpow : |completeWeilEnergy φ (c N) N y_rem| ≤ 1 / L ^ (2 / 256 : ℝ) := by
-    have hg := (hglobN hcN hc_le_L).1 y_rem
-    refine hg.trans ?_
-    have hL1_le : L + 1 ≤ 2 * L := by linarith only [hL1]
-    have hCq_256 : C_q ≤ L ^ (1 / 256 : ℝ) := by
-      have h1 : C_q ≤ C_q * (R + 1) := le_mul_of_one_le_right hC_q.le (by linarith)
-      linarith only [h1, hL_256, hR, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
-    calc C_q * c N ^ 3 * (L + 1) * ‖y_rem‖ ^ 2
-        ≤ L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
-            ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) :=
-          mul_le_mul
-            (mul_le_mul (mul_le_mul hCq_256 hc3_rpow (by positivity) (by positivity))
-              hL1_le (by positivity) (by positivity))
-            hyrem_sq (sq_nonneg _) (by positivity)
-      _ = (2 * (8 + 2 * 1170 ^ 2)) / L ^ (5 / 256 : ℝ) := by
-          rw [show L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
-              ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) =
-            (2 * (8 + 2 * 1170 ^ 2)) *
-              (L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * L / L ^ (359 / 256 : ℝ)) by ring,
-            ← Real.rpow_add hL0, ← Real.rpow_add_one hL0.ne', ← Real.rpow_sub hL0]
-          have hexp : (1 / 256 + 97 / 256 + 1 - 359 / 256 : ℝ) = -(5 / 256) := by norm_num
-          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
-      _ = ((2 * (8 + 2 * 1170 ^ 2)) / L ^ (3 / 256 : ℝ)) * (1 / L ^ (2 / 256 : ℝ)) := by
-          rw [div_mul_div_comm, mul_one, ← Real.rpow_add hL0]
-          norm_num
-      _ ≤ 1 * (1 / L ^ (2 / 256 : ℝ)) := by
-          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
-          rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
-          exact (by norm_num : (2 * (8 + 2 * 1170 ^ 2) : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans hL_3_256
-      _ = 1 / L ^ (2 / 256 : ℝ) := one_mul _
+  have hvan_lin : ∀ (α β : ℝ) (n : ℕ), n ≤ M →
+      primeHorizonExtension (α • y_sp + β • y_rem) n = 0 := by
+    intro α β n hnM
+    by_cases hn : n ∈ Icc 1 N
+    · rw [primeHorizonExtension_coe _ ⟨n, hn⟩, PiLp.add_apply, PiLp.smul_apply, PiLp.smul_apply,
+        PiLp.add_apply]
+      have hnot : ¬(M < n) := Nat.not_lt.mpr hnM
+      change α * (if M < n ∧ q ∣ n then A_sp * Real.sqrt q / Real.sqrt n else 0) +
+        β * ((if M < n then B_bg / Real.sqrt n else 0) +
+          (if M < n then primeHorizonExtension u n else 0)) = 0
+      rw [if_neg (fun h => hnot h.1), if_neg hnot, if_neg hnot]
+      ring
+    · simp only [primeHorizonExtension, hn, ↓reduceDIte]
   have hgard_col : ∀ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
       (∀ n, n ≤ M → primeHorizonExtension w n = 0) →
       0 ≤ completeWeilEnergy φ (c N) N w + B_col * c N * ‖w‖ ^ 2 := by
@@ -4241,19 +4225,37 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     rw [mul_zero] at hm
     refine hm.trans_eq ?_
     field_simp [hc0.ne', hM_int.ne']
-  have hvan_lin : ∀ (α β : ℝ) (n : ℕ), n ≤ M →
-      primeHorizonExtension (α • y_sp + β • y_rem) n = 0 := by
-    intro α β n hnM
-    by_cases hn : n ∈ Icc 1 N
-    · rw [primeHorizonExtension_coe _ ⟨n, hn⟩, PiLp.add_apply, PiLp.smul_apply, PiLp.smul_apply,
-        PiLp.add_apply]
-      have hnot : ¬(M < n) := Nat.not_lt.mpr hnM
-      change α * (if M < n ∧ q ∣ n then A_sp * Real.sqrt q / Real.sqrt n else 0) +
-        β * ((if M < n then B_bg / Real.sqrt n else 0) +
-          (if M < n then primeHorizonExtension u n else 0)) = 0
-      rw [if_neg (fun h => hnot h.1), if_neg hnot, if_neg hnot]
-      ring
-    · simp only [primeHorizonExtension, hn, ↓reduceDIte]
+  clear_value y_rem y_sp y_bg y_u u M Lc Q₁ q Nq Mq
+  have hEyrem_rpow : |completeWeilEnergy φ (c N) N y_rem| ≤ 1 / L ^ (2 / 256 : ℝ) := by
+    have hg := (hglobN hcN hc_le_L).1 y_rem
+    refine hg.trans ?_
+    have hL1_le : L + 1 ≤ 2 * L := by linarith only [hL1]
+    have hCq_256 : C_q ≤ L ^ (1 / 256 : ℝ) := by
+      have h1 : C_q ≤ C_q * (R + 1) := le_mul_of_one_le_right hC_q.le (by linarith)
+      linarith only [h1, hL_256, hR, hBR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
+    calc C_q * c N ^ 3 * (L + 1) * ‖y_rem‖ ^ 2
+        ≤ L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
+            ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) :=
+          mul_le_mul
+            (mul_le_mul (mul_le_mul hCq_256 hc3_rpow (by positivity) (by positivity))
+              hL1_le (by positivity) (by positivity))
+            hyrem_sq (sq_nonneg _) (by positivity)
+      _ = (2 * (8 + 2 * 1170 ^ 2)) / L ^ (5 / 256 : ℝ) := by
+          rw [show L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * (2 * L) *
+              ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) =
+            (2 * (8 + 2 * 1170 ^ 2)) *
+              (L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) * L / L ^ (359 / 256 : ℝ)) by ring,
+            ← Real.rpow_add hL0, ← Real.rpow_add_one hL0.ne', ← Real.rpow_sub hL0]
+          have hexp : (1 / 256 + 97 / 256 + 1 - 359 / 256 : ℝ) = -(5 / 256) := by norm_num
+          rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
+      _ = ((2 * (8 + 2 * 1170 ^ 2)) / L ^ (3 / 256 : ℝ)) * (1 / L ^ (2 / 256 : ℝ)) := by
+          rw [div_mul_div_comm, mul_one, ← Real.rpow_add hL0]
+          norm_num
+      _ ≤ 1 * (1 / L ^ (2 / 256 : ℝ)) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
+          exact (by norm_num : (2 * (8 + 2 * 1170 ^ 2) : ℝ) ≤ (4 : ℝ) ^ (15 : ℕ)).trans hL_3_256
+      _ = 1 / L ^ (2 / 256 : ℝ) := one_mul _
   have hBcol_256 : B_col ≤ L ^ (1 / 256 : ℝ) := by
     have h1 : B_col ≤ B_col * (R + 1) := le_mul_of_one_le_right hBcol_pos.le (by linarith)
     linarith only [h1, hL_256, hR, hCR_nn, hTR_nn, hCself_pos, hCerr_pos, hH_pos, hlog4H_nn]
@@ -4268,13 +4270,13 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
             4 * (L ^ (1 / 64 : ℝ) * L ^ (9 / 64 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
             ← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
           have hexp : (1 / 64 + 9 / 64 + 1 / 64 - 1 : ℝ) = -(53 / 64) := by norm_num
-          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+          rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
       _ ≤ 1 := by
           rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
-          exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans
+          exact (by norm_num : (4 : ℝ) ≤ (4 : ℝ) ^ (15 : ℕ)).trans
             (hL_3_256.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
   have hBcol_yrem : B_col * c N * ‖y_rem‖ ^ 2 ≤ 1 / L ^ (2 / 256 : ℝ) := by
-    have hc_97 : c N ≤ L ^ (97 / 256 : ℝ) := (le_self_pow₀ hcN (by omega)).trans hc3_rpow
+    have hc_97 : c N ≤ L ^ (97 / 256 : ℝ) := (le_self_pow₀ hcN (by norm_num)).trans hc3_rpow
     calc B_col * c N * ‖y_rem‖ ^ 2
         ≤ L ^ (1 / 256 : ℝ) * L ^ (97 / 256 : ℝ) *
             ((8 + 2 * 1170 ^ 2) / L ^ (359 / 256 : ℝ)) :=
@@ -4293,7 +4295,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
       _ ≤ 1 * (1 / L ^ (2 / 256 : ℝ)) := by
           refine mul_le_mul_of_nonneg_right ?_ (by positivity)
           rw [div_le_one (Real.rpow_pos_of_pos hL0 _)]
-          exact (by norm_num : (8 + 2 * 1170 ^ 2 : ℝ) ≤ (4 : ℝ) ^ (15 : ℝ)).trans
+          exact (by norm_num : (8 + 2 * 1170 ^ 2 : ℝ) ≤ (4 : ℝ) ^ (15 : ℕ)).trans
             (hL_3_256.trans (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num)))
       _ = 1 / L ^ (2 / 256 : ℝ) := one_mul _
   have hBcol_inner : |B_col * c N * ⟪y_sp, y_rem⟫| ≤ 1 := by
@@ -4343,7 +4345,7 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
   have hts : t * s = 1 := one_div_mul_cancel hs_pos.ne'
   have hs2 : s ^ 2 = L ^ (2 / 256 : ℝ) := by
     dsimp only [s]
-    rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+    rw [← Real.rpow_natCast (L ^ (1 / 256 : ℝ)) 2, ← Real.rpow_mul hL0.le]
     norm_num
   have ht2 : t ^ 2 = 1 / L ^ (2 / 256 : ℝ) := by
     dsimp only [t]
@@ -4395,11 +4397,9 @@ private theorem tendsto_quasimode_collar_energy_div_log_log {c : ℕ → ℝ} {R
     rw [hm1] at hg_plus
     rw [hm2] at hg_minus
     have hXY : 2 * |X + Y| ≤ 3 := by
-      rw [ ← abs_of_pos (zero_lt_two (α := ℝ)), ← abs_mul, abs_le]
+      rw [← abs_of_pos (zero_lt_two (α := ℝ)), ← abs_mul, abs_le]
       exact ⟨by linarith only [hg_plus, ht2_sp, hs2_rem],
         by linarith only [hg_minus, ht2_sp, hs2_rem]⟩
-    have htri : |X| ≤ |X + Y| + |Y| := by
-      simpa only [add_sub_cancel_right] using abs_sub_le (X + Y) (-Y) 0
     have htri' : |X| ≤ |X + Y| + |Y| := by
       calc |X| = |(X + Y) + (-Y)| := by ring_nf
         _ ≤ |X + Y| + |-Y| := abs_add_le _ _
@@ -4442,28 +4442,30 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
     htend.eventually (gt_mem_nhds (by linarith))
   have hlog_rpow : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ)) /
       Real.log (N : ℝ) ^ (1 / 64 : ℝ)) atTop (𝓝 0) :=
-    ((tendsto_log_div_rpow_atTop (1 / 64 : ℝ) (by norm_num)).congr' (by
+    ((tendsto_log_div_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 64)).congr' (by
       filter_upwards [eventually_gt_atTop (0 : ℝ)] with x _
       rfl)).comp hL_tend
   have hrpow_zero : Tendsto (fun N : ℕ =>
       (32 + 2 * 1170 ^ 2) / Real.log (N : ℝ) ^ (7 / 16 : ℝ)) atTop (𝓝 0) := by
     have h1 : Tendsto (fun x : ℝ => x ^ (-(7 / 16 : ℝ))) atTop (𝓝 0) :=
-      tendsto_rpow_neg_atTop (by norm_num)
-    simpa only [div_eq_mul_inv, Real.rpow_neg_eq_inv_rpow, mul_zero] using
-      (h1.comp hL_tend).const_mul (32 + 2 * 1170 ^ 2)
+      tendsto_rpow_neg_atTop (by norm_num : (0 : ℝ) < 7 / 16)
+    have h2 := (h1.comp hL_tend).const_mul (32 + 2 * 1170 ^ 2)
+    rw [mul_zero] at h2
+    exact h2.congr fun N => by
+      dsimp only [Function.comp_def]
+      rw [Real.rpow_neg (Real.log_natCast_nonneg N), ← div_eq_mul_inv]
   refine squeeze_zero_norm' ?_ hrpow_zero
   filter_upwards [hc1, hrat_lt, norm_lowPacketProjection_primeAboveLowPacket_le,
     eventually_ge_atTop 16,
-    hL_tend.eventually_ge_atTop ((4 : ℝ) ^ (96 : ℕ)),
+    hL_tend.eventually_ge_atTop ((4 : ℝ) ^ (96 : ℝ)),
     ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 64)).comp hL_tend).eventually_ge_atTop
       (R + 1 + 1 + |Real.log H_cut| + 64),
     hlog_rpow.eventually (gt_mem_nhds zero_lt_one)]
     with N hcN hratN hu_bd hN16 hL_big hL_64 hlogL_64
-  dsimp only [Function.comp_def] at hL_big hL_64 hlogL_64
+  dsimp only [Function.comp_def] at hL_64 hlogL_64
+  change (4 : ℝ) ^ (96 : ℝ) ≤ Real.log (N : ℝ) at hL_big
   set L := Real.log (N : ℝ)
-  have hL1 : 1 ≤ L := by
-    have : (1 : ℝ) ≤ (4 : ℝ) ^ (96 : ℕ) := one_le_pow₀ (by norm_num)
-    linarith only [this, hL_big]
+  have hL1 : 1 ≤ L := (Real.one_le_rpow (by norm_num) (by norm_num)).trans hL_big
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
   have hN1 : 1 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
@@ -4473,7 +4475,7 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
     linarith only [hL_64, abs_nonneg (Real.log H_cut)]
   have hc_le_9_64 : c N ≤ L ^ (9 / 64 : ℝ) := by
     have hp8 : c N ^ 8 ≤ (L ^ (9 / 64 : ℝ)) ^ 8 := by
-      rw [← Real.rpow_natCast, ← Real.rpow_mul hL0.le]
+      rw [← Real.rpow_natCast (L ^ (9 / 64 : ℝ)) 8, ← Real.rpow_mul hL0.le]
       calc c N ^ 8 ≤ (R + 1) * L := (div_lt_iff₀ hL0).mp hratN |>.le
         _ ≤ L ^ (1 / 64 : ℝ) * L := mul_le_mul_of_nonneg_right hR1_64 hL0.le
         _ = L ^ (65 / 64 : ℝ) := by rw [← Real.rpow_add_one hL0.ne']; norm_num
@@ -4487,7 +4489,7 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
   have hlogc_le : Real.log (c N) ≤ L ^ (1 / 64 : ℝ) :=
     (Real.log_le_log hc0 hc_le_L).trans hlogL_le
   set Lc := linearDefectCutoff (c N)
-  obtain ⟨_, _, _, hLc_up⟩ := linearDefectCutoff_bounds hcN
+  obtain ⟨hLc3, _, _, hLc_up⟩ := linearDefectCutoff_bounds hcN
   have hLc_le_Hc : (Lc : ℝ) ≤ H_cut * c N := by dsimp only [H_cut]; linarith only [hLc_up, hcN]
   set M := N / Lc
   have hMN : M ≤ N := Nat.div_le_self N Lc
@@ -4495,11 +4497,9 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
   obtain ⟨hq_prime, _, hq_le⟩ := primeAboveLowPacket_spec N
   have hq2 : 2 ≤ q := hq_prime.two_le
   have hq0 : (0 : ℝ) < q := by exact_mod_cast hq_prime.pos
-  have h2_rpow : (2 : ℝ) ≤ L ^ (13 / 32 : ℝ) := by
-    have hbase : (4 : ℝ) ^ (96 : ℝ) ≤ L := by norm_num at hL_big ⊢; exact hL_big
-    have hrp := Real.rpow_le_rpow (by positivity) hbase (by norm_num : (0 : ℝ) ≤ 13 / 32)
-    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 4)] at hrp
-    exact (by norm_num : (2 : ℝ) ≤ (4 : ℝ) ^ ((96 : ℝ) * (13 / 32))).trans hrp
+  have h2_rpow : (2 : ℝ) ≤ L ^ (13 / 32 : ℝ) :=
+    (by norm_num : (2 : ℝ) ≤ (4 : ℝ) ^ (1 : ℕ)).trans
+      (four_pow_nat_le_rpow 1 hL_big (by norm_num) (by norm_num))
   have hq_le_4 : (q : ℝ) ≤ 4 * L ^ (13 / 32 : ℝ) := by
     have hQ : (lowPacketCutoff N : ℝ) ≤ L ^ (13 / 32 : ℝ) :=
       Nat.floor_le (Real.rpow_nonneg hL0.le _)
@@ -4532,12 +4532,14 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
       rw [if_neg (Nat.not_lt.mpr (mem_Icc.mp hn).2), zero_pow (by norm_num)]
     rw [hz1, zero_add, mul_sum]
     refine sum_le_sum fun n hn => ?_
-    have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨by omega, (mem_Ioc.mp hn).2⟩
-    have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 1 ≤ n by omega)
+    obtain ⟨hn_lo, hn_hi⟩ := mem_Ioc.mp hn
+    have hn1 : 1 ≤ n := Nat.succ_le_of_lt ((Nat.zero_le M).trans_lt hn_lo)
+    have hnN : n ∈ Icc 1 N := mem_Icc.mpr ⟨hn1, hn_hi⟩
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
     rw [primeHorizonExtension_coe _ ⟨n, hnN⟩]
     change (if M < n then primeHorizonExtension v n else 0) ^ 2 ≤ _
-    rw [if_pos (mem_Ioc.mp hn).1, primeHorizonExtension_coe v ⟨n, hnN⟩]
-    change (normalizedRamanujanMode q n / Real.sqrt (Real.log N * n)) ^ 2 ≤ _
+    rw [if_pos hn_lo, primeHorizonExtension_coe v ⟨n, hnN⟩]
+    change ((Real.sqrt (Real.log (N : ℝ)))⁻¹ * (normalizedRamanujanMode q n / Real.sqrt n)) ^ 2 ≤ _
     have hmode_sq : normalizedRamanujanMode q n ^ 2 ≤ q := by
       have hqt : (q.totient : ℝ) = (q : ℝ) - 1 := by
         rw [Nat.totient_prime hq_prime, Nat.cast_sub hq_prime.one_lt.le, Nat.cast_one]
@@ -4552,7 +4554,8 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
         linarith
       · rw [if_neg hdvd, neg_sq, one_pow]
         exact (div_le_one_of_le₀ hqm1 (by linarith)).trans (by linarith)
-    rw [div_pow, Real.sq_sqrt (mul_nonneg hL0.le hn0.le)]
+    rw [mul_pow, inv_pow, Real.sq_sqrt hL0.le, div_pow, Real.sq_sqrt hn0.le, ← div_eq_inv_mul,
+      div_div]
     calc normalizedRamanujanMode q n ^ 2 / (L * n)
         ≤ (q : ℝ) / (L * n) := div_le_div_of_nonneg_right hmode_sq (by positivity)
       _ = (q : ℝ) / L * (1 / (n : ℝ)) := by ring
@@ -4560,8 +4563,9 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
     have h1 := sum_inv_Ioc_le hMN hN1
     have hNM1 : (N : ℝ) / ((M : ℝ) + 1) ≤ H_cut * c N := by
       rw [div_le_iff₀ (by positivity)]
+      have hLc0 : 0 < Lc := lt_of_lt_of_le (by norm_num) hLc3
       have hlt : N < Lc * (M + 1) := by
-        simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N (by omega : 0 < Lc)
+        simpa only [M, Nat.mul_comm] using Nat.lt_mul_div_succ N hLc0
       have hc : (N : ℝ) ≤ ((Lc * (M + 1) : ℕ) : ℝ) := by exact_mod_cast hlt.le
       rw [Nat.cast_mul, Nat.cast_add, Nat.cast_one] at hc
       exact hc.trans (mul_le_mul_of_nonneg_right hLc_le_Hc (by positivity))
@@ -4572,6 +4576,7 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
     have h1H : 1 + Real.log H_cut ≤ L ^ (1 / 64 : ℝ) := by
       linarith only [hL_64, hR, le_abs_self (Real.log H_cut)]
     linarith only [h1, hlog_diff, h1H, hlogc_le]
+  clear_value v M Lc
   have hyv_rpow : c N * ‖horizonCollarVector M v‖ ^ 2 ≤ 8 / L ^ (7 / 16 : ℝ) := by
     calc c N * ‖horizonCollarVector M v‖ ^ 2
         ≤ L ^ (9 / 64 : ℝ) * (((4 * L ^ (13 / 32 : ℝ)) / L) * (2 * L ^ (1 / 64 : ℝ))) :=
@@ -4584,7 +4589,7 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
             8 * (L ^ (9 / 64 : ℝ) * L ^ (13 / 32 : ℝ) * L ^ (1 / 64 : ℝ) / L) by ring,
             ← Real.rpow_add hL0, ← Real.rpow_add hL0, ← Real.rpow_sub_one hL0.ne']
           have hexp : (9 / 64 + 13 / 32 + 1 / 64 - 1 : ℝ) = -(7 / 16) := by norm_num
-          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+          rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
   have hyu_rpow : c N * ‖horizonCollarVector M u‖ ^ 2 ≤ 1170 ^ 2 / L ^ (7 / 16 : ℝ) := by
     have h1q : 1 + Real.log q ≤ 65 * L ^ (1 / 64 : ℝ) := by
       have hq_4L : (q : ℝ) ≤ 4 * L :=
@@ -4594,7 +4599,9 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
       have hlq : Real.log (q : ℝ) ≤ Real.log (4 * L) := Real.log_le_log hq0 hq_4L
       rw [Real.log_mul (by norm_num) hL0.ne'] at hlq
       have hlog4 : Real.log (4 : ℝ) ≤ 2 := by
-        have := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 4); linarith
+        rw [show (4 : ℝ) = 2 * 2 by norm_num, Real.log_mul two_ne_zero two_ne_zero]
+        have := Real.log_two_lt_d9
+        linarith
       have h1_64 : 1 ≤ L ^ (1 / 64 : ℝ) := Real.one_le_rpow hL1 (by norm_num)
       linarith only [hlq, hlog4, hlogL_le, h1_64]
     have hu_rpow : ‖u‖ ≤ 1170 / L ^ (63 / 64 : ℝ) := by
@@ -4605,19 +4612,21 @@ private theorem tendsto_c_mul_quasimode_collar_norm_sq_zero {c : ℕ → ℝ} {R
             rw [show 18 * (65 * L ^ (1 / 64 : ℝ)) / L = 1170 * (L ^ (1 / 64 : ℝ) / L) by ring,
               ← Real.rpow_sub_one hL0.ne']
             have hexp : (1 / 64 - 1 : ℝ) = -(63 / 64) := by norm_num
-            rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+            rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
+    clear_value u q
     have hp := pow_le_pow_left₀ (norm_nonneg (horizonCollarVector M u))
       ((norm_horizonCollarVector_le M u).trans hu_rpow) 2
     rw [div_pow, ← Real.rpow_natCast (L ^ (63 / 64 : ℝ)) 2, ← Real.rpow_mul hL0.le] at hp
-    norm_num at hp
+    have hp' : ‖horizonCollarVector M u‖ ^ 2 ≤ 1170 ^ 2 / L ^ (63 / 32 : ℝ) := by
+      norm_num at hp ⊢; exact hp
     calc c N * ‖horizonCollarVector M u‖ ^ 2
         ≤ L ^ (9 / 64 : ℝ) * (1170 ^ 2 / L ^ (63 / 32 : ℝ)) :=
-          mul_le_mul hc_le_9_64 hp (sq_nonneg _) (by positivity)
+          mul_le_mul hc_le_9_64 hp' (sq_nonneg _) (by positivity)
       _ = 1170 ^ 2 / L ^ (117 / 64 : ℝ) := by
           rw [show L ^ (9 / 64 : ℝ) * (1170 ^ 2 / L ^ (63 / 32 : ℝ)) =
             1170 ^ 2 * (L ^ (9 / 64 : ℝ) / L ^ (63 / 32 : ℝ)) by ring, ← Real.rpow_sub hL0]
           have hexp : (9 / 64 - 63 / 32 : ℝ) = -(117 / 64) := by norm_num
-          rw [hexp, Real.rpow_neg hL0.le, div_eq_mul_inv]
+          rw [hexp, Real.rpow_neg hL0.le, ← div_eq_mul_inv]
       _ ≤ 1170 ^ 2 / L ^ (7 / 16 : ℝ) :=
           div_le_div_of_nonneg_left (by norm_num) (Real.rpow_pos_of_pos hL0 _)
             (Real.rpow_le_rpow_of_exponent_le hL1 (by norm_num))
