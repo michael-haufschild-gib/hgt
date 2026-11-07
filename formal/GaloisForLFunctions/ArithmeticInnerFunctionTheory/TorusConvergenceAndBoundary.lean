@@ -37,10 +37,9 @@ theorem cosSum_adjacent_energy (θ : ℝ) (k : ℕ) :
     exact mul_le_mul_of_nonneg_right
       (mul_le_of_le_one_left (abs_nonneg _) hc) (abs_nonneg _)
   have hs := sq_nonneg (|cosSum θ (k + 1)| - |cosSum θ k|)
-  rw [sq_abs, sq_abs] at hs
   have hi := cosSum_conserved_form θ k
   have hl := neg_abs_le (Real.cos θ * cosSum θ (k + 1) * cosSum θ k)
-  nlinarith only [hm, hs, hi, hl]
+  nlinarith only [hm, hs, hi, hl, sq_abs (cosSum θ (k + 1)), sq_abs (cosSum θ k)]
 
 /-- Chebyshev characters never tend to zero, including endpoint phases. -/
 theorem cosSum_not_tendsto_zero (θ : ℝ) :
@@ -153,6 +152,42 @@ theorem boundaryOscillation_damping_not_positive {α : ℝ} (hα : 0 < α) (hα1
   have h := (oscillatory_bernstein_dichotomy (ω := 1) one_ne_zero).1 α hα hα1
     (1 / 2) (by norm_num)
   simpa only [boundaryOscillation, one_mul, div_eq_mul_inv, mul_comm] using h
+
+/-- Positive oscillations can leave the unrestricted cone under small damping and re-enter
+above the Euler abscissa. The re-entering amplitudes have genuine convergent character series. -/
+theorem exists_oscillation_damping_reentry {α : ℝ} (hα : 1 < α) :
+    ∃ ε : ℝ, 0 < ε ∧ ε < 1 ∧
+      IsAllBaseTorusPositive (fun y => 1 + ε * Real.cos y) ∧
+      (∀ β : ℝ, 0 < β → β ≤ 1 →
+        ¬ IsAllBaseTorusPositive (fun y => Real.exp (-β * y) * (1 + ε * Real.cos y))) ∧
+      IsAllBaseTorusPositive (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y)) ∧
+      ¬ IsExpConvexFrom 0 (fun y => Real.exp (-α * y) * (1 + ε * Real.cos y)) := by
+  have hd := oscillatory_bernstein_dichotomy (ω := 1) one_ne_zero
+  obtain ⟨ε₀, hε₀, hsuper⟩ := hd.2 α hα
+  let ε := min ε₀ 1 / 2
+  have hε : 0 < ε := div_pos (lt_min hε₀ one_pos) (by norm_num)
+  have hε1 : ε < 1 := by dsimp [ε]; linarith [min_le_right ε₀ 1]
+  have hε₀' : |ε| ≤ ε₀ := by
+    rw [abs_of_pos hε]
+    dsimp [ε]
+    linarith [min_le_left ε₀ 1]
+  obtain ⟨hpositive, hnot⟩ := hsuper ε hε.ne' hε₀'
+  have hfloor (y : ℝ) : 1 - ε ≤ 1 + ε * Real.cos y := by
+    nlinarith only [Real.neg_one_le_cos y, hε]
+  have hnonneg (y : ℝ) : 0 ≤ 1 + ε * Real.cos y := by linarith [hfloor y]
+  refine ⟨ε, hε, hε1, ?_, ?_, ?_, ?_⟩
+  · exact (allBaseTorusPositive_iff_nonneg_of_abs_floor (by linarith : 0 < 1 - ε)
+      (fun y => by rw [abs_of_nonneg (hnonneg y)]; exact hfloor y)).mpr hnonneg
+  · intro β hβ hβ1
+    simpa only [one_mul] using hd.1 β hβ hβ1 ε hε.ne'
+  · intro n p hp hinj x θ
+    simpa only [one_mul] using (hpositive n p hp hinj x θ).le
+  · simpa only [one_mul] using hnot
+
+#print axioms exists_boundary_torusPositive_not_expConvex
+#print axioms allBaseTorusPositive_iff_nonneg_of_abs_floor
+#print axioms boundaryOscillation_damping_not_positive
+#print axioms exists_oscillation_damping_reentry
 
 end
 

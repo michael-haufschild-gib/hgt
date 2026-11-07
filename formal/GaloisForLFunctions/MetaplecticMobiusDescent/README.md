@@ -274,6 +274,11 @@ resolvent correction gives a meromorphic family with the restricted residue.
 of jointly smooth families on compact parameter and support sets. Summable
 scalar weights give a smooth sum, with every derivative computed termwise.
 
+`SpatialSmoothnessOfTheCubicEisensteinSeries.lean` normalizes cusp rows onto
+a compact unit-energy sphere. The convergent base-point series supplies
+the scalar weights, proving spatial smoothness of the actual series for
+`Re s>2` and termwise derivatives of its compact regularizations.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

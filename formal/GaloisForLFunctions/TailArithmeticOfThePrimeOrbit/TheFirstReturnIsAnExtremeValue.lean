@@ -209,7 +209,7 @@ theorem exists_norm_zeta_le_log : ∃ M : ℝ, 5 ≤ M ∧ ∀ s : ℂ, 1 ≤ s.
       intro h
       have := hs.2.2.1
       rw [h] at this
-      simp at this
+      norm_num at this
     exact (differentiableAt_riemannZeta hs1).continuousAt.continuousWithinAt
   obtain ⟨M₁, hM₁⟩ := hKc.exists_bound_of_continuousOn hcont
   refine ⟨max M₁ 5, le_max_right _ _, fun s h1 h2 h3 => ?_⟩
@@ -223,10 +223,14 @@ theorem exists_norm_zeta_le_log : ∃ M : ℝ, 5 ≤ M ∧ ∀ s : ℂ, 1 ≤ s.
     linarith [le_max_right M₁ 5]
 
 theorem spikePoint_re (N : ℕ) (t : ℝ) : (spikePoint N t).re = 1 + 1 / Real.log (N : ℝ) := by
-  simp [spikePoint]
+  rw [spikePoint, Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.I_im,
+    Complex.ofReal_re, Complex.ofReal_im]
+  ring
 
 theorem spikePoint_im (N : ℕ) (t : ℝ) : (spikePoint N t).im = t := by
-  simp [spikePoint]
+  rw [spikePoint, Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.I_re, Complex.I_im,
+    Complex.ofReal_re, Complex.ofReal_im]
+  ring
 
 /-- The spike is at most `M + log(|t| + 1)` for `|t| ≥ 1`. -/
 theorem norm_zeta_spikePoint_le {M : ℝ}

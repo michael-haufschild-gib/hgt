@@ -49,6 +49,27 @@ resolution. Translation exposes coefficients of the polynomial
 its reduction modulo a period. These mechanisms must be combined with counts
 of actual integers, rather than arbitrary torus points.
 
+## Foundational theorems
+
+These results couple translation to multiplication without an analytic sign
+assumption. They classify exact fibres and the resolution needed to separate
+them; occupation across distinct winding cells remains a separate question.
+
+| Theorem | Exact content | Lean declaration |
+|---|---|---|
+| Pair reconstruction | `S(a,b)=(ab,(a+1)(b+1))` determines the unordered pair. On an alphabet of size `M`, its ordered collision count `E` satisfies `E+M=2M²`. | [`pairSignature_eq_iff`, `mixedCollisionCount_add_card`](ShiftedProductRigidity.lean) |
+| Real-cell separation | In `[1,N]`, a radius-`ε` cell for both coordinates of `t log S` contains at most two ordered pairs when `2ε(N+1)²<|t|`. | [`card_logPairCell_le_two`](LogarithmicCollisionCells.lean) |
+| Winding occupation | If `M` integers have their own and their successor's phases in prescribed radius-`ε` arcs, their pair-winding signatures number at least `M²/2` when `4ε(N+1)²<|t|`. | [`card_sq_le_two_mul_windingSignatures`](WindingOccupancy.lean) |
+| Optimal resolution order | Pairs `(n+1,n+4)` and `(n+2,n+3)` are distinct but their translated products differ by two at every nonnegative integer shift. Corresponding logarithms differ by at most `2/(n+1)²`. | [`neighbouring_pair_log_gap`, `neighbouring_pair_signatures_ne`](SharpnessOfProductResolution.lean) |
+| Tuple reconstruction | A multiset of size `k` is determined by products of its translates at any `k` distinct complex parameters. | [`eq_of_shifted_products`, `translated_products_complete`](TranslatedTupleReconstruction.lean) |
+
+Pair reconstruction follows by recovering the sum from the two products.
+Tuple reconstruction recovers the monic polynomial `∏ᵢ(X+nᵢ)` by interpolation.
+Real-cell separation uses the integer gap between distinct products. Winding
+occupation applies this separation to sums of two phase remainders. The close
+neighbouring pairs show why exact interpolation alone does not remove the
+need for quantitative resolution.
+
 ## Tools and open research topics
 
 | Required tool | Mathematical target |

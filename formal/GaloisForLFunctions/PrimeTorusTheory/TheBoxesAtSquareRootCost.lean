@@ -167,7 +167,7 @@ theorem norm_integral_le_gap (hY : ∀ p ∈ Y, p.Prime) {κ : Y → ℕ} (hne :
   nlinarith [abs_nonneg (freqOf e κ)]
 
 /-- **The Chernoff sum.** `Σ_κ coeff(κ) gapOf(κ)^λ ≤ Π_p 2 exp(e_p λ² log² p/4)`. -/
-theorem sum_coeffOf_mul_gap_rpow_le (hY : ∀ p ∈ Y, p.Prime) {l : ℝ} (hl : 0 ≤ l) :
+theorem sum_coeffOf_mul_gap_rpow_le (hY : ∀ p ∈ Y, p.Prime) (l : ℝ) :
     ∑ κ ∈ boxIndex Y e, coeffOf e κ * (gapOf e κ : ℝ) ^ l ≤
       ∏ p ∈ Y, 2 * Real.exp (e p * (l * Real.log p) ^ 2 / 4) := by
   classical
@@ -208,7 +208,7 @@ theorem abs_integral_boxWeight_sub_le_gap (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ 
       rw [Finset.mul_sum, Finset.mul_sum]
       exact Finset.sum_congr rfl fun κ _ => by ring
     rw [h1]
-    have h2 := sum_coeffOf_mul_gap_rpow_le e hY hl0
+    have h2 := sum_coeffOf_mul_gap_rpow_le e hY l
     have h3 : 0 ≤ L ^ (1 - l) := Real.rpow_nonneg hL.le _
     nlinarith
   · have hA : ‖∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤ L := by

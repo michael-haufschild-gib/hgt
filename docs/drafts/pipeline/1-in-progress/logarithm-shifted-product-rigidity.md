@@ -69,9 +69,9 @@ the multiset, including multiplicities.
 
 ## Lean evidence
 
-`ShiftedProductRigidity.lean` passes the direct Lean check. Its classification
-and exact collision count depend only on `propext`, `Classical.choice`,
-`Quot.sound`. `LogarithmicCollisionCells.lean` passes its dependency build,
-and `card_logPairCell_le_two` has the same standard axiom set; its final direct
-check remains required. The winding, sharpness and general tuple modules remain
-under verification.
+Direct Lean checks pass for `ShiftedProductRigidity`, `WindingOccupancy`,
+`SharpnessOfProductResolution`, and `TranslatedTupleReconstruction`.
+`LogarithmicCollisionCells` passes its dependency build; final direct check
+remains required. Classification, collision count, and real-cell bound have
+axiom set `{propext, Classical.choice, Quot.sound}`. Axiom audits for winding,
+sharpness, and tuple reconstruction remain required.

@@ -286,7 +286,6 @@ theorem exists_norm_zeta_le_reflect :
       2 * ‖(2 * (Real.pi : ℂ)) ^ (-w)‖ * ‖Complex.Gamma w‖ * ‖cos ((Real.pi : ℂ) * w / 2)‖ * a := by
     calc a / (4 * Real.pi * C₀ * Q) = 2 * (2 * Real.pi)⁻¹ * (C₀ * Q * E)⁻¹ * (E / 4) * a := by
           field_simp
-          ring
       _ ≤ 2 * ‖(2 * (Real.pi : ℂ)) ^ (-w)‖ * ‖Complex.Gamma w‖ * ‖cos ((Real.pi : ℂ) * w / 2)‖ * a := by
           refine mul_le_mul_of_nonneg_right ?_ ha0
           refine mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hcpow (by norm_num)) hGlow
@@ -436,7 +435,8 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
     have h2 := Nat.ceil_lt_add_one (div_pos hu2 hρ).le
     rw [← hK] at h2
     have h3 : (K : ℝ) * ρ < ((2 - u₀) / ρ + 1) * ρ := mul_lt_mul_of_pos_right h2 hρ
-    have h4 : ((2 - u₀) / ρ + 1) * ρ = 2 - u₀ + ρ := by field_simp
+    have h4 : ((2 - u₀) / ρ + 1) * ρ = 2 - u₀ + ρ := by
+      rw [add_mul, div_mul_cancel₀ _ hρ.ne', one_mul]
     linarith
   obtain ⟨θ, hθdef⟩ : ∃ θ : ℝ, θ = (1 / 2 : ℝ) ^ K := ⟨_, rfl⟩
   have hθ0 : 0 < θ := by rw [hθdef]; positivity
@@ -470,7 +470,7 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
     have h4 := half_le_norm_zeta (s := c₀ + (τ : ℂ) * I) (by rw [h3]; norm_num)
     linarith
   -- The chain of centres `u₀ + kρ + iγ`.
-  obtain ⟨q, hq⟩ : ∃ q : ℕ → ℂ, q = fun k => ((u₀ + k * ρ : ℝ) : ℂ) + (γ : ℂ) * I := ⟨_, rfl⟩
+  obtain ⟨q, hq⟩ : ∃ q : ℕ → ℂ, q = fun k : ℕ => ((u₀ + k * ρ : ℝ) : ℂ) + (γ : ℂ) * I := ⟨_, rfl⟩
   have hqk : ∀ k, q k = ((u₀ + k * ρ : ℝ) : ℂ) + (γ : ℂ) * I := fun k => by rw [hq]
   have hstep : ∀ k, ‖q (k + 1) - q k‖ ≤ ρ := by
     intro k
@@ -478,7 +478,8 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
       rw [hqk, hqk]
       push_cast
       ring
-    rw [h2, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hρ]
+    rw [h2, Complex.norm_real, Real.norm_eq_abs]
+    exact (abs_of_pos hρ).le
   have hqc : ∀ k ≤ K, ‖q k - c₀‖ = 3 - u₀ - k * ρ := by
     intro k hk
     have h2 : q k - c₀ = ((u₀ + k * ρ - 3 : ℝ) : ℂ) := by
@@ -527,6 +528,8 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
     obtain ⟨y, hy⟩ : ∃ y, y = w.im := ⟨_, rfl⟩
     rw [← hu] at hre
     rw [← hy] at him'
+    obtain ⟨hre1, hre2⟩ := hre
+    obtain ⟨him1, him2⟩ := him'
     obtain ⟨t, ht⟩ : ∃ t, t = y + τ := ⟨_, rfl⟩
     have ht2 : X ≤ t := by
       rw [hX, ht]
@@ -551,8 +554,8 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
       rw [h2]
       refine (norm_add_le _ _).trans ?_
       rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
-        Real.norm_eq_abs, abs_neg, abs_of_pos (by linarith)]
-      have h3 := abs_le.mpr him'
+        Real.norm_eq_abs, abs_neg, abs_of_pos (by linarith : (0 : ℝ) < 2 + u)]
+      have h3 := abs_le.mpr ⟨him1, him2⟩
       linarith
     have h2 := hM _ hmem
     have hsum : ((1 - u : ℝ) : ℂ) + (y : ℂ) * I + (τ : ℂ) * I = ((1 - u : ℝ) : ℂ) + (t : ℂ) * I := by
@@ -563,7 +566,7 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
     have hpow : t ^ (1 / 2 - u) ≤ X ^ (-δ) := by
       calc t ^ (1 / 2 - u) ≤ t ^ (-δ) := Real.rpow_le_rpow_of_exponent_le ht1 (by linarith)
         _ ≤ X ^ (-δ) := by
-          rw [Real.rpow_neg (by linarith), Real.rpow_neg hXpos.le]
+          rw [Real.rpow_neg (by linarith : (0 : ℝ) ≤ t), Real.rpow_neg hXpos.le]
           exact inv_anti₀ hXδ (Real.rpow_le_rpow hXpos.le ht2 hδ.le)
     calc ‖riemannZeta ((u : ℂ) + (t : ℂ) * I)‖
         ≤ C * t ^ (1 / 2 - u) * ‖riemannZeta (((1 - u : ℝ) : ℂ) + (t : ℂ) * I)‖ := h1
@@ -596,7 +599,9 @@ theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} 
       calc (1 / 2 : ℝ) ≤ a ^ θ * M := hlow
         _ ≤ C * X ^ (-b) * M := mul_le_mul_of_nonneg_right haθ hMpos.le
         _ = C * (X ^ b)⁻¹ * M := by rw [Real.rpow_neg hXpos.le]
-    have h9 : C * (X ^ b)⁻¹ * M = C * M / X ^ b := by field_simp
+    have h9 : C * (X ^ b)⁻¹ * M = C * M / X ^ b := by
+      rw [div_eq_mul_inv]
+      ring
     rw [h9, le_div_iff₀ hXb] at h8
     linarith
   have hτb : τ ^ b / 2 ≤ X ^ b := by
