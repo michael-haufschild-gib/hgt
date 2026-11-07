@@ -36,6 +36,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TheCuspFormsVanishAtTheCusp
 import GaloisForLFunctions.BlackHoleRingdown.TheCuspChannel
 import GaloisForLFunctions.BlackHoleRingdown.TheCuspFormsExist
 import GaloisForLFunctions.BlackHoleRingdown.TheCuspSpectrumIsDiscrete
+import GaloisForLFunctions.BlackHoleRingdown.TheOddSectorIsACavity
 import GaloisForLFunctions.BlackHoleRingdown.TheCosineFamilyOfTheHorizon
 import GaloisForLFunctions.BlackHoleRingdown.TheGeneralHorizonData
 import GaloisForLFunctions.BlackHoleRingdown.TheVectorModesOfTheMetric
@@ -75,7 +76,7 @@ with the echo train minus its mean growth, and the causal symbol is the transfer
 Every compact pulse gives an exact solution by the method of images, with the same echo identity and ringdown. Every
 square-integrable function on the horizon is a constant plus a limit of such fields plus a cusp form, and the wave evolution
 is a contractive cosine family on the complement of the constants. Cusp forms have `λ ≥ ¼` and undamped horizon modes, at the
-universal rate of the boundary condition; the mirror-odd sector is cuspidal, so they exist; their eigenvalues form a discrete unbounded sequence. The scalar wave of a pulse carries an exact vacuum perturbation of the metric, in the
+universal rate of the boundary condition; the mirror-odd sector is cuspidal, so they exist; their eigenvalues form a discrete unbounded sequence. The whole mirror-odd half of the horizon is cuspidal: the zeros couple only to mirror-even data. The scalar wave of a pulse carries an exact vacuum perturbation of the metric, in the
 vector and in the scalar sector, in closed form and covariant under `SL₂(ℤ)`; each zero is a gravitational quasinormal mode, and
 each component of the metric rings down in these modes.
 -/

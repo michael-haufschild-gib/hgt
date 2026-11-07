@@ -111,6 +111,7 @@ theorem spacing_self_energy_bounds (ε : Set.Ioi (0:ℝ)) (n : ℕ) :
   have hr0 : 0<r := Real.exp_pos _
   have hr1 : r<1 := spacingRadius_lt_one ε.property (Nat.succ_pos n)
   have hlog : Real.log r=-(2*ε/(N:ℝ)) := by
+    change Real.log (spacingRadius ε N N)=-(2*ε/(N:ℝ))
     rw [spacingRadius_self_eq, Real.log_exp]
   have hdecomp := torsionEnergy_finite_radius r hr0 N
   rw [abs_of_pos (sub_pos.mpr hr1), hlog] at hdecomp
@@ -121,7 +122,8 @@ theorem spacing_self_energy_bounds (ε : Set.Ioi (0:ℝ)) (n : ℕ) :
     rw [torsionPairCount_self]
     exact Nat.mul_le_mul_left _ ((Nat.sub_le _ _).trans (Nat.totient_le N))
   have hc : (torsionPairCount N N:ℝ)≤(Nat.totient N:ℝ)*(N:ℝ) := by exact_mod_cast hcNat
-  have hB0 : 0≤(ε:ℝ)*(torsionPairCount N N:ℝ)/N := by positivity
+  have hB0 : 0≤(ε:ℝ)*(torsionPairCount N N:ℝ)/N :=
+    div_nonneg (mul_nonneg ε.property.le (Nat.cast_nonneg _)) hN0.le
   have hB : (ε:ℝ)*(torsionPairCount N N:ℝ)/N≤(Nat.totient N:ℝ)*ε := by
     apply (div_le_iff₀ hN0).mpr
     calc (ε:ℝ)*(torsionPairCount N N:ℝ) ≤ (ε:ℝ)*((Nat.totient N:ℝ)*(N:ℝ)) :=
@@ -167,7 +169,7 @@ theorem spacing_diagonal_uniform (ε : Set.Ioi (0:ℝ)) (n : ℕ) :
   have huupper : u≤2*(ε:ℝ) := by
     apply (div_le_iff₀ hN0).mpr
     simpa only [mul_one] using
-      mul_le_mul_of_nonneg_left hN1 (show 0≤2*(ε:ℝ) by positivity)
+      mul_le_mul_of_nonneg_left hN1 (mul_nonneg (by norm_num) ε.property.le)
   have hr : r=Real.exp (-u) := spacingRadius_self_eq ε N
   have hb := spacing_self_energy_bounds ε n
   change -((Nat.totient N:ℝ)*E)≤D ∧ D≤(Nat.totient N:ℝ)*ε at hb

@@ -101,10 +101,17 @@ private theorem summable_reflectedSeed (σ : D4BMUpperHalfPlaneCoordinate)
 private theorem summable_scalarWindingTerm (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :
     Summable (fun q : ScalarCharge => (narainMassSq ρ σ q.val : ℂ) ^ (-s)) := by
-  apply scalarParameterOrder.summable_iff.mp
-  simp only [Function.comp_def, scalarTerm_parameters]
-  exact summable_mul_of_summable_norm (summable_halfEpsteinTerm ρ hs).norm
-    (summable_reflectedSeed σ hs).norm
+  have hprod : Summable (fun t : (ℕ × ℤ) × D4BMPrimitiveIntegerPair =>
+      halfEpsteinTerm ρ s t.1 *
+        d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv t.2)) :=
+    summable_mul_of_summable_norm (f := halfEpsteinTerm ρ s)
+      (g := fun a => d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv a))
+      (summable_halfEpsteinTerm ρ hs).norm
+      (summable_reflectedSeed σ hs).norm
+  have hparam : Summable
+      ((fun q : ScalarCharge => (narainMassSq ρ σ q.val : ℂ) ^ (-s)) ∘ scalarParameterOrder) :=
+    hprod.congr (fun t => (scalarTerm_parameters ρ σ s t).symm)
+  exact scalarParameterOrder.summable_iff.mp hparam
 
 private theorem scalarWindingTerm_sum (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :
@@ -116,7 +123,9 @@ private theorem scalarWindingTerm_sum (ρ σ : D4BMUpperHalfPlaneCoordinate)
   calc
     _ = (∑' t, halfEpsteinTerm ρ s t) *
         ∑' a, d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv a) :=
-      (tsum_mul_tsum_of_summable_norm (summable_halfEpsteinTerm ρ hs).norm
+      (tsum_mul_tsum_of_summable_norm (f := halfEpsteinTerm ρ s)
+        (g := fun a => d4BMPoincareSeed σ s (d4BMPrimitiveIntegerPairReflectEquiv a))
+        (summable_halfEpsteinTerm ρ hs).norm
         (summable_reflectedSeed σ hs).norm).symm
     _ = _ := congrArg ((∑' t, halfEpsteinTerm ρ s t) * ·)
       (d4BMPrimitiveIntegerPairReflectEquiv.tsum_eq (d4BMPoincareSeed σ s))

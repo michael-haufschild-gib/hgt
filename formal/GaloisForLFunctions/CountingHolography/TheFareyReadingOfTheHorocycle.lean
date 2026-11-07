@@ -17,10 +17,8 @@ contributes the same kernel, the time the horocycle spends in its horoball shell
 
 a finite sum: denominators with `c² y > 1/a` see nothing. The echo integers of the cusp are the
 totients, and the thermalization of a long horocycle is the equidistribution of the Farey points of
-order `≈ y^{-1/2}`. With Zagier's theorem this reads (`riemannHypothesis_iff_fareyCount_rate`): RH
-holds iff every smooth totient-weighted Farey count reaches its limit at rate `y^{3/4-ε}`. The exponent
-`3/4 = 1/2 + 1/4` is the square-root size of the count of order `C = y^{-1/2}` relative to its
-volume `C²`, plus the universal damping rate.
+order `≈ y^{-1/2}`. For a shell the mean is the average number of cusp images met
+(`horocycleMean_shellCount`). The rates are read in `TheHorocycleRateIsTheSquareRootFareyLaw`.
 
 The unfolding is elementary: a window of `c` consecutive integers contains exactly `φ(c)` integers
 coprime to `c` (`card_coprime_Ico`), so every point of the line is covered `φ(c)` times by the
@@ -166,7 +164,6 @@ theorem im_rowSmul_horoPoint (p : gammaSet 1 1 0) {x y : ℝ} (hy : 0 < y) :
   have hz : ((horoPoint x y : ℍ) : ℂ) = ⟨x, y⟩ := by
     simp only [horoPoint]
     rw [ofComplex_apply_of_im_pos hy]
-    rfl
   rw [hz, rowDepth, Complex.normSq_apply]
   congr 1
   simp only [Complex.add_re, Complex.mul_re, Complex.intCast_re, Complex.intCast_im, Complex.add_im,
@@ -190,6 +187,13 @@ theorem rowDepth_bounds {a : ℝ} (ha : 0 < a) {y x : ℝ} (hy : 0 < y) {c d : �
     linarith
   exact ⟨by nlinarith [sq_nonneg ((c : ℝ) * x + d)], by nlinarith [sq_nonneg ((c : ℝ) * y)]⟩
 
+/-- The indicator of the coprime rows. -/
+theorem indicator_gammaSet (f : (Fin 2 → ℤ) → ℂ) (v : Fin 2 → ℤ) :
+    (gammaSet 1 1 0).indicator f v = if (v 0).gcd (v 1) = 1 then f v else 0 := by
+  by_cases h : (v 0).gcd (v 1) = 1
+  · rw [Set.indicator_of_mem ((gammaSet_one_mem_iff 1 v).mpr h), if_pos h]
+  · rw [Set.indicator_of_notMem (mt (gammaSet_one_mem_iff 1 v).mp h), if_neg h]
+
 variable {ψ : ℝ → ℂ} {a : ℝ}
 
 /-- **On the horocycle segment the pseudo-Eisenstein series is a finite sum over a box of rows.** -/
@@ -206,10 +210,11 @@ theorem pseudoEisenstein_horoPoint (ha : 0 < a) (hψa : ∀ t, t < a → ψ t = 
     ← (Equiv.tsum_eq (finTwoArrowEquiv ℤ).symm _)]
   rw [tsum_eq_sum (s := Finset.Icc (-(C : ℤ)) C ×ˢ Finset.Icc (-(D : ℤ)) D), Finset.sum_product]
   · refine Finset.sum_congr rfl fun c _ => Finset.sum_congr rfl fun d _ => ?_
-    simp [Set.indicator_apply, gammaSet_one_mem_iff]
+    rw [finTwoArrowEquiv_symm_apply, indicator_gammaSet]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   · rintro ⟨c, d⟩ hq
-    simp only [Set.indicator_apply, gammaSet_one_mem_iff, finTwoArrowEquiv_symm_apply,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Set.mem_setOf_eq]
+    rw [finTwoArrowEquiv_symm_apply, indicator_gammaSet]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     split_ifs with hg
     · apply hψa
       by_contra hlt
@@ -267,6 +272,7 @@ theorem fareyKernel_eq_zero (hψa : ∀ t, t < a → ψ t = 0) {y : ℝ} (hy : 0
   have hc0 : (0 : ℝ) < c := by
     rcases Nat.eq_zero_or_pos c with rfl | h
     · simp at hc
+      linarith
     · exact_mod_cast h
   have ha : 0 < a := by
     by_contra h
@@ -430,10 +436,6 @@ theorem horocycleMean_eq_fareySum (hψm : Measurable ψ) {M : ℝ} (hψb : ∀ t
           rw [if_pos hcop]
           simp only [hg1, ↓reduceIte]
           congr 1
-          funext x
-          simp only [hg, rowDepth]
-          push_cast
-          rfl
         · have hg1 : Int.gcd (c : ℤ) d ≠ 1 := fun h => hcop (Int.isCoprime_iff_gcd_eq_one.mpr h)
           rw [if_neg hcop]
           simp only [hg1, ↓reduceIte, integral_zero]
@@ -448,13 +450,64 @@ theorem horocycleMean_eq_fareySum (hψm : Measurable ψ) {M : ℝ} (hψb : ∀ t
         simp only [hg]
         congr 2
         ring
-      rw [hk, h, abs_inv, abs_of_pos hc0, Complex.real_smul]
+      have hcne : (c : ℂ) ≠ 0 := by exact_mod_cast hc0.ne'
+      rw [hk, h, abs_inv, abs_of_pos hc0, Complex.real_smul, ← mul_assoc]
       push_cast
-      field_simp
+      rw [mul_inv_cancel₀ hcne, one_mul]
     rw [hrows, hunf, hscale]
     have hcne : (c : ℂ) ≠ 0 := by exact_mod_cast hc0.ne'
     field_simp
   rw [hH0, Finset.sum_congr rfl hHc]
+
+/-! ### The shell count -/
+
+/-- **The shell count**: the number of cusp images of `SL₂(ℤ)` whose horoball shell `a ≤ Im < b` contains
+`z`, counted by their coprime rows. -/
+def shellCount (a b : ℝ) (z : ℍ) : ℕ :=
+  {p : gammaSet 1 1 0 | (gammaSetMatrix p • z).im ∈ Ico a b}.ncard
+
+/-- **The pseudo-Eisenstein series of a shell is an integer count of cusp images.** -/
+theorem pseudoEisenstein_shell {a b : ℝ} (ha : 0 < a) (z : ℍ) :
+    pseudoEisenstein ((Ico a b).indicator 1) z = shellCount a b z := by
+  classical
+  have hfin := RHTower.DeckPointPair.finite_rows_im_ge (isCompact_singleton (x := z)) ha
+  set S := hfin.toFinset
+  have hS : ∀ p ∉ S, (Ico a b).indicator (1 : ℝ → ℂ) (gammaSetMatrix p • z).im = 0 := by
+    intro p hp
+    refine Set.indicator_of_notMem (fun h => hp ?_) _
+    exact hfin.mem_toFinset.2 ⟨z, rfl, h.1⟩
+  rw [pseudoEisenstein_eq_sum hS]
+  have hset : {p : gammaSet 1 1 0 | (gammaSetMatrix p • z).im ∈ Ico a b} =
+      ↑(S.filter fun p => (gammaSetMatrix p • z).im ∈ Ico a b) := by
+    ext p
+    simp only [Set.mem_setOf_eq, Finset.coe_filter, Set.mem_setOf_eq]
+    exact ⟨fun h => ⟨hfin.mem_toFinset.2 ⟨z, rfl, h.1⟩, h⟩, fun h => h.2⟩
+  rw [shellCount, hset, Set.ncard_coe_finset, Finset.card_filter]
+  push_cast
+  refine Finset.sum_congr rfl fun p _ => ?_
+  by_cases h : (gammaSetMatrix p • z).im ∈ Ico a b
+  · rw [Set.indicator_of_mem h, if_pos h, Pi.one_apply]
+  · rw [Set.indicator_of_notMem h, if_neg h]
+
+/-- **The mean count of cusp images in a shell along a closed horocycle** is a totient-weighted sum of the
+times the horocycle spends in the shells of one Farey point of each denominator. -/
+theorem horocycleMean_shellCount {a b : ℝ} (ha : 0 < a) {y : ℝ} (hy : 0 < y) {C : ℕ}
+    (hC : 1 < ((C : ℝ) + 1) ^ 2 * a * y) :
+    horocycleMean (fun z => (shellCount a b z : ℂ)) y =
+      2 * (Ico a b).indicator 1 y + 2 * ∑ c ∈ Finset.Icc 1 C,
+        (c.totient : ℂ) * fareyKernel ((Ico a b).indicator 1) y c := by
+  have h := horocycleMean_eq_fareySum (ψ := (Ico a b).indicator 1)
+    (measurable_one.indicator measurableSet_Ico) (M := 1)
+    (fun t => by
+      by_cases ht : t ∈ Ico a b
+      · simp [Set.indicator_of_mem ht]
+      · simp [Set.indicator_of_notMem ht])
+    ha (fun t ht => Set.indicator_of_notMem (fun h => by linarith [h.1]) _) hy hC
+  rw [← h]
+  unfold horocycleMean
+  congr 1
+  funext x
+  rw [pseudoEisenstein_shell ha]
 
 end GaloisForLFunctions.CountingHolography
 

@@ -1,7 +1,6 @@
 import GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.NarainDirichlet
 import GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap.NarainPartition
-import GaloisForLFunctions.RHTower.FiniteExponentialSumMellin
-import GaloisForLFunctions.HTGeometry.DaiYoshikawa.SpectralZetaMellinSum
+import Mathlib.NumberTheory.LSeries.MellinEqDirichlet
 
 /-!
 # The actual scalar Narain heat sum has the Eisenstein-product Mellin transform
@@ -13,7 +12,6 @@ convergence therefore justifies the full charge-sum interchange.
 -/
 
 open Complex RHTower MeasureTheory
-open GaloisForLFunctions.HTGeometry
 
 namespace GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap
 
@@ -82,85 +80,38 @@ theorem narainScalarPartition_eq_heat (ρ σ : D4BMUpperHalfPlaneCoordinate)
     _ = _ := by
       rw [hsum.tsum_eq_add_tsum_ite ((0, 0), (0, 0)), hvacuum, ← hheat]
 
-private def scalarMellinTerm (ρ σ : D4BMUpperHalfPlaneCoordinate) (s : ℂ)
-    (q : NonzeroScalarCharge) (y : ℝ) : ℂ :=
-  (y : ℂ) ^ (s - 1) * (narainBoltzmann ρ σ y q.val : ℂ)
-
-private theorem scalarMellinTerm_exp (ρ σ : D4BMUpperHalfPlaneCoordinate)
-    (s : ℂ) (q : NonzeroScalarCharge) (y : ℝ) :
-    scalarMellinTerm ρ σ s q y = (y : ℂ) ^ (s - 1) *
-      (Real.exp (-((Real.pi * narainMassSq ρ σ q.val) * y)) : ℂ) := by
-  dsimp only [scalarMellinTerm, narainBoltzmann]
-  congr 3
-  ring
-
-private theorem integrable_scalarMellinTerm (ρ σ : D4BMUpperHalfPlaneCoordinate)
-    {s : ℂ} (hs : 0 < s.re) (q : NonzeroScalarCharge) :
-    IntegrableOn (scalarMellinTerm ρ σ s q) (Set.Ioi 0) := by
-  have h := mellinConvergent_exp_neg_mul
-    (mul_pos Real.pi_pos (narainMassSq_pos ρ σ q.property.2)) hs
-  simp only [MellinConvergent, smul_eq_mul] at h
-  exact h.congr_fun (fun y _ => (scalarMellinTerm_exp ρ σ s q y).symm)
-    measurableSet_Ioi
-
-private theorem integral_scalarMellinTerm (ρ σ : D4BMUpperHalfPlaneCoordinate)
-    {s : ℂ} (hs : 0 < s.re) (q : NonzeroScalarCharge) :
-    (∫ y in Set.Ioi (0 : ℝ), scalarMellinTerm ρ σ s q y) =
-      ((Real.pi : ℂ) ^ (-s) * Complex.Gamma s) * narainDirichletTerm ρ σ s q := by
-  have hmass := narainMassSq_pos ρ σ q.property.2
-  have h := mellin_exp_neg_mul_finiteExponentialSumMellin
-    (mul_pos Real.pi_pos hmass) hs
-  simp only [mellin, smul_eq_mul] at h
-  rw [setIntegral_congr_fun measurableSet_Ioi
-    (fun y _ => scalarMellinTerm_exp ρ σ s q y), h, Complex.ofReal_mul,
-    Complex.mul_cpow_ofReal_nonneg Real.pi_pos.le hmass.le]
-  dsimp only [narainDirichletTerm]
-  ring
-
-private theorem integral_norm_scalarMellinTerm (ρ σ : D4BMUpperHalfPlaneCoordinate)
-    {s : ℂ} (hs : 0 < s.re) (q : NonzeroScalarCharge) :
-    (∫ y in Set.Ioi (0 : ℝ), ‖scalarMellinTerm ρ σ s q y‖) =
-      (Real.Gamma s.re * Real.pi ^ (-s.re)) * ‖narainDirichletTerm ρ σ s q‖ := by
-  have hmass := narainMassSq_pos ρ σ q.property.2
-  have hnorm (y : ℝ) (hy : y ∈ Set.Ioi (0 : ℝ)) :
-      ‖scalarMellinTerm ρ σ s q y‖ =
-        Real.exp (-((Real.pi * narainMassSq ρ σ q.val) * y)) * y ^ (s.re - 1) := by
-    rw [scalarMellinTerm_exp, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy,
-      Complex.norm_real, Real.norm_of_nonneg (Real.exp_pos _).le]
-    simp only [Complex.sub_re, Complex.one_re]
-    exact mul_comm _ _
-  rw [setIntegral_congr_fun measurableSet_Ioi hnorm,
-    DaiYoshikawa.integral_exp_neg_mul_rpow (mul_pos Real.pi_pos hmass) hs,
-    narainDirichletTerm, Complex.norm_cpow_eq_rpow_re_of_pos hmass]
-  simp only [Complex.neg_re]
-  rw [Real.mul_rpow Real.pi_pos.le hmass.le, Real.rpow_neg Real.pi_pos.le,
-    Real.rpow_neg hmass.le]
-  ring
-
-/-- The integrals of the absolute Mellin terms form a convergent series. -/
-private theorem summable_integral_norm_scalarMellinTerm
-    (ρ σ : D4BMUpperHalfPlaneCoordinate) {s : ℂ} (hs : 1 < s.re) :
-    Summable (fun q => ∫ y in Set.Ioi (0 : ℝ), ‖scalarMellinTerm ρ σ s q y‖) := by
-  exact ((summable_narainDirichletTerm ρ σ hs).norm.mul_left
-    (Real.Gamma s.re * Real.pi ^ (-s.re))).congr
-      (fun q => (integral_norm_scalarMellinTerm ρ σ (by linarith only [hs]) q).symm)
-
 /-- The Mellin transform is taken from the literal nonvacuum scalar heat sum. -/
 theorem mellin_narainScalarHeat (ρ σ : D4BMUpperHalfPlaneCoordinate)
     {s : ℂ} (hs : 1 < s.re) :
     mellin (narainScalarHeat ρ σ) s =
       (Real.pi : ℂ) ^ (-s) * Complex.Gamma s *
         (∑' q, narainDirichletTerm ρ σ s q) := by
-  have hs0 : 0 < s.re := by linarith only [hs]
-  have hint := integrable_scalarMellinTerm ρ σ hs0
-  have hsum := summable_integral_norm_scalarMellinTerm ρ σ hs
-  change (∫ y in Set.Ioi (0 : ℝ), (y : ℂ) ^ (s - 1) • narainScalarHeat ρ σ y) = _
-  simp only [smul_eq_mul, narainScalarHeat, ← tsum_mul_left]
-  change (∫ y in Set.Ioi (0 : ℝ), ∑' q, scalarMellinTerm ρ σ s q y) = _
-  rw [integral_tsum_eq_tsum_integral_of_summable_integral_norm
-    (μ := volume.restrict (Set.Ioi (0 : ℝ)))
-    (F := fun q y => scalarMellinTerm ρ σ s q y) hint hsum]
-  simp only [integral_scalarMellinTerm ρ σ hs0, tsum_mul_left]
+  have hmass (q : NonzeroScalarCharge) : 0 < narainMassSq ρ σ q.val :=
+    narainMassSq_pos ρ σ q.property.2
+  have hF : ∀ y ∈ Set.Ioi (0 : ℝ),
+      HasSum (fun q : NonzeroScalarCharge =>
+        (1 : ℂ) * (Real.exp (-Real.pi * narainMassSq ρ σ q.val * y) : ℂ))
+          (narainScalarHeat ρ σ y) := by
+    intro y hy
+    refine (summable_narainScalarHeatTerm ρ σ hy).hasSum.congr_fun fun q => ?_
+    rw [one_mul, narainBoltzmann]
+    congr 2
+    ring
+  have hsum : Summable (fun q : NonzeroScalarCharge =>
+      ‖(1 : ℂ)‖ / narainMassSq ρ σ q.val ^ s.re) := by
+    refine (summable_narainDirichletTerm ρ σ hs).norm.congr fun q => ?_
+    rw [narainDirichletTerm, Complex.norm_cpow_eq_rpow_re_of_pos (hmass q),
+      Complex.neg_re, norm_one, Real.rpow_neg (hmass q).le, one_div]
+  have hM := hasSum_mellin_pi_mul
+    (a := fun _ : NonzeroScalarCharge => (1 : ℂ))
+    (q := fun q : NonzeroScalarCharge => narainMassSq ρ σ q.val)
+    (F := narainScalarHeat ρ σ) (s := s)
+    (fun q => Or.inr (hmass q)) (by linarith only [hs]) hF hsum
+  have hval : HasSum (fun q => ((Real.pi : ℂ) ^ (-s) * Complex.Gamma s) *
+      narainDirichletTerm ρ σ s q) (mellin (narainScalarHeat ρ σ) s) :=
+    hM.congr_fun (fun q => by
+      simp only [mul_one, narainDirichletTerm, Complex.cpow_neg, div_eq_mul_inv])
+  exact hval.tsum_eq.symm.trans (tsum_mul_left)
 
 /-- The scalar heat Mellin transform has the exact two-modulus Eisenstein normalization. -/
 theorem mellin_narainScalarHeat_eq_eisenstein_product
@@ -186,9 +137,11 @@ theorem mellin_narainScalarProjection (ρ σ : D4BMUpperHalfPlaneCoordinate)
   apply setIntegral_congr_fun measurableSet_Ioi
   intro y hy
   have hy0 : (y : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt hy)
+  dsimp only
   rw [integral_narainPartition_eq_scalar ρ σ hy, narainScalarPartition_eq_heat ρ σ hy]
   apply congrArg (fun z : ℂ => (y : ℂ) ^ (s - 1) • z)
-  field_simp [hy0] <;> ring
+  field_simp [hy0]
+  ring
 
 end
 

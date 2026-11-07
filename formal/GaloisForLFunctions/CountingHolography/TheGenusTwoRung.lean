@@ -21,7 +21,8 @@ two base-change towers. The channel numbers of level `n` are `2`, `2qⁿ`, `2(q�
 
 So for `4 ≤ q ≤ 19` the graph has integral mode data, the functional equation, the sharp number of
 trivial zeros and the count law at the first level, and a slow resonance
-(`firstCountLaw_does_not_force_damping`). At genus one the first level is the whole law; from genus two
+(`firstCountLaw_does_not_force_damping`): integrality of the mode data does not force a count, already
+with a single trivial zero. At genus one the first level is the whole law; from genus two
 on the count law has to hold at every level, and it does exactly when the black hole is critical.
 -/
 
@@ -253,19 +254,21 @@ theorem genusTwo_tower_iff {q : ℕ} (hq : 2 ≤ q) :
         ≤ |towerTrace q (traceOne q) n| + |towerTrace q (traceTwo q) n| := abs_add_le _ _
       _ ≤ 4 * Real.sqrt q ^ n := by linarith [hslow n]
 
-/-- **The first count law does not force damping at genus two.** For `4 ≤ q ≤ 19` the black hole has the
-functional equation of genus two, the count law at the first level and a resonance off the critical
-circle, and the count law fails at some level. -/
+/-- **Integrality and the first count law do not force damping at genus two.** For `4 ≤ q ≤ 19` the black
+hole has integral mode data with the sharp law of trivial zeros (one trivial zero, scaled coefficient of
+size one), the functional equation of genus two, the count law at the first level, and a resonance off
+the critical circle; the count law fails at some level. -/
 theorem firstCountLaw_does_not_force_damping {q : ℕ} (h4 : 4 ≤ q) (h19 : q ≤ 19) :
-    (∀ w : ℂ, w ≠ 0 → (genusTwoL q).reverse.eval w =
+    |(scalePoly q (genusTwoIndex q) (fun i => genusTwoRay i)).coeff (2 * 1)| = 1 ∧
+      (∀ w : ℂ, w ≠ 0 → (genusTwoL q).reverse.eval w =
         ((q : ℂ) * w ^ 2) ^ 2 * (genusTwoL q).reverse.eval (1 / ((q : ℂ) * w))) ∧
       (∃ K : ℤ → ℤ → ℕ, CountLaw K ∧ (K 0 1 : ℤ) = 2 ∧ (K 1 0 : ℤ) = 2 * (q : ℤ) ^ 1 ∧
         (K 1 1 : ℤ) = 2 * ((q : ℤ) ^ 1 + 1) - genusTwoTrace q 1) ∧
       (∃ z : ℂ, (genusTwoL q).eval z = 0 ∧ Complex.normSq z ≠ q) ∧
       ∃ n, 1 ≤ n ∧ ¬ ∃ K : ℤ → ℤ → ℕ, CountLaw K ∧ (K 0 1 : ℤ) = 2 ∧
         (K 1 0 : ℤ) = 2 * (q : ℤ) ^ n ∧ (K 1 1 : ℤ) = 2 * ((q : ℤ) ^ n + 1) - genusTwoTrace q n := by
-  refine ⟨genusTwoL_functional_equation (by omega), (genusTwo_firstLevel_iff (by omega)).mpr h19,
-    ?_, ?_⟩
+  refine ⟨genusTwo_sharp (by omega), genusTwoL_functional_equation (by omega),
+    (genusTwo_firstLevel_iff (by omega)).mpr h19, ?_, ?_⟩
   · by_contra h
     push Not at h
     have := (genusTwo_critical_iff (q := q) (by omega)).mp h

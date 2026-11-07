@@ -29,8 +29,10 @@ does not fulfill these requirements.
   with the archimedean reserve remains an independent open inequality.
 - [Conductor control](../3-formalized/hhac-conductor-controlled-regularization.md): bound the
   remainder for arbitrary signed finite pairings by conductors and totients.
-- [Exact chord energy](hhac-torsion-chord-energy.md): sharpen that cost using
-  the full root-of-unity energy and the least common multiple of conductors.
+- [Exact chord energy](../3-formalized/hhac-torsion-chord-energy.md): sharpen that cost using
+  the full root-of-unity energy and the least common multiple of conductors;
+  obtain a conductor-uniform modulus for the spacing-regulated diagonal and
+  its quadratic form on arbitrary finite supports.
 
 The programme definitions are
 [EffectiveScalingGeometry/README.md](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md)
@@ -38,6 +40,19 @@ and
 [HeightHomotopyArithmeticCounts/README.md](../../../../formal/GaloisForLFunctions/HeightHomotopyArithmeticCounts/README.md).
 These constructions are first tools within the full specification, not a
 replacement completion criterion.
+
+## Global mathematical gap
+
+`ArithmeticCastelnuovoSeveri.riemannHypothesis_iff_exists_effectivity`
+identifies full scaling-surface Riemann–Roch plus ample effectivity with RH.
+The existing source-section constructions prove restricted-aperture cases;
+their all-aperture mixed-defect payment remains open. The filtration's interval
+law does not supply that payment or bound Euler cancellation.
+
+For heights, the spacing regulator has an indefinite renormalized limit.
+Controlling its finite-radius error does not construct a nonnegative local-height
+sum, an arithmetic addition law, or a fixed-point localization of the nerve.
+Those constructions remain required inputs to the two programmes.
 
 ## Proof obligations
 

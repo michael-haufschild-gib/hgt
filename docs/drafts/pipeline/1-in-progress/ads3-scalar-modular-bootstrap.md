@@ -17,19 +17,33 @@ The corpus's single-Eisenstein detection theorem now extends to the product:
 ## Conjectures and obligations
 
 1. **Product-kernel coverage — proved in Lean.** At every zero of `ξ(1+2u)`, the product kernel has a pole of the full multiplicity for some pair of moduli on each prescribed pair of horocycles. Its double horocycle numerator average is explicitly nonzero.
-2. **Actual partition identity.** Identify this kernel, with all normalization factors, as the Eisenstein overlap of the central-charge-two Narain lattice partition function. Establish convergence, regularization and the scalar projection in Lean.
+2. **Actual partition identity — partly formalized.** The convergent Narain sum, scalar projection and general two-modulus Dirichlet and Mellin formulas are proved in Lean. Establish modular inversion, the regularized fundamental-domain overlap and normalization of its continuation into the pole-detecting kernel.
 3. **Source estimate.** For every pair of central-charge-two target moduli, derive
    `yΣ_scalar exp(−2πΔy) − [y−(3/π)log y+B] = O_ε(y^(3/4−ε))`
    as `y→0+`, for every `ε>0`, with the vacuum included and `B` the exact
    constant term. The loss `ε` permits logarithmic factors from multiple zeros.
    Prove the Mellin bridge from this family of bounds to RH using full pole
    coverage. The bound itself is an open target, not an input.
+4. **[Pole-forced decay boundary](ads3-narain-pole-decay-boundary.md).** At each arithmetic zero `ρ`, some target
+   pair on every prescribed pair of horocycles should admit no scalar
+   remainder bound `O(y^α)` with `α>1−Re ρ/2`, after subtraction of any
+   constant and logarithmic main terms. Such a bound would make the
+   remainder Mellin transform holomorphic across the detected pole;
+   the main terms have poles only at `s=1`. The corpus's
+   `BlackHoleRingdown/TheHorocycleReadsTheZeros.lean` supplies the
+   decay-to-holomorphy and analytic-uniqueness mechanism. The Narain
+   source still needs its local integrability, large-height bound and
+   logarithmic Mellin subtraction proved.
 
 For the RH implication, the proved mean-pole theorem exposes a weaker
 sufficient target: the same remainder bound for one double target-horocycle
 average at prescribed positive heights. No arithmetic pole cancels in that
 average. Identifying its actual Mellin transform requires uniform Gaussian
 and Dirichlet bounds on the compact target intervals; these remain obligations.
+For fixed heights `Y,Z>0` and horizontal coordinates in `[0,1]`, the explicit
+candidate majorant is `K*=YZ(2Z²+3)Z⁻²(2+3Y⁻²)`: mass coercivity gives
+`M²≥(|n|²+|w|²)/K*`. The square-target scalar Dirichlet theorem would then
+dominate all target Dirichlet norms by `K*^(Re s)` times one summable series.
 
 ## Product detector: formalized
 
@@ -49,11 +63,12 @@ pole order for the pointwise product. Multiple zeros require no extra assumption
 
 **Normalization obligation.** In the literature's variable `s=1/2+u`,
 `Λ(s)=π^(−s)Γ(s)ζ(2s)` and `ξ(2s)=s(2s−1)Λ(s)`.
-The Rankin–Selberg transform is `2K/[u(1+2u)]`. This elementary factor is
-nonzero at arithmetic resonances. The equality to the lattice transform still
-needs a Lean proof; defining `K` does not establish it.
+The literature's Rankin–Selberg normalization is `2K/[u(1+2u)]`. This
+elementary factor is nonzero at arithmetic resonances. The actual scalar
+Mellin transform `2Λ(s)E_s(ρ)E_s(σ)` is now formalized; matching its continuation
+to this quotient remains a Lean obligation.
 
-## Lattice source to establish
+## Lattice source
 
 For the square two-torus, scalar charges are `n,w∈ℤ²` with `n·w=0`.
 For `w≠0`, the unique parametrization is
@@ -75,14 +90,11 @@ For general moduli `σ=x+iy`, `ρ=B+iV`, set
 `M²=[Qσ(n+BJw)+V²Qσ(Jw)]/(Vy)`.
 Primitive scalar coordinates give
 `M²=Qσ(a,b)[(d+Bc)²+(Vc)²]/(Vy)`.
-This reduces the general-modulus source identity to the same decomposition;
-negative `c` is paired with `(-c,-d)`, rather than changing `c` alone.
-For normalized full, primitive and positive-first-coordinate sums `L_z,P_z,H_z`,
-the required identities are
-`L_z=ζ(2s)P_z=2H_z+2(Im z)^sζ(2s)` and
-`S_(ρ,σ)=(Im ρ)^sL_σ+H_ρP_σ=2ζ(2s)E_s(ρ)E_s(σ)`.
-`Sieve.ofReal_div_cpow_eq_mul_cpow_neg` handles the positive-real powers;
-`d4BMPrimitiveIntegerPairReflectEquiv` matches the sign convention in `Qσ`.
+The [general-modulus Dirichlet identity](../3-formalized/ads3-narain-dirichlet-product.md)
+is formalized in `EpsteinLatticeDecomposition.lean` and `NarainDirichlet.lean`:
+`S_(ρ,σ)(s)=2ζ(2s)E_s(ρ)E_s(σ)` for `Re s>1`, with absolute convergence.
+Positive-gcd decomposition and central reflection give the exact axis
+cancellation; primitive reflection handles the target quadratic's sign convention.
 The [general mass identities and bounds](../3-formalized/ads3-narain-mass-bounds.md)
 are formalized in `NarainMass.lean`: chiral positivity `M²≥2|n·w|`,
 the scalar factorization, and
@@ -115,14 +127,25 @@ The explicit Poisson target is
 where `Rσ(v)=|v₁+σv₂|²`. Inversion sends
 `(x,t)` to `(-x,t)/(x²+t²)` and `(m,w)` to `(-w,m)`; both the quadratic
 exponent and determinant phase agree. The corpus's
-`RankTwoAffine.affine_gaussian_poisson` includes the required linear terms.
-Its original, intermediate and dual summability premises must all be proved
-for this source before it can identify the two partition sums.
+`IntegerLatticePoisson.gaussian_theta_characteristics` supplies Poisson
+summation with affine convergence already proved. Use
+`Bσ(v₁,v₂)=(σ₂v₁,v₂−σ₁v₁)`, Gaussian parameter `t/(Vσ₂)`, spatial shift
+`Bσ(BJw)` and modulation `x Bσ^(−T)w`. The shift-modulation cross phase
+vanishes because `Jw·w=0`; the dual phase is `B det(m,w)`, the dual norm is
+`Rσ(m−xw)/σ₂²`, and the prefactor is `V/t`. The explicit linear equivalence,
+determinant and inverse-adjoint identities, followed by charge-sum
+reindexing, remain to be formalized.
 The dual quadratic is already a Narain mass:
 `[Rσ(m−xw)+t²Rσ(w)]/(tσ₂)=M²_((x,t),σ)(Jm,−w)`.
 Its spin is `det(m,w)`. Thus the dual convergence follows from the same
 coercive bound, and the Poisson identity is equivalently the triality
 `Z_(ρ,σ)(τ)=Z_(τ,σ)(ρ)`; this equality remains to be formalized.
+
+The [actual scalar Mellin identity](../3-formalized/ads3-narain-scalar-mellin.md)
+is formalized in `NarainMellin.lean`:
+`Mellin[y⁻¹∫₀¹ Z(x,y)dx−1](s)=2π^(−s)Γ(s)ζ(2s)E_s(ρ)E_s(σ)`
+for `Re s>1`. Every Mellin interchange premise is discharged by the proved
+mass positivity and absolute Dirichlet convergence.
 
 ## External audit
 
@@ -135,6 +158,6 @@ coercive bound, and the Poisson identity is equivalently the triality
 
 - [x] 0 → 1: concrete source and noncancellation question.
 - [ ] 1 → 2: dependency-closed paper proof of the partition identity and source estimate.
-- [ ] 2 → 3: exact source theorems checked with `lake --old env lean`, transitive axiom audit, umbrella imports.
+- [ ] 2 → 3: remainder bound and RH bridge formalized, with direct Lean checks, transitive axiom audits and umbrella imports.
 
 No RH bound, unitarity-to-RH implication, or complete route is claimed.

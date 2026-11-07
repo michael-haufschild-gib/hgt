@@ -108,9 +108,44 @@ distinct torsion points, then sums the pointwise estimate. Thus
 `≤ (1−r)²/(2r) Σ |a(m,n)|(mn)²c(m,n)`.
 
 This is uniform in the finite conductors with an explicit polynomial cost.
-Sharper chord-energy formulas and uniform control under the arithmetic
-spacing regulator remain research topics. Neither this bound nor its
-quadratic radial rate pays for the divergent diagonal.
+Neither this bound nor its quadratic radial rate pays for the divergent diagonal.
+
+[`TorsionChordEnergy.lean`](TorsionChordEnergy.lean) proves the classical exact
+energy of the nontrivial `L`-th roots of unity:
+
+`Σ_{u^L=1, u≠1} |1−u|⁻² = (L²−1)/12`, for `L≥1`.
+
+The proof uses the first two logarithmic derivatives of
+`1+X+⋯+X^(L−1)` at `1`.
+[`SharpTorsionChordBounds.lean`](SharpTorsionChordBounds.lean) applies this
+identity to the actual primitive orbits. Each row of distinct ratios embeds
+in the nontrivial roots of order `lcm(m,n)`, giving
+
+`C(m,n) ≤ min(φ(m),φ(n)) (lcm(m,n)²−1)/12`.
+
+For a self-orbit this bounds the radial remainder by
+`(1−r)²φ(n)(n²−1)/(24r)`. The arithmetic spacing scale can therefore cancel
+the quadratic conductor factor; a fixed-radius separation estimate alone
+does not exhibit this cancellation.
+
+[`UniformSpacingDiagonal.lean`](UniformSpacingDiagonal.lean) makes that
+cancellation uniform over all positive conductors. At the existing arithmetic
+spacing radius `r=exp(−2ε/n)`, `ε>0`, it proves
+
+`0 ≤ R_r(n,n) ≤ φ(n) ε² exp(2ε)/6`,
+
+`|T_r(n,n)+φ(n)log(1−r)+I(n,n)| ≤ φ(n) max(ε, ε² exp(2ε)/6)`.
+
+For the actual twisted energy and scalar counterterm, the stronger certificate is
+
+`|twistedEnergy(r,n,n)+log(2ε)−tameDifferent(n)|`
+`≤ max(3ε, ε² exp(2ε)/6)`.
+
+The same modulus bounds every finite diagonal quadratic form by its squared
+coefficient norm, independently of the support. Thus the known pointwise
+diagonal limit has a conductor-uniform quantitative form. Mixed-conductor
+control and payment of the removed self-energy remain separate questions;
+the indefinite spacing limit is not an arithmetic height.
 
 ## Mechanisms and tools
 

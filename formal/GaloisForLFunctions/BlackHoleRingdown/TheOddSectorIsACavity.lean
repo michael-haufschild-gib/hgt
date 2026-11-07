@@ -211,8 +211,9 @@ theorem hasSum_odd {f : DeckL2 0} (hf : mirrorL2 f = -f) :
   have h := (cuspEigenBasis 0).hasSum_repr ⟨f, mem_cuspidalL2Closure_of_odd hf⟩
   have h2 := h.map (cuspidalL2Closure 0).subtypeL (cuspidalL2Closure 0).subtypeL.continuous
   convert h2 using 1
-  funext i
-  simp
+  · funext i
+    simp
+  · rfl
 
 end OddSector
 

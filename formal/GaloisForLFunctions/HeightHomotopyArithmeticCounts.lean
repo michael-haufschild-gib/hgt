@@ -2,5 +2,7 @@ import GaloisForLFunctions.HeightHomotopyArithmeticCounts.RadialLogarithmicKerne
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.FiniteRadiusTorsionEnergy
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.ConductorControlledRegularization
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.TorsionChordEnergy
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.SharpTorsionChordBounds
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.UniformSpacingDiagonal
 
 /-! Local heights, torsion regularization and homotopy invariants of arithmetic counts. -/

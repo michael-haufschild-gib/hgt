@@ -14,6 +14,8 @@ of distinct ordered pairs satisfies
 Together with the finite-radius decomposition this gives a conductor-explicit
 error bound, including for signed finite pairings. The constant is deliberately
 coarse; the point is uniformity as the conductors grow.
+The [exact chord-energy certificate](hhac-torsion-chord-energy.md) sharpens
+this cost and controls the spacing-regulated diagonal uniformly in conductor.
 
 ## Paper proof
 

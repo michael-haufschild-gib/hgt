@@ -73,7 +73,8 @@ private theorem torsionInverseChordCost_le_full_root (m n : ℕ) (hm : 0 < m) (h
         intro w hw
         rw [norm_one_sub_mul_conj (norm_of_mem_primitiveRoots (mem_of_mem_erase hw))]
       _ = ∑ u ∈ ((primitiveRoots n ℂ).erase z).image (fun w => z*conj w), 1/‖1-u‖^2 :=
-        (sum_image hinj.injOn).symm
+        (sum_image (s := (primitiveRoots n ℂ).erase z)
+          (f := fun u : ℂ => (1:ℝ)/‖1-u‖^2) hinj.injOn).symm
       _ ≤ unityChordEnergy (Nat.lcm m n) := by
         unfold unityChordEnergy
         apply sum_le_sum_of_subset_of_nonneg

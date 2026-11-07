@@ -72,8 +72,10 @@ by `(1−r)²/(2r)` times the sum of absolute coefficients weighted by
 `ArithmeticIntersectionTheory.TheSpacingRegulatorRemovesTheAnomaly`
 already constructs positive spacing-dependent regulators and identifies
 their indefinite limits. The additional target here is a finite-radius
-error formula, not another limiting positivity claim. The conductor certificate bounds `C(m,n)` arithmetically. Sharp conductor
-estimates and payment of the diagonal remain open.
+error formula, not another limiting positivity claim. The conductor certificate
+bounds `C(m,n)` arithmetically; [exact chord energy](hhac-torsion-chord-energy.md)
+sharpens that bound and gives a conductor-uniform diagonal spacing modulus.
+Mixed-conductor uniformity and payment of the diagonal remain open.
 
 ## Lean formalization
 

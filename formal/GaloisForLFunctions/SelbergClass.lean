@@ -72,3 +72,9 @@ import GaloisForLFunctions.SelbergClass.Primon.ArithmeticAverage
 import GaloisForLFunctions.SelbergClass.Primon.LogarithmicBoundary
 import GaloisForLFunctions.SelbergClass.Primon.ThermalArithmeticProduct
 import GaloisForLFunctions.SelbergClass.Primon.PrincipalSeries
+import GaloisForLFunctions.SelbergClass.Primon.ModularBoundaryDefect
+import GaloisForLFunctions.SelbergClass.Primon.PrincipalHermitian
+import GaloisForLFunctions.SelbergClass.Primon.PrincipalHilbertInverse
+import GaloisForLFunctions.SelbergClass.Primon.CompactLadders
+import GaloisForLFunctions.SelbergClass.Primon.KestenOrthogonalPolynomials
+import GaloisForLFunctions.SelbergClass.Primon.KestenJacobiMoments
