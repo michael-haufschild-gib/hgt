@@ -9,7 +9,9 @@
 
 Prove an unconditional source estimate beyond absolute convergence. The candidate external estimate is
 `Σ_{0<N(u)≤D^(1+θ)} |Σ_n μ_K(n)(u/n)_6 W(N(n)/D)|² ≪ D^(2+θ+ε)`
-for every fixed `θ, ε > 0` and smooth compactly supported `W`. Sixth-power
+for every fixed `θ, ε > 0` and smooth compactly supported `W`, with columns
+indexed by primary generators outside a fixed finite set of exceptional
+prime ideals. Sixth-power
 rows retain `gcd(n,b)=1`; averaging over `b` produces the totient-weighted
 coefficient `μ_K(n)φ(n)/N(n)` and the `11/12` exponent. The external final
 bridge uses its corrected Euler product and Mellin continuation to exclude
@@ -92,6 +94,9 @@ is formalized with compact error map.
 The [meromorphic resolvent](../3-formalized/cubic-meromorphic-resolvent.md)
 is constructed at spectral value `8/9`, hence at Eisenstein parameter
 `4/3`; its possible pole does not yet prove a nonzero theta residue.
+The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.md)
+is now identified as `(17/6)MPM*F(4/3)`, globally in `L²` and after compact
+restriction of the corrected seed. Nonvanishing remains unproved locally.
 
 Cubic theta identification, cube removal, and uniform transfer estimates
 remain open locally.

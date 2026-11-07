@@ -73,7 +73,7 @@ theorem sum_choose_div_exp_le (e : ℕ) (v : ℝ) :
         ring
 
 /-- The same with `|e − k|`: at most `2 e^{e u²/4}`. -/
-theorem sum_choose_div_exp_abs_le (e : ℕ) {u : ℝ} (hu : 0 ≤ u) :
+theorem sum_choose_div_exp_abs_le (e : ℕ) (u : ℝ) :
     ∑ k ∈ range (2 * e + 1), ((2 * e).choose k : ℝ) / 4 ^ e *
       Real.exp (u * ((((e - k) + (k - e) : ℕ)) : ℝ)) ≤ 2 * Real.exp (e * u ^ 2 / 4) := by
   have hterm : ∀ k ∈ range (2 * e + 1), ((2 * e).choose k : ℝ) / 4 ^ e *
@@ -176,7 +176,8 @@ theorem sum_coeffOf_mul_gap_rpow_le (hY : ∀ p ∈ Y, p.Prime) {l : ℝ} (hl : 
         Real.exp ((l * Real.log (i : ℕ)) * ((((e i - κ i) + (κ i - e i) : ℕ)) : ℝ))) := by
     intro κ
     have hg : (0 : ℝ) < gapOf e κ := by
-      exact_mod_cast Finset.prod_pos fun i _ => pow_pos (hY i i.2).pos _
+      have : 0 < gapOf e κ := Finset.prod_pos fun i _ => pow_pos (hY i i.2).pos _
+      exact_mod_cast this
     rw [Real.rpow_def_of_pos hg]
     unfold gapOf
     rw [log_prod_pow hY (fun i : Y => (e i - κ i) + (κ i - e i)), Finset.sum_mul, Real.exp_sum]
@@ -192,14 +193,14 @@ theorem sum_coeffOf_mul_gap_rpow_le (hY : ∀ p ∈ Y, p.Prime) {l : ℝ} (hl : 
       Real.exp ((l * Real.log (i : ℕ)) * ((((e i - k) + (k - e i) : ℕ)) : ℝ))),
     ← Finset.prod_coe_sort Y (fun p => 2 * Real.exp (e p * (l * Real.log p) ^ 2 / 4))]
   refine Finset.prod_le_prod (fun i _ => Finset.sum_nonneg fun k _ => by positivity) fun i _ => ?_
-  exact sum_choose_div_exp_abs_le (e i) (mul_nonneg hl (Real.log_natCast_nonneg _))
+  exact sum_choose_div_exp_abs_le (e i) (l * Real.log (i : ℕ))
 
 /-- **The window integral at Chernoff cost.** -/
 theorem abs_integral_boxWeight_sub_le_gap (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ → ℝ) (T : ℝ) {L : ℝ}
     (hL : 0 < L) {l : ℝ} (hl0 : 0 ≤ l) (hl1 : l ≤ 1) :
     |(∫ t in T..T + L, boxWeight Y e θ t) - L * ∏ p ∈ Y, binomMean (e p)| ≤
       2 * (L ^ (1 - l) * ∏ p ∈ Y, 2 * Real.exp (e p * (l * Real.log p) ^ 2 / 4)) := by
-  have h := abs_integral_boxWeight_sub_le_sum e θ T L
+  have h := abs_integral_boxWeight_sub_le_sum (Y := Y) e θ T L
     (fun κ => 2 * (L ^ (1 - l) * (gapOf e κ : ℝ) ^ l)) (fun κ => by positivity) fun κ _ hne => ?_
   · refine h.trans ?_
     have h1 : ∑ κ ∈ boxIndex Y e, coeffOf e κ * (2 * (L ^ (1 - l) * (gapOf e κ : ℝ) ^ l)) =
@@ -270,7 +271,7 @@ theorem exists_mem_box_gap {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : �
       have e1 : Real.exp (Y.card * Real.log (8 * m)) = (8 * (m : ℝ)) ^ Y.card := by
         rw [← Real.rpow_natCast, Real.rpow_def_of_pos hm8, mul_comm]
       rw [hPe, Real.exp_add, Real.exp_add, Real.exp_log (by norm_num), e1,
-        show (8 * (m : ℝ)) = 2 * (4 * m) by ring, mul_pow]
+        show (8 * (m : ℝ)) ^ Y.card = 2 ^ Y.card * (4 * (m : ℝ)) ^ Y.card by rw [← mul_pow]; ring]
       ring
     have h4 : L ^ l = Real.exp (l * Real.log L) := by
       rw [Real.rpow_def_of_pos hL, mul_comm]
@@ -292,7 +293,7 @@ theorem card_primesUpTo_eq (y : ℕ) : (primesUpTo y).card = Nat.primeCounting y
   rw [Nat.count_eq_card_filter_range]
 
 /-- `Σ_{p ≤ y} log² p ≤ 1.4 y log y`. -/
-theorem sum_log_sq_le (y : ℕ) (hy : 1 ≤ y) :
+theorem sum_log_sq_le (y : ℕ) :
     ∑ p ∈ primesUpTo y, Real.log p ^ 2 ≤ 1.4 * y * Real.log y := by
   have hθ : ∑ p ∈ primesUpTo y, Real.log p ≤ y * Real.log 4 := by
     have h := boxModulus_primesUpTo_le y 1
@@ -327,7 +328,43 @@ theorem sum_log_sq_le (y : ℕ) (hy : 1 ≤ y) :
   have h5 : Real.log y * ∑ p ∈ primesUpTo y, Real.log p ≤ Real.log y * (y * Real.log 4) :=
     mul_le_mul_of_nonneg_left hθ hℓ
   have hy0 : (0 : ℝ) ≤ y := Nat.cast_nonneg y
-  nlinarith
+  have h6 := mul_le_mul_of_nonneg_left h4 (mul_nonneg hℓ hy0)
+  linarith
+
+/-- The arithmetic of the length at `λ = √(δ ℓ'/ℓ³)`: the three terms cost `2.1 + 6w + 2.8w < 10w`, `w = y ℓ'/ℓ ≥ 12`. -/
+theorem sharp_length_algebra {δ ℓ ℓ' y r m S l a : ℝ} (hδ0 : 0 < δ) (hℓ0 : 0 < ℓ) (hℓ'1 : 1 ≤ ℓ')
+    (hy : 12 * ℓ ≤ y) (hr : r ≤ 3 * y / ℓ) (ha0 : 0 ≤ a) (ha : a ≤ 2 * ℓ') (hm : m ≤ 4 * ℓ / δ)
+    (hS0 : 0 ≤ S) (hS : S ≤ 1.4 * y * ℓ) (hl2 : l ^ 2 = δ * ℓ' / ℓ ^ 3) :
+    Real.log 8 + r * a + m * l ^ 2 * S / 2 < 10 * (y * ℓ' / ℓ) := by
+  set w : ℝ := y * ℓ' / ℓ with hw
+  have hy0 : 0 ≤ y := by linarith
+  have h8 : Real.log 8 ≤ 2.1 := by
+    have e : (8 : ℝ) = 2 ^ 3 := by norm_num
+    rw [e, Real.log_pow]
+    have := Real.log_two_lt_d9
+    push_cast
+    linarith
+  have hT2 : r * a ≤ 6 * w := by
+    calc r * a ≤ (3 * y / ℓ) * a := mul_le_mul_of_nonneg_right hr ha0
+      _ ≤ (3 * y / ℓ) * (2 * ℓ') := mul_le_mul_of_nonneg_left ha (by positivity)
+      _ = 6 * w := by rw [hw]; ring
+  have hT3 : m * l ^ 2 * S / 2 ≤ 2.8 * w := by
+    have hmS : m * S ≤ (4 * ℓ / δ) * (1.4 * y * ℓ) := by
+      calc m * S ≤ (4 * ℓ / δ) * S := mul_le_mul_of_nonneg_right hm hS0
+        _ ≤ (4 * ℓ / δ) * (1.4 * y * ℓ) := mul_le_mul_of_nonneg_left hS (by positivity)
+    have h1 := mul_le_mul_of_nonneg_right hmS (sq_nonneg l)
+    have e : (4 * ℓ / δ) * (1.4 * y * ℓ) * l ^ 2 / 2 = 2.8 * w := by
+      rw [hl2, hw]
+      field_simp
+      ring
+    calc m * l ^ 2 * S / 2 = m * S * l ^ 2 / 2 := by ring
+      _ ≤ (4 * ℓ / δ) * (1.4 * y * ℓ) * l ^ 2 / 2 := by linarith
+      _ = 2.8 * w := e
+  have hw12 : 12 ≤ w := by
+    rw [hw, le_div_iff₀ hℓ0]
+    have := mul_le_mul_of_nonneg_left hℓ'1 hy0
+    linarith
+  linarith
 
 /-- **The scale of the boxes at square-root cost.** Every window of length `exp(10 y √(log y · log log y/δ))` enters every `δ`-box on the primes up to `y`. -/
 theorem eventually_exists_mem_box_sharp {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
@@ -362,8 +399,10 @@ theorem eventually_exists_mem_box_sharp {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 
   have hl1 : l ≤ 1 := by
     have h1 : δ * ℓ' / ℓ ^ 3 ≤ 1 := by
       rw [div_le_one (by positivity)]
-      have h2 : δ * ℓ' ≤ ℓ := by nlinarith
-      have h3 : ℓ ≤ ℓ ^ 3 := by nlinarith
+      have h2 : δ * ℓ' ≤ ℓ := by
+        have := mul_le_mul_of_nonneg_right hδ1.le (show (0 : ℝ) ≤ ℓ' by linarith)
+        linarith
+      have h3 : ℓ ≤ ℓ ^ 3 := le_self_pow₀ (by linarith) (by norm_num)
       linarith
     exact (Real.sqrt_le_sqrt h1).trans_eq Real.sqrt_one
   have hl2 : l ^ 2 = δ * ℓ' / ℓ ^ 3 := Real.sq_sqrt hq0
@@ -381,20 +420,11 @@ theorem eventually_exists_mem_box_sharp {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 
         rw [← Real.sqrt_mul hq0]
         have e : δ * ℓ' / ℓ ^ 3 * (ℓ * ℓ' / δ) = (ℓ' / ℓ) ^ 2 := by
           field_simp
-          ring
         rw [e, Real.sqrt_sq (by positivity)]
       calc √(δ * ℓ' / ℓ ^ 3) * (10 * y * √(ℓ * ℓ' / δ))
           = 10 * y * (√(δ * ℓ' / ℓ ^ 3) * √(ℓ * ℓ' / δ)) := by ring
         _ = 10 * (y * ℓ' / ℓ) := by rw [h1]; ring
     rw [hlogL]
-    set w : ℝ := y * ℓ' / ℓ with hw
-    -- The three terms.
-    have h8 : Real.log 8 ≤ 2.1 := by
-      have e : (8 : ℝ) = 2 ^ 3 := by norm_num
-      rw [e, Real.log_pow]
-      have := Real.log_two_lt_d9
-      push_cast
-      linarith
     have h4 : Real.log 4 ≤ 1.4 := by
       have e : (4 : ℝ) = 2 ^ 2 := by norm_num
       rw [e, Real.log_pow]
@@ -405,62 +435,41 @@ theorem eventually_exists_mem_box_sharp {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 
       rw [card_primesUpTo_eq]
       refine hπ.trans ?_
       rw [div_le_div_iff_of_pos_right hℓ0]
-      nlinarith
-    have hm4 : (m : ℝ) ≤ 4 * ℓ / δ := by
-      have : 1 ≤ ℓ / δ := by
-        rw [le_div_iff₀ hδ0]
-        linarith
-      have e : 3 * ℓ / δ + 1 ≤ 4 * ℓ / δ := by
-        have : 4 * ℓ / δ = 3 * ℓ / δ + ℓ / δ := by ring
-        linarith
+      have := mul_le_mul_of_nonneg_right (show Real.log 4 + 1 ≤ 3 by linarith) hYpos.le
       linarith
+    have hℓδ1 : 1 ≤ ℓ / δ := by
+      rw [le_div_iff₀ hδ0]
+      linarith
+    have hm4 : (m : ℝ) ≤ 4 * ℓ / δ := by
+      have e : 4 * ℓ / δ = 3 * ℓ / δ + ℓ / δ := by ring
+      linarith
+    have hmr : (1 : ℝ) ≤ m := by exact_mod_cast hmpos
     have hlog8m : Real.log (8 * m) ≤ 2 * ℓ' := by
-      have hmr : (1 : ℝ) ≤ m := by exact_mod_cast hmpos
       have h1 : 8 * (m : ℝ) ≤ ℓ ^ 2 := by
-        have h2 : 8 * (m : ℝ) ≤ 24 * ℓ / δ + 8 := by
-          have : 8 * (3 * ℓ / δ + 1) = 24 * ℓ / δ + 8 := by ring
-          linarith
         have h3 : 24 * ℓ / δ + 8 ≤ ℓ ^ 2 := by
           have h5 : 24 * ℓ / δ = (24 / δ) * ℓ := by ring
+          have h6 := mul_le_mul_of_nonneg_right hℓδ hℓ0.le
+          have h7 : 8 ≤ 8 * ℓ := by linarith
           rw [h5]
           nlinarith
+        have e : 8 * (3 * ℓ / δ + 1) = 24 * ℓ / δ + 8 := by ring
         linarith
       have := Real.log_le_log (by positivity) h1
-      rwa [Real.log_pow, hℓ'def] at this
-    have hlog8m0 : 0 ≤ Real.log (8 * m) := Real.log_nonneg (by
-      have : (1 : ℝ) ≤ m := by exact_mod_cast hmpos
-      linarith)
-    have hT2 : ((primesUpTo y).card : ℝ) * Real.log (8 * m) ≤ 6 * w := by
-      calc ((primesUpTo y).card : ℝ) * Real.log (8 * m) ≤ (3 * y / ℓ) * (2 * ℓ') :=
-            mul_le_mul hr hlog8m hlog8m0 (by positivity)
-        _ = 6 * w := by rw [hw]; ring
-    have hΣ := sum_log_sq_le y hy1
-    have hΣ0 : 0 ≤ ∑ p ∈ primesUpTo y, Real.log p ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
-    have hT3 : (m : ℝ) * l ^ 2 * (∑ p ∈ primesUpTo y, Real.log p ^ 2) / 2 ≤ 2.8 * w := by
-      have hmΣ : (m : ℝ) * ∑ p ∈ primesUpTo y, Real.log p ^ 2 ≤ (4 * ℓ / δ) * (1.4 * y * ℓ) :=
-        mul_le_mul hm4 hΣ hΣ0 (by positivity)
-      have hl2' : 0 ≤ l ^ 2 := sq_nonneg l
-      calc (m : ℝ) * l ^ 2 * (∑ p ∈ primesUpTo y, Real.log p ^ 2) / 2
-          = ((m : ℝ) * ∑ p ∈ primesUpTo y, Real.log p ^ 2) * l ^ 2 / 2 := by ring
-        _ ≤ ((4 * ℓ / δ) * (1.4 * y * ℓ)) * l ^ 2 / 2 := by
-            have := mul_le_mul_of_nonneg_right hmΣ hl2'
-            linarith
-        _ = 2.8 * w := by
-            rw [hl2, hw]
-            field_simp
-            ring
-    have hw12 : 12 ≤ w := by
-      have h1 : 12 * ℓ ≤ y := by
-        have : 12 * ℓ / δ ≤ y := by
-          have : 4 * (3 * ℓ / δ + 1) = 12 * ℓ / δ + 4 := by ring
-          linarith
-        have h2 : 12 * ℓ ≤ 12 * ℓ / δ := by
-          rw [le_div_iff₀ hδ0]
-          nlinarith
+      rw [Real.log_pow] at this
+      push_cast at this
+      exact this
+    have hlog8m0 : 0 ≤ Real.log (8 * m) := Real.log_nonneg (by linarith)
+    have h12 : 12 * ℓ ≤ y := by
+      have h1 : 12 * ℓ / δ ≤ y := by
+        have : 4 * (3 * ℓ / δ + 1) = 12 * ℓ / δ + 4 := by ring
         linarith
-      rw [hw, le_div_iff₀ hℓ0]
-      nlinarith
-    linarith
+      have h2 : 12 * ℓ ≤ 12 * ℓ / δ := by
+        rw [le_div_iff₀ hδ0]
+        have := mul_le_mul_of_nonneg_left hδ1.le (show (0 : ℝ) ≤ 12 * ℓ by linarith)
+        linarith
+      linarith
+    exact sharp_length_algebra hδ0 hℓ0 hℓ'1 h12 hr hlog8m0 hlog8m hm4
+      (Finset.sum_nonneg fun _ _ => sq_nonneg _) (sum_log_sq_le y) hl2
 
 end
 

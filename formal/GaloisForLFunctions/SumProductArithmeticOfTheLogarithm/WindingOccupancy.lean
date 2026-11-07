@@ -49,7 +49,8 @@ private theorem product_cell_bound {a b : ℕ} {t ε θ : ℝ}
     simp only [phaseRemainder, Int.cast_add]
     ring
   rw [he]
-  exact (abs_add _ _).trans (by linarith only [har, hbr])
+  exact abs_le.mpr ⟨by linarith only [(abs_le.mp har).1, (abs_le.mp hbr).1],
+    by linarith only [(abs_le.mp har).2, (abs_le.mp hbr).2]⟩
 
 /-- A winding signature specifies a real cell of radius `2ε`. -/
 theorem arc_pair_mem_logPairCell {N a b : ℕ} {t ε θ η : ℝ}
@@ -58,6 +59,7 @@ theorem arc_pair_mem_logPairCell {N a b : ℕ} {t ε θ η : ℝ}
     (a, b) ∈ logPairCell N t (2 * ε)
       (2 * θ + 2 * Real.pi * (windingSignature t θ η (a, b)).1)
       (2 * η + 2 * Real.pi * (windingSignature t θ η (a, b)).2) := by
+  classical
   obtain ⟨haN, haθ, haη⟩ := mem_filter.mp ha
   obtain ⟨hbN, hbθ, hbη⟩ := mem_filter.mp hb
   refine mem_filter.mpr ⟨mem_product.mpr ⟨haN, hbN⟩, ?_⟩

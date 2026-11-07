@@ -25,7 +25,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.RigidArithmeticOfCuts
 
-variable {ι : Type*} [Countable ι]
+variable {ι : Type*}
 
 /-- `ε ζ(1 + ε + b)` is bounded for `Re b ≥ 0`, `0 < ε ≤ 1`. -/
 private lemma norm_mul_zeta_le {ε : ℝ} (hε : 0 < ε) (hε1 : ε ≤ 1) {b : ℂ} (hb : 0 ≤ b.re) :
@@ -230,6 +230,8 @@ theorem norm_zeta_le_strip {σ₀ σ₁ : ℝ} (h0 : 0 < σ₀) (h1 : σ₁ < 1)
     simp at hs1
     linarith
   have hmode := hasSum_abelStep_mod (le_refl 2) hσ hs1'
+  have hcast2 : (((2 : ℕ) : ℝ) : ℂ) = ((2 : ℝ) : ℂ) := by norm_num
+  rw [hcast2] at hmode
   have hκ : 0 < (2 : ℝ) ^ (1 - σ₁) - 1 := by
     have := Real.one_lt_rpow (by norm_num : (1 : ℝ) < 2) (by linarith : 0 < 1 - σ₁)
     linarith
@@ -365,7 +367,7 @@ theorem superposition_kernel_iff {c s : ι → ℂ} {σ₀ σ₁ : ℝ} (hS : Is
           simp only [hd, hw]
           ring
         simp_rw [hexp] at hzero
-        rw [tsum_sub (hdsum.of_norm) hsum] at hzero
+        rw [Summable.tsum_sub (hdsum.of_norm) hsum] at hzero
         have hval : ∑' i, d i * (((k : ℝ) + 1 : ℝ) : ℂ) ^ (w i) = D := by
           rw [hD]
           linear_combination hzero
@@ -411,7 +413,10 @@ theorem hasSum_abelStep {s : ℂ} (hσ : 0 < s.re) : HasSum (abelStep s) 1 := by
     | zero => simp
     | succ N ih =>
       rw [Finset.sum_range_succ, ih, abelStep]
-      push_cast
+      have h2 : (N : ℝ) + 2 = ((N + 1 : ℕ) : ℝ) + 1 := by
+        push_cast
+        ring
+      rw [h2]
       ring
   have hsum : Summable (abelStep s) := by
     refine Summable.of_norm_bounded ((summable_rpow_succ hσ).mul_left ‖s‖) fun j => ?_
@@ -427,7 +432,7 @@ theorem hasSum_abelStep {s : ℂ} (hσ : 0 < s.re) : HasSum (abelStep s) 1 := by
       have h2 : Tendsto (fun N : ℕ => ((N : ℝ) + 1)) atTop atTop :=
         tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop
       exact (tendsto_rpow_neg_atTop hσ).comp h2
-    have := tendsto_const_nhds.sub h0
+    have := (tendsto_const_nhds (x := (1 : ℂ))).sub h0
     rwa [sub_zero] at this
   have heq := tendsto_nhds_unique hsum.hasSum.tendsto_sum_nat hlim
   rw [← heq]

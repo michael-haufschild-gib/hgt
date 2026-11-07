@@ -292,3 +292,9 @@ are supplied by locally checked modules.
 TheCubicIncomingResidue adapts the actual forcing correction and its
 spectral residue from OpenAI Eisenstein/MeromorphicResolvent.lean.
 The entire forcing and meromorphic resolvent are locally checked.
+LocalCubicCorrectedSeeds adapts the compact height bound and local incoming
+family from OpenAI Eisenstein/SeedHeight.lean and MeromorphicResolvent.lean.
+The barrier, compact profile map, and spectral residue are locally constructed.
+Sobolev/CompactSmoothParameterSums adapts compact-family smooth summation
+from OpenAI Eisenstein/SeedHeight.lean. The uniform derivative bounds also
+give termwise iterated differentiation through Mathlib's smooth-series theorem.

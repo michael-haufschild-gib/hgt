@@ -1,25 +1,33 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheTransportOfAZeroIsEffective
 import GaloisForLFunctions.HTGeometry.GammaVerticalSharpBound
 import GaloisForLFunctions.PrimeTorusTheory.TheMisalignmentBand
+import GaloisForLFunctions.RHTower.BurnolSoninEvaluationNonvanishing
 import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 import GaloisForLFunctions.RHTower.ZetaEulerRegionDiscSeamMargin
 
 /-!
 # The slow return bound lives right of the line
 
-A bound `|ζ(s + iτ)| ≤ N^A` at an aligned shift can only hold on a domain that stays right of `Re s = 0`.
+Transport of a zero `ρ = β + iγ` along shifts `τ` needs a bound for `ζ(s + iτ)` on a disc about `3 + iγ` that reaches `ρ`. Such a bound is
+only possible on discs that stay right of the critical line.
 
-* **Left of `Re s = 0` the size is a power of the height** (`exists_mul_rpow_le_norm_zeta_left`). The functional equation gives
-  `|ζ(−η + it)| ≥ c t^{½+η}` for `0 < η ≤ 1`, `t ≥ 1`: the cosine cancels the decay of `Γ`, and `|ζ(1 + η − it)|` is bounded below.
-* **An aligned length is a power of the logarithm of the height.** A head return up to `N ≥ 11` at `τ ≥ 1` has `N < τ + 1`
-  (`lt_add_one_of_isHeadReturn`), since consecutive integers near `τ` have phases apart by a fixed amount. At large `τ`, non-alignment gives the sharper
-  `N < 1024 (log τ)⁴ (log log τ)²` (`length_lt_of_isHeadReturn`). With `exists_isHeadReturn_le`, this brackets the aligned length at a height.
-* **So on a disc about `3 + iγ` of radius `R > 3` the bound fails for every exponent** (`exists_large_value_left`), at every long enough head return, with no
-  hypothesis on the zeros. The disc of radius `31/10` is such a disc. The hypothesis of `asymptoticAbscissaLaw_of_slowReturns` therefore holds exactly when no zero lies right of
-  `½` (`slowReturnHypothesis_iff_riemannHypothesis`): as a receiver it reads `RH ⇒ AAL`.
-* **The transport theorem survives on discs that stop short of the line** (`transport_of_isHeadReturn_on_disc`). For a zero `ρ = β + iγ` and any radius `3 − β < R ≤ 31/10`,
-  the explicit exponent `transportExponent β R` suffices, for every `r > 0`. Taking `R = 3 − σ₀`, `½ ≤ σ₀ < β`, the domain stays right of the line, and
-  aligned returns bounded there at each right zero give the asymptotic abscissa law (`asymptoticAbscissaLaw_of_slowReturns_right`).
+* **Left of `Re s = 0`, `ζ` is a power of the height** (`exists_mul_rpow_le_norm_zeta_left`). By the functional equation,
+  `|ζ(−η + it)| ≥ c t^{½+η}` for `0 < η ≤ 1`, `t ≥ 1`. The cosine cancels the decay of `Γ`, and `|ζ(1 + η − it)|` is bounded below.
+  At the left edge `−1/10` of the disc of radius `31/10` this is `c t^{3/5}`.
+* **Left of `½`, the reflection is small** (`exists_norm_zeta_le_reflect`). For `½ ≤ u < 1`, `|ζ(u + it)| ≤ C t^{½−u} |ζ(1 − u + it)|`.
+* **Smallness propagates along a chain of three-circle steps** (`norm_le_of_chain`). A disc about `3 + iγ` of radius `R > 5/2` contains a pair
+  `1 − u + iy`, `u + iy` with `u > ½`, so a bound `M` on the disc makes `ζ(· + iτ)` of size `≤ τ^{−δ} M` near `u + iγ`. The chain carries this to
+  `Re s = 2`, where `|ζ| ≥ ½`. Hence **`M ≥ c τ^b`** (`exists_rpow_le_of_norm_le_on_disc`), with `b, c > 0` depending only on the disc.
+* **An aligned length is polylogarithmic in the height.** A head return up to `N ≥ 11` at `τ ≥ 1` has `N < τ + 1` (`lt_add_one_of_isHeadReturn`).
+  At large `τ`, non-alignment gives `N < 1024 (log τ)⁴ (log log τ)²` (`length_lt_of_isHeadReturn`). Hence `N^A` is below every power of `τ`.
+* **Consequences.** On every disc of radius `R > 5/2` the bound `|ζ(s + iτ)| ≤ N^A` fails at every long head return, for every exponent `A`
+  (`exists_large_value_of_left_edge_lt_half`); on the disc of radius `31/10` the witness is the left edge (`exists_large_value_left`). The
+  hypothesis of `asymptoticAbscissaLaw_of_slowReturns` therefore holds exactly when no zero lies right of `½`
+  (`slowReturnHypothesis_iff_riemannHypothesis`). Along a phase return, every connected domain of bounded translates that meets `Re s > 1` lies in
+  `Re s > ½` (`IsPhaseReturn.re_gt_half_of_translatesBoundedOn`).
+* **Transport survives on discs short of the line** (`transport_of_isHeadReturn_on_disc`). For `3 − β < R ≤ 31/10` the explicit exponent
+  `transportExponent β R > 0` works. With `R = 3 − σ₀`, `½ ≤ σ₀ < β`, slow aligned returns at each right zero give the asymptotic abscissa law
+  (`asymptoticAbscissaLaw_of_slowReturns_right`).
 -/
 
 open Complex Filter Topology Metric Set
@@ -27,6 +35,8 @@ open Complex Filter Topology Metric Set
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics
+
+/-! ### The cosine and the reflection -/
 
 /-- The cosine on a vertical line is exponentially large in the height. -/
 theorem sub_exp_le_two_mul_norm_cos (z : ℂ) :
@@ -54,6 +64,34 @@ theorem sub_exp_le_two_mul_norm_cos (z : ℂ) :
   · rw [ha, neg_neg]
     rw [abs_sub_comm]
     exact le_abs_self _
+
+/-- `|cos(π s/2)| ≥ e^{π|t|/2}/4` once `|Im s| = |t| ≥ 1`. -/
+theorem exp_div_four_le_norm_cos {s : ℂ} (ht : 1 ≤ |s.im|) :
+    Real.exp (Real.pi * |s.im| / 2) / 4 ≤ ‖cos ((Real.pi : ℂ) * s / 2)‖ := by
+  have h3 := sub_exp_le_two_mul_norm_cos ((Real.pi : ℂ) * s / 2)
+  have him : ((Real.pi : ℂ) * s / 2).im = Real.pi / 2 * s.im := by
+    have : (Real.pi : ℂ) * s / 2 = ((Real.pi / 2 : ℝ) : ℂ) * s := by
+      push_cast
+      ring
+    rw [this, Complex.im_ofReal_mul]
+  have hab : |((Real.pi : ℂ) * s / 2).im| = Real.pi * |s.im| / 2 := by
+    rw [him, abs_mul, abs_of_pos (by positivity)]
+    ring
+  rw [hab, Real.exp_neg] at h3
+  obtain ⟨E, hE⟩ : ∃ E, E = Real.exp (Real.pi * |s.im| / 2) := ⟨_, rfl⟩
+  rw [← hE] at h3 ⊢
+  have hEpos : 0 < E := hE ▸ Real.exp_pos _
+  have hE2 : 2 ≤ E := by
+    rw [hE]
+    have h5 : (1 : ℝ) ≤ Real.pi * |s.im| / 2 := by
+      have := Real.pi_gt_three
+      nlinarith
+    have h6 := Real.add_one_le_exp (Real.pi * |s.im| / 2)
+    linarith
+  have hsmall : E⁻¹ ≤ E / 2 := by
+    rw [inv_le_iff_one_le_mul₀ hEpos]
+    nlinarith
+  linarith
 
 /-- **Left of `Re s = 0` the size of `ζ` is a power of the height.** For `0 < η ≤ 1` and `t ≥ 1`, `|ζ(−η + it)| ≥ c t^{½+η}`. -/
 theorem exists_mul_rpow_le_norm_zeta_left {η : ℝ} (hη0 : 0 < η) (hη1 : η ≤ 1) :
@@ -92,7 +130,7 @@ theorem exists_mul_rpow_le_norm_zeta_left {η : ℝ} (hη0 : 0 < η) (hη1 : η 
     linarith
   have hfe := riemannZeta_one_sub hnat hne1
   rw [hflip] at hfe
-  -- The Gamma factor.
+  -- The Gamma factor, through `Γ(u + 1) = u Γ(u)` at `u = η + it`.
   obtain ⟨u, hu⟩ : ∃ u : ℂ, u = (η : ℂ) + (t : ℂ) * I := ⟨_, rfl⟩
   have hure : u.re = η := by simp [hu]
   have huim : u.im = t := by simp [hu]
@@ -112,49 +150,32 @@ theorem exists_mul_rpow_le_norm_zeta_left {η : ℝ} (hη0 : 0 < η) (hη1 : η 
   have hGupos : 0 < ‖Complex.Gamma u‖ := norm_pos_iff.mpr hGu0
   have hGinv := hG η t hη0.le hη1 (by rwa [abs_of_pos ht0])
   rw [abs_of_pos ht0, ← hu, norm_inv, ← hE] at hGinv
-  have htpow : 0 < t ^ (1 / 2 - η) := Real.rpow_pos_of_pos ht0 _
-  have hGlow : (C * t ^ (1 / 2 - η) * E)⁻¹ ≤ ‖Complex.Gamma u‖ := by
+  obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = t ^ (1 / 2 - η) := ⟨_, rfl⟩
+  rw [← hQ] at hGinv
+  have hQpos : 0 < Q := by rw [hQ]; exact Real.rpow_pos_of_pos ht0 _
+  have hGlow : (C * Q * E)⁻¹ ≤ ‖Complex.Gamma u‖ := by
     rw [← inv_inv ‖Complex.Gamma u‖]
     exact inv_anti₀ (inv_pos.mpr hGupos) hGinv
   have hut : t ≤ ‖u‖ := by
     have := Complex.abs_im_le_norm u
     rwa [huim, abs_of_pos ht0] at this
-  have hpowmul : P * t ^ (1 / 2 - η) = t := by
-    rw [hP, ← Real.rpow_add ht0]
+  have hpowmul : P * Q = t := by
+    rw [hP, hQ, ← Real.rpow_add ht0]
     have : (1 / 2 + η) + (1 / 2 - η) = 1 := by ring
     rw [this, Real.rpow_one]
   have hGs : P / (C * E) ≤ ‖Complex.Gamma s‖ := by
     rw [hGamma]
-    have hstep : P / (C * E) = t * (C * t ^ (1 / 2 - η) * E)⁻¹ := by
+    have hstep : P / (C * E) = t * (C * Q * E)⁻¹ := by
       rw [← hpowmul]
       field_simp
     rw [hstep]
     exact mul_le_mul hut hGlow (by positivity) (norm_nonneg _)
   -- The cosine.
   have hcos : E / 4 ≤ ‖cos ((Real.pi : ℂ) * s / 2)‖ := by
-    have h3 := sub_exp_le_two_mul_norm_cos ((Real.pi : ℂ) * s / 2)
-    have him : ((Real.pi : ℂ) * s / 2).im = -(Real.pi * t / 2) := by
-      have : (Real.pi : ℂ) * s / 2 = ((Real.pi / 2 : ℝ) : ℂ) * s := by
-        push_cast
-        ring
-      rw [this, Complex.im_ofReal_mul, hsim]
-      ring
-    have hab : |((Real.pi : ℂ) * s / 2).im| = Real.pi * t / 2 := by
-      rw [him, abs_neg, abs_of_pos (by positivity)]
-    rw [hab, ← hE] at h3
-    have hsmall : Real.exp (-(Real.pi * t / 2)) ≤ E / 2 := by
-      rw [Real.exp_neg, ← hE]
-      have hE2 : 2 ≤ E := by
-        rw [hE]
-        have h5 : (1 : ℝ) ≤ Real.pi * t / 2 := by
-          have := Real.pi_gt_three
-          nlinarith
-        have h6 := Real.add_one_le_exp (Real.pi * t / 2)
-        linarith
-      rw [inv_le_iff_one_le_mul₀ hEpos]
-      nlinarith
-    linarith
-  -- The value of `ζ` to the right of `1`.
+    have habs : |s.im| = t := by rw [hsim, abs_neg, abs_of_pos ht0]
+    have h3 := exp_div_four_le_norm_cos (s := s) (by rw [habs]; exact ht)
+    rwa [habs, ← hE] at h3
+  -- The value of `ζ` right of `1`.
   have hzeta : Z⁻¹ ≤ ‖riemannZeta s‖ := by
     have h3 := RHTower.norm_inv_riemannZeta_le_of_le_re (σ₁ := 1 + η) (by linarith) (s := s) (by rw [hsre])
     have h1re : (1 : ℝ) + η - 1 = η := by ring
@@ -181,6 +202,414 @@ theorem exists_mul_rpow_le_norm_zeta_left {η : ℝ} (hη0 : 0 < η) (hη1 : η 
         mul_le_mul (mul_le_mul_of_nonneg_left hprod (by positivity)) hzeta (by positivity) (by positivity)
     _ = _ := by ring
 
+/-- At the left edge `Re s = −1/10` of the disc of radius `31/10` about `3 + iγ`: `|ζ(−1/10 + it)| ≥ c t^{3/5}`. -/
+theorem exists_mul_rpow_three_fifths_le_norm_zeta :
+    ∃ c : ℝ, 0 < c ∧ ∀ t : ℝ, 1 ≤ t →
+      c * t ^ (3 / 5 : ℝ) ≤ ‖riemannZeta (((-(1 / 10) : ℝ) : ℂ) + (t : ℂ) * I)‖ := by
+  obtain ⟨c, hc, h⟩ := exists_mul_rpow_le_norm_zeta_left (η := 1 / 10) (by norm_num) (by norm_num)
+  refine ⟨c, hc, fun t ht => ?_⟩
+  have h3 : (1 / 2 + 1 / 10 : ℝ) = 3 / 5 := by norm_num
+  have h4 := h t ht
+  rwa [h3] at h4
+
+/-- **The reflection is small left of `½`.** For `½ ≤ u < 1` and `t ≥ 1`, `|ζ(u + it)| ≤ C t^{½−u} |ζ(1 − u + it)|`. -/
+theorem exists_norm_zeta_le_reflect :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ u t : ℝ, 1 / 2 ≤ u → u < 1 → 1 ≤ t →
+      ‖riemannZeta ((u : ℂ) + (t : ℂ) * I)‖ ≤
+        C * t ^ (1 / 2 - u) * ‖riemannZeta (((1 - u : ℝ) : ℂ) + (t : ℂ) * I)‖ := by
+  obtain ⟨C₀, hC₀, hG⟩ := HTGeometry.exists_norm_inv_Gamma_le_sharp
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  have h2pi : (1 : ℝ) ≤ 2 * Real.pi := by linarith [Real.pi_gt_three]
+  have h2pi0 : (0 : ℝ) < 2 * Real.pi := by positivity
+  refine ⟨1 + 4 * Real.pi * C₀, by nlinarith [mul_pos hpi hC₀], fun u t hu hu1 ht => ?_⟩
+  have ht0 : 0 < t := by linarith
+  have hu0 : 0 < u := by linarith
+  obtain ⟨w, hw⟩ : ∃ w : ℂ, w = (u : ℂ) + (t : ℂ) * I := ⟨_, rfl⟩
+  have hwre : w.re = u := by simp [hw]
+  have hwim : w.im = t := by simp [hw]
+  have hnat : ∀ n : ℕ, w ≠ -(n : ℂ) := by
+    intro n h
+    have h3 := congrArg Complex.re h
+    rw [hwre] at h3
+    have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    simp at h3
+    linarith
+  have hne1 : w ≠ 1 := by
+    intro h
+    have h3 := congrArg Complex.im h
+    rw [hwim] at h3
+    simp at h3
+    linarith
+  have hfe := riemannZeta_one_sub hnat hne1
+  obtain ⟨y, hy⟩ : ∃ y : ℂ, y = ((1 - u : ℝ) : ℂ) + (t : ℂ) * I := ⟨_, rfl⟩
+  have hyre : y.re = 1 - u := by simp [hy]
+  have hyim : y.im = t := by simp [hy]
+  have hyne : y ≠ 1 := by
+    intro h
+    have h3 := congrArg Complex.im h
+    rw [hyim] at h3
+    simp at h3
+    linarith
+  have hconj : (1 : ℂ) - w = (starRingEnd ℂ) y := by
+    apply Complex.ext
+    · rw [Complex.sub_re, Complex.one_re, hwre, Complex.conj_re, hyre]
+    · rw [Complex.sub_im, Complex.one_im, hwim, Complex.conj_im, hyim]
+      ring
+  have hnorm : ‖riemannZeta (1 - w)‖ = ‖riemannZeta y‖ := by
+    rw [hconj, RHTower.riemannZeta_conj_of_re_pos (by rw [hyre]; linarith) hyne, Complex.norm_conj]
+  rw [← hw, ← hy, ← hnorm, hfe, norm_mul, norm_mul, norm_mul, norm_mul, Complex.norm_two]
+  -- Lower bounds for the three factors.
+  obtain ⟨E, hE⟩ : ∃ E : ℝ, E = Real.exp (Real.pi * t / 2) := ⟨_, rfl⟩
+  have hEpos : 0 < E := by rw [hE]; exact Real.exp_pos _
+  obtain ⟨Q, hQ⟩ : ∃ Q : ℝ, Q = t ^ (1 / 2 - u) := ⟨_, rfl⟩
+  have hQpos : 0 < Q := by rw [hQ]; exact Real.rpow_pos_of_pos ht0 _
+  rw [← hQ]
+  have hGinv := hG u t hu0.le hu1.le (by rwa [abs_of_pos ht0])
+  rw [abs_of_pos ht0, ← hw, norm_inv, ← hE, ← hQ] at hGinv
+  have hGu0 : Complex.Gamma w ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by rw [hwre]; exact hu0)
+  have hGupos : 0 < ‖Complex.Gamma w‖ := norm_pos_iff.mpr hGu0
+  have hGlow : (C₀ * Q * E)⁻¹ ≤ ‖Complex.Gamma w‖ := by
+    rw [← inv_inv ‖Complex.Gamma w‖]
+    exact inv_anti₀ (inv_pos.mpr hGupos) hGinv
+  have hcos : E / 4 ≤ ‖cos ((Real.pi : ℂ) * w / 2)‖ := by
+    have habs : |w.im| = t := by rw [hwim, abs_of_pos ht0]
+    have h3 := exp_div_four_le_norm_cos (s := w) (by rw [habs]; exact ht)
+    rwa [habs, ← hE] at h3
+  have hcpow : (2 * Real.pi)⁻¹ ≤ ‖(2 * (Real.pi : ℂ)) ^ (-w)‖ := by
+    have h3 : (2 * (Real.pi : ℂ)) = ((2 * Real.pi : ℝ) : ℂ) := by push_cast; ring
+    rw [h3, Complex.norm_cpow_eq_rpow_re_of_pos h2pi0, Complex.neg_re, hwre, ← Real.rpow_neg_one]
+    exact Real.rpow_le_rpow_of_exponent_le h2pi (by linarith)
+  obtain ⟨a, ha⟩ : ∃ a, a = ‖riemannZeta w‖ := ⟨_, rfl⟩
+  rw [← ha]
+  have ha0 : 0 ≤ a := ha ▸ norm_nonneg _
+  have hkey : a / (4 * Real.pi * C₀ * Q) ≤
+      2 * ‖(2 * (Real.pi : ℂ)) ^ (-w)‖ * ‖Complex.Gamma w‖ * ‖cos ((Real.pi : ℂ) * w / 2)‖ * a := by
+    calc a / (4 * Real.pi * C₀ * Q) = 2 * (2 * Real.pi)⁻¹ * (C₀ * Q * E)⁻¹ * (E / 4) * a := by
+          field_simp
+          ring
+      _ ≤ 2 * ‖(2 * (Real.pi : ℂ)) ^ (-w)‖ * ‖Complex.Gamma w‖ * ‖cos ((Real.pi : ℂ) * w / 2)‖ * a := by
+          refine mul_le_mul_of_nonneg_right ?_ ha0
+          refine mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left hcpow (by norm_num)) hGlow
+            (by positivity) (by positivity)) hcos (by positivity) (by positivity)
+  have hden : 0 < 4 * Real.pi * C₀ * Q := by positivity
+  rw [div_le_iff₀ hden] at hkey
+  have hQa : 0 ≤ Q * a := mul_nonneg hQpos.le ha0
+  nlinarith [mul_nonneg hQa (norm_nonneg (riemannZeta (1 - w)))]
+
+/-! ### Propagation of smallness -/
+
+/-- **One three-circle step.** If `g` is bounded by `M` on the disc of radius `4ρ` about `q` and by `m ≤ M` on the disc of radius `ρ`, then it is
+bounded by `√(mM)` on the disc of radius `2ρ`. -/
+theorem norm_le_geomMean_step {g : ℂ → ℂ} {q : ℂ} {ρ m M : ℝ} (hρ : 0 < ρ) (hm : 0 < m) (hmM : m ≤ M)
+    (hd : ∀ w, ‖w - q‖ ≤ 4 * ρ → DifferentiableAt ℂ g w)
+    (hM : ∀ w, ‖w - q‖ ≤ 4 * ρ → ‖g w‖ ≤ M)
+    (hsmall : ∀ w, ‖w - q‖ ≤ ρ → ‖g w‖ ≤ m) {w : ℂ} (hw : ‖w - q‖ ≤ 2 * ρ) :
+    ‖g w‖ ≤ m ^ (1 / 2 : ℝ) * M ^ (1 / 2 : ℝ) := by
+  by_cases hin : ‖w - q‖ ≤ ρ
+  · have h1 := hsmall w hin
+    have h2 : m ^ (1 / 2 : ℝ) * m ^ (1 / 2 : ℝ) = m := by
+      rw [← Real.rpow_add hm]
+      norm_num
+    have h3 : m ^ (1 / 2 : ℝ) ≤ M ^ (1 / 2 : ℝ) := Real.rpow_le_rpow hm.le hmM (by norm_num)
+    have h4 : 0 < m ^ (1 / 2 : ℝ) := Real.rpow_pos_of_pos hm _
+    nlinarith
+  · push Not at hin
+    obtain ⟨f, hf⟩ : ∃ f : ℂ → ℂ, f = fun y => g (y + q) := ⟨_, rfl⟩
+    have hdf : ∀ y : ℂ, ρ ≤ ‖y‖ → ‖y‖ ≤ 4 * ρ → DifferentiableAt ℂ f y := by
+      intro y _ hy
+      have hy' : ‖(y + q) - q‖ ≤ 4 * ρ := by rwa [add_sub_cancel_right]
+      rw [hf]
+      exact (hd _ hy').comp y (differentiableAt_id.add_const q)
+    have h1' : ∀ y : ℂ, ‖y‖ = ρ → ‖f y‖ ≤ m := by
+      intro y hy
+      rw [hf]
+      show ‖g (y + q)‖ ≤ m
+      exact hsmall _ (by rw [add_sub_cancel_right, hy])
+    have h3' : ∀ y : ℂ, ‖y‖ = 4 * ρ → ‖f y‖ ≤ M := by
+      intro y hy
+      rw [hf]
+      show ‖g (y + q)‖ ≤ M
+      exact hM _ (by rw [add_sub_cancel_right, hy])
+    have hthree := HTGeometry.norm_le_of_three_circles (f := f) (z := w - q) hρ (by linarith) hdf h1' h3'
+      hin.le (by linarith)
+    have hfw : f (w - q) = g w := by
+      rw [hf]
+      show g (w - q + q) = g w
+      rw [sub_add_cancel]
+    rw [hfw] at hthree
+    have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
+    have h4 : Real.log (4 * ρ) - Real.log ρ = 2 * Real.log 2 := by
+      rw [Real.log_mul (by norm_num) hρ.ne', show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+      push_cast
+      ring
+    have hs : (Real.log ‖w - q‖ - Real.log ρ) / (Real.log (4 * ρ) - Real.log ρ) ≤ 1 / 2 := by
+      rw [h4, div_le_iff₀ (by positivity)]
+      have h5 : Real.log ‖w - q‖ ≤ Real.log (2 * ρ) := Real.log_le_log (by linarith) hw
+      rw [Real.log_mul (by norm_num) hρ.ne'] at h5
+      linarith
+    have hi := interp_mono hm hmM hs
+    have h6 : (1 : ℝ) - 1 / 2 = 1 / 2 := by norm_num
+    rw [h6] at hi
+    exact hthree.trans hi
+
+/-- **A chain of three-circle steps.** Along centres `q k` a distance `≤ ρ` apart, with `g` holomorphic and bounded by `M` on the discs of radius
+`4ρ`, a bound `aM` on the first disc of radius `ρ` becomes `a^{2^{-k}} M` on the `k`-th. -/
+theorem norm_le_of_chain {g : ℂ → ℂ} {q : ℕ → ℂ} {ρ a M : ℝ} (hρ : 0 < ρ) (ha : 0 < a) (ha1 : a ≤ 1)
+    (hMpos : 0 < M) {K : ℕ} (hstep : ∀ k, ‖q (k + 1) - q k‖ ≤ ρ)
+    (hd : ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ 4 * ρ → DifferentiableAt ℂ g w)
+    (hM : ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ 4 * ρ → ‖g w‖ ≤ M)
+    (hsmall : ∀ w, ‖w - q 0‖ ≤ ρ → ‖g w‖ ≤ a * M) :
+    ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ ρ → ‖g w‖ ≤ a ^ ((1 / 2 : ℝ) ^ k) * M := by
+  intro k
+  induction k with
+  | zero =>
+    intro _ w hw
+    simpa using hsmall w hw
+  | succ k ih =>
+    intro hk w hw
+    have hkK : k ≤ K := by omega
+    obtain ⟨θ, hθ⟩ : ∃ θ : ℝ, θ = (1 / 2 : ℝ) ^ k := ⟨_, rfl⟩
+    have hθ0 : 0 ≤ θ := by rw [hθ]; positivity
+    have hih := ih hkK
+    rw [← hθ] at hih
+    have haθ : 0 < a ^ θ := Real.rpow_pos_of_pos ha _
+    have haθ1 : a ^ θ ≤ 1 := Real.rpow_le_one ha.le ha1 hθ0
+    have hstepw : ‖w - q k‖ ≤ 2 * ρ := by
+      have h2 : w - q k = (w - q (k + 1)) + (q (k + 1) - q k) := by ring
+      rw [h2]
+      exact (norm_add_le _ _).trans (by linarith [hstep k])
+    have h3 := norm_le_geomMean_step hρ (mul_pos haθ hMpos) (mul_le_of_le_one_left hMpos.le haθ1)
+      (hd k hkK) (hM k hkK) hih hstepw
+    have hval : (a ^ θ * M) ^ (1 / 2 : ℝ) * M ^ (1 / 2 : ℝ) = a ^ ((1 / 2 : ℝ) ^ (k + 1)) * M := by
+      rw [Real.mul_rpow haθ.le hMpos.le, mul_assoc, ← Real.rpow_add hMpos, ← Real.rpow_mul ha.le, pow_succ, ← hθ]
+      norm_num
+    rw [hval] at h3
+    exact h3
+
+/-- `|ζ(s)| ≥ ½` for `Re s ≥ 2`. -/
+theorem half_le_norm_zeta {s : ℂ} (hs : 2 ≤ s.re) : 1 / 2 ≤ ‖riemannZeta s‖ := by
+  have h := RHTower.norm_inv_riemannZeta_le_of_le_re (σ₁ := 2) (by norm_num) hs
+  have hne : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_le_re (by linarith)
+  have hpos : 0 < ‖riemannZeta s‖ := norm_pos_iff.mpr hne
+  have h2 : ‖riemannZeta s‖⁻¹ ≤ 2 := by
+    rw [← norm_inv]
+    exact h.trans (by norm_num)
+  rw [one_div]
+  exact (inv_le_comm₀ hpos two_pos).mp h2
+
+/-- **A disc crossing the critical line sees a power of the height.** For `R > 5/2` and `γ ≥ 0` there are `c, b > 0` and `H` such that, for
+`τ ≥ H`, a bound `|ζ(s + iτ)| ≤ M` on the closed disc of radius `R` about `3 + iγ` forces `M ≥ c τ^b`. The disc contains a pair `1 − u + iy`,
+`u + iy` with `u > ½`; reflection makes `ζ(· + iτ)` of size `≤ C τ^{−δ} M` on a small disc about `u + iγ`, and a chain of three-circle steps
+carries this to `Re s = 2`, where `|ζ| ≥ ½`. -/
+theorem exists_rpow_le_of_norm_le_on_disc {R : ℝ} (hR : 5 / 2 < R) {γ : ℝ} (hγ : 0 ≤ γ) :
+    ∃ c b H : ℝ, 0 < c ∧ 0 < b ∧ ∀ τ : ℝ, H ≤ τ → ∀ M : ℝ,
+      (∀ s ∈ closedBall ((3 : ℂ) + (γ : ℂ) * I) R, ‖riemannZeta (s + (τ : ℂ) * I)‖ ≤ M) →
+      c * τ ^ b ≤ M := by
+  obtain ⟨C, hC1, hrefl⟩ := exists_norm_zeta_le_reflect
+  have hC0 : 0 < C := by linarith
+  obtain ⟨d, hd⟩ : ∃ d, d = min R 3 - 5 / 2 := ⟨_, rfl⟩
+  have hd0 : 0 < d := by
+    have : 5 / 2 < min R 3 := lt_min hR (by norm_num)
+    rw [hd]
+    linarith
+  have hd12 : d ≤ 1 / 2 := by
+    have := min_le_right R 3
+    rw [hd]
+    linarith
+  have hdR : 5 / 2 + d ≤ R := by
+    have := min_le_left R 3
+    rw [hd]
+    linarith
+  obtain ⟨ρ, hρdef⟩ : ∃ ρ, ρ = d / 8 := ⟨_, rfl⟩
+  have hρ : 0 < ρ := by rw [hρdef]; positivity
+  obtain ⟨u₀, hu₀⟩ : ∃ u₀ : ℝ, u₀ = 1 / 2 + d / 2 := ⟨_, rfl⟩
+  obtain ⟨δ, hδdef⟩ : ∃ δ : ℝ, δ = 3 * d / 8 := ⟨_, rfl⟩
+  have hδ : 0 < δ := by rw [hδdef]; positivity
+  have hδ1 : δ ≤ 1 := by rw [hδdef]; linarith
+  have hu2 : 0 < 2 - u₀ := by rw [hu₀]; linarith
+  obtain ⟨K, hK⟩ : ∃ K : ℕ, K = ⌈(2 - u₀) / ρ⌉₊ := ⟨_, rfl⟩
+  have hKlow : 2 - u₀ ≤ K * ρ := by
+    have h2 := Nat.le_ceil ((2 - u₀) / ρ)
+    rw [← hK, div_le_iff₀ hρ] at h2
+    exact h2
+  have hKhigh : K * ρ < 2 - u₀ + ρ := by
+    have h2 := Nat.ceil_lt_add_one (div_pos hu2 hρ).le
+    rw [← hK] at h2
+    have h3 : (K : ℝ) * ρ < ((2 - u₀) / ρ + 1) * ρ := mul_lt_mul_of_pos_right h2 hρ
+    have h4 : ((2 - u₀) / ρ + 1) * ρ = 2 - u₀ + ρ := by field_simp
+    linarith
+  obtain ⟨θ, hθdef⟩ : ∃ θ : ℝ, θ = (1 / 2 : ℝ) ^ K := ⟨_, rfl⟩
+  have hθ0 : 0 < θ := by rw [hθdef]; positivity
+  have hθ1 : θ ≤ 1 := by rw [hθdef]; exact pow_le_one₀ (by norm_num) (by norm_num)
+  obtain ⟨b, hb⟩ : ∃ b, b = δ * θ := ⟨_, rfl⟩
+  have hb0 : 0 < b := by rw [hb]; positivity
+  have hb1 : b ≤ 1 := by rw [hb]; nlinarith
+  refine ⟨1 / (8 * C), b, max 3 (2 * C ^ (1 / δ)), by positivity, hb0, fun τ hτH M hM => ?_⟩
+  have hτ3 : 3 ≤ τ := (le_max_left _ _).trans hτH
+  have hτC : 2 * C ^ (1 / δ) ≤ τ := (le_max_right _ _).trans hτH
+  have hτpos : 0 < τ := by linarith
+  obtain ⟨X, hX⟩ : ∃ X, X = τ / 2 := ⟨_, rfl⟩
+  have hXpos : 0 < X := by rw [hX]; positivity
+  have hX1 : 1 ≤ X := by rw [hX]; linarith
+  have hXδ : 0 < X ^ δ := Real.rpow_pos_of_pos hXpos _
+  have hXC : C ≤ X ^ δ := by
+    have h1 : C ^ (1 / δ) ≤ X := by rw [hX]; linarith
+    have h2 := Real.rpow_le_rpow (Real.rpow_nonneg hC0.le _) h1 hδ.le
+    rwa [← Real.rpow_mul hC0.le, one_div, inv_mul_cancel₀ hδ.ne', Real.rpow_one] at h2
+  obtain ⟨a, ha⟩ : ∃ a, a = C * X ^ (-δ) := ⟨_, rfl⟩
+  have ha0 : 0 < a := by rw [ha]; exact mul_pos hC0 (Real.rpow_pos_of_pos hXpos _)
+  have ha1 : a ≤ 1 := by
+    rw [ha, Real.rpow_neg hXpos.le, ← div_eq_mul_inv, div_le_one hXδ]
+    exact hXC
+  obtain ⟨c₀, hc₀⟩ : ∃ c₀ : ℂ, c₀ = (3 : ℂ) + (γ : ℂ) * I := ⟨_, rfl⟩
+  rw [← hc₀] at hM
+  -- `M ≥ ½` from the centre.
+  have hMpos : 0 < M := by
+    have h2 := hM c₀ (mem_closedBall_self (by linarith))
+    have h3 : (c₀ + (τ : ℂ) * I).re = 3 := by rw [hc₀]; simp
+    have h4 := half_le_norm_zeta (s := c₀ + (τ : ℂ) * I) (by rw [h3]; norm_num)
+    linarith
+  -- The chain of centres `u₀ + kρ + iγ`.
+  obtain ⟨q, hq⟩ : ∃ q : ℕ → ℂ, q = fun k => ((u₀ + k * ρ : ℝ) : ℂ) + (γ : ℂ) * I := ⟨_, rfl⟩
+  have hqk : ∀ k, q k = ((u₀ + k * ρ : ℝ) : ℂ) + (γ : ℂ) * I := fun k => by rw [hq]
+  have hstep : ∀ k, ‖q (k + 1) - q k‖ ≤ ρ := by
+    intro k
+    have h2 : q (k + 1) - q k = ((ρ : ℝ) : ℂ) := by
+      rw [hqk, hqk]
+      push_cast
+      ring
+    rw [h2, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hρ]
+  have hqc : ∀ k ≤ K, ‖q k - c₀‖ = 3 - u₀ - k * ρ := by
+    intro k hk
+    have h2 : q k - c₀ = ((u₀ + k * ρ - 3 : ℝ) : ℂ) := by
+      rw [hqk, hc₀]
+      push_cast
+      ring
+    have hkR : (k : ℝ) * ρ ≤ K * ρ := mul_le_mul_of_nonneg_right (by exact_mod_cast hk) hρ.le
+    rw [h2, Complex.norm_real, Real.norm_eq_abs, abs_of_neg (by linarith)]
+    ring
+  have hin : ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ 4 * ρ → w ∈ closedBall c₀ R := by
+    intro k hk w hw
+    rw [mem_closedBall, dist_eq_norm]
+    have h2 : w - c₀ = (w - q k) + (q k - c₀) := by ring
+    rw [h2]
+    refine (norm_add_le _ _).trans ?_
+    have h3 := hqc k hk
+    have h4 : (0 : ℝ) ≤ k * ρ := by positivity
+    linarith
+  have him : ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ 4 * ρ → 0 < (w + (τ : ℂ) * I).im := by
+    intro k _ w hw
+    have h2 := (abs_le.mp ((Complex.abs_im_le_norm (w - q k)).trans hw)).1
+    have h3 : (q k).im = γ := by rw [hqk]; simp
+    rw [Complex.sub_im, h3] at h2
+    have h4 : (w + (τ : ℂ) * I).im = w.im + τ := by simp
+    rw [h4]
+    linarith
+  have hdiff : ∀ k ≤ K, ∀ w, ‖w - q k‖ ≤ 4 * ρ →
+      DifferentiableAt ℂ (fun w : ℂ => riemannZeta (w + (τ : ℂ) * I)) w := by
+    intro k hk w hw
+    have hne : w + (τ : ℂ) * I ≠ 1 := by
+      intro h1
+      have h2 := him k hk w hw
+      rw [h1] at h2
+      simp at h2
+    exact (differentiableAt_riemannZeta hne).comp w (differentiableAt_id.add_const _)
+  -- Smallness on the first disc, by reflection.
+  have hsmall : ∀ w, ‖w - q 0‖ ≤ ρ → ‖riemannZeta (w + (τ : ℂ) * I)‖ ≤ a * M := by
+    intro w hw
+    have hq0re : (q 0).re = u₀ := by rw [hqk]; simp
+    have hq0im : (q 0).im = γ := by rw [hqk]; simp
+    have hre := abs_le.mp ((Complex.abs_re_le_norm (w - q 0)).trans hw)
+    have him' := abs_le.mp ((Complex.abs_im_le_norm (w - q 0)).trans hw)
+    rw [Complex.sub_re, hq0re] at hre
+    rw [Complex.sub_im, hq0im] at him'
+    obtain ⟨u, hu⟩ : ∃ u, u = w.re := ⟨_, rfl⟩
+    obtain ⟨y, hy⟩ : ∃ y, y = w.im := ⟨_, rfl⟩
+    rw [← hu] at hre
+    rw [← hy] at him'
+    obtain ⟨t, ht⟩ : ∃ t, t = y + τ := ⟨_, rfl⟩
+    have ht2 : X ≤ t := by
+      rw [hX, ht]
+      linarith
+    have ht1 : 1 ≤ t := hX1.trans ht2
+    have hu12 : 1 / 2 + δ ≤ u := by
+      rw [hδdef]
+      linarith
+    have hu1 : u < 1 := by linarith
+    have hw' : w + (τ : ℂ) * I = (u : ℂ) + (t : ℂ) * I := by
+      apply Complex.ext
+      · simp [hu]
+      · simp [ht, hy]
+    rw [hw']
+    have h1 := hrefl u t (by linarith) hu1 ht1
+    have hmem : ((1 - u : ℝ) : ℂ) + (y : ℂ) * I ∈ closedBall c₀ R := by
+      rw [mem_closedBall, dist_eq_norm]
+      have h2 : ((1 - u : ℝ) : ℂ) + (y : ℂ) * I - c₀ = ((-(2 + u) : ℝ) : ℂ) + ((y - γ : ℝ) : ℂ) * I := by
+        rw [hc₀]
+        push_cast
+        ring
+      rw [h2]
+      refine (norm_add_le _ _).trans ?_
+      rw [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs,
+        Real.norm_eq_abs, abs_neg, abs_of_pos (by linarith)]
+      have h3 := abs_le.mpr him'
+      linarith
+    have h2 := hM _ hmem
+    have hsum : ((1 - u : ℝ) : ℂ) + (y : ℂ) * I + (τ : ℂ) * I = ((1 - u : ℝ) : ℂ) + (t : ℂ) * I := by
+      rw [ht]
+      push_cast
+      ring
+    rw [hsum] at h2
+    have hpow : t ^ (1 / 2 - u) ≤ X ^ (-δ) := by
+      calc t ^ (1 / 2 - u) ≤ t ^ (-δ) := Real.rpow_le_rpow_of_exponent_le ht1 (by linarith)
+        _ ≤ X ^ (-δ) := by
+          rw [Real.rpow_neg (by linarith), Real.rpow_neg hXpos.le]
+          exact inv_anti₀ hXδ (Real.rpow_le_rpow hXpos.le ht2 hδ.le)
+    calc ‖riemannZeta ((u : ℂ) + (t : ℂ) * I)‖
+        ≤ C * t ^ (1 / 2 - u) * ‖riemannZeta (((1 - u : ℝ) : ℂ) + (t : ℂ) * I)‖ := h1
+      _ ≤ C * X ^ (-δ) * M :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hpow hC0.le) h2 (norm_nonneg _)
+            (mul_pos hC0 (Real.rpow_pos_of_pos hXpos _)).le
+      _ = a * M := by rw [ha]
+  -- The end of the chain sits at `Re s ≥ 2`.
+  have hchain : ‖riemannZeta (q K + (τ : ℂ) * I)‖ ≤ a ^ θ * M := by
+    rw [hθdef]
+    exact norm_le_of_chain (g := fun w : ℂ => riemannZeta (w + (τ : ℂ) * I)) (q := q) hρ ha0 ha1 hMpos
+      hstep hdiff (fun k hk w hw => hM w (hin k hk w hw)) hsmall K le_rfl (q K)
+      (by rw [sub_self, norm_zero]; exact hρ.le)
+  have hre : 2 ≤ (q K + (τ : ℂ) * I).re := by
+    have h2 : (q K + (τ : ℂ) * I).re = u₀ + K * ρ := by rw [hqk]; simp
+    rw [h2]
+    linarith
+  have hlow : (1 / 2 : ℝ) ≤ a ^ θ * M := (half_le_norm_zeta hre).trans hchain
+  have haθ : a ^ θ ≤ C * X ^ (-b) := by
+    rw [ha, Real.mul_rpow hC0.le (Real.rpow_nonneg hXpos.le _), ← Real.rpow_mul hXpos.le]
+    have h5 : C ^ θ ≤ C := by
+      calc C ^ θ ≤ C ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hC1 hθ1
+        _ = C := Real.rpow_one C
+    have h6 : -δ * θ = -b := by rw [hb]; ring
+    rw [h6]
+    exact mul_le_mul_of_nonneg_right h5 (Real.rpow_nonneg hXpos.le _)
+  have hXb : 0 < X ^ b := Real.rpow_pos_of_pos hXpos _
+  have h7 : X ^ b / 2 ≤ C * M := by
+    have h8 : 1 / 2 ≤ C * (X ^ b)⁻¹ * M := by
+      calc (1 / 2 : ℝ) ≤ a ^ θ * M := hlow
+        _ ≤ C * X ^ (-b) * M := mul_le_mul_of_nonneg_right haθ hMpos.le
+        _ = C * (X ^ b)⁻¹ * M := by rw [Real.rpow_neg hXpos.le]
+    have h9 : C * (X ^ b)⁻¹ * M = C * M / X ^ b := by field_simp
+    rw [h9, le_div_iff₀ hXb] at h8
+    linarith
+  have hτb : τ ^ b / 2 ≤ X ^ b := by
+    rw [hX, Real.div_rpow hτpos.le (by norm_num)]
+    have h2b : (2 : ℝ) ^ b ≤ 2 := by
+      calc (2 : ℝ) ^ b ≤ 2 ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le (by norm_num) hb1
+        _ = 2 := Real.rpow_one 2
+    exact div_le_div_of_nonneg_left (Real.rpow_nonneg hτpos.le _) (by positivity) h2b
+  rw [div_mul_eq_mul_div, one_mul, div_le_iff₀ (by positivity)]
+  nlinarith [mul_pos hC0 hMpos]
+
+/-! ### The length of an aligned return -/
+
 /-- The phase at `n + 1` of a head return, written as an exponential. -/
 private theorem norm_exp_sub_one_le_of_isHeadReturn {N : ℕ} {τ : ℝ} (h : IsHeadReturn N τ) {n : ℕ} (hn : n < N) :
     ‖exp ((-(Real.log ((n : ℝ) + 1) * τ) : ℝ) * I) - 1‖ ≤ 1 / (N : ℝ) := by
@@ -189,7 +618,8 @@ private theorem norm_exp_sub_one_le_of_isHeadReturn {N : ℕ} {τ : ℝ} (h : Is
   have h2 : -Real.log ((n : ℝ) + 1) * τ = -(Real.log ((n : ℝ) + 1) * τ) := by ring
   rwa [h2] at h1
 
-/-- **An aligned length is below the height.** A head return up to `N ≥ 11` at `τ ≥ 1` has `N < τ + 1`: the integers `⌈τ⌉` and `⌈τ⌉ + 1` have phases apart by an amount in `[1/3, 1]`. -/
+/-- **An aligned length is below the height.** A head return up to `N ≥ 11` at `τ ≥ 1` has `N < τ + 1`: the integers `⌈τ⌉` and `⌈τ⌉ + 1` have
+phases apart by an angle in `[1/3, 1]`. -/
 theorem lt_add_one_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 11 ≤ N) (hτ : 1 ≤ τ) (h : IsHeadReturn N τ) :
     (N : ℝ) < τ + 1 := by
   by_contra hcon
@@ -215,7 +645,7 @@ theorem lt_add_one_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 11 ≤ N) (hτ : 1
   obtain ⟨θ, hθ⟩ : ∃ θ : ℝ, θ = τ * Real.log ((a + 1) / a) := ⟨_, rfl⟩
   have hlogdiff : Real.log ((a + 1) / a) = Real.log (a + 1) - Real.log a :=
     Real.log_div (by linarith) hapos.ne'
-  -- Size of the step.
+  -- The size of the step.
   have hxpos : 0 < (a + 1) / a := by positivity
   have hup : Real.log ((a + 1) / a) ≤ 1 / a := by
     have h3 := Real.log_le_sub_one_of_pos hxpos
@@ -273,7 +703,7 @@ theorem lt_add_one_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 11 ≤ N) (hτ : 1
   rw [hnorm] at hdiff
   have hlow : 2 * (1 / 3 / Real.pi) ≤ 2 / (N : ℝ) := by
     refine le_trans ?_ hdiff
-    have h3 : 1 / 3 / Real.pi ≤ θ / Real.pi := div_le_div_of_nonneg_right hθ3 hpi3.le.trans' (by norm_num) |>.trans le_rfl
+    have h3 : 1 / 3 / Real.pi ≤ θ / Real.pi := div_le_div_of_nonneg_right hθ3 Real.pi_pos.le
     linarith
   have hNpos : (0 : ℝ) < N := by linarith
   rw [le_div_iff₀ hNpos] at hlow
@@ -282,12 +712,12 @@ theorem lt_add_one_of_isHeadReturn {N : ℕ} {τ : ℝ} (hN : 11 ≤ N) (hτ : 1
   rw [h7, div_le_iff₀ (by positivity)] at hlow
   nlinarith
 
-/-- **An aligned length is polylogarithmic in the height.** At large `τ`, a head return up to `N` has `N < 1024 (log τ)⁴ (log log τ)²`. -/
+/-- **An aligned length is polylogarithmic in the height.** At large `τ`, a head return up to `N` has `N < 1024 (log τ)⁴ (log log τ)²`:
+some `n ≤ 50 (log τ)² log log τ` has its phase at least `1/(4096 (log τ)⁴ (log log τ)²)` away from `1`. -/
 theorem length_lt_of_isHeadReturn :
     ∃ T₀ : ℝ, 0 < T₀ ∧ ∀ τ : ℝ, T₀ ≤ τ → ∀ N : ℕ, IsHeadReturn N τ →
       (N : ℝ) < 1024 * Real.log τ ^ 4 * Real.log (Real.log τ) ^ 2 := by
   obtain ⟨T₁, hT₁, hna⟩ := PrimeTorusTheory.exists_not_aligned_of_large_of_word
-  have hee : (1 : ℝ) < Real.exp (Real.exp 1) := Real.one_lt_exp_iff.mpr (Real.exp_pos 1)
   refine ⟨max T₁ (Real.exp (Real.exp 1)), lt_max_of_lt_left hT₁, fun τ hτ N h => ?_⟩
   have hτ1 : T₁ ≤ τ := (le_max_left _ _).trans hτ
   have hτ2 : Real.exp (Real.exp 1) ≤ τ := (le_max_right _ _).trans hτ
@@ -375,50 +805,63 @@ theorem length_lt_of_isHeadReturn :
     ring
   linarith
 
-/-- The aligned length, read at a real exponent, is small against any power of the height. -/
-private theorem eventually_length_rpow_lt {A c : ℝ} (hA : 0 < A) (hc : 0 < c) :
-    ∃ H : ℝ, 1 ≤ H ∧ ∀ τ : ℝ, H ≤ τ → ∀ N : ℕ, IsHeadReturn N τ → (N : ℝ) ^ A < c * τ ^ (1 / 2 : ℝ) := by
-  obtain ⟨T₀, hT₀, hlen⟩ := length_lt_of_isHeadReturn
-  have hK : 0 < c / (2 * (1024 : ℝ) ^ A) := by positivity
-  have hlo := (isLittleO_log_rpow_rpow_atTop (6 * A) (by norm_num : (0 : ℝ) < 1 / 2)).bound hK
-  obtain ⟨H₀, hH₀⟩ := eventually_atTop.mp
-    (hlo.and ((eventually_ge_atTop T₀).and (eventually_ge_atTop (Real.exp (Real.exp 1)))))
-  have hee : 1 ≤ Real.exp (Real.exp 1) := Real.one_le_exp (Real.exp_pos 1).le
-  refine ⟨max 1 H₀, le_max_left _ _, fun τ hτ N h => ?_⟩
-  obtain ⟨hbd, hτT, hτe⟩ := hH₀ τ ((le_max_right _ _).trans hτ)
-  have hτpos : 0 < τ := lt_of_lt_of_le (by norm_num) ((le_max_left _ _).trans hτ)
+/-- The aligned length at large height is at most `1024 (log τ)⁶`. -/
+theorem length_le_pow_log_of_isHeadReturn :
+    ∃ T₀ : ℝ, 1 ≤ T₀ ∧ ∀ τ : ℝ, T₀ ≤ τ → ∀ N : ℕ, IsHeadReturn N τ →
+      1 ≤ Real.log τ ∧ (N : ℝ) ≤ 1024 * Real.log τ ^ 6 := by
+  obtain ⟨T₁, _, hlen⟩ := length_lt_of_isHeadReturn
+  have hee : (1 : ℝ) ≤ Real.exp (Real.exp 1) := Real.one_le_exp (Real.exp_pos 1).le
+  refine ⟨max T₁ (Real.exp (Real.exp 1)), hee.trans (le_max_right _ _), fun τ hτ N h => ?_⟩
+  have hτe : Real.exp (Real.exp 1) ≤ τ := (le_max_right _ _).trans hτ
+  have hτpos : 0 < τ := lt_of_lt_of_le (Real.exp_pos _) hτe
+  have hlenN := hlen τ ((le_max_left _ _).trans hτ) N h
   obtain ⟨L, hL⟩ : ∃ L : ℝ, L = Real.log τ := ⟨_, rfl⟩
   have hLe : Real.exp 1 ≤ L := by
     rw [hL]
     exact (Real.le_log_iff_exp_le hτpos).mpr hτe
   have hL1 : 1 ≤ L := le_trans (by linarith [Real.add_one_le_exp (1 : ℝ)]) hLe
   have hLpos : 0 < L := by linarith
-  have hℓ1 : 1 ≤ Real.log L := (Real.le_log_iff_exp_le hLpos).mpr hLe
+  have hℓ1 : 0 ≤ Real.log L := Real.log_nonneg hL1
   have hℓL : Real.log L ≤ L := (Real.log_le_sub_one_of_pos hLpos).trans (by linarith)
-  have hlenN := hlen τ hτT N h
-  rw [← hL] at hlenN hbd
-  have hN6 : (N : ℝ) ≤ 1024 * L ^ 6 := by
-    refine hlenN.le.trans ?_
-    have h3 : Real.log L ^ 2 ≤ L ^ 2 := pow_le_pow_left₀ (by linarith) hℓL 2
-    calc 1024 * L ^ 4 * Real.log L ^ 2 ≤ 1024 * L ^ 4 * L ^ 2 :=
-          mul_le_mul_of_nonneg_left h3 (by positivity)
-      _ = _ := by ring
+  rw [← hL] at hlenN ⊢
+  refine ⟨hL1, hlenN.le.trans ?_⟩
+  have h3 : Real.log L ^ 2 ≤ L ^ 2 := pow_le_pow_left₀ hℓ1 hℓL 2
+  calc 1024 * L ^ 4 * Real.log L ^ 2 ≤ 1024 * L ^ 4 * L ^ 2 := mul_le_mul_of_nonneg_left h3 (by positivity)
+    _ = _ := by ring
+
+/-- **`N^A` is below every power of the height** at an aligned return up to `N`, once the height is large. -/
+theorem eventually_length_rpow_lt {A c b : ℝ} (hA : 0 < A) (hc : 0 < c) (hb : 0 < b) :
+    ∃ H : ℝ, 1 ≤ H ∧ ∀ τ : ℝ, H ≤ τ → ∀ N : ℕ, IsHeadReturn N τ → (N : ℝ) ^ A < c * τ ^ b := by
+  obtain ⟨T₀, hT₀, hlen⟩ := length_le_pow_log_of_isHeadReturn
+  have hK : 0 < c / (2 * (1024 : ℝ) ^ A) := by positivity
+  have hlo := (isLittleO_log_rpow_rpow_atTop (6 * A) hb).bound hK
+  obtain ⟨H₀, hH₀⟩ := eventually_atTop.mp hlo
+  refine ⟨max T₀ H₀, hT₀.trans (le_max_left _ _), fun τ hτ N h => ?_⟩
+  have hbd := hH₀ τ ((le_max_right _ _).trans hτ)
+  have hτ1 : 1 ≤ τ := hT₀.trans ((le_max_left _ _).trans hτ)
+  have hτpos : 0 < τ := by linarith
+  obtain ⟨hL1, hN6⟩ := hlen τ ((le_max_left _ _).trans hτ) N h
+  obtain ⟨L, hL⟩ : ∃ L : ℝ, L = Real.log τ := ⟨_, rfl⟩
+  rw [← hL] at hL1 hN6 hbd
+  have hLpos : 0 < L := by linarith
   have hpow : (N : ℝ) ^ A ≤ (1024 : ℝ) ^ A * L ^ (6 * A) := by
     calc (N : ℝ) ^ A ≤ (1024 * L ^ 6) ^ A := Real.rpow_le_rpow (Nat.cast_nonneg N) hN6 hA.le
       _ = _ := by
         rw [Real.mul_rpow (by norm_num) (by positivity), Real.rpow_mul hLpos.le]
         norm_cast
-  have hτp : 0 < τ ^ (1 / 2 : ℝ) := Real.rpow_pos_of_pos hτpos _
+  have hτp : 0 < τ ^ b := Real.rpow_pos_of_pos hτpos _
   rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_of_pos (Real.rpow_pos_of_pos hLpos _), abs_of_pos hτp] at hbd
   have h1024 : 0 < (1024 : ℝ) ^ A := by positivity
   calc (N : ℝ) ^ A ≤ (1024 : ℝ) ^ A * L ^ (6 * A) := hpow
-    _ ≤ (1024 : ℝ) ^ A * (c / (2 * (1024 : ℝ) ^ A) * τ ^ (1 / 2 : ℝ)) :=
+    _ ≤ (1024 : ℝ) ^ A * (c / (2 * (1024 : ℝ) ^ A) * τ ^ b) :=
         mul_le_mul_of_nonneg_left hbd h1024.le
-    _ = c / 2 * τ ^ (1 / 2 : ℝ) := by field_simp
-    _ < c * τ ^ (1 / 2 : ℝ) := by nlinarith [mul_pos hc hτp]
+    _ = c / 2 * τ ^ b := by field_simp
+    _ < c * τ ^ b := by nlinarith [mul_pos hc hτp]
 
-/-- **On a disc crossing `Re s = 0` the bound fails for every exponent.** For `R > 3`, `γ ≥ 0` and `A > 0`, every head return of length past some `N₀`, at any `τ ≥ 1`,
-has `|ζ(s + iτ)| > N^A` somewhere on the disc of radius `R` about `3 + iγ`. No hypothesis on the zeros enters. -/
+/-! ### The bound fails on discs crossing the line -/
+
+/-- **On a disc crossing `Re s = 0` the left edge exceeds `N^A`.** For `R > 3`, `γ ≥ 0` and `A > 0`, at every head return of length past some
+`N₀`, at any `τ ≥ 1`, the point `−η + iγ`, `η = min(R − 3, 1)`, of the disc of radius `R` about `3 + iγ` has `|ζ(s + iτ)| > N^A`. -/
 theorem exists_large_value_left {R : ℝ} (hR : 3 < R) {γ A : ℝ} (hγ : 0 ≤ γ) (hA : 0 < A) :
     ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ τ : ℝ, 1 ≤ τ → IsHeadReturn N τ →
       ∃ s ∈ closedBall ((3 : ℂ) + (γ : ℂ) * I) R, (N : ℝ) ^ A < ‖riemannZeta (s + (τ : ℂ) * I)‖ := by
@@ -429,7 +872,7 @@ theorem exists_large_value_left {R : ℝ} (hR : 3 < R) {γ A : ℝ} (hγ : 0 ≤
   have hη1 : η ≤ 1 := hηdef ▸ min_le_right _ _
   have hηR : η ≤ R - 3 := hηdef ▸ min_le_left _ _
   obtain ⟨c, hc, hlow⟩ := exists_mul_rpow_le_norm_zeta_left hη0 hη1
-  obtain ⟨H, hH1, hH⟩ := eventually_length_rpow_lt hA hc
+  obtain ⟨H, hH1, hH⟩ := eventually_length_rpow_lt hA hc (by norm_num : (0 : ℝ) < 1 / 2)
   obtain ⟨N₁, hN₁⟩ := exists_nat_ge (H + 1)
   refine ⟨max 11 N₁, fun N hN τ hτ h => ?_⟩
   have hN11 : 11 ≤ N := (le_max_left _ _).trans hN
@@ -457,54 +900,186 @@ theorem exists_large_value_left {R : ℝ} (hR : 3 < R) {γ A : ℝ} (hγ : 0 ≤
       _ ≤ c * (γ + τ) ^ (1 / 2 + η) := mul_le_mul_of_nonneg_left hpow hc.le
       _ ≤ _ := hstep
 
-/-- **No slow returns on a disc crossing `Re s = 0`.** -/
-theorem not_slowReturns_left {R : ℝ} (hR : 3 < R) {γ A : ℝ} (hγ : 0 ≤ γ) (hA : 0 < A) :
+/-- **On a disc crossing the critical line the bound fails for every exponent.** For `R > 5/2`, `γ ≥ 0` and `A > 0`, every head return of
+length past some `N₀`, at any `τ ≥ 1`, has `|ζ(s + iτ)| > N^A` somewhere on the disc of radius `R` about `3 + iγ`. No hypothesis on the zeros
+enters. -/
+theorem exists_large_value_of_left_edge_lt_half {R : ℝ} (hR : 5 / 2 < R) {γ A : ℝ} (hγ : 0 ≤ γ) (hA : 0 < A) :
+    ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ τ : ℝ, 1 ≤ τ → IsHeadReturn N τ →
+      ∃ s ∈ closedBall ((3 : ℂ) + (γ : ℂ) * I) R, (N : ℝ) ^ A < ‖riemannZeta (s + (τ : ℂ) * I)‖ := by
+  obtain ⟨c, b, H₁, hc, hb, hcore⟩ := exists_rpow_le_of_norm_le_on_disc hR hγ
+  obtain ⟨H₂, _, hH₂⟩ := eventually_length_rpow_lt hA hc hb
+  obtain ⟨N₁, hN₁⟩ := exists_nat_ge (max H₁ H₂ + 1)
+  refine ⟨max 11 N₁, fun N hN τ hτ h => ?_⟩
+  have hN11 : 11 ≤ N := (le_max_left _ _).trans hN
+  have hNH : max H₁ H₂ + 1 ≤ (N : ℝ) := hN₁.trans (by exact_mod_cast (le_max_right _ _).trans hN)
+  have hτN := lt_add_one_of_isHeadReturn hN11 hτ h
+  have hτH : max H₁ H₂ ≤ τ := by linarith
+  by_contra hcon
+  push Not at hcon
+  have h1 := hcore τ ((le_max_left _ _).trans hτH) _ hcon
+  have h2 := hH₂ τ ((le_max_right _ _).trans hτH) N h
+  linarith
+
+/-- **No slow returns on a disc crossing the critical line.** -/
+theorem not_slowReturns_of_left_edge_lt_half {R : ℝ} (hR : 5 / 2 < R) {γ A : ℝ} (hγ : 0 ≤ γ) (hA : 0 < A) :
     ¬ ∀ (N₀ : ℕ) (H : ℝ), ∃ N, N₀ ≤ N ∧ ∃ τ : ℝ, H ≤ τ ∧ IsHeadReturn N τ ∧
       ∀ s ∈ closedBall ((3 : ℂ) + (γ : ℂ) * I) R, ‖riemannZeta (s + (τ : ℂ) * I)‖ ≤ (N : ℝ) ^ A := by
   intro hslow
-  obtain ⟨N₀, hN₀⟩ := exists_large_value_left hR hγ hA
+  obtain ⟨N₀, hN₀⟩ := exists_large_value_of_left_edge_lt_half hR hγ hA
   obtain ⟨N, hN, τ, hτ, hhead, hbd⟩ := hslow N₀ 1
   obtain ⟨s, hs, hlt⟩ := hN₀ N hN τ hτ hhead
   exact absurd (hbd s hs) (not_le.mpr hlt)
 
-/-- **The hypothesis of `asymptoticAbscissaLaw_of_slowReturns` is the Riemann hypothesis.** On the disc of radius `31/10` the bound is false at every right zero, so the hypothesis holds
-exactly when no right zero exists, and the receiver reads `RH ⇒ AAL`. -/
+/-- A zero right of `½` has a reflection with the same real part in the upper half-plane. -/
+private theorem exists_upper_zero {s : ℂ} (hs : 1 / 2 < s.re) (hζ : riemannZeta s = 0) :
+    ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ ρ.re = s.re ∧ s.re < 1 ∧ 0 < ρ.im := by
+  have hs1 : s.re < 1 := by
+    by_contra hge
+    exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp hge) hζ
+  have hne1 : s ≠ 1 := fun h => by
+    rw [h, one_re] at hs1
+    exact lt_irrefl 1 hs1
+  rcases lt_trichotomy s.im 0 with him | him | him
+  · refine ⟨(starRingEnd ℂ) s, ?_, by simp, hs1, by simpa using him⟩
+    exact (RHTower.riemannZeta_conj_eq_zero_iff_of_re_pos (by linarith) hne1).mpr hζ
+  · exfalso
+    have hreal : s = ((s.re : ℝ) : ℂ) := by
+      apply Complex.ext <;> simp [him]
+    rw [hreal] at hζ
+    exact RHTower.riemannZeta_real_strip_ne_zero (by linarith) hs1 hζ
+  · exact ⟨_, hζ, rfl, hs1, him⟩
+
+/-- **Slow returns on a disc crossing the line are the Riemann hypothesis.** For `R > 5/2`, asking every zero right of `½` in the upper
+half-plane for slow aligned returns, at some exponent, on the disc of radius `R` about `3 + iγ` holds exactly when there is no such zero. -/
+theorem slowReturns_on_disc_iff_riemannHypothesis {R : ℝ} (hR : 5 / 2 < R) :
+    (∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im → ∃ A : ℝ, 0 < A ∧
+      ∀ (N₀ : ℕ) (H : ℝ), ∃ N, N₀ ≤ N ∧ ∃ τ : ℝ, H ≤ τ ∧ IsHeadReturn N τ ∧
+        ∀ s ∈ closedBall ((3 : ℂ) + (ρ.im : ℂ) * I) R,
+          ‖riemannZeta (s + (τ : ℂ) * I)‖ ≤ (N : ℝ) ^ A) ↔ RiemannHypothesis := by
+  rw [RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  constructor
+  · intro hslow s hs hζ
+    obtain ⟨ρ, hρ, hρre, hs1, hρim⟩ := exists_upper_zero hs hζ
+    obtain ⟨A, hA, hbd⟩ := hslow ρ hρ (by rw [hρre]; exact hs) (by rw [hρre]; exact hs1) hρim
+    exact not_slowReturns_of_left_edge_lt_half hR hρim.le hA hbd
+  · intro hRH ρ hρ h12 _ _
+    exact absurd hρ (hRH ρ h12)
+
+/-- **The hypothesis of `asymptoticAbscissaLaw_of_slowReturns` is the Riemann hypothesis.** On the disc of radius `31/10` the bound fails at
+every right zero, so the hypothesis holds exactly when no right zero exists, and the receiver reads `RH ⇒ AAL`. -/
 theorem slowReturnHypothesis_iff_riemannHypothesis :
     (∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im → ∀ A : ℝ, 0 < A →
       ∀ (N₀ : ℕ) (H : ℝ), ∃ N, N₀ ≤ N ∧ ∃ τ : ℝ, H ≤ τ ∧ IsHeadReturn N τ ∧
         ∀ s ∈ closedBall ((3 : ℂ) + (ρ.im : ℂ) * I) (31 / 10),
           ‖riemannZeta (s + (τ : ℂ) * I)‖ ≤ (N : ℝ) ^ A) ↔ RiemannHypothesis := by
-  rw [RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
+  rw [← slowReturns_on_disc_iff_riemannHypothesis (by norm_num : (5 / 2 : ℝ) < 31 / 10)]
   constructor
-  · intro hslow s hs hζ
-    have hs1 : s.re < 1 := by
-      by_contra hge
-      exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp hge) hζ
-    have hne1 : s ≠ 1 := fun h => by
-      rw [h, one_re] at hs1
-      exact lt_irrefl 1 hs1
-    obtain ⟨ρ, hρ, hρre, hρim⟩ : ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ ρ.re = s.re ∧ 0 < ρ.im := by
-      rcases lt_trichotomy s.im 0 with him | him | him
-      · refine ⟨(starRingEnd ℂ) s, ?_, by simp, by simpa using him⟩
-        exact (RHTower.riemannZeta_conj_eq_zero_iff_of_re_pos (by linarith) hne1).mpr hζ
-      · exfalso
-        have hreal : s = ((s.re : ℝ) : ℂ) := by
-          apply Complex.ext <;> simp [him]
-        rw [hreal] at hζ
-        exact RHTower.riemannZeta_real_strip_ne_zero (by linarith) hs1 hζ
-      · exact ⟨_, hζ, rfl, him⟩
-    exact not_slowReturns_left (by norm_num : (3 : ℝ) < 31 / 10) hρim.le one_pos
-      (hslow ρ hρ (by rw [hρre]; exact hs) (by rw [hρre]; exact hs1) hρim 1 one_pos)
-  · intro hRH ρ hρ h12 _ _
-    exact absurd hρ (hRH ρ h12)
+  · intro hslow ρ hρ h12 h1 him
+    exact ⟨1, one_pos, hslow ρ hρ h12 h1 him 1 one_pos⟩
+  · intro hslow ρ hρ h12 h1 him A hA
+    obtain ⟨A', hA', hbd⟩ := hslow ρ hρ h12 h1 him
+    exact absurd hbd (not_slowReturns_of_left_edge_lt_half (by norm_num) him.le hA')
 
-/-- The exponent of the transport theorem for a zero of real part `β` on a disc of radius `R` about `3 + iγ`. The zero sits at distance `3 − β`, and the
-circle halfway to the boundary has logarithmic position `t = log((R + 3 − β)/2)/log R`; the exponent is `(1 − t)/(2t)`. -/
+/-- **A domain of bounded translates lies right of the line.** Along a phase return, every connected open domain in the upper half-plane that
+meets `Re s > 1` and carries bounded translates lies in `Re s > ½`. Otherwise it contains a disc about a point of the line; at a pair
+`1 − u + iy`, `u + iy` of that disc with `u > ½`, the translates converge to `ζ` and the reflection makes them tend to `0` at `u + iy`, so `ζ`
+vanishes on an open set. -/
+theorem IsPhaseReturn.re_gt_half_of_translatesBoundedOn {τ : ℕ → ℝ} (h : IsPhaseReturn τ) {U : Set ℂ} (hUo : IsOpen U)
+    (hUc : IsPreconnected U) (hUim : ∀ z ∈ U, 0 < z.im) {s₀ : ℂ} (hs₀ : s₀ ∈ U) (hs₀1 : 1 < s₀.re)
+    (hbd : TranslatesBoundedOn τ U) {z : ℂ} (hz : z ∈ U) : 1 / 2 < z.re := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨w, hwU, hwre⟩ := hUc.intermediate_value hz hs₀ Complex.continuous_re.continuousOn
+    (⟨hcon, by linarith⟩ : (1 / 2 : ℝ) ∈ Icc z.re s₀.re)
+  obtain ⟨ε₀, hε₀, hball⟩ := Metric.isOpen_iff.mp hUo w hwU
+  obtain ⟨ε, hε⟩ : ∃ ε, ε = min ε₀ (1 / 2) := ⟨_, rfl⟩
+  have hε0 : 0 < ε := by rw [hε]; exact lt_min hε₀ (by norm_num)
+  have hεU : ball w ε ⊆ U := (ball_subset_ball (hε ▸ min_le_left _ _)).trans hball
+  have hε12 : ε ≤ 1 / 2 := hε ▸ min_le_right _ _
+  have hlu := h.tendstoLocallyUniformlyOn hUo hUc hUim hs₀ hs₀1 hbd
+  obtain ⟨C, _, hrefl⟩ := exists_norm_zeta_le_reflect
+  -- `ζ` vanishes right of the line in the disc about `w`.
+  have hzero : ∀ x ∈ ball w ε, 1 / 2 < x.re → riemannZeta x = 0 := by
+    intro x hx hx12
+    have hxn : ‖x - w‖ < ε := by rwa [mem_ball, dist_eq_norm] at hx
+    obtain ⟨y, hy⟩ : ∃ y : ℂ, y = ((1 - x.re : ℝ) : ℂ) + (x.im : ℂ) * I := ⟨_, rfl⟩
+    have hyball : y ∈ ball w ε := by
+      rw [mem_ball, dist_eq_norm]
+      have h2 : y - w = -((starRingEnd ℂ) (x - w)) := by
+        apply Complex.ext
+        · have h3 : y.re = 1 - x.re := by rw [hy]; simp
+          rw [Complex.sub_re, h3, Complex.neg_re, Complex.conj_re, Complex.sub_re, hwre]
+          ring
+        · have h3 : y.im = x.im := by rw [hy]; simp
+          rw [Complex.sub_im, h3, Complex.neg_im, Complex.conj_im, Complex.sub_im]
+          ring
+      rw [h2, norm_neg, Complex.norm_conj]
+      exact hxn
+    have hx1 : x.re < 1 := by
+      have h2 := (abs_lt.mp ((Complex.abs_re_le_norm (x - w)).trans_lt hxn)).2
+      rw [Complex.sub_re, hwre] at h2
+      linarith
+    have hxlim : Tendsto (fun j => riemannZeta (x + (τ j : ℂ) * I)) atTop (𝓝 (riemannZeta x)) :=
+      hlu.tendsto_at (hεU hx)
+    have hylim : Tendsto (fun j => riemannZeta (y + (τ j : ℂ) * I)) atTop (𝓝 (riemannZeta y)) :=
+      hlu.tendsto_at (hεU hyball)
+    have htj : Tendsto (fun j => x.im + τ j) atTop atTop := tendsto_atTop_add_const_left _ _ h.tendsto
+    have hpow : Tendsto (fun j => (x.im + τ j) ^ (-(x.re - 1 / 2))) atTop (𝓝 0) :=
+      (tendsto_rpow_neg_atTop (by linarith)).comp htj
+    have hright : Tendsto (fun j => C * (x.im + τ j) ^ (-(x.re - 1 / 2)) * ‖riemannZeta (y + (τ j : ℂ) * I)‖)
+        atTop (𝓝 (C * 0 * ‖riemannZeta y‖)) :=
+      (hpow.const_mul C).mul hylim.norm
+    rw [mul_zero, zero_mul] at hright
+    have hlim0 : Tendsto (fun j => ‖riemannZeta (x + (τ j : ℂ) * I)‖) atTop (𝓝 0) := by
+      refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ hright
+      filter_upwards [htj.eventually_ge_atTop 1] with j hj
+      have hxj : x + (τ j : ℂ) * I = (x.re : ℂ) + ((x.im + τ j : ℝ) : ℂ) * I := by
+        apply Complex.ext <;> simp
+      have hyj : y + (τ j : ℂ) * I = ((1 - x.re : ℝ) : ℂ) + ((x.im + τ j : ℝ) : ℂ) * I := by
+        rw [hy]
+        push_cast
+        ring
+      rw [hxj, hyj]
+      have h5 := hrefl x.re (x.im + τ j) hx12.le hx1 hj
+      have h6 : (1 / 2 : ℝ) - x.re = -(x.re - 1 / 2) := by ring
+      rwa [h6] at h5
+    exact norm_eq_zero.mp (tendsto_nhds_unique hxlim.norm hlim0)
+  -- A point right of the line in that disc, where the zeros of `ζ` are isolated.
+  obtain ⟨x₀, hx₀⟩ : ∃ x₀ : ℂ, x₀ = w + ((ε / 2 : ℝ) : ℂ) := ⟨_, rfl⟩
+  have hx₀re : x₀.re = 1 / 2 + ε / 2 := by rw [hx₀, Complex.add_re, Complex.ofReal_re, hwre]
+  have hx₀ball : x₀ ∈ ball w ε := by
+    rw [mem_ball, dist_eq_norm, hx₀, add_sub_cancel_left, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (by positivity)]
+    linarith
+  have h1 : ∀ᶠ x in 𝓝 x₀, x ∈ ball w ε := isOpen_ball.mem_nhds hx₀ball
+  have h2 : ∀ᶠ x in 𝓝 x₀, 1 / 2 < x.re :=
+    (Complex.continuous_re.tendsto x₀).eventually (lt_mem_nhds (by rw [hx₀re]; linarith))
+  have hiso := RHTower.eventually_riemannZeta_ne_zero_nhdsNE (w := x₀) (by rw [hx₀re]; linarith)
+    (by rw [hx₀re]; linarith)
+  obtain ⟨x, hne, hx⟩ := (hiso.and ((h1.and h2).filter_mono nhdsWithin_le_nhds)).exists
+  exact hne (hzero x hx.1 hx.2)
+
+/-! ### Transport on a disc short of the line -/
+
+/-- The exponent of the transport theorem for a zero of real part `β` on a disc of radius `R` about `3 + iγ`. The zero sits at distance
+`3 − β`; the circle halfway to the boundary has logarithmic position `t = log((R + 3 − β)/2)/log R`, and the exponent is `(1 − t)/(2t)`. -/
 def transportExponent (β R : ℝ) : ℝ :=
   (1 - Real.log ((R + 3 - β) / 2) / Real.log R) / (2 * (Real.log ((R + 3 - β) / 2) / Real.log R))
 
-/-- **Transport on a disc that stops short of the line.** Let `ρ = β + iγ` be a zero, `0 < β < 1`, `γ ≥ 3`, and `3 − β < R ≤ 31/10`. For every `r > 0`, at every shift aligned up to a large `N`, the bound
-`|ζ(s + iτ)| ≤ N^{transportExponent β R}` on the disc of radius `R` about `3 + iγ` puts a zero within `r` of `ρ + iτ`. -/
+/-- The transport exponent is positive when the disc reaches the zero. -/
+theorem transportExponent_pos {β R : ℝ} (h1 : β < 1) (hR : 3 - β < R) : 0 < transportExponent β R := by
+  have hD1 : 1 < (R + 3 - β) / 2 := by linarith
+  have hDR : (R + 3 - β) / 2 < R := by linarith
+  have hlogR : 0 < Real.log R := Real.log_pos (by linarith)
+  have hlogD : 0 < Real.log ((R + 3 - β) / 2) := Real.log_pos hD1
+  have hlt : Real.log ((R + 3 - β) / 2) < Real.log R := Real.log_lt_log (by linarith) hDR
+  have ht0 : 0 < Real.log ((R + 3 - β) / 2) / Real.log R := div_pos hlogD hlogR
+  have ht1 : Real.log ((R + 3 - β) / 2) / Real.log R < 1 := (div_lt_one hlogR).mpr hlt
+  exact div_pos (by linarith) (by positivity)
+
+/-- **Transport on a disc that stops short of the line.** Let `ρ = β + iγ` be a zero, `0 < β < 1`, `γ ≥ 3`, and `3 − β < R ≤ 31/10`. For every
+`r > 0`, at every shift aligned up to a large `N`, the bound `|ζ(s + iτ)| ≤ N^{transportExponent β R}` on the disc of radius `R` about `3 + iγ`
+puts a zero within `r` of `ρ + iτ`. -/
 theorem transport_of_isHeadReturn_on_disc {ρ : ℂ} (hρ : riemannZeta ρ = 0) (h0 : 0 < ρ.re) (h1 : ρ.re < 1)
     (hγ : 3 ≤ ρ.im) {R : ℝ} (hR : 3 - ρ.re < R) (hR' : R ≤ 31 / 10) {r : ℝ} (hr : 0 < r) :
     ∃ N₀ : ℕ, ∀ N, N₀ ≤ N → ∀ τ : ℝ, 1 ≤ τ → IsHeadReturn N τ →
@@ -547,9 +1122,7 @@ theorem transport_of_isHeadReturn_on_disc {ρ : ℂ} (hρ : riemannZeta ρ = 0) 
   obtain ⟨A, hA⟩ : ∃ A, A = transportExponent ρ.re R := ⟨_, rfl⟩
   have hAval : A = (1 - t) / (2 * t) := by
     rw [hA, transportExponent, ht, hD]
-  have hA0 : 0 < A := by
-    rw [hAval]
-    exact div_pos (by linarith) (by positivity)
+  have hA0 : 0 < A := hA ▸ transportExponent_pos h1 hR
   have hAt : A * t = (1 - t) / 2 := by
     rw [hAval]
     field_simp
@@ -654,8 +1227,8 @@ theorem transport_of_isHeadReturn_on_disc {ρ : ℂ} (hρ : riemannZeta ρ = 0) 
   obtain ⟨z, hz, hzero⟩ := RHTower.exists_zero_of_mem_zetaReturnSet hr'0 hre hρ hmS hbound
   exact ⟨z, ball_subset_ball hr'r.le hz, hzero⟩
 
-/-- **The lower bound behind a finite top layer, on a disc short of the line.** If finitely many zeros lie right of `σ`, then for a zero `ρ` right of `σ`, at every aligned shift past a height,
-`ζ` exceeds `N^{transportExponent β R}` somewhere on the disc of radius `R`. -/
+/-- **The lower bound behind a finite top layer, on a disc short of the line.** If finitely many zeros lie right of `σ`, then for a zero `ρ`
+right of `σ`, at every aligned shift past a height, `ζ` exceeds `N^{transportExponent β R}` somewhere on the disc of radius `R`. -/
 theorem exists_large_value_of_finite_on_disc {σ : ℝ} (hfin : {w : ℂ | riemannZeta w = 0 ∧ σ < w.re}.Finite) {ρ : ℂ}
     (hρ : riemannZeta ρ = 0) (hσ : σ < ρ.re) (h0 : 0 < ρ.re) (h1 : ρ.re < 1) (hγ : 3 ≤ ρ.im) {R : ℝ}
     (hR : 3 - ρ.re < R) (hR' : R ≤ 31 / 10) :
@@ -699,8 +1272,9 @@ theorem infinite_zeros_of_slow_returns_on_disc {ρ : ℂ} (hρ : riemannZeta ρ 
   obtain ⟨s, hs, hlt⟩ := hall N hN τ hτ hhead
   exact absurd (hbd s hs) (not_le.mpr hlt)
 
-/-- **Slow aligned returns right of the line give the asymptotic abscissa law.** It is enough that each zero `ρ = β + iγ` right of `½` in the upper half-plane has some `½ ≤ σ₀ < β` such that aligned
-shifts of arbitrarily large length and height keep `ζ` below `N^{transportExponent β (3 − σ₀)}` on the disc about `3 + iγ` with left edge `σ₀`. -/
+/-- **Slow aligned returns right of the line give the asymptotic abscissa law.** It is enough that each zero `ρ = β + iγ` right of `½` in the
+upper half-plane has some `½ ≤ σ₀ < β` such that aligned shifts of arbitrarily large length and height keep `ζ` below
+`N^{transportExponent β (3 − σ₀)}` on the disc about `3 + iγ` with left edge `σ₀`. -/
 theorem asymptoticAbscissaLaw_of_slowReturns_right
     (hslow : ∀ ρ : ℂ, riemannZeta ρ = 0 → 1 / 2 < ρ.re → ρ.re < 1 → 0 < ρ.im → ∃ σ₀ : ℝ, 1 / 2 ≤ σ₀ ∧ σ₀ < ρ.re ∧
       ∀ (N₀ : ℕ) (H : ℝ), ∃ N, N₀ ≤ N ∧ ∃ τ : ℝ, H ≤ τ ∧ IsHeadReturn N τ ∧

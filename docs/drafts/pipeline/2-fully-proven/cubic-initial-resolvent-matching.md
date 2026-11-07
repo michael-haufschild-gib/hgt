@@ -1,9 +1,9 @@
 # Initial matching with the cubic Eisenstein series
 
 - **ID:** cubic-initial-resolvent-matching
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
+- **Stage:** 2-fully-proven
+- **Type:** THEOREM (paper)
+- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** For `Re s>4`, `Im s>0`, and cutoff heights `1<a<b`, the actual quotient Eisenstein series minus its incoming seed equals `R(s(2−s))F(s)` in `L²`.
 
 Normalize each nonzero cusp row by its Euclidean norm. The normalized rows

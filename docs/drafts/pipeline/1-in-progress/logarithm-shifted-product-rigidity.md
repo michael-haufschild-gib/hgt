@@ -44,6 +44,29 @@ Let `S(a,b)=(ab,(a+1)(b+1))`.
 These are elementary reconstruction and packing results. They are not claimed
 as new sum-product estimates in the literature or as a saving past VK.
 
+## Proofs
+
+Subtracting the two product equalities gives equality of pair sums. Equal sum
+and product identify the two roots of the same quadratic, hence the unordered
+pair. A diagonal pair has one ordered representative; every other pair has
+two. Summing the fibre sizes gives `M+2(M²−M)=2M²−M`.
+
+Distinct positive integers at most `B` have logarithmic separation at least
+`1/B`. Two readings in a common radius-`ε` real cell differ by at most `2ε`.
+Apply this with `B=(N+1)²` to both products, then use pair reconstruction.
+For phase arcs, adding two remainders gives radius `2ε`; fixing both winding
+sums fixes both real cell centres. Counting fibres gives `M²≤2|W|`.
+
+The displayed neighbouring pairs have equal sums and product difference `2`
+after every common translation. For `x>0`,
+`0≤log(x+2)−log x≤2/x`, by `log(1+u)≤u`. Their smaller translated product
+is at least `(n+1)²`, proving the stated resolution bound.
+
+For tuples of cardinality `k`, the two product polynomials are monic of degree
+`k`. Their difference has degree below `k`; vanishing at `k` distinct parameters
+forces equality. Unique factorization of the monic linear factors recovers
+the multiset, including multiplicities.
+
 ## Lean evidence
 
 `ShiftedProductRigidity.lean` passes the direct Lean check. Its classification

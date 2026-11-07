@@ -47,6 +47,11 @@ to these modes.
 * Count-distance geometry above the Beurling isolation gap, keeping nonnegative
   generator multiplicities and finite exceptional zero support explicit.
 
+[Bounded-count rigidity](logarithm-bounded-count-rigidity.md) isolates a concrete
+next target on this last question: extend rational-prime rigidity from vanishing
+count error to bounded count error at slope one, using collision amplification
+in the free label monoid. Its Lean proof remains under development.
+
 Finite-field calibration must retain the precise split-hyperelliptic scope
 of existing Stepanov results. Any power-saving parity output must include
 its zero-free-strip consequence. None of these requirements is discharged

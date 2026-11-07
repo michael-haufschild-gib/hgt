@@ -266,6 +266,14 @@ incoming forcing. Its residue at `4/3` is `(17/6)MPM*F(4/3)`, lies in
 a finite-dimensional range, and satisfies the `8/9` eigenvalue equation.
 Nonvanishing is a separate arithmetic input.
 
+`LocalCubicCorrectedSeeds.lean` bounds every cusp height on compact quotient
+sets. The restricted incoming seed is an entire `L²` family; adding the
+resolvent correction gives a meromorphic family with the restricted residue.
+
+`Sobolev/CompactSmoothParameterSums.lean` bounds all spatial derivatives
+of jointly smooth families on compact parameter and support sets. Summable
+scalar weights give a smooth sum, with every derivative computed termwise.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

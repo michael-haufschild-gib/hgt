@@ -56,8 +56,14 @@ at `z=8/9` and after composition at `s=4/3`, with explicit finite-rank singular 
 The [smooth incoming forcing](../3-formalized/cubic-smooth-incoming-forcing.md)
 is compactly supported on the quotient and entire as an `L²` family.
 
-Open inputs: [source matching](cubic-initial-resolvent-matching.md), Fourier identification, and nonvanishing
-of `C∞`. None is supplied as an assumption in a local endpoint.
+The [incoming spectral residue](../3-formalized/cubic-incoming-spectral-residue.md)
+is constructed globally in `L²` and locally for the corrected incoming family.
+Its nonvanishing is not yet established.
+
+Open inputs: [source matching](../2-fully-proven/cubic-initial-resolvent-matching.md),
+[residue nonvanishing](cubic-constant-term-nonvanishing.md), Fourier
+identification, and nonvanishing of `C∞`. None is supplied as an assumption
+in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.
 
 Sources: external OpenAI `Eisenstein/FredholmAlternative.lean`,

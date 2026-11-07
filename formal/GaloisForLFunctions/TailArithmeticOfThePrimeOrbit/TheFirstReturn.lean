@@ -195,8 +195,8 @@ theorem IsReturn.nat_mul (ht : IsReturn s ℓ η t) (hη : 0 ≤ η) (n : ℕ) :
       have hs : √η ^ 2 = η := sq_sqrt hη
       push_cast
       nlinarith [hs]
-    rw [e, show ((n + 1 : ℕ) : ℝ) * t = n * t + t by push_cast; ring]
-    exact h
+    rw [e] at h
+    rwa [show ((n + 1 : ℕ) : ℝ) * t = n * t + t by push_cast; ring]
 
 /-! ## Corners -/
 

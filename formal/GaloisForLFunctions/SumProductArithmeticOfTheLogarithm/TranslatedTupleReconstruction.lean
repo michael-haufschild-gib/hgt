@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.SumProductArithmeticOfTheLogarithm
 open Finset Polynomial
 
 private theorem shiftPoly_eq_ofMultiset (l : Multiset ℕ) :
-    shiftPoly l = Polynomial.ofMultiset (l.map fun n => -(n : ℂ)) := by
+    shiftPoly l = Polynomial.ofMultiset (l.map fun n : ℕ => -(n : ℂ)) := by
   simp only [shiftPoly, Polynomial.ofMultiset_apply, Multiset.map_map,
     Function.comp_def, map_neg, sub_neg_eq_add]
 

@@ -1,363 +1,49 @@
-The integral of 
-∣
-𝐸
-′
-∣
-2
-∣E
-′
-∣
-2
- yields a key equation involving Bessel functions and the divisor function, 
-𝑑
-(
-𝑛
-)
-d(n). A complete computation of 
-𝑃
-1
-(
-𝑤
-,
-𝑠
-)
-P
-1
-	​
+## Critical-Strip Arithmetic Bernstein and Mollified Log-Dilation Bridges
 
-(w,s) spectral expansion is now needed to see how the Poincaré series connects to both Maass forms and Eisenstein series. The analysis must connect the divisor correlations and spectral decompositions of Estermann to the Rankin-Selberg identity. The key spectral integral to check is 
-⟨
-∣
-𝐸
-′
-(
-⋅
-,
-1
-/
-2
-)
-∣
-2
-,
-𝐸
-(
-⋅
-,
-1
-/
-2
-+
-𝑖
-𝑟
-)
-⟩
-⟨∣E
-′
-(⋅,1/2)∣
-2
-,E(⋅,1/2+ir)⟩.
+Both research directions are resolved and formalized unconditionally in Lean 4 inside `ArithmeticInnerFunctionTheory` (wired into [ArithmeticInnerFunctionTheory.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory.lean#L39-L40) and documented in [README.md](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md)), with promoted pipeline cards [critical-strip-arithmetic-bernstein.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/3-formalized/critical-strip-arithmetic-bernstein.md) and [mollified-log-dilation-bridge.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/3-formalized/mollified-log-dilation-bridge.md).
 
-Calculating the inner products using spectral theory requires carefully tracking normalization. Unfolding the Eisenstein series doesn't introduce a normalization factor, 
-1
-/
-𝜃
-(
-2
-𝜈
-)
-1/θ(2ν), and the gamma factors and zeta factors are essential to verify pole locations. The Fourier Expansion of the Eisenstein Series does introduce a 
-Γ
-(
-1
-/
-2
-−
-𝑖
-𝑟
-)
-𝜃
-(
-1
-−
-2
-𝑖
-𝑟
-)
-θ(1−2ir)
-Γ(1/2−ir)
-	​
+---
 
- to the integral, when 
-𝑢
-=
-1
-/
-2
-+
-𝑖
-𝑟
-u=1/2+ir.
+### 1. Two-Transition Architecture Across `κ ∈ [1/2, 1]`: [CriticalStripArithmeticBernstein.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean)
 
-The continuous spectrum integrand of the Estermann function's spectral decomposition, 
-𝐷
-(
-𝑠
-;
-1
-)
-D(s;1), now appears: 
-𝜁
-(
-1
-/
-2
-+
-𝑧
-)
-2
-𝜁
-(
-1
-/
-2
-−
-𝑧
-)
-2
-𝜁
-(
-1
-+
-2
-𝑧
-)
-𝜁
-(
-1
-−
-2
-𝑧
-)
-ζ(1+2z)ζ(1−2z)
-ζ(1/2+z)
-2
-ζ(1/2−z)
-2
-	​
+Testing [`torusPositive_iff_hankel_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheArithmeticBernsteinTheorem.lean#L465-L492) inside `[1/2, 1]` uncovers **two distinct phase transitions** rather than one:
 
- multiplied by a Gamma factor. This expression matches Motohashi's formula exactly. The inner products, when unfolded, precisely reconstruct the integrand: the inner product with the Eisenstein series derivative provides the numerator, while the Poincaré series' inner product gives the denominator, yielding this exact form.
+1. **First Transition at `κ = 1/2` (Level-1 Hecke Sufficiency Breaks)**
+   - [`heckePositive_iff_expConvex_of_lt_half`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L289-L330): For left-growth exponent `κ < 1/2`, [`IsAllBaseHeckePositive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L72-L76), [`IsAllBaseTorusPositive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L67-L70), and exponential convexity [`IsExpConvexFrom`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/TheInsertionConeOfExponentiallyConvexAmplitudes.lean#L48-L51) coincide.
+   - [`abs_tentBump_prime_double_sum_le`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L360-L516) & [`exists_heckePositive_not_torusPositive_ge_half`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L522-L688): Weighted Schur bounds with weights `p_i^{-1/2}` prove `|∑_{i,j} d_i d_j tentBump(x + log(p_i p_j))| ≤ 2√5 e^{-x/2} ∑_i d_i²` without logarithmic loss. Consequently, for every `κ ≥ 1/2` (including `κ = 1/2`), `e^{-κy} - ε · tentBump(y)` is all-base Level-1 Hecke positive yet not exponentially convex, while higher prime powers break `IsAllBaseTorusPositive` throughout `κ ∈ [1/2, 1]`.
 
-The Estermann function integral's poles require careful evaluation. The Gamma factors' analyticity, coupled with 
-𝜁
-(
-1
-±
-2
-𝑧
-)
-ζ(1±2z) vanishing to second order at z=0, ensures the contour's initial analyticity. The critical constraint on 
-𝑠
-s and 
-𝑧
-z arises from examining these locations where 
-𝜁
-(
-1
-±
-2
-𝑧
-)
-ζ(1±2z) is not holomorphic. Shifting the z-contour requires attention to the poles and zeros of 
-𝜁
-(
-𝑠
-)
-ζ(s).
+2. **`SU(2)` Poisson–Szegő Kernel and Complete-Monotonicity Module Law**
+   - [`su2PoissonKernel`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L693-L694), [`su2PoissonKernel_pos`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L708-L714), & [`hasSum_cosSum_mul_cosSum_geom`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L717-L866):
+     $$\sum_{k=0}^\infty r^k \operatorname{cosSum}(\theta, k)\,\operatorname{cosSum}(\varphi, k) = \frac{1 - r^2}{(1 - 2r\cos(\theta-\varphi) + r^2)(1 - 2r\cos(\theta+\varphi) + r^2)} > 0 \quad (|r| < 1).$$
+   - [`torusSum_mul_geom_eq_integral`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L909-L980), [`torusPositiveAt_mul_exp_neg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L984-L1013), & [`IsAllBaseTorusPositive.mul_exp_neg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L1015-L1020): Multiplying any fixed-base or all-base torus-positive amplitude by `e^{-βy}` (`β ≥ 0`) preserves torus positivity.
 
-The continuous spectrum integral, 
-𝐼
-cont
-(
-𝑠
-)
-I
-cont
-	​
+3. **Second Transition at `κ = 1` (Mellin–Kronecker Collapse and Sharp `α = 1` Boundary)**
+   - [`exists_primes_cos_le_neg_half_prod_lt`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L1141-L1334) & [`eq_zero_of_torusPositive_of_lt_min_one`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L1376-L1758): Any continuous `IsAllBaseTorusPositive` amplitude satisfying right decay `κ₀ > 0` and left bound `|f(y)| ≤ C e^{-κy}` on `(-∞, 0]` with `κ < min(1, κ₀)` vanishes identically (`f = 0`) via Mellin factorization and harmonic prime-window divergence along `cos(t log q) ≤ -1/2`.
+   - [`oscillatory_bernstein_dichotomy`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L1906-L2195): For `f(y) = e^{-αy}(1 + ε cos(ωy))` (`ω ≠ 0`), `0 < α ≤ 1` and `ε ≠ 0` refute `IsAllBaseTorusPositive`, whereas for every `α > 1` small `0 < |ε| ≤ ε₀` yields strict all-base torus positivity without exponential convexity.
+   - [`laplaceMixture_torusPositive_iff_nonneg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L2363-L2528) & [`exists_supercritical_laplaceMixture_not_expConvex`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L2533-L2688): Finite Laplace mixtures `∑_r c_r e^{-α_r y}` on `(0, 1]` are all-base torus-positive iff `∀ r, c_r ≥ 0`, whereas for any `1 < α₀ < α₁ < α₂`, `e^{-α₀ y} - ε e^{-α₁ y} + e^{-α₂ y}` is strictly all-base torus-positive for small `ε > 0` yet fails `3 × 3` Hankel positivity.
 
-(s), appears free of poles in 
-1
-/
-2
-<
-Re
-⁡
-𝑠
-<
-1
-1/2<Res<1. Observing the integrand along 
-Re
-⁡
-𝑧
-=
-0
-Rez=0 reveals no poles for 
-Γ
-(
-𝑠
-−
-1
-/
-2
-+
-𝑖
-𝑟
-)
-Γ
-(
-𝑠
-−
-1
-/
-2
-−
-𝑖
-𝑟
-)
-Γ(s−1/2+ir)Γ(s−1/2−ir) when 
-Re
-⁡
-𝑠
->
-1
-/
-2
-Res>1/2. Additionally, the absolute value term is independent of 
-𝑠
-s. The rapid decay of the Gamma function product further indicates the integral's completeness. Therefore, 
-𝐼
-cont
-(
-𝑠
-)
-I
-cont
-	​
+---
 
-(s) has no poles in that range. This result immediately impacts the Estermann function's spectral decomposition.
+### 2. Mollified Log-Dilation Bridge and Selberg–Hankel Defect: [MollifiedLogDilationBridge.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean)
 
-The continuous spectrum integral is entirely holomorphic on 
-Re
-⁡
-𝑠
->
-1
-/
-2
-Res>1/2. A critical issue arises when 
-Re
-⁡
-𝑠
-Res decreases past 
-1
-/
-2
-1/2. As Re 
-𝑠
-s decreases below 
-1
-/
-2
-1/2, the poles of the Gamma functions pinch the 
-𝑧
-z-contour, and a residue from the zeta terms appears: 
-𝜁
-(
-1
-−
-𝑠
-)
-2
-𝜁
-(
-𝑠
-)
-2
-𝜁
-(
-2
-−
-2
-𝑠
-)
-𝜁
-(
-2
-𝑠
-)
-Γ
-(
-2
-𝑠
-−
-1
-)
-𝐻
-(
-𝑠
-,
-1
-/
-2
-−
-𝑠
-)
-ζ(2−2s)ζ(2s)
-ζ(1−s)
-2
-ζ(s)
-2
-	​
+1. **Shifted Plancherel Second Moment and Szegő Variational Ratio**
+   - [`shiftedFractLogPull`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L69-L70), [`fourier_shiftedFractLogPull`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L164-L184), & [`integrable_norm_sq_zeta_shifted_poisson`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L209-L246): Plancherel on `e^{-(1/2+δ)u} {e^u}` establishes `τ ↦ ‖ζ(1/2 + δ + iτ)‖² P_w(τ) ∈ L¹(ℝ)` for all `δ ∈ (-1/2, 1/2)` and `Re w > 1/2`.
+   - [`shiftedBudget`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L249-L251), [`isGLB_shiftedBudget_innerField`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L316-L337), [`exp_two_dilation_drop_eq_szego_ratio`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L360-L377), & [`riemannHypothesis_iff_szego_budget_ratio_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L380-L413): For every `δ ∈ (0, 1/2)`,
+     $$\exp\!\bigl(2(I(1) - I_\delta(1))\bigr) = \left(\frac{\delta\,\|\zeta(1+\delta)\|}{1-\delta}\right)^2 \frac{\inf_{Q(0)=0} \operatorname{budget}(1, Q)}{\inf_{Q(0)=0} \operatorname{shiftedBudget}(\delta, 1, Q)},$$
+     giving an unconditional single-shift `L²` variational ratio criterion for `RiemannHypothesis`.
 
-Γ(2s−1)H(s,1/2−s). This integrand has a zero where 
-2
-𝑠
-=
-𝜌
-2s=ρ. These zeros at 
-𝑠
-=
-𝜌
-/
-2
-s=ρ/2 arise due to the pinch and residues, contradicting the countermodels because they do not have these poles. The poles at 
-𝑠
-=
-𝜌
-/
-2
-s=ρ/2 invalidate all countermodels.
+2. **Outer Euler-Prefix Mollification and Exact Shifted Poisson Gram Coercivity**
+   - [`eulerMollifier`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L418-L419), [`integral_log_eulerMollifier_shifted`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L446-L499), & [`eulerMollified_log_dilation_quotient_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L504-L584): Finite Euler prefixes `∏_{p ∈ S} (1 - p^{-s})` are outer on `Re s ≥ 1/2` and cancel prime factors inside the Poisson log-dilation integral while leaving `I(1) - I_δ(1)` invariant.
+   - [`integral_cos_mul_halfPlanePoissonKernel_one`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L589-L654), [`realDirichletPoly`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L657-L658), [`integral_dirichletPoly_norm_sq_poisson`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L661-L758), & [`dirichletGram_eq_abel_squares`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L762-L834): Because `∫ cos(ξτ) P₁(τ) dτ = e^{-|ξ|/2}`, Dirichlet polynomials on `Re s = 1/2 + δ` have exact Poisson Gram form `∑_{m,n} (b_m m^{-δ})(b_n n^{-δ}) / max(m, n)`, which diagonalizes into strictly positive-definite Abel partial-sum squares:
+     $$\frac{1}{M}\Bigl(\sum_{m=1}^M b_m m^{-\delta}\Bigr)^2 + \sum_{k=1}^{M-1}\Bigl(\frac{1}{k}-\frac{1}{k+1}\Bigr)\Bigl(\sum_{m=1}^k b_m m^{-\delta}\Bigr)^2.$$
 
-The continuous spectrum integral for the Estermann function is holomorphic for 
-Re
-⁡
-𝑠
->
-1
-/
-2
-Res>1/2. Crucially, for 
-Re
-⁡
-𝑠
-<
-1
-/
-2
-Res<1/2, poles appear at 
-𝑠
-=
-𝜌
-/
-2
-s=ρ/2 due to residues from the Gamma function's pinch.
+3. **Prime-Side Selberg–Cholesky Minimum and `δ → 0⁺` Defect Law**
+   - [`eulerAmpl`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L839-L840), [`dirichletHankel_eulerAmpl_eq_sum_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L860-L868), [`selbergArray`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L872-L875), [`dirichletHankel_eulerAmpl_ge_selberg`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L939-L1015), & [`dirichletHankel_selbergArray_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L1018-L1112): On `eulerAmpl p σ`, `dirichletHankelForm` over all `c` supported in `piBox n N` (`N ≥ 2`) with `c 0 = 1` attains its exact minimum `∏_i (1 + p_i^{-2σ})⁻¹` on the squarefree Selberg sieve array `selbergArray p σ`.
+   - [`eulerHankel_pos_floor_of_pos`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L1118-L1145), [`exists_eulerHankel_lt_of_critical`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L1149-L1202), [`hasDerivAt_log_eulerHankel_min`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L1205-L1239), & [`not_summable_primes_log_div_add_one`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L1242-L1277): At `σ = 1/2 + δ`, this minimum has uniform positive lower bound `exp(-∑'_m m^{-(1+2δ)}) > 0` for every `δ > 0`, collapses to `0` at `δ = 0`, and has logarithmic `δ → 0` slope `2 ∑_i log p_i / (p_i + 1)`, whose prime series diverges.
+
+---
+
+
+**Next-Cycle Conjecture Plan:**
+1. **Conformal-to-Dirichlet cross-gram matrix and Laguerre–Poisson projection in `budget 1 Q` vs. `shiftedBudget δ 1 Q`:** Compute the exact inner products and Gram matrix between conformal disc-chart exponentials `exp(Q(φ₁(1/2 + δ + iτ)))` (Laguerre waves on `Re s = 1/2 + δ`) and Dirichlet modes `m^{-(1/2 + δ + iτ)}` against `P₁(τ) dτ`, isolating how Archimedean Laguerre–disc modes bypass the pure-Euler invariance of [`eulerMollified_log_dilation_quotient_eq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L504-L584) and interact with the `1/max(m, n)` Abel coercivity of [`dirichletGram_eq_abel_squares`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean#L762-L834).
+2. **Exact boundary classification at `κ = 1` for Arithmetic Bernstein:** Test whether every continuous [`IsAllBaseTorusPositive`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L67-L70) amplitude satisfying `|f(y)| ≤ C e^{-y}` on `(-∞, 0]` (where [`eq_zero_of_torusPositive_of_lt_min_one`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/CriticalStripArithmeticBernstein.lean#L1376-L1758) stops when `κ = 1` or `κ₀ ≤ 1`) must be exponentially convex on `ℝ` via resolvent/Laplace inversion along `Re s > 1` combined with prime-phase concentration as `σ → 1⁺`.

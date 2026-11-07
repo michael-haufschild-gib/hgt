@@ -1,7 +1,7 @@
 # Incoming cubic spectral residue
 
 - **ID:** cubic-incoming-spectral-residue
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual incoming resolvent correction is meromorphic at `s=4/3`, with residue `(17/6) M P M* F(4/3)` in the `8/9` eigenspace. Adding the incoming seed gives the same residue on every compact quotient set.
@@ -23,10 +23,12 @@ bounded profile map followed by compact restriction. This family is entire;
 its product with `s−4/3` tends to zero. Thus the local corrected seed is
 meromorphic with residue equal to the restricted vector above.
 
-`TheCubicIncomingResidue.lean` is checked: `kernelEisensteinResidueVector_limit`
-and `kernelEisensteinResidueVector_graph` use only `propext`, `Classical.choice`,
-and `Quot.sound`. The compact-local assertions await
-`LocalCubicCorrectedSeeds.lean`, namespace `CubicEisenstein`.
+`TheCubicIncomingResidue.lean` and `LocalCubicCorrectedSeeds.lean` pass direct
+Lean checks. The endpoints `kernelEisensteinResidueVector_limit`,
+`kernelEisensteinResidueVector_graph`, `kernelLocalCorrectedSeed_ae_eq`,
+`kernelLocalCorrectedSeed_meromorphicAt`, and
+`kernelLocalCorrectedSeed_residue_limit` use only `propext`,
+`Classical.choice`, and `Quot.sound`; namespace `CubicEisenstein`.
 
 Adapted from OpenAI's meromorphic-resolvent and seed-height arguments.
 Source matching and residue nonvanishing remain open on the parent card.

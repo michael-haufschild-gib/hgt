@@ -44,6 +44,7 @@ import GaloisForLFunctions.PrimeTorusTheory.WhereTheWordsStop
 import GaloisForLFunctions.PrimeTorusTheory.TheTransferToRareHeights
 import GaloisForLFunctions.PrimeTorusTheory.PrimeCharactersAreLacunary
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
+import GaloisForLFunctions.PrimeTorusTheory.TheBoxesAtSquareRootCost
 
 /-!
 # Prime Torus Theory

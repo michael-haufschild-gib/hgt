@@ -19,7 +19,7 @@ private theorem log_add_two_gap_le {x : ℝ} (hx : 0 < x) :
   have hmono : Real.log x ≤ Real.log (x + 2) :=
     Real.log_le_log hx (by linarith only [hx])
   rw [abs_of_nonneg (sub_nonneg.mpr hmono)]
-  have he : (x + 2) / x - 1 = 2 / x := by field_simp; ring
+  have he : (x + 2) / x - 1 = 2 / x := by field_simp [hx.ne']; ring
   linarith only [hlog, he]
 
 /-- Different pairs with the same sum have translated products only two apart. -/
