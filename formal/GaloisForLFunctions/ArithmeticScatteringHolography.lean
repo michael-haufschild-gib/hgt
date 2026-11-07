@@ -30,6 +30,8 @@ import GaloisForLFunctions.ArithmeticScatteringHolography.TheKMSStripOfTheHorizo
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheIntegerProbesOfTheHorizon
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfABlackHole
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheThroatOfEveryLength
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheTrivialZerosOfACusp
+import GaloisForLFunctions.ArithmeticScatteringHolography.TheBlackHoleOfGenusTwo
 import GaloisForLFunctions.ArithmeticScatteringHolography.TheLaxPhillipsSemigroup
 
 /-!
@@ -43,5 +45,5 @@ system, and is a dissipated energy exactly under RH. The law carries over to eve
 where Hecke at `p` is modular time translation by `log p`. The Hecke algebra exists at all degrees on the fakes, with positivity.
 What excludes them is a count law for the probes, the parallelogram law for the number of points of `y - x π`, whose first instance
 is the conservation of channels. It holds on true curves by the exact parallelogram law of heights on the twisted curve, which reproves
-Hasse's theorem without Stepanov. See `ArithmeticScatteringHolography/README.md`.
+Hasse's theorem without Stepanov. A graph with the functional equation of genus two exists for every `q`, critical only for `q ≤ 3`. See `ArithmeticScatteringHolography/README.md`.
 -/

@@ -379,7 +379,7 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-earlier today we created these documents:
+earlier we created these documents:
 - docs/reports/review-0611/walls-ledger.md
 - docs/reports/review-0611/route-obstacles.md
 - docs/reports/review-0611/route-unification-ledger.md
@@ -415,7 +415,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0611/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-0711/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -491,9 +491,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0611/obstacles-summary.md
+read and understand docs/reports/review-0711/obstacles-summary.md
 
-under "## 2.8 If positivity, Weil positivity and spectral methods are excluded: which field?" it describes a new field/research programme called "Arithmetic auxiliary dynamics".
+under "## 2.9 If positivity, Weil positivity and spectral methods are excluded: which field?" it describes a new field/research programme called "Sum-product arithmetic of the logarithm".
 
 Your task: develop this field/research programme and do the actual research and formalization.
 
@@ -647,10 +647,10 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0611/obstacles-summary.md
 
-under "## 2.9 The one question" it ask a question: 
-"**Can the error in the prime number theorem be a single finite oscillation?** Formally: are there `β>½`, `η>0` and a nonzero finite trigonometric polynomial `T` with
+under "## 3. The one question" it ask a question: 
+"**Can a negative direction of the complete Weil matrix at a fixed critical ratio escape every window of length of order `log R`?** Let `R=c⁸/log N` be fixed and let `R_c(ζ)` be the largest ratio below which the matrix is eventually positive definite. Is `log R_c(ζ)≳a*(ζ)`? The inequality that decides it is a Gårding bound at each fixed `R` (A10):
 
-`ψ(x)−x=x^{β}T(log x)+O(x^{β−η})`?"
+`Q(U)+B_R‖U‖²≥a_RW₈(U)` on normalized atomic sources, with `a_R>0`."
 
 your task: answer the question, find a complete solution for it and unconditionally formalize it and its implications and collaries in lean.
 
@@ -779,3 +779,42 @@ Your task: Not only review both reports but go beyond them. Be antagonistic to t
 Keep a log for mathematical facts you discover. Not a working log. Facts and information you discovered.
 
 The final report goes into docs/reports/review-3010/reboot-final.md
+
+
+## wall breaking
+context - reports summarizing the current frontier of our research:
+docs/reports/review-0611/route-obstacles.md
+docs/reports/review-0611/walls-ledger.md
+docs/reports/review-0611/route-unification-ledger.md
+docs/reports/rh-current-frontier-map.md
+docs/reports/rh-killed-routes.md
+
+problem:
+we are stuck. we arrived from different angles, in different languages and frameworks on the same fundamental problem of a missing mechanism.
+
+the mechanism would not necessarily prove RH or quasiRH but open the door to a new understanding and clear route towards the RH proof. a real breakthrough, not another description of a route that hits a hard wall - but a mechanism to decicively break through the wall.
+
+your task: find and formalize that mechanism and its collaries.
+
+we are not interested in solving one of the obstacles, but a real breakthrough, a seismic shift.
+
+**Tools to use:**
+1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
+
+2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
+
+do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
+
+always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+
+**Lean rules:**
+1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
+
+Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.

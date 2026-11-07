@@ -13,18 +13,18 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven
-- [x] 2 → 3  formalized: 28 modules, each checked with `lake --old env lean`
+- [x] 2 → 3  formalized: 39 modules, each checked with `lake --old env lean`
 
 ## Answers
 
 | Q | Answer | Lean |
 |---|---|---|
 | What replaces Frobenius | The carry `⌊k{x}⌋`, never constant; bounded multiplicities have no Frobenius. Curves: kernel = recurrence of rank `deg P`. `ℤ`: Hecke action on the kernel | `not_exists_constant_carry`, `not_hasFrobenius_of_bounded`, `rank_curveKernel`, `exists_mul_of_hecke_invariant` |
-| Nonlinear functional seeing a zero and surviving the twin | `ζ A^k` has order `m − k`; the Selberg ledger has gap `4 L N Σ b(e)/e + O(N^{3/4})` on every filter | `sees_of_lt`, `exists_abs_selberg_gap_sub_le`, `tendsto_selberg_twin_gap` |
-| Primes recur at a zero | Prime returns have positive density at every length; at a zero the returns of `ζ` are rare, so the tail fails | `exists_density_primeReturnSet`, `primeReturnSet_subset_zetaReturnSet`, `exists_primeReturn_not_zetaReturn` |
-| Single off-line zero | No contradiction from any named class; a power bound on the parity ledger would confine zeros, and it has no source | `forall_hasSum_abelStep_mod_zero_iff`, `twistPoly_eq_zero_of_parity_bound` |
-| Closest fake | One fake at infinite level; tight fakes converge to it; no lower radius at finite level | `eq_pronic_of_forall_isFakePrimeMeasure`, `tendsto_pronic_of_tight`, `isFakePrimeMeasure_translate` |
-| Rotated relation | Equal modulus is RH; polynomial coefficients are refuted; unrestricted coefficients are vacuous | `riemannHypothesis_iff_forall_norm_eq`, `squaredXi_no_polynomial_rotation`, `exists_normalized_entire_vacuous_rotated_relation` |
+| Nonlinear functional seeing a zero and surviving the twin | `ζ A^k` has order `m − k`; Selberg gap `4 L N Σ b(e)/e + O(√N log N)` on every filter; every level `y ≤ N/(K log² N)` seen at order `N/√y`; passes Type I and II data; at every degree no separation at the zeros | `sees_of_lt`, `exists_abs_selberg_gap_sub_le_sharp`, `exists_level_gap_order`, `not_isBilinearStatement_selberg`, `tendsto_sub_pow_twinSymbol_at_zero` |
+| Primes recur at a zero | Prime returns have positive density at every length and lie above the length; at a zero the returns of `ζ` are rare, so the tail fails | `exists_density_primeReturnSet`, `no_prime_return`, `exists_primeReturn_not_zetaReturn` |
+| Single off-line zero | No contradiction from any named class; a parity bound at a power saving is equivalent to a zero-free strip; a bounded count is consistent with new zeros | `zeroFree_iff_liouville_power`, `exists_cubicFactor_eq_zero`, `superposition_kernel_iff` |
+| Closest fake | One fake at infinite level; tight fakes converge to it; finite-level radius `≍ 1/log log K` under a summable deviation | `eq_pronic_of_forall_isFakePrimeMeasure`, `tendsto_pronic_of_tight`, `abs_cutDeviation_le_of_level` |
+| Rotated relation | Equal modulus is RH; coefficients of growth `exp(C√|w|)` give only the trivial relation; at the size of `Q` the relation is vacuous | `riemannHypothesis_iff_forall_norm_eq`, `rotated_relation_trivial`, `exists_normalized_entire_vacuous_rotated_relation` |
 
 ## Paper proofs
 
@@ -46,6 +46,24 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 
 **Infinite defect.** `D(t) m^{it}` is a finite sum of Bohr integrands at frequencies `log m ± log n`. Cauchy on the rectangle `[½, ¾]` with the convexity bound moves `tendsto_zeta_line_mul_char_average_log` to the critical line (`tendsto_critical_average_sub`). The mean is `m^{-½}(a(m) − G(1))` (`tendsto_stencilDefect_average`). A sublinear defect makes `a` constant, and induction on divisors gives `g = c δ₁` (`eq_zero_of_stencilCount_const`, `eq_zero_of_defect_sublinear`).
 
+**Parity exponent.** A zero-free strip gives `M(x) ≪ x^a` (`exists_mertens_power_of_zeroFree`), and `L(x) = Σ_{d≤√x} M(x/d²)` keeps the exponent for `a > ½` (`abs_liouvilleR_le_of_power`). The converse is the confinement theorem with `c = δ₁` (`zeroFree_iff_liouville_power`).
+
+**Sharp filter law.** The hyperbola method on squares gives `Σ_{n≤N} (Λ_even ∗ Λ_even)(n) = Σ_{e≤N} Λ_even(e) ψ(√(N/e)) ≪ √N Σ_{j≤√N} Λ(j)/j ≪ √N log N` (`exists_sum_conv_even_le`). The mass above a level is between `1/(8√y)` (PNT in `(√y, 2√y]`) and `6C/√y` (partial summation) (`exists_le_harmonicMass_level`, `harmonicMass_level_le`).
+
+**Every degree.** `T = A + h`, `h(s) = −2A(2s)` holomorphic on `Re s > ½`; induction on `k` with `T^{k+1} − A^{k+1} = T(T^k − A^k) + A^k h` (`tendsto_sub_pow_twinSymbol_at_one`, `tendsto_sub_pow_twinSymbol_at_zero`).
+
+**Dominance and the coefficient boundary.** With `ω² = ϑ`, `Q(ϑ(−r²)) = ξ(½ + rω)` and `Q(−r²) = ξ(½ + r)`. Writing `ξ = ½ s(s−1) Γ_ℝ(s) ζ(s)`, the Gamma ratio `Γ(a)·a·m! ≤ Γ(a + m + 1)` gives `Γ(a)/Γ(b) ≤ 4/(⌊b − a⌋ − 1)!`, which beats `π^{b−a}`, the polynomial factors and every `e^{Kr}` (`exists_norm_squaredXi_rot_le`). Then `f(z) = T(−z²)` decays faster than every exponential on `ℝ_+`; Phragmén–Lindelöf on quadrants rotates the decay by `π/4` twice, bounds `f` on four quadrants, and Liouville gives `f = 0` (`eq_zero_of_decaysOnRay`). Two more applications at `w ↦ ϑ^{±1} w` remove `A` and `B` (`rotated_relation_trivial`).
+
+**Cancellation off a small set.** The mean value theorem `∫_0^T |Σ a_n n^{it}|² ≤ (T + 4N(1 + log N)) Σ |a_n|²` and Chebyshev give measure `≤ 2T y^{-2ε}` at each dyadic `y`, and a geometric sum over the lengths (`exists_cancellation_off_small_set`).
+
+**First return.** Near `τ`, `n = ⌈τ⌉` and `n + 1` differ in phase by `θ ∈ [⅓, 1]`, and `‖e^{iθ} − 1‖ = 2 sin(θ/2) ≥ ¼`; below `1`, `n = ⌈e^{1/τ}⌉` has phase in `[1, 2]` (`exists_phase_far`). Composites carry at most `Ω(n) ≤ log₂ N` prime errors (`no_prime_return`).
+
+**Finite-level radius.** The sieve of `mul_tsum_primePart` needs `k W(kℕ) = S` only for `k ≤ n ∏_{p<X} p ≤ n 4^X` (`mul_tsum_primePart_of_level`); the leftover multiples have `t = 1` or `t ≥ X` (`abs_le_of_uniform_multiples_level`).
+
+**Bounded-count model.** `a = 1 − 1_{2∣·} + 4·1_{8∣·}`, so `N(x) = x − ⌊x/2⌋ + 4⌊x/8⌋` and `−3 ≤ N(x) − x ≤ 0`. The real root `r ∈ [−0.8, −0.75]` of `4X³ − X + 1` splits off `4X² + 4rX + 4r² − 1`, with complex roots of squared modulus `r² − ¼ ∈ (¼, ½)` (`exists_cubicFactor_eq_zero`).
+
+**Superpositions.** Interchanging the cut moment with the superposition gives `Σ_i d_i k^{w_i} = D`, `d_i = c_i ζ(s_i)`, `w_i = 1 − s_i`. At the top abscissa, `Σ_k k^{−1−ε−a}` turns this into `Σ_i d_i ζ(1 + ε + a − w_i) = D ζ(1 + ε + a)`, and `ε → 0+` isolates `d_{i₀}` (`eq_zero_of_sum_cpow_eq_const`).
+
 **Purity.** At a root, imaginary part gives `y = 0` or `2 q x = t`. Both cases give `q |u|² = 1` when `t² ≤ 4q`. Above the bound two real roots with product `1/q` cannot both have square `1/q` (`normSq_of_root`, `isPureKernel_iff`).
 
 ## No-go closure
@@ -55,7 +73,10 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 | Exact ledgers see zeros | Order law of the pieces `ζ A^k`, residue at simple zeros | Lean: `meromorphicOrderAt_ledgerSymbol`, `tendsto_mul_ledgerSymbol` |
 | Selberg ledger breaks parity | Exact gap law, every filter seen at scale `N`, constant `→ 0` | Lean: `exists_abs_selberg_gap_sub_le`, `levelConstant_pos`, `tendsto_levelConstant` |
 | Prime returns transport a zero | Effective recurrence of Dirichlet polynomials; half-plane return theorem | Lean: `exists_zero_in_every_window`, `primeReturnSet_subset_zetaReturnSet` |
-| Polynomial rotation of `Q` | Extremal modulus, equal-modulus equivalence, Stieltjes sign | Lean: `norm_squaredXi_conj_lt`, `riemannHypothesis_iff_forall_norm_eq`, `im_stieltjes_nonpos` |
+| Polynomial rotation of `Q` | Coefficient boundary at `exp(C√|w|)`, dominance, extremal modulus, Stieltjes sign | Lean: `rotated_relation_trivial`, `exists_norm_squaredXi_rot_le`, `norm_squaredXi_conj_lt`, `im_stieltjes_nonpos` |
+| Parity source at a power saving | Equivalence with zero-free strips; VK-level source | Lean: `zeroFree_iff_liouville_power`, `exists_abs_parityLedger_le_log` |
+| Pointwise bounds below VK at all heights | Square-root cancellation off a small set; first return above the length | Lean: `exists_cancellation_off_small_set`, `no_prime_return` |
+| Bounded count forces the line | Explicit nonnegative multiplicative model | Lean: `cubicCount_sub_mem`, `exists_cubicFactor_eq_zero` |
 | Unrestricted rotated coefficients | Exact local alternative; see `5-failed/rotated-relations-with-unrestricted-balanced-coefficients.md` | Lean: `balanced_relation_zero_or_modulus_eq` |
 | Stencil near `ζ` in FE distance | Bohr coefficients on the line; mean law of the defect | Lean: `tendsto_critical_average_log`, `tendsto_stencilDefect_average` |
 | New zeros by added generators | Exact factorization right of the count exponent | Lean: `exists_numerator_eq_mul` |
@@ -63,7 +84,7 @@ Answer the questions of §2.9, build the tools of §2.9, test the criteria of §
 
 ## Open
 
-Parity source; growing levels; degree `≥ 3` ledgers; kernel beyond power laws; finite-level radius; integer-norm one-offs; smallest FE defect of a one-off; coefficient classes; second-order extremal law; pointwise bounds between `y ≍ log T` and VK. See the README, §9.
+Parity at a power saving for stencils whose twists vanish at a zero; parity on all integers through cuts; genuine Beurling one-offs; the Báez-Duarte–Bagchi converse for the energy kernel; coefficients between `exp(C√|w|)` and `Q`; second-order extremal law; the exceptional set between `log T` and VK; FE defect of a one-off outside stencils. See the README, §9.
 
 ## Log
 - 2026-11-07 — created in 1-in-progress

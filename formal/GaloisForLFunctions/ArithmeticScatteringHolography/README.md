@@ -1,7 +1,7 @@
 # Arithmetic Scattering Holography (ASH)
 
 Namespace `GaloisForLFunctions.ArithmeticScatteringHolography`; umbrella
-`ArithmeticScatteringHolography.lean`; 33 modules.
+`ArithmeticScatteringHolography.lean`; 35 modules.
 
 ## 1. Motivation
 
@@ -58,7 +58,9 @@ from the conservation of channels at all probes, independently of Stepanov.
 | Lax–Phillips semigroup | `lpMatrix`, `shiftPair` | the companion `Z` of the denominator, on the state `(R_n, R_{n+1})` |
 | Metric of the model space | `kreinHerm` | the Hermitian Krein form `q\|x\|² - t Re(x̄y) + \|y\|²` |
 | Throat | `throatOp`, `throatMass`, `throatPoly` | a one-cusp tree lattice with two free edge indices `a, b` |
-| Throat of every length | `chainOp`, `chainMass`, `thPoly`, `thDen` | a path with one cusp and free indices `c_j`, with its denominator |
+| Throat of every length | `chainOp`, `chainMass`, `thPoly`, `thDen` | a path with one cusp at its end and free indices `c_j`, with its denominator |
+| Mode polynomial | `modeMatrix`, `modePoly`, `scalePoly` | `det((x² + q) I - x A - q diag c)` for any finite graph with rays, and its scaling `x = q w` |
+| Black hole of genus two | `genusTwoIndex`, `genusTwoL` | an 11-vertex graph with the cusp in the middle, and its numerator `L_q` |
 | KMS correlator | `kmsCorrelator` | `G(z) = F(1 + iz)` on the strip `0 ≤ Re s ≤ 1` |
 | Fake horizon | `fakeKernel`, `fakeXi` | the transform of `e^{-x²}(e cosh b + cosh 2x) > 0` |
 | Integer probes over `ℤ` | `atomGram`, `integerProbe` | the Gram form of `B(· - log n)` on integer vectors |
@@ -172,17 +174,25 @@ make it a tree lattice quotient by Bass–Kulkarni [C].
     positivity (`kernel_positive`).
 25. A throat has flux for all edge indices (`throat_green`), and its modes multiply to `(b-1)q` (`throat_resonance`, `throat_partner_law`), so the functional equation is the condition `b = 2`
     (`throat_functional_equation_iff`). In every length the denominator is monic with constant term `q^{m+2}(1 - c₀)` and the root `q²` (`thDen_monic_natDegree`, `thDen_eval_zero`, `thDen_eval_ground`), each root is a resonance (`chain_resonance`), and
-    the functional equation is impossible from genus two on (`chain_no_functional_equation`): a path quotient has it only at genus at most one.
+    the functional equation is impossible from genus two on (`chain_no_functional_equation`): a path with the cusp at its end has it only at genus at most one.
+26. **Trivial zeros.** For any finite graph with rays, the mode polynomial is monic of degree `2 #T`, its roots are the resonances, and `R(q w) = q^{#T} S(w)` with `S` integral (`modePoly_monic`, `exists_field_of_root`,
+    `modePoly_scale`). If `R = x^{2m} (x² - q²) L(x²) (compact)` with a functional equation of genus `g`, integrality gives `g ≤ m + 1` (`genus_le_trivial_zeros`), and `∑ g_i ≤ m + a` over several sectors
+    (`total_genus_le_trivial_zeros`). With no boundary index one, `(-∏(1 - c_v)) q^g = q`, so `g ≤ 1` for every graph, branched or not (`cusp_index_law`). At a vertex of index one with one trivial zero,
+    `(∑ n_u b_u - q) q^g = q²` (`first_branch_law`).
+27. **The black hole of genus two.** The bound is attained. An 11-vertex graph with the cusp at a vertex of index one and two branches of five vertices has
+    `R = x² (x² - q²) L_q(x²) · (compact)`, `L_q = z⁴ - (q-2) z³ - (q-1) z² - q(q-2) z + q²` (`genusTwo_modePoly`, `genusTwo_factorization`), with the functional equation for every `q`
+    (`genusTwoL_functional_equation`). The two branches are different chains with the same denominator, and their differences are the compact modes. All modes are on the critical circle
+    if and only if `q ≤ 3` (`genusTwo_critical_iff`), and for `q ≥ 4` there is a slow resonance (`universal_damping_not_forced_at_genus_two`).
 
 **The semigroup and the phase.**
-26. The Hankel operator of the echo train has rank two (`hankel_det_eq_zero`, `recurrence_shift`), and its compression is the semigroup `Z` with `det Z = q` and spectrum the modes (`lpMatrix_det`,
+28. The Hankel operator of the echo train has rank two (`hankel_det_eq_zero`, `recurrence_shift`), and its compression is the semigroup `Z` with `det Z = q` and spectrum the modes (`lpMatrix_det`,
     `lpMatrix_charpoly`, `lpMatrix_mode`). `Z` multiplies the metric of the model space by `q` for every `t` (`kreinHerm_step`, `kreinHerm_semigroup`); the metric is positive exactly under universal
     damping (`kreinHerm_nonneg_iff`), and a mode has signature `2 (Im z)²` (`kreinHerm_mode`). Two resonant states pair as a Szegő kernel (`gram_law`).
-27. On a disc free of zeros of the causal symbol, log-modulus and phase determine each other (`kramers_kronig`, `causal_symbol_kramers_kronig`). The Bode integral is the term at frequency zero on the
+29. On a disc free of zeros of the causal symbol, log-modulus and phase determine each other (`kramers_kronig`, `causal_symbol_kramers_kronig`). The Bode integral is the term at frequency zero on the
     universal circle.
 
 **Horocycles.**
-28. The horospheres of a tree satisfy the wave equation with depth as time (`horosphere_isWave`). The mean over a closed
+30. The horospheres of a tree satisfy the wave equation with depth as time (`horosphere_isWave`). The mean over a closed
     horocycle obeys `H[T_p F](y) = p^{-½} H[F](py) + p^{½} H[F](y/p)` (`horoMean_heckeOp`).
 
 ## 5. Questions the programme answers
@@ -192,6 +202,10 @@ make it a tree lattice quotient by Bass–Kulkarni [C].
 resonances off the circle. For `q ≥ 8` they carry commuting positive operators at all degrees, with the arithmetic eigenvalues on their cusp forms
 (`universal_damping_not_forced_with_degree_two`, `universal_damping_not_forced_at_every_degree`, `universal_damping_not_forced_by_the_full_algebra`, `universal_damping_not_forced_at_every_class`). The physical reading is a
 reformulation, unless new input is brought.
+
+**Does the functional equation force universal damping?** No. At genus one every black hole has it, the fakes included (`universal_damping_not_forced_one_cusp`), and at genus two the graph above has it with a slow resonance for `q ≥ 4`
+(`universal_damping_not_forced_at_genus_two`). What it does force is
+structure at the cusp: at least `g - 1` trivial zeros, and the first branch law (`genus_le_trivial_zeros`, `first_branch_law`). So a graph with the functional equation of genus `g ≥ 2` must branch at its cusp.
 
 **Is there a law on the graph that excludes the fakes?** Yes: the count law (`Channels.universal_iff_countLaw`). It uses only `q` and the number of cusps, and its first instance is the
 local count that defines the graph. A fake has counts, positive at every level of its tower, and they are not quadratic. So wave dynamics supplies one instance of the law, and the sharp rate is the law at all probes.
@@ -260,6 +274,8 @@ with no information about mode positions.
 | Count law on a true curve, and Hasse | `elliptic_has_countLaw`, `hasse_of_countLaw`, `elliptic_universal_damping_of_countLaw` | unconditional, odd characteristic |
 | Hecke at every class on fakes | `heckeClass_comm`, `heckeClass_nonneg`, `heckeClass_resonance`, `universal_damping_not_forced_at_every_class` | unconditional, odd groups, `q ≥ 7` |
 | Path quotients and the functional equation | `chain_green`, `chain_resonance`, `chain_no_functional_equation` | unconditional |
+| Trivial zeros of a cusp | `modePoly_scale`, `genus_le_trivial_zeros`, `total_genus_le_trivial_zeros`, `cusp_index_law`, `first_branch_law` | unconditional |
+| Black hole of genus two | `genusTwo_factorization`, `genusTwoL_functional_equation`, `genusTwo_sharp`, `genusTwo_critical_iff`, `universal_damping_not_forced_at_genus_two` | unconditional, `q ≥ 2` |
 | Partner law is independent of flux | `throat_green`, `throat_partner_law`, `throat_functional_equation_iff` | unconditional |
 | Integer probes over `ℤ` | `riemannHypothesis_iff_integerProbes`, `integerProbe_parallelogram`, `posSemidef_of_integer_nonneg` | equivalence |
 | Universal damping is not forced | `exists_slow_resonance`, `universal_damping_not_forced_*` | unconditional |
@@ -310,6 +326,8 @@ with no information about mode positions.
 | Conservation of channels is the whole law | It is the first instance; a fake breaks the second (`fake_violates_second_probe`) |
 | The count law is Hasse in other words | It has an independent proof, by the addition law of the curve (`height_parallelogram`), and Hasse follows |
 | Long throats generalize the curve | Their partner product is `q^m (c₀ - 1)`, so they miss the functional equation from genus two on |
+| Genus two needs a curve | An 11-vertex graph has the functional equation of genus two for every `q`, and it is critical only for `q ≤ 3` |
+| The functional equation is a local condition at the cusp | It forces only the trivial zeros and the first branch law; the rest is the global shape of the graph |
 | KMS positivity places the zeros | It holds for `ξ` unconditionally, and on a fake horizon with no zero on the line (`fake_horizon`) |
 | A slow mode is a resonance of negative norm | It is neutral: `H(1, z) = 0` on a real mode (`kreinHerm_mode`). Negative states are the combinations of two modes |
 | Unitarity gives the functional equation | A throat has flux and unitarity for all `b`, and the functional equation only at `b = 2` |
@@ -369,7 +387,8 @@ degree. Over `ℤ` none is known, which is the door of the effective geometry pr
 ## 11. Open research topics
 
 1. Over `ℤ`: a count equal to the Krein square of the integer probes. By `riemannHypothesis_of_count` this is a proof of RH, so it is the open problem itself, not a task of this programme.
-2. The true quotient `Γ\T` for a curve of genus two, with its branching, and the partner law as a statement about the lattice. By `chain_no_functional_equation` it cannot be a path.
+2. The true quotient `Γ\T` for a curve of genus two, and genus three and beyond. A graph with the functional equation of genus two exists (`genusTwo_factorization`), and every such graph has at least `g - 1`
+   trivial zeros (`genus_le_trivial_zeros`). Which graphs come from curves, and which law excludes the other ones?
 3. The small fields: `P_d(A)` has a negative entry at `q = 2`, `h = 5`, `d = 3` (paper computation), where the curve has no place of degree three. Which entries of the family need a place to exist?
 4. The cuspidal sectors of the adelic bulk: Maass forms, where Hecke is independent of the wave group and there are no resonances, as `thetaField` is on the graph.
 5. The Bode integral at finite height over `ℤ`, with an exceptional set.

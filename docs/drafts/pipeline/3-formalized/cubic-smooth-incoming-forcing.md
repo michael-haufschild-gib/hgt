@@ -1,7 +1,7 @@
 # Smooth incoming cubic forcing
 
 - **ID:** cubic-smooth-incoming-forcing
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** THEOREM
 - **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** For `1<a<b`, a smooth cubic-equivariant incoming seed equals `v^s` above height `b`. Its Laplace defect descends to a smooth compactly supported quotient function and defines an entire quotient `L²` family.
@@ -26,7 +26,7 @@ Finite quotient volume gives a continuous linear map
 `exp(s log v)(v²χ″+(2s−1)vχ′)`, which is entire. Its `L²` class agrees
 with the compact smooth test defined by the pointwise defect.
 
-Lean targets: `CharacterEquivariantCubicCuspProfiles.lean`,
+Lean modules: `CharacterEquivariantCubicCuspProfiles.lean`,
 `CubicIncomingHeightProfiles.lean`, `SmoothCubicCuspSeeds.lean`,
 `CubicCompactHeightProfiles.lean`, and `CompactSmoothCubicDefects.lean`
 in `MetaplecticMobiusDescent`, namespace `CubicEisenstein`.
@@ -34,3 +34,9 @@ in `MetaplecticMobiusDescent`, namespace `CubicEisenstein`.
 The source-resolvent matching and nonzero residue remain on the parent
 card. Adapted from OpenAI's cusp-profile, compact-profile, and smooth-test
 arguments, using the locally checked height calculus and quotient.
+
+Checked endpoints: `actual_smoothCuspSeed_laplace_defect`,
+`kernelL2Defect_entire`, `kernelQuotientDefect_hasCompactSupport`,
+`kernelDefectSmoothTest_toL2`, and `kernelQuotientSeed_contMDiff`.
+Direct source audits pass with only `propext`, `Classical.choice`, and
+`Quot.sound`; no analytic assumptions or limit overrides.

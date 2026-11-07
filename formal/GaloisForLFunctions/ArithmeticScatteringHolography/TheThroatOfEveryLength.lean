@@ -19,7 +19,7 @@ gives monic polynomials of degree `j` (`thPoly_monic`). The denominator `R = (z 
 index nearest the cusp**.
 
 So the functional equation has no room. After removing the root `q²`, a denominator of even degree `2g` with the functional equation would have constant term `q^g`, while a throat has `q^{2g-1}(c₀ - 1)`
-(`denom_constant_eq`). For `g ≥ 2` this is impossible (`chain_no_functional_equation`). **A path quotient has the functional equation only at genus at most one**: at genus two the graph must branch, and the partner law is a
+(`denom_constant_eq`). For `g ≥ 2` this is impossible (`chain_no_functional_equation`). **A path with its cusp at the end has the functional equation only at genus at most one**: at genus two the graph must branch at the cusp, and the partner law is a
 global statement about the lattice.
 -/
 
@@ -408,7 +408,7 @@ theorem top_of_functional_equation {P : ℂ[X]} {g : ℕ} {Q : ℂ} (hQ : Q ≠ 
   rw [hP0]
   simp
 
-/-- **A path quotient has the functional equation only at genus at most one.** For a throat of length `2g`, `g ≥ 2`, whose last index is not trivial, the denominator `P = reverse D` does not satisfy
+/-- **A path with its cusp at the end has the functional equation only at genus at most one.** For a throat of length `2g`, `g ≥ 2`, whose last index is not trivial, the denominator `P = reverse D` does not satisfy
 `P(w) = (q w²)^g P(1/(q w))`. -/
 theorem chain_no_functional_equation (hq : 2 ≤ q) {g : ℕ} (hg : 2 ≤ g) (hc0 : c 0 ≠ 1) (hc00 : c 0 ≠ 0)
     {D : ℂ[X]} (hD : thDen q c (2 * g - 1) = (X - C ((q : ℂ) ^ 2)) * D) (hmon : D.Monic)

@@ -80,3 +80,10 @@
 - formal/GaloisForLFunctions/CriticalHardyTheoryOfTheWindowCone/README.md
 - formal/GaloisForLFunctions/ArithmeticProduction/README.md
 - formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md
+- formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/README.md
+- formal/GaloisForLFunctions/ArithmeticScatteringHolography/README.md
+- formal/GaloisForLFunctions/MetaplecticMobiusDescent/README.md
+- formal/GaloisForLFunctions/NodalGeometryOfTheDeBruijnFlow/README.md
+- formal/GaloisForLFunctions/PrimeTorusTheory/README.md
+- formal/GaloisForLFunctions/RigidArithmeticOfCuts/README.md
+- formal/GaloisForLFunctions/WindowVisibilityLaw/README.md

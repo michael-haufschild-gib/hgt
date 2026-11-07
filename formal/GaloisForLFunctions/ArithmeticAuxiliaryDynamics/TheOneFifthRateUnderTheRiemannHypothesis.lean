@@ -26,7 +26,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics
 
-private lemma mem_primes {T P : ℕ} : P ∈ primesUpTo T ↔ P.Prime ∧ P ≤ T := by
+theorem mem_primesUpTo {T P : ℕ} : P ∈ primesUpTo T ↔ P.Prime ∧ P ≤ T := by
   simp only [primesUpTo, mem_filter, mem_Icc]
   constructor
   · rintro ⟨⟨_, h2⟩, h3⟩
@@ -83,7 +83,7 @@ theorem abs_mobiusPart_sub_le {T r s : ℕ} (hsr : s ≤ r) :
         by_contra hnd
         refine hex p ?_ hpb
         rw [hE]
-        exact mem_filter.mpr ⟨mem_primes.mpr ⟨hp1, (Nat.le_of_mem_primeFactors hp).trans hbT⟩, hnd⟩
+        exact mem_filter.mpr ⟨mem_primesUpTo.mpr ⟨hp1, (Nat.le_of_mem_primeFactors hp).trans hbT⟩, hnd⟩
       have hmod : s % b = r % b := (Nat.modEq_iff_dvd' hsr).mpr hdvd
       rw [hmod, sub_self, mul_zero, abs_zero]
       exact hsum0
@@ -97,7 +97,7 @@ theorem abs_mobiusPart_sub_le {T r s : ℕ} (hsr : s ≤ r) :
   refine sum_le_sum fun P hP => ?_
   have hP1 : 0 < P := by
     rw [hE] at hP
-    exact (mem_primes.mp (mem_filter.mp hP).1).1.pos
+    exact (mem_primesUpTo.mp (mem_filter.mp hP).1).1.pos
   have hPR : (0 : ℝ) < P := by exact_mod_cast hP1
   have hcount : ∑ b ∈ Icc 1 T, (if P ∣ b then (1 : ℝ) else 0) = ((T / P : ℕ) : ℝ) := by
     have hset : Icc 1 T = Ioc 0 T := by
@@ -111,7 +111,7 @@ theorem abs_mobiusPart_sub_le {T r s : ℕ} (hsr : s ≤ r) :
   exact Nat.cast_div_le
 
 /-- The residue at `G P` is at least `s`, and at least `s + G` when `P` does not divide `r − s`. -/
-private lemma mod_mul_ge {G P r : ℕ} (hG : 0 < G) (hP : 0 < P) :
+theorem mod_mul_ge {G P r : ℕ} (hG : 0 < G) (hP : 0 < P) :
     ((r % G : ℕ) : ℝ) + (if P ∣ r - r % G then 0 else (G : ℝ)) ≤ ((r % (G * P) : ℕ) : ℝ) := by
   have hmod : r % (G * P) % G = r % G := Nat.mod_mul_right_mod r G P
   have hdiv := Nat.div_add_mod (r % (G * P)) G
@@ -156,7 +156,7 @@ theorem mobiusPart_add_harmonicEntangled_ge (T r : ℕ) {G : ℕ} (hG : 0 < G) :
     rw [sum_filter, harmonicCoefficient, primeHarmonic, mul_assoc, mul_comm (∑ P ∈ primesUpTo T, 1 / (P : ℝ)),
       ← mul_assoc, mul_sum, ← sum_add_distrib, harmonicEntangled]
     refine sum_le_sum fun P hP => ?_
-    have hP1 := (mem_primes.mp hP).1.pos
+    have hP1 := (mem_primesUpTo.mp hP).1.pos
     have hPR : (0 : ℝ) < P := by exact_mod_cast hP1
     have hW : (0 : ℝ) ≤ (T : ℝ) / ((G : ℝ) * P) := by positivity
     have hm := mul_le_mul_of_nonneg_left (mod_mul_ge (r := r) hG hP1) hW
@@ -185,7 +185,7 @@ private lemma sum_harmonicLetters {T G : ℕ} (hG : T < G) (φ : ℕ → ℝ) (h
     rw [Finset.disjoint_left]
     intro k hk hk'
     obtain ⟨P, hP, rfl⟩ := mem_image.mp hk'
-    have hPpos := (mem_primes.mp hP).1.pos
+    have hPpos := (mem_primesUpTo.mp hP).1.pos
     have h1 := (mem_Icc.mp (mem_filter.mp hk).1).2
     have h2 : G ≤ G * P := Nat.le_mul_of_pos_right G hPpos
     omega
@@ -210,7 +210,7 @@ private lemma sum_harmonicLetters {T G : ℕ} (hG : T < G) (φ : ℕ → ℝ) (h
         push_cast
         rfl
   · refine sum_congr rfl fun P hP => ?_
-    have hPpos := (mem_primes.mp hP).1.pos
+    have hPpos := (mem_primesUpTo.mp hP).1.pos
     have hle : T < G * P := lt_of_lt_of_le hG (Nat.le_mul_of_pos_right G hPpos)
     simp only [harmonicWeights]
     rw [if_neg (by omega), Nat.mul_div_cancel_left _ hG0]
@@ -218,11 +218,11 @@ private lemma sum_harmonicLetters {T G : ℕ} (hG : T < G) (φ : ℕ → ℝ) (h
     rfl
 
 private lemma primeHarmonic_ge_half {T : ℕ} (hT : 2 ≤ T) : 1 / 2 ≤ primeHarmonic T := by
-  have h2 : 2 ∈ primesUpTo T := mem_primes.mpr ⟨Nat.prime_two, hT⟩
+  have h2 : 2 ∈ primesUpTo T := mem_primesUpTo.mpr ⟨Nat.prime_two, hT⟩
   have := single_le_sum (f := fun P : ℕ => 1 / (P : ℝ)) (fun P _ => by positivity) h2
   simpa [primeHarmonic] using this
 
-private lemma primeHarmonic_le (T : ℕ) : primeHarmonic T ≤ 1 + Real.log T := by
+theorem primeHarmonic_le (T : ℕ) : primeHarmonic T ≤ 1 + Real.log T := by
   have hsub : primesUpTo T ⊆ Icc 1 T := filter_subset _ _
   have h1 : primeHarmonic T ≤ ∑ i ∈ Icc 1 T, ((i : ℝ))⁻¹ := by
     rw [primeHarmonic]
@@ -249,14 +249,14 @@ theorem exists_harmonic_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : �
     rcases mem_union.mp hk with h | h
     · exact (mem_Icc.mp (mem_filter.mp h).1).1
     · obtain ⟨P, hP, rfl⟩ := mem_image.mp h
-      exact hG2.trans (Nat.le_mul_of_pos_right G (mem_primes.mp hP).1.pos)
+      exact hG2.trans (Nat.le_mul_of_pos_right G (mem_primesUpTo.mp hP).1.pos)
   have hJK : ∀ k ∈ moebiusLetters T G, k ≤ G * T := by
     intro k hk
     rcases mem_union.mp hk with h | h
     · have hkT := (mem_Icc.mp (mem_filter.mp h).1).2
       exact hkT.trans (hG.le.trans (Nat.le_mul_of_pos_right G (by omega)))
     · obtain ⟨P, hP, rfl⟩ := mem_image.mp h
-      exact Nat.mul_le_mul_left G (mem_primes.mp hP).2
+      exact Nat.mul_le_mul_left G (mem_primesUpTo.mp hP).2
   have hsumMod : ∀ r, ∑ k ∈ moebiusLetters T G, (harmonicWeights T G k : ℝ) * ((r % k : ℕ) : ℝ) =
       mobiusPart T r + harmonicEntangled T G r := by
     intro r
@@ -336,11 +336,11 @@ theorem exists_harmonic_producer {T G : ℕ} (hT : 2 ≤ T) (hG : T < G) {η : �
         ∑ P ∈ primesUpTo T, (T : ℝ) / ((G : ℝ) * P) * Real.log ((G * T : ℕ) : ℝ) := by
       rw [harmonicCoefficient, primeHarmonic, mul_sum, sum_mul]
       refine sum_congr rfl fun P hP => ?_
-      have hPR : (P : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (mem_primes.mp hP).1.ne_zero
+      have hPR : (P : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (mem_primesUpTo.mp hP).1.ne_zero
       field_simp
     rw [hS, e]
     refine sum_le_sum fun P hP => ?_
-    obtain ⟨hPp, hPT⟩ := mem_primes.mp hP
+    obtain ⟨hPp, hPT⟩ := mem_primesUpTo.mp hP
     have hl : Real.log ((G * P : ℕ) : ℝ) ≤ Real.log ((G * T : ℕ) : ℝ) := by
       refine Real.log_le_log ?_ ?_
       · exact_mod_cast Nat.mul_pos hG0 hPp.pos

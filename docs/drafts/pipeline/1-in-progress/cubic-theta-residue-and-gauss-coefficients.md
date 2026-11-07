@@ -53,7 +53,10 @@ for `0≤λ<1`, including `λ=8/9`; nonzero kernel is not yet proved.
 The [actual resolvent is meromorphic](../3-formalized/cubic-meromorphic-resolvent.md)
 at `z=8/9` and after composition at `s=4/3`, with explicit finite-rank singular part.
 
-Open inputs: source matching, Fourier identification, and nonvanishing
+The [smooth incoming forcing](../3-formalized/cubic-smooth-incoming-forcing.md)
+is compactly supported on the quotient and entire as an `L²` family.
+
+Open inputs: [source matching](cubic-initial-resolvent-matching.md), Fourier identification, and nonvanishing
 of `C∞`. None is supplied as an assumption in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.
 

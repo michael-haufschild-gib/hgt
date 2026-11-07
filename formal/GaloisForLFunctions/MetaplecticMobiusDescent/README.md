@@ -253,6 +253,19 @@ is entire in the spectral parameter.
 and its exact Laplace defect. Both descend through the cubic character
 kernel to the quotient and are entire pointwise in the spectral parameter.
 
+`CubicCompactHeightProfiles.lean` constructs the bounded linear map from
+compact-height profiles to quotient `L²`. The actual incoming defect is
+its image of an entire Banach-algebra exponential family.
+
+`CompactSmoothCubicDefects.lean` proves compact support and smoothness
+of the actual quotient defect. Its compact smooth test has exactly the
+entire `L²` forcing class constructed above.
+
+`TheCubicIncomingResidue.lean` applies the actual resolvent to the entire
+incoming forcing. Its residue at `4/3` is `(17/6)MPM*F(4/3)`, lies in
+a finite-dimensional range, and satisfies the `8/9` eigenvalue equation.
+Nonvanishing is a separate arithmetic input.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

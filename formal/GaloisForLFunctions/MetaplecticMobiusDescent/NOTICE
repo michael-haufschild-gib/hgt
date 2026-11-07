@@ -282,3 +282,13 @@ SmoothCubicCuspSeeds adapts the locally finite height-profile sums and
 seed equations from OpenAI Eisenstein/SmoothCuspCutoffs.lean,
 SeedDefects.lean, and FundamentalDomain.lean. Local finiteness uses
 the locally checked integral-row bound and actual spatial chart.
+CubicCompactHeightProfiles adapts the bounded profile map and entire
+L² defect family from OpenAI Eisenstein/CompactProfiles.lean. Its
+high-cusp uniqueness and quotient measure are locally constructed.
+CompactSmoothCubicDefects adapts high-cusp vanishing, compact support,
+and smooth chart transport from OpenAI Eisenstein/TransformedColumns.lean,
+SmoothTests.lean, and SeedHeight.lean. The quotient and height bounds
+are supplied by locally checked modules.
+TheCubicIncomingResidue adapts the actual forcing correction and its
+spectral residue from OpenAI Eisenstein/MeromorphicResolvent.lean.
+The entire forcing and meromorphic resolvent are locally checked.

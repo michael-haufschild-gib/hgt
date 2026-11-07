@@ -9,7 +9,12 @@
 
 Prove an unconditional source estimate beyond absolute convergence. The candidate external estimate is
 `Σ_{0<N(u)≤D^(1+θ)} |Σ_n μ_K(n)(u/n)_6 W(N(n)/D)|² ≪ D^(2+θ+ε)`
-for every fixed `θ, ε > 0` and smooth compactly supported `W`. Sixth-power rows then give the `11/12` exponent. This is an external claim, not a theorem established in this corpus.
+for every fixed `θ, ε > 0` and smooth compactly supported `W`. Sixth-power
+rows retain `gcd(n,b)=1`; averaging over `b` produces the totient-weighted
+coefficient `μ_K(n)φ(n)/N(n)` and the `11/12` exponent. The external final
+bridge uses its corrected Euler product and Mellin continuation to exclude
+zeta zeros. It does not identify ideal Möbius sums with rational-integer
+Möbius sums. Neither the estimate nor this full bridge is established locally.
 
 ## Arithmetic mechanism to audit
 
@@ -22,6 +27,12 @@ for every fixed `θ, ε > 0` and smooth compactly supported `W`. Sixth-power row
 ## Status and sources
 
 The global mean-square estimate has no local dependency-closed proof. Corpus searches found no matching source estimate. External endpoints and their transitive analytic dependencies require audit before reuse.
+
+The [frontier review](../../../reports/review-0711/route-obstacles.md)
+separates classical cubic spectral theory (A33) from the cancellation
+transfer (B94). The target here is the uniform mean-square estimate above;
+continuation and coefficient identification are prerequisites. Generic
+spectral positivity supplies neither the signed transfer nor its uniformity.
 
 The following arithmetic statements are formalized in
 `MetaplecticMobiusDescent/`, with direct Lean checks and standard-axiom audits.
@@ -78,6 +89,9 @@ Its completed energy space has a closed gradient, faithful mass embedding,
 and [compact mass restriction](../3-formalized/cubic-kernel-local-sobolev-compactness.md)
 to every compact quotient set. The [actual exterior coercivity estimate](../3-formalized/cubic-quotient-exterior-coercivity.md)
 is formalized with compact error map.
+The [meromorphic resolvent](../3-formalized/cubic-meromorphic-resolvent.md)
+is constructed at spectral value `8/9`, hence at Eisenstein parameter
+`4/3`; its possible pole does not yet prove a nonzero theta residue.
 
 Cubic theta identification, cube removal, and uniform transfer estimates
 remain open locally.

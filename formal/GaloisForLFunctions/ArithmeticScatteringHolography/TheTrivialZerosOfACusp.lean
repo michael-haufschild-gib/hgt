@@ -467,7 +467,8 @@ theorem cusp_index_law {q : ℕ} (hq : 2 ≤ q) (A : Matrix T T ℤ) (c : T → 
     have h := congrArg (fun p => p.coeff 0) hfac
     simp only [coeff_map] at h
     rw [coeff_X_pow_mul', if_neg (by omega), modePoly_coeff_zero] at h
-    have h0 : (q : ℤ) ^ Fintype.card T * ∏ v, (1 - c v) = 0 := by exact_mod_cast h
+    have h0 : (q : ℤ) ^ Fintype.card T * ∏ v, (1 - c v) = 0 :=
+      (map_eq_zero_iff (Int.castRingHom ℂ) Int.cast_injective).mp h
     exact (mul_ne_zero (pow_ne_zero _ hq0) hprod) h0
   subst hm
   have hL0 := eval_zero_of_functional_equation (by omega) hL hdeg hFE
@@ -508,7 +509,6 @@ theorem modePoly_branch_coeff_two {q : ℕ} (hq : q ≠ 0) (n b : S → ℤ) (A'
     · simp [modeMatrix, branchMatrix, branchIndex, hN₂]
       ring
     · simp [modeMatrix, branchMatrix, branchIndex, hN₂]
-      ring
     · simp [modeMatrix, branchMatrix, branchIndex, hN₂]
   have hdet : modePoly q (branchMatrix n b A') branchIndex = X ^ 2 * N₂.det := by
     rw [modePoly, hsplit, Matrix.det_mul, Matrix.det_mul, Matrix.det_diagonal,
@@ -571,7 +571,7 @@ theorem first_branch_law {q : ℕ} (hq : 2 ≤ q) (n b : S → ℤ) (A' : Matrix
   rw [hS] at hcoef
   have hZ : (q : ℤ) ^ (1 + g + Multiset.card ls) ≠ 0 := pow_ne_zero _ hq0
   apply mul_left_cancel₀ hZ
-  linear_combination -hcoef
+  linear_combination hcoef
 
 /-- **Calibration.** A single vertex with all its `q + 1` edges in the ray has the mode polynomial `x² - q²`: genus zero, `c₀ = q + 1`. -/
 theorem modePoly_single_vertex (q : ℕ) :

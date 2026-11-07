@@ -16,7 +16,7 @@ is the degree of `y - x F`. It obeys the parallelogram law because the height do
 
   `X(P₀ - P₁) = N / (T^q - T)²`,  `N = h (1 + h^{(q-1)/2})² - (a + T + T^q)(T^q - T)²`
 
-(`xCoord_sub`), and at a point `c ∈ 𝔽_q` of the `x`-line this fraction loses `1 - χ(h(c))` powers of `T - c` (`numer_factor`): the pole has order `1 + χ(h(c))`, the number of points of the curve above `c`. So
+(`xCoord_sub`), and at a point `c ∈ 𝔽_q` of the `x`-line this fraction loses `1 - χ(h(c))` powers of `T - c` (`commonFactor_dvd`, `reduced_coprime`): the pole has order `1 + χ(h(c))`, the number of points of the curve above `c`. So
 `K(1, 1) = #E(𝔽_q)` (`height_sub_eq`, `manin_countLaw`). Then `CountLaw.universal` gives `t² ≤ 4q` (`hasse_of_countLaw`).
 
 This is Manin's elementary proof of Hasse's theorem, in the language of the black hole: the first instance of the law is the local count of the graph, and the content of the theorem is all the others.

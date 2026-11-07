@@ -1,8 +1,8 @@
 # Mollified log-dilation bridges and prime-side Selberg–Hankel defect at fixed shift
 
 - **ID:** mollified-log-dilation-bridge
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/README.md` Open Topic 1 & Open Topic 3; `TheDilationQuotientReadsTheInnerMass`; `TheInnerMassIsAMollifierInfimum`; `TheFixedBaseConeAndCriticalBernstein`.
 - **Statement:**
   1. *Shifted Plancherel second moment, shifted Szegő infimum, and variational dilation ratio.*
@@ -15,8 +15,8 @@
      For any finite set `S` of integers `p ≥ 2`, `eulerMollifier S s = ∏_{p ∈ S} (1 − p^{−s})` is nonvanishing on `Re s ≥ 1/2`, satisfies `∫ log ‖eulerMollifier S (1/2 + δ + iτ)‖ P_w(τ) dτ = log ‖eulerMollifier S (w + δ)‖` for all `δ ≥ 0` and `Re w > 1/2`, and transforms the log-dilation identity at `w = 1`, `δ ∈ (0, 1/2)` into
      `∫ (log ‖ζ(1/2 + iτ) eulerMollifier S (1/2 + iτ)‖ − log ‖ζ(1/2 + δ + iτ) eulerMollifier S (1/2 + δ + iτ)‖) P₁(τ) dτ = (I(1) − I_δ(1)) + log((1 − δ) ∏_{p ∈ S} (1 − p⁻¹) / (δ ‖ζ(1 + δ) eulerMollifier S (1 + δ)‖))`.
   3. *Exact shifted Poisson Gram matrix and Abel partial-sum coercivity of Dirichlet polynomials.*
-     For `ξ ∈ ℝ`, `∫ cos(ξτ) P₁(τ) dτ = exp(−|ξ|/2)`. Consequently, for every `M : ℕ`, `b : ℕ → ℝ`, and `δ ∈ ℝ`, `dirichletPoly M b s = ∑_{m ∈ Icc 1 M} b_m m^{−s}` obeys
-     `∫ ‖dirichletPoly M b (1/2 + δ + iτ)‖² P₁(τ) dτ = ∑_{m ∈ Icc 1 M} ∑_{n ∈ Icc 1 M} (b_m m^{−δ})(b_n n^{−δ}) / max(m, n)`,
+     For `ξ ∈ ℝ`, `∫ cos(ξτ) P₁(τ) dτ = exp(−|ξ|/2)`. Consequently, for every `M : ℕ`, `b : ℕ → ℝ`, and `δ ∈ ℝ`, `realDirichletPoly M b s = ∑_{m ∈ Icc 1 M} b_m m^{−s}` obeys
+     `∫ ‖realDirichletPoly M b (1/2 + δ + iτ)‖² P₁(τ) dτ = ∑_{m ∈ Icc 1 M} ∑_{n ∈ Icc 1 M} (b_m m^{−δ})(b_n n^{−δ}) / max(m, n)`,
      and for `M ≥ 1` this quadratic form equals the strictly positive-definite Abel sum of squares
      `(∑_{m ∈ Icc 1 M} b_m m^{−δ})² / M + ∑_{k ∈ Icc 1 (M − 1)} (k⁻¹ − (k + 1)⁻¹) (∑_{m ∈ Icc 1 k} b_m m^{−δ})²`.
   4. *Prime-side Selberg–Cholesky diagonalization and `δ → 0⁺` defect dichotomy.*
@@ -30,7 +30,38 @@
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorem, foreground audit green, axiom check PASS
+- [x] 2 → 3  formalized: `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean` (`integrable_norm_sq_zeta_shifted_poisson`, `isGLB_shiftedBudget_innerField`, `exp_two_dilation_drop_eq_szego_ratio`, `riemannHypothesis_iff_szego_budget_ratio_eq`, `eulerMollified_log_dilation_quotient_eq`, `integral_cos_mul_halfPlanePoissonKernel_one`, `integral_dirichletPoly_norm_sq_poisson`, `dirichletGram_eq_abel_squares`, `dirichletHankel_eulerAmpl_ge_selberg`, `dirichletHankel_selbergArray_eq`, `eulerHankel_pos_floor_of_pos`, `exists_eulerHankel_lt_of_critical`, `hasDerivAt_log_eulerHankel_min`, `not_summable_primes_log_div_add_one`), foreground `lake --old env lean` green, `#print axioms` PASS (`[propext, Classical.choice, Quot.sound]`)
+
+## Lean verification
+- **Module:** `formal/GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean`
+- **Declarations:**
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.shiftedFractLogPull`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.fourier_shiftedFractLogPull`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.integrable_norm_sq_zeta_shiftedLine`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.integrable_norm_sq_zeta_shifted_poisson`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.shiftedBudget`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.isGLB_shiftedBudget`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.isGLB_shiftedBudget_innerField`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.isGLB_shiftedBudget_one`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.exp_two_dilation_drop_eq_szego_ratio`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.riemannHypothesis_iff_szego_budget_ratio_eq`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.eulerMollifier`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.integral_log_eulerMollifier_shifted`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.eulerMollified_log_dilation_quotient_eq`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.integral_cos_mul_halfPlanePoissonKernel_one`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.realDirichletPoly`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.integral_dirichletPoly_norm_sq_poisson`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.dirichletGram_eq_abel_squares`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.eulerAmpl`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.dirichletHankel_eulerAmpl_eq_sum_sq`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.selbergArray`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.dirichletHankel_eulerAmpl_ge_selberg`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.dirichletHankel_selbergArray_eq`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.eulerHankel_pos_floor_of_pos`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.exists_eulerHankel_lt_of_critical`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.hasDerivAt_log_eulerHankel_min`
+  - `GaloisForLFunctions.ArithmeticInnerFunctionTheory.not_summable_primes_log_div_add_one`
+- **Audit:** `lake --old env lean GaloisForLFunctions/ArithmeticInnerFunctionTheory/MollifiedLogDilationBridge.lean` exited `0` with zero warnings and default heartbeats; all `#print axioms` checks report only `[propext, Classical.choice, Quot.sound]`.
 
 ## Proof
 

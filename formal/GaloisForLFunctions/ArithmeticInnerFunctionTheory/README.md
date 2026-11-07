@@ -33,7 +33,7 @@ The field gives the second expression, exact certificates, classifications, tang
 | Green kernel | `greenKernel` | `G(w, ρ) = log(|w + ρ̄ − 1|/|w − ρ|) = log 1/ϱ(w, ρ)` |
 | Inner field of a datum | `innerOf` | `I_E(w) = ∫ log|E| P_w − log|E(w)|` |
 | Inner field of `ζ` | `innerField`, `ZetaRightZero`, `zeroMult` | `I(w) = Σ_ρ m_ρ G(w, ρ)` over the right zeros |
-| Budget | `budget`, `shiftedBudget`, `polyMollifier`, `eulerMollifier` | `∫ |ζ e^{Q∘φ_w}|² P_w` and its `Re s = ½ + δ` counterpart; outer Euler prefixes `Π_{p∈S}(1 − p^{−s})` |
+| Budget | `budget`, `shiftedBudget`, `polyMollifier`, `eulerMollifier`, `realDirichletPoly` | `∫ |ζ e^{Q∘φ_w}|² P_w` and its `Re s = ½ + δ` counterpart; outer Euler prefixes `Π_{p∈S}(1 − p^{−s})` and Dirichlet polynomials |
 | Hardy functions of the disc | `IsHardyDisc`, `taylorCoeff`, `mollified` | functions with `|Φ| ≤ A/|1 − w|²` and bounded means, with Parseval and no boundary limit theory; `E M_Q` in the coordinate `u = (s − 1)/s` |
 | Curve inner mass | `innerMass`, `lPoly` | `Σ log⁺|β_i|`, the Mahler measure of the normalized `L`-polynomial |
 | Abel mollifier of a curve | `frobTrace`, `abelPoly`, `abelBudget`, `abelRatio` | `Q = Σ_{k≤N} ρ^k a_k v^k/k`, the Euler logarithm damped and truncated; the dilation quotient `|P(v)/P(ρv)|²` |

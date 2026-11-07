@@ -341,10 +341,12 @@ theorem norm_integral_le (hY : ∀ p ∈ Y, p.Prime) {κ : Y → ℕ} (hκ : κ 
     rwa [mul_inv_cancel₀ hmaxpos.ne'] at this
   nlinarith [abs_nonneg (freqOf e κ)]
 
-/-- **The window integral of a box weight.** The coefficient mass is `1`, whatever the number of primes. -/
-theorem abs_integral_boxWeight_sub_le (hY : ∀ p ∈ Y, p.Prime) (T L : ℝ) :
+/-- The window integral of a box weight, from any bound `Φ` on the window integrals of the nonzero frequencies. -/
+theorem abs_integral_boxWeight_sub_le_sum (T L : ℝ) (Φ : (Y → ℕ) → ℝ) (hΦ0 : ∀ κ, 0 ≤ Φ κ)
+    (hΦ : ∀ κ ∈ boxIndex Y e, κ ≠ (fun i : Y => e i) →
+      ‖∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤ Φ κ) :
     |(∫ t in T..T + L, boxWeight Y e θ t) - L * ∏ p ∈ Y, binomMean (e p)| ≤
-      2 * (boxD Y e : ℝ) ^ 2 := by
+      ∑ κ ∈ boxIndex Y e, coeffOf e κ * Φ κ := by
   classical
   have hc : ∀ κ : Y → ℕ, Continuous fun t : ℝ => (coeffOf e κ : ℂ) * ePhase (-phaseOf e θ κ) *
       cexp (I * ((freqOf e κ : ℝ) * (t : ℝ))) := fun κ => by fun_prop
@@ -366,23 +368,19 @@ theorem abs_integral_boxWeight_sub_le (hY : ∀ p ∈ Y, p.Prime) (T L : ℝ) :
     ring
   rw [← Finset.add_sum_erase _ _ hmem, hmain] at hint
   have hrest : ‖∑ κ ∈ (boxIndex Y e).erase κ₀, (coeffOf e κ : ℂ) * ePhase (-phaseOf e θ κ) *
-      ∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤ 2 * (boxD Y e : ℝ) ^ 2 := by
+      ∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤
+      ∑ κ ∈ boxIndex Y e, coeffOf e κ * Φ κ := by
     refine (norm_sum_le _ _).trans ?_
     have hterm : ∀ κ ∈ (boxIndex Y e).erase κ₀,
         ‖(coeffOf e κ : ℂ) * ePhase (-phaseOf e θ κ) *
-          ∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤
-        coeffOf e κ * (2 * (boxD Y e : ℝ) ^ 2) := by
+          ∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ)))‖ ≤ coeffOf e κ * Φ κ := by
       intro κ hκ
       have hκ' := Finset.mem_erase.mp hκ
       rw [norm_mul, norm_mul, norm_ePhase, mul_one, Complex.norm_real, Real.norm_of_nonneg (coeffOf_nonneg e κ)]
-      exact mul_le_mul_of_nonneg_left (norm_integral_le e hY hκ'.2 hκ'.1 T L) (coeffOf_nonneg e κ)
+      exact mul_le_mul_of_nonneg_left (hΦ κ hκ'.2 hκ'.1) (coeffOf_nonneg e κ)
     refine (Finset.sum_le_sum hterm).trans ?_
-    rw [← Finset.sum_mul]
-    have h1 : ∑ κ ∈ (boxIndex Y e).erase κ₀, coeffOf e κ ≤ ∑ κ ∈ boxIndex Y e, coeffOf e κ :=
-      Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _) fun κ _ _ => coeffOf_nonneg e κ
-    rw [sum_coeffOf] at h1
-    have h2 : (0 : ℝ) ≤ 2 * (boxD Y e : ℝ) ^ 2 := by positivity
-    nlinarith
+    exact Finset.sum_le_sum_of_subset_of_nonneg (Finset.erase_subset _ _)
+      fun κ _ _ => mul_nonneg (coeffOf_nonneg e κ) (hΦ0 κ)
   have hre : ((((∫ t in T..T + L, boxWeight Y e θ t) - L * ∏ p ∈ Y, binomMean (e p) : ℝ)) : ℂ) =
       ∑ κ ∈ (boxIndex Y e).erase κ₀, (coeffOf e κ : ℂ) * ePhase (-phaseOf e θ κ) *
         ∫ t in T..T + L, cexp (I * ((freqOf e κ : ℝ) * (t : ℝ))) := by
@@ -390,6 +388,14 @@ theorem abs_integral_boxWeight_sub_le (hY : ∀ p ∈ Y, p.Prime) (T L : ℝ) :
     ring
   rw [← Real.norm_eq_abs, ← Complex.norm_real, hre]
   exact hrest
+
+/-- **The window integral of a box weight.** The coefficient mass is `1`, whatever the number of primes. -/
+theorem abs_integral_boxWeight_sub_le (hY : ∀ p ∈ Y, p.Prime) (T L : ℝ) :
+    |(∫ t in T..T + L, boxWeight Y e θ t) - L * ∏ p ∈ Y, binomMean (e p)| ≤
+      2 * (boxD Y e : ℝ) ^ 2 := by
+  have h := abs_integral_boxWeight_sub_le_sum e θ T L (fun _ => 2 * (boxD Y e : ℝ) ^ 2)
+    (fun _ => by positivity) fun κ hκ hne => norm_integral_le e hY hκ hne T L
+  rwa [← Finset.sum_mul, sum_coeffOf, one_mul] at h
 
 end Expansion
 
@@ -421,20 +427,17 @@ theorem box_algebra {A B X c r D L : ℝ} {m : ℝ} (hm : 1 ≤ m) (hB : B ≤ 1
   rw [e] at h
   nlinarith
 
-/-- **The box theorem.** See the module docstring. -/
-theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ → ℝ) {m : ℕ} (hm : 1 ≤ m)
+/-- **The core of the box theorem.** If no time of the window lies in the box, and the window integrals of the box weights are known up to `2D`, then `L ≤ 8 (4m)^r D`. -/
+theorem box_core {Y : Finset ℕ} (θ : ℕ → ℝ) {m : ℕ} (hm : 1 ≤ m)
     {δ : ℝ} (hδ1 : δ < 1) (hc : 8 * (m : ℝ) * ((Y.card : ℝ) * (1 - δ) ^ m) ≤ 1) (T : ℝ)
-    {L : ℝ} (hL : 8 * (4 * (m : ℝ)) ^ Y.card * ((boxModulus Y (2 * m) : ℕ) : ℝ) ^ 2 < L) :
-    ∃ t ∈ Set.Icc T (T + L), ∀ q ∈ Y, 1 - δ < bump (t * Real.log q - θ q) := by
+    {L D : ℝ} (hLpos : 0 < L) (hD0 : 0 ≤ D)
+    (hErr : ∀ e : ℕ → ℕ, (∀ p, e p ≤ 2 * m) →
+      |(∫ t in T..T + L, boxWeight Y e θ t) - L * ∏ p ∈ Y, binomMean (e p)| ≤ 2 * D)
+    (hall : ∀ t ∈ Set.Icc T (T + L), ∃ q ∈ Y, bump (t * Real.log q - θ q) ≤ 1 - δ) :
+    L ≤ 8 * (4 * (m : ℝ)) ^ Y.card * D := by
   classical
   have hmr : (1 : ℝ) ≤ m := by exact_mod_cast hm
-  have hLpos : 0 < L := lt_of_le_of_lt (by positivity) hL
-  by_contra hcon
-  push Not at hcon
-  have hall : ∀ t ∈ Set.Icc T (T + L), ∃ q ∈ Y, bump (t * Real.log q - θ q) ≤ 1 - δ := hcon
   obtain ⟨q₀, hq₀, -⟩ := hall T ⟨le_rfl, by linarith⟩
-  set D : ℝ := ((boxModulus Y (2 * m) : ℕ) : ℝ) ^ 2 with hD
-  have hD0 : 0 ≤ D := by positivity
   set c : ℝ := (1 - δ) ^ m with hcdef
   have hc0 : 0 ≤ c := pow_nonneg (by linarith) _
   set eAll : ℕ → ℕ := fun _ => 2 * m with heAll
@@ -484,12 +487,8 @@ theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ �
     rw [hX, ← pow_succ']
     congr 1
     omega
-  have hDall : (boxD Y eAll : ℝ) ^ 2 = D := by
-    rw [hD]
-    rfl
   have hlow : L * (A * X) - 2 * D ≤ ∫ t in T..T + L, boxWeight Y eAll θ t := by
-    have h1 := abs_integral_boxWeight_sub_le eAll θ hY T L
-    rw [hDall] at h1
+    have h1 := hErr eAll fun _ => le_rfl
     have e1 : ∏ p ∈ Y, binomMean (eAll p) = A * X := by
       rw [← hAr]
       exact Finset.prod_const A
@@ -497,7 +496,9 @@ theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ �
     linarith [(abs_le.mp h1).1]
   have hupq : ∀ q ∈ Y, ∫ t in T..T + L, boxWeight Y (eq' q) θ t ≤ L * (B * X) + 2 * D := by
     intro q hq
-    have h1 := abs_integral_boxWeight_sub_le (eq' q) θ hY T L
+    have h1 := hErr (eq' q) fun p => by
+      simp only [heq']
+      split_ifs <;> omega
     have e1 : ∏ p ∈ Y, binomMean (eq' q p) = B * X := by
       rw [← Finset.mul_prod_erase Y _ hq]
       have e2 : ∏ p ∈ Y.erase q, binomMean (eq' q p) = X := by
@@ -507,14 +508,6 @@ theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ �
       rw [e2]
       simp [heq', hB]
     rw [e1] at h1
-    have hDq : (boxD Y (eq' q) : ℝ) ^ 2 ≤ D := by
-      rw [← hDall]
-      have hle : boxD Y (eq' q) ≤ boxD Y eAll := by
-        refine Finset.prod_le_prod' fun p hp => Nat.pow_le_pow_right (hY p hp).pos ?_
-        simp only [heq', heAll]
-        split_ifs <;> omega
-      have : (boxD Y (eq' q) : ℝ) ≤ boxD Y eAll := by exact_mod_cast hle
-      exact pow_le_pow_left₀ (by positivity) this 2
     linarith [(abs_le.mp h1).2]
   have hsum : ∑ q ∈ Y, ∫ t in T..T + L, boxWeight Y (eq' q) θ t ≤ (r : ℝ) * (L * (B * X) + 2 * D) := by
     have := Finset.sum_le_card_nsmul Y _ _ hupq
@@ -534,12 +527,27 @@ theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ �
     rw [← mul_pow]
     exact one_le_pow₀ hAm
   have h4m : 0 < (4 * (m : ℝ)) ^ r := by positivity
-  have hLle : L ≤ 8 * (4 * (m : ℝ)) ^ r * D := by
-    calc L = L * 1 := (mul_one _).symm
-      _ ≤ L * (A ^ r * (4 * (m : ℝ)) ^ r) := mul_le_mul_of_nonneg_left hpow hLpos.le
-      _ = (L * A ^ r) * (4 * (m : ℝ)) ^ r := by ring
-      _ ≤ (8 * D) * (4 * (m : ℝ)) ^ r := mul_le_mul_of_nonneg_right hclose h4m.le
-      _ = _ := by ring
+  calc L = L * 1 := (mul_one _).symm
+    _ ≤ L * (A ^ r * (4 * (m : ℝ)) ^ r) := mul_le_mul_of_nonneg_left hpow hLpos.le
+    _ = (L * A ^ r) * (4 * (m : ℝ)) ^ r := by ring
+    _ ≤ (8 * D) * (4 * (m : ℝ)) ^ r := mul_le_mul_of_nonneg_right hclose h4m.le
+    _ = _ := by ring
+
+/-- **The box theorem.** See the module docstring. -/
+theorem exists_mem_box {Y : Finset ℕ} (hY : ∀ p ∈ Y, p.Prime) (θ : ℕ → ℝ) {m : ℕ} (hm : 1 ≤ m)
+    {δ : ℝ} (hδ1 : δ < 1) (hc : 8 * (m : ℝ) * ((Y.card : ℝ) * (1 - δ) ^ m) ≤ 1) (T : ℝ)
+    {L : ℝ} (hL : 8 * (4 * (m : ℝ)) ^ Y.card * ((boxModulus Y (2 * m) : ℕ) : ℝ) ^ 2 < L) :
+    ∃ t ∈ Set.Icc T (T + L), ∀ q ∈ Y, 1 - δ < bump (t * Real.log q - θ q) := by
+  have hLpos : 0 < L := lt_of_le_of_lt (by positivity) hL
+  by_contra hcon
+  push Not at hcon
+  refine absurd (box_core θ hm hδ1 hc T hLpos (D := ((boxModulus Y (2 * m) : ℕ) : ℝ) ^ 2)
+    (by positivity) (fun e he => ?_) hcon) (not_le.mpr hL)
+  refine (abs_integral_boxWeight_sub_le e θ hY T L).trans ?_
+  have hle : boxD Y e ≤ boxModulus Y (2 * m) :=
+    Finset.prod_le_prod' fun p hp => Nat.pow_le_pow_right (hY p hp).pos (he p)
+  have h1 : (boxD Y e : ℝ) ≤ boxModulus Y (2 * m) := by exact_mod_cast hle
+  have h2 := pow_le_pow_left₀ (by positivity) h1 2
   linarith
 
 /-- The box theorem on the primes up to `y`. -/
@@ -618,15 +626,11 @@ theorem log_box_length_lt {δ Y ℓ a : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) (h�
   have hY4 : 4 * Y ≤ w := by nlinarith
   linarith
 
-/-- **The scale of the boxes.** Every window of length `exp((20/δ) y log y)` enters every box on the primes up to `y`. -/
-theorem eventually_exists_mem_box {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
-    ∃ y₀ : ℕ, ∀ y : ℕ, y₀ ≤ y → ∀ (θ : ℕ → ℝ) (T : ℝ),
-      ∃ t ∈ Set.Icc T (T + Real.exp (20 / δ * y * Real.log y)),
-        ∀ q ∈ primesUpTo y, 1 - δ < bump (t * Real.log q - θ q) := by
-  obtain ⟨y₀, hy₀⟩ := eventually_atTop.mp
-    (tendsto_natCast_atTop_atTop.eventually (eventually_box_conditions hδ0))
-  refine ⟨y₀, fun y hy θ T => ?_⟩
-  obtain ⟨hℓ, hY4, hY8, hY1⟩ := hy₀ y hy
+/-- The exponent `m = ⌈3 log y/δ⌉` pays for all the primes up to `y`. -/
+theorem box_tail_condition {δ : ℝ} {y : ℕ} (hδ0 : 0 < δ) (hδ1 : δ < 1) (hℓ : 4 ≤ Real.log y)
+    (hY8 : 8 * (3 * Real.log y / δ + 1) ≤ (y : ℝ) ^ 2) (hY1 : 1 ≤ (y : ℝ)) :
+    ∃ m : ℕ, 1 ≤ m ∧ (m : ℝ) ≤ 3 * Real.log y / δ + 1 ∧
+      8 * (m : ℝ) * ((y : ℝ) * (1 - δ) ^ m) ≤ 1 := by
   set ℓ : ℝ := Real.log y with hℓdef
   have hYpos : (0 : ℝ) < y := by linarith
   set m : ℕ := ⌈3 * ℓ / δ⌉₊ with hm
@@ -638,7 +642,6 @@ theorem eventually_exists_mem_box {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
       rw [le_div_iff₀ hδ0]
       nlinarith
     exact_mod_cast h
-  have hmr : (1 : ℝ) ≤ m := by exact_mod_cast hmpos
   -- The tail `(1 − δ)^m ≤ y^{−3}`.
   have htail : (1 - δ) ^ m ≤ 1 / (y : ℝ) ^ 3 := by
     have h1 : 1 - δ ≤ Real.exp (-δ) := by
@@ -656,17 +659,30 @@ theorem eventually_exists_mem_box {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
       have := mul_le_mul_of_nonneg_right hm1 hδ0.le
       rwa [div_mul_cancel₀ _ hδ0.ne'] at this
     linarith
-  have hc : 8 * (m : ℝ) * ((y : ℝ) * (1 - δ) ^ m) ≤ 1 := by
-    have h1 : (y : ℝ) * (1 - δ) ^ m ≤ (y : ℝ) * (1 / (y : ℝ) ^ 3) :=
-      mul_le_mul_of_nonneg_left htail hYpos.le
-    have e : (y : ℝ) * (1 / (y : ℝ) ^ 3) = 1 / (y : ℝ) ^ 2 := by
-      field_simp
-    rw [e] at h1
-    have h2 : 8 * (m : ℝ) ≤ (y : ℝ) ^ 2 := by linarith
-    calc 8 * (m : ℝ) * ((y : ℝ) * (1 - δ) ^ m) ≤ (y : ℝ) ^ 2 * (1 / (y : ℝ) ^ 2) :=
-          mul_le_mul h2 h1 (mul_nonneg hYpos.le (pow_nonneg (by linarith) _)) (by positivity)
-      _ = 1 := by field_simp
+  refine ⟨m, hmpos, hm2, ?_⟩
+  have h1 : (y : ℝ) * (1 - δ) ^ m ≤ (y : ℝ) * (1 / (y : ℝ) ^ 3) :=
+    mul_le_mul_of_nonneg_left htail hYpos.le
+  have e : (y : ℝ) * (1 / (y : ℝ) ^ 3) = 1 / (y : ℝ) ^ 2 := by
+    field_simp
+  rw [e] at h1
+  have h2 : 8 * (m : ℝ) ≤ (y : ℝ) ^ 2 := by linarith
+  calc 8 * (m : ℝ) * ((y : ℝ) * (1 - δ) ^ m) ≤ (y : ℝ) ^ 2 * (1 / (y : ℝ) ^ 2) :=
+        mul_le_mul h2 h1 (mul_nonneg hYpos.le (pow_nonneg (by linarith) _)) (by positivity)
+    _ = 1 := by field_simp
+
+/-- **The scale of the boxes.** Every window of length `exp((20/δ) y log y)` enters every box on the primes up to `y`. -/
+theorem eventually_exists_mem_box {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) :
+    ∃ y₀ : ℕ, ∀ y : ℕ, y₀ ≤ y → ∀ (θ : ℕ → ℝ) (T : ℝ),
+      ∃ t ∈ Set.Icc T (T + Real.exp (20 / δ * y * Real.log y)),
+        ∀ q ∈ primesUpTo y, 1 - δ < bump (t * Real.log q - θ q) := by
+  obtain ⟨y₀, hy₀⟩ := eventually_atTop.mp
+    (tendsto_natCast_atTop_atTop.eventually (eventually_box_conditions hδ0))
+  refine ⟨y₀, fun y hy θ T => ?_⟩
+  obtain ⟨hℓ, hY4, hY8, hY1⟩ := hy₀ y hy
+  obtain ⟨m, hmpos, hm2, hc⟩ := box_tail_condition hδ0 hδ1 hℓ hY8 hY1
+  set ℓ : ℝ := Real.log y with hℓdef
   -- The length.
+  have hmr : (1 : ℝ) ≤ m := by exact_mod_cast hmpos
   have hlogm : Real.log (4 * (m : ℝ)) ≤ ℓ := Real.log_le_log (by positivity) (by linarith)
   have hstrict := log_box_length_lt hδ0 hδ1 hℓ hY1 hm2 hlogm
   have hL : 8 * (4 * (m : ℝ)) ^ y * ((4 : ℝ) ^ (2 * m * y)) ^ 2 < Real.exp (20 / δ * y * ℓ) := by

@@ -623,6 +623,7 @@ theorem integral_cos_mul_halfPlanePoissonKernel_one (ξ : ℝ) :
     rw [hrep, Complex.reCLM_apply, Complex.ofReal_re] at hre
     rw [hre]
     refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    dsimp only
     rw [Complex.reCLM_apply]
     symm
     dsimp only [F]
@@ -686,7 +687,7 @@ theorem integral_dirichletPoly_norm_sq_poisson (M : ℕ) (b : ℕ → ℝ) (δ :
       have hm_pos : (0 : ℝ) < m := by exact_mod_cast (Finset.mem_Icc.mp hm).1
       have hm_ne : (m : ℂ) ≠ 0 := by exact_mod_cast hm_pos.ne'
       rw [Complex.cpow_def_of_ne_zero hm_ne, ← Complex.ofReal_natCast,
-        Complex.ofReal_log hm_pos.le]
+        ← Complex.ofReal_log hm_pos.le]
       have hexp_arg : (Real.log m : ℂ) * -(1 / 2 + (δ : ℂ) + τ * I) =
           (((Real.log m * (-δ) + Real.log m * (-(1 / 2 : ℝ))) : ℝ) : ℂ) +
             ((-Real.log m * τ : ℝ) : ℂ) * I := by push_cast; ring
@@ -703,7 +704,9 @@ theorem integral_dirichletPoly_norm_sq_poisson (M : ℕ) (b : ℕ → ℝ) (δ :
     refine Finset.sum_congr rfl fun n _ => ?_
     rw [map_mul, Complex.conj_ofReal, ← Complex.exp_conj]
     have hconj_e : conj (((-Real.log n * τ : ℝ) : ℂ) * I) = (((Real.log n * τ : ℝ) : ℂ) * I) := by
-      simp [Complex.conj_I]
+      rw [map_mul, Complex.conj_ofReal, Complex.conj_I,
+        show (-Real.log n * τ : ℝ) = -(Real.log n * τ) by ring, Complex.ofReal_neg]
+      ring
     rw [hconj_e]
     have hmul_c : ((w_m m : ℂ) * Complex.exp (((-Real.log m * τ : ℝ) : ℂ) * I)) *
         ((w_m n : ℂ) * Complex.exp (((Real.log n * τ : ℝ) : ℂ) * I)) =
@@ -736,12 +739,12 @@ theorem integral_dirichletPoly_norm_sq_poisson (M : ℕ) (b : ℕ → ℝ) (δ :
     rw [Real.rpow_def_of_pos hm_pos, Real.rpow_def_of_pos hn_pos, ← Real.exp_add, ← Real.exp_add]
     rcases le_total m n with hmn | hnm
     · have hlog_le : Real.log m ≤ Real.log n := Real.log_le_log hm_pos (by exact_mod_cast hmn)
-      rw [max_eq_right hmn, abs_of_nonneg (sub_nonneg.mpr hlog_le)]
+      rw [max_eq_right (by exact_mod_cast hmn), abs_of_nonneg (sub_nonneg.mpr hlog_le)]
       have he : Real.log m * -(1 / 2 : ℝ) + Real.log n * -(1 / 2 : ℝ) +
           -(Real.log n - Real.log m) / 2 = -Real.log n := by ring
       rw [he, Real.exp_neg, Real.exp_log hn_pos]
     · have hlog_le : Real.log n ≤ Real.log m := Real.log_le_log hn_pos (by exact_mod_cast hnm)
-      rw [max_eq_left hnm, abs_of_nonpos (sub_nonpos.mpr hlog_le)]
+      rw [max_eq_left (by exact_mod_cast hnm), abs_of_nonpos (sub_nonpos.mpr hlog_le)]
       have he : Real.log m * -(1 / 2 : ℝ) + Real.log n * -(1 / 2 : ℝ) +
           -(-(Real.log n - Real.log m)) / 2 = -Real.log m := by ring
       rw [he, Real.exp_neg, Real.exp_log hm_pos]
@@ -1058,16 +1061,17 @@ theorem dirichletHankel_selbergArray_eq {n : ℕ} {p : Fin n → ℕ} (hp : ∀ 
       split_ifs with hdu
       · rw [← Finset.prod_mul_distrib]
         refine Finset.prod_congr rfl fun i _ => ?_
-        dsimp only [F_d]
-        rw [if_pos (mem_piBox.mp hdu i)]
-        rfl
+        dsimp only [F_d, Pi.add_apply]
+        have hdui : d i + u i < 2 := mem_piBox.mp hdu i
+        rw [if_pos hdui]
       · have hex : ∃ i₀ : Fin n, ¬ (d i₀ + u i₀ < 2) := by
           by_contra hall; push Not at hall
           exact hdu (mem_piBox.mpr hall)
         obtain ⟨i₀, hi₀⟩ := hex
         rw [zero_mul]
         symm
-        exact Finset.prod_eq_zero (Finset.mem_univ i₀) (by simp [F_d, hi₀])
+        exact Finset.prod_eq_zero (Finset.mem_univ i₀)
+          (by dsimp only [F_d]; rw [if_neg hi₀, zero_mul])
     rw [Finset.sum_congr rfl hpt]
     unfold piBox
     rw [← Finset.prod_univ_sum, eulerAmpl_eq_prod hp σ d,
@@ -1076,18 +1080,23 @@ theorem dirichletHankel_selbergArray_eq {n : ℕ} {p : Fin n → ℕ} (hp : ∀ 
     dsimp only [F_d]
     have hp0 : (0 : ℝ) < p i := by exact_mod_cast hp i
     have hd_lt : d i < 2 := mem_piBox.mp hd i
-    have h2σ : (p i : ℝ) ^ (-σ) * (p i : ℝ) ^ (-σ) = (p i : ℝ) ^ (-2 * σ) := by
-      rw [← Real.rpow_add hp0]; congr 1; ring
-    have hden_ne : (1 + (p i : ℝ) ^ (-2 * σ)) ≠ 0 := by positivity
     rw [Finset.sum_range_succ, Finset.sum_range_one]
+    set a : ℝ := (p i : ℝ) ^ (-σ)
+    set b : ℝ := (p i : ℝ) ^ (-2 * σ)
+    have hab : a * a = b := by
+      dsimp only [a, b]; rw [← Real.rpow_add hp0]; congr 1; ring
+    have hb_ne : 1 + b ≠ 0 := by dsimp only [b]; positivity
     have hdi_cases : d i = 0 ∨ d i = 1 := by omega
     rcases hdi_cases with h0 | h1
-    · rw [h0]; simp only [zero_add, pow_zero, pow_one, mul_one]
-      norm_num
-      field_simp [hden_ne]; linarith [h2σ]
-    · rw [h1]; simp only [pow_zero, pow_one, mul_one]
-      norm_num
-      field_simp [hden_ne]
+    · rw [h0, if_pos (by decide : 0 + 0 < 2), if_pos (rfl : 0 + 0 = 0),
+        if_pos (by decide : 0 + 1 < 2), if_neg (by decide : ¬ (0 + 1 = 0)),
+        pow_zero, pow_one]
+      field_simp [hb_ne]
+      nlinarith [hab]
+    · rw [h1, if_pos (by decide : 1 + 0 < 2), if_neg (by decide : ¬ (1 + 0 = 0)),
+        if_neg (by decide : ¬ (1 + 1 < 2)),
+        pow_zero, pow_one, div_eq_mul_inv]
+      ring
   have hsq_d : ∀ d ∈ piBox n 2,
       (∑ u ∈ piBox n N, selbergArray p σ (d + u) * eulerAmpl p σ u) ^ 2 =
         eulerAmpl p σ d ^ 2 * (∏ i, (1 + (p i : ℝ) ^ (-2 * σ))⁻¹) ^ 2 := fun d hd => by

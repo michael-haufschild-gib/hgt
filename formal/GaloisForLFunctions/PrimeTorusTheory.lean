@@ -40,6 +40,10 @@ import GaloisForLFunctions.PrimeTorusTheory.TheEnergyPastTheDiagonal
 import GaloisForLFunctions.PrimeTorusTheory.CoordinatesThatSeeTheHeight
 import GaloisForLFunctions.PrimeTorusTheory.TheHullOverTorsionPoints
 import GaloisForLFunctions.PrimeTorusTheory.AnIsolatedZeroForcesAnEntry
+import GaloisForLFunctions.PrimeTorusTheory.WhereTheWordsStop
+import GaloisForLFunctions.PrimeTorusTheory.TheTransferToRareHeights
+import GaloisForLFunctions.PrimeTorusTheory.PrimeCharactersAreLacunary
+import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOfTheHull
 
 /-!
 # Prime Torus Theory
