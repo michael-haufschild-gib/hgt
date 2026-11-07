@@ -63,18 +63,31 @@ is then the bottleneck, not the tail.
   worst phase `≈ −0.95`, arch at `75` is `1.248`). Past the Kronecker limit the phases
   `(γ log p)` at the actual heights are needed: Hardy-`Z` signs (`hardySEM`) or phase cells on a grid.
 - **A3.** Odd unit window: Lean has `weilQuad F + (3203/320)(∫xF)² ≥ ‖F‖²/1000`. The two-moment
-  lower form with the exact log potential `V(u) = 0.5549 − ½log(1 − u²)` and the reflection at
-  `2 log 2 − u` has Schur Gram entries `Γ₁₁ ≈ 0.229`, `Γ₃₃ ≈ 0.230`, `Γ₁₃ ≈ −0.047` against
-  `1/K₁ = 0.2499`, `1/K₃ = 0.3175`: the determinant condition reads `0.0018` against `0.0022` (fails at
-  the size of the quadrature error). Positivity needs part of the discarded reserves (higher lags,
-  harmonic gap above level 5) and integrals of log-singular functions certified to `~1%`.
+  lower form `firstFoldTwoMomentForm` is `M − K₁ℓ₁² − K₃ℓ₃²` with `M` pointwise: `V(u) =
+  κ₀ − ½log(1 − u²)`, `κ₀ = 0.554924`, off the strip, and the blocks `[[V(u), w],[w, V(σu)]]`,
+  `w = log 2/√2`, `σu = 2log 2 − u`, on `[2log 2 − 1, log 2]`. It is `≥ 0` iff the Gram matrix
+  `Γᵢⱼ = ⟨M⁻¹pᵢ, pⱼ⟩` of `p₁ = u`, `p₃ = P₃` satisfies `Γ ⪯ diag(1/K₁, 1/K₃)`. Quadrature (Simpson off
+  the strip, graded steps at the log singularity `σu → 1`): `Γ₁₁ ≈ 0.2294`, `Γ₃₃ ≈ 0.2324`,
+  `Γ₁₃ ≈ −0.0442`; margins `1/K₁ − Γ₁₁ ≈ 0.0205`, `1/K₃ − Γ₃₃ ≈ 0.0851`, product `0.00174` against
+  `Γ₁₃² ≈ 0.00195`. The form fails by `≈ 11%`; the unused Gamma reserve (`0.0044 E` beyond `E/64`)
+  brings it to equality. So no certified quadrature of this form closes the window: a sharper lower
+  form is needed first (harmonic gap above level 5 on modes `≥ 7`, higher lags), and its Gram entries
+  then need `~0.5%` precision on log-singular integrands. A height-67 route fails too: zero positions
+  below 67 are unknown without computation, so they cannot serve as samples.
   `log 2` and `½ log 5` lie far beyond the certified `0.362`.
-- **A5.** The failure is `U_r(2γ) < 0` at small `r` for a zero with `(Θ²)^(2γ) > 0`; the value is
-  `≈ −10⁻¹⁷`. A certificate needs a located zero and that Fourier value. `(Φ²)^` oscillates at large
-  argument (the natural boundary of `θ` on `Im z = π/4`), so no sign argument over all zeros works.
+- **A5.** Exactly, `U_r(b) = ∬_{y₁+y₂>r} e^{ib(y₁−y₂)/2}Φ(y₁)Φ(y₂)`, i.e. `½Ξ̂(b/2)²` plus
+  `∫ (sin ωr/ω) Ξ̂(ω + b/2)Ξ̂(ω − b/2) dω/π` up to normalization. At `b = 2γ` the first term vanishes and
+  for small `r` the sign is that of the autocorrelation of `Ξ` at lag `2γ`, of size `≈ 10⁻¹⁷` at `γ₄`;
+  `U_r` is negative only within `≈ 10⁻⁸` of `2γ`, so a certificate needs a located zero. An explicit
+  formula average `Σ_γ g(γ)²(Φ²)^(2γ)` at large height needs the asymptotics of the self-convolution
+  of `Ξ` (a mean value of `Z(t+v)Z(t−v)`). At large `r` the kernel tends to `e^{−2πe^r cosh 2t}`, whose
+  transform `K_{ib/2}(2πe^r)` changes sign, but the integral over `s > r` may restore positivity.
+  No route avoids zero location or deep asymptotics.
 - **A6.** Cone widths of `𝒜(c)` at `c > 0.66` and Lévy margins at `½ log 3` are convex-program
   certificates beyond the certified window `0.362`.
 - **A7.** On the nine moduli the total kernel `ω + Λ(n)/√n − P` is positive at every point of the
   anti-diagonal (`totalAntiDiagonalKernel_pos_forall_iff`), so no nonnegative gauge pays it; a
-  certificate must come from ratio atoms and shared surplus (AIP open question 6). The corpus has
-  no statement of what such a certificate asserts.
+  certificate must come from ratio atoms and shared surplus (AIP open question 6); it is ACT open
+  question 1 restricted to nine moduli. The finite reading, per-modulus ranges `½log n < r ≤
+  ½log n + η_n` of the own-strip payment (`two_mul_primePowerShift_le_stripSurplus`, `η = 1/12` from
+  the fold potential `1.9 − η/p − 3η²`), does not globalize: strips share their surplus.

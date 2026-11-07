@@ -39,5 +39,11 @@ Their unique positive difference lies in the indicated range. The bound
 therefore retains each difference's exact gcd classes at logarithmic
 resolution; it does not replace the missing prime-pair asymptotic.
 
+The complete ordered logarithmic energy is exactly
+`|A||P|+2E⁺(δ)`, where `A` is the smooth row set and `P` the prime column
+set. Smooth/rough product uniqueness gives the diagonal; swapping the two
+products exchanges the positive and negative orientations. Thus the same
+bound, doubled and added to the exact diagonal, controls the full energy.
+
 Lean verification remains open. No prime-pair
 asymptotic, random-energy law, or exponential-sum saving is claimed.

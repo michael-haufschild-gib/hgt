@@ -73,6 +73,7 @@ norm at most `x`, and `D(n)=N(n)−n`.
 | Signed carry excursions | The model satisfies `2(N(n)+N(⌊n/2⌋))+s₃(n)=3n`. Arbitrarily large `n` have `N(n)≤n−log n/(2 log 3)`. | [`PositiveNearCount.count_add_half_digit_sum`, `PositiveNearCount.negative_log_excursions`](PositiveNearCountCarries.lean) |
 | Sharp averaged deficit | For the same model, `R(x)=∫₀ˣN(t)dt` satisfies `x log x/(12 log 3)≤x²/2−R(x)≤(2/3)x(log x/log 3+1)+x/2` for `x≥1`. | [`PositiveNearCount.riesz_log_bound`, `PositiveNearCount.integral_count_deficit`](PositiveNearCountRiesz.lean) |
 | Exact averaged coefficient | `(x²/2−∫₀ˣN(t)dt)/(x log x) → 1/(4 log 3)` for the actual positive model. Its norm-four profile has uniform orbit average `1/4`. | [`PositiveNearCount.tendsto_integral_count_deficit`, `PositiveNearCount.uniform_profile_average`](PositiveNearCountExactAverage.lean) |
+| Effective averaged remainder | Uniform profile error is at most `C log log n/log n`; the actual integral-count coefficient error is at most `C' log log log x/log log x`, with explicit constants and cutoffs. | [`PositiveNearCount.profile_log_rate`, `PositiveNearCount.integral_count_coefficient_log_rate`](PositiveNearCountConvergenceRate.lean) |
 | Euler continuation and zero divisor | The actual model series is `ζ(s)/((1+2^(−s))(1−3^(−s)))` for `Re s>1`; its continuation has residue one and the same zeros, with multiplicities, as `ζ` on `Re s>0` away from one. | [`PositiveNearCount.zetaSeriesC_eq_continuation`, `PositiveNearCount.analyticOrderAt_zetaContinuation`, `PositiveNearCount.zetaContinuation_residue_one`](PositiveNearCountEuler.lean) |
 
 Pair reconstruction follows by recovering the sum from the two products.
@@ -122,6 +123,16 @@ forces its average to `1/4`, uniformly in its starting scale. The actual count
 differs from the profile sum by a bounded normalized error. This identifies
 logarithmic distance after averaging while leaving the pointwise
 logarithmic-to-quadratic-logarithmic gap open.
+
+The averaging is effective. Write
+`R(Q)=(8 log Q+32 log 4+2/3)/Q` and `B(Q)=Q4^Q log 4/4`.
+For every `Q≥2`, every orbit length `n≥1` and every positive starting
+scale, the profile average differs from `1/4` by at most `R(Q)+B(Q)/n`.
+An explicit complementary return and the profile's logarithmic modulus
+produce these two costs. Choosing `Q=⌊log n/log 16⌋` gives the uniform
+iterated-logarithmic rate above; choosing at scale `log x` transfers it
+to the actual integral count. The finite bound is
+[`effective_integral_count_coefficient_error`](PositiveNearCountEffectiveAverage.lean).
 
 The model’s Dirichlet series is also identified from its actual generalized
 integers. Absolute convergence and the coordinate bijection produce its

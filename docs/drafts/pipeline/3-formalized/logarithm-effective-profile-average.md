@@ -1,8 +1,8 @@
 # Effective average of the positive count profile
 
 - **ID:** SPL-effective-profile-average
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization incomplete
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For the continuous norm-four profile `P`, integers `Q≥2`,
   `n≥1`, and every `x>0`,
 
@@ -71,7 +71,7 @@ error at most `((1/log 3+1)C+7/8)·log log log x/log log x` for
 range, and `1/log 3+1/Y≤1/log 3+1`. These are quantitative consequences
 of the same finite-parameter estimate.
 
-## Formalization boundary
+## Formalization
 
 `EffectiveLogarithmicHalfTurn.lean` proves the arithmetic half-turn.
 `PositiveNearCountProfileModulus.lean` proves `midpointRounding_lipschitz`,
@@ -84,5 +84,10 @@ axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 `effective_integral_count_coefficient_error`. Its direct source check and
 capstone axiom audits pass with the same standard axioms.
 
-Parameter-choice corollaries remain under formalization. No many-prime
-all-height saving is claimed.
+`PositiveNearCountConvergenceRate.lean` proves
+`exists_resolution_for_log_rate`, `profile_log_rate`,
+`uniform_profile_log_rate`, and `integral_count_coefficient_log_rate`, with
+the constants and cutoffs above. Its direct source check passes; all four
+capstones use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+The pointwise count-distance gap and many-prime all-height saving remain open.

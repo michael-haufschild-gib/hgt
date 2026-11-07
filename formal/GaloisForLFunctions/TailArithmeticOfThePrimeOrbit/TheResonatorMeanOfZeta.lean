@@ -392,6 +392,118 @@ theorem tendsto_resonatorMean_zeta {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0) 
     _ < ε / 2 + ε / 4 + ε / 4 := by linarith
     _ = ε := by ring
 
+/-! ## The tail decouples from the head -/
+
+/-- The `y`-smooth part of `k`: its prime powers below `y`. -/
+def smoothPart (y k : ℕ) : ℕ := ∏ p ∈ k.primeFactors.filter (· < y), p ^ k.factorization p
+
+/-- The `y`-rough part of `k`: its prime powers from `y` on. -/
+def roughPart (y k : ℕ) : ℕ := ∏ p ∈ k.primeFactors.filter (fun p => ¬ p < y), p ^ k.factorization p
+
+theorem smoothPart_mul_roughPart (y : ℕ) {k : ℕ} (hk : k ≠ 0) : smoothPart y k * roughPart y k = k := by
+  rw [smoothPart, roughPart, Finset.prod_filter_mul_prod_filter_not]
+  conv_rhs => rw [← Nat.prod_factorization_pow_eq_self hk]
+  rfl
+
+/-- A prime dividing a product of powers of primes from a set lies in the set. -/
+private theorem prime_mem_of_dvd_prod {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (e : ℕ → ℕ) {q : ℕ}
+    (hq : q.Prime) (h : q ∣ ∏ p ∈ S, p ^ e p) : q ∈ S := by
+  obtain ⟨p, hpS, hqp⟩ := (Nat.prime_iff.mp hq).dvd_finsetProd_iff _ |>.mp h
+  have := (Nat.prime_dvd_prime_iff_eq hq (hS p hpS)).mp (hq.dvd_of_dvd_pow hqp)
+  rw [this]
+  exact hpS
+
+theorem smoothPart_mem (y k : ℕ) : smoothPart y k ∈ Nat.smoothNumbers y := by
+  refine Nat.mem_smoothNumbers'.mpr fun q hq hqd => ?_
+  have hS : ∀ p ∈ k.primeFactors.filter (· < y), p.Prime := fun p hp =>
+    Nat.prime_of_mem_primeFactors (Finset.mem_filter.mp hp).1
+  exact (Finset.mem_filter.mp (prime_mem_of_dvd_prod hS _ hq hqd)).2
+
+theorem isRough_roughPart (y k : ℕ) : IsRough y (roughPart y k) := by
+  have hS : ∀ p ∈ k.primeFactors.filter (fun p => ¬ p < y), p.Prime := fun p hp =>
+    Nat.prime_of_mem_primeFactors (Finset.mem_filter.mp hp).1
+  refine ⟨Finset.prod_ne_zero_iff.mpr fun p hp => pow_ne_zero _ (hS p hp).ne_zero, fun q hq hqd => ?_⟩
+  exact not_lt.mp (Finset.mem_filter.mp (prime_mem_of_dvd_prod hS _ hq hqd)).2
+
+/-- **The coefficients factor.** For a smooth resonator, `c_{su} = u^{−σ} c_s` when `s` is smooth and
+`u` rough. -/
+theorem resonatorCoeff_mul {y : ℕ} {A : Finset ℕ} (hA : ∀ m ∈ A, m ∈ Nat.smoothNumbers y)
+    (r : ℕ → ℂ) (σ : ℝ) {s u : ℕ} (hs : s ∈ Nat.smoothNumbers y) (hu : IsRough y u) :
+    resonatorCoeff A r σ (s * u) = lineWeight σ u * resonatorCoeff A r σ s := by
+  unfold resonatorCoeff
+  rw [Finset.mul_sum, Finset.filter_congr (p := (· ∣ s * u)) (q := (· ∣ s)) fun m hm =>
+    ⟨fun h => (coprime_of_smooth_of_rough (hA m hm) hu).dvd_of_dvd_mul_right h,
+      fun h => h.mul_right u⟩]
+  refine Finset.sum_congr rfl fun m hm => ?_
+  have hms : m ∣ s := (Finset.mem_filter.mp hm).2
+  rw [show s * u / m = s / m * u by rw [Nat.mul_comm s u, Nat.mul_div_assoc u hms, Nat.mul_comm],
+    lineWeight, lineWeight, lineWeight, Nat.cast_mul,
+    Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _), Complex.ofReal_mul]
+  ring
+
+/-- The pairs `(smooth, rough)` multiply injectively onto the positive integers. -/
+private def smoothRoughMul (y : ℕ) : Nat.smoothNumbers y × {u // IsRough y u} → ℕ :=
+  fun x => (x.1 : ℕ) * x.2
+
+private theorem smoothRoughMul_injective (y : ℕ) : Function.Injective (smoothRoughMul y) := by
+  rintro ⟨⟨s, hs⟩, ⟨u, hu⟩⟩ ⟨⟨s', hs'⟩, ⟨u', hu'⟩⟩ h
+  obtain ⟨e1, e2⟩ := smooth_mul_rough_injective hs hs' hu hu' h
+  subst e1; subst e2
+  rfl
+
+/-- **The tail decouples from the head for `ζ` itself.** For a resonator on `y`-smooth integers the
+limit factors as the head part times the rough mass `Σ_{u rough} u^{−2σ}`. -/
+theorem tsum_resonatorCoeff_eq_mul {y : ℕ} {A : Finset ℕ} (hA : ∀ m ∈ A, m ∈ Nat.smoothNumbers y)
+    (r : ℕ → ℂ) {σ : ℝ} (hσ : 1 / 2 < σ) :
+    ∑' k, ‖resonatorCoeff A r σ k‖ ^ 2 =
+      (∑' s : Nat.smoothNumbers y, ‖resonatorCoeff A r σ s‖ ^ 2) *
+        ∑' u : {u // IsRough y u}, (u : ℝ) ^ (-2 * σ) := by
+  have hA0 : ∀ m ∈ A, m ≠ 0 := fun m hm => Nat.ne_zero_of_mem_smoothNumbers (hA m hm)
+  have hc : Summable fun k => ‖resonatorCoeff A r σ k‖ ^ 2 := by
+    refine (summable_resonatorMajorant_sq hA0 r hσ).of_nonneg_of_le (fun k => sq_nonneg _) fun k => ?_
+    have h := norm_truncResonatorCoeff_le A r σ k k
+    have e : truncResonatorCoeff A r σ k k = resonatorCoeff A r σ k := by
+      unfold truncResonatorCoeff resonatorCoeff
+      rw [Finset.filter_congr (p := fun m => m ∣ k ∧ k / m ≤ k) (q := fun m => m ∣ k)
+        (fun m _ => ⟨fun h => h.1, fun h => ⟨h, Nat.div_le_self k m⟩⟩)]
+    rw [e] at h
+    exact pow_le_pow_left₀ (norm_nonneg _) h 2
+  have hu : Summable fun n : ℕ => (n : ℝ) ^ (-2 * σ) := Real.summable_nat_rpow.mpr (by linarith)
+  have hcs : Summable fun s : Nat.smoothNumbers y => ‖resonatorCoeff A r σ s‖ ^ 2 :=
+    hc.subtype _
+  have hus : Summable fun u : {u // IsRough y u} => (u : ℝ) ^ (-2 * σ) := hu.subtype _
+  rw [tsum_mul_tsum_of_summable_norm (by simpa using hcs)
+    (hus.congr fun u => (Real.norm_of_nonneg (by positivity)).symm)]
+  rw [← (smoothRoughMul_injective y).tsum_eq (f := fun k => ‖resonatorCoeff A r σ k‖ ^ 2)]
+  · refine tsum_congr fun x => ?_
+    simp only [smoothRoughMul]
+    rw [resonatorCoeff_mul hA r σ x.1.2 x.2.2, norm_mul, mul_pow, norm_lineWeight,
+      ← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
+    push_cast
+    ring_nf
+  · intro k hk
+    have hk0 : k ≠ 0 := by
+      rintro rfl
+      apply hk
+      simp only [resonatorCoeff]
+      rw [sq_eq_zero_iff, norm_eq_zero]
+      refine Finset.sum_eq_zero fun m _ => ?_
+      rw [Nat.zero_div, lineWeight, Nat.cast_zero, Real.zero_rpow (by linarith), Complex.ofReal_zero,
+        mul_zero]
+    exact ⟨(⟨smoothPart y k, smoothPart_mem y k⟩, ⟨roughPart y k, isRough_roughPart y k⟩),
+      smoothPart_mul_roughPart y hk0⟩
+
+/-- **The resonator mean of `ζ` on a Bohr set of the head.** For a resonator on `y`-smooth integers,
+`(1/T) ∫_T^{2T} |R(t)ζ(σ + it)|² dt → (Σ_{s smooth} |c_s|²) · Σ_{u rough} u^{−2σ}`: conditionally on the
+head, the tail of `ζ` has its unconditional second moment. -/
+theorem tendsto_resonatorMean_zeta_smooth {y : ℕ} {A : Finset ℕ}
+    (hA : ∀ m ∈ A, m ∈ Nat.smoothNumbers y) (r : ℕ → ℂ) {σ : ℝ} (hσ : 1 / 2 < σ) (hσ1 : σ < 1) :
+    Tendsto (dyadicSquareMean fun t => headPoly A r t * riemannZeta ((σ : ℂ) + (t : ℂ) * Complex.I))
+      atTop (𝓝 ((∑' s : Nat.smoothNumbers y, ‖resonatorCoeff A r σ s‖ ^ 2) *
+        ∑' u : {u // IsRough y u}, (u : ℝ) ^ (-2 * σ))) := by
+  rw [← tsum_resonatorCoeff_eq_mul hA r hσ]
+  exact tendsto_resonatorMean_zeta (fun m hm => Nat.ne_zero_of_mem_smoothNumbers (hA m hm)) r hσ hσ1
+
 end
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

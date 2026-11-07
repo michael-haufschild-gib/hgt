@@ -226,7 +226,7 @@ theorem differentiableOn_boundedLaplace {E : ℝ → ℝ} (hEm : Measurable E) (
 def primePowerRemainder (t : ℕ → ℝ) (s : ℂ) : ℂ :=
   ∑' k, (-Complex.log (1 - cexp (-(s * t k))) - cexp (-(s * t k)))
 
-theorem norm_primePowerTerm_le {t : ℝ} (ht : 0 < t) {σ₀ : ℝ} (hσ₀ : 0 < σ₀) {z : ℂ}
+theorem norm_primePowerTerm_le {t : ℝ} (ht : 0 < t) {σ₀ : ℝ} {z : ℂ}
     (hz : σ₀ ≤ z.re) {q : ℝ} (hq : Real.exp (-(σ₀ * t)) ≤ q) (hq1 : q < 1) :
     ‖-Complex.log (1 - cexp (-(z * t))) - cexp (-(z * t))‖ ≤
       Real.exp (-(2 * σ₀ * t)) * (1 - q)⁻¹ / 2 := by
@@ -252,7 +252,6 @@ theorem norm_primePowerTerm_le {t : ℝ} (ht : 0 < t) {σ₀ : ℝ} (hσ₀ : 0 
   have hn1 : 0 ≤ (1 - ‖x‖)⁻¹ := inv_nonneg.mpr (by linarith)
   calc ‖x‖ ^ 2 * (1 - ‖x‖)⁻¹ / 2 ≤ Real.exp (-(2 * σ₀ * t)) * (1 - q)⁻¹ / 2 := by
         gcongr
-        exact hinv
 
 /-- **The prime-power remainder is holomorphic on `Re s > 1/2`.** -/
 theorem differentiableOn_primePowerRemainder {t : ℕ → ℝ} (ht : ∀ k, 0 < t k)
@@ -291,7 +290,7 @@ theorem differentiableOn_primePowerRemainder {t : ℕ → ℝ} (ht : ∀ k, 0 < 
         Real.exp (-(2 * σ₀ * t k)) * (1 - q)⁻¹ / 2 := by
     intro k z hz
     have hz' : σ₀ < z.re := hz
-    refine norm_primePowerTerm_le (ht k) hσ₀0 hz'.le ?_ hq1
+    refine norm_primePowerTerm_le (ht k) hz'.le ?_ hq1
     rw [hq]
     exact Real.exp_le_exp.mpr (by nlinarith [hmono k])
   have hsumU : Summable fun k => Real.exp (-(2 * σ₀ * t k)) * (1 - q)⁻¹ / 2 := by
@@ -321,11 +320,151 @@ theorem tsum_neg_log_eq {t : ℕ → ℝ} (ht : ∀ k, 0 < t k) (hmono : ∀ k, 
     have hle : Real.exp (-(s.re * t k)) ≤ q := by
       rw [hq]
       exact Real.exp_le_exp.mpr (by nlinarith [hmono k])
-    exact norm_primePowerTerm_le (ht k) hs0 le_rfl hle hq1
+    exact norm_primePowerTerm_le (ht k) le_rfl hle hq1
   rw [primePowerRemainder, ← h1.tsum_add h2]
   congr 1
   funext k
   ring
+
+/-! ### The prime density of the continuous one-off -/
+
+open RHTower.BeurlingOverRegularIntegers
+
+/-- The parameters of the continuous one-off. -/
+structure Params where
+  μ : ℝ
+  ν : ℝ
+  γ : ℝ
+  hμ1 : 1 / 3 < μ
+  hμ2 : μ < 1 / 2
+  hν0 : 0 < ν
+  hν : ν < 3 * μ - 1
+
+namespace Params
+
+variable (P : Params)
+
+/-- The logarithmic prime density. -/
+def w : ℝ → ℝ := primeDensity P.μ P.ν P.γ
+
+theorem hlow : 0 ≤ 3 * P.μ - 1 - P.ν := by linarith [P.hν]
+theorem hhigh : 0 ≤ 3 * P.μ - 1 + P.ν := by linarith [P.hν, P.hν0]
+theorem h4 : 0 ≤ 4 * P.μ - 1 := by linarith [P.hμ1]
+
+/-- The numerator as a sum of squares, `x = e^{μt}`, `y = e^{νt}`, `z = e^{-(3μ-1)t}`. -/
+theorem primeNumerator_eq (μ ν γ t : ℝ) :
+    primeNumerator μ ν γ t = Real.exp (-((3 * μ - 1) * t)) *
+      (2 * Real.exp (μ * t) ^ 2 * (1 - Real.cos (γ * t)) +
+        (Real.exp (ν * t) - 1) ^ 2 / Real.exp (ν * t) +
+        (Real.exp (μ * t) - 1) ^ 3 * (Real.exp (μ * t) + 1) / Real.exp (μ * t)) := by
+  have e1 : Real.exp t = Real.exp (-((3 * μ - 1) * t)) * Real.exp (μ * t) ^ 3 := by
+    rw [← Real.exp_nat_mul, ← Real.exp_add]; congr 1; push_cast; ring
+  have e2 : Real.exp ((1 - μ) * t) = Real.exp (-((3 * μ - 1) * t)) * Real.exp (μ * t) ^ 2 := by
+    rw [← Real.exp_nat_mul, ← Real.exp_add]; congr 1; push_cast; ring
+  have e3 : Real.exp (-((3 * μ - 1 - ν) * t)) =
+      Real.exp (-((3 * μ - 1) * t)) * Real.exp (ν * t) := by
+    rw [← Real.exp_add]; congr 1; ring
+  have e4 : Real.exp (-((3 * μ - 1 + ν) * t)) =
+      Real.exp (-((3 * μ - 1) * t)) / Real.exp (ν * t) := by
+    rw [← Real.exp_sub]; congr 1; ring
+  have e5 : Real.exp (-((4 * μ - 1) * t)) =
+      Real.exp (-((3 * μ - 1) * t)) / Real.exp (μ * t) := by
+    rw [← Real.exp_sub]; congr 1; ring
+  rw [primeNumerator, e1, e2, e3, e4, e5]
+  have hx0 : 0 < Real.exp (μ * t) := Real.exp_pos _
+  have hy0 : 0 < Real.exp (ν * t) := Real.exp_pos _
+  field_simp
+  ring
+
+/-- The density is positive on `(0, ∞)`. -/
+theorem w_pos {t : ℝ} (ht : 0 < t) : 0 < P.w t := by
+  have hμ0 : 0 < P.μ := by linarith [P.hμ1]
+  have hx1 : 1 < Real.exp (P.μ * t) := Real.one_lt_exp_iff.mpr (mul_pos hμ0 ht)
+  have hx0 : 0 < Real.exp (P.μ * t) := Real.exp_pos _
+  have hy0 : 0 < Real.exp (P.ν * t) := Real.exp_pos _
+  have h1 : 0 ≤ 2 * Real.exp (P.μ * t) ^ 2 * (1 - Real.cos (P.γ * t)) :=
+    mul_nonneg (by positivity) (by linarith [Real.cos_le_one (P.γ * t)])
+  have h2 : 0 ≤ (Real.exp (P.ν * t) - 1) ^ 2 / Real.exp (P.ν * t) := by positivity
+  have h3 : 0 < (Real.exp (P.μ * t) - 1) ^ 3 * (Real.exp (P.μ * t) + 1) / Real.exp (P.μ * t) :=
+    div_pos (mul_pos (pow_pos (by linarith) 3) (by linarith)) hx0
+  have hN : 0 < primeNumerator P.μ P.ν P.γ t := by
+    rw [primeNumerator_eq]
+    exact mul_pos (Real.exp_pos _) (by linarith)
+  exact div_pos hN ht
+
+/-- **Lower bound.** `w(t) ≥ c₀ e^t/t` for `t ≥ 1`, `c₀ = (1 − e^{-μ})³`. -/
+theorem w_ge {t : ℝ} (ht : 1 ≤ t) :
+    (1 - Real.exp (-P.μ)) ^ 3 * Real.exp t / t ≤ P.w t := by
+  have hμ0 : 0 < P.μ := by linarith [P.hμ1]
+  have ht0 : 0 < t := by linarith
+  set x := Real.exp (P.μ * t) with hx
+  have hx0 : 0 < x := Real.exp_pos _
+  have hxμ : Real.exp P.μ ≤ x := Real.exp_le_exp.mpr (by nlinarith)
+  have hc : 0 ≤ 1 - Real.exp (-P.μ) := by
+    have := Real.exp_le_one_iff.mpr (by linarith : -P.μ ≤ 0)
+    linarith
+  have hlin : (1 - Real.exp (-P.μ)) * x ≤ x - 1 := by
+    have h : Real.exp (-P.μ) * x ≥ 1 := by
+      have : Real.exp (-P.μ) * Real.exp P.μ = 1 := by rw [← Real.exp_add]; simp
+      nlinarith [Real.exp_pos (-P.μ)]
+    nlinarith
+  have hcube : (1 - Real.exp (-P.μ)) ^ 3 * x ^ 3 ≤ (x - 1) ^ 3 := by
+    have := pow_le_pow_left₀ (mul_nonneg hc hx0.le) hlin 3
+    rwa [mul_pow] at this
+  have hz : Real.exp (-((3 * P.μ - 1) * t)) * x ^ 3 = Real.exp t := by
+    rw [hx, ← Real.exp_nat_mul, ← Real.exp_add]; congr 1; push_cast; ring
+  have hthird : (x - 1) ^ 3 ≤ (x - 1) ^ 3 * (x + 1) / x := by
+    rw [le_div_iff₀ hx0]
+    have : 0 ≤ (x - 1) ^ 3 := pow_nonneg (by nlinarith [Real.one_le_exp (le_of_lt hμ0)]) 3
+    nlinarith
+  have h1 : 0 ≤ 2 * x ^ 2 * (1 - Real.cos (P.γ * t)) :=
+    mul_nonneg (by positivity) (by linarith [Real.cos_le_one (P.γ * t)])
+  have h2 : 0 ≤ (Real.exp (P.ν * t) - 1) ^ 2 / Real.exp (P.ν * t) := by positivity
+  have hN : (1 - Real.exp (-P.μ)) ^ 3 * Real.exp t ≤ primeNumerator P.μ P.ν P.γ t := by
+    rw [primeNumerator_eq, ← hx]
+    have hz0 : 0 < Real.exp (-((3 * P.μ - 1) * t)) := Real.exp_pos _
+    calc (1 - Real.exp (-P.μ)) ^ 3 * Real.exp t
+        = Real.exp (-((3 * P.μ - 1) * t)) * ((1 - Real.exp (-P.μ)) ^ 3 * x ^ 3) := by
+          rw [← hz]; ring
+      _ ≤ Real.exp (-((3 * P.μ - 1) * t)) * (2 * x ^ 2 * (1 - Real.cos (P.γ * t)) +
+          (Real.exp (P.ν * t) - 1) ^ 2 / Real.exp (P.ν * t) + (x - 1) ^ 3 * (x + 1) / x) := by
+          gcongr
+          linarith
+  unfold w primeDensity
+  exact div_le_div_of_nonneg_right hN ht0.le
+
+theorem measurable_w : Measurable P.w := by
+  unfold w primeDensity primeNumerator
+  fun_prop
+
+/-- The complex Laplace integrand is integrable on `(0, ∞)` for `Re s > 1`. -/
+theorem integrableOn_cexp_mul_w {s : ℂ} (hs : 1 < s.re) :
+    IntegrableOn (fun t : ℝ => cexp (-(s * t)) * (P.w t : ℂ)) (Ioi 0) := by
+  have hb : 0 < (s - (1 - P.μ)).re := by
+    simpa using re_sub_pos (a := 1 - P.μ) (by linarith [P.hμ1]) hs
+  have h1 : 0 < (s - 1).re := by simpa using re_sub_pos (a := 1) le_rfl hs
+  have hm : 0 < (s - (1 - P.μ) - P.γ * I).re := by simpa using hb
+  have hp : 0 < (s - (1 - P.μ) + P.γ * I).re := by simpa using hb
+  have hl : 0 < (s + (3 * P.μ - 1 - P.ν)).re := by
+    simpa using re_add_pos (a := 3 * P.μ - 1 - P.ν) P.hlow hs
+  have hh : 0 < (s + (3 * P.μ - 1 + P.ν)).re := by
+    simpa using re_add_pos (a := 3 * P.μ - 1 + P.ν) P.hhigh hs
+  have hq : 0 < (s + (4 * P.μ - 1)).re := by
+    simpa using re_add_pos (a := 4 * P.μ - 1) P.h4 hs
+  refine ((integrableOn_frullani h1 hm).add ((integrableOn_frullani hl hp).add
+    (integrableOn_frullani hh hq))).congr_fun (fun t ht => ?_) measurableSet_Ioi
+  exact (cexp_mul_primeDensity P.μ P.ν P.γ s ht).symm
+
+/-- The real Laplace integrand `e^{-σu} w(u)` is integrable on `(0, ∞)` for `σ > 1`. -/
+theorem integrableOn_exp_mul_w {σ : ℝ} (hσ : 1 < σ) :
+    IntegrableOn (fun u : ℝ => Real.exp (-(σ * u)) * P.w u) (Ioi 0) := by
+  have h := (P.integrableOn_cexp_mul_w (s := (σ : ℂ)) (by simpa using hσ)).re
+  refine h.congr_fun (fun u _ => ?_) measurableSet_Ioi
+  simp only
+  rw [show -((σ : ℂ) * (u : ℂ)) = ((-(σ * u) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_exp,
+    ← Complex.ofReal_mul, Complex.ofReal_re]
+
+end Params
 
 end
 

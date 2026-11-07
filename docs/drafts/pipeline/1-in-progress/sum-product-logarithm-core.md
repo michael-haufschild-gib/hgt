@@ -70,8 +70,11 @@ is identified from the actual series and preserves zeta’s complete
 right-half-plane zero divisor and residue one.
 Pointwise optimality and exceptional-zero distance remain open. The
 [exact averaged coefficient](../3-formalized/logarithm-positive-model-exact-average.md)
-is `1/(4 log 3)`, formalized for the actual integral count. Quantitative
-[profile averaging](../2-fully-proven/logarithm-effective-profile-average.md) remains in progress.
+is `1/(4 log 3)`, formalized for the actual integral count.
+[Effective profile averaging](../3-formalized/logarithm-effective-profile-average.md)
+now gives uniform error `O(log log n/log n)` and actual integral-count
+coefficient error `O(log log log x/log log x)`, with explicit constants and
+cutoffs. These averaged rates do not close the pointwise distance gap.
 
 Finite-field calibration must retain the precise split-hyperelliptic scope
 of existing Stepanov results. Any power-saving parity output must include
