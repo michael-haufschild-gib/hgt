@@ -85,8 +85,11 @@ theorem besselPowerTail_zero_eq_gamma {p : ℝ} (hp : -1 < p) (τ : ℝ) :
           modifiedBesselKOrder (2 * u) (((2 * τ : ℝ) : ℂ) * I)).re := by
       apply setIntegral_congr_fun measurableSet_Ioi
       exact fun u hu => radial_integrand_eq_re hu p τ
+    _ = (∫ u in Ioi (0 : ℝ), (u : ℂ) ^ (((p : ℂ) + 1) - 1) *
+        modifiedBesselKOrder (2 * u) (((2 * τ : ℝ) : ℂ) * I)).re :=
+      Complex.reCLM.integral_comp_comm hi
     _ = _ := by
-      rw [integral_re hi, hmass]
+      rw [hmass]
       norm_num [Complex.normSq_eq_norm_sq, z]
 
 /-- No mass is lost when the lower endpoint tends to zero from the positive ray. -/

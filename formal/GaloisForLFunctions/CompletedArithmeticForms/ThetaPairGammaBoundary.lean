@@ -109,8 +109,9 @@ theorem thetaFiniteGammaLeading_eq_cosine_sum (M : ℕ) (τ : ℝ) :
   let T : Fin M → ℝ := fun j => Real.log ((j : ℕ) + 1)
   have hh := _root_.RHTower.trigPoly_normSq c T τ
   change ((‖thetaFiniteGammaPhase M τ‖ ^ 2 : ℝ) : ℂ) = _ at hh
-  have hre := congrArg Complex.re hh
-  simp only [Complex.ofReal_re, Complex.sum_re, c, T, Complex.conj_ofReal,
+  have hre := congrArg Complex.reCLM hh
+  simp only [map_sum] at hre
+  simp only [Complex.reCLM_apply, Complex.ofReal_re, c, T, Complex.conj_ofReal,
     Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
     Complex.exp_re, Complex.I_re, Complex.I_im, mul_zero, zero_mul, sub_zero,
     add_zero, mul_one, Real.exp_zero, one_mul] at hre

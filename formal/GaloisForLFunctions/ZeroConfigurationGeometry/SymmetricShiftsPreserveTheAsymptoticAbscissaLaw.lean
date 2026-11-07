@@ -92,9 +92,8 @@ theorem half_le_of_xi_eventualBound {σ : ℝ}
       simp only [Complex.I_sq, mul_neg, mul_one, neg_neg]
     rw [he, XiC_ofReal, hzero]
     simp only [Complex.ofReal_zero]
-  have hb := hbound _ hxi (by
-    simpa only [Complex.add_im, Complex.div_ofNat_im, Complex.ofReal_mul_im,
-      Complex.I_im, mul_one, zero_add, abs_of_pos (hT.trans ht)] using ht.le)
+  have him : ((1 / 2 : ℂ) + (t : ℂ) * I).im = t := by simp
+  have hb := hbound _ hxi (by rw [him, abs_of_pos (hT.trans ht)]; exact ht.le)
   simpa using hb
 
 /-- The usual finite-tail formulation of AAL is exactly eventual-to-global rigidity for `ξ`. -/
@@ -110,10 +109,11 @@ theorem asymptoticAbscissaLaw_iff_xi_eventualToGlobal :
       mem_zetaAsymptoticAbscissaSet_iff_eventually_height.mpr
         ⟨hhalf, T, hT, fun q hq => hbound _ (xi_xiZeroCopy_eq_zero q) hq⟩
     obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hz
+    have he : (1 / 2 : ℝ) + (σ - 1 / 2) = σ := by ring
     have hfin : {q : XiZeroCopy | 1 / 2 + (σ - 1 / 2) < (q.1 : ℂ).re}.Finite := by
-      simpa only [add_sub_cancel] using hmem.2
+      simpa only [he] using hmem.2
     have hb := hA (σ - 1 / 2) (by linarith only [hhalf]) hfin q
-    simpa only [add_sub_cancel, hq] using hb
+    simpa only [he, hq] using hb
   · intro hA h hh hfin q
     have hmem : 1 / 2 + h ∈ zetaAsymptoticAbscissaSet :=
       ⟨by linarith only [hh], hfin⟩
@@ -122,7 +122,7 @@ theorem asymptoticAbscissaLaw_iff_xi_eventualToGlobal :
     apply hA (1 / 2 + h) ?_ _ (xi_xiZeroCopy_eq_zero q)
     refine ⟨T, hT, fun z hz hheight => ?_⟩
     obtain ⟨r, hr⟩ := exists_xiZeroCopy_of_xi_eq_zero hz
-    exact hr ▸ hbound r (by simpa only [hr] using hheight)
+    simpa only [hr] using hbound r (by simpa only [hr] using hheight)
 
 /-- The symmetric shifted product satisfies the zero-bound form of AAL exactly when `ζ` does. -/
 theorem asymptoticAbscissaLaw_iff_symmetricShift_eventualToGlobal {a : ℝ} (ha : 0 ≤ a) :
