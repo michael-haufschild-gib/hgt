@@ -2967,110 +2967,178 @@ private lemma all_ratio_three_band_assembly {Q₁ R₀ R₁ N : ℕ}
   rw [hw_split, mul_add]
   linarith only [hpartB, hband2, hleak_le, hP_rem, hS_rem, hid_P, hid_S]
 
-/-- **All-ratio complement Gårding and deterministic far-sector bridge above `⌊(log N)^{13/32}⌋₊`.**
-For every `R_max > 0`, splitting any `z ∈ (conductorSubspace ⌊(log N)^{13/32}⌋₊ N)ᗮ` orthogonally into
-`z = u₀ + u₁ + w` with `w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ` yields simultaneously:
-1. All-ratio complement Gårding on `z`, retaining `(κ₀ + 2) ‖z‖²`, prefix mass `(k₁ / 16) P_w`,
-   top-collar seventh mass `(g₀ log N / (64 c⁷)) S7_w`, eighth-power exponential mass
-   `(c c_W / R_max) W₈(U_w)`, and archimedean Lévy energy `(c / (4 I₂)) levyEnergy U_w` against
-   `completeWeilEnergy c N z + (c B_far) ∫ U_w²`;
-2. The deterministic energy bridge bounding `completeWeilEnergy c N w` above by
-   `completeWeilEnergy c N z` plus an `O(1 / log log N)` fraction of the far block reserves. -/
-theorem exists_all_ratio_complement_garding_and_far_bridge :
-    ∃ c_W : ℝ, 0 < c_W ∧
-      ∀ {R_max : ℝ}, 0 < R_max →
-        ∃ B_far : ℝ, 0 < B_far ∧
-          ∀ᶠ N : ℕ in atTop,
-            ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
-              ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
-                z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ →
-                ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
-                  w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
-                  let x_w := primeHorizonExtension w
-                  let M := N / linearDefectCutoff c
-                  let y_w := atomicTailCoefficients M x_w
-                  let U_w := normalizedCentredAtomicTest tiltedUnitSpline y_w c N
-                  let L := Real.log (N : ℝ)
-                  let ℓ := 1 + Real.log L
-                  let k₁ := L / (2 * explicitConductorCutoffConstant * ℓ ^ 5)
-                  (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 +
-                      (k₁ / 16) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
-                      (dyadicTopMassConstant * L / (64 * c ^ 7)) *
-                        topCollarSeventhMass M N x_w +
-                      (c * c_W / R_max) * (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) +
-                      (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_w ≤
-                    completeWeilEnergy tiltedUnitSpline c N z +
-                      (c * B_far) * ∫ u, U_w u ^ 2 ∧
-                  completeWeilEnergy tiltedUnitSpline c N w ≤
-                    completeWeilEnergy tiltedUnitSpline c N z +
-                      (1 / ℓ) * ((k₁ / 8) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
-                        (dyadicTopMassConstant * L / (32 * c ^ 7)) *
-                          topCollarSeventhMass M N x_w) := by
-  obtain ⟨c_W, hc_W, hfar_gen⟩ := exists_all_ratio_far_garding
-  obtain ⟨C_pr, C_up, C_upT, C_np, hCpr, hCup, hCupT, hCnp, hcross_shape⟩ :=
-    exists_band_far_cross_le_reserve_shape
-  obtain ⟨C_cross01, hC_cross01, hcross01⟩ := exists_band0_band1_cross_le
-  obtain ⟨C_coerc0, C_small0, hC_coerc0, hC_small0, hcoerc0⟩ :=
-    exists_completeWeilEnergy_ge_three_quarters_log_homogeneous
-  obtain ⟨C_band1, hC_band1, hcoerc1⟩ := exists_band1_coercive_homogeneous
-  obtain ⟨K_res, hK_res, hres⟩ := exists_tiltedUnitSpline_quadratic_conductor_residual_variable_rate
-  obtain ⟨K_tot, hK_tot, htot⟩ := exists_div_totient_le_loglog
-  have hD : 0 < explicitConductorCutoffConstant := explicitConductorCutoffConstant_pos
-  have hg₀ : 0 < dyadicTopMassConstant := dyadicTopMassConstant_pos
-  have hκ₀ : 0 < tiltedSplineSpectralFloorConstant := tiltedSplineSpectralFloorConstant_pos
-  set D := explicitConductorCutoffConstant
-  set g₀ := dyadicTopMassConstant
-  set κ₀ := tiltedSplineSpectralFloorConstant
-  refine ⟨c_W, hc_W, fun {R_max} hR => ?_⟩
-  obtain ⟨B_far, hB_far, hfar_ev⟩ := hfar_gen hR
-  refine ⟨B_far, hB_far, ?_⟩
-  set K_c : ℝ := (R_max + 1) ^ (1 / 8 : ℝ)
-  have hKc1 : 1 ≤ K_c := Real.one_le_rpow (by linarith) (by norm_num)
+private lemma complement_garding_at_N {N : ℕ}
+    {D g₀ κ₀ c_W R_max B_far C_pr C_up C_upT C_np C_cross01 C_coerc0 C_small0 C_band1
+      K_res K_tot K_c M_bk CB C_U_all c : ℝ}
+    (hD_eq : D = explicitConductorCutoffConstant)
+    (hg₀_eq : g₀ = dyadicTopMassConstant)
+    (hκ₀_eq : κ₀ = tiltedSplineSpectralFloorConstant)
+    (hD : 0 < D) (hg₀ : 0 < g₀) (hκ₀ : 0 < κ₀)
+    (hCpr : 0 < C_pr) (hCup : 0 ≤ C_up) (hCupT : 0 ≤ C_upT) (hCnp : 0 ≤ C_np)
+    (hC_cross01 : 0 < C_cross01) (hC_small0 : 0 < C_small0)
+    (hK_res : 0 < K_res) (hK_tot : 1 ≤ K_tot)
+    (hKc1 : 1 ≤ K_c) (hKc_def : K_c = (R_max + 1) ^ (1 / 8 : ℝ))
+    (hMbk0 : 0 ≤ M_bk) (hMbk_def : M_bk = 1 + 8 * K_c ^ 7 / g₀)
+    (hCB0 : 0 ≤ CB) (hCB_def : CB = 4 + Real.log (2 * (256 * Real.exp 2 + 4)) + 1)
+    (hcross_shape : ∀ {R M N' : ℕ} {c' Sg k b ρ : ℝ},
+      2 ≤ R → (R : ℝ) ^ 6 ≤ N' → 1 ≤ M → M ≤ N' →
+      18 * (1 + Real.log R) ≤ Real.log N' →
+      1 ≤ c' → 8 * c' ≤ (N' : ℝ) / R → c' ^ 4 ≤ (N' : ℝ) ^ 2 * Real.log N' →
+      (nearPairSet R N').card ≤ 24 * R ^ 2 * N' →
+      (upperPairSet R N').card ≤ 6 * R ^ 2 * N' →
+      pairKernelSupportRadius c' R N' < atomSpacing R →
+      ⌈(N' : ℝ) / R⌉₊ ≤ N' → 2 * R * primeOrderCutoff N' (c' / N') ≤ N' →
+      1 ≤ Sg → (∀ q ∈ Icc 1 R, ((q : ℝ) / Nat.totient q) ≤ Sg) →
+      ‖poleModeResidual c' N'‖ ^ 2 ≤ ρ →
+      0 < k → 0 < b →
+      128 * C_pr * (1 + Real.log (R : ℝ)) ^ 2 / (Real.log (N' : ℝ) * k) +
+        128 * c' ^ 7 * C_pr * (1 + Real.log (R : ℝ)) * terminalPacketCost R M N' /
+          (Real.log (N' : ℝ) * b * k) +
+        32 * c' ^ 7 * C_np * bandFarBudgetG R N' c' Sg / (b * k) ≤ 1 / 32 →
+      256 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N' : ℝ) * k) +
+        256 * c' ^ 7 * C_pr * (1 + Real.log (R : ℝ)) / (Real.log (N' : ℝ) * b * k) +
+        32 * c' ^ 7 * C_np * (bandFarBudgetU R N' c' ρ Sg + 2 * bandFarBudgetG R N' c' Sg +
+          2 * bandFarBudgetA R N' c') / (b * k) +
+        128 * C_up * c' ^ 2 * (1 + Real.log c') / k +
+        128 * c' ^ 7 * C_upT * c' ^ 2 * ((N' : ℝ) / M) * (1 + Real.log c') /
+          (Real.log (N' : ℝ) * b * k) ≤ 1 / 4 →
+      ∀ a : ℕ → ℝ,
+        (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N') ∈ (conductorSubspace 1 N')ᗮ →
+        ∀ {w' : EuclideanSpace ℝ (PrimeHorizonIndex N')}, w' ∈ (conductorSubspace R N')ᗮ →
+        2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c' N')
+            (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'), w'⟫| ≤
+          (1 / 32 : ℝ) * primeAdjunctionMass R a +
+            (1 / 4 : ℝ) * ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'‖ ^ 2 +
+            (k / 32) * (∑ n ∈ Icc 1 M, primeHorizonExtension w' n ^ 2) +
+            (b * k / (32 * c' ^ 7)) * (∑ n ∈ Ioc M N', primeHorizonExtension w' n ^ 2) +
+            (b * k / (32 * c' ^ 7)) * ‖w'‖ ^ 2)
+    (hcross01 : ∀ {R₀ N' : ℕ} {c' Lh : ℝ},
+      2 ≤ R₀ → (R₀ : ℝ) ^ 6 ≤ N' → 18 * (1 + Real.log R₀) ≤ Real.log N' →
+      1 ≤ c' → c' ≤ N' →
+      (nearPairSet R₀ N').card ≤ 24 * R₀ ^ 2 * N' →
+      (upperPairSet R₀ N').card ≤ 6 * R₀ ^ 2 * N' →
+      1 + Real.log (R₀ : ℝ) ≤ 2 * Lh →
+      C_cross01 * (1 / Lh + c' ^ 2 * (1 + Real.log c') / Lh +
+        c' ^ 4 * (1 + Real.log c') / Real.log (N' : ℝ) +
+        c' ^ 3 * (R₀ : ℝ) ^ 2 * (Real.log (N' : ℝ) / (N' : ℝ))) ≤ 1 →
+      ∀ a₀ : ℕ → ℝ,
+        (∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N') ∈ (conductorSubspace 1 N')ᗮ →
+        ∀ {u₁ : EuclideanSpace ℝ (PrimeHorizonIndex N')}, u₁ ∈ (conductorSubspace R₀ N')ᗮ →
+        2 * |⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline c' N')
+            (∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N'), u₁⟫| ≤
+          (1 / 32 : ℝ) * primeAdjunctionMass R₀ a₀ +
+            (1 / 4 : ℝ) * ‖∑ m ∈ Icc 1 R₀, a₀ m • normalizedRamanujanHorizonVector m N'‖ ^ 2 +
+            (1 / 16 : ℝ) * Lh * ‖u₁‖ ^ 2)
+    (hcoerc0 : ∀ {Q R N' : ℕ} {c' : ℝ},
+      2 ≤ Q → Q ≤ R → (R : ℝ) ^ 6 ≤ N' → 36 * (1 + Real.log R) ≤ Real.log N' →
+      1 ≤ c' → c' ≤ Real.log N' → c' ≤ N' →
+      pairKernelSupportRadius c' R N' < atomSpacing R →
+      (nearPairSet R N').card ≤ 24 * R ^ 2 * N' →
+      C_small0 * (c' * (1 + Real.log c') * (1 + Real.log R) / Real.log N' +
+        c' * (1 + Real.log R) / Real.log N' + c' ^ 2 / Real.log N' +
+        c' ^ 2 * (1 + Real.log R) * (1 + Real.log c') / Real.log N' +
+        c' ^ 2 * (R : ℝ) * Real.sqrt (Real.log N' / N') +
+        c' ^ 5 * Real.log N' / N' +
+        c' * Real.sqrt c' * (1 + Real.log c') / Real.sqrt Q +
+        c' ^ 3 * (R : ℝ) ^ 4 / N' + c' ^ 2 * (1 + Real.log c') / Real.log N') ≤ 1 →
+      ∀ a : ℕ → ℝ,
+        (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N') ∈ (conductorSubspace Q N')ᗮ →
+        (1 / 8 : ℝ) * primeAdjunctionMass R a +
+          ((3 / 4 : ℝ) * Real.log (Q : ℝ) - Real.log c' - C_coerc0) *
+            ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'‖ ^ 2 ≤
+          completeWeilEnergy tiltedUnitSpline c' N'
+            (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'))
+    (hcoerc1 : ∀ {Q R N' : ℕ} {c' : ℝ},
+      2 ≤ Q → Q ≤ R → (R : ℝ) ^ 6 ≤ N' → 1080 * (1 + Real.log R) ≤ Real.log N' →
+      1 ≤ c' → c' ≤ Real.log N' → c' ≤ N' →
+      (nearPairSet R N').card ≤ 24 * R ^ 2 * N' →
+      (R : ℝ) * Real.sqrt (Real.log N' / N') ≤ 1 →
+      ∀ a : ℕ → ℝ,
+        (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N') ∈ (conductorSubspace Q N')ᗮ →
+        (1 / 8 : ℝ) * primeAdjunctionMass R a +
+          ((1 / 4 : ℝ) * Real.log (Q : ℝ) - C_band1 * c' ^ 2 * (1 + Real.log c')) *
+            ‖∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'‖ ^ 2 ≤
+          completeWeilEnergy tiltedUnitSpline c' N'
+            (∑ m ∈ Icc 1 R, a m • normalizedRamanujanHorizonVector m N'))
+    (htot : ∀ q : ℕ, 1 ≤ q → (q : ℝ) / Nat.totient q ≤ K_tot * (1 + Real.log (1 + Real.log q)))
+    (hfarN : ∀ {c' : ℝ}, 1 ≤ c' → c' ^ 8 ≤ R_max * Real.log (N : ℝ) →
+      ∀ {z' : EuclideanSpace ℝ (PrimeHorizonIndex N)}, z' ∈ (conductorSubspace 1 N)ᗮ →
+        let x := primeHorizonExtension z'
+        let M := N / linearDefectCutoff c'
+        let y := atomicTailCoefficients M x
+        let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c' N
+        (7 / 8 : ℝ) * poleDefect M x +
+          (dyadicTopMassConstant / (8 * c' ^ 7)) * Real.log (N : ℝ) *
+            topCollarSeventhMass M N x +
+          (c' * c_W / R_max) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) +
+          (c' / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_y -
+          ((1 / (16 * explicitConductorCutoffConstant)) * Real.log (N : ℝ) /
+            (1 + Real.log (Real.log (N : ℝ))) ^ 5) *
+            (∑ n ∈ Icc 1 M, x n ^ 2) ≤
+        completeWeilEnergy tiltedUnitSpline c' N z' +
+          (c' * B_far) * ∫ u, U_y u ^ 2)
+    (hQ2 : 2 ≤ ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊)
+    (hQR₀ : ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ ≤ ⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊)
+    (hsqrtQ : (1 / 2 : ℝ) * Real.log (N : ℝ) ^ ((13 / 32 : ℝ) / 2) ≤
+      Real.sqrt ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊)
+    (hlogQ_lb : (13 / 32 : ℝ) * Real.log (Real.log (N : ℝ)) - 1 ≤
+      Real.log (⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ : ℝ))
+    (hH₀_ub : 1 + Real.log (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ) ≤
+      2 * Real.log (N : ℝ) ^ (1 / 2 : ℝ))
+    (hlogR₀_lb : Real.log (N : ℝ) ^ (1 / 2 : ℝ) - 1 ≤
+      Real.log (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ))
+    (h36_R₀ : 36 * (1 + Real.log (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ)) ≤
+      Real.log (N : ℝ))
+    (hLX : Real.log (N : ℝ) ≤ (N : ℝ) ^ (1 / 36 : ℝ))
+    (hpoly5 : 2 * (1 + Real.log (Real.log (N : ℝ))) ^ 5 ≤ Real.log (N : ℝ) ^ (1 / 4 : ℝ))
+    (hpoly5_78 : 2 * D * (1 + Real.log (Real.log (N : ℝ))) ^ 5 ≤ Real.log (N : ℝ) ^ (7 / 8 : ℝ))
+    (hpoly7_U : 8 * C_U_all * (1 + Real.log (Real.log (N : ℝ))) ^ 7 ≤
+      Real.log (N : ℝ) ^ (1 / 8 : ℝ))
+    (hCU_def : C_U_all = 1024 * D * C_pr + 512 * C_pr * M_bk +
+      32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
+      256 * D * C_up * K_c ^ 2 + 256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk)
+    (hpoly128 : 2 * (1 + Real.log (Real.log (N : ℝ))) ^ 1 ≤ Real.log (N : ℝ) ^ (1 / 128 : ℝ))
+    (hν_max : max (max (C_small0 * (18 * K_c ^ 4)) (C_cross01 * (4 * K_c ^ 4)))
+      (max (32 * C_band1 * K_c ^ 4) (2 * Real.log K_c + 2)) ≤ Real.log (N : ℝ) ^ (1 / 128 : ℝ))
+    (hL34_max : max (4 * D + 4) (32 * D * (κ₀ + 2)) ≤ Real.log (N : ℝ) ^ (3 / 4 : ℝ))
+    (hL8_max : max (128 * (256 * C_pr * CB * M_bk)) (64 * (κ₀ + 2) * K_c ^ 7 / g₀) ≤
+      Real.log (N : ℝ) ^ (1 / 8 : ℝ))
+    (hll_fl0 : (κ₀ + 4 + C_coerc0 + Real.log K_c + 3 / 4) / (23 / 128) ≤
+      Real.log (Real.log (N : ℝ)))
+    (hll_leak : 56 * CB * K_c ^ 7 / (D * g₀) ≤ Real.log (Real.log (N : ℝ)))
+    (hll_E : 128 * (1024 * D * C_pr + 32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6)) ≤
+      Real.log (Real.log (N : ℝ)))
+    (hL_max : max 3000 (max ((8 * (κ₀ + 3)) ^ 2) (R_max + 1)) ≤ Real.log (N : ℝ))
+    (hresN : ∀ m : ℕ, 0 < m → (m : ℝ) ≤ (N : ℝ) ^ (0 : ℝ) → ∀ c' : ℝ, 1 ≤ c' →
+      c' * (m : ℝ) < (N : ℝ) / 8 →
+      ‖ramanujanConductorResidual tiltedUnitSpline m c' N‖ ^ 2 ≤
+        K_res * (c' ^ 2 * (1 + Real.log c') ^ 3 * (m : ℝ) ^ 2 * (1 + Real.log m) ^ 4 *
+          Real.log (N : ℝ) ^ ((1 : ℝ) / (16 : ℕ)) / Real.log (N : ℝ) +
+          c' ^ 10 * (m : ℝ) ^ 8 * (Real.log (N : ℝ) / N) ^ 2))
+    (hN3 : 3 ≤ N) (hc1 : 1 ≤ c) (hc8 : c ^ 8 ≤ R_max * Real.log (N : ℝ))
+    {z : EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hz_orth : z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ) :
+    ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+      w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
+      let x_w := primeHorizonExtension w
+      let M := N / linearDefectCutoff c
+      let y_w := atomicTailCoefficients M x_w
+      let U_w := normalizedCentredAtomicTest tiltedUnitSpline y_w c N
+      let L := Real.log (N : ℝ)
+      let ℓ := 1 + Real.log L
+      let k₁ := L / (2 * D * ℓ ^ 5)
+      (κ₀ + 2) * ‖z‖ ^ 2 +
+          (k₁ / 16) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+          (g₀ * L / (64 * c ^ 7)) * topCollarSeventhMass M N x_w +
+          (c * c_W / R_max) * (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) +
+          (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_w ≤
+        completeWeilEnergy tiltedUnitSpline c N z +
+          (c * B_far) * ∫ u, U_w u ^ 2 ∧
+      completeWeilEnergy tiltedUnitSpline c N w ≤
+        completeWeilEnergy tiltedUnitSpline c N z +
+          (1 / ℓ) * ((k₁ / 8) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+            (g₀ * L / (32 * c ^ 7)) * topCollarSeventhMass M N x_w) := by
   have hKc0 : 0 < K_c := zero_lt_one.trans_le hKc1
-  set M_bk : ℝ := 1 + 8 * K_c ^ 7 / g₀
-  have hMbk0 : 0 ≤ M_bk := by dsimp only [M_bk]; positivity
-  set CB : ℝ := 4 + Real.log (2 * (256 * Real.exp 2 + 4)) + 1
-  have hCB0 : 0 ≤ CB := by
-    have := Real.log_nonneg (show (1 : ℝ) ≤ 2 * (256 * Real.exp 2 + 4) by nlinarith [Real.exp_pos 2])
-    dsimp only [CB]; linarith
-  have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
-    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  have hllim : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
-    Real.tendsto_log_atTop.comp hLlim
-  set C_U_all : ℝ := 1024 * D * C_pr + 512 * C_pr * M_bk +
-    32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
-    256 * D * C_up * K_c ^ 2 + 256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk
-  filter_upwards [
-    hfar_ev,
-    eventually_three_cutoff_bounds_one_ninth (by norm_num : (0 : ℝ) < 13 / 32)
-      (by norm_num : (13 / 32 : ℝ) ≤ 1 / 2) (by norm_num : (0 : ℝ) < 1 / 4096) le_rfl,
-    eventually_log_nat_le_rpow_36_one_ninth,
-    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 5
-      (by norm_num : (0 : ℝ) < 1 / 4) 2),
-    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 5
-      (by norm_num : (0 : ℝ) < 7 / 8) (2 * D)),
-    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 7
-      (by norm_num : (0 : ℝ) < 1 / 8) (8 * C_U_all)),
-    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1
-      (by norm_num : (0 : ℝ) < 1 / 128) 2),
-    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 128)).comp hLlim).eventually_ge_atTop
-      (max (max (C_small0 * (18 * K_c ^ 4)) (C_cross01 * (4 * K_c ^ 4)))
-        (max (32 * C_band1 * K_c ^ 4) (2 * Real.log K_c + 2))),
-    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 3 / 4)).comp hLlim).eventually_ge_atTop
-      (max (4 * D + 4) (32 * D * (κ₀ + 2))),
-    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 8)).comp hLlim).eventually_ge_atTop
-      (max (128 * (256 * C_pr * CB * M_bk)) (64 * (κ₀ + 2) * K_c ^ 7 / g₀)),
-    hllim.eventually_ge_atTop ((κ₀ + 4 + C_coerc0 + Real.log K_c + 3 / 4) / (23 / 128)),
-    hllim.eventually_ge_atTop (56 * CB * K_c ^ 7 / (D * g₀)),
-    hllim.eventually_ge_atTop
-      (128 * (1024 * D * C_pr + 32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6))),
-    hLlim.eventually_ge_atTop (max 3000 (max ((8 * (κ₀ + 3)) ^ 2) (R_max + 1))),
-    hres 0 le_rfl 16 (by norm_num),
-    eventually_ge_atTop 3] with
-      N hfarN hcut hLX hpoly5 hpoly5_78 hpoly7_U hpoly128 hν_max hL34_max hL8_max
-      hll_fl0 hll_leak hll_E hL_max hresN hN3
-  dsimp only [Function.comp_def] at hν_max hL34_max hL8_max
-  intro c hc1 hc8 z hz_orth
   have hL3000 : 3000 ≤ Real.log (N : ℝ) := (le_max_left _ _).trans hL_max
   have hL_Lh_gap : (8 * (κ₀ + 3)) ^ 2 ≤ Real.log (N : ℝ) :=
     ((le_max_left _ _).trans (le_max_right _ _)).trans hL_max
@@ -3082,6 +3150,7 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
   have hN1 : 1 ≤ N := by omega
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
   have hc_up : c ≤ K_c * Real.log (N : ℝ) ^ (1 / 8 : ℝ) := by
+    rw [hKc_def]
     have h8 : c ^ 8 ≤ (R_max + 1) * Real.log (N : ℝ) := by linarith [hc8, hL0]
     have hp := Real.rpow_le_rpow (pow_nonneg hc0.le 8) h8 (by norm_num : (0 : ℝ) ≤ 1 / 8)
     have hlhs : (c ^ 8) ^ (1 / 8 : ℝ) = c := by
@@ -3096,7 +3165,6 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
     by_contra hlt
     exact not_lt_of_ge h8 (pow_lt_pow_left₀ (lt_of_not_ge hlt) hL0.le (by norm_num))
   have hL34_D : 4 * D + 4 ≤ Real.log (N : ℝ) ^ (3 / 4 : ℝ) := (le_max_left _ _).trans hL34_max
-  obtain ⟨hQ2, hQR₀, -, -, hsqrtQ, hlogQ_lb, hH₀_ub, hlogR₀_lb, h36_R₀, -, -, -⟩ := hcut
   obtain ⟨hR₀R₁, h1_R₁, h1080_R₁, hgap_lo, hgap_hi, hRN₁⟩ :=
     subexpCutoff_all_ratio_bounds hD hN1 hL3000 hLX hpoly5 hL34_D
   obtain ⟨u₀, u₁, w, hz_eq, hu₀_mem, hu₀_orthQ, hu₁_mem, hu₁_orthR₀, hw_orthR₁, hnorm_z⟩ :=
@@ -3120,6 +3188,7 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
     linear_prefix_horizon_bounds_one_ninth hN1 hR₀2 hc1 hL3000 hLX hcL h36_R₀
   obtain ⟨hRM1, hlogM1, hB1_ub, hhalf_M⟩ :=
     linear_prefix_horizon_bounds_one_ninth hN1 hR₁2 hc1 hL3000 hLX hcL h36_R₁
+  rw [← hCB_def] at hB0_ub hB1_ub
   have hM2 : 2 ≤ N / linearDefectCutoff c :=
     (hR₁2.trans (Nat.le_mul_of_pos_right _ (by omega : 0 < subexpCutoff N))).trans hRM1
   have hM1 : 1 ≤ N / linearDefectCutoff c := by omega
@@ -3127,27 +3196,29 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
     linarith [Real.log_le_log hc0 hcL]
   have hw_orth1 : w ∈ (conductorSubspace 1 N)ᗮ := fun v hv =>
     hw_orthR₁ v (conductorSubspace_mono (by omega : 1 ≤ subexpCutoff N) N hv)
-  -- Far-sector Gårding on `w` upgraded to prefix + seventh-power reserves
-  set x_w := primeHorizonExtension w
-  set M := N / linearDefectCutoff c
-  set y_w := atomicTailCoefficients M x_w
-  set U_w := normalizedCentredAtomicTest tiltedUnitSpline y_w c N
-  set E_extra := (c * B_far) * (∫ u, U_w u ^ 2) -
-    (c * c_W / R_max) * (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) -
-    (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_w
   have hfar_w_raw := hfarN hc1 hc8 hw_orth1
+  rw [← hD_eq, ← hg₀_eq] at hfar_w_raw
+  obtain ⟨E_extra, hE_def⟩ : ∃ E_extra : ℝ, E_extra =
+      (c * B_far) * (∫ u, normalizedCentredAtomicTest tiltedUnitSpline
+        (atomicTailCoefficients (N / linearDefectCutoff c) (primeHorizonExtension w)) c N u ^ 2) -
+      (c * c_W / R_max) * (∫ u, normalizedCentredAtomicTest tiltedUnitSpline
+        (atomicTailCoefficients (N / linearDefectCutoff c) (primeHorizonExtension w)) c N u ^ 2 *
+        Real.exp (-(8 * u))) -
+      (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy
+        (normalizedCentredAtomicTest tiltedUnitSpline
+          (atomicTailCoefficients (N / linearDefectCutoff c) (primeHorizonExtension w)) c N) :=
+    ⟨_, rfl⟩
   have hfar_w_shift :
-      (7 / 8 : ℝ) * poleDefect M x_w +
-        (g₀ / (8 * c ^ 7)) * Real.log (N : ℝ) * topCollarSeventhMass M N x_w -
+      (7 / 8 : ℝ) * poleDefect (N / linearDefectCutoff c) (primeHorizonExtension w) +
+        (g₀ / (8 * c ^ 7)) * Real.log (N : ℝ) *
+          topCollarSeventhMass (N / linearDefectCutoff c) N (primeHorizonExtension w) -
         ((1 / (16 * D)) * Real.log (N : ℝ) / (1 + Real.log (Real.log (N : ℝ))) ^ 5) *
-          (∑ n ∈ Icc 1 M, x_w n ^ 2) ≤
+          (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w n ^ 2) ≤
       completeWeilEnergy tiltedUnitSpline c N w + E_extra := by
-    dsimp only [E_extra, g₀, D, x_w, M, y_w, U_w] at hfar_w_raw ⊢
-    linarith only [hfar_w_raw]
-  have hband2 := subexp_far_collar_reserve_all_ratio rfl hD hg₀ hCB0 hKc1 hc1 hc_up hL2 hR₁2
+    linarith only [hfar_w_raw, hE_def]
+  have hband2 := subexp_far_collar_reserve_all_ratio hD_eq hD hg₀ hCB0 hKc1 hc1 hc_up hL2 hR₁2
     hM2 hRM1 hlogM1 hhalf_M hB1_ub h1c_ℓ hgap_lo hgap_hi
     (by linarith only [hll_leak]) hw_orthR₁ hfar_w_shift
-  -- Band 0 and Band 1 scalar smallness
   have hVc : 1 + Real.log c ≤ Real.log (N : ℝ) ^ (1 / 128 : ℝ) := by
     have hlogc : Real.log c ≤ Real.log K_c + (1 / 8 : ℝ) * Real.log (Real.log (N : ℝ)) := by
       have h1 := Real.log_le_log hc0 hc_up
@@ -3170,7 +3241,6 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
   obtain ⟨hsmall_band0, hsmall_cross01, hfl0, hfl1⟩ :=
     all_ratio_band0_band1_scalars hc1 hKc1 hc_up hL1 rfl hκ₀ hC_small0 hC_cross01 hVc hsqrtQ
       hlogQ_lb hH₀_ub hlogR₀_lb hR₀_tail hc5N hc3R₀4 hc3R₀2 hν_b1 hν_b2 hν_b6 hll_scaled hL_Lh_gap
-  -- Band–far cross terms at `k = L / (2 * D * ℓ ^ 6)` and `b = min (c ^ 7) ((g₀ * D / 4) * ℓ ^ 5)`
   set L := Real.log (N : ℝ) with hL_eq
   set ℓ := 1 + Real.log L with hℓ_eq
   set k₁ := L / (2 * D * ℓ ^ 5) with hk₁_eq
@@ -3180,8 +3250,9 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
   have hℓ0 : 0 < ℓ := zero_lt_one.trans_le hℓ1
   have hk_pos : 0 < k := by rw [hk_eq]; positivity
   have hb_pos : 0 < b := lt_min (pow_pos hc0 7) (by positivity)
-  have hbk_ub : c ^ 7 / (b * k) ≤ M_bk * ℓ / L ^ (1 / 8 : ℝ) :=
-    all_ratio_c7_div_bk_le hD hg₀ hL1 hℓ1 hc1 hc_up hKc1 hk_eq hb_eq hpoly5_78
+  have hbk_ub : c ^ 7 / (b * k) ≤ M_bk * ℓ / L ^ (1 / 8 : ℝ) := by
+    rw [hMbk_def]
+    exact all_ratio_c7_div_bk_le hD hg₀ hL1 hℓ1 hc1 hc_up hKc1 hk_eq hb_eq hpoly5_78
   have hRN₀ : L ^ 18 * (⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊ : ℝ) ^ 16 ≤ N :=
     le_trans (mul_le_mul_of_nonneg_left
       (pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast hR₀R₁) 16) (by positivity)) hRN₁
@@ -3192,7 +3263,7 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
     near_ceil_side_conditions (by omega : 1 ≤ subexpCutoff N) hc1 hcL
       (by linarith only [hL3000]) hRN₁
   obtain ⟨hL3, -, -, hTup⟩ := linearDefectCutoff_bounds hc1
-  have hNM : (N : ℝ) / M ≤ 2 * (256 * Real.exp 2 + 4) * c := by
+  have hNM : (N : ℝ) / (N / linearDefectCutoff c : ℕ) ≤ 2 * (256 * Real.exp 2 + 4) * c := by
     have h1 := nat_div_div_le_two_mul (by omega : 1 ≤ linearDefectCutoff c) hcutN
     linarith only [h1, hTup]
   set Sg₁ := K_tot * (1 + Real.log (1 + Real.log (subexpCutoff N : ℝ))) with hSg₁_eq
@@ -3223,8 +3294,13 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
       (Nat.cast_pos.mpr (by omega : 0 < ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊))
       (Nat.cast_le.mpr hR₀R₁)
     linarith only [hle, h1_R₁]
-  have hU_small : C_U_all * ℓ ^ 7 ≤ (1 / 8 : ℝ) * L ^ (1 / 8 : ℝ) := by
-    linarith only [hpoly7_U]
+  have hU_small :
+      (1024 * D * C_pr + 512 * C_pr * M_bk +
+        32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
+        256 * D * C_up * K_c ^ 2 +
+        256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk) * ℓ ^ 7 ≤
+      (1 / 8 : ℝ) * L ^ (1 / 8 : ℝ) := by
+    rw [← hCU_def]; linarith only [hpoly7_U]
   obtain ⟨hsE0, hsU0⟩ := all_ratio_band_far_budgets hL_eq hℓ_eq hk_eq hbk_ub hD hCpr hCup hCupT
     hCnp hCB0 hKc1 hMbk0 hK_tot hK_res.le hL1 hc1 hcL hc_up hk_pos hb_pos
     (by omega : 1 ≤ ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊) (Nat.div_le_self _ _) hRN₀ h1_R₀ hB0_ub hNM
@@ -3246,8 +3322,9 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
         (1 / 32 : ℝ) * primeAdjunctionMass ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊ a₀ +
           (1 / 4 : ℝ) * ‖∑ m ∈ Icc 1 ⌊Real.exp (L ^ (1 / 2 : ℝ))⌋₊,
             a₀ m • normalizedRamanujanHorizonVector m N‖ ^ 2 +
-          (k / 32) * (∑ n ∈ Icc 1 M, primeHorizonExtension w' n ^ 2) +
-          (b * k / (32 * c ^ 7)) * (∑ n ∈ Ioc M N, primeHorizonExtension w' n ^ 2) +
+          (k / 32) * (∑ n ∈ Icc 1 (N / linearDefectCutoff c), primeHorizonExtension w' n ^ 2) +
+          (b * k / (32 * c ^ 7)) * (∑ n ∈ Ioc (N / linearDefectCutoff c) N,
+            primeHorizonExtension w' n ^ 2) +
           (b * k / (32 * c ^ 7)) * ‖w'‖ ^ 2 := fun a₀ hu₀_1 w' hw' =>
     hcross_shape hR₀2 (by exact_mod_cast hR₀6) hM1 (Nat.div_le_self _ _) h18_R₀ hc1 h8c hc4
       hsize_near0 hsize_up0 hrad hceil0 hRK0 hSg1 (div_totient_le_loglog_of_le hK_tot htot hR₀R₁)
@@ -3256,7 +3333,6 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
   have hcr1w := hcross_shape hR₁2 (by exact_mod_cast hR₁6) hM1 (Nat.div_le_self _ _) h18_R₁ hc1
     h8c hc4 hsize_near1 hsize_up1 hrad hceil1 hRK1 hSg1
     (div_totient_le_loglog_of_le hK_tot htot le_rfl) hρ_norm hk_pos hb_pos hsE1 hsU1
-  -- Norm floors on `w`
   have hk₁_lb : L ^ (3 / 4 : ℝ) / D ≤ k₁ := by
     rw [hk₁_eq, div_le_div_iff₀ hD (by positivity)]
     have hpoly5' : 2 * ℓ ^ 5 ≤ L ^ (1 / 4 : ℝ) := by rw [hℓ_eq, hL_eq]; exact hpoly5
@@ -3310,9 +3386,123 @@ theorem exists_all_ratio_complement_garding_and_far_bridge :
     nlinarith only [sq_nonneg ‖u₀‖, h1]
   have hu01_nn : 0 ≤ (κ₀ + 3) * ‖u₀‖ ^ 2 + (κ₀ + 2 + L ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 := by
     positivity
-  refine ⟨?_, ?_⟩
-  · dsimp only [E_extra] at hgarding_raw
-    linarith only [hgarding_raw, hnorm_fl]
-  · linarith only [hbridge_raw, hu01_nn]
+  exact ⟨by linarith only [hgarding_raw, hnorm_fl, hE_def], by linarith only [hbridge_raw, hu01_nn]⟩
+
+/-- **All-ratio complement Gårding and deterministic far-sector bridge above `⌊(log N)^{13/32}⌋₊`.**
+For every `R_max > 0`, splitting any `z ∈ (conductorSubspace ⌊(log N)^{13/32}⌋₊ N)ᗮ` orthogonally into
+`z = u₀ + u₁ + w` with `w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ` yields simultaneously:
+1. All-ratio complement Gårding on `z`, retaining `(κ₀ + 2) ‖z‖²`, prefix mass `(k₁ / 16) P_w`,
+   top-collar seventh mass `(g₀ log N / (64 c⁷)) S7_w`, eighth-power exponential mass
+   `(c c_W / R_max) W₈(U_w)`, and archimedean Lévy energy `(c / (4 I₂)) levyEnergy U_w` against
+   `completeWeilEnergy c N z + (c B_far) ∫ U_w²`;
+2. The deterministic energy bridge bounding `completeWeilEnergy c N w` above by
+   `completeWeilEnergy c N z` plus an `O(1 / log log N)` fraction of the far block reserves. -/
+theorem exists_all_ratio_complement_garding_and_far_bridge :
+    ∃ c_W : ℝ, 0 < c_W ∧
+      ∀ {R_max : ℝ}, 0 < R_max →
+        ∃ B_far : ℝ, 0 < B_far ∧
+          ∀ᶠ N : ℕ in atTop,
+            ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
+              ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+                z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ →
+                ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+                  w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
+                  let x_w := primeHorizonExtension w
+                  let M := N / linearDefectCutoff c
+                  let y_w := atomicTailCoefficients M x_w
+                  let U_w := normalizedCentredAtomicTest tiltedUnitSpline y_w c N
+                  let L := Real.log (N : ℝ)
+                  let ℓ := 1 + Real.log L
+                  let k₁ := L / (2 * explicitConductorCutoffConstant * ℓ ^ 5)
+                  (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 +
+                      (k₁ / 16) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+                      (dyadicTopMassConstant * L / (64 * c ^ 7)) *
+                        topCollarSeventhMass M N x_w +
+                      (c * c_W / R_max) * (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) +
+                      (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_w ≤
+                    completeWeilEnergy tiltedUnitSpline c N z +
+                      (c * B_far) * ∫ u, U_w u ^ 2 ∧
+                  completeWeilEnergy tiltedUnitSpline c N w ≤
+                    completeWeilEnergy tiltedUnitSpline c N z +
+                      (1 / ℓ) * ((k₁ / 8) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+                        (dyadicTopMassConstant * L / (32 * c ^ 7)) *
+                          topCollarSeventhMass M N x_w) := by
+  obtain ⟨c_W, hc_W, hfar_gen⟩ := exists_all_ratio_far_garding
+  obtain ⟨C_pr, C_up, C_upT, C_np, hCpr, hCup, hCupT, hCnp, hcross_shape⟩ :=
+    exists_band_far_cross_le_reserve_shape
+  obtain ⟨C_cross01, hC_cross01, hcross01⟩ := exists_band0_band1_cross_le
+  obtain ⟨C_coerc0, C_small0, _hC_coerc0, hC_small0, hcoerc0⟩ :=
+    exists_completeWeilEnergy_ge_three_quarters_log_homogeneous
+  obtain ⟨C_band1, _hC_band1, hcoerc1⟩ := exists_band1_coercive_homogeneous
+  obtain ⟨K_res, hK_res, hres⟩ := exists_tiltedUnitSpline_quadratic_conductor_residual_variable_rate
+  obtain ⟨K_tot, hK_tot, htot⟩ := exists_div_totient_le_loglog
+  have hD : 0 < explicitConductorCutoffConstant := explicitConductorCutoffConstant_pos
+  have hg₀ : 0 < dyadicTopMassConstant := dyadicTopMassConstant_pos
+  have hκ₀ : 0 < tiltedSplineSpectralFloorConstant := tiltedSplineSpectralFloorConstant_pos
+  refine ⟨c_W, hc_W, fun {R_max} hR => ?_⟩
+  obtain ⟨B_far, hB_far, hfar_ev⟩ := hfar_gen hR
+  refine ⟨B_far, hB_far, ?_⟩
+  obtain ⟨K_c, hKc1, hKc_def⟩ : ∃ K_c : ℝ, 1 ≤ K_c ∧ K_c = (R_max + 1) ^ (1 / 8 : ℝ) :=
+    ⟨(R_max + 1) ^ (1 / 8 : ℝ), Real.one_le_rpow (by linarith) (by norm_num), rfl⟩
+  obtain ⟨M_bk, hMbk0, hMbk_def⟩ :
+      ∃ M_bk : ℝ, 0 ≤ M_bk ∧ M_bk = 1 + 8 * K_c ^ 7 / dyadicTopMassConstant :=
+    ⟨1 + 8 * K_c ^ 7 / dyadicTopMassConstant, by positivity, rfl⟩
+  obtain ⟨CB, hCB0, hCB_def⟩ :
+      ∃ CB : ℝ, 0 ≤ CB ∧ CB = 4 + Real.log (2 * (256 * Real.exp 2 + 4)) + 1 := by
+    refine ⟨4 + Real.log (2 * (256 * Real.exp 2 + 4)) + 1, ?_, rfl⟩
+    have := Real.log_nonneg (show (1 : ℝ) ≤ 2 * (256 * Real.exp 2 + 4) by nlinarith [Real.exp_pos 2])
+    linarith
+  obtain ⟨C_U_all, hCU_def⟩ : ∃ C_U_all : ℝ, C_U_all =
+      1024 * explicitConductorCutoffConstant * C_pr + 512 * C_pr * M_bk +
+      32 * C_np * M_bk * (8 * K_res * K_c ^ 2 + K_c ^ 2 * (1560 * K_tot + 96) + K_c ^ 4 + 3) +
+      256 * explicitConductorCutoffConstant * C_up * K_c ^ 2 +
+      256 * C_upT * (256 * Real.exp 2 + 4) * K_c ^ 3 * M_bk := ⟨_, rfl⟩
+  have hLlim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have hllim : Tendsto (fun N : ℕ => Real.log (Real.log (N : ℝ))) atTop atTop :=
+    Real.tendsto_log_atTop.comp hLlim
+  filter_upwards [
+    hfar_ev,
+    eventually_three_cutoff_bounds_one_ninth (by norm_num : (0 : ℝ) < 13 / 32)
+      (by norm_num : (13 / 32 : ℝ) ≤ 1 / 2) (by norm_num : (0 : ℝ) < 1 / 4096) le_rfl,
+    eventually_log_nat_le_rpow_36_one_ninth,
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 5
+      (by norm_num : (0 : ℝ) < 1 / 4) 2),
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 5
+      (by norm_num : (0 : ℝ) < 7 / 8) (2 * explicitConductorCutoffConstant)),
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 7
+      (by norm_num : (0 : ℝ) < 1 / 8) (8 * C_U_all)),
+    hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 1
+      (by norm_num : (0 : ℝ) < 1 / 128) 2),
+    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 128)).comp hLlim).eventually_ge_atTop
+      (max (max (C_small0 * (18 * K_c ^ 4)) (C_cross01 * (4 * K_c ^ 4)))
+        (max (32 * C_band1 * K_c ^ 4) (2 * Real.log K_c + 2))),
+    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 3 / 4)).comp hLlim).eventually_ge_atTop
+      (max (4 * explicitConductorCutoffConstant + 4)
+        (32 * explicitConductorCutoffConstant * (tiltedSplineSpectralFloorConstant + 2))),
+    ((tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 8)).comp hLlim).eventually_ge_atTop
+      (max (128 * (256 * C_pr * CB * M_bk))
+        (64 * (tiltedSplineSpectralFloorConstant + 2) * K_c ^ 7 / dyadicTopMassConstant)),
+    hllim.eventually_ge_atTop
+      ((tiltedSplineSpectralFloorConstant + 4 + C_coerc0 + Real.log K_c + 3 / 4) / (23 / 128)),
+    hllim.eventually_ge_atTop
+      (56 * CB * K_c ^ 7 / (explicitConductorCutoffConstant * dyadicTopMassConstant)),
+    hllim.eventually_ge_atTop
+      (128 * (1024 * explicitConductorCutoffConstant * C_pr +
+        32 * C_np * M_bk * (8 * K_c * K_tot ^ 2 + 6))),
+    hLlim.eventually_ge_atTop
+      (max 3000 (max ((8 * (tiltedSplineSpectralFloorConstant + 3)) ^ 2) (R_max + 1))),
+    hres 0 le_rfl 16 (by norm_num),
+    eventually_ge_atTop 3] with
+      N hfarN hcut hLX hpoly5 hpoly5_78 hpoly7_U hpoly128 hν_max hL34_max hL8_max
+      hll_fl0 hll_leak hll_E hL_max hresN hN3
+  dsimp only [Function.comp_def] at hν_max hL34_max hL8_max
+  obtain ⟨hQ2, hQR₀, -, -, hsqrtQ, hlogQ_lb, hH₀_ub, hlogR₀_lb, h36_R₀, -, -, -⟩ := hcut
+  intro c hc1 hc8 z hz_orth
+  exact complement_garding_at_N rfl rfl rfl hD hg₀ hκ₀ hCpr hCup hCupT hCnp hC_cross01 hC_small0
+    hK_res hK_tot hKc1 hKc_def hMbk0 hMbk_def hCB0 hCB_def hcross_shape hcross01 hcoerc0 hcoerc1
+    htot hfarN hQ2 hQR₀ hsqrtQ hlogQ_lb hH₀_ub hlogR₀_lb h36_R₀ hLX hpoly5 hpoly5_78 hpoly7_U
+    hCU_def hpoly128 hν_max hL34_max hL8_max hll_fl0 hll_leak hll_E hL_max hresN hN3 hc1 hc8
+    hz_orth
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

@@ -374,6 +374,10 @@ counts via quotient-unit fibers.
 totient convolution formula, and the corresponding multiplicative-fiber
 identity from squarefree prime support.
 
+`CubicPrimaryIdealGenerators.lean` constructs multiplicative primary
+generators of unramified ideals from the actual Jacobi-sum prime generators,
+with span and norm identities and exact exclusion of ramified factors.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

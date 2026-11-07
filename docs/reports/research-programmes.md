@@ -87,3 +87,6 @@
 - formal/GaloisForLFunctions/PrimeTorusTheory/README.md
 - formal/GaloisForLFunctions/RigidArithmeticOfCuts/README.md
 - formal/GaloisForLFunctions/WindowVisibilityLaw/README.md
+- formal/GaloisForLFunctions/MetaplecticMobiusDescent/README.md
+- formal/GaloisForLFunctions/TailArithmeticOfThePrimeOrbit/README.md
+- formal/GaloisForLFunctions/SumProductArithmeticOfTheLogarithm/README.md

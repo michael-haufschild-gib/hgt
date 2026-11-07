@@ -326,3 +326,4 @@ TheCubicConstantTermIsSupportedOnCubes adapts Eisenstein/ConstantTermSupport.lea
 CubicAdmissibleResidueCounts adapts CubicSieve/ConjugateProfiles.lean affine residue counts and ramified quotient norms.
 CubicIdealTotients adapts Eisenstein/RamifiedNormWeights.lean ideal-totient cardinality identities.
 CubicIdealMobiusInversion adapts Arithmetic/IdealMobius.lean and Eisenstein/RamifiedNormWeights.lean divisor inversion and totient convolution.
+CubicPrimaryIdealGenerators adapts Arithmetic/IdealMobius.lean primary ideal generators and GaussSum/ReflectionBrackets.lean unramified support, reusing the local Jacobi-sum generators.
