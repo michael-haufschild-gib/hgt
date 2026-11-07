@@ -337,3 +337,8 @@ TheCubicResidualCharacter adapts Eisenstein/ConjugateLevelAction.lean quotient a
 CubicWhittakerAverages adapts Eisenstein/ScatteringCoefficients.lean Whittaker parameter-integral bounds and differentiation.
 CubicFourierBesselKernel adapts Eisenstein/HyperbolicSpace.lean Gamma-integral, Gaussian Fourier, and Bessel-kernel arguments.
 CubicResidualFourierTests adapts Eisenstein/ScatteringCoefficients.lean bounded Fourier tests and initial scattering identities.
+PositiveCubicWhittakerFactors adapts Eisenstein/ScatteringCoefficients.lean positivity of the Schläfli integral and compact Whittaker factors.
+CubicScatteringContinuation adapts Eisenstein/WhittakerContinuation.lean scattering continuation by Whittaker normalization.
+WeightedCubicWhittakerAverages adapts Eisenstein/WhittakerContinuation.lean weighted height integrals and interval rescaling.
+CompactCubicQuotientPullbacks adapts Eisenstein/WhittakerContinuation.lean compact chart domination and complex L² pullbacks.
+WeightedCubicResidualFourierTests adapts Eisenstein/WhittakerContinuation.lean bounded weighted Fourier tests and their arithmetic initial factorization.

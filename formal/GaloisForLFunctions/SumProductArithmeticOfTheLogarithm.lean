@@ -20,6 +20,10 @@ import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountE
 
 import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.EffectiveLogarithmicHalfTurn
 
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountProfileModulus
+
+import GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.PositiveNearCountEffectiveAverage
+
 /-!
 # Sum-product arithmetic of the logarithm
 

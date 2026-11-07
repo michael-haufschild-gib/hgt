@@ -65,6 +65,13 @@ Its [nonvanishing](../3-formalized/cubic-constant-term-nonvanishing.md) and
 identifies the actual Eisenstein remainder with the resolvent correction
 for `Re s>4`, `Im s>0`, with all analytic premises discharged.
 
+The nonzero residue transforms by the cubic character
+(`cubicEisensteinResidue_nonzero_character`). Bounded continuous height weights
+give continuous `L²` Fourier tests whose meromorphic families have the expected
+residue limit (`kernelCuspWeightedFourierFamily_residue_limit`). For nonzero
+frequencies, the initial family factors into the scattering coefficient and
+weighted Whittaker integral (`kernelCuspWeightedFourierFamily_initial_factor`).
+
 Open inputs: Gauss-coefficient identification and nonvanishing of `C∞`.
 Neither is supplied as an assumption in a local endpoint.
 The subsequent uniform mean-square descent remains on the parent card.

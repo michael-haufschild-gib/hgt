@@ -420,6 +420,30 @@ and specializes the formula at s = 4/3.
 actual quotient L² family, proves meromorphy and residue limits, and
 identifies their initial arithmetic scattering formula using source matching.
 
+`PositiveCubicWhittakerFactors.lean` proves strict positivity of the real
+hyperbolic Fourier kernel and compact Whittaker height factor, hence
+nonvanishing at s = 4/3 for every frequency.
+
+`CubicScatteringContinuation.lean` continues nonzero-frequency scattering
+coefficients meromorphically by normalized bounded Fourier tests, proves their
+residue limits, and identifies them with the initial arithmetic Dirichlet
+series on an open set.
+
+`WeightedCubicWhittakerAverages.lean` proves holomorphy of bounded height-
+weighted Whittaker averages throughout Re s > 1 on every compact positive
+height interval, using rescaling and the established product-integral
+majorants.
+
+`CompactCubicQuotientPullbacks.lean` bounds compactly restricted hyperbolic
+volume under quotient projection by a finite multiple of quotient volume and
+constructs the resulting bounded complex L² pullback with its almost-
+everywhere identity.
+
+`WeightedCubicResidualFourierTests.lean` constructs bounded height-weighted
+Fourier tests of the actual meromorphic family, proves their residue limits
+against the nonzero residual vector, and gives the exact initial scattering-
+factor identity.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.

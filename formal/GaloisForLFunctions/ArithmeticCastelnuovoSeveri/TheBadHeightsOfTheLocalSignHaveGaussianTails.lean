@@ -13,7 +13,9 @@ by the `2k`-th moment of the prime part of `D_N` gives
 * **Gaussian tails** (`exists_weilPositive_quadrature_moment`): for `δ ≤ 1/4`, `kδ ≤ 8M²`, the
   bad heights have measure `≤ 209 (4kδ²)^k T` (with `k^k (4δ²)^k = (4kδ²)^k`);
 * **exponential rarity** (`exists_weilPositive_quadrature_exp_rare`): for `δ ≤ 1/(64M²)`, measure
-  `≤ 418 e^{−5M²/δ} T`, against `δT` from Markov.
+  `≤ 418 e^{−5M²/δ} T`, against `δT` from Markov;
+* **power saving at aperture `K log log T`** (`eventually_weilPositive_loglog_aperture`): measure
+  `≤ T^{1 − 1/(64K)}`, against `T · O(log log T/log T)` from Markov.
 
 **Mechanism.** Split `D_N = Re P_N + H_N`: `P_N` carries the primes, the proper prime powers give
 `|H_N| ≤ 2 log N + 4 log 4 + 16` (`abs_primeCosine_le_primePart`). The power `P_N^k` is the
@@ -707,9 +709,155 @@ theorem exists_weilPositive_quadrature_exp_rare {δ M : ℝ} (hδ : 0 < δ) (hM 
 
 /-! ### Power-saving bad heights at aperture `K log log T` -/
 
+/-- The size constant `C₁(K)` for `L = log T`. -/
+def loglogSizeConstant (K : ℝ) : ℝ :=
+  max (max (8 * (10 + Real.log 4) + 8) 16) (64 * K * Real.log 209)
+
+/-- The constant `C₂` for `ℓ = log L`. -/
+def loglogDepthConstant : ℝ := max (2 * (3 + fieldConstant)) 1
+
+/-- The ratio constant `C₃(K, M)` in `C₃ ℓ ≤ L`. -/
+def loglogRatioConstant (K M : ℝ) : ℝ := 256 * M ^ 2 * K + 16 * K
+
+/-- The root constant `C₄(K, M)` in `C₄ ℓ ≤ √L`. -/
+def loglogRootConstant (K M : ℝ) : ℝ := 2048 * M ^ 4 * K
+
+/-- **The four eventual inequalities in `L = log T`.** -/
+theorem eventually_loglog_inequalities {K M : ℝ} (hK : 1 ≤ K) (hM : 1 ≤ M) :
+    ∀ᶠ L : ℝ in atTop, loglogSizeConstant K ≤ L ∧ loglogDepthConstant ≤ Real.log L ∧
+      loglogRatioConstant K M * Real.log L ≤ L ∧ loglogRootConstant K M * Real.log L ≤ Real.sqrt L := by
+  have hK0 : 0 < K := by linarith
+  have hM0 : 0 < M := by linarith
+  have hC₃0 : 0 < loglogRatioConstant K M := by unfold loglogRatioConstant; positivity
+  have hC₄0 : 0 < loglogRootConstant K M := by unfold loglogRootConstant; positivity
+  have h3 := Real.isLittleO_log_id_atTop.bound (inv_pos.mpr hC₃0)
+  have h4 := (isLittleO_log_rpow_atTop (r := 1 / 2) (by norm_num)).bound (inv_pos.mpr hC₄0)
+  filter_upwards [eventually_ge_atTop (loglogSizeConstant K),
+    Real.tendsto_log_atTop.eventually_ge_atTop loglogDepthConstant, h3, h4,
+    eventually_gt_atTop (1 : ℝ)] with L hL1 hL2 hL3 hL4 hL5
+  have hlogL : 0 ≤ Real.log L := Real.log_nonneg hL5.le
+  refine ⟨hL1, hL2, ?_, ?_⟩
+  · rw [Real.norm_of_nonneg hlogL, id, Real.norm_of_nonneg (by linarith)] at hL3
+    have := mul_le_mul_of_nonneg_left hL3 hC₃0.le
+    rwa [← mul_assoc, mul_inv_cancel₀ hC₃0.ne', one_mul] at this
+  · rw [Real.norm_of_nonneg hlogL, Real.norm_of_nonneg (Real.rpow_nonneg (by linarith) _)] at hL4
+    have := mul_le_mul_of_nonneg_left hL4 hC₄0.le
+    rwa [← mul_assoc, mul_inv_cancel₀ hC₄0.ne', one_mul, ← Real.sqrt_eq_rpow] at this
+
+theorem loglog_delta_le {K M L ℓ : ℝ} (hℓ0 : 0 < ℓ) (hK : 1 ≤ K) (hL0 : 0 < L)
+    (hL3 : loglogRatioConstant K M * ℓ ≤ L) : 64 * M ^ 2 * K * ℓ / L ≤ 1 / 4 := by
+  rw [div_le_iff₀ hL0]
+  unfold loglogRatioConstant at hL3
+  have h16 : 0 ≤ 16 * K * ℓ := by positivity
+  linarith only [hL3, h16]
+
+theorem loglog_one_le_k {K L ℓ : ℝ} (hK : 1 ≤ K) (hℓ0 : 0 < ℓ) {M : ℝ}
+    (hL3 : loglogRatioConstant K M * ℓ ≤ L) : 1 ≤ ⌊L / (8 * K * ℓ)⌋₊ := by
+  have hK0 : 0 < K := by linarith
+  refine Nat.le_floor ?_
+  rw [Nat.cast_one, le_div_iff₀ (by positivity), one_mul]
+  unfold loglogRatioConstant at hL3
+  have h1 : 0 ≤ 256 * M ^ 2 * K * ℓ := by positivity
+  have h2 : 8 * K * ℓ ≤ 16 * K * ℓ := by nlinarith only [hK0, hℓ0]
+  linarith only [hL3, h1, h2]
+
+theorem loglog_k_mul_delta_le {K M L ℓ : ℝ} (hK : 1 ≤ K) (hℓ0 : 0 < ℓ) (hL0 : 0 < L) :
+    (⌊L / (8 * K * ℓ)⌋₊ : ℝ) * (64 * M ^ 2 * K * ℓ / L) ≤ 8 * M ^ 2 := by
+  have hK0 : 0 < K := by linarith
+  have hk_le : (⌊L / (8 * K * ℓ)⌋₊ : ℝ) ≤ L / (8 * K * ℓ) := Nat.floor_le (by positivity)
+  have h := mul_le_mul_of_nonneg_right hk_le (by positivity : (0 : ℝ) ≤ 64 * M ^ 2 * K * ℓ / L)
+  refine h.trans (le_of_eq ?_)
+  field_simp
+  ring
+
+theorem loglog_apertureThreshold_le {K M L ℓ : ℝ} (hK : 1 ≤ K) (hM : 1 ≤ M) (hℓ0 : 0 < ℓ)
+    (hL1 : loglogSizeConstant K ≤ L) (hL2 : loglogDepthConstant ≤ ℓ) :
+    apertureThreshold (64 * M ^ 2 * K * ℓ / L / (64 * M ^ 2)) ≤ L := by
+  have hK0 : 0 < K := by linarith
+  have hM0 : M ≠ 0 := by linarith
+  have hL16 : 16 ≤ L := (le_max_right _ _).trans ((le_max_left _ _).trans hL1)
+  have hL0 : 0 < L := by linarith
+  have hlam : 64 * M ^ 2 * K * ℓ / L / (64 * M ^ 2) = K * ℓ / L := by
+    field_simp
+  rw [hlam]
+  unfold apertureThreshold
+  refine max_le ((le_max_left _ _).trans ((le_max_left _ _).trans hL1)) ?_
+  have hc := fieldConstant_pos
+  have hKℓ : ℓ ≤ K * ℓ := le_mul_of_one_le_left hℓ0.le hK
+  have hfc : 2 * (3 + fieldConstant) ≤ K * ℓ := ((le_max_left _ _).trans hL2).trans hKℓ
+  have hKℓ0 : 0 < K * ℓ := by positivity
+  rw [div_div_eq_mul_div]
+  have h1 : (1 + fieldConstant + 2) * L / (K * ℓ) ≤ L / 2 := by
+    rw [div_le_div_iff₀ hKℓ0 (by norm_num)]
+    nlinarith only [hfc, hL0]
+  linarith only [h1, hL16]
+
+theorem loglog_two_k_le {K L ℓ : ℝ} (hK : 1 ≤ K) (hℓ1 : 1 ≤ ℓ) (hL0 : 0 < L) :
+    2 * (⌊L / (8 * K * ℓ)⌋₊ : ℝ) ≤ L := by
+  have hK0 : 0 < K := by linarith
+  have hk_le : (⌊L / (8 * K * ℓ)⌋₊ : ℝ) ≤ L / (8 * K * ℓ) := Nat.floor_le (by positivity)
+  have hKℓ1 : 1 ≤ K * ℓ := one_le_mul_of_one_le_of_one_le hK hℓ1
+  have h8 : (8 : ℝ) ≤ 8 * K * ℓ := by
+    have : 8 * K * ℓ = 8 * (K * ℓ) := by ring
+    linarith only [this, hKℓ1]
+  have h : L / (8 * K * ℓ) ≤ L / 8 := div_le_div_of_nonneg_left hL0.le (by norm_num) h8
+  linarith only [hk_le, h, hL0]
+
+/-- `k · 4δ² ≤ e^{−ℓ/2}` at `δ = 64M²Kℓ/L`, `k ≤ L/(8Kℓ)`, `ℓ = log L`. -/
+theorem loglog_base_le {K M L : ℝ} (hK : 1 ≤ K) (hL1 : 1 < L)
+    (hL4 : loglogRootConstant K M * Real.log L ≤ Real.sqrt L) :
+    (⌊L / (8 * K * Real.log L)⌋₊ : ℝ) * (4 * (64 * M ^ 2 * K * Real.log L / L) ^ 2) ≤
+      Real.exp (-(Real.log L / 2)) := by
+  have hK0 : 0 < K := by linarith
+  have hL0 : 0 < L := by linarith
+  have hℓ0 : 0 < Real.log L := Real.log_pos hL1
+  have hk_le : (⌊L / (8 * K * Real.log L)⌋₊ : ℝ) ≤ L / (8 * K * Real.log L) :=
+    Nat.floor_le (by positivity)
+  have hq : (⌊L / (8 * K * Real.log L)⌋₊ : ℝ) * (4 * (64 * M ^ 2 * K * Real.log L / L) ^ 2) ≤
+      loglogRootConstant K M * Real.log L / L := by
+    have h := mul_le_mul_of_nonneg_right hk_le
+      (by positivity : (0 : ℝ) ≤ 4 * (64 * M ^ 2 * K * Real.log L / L) ^ 2)
+    refine h.trans (le_of_eq ?_)
+    unfold loglogRootConstant
+    field_simp
+    ring
+  have hsq0 : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL0
+  have hexp : Real.exp (-(Real.log L / 2)) = 1 / Real.sqrt L := by
+    have h : Real.exp (Real.log L / 2) = Real.sqrt L := by
+      rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hL0]
+      congr 1
+      ring
+    rw [Real.exp_neg, h, one_div]
+  refine hq.trans ?_
+  rw [hexp, div_le_div_iff₀ hL0 hsq0, one_mul]
+  calc loglogRootConstant K M * Real.log L * Real.sqrt L ≤ Real.sqrt L * Real.sqrt L :=
+        mul_le_mul_of_nonneg_right hL4 hsq0.le
+    _ = L := Real.mul_self_sqrt hL0.le
+
+/-- `209 e^{−kℓ/2} ≤ e^{−L/(64K)}` once `k > L/(8Kℓ) − 1`, `64K log 209 ≤ L`, `16Kℓ ≤ L`. -/
+theorem loglog_exp_le {K L ℓ k : ℝ} (hK : 1 ≤ K) (hℓ0 : 0 < ℓ)
+    (hk_gt : L / (8 * K * ℓ) < k + 1) (h209 : 64 * K * Real.log 209 ≤ L) (hℓL : 16 * K * ℓ ≤ L) :
+    209 * Real.exp (-(k * ℓ / 2)) ≤ Real.exp (-(L / (64 * K))) := by
+  have hK0 : 0 < K := by linarith
+  have h1 : L / (8 * K * ℓ) * ℓ = L / (8 * K) := by field_simp
+  have h2 : (L / (8 * K * ℓ) - 1) * ℓ ≤ k * ℓ := mul_le_mul_of_nonneg_right (by linarith) hℓ0.le
+  have h3 : (L / (8 * K * ℓ) - 1) * ℓ = L / (8 * K) - ℓ := by rw [sub_mul, h1, one_mul]
+  have hlog209 : Real.log 209 ≤ L / (64 * K) := by
+    rw [le_div_iff₀ (by positivity)]
+    linarith only [h209]
+  have hℓ2 : ℓ / 2 ≤ L / (32 * K) := by
+    rw [le_div_iff₀ (by positivity)]
+    linarith only [hℓL]
+  have hsplit : L / (8 * K) = 2 * (L / (64 * K)) + 2 * (L / (32 * K)) + 2 * (L / (64 * K)) := by
+    field_simp; ring
+  have h209' : (209 : ℝ) = Real.exp (Real.log 209) := (Real.exp_log (by norm_num)).symm
+  rw [h209', ← Real.exp_add]
+  refine Real.exp_le_exp.mpr ?_
+  linarith only [h2, h3, hlog209, hℓ2, hsplit]
+
 /-- **Power-saving bad heights at aperture `K log log T`.** For `K, M ≥ 1`, eventually in `T`, outside a
 set of heights of measure `≤ T^{1 − 1/(64K)}`, every real `F₀ ∈ C²_c([−A, A])`, `A = K log log T`, of
-shape `M` has `Q_γ(F₀) > 0`. Markov gives `T · O(log log T / log T)` at this aperture.
+shape `M` has `Q_γ(F₀) > 0`; Markov gives `T · O(log log T / log T)` at this aperture.
 The choice is `δ = 64M²K log log T / log T` and `k = ⌊log T / (8K log log T)⌋`. -/
 theorem eventually_weilPositive_loglog_aperture {K M : ℝ} (hK : 1 ≤ K) (hM : 1 ≤ M) :
     ∀ᶠ T : ℝ in atTop, ∃ B : Set ℝ,
@@ -720,142 +868,50 @@ theorem eventually_weilPositive_loglog_aperture {K M : ℝ} (hK : 1 ≤ K) (hM :
           M ^ 2 * (K * Real.log (Real.log T)) * (∫ u, F₀ u ^ 2) →
         0 < ∫ u, F₀ u ^ 2 →
         0 < fullZeroForm (cosineSource F₀ γ) + fullZeroForm (sineSource F₀ γ) := by
-  have hK0 : 0 < K := by linarith
-  have hM2 : 1 ≤ M ^ 2 := one_le_pow₀ hM
-  have hM2p : 0 < M ^ 2 := by positivity
-  have hc0 := fieldConstant_pos
-  have hl4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-  set C₁ : ℝ := max (max (8 * (10 + Real.log 4) + 8) 16) (64 * K * Real.log 209) with hC₁
-  set C₂ : ℝ := max (2 * (3 + fieldConstant)) 1 with hC₂
-  set C₃ : ℝ := 256 * M ^ 2 * K + 16 * K with hC₃
-  set C₄ : ℝ := 2048 * M ^ 4 * K with hC₄
-  have hC₃0 : 0 < C₃ := by positivity
-  have hC₄0 : 0 < C₄ := by positivity
-  -- the eventual inequalities in `L = log T`
-  have hE : ∀ᶠ L : ℝ in atTop, C₁ ≤ L ∧ C₂ ≤ Real.log L ∧ C₃ * Real.log L ≤ L ∧
-      C₄ * Real.log L ≤ Real.sqrt L := by
-    have h1 := eventually_ge_atTop C₁
-    have h2 := Real.tendsto_log_atTop.eventually_ge_atTop C₂
-    have h3 := (Real.isLittleO_log_id_atTop.bound (inv_pos.mpr hC₃0))
-    have h4 := ((Real.isLittleO_log_rpow_atTop (r := 1 / 2) (by norm_num)).bound (inv_pos.mpr hC₄0))
-    filter_upwards [h1, h2, h3, h4, eventually_gt_atTop (1 : ℝ)] with L hL1 hL2 hL3 hL4 hL5
-    have hlogL : 0 ≤ Real.log L := Real.log_nonneg hL5.le
-    refine ⟨hL1, hL2, ?_, ?_⟩
-    · rw [Real.norm_of_nonneg hlogL, id, Real.norm_of_nonneg (by linarith)] at hL3
-      have := mul_le_mul_of_nonneg_left hL3 hC₃0.le
-      rwa [← mul_assoc, mul_inv_cancel₀ hC₃0.ne', one_mul] at this
-    · rw [Real.norm_of_nonneg hlogL, Real.norm_of_nonneg (Real.rpow_nonneg (by linarith) _)] at hL4
-      have := mul_le_mul_of_nonneg_left hL4 hC₄0.le
-      rwa [← mul_assoc, mul_inv_cancel₀ hC₄0.ne', one_mul, ← Real.sqrt_eq_rpow] at this
-  filter_upwards [Real.tendsto_log_atTop.eventually hE, eventually_gt_atTop (0 : ℝ)] with T hT hT0
+  filter_upwards [Real.tendsto_log_atTop.eventually (eventually_loglog_inequalities hK hM),
+    eventually_gt_atTop (0 : ℝ)] with T hT hT0
   obtain ⟨hL1, hL2, hL3, hL4⟩ := hT
+  have hK0 : 0 < K := by linarith
+  have hM2p : 0 < M ^ 2 := by positivity
+  have hℓ1 : 1 ≤ Real.log (Real.log T) := (le_max_right _ _).trans hL2
+  have hℓ0 : 0 < Real.log (Real.log T) := by linarith
+  have hL16 : 16 ≤ Real.log T := (le_max_right _ _).trans ((le_max_left _ _).trans hL1)
+  have hL0 : 0 < Real.log T := by linarith
+  have hδ0 : 0 < 64 * M ^ 2 * K * Real.log (Real.log T) / Real.log T := by positivity
+  have hA : 64 * M ^ 2 * K * Real.log (Real.log T) / Real.log T / (64 * M ^ 2) * Real.log T =
+      K * Real.log (Real.log T) := by
+    field_simp
+  obtain ⟨B, hB, hgood⟩ := weilPositive_quadrature_moment_of_le hδ0
+    (loglog_delta_le hℓ0 hK hL0 hL3) hM (loglog_one_le_k hK hℓ0 hL3)
+    (loglog_k_mul_delta_le hK hℓ0 hL0) hT0 (loglog_apertureThreshold_le hK hM hℓ0 hL1 hL2)
+    (loglog_two_k_le hK hℓ1 hL0)
+  refine ⟨B, hB.trans (ENNReal.ofReal_le_ofReal ?_), fun γ hγ hγB F₀ hF₀ hF₀c hsupp hshape hpos =>
+    hgood γ hγ hγB F₀ hF₀ hF₀c (by rwa [hA]) (by rwa [hA]) hpos⟩
   set L := Real.log T with hLdef
   set ℓ := Real.log L with hℓdef
-  have hL16 : 16 ≤ L := (le_max_right _ _).trans ((le_max_left _ _).trans hL1)
-  have hL0 : 0 < L := by linarith
-  have hℓ1 : 1 ≤ ℓ := (le_max_right _ _).trans hL2
-  have hℓ0 : 0 < ℓ := by linarith
-  have hKℓ : 0 < K * ℓ := by positivity
-  set δ : ℝ := 64 * M ^ 2 * K * ℓ / L with hδdef
-  have hδ0 : 0 < δ := by positivity
-  have hA : δ / (64 * M ^ 2) * L = K * ℓ := by
-    rw [hδdef]
-    field_simp
-  have hlam : δ / (64 * M ^ 2) = K * ℓ / L := by
-    rw [hδdef]
-    field_simp
-  have hδ4 : δ ≤ 1 / 4 := by
-    rw [hδdef, div_le_iff₀ hL0]
-    have : 256 * M ^ 2 * K * ℓ ≤ L := by nlinarith
-    linarith
   set k : ℕ := ⌊L / (8 * K * ℓ)⌋₊ with hk_def
-  have hk_le : (k : ℝ) ≤ L / (8 * K * ℓ) := Nat.floor_le (by positivity)
   have hk_gt : L / (8 * K * ℓ) < k + 1 := by
     rw [hk_def]
     exact Nat.lt_floor_add_one _
-  have hk1 : 1 ≤ k := by
-    refine Nat.le_floor ?_
-    rw [Nat.cast_one, le_div_iff₀ (by positivity)]
-    nlinarith
-  have hkδ : (k : ℝ) * δ ≤ 8 * M ^ 2 := by
-    have h := mul_le_mul_of_nonneg_right hk_le hδ0.le
-    refine h.trans (le_of_eq ?_)
-    rw [hδdef]
-    field_simp
-    ring
-  have hTA : apertureThreshold (δ / (64 * M ^ 2)) ≤ Real.log T := by
-    rw [hlam]
-    unfold apertureThreshold
-    refine max_le ((le_max_left _ _).trans ((le_max_left _ _).trans hL1)) ?_
-    have hfc : 3 + fieldConstant ≤ K * ℓ / 2 := by
-      have := (le_max_left _ _).trans hL2
-      nlinarith
-    rw [div_div_eq_mul_div]
-    have h1 : (1 + fieldConstant + 2) * L / (K * ℓ) ≤ L / 2 := by
-      rw [div_le_div_iff₀ hKℓ (by norm_num)]
-      nlinarith
-    linarith
-  have hTk : 2 * (k : ℝ) ≤ Real.log T := by
-    have h : L / (8 * K * ℓ) ≤ L / 8 := by
-      rw [div_le_div_iff₀ (by positivity) (by norm_num)]
-      nlinarith
-    linarith
-  obtain ⟨B, hB, hgood⟩ := weilPositive_quadrature_moment_of_le hδ0 hδ4 hM hk1 hkδ hT0 hTA hTk
-  refine ⟨B, hB.trans (ENNReal.ofReal_le_ofReal ?_), fun γ hγ hγB F₀ hF₀ hF₀c hsupp hshape hpos =>
-    hgood γ hγ hγB F₀ hF₀ hF₀c (by rwa [← hLdef, hA]) (by rwa [← hLdef, hA]) hpos⟩
-  -- the measure: `209 (4kδ²)^k ≤ 209 e^{−kℓ/2} ≤ e^{−L/(64K)}`
-  have hq : (k : ℝ) * (4 * δ ^ 2) ≤ C₄ * ℓ / L := by
-    have h := mul_le_mul_of_nonneg_right hk_le (by positivity : (0 : ℝ) ≤ 4 * δ ^ 2)
-    refine h.trans (le_of_eq ?_)
-    rw [hδdef, hC₄]
-    field_simp
-    ring
-  have hsqrt : Real.sqrt L * Real.sqrt L = L := Real.mul_self_sqrt hL0.le
-  have hsq0 : 0 < Real.sqrt L := Real.sqrt_pos.mpr hL0
-  have hexpℓ : Real.exp (-(ℓ / 2)) = 1 / Real.sqrt L := by
-    rw [Real.sqrt_eq_rpow, Real.exp_neg, hℓdef, div_eq_mul_inv, Real.exp_mul, Real.exp_log hL0,
-      one_div, Real.rpow_inv_natCast_pow] <;> first | rfl | norm_num
-  have hqsmall : C₄ * ℓ / L ≤ Real.exp (-(ℓ / 2)) := by
-    rw [hexpℓ, div_le_div_iff₀ hL0 hsq0, one_mul]
-    calc C₄ * ℓ * Real.sqrt L ≤ Real.sqrt L * Real.sqrt L :=
-          mul_le_mul_of_nonneg_right hL4 hsq0.le
-      _ = L := hsqrt
-  have hpowk : (k : ℝ) ^ k * (4 * δ ^ 2) ^ k ≤ Real.exp (-((k : ℝ) * ℓ / 2)) := by
+  have hbase := loglog_base_le (M := M) hK (by linarith) hL4
+  have hpowk : (k : ℝ) ^ k * (4 * (64 * M ^ 2 * K * ℓ / L) ^ 2) ^ k ≤
+      Real.exp (-((k : ℝ) * ℓ / 2)) := by
     rw [← mul_pow]
-    calc ((k : ℝ) * (4 * δ ^ 2)) ^ k ≤ Real.exp (-(ℓ / 2)) ^ k :=
-          pow_le_pow_left₀ (by positivity) (hq.trans hqsmall) k
+    calc ((k : ℝ) * (4 * (64 * M ^ 2 * K * ℓ / L) ^ 2)) ^ k ≤ Real.exp (-(ℓ / 2)) ^ k :=
+          pow_le_pow_left₀ (by positivity) hbase k
       _ = Real.exp (-((k : ℝ) * ℓ / 2)) := by
           rw [← Real.exp_nat_mul]
           ring_nf
-  have hkℓ : L / (16 * K) - ℓ / 2 ≤ (k : ℝ) * ℓ / 2 := by
-    have h1 : L / (8 * K * ℓ) * ℓ = L / (8 * K) := by field_simp
-    have h2 : (L / (8 * K * ℓ) - 1) * ℓ ≤ (k : ℝ) * ℓ :=
-      mul_le_mul_of_nonneg_right (by linarith) hℓ0.le
-    have h3 : (L / (8 * K * ℓ) - 1) * ℓ = L / (8 * K) - ℓ := by rw [sub_mul, h1, one_mul]
-    have h4 : L / (16 * K) = L / (8 * K) / 2 := by field_simp; ring
-    linarith
-  have hfinal : 209 * Real.exp (-((k : ℝ) * ℓ / 2)) ≤ Real.exp (-(L / (64 * K))) := by
-    have h209 : (209 : ℝ) = Real.exp (Real.log 209) := (Real.exp_log (by norm_num)).symm
-    rw [h209, ← Real.exp_add]
-    refine Real.exp_le_exp.mpr ?_
-    have hlog209 : Real.log 209 ≤ L / (64 * K) := by
-      rw [le_div_iff₀ (by positivity)]
-      have := (le_max_right _ _).trans hL1
-      linarith
-    have hℓL : ℓ / 2 ≤ L / (32 * K) := by
-      rw [le_div_iff₀ (by positivity)]
-      have : 16 * K * ℓ ≤ L := by
-        have : 16 * K * ℓ ≤ C₃ * ℓ := mul_le_mul_of_nonneg_right (by nlinarith) hℓ0.le
-        linarith
-      linarith
-    have hsplit : L / (16 * K) = L / (64 * K) + L / (32 * K) + L / (64 * K) := by
-      field_simp; ring
-    linarith
-  have hT0' : 0 ≤ T := hT0.le
-  calc 209 * ((k : ℝ) ^ k * (4 * δ ^ 2) ^ k) * T ≤ 209 * Real.exp (-((k : ℝ) * ℓ / 2)) * T := by
-        gcongr
-    _ ≤ Real.exp (-(L / (64 * K))) * T := mul_le_mul_of_nonneg_right hfinal hT0'
-    _ = T * Real.exp (-(Real.log T / (64 * K))) := by rw [hLdef]; ring
+  have h209 : 64 * K * Real.log 209 ≤ L := (le_max_right _ _).trans hL1
+  have hℓL : 16 * K * ℓ ≤ L := by
+    unfold loglogRatioConstant at hL3
+    have h1 : 0 ≤ 256 * M ^ 2 * K * ℓ := by positivity
+    linarith only [hL3, h1]
+  have hfinal := loglog_exp_le hK hℓ0 hk_gt h209 hℓL
+  calc 209 * ((k : ℝ) ^ k * (4 * (64 * M ^ 2 * K * ℓ / L) ^ 2) ^ k) * T
+      ≤ 209 * Real.exp (-((k : ℝ) * ℓ / 2)) * T := by gcongr
+    _ ≤ Real.exp (-(L / (64 * K))) * T := mul_le_mul_of_nonneg_right hfinal hT0.le
+    _ = T * Real.exp (-(L / (64 * K))) := by ring
 
 end
 

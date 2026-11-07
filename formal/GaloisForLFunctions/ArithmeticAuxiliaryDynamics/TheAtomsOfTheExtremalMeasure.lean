@@ -44,7 +44,7 @@ private lemma sum_Icc_two_eq_fin (g : ℕ → ℝ) (K : ℕ) :
 
 private lemma weightsOf_fin {K : ℕ} (v : Fin (K - 1) → ℝ) (i : Fin (K - 1)) :
     weightsOf K v ((i : ℕ) + 2) = v i := by
-  have h : 2 ≤ (i : ℕ) + 2 ∧ (i : ℕ) + 2 - 2 < K - 1 := ⟨by omega, by simpa using i.2⟩
+  have h : 2 ≤ (i : ℕ) + 2 ∧ (i : ℕ) + 2 - 2 < K - 1 := ⟨by omega, by simp⟩
   rw [weightsOf, dif_pos h]
   congr 1
 
@@ -60,7 +60,7 @@ theorem objective_weightsOf (K : ℕ) (v : Fin (K - 1) → ℝ) :
   exact sum_congr rfl fun i _ => by rw [weightsOf_fin]
 
 /-- A real weight agrees with the weight of its coordinate vector on the letters. -/
-private lemma saw_weightsOf_restrict {K : ℕ} (hK : 2 ≤ K) (q : ℕ → ℝ) :
+private lemma saw_weightsOf_restrict {K : ℕ} (_hK : 2 ≤ K) (q : ℕ → ℝ) :
     (∀ r, saw (weightsOf K fun i => q ((i : ℕ) + 2)) K r = saw q K r) ∧
       objective (weightsOf K fun i => q ((i : ℕ) + 2)) K = objective q K := by
   constructor

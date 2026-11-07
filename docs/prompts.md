@@ -808,3 +808,29 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
+## Report AAL
+
+Context:
+- docs/reports/review-0711/astra.md
+- docs/reports/review-0711/astra.md
+- docs/reports/review-0711/obstacles-summary.md
+- docs/reports/review-0711/route-obstacles.md
+- docs/reports/review-0711/walls-ledger.md
+- docs/reports/review-0711/route-unification-ledger.md
+- docs/reports/rh-killed-routes.md
+- docs/reports/rh-current-frontier-map.md
+
+Our next big target is to find a solution to AAL - to either prove or disprove it.
+
+Your task: Research, compile and write a complete report about AAL:
+- State clearly what needs to be proven/disproven as mathematical statement.
+- List everything we know about the problem directly or indirectly, supporting facts, nogos, possible attack routes, partial solutions, milestones, obstacles already identified, what a proof cannot be like, what a proof must be like, etc.
+
+The outcome is to have an in-depth report we can give to research agents and they understand what AAL is, what is meant by a task to prove or disprove AAL, what information is already available to them and backed up by the corpus and what are the open problems to solve.
+
+Do not rely only on these markdown files which are partly outdated. Use the search tool for our lean corpus to research what our research currently shows. Do not assume, our research is far ahead of your training data - our lean corpus is the Sota research. Take the time to search and understand. We are expected an accurate, in-depth research and report, not superficial ai-slop that is useless to our frontier research.
+
+Keep a log file in logs/ for your research to note down facts and findings, since this research will go over multiple context window compactions that otherwise may lose information.
+
+Put the final report into docs/reports/review-0711/aal.md

@@ -14,8 +14,8 @@
 | # | Task | Status | Lean |
 |---|---|---|---|
 | A25 | Physical all-`n` Hecke moments | done | `ResonantStates/EveryHeckeOperatorIsDiagonalOnEisenstein`, `ResonantStates/TheHeckeAlgebraHasThePoissonSpectralMeasure`; card `3-formalized/pm-every-hecke-operator-has-the-poisson-spectral-measure.md` |
-| A26 | Weyl law; metric of `L²` data; regularity at `r=1`; scalar sector | open | — |
-| A27 | Local AdS₄ isometry; modular Lax–Phillips; Zagier–Sarnak; Kramers–Kronig | open | — |
+| A26 | Weyl law; metric of `L²` data; regularity at `r=1`; scalar sector | regularity at `r=1` done; rest open | `BlackHoleRingdown/TheMetricOfAPulseIsRegularAcrossTheHorizon`; card `3-formalized/bhr-pulse-metric-regular-across-the-horizon.md` |
+| A27 | Local AdS₄ isometry; modular Lax–Phillips; Zagier–Sarnak; Kramers–Kronig | AdS₄ quotient done; rest open | `BlackHoleRingdown/TheModularBlackHoleIsAQuotientOfAntiDeSitter`; card `3-formalized/bhr-modular-black-hole-is-a-quotient-of-anti-de-sitter.md` |
 | A28 | Reciprocal quadric traces = vanishing-cycle traces | open | — |
 | A29 | Mixed Young projections at small rank | open | — |
 | A30 | Best stencil exponent under RH | open | — |

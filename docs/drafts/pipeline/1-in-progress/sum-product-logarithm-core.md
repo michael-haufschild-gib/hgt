@@ -71,7 +71,7 @@ right-half-plane zero divisor and residue one.
 Pointwise optimality and exceptional-zero distance remain open. The
 [exact averaged coefficient](../3-formalized/logarithm-positive-model-exact-average.md)
 is `1/(4 log 3)`, formalized for the actual integral count. Quantitative
-[profile averaging](logarithm-effective-profile-average.md) remains in progress.
+[profile averaging](../2-fully-proven/logarithm-effective-profile-average.md) remains in progress.
 
 Finite-field calibration must retain the precise split-hyperelliptic scope
 of existing Stepanov results. Any power-saving parity output must include

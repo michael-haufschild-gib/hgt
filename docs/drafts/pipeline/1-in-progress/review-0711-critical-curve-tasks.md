@@ -10,8 +10,8 @@
 
 | Task | Status | Lean |
 |---|---|---|
-| A14 frequency-integral identity; Gaussian moments in the typical-height sign | in progress | — |
-| A11 finish CACT critical-ratio modules | blocked: `PrefixCollarSchurObstructionAndFarDecoupling.lean` edited live by an unidentified agent (13:42); `NegativeDirections…` unowned | — |
+| A14 frequency-integral identity; Gaussian moments in the typical-height sign | done | `ArithmeticPolarization/WeilsFormIsTheAverageOfItsFrequencyPackets.lean`: `integral_re_W_frequencyPacket`, `∫ Re W(f ⋆ φ_X) dX = 2π‖φ‖₂² Re W(f)`; `volume_neg_frequencyPacket_pos`. `ArithmeticCastelnuovoSeveri/TheBadHeightsOfTheLocalSignHaveGaussianTails.lean`: `exists_weilPositive_quadrature_moment` (bad measure `209 k^k(4δ²)^k T`, `kδ ≤ 8M²`), `exists_weilPositive_quadrature_exp_rare` (`418 e^{−5M²/δ} T` for `δ ≤ 1/(64M²)`), `eventually_weilPositive_loglog_aperture` (aperture `K log log T`, bad measure `≤ T^{1−1/(64K)}`). Axioms: propext, choice, Quot.sound |
+| A11 finish CACT critical-ratio modules | owned by a non-Claude agent (both [S] files edited 13:42–14:35); not touched | — |
 | A10 compactness assembly | open | — |
 | A13 growing-period charges beyond gcd profiles | open | — |
 | A12 low-packet polar Schur payment against the top window | open | — |

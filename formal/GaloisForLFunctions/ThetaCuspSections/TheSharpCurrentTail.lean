@@ -108,7 +108,6 @@ theorem hasDerivAt_lineAnti {n : ℕ} (hn : 1 ≤ n) (u : ℝ) :
   refine h.congr_deriv ?_
   unfold lineProfile lineX
   field_simp
-  ring
 
 private theorem tendsto_pow_mul_exp_scaled (k : ℕ) :
     Tendsto (fun Y : ℝ => Y ^ k * Real.exp (-(0.53 * Y))) atTop (𝓝 0) := by
@@ -426,7 +425,7 @@ theorem norm_XiC_le_wide (t a : ℝ) (ha : |a| ≤ 3 / 2) :
     have hshift := integral_horizontal_shift_of_decay (F := thetaStripKernel w) (c := 7 / 10)
       (C := 2770 * Real.exp (|t| * (7 / 10))) (r := 1 / 2) (by norm_num) (by norm_num) hdiff hbound
     have hFL : (∫ x : ℝ, thetaStripKernel w ((x : ℝ) : ℂ)) = XiC w := by
-      rw [integral_thetaStripKernel_real, thetaCuspFourierLaplace_eq_XiC_all]
+      rw [integral_thetaStripKernel_real, HedenmalmThetaSource.thetaCuspFourierLaplace_eq_XiC_all]
     rw [← hFL, ← hshift]
     -- The line bound.
     have hline : ∀ x : ℝ, ‖thetaStripKernel w ((x : ℂ) + ((7 / 10 : ℝ) : ℂ) * I)‖ ≤
