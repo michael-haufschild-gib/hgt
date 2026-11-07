@@ -6,7 +6,7 @@ import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheConeHasPositive
 
 For a weight system `λ` write `ψ_λ(X) = Σ_{2 ≤ n ≤ X} λ(n)`.
 
-* **Smoothed Chebyshev law at every resolution** (`smoothedChebyshev_mem_of_mem_datumCone`). Integrating the
+* **Smoothed Chebyshev law at every resolution** (`smoothedChebyshev_le`). Integrating the
   short-interval law of `TheConeHasNoLongGaps` against `e^a da` on `[0, A]` gives, on the cone of `(β, s)`,
   `|Σ_n λ(n) H_j(log n − 2A) − βe^{2A}| ≤ |β| + (6|β| + 2D_{j,s}/J_j²) e^A`, where `H_j` is the smoothed step of
   resolution `r_j` built from `e^{−u/2} k_j(u)` (`jStep`).
@@ -546,7 +546,7 @@ theorem two_jConst_div_le (j : ℕ) {X u G : ℝ} (hlogX : 1 ≤ Real.log X) (hx
           (by positivity)) (by linarith)) hJ2 (by positivity) (by positivity)
 
 /-- The arithmetic of the power saving. -/
-theorem power_saving_arith {u L B C₀ g : ℝ} (hu1 : 1 ≤ u) (hL : 1 ≤ L) (hg : 0 ≤ g) (hC : 0 ≤ C₀)
+theorem power_saving_arith {u L B C₀ g : ℝ} (hu1 : 1 ≤ u) (hL : 1 ≤ L) (hC : 0 ≤ C₀)
     (hB : B ≤ 2 * L + C₀) :
     1 + (6 + g * u ^ 2 * L) * u ^ 3 + 5 * u ^ 5 * B ≤ (17 + g + 5 * C₀) * u ^ 5 * L := by
   have hu35 : u ^ 3 ≤ u ^ 5 := pow_le_pow_right₀ hu1 (by norm_num)
@@ -555,7 +555,9 @@ theorem power_saving_arith {u L B C₀ g : ℝ} (hu1 : 1 ≤ u) (hL : 1 ≤ L) (
   have hv1 : 1 ≤ v := by rw [hv]; nlinarith
   have h2 : u ^ 3 ≤ v := by rw [hv]; nlinarith
   have h3 : 5 * u ^ 5 * B ≤ 5 * u ^ 5 * (2 * L + C₀) := mul_le_mul_of_nonneg_left hB (by positivity)
-  have h4 : u ^ 5 * C₀ ≤ C₀ * v := by rw [hv]; nlinarith
+  have h4 : u ^ 5 * C₀ ≤ C₀ * v := by
+    have h := mul_le_mul_of_nonneg_left hL (mul_nonneg (by positivity : (0 : ℝ) ≤ u ^ 5) hC)
+    rw [hv]; linarith
   have e1 : (6 + g * u ^ 2 * L) * u ^ 3 = 6 * u ^ 3 + g * v := by rw [hv]; ring
   have e2 : 5 * u ^ 5 * (2 * L + C₀) = 10 * v + 5 * (u ^ 5 * C₀) := by rw [hv]; ring
   have e3 : (17 + g + 5 * C₀) * u ^ 5 * L = 17 * v + g * v + 5 * (C₀ * v) := by rw [hv]; ring
@@ -650,8 +652,13 @@ theorem exists_abs_chebyshev_sub_le_of_mem_windowCone :
       rw [← Real.exp_log hn0, ← Real.exp_log hX0, ← Real.exp_add]
       exact Real.exp_lt_exp.mpr h1
     have h3 : Real.exp (1 / 6) ≤ 2 := by
-      have : Real.exp (1 / 6) ≤ Real.exp 1 := Real.exp_le_exp.mpr (by norm_num)
-      have := Real.exp_one_lt_d9; linarith
+      have := Real.exp_one_lt_d9
+      have h5 : Real.exp (1 / 6) ^ 6 = Real.exp 1 := by rw [← Real.exp_nat_mul]; norm_num
+      by_contra hcon
+      push Not at hcon
+      have h6 : (2 : ℝ) ^ 6 < Real.exp (1 / 6) ^ 6 := pow_lt_pow_left₀ hcon (by norm_num) (by norm_num)
+      norm_num at h6
+      linarith
     have h4 : X * Real.exp (1 / 6) ≤ X * 2 := mul_le_mul_of_nonneg_left h3 hX0.le
     rw [hu6]; linarith
   have hlayer := sum_abs_layer_le hu0 hB0 hcard hQ hPmem
@@ -662,9 +669,10 @@ theorem exists_abs_chebyshev_sub_le_of_mem_windowCone :
     refine hsm.trans ?_
     have : 6 + 2 * jConst j 0 / jJ j ^ 2 ≤ 6 + 512 / Real.pi * G * u ^ 2 * Real.log X := by
       linarith only [hD]
-    exact add_le_add_left (mul_le_mul_of_nonneg_right this (by positivity)) 1
+    have h := mul_le_mul_of_nonneg_right this (pow_nonneg hu0.le 3)
+    linarith only [h]
   rw [hu5]
-  have hfinal := power_saving_arith (g := 512 / Real.pi * G) hu1 hlogX (by positivity) hC0.le hBle
+  have hfinal := power_saving_arith (g := 512 / Real.pi * G) hu1 hlogX hC0.le hBle
   calc |chebyshevOf lam X - X|
       ≤ |chebyshevOf lam X - ∑ n ∈ Finset.Icc 2 M, lam n * jStep j (Real.log n - Real.log X)| +
         |∑ n ∈ Finset.Icc 2 M, lam n * jStep j (Real.log n - Real.log X) - X| := abs_sub_le _ _ _

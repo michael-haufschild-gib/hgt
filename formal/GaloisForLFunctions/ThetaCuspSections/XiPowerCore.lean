@@ -72,10 +72,12 @@ private theorem Xi_ge_power_core_nonneg {b : ℝ} (hb0 : 0 ≤ b) (hb : b < 12) 
           (deriv Xi x * (1 - x ^ 2 / 144) + x / 18 * Xi x)) /
             ((1 - x ^ 2 / 144) ^ 4) ^ 2) x := by
     have hW : HasDerivAt (fun y : ℝ => 1 - y ^ 2 / 144) (-x / 72) x := by
-      convert (hasDerivAt_const x (1 : ℝ)).sub (((hasDerivAt_id x).pow 2).div_const 144) using 1 <;>
-        norm_num <;> ring
+      apply ((hasDerivAt_const x (1 : ℝ)).sub
+        (((hasDerivAt_id x).pow 2).div_const 144)).congr_deriv
+      norm_num only [id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one, zero_sub]
+      ring
     apply ((hasDerivAt_Xi_real x).div (hW.pow 4) (pow_ne_zero 4 (hw x hx).ne')).congr_deriv
-    norm_num only [Nat.cast_ofNat, Nat.reduceSub]
+    norm_num only [Pi.pow_apply, Nat.cast_ofNat, Nat.reduceSub]
     ring
   have hmono : MonotoneOn G (Icc 0 b) := by
     refine monotoneOn_of_deriv_nonneg (convex_Icc 0 b)
@@ -108,7 +110,10 @@ theorem Xi_ge_center_power_core {b : ℝ} (hb : |b| ≤ 12) :
 /-- The power core retains an explicit numerical source mass. -/
 theorem Xi_ge_power_core {b : ℝ} (hb : |b| ≤ 12) :
     (49 / 100 : ℝ) * (1 - b ^ 2 / 144) ^ 4 ≤ Xi b := by
-  have hz : (49 / 100 : ℝ) ≤ Xi 0 := Xi_zero_ge
+  have hz : (49 / 100 : ℝ) ≤ Xi 0 := by
+    have hh := Xi_zero_ge
+    norm_num at hh ⊢
+    exact hh
   exact (mul_le_mul_of_nonneg_right hz (by positivity)).trans (Xi_ge_center_power_core hb)
 
 #print axioms Xi_pos_twelve

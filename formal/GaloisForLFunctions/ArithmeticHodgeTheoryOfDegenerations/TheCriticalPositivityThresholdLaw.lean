@@ -1235,8 +1235,8 @@ private theorem exponentialMass_windowMollify_le {F : ℝ → ℝ} {A δ : ℝ} 
 /-- Dominated-convergence upper bound on `archForm (windowMollify F₀ ((n : ℝ) + 1) δ)` from the
 critical `Γ`-liminf inequality on `F₀`. -/
 private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → ℝ} {Rstar : ℝ}
-    (hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
-    (hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
+    (_hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
+    (_hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
     (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
     (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
       truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
@@ -1983,6 +1983,11 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     normalizedCentredAtomicTest tiltedUnitSpline (y_norm k) (c_seq k) (N_seq k)
   have hV_eq : ∀ k, V k = fun u => (ν k)⁻¹ * U_raw k u := fun k =>
     normalizedCentredAtomicTest_const_mul (ν k)⁻¹ (y_raw k) (c_seq k) (N_seq k)
+  have hUd : ∀ k, ContDiff ℝ 2 (U_raw k) := fun k =>
+    contDiff_const.mul (contDiff_centredAtomicTest contDiff_tiltedUnitSpline _ _ _)
+  have hUc : ∀ k, HasCompactSupport (U_raw k) := fun k =>
+    (hasCompactSupport_centredAtomicTest tiltedUnitSpline_eq_zero (y_raw k)
+      (zero_lt_one.trans_le (hz_spec k).1) (by have := hN3_seq k; omega)).mul_left
   have hVd : ∀ k, ContDiff ℝ 2 (V k) := fun k =>
     contDiff_const.mul (contDiff_centredAtomicTest contDiff_tiltedUnitSpline _ _ _)
   have hVc : ∀ k, HasCompactSupport (V k) := fun k =>
@@ -2005,23 +2010,28 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     rw [heq]
     have hm := mul_le_mul_of_nonneg_left hb2 (sq_nonneg (ν k)⁻¹)
     have hid : (ν k)⁻¹ ^ 2 * (M₈ * ∫ u, U_raw k u ^ 2) = M₈ := by
-      rw [← hν_sq k, inv_pow]; field_simp [(pow_ne_zero 2 (hν_pos k).ne')]
+      have hne : (∫ u, U_raw k u ^ 2) ≠ 0 := (hU_raw_pos k).ne'
+      rw [inv_pow, hν_sq k, mul_comm M₈, inv_mul_cancel_left₀ hne]
     linarith only [hm, hid]
-  have hV_supp_k : ∀ k u, 1 / ((k : ℝ) + 1) < u → V k u = 0 := fun k u hu =>
+  have hV_supp_k : ∀ (k : ℕ) (u : ℝ), 1 / (Nat.cast k + 1) < u → V k u = 0 := fun k u hu =>
     normalizedCentredAtomicTest_eq_zero_of_gt (zero_lt_one.trans_le (hz_spec k).1)
       (by have := hN3_seq k; omega) (y_norm k) ((hc_width k).trans_lt hu)
-  have hV_supp1 : ∀ k u, 1 < u → V k u = 0 := fun k u hu =>
-    hV_supp_k k u ((div_le_one_of_le₀ (by positivity) (by positivity)).trans_lt hu)
-  have hV_wq : ∀ k, weilQuad (V k) ≤ 1 / ((k : ℝ) + 1) := by
+  have hV_supp1 : ∀ (k : ℕ) (u : ℝ), 1 < u → V k u = 0 := fun k u hu =>
+    hV_supp_k k u ((div_le_one_of_le₀
+      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity)).trans_lt hu)
+  have hV_wq : ∀ (k : ℕ), weilQuad (V k) ≤ 1 / (Nat.cast k + 1) := by
     intro k
     obtain ⟨_, _, hb3⟩ := Classical.choose_spec (hbr_k k)
-    rw [hV_eq k, CohomologyOfWindowsOfSpecZ.weilQuad_const_mul]
+    rw [hV_eq k, weilQuad_const_mul (hUd k) (hUc k) (ν k)⁻¹]
     have hm := mul_le_mul_of_nonneg_left hb3 (sq_nonneg (ν k)⁻¹)
-    have hid : (ν k)⁻¹ ^ 2 * ((1 / ((k : ℝ) + 1)) * ∫ u, U_raw k u ^ 2) = 1 / ((k : ℝ) + 1) := by
-      rw [← hν_sq k, inv_pow]; field_simp [(pow_ne_zero 2 (hν_pos k).ne')]
+    have hid : (ν k)⁻¹ ^ 2 * ((1 / (Nat.cast k + 1)) * ∫ u, U_raw k u ^ 2) =
+        1 / (Nat.cast k + 1) := by
+      have hne : (∫ u, U_raw k u ^ 2) ≠ 0 := (hU_raw_pos k).ne'
+      rw [inv_pow, hν_sq k, mul_comm (1 / (Nat.cast k + 1)), inv_mul_cancel_left₀ hne]
     linarith only [hm, hid]
-  have hV_wq1 : ∀ k, weilQuad (V k) ≤ 1 := fun k =>
-    (hV_wq k).trans (div_le_one_of_le₀ (by positivity) (by positivity))
+  have hV_wq1 : ∀ (k : ℕ), weilQuad (V k) ≤ 1 := fun k =>
+    (hV_wq k).trans (div_le_one_of_le₀
+      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity))
   have hV_mem : ∀ k, MemLp (V k) 2 (volume : Measure ℝ) := fun k =>
     (hVd k).continuous.memLp_of_hasCompactSupport (hVc k)
   obtain ⟨R_lim, hR_lim_mem, φ₁, hφ₁_mono, hφ₁_lim⟩ :=
@@ -2047,13 +2057,14 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     have hof := (ENNReal.continuous_ofReal.tendsto 0).comp hnorm0
     simp only [ENNReal.ofReal_zero] at hof
     refine hof.congr fun i => ?_
-    have hsub_mem : MemLp (fun u => V (φ₁ (φ₂ i)) u - F u) 2 (volume : Measure ℝ) :=
+    have hsub_mem : MemLp (V (φ₁ (φ₂ i)) - F) 2 (volume : Measure ℝ) :=
       (hV_mem (φ₁ (φ₂ i))).sub hF_mem
-    have hto : hsub_mem.toLp (fun u => V (φ₁ (φ₂ i)) u - F u) =
+    have hto : hsub_mem.toLp (V (φ₁ (φ₂ i)) - F) =
         (hV_mem (φ₁ (φ₂ i))).toLp (V (φ₁ (φ₂ i))) - F_Lp := by
       rw [← hF_toLp, MemLp.toLp_sub]
     dsimp only [Function.comp_def]
     rw [← hto, Lp.norm_toLp, ENNReal.ofReal_toReal hsub_mem.eLpNorm_ne_top]
+    rfl
   have hin_meas := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
     (fun i => (hV_mem (φ₁ (φ₂ i))).aestronglyMeasurable) hF_mem.aestronglyMeasurable hlp_eLp
   obtain ⟨φ₃, hφ₃_mono, hφ₃_ae⟩ := hin_meas.exists_seq_tendsto_ae
@@ -2076,17 +2087,17 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     have hn2 : ∀ j : ℕ, ‖(hV_mem (s j)).toLp (V (s j))‖ ^ 2 = 1 := fun j => by
       rw [HTGeometry.norm_toLp_sq, hV_norm (s j)]
     rw [← HTGeometry.norm_toLp_sq hF_mem]
-    exact (tendsto_nhds_unique hn1 (by simpa only [hn2] using tendsto_const_nhds)).symm
+    exact tendsto_nhds_unique hn1 (by simpa only [hn2] using tendsto_const_nhds)
   have hF_pos_ae : ∀ᵐ u : ℝ, 0 < u → F u = 0 := by
     filter_upwards [hφ₃_ae] with u hu_lim hu_pos
-    have hex_j : ∃ j₀ : ℕ, 1 / (Nat.cast (s j₀) + 1) < u := by
-      have hz : Tendsto (fun j : ℕ => 1 / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
-        tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop
+    have hex_j : ∃ j₀ : ℕ, (1 : ℝ) / (Nat.cast (s j₀) + 1) < u := by
+      have hz : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
+        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
       exact (hz.eventually (gt_mem_nhds hu_pos)).exists
     obtain ⟨j₀, hj₀⟩ := hex_j
     have hev0 : ∀ᶠ j : ℕ in atTop, V (s j) u = 0 := by
       filter_upwards [eventually_ge_atTop j₀] with j hj
-      have hle : 1 / (Nat.cast (s j) + 1) ≤ 1 / (Nat.cast (s j₀) + 1) :=
+      have hle : (1 : ℝ) / (Nat.cast (s j) + 1) ≤ (1 : ℝ) / (Nat.cast (s j₀) + 1) :=
         div_le_div_of_nonneg_left zero_le_one (by positivity)
           (by exact_mod_cast Nat.add_le_add_right (hs_mono.monotone hj) 1)
       exact hV_supp_k (s j) u (hle.trans_lt hj₀)
@@ -2110,27 +2121,30 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
         (Eventually.of_forall fun j =>
           eLpNorm_two_le_of_integral_sq_le (hVw j) (by simpa only [hsq] using hV_M₈ (s j)))
         (fun j => (hVw j).aestronglyMeasurable) hae_w)
-    exact ⟨by simpa only [hsq] using hmem_w.integrable_sq, by simpa only [hsq] using hbd_w⟩
+    exact ⟨by simpa only [Pi.mul_apply, hsq] using hmem_w.integrable_sq,
+      by simpa only [Pi.mul_apply, hsq] using hbd_w⟩
   set F₀ : ℝ → ℝ := (Set.Iio (0 : ℝ)).indicator F
   have hF₀m : Measurable F₀ := hFm.indicator measurableSet_Iio
   have hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0 := fun u hu =>
-    Set.indicator_of_notMem (not_lt.mpr hu) F
+    Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hu]) F
   have hF₀_ae : F₀ =ᵐ[volume] F := by
     have hnot0 : ∀ᵐ u : ℝ, u ≠ 0 := by
       rw [ae_iff]
-      simpa only [Classical.not_not] using measure_singleton (0 : ℝ)
+      have hset : {u : ℝ | ¬ u ≠ 0} = ({0} : Set ℝ) := by ext u; simp
+      rw [hset]
+      exact measure_singleton (0 : ℝ)
     filter_upwards [hF_pos_ae, hnot0] with u hu_pos hne
     rcases lt_trichotomy u 0 with hlt | rfl | hgt
-    · exact Set.indicator_of_mem hlt F
+    · exact Set.indicator_of_mem (show u ∈ Set.Iio (0 : ℝ) from hlt) F
     · exact absurd rfl hne
     · dsimp only [F₀]
-      rw [Set.indicator_of_notMem (not_lt.mpr hgt.le), hu_pos hgt]
+      rw [Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hgt.le]), hu_pos hgt]
   have hF₀2 : Integrable fun u => F₀ u ^ 2 :=
-    hF_mem.integrable_sq.congr (hF₀_ae.symm.mono fun _ h => by rw [h])
+    hF_mem.integrable_sq.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
   have hF₀_norm : (∫ u, F₀ u ^ 2) = 1 := by
     rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h]), hF_norm]
   have hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)) :=
-    hF8_pair.1.congr (hF₀_ae.symm.mono fun _ h => by rw [h])
+    hF8_pair.1.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
   have hF₀8_le : (∫ u, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
     rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h])]
     exact hF8_pair.2
@@ -2142,6 +2156,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     (Eventually.of_forall fun u hu => hF₀_zero u (zero_lt_one.trans hu).le) hs_L2_F₀
   let N_sub : ℕ → ℕ := fun j => N_seq (s j)
   have hN_sub : StrictMono N_sub := hN_strict.comp hs_mono
+  letI : DecidablePred (fun N : ℕ => ∃ j : ℕ, N_sub j = N) := Classical.decPred _
   let c_full : ℕ → ℝ := fun N =>
     if h : ∃ j : ℕ, N_sub j = N then c_seq (s (Classical.choose h)) else localCriticalCurve R_lim N
   let x_full : ℕ → ℕ → ℝ := fun N =>
@@ -2164,16 +2179,20 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     rw [hc_full_sub j, hx_full_sub j]
   have hc1_full : ∀ N : ℕ, 1 ≤ c_full N := by
     intro N
-    dsimp only [c_full]
-    split_ifs with h
-    · exact (hz_spec _).1
-    · exact one_le_localCriticalCurve R_lim N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with h | h
+    · have hc_eq : c_full N = c_seq (s (Classical.choose h)) := by
+        dsimp only [c_full]; rw [dif_pos h]
+      rw [hc_eq]
+      exact (hz_spec _).1
+    · have hc_eq : c_full N = localCriticalCurve R_lim N := by
+        dsimp only [c_full]; rw [dif_neg h]
+      rw [hc_eq]
+      exact one_le_localCriticalCurve R_lim N
   have hmass_full : ∀ N : ℕ,
       (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2) ≤ 1 := by
     intro N
-    by_cases h : ∃ j : ℕ, N_sub j = N
-    · obtain ⟨j, rfl⟩ := h
-      rw [hU_full_sub j, hV_norm (s j)]
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j, hV_norm (s j)]
     · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
       rw [hx0, normalizedCentredAtomicTest_zero]
       simp
@@ -2181,9 +2200,8 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
       (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2 *
         Real.exp (-(8 * u))) ≤ M₈ := by
     intro N
-    by_cases h : ∃ j : ℕ, N_sub j = N
-    · obtain ⟨j, rfl⟩ := h
-      rw [hU_full_sub j]
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j]
       exact hV_M₈ (s j)
     · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
       rw [hx0, normalizedCentredAtomicTest_zero]
@@ -2198,9 +2216,8 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
     obtain ⟨J, hJ⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hsub_ratio) ε hε)
     obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hloc_ratio) ε hε)
     refine eventually_atTop.mpr ⟨max N₁ (N_sub J), fun N hN => ?_⟩
-    by_cases h : ∃ j : ℕ, N_sub j = N
-    · obtain ⟨j, rfl⟩ := h
-      rw [hc_full_sub j]
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hc_full_sub j]
       exact hJ j (hN_sub.le_iff_le.mp ((le_max_right N₁ (N_sub J)).trans hN))
     · have hc_loc : c_full N = localCriticalCurve R_lim N := by dsimp only [c_full]; rw [dif_neg h]
       rw [hc_loc]
@@ -2232,8 +2249,8 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
       rw [Filter.eventually_map] at hev_gt
       have hev_gt' : ∀ᶠ j : ℕ in atTop, b_half < weilQuad (V (s j)) :=
         hev_gt.mono fun j hj => by rwa [hU_full_sub j] at hj
-      have hz_inv : Tendsto (fun j : ℕ => 1 / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
-        tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop
+      have hz_inv : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
+        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
       obtain ⟨j, hj_gt, hj_lt⟩ :=
         (hev_gt'.and (hz_inv.eventually (gt_mem_nhds hb_pos))).exists
       have hwq_j := hV_wq (s j)

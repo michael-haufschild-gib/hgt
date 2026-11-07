@@ -113,11 +113,10 @@ theorem pow_mul_exp_neg_le (n : ℕ) {u : ℝ} (hu : 0 ≤ u) :
     rw [← mul_pow]
     congr 1
     field_simp
-  rw [hp, Real.exp_neg]
-  have he : 0 < Real.exp (Real.pi * u / 2) := Real.exp_pos _
-  rw [mul_assoc, ← div_eq_mul_inv, div_le_iff₀ he]
-  have h2 : (0 : ℝ) ≤ (2 / Real.pi) ^ n := by positivity
-  nlinarith [mul_le_mul_of_nonneg_left h h2]
+  rw [hp, Real.exp_neg, mul_assoc, ← div_eq_mul_inv]
+  gcongr
+  rw [div_le_iff₀ (Real.exp_pos _)]
+  linarith [h]
 
 /-- A polynomial times `e^{-π|t|/2}` is `O((1 + t²)^{-K})` for `|t| ≥ 1`. -/
 theorem exists_pow_mul_exp_le (N K : ℕ) :
@@ -155,6 +154,26 @@ theorem gammaℝ_ne_zero_of_im {z : ℂ} (h : z.im ≠ 0) : Gammaℝ z ≠ 0 := 
   rw [hn]
   simp
 
+/-- `ξ(2s - 1)` and `ξ(2s)` through `Λ`: `s ξ(2s - 1) = s(2s - 1) ((s - 1) Λ(2s - 1))`,
+`ξ(2s) = s(2s - 1) Λ(2s)`. -/
+theorem xi_two_mul_sub_one_eq {s : ℂ} (h0 : 2 * s - 1 ≠ 0) (h1 : 2 * s - 1 ≠ 1) :
+    s * xi (2 * s - 1) = s * (2 * s - 1) * ((s - 1) * completedRiemannZeta (2 * s - 1)) := by
+  rw [xi_eq_half_mul h0 h1]
+  ring
+
+theorem xi_two_mul_eq {s : ℂ} (h0 : 2 * s ≠ 0) (h1 : 2 * s ≠ 1) :
+    xi (2 * s) = s * (2 * s - 1) * completedRiemannZeta (2 * s) := by
+  rw [xi_eq_half_mul h0 h1]
+  ring
+
+/-- `Q(s) = (s - 1) Λ(2s - 1)/Λ(2s)` when `2s, 2s - 1 ∉ {0, 1}`. -/
+theorem scatterQ_eq_completed {s : ℂ} (hs0 : s ≠ 0) (h0 : 2 * s - 1 ≠ 0) (h1 : 2 * s - 1 ≠ 1)
+    (h2 : 2 * s ≠ 1) :
+    scatterQ s = (s - 1) * completedRiemannZeta (2 * s - 1) / completedRiemannZeta (2 * s) := by
+  have hm : s * (2 * s - 1) ≠ 0 := mul_ne_zero hs0 h0
+  rw [scatterQ, xi_two_mul_sub_one_eq h0 h1,
+    xi_two_mul_eq (mul_ne_zero two_ne_zero hs0) h2, mul_div_mul_left _ _ hm]
+
 theorem msB_div_msA_eq {s : ℂ} (hs : 1 < s.re) :
     msB (s - 1 / 2) / msA (s - 1 / 2) = scatterQ s / (s - 1) := by
   have h1re : 1 < (2 * s - 1).re := by simp; linarith
@@ -163,18 +182,15 @@ theorem msB_div_msA_eq {s : ℂ} (hs : 1 < s.re) :
     ⟨fun h => by rw [h] at hz; simp at hz; linarith, fun h => by rw [h] at hz; simp at hz⟩
   have hΓ1 := Gammaℝ_ne_zero_of_re_pos (by linarith : (0 : ℝ) < (2 * s - 1).re)
   have hΓ2 := Gammaℝ_ne_zero_of_re_pos (by linarith : (0 : ℝ) < (2 * s).re)
-  have hζ2 := riemannZeta_ne_zero_of_one_lt_re h2re
   have hs1 : s - 1 ≠ 0 := fun h => by
     have := congrArg Complex.re h; simp at this; linarith
   have hs0 : s ≠ 0 := fun h => by rw [h] at hs; simp at hs; linarith
-  have h21 : 2 * s - 1 ≠ 0 := (hne _ h1re).1
-  rw [msB, msA, reflectedCompletedLambda, reflectedCompletedLambda,
-    show 2 * (s - 1 / 2) = 2 * s - 1 by ring, show 1 + 2 * (s - 1 / 2) = 2 * s by ring, scatterQ,
-    xi_eq_half_mul (hne _ h1re).1 (hne _ h1re).2, xi_eq_half_mul (hne _ h2re).1 (hne _ h2re).2,
-    completedRiemannZeta_eq_gammaℝ_mul (hne _ h1re).1 hΓ1,
-    completedRiemannZeta_eq_gammaℝ_mul (hne _ h2re).1 hΓ2]
-  field_simp
-  ring
+  rw [scatterQ_eq_completed hs0 (hne _ h1re).1 (hne _ h1re).2 (hne _ h2re).2, msB, msA,
+    reflectedCompletedLambda, reflectedCompletedLambda,
+    show 1 + 2 * (s - 1 / 2) = 2 * s by ring, show 2 * (s - 1 / 2) = 2 * s - 1 by ring,
+    ← completedRiemannZeta_eq_gammaℝ_mul (hne _ h1re).1 hΓ1,
+    ← completedRiemannZeta_eq_gammaℝ_mul (hne _ h2re).1 hΓ2, mul_div_assoc,
+    mul_div_cancel_left₀ _ hs1]
 
 /-- Off the real axis, `Q(s) = (s - 1) (Γℝ(2s - 1)/Γℝ(2s)) ζ(2s - 1) ζ(2s)⁻¹`. -/
 theorem scatterQ_eq {s : ℂ} (him : s.im ≠ 0) :
@@ -184,17 +200,11 @@ theorem scatterQ_eq {s : ℂ} (him : s.im ≠ 0) :
   have h1 : (2 * s - 1).im ≠ 0 := by simp [him]
   have hne : ∀ z : ℂ, z.im ≠ 0 → z ≠ 0 ∧ z ≠ 1 := fun z hz =>
     ⟨fun h => hz (by simp [h]), fun h => hz (by simp [h])⟩
-  have hG1 := gammaℝ_ne_zero_of_im h1
-  have hG2 := gammaℝ_ne_zero_of_im h2
   have hs0 : s ≠ 0 := fun h => him (by simp [h])
-  have h21 : 2 * s - 1 ≠ 0 := (hne _ h1).1
-  rw [scatterQ, xi_eq_half_mul (hne _ h1).1 (hne _ h1).2, xi_eq_half_mul (hne _ h2).1 (hne _ h2).2,
-    completedRiemannZeta_eq_gammaℝ_mul (hne _ h1).1 hG1,
-    completedRiemannZeta_eq_gammaℝ_mul (hne _ h2).1 hG2]
-  by_cases hζ : riemannZeta (2 * s) = 0
-  · simp [hζ]
-  · field_simp
-    ring
+  rw [scatterQ_eq_completed hs0 (hne _ h1).1 (hne _ h1).2 (hne _ h2).2,
+    completedRiemannZeta_eq_gammaℝ_mul (hne _ h1).1 (gammaℝ_ne_zero_of_im h1),
+    completedRiemannZeta_eq_gammaℝ_mul (hne _ h2).1 (gammaℝ_ne_zero_of_im h2)]
+  ring
 
 theorem differentiableAt_scatterQ {s : ℂ} (h : xi (2 * s) ≠ 0) :
     DifferentiableAt ℂ scatterQ s := by
@@ -235,7 +245,7 @@ theorem exists_norm_scatterQ_le {σ₀ σ₁ K₀ : ℝ} {N₀ : ℕ} (hK₀ : 0
   set L := |σ₀ - 1| + |σ₁ - 1| + 1
   refine ⟨L * (Real.pi ^ (1 / 2 : ℝ) * (C₁ * C₂)) * (C₃ * 2 ^ N₃) * K₀, 1 + (N₁ + N₂) + N₃ + N₀,
     by positivity, fun s h0 h1 ht => ?_⟩
-  have hsim : s.im ≠ 0 := fun h => by rw [h] at ht; simp at ht
+  have hsim : s.im ≠ 0 := fun h => by rw [h, abs_zero] at ht; linarith
   have hti : 0 < |s.im| := lt_of_lt_of_le one_pos ht
   rw [scatterQ_eq hsim, norm_mul, norm_mul, norm_mul, norm_gammaℝ_div]
   -- the four factors
@@ -249,10 +259,16 @@ theorem exists_norm_scatterQ_le {σ₀ σ₁ K₀ : ℝ} {N₀ : ℕ} (hK₀ : 0
         linarith [le_abs_self (σ₁ - 1), abs_nonneg (σ₀ - 1)]
       · rw [abs_of_nonpos (by linarith)]
         linarith [neg_abs_le (σ₀ - 1), abs_nonneg (σ₁ - 1)]
-    nlinarith
+    have hS : |σ₀ - 1| + |σ₁ - 1| ≤ (|σ₀ - 1| + |σ₁ - 1|) * |s.im| :=
+      le_mul_of_one_le_right (by positivity) ht
+    calc ‖s - 1‖ ≤ |s.re - 1| + |s.im| := this
+      _ ≤ (|σ₀ - 1| + |σ₁ - 1|) * |s.im| + |s.im| := by linarith
+      _ = L * |s.im| := by simp only [L]; ring
   have hB1 : ‖Gamma (s - 1 / 2)‖ ≤ C₁ * |s.im| ^ N₁ * Real.exp (-(Real.pi * |s.im| / 2)) := by
-    have := hΓ₁ (s - 1 / 2) (by simp; linarith) (by simp; linarith) (by simpa using ht)
-    simpa using this
+    have hre : (s - 1 / 2).re = s.re - 1 / 2 := by simp
+    have him' : (s - 1 / 2).im = s.im := by simp
+    have := hΓ₁ (s - 1 / 2) (by rw [hre]; linarith) (by rw [hre]; linarith) (by rw [him']; exact ht)
+    rwa [him'] at this
   have hB2 : ‖(Gamma s)⁻¹‖ ≤ C₂ * |s.im| ^ N₂ * Real.exp (Real.pi * |s.im| / 2) :=
     hΓ₂ s h0 h1 ht
   have hB : ‖Gamma (s - 1 / 2)‖ * ‖(Gamma s)⁻¹‖ ≤ C₁ * C₂ * |s.im| ^ (N₁ + N₂) := by
@@ -266,7 +282,7 @@ theorem exists_norm_scatterQ_le {σ₀ σ₁ K₀ : ℝ} {N₀ : ℕ} (hK₀ : 0
             rw [← Real.exp_add]; simp
           linear_combination (C₁ * C₂ * |s.im| ^ N₁ * |s.im| ^ N₂) * this
   have hC : ‖riemannZeta (2 * s - 1)‖ ≤ C₃ * 2 ^ N₃ * |s.im| ^ N₃ := by
-    have hz : 2 * s - 1 = (((2 * s.re - 1 : ℝ)) : ℂ) + ((2 * s.im : ℝ) : ℂ) * I := by
+    have hz : (2 : ℂ) * s - 1 = (((2 * s.re - 1 : ℝ)) : ℂ) + ((2 * s.im : ℝ) : ℂ) * Complex.I := by
       apply Complex.ext <;> simp
     have hσ : |2 * s.re - 1| ≤ |2 * σ₀ - 1| + |2 * σ₁ - 1| := by
       rcases le_total (2 * s.re - 1) 0 with h | h
@@ -288,7 +304,6 @@ theorem exists_norm_scatterQ_le {σ₀ σ₁ K₀ : ℝ} {N₀ : ℕ} (hK₀ : 0
         gcongr
     _ = L * (Real.pi ^ (1 / 2 : ℝ) * (C₁ * C₂)) * (C₃ * 2 ^ N₃) * K₀ *
         |s.im| ^ (1 + (N₁ + N₂) + N₃ + N₀) := by
-        rw [pow_add, pow_add, pow_add, pow_one]
         ring
 
 /-! ## Continuity of the horocycle mean -/
@@ -423,8 +438,7 @@ theorem mellinRegularStrip_regularPart (hψ : IsTest ψ a b) (hθ0 : 0 ≤ θ) (
     rw [le_div_iff₀ hpos]
     calc ‖regularPart ψ w‖ * (1 + w.im ^ 2) ^ K ≤ max B 0 * 2 ^ K :=
           mul_le_mul ((hB w hwb).trans (le_max_left _ _)) h1 (by positivity) (le_max_right _ _)
-      _ ≤ _ := by
-          nlinarith [mul_le_mul_of_nonneg_left (le_refl (1 : ℝ)) hS0, pow_pos hpos 1]
+      _ ≤ _ := by linarith
   · -- outside the box
     have ht1 : 1 ≤ |w.im| := ht.le
     have hw0 : w ≠ 0 := fun h => by rw [h] at ht; simp at ht; linarith
@@ -487,9 +501,230 @@ theorem mellinRegularStrip_regularPart (hψ : IsTest ψ a b) (hθ0 : 0 ≤ θ) (
       _ ≤ 2 * (C₁ / (1 + w.im ^ 2) ^ K) +
           (2 * CQ * C₂ + ‖residueConst ψ‖ * (CΓ * CE)) / (1 + w.im ^ 2) ^ K := by gcongr
       _ = (2 * C₁ + 2 * CQ * C₂ + ‖residueConst ψ‖ * (CΓ * CE)) / (1 + w.im ^ 2) ^ K := by ring
-      _ ≤ _ := by gcongr; linarith
+      _ ≤ _ := div_le_div_of_nonneg_right (by linarith) hpos.le
 
 end Regular
+
+
+/-! ## Mellin inversion and the contour shift -/
+
+section Rate
+
+theorem isTest_of_band {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) {a b : ℝ} (ha : 0 < a) (hab : a ≤ b)
+    (hφa : ∀ y, y < a → φ y = 0) (hφb : ∀ y, b < y → φ y = 0) :
+    IsTest (fun t => (φ t : ℂ)) a b := by
+  refine ⟨ha, hab, Complex.ofRealCLM.contDiff.comp hφ, fun y hy => ?_⟩
+  by_contra hy'
+  rcases not_and_or.1 hy' with h | h
+  · exact hy (by simp [hφa y (not_le.1 h)])
+  · exact hy (by simp [hφb y (not_le.1 h)])
+
+theorem mellinConvergent_exp_neg {w : ℂ} (hw : 0 < w.re) :
+    MellinConvergent (fun y : ℝ => ((Real.exp (-y) : ℝ) : ℂ)) w := by
+  refine (Complex.GammaIntegral_convergent hw).congr_fun (fun y _ => ?_) measurableSet_Ioi
+  simp only [smul_eq_mul]
+  ring
+
+theorem mellin_exp_neg {w : ℂ} (hw : 0 < w.re) :
+    mellin (fun y : ℝ => ((Real.exp (-y) : ℝ) : ℂ)) w = Gamma w := by
+  rw [Complex.Gamma_eq_integral hw, Complex.GammaIntegral, mellin]
+  refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
+  simp only [smul_eq_mul]
+  push_cast
+  ring
+
+variable {ψ : ℝ → ℂ} {a b : ℝ}
+
+/-- The Mellin transform of `A_ψ - c e^{-y}` is the regular part `Ψ` on `Re w > 0`. -/
+theorem mellin_sub_exp_eq_regularPart (hψ : IsTest ψ a b) (ha : 1 < a) {w : ℂ} (hw : 0 < w.re) :
+    mellin (fun y => horocycleMean (pseudoEisenstein ψ) y -
+      residueConst ψ * ((Real.exp (-y) : ℝ) : ℂ)) w = regularPart ψ w := by
+  have hψa : ∀ y, y < a → ψ y = 0 := fun y hy => hψ.eq_zero_of_le hy.le
+  have hψb : ∀ y, b < y → ψ y = 0 := fun y hy => hψ.eq_zero_of_ge hy.le
+  have hs1 : 1 < (w + 1).re := by simp; linarith
+  have hw0 : w ≠ 0 := fun h => by rw [h] at hw; simp at hw
+  have hA := mellinConvergent_horocycleMean hψ.continuous ha hψa hψb hs1
+  simp only [add_sub_cancel_right] at hA
+  have hE := (mellinConvergent_exp_neg hw).const_smul (residueConst ψ)
+  have hmA := mellin_horocycleMean hψ.continuous ha hψa hψb hs1
+  simp only [add_sub_cancel_right] at hmA
+  rw [msB_div_msA_eq hs1, add_sub_cancel_right] at hmA
+  have hsplit : mellin (fun y => horocycleMean (pseudoEisenstein ψ) y -
+      residueConst ψ * ((Real.exp (-y) : ℝ) : ℂ)) w =
+      mellin (horocycleMean (pseudoEisenstein ψ)) w -
+        residueConst ψ * mellin (fun y : ℝ => ((Real.exp (-y) : ℝ) : ℂ)) w := by
+    rw [mellin, mellin, mellin, ← integral_const_mul, ← integral_sub hA]
+    · refine setIntegral_congr_fun measurableSet_Ioi fun y _ => ?_
+      simp only [smul_eq_mul]
+      ring
+    · refine hE.congr_fun (fun y _ => ?_) measurableSet_Ioi
+      simp only [smul_eq_mul]
+      ring
+  rw [hsplit, hmA, mellin_exp_neg hw, regularPart_eq hw0, poleNumerator,
+    Complex.Gamma_add_one w hw0, show -(w + 1) = -(w + 1) by rfl]
+  field_simp
+  ring
+
+/-- **The contour shift.** Under a zero-free half-plane `Re z > θ` with polynomial growth of `1/ζ`,
+`|A_ψ(y) - c| ≤ C y^{1 - θ/2 - ε}` on `(0, 1]`. -/
+theorem norm_horocycleMean_sub_le_of_zeroFree (hψ : IsTest ψ a b) (ha : 1 < a) {θ : ℝ}
+    (hθ0 : 0 ≤ θ) (hθ1 : θ ≤ 1) (hZ : ∀ z : ℂ, θ < z.re → xi z ≠ 0)
+    (hP : ∀ δ : ℝ, 0 < δ → ∀ d : ℝ, ∃ K : ℝ, ∃ N : ℕ, 0 ≤ K ∧ ∀ z : ℂ, θ + δ ≤ z.re →
+      z.re ≤ d → 2 ≤ |z.im| → ‖(riemannZeta z)⁻¹‖ ≤ K * |z.im| ^ N)
+    {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y → y ≤ 1 →
+      ‖horocycleMean (pseudoEisenstein ψ) y - residueConst ψ‖ ≤ C * y ^ (1 - θ / 2 - ε) := by
+  have hψa : ∀ y, y < a → ψ y = 0 := fun y hy => hψ.eq_zero_of_le hy.le
+  have hψb : ∀ y, b < y → ψ y = 0 := fun y hy => hψ.eq_zero_of_ge hy.le
+  have ha0 : 0 < a := by linarith
+  set A := horocycleMean (pseudoEisenstein ψ) with hAdef
+  set c := residueConst ψ with hcdef
+  set g : ℝ → ℂ := fun y => A y - c * ((Real.exp (-y) : ℝ) : ℂ) with hg
+  have hΨ := mellinRegularStrip_regularPart hψ hθ0 hθ1 hZ hP
+  set c' : ℝ := θ / 2 - 1 + ε with hc'
+  have hc'1 : θ / 2 - 1 < c' := by linarith
+  have hc'2 : c' < 2 := by linarith
+  have h11 : θ / 2 - 1 < 1 := by linarith
+  set K := (1 / (2 * Real.pi)) * ∫ t : ℝ, ‖regularPart ψ ((c' : ℂ) + t * Complex.I)‖ with hK
+  have hK0 : 0 ≤ K := mul_nonneg (by positivity) (integral_nonneg fun _ => norm_nonneg _)
+  obtain ⟨B, -, hB⟩ := exists_norm_pseudoEisenstein_le hψ.continuous ha hψa hψb
+  have hFc := continuous_pseudoEisenstein hψ.continuous ha0 hψa
+  refine ⟨K + ‖c‖, by positivity, fun y hy hy1 => ?_⟩
+  -- Mellin inversion for `g` at `Re w = 1`
+  have hconv : MellinConvergent g 1 := by
+    have h1 := mellinConvergent_horocycleMean hψ.continuous ha hψa hψb (s := 2) (by norm_num)
+    have h2 := (mellinConvergent_exp_neg (w := 1) (by norm_num)).const_smul c
+    norm_num at h1
+    refine (h1.sub h2).congr_fun (fun t _ => ?_) measurableSet_Ioi
+    simp only [Pi.sub_apply, hg, smul_eq_mul]
+    ring
+  have hline : ∀ t : ℝ, mellin g ((1 : ℝ) + t * Complex.I) = regularPart ψ ((1 : ℝ) + t * Complex.I) := by
+    intro t
+    exact mellin_sub_exp_eq_regularPart hψ ha (by simp)
+  have hvert : VerticalIntegrable (mellin g) 1 := by
+    refine (hΨ.integrable_line h11 (by norm_num)).congr (Eventually.of_forall fun t => ?_)
+    exact (hline t).symm
+  have hcont : ContinuousAt g y :=
+    (continuousAt_horocycleMean hFc hB hy).sub (continuousAt_const.mul
+      (Complex.continuous_ofReal.comp (Real.continuous_exp.comp continuous_neg)).continuousAt)
+  have hinv := mellinInv_mellin_eq 1 g hy hconv hvert hcont
+  have hinv' : mellinInv 1 (mellin g) y = mellinInv 1 (regularPart ψ) y := by
+    unfold mellinInv
+    congr 1
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    simp only
+    rw [hline t]
+  have hshift := hΨ.mellinInv_eq h11 (by norm_num) hc'1 hc'2 hy
+  have hbound := norm_mellinInv_le (Ψ := regularPart ψ) c' hy
+  have hgy : ‖g y‖ ≤ K * y ^ (1 - θ / 2 - ε) := by
+    rw [← hinv, hinv', hshift]
+    refine hbound.trans (le_of_eq ?_)
+    rw [hK, show -c' = 1 - θ / 2 - ε by rw [hc']; ring]
+    ring
+  -- the cutoff `c e^{-y}` differs from `c` by at most `‖c‖ y`
+  have hexp : ‖((Real.exp (-y) : ℝ) : ℂ) - 1‖ ≤ y := by
+    rw [show ((Real.exp (-y) : ℝ) : ℂ) - 1 = ((Real.exp (-y) - 1 : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by
+        have := Real.exp_le_one_iff.2 (by linarith : -y ≤ 0); linarith)]
+    linarith [Real.add_one_le_exp (-y)]
+  have hyp : y ≤ y ^ (1 - θ / 2 - ε) := by
+    have := Real.rpow_le_rpow_of_exponent_ge hy hy1 (show 1 - θ / 2 - ε ≤ 1 by linarith)
+    simpa using this
+  have hsplit : A y - c = g y + c * (((Real.exp (-y) : ℝ) : ℂ) - 1) := by
+    simp only [hg]
+    ring
+  rw [hsplit]
+  calc ‖g y + c * (((Real.exp (-y) : ℝ) : ℂ) - 1)‖
+      ≤ ‖g y‖ + ‖c‖ * ‖((Real.exp (-y) : ℝ) : ℂ) - 1‖ := by
+        refine (norm_add_le _ _).trans ?_
+        rw [norm_mul]
+    _ ≤ K * y ^ (1 - θ / 2 - ε) + ‖c‖ * y ^ (1 - θ / 2 - ε) := by
+        gcongr
+        exact hexp.trans hyp
+    _ = (K + ‖c‖) * y ^ (1 - θ / 2 - ε) := by ring
+
+/-- The limit of the horocycle means: `c = 2 Q(1) ψ̃(-1) = (6/π) ∫_0^∞ ψ(y) y^{-2} dy`, the mean of
+`F_ψ` over `SL₂(ℤ)\ℍ` for the probability measure `(3/π) dx dy/y²`. -/
+theorem residueConst_eq (ψ : ℝ → ℂ) :
+    residueConst ψ = 6 / Real.pi * mellin ψ (-1) := by
+  have hQ : scatterQ 1 = 3 / Real.pi := by
+    rw [scatterQ, show (2 : ℂ) * 1 - 1 = 1 by norm_num, show (2 : ℂ) * 1 = 2 by norm_num, xi_one,
+      xi_two, completedRiemannZeta_eq_gammaℝ_mul two_ne_zero
+        (Gammaℝ_ne_zero_of_re_pos (by norm_num)), riemannZeta_two, Gammaℝ_def]
+    rw [show -(2 : ℂ) / 2 = -1 by norm_num, show (2 : ℂ) / 2 = 1 by norm_num, Complex.Gamma_one,
+      Complex.cpow_neg_one]
+    have hπ : (Real.pi : ℂ) ≠ 0 := ofReal_ne_zero.2 Real.pi_ne_zero
+    field_simp
+    ring
+  rw [residueConst, hQ]
+  ring
+
+end Rate
+
+/-! ## The three rates -/
+
+theorem xi_ne_zero_of_one_lt_re {z : ℂ} (hz : 1 < z.re) : xi z ≠ 0 := by
+  rw [Ne, xi_eq_zero_iff (by linarith) (fun h => by rw [h] at hz; simp at hz)]
+  exact riemannZeta_ne_zero_of_one_lt_re hz
+
+/-- **Horocycle equidistribution at rate `y^{1/2 - ε}`, unconditionally.** The means of every
+smooth pseudo-Eisenstein series supported above height `1` converge to `(6/π)∫ φ(y) y^{-2} dy`. -/
+theorem horocycle_rate {φ : ℝ → ℝ} (hφ : ContDiff ℝ ∞ φ) (hc : HasCompactSupport φ)
+    (hs : tsupport φ ⊆ Ioi 1) {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y → y ≤ 1 →
+      ‖horocycleMean (pseudoEisenstein fun t => (φ t : ℂ)) y -
+        6 / Real.pi * mellin (fun t => (φ t : ℂ)) (-1)‖ ≤ C * y ^ (1 / 2 - ε) := by
+  obtain ⟨a, b, ha, hab, hφa, hφb⟩ := exists_band_of_tsupport hc hs
+  have hψ := isTest_of_band hφ (by linarith) hab hφa hφb
+  have h := norm_horocycleMean_sub_le_of_zeroFree hψ ha (θ := 1) zero_le_one le_rfl
+    (fun z hz => xi_ne_zero_of_one_lt_re hz)
+    (fun δ hδ d => ⟨1 + 1 / δ, 0, by positivity, fun z hz _ _ => by
+      simpa using norm_inv_riemannZeta_le_of_le_re (by linarith : 1 < 1 + δ) hz⟩) hε hε1
+  rwa [residueConst_eq, show (1 : ℝ) - 1 / 2 - ε = 1 / 2 - ε by ring] at h
+
+/-- **Under the Riemann hypothesis the rate is `y^{3/4 - ε}`.** -/
+theorem horocycle_rate_of_riemannHypothesis (hRH : RiemannHypothesis) {φ : ℝ → ℝ}
+    (hφ : ContDiff ℝ ∞ φ) (hc : HasCompactSupport φ) (hs : tsupport φ ⊆ Ioi 1) {ε : ℝ}
+    (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ y : ℝ, 0 < y → y ≤ 1 →
+      ‖horocycleMean (pseudoEisenstein fun t => (φ t : ℂ)) y -
+        6 / Real.pi * mellin (fun t => (φ t : ℂ)) (-1)‖ ≤ C * y ^ (3 / 4 - ε) := by
+  obtain ⟨a, b, ha, hab, hφa, hφb⟩ := exists_band_of_tsupport hc hs
+  have hψ := isTest_of_band hφ (by linarith) hab hφa hφb
+  have hZ : ∀ z : ℂ, 1 / 2 < z.re → xi z ≠ 0 := fun z hz h0 => by
+    have := (riemannHypothesis_iff_xi_zero_re_eq_half.1 hRH) z h0
+    linarith
+  have hP : ∀ δ : ℝ, 0 < δ → ∀ d : ℝ, ∃ K : ℝ, ∃ N : ℕ, 0 ≤ K ∧ ∀ z : ℂ, 1 / 2 + δ ≤ z.re →
+      z.re ≤ d → 2 ≤ |z.im| → ‖(riemannZeta z)⁻¹‖ ≤ K * |z.im| ^ N := by
+    intro δ hδ d
+    obtain ⟨Kb, hKb, -, hbd⟩ := exists_invZeta_shift_data_of_rh hRH (δ := min δ (1 / 2))
+      (lt_min hδ (by norm_num)) (by linarith [min_le_right δ (1 / 2)]) one_pos d
+    refine ⟨2 * Kb, 1, by positivity, fun z hz1 hz2 hzt => ?_⟩
+    have hmem : z ∈ GaloisForLFunctions.HTGeometry.verticalStrip (1 / 2 + min δ (1 / 2)) d :=
+      ⟨by linarith [min_le_left δ (1 / 2)], hz2⟩
+    have hz1' : z ≠ 1 := fun h => by rw [h] at hzt; simp at hzt; linarith
+    have h := hbd z hmem
+    rw [Sieve.invZeta_eq_inv hz1', Real.rpow_one] at h
+    calc ‖(riemannZeta z)⁻¹‖ ≤ Kb * (2 + |z.im|) := h
+      _ ≤ Kb * (2 * |z.im|) := by gcongr; linarith
+      _ = 2 * Kb * |z.im| ^ 1 := by ring
+  have h := norm_horocycleMean_sub_le_of_zeroFree hψ ha (θ := 1 / 2) (by norm_num) (by norm_num)
+    hZ hP hε hε1
+  rwa [residueConst_eq, show (1 : ℝ) - 1 / 2 / 2 - ε = 3 / 4 - ε by ring] at h
+
+/-- **Zagier's theorem for pseudo-Eisenstein test functions.** The Riemann hypothesis holds iff the
+horocycle means of every smooth pseudo-Eisenstein series supported above height `1` converge at
+rate `y^{3/4 - ε}` for every `ε > 0`. -/
+theorem riemannHypothesis_iff_horocycle_rate :
+    RiemannHypothesis ↔ ∀ ε : ℝ, 0 < ε → ∀ φ : ℝ → ℝ, ContDiff ℝ ∞ φ → HasCompactSupport φ →
+      tsupport φ ⊆ Ioi 1 → ∃ c : ℂ, ∃ C : ℝ, ∀ y : ℝ, 0 < y → y ≤ 1 →
+        ‖horocycleMean (pseudoEisenstein fun t => (φ t : ℂ)) y - c‖ ≤ C * y ^ (3 / 4 - ε) := by
+  refine ⟨fun hRH ε hε φ hφ hc hs => ?_, riemannHypothesis_of_horocycle_rate⟩
+  obtain ⟨C, hC, h⟩ := horocycle_rate_of_riemannHypothesis hRH hφ hc hs
+    (ε := min ε (1 / 2)) (lt_min hε (by norm_num)) (by linarith [min_le_right ε (1 / 2)])
+  refine ⟨_, C, fun y hy hy1 => (h y hy hy1).trans ?_⟩
+  exact mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow_of_exponent_ge hy hy1 (by linarith [min_le_left ε (1 / 2)])) hC
 
 end
 

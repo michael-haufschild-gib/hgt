@@ -17,10 +17,11 @@ formats on the cone, transport, data beyond ζ). Working log: logs/cht-250-contr
 
 ## State
 - Proved (Lean): local density law; residue read from above at rate `1/c`; datum region left of `β = 1` for every
-  conductor; short-interval law and no gaps `≫ √X log X`; second moment and positive support density `X/(log X)²`.
+  conductor; short-interval law and no gaps `≫ √X log X`; second moment and positive support density `X/(log X)²`;
+  PNT `ψ_λ(X) = X + O(X^{5/6} log X)` for every point of `𝒜(c)`.
 - Open queue: odd-multiplier blind family (doubly exponential upper residue reading?); upper bound on support
   (`≲ X/log X`?); local law near the top of the box; bands at the top; transport across prime steps; no-pole critical
   conductor below Beckner's constant.
 
 ## Log
-- 2026-11-07 — created; contributions 1–5 formalized.
+- 2026-11-07 — created; contributions 1–6 formalized; loop paused by the user after #6.

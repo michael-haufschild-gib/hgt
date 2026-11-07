@@ -135,7 +135,7 @@ theorem hasDerivAt_weighted_legendreFlux (n r : ℕ) (x : ℝ) :
   have hd := (hW.pow (r + 1)).mul (hasDerivAt_legendreDerivative n (r + 1) x)
   apply hd.congr_deriv
   norm_num only [id_eq, Nat.cast_ofNat, Nat.reduceSub, pow_one, mul_one, zero_sub,
-    Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one]
+    Nat.add_sub_cancel, Nat.cast_add, Nat.cast_one, Pi.pow_apply]
   rw [pow_succ]
   linear_combination (1 - x ^ 2) ^ r * legendreDerivative_equation n r x
 
@@ -198,8 +198,47 @@ theorem weightedLegendreEnergy_self (r n : ℕ) :
     rw [weightedLegendreEnergy_succ, ih, Finset.prod_range_succ]
     ring
 
+/-- The adjacent derivative difference persists at every differentiation order. -/
+theorem legendreDerivative_difference (n r : ℕ) (x : ℝ) :
+    (legendreDerivative (n + 2) (r + 1)).eval x =
+      (2 * (n : ℝ) + 3) * (legendreDerivative (n + 1) r).eval x +
+        (legendreDerivative n (r + 1)).eval x := by
+  induction r generalizing x with
+  | zero => simp only [derivative_one_eval, derivative_zero_eval, legP']
+  | succ r ih =>
+    have he : (fun t : ℝ => (legendreDerivative (n + 2) (r + 1)).eval t) =
+        fun t => (2 * (n : ℝ) + 3) * (legendreDerivative (n + 1) r).eval t +
+          (legendreDerivative n (r + 1)).eval t := funext ih
+    have hl := hasDerivAt_legendreDerivative (n + 2) (r + 1) x
+    have hr := ((hasDerivAt_legendreDerivative (n + 1) r x).const_mul
+      (2 * (n : ℝ) + 3)).add (hasDerivAt_legendreDerivative n (r + 1) x)
+    rw [he] at hl
+    exact hl.unique hr
+
+/-- Bonnet's recurrence at derivative order `r` retains its negative lower mode. -/
+theorem legendreDerivative_bonnet (n r : ℕ) (x : ℝ) :
+    ((n : ℝ) + 2 - r) * (legendreDerivative (n + 2) r).eval x =
+      (2 * (n : ℝ) + 3) * x * (legendreDerivative (n + 1) r).eval x -
+        ((n : ℝ) + 1 + r) * (legendreDerivative n r).eval x := by
+  induction r generalizing x with
+  | zero =>
+    simpa only [Nat.cast_zero, sub_zero, add_zero, derivative_zero_eval] using legP_bonnet n x
+  | succ r ih =>
+    have he : (fun t : ℝ => ((n : ℝ) + 2 - r) * (legendreDerivative (n + 2) r).eval t) =
+        fun t => (2 * (n : ℝ) + 3) * t * (legendreDerivative (n + 1) r).eval t -
+          ((n : ℝ) + 1 + r) * (legendreDerivative n r).eval t := funext ih
+    have hl := (hasDerivAt_legendreDerivative (n + 2) r x).const_mul ((n : ℝ) + 2 - r)
+    have hr := (((hasDerivAt_id x).const_mul (2 * (n : ℝ) + 3)).mul
+      (hasDerivAt_legendreDerivative (n + 1) r x)).sub
+        ((hasDerivAt_legendreDerivative n r x).const_mul ((n : ℝ) + 1 + r))
+    rw [he] at hl
+    have hh := hl.unique hr
+    simp only [id_eq, mul_one, Nat.cast_add, Nat.cast_one] at hh ⊢
+    linear_combination hh - legendreDerivative_difference n r x
+
 #print axioms legendreDerivative_equation
 #print axioms weightedLegendreEnergy_eq_zero
 #print axioms weightedLegendreEnergy_self
+#print axioms legendreDerivative_bonnet
 
 end GaloisForLFunctions.ThetaCuspSections

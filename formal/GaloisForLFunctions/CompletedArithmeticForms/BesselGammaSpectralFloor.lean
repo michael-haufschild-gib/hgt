@@ -4,6 +4,7 @@ import GaloisForLFunctions.CompletedArithmeticForms.BesselGammaMomentScale
 import GaloisForLFunctions.RHTower.UnwindowedHankelSignCone
 import GaloisForLFunctions.RHTower.ThetaCusp.ThetaCuspHawkingBMCauchyPowerFourierBessel
 import GaloisForLFunctions.HTGeometry.GammaCosineCriticalModulus
+
 /-!
 # A Gamma spectral reserve for the integrated first atom
 
@@ -227,36 +228,47 @@ theorem integrable_besselFirstAtomMoment {q : ℝ} (hq : 3 ≤ q) (k : ℕ) :
   have hh := mul_le_mul_of_nonneg_right hb (firstAtom_density_pos hq b).le
   simpa only [add_mul, one_mul, Pi.add_apply] using hh
 
+/-- Polynomial squares are integrable against the complete first-atom density. -/
+theorem integrable_polynomial_sq_besselFirstAtom {q : ℝ} (hq : 3 ≤ q) (P : Polynomial ℝ) :
+    Integrable (fun b : ℝ => P.eval b ^ 2 * besselFirstAtomTailDensity (b / 2) q) := by
+  have hh := _root_.RHTower.integrable_polynomial_mul_of_rawMoments
+    (integrable_besselFirstAtomMoment hq) (P ^ 2)
+  convert hh using 1
+  funext b
+  rw [_root_.Polynomial.eval_pow]
+
+private theorem polynomial_gamma_lower {q : ℝ} (hq : 3 ≤ q) (P : Polynomial ℝ) (b : ℝ) :
+    firstAtomGammaReserve q * (P.eval b ^ 2 / Real.cosh (Real.pi * b / 2)) ≤
+      P.eval b ^ 2 * besselFirstAtomTailDensity (b / 2) q := by
+  have hh := mul_le_mul_of_nonneg_left (besselFirstAtomTailDensity_gamma_lower hq (b / 2))
+    (sq_nonneg (P.eval b))
+  rw [show Real.pi * (b / 2) = Real.pi * b / 2 by ring] at hh
+  dsimp only [firstAtomGammaReserve]
+  calc
+    _ = P.eval b ^ 2 *
+        (2 * Real.sqrt q * (q ^ 2 - 2 * q - 1) * Real.exp (-2 * (q + 1)) /
+          Real.cosh (Real.pi * b / 2)) := by ring
+    _ ≤ _ := hh
+
+/-- Every polynomial has finite energy in the hyperbolic-secant Gamma norm. -/
+theorem integrable_polynomial_sq_sech (P : Polynomial ℝ) :
+    Integrable (fun b : ℝ => P.eval b ^ 2 / Real.cosh (Real.pi * b / 2)) := by
+  have hC := firstAtomGammaReserve_pos (q := (3 : ℝ)) le_rfl
+  have hi := integrable_polynomial_sq_besselFirstAtom (q := (3 : ℝ)) le_rfl P
+  have hc : Continuous fun b : ℝ => P.eval b ^ 2 / Real.cosh (Real.pi * b / 2) :=
+    Continuous.div (by fun_prop) (by fun_prop) (fun b => (Real.cosh_pos _).ne')
+  apply (hi.div_const (firstAtomGammaReserve 3)).mono' hc.aestronglyMeasurable
+  filter_upwards with b
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  exact (le_div_iff₀ hC).mpr (by
+    nlinarith only [polynomial_gamma_lower (q := (3 : ℝ)) le_rfl P b])
+
 /-- The complete first atom pays a fixed Gamma norm for every polynomial degree. -/
 theorem firstAtom_polynomial_gamma_payment {q : ℝ} (hq : 3 ≤ q) (P : Polynomial ℝ) :
     firstAtomGammaReserve q * (∫ b : ℝ, P.eval b ^ 2 / Real.cosh (Real.pi * b / 2)) ≤
       ∫ b : ℝ, P.eval b ^ 2 * besselFirstAtomTailDensity (b / 2) q := by
-  have hC := firstAtomGammaReserve_pos hq
-  have hi : Integrable (fun b : ℝ => P.eval b ^ 2 * besselFirstAtomTailDensity (b / 2) q) := by
-    have hh := _root_.RHTower.integrable_polynomial_mul_of_rawMoments
-      (integrable_besselFirstAtomMoment hq) (P ^ 2)
-    convert hh using 1
-    funext b
-    rw [_root_.Polynomial.eval_pow]
-  have hpoint (b : ℝ) : firstAtomGammaReserve q * (P.eval b ^ 2 / Real.cosh (Real.pi * b / 2)) ≤
-      P.eval b ^ 2 * besselFirstAtomTailDensity (b / 2) q := by
-    have hh := mul_le_mul_of_nonneg_left (besselFirstAtomTailDensity_gamma_lower hq (b / 2))
-      (sq_nonneg (P.eval b))
-    rw [show Real.pi * (b / 2) = Real.pi * b / 2 by ring] at hh
-    dsimp only [firstAtomGammaReserve]
-    calc
-      _ = P.eval b ^ 2 *
-          (2 * Real.sqrt q * (q ^ 2 - 2 * q - 1) * Real.exp (-2 * (q + 1)) /
-            Real.cosh (Real.pi * b / 2)) := by ring
-      _ ≤ _ := hh
-  have hgi : Integrable (fun b : ℝ => P.eval b ^ 2 / Real.cosh (Real.pi * b / 2)) := by
-    have hc : Continuous fun b : ℝ => P.eval b ^ 2 / Real.cosh (Real.pi * b / 2) :=
-      Continuous.div (by fun_prop) (by fun_prop) (fun b => (Real.cosh_pos _).ne')
-    apply (hi.div_const (firstAtomGammaReserve q)).mono' hc.aestronglyMeasurable
-    filter_upwards with b
-    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
-    exact (le_div_iff₀ hC).mpr (by nlinarith only [hpoint b])
-  have hh := integral_mono (hgi.const_mul _) hi hpoint
+  have hh := integral_mono ((integrable_polynomial_sq_sech P).const_mul _)
+    (integrable_polynomial_sq_besselFirstAtom hq P) (polynomial_gamma_lower hq P)
   rwa [integral_const_mul] at hh
 
 #print axioms besselHalfOrderSquare_tendsto_zero_right
