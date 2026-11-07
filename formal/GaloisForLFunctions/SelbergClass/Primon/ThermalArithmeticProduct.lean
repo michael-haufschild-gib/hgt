@@ -37,7 +37,7 @@ theorem integral_kesten_thermalFactor (p : Nat.Primes) (β : ℝ) :
 theorem hasProd_thermalArithmeticMeans (β : ℝ) :
     HasProd (fun p : Nat.Primes => ∫ t in Ioo (0 : ℝ) 1,
       kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p β) t)
-      (riemannZeta (2 * Real.exp β + 1)).re := by
+      (riemannZeta ((2 * Real.exp β + 1 : ℝ) : ℂ)).re := by
   have hs : 1 < 2 * Real.exp β + 1 := by have := Real.exp_pos β; linarith
   simpa only [integral_kesten_thermalFactor] using RHTower.hasProd_primeEulerFactor hs
 
@@ -45,7 +45,7 @@ theorem hasProd_thermalArithmeticMeans (β : ℝ) :
 theorem hasSum_log_thermalArithmeticMeans (β : ℝ) :
     HasSum (fun p : Nat.Primes => Real.log (∫ t in Ioo (0 : ℝ) 1,
       kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p β) t))
-      (Real.log (riemannZeta (2 * Real.exp β + 1)).re) := by
+      (Real.log (riemannZeta ((2 * Real.exp β + 1 : ℝ) : ℂ)).re) := by
   have hs : 1 < 2 * Real.exp β + 1 := by have := Real.exp_pos β; linarith
   simpa only [integral_kesten_thermalFactor, Real.log_inv] using
     RHTower.hasSum_negLog_primeEulerFactor hs
@@ -62,6 +62,18 @@ theorem one_lt_integral_kesten_thermalFactor (p : Nat.Primes) (β : ℝ) :
     Real.rpow_lt_one_of_one_lt_of_neg hp (by have := Real.exp_pos β; linarith)
   rw [← one_div, lt_div_iff₀ (sub_pos.mpr hx1)]
   linarith
+
+/-- The gap between logarithm of the mean and mean logarithm is explicit. -/
+theorem thermal_log_average_gap_eq (p : Nat.Primes) (β : ℝ) :
+    Real.log (∫ t in Ioo (0 : ℝ) 1,
+        kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p β) t) -
+      (∫ t in Ioo (0 : ℝ) 1, kestenMcKayDensity p t * thermalLocalLog p β t) =
+      -((p : ℝ) + 1) / 2 * Real.log (1 - (p : ℝ) ^ (-(2 * Real.exp β + 1))) := by
+  have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
+  rw [integral_kesten_thermalFactor, integral_kesten_thermalLocalLog, Real.log_inv]
+  simp only [Real.rpow_def_of_pos hp,
+    mul_comm (Real.log (p : ℝ)) (-(2 * Real.exp β + 1))]
+  ring
 
 /-- The exact phase formulas give a strict logarithmic averaging gap at every prime. -/
 theorem thermal_log_average_gap_pos (p : Nat.Primes) (β : ℝ) :

@@ -140,14 +140,18 @@ theorem integral_narainPartition_eq_scalar (ρ σ : D4BMUpperHalfPlaneCoordinate
   rw [integral_const_mul,
     integral_tsum_eq_tsum_integral_of_summable_integral_norm
       (μ := volume.restrict (Set.Ioc (0 : ℝ) 1))
-      (F := fun q x => narainPartitionTerm ρ σ x y q) hInt hsum,
-    tsum_subtype]
+      (F := fun q x => narainPartitionTerm ρ σ x y q) hInt hsum]
   congr 1
-  apply tsum_congr
-  intro q
-  rw [← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1),
-    integral_narainPartitionTerm]
-  simp only [Set.indicator_apply, Set.mem_setOf_eq]
+  calc
+    _ = ∑' q, {q : (ℤ × ℤ) × (ℤ × ℤ) | chargeSpin q = 0}.indicator
+        (fun q => (narainBoltzmann ρ σ y q : ℂ)) q := by
+      apply tsum_congr
+      intro q
+      rw [← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 1),
+        integral_narainPartitionTerm]
+      simp only [Set.indicator_apply, Set.mem_setOf_eq]
+    _ = _ := (tsum_subtype {q : (ℤ × ℤ) × (ℤ × ℤ) | chargeSpin q = 0}
+      (fun q => (narainBoltzmann ρ σ y q : ℂ))).symm
 
 end
 

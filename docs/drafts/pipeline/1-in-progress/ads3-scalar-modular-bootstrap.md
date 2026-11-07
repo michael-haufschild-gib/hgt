@@ -25,6 +25,12 @@ The corpus's single-Eisenstein detection theorem now extends to the product:
    Prove the Mellin bridge from this family of bounds to RH using full pole
    coverage. The bound itself is an open target, not an input.
 
+For the RH implication, the proved mean-pole theorem exposes a weaker
+sufficient target: the same remainder bound for one double target-horocycle
+average at prescribed positive heights. No arithmetic pole cancels in that
+average. Identifying its actual Mellin transform requires uniform Gaussian
+and Dirichlet bounds on the compact target intervals; these remain obligations.
+
 ## Product detector: formalized
 
 Put `D(u)=ξ(1+2u)`, `N(u;x,Y)=D(u)E(1/2+u;x+iY)` and
@@ -95,15 +101,28 @@ For the partition-function bridge, the corpus supplies
 `IntegerLatticePoisson.summable_norm_gaussian_affine_lattice` and
 `gaussian_theta_characteristics` in `HTGeometry/GaussianThetaCharacteristics.lean`.
 The coercive bound dominates the actual partition terms by four Gaussian
-series. `NarainPartition.lean` contains the pending proof of this absolute
-convergence. The corpus's `HTGeometry.integral_fourierChar` and
-`integral_tsum_eq_tsum_integral_of_summable_integral_norm` supply the tools
-for the next scalar-projection identity, with all hypotheses discharged by
-the Gaussian bound. Poisson summation in momentum gives the Lagrangian
+series. [Absolute convergence, modular translation and the exact scalar
+projection](../3-formalized/ads3-narain-partition-projection.md) are formalized
+in `NarainPartition.lean`, with all integration-interchange hypotheses
+discharged by this Gaussian bound. Poisson summation in momentum gives the Lagrangian
 expression, where modular inversion is an integer reindexing of the two
 winding columns; that identification remains open.
 The gap controls the large-worldsheet-height cusp. It does not supply the
 small-height scalar remainder required for RH.
+
+The explicit Poisson target is
+`Z(x,t)=V Σ_(m,w) exp[−πV(Rσ(m−xw)+t²Rσ(w))/(tσ₂)+2πiB det(m,w)]`,
+where `Rσ(v)=|v₁+σv₂|²`. Inversion sends
+`(x,t)` to `(-x,t)/(x²+t²)` and `(m,w)` to `(-w,m)`; both the quadratic
+exponent and determinant phase agree. The corpus's
+`RankTwoAffine.affine_gaussian_poisson` includes the required linear terms.
+Its original, intermediate and dual summability premises must all be proved
+for this source before it can identify the two partition sums.
+The dual quadratic is already a Narain mass:
+`[Rσ(m−xw)+t²Rσ(w)]/(tσ₂)=M²_((x,t),σ)(Jm,−w)`.
+Its spin is `det(m,w)`. Thus the dual convergence follows from the same
+coercive bound, and the Poisson identity is equivalently the triality
+`Z_(ρ,σ)(τ)=Z_(τ,σ)(ρ)`; this equality remains to be formalized.
 
 ## External audit
 

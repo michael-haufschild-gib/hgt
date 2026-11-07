@@ -63,7 +63,7 @@ theorem completedConductorEnergy_tilted_pos {c : ℝ} (hc : 0 < c) {m : ℕ} (hm
       (tiltedUnitSpline_completedConductorEnergy_ge_above_overlap hc hm (le_of_not_ge hmc))
 
 private theorem critical_collar_side_bounds {N : ℕ} {c R₀ L : ℝ}
-    (hL_def : L = Real.log (N : ℝ)) (hR₀1 : 1 ≤ R₀) (hc1 : 1 ≤ c)
+    (hL_def : L = Real.log (N : ℝ)) (hc1 : 1 ≤ c)
     (hc_R₀ : c ≤ R₀ * L ^ (1 / 8 : ℝ)) (hR₀_L : R₀ ≤ L ^ (1 / 8 : ℝ))
     (hL2048 : 2048 ≤ L) (hL8N : L ^ (8 : ℕ) ≤ N) :
     c ≤ L ∧
@@ -229,13 +229,13 @@ private theorem above_cutoff_low_range_dualSeventh_sum_le {m₀ Q M N : ℕ} {c 
     _ = (3 * K_d7 * R_max / κ) / (m₀ : ℝ) ^ 4 := by field_simp [hm₀0.ne']
 
 /-- **Finite-conductor reduction of dual seventh-power collar residuals at any critical ratio.**
-For every `R_max > 0` and `ε > 0`, there exists a finite conductor cutoff `m₀ ≥ 1` (independent of
+For every `R_max` and `ε > 0`, there exists a finite conductor cutoff `m₀ ≥ 1` (independent of
 `N` and `c`) such that eventually in `N`, across all `1 ≤ c` with `c⁸ ≤ R_max log N` and all collar
 boundaries `M` with `2 · linearPrimeStrip c ≤ M` (including `M = N / linearDefectCutoff c`):
 1. `(c⁷ / log N) · ∑_{m ∈ Ioc m₀ (lowPacketCutoff N)} D₇(r_m) / E_m(c) ≤ ε`;
 2. `(1 / c) · ∑_{m ∈ Ioc m₀ ⌊(log N)^{1/4}⌋₊} D₇(r_m) / E_m(c) ≤ ε`. -/
 theorem exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio
-    {R_max : ℝ} (hR : 0 < R_max) {ε : ℝ} (hε : 0 < ε) :
+    {R_max : ℝ} {ε : ℝ} (hε : 0 < ε) :
     ∃ m₀ : ℕ, 1 ≤ m₀ ∧ ∀ᶠ N : ℕ in atTop,
       ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
         2 * linearPrimeStrip c ≤ N / linearDefectCutoff c ∧
@@ -307,7 +307,7 @@ theorem exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio
       norm_num [Real.rpow_one]
     rwa [hlhs, hrhs] at hr
   obtain ⟨hc_le_L, hlarge, hradN, hc4N, h2BM_def, hrate_d7⟩ :=
-    critical_collar_side_bounds rfl hR₀1 hc1 hc_R₀ hR₀_L hL2048 hL8N
+    critical_collar_side_bounds rfl hc1 hc_R₀ hR₀_L hL2048 hL8N
   refine ⟨h2BM_def, fun {M} h2BM => ?_⟩
   have hd7_pt : ∀ m : ℕ, 0 < m →
       topCollarDualSeventhMass M N (conductorResidualVector c m N) ≤
@@ -504,8 +504,12 @@ theorem exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio
     have hsplit : (∑ m ∈ Ioc m₀ Q₁,
         topCollarDualSeventhMass M N (conductorResidualVector c m N) /
           completedConductorEnergy tiltedUnitSpline c m) =
-        (∑ m ∈ Ioc m₀ Q₁, if (m : ℝ) ≤ c then _ else 0) +
-          (∑ m ∈ Ioc m₀ Q₁, if c < (m : ℝ) then _ else 0) := by
+        (∑ m ∈ Ioc m₀ Q₁, if (m : ℝ) ≤ c then
+            topCollarDualSeventhMass M N (conductorResidualVector c m N) /
+              completedConductorEnergy tiltedUnitSpline c m else 0) +
+          (∑ m ∈ Ioc m₀ Q₁, if c < (m : ℝ) then
+            topCollarDualSeventhMass M N (conductorResidualVector c m N) /
+              completedConductorEnergy tiltedUnitSpline c m else 0) := by
       rw [← sum_add_distrib]
       refine sum_congr rfl fun m _ => ?_
       by_cases hmc : (m : ℝ) ≤ c
@@ -596,8 +600,12 @@ theorem exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio
     have hsplit2 : (∑ m ∈ Ioc m₀ Q₀,
         topCollarDualSeventhMass M N (conductorResidualVector c m N) /
           completedConductorEnergy tiltedUnitSpline c m) =
-        (∑ m ∈ Ioc m₀ Q₀, if (m : ℝ) ≤ c then _ else 0) +
-          (∑ m ∈ Ioc m₀ Q₀, if c < (m : ℝ) then _ else 0) := by
+        (∑ m ∈ Ioc m₀ Q₀, if (m : ℝ) ≤ c then
+            topCollarDualSeventhMass M N (conductorResidualVector c m N) /
+              completedConductorEnergy tiltedUnitSpline c m else 0) +
+          (∑ m ∈ Ioc m₀ Q₀, if c < (m : ℝ) then
+            topCollarDualSeventhMass M N (conductorResidualVector c m N) /
+              completedConductorEnergy tiltedUnitSpline c m else 0) := by
       rw [← sum_add_distrib]
       refine sum_congr rfl fun m _ => ?_
       by_cases hmc : (m : ℝ) ≤ c
@@ -642,7 +650,7 @@ theorem exists_above_cutoff_subquarter_packet_collar_schur_below_ratio {R_max : 
   have hε'_eq : 2 * I₂ / κ_R * ε' = ε := by
     rw [hε'_def, div_mul_div_comm, show 2 * I₂ * (ε * κ_R) = ε * (κ_R * (2 * I₂)) by ring,
       mul_div_cancel_right₀ _ (mul_ne_zero hκR.ne' (mul_ne_zero two_ne_zero hI₂.ne'))]
-  obtain ⟨m₀, hm₀1, hcut_ev⟩ := exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio hR hε'
+  obtain ⟨m₀, hm₀1, hcut_ev⟩ := exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio (R_max := R_max) hε'
   refine ⟨m₀, hm₀1, ?_⟩
   filter_upwards [hgard_ev, hcut_ev, eventually_ge_atTop 1] with N hgardN hcutN hN1 c hc1 hc8 b y hy_supp
   have hc0 : 0 < c := zero_lt_one.trans_le hc1
@@ -826,7 +834,7 @@ theorem complete_prefix_and_low_packet_collar_resolution {c : ℕ → ℝ} {R : 
     fun ε hε => ?_,
     fun hpsd _A hA => polarPaymentAt_of_eventually_nonneg hc hR hcrit hpsd hA⟩
   obtain ⟨m₀, hm₀1, hcut⟩ :=
-    exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio (R_max := R + 1) (by linarith) hε
+    exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio (R_max := R + 1) hε
   refine ⟨m₀, hm₀1, ?_⟩
   filter_upwards [hcut, hcrit.eventually (gt_mem_nhds (by linarith : R < R + 1)),
     eventually_ge_atTop 3] with N hN hrat hN3
@@ -835,8 +843,6 @@ theorem complete_prefix_and_low_packet_collar_resolution {c : ℕ → ℝ} {R : 
   exact (hboth h2BM).1
 
 
-#print axioms not_naive_physical_prefix_collar_schur_decoupling
-#print axioms exists_far_prefix_collar_schur_decoupling_below_ratio
 #print axioms exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio
 #print axioms exists_above_cutoff_subquarter_packet_collar_schur_below_ratio
 #print axioms complete_prefix_and_low_packet_collar_resolution

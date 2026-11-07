@@ -69,3 +69,6 @@ import GaloisForLFunctions.SelbergClass.Primon.LogarithmicAverage
 import GaloisForLFunctions.SelbergClass.Primon.ThermalLocalFactor
 import GaloisForLFunctions.SelbergClass.Primon.CharacterMoments
 import GaloisForLFunctions.SelbergClass.Primon.ArithmeticAverage
+import GaloisForLFunctions.SelbergClass.Primon.LogarithmicBoundary
+import GaloisForLFunctions.SelbergClass.Primon.ThermalArithmeticProduct
+import GaloisForLFunctions.SelbergClass.Primon.PrincipalSeries

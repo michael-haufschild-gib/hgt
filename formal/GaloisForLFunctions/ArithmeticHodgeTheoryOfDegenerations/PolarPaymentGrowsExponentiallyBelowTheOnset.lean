@@ -30,7 +30,8 @@ uniformly in `A ≥ 0`. Below the onset aperture `a*(ζ)`:
 noncomputable section
 set_option autoImplicit false
 
-open MeasureTheory Set Filter Topology Finset
+open MeasureTheory Set Filter Topology
+open scoped CompactlySupported
 
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
@@ -45,6 +46,7 @@ open _root_.Zeta23 _root_.RHTower _root_.RHTower.CHMDDoobGraph
   GaloisForLFunctions.CriticalArithmeticCorrelationTheory
   GaloisForLFunctions.ArithmeticDegenerationTheory
   GaloisForLFunctions.RenormalizedArithmeticPotentialTheory
+  GaloisForLFunctions.BiScaleUncertainty
 
 /-! ### 1. Exact logarithmic-variable kernel of `generalTerminalPolarSource` -/
 
@@ -138,24 +140,38 @@ private lemma integral_polarCenterProfile_logProfile {g : ℝ → ℝ} {A : ℝ}
       rw [uIcc_of_le heA1] at hx; exact ⟨heA0.trans hx.1, hx.2⟩).intervalIntegrable
   rw [← intervalIntegral.integral_add_adjacent_intervals hI1 hI2]
   have hzero1 : ∫ x in (0 : ℝ)..Real.exp (-A), polarCenterProfile (logProfile g) x = 0 := by
-    rw [intervalIntegral.integral_of_le heA0, ← integral_Ioo_eq_integral_Ioc,
+    rw [intervalIntegral.integral_of_le heA0, integral_Ioc_eq_integral_Ioo,
       ← integral_indicator measurableSet_Ioo]
     refine integral_eq_zero_of_ae (Eventually.of_forall fun x => ?_)
     by_cases hx : x ∈ Ioo 0 (Real.exp (-A))
     · rw [indicator_of_mem hx]
       have hlp0 : logProfile g x = 0 := logProfile_eq_zero_of_lt hsupp hx.2
-      simp only [polarCenterProfile, hlp0, zero_div, zero_mul, sub_zero]
-    · exact indicator_of_notMem hx _
-  rw [hzero1, zero_add, show (1 : ℝ) = Real.exp 0 by simp]
+      simp only [polarCenterProfile, hlp0, zero_div, zero_mul, sub_zero, Pi.zero_apply]
+    · simp only [indicator_of_notMem hx, Pi.zero_apply]
+  rw [hzero1, zero_add]
+  let P_ext : ℝ → ℝ := fun x => polarCenterProfile (logProfile g) (max 0 (min x 1))
+  have hcont_ext : Continuous P_ext := by
+    rw [← continuousOn_univ]
+    exact hcontP.comp (continuous_const.max (continuous_id.min continuous_const)).continuousOn
+      fun x _ => ⟨le_max_left _ _, max_le zero_le_one (min_le_right _ _)⟩
+  have hP_eq_I2 : ∫ x in Real.exp (-A)..1, polarCenterProfile (logProfile g) x =
+      ∫ x in Real.exp (-A)..Real.exp 0, P_ext x := by
+    rw [Real.exp_zero]
+    refine intervalIntegral.integral_congr fun x hx => ?_
+    rw [uIcc_of_le heA1] at hx
+    dsimp only [P_ext]
+    rw [min_eq_left hx.2, max_eq_right (heA0.trans hx.1)]
+  rw [hP_eq_I2]
   have hsub := intervalIntegral.integral_deriv_smul_comp (a := -A) (b := 0) (f := Real.exp)
-    (f' := Real.exp) (g := polarCenterProfile (logProfile g)) (fun y _ => Real.hasDerivAt_exp y)
-    Real.continuous_exp.continuousOn (hcontP.mono fun x hx => by
-      rw [Real.exp_zero, uIcc_of_le heA1] at hx; exact ⟨heA0.trans hx.1, hx.2⟩)
+    (f' := Real.exp) (g := P_ext) (fun y _ => Real.hasDerivAt_exp y)
+    Real.continuous_exp.continuousOn hcont_ext
   rw [← hsub]
-  have hcongr : ∫ y in (-A)..0, Real.exp y * polarCenterProfile (logProfile g) (Real.exp y) =
+  have hcongr : ∫ y in (-A)..0, Real.exp y • (P_ext ∘ Real.exp) y =
       ∫ y in (-A)..0, φ y := by
     refine intervalIntegral.integral_congr fun y hy => ?_
     rw [uIcc_of_le (by linarith)] at hy
+    simp only [Function.comp_apply, smul_eq_mul, P_ext]
+    rw [min_eq_left (Real.exp_le_one_iff.mpr hy.2), max_eq_right (Real.exp_pos y).le]
     exact hpt y hy
   rw [hcongr, intervalIntegral.integral_of_le (by linarith), ← integral_Icc_eq_integral_Ioc,
     setIntegral_eq_integral_of_forall_compl_eq_zero fun y hy => by
@@ -189,14 +205,15 @@ private lemma finitePrimeTerminalMean_logProfile_eq {g : ℝ → ℝ} {A : ℝ}
         rw [intervalIntegral.integral_of_le h1k_pos.le, ← integral_indicator measurableSet_Ioc]
         refine integral_eq_zero_of_ae (Eventually.of_forall fun x => ?_)
         by_cases hx : x ∈ Ioc 0 (1 / (k : ℝ))
-        · rw [indicator_of_mem hx]
-          exact logProfile_eq_zero_of_lt hsupp (hx.2.trans_lt h1k_lt)
-        · exact indicator_of_notMem hx _
+        · simp only [indicator_of_mem hx, logProfile_eq_zero_of_lt hsupp (hx.2.trans_lt h1k_lt),
+            Pi.zero_apply]
+        · simp only [indicator_of_notMem hx, Pi.zero_apply]
       have hR : ∫ y, (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) y = 0 := by
         refine integral_eq_zero_of_ae (Eventually.of_forall fun y => ?_)
         by_cases hy : y ∈ Iic (-Real.log (k : ℝ))
-        · rw [indicator_of_mem hy, hsupp y fun hm => by linarith [mem_Iic.mp hy, hm.1], mul_zero]
-        · exact indicator_of_notMem hy _
+        · simp only [indicator_of_mem hy, hsupp y fun hm => by linarith [mem_Iic.mp hy, hm.1],
+            mul_zero, Pi.zero_apply]
+        · simp only [indicator_of_notMem hy, Pi.zero_apply]
       rw [hL, hR]
     · have heA_le : Real.exp (-A) ≤ 1 / (k : ℝ) := by
         rw [← hexp_log]; exact Real.exp_le_exp.mpr hge
@@ -206,62 +223,68 @@ private lemma finitePrimeTerminalMean_logProfile_eq {g : ℝ → ℝ} {A : ℝ}
         hcontLP.intervalIntegrable _ _
       rw [← intervalIntegral.integral_add_adjacent_intervals hI1 hI2]
       have hzero1 : ∫ x in (0 : ℝ)..Real.exp (-A), logProfile g x = 0 := by
-        rw [intervalIntegral.integral_of_le (Real.exp_pos _).le, ← integral_Ioo_eq_integral_Ioc,
+        rw [intervalIntegral.integral_of_le (Real.exp_pos _).le, integral_Ioc_eq_integral_Ioo,
           ← integral_indicator measurableSet_Ioo]
         refine integral_eq_zero_of_ae (Eventually.of_forall fun x => ?_)
         by_cases hx : x ∈ Ioo 0 (Real.exp (-A))
-        · rw [indicator_of_mem hx]; exact logProfile_eq_zero_of_lt hsupp hx.2
-        · exact indicator_of_notMem hx _
+        · simp only [indicator_of_mem hx, logProfile_eq_zero_of_lt hsupp hx.2, Pi.zero_apply]
+        · simp only [indicator_of_notMem hx, Pi.zero_apply]
       rw [hzero1, zero_add, ← hexp_log]
       have hsub := intervalIntegral.integral_deriv_smul_comp (a := -A) (b := -Real.log (k : ℝ))
         (f := Real.exp) (f' := Real.exp) (g := logProfile g) (fun y _ => Real.hasDerivAt_exp y)
-        Real.continuous_exp.continuousOn hcontLP.continuousOn
+        Real.continuous_exp.continuousOn hcontLP
       rw [← hsub]
-      have hcongr : ∫ y in (-A)..(-Real.log (k : ℝ)), Real.exp y * logProfile g (Real.exp y) =
+      have hcongr : ∫ y in (-A)..(-Real.log (k : ℝ)), Real.exp y • (logProfile g ∘ Real.exp) y =
           ∫ y in (-A)..(-Real.log (k : ℝ)), Real.exp y * g y := by
         refine intervalIntegral.integral_congr fun y _ => ?_
-        simp only [Function.comp_apply, logProfile, if_pos (Real.exp_pos y), Real.log_exp,
-          smul_eq_mul]
+        simp only [Function.comp_apply, smul_eq_mul, logProfile, if_pos (Real.exp_pos y),
+          Real.log_exp]
       rw [hcongr, intervalIntegral.integral_of_le hge, ← integral_Icc_eq_integral_Ioc,
         ← integral_indicator measurableSet_Icc]
       refine integral_congr_ae (Eventually.of_forall fun y => ?_)
       by_cases hy : y ∈ Iic (-Real.log (k : ℝ))
       · by_cases hyA : -A ≤ y
-        · rw [indicator_of_mem ⟨hyA, mem_Iic.mp hy⟩, indicator_of_mem hy]
+        · rw [indicator_of_mem (mem_Icc.mpr ⟨hyA, mem_Iic.mp hy⟩), indicator_of_mem hy]
         · rw [indicator_of_notMem fun hm => hyA hm.1, indicator_of_mem hy,
             hsupp y fun hm => hyA hm.1, mul_zero]
       · rw [indicator_of_notMem fun hm => hy (mem_Iic.mpr hm.2), indicator_of_notMem hy]
   set K : ℕ := ⌈1 / Real.exp (-A - 1)⌉₊
-  have hterm_int : ∀ k ∈ Icc 1 K, Integrable fun y =>
+  have hterm_int : ∀ k ∈ Finset.Icc 1 K, Integrable fun y =>
       (ArithmeticFunction.vonMangoldt k : ℝ) *
         (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) y :=
     fun k _ => (hint_eg.indicator measurableSet_Iic).const_mul _
   have hpt_sum : ∀ y : ℝ,
-      (∑ k ∈ Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
+      (∑ k ∈ Finset.Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
           (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) y) =
         Real.exp y * g y * Chebyshev.psi (Real.exp (-y)) := by
     intro y
     by_cases hy : y ∈ Icc (-A) 0
     · by_cases hy0 : y = 0
       · subst hy0
-        simp [hg0]
+        have hzero_ind : ∀ k ∈ Finset.Icc 1 K,
+            (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) 0 = 0 := by
+          intro k _
+          by_cases hk0 : 0 ∈ Iic (-Real.log (k : ℝ))
+          · rw [indicator_of_mem hk0, hg0, mul_zero]
+          · exact indicator_of_notMem hk0 _
+        rw [hg0, mul_zero, zero_mul]
+        exact Finset.sum_eq_zero fun k hk => by rw [hzero_ind k hk, mul_zero]
       · have hylt : y < 0 := lt_of_le_of_ne hy.2 hy0
-        have hsum_ind : (∑ k ∈ Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
+        have hsum_ind : (∑ k ∈ Finset.Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
               (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) y) =
-            Real.exp y * g y * ∑ k ∈ (Icc 1 K).filter (fun k : ℕ => y ≤ -Real.log (k : ℝ)),
+            Real.exp y * g y * ∑ k ∈ (Finset.Icc 1 K).filter (fun k : ℕ => y ≤ -Real.log (k : ℝ)),
               (ArithmeticFunction.vonMangoldt k : ℝ) := by
-          rw [mul_sum, sum_filter]
-          refine sum_congr rfl fun k _ => ?_
+          rw [Finset.mul_sum, Finset.sum_filter]
+          refine Finset.sum_congr rfl fun k _ => ?_
           by_cases hky : y ≤ -Real.log (k : ℝ)
           · rw [indicator_of_mem (mem_Iic.mpr hky), if_pos hky]; ring
-          · rw [indicator_of_notMem (fun hm => hky (mem_Iic.mp hm)), if_neg hky, mul_zero,
-              mul_zero]
+          · rw [indicator_of_notMem (fun hm => hky (mem_Iic.mp hm)), if_neg hky, mul_zero]
         rw [hsum_ind]
         congr 1
         unfold Chebyshev.psi
         congr 1
         ext k
-        simp only [mem_filter, mem_Icc, mem_Ioc]
+        simp only [Finset.mem_filter, Finset.mem_Icc, Finset.mem_Ioc]
         constructor
         · rintro ⟨⟨hk1, _⟩, hky⟩
           have hk0 : (0 : ℝ) < k := by exact_mod_cast hk1
@@ -280,21 +303,21 @@ private lemma finitePrimeTerminalMean_logProfile_eq {g : ℝ → ℝ} {A : ℝ}
             (hke.trans heA1).trans (Nat.le_ceil _)
           exact ⟨⟨hk1, by exact_mod_cast hkK_real⟩, by linarith⟩
     · simp only [hsupp y hy, mul_zero, zero_mul]
-      refine sum_eq_zero fun k _ => ?_
+      refine Finset.sum_eq_zero fun k _ => ?_
       by_cases hky : y ∈ Iic (-Real.log (k : ℝ))
       · rw [indicator_of_mem hky, hsupp y hy, mul_zero, mul_zero]
       · rw [indicator_of_notMem hky, mul_zero]
   have hint_psi : Integrable (fun y => Real.exp y * g y * Chebyshev.psi (Real.exp (-y))) :=
-    (integrable_finset_sum (Icc 1 K) hterm_int).congr (Eventually.of_forall hpt_sum)
+    (integrable_finsetSum (Finset.Icc 1 K) hterm_int).congr (Eventually.of_forall hpt_sum)
   refine ⟨?_, hint_psi⟩
   unfold finitePrimeTerminalMean
-  have hsum_rw : (∑ k ∈ Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
+  have hsum_rw : (∑ k ∈ Finset.Icc 1 K, (ArithmeticFunction.vonMangoldt k : ℝ) *
         ∫ x in (0 : ℝ)..(1 / (k : ℝ)), logProfile g x) =
-      ∑ k ∈ Icc 1 K, ∫ y, (ArithmeticFunction.vonMangoldt k : ℝ) *
+      ∑ k ∈ Finset.Icc 1 K, ∫ y, (ArithmeticFunction.vonMangoldt k : ℝ) *
         (Iic (-Real.log (k : ℝ))).indicator (fun y => Real.exp y * g y) y := by
-    refine sum_congr rfl fun k hk => ?_
-    rw [hk_eq k (mem_Icc.mp hk).1, integral_const_mul]
-  rw [hsum_rw, ← integral_finset_sum (Icc 1 K) hterm_int]
+    refine Finset.sum_congr rfl fun k hk => ?_
+    rw [hk_eq k (Finset.mem_Icc.mp hk).1, integral_const_mul]
+  rw [hsum_rw, ← integral_finsetSum (Finset.Icc 1 K) hterm_int]
   exact integral_congr_ae (Eventually.of_forall hpt_sum)
 
 /-- **Exact logarithmic-variable representation of `generalTerminalPolarSource`.**
@@ -321,11 +344,17 @@ theorem generalTerminalPolarSource_eq_integral_terminalPolarKernel {g : ℝ → 
     rw [hker_eq]
     exact (hintP.sub hintL).sub hintF
   refine ⟨?_, hintK⟩
+  have h_int_eq : ∫ y, g y * terminalPolarKernel y =
+      (∫ y, (g y - Real.exp y * g y * Real.log (1 - Real.exp (2 * y)) / 2)) -
+        Real.log (2 * Real.pi) * (∫ y, Real.exp y * g y) -
+        ∫ y, Real.exp y * g y * Chebyshev.psi (Real.exp (-y)) := by
+    have h1 := integral_sub (hintP.sub hintL) hintF
+    have h2 := integral_sub hintP hintL
+    have h3 := integral_const_mul (Real.log (2 * Real.pi)) (fun y => Real.exp y * g y)
+    dsimp only [Pi.sub_apply] at h1 h2
+    rw [hker_eq, h1, h2, h3]
   unfold generalTerminalPolarSource splineAtom
-  rw [hP, hL, hF, ← integral_const_mul (Real.log (2 * Real.pi)),
-    ← integral_sub hintP hintL, ← integral_sub (hintP.sub hintL) hintF]
-  congr 2
-  exact hker_eq.symm
+  rw [hP, hL, hF, ← h_int_eq]
 
 /-- Additivity of `generalTerminalPolarSource A` on `C²` tests supported in `[−A, 0]`. -/
 theorem generalTerminalPolarSource_add {g₁ g₂ : ℝ → ℝ} {A : ℝ} (hA : 0 ≤ A)
@@ -352,7 +381,7 @@ private lemma abs_terminalPolarKernel_le_nine {y : ℝ} (hy : y ≤ -2) :
   have he2y_le : Real.exp (2 * y) ≤ 1 / 2 := by
     have h4 : (2 : ℝ) ≤ Real.exp 4 := by linarith [Real.add_one_le_exp 4]
     have hle : Real.exp (2 * y) ≤ Real.exp (-4) := Real.exp_le_exp.mpr (by linarith)
-    rw [Real.exp_neg] at hle
+    rw [Real.exp_neg, ← one_div] at hle
     exact hle.trans (one_div_le_one_div_of_le (by norm_num) h4)
   have h1sub_pos : 0 < 1 - Real.exp (2 * y) := by linarith
   have hlog_le : |Real.log (1 - Real.exp (2 * y))| ≤ 1 := by
@@ -361,12 +390,12 @@ private lemma abs_terminalPolarKernel_le_nine {y : ℝ} (hy : y ≤ -2) :
       rw [div_le_iff₀ h1sub_pos]; linarith
     have hlog2 : Real.log (1 / (1 - Real.exp (2 * y))) ≤ 1 := by
       exact (Real.log_le_sub_one_of_pos (by positivity)).trans (by linarith)
-    rwa [Real.log_one_div h1sub_pos] at hlog2
+    rwa [one_div, Real.log_inv] at hlog2
   have hey_pos : 0 < Real.exp y := Real.exp_pos y
   have hey_le : Real.exp y ≤ 1 / 2 := by
     have h2 : (2 : ℝ) ≤ Real.exp 2 := by linarith [Real.add_one_le_exp 2]
     have hle : Real.exp y ≤ Real.exp (-2) := Real.exp_le_exp.mpr hy
-    rw [Real.exp_neg] at hle
+    rw [Real.exp_neg, ← one_div] at hle
     exact hle.trans (one_div_le_one_div_of_le (by norm_num) h2)
   have hlog2pi_pos : 0 ≤ Real.log (2 * Real.pi) :=
     Real.log_nonneg (by nlinarith [Real.pi_gt_three])
@@ -407,17 +436,13 @@ private lemma abs_terminalPolarKernel_le_nine {y : ℝ} (hy : y ≤ -2) :
       (1 : ℝ) + |Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2| +
         |Real.log (2 * Real.pi) * Real.exp y| +
         |Real.exp y * Chebyshev.psi (Real.exp (-y))| := by
-    calc _ ≤ |1 - Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2 -
-            Real.log (2 * Real.pi) * Real.exp y| +
-          |Real.exp y * Chebyshev.psi (Real.exp (-y))| := abs_sub _ _
-      _ ≤ |1 - Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2| +
-            |Real.log (2 * Real.pi) * Real.exp y| +
-          |Real.exp y * Chebyshev.psi (Real.exp (-y))| := add_le_add_right (abs_sub _ _) _
-      _ ≤ (|(1 : ℝ)| + |Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2|) +
-            |Real.log (2 * Real.pi) * Real.exp y| +
-          |Real.exp y * Chebyshev.psi (Real.exp (-y))| :=
-        add_le_add_right (add_le_add_right (abs_sub _ _) _) _
-      _ = _ := by norm_num [add_assoc]
+    have hs1 := abs_sub (1 - Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2 -
+      Real.log (2 * Real.pi) * Real.exp y) (Real.exp y * Chebyshev.psi (Real.exp (-y)))
+    have hs2 := abs_sub (1 - Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2)
+      (Real.log (2 * Real.pi) * Real.exp y)
+    have hs3 := abs_sub (1 : ℝ) (Real.exp y * Real.log (1 - Real.exp (2 * y)) / 2)
+    rw [abs_of_pos (by norm_num : (0 : ℝ) < 1)] at hs3
+    linarith
   linarith
 
 private lemma abs_halfMoment_sq_le_shifted_exponentialMass {F : ℝ → ℝ} {b : ℝ}
@@ -467,7 +492,7 @@ private lemma abs_halfMoment_sq_le_shifted_exponentialMass {F : ℝ → ℝ} {b 
         dsimp only [B]
         rw [indicator_of_notMem (fun hm => not_lt.mpr (mem_Iic.mp hm) hy), hFs y hy, abs_zero]
         norm_num
-    have hint := integral_nonneg hpt
+    have hint := integral_nonneg fun y => hpt y
     rw [integral_add ((iE.const_mul (t * t)).add (igq.const_mul (2 * t))) iB,
       integral_add (iE.const_mul (t * t)) (igq.const_mul (2 * t)),
       integral_const_mul, integral_const_mul] at hint
@@ -514,7 +539,8 @@ theorem sq_generalTerminalPolarSource_deep_le {g : ℝ → ℝ} {A b : ℝ} (hA 
           rw [mul_right_comm, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul]
         rw [hid, abs_mul, abs_of_pos (Real.exp_pos _)]
       rw [hgF]
-      nlinarith [abs_nonneg (F y), Real.exp_pos (-(y / 2))]
+      exact (mul_le_mul_of_nonneg_left hk9
+        (mul_nonneg (abs_nonneg (F y)) (Real.exp_pos _).le)).trans_eq (mul_comm _ _)
     · push Not at hy
       rw [hdeep y hy, hFs y hy, abs_zero, zero_mul, zero_mul, mul_zero]
   have habs : |∫ y, g y * terminalPolarKernel y| ≤ 9 * ∫ y, |F y| * Real.exp (-(y / 2)) := by
@@ -539,11 +565,12 @@ private lemma measurable_chebyshevPsi : Measurable Chebyshev.psi := by
     · have hf0 : ⌊x⌋₊ = 0 := Nat.floor_of_nonpos hx.le
       unfold Chebyshev.psi
       rw [hf0]
-      simp only [Ioc_self, sum_empty]
+      simp only [Finset.Ioc_self, Finset.sum_empty]
       exact Chebyshev.psi_nonneg y
     · unfold Chebyshev.psi
-      exact sum_le_sum_of_subset_of_nonneg
-        (fun n hn => mem_Ioc.mpr ⟨(mem_Ioc.mp hn).1, (mem_Ioc.mp hn).2.trans (Nat.floor_mono hxy)⟩)
+      exact Finset.sum_le_sum_of_subset_of_nonneg
+        (fun n hn => Finset.mem_Ioc.mpr
+          ⟨(Finset.mem_Ioc.mp hn).1, (Finset.mem_Ioc.mp hn).2.trans (Nat.floor_mono hxy)⟩)
         fun _ _ _ => ArithmeticFunction.vonMangoldt_nonneg
   exact hmono.measurable
 
@@ -554,12 +581,14 @@ private lemma measurable_ccmReciprocalMangoldtError : Measurable ccmReciprocalMa
     · have hf0 : ⌊x⌋₊ = 0 := Nat.floor_of_nonpos hx.le
       unfold ccmReciprocalMangoldtCumulative
       rw [hf0]
-      have hempty : Icc 2 0 = ∅ := by ext n; simp
-      rw [hempty, sum_empty]
-      exact sum_nonneg fun _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg _)
+      have hempty : Finset.Icc 2 0 = ∅ := by ext n; simp
+      rw [hempty, Finset.sum_empty]
+      exact Finset.sum_nonneg fun _ _ =>
+        div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg _)
     · unfold ccmReciprocalMangoldtCumulative
-      exact sum_le_sum_of_subset_of_nonneg
-        (fun n hn => mem_Icc.mpr ⟨(mem_Icc.mp hn).1, (mem_Icc.mp hn).2.trans (Nat.floor_mono hxy)⟩)
+      exact Finset.sum_le_sum_of_subset_of_nonneg
+        (fun n hn => Finset.mem_Icc.mpr
+          ⟨(Finset.mem_Icc.mp hn).1, (Finset.mem_Icc.mp hn).2.trans (Nat.floor_mono hxy)⟩)
         fun _ _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg _)
   unfold ccmReciprocalMangoldtError
   exact (hmono.measurable.comp Real.continuous_exp.measurable).sub measurable_id
@@ -601,7 +630,7 @@ private lemma fullZeroForm_eq_weilQuad_of_cont {F : ℝ → ℝ} (hF : Continuou
 
 private lemma abs_neg_mul_log_one_sub_exp_two_mul_le {s y : ℝ} (hs : 1 ≤ s) (hys : -s ≤ y)
     (hy0 : y < 0) :
-    (-y) * |Real.log (1 - Real.exp (2 * y))| ≤ (s + 1) ^ 2 + s + 1 := by
+    (-y) * |Real.log (1 - Real.exp (2 * y))| ≤ 2 * s ^ 2 + s + 1 := by
   set t : ℝ := -2 * y
   have ht_pos : 0 < t := by dsimp only [t]; linarith
   have ht_le : t ≤ 2 * s := by dsimp only [t]; linarith
@@ -623,16 +652,17 @@ private lemma abs_neg_mul_log_one_sub_exp_two_mul_le {s y : ℝ} (hs : 1 ≤ s) 
     linarith
   have hsq_pos : 0 < Real.sqrt t := Real.sqrt_pos.mpr ht_pos
   have hneg_log : -Real.log t ≤ 2 / Real.sqrt t := by
-    have hsq_eq : Real.sqrt t ^ 2 = t := Real.sq_sqrt ht_pos.le
-    have hl : -Real.log t = 2 * Real.log (1 / Real.sqrt t) := by
-      rw [Real.log_one_div hsq_pos, ← hsq_eq, Real.log_pow]; push_cast; ring
+    have hl_sqrt := Real.log_sqrt ht_pos.le
     have hsub := Real.log_le_sub_one_of_pos (one_div_pos.mpr hsq_pos)
+    rw [one_div, Real.log_inv] at hsub
+    rw [← one_div] at hsub
     linarith
   have ht_neg_log : t * (-Real.log t) ≤ t + 1 := by
     have hm := mul_le_mul_of_nonneg_left hneg_log ht_pos.le
     have hdiv : t * (2 / Real.sqrt t) = 2 * Real.sqrt t := by
-      conv_lhs => rw [← Real.sq_sqrt ht_pos.le]
-      field_simp [hsq_pos.ne']
+      calc t * (2 / Real.sqrt t) = Real.sqrt t ^ 2 * (2 / Real.sqrt t) := by
+            rw [Real.sq_sqrt ht_pos.le]
+        _ = 2 * Real.sqrt t := by field_simp [hsq_pos.ne']
     have hamgm : 2 * Real.sqrt t ≤ t + 1 := by
       nlinarith [sq_nonneg (Real.sqrt t - 1), Real.sq_sqrt ht_pos.le]
     linarith
@@ -640,8 +670,8 @@ private lemma abs_neg_mul_log_one_sub_exp_two_mul_le {s y : ℝ} (hs : 1 ≤ s) 
   have hrewrite : (-y) * (t - Real.log t) = (-y) * t + (t * (-Real.log t)) / 2 := by
     dsimp only [t]; ring
   rw [hrewrite] at hmul
-  have hyt : (-y) * t ≤ 2 * s ^ 2 / 2 := by dsimp only [t]; nlinarith
-  nlinarith
+  have hyt : (-y) * t ≤ 2 * s ^ 2 := by dsimp only [t]; nlinarith [hys, hy0, hs]
+  linarith
 
 private lemma abs_log_one_sub_le_two_mul {u : ℝ} (hu0 : 0 < u) (hu : u ≤ 1 / 2) :
     |Real.log (1 - u)| ≤ 2 * u := by
@@ -651,7 +681,7 @@ private lemma abs_log_one_sub_le_two_mul {u : ℝ} (hu0 : 0 < u) (hu : u ≤ 1 /
     rw [div_sub_one h1.ne', div_le_iff₀ h1]
     nlinarith
   have hlog := Real.log_le_sub_one_of_pos (one_div_pos.mpr h1)
-  rw [Real.log_one_div h1] at hlog
+  rw [one_div, Real.log_inv, ← one_div] at hlog
   linarith
 
 /-- **Pole-cross compression on `C²` half-aperture window tests.** Given a sharp bound at aperture
@@ -780,13 +810,12 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
               ccmReciprocalMangoldtError (s + x)| ≤
             max Bg 0 + ((Real.log 4 + 4) * Real.exp (2 * s) + Real.exp (2 * s)) +
               (Real.log 4 + 5) := by
-          calc _ ≤ |ccmGammaPolarBoundary (s - x) (s + x) -
-                (Chebyshev.psi (Real.exp (s - x)) - Real.exp (s - x))| +
-                |ccmReciprocalMangoldtError (s + x)| := abs_sub _ _
-            _ ≤ |ccmGammaPolarBoundary (s - x) (s + x)| +
-                |Chebyshev.psi (Real.exp (s - x)) - Real.exp (s - x)| +
-                |ccmReciprocalMangoldtError (s + x)| := add_le_add_right (abs_sub _ _) _
-            _ ≤ _ := by linarith
+          have hs1 := abs_sub (ccmGammaPolarBoundary (s - x) (s + x) -
+            (Chebyshev.psi (Real.exp (s - x)) - Real.exp (s - x)))
+            (ccmReciprocalMangoldtError (s + x))
+          have hs2 := abs_sub (ccmGammaPolarBoundary (s - x) (s + x))
+            (Chebyshev.psi (Real.exp (s - x)) - Real.exp (s - x))
+          linarith
         exact mul_le_mul hex1 hsum (abs_nonneg _) (Real.exp_pos s).le
       calc _ ≤ _ + _ := abs_add_le _ _
         _ ≤ BP := by dsimp only [BP]; linarith
@@ -846,7 +875,7 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
     rwa [hshift_eq] at hlim_ineq
   -- Step 2: dominated limit `δ_m = 1/(m + 5) → 0`
   set C_dom : ℝ :=
-    Real.exp s * ((L₁ : ℝ) * ((s + 1) ^ 2 + s + 1) + 4 * B₁ +
+    Real.exp s * ((L₁ : ℝ) * (2 * s ^ 2 + s + 1) + 4 * B₁ +
       ((Real.log 4 + 5) * Real.exp s + (Real.log 4 + 5)) * B₁) +
       (|Real.eulerMascheroniConstant| + |Real.log (2 * Real.pi)| + 1) * Real.exp s * B₁
   have hCdom0 : 0 ≤ C_dom := by
@@ -878,7 +907,7 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
         have he_tail1 : Real.exp (-(y + 2 * s)) ≤ 1 / 2 := by
           have h2 : (2 : ℝ) ≤ Real.exp 2 := by linarith [Real.add_one_le_exp 2]
           have hle : Real.exp (-(y + 2 * s)) ≤ Real.exp (-2) := Real.exp_le_exp.mpr (by linarith)
-          rw [Real.exp_neg] at hle
+          rw [Real.exp_neg, ← one_div] at hle
           exact hle.trans (one_div_le_one_div_of_le (by norm_num) h2)
         have he_tail2 : Real.exp (-(2 * (y + 2 * s))) ≤ 1 / 2 := by
           exact (Real.exp_le_exp.mpr (by linarith)).trans he_tail1
@@ -894,7 +923,7 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
           rw [h1, h2]
           ring
         have hlog_sing : |-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ)| ≤
-            (L₁ : ℝ) * ((s + 1) ^ 2 + s + 1) := by
+            (L₁ : ℝ) * (2 * s ^ 2 + s + 1) := by
           rw [abs_mul, abs_mul, abs_neg, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
           have h1 := mul_le_mul_of_nonneg_left hH_lip
             (mul_nonneg (by norm_num : (0 : ℝ) ≤ 1 / 2) (abs_nonneg _))
@@ -965,7 +994,7 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
                   (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ) -
                 (Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ) -
                 ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ))| ≤
-            Real.exp s * ((L₁ : ℝ) * ((s + 1) ^ 2 + s + 1) + 4 * B₁ +
+            Real.exp s * ((L₁ : ℝ) * (2 * s ^ 2 + s + 1) + 4 * B₁ +
               ((Real.log 4 + 5) * Real.exp s + (Real.log 4 + 5)) * B₁) := by
           rw [abs_mul, abs_of_pos (Real.exp_pos _)]
           have hinner : |-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ) +
@@ -973,26 +1002,24 @@ theorem sq_poleCross_windowTest_le {s C_pole : ℝ} (hs : 6 ≤ s) (hCp : 0 ≤ 
                   (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ) -
                 (Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ) -
                 ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ)| ≤
-              (L₁ : ℝ) * ((s + 1) ^ 2 + s + 1) + 4 * B₁ +
+              (L₁ : ℝ) * (2 * s ^ 2 + s + 1) + 4 * B₁ +
                 ((Real.log 4 + 5) * Real.exp s + (Real.log 4 + 5)) * B₁ := by
-            calc _ ≤ |-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ) +
-                  (-Real.log (1 - Real.exp (-(y + 2 * s))) +
-                    (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ) -
-                  (Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ)| +
-                  |ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ)| := abs_sub _ _
-              _ ≤ |-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ) +
-                  (-Real.log (1 - Real.exp (-(y + 2 * s))) +
-                    (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ)| +
-                  |(Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ)| +
-                  |ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ)| :=
-                add_le_add_right (abs_sub _ _) _
-              _ ≤ |-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ)| +
-                  |(-Real.log (1 - Real.exp (-(y + 2 * s))) +
-                    (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ)| +
-                  |(Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ)| +
-                  |ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ)| :=
-                add_le_add_right (add_le_add_right (abs_add_le _ _) _) _
-              _ ≤ _ := by linarith
+            have hs1 := abs_sub
+              (-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ) +
+                (-Real.log (1 - Real.exp (-(y + 2 * s))) +
+                  (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ) -
+                (Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ))
+              (ccmReciprocalMangoldtError (s + (y + s)) * H₁ (y + δ))
+            have hs2 := abs_sub
+              (-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ) +
+                (-Real.log (1 - Real.exp (-(y + 2 * s))) +
+                  (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ))
+              ((Chebyshev.psi (Real.exp (s - (y + s))) - Real.exp (s - (y + s))) * H₁ (y + δ))
+            have hs3 := abs_add_le
+              (-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) * H₁ (y + δ))
+              ((-Real.log (1 - Real.exp (-(y + 2 * s))) +
+                (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))) * H₁ (y + δ))
+            linarith
           exact mul_le_mul hexp_p hinner (abs_nonneg _) (Real.exp_pos s).le
         have hsecond : |(-Real.eulerMascheroniConstant - Real.log (2 * Real.pi)) *
               Real.exp ((y + s) / 2) * H₁ (y + δ) -
@@ -1091,9 +1118,10 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
   set H₁ := halfWeight h₁
   have hh₁0 : h₁ 0 = 0 := vanish_zero_of_window_support hh₁.continuous hsuppA
   have hh₁_left : h₁ (-(s / 2)) = 0 := by
+    have h0_seq : Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
     have ht : Tendsto (fun n : ℕ => -(s / 2) - 1 / ((n : ℝ) + 1)) atTop (𝓝 (-(s / 2))) := by
-      simpa only [sub_zero] using
-        tendsto_const_nhds.sub tendsto_one_div_add_atTop_nhds_zero_nat
+      simpa only [sub_zero] using (tendsto_const_nhds (x := -(s / 2))).sub h0_seq
     have h0 : Tendsto (fun n : ℕ => h₁ (-(s / 2) - 1 / ((n : ℝ) + 1))) atTop (𝓝 0) :=
       tendsto_const_nhds.congr fun n =>
         (hsupps _ fun hm => by
@@ -1140,8 +1168,11 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
               (reciprocalMangoldtError (y + 2 * s) + Real.eulerMascheroniConstant)) +
             Real.exp (-2 * s) * Real.exp (-(y / 2)) * H₁ y := by
         unfold terminalPolarKernel poleCrossProfile ccmGammaPolarBoundary
+        have hexp0 : Real.exp y * Real.exp (-y) = 1 := by
+          rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
         rw [hsy1, hsy2, hmert_eq, show -(2 * -y) = 2 * y by ring, hH_inv]
         linear_combination
+          -(Real.exp (-(y / 2)) * H₁ y) * hexp0 +
           (-Real.log (1 - Real.exp (2 * y)) / 2 - Real.log (2 * Real.pi) -
               Chebyshev.psi (Real.exp (-y)) + Real.exp (-y)) * hexp1 +
             (-(H₁ y * (-(1 / 2 : ℝ) * Real.log (1 - Real.exp (2 * y)) -
@@ -1157,7 +1188,7 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
       have he_t1 : Real.exp (-(y + 2 * s)) ≤ 1 / 2 := by
         have h2 : (2 : ℝ) ≤ Real.exp 2 := by linarith [Real.add_one_le_exp 2]
         have hle : Real.exp (-(y + 2 * s)) ≤ Real.exp (-2) := Real.exp_le_exp.mpr (by linarith)
-        rw [Real.exp_neg] at hle
+        rw [Real.exp_neg, ← one_div] at hle
         exact hle.trans (one_div_le_one_div_of_le (by norm_num) h2)
       have he_t2 : Real.exp (-(2 * (y + 2 * s))) ≤ 1 / 2 :=
         (Real.exp_le_exp.mpr (by linarith)).trans he_t1
@@ -1182,14 +1213,14 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
             (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s)))) +
             (reciprocalMangoldtError (y + 2 * s) + Real.eulerMascheroniConstant)| ≤
           (C_pr + 3) * Real.exp (-3 * s / 16) := by
-        calc _ ≤ |Real.log (1 - Real.exp (-(y + 2 * s))) -
-              (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))| +
-              |reciprocalMangoldtError (y + 2 * s) + Real.eulerMascheroniConstant| := abs_add_le _ _
-          _ ≤ |Real.log (1 - Real.exp (-(y + 2 * s)))| +
-              |(1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s))))| +
-              |reciprocalMangoldtError (y + 2 * s) + Real.eulerMascheroniConstant| :=
-            add_le_add_right (abs_sub _ _) _
-          _ ≤ _ := by linarith
+        have hs1 := abs_add_le
+          (Real.log (1 - Real.exp (-(y + 2 * s))) -
+            (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s)))))
+          (reciprocalMangoldtError (y + 2 * s) + Real.eulerMascheroniConstant)
+        have hs2 := abs_sub
+          (Real.log (1 - Real.exp (-(y + 2 * s))))
+          ((1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s)))))
+        linarith
       calc _ ≤ |Real.exp (y / 2) * H₁ y *
               (Real.log (1 - Real.exp (-(y + 2 * s))) -
                 (1 / 2 : ℝ) * Real.log (1 - Real.exp (-(2 * (y + 2 * s)))) +
@@ -1219,7 +1250,7 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
             · exact absurd ⟨hgt1, hlt2⟩ hyI
         · exact hsupps y hyc
       have hH0_out : H₁ y = 0 := by simp only [H₁, halfWeight, hh0_out, mul_zero]
-      simp [hh0_out, hH0_out, hCpr]
+      simp [hh0_out, hH0_out]
   have habs : |∫ y, (h₁ y * terminalPolarKernel y -
         Real.exp (-(s / 2)) *
           ((centralInterval s).indicator (poleCrossProfile s) (y + s) * H₁ y))| ≤
@@ -1233,11 +1264,8 @@ theorem sq_top_polarSource_sub_poleCross_le {A s C_pr : ℝ} (hA : 0 ≤ A) (hs 
           ((centralInterval s).indicator (poleCrossProfile s) (y + s) * H₁ y))) ^ 2 ≤
       (C_pr + 4) ^ 2 * Real.exp (-3 * s / 8) * (∫ y, |H₁ y| * Real.exp (-(y / 2))) ^ 2 := by
     have hp := pow_le_pow_left₀ (abs_nonneg _) habs 2
-    rw [sq_abs] at hp
-    have hexp_sq : ((C_pr + 4) * Real.exp (-3 * s / 16)) ^ 2 =
-        (C_pr + 4) ^ 2 * Real.exp (-3 * s / 8) := by
-      rw [mul_pow, sq, ← Real.exp_add, show -3 * s / 16 + -3 * s / 16 = -3 * s / 8 by ring]
-    linarith [hp, hexp_sq]
+    rwa [sq_abs, mul_pow, mul_pow, sq (Real.exp _), ← Real.exp_add,
+      show -3 * s / 16 + -3 * s / 16 = -3 * s / 8 by ring] at hp
   have hm0 := abs_halfMoment_sq_le_shifted_exponentialMass hH₁ hH₁c le_rfl
     (fun y hy => hH₁_pos y (by linarith))
   rw [mul_zero, Real.exp_zero, one_mul] at hm0
@@ -1393,7 +1421,8 @@ theorem exists_polarPaymentAt_exp_of_le_onsetAperture :
       unfold exponentialMass
       have hint1 : Integrable fun y => Real.exp (-(8 * y)) * halfWeight h₁ y ^ 2 := by
         have hc1 : HasCompactSupport (fun y => halfWeight h₁ y ^ 2) :=
-          ((HasCompactSupport.intro isCompact_Icc hsupp₁A).mul_left).comp_left (sq_eq_zero_iff.mpr)
+          ((HasCompactSupport.intro isCompact_Icc hsupp₁A).mul_left).comp_left
+            (by norm_num : (0 : ℝ) ^ 2 = 0)
         exact ((by fun_prop : Continuous fun y => Real.exp (-(8 * y))).mul
           (((Real.continuous_exp.comp (continuous_id.div_const 2)).mul hh₁.continuous).pow 2)).integrable_of_hasCompactSupport hc1.mul_left
       refine integral_mono hint1 hH2_int fun y => ?_
@@ -1407,7 +1436,8 @@ theorem exists_polarPaymentAt_exp_of_le_onsetAperture :
       unfold exponentialMass
       have hint2 : Integrable fun y => Real.exp (-(8 * y)) * halfWeight h₂ y ^ 2 := by
         have hc2 : HasCompactSupport (fun y => halfWeight h₂ y ^ 2) :=
-          ((HasCompactSupport.intro isCompact_Icc hsupp₂A).mul_left).comp_left (sq_eq_zero_iff.mpr)
+          ((HasCompactSupport.intro isCompact_Icc hsupp₂A).mul_left).comp_left
+            (by norm_num : (0 : ℝ) ^ 2 = 0)
         exact ((by fun_prop : Continuous fun y => Real.exp (-(8 * y))).mul
           (((Real.continuous_exp.comp (continuous_id.div_const 2)).mul hh₂.continuous).pow 2)).integrable_of_hasCompactSupport hc2.mul_left
       refine integral_mono hint2 hH2_int fun y => ?_

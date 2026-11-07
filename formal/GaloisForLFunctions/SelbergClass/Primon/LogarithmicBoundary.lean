@@ -1,3 +1,4 @@
+import Mathlib.NumberTheory.SumPrimeReciprocals
 import GaloisForLFunctions.RHTower.PrimeZetaLogAsymptotic
 import GaloisForLFunctions.SelbergClass.Primon.ThermalLocalFactor
 
@@ -5,8 +6,8 @@ import GaloisForLFunctions.SelbergClass.Primon.ThermalLocalFactor
 # The logarithmic boundary of the averaged primon gas
 
 The half-temperature singularity in Hartnoll–Yang, arXiv:2502.02661v2, (96),
-follows with an explicit finite part. Subtracting the first prime-power term leaves a uniformly summable remainder
-at the boundary. The prime-zeta asymptotic therefore gives the precise
+follows with an explicit finite part. Subtracting the first prime-power term
+leaves a uniformly summable remainder at the boundary. The prime-zeta asymptotic therefore gives the precise
 renormalized limit of the logarithmic local averages.
 -/
 
@@ -102,6 +103,18 @@ theorem summable_primeLogRemainder (v : ℝ) :
     Summable (fun p : Nat.Primes => primeLogRemainder p (1 + |v|)) :=
   summable_remainder (by have := abs_nonneg v; linarith)
 
+/-- At inverse temperature `1/2`, the original logarithmic prime series diverges. -/
+theorem not_summable_primeMeanLog_boundary :
+    ¬ Summable (fun p : Nat.Primes => primeMeanLog p 1) := by
+  intro h
+  have hs := ((summable_remainder (u := 1) le_rfl).sub h).mul_right 2
+  apply Nat.Primes.not_summable_one_div
+  refine hs.congr ?_
+  intro p
+  change (primeLogRemainder p 1 - primeMeanLog p 1) * 2 = 1 / (p : ℝ)
+  rw [primeLogRemainder, Real.rpow_neg_one]
+  ring
+
 private theorem continuousAt_remainder (p : Nat.Primes) :
     ContinuousAt (primeLogRemainder p) 1 := by
   have hp : (0 : ℝ) < (p : ℝ) := by exact_mod_cast p.property.pos
@@ -147,9 +160,8 @@ private theorem partition_decomposition {u : ℝ} (hu : 1 < u) :
       ∑' p : Nat.Primes, primeLogRemainder p u := by
   change meanLogPartition u + RHTower.primeZeta u / 2 =
     ∑' p : Nat.Primes, (primeMeanLog p u + (p : ℝ) ^ (-u) / 2)
-  rw [tsum_add (summable_mean hu)
-    ((RHTower.summable_primeZetaTerm hu).div_const 2), tsum_div_const]
-  rfl
+  exact ((summable_mean hu).hasSum.add
+    ((RHTower.summable_primeZetaTerm hu).hasSum.div_const 2)).tsum_eq.symm
 
 /-- The full averaged logarithm has a half-logarithmic singularity and an explicit finite part. -/
 theorem tendsto_meanLogPartition_sub_half_log :

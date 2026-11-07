@@ -13,7 +13,9 @@
 
 Fix `φ = tiltedUnitSpline`, `I₂ = ∫ φ²`, `R > 0`, and `c_N ≥ 1` with `c_N^8 / log N → R`. Put `L = log N`, `D = linearDefectCutoff c_N`, `M = N / D`, `Q₁ = ⌊L^{13/32}⌋₊`, `θ = 1 / (1 + log L)^5`, `R₁ = ⌊N^θ⌋₊`, `B_N = completeWeilMatrix φ c_N N`, `U_x = normalizedCentredAtomicTest φ x c_N N`, and `weilBilin F G = (weilQuad (F + G) - weilQuad (F - G)) / 4`. By linearity of `x ↦ U_x` and `completeWeilMatrix_inner_eq_weilQuad`, `weilQuad U_x = (I₂ / c_N) ⟨B_N x, x⟩` and `weilBilin U_x U_y = (I₂ / c_N) ⟨B_N x, y⟩`.
 
-### Theorem 0 (Sharp Two-Sided Prefix–Collar Schur Decoupling) `[PROVED HERE]`
+### Theorem 0 (Sharp Two-Sided Prefix–Collar Schur Decoupling) `[FORMALIZED: PrefixCollarSchurObstructionAndFarDecoupling]`
+
+Formalized unconditionally in `CriticalArithmeticCorrelationTheory.PrefixCollarSchurObstructionAndFarDecoupling`: (a) `tendsto_prime_quasimode_prefix_collar_schur_ratio`, `not_naive_physical_prefix_collar_schur_decoupling`; (b) `exists_far_prefix_collar_schur_decoupling_below_ratio`, `exists_far_prefix_collar_schur_decoupling`. Combined with the finite-conductor collar reduction and the `m = 1` polar retention law in `CriticalArithmeticCorrelationTheory.FiniteConductorCollarReductionAndPolarDecoupling.complete_prefix_and_low_packet_collar_resolution`.
 
 **(a) `4 / 13` physical-tearing obstruction on `(conductorSubspace Q₁ N)ᗮ`.** Let `q_N` be the least prime `> Q₁`; by Bertrand's postulate (`Nat.exists_prime_lt_and_le_two_mul`), `Q₁ < q_N ≤ 2 Q₁`, so `log q_N = (13/32) log L + O(1)` and `q_N / c_N → ∞`. Set `v = normalizedRamanujanHorizonVector q_N N` and `z_N = P_{(V_{Q_1})ᗮ} v`. Since `q_N > Q₁`, for every `1 ≤ m ≤ Q₁`, `gcd(q_N, m) = 1` and `|⟨v, v_m⟩| = O(√(q_N m) / L)`, whence `‖z_N - v‖ = O(Q₁^2 / L) = O(L^{-3/16})` and replacing `v` by `z_N` changes `⟨B_N ·, ·⟩` on `z_N, p_N, y_N` by `O(c_N Q₁^4 / L^2) = o(1 / c_N)`. Because `D = linearDefectCutoff c_N = ⌈max 3 (256 e^2 c_N)⌉₊`, `log D = log c_N + O(1) = (1/8) log L + O_R(1)` and `c'_M := c_N M / N = (1 / (256 e^2)) + o(1) < 1`. For `v` (`c_{q_N}(n) = q_N - 1` on `q_N ∣ n` and `-1` otherwise):
 1. Consecutive multiples of `q_N` in `[1, N]` have log-spacing `≥ q_N / N > c_N / N`, so the `q_N ∣ n` spike component has pairwise disjoint atoms across all of `[1, N]` and is a `+log q_N` translate of the unit horizon vector at `N / q_N`, while the `-1` background has mass `O(1 / q_N)` and energy `O_R((log c_N) / q_N) = o(1)`.
@@ -54,6 +56,8 @@ Assume `a ≥ 2` and `ZetaWindowPositive a` (`0 ≤ weilQuad G` for `IsWindowTes
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
 - [ ] 2 → 3  formalized: Lean theorems compiled and axiom-audited
+  - Lean: Theorems 0, 1 and 2(a) (`NegativeDirectionsCannotEscapeLogarithmicWindows.exists_completeWeilEnergy_floor_of_vanish_top_log_window`); the threshold chain and every `= ⊤ ↔ RiemannHypothesis` / `onsetAperture` equivalence of Theorem 4 (`TheCriticalPositivityThresholdLaw`, `PolarPaymentThresholdHierarchy.criticalThreshold_hierarchy`); the `m > m₀` low-packet coupling of Theorem 2(b) step 2 (`exists_above_cutoff_subquarter_packet_collar_schur_below_ratio`).
+  - Not in Lean: all-space window-localized Gårding (Theorem 2(b) on `EuclideanSpace ℝ (PrimeHorizonIndex N)`, incl. the `2 ≤ m ≤ m₀(R)` periodicity step); `log R_c^⊥(ζ) ≥ (13/4) a*(ζ) - C₀'` and `log R_c(ζ) ≥ (1/4) a*(ζ) - C₀` (Lean has only `log R_c^{high}(ζ) ≥ 6 a*(ζ) + log c` via `log_highConductorCriticalThreshold_ge_six_mul_onsetAperture`); Theorem 3 in its `ZetaWindowPositive a` form (Lean: `iInf_windowThreshold_ge_exp_six_mul_of_le_onsetAperture`).
 
 ## Log
 - 2026-11-07 — updated with sharp two-sided prefix–collar Schur resolution (4/13 physical-tearing obstruction + far-prefix o(1) decoupling) and complete dependency-closed proofs of Theorems 0–4
