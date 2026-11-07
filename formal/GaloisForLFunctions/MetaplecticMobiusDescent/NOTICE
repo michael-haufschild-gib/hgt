@@ -243,3 +243,14 @@ from MeanSquare/UnitRows.lean. Density of the locally constructed energy
 core identifies the coordinate equation with the actual operator graph.
 HyperbolicAxisLaplacian adapts affine axis differentiation from OpenAI
 MeanSquare/UnitRows.lean and the axis expression from Eisenstein/SmoothSummands.lean.
+HyperbolicLogarithmicHeight adapts quadratic height calculus from OpenAI
+CubicSieve/TwistedProfiles.lean, QuadraticSieve/SpatialDerivatives.lean, and
+Eisenstein/SmoothCuspCutoffs.lean. Its actual row-height identity uses the
+locally proved upper triangular row-energy formula.
+HyperbolicHeightProfiles adapts logarithmic profile differentiation and
+finite axis sums from OpenAI Eisenstein/SmoothCuspCutoffs.lean. The local
+proof uses the actual row-height identity and the local axis calculus.
+TheCubicCuspBarrier adapts the invariant cusp construction and compact
+defect from OpenAI Eisenstein/CuspHeight.lean, and smooth transitions from
+Eisenstein/SmoothCuspCutoffs.lean. Its local finiteness input is the local
+bounded-row theorem; the chart reconstruction is from SmoothTests.lean.

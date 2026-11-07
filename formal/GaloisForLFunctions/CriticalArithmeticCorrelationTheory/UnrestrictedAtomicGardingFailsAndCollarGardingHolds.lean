@@ -34,6 +34,7 @@ open SpacingScaleHarmonicAnalysis ArithmeticLorentzianGeometry
   RenormalizedArithmeticPotentialTheory CompletedArithmeticForms
   CriticalScaleArithmeticRigidity ArithmeticElectrostatics
   ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
+  ArithmeticPositivityTheory
 
 /-! ### 1. Homogeneity and exponential absorption of the prime and pole forms -/
 
@@ -112,13 +113,15 @@ theorem primeSum_comp_add_right (H : ℝ → ℝ) (w : ℝ) :
     have heq : (fun y => H (y + w) * H (y - Real.log n + w)) =
         fun y => (fun u => H u * H (u - Real.log n)) (y + w) :=
       funext fun y => by dsimp only; congr 2; ring
-    rw [heq, integral_add_right_eq_self]
+    rw [heq]
+    exact integral_add_right_eq_self (fun u => H u * H (u - Real.log n)) w
   have h2 : (∫ y, H (y + w) * H (y + Real.log n + w)) =
       ∫ y, H y * H (y + Real.log n) := by
     have heq : (fun y => H (y + w) * H (y + Real.log n + w)) =
         fun y => (fun u => H u * H (u + Real.log n)) (y + w) :=
       funext fun y => by dsimp only; congr 2; ring
-    rw [heq, integral_add_right_eq_self]
+    rw [heq]
+    exact integral_add_right_eq_self (fun u => H u * H (u + Real.log n)) w
   rw [h1, h2]
 
 /-- Any compactly supported continuous source vanishing above `1` has its prime form absorbed by
@@ -240,8 +243,9 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
             ring_nf
     · push Not at hu0
       have hind : Φ u = 1 / 6 := by
+        have hnot : u ∉ Set.Iic (0 : ℝ) := fun h => not_le.mpr hu0 (Set.mem_Iic.mp h)
         dsimp only [Φ]
-        rw [Set.indicator_of_notMem (fun h => not_le.mpr hu0 h),
+        rw [Set.indicator_of_notMem hnot,
           Set.indicator_of_mem (Set.mem_Ioc.mpr ⟨hu0, hu1⟩), zero_add]
       rw [hind]
       have hsinh1 : Real.sinh (u / 2) ^ 2 ≤ 1 := by
@@ -259,6 +263,7 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
   have hi_Iic : Integrable ((Set.Iic (0 : ℝ)).indicator (fun v => (1 / 2 : ℝ) * Real.exp (3 * v))) := by
     have hneg : IntegrableOn (fun v : ℝ => (1 / 2 : ℝ) * Real.exp (-(3 * v))) (Set.Ioi 0) := by
       have h1 := integrableOn_exp_mul_Ioi (by norm_num : -(3 : ℝ) < 0) 0
+      change Integrable _ _
       simpa only [neg_mul] using h1.const_mul (1 / 2 : ℝ)
     have hcomp : Integrable (fun v : ℝ =>
         (Set.Ioi (0 : ℝ)).indicator (fun x => (1 / 2 : ℝ) * Real.exp (-(3 * x))) (-v)) :=
@@ -286,8 +291,9 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
         1 / 6 := by
       have heq : (∫ u, (Set.Iic (0 : ℝ)).indicator (fun v => (1 / 2 : ℝ) * Real.exp (3 * v)) u) =
           ∫ v in Set.Ioi (0 : ℝ), (1 / 2 : ℝ) * Real.exp (-(3 : ℝ) * v) := by
-        rw [← Measure.integral_comp_neg (fun u =>
-          (Set.Iic (0 : ℝ)).indicator (fun v => (1 / 2 : ℝ) * Real.exp (3 * v)) u)]
+        rw [← (Measure.measurePreserving_neg (volume : Measure ℝ)).integral_comp
+          (MeasurableEquiv.neg ℝ).measurableEmbedding
+          (fun u => (Set.Iic (0 : ℝ)).indicator (fun v => (1 / 2 : ℝ) * Real.exp (3 * v)) u)]
         have hae : (fun v : ℝ =>
             (Set.Iic (0 : ℝ)).indicator (fun x => (1 / 2 : ℝ) * Real.exp (3 * x)) (-v)) =ᵐ[volume]
             (Set.Ioi (0 : ℝ)).indicator (fun v => (1 / 2 : ℝ) * Real.exp (-(3 : ℝ) * v)) := by
@@ -343,7 +349,8 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
               Real.sinh (u / 2) ^ 2 / W u := by
           have h1 : Real.sqrt (W u) ^ 2 = W u := Real.sq_sqrt hw0.le
           field_simp [hsw]
-          nlinarith only [h1]
+          rw [h1]
+          ring
         linarith only [hsq, hexp_sq, hΦ_bound u hu1]
       · push Not at hu1
         have hUu : U u = 0 := hs u hu1
@@ -358,8 +365,9 @@ theorem exists_two_mul_sinhHalfMoment_sq_le_exponential_mass {ε : ℝ} (hε : 0
     rw [integral_lin3 hiUW hiUS hiΦ (t * t) (2 * t)] at hint_nn
     change 0 ≤ (t * t) * A + 2 * t * sinhHalfMoment U + ∫ u, Φ u at hint_nn
     linarith
-  have hcs := abs_le_sqrt_mul_sqrt_of_quadratic_nonneg hA0 fun t =>
+  have hquad' : ∀ t : ℝ, 0 ≤ A * (t * t) + 2 * sinhHalfMoment U * t + 1 / 2 := fun t =>
     (hquad t).trans (by linarith only [hint_Φ])
+  have hcs := abs_le_sqrt_mul_sqrt_of_quadratic_nonneg hA0 hquad'
   have hsq := pow_le_pow_left₀ (abs_nonneg _) hcs 2
   rw [sq_abs, mul_pow, Real.sq_sqrt hA0, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 1 / 2)] at hsq
   have hA_eq : A = (ε / 2) * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) + B₀ * ∫ u, U u ^ 2 := by
@@ -390,8 +398,8 @@ theorem primeHorizonExtension_deepPoleOrthogonalVector {N : ℕ} (hN : 2 ≤ N) 
   · exact primeHorizonExtension_coe (horizonProfileVector deepPoleOrthogonalCoeffs N) ⟨n, hn⟩
   · have hnot1 : n ≠ 1 := fun h => hn (by subst h; exact mem_Icc.mpr ⟨le_rfl, by omega⟩)
     have hnot2 : n ≠ 2 := fun h => hn (by subst h; exact mem_Icc.mpr ⟨by omega, hN⟩)
-    rw [primeHorizonExtension_eq_zero_of_not_mem _ hn]
-    simp only [deepPoleOrthogonalCoeffs, if_neg hnot1, if_neg hnot2]
+    simp only [primeHorizonExtension, hn, ↓reduceDIte, deepPoleOrthogonalCoeffs,
+      if_neg hnot1, if_neg hnot2]
 
 theorem norm_deepPoleOrthogonalVector {N : ℕ} (hN : 2 ≤ N) :
     ‖deepPoleOrthogonalVector N‖ = 1 := by
@@ -416,47 +424,55 @@ theorem norm_deepPoleOrthogonalVector {N : ℕ} (hN : 2 ≤ N) :
 
 theorem deepPoleOrthogonalVector_mem_orthogonal {N : ℕ} (hN : 2 ≤ N) :
     deepPoleOrthogonalVector N ∈ (conductorSubspace 1 N)ᗮ := by
-  rw [conductorSubspace, Submodule.mem_orthogonal_span]
-  rintro _ ⟨⟨m, hm⟩, rfl⟩
-  have hm1 : m = 1 := by
-    have := mem_Icc.mp hm
-    omega
-  subst hm1
-  change ⟪normalizedRamanujanHorizonVector 1 N, deepPoleOrthogonalVector N⟫ = 0
-  have hpack : normalizedRamanujanHorizonVector 1 N =
-      (Real.sqrt (Real.log N))⁻¹ • horizonProfileVector (fun n => 1 / Real.sqrt n) N := by
-    have hp := normalizedRamanujanPacketVector_eq_smul_profile (Icc 1 1) (fun _ => (1 : ℝ)) N
-    simp only [normalizedRamanujanPacketVector, Icc_self, sum_singleton, one_smul] at hp
-    rw [hp]
-    congr 1
-    ext n
-    simp only [horizonProfileVector, ramanujanPacketProfile, sum_singleton, one_mul,
-      ramanujanPoleProfile, normalizedRamanujanMode_one]
-  rw [hpack, real_inner_smul_left]
-  suffices h0 : ⟪horizonProfileVector (fun n => 1 / Real.sqrt n) N,
-      deepPoleOrthogonalVector N⟫ = 0 by
-    rw [h0, mul_zero]
-  rw [EuclideanSpace.inner_eq_star_dotProduct]
-  change (∑ i : PrimeHorizonIndex N,
-      deepPoleOrthogonalCoeffs i.1 * (1 / Real.sqrt i.1)) = 0
-  rw [sum_coe_sort (Icc 1 N) (fun n => deepPoleOrthogonalCoeffs n * (1 / Real.sqrt n))]
-  have hsub : ({1, 2} : Finset ℕ) ⊆ Icc 1 N := by
-    intro n hn
-    simp only [mem_insert, mem_singleton] at hn
-    rcases hn with rfl | rfl
-    · exact mem_Icc.mpr ⟨le_rfl, by omega⟩
-    · exact mem_Icc.mpr ⟨by omega, hN⟩
-  rw [← sum_subset hsub fun n _ hnot => by
-    simp only [mem_insert, mem_singleton, not_or] at hnot
-    simp only [deepPoleOrthogonalCoeffs, if_neg hnot.1, if_neg hnot.2, zero_mul]]
-  rw [sum_pair (by decide : (1 : ℕ) ≠ 2)]
-  simp only [deepPoleOrthogonalCoeffs, ↓reduceIte, Nat.ofNat_ne_one, Nat.cast_one, Real.sqrt_one,
-    div_one, mul_one, Nat.cast_ofNat]
-  have hsqrt : Real.sqrt (2 / 3 : ℝ) * (1 / Real.sqrt 2) = 1 / Real.sqrt 3 := by
-    rw [Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 2)]
-    field_simp [(Real.sqrt_pos.mpr zero_lt_two).ne',
-      (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 3)).ne']
-  linarith only [hsqrt]
+  have horth1 : ⟪normalizedRamanujanHorizonVector 1 N, deepPoleOrthogonalVector N⟫ = 0 := by
+    have hpack : normalizedRamanujanHorizonVector 1 N =
+        (Real.sqrt (Real.log N))⁻¹ • horizonProfileVector (fun n => 1 / Real.sqrt n) N := by
+      have hp := normalizedRamanujanPacketVector_eq_smul_profile (Icc 1 1) (fun _ => (1 : ℝ)) N
+      simp only [normalizedRamanujanPacketVector, Icc_self, sum_singleton, one_smul] at hp
+      rw [hp]
+      congr 1
+      ext n
+      simp only [horizonProfileVector, ramanujanPacketProfile, sum_singleton, one_mul,
+        ramanujanPoleProfile, normalizedRamanujanMode_one]
+    rw [hpack, real_inner_smul_left]
+    suffices h0 : ⟪horizonProfileVector (fun n => 1 / Real.sqrt n) N,
+        deepPoleOrthogonalVector N⟫ = 0 by
+      rw [h0, mul_zero]
+    rw [EuclideanSpace.inner_eq_star_dotProduct]
+    change (∑ i : PrimeHorizonIndex N,
+        deepPoleOrthogonalCoeffs i.1 * (1 / Real.sqrt i.1)) = 0
+    rw [sum_coe_sort (Icc 1 N) (fun n => deepPoleOrthogonalCoeffs n * (1 / Real.sqrt n))]
+    have hsub : ({1, 2} : Finset ℕ) ⊆ Icc 1 N := by
+      intro n hn
+      simp only [mem_insert, mem_singleton] at hn
+      rcases hn with rfl | rfl
+      · exact mem_Icc.mpr ⟨le_rfl, by omega⟩
+      · exact mem_Icc.mpr ⟨by omega, hN⟩
+    rw [← sum_subset hsub fun n _ hnot => by
+      simp only [mem_insert, mem_singleton, not_or] at hnot
+      simp only [deepPoleOrthogonalCoeffs, if_neg hnot.1, if_neg hnot.2, zero_mul]]
+    rw [sum_pair (by decide : (1 : ℕ) ≠ 2)]
+    simp only [deepPoleOrthogonalCoeffs, ↓reduceIte, if_neg (show (2 : ℕ) ≠ 1 by decide),
+      Nat.cast_one, Real.sqrt_one, div_one, mul_one, Nat.cast_ofNat]
+    have hsqrt : Real.sqrt (2 / 3 : ℝ) * (1 / Real.sqrt 2) = 1 / Real.sqrt 3 := by
+      rw [Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 2)]
+      field_simp [(Real.sqrt_pos.mpr zero_lt_two).ne',
+        (Real.sqrt_pos.mpr (by norm_num : (0 : ℝ) < 3)).ne']
+    linarith only [hsqrt, (by simp only [one_div] : (Real.sqrt 3)⁻¹ = 1 / Real.sqrt 3)]
+  rw [conductorSubspace, Submodule.mem_orthogonal]
+  intro v hv
+  refine Submodule.span_induction ?_ ?_ ?_ ?_ hv
+  · rintro _ ⟨⟨m, hm⟩, rfl⟩
+    have hm1 : m = 1 := by
+      have := mem_Icc.mp hm
+      omega
+    subst hm1
+    exact horth1
+  · simp
+  · intro x y _ _ hx hy
+    rw [inner_add_left, hx, hy, add_zero]
+  · intro a x _ hx
+    rw [real_inner_smul_left, hx, mul_zero]
 
 private theorem atomicTest_deepPoleOrthogonal_eq {N : ℕ} (hN : 2 ≤ N) (g : ℝ → ℝ) (u : ℝ) :
     atomicTest N deepPoleOrthogonalCoeffs g u =
@@ -472,8 +488,8 @@ private theorem atomicTest_deepPoleOrthogonal_eq {N : ℕ} (hN : 2 ≤ N) (g : �
     simp only [mem_insert, mem_singleton, not_or] at hnot
     simp only [deepPoleOrthogonalCoeffs, if_neg hnot.1, if_neg hnot.2, zero_mul]]
   rw [sum_pair (by decide : (1 : ℕ) ≠ 2)]
-  simp only [deepPoleOrthogonalCoeffs, ↓reduceIte, Nat.ofNat_ne_one, Nat.cast_one, Real.log_one,
-    sub_zero, Nat.cast_ofNat]
+  simp only [deepPoleOrthogonalCoeffs, ↓reduceIte, if_neg (show (2 : ℕ) ≠ 1 by decide),
+    Nat.cast_one, Real.log_one, sub_zero, Nat.cast_ofNat, one_div]
   ring
 
 private theorem atomicTest_deepPoleOrthogonal_sq {φ : ℝ → ℝ}
@@ -509,10 +525,13 @@ private theorem atomicTest_deepPoleOrthogonal_sq {φ : ℝ → ℝ}
   have hs3 : (1 / Real.sqrt 3) ^ 2 = (1 / 3 : ℝ) := by
     rw [div_pow, one_pow, Real.sq_sqrt (by norm_num)]
   have hs23 : Real.sqrt (2 / 3 : ℝ) ^ 2 = 2 / 3 := Real.sq_sqrt (by norm_num)
-  nlinarith only [hprod0, hs3, hs23,
-    (by ring : ((1 / Real.sqrt 3) * g u - Real.sqrt (2 / 3 : ℝ) * g (u - Real.log 2)) ^ 2 =
-      (1 / Real.sqrt 3) ^ 2 * g u ^ 2 + Real.sqrt (2 / 3 : ℝ) ^ 2 * g (u - Real.log 2) ^ 2 -
-        2 * (1 / Real.sqrt 3) * Real.sqrt (2 / 3 : ℝ) * (g u * g (u - Real.log 2)))]
+  change ((1 / Real.sqrt 3) * g u - Real.sqrt (2 / 3 : ℝ) * g (u - Real.log 2)) ^ 2 =
+    (1 / 3 : ℝ) * g u ^ 2 + (2 / 3 : ℝ) * g (u - Real.log 2) ^ 2
+  calc ((1 / Real.sqrt 3) * g u - Real.sqrt (2 / 3 : ℝ) * g (u - Real.log 2)) ^ 2
+      = (1 / Real.sqrt 3) ^ 2 * g u ^ 2 + Real.sqrt (2 / 3 : ℝ) ^ 2 * g (u - Real.log 2) ^ 2 -
+          2 * (1 / Real.sqrt 3) * Real.sqrt (2 / 3 : ℝ) * (g u * g (u - Real.log 2)) := by ring
+    _ = (1 / 3 : ℝ) * g u ^ 2 + (2 / 3 : ℝ) * g (u - Real.log 2) ^ 2 := by
+          rw [hs3, hs23, hprod0]; ring
 
 /-- Exact `L²` norm of the normalized deep pole-orthogonal source once `N ≥ 4 c`. -/
 theorem integral_normalized_deepPoleOrthogonal_sq {φ : ℝ → ℝ}
@@ -544,7 +563,10 @@ theorem integral_normalized_deepPoleOrthogonal_sq {φ : ℝ → ℝ}
       integral_add_right_eq_self (fun u => atomicTest N deepPoleOrthogonalCoeffs g u ^ 2)
         (Real.log N)]
   rw [hshift]
-  simp_rw [atomicTest_deepPoleOrthogonal_sq hφs hc1 hN4c]
+  have hsq_g : ∀ u, atomicTest N deepPoleOrthogonalCoeffs g u ^ 2 =
+      (1 / 3 : ℝ) * g u ^ 2 + (2 / 3 : ℝ) * g (u - Real.log 2) ^ 2 :=
+    atomicTest_deepPoleOrthogonal_sq hφs hc1 hN4c
+  simp_rw [hsq_g]
   rw [integral_add (hig2.const_mul _) ((hig2.comp_sub_right (Real.log 2)).const_mul _),
     integral_const_mul, integral_const_mul,
     integral_sub_right_eq_self (fun u => g u ^ 2) (Real.log 2)]
@@ -577,7 +599,11 @@ theorem exponentialMass_normalized_deepPoleOrthogonal_ge {φ : ℝ → ℝ}
   let U := normalizedCentredAtomicTest φ deepPoleOrthogonalCoeffs c N
   have hU_cd : Continuous U := by
     dsimp only [U, normalizedCentredAtomicTest, centredAtomicTest]
-    exact continuous_const.mul ((continuous_atomicTest hg N _).comp (continuous_id.add continuous_const))
+    have hatom : Continuous (atomicTest N deepPoleOrthogonalCoeffs g) := by
+      unfold atomicTest
+      exact continuous_finsetSum _ fun n _ =>
+        continuous_const.mul (hg.comp (continuous_id.sub continuous_const))
+    exact continuous_const.mul (hatom.comp (continuous_id.add continuous_const))
   have hU_cs : HasCompactSupport U := by
     dsimp only [U, normalizedCentredAtomicTest, centredAtomicTest]
     exact ((hasCompactSupport_atomicTest hgs N _).comp_homeomorph
@@ -619,12 +645,13 @@ theorem exponentialMass_normalized_deepPoleOrthogonal_ge {φ : ℝ → ℝ}
               (Real.exp (-8) * (N : ℝ) ^ 8) := by ring
         _ ≤ U y ^ 2 * Real.exp (-(8 * y)) :=
             mul_le_mul hU2_ge hexp_ge (by positivity) (sq_nonneg _)
-    · rw [hgs _ hy, sq, mul_zero, mul_zero]
+    · rw [hgs _ hy]
+      simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero]
       exact mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
   have hmono := integral_mono hi_lhs hi_rhs hpt
   rw [integral_const_mul, integral_add_right_eq_self (fun u => g u ^ 2) (Real.log N),
     integral_atomDilate_sq hw] at hmono
-  refine le_trans ?_ hmono
+  refine le_trans (le_of_eq ?_) hmono
   dsimp only [w]
   field_simp [hc0.ne', hN_pos.ne']
 
@@ -703,7 +730,10 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
     ring
   have hf_L2 : ∫ u, f u ^ 2 = w * I₂ := by
     have hig2 : Integrable (fun u => g u ^ 2) := integrable_sq_of_continuous hg.continuous hgc
-    simp_rw [f, atomicTest_deepPoleOrthogonal_sq hφs hc1 hN4c]
+    have hsq_g : ∀ u, f u ^ 2 =
+        (1 / 3 : ℝ) * g u ^ 2 + (2 / 3 : ℝ) * g (u - Real.log 2) ^ 2 :=
+      atomicTest_deepPoleOrthogonal_sq hφs hc1 hN4c
+    simp_rw [hsq_g]
     rw [integral_add (hig2.const_mul _) ((hig2.comp_sub_right (Real.log 2)).const_mul _),
       integral_const_mul, integral_const_mul,
       integral_sub_right_eq_self (fun u => g u ^ 2) (Real.log 2)]
@@ -726,12 +756,13 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
       · rw [abs_neg, abs_mul]; exact mul_le_of_le_one_left (abs_nonneg _) hc2_le
     have hmono := integral_mono (hf_cd.continuous.integrable_of_hasCompactSupport hf_cs).abs
       (hig1.add (hig1.comp_sub_right (Real.log 2))) hpt
+    change (∫ x, |f x|) ≤ ∫ x, (|g x| + |g (x - Real.log 2)|) at hmono
     have hg_L1 : ∫ u, |g u| = w * I₁ := by
       simpa only [g, atomDilate, abs_of_pos hw, smul_eq_mul] using
         Measure.integral_comp_div (fun u => |φ u|) w
     rw [integral_add hig1 (hig1.comp_sub_right (Real.log 2)),
       integral_sub_right_eq_self (fun u => |g u|) (Real.log 2), hg_L1] at hmono
-    linarith
+    linarith only [hmono]
   have hf_lip : ∀ u v, |f u - f v| ≤ (2 * M₁ / w) * |u - v| := by
     intro u v
     have hg_lip : ∀ a b, |g a - g b| ≤ (M₁ / w) * |a - b| := fun a b => by
@@ -752,7 +783,7 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
       have hsh : |(u - Real.log 2) - (v - Real.log 2)| = |u - v| := by ring_nf
       exact (mul_le_of_le_one_left (abs_nonneg _) hc2_le).trans
         ((hg_lip _ _).trans_eq (by rw [hsh]))
-    exact (abs_add_le _ _).trans (by linarith)
+    exact (abs_add_le _ _).trans ((add_le_add h1 h2).trans_eq (by ring))
   have hlev := levyEnergy_le_lipschitz hf_cd hf_cs hf_lip hw hw1
   have hlogw : Real.log (1 / w) ≤ Real.log N := by
     have h1w : 1 / w = (N : ℝ) / c := by dsimp only [w]; field_simp [hc0.ne', hN_pos.ne']
@@ -769,8 +800,13 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
     have h2 : (2 * Real.log (1 / w) + levyLipConstant) * (∫ u, f u ^ 2) ≤
         (2 * Real.log N + levyLipConstant) * I₂ * w := by
       rw [hf_L2]
-      exact (mul_le_mul_of_nonneg_right (by linarith) (mul_nonneg hw.le hI₂0)).trans_eq (by ring)
-    linarith
+      have hcoef : 2 * Real.log (1 / w) + levyLipConstant ≤ 2 * Real.log N + levyLipConstant := by
+        linarith only [hlogw]
+      exact (mul_le_mul_of_nonneg_right hcoef (mul_nonneg hw.le hI₂0)).trans_eq (by ring)
+    linarith only [hlev, h1, h2,
+      (by ring : 4 * Real.exp (1 / 2) * M₁ * I₁ * w +
+        (2 * Real.log N + levyLipConstant) * I₂ * w =
+        (4 * Real.exp (1 / 2) * M₁ * I₁ + (2 * Real.log N + levyLipConstant) * I₂) * w)]
   have hexp_f : exponentialSourceMass f ≤ Real.exp 2 * (w * I₂) := by
     have hf2c : HasCompactSupport (fun y => f y ^ 2) := by
       rw [hasCompactSupport_iff_eventuallyEq] at hf_cs ⊢
@@ -802,7 +838,8 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
   have hpole : 2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2 ≤
       8 * Real.cosh (1 / 2) ^ 2 * I₁ ^ 2 * w := by
     have hCf : |coshHalfMoment f| ≤ Real.cosh (1 / 2) * (2 * w * I₁) :=
-      (abs_moment_le hf_cd.continuous hf_cs hf_supp1 Real.continuous_cosh
+      (abs_moment_le hf_cd.continuous hf_cs hf_supp1
+        (Real.continuous_cosh.comp (continuous_id.div_const 2))
         fun u hu => abs_cosh_half_le hu).trans
         (mul_le_mul_of_nonneg_left hf_L1 (Real.cosh_pos _).le)
     have hCf2 : coshHalfMoment f ^ 2 ≤ 4 * Real.cosh (1 / 2) ^ 2 * I₁ ^ 2 * w ^ 2 := by
@@ -821,9 +858,34 @@ theorem exists_weilQuad_normalized_deepPoleOrthogonal_le_log {φ : ℝ → ℝ}
   have hlogN0 : 0 ≤ Real.log (N : ℝ) := Real.log_natCast_nonneg N
   have hwf : weilQuad f ≤ C_deep * w * (Real.log N + 1) := by
     rw [weilQuad_eq hf_cd hf_cs]
-    dsimp only [C_deep]
-    nlinarith only [hγ, hlev', hprime, hpole, hw, hlogN0, hI₂0, hI₁0, hM₁0, hC_lip_nn,
-      vonMangoldtThreeHalvesMass_nonneg, (Real.exp_pos (1 / 2)).le, (Real.exp_pos 2).le]
+    let K_const := (2 * |gammaHardyPhaseRate 0| + levyLipConstant +
+      2 * vonMangoldtThreeHalvesMass * Real.exp 2) * I₂ +
+      4 * Real.exp (1 / 2) * M₁ * I₁ + 8 * Real.cosh (1 / 2) ^ 2 * I₁ ^ 2
+    have hK_nn : 0 ≤ K_const := by
+      have := vonMangoldtThreeHalvesMass_nonneg
+      dsimp only [K_const]
+      positivity
+    have hbase : 2 * gammaHardyPhaseRate 0 * (∫ u, f u ^ 2) + levyEnergy f - primeSum f +
+        (2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2) ≤
+        2 * I₂ * w * Real.log N + K_const * w := by
+      dsimp only [K_const]
+      linarith only [hγ, hlev', hprime, hpole,
+        (by ring : 2 * |gammaHardyPhaseRate 0| * I₂ * w +
+            (4 * Real.exp (1 / 2) * M₁ * I₁ + (2 * Real.log N + levyLipConstant) * I₂) * w +
+            2 * vonMangoldtThreeHalvesMass * Real.exp 2 * I₂ * w +
+            8 * Real.cosh (1 / 2) ^ 2 * I₁ ^ 2 * w =
+          2 * I₂ * w * Real.log N +
+            ((2 * |gammaHardyPhaseRate 0| + levyLipConstant +
+                2 * vonMangoldtThreeHalvesMass * Real.exp 2) * I₂ +
+              4 * Real.exp (1 / 2) * M₁ * I₁ + 8 * Real.cosh (1 / 2) ^ 2 * I₁ ^ 2) * w)]
+    have hK_grow : K_const * w ≤ K_const * w * (Real.log N + 1) :=
+      le_mul_of_one_le_right (mul_nonneg hK_nn hw.le) (by linarith only [hlogN0])
+    have h2I_nn : 0 ≤ 2 * I₂ * w := by positivity
+    have hC_def : C_deep = 2 * I₂ + K_const := by dsimp only [C_deep, K_const]; ring
+    have hC_eq : C_deep * w * (Real.log N + 1) =
+        2 * I₂ * w * Real.log N + 2 * I₂ * w + K_const * w * (Real.log N + 1) := by
+      rw [hC_def]; ring
+    linarith only [hbase, hK_grow, h2I_nn, hC_eq]
   have hcd_cent : ContDiff ℝ 2 (centredAtomicTest φ deepPoleOrthogonalCoeffs c N) :=
     contDiff_centredAtomicTest hφ _ c N
   have hcs_cent : HasCompactSupport (centredAtomicTest φ deepPoleOrthogonalCoeffs c N) := by
@@ -873,7 +935,7 @@ theorem not_unrestricted_atomic_garding_on_poleOrthogonal
     exact ((div_lt_iff₀ hL0).mp hlt).le
   have hL_le : ∀ᶠ N : ℕ in atTop, Real.log (N : ℝ) ≤ (N : ℝ) / (4 * (R + 1)) := by
     have h0 : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
-      simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 zero_ne_one
+      simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
     have hev := (h0.comp tendsto_natCast_atTop_atTop).eventually
       (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (4 * (R + 1))))
     filter_upwards [hev, eventually_ge_atTop 1] with N hlt hN1
@@ -971,7 +1033,7 @@ theorem not_unrestricted_unitL2_atomic_garding_on_poleOrthogonal
   have hc_up : ∀ᶠ N : ℕ in atTop, 4 * c N ≤ N := by
     have hevR := htend.eventually (gt_mem_nhds (by linarith : R < R + 1))
     have h0 : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
-      simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 zero_ne_one
+      simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
     have hevL := (h0.comp tendsto_natCast_atTop_atTop).eventually
       (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / (4 * (R + 1))))
     filter_upwards [hc1, hevR, hevL, eventually_ge_atTop 3] with N hcN hltR hltL hN3
@@ -1005,6 +1067,7 @@ theorem not_unrestricted_unitL2_atomic_garding_on_poleOrthogonal
       integral_normalized_deepPoleOrthogonal_sq contDiff_tiltedUnitSpline.continuous
         tiltedUnitSpline_eq_zero hcN h4cN,
       hα2]
+    change (c N / I₂) * ((1 / c N) * I₂) = 1
     field_simp [hc0.ne', hI₂.ne']
   · rw [primeHorizonExtension_deepPoleOrthogonalVector hN2]
     let U := normalizedCentredAtomicTest tiltedUnitSpline deepPoleOrthogonalCoeffs (c N) N
@@ -1348,11 +1411,12 @@ private theorem levyEnergy_atomicTest_garding_ge {c : ℝ} (hc0 : 1 / 2052 ≤ c
       _ ≤ _ := mul_le_mul_of_nonneg_left hband (by positivity)
   have hf_nn : 0 ≤ ∫ u, atomicTest N z (atomDilate tiltedUnitSpline (c / N)) u ^ 2 :=
     integral_nonneg fun _ => sq_nonneg _
-  have hγ : -2 * |gammaHardyPhaseRate 0| *
+  have hγ : 2 * gammaHardyPhaseRate 0 *
       (∫ u, atomicTest N z (atomDilate tiltedUnitSpline (c / N)) u ^ 2) ≤
-      2 * gammaHardyPhaseRate 0 *
+      2 * |gammaHardyPhaseRate 0| *
         (∫ u, atomicTest N z (atomDilate tiltedUnitSpline (c / N)) u ^ 2) :=
-    mul_le_mul_of_nonneg_right (by linarith [neg_abs_le (gammaHardyPhaseRate 0)]) hf_nn
+    mul_le_mul_of_nonneg_right
+      (by linarith [le_abs_self (gammaHardyPhaseRate 0)]) hf_nn
   linarith only [hgamma, hlev_eq, hbandTerm, hγ,
     (by ring : (factorialSpanGammaOffset + Real.log 2 + 2 * |gammaHardyPhaseRate 0|) *
       (∫ u, atomicTest N z (atomDilate tiltedUnitSpline (c / N)) u ^ 2) =
@@ -1654,7 +1718,11 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
               u - shellCenter N k := by ring
           rw [hid] at htri; linarith
         rw [dyadicShellBump_eq_zero h2, dyadicShellBump_eq_zero h1, sub_self, zero_mul, mul_zero]
-      · rw [hsupp _ huw, mul_zero, mul_zero]
+      · dsimp only [g]
+        rw [hsupp _ huw, mul_zero, mul_zero]
+    have hR_pt : ∀ u, dyadicShellBump N k u * atomicTest N y g u -
+        atomicTest N (fun n => dyadicShellBump N k (Real.log n) * y n) g u =
+        ∑ n ∈ S_k, y n * h_atom n u := congrFun hR_eq
     have hRk_cd : ContDiff ℝ 2 (fun u => dyadicShellBump N k u * atomicTest N y g u -
         atomicTest N (fun n => dyadicShellBump N k (Real.log n) * y n) g u) :=
       ((contDiff_dyadicShellBump N k).mul (contDiff_atomicTest hg N y)).sub
@@ -1665,6 +1733,7 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
         (hasCompactSupport_atomicTest hsupp N _)
     have hinterp := levyEnergy_le_interpolated hRk_cd hRk_cs hw hw1
     rw [hR_eq] at hinterp hRk_cd hRk_cs ⊢
+    simp_rw [hR_pt] at hinterp ⊢
     have hh_diff : ∀ n : ℕ, Differentiable ℝ (h_atom n) := fun n =>
       (((contDiff_dyadicShellBump N k).sub contDiff_const).mul
         (hg.comp (contDiff_id.sub contDiff_const))).differentiable (by norm_num)
@@ -1688,7 +1757,7 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
       · rw [Set.indicator_of_notMem huI, mul_zero]
         have hvw : u - Real.log n ∉ Set.Icc 0 w := fun hmem =>
           huI (Set.mem_Icc.mpr ⟨by linarith [hmem.1], by linarith [hmem.2]⟩)
-        dsimp only [h_atom]
+        dsimp only [h_atom, g]
         rw [hsupp _ hvw, mul_zero, abs_zero]
     have hderiv_atom : ∀ (n : ℕ) (u : ℝ),
         |deriv (h_atom n) u| ≤
@@ -1727,8 +1796,8 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
                 (deriv tiltedUnitSpline ((u - Real.log n) / w) / w)|
             ≤ |deriv (baseShellBump : ℝ → ℝ) (u - shellCenter N k)| * |g (u - Real.log n)| +
                 |dyadicShellBump N k u - dyadicShellBump N k (Real.log n)| *
-                  |deriv tiltedUnitSpline ((u - Real.log n) / w) / w| := by
-              simpa only [abs_mul] using abs_add_le _ _
+                  |deriv tiltedUnitSpline ((u - Real.log n) / w) / w| :=
+              (abs_add_le _ _).trans_eq (by rw [abs_mul, abs_mul])
           _ ≤ L_B * M₀ + (L_B * w) * (M₁ / w) :=
               add_le_add (mul_le_mul (hdB _) (hb0 _) (abs_nonneg _) hLB0)
                 (mul_le_mul hv1 hd2_le (abs_nonneg _) (mul_nonneg hLB0 hw.le))
@@ -1858,7 +1927,7 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
               mul_le_mul_of_nonneg_left hL2_Rk (by positivity)
           _ = (2 + levyLipConstant) * (L_B * M₀) ^ 2 * ((Real.exp 1 + 1) * c) * w ^ 2 *
                 ∑ n ∈ S_k, y n ^ 2 := by
-              field_simp [hw.ne']; ring
+              field_simp [hw.ne']
       have hsum12 : K₀ ^ 2 + (2 + levyLipConstant) * (L_B * M₀) ^ 2 ≤ C_shell := by
         dsimp only [C_shell]
         nlinarith [sq_nonneg (L_B * M₀)]
@@ -1866,6 +1935,8 @@ theorem exists_sum_dyadicCommutator_L2_and_levyEnergy_le :
         (mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right hsum12 (by positivity : 0 ≤ (Real.exp 1 + 1) * c))
           (sq_nonneg w)) hS0
+      change levyEnergy (fun u => ∑ n ∈ S_k, y n * h_atom n u) ≤
+        C_shell * ((Real.exp 1 + 1) * c) * w ^ 2 * ∑ n ∈ S_k, y n ^ 2
       linarith only [hinterp, hterm1, hterm2, hstep,
         (by ring : K₀ ^ 2 * ((Real.exp 1 + 1) * c) * w ^ 2 * (∑ n ∈ S_k, y n ^ 2) +
           (2 + levyLipConstant) * (L_B * M₀) ^ 2 * ((Real.exp 1 + 1) * c) * w ^ 2 *
@@ -2057,7 +2128,9 @@ theorem exists_top_archForm_dyadic_seventh_reserve_garding :
         integrable_sq_of_continuous (hak.sub hFk) (hakc.sub hFkc)
       have hi_F : Integrable (fun u => F_k u ^ 2) := integrable_sq_of_continuous hFk hFkc
       have hm := integral_mono hi_F ((hi_a.const_mul 2).add (hi_r.const_mul 2)) fun u => by
-        nlinarith [sq_nonneg (a_k u + (a_k u - F_k u))]
+        dsimp only [Pi.add_apply]
+        nlinarith [sq_nonneg (2 * a_k u - F_k u)]
+      change (∫ x, F_k x ^ 2) ≤ ∫ x, (2 * a_k x ^ 2 + 2 * (a_k x - F_k x) ^ 2) at hm
       rwa [integral_add (hi_a.const_mul 2) (hi_r.const_mul 2),
         integral_const_mul, integral_const_mul] at hm
     have hsum_a : (∑ k ∈ s, ∫ u, (dyadicShellBump N k u * atomicTest N y g u) ^ 2) ≤
@@ -2186,7 +2259,7 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
   have hL_lim : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have hLN_zero : Tendsto (fun x : ℝ => Real.log x / x) atTop (𝓝 0) := by
-    simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 zero_ne_one
+    simpa using Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
   have hev_L2N : ∀ᶠ N : ℕ in atTop,
       ((256 * Real.exp 2 + 4) ^ 2 * (R_max + 1)) * Real.log (N : ℝ) ≤ N := by
     set A := (256 * Real.exp 2 + 4) ^ 2 * (R_max + 1)
@@ -2194,6 +2267,7 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
     have hev := (hLN_zero.comp tendsto_natCast_atTop_atTop).eventually
       (gt_mem_nhds (by positivity : (0 : ℝ) < 1 / A))
     filter_upwards [hev, eventually_ge_atTop 1] with N hlt hN1
+    dsimp only [Function.comp_def] at hlt
     have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
     have hm := (div_lt_iff₀ hN0).mp hlt
     have hdiv : 1 / A * (N : ℝ) = (N : ℝ) / A := by field_simp [hA.ne']
@@ -2207,13 +2281,16 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
       have hev := (hLN_zero.comp tendsto_natCast_atTop_atTop).eventually
         (gt_mem_nhds (div_pos (div_pos hc₀ zero_lt_two) hA))
       filter_upwards [hev] with N hlt
+      dsimp only [Function.comp_def] at hlt
       have hm := (lt_div_iff₀ hA).mp hlt
       linarith only [hm,
         (by ring : I₂ * C_err * ((R_max + 1) * Real.log (N : ℝ) / N) =
           (Real.log (N : ℝ) / N) * A)]
     · have h0 : C_err = 0 := le_antisymm (not_lt.mp hCerr_pos) hC_err0
       filter_upwards with N
-      rw [h0]; simp [hc₀.le]
+      rw [h0]
+      simp only [mul_zero, zero_mul]
+      positivity
   filter_upwards [hev_L2N, hev_err, eventually_ge_atTop 3] with N hL2N_b herr_b hN3 c hc1 hc8 x
   obtain ⟨hL3, h4c, -, hLup⟩ := linearDefectCutoff_bounds hc1
   have hc0_pos : 0 < c := zero_lt_one.trans_le hc1
@@ -2268,6 +2345,7 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
     have hnN : (n : ℝ) ≤ N := by exact_mod_cast (mem_Icc.mp hn).2
     have hlog : Real.log n ≤ Real.log N := Real.log_le_log hn1 hnN
     have hnot : u + Real.log N - Real.log n ∉ Set.Icc 0 w := fun hm => by linarith [hm.2, hw1]
+    dsimp only [g]
     rw [hgs _ hnot, mul_zero]
   -- Scale archimedean Gårding reserve from `f_y` to `U_y`
   have hUy_arch_scale : archForm U_y + B_arch * (∫ u, U_y u ^ 2) =
@@ -2281,21 +2359,24 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
         unfold levyEnergy centredAtomicTest
         refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
         congr 1
-        have hfn : (fun u => f_y (u + Real.log N) - f_y (u + t + Real.log N)) =
-            fun u => (fun v => f_y v - f_y (v + t)) (u + Real.log N) :=
+        have hfn : (fun u => (f_y (u + Real.log N) - f_y (u + t + Real.log N)) ^ 2) =
+            fun u => (fun v => (f_y v - f_y (v + t)) ^ 2) (u + Real.log N) :=
           funext fun u => by dsimp only; congr 2; ring
-        simp_rw [hfn]
+        rw [hfn]
         exact integral_add_right_eq_self (fun v => (f_y v - f_y (v + t)) ^ 2) (Real.log N)
-      linarith
+      rw [h1, h2, hL2_sh, hlev_sh]
     have hL2_Uy : (∫ u, U_y u ^ 2) = ((N : ℝ) / c ^ 2) * ∫ u, f_y u ^ 2 := by
       dsimp only [U_y, normalizedCentredAtomicTest]
       simp_rw [mul_pow, div_pow, Real.sq_sqrt hN_pos.le]
       rw [integral_const_mul]
       exact congrArg (((N : ℝ) / c ^ 2) * ·)
         (integral_add_right_eq_self (fun u => f_y u ^ 2) (Real.log N))
-    dsimp only [U_y, normalizedCentredAtomicTest]
-    rw [archForm_const_mul hcent_cd hcent_cs, div_pow, Real.sq_sqrt hN_pos.le,
-      harch_cent, hL2_Uy]
+    have harch_Uy_eq : archForm U_y = ((N : ℝ) / c ^ 2) * archForm f_y := by
+      have hfn_Uy : U_y = fun u => (Real.sqrt N / c) * centredAtomicTest tiltedUnitSpline y c N u :=
+        rfl
+      rw [hfn_Uy, archForm_const_mul hcent_cd hcent_cs, div_pow, Real.sq_sqrt hN_pos.le,
+        harch_cent]
+    rw [harch_Uy_eq, hL2_Uy]
     ring
   have harch_Uy : (c₀ / 2) * topCollarSeventhMass M N x ≤
       archForm U_y + B_arch * ∫ u, U_y u ^ 2 := by
@@ -2331,8 +2412,9 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
   have hpo_Uy := hpole hUy_cd.continuous hUy_cs hUy_le1
   have hweil_Uy : weilQuad U_y = archForm U_y - primeSum U_y +
       (2 * coshHalfMoment U_y ^ 2 - 2 * sinhHalfMoment U_y ^ 2) := by
-    rw [weilQuad_eq hUy_cd hUy_cs, archForm_eq_levyEnergy hUy_cd hUy_cs]
-    ring
+    have h1 := weilQuad_eq hUy_cd hUy_cs
+    have h2 := archForm_eq_levyEnergy hUy_cd hUy_cs
+    linarith only [h1, h2]
   have hcosh0 : 0 ≤ 2 * coshHalfMoment U_y ^ 2 := by positivity
   have h3ε : 3 * ε * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
       (c₀ / 4) * topCollarSeventhMass M N x := by
@@ -2340,9 +2422,24 @@ theorem exists_collar_atomic_garding_below_ratio {R_max : ℝ} (hR : 0 < R_max) 
         ≤ 3 * ε * (C₈ * topCollarSeventhMass M N x) :=
           mul_le_mul_of_nonneg_left hW8_le (by positivity)
       _ = (c₀ / 4) * topCollarSeventhMass M N x := by
-          dsimp only [ε]; field_simp [hC₈.ne']
-  dsimp only [B_R, a_R, κ_R]
-  linarith only [harch_Uy, hpr_Uy, hpo_Uy, hweil_Uy, hcosh0, h3ε]
+          dsimp only [ε]; field_simp [hC₈.ne']; ring
+  change κ_R * topCollarSeventhMass M N x +
+      a_R * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+    weilQuad U_y + B_R * ∫ u, U_y u ^ 2
+  have hB_def : B_R = B_arch + B_prime + B_pole := rfl
+  have ha_def : a_R = ε := rfl
+  have hκ_def : κ_R = c₀ / 4 := rfl
+  rw [hB_def, ha_def, hκ_def]
+  rw [ha_def] at hpr_Uy hpo_Uy
+  have h3ε' : 3 * (ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) ≤
+      (c₀ / 4) * topCollarSeventhMass M N x :=
+    (by ring : 3 * (ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) =
+      3 * ε * ∫ u, U_y u ^ 2 * Real.exp (-(8 * u))).trans_le h3ε
+  have hc0_split : c₀ / 2 * topCollarSeventhMass M N x =
+      2 * (c₀ / 4 * topCollarSeventhMass M N x) := by ring
+  linarith only [harch_Uy, hpr_Uy, hpo_Uy, hweil_Uy, hcosh0, h3ε', hc0_split,
+    (by ring : (B_arch + B_prime + B_pole) * (∫ u, U_y u ^ 2) =
+      B_arch * (∫ u, U_y u ^ 2) + B_prime * (∫ u, U_y u ^ 2) + B_pole * ∫ u, U_y u ^ 2)]
 
 /-- **Collar atomic Gårding along any critical curve `c_N⁸ / log N → R > 0`.** -/
 theorem exists_collar_atomic_garding_along_critical_curve

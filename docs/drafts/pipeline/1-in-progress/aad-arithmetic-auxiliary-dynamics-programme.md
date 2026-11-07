@@ -13,16 +13,20 @@ Develop the field: objects, tools, answers to its questions. Lean folder `formal
 All results below are Lean theorems, unconditional. Paper targets are closed.
 
 - Scale: floor `c₁/(√K (1+log K))` (`exists_half_floor`); `K^{-a}` reads `Re ρ ≤ 1−a`; rates for all `a<1/2` give RH; `a>1/2` impossible. Peak law `w ≤ 100 (1+log K)² (K T + m)`.
-- Construction: VK rate on polynomial alphabets (`hasRate_vk`); RH gives every `a<1/5`, strip `Θ` gives `a<(1−Θ)/(3−Θ)` (`hasRate_of_zeroFree_sharp`); polynomial rate ⇔ strip.
-- Exact LP duality, extremal fake prime measure and its distance from the pronic one (`exists_extremal_bracket`).
-- Parity: factor 2 is one Hecke factor; parity neutral producers at the Mertens level (`hasParityNeutralRate_vk`, `exists_hasParityNeutralRate_rpow_iff`).
+- Construction: VK rate on polynomial alphabets (`hasRate_vk`); RH gives every `a<1/5`, strip `Θ` gives `a<(1−Θ)/(3−Θ)` (`hasRate_of_zeroFree_sharp`).
+- Rate = Mertens: `|M(n)| ≤ ε n + 12 (w/m) √n + K` (`IsProducer.abs_mertens_le`), `|M(n)| ≤ 3 ε n` past `K² log⁶ K`; scales coincide, elementary (`hasRate_exp_iff_mertens`, `exists_hasRate_rpow_iff_mertens`). So no certificate avoids `M(x)`.
+- Exact LP duality, extremal fake prime measure, distance from the pronic one (`exists_extremal_bracket`). Profinite rigidity: class masses pinned at high level (`exists_level_classMass_close`); every window reached (`exists_producer_at_window`).
+- Parity: factor 2 is one Hecke factor; parity neutral producers at the Mertens level (`hasParityNeutralRate_vk`, `exists_hasParityNeutralRate_rpow_iff`). Rate bounds `L(x)` too (`IsProducer.abs_liouvilleR_le`).
 - Curves: linear stencil window is `|a| ≤ q+1`; purity is the upper bound for curve and twist (`isPure_iff_upper_bound`).
 - Ledger ladder: order law for all analytic `f`, generating function, twin gap.
-- Transport: phase returns exist; a bounded one at a zero gives infinitely many zeros; one at each zero gives AAL (`asymptoticAbscissaLaw_of_boundedReturns`).
-- Tools: multiplicity and zero estimates on the gauge torus, Siegel with parity, effective Kronecker, Hurwitz limit set in the torus, transport count, return exponent.
+- Transport: phase returns exist; local effective transport with bound `N^A` in the aligned length (`exists_exponent_transport`); slow returns give AAL (`asymptoticAbscissaLaw_of_slowReturns`); finite top layer forces `ζ > N^A` at every aligned shift (`exists_large_value_of_finite`).
+- Tools: multiplicity and zero estimates on the gauge torus, Siegel with parity, effective Kronecker, Hurwitz limit set in the torus, transport count, return exponent, folding.
 
 ## Open core
-Certificate of a rate not through `M(x)`; exponent under RH in `[1/5, 1/2]`; parity through the primes; arithmetic input for a nonlinear ledger (RigidArithmeticOfCuts); bounded phase returns at a zero; Stepanov's twist over `ℤ`; explicit extremal measure.
+A proof of `g ≥ 0` for an explicit family without a bound on `M(x)`; exponent under RH in `[1/5, 1/2]`; parity through the primes; arithmetic input for a nonlinear ledger (RigidArithmeticOfCuts); slow aligned returns at a zero; Stepanov's twist over `ℤ`; finite-`K` form of the extremal measure. The first, the second and the fifth are at or past the strength of RH or AAL: they are research problems, not remaining formalization.
+
+## Attempted, not achieved
+Exponent `1/4` under RH: replace prime letters in `(y, T]`, `y ≈ 1/ε`, by pairs `P, d_P` with `d_P` smooth and adjacent, so entanglement only covers `P ≤ y`. The near law past `T` then needs `M` in short intervals `[x/d_P, x/P]` summed over `P`; RH gives only `√(x/P)` each, too weak by a power. Would work under a short-interval input beyond RH.
 
 ## Gates
 - [x] 0 → 1  in-progress

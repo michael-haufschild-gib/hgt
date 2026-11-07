@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport
 import GaloisForLFunctions.HTGeometry.ThreeCircles
+import GaloisForLFunctions.HTGeometry.DirichletSimultaneousApproximation
 import GaloisForLFunctions.VerifiedHeightRungs.HadamardBudget.TheVerifiedHeightSixtySeven
 import GaloisForLFunctions.VerifiedHeightRungs.LiAndHausdorffEntries
 
@@ -15,8 +16,9 @@ Then Hadamard's three circles interpolate:
 with `t < 1` depending only on `ρ` and the circle. Rouché moves the zero as soon as this is small.
 
 **So a polynomial bound in the aligned length suffices.** For each zero there is an exponent `A > 0` such that, at every shift aligned up
-to `N ≥ N₀`, a bound `|ζ(s + iτ)| ≤ N^A` on the disc puts a zero within `r` of `ρ + iτ`. Alignment up to `N` is available at heights
-`exp(O(N))`, so `N^A` is a power of `log τ`.
+to `N ≥ N₀`, a bound `|ζ(s + iτ)| ≤ N^A` on the disc puts a zero within `r` of `ρ + iτ`. By simultaneous Dirichlet approximation a shift aligned up to
+`N` exists with `1 ≤ τ ≤ (7N)^N`. At such a shift `N ≥ log τ / log (7N)`, so the bound allowed is at least a power of `log τ`, up to a factor
+that is a power of `log N`.
 
 The contrapositive is a lower bound. If only finitely many zeros lie right of `σ`, then at every aligned shift, past a height, `ζ` is larger
 than `N^A` somewhere on the disc about each zero right of `σ`. This is the local form of the missing input of transport: the question is whether an aligned shift
@@ -33,6 +35,47 @@ namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics
 /-- The phases of `1, …, N` are within `1/N` of `1` at the shift `τ`. -/
 def IsHeadReturn (N : ℕ) (τ : ℝ) : Prop :=
   ∀ n < N, ‖phaseDefect (fun _ => τ) 0 n‖ ≤ 1 / (N : ℝ)
+
+/-- **Aligned shifts exist at bounded height.** By simultaneous Dirichlet approximation, a shift aligned up to `N` exists with `1 ≤ τ ≤ (7N)^N`. -/
+theorem exists_isHeadReturn_le {N : ℕ} (hN : 1 ≤ N) :
+    ∃ τ : ℝ, 1 ≤ τ ∧ τ ≤ ((7 * N : ℕ) : ℝ) ^ N ∧ IsHeadReturn N τ := by
+  have hNR : (0 : ℝ) < N := by exact_mod_cast hN
+  have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
+  obtain ⟨k, hk1, hkQ, hclose⟩ := HTGeometry.exists_dirichlet_simultaneous
+    (fun i : Fin N => Real.log (((i : ℕ) : ℝ) + 1) / (2 * Real.pi)) (7 * N) (by omega)
+  rw [Fintype.card_fin] at hkQ
+  refine ⟨k, by exact_mod_cast hk1, by exact_mod_cast hkQ, fun n hn => ?_⟩
+  obtain ⟨m, hm⟩ := hclose ⟨n, hn⟩
+  simp only at hm
+  obtain ⟨e, he⟩ : ∃ e : ℝ, e = (k : ℝ) * (Real.log ((n : ℝ) + 1) / (2 * Real.pi)) - m := ⟨_, rfl⟩
+  rw [← he] at hm
+  have hkey : -Real.log ((n : ℝ) + 1) * (k : ℝ) = -(2 * Real.pi * e) + (-m : ℤ) * (2 * Real.pi) := by
+    rw [he]
+    push_cast
+    field_simp
+    ring
+  rw [phaseDefect_eq]
+  simp only
+  rw [hkey]
+  have hexp : exp (((-(2 * Real.pi * e) + (-m : ℤ) * (2 * Real.pi) : ℝ) : ℂ) * I) =
+      exp (((-(2 * Real.pi * e) : ℝ) : ℂ) * I) := by
+    push_cast
+    rw [add_mul, Complex.exp_add]
+    have h1 : ((-(m : ℂ)) * (2 * (Real.pi : ℂ))) * I = ((-m : ℤ) : ℂ) * (2 * (Real.pi : ℂ) * I) := by
+      push_cast
+      ring
+    rw [h1, Complex.exp_int_mul_two_pi_mul_I, mul_one]
+  rw [hexp, mul_comm _ I]
+  refine (Complex.norm_exp_I_mul_ofReal_sub_one_le).trans ?_
+  rw [Real.norm_eq_abs, abs_neg, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)]
+  have hpi2 := Real.pi_lt_d2
+  have hQ : (0 : ℝ) < ((7 * N : ℕ) : ℝ) := by positivity
+  have h2 : 2 * Real.pi * |e| ≤ 2 * Real.pi * (1 / ((7 * N : ℕ) : ℝ)) :=
+    mul_le_mul_of_nonneg_left hm.le (by positivity)
+  refine h2.trans ?_
+  push_cast
+  rw [mul_one_div, div_le_div_iff₀ (by positivity) hNR]
+  nlinarith
 
 private lemma norm_zetaTerm_le {w : ℂ} (hw : 2 ≤ w.re) (n : ℕ) :
     ‖zetaTerm w n‖ ≤ 1 / ((n : ℝ) + 1) ^ 2 := by

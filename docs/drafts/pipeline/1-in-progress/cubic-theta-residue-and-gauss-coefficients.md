@@ -41,6 +41,8 @@ The [actual energy space has compact restriction](../3-formalized/cubic-kernel-l
 to every compact quotient set. Gradient closability and mass injectivity
 are also formalized. The [variational Laplacian](../3-formalized/cubic-quotient-variational-laplacian.md)
 is closed, densely defined, nonnegative, and self-adjoint.
+The [global Green identity](../3-formalized/cubic-quotient-green-identity.md)
+identifies its action with the positive coordinate Laplacian.
 
 Open inputs: [exterior coercivity](cubic-quotient-exterior-coercivity.md),
 spectral continuation, Fourier identification, and nonvanishing

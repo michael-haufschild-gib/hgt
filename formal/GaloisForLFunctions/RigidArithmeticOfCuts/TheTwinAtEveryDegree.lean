@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RigidArithmeticOfCuts.TheHierarchyOfLedgers
+import GaloisForLFunctions.RigidArithmeticOfCuts.TheSelbergLedgerSeparatesTheTwin
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 
 /-!
@@ -21,6 +22,9 @@ So the nonlinear reading of the twin is a statement at `s = 1` and `s = 2`, at e
 -/
 
 open Complex Filter Topology
+open ArithmeticFunction (vonMangoldt cardFactors)
+open scoped LSeries.notation
+open GaloisForLFunctions.ArithmeticOfSquareRootPrecision
 
 noncomputable section
 
@@ -40,6 +44,94 @@ theorem vonMangoldtSymbol_eq (s : ℂ) :
     vonMangoldtSymbol s = -deriv riemannZeta s / riemannZeta s := by
   rw [vonMangoldtSymbol, logDeriv_apply]
   ring
+
+/-- The even part of `Λ` vanishes off the squares. -/
+theorem evenVonMangoldt_eq_zero_of_not_square {n : ℕ} (hn : ∀ j : ℕ, j ^ 2 ≠ n) : evenVonMangoldt n = 0 := by
+  by_contra hne
+  have hΛ : vonMangoldt n ≠ 0 := by
+    intro h0
+    apply hne
+    simp [evenVonMangoldt, h0]
+  have heven : Even (cardFactors n) := by
+    by_contra h
+    apply hne
+    simp [evenVonMangoldt, h]
+  obtain ⟨p, k, hp, hk, rfl⟩ := isPrimePow_nat_iff _ |>.mp
+    (not_not.mp (mt ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr hΛ))
+  rw [ArithmeticFunction.cardFactors_apply_prime_pow hp] at heven
+  obtain ⟨i, rfl⟩ := heven
+  exact hn (p ^ i) (by rw [← pow_mul, mul_two])
+
+/-- On the squares, the term of the even part at `s` is the term of `Λ` at `2s`. -/
+theorem term_even_sq (s : ℂ) (j : ℕ) :
+    LSeries.term (fun n => ((evenVonMangoldt n : ℝ) : ℂ)) s (j ^ 2) =
+      LSeries.term (fun n => ((vonMangoldt n : ℝ) : ℂ)) (2 * s) j := by
+  rcases eq_or_ne j 0 with rfl | hj
+  · simp
+  · have hj2 : j ^ 2 ≠ 0 := pow_ne_zero 2 hj
+    have heven : Even (cardFactors (j ^ 2)) := by
+      rw [sq, ArithmeticFunction.cardFactors_mul hj hj]
+      exact ⟨_, rfl⟩
+    rw [LSeries.term_of_ne_zero hj2, LSeries.term_of_ne_zero hj, evenVonMangoldt, if_pos heven,
+      ArithmeticFunction.vonMangoldt_apply_pow two_ne_zero]
+    congr 1
+    push_cast
+    exact (Complex.natCast_cpow_natCast_mul j 2 s).symm
+
+/-- The Dirichlet series of the even part is `A(2s)`. -/
+theorem hasSum_term_even {s : ℂ} (hs : 1 / 2 < s.re) :
+    HasSum (LSeries.term (fun n => ((evenVonMangoldt n : ℝ) : ℂ)) s) (vonMangoldtSymbol (2 * s)) := by
+  have h2 : 1 < (2 * s).re := by
+    simp only [Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero]
+    linarith
+  have hsum := (ArithmeticFunction.LSeriesSummable_vonMangoldt h2).hasSum
+  have hval : LSeries (fun n => ((vonMangoldt n : ℝ) : ℂ)) (2 * s) = vonMangoldtSymbol (2 * s) := by
+    rw [vonMangoldtSymbol_eq]
+    exact ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div h2
+  have hsum' : HasSum (LSeries.term (fun n => ((vonMangoldt n : ℝ) : ℂ)) (2 * s))
+      (vonMangoldtSymbol (2 * s)) := by
+    rw [← hval]
+    exact hsum
+  have hinj : Function.Injective fun j : ℕ => j ^ 2 := Nat.pow_left_injective (by norm_num)
+  have hzero : ∀ n ∉ Set.range (fun j : ℕ => j ^ 2),
+      LSeries.term (fun n => ((evenVonMangoldt n : ℝ) : ℂ)) s n = 0 := by
+    intro n hn
+    have hn' : ∀ j : ℕ, j ^ 2 ≠ n := fun j h => hn ⟨j, h⟩
+    by_cases h0 : n = 0
+    · rw [h0, LSeries.term_zero]
+    · rw [LSeries.term_of_ne_zero h0, evenVonMangoldt_eq_zero_of_not_square hn']
+      simp
+  refine (hinj.hasSum_iff hzero).mp ?_
+  have hfun : (LSeries.term (fun n => ((evenVonMangoldt n : ℝ) : ℂ)) s) ∘ (fun j : ℕ => j ^ 2) =
+      LSeries.term (fun n => ((vonMangoldt n : ℝ) : ℂ)) (2 * s) := by
+    funext j
+    exact term_even_sq s j
+  rw [hfun]
+  exact hsum'
+
+/-- **The twin has symbol `T`.** On `Re s > 1`, `Σ −λ(n)Λ(n) n^{-s} = A(s) − 2 A(2s)`. -/
+theorem LSeries_twinWeight {s : ℂ} (hs : 1 < s.re) :
+    LSeries (fun n => ((twinWeight n : ℝ) : ℂ)) s = twinSymbol s := by
+  have h1 : HasSum (LSeries.term (fun n => ((vonMangoldt n : ℝ) : ℂ)) s) (vonMangoldtSymbol s) := by
+    have hval : LSeries (fun n => ((vonMangoldt n : ℝ) : ℂ)) s = vonMangoldtSymbol s := by
+      rw [vonMangoldtSymbol_eq]
+      exact ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs
+    rw [← hval]
+    exact (ArithmeticFunction.LSeriesSummable_vonMangoldt hs).hasSum
+  have h2 := hasSum_term_even (s := s) (by linarith)
+  have h3 := h1.sub (h2.mul_left 2)
+  have hfun : LSeries.term (fun n => ((twinWeight n : ℝ) : ℂ)) s = fun n =>
+      LSeries.term (fun n => ((vonMangoldt n : ℝ) : ℂ)) s n -
+        2 * LSeries.term (fun n => ((evenVonMangoldt n : ℝ) : ℂ)) s n := by
+    funext n
+    by_cases h0 : n = 0
+    · simp [h0]
+    · have hw : vonMangoldtWeight n = vonMangoldt n := rfl
+      rw [LSeries.term_of_ne_zero h0, LSeries.term_of_ne_zero h0, LSeries.term_of_ne_zero h0, twinWeight_eq, hw]
+      push_cast
+      ring
+  rw [LSeries, hfun, twinSymbol]
+  exact h3.tsum_eq
 
 /-- The correction is continuous on `Re s > ½`, since `2s` lies in the half-plane of absolute convergence. -/
 theorem continuousAt_twinCorrection {s : ℂ} (hs : 1 / 2 < s.re) : ContinuousAt twinCorrection s := by

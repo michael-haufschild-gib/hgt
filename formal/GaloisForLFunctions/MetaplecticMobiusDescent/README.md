@@ -205,8 +205,23 @@ of the actual variational Laplacian.
 `HyperbolicAxisLaplacian.lean` identifies the positive Fréchet expression
 with minus the iterated coordinate-axis Laplacian on positive half-space.
 
+`HighCubicCuspsAreLocallyFinite.lean` bounds integral cusp-row coordinates
+using a continuous triangular representative. Only finitely many rows can
+have height at least one locally. The integral norm lower bound also gives
+the height-product obstruction for distinct cusp directions.
+
+`HyperbolicLogarithmicHeight.lean` identifies the actual transformed cusp
+height and proves the eikonal and Laplace identities for its logarithm.
+
+`HyperbolicHeightProfiles.lean` proves the profile formula
+`Δ_axis F(h)=h²F″(h)−hF′(h)`, together with finite-sum and germ identities.
+
+`TheCubicCuspBarrier.lean` constructs the invariant smooth barrier, equal
+to height in every sufficiently high integral cusp. Its height-profile
+defect is continuous and compactly supported on the actual quotient.
+
 Theta identification and uniform contracting mean-square descent remain
 unproved here. No global cancellation
 estimate or zero-free half-plane is asserted by this module.
 
-The finite proofs draw on the [OpenAI metaplectic argument](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf). Source attribution is in `NOTICE`; license is in `LICENSE`.
+The arithmetic and quotient analysis draw on the [OpenAI metaplectic argument](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf). Source attribution is in `NOTICE`; license is in `LICENSE`.

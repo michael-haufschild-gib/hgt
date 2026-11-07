@@ -21,27 +21,28 @@ Answer the six questions of §2.8b and build its five tools, in `formal/GaloisFo
 |---|---|---|
 | P1 | Group closure, transport, corners, Halász–Montgomery | `TheOrbitOfAPhaseSystem` |
 | P2 | Bohr sets, clusters, large-value pairs, descent | `LargeValueHeightsFormAnApproximateGroup` |
-| P3 | Finite-time Bohr isometry; Kronecker scale | `TheFiniteTimeBohrIsometry` |
+| P3 | Finite-time Bohr isometry; Kronecker scale; boxes and the mixing bracket | `TheFiniteTimeBohrIsometry`, `TheBoxesOfTheTorus` |
 | P4 | Pigeonhole non-alignment; saving `T^{−2/(A−1)−δ}`; any set of primes; top of the column | `UniqueFactorizationPaysForNonAlignment`, `TheSavingAgainstSize`, `TheSavingOnAnySetOfPrimes` |
-| P5 | Moment = energy; start of the orbit; diagonal range; last-moment bound | `TheEnergyOfTheOrbit`, `TheDiagonalRange` |
+| P5 | Moment = energy; start of the orbit; diagonal range; energy at every order; oscillating energy | `TheEnergyOfTheOrbit`, `TheDiagonalRange`, `TheEnergyPastTheDiagonal` |
 | P6 | Rounded orbit: diagonal data cannot exclude a return | `TheRoundedOrbit` |
-| P7 | Agler wall, finite and all primes; first and second test; sharpness | `PrimeByPrimePaymentCannotUseTheGammaFactor`, `TheWallForAllPrimes` |
+| P7 | Agler wall, finite and all primes; first and second test; sharpness; coordinates that see the height | `PrimeByPrimePaymentCannotUseTheGammaFactor`, `TheWallForAllPrimes`, `CoordinatesThatSeeTheHeight` |
 | P8 | Fejér sign at the start; twin; start is extremal | `TheCornersOfTheOrbit` |
-| P9 | Hull: finite type, Liouville ⇔ RH, typical zero-free, limits ⇔ RH | `TheHullOverTheTorus` |
+| P9 | Hull: finite type, characters, Liouville ⇔ RH, typical zero-free, limits ⇔ RH; a zero forces an entry | `TheHullOverTheTorus`, `TheHullOverTorsionPoints`, `AnIsolatedZeroForcesAnEntry` |
 | P10 | Pole price; large values counted through the pole | `TheReturnsThePoleMustPay` |
 | P11 | Graph lift; frozen = size; outer factor; allocation | `CertificatesOnTheOrbit` |
 | P12 | Critical coupling: theta counts integers | `TheCriticalCouplingOfTheBase` |
 | P13 | Rank law; continuous systems have no torus; Pick certificate at rank one | `TheRankLaw`, `TheCertificateAtRankOne` |
 | P14 | Character discrepancy; box count | `TheDiscrepancyOfTheOrbit` |
-| P15 | Tarry–Escott and squared words; saving at every length; polylogarithmic saving past the horizon; sup of integer powers | `TarryEscottWords`, `TarryEscottWordsForbidAlignment`, `NonAlignmentAtEveryLargeHeight`, `TheOrbitAvoidsTorsionPoints`, `TheLogarithmicHankelForm`, `SquaredWordsForbidAlignment`, `TheMisalignmentBand`, `TheMassOfMisalignedPrimes`, `TheSavingAtEveryLength`, `TheSupBoundOfIntegerPowers` |
+| P15 | Tarry–Escott and squared words; saving at every length; polylogarithmic saving past the horizon; away from small primes; sup of integer powers; `ζ` below its supremum | `TarryEscottWords`, `TarryEscottWordsForbidAlignment`, `NonAlignmentAtEveryLargeHeight`, `TheOrbitAvoidsTorsionPoints`, `TheLogarithmicHankelForm`, `SquaredWordsForbidAlignment`, `TheMisalignmentBand`, `TheMassOfMisalignedPrimes`, `TheSavingAtEveryLength`, `TheSavingAwayFromSmallPrimes`, `TheSupBoundOfIntegerPowers`, `ZetaStaysBelowItsSupremum` |
+| P17 | Escape from low-rank progressions; every rotation; many misaligned primes; modulus below size | `TheOrbitEscapesProgressions` |
 | P16 | The six questions, one statement each | `TheQuestionsOfTheField` |
 
 ## Open
-Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Transfer of the polylogarithmic saving to the top; oscillating energy past the diagonal; boxes at the mixing time; non-returning coordinates; hull beyond finite type.
+Required saving `≍ εL/ℓ` at `y = (1+ε)L²/16` on the top of the column, against the proved `L⁻⁸ℓ⁻⁴` on all primes and a power of `T` at the top. Polylogarithmic precision above the primes up to `log y`; smooth numbers in short intervals; exact mixing exponent; certificate coordinates tied to `p^{−s}`; natural boundary of the hull. README §9.
 
 ## No-go closure
 - **Exact killing theorem/mechanism:** the kernel-valued Agler form of §2.8b dies on two points: `agler_wall`, `agler_wall_all_primes`, `no_decomposition_euler`, `euler_test`.
-- **Strongest positive survivor:** `two_point_inequality` for arbitrary coordinates, and `norm_sub_sq_le_of_general` for a general archimedean term; the positive side `aglerDecompositionMulTwo`, `selfDecomposition`, and at rank one `exists_certificate_iff`.
+- **Strongest positive survivor:** `two_point_inequality` for arbitrary coordinates, and `norm_sub_sq_le_of_general` for a general archimedean term; the positive side `aglerDecompositionMulTwo`, `selfDecomposition`, at rank one `exists_certificate_iff`, and with coordinates that see the height `euler_test_has_height_certificate`.
 - **New insight:** a passing certificate must use coordinates that see absolute height.
 - **Status:** Lean, as named.
 

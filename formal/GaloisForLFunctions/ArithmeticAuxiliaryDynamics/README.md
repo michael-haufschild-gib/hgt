@@ -18,9 +18,11 @@ The central object is the **producer**: an integer stencil whose factorial ratio
 
 - **The scale is exact at its top.** A rate `K^{-a}` forces `Re ρ ≤ 1 − a`, and rates up to `K^{-1/2}` give RH. No faster rate exists.
 - **The construction is explicit.** Integer producers on polynomial alphabets reach the Vinogradov–Korobov rate, and under RH every rate `K^{-a}`, `a < 1/5`.
+- **The rate is the Mertens function.** Any producer of rate `ε` has `|M(n)| ≤ ε n + 12 (w/m) √n + K`, by a three-line identity. With the construction, the scale of the rate and the scale of `M` are one scale.
+- **Fake prime measures are profinitely rigid.** At high level every fake prime measure gives each residue class its true mass. Its freedom is archimedean only.
 - **Parity costs nothing in the coefficients.** Parity neutral producers reach the same scales.
 - **The linear theory is blind to purity, even over a curve.** There it stops at the trivial bound.
-- **Transport lacks exactly one bound.** A bounded phase return at a zero forces infinitely many zeros.
+- **Transport lacks exactly one bound.** At an aligned shift, a bound on `ζ` polynomial in the aligned length moves a zero. Boundedness is not needed.
 
 What remains has to be nonlinear in the primes, which is the subject of the continuation RigidArithmeticOfCuts.
 
@@ -54,7 +56,10 @@ What remains has to be nonlinear in the primes, which is the subject of the cont
 | Carlitz factorial | `carlitzSize`, `carlitzOrder` | `∏_{f monic, deg f = n} f` over `𝔽_q[T]` |
 | Returns | `zetaReturnSet`, `ReturnsOnDisc`, `ReturnExponentLE` | shifts with `ζ(· + iτ) ≈ ζ` on a disc; their exponent |
 | Phase returns | `IsPhaseReturn`, `TranslatesBoundedOn` | `τ_j → ∞` with `n^{-iτ_j} → 1` for all `n`; boundedness of translates on a domain |
+| Aligned shift | `IsHeadReturn N τ` | the phases of `1, …, N` are within `1/N` of `1` at `τ` |
 | Hurwitz limit | `phaseAt`, `exists_gauge_point` | limits of translates, read as points of the gauge torus |
+| Slack along floors | `producerSlack` | `g − m 1_{[1,B)}`, which is nonnegative on `r ≥ 1` |
+| Class mass, folding | `classMass`, `foldMeasure`, `pronicMeasure` | the mass of a residue class; the measure folded onto `[1, q)`; the true measure `1/(r (r+1))` |
 
 External: `stepWeight`, `IsBalanced`, `stencilSlope`, `stencilErrorConst` (ArithmeticKreinLangerTheory); `nairLattice_eq` (ArithmeticOfSquareRootPrecision); `GaugeTorus` (ArithmeticGaugeTheory); `zetaReturnSet`, `AsymptoticAbscissaLaw` (RHTower); `exists_abs_mertensM_le_vk_rate` (BezoutValuationIncidence); `mobiusMertens_subpower_of_zeroFree` (RHTower).
 
@@ -91,14 +96,18 @@ External: `stepWeight`, `IsBalanced`, `stencilSlope`, `stencilErrorConst` (Arith
 12. **Hecke mixing.** `D_{c₁ + a T_j c₂}(s) = D_{c₁}(s) + a j^{-s} D_{c₂}(s)`, so positive dilations stay in the cone and add `(a/j) slope(c₂)` to the slope. The twist picks up `λ(j)`.
 13. **Adjacent dilates.** With `λ(n) = −1`, `λ(n + 1) = +1`, the difference `T_n − T_{n+1}` adds parity balances and subtracts slopes, so parity per unit of slope grows by `2n`. On multiplicities it is a spike at `r = n`.
 14. **The order law.** `(f′/f)^j f` has a pole of order `j − n` at a zero of order `n` when `j > n`, and it is regular when `j ≤ n`. This holds for every analytic `f`.
+15. **The ledger of `μ` is the peak.** `Σ_d μ(d) ⌊N/d⌋ = 1`, so the ledger of `μ` is `−w` once `n ≥ K`. With the slack bound `Σ_{d ≤ n} (g − m 1_{[1,B)})(⌊n/d⌋) ≤ n T + 2 w √n`, this gives `m |M(n) − M(⌊n/B⌋)| ≤ n T + 3 w √n`, and summing over the scales `n/Bʲ` turns `T/m` into the rate exactly.
+16. **The harmonic sum from `M` alone.** The hyperbola method at `n = T V` gives `|m(T)| ≤ 2/V + η (2 + log V)` when `|M(y)| ≤ η y` on `y ≥ T`.
+17. **Folding and jumps.** A measure of level `q` folds onto `[1, q)` and keeps its moments at the divisors of `q`. If `r ≥ N!`, the residue modulo `m!` jumps at some `m ≥ N`, and a jump makes `r mod (m+1)!` at least `m!`. The moment `log (m+1)!` pays for it, so folded measures are tight, with no input about primes.
 
 **Transport.**
 
-15. **Propagation.** A return on a disc with locally bounded translates spreads to the whole upper quadrant, by Vitali and the identity theorem.
-16. **Phases.** Dirichlet coefficients are read off at large `Re s`, so every phase returns, and a limit of translates is a point of the gauge torus.
-17. **Pole.** The translates converge to `ζ` on `Re s > 1`, so they cannot stay bounded near `s = 1`.
-18. **Minimum modulus.** A return of strength `m/2` on an isolating disc puts a zero in the translated disc, so the returns are counted by zeros.
-19. **Propagation from the right.** Phase returns always exist and converge on `Re s > 1`. With bounded translates on a connected domain they converge on all of it, and Rouché moves the zero.
+18. **Propagation.** A return on a disc with locally bounded translates spreads to the whole upper quadrant, by Vitali and the identity theorem.
+19. **Phases.** Dirichlet coefficients are read off at large `Re s`, so every phase returns, and a limit of translates is a point of the gauge torus.
+20. **Pole.** The translates converge to `ζ` on `Re s > 1`, so they cannot stay bounded near `s = 1`.
+21. **Minimum modulus.** A return of strength `m/2` on an isolating disc puts a zero in the translated disc, so the returns are counted by zeros.
+22. **Propagation from the right.** Phase returns always exist and converge on `Re s > 1`. With bounded translates on a connected domain they converge on all of it, and Rouché moves the zero.
+23. **Three circles.** An aligned shift is within `4/N` of `ζ` on `Re s ≥ 2`. A bound `M` on a larger disc interpolates to `(4/N)^{1−t} (2M)^t` at the zero, so `M = N^A` is enough.
 
 **Inherited from neighbouring programmes.**
 
@@ -112,13 +121,13 @@ External: `stepWeight`, `IsBalanced`, `stencilSlope`, `stencilErrorConst` (Arith
 | # | Question | Answer | Lean |
 |---|---|---|---|
 | 1 | What replaces Frobenius? | Over `𝔽_q[T]` the stencil `1 − qX` is exact: size `q^n`, multiplicity `1_{deg P ∣ n}`, rate `0`, because `1/ζ` is a polynomial and norms are quantized. Over a curve the same stencil reads only `P(1)`, and at genus one nonnegativity at every extension is exactly `|a| ≤ q + 1`, that is `1 ≤ |α| ≤ q` for real roots: the strip, not the line. Purity is the opposite inequality: `N_n ≤ qⁿ + 1 + C q^{n/2}` for the curve and its twist holds iff `a² ≤ 4q`. Stepanov's auxiliary supplies that upper bound through the twist `x ↦ x^q`, which is nonlinear in the points. Over `ℤ` the linear replacement is `1/ζ` truncated to a finite stencil, with rate at least `c/(√K log K)`. No nonlinear replacement is known. | `carlitzOrder_sub`, `card_pow_eq_sum_irrDeg`, `coeff_balanced_stencil_mul`, `curveCountR_nonneg_iff`, `abs_root_bounds`, `exists_impure_of_stencil`, `isPure_iff_upper_bound`, `exists_half_floor` |
-| 2 | What is the exact rate `A(K) − 1`? Is it a capacity? | `c₁/(√K (1 + log K)) ≤ A(K) − 1 ≤ exp(−(log K)^α)` for all `α < 3/5`. It is polynomial iff `ζ` has a zero-free strip. At each window it is a finite linear program with exact duality, attained on the dual side by a fake prime measure. The dual constraints are arithmetic sawteeth, not potentials, so it is not a capacity. | `exists_half_bracket_bestRate`, `exists_hasRate_rpow_iff`, `exists_extremal_fake_measure` |
+| 2 | What is the exact rate `A(K) − 1`? Is it a capacity? | It is the Mertens function up to a polynomial change of scale: `|M(n)| ≤ 3 ε n` for `n ≥ (D (1 + log K)³ K)²`, and a bound on `M` gives producers on polynomial alphabets. So `c₁/(√K (1 + log K)) ≤ A(K) − 1 ≤ exp(−(log K)^α)` for all `α < 3/5`, and it is polynomial iff `M(n) ≪ n^{1−σ}` iff `ζ` has a zero-free strip. At each window it is a finite linear program with exact duality, attained on the dual side by a fake prime measure. The dual constraints are arithmetic sawteeth, not potentials, so it is not a capacity. | `exists_abs_mertens_le_three_rate`, `hasRate_exp_iff_mertens`, `exists_hasRate_rpow_iff_mertens`, `exists_half_bracket_bestRate`, `exists_hasRate_rpow_iff`, `exists_extremal_fake_measure` |
 | 3 | Where does the factor 2 of sieve parity go? | On the monotone cone, `1_{λ=−1} = (1−λ)/2` moves it to `Σ c(k) λ(k) L(⌊x/k⌋)`, and that cone is disjoint from producers. A single Hecke factor `1 + j^{1−s}` with `λ(j) = −1` neutralizes the parity balance of any producer and multiplies its normalized slope by exactly `2`. A difference of adjacent dilates does the same at slope cost `≈ 1/n`, so parity neutral producers reach the Mertens level: every rate `exp(−(log K)^α)`, `α < 3/5`, and polynomial parity neutral rates exist iff there is a zero-free strip. So the factor `2` is an artefact of one Hecke factor. A linear parity constraint on the coefficients is free, and parity is not read through them. | `two_mul_card_le_mean`, `eq_zero_of_balanced_of_increment_nonneg`, `IsProducer.parity_neutral_of_odd`, `exists_neutral_producer`, `hasParityNeutralRate_vk`, `exists_hasParityNeutralRate_rpow_iff` |
-| 4 | Why do primes recur at a zero, if they do? | Phase returns always exist, so the primes recur along them freely. On any bounded return at a zero they must, and the limit is the identity of the gauge torus. What fails is the size of `ζ`: if finitely many zeros lie right of `σ`, every phase return has unbounded translates on every connected domain joining a zero right of `σ` to `Re s > 1`. Conversely, one bounded phase return at each zero gives AAL. Whether bounded phase returns exist at a zero is the exact open input. | `exists_isPhaseReturn`, `tendsto_phaseDefect_zero`, `tendsto_phase_one_of_limit_zeta`, `not_translatesBoundedOn_of_finite`, `IsPhaseReturn.infinite_zeros`, `asymptoticAbscissaLaw_of_boundedReturns` |
+| 4 | Why do primes recur at a zero, if they do? | Phase returns always exist, so the primes recur along them freely. On any bounded return at a zero they must, and the limit is the identity of the gauge torus. What fails is the size of `ζ`. Each zero has an exponent `A > 0` such that an aligned shift of length `N` with `|ζ(s + iτ)| ≤ N^A` on a disc reaching past the zero moves it. If finitely many zeros lie right of `σ`, then at every aligned shift past a height `ζ` exceeds `N^A` on that disc. Conversely, slow aligned returns at each zero give AAL. So the exact open input is a polynomial bound in the aligned length, across a disc that crosses `Re s = 1`, at some aligned shift. | `exists_isPhaseReturn`, `tendsto_phaseDefect_zero`, `tendsto_phase_one_of_limit_zeta`, `exists_exponent_transport`, `exists_large_value_of_finite`, `asymptoticAbscissaLaw_of_slowReturns`, `not_translatesBoundedOn_of_finite`, `IsPhaseReturn.infinite_zeros`, `asymptoticAbscissaLaw_of_boundedReturns` |
 | 5 | Is a single off-line zero a contradiction with `N(x) = ⌊x⌋`? | Not by a linear identity. The mode of a zero is annihilated in every linear ledger, whose truncation moves by at most `w/β`, uniformly in `n`. A quadratic ledger does see a simple zero, as a pole with coefficient `a D_c(ρ)`, but the order law holds for every analytic function. So seeing a zero is not excluding it: any contradiction needs arithmetic input that meromorphy does not imply. | `hasSum_ledgerMode_eq_zero`, `IsProducer.norm_ledgerMode_self_le`, `exists_ladder_at_zero`, `tendsto_ladder_of_lt` |
-| 6 | Does an explicit parity-selective auxiliary beat Vinogradov–Korobov? | Explicit integer producers reach it on polynomial alphabets, with or without parity neutrality. A rate with `α > 3/5` would give a zero-free region of exponent `1/α − 1 < 2/3`, wider than the classical one. The known families are certified by `M(x)`, so beating VK by a stencil requires a certificate that does not pass through `M(x)`. None is known. | `exists_moebius_producer_of_level`, `hasRate_vk`, `hasParityNeutralRate_vk`, `exists_re_le_of_hasRate_exp` |
+| 6 | Does an explicit parity-selective auxiliary beat Vinogradov–Korobov? | Explicit integer producers reach it on polynomial alphabets, with or without parity neutrality. Beating it is exactly beating it for `M`: rates `exp(−(log K)^β)`, `β < α`, hold iff `|M(n)| ≤ n exp(−(log n)^β)`, `β < α`, by elementary proofs in both directions. No certificate can avoid `M(x)`, since any rate bounds `M(x)` and `L(x)` in three lines. The only remaining form of the question is a direct proof that an explicit family has `g ≥ 0`. | `exists_moebius_producer_of_level`, `hasRate_vk`, `hasParityNeutralRate_vk`, `hasRate_exp_iff_mertens`, `IsProducer.abs_mertens_le`, `IsProducer.abs_liouvilleR_le` |
 | 7 | What nonlinear functional sees a zero mode and survives the Liouville twin? | The quadratic ledger does both. It has a pole at each simple zero, and its value on `Λ` exceeds its value on `−λΛ` by at least `4 m log 2 Σ log p` over primes with `4p ≤ n < 4pB`, against `2 w ψ(√n)` for the linear ledger. The separation goes through prime squares, which are known, so it carries no new information about the primes. A functional that separates the twin through the primes themselves is not known. | `exists_ladder_at_zero`, `lseries_ladder`, `IsProducer.ledger_twin_gap`, `IsProducer.abs_ledger_twin_le` |
-| 8 | What is the fake prime measure closest to the true one, for each `K`? | At each window `B` at most the period there is an extremal one, supported on one period, of largest window mass among all consistent measures. That mass over the pronic mass `1 − 1/B` is the exact best normalized slope. At the best window it lies between `1 + c₁/(√K (1 + log K))` and `1 + exp(−(log K)^α)` times the pronic mass. Its explicit form is open. At infinite level only the pronic measure is consistent. | `exists_extremal_fake_measure`, `exists_extremal_gap`, `exists_extremal_bracket`, `IsFakePrimeMeasure.hasSum_slack`, `forall_isFakePrimeMeasure_iff` |
+| 8 | What is the fake prime measure closest to the true one, for each `K`? | On residues all of them are: for fixed `k` and class `ι ≢ 0`, every fake prime measure of high level gives the class its pronic mass. Pointwise nothing is determined, since translating an atom by a period keeps every moment. So the freedom is where along a class the mass sits. At each window `B` at most the period there is an extremal measure, of largest window mass; that mass over `1 − 1/B` is the exact best normalized slope. At the best window it lies between `1 + c₁/(√K (1 + log K))` and `1 + exp(−(log K)^α)` times the pronic mass. At each fixed window the extremal mass tends to `1 − 1/B`, so every window is reached by producers of rate tending to `0`. Its exact form at finite `K` is open. | `exists_level_classMass_close`, `exists_level_window_mass_le`, `exists_producer_at_window`, `exists_extremal_fake_measure`, `exists_extremal_bracket`, `IsFakePrimeMeasure.hasSum_slack`, `isFakePrimeMeasure_translate`, `forall_isFakePrimeMeasure_iff` |
 
 ## 6. The scale of the rate
 
@@ -133,6 +142,12 @@ External: `stepWeight`, `IsBalanced`, `stencilSlope`, `stencilErrorConst` (Arith
 | certificate at height `τ` | `√K (1 + log K) ≳ |τ|` | `exists_necessary_alphabet_half` |
 | rate `exp(−(log K)^α)` | `Re ρ ≤ 1 − c (log ‖ρ‖)^{1−1/α}` | `exists_re_le_of_hasRate_exp` |
 | VK bounds for `M` and `m` | rate `exp(−(log K)^α)`, `α < 3/5` | `hasRate_vk` |
+| any producer of rate `ε` on `[1, K]` | `|M(n)| ≤ ε n + 12 (w/m) √n + K` | `IsProducer.abs_mertens_le` |
+| any producer of rate `ε` on `[1, K]` | `|M(n)| ≤ 3 ε n` for `n ≥ (D (1 + log K)³ K)²` | `exists_abs_mertens_le_three_rate` |
+| a family of rate `f`, `0 < θ < ½` | `|M(n)| ≤ 3 f(⌊n^θ⌋) n` eventually | `HasRate.eventually_abs_mertens_le` |
+| rate `K^{-a}` | `M(n) ≪ n^{1−σ}` for `σ < a/2` | `HasRate.exists_abs_mertens_le_rpow` |
+| rates `exp(−(log K)^β)`, `β < α` | same for `M(n)/n`, and conversely | `hasRate_exp_iff_mertens` |
+| a polynomial rate | a power saving for `M`, and conversely | `exists_hasRate_rpow_iff_mertens` |
 
 So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions match on the exponent `α = 3/5` at the VK scale, and up to a constant in the exponent at the polynomial scale.
 
@@ -153,9 +168,12 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 | The explicit Möbius producer | `moebiusWeight_nonneg`, `exists_moebius_producer`, `exists_moebius_producer_of_level` |
 | **Harmonic entanglement and the one-fifth rate** | `abs_mobiusPart_sub_le`, `mobiusPart_add_harmonicEntangled_ge`, `exists_harmonic_producer`, `hasRate_of_zeroFree_sharp`, `hasRate_of_riemannHypothesis_sharp` |
 | **A Mertens level gives a rate; polynomial rate ⇔ zero-free strip** | `eventually_producer_of_level`, `exists_hasRate_rpow_iff` |
+| **A rate bounds the Mertens and Liouville functions, with constant one** | `IsProducer.sum_producerSlack_le`, `IsProducer.abs_sum_le_of_ledger`, `IsProducer.ledger_moebius`, `IsProducer.abs_mertens_le`, `IsProducer.abs_liouvilleR_le`, `exists_abs_mertens_le_three_rate` |
+| **The scales of the rate and of `M` coincide, without zeros** | `abs_mobiusHarmonic_le_of_mertens`, `isMertensLevel_of_mertens_exp`, `hasRate_exp_iff_mertens`, `exists_hasRate_rpow_iff_mertens` |
 | **Explicit integer producers at the VK rate** | `isMertensLevel_vk`, `hasRate_vk` |
 | **Exact LP duality; the extremal fake prime measure and its distance from the truth** | `IsFakePrimeMeasure.le_normSlope`, `exists_producer_of_feasible`, `exists_extremal_fake_measure`, `exists_extremal_bracket` |
 | **Parity: the factor of two, and parity neutral producers at the Mertens level** | `IsProducer.parity_neutral_of_odd`, `exists_liouville_pattern`, `exists_neutral_producer`, `exists_neutral_producer_of_level`, `hasParityNeutralRate_vk`, `exists_hasParityNeutralRate_rpow_iff` |
+| **Profinite rigidity of fake prime measures; every window is reached** | `IsFakePrimeMeasure.sum_fold_moment`, `IsFakePrimeMeasure.sum_fold_tail_le`, `tendsto_foldMeasure_pronic`, `exists_level_classMass_close`, `exists_level_window_mass_le`, `exists_producer_at_window` |
 | Disjoint cones; parity ledger | `eq_zero_of_balanced_of_increment_nonneg`, `meanValue_pos`, `two_mul_coeff_one_mul_card_le` |
 | Blindness of the linear ledger to zeros and to the twin | `hasSum_ledgerMode_eq_zero`, `IsProducer.norm_ledgerMode_self_le`, `IsProducer.abs_ledger_twin_le` |
 | **The ledger ladder: the order law, its generating function, the twin gap** | `tendsto_ladder_of_lt`, `tendsto_ladder_of_le`, `exists_ladder_at_zero`, `lseries_ladder`, `sum_Icc_mul_incrementFn`, `IsProducer.ledger_twin_gap` |
@@ -167,6 +185,7 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 | Hurwitz limit set embeds in the gauge torus | `exists_tendsto_phase`, `exists_gauge_point`, `coeff_eq_zero_of_hasSum_zero` |
 | The transport count; the return exponent reads the zero | `volume_returnSet_le_zeroCount`, `riemannZeta_eq_zero_iff_returnExponent`, `returnExponent_jump` |
 | **The missing input of transport** | `exists_isPhaseReturn`, `IsPhaseReturn.tendstoLocallyUniformlyOn`, `IsPhaseReturn.infinite_zeros`, `not_translatesBoundedOn_of_finite`, `asymptoticAbscissaLaw_of_boundedReturns` |
+| **The transport of a zero is effective** | `norm_sub_le_of_isHeadReturn`, `exists_exponent_transport`, `exists_large_value_of_finite`, `infinite_zeros_of_slow_returns`, `asymptoticAbscissaLaw_of_slowReturns` |
 | Frobenius as a factorial stencil; exact ledger | `carlitzOrder_sub`, `carlitzSize_eq_sum_order`, `card_pow_eq_sum_irrDeg` |
 | **The curve stencil stops at the trivial bound; purity is an upper bound** | `coeff_balanced_stencil_mul`, `coeff_curve_tail`, `curveCount_nonneg_iff`, `curveCountR_nonneg_iff`, `abs_root_bounds`, `exists_impure_of_stencil`, `isPure_iff_upper_bound` |
 | Battery: golden obeys transport and fails the count; continuous counts have no multiplicity | `goldenL_shift`, `goldenL_deepZero`, `golden_fails_count`, `continuous_multiplicity_eq_zero` |
@@ -179,6 +198,9 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 - Stencil calculus: increments, Möbius inversion, palindrome, moments of coefficients, Hecke action.
 - **Size bounds for signed stencils past sup-norm**: the smooth mean value and peak law, the coefficient mass law, the uncertainty law.
 - **An explicit positivizer**: entangled letters with harmonic weights turn a signed Möbius sawtooth into an integer producer on the alphabet `T²/δ`, up to logarithms.
+- **The transference from stencils to bounded weights**: `IsProducer.abs_sum_le_of_ledger` bounds the partial sums of any `|a| ≤ 1` whose ledger is small.
+- **Folding**: `foldMeasure` reduces a fake prime measure to one period, keeping the moments at the divisors, with tightness from jumps alone.
+- **A local transport theorem**: `exists_exponent_transport`, by three circles and Rouché.
 - `exists_stencil_of_weights`, `exists_producer_of_feasible`: exact clearing of rational weights, and rational approach to any real feasible weight.
 - **LP duality**: fake prime measures as certificates of floors, with no gap at any window.
 - Dictionary between rates and zero-free regions in both directions.
@@ -192,9 +214,10 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 
 **To build.**
 
-- A certificate of a producer's rate that does not pass through `M(x)`.
+- A proof of `g ≥ 0` for an explicit family that uses no bound on `M(x)`.
 - A smaller alphabet at a given level. The family has peak `≍ K ε`, which the peak law allows, and the uncertainty law only asks for `1/ε`. Closing that gap would raise the RH rate.
-- A local form of the transport theorem: returns on a disc with polynomially bounded translates and polynomially small error.
+- A quantitative form of profinite rigidity: the level at which classes modulo `k` are within `η`, in terms of the rate.
+- Producers for arbitrary finite shapes: `g ≥ m` on a set `S`, at the pronic cost of `S`. The duality here is written for windows.
 - Arithmetic input for a nonlinear ledger: a bound on `Σ_d Λ^{∗j}(d) g(⌊n/d⌋)` that is not implied by meromorphy.
 - Pointwise bounds below the VK length, and a metric geometry of Beurling systems near the integers (RigidArithmeticOfCuts).
 
@@ -202,13 +225,13 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 
 ## 9. Open research topics
 
-1. **Certification without Möbius sums.** The Möbius producer is explicit, and its rate is certified by `M(x)`. Is there a family with non-constant multiplicity on its window whose rate has an independent proof?
-2. **The exact exponent.** Under RH the exponent of the rate lies in `[1/5, 1/2]`. The obstruction on the construction side is that a level `δ ≍ T^{-1/2}` forces `T ≍ δ^{-2}`, and the far letters have peak `≍ T²`. Is there a positivizer with peak near `1/ε`? Does a rate at `1/2` hold for any family?
+1. **Positivity without Möbius sums.** A rate is a bound on `M(x)`, so no stencil gives a bound on `M(x)` for free. The slope of an explicit stencil is a finite sum. All of the arithmetic is in `g ≥ 0`, and the Möbius family proves that from a bound on `M(x)`. Is there an explicit family whose nonnegativity has a direct combinatorial proof, past the known scale?
+2. **The exact exponent.** Under RH the exponent of the rate lies in `[1/5, 1/2]`. The obstruction on the construction side is that a level `δ ≍ T^{-1/2}` forces `T ≍ δ^{-2}`, and the far letters have peak `≍ T²`. Within entangled letters this is the limit: each prime up to `T` needs a letter of its own, and pays at least `1`. Replacing the primes in `(1/δ, T]` by adjacent pairs of smooth letters would reach `1/4`, but its near law needs Möbius sums over short intervals beyond what RH gives. Is there a positivizer with peak near `1/ε`?
 3. **Parity through the primes.** Parity neutrality in the coefficients is free. The twin gap goes through prime squares. What functional separates a twin that agrees with `Λ` on all prime powers up to a level?
 4. **Nonlinear arithmetic input.** The ladder sees zeros, and nothing bounds its modes. Which degree-two statement over `ℤ` has no analogue for a general meromorphic function?
-5. **Bounded phase returns.** Is there, at a zero right of `½ + h`, a phase return whose translates are bounded on a connected domain joining the zero to `Re s > 1`? One at each zero gives AAL. Any such sequence carries a spike at the pole.
+5. **Slow aligned returns.** Is there, at a zero right of `½ + h`, an aligned shift of length `N` at which `ζ` is at most `N^A` across a disc joining the zero to `Re s ≥ 2`? Slow returns at each zero and each exponent give AAL. Alignment forces `Σ_{p ≤ N} p^{-σ}` into `log ζ`, so the primes past `N` have to cancel it. Any such sequence carries a spike at the pole.
 6. **Curves.** Purity is the upper bound for the curve and its twist. Write Stepanov's auxiliary in ledger language: which degree in the points is the twist `x ↦ x^q`, and what is its analogue at the integers? Over a curve the linear theory stops at the trivial bound, so this is the actual model.
-7. **The extremal measure.** Describe the extremal fake prime measure explicitly. A limit as `K → ∞` that keeps all moments is the pronic measure, so how do the extremal measures lose moment mass to infinity, and at what rate in `K`?
+7. **The extremal measure.** On residues the limit is the pronic measure. At finite `K` the extremal measure is known only through its mass. What is its support, and how fast do its class masses converge in terms of the rate?
 
 ## 10. Traps
 
@@ -220,7 +243,10 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 | Integrality forces factorial alphabets | Entangled letters give an alphabet `≈ T²/δ`, and clearing rational weights is exact |
 | Integer coefficients make this a Diophantine problem | Integrality costs nothing: every rational weight clears, and rational points approach every real feasible cost |
 | Uniform far weights are natural | A failure at `P` can only cost `T/P`, and weights `∝ 1/P` drop the total from `π(T) T/G` to `(T/G) log log T` |
-| A stencil past VK would be independent of primes | Its rate reads a zero-free region directly, and the known family contains `μ` by rigidity |
+| A stencil past VK would be independent of primes | Any rate bounds `M(x)` by a three-line identity, and the known family contains `μ` by rigidity |
+| The equivalence of rate and zero-free strip needs complex analysis | The rate and the Mertens scale are equivalent by elementary proofs. Only the step from `M` to zeros uses analysis |
+| Fake prime measures are free | Their class masses are pinned at high level. Only the placement along a class is free |
+| A window has to be large to reach a small rate | Every window `B ≥ 2` is reached by producers of rate tending to `0` |
 | A small peak is compatible with a small rate | `ε x ≥ c₀`: a small rate forces a large peak, and the peak law bounds it by `K ε` up to logarithms |
 | The Hecke algebra amplifies | Positive dilations multiply the normalized slope by `1 + a/j` |
 | The sieve's 2 obstructs producers | `h ≥ 0` is a different, disjoint cone |
@@ -234,6 +260,7 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 | Transport proves purity | The golden fake returns exactly and fails the count |
 | Multiplicity survives continuous counts | `Σ c(k) x/k = 0`: all of it is the sawtooth |
 | The primes block returns at a zero | Phase returns always exist. What is missing is a bound on `ζ` along them |
+| Transport needs bounded translates | A bound polynomial in the aligned length is enough, by three circles |
 | Returns accumulate into a contradiction | Their measure is at most `2r` times the zero count, so strong returns are as rare as zeros |
 | Adams operators raise multiplicity | They keep the number of letters and raise the alphabet to a power |
 | The rate is a capacity | Sawtooth moments are not potentials |
@@ -260,6 +287,8 @@ So under RH the exponent of the rate lies in `[1/5, 1/2]`. The two directions ma
 | Uses | ArithmeticOfSquareRootPrecision | golden calibration, Liouville identity |
 | Uses | ArithmeticCastelnuovoSeveri | large almost periods of a finite family of phases |
 | Used by | ArithmeticKreinLangerTheory | `exists_producer_with_quantitative_cost` takes the coefficient bound and `IsProducer` from here |
+| Uses | RigidArithmeticOfCuts | uniqueness of the fake prime measure at infinite level, the Liouville floor identity |
+| Uses | VerifiedHeightRungs | RH through height `67`, which keeps the transport disc off the pole |
 | Used by | RigidArithmeticOfCuts | fake prime measures, Hecke action, the VK rate, Mellin transform, twin ledger |
 
 | Neighbour | Relation |
@@ -287,18 +316,18 @@ A contribution belongs to this field only if it
 
 The linear theory has answered its questions in the form they were asked. The field succeeds further if it does one of the following.
 
-- Certifies a producer without Möbius sums, past a known zero-free region.
-- Proves that no such certificate exists in a stated class.
+- Proves `g ≥ 0` for an explicit family without a bound on `M(x)`, past the known scale.
+- Proves that no such proof exists in a stated class.
 - Closes the exponent gap `[1/5, 1/2]` under RH.
-- Exhibits a bounded phase return at a zero, or excludes one in a stated class.
+- Exhibits a slow aligned return at a zero, or excludes one in a stated class.
 - Gives a nonlinear statement over `ℤ` that proves Hasse–Weil over `𝔽_q` in the same language and has no analogue for a general meromorphic function.
 
 ## 14. Big picture
 
-The linear construction over `ℤ` is exact at the top of its scale. Producers exist explicitly at polynomial alphabet and integrality costs nothing. A Mertens level gives a rate, a rate gives a zero-free region, and the two match at the VK exponent and at the polynomial scale up to constants. A rate `K^{-a}` reads `Θ ≤ 1 − a`, and the scale ends at `a = 1/2`, exactly where the reading reaches `½`. Each window is a linear program with an extremal fake prime measure. Parity neutrality is free at every proved scale.
+The linear construction over `ℤ` is exact at the top of its scale. Producers exist explicitly at polynomial alphabet and integrality costs nothing. A bound on `M` gives a rate and a rate gives a bound on `M`, both by elementary proofs. A rate `K^{-a}` reads `Θ ≤ 1 − a`, and the scale ends at `a = 1/2`, exactly where the reading reaches `½`. Each window is a linear program with an extremal fake prime measure, and on residues every fake prime measure of high level is already the truth. Parity neutrality is free at every proved scale.
 
-Rigidity explains why. Every stencil with a constant window contains `μ`, because a window of constant multiplicity is the inverse of `ζ`. So a stencil is `1/ζ` in integer form, and it has no force beyond a bound on `M(x)`, unless a certificate is found that does not pass through `M(x)`.
+Rigidity explains why. Every stencil with a constant window contains `μ`, because a window of constant multiplicity is the inverse of `ζ`. So a stencil is `1/ζ` in integer form, and its rate is a bound on `M(x)`: that is a theorem, not an impression. A stencil can only help if its nonnegativity is proved another way.
 
 The curve shows that this is not a defect of the integers. Over a curve a linear stencil reads one value of the numerator, and its window is the critical strip. The linear theory reaches the analogue of `ζ(1 + it) ≠ 0` there too. Purity is a different inequality, an upper bound on counts at square root precision, and Stepanov gets it from a twist inside the auxiliary, which is nonlinear in the points. So the question that remains is what plays the part of that twist over `ℤ`. The ladder of degrees is a first language for it: it sees a zero of order `n` at degree `n + 1`. But the order law is a fact about all analytic functions, and it needs an arithmetic bound that no source supplies.
 
-Transport has a parallel result. Phase returns always exist, so the primes never block a return, and one bound on `ζ` along them would give AAL. Strong returns are counted by zeros, so they are as rare as the zeros they move. On the fake side transport is free and the count fails, which is why neither half can stand alone.
+Transport has a parallel result. Phase returns always exist, so the primes never block a return, and a bound on `ζ` along them, polynomial in the aligned length, would give AAL. Strong returns are counted by zeros, so they are as rare as the zeros they move. On the fake side transport is free and the count fails, which is why neither half can stand alone.

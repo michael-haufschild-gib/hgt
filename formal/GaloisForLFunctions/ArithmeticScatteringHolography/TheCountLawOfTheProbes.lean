@@ -27,7 +27,7 @@ parameter of the wave system: it uses only `q` and the number of cusps (`Channel
 probe already (`fake_violates_second_probe`).
 
 So the law on the graph that excludes the fakes exists. On a true curve `K` is the degree, the parallelogram law is the theorem of the cube, and
-`K ≥ 0` because it is a count. The three cases are the three ways the two properties can meet:
+`K ≥ 0` because it is a count (`TheCountLawOfATrueCurve`, where this reproves Hasse's theorem). The three cases are the three ways the two properties can meet:
 
 * a curve: `K` is a count and is quadratic;
 * a fake: `K = |𝒬|` is a count and is not quadratic;
@@ -405,19 +405,6 @@ theorem card_quotient_tower {q t : ℤ} (hq : 2 ≤ q) (ht : |t| ≤ q) {n : ℕ
     rw [Int.natAbs_of_nonneg hnn]
   rw [← hcast, ← h1]
   simp
-
-section Curve
-
-attribute [local instance] Classical.propDecidable
-
-/-- **A true curve has the law**, through Hasse. -/
-theorem elliptic_has_countLaw {F : Type*} [Field F] [Fintype F] (W : WeierstrassCurve F) [W.IsElliptic]
-    (hF : ringChar F ≠ 2) :
-    ∃ K : ℤ → ℤ → ℕ, CountLaw K ∧ K 0 1 = 1 ∧ K 1 0 = (ellipticChannels W).q ∧
-      K 1 1 = Fintype.card W.toAffine.Point :=
-  (ellipticChannels W).universal_iff_countLaw.mpr (elliptic_trace_sq_le W hF)
-
-end Curve
 
 end GaloisForLFunctions.ArithmeticScatteringHolography
 

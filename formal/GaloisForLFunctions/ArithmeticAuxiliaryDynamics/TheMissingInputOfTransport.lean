@@ -38,7 +38,8 @@ def TranslatesBoundedOn (τ : ℕ → ℝ) (U : Set ℂ) : Prop :=
   ∀ z ∈ U, ∃ R : ℝ, 0 < R ∧ ball z R ⊆ U ∧ ∃ C : ℝ,
     ∀ j, ∀ w ∈ ball z R, ‖riemannZeta (w + (τ j : ℂ) * I)‖ ≤ C
 
-private lemma phaseDefect_eq (τ : ℕ → ℝ) (j n : ℕ) :
+/-- The phase defect, as an exponential. -/
+theorem phaseDefect_eq (τ : ℕ → ℝ) (j n : ℕ) :
     phaseDefect τ j n = exp (((-Real.log ((n : ℝ) + 1) * τ j : ℝ) : ℂ) * I) - 1 := by
   have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
   have hne : (((n : ℝ) + 1 : ℝ) : ℂ) ≠ 0 := by exact_mod_cast hpos.ne'

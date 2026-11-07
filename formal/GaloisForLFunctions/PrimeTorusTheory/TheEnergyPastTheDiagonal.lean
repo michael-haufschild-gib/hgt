@@ -21,8 +21,8 @@ It beats interpolation from the diagonal range `k₀ = log H/log y` for `k` up t
 scale (`card_largeValue_le_past_diagonal`). The middle term is independent of the window: `R ≪ kΛ k! (π(y)/(θS)²)^k/θ` for every `H`.
 
 **The oscillating energy.** Every absolute bound is at least `S^{2k}/(8kΛH)`, so the positive energy never sees a saving. The oscillating energy is the clocked moment, and so it is bounded by the supremum of the modulus
-on the window (`shiftedEnergy_le_of_norm_le`). With the rotation-proof saving this gives `E^{T}_k ≤ (S − c L^{−19} ℓ^{−14})^{2k}` for all `k` and `H ≤ T/2` (`shiftedEnergy_critical_le`). This is the first bound for the
-oscillating energy that is below the positive energy at any height: it separates them once `k ≫ S L^{19} ℓ^{14} log(kΛH)`.
+on the window (`shiftedEnergy_le_of_norm_le`). With the rotation-proof saving this gives `E^{T}_k ≤ (S − c L^{−19} ℓ^{−14})^{2k}` for all `k` and `H ≤ T/2` (`shiftedEnergy_critical_le`). This is below the positive
+energy once `k ≫ S L^{19} ℓ^{14} log(kΛH)`, so the two separate there.
 -/
 
 open Finset Filter Topology

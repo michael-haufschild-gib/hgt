@@ -21,13 +21,17 @@ Density then passes the inequality to the completed energy graph.
 The local and global Green identities, including equations holding only
 on test support, are formalized. Coordinate equations identify the actual
 variational operator graph; see [Green identity](../3-formalized/cubic-quotient-green-identity.md).
+The [transformed-height profile calculus](../3-formalized/hyperbolic-cusp-height-profile-calculus.md)
+is formalized, including its Laplace equation and finite-sum identities.
 
-Open: barrier construction and defect equation, ground-state inequality,
+The [invariant barrier and compact profile defect](../3-formalized/cubic-invariant-cusp-barrier.md)
+are formalized.
+
+Open: defect differential equation, ground-state inequality,
 and passage to the completed graph. Compactness
 of `1_K` is tracked on [formalized local compactness](../3-formalized/cubic-kernel-local-sobolev-compactness.md).
 
 External argument: OpenAI `Eisenstein/CuspHeight.lean`,
 `BarrierPotential.lean`, `MeanSquare/UnitRows.lean`, and
-`CubicSieve/CutoffOrders.lean`. The direct bounded-row proof of local
-finiteness would reuse the corpus Bianchi reduction instead of the
-external spatial derivative majorants.
+`CubicSieve/CutoffOrders.lean`. The [direct bounded-row proof of local finiteness](../3-formalized/cubic-high-cusp-local-finiteness.md)
+and integral height-product bound are formalized using corpus row geometry.

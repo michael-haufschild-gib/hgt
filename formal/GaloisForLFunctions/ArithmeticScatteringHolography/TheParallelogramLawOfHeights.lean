@@ -746,6 +746,236 @@ theorem cast_formTriple (x₁ x₂ : RatFunc F) :
   · rw [map_formB, cast_num_eq, cast_num_eq, formB_scale]
   · rw [map_formC, cast_num_eq, cast_num_eq, formC_scale]
 
+/-- With the origin as first point the triple is the square of the second. -/
+theorem formTriple_zero_left (p r : F[X]) :
+    formTriple a b c 1 0 p r = pairTriple p r p r := by
+  simp only [formTriple, pairTriple, formA, formB, formC]
+  ext1
+  · ring
+  · ext1
+    · ring
+    · ring
+
+theorem formTriple_zero_right (p r : F[X]) :
+    formTriple a b c p r 1 0 = pairTriple p r p r := by
+  simp only [formTriple, pairTriple, formA, formB, formC]
+  ext1
+  · ring
+  · ext1
+    · ring
+    · ring
+
+theorem crossRel_self (t : F[X] × F[X] × F[X]) : CrossRel t t := by
+  refine ⟨?_, ?_, ?_⟩ <;> ring
+
+/-- `(2 : F(T)) ≠ 0`. -/
+theorem two_ne_zero_ratFunc (h2 : (2 : F) ≠ 0) : (2 : RatFunc F) ≠ 0 := by
+  have h : (cast (C (2 : F))) ≠ 0 := by
+    rw [Ne, map_eq_zero_iff _ (RatFunc.algebraMap_injective F), C_eq_zero]
+    exact h2
+  rwa [map_ofNat, map_ofNat] at h
+
+/-- **Duplication in the triple.** -/
+theorem crossRel_double (h2 : (2 : F) ≠ 0) (P : (twistCurve a b c).toAffine.Point)
+    (hP : P ≠ 0) :
+    CrossRel (formTriple a b c (xPair a b c P).1 (xPair a b c P).2 (xPair a b c P).1 (xPair a b c P).2)
+      (pairTriple (xPair a b c (P + P)).1 (xPair a b c (P + P)).2 1 0) := by
+  have h2K := two_ne_zero_ratFunc h2
+  have hD := twistD_ne_zero (a := a) (b := b) (c := c)
+  rcases P with _ | ⟨x, y, h⟩
+  · exact absurd rfl hP
+  set X := x / twistD a b c with hX
+  have hcast := cast_formTriple (a := a) (b := b) (c := c) X X
+  simp only at hcast
+  obtain ⟨cA, cB, cC⟩ := hcast
+  have hA0 : formA (RatFunc.num X) (RatFunc.denom X) (RatFunc.num X) (RatFunc.denom X) = 0 := by
+    unfold formA
+    ring
+  have eP : xPair a b c (WeierstrassCurve.Affine.Point.some x y h) = (RatFunc.num X, RatFunc.denom X) := rfl
+  rw [eP]
+  by_cases hy : y = 0
+  · -- a point of order two
+    subst hy
+    have hneg : (0 : RatFunc F) = (twistCurve a b c).toAffine.negY x 0 := by
+      have := twist_negY (α := cast (C a)) (β := cast (C b)) (γ := cast (C c)) (D := twistD a b c) x (0 : RatFunc F)
+      rw [neg_zero] at this
+      exact this.symm
+    have hadd : (WeierstrassCurve.Affine.Point.some x 0 h + WeierstrassCurve.Affine.Point.some x 0 h :
+        (twistCurve a b c).toAffine.Point) = 0 :=
+      WeierstrassCurve.Affine.Point.add_self_of_Y_eq hneg
+    have e0 : xPair a b c (0 : (twistCurve a b c).toAffine.Point) = (1, 0) := rfl
+    rw [hadd, e0]
+    have heq := h.1
+    have heq' := (twist_equation (α := cast (C a)) (β := cast (C b)) (γ := cast (C c)) (D := twistD a b c)).mp heq
+    have hh : X ^ 3 + cast (C a) * X ^ 2 + cast (C b) * X + cast (C c) = 0 := by
+      have hx : x = twistD a b c * X := by
+        rw [hX]
+        field_simp
+      rw [hx] at heq'
+      have h3 : (twistD a b c) ^ 3 ≠ 0 := pow_ne_zero 3 hD
+      apply mul_left_cancel₀ h3
+      linear_combination -heq'
+    have hBzero : formB (C a) (C b) (C c) (RatFunc.num X) (RatFunc.denom X) (RatFunc.num X)
+        (RatFunc.denom X) = 0 := by
+      apply RatFunc.algebraMap_injective F
+      rw [cB, map_zero]
+      have : formB (cast (C a)) (cast (C b)) (cast (C c)) X 1 X 1 =
+          4 * (X ^ 3 + cast (C a) * X ^ 2 + cast (C b) * X + cast (C c)) := by
+        unfold formB
+        ring
+      rw [this, hh]
+      ring
+    refine ⟨?_, ?_, ?_⟩
+    · simp only [formTriple, pairTriple]
+      rw [hA0, hBzero]
+      simp
+    · simp only [formTriple, pairTriple]
+      rw [hA0]
+      simp
+    · simp only [formTriple, pairTriple]
+      rw [hBzero]
+      simp
+  · -- a point not of order two
+    have hyne : y ≠ (twistCurve a b c).toAffine.negY x y := by
+      have hn : (twistCurve a b c).toAffine.negY x y = -y :=
+        twist_negY (α := cast (C a)) (β := cast (C b)) (γ := cast (C c)) (D := twistD a b c) x y
+      rw [hn]
+      intro he
+      have h0 : 2 * y = 0 := by linear_combination he
+      exact (mul_ne_zero h2K hy) h0
+    have hadd := WeierstrassCurve.Affine.Point.add_self_of_Y_ne (h₁ := h) hyne
+    rw [hadd]
+    set Z := (twistCurve a b c).toAffine.addX x x ((twistCurve a b c).toAffine.slope x x y y) /
+      twistD a b c with hZ
+    have hdbl : formB (cast (C a)) (cast (C b)) (cast (C c)) X 1 X 1 * Z =
+        formC (cast (C a)) (cast (C b)) (cast (C c)) X 1 X 1 :=
+      double_of_Y_ne h2K hD h.1 hy
+    have hV := cast_num_eq Z
+    refine crossRel_of_cast ?_ ?_ ?_
+    · simp only [formTriple, pairTriple]
+      rw [hA0]
+      simp
+    · simp only [formTriple, pairTriple]
+      rw [hA0]
+      simp
+    · simp only [formTriple, pairTriple, xPair]
+      rw [cB, cC]
+      simp only [map_add, map_mul, map_one, map_zero]
+      rw [hV, ← hdbl]
+      ring
+
+/-- The cross relations from the sum and the product of the two roots. -/
+theorem crossRel_of_values {X₁ X₂ Z₁ Z₂ : RatFunc F}
+    (hS : (X₁ - X₂) ^ 2 * (Z₁ + Z₂) = formB (cast (C a)) (cast (C b)) (cast (C c)) X₁ 1 X₂ 1)
+    (hPr : (X₁ - X₂) ^ 2 * (Z₁ * Z₂) = formC (cast (C a)) (cast (C b)) (cast (C c)) X₁ 1 X₂ 1) :
+    CrossRel (formTriple a b c (RatFunc.num X₁) (RatFunc.denom X₁) (RatFunc.num X₂) (RatFunc.denom X₂))
+      (pairTriple (RatFunc.num Z₁) (RatFunc.denom Z₁) (RatFunc.num Z₂) (RatFunc.denom Z₂)) := by
+  have hcast := cast_formTriple (a := a) (b := b) (c := c) X₁ X₂
+  simp only at hcast
+  obtain ⟨cA, cB, cC⟩ := hcast
+  have hA1 : formA X₁ 1 X₂ 1 = (X₁ - X₂) ^ 2 := by
+    unfold formA
+    ring
+  have hV₁ := cast_num_eq Z₁
+  have hV₂ := cast_num_eq Z₂
+  refine crossRel_of_cast ?_ ?_ ?_
+  · simp only [formTriple, pairTriple]
+    rw [cA, cB, hA1]
+    simp only [map_add, map_mul]
+    rw [hV₁, hV₂, ← hS]
+    ring
+  · simp only [formTriple, pairTriple]
+    rw [cA, cC, hA1]
+    simp only [map_add, map_mul]
+    rw [hV₁, hV₂, ← hPr]
+    ring
+  · simp only [formTriple, pairTriple]
+    rw [cB, cC]
+    simp only [map_add, map_mul]
+    rw [hV₁, hV₂, ← hS, ← hPr]
+    ring
+
+/-- **The cross relations**: `X(P + Q)` and `X(P - Q)` are the roots of the quadratic of the three forms at `X(P)`, `X(Q)`. -/
+theorem crossRelations (h2 : (2 : F) ≠ 0) (P Q : (twistCurve a b c).toAffine.Point) :
+    CrossRel (formTriple a b c (xPair a b c P).1 (xPair a b c P).2 (xPair a b c Q).1 (xPair a b c Q).2)
+      (pairTriple (xPair a b c (P + Q)).1 (xPair a b c (P + Q)).2
+        (xPair a b c (P - Q)).1 (xPair a b c (P - Q)).2) := by
+  have h2K := two_ne_zero_ratFunc h2
+  have hD := twistD_ne_zero (a := a) (b := b) (c := c)
+  by_cases hP0 : P = 0
+  · subst hP0
+    rw [zero_add, zero_sub, xPair_neg]
+    have e : xPair a b c (0 : (twistCurve a b c).toAffine.Point) = (1, 0) := rfl
+    rw [e]
+    simp only
+    rw [formTriple_zero_left]
+    exact crossRel_self _
+  by_cases hQ0 : Q = 0
+  · subst hQ0
+    rw [add_zero, sub_zero]
+    have e : xPair a b c (0 : (twistCurve a b c).toAffine.Point) = (1, 0) := rfl
+    rw [e]
+    simp only
+    rw [formTriple_zero_right]
+    exact crossRel_self _
+  rcases P with _ | ⟨x₁, y₁, h₁⟩
+  · exact absurd rfl hP0
+  rcases Q with _ | ⟨x₂, y₂, h₂⟩
+  · exact absurd rfl hQ0
+  by_cases hx : x₁ = x₂
+  · subst hx
+    rcases WeierstrassCurve.Affine.Y_eq_of_X_eq h₁.1 h₂.1 rfl with hy | hy
+    · subst hy
+      rw [sub_self]
+      have hd := crossRel_double h2 (WeierstrassCurve.Affine.Point.some x₁ y₁ h₁) hP0
+      have e : xPair a b c (0 : (twistCurve a b c).toAffine.Point) = (1, 0) := rfl
+      rw [e]
+      exact hd
+    · -- the second point is the opposite of the first
+      have hQ : (WeierstrassCurve.Affine.Point.some x₁ y₂ h₂ : (twistCurve a b c).toAffine.Point) =
+          -WeierstrassCurve.Affine.Point.some x₁ y₁ h₁ := by
+        have hy' : y₂ = (twistCurve a b c).toAffine.negY x₁ y₁ := by
+          rw [hy, WeierstrassCurve.Affine.negY_negY]
+        subst hy'
+        rfl
+      rw [hQ, add_neg_cancel, sub_neg_eq_add, xPair_neg]
+      have hd := crossRel_double h2 (WeierstrassCurve.Affine.Point.some x₁ y₁ h₁) hP0
+      have e : xPair a b c (0 : (twistCurve a b c).toAffine.Point) = (1, 0) := rfl
+      rw [e]
+      obtain ⟨d1, d2, d3⟩ := hd
+      simp only [pairTriple, CrossRel] at d1 d2 d3 ⊢
+      refine ⟨?_, ?_, ?_⟩
+      · linear_combination d1
+      · linear_combination d2
+      · linear_combination d3
+  · -- the general position
+    have hadd := WeierstrassCurve.Affine.Point.add_of_X_ne (h₁ := h₁) (h₂ := h₂) hx
+    have hsub : (WeierstrassCurve.Affine.Point.some x₁ y₁ h₁ - WeierstrassCurve.Affine.Point.some x₂ y₂ h₂ :
+        (twistCurve a b c).toAffine.Point) =
+        WeierstrassCurve.Affine.Point.some x₁ y₁ h₁ + WeierstrassCurve.Affine.Point.some x₂ _
+          ((WeierstrassCurve.Affine.nonsingular_neg ..).mpr h₂) := by
+      rw [sub_eq_add_neg, WeierstrassCurve.Affine.Point.neg_some]
+    have hadd2 := WeierstrassCurve.Affine.Point.add_of_X_ne (h₁ := h₁)
+      (h₂ := (WeierstrassCurve.Affine.nonsingular_neg x₂ y₂).mpr h₂) hx
+    rw [hsub, hadd2, hadd]
+    obtain ⟨hS, hPr⟩ := sum_product_of_X_ne (α := cast (C a)) (β := cast (C b)) (γ := cast (C c)) hD h₁.1 h₂.1 hx
+    exact crossRel_of_values hS hPr
+
+/-- **The exact parallelogram law of heights.** -/
+theorem height_parallelogram (h2 : (2 : F) ≠ 0)
+    (hcop : IsCoprime (cubicPoly a b c) (derivative (cubicPoly a b c)))
+    (P Q : (twistCurve a b c).toAffine.Point) :
+    height a b c (P + Q) + height a b c (P - Q) = 2 * height a b c P + 2 * height a b c Q := by
+  obtain ⟨c1, c2, c3⟩ := crossRelations h2 P Q
+  simp only [formTriple, pairTriple] at c1 c2 c3
+  obtain ⟨k, hk, eA, eB, eD⟩ := eq_const_mul_of_cross
+    (forms_bezout h2 hcop (xPair_coprime P) (xPair_coprime Q))
+    (pair_bezout (xPair_coprime (P + Q)) (xPair_coprime (P - Q))) c1 c2 c3
+  have h1 := forms_top (a := a) (b := b) (c := c) h2 hcop (xPair_ne P) (xPair_ne Q)
+  have h3 := pair_top (xPair_ne (P + Q)) (xPair_ne (P - Q))
+  rw [eA, eB, eD, maxDeg_const_mul hk, h3] at h1
+  exact h1
+
 end Twist
 
 end GaloisForLFunctions.ArithmeticScatteringHolography

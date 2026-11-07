@@ -2,7 +2,7 @@
 
 Namespace `GaloisForLFunctions.PrimeTorusTheory`; umbrella `PrimeTorusTheory.lean`.
 
-Throughout, `L = log T`, `ℓ = log L`, and a column is `P(t) = Σ_{p ≤ y} a_p cos(t log p)` with size `S = Σ a_p`.
+Throughout, `L = log T`, `ℓ = log L`, `θ_p = t log p/2π`, and a column is `P(t) = Σ_{p ≤ y} a_p cos(t log p)` with size `S = Σ a_p`.
 
 ## 1. Motivation
 
@@ -20,12 +20,13 @@ PTT takes as its object the pair `(t, ω_t)` **at finite time**: how far the orb
 | Orbit | `orbit`, `poly`, `polyAt` | `ω_t(i) = e^{−itℓ_i}`; `Σ a_i e^{itℓ_i}`; its translate by a torus point |
 | Column, size, defect | `column`, `size`, `defect`, `antiDefect` | `P`, `S`, `D = S − P`, `S + P` |
 | Bohr and large-value sets | `bohr`, `largeValue` | `{D ≤ r²}`, `{P ≥ θS}` |
-| Alignment | `AlignedAt`, `phaseDist`, `topPrimes` | distance of `t log p` to `2πℤ`; the primes above a threshold |
+| Alignment | `AlignedAt`, `phaseDist`, `rotDist`, `topPrimes` | distance of `θ_p` to `ℤ`, or to a rotation `φ + ℤ` |
 | Near-diagonal energy | `energy`, `shiftedEnergy`, `clockedMoment`, `diagonalMass` | `Σ A_u A_v cos(T₀(λ_u − λ_v)) sinc²(H(λ_u − λ_v)/2)` over pairs of `k`-tuples |
-| Resonator | `resonator`, `boxKernel`, `targetCoeff`, `boxModulus` | `Σ_{n∣D} c(n) n^{it}`, a Fejér product |
-| Words | `IsWord`, `binomMoment`, `wordLog`, `logForm` | Tarry–Escott words: linear forms in logarithms of integers with vanishing moments |
+| Resonators | `resonator`, `boxKernel`, `boxWeight`, `binomMean` | a Fejér product `Σ_{n∣D} c(n) n^{it}`; the concentrated product `Π_p ((1 + cos x_p)/2)^{e_p}` |
+| Words | `IsWord`, `binomMoment`, `wordLog`, `logForm`, `FineWord`, `wordHeight` | Tarry–Escott words; the squared phase `y(u)` |
+| Models | `modelPhase`, `apTerm`, `rankCoeff` | a prime phase model extended additively; the progression `1 + Q(x + h(a + b))`; its lattice coefficient |
 | Fibres of the hull | `orbitPoint`, `gaugeFibre`, `liouvilleFibre` | `L_ω(s) = Σ ω(n) n^{−s}` |
-| Certificates | `AglerDecomposition`, `AglerDecompositionAll`, `TwoPositive`, `pickKernel`, `graph_lift`, `column_outer_factor` | kernel-valued prime conductances; slow coefficients |
+| Certificates | `AglerDecomposition`, `AglerDecompositionAll`, `TwoPositive`, `pickKernel`, `heightCoord` | kernel-valued conductances; coordinates that see the height |
 | Sign patterns | `pattern`, `cosZeros` | the box of the torus the orbit is in |
 | Theta amplitude | `thetaAmp`, `thetaSum` | `e^{x/2} Σ_{n≥1} e^{−πn²e^{2x}}` |
 
@@ -33,9 +34,10 @@ PTT takes as its object the pair `(t, ω_t)` **at finite time**: how far the orb
 
 - **Alignment, entry.** The orbit is near the corner `+1` on a set of primes; it enters the half-space `{P ≥ θS}`.
 - **Return.** A height of small defect. **Start of the orbit.** `t = 0`, the corner `ω_0 = 1`, the pole.
-- **Corners.** `+1` and `−1`; the Liouville twin is the orbit translated by `−1`.
+- **Corners, rotations.** `+1` and `−1`; the Liouville twin is the orbit translated by `−1`. A rotation is a common phase `φ` of all primes: moments cannot tell it from `+1`.
+- **Rank.** The number of generators of a progression holding the phases `θ_p`.
 - **Kronecker scale.** `y ≍ log T`: up to it the orbit reaches every half-space.
-- **Mixing time.** `2^{π(y)}/θ(y)`: below it the orbit misses a box of the torus.
+- **Mixing time.** The time for the orbit to reach every box: between `2^{π(y)}/θ(y)` and `exp(40 y log y)`.
 - **Diagonal range.** `k ≤ log H / log y`: products of `k` primes separate at resolution `1/H`. **Past the diagonal.** They overflow the boxes.
 - **Size horizon.** `y = L²/16`, where `Σ_{n ≤ y} Λ(n) n^{−½} ≈ 2√y` meets the base `½ L`. At `y = L^{2K}` this is the scale `K = 1`. The Rankin saddle of the `y`-smooth numbers up to `T` is at `1 − 1/(2K)`, which is `½` exactly at `K = 1`. Below the horizon size fits under the base and no sign is needed.
 - **Saving against size.** A lower bound for `S − sup P`. **Required saving.** What a bound at the level of the base needs: size minus base, which is `≍ εL/ℓ` at `y = (1 + ε)L²/16` at weights `p^{−½}`.
@@ -51,34 +53,37 @@ PTT takes as its object the pair `(t, ω_t)` **at finite time**: how far the orb
 3. Descent (`exists_low_return_of_many_large_values`, `card_le_of_no_low_return`). Pigeonholing a large-value set into short intervals gives a large value at a low height. Rare heights are controlled by the first return.
 4. Doubling (`defect_two_mul_le_antiDefect`, `three_four_one`). `ω ↦ ω²` sends both corners to `+1`: a visit near `−1` at `t` is a visit near `+1` at `2t`. This is `3 + 4cos + cos 2 ≥ 0` on the orbit.
 
-**The resonator is a finite-time Bohr isometry.**
-5. A Fejér product over a set `Y` of primes is `|R(t)|²`, with `R = Σ_{n∣D} c(n) n^{it}`, `D = Π_{p∈Y} p^m`, and unimodular coefficients. Its window integrals have an exact main term and an error bounded by the integrality `|log a − log b| ≥ 1/max(a, b)`, with no input from linear forms in logarithms. So every window of length `2(N+1)(m+1)^y 4^{my}/η` reaches level `m/(m+1)` on the primes up to `y`, with error `η` on any longer polynomial of length `N` (`exists_column_ge`, `exists_column_ge_of_primesUpTo`).
+**Resonators are finite-time Bohr isometries.**
+5. A Fejér product over a set `Y` of primes is `|R(t)|²`, with `R = Σ_{n∣D} c(n) n^{it}`, `D = Π_{p∈Y} p^m`, and unimodular coefficients. Its window integrals have an exact main term and an error bounded by the integrality `|log a − log b| ≥ 1/max(a, b)`, with no input from linear forms in logarithms. So every window of length `2(N+1)(m+1)^y 4^{my}/η` reaches level `m/(m+1)` on the primes up to `y` (`exists_column_ge_of_primesUpTo`).
+6. Boxes need a concentrated kernel. `Π_p w(x_p)^{e_p}`, `w = (1 + cos)/2`, has binomial Fourier coefficients of total mass `1`, whatever the number of primes (`abs_integral_boxWeight_sub_le`). Outside the box of `q`, lowering the exponent of `q` from `2m` to `m` costs `(1 − δ)^m`, which replaces a union bound by `8 m r (1 − δ)^m ≤ 1`. So every window of length `exp((20/δ) y log y)` enters every box on the primes up to `y` (`exists_mem_box`, `eventually_exists_mem_box`).
 
 **Integers forbid alignment, with a price.**
-6. Unique factorization (`le_of_aligned`). Past the diagonal range two distinct products of `k` primes of a set `G` fall into one box of width `π/t`. Alignment to within `ε` puts `t log(a/b)` within `2kε` of `0`, while `|log(a/b)| ≥ y^{−k}`, so `t ≤ 2kεy^k`. Only the cardinality of `G` enters, so the saving survives deleting primes (`saving_on_any_set_of_primes`, `saving_at_the_top_of_the_column`). The price is a power of `T`.
-7. Tarry–Escott words (`exists_not_aligned`, `exists_not_aligned_of_large`). A word `c` with vanishing moments makes `Σ c_a log(x + a)` tiny and slowly varying, so at a suitable `x` the phase `t Σ c_a log(x+a)/2π` is at distance `≥ ¼` from the integers. Alignment of every integer in `[x, x + M]` would put it near an integer. This uses that every integer in a short interval is a product of the generators, so it needs all small primes.
-8. Squared words and the logarithmic Hankel form (`logForm`, `exists_band`, `le_sum_primes_phaseDist`, `le_sum_primes_critical`). The phase of `Σ c_a c_b log(x + a + b)` is positive, decreasing and log-convex in `x`, with no cancellation to control. The crossing of `½` is therefore slow, a band of real arguments. Since the word has mass zero the phase is unchanged under `x + h(a+b)`, so the band gives a positive density of misaligned integers. Their mean distance over `n ≤ N` is carried by the primes at weight `1/p`.
-9. Height against length (`exp_neg_le_sum_primes_critical`). Words of height `H` trade `ℓ¹` mass for length: order `L` at length `L^A` costs `H^{O(1)}` with `log H ≍ L^{2−A} ℓ`. A word has mass zero, so it cannot see a common rotation of the phases: the same argument bounds `|Σ_{n<N} n^{it}|` (`norm_sum_le_of_large`).
+7. Unique factorization (`le_of_aligned`). Past the diagonal range two distinct products of `k` primes of a set `G` fall into one box of width `π/t`. Alignment to within `ε` puts `t log(a/b)` within `2kε` of `0`, while `|log(a/b)| ≥ y^{−k}`, so `t ≤ 2kεy^k`. Only the cardinality of `G` enters, so the saving survives deleting primes (`saving_on_any_set_of_primes`, `saving_at_the_top_of_the_column`). The price is a power of `T`.
+8. Tarry–Escott words (`exists_not_aligned`, `exists_not_aligned_of_large`). A word `c` with vanishing moments makes `Σ c_a log(x + a)` tiny and slowly varying, so at a suitable `x` the phase `t Σ c_a log(x+a)/2π` is at distance `≥ ¼` from the integers. Alignment of every integer in `[x, x + M]` would put it near an integer. This uses that every integer in a short interval is a product of the generators.
+9. Squared words and the logarithmic Hankel form (`logForm`, `exists_band`, `le_sum_primes_phaseDist`, `le_sum_primes_critical`). The phase of `Σ c_a c_b log(x + a + b)` is positive, decreasing and log-convex in `x`, with no cancellation to control. So its crossing of `½` is slow, a band of real arguments. Since the word has mass zero the phase depends only on `x/h`, so the band gives misaligned integers of positive density, on every progression. Their mean distance is carried by the primes at weight `1/p`.
+10. Height against length (`exp_neg_le_sum_primes_critical`). Words of height `H` trade `ℓ¹` mass for length: order `L` at length `L^A` costs `H^{O(1)}` with `log H ≍ L^{2−A} ℓ`.
+11. **Escape from progressions** (`exists_prime_escape`, `exists_prime_escape_rank`). The squared phase `y(u)` moves slowly along every lattice `(β + n)/h`, by log-convexity (`exists_grid_point`). If the `θ_p` lie near a model `ψ_p`, then `y(x/h)` lies near the values of the model on the progression. When the model has rank `d` and width `E`, those values form a set of size `≤ (2WE + 1)^d`, `W = (M + 1)²Λ`, and a cell of `[¼, ½]` is free of them (`exists_free_cell`). The phase lands in that cell, which is a contradiction. So generators cost their number, not their size.
 
 **The energy is the moment.**
-10. `clockedMoment_eq`: the Fejér-clocked moment of the orbit is exactly the near-diagonal sum, oscillating at height `T₀`. Through the diagonal range the energy is diagonal (`energy_le`). Every large value contributes (`card_mul_le_clockedMoment`), and the start of the orbit contributes `S^{2k}/(8kΛH)` (`energy_ge_start`): the mixing term forced by Cauchy–Schwarz is the pole.
+12. `clockedMoment_eq`: the Fejér-clocked moment of the orbit is exactly the near-diagonal sum, oscillating at height `T₀`. Through the diagonal range the energy is diagonal (`energy_le`). At every `k` a fibre of the product has at most `k!` tuples and the kernel over the integers near `m` has mass `≲ m/H`, whichever integers occur (`energy_le_past_diagonal`). Every large value contributes (`card_mul_le_clockedMoment`), and the start of the orbit contributes `S^{2k}/(8kΛH)` (`energy_ge_start`): the mixing term forced by Cauchy–Schwarz is the pole. The oscillating energy is bounded by the modulus on the window (`shiftedEnergy_le_of_norm_le`).
 
 **Rank.**
-11. At rank one (`IsRankOne`) the orbit is periodic whatever the size, exact returns have positive density, and products collide (`tupleStep_eq_of_coeff_sum_eq`). At finite rank `r` the return time is `Q^r` whatever the size (`exists_return_of_rank`). A continuous system has no torus (`tendsto_continuousColumn`).
+13. At rank one (`IsRankOne`) the orbit is periodic whatever the size, exact returns have positive density, and products collide (`tupleStep_eq_of_coeff_sum_eq`). At finite rank `r` the return time is `Q^r` whatever the size (`exists_return_of_rank`). A continuous system has no torus (`tendsto_continuousColumn`).
 
 **The two-point test.**
-12. Test a decomposition on `(1, −1)` at `s` and at `s + iτ`, with `τ` a return. Prime coordinates barely move and contribute a nonnegative amount; the Gamma coordinate is tiny at `s + iτ`. What remains is `|S(s)| ≤ |G(s)|` (`two_point_inequality`, `norm_le_of_returns`). With all primes the return errors are dominated by `Σ_p p^{−2σ}`, which converges on `Re s > ½` (`two_point_inequality_all`).
-13. At rank one the same test is Schwarz–Pick (`exists_certificate_iff`): the determinant of the quotient kernel is the pseudo-hyperbolic comparison.
+14. Test a decomposition on `(1, −1)` at `s` and at `s + iτ`, with `τ` a return. Prime coordinates barely move and contribute a nonnegative amount; the Gamma coordinate is tiny at `s + iτ`. What remains is `|S(s)| ≤ |G(s)|` (`two_point_inequality`, `norm_le_of_returns`). With all primes the return errors are dominated by `Σ_p p^{−2σ}`, which converges on `Re s > ½` (`two_point_inequality_all`).
+15. At rank one the same test is Schwarz–Pick (`exists_certificate_iff`): the determinant of the quotient kernel is the pseudo-hyperbolic comparison.
+16. Products decompose (`hasSum_of_product`): `S = Π z_n` has kernels `Π_{m<n} z_m(x) conj z_m(y)` of rank one. So each prime can pay its Euler factor out of a share of the Gamma factor, through coordinates `(s + 3)^{−α_p} E_p(s)` that do not return (`euler_test_has_height_certificate`).
 
 ## 5. The questions, and their answers
 
 | Question | Answer | Lean |
 |---|---|---|
-| How long does the orbit need to enter a half-space at `y = L^{2K}`, `K > ½`? Any saving against size? | Every window of length `exp(c_m y₀)` enters level `(m/(m+1)) S(y₀)`: the Kronecker scale, at any length. It never reaches size past that scale. On all primes the saving exceeds `T^{−δ}` for every `δ` at every `K > ½`, is at least `exp(−L^β)`, `β > 2 − 2K`, up to `K = 1`, and at least a constant times `L^{−8}ℓ^{−4}` at `y ≥ 48 L²ℓ`. With every prime up to `L^{A'}` deleted, `1 < A' < 2K`, it is still `T^{−2(2K−A'+1)/(A'−1)−δ}`. Separated visits at level `θ` in a window `H ≥ 4y^k` number at most `16kΛH k!(Σa²)^k/(θ(θS)^{2k})`, which is `H^{1/(2K)+o(1)}` at `H ≍ T`. | `question_one`, `card_largeValue_le` |
-| Near-diagonal energy past `k = L/log y`? | It is the clocked moment. Through the diagonal range it is the diagonal. Past it, it contains the diagonal and the start of the orbit, each large value adds a term of the same shape, and interpolation bounds it by size. The positive count never sees a saving: non-alignment lives in the cancellation of the oscillating sum. Diagonal data cannot exclude a return. | `question_two`, `clockedMoment_succ_le`, `diagonal_data_cannot_exclude_return`, `not_mem_largeValue_of_shiftedEnergy_lt` |
+| How long does the orbit need to enter a half-space at `y = L^{2K}`, `K > ½`? Any saving against size? | Every window of length `exp(c_m y₀)` enters level `(m/(m+1)) S(y₀)`, and every window of length `exp((20/δ) y₀ log y₀)` enters every `δ`-box on the primes up to `y₀`. Past the Kronecker scale the column never reaches size, nor does its modulus against any rotation. On all primes the saving exceeds `T^{−δ}` for every `δ` at every `K > ½`, is at least `exp(−L^β)`, `β > 2 − 2K`, up to `K = 1`, and of order `L^{−8}ℓ^{−4}` at `y ≥ 48 L²ℓ`. The modulus saves `L^{−19}ℓ^{−14}` at `y ≥ 10⁹ L⁶ℓ⁴`. With every prime up to `L^{A'}` deleted, `1 < A' < 2K`, the saving is still `T^{−2(2K−A'+1)/(A'−1)−δ}`. Separated visits at level `θ` number at most `H^{1/(2K)+o(1)}` at `H ≍ T`. | `question_one`, `question_one_boxes_and_rotations`, `card_largeValue_le` |
+| Near-diagonal energy past `k = L/log y`? | It is the clocked moment. At every `k` it is at most `k!(Σ r^{−2σ})^k + 24 k!(Σ r^{1−2σ})^k/H + 32 S^{2k}/H²`, and at least the diagonal and `S^{2k}/(8kΛH)`. At `σ = ½` the two sides differ by `k!(log y/4)^k`, which is the unknown density of smooth numbers in short intervals. The positive count never sees a saving. The oscillating energy does: at height `T` it is at most `(S − c L^{−19}ℓ^{−14})^{2k}`. Diagonal data cannot exclude a return. | `question_two`, `question_two_past_the_diagonal`, `shiftedEnergy_critical_le`, `diagonal_data_cannot_exclude_return` |
 | Why is the Gamma coupling at the critical growth `κ = ½`? | The theta amplitude counts integers (Poisson): `f(x)e^{x/2} → ½`. The diagonal cost of the Bernstein test divides by the count of the test integers. So against integers the cost balances exactly, against primes it loses one logarithm, and below `½` it vanishes. Both `½`s are the pole of `ζ`: the centre of the functional equation is half the pole, and `Σ n^{−2σ}` diverges there. | `question_three` |
-| Which functions on `X` have a sum-of-squares form with `t`-dependent coefficients? | Pointwise in `t`: all nonnegative ones, tautologically. Frozen on a window past the Kronecker time: only those paying size. Above the size curve: explicit, column by column, with an outer factor. Kernel-valued with returning prime coordinates and a Gamma coordinate: only those dominated by the Gamma coordinate, for finitely many primes and for all primes on `Re s > σ₀ ≥ ½`. So a Schur function carrying the Euler factor `ζ(2s−1)/ζ(2s)` has no such form. At one coordinate: exactly the Schur functions. | `question_four`, `no_decomposition_euler`, `exists_certificate_iff`, `rank_one_law` |
-| Over which torus points does the hull extend into the strip, and which carry zeros? | Finite modifications of orbit points: meromorphically, with exactly the translated zeros of `ζ`. The Liouville point: `ζ(2s)/ζ(s)`, holomorphic on `Re s > ½` iff RH. Haar-almost every point: holomorphic on `Re s > ½`, zero-free. RH is the zero-freeness of every nonzero limit of vertical translates. | `question_five` |
+| Which functions on `X` have a sum-of-squares form with `t`-dependent coefficients? | Pointwise in `t`: all nonnegative ones, tautologically. Frozen on a window past the Kronecker time: only those paying size. Above the size curve: explicit, column by column, with an outer factor. Kernel-valued with returning prime coordinates and a Gamma coordinate: only those dominated by the Gamma coordinate, for finitely many primes and for all primes on `Re s > σ₀ ≥ ½`, so a Schur function carrying the Euler factor `ζ(2s−1)/ζ(2s)` has none. With coordinates that see the height it does have one. At one coordinate: exactly the Schur functions. | `question_four`, `question_four_height_coordinates`, `no_decomposition_euler`, `exists_certificate_iff`, `rank_one_law` |
+| Over which torus points does the hull extend into the strip, and which carry zeros? | Finite modifications of orbit points: meromorphically, with exactly the translated zeros of `ζ`. Dirichlet characters: entirely, with the zeros of `L(s, χ)`, and zero-free on `Re s ≥ 1`. The Liouville point, also of order two: `ζ(2s)/ζ(s)`, holomorphic on `Re s > ½` iff RH. Haar-almost every point: holomorphic on `Re s > ½`, zero-free. RH is the zero-freeness of every nonzero limit of vertical translates. | `question_five`, `fibre_extends_of_character` |
 | Does a large-value set have additive structure, forcing returns the pole must pay for? | Yes. Differences have level `θ²` on average, and at the corner the set is an approximate group. At weights `1/p` the pole prices each level: `θ S ≤ log(8 log u + 39) + C`, so a height at level `θ` lies above `exp(c(log z)^θ)`, and the number of large values in a window is bounded through the first level the pole permits. At weights `p^{−½}` the pole pays nothing. | `question_six`, `pair_level_le`, `card_le_of_pole` |
 
 ## 6. Pillar theorems
@@ -89,41 +94,35 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 |---|---|
 | Group closure, transport, corners | `sqrt_defect_add_le`, `column_sub_sq_le`, `defect_two_mul_le_antiDefect` |
 | Large-value structure and descent | `sq_sum_column_le`, `card_pairs_ge`, `exists_low_return_of_many_large_values` |
-| Finite-time Bohr isometry | `exists_column_ge`, `exists_column_ge_of_primesUpTo` |
+| Finite-time Bohr isometry on half-spaces and on boxes; the mixing bracket | `exists_column_ge`, `exists_mem_box`, `eventually_exists_mem_box`, `exists_box_missed` |
 | Pigeonhole non-alignment; power saving on any set of primes and at the top of the column | `le_of_aligned`, `saving_against_size`, `saving_on_any_set_of_primes`, `saving_at_the_top_of_the_column` |
 | Non-alignment at every large height, away from every torsion point | `exists_not_aligned_of_large`, `exists_prime_not_near_torsion`, `exists_not_aligned_of_large_of_word` |
-| Saving at every length past the Kronecker scale; polylogarithmic past the size horizon | `rpow_neg_le_sum_primes_critical`, `exp_neg_le_sum_primes_critical`, `le_sum_primes_critical`, `le_sum_primes_liouville` |
-| The sum of `n^{it}` over `n < N` is shorter than `N` at every length past the Kronecker scale | `norm_sum_le_of_large`, `norm_sum_le_of_length` |
-| Moment = energy; start of the orbit; diagonal range; last-moment bound | `clockedMoment_eq`, `energy_ge_start`, `energy_le`, `card_largeValue_le` |
+| Escape from progressions of low rank; every rotation; many misaligned primes | `exists_prime_escape_rank`, `exists_prime_not_near_rotation`, `exists_prime_not_mem_of_large` |
+| The modulus stays below size | `norm_sum_primes_le`, `norm_sum_le_of_large`, `norm_sum_ap_le_of_large`, `norm_zeta_le_of_large` |
+| Saving at every length; past the size horizon; away from small primes | `rpow_neg_le_sum_primes_critical`, `exp_neg_le_sum_primes_critical`, `le_sum_primes_critical`, `le_sum_primes_liouville`, `le_sum_primes_critical_coprime_of_large` |
+| Moment = energy; start of the orbit; energy at every order; oscillating energy | `clockedMoment_eq`, `energy_ge_start`, `energy_le`, `energy_le_past_diagonal`, `card_largeValue_le_past_diagonal`, `shiftedEnergy_critical_le` |
 | Rounded orbit: diagonal data cannot exclude a return | `diagonal_data_cannot_exclude_return`, `exists_collision` |
-| Discrepancy: low-degree uniform, sparse on boxes | `norm_integral_nPhase_sub_le`, `exists_pattern_not_attained` |
 | Agler wall; first and second test; sharpness | `two_point_inequality`, `agler_wall`, `two_primes_first_test`, `agler_wall_all_primes`, `euler_test`, `selfDecomposition` |
-| Rank one: Pick criterion, Schur certificate | `exists_certificate_iff`, `twoPositive_pickKernel_comp`, `rank_one_law` |
+| Rank one; coordinates that see the height | `exists_certificate_iff`, `rank_one_law`, `hasSum_of_product`, `euler_test_has_height_certificate`, `hasSum_of_exp` |
 | Corners and parity | `clockedColumn_eq`, `clockedColumn_neg_one`, `clockedMomentAt_le_energy` |
-| Hull | `riemannHypothesis_iff_liouvilleFibre_extends`, `ae_fibre_extends_zeroFree`, `fibre_zero_iff`, `riemannHypothesis_iff_limits_zeroFree` |
+| Hull | `riemannHypothesis_iff_liouvilleFibre_extends`, `ae_fibre_extends_zeroFree`, `fibre_zero_iff`, `riemannHypothesis_iff_limits_zeroFree`, `fibre_extends_of_character` |
+| A zero forces an entry | `isolated_zero_forces_entry` |
 | Pole price | `column_le_pole`, `not_mem_largeValue_of_lt`, `card_le_of_pole`, `eventually_not_mem_largeValue` |
 | Critical coupling | `tendsto_thetaAmp_left`, `tendsto_thetaAmp_integers`, `tendsto_thetaAmp_div_primeCounting` |
 
 ## 7. Tools
 
-**Developed.**
-- Metric and additive calculus of the orbit, for any phase system.
-- Resonators with unimodular coefficients: main term plus integrality error, for arbitrary finite integer sets.
-- Pigeonhole with unique factorization, for arbitrary sets of primes.
-- Words with vanishing moments, of height one and of larger height; the logarithmic Hankel form; misalignment bands; the transfer from integers to primes at weight `1/p`.
-- Near-diagonal energy against a Fejér clock, at every height; `k`-fold fibres of the product, with the bound `k!`.
-- Rounded orbits as a calibration for what diagonal data sees.
-- Two-point test of kernel decompositions, for one coordinate, for finitely many and for all primes.
-- Outer factors of columns; allocation of the base.
-- Fibres over finite-type and typical torus points, with the identity theorem and Hurwitz on domains.
-- Sign-pattern count of the orbit.
+Each tool is stated with what it reaches and where it stops.
 
-**To build.**
-- A transfer of the polylogarithmic saving to the top of the column.
-- A bound for the oscillating energy past the diagonal range better than interpolation.
-- An effective Bohr isometry for boxes at scale `exp(cy)`, not only half-spaces.
-- Height-dependent coordinates that do not return, with a nontrivial decomposition.
-- A formal statement that a zero of depth `d` at height `γ` forces entry into a half-space at length `(log γ)^{1/d}`.
+| Tool | Reaches | Stops at |
+|---|---|---|
+| Non-alignment below the mixing time | Words: precision `L^{−C}` at `y ≍ L²ℓ`, and rotation-proof at `y ≍ L⁶ℓ⁴`. Pigeonhole: on any `L^{A'}` primes at precision a power of `T` | Words use every small prime, so they cannot see only the top of the column. Both Q-progressions and rank generators stop at the primes up to `≍ log y` |
+| Near-diagonal energy past `k = log T/log y` | Upper and lower bounds within `k!(log y/4)^k` at every `k`; the oscillating energy below size | The factor is the density of `y`-smooth numbers in intervals of length `N/T` |
+| Discrepancy against Haar at `y > log T` | Characters of height `≪ L`; sign patterns from below, `δ`-boxes from above | A gap `(log y)²` in the exponent of the mixing time |
+| Transfer from typical to rare heights | Group closure, Halász–Montgomery, descent to the first return, large-value counts at every scale, the isolated-zero bridge | Bohr translation loses a factor `log y` in the exponent, so typical bounds do not reach single heights past the Kronecker scale |
+| Certificates with prime conductances | Rank-one Pick criterion; the wall on returning coordinates, sharp; product certificates with coordinates that see the height | A constant share of the base pays only down to size at `t = 0`, and unconstrained coordinates carry no information (`hasSum_of_exp`) |
+
+The mechanisms give reusable general statements: the metric calculus of any phase system; the integer-gap integral for arbitrary multi-indices; the model and the free cell for arbitrary finite value sets; the fibre and kernel bounds for arbitrary sets of primes; product and two-point tests for arbitrary coordinates.
 
 ## 8. Test systems
 
@@ -131,7 +130,7 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 |---|---|---|
 | Curves, Golden, commensurable steps | rank one: periodic orbit, exact returns of positive density at any size, weights irrelevant; products collide, so every integer argument is void; certificates are the Schur property | `defect_period`, `exists_exact_return`, `shiftedEnergy_period`, `tupleStep_eq_of_coeff_sum_eq`, `rank_one_law` |
 | Finite rank | return time `Q^r`, independent of the number of steps | `exists_return_of_rank` |
-| Integers | infinite rank, with integrality | `not_isRankOne_log`, `le_of_aligned` |
+| Integers | infinite rank, with integrality and additive structure | `not_isRankOne_log`, `le_of_aligned`, `exists_prime_escape_rank` |
 | Rounded primes | same weights, same orbit to time `cT`, same diagonal moments, exact return at `T`; loses unique factorization past the mixing range | `diagonal_data_cannot_exclude_return`, `exists_collision` |
 | Continuous Beurling | no torus: the column dies, the orbit never returns. Non-alignment alone decides nothing | `tendsto_continuousColumn`, `exists_defect_ge` |
 | Integer-norm systems | same steps, different weights: orbit statements are uniform in the weights, so such a system must be excluded through the amplitude | by design |
@@ -139,15 +138,15 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 
 ## 9. Open research topics
 
-1. **The required saving.** At `y = (1+ε)L²/16` a one-sided bound at the level of the base needs a saving `≍ εL/ℓ` on the top of the column. At weights `p^{−½}` the proved saving is of order `L^{−8}ℓ^{−4}` at `y ≥ 48L²ℓ`, on all primes. A macroscopic theorem, `sup_{[T,2T]} P ≤ (1 − c)S` for some `K > 1`, is quasi-RH strength up to crystal shielding. What is the largest saving at length `L^{2K}`?
-2. **The location of the saving.** The polylogarithmic saving may sit on small primes; on the top of the column the proved saving is a power of `T`. Does the top carry a saving larger than every power of `T`? How many primes up to `y` are misaligned at precision `L^{−C}`?
-3. **The exponent on a set of primes.** Is the exponent `2(A − A' + 1)/(A' − 1)` the truth on sets of `L^{A'}` primes, or an artifact of counting? Counting smooth numbers alone cannot beat precision `T^{−1/(A−1)}`: a comb of density `y^{−k}/T` is consistent with every count. Below `A' = 1` the count `C(|G|, k) > T` fails and only Baker remains.
-4. **The oscillating energy past the diagonal range.** The expected shape is diagonal + start + nothing else; its proof is non-alignment. Which part of `k₀ < k < k₀·2K/(2K−1)` is reachable? This is `y`-smooth numbers in intervals of length `N/T`.
-5. **Mixing time.** `2^{π(y)}/θ(y)` from below on boxes; `exp(c_m y)` from above on half-spaces. What is the exact exponent for boxes?
-6. **Certificates.** A decomposition with coordinates that see absolute height. `two_point_inequality` says exactly what they must achieve: they must differ from their values along returns by the size of what they pay. A system of returning coordinates only certifies through an archimedean coordinate that already carries `S` (`selfDecomposition`, `agler_wall_all_primes`).
-7. **The hull.** Torsion points beyond Liouville (characters, finite-order twists); natural boundary over typical points; the exact zero-carrying set when RH fails.
-8. **Arithmetic Bernstein between growth `½` and `1`.** The Euler collapse kills perturbations at `α ≤ 1`, the mechanism stops at `½`.
-9. **Zero to entry.** A Turán-type statement of how an off-line zero forces a visit, and at which length.
+1. **The required saving.** At `y = (1+ε)L²/16` a one-sided bound at the level of the base needs a saving `≍ εL/ℓ` on the top of the column. A macroscopic theorem, `sup_{[T,2T]} P ≤ (1 − c)S` for some `K > 1`, is quasi-RH strength up to crystal shielding. What is the largest saving at length `L^{2K}`?
+2. **The location of the saving.** Polylogarithmic precision reaches the primes above `≍ log y` and no further: a progression prime to `Q` has length `≥ Q`, and a generator costs a factor `L⁴`. On the top of the column the proved saving is a power of `T`. Does the top carry a saving larger than every power of `T`?
+3. **Precision on a set of primes.** Is the exponent `2(A − A' + 1)/(A' − 1)` the truth on sets of `L^{A'}` primes? Counting smooth numbers alone cannot beat precision `T^{−1/(A−1)}`: a comb of density `y^{−k}/T` is consistent with every count. Below `A' = 1` the count `C(|G|, k) > T` fails and only Baker remains.
+4. **Smooth numbers in short intervals.** The energy past the diagonal is `diagonal + start` up to `k!(log y/4)^k`. Any saving on this factor is a count of `y`-smooth numbers in intervals of length `N/T` with `y` polylogarithmic in `N`.
+5. **The rank of the orbit.** More than `d` primes up to `L^{9d+6}` are misaligned at precision `L^{−9d−10}`. Is the number of misaligned primes at fixed precision `L^{−C}` a power of `y`?
+6. **Mixing time.** `(log 2) π(y) ≲ log T_mix ≲ 40 y log y` at `δ = ½`. What is the exact exponent?
+7. **Certificates.** Which class of coordinates, tied to `p^{−s}`, gives a certificate below size at `t = 0`?
+8. **The hull.** Natural boundary over typical points on `Re s = ½`; the exact zero-carrying set when RH fails; order-two points that are neither characters nor Liouville.
+9. **Arithmetic Bernstein between growth `½` and `1`.** The Euler collapse kills perturbations at `α ≤ 1`, the mechanism stops at `½`.
 
 ## 10. Traps
 
@@ -155,15 +154,19 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 |---|---|
 | Diagonal moments exclude a return | A rounded orbit has identical diagonal moments and an exact return at `T` |
 | Near-diagonal counts prove a saving | The start of the orbit alone gives `E_k ≥ S^{2k}/(8kΛH)`, whose `2k`-th root tends to `S`: the positive energy sees size |
+| A saving at the corner is a saving for moments | Moments see `|P|`, and a common rotation has full modulus. Only a rotation-proof saving passes to the moments (`norm_sum_primes_le`) |
 | The mixing term is statistical | It is `t = 0`, the pole |
-| Effective Kronecker needs Baker | Half-spaces need only the integer gap, with exponent linear in `y` |
+| Effective Kronecker needs Baker | Half-spaces and boxes need only the integer gap |
+| A box costs what a half-space costs | A half-space controls the average coordinate; a box controls all of them, and the concentrated kernel pays a factor `log y` in the exponent |
 | Bohr's isometry holds at finite time | Up to `y ≍ log T` for half-spaces; past that the orbit misses boxes |
 | Kernel-valued conductances evade frustration | With returning coordinates they pay nothing beyond the archimedean coordinate (`agler_wall_all_primes`) |
+| Coordinates that do not return are a breakthrough | Every zero-free Schur function is the product of its own roots (`hasSum_of_exp`). The content is in how a coordinate depends on `p^{−s}` |
 | Agler's bidisc theorem contradicts the wall | A function of `(2^{−s}, 3^{−s})` is almost periodic and does not decay; the wall concerns functions that see `t` |
 | `t`-dependent coefficients are a new tool | Pointwise they are tautological (`graph_lift`); slow ones cost size (`frozen_certificate_costs_size`) |
 | Any saving against size moves the sign | The sign needs the saving to reach size minus base, `≍ εL/ℓ` just past the horizon; the proved saving is of order `L^{−8}ℓ^{−4}` |
-| A saving on all primes is a saving at the top | Words use every small prime, so the saving may sit there; the size sits at the top, where the proved saving is a power of `T` |
+| A saving on all primes is a saving at the top | Words use every small prime; the size sits at the top, where the proved saving is a power of `T` |
 | Below the size horizon a saving is needed | Size fits under the base there; there is nothing to save |
+| Torsion points behave alike | Characters extend unconditionally; the Liouville point extends iff RH; both have finite order (`fibre_extends_of_character`) |
 | Absolute moments separate the twin | `|P_{−1}| = |P|`: only a signed functional at the start can |
 | Non-alignment decides the critical line | Continuous Beurling systems have no returns, so it decides nothing there |
 | Zeros over a Haar-null set means no zeros | The orbit itself is Haar-null |
@@ -193,7 +196,7 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 
 | Direction | Programmes |
 |---|---|
-| Uses | HTGeometry (log separation, window means, simultaneous Dirichlet, Hurwitz, Schwarz–Pick), RHTower (Abel summation, Liouville series, zero-free right half-plane, near-one bound, prime harmonic lower bound, zeta bounds on `Re s > 1`), ArithmeticCorrelationGeometry (gauge torus, almost-sure square root), SignedSuccessorArithmetic (prime cosine sum against `ζ`), ArithmeticInnerFunctionTheory (column shape) |
+| Uses | HTGeometry (log separation, window means, simultaneous Dirichlet, Hurwitz, Schwarz–Pick), RHTower (Abel summation, Liouville series, zero-free right half-plane, near-one bound, prime harmonic lower bound, zeta bounds on `Re s > 1`), ArithmeticCorrelationGeometry (gauge torus, almost-sure square root), SignedSuccessorArithmetic (prime cosine sum against `ζ`), ArithmeticInnerFunctionTheory (column shape), ArithmeticPositivityTheory (single-height visibility) |
 
 | Neighbour | Interface |
 |---|---|
@@ -209,8 +212,8 @@ All are unconditional. The hull theorems are equivalences with RH and are stated
 
 The walls that remain concern many independent primes at finite height. PTT puts them in one language, and then separates what is forced from what is not.
 
-Forced: the orbit is a group, so large values form an approximate group, doubling identifies the two corners, and rare heights descend. The integers separate, so effective Kronecker holds for half-spaces with no Baker input, and the orbit is uniform on low-degree characters up to the last diagonal scale. Unique factorization and Tarry–Escott words forbid exact alignment at every length past the Kronecker scale. So there *is* a saving against size at all large heights: on all primes it exceeds every power of `T`, and it is a power of `log T` past the size horizon; on any large set of primes, in particular at the top of the column, it is a power of `T`.
+Forced: the orbit is a group, so large values form an approximate group, doubling identifies the two corners, and rare heights descend. The integers separate, so effective Kronecker holds for half-spaces and boxes with no Baker input, and the orbit is uniform on low-degree characters up to the last diagonal scale. Unique factorization and Tarry–Escott words forbid alignment at every length past the Kronecker scale. The prime phases do not lie near any rotation or any progression of low rank, so the saving against size holds for the modulus, the quantity moments see. It is a power of `log T` past the size horizon, it grows with the length away from small primes, and at the top of the column it is a power of `T`.
 
-Not forced: nothing in the diagonal data, group closure or the orbit up to `cT` excludes a return at `T`, since a rounded orbit has all of these and does return. Near-diagonal counts contain the start of the orbit, so they see size and nothing less. Kernel-valued prime-by-prime certificates with returning coordinates pay only what the archimedean coordinate dominates, so the Euler factor of the scattering function cannot be paid in that form, even though a single coordinate pays every Schur function of itself. The pole prices the weights `1/p` and is silent at `p^{−½}`.
+Not forced: nothing in the diagonal data, group closure or the orbit up to `cT` excludes a return at `T`, since a rounded orbit has all of these and does return. Near-diagonal counts contain the start of the orbit, so they see size and nothing less. Kernel-valued prime-by-prime certificates with returning coordinates pay only what the archimedean coordinate dominates, so the Euler factor of the scattering function cannot be paid in that form. Coordinates that see the height do pay it, down to size at `t = 0`. The pole prices the weights `1/p` and is silent at `p^{−½}`.
 
-So the problem is located: the oscillating near-diagonal sum past the diagonal range, at the top of a column just past the size horizon, at a required saving of order `L/ℓ`, where `L^{−8}ℓ^{−4}` on all primes and a power of `T` at the top are proved. It cannot come from a positive count, from diagonal moments, from a frozen certificate, or from a coordinate that returns. The two mechanisms in hand are complementary. Words reach precision polynomial in `1/L`, but use every small prime. Pigeonhole lives anywhere on the column, at precision a power of `1/T`. Combining them, precision polynomial in `1/L` on a positive proportion of the top of the column, is the next theorem to aim at. It would still fall short of the required saving unless the precision becomes macroscopic, and that last step is the quasi-RH core.
+So the problem is located: the oscillating near-diagonal sum past the diagonal range, at the top of a column just past the size horizon, at a required saving of order `L/ℓ`. What is proved there is `L^{−8}ℓ^{−4}` on all primes, a growth `√(log y)` away from the primes up to `log y`, and a power of `T` at the top. It cannot come from a positive count, from diagonal moments, from a frozen certificate, or from a coordinate that returns. The two mechanisms in hand are complementary. Words reach precision polynomial in `1/L`, but stop at the primes up to `log y`. Pigeonhole lives anywhere on the column, at precision a power of `1/T`. Combining them, precision polynomial in `1/L` on a positive proportion of the top of the column, is the next theorem to aim at. It would still fall short of the required saving unless the precision becomes macroscopic, and that last step is the quasi-RH core.
