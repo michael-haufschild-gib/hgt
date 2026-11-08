@@ -63,11 +63,11 @@ theorem conj_eulerMollifierCoeff (y n : ℕ) :
 
 /-- The length of the Euler mollifier: `log y# ≤ y log 4`. -/
 theorem log_primorial_le (y : ℕ) : Real.log (primorial y) ≤ y * Real.log 4 := by
-  have h := primorial_le_4_pow y
+  have h := primorial_le_four_pow y
   have hpos : (0 : ℝ) < primorial y := by exact_mod_cast primorial_pos y
   calc Real.log (primorial y) ≤ Real.log ((4 : ℝ) ^ y) :=
         Real.log_le_log hpos (by exact_mod_cast h)
-    _ = y * Real.log 4 := Real.log_pow y 4
+    _ = y * Real.log 4 := Real.log_pow 4 y
 
 /-- **An Euler mollifier with a near-unit second moment uses the primes up to `log² T`.** -/
 theorem eulerMollifier_needs_primes {K₀ : ℝ} (hK₀ : 0 < K₀) :

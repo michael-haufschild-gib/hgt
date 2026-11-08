@@ -23,6 +23,8 @@ theorem iteratedDeriv_narainMellinMean_imaginary_eq_clock_moment
     apply ((narainMeanClockSchwartz Y Z).integrable_pow_mul volume m).mono'
       ((continuous_id.pow m).smul (narainMeanClockSchwartz Y Z).continuous).aestronglyMeasurable
     filter_upwards [] with L
+    change ‖L ^ m • narainMeanClockSchwartz Y Z L‖ ≤
+      ‖L‖ ^ m * ‖narainMeanClockSchwartz Y Z L‖
     simp only [norm_smul, norm_pow, le_refl]
   have hd := congrFun (Real.iteratedDeriv_fourier (N := ⊤)
     (fun m _ => hmoment m) (n := n) le_top) (t / (2 * Real.pi))
@@ -82,7 +84,8 @@ theorem integrableOn_narainMeanBoundaryMomentDensity (Y Z : Height) (n : ℕ) (t
   rw [integrableOn_Ioi_iff_integrable_exp_smul]
   have hbase := ((narainMeanClockSchwartz Y Z).integrable_pow_mul volume n)
   have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).integrable_comp_of_integrable hbase
-  simp only [Function.comp_apply, norm_neg] at hneg
+  change Integrable (fun u : ℝ => ‖-u‖ ^ n * ‖narainMeanClockSchwartz Y Z (-u)‖) at hneg
+  simp only [norm_neg] at hneg
   apply hneg.mono'
   · simp_rw [exp_smul_narainMeanBoundaryMomentDensity]
     exact (by fun_prop : Continuous (fun u : ℝ =>

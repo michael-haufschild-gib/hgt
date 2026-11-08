@@ -16,8 +16,9 @@ of its Hodge/scattering constructions.
 
 ## Open constructions
 
-1. A surface surrogate with an integer quadratic Riemann–Roch count on Hecke
-   correspondences, independent of `Q`, with independently proved sign control.
+1. A [surface count](../0-backlog/riac-surface-riemann-roch-count.md) with
+   integer quadratic Riemann–Roch scaling on Hecke correspondences, independent
+   of `Q`, with independently proved sign control.
 2. Critical `δ=0` torsion compensation, including the archimedean place.
 3. A completed prime chain complex with proved `s`-dependent zero detection.
 4. A natural relative pair and signed-index localization recovering `M(N)`.
@@ -49,8 +50,8 @@ height distortion; the prime-face comparison remains missing.
 
 ## Necessary distinctions
 
-`Σ_faces(−1)^card=M(N)+P_N` for the core. Ordinary topological Euler
-characteristic is `1−M(N)−P_N`. Relative subtraction must respect this sign.
+`Σ_faces(−1)^card=M(N)+P_N` for the core. For `N≥4`, its ordinary
+topological Euler characteristic is `1−M(N)−P_N`. Relative subtraction must respect this sign.
 Integer-valued `χ` alone is not a nonnegative count. Positive raw torsion
 forms alone do not make their renormalized limit positive.
 

@@ -49,7 +49,7 @@ Write `P_N=#{p prime : N/2<p≤N}`. The existing Lean convention is
 
 `E(core)=Σ_faces (−1)^card = M(N)+P_N`.
 
-Thus reduced topological Euler characteristic is `−M(N)−P_N`; ordinary Euler
+For `N≥4`, reduced topological Euler characteristic is `−M(N)−P_N`; ordinary Euler
 characteristic is `1−M(N)−P_N`. The report calls `E(core)` an Euler
 characteristic without this sign convention. Any relative construction must
 specify which invariant it recovers. Deleting isolated primes alone does not
@@ -172,7 +172,9 @@ settles the exact augmentation domain before introducing higher homology.
 
 The [logarithmic full-form candidate](../../../docs/drafts/pipeline/1-in-progress/riac-logarithmic-torsion-completion.md)
 asks whether the sharp prime-star exponent extends to boundedness and positive
-diagonal completion on every conductor. Its Schur estimate is unverified.
+diagonal completion on every conductor. [LogarithmicMangoldtTail.lean](LogarithmicMangoldtTail.lean) proves its
+required full Mangoldt tail for every exponent above one. The combined
+Schur estimate and completed-form classification remain unverified.
 
 The five constructions remain open. No critical positive form, arithmetic
 surface, square-root Mertens bound or RH proof is asserted.

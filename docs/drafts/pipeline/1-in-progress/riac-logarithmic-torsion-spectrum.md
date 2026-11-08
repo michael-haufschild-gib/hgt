@@ -38,3 +38,7 @@ to the logarithmic arithmetic carrier, with its original pair series retained.
 Complete Lean drafts exist for both mechanisms. They remain unchecked,
 and depend on the unverified logarithmic bounded-completion draft.
 No spectral theorem from these drafts is accepted yet.
+
+The [power–logarithmic refinement](../0-backlog/riac-power-logarithmic-spectral-boundary.md)
+asks for a separate sharp classification at the positive conductor boundary
+`δ=1/2`. Its proposed diagonal moment estimate remains unproved.

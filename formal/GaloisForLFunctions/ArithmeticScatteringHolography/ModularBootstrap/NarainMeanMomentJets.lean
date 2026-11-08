@@ -30,7 +30,10 @@ private theorem iteratedDeriv_complexLine {F : ℂ → ℂ} {a : ℂ}
     have hd := hk.differentiableAt.hasDerivAt.comp (x : ℂ)
       ((hasDerivAt_id (x : ℂ)).const_mul a)
     have hr := hd.comp_ofReal.const_mul (a ^ n)
-    rw [hr.deriv, iteratedDeriv_succ, pow_succ]
+    have hderiv : deriv (fun t : ℝ => a ^ n * iteratedDeriv n F (a * (t : ℂ))) x =
+        a ^ n * (deriv (iteratedDeriv n F) (a * (x : ℂ)) * (a * 1)) := by
+      convert! hr.deriv using 1
+    rw [hderiv, iteratedDeriv_succ, pow_succ]
     ring
 
 /-- Every tangential frequency derivative equals its actual complex Mellin jet. -/
@@ -89,7 +92,9 @@ theorem iteratedDeriv_narainMellinMean_zero_eq_clock_moment (Y Z : Height) (n : 
     apply ((narainMeanClockSchwartz Y Z).integrable_pow_mul volume m).mono'
       ((continuous_id.pow m).smul (narainMeanClockSchwartz Y Z).continuous).aestronglyMeasurable
     filter_upwards [] with L
-    rw [norm_smul, norm_pow]
+    change ‖L ^ m • narainMeanClockSchwartz Y Z L‖ ≤
+      ‖L‖ ^ m * ‖narainMeanClockSchwartz Y Z L‖
+    simp only [norm_smul, norm_pow, le_refl]
   have hd := congrFun (Real.iteratedDeriv_fourier (N := ⊤)
     (fun m _ => hmoment m) (n := n) le_top) 0
   rw [fourier_narainMeanClockSchwartz, iteratedDeriv_narainMeanBoundaryFrequency_zero,

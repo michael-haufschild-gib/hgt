@@ -8,9 +8,10 @@
 
 ## Candidate
 
-For the full prime complex `K_N`, ordinary Euler characteristic is `1−M(N)`.
+For `N≥1`, the full prime complex `K_N` has ordinary Euler characteristic
+`1−M(N)`.
 The canonical cone pair `(CK_N,K_N)` therefore suggests relative Euler
-characteristic `M(N)`. Using the connected core instead leaves `M(N)+P_N`,
+characteristic `M(N)`. At `N≥4`, using the connected core instead leaves `M(N)+P_N`,
 where `P_N` counts primes in `(N/2,N]`. The cone is determined by the complex;
 no cells are chosen from the value of `M(N)`.
 

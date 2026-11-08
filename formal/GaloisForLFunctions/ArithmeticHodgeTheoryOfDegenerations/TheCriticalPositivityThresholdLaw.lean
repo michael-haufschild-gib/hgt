@@ -1233,20 +1233,20 @@ private theorem exponentialMass_windowMollify_le {F : ℝ → ℝ} {A δ : ℝ} 
   exact hbd.trans (mul_le_mul_of_nonneg_left hG8_le (Real.exp_pos _).le)
 
 /-- Dominated-convergence upper bound on `archForm (windowMollify F₀ ((n : ℝ) + 1) δ)` from the
-critical `Γ`-liminf inequality on `F₀`. -/
-private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → ℝ} {Rstar : ℝ}
+critical `Γ`-liminf inequality with an arbitrary finite upper bound on `F₀`. -/
+theorem exists_archForm_windowMollify_le_of_gammaLiminf_bound {F₀ : ℝ → ℝ} {Rstar B : ℝ}
     (_hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
     (_hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
     (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
     (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
       truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
-        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0) :
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ B) :
     ∃ C_arch : ℝ, 0 ≤ C_arch ∧
       ∀ {δ : ℝ}, 0 < δ → ∀ N_min : ℕ, ∃ n : ℕ, N_min ≤ n ∧
         archForm (windowMollify F₀ ((n : ℝ) + 1) δ) ≤
           primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
             criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
-            (C_arch + 1) * δ := by
+            (C_arch + 1) * δ + B := by
   set T₀ : ℝ := Real.exp factorialSpanGammaOffset
   have hT₀_pos : 0 < T₀ := Real.exp_pos _
   obtain ⟨B_γ, hB_γ⟩ := (isCompact_Icc (a := -T₀) (b := T₀)).exists_bound_of_continuousOn
@@ -1360,7 +1360,7 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
   have hL_ub : (1 / (2 * Real.pi)) * (∫ r, q r) ≤
       primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
         criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
-        C_arch * δ := by
+        C_arch * δ + B := by
     have htrunc_lim : Tendsto (fun m : ℕ =>
         (1 / (2 * Real.pi)) * ∫ r in (highFrequencies (T₀ + (m : ℝ)))ᶜ, q r)
         atTop (𝓝 ((1 / (2 * Real.pi)) * ∫ r, q r)) := by
@@ -1487,6 +1487,24 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
     (eventually_ge_atTop N_min)
   obtain ⟨n, hn_lt, hn_ge⟩ := hev.exists
   exact ⟨n, hn_ge, by linarith only [hn_lt, hL_ub]⟩
+
+/-- Dominated-convergence upper bound on `archForm (windowMollify F₀ ((n : ℝ) + 1) δ)` from the
+critical `Γ`-liminf inequality on `F₀`. -/
+private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → ℝ} {Rstar : ℝ}
+    (_hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
+    (_hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
+    (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
+    (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0) :
+    ∃ C_arch : ℝ, 0 ≤ C_arch ∧
+      ∀ {δ : ℝ}, 0 < δ → ∀ N_min : ℕ, ∃ n : ℕ, N_min ≤ n ∧
+        archForm (windowMollify F₀ ((n : ℝ) + 1) δ) ≤
+          primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
+            criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+            (C_arch + 1) * δ := by
+  simpa only [add_zero] using
+    exists_archForm_windowMollify_le_of_gammaLiminf_bound _hF₀m hF₀i _hF₀8 hF₀_zero hliminf
 
 /-- A unit-norm `L²` profile `F₀` vanishing on `[0, ∞)` that satisfies the critical `Γ`-liminf
 inequality at `Rstar` cannot coexist with `∀ A ≥ 0, (R₁ : EReal) < windowThreshold A` for any

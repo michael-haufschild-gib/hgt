@@ -5,6 +5,8 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.WellFoundedTowersSelfImprove
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheExceptionalCoordinate
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheFunctionalEquationAdmitsEveryFiniteLayer
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheTowersOfZeta
+import GaloisForLFunctions.InfiniteRankWeilTheory.ReturnsFreezeSmoothPolynomials
+import GaloisForLFunctions.InfiniteRankWeilTheory.TheCriticalWeight
 
 /-!
 # Infinite-rank Weil theory over Spec ℤ

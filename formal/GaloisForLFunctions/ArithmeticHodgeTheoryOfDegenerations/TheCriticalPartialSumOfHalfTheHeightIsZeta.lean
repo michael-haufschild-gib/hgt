@@ -87,18 +87,22 @@ theorem norm_adaptivePartialSum_sub_zeta_le (B : ℕ) {b : ℝ} (hb : 1 ≤ |b|)
     rw [Real.rpow_neg hM0.le, Real.rpow_neg hb0.le, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow]
     rw [← div_eq_mul_inv, le_div_iff₀ (Real.sqrt_pos.mpr hb0), inv_mul_eq_div,
       div_le_iff₀ (Real.sqrt_pos.mpr hM0), ← Real.sqrt_mul (by norm_num)]
-    rw [one_mul]
     exact Real.sqrt_le_sqrt (by linarith)
   have h2 : (M : ℝ) ^ (1 / 2 : ℝ) / |b| ≤
       Real.sqrt (1 + 2 * ((B : ℝ) + 1)) * |b| ^ (-(1 / 2 : ℝ)) := by
     rw [Real.rpow_neg hb0.le, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow, ← div_eq_mul_inv,
-      div_le_div_iff₀ hb0 (Real.sqrt_pos.mpr hb0)]
-    have hsb : Real.sqrt |b| * Real.sqrt |b| = |b| := Real.mul_self_sqrt hb0.le
-    rw [← Real.sqrt_mul hM0.le, ← Real.sqrt_mul (by positivity), ← hsb, ← Real.sqrt_mul hb0.le,
-      ← Real.sqrt_mul (by positivity)]
-    refine Real.sqrt_le_sqrt ?_
+      div_le_div_iff₀ hb0 (Real.sqrt_pos.mpr hb0), ← Real.sqrt_mul hM0.le]
     have hb1 : (1 : ℝ) ≤ |b| := hb
-    nlinarith [mul_le_mul_of_nonneg_left hMup hb0.le]
+    calc Real.sqrt (M * |b|) ≤ Real.sqrt ((1 + 2 * ((B : ℝ) + 1)) * |b| ^ 2) :=
+          Real.sqrt_le_sqrt (by
+            have h3 : |b| ≤ |b| ^ 2 := by nlinarith
+            have hB0 : (0 : ℝ) ≤ B := Nat.cast_nonneg B
+            have h4 := mul_le_mul_of_nonneg_right hMup hb0.le
+            have h5 : ((B : ℝ) + 1) * |b| ≤ ((B : ℝ) + 1) * |b| ^ 2 :=
+              mul_le_mul_of_nonneg_left h3 (by linarith)
+            nlinarith)
+      _ = Real.sqrt (1 + 2 * ((B : ℝ) + 1)) * |b| := by
+          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hb0.le]
   nlinarith [h1, h2]
 
 /-- **The squares agree to the same error.** -/

@@ -78,23 +78,28 @@ physical profiles. The collar seventh-mass reserve bounds coefficient `ℓ²`
 after profile normalization, so a static arbitrarily accurate approximation suffices.
 This row approximation and its application to polar threshold sufficiency remain unproved.
 
-### Reduction to one scalar row coefficient (conjecture)
+### Strong polar profile (conjecture)
 
-Put `aφ = (∫φ)²/∫φ²`, `x = n/N`, `ψ(y) = Σ_{k≤⌊y⌋} Λ(k)`, and
-`g(x) = √x [1/x − ½ log(1−x²) − ψ(1/x)]`.
-On every fixed `δ < x ≤ 1`, conjecture that
-`F_N(n) = √(N log N) (B_{c,N}v₁)_n / c` differs in normalized square mean
-`N⁻¹Σ_n |·|²` by `o(1)` from `aφ g(x) + t_N √x`, with bounded real `t_N`.
-The already-proved smooth-window source limit then identifies
-`t_N → −aφ log(2π)`: test against one smooth window whose pairing with `√x` is nonzero.
-This avoids evaluating the near/far gamma kernel integrals separately.
+Put `aφ = (∫φ)²/∫φ²`, `x = n/N`, and `ψ(y) = Σ_{k≤⌊y⌋} Λ(k)`.
+On every fixed `δ < x ≤ 1`, the target is normalized square-mean convergence of
+`√(N log N) (B_{c,N}v₁)_n / c` to
+`aφ √x [1/x − ½ log(1−x²) − ψ(1/x) − log(2π)]`.
 
-Required row estimates: Lipschitz lattice quadrature on the near annuli; harmonic
-collar comparison with `log(cn/N)` on interior rows; negligible terminal strip;
-the squared-log center tail; and the finite Mangoldt upward mean.
-The near Gram identity cancels the `log(n/N)` terms. Far gamma tails are `O(1/T)`
-after cutting at log-distance `Tc/N`. None of these reductions is being used as an
-assumption in a threshold theorem.
+The near Gram identity cancels the `log c` and `log x` terms. Fixed far annuli
+have row-independent means, with a remaining `O(1/T)` tail. The existing
+`tendsto_joint_near_far_Gamma_integral` identifies their combined constant as
+`−aφ log(2π)` after adding the harmonic collar constant.
+
+Verified bricks: closed-annulus quadrature with `O(1/n)` error and terminal-strip
+square-mean control (`LogarithmicAnnuliHaveUniformRowMeans`); summable squared-log
+center tails and scaled Gram-defect decay (`PolarRowsHaveSummableTerminalTails`).
+Full center-profile square-mean convergence is verified in
+`ThePolarCenterRowHasItsStrongProfile`. Near-collar harmonic comparison, the sampled
+Mangoldt row, and assembly of the full strong profile still require verification. Endpoint ramp multiplication and finite
+jump ramps reduce Lipschitz approximation to compact-interval polynomial density.
+The sampled finite-jump ramp estimate and compact smooth Lipschitz density have clean
+Lean axiom audits (`SampledJumpsAdmitLipschitzApproximation`,
+`ContinuousWindowsAdmitCompactLipschitzApproximation`).
 
 ## Verified scalar identification
 
@@ -103,3 +108,12 @@ tests `h_N` satisfy `⟨v_N,h_N⟩ ≥ a > 0`, then
 `⟨x_N,h_N⟩ − s⟨v_N,h_N⟩ → 0` implies `‖x_N − s v_N‖ → 0`.
 This holds for varying Hilbert spaces. Lean: `PolarRowScalarIsFixedByOneWindow`;
 axioms `propext, Classical.choice, Quot.sound`.
+
+## Source continuity
+
+The physical polar source is `e^(−u/2) terminalPolarKernel(u)` on `u ≤ 0`.
+Its dual exponential norm is `∫_{u≤0} e^u terminalPolarKernel(u)² du`.
+Deep kernel boundedness and a squared-logarithm terminal majorant make this finite.
+Combined with the existing `tendsto_exponentialSourceMass_sub`, Cauchy–Schwarz
+then transfers polar source pairings through strong `L²` limits with bounded eighth mass.
+The kernel estimate and source-continuity formalizations are drafted, not yet checked.

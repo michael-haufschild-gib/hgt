@@ -6,4 +6,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicS
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.UnitaryPrimeChainGauge
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicMangoldtTail
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

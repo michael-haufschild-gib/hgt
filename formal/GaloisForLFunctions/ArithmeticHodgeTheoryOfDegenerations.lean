@@ -206,3 +206,4 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   fixed hyperbolic plane; the exponential rate of every curve is its zero width `max|Re s − ½|`.
 -/
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalMatrixIsDecidedByThePoleChannel
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalPartialSumOfHalfTheHeightIsZeta

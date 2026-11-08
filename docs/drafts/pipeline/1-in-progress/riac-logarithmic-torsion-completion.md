@@ -16,27 +16,33 @@ At conductor `n`, the weighted row contributions are
 - multiples: `L(n)^a Σ_(t≥2) Λ(t)/(t L(nt)^a)`, at most `K_a L(n)^a`;
 - proper divisors: `L(n)^a Σ_(t|n,t>1) Λ(t)/L(n/t)^a`, at most `L(n)^a log n`.
 
-Here `K_a=Σ_(t≥2) Λ(t)/(t L(t)^a)` should be finite for `a>1`.
+The [formalized Mangoldt tail](../3-formalized/riac-logarithmic-mangoldt-tail.md)
+gives `K_a=Σ_(t≥2) Λ(t)/(t L(t)^a)<∞` for every `a>1`.
 The divisor identity `Σ_(t|n) Λ(t)=log n` and `L≥1` then bound the entire
 row by `(K_a+1)L(n)^α`. Weighted two-variable square completion gives
 absolute finite-form control. Since the original tame diagonal is
 nonnegative and bounded by `log n`, this also gives an explicit positive
 diagonal completion of the full torsion matrix. The proposed positive
 correction is `(K_a+1)L(n)^α`; the absolute-form bound uses `K_a+2`.
+These constants are sufficient bounds. Only the exponent threshold is claimed
+to be sharp; minimal full-matrix compensation is not determined.
 
 At `α≤2`, the conductor-one prime row has square mass comparable to
 `Σ_p (log p)²/(p L(p)^α)`, which diverges. The prime-star classification
 also excludes every finite constant diagonal compensation in that range.
-The full finite absolute bound and sharp positive-compensation equivalence
-now have a complete Lean draft. Neither is accepted until that draft passes
-its direct check and transitive axiom audits.
+The full finite absolute bound, sharp positive-compensation equivalence and
+unique bounded Hilbert completion have complete Lean drafts. The same cost
+`K_a+1` compensates every completed probe: the absolute prime pair series
+is bounded by that cost times the logarithmic mass, while each original
+torsion summand is bounded below by the negative absolute prime summand.
+These claims remain unaccepted pending direct checks and axiom audits.
 
 The generic finite weighted Schur test already exists as
 `weighted_double_sum_le_weightedRowBound` in `HTGeometry.WeightedSchurTest`.
 The required tail reduces to the existing prime reciprocal-log series and
 `RHTower.sum_nonprime_vonMangoldt_rpow_le` at exponent one; the latter
-uniformly bounds the proper-prime-power mass by `72`. Its conversion into
-the required summability theorem is under Lean verification.
+uniformly bounds the proper-prime-power mass by `72`. The conversion into
+the required summability theorem has passed its production Lean check.
 
 For necessity, the draft embeds every prime-star probe into its actual
 integer support `{1}∪S`. A full positive correction with constant `C` restricts
