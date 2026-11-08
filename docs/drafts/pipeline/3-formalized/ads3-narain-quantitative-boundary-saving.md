@@ -80,9 +80,9 @@ the umbrella; all twenty-four endpoint audits have the stated axiom set.
 The weaker saving `exp(−cL/log L)` follows as well. Neither saving
 provides a fixed power above `1/2`.
 
-The [logarithmic-derivative extension](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
-applies the same contour to `u^k M(u)`. It remains a separate candidate;
-the scalar bound alone does not control derivatives of its error.
+The [logarithmic-derivative extension](ads3-narain-logarithmic-derivative-saving.md)
+is formalized through a uniform complex-clock contour and Cauchy estimates.
+It gives one universal saving and a common factorial bound for every order.
 
 ## Gates
 

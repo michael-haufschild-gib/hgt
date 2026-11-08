@@ -218,6 +218,25 @@ theorem double_zero_forces_frequency_span_cost {P : MvPolynomial (Fin 2) ℝ≥0
   refine ⟨hgap, (div_le_iff₀ (sub_pos.mpr hgap)).mpr ?_⟩
   simpa only [mul_comm] using hcost'
 
+/-- Approaching unit mass at a double zero forces an actual supported frequency to diverge. -/
+theorem double_zero_forces_large_frequency {P : MvPolynomial (Fin 2) ℝ≥0}
+    (hP : MvPolynomial.constantCoeff P = 1) {ρ : ℂ} (hz : dirichletEval ρ P = 0)
+    (hd : deriv (fun s => dirichletEval s P) ρ = 0) :
+    ∃ d ∈ P.support.erase 0,
+      Real.log 2 * (dirichletTailMass P ρ.re + 1) / (dirichletTailMass P ρ.re - 1) ≤
+        monomialLog d := by
+  have hS : (P.support.erase 0).Nonempty := by
+    have hm := one_le_dirichletTailMass_of_zero hP hz
+    by_contra hn
+    rw [Finset.not_nonempty_iff_eq_empty] at hn
+    simp only [dirichletTailMass, hn, Finset.sum_empty] at hm
+    norm_num at hm
+  obtain ⟨d, hdmem, hmax⟩ := Finset.exists_max_image (P.support.erase 0) monomialLog hS
+  have hspan := double_zero_forces_frequency_span_cost hP hz hd (monomialLog d) hmax
+  have hc := (div_le_iff₀ (sub_pos.mpr hspan.1)).mp hspan.2
+  refine ⟨d, hdmem, (div_le_iff₀ (sub_pos.mpr (one_lt_tail_mass_of_zero_deriv hP hz hd))).mpr ?_⟩
+  nlinarith only [hc]
+
 theorem dirichletEval_scaledTwoMonomial (β : ℝ) (s : ℂ) :
     dirichletEval s (scaledTwoMonomial β) =
       Complex.exp ((Real.log 2 : ℂ) * ((β : ℂ) - s)) := by
@@ -361,6 +380,81 @@ theorem doubleZeroAnnihilator_tail_mass (β : ℝ) (m : ℕ) :
     ring
   rw [he, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (by positivity)]
 
+private theorem positiveTrinomial_support (a b r : ℝ≥0) (n : ℕ) :
+    (1 + MvPolynomial.C a * (MvPolynomial.C r * MvPolynomial.X (0 : Fin 2)) +
+      MvPolynomial.C b * (MvPolynomial.C r * MvPolynomial.X (0 : Fin 2)) ^ n).support ⊆
+      {0, Finsupp.single 0 1, Finsupp.single 0 n} := by
+  classical
+  have h1 : MvPolynomial.C a * (MvPolynomial.C r * MvPolynomial.X (0 : Fin 2)) =
+      MvPolynomial.monomial (Finsupp.single 0 1) (a * r) := by
+    rw [← mul_assoc, ← map_mul, MvPolynomial.C_mul_X_eq_monomial]
+  have h2 : MvPolynomial.C b * (MvPolynomial.C r * MvPolynomial.X (0 : Fin 2)) ^ n =
+      MvPolynomial.monomial (Finsupp.single 0 n) (b * r ^ n) := by
+    rw [mul_pow, ← map_pow, ← mul_assoc, ← map_mul, MvPolynomial.C_mul_X_pow_eq_monomial]
+  rw [h1, h2]
+  intro d hd
+  simp only [Finset.mem_insert, Finset.mem_singleton]
+  rcases Finset.mem_union.mp (MvPolynomial.support_add hd) with hd | hd
+  · rcases Finset.mem_union.mp (MvPolynomial.support_add hd) with hd | hd
+    · exact Or.inl (by simpa only [MvPolynomial.support_one, Finset.mem_singleton] using hd)
+    · exact Or.inr (Or.inl (Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hd)))
+  · exact Or.inr (Or.inr (Finset.mem_singleton.mp (MvPolynomial.support_monomial_subset hd)))
+
+private theorem monomialLog_single_zero (n : ℕ) :
+    monomialLog (Finsupp.single (0 : Fin 2) n) = (n : ℝ) * Real.log 2 := by
+  simp [monomialLog, primeBase]
+
+theorem doubleZeroAnnihilator_frequency_bound (β : ℝ) (m : ℕ) :
+    ∀ d ∈ (doubleZeroAnnihilator β m).support.erase 0,
+      monomialLog d ≤ ((2 * m + 2 : ℕ) : ℝ) * Real.log 2 := by
+  intro d hd
+  have hraw : d ∈
+      (1 + MvPolynomial.C (doubleZeroLinearCoefficient m) *
+          (MvPolynomial.C (sharpBinomialCoefficient β) * MvPolynomial.X (0 : Fin 2)) +
+        MvPolynomial.C (doubleZeroTailCoefficient m) *
+          (MvPolynomial.C (sharpBinomialCoefficient β) * MvPolynomial.X (0 : Fin 2)) ^
+            (2 * m + 2)).support := Finset.mem_of_mem_erase hd
+  have hs := positiveTrinomial_support (doubleZeroLinearCoefficient m)
+    (doubleZeroTailCoefficient m) (sharpBinomialCoefficient β) (2 * m + 2) hraw
+  simp only [Finset.mem_insert, Finset.mem_singleton] at hs
+  rcases hs with hzero | hfirst | hlast
+  · exact ((Finset.mem_erase.mp hd).1 hzero).elim
+  · rw [hfirst, monomialLog_single_zero, Nat.cast_one, one_mul]
+    have hn : (1 : ℝ) ≤ ((2 * m + 2 : ℕ) : ℝ) := by
+      exact_mod_cast (show 1 ≤ 2 * m + 2 by omega)
+    simpa only [one_mul] using mul_le_mul_of_nonneg_right hn
+      (Real.log_pos (by norm_num : (1 : ℝ) < 2)).le
+  · rw [hlast, monomialLog_single_zero]
+
+theorem doubleZeroAnnihilator_attains_span_cost (β : ℝ) (m : ℕ) :
+    dirichletTailMass (doubleZeroAnnihilator β m) β =
+      (((2 * m + 2 : ℕ) : ℝ) * Real.log 2 + Real.log 2) /
+        (((2 * m + 2 : ℕ) : ℝ) * Real.log 2 - Real.log 2) := by
+  rw [doubleZeroAnnihilator_tail_mass]
+  have hL : Real.log 2 ≠ 0 := (Real.log_pos (by norm_num : (1 : ℝ) < 2)).ne'
+  have hn : 2 * (m : ℝ) + 1 ≠ 0 := by positivity
+  have hnum : ((2 * m + 2 : ℕ) : ℝ) * Real.log 2 + Real.log 2 =
+      (2 * (m : ℝ) + 3) * Real.log 2 := by push_cast; ring
+  have hden : ((2 * m + 2 : ℕ) : ℝ) * Real.log 2 - Real.log 2 =
+      (2 * (m : ℝ) + 1) * Real.log 2 := by push_cast; ring
+  rw [hnum, hden]
+  field_simp [hL, hn]
+  ring
+
+/-- The frequency-span inequality is attained by explicit positive double-zero polynomials. -/
+theorem exists_double_zero_with_sharp_frequency_cost (β : ℝ) (m : ℕ) :
+    ∃ P : MvPolynomial (Fin 2) ℝ≥0, ∃ ρ : ℂ,
+      MvPolynomial.constantCoeff P = 1 ∧ ρ.re = β ∧ dirichletEval ρ P = 0 ∧
+      deriv (fun s => dirichletEval s P) ρ = 0 ∧
+      (∀ d ∈ P.support.erase 0, monomialLog d ≤ ((2 * m + 2 : ℕ) : ℝ) * Real.log 2) ∧
+      dirichletTailMass P β =
+        (((2 * m + 2 : ℕ) : ℝ) * Real.log 2 + Real.log 2) /
+          (((2 * m + 2 : ℕ) : ℝ) * Real.log 2 - Real.log 2) :=
+  ⟨doubleZeroAnnihilator β m, sharpBinomialRoot β,
+    doubleZeroAnnihilator_constantCoeff β m, sharpBinomialRoot_re β,
+    doubleZeroAnnihilator_vanishes β m, doubleZeroAnnihilator_deriv_eq_zero β m,
+    doubleZeroAnnihilator_frequency_bound β m, doubleZeroAnnihilator_attains_span_cost β m⟩
+
 /-- Double zeros of positive Dirichlet polynomials have no uniform mass gap above one. -/
 theorem exists_double_zero_annihilator_with_mass_near_one (β : ℝ) {ε : ℝ} (hε : 0 < ε) :
     ∃ P : MvPolynomial (Fin 2) ℝ≥0, ∃ ρ : ℂ,
@@ -385,7 +479,9 @@ theorem exists_double_zero_annihilator_with_mass_near_one (β : ℝ) {ε : ℝ} 
 #print axioms analyticOrderAt_eq_one_of_unit_tail_mass
 #print axioms one_lt_tail_mass_of_zero_deriv
 #print axioms double_zero_forces_frequency_span_cost
+#print axioms double_zero_forces_large_frequency
 #print axioms exists_sharp_unit_mass_simple_annihilator
+#print axioms exists_double_zero_with_sharp_frequency_cost
 #print axioms exists_double_zero_annihilator_with_mass_near_one
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator

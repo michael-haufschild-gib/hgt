@@ -46,6 +46,8 @@ All five modules passed direct Lean checks; ten endpoint axiom audits
 contain only `propext`, `Classical.choice`, `Quot.sound`. Umbrella imports
 are wired. No small-height scalar estimate follows from this theorem.
 
+The [mirror-charge theorem](ads3-narain-three-moduli-symmetry.md) now gives all three pairwise moduli exchanges and independent modularity in each variable.
+
 ## Gates
 
 - [x] 0 → 1: exact Poisson characteristics and charge reindexing identified.

@@ -176,7 +176,12 @@ theorem eventually_polar_collar_pairing_payment
       (2 * K * (R + 1) / κ_S) * c N / Real.log N := by
     have h := mul_le_mul_of_nonneg_left hratio.le
       (show 0 ≤ 2 * K * c N / (κ_S * Real.log N) by positivity)
-    convert h using 1 <;> ring
+    calc
+      _ = (2 * K * c N / (κ_S * Real.log N)) *
+          (c N ^ 8 / Real.log N) := by
+        field_simp [hc0.ne', hL.ne', hκS.ne']
+      _ ≤ (2 * K * c N / (κ_S * Real.log N)) * (R + 1) := h
+      _ = _ := by ring
   have hlast := mul_le_mul_of_nonneg_right hcoef (sq_nonneg b)
   dsimp only [S, t, M] at hpay hlast ⊢
   ring_nf at hpay hlast ⊢
@@ -268,6 +273,7 @@ theorem eventually_lowPacket_cross_payment
   have hab' := abs_add_le T₁ T₂
   rw [conductor_packet_cross_eq_residual_sum (c N) b horth, hsum]
   dsimp only [T₀, T₁, T₂, E, r, Q, M] at hab hab' hpre hnon hsumE hp hn h₁ ⊢
+  ring_nf at hpre hnon hsumE hp hn h₁ hab hab' ⊢
   linarith only [hpre, hnon, hsumE, hp, hn, h₁, hab, hab']
 
 /-- Orthogonality to conductor one makes its coordinate a quadratic Gram error. -/
@@ -352,8 +358,11 @@ theorem eventually_primitive_polar_penalty_le
     have hsmall' : 3888 * K * (R + 1) * (1 + Real.log L) ^ 2 ≤ κ * ε * L := by
       have hh : (3888 * K * (R + 1) / (κ * ε)) * (1 + Real.log L) ^ 2 ≤ L := by
         simpa only [Function.comp_def, Real.rpow_one] using hsmall
-      have hm := mul_le_mul_of_nonneg_right hh (show 0 ≤ κ * ε by positivity)
-      convert hm using 1 <;> (try field_simp [hκ.ne', hε.ne']) <;> ring
+      have hh' : (3888 * K * (R + 1) * (1 + Real.log L) ^ 2) / (κ * ε) ≤ L := by
+        simpa only [div_mul_eq_mul_div] using hh
+      have hm := (div_le_iff₀ (mul_pos hκ hε)).mp hh'
+      nlinarith only [hm]
+
     have hprod := mul_le_mul_of_nonneg_left hc8
       (show 0 ≤ 3888 * K * (1 + Real.log L) ^ 2 by positivity)
     have hsmallL := mul_le_mul_of_nonneg_right hsmall' hL0.le
@@ -364,8 +373,12 @@ theorem eventually_primitive_polar_penalty_le
     have hlogterm := mul_le_mul_of_nonneg_left hlogs (show 0 ≤ 3888 * K * c N ^ 8 by positivity)
     have hendall : 3888 * K * c N ^ 8 * (1 + Real.log Q) ^ 2 ≤ κ * ε * L ^ 3 := by
       linarith only [hprod, hsmallL, hend, hlogterm]
-    apply (mul_le_mul_iff_right₀ (show 0 < 2 * c N ^ 7 * L ^ 3 by positivity)).mp
-    convert hendall using 1 <;> (try field_simp [ne_of_gt hL0, ne_of_gt hc0]) <;> ring
+    rw [show K * c N / L * (1944 * ((1 + Real.log Q) / L) ^ 2) =
+      (1944 * K * c N * (1 + Real.log Q) ^ 2) / L ^ 3 by ring,
+      show ε * (κ / (2 * c N ^ 7)) = (κ * ε) / (2 * c N ^ 7) by ring]
+    apply (div_le_div_iff₀ (pow_pos hL0 3) (show 0 < 2 * c N ^ 7 by positivity)).mpr
+    nlinarith only [hendall]
+
   have hb' := mul_le_mul_of_nonneg_left hb (show 0 ≤ K * c N / L by positivity)
   have hc' := mul_le_mul_of_nonneg_right hcoef
     (show 0 ≤ ∑ m ∈ Icc 1 Q, b m ^ 2 from sum_nonneg fun _ _ => sq_nonneg _)

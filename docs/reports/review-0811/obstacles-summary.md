@@ -202,7 +202,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B47 | Multiplicity `o(log X)` by an input not reducible to size | sub | ZCG |
 | B101 | Polar payment of the pole channel at every ratio on windows of length `→∞` | RH | HF, AIP, SRT |
 | B102 | Sign of the frequency-adaptive theta head at every degree; its leading term is `\|Σ_{n≤\|b\|/2}n^{−½+ib}\|²`, so the sign is decided where that partial sum of ζ is small | RH (all ranks) | TH |
-| B104 | `R_c(ζ)=R_high` | method | HF, SRT |
+| B104 | `R_c(ζ)=R_high`; with `R_pole=⨅windowThreshold` [S] this is whether the pole direction alone lowers the whole-space threshold | method | HF, SRT |
 
 ### Π — precision and production
 | # | Problem | Strength | Routes |

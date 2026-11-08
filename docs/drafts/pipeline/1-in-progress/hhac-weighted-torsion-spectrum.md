@@ -65,8 +65,11 @@ every positive weight. Infinite sign directions and the Hilbert–Schmidt classi
 prove the exact arithmetic blocks and vanishing mixed entries.
 `spacingLimitKernel_primePair_sum`, `eventually_spacingPrimePair_energy_neg`
 and `spacingLimitKernel_prime_self_pos` prove their negative pair energies
-and positive prime diagonals. Their transfer to finite-dimensional definite
-subspaces of the actual Hilbert carrier remains under formalization.
+and positive prime diagonals. `spacingPrimePairProbe_energy`, `_orthogonal` and the corresponding positive
+prime-probe lemmas realize these matrices in the actual Hilbert carrier.
+`SpacingDefiniteFamilies` now proves arbitrarily large orthogonal families of
+both signs and their exact diagonal synthesis identity. Injective definite
+subspaces and finite-rank correction obstructions remain under formalization.
 
 The existing `ArithmeticIntersectionTheory.spacingLimit_not_nonneg` already
 refutes positivity on `{1,2}`. The stronger target here concerns arbitrarily

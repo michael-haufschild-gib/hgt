@@ -24,7 +24,8 @@ theorem narainThreeModuli_swap_targets (ρ σ τ : UpperHalfPlane) :
 
 theorem narainThreeModuli_swap_area_worldsheet (ρ σ τ : UpperHalfPlane) :
     narainThreeModuli ρ σ τ = narainThreeModuli τ σ ρ :=
-  narainPartition_triality _ _ _
+  narainPartition_triality ⟨ρ.re, ρ.im, ρ.im_pos⟩
+    ⟨σ.re, σ.im, σ.im_pos⟩ ⟨τ.re, τ.im, τ.im_pos⟩
 
 /-- Mirror exchange and Poisson triality also exchange shape and worldsheet moduli. -/
 theorem narainThreeModuli_swap_shape_worldsheet (ρ σ τ : UpperHalfPlane) :

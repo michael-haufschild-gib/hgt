@@ -85,7 +85,7 @@ Structure [D]: at each ratio the critical form is paid on every channel except t
 | B6 | Full-space sign eventually at every `K`; equivalently every critical threshold `=⊤` | RH |
 | B8 | Head thresholds for every `d` | RH |
 | B101 | Low-packet polar payment at every ratio on growing windows (the pole channel) | RH |
-| B104 | `R_c(ζ)=R_high` | method |
+| B104 | `R_c(ζ)=R_high`; `R_pole=⨅windowThreshold` [S], so only the pole direction is in question | method |
 
 ### S2. Window tower and canonical flow
 

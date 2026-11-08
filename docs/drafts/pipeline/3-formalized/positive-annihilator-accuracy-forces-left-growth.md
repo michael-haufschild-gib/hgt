@@ -37,4 +37,4 @@ Every finite set of actual ξ-zeros, with arbitrary prescribed multiplicities, a
 - `exists_positive_annihilator_of_unit_tail_mass`
 - `sharpBinomial_attains_left_growth`
 
-Direct `lake --old env lean` audit passes without warnings. All seven capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`. The module is umbrella-wired. The strict worklog claim is replaced by an exact equality classification and a sharp growth law; AAL remains undecided. Multiplicity and frequency-span refinements are tracked separately in `1-in-progress/the-unit-mass-boundary-of-positive-annihilators.md`.
+Direct `lake --old env lean` audit passes without warnings. All seven capstones depend only on `propext`, `Classical.choice`, and `Quot.sound`. The module is umbrella-wired. The strict worklog claim is replaced by an exact equality classification and a sharp growth law; AAL remains undecided. The formalized multiplicity and frequency-span refinements are in `the-unit-mass-boundary-of-positive-annihilators.md`.

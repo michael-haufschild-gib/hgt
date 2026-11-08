@@ -56,3 +56,15 @@ second band, and far prefix can therefore be paid while retaining the exact coll
 Lean: `eventually_critical_deep_residual_le`,
 `eventually_critical_schur_pairing_except_collar` in `AllRatioDeepConductorPairings`.
 Axioms: `propext, Classical.choice, Quot.sound`.
+
+## Polar transfer: remaining lemma
+For each fixed `0 < δ < 1`, approximate the normalized conductor-one row on
+`δN < n ≤ N` in `ℓ²` by sampled Lipschitz functions of `log(n/N)`.
+The limiting kernel has a logarithmic singularity at `n/N = 1` and finitely many
+prime jumps on this interval. Required estimates: interior row convergence,
+uniform squared-log endpoint tails, and negligible neighborhoods of the jumps.
+The existing adjoint synthesis estimate
+`abs_integral_normalizedCentredAtomicTest_mul_sub_le` then transfers samples to
+physical profiles. The collar seventh-mass reserve bounds coefficient `ℓ²`
+after profile normalization, so a static arbitrarily accurate approximation suffices.
+This row approximation and its application to polar threshold sufficiency remain unproved.

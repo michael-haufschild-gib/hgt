@@ -1599,7 +1599,8 @@ private lemma nearGammaNonpolarRemRow_eq {φ : ℝ → ℝ} {c : ℝ} (hc0 : 0 <
     rw [← sum_add_distrib]; refine sum_congr rfl fun _ _ => by ring
   rw [hmain, hsplit_arch, hjet_sum]; ring
 
-private lemma nearRowIndices_card_and_pointwise_local {φ : ℝ → ℝ}
+/-- A near row has linearly many entries, with comparable square-root weights and bounded Gram kernel. -/
+lemma nearRowIndices_card_and_pointwise_local {φ : ℝ → ℝ}
     (hφ : ContDiff ℝ 2 φ) (hsupp : ∀ u, u ∉ Set.Icc 0 1 → φ u = 0)
     (hM : 0 < ∫ u, φ u ^ 2) {c : ℝ} {N n : ℕ}
     (hc0 : 0 < c) (hN0 : (0 : ℝ) < N) (hw1 : c / N ≤ 1) (hn : n ∈ Icc 1 N) :
@@ -2611,7 +2612,7 @@ private lemma sum_Icc_inv_sq_le_two_div {d N : ℕ} (hd1 : 1 ≤ d) :
 
 /-- Far-tail (`|log j - log n| > T * (c / N)`) row bound for `separatedCrossErrorMatrix` against
 `normalizedRamanujanMode m` (`m ≥ 1`). -/
-private lemma separatedCross_tail_row_le {m N n : ℕ} (hm0 : 0 < m)
+lemma separatedCross_tail_row_le {m N n : ℕ} (hm0 : 0 < m)
     (hn : n ∈ Icc 1 N) {c T : ℝ} (hc0 : 0 < c) (_hcN : c ≤ N) (hT2 : 2 ≤ T) :
     |∑ j ∈ (Icc 1 N).filter (fun j : ℕ => T * (c / N) < |Real.log (j : ℝ) - Real.log (n : ℝ)|),
       atomCrossErrorKernel (atomDilate tiltedUnitSpline (c / N)) n j *

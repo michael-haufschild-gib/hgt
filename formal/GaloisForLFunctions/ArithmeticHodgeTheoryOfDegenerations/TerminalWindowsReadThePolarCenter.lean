@@ -84,7 +84,8 @@ theorem continuousOn_polarCenterProfile
     · exact (hcont x hx).div continuousWithinAt_id hx0
   exact hdiv.sub ((continuousOn_terminal_boundary_log hLF hFL hF1).div_const 2)
 
-private theorem abs_terminal_polarCenter_row_sub_le
+/-- A Lipschitz weight vanishing at the terminal endpoint gives a uniform harmonic-row error. -/
+theorem abs_terminal_polarCenter_row_sub_le
     {F : ℝ → ℝ} {BF LF δ : ℝ} (hF : ∀ x, |F x| ≤ BF) (hLF : 0 ≤ LF)
     (hFL : ∀ x ∈ Set.Icc (0 : ℝ) 1, ∀ y ∈ Set.Icc (0 : ℝ) 1,
       |F x - F y| ≤ LF * |x - y|) (hF1 : F 1 = 0)

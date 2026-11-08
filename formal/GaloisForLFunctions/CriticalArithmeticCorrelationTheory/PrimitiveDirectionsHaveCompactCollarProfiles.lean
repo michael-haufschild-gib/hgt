@@ -118,12 +118,20 @@ theorem exists_critical_primitive_collar_weilQuad_bridge
     have hh : (c N * c_W / (R + 1)) * W₈ ≤ (c N * B) * U₂ := by
       linarith only [hg, hnonpos, hA, hnorm, hP, hS, hlterm]
     have hm := mul_le_mul_of_nonneg_left hh (show 0 ≤ (R + 1) / (c N * c_W) by positivity)
-    convert hm using 1 <;> dsimp only [K_W] <;> field_simp <;> ring
+    calc
+      W₈ = ((R + 1) / (c N * c_W)) * ((c N * c_W / (R + 1)) * W₈) := by
+        field_simp [hc0.ne', hcW.ne', (show R + 1 ≠ 0 by positivity)]
+      _ ≤ ((R + 1) / (c N * c_W)) * ((c N * B) * U₂) := hm
+      _ = K_W * U₂ := by dsimp only [K_W]; field_simp [hc0.ne', hcW.ne']
   have hLev : levyEnergy U ≤ K_L * U₂ := by
     have hh : (c N / (4 * I₂)) * levyEnergy U ≤ (c N * B) * U₂ := by
       linarith only [hg, hnonpos, hA, hnorm, hP, hS, hwterm]
     have hm := mul_le_mul_of_nonneg_left hh (show 0 ≤ 4 * I₂ / c N by positivity)
-    convert hm using 1 <;> dsimp only [K_L] <;> field_simp <;> ring
+    calc
+      levyEnergy U = (4 * I₂ / c N) * ((c N / (4 * I₂)) * levyEnergy U) := by
+        field_simp [hc0.ne', hI₂.ne']
+      _ ≤ (4 * I₂ / c N) * ((c N * B) * U₂) := hm
+      _ = K_L * U₂ := by dsimp only [K_L]; field_simp [hc0.ne']
   have hpositive : 0 < U₂ := by
     by_contra hnot
     have hzero : U₂ = 0 := le_antisymm (not_lt.mp hnot) hU₂
@@ -146,7 +154,7 @@ theorem exists_critical_primitive_collar_weilQuad_bridge
     have he' : completeWeilEnergy tiltedUnitSpline (c N) N w ≤ η * ((c N * B) * U₂) := by
       linarith only [he, hnonpos, hh]
     have hm := mul_le_mul_of_nonneg_left he' (show 0 ≤ I₂ / c N by positivity)
-    convert hm using 1 <;> dsimp only [η] <;> field_simp <;> ring
+    exact hm.trans_eq (by dsimp only [η]; field_simp [hc0.ne', hI₂.ne', hB.ne'])
   have hR₁ : 1 ≤ subexpCutoff N := by
     unfold subexpCutoff
     exact Nat.le_floor (by exact_mod_cast Real.one_le_exp (by positivity))
@@ -161,15 +169,19 @@ theorem exists_critical_primitive_collar_weilQuad_bridge
   have hPbound : (I₂ / c N) * (2 * P) ≤ 2 * I₂ * B * U₂ := by
     have hp : P ≤ (c N * B) * U₂ := by linarith only [hPS, hS]
     have hh := mul_le_mul_of_nonneg_left hp (show 0 ≤ 2 * I₂ / c N by positivity)
-    convert hh using 1 <;> field_simp <;> ring
+    calc
+      _ = (2 * I₂ / c N) * P := by ring
+      _ ≤ (2 * I₂ / c N) * ((c N * B) * U₂) := hh
+      _ = _ := by field_simp [hc0.ne']
   have hsum : (I₂ / c N) * (2 * P) + W₈ + levyEnergy U + U₂ ≤ H * U₂ := by
     dsimp only [H]
     linarith only [hPbound, hW, hLev]
   have herror := mul_le_mul_of_nonneg_left hsum hδ.le
-  have hid : δ * (H * U₂) = (ε / 2) * U₂ := by dsimp only [δ]; field_simp
+  have hid : δ * (H * U₂) = (ε / 2) * U₂ := by dsimp only [δ]; field_simp [hH.ne']
   rw [hid] at herror
   dsimp only [P] at herror
   refine ⟨hpositive, hW, hLev, ?_⟩
+  ring_nf at hpole herror hfar ⊢
   linarith only [hpole, herror, hfar]
 
 #print axioms exists_critical_primitive_collar_weilQuad_bridge

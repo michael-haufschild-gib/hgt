@@ -38,9 +38,8 @@ Both modules passed final direct Lean checks and are imported by the
 umbrella. All six endpoint axiom audits contain only `propext`,
 `Classical.choice` and `Quot.sound`.
 
-The [complex-clock refinement](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
-remains under formalization. Its target is
-`|H^(n)(L)|≤C n! (π/16)^(−n) exp(−Lw(L)/128)` with one threshold
+The [proved complex-clock refinement](ads3-narain-logarithmic-derivative-saving.md)
+gives `|H^(n)(L)|≤C n! (π/16)^(−n) exp(−Lw(L)/128)` with one threshold
 for every derivative order. The scalar theorem supplies no fixed power
 above `1/2`.
 

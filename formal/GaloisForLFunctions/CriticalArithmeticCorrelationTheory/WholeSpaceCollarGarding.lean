@@ -83,6 +83,7 @@ theorem exists_wholeSpace_collar_garding_with_linear_mass :
     integral_nonneg fun _ => sq_nonneg _
   have hBpay := mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left hBbound (zero_lt_one.trans_le (hc N)).le) hmass
+  ring_nf at hGarding hcros henergy hnegative hnorm' hlowN hBpay ⊢
   linarith only [hGarding, hcros, henergy, hnegative, hnorm', hlowN, hBpay]
 
 /-- Whole-space collar Gårding along a positive critical curve. -/
@@ -189,7 +190,8 @@ theorem exists_critical_primitive_collar_garding_and_far_bridge
   have hnorm' := congrArg (fun t : ℝ => (tiltedSplineSpectralFloorConstant + 2) * t) hnorm
   dsimp only [κ_P, κ_S, y] at hcros₀ hcrosη henergy hnegative hnorm' hlowN
   constructor
-  · linarith only [hGarding, hcros₀, hp₀, henergy, hnegative, hnorm', hlowN]
+  · ring_nf at hGarding hcros₀ hp₀ henergy hnegative hnorm' hlowN ⊢
+    linarith only [hGarding, hcros₀, hp₀, henergy, hnegative, hnorm', hlowN]
   · let L := Real.log (N : ℝ)
     let M := N / linearDefectCutoff (c N)
     let P := (L / (64 * explicitConductorCutoffConstant * (1 + Real.log L) ^ 5)) *
@@ -222,8 +224,106 @@ theorem exists_critical_primitive_collar_garding_and_far_bridge
     have hband1 : 0 ≤ (tiltedSplineSpectralFloorConstant + 2) * ‖u₁‖ ^ 2 := by
       have := tiltedSplineSpectralFloorConstant_pos; positivity
     dsimp only [P, S, M, L] at hres
+    ring_nf at hbridge hcrosη hpη henergy hnegative hlowN hres hE0 hband0 hband1 ⊢
     linarith only [hbridge, hcrosη, hpη, henergy, hnegative, hlowN, hres, hE0, hband0, hband1]
 
+/-- Whole-space Gårding has only terminal-window mass and one scalar polar loss. The window
+length grows by at most one quarter of the logarithm of the critical ratio. -/
+theorem exists_wholeSpace_window_localized_collar_garding :
+    ∃ C_len : ℝ, 1 ≤ C_len ∧
+    ∀ {c : ℕ → ℝ}, (∀ N, 1 ≤ c N) → ∀ {R : ℝ}, 0 < R →
+    Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R) →
+    ∃ A B C a : ℝ, 1 ≤ A ∧ A ≤ (1 / 4 : ℝ) * Real.log (R + 1) + C_len ∧
+      0 < B ∧ 0 < C ∧ 0 < a ∧
+    ∀ᶠ N : ℕ in atTop, ∀ b : ℕ → ℝ,
+      ∀ z ∈ (conductorSubspace (lowPacketCutoff N) N)ᗮ,
+      ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+        w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
+        let M := N / linearDefectCutoff (c N)
+        let U := normalizedCentredAtomicTest tiltedUnitSpline
+          (atomicTailCoefficients M (primeHorizonExtension w)) (c N) N
+        let L := Real.log (N : ℝ)
+        (1 / 4 : ℝ) * (∑ m ∈ Icc 1 (lowPacketCutoff N),
+          completedConductorEnergy tiltedUnitSpline (c N) m * b m ^ 2) +
+        (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 +
+        (L / (64 * explicitConductorCutoffConstant * (1 + Real.log L) ^ 5)) *
+          (∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2) +
+        (dyadicTopMassConstant * L / (128 * c N ^ 7)) *
+          topCollarSeventhMass M N (primeHorizonExtension w) +
+        (c N * a) * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) +
+        (c N / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U ≤
+        completeWeilEnergy tiltedUnitSpline (c N) N
+          ((∑ m ∈ Icc 1 (lowPacketCutoff N), b m • normalizedRamanujanHorizonVector m N) + z) +
+        (c N * B) * (∫ u in Set.Ioc (-A) 1, U u ^ 2) + (C * c N / L) * b 1 ^ 2 := by
+  obtain ⟨c_W, C_B, hcW, hCB, hG⟩ := exists_wholeSpace_collar_garding_with_linear_mass
+  let C_len := (1 / 8 : ℝ) * Real.log (4 * C_B / c_W + 1) + 1
+  have hClen : 1 ≤ C_len := by
+    have hlog : 0 ≤ Real.log (4 * C_B / c_W + 1) := Real.log_nonneg (by have hh : 0 < 4 * C_B / c_W := by positivity; linarith only [hh])
+    dsimp only [C_len]; linarith only [hlog]
+  refine ⟨C_len, hClen, fun {c} hc {R} hR hcrit => ?_⟩
+  obtain ⟨C, hC, hGN⟩ := hG hc hR hcrit
+  let A := (1 / 8 : ℝ) * Real.log (2 * C_B * (R + 1) * (R + 2) / c_W + 1) + 1
+  have hA : 1 ≤ A := by
+    have hlog : 0 ≤ Real.log (2 * C_B * (R + 1) * (R + 2) / c_W + 1) :=
+      Real.log_nonneg (by have hh : 0 < 2 * C_B * (R + 1) * (R + 2) / c_W := by positivity; linarith only [hh])
+    dsimp only [A]; linarith only [hlog]
+  have hAlen : A ≤ (1 / 4 : ℝ) * Real.log (R + 1) + C_len := by
+    have hR1 : 1 ≤ R + 1 := by linarith
+    have hcoeff : 0 ≤ 2 * C_B / c_W := by positivity
+    have hprod : (R + 1) * (R + 2) ≤ 2 * (R + 1) ^ 2 := by nlinarith only [hR, sq_nonneg R]
+    have hh := mul_le_mul_of_nonneg_left hprod hcoeff
+    have hsq := one_le_pow₀ hR1 (n := 2)
+    have harg : 2 * C_B * (R + 1) * (R + 2) / c_W + 1 ≤
+        (4 * C_B / c_W + 1) * (R + 1) ^ 2 := by nlinarith only [hh, hsq]
+    have hlog := Real.log_le_log (by positivity) harg
+    rw [Real.log_mul (by positivity) (by positivity), Real.log_pow] at hlog
+    dsimp only [A, C_len]
+    norm_num only [Nat.cast_ofNat] at hlog
+    linarith only [hlog]
+  refine ⟨A, C_B * (R + 2), C, c_W / (2 * (R + 1)), hA, hAlen,
+    by positivity, hC, by positivity, ?_⟩
+  have hwidth : Tendsto (fun N : ℕ => c N / (N : ℝ)) atTop (𝓝 0) := by
+    simpa only [pow_one, pow_zero, mul_one] using criticalCurve_pow_log_div_natCast hc hR hcrit 1 0
+  filter_upwards [hGN, eventually_ge_atTop 1, hwidth.eventually (gt_mem_nhds zero_lt_one)]
+    with N hGN hN1 hwid b z hz
+  obtain ⟨w, hw, hg⟩ := hGN b z hz
+  refine ⟨w, hw, ?_⟩
+  let y := atomicTailCoefficients (N / linearDefectCutoff (c N)) (primeHorizonExtension w)
+  let U := normalizedCentredAtomicTest tiltedUnitSpline y (c N) N
+  have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hUd : ContDiff ℝ 2 U :=
+    contDiff_const.mul (contDiff_centredAtomicTest contDiff_tiltedUnitSpline _ _ _)
+  have hUc : HasCompactSupport U :=
+    (hasCompactSupport_centredAtomicTest tiltedUnitSpline_eq_zero y hc0 hN1).mul_left
+  have hsupp : ∀ u, 1 < u → U u = 0 := by
+    intro u hu
+    have hs := tiltedUnitSpline_atom_support (div_pos hc0 hN0)
+    dsimp only [U, normalizedCentredAtomicTest, centredAtomicTest, atomicTest]
+    rw [mul_eq_zero]
+    right
+    refine sum_eq_zero fun n hn => ?_
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (mem_Icc.mp hn).1
+    have hlog := Real.log_le_log hn0 (show (n : ℝ) ≤ N by exact_mod_cast (mem_Icc.mp hn).2)
+    rw [hs _ (fun hmem => by linarith only [hmem.2, hu, hwid, hlog]), mul_zero]
+  have hsplit := integral_sq_eq_Iic_add_Ioc (zero_le_one.trans hA) hUd.continuous hUc hsupp
+  have htail := iic_mass_le_exponential_mass hCB hcW (show 0 < R + 1 by positivity)
+    hUd.continuous hUc
+  change (2 * C_B * (R + 1 + 1)) *
+      (∫ u, (Set.Iic (-((1 / 8 : ℝ) * Real.log (2 * C_B * (R + 1) * (R + 1 + 1) / c_W + 1) + 1))).indicator
+        (fun v => U v ^ 2) u) ≤ (c_W / (R + 1)) * ∫ u, U u ^ 2 * Real.exp (-(8 * u)) at htail
+  have hR2 : R + 1 + 1 = R + 2 := by ring
+  rw [hR2] at htail
+  have hpaid := mul_le_mul_of_nonneg_left htail (show 0 ≤ c N / 2 by positivity)
+  dsimp only [A] at hsplit
+  dsimp only at hg ⊢
+  dsimp only [U, y] at hsplit hpaid
+  rw [hsplit, mul_add] at hg
+  ring_nf at hg hpaid ⊢
+  linarith only [hg, hpaid]
+
+#print axioms exists_wholeSpace_collar_garding_with_linear_mass
+#print axioms exists_wholeSpace_window_localized_collar_garding
 #print axioms exists_critical_wholeSpace_collar_garding
 #print axioms exists_critical_primitive_collar_garding_and_far_bridge
 

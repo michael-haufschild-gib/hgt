@@ -556,5 +556,3 @@ theorem norm_smSum_sub_le (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
 end CuspSRS
 
 end GaloisForLFunctions.BlackHoleRingdown
-#print axioms GaloisForLFunctions.BlackHoleRingdown.CuspSRS.norm_smSum_sub_le
-#print axioms GaloisForLFunctions.BlackHoleRingdown.CuspRSL.exists_rsPhi_poly

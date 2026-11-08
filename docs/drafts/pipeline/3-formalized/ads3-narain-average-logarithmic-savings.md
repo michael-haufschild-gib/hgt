@@ -38,8 +38,8 @@ Lean checks and are imported by the umbrella.
 
 The proved [Schwartz theorem](../3-formalized/ads3-narain-boundary-schwartz.md)
 gives rapid decay of every boundary and clock derivative. The
-[quantitative derivative candidate](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
-asks for a common arithmetic saving exponent across all derivative orders.
+[proved quantitative derivative bound](ads3-narain-logarithmic-derivative-saving.md)
+gives a common arithmetic saving, factorial control and one threshold across all orders.
 The Schwartz theorem uses Landau interpolation and Fourier inversion;
 differentiating the scalar error estimate alone would not justify it.
 

@@ -17,7 +17,7 @@ The corpus's single-Eisenstein detection theorem now extends to the product:
 ## Conjectures and obligations
 
 1. **Product-kernel coverage — proved in Lean.** At every zero of `ξ(1+2u)`, the product kernel has a pole of the full multiplicity for some pair of moduli on each prescribed pair of horocycles. Its double horocycle numerator average is explicitly nonzero.
-2. **Actual partition identity — formalized.** The convergent Narain sum, scalar projection, general two-modulus Dirichlet and Mellin formulas, and the scalar Mellin continuation into the pole-detecting kernel are proved in Lean. [Full modular invariance](../3-formalized/ads3-narain-modular-inversion.md) is also proved. The [regularized fundamental-domain overlap](../3-formalized/ads3-narain-regularized-overlap.md) equals this actual Mellin transform, with exact vacuum and scattering counterterms.
+2. **Actual partition identity — formalized.** The convergent Narain sum, scalar projection, general two-modulus Dirichlet and Mellin formulas, and the scalar Mellin continuation into the pole-detecting kernel are proved in Lean. [Independent modularity and all three pairwise moduli exchanges](../3-formalized/ads3-narain-three-moduli-symmetry.md) are proved. The [regularized fundamental-domain overlap](../3-formalized/ads3-narain-regularized-overlap.md) equals this actual Mellin transform, with exact vacuum and scattering counterterms.
 3. **Source estimate.** For every pair of central-charge-two target moduli, derive
    `yΣ_scalar exp(−2πΔy) − [y−(3/π)log y+B] = O_ε(y^(3/4−ε))`
    as `y→0+`, for every `ε>0`, with the vacuum included and `B` the exact
@@ -57,6 +57,8 @@ remain targets.
 The unconditional [half-power boundary rate](../3-formalized/ads3-narain-average-boundary-rate.md) is formalized: the actual remainder is `o(y^(1/2))`. The [quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md) is also proved: with `L=−log y`, the remainder is bounded by `C√y exp(−cL/[(log L)^(2/3)(log log L)^(5/3)])`. The moving contour retains the full Vinogradov–Korobov width. The [universal-constant refinement](../3-formalized/ads3-narain-universal-saving-constant.md) fixes `c=1/(128·10^8)` independently of target heights. Consequently [every logarithmic saving](../3-formalized/ads3-narain-average-logarithmic-savings.md) holds: `R=o(√y/L^N)` for all `N≥0`.
 
 [Schwartz regularity of the actual boundary and clock remainder](../3-formalized/ads3-narain-boundary-schwartz.md) is formalized. Both literal functions have all absolute polynomial moments, and the clock integral vanishes. Spectral moments, the two source tails, Landau interpolation and pointwise Fourier inversion prove these statements. The corresponding [pointwise saving at every target pair](../0-backlog/ads3-narain-pointwise-boundary-saving.md) should follow from the existing sharp Fourier-tail envelope and the full filled numerator.
+
+The [common derivative bound](../3-formalized/ads3-narain-logarithmic-derivative-saving.md) is formalized: every order satisfies `|H^(n)(L)|≤C n! (16/π)^n exp(−Lw(L)/128)` with one threshold and prefactor independent of derivative order. A uniform complex disk estimate and Cauchy bounds prove the literal source statement.
 
 ## Product detector: formalized
 

@@ -3,7 +3,7 @@
 - **ID:** W11-NA3
 - **Stage:** 0-backlog
 - **Type:** CANDIDATE
-- **Source:** [Three-modulus symmetry](../1-in-progress/ads3-narain-three-moduli-symmetry.md)
+- **Source:** [Three-modulus symmetry](../3-formalized/ads3-narain-three-moduli-symmetry.md)
 
 ## Conjecture
 
@@ -41,13 +41,13 @@ theta contribution is `Y−√t+o(1)`. The
 would identify the same invariant as `V(t)=2t Tf(t)`. Neither identity
 has yet been formalized.
 
-Corpus search supplies Poisson triality, scalar projection and the
-uniform target bound, but not this three-height identity. Mirror symmetry
-and joint norm-Fubini remain formalization inputs. This is a lower bound;
-it supplies no RH-strength remainder upper bound.
+Poisson triality, mirror symmetry, scalar projection and the uniform
+target bound are formalized. The three-height identity still needs joint
+angular norm-Fubini and the actual integral interchanges. This is a lower
+bound; it supplies no RH-strength remainder upper bound.
 
 ## Gates
 
-- [ ] 0 → 1: prove mirror symmetry and triple angular norm integrability.
+- [ ] 0 → 1: prove triple angular norm integrability and permutation of the actual averages.
 - [ ] 1 → 2: exact source symmetry and lower bound proved.
 - [ ] 2 → 3: direct Lean checks, axiom audits and umbrella imports.

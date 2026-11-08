@@ -50,9 +50,9 @@ All five modules passed final direct Lean checks and are imported by the
 umbrella. All eighteen endpoint axiom audits contain only `propext`,
 `Classical.choice` and `Quot.sound`.
 
-The [quantitative derivative refinement](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
-remains open. Qualitative Schwartz regularity supplies no fixed power
-above the square-root remainder boundary.
+The [quantitative derivative bound](ads3-narain-logarithmic-derivative-saving.md)
+is also formalized, with one factorial rate and threshold for all orders.
+Neither conclusion supplies a fixed power above the square-root remainder boundary.
 
 ## Gates
 

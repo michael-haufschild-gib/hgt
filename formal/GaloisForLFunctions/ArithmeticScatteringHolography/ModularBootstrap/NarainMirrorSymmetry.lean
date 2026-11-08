@@ -31,7 +31,6 @@ theorem narainMassSq_mirror (ρ σ : D4BMUpperHalfPlaneCoordinate)
     narainMassSq σ ρ (mirrorCharge q) = narainMassSq ρ σ q := by
   rcases q with ⟨⟨a, b⟩, ⟨c, d⟩⟩
   simp only [mirrorCharge, Equiv.coe_fn_mk, narainMassSq, targetQuadratic]
-  push_cast
   field_simp [ρ.y_pos.ne', σ.y_pos.ne']
   ring
 

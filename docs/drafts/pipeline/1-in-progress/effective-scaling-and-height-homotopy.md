@@ -124,3 +124,10 @@ Every claimed result needs a dependency-closed paper argument, matching Lean
 statement, direct `lake --old env lean <module>` audit, and `#print axioms`.
 Each programme has its own directory and sibling umbrella. No umbrella builds,
 numerical experiments, assumed analytic inputs or proof placeholders.
+
+## Third programme
+
+[Renormalized intersection theory of arithmetic counts](renormalized-intersection-arithmetic-counts.md)
+adds the review-0811 specification: quadratic counts, critical torsion
+compensation, parameter-dependent completion, relative localization and
+modular cells. It shares these foundations; all earlier open targets remain.
