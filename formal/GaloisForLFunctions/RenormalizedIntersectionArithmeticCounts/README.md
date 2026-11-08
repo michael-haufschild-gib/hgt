@@ -407,3 +407,13 @@ logarithmic loss. The mechanism is classical; the contribution is its
 realization by actual finite arithmetic counts with complete Lean proofs.
 The orientation-quotient comparison and the integer conductor-height
 transfer remain open.
+
+[EllipticFrobeniusOrbits.lean](EllipticFrobeniusOrbits.lean) supplies the
+geometric fibre comparison. Frobenius is transitive on actual residue-field
+embeddings. Two actual projective points map to the same closed place
+exactly when a Frobenius power joins them, with infinity fixed. The powers
+satisfy the identity and composition laws. Thus the supported closed-place
+fibres are the actual arithmetic orbits; the [formalized comparison](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-frobenius-orbits.md)
+does not assume an orbit-count identity. Identifying stable point subsets
+with divisors and comparing their permutation signs remain necessary for
+the orientation-cover bound.

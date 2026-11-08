@@ -207,3 +207,7 @@ theorem beurlingSystem_rigidity_of_integer_support_integrable_defect
 
 
 end GaloisForLFunctions.ExactEventTheory
+
+#print axioms GaloisForLFunctions.ExactEventTheory.integer_support_pins_pole_residue
+#print axioms GaloisForLFunctions.ExactEventTheory.integer_spectrum_of_integer_support_integrable_defect
+#print axioms GaloisForLFunctions.ExactEventTheory.beurlingSystem_rigidity_of_integer_support_integrable_defect

@@ -44,9 +44,10 @@ finitely many collision times occur. Constant real perturbations `p+ε` avoid
 the finite critical-value set and approximate arbitrary nonzero real `p`.
 Continuity of finite root moments would then remove initial separability.
 
-Remaining proof work: carry moment comparison through collisions and prove the
-initial-time bound. Polynomial approximation remains a route to the initial
-bound; the actual positive-time field now has its own drift certificate.
+Remaining proof work: identify the corrected action's derivative, complete
+global moment comparison, and prove the initial-time bound. Polynomial
+approximation remains a route to the initial bound; the actual positive-time
+field now has its own drift certificate and the corrected action is continuous.
 No contribution counted yet.
 
 ## Lean certificate for the paired mechanism
@@ -63,6 +64,11 @@ the complex reciprocal field with the paired kernel and proves the same drift
 inequality for a complete finite conjugate packet, including any finite real
 exterior. Both capstones pass direct Lean check with the same standard axioms.
 
+`ArithmeticElectrostatics/ThePolynomialHeatZerosHaveTheirReciprocalVelocity.lean`
+proves the polynomial backward heat equation, analytic branches at simple
+zeros, and their exact reciprocal-field velocity. Six audited declarations
+pass direct Lean check with the standard axioms above.
+
 `ArithmeticElectrostatics/TheSimpleHeatPacketPaysElapsedDepth.lean` proves the
 upper-zero velocity comparison with the finite packet, the actual elapsed-depth
 drift inequality, and `heatUpperElapsedDepthDrift_nonpos_forward`: after every
@@ -70,3 +76,9 @@ positive time, a punctured forward interval satisfies the drift inequality for
 all nonnegative powers and offsets. Compact forward simplicity is proved by
 the corpus, not assumed in this capstone. All three capstones pass direct Lean
 check with the standard axioms above.
+
+`ArithmeticElectrostatics/TheElapsedDepthActionIsContinuous.lean` proves that
+every continuous real-axis-vanishing weight has a continuous global heat-zero
+sum at positive times. In particular, the full corrected elapsed-depth action
+is continuous through collisions for every real exponent. Both capstones pass
+direct Lean check with the same standard axioms.

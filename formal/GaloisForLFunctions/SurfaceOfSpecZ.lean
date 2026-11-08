@@ -13,6 +13,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ThePlaneCountsAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusIsAHyperbolicGreenFunction
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusHasInfiniteRank
 import GaloisForLFunctions.SurfaceOfSpecZ.TheSignOfWeilsAtomicKernelIsPlastic
+import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanSelfEnergyIsLogarithmic
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilForPairsOfPrimeDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicGenusIsNLogN
 import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicSurfaceHasGenusNLogN
@@ -20,6 +21,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimeChannelOfTheAtomicSurface
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWidth
 import GaloisForLFunctions.SurfaceOfSpecZ.OneSidedHasseWeilAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovSideIsBlindToRealZeros
+import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtTheSquareDegrees
 
 /-!
 # The surface of `Spec ℤ`
@@ -54,7 +56,8 @@ degrees are bounded below (an upper bound on the smoothed point counts), and iff
 above; Pringsheim's theorem becomes Landau's. The Stepanov side needs exactly that `ζ` has no real
 zeros in the strip: without real zeros it decides the line for every configuration, and on the real
 pair `{¼, ¾}` it holds while the pair is off the line, as a real Frobenius eigenvalue above `√q` passes
-an upper bound on point counts and needs the twist. The count
+an upper bound on point counts and needs the twist. As Bombieri needs only the even extensions, the
+square degrees suffice: an upper bound on the smoothed point counts at the degrees `n²` is RH. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
 whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
 they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley.

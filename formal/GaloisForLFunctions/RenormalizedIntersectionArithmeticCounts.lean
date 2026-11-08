@@ -38,4 +38,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.SquarefreeDi
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticSquarefreeCounts
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticFrobeniusOrbits
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

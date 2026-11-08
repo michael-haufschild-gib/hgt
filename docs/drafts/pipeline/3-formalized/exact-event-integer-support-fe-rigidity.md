@@ -1,8 +1,8 @@
 # Integer support makes integrable FE defects rigid
 
 - **ID:** exact-event-integer-support-fe-rigidity
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-0811/obstacles-summary.md §2.5, §2.10; B84, B103
 - **Statement:** In the Hamburger strip class, a nonempty countable Beurling system with integer norms and integrable uncompleted Riemann FE defect has exactly the rational primes, with no restriction on defect size or pole residue.
 
@@ -25,9 +25,20 @@ theorem; no FE regularity is claimed for the known one-offs.
 
 - [x] Corpus audit: unit-density rigidity, small-defect rigidity, ordered Beurling norms.
 - [x] Dependency-closed paper argument above.
-- [ ] Exact Lean statement and direct module check.
-- [ ] Transitive axiom audit.
-- [ ] Consequence for nonclassical integer-supported systems stated without claiming RH.
+- [x] Exact Lean statement and direct module check.
+- [x] Transitive axiom audit: only `propext`, `Classical.choice`, `Quot.sound`.
+- [x] Nonclassical integer-supported systems cannot satisfy all displayed strip and integrability conditions. No conclusion about zeros of ζ follows.
+
+## Lean
+
+`ExactEventTheory/IntegerSupportForcesExactArithmetic.lean`:
+
+- `integer_support_pins_pole_residue`
+- `integer_spectrum_of_integer_support_integrable_defect`
+- `beurlingSystem_rigidity_of_integer_support_integrable_defect`
+
+Final audit: `lake --old env lean GaloisForLFunctions/ExactEventTheory/IntegerSupportForcesExactArithmetic.lean`.
+Programme umbrella and `MainTheorems.lean` imports added; no umbrella build.
 
 External search found classical Hamburger converse theorems, not this L¹-defect extension;
 absence from search is not a literature-priority claim.

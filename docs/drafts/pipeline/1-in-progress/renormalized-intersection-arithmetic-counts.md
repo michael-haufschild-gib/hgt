@@ -104,6 +104,10 @@ it proves `|E_n−O_n|≤8(n+1)²(√3)^n` and the prefix bound
 `F₃`. The closed-place cutoff is exhaustive, infinity is retained, and the
 Frobenius root bound is proved for the actual curve. These bounds do not
 transfer to integer local indices without a further arithmetic comparison.
+The [actual Frobenius-fibre theorem](../3-formalized/riac-elliptic-frobenius-orbits.md)
+identifies projective-point orbits with supported closed-place fibres,
+including infinity. The stable-subset and permutation-sign comparisons
+remain necessary for the elliptic orientation-cover bound.
 
 ## Necessary distinctions
 

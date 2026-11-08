@@ -57,10 +57,11 @@ concrete nonzero square-root-scale calibration directly.
 For its orientation comparison,
 [FiniteFieldEllipticClosedPoints.lean](../../../../formal/GaloisForLFunctions/ArithmeticEffectivityTheory/FiniteFieldEllipticClosedPoints.lean)
 already identifies points over a closed place with its residue-field
-embeddings. The remaining geometric bridge is Frobenius transitivity on
-each such fibre. Stable subsets would then be unions of closed-place
-fibres, with cardinality equal to total residue degree. Collision
-cancellation should reduce the orientation sum to these subsets; a cycle
+embeddings. [Frobenius transitivity on these actual fibres](../3-formalized/riac-elliptic-frobenius-orbits.md)
+is now formalized, including actual projective points and infinity.
+The remaining comparison must identify stable subsets with unions of
+closed-place fibres, with cardinality equal to total residue degree.
+Collision cancellation should reduce the orientation sum to these subsets; a cycle
 of degree `d` contributes sign `(-1)^(d−1)`, giving the factor `(-1)^n`
 times the even-minus-odd divisor count in total degree `n`.
 This comparison is not yet formalized.

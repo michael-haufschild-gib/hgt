@@ -53,8 +53,31 @@ These are inherited results, not contributions claimed by this programme.
 | Finite Euler product plus appropriate FE forces local squares | Finite-rank calibration, not the infinite theorem |
 | Two-scale blindness, precision cap, positive one-offs | Tests for invalid proposed mechanisms |
 
-New pillar theorems must be stated here only after their exact Lean statements and transitive
-axioms have been checked. No new pillar theorem is asserted in this initial foundation.
+## New pillar: integer support forces exact arithmetic
+
+For a nonempty countable Beurling system whose generalized integers have natural-number
+norms, an integrable **uncompleted** Riemann FE defect forces exactly the rational primes.
+There is no smallness condition on the defect and no upper bound assumed for the pole residue.
+The precise analytic class requires the inverse-3/2 moment and the displayed Hamburger strip
+continuity, holomorphy, decay and boundary identities; the defect is measurable, polynomially
+bounded and integrable.
+
+The mechanism is an exact event in the Abel transform. Integer support identifies the cosine
+means at frequencies zero and one. Integrable defects have zero radial residue, while the
+unit generalized integer has mass one. Thus the pole residue is one. Unit-density rigidity
+then fills the integer lattice with unit masses and identifies its prime generators.
+
+The Lean declarations in `IntegerSupportForcesExactArithmetic.lean` are
+`integer_support_pins_pole_residue`,
+`integer_spectrum_of_integer_support_integrable_defect`, and
+`beurlingSystem_rigidity_of_integer_support_integrable_defect`.
+Direct Lean checks and transitive axiom audits pass with only `propext`, `Classical.choice`
+and `Quot.sound`.
+
+This strengthens the inherited small-defect theorem on integer-supported systems to arbitrary
+finite defect. Any nonclassical system in this subclass must fail at least one displayed
+regularity or integrability condition. It does not establish those conditions for the known
+one-offs, classify noninteger systems, or exclude exceptional zeros of ζ.
 
 ## Tools and questions
 
@@ -68,8 +91,9 @@ axioms have been checked. No new pillar theorem is asserted in this initial foun
 | Euler–FE finite-layer classification (B103, B84) | Which precisely defined classes admit a finite layer; what FE defect is necessary? |
 | Shift-family stability | Does the trivial linear slope remain bounded as the shift tends to zero? |
 
-All questions in this table remain open here. An implication assuming its missing arithmetic
-input does not count as construction of the required tool.
+The classification question has the integer-supported result above; its general case and the
+other questions remain open here. An implication assuming its missing arithmetic input does
+not count as construction of the required tool.
 
 ## Traps and calibration
 
@@ -77,6 +101,9 @@ Positive-density near-cancellation does not supply exact cancellation. Convergen
 values need not retain a nonzero analytic limit. The functional equation preserves absolute
 height. A fixed Euler cutoff is a nonvanishing multiplier and cannot remove a zero. Absolute
 convergence cannot be silently extended into the critical strip.
+
+Gamma-completed decay is weaker than integrability of the uncompleted FE defect used in B84.
+Subexponential growth of a Mellin correction alone cannot bridge that distinction.
 
 Every proposed transport mechanism must recover Bohr recurrence in its domain and the curve
 and exponential-polynomial cases. Its arithmetic input must distinguish ζ from the relevant

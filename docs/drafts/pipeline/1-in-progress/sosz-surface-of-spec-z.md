@@ -48,6 +48,7 @@
 | C18 | One side of the crude bound at the integer degrees suffices (Bombieri–Stepanov) | proved (Lean) | `riemannHypothesis_iff_bddBelow_integerDegrees`: RH iff `c_B(log n) ≥ −K` for all `n` — an upper bound on the smoothed point counts, the side Stepanov's method gives on a curve; `riemannHypothesis_iff_bddAbove_integerDegrees`: RH iff `c_B(log n) ≤ K`. Pringsheim's theorem for `Σ(Cq^{n/2} + a_n)Tⁿ` becomes Landau's for `K ± c_B` (`evenCoeff_eq_zero_of_two_re_lagStructure_ge`), with "no real Frobenius eigenvalue above `√q`" replaced by "no real zero of `ζ` in the strip" |
 | C19 | The prime channel of the atomic surface is of lower order than the jets | proved (Lean), unconditional | in `y_n = √n x_n` the prime kernel `w(m, nt) = Λ(t)/√t` is the Hecke operator `Σ_t Λ(t)t^{−1/2}(T_t + T_t*)`; on `[1, N]` its form is `≤ (log N + log 4 + 4)Σy²` (`primeChannel_le`: weighted Schur test with weights `n^{−1/2}`, row sums `log(N/n) + O(1)` by Mertens plus `Σ_{t∣n}Λ(t) = log n`) and `≥ log M(log M − log 4 − 4)` at `y_n = n^{−1/2}` with energy `≤ 1 + log N`, `M = ⌊√N⌋` (`primeChannel_ge`). Spectral radius `≍ log N`, the pole of `ζ` at `1`, against `N log N` for the jets: at atom spacing `1/N` the archimedean channel is `N` times larger, and the zeros enter neither at leading order |
 | C20 | The Stepanov side of C18 works for every zero configuration | refuted (Lean); positive survivor proved | survivor `onLine_of_two_re_lagStructure_ge`: for a tempered configuration without real zeros, `2 Re S ≥ −K` puts every zero on the line. Obstruction `stepanov_side_blind_to_real_zeros`: on the real pair `{¼, ¾}` the spline lag structure is `ĥ(−i/4)²(e^{u/4} + e^{−u/4})`, bounded below, unbounded above. An upper bound on point counts is blind to real zeros, as on a curve it is blind to a real eigenvalue `α > √q` (Bombieri–Stepanov need the twist for the other side); for `ζ` the absence of real zeros in the strip is the twist |
+| C21 | The Stepanov count is needed only at the square degrees, as Bombieri's at the even extensions | proved (Lean) | `riemannHypothesis_iff_bddBelow_squareDegrees`: RH iff `c_B(log n²) ≥ −K` for all `n`; `riemannHypothesis_iff_bddBelow_of_sqrtGaps` for any degree set with gaps `O(√x)`. Degrees multiply, so the even powers of Frobenius are the graphs `Γ_{n²} = Γ_n ∘ Γ_n` |
 
 ## Big picture
 
@@ -94,4 +95,4 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C20 formalized in `SurfaceOfSpecZ/` (nineteen modules, standard axioms)
+- 2026-11-08 — created; C1–C21 formalized in `SurfaceOfSpecZ/` (twenty modules, standard axioms)

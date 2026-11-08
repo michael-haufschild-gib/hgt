@@ -102,6 +102,10 @@ structure H3 where
 /-- Coordinate embedding of `H3` into `Fin 3 → ℝ` as `![Re z, Im z, t]`. -/
 def h3Vec (p : H3) : Fin 3 → ℝ := ![p.z.re, p.z.im, p.t]
 
+@[simp] theorem h3Vec_zero (p : H3) : h3Vec p 0 = p.z.re := rfl
+@[simp] theorem h3Vec_one (p : H3) : h3Vec p 1 = p.z.im := rfl
+@[simp] theorem h3Vec_two (p : H3) : h3Vec p 2 = p.t := rfl
+
 theorem h3Vec_injective : Function.Injective h3Vec := by
   intro p q h
   have h0 := congrFun h 0
@@ -142,13 +146,6 @@ theorem measurableEmbedding_h3Vec : MeasurableEmbedding h3Vec where
     exact hu.inter isOpen_range_h3Vec.measurableSet
 
 instance : BorelSpace H3 := measurableEmbedding_h3Vec.borelSpace ⟨rfl⟩
-
-instance : IsFiniteMeasureOnCompacts (volume.comap h3Vec) :=
-  .comap' _ continuous_h3Vec measurableEmbedding_h3Vec
-
-instance : IsLocallyFiniteMeasure (volume.comap h3Vec) := inferInstance
-instance : SigmaFinite (volume.comap h3Vec) := inferInstance
-instance : SFinite (volume.comap h3Vec) := inferInstance
 
 /-- Point `(0, t)` on the vertical dilation geodesic of `ℍ³`. -/
 def degPoint (t : ℝ) (ht : 0 < t) : H3 := ⟨0, t, ht⟩
@@ -260,7 +257,7 @@ theorem re_trace_toHermMat_mul_adjugate (p q : H3) :
     ring
   rw [hnorm]
   simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
-    Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.div_ofReal_re,
+    Complex.add_re, Complex.mul_re, Complex.div_ofReal_re, Complex.div_ofReal_im,
     Complex.ofReal_re, Complex.ofReal_im, Complex.conj_re, Complex.conj_im, Complex.neg_re,
     Complex.neg_im]
   field_simp
@@ -295,6 +292,15 @@ def h3Act (g : SL2C) (p : H3) : H3 where
   t := p.t / h3Denom g p
   t_pos := div_pos p.t_pos (h3Denom_pos g p)
 
+@[simp]
+theorem h3Act_z (g : SL2C) (p : H3) :
+    (h3Act g p).z = ((g.1 0 0 * p.z + g.1 0 1) * conj (g.1 1 0 * p.z + g.1 1 1) +
+      g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2) / (h3Denom g p : ℂ) := rfl
+
+@[simp]
+theorem h3Act_t (g : SL2C) (p : H3) :
+    (h3Act g p).t = p.t / h3Denom g p := rfl
+
 theorem toHermMat_h3Act (g : SL2C) (p : H3) :
     toHermMat (h3Act g p) = g.1 * toHermMat p * g.1.conjTranspose := by
   have hp : p.t ≠ 0 := p.t_pos.ne'
@@ -321,16 +327,14 @@ theorem toHermMat_h3Act (g : SL2C) (p : H3) :
       ring
     rw [hAC, neg_one_mul, Complex.normSq_neg, Complex.normSq_ofReal, ← sq] at hlag_c
     simpa only [Complex.normSq_eq_norm_sq] using hlag_c
-  have hmul_conj : ∀ z : ℂ, ((‖z‖ ^ 2 : ℝ) : ℂ) = z * conj z := fun z => by
-    rw [← Complex.normSq_eq_norm_sq, Complex.mul_conj]
+  have hmul_conj : ∀ z : ℂ, (‖z‖ : ℂ) ^ 2 = z * conj z := fun z => by
+    rw [← Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq, Complex.mul_conj]
   ext i j
   fin_cases i <;> fin_cases j
   · -- Entry (0, 0)
-    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
-      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_fin_one]
-    change (((‖(A * conj C + g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2) / (h3Denom g p : ℂ)‖ ^ 2 +
-        (p.t / h3Denom g p) ^ 2) / (p.t / h3Denom g p) : ℝ) : ℂ) = _
+    simp only [Fin.zero_eta, toHermMat, h3Act_z, h3Act_t, Matrix.mul_apply, Fin.sum_univ_two,
+      Matrix.conjTranspose_apply, Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one]
     have hnum_simp :
         (‖(A * conj C + g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2) / (h3Denom g p : ℂ)‖ ^ 2 +
           (p.t / h3Denom g p) ^ 2) / (p.t / h3Denom g p) =
@@ -340,39 +344,37 @@ theorem toHermMat_h3Act (g : SL2C) (p : H3) :
       have hden_eq : ‖C‖ ^ 2 + ‖g.1 1 0‖ ^ 2 * p.t ^ 2 = h3Denom g p := rfl
       rw [hden_eq]
       field_simp
-    rw [hnum_simp, Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_mul, hmul_conj A,
-      hmul_conj (g.1 0 0), Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow,
-      Complex.ofReal_div, Complex.ofReal_one]
-    simp only [A, map_add, map_mul]
+    rw [show g.1 0 0 * p.z + g.1 0 1 = A from rfl, show g.1 1 0 * p.z + g.1 1 1 = C from rfl,
+      hnum_simp]
+    push_cast
+    simp only [hmul_conj, A, map_add, map_mul]
     field_simp
     ring
   · -- Entry (0, 1)
-    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
-      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_fin_one, Complex.ofReal_div, Complex.ofReal_one]
-    rw [Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow]
+    simp only [Fin.zero_eta, Fin.mk_one, toHermMat, h3Act_z, h3Act_t, Matrix.mul_apply,
+      Fin.sum_univ_two, Matrix.conjTranspose_apply, Complex.star_def, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+    push_cast
+    simp only [hmul_conj, map_add, map_mul]
     field_simp
-    simp only [map_add, map_mul]
     ring
   · -- Entry (1, 0)
-    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
-      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_fin_one, Complex.ofReal_div, Complex.ofReal_one,
-      map_div₀, map_add, map_mul, map_pow, Complex.conj_conj, Complex.conj_ofReal]
-    rw [Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow]
+    simp only [Fin.zero_eta, Fin.mk_one, toHermMat, h3Act_z, h3Act_t, Matrix.mul_apply,
+      Fin.sum_univ_two, Matrix.conjTranspose_apply, Complex.star_def, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+    push_cast
+    simp only [hmul_conj, map_div₀, map_add, map_mul, map_pow, Complex.conj_conj,
+      Complex.conj_ofReal]
     field_simp
     ring
   · -- Entry (1, 1)
-    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
-      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_fin_one]
+    simp only [Fin.mk_one, toHermMat, h3Act_t, Matrix.mul_apply, Fin.sum_univ_two,
+      Matrix.conjTranspose_apply, Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one]
     unfold h3Denom
-    rw [Complex.ofReal_div, Complex.ofReal_div, Complex.ofReal_one,
-      Complex.ofReal_add, Complex.ofReal_mul, hmul_conj (g.1 1 0 * p.z + g.1 1 1),
-      hmul_conj (g.1 1 0), Complex.ofReal_pow, Complex.ofReal_add, hmul_conj p.z,
-      Complex.ofReal_pow]
+    push_cast
+    simp only [hmul_conj, map_add, map_mul]
     field_simp
-    simp only [map_add, map_mul]
     ring
 
 @[simp]
@@ -400,19 +402,19 @@ theorem h3Cosh_h3Act (g : SL2C) (p q : H3) :
     h3Cosh (h3Act g p) (h3Act g q) = h3Cosh p q := by
   have h1 := re_trace_toHermMat_mul_adjugate (h3Act g p) (h3Act g q)
   have h2 := re_trace_toHermMat_mul_adjugate p q
-  have hdet : g.1 0 0 * g.1 1 1 - g.1 0 1 * g.1 1 0 = 1 := by
-    have h := g.prop
-    rwa [Matrix.det_fin_two] at h
-  have hadj_g : g.1.adjugate * g.1 = 1 := by
-    ext i j
+  have hadj_prod : ∀ A B : Matrix (Fin 2) (Fin 2) ℂ,
+      (A * B).adjugate = B.adjugate * A.adjugate := by
+    intro A B; ext i j
     fin_cases i <;> fin_cases j <;>
-      simp [Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two] <;>
-      linear_combination hdet
+      simp [Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+  have hadj_g : g.1.adjugate * g.1 = 1 := by
+    rw [Matrix.adjugate_mul, g.prop, one_smul]
   have hadj_gh : g.1.conjTranspose * g.1.conjTranspose.adjugate = 1 := by
     rw [Matrix.mul_adjugate, Matrix.det_conjTranspose, g.prop, star_one, one_smul]
   have htr : (toHermMat (h3Act g p) * (toHermMat (h3Act g q)).adjugate).trace =
       (toHermMat p * (toHermMat q).adjugate).trace := by
-    rw [toHermMat_h3Act g p, toHermMat_h3Act g q, Matrix.adjugate_mul, Matrix.adjugate_mul]
+    rw [toHermMat_h3Act g p, toHermMat_h3Act g q,
+      hadj_prod (g.1 * toHermMat q) g.1.conjTranspose, hadj_prod g.1 (toHermMat q)]
     calc (g.1 * toHermMat p * g.1.conjTranspose *
             (g.1.conjTranspose.adjugate * ((toHermMat q).adjugate * g.1.adjugate))).trace
         = (g.1 * (toHermMat p * (g.1.conjTranspose * g.1.conjTranspose.adjugate) *
@@ -442,7 +444,8 @@ def borelToPoint (q : H3) : SL2C :=
     simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
     have hsq : (Real.sqrt q.t : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr q.t_pos).ne'
-    field_simp⟩
+    field_simp
+    ring⟩
 
 theorem h3Act_borelToPoint_origin (q : H3) :
     h3Act (borelToPoint q) (degPoint 1 zero_lt_one) = q := by
@@ -454,8 +457,7 @@ theorem h3Act_borelToPoint_origin (q : H3) :
       Matrix.cons_val_fin_one, zero_mul, zero_add, norm_zero, zero_pow two_ne_zero, add_zero,
       one_div, norm_inv, Complex.norm_real, Real.norm_of_nonneg hsq_pos.le, inv_pow, hsq]
   ext
-  · unfold h3Act
-    rw [hden]
+  · rw [h3Act_z, hden]
     simp only [borelToPoint, degPoint, Matrix.of_apply, Matrix.cons_val_zero,
       Matrix.cons_val_one, Matrix.cons_val_fin_one, mul_zero, zero_add,
       map_zero, add_zero, one_div, map_inv₀, Complex.conj_ofReal, Complex.ofReal_inv]
@@ -464,8 +466,7 @@ theorem h3Act_borelToPoint_origin (q : H3) :
     have hsqc2 : (Real.sqrt q.t : ℂ) ^ 2 = (q.t : ℂ) := by exact_mod_cast hsq
     field_simp
     rw [sq, ← hsqc2]; ring
-  · unfold h3Act
-    rw [hden]
+  · rw [h3Act_t, hden]
     simp only [degPoint]
     field_simp
 
@@ -546,16 +547,84 @@ theorem h3Dist_triangle (p q r : H3) : h3Dist p r ≤ h3Dist p q + h3Dist q r :=
 def h3Measure : Measure H3 :=
   (volume.comap h3Vec).withDensity fun p => ENNReal.ofReal (p.t⁻¹ ^ 3)
 
-theorem h3Measure_eq_lintegral (s : Set H3) :
+theorem h3Measure_eq_lintegral {s : Set H3} (hs : MeasurableSet s) :
     h3Measure s = ∫⁻ w in h3Vec '' s, ENNReal.ofReal ((w 2)⁻¹ ^ 3) ∂volume := by
   have hmp : MeasurePreserving h3Vec (volume.comap h3Vec)
       (volume.restrict (Set.range h3Vec)) :=
     ⟨measurableEmbedding_h3Vec.measurable, by rw [measurableEmbedding_h3Vec.map_comap]⟩
-  rw [h3Measure, withDensity_apply',
+  rw [h3Measure, withDensity_apply _ hs,
     ← Set.inter_eq_self_of_subset_left (Set.image_subset_range _ _),
     ← Measure.restrict_restrict' measurableEmbedding_h3Vec.measurableSet_range,
     ← hmp.setLIntegral_comp_emb measurableEmbedding_h3Vec]
   rfl
+
+theorem continuous_h3Act (g : SL2C) : Continuous (h3Act g) := by
+  rw [continuous_induced_rng]
+  have hc0 : Continuous (fun p : H3 => h3Vec p 0) :=
+    (continuous_apply 0).comp continuous_h3Vec
+  have hc1 : Continuous (fun p : H3 => h3Vec p 1) :=
+    (continuous_apply 1).comp continuous_h3Vec
+  have hct : Continuous (fun p : H3 => p.t) :=
+    (continuous_apply 2).comp continuous_h3Vec
+  have hcz : Continuous (fun p : H3 => p.z) := by
+    have heq : (fun p : H3 => p.z) =
+        fun p => (h3Vec p 0 : ℂ) + (h3Vec p 1 : ℂ) * Complex.I :=
+      funext fun p => (Complex.re_add_im p.z).symm
+    rw [heq]
+    exact (Complex.continuous_ofReal.comp hc0).add
+      ((Complex.continuous_ofReal.comp hc1).mul continuous_const)
+  have hcden : Continuous (fun p : H3 => h3Denom g p) := by
+    unfold h3Denom
+    exact (((continuous_const.mul hcz).add continuous_const).norm.pow 2).add
+      (continuous_const.mul (hct.pow 2))
+  have hcz' : Continuous (fun p : H3 => (h3Act g p).z) := by
+    simp only [h3Act_z]
+    refine Continuous.div ?_ (Complex.continuous_ofReal.comp hcden)
+      (fun p => Complex.ofReal_ne_zero.mpr (h3Denom_pos g p).ne')
+    refine (((continuous_const.mul hcz).add continuous_const).mul
+      (Complex.continuous_conj.comp ((continuous_const.mul hcz).add continuous_const))).add ?_
+    exact continuous_const.mul ((Complex.continuous_ofReal.comp hct).pow 2)
+  have hct' : Continuous (fun p : H3 => (h3Act g p).t) :=
+    hct.div hcden fun p => (h3Denom_pos g p).ne'
+  refine continuous_pi fun i => ?_
+  fin_cases i
+  · exact Complex.continuous_re.comp hcz'
+  · exact Complex.continuous_im.comp hcz'
+  · exact hct'
+
+/-- Homeomorphism of `ℍ³` induced by `g ∈ SL(2, ℂ)`. -/
+def h3ActHomeomorph (g : SL2C) : H3 ≃ₜ H3 where
+  toFun := h3Act g
+  invFun := h3Act g⁻¹
+  left_inv p := by rw [← h3Act_mul, inv_mul_cancel, h3Act_one]
+  right_inv p := by rw [← h3Act_mul, mul_inv_cancel, h3Act_one]
+  continuous_toFun := continuous_h3Act g
+  continuous_invFun := continuous_h3Act g⁻¹
+
+theorem measurableEmbedding_h3Act (g : SL2C) : MeasurableEmbedding (h3Act g) :=
+  (h3ActHomeomorph g).isClosedEmbedding.measurableEmbedding
+
+theorem continuous_h3Dist_right (q : H3) : Continuous (h3Dist q) := by
+  have hc0 : Continuous (fun p : H3 => h3Vec p 0) :=
+    (continuous_apply 0).comp continuous_h3Vec
+  have hc1 : Continuous (fun p : H3 => h3Vec p 1) :=
+    (continuous_apply 1).comp continuous_h3Vec
+  have hct : Continuous (fun p : H3 => p.t) :=
+    (continuous_apply 2).comp continuous_h3Vec
+  have hcz : Continuous (fun p : H3 => p.z) := by
+    have heq : (fun p : H3 => p.z) =
+        fun p => (h3Vec p 0 : ℂ) + (h3Vec p 1 : ℂ) * Complex.I :=
+      funext fun p => (Complex.re_add_im p.z).symm
+    rw [heq]
+    exact (Complex.continuous_ofReal.comp hc0).add
+      ((Complex.continuous_ofReal.comp hc1).mul continuous_const)
+  have hcont_cosh : Continuous (fun p : H3 => h3Cosh q p) := by
+    unfold h3Cosh
+    refine continuous_const.add (Continuous.div ?_ ?_ fun p => ?_)
+    · exact ((continuous_const.sub hcz).norm.pow 2).add ((continuous_const.sub hct).pow 2)
+    · exact continuous_const.mul hct
+    · have := q.t_pos; have := p.t_pos; positivity
+  exact Real.continuousOn_arcosh.comp_continuous hcont_cosh fun p => one_le_h3Cosh q p
 
 /-- Parabolic translation matrix `!![1, ω; 0, 1]` in `SL(2, ℂ)`. -/
 def parabolicSL2 (ω : ℂ) : SL2C :=
@@ -574,8 +643,13 @@ theorem h3Vec_parabolicSL2 (ω : ℂ) (p : H3) :
   have hden : h3Denom (parabolicSL2 ω) p = 1 := by
     simp [h3Denom, parabolicSL2]
   ext i
-  fin_cases i <;>
-    (unfold h3Vec h3Act; rw [hden]; simp [parabolicSL2])
+  fin_cases i
+  · change (h3Act (parabolicSL2 ω) p).z.re = p.z.re + ω.re
+    rw [h3Act_z, hden]; simp [parabolicSL2]
+  · change (h3Act (parabolicSL2 ω) p).z.im = p.z.im + ω.im
+    rw [h3Act_z, hden]; simp [parabolicSL2]
+  · change (h3Act (parabolicSL2 ω) p).t = p.t + 0
+    rw [h3Act_t, hden]; simp
 
 /-- Linear map on `Fin 3 → ℝ` representing `diagSL2 a ha`. -/
 def diagVecMat (a : ℂ) : Matrix (Fin 3) (Fin 3) ℝ :=
@@ -604,27 +678,27 @@ theorem h3Vec_diagSL2 {a : ℂ} (ha : a ≠ 0) (p : H3) :
     have hca : conj a ≠ 0 := map_ne_zero _ |>.mpr ha
     rw [inv_pow, Complex.ofReal_inv, div_inv_eq_mul, hmul, map_inv₀]
     field_simp
-    ring
   ext i
   fin_cases i
-  · unfold h3Vec h3Act
-    rw [hden]
+  · change (h3Act (diagSL2 a ha) p).z.re = (Matrix.toLin' (diagVecMat a)) (h3Vec p) 0
+    rw [h3Act_z, hden]
     simp only [diagSL2, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_fin_one, add_zero, zero_mul, map_zero, mul_zero]
     rw [hz]
     simp [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
     ring
-  · unfold h3Vec h3Act
-    rw [hden]
+  · change (h3Act (diagSL2 a ha) p).z.im = (Matrix.toLin' (diagVecMat a)) (h3Vec p) 1
+    rw [h3Act_z, hden]
     simp only [diagSL2, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_fin_one, add_zero, zero_mul, map_zero, mul_zero]
     rw [hz]
     simp [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · unfold h3Vec h3Act
-    rw [hden]
-    simp only [Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons,
-      diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
+  · change (h3Act (diagSL2 a ha) p).t = (Matrix.toLin' (diagVecMat a)) (h3Vec p) 2
+    rw [h3Act_t, hden]
+    simp only [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
+      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+      Matrix.head_cons, Matrix.tail_cons, h3Vec_zero, h3Vec_one, h3Vec_two, mul_zero, zero_mul,
+      zero_add]
     field_simp
 
 /-- Coordinate map on `Fin 3 → ℝ` representing `invSL2 = !![0, -1; 1, 0]`. -/
@@ -640,9 +714,13 @@ theorem h3Vec_invSL2 (p : H3) : h3Vec (h3Act invSL2 p) = invVecMap (h3Vec p) := 
       ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
   ext i
-  fin_cases i <;>
-    (unfold h3Vec h3Act; rw [hden];
-      simp [invSL2, invVecMap, Complex.div_ofReal_re, Complex.div_ofReal_im])
+  fin_cases i
+  · change (h3Act invSL2 p).z.re = invVecMap (h3Vec p) 0
+    rw [h3Act_z, hden]; simp [invSL2, invVecMap, Complex.div_ofReal_re]
+  · change (h3Act invSL2 p).z.im = invVecMap (h3Vec p) 1
+    rw [h3Act_z, hden]; simp [invSL2, invVecMap, Complex.div_ofReal_im]
+  · change (h3Act invSL2 p).t = invVecMap (h3Vec p) 2
+    rw [h3Act_t, hden]; simp [invVecMap]
 
 theorem invVecMap_involutive {w : Fin 3 → ℝ} (hw : 0 < w 2) : invVecMap (invVecMap w) = w := by
   set r2 := w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2
@@ -682,8 +760,7 @@ theorem det_invVecJac {w : Fin 3 → ℝ} (hw : 0 < w 2) :
 
 theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     HasFDerivAt invVecMap (Matrix.toLin' (invVecJac w)).toContinuousLinearMap w := by
-  have heq : invVecMap = fun v i => invVecMap v i := rfl
-  rw [heq, hasFDerivAt_pi]
+  let L := (Matrix.toLin' (invVecJac w)).toContinuousLinearMap
   set p0 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 0
   set p1 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 1
   set p2 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 2
@@ -697,27 +774,30 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     have h2 := (hd2.pow 2).congr_fderiv (by ext v; simp [p2]; ring)
     exact (h0.add h1).add h2
   have hr2_ne : w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2 ≠ 0 := (by positivity : 0 < w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2).ne'
-  intro i
+  refine (hasFDerivAt_pi.mpr fun i => (?_ : HasFDerivAt (fun v => invVecMap v i)
+    ((ContinuousLinearMap.proj i).comp L) w)).congr_fderiv (by ext v i; rfl)
   fin_cases i
   · change HasFDerivAt (fun v : Fin 3 → ℝ => -v 0 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
     refine (hd0.neg.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
-    simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
+    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring
   · change HasFDerivAt (fun v : Fin 3 → ℝ => v 1 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
     refine (hd1.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
-    simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
+    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring
   · change HasFDerivAt (fun v : Fin 3 → ℝ => v 2 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
     refine (hd2.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
-    simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
+    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring
 
 private theorem h3Measure_parabolicSL2 (ω : ℂ) {s : Set H3} (hs : MeasurableSet s) :
     h3Measure ((parabolicSL2 ω) • s) = h3Measure s := by
-  rw [h3Measure_eq_lintegral, h3Measure_eq_lintegral]
+  have hgs : MeasurableSet ((parabolicSL2 ω) • s) :=
+    (measurableEmbedding_h3Act (parabolicSL2 ω)).measurableSet_image.mpr hs
+  rw [h3Measure_eq_lintegral hgs, h3Measure_eq_lintegral hs]
   set c : Fin 3 → ℝ := ![ω.re, ω.im, 0]
   have himg : h3Vec '' ((parabolicSL2 ω) • s) = (fun w => w + c) '' (h3Vec '' s) := by
     ext v
@@ -742,7 +822,9 @@ private theorem h3Measure_parabolicSL2 (ω : ℂ) {s : Set H3} (hs : MeasurableS
 
 private theorem h3Measure_diagSL2 {a : ℂ} (ha : a ≠ 0) {s : Set H3} (hs : MeasurableSet s) :
     h3Measure ((diagSL2 a ha) • s) = h3Measure s := by
-  rw [h3Measure_eq_lintegral, h3Measure_eq_lintegral]
+  have hgs : MeasurableSet ((diagSL2 a ha) • s) :=
+    (measurableEmbedding_h3Act (diagSL2 a ha)).measurableSet_image.mpr hs
+  rw [h3Measure_eq_lintegral hgs, h3Measure_eq_lintegral hs]
   set L : (Fin 3 → ℝ) →L[ℝ] (Fin 3 → ℝ) := (Matrix.toLin' (diagVecMat a)).toContinuousLinearMap
   have himg : h3Vec '' ((diagSL2 a ha) • s) = L '' (h3Vec '' s) := by
     ext v
@@ -779,12 +861,14 @@ private theorem h3Measure_diagSL2 {a : ℂ} (ha : a ≠ 0) {s : Set H3} (hs : Me
   have hna : 0 < ‖a‖ := norm_pos_iff.mpr ha
   rw [hdet, hw2, ← ENNReal.ofReal_mul (by positivity)]
   congr 1
-  simp only [h3Vec, Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
+  simp only [h3Vec_two]
   field_simp
 
 private theorem h3Measure_invSL2 {s : Set H3} (hs : MeasurableSet s) :
     h3Measure (invSL2 • s) = h3Measure s := by
-  rw [h3Measure_eq_lintegral, h3Measure_eq_lintegral]
+  have hgs : MeasurableSet (invSL2 • s) :=
+    (measurableEmbedding_h3Act invSL2).measurableSet_image.mpr hs
+  rw [h3Measure_eq_lintegral hgs, h3Measure_eq_lintegral hs]
   have himg : h3Vec '' (invSL2 • s) = invVecMap '' (h3Vec '' s) := by
     ext v
     simp only [Set.mem_image, Set.mem_smul_set, smul_h3_def]
@@ -812,61 +896,14 @@ private theorem h3Measure_invSL2 {s : Set H3} (hs : MeasurableSet s) :
     positivity
   have hdet : |((Matrix.toLin' (invVecJac (h3Vec p))).toContinuousLinearMap :
       (Fin 3 → ℝ) →ₗ[ℝ] (Fin 3 → ℝ)).det| = r2⁻¹ ^ 3 := by
-    rw [LinearMap.coe_toContinuousLinearMap', LinearMap.det_toLin', det_invVecJac p.t_pos,
-      abs_of_pos (by positivity)]
+    change |(Matrix.toLin' (invVecJac (h3Vec p))).det| = r2⁻¹ ^ 3
+    rw [LinearMap.det_toLin', det_invVecJac p.t_pos, abs_of_pos (by positivity)]
   have hw2 : invVecMap (h3Vec p) 2 = p.t / r2 := by
     simp [invVecMap, h3Vec, r2]
   rw [hdet, hw2, ← ENNReal.ofReal_mul (by positivity)]
   congr 1
-  simp only [h3Vec, Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
+  simp only [h3Vec_two]
   field_simp
-
-theorem continuous_h3Act (g : SL2C) : Continuous (h3Act g) := by
-  rw [continuous_induced_rng]
-  have hc0 : Continuous (fun p : H3 => h3Vec p 0) :=
-    (continuous_apply 0).comp continuous_h3Vec
-  have hc1 : Continuous (fun p : H3 => h3Vec p 1) :=
-    (continuous_apply 1).comp continuous_h3Vec
-  have hct : Continuous (fun p : H3 => p.t) := by
-    exact (continuous_apply 2).comp continuous_h3Vec
-  have hcz : Continuous (fun p : H3 => p.z) := by
-    have heq : (fun p : H3 => p.z) =
-        fun p => (h3Vec p 0 : ℂ) + (h3Vec p 1 : ℂ) * Complex.I := by
-      funext p
-      exact (Complex.re_add_im p.z).symm
-    rw [heq]
-    exact (Complex.continuous_ofReal.comp hc0).add
-      ((Complex.continuous_ofReal.comp hc1).mul continuous_const)
-  have hcden : Continuous (fun p : H3 => h3Denom g p) := by
-    unfold h3Denom
-    exact (((continuous_const.mul hcz).add continuous_const).norm.pow 2).add
-      (continuous_const.mul (hct.pow 2))
-  have hcz' : Continuous (fun p : H3 => (h3Act g p).z) := by
-    simp only [h3Act]
-    refine Continuous.div ?_ (Complex.continuous_ofReal.comp hcden)
-      (fun p => Complex.ofReal_ne_zero.mpr (h3Denom_pos g p).ne')
-    refine (((continuous_const.mul hcz).add continuous_const).mul
-      (Complex.continuous_conj.comp ((continuous_const.mul hcz).add continuous_const))).add ?_
-    exact continuous_const.mul ((Complex.continuous_ofReal.comp hct).pow 2)
-  have hct' : Continuous (fun p : H3 => (h3Act g p).t) :=
-    hct.div hcden fun p => (h3Denom_pos g p).ne'
-  refine continuous_pi fun i => ?_
-  fin_cases i
-  · exact Complex.continuous_re.comp hcz'
-  · exact Complex.continuous_im.comp hcz'
-  · exact hct'
-
-/-- Homeomorphism of `ℍ³` induced by `g ∈ SL(2, ℂ)`. -/
-def h3ActHomeomorph (g : SL2C) : H3 ≃ₜ H3 where
-  toFun := h3Act g
-  invFun := h3Act g⁻¹
-  left_inv p := by rw [← h3Act_mul, inv_mul_cancel, h3Act_one]
-  right_inv p := by rw [← h3Act_mul, mul_inv_cancel, h3Act_one]
-  continuous_toFun := continuous_h3Act g
-  continuous_invFun := continuous_h3Act g⁻¹
-
-theorem measurableEmbedding_h3Act (g : SL2C) : MeasurableEmbedding (h3Act g) :=
-  (h3ActHomeomorph g).isClosedEmbedding.measurableEmbedding
 
 /-- Bruhat factorization of any `g ∈ SL(2, ℂ)` into parabolic, diagonal, and inversion generators. -/
 theorem bruhat_sl2c (g : SL2C) :
@@ -886,7 +923,7 @@ theorem bruhat_sl2c (g : SL2C) :
     have ha : a ≠ 0 := left_ne_zero_of_mul_eq_one had
     have hd : d = a⁻¹ := eq_inv_of_mul_eq_one_right had
     refine ⟨b * a, a, ha, Subtype.ext <| Matrix.ext fun i j => ?_⟩
-    change g.1 i j = (parabolicSL2 (b * a)).1.mul (diagSL2 a ha).1 i j
+    change g.1 i j = ((parabolicSL2 (b * a)).1 * (diagSL2 a ha).1) i j
     fin_cases i <;> fin_cases j <;>
       simp [parabolicSL2, diagSL2, Matrix.mul_apply, Fin.sum_univ_two, a, b, c, d, hc, hd]
     exact (mul_inv_cancel_right₀ ha b).symm
@@ -895,9 +932,10 @@ theorem bruhat_sl2c (g : SL2C) :
     change g.1 i j = ((parabolicSL2 (a / c)).1 *
       ((diagSL2 c⁻¹ (inv_ne_zero hc)).1 * (invSL2.1 * (parabolicSL2 (d / c)).1))) i j
     fin_cases i <;> fin_cases j <;>
-      simp [parabolicSL2, diagSL2, invSL2, Matrix.mul_apply, Fin.sum_univ_two, a, b, c, d]
+      simp [parabolicSL2, diagSL2, invSL2, Matrix.mul_apply, Fin.sum_univ_two, a, c, d]
     · exact (div_mul_cancel₀ a hc).symm
-    · field_simp [hc]
+    · change b = _
+      field_simp [hc]
       linear_combination -hdet
     · exact (mul_div_cancel₀ d hc).symm
 
@@ -905,7 +943,7 @@ theorem bruhat_sl2c (g : SL2C) :
 theorem h3Measure_h3Act (g : SL2C) {s : Set H3} (hs : MeasurableSet s) :
     h3Measure (g • s) = h3Measure s := by
   have hmul_smul : ∀ (g₁ g₂ : SL2C) (E : Set H3), (g₁ * g₂) • E = g₁ • (g₂ • E) :=
-    fun g₁ g₂ E => (mul_smul g₁ g₂ E).symm
+    fun g₁ g₂ E => mul_smul g₁ g₂ E
   have hm : ∀ (h : SL2C) {E : Set H3}, MeasurableSet E → MeasurableSet (h • E) := by
     intro h E hE
     have : h • E = h3Act h '' E := rfl
@@ -974,8 +1012,8 @@ theorem h3Act_degPoint_of_vertRot {g : SL2C} (hb : g.1 0 1 = 0) (hc : g.1 1 0 = 
   have hden : h3Denom g (degPoint t ht) = 1 := by
     simp [h3Denom, degPoint, hc, hd_norm]
   ext
-  · unfold h3Act; rw [hden]; simp [degPoint, hb, hc]
-  · unfold h3Act; rw [hden]; simp [degPoint]
+  · rw [h3Act_z, hden]; simp [degPoint, hb, hc]
+  · rw [h3Act_t, hden]; simp [degPoint]
 
 /-- **Vertical geodesic stabilizer rigidity.** An element `g ∈ SL(2, ℂ)` preserves the off-diagonal
 archimedean Frobenius profile on integer degrees if and only if `g = diag(a, a⁻¹)` with `‖a‖ = 1`,
@@ -998,7 +1036,7 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       rw [hd, Real.cosh_abs, cosh_log_sub_log (by exact_mod_cast hm) (by exact_mod_cast hn)] at h1
       have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
       have hn' : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
-      rw [h1]
+      rw [← h1]
       field_simp
       ring
     -- Pin `g • natPoint 2 = natPoint 2` via anchors `m = 1` and `m = 4`
@@ -1073,8 +1111,7 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       have hz := congrArg H3.z hp2
       have hden_one : h3Denom g (natPoint 2 (by norm_num)) = 1 := by
         simp [h3Denom, natPoint, hc, hd_norm]
-      unfold h3Act at hz
-      rw [hden_one] at hz
+      rw [h3Act_z, hden_one] at hz
       simp only [natPoint, mul_zero, zero_add, hc, map_zero, add_zero,
         Complex.ofReal_one, div_one] at hz
       exact (mul_eq_zero.mp hz).resolve_right (map_ne_zero _ |>.mpr hd_ne)
@@ -1142,7 +1179,6 @@ theorem tendsto_freeSpace_robin (s : ℝ) :
     have := hasDerivAt_iff_tendsto_slope.mp hd
     exact this.congr fun d => by rw [slope_def_field, mul_zero, Real.exp_zero, sub_zero]
   have hrem : Tendsto (fun d : ℝ => (Real.sinh d - d) / d ^ 2) (𝓝[≠] 0) (𝓝 0) := by
-    refine tendsto_zero_iff_norm_tendsto_zero.mpr ?_
     refine squeeze_zero_norm' (a := fun d => |Real.sinh d|) ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with d hd
       rw [Real.norm_eq_abs, abs_div, abs_sq]
@@ -1267,10 +1303,10 @@ theorem h3Measure_ball_ge {ρ t : ℝ} (hρ : 0 < ρ) (ht : 0 < t) :
       Real.arcosh_lt_arcosh (h3Cosh_pos _ _) (Real.cosh_pos ρ)]
     unfold h3Cosh degPoint
     have hx2 : w 0 ^ 2 ≤ δ ^ 2 * t ^ 2 := by
-      have : |w 0| ≤ δ * t := abs_le.mpr (Set.mem_Icc.mp hw0)
+      have : |w 0| ≤ δ * t := abs_le.mpr ⟨by linarith [hw0.1], by linarith [hw0.2]⟩
       nlinarith [sq_abs (w 0), abs_nonneg (w 0)]
     have hy2 : w 1 ^ 2 ≤ δ ^ 2 * t ^ 2 := by
-      have : |w 1| ≤ δ * t := abs_le.mpr (Set.mem_Icc.mp hw1)
+      have : |w 1| ≤ δ * t := abs_le.mpr ⟨by linarith [hw1.1], by linarith [hw1.2]⟩
       nlinarith [sq_abs (w 1), abs_nonneg (w 1)]
     have hz2 : (t - w 2) ^ 2 ≤ δ ^ 2 * t ^ 2 := by
       have : |t - w 2| ≤ δ * t := abs_le.mpr ⟨by linarith [hw2.2], by linarith [hw2.1]⟩
@@ -1287,15 +1323,15 @@ theorem h3Measure_ball_ge {ρ t : ℝ} (hρ : 0 < ρ) (ht : 0 < t) :
           ≤ 3 * δ ^ 2 * t ^ 2 := by linarith
         _ ≤ 3 * δ ^ 2 * (2 * t * w 2) :=
             mul_le_mul_of_nonneg_left hden_lo (by positivity)
-    linarith
+    nlinarith [sq_nonneg δ]
   have hvol_Q : volume Q = ENNReal.ofReal (8 * δ ^ 3 * t ^ 3) := by
     rw [MeasureTheory.volume_pi_pi, Fin.prod_univ_three]
     simp only [a, b, Real.volume_Icc, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons]
-    rw [← ENNReal.ofReal_mul (by nlinarith), ← ENNReal.ofReal_mul (by positivity)]
+    rw [← ENNReal.ofReal_mul (by nlinarith), ← ENNReal.ofReal_mul (by nlinarith)]
     congr 1
     ring
-  rw [h3Measure_eq_lintegral]
+  rw [h3Measure_eq_lintegral (isOpen_lt (continuous_h3Dist_right _) continuous_const).measurableSet]
   calc ENNReal.ofReal (64 / 27 * δ ^ 3)
       = ENNReal.ofReal ((2 / (3 * t)) ^ 3) * volume Q := by
         rw [hvol_Q, ← ENNReal.ofReal_mul (by positivity)]
@@ -1392,7 +1428,6 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
   by_contra hboth
   push Not at hboth
   obtain ⟨hfin_thin, R, hR1, hno_fold⟩ := hboth
-  rw [Set.not_infinite] at hfin_thin
   obtain ⟨F, hF_meas, hF_lt, hF_cov⟩ := hcov
   -- Countability of `Γ` and finiteness of `vertStab Γ`
   haveI : SecondCountableTopology SL2C := inferInstance
@@ -1689,7 +1724,7 @@ primes, any `Γ`-invariant kernel `K : H3 → H3 → ℝ` bounded below by a New
 real value on the diagonal) becomes arbitrarily large on prime pairs `(p, q)` of arbitrarily large
 ratio `q / p > R`, whereas `archProfile (log (q / p)) → 0`. -/
 theorem newtonian_quotient_unbounded_on_primes (Γ : Subgroup SL2C)
-    (hfold : ∀ ε : ℝ, 0 < ε → ∀ R : ℝ, 1 < R → ∃ p, ∃ hp : p.Prime, ∃ q, ∃ hq : q.Prime,
+    (hfold : ∀ ε : ℝ, 0 < ε → ∀ R : ℝ, 1 < R → ∃ p : ℕ, ∃ hp : p.Prime, ∃ q : ℕ, ∃ hq : q.Prime,
       R < (q : ℝ) / p ∧ ∃ γ : Γ,
         h3Dist (natPoint p hp.pos) (h3Act (γ : SL2C) (natPoint q hq.pos)) < ε)
     {K : H3 → H3 → ℝ} {c₁ C₁ : ℝ} (hc₁ : 0 < c₁)
@@ -1773,7 +1808,9 @@ theorem parabolic_poincare_not_summable_half {ω : ℂ} (hω : ω ≠ 0) {t u : 
       rw [parabolicSL2_pow]
       have hden : h3Denom (parabolicSL2 ((m : ℂ) * ω)) (degPoint u hu) = 1 := by
         simp [h3Denom, parabolicSL2, degPoint]
-      ext <;> (unfold h3Act; rw [hden]; simp [parabolicSL2, degPoint])
+      ext
+      · rw [h3Act_z, hden]; simp [parabolicSL2, degPoint]
+      · rw [h3Act_t, hden]; simp [degPoint]
     set d := h3Dist (degPoint t ht) (h3Act (parabolicSL2 ω ^ m) (degPoint u hu))
     have hd_pos : 0 < d := by
       dsimp only [d]
@@ -1880,7 +1917,7 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
         simpa using (hasDerivAt_pow 2 r).add_const ((t - u) ^ 2)
       have h2 := (h1.div_const (2 * t * u)).const_add 1
       refine h2.congr_deriv ?_
-      field_simp; ring
+      field_simp
     have hd_horo : HasDerivAt (horoDist t u) ((Real.sqrt (C ^ 2 - 1))⁻¹ * (r / (t * u))) r :=
       (Real.hasDerivAt_arcosh hC1).comp r hd_arg
     have hd_exp : HasDerivAt (fun x => Real.exp (-α * horoDist t u x))
@@ -1894,8 +1931,9 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
       refine (Real.sqrt_pos.mpr ?_).ne'
       nlinarith
     have hπ : Real.pi ≠ 0 := Real.pi_ne_zero
-    simp only [F', hyperbolicGreen, α]
-    rw [hsinh]
+    have hα_ne : α ≠ 0 := hα.ne'
+    simp only [F', hyperbolicGreen]
+    rw [show -(s - 1) * horoDist t u r = -α * horoDist t u r by simp [α], hsinh]
     field_simp
     ring
   -- Nonnegativity of `F'` on `(0, ∞)`
@@ -1960,7 +1998,7 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
     conv_lhs =>
       rw [show min t u * max t u = Real.exp (Real.log (min t u)) * Real.exp (Real.log (max t u)) by
         rw [Real.exp_log hmin_pos, Real.exp_log hmax_pos]]
-    rw [mul_div_right_comm, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+    rw [div_mul_eq_mul_div, ← Real.exp_add, ← Real.exp_add]
     congr 2
     simp only [α]; ring
   rw [hint, hF0]
@@ -2206,7 +2244,7 @@ theorem integral_causalJetWave_mul {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (k : �
     funext x
     simp only [causalJetWave]
     rw [← Set.inter_indicator_mul, Set.Ioc_inter_Ioc, max_self]
-    refine indicator_congr fun u _ => ?_
+    refine congrFun (Set.indicator_congr fun u _ => ?_) x
     have hsq : Real.sqrt (4 * (k : ℝ) + 1) * Real.sqrt (4 * (k : ℝ) + 1) = 4 * (k : ℝ) + 1 :=
       Real.mul_self_sqrt (by positivity)
     calc (Real.sqrt (4 * (k : ℝ) + 1) * (u / a) ^ (2 * k)) *
@@ -2228,7 +2266,7 @@ theorem integral_causalJetWave_mul {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (k : �
     have h1 := (hasDerivAt_pow (4 * k + 1) u).div_const ((a * b) ^ (2 * k))
     refine h1.congr_deriv ?_
     push_cast
-    rw [Nat.add_sub_cancel]
+    rfl
   have hint_cont : IntervalIntegrable
       (fun u => (4 * (k : ℝ) + 1) * u ^ (4 * k) / (a * b) ^ (2 * k)) volume 0 m :=
     (by fun_prop : Continuous _).intervalIntegrable 0 m
@@ -2292,14 +2330,16 @@ theorem hasSum_dampedJet_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {m n : ℕ
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   have hfull := hasSum_dampedFrobenius_gram hr0 hr1 hm hn
-  have h0 : (∫ x in Set.Ioi 0, (r ^ 0 * causalJetWave m 0 x) * (r ^ 0 * causalJetWave n 0 x)) =
+  have h0 : (∫ x in Set.Ioi (0 : ℝ), (r ^ 0 * causalJetWave m 0 x) * (r ^ 0 * causalJetWave n 0 x)) =
       min (m : ℝ) n := by
     simp only [pow_zero, one_mul]
     simpa using integral_causalJetWave_mul hm' hn' 0
-  have hshift := (hasSum_nat_add_iff 1).mpr hfull
-  rw [Finset.sum_range_one, h0] at hshift
-  unfold dampedJet
-  exact hshift
+  have heq : dampedFrobenius r m n = dampedJet r m n +
+      ∑ i ∈ Finset.range 1, ∫ x in Set.Ioi (0 : ℝ),
+        (r ^ i * causalJetWave m i x) * (r ^ i * causalJetWave n i x) := by
+    rw [Finset.sum_range_one, h0, dampedJet, sub_add_cancel]
+  rw [heq] at hfull
+  exact (hasSum_nat_add_iff 1).mpr hfull
 
 /-- **Positive semidefiniteness of the damped pure-jet kernel `dampedJet`.** -/
 theorem dampedJet_posSemidef {ι : Type*} (s : Finset ι) {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
@@ -2378,10 +2418,10 @@ theorem dampedJet_posSemidef {ι : Type*} (s : Finset ι) {r : ℝ} (hr0 : 0 ≤
       rw [sq, Finset.sum_mul_sum]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
     simp_rw [hsq_exp]
-    rw [MeasureTheory.integral_finset_sum s fun i hi =>
-      integrable_finset_sum s fun j hj => (hint_prod i hi j hj).const_mul _]
+    rw [MeasureTheory.integral_finsetSum s fun i hi =>
+      integrable_finsetSum s fun j hj => (hint_prod i hi j hj).const_mul _]
     refine Finset.sum_congr rfl fun i hi => ?_
-    rw [MeasureTheory.integral_finset_sum s fun j hj => (hint_prod i hi j hj).const_mul _]
+    rw [MeasureTheory.integral_finsetSum s fun j hj => (hint_prod i hi j hj).const_mul _]
     refine Finset.sum_congr rfl fun j hj => ?_
     rw [MeasureTheory.integral_const_mul]
     simp [f, hi, hj]
@@ -2397,7 +2437,8 @@ theorem tendsto_dampedJet_of_ne {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (hmn : m �
 /-- On the diagonal, `dampedJet r n n = n r² / (1 - r²) → +∞` as `r → 1⁻`. -/
 theorem tendsto_dampedJet_diag {n : ℕ} (hn : 0 < n) :
     Tendsto (fun r => dampedJet r n n) (𝓝[<] 1) atTop := by
-  have h := tendsto_atTop_add_const_right atTop (-(n : ℝ)) (tendsto_dampedFrobenius_diag hn)
+  have h := tendsto_atTop_add_const_right (𝓝[<] (1 : ℝ)) (-(n : ℝ))
+    (tendsto_dampedFrobenius_diag hn)
   refine h.congr fun r => ?_
   simp [dampedJet, sub_eq_add_neg]
 
@@ -2422,7 +2463,7 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
     intro x
     have hlim : Tendsto (fun r => ∑ m ∈ B, ∑ n ∈ B, x m * x n * K r m n) (𝓝[<] 1)
         (𝓝 (∑ m ∈ B, ∑ n ∈ B, x m * x n * K₁ m n)) :=
-      tendsto_finset_sum B fun m hm => tendsto_finset_sum B fun n hn =>
+      tendsto_finsetSum B fun m hm => tendsto_finsetSum B fun n hn =>
         (htend m n (hB_pos m hm) (hB_pos n hn)).const_mul _
     have hge : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 ≤ ∑ m ∈ B, ∑ n ∈ B, x m * x n * K r m n := by
       have hgt0 : ∀ᶠ r in 𝓝[<] (1 : ℝ), (0 : ℝ) < r :=
@@ -2473,7 +2514,7 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
       have hn' := Finset.mem_Ico.mp hn
       have hsum_le : (m : ℝ) + n ≤ 4 * N := by exact_mod_cast (by omega : m + n ≤ 4 * N)
       by_cases hmn : m = n
-      · subst hmn; simp; positivity
+      · subst hmn; simp
       rw [if_neg hmn]
       obtain ⟨hlo, -⟩ := frobeniusIntersection_block_bounds hm hn hmn
       by_cases hlt : m < n
@@ -2565,7 +2606,7 @@ theorem not_atomic_countertermFree_log_diag (C : ℝ) :
   have hN1 : 1 ≤ N := Nat.mul_pos (Nat.succ_pos _) (Nat.succ_pos _)
   have hexp19_lt : Real.exp 19 < N := by
     have h1 : Real.exp 19 < (⌊Real.exp 19⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
-    have h2 : (1 : ℝ) ≤ (⌊32 * C₀⌋₊ : ℝ) + 1 := by positivity
+    have h2 : (1 : ℝ) ≤ (⌊32 * C₀⌋₊ : ℝ) + 1 := by linarith [Nat.cast_nonneg ⌊32 * C₀⌋₊]
     push_cast [N]
     nlinarith
   have hN_pos : (0 : ℝ) < N := (Real.exp_pos 19).trans hexp19_lt
@@ -2614,7 +2655,9 @@ theorem tendsto_add_twistedEnergy_atTop {A : ℝ → ℕ → ℕ → ℝ} {S : F
     {x : ℕ → ℝ} (hx : 0 < ∑ n ∈ S, x n ^ 2) :
     Tendsto (fun r => ∑ m ∈ S, ∑ n ∈ S, x m * x n * (A r m n + twistedEnergy r m n))
       (𝓝[<] 1) atTop := by
-  have hren := (weilPrimeKernel_renormalized_torsion_energy hS x).2.mono_left nhdsWithin_le_nhds
+  have hren : Tendsto (fun r => ∑ m ∈ S, ∑ n ∈ S, x m * x n * twistedEnergy r m n +
+      Real.log |1 - r| * ∑ n ∈ S, x n ^ 2) (𝓝[<] 1) (𝓝 _) :=
+    (weilPrimeKernel_renormalized_torsion_energy hS x).2.mono_left nhdsWithin_le_nhds
   -- `-log |1 - r| → +∞` as `r → 1⁻`
   have hneg_log : Tendsto (fun r : ℝ => -Real.log |1 - r|) (𝓝[<] 1) atTop := by
     have hsub : Tendsto (fun r : ℝ => |1 - r|) (𝓝[<] 1) (𝓝[>] 0) := by
