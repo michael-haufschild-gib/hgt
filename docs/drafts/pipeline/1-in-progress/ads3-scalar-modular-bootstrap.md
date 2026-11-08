@@ -17,33 +17,42 @@ The corpus's single-Eisenstein detection theorem now extends to the product:
 ## Conjectures and obligations
 
 1. **Product-kernel coverage — proved in Lean.** At every zero of `ξ(1+2u)`, the product kernel has a pole of the full multiplicity for some pair of moduli on each prescribed pair of horocycles. Its double horocycle numerator average is explicitly nonzero.
-2. **Actual partition identity — partly formalized.** The convergent Narain sum, scalar projection and general two-modulus Dirichlet and Mellin formulas are proved in Lean. Establish modular inversion, the regularized fundamental-domain overlap and normalization of its continuation into the pole-detecting kernel.
+2. **Actual partition identity — partly formalized.** The convergent Narain sum, scalar projection, general two-modulus Dirichlet and Mellin formulas, and the scalar Mellin continuation into the pole-detecting kernel are proved in Lean. [Full modular invariance](../3-formalized/ads3-narain-modular-inversion.md) is also proved. Establish the [regularized fundamental-domain overlap](ads3-narain-regularized-overlap.md).
 3. **Source estimate.** For every pair of central-charge-two target moduli, derive
    `yΣ_scalar exp(−2πΔy) − [y−(3/π)log y+B] = O_ε(y^(3/4−ε))`
    as `y→0+`, for every `ε>0`, with the vacuum included and `B` the exact
-   constant term. The loss `ε` permits logarithmic factors from multiple zeros.
-   Prove the Mellin bridge from this family of bounds to RH using full pole
-   coverage. The bound itself is an open target, not an input.
-4. **[Pole-forced decay boundary](ads3-narain-pole-decay-boundary.md).** At each arithmetic zero `ρ`, some target
-   pair on every prescribed pair of horocycles should admit no scalar
+   [constant term](../3-formalized/ads3-narain-principal-part.md). The loss `ε` permits logarithmic factors from multiple zeros.
+   The Mellin bridge from even one fixed target average to RH is now
+   formalized. The bound itself remains open.
+4. **[Pole-forced decay boundary — proved in Lean](../3-formalized/ads3-narain-pole-decay-boundary.md).** At each arithmetic zero `ρ`, some target
+   pair on every prescribed pair of horocycles admits no scalar
    remainder bound `O(y^α)` with `α>1−Re ρ/2`, after subtraction of any
    constant and logarithmic main terms. Such a bound would make the
    remainder Mellin transform holomorphic across the detected pole;
    the main terms have poles only at `s=1`. The corpus's
    `BlackHoleRingdown/TheHorocycleReadsTheZeros.lean` supplies the
    decay-to-holomorphy and analytic-uniqueness mechanism. The Narain
-   source still needs its local integrability, large-height bound and
-   logarithmic Mellin subtraction proved.
+   source's [local integrability and exponential large-height bound](../3-formalized/ads3-narain-heat-regularity.md),
+   logarithmic Mellin subtraction and analytic uniqueness are all
+   formalized. Any positive-power expansion also forces logarithmic
+   coefficient `−3/π`. No small-height rate is supplied by this obstruction.
 
-For the RH implication, the proved mean-pole theorem exposes a weaker
-sufficient target: the same remainder bound for one double target-horocycle
-average at prescribed positive heights. No arithmetic pole cancels in that
-average. Identifying its actual Mellin transform requires uniform Gaussian
-and Dirichlet bounds on the compact target intervals; these remain obligations.
-For fixed heights `Y,Z>0` and horizontal coordinates in `[0,1]`, the explicit
-candidate majorant is `K*=YZ(2Z²+3)Z⁻²(2+3Y⁻²)`: mass coercivity gives
-`M²≥(|n|²+|w|²)/K*`. The square-target scalar Dirichlet theorem would then
-dominate all target Dirichlet norms by `K*^(Re s)` times one summable series.
+For the RH implication, one fixed
+[double target-horocycle average](../3-formalized/ads3-narain-target-average.md)
+at any prescribed positive heights suffices. Its actual Mellin transform
+is the explicit mean, with target/height norm-Fubini fully proved.
+The uniform square-target heat majorant uses
+`K*=YZ(2Z²+3)Z⁻²(2+3Y⁻²)` and the mass bound
+`M²≥(|n|²+|w|²)/K*`. It also proves continuity and exponential
+large-height decay of the average. Every arithmetic pole survives.
+The [fixed-source decay obstruction](../3-formalized/ads3-narain-average-pole-decay-boundary.md)
+is formalized: rates `y^(1−σ₀/2−ε)` for every positive `ε` exclude xi
+zeros with `Re s>σ₀`. At `σ₀=1/2`, this proves the rate-to-RH implication.
+The [exact mean constant and weighted residue](../3-formalized/ads3-narain-average-principal-part.md)
+are formalized, including rigidity of both main coefficients. The
+[converse rate implication](../0-backlog/ads3-narain-average-sharp-rate.md) and
+[universal-profile scaling identity](../0-backlog/ads3-narain-average-scaling.md)
+remain targets. The unconditional [half-power boundary rate](ads3-narain-average-boundary-rate.md) is under formalization.
 
 ## Product detector: formalized
 
@@ -61,12 +70,15 @@ negative of the zero order of `D`. Separately, each nonzero constant term forces
 a point with `N(p;x,Y)≠0`; choosing one on each horocycle gives the same full
 pole order for the pointwise product. Multiple zeros require no extra assumption.
 
-**Normalization obligation.** In the literature's variable `s=1/2+u`,
+**[Normalization: formalized](../3-formalized/ads3-narain-mellin-continuation.md).** In the variable `s=1/2+u`,
 `Λ(s)=π^(−s)Γ(s)ζ(2s)` and `ξ(2s)=s(2s−1)Λ(s)`.
 The literature's Rankin–Selberg normalization is `2K/[u(1+2u)]`. This
 elementary factor is nonzero at arithmetic resonances. The actual scalar
-Mellin transform `2Λ(s)E_s(ρ)E_s(σ)` is now formalized; matching its continuation
-to this quotient remains a Lean obligation.
+Mellin transform `2Λ(s)E_s(ρ)E_s(σ)` equals this quotient on `Re s>1`.
+`NarainMellinContinuation.lean` proves global meromorphicity, the exact
+partition-projection identity and full pole multiplicity for the actual
+source continuations. At unit target heights the average is
+`2L₊+4L₋+2L₋²/L₊`, where `L₊=Λ(s)`, `L₋=π^(1/2−s)Γ(s−1/2)ζ(2s−1)`.
 
 ## Lattice source
 
@@ -109,43 +121,32 @@ Positive lattice counting and Poisson duality therefore cannot justify
 zero-freeness of a fixed-modulus numerator. Universal detection uses the
 proved horocycle family, not such a zero-freeness claim.
 
-For the partition-function bridge, the corpus supplies
-`IntegerLatticePoisson.summable_norm_gaussian_affine_lattice` and
-`gaussian_theta_characteristics` in `HTGeometry/GaussianThetaCharacteristics.lean`.
-The coercive bound dominates the actual partition terms by four Gaussian
-series. [Absolute convergence, modular translation and the exact scalar
-projection](../3-formalized/ads3-narain-partition-projection.md) are formalized
-in `NarainPartition.lean`, with all integration-interchange hypotheses
-discharged by this Gaussian bound. Poisson summation in momentum gives the Lagrangian
-expression, where modular inversion is an integer reindexing of the two
-winding columns; that identification remains open.
-The gap controls the large-worldsheet-height cusp. It does not supply the
-small-height scalar remainder required for RH.
-
-The explicit Poisson target is
-`Z(x,t)=V Σ_(m,w) exp[−πV(Rσ(m−xw)+t²Rσ(w))/(tσ₂)+2πiB det(m,w)]`,
-where `Rσ(v)=|v₁+σv₂|²`. Inversion sends
-`(x,t)` to `(-x,t)/(x²+t²)` and `(m,w)` to `(-w,m)`; both the quadratic
-exponent and determinant phase agree. The corpus's
-`IntegerLatticePoisson.gaussian_theta_characteristics` supplies Poisson
-summation with affine convergence already proved. Use
-`Bσ(v₁,v₂)=(σ₂v₁,v₂−σ₁v₁)`, Gaussian parameter `t/(Vσ₂)`, spatial shift
-`Bσ(BJw)` and modulation `x Bσ^(−T)w`. The shift-modulation cross phase
-vanishes because `Jw·w=0`; the dual phase is `B det(m,w)`, the dual norm is
-`Rσ(m−xw)/σ₂²`, and the prefactor is `V/t`. The explicit linear equivalence,
-determinant and inverse-adjoint identities, followed by charge-sum
-reindexing, remain to be formalized.
-The dual quadratic is already a Narain mass:
-`[Rσ(m−xw)+t²Rσ(w)]/(tσ₂)=M²_((x,t),σ)(Jm,−w)`.
-Its spin is `det(m,w)`. Thus the dual convergence follows from the same
-coercive bound, and the Poisson identity is equivalently the triality
-`Z_(ρ,σ)(τ)=Z_(τ,σ)(ρ)`; this equality remains to be formalized.
+[Absolute convergence, modular translation and exact scalar projection](../3-formalized/ads3-narain-partition-projection.md)
+follow from Gaussian domination. [Full modular invariance and Poisson
+triality](../3-formalized/ads3-narain-modular-inversion.md) are formalized:
+momentum Poisson summation exchanges target area and worldsheet moduli;
+the target charge permutation then gives worldsheet inversion, and the
+standard generators give `SL₂(ℤ)` invariance. The [positive majorant, angular norm control and cusp bounds](../3-formalized/ads3-narain-partition-cusp-bounds.md)
+are formalized. Angular norm integration reduces overlap convergence to
+scalar Mellin convergence for `Re s>1`; linear cusp growth controls the
+remaining Eisenstein tail. These estimates supply no small-height RH rate.
 
 The [actual scalar Mellin identity](../3-formalized/ads3-narain-scalar-mellin.md)
 is formalized in `NarainMellin.lean`:
 `Mellin[y⁻¹∫₀¹ Z(x,y)dx−1](s)=2π^(−s)Γ(s)ζ(2s)E_s(ρ)E_s(σ)`
 for `Re s>1`. Every Mellin interchange premise is discharged by the proved
 mass positivity and absolute Dirichlet convergence.
+
+For contour estimates, the corpus already proves sharp Gamma decay of the
+Whittaker tails and `exists_eisenstein_strip_le` in
+`BlackHoleRingdown/ThePolynomialGrowthOfTheEisensteinFunction.lean`.
+Its `exists_exp_mul_norm_inv_xi_le` reduces the remaining strip weight to
+polynomial growth of `1/ζ(1+2u)`. Thus the pointwise contour argument does
+not need a new Bessel decay theorem. Mellin inversion and
+the source rate still require formal proofs; the RH-strength zero-free
+region cannot be assumed as an unconditional input.
+The [exact principal part](../3-formalized/ads3-narain-principal-part.md) is formalized.
+Its enlarged analytic domain uses the proved [removable central zero](../3-formalized/ads3-narain-central-zero.md).
 
 ## External audit
 

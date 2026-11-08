@@ -10,7 +10,7 @@ density `2 sin²(πt)` uniformly. The supremum distance is exactly `2/(p+1)`,
 attained at the central phase. This concerns the explicit density family.
 -/
 
-open Set Filter Topology
+open Set Filter Topology MeasureTheory
 open GaloisForLFunctions.HTGeometry
 
 namespace GaloisForLFunctions.SelbergClass.Primon
@@ -27,7 +27,9 @@ theorem kestenMcKayDensity_eq_sine_square (p : Nat.Primes) (t : ℝ) :
   unfold kestenMcKayDensity
   congr 1
   rw [show 2 * Real.pi * t = 2 * (Real.pi * t) by ring, Real.cos_two_mul]
-  nlinarith only [Real.sin_sq_add_cos_sq (Real.pi * t)]
+  rw [show Real.cos (Real.pi * t) ^ 2 = 1 - Real.sin (Real.pi * t) ^ 2 by
+    nlinarith only [Real.sin_sq_add_cos_sq (Real.pi * t)]]
+  ring
 
 /-- The uniform phase error has a prime-exact upper bound. -/
 theorem abs_kestenMcKayDensity_sub_semicircle_le (p : Nat.Primes) (t : ℝ) :
@@ -47,11 +49,13 @@ theorem abs_kestenMcKayDensity_sub_semicircle_le (p : Nat.Primes) (t : ℝ) :
       (((p : ℝ) - 1) ^ 2 + 4 * (p : ℝ) * u) - 2 * u =
       (2 * u * (3 * (p : ℝ) - 1 - 4 * (p : ℝ) * u)) /
         (((p : ℝ) - 1) ^ 2 + 4 * (p : ℝ) * u) := by
-    field_simp [ne_of_gt hD]
+    apply (eq_div_iff (ne_of_gt hD)).mpr
+    rw [sub_mul, div_mul_cancel₀ _ (ne_of_gt hD)]
     ring
   rw [he, abs_le]
   constructor
-  · rw [neg_div, div_le_div_iff₀ hp1 hD]
+  · have hn : -(2 / ((p : ℝ) + 1)) = (-2) / ((p : ℝ) + 1) := by ring
+    rw [hn, div_le_div_iff₀ hp1 hD]
     have hfactor : 0 ≤ (1 - u) *
         (4 * (p : ℝ) * ((p : ℝ) + 1) * u + ((p : ℝ) - 1) ^ 2) :=
       mul_nonneg (sub_nonneg.mpr hu1) (by positivity)
@@ -110,11 +114,54 @@ theorem tendsto_kestenDensityOnUnit :
   simpa only [mul_zero, Function.comp_def] using
     (tendsto_inv_atTop_zero.comp hp).const_mul 2
 
+/-- Phase expectation of a continuous observable under the prime density. -/
+def kestenObservableAverage (p : Nat.Primes) (f : C(ℝ, ℝ)) : ℝ :=
+  ∫ t in Ioo (0 : ℝ) 1, kestenMcKayDensity p t * f t
+
+/-- Phase expectation under the limiting semicircle density. -/
+def semicircleObservableAverage (f : C(ℝ, ℝ)) : ℝ :=
+  ∫ t in Ioo (0 : ℝ) 1, semicirclePhaseDensity t * f t
+
+/-- Every continuous phase observable inherits the uniform density error bound. -/
+theorem norm_kestenObservableAverage_sub_semicircle_le (p : Nat.Primes) (f : C(ℝ, ℝ)) :
+    ‖kestenObservableAverage p f - semicircleObservableAverage f‖ ≤
+      (2 / ((p : ℝ) + 1)) * ‖f.restrict (Icc (0 : ℝ) 1)‖ := by
+  have hi : IntegrableOn (fun t => kestenMcKayDensity p t * f t) (Ioo (0 : ℝ) 1) :=
+    ((continuous_kestenMcKayDensity p).mul f.continuous).continuousOn.integrableOn_Icc.mono_set
+      Ioo_subset_Icc_self
+  have hs : IntegrableOn (fun t => semicirclePhaseDensity t * f t) (Ioo (0 : ℝ) 1) :=
+    ((by unfold semicirclePhaseDensity; fun_prop : Continuous semicirclePhaseDensity).mul
+      f.continuous).continuousOn.integrableOn_Icc.mono_set Ioo_subset_Icc_self
+  have he : kestenObservableAverage p f - semicircleObservableAverage f =
+      ∫ t in Ioo (0 : ℝ) 1, (kestenMcKayDensity p t - semicirclePhaseDensity t) * f t := by
+    rw [kestenObservableAverage, semicircleObservableAverage, ← integral_sub hi hs]
+    congr 1
+    funext t
+    ring
+  rw [he]
+  have hb : ∀ t ∈ Ioo (0 : ℝ) 1,
+      ‖(kestenMcKayDensity p t - semicirclePhaseDensity t) * f t‖ ≤
+        (2 / ((p : ℝ) + 1)) * ‖f.restrict (Icc (0 : ℝ) 1)‖ := by
+    intro t ht
+    rw [norm_mul, Real.norm_eq_abs]
+    exact mul_le_mul (abs_kestenMcKayDensity_sub_semicircle_le p t)
+      (ContinuousMap.norm_coe_le_norm (f.restrict (Icc (0 : ℝ) 1))
+        ⟨t, ht.1.le, ht.2.le⟩) (norm_nonneg _) (by positivity)
+  have h := norm_setIntegral_le_of_norm_le_const
+    (by simp [Real.volume_Ioo] :
+      volume (Ioo (0 : ℝ) 1) < ⊤) hb
+  simpa only [Real.volume_real_Ioo, sub_zero, max_eq_left zero_le_one, mul_one] using h
+
+/-- Prime phase expectations converge for every continuous observable. -/
+theorem tendsto_kestenObservableAverage (f : C(ℝ, ℝ)) :
+    Tendsto (fun p => kestenObservableAverage p f) cofinite
+      (𝓝 (semicircleObservableAverage f)) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  apply squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+    (Eventually.of_forall fun p => norm_kestenObservableAverage_sub_semicircle_le p f)
+  have h := (tendsto_iff_norm_sub_tendsto_zero.mp tendsto_kestenDensityOnUnit).const_mul
+    ‖f.restrict (Icc (0 : ℝ) 1)‖
+  simpa only [norm_kestenDensityOnUnit_sub_semicircle, mul_zero, zero_mul, mul_comm] using h
+
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenMcKayDensity_eq_sine_square
-#print axioms GaloisForLFunctions.SelbergClass.Primon.abs_kestenMcKayDensity_sub_semicircle_le
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenMcKayDensity_sub_semicircle_half
-#print axioms GaloisForLFunctions.SelbergClass.Primon.norm_kestenDensityOnUnit_sub_semicircle
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tendsto_kestenDensityOnUnit

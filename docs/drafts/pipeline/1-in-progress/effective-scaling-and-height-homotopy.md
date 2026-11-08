@@ -33,6 +33,40 @@ does not fulfill these requirements.
   the full root-of-unity energy and the least common multiple of conductors;
   obtain a conductor-uniform modulus for the spacing-regulated diagonal and
   its quadratic form on arbitrary finite supports.
+- [Isolated-prime obstruction](../5-failed/hhac-isolated-prime-fixed-points.md):
+  literal square-root-sized fixed sets are impossible for identity-homotopic
+  maps. The positive survivor is the exact component classification, connected
+  core bouquet and prime-count correction to its Euler characteristic, all formalized.
+- [Dirichlet persistence](../3-formalized/esg-dirichlet-persistence-equivalence.md):
+  actual augmented cutoff complexes and homology persistence functors;
+  natural conjugacy of every complex Dirichlet weighting to the unweighted system.
+- [Cycle-height structure](../3-formalized/esg-cycle-height-structure.md):
+  natural odd coordinates for cycles and the exact identity that boundaries
+  at `N` are cycles at `⌊N/2⌋`, over every commutative ring.
+- [Critical coordinate persistence](../3-formalized/esg-critical-coordinate-persistence.md):
+  split projection with exact half-cutoff kernel and natural survival maps.
+- [Arithmetic homology barcode](../3-formalized/esg-prime-homology-coordinates.md):
+  actual augmented homology is naturally the odd-squarefree intervals `[m,2m)`,
+  in exterior degree `ω(m)`, over every commutative ring.
+- [Integral chain coefficients](../3-formalized/esg-integral-chain-coefficients.md):
+  canonical chain and homology maps, with natural tensor base change over every
+  commutative ring and explicit cycle representatives.
+- [Integral prime persistence](../3-formalized/esg-integral-prime-persistence.md): the natural barcode
+  commutes with canonical coefficient extension at every odd-squarefree label.
+- [Prime-weighted contraction](../3-formalized/esg-prime-weighted-contraction.md):
+  actual nullhomotopy after tripling height, with a sharp augmented obstruction
+  to doubling over the integers.
+- [Sharp weighted torsion exponent](../3-formalized/esg-prime-weighted-torsion-exponent.md):
+  exact boundary saturation, actual homology killed by two, and a nonzero
+  order-two class at height two.
+- [Integral weighted cycle coordinates](../3-formalized/esg-prime-weighted-cycle-coordinates.md):
+  height-preserving inverse maps and a natural integral basis on bounded odd faces.
+- [Integral weighted boundary lattice](../3-formalized/esg-prime-weighted-boundary-lattice.md):
+  exact augmented relations from low odd chains, doubled half-height chains,
+  and half-height faces containing three; joint free/parity projection is
+  surjective with exactly that kernel.
+- [Weighted torsion classification](esg-prime-weighted-torsion-classification.md):
+  proposed integral persistence with explicit free-to-torsion transition maps.
 
 The programme definitions are
 [EffectiveScalingGeometry/README.md](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md)
@@ -51,8 +85,10 @@ law does not supply that payment or bound Euler cancellation.
 
 For heights, the spacing regulator has an indefinite renormalized limit.
 Controlling its finite-radius error does not construct a nonnegative local-height
-sum, an arithmetic addition law, or a fixed-point localization of the nerve.
-Those constructions remain required inputs to the two programmes.
+sum, an arithmetic addition law, or signed fixed-point localization of the nerve.
+The literal small-fixed-set version is refuted by isolated primes; a replacement
+must retain the proved core/component correction and establish cancellation.
+The other constructions remain required inputs to the two programmes.
 
 ## Proof obligations
 

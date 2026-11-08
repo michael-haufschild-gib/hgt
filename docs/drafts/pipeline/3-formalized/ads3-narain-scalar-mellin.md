@@ -40,9 +40,10 @@ The direct `lake --old env lean` check passes without warnings.
 All four endpoint axiom audits contain only `propext`, `Classical.choice`,
 `Quot.sound`. The module is imported by the topic umbrella.
 
-This is the classical two-torus scalar Mellin formula. The regularized
-fundamental-domain overlap, modular inversion, normalization of the continued
-pole kernel and the RH-strength remainder remain separate obligations.
+This is the classical two-torus scalar Mellin formula. Its
+[meromorphic continuation and arithmetic pole coverage](ads3-narain-mellin-continuation.md)
+are also formalized. The regularized fundamental-domain overlap, modular
+inversion and the RH-strength remainder remain separate obligations.
 
 ## Gates
 

@@ -95,8 +95,7 @@ theorem narainMellinMean_one_eq {u : ℂ} (hu : 1 / 2 < u.re) :
   have hL : reflectedCompletedLambda (1 + 2 * u) ≠ 0 := by
     intro h
     exact hD (by rw [hx, h, mul_zero])
-  rw [narainMellinMean, meanQuotient, numeratorMean_eq_completed hu,
-    numeratorMean_eq_completed hu, hx]
+  rw [narainMellinMean, meanQuotient, numeratorMean_eq_completed hu, hx]
   simp only [Complex.ofReal_one, Complex.one_cpow, mul_one]
   generalize u * (1 + 2 * u) = c at hc ⊢
   field_simp [hc, hL]
@@ -149,7 +148,6 @@ theorem narainMellinContinuation_eq_mellin (ρ σ : D4BMUpperHalfPlaneCoordinate
     ← reflectedCompletedLambda_two_mul, hx]
   generalize s * (2 * s - 1) = c at hc ⊢
   field_simp [hc, hL]
-  ring
 
 /-- The same continuation starts directly from the scalar projection of the
 actual partition function, divided by height and with the vacuum removed. -/

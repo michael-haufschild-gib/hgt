@@ -24,6 +24,12 @@ parallelogram law up to `6` (`floorCount_near`, `floorCount_parallelogram`), so 
 at bounded distance with an approximate law is RH-strength exactly, in both directions; its content is
 that the count be defined without `Q`.
 
+**The Born rule over `ℤ`.** Hecke at `p` moves every atom `B(· - log n)` to `B(· - log p n)` and is an
+exact isometry of `Q` (`integerProbe_dilate`): the integer probes carry a quadratic form covariant under
+every Hecke operator, unconditionally. Over `ℤ` the quadratic half of the count law holds; the missing
+half is the count, and a count with Tate limit `Q` is asymptotically Hecke invariant
+(`tateLimit_dilate`).
+
 **The fakes.** The count of a probe on a black hole is exactly homogeneous,
 `#ℤ[π]/(m(y - xπ)) = m² #ℤ[π]/(y - xπ)` (`probeCount_smul`), so its Tate limit is `|𝒬|`: quadratic
 exactly under universal damping. A fake has a count whose leading term is not a form.
@@ -169,6 +175,95 @@ theorem probeCount_smul (q t x y : ℤ) (m : ℕ) :
   rw [show (m * y : ℤ) ^ 2 - t * (m * x) * (m * y) + q * (m * x) ^ 2 =
     (m : ℤ) ^ 2 * (y ^ 2 - t * x * y + q * x ^ 2) by ring, Int.natAbs_mul, Int.natAbs_pow,
     Int.natAbs_natCast]
+
+/-! ### The Born rule over `ℤ` -/
+
+/-- The atom `n = i + 1` moved to `p n`, at the index `p (i + 1) - 1`. -/
+def dilateIndex {p : ℕ} (hp : 0 < p) (N : ℕ) (i : Fin N) : Fin (p * N) :=
+  ⟨p * ((i : ℕ) + 1) - 1, by
+    have h1 : p * ((i : ℕ) + 1) ≤ p * N := Nat.mul_le_mul_left p i.2
+    have h2 : 1 ≤ p * ((i : ℕ) + 1) := Nat.one_le_iff_ne_zero.mpr (by positivity)
+    generalize p * ((i : ℕ) + 1) = A at h1 h2
+    omega⟩
+
+theorem dilateIndex_val {p : ℕ} (hp : 0 < p) (N : ℕ) (i : Fin N) :
+    ((dilateIndex hp N i : ℕ) : ℝ) + 1 = p * ((i : ℝ) + 1) := by
+  have h2 : 1 ≤ p * ((i : ℕ) + 1) := Nat.one_le_iff_ne_zero.mpr (by positivity)
+  simp only [dilateIndex]
+  rw [Nat.cast_sub h2]
+  push_cast
+  ring
+
+theorem dilateIndex_injective {p : ℕ} (hp : 0 < p) (N : ℕ) : Function.Injective (dilateIndex hp N) := by
+  intro i j h
+  have h' := congrArg (fun k : Fin (p * N) => ((k : ℕ) : ℝ) + 1) h
+  simp only [dilateIndex_val] at h'
+  have hp' : (0 : ℝ) < p := by exact_mod_cast hp
+  have : (i : ℝ) = j := by
+    have := mul_left_cancel₀ hp'.ne' h'
+    linarith
+  exact Fin.ext (by exact_mod_cast this)
+
+/-- **Hecke at `p` on the integer probes**: every atom `B(· - log n)` is moved to `B(· - log p n)`. -/
+def dilate {p : ℕ} (hp : 0 < p) {N : ℕ} (a : Fin N → ℤ) : Fin (p * N) → ℤ :=
+  Function.extend (dilateIndex hp N) a 0
+
+/-- A quadratic form of a vector extended by zero along an embedding is the form of the restricted
+matrix. -/
+theorem hermQuad_extend {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ] {e : ι → κ}
+    (he : Function.Injective e) (M : Matrix κ κ ℂ) (x : ι → ℂ) :
+    hermQuad M (Function.extend e x 0) = hermQuad (M.submatrix e e) x := by
+  classical
+  have hsum : ∀ F : κ → ℂ, (∀ k, k ∉ Finset.univ.image e → F k = 0) →
+      ∑ k, F k = ∑ i, F (e i) := by
+    intro F hF
+    rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image e)) fun k _ hk => hF k hk,
+      Finset.sum_image fun i _ j _ h => he h]
+  have hoff : ∀ k, k ∉ Finset.univ.image e → Function.extend e x 0 k = 0 := by
+    intro k hk
+    refine Function.extend_apply' _ _ _ fun ⟨i, hi⟩ => hk ?_
+    exact Finset.mem_image.mpr ⟨i, Finset.mem_univ _, hi⟩
+  unfold hermQuad
+  congr 1
+  simp only [dotProduct, Matrix.mulVec, Pi.star_apply, Matrix.submatrix_apply]
+  rw [hsum _ fun k hk => by rw [hoff k hk, star_zero, zero_mul]]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [he.extend_apply]
+  congr 1
+  rw [hsum _ fun l hl => by rw [hoff l hl, mul_zero]]
+  exact Finset.sum_congr rfl fun j _ => by rw [he.extend_apply]
+
+/-- **The Born rule over `ℤ`.** Hecke at every `p` is an exact isometry of the Krein square of the
+integer probes: the dilation of a probe by `p` has the same Krein square. Together with the
+parallelogram law (`integerProbe_parallelogram`), the quadratic half of the count law holds over `ℤ`
+unconditionally; the missing half is the count. -/
+theorem integerProbe_dilate {p : ℕ} (hp : 0 < p) {N : ℕ} (a : Fin N → ℤ) :
+    integerProbe (p * N) (dilate hp a) = integerProbe N a := by
+  have hcast : (fun k => ((dilate hp a k : ℤ) : ℂ)) =
+      Function.extend (dilateIndex hp N) (fun i => (a i : ℂ)) 0 := by
+    funext k
+    by_cases hk : ∃ i, dilateIndex hp N i = k
+    · obtain ⟨i, rfl⟩ := hk
+      simp only [dilate, (dilateIndex_injective hp N).extend_apply]
+    · simp only [dilate, Function.extend_apply' _ _ _ hk, Pi.zero_apply, Int.cast_zero]
+  unfold integerProbe
+  rw [hcast, hermQuad_extend (dilateIndex_injective hp N)]
+  congr 1
+  ext i j
+  simp only [Matrix.submatrix_apply, atomGram_eq_ratio, dilateIndex_val]
+  have hp' : (p : ℝ) ≠ 0 := by exact_mod_cast hp.ne'
+  rw [mul_div_mul_left _ _ hp']
+
+/-- **A count is asymptotically Hecke invariant.** If `K` has Tate limit `Q`, the Tate limits of a probe
+and of its dilation agree. -/
+theorem tateLimit_dilate {K : ∀ N, (Fin N → ℤ) → ℕ}
+    (hK : ∀ N (a : Fin N → ℤ),
+      Tendsto (fun m : ℕ => (K N (m • a) : ℝ) / (m : ℝ) ^ 2) atTop (𝓝 (integerProbe N a)))
+    {p : ℕ} (hp : 0 < p) {N : ℕ} (a : Fin N → ℤ) :
+    Tendsto (fun m : ℕ => (K (p * N) (m • dilate hp a) : ℝ) / (m : ℝ) ^ 2) atTop
+      (𝓝 (integerProbe N a)) := by
+  rw [← integerProbe_dilate hp a]
+  exact hK _ _
 
 end GaloisForLFunctions.CountingHolography
 

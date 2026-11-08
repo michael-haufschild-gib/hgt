@@ -182,5 +182,3 @@ theorem integral_kesten_polynomial_sq_pos_iff (p : Nat.Primes) (Q : Polynomial â
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-

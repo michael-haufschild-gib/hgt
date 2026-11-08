@@ -2,7 +2,7 @@
 
 - **ID:** cact-whole-space-threshold-onset
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE (Part A, Part B3) · THEOREM (Lean) for the finished parts
+- **Type:** CONJECTURE (Part A) · THEOREM (Lean) for the finished parts
 - **Source:** [Obstacles summary §3](../../../reports/review-0611/obstacles-summary.md), "The one question"
 - **Statement:** `log R_c(ζ) ≥ c·a*(ζ) − C`, where `R_c(ζ) = criticalPositivityThreshold`.
 
@@ -21,18 +21,23 @@ Answer §3: the whole-space critical threshold grows exponentially in the onset 
 | Depth `≥ ¼` excluded up to height `exp(a/K)` under window positivity at `a` | `exists_abs_re_sub_half_lt_quarter_of_hodgeIndex` |
 | `|Φ(L)| ≤ C e^{L/4}` for `K(L+2) ≤ a*`; Mertens lag `≤ C e^{−L/4}` | `exists_abs_weilLagFunctionReal_le_of_zetaWindowPositive`, `exists_abs_mertensLagPrimitive_le_of_zetaWindowPositive` |
 | `|e^{−s}D(s) − κ₀| ≤ C e^{−s/2}` for `K(2s+2) ≤ a*` | `exists_abs_poleDiagonal_sharp_of_le_onsetAperture` (`AHD/ThePoleSelfEnergyIsSharpBelowTheOnset`) |
+| B1–B3: `PolarPaymentAt R A` for all `A ≥ 0` and all `0 < R ≤ c₁ e^{c₂ a}`, `0 ≤ a ≤ a*` | `exists_polarPaymentAt_exp_of_le_onsetAperture` (`AHD/PolarPaymentGrowsExponentiallyBelowTheOnset`) |
+| `R_c ≤ R_c^{nn} ≤ R_c^{polar} ≤ R_c^{high}`; `R_c^{polar} = ⊤ ⇔ RH` | `criticalThreshold_hierarchy` (`AHD/PolarPaymentThresholdHierarchy`) |
+| `R_c^{polar} ≥ c₁ e^{c₂ a*}`, `log R_c^{polar} ≥ c₂ a* + log c₁` | `exp_mul_le_polarPaymentCriticalThreshold`, `log_polarPaymentCriticalThreshold_ge_mul_onsetAperture` (`AHD/PolarPaymentThresholdGrowsExponentially`) |
 
 ## Open steps
-- **A (threshold identity):** `R_c = sup{R : ∀A, PolarPaymentAt R A}`. Necessity is
-  `polarPaymentAt_of_eventually_nonneg`. Sufficiency: Schur-complete the low packet; modes
-  `m ≥ 2` and `c < m ≤ Q` are `o(c)‖w_top‖²`, absorbed by the `S₇` reserve; mode `1` converges to
-  `S_polar(U_top)`; compactness as in `TheCriticalPositivityThresholdLaw`.
-- **B1 (2×2 pole compression):** window positivity at `s ≤ a*` gives
-  `|Q_s(u_pole, f)|² ≤ D(s) Q_s(f)` (Cauchy–Schwarz for `ccmRestrictedWeilSourceQuadratic ≥ 0`).
-- **B2 (deep/top split):** cut `H` at `−a/4`; the deep part has `S(h_deep)² ≲ e^{−7a/2}M₈(H)`.
-- **B3 (bridge):** identify `generalTerminalPolarSource A h_top` with the CCM cross pairing
-  `Q_s(u_pole, f)` up to `O(e^{−cs})M₈^{1/2}`. Then B1 + sharp `D(s)` give
-  `S²/D(R) ≤ a_φQ + (7J/R)M₈` for `R ≤ c e^{c a*}`.
+- **A (threshold identity):** `R_c = R_c^{polar}`, i.e. `PolarPaymentAt R₁ A` for all `A ≥ 0` implies
+  `EventuallyCriticalPosDef R` for `R < R₁`. Necessity is `polarPaymentAt_of_eventually_nonneg`.
+  Sufficiency: Schur-complete the low packet, `E(x) ≥ E(z) − Σ_{m≤Q} ⟪r_m, z⟫²/d_m` for
+  `z = P_{V_Q^⊥} x`; run the compactness of `eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold`
+  on `z`. **Gap:** the limit of the Schur terms along an arbitrary bad sequence. Lean has the limit
+  `√L/c ⟪B v_m, ·⟫ → S(h)` (`m = 1`) or `→ 0` (`m ≥ 2`) only on window vectors
+  `horizonProfileVector (horizonWeights h N) N` (`tendsto_complete_terminal_pole`,
+  `tendsto_complete_terminal_nonpolar`); the crude `D₇` bound leaves `O(R²/m⁵)` for `m ≤ m₀(R)`.
+  Needed: a bound `|√L/c ⟪B v_m, z⟫| ≤ C_m (‖U_w‖₂ + W₈(U_w)^{1/2}) + o(1)·reserves(z)` uniform
+  in `N` and `z ∈ V_Q^⊥`, so that window-vector limits transfer to strong `L²` limits of collar
+  profiles.
 
 ## Log
 - 2026-11-07 — card created; sharp pole self-energy below the onset formalized.
+- 2026-11-07 — B1–B3 formalized; Part A gap isolated (uniform pole-pairing bound).

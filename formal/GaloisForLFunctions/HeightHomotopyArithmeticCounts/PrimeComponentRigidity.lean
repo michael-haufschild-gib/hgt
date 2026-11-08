@@ -5,8 +5,8 @@ import Mathlib.Topology.Connected.Clopen
 # Isolated-prime rigidity and the connected core
 
 Upper-half primes are isolated points of the actual barycentric prime complex.
-Every map homotopic to the identity fixes them individually. Above height four,
-all remaining points form one path component, identified by vanishing upper-half
+Every map homotopic to the identity fixes them individually. At heights at least
+four, all remaining points form one path component, identified by vanishing upper-half
 coordinates. This isolates the degree-zero obstruction to fixed-point localization.
 -/
 

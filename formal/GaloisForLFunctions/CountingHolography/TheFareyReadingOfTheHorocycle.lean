@@ -18,7 +18,8 @@ contributes the same kernel, the time the horocycle spends in its horoball shell
 a finite sum: denominators with `c² y > 1/a` see nothing. The echo integers of the cusp are the
 totients, and the thermalization of a long horocycle is the equidistribution of the Farey points of
 order `≈ y^{-1/2}`. For a shell the mean is the average number of cusp images met
-(`horocycleMean_shellCount`). The rates are read in `TheHorocycleRateIsTheSquareRootFareyLaw`.
+(`horocycleMean_shellCount`). These counts are linear in the source (`pseudoEisenstein_add`,
+`shellCount_add`), so by `LinearCountsAreDegenerate` they never obey the count law themselves. The rates are read in `TheHorocycleRateIsTheSquareRootFareyLaw`.
 
 The unfolding is elementary: a window of `c` consecutive integers contains exactly `φ(c)` integers
 coprime to `c` (`card_coprime_Ico`), so every point of the line is covered `φ(c)` times by the
@@ -508,6 +509,36 @@ theorem horocycleMean_shellCount {a b : ℝ} (ha : 0 < a) {y : ℝ} (hy : 0 < y)
   congr 1
   funext x
   rw [pseudoEisenstein_shell ha]
+
+/-! ### The counts of the horizon are linear in the source -/
+
+/-- **The pseudo-Eisenstein series is additive in the source.** -/
+theorem pseudoEisenstein_add {ψ₁ ψ₂ : ℝ → ℂ} {a : ℝ} (ha : 0 < a) (h₁ : ∀ t, t < a → ψ₁ t = 0)
+    (h₂ : ∀ t, t < a → ψ₂ t = 0) (z : ℍ) :
+    pseudoEisenstein (ψ₁ + ψ₂) z = pseudoEisenstein ψ₁ z + pseudoEisenstein ψ₂ z := by
+  have hfin := RHTower.DeckPointPair.finite_rows_im_ge (isCompact_singleton (x := z)) ha
+  set S := hfin.toFinset
+  have hout (ψ : ℝ → ℂ) (hψ : ∀ t, t < a → ψ t = 0) : ∀ p ∉ S, ψ (gammaSetMatrix p • z).im = 0 := by
+    intro p hp
+    refine hψ _ (lt_of_not_ge fun h => hp ?_)
+    exact hfin.mem_toFinset.2 ⟨z, rfl, h⟩
+  rw [pseudoEisenstein_eq_sum (hout _ fun t ht => by simp [h₁ t ht, h₂ t ht]),
+    pseudoEisenstein_eq_sum (hout _ h₁), pseudoEisenstein_eq_sum (hout _ h₂), ← Finset.sum_add_distrib]
+  rfl
+
+/-- **Shell counts add over adjacent shells**: the horizon's count is linear in the source. -/
+theorem shellCount_add {a b c : ℝ} (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) (z : ℍ) :
+    shellCount a c z = shellCount a b z + shellCount b c z := by
+  have hind : (Ico a c).indicator (1 : ℝ → ℂ) = (Ico a b).indicator 1 + (Ico b c).indicator 1 := by
+    funext t
+    simp only [Pi.add_apply, Set.indicator_apply, Set.mem_Ico, Pi.one_apply]
+    by_cases h1 : a ≤ t <;> by_cases h2 : t < b <;> by_cases h3 : t < c <;> simp_all <;> linarith
+  have h := pseudoEisenstein_add (ψ₁ := (Ico a b).indicator 1) (ψ₂ := (Ico b c).indicator 1) ha
+    (fun t ht => Set.indicator_of_notMem (fun h => by linarith [h.1]) _)
+    (fun t ht => Set.indicator_of_notMem (fun h => by linarith [h.1]) _) z
+  rw [← hind, pseudoEisenstein_shell ha, pseudoEisenstein_shell ha,
+    pseudoEisenstein_shell (lt_of_lt_of_le ha hab)] at h
+  exact_mod_cast h
 
 end GaloisForLFunctions.CountingHolography
 

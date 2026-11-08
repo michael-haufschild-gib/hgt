@@ -103,7 +103,7 @@ theorem exists_norm_mellin_le_decay_pow {f : ℝ → ℂ} {a b : ℝ} (hf : IsTe
     _ ≤ 2 ^ K * (C₀ + C₂) := by gcongr
 
 /-- `u^n e^{-πu/2} ≤ (2/π)^n n!` for `u ≥ 0`. -/
-theorem pow_mul_exp_neg_le (n : ℕ) {u : ℝ} (hu : 0 ≤ u) :
+private theorem pow_mul_exp_neg_le (n : ℕ) {u : ℝ} (hu : 0 ≤ u) :
     u ^ n * Real.exp (-(Real.pi * u / 2)) ≤ (2 / Real.pi) ^ n * n.factorial := by
   have hx : 0 ≤ Real.pi * u / 2 := by positivity
   have h := Real.pow_div_factorial_le_exp _ hx n

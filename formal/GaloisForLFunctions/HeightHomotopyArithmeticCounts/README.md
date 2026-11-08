@@ -147,6 +147,47 @@ diagonal limit has a conductor-uniform quantitative form. Mixed-conductor
 control and payment of the removed self-energy remain separate questions;
 the indefinite spacing limit is not an arithmetic height.
 
+The topological localization question has a definite obstruction.
+[`PrimeComponentRigidity.lean`](PrimeComponentRigidity.lean) proves that every
+prime `N/2<p≤N` is an isolated vertex of the actual prime complex. A self-map
+homotopic to the identity fixes each such vertex individually.
+[`PrimeFixedPointObstruction.lean`](PrimeFixedPointObstruction.lean) combines
+this injection with the existing prime-window theorem: eventually there are
+at least `N/(4 log N)` forced fixed points. Their number divided by `√N` tends
+to infinity. Thus the proposed literal fixed set of square-root cardinality
+cannot exist, even without any naturality requirement on the maps. This does
+not rule out cancellation in a signed Lefschetz sum.
+
+The obstruction also identifies an exact positive replacement. At `N≥4`,
+all other points form one path component, the core containing prime two.
+[`PrimeCoreEuler.lean`](PrimeCoreEuler.lean) realizes this core by the faces
+whose vertices satisfy `2p≤N`, proves its path connectedness and preservation
+under maps homotopic to the identity, and computes
+
+`coreEuler(N) = M(N) + #{p prime : N/2<p≤N}`.
+
+Here `coreEuler` is the signed augmented face count; the core's reduced Euler
+characteristic is its negative. Removing the isolated vertices therefore
+requires an explicit arithmetic correction. The desired square-root bound
+concerns cancellation between that prime contribution and the core, rather
+than a small Euler characteristic of the core itself.
+
+[`PrimeCoreBouquet.lean`](PrimeCoreBouquet.lean) gives the stronger homotopy
+description: the core is a bouquet retaining exactly the original complementary
+facets with at least two vertices. These are the positive-dimensional spheres
+with odd squarefree composite labels. Their integral dimensions remain
+`ω(m)−1`; only the prime-labelled zero-spheres disappear. This supplies an
+actual connected target for a replacement action, not a contraction or an
+Euler-cancellation estimate.
+
+The companion [effective scaling geometry programme](../EffectiveScalingGeometry/README.md)
+constructs the actual augmented prime-height homology persistence functor.
+Its Dirichlet-weighted boundary is naturally conjugate to the unweighted one
+at every complex parameter. Such scalar weights therefore preserve finite
+algebraic persistence. A cancellation mechanism must supply further structure;
+analytic completion, integral lattices and signed actions remain distinct
+possibilities requiring their own arithmetic estimates.
+
 ## Mechanisms and tools
 
 The height mechanism is
@@ -156,8 +197,8 @@ The height mechanism is
 
 The topology mechanism is
 
-`prime-star nerve → natural self-map → homotopy invariance
-→ local fixed-point indices → cancellation bound`.
+`prime-star nerve → isolated-prime/core decomposition → natural action
+→ signed local indices → cancellation against the component contribution`.
 
 The two mechanisms should meet in a quadratic refinement whose signature reads
 primitive geometry. Geodesic renormalization of horocycles may compare this
@@ -165,24 +206,27 @@ refinement with modular cusp counts; that comparison itself requires proof.
 
 Tools to build are a nonnegative arithmetic function on correspondences,
 regularized torsion self-energy at finite radius, an approximate parallelogram
-for a log-count, a self-map homotopic to the identity with controlled fixed-point
-indices, a cusp realization of the nerve, and its polarized quadratic refinement.
+for a log-count, an action with controlled signed fixed-point contributions,
+a cusp realization of the nerve, and its polarized quadratic refinement.
 
 ## Questions and open research topics
 
 1. What group carries the probes, or what replaces a group?
 2. What arithmetic addition law produces a quasi-parallelogram over `ℤ`?
 3. Which local term absorbs torsion self-energy, with what normalization?
-4. Which natural map localizes the nerve Euler characteristic to a fixed set
-   of square-root size?
+4. The literal square-root-sized fixed set is impossible for maps homotopic
+   to the identity. Which signed or relative localization replaces it and
+   accounts for the isolated-prime contribution?
 5. How can linear Betti mass coexist with square-root Euler cancellation,
    and which differential or action explains that cancellation?
 6. Can the nerve be realized in the modular surface with the required modular
    action on cells?
 7. Do Hecke correspondences generate the ample cone of the refinement?
 
-These are open construction and estimate problems. No square-root upper bound
-for `M(N)`, global arithmetic height, or nerve localization is asserted here.
+The negative answer to the literal version of question 4 is proved; its
+replacement and the other construction problems remain open. No square-root
+upper bound for `M(N)`, global arithmetic height, or signed nerve localization
+is asserted here.
 
 ## Calibration and traps
 
@@ -201,9 +245,11 @@ for the distinction between cuspidal and Eisenstein contributions.
 
 ## Success and contribution criteria
 
-Success means constructing all six named tools, answering the seven questions,
+Success means resolving all six named tools, answering the seven questions,
 and verifying the curve and countermodel calibrations. It includes the stated
 Betti and square-root lower laws, not only an Euler-characteristic identity.
+A replacement for the refuted literal fixed-set tool must retain the exact
+component correction and prove the required cancellation estimate.
 A height defined through `Q`, a conditional height principle, or a reformulation
 of RH is not completion.
 

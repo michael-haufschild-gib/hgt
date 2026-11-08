@@ -28,10 +28,11 @@ theorem det_kestenCoefficientMatrix (p : Nat.Primes) (N : ℕ) :
 private theorem kestenPolynomial_expansion (p : Nat.Primes) (N : ℕ) (i : Fin N) :
     kestenPolynomial p i =
       ∑ k : Fin N, Polynomial.monomial (k : ℕ) ((kestenPolynomial p i).coeff k) := by
-  rw [(kestenPolynomial p i).as_sum_range' N (by
+  exact ((kestenPolynomial p i).as_sum_range' N (by
     rw [kestenPolynomial_natDegree]
-    exact i.isLt)]
-  exact (Fin.sum_univ_eq_sum_range _ N).symm
+    exact i.isLt)).trans
+      (Fin.sum_univ_eq_sum_range
+        (fun k : ℕ => Polynomial.monomial k ((kestenPolynomial p i).coeff k)) N).symm
 
 /-- The finite polynomial coefficient change diagonalizes the actual moment Hankel matrix. -/
 theorem kesten_hankel_congruence (p : Nat.Primes) (N : ℕ) :
@@ -72,19 +73,21 @@ theorem det_kestenMoment_hankel_succ (p : Nat.Primes) (n : ℕ) :
   have h := congrArg Matrix.det (kesten_hankel_congruence p (n + 1))
   simp only [Matrix.det_mul, Matrix.det_transpose,
     det_kestenCoefficientMatrix, one_mul, mul_one, Matrix.det_diagonal] at h
-  rw [h, Fin.prod_univ_eq_prod_range, Finset.prod_range_succ']
-  simp
+  calc
+    (momentHankelMatrix (kestenMoment p) (n + 1)).det =
+        ∏ i : Fin (n + 1), if (i : ℕ) = 0 then 1 else 1 + (p : ℝ)⁻¹ := h
+    _ = ∏ i ∈ Finset.range (n + 1), if i = 0 then 1 else 1 + (p : ℝ)⁻¹ :=
+      Fin.prod_univ_eq_prod_range (fun i : ℕ => if i = 0 then 1 else 1 + (p : ℝ)⁻¹) _
+    _ = (1 + (p : ℝ)⁻¹) ^ n := by rw [Finset.prod_range_succ']; simp
 
 /-- No finite prime phase Hankel determinant vanishes. -/
 theorem det_kestenMoment_hankel_pos (p : Nat.Primes) (N : ℕ) :
-    0 < (momentHankelMatrix (kestenMoment p) N).det :=
-  (kestenMoment_hankel_posDef p N).det_pos
+    0 < (momentHankelMatrix (kestenMoment p) N).det := by
+  cases N with
+  | zero => simp
+  | succ n =>
+    rw [det_kestenMoment_hankel_succ]
+    positivity
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenCoefficientMatrix
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kesten_hankel_congruence
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenMoment_hankel_posDef
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenMoment_hankel_succ
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenMoment_hankel_pos

@@ -90,12 +90,187 @@ below `2m`, and maps it constantly to the basepoint thereafter. The finite
 ambient model contains every face of the original prime nerve once the
 ambient labels extend beyond the height.
 
-This is a geometric interval law for inclusion maps. A separate persistent
-homology object and barcode isomorphism are not constructed here. The common
-logarithmic lifespan `log 2` gives no parity information to lifespan-only
+This is a geometric interval law for inclusion maps. The homology persistence
+functor below supplies the algebraic object; its natural surviving-coordinate
+isomorphism is now established in every augmented exterior degree. The common logarithmic lifespan `log 2` gives no
+parity information to lifespan-only
 weights; birth locations and sphere dimensions retain arithmetic information.
 The law therefore identifies what a richer weighting must use without
 claiming an Euler-cancellation bound.
+
+The companion programme's
+[component and core theorems](../HeightHomotopyArithmeticCounts/README.md)
+give a further constraint on such weights. Upper-half primes are isolated
+vertices fixed by every self-map homotopic to the identity. There are eventually
+more than `C√N` of them for every constant `C`, so literal small-fixed-set
+localization is unavailable. The connected core retains precisely the
+positive-dimensional sphere summands, and its reduced Euler characteristic is
+`−M(N)−#{N/2<p≤N}`. A cancellation mechanism must compare this core contribution
+with the isolated-prime mass.
+
+[`PrimeCutoffComplex.lean`](PrimeCutoffComplex.lean) constructs the actual
+augmented exterior-chain complex at every prime-product cutoff, for every
+commutative coefficient ring and every vertex boundary functional. Literal
+inclusions define the height functor; applying homology gives its persistence
+module, including the empty-face degree.
+
+[`DirichletChainGauge.lean`](DirichletChainGauge.lean) multiplies each prime
+vertex by `p^s` and extends through exterior powers. The inverse uses `−s`,
+and the gauge preserves every cutoff. Contraction naturality gives
+`d_s G_s = G_s d_0` for the actual Dirichlet boundary with weights `p^(−s)`.
+[`DirichletPersistenceEquivalence.lean`](DirichletPersistenceEquivalence.lean)
+makes these maps a natural chain isomorphism and hence a natural homology
+persistence isomorphism, for every complex `s` and every degree.
+
+Thus finite complex Dirichlet weights preserve algebraic persistence.
+Analytic completion and norm control are separate questions. Integral nonunit
+weights need not admit this gauge. Product-weighted homology itself is classical;
+see [Ren–Wu–Wu](https://arxiv.org/abs/1708.06722). The contribution here is the
+conjugacy on the actual prime-height complexes and their inclusion maps.
+
+[`PrimeChainBasis.lean`](PrimeChainBasis.lean) identifies the tuple-defined
+cutoff with the span of increasing prime supports of bounded product, over
+any commutative ring. Membership is exactly a condition on the support of
+exterior-basis coefficients.
+
+[`PrimeCycleProjection.lean`](PrimeCycleProjection.lean) constructs a natural
+retraction from each positive-degree chain module to its cycles at the same
+height. The map is `d(2∧·)`. Its complementary term `2∧d` replaces a removed
+prime by two, so it cannot increase the prime product. This splits the cycle
+submodule before passing to homology and supplies explicit cycle representatives.
+
+[`PrimeBoundaryHeight.lean`](PrimeBoundaryHeight.lean) identifies the boundary
+submodule exactly: boundaries at height `N` are cycles at height `⌊N/2⌋`.
+Deletion divides the product by at least two; adjoining two fills every cycle
+at the smaller cutoff. The identity holds over every commutative ring and
+includes the empty augmented degree. For an arbitrary weighted vertex
+functional, the forward height decrease still holds.
+
+[`OddPrimeChainProjection.lean`](OddPrimeChainProjection.lean) and
+[`PrimeCycleCoordinates.lean`](PrimeCycleCoordinates.lean) give the natural
+coordinate equivalence: cycles in positive exterior degree are exactly the
+bounded odd-face coordinates. Forgetting two gives one direction; taking
+the boundary of the two-cone gives its inverse. Thus both cycles and boundaries
+have explicit arithmetic cutoff descriptions over any commutative ring.
+[`PrimeCycleBasis.lean`](PrimeCycleBasis.lean) makes these coordinates actual
+bases of the odd cutoff and cycle submodules, with basis cycles `d(2∧S)`.
+
+[`PrimeCriticalCoordinates.lean`](PrimeCriticalCoordinates.lean) projects odd
+chains onto the coordinates with `m≤N<2m`. This projection is split surjective
+and has exactly the half-cutoff kernel. Its quotient is therefore free on the
+surviving coordinates. Raising height retains each coefficient until `2m`;
+these maps form a persistence functor, and projection commutes with odd-chain
+inclusions.
+
+[`PrimeHomologyCoordinates.lean`](PrimeHomologyCoordinates.lean) identifies
+actual categorical homology persistence in every positive exterior degree with
+the surviving-coordinate functor. It sends actual cycle classes to their odd
+coefficients and commutes with all height maps. This supplies the categorical
+comparison beyond the geometric interval law and the concrete subquotient.
+
+[`PrimeAugmentedHomology.lean`](PrimeAugmentedHomology.lean) includes degree
+zero and combines the comparisons into a natural isomorphism in every degree.
+The empty support survives precisely on `[1,2)`.
+
+[`PrimeSquarefreeIndices.lean`](PrimeSquarefreeIndices.lean) identifies each
+prime face with its squarefree product, preserving cardinality and parity.
+[`PrimeArithmeticPersistence.lean`](PrimeArithmeticPersistence.lean) reindexes
+the actual homology functor naturally by odd squarefree integers: `m` contributes
+the interval `[m,2m)` in exterior degree `ω(m)`. Every height map retains the
+same coefficient until its death. The statement holds over any commutative ring.
+
+[`PrimeIntegralCoefficients.lean`](PrimeIntegralCoefficients.lean) constructs
+the canonical maps from integral prime chains to the same chains over any
+commutative ring. They preserve every exterior basis face and commute with
+actual boundaries, prime cones and height inclusions. The construction uses
+the exterior universal property.
+
+[`PrimeHomologyTensorCoordinates.lean`](PrimeHomologyTensorCoordinates.lean)
+constructs the actual homology basis and the corresponding tensor equivalence
+`R ⊗[ℤ] H_k(C(N);ℤ) ≃ H_k(C(N);R)`. Its pure-tensor coefficients are the
+integral coefficients multiplied by the scalar.
+
+[`PrimeHomologyCoefficientMap.lean`](PrimeHomologyCoefficientMap.lean) descends
+canonical chain extension through the actual boundary quotient. Its homology
+map sends each class to the class of its extended cycle and commutes with
+height inclusions. [`PrimeHomologyBaseChange.lean`](PrimeHomologyBaseChange.lean)
+identifies the tensor comparison with this actual map: `r⊗x ↦ r·H(ℤ→R)(x)`.
+The proof uses the explicit surviving representatives `d(2∧S)`, including
+the empty chain in degree zero. Thus coefficient extension commutes with
+homology persistence over every commutative ring, without a flatness assumption.
+[`PrimeArithmeticBaseChange.lean`](PrimeArithmeticBaseChange.lean) proves
+compatibility in the arithmetic labels themselves: each odd-squarefree barcode
+coefficient is the canonical image of its integer coefficient.
+None of these algebraic interval descriptions bounds Euler cancellation.
+
+Integral prime weights have a different filling law.
+[`PrimeWeightedContraction.lean`](PrimeWeightedContraction.lean) uses the
+boundary coefficient `p` at prime `p`. The difference of the three-cone and
+two-cone satisfies `dh+hd=(3−2)id=id` and preserves height up to a factor of
+three. Thus the actual inclusion `N→3N` is nullhomotopic and induces zero on
+every augmented homology group, over any commutative ring. The cone commutes
+with height inclusions. Over the integers, parity of the empty-chain coefficient
+prevents filling the height-one generator at height two. Hence three is the
+least uniform integer dilation.
+
+[`PrimeWeightedBoundarySaturation.lean`](PrimeWeightedBoundarySaturation.lean)
+identifies the integral boundary saturation exactly. A weighted cycle has a
+bounding nonzero multiple at `N` precisely when it lies below `⌊N/2⌋`.
+Coordinate cutoffs are saturated in the exterior lattice, and coning with two
+fills the double of every such cycle. Thus torsion cycle classes are killed
+by two, including the empty augmented degree.
+[`PrimeWeightedHomologyTorsion.lean`](PrimeWeightedHomologyTorsion.lean) proves
+this for actual categorical homology at every height and degree, and exhibits
+a nonzero class of order two at height two. The full torsion classification
+and its height maps remain open.
+
+[`PrimeOddCutoffComplex.lean`](PrimeOddCutoffComplex.lean) deletes the
+prime-two vertex inside the actual weighted complex. Every remaining deletion
+divides height by at least three. This subcomplex, its homology and its
+inclusion in the full complex are natural in height. It supplies the smaller
+height bound needed to analyze integral weighted cycles.
+[`PrimeTwoChainSplitting.lean`](PrimeTwoChainSplitting.lean) gives the actual
+chain decomposition `Cₖ₊₁(N) ≃ Oₖ₊₁(N) ⊕ Oₖ(⌊N/2⌋)`. Its maps are odd
+projection and contraction by the prime-two coordinate; the inverse adjoins
+two to the second component and adds the first.
+[`PrimeWeightedCycleHeight.lean`](PrimeWeightedCycleHeight.lean) sharpens the
+second component to height `⌊N/3⌋` for integral prime-weighted cycles. The odd
+boundary equation `d(Ox)+2δ₂x=0` and saturation of coordinate cutoffs give the
+extra decrease. This permits adjoining three to that component within `N`.
+[`PrimeWeightedCycleCoordinates.lean`](PrimeWeightedCycleCoordinates.lean)
+then identifies integral weighted cycles naturally with bounded odd-face
+coordinates. The representative of an odd chain is `d((e₃−e₂)∧·)`; the inverse
+is `O+e₃∧δ₂`. Both preserve height. The resulting actual integral cycle basis
+has one vector per bounded odd face. The boundary relations are explicit below;
+torsion counts and actual persistence transitions still require the quotient comparison.
+[`PrimeConeKernel.lean`](PrimeConeKernel.lean) identifies the kernel of adjoining
+any prime inside an odd cutoff: it is exactly the span of bounded odd faces
+already containing that prime. The proof contracts the same coordinate and
+recovers the projection onto faces omitting it. This holds over every
+commutative ring and supplies the coordinate description needed at prime three.
+
+[`PrimeWeightedBoundaryCoordinates.lean`](PrimeWeightedBoundaryCoordinates.lean)
+identifies the exact integral boundary lattice in positive exterior degree.
+In corrected odd coordinates it is
+`O(⌊N/3⌋)+2O(⌊N/2⌋)+(O(⌊N/2⌋)∩ker(e₃∧·))`.
+The last summand consists of faces containing three. Splitting a filling into
+its odd and two-cone parts gives one containment; the Bézout cone and two-cone
+supply explicit fillings for all three summands. This is the relation lattice
+needed for the free and parity coefficient classification.
+
+[`PrimeWeightedParityCoordinates.lean`](PrimeWeightedParityCoordinates.lean)
+projects onto free coefficients on `m≤N<2m` and parity coefficients on
+`2m≤N<3m` for odd faces omitting three. The projection is surjective and its
+kernel is exactly the relation lattice above. Equivalently, a chain belongs
+to that lattice precisely when it has half-height support and even coefficients
+in the torsion window. This quotient calculation holds in every exterior
+degree; its transport to actual augmented homology and height maps remains open.
+
+[`PrimeWeightedAugmentedBoundary.lean`](PrimeWeightedAugmentedBoundary.lean)
+proves the same boundary-lattice formula in empty degree, where coordinates
+are the identity. A prime cone is injective on empty chains because coordinate
+contraction recovers the chain. Thus the three-cone kernel contributes zero,
+and the remaining low and doubled half-height summands give all boundaries.
 
 ## Mechanisms and tools
 

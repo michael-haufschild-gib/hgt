@@ -76,7 +76,7 @@ In the scalar sector the corpus matrix `M_s` is polynomial in `s`, and `s_γ² e
 ## Status of the parts
 Not formalized:
 - Mode sums converge only along the good heights.
-- A Weyl law. Existence and infinitude of level-one cusp forms are proved in `bhr-the-cusp-forms-of-the-modular-horizon-exist.md`.
+- The Weyl asymptotic. Existence, discreteness and the lower bound `N(Λ) ≥ cΛ` are proved (`bhr-the-cusp-forms-of-the-modular-horizon-exist.md`, `bhr-the-cusp-spectrum-is-discrete.md`, `bhr-a-weyl-lower-bound-for-the-cusp-spectrum.md`).
 - The metric of a pulse is not extended to the `L²` closure: exact vacuum perturbations are for compact pulses and separated modes.
 - Regularity of the metric perturbations across `r = 1` is not treated: the radial block has `1/F` in these coordinates, and no gauge or ingoing form was proved.
 - The scalar sector is treated at `s = u - 3/2`, the corpus fundamental reconstruction, and not at `s = u - ½`.
