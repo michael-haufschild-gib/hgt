@@ -93,8 +93,9 @@ theorem abelCos_gram {a lam : ℕ → ℝ} (ha0 : ∀ n, 0 ≤ a n) (hlam : ∀ 
     nlinarith
   have hab : ∀ τ, abelCos a lam τ ε = ε * X τ := fun τ => rfl
   simp only [hab]
-  rw [← Finset.mul_sum, ← Finset.mul_sum]
-  simp only [← Finset.mul_sum]
+  have e1 : ∑ x ∈ S, ∑ x_1 ∈ S, ε * X (lam x - lam x_1) =
+      ε * ∑ m ∈ S, ∑ m' ∈ S, X (lam m - lam m') := by simp only [Finset.mul_sum]
+  rw [e1, ← Finset.mul_sum]
   nlinarith [mul_nonneg hε.le hG0]
 
 /-! ### Separation of a non-frequency -/
@@ -203,7 +204,9 @@ theorem sum_mass_le_of_differenceFree {a lam : ℕ → ℝ}
     · rw [if_neg hmm]
       rcases lt_or_gt_of_ne (hmono.injective.ne hmm) with hlt | hgt
       · rw [show lam m - lam m' = -(lam m' - lam m) by ring]
-        simp_rw [abelCos_neg]
+        have heq : abelCos a lam (-(lam m' - lam m)) = abelCos a lam (lam m' - lam m) :=
+          funext fun ε => abelCos_neg a lam _ ε
+        rw [heq]
         exact hgap _ (by linarith) (hS m' hm' m hm hlt)
       · exact hgap _ (by linarith) (hS m hm m' hm' hgt)
   have hsumpair : Tendsto (fun ε => ∑ m ∈ S, ∑ m' ∈ S, abelCos a lam (lam m - lam m') ε)
@@ -214,7 +217,7 @@ theorem sum_mass_le_of_differenceFree {a lam : ℕ → ℝ}
   rw [hdiag] at hsumpair
   have hsumatom : Tendsto (fun ε => ∑ m ∈ S, abelCos a lam (lam m) ε) (𝓝[>] 0)
       (𝓝 (∑ m ∈ S, a m / (2 * Real.pi))) := tendsto_finsetSum _ fun m _ => hatom m
-  set K : ℝ := S.card with hK
+  set K : ℝ := (S.card : ℝ) with hK
   set r : ℝ := Real.sqrt K with hr
   have hlim := le_of_tendsto_of_tendsto ((hsumatom.const_mul (2 * r)))
     ((hC0.const_mul (r ^ 2)).add hsumpair)
@@ -238,7 +241,8 @@ theorem sum_mass_le_of_differenceFree {a lam : ℕ → ℝ}
     linarith
   · have hS0 : S = ∅ := by
       rw [eq_comm, Nat.cast_eq_zero, Finset.card_eq_zero] at hK0; exact hK0
-    simp [hS0]
+    have hr0 : r = 0 := by rw [hr, hK, ← hK0, Real.sqrt_zero]
+    simp [hS0, hr0]
 
 /-- **Difference-free sets are small.** `|S| ≤ 4β²` for every difference-free set of frequencies. -/
 theorem card_le_of_differenceFree {a lam : ℕ → ℝ}

@@ -74,7 +74,7 @@ theorem tentAtomMass_half_eq_zero_of_lt {ι : Type*} {lam : ι → ℝ}
       have hb : 1 - |lam i / h - y / h| ≤ unitTent (y / h) (lam i / h) := le_max_right _ _
       linarith only [hb, hlt]
     apply unitTent_eq_zero
-    have he : lam i / (h / 2) - y / (h / 2) = 2 * (lam i / h - y / h) := by field_simp; ring
+    have he : lam i / (h / 2) - y / (h / 2) = 2 * (lam i / h - y / h) := by field_simp
     rw [he, abs_mul, abs_of_pos (show (0 : ℝ) < 2 by norm_num)]
     linarith only [hd]
   simp only [tentAtomMass, hz, tsum_zero, mul_zero]

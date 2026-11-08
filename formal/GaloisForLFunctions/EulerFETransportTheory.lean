@@ -1,0 +1,12 @@
+import GaloisForLFunctions.ZeroConfigurationGeometry.AbscissaLaws.TheAbscissaLawsOfAZeroConfiguration
+import GaloisForLFunctions.ExactEventTheory.IntegrableDefectsHaveDecayingBoundary
+import GaloisForLFunctions.ExactEventTheory.TentPairingsOfIntegrableDefects
+import GaloisForLFunctions.ExactEventTheory.TentRecurrenceOfIntegrableDefects
+import GaloisForLFunctions.ExactEventTheory.IntegrableDefectsVanishInTheUnitGap
+
+/-!
+# Euler–functional-equation transport
+
+Zero-transport equivalences and the boundary calculus for integrable functional-equation
+defects are the analytic foundations for coupling Euler arithmetic to height replication.
+-/

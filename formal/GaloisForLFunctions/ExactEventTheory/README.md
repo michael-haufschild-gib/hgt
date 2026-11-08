@@ -136,10 +136,23 @@ term `hβ`, and its boundary-error integral. That error is bounded by
 moment justifies both limiting interchanges. The exact identity and decay theorem are
 kernel checked with the three standard axioms above.
 
-These supply the analytic inputs for B122. The proposed recurrence argument uses two nested
-tents and the atom-mass floor to eliminate the error on `0 < |y| < 1`; one unit tent at
-zero would then force integer support. Recurrence transfer, boundary evenness and the origin
-pairing remain to be proved.
+`TentRecurrenceOfIntegrableDefects.lean` derives common distant returns for these cosine
+pairings and proves an exact nonlinear restriction. Write
+`P_h(y) = hβ + h Σ_x sinc²(πh‖x‖) cos(2π‖x‖y)`. For an actual countable Beurling system
+with integrable theta defect, `P_h(y) < 1/4` forces `P_{h/2}(y) = 0`, for `0 < h ≤ 1`.
+The atom-mass floor excludes inner atoms whenever the outer half-mass is below `1/4`;
+common returns transfer this exclusion after the boundary errors decay. Recurrence is
+proved from absolute Fourier convergence. No alignment or defect-smallness condition is used.
+
+`IntegrableDefectsVanishInTheUnitGap.lean` completes the local recurrence argument:
+`Re J(iy) = 0` for `0 < y < 1`. Normalized shrinking tent averages recover the boundary
+value, while the threshold forces their vanishing. Conjugation of the actual Laplace
+identity proves evenness, hence vanishing also for `−1 < y < 0`. Both terminal theorems
+are kernel checked with the three standard axioms.
+
+These supply the analytic and recurrence inputs for B122. The origin Fejér pairing and
+the resulting integer-support classification are developed jointly with
+`EulerFETransportTheory`; their assembly remains unfinished.
 
 ## Tools and questions
 

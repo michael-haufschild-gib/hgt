@@ -60,24 +60,22 @@ def orbitFun (F : MvPolynomial P ℤ) (s : ℂ) : ℂ :=
   MvPolynomial.aeval (fun p : P => cexp (-s * Real.log ((p : Nat.Primes) : ℕ))) F
 
 theorem orbitFun_eq_sum (F : MvPolynomial P ℤ) (s : ℂ) :
-    orbitFun F s = ∑ α ∈ F.support, (F.coeff α : ℂ) * cexp (-s * frequency α) := by
+    orbitFun F s = ∑ α ∈ F.support, ((F.coeff α : ℤ) : ℂ) * cexp (-s * frequency α) := by
   rw [orbitFun, MvPolynomial.aeval_def, MvPolynomial.eval₂_eq]
   refine sum_congr rfl fun α _ => ?_
   rw [algebraMap_int_eq, eq_intCast]
   congr 1
-  rw [frequency, ← Finsupp.prod_pow, Finsupp.prod]
   simp only [← Complex.exp_nat_mul, ← Complex.exp_sum]
   congr 1
+  unfold frequency
   push_cast
-  rw [mul_sum, ← sum_subset (subset_univ α.support)]
-  · refine sum_congr rfl fun p _ => ?_
-    ring
-  · intro p _ hp
-    rw [Finsupp.notMem_support_iff.mp hp]
-    simp
+  rw [mul_sum, ← sum_subset (subset_univ α.support)
+    (fun p _ hp => by rw [Finsupp.notMem_support_iff.mp hp]; simp)]
+  refine sum_congr rfl fun p _ => ?_
+  ring
 
 theorem differentiable_orbitFun (F : MvPolynomial P ℤ) : Differentiable ℂ (orbitFun F) := by
-  have : orbitFun F = fun s => ∑ α ∈ F.support, (F.coeff α : ℂ) * cexp (-s * frequency α) :=
+  have : orbitFun F = fun s => ∑ α ∈ F.support, ((F.coeff α : ℤ) : ℂ) * cexp (-s * frequency α) :=
     funext (orbitFun_eq_sum F)
   rw [this]
   fun_prop
@@ -85,12 +83,14 @@ theorem differentiable_orbitFun (F : MvPolynomial P ℤ) : Differentiable ℂ (o
 /-- On the imaginary axis the entire function is the orbit value. -/
 theorem orbitFun_I_mul (F : MvPolynomial P ℤ) (t : ℝ) : orbitFun F (t * I) = orbitValue F t := by
   rw [orbitFun, orbitValue]
-  congr 1
-  funext p
-  rw [orbitPoint, phase]
-  congr 1
-  push_cast
-  ring
+  have h : (fun p : P => cexp (-((t : ℂ) * I) * Real.log ((p : Nat.Primes) : ℕ))) =
+      orbitPoint P t := by
+    funext p
+    rw [orbitPoint, phase]
+    congr 1
+    push_cast
+    ring
+  rw [h]
 
 /-- **A nonzero integer auxiliary is not identically zero.** On the real axis the term of smallest
 frequency dominates. -/
@@ -98,7 +98,7 @@ theorem exists_orbitFun_ne_zero {F : MvPolynomial P ℤ} (hF : F ≠ 0) : ∃ s,
   classical
   have hne : F.support.Nonempty := MvPolynomial.support_nonempty.mpr hF
   obtain ⟨α₀, hα₀, hmin⟩ := F.support.exists_min_image frequency hne
-  have hc₀ : (F.coeff α₀ : ℂ) ≠ 0 := by exact_mod_cast MvPolynomial.mem_support_iff.mp hα₀
+  have hc₀ : ((F.coeff α₀ : ℤ) : ℂ) ≠ 0 := by exact_mod_cast MvPolynomial.mem_support_iff.mp hα₀
   set R := F.support.erase α₀
   have hgap : ∀ α ∈ R, 0 < frequency α - frequency α₀ := by
     intro α hα
@@ -108,37 +108,36 @@ theorem exists_orbitFun_ne_zero {F : MvPolynomial P ℤ} (hF : F ≠ 0) : ∃ s,
     exact sub_pos.mpr (lt_of_le_of_ne hle (Ne.symm this))
   -- `e^{σλ₀} A(σ) = c₀ + Σ_{α ≠ α₀} c_α e^{−σ(λ_α − λ₀)} → c₀`
   have htend : Filter.Tendsto (fun σ : ℝ => ∑ α ∈ R,
-      ‖(F.coeff α : ℂ)‖ * Real.exp (-(σ * (frequency α - frequency α₀)))) Filter.atTop
+      ‖((F.coeff α : ℤ) : ℂ)‖ * Real.exp (-(σ * (frequency α - frequency α₀)))) Filter.atTop
       (nhds 0) := by
-    have : (0 : ℝ) = ∑ α ∈ R, ‖(F.coeff α : ℂ)‖ * 0 := by simp
+    have : (0 : ℝ) = ∑ α ∈ R, ‖((F.coeff α : ℤ) : ℂ)‖ * 0 := by simp
     rw [this]
-    refine tendsto_finset_sum _ fun α hα => (tendsto_const_nhds.mul ?_)
+    refine tendsto_finsetSum _ fun α hα => (tendsto_const_nhds.mul ?_)
     exact Real.tendsto_exp_atBot.comp (Filter.tendsto_neg_atTop_atBot.comp
       (Filter.tendsto_id.atTop_mul_const (hgap α hα)))
   obtain ⟨σ, hσ⟩ := (htend.eventually (gt_mem_nhds (norm_pos_iff.mpr hc₀))).exists
   refine ⟨σ, fun h0 => ?_⟩
-  have hsplit : orbitFun F σ * cexp (σ * frequency α₀) = (F.coeff α₀ : ℂ) +
-      ∑ α ∈ R, (F.coeff α : ℂ) * cexp (-(σ * (frequency α - frequency α₀))) := by
+  have hsplit : orbitFun F σ * cexp (σ * frequency α₀) = ((F.coeff α₀ : ℤ) : ℂ) +
+      ∑ α ∈ R, ((F.coeff α : ℤ) : ℂ) * cexp (-(σ * (frequency α - frequency α₀))) := by
     rw [orbitFun_eq_sum, ← add_sum_erase _ _ hα₀, add_mul, sum_mul]
     congr 1
     · rw [mul_assoc, ← Complex.exp_add]; simp
     · refine sum_congr rfl fun α _ => ?_
       rw [mul_assoc, ← Complex.exp_add]
       congr 2
-      push_cast
       ring
   rw [h0, zero_mul] at hsplit
-  have hb : ‖∑ α ∈ R, (F.coeff α : ℂ) * cexp (-(σ * (frequency α - frequency α₀)))‖ ≤
-      ∑ α ∈ R, ‖(F.coeff α : ℂ)‖ * Real.exp (-(σ * (frequency α - frequency α₀))) := by
+  have hb : ‖∑ α ∈ R, ((F.coeff α : ℤ) : ℂ) * cexp (-(σ * (frequency α - frequency α₀)))‖ ≤
+      ∑ α ∈ R, ‖((F.coeff α : ℤ) : ℂ)‖ * Real.exp (-(σ * (frequency α - frequency α₀))) := by
     refine (norm_sum_le _ _).trans (sum_le_sum fun α _ => ?_)
     rw [norm_mul]
     refine le_of_eq ?_
     congr 1
     rw [show (-((σ : ℂ) * ((frequency α : ℂ) - frequency α₀))) =
       ((-(σ * (frequency α - frequency α₀)) : ℝ) : ℂ) by push_cast; ring, Complex.norm_exp_ofReal]
-  have heq : (F.coeff α₀ : ℂ) = -∑ α ∈ R, (F.coeff α : ℂ) * cexp (-(σ * (frequency α -
+  have heq : ((F.coeff α₀ : ℤ) : ℂ) = -∑ α ∈ R, ((F.coeff α : ℤ) : ℂ) * cexp (-(σ * (frequency α -
       frequency α₀))) := eq_neg_of_add_eq_zero_left hsplit.symm
-  have : ‖(F.coeff α₀ : ℂ)‖ ≤ ∑ α ∈ R, ‖(F.coeff α : ℂ)‖ *
+  have : ‖((F.coeff α₀ : ℤ) : ℂ)‖ ≤ ∑ α ∈ R, ‖((F.coeff α : ℤ) : ℂ)‖ *
       Real.exp (-(σ * (frequency α - frequency α₀))) := by
     rw [heq, norm_neg]; exact hb
   linarith
@@ -162,7 +161,14 @@ theorem countable_setOf_orbitValue_eq_zero {F : MvPolynomial P ℤ} (hF : F ≠ 
 vanishes form a countable set. -/
 theorem countable_setOf_exists_orbitValue_eq_zero (P : Finset Nat.Primes) :
     {t : ℝ | ∃ F : MvPolynomial P ℤ, F ≠ 0 ∧ orbitValue F t = 0}.Countable := by
-  haveI : Countable (MvPolynomial P ℤ) := inferInstanceAs (Countable ((P →₀ ℕ) →₀ ℤ))
+  haveI : Countable (MvPolynomial P ℤ) := by
+    refine Function.Injective.countable (f := fun F : MvPolynomial P ℤ =>
+      Finsupp.onFinset F.support (fun α => F.coeff α)
+        (fun α h => MvPolynomial.mem_support_iff.mpr h)) ?_
+    intro F G h
+    ext α
+    have := DFunLike.congr_fun h α
+    simpa using this
   have : {t : ℝ | ∃ F : MvPolynomial P ℤ, F ≠ 0 ∧ orbitValue F t = 0} =
       ⋃ F : {F : MvPolynomial P ℤ // F ≠ 0}, {t : ℝ | orbitValue F.1 t = 0} := by
     ext t
@@ -214,14 +220,14 @@ theorem one_sub_le_norm_orbitValue (F : MvPolynomial P ℤ) (ε : P → ℂ) (h�
     have : ε = fun p => ((z p : ℤ) : ℂ) := funext hz
     rw [this]
     have h := MvPolynomial.comp_aeval_apply (R := ℤ) (f := z) (Algebra.ofId ℤ ℂ) F
-    simp only [Algebra.ofId_apply, algebraMap_int_eq, eq_intCast] at h
+    simp only [eq_intCast] at h
     exact h.symm
   obtain ⟨z, hz⟩ := hint
   have hz1 : 1 ≤ ‖MvPolynomial.aeval ε F‖ := by
     rw [hz, Complex.norm_intCast]
     have : z ≠ 0 := by rintro rfl; exact hF (by rw [hz]; simp)
     exact_mod_cast Int.one_le_abs this
-  have hL := norm_aeval_sub_le F (fun p => (norm_phase _ _).le) hεn hret
+  have hL := norm_aeval_sub_le F (u := orbitPoint P t) (fun p => (norm_phase _ _).le) hεn hret
   have htri := norm_sub_norm_le (MvPolynomial.aeval ε F) (MvPolynomial.aeval (orbitPoint P t) F)
   rw [norm_sub_rev] at htri
   rw [orbitValue]

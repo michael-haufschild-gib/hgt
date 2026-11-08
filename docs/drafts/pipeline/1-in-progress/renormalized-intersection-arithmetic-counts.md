@@ -130,6 +130,12 @@ Curves: Manin, Stepanov, Rosati; polynomial prime complexes over finite fields.
 The [curve orientation-count candidate](riac-curve-orientation-square-root.md)
 asks for square-root-scale error on actual hyperelliptic point sets using
 the derived Stepanov bound, without an assumed Weil-root condition.
+Its [actual fixed-point comparison](../3-formalized/riac-hyperelliptic-fixed-points.md)
+is formalized: `#Fix(Frobenius^d)=q^d+1−Σαᵢ^d` for every required
+cycle length in the factorial ambient extension. The general signed
+counts also have their [determinant realization](../3-formalized/riac-orientation-determinant.md),
+`A_n−B_n=[t^n]det(1+tP_φ)`, with actual fixed-point traces. The finite-degree
+comparison with the curve's rational generating function remains open.
 Countermodels: Golden, complex fake, shifted data and genus-two graph.
 Retain full probe rank, both degrees plus primitive data, linear Betti mass,
 isolated-prime fixed points and the square-root Euler lower law.

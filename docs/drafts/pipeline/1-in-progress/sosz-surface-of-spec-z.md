@@ -49,6 +49,7 @@
 | C19 | The prime channel of the atomic surface is of lower order than the jets | proved (Lean), unconditional | in `y_n = √n x_n` the prime kernel `w(m, nt) = Λ(t)/√t` is the Hecke operator `Σ_t Λ(t)t^{−1/2}(T_t + T_t*)`; on `[1, N]` its form is `≤ (log N + log 4 + 4)Σy²` (`primeChannel_le`: weighted Schur test with weights `n^{−1/2}`, row sums `log(N/n) + O(1)` by Mertens plus `Σ_{t∣n}Λ(t) = log n`) and `≥ log M(log M − log 4 − 4)` at `y_n = n^{−1/2}` with energy `≤ 1 + log N`, `M = ⌊√N⌋` (`primeChannel_ge`). Spectral radius `≍ log N`, the pole of `ζ` at `1`, against `N log N` for the jets: at atom spacing `1/N` the archimedean channel is `N` times larger, and the zeros enter neither at leading order |
 | C20 | The Stepanov side of C18 works for every zero configuration | refuted (Lean); positive survivor proved | survivor `onLine_of_two_re_lagStructure_ge`: for a tempered configuration without real zeros, `2 Re S ≥ −K` puts every zero on the line. Obstruction `stepanov_side_blind_to_real_zeros`: on the real pair `{¼, ¾}` the spline lag structure is `ĥ(−i/4)²(e^{u/4} + e^{−u/4})`, bounded below, unbounded above. An upper bound on point counts is blind to real zeros, as on a curve it is blind to a real eigenvalue `α > √q` (Bombieri–Stepanov need the twist for the other side); for `ζ` the absence of real zeros in the strip is the twist |
 | C21 | The Stepanov count is needed only at the square degrees, as Bombieri's at the even extensions | proved (Lean) | `riemannHypothesis_iff_bddBelow_squareDegrees`: RH iff `c_B(log n²) ≥ −K` for all `n`; `riemannHypothesis_iff_bddBelow_of_sqrtGaps` for any degree set with gaps `O(√x)`. Degrees multiply, so the even powers of Frobenius are the graphs `Γ_{n²} = Γ_n ∘ Γ_n` |
+| C22 | RH is invariant under base change: the degrees `nᵏ` decide it, from one side, for every `k` | proved (Lean) | `riemannHypothesis_iff_bddBelow_powerDegrees`: for each `k ≥ 1` and every box spline `U_1^{⋆(r+1)}` of order `r ≥ r₀(k)`, RH iff `2 Re S(k log n) ≥ −K` for all `n`. The gap method gives only width `≤ ½ − 1/k` (C16); the multiplicative structure gives everything: the trace Dirichlet series is `Σ_z e_z ζ(s − kz)` (`traceDirichlet_eq`), meromorphic on `1 < Re s < 2 + k/2` with poles `1 + kz` of residue `e_z` (`differentiableAt_traceZetaOf`), the analogue of the rationality of `Z(C/𝔽_{qᵏ})`; Landau for nonnegative Dirichlet series puts the abscissa at `1`, and the rightmost off-line pole on its line blows up along its ray against the convergent series. The order `r₀(k)` comes from the polynomial growth of `ζ` on `|Re| ≤ 3 + k` |
 
 ## Big picture
 
@@ -69,7 +70,8 @@ pairs them), and what is left is the zero sum itself.
 Smoothed by the cubic spline, the Frobenius graphs at integer degrees are a curve in every numerical
 respect: genus `c_B(0)/2`, traces `c_B(log n)`, Hasse–Weil at every degree iff RH, the self-improvement
 from a crude bound is free, one side of the crude bound suffices (Landau in place of Pringsheim), the
-squares suffice, and the count door holds plane by plane. Over `𝔽_q` the crude bound is Stepanov's
+squares suffice, RH is invariant under base change (the degrees `nᵏ` decide it through the trace zeta
+function `Σ_z e_z ζ(s − kz)`), and the count door holds plane by plane. Over `𝔽_q` the crude bound is Stepanov's
 count, an upper bound on points; over `ℤ` it is `c_B(log n) ≥ −K`, which is RH. The object the corpus
 is missing is therefore a natural binary count on the planes `⟨Γ_1, Γ_n⟩`, i.e. a reason for an upper
 bound on the smoothed point counts at each integer degree.
@@ -92,7 +94,10 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
 3. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`,
    carried by no metric on `ℙ¹_ℤ`; the even-sector trace of the dilation of `ℝ` at its fixed point.
 4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: width `≤ 1/12` (C16); RH by this
-   route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
+   route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14). The Dirichlet
+   method of C22 would need the continuation of `Σ_z e_z P(s − z)`, `P` the prime zeta function,
+   which has logarithmic singularities at `z + ρ'` for every zero `ρ'`, real ones among them (heuristic,
+   not formalized).
 
 ## Log
-- 2026-11-08 — created; C1–C21 formalized in `SurfaceOfSpecZ/` (twenty modules, standard axioms)
+- 2026-11-08 — created; C1–C22 formalized in `SurfaceOfSpecZ/` (twenty-two modules)

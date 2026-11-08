@@ -18,6 +18,7 @@
 | 6 | B84, B103 | Quantiles of `V(x)=W(x)−W(x/2)/2+W(min(x,u₀)/2)/2` (strictly increasing: `w(u)>w(u/2)/4` beyond `u₀`) give positive discrete primes with `|N−(W−W(·/2)/2)|≤M`; their Euler product equals `ζ_c(s)exp(−L(4s)/4+sΛ(s)+sΛ(2s)+R₃(s))`, holomorphic on `Re s>1/3`, `s≠1`, zeros there exactly `(1−μ)±iγ`; holomorphic and zero-free on all of `Re s=½`, finite at `½` (the uncorrected one-off diverges). Remaining for an FE defect: growth of `sΛ(s)` on the line (trivially `O(|s|)`) | `ArithmeticPositiveDuality/ADiscreteOneOffCrossesTheCriticalLine` |
 | 7 | B103, B84, B98 | Rounding the corrected primes up to `q_k=⌈e^{t_k}⌉` gives, at every height `γ`, natural generators `q_k≥2` and natural coefficients `a_n` with `Π(1−q_k^{-s})^{-1}=Σa_n n^{-s}=F(s)` on `Re s>1`, `Σ_{n<N}a_n∼AN` (`A>0`, Wiener–Ikehara), `F` holomorphic on `Re s>1/3`, `s≠1`, zeros there exactly `3/5±iγ`, `F≠0` on `Re s=½`. Generic: natural generators with `Euler product = H(s)/(s−1)`, `H` holomorphic past `Re s=1`, `H(1)≠0` ⇒ linear counting. Of B103's hypotheses only the FE can exclude a finite layer | `ArithmeticPositiveDuality/AnIntegerNormOneOffCrossesTheCriticalLine` |
 | 8 | B26 | On the real axis `ξ_τ(σ)=∫Φ(x)e^{−τx²}e^{(σ−½)x}dx`, and `ξ_τ/ξ` is the mean of `e^{−τx²}` under the tilted law `∝Φ(x)e^{(σ−½)x}`, which escapes to `+∞` below `log(2σ+5)` (envelope `Φ≤C₀e^{9x/2}e^{−πe^{2x}}`): for `τ>0` the ratio `→0` yet `≥½e^{−τlog(2σ+5)²}`; for `τ<0` it `→∞`. An absolutely convergent Dirichlet series tends to `a₁` at rate `2^{σ₁−σ}`. Hence `ξ_τ = ½s(s−1)Γ_ℝ(s)D(s)` on a real half-line with `D` a Dirichlet series iff `τ=0`: the Dirichlet structure alone (no Euler product, no FE) selects `Φ` among `Φe^{−τx²}`, read at `σ→∞` on the scale `log σ` | `ZeroConfigurationGeometry/OnlyTheUndeformedKernelHasADirichletSeries` |
+| 9 | B84, B103 | For a positive spectrum (`λ₀=1`, masses `≥1`) with an integrable FE defect and pole coefficient `β`, the Abel means `C_τ` obey the Gram inequality `2rΣ_{m∈S}C_{λ_m} ≤ r²C_0+Σ_{m,m'∈S}C_{λ_m−λ_{m'}}`; with `C_0→β/π`, `C_{λ_m}→a_m/2π` and `C_τ→0` at separated non-frequencies (every positive non-frequency is separated), a set `S` of frequencies whose differences are no frequencies has `Σ_S a_m ≤ 2β√|S|`, so `|S|≤4β²`. A spectrum with difference-free sets of every size has no integrable defect at any residue: an integrable defect forces the generalized integers to be additively saturated (independence number of the difference graph `≤` squared residue) | `ArithmeticPositiveDuality/IntegrableDefectsForceAdditiveSaturation` |
 
 ## Conjecture log
 - C1 (proved, #1): the jets carrier is hyperbolic three-space with dilations as translations along a geodesic.
@@ -25,9 +26,10 @@
 - C3 (proved, #3): C15.1 — integer probes are not integer-valued; integrality would force RH and then a constant Bohr series.
 - C4 (proved, #4): the atomic Weil kernel's sign is the plastic law; Markov holds exactly on plastic windows.
 - C5 (proved, #5): the archimedean counterterm of the damped `ℍ³` propagator is `g(0)·log(1/(1−r²)) + O(1)`, universal; the renormalized limit is the Lévy jump energy.
+- C9 (proved, #9): integrable FE defects force additive saturation of the frequency set at every residue.
 - C8 (proved, #8): the time-0 selector of the heat family is already the Dirichlet structure, visible at real infinity.
 - C7 (proved, #7): integrality, linear counting and continuation across the line together still allow a finite layer.
 - C6 (proved, #6): a discrete one-off continues across `Re s=½` once the count carries the prime-square term; the obstruction to an FE defect is the type of `sΛ(s)` on the line, not discreteness.
 
 ## Log
-- 2026-11-08 — created; #1–#8 formalized and wired.
+- 2026-11-08 — created; #1–#9 formalized and wired; loop paused by user after #9.

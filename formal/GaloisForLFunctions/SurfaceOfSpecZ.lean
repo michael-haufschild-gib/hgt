@@ -22,6 +22,8 @@ import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWid
 import GaloisForLFunctions.SurfaceOfSpecZ.OneSidedHasseWeilAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovSideIsBlindToRealZeros
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtTheSquareDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.TheTraceZetaFunctionAtThePowerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.BaseChangeAtThePowerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.HyperbolicQuotientsJetCarriersAndCoupledDamping
 
 /-!
@@ -58,7 +60,9 @@ above; Pringsheim's theorem becomes Landau's. The Stepanov side needs exactly th
 zeros in the strip: without real zeros it decides the line for every configuration, and on the real
 pair `{¼, ¾}` it holds while the pair is off the line, as a real Frobenius eigenvalue above `√q` passes
 an upper bound on point counts and needs the twist. As Bombieri needs only the even extensions, the
-square degrees suffice: an upper bound on the smoothed point counts at the degrees `n²` is RH. The count
+square degrees suffice: an upper bound on the smoothed point counts at the degrees `n²` is RH. Base
+change holds as for curves: for every `k` the degrees `nᵏ` decide RH from one side, through the trace
+zeta function `Σ_z e_z ζ(s − kz)`, whose poles `1 + kz` are the zeros moved by the base change. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
 whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
 they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley. In hyperbolic three-space `ℍ³`, only pointwise rotations around the vertical degree geodesic preserve the off-diagonal archimedean Frobenius, any discrete finite-covolume quotient triggers a thin–thick folding dichotomy while parabolic cusps diverge harmonically at `s = ½`, the pure trivial-zero jets have infinite rank on coprime primes and are carried by a dilation-covariant causal monomial bundle on `L²(0, ∞)`, and counterterm-free positive damping requires coherent archimedean–torsion correlation locking (impossible on atomic degrees below `N log N`, equivalent to RH on smoothed Frobenius graphs, and impossible on either channel alone).

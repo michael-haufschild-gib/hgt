@@ -48,4 +48,8 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.TupleOrienta
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticOrientationCounts
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.HyperellipticFixedPoints
+
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.OrientationDeterminant
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

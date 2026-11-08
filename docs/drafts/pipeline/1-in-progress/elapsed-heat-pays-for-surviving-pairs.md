@@ -117,6 +117,14 @@ a nonzero limit, and fixed root cardinality. Constant perturbations preserve
 all nonnegative depth powers, including at multiple roots. All three
 capstones pass direct Lean check with the same standard axioms.
 
+`ArithmeticElectrostatics/ThePolynomialElapsedDepthActionHasItsDerivative.lean`
+proves a local enumeration of every simple heat fibre, the exact corrected-action
+derivative, and its bound by the full nonreal count. For every initially separable
+nonzero real polynomial, every `q>0`, and `t≥0`, it proves the full elapsed moment
+is at most the initial depth moment, through all later collisions. The exact
+nonreal-moment identity is included. All five capstones pass direct Lean check
+with the same standard axioms.
+
 `ArithmeticElectrostatics/ThePolynomialHeatClockComposes.lean` proves the
 polynomial heat semigroup, nonreal-count monotonicity between arbitrary times,
 compatibility of real and complex heat, and commutation with constant addition.

@@ -394,6 +394,15 @@ ordering bijection supplies exactly `n!` tuples per support. This proves
 the comparison for the original quotient counts, including degrees zero
 and one.
 
+[OrientationDeterminant.lean](OrientationDeterminant.lean) identifies these
+independent counts with the actual permutation determinant:
+`A_n−B_n=[t^n]det(1+tP_φ)`. Principal minors on invariant supports are
+their permutation signs; moving supports have a zero row. Also
+`Tr(P_φ^d)=#Fix(φ^d)`. The [formalized identities](../../../docs/drafts/pipeline/3-formalized/riac-orientation-determinant.md)
+retain collisions through the tuple comparison and require no simple
+spectrum. They expose the precise coefficient problem without assuming
+a signed estimate.
+
 [FibrePermutationSigns.lean](FibrePermutationSigns.lean) decomposes the
 orientation sign over any invariant finite partition. If every fibre is
 nonempty and transitive, the sign is `(-1)^(number of points + number of
@@ -446,5 +455,17 @@ They satisfy `A_n−B_n=J_n=(-1)^n(E_n−O_n)` and therefore
 `|A_n−B_n|≤8(n+1)²(√3)^n`. Their definitions use no signed divisor count.
 The [quotient comparison and bound](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-orientation-quotients.md)
 are formalized, with collisions and both low-degree labels retained.
-General hyperelliptic counts and control of the integer sum `1−M(N)`
-remain open.
+General hyperelliptic quotient bounds and control of the integer sum
+`1−M(N)` remain open.
+
+[HyperellipticFixedPoints.lean](HyperellipticFixedPoints.lean) supplies the
+general arithmetic fixed-point comparison. An embedded degree-`d` field
+is exactly the fixed field of `Frobenius^d`. Coordinate descent identifies
+its solutions of `y²=f(x)`, with infinity, with the actual fixed points
+in the ambient field. For odd-degree `f`, the count is
+`q^d+1−Σαᵢ^d`, with the actual arithmetic L-polynomial roots.
+The [formalized comparison](../../../docs/drafts/pipeline/3-formalized/riac-hyperelliptic-fixed-points.md)
+discharges degree divisibility for every `1≤d≤n` in the degree-`n!`
+extension. It requires no Weil-circle or cancellation input. These
+finite-degree trace identities still need their signed coefficient
+comparison before giving the general quotient bound.

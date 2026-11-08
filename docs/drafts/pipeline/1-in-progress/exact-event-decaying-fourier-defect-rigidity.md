@@ -34,9 +34,9 @@ is unnecessary for classification.
 - [x] Boundary values and locally integrable majorant for J on the imaginary axis.
 - [x] Positive-centre tent Fourier identity from the defective Laplace identity, with every
   limiting interchange justified by the inverse-square moment; translated errors vanish.
-- [ ] Simultaneous recurrence of the actual convolution observables; no recurrence premise
+- [x] Simultaneous recurrence of the actual convolution observables; no recurrence premise
   may be added to the final Beurling theorem.
-- [ ] Atomic recurrence argument on `(0,1)`, and evenness of the real boundary defect.
+- [x] Atomic recurrence argument on `(0,1)`, and evenness of the real boundary defect.
 - [ ] Unit-tent pairing at zero gives integer support; apply integer-support rigidity
   and audit the resulting Beurling classification.
 
@@ -65,8 +65,9 @@ is an integer. The existing integer-support theorem then fixes the pole residue,
 all masses, and the Beurling generators. A separate global Fourier-inversion or
 harmonic-uniqueness theorem is unnecessary for this last step.
 
-The positive-centre Fourier identity is established. Recurrence transfer and the origin
-pairing remain unproved. No full-rigidity claim.
+The positive-centre Fourier identity, recurrence threshold, pointwise unit-gap vanishing
+and evenness are established. The origin pairing and classification remain unproved.
+No full-rigidity claim.
 
 ## Formal boundary input
 
@@ -93,3 +94,28 @@ moment, real pole coefficient, and the displayed defective theta identity with m
 polynomially bounded, integrable `g`. The boundary estimate itself needs only `Integrable g`.
 `tent_boundary_identity_of_theta_defect` and `tendsto_tentBoundaryError_atTop` are kernel
 checked with `propext`, `Classical.choice`, `Quot.sound` only.
+
+## Formal recurrence threshold
+
+Set `P_h(y) = hβ + h Σ_x sinc²(πh‖x‖) cos(2π‖x‖y)`, indexed by generalized integers.
+`TentRecurrenceOfIntegrableDefects.lean` derives absolute convergence, continuity and
+simultaneous distant returns from the inverse-square moment. For the actual Beurling
+measure with an integrable theta defect it proves
+
+    P_h(y) < 1/4  ⇒  P_{h/2}(y) = 0,       0 < h ≤ 1.
+
+The outer half-mass below `1/4` excludes every atom from the inner tent. Distant common
+returns and boundary-error decay transfer this atomic implication to the recurrent parts.
+No recurrence, alignment, injectivity or defect-smallness premise is added.
+`beurling_tentRecurrentPart_half_eq_zero` is kernel checked with the three standard axioms.
+
+## Formal unit-gap vanishing
+
+`IntegrableDefectsVanishInTheUnitGap.lean` proves `Re J(iy)=0` for `0<y<1` in the same
+countable Beurling theta-defect class. Normalized shrinking tent averages converge to the
+continuous boundary value. The unnormalized outer error tends to zero; the recurrence
+threshold kills the inner average. Conjugation symmetry of the actual Laplace identity
+then gives evenness and vanishing on the negative unit gap as well.
+
+`beurling_defectBoundary_re_eq_zero_on_unit_gap` and
+`defectBoundary_re_even_of_theta_defect` are kernel checked with the three standard axioms.

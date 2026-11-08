@@ -28,8 +28,9 @@ The proposed coefficient identity is
 
 Signed cycle counting should derive it from the actual extension counts
 `#C(F_(q^d))=q^d+1−Σ_i α_i^d`. For a fixed `n`, only cycle lengths
-`1≤d≤n` occur; each divides `n!`. The comparison with fixed points inside
-`C(E)` must be proved for these lengths, not assumed for all iterates.
+`1≤d≤n` occur; each divides `n!`. The [actual fixed-point comparison](../3-formalized/riac-hyperelliptic-fixed-points.md)
+is formalized for these lengths. It is not asserted for all iterates in
+the finite ambient field.
 
 The existing Stepanov theorem proves `|α_i|≤√q` without assuming that `f`
 splits. A product-of-geometric-series bound would then give
@@ -42,13 +43,19 @@ open. The concrete elliptic case below is formalized.
 
 ## Inputs and obligations
 
-1. Construct the finite curve point sets and Frobenius. The general
+1. Actual finite curve point sets and coordinate Frobenius are constructed
+   in [HyperellipticFixedPoints.lean](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/HyperellipticFixedPoints.lean). The general
    [orientation action and quotient](../3-formalized/riac-orientation-quotient-counts.md)
    are formalized.
 2. The cover-minus-base identity with signed transporter mass is formalized
    for every finite equivariant action; instantiate it on the actual curves.
-3. Prove the fixed-field comparison for each permutation cycle length.
-4. Derive the signed cycle-index coefficient identity from actual point counts.
+3. The fixed-field comparison and actual root-power-sum count are
+   formalized for every permutation cycle length.
+4. The [determinant realization](../3-formalized/riac-orientation-determinant.md)
+   is formalized: `A_n−B_n=[t^n]det(1+tP_φ)` and
+   `Tr(P_φ^d)=#Fix(φ^d)`. The remaining coefficient comparison must
+   identify this determinant with the displayed rational generating
+   function through degree `n`, using the actual trace values.
 5. Instantiate the derived Stepanov bound and audit the resulting inequality.
 
 The [actual elliptic divisor branch](../3-formalized/riac-elliptic-squarefree-divisor-cancellation.md)
