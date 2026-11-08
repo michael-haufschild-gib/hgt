@@ -161,5 +161,148 @@ lemma normalized_sum_terminal_polarCenterProfile_sq_le {K N : ℕ}
         _ = 18 * ((K : ℝ) / N) + 64 * Real.sqrt K * (Real.sqrt (N : ℝ) / N) := by ring
         _ = _ := by rw [hr]; ring
 
+
+/-- Splitting off the last `K` rows bounds the full top-window error by an interior reciprocal
+error and a uniformly small endpoint tail. -/
+lemma normalized_sum_polarCenter_error_le {δ : ℝ} (hδ : 0 < δ) {K N : ℕ}
+    (hK1 : 1 ≤ K) (hK : 2 * K ≤ N) :
+    (∑ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
+      (polarCenterRow N n - polarCenterProfile (fun _ => 1) ((n : ℝ) / N)) ^ 2) / N ≤
+      (2 / (K : ℝ) + 1 / (δ * N)) ^ 2 +
+        136 * ((K : ℝ) / N) + 256 * Real.sqrt ((K : ℝ) / N) := by
+  have hN1 : 1 ≤ N := by omega
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
+  have hK0 : (0 : ℝ) < K := by exact_mod_cast hK1
+  let S := Ioc ⌊δ * (N : ℝ)⌋₊ N
+  let E : ℕ → ℝ := fun n =>
+    (polarCenterRow N n - polarCenterProfile (fun _ => 1) ((n : ℝ) / N)) ^ 2
+  let C : ℝ := 2 / K + 1 / (δ * N)
+  have hC : 0 ≤ C := by dsimp only [C]; positivity
+  have hearly : ∀ n ∈ S, n ≤ N - K → E n ≤ C ^ 2 := by
+    intro n hn hmid
+    have hnlo : ⌊δ * (N : ℝ)⌋₊ < n := (mem_Ioc.mp hn).1
+    have hn1 : 1 ≤ n := by omega
+    have hnlt : n < N := by omega
+    have hnδ : δ * (N : ℝ) < n := (Nat.lt_floor_add_one _).trans_le
+      (by exact_mod_cast Nat.succ_le_of_lt hnlo)
+    have hkn : K ≤ N - n := by omega
+    have hab := abs_polarCenterRow_sub_profile_le hn1 hnlt
+    have hrec₁ : 2 / ((N - n : ℕ) : ℝ) ≤ 2 / (K : ℝ) :=
+      div_le_div_of_nonneg_left (by norm_num) hK0 (by exact_mod_cast hkn)
+    have hrec₂ : 1 / (n : ℝ) ≤ 1 / (δ * N) :=
+      one_div_le_one_div_of_le (mul_pos hδ hN0) hnδ.le
+    have habC : |polarCenterRow N n - polarCenterProfile (fun _ => 1) ((n : ℝ) / N)| ≤ C := by
+      exact hab.trans (add_le_add hrec₁ hrec₂)
+    have hs := pow_le_pow_left₀ (abs_nonneg _) habC 2
+    simpa only [E, sq_abs] using hs
+  have hsplit : (∑ n ∈ S, E n) ≤ N * C ^ 2 + ∑ n ∈ Ioc (N - K) N, E n := by
+    have hpoint : ∀ n ∈ S, E n ≤ C ^ 2 + if N - K < n then E n else 0 := by
+      intro n hn
+      by_cases hlate : N - K < n
+      · rw [if_pos hlate]
+        exact le_add_of_nonneg_left (sq_nonneg C)
+      · rw [if_neg hlate, add_zero]
+        exact hearly n hn (not_lt.mp hlate)
+    have hsum := sum_le_sum hpoint
+    rw [sum_add_distrib, sum_const, nsmul_eq_mul, ← sum_filter] at hsum
+    have hcard : (S.card : ℝ) ≤ N := by
+      dsimp only [S]
+      rw [Nat.card_Ioc]
+      exact_mod_cast Nat.sub_le N ⌊δ * (N : ℝ)⌋₊
+    have hsub : S.filter (fun n => N - K < n) ⊆ Ioc (N - K) N := by
+      intro n hn
+      exact mem_Ioc.mpr ⟨(mem_filter.mp hn).2, (mem_Ioc.mp (mem_filter.mp hn).1).2⟩
+    exact hsum.trans (add_le_add (mul_le_mul_of_nonneg_right hcard (sq_nonneg C))
+      (sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => by dsimp only [E]; positivity)))
+  have htail : (∑ n ∈ Ioc (N - K) N, E n) / N ≤
+      136 * ((K : ℝ) / N) + 256 * Real.sqrt ((K : ℝ) / N) := by
+    have he : (∑ n ∈ Ioc (N - K) N, E n) ≤
+        2 * (∑ n ∈ Ioc (N - K) N, polarCenterRow N n ^ 2) +
+        2 * (∑ n ∈ Ioc (N - K) N, polarCenterProfile (fun _ => 1) ((n : ℝ) / N) ^ 2) := by
+      rw [mul_sum, mul_sum, ← sum_add_distrib]
+      exact sum_le_sum fun n _ => by
+        dsimp only [E]
+        nlinarith only [sq_nonneg (polarCenterRow N n + polarCenterProfile (fun _ => 1) ((n : ℝ) / N))]
+    have hnorm := div_le_div_of_nonneg_right he hN0.le
+    have h₁ := normalized_sum_terminal_polarCenterRow_sq_le hN1 hK
+    have h₂ := normalized_sum_terminal_polarCenterProfile_sq_le hN1 hK
+    have hid : (2 * (∑ n ∈ Ioc (N - K) N, polarCenterRow N n ^ 2) +
+        2 * (∑ n ∈ Ioc (N - K) N, polarCenterProfile (fun _ => 1) ((n : ℝ) / N) ^ 2)) / N =
+        2 * ((∑ n ∈ Ioc (N - K) N, polarCenterRow N n ^ 2) / N) +
+        2 * ((∑ n ∈ Ioc (N - K) N, polarCenterProfile (fun _ => 1) ((n : ℝ) / N) ^ 2) / N) := by ring
+    rw [hid] at hnorm
+    linarith only [hnorm, h₁, h₂]
+  have htotal := div_le_div_of_nonneg_right hsplit hN0.le
+  have hid : ((N : ℝ) * C ^ 2 + ∑ n ∈ Ioc (N - K) N, E n) / N =
+      C ^ 2 + (∑ n ∈ Ioc (N - K) N, E n) / N := by field_simp [hN0.ne']
+  rw [hid] at htotal
+  exact htotal.trans (by linarith only [htail])
+
+
+/-- The polar harmonic center converges to its sampled logarithmic profile in normalized
+square mean on every fixed terminal fraction of the horizon. -/
+theorem tendsto_normalized_polarCenter_profile_error {δ : ℝ} (hδ : 0 < δ) :
+    Tendsto (fun N : ℕ =>
+      (∑ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
+        (polarCenterRow N n - polarCenterProfile (fun _ => 1) ((n : ℝ) / N)) ^ 2) / N)
+      atTop (𝓝 0) := by
+  apply tendsto_order.2
+  constructor
+  · intro a ha
+    exact Eventually.of_forall fun N => ha.trans_le
+      (div_nonneg (sum_nonneg fun _ _ => sq_nonneg _) (Nat.cast_nonneg N))
+  · intro ε hε
+    let t := min (1 / 4 : ℝ) (ε / 1000)
+    let η := t ^ 2
+    have ht : 0 < t := lt_min (by norm_num) (by positivity)
+    have ht1 : t ≤ 1 / 4 := min_le_left _ _
+    have htε : t ≤ ε / 1000 := min_le_right _ _
+    have hη : 0 < η := sq_pos_of_pos ht
+    have hηt : η ≤ t := by dsimp only [η]; nlinarith only [ht, ht1]
+    have hηhalf : η ≤ 1 / 2 := hηt.trans (ht1.trans (by norm_num))
+    have htail : 136 * η + 256 * Real.sqrt η < ε / 2 := by
+      have he : Real.sqrt η = t := Real.sqrt_sq ht.le
+      rw [he]
+      linarith only [hηt, htε, hε]
+    let C : ℝ := 4 / η + 1 / δ
+    have hC : 0 < C := by dsimp only [C]; positivity
+    have hlim : Tendsto (fun N : ℕ => (C / (N : ℝ)) ^ 2) atTop (𝓝 0) := by
+      have h := (tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop :
+        Tendsto (fun N : ℕ => C / (N : ℝ)) atTop (𝓝 0)).pow 2
+      simpa only [zero_pow (by decide : 2 ≠ 0)] using h
+    filter_upwards [eventually_ge_atTop 1,
+      (tendsto_natCast_atTop_atTop : Tendsto (fun N : ℕ => (N : ℝ)) atTop atTop).eventually_ge_atTop (4 / η),
+      hlim.eventually (gt_mem_nhds (half_pos hε))] with N hN hlarge hsmall
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+    let K := ⌊η * (N : ℝ)⌋₊
+    have hηN : 4 ≤ η * (N : ℝ) := by
+      have h := (div_le_iff₀ hη).mp hlarge
+      simpa only [mul_comm] using h
+    have hK1 : 1 ≤ K := Nat.le_floor (by linarith only [hηN])
+    have hK0 : (0 : ℝ) < K := by exact_mod_cast hK1
+    have hKhi : (K : ℝ) ≤ η * N := Nat.floor_le (mul_nonneg hη.le hN0.le)
+    have hKlo : η * (N : ℝ) / 2 ≤ K := by
+      have hh := Nat.sub_one_lt_floor (η * (N : ℝ))
+      change η * (N : ℝ) - 1 < (K : ℝ) at hh
+      linarith only [hh, hηN]
+    have hKhalf : 2 * K ≤ N := by
+      have hh := mul_le_mul_of_nonneg_right hηhalf hN0.le
+      have hcast : 2 * (K : ℝ) ≤ N := by linarith only [hKhi, hh]
+      exact_mod_cast hcast
+    have hKr : (K : ℝ) / N ≤ η := (div_le_iff₀ hN0).mpr hKhi
+    have hCbound : 2 / (K : ℝ) + 1 / (δ * N) ≤ C / N := by
+      have hh := div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 2)
+        (by positivity : 0 < η * (N : ℝ) / 2) hKlo
+      calc
+        _ ≤ 2 / (η * (N : ℝ) / 2) + 1 / (δ * N) := add_le_add hh le_rfl
+        _ = C / N := by dsimp only [C]; field_simp [hη.ne', hδ.ne', hN0.ne']; ring
+    have hCsq := pow_le_pow_left₀ (by positivity : 0 ≤ 2 / (K : ℝ) + 1 / (δ * N)) hCbound 2
+    have htN : 136 * ((K : ℝ) / N) + 256 * Real.sqrt ((K : ℝ) / N) < ε / 2 :=
+      (add_le_add (mul_le_mul_of_nonneg_left hKr (by norm_num))
+        (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hKr) (by norm_num))).trans_lt htail
+    have hbound := normalized_sum_polarCenter_error_le hδ hK1 hKhalf
+    linarith only [hbound, hCsq, htN, hsmall]
+
 #print axioms abs_polarCenterRow_sub_profile_le
+#print axioms tendsto_normalized_polarCenter_profile_error
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -99,24 +99,25 @@ theorem newtonSegment_det (m n : ℤ) : |(m * (-1) - (-1) * n : ℤ)| = |m - n| 
 
 /-- The cusp multiplicity is a count: `min(m, n)` integers lie below both `m` and `n`. -/
 theorem min_eq_sum_indicator {m n K : ℕ} (hm : m ≤ K) (hn : n ≤ K) :
-    (min m n : ℤ) = ∑ k ∈ range K, (if k < m then (1 : ℤ) else 0) * (if k < n then 1 else 0) := by
+    ((min m n : ℕ) : ℤ) =
+      ∑ k ∈ range K, (if k < m then (1 : ℤ) else 0) * (if k < n then 1 else 0) := by
   have : ∀ k ∈ range K, ((if k < m then (1 : ℤ) else 0) * (if k < n then 1 else 0)) =
       if k < min m n then 1 else 0 := by
     intro k _
-    by_cases h1 : k < m <;> by_cases h2 : k < n <;> simp [h1, h2, lt_min_iff]
+    by_cases h1 : k < m <;> by_cases h2 : k < n <;> simp [h1, h2]
   rw [sum_congr rfl this, ← sum_filter]
   have hfilt : (range K).filter (fun k => k < min m n) = range (min m n) := by
     ext k; simp only [mem_filter, mem_range]
     constructor
     · exact fun h => h.2
     · exact fun h => ⟨lt_of_lt_of_le h ((min_le_left _ _).trans hm), h⟩
-  rw [hfilt, card_range]
+  rw [hfilt]
   simp
 
 variable (S : Finset ℕ) (a : ℕ → ℤ)
 
 /-- The cusp form `Σ a_m a_n min(m, n)` of a probe supported on `S`. -/
-def cuspForm : ℤ := ∑ m ∈ S, ∑ n ∈ S, a m * a n * (min m n : ℤ)
+def cuspForm : ℤ := ∑ m ∈ S, ∑ n ∈ S, a m * a n * ((min m n : ℕ) : ℤ)
 
 /-- The torus form `Σ a_m a_n |m − n|`: the intersection form of the Frobenius zonotope surface. -/
 def torusForm : ℤ := ∑ m ∈ S, ∑ n ∈ S, a m * a n * (Nat.dist m n : ℤ)
@@ -135,18 +136,22 @@ def zonotopeDefect : ℤ := 2 * degH S a * degV S a - torusForm S a
 /-- **The cusp form is a sum of squares of tails.** -/
 theorem cuspForm_eq_sum_sq {K : ℕ} (hS : ∀ n ∈ S, n ≤ K) :
     cuspForm S a = ∑ k ∈ range K, tail S a k ^ 2 := by
-  unfold cuspForm tail
-  have hexp : ∀ m ∈ S, ∀ n ∈ S, a m * a n * (min m n : ℤ) =
-      ∑ k ∈ range K, (if k < m then a m else 0) * (if k < n then a n else 0) := by
+  set F : ℕ → ℕ → ℤ := fun k n => if k < n then a n else 0 with hF
+  have hexp : ∀ m ∈ S, ∀ n ∈ S, a m * a n * ((min m n : ℕ) : ℤ) =
+      ∑ k ∈ range K, F k m * F k n := by
     intro m hm n hn
     rw [min_eq_sum_indicator (hS m hm) (hS n hn), mul_sum]
     refine sum_congr rfl fun k _ => ?_
-    by_cases h1 : k < m <;> by_cases h2 : k < n <;> simp [h1, h2]
-  rw [sum_congr rfl fun m hm => sum_congr rfl fun n hn => hexp m hm n hn]
-  simp_rw [sq, sum_mul_sum]
-  rw [sum_comm]
-  refine sum_congr rfl fun k _ => ?_
-  rw [sum_comm]
+    by_cases h1 : k < m <;> by_cases h2 : k < n <;> simp [hF, h1, h2]
+  have hswap : ∀ m ∈ S, ∑ n ∈ S, ∑ k ∈ range K, F k m * F k n =
+      ∑ k ∈ range K, ∑ n ∈ S, F k m * F k n := fun _ _ => sum_comm
+  calc cuspForm S a = ∑ m ∈ S, ∑ n ∈ S, ∑ k ∈ range K, F k m * F k n :=
+        sum_congr rfl fun m hm => sum_congr rfl fun n hn => hexp m hm n hn
+    _ = ∑ k ∈ range K, ∑ m ∈ S, ∑ n ∈ S, F k m * F k n := by
+        rw [sum_congr rfl hswap, sum_comm]
+    _ = ∑ k ∈ range K, tail S a k ^ 2 := by
+        refine sum_congr rfl fun k _ => ?_
+        rw [sq, tail, sum_mul_sum]
 
 /-- The cusp form is nonnegative. -/
 theorem cuspForm_nonneg : 0 ≤ cuspForm S a := by
@@ -155,25 +160,29 @@ theorem cuspForm_nonneg : 0 ≤ cuspForm S a := by
   exact sum_nonneg fun k _ => sq_nonneg _
 
 /-- `|m − n| = m + n − 2 min(m, n)`. -/
-theorem dist_eq_add_sub_two_min (m n : ℕ) : (Nat.dist m n : ℤ) = m + n - 2 * min m n := by
-  have := two_mul_min_add_dist m n
-  have : ((2 * min m n + Nat.dist m n : ℕ) : ℤ) = ((m + n : ℕ) : ℤ) := by rw [this]
-  push_cast at this
+theorem dist_eq_add_sub_two_min (m n : ℕ) :
+    (Nat.dist m n : ℤ) = m + n - 2 * ((min m n : ℕ) : ℤ) := by
+  have h := congrArg (Nat.cast : ℕ → ℤ) (two_mul_min_add_dist m n)
+  push_cast at h ⊢
   linarith
 
 /-- **The torus form**: bidegree pairing minus twice the cusp form. -/
 theorem torusForm_eq : torusForm S a = 2 * degH S a * degV S a - 2 * cuspForm S a := by
-  unfold torusForm degH degV cuspForm
-  simp_rw [dist_eq_add_sub_two_min, mul_sub, mul_add, sum_sub_distrib, sum_add_distrib]
-  rw [mul_sum, mul_sum]
-  have h1 : ∑ m ∈ S, ∑ n ∈ S, a m * a n * (m : ℤ) = (∑ n ∈ S, a n) * ∑ m ∈ S, (m : ℤ) * a m := by
-    rw [sum_mul_sum, sum_comm]; exact sum_congr rfl fun _ _ => sum_congr rfl fun _ _ => by ring
-  have h2 : ∑ m ∈ S, ∑ n ∈ S, a m * a n * (n : ℤ) = (∑ n ∈ S, a n) * ∑ m ∈ S, (m : ℤ) * a m := by
-    rw [sum_mul_sum]; exact sum_congr rfl fun _ _ => sum_congr rfl fun _ _ => by ring
-  have h3 : ∑ m ∈ S, ∑ n ∈ S, a m * a n * (2 * (min m n : ℤ)) =
-      ∑ m ∈ S, 2 * ∑ n ∈ S, a m * a n * (min m n : ℤ) := by
-    refine sum_congr rfl fun _ _ => ?_
-    rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+  have hpt : ∀ m n : ℕ, a m * a n * (Nat.dist m n : ℤ) =
+      a n * ((m : ℤ) * a m) + a m * ((n : ℤ) * a n) -
+        2 * (a m * a n * ((min m n : ℕ) : ℤ)) := by
+    intro m n; rw [dist_eq_add_sub_two_min]; ring
+  have h1 : ∑ m ∈ S, ∑ n ∈ S, a n * ((m : ℤ) * a m) =
+      (∑ n ∈ S, a n) * ∑ m ∈ S, (m : ℤ) * a m := by
+    rw [sum_mul_sum, sum_comm]
+  have h2 : ∑ m ∈ S, ∑ n ∈ S, a m * ((n : ℤ) * a n) =
+      (∑ m ∈ S, a m) * ∑ n ∈ S, (n : ℤ) * a n := by
+    rw [sum_mul_sum]
+  have h3 : ∑ m ∈ S, ∑ n ∈ S, 2 * (a m * a n * ((min m n : ℕ) : ℤ)) = 2 * cuspForm S a := by
+    rw [cuspForm, mul_sum]
+    exact sum_congr rfl fun _ _ => (mul_sum _ _ _).symm
+  unfold torusForm degH degV
+  simp only [hpt, sum_sub_distrib, sum_add_distrib]
   rw [h1, h2, h3]
   ring
 
@@ -227,7 +236,7 @@ theorem archLevyDensity_eq_cusp_add {x : ℝ} (hx : 0 < x) :
     RHTower.archLevyDensity x =
       Real.exp (-x / 2) + ∑' k : ℕ, Real.exp (-((2 * ((k + 1 : ℕ) : ℝ) + 1 / 2) * x)) := by
   have hsum : Summable fun k : ℕ => Real.exp (-((2 * (k : ℝ) + 1 / 2) * x)) := by
-    have hr : Real.exp (-(2 * x)) < 1 := Real.exp_lt_one_of_neg (by linarith)
+    have hr : Real.exp (-(2 * x)) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
     refine (summable_geometric_of_lt_one (Real.exp_pos _).le hr).mul_left (Real.exp (-x / 2)) |>.congr
       fun k => ?_
     rw [← Real.exp_nat_mul, ← Real.exp_add]

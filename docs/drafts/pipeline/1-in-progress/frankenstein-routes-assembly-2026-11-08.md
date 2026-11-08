@@ -42,5 +42,28 @@ Frobenius periodicity; weak recurrence is its function-level shadow, and AAL equ
 shadow. The JAS shell criterion reads the same proof in the Frobenius-eigenvalue coordinate:
 ZAL ↔ finite rank (free on curves), shell-sum growth ↔ Stepanov's count, Turán ↔ power sums.
 
+## F21 — critical-line firewall
+
+**Bridge (Lean, `ArithmeticPositiveDuality/TheCriticalLineFirewall`).** One function-level law
+`HalfPlaneAbscissaLaw F σ₀`; for ζ at `½` it is `AsymptoticAbscissaLaw`. `criticalLineFirewall`:
+the law fails with a finite nonempty top layer for the continuous positive system (count error → 0,
+continued across `½`), the integer-norm Euler product with linear counting, the rational-prime Euler
+product with multiplicative coefficients and linear counting, and the zero set of one reflection
+pair; ζ's law is invariant under every symmetric shift.
+
+**Learning.** The reflection `ρ ↦ 1 − ρ̄` keeps heights; AAL is vertical transport. A functional-
+equation input must turn the FE into transport in height — the zero-set symmetry gives nothing.
+
+## F18 — AAL tail form
+
+**Bridge (Lean, `TailArithmeticOfThePrimeOrbit/TheAbscissaLawIsATailTransport`).**
+`asymptoticAbscissaLaw_iff_tailTransport`: AAL ⇔ near every right zero, above every height, a point
+where at every cut the tail vanishes and `|ζ − E_y| = |E_y| ≥ Π_{p≤y}(1+p^{−σ})^{−1}`. The heights
+are tail-bad at every cut (`tailTransport_height_mem_tailBad`).
+
+**Correction of the [D] reading.** No head alignment ("Kronecker scale") is part of AAL: the law asks
+for full-amplitude tail events, not returns of the phases. Alignment enters only through the
+return-based producers, which ask for more than AAL.
+
 ## Log
-- 2026-11-08 — created; F22 started.
+- 2026-11-08 — created; F22, F21, F18 bridges compiled and wired.

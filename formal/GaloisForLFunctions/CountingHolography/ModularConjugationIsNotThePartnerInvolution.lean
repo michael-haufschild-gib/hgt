@@ -170,12 +170,11 @@ theorem spacelike_right_left_mod_sl2z (t t' : ℝ) {r r' : ℝ} (hr : 1 < r) (hr
 def rindlerBoostMatrix (τ : ℝ) : Matrix (Fin 2) (Fin 2) ℝ :=
   !![Real.cosh τ, Real.sinh τ; Real.sinh τ, Real.cosh τ]
 
-/-- **Uniqueness of the geometric Rindler involution.** Every `2 × 2` Lorentz transformation of the
-`(X₃, X₄)` plane that commutes with all Rindler boosts and maps `(1, 0)` into `{u₀ < 0}` is `-1`. -/
+/-- **Uniqueness of the geometric Rindler involution.** Every linear involution of the `(X₃, X₄)`
+plane that commutes with all Rindler boosts and maps `(1, 0)` into `{u₀ < 0}` is `-1`. -/
 theorem rindler_wedge_involution_unique (L : Matrix (Fin 2) (Fin 2) ℝ)
+    (hinvol : L * L = 1)
     (hcomm : ∀ τ : ℝ, L * rindlerBoostMatrix τ = rindlerBoostMatrix τ * L)
-    (hlor : ∀ u₀ u₁ : ℝ,
-      (L 0 0 * u₀ + L 0 1 * u₁) ^ 2 - (L 1 0 * u₀ + L 1 1 * u₁) ^ 2 = u₀ ^ 2 - u₁ ^ 2)
     (hwedge : L 0 0 < 0) :
     L = !![-1, 0; 0, -1] := by
   have hs : Real.sinh 1 ≠ 0 := by
@@ -192,12 +191,15 @@ theorem rindler_wedge_involution_unique (L : Matrix (Fin 2) (Fin 2) ℝ)
   have had : L 0 0 = L 1 1 := by
     have : (L 0 0 - L 1 1) * Real.sinh 1 = 0 := by linarith
     exact sub_eq_zero.mp ((mul_eq_zero.mp this).resolve_right hs)
-  have hl1 := hlor 1 0
-  have hl2 := hlor 1 1
-  rw [hbc, ← had] at hl1 hl2
-  have hab0 : L 0 0 * L 1 0 = 0 := by nlinarith
+  have hi00 : L 0 0 * L 0 0 + L 0 1 * L 1 0 = 1 := by
+    simpa [Matrix.mul_apply, Fin.sum_univ_two] using congr_fun (congr_fun hinvol 0) 0
+  have hi01 : L 0 0 * L 0 1 + L 0 1 * L 1 1 = 0 := by
+    simpa [Matrix.mul_apply, Fin.sum_univ_two] using congr_fun (congr_fun hinvol 0) 1
+  rw [hbc] at hi00 hi01
+  rw [← had] at hi01
+  have hab0 : L 0 0 * L 1 0 = 0 := by linarith
   have hb0 : L 1 0 = 0 := (mul_eq_zero.mp hab0).resolve_left hwedge.ne
-  have ha2 : L 0 0 ^ 2 = 1 := by nlinarith
+  rw [hb0] at hi00
   have ha : L 0 0 = -1 := by nlinarith
   have hc0 : L 0 1 = 0 := hbc.trans hb0
   have hd : L 1 1 = -1 := had.symm.trans ha
@@ -211,12 +213,9 @@ theorem rindler_kms_period_mismatch :
       Complex.sinh (z + 2 * Real.pi * Complex.I) = Complex.sinh z) ∧
     (∀ z : ℂ, kmsCorrelator _root_.RHTower.xi (z + Complex.I) =
       kmsCorrelator _root_.RHTower.xi (-z)) ∧
-    (2 * Real.pi : ℝ) ≠ 1 := by
-  refine ⟨fun z => ⟨?_, ?_⟩, xi_kms_condition, by linarith [Real.pi_gt_three]⟩
-  · rw [show z + 2 * Real.pi * Complex.I = z + (2 * Real.pi) * Complex.I by ring]
-    simpa [Complex.cos_two_pi, Complex.sin_two_pi] using Complex.cosh_add_mul_I z (2 * Real.pi)
-  · rw [show z + 2 * Real.pi * Complex.I = z + (2 * Real.pi) * Complex.I by ring]
-    simpa [Complex.cos_two_pi, Complex.sin_two_pi] using Complex.sinh_add_mul_I z (2 * Real.pi)
+    (2 * Real.pi : ℝ) ≠ 1 :=
+  ⟨fun z => ⟨Complex.cosh_periodic z, Complex.sinh_periodic z⟩,
+    xi_kms_condition, by linarith [Real.pi_gt_three]⟩
 
 /-! ### 2. Normalizer rigidity of `PSL₂(ℤ)` and non-closure of integer shifts -/
 
@@ -402,32 +401,40 @@ theorem normalizer_psl2z_entries_int (g : Matrix (Fin 2) (Fin 2) ℝ)
   have hAD_sq : A * D = m_ad.natAbs ^ 2 := by
     have hr : ((A * D : ℕ) : ℝ) = ((m_ad.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : ((m_ad.natAbs : ℤ) : ℝ) ^ 2 = (m_ad : ℝ) ^ 2 := by
-        exact_mod_cast Int.natAbs_sq m_ad
+      have h1 : (m_ad.natAbs : ℝ) ^ 2 = (m_ad : ℝ) ^ 2 := by
+        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_ad)
+        push_cast at h1z
+        exact h1z
       rw [hA_eq, hD_eq, h1, ← had]
       ring
     exact_mod_cast hr
   have hBC_sq : B * C = m_bc.natAbs ^ 2 := by
     have hr : ((B * C : ℕ) : ℝ) = ((m_bc.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : ((m_bc.natAbs : ℤ) : ℝ) ^ 2 = (m_bc : ℝ) ^ 2 := by
-        exact_mod_cast Int.natAbs_sq m_bc
+      have h1 : (m_bc.natAbs : ℝ) ^ 2 = (m_bc : ℝ) ^ 2 := by
+        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_bc)
+        push_cast at h1z
+        exact h1z
       rw [hB_eq, hC_eq, h1, ← hbc]
       ring
     exact_mod_cast hr
   have hAB_sq : A * B = m_ab.natAbs ^ 2 := by
     have hr : ((A * B : ℕ) : ℝ) = ((m_ab.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : ((m_ab.natAbs : ℤ) : ℝ) ^ 2 = (m_ab : ℝ) ^ 2 := by
-        exact_mod_cast Int.natAbs_sq m_ab
+      have h1 : (m_ab.natAbs : ℝ) ^ 2 = (m_ab : ℝ) ^ 2 := by
+        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_ab)
+        push_cast at h1z
+        exact h1z
       rw [hA_eq, hB_eq, h1, ← hab]
       ring
     exact_mod_cast hr
   have hCD_sq : C * D = m_cd.natAbs ^ 2 := by
     have hr : ((C * D : ℕ) : ℝ) = ((m_cd.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : ((m_cd.natAbs : ℤ) : ℝ) ^ 2 = (m_cd : ℝ) ^ 2 := by
-        exact_mod_cast Int.natAbs_sq m_cd
+      have h1 : (m_cd.natAbs : ℝ) ^ 2 = (m_cd : ℝ) ^ 2 := by
+        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_cd)
+        push_cast at h1z
+        exact h1z
       rw [hC_eq, hD_eq, h1, ← hcd]
       ring
     exact_mod_cast hr
@@ -436,7 +443,7 @@ theorem normalizer_psl2z_entries_int (g : Matrix (Fin 2) (Fin 2) ℝ)
     have hcop_int : IsCoprime m_ad m_bc := by
       rcases hδz with h1 | h1
       · refine ⟨1, -1, ?_⟩; simp [m_ad, h1]
-      · refine ⟨-1, 1, ?_⟩; simp [m_ad, h1]; ring
+      · refine ⟨-1, 1, ?_⟩; simp [m_ad, h1]
     have hcop_nat : Nat.Coprime m_ad.natAbs m_bc.natAbs := Int.isCoprime_iff_nat_coprime.mp hcop_int
     exact (hcop_nat.pow_left 2).pow_right 2
   have hcop_AB : Nat.Coprime A B :=
@@ -499,14 +506,15 @@ theorem pseudoEisenstein_reflect_eq (ψ : ℝ → ℂ) (x : ℝ) {y : ℝ} (hy :
   congr 1
   rw [RHTower.DeckPointPair.im_gammaSetMatrix_smul, RHTower.DeckPointPair.im_gammaSetMatrix_smul,
     im_ofComplex_mk hy, im_ofComplex_mk hy]
-  have hz1 : ((ofComplex (⟨-x, y⟩ : ℂ) : ℍ) : ℂ) = ⟨-x, y⟩ := ofComplex_apply_of_im_pos hy
-  have hz2 : ((ofComplex (⟨x, y⟩ : ℂ) : ℍ) : ℂ) = ⟨x, y⟩ := ofComplex_apply_of_im_pos hy
+  have hz1 : ((ofComplex (⟨-x, y⟩ : ℂ) : ℍ) : ℂ) = ⟨-x, y⟩ := by
+    rw [ofComplex_apply_of_im_pos (z := ⟨-x, y⟩) hy]
+  have hz2 : ((ofComplex (⟨x, y⟩ : ℂ) : ℍ) : ℂ) = ⟨x, y⟩ := by
+    rw [ofComplex_apply_of_im_pos (z := ⟨x, y⟩) hy]
   rw [hz1, hz2]
   dsimp [e, negRow]
   congr 1
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Complex.normSq_apply, Complex.add_re,
-    Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.intCast_re, Complex.intCast_im,
-    Int.cast_neg]
+  simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im,
+    Int.cast_neg, Complex.neg_re, Complex.neg_im, Complex.intCast_re, Complex.intCast_im]
   ring
 
 /-- **Integer shifts are not closed under the partner involution.** For every `n ≥ 2`, `-log n` is
@@ -683,7 +691,9 @@ theorem conjOp_eq_self_of_selfAdjoint_central (ms : StandardForm M) {Z : H →L[
             (ContinuousLinearMap.adjoint_inner_left _ _ _).symm
         _ = inner ℂ ((star D) ms.Ω) (D ms.Ω) := by rw [← ContinuousLinearMap.star_eq_adjoint]
         _ = inner ℂ (D ms.Ω) (D ms.Ω) := by rw [hD_sa]
-    rw [hadj, inner_self_eq_norm_sq]
+    have hsq : inner ℂ (D ms.Ω) (D ms.Ω) = ((‖D ms.Ω‖ ^ 2 : ℝ) : ℂ) :=
+      (inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (D ms.Ω)).trans (Complex.ofReal_pow _ 2).symm
+    rw [hadj, hsq, Complex.ofReal_re]
   rw [hnorm] at hpos
   have hDΩ : D ms.Ω = 0 := norm_eq_zero.mp (by nlinarith [norm_nonneg (D ms.Ω)])
   have hD0 : D = 0 := ms.separating D hD_mem hDΩ
@@ -708,9 +718,11 @@ theorem tomita_central_eq_star (ms : StandardForm M) {Z : H →L[ℂ] H}
   have hB_mem : B ∈ M := M.toStarSubalgebra.smul_mem (sub_mem hZ hZs_mem) _
   have hB_comm : B ∈ M.commutant := M.commutant.toStarSubalgebra.smul_mem (sub_mem hZc hZs_comm) _
   have hB_sa : star B = B := by
-    have hstar_c : star (-(Complex.I / 2) : ℂ) = Complex.I / 2 := by simp [RCLike.star_def]
+    have hstar_c : star (-(Complex.I / 2) : ℂ) = Complex.I / 2 := by
+      simp [RCLike.star_def]
+      ring
     rw [show B = (-(Complex.I / 2) : ℂ) • (Z - star Z) from rfl, star_smul, star_sub, star_star,
-      hstar_c, ← neg_sub, smul_neg, ← neg_smul]
+      hstar_c, ← neg_sub, smul_neg, ← _root_.neg_smul]
   have hJA : ms.J.conjOp A = A := ms.conjOp_eq_self_of_selfAdjoint_central hA_mem hA_comm hA_sa
   have hJB : ms.J.conjOp B = B := ms.conjOp_eq_self_of_selfAdjoint_central hB_mem hB_comm hB_sa
   have hZ_decomp : Z = A + Complex.I • B := by
@@ -721,19 +733,29 @@ theorem tomita_central_eq_star (ms : StandardForm M) {Z : H →L[ℂ] H}
       show B = (-(Complex.I / 2) : ℂ) • (Z - star Z) from rfl, smul_smul, hI2]
     module
   have hZs_decomp : star Z = A - Complex.I • B := by
-    rw [hZ_decomp, star_add, star_smul, hA_sa, hB_sa, RCLike.star_def, conj_I, neg_smul,
-      sub_eq_add_neg]
+    have h1 : star (A + Complex.I • B) = star A + star (Complex.I • B) := star_add _ _
+    have h2 : star (Complex.I • B) = -(Complex.I • B) := by
+      rw [star_smul, hB_sa, RCLike.star_def, conj_I, _root_.neg_smul]
+    calc star Z = star (A + Complex.I • B) := congr_arg star hZ_decomp
+      _ = A + -(Complex.I • B) := h1.trans (congr_arg₂ (· + ·) hA_sa h2)
+      _ = A - Complex.I • B := (sub_eq_add_neg _ _).symm
   have hJZ_eq : ms.J.conjOp Z = star Z := by
-    rw [hZ_decomp, AntiunitaryInvol.conjOp_add, AntiunitaryInvol.conjOp_smul, hJA, hJB,
-      conj_I, neg_smul, ← sub_eq_add_neg, ← hZs_decomp]
+    have h1 : ms.J.conjOp (A + Complex.I • B) = ms.J.conjOp A + ms.J.conjOp (Complex.I • B) :=
+      AntiunitaryInvol.conjOp_add ms.J _ _
+    have h2 : ms.J.conjOp (Complex.I • B) = -(Complex.I • B) := by
+      rw [AntiunitaryInvol.conjOp_smul, hJB, conj_I, _root_.neg_smul]
+    calc ms.J.conjOp Z = ms.J.conjOp (A + Complex.I • B) := congr_arg ms.J.conjOp hZ_decomp
+      _ = A + -(Complex.I • B) := h1.trans (congr_arg₂ (· + ·) hJA h2)
+      _ = star Z := by rw [← sub_eq_add_neg, hZs_decomp]
   refine ⟨hZc, hJZ_eq, ?_⟩
   rw [hJZ_eq]
-  have hcomm_star : Z * star Z = star Z * Z := (VonNeumannAlgebra.mem_commutant_iff.mp hZc) _ hZs_mem
+  have hcomm_star : Z * star Z = star Z * Z :=
+    ((VonNeumannAlgebra.mem_commutant_iff.mp hZc) _ hZs_mem).symm
   have happ : Z ((star Z) ms.Ω) = (star Z) (Z ms.Ω) :=
     congr_arg (fun T : H →L[ℂ] H => T ms.Ω) hcomm_star
   rw [happ, ContinuousLinearMap.star_eq_adjoint, ContinuousLinearMap.adjoint_inner_right,
     inner_self_eq_norm_sq_to_K]
-  rfl
+  exact (Complex.ofReal_pow _ 2).symm
 
 end StandardForm
 
@@ -766,12 +788,15 @@ theorem exists_standardForm_partner_rep_iff_damped {q t : ℝ} :
       rw [hπJ]
       change (π z * π (star z)) ms.Ω = _
       rw [← map_mul, ← QuadraticAlgebra.algebraMap_norm_eq_mul_star, AlgHom.commutes,
-        Algebra.algebraMap_eq_smul_one, _root_.smul_apply, ContinuousLinearMap.one_apply_eq_self,
-        hr_smul]
+        Algebra.algebraMap_eq_smul_one]
+      exact hr_smul z.norm ms.Ω
     rw [hmul, inner_smul_right] at hcone
     have hreal : z.norm * ‖ms.Ω‖ ^ 2 = ‖π z ms.Ω‖ ^ 2 := by
+      have hsq : inner ℂ ms.Ω ms.Ω = ((‖ms.Ω‖ ^ 2 : ℝ) : ℂ) :=
+        (inner_self_eq_norm_sq_to_K (𝕜 := ℂ) ms.Ω).trans (Complex.ofReal_pow _ 2).symm
+      rw [hsq] at hcone
       have hre := congr_arg Complex.re hcone
-      rwa [Complex.re_ofReal_mul, inner_self_eq_norm_sq, Complex.ofReal_re] at hre
+      rwa [Complex.re_ofReal_mul, Complex.ofReal_re, Complex.ofReal_re] at hre
     have hΩ2 : 0 < ‖ms.Ω‖ ^ 2 := sq_pos_of_pos (_root_.norm_pos_iff.mpr hΩ_ne)
     nlinarith [sq_nonneg ‖π z ms.Ω‖]
   · intro ht
@@ -812,20 +837,21 @@ theorem exists_standardForm_partner_rep_iff_damped {q t : ℝ} :
         conj_mem_commutant_iff := fun A => ⟨fun _ => trivial, fun _ => hcomm_top _⟩
         natural_cone_pos := fun A _ => by
           have hA : ∀ z : ℂ, A z = z * A 1 := fun z => by simpa [mul_comm] using A.map_smul z 1
-          have hJ1 : Jc 1 = 1 := map_one _
+          have hJ1 : Jc 1 = 1 := map_one (starRingEnd ℂ)
           have hval : A ((Jc.conjOp A) 1) = A 1 * starRingEnd ℂ (A 1) := by
             show A (Jc (A (Jc 1))) = _
             rw [hJ1, hA (Jc (A 1))]
             show starRingEnd ℂ (A 1) * A 1 = A 1 * starRingEnd ℂ (A 1)
             ring
-          rw [RCLike.inner_apply, map_one, mul_one, hval, Complex.mul_conj, Complex.ofReal_re]
+          rw [RCLike.inner_apply, map_one (starRingEnd ℂ), mul_one, hval, Complex.mul_conj,
+            Complex.ofReal_re]
           exact Complex.normSq_nonneg _ }
     let π : QuadraticAlgebra ℝ (-q) t →ₐ[ℝ] (ℂ →L[ℂ] ℂ) :=
       { toFun := fun z => ρ z • (1 : ℂ →L[ℂ] ℂ)
         map_one' := by rw [map_one, one_smul]
         map_mul' := fun x y => by rw [map_mul, smul_mul_smul_comm, mul_one]
-        map_zero' := by rw [map_zero, zero_smul]
-        map_add' := fun x y => by rw [map_add, add_smul]
+        map_zero' := by rw [map_zero, zero_smul ℂ (1 : ℂ →L[ℂ] ℂ)]
+        map_add' := by intro x y; rw [map_add, add_smul (ρ x) (ρ y) (1 : ℂ →L[ℂ] ℂ)]
         commutes' := fun r => by
           ext
           simp [Algebra.algebraMap_eq_smul_one, Complex.real_smul] }
@@ -888,7 +914,7 @@ def diagVN (ι : Type*) [DecidableEq ι] : VonNeumannAlgebra (lp (fun _ : ι => 
     rw [hcoe]
     ext T
     refine ⟨fun hT S hS => ?_, fun hT S hS => (hS T hT).symm⟩
-    exact (hT S fun U hU => (hU S hS).symm).symm
+    exact hT S fun U hU => (hU S hS).symm
 
 theorem mem_diagVN_iff [DecidableEq ι] (T : lp (fun _ : ι => ℂ) 2 →L[ℂ] lp (fun _ : ι => ℂ) 2) :
     T ∈ diagVN ι ↔ ∀ i : ι, lpCoordProj i * T = T * lpCoordProj i := by
@@ -904,7 +930,7 @@ theorem lpDiagonalCLM_mem_diagVN [DecidableEq ι] (lam : ι → ℂ) {C : ℝ} (
     (hC : ∀ i, ‖lam i‖ ≤ C) : lpDiagonalCLM lam hC0 hC ∈ diagVN ι := by
   rw [mem_diagVN_iff]
   intro i
-  refine ContinuousLinearMap.ext fun f => lp.ext fun j => ?_
+  refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun j => ?_
   change lpCoordProj i (lpDiagonalCLM lam hC0 hC f) j = lpDiagonalCLM lam hC0 hC (lpCoordProj i f) j
   rw [lpCoordProj_apply, lpDiagonalCLM_apply, lpDiagonalCLM_apply, lpCoordProj_apply]
   ring
@@ -932,7 +958,7 @@ theorem diagVN_commutant_eq [DecidableEq ι] : (diagVN ι).commutant = diagVN ι
   rw [VonNeumannAlgebra.mem_commutant_iff]
   refine ⟨fun h => (mem_diagVN_iff T).mpr fun i => h _ (lpCoordProj_mem_diagVN i),
     fun hT S hS => ?_⟩
-  refine ContinuousLinearMap.ext fun f => lp.ext fun i => ?_
+  refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun i => ?_
   calc (S * T) f i = S (T f) i := rfl
     _ = S (lp.single 2 i 1) i * (T f i) := diagVN_apply_eq hS (T f) i
     _ = S (lp.single 2 i 1) i * (T (lp.single 2 i 1) i * f i) := by rw [diagVN_apply_eq hT f i]
@@ -960,38 +986,40 @@ def lpConjInvol (ι : Type*) : AntiunitaryInvol (lp (fun _ : ι => ℂ) 2) where
 
 theorem lpConjInvol_conjOp_coordProj [DecidableEq ι] (i : ι) :
     (lpConjInvol ι).conjOp (lpCoordProj i) = lpCoordProj i := by
-  refine ContinuousLinearMap.ext fun f => lp.ext fun j => ?_
+  refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun j => ?_
   simp only [AntiunitaryInvol.conjOp_apply, lpConjInvol_apply, lpCoordProj_apply]
   split_ifs <;> simp
 
-/-- Standard form on `diagVN ι` associated to a strictly positive summable weight `w`. -/
-def diagStandardForm [DecidableEq ι] (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hsum : Summable w) :
-    StandardForm (diagVN ι) where
-  Ω := ⟨fun i => ((Real.sqrt (w i) : ℝ) : ℂ), by
+/-- The cyclic separating vector `(√(w i))_{i ∈ ι}` in `ℓ²(ι)` for a positive summable weight `w`. -/
+def diagOmega (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hsum : Summable w) : lp (fun _ : ι => ℂ) 2 :=
+  ⟨fun i => ((Real.sqrt (w i) : ℝ) : ℂ), by
     refine memℓp_gen ?_
     have h2 : ENNReal.toReal 2 = (2 : ℝ) := by norm_num
     refine hsum.congr fun i => ?_
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
       h2, Real.rpow_two, Real.sq_sqrt (hw i).le]⟩
+
+@[simp] theorem diagOmega_apply (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hsum : Summable w) (i : ι) :
+    diagOmega w hw hsum i = ((Real.sqrt (w i) : ℝ) : ℂ) := rfl
+
+/-- Standard form on `diagVN ι` associated to a strictly positive summable weight `w`. -/
+def diagStandardForm [DecidableEq ι] (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hsum : Summable w) :
+    StandardForm (diagVN ι) where
+  Ω := diagOmega w hw hsum
   separating := fun A hA hA0 => by
     have hdiag0 : ∀ i : ι, A (lp.single 2 i 1) i = 0 := by
       intro i
-      have hi : A ⟨fun j => ((Real.sqrt (w j) : ℝ) : ℂ), _⟩ i = 0 := by
+      have hi : A (diagOmega w hw hsum) i = 0 := by
         rw [hA0]; rfl
-      rw [diagVN_apply_eq hA] at hi
+      rw [diagVN_apply_eq hA, diagOmega_apply] at hi
       have hne : (((Real.sqrt (w i) : ℝ) : ℂ)) ≠ 0 :=
         Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (hw i)).ne'
       exact (mul_eq_zero.mp hi).resolve_right hne
-    refine ContinuousLinearMap.ext fun f => lp.ext fun i => ?_
+    refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun i => ?_
     rw [diagVN_apply_eq hA, hdiag0 i, zero_mul]
     rfl
   cyclic := fun f => by
-    let Ωv : lp (fun _ : ι => ℂ) 2 := ⟨fun i => ((Real.sqrt (w i) : ℝ) : ℂ), by
-      refine memℓp_gen ?_
-      have h2 : ENNReal.toReal 2 = (2 : ℝ) := by norm_num
-      refine hsum.congr fun i => ?_
-      rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _),
-        h2, Real.rpow_two, Real.sq_sqrt (hw i).le]⟩
+    let Ωv := diagOmega w hw hsum
     have hhas : HasSum (fun i : ι => lp.single 2 i (f i)) f :=
       lp.hasSum_single ENNReal.ofNat_ne_top f
     refine mem_closure_of_tendsto hhas ?_
@@ -1020,10 +1048,9 @@ def diagStandardForm [DecidableEq ι] (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hs
     · have hi := congr_arg (lpConjInvol ι).conjOp (h i)
       simpa [AntiunitaryInvol.conjOp_mul, lpConjInvol_conjOp_coordProj] using hi
   natural_cone_pos := fun A hA => by
-    rw [lp.inner_eq_tsum]
+    let Ωv := diagOmega w hw hsum
     have hterm : ∀ i : ι,
-        (inner ℂ (((Real.sqrt (w i) : ℝ) : ℂ))
-          (A ((lpConjInvol ι).conjOp A ⟨fun j => ((Real.sqrt (w j) : ℝ) : ℂ), _⟩) i)).re =
+        (inner ℂ (Ωv i) (A ((lpConjInvol ι).conjOp A Ωv) i)).re =
           w i * ‖A (lp.single 2 i 1) i‖ ^ 2 := by
       intro i
       have hJA_mem : (lpConjInvol ι).conjOp A ∈ diagVN ι := by
@@ -1039,8 +1066,8 @@ def diagStandardForm [DecidableEq ι] (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hs
           simp only [lpConjInvol_apply, lp.single_apply, Pi.single_apply]
           split_ifs <;> simp
         rw [hs]
-      rw [diagVN_apply_eq hA, diagVN_apply_eq hJA_mem, hJA_diag, RCLike.inner_apply,
-        Complex.conj_ofReal]
+      rw [diagVN_apply_eq hA, diagVN_apply_eq hJA_mem, hJA_diag, RCLike.inner_apply]
+      simp only [Ωv, diagOmega_apply, Complex.conj_ofReal]
       set z := A (lp.single 2 i 1) i
       have hz : z * starRingEnd ℂ z = ((‖z‖ ^ 2 : ℝ) : ℂ) := by
         rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
@@ -1052,12 +1079,14 @@ def diagStandardForm [DecidableEq ι] (w : ι → ℝ) (hw : ∀ i, 0 < w i) (hs
               rw [hz, ← Complex.ofReal_pow, Real.sq_sqrt (hw i).le]
           _ = ((w i * ‖z‖ ^ 2 : ℝ) : ℂ) := by push_cast; ring
       rw [hcalc, Complex.ofReal_re]
-    have hsum_inner := lp.summable_inner (𝕜 := ℂ)
-      (⟨fun j => ((Real.sqrt (w j) : ℝ) : ℂ), _⟩ : lp (fun _ : ι => ℂ) 2)
-      (A ((lpConjInvol ι).conjOp A ⟨fun j => ((Real.sqrt (w j) : ℝ) : ℂ), _⟩))
-    rw [← Complex.reCLM.map_tsum hsum_inner]
+    have hsum_inner := lp.summable_inner (𝕜 := ℂ) Ωv (A ((lpConjInvol ι).conjOp A Ωv))
+    have hre_eq : (inner ℂ Ωv (A ((lpConjInvol ι).conjOp A Ωv))).re =
+        ∑' i : ι, (inner ℂ (Ωv i) (A ((lpConjInvol ι).conjOp A Ωv) i)).re := by
+      rw [lp.inner_eq_tsum]
+      exact Complex.reCLM.map_tsum hsum_inner
+    change 0 ≤ (inner ℂ Ωv (A ((lpConjInvol ι).conjOp A Ωv))).re
+    rw [hre_eq]
     exact tsum_nonneg fun i => by
-      change 0 ≤ (inner ℂ _ _).re
       rw [hterm i]
       exact mul_nonneg (hw i).le (sq_nonneg _)
 
@@ -1119,12 +1148,12 @@ theorem riemannHypothesis_iff_exists_standardForm_bornRule :
       lpDiagonalCLM (fun i : ι => archChar (-γ i.1) ((r : ℚˣ) : ℚ)) zero_le_one
         (fun i => (norm_archChar _ _).le)
     have hU1 : U 1 = 1 := by
-      refine ContinuousLinearMap.ext fun f => lp.ext fun i => ?_
-      simp only [U, lpDiagonalCLM_apply, Subgroup.coe_one, Units.val_one, archChar_one, one_mul]
-      rfl
+      refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun i => ?_
+      change archChar (-γ i.1) ((((1 : posUnits) : ℚˣ) : ℚ)) * f i = f i
+      rw [Subgroup.coe_one, Units.val_one, archChar_one, one_mul]
     have hUmul : ∀ r s : posUnits, U (r * s) = U r * U s := by
       intro r s
-      refine ContinuousLinearMap.ext fun f => lp.ext fun i => ?_
+      refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun i => ?_
       change archChar (-γ i.1) ((((r * s : posUnits) : ℚˣ) : ℚ)) * f i =
         archChar (-γ i.1) ((r : ℚˣ) : ℚ) * (archChar (-γ i.1) ((s : ℚˣ) : ℚ) * f i)
       rw [Subgroup.coe_mul, Units.val_mul, archChar_mul (-γ i.1) r.2 s.2, mul_assoc]
@@ -1132,7 +1161,7 @@ theorem riemannHypothesis_iff_exists_standardForm_bornRule :
       lpDiagonalCLM_mem_diagVN _ zero_le_one _
     have hUJ : ∀ r : posUnits, ms.J.conjOp (U r) = U r⁻¹ := by
       intro r
-      refine ContinuousLinearMap.ext fun f => lp.ext fun i => ?_
+      refine ContinuousLinearMap.ext fun f => lp.ext <| funext fun i => ?_
       change starRingEnd ℂ (archChar (-γ i.1) ((r : ℚˣ) : ℚ) * starRingEnd ℂ (f i)) =
         archChar (-γ i.1) (((r⁻¹ : posUnits) : ℚˣ) : ℚ) * f i
       rw [map_mul, Complex.conj_conj, Subgroup.coe_inv, Units.val_inv_eq_inv_val,
@@ -1155,23 +1184,25 @@ theorem riemannHypothesis_iff_exists_standardForm_bornRule :
           _ = (c i.1 : ℂ) * archChar (-γ i.1) ((u : ℚˣ) : ℚ) := by
               rw [Real.sq_sqrt i.2.le]
       simp_rw [hterm]
-      have hsub :
-          (∑' i : spos, (c i.1 : ℂ) * archChar (-γ i.1) ((u : ℚˣ) : ℚ)) =
-          ∑' n : ℕ, (c n : ℂ) * archChar (-γ n) ((u : ℚˣ) : ℚ) := by
-        refine tsum_subtype_eq_of_support_subset ?_
+      let g : ℕ → ℂ := fun n => (c n : ℂ) * archChar (-γ n) ((u : ℚˣ) : ℚ)
+      have hsub : (∑' i : spos, g i.1) = ∑' n : ℕ, g n := by
+        refine @tsum_subtype_eq_of_support_subset ℂ ℕ _ _ g spos ?_
         intro n hn
         have hcn : c n ≠ 0 := by
           intro h0
-          exact hn (by simp [h0])
+          exact hn (by simp [g, h0])
         exact lt_of_le_of_ne (hc0 n) hcn.symm
-      rw [hsub, hreindex (fun r => archChar (-r) ((u : ℚˣ) : ℚ)), ratCorr_eq_tsum hW u]
+      change (∑' i : spos, g i.1) = ratCorr u
+      rw [hsub]
+      change (∑' n : ℕ, (c n : ℂ) * archChar (-γ n) ((u : ℚˣ) : ℚ)) = ratCorr u
+      rw [hreindex (fun r => archChar (-r) ((u : ℚˣ) : ℚ)), ratCorr_eq_tsum hW u]
     refine ⟨H, inferInstance, inferInstance, inferInstance, M, ms, U, hU1, hUmul, hUM, hUJ,
       fun N a => ?_⟩
     intro X
     have hXJ : ms.J.conjOp X = ∑ i : Fin N, (a i : ℂ) • U (natPosUnit i)⁻¹ := by
       simp only [X, AntiunitaryInvol.conjOp_sum, AntiunitaryInvol.conjOp_smul, hUJ]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [Complex.conj_intCast]
+      rw [map_intCast]
     have hexp :
         inner ℂ ms.Ω (X (ms.J.conjOp X ms.Ω)) =
           ∑ i : Fin N, ∑ j : Fin N,
@@ -1179,7 +1210,6 @@ theorem riemannHypothesis_iff_exists_standardForm_bornRule :
       rw [hXJ]
       simp only [X, _root_.sum_apply, _root_.smul_apply,
         map_sum, map_smul, inner_sum, inner_smul_right, Finset.mul_sum]
-      rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
       have hUij : U (natPosUnit j) (U (natPosUnit i)⁻¹ ms.Ω) =
           U ((natPosUnit i)⁻¹ * natPosUnit j) ms.Ω := by

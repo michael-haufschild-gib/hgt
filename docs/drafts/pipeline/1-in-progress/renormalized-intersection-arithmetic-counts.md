@@ -35,6 +35,8 @@ is whether the standard completed complex remains contractible above that thresh
 Two active refinements are the [logarithmic compensation boundary](riac-logarithmic-star-compensation.md)
 and [vertical unitary graph equivalence](riac-unitary-prime-chain-gauge.md).
 Their candidate thresholds and exact arithmetic comparisons are not yet Lean-accepted.
+The [full logarithmic torsion candidate](riac-logarithmic-torsion-completion.md)
+asks for the sharp extension from prime stars to every conductor interaction.
 
 ## Necessary distinctions
 

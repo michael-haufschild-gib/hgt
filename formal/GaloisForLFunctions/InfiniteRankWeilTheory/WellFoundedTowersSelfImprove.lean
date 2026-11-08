@@ -167,10 +167,10 @@ theorem _root_.GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.unitar
     by_contra hgt
     push Not at hgt
     have h0 := mergedWeight_eq_zero_of_thick_bound D.toWeilTower.z (fun _ => (1 : ℂ))
-      (by simp) zero_le_one (wellFoundedAbove_of_finite _ _) hG hlev hgt univ
+      Summable.of_finite zero_le_one (wellFoundedAbove_of_finite _ _) hG hlev hgt univ
       (fun _ _ => mem_univ _)
     have hpos : (0 : ℝ) < ((univ.filter fun l => D.β l = D.β j).card : ℝ) := by
-      exact_mod_cast card_pos.2 ⟨j, mem_filter.2 ⟨mem_univ _, rfl⟩⟩
+      exact_mod_cast card_pos.2 ⟨j, by simp⟩
     simp only [sum_const, nsmul_eq_mul, mul_one] at h0
     change ((univ.filter fun l => D.β l = D.β j).card : ℂ) = 0 at h0
     exact hpos.ne' (by exact_mod_cast h0)

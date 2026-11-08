@@ -121,6 +121,12 @@ already completes the root squares at diagonal `Λ(k)` with a cutoff-dependent
 Mertens payment. The present branch asks for arbitrary prime diagonals and
 a finite payment uniform over every finite prime set.
 
+The existing [prime-face graph gauge](../RHTower/PrimeFaceBoundaryGauge.lean)
+trivializes the row-summability graph family in the product topology for all
+complex parameters. That topology does not preserve a prescribed Hilbert norm.
+The weighted exterior programme must establish its own norm and domain
+comparisons; algebraic or product-topology conjugacy alone does not supply them.
+
 ## Calibration and success criteria
 
 Recover Hasse–Weil from heights or counts for elliptic and hyperelliptic
@@ -141,6 +147,10 @@ identifies the full count target with RH. The
 provides an arithmetic observable, without a prime-core cell action.
 The [completed-boundary theorem](../../../docs/drafts/pipeline/3-formalized/riac-completed-prime-boundary.md)
 settles the exact augmentation domain before introducing higher homology.
+
+The [logarithmic full-form candidate](../../../docs/drafts/pipeline/1-in-progress/riac-logarithmic-torsion-completion.md)
+asks whether the sharp prime-star exponent extends to boundedness and positive
+diagonal completion on every conductor. Its Schur estimate is unverified.
 
 The five constructions remain open. No critical positive form, arithmetic
 surface, square-root Mertens bound or RH proof is asserted.

@@ -3,108 +3,72 @@
 - **ID:** hhac-weighted-torsion-spectrum
 - **Stage:** 1-in-progress
 - **Type:** SPECTRAL CLASSIFICATION
-- **Status:** Compact self-adjoint representation and finite-rank sign obstruction formalized; Hilbert–Schmidt classification open
+- **Status:** Compactness and finite-rank sign obstruction formalized; complete Hilbert–Schmidt draft checked, production audit pending
 
-## Target
+## Exact classification
 
-For every `δ>0`, the actual torsion-limit form on `Hδ` should represent a
-compact self-adjoint operator with infinitely many positive and negative
-directions. Its Hilbert–Schmidt threshold should be exactly `δ>1/2`.
+For every `δ>0`, the actual torsion-limit form on `Hδ=ℓ²(n^δ)` represents a
+compact self-adjoint operator. Both positive and negative definite subspaces
+have arbitrarily large finite dimension. Every finite family of linear
+constraints leaves both signs; every bilinear correction through a
+finite-dimensional space leaves the form indefinite.
 
-This would distinguish infinite arithmetic rank from positivity and show
-whether finitely many correction directions could repair the torsion limit.
-It depends on the actual operator construction in
-[weighted torsion completion](../3-formalized/hhac-weighted-torsion-form-completion.md).
+The Hilbert–Schmidt threshold is exactly `δ>1/2`. Above it the squared norm is
 
-## Mathematical mechanisms
+`2(Σ_(m≥1) m^(−2δ))(Σ_(t≥1) Λ(t)²/t^(1+δ)) + Σ_(n≥1) d(n)²/n^(2δ)`.
 
-The limit is bounded for every positive conductor weight. For `0<β<δ`,
-the coefficient-preserving inclusion `J:Hδ→Hβ` multiplies normalized conductor
-coordinates by `n^((β−δ)/2)`. Its finite-coordinate truncations have finite rank,
-and their operator-norm error is bounded by `(N+1)^((β−δ)/2)→0`.
-Thus `J` is compact. The original absolutely convergent series gives
-`Lδ(u,v)=Lβ(Ju,Jv)`, so the limit map into the continuous dual is compact.
-Riesz representation then gives the self-adjoint Hilbert operator. This factorization and the compact self-adjoint representation are formalized
-for the actual coefficient maps.
+Here `d(n)` is the original tame different and `Λ(1)=0`. These statements
+concern the actual torsion kernel, not its gcd majorant or a model matrix.
 
-For distinct sufficiently large odd primes `q`, restrict to the arithmetic
-coefficients supported on `{q,2q}`. Verify the exact matrix
+## Proof
 
-`[[d(q), −log(2)/√2], [−log(2)/√2, d(q)+log(2)]]`,
+For `0<β<δ`, coefficient-preserving inclusion `J:Hδ→Hβ` multiplies normalized
+coordinates by `n^((β−δ)/2)`. Its finite-rank truncations converge in norm.
+The original absolutely convergent pair series gives
+`Lδ(u,v)=Lβ(Ju,Jv)`. Compactness follows, and symmetry gives self-adjointness.
 
-where `d(q)=log(q)/(q−1)`. Different prime pairs have zero mixed entries.
-The vector `(1,1)` then has value
-`2d(q)−(√2−1)log(2)`, negative for all sufficiently large `q`, since `d(q)→0`.
-The second coordinate has positive value. Finite linear combinations of
-distinct negative pair vectors give negative definite subspaces of arbitrarily
-large dimension. Any map to a fixed finite-dimensional correction space has
-a nonzero kernel on a sufficiently large such subspace. These are compressions; invariance
-of their span under the full operator is not asserted.
+On `{q,2q}` for odd prime `q`, the arithmetic matrix is
+`[[d(q),−log(2)/√2],[−log(2)/√2,d(q)+log(2)]]`.
+Different prime pairs have zero mixed entries. Equal coordinates have energy
+`2d(q)−(√2−1)log(2)`, negative eventually; the second coordinate has positive
+energy. Orthogonal synthesis gives definite subspaces of every finite dimension.
+A map into a fixed finite-dimensional correction space has nonzero kernel on
+a sufficiently large such subspace. These are compressions; invariance under
+the full operator is not required.
 
-In normalized Hilbert coordinates the prime entries are
-`−P(m,n)/(mn)^(δ/2)`. Divisibility suggests the exact square-sum decomposition
+The normalized matrix is `L(m,n)/(mn)^(δ/2)`. Its divisor half is supported
+on `(m,mt)`, with square `m^(−2δ)Λ(t)²t^(−1−δ)`. The two strict divisor
+halves and the diagonal are disjoint. Nonnegative product summation gives
+the displayed exact square mass; logarithmic envelopes prove convergence
+for `δ>1/2`. Parseval identifies it with the actual Hilbert–Schmidt norm.
+For necessity, `d(2k)≥log 2` makes the even diagonal dominate the divergent
+power series whenever `δ≤1/2`.
 
-`Σ_{m≠n} P(m,n)²/(mn)^δ`
-`=2(Σ_m m^(−2δ))(Σ_{t≥2} Λ(t)²/t^(1+δ))`.
+## Lean declarations
 
-The diagonal contributes `Σ_n d(n)²/n^(2δ)`. Even conductors satisfy `d(2k)≥log 2`, so their diagonal squares alone
-should force divergence at `δ≤1/2`. The logarithmic envelopes should give
-convergence above that boundary. Reindexing, summability and the operator interpretation
-all require proofs.
+- `weightedProbeInclusion_compact`, `spacingLimitOperator_factor`,
+  `spacingLimitHilbertOperator_selfAdjoint`, `spacingLimitHilbertOperator_compact`.
+- `SpacingDefiniteFamilies` and `SpacingFiniteConstraints`: actual definite
+  synthesis, arbitrary finite constraints and finite-rank correction obstruction.
+- `TorsionHilbertSchmidtBoundary`: `spacingNormalizedMatrix_square_tsum`,
+  `spacingLimitHilbertOperator_hilbertSchmidt_iff`,
+  `spacingLimitHilbertOperator_hsNormSq`.
 
-## Established input and distinction
+The complete Hilbert–Schmidt draft passes eighteen transitive axiom audits
+with only `propext`, `Classical.choice` and `Quot.sound`. Its direct production
+check is pending. Earlier compactness and finite-rank sign modules are accepted.
 
-`weightedProbeInclusion_coefficients` and `weightedProbeInclusion_compact`
-formalize the coefficient-preserving compact inclusion for every `β<δ`.
-`spacingLimitOperator_factor` proves the actual form factorization.
-`spacingLimitHilbertOperator_inner`, `_selfAdjoint` and `_compact` identify
-the original pair series with a compact self-adjoint Hilbert operator for
-every positive weight. The Hilbert–Schmidt classification remains open.
+## Positive survivor and prior work
 
-`spacingLimitKernel_primePair` and `spacingLimitKernel_primePairs_orthogonal`
-prove the exact arithmetic blocks and vanishing mixed entries.
-`spacingLimitKernel_primePair_sum`, `eventually_spacingPrimePair_energy_neg`
-and `spacingLimitKernel_prime_self_pos` prove their negative pair energies
-and positive prime diagonals. `spacingPrimePairProbe_energy`, `_orthogonal` and the corresponding positive
-prime-probe lemmas realize these matrices in the actual Hilbert carrier.
-`SpacingDefiniteFamilies` now proves arbitrarily large orthogonal families of
-both signs and their exact diagonal synthesis identity. `SpacingFiniteConstraints`
-constructs injective definite subspaces of every finite dimension. Every finite
-family of linear constraints leaves a nonzero vector of each sign. Consequently
-any bilinear correction with finite-dimensional range leaves the form indefinite;
-the corresponding statement holds for finite-rank Hilbert operators.
-
-The existing `ArithmeticIntersectionTheory.spacingLimit_not_nonneg` already
-refutes positivity on `{1,2}`. The stronger target here concerns arbitrarily
-large positive and negative subspaces on the completed carrier, including
-negative vectors annihilating any fixed finite family of linear constraints.
-Its positive content includes exact prime-pair compressions, compactness and
-the sharp Hilbert–Schmidt boundary.
-
-## Positive survivor required for any sign obstruction
-
-If finite-rank sign repair fails, retain the exact arithmetic compressions,
-compactness and sharp Hilbert–Schmidt classification, with their Lean status.
-A renamed assertion of infinite negative index is not sufficient salvage.
-No conclusion about the full Weil form or its archimedean payment follows
-from the torsion limit alone.
-
-## Existing spectral background
+The survivor comprises exact prime-pair compressions, compactness, both
+infinite sign indices and the sharp summability boundary with exact norm.
+No conclusion about the full Weil form or its archimedean payment follows.
 
 [Hilberdink–Pushnitski](https://arxiv.org/abs/2110.14323) prove compactness and
-power eigenvalue asymptotics for the LCM matrices
-`E(σ,τ)_(m,n)=(mn)^σ/lcm(m,n)^τ` in their stated parameter range.
-Substitution `τ=1`, `σ=(1−δ)/2` identifies the positively weighted normalized
-gcd majorant with this family, with exponent `τ−2σ=δ`. This algebraic
-identification locates the compactness mechanism in established arithmetic
-operator theory. The further novelty audit concerns the actual torsion
-kernel, its prime-pair compressions and regulated comparison; no priority
-claim follows from the preliminary search.
-
-The related [indefinite LCM-matrix family](https://arxiv.org/abs/2401.06892)
-of Hilberdink–Pushnitski also has compactness and infinitely many eigenvalues
-of each sign in its parameter range. Neither that theorem nor the earlier
-positive LCM family identifies this variable-diagonal torsion kernel.
-Existing corpus constant-counterterm index theorems likewise use a different
-diagonal. No novelty priority is claimed for compactness or orthogonal
-negative-vector arguments themselves.
+power eigenvalue asymptotics for LCM matrices `E(σ,τ)_(m,n)=(mn)^σ/lcm(m,n)^τ`.
+The substitution `τ=1`, `σ=(1−δ)/2` identifies the positive normalized gcd
+majorant with that family. Their [indefinite LCM family](https://arxiv.org/abs/2401.06892)
+also has infinitely many eigenvalues of each sign in its stated range.
+Neither identifies this variable-diagonal torsion kernel. Existing corpus
+constant-counterterm index laws also use a different diagonal. No priority
+claim is made for compactness or orthogonal negative-vector arguments.
