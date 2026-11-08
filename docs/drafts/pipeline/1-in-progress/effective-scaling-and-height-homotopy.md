@@ -41,6 +41,10 @@ does not fulfill these requirements.
   actual symmetric forms on an infinite-rank Hilbert carrier, absolute pair
   series, raw positivity, exact scalar counterterm and operator-norm convergence
   with a power rate for every positive conductor weight.
+- [Weighted torsion spectrum](hhac-weighted-torsion-spectrum.md): coefficient-preserving
+  compact inclusions factor the actual limit form; its Riesz representative is
+  compact and self-adjoint for every positive conductor weight. Infinite sign
+  directions and the sharp Hilbert–Schmidt threshold remain under development.
 - [Mixed spacing prime row](../5-failed/hhac-mixed-spacing-prime-row.md):
   no uniform unweighted ℓ² bound; square summability holds exactly for positive
   conductor weights, and the weighted squared error tends to zero.
@@ -85,8 +89,12 @@ does not fulfill these requirements.
   naturally isomorphic to the two-prime differential; the comparison preserves
   height and canonical integral coefficient extension. Actual core/tag block
   coordinates have row `(2,3)` and column `(-3,2)`, naturally in height.
-  [Arbitrary-coefficient homology](esg-all-coefficient-weighted-homology.md)
-  remains in progress.
+- [Arbitrary-coefficient homology](../3-formalized/esg-all-coefficient-weighted-homology.md):
+  actual augmented homology splits by squarefree cores coprime to six. Its lower
+  branch is `R[m,2m)→R/2R[2m,3m)` and upper branch is
+  `Ann_R(2)[2m,3m)→R[3m,6m)`, with reduction and inclusion at the crossings.
+  The comparison preserves actual height maps and canonical integer extension;
+  binary coefficients give `[m,3m)` and `[2m,6m)` in consecutive degrees.
 
 The programme definitions are
 [EffectiveScalingGeometry/README.md](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md)

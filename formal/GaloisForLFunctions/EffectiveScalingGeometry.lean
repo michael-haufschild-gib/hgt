@@ -88,4 +88,10 @@ import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBlockTransition
 
 import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBinaryPersistence
 
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedIntegralCoefficients
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeIntegralPersistence
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeArithmeticCores
+
 /-! Arithmetic height filtrations, sections and effectivity on the scaling surface. -/

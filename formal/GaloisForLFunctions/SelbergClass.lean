@@ -156,3 +156,6 @@ import GaloisForLFunctions.SelbergClass.Primon.KestenDirichletVacuum
 import GaloisForLFunctions.SelbergClass.Primon.KestenDirichletGrowth
 import GaloisForLFunctions.SelbergClass.Primon.KestenGaussianNoise
 import GaloisForLFunctions.SelbergClass.Primon.KestenGaussianProcess
+import GaloisForLFunctions.SelbergClass.Primon.KestenGaussianResidual
+import GaloisForLFunctions.SelbergClass.Primon.KestenDirichletSchur
+import GaloisForLFunctions.SelbergClass.Primon.KestenGaussianBridge

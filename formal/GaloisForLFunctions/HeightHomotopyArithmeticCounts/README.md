@@ -297,6 +297,20 @@ regularized torsion self-energy at finite radius, an approximate parallelogram
 for a log-count, an action with controlled signed fixed-point contributions,
 a cusp realization of the nerve, and its polarized quadratic refinement.
 
+### Compactness of the actual torsion limit
+
+For `0<β<δ`, the coefficient-preserving inclusion `Hδ→Hβ` multiplies normalized
+conductor coordinates by `n^((β−δ)/2)` and is compact. The original pair series
+factors through this inclusion in both variables. Consequently its Riesz
+representative is a compact self-adjoint operator on every `Hδ`, `δ>0`.
+[WeightedTorsionCompactness.lean](WeightedTorsionCompactness.lean) retains the
+actual arithmetic series in this representation. The normalized basis has
+coefficient `n^(−δ/2)` at conductor `n`; rescaled conductor atoms recover exact
+original kernel entries by [WeightedProbeAtoms.lean](WeightedProbeAtoms.lean).
+Compactness supplies no sign;
+infinite positive and negative directions and the Hilbert–Schmidt boundary
+are separate spectral questions.
+
 ## Questions and open research topics
 
 1. What group carries the probes, or what replaces a group?

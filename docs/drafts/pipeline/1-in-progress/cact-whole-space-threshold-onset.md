@@ -41,3 +41,10 @@ Answer §3: the whole-space critical threshold grows exponentially in the onset 
 ## Log
 - 2026-11-07 — card created; sharp pole self-energy below the onset formalized.
 - 2026-11-07 — B1–B3 formalized; Part A gap isolated (uniform pole-pairing bound).
+
+## Collar cancellation target
+For each fixed `m ≥ 2` on a positive critical curve, conjecture
+`(log N / c_N²) D₇(N / linearDefectCutoff c_N, N; r_m) → 0`.
+Split at `⌊δN⌋`: the lower piece is `O_m(δ)` after normalization; the upper piece
+is bounded by the known vanishing top-window norm. Finite-conductor reduction should then give
+`(c_N⁷ / log N) Σ_{2≤m≤Q₁} D₇(r_m)/E_m(c_N) → 0`.

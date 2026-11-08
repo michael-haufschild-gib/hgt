@@ -92,9 +92,9 @@ Uniform complex-clock contours, their actual-source identification and
 the resulting quantifier order remain unformalized. The real-frequency
 bound alone does not establish the required disk supremum.
 
-The [universal-constant refinement](ads3-narain-universal-saving-constant.md)
-would further fix `c=1/128` independently of target heights, by removing
-the asymptotically inactive fixed ceiling in the contour width.
+The [universal-constant refinement](../3-formalized/ads3-narain-universal-saving-constant.md)
+proves the scalar exponent `c=1/128` independently of target heights.
+The same absorption applies to the proposed complex-disk bound.
 
 ## Two-sided refinement
 

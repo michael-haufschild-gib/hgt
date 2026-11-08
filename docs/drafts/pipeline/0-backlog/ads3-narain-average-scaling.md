@@ -93,21 +93,13 @@ coefficient vanishes there. This refinement needs the exact completed-zeta
 expansion and removability proofs; arithmetic-divisor cancellation alone
 does not establish the endpoint residues or global entire extension.
 
-## Uniform quantitative consequence
+## Quantitative boundary
 
-The proposed source identity would also make the VK saving exponent
-independent of target heights. Apply the proved unit-height bound at
-`Py`, where `P=YZ`, so its clock is `L−log P`. For sufficiently large
-`L`, this clock lies between `L/2` and `2L`. Width monotonicity and the
-proved doubling estimate retain a fixed fraction of `Lw(L)`, independent
-of `P`. The amplitude `√P` changes only the prefactor. The explicit
-`(P−1)y` and theta errors decay faster than that bound. Thus one universal
-`c>0` should work for every target pair, with target-dependent prefactors
-and thresholds. This deduction still requires the exact source scaling
-and shifted-profile comparison in Lean. A separate
-[direct contour candidate](../1-in-progress/ads3-narain-universal-saving-constant.md)
-removes the target-dependent width factor asymptotically and could prove
-the stronger explicit exponent `Lw(L)/128` without source scaling.
+A target-independent saving exponent is already
+[formalized directly from the contour](../3-formalized/ads3-narain-universal-saving-constant.md):
+`|R_YZ(y)|≤C√y exp(−Lw(L)/128)` with target-dependent prefactors and
+thresholds. The proposed scaling identity would additionally identify the
+complete arithmetic profile and its principal coefficients.
 
 ## Gates
 

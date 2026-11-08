@@ -22,7 +22,7 @@ def kestenGaussianBridge (p : Nat.Primes) (n : ℕ) (ω : ℕ → ℝ) :
 /-- The finite residual vector has an actual joint Gaussian law. -/
 theorem hasGaussianLaw_kestenGaussianBridge (p : Nat.Primes) (n : ℕ) :
     HasGaussianLaw (kestenGaussianBridge p n) (kestenGaussianNoiseMeasure p) := by
-  let L : ((Finset.univ : Finset (Fin (n + 1))) → ℝ) →L[ℝ] (Fin (n + 1) → ℝ) :=
+  let L : (↥(Finset.univ : Finset (Fin (n + 1))) → ℝ) →L[ℝ] (Fin (n + 1) → ℝ) :=
     { toFun x i := x ⟨i, Finset.mem_univ i⟩
       map_add' _ _ := rfl
       map_smul' _ _ := rfl }
@@ -60,7 +60,8 @@ theorem hasLaw_kestenGaussianBridge (p : Nat.Primes) (n : ℕ) :
     apply IsGaussian.ext
     · simp only [id_eq, integral_id_multivariateGaussian]
       rw [integral_map (hasGaussianLaw_kestenGaussianBridge p n).aemeasurable
-        (by fun_prop)]
+        (show AEStronglyMeasurable (fun x : EuclideanSpace ℝ (Fin (n + 1)) => x)
+          ((kestenGaussianNoiseMeasure p).map (kestenGaussianBridge p n)) by fun_prop)]
       ext i
       change EuclideanSpace.proj i
         (∫ ω, kestenGaussianBridge p n ω ∂kestenGaussianNoiseMeasure p) = 0
@@ -71,24 +72,22 @@ theorem hasLaw_kestenGaussianBridge (p : Nat.Primes) (n : ℕ) :
     refine LinearMap.BilinForm.ext_basis
       (EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis fun i j => ?_
     rw [ContinuousLinearMap.toBilinForm_apply, ContinuousLinearMap.toBilinForm_apply,
-      covarianceBilin_apply_eq_cov IsGaussian.memLp_two_id,
-      covarianceBilin_apply_eq_cov IsGaussian.memLp_two_id,
-      covariance_map (by fun_prop) (by fun_prop)
-        (hasGaussianLaw_kestenGaussianBridge p n).aemeasurable]
-    have hproj (i : Fin (n + 1)) :
-        (fun x : EuclideanSpace ℝ (Fin (n + 1)) =>
-          inner ℝ ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis i) x) = fun x => x i := by
-      ext x
-      simp [PiLp.inner_apply]
-    simp_rw [hproj]
-    exact (covariance_kestenGaussianBridge p n i j).trans
-      (covariance_eval_multivariateGaussian (posDef_kestenDirichletGreen p n).posSemidef i j).symm
+      covarianceBilin_apply_eq_cov
+        (μ := (kestenGaussianNoiseMeasure p).map (kestenGaussianBridge p n)) IsGaussian.memLp_two_id,
+      covarianceBilin_apply_eq_cov
+        (μ := multivariateGaussian 0 (kestenDirichletGreen p n)) IsGaussian.memLp_two_id,
+      covariance_map]
+    · have hproj (i : Fin (n + 1)) :
+          (fun x : EuclideanSpace ℝ (Fin (n + 1)) =>
+            inner ℝ ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ).toBasis i) x) = fun x => x i := by
+        ext x
+        simp [PiLp.inner_apply]
+      simp_rw [hproj]
+      exact (covariance_kestenGaussianBridge p n i j).trans
+        (covariance_eval_multivariateGaussian (posDef_kestenDirichletGreen p n).posSemidef i j).symm
+    · fun_prop
+    · fun_prop
+    · exact (hasGaussianLaw_kestenGaussianBridge p n).aemeasurable
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasGaussianLaw_kestenGaussianBridge
-#print axioms GaloisForLFunctions.SelbergClass.Primon.integral_kestenGaussianBridge_coord
-#print axioms GaloisForLFunctions.SelbergClass.Primon.covariance_kestenGaussianBridge
-#print axioms GaloisForLFunctions.SelbergClass.Primon.indepFun_kestenGaussianBridge_terminal
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasLaw_kestenGaussianBridge

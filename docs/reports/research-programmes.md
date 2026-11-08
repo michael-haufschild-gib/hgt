@@ -90,3 +90,6 @@
 - formal/GaloisForLFunctions/MetaplecticMobiusDescent/README.md
 - formal/GaloisForLFunctions/TailArithmeticOfThePrimeOrbit/README.md
 - formal/GaloisForLFunctions/SumProductArithmeticOfTheLogarithm/README.md
+- formal/GaloisForLFunctions/CountingHolography/README.md
+- formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md
+- formal/GaloisForLFunctions/HeightHomotopyArithmeticCounts/README.md

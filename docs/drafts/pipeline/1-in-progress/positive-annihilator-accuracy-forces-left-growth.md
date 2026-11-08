@@ -10,5 +10,11 @@ The first inequality is the triangle inequality; the second is logarithmic conve
 
 The worklog's strict claim `H(β)>1` is false for general positive Dirichlet polynomials: `1+2^β 2^(-s)` vanishes at `β+iπ/log 2` and has `H(β)=1`. Equality and the exact exponent should be retained in the formal statement. This obstruction limits positive annihilator amplification; it does not prove AAL.
 
+The exact positive survivor is
+`H(β)−1=Σ a_n n^(−β)(1+cos(γ log n))`.
+Every summand is nonnegative; equality holds exactly when each supported nonconstant monomial has phase `−1`. The binomial above also attains the left-growth exponent exactly.
+
+At equality, `P′(β+iγ)=Σ a_n n^(−β) log n>0`; hence the zero is simple. The derivative identity and the strict mass consequence for multiple zeros remain to be formalized. No uniform multiplicity gap is asserted.
+
 - **Paper status:** elementary proof identified; literal polynomial bridge and equality example require audit.
 - **Lean status:** not formalized.

@@ -3,7 +3,7 @@
 - **ID:** hhac-weighted-torsion-spectrum
 - **Stage:** 1-in-progress
 - **Type:** SPECTRAL CLASSIFICATION
-- **Status:** Explicit proof mechanisms under formalization; no spectral theorem claimed
+- **Status:** Compact self-adjoint representation formalized; sign and Hilbert–Schmidt classification open
 
 ## Target
 
@@ -16,7 +16,7 @@ whether finitely many correction directions could repair the torsion limit.
 It depends on the actual operator construction in
 [weighted torsion completion](../3-formalized/hhac-weighted-torsion-form-completion.md).
 
-## Paper mechanisms requiring Lean verification
+## Mathematical mechanisms
 
 The limit is bounded for every positive conductor weight. For `0<β<δ`,
 the coefficient-preserving inclusion `J:Hδ→Hβ` multiplies normalized conductor
@@ -24,8 +24,8 @@ coordinates by `n^((β−δ)/2)`. Its finite-coordinate truncations have finite 
 and their operator-norm error is bounded by `(N+1)^((β−δ)/2)→0`.
 Thus `J` is compact. The original absolutely convergent series gives
 `Lδ(u,v)=Lβ(Ju,Jv)`, so the limit map into the continuous dual is compact.
-Riesz representation then gives the self-adjoint Hilbert operator. These are
-proof obligations for the actual coefficient maps, not new assumed properties.
+Riesz representation then gives the self-adjoint Hilbert operator. This factorization and the compact self-adjoint representation are formalized
+for the actual coefficient maps.
 
 For distinct sufficiently large odd primes `q`, restrict to the arithmetic
 coefficients supported on `{q,2q}`. Verify the exact matrix
@@ -51,6 +51,22 @@ The diagonal contributes `Σ_n d(n)²/n^(2δ)`. Ratio-two entries should force
 divergence at `δ≤1/2`; the logarithmic envelopes should give convergence
 above that boundary. Reindexing, summability and the operator interpretation
 all require proofs.
+
+## Established input and distinction
+
+`weightedProbeInclusion_coefficients` and `weightedProbeInclusion_compact`
+formalize the coefficient-preserving compact inclusion for every `β<δ`.
+`spacingLimitOperator_factor` proves the actual form factorization.
+`spacingLimitHilbertOperator_inner`, `_selfAdjoint` and `_compact` identify
+the original pair series with a compact self-adjoint Hilbert operator for
+every positive weight. Infinite sign directions and the Hilbert–Schmidt classification remain open.
+
+The existing `ArithmeticIntersectionTheory.spacingLimit_not_nonneg` already
+refutes positivity on `{1,2}`. The stronger target here concerns arbitrarily
+large positive and negative subspaces on the completed carrier, including
+negative vectors annihilating any fixed finite family of linear constraints.
+Its positive content includes exact prime-pair compressions, compactness and
+the sharp Hilbert–Schmidt boundary.
 
 ## Positive survivor required for any sign obstruction
 

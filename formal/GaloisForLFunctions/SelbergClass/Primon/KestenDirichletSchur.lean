@@ -35,7 +35,10 @@ theorem kestenDirichletCorrection_eq_terminal_variance (p : Nat.Primes) (n : ℕ
   rw [kestenDirichletCorrection]
   apply (eq_div_iff ht).mpr
   rw [kestenGreenEntry_variance_recursion]
-  field_simp [hq, hd] <;> ring
+  have hf : primeReciprocal p + primeReciprocal p ^ 2 * kestenGreenEntry p n n =
+      ((primeReciprocal p)⁻¹ + kestenGreenEntry p n n) * primeReciprocal p ^ 2 := by
+    field_simp [hq]
+  rw [hf, ← mul_assoc, inv_mul_cancel₀ hd, one_mul]
 
 /-- Removing the next terminal coordinate gives exactly the Dirichlet inverse. -/
 theorem kestenDirichletGreen_eq_terminal_schur (p : Nat.Primes) (n : ℕ)
@@ -50,7 +53,3 @@ theorem kestenDirichletGreen_eq_terminal_schur (p : Nat.Primes) (n : ℕ)
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenGreenEntry_terminal_step
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletCorrection_eq_terminal_variance
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_eq_terminal_schur

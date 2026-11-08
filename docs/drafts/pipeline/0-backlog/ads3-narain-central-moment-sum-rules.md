@@ -28,6 +28,16 @@ the actual Mellin boundary and all its tangential derivatives with source
 moments; it does not assert convergence on an open strip to the left of
 the boundary. The refinement remains unformalized.
 
+**Right-half-strip refinement.** For `0<Re u<1/2`, the same full-axis
+remainder should satisfy the absolutely convergent identity
+`∫₀∞ y^(u−3/2)(log y)^n R(y)dy=M^(n)(u)` for every `n`.
+At zero height, the proved square-root saving permits `Re u≥0`;
+at infinite height, `R(y)=(3/π)log y−B+o(1)` permits `Re u<1/2`.
+Cutoff Mellin regularization and the explicit large-height main-term
+integrals should identify the transform on this strip. The boundary-family
+formula is its continuous tangential limit, but does not by itself prove
+the open-strip identity. This refinement remains unformalized.
+
 Thus these moments have first nonzero index `1`, `3` or `5`, according
 as zero, one or two target heights equal `Y*=exp(2−4 Re ξ′(1))`.
 The zeroth moment always vanishes. The first is

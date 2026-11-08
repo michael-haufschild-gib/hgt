@@ -254,7 +254,17 @@ as inclusion `Ann_R(2)→R`; within each window, coefficients persist unchanged.
 specializes actual core homology over `𝔽₂` to `[m,3m)` and `[2m,6m)` in
 consecutive degrees. Internal maps retain their coefficient, including across
 the intermediate tag births; both branches vanish outside these intervals.
-Canonical integer coefficient compatibility remains a proof obligation.
+[PrimeWeightedIntegralCoefficients.lean](PrimeWeightedIntegralCoefficients.lean)
+constructs canonical integer extension on original cycles and homology,
+commuting with core projections and height inclusions.
+[PrimeTwoPrimeIntegralPersistence.lean](PrimeTwoPrimeIntegralPersistence.lean)
+identifies both extracted quotient coefficients with their canonical scalar
+images. Newly present annihilator classes over a target ring need not come
+from integral homology.
+[PrimeTwoPrimeArithmeticCores.lean](PrimeTwoPrimeArithmeticCores.lean) identifies
+all core supports with squarefree integers coprime to six, preserving product
+height and the number of prime factors. Together these comparisons classify
+actual prime-weighted homology persistence over every commutative ring.
 
 ## Mechanisms and tools
 

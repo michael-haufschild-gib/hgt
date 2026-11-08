@@ -16,11 +16,9 @@ such that, for all sufficiently small positive `y`,
 This implies every proposed logarithmic saving. It gives no fixed
 power above `1/2` and no RH-strength estimate.
 
-**Uniform-exponent candidate.** The saving constant `c` should be
-independent of `Y,Z`: the strip width comes entirely from the uniform
-reciprocal-zeta theorem, while target heights affect the numerator
-bounds. Constants `C` may depend on the targets. This stronger
-quantifier order is not yet formalized by the fixed-pair construction.
+The [uniform-exponent refinement](ads3-narain-universal-saving-constant.md)
+is also formalized: `c=1/(128·10^8)` works for every target-height pair,
+with target-dependent prefactors and thresholds.
 
 ## Proof
 
@@ -85,10 +83,6 @@ provides a fixed power above `1/2`.
 The [logarithmic-derivative extension](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
 applies the same contour to `u^k M(u)`. It remains a separate candidate;
 the scalar bound alone does not control derivatives of its error.
-
-A [universal-constant refinement](../1-in-progress/ads3-narain-universal-saving-constant.md)
-uses eventual inactivity of the fixed width ceiling to target the explicit
-exponent `Lw(L)/128` for every target pair. It remains unformalized.
 
 ## Gates
 

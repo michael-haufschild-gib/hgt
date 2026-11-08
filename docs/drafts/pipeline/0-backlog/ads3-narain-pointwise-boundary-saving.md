@@ -53,7 +53,11 @@ first the boundary line, then the finite Vinogradov–Korobov rectangle.
 
 Remaining obligations: full numerator strip bound, pointwise weighted
 residue, Mellin inversion, contour transport and all tail estimates.
-The averaged quantitative chain is itself not yet kernel-checked.
+The averaged quantitative chain is kernel-checked. The proved
+[universal absorption constant](../3-formalized/ads3-narain-universal-saving-constant.md)
+would also fix the displayed `c=1/(128·10^8)` independently of target
+moduli once the pointwise contour is established; it needs only a
+positive fixed width ceiling, whose asymptotic contribution disappears.
 This target gives no exponent above one half and no RH-strength bound.
 
 ## Gates
