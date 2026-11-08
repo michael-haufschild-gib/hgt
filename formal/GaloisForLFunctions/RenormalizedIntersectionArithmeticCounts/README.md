@@ -318,3 +318,22 @@ this proof, and repeated coordinates are retained.
 The [formalized construction](../../../docs/drafts/pipeline/3-formalized/riac-independent-frobenius-orbit-counts.md)
 supplies an independent finite-field count. Its comparison with the
 orientation cover and the integer local-index sum remains open.
+
+## Signed Frobenius orbits
+
+[FiniteFieldSignedOrbits.lean](FiniteFieldSignedOrbits.lean) assigns each
+actual tuple orbit the difference of its positive and negative transporter
+counts, divided by the group order. These orientation weights are proved
+to lie in `{-1,0,1}`. Non-fixed orbits and odd stabilizers give zero;
+otherwise the weight is the transporter character.
+
+For permutation orbits, repeated coordinates give zero and distinct
+coordinates retain Frobenius sign. Independent normal-basis counts prove
+that the total weight is exactly zero whenever there are at least two
+labels. This holds in every finite characteristic and uses no polynomial
+Möbius cancellation theorem.
+
+The [formalized signed count](../../../docs/drafts/pipeline/3-formalized/riac-finite-field-signed-orbits.md)
+is a finite-field orientation mechanism. Its polynomial factorization
+comparison and identification with integer relative-homology indices
+remain open; it supplies no bound on `1−M(N)`.

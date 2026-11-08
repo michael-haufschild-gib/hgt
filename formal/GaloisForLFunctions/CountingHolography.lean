@@ -17,6 +17,7 @@ import GaloisForLFunctions.CountingHolography.TheHorocycleRateIsTheSquareRootFar
 import GaloisForLFunctions.CountingHolography.ThermalizationFasterThanTheSquareRootIsAZeroFreeStrip
 import GaloisForLFunctions.CountingHolography.TheRateOfASharpShell
 import GaloisForLFunctions.CountingHolography.ModularConjugationIsNotThePartnerInvolution
+import GaloisForLFunctions.CountingHolography.HalfSidedModularInclusionsCannotCarryTheHeckeClock
 import GaloisForLFunctions.CountingHolography.ClosedHorocycleThermalizationAndSharpShells
 import GaloisForLFunctions.CountingHolography.TheCountFailsAtTheSecondPlaceOfAHeckeTriangleGroup
 
@@ -44,7 +45,10 @@ zero-free strip `Re ρ ≤ 1 − 2δ`. Smooth profiles have unconditional rate
 `y^{1/2} exp(-√(-log y))`; sharp shells have rate `y^{1/2}`. Every single sharp shell has the
 RH rate iff RH and square-root cancellation of the Möbius-twisted quarter-disc remainder hold.
 Internal modular conjugation forces source operators to be central with `J Z J = Z*`; a
-standard-form realization of the integer Born rule exists iff RH. See
-`CountingHolography/README.md`.
+standard-form realization of the integer Born rule exists iff RH. External vacuum-fixing partner
+unitaries produce multiplicatively Hankel natural-cone forms whose Hecke-dilation invariant locus is
+classified by `ℚ_{>0} / (ℚ_{>0})²`, while Borchers half-sided modular inclusions act trivially on
+every graph black hole and cannot realize the integer probe form in either natural-cone or GNS
+Tate limit. See `CountingHolography/README.md`.
 -/
 import GaloisForLFunctions.CountingHolography.TheCountDoorOfACurveAndOfZ

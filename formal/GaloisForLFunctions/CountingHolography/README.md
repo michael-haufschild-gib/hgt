@@ -243,6 +243,26 @@ limit, exists exactly when RH holds (`riemannHypothesis_iff_exists_standardForm_
 `riemannHypothesis_iff_exists_standardForm_tateLimit`). See
 [ModularConjugationIsNotThePartnerInvolution.lean](ModularConjugationIsNotThePartnerInvolution.lean).
 
+**Can a half-sided modular inclusion carry the Hecke clock?** No. A bounded positive self-adjoint
+generator whose unitary group commutes with `J` vanishes (`posGen_eq_zero_of_comm_antiunitaryInvol`),
+while external vacuum-fixing shifts inverted by `J` (`U(s) Ω = Ω`, `J U(s) J = U(s)*`) make every
+cross-horizon natural-cone correlation multiplicatively Hankel (`StandardForm.naturalCone_partner_hankel`).
+Kernels on `ℕ+ × ℕ+` that are simultaneously multiplicatively Hankel and Hecke-dilation invariant
+factor through `sqFreeCore (m * n)` (`isMulHankel_and_heckeInv_iff_sqClass`,
+`mulHankel_heckeInv_iff_factorsThrough_sqFreeCore`): they admit noncentral `StandardForm` realizations
+on `M₂(ℂ)` escaping Tomita central collapse (`exists_nontrivial_vacuumFixing_partner_standardForm_heckeInv`),
+but collapse to constants on every continuous log-Toeplitz profile (`const_of_mulHankel_eq_logToeplitz`)
+and every positive-energy Laplace measure (`const_of_sqClass_laplaceMeasure`). In any Borchers
+`ax + b` pair `Δ(s) U(a) Δ(-s) = U(e^{-2πs} a)`, `U(a)` has no non-identity eigenvectors
+(`BorchersPair.eigenvector_eq_zero_of_ne_one`), acts trivially on every finite-dimensional invariant
+subspace and every graph black hole `QuadraticAlgebra ℝ (-q) t`
+(`BorchersPair.trivial_on_finiteDimensional`, `BorchersPair.no_nontrivial_borchers_on_quadraticAlgebra`),
+and annihilates all alternating Cesàro Bohr averages (`BorchersPair.alternating_cesaro_tendsto_zero`).
+Over `ℤ`, neither the cross-horizon natural-cone form (`no_vacuumFixing_partner_tateLimit_integerProbe`)
+nor the one-sided Borchers GNS norm (`no_borchers_gns_tateLimit_integerProbe`) can have Tate limit
+`integerProbe` (`no_halfSided_modular_inclusion_carries_integerProbe`, `partner_standardForm_trichotomy`).
+See [HalfSidedModularInclusionsCannotCarryTheHeckeClock.lean](HalfSidedModularInclusionsCannotCarryTheHeckeClock.lean).
+
 **Q2. What is the physical origin of the parallelogram law on a branched graph?** The delay. A quadratic
 count covariant under one tick is a Born rule; a nondegenerate one forces the partner law
 (`partner_of_bornRule`), and at genus one it is unique, `K(1)·𝒬` (`countLaw_covariant_eq`), so a covariant

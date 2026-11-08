@@ -48,6 +48,8 @@
 
 | C16 | Hasse–Weil on the one-sided prime planes `⟨Γ_1, Γ_p⟩` decides RH | partial (Lean) | degrees with gaps `O(x^θ)` give `zetaZeroWidth ≤ θ − ½` (`zetaZeroWidth_le_of_hasseWeil_of_powGaps`); Huxley's `θ > 7/12` gives width `≤ 1/12` from the prime planes (`zetaZeroWidth_le_of_hasseWeil_primeDegrees`). Classically width `σ` gives prime gaps `x^{½+σ+ε}`: the transfer between Hasse–Weil at the primes and prime gaps is the identity on exponents, so this route reaches RH exactly at gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` (C14) avoid gaps entirely |
 
+| C17 | The atomic surface truncated at degree `N` satisfies the Hodge index with a finite genus | proved (Lean), unconditional | `genusDefect_Icc_nonneg_of_le`: genus `4N(1 + log N)` suffices on all `Σ_{n ≤ N} x_nΓ_n`; `genus_ge_of_genusDefect_Icc_nonneg`: `⌊N/2⌋(log⌊N/2⌋ − 17)/16` is necessary. Channel by channel: `Γ_m·Γ_n = √(mn)(ω + w)`; jets `ω ≤ N/|m−n|` (row sums `2N(1 + log N)`), primes `w ≤ 2` (row sums `2N`), pole rank two (`≥ −N(2 + log N)Σnx²`). The atomic genus is archimedean; the primes, where the zeros enter, are of lower order `O(N)`, so atoms cannot see RH |
+
 ## Big picture
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -76,12 +78,13 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
 1. A natural `ℕ`- or log-cardinality-valued count on each plane `⟨Γ_1, Γ_n⟩` with Tate limit `δ_n`,
    defined without `c_B` (C13); equivalently a crude bound `|c_B(log n)| = O(1)` (C11).
 2. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's; the
-   off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization must grow like
-   `N log N` at degree `N` (C15), so a diagonal of bounded genus exists only for smoothed graphs.
+   off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization is `Θ(N log N)` at
+   degree `N` and unconditional (C15, C17); a diagonal of bounded genus exists only for smoothed graphs,
+   and the RH content is in the `O(N)` prime part below the archimedean divergence.
 3. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`,
    carried by no metric on `ℙ¹_ℤ`; the even-sector trace of the dilation of `ℝ` at its fixed point.
 4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: width `≤ 1/12` (C16); RH by this
    route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C16 formalized in `SurfaceOfSpecZ/` (fifteen modules, standard axioms)
+- 2026-11-08 — created; C1–C17 formalized in `SurfaceOfSpecZ/` (sixteen modules, standard axioms)

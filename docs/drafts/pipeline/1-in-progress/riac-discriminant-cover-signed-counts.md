@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** [RIAC](renormalized-intersection-arithmetic-counts.md)
-- **Statement:** Construct the actual finite-field cover `y²=disc(f)` and derive its point count from Frobenius orientation and polynomial Möbius cancellation.
+- **Statement:** Construct the actual finite-field cover `y²=disc(f)` and derive its point count independently from Frobenius orientation and normal-basis counts.
 
 ## Mathematical target
 
@@ -82,7 +82,21 @@ to vanish. For distinct roots it is the Frobenius sign.
 places this stabilizer average in a general ramified-cover trace formula.
 For the sign character its polynomial average is zero in degree at least two.
 
-The direct construction seeks this cancellation through actual transporter
-counts and normal-basis bijections. It must prove the local stabilizer
-averages and their global sum; neither is presently formalized here.
-The integer cutoff comparison remains an additional obligation.
+The [direct signed construction](../3-formalized/riac-finite-field-signed-orbits.md)
+now proves this orbit cancellation through actual transporter counts and
+normal-basis bijections. Every local weight is `−1`, `0` or `1`; repeated
+coordinates vanish and distinct coordinates retain Frobenius sign.
+The Vieta/factorization comparison and the integer cutoff comparison remain
+additional obligations.
+
+## Vieta comparison
+
+Use the extension of degree `n!` so that every monic degree-`n` polynomial
+splits: each irreducible factor has degree `d≤n`, hence its residue field
+embeds in that extension. Ordered roots then define a Frobenius-stable
+permutation orbit. The root product makes this map injective; equality of
+the independently proved cardinalities `q^n` makes it bijective.
+
+The remaining cover comparison is `disc(f)=V(roots)^2`, with Vandermonde
+`V` transforming by permutation sign. This route does not use a polynomial
+Möbius degree sum. Neither comparison is yet claimed as formalized.

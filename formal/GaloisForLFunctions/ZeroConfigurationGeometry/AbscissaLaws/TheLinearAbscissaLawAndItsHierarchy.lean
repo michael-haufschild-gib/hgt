@@ -51,7 +51,7 @@ For a reflection-symmetric, ordinate-locally-finite strip configuration `Z` (`Ze
 open Complex Filter Topology MeasureTheory Set Asymptotics
 open scoped ComplexConjugate
 open ArithmeticFunction (vonMangoldt)
-open RHTower
+open Zeta23 RHTower
 
 noncomputable section
 
@@ -188,7 +188,8 @@ theorem linearAbscissaLawAt_iff_eventualToGlobalAt {C : ℝ} (hC : 0 ≤ C) :
     have hmem : 1 / 2 + h ∈ asymptoticAbscissaSet Z :=
       ⟨by linarith, by simpa [add_sub_cancel_left] using hfin⟩
     have hle : asymptoticAbscissa Z - 1 / 2 ≤ h := by
-      have := csInf_le (bddBelow_asymptoticAbscissaSet Z) hmem
+      have : asymptoticAbscissa Z ≤ 1 / 2 + h :=
+        csInf_le (bddBelow_asymptoticAbscissaSet Z) hmem
       linarith
     have hmul : C * (asymptoticAbscissa Z - 1 / 2) ≤ C * h := mul_le_mul_of_nonneg_left hle hC
     have hρΘ := re_le_zeroAbscissa Z hρ
@@ -199,12 +200,13 @@ theorem linearAbscissaLawAt_iff_eventualToGlobalAt {C : ℝ} (hC : 0 ≤ C) :
     rcases eq_or_lt_of_le hC with rfl | hCpos
     · rw [zero_mul, sub_nonpos]
       refine (zeroAbscissa_le_iff Z).mpr ⟨le_rfl, fun ρ hρ => ?_⟩
-      have := hE (1 / 2) (by norm_num) (by
-        simpa [show (1 / 2 : ℝ) + 1 / 2 - 1 / 2 = 1 / 2 by ring] using
-          (one_mem_asymptoticAbscissaSet Z).2) ρ hρ
+      have hfin12 : (rightOf Z (1 / 2)).Finite := by
+        simpa only [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] using
+          (one_mem_asymptoticAbscissaSet Z).2
+      have := hE (1 / 2) (by norm_num) hfin12 ρ hρ
       linarith
     · rw [← div_le_iff₀' hCpos]
-      refine le_of_le_of_eq (c := sInf ((fun σ : ℝ => σ - 1 / 2) '' asymptoticAbscissaSet Z)) ?_ ?_
+      refine le_of_le_of_eq (b := sInf ((fun σ : ℝ => σ - 1 / 2) '' asymptoticAbscissaSet Z)) ?_ ?_
       · refine le_csInf ((asymptoticAbscissaSet_nonempty Z).image _) ?_
         rintro _ ⟨σ, ⟨h12, hfin⟩, rfl⟩
         rw [div_le_iff₀' hCpos]
@@ -280,9 +282,13 @@ theorem abscissaLaw_iff_forall_gt_one_linearAbscissaLawAt :
       unfold LinearAbscissaLawAt at hL
       have hval : C * (asymptoticAbscissa Z - 1 / 2) =
           (asymptoticAbscissa Z - 1 / 2) + (zeroAbscissa Z - asymptoticAbscissa Z) / 2 := by
-        rw [hCdef, add_mul, one_mul, div_mul_eq_mul_div]
         have hne : asymptoticAbscissa Z - 1 / 2 ≠ 0 := by linarith
-        field_simp
+        calc C * (asymptoticAbscissa Z - 1 / 2)
+            = (asymptoticAbscissa Z - 1 / 2) +
+                ((zeroAbscissa Z - asymptoticAbscissa Z) / 2) / (asymptoticAbscissa Z - 1 / 2) *
+                  (asymptoticAbscissa Z - 1 / 2) := by rw [hCdef]; ring
+          _ = (asymptoticAbscissa Z - 1 / 2) + (zeroAbscissa Z - asymptoticAbscissa Z) / 2 := by
+                rw [div_mul_cancel₀ _ hne]
       rw [hval] at hL
       linarith
 
@@ -358,11 +364,11 @@ def seqLower (δ : ℕ → ℝ) (n : ℕ) : ℂ :=
 
 theorem reflect_seqUpper (δ : ℕ → ℝ) (n : ℕ) :
     reflect (seqUpper δ n) = seqLower δ n := by
-  apply Complex.ext <;> simp [reflect, seqUpper, seqLower] <;> ring
+  (apply Complex.ext <;> simp [reflect, seqUpper, seqLower]); ring
 
 theorem reflect_seqLower (δ : ℕ → ℝ) (n : ℕ) :
     reflect (seqLower δ n) = seqUpper δ n := by
-  apply Complex.ext <;> simp [reflect, seqUpper, seqLower] <;> ring
+  (apply Complex.ext <;> simp [reflect, seqUpper, seqLower]); ring
 
 /-- Strip configuration consisting of the pairs `½ ± δ_n + i(n + 1)` (`n : ℕ`) with multiplicity 1. -/
 def seqPairConfig (δ : ℕ → ℝ) (h0 : ∀ n, 0 ≤ δ n) (h12 : ∀ n, δ n ≤ 1 / 2) : ZeroConfig where
@@ -442,7 +448,8 @@ theorem harmonicConfig_separates_linearAbscissaLaw_from_finiteStratum :
     · simp only [seqUpper, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one,
         sub_self, add_zero] at hre
       have hlt : h < 1 / ((n : ℝ) + 3) := by linarith
-      have hn : (n : ℝ) + 3 < 1 / h := (lt_div_iff₀ hh).mpr ((lt_div_iff₀ (by positivity)).mp hlt)
+      have hn : (n : ℝ) + 3 < 1 / h :=
+        (lt_div_iff₀ hh).mpr (by linarith [(lt_div_iff₀ (by positivity)).mp hlt])
       have hnN : n < N := by
         have hceil : 1 / h ≤ (⌈1 / h⌉₊ : ℝ) := Nat.le_ceil _
         have hlt' : (n : ℝ) < (⌈1 / h⌉₊ : ℝ) := by linarith
@@ -474,8 +481,9 @@ theorem harmonicConfig_separates_linearAbscissaLaw_from_finiteStratum :
       linarith
   have hnotL : ¬ LinearAbscissaLaw harmonicConfig := by
     intro hL
-    have hP := ((linearAbscissaLaw_tfae harmonicConfig).out 0 4).mp hL hZAL
-    have h12 := (pure_iff_zeroAbscissa_eq_half harmonicConfig).mp hP
+    have himp : ApproachesLine harmonicConfig → Pure harmonicConfig :=
+      ((linearAbscissaLaw_tfae harmonicConfig).out 0 4).mp hL
+    have h12 := (pure_iff_zeroAbscissa_eq_half harmonicConfig).mp (himp hZAL)
     linarith
   exact ⟨hinf, hB13, hZAL, hΘ, hnotL⟩
 
@@ -497,15 +505,15 @@ theorem bumpRatioConfig_abscissas {a b : ℝ} (n₀ : ℕ) (ha : 0 ≤ a) (hab :
     refine le_antisymm ?_ ?_
     · refine (zeroAbscissa_le_iff Z).mpr ⟨by linarith, ?_⟩
       rintro z (⟨n, rfl⟩ | ⟨n, rfl⟩)
-      · simp only [seqUpper, δ, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
+      · simp only [seqUpper, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
           mul_one, sub_self, add_zero]
         split_ifs <;> linarith
-      · simp only [seqLower, δ, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
+      · simp only [seqLower, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
           mul_one, sub_self, add_zero]
         split_ifs <;> linarith
     · have hmem : seqUpper δ n₀ ∈ Z.carrier := Or.inl ⟨n₀, rfl⟩
       have h0 := re_le_zeroAbscissa Z hmem
-      simp only [seqUpper, δ, if_true, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im,
+      simp only [seqUpper, if_true, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im,
         I_im, mul_one, sub_self, add_zero] at h0
       exact h0
   have hΘinf : asymptoticAbscissa Z = 1 / 2 + a := by
@@ -513,12 +521,12 @@ theorem bumpRatioConfig_abscissas {a b : ℝ} (n₀ : ℕ) (ha : 0 ≤ a) (hab :
     · refine csInf_le (bddBelow_asymptoticAbscissaSet Z) ⟨by linarith, ?_⟩
       refine (finite_singleton (seqUpper δ n₀)).subset ?_
       rintro z ⟨(⟨n, rfl⟩ | ⟨n, rfl⟩), hre⟩
-      · simp only [seqUpper, δ, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
+      · simp only [seqUpper, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
           mul_one, sub_self, add_zero] at hre
         by_cases hn : n = n₀
         · subst hn; exact mem_singleton _
         · simp only [hn, if_false] at hre; linarith
-      · simp only [seqLower, δ, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
+      · simp only [seqLower, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
           mul_one, sub_self, add_zero] at hre
         split_ifs at hre <;> linarith
     · refine le_csInf (asymptoticAbscissaSet_nonempty Z) fun σ ⟨_, hfin⟩ => ?_
@@ -751,7 +759,7 @@ theorem spectralDepth_riemannHeat_nonneg {t : ℝ} (ht : 0 < t) :
   rintro x (rfl | ⟨z, hz, rfl⟩)
   · exact le_max_right M 0
   · by_cases him : z.im = 0
-    · rw [him, abs_zero]; exact le_max_right M 0
+    · dsimp only; rw [him, abs_zero]; exact le_max_right M 0
     · exact (hM ⟨z, ⟨hz, him⟩, rfl⟩).trans (le_max_left M 0)
 
 theorem im_eq_zero_of_spectralDepth_riemannHeat_le_zero {t : ℝ} (ht : 0 < t)
@@ -764,7 +772,7 @@ theorem im_eq_zero_of_spectralDepth_riemannHeat_le_zero {t : ℝ} (ht : 0 < t)
     rintro x (rfl | ⟨w, hw, rfl⟩)
     · exact le_max_right M 0
     · by_cases him : w.im = 0
-      · rw [him, abs_zero]; exact le_max_right M 0
+      · dsimp only; rw [him, abs_zero]; exact le_max_right M 0
       · exact (hM ⟨w, ⟨hw, him⟩, rfl⟩).trans (le_max_left M 0)
   have habs : |z.im| ≤ 0 :=
     (le_csSup hbdd (mem_insert_of_mem _ ⟨z, hz, rfl⟩)).trans hle
@@ -793,6 +801,7 @@ theorem riemannHypothesis_iff_eventually_heat_linearAbscissaLaw :
           (Set.Finite.mem_toFinset _).mpr ⟨hz, hne⟩
         have hsum0 := Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => Nat.zero_le _) |>.mp ht0 z hmem
         exact absurd (one_le_zeroMult_riemannHeat ht.le hz) (by omega)
+      dsimp only
       rw [him0, abs_zero]
   · intro hev
     filter_upwards [hev, self_mem_nhdsWithin] with t ⟨C, hC⟩ (ht : 0 < t)
@@ -890,7 +899,8 @@ theorem not_zetaLinearEventualToGlobalAt_of_neg {C : ℝ} (hC : C < 0) :
       rw [he, XiC_ofReal, hzero, Complex.ofReal_zero]
     obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
     have hfin : {r : XiZeroCopy | 1 / 2 + 1 / 2 < (r.1 : ℂ).re}.Finite := by
-      simpa [show (1 / 2 : ℝ) + 1 / 2 = 1 by norm_num] using one_mem_zetaAsymptoticAbscissaSet.2
+      norm_num
+      exact one_mem_zetaAsymptoticAbscissaSet.2
     have hb := hE (1 / 2) (by norm_num) hfin q
     have hre : (q.1 : ℂ).re = 1 / 2 := by rw [hq]; simp
     rw [hre] at hb
@@ -973,7 +983,6 @@ theorem zetaLinearAbscissaLawAt_of_not_zerosApproachLine
   have hrhs : 1 / (2 * zetaAsymptoticAbscissa - 1) * (zetaAsymptoticAbscissa - 1 / 2) = 1 / 2 := by
     have h2 : 2 * zetaAsymptoticAbscissa - 1 ≠ 0 := by linarith
     field_simp
-    ring
   rw [hrhs]
   linarith [zetaZeroAbscissa_le_one]
 
@@ -991,7 +1000,9 @@ theorem zetaLinearAbscissaLaw_imp_finiteOffLine_rh (hL : ZetaLinearAbscissaLaw)
     rw [him] at hlt
     intro heq
     linarith
-  exact (zetaLinearAbscissaLaw_tfae.out 0 4).mp hL hZAL
+  have himp : BacklundConverse.ZerosApproachLine → RiemannHypothesis :=
+    (zetaLinearAbscissaLaw_tfae.out 0 4).mp hL
+  exact himp hZAL
 
 /-! ### Failure of symmetric-shift invariance -/
 
@@ -1065,7 +1076,7 @@ theorem uniform_symmetricShift_linearEventualToGlobal_iff {C : ℝ} (hC1 : 1 ≤
     refine (symmetricShiftProduct_globalBound_iff ha.le (1 / 2 + C * h)).mpr fun w hw => ?_
     obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hw
     have hb := hE (h - a) (by linarith) hfin q
-    rw [← hq] at hb
+    rw [hq] at hb
     nlinarith
 
 /-- For `C < 1`, no uniform linear eventual-to-global bound across `a > 0` can hold, since Hardy's
@@ -1095,7 +1106,7 @@ theorem not_uniform_symmetricShift_linearEventualToGlobal_of_lt_one {C : ℝ} (h
     (hunif a ha (1 / 2 + a) (by positivity) hev) _ hxi
   have hre : ((1 / 2 : ℂ) + (t : ℂ) * I).re = 1 / 2 := by simp
   rw [hre] at hglob
-  have ha_eq : (1 - C) * a = |C| + 1 := div_mul_cancel₀ _ (by linarith)
+  have ha_eq : (1 - C) * a = |C| + 1 := mul_div_cancel₀ (|C| + 1) (by linarith)
   have hCabs : C / 2 ≤ |C| / 2 := div_le_div_of_nonneg_right (le_abs_self C) (by norm_num)
   have hpos : 0 ≤ |C| := abs_nonneg C
   linarith
@@ -1108,7 +1119,9 @@ theorem exists_uniform_symmetricShift_linearEventualToGlobal_iff :
         symmetricShiftProduct xi a z = 0 → T ≤ |z.im| → z.re ≤ 1 / 2 + h) →
       ∀ z : ℂ, symmetricShiftProduct xi a z = 0 → z.re ≤ 1 / 2 + C * h) ↔
     ZetaLinearAbscissaLaw := by
-  rw [zetaLinearAbscissaLaw_tfae.out 0 1]
+  have h01 : ZetaLinearAbscissaLaw ↔ ∃ C : ℝ, 1 ≤ C ∧ ZetaLinearAbscissaLawAt C :=
+    zetaLinearAbscissaLaw_tfae.out 0 1
+  rw [h01]
   constructor
   · rintro ⟨C, hunif⟩
     have hC1 : 1 ≤ C := by
@@ -1246,7 +1259,7 @@ theorem mul_mellin_expSumRemainder {S : Finset ℂ} {d : ℂ → ℂ} {s : ℂ}
           - (t : ℂ) ^ (-s)) (volume.restrict (Ioi 1)) := hi0.sub hi1
     rw [setIntegral_congr_fun measurableSet_Ioi hpt,
       integral_sub hi01 (integrable_finsetSum _ hi2), integral_sub hi0 hi1,
-      integral_finset_sum _ hi2, hA]
+      integral_finsetSum _ hi2, hA]
     congr 1
     exact Finset.sum_congr rfl fun z hz => hB z hz
   rw [hm, hint, vonMangoldtLSeries_eq_mul_integral_criticalCumulative h1, mul_sub, mul_sub,
@@ -1331,8 +1344,9 @@ theorem neg_mul_deriv_zetaResidueUnit_eq_expSum {S : Finset ℂ} {d : ℂ → �
   have hev : F =ᶠ[𝓝 (r : ℂ)] 0 := by
     filter_upwards [hV] with w hw
     simp only [F, Pi.zero_apply]
-    rw [hright w hw.1 (fun z hz => (le_abs_self z.re).trans
-      ((Finset.single_le_sum (fun _ _ => abs_nonneg _) hz).trans_lt hw.2)), sub_self]
+    rw [hright w hw.1 (fun z hz => (le_abs_self z.re).trans_lt
+      ((Finset.single_le_sum (f := fun u : ℂ => |u.re|) (fun _ _ => abs_nonneg _) hz).trans_lt hw.2)),
+      sub_self]
   have h0 : F s = 0 := hFa.eqOn_zero_of_preconnected_of_eventuallyEq_zero
     (convex_halfSpace_re_gt σ₀).isPreconnected hz₀ hev hs
   exact sub_eq_zero.mp h0
@@ -1371,6 +1385,7 @@ theorem mem_of_zeta_eq_zero_of_expSumError {S : Finset ℂ} {d : ℂ → ℂ} {K
   have hord := analyticOrderAt_congr hev
   have hleft : analyticOrderAt (fun w => expSumDenominator S w * deriv zetaResidueUnit w) ρ
       = analyticOrderAt (deriv zetaResidueUnit) ρ := by
+    change analyticOrderAt (expSumDenominator S * deriv zetaResidueUnit) ρ = _
     rw [analyticOrderAt_mul (𝕜 := ℂ) hPa hdZa, hPa.analyticOrderAt_eq_zero.mpr hP, zero_add]
   have hright : analyticOrderAt (-(zetaResidueUnit * expSumNumerator S d)) ρ
       = analyticOrderAt zetaResidueUnit ρ + analyticOrderAt (expSumNumerator S d) ρ := by
@@ -1414,7 +1429,7 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
     have hx0 : 0 ≤ x := by linarith
     have hfl_le : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le hx0
     have hψ_eq : Chebyshev.psi x = chebyshevPsi ⌊x⌋₊ := by
-      rw [← chebyshevPsi_eq_psi, Chebyshev.psi_eq_sum_Icc, Chebyshev.psi_eq_sum_Icc,
+      rw [chebyshevPsi_eq_psi, Chebyshev.psi_eq_sum_Icc, Chebyshev.psi_eq_sum_Icc,
         Nat.floor_natCast]
     have hψ_nonneg : 0 ≤ Chebyshev.psi x := by rw [hψ_eq, chebyshevPsi_eq_psi]; exact psi_nat_nonneg _
     have hψ_le : Chebyshev.psi x ≤ 6 * x := by
@@ -1472,19 +1487,30 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
         = -(((∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re : ℝ) : ℂ) := by
       have hfib1 : ∑ z ∈ S, (∑ q ∈ top with (q.1 : ℂ) = z, (1 / (2 * (q.1 : ℂ)))) * (x : ℂ) ^ z
           = ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ)) := by
-        simp_rw [Finset.sum_mul]
-        rw [Finset.sum_fiberwise_of_maps_to (fun q hq =>
-          Finset.mem_union_left _ (Finset.mem_image_of_mem _ hq))]
-        refine Finset.sum_congr rfl fun q _ => ?_
-        ring
+        have hinner : ∀ z : ℂ,
+            (∑ q ∈ top with (q.1 : ℂ) = z, (1 / (2 * (q.1 : ℂ)))) * (x : ℂ) ^ z =
+              ∑ q ∈ top with (q.1 : ℂ) = z, (x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ)) := fun z => by
+          rw [Finset.sum_mul]
+          refine Finset.sum_congr rfl fun q hq => ?_
+          rw [← (Finset.mem_filter.mp hq).2]
+          ring
+        simp_rw [hinner]
+        exact Finset.sum_fiberwise_of_maps_to fun q hq =>
+          Finset.mem_union_left _ (Finset.mem_image_of_mem _ hq)
       have hfib2 : ∑ z ∈ S, (∑ q ∈ top with conj (q.1 : ℂ) = z,
             (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z
           = ∑ q ∈ top, (x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ)) := by
-        simp_rw [Finset.sum_mul]
-        rw [Finset.sum_fiberwise_of_maps_to (fun q hq =>
-          Finset.mem_union_right _ (Finset.mem_image_of_mem _ hq))]
-        refine Finset.sum_congr rfl fun q _ => ?_
-        ring
+        have hinner : ∀ z : ℂ,
+            (∑ q ∈ top with conj (q.1 : ℂ) = z, (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z =
+              ∑ q ∈ top with conj (q.1 : ℂ) = z,
+                (x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ)) := fun z => by
+          rw [Finset.sum_mul]
+          refine Finset.sum_congr rfl fun q hq => ?_
+          rw [← (Finset.mem_filter.mp hq).2]
+          ring
+        simp_rw [hinner]
+        exact Finset.sum_fiberwise_of_maps_to fun q hq =>
+          Finset.mem_union_right _ (Finset.mem_image_of_mem _ hq)
       have hconj_cpow : ∀ q : XiZeroCopy,
           (x : ℂ) ^ conj (q.1 : ℂ) = conj ((x : ℂ) ^ (q.1 : ℂ)) := fun q => by
         have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx0.ne'
@@ -1496,23 +1522,18 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
               (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z) := by
         rw [← Finset.sum_neg_distrib, ← Finset.sum_sub_distrib]
         exact Finset.sum_congr rfl fun z _ => by dsimp [d]; ring
-      rw [hd_split, hfib1, hfib2, Complex.re_eq_add_conj, map_sum]
-      rw [sub_eq_add_neg, ← Finset.sum_neg_distrib, ← Finset.sum_neg_distrib,
-        ← Finset.sum_add_distrib]
-      calc (∑ q ∈ top, -((x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ)))) +
-            (∑ q ∈ top, -((x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ))))
-          = ∑ q ∈ top, (-((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)) -
-              conj ((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ))) / 2 := by
-            rw [← Finset.sum_add_distrib]
-            refine Finset.sum_congr rfl fun q _ => ?_
-            rw [hconj_cpow q, map_div₀]
-            ring
-        _ = -(((∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)) +
-              ∑ q ∈ top, conj ((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ))) / 2) := by
-            rw [← Finset.sum_div]
-            simp_rw [show ∀ a b : ℂ, (-a - b) / 2 = -(a + b) / 2 from fun _ _ => by ring]
-            rw [Finset.sum_div, ← Finset.sum_neg_distrib, Finset.sum_add_distrib, neg_div]
-            ring
+      have hfib1' : ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ))
+          = (∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)) / 2 := by
+        rw [Finset.sum_div]
+        exact Finset.sum_congr rfl fun _ _ => by ring
+      have hfib2' : ∑ q ∈ top, (x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ))
+          = (∑ q ∈ top, conj ((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ))) / 2 := by
+        rw [Finset.sum_div]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        rw [hconj_cpow q, map_div₀]
+        ring
+      rw [hd_split, hfib1, hfib2, hfib1', hfib2', Complex.re_eq_add_conj, map_sum]
+      ring
     have herr_eq : expSumError S d x =
         ((Chebyshev.psi x - x + (∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re : ℝ) : ℂ) := by
       rw [expSumError, hsum_eq]

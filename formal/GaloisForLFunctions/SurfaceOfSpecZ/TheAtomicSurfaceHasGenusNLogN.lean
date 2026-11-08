@@ -242,7 +242,7 @@ theorem genusDefect_Icc_nonneg_of_le {g : ℝ} {N : ℕ} (hN : 1 ≤ N)
             sum_congr rfl fun _ _ => sum_congr rfl fun _ _ => by ring
         _ = (∑ m ∈ T, (m : ℝ) * x m) * (∑ n ∈ T, x n) +
               (∑ m ∈ T, x m) * (∑ n ∈ T, (n : ℝ) * x n) := by
-            rw [h1, h2, ← sum_add_distrib]; exact sum_congr rfl fun _ _ => sum_add_distrib.symm
+            rw [h1, h2, ← sum_add_distrib]; exact sum_congr rfl fun _ _ => sum_add_distrib
         _ = _ := by ring
     have hdiag : ∑ m ∈ T, ∑ n ∈ T, (if m = n then x m * x n * ((m : ℝ) + n) else 0) = 2 * S := by
       rw [hSdef, mul_sum]
@@ -312,7 +312,7 @@ theorem genusDefect_Icc_nonneg_of_le {g : ℝ} {N : ℕ} (hN : 1 ≤ N)
       intro m _
       rw [mul_sum]
       exact sum_congr rfl fun n _ => by split_ifs <;> simp
-    rw [sum_congr rfl hfac, sum_congr rfl hfac]
+    rw [sum_congr rfl hfac]
     have h1 := sum_le_sum hrow
     have h2 : ∑ m ∈ T, (m : ℝ) * x m ^ 2 / 2 * ρ = ρ / 2 * S := by
       rw [hSdef, mul_sum]; exact sum_congr rfl fun _ _ => by ring
@@ -360,8 +360,8 @@ theorem genus_ge_of_genusDefect_Icc_nonneg {g : ℝ} (hg : 0 ≤ g) {N : ℕ}
     intro n hn; rw [mem_Ico] at hn; rw [mem_Icc]; omega
   set x : ℕ → ℝ := fun n => if n ∈ Ico M (2 * M) then 1 else 0 with hx
   have h1 := h x
-  rw [genusDefect_restrict hsub (fun n hn => by simp [hx, hn]),
-    genusDefect_congr (y := 1) (fun n hn => by simp [hx, hn])] at h1
+  rw [genusDefect_restrict hsub (fun n hn => by simp only [hx]; rw [if_neg hn]),
+    genusDefect_congr (y := 1) (fun n hn => by simp only [hx, Pi.one_apply]; rw [if_pos hn])] at h1
   exact genus_ge_of_genusDefect_nonneg hg h1
 
 end GaloisForLFunctions.SurfaceOfSpecZ

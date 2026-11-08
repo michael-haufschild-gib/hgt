@@ -1,12 +1,12 @@
 # Positive annihilator division forces coefficient oscillation
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Obstacles:** B13, B112.
 - **Object:** For a nonnegative two-prime polynomial `P(X,Y)` with constant coefficient one, define the canonical formal coefficients `b_(a,b)` by
   `Σ b_(a,b) X^a Y^b = 1/((1−X)(1−Y)P(X,Y))`.
   These are the two-prime lattice coefficients of the formal quotient `ζ/P`.
-- **Statement sought:** If `P(2^(−ρ),3^(−ρ))=0`, `β=Re ρ>0`, then for every `0≤α<β` and `C>0` there are lattice indices with
+- **Statement proved:** If `P(2^(−ρ),3^(−ρ))=0`, `β=Re ρ>0`, then for every `0≤α<β` and `C>0` there are lattice indices with
   `b_(a,b)>C exp(α(a log 2+b log 3))`, and indices with
   `b_(a,b)<−C exp(α(a log 2+b log 3))`.
   In particular, infinitely many negative coefficients are unavoidable; neither sign admits a smaller exponential envelope.
@@ -27,4 +27,13 @@ The left side vanishes; the right side is nonzero because `Re ρ>0`. Both one-si
 
 The same evaluation argument gives an endpoint refinement: `Σ_d |b_d| exp(−(Re ρ)L_d)` diverges. If this sum converged, the convolution identity would remain evaluable at `ρ` itself. This is part of the same contribution, not a separate result count.
 
-Lean formalization pending; uncounted.
+## Lean certificate
+
+Module: `GaloisForLFunctions/ArithmeticPositiveDuality/AnnihilatorDivisionForcesCoefficientOscillation.lean`.
+Namespace: `GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator`.
+
+- `quotient_coefficients_have_two_sided_exponential_excursions`: both signs exceed every envelope of exponent `0≤α<Re ρ`.
+- `quotient_coefficient_excursions_escape_finite_sets`: both excursions avoid any prescribed finite set.
+- `quotient_absolute_mass_diverges_at_zero`: absolute weighted mass diverges at the endpoint `Re ρ`.
+
+Final audit: `lake --old env lean GaloisForLFunctions/ArithmeticPositiveDuality/AnnihilatorDivisionForcesCoefficientOscillation.lean`, exit 0, no warnings. All three declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import wired. These results count as one contribution; B13 and B112 remain open.

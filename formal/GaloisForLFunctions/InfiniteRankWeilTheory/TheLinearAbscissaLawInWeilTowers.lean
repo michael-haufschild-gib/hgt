@@ -32,6 +32,7 @@ every `h ≥ 0`, finiteness of `{i : ½ + h < Re (ρ i)}` forces `Re (ρ i) ≤ 
 
 open Complex Filter Topology Set
 open GaloisForLFunctions.ZeroConfigurationGeometry
+open RHTower (XiZeroCopy weilLagFunction zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le)
 
 noncomputable section
 

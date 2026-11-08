@@ -40,7 +40,7 @@ open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline contDiff
 open GaloisForLFunctions.ArithmeticScatteringHolography (atomGram integerProbe atomGram_isHermitian
   atomGram_im)
 open GaloisForLFunctions.RenormalizedIntersectionTheory (splineSeries continuous_splineSeries
-  orbitCorr_splineCycle_eq summable_norm_splineTerm criticalSeen criticalSeen_infinite
+  orbitCorr_splineCycle_eq criticalSeen criticalSeen_infinite
   cx_cubicSpline_contDiff cx_cubicSpline_hasCompactSupport)
 
 noncomputable section
@@ -59,19 +59,39 @@ theorem atomGram_eq_splineSeries (N : ℕ) (i j : Fin N) :
   rw [h1]
   set y := Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1)
   have hW : ArithmeticPositiveDuality.splineCorr y =
-      zetaZeroConfig.W (translate y (cx cubicSpline)) (cx cubicSpline) := by
-    rw [RHTower.zeta_W_eq_weilFullFunctional_mixed (translate_contDiff cx_cubicSpline_contDiff y)
-      (translate_hasCompactSupport cx_cubicSpline_hasCompactSupport y) cx_cubicSpline_contDiff
+      zetaZeroConfig.W (ArithmeticCastelnuovoSeveri.translate y (cx cubicSpline)) (cx cubicSpline) := by
+    rw [RHTower.zeta_W_eq_weilFullFunctional_mixed (ArithmeticCastelnuovoSeveri.translate_contDiff cx_cubicSpline_contDiff y)
+      (ArithmeticCastelnuovoSeveri.translate_hasCompactSupport cx_cubicSpline_hasCompactSupport y) cx_cubicSpline_contDiff
       cx_cubicSpline_hasCompactSupport]
     rfl
-  have h0 : cx cubicSpline = translate 0 (cx cubicSpline) := funext fun v => by
-    simp [translate]
-  rw [hW]
-  conv_lhs => rw [show zetaZeroConfig.W (translate y (cx cubicSpline)) (cx cubicSpline) =
-    zetaZeroConfig.W (translate y (cx cubicSpline)) (translate 0 (cx cubicSpline)) by rw [← h0]]
-  rw [W_shiftTest_shiftTest, splineSeries]
+  have h0 : cx cubicSpline = ArithmeticCastelnuovoSeveri.translate 0 (cx cubicSpline) := funext fun v => by
+    simp [ArithmeticCastelnuovoSeveri.translate]
+  have h2 : zetaZeroConfig.W (ArithmeticCastelnuovoSeveri.translate y (cx cubicSpline)) (cx cubicSpline) =
+      zetaZeroConfig.W (ArithmeticCastelnuovoSeveri.translate y (cx cubicSpline))
+        (ArithmeticCastelnuovoSeveri.translate 0 (cx cubicSpline)) := by rw [← h0]
+  rw [hW, h2, W_shiftTest_shiftTest, splineSeries]
   refine tsum_congr fun τ => ?_
   rw [sub_zero]
+
+/-- The zero-side terms of the spline series are absolutely summable at every scale. -/
+theorem summable_norm_splineTerm' (t : ℝ) :
+    Summable fun τ : zetaZeroConfig.carrier =>
+      ‖cexp ((t : ℂ) * ((τ : ℂ) - 1 / 2)) * zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) τ‖ := by
+  have hsum := summable_norm_Wsummand zetaZeroConfig SquareRootThreshold.temperedConfig_zetaZeroConfig
+    (cx_contDiff contDiff_cubicSpline) (cx_hasCompactSupport hasCompactSupport_cubicSpline)
+    (cx_contDiff contDiff_cubicSpline) (cx_hasCompactSupport hasCompactSupport_cubicSpline)
+  refine (hsum.mul_left (Real.exp (|t| / 2))).of_nonneg_of_le (fun _ => norm_nonneg _) fun τ => ?_
+  have hstrip := zetaZeroConfig.strip τ.1 τ.2
+  rw [norm_mul, Complex.norm_exp]
+  refine mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+  have hre : ((t : ℂ) * ((τ : ℂ) - 1 / 2)).re = t * ((τ : ℂ).re - 1 / 2) := by simp
+  rw [hre]
+  have h1 : |(τ : ℂ).re - 1 / 2| ≤ 1 / 2 :=
+    abs_le.mpr ⟨by linarith [hstrip.1], by linarith [hstrip.2]⟩
+  calc t * ((τ : ℂ).re - 1 / 2) ≤ |t * ((τ : ℂ).re - 1 / 2)| := le_abs_self _
+    _ = |t| * |(τ : ℂ).re - 1 / 2| := abs_mul _ _
+    _ ≤ |t| * (1 / 2) := mul_le_mul_of_nonneg_left h1 (abs_nonneg _)
+    _ = |t| / 2 := by ring
 
 /-! ### Integer squares force a constant orbit -/
 
@@ -272,7 +292,7 @@ theorem exists_re_splineSeries_lt (hRH : RiemannHypothesis) :
   -- the real parts as real series
   have hsum : ∀ t, Summable fun τ : zetaZeroConfig.carrier =>
       cexp ((t : ℂ) * ((τ : ℂ) - 1 / 2)) * zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) τ :=
-    fun t => (summable_norm_splineTerm t).of_norm
+    fun t => (summable_norm_splineTerm' t).of_norm
   have hre : ∀ t, (splineSeries t).re =
       ∑' τ : zetaZeroConfig.carrier, criticalWeight τ * Real.cos (t * (τ : ℂ).im) := by
     intro t

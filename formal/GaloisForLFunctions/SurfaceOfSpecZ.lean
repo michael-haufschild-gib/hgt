@@ -14,6 +14,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusIsAHyperbolicGr
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusHasInfiniteRank
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilForPairsOfPrimeDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicGenusIsNLogN
+import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicSurfaceHasGenusNLogN
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWidth
 
 /-!
@@ -34,7 +35,9 @@ prime powers. Over `𝔽_{1ⁿ}` the surface has `Λ(n) + 1 + 1/(n² − 1)` poi
 `ℙ¹` has `n + 1`; the trace is of size `n`, so no finite genus passes the Hasse–Weil test on two-term
 probes: atomic Frobenius graphs force infinite genus, and smoothing performs the prime number theorem.
 On a dyadic block of degrees `[N, 2N)` the genus the atoms need is of exact order `N log N`: no torsion
-orbits meet inside the block, and the jets make the defect a negative harmonic matrix.
+orbits meet inside the block, and the jets make the defect a negative harmonic matrix. On all degrees
+`≤ N` the atomic surface satisfies the Hodge index unconditionally with genus `4N(1 + log N)`: the jets
+cost `N log N`, the pole `N log N` through Cauchy–Schwarz, the primes only `O(N)`.
 Off the diagonal Weil's kernel is the archimedean compensation (pole plane minus cusp and jets) plus
 the Abel limit of the positive torsion energy of `ℙ¹_ℤ`. Smoothed by the cubic spline, the Frobenius
 graphs form a curve of finite genus exactly under RH: Hasse–Weil on every plane `⟨Γ_1, Γ_n⟩`, `n ∈ ℕ`,

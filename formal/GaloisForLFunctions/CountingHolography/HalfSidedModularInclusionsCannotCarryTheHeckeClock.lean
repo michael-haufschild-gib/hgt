@@ -2557,19 +2557,5 @@ theorem partner_standardForm_trichotomy :
   · intro H _ _ _ M hs A₀ hA₀
     exact (no_halfSided_modular_inclusion_carries_integerProbe hs hA₀).2
 
-#print axioms posGen_eq_zero_of_comm_antiunitaryInvol
-#print axioms StandardForm.naturalCone_partner_hankel
-#print axioms isMulHankel_and_heckeInv_iff_sqClass
-#print axioms mulHankel_heckeInv_iff_factorsThrough_sqFreeCore
-#print axioms exists_nontrivial_vacuumFixing_partner_standardForm_heckeInv
-#print axioms const_of_mulHankel_eq_logToeplitz
-#print axioms const_of_sqClass_laplaceMeasure
-#print axioms BorchersPair.no_nontrivial_borchers_on_quadraticAlgebra
-#print axioms BorchersPair.alternating_cesaro_tendsto_zero
-#print axioms no_vacuumFixing_partner_tateLimit_integerProbe
-#print axioms no_borchers_gns_tateLimit_integerProbe
-#print axioms no_halfSided_modular_inclusion_carries_integerProbe
-#print axioms partner_standardForm_trichotomy
-
 end GaloisForLFunctions.CountingHolography
 

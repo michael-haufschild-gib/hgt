@@ -84,7 +84,11 @@ Their signed fibre counts recover polynomial Möbius signs. The aggregate
 count uses established polynomial cancellation. A separate
 [independent Frobenius orbit count](../3-formalized/riac-independent-frobenius-orbit-counts.md)
 now derives `q^n` from normal-basis bijections and actual transporter sets.
-Its orientation-cover comparison and the integer comparison remain open.
+The [signed orbit refinement](../3-formalized/riac-finite-field-signed-orbits.md)
+constructs local weights in `{-1,0,1}`, proves collision cancellation and
+retains Frobenius sign on distinct roots. Their total cancels independently
+for at least two labels. The polynomial comparison and the identification
+with integer local indices remain open.
 
 ## Necessary distinctions
 
