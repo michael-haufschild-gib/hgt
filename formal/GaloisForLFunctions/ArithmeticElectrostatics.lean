@@ -38,6 +38,7 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheElapsedDepthActionHasItsZ
 import GaloisForLFunctions.ArithmeticElectrostatics.TheHeatDivisorPaysElapsedDepth
 import GaloisForLFunctions.ArithmeticElectrostatics.ThePolynomialHeatClockComposes
 import GaloisForLFunctions.ArithmeticElectrostatics.ThePolynomialHeatCollisionsAreFinite
+import GaloisForLFunctions.ArithmeticElectrostatics.ThePolynomialElapsedDepthActionIsContinuous
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor

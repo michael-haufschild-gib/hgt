@@ -106,7 +106,7 @@ theorem xi_eq_heatLaplace (σ : ℝ) : xi σ = (heatLaplace 0 (σ - 1 / 2) : ℂ
   rw [← riemannHeat_neg_eq_heatLaplace, neg_zero, riemannHeat_zero]
   congr 1
   push_cast
-  linear_combination (1 / 2 - (σ : ℂ)) * Complex.I_sq
+  linear_combination ((σ : ℂ) - 1 / 2) * Complex.I_sq
 
 /-- The mass of `Φ` on `[a, a + 1]`. -/
 def unitMass (a : ℝ) : ℝ := ∫ x in a..(a + 1), riemannKernelReal x
@@ -116,8 +116,8 @@ theorem unitMass_pos (a : ℝ) : 0 < unitMass a :=
     (continuous_riemannKernelReal.intervalIntegrable _ _) (fun x _ => riemannKernelReal_pos x)
     (by linarith)
 
-/-- **The tilted mass sits right of `a`**: `L_0(c) ≥ e^{ca} ∫_a^{a+1} Φ` for `c, a ≥ 0`. -/
-theorem heatLaplace_zero_ge {c a : ℝ} (hc : 0 ≤ c) (ha : 0 ≤ a) :
+/-- **The tilted mass sits right of `a`**: `L_0(c) ≥ e^{ca} ∫_a^{a+1} Φ` for `c ≥ 0`. -/
+theorem heatLaplace_zero_ge {c a : ℝ} (hc : 0 ≤ c) :
     Real.exp (c * a) * unitMass a ≤ heatLaplace 0 c := by
   have hint := integrable_heatIntegrand 0 c
   have hnn : ∀ x, 0 ≤ riemannKernelReal x * Real.exp (-0 * x ^ 2) * Real.exp (c * x) := fun x => by
@@ -301,7 +301,7 @@ theorem heatLaplace_ge {τ c : ℝ} (hτ : 0 ≤ τ) (hc : 0 ≤ c) :
 theorem tendsto_ratio_zero {τ : ℝ} (hτ : 0 < τ) :
     Tendsto (fun c => heatLaplace τ c / heatLaplace 0 c) atTop (𝓝 0) := by
   have hpos : ∀ c, 0 ≤ c → 0 < heatLaplace 0 c := fun c hc =>
-    lt_of_lt_of_le (by have := unitMass_pos 0; positivity) (heatLaplace_zero_ge hc le_rfl)
+    lt_of_lt_of_le (by have := unitMass_pos 0; positivity) (heatLaplace_zero_ge (a := 0) hc)
   set I := ∫ x, riemannKernelReal x with hI
   rw [tendsto_order]
   refine ⟨fun a ha => Eventually.of_forall fun c => lt_of_lt_of_le ha
@@ -311,7 +311,8 @@ theorem tendsto_ratio_zero {τ : ℝ} (hτ : 0 < τ) :
     have ht : Tendsto (fun M : ℝ => Real.exp (-τ * M ^ 2)) atTop (𝓝 0) := by
       refine Real.tendsto_exp_atBot.comp ?_
       have h2 : Tendsto (fun M : ℝ => M ^ 2) atTop atTop := tendsto_pow_atTop two_ne_zero
-      exact (h2.const_mul_atTop hτ).neg_atTop_atBot.congr fun M => by ring
+      exact (tendsto_neg_atTop_atBot.comp (h2.const_mul_atTop hτ)).congr fun M => by
+        simp only [Function.comp_apply]; ring
     obtain ⟨M, hM⟩ := (ht.eventually (gt_mem_nhds (by linarith : (0 : ℝ) < ε / 2))).and
       (eventually_ge_atTop 0) |>.exists
     exact ⟨M, hM.2, hM.1⟩
@@ -325,7 +326,7 @@ theorem tendsto_ratio_zero {τ : ℝ} (hτ : 0 < τ) :
     exact ht.eventually (gt_mem_nhds (by linarith))
   filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with c hc hc0
   have hup := heatLaplace_le hτ.le hc0 hM0
-  have hlow := heatLaplace_zero_ge hc0 (by linarith : (0 : ℝ) ≤ M + 1)
+  have hlow := heatLaplace_zero_ge (a := M + 1) hc0
   rw [← hm] at hlow
   have hL0 := hpos c hc0
   rw [div_lt_iff₀ hL0]
@@ -351,7 +352,7 @@ theorem eventually_ratio_ge {τ : ℝ} (hτ : 0 ≤ τ) :
       simpa using (Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot).mul_const tailConst
     exact (ht.eventually (gt_mem_nhds (by linarith : (0 : ℝ) < κ / 2))).mono fun c h => h.le
   filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with c hc hc0
-  have hlow := heatLaplace_zero_ge hc0 (le_refl 0)
+  have hlow := heatLaplace_zero_ge (a := 0) hc0
   rw [mul_zero, Real.exp_zero, one_mul, ← hκ] at hlow
   have hL0 : 0 < heatLaplace 0 c := lt_of_lt_of_le hκ0 hlow
   have hge := heatLaplace_ge hτ hc0
@@ -381,7 +382,7 @@ theorem tendsto_ratio_atTop {τ : ℝ} (hτ : τ < 0) :
     exact (ht.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono fun c h => h.le
   filter_upwards [hsmall, eventually_ge_atTop (0 : ℝ)] with c hc hc0
   have hlow := heatLaplace_ge_of_nonpos hτ.le hc0 hM0
-  have hm' := heatLaplace_zero_ge hc0 (by linarith : (0 : ℝ) ≤ M + 1)
+  have hm' := heatLaplace_zero_ge (a := M + 1) hc0
   rw [← hm] at hm'
   have hL0 : 0 < heatLaplace 0 c :=
     lt_of_lt_of_le (by positivity) hm'
@@ -417,6 +418,7 @@ theorem norm_LSeries_sub_le {a : ℕ → ℂ} {σ₁ σ : ℝ} (ha : LSeriesSumm
     · interval_cases n
       · simp [he, LSeries.term]
       · simp [he, LSeries.term]
+        positivity
     · have hn0 : n ≠ 0 := by omega
       have hn1' : n ≠ 1 := by omega
       simp only [he, if_neg hn1', sub_zero]
@@ -457,7 +459,7 @@ theorem tendsto_two_rpow_sub (σ₁ : ℝ) :
 theorem eventually_half_le_norm_riemannZeta :
     ∀ᶠ σ : ℝ in atTop, 1 / 2 ≤ ‖riemannZeta σ‖ ∧ ‖riemannZeta σ‖ ≤ 3 / 2 := by
   have h1 : LSeriesSummable (1 : ℕ → ℂ) ((2 : ℝ) : ℂ) :=
-    LSeriesSummable_one_iff.mpr (by simp; norm_num)
+    LSeriesSummable_one_iff.mpr (by norm_num)
   set S := ∑' n, ‖LSeries.term (1 : ℕ → ℂ) ((2 : ℝ) : ℂ) n‖ with hS
   have ht : Tendsto (fun σ : ℝ => (2 : ℝ) ^ ((2 : ℝ) - σ) * S) atTop (𝓝 0) := by
     simpa using (tendsto_two_rpow_sub 2).mul_const S
@@ -503,6 +505,8 @@ theorem norm_LSeries_eq_ratio {τ : ℝ} {a : ℕ → ℂ} {σ : ℝ} (hσ : 1 <
   have hL0 : 0 < heatLaplace 0 (σ - 1 / 2) := by
     rw [hn0]
     exact mul_pos hPn (norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_lt_re hre))
+  have hζ0 : ‖riemannZeta σ‖ ≠ 0 :=
+    norm_ne_zero_iff.mpr (riemannZeta_ne_zero_of_one_lt_re hre)
   rw [hn1, hn0]
   field_simp
 
@@ -559,7 +563,7 @@ theorem not_exists_dirichlet_of_ne_zero {τ : ℝ} (hτ : τ ≠ 0) :
           linarith
         rw [hσD] at h1
         nlinarith [hσζ.2]
-      have := le_of_tendsto hlim hle
+      have := ge_of_tendsto hlim hle
       exact norm_le_zero_iff.mp this
     -- the floor `e^{−τ log(2σ+5)²}/4` against `2^{σ₁−σ} S`
     have hfloor := hshift.eventually (eventually_ratio_ge hpos.le)
@@ -612,7 +616,7 @@ theorem not_exists_dirichlet_of_ne_zero {τ : ℝ} (hτ : τ ≠ 0) :
     have h7 : Real.exp (σ * Real.log 2 / 2) ≤ 4 * Real.exp (σ₁ * Real.log 2) * S := by
       have := mul_le_mul_of_nonneg_left h6 (Real.exp_pos (σ * Real.log 2 / 2)).le
       nlinarith
-    linarith
+    linarith [mul_nonneg hE0.le hS0]
 
 /-- **The time-zero selector.** `ξ_τ` is `½s(s−1)Γ_ℝ(s)` times an absolutely convergent Dirichlet
 series on a real half-line iff `τ = 0`. -/
@@ -622,7 +626,7 @@ theorem exists_dirichlet_iff (τ : ℝ) :
         (σ : ℂ) * (σ - 1) / 2 * (Complex.Gammaℝ σ * LSeries a σ)) ↔ τ = 0 := by
   refine ⟨fun h => by_contra fun hτ => not_exists_dirichlet_of_ne_zero hτ h, ?_⟩
   rintro rfl
-  refine ⟨1, 2, LSeriesSummable_one_iff.mpr (by simp; norm_num), fun σ hσ => ?_⟩
+  refine ⟨1, 2, LSeriesSummable_one_iff.mpr (by norm_num), fun σ hσ => ?_⟩
   have hre : 1 < (σ : ℂ).re := by simp; linarith
   rw [riemannHeat_neg_eq_heatLaplace, ← xi_eq_heatLaplace, xi_eq_mul_Gammaℝ_zeta hre,
     LSeries_one_eq_riemannZeta hre]

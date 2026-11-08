@@ -54,6 +54,7 @@ identifies the divisor Möbius series with reciprocal zeta;
 repeated roots. This contribution realizes the cancellation with actual
 finite arithmetic sets and a dependency-closed Lean proof.
 
-The Frobenius orientation-quotient comparison remains separate. No integer
-estimate for `Σ_p index_p(N)=1−M(N)` follows. A transfer must preserve
-signed arithmetic incidence and control conductor-height errors.
+The [Frobenius orientation-quotient comparison](riac-elliptic-orientation-quotients.md)
+is proved separately and transfers this bound to the original orbit
+counts. No integer estimate for `Σ_p index_p(N)=1−M(N)` follows. A transfer
+must preserve signed arithmetic incidence and control conductor-height errors.

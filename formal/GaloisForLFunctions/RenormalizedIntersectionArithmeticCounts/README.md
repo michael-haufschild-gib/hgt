@@ -386,6 +386,14 @@ characters are retained, including both orientation labels in degrees
 zero and one. This [count realization](../../../docs/drafts/pipeline/3-formalized/riac-orientation-quotient-counts.md)
 does not itself bound the difference.
 
+[TupleOrientationCounts.lean](TupleOrientationCounts.lean) identifies this
+difference for a finite point permutation with the intrinsic signed sum
+over invariant `n`-point subsets. Odd swap stabilizers cancel collisions.
+Each injective tuple has its support's permutation sign, and an explicit
+ordering bijection supplies exactly `n!` tuples per support. This proves
+the comparison for the original quotient counts, including degrees zero
+and one.
+
 [FibrePermutationSigns.lean](FibrePermutationSigns.lean) decomposes the
 orientation sign over any invariant finite partition. If every fibre is
 nonempty and transitive, the sign is `(-1)^(number of points + number of
@@ -411,8 +419,7 @@ Frobenius root bound. No Weil-root, simplicity or cancellation assumption
 is added. At norm horizon `N=3^n`, the bound is `√N` times a quadratic
 logarithmic loss. The mechanism is classical; the contribution is its
 realization by actual finite arithmetic counts with complete Lean proofs.
-The orientation-quotient comparison and the integer conductor-height
-transfer remain open.
+The integer conductor-height transfer remains open.
 
 [EllipticFrobeniusOrbits.lean](EllipticFrobeniusOrbits.lean) supplies the
 geometric fibre comparison. Frobenius is transitive on actual residue-field
@@ -430,6 +437,14 @@ degree in points. The intrinsic Frobenius orientation is
 Consequently the independently defined geometric sum `J_n=Σ_T ε(T)`
 satisfies `J_n=(-1)^n(E_n−O_n)` and `|J_n|≤8(n+1)²(√3)^n`.
 This [signed configuration theorem](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-stable-orientation.md)
-is formalized. The original orientation-quotient counts still require
-their transporter comparison with `J_n`; the integer-height transfer
-remains separate.
+is formalized.
+
+[EllipticOrientationCounts.lean](EllipticOrientationCounts.lean) constructs
+the original arithmetic counts `A_n` and `B_n` from Frobenius-stable orbits
+of actual curve tuples, with and without the two-point orientation label.
+They satisfy `A_n−B_n=J_n=(-1)^n(E_n−O_n)` and therefore
+`|A_n−B_n|≤8(n+1)²(√3)^n`. Their definitions use no signed divisor count.
+The [quotient comparison and bound](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-orientation-quotients.md)
+are formalized, with collisions and both low-degree labels retained.
+General hyperelliptic counts and control of the integer sum `1−M(N)`
+remain open.

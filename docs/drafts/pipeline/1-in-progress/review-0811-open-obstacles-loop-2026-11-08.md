@@ -17,6 +17,7 @@
 | 5 | B88, B118 | The damped `ℍ³` profile `K_r(x)=e^{−|x|/2}/(1−r²e^{−2|x|})` has self-energy `Z(r)=∫K_r=Σr^{2k}·2/(2k+½)` with `log(1/(1−r²))+4−π²/24 ≤ Z(r) ≤ log(1/(1−r²))+4`; `∫K_r g = g(0)Z(r) − ∫K_r(g(0)−g)`, and for `g ≤ g(0)` (every autocorrelation) `∫K_r g − g(0)Z(r) → −∫ω(g(0)−g)`, `ω` the archimedean Lévy density. The archimedean place needs exactly one counterterm, universal and logarithmic; the remainder is minus the Lévy jump energy | `SurfaceOfSpecZ/TheArchimedeanSelfEnergyIsLogarithmic` |
 | 6 | B84, B103 | Quantiles of `V(x)=W(x)−W(x/2)/2+W(min(x,u₀)/2)/2` (strictly increasing: `w(u)>w(u/2)/4` beyond `u₀`) give positive discrete primes with `|N−(W−W(·/2)/2)|≤M`; their Euler product equals `ζ_c(s)exp(−L(4s)/4+sΛ(s)+sΛ(2s)+R₃(s))`, holomorphic on `Re s>1/3`, `s≠1`, zeros there exactly `(1−μ)±iγ`; holomorphic and zero-free on all of `Re s=½`, finite at `½` (the uncorrected one-off diverges). Remaining for an FE defect: growth of `sΛ(s)` on the line (trivially `O(|s|)`) | `ArithmeticPositiveDuality/ADiscreteOneOffCrossesTheCriticalLine` |
 | 7 | B103, B84, B98 | Rounding the corrected primes up to `q_k=⌈e^{t_k}⌉` gives, at every height `γ`, natural generators `q_k≥2` and natural coefficients `a_n` with `Π(1−q_k^{-s})^{-1}=Σa_n n^{-s}=F(s)` on `Re s>1`, `Σ_{n<N}a_n∼AN` (`A>0`, Wiener–Ikehara), `F` holomorphic on `Re s>1/3`, `s≠1`, zeros there exactly `3/5±iγ`, `F≠0` on `Re s=½`. Generic: natural generators with `Euler product = H(s)/(s−1)`, `H` holomorphic past `Re s=1`, `H(1)≠0` ⇒ linear counting. Of B103's hypotheses only the FE can exclude a finite layer | `ArithmeticPositiveDuality/AnIntegerNormOneOffCrossesTheCriticalLine` |
+| 8 | B26 | On the real axis `ξ_τ(σ)=∫Φ(x)e^{−τx²}e^{(σ−½)x}dx`, and `ξ_τ/ξ` is the mean of `e^{−τx²}` under the tilted law `∝Φ(x)e^{(σ−½)x}`, which escapes to `+∞` below `log(2σ+5)` (envelope `Φ≤C₀e^{9x/2}e^{−πe^{2x}}`): for `τ>0` the ratio `→0` yet `≥½e^{−τlog(2σ+5)²}`; for `τ<0` it `→∞`. An absolutely convergent Dirichlet series tends to `a₁` at rate `2^{σ₁−σ}`. Hence `ξ_τ = ½s(s−1)Γ_ℝ(s)D(s)` on a real half-line with `D` a Dirichlet series iff `τ=0`: the Dirichlet structure alone (no Euler product, no FE) selects `Φ` among `Φe^{−τx²}`, read at `σ→∞` on the scale `log σ` | `ZeroConfigurationGeometry/OnlyTheUndeformedKernelHasADirichletSeries` |
 
 ## Conjecture log
 - C1 (proved, #1): the jets carrier is hyperbolic three-space with dilations as translations along a geodesic.
@@ -24,8 +25,9 @@
 - C3 (proved, #3): C15.1 — integer probes are not integer-valued; integrality would force RH and then a constant Bohr series.
 - C4 (proved, #4): the atomic Weil kernel's sign is the plastic law; Markov holds exactly on plastic windows.
 - C5 (proved, #5): the archimedean counterterm of the damped `ℍ³` propagator is `g(0)·log(1/(1−r²)) + O(1)`, universal; the renormalized limit is the Lévy jump energy.
+- C8 (proved, #8): the time-0 selector of the heat family is already the Dirichlet structure, visible at real infinity.
 - C7 (proved, #7): integrality, linear counting and continuation across the line together still allow a finite layer.
 - C6 (proved, #6): a discrete one-off continues across `Re s=½` once the count carries the prime-square term; the obstruction to an FE defect is the type of `sΛ(s)` on the line, not discreteness.
 
 ## Log
-- 2026-11-08 — created; #1–#7 formalized and wired.
+- 2026-11-08 — created; #1–#8 formalized and wired.

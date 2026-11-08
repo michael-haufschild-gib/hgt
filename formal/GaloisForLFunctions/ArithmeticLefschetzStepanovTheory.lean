@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheFrobeniusOfTheTorsionIsGalois
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheOrderAtTheCommonFixedPointCostsTheDegree
 
 /-!
 # Arithmetic Lefschetz–Stepanov theory

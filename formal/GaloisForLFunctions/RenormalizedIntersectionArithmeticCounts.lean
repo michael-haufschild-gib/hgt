@@ -46,4 +46,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticStab
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.TupleOrientationCounts
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticOrientationCounts
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

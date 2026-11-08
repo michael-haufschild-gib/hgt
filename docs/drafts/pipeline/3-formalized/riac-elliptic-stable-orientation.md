@@ -47,8 +47,8 @@ Main declarations: `sign_eq_prod_labelledFibrePerm`, `sign_eq_pow_card_add_card`
 Direct final Lean checks passed. All 20 transitive axiom audits across
 the two modules use only `propext`, `Classical.choice`, `Quot.sound`.
 
-The original orientation-quotient counts still require their transporter
-comparison with `J_n`: collisions cancel, and each distinct-point
-configuration contributes its `n!` orderings. This theorem does not assume
-or assert that unfinished identification. No integer conductor-height
-comparison or estimate for `Σ_p index_p(N)=1−M(N)` follows.
+The [original orientation-quotient counts](riac-elliptic-orientation-quotients.md)
+satisfy `A_n−B_n=J_n` by a separate proved transporter comparison:
+collisions cancel, and each distinct-point configuration contributes its
+`n!` orderings. No integer conductor-height comparison or estimate for
+`Σ_p index_p(N)=1−M(N)` follows.

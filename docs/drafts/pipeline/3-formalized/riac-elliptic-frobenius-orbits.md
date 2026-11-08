@@ -36,5 +36,5 @@ This establishes the geometric fibre comparison needed to relate actual
 orientation quotients to the [proved signed divisor counts](riac-elliptic-squarefree-divisor-cancellation.md).
 The [stable-subset bijection and permutation-sign comparison](riac-elliptic-stable-orientation.md)
 are now formalized, with a square-root bound on the actual geometric
-orientation sum. The original orientation-quotient comparison and the
-integer conductor-height transfer remain open.
+orientation sum. The [original orientation-quotient comparison](riac-elliptic-orientation-quotients.md)
+is also formalized. The integer conductor-height transfer remains open.

@@ -28,8 +28,9 @@ theorem tendstoLocallyUniformly_heatFlow_nhds (p : ℂ[X]) (t : ℂ) :
   letI : CompactSpace K := isCompact_iff_compactSpace.mp hK
   let F : ℂ → K → ℂ := fun s z => (heatFlow s p).eval z
   have hF : Continuous (Function.uncurry F) := by
-    have h := (continuous_biEval (polynomialHeatFamily p)).comp
-      (continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd))
+    have hmap : Continuous (fun z : ℂ × K => (z.1, (z.2 : ℂ))) :=
+      continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
+    have h := (continuous_biEval (polynomialHeatFamily p)).comp hmap
     apply h.congr
     intro z
     exact (biEval_eq_eval_biFibre _ _).trans (by rw [biFibre_polynomialHeatFamily]; rfl)
@@ -83,7 +84,7 @@ private theorem continuous_polynomial_elapsedMoment_clamped {p : ℂ[X]}
   apply continuous_iff_continuousAt.mpr
   intro t
   let R := ((heatFlow (t : ℂ) p).roots.map norm).sum + 1
-  have hRnear : ∀ᶠ s in 𝓝 t, ∀ z ∈ (heatFlow (s : ℂ) p).roots, ‖z‖ ≤ R := by
+  have hRnear : ∀ᶠ s : ℝ in 𝓝 t, ∀ z ∈ (heatFlow (s : ℂ) p).roots, ‖z‖ ≤ R := by
     filter_upwards [(hnorm.tendsto t).eventually
       (Iio_mem_nhds (show ((heatFlow (t : ℂ) p).roots.map norm).sum < R by
         dsimp only [R]; linarith))] with s hs z hz
@@ -113,7 +114,7 @@ private theorem continuous_polynomial_elapsedMoment_clamped {p : ℂ[X]}
   have hη : 0 < η := by dsimp only [η]; positivity
   have hηN : (p.natDegree : ℝ) * η < ε / 2 := by
     dsimp only [η]
-    rw [mul_div_assoc, div_lt_iff₀ (by positivity)]
+    rw [← mul_div_assoc, div_lt_iff₀ (by positivity)]
     nlinarith only [hε]
   have he := (Metric.tendstoUniformly_iff.mp hu) η hη
   have hf := (hfixed.tendsto t).eventually (Metric.ball_mem_nhds _ (half_pos hε))
@@ -138,7 +139,7 @@ private theorem continuous_polynomial_elapsedMoment_clamped {p : ℂ[X]}
         dist (((heatFlow (s : ℂ) p).roots.map Ψ).sum)
           (((heatFlow (t : ℂ) p).roots.map Ψ).sum) := dist_triangle _ _ _
     _ ≤ (p.natDegree : ℝ) * η + dist (((heatFlow (s : ℂ) p).roots.map Ψ).sum)
-          (((heatFlow (t : ℂ) p).roots.map Ψ).sum) := add_le_add_right hfirst _
+          (((heatFlow (t : ℂ) p).roots.map Ψ).sum) := add_le_add hfirst le_rfl
     _ < ε / 2 + ε / 2 := add_lt_add hηN hclose
     _ = ε := by ring
 
@@ -157,7 +158,7 @@ theorem continuousOn_polynomialElapsedDepthAction {p : ℂ[X]} (hp : p ≠ 0)
   have hc := (continuous_polynomial_elapsedMoment_clamped hp hq).sub hbase
   apply hc.continuousOn.congr
   intro t ht
-  simp only [Pi.sub_apply, max_eq_left ht]
+  simp only [Pi.sub_apply, max_eq_left (show 0 ≤ t from ht)]
   unfold polynomialElapsedDepthAction
   rw [Multiset.sum_map_sub, Multiset.map_const', Multiset.sum_replicate, nsmul_eq_mul,
     IsAlgClosed.card_roots_eq_natDegree, (heatFlow_degree_ne_zero hp (t : ℂ)).1]

@@ -36,8 +36,9 @@ splits. A product-of-geometric-series bound would then give
 
 `|A_n−B_n| ≤ (2q+2)(n+1)^(m−1) q^(n/2)`.
 
-For fixed curve this is the RH scale `Oε((q^n)^(1/2+ε))`. The coefficient
-identity and its actual-count interpretation are not yet formalized here.
+For fixed curve this is the RH scale `Oε((q^n)^(1/2+ε))`. The general
+hyperelliptic coefficient identity and its actual-count interpretation remain
+open. The concrete elliptic case below is formalized.
 
 ## Inputs and obligations
 
@@ -66,11 +67,12 @@ actual Frobenius sign is `(-1)^(n + number of closed places)`, including
 singletons. Thus their geometric signed sum satisfies
 `J_n=(-1)^n(E_n−O_n)` and `|J_n|≤8(n+1)²(√3)^n`.
 
-The remaining elliptic quotient comparison is `A_n−B_n=J_n`.
-Signed transporter counting should prove it directly: collisions cancel
-by an odd swap, each injective tuple has its support's Frobenius sign,
-and each `n`-point support has `n!` orderings. The original cover and base
-counts remain the target; this final identification is not yet formalized.
+The [elliptic quotient comparison](../3-formalized/riac-elliptic-orientation-quotients.md)
+is also formalized: `A_n−B_n=J_n`. Signed transporter counting proves it
+directly: collisions cancel by an odd swap, each injective tuple has its
+support's Frobenius sign, and each `n`-point support has `n!` orderings.
+Thus the original cover and base counts satisfy
+`|A_n−B_n|≤8(n+1)²(√3)^n`, with all arithmetic inputs discharged.
 
 Verified source inputs:
 [HyperellipticRiemannHypothesis.lean](../../../../formal/GaloisForLFunctions/RHTower/HyperellipticRiemannHypothesis.lean)
@@ -91,5 +93,5 @@ The general ramified-orbit framework is classical:
 [Gadish](https://arxiv.org/html/1703.01710v2).
 Symmetric-power zeta identities are treated by
 [Huang](https://arxiv.org/abs/1707.03479).
-The displayed signed specialization is a proposed deduction, not a quoted
-or newly established theorem.
+The displayed general hyperelliptic identity remains a proposed deduction;
+the concrete elliptic comparison and bound above are formalized.

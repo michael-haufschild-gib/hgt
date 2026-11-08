@@ -51,6 +51,17 @@ Fixed root cardinality upgrades locally uniform polynomial convergence to
 continuity of nonnegative weighted root sums: a bounded cutoff detects any
 escaping multiplicity copy, and the complementary weight gives the upper bound.
 
+For the entire-function transfer, `xiRealApprox` consists of finite initial
+zero copies and its heat converges below the Gaussian-growth horizon
+(`tendstoLocallyUniformly_polyHeat_xiRealApprox`). On any finite nonreal target
+set, choose `δ>0` below every absolute imaginary part. The continuous weight
+`min(1, |Im z|/δ) ((Im z)²+2t)^q` equals the full elapsed weight on that set,
+vanishes on the real axis, and never exceeds the nonreal moment. Weighted
+zero-sum semicontinuity then transfers the polynomial budget. Positive-time
+moment monotonicity extends a bound below the growth horizon to every later
+time. The same cutoff can remove initial separability without asserting
+continuity of the discontinuous nonreal count.
+
 Remaining proof work: the polynomial budget and its transfer to the actual
 initial divisor. Global moment comparison at positive times is formalized;
 it does not by itself control the initial trace.
@@ -104,4 +115,22 @@ All four capstones pass direct Lean check with the same standard axioms.
 of every continuous nonnegative root sum from locally uniform convergence,
 a nonzero limit, and fixed root cardinality. Constant perturbations preserve
 all nonnegative depth powers, including at multiple roots. All three
+capstones pass direct Lean check with the same standard axioms.
+
+`ArithmeticElectrostatics/ThePolynomialHeatClockComposes.lean` proves the
+polynomial heat semigroup, nonreal-count monotonicity between arbitrary times,
+compatibility of real and complex heat, and commutation with constant addition.
+All five capstones pass direct Lean check with the same standard axioms.
+
+`ArithmeticElectrostatics/ThePolynomialHeatCollisionsAreFinite.lean` proves
+that an initially separable nonzero complex polynomial has finitely many
+nonsimple heat fibres. Its time resultant specializes without monic
+normalization, and every real time admits a punctured forward interval of
+simple fibres. All four capstones pass direct Lean check with the same
+standard axioms.
+
+`ArithmeticElectrostatics/ThePolynomialElapsedDepthActionIsContinuous.lean`
+proves continuity of nonnegative weighted polynomial heat-root sums and of
+the corrected elapsed-depth action on `[0,∞)`, including collisions. At zero,
+every positive exponent recovers the initial depth moment. All four
 capstones pass direct Lean check with the same standard axioms.

@@ -129,10 +129,17 @@ Every compact continuous test passes to the boundary, including tests crossing z
 power before approaching either imaginary ray, then applying dominated convergence.
 Its direct Lean check and transitive axiom audit pass.
 
-This supplies the analytic boundary input for B122. The proposed next mechanism pairs
-the FE with translated tents, uses simultaneous recurrence and the atom-mass floor to
-eliminate the decaying error, then uses one unit tent to force integer support. The
-tent identity and recurrence argument remain unproved here.
+`TentPairingsOfIntegrableDefects.lean` pairs the FE with every tent of width `0 < h ≤ 1`
+and centre `y > h`. Half its atomic mass equals a sinc-squared cosine pairing, the pole
+term `hβ`, and its boundary-error integral. That error is bounded by
+`(3h/π)‖g‖₁(y−h)⁻¹ᐟ²`, hence vanishes under distant translation. The inverse-square
+moment justifies both limiting interchanges. The exact identity and decay theorem are
+kernel checked with the three standard axioms above.
+
+These supply the analytic inputs for B122. The proposed recurrence argument uses two nested
+tents and the atom-mass floor to eliminate the error on `0 < |y| < 1`; one unit tent at
+zero would then force integer support. Recurrence transfer, boundary evenness and the origin
+pairing remain to be proved.
 
 ## Tools and questions
 

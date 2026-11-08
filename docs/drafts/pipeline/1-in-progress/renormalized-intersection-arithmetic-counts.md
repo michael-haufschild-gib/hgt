@@ -110,8 +110,12 @@ including infinity. The [stable-configuration theorem](../3-formalized/riac-elli
 now identifies actual `n`-point configurations with degree-`n` squarefree
 divisors and proves their intrinsic Frobenius orientation formula.
 Their signed sum satisfies `J_n=(-1)^n(E_n−O_n)` and the same square-root
-bound. The original orientation-quotient counts still require their
-transporter comparison with `J_n`.
+bound. The [original orientation-quotient counts](../3-formalized/riac-elliptic-orientation-quotients.md)
+also have their complete comparison: `A_n−B_n=J_n`, hence
+`|A_n−B_n|≤8(n+1)²(√3)^n`. They are defined independently from actual
+point tuples and orientation labels; signed transporter counting retains
+all collisions and proves the identification. The integer-height
+comparison remains open.
 
 ## Necessary distinctions
 

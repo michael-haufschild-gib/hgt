@@ -22,6 +22,10 @@ def tentSeriesKernel (h n ε s u : ℝ) : ℝ := shiftedTentSeriesKernel n ε s 
 /-- The dual cosine kernel for the same tent. -/
 def tentDualKernel (h n ε s u : ℝ) : ℝ := h * shiftedTentDualKernel n ε s (h * u)
 
+/-- The nonnegative Fourier weight of a tent, without its width factor. -/
+def tentFourierWeight (h u : ℝ) : ℝ :=
+  (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2
+
 /-- The pole term after the radial and height variables are scaled together. -/
 def tentPolarKernel (h β n ε s : ℝ) : ℝ :=
   shiftedTentPolarKernel (β : ℂ) n ε s + (h - 1) * β * (1 - |s|)
@@ -30,6 +34,10 @@ def tentPolarKernel (h β n ε s : ℝ) : ℝ :=
 def tentDefectKernel (g : ℝ → ℂ) (h n ε s : ℝ) : ℝ :=
   h * (1 - |s|) * (defectLaplace g
     ((h : ℂ) * ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I))).re
+
+/-- Boundary error paired with a tent of width `h` centred at `h*n`. -/
+def tentBoundaryError (g : ℝ → ℂ) (h n : ℝ) : ℝ :=
+  ∫ s in (-1 : ℝ)..1, h * (1 - |s|) * (defectBoundary g (h * (n + s))).re
 
 theorem tentSeriesKernel_eq {h : ℝ} (hh : 0 < h) (n ε s u : ℝ) :
     tentSeriesKernel h n ε s u = h * (1 - |s|) *
@@ -41,7 +49,6 @@ theorem tentSeriesKernel_eq {h : ℝ} (hh : 0 < h) (n ε s u : ℝ) :
   have hd : ((u : ℂ) / h) ^ 2 + z ^ 2 =
       ((u : ℂ) ^ 2 + ((h : ℂ) * z) ^ 2) / (h : ℂ) ^ 2 := by
     field_simp
-    <;> ring
   have he : z / ((Real.pi : ℂ) * (((u : ℂ) / h) ^ 2 + z ^ 2)) =
       (h : ℂ) * (((h : ℂ) * z) / ((Real.pi : ℂ) * ((u : ℂ) ^ 2 + ((h : ℂ) * z) ^ 2))) := by
     rw [hd, ← mul_div_assoc]
@@ -122,7 +129,7 @@ theorem integrable_tentDualKernel {ν : Measure ℝ} [SFinite ν]
   rw [Real.norm_eq_abs, tentDualKernel, abs_mul, abs_of_pos hh]
   calc h * |shiftedTentDualKernel n ε s (h * u)| ≤
       h * ((1 / (2 * Real.pi ^ 2 * ε ^ 2)) * (1 / (h * u) ^ 2)) := hb
-    _ = _ := by field_simp; ring
+    _ = _ := by field_simp
 
 theorem continuous_tentPolarKernel (h β n : ℝ) {ε : ℝ} (hε : 0 < ε) :
     Continuous (tentPolarKernel h β n ε) :=
@@ -137,7 +144,9 @@ theorem continuous_tentDefectKernel {g : ℝ → ℂ} (hg : Integrable g)
       ((h * ε : ℝ) : ℂ) + ((h * (n + s) : ℝ) : ℂ) * I := by
     push_cast
     ring
-  simp only [tentDefectKernel, he]
+  change Continuous fun s : ℝ => h * (1 - |s|) *
+    (defectLaplace g ((h : ℂ) * ((ε : ℂ) + ((n + s : ℝ) : ℂ) * I))).re
+  simp only [he]
   exact (by fun_prop : Continuous fun s : ℝ => h * (1 - |s|)).mul (Complex.continuous_re.comp hc)
 
 theorem integral_tentSeriesKernel_eq_of_theta_defect {ν : Measure ℝ}
@@ -245,7 +254,8 @@ theorem tendsto_integral_tentSeriesKernel {ν : Measure ℝ}
       fun s hs => shiftedTentSeriesKernel_nonneg hε.1 n (abs_le.mpr hs) (u / h))]
     have hb := intervalIntegral_shiftedTentSeriesKernel_le hn hε.1 hε.2.le huh
     change (∫ s in (-1 : ℝ)..1, shiftedTentSeriesKernel n ε s (u / h)) ≤ _
-    convert hb using 1 <;> field_simp <;> ring
+    convert hb using 1
+    field_simp
   · filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
     have huh : 1 ≤ u / h := (le_div_iff₀ hh).mpr (by linarith only [hu, hh1])
     have h0 : unitTent 0 (-(u / h) - n) = 0 :=
@@ -259,9 +269,8 @@ theorem tendsto_integral_tentSeriesKernel {ν : Measure ℝ}
 theorem intervalIntegral_tentDualKernel {h u : ℝ} (hh : 0 < h) (hu : 0 < u) (n ε : ℝ) :
     ∫ s in (-1 : ℝ)..1, tentDualKernel h n ε s u =
       h * (Real.exp (-2 * Real.pi * (h * u) * ε) *
-        (Real.cos (2 * Real.pi * (h * u) * n) *
-          (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2)) := by
-  simp only [tentDualKernel, intervalIntegral.integral_const_mul,
+        (Real.cos (2 * Real.pi * (h * u) * n) * tentFourierWeight h u)) := by
+  simp only [tentDualKernel, tentFourierWeight, intervalIntegral.integral_const_mul,
     intervalIntegral_shiftedTentDualKernel (mul_pos hh hu).ne']
 
 theorem abs_intervalIntegral_tentDualKernel_le {h u ε : ℝ}
@@ -269,19 +278,25 @@ theorem abs_intervalIntegral_tentDualKernel_le {h u ε : ℝ}
     |∫ s in (-1 : ℝ)..1, tentDualKernel h n ε s u| ≤
       (1 / (Real.pi ^ 2 * h)) * (1 / u ^ 2) := by
   rw [intervalIntegral_tentDualKernel hh hu, abs_mul, abs_of_pos hh,
-    abs_mul, abs_of_pos (Real.exp_pos _), abs_mul, abs_of_nonneg (sq_nonneg _)]
+    abs_mul, abs_of_pos (Real.exp_pos _), abs_mul,
+    abs_of_nonneg (show 0 ≤ tentFourierWeight h u from sq_nonneg _)]
   have he : Real.exp (-2 * Real.pi * (h * u) * ε) ≤ 1 :=
-    Real.exp_le_one_iff.mpr (by have := Real.pi_pos; nlinarith [mul_pos (mul_pos hh hu) hε])
+    Real.exp_le_one_iff.mpr (by
+      have hp : 0 ≤ 2 * Real.pi * (h * u) * ε := by positivity
+      linarith only [hp])
   have hc := Real.abs_cos_le_one (2 * Real.pi * (h * u) * n)
-  have hs : (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2 ≤
+  have hs : tentFourierWeight h u ≤
       1 / (Real.pi * (h * u)) ^ 2 := by
-    rw [div_pow]
+    rw [tentFourierWeight, div_pow]
     exact div_le_div_of_nonneg_right (Real.sin_sq_le_one _) (sq_nonneg _)
   calc h * (Real.exp (-2 * Real.pi * (h * u) * ε) *
-      (|Real.cos (2 * Real.pi * (h * u) * n)| *
-        (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2)) ≤
-        h * (1 * (1 * (1 / (Real.pi * (h * u)) ^ 2))) := by gcongr
-    _ = _ := by field_simp; ring
+      (|Real.cos (2 * Real.pi * (h * u) * n)| * tentFourierWeight h u)) ≤
+        h * (1 * (1 * (1 / (Real.pi * (h * u)) ^ 2))) := by
+          apply mul_le_mul_of_nonneg_left _ hh.le
+          exact mul_le_mul he
+            (mul_le_mul hc hs (sq_nonneg _) zero_le_one)
+            (mul_nonneg (abs_nonneg _) (sq_nonneg _)) zero_le_one
+    _ = _ := by field_simp
 
 /-- The dual side converges to its absolutely integrable sinc-squared cosine pairing. -/
 theorem tendsto_integral_tentDualKernel {ν : Measure ℝ}
@@ -289,7 +304,7 @@ theorem tendsto_integral_tentDualKernel {ν : Measure ℝ}
     {h : ℝ} (hh : 0 < h) (n : ℝ) :
     Tendsto (fun ε : ℝ => ∫ u, (∫ s in (-1 : ℝ)..1, tentDualKernel h n ε s u) ∂ν)
       (𝓝[>] 0) (𝓝 (h * ∫ u, Real.cos (2 * Real.pi * (h * u) * n) *
-        (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2 ∂ν)) := by
+        tentFourierWeight h u ∂ν)) := by
   haveI : SigmaFinite ν := sigmaFinite_of_measure_Iio_one_eq_zero hsupp hmom
   rw [← integral_const_mul]
   refine tendsto_integral_filter_of_dominated_convergence
@@ -301,9 +316,8 @@ theorem tendsto_integral_tentDualKernel {ν : Measure ℝ}
     exact abs_intervalIntegral_tentDualKernel_le hh (zero_lt_one.trans_le hu) hε n
   · filter_upwards [ae_one_le_of_measure_Iio_one_eq_zero hsupp] with u hu
     have hc : Continuous fun ε : ℝ => h * (Real.exp (-2 * Real.pi * (h * u) * ε) *
-        (Real.cos (2 * Real.pi * (h * u) * n) *
-          (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2)) := by fun_prop
-    have ht := (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+        (Real.cos (2 * Real.pi * (h * u) * n) * tentFourierWeight h u)) := by fun_prop
+    have ht := (hc.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
     simp only [mul_zero, Real.exp_zero, one_mul] at ht
     exact ht.congr' (Eventually.of_forall fun ε =>
       (intervalIntegral_tentDualKernel hh (zero_lt_one.trans_le hu) n ε).symm)
@@ -324,7 +338,8 @@ theorem tendsto_integral_tentPolarKernel (h β : ℝ) {n : ℝ} (hn : 1 ≤ n) :
       (𝓝[>] 0) (𝓝 (h * β)) := by
   have ht := tendsto_windowPoisson (-n)
   rw [unitTent_eq_zero (by rw [sub_zero, abs_neg, abs_of_pos (by linarith)]; exact hn)] at ht
-  have hl := (tendsto_const_nhds (x := h * β) (f := 𝓝[>] (0 : ℝ))).sub (ht.const_mul β)
+  have hl := (tendsto_const_nhds : Tendsto (fun _ : ℝ => h * β)
+    (𝓝[>] 0) (𝓝 (h * β))).sub (ht.const_mul β)
   simp only [mul_zero, sub_zero] at hl
   exact hl.congr' (eventually_nhdsWithin_of_forall fun ε hε =>
     (intervalIntegral_tentPolarKernel h β n hε).symm)
@@ -368,7 +383,8 @@ theorem tendsto_integral_tentDefectKernel {g : ℝ → ℂ} (hg : Integrable g)
   have ht : Tendsto (fun ε : ℝ => h * ε) (𝓝[>] 0) (𝓝[>] 0) := by
     apply tendsto_nhdsWithin_iff.mpr
     refine ⟨?_, ?_⟩
-    · simpa only [mul_zero] using (tendsto_id.const_mul h).mono_left
+    · simpa only [id_eq, mul_zero] using
+        ((tendsto_id : Tendsto (fun x : ℝ => x) (𝓝 0) (𝓝 0)).const_mul h).mono_left
         (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
     · exact eventually_nhdsWithin_of_forall fun ε hε => mul_pos hh hε
   apply intervalIntegral.tendsto_integral_filter_of_dominated_convergence
@@ -405,7 +421,7 @@ theorem tent_boundary_identity_of_theta_defect {ν : Measure ℝ}
     {h n : ℝ} (hh : 0 < h) (hh1 : h ≤ 1) (hn : 1 < n) :
     (1 / 2) * (∫ u, unitTent n (u / h) ∂ν) =
       h * (∫ u, Real.cos (2 * Real.pi * (h * u) * n) *
-        (Real.sin (Real.pi * (h * u)) / (Real.pi * (h * u))) ^ 2 ∂ν) + h * β +
+        tentFourierWeight h u ∂ν) + h * β +
           ∫ s in (-1 : ℝ)..1, h * (1 - |s|) * (defectBoundary g (h * (n + s))).re := by
   have hleft := tendsto_integral_tentSeriesKernel hsupp hmom hh hh1 hn.le
   have hright := ((tendsto_integral_tentDualKernel hsupp hmom hh n).add
@@ -416,6 +432,57 @@ theorem tent_boundary_identity_of_theta_defect {ν : Measure ℝ}
   filter_upwards [Ioo_mem_nhdsGT (show (0 : ℝ) < 1 by norm_num)] with ε hε
   exact (tent_pairing_identity hsupp hmom hgm hgb hgi hθ hh hh1 hn.le hε.1 hε.2.le).symm
 
+/-- The boundary error is uniformly small for tents far from the origin. -/
+theorem norm_tentBoundaryError_le {g : ℝ → ℂ} (hg : Integrable g)
+    {h n : ℝ} (hh : 0 < h) (hn : 1 < n) :
+    ‖tentBoundaryError g h n‖ ≤
+      (2 * h * (3 / (2 * Real.pi) * ∫ t, ‖g t‖)) *
+        (h * (n - 1)) ^ (-(1 / 2 : ℝ)) := by
+  let C : ℝ := 3 / (2 * Real.pi) * ∫ t, ‖g t‖
+  have hC : 0 ≤ C := mul_nonneg (by positivity) (integral_nonneg fun _ => norm_nonneg _)
+  have hb : ∀ s ∈ uIoc (-1 : ℝ) 1,
+      ‖h * (1 - |s|) * (defectBoundary g (h * (n + s))).re‖ ≤
+        h * C * (h * (n - 1)) ^ (-(1 / 2 : ℝ)) := by
+    intro s hs
+    rw [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 1)] at hs
+    have hs1 : |s| ≤ 1 := abs_le.mpr ⟨hs.1.le, hs.2⟩
+    have ha : 0 < h * (n - 1) := mul_pos hh (sub_pos.mpr hn)
+    have hy : h * (n - 1) ≤ |h * (n + s)| :=
+      (mul_le_mul_of_nonneg_left (by linarith only [hs.1]) hh.le).trans (le_abs_self _)
+    have hj : ‖defectBoundary g (h * (n + s))‖ ≤
+        C * (h * (n - 1)) ^ (-(1 / 2 : ℝ)) :=
+      (norm_defectBoundary_le hg _).trans
+        (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_nonpos ha hy (by norm_num)) hC)
+    have hw : 0 ≤ h * (1 - |s|) := mul_nonneg hh.le (sub_nonneg.mpr hs1)
+    have hw1 : h * (1 - |s|) ≤ h := by nlinarith only [mul_nonneg hh.le (abs_nonneg s)]
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg hw]
+    calc h * (1 - |s|) * |(defectBoundary g (h * (n + s))).re| ≤
+        h * ‖defectBoundary g (h * (n + s))‖ :=
+          mul_le_mul hw1 (Complex.abs_re_le_norm _) (abs_nonneg _) hh.le
+      _ ≤ h * (C * (h * (n - 1)) ^ (-(1 / 2 : ℝ))) :=
+          mul_le_mul_of_nonneg_left hj hh.le
+      _ = _ := by ring
+  have hi := intervalIntegral.norm_integral_le_of_norm_le_const hb
+  norm_num only [show |(1 : ℝ) - -1| = 2 by norm_num] at hi
+  exact hi.trans_eq (by dsimp only [C]; ring)
+
+/-- Fixed-width tent errors vanish as their centres tend to positive infinity. -/
+theorem tendsto_tentBoundaryError_atTop {g : ℝ → ℂ} (hg : Integrable g)
+    {h : ℝ} (hh : 0 < h) :
+    Tendsto (tentBoundaryError g h) atTop (𝓝 0) := by
+  have ht : Tendsto (fun n : ℝ => h * (n - 1)) atTop atTop := by
+    refine tendsto_atTop.mpr fun b => eventually_atTop.mpr ⟨b / h + 1, fun n hn => ?_⟩
+    have hb : b / h ≤ n - 1 := by linarith only [hn]
+    have hb' := (div_le_iff₀ hh).mp hb
+    simpa only [mul_comm] using hb'
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  refine squeeze_zero' (Eventually.of_forall fun n => norm_nonneg _)
+    (eventually_atTop.mpr ⟨2, fun n hn => norm_tentBoundaryError_le hg hh (by linarith only [hn])⟩) ?_
+  simpa using
+    ((tendsto_rpow_neg_atTop (by norm_num : 0 < (1 / 2 : ℝ))).comp ht).const_mul
+      (2 * h * (3 / (2 * Real.pi) * ∫ t, ‖g t‖))
+
 end GaloisForLFunctions.ExactEventTheory
 
 #print axioms GaloisForLFunctions.ExactEventTheory.tent_boundary_identity_of_theta_defect
+#print axioms GaloisForLFunctions.ExactEventTheory.tendsto_tentBoundaryError_atTop
