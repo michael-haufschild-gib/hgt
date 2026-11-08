@@ -42,11 +42,11 @@ open Zeta23
 
 noncomputable section
 
-namespace GaloisForLFunctions.FrankensteinRoutes
+namespace GaloisForLFunctions.ZeroConfigurationGeometry
 
 open ArithmeticCastelnuovoSeveri
 
-namespace ZeroConfig'
+namespace ConfigAbscissa
 
 variable (Z : ZeroConfig)
 
@@ -182,13 +182,13 @@ theorem pairConfig_not_abscissaLaw {ρ : ℂ} (h12 : 1 / 2 < ρ.re) (h1 : ρ.re 
   have := hA (hfin 0) ρ (Or.inl rfl)
   linarith
 
-end ZeroConfig'
+end ConfigAbscissa
 
 /-! ### Curves: the Frobenius supplies AAL -/
 
-namespace CurveTemplate
+namespace CurveAbscissa
 
-open ZeroConfig'
+open ConfigAbscissa
 
 variable {ι : Type*} [Fintype ι] (D : CurveDatum ι) (hD : ∀ i, ‖D.β i‖ ≤ D.sqrtq)
 
@@ -245,13 +245,13 @@ theorem hyperellipticConfig_pure :
 
 end Hyperelliptic
 
-end CurveTemplate
+end CurveAbscissa
 
 /-! ### ζ: the configuration laws are the corpus laws -/
 
-namespace ZetaTemplate
+namespace ZetaAbscissa
 
-open ZeroConfig' RHTower RHTower.CrossRouteReceiverBridges
+open ConfigAbscissa RHTower RHTower.CrossRouteReceiverBridges
 
 /-- The copies of the zeros right of `½ + h` are finite iff the zeros are. -/
 theorem finite_copies_iff (h : ℝ) :
@@ -340,6 +340,6 @@ theorem riemannHypothesis_iff_template :
   rw [← pure_iff_approachesLine_and_abscissaLaw, riemannHypothesis_iff_zetaZeroConfig_onLine]
   rfl
 
-end ZetaTemplate
+end ZetaAbscissa
 
-end GaloisForLFunctions.FrankensteinRoutes
+end GaloisForLFunctions.ZeroConfigurationGeometry

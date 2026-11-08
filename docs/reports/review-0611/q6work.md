@@ -22,6 +22,7 @@
    - `CACT/AllRatioDeepConductorPairings.lean`: arbitrarily small deep inverse-energy residuals at every positive critical ratio; all non-collar Schur costs are absorbed while retaining the literal collar cost. Both theorems pass Lean and the same axiom audit.
    - `CACT/LowConductorCollarPairingsAndWindowLocalizedGarding.lean`: nonpolar packet and all non-collar Schur payments; whole packet cross-payment with the sole scalar loss `C c b₁² / log N`; that loss is absorbed by an arbitrarily small packet diagonal on the primitive hyperplane. Core theorems pass Lean and the same axiom audit.
    - `CACT/NegativeDirectionsCannotEscapeLogarithmicWindows.lean`: `exists_all_ratio_far_garding_with_linear_mass` and `exists_all_ratio_three_band_garding_with_linear_mass` retain the full three-band reserves with `B_far ≤ C_B (R_max + 1)`. Both pass Lean and the same axiom audit.
+   - `CACT/WholeSpaceCollarGarding.lean`: whole-space Gårding with sole scalar polar loss `C c b₁² / log N`; localization to `(-A, 1]` with `A ≤ (1/4) log(R + 1) + C_len`; simultaneous primitive Gårding and arbitrarily accurate far-energy bridge. All four main theorems pass Lean and the same axiom audit.
 
 ---
 
@@ -33,10 +34,10 @@ Paper-proof pipeline cards tracking the remaining Lean formalization:
 
 Remaining mathematical obligations and validation:
 
-1. **All-Space Window-Localized Gårding & Primitive Compactness** (`WholeSpaceCollarGarding.lean` and `PrimitiveDirectionsHaveCompactCollarProfiles.lean` — proofs drafted; not yet checked):
+1. **Primitive Compactness** (`PrimitiveDirectionsHaveCompactCollarProfiles.lean` — proof drafted; not yet checked):
    - **Done:** expose the three-band decomposition `z = u₀ + u₁ + w` and absorb all non-collar pairings `⟪r_m, u₀ + u₁ + w_P⟫` (`1 ≤ m ≤ Q₁`).
    - **Done:** combine [`exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FiniteConductorCollarReductionAndPolarDecoupling.lean#L237) (`m > m₀`), [`exists_truncated_dualSeventh_conductor_residual`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L736) (`Ioc M ⌊δ N⌋₊`), and [`eventually_uniform_nonpolar_topWindow_norm_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3842) (`Ioc ⌊δ N⌋₊ N`) to decouple all `2 ≤ m ≤ Q₁` from `(V_{Q₁})ᗮ`.
-   - Deduce the primitive-hyperplane `weilQuad` compactness bridge on all of `(conductorSubspace 1 N)ᗮ` and **All-Space Window-Localized Gårding** on `EuclideanSpace ℝ (PrimeHorizonIndex N)` (retaining `∫_{(-A_R, 1]} U_w²` on `A_R ≤ (1/4) log(R_max + 1) + C_len` and `b₁² / log N`).
+   - Deduce the primitive-hyperplane `weilQuad` compactness bridge on all of `(conductorSubspace 1 N)ᗮ`. Whole-space window-localized Gårding is verified above.
 
 2. **`m = 1` Top-Window Lipschitz Profile Approximation & Whole-Space Threshold Equality** (`formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarModeTopWindowLipschitzTransfer.lean` and `WholeSpaceCriticalThresholdEqualsPolarThreshold.lean` — not yet written):
    - Build `.olean` for [PolarPaymentThresholdGrowsExponentially.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentThresholdGrowsExponentially.lean).

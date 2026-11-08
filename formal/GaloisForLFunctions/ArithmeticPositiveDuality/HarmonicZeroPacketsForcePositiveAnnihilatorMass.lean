@@ -208,4 +208,36 @@ theorem harmonic_zero_packet_mass_eq_iff {P : MvPolynomial (Fin 2) ℝ≥0}
     have hm : (m + 1 : ℝ) ≠ 0 := by positivity
     exact sub_eq_zero.mp ((mul_eq_zero.mp he.symm).resolve_left hm)
 
+/-- The geometric polynomial attains the harmonic-packet mass bound. -/
+def harmonicPacketAnnihilator (β : ℝ) (m : ℕ) : MvPolynomial (Fin 2) ℝ≥0 :=
+  ∑ j ∈ Finset.range (m + 1), scaledTwoMonomial β ^ j
+
+/-- The positive ordinate spacing of the extremal packet. -/
+def harmonicPacketStep (m : ℕ) : ℝ := 2 * Real.pi / (((m : ℝ) + 1) * Real.log 2)
+
+theorem harmonicPacketAnnihilator_constantCoeff (β : ℝ) (m : ℕ) :
+    MvPolynomial.constantCoeff (harmonicPacketAnnihilator β m) = 1 := by
+  induction m with
+  | zero => simp [harmonicPacketAnnihilator]
+  | succ m ih =>
+      rw [harmonicPacketAnnihilator, Finset.sum_range_succ, map_add]
+      change MvPolynomial.constantCoeff (harmonicPacketAnnihilator β m) + _ = 1
+      rw [ih, map_pow]
+      simp [scaledTwoMonomial]
+
+theorem dirichletEval_harmonicPacketAnnihilator (β : ℝ) (m : ℕ) (s : ℂ) :
+    dirichletEval s (harmonicPacketAnnihilator β m) =
+      ∑ j ∈ Finset.range (m + 1), dirichletEval s (scaledTwoMonomial β) ^ j := by
+  simp only [harmonicPacketAnnihilator, map_sum, map_pow]
+
+theorem harmonicPacketAnnihilator_tail_mass (β : ℝ) (m : ℕ) :
+    dirichletTailMass (harmonicPacketAnnihilator β m) β = m := by
+  have he := dirichletEval_ofReal_eq_one_add_tail
+    (harmonicPacketAnnihilator_constantCoeff β m) β
+  rw [dirichletEval_harmonicPacketAnnihilator, scaledTwoMonomial_at_real] at he
+  simp only [one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one] at he
+  have hr := congrArg Complex.re he
+  simp only [Complex.natCast_re, Complex.ofReal_re, Nat.cast_add, Nat.cast_one] at hr
+  linarith only [hr]
+
 end GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator

@@ -36,4 +36,26 @@ def arbitraryMultiplicityAnnihilator (β : ℝ) (r n : ℕ) : MvPolynomial (Fin 
     ∑ j ∈ Finset.range (r + 1), MvPolynomial.C (multiplicityPrimitiveCoefficient r n j) *
       scaledTwoMonomial β ^ (1 + j * (2 * n + 1))
 
+theorem coe_multiplicityPrimitiveCoefficient (r n j : ℕ) :
+    ((multiplicityPrimitiveCoefficient r n j : ℝ≥0) : ℝ) =
+      (r.choose j : ℝ) / (1 + (j : ℝ) * (2 * (n : ℝ) + 1)) := by
+  simp [multiplicityPrimitiveCoefficient]
+
+theorem arbitraryMultiplicityAnnihilator_constantCoeff (β : ℝ) (r n : ℕ) :
+    MvPolynomial.constantCoeff (arbitraryMultiplicityAnnihilator β r n) = 1 := by
+  simp [arbitraryMultiplicityAnnihilator, scaledTwoMonomial, pow_add]
+
+theorem dirichletEval_arbitraryMultiplicityAnnihilator (β : ℝ) (r n : ℕ) (s : ℂ)
+    (hS : 0 < multiplicityPrimitiveNormalizer r n) :
+    dirichletEval s (arbitraryMultiplicityAnnihilator β r n) =
+      1 + ((multiplicityPrimitiveNormalizer r n : ℂ)⁻¹) *
+        ∑ j ∈ Finset.range (r + 1),
+          (((multiplicityPrimitiveCoefficient r n j : ℝ≥0) : ℝ) : ℂ) *
+            dirichletEval s (scaledTwoMonomial β) ^ (1 + j * (2 * n + 1)) := by
+  simp only [arbitraryMultiplicityAnnihilator, map_add, map_one, map_mul, map_sum, map_pow]
+  have hC (a : ℝ≥0) : dirichletEval s (MvPolynomial.C a) = (((a : ℝ≥0) : ℝ) : ℂ) := rfl
+  simp only [hC]
+  congr 2
+  simp [hS.le]
+
 end GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator
