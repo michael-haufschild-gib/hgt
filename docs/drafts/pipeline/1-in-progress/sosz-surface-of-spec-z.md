@@ -44,6 +44,8 @@
 
 | C14 | The prime degrees decide RH | proved (Lean) | `riemannHypothesis_iff_forall_primePair_hasseWeil`: Hasse–Weil on every plane `⟨Γ_p, Γ_q⟩` of two smoothed graphs of prime degree is RH; the log-ratios of primes are dense by the prime number theorem (prime in `(x,(1+ε)x)`), so no gap condition is needed for pairs, in contrast with the one-sided planes `⟨Γ_1, Γ_p⟩` of C12 |
 
+| C15 | The diagonal of the atomic graphs admits a renormalization of bounded growth | refuted (Lean) | on the degrees `[N, 2N)` the genus must satisfy `N(log N − 17)/16 ≤ g` (`genus_ge_of_genusDefect_nonneg`), and `g ≥ N(4 log N + 6)` suffices (`genusDefect_nonneg_of_le`): order `N log N`, against `√n` from the planes `⟨Γ_1, Γ_n⟩` (C7). Inside a dyadic block no degree divides another, so no torsion orbits meet and `Γ_m·Γ_n` is the jets alone, between `N²/(4|m−n|)` and `4N²/|m−n|`; the defect is a negative harmonic matrix. The divergence of the diagonal is the logarithmic singularity of the archimedean kernel at the atom spacing `1/N` |
+
 ## Big picture
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -72,11 +74,12 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
 1. A natural `ℕ`- or log-cardinality-valued count on each plane `⟨Γ_1, Γ_n⟩` with Tate limit `δ_n`,
    defined without `c_B` (C13); equivalently a crude bound `|c_B(log n)| = O(1)` (C11).
 2. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's; the
-   off-diagonal is a nonnegative Lefschetz count.
+   off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization must grow like
+   `N log N` at degree `N` (C15), so a diagonal of bounded genus exists only for smoothed graphs.
 3. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`,
    carried by no metric on `ℙ¹_ℤ`; the even-sector trace of the dilation of `ℝ` at its fixed point.
 4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: decided by the method of C12 once
    prime gaps are `O(√p)`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C14 formalized in `SurfaceOfSpecZ/` (thirteen modules, standard axioms)
+- 2026-11-08 — created; C1–C15 formalized in `SurfaceOfSpecZ/` (fourteen modules, standard axioms)

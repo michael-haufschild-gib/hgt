@@ -415,6 +415,3 @@ theorem genusDefect_nonneg_of_le {g : ℝ} {N : ℕ} (hN : 1 ≤ N)
   nlinarith [mul_le_mul_of_nonneg_right hρle hsq]
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.genus_ge_of_genusDefect_nonneg
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.genusDefect_nonneg_of_le
