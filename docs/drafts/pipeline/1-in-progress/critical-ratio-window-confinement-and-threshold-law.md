@@ -2,7 +2,7 @@
 
 - **ID:** critical-ratio-window-confinement-and-threshold-law
 - **Stage:** 1-in-progress
-- **Status:** Decoupling and collar Gårding formalized; primitive threshold proof drafted; whole-space polar transfer open.
+- **Status:** Decoupling and collar Gårding formalized; primitive threshold equality formalized; whole-space polar transfer open.
 - **Target:** \(R_c=R_c^{\mathrm{nn}}=R_c^{\mathrm{polar}}\), \(R_c^\perp=\inf_{A\ge0}R_1(A)\), and exponential onset lower bounds.
 
 ## Definitions
@@ -46,7 +46,7 @@ ending at \(X,Y,N\). Let \(U\) be the normalized atomic profile of the collar of
 5. **Existing threshold bounds.**
    \[
    0<R_c\le R_c^{\mathrm{nn}}\le R_c^{\mathrm{polar}}
-     \le R_c^\perp\le R_c^{\mathrm{high}}
+     \le R_c^\perp=R_c^{\mathrm{high}}
      =\inf_{A\ge0}R_1(A).
    \]
    The window infimum is at least \(c_0e^{6a}\), and the polar threshold at least
@@ -67,7 +67,7 @@ has unit-normalized collar profiles with bounded eighth exponential mass and asy
 nonpositive Weil form. Strong compactness and the critical alias lower bound contradict
 \(R<\inf_A R_1(A)\).
 
-Lean draft: `PrimitiveCriticalThresholdEqualsWindowThreshold`; final verification remains.
+Lean: `PrimitiveCriticalThresholdEqualsWindowThreshold`; final file check and four axiom audits pass, including the sixth-exponential and logarithmic consequences.
 
 ## Remaining whole-space obligation
 
@@ -85,6 +85,6 @@ The resulting exponent is the proved polar-payment constant \(c_2>0\); no specif
 
 ## Completion criteria
 
-- Verify primitive threshold equality and its sixth-exponential/logarithmic consequences.
+- Primitive threshold equality and its sixth-exponential/logarithmic consequences are verified.
 - Prove and audit polar row transfer and whole-space threshold equality.
 - Wire finished modules; promote this card only after all stated targets pass Lean.

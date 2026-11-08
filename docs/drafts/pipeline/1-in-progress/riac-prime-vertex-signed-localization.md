@@ -9,8 +9,8 @@
 ## Arithmetic map
 
 On the actual barycentric realization of the prime-product complex, use
-`F(x)_p=p x_p/(Σ_q q x_q)`. This preserves every face and cutoff, and
-interpolating the positive weights from `1` to `p` gives a homotopy from
+`F(x)_p=(p+1)x_p/(Σ_q (q+1)x_q)`. This preserves every face and cutoff, and
+interpolating the positive weights from `1` to `p+1` gives a homotopy from
 identity. Distinct prime weights should force the fixed points to be exactly
 the prime vertices. The construction uses prime labels, independently of
 `M(N)` and the Weil form.

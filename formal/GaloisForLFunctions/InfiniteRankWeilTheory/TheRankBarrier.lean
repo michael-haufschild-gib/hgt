@@ -10,7 +10,9 @@ layer `R·μ_k` and reflected inner layer `R⁻¹·μ_k`, has vanishing level su
 divisible by `k` (`levelSum_rootsOfUnityTower_eq_zero`). So a bound holding on a set of levels of
 density `1 − 1/k` (`card_Ioc_filter_not_dvd`), containing runs of length `k − 1` at every position,
 does not self-improve, although the top `R > 1` is visible and the tower is closed under conjugation
-and inversion. At unbounded exceptional rank only thick sets of levels self-improve.
+and inversion. The barrier survives any critical remainder of trace norm `W`, which only raises the
+bound to `W` (`norm_levelSum_rootsOfUnity_add_le`). At unbounded exceptional rank only thick sets of
+levels self-improve.
 
 **The currency is the trace norm, not the rank.** Any finite sequence of values on a window of `N`
 levels is cancelled exactly by `N` distinct unimodular modes (`exists_unimodular_cancelling_layer`,
@@ -116,6 +118,20 @@ theorem levelSum_rootsOfUnityTower_eq_zero {R : ℝ} {k : ℕ} (hk : k ≠ 0) {�
   simp only [one_mul, rootsOfUnityTower, zpow_natCast, mul_pow, ← pow_mul]
   rw [Fintype.sum_bool]
   simp only [if_true, Bool.false_eq_true, if_false, ← Finset.mul_sum, hfin, mul_zero, add_zero]
+
+/-- **The barrier survives an infinite critical remainder.** Adjoin to the roots-of-unity tower any
+remainder of modulus `≤ 1`, of any rank, with trace norm `W`: the level sums stay `≤ W` at every
+level not divisible by `k`, although the top `R` is visible. -/
+theorem norm_levelSum_rootsOfUnity_add_le {R : ℝ} {k : ℕ} (hk : k ≠ 0) {κ : Type*} (u w : κ → ℂ)
+    (hu : ∀ l, ‖u l‖ ≤ 1) (hw : Summable fun l => ‖w l‖) {ν : ℕ} (hν : ¬ k ∣ ν) :
+    ‖levelSum (Sum.elim (rootsOfUnityTower R k) u) (Sum.elim (fun _ => 1) w) ν‖ ≤
+      ∑' l, ‖w l‖ := by
+  have hsplit : levelSum (Sum.elim (rootsOfUnityTower R k) u) (Sum.elim (fun _ => 1) w) ν =
+      levelSum (rootsOfUnityTower R k) (fun _ => 1) ν + levelSum u w ν := by
+    unfold levelSum
+    exact Summable.tsum_sum Summable.of_finite (summable_levelTerm hu hw ν)
+  rw [hsplit, levelSum_rootsOfUnityTower_eq_zero hk hν, zero_add]
+  simpa using norm_levelSum_le hu hw ν
 
 /-- The levels not divisible by `k` have density `1 − 1/k`: `(k − 1)n` of the first `kn`. -/
 theorem card_Ioc_filter_not_dvd (k n : ℕ) (hk : k ≠ 0) :

@@ -25,26 +25,25 @@ namespace GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa
 
 open ArithmeticCastelnuovoSeveri
 
-/-- **Asymptotic properties** depend only on the zeros above some height. -/
+/-- **Asymptotic properties** depend only on the zeros above some height, with multiplicities. -/
 def IsAsymptotic (P : ZeroConfig → Prop) : Prop :=
   ∀ Z Z' : ZeroConfig, (∃ T : ℝ, ∀ z : ℂ, T < |z.im| →
-      (z ∈ Z.carrier ↔ z ∈ Z'.carrier) ∧ Z.mult z = Z'.mult z) → (P Z ↔ P Z')
+      (z ∈ Z.carrier ↔ z ∈ Z'.carrier) ∧ (z ∈ Z.carrier → Z.mult z = Z'.mult z)) → (P Z ↔ P Z')
 
 theorem approachesLine_isAsymptotic : IsAsymptotic ApproachesLine := by
   -- symmetric, so one direction suffices
   suffices H : ∀ Z Z' : ZeroConfig, (∃ T : ℝ, ∀ z : ℂ, T < |z.im| →
-      (z ∈ Z.carrier ↔ z ∈ Z'.carrier) ∧ Z.mult z = Z'.mult z) →
-      ApproachesLine Z → ApproachesLine Z' by
+      (z ∈ Z.carrier ↔ z ∈ Z'.carrier)) → ApproachesLine Z → ApproachesLine Z' by
     intro Z Z' hT
-    refine ⟨H Z Z' hT, H Z' Z ?_⟩
     obtain ⟨T, hT⟩ := hT
-    exact ⟨T, fun z hz => ⟨(hT z hz).1.symm, (hT z hz).2.symm⟩⟩
+    exact ⟨H Z Z' ⟨T, fun z hz => (hT z hz).1⟩, H Z' Z ⟨T, fun z hz => (hT z hz).1.symm⟩⟩
   rintro Z Z' ⟨T, hT⟩ hZ h hh
   refine ((hZ h hh).union (finite_of_abs_im_le Z' T)).subset fun z ⟨hz, hre⟩ => ?_
   by_cases hzT : T < |z.im|
-  · exact Or.inl ⟨(hT z hzT).1.mpr hz, hre⟩
+  · exact Or.inl ⟨(hT z hzT).mpr hz, hre⟩
   · exact Or.inr ⟨hz, not_lt.mp hzT⟩
 
+open scoped Classical in
 /-- Adding one reflection pair `{ρ, 1 − ρ̄}` absent from `Z`, with multiplicity one. -/
 def addPair (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1) (hρ : ρ ∉ Z.carrier)
     (hρ' : reflect ρ ∉ Z.carrier) : ZeroConfig where
@@ -68,7 +67,7 @@ def addPair (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1) (h
     rintro z (hz | rfl | rfl)
     · simp [hz, Z.reflect_mem z hz, Z.mult_reflect z hz]
     · simp [hρ, hρ']
-    · have hrr : reflect (reflect z) = z := by simp [reflect]
+    · have hrr : reflect (reflect ρ) = ρ := by simp [reflect]
       simp [hrr, hρ, hρ']
   finite_window T₁ T₂ := ((Z.finite_window T₁ T₂).union
     ((finite_singleton _).insert _)).subset fun z ⟨hz, hw⟩ => by
@@ -103,7 +102,7 @@ theorem addPair_agrees_above (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 
     (hρ : ρ ∉ Z.carrier) (hρ' : reflect ρ ∉ Z.carrier) :
     ∀ z : ℂ, |ρ.im| < |z.im| →
       (z ∈ Z.carrier ↔ z ∈ (addPair Z ρ h0 h1 hρ hρ').carrier) ∧
-        Z.mult z = (addPair Z ρ h0 h1 hρ hρ').mult z := by
+        (z ∈ Z.carrier → Z.mult z = (addPair Z ρ h0 h1 hρ hρ').mult z) := by
   intro z hz
   have hne : z ≠ ρ := fun h => by rw [h] at hz; exact lt_irrefl _ hz
   have hne' : z ≠ reflect ρ := fun h => by
@@ -118,12 +117,8 @@ theorem addPair_agrees_above (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 
       · exact h
       · exact absurd h hne
       · exact absurd h hne'
-  · show Z.mult z = if z ∈ Z.carrier then Z.mult z else 1
-    by_cases h : z ∈ Z.carrier
-    · rw [if_pos h]
-    · -- off the carrier, the multiplicity of `Z` is not used; compare through membership
-      rw [if_neg h]
-      exact absurd h (by simp_all)
+  · intro h
+    simp [addPair, h]
 
 /-- **No asymptotic property decides the finite stratum.** -/
 theorem exists_not_abscissaLawAt_zero_of_isAsymptotic {P : ZeroConfig → Prop}

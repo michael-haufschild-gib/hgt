@@ -16,7 +16,7 @@ Answer §3: the whole-space critical threshold grows exponentially in the onset 
 | Unrestricted atomic Gårding (A10 as stated) fails at every `R > 0`; top-collar Gårding holds | `CACT/UnrestrictedAtomicGardingFailsAndCollarGardingHolds` |
 | Nonpositive directions cannot escape the top window of length `(1/8)log(R+1)+C₀` | `CACT/NegativeDirectionsCannotEscapeLogarithmicWindows` |
 | `⨅_A R₁(A) ≥ c₀ e^{6a*}` | `AHD/TheContinuumWindowThresholdGrowsExponentially` |
-| `R_c^{high} = ⨅_A R₁(A)`, `log R_c^{high} ≥ 6a* + log c₀`; `R_c = ⊤ ⇔ a* = ⊤ ⇔ RH` | `AHD/TheCriticalPositivityThresholdLaw` |
+| `R_c^⊥ = R_c^{high} = ⨅_A R₁(A)`, `log R_c^{high} ≥ 6a* + log c₀`; `R_c = ⊤ ⇔ a* = ⊤ ⇔ RH` | `AHD/TheCriticalPositivityThresholdLaw`, `PrimitiveCriticalThresholdEqualsWindowThreshold` |
 | `e^{−s}D(s) − κ₀ = −2e^{−s}Φ(2s) − 2e^{−2s}(log 2π − S) + r/e^s` (exact) | `poleDiagonalExplicit_div_exp_sub_sharp_eq` |
 | Depth `≥ ¼` excluded up to height `exp(a/K)` under window positivity at `a` | `exists_abs_re_sub_half_lt_quarter_of_hodgeIndex` |
 | `|Φ(L)| ≤ C e^{L/4}` for `K(L+2) ≤ a*`; Mertens lag `≤ C e^{−L/4}` | `exists_abs_weilLagFunctionReal_le_of_zetaWindowPositive`, `exists_abs_mertensLagPrimitive_le_of_zetaWindowPositive` |

@@ -35,10 +35,10 @@ Paper-proof pipeline cards tracking the remaining Lean formalization:
 
 Remaining mathematical obligations and validation:
 
-1. **Primitive Threshold Equality** (`PrimitiveCriticalThresholdEqualsWindowThreshold.lean` — proof drafted; not yet checked):
+1. **Primitive Threshold Equality — verified** (`PrimitiveCriticalThresholdEqualsWindowThreshold.lean`):
    - **Done:** expose the three-band decomposition `z = u₀ + u₁ + w` and absorb all non-collar pairings `⟪r_m, u₀ + u₁ + w_P⟫` (`1 ≤ m ≤ Q₁`).
    - **Done:** combine [`exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FiniteConductorCollarReductionAndPolarDecoupling.lean#L237) (`m > m₀`), [`exists_truncated_dualSeventh_conductor_residual`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L736) (`Ioc M ⌊δ N⌋₊`), and [`eventually_uniform_nonpolar_topWindow_norm_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3842) (`Ioc ⌊δ N⌋₊ N`) to decouple all `2 ≤ m ≤ Q₁` from `(V_{Q₁})ᗮ`.
-   - Primitive compactness and whole-space window-localized Gårding are verified above. Validate the atomic-sequence compactness interface and resulting primitive threshold equality.
+   - **Done:** `poleOrthogonalCriticalThreshold = ⨅ A ≥ 0, windowThreshold A = highConductorCriticalThreshold`; sixth-exponential onset lower bound and finite-threshold logarithmic bound. Final file check and all four axiom audits pass (`propext, Classical.choice, Quot.sound`).
 
 2. **`m = 1` Top-Window Lipschitz Profile Approximation & Whole-Space Threshold Equality** (`formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarModeTopWindowLipschitzTransfer.lean` and `WholeSpaceCriticalThresholdEqualsPolarThreshold.lean` — not yet written):
    - **Verified brick:** `AHD/PolarRowScalarIsFixedByOneWindow.lean` gives quantitative scalar identification and strong convergence from arbitrarily accurate scalar-line approximation plus one nonvanishing bounded weak test. Both axiom audits are clean.

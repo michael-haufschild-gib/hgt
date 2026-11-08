@@ -24,6 +24,11 @@ The window theorem then reads, for `ζ`:
 * `riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded`: RH is ZAL plus one bounded lag
   along a thick set of levels of one tower. By `TheRankBarrier`, no density statement in the levels
   can replace "thick" in an argument that applies to all towers of finite exceptional rank.
+* In primes (`primeDeviation`, `weilLagFunction_eq_primeDeviation`): the crude count over `ℤ` is a
+  bound `|(X − ψ(X)) + X(Σ_{n≤X}Λ(n)/n − log X + γ)| ≤ C X^{½+a}` along the geometric scales
+  `X = e^{νℓ}`, `ν` in a thick set. For every `a > 0` it gives AAL
+  (`asymptoticAbscissaLaw_of_thick_primeDeviation_bound`); at `a = 0`, with ZAL, it is RH
+  (`riemannHypothesis_iff_zerosApproachLine_and_thick_primeDeviation`).
 -/
 
 open Complex
@@ -171,5 +176,85 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded :
       _ ≤ max C 0 := le_max_left _ _
       _ ≤ max C 0 * Real.exp (a * ν * ℓ) :=
           le_mul_of_one_le_right (le_max_right _ _) (Real.one_le_exp (by positivity))
+
+/-! ### The crude count on a thick set of scales, in primes -/
+
+/-- The prime-side deviation at scale `X`:
+`(X − ψ(X)) + X(Σ_{n≤X} Λ(n)/n − log X + γ) − log 2π + Σ_k X^{−2k}/(2k(2k+1))`. -/
+def primeDeviation (X : ℝ) : ℂ :=
+  ((X - Chebyshev.psi X : ℝ) : ℂ) +
+    X * (((∑ n ∈ Finset.Icc 1 ⌊X⌋₊, ArithmeticFunction.vonMangoldt n / (n : ℝ) : ℝ) : ℂ) -
+      Real.log X + Real.eulerMascheroniConstant) -
+    Real.log (2 * Real.pi) + RHTower.trivialZeroSeries X
+
+/-- `Φ(L) = e^{−L/2} · primeDeviation(e^L)` for `L > 0`. -/
+theorem weilLagFunction_eq_primeDeviation {L : ℝ} (hL : 0 < L) :
+    weilLagFunction L = Real.exp (-L / 2) * primeDeviation (Real.exp L) := by
+  rw [RHTower.weilLagFunction_eq_prime_side hL, primeDeviation, Real.log_exp]
+  push_cast
+  ring
+
+theorem norm_weilLagFunction_eq {L : ℝ} (hL : 0 < L) :
+    ‖weilLagFunction L‖ = Real.exp (-L / 2) * ‖primeDeviation (Real.exp L)‖ := by
+  rw [weilLagFunction_eq_primeDeviation hL, norm_mul, Complex.norm_real,
+    Real.norm_of_nonneg (Real.exp_pos _).le]
+
+/-- A thick set stays thick after removing finitely many levels. -/
+theorem thick_inter_Ici {G : Set ℕ} (hG : Thick G) (n₀ : ℕ) : Thick (G ∩ Set.Ici n₀) := by
+  intro L N
+  obtain ⟨M, hM, hwin⟩ := hG L (max N n₀)
+  refine ⟨M, (le_max_left _ _).trans hM, fun ν h1 h2 => ⟨hwin ν h1 h2, ?_⟩⟩
+  have := le_max_right N n₀
+  simp only [Set.mem_Ici]
+  omega
+
+/-- **The crude count over `ℤ`, in primes.** If along the geometric scales `X = e^{νℓ}` of one base
+the prime deviation is `≤ C X^{½+a}` on a thick set of exponents, for every `a > 0`, then AAL holds. -/
+theorem asymptoticAbscissaLaw_of_thick_primeDeviation_bound {ℓ : ℝ} (hℓ : 0 < ℓ)
+    (h : ∀ a : ℝ, 0 < a → ∃ G : Set ℕ, Thick G ∧ ∃ C : ℝ, ∀ ν ∈ G, 1 ≤ ν →
+      ‖primeDeviation (Real.exp (ν * ℓ))‖ ≤ C * Real.exp ((1 / 2 + a) * (ν * ℓ))) :
+    RHTower.AsymptoticAbscissaLaw := by
+  refine asymptoticAbscissaLaw_of_thick_lag_bound hℓ fun a ha => ?_
+  obtain ⟨G, hG, C, hC⟩ := h a ha
+  refine ⟨G ∩ Set.Ici 1, thick_inter_Ici hG 1, C, fun ν hν => ?_⟩
+  have hν1 : 1 ≤ ν := hν.2
+  have hL : 0 < (ν : ℝ) * ℓ := mul_pos (by exact_mod_cast hν1) hℓ
+  rw [norm_weilLagFunction_eq hL]
+  have hb := hC ν hν.1 hν1
+  calc Real.exp (-(ν * ℓ) / 2) * ‖primeDeviation (Real.exp (ν * ℓ))‖
+      ≤ Real.exp (-(ν * ℓ) / 2) * (C * Real.exp ((1 / 2 + a) * (ν * ℓ))) :=
+        mul_le_mul_of_nonneg_left hb (Real.exp_pos _).le
+    _ = C * Real.exp (a * ν * ℓ) := by
+        rw [mul_left_comm, ← Real.exp_add]; congr 2; ring
+
+/-- **RH is ZAL plus a crude count on a thick set of scales.** `RH ⇔ ZAL ∧` for one base `ℓ`, the
+prime deviation is `O(X^{1/2})` along `X = e^{νℓ}` for `ν` in a thick set. -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_thick_primeDeviation :
+    RiemannHypothesis ↔ RHTower.BacklundConverse.ZerosApproachLine ∧
+      ∃ ℓ : ℝ, 0 < ℓ ∧ ∃ G : Set ℕ, Thick G ∧ ∃ C : ℝ, ∀ ν ∈ G, 1 ≤ ν →
+        ‖primeDeviation (Real.exp (ν * ℓ))‖ ≤ C * Real.exp ((ν * ℓ) / 2) := by
+  rw [riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded]
+  constructor
+  · rintro ⟨hZ, ℓ, hℓ, G, hG, C, hC⟩
+    refine ⟨hZ, ℓ, hℓ, G, hG, C, fun ν hν hν1 => ?_⟩
+    have hL : 0 < (ν : ℝ) * ℓ := mul_pos (by exact_mod_cast hν1) hℓ
+    have h := hC ν hν
+    rw [norm_weilLagFunction_eq hL] at h
+    have he : Real.exp ((ν * ℓ) / 2) * Real.exp (-(ν * ℓ) / 2) = 1 := by
+      rw [← Real.exp_add]; ring_nf; exact Real.exp_zero
+    calc ‖primeDeviation (Real.exp (ν * ℓ))‖
+        = Real.exp ((ν * ℓ) / 2) * (Real.exp (-(ν * ℓ) / 2) *
+            ‖primeDeviation (Real.exp (ν * ℓ))‖) := by rw [← mul_assoc, he, one_mul]
+      _ ≤ Real.exp ((ν * ℓ) / 2) * C := mul_le_mul_of_nonneg_left h (Real.exp_pos _).le
+      _ = C * Real.exp ((ν * ℓ) / 2) := mul_comm _ _
+  · rintro ⟨hZ, ℓ, hℓ, G, hG, C, hC⟩
+    refine ⟨hZ, ℓ, hℓ, G ∩ Set.Ici 1, thick_inter_Ici hG 1, C, fun ν hν => ?_⟩
+    have hν1 : 1 ≤ ν := hν.2
+    have hL : 0 < (ν : ℝ) * ℓ := mul_pos (by exact_mod_cast hν1) hℓ
+    rw [norm_weilLagFunction_eq hL]
+    calc Real.exp (-(ν * ℓ) / 2) * ‖primeDeviation (Real.exp (ν * ℓ))‖
+        ≤ Real.exp (-(ν * ℓ) / 2) * (C * Real.exp ((ν * ℓ) / 2)) :=
+          mul_le_mul_of_nonneg_left (hC ν hν.1 hν1) (Real.exp_pos _).le
+      _ = C := by rw [mul_left_comm, ← Real.exp_add]; ring_nf; rw [Real.exp_zero, mul_one]
 
 end GaloisForLFunctions.InfiniteRankWeilTheory
