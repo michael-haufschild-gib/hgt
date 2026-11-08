@@ -274,7 +274,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B81 | Candidate landings | producer | candidates |
 | B82 | Inner-field decay `I(½+h+it)→0` | ≥qRH | BAG, AIF |
 | B83 | AAL | sub | BAG, JAS, SC, ZCG, WL, IWT |
-| B84 | Smallest FE defect carrying a one-off | method | BAG, ACS, APD |
+| B84 | Smallest FE defect of a discrete Euler product carrying a finite off-line layer (§2.5) | method | BAG, ACS, APD |
 | B85 | Arithmetic global trace on a family containing ζ | RH | ACS |
 | B86 | Mixed Young projections at unbounded rank | RH | ACS |
 | B87 | A nonnegative count on integer probes, defined without `Q`, with Tate limit `Q` (a genuine limit: `Q` is not integer-valued) | RH | ACS, HF, PM, RW, AE, CTH, SOSZ |
@@ -394,34 +394,31 @@ No contradiction comes from exact identities, from positivity, Euler products, c
 | Rankin–Selberg noncancellation (B109) | turns the cusp-energy rate into a full receiver | T1 vacuous | adds a receiver |
 | Prime gaps `O(x^{½+ε})` (B119) | the prime planes then decide RH | T1 pass, T5 n/a | classical problem; strength above qRH through the transfer |
 
-## 2.5 Breakthrough question below AAL, RH and quasi-RH: does ZAL imply RH?
+## 2.5 Breakthrough question below AAL, RH and quasi-RH: how much functional equation does a finite layer cost?
 
-**Question.** *If the zeros approach the critical line, must they lie on it?* Precisely (B111): does `Θ∞=½` force `Θ=½`? Equivalently, in Chebyshev form:
+**Why not a zero law.** On configurations the dial is strict, `AAL ⊊ LinAt C ⊊ (ZAL⇒RH) ⊊ B13`, and B13 is its bottom [L]. Every statement below AAL that constrains the zeros of ζ contains B13: every transport law (a right zero forces off-line zeros at larger heights, at any depth), every linear slope, and `ZAL⇒RH` [L/D]. B13 is an exceptional-zero problem of Landau–Siegel type. A tractable question below AAL therefore cannot be a law for the zeros of ζ; it has to be a question about the mechanism an AAL proof must use.
 
-  *if for every `h>0` the Chebyshev error `ψ(x)−x` is `O(x^{½+h})` after removing finitely many oscillating terms `Σd(z)x^z`, is it `O(x^{½+ε})` without removing any?*
+**The mechanism.** Five theorems leave one ingredient: the Euler product and the FE used together (§1.3). Two proved facts bracket it. At finite rank the two force purity: a finite Euler product with an FE of conductor `ΠP` has `a_p²=p` and every zero on `Re s=½` [L]. In the Beurling class an FE with defect `≤1/6400` forces the rational primes [L]. What no theorem decides is whether the FE excludes finite layers **stably** — at positive defect, for systems other than ζ — or **only through rigidity**, by forcing the system to be ζ.
 
-Equivalently (`zetaLinearAbscissaLaw_tfae`) [L]: there is one constant `C` with `Θ−½≤C(Θ∞−½)`. Equivalently in the shift family [L]: every `ξ(s+a)ξ(s−a)`, `a>0`, satisfies the linear eventual-to-global law with the trivial slope `C(a)=1+1/(2a)`; the question is whether some slope survives uniformly as `a→0`.
+**The question (B84).** *What is the smallest functional-equation defect of a discrete Euler product that carries a finite off-line layer?* Precisely: among discrete Beurling systems (prime atoms `p_k>1`) whose zeta continues to a neighbourhood of `Re s=½` with the regularity required by the rigidity theorem, let `D_layer` be the infimum of the FE defect over systems with a finite nonempty off-line layer. Rigidity gives defect `≥1/6400` for every system other than the rational primes. Is `D_layer` finite, and how close to `1/6400` is it?
 
-**Where it sits [L].** Strictly between B13 and AAL on configurations: `AAL ⊊ LinAt C ⊊ (ZAL⇒RH) ⊊ B13`. It contains the finite stratum and adds the harmonic-depth worlds: infinitely many off-line zeros whose depths tend to zero while a finite top stays at `Θ>½`.
+**First step: construct a discrete one-off with finite FE defect.** The corpus discrete one-off follows the continuous one-off's prime count to within one, `|N−W|≤1`, and therefore blows up at `s=½`: its prime squares give `R(σ)≥½Σ_kp_k^{−2σ}→∞` as `σ→½⁺` [L, `ADiscreteBeurlingOneOff`]. The blow-up comes from matching the count of primes alone. Matching instead the full prime-power count `Π_P(x)=Σ_{p_k^m≤x}1/m` to the continuous `Π_c` within `O(1)` (a greedy choice of atoms does this, since the prime-power jumps are `≤½` and of total size `O(√x)`) gives `ζ_P=ζ_c·exp(s∫x^{−s−1}(Π_P−Π_c)dx)`, a nonvanishing factor on `Re s>0` times the continuous one-off, which continues across `½` with exactly the finite layer `(1−μ)±iγ` [L for `ζ_c`; D for the factor]. What remains is the concrete analytic obstacle: the factor must have finite order on the critical line, which needs the atoms' Dirichlet series `Σp_k^{−s}` to grow at most logarithmically in `|t|` — a choice of atoms with controlled exponential sums (near-integer atoms, or atoms from an auxiliary Beurling system with known Weyl sums). Then the FE defect is an explicit integral of `ζ_P` against its reflection and can be computed.
 
-**What it gives.**
-| Answer | Effect |
+**What either answer gives.**
+| Answer | Effect on AAL research |
 |---|---|
-| Proved | RH ⇔ ZAL. Every ZAL receiver and producer becomes an RH receiver and producer: inner-field decay, subtracted lag, `Λ_Xlog X→0`, eventual Hadamard positivity, LH with every cosine-shift level eventually real, high-collision counts, `N(σ,∞)<∞` for every `σ>½` [L]. The AAL half of F1 and F22 disappears; RH becomes a crude zero-density statement in the exceptional coordinate. |
-| Proved | The slope dial reduces to one question: `C↓1`. |
-| Refuted | ζ has a zero right of the line while all but finitely many zeros beyond each depth lie arbitrarily close to it: a finite top over a remainder that approaches the line. |
+| A discrete one-off with finite FE defect `D` exists | the FE has no stable exclusion power at defect `D`; with the rigidity window `[0,1/6400)` this says the FE excludes finite layers only by pinning the system to the rational primes. Every B13 or AAL argument must use the exact FE of ζ; deformation, compactness and stability arguments in spaces of Euler products are dead; the toolkit is exact identities (local squares, Hamburger-type rigidity). The value of `D_layer` measures how close a fake can come to ζ. |
+| Every construction is forced to infinite defect (blow-up at `½` or infinite order) | evidence, and a target theorem, that continuation across the line with finite FE defect is incompatible with a finite layer for discrete Euler products other than ζ: a stable Euler–FE exclusion mechanism exists. Its proof in the class of non-ζ systems is the first theorem of the type B112 asks for, and the template for B13. |
 
 **Why this question.**
-- **It is the quantifier-free core of the linear law.** The dial question "is there a constant `C`" is, by the quantifier collapse, exactly this implication; every fixed slope is strictly stronger.
-- **Its failure world is maximally rigid.** In `ZAL ∧ ¬RH`: Lindelöf; a zero-free half-plane; for every `h>0` the explicit formula is finite rank plus `O(x^{½+h})`; the top layer is finite and attained, reflected by the FE to a bottom layer at the same heights; at every resolution the exceptional rank is finite; the top is seen at every level of its resonant tower [L].
-- **It is a two-scale statement by construction.** `Θ` sees the finitely many top zeros, `Θ∞` the zeros at large height. No asymptotic or bounded-height property decides it [L].
-- **It cannot be family-uniform.** Along the heat flow every `H_t` satisfies ZAL and the linear law with a `t`-dependent slope is RH [L]; along the shift family the trivial slope diverges as `a→0` [L]. An answer must hold for ζ itself, through its Euler product.
+- **It is about the only unrefuted ingredient.** Positivity, Euler products alone, linear counting, continuation alone, FE alone, family-uniform laws and scale-separated statistics are refuted as AAL inputs [L]; the Euler product together with the FE is what remains, and this question decides in which form it can work.
+- **It is not a famous problem in disguise.** It asks for a construction in a class the corpus already builds (continuous, discrete, integer-norm and rational-prime one-offs) plus a computation of a defect; neither answer implies B13 for ζ.
+- **It has a definite first step and a named obstacle.** The blow-up mechanism of the existing discrete one-off is identified in Lean; the replacement (prime-power matching) is explicit; the remaining difficulty is growth of one auxiliary Dirichlet series on one line.
+- **It sharpens two walls at once.** B103 (positive discrete Euler products with continuation and an FE: AAL?) and B84 (smallest FE defect carrying a one-off) become one quantitative question.
 
-**What an answer needs [L/D].** The Dirichlet series (`cosh` models), the Euler product (heat family), the FE (one-offs), both scales (two-scale law), and a mechanism that turns a finite top over an approaching remainder into a contradiction — in tower form, a thick-set bound at exponent `C(Θ∞−½)+ε` for one `C` (the relative thick crude count, B116).
+**Tests.** T1: not applicable (a method question, implied by nothing about ζ's zeros). T2: a stated quantity `D_layer`. T3: the effects table. T4: not a finite rung. T5: calibrated on the corpus fakes by construction. T6: prime-power matching and controlled atom sums; neither refuted. T7: moves Γ73, Γ124, Γ145, Γ161, B84, B103. T8 (tractability): not itself a long-standing open problem; its first step is a construction with one named analytic obstacle.
 
-**Tests.** T1: implied by RH; does not imply quasi-RH. T2: an implication between two abscissae. T3: RH ⇔ ZAL. T4: no finite rung decides it [L]. T5: false on harmonic-depth configurations, integer-norm one-offs (ZAL, ¬RH) and `cosh` models [L]. T6: relative thick crude count; Euler–FE input. T7: moves Γ155, Γ67, B111, B116.
-
-**Limit.** It leaves ZAL itself, which is at least quasi-RH.
+**Limit.** It decides the form of the mechanism, not AAL. If the FE works only through rigidity, the remaining AAL problem is a statement about the exact arithmetic of ζ, of Landau–Siegel type.
 
 ## 2.6 If positivity, Weil positivity and spectral methods are excluded
 
@@ -612,7 +609,7 @@ Holography, ringdown and counting holography are formalized; their positive resu
 
 ## 3. The one big question
 
-**Can ζ have finitely many, but not zero, zeros off the critical line?** (B13) It is AAL at depth `h=0`: the bottom of the strict dial `AAL ⊊ LinAt C ⊊ (ZAL⇒RH) ⊊ B13`, strictly below `ZAL⇒RH` (§2.5), below AAL and below quasi-RH.
+**Can ζ have finitely many, but not zero, zeros off the critical line?** (B13) It is AAL at depth `h=0`: the bottom of the strict dial `AAL ⊊ LinAt C ⊊ (ZAL⇒RH) ⊊ B13`, strictly below `ZAL⇒RH` (B111), below AAL and below quasi-RH.
 
 | Form | Statement | Evidence |
 |---|---|---|

@@ -237,7 +237,7 @@ Structure [D]: AAL needs a Dirichlet-series input that couples both scales, uses
 | B89 | A bounded aligned return at each right zero on a right disc | sub |
 | B96 | Conditional law of the Euler tail at the Kronecker scale | sub |
 | B13 | Finite stratum | sub |
-| B84 | Smallest FE defect carrying a one-off | method |
+| B84 | Smallest FE defect of a discrete Euler product carrying a finite off-line layer | method |
 | B103 | Positive discrete Euler products with linear counting, continuation across `Re s=½` and an FE: AAL? | method / sub |
 | B110 | Thick crude count: `primeDeviation(X)=O(X^{½+a})` on a thick set of geometric scales of one base, every `a>0` | AAL |
 | B111 | `ZAL ⇒ RH` (existential linear AAL) | sub |

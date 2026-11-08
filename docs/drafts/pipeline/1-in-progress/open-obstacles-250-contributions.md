@@ -13,4 +13,4 @@
 | 5 | B13, B112, annihilator division | Canonical quotient coefficients have unbounded excursions of both signs at every nonnegative exponent below a right-hand zero; absolute weighted mass diverges at the endpoint | [Proof and Lean audit](../3-formalized/annihilator-division-forces-coefficient-oscillation.md) |
 | 6 | B13, B112, initial heat energy | Exact finite or infinite initial trace; bounded heat energy iff initial squared upper-depths are summable; finite mass forces `t N(t)→0` | [Proof and Lean audit](../3-formalized/the-initial-trace-of-heat-depth-energy.md) |
 
-Candidate: [elapsed heat pays for surviving pairs](../0-backlog/elapsed-heat-pays-for-surviving-pairs.md).
+Candidate: [elapsed heat pays for surviving pairs](elapsed-heat-pays-for-surviving-pairs.md).

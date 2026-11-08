@@ -1,6 +1,6 @@
 # Elapsed heat pays for surviving pairs
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Obstacles:** B13, B112; small-time nonreal heat counts.
 - **Statement sought:** For every `q>0` and `t>0`, the upper nonreal roots of a real polynomial heat flow satisfy
@@ -25,4 +25,21 @@ For the power profile, monotonicity also has an algebraic proof:
 `y²(y²+c)^(q−1) = [y²/(y²+c)] (y²+c)^q`.
 Both factors are nonnegative and increasing for `c≥0`, `q>0`, `y>0`. This avoids differentiating a negative power.
 
-Remaining proof work: audit the paired-force formula with multiplicities; carry comparison through polynomial collisions; transfer finite root sums to `H_t`, using continuous cutoffs away from the real axis. No Lean result claimed or counted.
+For collision comparison, use the continuous corrected action
+`J_q(t)=Σ_upper [((Im z)²+2t)^q−(2t)^q]`.
+At simple times its derivative is at most `−2q(2t)^(q−1) N_upper(t)`.
+Integrating and using nonincreasing nonreal count recovers monotonicity of
+`J_q(t)+(2t)^q N_upper(t)`, including real collisions.
+
+Remaining proof work: connect the finite paired field to polynomial zero velocities;
+carry comparison through collisions; transfer finite root sums to `H_t`, using
+continuous cutoffs away from the real axis. No contribution counted yet.
+
+## Lean certificate for the paired mechanism
+
+`ArithmeticElectrostatics/ConjugatePairsDissipateLogarithmicDepth.lean` proves
+the exact classification (`conjugatePairWork_nonneg_iff`), admissibility of every
+nonnegative exponent, the finite packet drift inequality, its stability under
+additional downward velocity, and the actual chain-rule derivative of the
+elapsed-depth weight. Direct Lean check passes; all five audited capstones use
+only `propext`, `Classical.choice`, `Quot.sound`.

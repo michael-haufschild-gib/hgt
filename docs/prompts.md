@@ -489,9 +489,10 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0811/obstacles-summary.md
 
-under "## 2.8b Does closing RH need a new field?" it suggest a new fields/research programme called "infinite-rank Weil theory over `Spec ℤ`"
+under "## 2.10 Does an AAL proof or falsification need a new field?" it suggest a new fields/research programme called "exact-event theory of Euler products"
 
 Your task: develop this field/research programme and do the actual research and formalization.
+We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
 
 Follow the example of other research programmes: formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri or formal/GaloisForLFunctions/ArithmeticOrientationGeometry
 
@@ -645,21 +646,17 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0811/obstacles-summary.md
 
-under "### Primary: is the depth density `o(T)`? (B57)" it asks a question:
-Does `Σ_{T<γ≤2T,β>½}m_ρ(β−½)=o(T)`? Equivalently `T⁻¹∫_T^{2T}log|ζ(½+it)|dt→0`, `I(½+x+it)→0`, density-zero damping deficits on the horizon, and for each fixed `u>0` the proportion of zeros of depth `>u/log T` tends to zero.
+under "## 2.5 Breakthrough question below AAL, RH and quasi-RH: linear AAL" it asks a question:
+"*Can the deepest zero sit arbitrarily far above the asymptotic abscissa?* Let `Θ=sup Re ρ` and `Θ∞=inf{σ≥½: finitely many zeros have Re ρ>σ}`. AAL is `Θ=Θ∞`; the finite stratum B13 is `Θ∞=½ ⇒ Θ=½`. **Linear AAL** (B111): is there a constant `C` with
+
+  `Θ−½ ≤ C(Θ∞−½)`,
+
+equivalently: finitely many zeros right of `½+h` ⇒ no zero right of `½+Ch`, for every `h≥0`?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
 We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
-  
-**Tools to use:**
-1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
 
-2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
-
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
-
-always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
@@ -683,13 +680,13 @@ Goal is met when there are no more open or partially solved or sharpened walls.
 
 Do not use the hgtl7 skill.
 
-read the wall ledger (a wall is a mathematical obstacle in our research): docs/reports/review-0611/walls-ledger.md
+read: docs/reports/review-0811/obstacles-summary.md
 
 on every turn:
-conjecture, derive, formalize a way to either
-- turn an open or sharpened wall into partially solved or solved (or proven no-go).
-- turn a partially solved wall into a solved wall.
+conjecture, derive, formalize a significant contribution to solving a problem under ## 2.2 Open mathematical obstacles
  
+your ultimate goal is to solve all the problems, but do not attempt to solve them outright, but the research towards solving them is the valuable activitity. 
+
 we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.
   
 **Tools to use:**
@@ -713,9 +710,9 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
-Do not use the wall ledger as diary. Only update status, do not add more.
+Goal is met when you have made at least 250 such significant contributions.
 
-Goal is met when there are no more open or partially solved or sharpened walls.
+Do not use the wall ledger as diary. Only update status, do not add more.
 
 ## Deep understanding
 
@@ -781,29 +778,18 @@ The final report goes into docs/reports/review-3010/reboot-final.md
 
 ## wall breaking
 context - reports summarizing the current frontier of our research:
-docs/reports/review-0611/route-obstacles.md
-docs/reports/review-0611/walls-ledger.md
-docs/reports/review-0611/route-unification-ledger.md
+docs/reports/review-0811/route-obstacles.md
+docs/reports/review-0811/walls-ledger.md
+docs/reports/review-0811/route-unification-ledger.md
+docs/reports/review-0811/obstacles-summary.md
 docs/reports/rh-current-frontier-map.md
 docs/reports/rh-killed-routes.md
 
-problem:
-we are stuck. we arrived from different angles, in different languages and frameworks on the same fundamental problem of a missing mechanism.
+docs/reports/review-0811/obstacles-summary.md lists under "### Γ — selection, reflection and transport" several open mathematical problems.
 
-the mechanism would not necessarily prove RH or quasiRH but open the door to a new understanding and clear route towards the RH proof. a real breakthrough, not another description of a route that hits a hard wall - but a mechanism to decicively break through the wall.
+your task: solve one of these problems, find and formalize a full solution.
 
-your task: find and formalize that mechanism and its collaries.
-
-we are not interested in solving one of the obstacles, but a real breakthrough, a seismic shift.
-
-**Tools to use:**
-1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
-
-2. Conjecture loop: use an endless loop of conjecture -> succeed and move to next conjecture or fail and learn from it and move to next conjecture. never stop conjecturing no matter how often you fail.
-
-do not conjecture or judge or assume or anything on your training data. your training data is outdated. use the search tool for our lean corpus to understand what the true frontier and true open questions are.
-
-always look at the big picture, try to understand what all our research is trying to tell you about the nature of the field. do not blindly follow a route because it is in your training data. understand what our research is hinting at. your job is to create the missing mathematical knowledge through relentless conjecturing and learning from failures.
+formalize any significant finding you make during your research, if it is not yet in our lean corpus, even if it does not yet solve one of the open mathematical problems. we are not interested in busywork, but actual significant progress and ultimately a full solution to at least one of the open mathemical problems.
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
