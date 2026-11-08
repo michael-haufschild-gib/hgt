@@ -59,12 +59,18 @@ For its orientation comparison,
 already identifies points over a closed place with its residue-field
 embeddings. [Frobenius transitivity on these actual fibres](../3-formalized/riac-elliptic-frobenius-orbits.md)
 is now formalized, including actual projective points and infinity.
-The remaining comparison must identify stable subsets with unions of
-closed-place fibres, with cardinality equal to total residue degree.
-Collision cancellation should reduce the orientation sum to these subsets; a cycle
-of degree `d` contributes sign `(-1)^(d−1)`, giving the factor `(-1)^n`
-times the even-minus-odd divisor count in total degree `n`.
-This comparison is not yet formalized.
+The [stable-configuration comparison](../3-formalized/riac-elliptic-stable-orientation.md)
+is now formalized. Full point support and closed-place support identify
+stable `n`-point subsets with all degree-`n` squarefree divisors. Their
+actual Frobenius sign is `(-1)^(n + number of closed places)`, including
+singletons. Thus their geometric signed sum satisfies
+`J_n=(-1)^n(E_n−O_n)` and `|J_n|≤8(n+1)²(√3)^n`.
+
+The remaining elliptic quotient comparison is `A_n−B_n=J_n`.
+Signed transporter counting should prove it directly: collisions cancel
+by an odd swap, each injective tuple has its support's Frobenius sign,
+and each `n`-point support has `n!` orderings. The original cover and base
+counts remain the target; this final identification is not yet formalized.
 
 Verified source inputs:
 [HyperellipticRiemannHypothesis.lean](../../../../formal/GaloisForLFunctions/RHTower/HyperellipticRiemannHypothesis.lean)

@@ -120,6 +120,20 @@ The first two pillars locate the spectrum under lattice alignment; this pillar f
 unit multiplicities without alignment. Multiplicatively independent noninteger systems
 remain outside the classification.
 
+## Boundary calculus for finite defects
+
+An integrable defect has right-hand Laplace boundary values continuous away from zero,
+bounded by `3‖g‖₁ |y|⁻¹ᐟ²/(2π)`. They are locally integrable and vanish at infinity.
+Every compact continuous test passes to the boundary, including tests crossing zero.
+`IntegrableDefectsHaveDecayingBoundary.lean` proves these facts by factoring the complex
+power before approaching either imaginary ray, then applying dominated convergence.
+Its direct Lean check and transitive axiom audit pass.
+
+This supplies the analytic boundary input for B122. The proposed next mechanism pairs
+the FE with translated tents, uses simultaneous recurrence and the atom-mass floor to
+eliminate the decaying error, then uses one unit tent to force integer support. The
+tent identity and recurrence argument remain unproved here.
+
 ## Tools and questions
 
 | Required tool | Question it must resolve |
@@ -130,6 +144,7 @@ remain outside the classification.
 | Relative thick crude count (B116) | Can a bound tied to Θ∞ force a finite slope, and ultimately slope one? |
 | Finite-layer exclusion over an approaching remainder (B111) | Does Θ∞ = ½ force Θ = ½? |
 | Euler–FE finite-layer classification (B103, B84) | Which precisely defined classes admit a finite layer; what FE defect is necessary? |
+| Arbitrary finite-defect rigidity (B122) | Does every countable Beurling system with integrable uncompleted FE defect have exactly the rational primes? |
 | Shift-family stability | Does the trivial linear slope remain bounded as the shift tends to zero? |
 
 The classification question has the integer-supported and asymptotically aligned results above,
@@ -146,6 +161,10 @@ convergence cannot be silently extended into the critical strip.
 
 Gamma-completed decay is weaker than integrability of the uncompleted FE defect used in B84.
 Subexponential growth of a Mellin correction alone cannot bridge that distinction.
+
+AAL permits arbitrarily small loss in the transported real part. Exact tail cancellation means
+an actual zero; it does not remove that loss. Replication at exactly the same depth is a stronger
+endpoint claim when the maximal real part is attained and the tail only approaches it.
 
 Every proposed transport mechanism must recover Bohr recurrence in its domain and the curve
 and exponential-polynomial cases. Its arithmetic input must distinguish ζ from the relevant

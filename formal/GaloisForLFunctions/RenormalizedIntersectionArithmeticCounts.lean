@@ -40,4 +40,10 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticSqua
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticFrobeniusOrbits
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FibrePermutationSigns
+
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticStableSubsets
+
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.TupleOrientationCounts
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

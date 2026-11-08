@@ -96,3 +96,4 @@ import GaloisForLFunctions.PrimeTorusTheory
 import GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
 import GaloisForLFunctions.InfiniteRankWeilTheory
 import GaloisForLFunctions.ExactEventTheory
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory

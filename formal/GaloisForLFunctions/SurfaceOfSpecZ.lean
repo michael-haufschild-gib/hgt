@@ -22,6 +22,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWid
 import GaloisForLFunctions.SurfaceOfSpecZ.OneSidedHasseWeilAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovSideIsBlindToRealZeros
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtTheSquareDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.HyperbolicQuotientsJetCarriersAndCoupledDamping
 
 /-!
 # The surface of `Spec ℤ`
@@ -60,5 +61,5 @@ an upper bound on point counts and needs the twist. As Bombieri needs only the e
 square degrees suffice: an upper bound on the smoothed point counts at the degrees `n²` is RH. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
 whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
-they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley.
+they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley. In hyperbolic three-space `ℍ³`, only pointwise rotations around the vertical degree geodesic preserve the off-diagonal archimedean Frobenius, any discrete finite-covolume quotient triggers a thin–thick folding dichotomy while parabolic cusps diverge harmonically at `s = ½`, the pure trivial-zero jets have infinite rank on coprime primes and are carried by a dilation-covariant causal monomial bundle on `L²(0, ∞)`, and counterterm-free positive damping requires coherent archimedean–torsion correlation locking (impossible on atomic degrees below `N log N`, equivalent to RH on smoothed Frobenius graphs, and impossible on either channel alone).
 -/

@@ -34,25 +34,26 @@ Equivalently, on `[a,b]` compare the continuous function
 `J_q(t)+(2t)^q N_upper(b)`. Its forward derivative is nonpositive because
 `N_upper(b)≤N_upper(t)`. Endpoint comparison then gives the full moment law,
 without integrating the discontinuous count.
-An initial offset `c=ε+2t`, `ε>0`, keeps the corrected weight differentiable
-at real roots even at time zero; taking `ε↓0` recovers the stated finite
-polynomial budget.
+For a finite polynomial divisor and `q>0`, continuity at time zero suffices:
+the comparison theorem uses derivatives only at interior positive times,
+and the baseline `(2t)^q` vanishes at zero. No initial derivative or offset
+regularization is needed.
 
 For the polynomial comparison, first take an initially separable polynomial:
 its heat discriminant is a polynomial in time, nonzero at time zero, so only
 finitely many collision times occur. Constant real perturbations `p+ε` avoid
 the finite critical-value set and approximate arbitrary nonzero real `p`.
-Continuity of finite root moments would then remove initial separability.
+Formalized continuity of finite root moments permits removing initial
+separability once the separable polynomial budget is proved.
 The corpus `polynomialPencil_separable_of_parameter_not_mem`, with pencil
 direction `Q=1`, supplies the finite exceptional set for constant perturbations.
 Fixed root cardinality upgrades locally uniform polynomial convergence to
 continuity of nonnegative weighted root sums: a bounded cutoff detects any
 escaping multiplicity copy, and the complementary weight gives the upper bound.
 
-Remaining proof work: complete global moment comparison and prove the
-initial-time bound. Polynomial approximation remains a route to the initial
-bound; the actual positive-time field has its own drift certificate and the
-corrected action is continuous with the required forward derivative bound.
+Remaining proof work: the polynomial budget and its transfer to the actual
+initial divisor. Global moment comparison at positive times is formalized;
+it does not by itself control the initial trace.
 No contribution counted yet.
 
 ## Lean certificate for the paired mechanism
@@ -93,3 +94,14 @@ identifies the corrected action's derivative with the actual zero velocities
 and proves `J_q′(t) ≤ −2q(2t)^(q−1) N(t)` on punctured forward intervals,
 with both conjugate halves counted. All three capstones pass direct Lean
 check with the same standard axioms.
+
+`ArithmeticElectrostatics/TheHeatDivisorPaysElapsedDepth.lean` proves that
+`M_q(t)=Σ_nonreal m_z ((Im z)²+2t)^q` is antitone for `q≥0`, `t>0`,
+including every collision. It also proves `(2b)^q N(b)≤M_q(a)` for `0<a≤b`.
+All four capstones pass direct Lean check with the same standard axioms.
+
+`HTGeometry/PolynomialRoots/WeightedSumContinuity.lean` proves convergence
+of every continuous nonnegative root sum from locally uniform convergence,
+a nonzero limit, and fixed root cardinality. Constant perturbations preserve
+all nonnegative depth powers, including at multiple roots. All three
+capstones pass direct Lean check with the same standard axioms.

@@ -106,8 +106,12 @@ Frobenius root bound is proved for the actual curve. These bounds do not
 transfer to integer local indices without a further arithmetic comparison.
 The [actual Frobenius-fibre theorem](../3-formalized/riac-elliptic-frobenius-orbits.md)
 identifies projective-point orbits with supported closed-place fibres,
-including infinity. The stable-subset and permutation-sign comparisons
-remain necessary for the elliptic orientation-cover bound.
+including infinity. The [stable-configuration theorem](../3-formalized/riac-elliptic-stable-orientation.md)
+now identifies actual `n`-point configurations with degree-`n` squarefree
+divisors and proves their intrinsic Frobenius orientation formula.
+Their signed sum satisfies `J_n=(-1)^n(E_n−O_n)` and the same square-root
+bound. The original orientation-quotient counts still require their
+transporter comparison with `J_n`.
 
 ## Necessary distinctions
 

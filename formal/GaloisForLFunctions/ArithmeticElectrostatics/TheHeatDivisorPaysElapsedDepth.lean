@@ -86,7 +86,7 @@ theorem antitoneOn_heatElapsedDepthMoment {q : ℝ} (hq : 0 ≤ q) :
   have hcount : (nonrealZeroCount b : ℝ) ≤ (nonrealZeroCount a : ℝ) := by
     exact_mod_cast nonrealZeroCount_antitoneOn ha hb hab
   have hcredit := mul_le_mul_of_nonneg_left hcount
-    (Real.rpow_nonneg (show 0 ≤ 2 * a by positivity) q)
+    (Real.rpow_nonneg (mul_nonneg zero_le_two (le_of_lt ha)) q)
   exact h.trans (add_le_add le_rfl hcredit)
 
 /-- Removing the real-axis baseline leaves a nonnegative action. -/

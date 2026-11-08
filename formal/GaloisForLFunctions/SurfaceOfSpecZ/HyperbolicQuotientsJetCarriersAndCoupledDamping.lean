@@ -777,11 +777,11 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
   have hdr2 : HasFDerivAt (fun v : Fin 3 → ℝ => v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)
       ((2 * w 0) • p0 + (2 * w 1) • p1 + (2 * w 2) • p2) w := by
     have h0 : HasFDerivAt (fun v : Fin 3 → ℝ => v 0 ^ 2) ((2 * w 0) • p0) w :=
-      (HasFDerivAt.pow hd0 2).congr_fderiv (by ext v; simp [p0]; ring)
+      (HasFDerivAt.pow hd0 2).congr_fderiv (by ext v; simp [p0])
     have h1 : HasFDerivAt (fun v : Fin 3 → ℝ => v 1 ^ 2) ((2 * w 1) • p1) w :=
-      (HasFDerivAt.pow hd1 2).congr_fderiv (by ext v; simp [p1]; ring)
+      (HasFDerivAt.pow hd1 2).congr_fderiv (by ext v; simp [p1])
     have h2 : HasFDerivAt (fun v : Fin 3 → ℝ => v 2 ^ 2) ((2 * w 2) • p2) w :=
-      (HasFDerivAt.pow hd2 2).congr_fderiv (by ext v; simp [p2]; ring)
+      (HasFDerivAt.pow hd2 2).congr_fderiv (by ext v; simp [p2])
     exact HasFDerivAt.add (HasFDerivAt.add h0 h1) h2
   have hd_inv : HasFDerivAt (fun v : Fin 3 → ℝ => (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)⁻¹)
       ((-(r2 ^ 2)⁻¹) • ((2 * w 0) • p0 + (2 * w 1) • p1 + (2 * w 2) • p2)) w :=
@@ -793,8 +793,7 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     simp_rw [div_eq_mul_inv]
     refine (HasFDerivAt.fun_mul (HasFDerivAt.neg hd0) hd_inv).congr_fderiv ?_
     ext v
-    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
-      p0, p1, p2, r2]
+    simp [L, invVecJac, Matrix.toLin'_apply, dotProduct, Fin.sum_univ_three, p0, p1, p2, r2]
     simp only [inv_eq_one_div]
     field_simp [hw_ne]
     ring
@@ -803,8 +802,7 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     simp_rw [div_eq_mul_inv]
     refine (HasFDerivAt.fun_mul hd1 hd_inv).congr_fderiv ?_
     ext v
-    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
-      p0, p1, p2, r2]
+    simp [L, invVecJac, Matrix.toLin'_apply, dotProduct, Fin.sum_univ_three, p0, p1, p2, r2]
     simp only [inv_eq_one_div]
     field_simp [hw_ne]
     ring
@@ -813,8 +811,7 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     simp_rw [div_eq_mul_inv]
     refine (HasFDerivAt.fun_mul hd2 hd_inv).congr_fderiv ?_
     ext v
-    simp [L, invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
-      p0, p1, p2, r2]
+    simp [L, invVecJac, Matrix.toLin'_apply, dotProduct, Fin.sum_univ_three, p0, p1, p2, r2]
     simp only [inv_eq_one_div]
     field_simp [hw_ne]
     ring
@@ -960,10 +957,14 @@ theorem bruhat_sl2c (g : SL2C) :
     fin_cases i <;> fin_cases j <;>
       simp [parabolicSL2, diagSL2, invSL2, Matrix.mul_apply, Fin.sum_univ_two, a, c, d]
     · exact (div_mul_cancel₀ a hc).symm
-    · change b = _
-      rw [mul_div_cancel₀ d hc, inv_eq_one_div]
-      field_simp [hc]
-      linear_combination -hdet
+    · rw [mul_div_cancel₀ d hc]
+      have hbc : b = (a * d - 1) / c := by
+        rw [eq_div_iff hc]
+        linear_combination -hdet
+      change b = _
+      rw [hbc, sub_div, one_div]
+      simp only [div_eq_mul_inv, a, c, d]
+      ring
     · exact (mul_div_cancel₀ d hc).symm
 
 /-- **`SL(2, ℂ)` preserves the hyperbolic measure `h3Measure = t⁻³ dx dy dt`.** -/
@@ -1499,66 +1500,45 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
     | succ k _ => exact hnext_mem _
   have hseq_S : ∀ k, seq k ∈ S := fun k => (hseq_mem k).1
   have hseq_pos : ∀ k, 0 < seq k := fun k => hS_pos _ (hseq_S k)
-  have hseq_rat_succ : ∀ k : ℕ, R < ((seq (k + 1) : ℕ) : ℝ) / ((seq k : ℕ) : ℝ) := by
+  have hseq_rat_succ : ∀ k : ℕ, R < (Nat.cast (seq (k + 1)) : ℝ) / (Nat.cast (seq k) : ℝ) := by
     intro k
-    have hp : (0 : ℝ) < seq k := by exact_mod_cast hseq_pos k
+    have hp : (0 : ℝ) < Nat.cast (seq k) := by exact_mod_cast hseq_pos k
     rw [lt_div_iff₀ hp]
     exact hnext_rat (seq k)
-  have hseq_rat : ∀ {i j : ℕ}, i < j → R < (seq j : ℝ) / (seq i : ℝ) := by
+  have hseq_rat : ∀ {i j : ℕ}, i < j → R < (Nat.cast (seq j) : ℝ) / (Nat.cast (seq i) : ℝ) := by
     intro i j hij
-    obtain ⟨d, hd, rfl⟩ := Nat.exists_eq_add_of_lt hij
+    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_lt hij
+    clear hij
     induction d with
-    | zero => omega
+    | zero => simpa using hseq_rat_succ i
     | succ d ih =>
-      rcases Nat.eq_zero_or_pos d with rfl | hd_pos
-      · simpa using hseq_rat_succ i
-      · have h1 := ih hd_pos
-        have h2 := hseq_rat_succ (i + d)
-        have hp1 : (0 : ℝ) < seq i := by exact_mod_cast hseq_pos i
-        have hp2 : (0 : ℝ) < seq (i + d) := by exact_mod_cast hseq_pos (i + d)
-        calc R < R * R := lt_mul_of_one_lt_right (by linarith) hR1
-          _ < ((seq (i + d) : ℝ) / seq i) * ((seq (i + d + 1) : ℝ) / seq (i + d)) :=
-              mul_lt_mul'' h1 h2 (by linarith) (by linarith)
-          _ = (seq (i + (d + 1)) : ℝ) / seq i := by
-              rw [show i + (d + 1) = i + d + 1 by omega]; field_simp
+      have h2 := hseq_rat_succ (i + d + 1)
+      have hp1 : (0 : ℝ) < Nat.cast (seq i) := by exact_mod_cast hseq_pos i
+      have hp2 : (0 : ℝ) < Nat.cast (seq (i + d + 1)) := by exact_mod_cast hseq_pos (i + d + 1)
+      have hp1_ne : (Nat.cast (seq i) : ℝ) ≠ 0 := hp1.ne'
+      have hp2_ne : (Nat.cast (seq (i + d + 1)) : ℝ) ≠ 0 := hp2.ne'
+      calc R < R * R := lt_mul_of_one_lt_right (by linarith) hR1
+        _ < ((Nat.cast (seq (i + d + 1)) : ℝ) / Nat.cast (seq i)) *
+              ((Nat.cast (seq (i + d + 1 + 1)) : ℝ) / Nat.cast (seq (i + d + 1))) :=
+            mul_lt_mul'' ih h2 (by linarith) (by linarith)
+        _ = (Nat.cast (seq (i + (d + 1) + 1)) : ℝ) / Nat.cast (seq i) := by
+            rw [show i + (d + 1) + 1 = i + d + 1 + 1 by omega]
+            field_simp [hp1_ne, hp2_ne]
   -- Geodesic balls of radius `ε / 2` and their fundamental-domain projections `E k`
   have hε2 : 0 < ε / 2 := half_pos hε
   let B : ℕ → Set H3 := fun k =>
     {p : H3 | h3Dist (natPoint (seq k) (hseq_pos k)) p < ε / 2}
-  have hB_open : ∀ k, IsOpen (B k) := by
-    intro k
-    set q0 := natPoint (seq k) (hseq_pos k)
-    have hcont_cosh : Continuous (fun p : H3 => h3Cosh q0 p) := by
-      have hc0 : Continuous (fun p : H3 => h3Vec p 0) :=
-        (continuous_apply 0).comp continuous_induced_dom
-      have hc1 : Continuous (fun p : H3 => h3Vec p 1) :=
-        (continuous_apply 1).comp continuous_induced_dom
-      have hct : Continuous (fun p : H3 => p.t) :=
-        (continuous_apply 2).comp continuous_induced_dom
-      have hcz : Continuous (fun p : H3 => p.z) := by
-        have heq : (fun p : H3 => p.z) =
-            fun p => (h3Vec p 0 : ℂ) + (h3Vec p 1 : ℂ) * Complex.I :=
-          funext fun p => (Complex.re_add_im p.z).symm
-        rw [heq]
-        exact (Complex.continuous_ofReal.comp hc0).add
-          ((Complex.continuous_ofReal.comp hc1).mul continuous_const)
-      unfold h3Cosh
-      refine continuous_const.add (Continuous.div ?_ ?_ fun p => ?_)
-      · exact (((continuous_const.sub hcz).norm.pow 2).add ((continuous_const.sub hct).pow 2))
-      · exact continuous_const.mul hct
-      · have := q0.t_pos; have := p.t_pos; positivity
-    have hcont_dist : Continuous (fun p : H3 => h3Dist q0 p) :=
-      Real.continuousOn_arcosh.comp_continuous hcont_cosh fun p => one_le_h3Cosh q0 p
-    exact isOpen_lt hcont_dist continuous_const
+  have hB_open : ∀ k, IsOpen (B k) := fun k =>
+    isOpen_lt (continuous_h3Dist_right _) continuous_const
   have hB_meas : ∀ k, MeasurableSet (B k) := fun k => (hB_open k).measurableSet
   let E : ℕ → Set H3 := fun k => (⋃ γ : Γ, (γ : SL2C) • B k) ∩ F
   have hE_meas : ∀ k, MeasurableSet (E k) := fun k =>
-    (MeasurableSet.iUnion fun γ =>
+    (MeasurableSet.iUnion fun γ : Γ =>
       (measurableEmbedding_h3Act (γ : SL2C)).measurableSet_image.mpr (hB_meas k)).inter hF_meas
   -- Pairwise disjointness of `E i` and `E j` (`i ≠ j`)
-  have hE_disj : Pairwise (Disjoint on E) := by
+  have hE_disj : Pairwise (Function.onFun Disjoint E) := by
     intro i j hij
-    rw [Set.disjoint_iff]
+    refine Set.disjoint_iff.mpr ?_
     rintro x ⟨⟨hxi, -⟩, ⟨hxj, -⟩⟩
     rw [Set.mem_iUnion] at hxi hxj
     obtain ⟨γ₁, p₁, hp₁, rfl⟩ := hxi
@@ -1572,19 +1552,21 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
     have htri : h3Dist (natPoint (seq i) (hseq_pos i))
         (h3Act ((γ₁⁻¹ * γ₂ : Γ) : SL2C) (natPoint (seq j) (hseq_pos j))) < ε := by
       have hp12 : p₁ = h3Act ((γ₁⁻¹ * γ₂ : Γ) : SL2C) p₂ := by
-        change (γ₁ : SL2C) • p₁ = (γ₂ : SL2C) • p₂ at heq
+        have heq' : (γ₁ : SL2C) • p₁ = (γ₂ : SL2C) • p₂ := heq.symm
         calc p₁ = ((γ₁ : SL2C)⁻¹ * (γ₁ : SL2C)) • p₁ := by rw [inv_mul_cancel, one_smul]
           _ = (γ₁ : SL2C)⁻¹ • ((γ₁ : SL2C) • p₁) := mul_smul _ _ _
-          _ = (γ₁ : SL2C)⁻¹ • ((γ₂ : SL2C) • p₂) := by rw [heq]
+          _ = (γ₁ : SL2C)⁻¹ • ((γ₂ : SL2C) • p₂) := by rw [heq']
           _ = ((γ₁⁻¹ * γ₂ : Γ) : SL2C) • p₂ := (mul_smul _ _ _).symm
+      have hd2 : h3Dist p₁ (h3Act ((γ₁⁻¹ * γ₂ : Γ) : SL2C) (natPoint (seq j) (hseq_pos j))) =
+          h3Dist (natPoint (seq j) (hseq_pos j)) p₂ := by
+        rw [hp12, h3Dist_h3Act, h3Dist_comm]
       calc h3Dist (natPoint (seq i) (hseq_pos i))
             (h3Act ((γ₁⁻¹ * γ₂ : Γ) : SL2C) (natPoint (seq j) (hseq_pos j)))
           ≤ h3Dist (natPoint (seq i) (hseq_pos i)) p₁ +
               h3Dist p₁ (h3Act ((γ₁⁻¹ * γ₂ : Γ) : SL2C) (natPoint (seq j) (hseq_pos j))) :=
             h3Dist_triangle _ _ _
         _ = h3Dist (natPoint (seq i) (hseq_pos i)) p₁ +
-              h3Dist (natPoint (seq j) (hseq_pos j)) p₂ := by
-            rw [hp12, h3Dist_h3Act, h3Dist_comm p₂ _]
+              h3Dist (natPoint (seq j) (hseq_pos j)) p₂ := by rw [hd2]
         _ < ε / 2 + ε / 2 := add_lt_add hp₁ hp₂
         _ = ε := add_halves ε
     rcases lt_trichotomy i j with hlt | rfl | hgt
@@ -1598,7 +1580,8 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
             natPoint (seq i) (hseq_pos i) := by
           rw [← h3Act_mul]
           have hmul : ((γ₁⁻¹ * γ₂ : Γ) : SL2C) * ((γ₂⁻¹ * γ₁ : Γ) : SL2C) = 1 := by
-            exact_mod_cast (show (γ₁⁻¹ * γ₂) * (γ₂⁻¹ * γ₁) = 1 by group)
+            exact_mod_cast (show (γ₁⁻¹ * γ₂) * (γ₂⁻¹ * γ₁) = 1 by
+              rw [mul_assoc, ← mul_assoc γ₂, mul_inv_cancel, one_mul, inv_mul_cancel])
           rw [hmul, h3Act_one]
         rwa [this]
       exact hd_lt j i ⟨γ₂⁻¹ * γ₁, htri'⟩ hgt
@@ -1620,14 +1603,14 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
     · rintro ⟨q, hq, rfl⟩
       have hfix : natPoint (seq k) (hseq_pos k) =
           h3Act ((τ : Γ) : SL2C) (natPoint (seq k) (hseq_pos k)) :=
-        (τ.2 (seq k) (by exact_mod_cast hseq_pos k)).symm
+        (τ.2 (Nat.cast (seq k)) (by exact_mod_cast hseq_pos k)).symm
       rw [hfix, h3Dist_h3Act]
       exact hq
     · intro hp
       refine ⟨h3Act (((τ⁻¹ : vertStab Γ) : Γ) : SL2C) p, ?_, ?_⟩
       · have hfix : natPoint (seq k) (hseq_pos k) =
             h3Act (((τ⁻¹ : vertStab Γ) : Γ) : SL2C) (natPoint (seq k) (hseq_pos k)) :=
-          ((τ⁻¹ : vertStab Γ).2 (seq k) (by exact_mod_cast hseq_pos k)).symm
+          ((τ⁻¹ : vertStab Γ).2 (Nat.cast (seq k)) (by exact_mod_cast hseq_pos k)).symm
         rw [hfix, h3Dist_h3Act]
         exact hp
       · rw [← h3Act_mul]
@@ -1641,16 +1624,19 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
       ((measurableEmbedding_h3Act (rep c : SL2C)).measurableSet_image.mpr (hB_meas k)).inter hF_meas
     have hpiece_sub : ∀ c, piece c ⊆ E k := fun c x hx =>
       ⟨Set.mem_iUnion.mpr ⟨rep c, hx.1⟩, hx.2⟩
-    have hpiece_disj : Pairwise (Disjoint on piece) := by
+    have hpiece_disj : Pairwise (Function.onFun Disjoint piece) := by
       intro c₁ c₂ hc12
-      rw [Set.disjoint_iff]
+      refine Set.disjoint_iff.mpr ?_
       rintro x ⟨⟨⟨p₁, hp₁, rfl⟩, _⟩, ⟨⟨p₂, hp₂, heq⟩, _⟩⟩
       have hp12 : p₁ = h3Act (((rep c₁)⁻¹ * rep c₂ : Γ) : SL2C) p₂ := by
-        change (rep c₁ : SL2C) • p₁ = (rep c₂ : SL2C) • p₂ at heq
+        have heq' : (rep c₁ : SL2C) • p₁ = (rep c₂ : SL2C) • p₂ := heq.symm
         calc p₁ = ((rep c₁ : SL2C)⁻¹ * (rep c₁ : SL2C)) • p₁ := by rw [inv_mul_cancel, one_smul]
           _ = (rep c₁ : SL2C)⁻¹ • ((rep c₁ : SL2C) • p₁) := mul_smul _ _ _
-          _ = (rep c₁ : SL2C)⁻¹ • ((rep c₂ : SL2C) • p₂) := by rw [heq]
+          _ = (rep c₁ : SL2C)⁻¹ • ((rep c₂ : SL2C) • p₂) := by rw [heq']
           _ = (((rep c₁)⁻¹ * rep c₂ : Γ) : SL2C) • p₂ := (mul_smul _ _ _).symm
+      have hd2 : h3Dist p₁ (h3Act (((rep c₁)⁻¹ * rep c₂ : Γ) : SL2C)
+          (natPoint (seq k) (hseq_pos k))) = h3Dist (natPoint (seq k) (hseq_pos k)) p₂ := by
+        rw [hp12, h3Dist_h3Act, h3Dist_comm]
       have htri : h3Dist (natPoint (seq k) (hseq_pos k))
           (h3Act (((rep c₁)⁻¹ * rep c₂ : Γ) : SL2C) (natPoint (seq k) (hseq_pos k))) < ε := by
         calc h3Dist (natPoint (seq k) (hseq_pos k))
@@ -1659,8 +1645,7 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
                 h3Dist p₁ (h3Act (((rep c₁)⁻¹ * rep c₂ : Γ) : SL2C)
                   (natPoint (seq k) (hseq_pos k))) := h3Dist_triangle _ _ _
           _ = h3Dist (natPoint (seq k) (hseq_pos k)) p₁ +
-                h3Dist (natPoint (seq k) (hseq_pos k)) p₂ := by
-              rw [hp12, h3Dist_h3Act, h3Dist_comm p₂ _]
+                h3Dist (natPoint (seq k) (hseq_pos k)) p₂ := by rw [hd2]
           _ < ε / 2 + ε / 2 := add_lt_add hp₁ hp₂
           _ = ε := add_halves ε
       have hmem_stab : (rep c₁)⁻¹ * rep c₂ ∈ vertStab Γ := by
@@ -1709,7 +1694,7 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
         rw [hmul, mul_smul, hstab_ball τ k]
       rw [himg, hgB]
     have hBk_ge : c₀ ≤ h3Measure (B k) :=
-      h3Measure_ball_ge hε2 (by exact_mod_cast hseq_pos k)
+      h3Measure_ball_ge (t := Nat.cast (seq k)) hε2 (by exact_mod_cast hseq_pos k)
     calc c₀ ≤ h3Measure (B k) := hBk_ge
       _ ≤ h3Measure (⋃ c : Γ ⧸ vertStab Γ, ⋃ τ : vertStab Γ,
             B k ∩ (((rep c * (τ : Γ) : Γ) : SL2C)⁻¹ • F)) := measure_mono hcover
@@ -1727,8 +1712,9 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
       _ = (M : ℝ≥0∞) * ∑' c : Γ ⧸ vertStab Γ, h3Measure (piece c) := ENNReal.tsum_mul_left
       _ = (M : ℝ≥0∞) * h3Measure (⋃ c : Γ ⧸ vertStab Γ, piece c) := by
           rw [measure_iUnion hpiece_disj hpiece_meas]
-      _ ≤ (M : ℝ≥0∞) * h3Measure (E k) :=
-          mul_le_mul_left' (measure_mono (Set.iUnion_subset hpiece_sub)) _
+      _ ≤ (M : ℝ≥0∞) * h3Measure (E k) := by
+          gcongr
+          exact Set.iUnion_subset hpiece_sub
   -- Sum over `K` disjoint sets `E 0, …, E (K - 1) ⊆ F` to contradict `h3Measure F < ⊤`
   have hsum_le : ∀ K : ℕ, (K : ℝ≥0∞) * c₀ ≤ (M : ℝ≥0∞) * h3Measure F := by
     intro K
@@ -1743,16 +1729,24 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
       _ = (M : ℝ≥0∞) * h3Measure (⋃ k ∈ Finset.range K, E k) := by
             rw [measure_biUnion_finset hdisj_fin (fun k _ => hE_meas k)]
       _ ≤ (M : ℝ≥0∞) * h3Measure F := by
-            refine mul_le_mul_left' (measure_mono ?_) _
+            gcongr
             exact Set.iUnion₂_subset fun k _ => Set.inter_subset_right
   have htop_lt : (M : ℝ≥0∞) * h3Measure F < ⊤ :=
     ENNReal.mul_lt_top (ENNReal.natCast_ne_top M).lt_top hF_lt
-  have hdiv_lt : ((M : ℝ≥0∞) * h3Measure F) / c₀ < ⊤ :=
-    ENNReal.div_lt_top htop_lt.ne hc₀_pos.ne'
-  obtain ⟨K, hK⟩ := ENNReal.exists_nat_gt hdiv_lt.ne
+  set r₀ : ℝ := 64 / 27 * h3BallDelta (ε / 2) ^ 3
+  have hr₀_pos : 0 < r₀ := by have := h3BallDelta_pos hε2; positivity
+  set V : ℝ := ((M : ℝ≥0∞) * h3Measure F).toReal
+  set K : ℕ := ⌊V / r₀⌋₊ + 1
+  have hVR : V < (K : ℝ) * r₀ := by
+    have : V / r₀ < (K : ℝ) := by simp only [K]; push_cast; exact Nat.lt_floor_add_one _
+    rwa [div_lt_iff₀ hr₀_pos] at this
   have hmul_lt : (M : ℝ≥0∞) * h3Measure F < (K : ℝ≥0∞) * c₀ := by
-    have hc₀_top : c₀ ≠ ⊤ := ENNReal.ofReal_ne_top
-    exact (ENNReal.div_lt_iff (Or.inl hc₀_pos.ne') (Or.inl hc₀_top)).mp hK
+    calc (M : ℝ≥0∞) * h3Measure F
+        = ENNReal.ofReal V := (ENNReal.ofReal_toReal htop_lt.ne).symm
+      _ < ENNReal.ofReal ((K : ℝ) * r₀) :=
+          (ENNReal.ofReal_lt_ofReal_iff (mul_pos (by exact_mod_cast Nat.succ_pos _) hr₀_pos)).mpr hVR
+      _ = (K : ℝ≥0∞) * c₀ := by
+          rw [ENNReal.ofReal_mul (Nat.cast_nonneg K), ENNReal.ofReal_natCast]
   exact absurd (hsum_le K) (not_le.mpr hmul_lt)
 
 /-- **Off-diagonal blowup of Newtonian quotient kernels on primes.** Under thick-end folding on the
@@ -3363,6 +3357,4 @@ theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) 
   linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-
 

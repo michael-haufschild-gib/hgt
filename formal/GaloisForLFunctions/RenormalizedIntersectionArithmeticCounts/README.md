@@ -386,6 +386,12 @@ characters are retained, including both orientation labels in degrees
 zero and one. This [count realization](../../../docs/drafts/pipeline/3-formalized/riac-orientation-quotient-counts.md)
 does not itself bound the difference.
 
+[FibrePermutationSigns.lean](FibrePermutationSigns.lean) decomposes the
+orientation sign over any invariant finite partition. If every fibre is
+nonempty and transitive, the sign is `(-1)^(number of points + number of
+fibres)`. Singleton fibres remain in the formula; deleting fixed points
+without correcting the fibre count would give the wrong exponent.
+
 ## Square-root cancellation of actual elliptic divisor counts
 
 [SquarefreeDivisorCounts.lean](SquarefreeDivisorCounts.lean) constructs
@@ -414,6 +420,16 @@ embeddings. Two actual projective points map to the same closed place
 exactly when a Frobenius power joins them, with infinity fixed. The powers
 satisfy the identity and composition laws. Thus the supported closed-place
 fibres are the actual arithmetic orbits; the [formalized comparison](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-frobenius-orbits.md)
-does not assume an orbit-count identity. Identifying stable point subsets
-with divisors and comparing their permutation signs remain necessary for
-the orientation-cover bound.
+does not assume an orbit-count identity.
+
+[EllipticStableSubsets.lean](EllipticStableSubsets.lean) identifies actual
+Frobenius-stable `n`-point subsets in the degree-`n!` extension with all
+squarefree divisors of degree `n`. Every fibre contributes its residue
+degree in points. The intrinsic Frobenius orientation is
+`ε(T)=(-1)^(|T|+|support(T)|)`, retaining infinity and singleton fibres.
+Consequently the independently defined geometric sum `J_n=Σ_T ε(T)`
+satisfies `J_n=(-1)^n(E_n−O_n)` and `|J_n|≤8(n+1)²(√3)^n`.
+This [signed configuration theorem](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-stable-orientation.md)
+is formalized. The original orientation-quotient counts still require
+their transporter comparison with `J_n`; the integer-height transfer
+remains separate.
