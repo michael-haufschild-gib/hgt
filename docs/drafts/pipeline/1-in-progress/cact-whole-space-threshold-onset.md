@@ -33,18 +33,26 @@ Answer §3: the whole-space critical threshold grows exponentially in the onset 
   on `z`. **Gap:** the limit of the Schur terms along an arbitrary bad sequence. Lean has the limit
   `√L/c ⟪B v_m, ·⟫ → S(h)` (`m = 1`) or `→ 0` (`m ≥ 2`) only on window vectors
   `horizonProfileVector (horizonWeights h N) N` (`tendsto_complete_terminal_pole`,
-  `tendsto_complete_terminal_nonpolar`); the crude `D₇` bound leaves `O(R²/m⁵)` for `m ≤ m₀(R)`.
+  `tendsto_complete_terminal_nonpolar`); the nonpolar `D₇` Schur cost now vanishes (below). The polar functional still needs uniform transfer.
   Needed: a bound `|√L/c ⟪B v_m, z⟫| ≤ C_m (‖U_w‖₂ + W₈(U_w)^{1/2}) + o(1)·reserves(z)` uniform
   in `N` and `z ∈ V_Q^⊥`, so that window-vector limits transfer to strong `L²` limits of collar
   profiles.
 
-## Log
-- 2026-11-07 — card created; sharp pole self-energy below the onset formalized.
-- 2026-11-07 — B1–B3 formalized; Part A gap isolated (uniform pole-pairing bound).
-
-## Collar cancellation target
-For each fixed `m ≥ 2` on a positive critical curve, conjecture
+## Collar cancellation (Lean)
+For each fixed `m ≥ 2` on every positive critical curve,
 `(log N / c_N²) D₇(N / linearDefectCutoff c_N, N; r_m) → 0`.
-Split at `⌊δN⌋`: the lower piece is `O_m(δ)` after normalization; the upper piece
-is bounded by the known vanishing top-window norm. Finite-conductor reduction should then give
-`(c_N⁷ / log N) Σ_{2≤m≤Q₁} D₇(r_m)/E_m(c_N) → 0`.
+Splitting at `⌊δN⌋` bounds the lower piece by `O_m(δ)` and the upper piece by the
+vanishing top-window norm. Finite-conductor tail reduction gives
+`(c_N⁷ / log N) Σ_{2≤m≤Q₁} D₇(r_m)/E_m(c_N) → 0`, uniformly on positive compact
+critical bands.
+
+Lean (`CACT/NonpolarCollarResidualsVanish.lean`): `tendsto_nonpolar_collar_dualSeventh`,
+`tendsto_nonpolar_lowPacket_collar_schur_cost`,
+`eventually_uniform_nonpolar_lowPacket_collar_schur_cost` (CACT namespace).
+Axioms: `propext, Classical.choice, Quot.sound`.
+
+Deep inverse-energy residuals tend to zero at every critical ratio; the first band,
+second band, and far prefix can therefore be paid while retaining the exact collar cost.
+Lean: `eventually_critical_deep_residual_le`,
+`eventually_critical_schur_pairing_except_collar` in `AllRatioDeepConductorPairings`.
+Axioms: `propext, Classical.choice, Quot.sound`.

@@ -222,7 +222,7 @@ private theorem exp_term_interpolate {c : ℝ} (hc : 0 < c) (L s t θ : ℝ) :
   congr 1
   ring
 
-/-- The positive tail mass is multiplicatively convex on the real axis. -/
+/-- The positive tail mass is logarithmically convex on the real axis. -/
 theorem dirichletTailMass_interpolate (P : MvPolynomial (Fin 2) ℝ≥0) (s t : ℝ)
     {θ : ℝ} (hθ0 : 0 < θ) (hθ1 : θ < 1) :
     dirichletTailMass P (θ * s + (1 - θ) * t) ≤
@@ -288,14 +288,15 @@ theorem annihilator_accuracy_forces_left_growth {P : MvPolynomial (Fin 2) ℝ≥
           ((ρ.re - σlo) / (σhi - σlo) * Real.log ε +
             (σhi - ρ.re) / (σhi - σlo) * Real.log (dirichletTailMass P σlo)) :=
         mul_le_mul_of_nonneg_left hw hd.le
-      _ = _ := by field_simp [hd.ne']; ring
+      _ = _ := by field_simp [hd.ne']
   have hb : -((ρ.re - σlo) * Real.log ε) / (σhi - ρ.re) ≤
       Real.log (dirichletTailMass P σlo) := by
     apply (div_le_iff₀ (sub_pos.mpr hhi)).mpr
     linarith only [hscale']
   rw [Real.rpow_def_of_pos hε, ← Real.exp_log hL]
   apply Real.exp_le_exp.mpr
-  convert hb using 1 <;> ring
+  convert hb using 1
+  ring
 
 /-- Actual zeta zeros admit arbitrary positive finite annihilation accuracy, but every
 such construction pays the corresponding power-law mass cost to the left of each zero. -/

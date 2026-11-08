@@ -1810,11 +1810,23 @@ private theorem normalizedCentredAtomicTest_eq_zero_of_gt {c : ℝ} (hc : 0 < c)
   have hlog : Real.log n ≤ Real.log N := Real.log_le_log hn0 (by exact_mod_cast hnN)
   rw [hsupp _ fun hmem => by linarith only [hmem.2, hu, hlog], mul_zero]
 
-/-- **Every ratio below `⨅ A ≥ 0, windowThreshold A` is eventually positive definite on the
-high-conductor complement `(conductorSubspace ⌊(log N)^{13/32}⌋₊ N)ᗮ`.** -/
-theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (hRstar : 0 < Rstar)
-    (hlt : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) :
-    EventuallyHighConductorPosDef Rstar := by
+/-- A unit-mass critical atomic sequence with bounded eighth exponential mass cannot have
+asymptotically nonpositive Weil form below every continuum window threshold. -/
+theorem no_nonpositive_atomic_sequence_below_windowThreshold
+    {Rstar : ℝ} (hRstar : 0 < Rstar)
+    (hlt : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A)
+    {N_seq : ℕ → ℕ} (hN_strict : StrictMono N_seq) (hN_pos : ∀ k, 1 ≤ N_seq k)
+    {c_seq : ℕ → ℝ} (hc_seq : ∀ k, 1 ≤ c_seq k)
+    (hcrit_seq : Tendsto (fun k => c_seq k ^ 8 / Real.log (N_seq k : ℝ)) atTop (𝓝 Rstar))
+    (hc_width : ∀ k, c_seq k / (N_seq k : ℝ) ≤ 1 / ((k : ℝ) + 1))
+    (y_norm : ℕ → ℕ → ℝ)
+    (hV_norm : ∀ k, ∫ u, normalizedCentredAtomicTest tiltedUnitSpline (y_norm k)
+      (c_seq k) (N_seq k) u ^ 2 = 1)
+    {M₈ : ℝ} (hM₈_pos : 0 < M₈)
+    (hV_M₈ : ∀ k, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (y_norm k)
+      (c_seq k) (N_seq k) u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
+    (hV_wq : ∀ k, weilQuad (normalizedCentredAtomicTest tiltedUnitSpline (y_norm k)
+      (c_seq k) (N_seq k)) ≤ 1 / ((k : ℝ) + 1)) : False := by
   have hex_R₁ : ∃ R₁ : ℝ, Rstar < R₁ ∧ ∀ A : ℝ, 0 ≤ A → (R₁ : EReal) < windowThreshold A := by
     cases hinf : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) with
     | bot =>
@@ -1835,6 +1847,270 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
         exact iInf_le_of_le A (iInf_le _ hA)
       exact (EReal.coe_lt_coe_iff.mpr (by linarith)).trans_le hle
   obtain ⟨R₁, hR_lt, hR₁_win⟩ := hex_R₁
+  let V : ℕ → ℝ → ℝ := fun k =>
+    normalizedCentredAtomicTest tiltedUnitSpline (y_norm k) (c_seq k) (N_seq k)
+  have hVd : ∀ k, ContDiff ℝ 2 (V k) := fun k =>
+    contDiff_const.mul (contDiff_centredAtomicTest contDiff_tiltedUnitSpline _ _ _)
+  have hVc : ∀ k, HasCompactSupport (V k) := fun k =>
+    (hasCompactSupport_centredAtomicTest tiltedUnitSpline_eq_zero (y_norm k)
+      (zero_lt_one.trans_le (hc_seq k)) (hN_pos k)).mul_left
+  have hV_supp_k : ∀ (k : ℕ) (u : ℝ), 1 / (Nat.cast k + 1) < u → V k u = 0 := fun k u hu =>
+    normalizedCentredAtomicTest_eq_zero_of_gt (zero_lt_one.trans_le (hc_seq k))
+      (hN_pos k) (y_norm k) ((hc_width k).trans_lt hu)
+  have hV_supp1 : ∀ (k : ℕ) (u : ℝ), 1 < u → V k u = 0 := fun k u hu =>
+    hV_supp_k k u ((div_le_one_of_le₀
+      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity)).trans_lt hu)
+  have hV_wq1 : ∀ k, weilQuad (V k) ≤ 1 := fun k =>
+    (hV_wq k).trans (div_le_one_of_le₀
+      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity))
+  have hV_mem : ∀ k, MemLp (V k) 2 (volume : Measure ℝ) := fun k =>
+    (hVd k).continuous.memLp_of_hasCompactSupport (hVc k)
+  let φ₁ : ℕ → ℕ := fun k => k
+  have hφ₁_mono : StrictMono φ₁ := fun _ _ h => h
+  let R_lim := Rstar
+  have hR_lim_pos : 0 < R_lim := hRstar
+  have hR_lim_le : R_lim ≤ Rstar := le_rfl
+  have hφ₁_lim : Tendsto (fun k => c_seq (φ₁ k) ^ 8 / Real.log (N_seq (φ₁ k) : ℝ))
+      atTop (𝓝 R_lim) := hcrit_seq
+  have hS_tb := totallyBounded_toLp_of_bounded_weilQuad hVd hVc (fun k => (hV_norm k).le)
+    hM₈_pos.le hV_M₈ hV_supp1 hV_wq1 hV_mem
+  have hS_seq : IsSeqCompact (closure (Set.range fun k : ℕ => (hV_mem k).toLp (V k))) :=
+    (hS_tb.closure.isCompact_of_isComplete isClosed_closure.isComplete).isSeqCompact
+  obtain ⟨F_Lp, _, φ₂, hφ₂_mono, hφ₂_lim⟩ :=
+    hS_seq fun k => subset_closure ⟨φ₁ k, rfl⟩
+  have hF_raw : MemLp F_Lp 2 (volume : Measure ℝ) := Lp.memLp F_Lp
+  set F : ℝ → ℝ := hF_raw.aestronglyMeasurable.mk F_Lp
+  have hFm : Measurable F := hF_raw.aestronglyMeasurable.measurable_mk
+  have hF_ae : (F_Lp : ℝ → ℝ) =ᵐ[volume] F := hF_raw.aestronglyMeasurable.ae_eq_mk
+  have hF_mem : MemLp F 2 (volume : Measure ℝ) := hF_raw.ae_eq hF_ae
+  have hF_toLp : hF_mem.toLp F = F_Lp := Lp.ext (hF_mem.coeFn_toLp.trans hF_ae.symm)
+  have hlp_eLp : Tendsto (fun i : ℕ => eLpNorm (fun u => V (φ₁ (φ₂ i)) u - F u) 2 volume)
+      atTop (𝓝 0) := by
+    have hnorm0 : Tendsto (fun i : ℕ => ‖(hV_mem (φ₁ (φ₂ i))).toLp (V (φ₁ (φ₂ i))) - F_Lp‖)
+        atTop (𝓝 0) := tendsto_iff_norm_sub_tendsto_zero.mp hφ₂_lim
+    have hof := (ENNReal.continuous_ofReal.tendsto 0).comp hnorm0
+    simp only [ENNReal.ofReal_zero] at hof
+    refine hof.congr fun i => ?_
+    have hsub_mem : MemLp (V (φ₁ (φ₂ i)) - F) 2 (volume : Measure ℝ) :=
+      (hV_mem (φ₁ (φ₂ i))).sub hF_mem
+    have hto : hsub_mem.toLp (V (φ₁ (φ₂ i)) - F) =
+        (hV_mem (φ₁ (φ₂ i))).toLp (V (φ₁ (φ₂ i))) - F_Lp := by
+      rw [← hF_toLp, MemLp.toLp_sub]
+    dsimp only [Function.comp_def]
+    rw [← hto, Lp.norm_toLp, ENNReal.ofReal_toReal hsub_mem.eLpNorm_ne_top]
+    rfl
+  have hin_meas := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
+    (fun i => (hV_mem (φ₁ (φ₂ i))).aestronglyMeasurable) hF_mem.aestronglyMeasurable hlp_eLp
+  obtain ⟨φ₃, hφ₃_mono, hφ₃_ae⟩ := hin_meas.exists_seq_tendsto_ae
+  set s : ℕ → ℕ := fun j => φ₁ (φ₂ (φ₃ j))
+  have hs_mono : StrictMono s := hφ₁_mono.comp (hφ₂_mono.comp hφ₃_mono)
+  have hs_Lp_lim : Tendsto (fun j : ℕ => (hV_mem (s j)).toLp (V (s j))) atTop (𝓝 F_Lp) :=
+    hφ₂_lim.comp hφ₃_mono.tendsto_atTop
+  have hs_L2 : Tendsto (fun j : ℕ => ∫ u, (V (s j) u - F u) ^ 2) atTop (𝓝 0) := by
+    have hnorm_sq : Tendsto (fun j : ℕ => ‖(hV_mem (s j)).toLp (V (s j)) - hF_mem.toLp F‖ ^ 2)
+        atTop (𝓝 (0 ^ 2)) := by
+      rw [hF_toLp]
+      exact (tendsto_iff_norm_sub_tendsto_zero.mp hs_Lp_lim).pow 2
+    rw [zero_pow (by norm_num)] at hnorm_sq
+    exact hnorm_sq.congr fun j => HTGeometry.norm_toLp_sub_sq (hV_mem (s j)) hF_mem
+  have hF_norm : (∫ u, F u ^ 2) = 1 := by
+    have hn1 : Tendsto (fun j : ℕ => ‖(hV_mem (s j)).toLp (V (s j))‖ ^ 2)
+        atTop (𝓝 (‖hF_mem.toLp F‖ ^ 2)) := by
+      rw [hF_toLp]
+      exact (hs_Lp_lim.norm).pow 2
+    have hn2 : ∀ j : ℕ, ‖(hV_mem (s j)).toLp (V (s j))‖ ^ 2 = 1 := fun j => by
+      rw [HTGeometry.norm_toLp_sq, hV_norm (s j)]
+    rw [← HTGeometry.norm_toLp_sq hF_mem]
+    exact tendsto_nhds_unique hn1 (by simpa only [hn2] using tendsto_const_nhds)
+  have hF_pos_ae : ∀ᵐ u : ℝ, 0 < u → F u = 0 := by
+    filter_upwards [hφ₃_ae] with u hu_lim hu_pos
+    have hex_j : ∃ j₀ : ℕ, (1 : ℝ) / (Nat.cast (s j₀) + 1) < u := by
+      have hz : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
+        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
+      exact (hz.eventually (gt_mem_nhds hu_pos)).exists
+    obtain ⟨j₀, hj₀⟩ := hex_j
+    have hev0 : ∀ᶠ j : ℕ in atTop, V (s j) u = 0 := by
+      filter_upwards [eventually_ge_atTop j₀] with j hj
+      have hle : (1 : ℝ) / (Nat.cast (s j) + 1) ≤ (1 : ℝ) / (Nat.cast (s j₀) + 1) :=
+        div_le_div_of_nonneg_left zero_le_one (by positivity)
+          (by exact_mod_cast Nat.add_le_add_right (hs_mono.monotone hj) 1)
+      exact hV_supp_k (s j) u (hle.trans_lt hj₀)
+    exact tendsto_nhds_unique hu_lim (tendsto_const_nhds.congr' (hev0.mono fun _ h => h.symm))
+  have hF8_pair : Integrable (fun u => F u ^ 2 * Real.exp (-(8 * u))) ∧
+      (∫ u, F u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
+    let w : ℝ → ℝ := fun u => Real.exp (-(4 * u))
+    have hwc : Continuous w := by fun_prop
+    have hsq : ∀ (a u : ℝ), (w u * a) ^ 2 = a ^ 2 * Real.exp (-(8 * u)) := fun a u => by
+      dsimp only [w]
+      rw [mul_pow, ← Real.exp_nat_mul, mul_comm]
+      congr 2; push_cast; ring
+    have hVw : ∀ j : ℕ, MemLp (fun u => w u * V (s j) u) 2 (volume : Measure ℝ) := fun j =>
+      (hwc.mul (hVd (s j)).continuous).memLp_of_hasCompactSupport (hVc (s j)).mul_left
+    have hae_w : ∀ᵐ u, Tendsto (fun j => w u * V (s j) u) atTop (𝓝 (w u * F u)) := by
+      filter_upwards [hφ₃_ae] with u hu
+      exact hu.const_mul _
+    obtain ⟨hmem_w, hbd_w⟩ := integral_sq_le_of_eLpNorm_two_le
+      (hwc.aestronglyMeasurable.mul hFm.aestronglyMeasurable) hM₈_pos.le
+      (Lp.eLpNorm_le_of_ae_tendsto
+        (Eventually.of_forall fun j =>
+          eLpNorm_two_le_of_integral_sq_le (hVw j) (by simpa only [hsq] using hV_M₈ (s j)))
+        (fun j => (hVw j).aestronglyMeasurable) hae_w)
+    exact ⟨by simpa only [Pi.mul_apply, hsq] using hmem_w.integrable_sq,
+      by simpa only [Pi.mul_apply, hsq] using hbd_w⟩
+  set F₀ : ℝ → ℝ := (Set.Iio (0 : ℝ)).indicator F
+  have hF₀m : Measurable F₀ := hFm.indicator measurableSet_Iio
+  have hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0 := fun u hu =>
+    Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hu]) F
+  have hF₀_ae : F₀ =ᵐ[volume] F := by
+    have hnot0 : ∀ᵐ u : ℝ, u ≠ 0 := by
+      rw [ae_iff]
+      have hset : {u : ℝ | ¬ u ≠ 0} = ({0} : Set ℝ) := by ext u; simp
+      rw [hset]
+      exact measure_singleton (0 : ℝ)
+    filter_upwards [hF_pos_ae, hnot0] with u hu_pos hne
+    rcases lt_trichotomy u 0 with hlt | rfl | hgt
+    · exact Set.indicator_of_mem (show u ∈ Set.Iio (0 : ℝ) from hlt) F
+    · exact absurd rfl hne
+    · dsimp only [F₀]
+      rw [Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hgt.le]), hu_pos hgt]
+  have hF₀2 : Integrable fun u => F₀ u ^ 2 :=
+    hF_mem.integrable_sq.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
+  have hF₀_norm : (∫ u, F₀ u ^ 2) = 1 := by
+    rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h]), hF_norm]
+  have hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)) :=
+    hF8_pair.1.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
+  have hF₀8_le : (∫ u, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
+    rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h])]
+    exact hF8_pair.2
+  have hs_L2_F₀ : Tendsto (fun j : ℕ => ∫ u, (V (s j) u - F₀ u) ^ 2) atTop (𝓝 0) :=
+    hs_L2.congr fun j => integral_congr_ae (hF₀_ae.symm.mono fun _ h => by rw [h])
+  obtain ⟨hF₀i, hL1_sub⟩ := integrable_and_tendsto_L1_of_L2_and_exp8
+    (fun j => hVd (s j)) (fun j => hVc (s j)) (fun j => hV_supp1 (s j))
+    hM₈_pos.le (fun j => hV_M₈ (s j)) hF₀m hF₀2 hF₀8 hF₀8_le
+    (Eventually.of_forall fun u hu => hF₀_zero u (zero_lt_one.trans hu).le) hs_L2_F₀
+  let N_sub : ℕ → ℕ := fun j => N_seq (s j)
+  have hN_sub : StrictMono N_sub := hN_strict.comp hs_mono
+  letI : DecidablePred (fun N : ℕ => ∃ j : ℕ, N_sub j = N) := Classical.decPred _
+  let c_full : ℕ → ℝ := fun N =>
+    if h : ∃ j : ℕ, N_sub j = N then c_seq (s (Classical.choose h)) else localCriticalCurve R_lim N
+  let x_full : ℕ → ℕ → ℝ := fun N =>
+    if h : ∃ j : ℕ, N_sub j = N then y_norm (s (Classical.choose h)) else 0
+  have hc_full_sub : ∀ j : ℕ, c_full (N_sub j) = c_seq (s j) := by
+    intro j
+    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
+    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
+    dsimp only [c_full]
+    rw [dif_pos hex, hch]
+  have hx_full_sub : ∀ j : ℕ, x_full (N_sub j) = y_norm (s j) := by
+    intro j
+    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
+    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
+    dsimp only [x_full]
+    rw [dif_pos hex, hch]
+  have hU_full_sub : ∀ j : ℕ,
+      normalizedCentredAtomicTest tiltedUnitSpline (x_full (N_sub j)) (c_full (N_sub j)) (N_sub j) =
+        V (s j) := fun j => by
+    rw [hc_full_sub j, hx_full_sub j]
+  have hc1_full : ∀ N : ℕ, 1 ≤ c_full N := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with h | h
+    · have hc_eq : c_full N = c_seq (s (Classical.choose h)) := by
+        dsimp only [c_full]; rw [dif_pos h]
+      rw [hc_eq]
+      exact hc_seq _
+    · have hc_eq : c_full N = localCriticalCurve R_lim N := by
+        dsimp only [c_full]; rw [dif_neg h]
+      rw [hc_eq]
+      exact one_le_localCriticalCurve R_lim N
+  have hmass_full : ∀ N : ℕ,
+      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2) ≤ 1 := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j, hV_norm (s j)]
+    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
+      rw [hx0, normalizedCentredAtomicTest_zero]
+      simp
+  have hM_full : ∀ N : ℕ,
+      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2 *
+        Real.exp (-(8 * u))) ≤ M₈ := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j]
+      exact hV_M₈ (s j)
+    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
+      rw [hx0, normalizedCentredAtomicTest_zero]
+      simpa using hM₈_pos.le
+  have hcrit_full : Tendsto (fun N : ℕ => c_full N ^ 8 / Real.log (N : ℝ)) atTop (𝓝 R_lim) := by
+    have hsub_ratio : Tendsto (fun j : ℕ => c_seq (s j) ^ 8 / Real.log (Nat.cast (N_sub j)))
+        atTop (𝓝 R_lim) :=
+      hφ₁_lim.comp (hφ₂_mono.comp hφ₃_mono).tendsto_atTop
+    have hloc_ratio := tendsto_localCriticalCurve_ratio hR_lim_pos
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨J, hJ⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hsub_ratio) ε hε)
+    obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hloc_ratio) ε hε)
+    refine eventually_atTop.mpr ⟨max N₁ (N_sub J), fun N hN => ?_⟩
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hc_full_sub j]
+      exact hJ j (hN_sub.le_iff_le.mp ((le_max_right N₁ (N_sub J)).trans hN))
+    · have hc_loc : c_full N = localCriticalCurve R_lim N := by dsimp only [c_full]; rw [dif_neg h]
+      rw [hc_loc]
+      exact hN₁ N ((le_max_left N₁ (N_sub J)).trans hN)
+  let l : Filter ℕ := Filter.map N_sub atTop
+  have hl_le : l ≤ atTop := hN_sub.tendsto_atTop
+  have hL1_l : Tendsto (fun N : ℕ =>
+      ∫ u, ‖normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u - F₀ u‖)
+      l (𝓝 0) := by
+    rw [Filter.tendsto_map'_iff]
+    refine hL1_sub.congr fun j => ?_
+    dsimp only [Function.comp_def]
+    rw [hU_full_sub j]
+  have hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0 := by
+    intro T hT
+    have hlim_Rlim : truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0 := by
+      by_contra hpos_sum
+      push Not at hpos_sum
+      set b_half : ℝ := (truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u)))) / 2
+      have hb_pos : 0 < b_half := half_pos hpos_sum
+      have hb_lt : b_half < truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
+          (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) := half_lt_self hpos_sum
+      have hev_gt := eventually_lt_weilQuad_of_L1_limit_full hl_le hc1_full hR_lim_pos
+        hcrit_full hmass_full hM_full hF₀i hL1_l hT hb_lt
+      rw [Filter.eventually_map] at hev_gt
+      have hev_gt' : ∀ᶠ j : ℕ in atTop, b_half < weilQuad (V (s j)) :=
+        hev_gt.mono fun j hj => by rwa [hU_full_sub j] at hj
+      have hz_inv : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
+        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
+      obtain ⟨j, hj_gt, hj_lt⟩ :=
+        (hev_gt'.and (hz_inv.eventually (gt_mem_nhds hb_pos))).exists
+      have hwq_j := hV_wq (s j)
+      linarith only [hj_gt, hj_lt, hwq_j]
+    have halias_le : criticalAliasCoefficient Rstar ≤ criticalAliasCoefficient R_lim := by
+      unfold criticalAliasCoefficient
+      have hnum : 0 ≤ 7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne := by
+        have := integral_tiltedUnitSpline_sq_pos
+        have := tiltedJordanOne_pos
+        positivity
+      have hm_pos : 0 < (∫ u, tiltedUnitSpline u) ^ 2 :=
+        sq_pos_of_ne_zero integral_tiltedUnitSpline_ne_zero
+      exact div_le_div_of_nonneg_left hnum (mul_pos hm_pos hR_lim_pos)
+        (mul_le_mul_of_nonneg_left hR_lim_le hm_pos.le)
+    have hI₈_nn : 0 ≤ ∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u)) :=
+      setIntegral_nonneg measurableSet_Iio fun _ _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
+    have hm := mul_le_mul_of_nonneg_right halias_le hI₈_nn
+    linarith only [hlim_Rlim, hm]
+  exact contradiction_of_limit_profile_below_windowThreshold hRstar hR_lt hR₁_win hF₀m hF₀i hF₀2
+    hF₀_norm hM₈_pos.le hF₀8 hF₀8_le hF₀_zero hliminf
+
+/-- **Every ratio below `⨅ A ≥ 0, windowThreshold A` is eventually positive definite on the
+high-conductor complement `(conductorSubspace ⌊(log N)^{13/32}⌋₊ N)ᗮ`.** -/
+theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (hRstar : 0 < Rstar)
+    (hlt : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) :
+    EventuallyHighConductorPosDef Rstar := by
   by_contra hnot_pos
   obtain ⟨R₀, hR₀, hpos_R₀⟩ := exists_pos_eventuallyCriticalPosDef
   obtain ⟨c_W, hc_W, hbridge_gen⟩ := eventually_complement_collar_weilQuad_bridge
@@ -1988,11 +2264,6 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
   have hUc : ∀ k, HasCompactSupport (U_raw k) := fun k =>
     (hasCompactSupport_centredAtomicTest tiltedUnitSpline_eq_zero (y_raw k)
       (zero_lt_one.trans_le (hz_spec k).1) (by have := hN3_seq k; omega)).mul_left
-  have hVd : ∀ k, ContDiff ℝ 2 (V k) := fun k =>
-    contDiff_const.mul (contDiff_centredAtomicTest contDiff_tiltedUnitSpline _ _ _)
-  have hVc : ∀ k, HasCompactSupport (V k) := fun k =>
-    (hasCompactSupport_centredAtomicTest tiltedUnitSpline_eq_zero (y_norm k)
-      (zero_lt_one.trans_le (hz_spec k).1) (by have := hN3_seq k; omega)).mul_left
   have hV_norm : ∀ k, (∫ u, V k u ^ 2) = 1 := by
     intro k
     rw [hV_eq k]
@@ -2013,12 +2284,6 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
       have hne : (∫ u, U_raw k u ^ 2) ≠ 0 := (hU_raw_pos k).ne'
       rw [inv_pow, hν_sq k, mul_comm M₈, inv_mul_cancel_left₀ hne]
     linarith only [hm, hid]
-  have hV_supp_k : ∀ (k : ℕ) (u : ℝ), 1 / (Nat.cast k + 1) < u → V k u = 0 := fun k u hu =>
-    normalizedCentredAtomicTest_eq_zero_of_gt (zero_lt_one.trans_le (hz_spec k).1)
-      (by have := hN3_seq k; omega) (y_norm k) ((hc_width k).trans_lt hu)
-  have hV_supp1 : ∀ (k : ℕ) (u : ℝ), 1 < u → V k u = 0 := fun k u hu =>
-    hV_supp_k k u ((div_le_one_of_le₀
-      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity)).trans_lt hu)
   have hV_wq : ∀ (k : ℕ), weilQuad (V k) ≤ 1 / (Nat.cast k + 1) := by
     intro k
     obtain ⟨_, _, hb3⟩ := Classical.choose_spec (hbr_k k)
@@ -2029,248 +2294,25 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
       have hne : (∫ u, U_raw k u ^ 2) ≠ 0 := (hU_raw_pos k).ne'
       rw [inv_pow, hν_sq k, mul_comm (1 / (Nat.cast k + 1)), inv_mul_cancel_left₀ hne]
     linarith only [hm, hid]
-  have hV_wq1 : ∀ (k : ℕ), weilQuad (V k) ≤ 1 := fun k =>
-    (hV_wq k).trans (div_le_one_of_le₀
-      (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity))
-  have hV_mem : ∀ k, MemLp (V k) 2 (volume : Measure ℝ) := fun k =>
-    (hVd k).continuous.memLp_of_hasCompactSupport (hVc k)
   obtain ⟨R_lim, hR_lim_mem, φ₁, hφ₁_mono, hφ₁_lim⟩ :=
     isCompact_Icc.isSeqCompact hratio_mem
   have hR_lim_pos : 0 < R_lim := hR₀.trans_le hR_lim_mem.1
   have hR_lim_le : R_lim ≤ Rstar := hR_lim_mem.2
-  have hS_tb := totallyBounded_toLp_of_bounded_weilQuad hVd hVc (fun k => (hV_norm k).le)
-    hM₈_pos.le hV_M₈ hV_supp1 hV_wq1 hV_mem
-  have hS_seq : IsSeqCompact (closure (Set.range fun k : ℕ => (hV_mem k).toLp (V k))) :=
-    (hS_tb.closure.isCompact_of_isComplete isClosed_closure.isComplete).isSeqCompact
-  obtain ⟨F_Lp, _, φ₂, hφ₂_mono, hφ₂_lim⟩ :=
-    hS_seq fun k => subset_closure ⟨φ₁ k, rfl⟩
-  have hF_raw : MemLp F_Lp 2 (volume : Measure ℝ) := Lp.memLp F_Lp
-  set F : ℝ → ℝ := hF_raw.aestronglyMeasurable.mk F_Lp
-  have hFm : Measurable F := hF_raw.aestronglyMeasurable.measurable_mk
-  have hF_ae : (F_Lp : ℝ → ℝ) =ᵐ[volume] F := hF_raw.aestronglyMeasurable.ae_eq_mk
-  have hF_mem : MemLp F 2 (volume : Measure ℝ) := hF_raw.ae_eq hF_ae
-  have hF_toLp : hF_mem.toLp F = F_Lp := Lp.ext (hF_mem.coeFn_toLp.trans hF_ae.symm)
-  have hlp_eLp : Tendsto (fun i : ℕ => eLpNorm (fun u => V (φ₁ (φ₂ i)) u - F u) 2 volume)
-      atTop (𝓝 0) := by
-    have hnorm0 : Tendsto (fun i : ℕ => ‖(hV_mem (φ₁ (φ₂ i))).toLp (V (φ₁ (φ₂ i))) - F_Lp‖)
-        atTop (𝓝 0) := tendsto_iff_norm_sub_tendsto_zero.mp hφ₂_lim
-    have hof := (ENNReal.continuous_ofReal.tendsto 0).comp hnorm0
-    simp only [ENNReal.ofReal_zero] at hof
-    refine hof.congr fun i => ?_
-    have hsub_mem : MemLp (V (φ₁ (φ₂ i)) - F) 2 (volume : Measure ℝ) :=
-      (hV_mem (φ₁ (φ₂ i))).sub hF_mem
-    have hto : hsub_mem.toLp (V (φ₁ (φ₂ i)) - F) =
-        (hV_mem (φ₁ (φ₂ i))).toLp (V (φ₁ (φ₂ i))) - F_Lp := by
-      rw [← hF_toLp, MemLp.toLp_sub]
-    dsimp only [Function.comp_def]
-    rw [← hto, Lp.norm_toLp, ENNReal.ofReal_toReal hsub_mem.eLpNorm_ne_top]
-    rfl
-  have hin_meas := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (fun i => (hV_mem (φ₁ (φ₂ i))).aestronglyMeasurable) hF_mem.aestronglyMeasurable hlp_eLp
-  obtain ⟨φ₃, hφ₃_mono, hφ₃_ae⟩ := hin_meas.exists_seq_tendsto_ae
-  set s : ℕ → ℕ := fun j => φ₁ (φ₂ (φ₃ j))
-  have hs_mono : StrictMono s := hφ₁_mono.comp (hφ₂_mono.comp hφ₃_mono)
-  have hs_Lp_lim : Tendsto (fun j : ℕ => (hV_mem (s j)).toLp (V (s j))) atTop (𝓝 F_Lp) :=
-    hφ₂_lim.comp hφ₃_mono.tendsto_atTop
-  have hs_L2 : Tendsto (fun j : ℕ => ∫ u, (V (s j) u - F u) ^ 2) atTop (𝓝 0) := by
-    have hnorm_sq : Tendsto (fun j : ℕ => ‖(hV_mem (s j)).toLp (V (s j)) - hF_mem.toLp F‖ ^ 2)
-        atTop (𝓝 (0 ^ 2)) := by
-      rw [hF_toLp]
-      exact (tendsto_iff_norm_sub_tendsto_zero.mp hs_Lp_lim).pow 2
-    rw [zero_pow (by norm_num)] at hnorm_sq
-    exact hnorm_sq.congr fun j => HTGeometry.norm_toLp_sub_sq (hV_mem (s j)) hF_mem
-  have hF_norm : (∫ u, F u ^ 2) = 1 := by
-    have hn1 : Tendsto (fun j : ℕ => ‖(hV_mem (s j)).toLp (V (s j))‖ ^ 2)
-        atTop (𝓝 (‖hF_mem.toLp F‖ ^ 2)) := by
-      rw [hF_toLp]
-      exact (hs_Lp_lim.norm).pow 2
-    have hn2 : ∀ j : ℕ, ‖(hV_mem (s j)).toLp (V (s j))‖ ^ 2 = 1 := fun j => by
-      rw [HTGeometry.norm_toLp_sq, hV_norm (s j)]
-    rw [← HTGeometry.norm_toLp_sq hF_mem]
-    exact tendsto_nhds_unique hn1 (by simpa only [hn2] using tendsto_const_nhds)
-  have hF_pos_ae : ∀ᵐ u : ℝ, 0 < u → F u = 0 := by
-    filter_upwards [hφ₃_ae] with u hu_lim hu_pos
-    have hex_j : ∃ j₀ : ℕ, (1 : ℝ) / (Nat.cast (s j₀) + 1) < u := by
-      have hz : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
-        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
-      exact (hz.eventually (gt_mem_nhds hu_pos)).exists
-    obtain ⟨j₀, hj₀⟩ := hex_j
-    have hev0 : ∀ᶠ j : ℕ in atTop, V (s j) u = 0 := by
-      filter_upwards [eventually_ge_atTop j₀] with j hj
-      have hle : (1 : ℝ) / (Nat.cast (s j) + 1) ≤ (1 : ℝ) / (Nat.cast (s j₀) + 1) :=
-        div_le_div_of_nonneg_left zero_le_one (by positivity)
-          (by exact_mod_cast Nat.add_le_add_right (hs_mono.monotone hj) 1)
-      exact hV_supp_k (s j) u (hle.trans_lt hj₀)
-    exact tendsto_nhds_unique hu_lim (tendsto_const_nhds.congr' (hev0.mono fun _ h => h.symm))
-  have hF8_pair : Integrable (fun u => F u ^ 2 * Real.exp (-(8 * u))) ∧
-      (∫ u, F u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
-    let w : ℝ → ℝ := fun u => Real.exp (-(4 * u))
-    have hwc : Continuous w := by fun_prop
-    have hsq : ∀ (a u : ℝ), (w u * a) ^ 2 = a ^ 2 * Real.exp (-(8 * u)) := fun a u => by
-      dsimp only [w]
-      rw [mul_pow, ← Real.exp_nat_mul, mul_comm]
-      congr 2; push_cast; ring
-    have hVw : ∀ j : ℕ, MemLp (fun u => w u * V (s j) u) 2 (volume : Measure ℝ) := fun j =>
-      (hwc.mul (hVd (s j)).continuous).memLp_of_hasCompactSupport (hVc (s j)).mul_left
-    have hae_w : ∀ᵐ u, Tendsto (fun j => w u * V (s j) u) atTop (𝓝 (w u * F u)) := by
-      filter_upwards [hφ₃_ae] with u hu
-      exact hu.const_mul _
-    obtain ⟨hmem_w, hbd_w⟩ := integral_sq_le_of_eLpNorm_two_le
-      (hwc.aestronglyMeasurable.mul hFm.aestronglyMeasurable) hM₈_pos.le
-      (Lp.eLpNorm_le_of_ae_tendsto
-        (Eventually.of_forall fun j =>
-          eLpNorm_two_le_of_integral_sq_le (hVw j) (by simpa only [hsq] using hV_M₈ (s j)))
-        (fun j => (hVw j).aestronglyMeasurable) hae_w)
-    exact ⟨by simpa only [Pi.mul_apply, hsq] using hmem_w.integrable_sq,
-      by simpa only [Pi.mul_apply, hsq] using hbd_w⟩
-  set F₀ : ℝ → ℝ := (Set.Iio (0 : ℝ)).indicator F
-  have hF₀m : Measurable F₀ := hFm.indicator measurableSet_Iio
-  have hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0 := fun u hu =>
-    Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hu]) F
-  have hF₀_ae : F₀ =ᵐ[volume] F := by
-    have hnot0 : ∀ᵐ u : ℝ, u ≠ 0 := by
-      rw [ae_iff]
-      have hset : {u : ℝ | ¬ u ≠ 0} = ({0} : Set ℝ) := by ext u; simp
-      rw [hset]
-      exact measure_singleton (0 : ℝ)
-    filter_upwards [hF_pos_ae, hnot0] with u hu_pos hne
-    rcases lt_trichotomy u 0 with hlt | rfl | hgt
-    · exact Set.indicator_of_mem (show u ∈ Set.Iio (0 : ℝ) from hlt) F
-    · exact absurd rfl hne
-    · dsimp only [F₀]
-      rw [Set.indicator_of_notMem (show u ∉ Set.Iio (0 : ℝ) by simp [hgt.le]), hu_pos hgt]
-  have hF₀2 : Integrable fun u => F₀ u ^ 2 :=
-    hF_mem.integrable_sq.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
-  have hF₀_norm : (∫ u, F₀ u ^ 2) = 1 := by
-    rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h]), hF_norm]
-  have hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)) :=
-    hF8_pair.1.congr (hF₀_ae.symm.mono fun _ h => by dsimp only; rw [h])
-  have hF₀8_le : (∫ u, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ M₈ := by
-    rw [integral_congr_ae (hF₀_ae.mono fun _ h => by rw [h])]
-    exact hF8_pair.2
-  have hs_L2_F₀ : Tendsto (fun j : ℕ => ∫ u, (V (s j) u - F₀ u) ^ 2) atTop (𝓝 0) :=
-    hs_L2.congr fun j => integral_congr_ae (hF₀_ae.symm.mono fun _ h => by rw [h])
-  obtain ⟨hF₀i, hL1_sub⟩ := integrable_and_tendsto_L1_of_L2_and_exp8
-    (fun j => hVd (s j)) (fun j => hVc (s j)) (fun j => hV_supp1 (s j))
-    hM₈_pos.le (fun j => hV_M₈ (s j)) hF₀m hF₀2 hF₀8 hF₀8_le
-    (Eventually.of_forall fun u hu => hF₀_zero u (zero_lt_one.trans hu).le) hs_L2_F₀
-  let N_sub : ℕ → ℕ := fun j => N_seq (s j)
-  have hN_sub : StrictMono N_sub := hN_strict.comp hs_mono
-  letI : DecidablePred (fun N : ℕ => ∃ j : ℕ, N_sub j = N) := Classical.decPred _
-  let c_full : ℕ → ℝ := fun N =>
-    if h : ∃ j : ℕ, N_sub j = N then c_seq (s (Classical.choose h)) else localCriticalCurve R_lim N
-  let x_full : ℕ → ℕ → ℝ := fun N =>
-    if h : ∃ j : ℕ, N_sub j = N then y_norm (s (Classical.choose h)) else 0
-  have hc_full_sub : ∀ j : ℕ, c_full (N_sub j) = c_seq (s j) := by
-    intro j
-    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
-    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
-    dsimp only [c_full]
-    rw [dif_pos hex, hch]
-  have hx_full_sub : ∀ j : ℕ, x_full (N_sub j) = y_norm (s j) := by
-    intro j
-    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
-    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
-    dsimp only [x_full]
-    rw [dif_pos hex, hch]
-  have hU_full_sub : ∀ j : ℕ,
-      normalizedCentredAtomicTest tiltedUnitSpline (x_full (N_sub j)) (c_full (N_sub j)) (N_sub j) =
-        V (s j) := fun j => by
-    rw [hc_full_sub j, hx_full_sub j]
-  have hc1_full : ∀ N : ℕ, 1 ≤ c_full N := by
-    intro N
-    rcases Classical.em (∃ j : ℕ, N_sub j = N) with h | h
-    · have hc_eq : c_full N = c_seq (s (Classical.choose h)) := by
-        dsimp only [c_full]; rw [dif_pos h]
-      rw [hc_eq]
-      exact (hz_spec _).1
-    · have hc_eq : c_full N = localCriticalCurve R_lim N := by
-        dsimp only [c_full]; rw [dif_neg h]
-      rw [hc_eq]
-      exact one_le_localCriticalCurve R_lim N
-  have hmass_full : ∀ N : ℕ,
-      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2) ≤ 1 := by
-    intro N
-    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
-    · rw [hU_full_sub j, hV_norm (s j)]
-    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
-      rw [hx0, normalizedCentredAtomicTest_zero]
-      simp
-  have hM_full : ∀ N : ℕ,
-      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2 *
-        Real.exp (-(8 * u))) ≤ M₈ := by
-    intro N
-    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
-    · rw [hU_full_sub j]
-      exact hV_M₈ (s j)
-    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
-      rw [hx0, normalizedCentredAtomicTest_zero]
-      simpa using hM₈_pos.le
-  have hcrit_full : Tendsto (fun N : ℕ => c_full N ^ 8 / Real.log (N : ℝ)) atTop (𝓝 R_lim) := by
-    have hsub_ratio : Tendsto (fun j : ℕ => c_seq (s j) ^ 8 / Real.log (Nat.cast (N_sub j)))
-        atTop (𝓝 R_lim) :=
-      hφ₁_lim.comp (hφ₂_mono.comp hφ₃_mono).tendsto_atTop
-    have hloc_ratio := tendsto_localCriticalCurve_ratio hR_lim_pos
-    rw [Metric.tendsto_nhds]
-    intro ε hε
-    obtain ⟨J, hJ⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hsub_ratio) ε hε)
-    obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hloc_ratio) ε hε)
-    refine eventually_atTop.mpr ⟨max N₁ (N_sub J), fun N hN => ?_⟩
-    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
-    · rw [hc_full_sub j]
-      exact hJ j (hN_sub.le_iff_le.mp ((le_max_right N₁ (N_sub J)).trans hN))
-    · have hc_loc : c_full N = localCriticalCurve R_lim N := by dsimp only [c_full]; rw [dif_neg h]
-      rw [hc_loc]
-      exact hN₁ N ((le_max_left N₁ (N_sub J)).trans hN)
-  let l : Filter ℕ := Filter.map N_sub atTop
-  have hl_le : l ≤ atTop := hN_sub.tendsto_atTop
-  have hL1_l : Tendsto (fun N : ℕ =>
-      ∫ u, ‖normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u - F₀ u‖)
-      l (𝓝 0) := by
-    rw [Filter.tendsto_map'_iff]
-    refine hL1_sub.congr fun j => ?_
-    dsimp only [Function.comp_def]
-    rw [hU_full_sub j]
-  have hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
-      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
-        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0 := by
-    intro T hT
-    have hlim_Rlim : truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
-        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ 0 := by
-      by_contra hpos_sum
-      push Not at hpos_sum
-      set b_half : ℝ := (truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
-        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u)))) / 2
-      have hb_pos : 0 < b_half := half_pos hpos_sum
-      have hb_lt : b_half < truncatedWeilForm F₀ T + criticalAliasCoefficient R_lim *
-          (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) := half_lt_self hpos_sum
-      have hev_gt := eventually_lt_weilQuad_of_L1_limit_full hl_le hc1_full hR_lim_pos
-        hcrit_full hmass_full hM_full hF₀i hL1_l hT hb_lt
-      rw [Filter.eventually_map] at hev_gt
-      have hev_gt' : ∀ᶠ j : ℕ in atTop, b_half < weilQuad (V (s j)) :=
-        hev_gt.mono fun j hj => by rwa [hU_full_sub j] at hj
-      have hz_inv : Tendsto (fun j : ℕ => (1 : ℝ) / (Nat.cast (s j) + 1)) atTop (𝓝 0) :=
-        (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs_mono.tendsto_atTop).congr fun _ => rfl
-      obtain ⟨j, hj_gt, hj_lt⟩ :=
-        (hev_gt'.and (hz_inv.eventually (gt_mem_nhds hb_pos))).exists
-      have hwq_j := hV_wq (s j)
-      linarith only [hj_gt, hj_lt, hwq_j]
-    have halias_le : criticalAliasCoefficient Rstar ≤ criticalAliasCoefficient R_lim := by
-      unfold criticalAliasCoefficient
-      have hnum : 0 ≤ 7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne := by
-        have := integral_tiltedUnitSpline_sq_pos
-        have := tiltedJordanOne_pos
-        positivity
-      have hm_pos : 0 < (∫ u, tiltedUnitSpline u) ^ 2 :=
-        sq_pos_of_ne_zero integral_tiltedUnitSpline_ne_zero
-      exact div_le_div_of_nonneg_left hnum (mul_pos hm_pos hR_lim_pos)
-        (mul_le_mul_of_nonneg_left hR_lim_le hm_pos.le)
-    have hI₈_nn : 0 ≤ ∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u)) :=
-      setIntegral_nonneg measurableSet_Iio fun _ _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
-    have hm := mul_le_mul_of_nonneg_right halias_le hI₈_nn
-    linarith only [hlim_Rlim, hm]
-  exact contradiction_of_limit_profile_below_windowThreshold hRstar hR_lt hR₁_win hF₀m hF₀i hF₀2
-    hF₀_norm hM₈_pos.le hF₀8 hF₀8_le hF₀_zero hliminf
+  have hindex : ∀ k : ℕ, k ≤ φ₁ k := by
+    intro k
+    induction k with
+    | zero => exact Nat.zero_le _
+    | succ k ih => exact Nat.succ_le_of_lt (ih.trans_lt (hφ₁_mono (Nat.lt_succ_self k)))
+  have hinv : ∀ k : ℕ, (1 : ℝ) / (φ₁ k + 1) ≤ 1 / (k + 1) := fun k =>
+    div_le_div_of_nonneg_left zero_le_one (by positivity)
+      (by exact_mod_cast Nat.add_le_add_right (hindex k) 1)
+  exact no_nonpositive_atomic_sequence_below_windowThreshold hR_lim_pos
+    ((EReal.coe_le_coe_iff.mpr hR_lim_le).trans_lt hlt)
+    (hN_strict.comp hφ₁_mono) (fun k => by have := hN3_seq (φ₁ k); omega)
+    (fun k => (hz_spec (φ₁ k)).1) hφ₁_lim
+    (fun k => (hc_width (φ₁ k)).trans (hinv k))
+    (fun k => y_norm (φ₁ k)) (fun k => hV_norm (φ₁ k)) hM₈_pos
+    (fun k => hV_M₈ (φ₁ k)) (fun k => (hV_wq (φ₁ k)).trans (hinv k))
 
 /-! ### 5. Exact high-conductor threshold identity and exponential lower bounds -/
 

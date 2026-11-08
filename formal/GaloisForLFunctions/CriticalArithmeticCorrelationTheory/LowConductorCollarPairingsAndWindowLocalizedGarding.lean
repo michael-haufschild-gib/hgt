@@ -226,7 +226,7 @@ theorem eventually_lowPacket_cross_payment
   let T₀ := ∑ m ∈ Icc 1 Q, b m * ⟪r m, u₀ + u₁ + horizonPrefixVector M w⟫
   let T₂ := ∑ m ∈ Icc 2 Q, b m * ⟪r m, horizonCollarVector M w⟫
   let T₁ := b 1 * ⟪r 1, horizonCollarVector M w⟫
-  have hQ1 : 1 ≤ Q := Nat.one_le_floor_iff.mpr hQge
+  have hQ1 : 1 ≤ Q := Nat.le_floor (by exact_mod_cast hQge)
   have hE : ∀ m ∈ Icc 1 Q, 0 < E m := fun m hm =>
     completedConductorEnergy_tilted_pos (zero_lt_one.trans_le (hc N)) (mem_Icc.mp hm).1
   have hsplit : Icc 1 Q = insert 1 (Icc 2 Q) := by

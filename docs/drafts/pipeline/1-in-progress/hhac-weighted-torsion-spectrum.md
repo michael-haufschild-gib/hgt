@@ -47,9 +47,9 @@ In normalized Hilbert coordinates the prime entries are
 `Σ_{m≠n} P(m,n)²/(mn)^δ`
 `=2(Σ_m m^(−2δ))(Σ_{t≥2} Λ(t)²/t^(1+δ))`.
 
-The diagonal contributes `Σ_n d(n)²/n^(2δ)`. Ratio-two entries should force
-divergence at `δ≤1/2`; the logarithmic envelopes should give convergence
-above that boundary. Reindexing, summability and the operator interpretation
+The diagonal contributes `Σ_n d(n)²/n^(2δ)`. Even conductors satisfy `d(2k)≥log 2`, so their diagonal squares alone
+should force divergence at `δ≤1/2`. The logarithmic envelopes should give
+convergence above that boundary. Reindexing, summability and the operator interpretation
 all require proofs.
 
 ## Established input and distinction
