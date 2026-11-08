@@ -43,11 +43,16 @@ its heat discriminant is a polynomial in time, nonzero at time zero, so only
 finitely many collision times occur. Constant real perturbations `p+ε` avoid
 the finite critical-value set and approximate arbitrary nonzero real `p`.
 Continuity of finite root moments would then remove initial separability.
+The corpus `polynomialPencil_separable_of_parameter_not_mem`, with pencil
+direction `Q=1`, supplies the finite exceptional set for constant perturbations.
+Fixed root cardinality upgrades locally uniform polynomial convergence to
+continuity of nonnegative weighted root sums: a bounded cutoff detects any
+escaping multiplicity copy, and the complementary weight gives the upper bound.
 
-Remaining proof work: identify the corrected action's derivative, complete
-global moment comparison, and prove the initial-time bound. Polynomial
-approximation remains a route to the initial bound; the actual positive-time
-field now has its own drift certificate and the corrected action is continuous.
+Remaining proof work: complete global moment comparison and prove the
+initial-time bound. Polynomial approximation remains a route to the initial
+bound; the actual positive-time field has its own drift certificate and the
+corrected action is continuous with the required forward derivative bound.
 No contribution counted yet.
 
 ## Lean certificate for the paired mechanism
@@ -82,3 +87,9 @@ every continuous real-axis-vanishing weight has a continuous global heat-zero
 sum at positive times. In particular, the full corrected elapsed-depth action
 is continuous through collisions for every real exponent. Both capstones pass
 direct Lean check with the same standard axioms.
+
+`ArithmeticElectrostatics/TheElapsedDepthActionHasItsZeroVelocityDerivative.lean`
+identifies the corrected action's derivative with the actual zero velocities
+and proves `J_q′(t) ≤ −2q(2t)^(q−1) N(t)` on punctured forward intervals,
+with both conjugate halves counted. All three capstones pass direct Lean
+check with the same standard axioms.

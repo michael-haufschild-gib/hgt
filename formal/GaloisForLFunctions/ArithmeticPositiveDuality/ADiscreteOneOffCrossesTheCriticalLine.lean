@@ -574,8 +574,8 @@ theorem differentiableOn_logZeta : DifferentiableOn ℂ P.logZeta {z : ℂ | 1 <
       hEb).differentiableAt ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
         (show (0 : ℝ) < (z₀ - (b : ℂ)).re by simp; linarith))
     have hsub : DifferentiableAt ℂ (fun z : ℂ => z - (b : ℂ)) z₀ := differentiableAt_id.sub_const _
-    have hcomp : DifferentiableAt ℂ (fun z : ℂ => boundedLaplace E (z - (b : ℂ))) z₀ :=
-      hL.comp z₀ hsub
+    have hcomp := DifferentiableAt.comp (𝕜 := ℂ) (g := boundedLaplace E)
+      (f := fun z : ℂ => z - (b : ℂ)) z₀ hL hsub
     exact differentiableAt_id.mul hcomp
   exact (hgd.congr_of_eventuallyEq heq).differentiableWithinAt
 

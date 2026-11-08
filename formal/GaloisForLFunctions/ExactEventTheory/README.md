@@ -101,6 +101,25 @@ their products need not approach the integer lattice.
 `integer_spectrum_of_asymptotic_integer_support`. Its direct Lean check and transitive
 axiom audit pass with only `propext`, `Classical.choice` and `Quot.sound`.
 
+## New pillar: finite defect forces unique norm factorization
+
+For countable nonempty Beurling systems in the same Hamburger strip class, integrability
+of the uncompleted FE defect forces the generalized-integer norm map to be injective.
+This holds for arbitrary real generator norms and arbitrary finite defect size.
+
+The Abel residue at each distinct norm bounds its multiplicity Aₙ by the pole residue
+2β. Euler multiplication amplifies any collision: if distinct factorizations u and v
+have common norm r, the k+1 factorizations j·u+(k−j)·v have norm rᵏ and are distinct.
+For large k this contradicts the uniform multiplicity bound. Thus every generalized
+integer norm has a unique prime-label factorization.
+
+`IntegrableDefectsForbidNormCollisions.lean` proves
+`intNorm_injective_of_integrable_theta_defect` and
+`intNorm_injective_of_integrable_critical_line_defect`.
+The first two pillars locate the spectrum under lattice alignment; this pillar forces
+unit multiplicities without alignment. Multiplicatively independent noninteger systems
+remain outside the classification.
+
 ## Tools and questions
 
 | Required tool | Question it must resolve |
@@ -113,9 +132,10 @@ axiom audit pass with only `propext`, `Classical.choice` and `Quot.sound`.
 | Euler–FE finite-layer classification (B103, B84) | Which precisely defined classes admit a finite layer; what FE defect is necessary? |
 | Shift-family stability | Does the trivial linear slope remain bounded as the shift tends to zero? |
 
-The classification question has the integer-supported and asymptotically aligned results above;
-its general case and the other questions remain open here. An implication assuming its missing
-arithmetic input does not count as construction of the required tool.
+The classification question has the integer-supported and asymptotically aligned results above,
+and finite defect forces unique norm factorization in the general class. Locating a noninteger
+spectrum and the other questions remain open here. An implication assuming its missing arithmetic
+input does not count as construction of the required tool.
 
 ## Traps and calibration
 

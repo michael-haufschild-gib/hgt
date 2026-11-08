@@ -480,133 +480,110 @@ A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-ma
 
 **Limit.** Over `𝔽_q` these structures come from a variety; over ℤ none is constructed. Heights over number fields give central-value signs, not off-line zeros [D].
 
-## 2.9 Does closing RH need a new field?
+## 2.9 New field for RH: arithmetic Lefschetz–Stepanov theory
 
-No theorem says so. The evidence is structural: every available tool stops for a proved reason, the curve proof's freebies — finite rank and periodicity — are both absent over ℤ, and the one calibration where Euler product + FE succeed is finite rank.
-
-| Tool | Why it stops |
-|---|---|
-| Size estimates | before half-width `21/40`; all heights only to `a≈log log X` |
-| Markov, Perron | frustration past `log ρ` |
-| Type I/II sieve data | parity-blind |
-| Linear floor identities, ledgers | blind to every zero |
-| Barriers, short detectors | blind to purity; last-scale floor |
-| Mollifiers | outer; near-unit moments need the primes up to `log²T` |
-| Conditional laws, mean values | stop at the Kronecker scale; past the height collision counts of order `X²` with a binary constant |
-| Euler and prime coordinates | stop at `Re s=1` |
-| Concentration-compactness at the critical curve | returns the window threshold plus polar payment |
-| Finite computation | decides no level of the dial |
-| Zero statistics at one scale | cannot decide any level of the dial |
-| FE with analytic shape | admits every finite layer |
-| Laws uniform on the heat family | already RH |
-| Positivity, Euler products, counting, continuation | carry finite layers |
-| Density statements on tower levels | rank barrier |
-| Exact Frobenius; Rouché copies at returns | no exact returns; capped by precision |
-| Integrality | Chebyshev |
-| Renormalization | carries no sign |
-| Metrics, toric, continuous and finite-rank kernels | cannot carry the archimedean place |
-| Unitarity, Schur, `C*`, KMS, internal, vacuum-fixing and half-sided modular structures | wrong involution; central, square-class or eigenvalue collapse |
-| Horizon observables | width axis; VK saving |
-| Homotopy, persistence, identity-homotopic fixed points | `s`-blind; primes fixed with unbounded indices |
-
-**What is built, and where it stops.**
-| Field | Object | Stops at |
-|---|---|---|
-| Infinite-rank Weil theory | towers, exceptional rank, thick sets, elimination, Toeplitz counts, linear dial, critical weight, Frobenius substitute and its precision cost | the thick crude count for ζ; ZAL |
-| Zero-configuration geometry | abscissa laws, transport, two-scale law, curve split, strict linear hierarchy, finite-rank Chebyshev exponent, heat family | a two-scale Euler–FE input |
-| Surface of Spec ℤ | half-products, zonotope, `ℍ³` archimedean fibre, point count, Frobenius graphs at integer degrees, atomic genus | the diagonal |
-| Arithmetic inner functions | half-plane, causal order, inner mass | size, not vanishing |
-| Prime torus and tail arithmetic | `(t,ω_t)`, first return, Euler tail, tail transport | the Kronecker scale; exact events |
-| Rigid arithmetic of cuts | cut system, ledgers, kernel | parity is the strip |
-| Holography, ringdown, counting holography | waves, Born rules, count laws, standard forms, half-sided exclusion | the count over ℤ; a carrier with point spectrum |
-| Effective and renormalized geometry | polar surfaces, torsion forms, compensation, prime boundary, vertex dynamics, finite-field counts | sign at the critical weight; `s`-blind topology |
-| Arithmetic positive duality | Beurling systems, firewall, annihilators, relocation | the critical line |
-
-**The proposal: infinite-rank Weil theory of Euler products with a functional equation.** A field that proves RH must build, at infinite rank, what the curve proof gets from finite rank and periodicity, plus the count, and the corpus fixes where each must act: a crude step on thick sets, well-foundedness, an Euler–FE rigidity that at finite rank is the local-squares theorem, and a damping of the diagonal whose archimedean part lives on `ℍ³`.
+**Goal.** RH, with ZAL and AAL together, by completing the curve proof over ℤ.
 
 | Aspect | Content |
 |---|---|
-| What it is about | zeta-like objects with infinitely many modes, an Euler product and a functional equation, studied in the exceptional coordinate (modes beyond each depth, the linear dial) rather than the size coordinate; the coupling between low and high zeros that the Euler product and the FE impose together; counts at the critical weight with an archimedean fibre |
-| Objects | zero configurations and their dial `(Θ,Θ∞)`; finite-rank Chebyshev expansions of `ψ`; Weil towers at every base and their level sums and Toeplitz counts; isolated tops and their reflected bottom layers; thick sets of levels; Euler heads and tails; returns of prime subsets and frozen polynomials; half-products (𝔽₁-zonotope, `ℙ¹_ℤ` torsion) and the `ℍ³` fibre; Frobenius graphs at integer degrees; damping families of positive kernels; deformation families (heat, shifts) as calibration |
-| Language | exceptional rank, thick set, well-founded tower, isolated top, slope, eventual-to-global, zero transport, tail event, two-scale property, family-uniform property, critical weight, damping versus renormalization, half-product, archimedean fibre, self-energy, partner involution |
-| Mechanisms | Turán–Vandermonde elimination at the exceptional rank; the Dirichlet series as the coupling between scales; Euler product + FE rigidity (local squares at finite rank, Beurling rigidity at infinite rank); the FE converted into vertical transport; damping limits of positive intersection pairings; Green functions of `ℍ³` |
-| Tools to build | a thick crude-count theorem (B110); `ZAL⇒RH` (B111); a well-foundedness (ZAL) mechanism; an FE-to-transport principle (B112); an infinite-rank Euler–FE rigidity excluding finite layers (B13); a damping presentation of the diagonal (B88) with the `ℍ³` self-energy as its archimedean part |
-| Questions it must answer | Which Euler-product property of ζ couples the zeros below a height to those above it? How does the FE, a height reflection, become transport in height? Which prime-side bound holds on long runs of scales? What makes the towers of ζ well-founded? What positive object damps to the diagonal of Weil's form, and what is the self-energy of the point `z_n`? |
-| Criteria | reduce to the Lean curve proof at finite rank and to the local-squares theorem for finite Euler products; reproduce AAL for periodic, recurrent and almost periodic configurations; fail on `cosh` models through the Dirichlet series, on the heat family through the Euler product, on Beurling one-offs through the FE, on relocations through positivity, on Wolff towers through well-foundedness, on harmonic-depth configurations through the dial; be invariant under symmetric shifts where AAL is, and not where linear laws are not; respect the rank barrier; produce signs only by damping |
-| Calibration | curves (finite rank, periodic, complete proof [L]); finite Euler products with FE (local squares [L]); graph black holes (FE without damping [L]); Beurling one-offs (Euler product without FE [L]); `cosh` models (FE without Dirichlet series [L]); heat family (FE and Pólya positivity without Euler product [L]); shifted products (FE, AAL ⇔ AAL(ξ), trivial linear slope [L]); Wolff towers (non-well-founded [L]); the zonotope surface (a count [L]) |
+| What it is about | Making the integer degrees of Spec ℤ behave like the degrees `n` of `F^n` on a curve over `𝔽_q`. `c_B(log n)=Γ_1·Γ_n` becomes a fixed-point count of a degree-`n` Frobenius. Stepanov's auxiliary-polynomial bound is proved for that count, with integrality in the role of `x^q=x`. |
+| What it would be like | Weil's proof on `C×C` run at infinite rank. An exact Lefschetz formula for each `Γ_n` comes first, then a crude bound from an auxiliary function, then the free self-improvement. It is analytic number theory organized as algebraic geometry: every estimate is an intersection number, every bound an auxiliary function. |
+| Criteria it must meet | Reproduce Stepanov–Bombieri on curves over `𝔽_q` as its finite-rank case. Give the crude bound with a constant `K` at every integer degree, or on the squares. Use the Euler product and the FE (fail on one-offs, `cosh` models and the heat family). Beat the precision cap `J≤e²r log N+log(1/δ)` by exact vanishing, not by approximation. |
+| Questions it must answer | What is the degree-`n` Frobenius of Spec ℤ as a correspondence, and what are its fixed points? What is the Lefschetz identity for `Γ_1·Γ_n` with its main term? Which auxiliary integer Dirichlet polynomials vanish at all fixed points, to what order, of what degree? When does integrality force a `δ`-small auxiliary to vanish exactly at a return of the prime orbit? |
+| Tools it aims to develop | Siegel lemmas for Dirichlet polynomials on smooth numbers; zero estimates in many logarithms, uniform in their number; an integrality amplifier (small integer auxiliaries at returns are divisible); a Lefschetz fixed-point form of Frobenius-graph intersections; Stepanov counting `#fixed·J≤deg A`. |
+| Objects | Smoothed Frobenius graphs `Γ_n` and their integer-degree planes; the scaling surface and its zonotope Hodge index; Weil towers and thick sets of levels; returns of the prime orbit; integer auxiliary Dirichlet polynomials; the genus `c_B(0)/2`. |
+| Language | degree, Frobenius graph, fixed point, Lefschetz number, auxiliary polynomial, order of vanishing, height of an auxiliary, return, integrality amplifier, crude bound, self-improvement. |
+| Mechanisms | Built on: Turán–Vandermonde elimination at the exceptional rank; Lipschitz self-improvement at integer degrees (`K` ⇒ genus); Hodge index by counting on the zonotope; EAHT divisibility. To discover: an exact Frobenius over ℤ (the corpus has only approximate returns and one exact fixed point per prime); exact vanishing through integrality at many-prime returns. |
 
-**Limits.** Binary problems at the Kronecker scale are parity problems [C]. Excluding a finite layer is an exceptional-zero problem of Landau–Siegel type [D]. ZAL is quasi-RH.
+**Main conjecture (arithmetic Stepanov bound).** `|c_B(log n)|≤K` for every integer `n≥1`, or for every square.
 
-## 2.10 Does an AAL proof or falsification need a new field?
+**Route.** (1) [L] Any constant `K` at every integer degree is RH; squares suffice. (2) Lefschetz identity for `Γ_1·Γ_n`. (3) Auxiliary `A_n` vanishing to order `J` at the fixed points. (4) Integrality amplifier lifting the precision cap. (2)+(3)+(4) ⇒ crude bound ⇒ RH.
 
-**Why the existing tools stop [L].** AAL is vertical transport of zeros. Tools that see one scale decide no level of the dial. The FE as a zero symmetry keeps heights. Positivity, Euler products, linear counting and continuation carry finite layers. Laws uniform along the heat flow or the shift family are RH or diverge. Uniform almost periodicity would give AAL, and ζ is not uniformly almost periodic in the strip; almost periodicity at large height is not enough. Near-full tail cancellation is abundant at every point (Voronin), but AAL needs exact cancellation at heights transported from a right zero; returns at zeros are tail-bad and rare, so every density statement bounds the needed events from above. A moving functional equation (Riemann–Siegel at height `t`) does not transport a zero by a head return: freezing its head needs every prime phase up to `√(t/2π)` within a small precision, which at bounded harmonic defect first happens at heights `≥exp(c(log t)^{3/2}/log log t)` [L, bracket], where the head is longer and no longer determines ζ [D]. Phase-freezing Rouché copies are capped by precision [L].
+**Milestones.** M1 Lefschetz identity on the smoothed graphs. M2 amplifier at returns of `k` fixed primes, order `J≫k log N`. M3 amplifier with `k→∞` at the rate the squares need. M4 `|c_B(log k²)|≤k^{2σ}` for one `σ<½` (zero-free strip). M5 constant `K` (RH).
 
-**The field: exact-event theory of Euler products.** Its subject is the existence, not the frequency, of exact exceptional events of Dirichlet series with an Euler product and a functional equation — zeros, exact tail cancellations — and the rigidity of finite exceptional sets over approaching remainders.
+## 2.10 New field for AAL: Euler–FE transport theory
 
-| Aspect | Content |
-|---|---|
-| What it is about | when a single exceptional event (a zero right of the line) forces infinitely many at larger heights; the passage from approximate events of positive density (`η>0`) to exact events (`η=0`); finite exceptional layers and their dial `(Θ,Θ∞)` as rigid objects |
-| Objects | zero configurations and the transport relation; the linear dial and its separating configurations; the vertical shift group and the Bohr/prime torus; Euler heads and tails at every cut; partial returns with omitted arcs; isolated tops; towers and exceptional ranks; positive annihilators and their oscillating inverses; `cosh` models, two-scale `cosh` models, heat and shift families, Beurling one-offs, Wolff towers, relocations as calibration |
-| Language | transport, exact event, tail event, tail-good/bad height, isolated top, exceptional rank, slope, two-scale property, family-uniform property, relative thick count, conditional recurrence |
-| Mechanisms | Rouché and Jensen under partial approximation; universality upgraded from nonvanishing to vanishing targets in the presence of a zero; Turán–Vandermonde at the exceptional rank; the FE as a height reflection composed with vertical twists; Deuring–Heilbronn-type interaction between one exceptional zero and the rest [C], read as attraction rather than repulsion |
-| Tools to build | zero transport from weak almost periodicity with zero-disc control and the Euler product; lower bounds for exact tail events (B96); relative thick crude counts (B116); `ZAL⇒RH` (B111); an FE-to-transport principle (B112); a classification of Dirichlet series with Euler product and FE carrying a finite layer (B103, B84) |
-| Questions it must answer | Which weak almost periodicity, together with the Euler product, transports zeros? Does an isolated top force, through the Euler product and the FE together, a zero of the tail at larger heights? Is there any Dirichlet series with an Euler product and an FE and a finite layer? Can the rigid ¬AAL world coexist with the FE of ξ? Does the trivial linear slope of the shift family stay bounded as the shift tends to zero? |
-| Criteria | reproduce Bohr's recurrence on the half-plane of absolute convergence and AAL on curves and exponential polynomials; fail on `cosh` models (no Dirichlet series), the heat family (no Euler product), Beurling one-offs (no FE), harmonic-depth configurations and one-pair configurations; be shift invariant for AAL; never use the position of the line beyond the FE involution and Hardy's zeros; couple scales |
-| Falsification side | a ζ-specific finite layer cannot be produced by rational surgery with positive coefficients (first-gap negativity) [L]; a falsification needs an intrinsic construction — a Dirichlet series with Euler product, FE and a finite layer — of which no example exists, and in degree one none can exist other than ζ and its twists (Beurling and Selberg rigidity) [L] |
-
-**Limits.** AAL is not implied by any density statement; its finite case is an exceptional-zero problem [D].
-
-## 2.11 Without positivity, Weil positivity and spectral methods: which field?
-
-Inner-function theory, holography's flux and Lax–Phillips, standard forms, Hodge index and the count door lose their core. What remains is the toolkit of the curve proof — auxiliary functions, power sums and the FE as an identity — and its infinite-rank versions in the corpus: elimination at the exceptional rank on thick sets, the free self-improvement at the integer degrees, the finite-rank Euler–FE purity, tail transport, frozen polynomials at returns, collision counts, finite-field orientation and orbit counts used as identities.
-
-**The field: Diophantine Weil theory over ℤ — transcendence at the archimedean place, Turán at infinite rank, reciprocity as transport.**
+**Goal.** Prove AAL (`Θ=Θ∞`), so that ZAL gives RH; or build the counterexample class that decides the falsification branch.
 
 | Aspect | Content |
 |---|---|
-| What it is about | proving the crude count and the transport law by Diophantine approximation, cancellation and elimination: quantitative independence of the logarithms of the primes, auxiliary functions with integer coefficients forced to vanish exactly by integrality, power sums of zeros on windows of levels, reciprocity laws acting on heights |
-| Objects | the prime orbit `(t log p)_{p≤y}` and its returns as simultaneous approximations; auxiliary Dirichlet polynomials on smooth integers with integer coefficients; linear forms in logarithms; level sums of towers; thick sets of scales; smooth × prime products and their gcd collision classes; Farey fractions, Dedekind and cotangent sums; the prime deviation along geometric scales; orientation covers and cubic Gauss coefficients over function fields and `ℤ[ω]` |
-| Language | Frobenius substitute, frozen polynomial, forced vanishing, precision cap, return, heavy subset, linear form, height, zero estimate, exceptional rank, thick set, reciprocity, transport |
-| Mechanisms | transcendence method: auxiliary function, integrality (`|n|≥1`), extrapolation, zero estimate; Baker-type lower bounds for linear forms in logarithms; Vandermonde/Turán lower bounds at the exceptional rank; sum-product and incidence bounds for hyperbolas `xy=c`; reciprocity along the Euclidean algorithm as a height-moving identity; Stickelberger-type identities turning Möbius into a character of a discriminant |
-| Tools to build | a constant-precision first-return bound (B97, §2.6); a freezing control beyond the precision cap through integrality (B121); a thick crude count from collision counting past the height (B110); incidence bounds with a prime-density saving for smooth × prime near-collisions; a sign-free FE-to-transport principle through Poisson, theta and Farey reciprocity; an orientation cover over ℤ used as an identity (B120) |
-| Criteria | no quadratic form with a sign, no operator spectrum, no use of nonnegativity of counts; prove Hasse–Weil over `𝔽_q` in the same language (the corpus does for hyperelliptic curves [L]); reproduce the finite-rank Euler–FE purity; separate rational primes from Beurling one-offs through count distance or reciprocity; any parity output at power saving is a strip [L]; respect the rank barrier and the precision cap |
-| Questions it must answer | How early can the primes below `y` return simultaneously? Can integrality replace the exactness of the Frobenius? Is the fine multiplicative energy of smooth × prime products at scale `1/T` at its random value? Do long runs of scales carry square-root prime deviations? Does reciprocity, iterated along the Euclidean algorithm, move zeros in height? |
+| What it is about | The functional equation as a dynamics on heights, coupled across scales by the Euler product: how a reflection `s↦1−s̄` and a positive prime measure together force an exceptional zero to recur at every larger height. |
+| What it would be like | A rigidity theory of almost-periodic oscillations under a reflection and a positivity constraint. The rigid ¬AAL world (one isolated top, one finite oscillation of `ψ`) plays the role of a hypothetical counterexample, and theorems take it apart by transport. It resembles ergodic rigidity (measure classification) and Hamburger-type uniqueness more than estimates. |
+| Criteria it must meet | Use the Euler product and the FE together and at two scales, so that it fails on the heat family, the `cosh` models, the one-offs and Wolff towers [L]. Act stably or by exact identity, as decided by B122 (§3). Reduce to the local-squares purity theorem at finite rank. Prove transport at the same depth (`η=0`), not near-full tail events. |
+| Questions it must answer | How does theta modularity transform the oscillation `x^ΘT(log x)`? Why must a positive Euler product that continues to ℂ carry its atoms by zeros, and how does that couple the top to the critical zeros? What forces recurrence at larger heights: the resonant tower at `π/γ`, Poisson reciprocity, or the Euler factorization of the reflected side? What does a finite layer cost in FE defect? |
+| Tools it aims to develop | An FE-to-transport operator (B112); quantitative almost periodicity of the rigid oscillation; resonant-tower identities coupling height `γ` to `(2k+1)γ`; a defect calculus for conditionally convergent prime discrepancies; replication theorems ("one top ⇒ infinitely many tops at the same depth"). |
+| Objects | Zero configurations and the dial `(Θ,Θ∞)`; the rigid ¬AAL world; Euler heads and tails; returns; theta and its reflection; Beurling systems with integrable FE defect; resonant towers; one-offs as calibration. |
+| Language | transport, replication, isolated top, rigid oscillation, reflection, two-scale coupling, FE defect, layer cost, depth, resonant base. |
+| Mechanisms | Built on: AAL ⇔ zero transport ⇔ tail transport; the strict dial and quantifier collapse; FE rigidity at defect `1/6400` and stability up to height `M^{−½}`; subcritical Euler rigidity; local squares at finite rank. To discover: the replication law, i.e. how the FE turns a height reflection into vertical transport. |
 
-**Limits.** No source produces parity at power saving other than a strip [L]. No named mechanism above VK. Baker-type bounds lose a factor exponential in the number of logarithms [C].
+**Main conjecture (replication law).** A positive Euler product satisfying Riemann's FE cannot carry an isolated almost-periodic oscillation of `ψ` at exponent `Θ>Θ∞`; any top zero recurs at every larger height at the same depth.
 
-## 2.12 If RH is a physical phenomenon in AdS with a modular horizon: which field?
+**Route.** (1) [L] AAL ⇔ transport; ¬AAL is rigid. (2) The theta reflection maps the top oscillation to exponent `1−Θ`. (3) Positivity between atoms forces the critical zeros to reproduce the reflected oscillation at every scale. (4) Coherent reproduction needs zeros at depth `Θ−½` above every height ⇒ AAL.
 
-Holography, ringdown and counting holography are formalized; their positive results are exact solutions, width-axis receivers, Born rules and standard-form criteria; their negative results are that wave dynamics, unitarity, Hecke, KMS, `C*`, internal modular conjugation, vacuum-fixing partners, half-sided inclusions, the FE, integrality, linear counts and Hecke at a second place do not carry universal damping or `Q` [L]. The archimedean place itself is a field in Euclidean AdS₃ [L].
+**Milestones.** M1 complete FE rigidity or the fake class (§3). M2 `D_layer=∞` in the finite-defect class (§2.5). M3 one quartet of ζ replicates (`k=1`). M4 `LinAt C` for one `C`. M5 AAL.
 
-**The field: arithmetic holography of phases — modular duality between confined normal modes and horizon resonances.**
+## 2.11 New field for RH without positivity: transcendence theory of the prime orbit
 
-| Aspect | Content |
-|---|---|
-| What it is about | two descriptions of one arithmetic system: a confined phase (a static worldline in AdS₃, normal modes, a unitary Hamiltonian with point spectrum) and a deconfined phase (the modular horizon, quasinormal modes, decay rates on the width axis), related by a modular transformation; RH as the statement that the arithmetic resonances are modular images of real frequencies |
-| Objects | `ℍ³` = Euclidean AdS₃ with the worldline `{(0,0,y)}` and the scalar of `m²=−¾` in the quantizations `Δ=½` and `Δ=3/2`; the modular horizon `SL₂(ℤ)\`(Rindler wedge of AdS₄) with its mirror-even channel and odd cavity; the Narain AdS₃ partition function and its Poincaré structure; graph black holes and oscillator banks; Eisenstein series as Poincaré sums of a confined seed; the Hecke clock `U(log n)` |
-| Language | confined and deconfined phase, normal mode, quasinormal mode, Poincaré sum, modular image, conformal weight, lowest tower, alternate quantization, double-trace flow, cavity, partner involution, width |
-| Mechanisms | S-duality of thermal AdS₃ and BTZ (quasinormal = image of normal) [C]; Poincaré sums over `SL₂(ℤ)` (Eisenstein series, Maloney–Witten-type sums) [C]; the Gamma-function lattice of the archimedean place [L]; Bochner realization of `Q` with point spectrum; Rankin–Selberg unfolding between cavity and scattering channels [L] |
-| Tools to build | a confined companion of the mirror-even channel (B117); the modular map from its Euclidean correlators to the horizon response; a dictionary between the quantizations `Δ=½,3/2` and the pole of ζ (the spherical function `½sech(d/2)` that separates them); Rankin–Selberg noncancellation for one cavity mode (B109) |
-| Criteria | recover the universally damped lattice of the trivial zeros from the archimedean worldline; recover damped graph black holes from strictly stable oscillator banks and fail on undamped ones; avoid the central, square-class and Borchers collapses; use only smooth sources (sharp ones need more than RH); define the confined system without the zeros |
-| Questions it must answer | Is the mirror-even channel of the modular horizon the modular image of a confined system? Which conformal weight fixes the lowest tower at rate `¼`? Why does arithmeticity (no second place) make the companion unitary? Is the Narain average the first confined–deconfined pair in which the arithmetic poles survive? |
-
-**Limits.** A companion with the critical ordinates as eigenvalues is a Hilbert–Pólya operator; every proved physical statement is a restatement, an edge theorem, a width-axis receiver or the absence of a law. The geometry is locally pure AdS.
-
-## 2.13 If RH is a problem of topology or geometry: which field?
-
-**The field: Arakelov geometry of Spec ℤ with a hyperbolic archimedean fibre.** Counts are intersection numbers; signs come from coupled dampings or from Green functions of scattering (infinite-volume) hyperbolic manifolds, never from counterterms or finite-volume quotients [S]; the archimedean place is the dilation geodesic of `ℍ³` with its Green function at `s=½`; topology enters through orientation covers and signed localization.
+**Goal.** RH through ZAL and AAL using only Diophantine approximation, integrality, Turán power sums, Jensen and Rouché.
 
 | Aspect | Content |
 |---|---|
-| What it is about | building the missing surface "Spec ℤ × Spec ℤ" only as far as needed: Frobenius graphs at the integer degrees, an archimedean fibre in which the jets are radial modes of `ℍ³`, a finite part on `ℙ¹_ℤ`, and a diagonal carried by a coupled damping rather than a counterterm or a Robin constant; Möbius cancellation as the vanishing of a middle cohomology |
-| Objects | 𝔽₁-zonotope surface; `ℙ¹_ℤ` with torsion orbits and radial cyclotomic counts; `ℍ³` with the points `z_n=(0,0,n)` and the Green functions `G_{1/2}`, `G_{3/2}`; infinite-volume geometrically finite quotients with characters; the causal jet bundle on `L²(0,∞)`; smoothed Frobenius graphs and their integer-degree planes; the prime-product complex with its prime-vertex dynamics and exits; orientation covers over `𝔽_q[T]`, `ℤ[ω]`, ℤ |
-| Language | half-product, Frobenius graph, integer-degree plane, genus of a smoothing, archimedean fibre, Robin constant, self-energy, damping, critical weight, Hodge index, spectral gap, orientation cover, local index, Lefschetz localization |
-| Mechanisms | Hodge index by counting (zonotope); damping limits of positive kernels; Green functions of scattering hyperbolic manifolds and their resonances; coupled and locked dampings; Lefschetz–Hopf localization; Stickelberger orientation; Riemann–Roch on surfaces; Hecke equivariance |
-| Tools to build | a twisted infinite-volume Green function at `s=½` carrying the torsion (B118′); a damping presentation of the diagonal (B88); an orientation cover over ℤ (B120); a self-map of Lefschetz number `M(N)` with bounded local indices (B106) |
-| Criteria | reduce to the zonotope Hodge index and the curve count laws; reproduce the `ℍ³` identity of the archimedean Frobenius, the plastic sign change, the atomic genus `N log N` and the genus `c_B(0)/2` of smoothed pairs under RH; never use a counterterm as the source of sign; reproduce `Σ index=1−M(N)` and the orientation-cover count over `𝔽_q[T]` |
-| Questions it must answer | Does any hyperbolic 3-manifold carry Weil's kernel, given that no finite-volume quotient does? What is the self-energy of the point `z_n`, and is it the arithmetic counterterm? Which eigenvalues of that orbifold lie below `¾`? Is there an orientation cover over the integers, and what is its cohomology? |
+| What it is about | The prime orbit `t↦(t log p)_p` on the infinite torus as a Diophantine object. Quantitative independence of the logarithms of the primes is the engine; exact vanishing through integrality, where Rouché only approximates, is the output. |
+| What it would be like | Baker theory carried to infinitely many logarithms and joined to the analytic theory of Dirichlet polynomials. Proofs are auxiliary-function arguments (construct, extrapolate, apply a zero estimate) whose conclusions are bounds for prime sums, not irrationality statements. |
+| Criteria it must meet | Never use a sign, a spectral decomposition or a positivity. Reproduce Stepanov over `𝔽_q` (no returns to fear there) as the degenerate case. Pass the two-prime case (continued fractions) and the fixed-`k` case (Baker–Wüstholz). Supply what the sign-free curve proof lacks: a producer for the crude step beyond the precision cap, Chebyshev (integrality) and VK (exponential sums). |
+| Questions it must answer | How early can the primes `≤y` return to `δ`-precision, and how early can a heavy subset? How does the lower bound for linear forms in `k` logarithms depend on `k`, and can it be taken uniform for `k≍π(y)`? Which auxiliary integer polynomials on smooth numbers survive the passage from approximate to exact vanishing? How does Turán's power-sum method give ZAL on the finite-rank remainder of `ψ`? |
+| Tools it aims to develop | Linear forms in many logarithms with explicit dependence on their number; Schneider–Lang extrapolation along the prime orbit; Turán's second main theorem on thick sets of levels; Poisson, theta, Farey and Dedekind reciprocity as sign-free forms of the FE acting on heights. |
+| Objects | The infinite torus and the prime orbit; return times `R(y,δ)`; heavy subsets; frozen polynomials on smooth numbers; integer auxiliaries; power sums `Σb_jz_j^ν`; the finite-rank remainder of `ψ`. |
+| Language | return, precision, heavy subset, freezing, auxiliary, extrapolation, zero estimate, power sum, exceptional rank, reciprocity. |
+| Mechanisms | Built on: proportional saving ⇔ no early heavy return; Vandermonde elimination at the exceptional rank; the finite-rank Chebyshev exponent `Θ∞`; integrality (small integer auxiliaries are divisible). To discover: an integrality mechanism at many-prime returns, where every prime has its own exact fixed point but no two share one. |
 
-**Limits.** Over `𝔽_q` these structures come from a variety; over ℤ none is constructed. On a quotient the cusp's scattering matrix carries zeros of a Dedekind zeta; the positivity needed at `s=½` may be a Riemann hypothesis for the quotient [D].
+**Main conjecture (quantitative Kronecker for the primes).** For fixed `δ∈(0,1)` the first `δ`-return of all primes `≤y`, and of every heavy subset, occurs after `exp(y^c)` (B97).
+
+**Route.** (1) [L] Proportional saving ⇔ no early heavy return; sign-free elimination on thick sets. (2) Main conjecture ⇒ proportional saving at all heights (B46) ⇒ crude bound on a thick set ⇒ AAL. (3) Turán on `ψ−x` modulo finite exponential sums, with return bounds on the long sums ⇒ ZAL. (4) ZAL ∧ AAL ⇒ RH [L].
+
+**Milestones.** M1 two primes [L]. M2 linear forms in `k≍(log y)^A` logarithms with explicit `k`-dependence. M3 `log R(y,δ)≥(log y)²` (past VK). M4 `log R(y,δ)≥y^c`. M5 sign-free ZAL.
+
+## 2.12 New field for RH as AdS physics: arithmetic holography of the modular horizon
+
+**Goal.** RH as universal damping: every resonance of the mirror-even channel of the modular horizon decays at rate `¼` (⇔ RH [L]).
+
+| Aspect | Content |
+|---|---|
+| What it is about | A holographic dictionary between three objects: the modular horizon `SL₂(ℤ)\`(Rindler wedge of AdS₄), whose resonances are the zeros; Euclidean AdS₃, where the archimedean place is a worldline with `Δ=½`; and a confined dual whose normal modes are real. RH becomes the statement that the horizon is the modular image of a confined system. |
+| What it would be like | AdS₃ gravity in which the BTZ black hole and thermal AdS₃ are S-dual. Quasinormal decay rates are kinematics of real frequencies under the modular map, and the arithmetic of ℤ enters through the Poincaré sum over `SL₂(ℤ)`. Theorems are identities between partition functions plus unitarity of the confined side. |
+| Criteria it must meet | Define the confined system from the archimedean place and the primes alone, never from the zeros (otherwise it is a Hilbert–Pólya operator). Avoid the excluded realizations: internal, vacuum-fixing and half-sided Borchers clocks. Fail on graph black holes with `t²>4q` through the companion. Reproduce universal decay `e^{−t/4}`, the horocycle rate `y^{¾−ε}` and the Narain AdS₃ average. |
+| Questions it must answer | Which confined system has the worldline modes `½+2k` as its free part and primes as interactions at times `log n`? Which modular map sends its Euclidean correlators to the mirror-even response? Which conformal weight fixes the lowest tower at rate `¼`? Why does arithmeticity (no second place) make the confined side unitary? |
+| Tools it aims to develop | Arithmetic S-duality for Poincaré sums of confined seeds; Rademacher expansions with arithmetic poles; Krein-space holography for the mirror-even channel; Rankin–Selberg noncancellation for one cavity mode (B109). |
+| Objects | `ℍ³` as Euclidean AdS₃ with the worldline `{(0,0,y)}` and the scalar `m²=−¾` in quantizations `Δ=½,3/2`; the modular horizon with its mirror-even channel and odd cavity; graph black holes and oscillator banks; Eisenstein series as Poincaré sums of `y^s`; the Narain partition function; the Hecke clock `U(log n)`. |
+| Language | worldline, normal mode, quasinormal mode, ringdown, S-duality, confined seed, Poincaré sum, mirror channel, cavity, universal damping, Hecke clock. |
+| Mechanisms | Built on: `ℍ³` Green-function identity of the archimedean Frobenius; ringdown rate = zero-free width; partner standard forms exist iff damped; oscillator-bank positivity iff strictly stable; in a GNS realization of `Q` the Hecke clock has point spectrum. To discover: the modular confinement map, a kinematic origin of the rate `¼`. |
+
+**Main conjecture (modular confinement).** The mirror-even channel is the modular image of a unitary confined system built from the worldline modes and prime interactions; every resonance `ρ/2` is the image of a real normal mode, with decay `¼`.
+
+**Route.** (1) [L] decay `¼` ⇔ RH; ringdown = width; the Hecke clock needs point spectrum. (2) Confined system: Fock space over worldline modes with prime vertices, self-adjoint by construction. (3) Modular map: Poincaré sum over `SL₂(ℤ)` of the confined seed. (4) Kinematic damping ⇒ rate `¼` ⇒ RH.
+
+**Milestones.** M1 archimedean sector (`½+2k` ↦ Gamma-pole lattice). M2 one damped graph black hole as the image of a finite oscillator bank. M3 a Narain confined seed carrying the arithmetic poles. M4 any positive universal decay rate (zero-free strip). M5 rate `¼` (RH).
+
+## 2.13 New field for RH as topology or geometry: hyperbolic Arakelov theory of Spec ℤ
+
+**Goal.** RH as a Hodge index theorem on an arithmetic surface whose archimedean fibre is `ℍ³` with the dilation geodesic; in the topological branch, as the vanishing of a middle cohomology of an orientation cover over ℤ.
+
+| Aspect | Content |
+|---|---|
+| What it is about | Building the surface `S=(Spec ℤ×Spec ℤ)_{ℍ³}` only as far as Weil's proof needs it: divisors (Frobenius graphs at integer degrees), an intersection pairing (finite part on `ℙ¹_ℤ`, archimedean part as `ℍ³` Green functions at `s=½`), a diagonal given by a locked coupled damping, Riemann–Roch, and Hodge index. Topologically: Möbius as the point defect of a cover, `M(N)` as a Lefschetz number. |
+| What it would be like | Arakelov geometry with a three-dimensional hyperbolic fibre instead of Green currents on a Riemann surface, and without a quotient: the fibre is `ℍ³` with one marked geodesic and `U(1)` symmetry [S]. The diagonal self-intersection is a coupled damping of two divergent channels that lock in the ultraviolet [S], not a counterterm. Topology as in étale cohomology: counts as traces, cancellation as vanishing. |
+| Criteria it must meet | Reduce to the zonotope Hodge index and to Castelnuovo–Severi on `C×C` over `𝔽_q`. Reproduce the `ℍ³` identity of the archimedean Frobenius, the plastic sign law, the atomic diagonal `≥N(log N−17)/8`, the genus `c_B(0)/2` of smoothed pairs, `Σ index=1−M(N)` and the Stickelberger cover over `𝔽_q[T]`. Never take a sign from a counterterm; no finite-volume quotient. |
+| Questions it must answer | Which Hilbert space carries the causal jet waves and the twisted torsion energies together, with locked divergences? What are the sheaves whose Euler characteristics are the genera `N log N` and `c_B(0)/2`? Which class is ample (the rank-two pole)? Does a twisted infinite-volume Green function carry the torsion (B118′)? Which trace discriminant defines the orientation cover over ℤ, and what is its cohomology? |
+| Tools it aims to develop | Hyperbolic Arakelov Green functions at `s=½`; coupled and locked dampings; Riemann–Roch for Frobenius graphs; Hodge index from Riemann–Roch plus ampleness; orientation covers and signed Lefschetz localization; twisted Green functions of geometrically finite groups. |
+| Objects | 𝔽₁-zonotope; `ℙ¹_ℤ` with torsion orbits and radial cyclotomic counts; `ℍ³` with points `z_n=(0,0,n)`, Green functions `G_{1/2},G_{3/2}`; the causal jet bundle on `L²(0,∞)`; smoothed Frobenius graphs; the prime-product complex with prime-vertex dynamics and exits; orientation covers over `𝔽_q[T]`, `ℤ[ω]`, ℤ. |
+| Language | half-product, Frobenius graph, archimedean fibre, causal wave, coupled damping, locking, genus of a smoothing, ample class, Hodge index, orientation cover, local index, Lefschetz localization. |
+| Mechanisms | Built on: off-diagonal = pole − `ℍ³` Green − torsion [L]; counterterm-free damping ⇔ RH, channel coupling and locking [S]; Hasse–Weil at integer degrees ⇔ RH [L]; prime-vertex localization [L]; Stickelberger [L]. To discover: the locked diagonal and Riemann–Roch on `S`; an orientation cover over ℤ with a weight-`½` cohomology. |
+
+**Main conjecture (hyperbolic Hodge index).** The coupled-damping pairing on divisors of `S` is negative semidefinite on the primitive part; on `Γ_1,Γ_n` it gives Hasse–Weil at every integer degree, i.e. RH.
+
+**Route.** (1) [L/S] the off-diagonal identity, zonotope Hodge index, integer-degree Hasse–Weil ⇔ RH, damping ⇔ RH with locking. (2) Construct the locked diagonal. (3) Riemann–Roch on `S`. (4) Hodge index from Riemann–Roch and the ample pole ⇒ RH. Topological branch: orientation cover with a self-map of Lefschetz number `M(N)` and weight-`½` cohomology ⇒ `M(N)≪N^{½+ε}`.
+
+**Milestones.** M1 carriers beyond finite volume (B118′). M2 a locked presentation on windows of aperture `≤181/250` (every threshold `⊤` there [L]). M3 Riemann–Roch reproducing both genera. M4 Hodge index on windows of growing aperture (§2.4). M5 Hodge index on `S` (RH). Topological: covers over `ℤ[ω]` [L], Jacobi symbols as permutation signs [C], the cover over ℤ, its cohomology.
 
 ## 3. The one big question
 

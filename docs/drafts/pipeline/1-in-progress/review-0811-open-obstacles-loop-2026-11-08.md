@@ -14,12 +14,16 @@
 | 2 | B115, B17, B88 | Every square block of `archKernel` on rows below columns is a scaled Cauchy matrix, hence nonsingular; on pairwise coprime orders the archimedean Frobenius agrees with no kernel of finite rank (no finite-dimensional fibre carries the jets). `√(mn)C_∞(m,n)=(n³−nm²−m³)/(n²−m²)`: the compensation is negative iff `n/m` is below the plastic number `ρ³=ρ+1`, positive above, never zero (`ρ` irrational) — the `log ρ` aperture is where the archimedean compensation changes sign | `SurfaceOfSpecZ/TheArchimedeanFrobeniusHasInfiniteRank` |
 | 3 | B87, B95 (F15 C15.1) | The Krein squares of the integer probes are not all integers, unconditionally; no `ℤ`-valued count and no integral trace form `Tr(T_mT_nᵗ)` equals `Q` on integer probes. Proof: integer squares at `e_i`, `e_i+e_j` put `2Re F(log(m/n))∈ℤ` for the spline series `F`; density + continuity make `Re F` constant; bounded orbit ⇒ RH; under RH `Re F(0)−Re F(π/γ₁)≥2m|B̂(γ₁)|²>0` at a zero the spline sees | `CountingHolography/TheIntegerProbesAreNotIntegerValued` |
 | 4 | B17 | Weil's atomic off-diagonal kernel `W(m,n)` is negative iff `max/min` is below the plastic number `ρ³=ρ+1`, positive above, never zero; the primes never flip the sign (`Λ(x)/√x < C_∞` at integral ratios). The first Beurling–Deny criterion `Q(|x|)≤Q(x)` (every diagonal) holds on a finite atom set iff all its pairs lie within the plastic ratio: the atomic form of the Markov/Perron threshold `log ρ` | `SurfaceOfSpecZ/TheSignOfWeilsAtomicKernelIsPlastic` |
+| 5 | B88, B118 | The damped `ℍ³` profile `K_r(x)=e^{−|x|/2}/(1−r²e^{−2|x|})` has self-energy `Z(r)=∫K_r=Σr^{2k}·2/(2k+½)` with `log(1/(1−r²))+4−π²/24 ≤ Z(r) ≤ log(1/(1−r²))+4`; `∫K_r g = g(0)Z(r) − ∫K_r(g(0)−g)`, and for `g ≤ g(0)` (every autocorrelation) `∫K_r g − g(0)Z(r) → −∫ω(g(0)−g)`, `ω` the archimedean Lévy density. The archimedean place needs exactly one counterterm, universal and logarithmic; the remainder is minus the Lévy jump energy | `SurfaceOfSpecZ/TheArchimedeanSelfEnergyIsLogarithmic` |
+| 6 | B84, B103 | Quantiles of `V(x)=W(x)−W(x/2)/2+W(min(x,u₀)/2)/2` (strictly increasing: `w(u)>w(u/2)/4` beyond `u₀`) give positive discrete primes with `|N−(W−W(·/2)/2)|≤M`; their Euler product equals `ζ_c(s)exp(−L(4s)/4+sΛ(s)+sΛ(2s)+R₃(s))`, holomorphic on `Re s>1/3`, `s≠1`, zeros there exactly `(1−μ)±iγ`; holomorphic and zero-free on all of `Re s=½`, finite at `½` (the uncorrected one-off diverges). Remaining for an FE defect: growth of `sΛ(s)` on the line (trivially `O(|s|)`) | `ArithmeticPositiveDuality/ADiscreteOneOffCrossesTheCriticalLine` |
 
 ## Conjecture log
 - C1 (proved, #1): the jets carrier is hyperbolic three-space with dilations as translations along a geodesic.
 - C2 (proved, #2): every carrier of the jets on coprime orders is infinite-dimensional; the sign of `C_∞` is the plastic cubic.
 - C3 (proved, #3): C15.1 — integer probes are not integer-valued; integrality would force RH and then a constant Bohr series.
 - C4 (proved, #4): the atomic Weil kernel's sign is the plastic law; Markov holds exactly on plastic windows.
+- C5 (proved, #5): the archimedean counterterm of the damped `ℍ³` propagator is `g(0)·log(1/(1−r²)) + O(1)`, universal; the renormalized limit is the Lévy jump energy.
+- C6 (proved, #6): a discrete one-off continues across `Re s=½` once the count carries the prime-square term; the obstruction to an FE defect is the type of `sΛ(s)` on the line, not discreteness.
 
 ## Log
-- 2026-11-08 — created; #1–#4 formalized and wired.
+- 2026-11-08 — created; #1–#6 formalized and wired.
