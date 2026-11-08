@@ -78,7 +78,8 @@ theorem exists_polarFarAnnulusRow_interior_bound {T : ℝ} (hT : 2 ≤ T) :
   have hh' := div_le_div_of_nonneg_right hh hw0.le
   have he : |A - (c / N) * polarFarMean T (c / N)| / (c / N) =
       |polarFarAnnulusRow T c N n - polarFarMean T (c / N)| := by
-    rw [← abs_of_pos hw0, ← abs_div]
+    conv_lhs => arg 2; rw [← abs_of_pos hw0]
+    rw [← abs_div]
     congr 1
     change (A - (c / N) * polarFarMean T (c / N)) / (c / N) = A / (c / N) - _
     field_simp [hw0.ne']
@@ -144,11 +145,11 @@ theorem exists_polarFarAnnulusRow_global_bound {T : ℝ} (hT : 2 ≤ T) :
       exact sum_congr rfl fun j _ => by ring
     rw [he, abs_div, abs_of_pos hw0]
     exact (div_le_div_of_nonneg_right hh hw0.le).trans_eq
-      (by dsimp only [D]; field_simp [hw0.ne']; ring)
+      (by dsimp only [D]; field_simp [hw0.ne'])
   have hB' : |B / (c / N)| ≤ 2 * Real.exp 3 * T * A := by
     rw [abs_div, abs_of_pos hw0]
-    exact (div_le_div_of_nonneg_right hB hw0.le).trans_eq (by field_simp [hw0.ne']; ring)
-  have hm := hmean (by rw [abs_of_pos hw0]; exact hw)
+    exact (div_le_div_of_nonneg_right hB hw0.le).trans_eq (by field_simp [hw0.ne'])
+  have hm := hmean (w := c / N) (by rw [abs_of_pos hw0]; simpa only [mul_comm] using hw)
   rw [abs_of_pos hw0] at hm
   have htri : |polarFarAnnulusRow T c N n - polarFarMean T (c / N)| ≤
       |polarFarAnnulusRow T c N n - B / (c / N)| + |B / (c / N)| +
@@ -197,7 +198,7 @@ theorem tendsto_polarFarAnnulusRow_square_mean
     have hh := hi hc0 hN.2 (mem_Icc.mpr ⟨hn1, (mem_Ioc.mp hn).2⟩) hint
     have hratio : (N : ℝ) / n ≤ 1 / δ := by
       apply (div_le_div_iff₀ hn0 hδ).mpr
-      simpa only [one_mul, mul_comm] using hnδ
+      simpa only [one_mul, mul_one, mul_comm] using hnδ
     have hpay := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hratio hC) hc0.le
     exact hh.trans (add_le_add (hpay.trans_eq (by ring)) le_rfl)
 
@@ -220,7 +221,7 @@ theorem tendsto_polarFarAnnulusRow_zero_width_square_mean
     (tendsto_polarFarAnnulusRow_square_mean hδ hT hc hR hcrit) hconst
   exact hsum.congr fun N => by
     congr 1
-    exact sum_congr rfl fun n _ => by congr 1; ring
+    exact sum_congr rfl fun n _ => by congr 1; dsimp only [Function.comp_def]; ring
 
 #print axioms tendsto_polarFarAnnulusRow_square_mean
 #print axioms tendsto_polarFarAnnulusRow_zero_width_square_mean

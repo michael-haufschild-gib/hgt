@@ -66,7 +66,7 @@ theorem eventually_lowPacket_actual_pole_energy_approx
     (fun m hm => mul_nonneg (hE m hm) (sq_nonneg _)) h1
   have hscaled : |(completeWeilEnergy tiltedUnitSpline (c N) N v - E 1 - P) * b 1 ^ 2| ≤
       (ε / 2) * S := by
-    rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+    rw [abs_mul, abs_of_nonneg (sq_nonneg (b 1))]
     exact (mul_le_mul_of_nonneg_right hscalar (sq_nonneg _)).trans
       (by simpa only [mul_assoc] using mul_le_mul_of_nonneg_left hsingle (half_pos hε).le)
   have hid : completeWeilEnergy tiltedUnitSpline (c N) N y - S -
@@ -103,7 +103,6 @@ theorem eventually_lowPacket_ge_actual_pole_sub
         integral_tiltedUnitSpline_sq_pos (zero_lt_one.trans_le (hc N)) (mem_Icc.mp hm).1)
       (sq_nonneg _)) h1
   have hab := (abs_le.mp (hN b)).1
-  dsimp only at hab
   nlinarith only [hab, hsingle]
 
 #print axioms eventually_lowPacket_actual_pole_energy_approx

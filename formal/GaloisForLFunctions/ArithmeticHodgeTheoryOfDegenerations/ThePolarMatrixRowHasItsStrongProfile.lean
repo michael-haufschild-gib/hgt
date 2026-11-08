@@ -51,7 +51,6 @@ lemma polar_near_vector_eq_sample {c : ℝ} (hc : 0 < c) (N : ℕ) :
   change _ = (c / N) * Real.sqrt idx.1 * polarNearRow c N idx.1 / Real.sqrt (Real.log N)
   unfold polarNearRow
   field_simp [hc.ne', hN0.ne', hs]
-  ring
 
 /-- The full separated matrix row is the polar sampling of its scalar row. -/
 lemma polar_far_vector_eq_sample {c : ℝ} (hc : 0 < c) (N : ℕ) :
@@ -78,7 +77,7 @@ lemma polar_far_vector_eq_sample {c : ℝ} (hc : 0 < c) (N : ℕ) :
         atomCrossErrorKernel (atomDilate tiltedUnitSpline (c / N)) n j else 0)
       (ramanujanPoleProfile 1) N idx
   rw [happ]
-  simp only [normalizedRamanujanMode_one, ite_mul, zero_mul, mul_one_div]
+  simp only [normalizedRamanujanMode_one, mul_one_div, ite_div, zero_div]
   rw [← sum_filter]
   change _ = (c / N) * Real.sqrt idx.1 * polarFarRow c N idx.1 / Real.sqrt (Real.log N)
   unfold polarFarRow
@@ -92,7 +91,6 @@ lemma polar_far_vector_eq_sample {c : ℝ} (hc : 0 < c) (N : ℕ) :
     exact sum_congr rfl fun j _ => by ring
   rw [he]
   field_simp [hc.ne', hN0.ne', hs]
-  ring
 
 /-- The finite Mangoldt sampling agrees with the reciprocal Chebyshev profile. -/
 lemma polarUpwardMeanVector_eq_sample (c : ℝ) (N : ℕ) :
@@ -118,7 +116,6 @@ lemma polarUpwardMeanVector_eq_sample (c : ℝ) (N : ℕ) :
     ring
   rw [he]
   field_simp [hs]
-  ring
 
 /-- The full harmonic center sampling has the polar scalar normalization. -/
 lemma polarCenterMeanVector_eq_sample (c : ℝ) (N : ℕ) :

@@ -627,6 +627,7 @@ Holography, ringdown and counting holography are formalized; their positive resu
 | Tower form | syndetic excursions; single top pair at every level of its resonant tower | `InfiniteRankWeilTheory/TheTowersOfZeta` [L] |
 | Elimination | exceptional rank, price of hiding, rank barrier | `InfiniteRankWeilTheory/{TheExceptionalRankDecidesTheWindow,TheRankBarrier}` [L] |
 | Annihilators | finite sets at any multiplicity; harmonic packets cost `≥m`; left-growth law | `ArithmeticPositiveDuality/{PositiveTwoPrimeAnnihilators,ArbitraryMultiplicityNearUnitAnnihilatorMass,HarmonicZeroPacketsForcePositiveAnnihilatorMass,PositiveAnnihilatorAccuracyForcesLeftGrowth}` [L] |
+| Annihilator bandwidth | order `r+1≥2` and tail mass `H` force a supported logarithmic frequency `≥log 2+2(log 2)r²/(H−1)`; full Chebyshev mass bound at fixed bandwidth | `ArithmeticPositiveDuality/TheChebyshevCostOfAnnihilatorMultiplicity` [K] |
 | Rigid oscillation | finite oscillation of `ψ`, dilation annihilation | `ZeroConfigurationGeometry/{TheOneOffsAreFiniteOscillationsOfThePrimeError,MultiplicativeDilationAnnihilationOfPrimeError}` [L] |
 | Surgery | rational relocation fails at the first integer gap | `ArithmeticPositiveDuality/TheFirstIntegerGapDetectsRelocation` [L] |
 

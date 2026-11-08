@@ -21,7 +21,7 @@ this remainder unchanged.
 and small-height threshold should work for all horizontal target coordinates
 `ρ=x+iY`, `σ=w+iZ`. The sharp Fourier-tail envelope is already uniform
 in `x,w`. The additional obligation is uniform control of the filled
-quotients near their removable center. The exact algebraic candidate
+quotients near their removable center. The proved exact identity
 
 `D_(x,Y)(u)=D_Y(u)+2(2u−1)(1+2u)eisTail(u,x,Y)`
 
@@ -32,7 +32,8 @@ differentiating `uD_(x,Y)=u[D_Y+2(2u−1)(1+2u)eisTail]` at zero
 extends it to the center. The sharp tail bound is uniform in `x` at
 all ordinates, while the entire `D_Y` is bounded on compact spectral
 sets. This gives a concrete uniform compact-bound mechanism. The
-divided identity and its bound remain unformalized.
+divided identity and its uniform compact bound are formalized in
+`NarainPointwiseDividedTail`.
 
 ## Corpus mechanism
 
@@ -41,7 +42,8 @@ plus `(2u−1)(1+2u)(2u)eisTail(u,x,Y)`.
 The mean numerator strip bound is proved. The corpus's
 `BlackHoleRingdown.exists_weightedTail_jets_le_sharp` supplies the
 exponential envelope for the Fourier tail. Thus the full filled numerator
-should retain `C(1+|t|)^N exp(−π|t|/2)`. The exact pointwise quotient
+retains `C(1+|t|)^N exp(−π|t|/2)`, uniformly in the horizontal
+target coordinate, by `NarainPointwiseStripBounds`. The exact pointwise quotient
 then has the same reciprocal-zeta loss as the averaged transform.
 
 `NarainCentralZero` already removes the central singularity for every
@@ -51,8 +53,13 @@ supply the actual Mellin identity, continuity and large-height tail.
 The averaged contour construction should therefore extend pointwise:
 first the boundary line, then the finite Vinogradov–Korobov rectangle.
 
-Remaining obligations: full numerator strip bound, pointwise weighted
-residue, Mellin inversion, contour transport and all tail estimates.
+`NarainPointwiseResidue` proves the exact weighted residue
+`y⁻¹[B_(ρ,σ)−(3/π)log y]` at the physical main pole. These three
+modules passed direct Lean checks and five endpoint axiom audits;
+dependencies use only `propext`, `Classical.choice`, `Quot.sound`.
+
+Remaining obligations: pointwise Mellin inversion, contour transport and
+the corresponding integral tail estimates.
 The averaged quantitative chain is kernel-checked. The proved
 [universal absorption constant](../3-formalized/ads3-narain-universal-saving-constant.md)
 would also fix the displayed `c=1/(128·10^8)` independently of target
@@ -62,6 +69,7 @@ This target gives no exponent above one half and no RH-strength bound.
 
 ## Gates
 
-- [ ] 0 → 1: prove and audit the full numerator strip envelope.
+- [x] Full numerator strip envelope, divided compact bounds and weighted residue.
+- [ ] 0 → 1: assemble actual-source pointwise inversion inputs.
 - [ ] 1 → 2: dependency-closed actual-source contour argument.
 - [ ] 2 → 3: direct Lean checks, axiom audits and umbrella imports.

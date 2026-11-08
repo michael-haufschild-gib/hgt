@@ -42,11 +42,12 @@ lemma exists_regularizedPolarNearRow_interior_bound :
   have hw0 : 0 < c / N := div_pos hc hN0
   have hh := div_le_div_of_nonneg_right (hb hc hn hw hwide hint) hw0.le
   have hid (a b : ℝ) : |a - (c / N) * b| / (c / N) = |a / (c / N) - b| := by
-    rw [← abs_of_pos hw0, ← abs_div]
+    conv_lhs => arg 2; rw [← abs_of_pos hw0]
+    rw [← abs_div]
     congr 1
     field_simp [hw0.ne']
   rw [hid] at hh
-  exact hh.trans_eq (by field_simp [hc.ne', hN0.ne', hn0.ne']; ring)
+  exact hh.trans_eq (by field_simp [hc.ne', hN0.ne', hn0.ne'])
 
 /-- The regularized row differs from its harmonic collar by a uniformly bounded smooth row. -/
 lemma exists_regularizedPolarNearRow_sub_center_bound :
@@ -111,12 +112,13 @@ lemma exists_regularizedPolarNearRow_sub_center_bound :
           (Real.log c + Real.log ((n : ℝ) / N)) * nearPoleRow tiltedUnitSpline c N n)| / Real.sqrt n =
       |nearGammaDownwardRow tiltedUnitSpline c N 1 n / Real.sqrt n +
         (Real.log c + Real.log ((n : ℝ) / N)) * nearPoleRow tiltedUnitSpline c N n / Real.sqrt n - S| := by
-      rw [← abs_of_pos hsn, ← abs_div]
+      conv_lhs => arg 2; rw [← abs_of_pos hsn]
+      rw [← abs_div]
       congr 1
       rw [sub_div, sub_div, hsum]
       ring
     rw [heq] at hgam
-    exact hgam.trans_eq (by field_simp [hsn.ne', hN0.ne']; ring)
+    exact hgam.trans_eq (by field_simp [hsn.ne', hN0.ne'])
   have hP : nearPoleRow tiltedUnitSpline c N n = poleRowDefect tiltedUnitSpline c N n +
       (atomPoleErrorCoefficient tiltedUnitSpline c N + completeWeilPoleShift tiltedUnitSpline c / N) *
         Real.sqrt n := by
@@ -145,7 +147,7 @@ lemma exists_regularizedPolarNearRow_sub_center_bound :
   have htri := htriangle.trans (add_le_add hgam' hS)
   have hb := div_le_div_of_nonneg_right htri hw0.le
   have he : (20 * Real.exp 3 * (c / N) ^ 2 + 4 * Real.exp 3 * A * (c / N)) / (c / N) =
-      20 * Real.exp 3 * (c / N) + 4 * Real.exp 3 * A := by field_simp [hc.ne', hN0.ne']; ring
+      20 * Real.exp 3 * (c / N) + 4 * Real.exp 3 * A := by field_simp [hc.ne', hN0.ne']
   rw [he] at hb
   have hw1 : c / N ≤ 1 := hw.trans (by norm_num)
   have hh := mul_le_mul_of_nonneg_left hw1 (by positivity : 0 ≤ 20 * Real.exp 3)
@@ -189,7 +191,8 @@ lemma exists_regularizedPolarNearRow_global_bound {δ : ℝ} (hδ : 0 < δ) :
     have hh := div_le_div_of_nonneg_right (abs_polarCenterCollar_sub_log_le hc1 h8c hni) hsn.le
     have he : |(∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) -
         Real.log c * Real.sqrt n| / Real.sqrt n = |H - Real.log c| := by
-      rw [← abs_of_pos hsn, ← abs_div]
+      conv_lhs => arg 2; rw [← abs_of_pos hsn]
+      rw [← abs_div]
       congr 1
       dsimp only [H]
       field_simp [hsn.ne']
@@ -262,7 +265,7 @@ theorem tendsto_regularizedPolarNearRow_square_mean
     have hwide : 8 ≤ (n : ℝ) * (2 * c N / N) := by
       have hh := mul_le_mul_of_nonneg_right hnδ (by positivity : 0 ≤ 2 * c N / N)
       have hδc := (div_le_iff₀ hδ).mp hN.2.2
-      have he : δ * (N : ℝ) * (2 * c N / N) = 2 * (c N * δ) := by field_simp [hN0.ne']; ring
+      have he : δ * (N : ℝ) * (2 * c N / N) = 2 * (c N * δ) := by field_simp [hN0.ne']
       rw [he] at hh
       linarith only [hh, hδc]
     have hh := hi hc0 (mem_Icc.mpr ⟨hn1, (mem_Ioc.mp hn).2⟩)
@@ -270,7 +273,7 @@ theorem tendsto_regularizedPolarNearRow_square_mean
       (by simpa only [mul_div_assoc] using hint)
     have hratio : (N : ℝ) / n ≤ 1 / δ := by
       apply (div_le_div_iff₀ hn0 hδ).mpr
-      simpa only [one_mul, mul_comm] using hnδ
+      simpa only [one_mul, mul_one, mul_comm] using hnδ
     have hpay := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hratio hC) hc0.le
     exact hh.trans (add_le_add (hpay.trans_eq (by ring)) le_rfl)
 
@@ -289,6 +292,7 @@ theorem tendsto_polar_near_gram_correction_square_mean
   refine squeeze_zero' (Eventually.of_forall fun N => by positivity) ?_ hlim
   have hclog := Real.tendsto_log_atTop.comp (criticalCurve_facts hc hR hcrit).1
   filter_upwards [eventually_ge_atTop 1, hclog.eventually_ge_atTop 1] with N hN hlogc
+  change 1 ≤ Real.log (c N) at hlogc
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
   have hpt : ∀ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
@@ -309,7 +313,7 @@ theorem tendsto_polar_near_gram_correction_square_mean
       linarith only [hh, neg_abs_le (Real.log δ)]
     have hlog : |Real.log (c N) + Real.log ((n : ℝ) / N)| ≤
         (1 + |Real.log δ|) * Real.log (c N) := by
-      have hh := (abs_add_le _ _).trans (add_le_add le_rfl hlogx)
+      have hh := (abs_add_le (Real.log (c N)) (Real.log ((n : ℝ) / N))).trans (add_le_add le_rfl hlogx)
       rw [abs_of_nonneg (Real.log_nonneg (hc N))] at hh
       have hprod := mul_le_mul_of_nonneg_left hlogc (abs_nonneg (Real.log δ))
       nlinarith only [hh, hprod]
@@ -317,14 +321,13 @@ theorem tendsto_polar_near_gram_correction_square_mean
     rw [sq_abs, mul_pow] at hs
     have hratio : (N : ℝ) / n ≤ 1 / δ := by
       apply (div_le_div_iff₀ hn0 hδ).mpr
-      simpa only [one_mul, mul_comm] using hnδ
+      simpa only [one_mul, mul_one, mul_comm] using hnδ
     have he : ((Real.log (c N) + Real.log ((n : ℝ) / N)) *
         poleRowDefect tiltedUnitSpline (c N) N n / (Real.sqrt n * (c N / N))) ^ 2 / N =
       (Real.log (c N) + Real.log ((n : ℝ) / N)) ^ 2 * ((N : ℝ) / n) *
         (poleRowDefect tiltedUnitSpline (c N) N n ^ 2 / c N ^ 2) := by
       rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hn0.le]
       field_simp [hN0.ne', hn0.ne', hc0.ne']
-      ring
     rw [he]
     have hp := mul_le_mul hs hratio (div_nonneg hN0.le hn0.le) (by positivity)
     exact (mul_le_mul_of_nonneg_right hp (by positivity)).trans_eq (by dsimp only [K]; ring)
@@ -376,7 +379,7 @@ theorem tendsto_polar_near_atom_correction_square_mean
     have hh := Real.log_le_log hδ hxδ
     linarith only [hh, neg_abs_le (Real.log δ)]
   have hlog : |Real.log (c N) + Real.log ((n : ℝ) / N)| ≤ c N + |Real.log δ| := by
-    have hh := (abs_add_le _ _).trans (add_le_add le_rfl hlogx)
+    have hh := (abs_add_le (Real.log (c N)) (Real.log ((n : ℝ) / N))).trans (add_le_add le_rfl hlogx)
     rw [abs_of_nonneg (Real.log_nonneg (hc N))] at hh
     linarith only [hh, Real.log_le_sub_one_of_pos hc0]
   have hatom : |atomPoleErrorCoefficient tiltedUnitSpline (c N) N| ≤ D * (c N / N) ^ 2 :=
@@ -387,7 +390,7 @@ theorem tendsto_polar_near_atom_correction_square_mean
   rw [abs_div, abs_mul, abs_of_pos hw0]
   exact (div_le_div_of_nonneg_right
     (mul_le_mul hlog hatom (abs_nonneg _) (by positivity)) hw0.le).trans_eq
-      (by field_simp [hw0.ne']; ring)
+      (by field_simp [hw0.ne'])
 
 /-- The actual joint near Gamma and harmonic center row, without its vanishing corrections. -/
 def polarNearRow (c : ℝ) (N n : ℕ) : ℝ :=
@@ -414,7 +417,7 @@ theorem tendsto_polarNearRow_square_mean
       hcN.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 4))] with N hN hw
     have hw0 : 0 < c N / N := div_pos (zero_lt_one.trans_le (hc N)) (by exact_mod_cast hN)
     simpa only [Real.norm_eq_abs, abs_of_pos hw0] using
-      hmean (by rw [abs_of_pos hw0]; exact hw.le)
+      hmean (w := c N / N) (by rw [abs_of_pos hw0]; exact hw.le)
   have hm2 := tendsto_normalized_square_mean_const
     (S := fun N => Ioc ⌊δ * (N : ℝ)⌋₊ N)
     (fun N => by rw [Nat.card_Ioc]; exact Nat.sub_le _ _) hm

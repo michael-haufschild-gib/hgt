@@ -66,6 +66,15 @@ quantitative bound. The [exit-bouquet classification](../3-formalized/riac-prime
 constructs the full arithmetic homotopy type of each exit, with sphere labels
 in the exact multiplicative window determined by the least upper neighbour.
 
+The [proper arithmetic intersection count](../3-formalized/riac-thickened-intersection-counts.md)
+constructs actual finite rings `ℤ[X]/(P,Q)`, proves their resultant cardinality,
+and gives quadratic integer prime-local multiplicities and logarithmic heights
+under equal thickening. Distinct cyclotomic counts recover the established
+torsion intersection. The [rational-radius construction](riac-rational-abel-intersection-counts.md)
+asks for actual radial intersection counts and a divided-difference residue ring
+that removes the coincident-root self-factor. The critical sign and the
+comparison controlling the signed local-index sum remain open.
+
 ## Necessary distinctions
 
 `Σ_faces(−1)^card=M(N)+P_N` for the core. For `N≥4`, its ordinary

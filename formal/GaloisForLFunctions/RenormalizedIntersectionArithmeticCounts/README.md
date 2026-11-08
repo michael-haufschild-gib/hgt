@@ -169,6 +169,36 @@ and `p·∏S≤N<p·a·∏S`; their dimensions are `|S|−1`. This
 is formalized. Quantitative cancellation and a canonical relative pair on the
 connected core with Euler number `M(N)` remain separate.
 
+## Arithmetic intersection counts and local multiplicities
+
+[ThickenedArithmeticIntersections.lean](ThickenedArithmeticIntersections.lean)
+constructs the actual residue ring `ℤ[X]/(P,Q)` for proper monic divisors
+on `Spec ℤ[X]`. Monic division identifies its additive group with the
+integral Sylvester cokernel. Its cardinality is `C(P,Q)=|Res(P,Q)|`,
+with finiteness proved from the nonzero resultant.
+
+Thickening the two equations gives
+
+`C(P^a,Q^b)=C(P,Q)^(ab)`.
+
+Consequently the prime-local order multiplicity `i_p(P,Q)=v_p(C(P,Q))`
+is an integer and scales by `ab`; the independent logarithmic height
+`H(P,Q)=log C(P,Q)` has the same scaling. Its local-global formula is
+`H=log|Res(P,Q)|=Σ_p i_p log p`. Equal thickening gives exact quadratic
+local multiplicities and logarithmic height. The residue cardinality itself
+has exponential scaling in `k²`.
+
+Distinct cyclotomic divisors satisfy properness arithmetically. Their
+thickened logarithmic counts recover `ab·I(n,m)`, the established torsion-orbit
+intersection. The count therefore has a proved comparison with the existing
+torsion geometry, with no Weil form used in its definition.
+
+This constructs effective proper intersections. Self-intersections,
+critical renormalization and control of signed primitive combinations remain
+open. No comparison bounding `Σ_p index_p(N)=1−M(N)` follows from the
+nonnegativity of these individual heights. The required surface Riemann–Roch
+count and square-root cancellation remain the programme's targets.
+
 ## Literature and novelty boundary
 
 Connes–Consani construct integer dimensions and Riemann–Roch on the Arakelov

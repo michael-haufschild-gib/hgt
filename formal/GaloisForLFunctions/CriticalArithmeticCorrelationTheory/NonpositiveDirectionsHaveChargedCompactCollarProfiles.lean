@@ -70,7 +70,7 @@ theorem exists_critical_charged_collar_weilQuad_bridge
     have hh : H / (H + ε) ≤ 1 := (div_le_one (by positivity)).mpr
       (le_add_of_nonneg_right hε.le)
     calc
-      δ * H = (ε / 2) * (H / (H + ε)) := by dsimp only [δ]; ring
+      δ * H = (ε / 2) * (H / (H + ε)) := by dsimp only [δ]; simp only [div_eq_mul_inv, mul_inv_rev]; ring
       _ ≤ (ε / 2) * 1 := mul_le_mul_of_nonneg_left hh (by positivity)
       _ = ε / 2 := mul_one _
   have hQlim := (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 13 / 32)).comp
@@ -142,7 +142,7 @@ theorem exists_critical_charged_collar_weilQuad_bridge
     have h1 := mul_nonneg hB.le hβ
     have h2 := mul_nonneg hC₀.le hU₂
     dsimp only [B', J]
-    simp only [div_eq_mul_inv, mul_inv_rev] at h1 ⊢
+    simp only [div_eq_mul_inv] at h1 ⊢
     nlinarith only [mul_nonneg hc0.le h1, mul_nonneg hc0.le h2]
   have hg' : (1 / 4 : ℝ) * A + (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 + P + S +
       (c N * c_W / (R + 1)) * W₈ + (c N / (4 * I₂)) * levyEnergy U ≤
@@ -247,14 +247,20 @@ theorem exists_critical_charged_collar_weilQuad_bridge
     exact hh.trans_eq (by dsimp only [e, η]; field_simp [hc0.ne', hI₂.ne', hB'.ne']; ring)
   have hroughScaled := mul_le_mul_of_nonneg_left hrough (show 0 ≤ I₂ / c N by positivity)
   have hnonposScaled := mul_nonpos_of_nonneg_of_nonpos (show 0 ≤ I₂ / c N by positivity) hnonpos
+  have hroughClean : (I₂ / c N) * completeWeilEnergy tiltedUnitSpline (c N) N w ≤
+      3 * I₂ * B' * J := hroughScaled.trans_eq (by field_simp [hc0.ne'])
   dsimp only [P] at herror
   refine ⟨hpositive, hW, hLev, hSupper, ?_, ?_⟩
-  · dsimp only [K_Q]
-    simp only [div_eq_mul_inv, mul_inv_rev] at hpole herror hroughScaled ⊢
-    ring_nf at hpole herror hroughScaled ⊢
-    nlinarith only [hpole, herror, hroughScaled, herrrough]
-  · simp only [div_eq_mul_inv, mul_inv_rev] at hpole herror hchargedUpper hpay hnonposScaled ⊢
-    ring_nf at hpole herror hchargedUpper hpay hnonposScaled ⊢
+  · change weilQuad U ≤ K_Q * J
+    dsimp only [K_Q]
+    simp only [div_eq_mul_inv, mul_inv_rev] at hpole herror hroughClean ⊢
+    ring_nf at hpole herror hroughClean herrrough ⊢
+    linarith only [hpole, herror, hroughClean, herrrough]
+  · change weilQuad U + (I₂ / c N) *
+        (completeWeilEnergy tiltedUnitSpline (c N) N (normalizedRamanujanHorizonVector 1 N) * b 1 ^ 2 +
+          2 * b 1 * ⟪conductorResidualVector (c N) 1 N, horizonCollarVector M w⟫) ≤ ε * J
+    simp only [div_eq_mul_inv, mul_inv_rev] at hpole herror hchargedUpper hpay hnonposScaled ⊢
+    ring_nf at hpole herror hchargedUpper hpay hnonposScaled herrsmall ⊢
     linarith only [hpole, herror, hchargedUpper, hpay, hnonposScaled, herrsmall]
 
 #print axioms exists_critical_charged_collar_weilQuad_bridge

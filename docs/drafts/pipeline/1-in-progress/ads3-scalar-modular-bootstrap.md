@@ -56,7 +56,7 @@ remain targets.
 
 The unconditional [half-power boundary rate](../3-formalized/ads3-narain-average-boundary-rate.md) is formalized: the actual remainder is `o(y^(1/2))`. The [quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md) is also proved: with `L=−log y`, the remainder is bounded by `C√y exp(−cL/[(log L)^(2/3)(log log L)^(5/3)])`. The moving contour retains the full Vinogradov–Korobov width. The [universal-constant refinement](../3-formalized/ads3-narain-universal-saving-constant.md) fixes `c=1/(128·10^8)` independently of target heights. Consequently [every logarithmic saving](../3-formalized/ads3-narain-average-logarithmic-savings.md) holds: `R=o(√y/L^N)` for all `N≥0`.
 
-[Schwartz regularity of the actual boundary and clock remainder](../3-formalized/ads3-narain-boundary-schwartz.md) is formalized. Both literal functions have all absolute polynomial moments, and the clock integral vanishes. Spectral moments, the two source tails, Landau interpolation and pointwise Fourier inversion prove these statements. The corresponding [pointwise saving at every target pair](../0-backlog/ads3-narain-pointwise-boundary-saving.md) should follow from the existing sharp Fourier-tail envelope and the full filled numerator.
+[Schwartz regularity of the actual boundary and clock remainder](../3-formalized/ads3-narain-boundary-schwartz.md) is formalized. Both literal functions have all absolute polynomial moments, and the clock integral vanishes. Spectral moments, the two source tails, Landau interpolation and pointwise Fourier inversion prove these statements. The [pointwise inputs](../0-backlog/ads3-narain-pointwise-boundary-saving.md) now include the uniform full-numerator strip envelope, the exact divided-tail identity, uniform compact bounds and the weighted main-pole residue. Pointwise Mellin inversion and contour transport remain open.
 
 The [common derivative bound](../3-formalized/ads3-narain-logarithmic-derivative-saving.md) is formalized: every order satisfies `|H^(n)(L)|≤C n! (16/π)^n exp(−Lw(L)/128)` with one threshold and prefactor independent of derivative order. A uniform complex disk estimate and Cauchy bounds prove the literal source statement.
 
@@ -69,6 +69,20 @@ to the exceptional-height count. Its cubic and quintic coefficients are
 explicit; the doubly exceptional fifth moment is strictly positive.
 At fixed `P=YZ`, the first moment is exactly
 `4√P[(c−(log P)/2)²−((log Y−log Z)/2)²]`.
+
+[Universal arithmetic principal parts](../0-backlog/ads3-narain-average-scaling.md)
+are formalized: `M_YZ(u)−(YZ)^(1/2−u)M_11(u)` is analytic at every
+arithmetic resonance. Every negative Laurent coefficient therefore agrees
+along fixed-product target families, including multiple poles. The
+proposed physical theta-scaling identity remains unproved.
+
+The [small-height continuation](../0-backlog/ads3-narain-two-sided-oscillation.md)
+is now formalized with a real continuous remainder, an entire large-height
+tail, positive-real analyticity and full arithmetic pole multiplicities.
+The concrete Landau arguments giving two-sided oscillation remain open.
+[Interior strip decay](../0-backlog/ads3-narain-average-sharp-rate.md) is
+proved under its explicit zero-free hypothesis; the source contour
+transport needed for the sharp-rate equivalence remains open.
 
 ## Product detector: formalized
 

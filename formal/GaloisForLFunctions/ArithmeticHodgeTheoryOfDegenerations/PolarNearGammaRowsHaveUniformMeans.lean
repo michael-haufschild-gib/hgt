@@ -198,7 +198,7 @@ theorem exists_nearGamma_polar_scalar_mean_bound :
               Real.sqrt n| := by congr 1; ring
         _ = _ := by rw [abs_div, abs_of_pos hsn]
     rw [hleft]
-    exact hgam.trans_eq (by field_simp [hsn.ne', hN0.ne']; ring)
+    exact hgam.trans_eq (by field_simp [hsn.ne', hN0.ne'])
   have htri := (abs_sub_le
     (nearGammaDownwardRow tiltedUnitSpline c N 1 n / Real.sqrt n +
       (Real.log c + Real.log ((n : ℝ) / N)) * nearPoleRow tiltedUnitSpline c N n / Real.sqrt n)
@@ -264,8 +264,7 @@ theorem exists_joint_near_polar_scalar_mean_bound :
     exact (mul_le_mul_of_nonneg_left hcenter
       (div_nonneg (completeWeilPoleShift_nonneg _ hc.le) hN0.le)).trans_eq (by
         rw [hshift]
-        field_simp [hc.ne', hn0.ne', hN0.ne']
-        ring)
+        field_simp [hc.ne', hn0.ne', hN0.ne'])
   have he : nearGammaDownwardRow tiltedUnitSpline c N 1 n / Real.sqrt n +
       (completeWeilPoleShift tiltedUnitSpline c / N) *
         ((∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) / Real.sqrt n) +

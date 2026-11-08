@@ -98,8 +98,9 @@ theorem eventually_critical_schur_pairing_with_multiplier
         (mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hnum hL0.le)
           (by positivity)).trans_eq (by ring)
       _ = 60 * T / L ^ (1 / 4 : ℝ) := by
+        rw [← mul_div_assoc]
         apply (div_eq_div_iff hL0.ne' hqpos.ne').mpr
-        nlinarith only [hpowers']
+        nlinarith only [congrArg (fun x : ℝ => 60 * T * x) hpowers']
       _ ≤ 1 / 2 := (div_le_iff₀ hqpos).mpr (by linarith only [hquarter])
   have htopPaid := (mul_le_mul_of_nonneg_left htop
     (show 0 ≤ (6 * T) * L ^ (1 / 4 : ℝ) by positivity)).trans
@@ -116,7 +117,10 @@ theorem eventually_critical_schur_pairing_with_multiplier
     have he : L ^ (3 / 4 : ℝ) * L ^ (1 / 4 : ℝ) = L := by
       rw [← Real.rpow_add hL0]; norm_num
     apply (le_div_iff₀ hℓ).mpr
-    nlinarith only [hmul, he]
+    calc
+      _ = 6 * T * (1 + Real.log L) ^ 5 * L ^ (1 / 4 : ℝ) := by ring
+      _ ≤ L ^ (3 / 4 : ℝ) * κ_P * L ^ (1 / 4 : ℝ) := hmul
+      _ = κ_P * L := by rw [mul_right_comm, he, mul_comm]
   have hpair₀ := pairing_sum_le_deep_prefix_weighted_collar (X := (X : ℝ))
     hMN (fun m hm => hE m (hs hm)) u₀ u₁ w hΨ hD le_rfl
   have hpair : T * (∑ m ∈ s, ⟪r m, u₀ + u₁ + w⟫ ^ 2 / E m) ≤
@@ -171,7 +175,7 @@ theorem eventually_nonpolar_lowPacket_schur_payment_with_multiplier
     have he : (c N ^ 7 / Real.log N * D) * ((6 * T) * Real.log N / c N ^ 7) = (6 * T) * D := by
       field_simp [ne_of_gt hL, ne_of_gt hc0]
     rw [he] at hh
-    exact hh.trans_eq (by field_simp [hT.ne'] <;> ring)
+    exact hh.trans_eq (by field_simp [hT.ne'])
   have hpay := mul_le_mul_of_nonneg_right hD (topCollarSeventhMass_nonneg M N (primeHorizonExtension w))
   dsimp only [D, M, conductorResidualVector] at hpay
   dsimp only [M] at hb
@@ -228,7 +232,8 @@ theorem two_abs_weighted_sum_le_with_payment {s : Finset ℕ} {E a t : ℕ → �
     · refine sum_congr rfl fun m hm => ?_
       rw [div_pow, Real.sq_sqrt (hE m hm).le]
   have := two_abs_le_of_sq_le hS (one_div_pos.mpr hε) hcs
-  simpa only [Real.sq_sqrt hΦ, div_eq_mul_inv, inv_inv, one_mul, mul_comm] using this
+  rw [Real.sq_sqrt hΦ] at this
+  simpa only [one_div, div_eq_mul_inv, inv_inv, one_mul, mul_one, mul_comm] using this
 
 /-- The nonpolar collar alone costs an arbitrarily small seventh-power reserve. -/
 theorem eventually_nonpolar_collar_schur_payment_with_multiplier

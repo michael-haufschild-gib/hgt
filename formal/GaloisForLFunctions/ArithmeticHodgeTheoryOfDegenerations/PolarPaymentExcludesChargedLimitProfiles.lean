@@ -129,7 +129,10 @@ theorem no_charged_limit_profile_below_polarPayment
       simpa only [mul_zero, mul_one_div] using hinv.const_mul 8
     have he := Real.continuous_exp.continuousAt.tendsto.comp h8zero
     rw [Real.exp_zero] at he
-    have hh := ((((((tendsto_const_nhds.add hCzero).add_const B).sub hprime).add
+    have hconst := tendsto_const_nhds (f := (atTop : Filter ℕ))
+      (x := primeSum F - (2 * coshHalfMoment F ^ 2 - 2 * sinhHalfMoment F ^ 2) -
+        criticalAliasCoefficient R * I₈)
+    have hh := ((((((hconst.add hCzero).add_const B).sub hprime).add
       (((hcosh.pow 2).const_mul 2).sub ((hsinh.pow 2).const_mul 2))).add
         ((he.mul_const I₈).const_mul (criticalAliasCoefficient S))).add_const
           (I₂ * criticalPoleWindowCost S * β ^ 2)).add (hsource.const_mul (2 * I₁ * β))

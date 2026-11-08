@@ -44,6 +44,19 @@ The stronger endpoint
 is [formalized](../3-formalized/ads3-narain-average-boundary-rate.md), including
 actual-source Mellin inversion, boundary integrability and vanishing horizontal edges.
 
+## Formalized conditional strip bounds
+
+`NarainMeanZeroFreeStrip` proves analyticity of the actual mean wherever
+`σ₀<1+2 Re u`, away from the main pole, under the explicit assumption
+that `ξ` has no zero on `Re s>σ₀`. For `0≤σ₀<1` and
+`σ₀<1+2a<1`, it proves
+`|M_YZ(u)|≤C(1+|Im u|)^N exp(−π|Im u|/2)` uniformly on
+`a≤Re u≤0`, `|Im u|≥1`. The reciprocal-zeta polynomial lower bound
+combines with the proved filled-numerator envelope. The module and both
+endpoint axiom audits passed, with only the standard three axioms.
+This is an implication with its zero-free premise explicit; it does not
+establish that premise or the proposed sharp source rate.
+
 ## Proof obligations
 
 Necessity is formalized in
@@ -83,6 +96,7 @@ bounds is an extra premise of the claimed equivalence.
 
 ## Gates
 
-- [ ] 0 → 1: transport the audited reciprocal-zeta bound to each zero-free interior line.
+- [x] Conditional analyticity and uniform decay on every closed interior strip.
+- [ ] 0 → 1: transport the actual boundary identity to every interior line.
 - [ ] 1 → 2: dependency-closed paper proof of both directions.
 - [ ] 2 → 3: Lean formalization and transitive axiom audit.

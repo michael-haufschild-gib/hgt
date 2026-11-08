@@ -64,7 +64,7 @@ theorem polarFarMean_zero {T : ℝ} (hT : 2 ≤ T) :
     (hc.intervalIntegrable 0 T) heven
   have hsmall := integral_symmetric_even_eq_two_mul (hc.intervalIntegrable (-2) 0)
     (hc.intervalIntegrable 0 2) heven
-  have hsplit := intervalIntegral.integral_add_adjacent_intervals
+  have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (hc.intervalIntegrable 0 2) (hc.intervalIntegrable 2 T)
   have hcross : (∫ s in (2 : ℝ)..T, K s) = ∫ s in (2 : ℝ)..T,
       crossSingular tiltedUnitSpline (1 / s) := by

@@ -66,7 +66,8 @@ theorem near_polarCenter_row_eq_harmonics {c : ℝ} {N n : ℕ}
       have hlow : (n : ℝ) * Real.exp (-t) ≤ j :=
         (Nat.le_ceil _).trans (by exact_mod_cast hjlo)
       have hhigh : (j : ℝ) ≤ (n : ℝ) * Real.exp t :=
-        (by exact_mod_cast hjhi.trans (min_le_right _ _)).trans (Nat.floor_le (by positivity))
+        (by exact_mod_cast hjhi.trans (min_le_right _ _) :
+          (j : ℝ) ≤ (⌊(n : ℝ) * Real.exp t⌋₊ : ℝ)).trans (Nat.floor_le (by positivity))
       refine mem_filter.mpr ⟨mem_Icc.mpr ⟨hj1, hjhi.trans hhiN⟩, hjn, ?_⟩
       exact (abs_log_gap_le_iff_exp_bounds hj0 hn0).mpr ⟨hlow, hhigh⟩
   let Sl := Ico lo n
@@ -183,7 +184,8 @@ lemma lower_polar_half_width_bounds {n : ℕ} {t : ℝ}
     have hprod : Real.exp (-t) * (1 + t) ≤ 1 := by
       calc
         _ ≤ Real.exp (-t) * Real.exp t :=
-          mul_le_mul_of_nonneg_left (Real.add_one_le_exp t) (Real.exp_pos _).le
+          mul_le_mul_of_nonneg_left (by simpa only [add_comm] using Real.add_one_le_exp t)
+            (Real.exp_pos _).le
         _ = 1 := by rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
     have hpoly : 1 ≤ (1 - t + t ^ 2) * (1 + t) := by nlinarith only [pow_nonneg ht.le 3]
     have hh := hprod.trans hpoly
@@ -302,9 +304,11 @@ theorem abs_near_polarCenter_row_sub_interior_profile_le {c : ℝ} {N n : ℕ}
   have hab : |((harmonic (n - lo) : ℝ) - Real.log r - Real.eulerMascheroniConstant) +
         ((harmonic (hi - n) : ℝ) - Real.log r - Real.eulerMascheroniConstant) + smooth| ≤
       (4 * t + 4 / r) + (4 * t + 4 / r) + 4 * Real.exp 2 * (c / N) := by
+    have hsabs : |smooth| ≤ 4 * Real.exp 2 * (c / N) := by
+      rwa [abs_of_nonneg hs0]
     have hsum := (abs_add_le _ _).trans
       (add_le_add ((abs_add_le _ _).trans (add_le_add hHlo hHhi))
-        (by simpa only [abs_of_nonneg hs0] using hsle))
+        hsabs)
     exact hsum
   exact (div_le_div_of_nonneg_right hab (by norm_num : (0 : ℝ) ≤ 2)).trans_eq (by
     dsimp only [r, t]

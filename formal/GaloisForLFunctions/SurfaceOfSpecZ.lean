@@ -7,6 +7,9 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ThePointCountOfSpecZ
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTorsionEnergyAgainstTheJets
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilForPairsOfFrobeniusGraphs
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtTheIntegerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.CrudeHasseWeilAtTheIntegerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.SparseDegreesDecideRH
+import GaloisForLFunctions.SurfaceOfSpecZ.ThePlaneCountsAtTheIntegerDegrees
 
 /-!
 # The surface of `Spec ℤ`
@@ -28,5 +31,9 @@ probes: atomic Frobenius graphs force infinite genus, and smoothing performs the
 Off the diagonal Weil's kernel is the archimedean compensation (pole plane minus cusp and jets) plus
 the Abel limit of the positive torsion energy of `ℙ¹_ℤ`. Smoothed by the cubic spline, the Frobenius
 graphs form a curve of finite genus exactly under RH: Hasse–Weil on every plane `⟨Γ_1, Γ_n⟩`, `n ∈ ℕ`,
-is RH, as Hasse–Weil for all powers of Frobenius is RH for a curve.
+is RH, as Hasse–Weil for all powers of Frobenius is RH for a curve. A crude bound with any constant
+at the integer degrees already is RH (the self-improvement is free; the exponent of a crude bound is
+the zero width), and any set of degrees with gaps `O(√x)`, such as the squares, decides RH. The count
+door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
+whose Tate limit is its defect.
 -/

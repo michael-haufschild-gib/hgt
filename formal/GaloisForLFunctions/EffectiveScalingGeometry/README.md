@@ -11,6 +11,12 @@ the programme umbrella is `EffectiveScalingGeometry.lean`.
 
 ## Motivation and position
 
+The shared quantitative target is **signed cancellation of the actual local
+indices at the square-root scale**. [RIAC](../RenormalizedIntersectionArithmeticCounts/README.md)
+constructs their sum `Σ_p index_p(N)=1−M(N)`. Sections, heights and topology
+must provide a mechanism controlling that sum; the localization identity
+and the size of individual contributions do not provide the cancellation.
+
 For a curve over a finite field, sections have zero divisors, distinct effective
 curves have nonnegative intersection, and Riemann–Roch supplies sections.
 Together these produce the primitive sign in Weil's argument. On the scaling

@@ -49,13 +49,13 @@ theorem abs_polarFarRow_sub_annulus_le {c T : ℝ} {N n : ℕ}
           rw [sub_self, abs_zero] at hgap
           linarith only [hgap, hw0]
         apply mem_union_left
-        apply mem_sdiff.mpr
+        apply Finset.mem_sdiff.mpr
         exact ⟨mem_filter.mpr ⟨hjI, hjn, hsmall⟩,
           fun h => (not_le_of_gt hgap) (mem_filter.mp h).2.2⟩
       · exact mem_union_right _ (mem_filter.mpr ⟨hjI, lt_of_not_ge hsmall⟩)
     · intro hj
       rcases mem_union.mp hj with hjA | hjB
-      · obtain ⟨hjT, hj2⟩ := mem_sdiff.mp hjA
+      · obtain ⟨hjT, hj2⟩ := Finset.mem_sdiff.mp hjA
         obtain ⟨hjI, hjn, _⟩ := mem_filter.mp hjT
         exact mem_filter.mpr ⟨hjI, lt_of_not_ge
           (fun hle => hj2 (mem_filter.mpr ⟨hjI, hjn, hle⟩))⟩
@@ -64,7 +64,7 @@ theorem abs_polarFarRow_sub_annulus_le {c T : ℝ} {N n : ℕ}
   have hdisj : Disjoint A B := by
     apply disjoint_left.mpr
     intro j hjA hjB
-    have hle := (mem_filter.mp (mem_sdiff.mp hjA).1).2.2
+    have hle := (mem_filter.mp (Finset.mem_sdiff.mp hjA).1).2.2
     have hgt := (mem_filter.mp hjB).2
     exact (not_lt_of_ge hle) hgt
   have he : polarFarRow c N n - polarFarAnnulusRow T c N n =
@@ -78,14 +78,14 @@ theorem abs_polarFarRow_sub_annulus_le {c T : ℝ} {N n : ℕ}
   simp only [Nat.cast_one, Real.sqrt_one, normalizedRamanujanMode_one, mul_one, mul_one_div] at ht
   rw [he, abs_div, abs_of_pos (mul_pos hsn hw0)]
   exact (div_le_div_of_nonneg_right ht (mul_pos hsn hw0).le).trans_eq
-    (by field_simp [hc.ne', hN0.ne', hsn.ne']; ring)
+    (by field_simp [hc.ne', hN0.ne', hsn.ne'])
 
 /-- The full far polar row converges in sampled square mean to its archimedean finite part. -/
 theorem tendsto_polarFarRow_square_mean
     {δ : ℝ} (hδ : 0 < δ) {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
     (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
     Tendsto (fun N : ℕ => (∑ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
-      (polarFarRow (c N) N n - 2 * farCrossFinitePart tiltedUnitSpline) ^ 2) / N)
+      (polarFarRow (c N) N n - 2 * farCrossFinitePart tiltedUnitSpline) ^ 2) / (N : ℝ))
       atTop (𝓝 0) := by
   let K := 152 * (∫ u, |tiltedUnitSpline u|) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)
   have hK : 0 ≤ K := by dsimp only [K]; positivity
@@ -96,7 +96,7 @@ theorem tendsto_polarFarRow_square_mean
   have ha : Tendsto (fun N : ℕ => (4 * K / Real.sqrt δ) * Real.sqrt (c N ^ 2 / N))
       atTop (𝓝 0) := by
     have hh := (Real.continuous_sqrt.continuousAt.tendsto.comp hc2N).const_mul (4 * K / Real.sqrt δ)
-    simpa only [Real.sqrt_zero, mul_zero] using hh
+    simpa only [Function.comp_def, Real.sqrt_zero, mul_zero] using hh
   apply tendsto_normalized_square_mean_of_annular_limits
     (S := fun N => Ioc ⌊δ * (N : ℝ)⌋₊ N)
     (g := fun T N n => polarFarAnnulusRow T (c N) N n)
@@ -130,7 +130,7 @@ theorem tendsto_polarFarRow_square_mean
   have he : (4 * K) * (Real.sqrt (c N ^ 2 / N) / Real.sqrt δ) =
       (4 * K / Real.sqrt δ) * Real.sqrt (c N ^ 2 / N) := by ring
   rw [he] at hp
-  exact hh.trans (add_le_add (by simpa only [mul_div_assoc] using hp) le_rfl)
+  exact hh.trans (add_le_add (by simpa only [K, mul_div_assoc] using hp) le_rfl)
 
 #print axioms abs_polarFarRow_sub_annulus_le
 #print axioms tendsto_polarFarRow_square_mean

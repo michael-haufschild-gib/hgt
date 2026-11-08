@@ -29,7 +29,7 @@ theorem exists_polarFarClampedKernel_bounds {φ : ℝ → ℝ} (hφ : ContDiff �
   obtain ⟨C, hC, hA, hL⟩ := exists_crossSingular_inverse_bounds hφ hsupp hM
   refine ⟨C, hC, fun t => hA _ (le_max_left _ _), ?_⟩
   intro s t
-  have hmax : |max (2 : ℝ) |s| - max 2 |t|| ≤ |s - t| := by
+  have hmax : |max (2 : ℝ) (|s|) - max 2 (|t|)| ≤ |s - t| := by
     have hab := abs_le.mp (abs_abs_sub_abs_le s t)
     by_cases hs : |s| ≤ 2 <;> by_cases ht : |t| ≤ 2
     · rw [max_eq_left hs, max_eq_left ht, sub_self, abs_zero]
@@ -73,7 +73,14 @@ theorem abs_logarithmic_annulus_row_sub_mean_le {K : ℝ → ℝ} {A L T w : ℝ
     intro j hj
     obtain ⟨hjI, hjn, hjgap⟩ := mem_filter.mp hj
     exact mem_filter.mpr ⟨hjI, hjn, hjgap.trans h2w⟩
-  rw [sum_sdiff hsub]
+  let f : ℕ → ℝ := fun j => K ((Real.log j - Real.log n) / w) / (Real.sqrt n * Real.sqrt j)
+  have hsum : (∑ j ∈ logarithmicBallIndices (T * w) N n \ logarithmicBallIndices (2 * w) N n, f j) =
+      (∑ j ∈ logarithmicBallIndices (T * w) N n, f j) -
+        ∑ j ∈ logarithmicBallIndices (2 * w) N n, f j := by
+    have hh := sum_sdiff (f := f) hsub
+    linarith only [hh]
+  change |(∑ j ∈ logarithmicBallIndices (T * w) N n \ logarithmicBallIndices (2 * w) N n, f j) - _| ≤ _
+  rw [hsum]
   have hid (a b c d : ℝ) : (a - b) - (c - d) = (a - c) - (b - d) := by ring
   rw [hid]
   exact ((abs_sub _ _).trans (add_le_add hbig hsmallMean)).trans_eq (by ring)
@@ -135,7 +142,6 @@ lemma sum_logarithmic_ball_reciprocal_sqrt_le {N n : ℕ} {t : ℝ}
       unfold linearNearRowRadius
       dsimp only [c]
       field_simp
-      ring
     exact hcard.trans_eq hid
   calc
     _ ≤ ∑ _j ∈ logarithmicBallIndices t N n, Real.exp 1 / n := by
@@ -154,7 +160,7 @@ lemma sum_logarithmic_ball_reciprocal_sqrt_le {N n : ℕ} {t : ℝ}
     _ = _ := by
       have he : Real.exp (2 : ℝ) * Real.exp 1 = Real.exp 3 := by rw [← Real.exp_add]; norm_num
       calc
-        _ = 2 * t * (Real.exp 2 * Real.exp 1) := by field_simp [hn0.ne']; ring
+        _ = 2 * t * (Real.exp 2 * Real.exp 1) := by field_simp [hn0.ne']
         _ = _ := by rw [he]; ring
 
 /-- Atomic curvature contributes only a quadratic-width error to a fixed far-annulus row. -/

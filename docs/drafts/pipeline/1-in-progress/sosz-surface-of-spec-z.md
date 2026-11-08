@@ -41,6 +41,11 @@
 | C9 | Hasse–Weil for the smoothed Frobenius graphs at the integer degrees is RH | proved (Lean) | `riemannHypothesis_iff_hasseWeil_integerDegrees`: RH iff `|c_B(log n)| ≤ c_B(0)` for every `n ≥ 1`, the plane `⟨Γ_1, Γ_n⟩` for each integer degree, as for the powers of Frobenius on a curve; the gaps of `log ℕ` shrink like `e^{−t}` while the orbit correlation is Lipschitz with constant `e^{t/2}` (tempered zeros, `C²` spline). Pairs `⟨Γ_m, Γ_n⟩` also (`riemannHypothesis_iff_forall_frobeniusPair_hasseWeil`). Atoms: no finite genus (C7); smoothed: genus `c_B(0)/2` exactly under RH |
 | C10 | The Gamma/pole compensation asked by B88 is explicit | proved (Lean) | off the diagonal `W(m,n) = lim_{r→1}(C_∞(m,n) + T̃_r(m,n))` with `T̃_r` the positive gcd-twisted torsion energy of `ℙ¹_ℤ` and `√(mn)C_∞ = (m+n) − min/(1−(min/max)²)` (pole plane minus cusp and jets), positive for distant orders, negative for close ones (`√20 C_∞(4,5) = −19/9`); as a whole form the archimedean channels are the positive Lévy jump count `J` (off-diagonal `−ω`, diagonal `+∞`) plus the constant `Ω(0) < 0` |
 
+| C11 | Crude Hasse–Weil at the integer degrees self-improves | proved (Lean) | `|c_B(log n)| ≤ K n^σ` for all `n` iff zero width `≤ σ` (`zetaZeroWidth_le_iff_crude_integerDegrees`); `σ = 0`, any constant `K`, is RH (`riemannHypothesis_iff_bounded_integerDegrees`). The curve's self-improvement (power sums) is free for the smoothed graphs; the whole difficulty is the crude bound at every degree — Stepanov's step |
+| C12 | A sparse set of degrees decides RH | proved (Lean) | any `D ⊂ ℕ` with gaps `O(√x)` (`riemannHypothesis_iff_hasseWeil_of_sqrtGaps`), e.g. the squares (`riemannHypothesis_iff_hasseWeil_squareDegrees`). The gap exponent `½` is the critical abscissa: gaps `O(x^θ)`, `θ > ½`, control the orbit only to `e^{(θ−½)t}`. The primes (gaps `O(√p log p)` under RH, `O(p^{0.525})` unconditionally) sit just above it |
+
+| C13 | The count door is decided plane by plane | proved (Lean) | `riemannHypothesis_iff_planeCounts`: RH iff for every `n ≥ 1` some `K_n : ℤ² → ℕ` has Tate limit `δ_n(x,y) = c_B(0)x² + 2c_B(log n)xy + c_B(0)y²`, the defect of `xΓ_1 + yΓ_n`. A binary count per integer degree replaces counts on every `ℤᴺ`; on `C × C` the plane `⟨Δ, Γ_{Fⁿ}⟩` carries the integral genus form. The count still has to be found without `c_B` |
+
 ## Big picture after C1–C8
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -69,4 +74,4 @@ pairs them), and what is left is the zero sum itself.
    point, `ω(u) = ½(1/(2 sinh(u/2)) + 1/(2 cosh(u/2)))`, an archimedean object of infinite rank.
 
 ## Log
-- 2026-11-08 — created; C1–C10 formalized in `SurfaceOfSpecZ/` (nine modules, standard axioms)
+- 2026-11-08 — created; C1–C13 formalized in `SurfaceOfSpecZ/` (twelve modules, standard axioms)

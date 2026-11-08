@@ -11,6 +11,12 @@ the programme umbrella is `HeightHomotopyArithmeticCounts.lean`.
 
 ## Motivation and position
 
+The shared quantitative target is **signed cancellation of the actual local
+indices at the square-root scale**. [RIAC](../RenormalizedIntersectionArithmeticCounts/README.md)
+constructs their sum `Σ_p index_p(N)=1−M(N)`. Sections, heights and topology
+must provide a mechanism controlling that sum; the localization identity
+and the size of individual contributions do not provide the cancellation.
+
 An integer probe should carry local contributions whose product formula yields
 a nonnegative height. An addition law should make its asymptotic height
 quadratic. Independently, the reduced Euler characteristic of the nerve of prime stars
@@ -45,8 +51,8 @@ programmes provide geometric comparison targets, not a presumed positive count.
 A local height must come from arithmetic data, not a decomposition of `Q`
 chosen after its sign is known. A Tate limit requires a proved growth law and
 proved error control. “Homotopic to the identity” must be realized by an actual
-map or chain homotopy. Fixed-point indices must be bounded by a geometric
-argument, not by the desired bound on the Euler characteristic.
+map or chain homotopy. Control of the signed local-index sum must come from an independent geometric
+or arithmetic argument; the desired Euler-characteristic bound is not an input.
 
 ## Foundational pillars
 

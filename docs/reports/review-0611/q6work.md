@@ -1,59 +1,57 @@
-### 1. Completed & Verified in Lean 4
+# Critical thresholds and onset aperture
 
-1. **Collar Gårding, Unrestricted A10 Counterexample, and High-Conductor Window Confinement**
-   - [UnrestrictedAtomicGardingFailsAndCollarGardingHolds.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/UnrestrictedAtomicGardingFailsAndCollarGardingHolds.lean) (`.olean` built): refutes unrestricted atomic Gårding without collar restriction and proves collar atomic Gårding on `Ioc M N`.
-   - [NegativeDirectionsCannotEscapeLogarithmicWindows.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean) (`.olean` built): proves [`exists_window_localized_collar_garding`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L141), whole-space discrete non-escape [`exists_completeWeilEnergy_floor_of_vanish_top_log_window`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L368) / [`eventually_nonpos_completeWeilEnergy_not_escape_log_window`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L569), [`exists_all_ratio_far_garding`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L2012), [`exists_all_ratio_complement_garding_and_far_bridge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L3369), and high-conductor window confinement [`eventually_negative_direction_window_confinement`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/NegativeDirectionsCannotEscapeLogarithmicWindows.lean#L6032).
+**Complete proof assembly passes Lean. Individual module import checks and pipeline promotion remain.**
 
-2. **High-Conductor Threshold Law & Onset Lower Bound**
-   - [TheCriticalPositivityThresholdLaw.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TheCriticalPositivityThresholdLaw.lean) (`.olean` built): proves `highConductorCriticalThreshold = ⨅ A ≥ 0, windowThreshold A` and the upper bound `criticalPositivityThreshold ≤ criticalNonnegativityThreshold ≤ polarPaymentCriticalThreshold ≤ poleOrthogonalCriticalThreshold ≤ highConductorCriticalThreshold`.
-   - [PolarPaymentThresholdHierarchy.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentThresholdHierarchy.lean) (`.olean` built): connects `PolarPaymentAt` and `polarPaymentCriticalThreshold` to the threshold hierarchy.
-   - [PolarPaymentGrowsExponentiallyBelowTheOnset.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentGrowsExponentiallyBelowTheOnset.lean) (`.olean` built): proves `exists_polarPaymentAt_exp_of_le_onsetAperture` (polar payment holds for `R ≤ c₁ e^{c₂ a}` at every `0 ≤ a ≤ a*(ζ)`).
-   - [PolarPaymentThresholdGrowsExponentially.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentThresholdGrowsExponentially.lean) (checked clean; `.olean` not yet built; wired in [ArithmeticHodgeTheoryOfDegenerations.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations.lean)): proves `c₁ e^{c₂ a*(ζ)} ≤ polarPaymentCriticalThreshold`, `log R_c^{\mathrm{polar}}(ζ) ≥ c₂ a*(ζ) + log c₁` when `R_c^{\mathrm{polar}}(ζ) < ⊤`, and `c₀ e^{6 a*(ζ)} ≤ ⨅ A ≥ 0, windowThreshold A`.
+For `a* = onsetAperture zetaZeroConfig`, the critical thresholds satisfy
 
-3. **Nonpolar (`m ≥ 2`) Top-Window Row Cancellation & Truncated Collar Dual-Seventh Residual**
-   - [TopWindowConductorRowCancellation.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean) (`.olean` built; row-estimate API exports checked):
-     - [`eventually_uniform_low_packet_energy_ge`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L165): all-ratio low-packet coercivity up to `R_max * log N`.
-     - [`exists_truncated_dualSeventh_conductor_residual`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L736): truncated collar dual seventh-power bound on `Ioc M ⌊δ N⌋₊` (`m ≥ 1`), gaining the linear factor `δ`.
-     - [`tendsto_topWindow_bulk_subchannels`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L1404) & [`tendsto_topWindow_upward_linearization`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3382): `m ≥ 1` top-window bulk vanishing and upward linearization.
-     - [`tendsto_nonpolar_topWindow_norm_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3767) & [`eventually_uniform_nonpolar_topWindow_norm_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3842): uniform `o(c² / log N)` cancellation of `‖r_m|_{Ioc ⌊δ N⌋₊ N}‖²` for every `m ≥ 2` across `R₀ log N ≤ c⁸ ≤ R_max log N`.
+```
+0 < R_c = R_c^{nn} = R_c^{polar}
+        ≤ R_c^⊥ = R_c^{high} = inf_{A≥0} windowThreshold A.
+```
 
-4. **Full Nonpolar Collar Cancellation & All-Ratio Deep-Row Payment**
-   - `CACT/NonpolarCollarResidualsVanish.lean`: fixed-conductor normalized dual-seventh mass tends to zero for `m ≥ 2`; the entire growing nonpolar packet has vanishing normalized Schur cost, uniformly on positive compact critical bands. Core theorems pass Lean and `#print axioms` (`propext, Classical.choice, Quot.sound`).
-   - `CACT/AllRatioDeepConductorPairings.lean`: arbitrarily small deep inverse-energy residuals at every positive critical ratio; all non-collar Schur costs are absorbed while retaining the literal collar cost. Both theorems pass Lean and the same axiom audit.
-   - `CACT/LowConductorCollarPairingsAndWindowLocalizedGarding.lean`: nonpolar packet and all non-collar Schur payments; whole packet cross-payment with the sole scalar loss `C c b₁² / log N`; that loss is absorbed by an arbitrarily small packet diagonal on the primitive hyperplane. Core theorems pass Lean and the same axiom audit.
-   - `CACT/NegativeDirectionsCannotEscapeLogarithmicWindows.lean`: `exists_all_ratio_far_garding_with_linear_mass` and `exists_all_ratio_three_band_garding_with_linear_mass` retain the full three-band reserves with `B_far ≤ C_B (R_max + 1)`. Both pass Lean and the same axiom audit.
-   - `CACT/WholeSpaceCollarGarding.lean`: whole-space Gårding with sole scalar polar loss `C c b₁² / log N`; localization to `(-A, 1]` with `A ≤ (1/4) log(R + 1) + C_len`; simultaneous primitive Gårding and arbitrarily accurate far-energy bridge. All four main theorems pass Lean and the same axiom audit.
-   - `CACT/PrimitiveDirectionsHaveCompactCollarProfiles.lean`: every nonzero primitive nonpositive direction gives a nonzero collar profile with bounded eighth exponential mass and Lévy energy, and arbitrarily small normalized Weil form. `exists_critical_primitive_collar_weilQuad_bridge` passes Lean and the same axiom audit.
+For universal `c₀,c₁,c₂>0` and every finite `0≤a≤a*`,
 
----
+```
+R_c ≥ c₁ exp(c₂a),       R_c^⊥ ≥ c₀ exp(6a).
+```
 
-### 2. Still Open
+When the corresponding threshold is finite, these imply
+`log R_c ≥ log c₁+c₂a` and `log R_c^⊥ ≥ log c₀+6a`.
+Every displayed threshold is infinite iff `a*=∞` iff the Riemann hypothesis.
+No specific value of the whole-space exponent `c₂` is asserted.
 
-Paper-proof pipeline cards tracking the remaining Lean formalization:
-- [cact-whole-space-threshold-onset.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/1-in-progress/cact-whole-space-threshold-onset.md)
-- [critical-ratio-window-confinement-and-threshold-law.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/1-in-progress/critical-ratio-window-confinement-and-threshold-law.md)
+## Formalized conclusions
 
-Remaining mathematical obligations and validation:
+| Result | Lean declaration and source |
+|---|---|
+| Whole-space positivity equals polar payment | `criticalPositivityThreshold_eq_polarPaymentCriticalThreshold` in [WholeSpaceCriticalThresholdEqualsPolarThreshold](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/WholeSpaceCriticalThresholdEqualsPolarThreshold.lean) |
+| Nonnegativity has the same threshold | `criticalNonnegativityThreshold_eq_polarPaymentCriticalThreshold` in the same module |
+| Whole-space exponential and logarithmic onset bounds | `exp_mul_le_criticalPositivityThreshold`, `log_criticalPositivityThreshold_ge_mul_onsetAperture` in the same module |
+| Primitive threshold equals the window infimum, with sixth-exponential and logarithmic bounds | [PrimitiveCriticalThresholdEqualsWindowThreshold](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PrimitiveCriticalThresholdEqualsWindowThreshold.lean) |
+| Infinite-threshold equivalence chain | `criticalThresholds_eq_top_equivalences` in `WholeSpaceCriticalThresholdEqualsPolarThreshold` |
 
-1. **Primitive Threshold Equality — verified** (`PrimitiveCriticalThresholdEqualsWindowThreshold.lean`):
-   - **Done:** expose the three-band decomposition `z = u₀ + u₁ + w` and absorb all non-collar pairings `⟪r_m, u₀ + u₁ + w_P⟫` (`1 ≤ m ≤ Q₁`).
-   - **Done:** combine [`exists_finite_conductor_cutoff_collar_dualSeventh_below_ratio`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/FiniteConductorCollarReductionAndPolarDecoupling.lean#L237) (`m > m₀`), [`exists_truncated_dualSeventh_conductor_residual`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L736) (`Ioc M ⌊δ N⌋₊`), and [`eventually_uniform_nonpolar_topWindow_norm_sq`](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TopWindowConductorRowCancellation.lean#L3842) (`Ioc ⌊δ N⌋₊ N`) to decouple all `2 ≤ m ≤ Q₁` from `(V_{Q₁})ᗮ`.
-   - **Done:** `poleOrthogonalCriticalThreshold = ⨅ A ≥ 0, windowThreshold A = highConductorCriticalThreshold`; sixth-exponential onset lower bound and finite-threshold logarithmic bound. Final file check and all four axiom audits pass (`propext, Classical.choice, Quot.sound`).
+## Mathematical ingredients
 
-2. **`m = 1` Top-Window Lipschitz Profile Approximation & Whole-Space Threshold Equality** (`formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarModeTopWindowLipschitzTransfer.lean` and `WholeSpaceCriticalThresholdEqualsPolarThreshold.lean` — not yet written):
-   - **Verified brick:** `AHD/PolarRowScalarIsFixedByOneWindow.lean` gives quantitative scalar identification and strong convergence from arbitrarily accurate scalar-line approximation plus one nonvanishing bounded weak test. Both axiom audits are clean.
-   - **Verified brick:** `AHD/LogarithmicAnnuliHaveUniformRowMeans.lean` proves lattice quadrature, closed logarithmic-annulus means with explicit `O(1/n)` error, and terminal-strip square-mean control. All five axiom audits are clean; `.olean` built.
-   - **Verified brick:** `AHD/PolarRowsHaveSummableTerminalTails.lean` proves logarithmically scaled polar Gram-defect cancellation and the endpoint estimate `(1/N) Σ_{N−K<n≤N} polarCenterRow(N,n)² ≤ 50 K/N + 64 √(K/N)` for `2K ≤ N`. Both axiom audits are clean; `.olean` built.
-   - **Verified brick:** `AHD/ThePolarCenterRowHasItsStrongProfile.lean` proves square-mean convergence of the exact harmonic center row to its logarithmic profile on every fixed terminal fraction. Both axiom audits are clean; `.olean` built.
-   - **Verified bricks:** sampled finite-jump Lipschitz ramps and compact smooth Lipschitz approximation on intervals (`SampledJumpsAdmitLipschitzApproximation`, `ContinuousWindowsAdmitCompactLipschitzApproximation`); proof bodies pass Lean with clean axiom audits.
-   - **Verified brick:** `AHD/ThePolarSourceIsContinuousInTheWeightedNorm.lean` proves exponential square integrability of the polar kernel and continuity of its physical source functional in the exponential source norm. Module and `.olean` pass Lean; all five axiom audits are clean. `exists_window_sequence_of_gammaLiminf_bound` in `TheCriticalPositivityThresholdLaw` also passes Lean and its axiom audit: one-sided mollification preserves an arbitrary finite Gamma upper bound while converging in the exponential source norm.
-   - **Verified bricks:** `ThePolarSampleProfileAdmitsLipschitzApproximation` gives arbitrarily accurate compact Lipschitz approximations in normalized sampled square mean. `TheFullPolarCenterHasItsSampledProfile` and `ThePolarUpwardRowHasAChebyshevProfile` identify the literal center and upward rows; `PolarReferenceDiagonalsVanishOnTerminalFractions` removes the completed diagonal. Proof bodies and axiom audits pass. The near/far Gamma assembly remains unchecked.
-   - **Verified bricks:** `WindowWeightsHaveWeightedMassLimits` identifies weighted coefficient masses and half-weighted test pairings; `LogarithmicCutoffsPreserveCollarDualBounds` controls removed lower strips by truncated dual seventh mass. Proof bodies and axiom audits pass.
-   - **Verified bricks:** `exists_strong_negative_limit_of_bounded_weilQuad` and `eventually_lt_weilQuad_of_subsequence_L1_limit` in `TheCriticalPositivityThresholdLaw` provide strong negative-half-line compactness with mass convergence and the Gamma lower bound along strictly increasing horizons. Updated module and axiom audits pass.
-   - **Verified brick:** `AHD/PolarPaymentHasAStrictInteriorMargin.lean` proves that payment at ratio `S` leaves explicit positive eighth-mass and pole-square reserves at every `0 < R < S`. Both axiom audits are clean; `.olean` built.
-   - Build `.olean` for [PolarPaymentThresholdGrowsExponentially.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentThresholdGrowsExponentially.lean).
-   - Prove `m = 1` top-window `ℓ²` approximation of `(√(log N) / c) B_{c,N} v₁` on `Ioc ⌊δ N⌋₊ N` by `(∫ φ / √N) f(log(n / N))` (`f` Lipschitz) and deduce uniform `L²`-transfer of `(√(log N) / c) ⟪B_{c,N} v₁, z - x_h⟫` against smooth terminal window vectors `x_h`.
-   - Prove `poleOrthogonalCriticalThreshold = ⨅ A ≥ 0, windowThreshold A ≥ c₀ e^{6 a*(ζ)}`, `criticalPositivityThreshold = criticalNonnegativityThreshold = polarPaymentCriticalThreshold ≥ c₁ e^{c₂ a*(ζ)}` (`log R_c(ζ) ≥ c₂ a*(ζ) + log c₁` when `R_c(ζ) < ⊤`), and the full equivalence chain (`R_c(ζ) = ⊤ ↔ R_c^{\mathrm{polar}}(ζ) = ⊤ ↔ R_c^⊥(ζ) = ⊤ ↔ a*(ζ) = ⊤ ↔ RiemannHypothesis`).
+- **Collar restriction and localization.** Unrestricted atomic Gårding fails. Collar Gårding
+  holds, and whole-space mass localizes to `(-A,1]` with `A≤¼log(R+1)+C`, retaining
+  only the scalar polar loss `C c b₁²/log N`.
+- **Nonpolar cancellation.** Fixed nonpolar dual-seventh residuals and the growing nonpolar
+  packet Schur cost vanish uniformly on positive compact critical bands.
+- **Strong polar profile.** With `aφ=(∫φ)²/∫φ²`, `x=n/N`, the normalized matrix row has sampled
+  square-mean profile `aφ√x[1/x−½log(1−x²)−ψ(1/x)−log(2π)]` on every fixed terminal fraction.
+  Squared-log endpoint tails and finite-jump ramps permit compact Lipschitz approximation.
+  Source: [ThePolarMatrixRowHasItsStrongProfile](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/ThePolarMatrixRowHasItsStrongProfile.lean).
+- **Signed physical transfer.** Weighted collar approximation and adjoint synthesis transfer
+  the exact polar pairing to strong physical limits; one-sided mollification identifies its
+  source with the correct normalization.
+  Source: [PolarModeTopWindowLipschitzTransfer](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarModeTopWindowLipschitzTransfer.lean).
+- **Charged contradiction.** The sharp finite comparison retains actual pole energy and signed
+  collar pairing. Joint normalization `‖U‖₂²+β²=1` survives compactness. The Gamma lower
+  bound and polar transfer contradict the positive eighth-mass and pole-square reserve
+  supplied by payment at a strictly larger ratio.
 
-3. **Umbrella Wiring, `#print axioms` Audit & Pipeline Promotion:**
-   - Wire new modules into [CriticalArithmeticCorrelationTheory.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory.lean) and [ArithmeticHodgeTheoryOfDegenerations.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations.lean), verify `#print axioms` via `lake --old env lean`, and move both cards to `docs/drafts/pipeline/3-formalized/`.
+The complete proof assembly and all transitive axiom audits pass with only
+`propext, Classical.choice, Quot.sound`.
+
+Cards: [whole-space threshold and onset](../../drafts/pipeline/1-in-progress/cact-whole-space-threshold-onset.md),
+[prefix–collar decoupling and thresholds](../../drafts/pipeline/1-in-progress/critical-ratio-window-confinement-and-threshold-law.md).
