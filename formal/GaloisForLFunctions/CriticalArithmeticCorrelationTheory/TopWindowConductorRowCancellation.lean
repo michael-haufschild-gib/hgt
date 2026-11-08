@@ -1008,7 +1008,7 @@ private lemma abs_sum_Ico_mode_bv_le {k : ℕ} (hk : 2 ≤ k) (w : ℕ → ℝ) 
     exact ((abs_add_le _ _).trans (add_le_add hb1 hb2)).trans_eq (by ring)
 
 /-- Harmonic sum on the top window `Ioc ⌊δ N⌋₊ N` is bounded by `1 / δ`. -/
-private lemma sum_topWindow_inv_le {δ : ℝ} (hδ : 0 < δ) {N : ℕ} (hN : 1 ≤ N) :
+lemma sum_topWindow_inv_le {δ : ℝ} (hδ : 0 < δ) {N : ℕ} (hN : 1 ≤ N) :
     (∑ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N, 1 / (n : ℝ)) ≤ 1 / δ := by
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   calc (∑ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N, 1 / (n : ℝ))

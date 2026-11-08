@@ -307,9 +307,10 @@ representative is a compact self-adjoint operator on every `Hδ`, `δ>0`.
 actual arithmetic series in this representation. The normalized basis has
 coefficient `n^(−δ/2)` at conductor `n`; rescaled conductor atoms recover exact
 original kernel entries by [WeightedProbeAtoms.lean](WeightedProbeAtoms.lean).
-Compactness supplies no sign;
-infinite positive and negative directions and the Hilbert–Schmidt boundary
-are separate spectral questions.
+[SpacingFiniteConstraints.lean](SpacingFiniteConstraints.lean) constructs definite
+subspaces of both signs in every finite dimension. Every finite family of linear
+constraints leaves both signs, so no finite-rank bilinear correction makes this
+form semidefinite. The Hilbert–Schmidt boundary remains open.
 
 ## Questions and open research topics
 

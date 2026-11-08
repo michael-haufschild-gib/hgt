@@ -4821,6 +4821,14 @@ private lemma abs_centerPoleCollar_diff_le {c : ℝ} {N n : ℕ}
           (habs_int.trans (mul_le_mul_of_nonneg_left hlog_sqrt (by positivity))) hsn.le
       _ = 2 * (6 + 2 * Real.exp 2) * Real.sqrt N := by field_simp [hsn.ne']
 
+/-- The polar harmonic collar grows at most logarithmically, including rows cut by the horizon. -/
+theorem abs_polarCenterCollar_sub_log_le {c : ℝ} {N n : ℕ}
+    (hc1 : 1 ≤ c) (h8c : 8 * c ≤ N) (hn : n ∈ Icc 1 N) :
+    |(∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) -
+        Real.log c * Real.sqrt n| ≤
+      (4 + 2 * Real.exp 2) * (1 + Real.log c) * Real.sqrt n :=
+  (abs_centerPoleCollar_diff_le hc1 h8c hn).1
+
 /-- Three-zone `L^2` and bilinear bounds on `(completeWeilPoleShift φ c / N)` times the ground-mode
 center-collar difference `∑_{j ∈ nearRowIndices c N n} archimedeanCenterKernel n j / √j - log c * √n`. -/
 private lemma centerPoleCollar_sum_bounds (φ : ℝ → ℝ) :

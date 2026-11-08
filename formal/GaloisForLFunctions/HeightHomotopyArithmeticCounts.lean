@@ -35,4 +35,6 @@ import GaloisForLFunctions.HeightHomotopyArithmeticCounts.TorsionPrimePairProbes
 
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.SpacingDefiniteFamilies
 
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.SpacingFiniteConstraints
+
 /-! Local heights, torsion regularization and homotopy invariants of arithmetic counts. -/

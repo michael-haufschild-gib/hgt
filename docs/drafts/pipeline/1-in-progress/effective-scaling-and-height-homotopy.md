@@ -43,8 +43,10 @@ does not fulfill these requirements.
   with a power rate for every positive conductor weight.
 - [Weighted torsion spectrum](hhac-weighted-torsion-spectrum.md): coefficient-preserving
   compact inclusions factor the actual limit form; its Riesz representative is
-  compact and self-adjoint for every positive conductor weight. Infinite sign
-  directions and the sharp Hilbert–Schmidt threshold remain under development.
+  compact and self-adjoint for every positive conductor weight. Arbitrarily large
+  definite subspaces of both signs survive finite linear constraints; finite-rank
+  corrections cannot make the form semidefinite. The sharp Hilbert–Schmidt
+  threshold remains under development.
 - [Mixed spacing prime row](../5-failed/hhac-mixed-spacing-prime-row.md):
   no uniform unweighted ℓ² bound; square summability holds exactly for positive
   conductor weights, and the weighted squared error tends to zero.

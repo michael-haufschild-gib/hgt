@@ -65,12 +65,10 @@ def AbscissaLaw : Prop := ∀ h : ℝ, 0 ≤ h → AbscissaLawAt Z h
 /-- **Purity**: every zero lies on the critical line. -/
 def Pure : Prop := ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2
 
-theorem re_reflect (ρ : ℂ) : (reflect ρ).re = 1 - ρ.re := by simp [reflect]
-
 theorem pure_iff_forall_re_le : Pure Z ↔ ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 := by
   refine ⟨fun h ρ hρ => (h ρ hρ).le, fun h ρ hρ => le_antisymm (h ρ hρ) ?_⟩
   have := h _ (Z.reflect_mem ρ hρ)
-  rw [re_reflect] at this
+  rw [ArithmeticCastelnuovoSeveri.re_reflect] at this
   linarith
 
 /-- **Purity is ZAL plus AAL**, for every zero configuration. -/
@@ -163,7 +161,7 @@ def pairConfig (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1) : ZeroConfig whe
   strip := by
     rintro z (rfl | rfl)
     · exact ⟨h0, h1⟩
-    · rw [re_reflect]; exact ⟨by linarith, by linarith⟩
+    · rw [ArithmeticCastelnuovoSeveri.re_reflect]; exact ⟨by linarith, by linarith⟩
   reflect_mem := by
     rintro z (rfl | rfl)
     · exact Or.inr rfl
@@ -212,7 +210,7 @@ theorem curveConfig_pure_iff_unitary : Pure (D.curveConfig hD) ↔ ∀ i, ‖D.�
 /-- **On a curve ZAL is RH**: AAL is free, so the crude half carries the whole content. -/
 theorem curveConfig_approachesLine_iff_unitary :
     ApproachesLine (D.curveConfig hD) ↔ ∀ i, ‖D.β i‖ = 1 := by
-  rw [← curveConfig_pure_iff_unitary,
+  rw [← curveConfig_pure_iff_unitary D hD,
     pure_iff_approachesLine_of_verticallyRecurrent _
       (verticallyRecurrent_of_periodic _ D.period_pos (D.curveConfig_periodic hD))]
 
@@ -251,7 +249,7 @@ end CurveAbscissa
 
 namespace ZetaAbscissa
 
-open ConfigAbscissa RHTower RHTower.CrossRouteReceiverBridges
+open ConfigAbscissa _root_.RHTower _root_.RHTower.CrossRouteReceiverBridges
 
 /-- The copies of the zeros right of `½ + h` are finite iff the zeros are. -/
 theorem finite_copies_iff (h : ℝ) :
@@ -319,9 +317,9 @@ theorem deepCopies_finite_iff (h : ℝ) :
     constructor
     · rintro ⟨hρ, hre⟩
       refine ⟨reflect ρ, ⟨zetaZeroConfig.reflect_mem ρ hρ, ?_⟩, by simp [reflect]⟩
-      rw [re_reflect]; linarith
+      rw [ArithmeticCastelnuovoSeveri.re_reflect]; linarith
     · rintro ⟨z, ⟨hz, hre⟩, rfl⟩
-      exact ⟨zetaZeroConfig.reflect_mem z hz, by rw [re_reflect]; linarith⟩
+      exact ⟨zetaZeroConfig.reflect_mem z hz, by rw [ArithmeticCastelnuovoSeveri.re_reflect]; linarith⟩
   have hinj : InjOn reflect (rightOf zetaZeroConfig h) := fun a _ b _ hab => by
     have := congrArg reflect hab
     simpa [reflect] using this

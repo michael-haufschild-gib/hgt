@@ -79,6 +79,29 @@ remain separate; no integer count or full positive form follows.
 [Programme card](../../../docs/drafts/pipeline/1-in-progress/renormalized-intersection-arithmetic-counts.md)
 records the remaining mathematical targets.
 
+## Completed prime boundary
+
+[CompletedPrimeBoundary.lean](CompletedPrimeBoundary.lean) retains the actual
+finite boundary `d_s a=Σ_p p^(−s)a_p` and squared conductor norm
+`Σ_p p^δ |a_p|²`. Its normalized embedding in prime `ℓ²` is injective and dense.
+For every real `δ`, a bounded extension exists exactly when
+
+`2 Re(s)+δ>1`.
+
+Existence of any closed partial linear extension preserving all finite chains
+has the same exact range. In that range the bounded extension is unique,
+explicitly a Riesz functional, with squared norm `Σ_p p^(−2 Re(s)−δ)`.
+Outside it, finite chains have boundary one with arbitrarily small norm;
+`(0,1)` belongs to graph closure, ruling out every closed linear extension.
+The proof retains the exact gauge and finite-chain comparison. All twenty-one
+transitive axiom audits and the direct production Lean check pass.
+
+At `δ=0`, the original augmentation therefore cannot survive as a closed
+operator on or left of the critical line in this Hilbert model. The positive
+survivor is its exact extension classification, norm and explicit packets.
+Higher-degree contraction is a separate [construction problem](../../../docs/drafts/pipeline/0-backlog/riac-completed-prime-koszul.md).
+No completed homology or zero-detection theorem is asserted.
+
 ## Literature and novelty boundary
 
 Connes–Consani construct integer dimensions and Riemann–Roch on the Arakelov
@@ -116,8 +139,8 @@ The [Tate count theorem](../CountingHolography/TheTateLimitOfACount.lean)
 identifies the full count target with RH. The
 [Farey–horocycle comparison](../CountingHolography/TheHorocycleRateIsTheSquareRootFareyLaw.lean)
 provides an arithmetic observable, without a prime-core cell action.
-The [completed-boundary candidate](../../../docs/drafts/pipeline/1-in-progress/riac-completed-prime-boundary.md)
-asks for the exact domain threshold before introducing any homology.
+The [completed-boundary theorem](../../../docs/drafts/pipeline/3-formalized/riac-completed-prime-boundary.md)
+settles the exact augmentation domain before introducing higher homology.
 
 The five constructions remain open. No critical positive form, arithmetic
 surface, square-root Mertens bound or RH proof is asserted.

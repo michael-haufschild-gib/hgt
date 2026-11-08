@@ -2309,7 +2309,7 @@ theorem eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (
       (by exact_mod_cast Nat.add_le_add_right (hindex k) 1)
   exact no_nonpositive_atomic_sequence_below_windowThreshold hR_lim_pos
     ((EReal.coe_le_coe_iff.mpr hR_lim_le).trans_lt hlt)
-    (hN_strict.comp hφ₁_mono) (fun k => by have := hN3_seq (φ₁ k); omega)
+    (hN_strict.comp hφ₁_mono) (fun k => (by decide : 1 ≤ 3).trans (hN3_seq (φ₁ k)))
     (fun k => (hz_spec (φ₁ k)).1) hφ₁_lim
     (fun k => (hc_width (φ₁ k)).trans (hinv k))
     (fun k => y_norm (φ₁ k)) (fun k => hV_norm (φ₁ k)) hM₈_pos

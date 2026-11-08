@@ -43,9 +43,9 @@ theorem exists_pos_forall_window_le_norm_expSum {k : ℕ} (p : Fin k → ℂ)
   classical
   obtain ⟨j₀, hj₀⟩ : ∃ j₀, c j₀ ≠ 0 := by
     by_contra h
-    push_neg at h
+    push Not at h
     exact hc (funext h)
-  set V : Matrix (Fin k) (Fin k) ℂ := (Matrix.vandermonde p)ᵀ with hV
+  set V : Matrix (Fin k) (Fin k) ℂ := Matrix.transpose (Matrix.vandermonde p) with hV
   have hdet : IsUnit V.det := by
     rw [hV, Matrix.det_transpose]
     exact isUnit_iff_ne_zero.mpr (Matrix.det_vandermonde_ne_zero_iff.mpr hp)
@@ -54,7 +54,7 @@ theorem exists_pos_forall_window_le_norm_expSum {k : ℕ} (p : Fin k → ℂ)
   have hcpos : 0 < ‖c j₀‖ := norm_pos_iff.mpr hj₀
   refine ⟨‖c j₀‖ / (K + 1), by positivity, fun M => ?_⟩
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   set x : Fin k → ℂ := fun j => c j * p j ^ (M + 1) with hx
   have hy : ∀ m : Fin k, V.mulVec x m = ∑ j, c j * p j ^ (M + 1 + (m : ℕ)) := by
     intro m
@@ -66,7 +66,7 @@ theorem exists_pos_forall_window_le_norm_expSum {k : ℕ} (p : Fin k → ℂ)
   have hxW : x j₀ = (V⁻¹.mulVec (V.mulVec x)) j₀ := by
     rw [Matrix.mulVec_mulVec, Matrix.nonsing_inv_mul V hdet, Matrix.one_mulVec]
   have hxj : ‖x j₀‖ = ‖c j₀‖ := by
-    simp [hx, norm_mul, norm_pow, hunit]
+    simp [hx, norm_pow, hunit]
   have hle : ‖x j₀‖ ≤ K * (‖c j₀‖ / (K + 1)) := by
     rw [hxW]
     simp only [Matrix.mulVec, dotProduct]
@@ -126,7 +126,7 @@ theorem exists_pos_forall_window_le_norm_pointSum (P : Finset ℂ) (c : ℂ → 
     rw [hej, mul_pow]
     ring
   rw [hsum, norm_mul, norm_pow, Complex.norm_real, Real.norm_of_nonneg hR.le, mul_comm]
-  exact mul_le_mul_of_nonneg_right hm (pow_nonneg hR.le _)
+  exact mul_le_mul_of_nonneg_left hm (pow_nonneg hR.le _)
 
 /-! ### Towers with an isolated top -/
 
@@ -183,7 +183,7 @@ theorem exists_pos_forall_window_le_norm_levelSum {ι : Type*} (z b : ι → ℂ
     exact Finset.sum_congr rfl fun i _ => by rw [zpow_natCast]
   have hrestle : ‖rest‖ ≤ (∑' i, ‖b i‖) * r ^ ν := by
     have hrb : ∀ i : ↑((F : Set ι)ᶜ), ‖b i * z i ^ (ν : ℤ)‖ ≤ ‖b i‖ * r ^ ν := fun i => by
-      have hi : (i : ι) ∉ F := by simpa using i.2
+      have hi : (i : ι) ∉ F := fun h => i.2 (Finset.mem_coe.2 h)
       rw [norm_mul, zpow_natCast, norm_pow]
       exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) (hrest _ hi) ν)
         (norm_nonneg _)
@@ -200,8 +200,8 @@ theorem exists_pos_forall_window_le_norm_levelSum {ι : Type*} (z b : ι → ℂ
   have hS : levelSum z b ν = top + rest := hsplit
   have htri := norm_sub_le (top + rest) rest
   rw [add_sub_cancel_right] at htri
+  have h3' : ε * R ^ ν ≤ ‖top‖ := by rw [htopeq]; exact h3
   rw [hS]
-  rw [htopeq] at htri
   linarith
 
 /-! ### Self-improvement on windows and thick sets -/
@@ -268,7 +268,7 @@ theorem not_forall_mem_thick_norm_levelSum_le {ι : Type*} (z b : ι → ℂ)
     htop hvis (C := C) hρ hρR
   obtain ⟨M, hM, hwin⟩ := hG F.card M₀
   obtain ⟨ν, h1, h2, h3⟩ := hM₀ M hM
-  exact (hbd ν (hwin ν h1 h2)).not_lt h3
+  exact absurd (hbd ν (hwin ν h1 h2)) (not_le.mpr h3)
 
 /-- **The price of hiding a top.** A remainder of modulus `≤ 1` that makes the level sums vanish on
 the window `[M+1, M+#F]` has trace norm at least `εR^{M+1}`, with `ε > 0` depending only on the top

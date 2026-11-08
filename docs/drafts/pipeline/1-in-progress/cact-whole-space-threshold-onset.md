@@ -57,6 +57,14 @@ Lean: `eventually_critical_deep_residual_le`,
 `eventually_critical_schur_pairing_except_collar` in `AllRatioDeepConductorPairings`.
 Axioms: `propext, Classical.choice, Quot.sound`.
 
+Whole-space Gårding now retains the packet diagonal, prefix, seventh-mass, eighth-mass,
+and Lévy reserves with sole scalar loss `C c b₁² / log N`. Its mass term localizes to
+`(-A, 1]`, where `A ≤ ¼ log(R + 1) + C_len`. On the primitive hyperplane the scalar loss
+is absorbed, and the same far component has an arbitrarily accurate energy bridge.
+Lean: `exists_wholeSpace_window_localized_collar_garding`,
+`exists_critical_primitive_collar_garding_and_far_bridge` in `CACT/WholeSpaceCollarGarding`.
+Axioms: `propext, Classical.choice, Quot.sound`.
+
 ## Polar transfer: remaining lemma
 For each fixed `0 < δ < 1`, approximate the normalized conductor-one row on
 `δN < n ≤ N` in `ℓ²` by sampled Lipschitz functions of `log(n/N)`.
@@ -68,3 +76,21 @@ The existing adjoint synthesis estimate
 physical profiles. The collar seventh-mass reserve bounds coefficient `ℓ²`
 after profile normalization, so a static arbitrarily accurate approximation suffices.
 This row approximation and its application to polar threshold sufficiency remain unproved.
+
+### Reduction to one scalar row coefficient (conjecture)
+
+Put `aφ = (∫φ)²/∫φ²`, `x = n/N`, `ψ(y) = Σ_{k≤⌊y⌋} Λ(k)`, and
+`g(x) = √x [1/x − ½ log(1−x²) − ψ(1/x)]`.
+On every fixed `δ < x ≤ 1`, conjecture that
+`F_N(n) = √(N log N) (B_{c,N}v₁)_n / c` differs in normalized square mean
+`N⁻¹Σ_n |·|²` by `o(1)` from `aφ g(x) + t_N √x`, with bounded real `t_N`.
+The already-proved smooth-window source limit then identifies
+`t_N → −aφ log(2π)`: test against one smooth window whose pairing with `√x` is nonzero.
+This avoids evaluating the near/far gamma kernel integrals separately.
+
+Required row estimates: Lipschitz lattice quadrature on the near annuli; harmonic
+collar comparison with `log(cn/N)` on interior rows; negligible terminal strip;
+the squared-log center tail; and the finite Mangoldt upward mean.
+The near Gram identity cancels the `log(n/N)` terms. Far gamma tails are `O(1/T)`
+after cutting at log-distance `Tc/N`. None of these reductions is being used as an
+assumption in a threshold theorem.

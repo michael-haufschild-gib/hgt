@@ -33,7 +33,10 @@ theorem eventually_primitive_positive_of_critical_curve
     x ∈ (conductorSubspace 1 N)ᗮ ∧ x ≠ 0 ∧ completeWeilEnergy tiltedUnitSpline (c N) N x ≤ 0
   have hbad : ∃ᶠ N : ℕ in atTop, BadAt N := by
     rw [Filter.not_eventually] at hnot
-    exact hnot.mono fun N hN => by simpa only [not_forall, not_imp, not_lt] using hN
+    exact hnot.mono fun N hN => by
+      simp only [not_forall, not_lt] at hN
+      obtain ⟨x, hx, hne, he⟩ := hN
+      exact ⟨x, hx, hne, he⟩
   let GoodAt (k N : ℕ) : Prop := 1 ≤ N ∧ c N / (N : ℝ) ≤ 1 / ((k : ℝ) + 1) ∧
     ∀ x : EuclideanSpace ℝ (PrimeHorizonIndex N),
       x ∈ (conductorSubspace 1 N)ᗮ → x ≠ 0 →
@@ -134,7 +137,7 @@ theorem eventually_primitive_positive_of_critical_curve
 
 /-- Every ratio below the global window threshold is eventually positive on the primitive
 hyperplane, uniformly in the critical band. -/
-theorem eventuallyPoleOrthogonalPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (hRstar : 0 < Rstar)
+theorem eventuallyPoleOrthogonalPosDef_of_lt_iInf_windowThreshold {Rstar : ℝ} (_hRstar : 0 < Rstar)
     (hlt : (Rstar : EReal) < ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) :
     EventuallyPoleOrthogonalPosDef Rstar := by
   obtain ⟨R₀, hR₀, hsmall⟩ := exists_pos_eventuallyCriticalPosDef

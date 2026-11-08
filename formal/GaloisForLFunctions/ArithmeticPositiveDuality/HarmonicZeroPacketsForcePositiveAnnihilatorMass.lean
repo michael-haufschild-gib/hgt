@@ -96,7 +96,7 @@ private theorem weighted_geometric_energy {ι : Type*} (S : Finset ι) (w : ι �
         intro i _
         simp_rw [weighted_pair_moment S w u hu hm]
         exact hrow i
-      _ = _ := by simp; push_cast; ring
+      _ = _ := by simp; ring
   exact Complex.ofReal_injective hc
 
 /-- The unit phase of a supported monomial at ordinate `γ`. -/
@@ -237,7 +237,64 @@ theorem harmonicPacketAnnihilator_tail_mass (β : ℝ) (m : ℕ) :
   rw [dirichletEval_harmonicPacketAnnihilator, scaledTwoMonomial_at_real] at he
   simp only [one_pow, Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one] at he
   have hr := congrArg Complex.re he
-  simp only [Complex.natCast_re, Complex.ofReal_re, Nat.cast_add, Nat.cast_one] at hr
+  simp only [Complex.add_re, Complex.natCast_re, Complex.one_re, Complex.ofReal_re,
+    Nat.cast_add, Nat.cast_one] at hr
   linarith only [hr]
+
+theorem harmonicPacketStep_pos (m : ℕ) : 0 < harmonicPacketStep m := by
+  exact div_pos (mul_pos (by norm_num) Real.pi_pos)
+    (mul_pos (by positivity) (Real.log_pos (by norm_num)))
+
+/-- The geometric polynomial cancels every point of its first harmonic packet. -/
+theorem harmonicPacketAnnihilator_zero (β : ℝ) (m k : ℕ) (hk : 1 ≤ k) (hkm : k ≤ m) :
+    dirichletEval (harmonicPacketPoint β (harmonicPacketStep m) k)
+      (harmonicPacketAnnihilator β m) = 0 := by
+  let ζ : ℂ := Complex.exp (2 * Real.pi * I / (m + 1 : ℂ))
+  have hp : IsPrimitiveRoot ζ (m + 1) := by
+    simpa only [ζ, Nat.cast_add, Nat.cast_one] using
+      Complex.isPrimitiveRoot_exp (m + 1) (by omega)
+  have hn : (m + 1 : ℂ) ≠ 0 := by exact_mod_cast (show m + 1 ≠ 0 by omega)
+  have hl : (Real.log 2 : ℂ) ≠ 0 :=
+    Complex.ofReal_ne_zero.mpr (Real.log_pos (by norm_num)).ne'
+  have hv : dirichletEval (harmonicPacketPoint β (harmonicPacketStep m) k)
+      (scaledTwoMonomial β) = (ζ ^ k)⁻¹ := by
+    rw [dirichletEval_scaledTwoMonomial]
+    have he : (Real.log 2 : ℂ) *
+        ((β : ℂ) - harmonicPacketPoint β (harmonicPacketStep m) k) =
+        -((k : ℂ) * (2 * Real.pi * I / (m + 1 : ℂ))) := by
+      unfold harmonicPacketPoint harmonicPacketStep
+      push_cast
+      field_simp
+      ring
+    rw [he, Complex.exp_neg, Complex.exp_nat_mul]
+  rw [dirichletEval_harmonicPacketAnnihilator]
+  simp_rw [hv]
+  rw [← Fin.sum_univ_eq_sum_range]
+  apply (geometric_sum_eq_zero_iff _ _).mpr
+  constructor
+  · rw [inv_pow, ← pow_mul, Nat.mul_comm k (m + 1), pow_mul, hp.pow_eq_one]
+    simp
+  · intro h
+    have hpow : ζ ^ k = 1 := by
+      have hi := congrArg (fun z : ℂ => z⁻¹) h
+      simpa only [inv_inv, inv_one] using hi
+    exact Nat.not_dvd_of_pos_of_lt (by omega) (by omega)
+      ((hp.pow_eq_one_iff_dvd k).mp hpow)
+
+/-- The lower bound is attained by a positive polynomial using only the prime two. -/
+theorem exists_sharp_harmonic_packet (β : ℝ) (m : ℕ) :
+    ∃ (P : MvPolynomial (Fin 2) ℝ≥0) (γ : ℝ),
+      MvPolynomial.constantCoeff P = 1 ∧ 0 < γ ∧
+      (∀ k : ℕ, 1 ≤ k → k ≤ m → dirichletEval (harmonicPacketPoint β γ k) P = 0) ∧
+      dirichletTailMass P β = m := by
+  exact ⟨harmonicPacketAnnihilator β m, harmonicPacketStep m,
+    harmonicPacketAnnihilator_constantCoeff β m, harmonicPacketStep_pos m,
+    fun k hk hkm => harmonicPacketAnnihilator_zero β m k hk hkm,
+    harmonicPacketAnnihilator_tail_mass β m⟩
+
+#print axioms harmonic_zero_packet_energy
+#print axioms harmonic_zero_packet_mass_le
+#print axioms harmonic_zero_packet_mass_eq_iff
+#print axioms exists_sharp_harmonic_packet
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator

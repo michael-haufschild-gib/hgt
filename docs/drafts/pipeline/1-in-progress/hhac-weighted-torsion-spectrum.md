@@ -3,7 +3,7 @@
 - **ID:** hhac-weighted-torsion-spectrum
 - **Stage:** 1-in-progress
 - **Type:** SPECTRAL CLASSIFICATION
-- **Status:** Compact self-adjoint representation formalized; sign and Hilbert–Schmidt classification open
+- **Status:** Compact self-adjoint representation and finite-rank sign obstruction formalized; Hilbert–Schmidt classification open
 
 ## Target
 
@@ -59,7 +59,7 @@ formalize the coefficient-preserving compact inclusion for every `β<δ`.
 `spacingLimitOperator_factor` proves the actual form factorization.
 `spacingLimitHilbertOperator_inner`, `_selfAdjoint` and `_compact` identify
 the original pair series with a compact self-adjoint Hilbert operator for
-every positive weight. Infinite sign directions and the Hilbert–Schmidt classification remain open.
+every positive weight. The Hilbert–Schmidt classification remains open.
 
 `spacingLimitKernel_primePair` and `spacingLimitKernel_primePairs_orthogonal`
 prove the exact arithmetic blocks and vanishing mixed entries.
@@ -68,8 +68,11 @@ and `spacingLimitKernel_prime_self_pos` prove their negative pair energies
 and positive prime diagonals. `spacingPrimePairProbe_energy`, `_orthogonal` and the corresponding positive
 prime-probe lemmas realize these matrices in the actual Hilbert carrier.
 `SpacingDefiniteFamilies` now proves arbitrarily large orthogonal families of
-both signs and their exact diagonal synthesis identity. Injective definite
-subspaces and finite-rank correction obstructions remain under formalization.
+both signs and their exact diagonal synthesis identity. `SpacingFiniteConstraints`
+constructs injective definite subspaces of every finite dimension. Every finite
+family of linear constraints leaves a nonzero vector of each sign. Consequently
+any bilinear correction with finite-dimensional range leaves the form indefinite;
+the corresponding statement holds for finite-rank Hilbert operators.
 
 The existing `ArithmeticIntersectionTheory.spacingLimit_not_nonneg` already
 refutes positivity on `{1,2}`. The stronger target here concerns arbitrarily

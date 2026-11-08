@@ -26,10 +26,15 @@ of its Hodge/scattering constructions.
 First formalized branch: [prime-star compensation](../3-formalized/riac-prime-star-compensation.md):
 exact minimal payment, unrestricted diagonal classification, explicit negative
 probes, logarithmic-square obstruction and sharp power boundary.
-Active [boundary audit](riac-completed-prime-boundary.md): classify the actual
-Dirichlet augmentation and its closed extensions before discussing homology.
-Then determine whether the prime-two contraction preserves the higher-degree
-domains of a proposed completion.
+Second formalized branch: [completed prime boundary](../3-formalized/riac-completed-prime-boundary.md).
+The faithful dense weighted embedding admits a closed extension of the actual
+augmentation exactly when `2 Re(s)+δ>1`, with unique bounded extension and
+exact norm. At and below the boundary, explicit finite packets obstruct every
+closed extension. The [higher-degree question](../0-backlog/riac-completed-prime-koszul.md)
+is whether the standard completed complex remains contractible above that threshold.
+Two active refinements are the [logarithmic compensation boundary](riac-logarithmic-star-compensation.md)
+and [vertical unitary graph equivalence](riac-unitary-prime-chain-gauge.md).
+Their candidate thresholds and exact arithmetic comparisons are not yet Lean-accepted.
 
 ## Necessary distinctions
 

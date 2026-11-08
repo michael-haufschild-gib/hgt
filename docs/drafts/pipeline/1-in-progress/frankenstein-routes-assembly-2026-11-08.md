@@ -7,7 +7,7 @@
 - **Statement:** assemble each Frankenstein route as one Lean theorem; build the missing bridges;
   conjecture on what the assembly exposes.
 
-Lean folder: `formal/GaloisForLFunctions/FrankensteinRoutes/` (umbrella `FrankensteinRoutes.lean`).
+Lean modules go into the owning programme folders.
 Order: F22, F21, F18, F15, F2, then the rest.
 
 ## F22 — curve-proof template over ℤ
@@ -21,7 +21,7 @@ curves (`riemannHypothesis_oddHyperelliptic`, `hyperellipticDatum_unitary`); JAS
 **Missing bridge.** The matching curve step ↔ ℤ step was a reading [D]: ZAL and AAL were defined
 only for ζ. Bridge: define both laws on every `ZeroConfig` and evaluate them on curves and on ζ.
 
-**Results (Lean, `FrankensteinRoutes/CurveTemplate/TheAbscissaLawsOfAZeroConfiguration`).**
+**Results (Lean, `ZeroConfigurationGeometry/AbscissaLaws/TheAbscissaLawsOfAZeroConfiguration`).**
 - For every configuration: pure ⇔ ZAL ∧ AAL (the FE of the configuration gives the left side).
 - AAL ⇔ zero transport: every right zero has, for every `ε` and `T`, a zero of real part
   `> Re ρ − ε` at height `|Im| > T`. This is exactly the zero-level conclusion of weak recurrence;
