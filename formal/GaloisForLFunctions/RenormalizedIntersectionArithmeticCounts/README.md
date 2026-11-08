@@ -1,6 +1,6 @@
 # Renormalized intersection theory of arithmetic counts
 
-Programme specified by §2.11 of [review 0811](../../../docs/reports/review-0811/obstacles-summary.md).
+Arithmetic-count programme associated with [review 0811](../../../docs/reports/review-0811/obstacles-summary.md).
 Namespace: `GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts`.
 Companions: [effective scaling geometry](../EffectiveScalingGeometry/README.md)
 and [height and homotopy](../HeightHomotopyArithmeticCounts/README.md).
@@ -193,11 +193,10 @@ thickened logarithmic counts recover `ab·I(n,m)`, the established torsion-orbit
 intersection. The count therefore has a proved comparison with the existing
 torsion geometry, with no Weil form used in its definition.
 
-This constructs effective proper intersections. Self-intersections,
-critical renormalization and control of signed primitive combinations remain
-open. No comparison bounding `Σ_p index_p(N)=1−M(N)` follows from the
-nonnegativity of these individual heights. The required surface Riemann–Roch
-count and square-root cancellation remain the programme's targets.
+These counts construct effective proper intersections. The radial
+self-interaction below removes coincident-root factors arithmetically.
+The surface Riemann–Roch count and a comparison controlling
+`Σ_p index_p(N)=1−M(N)` remain open.
 
 ## Literature and novelty boundary
 
@@ -255,3 +254,31 @@ The independent surface count, critical positive completion, zero-detecting
 completion, relative core pair and modular cell comparison remain open.
 Signed localization is constructed, with no square-root Mertens bound or RH
 proof asserted.
+
+## Radial counts and arithmetic self-intersection
+
+[RationalAbelArithmeticCounts.lean](RationalAbelArithmeticCounts.lean)
+constructs the finite rings cut out by the monic radial equations
+`P_{n,a}=scaleRoots(Φ_n,a)`. For `0≤a<b`, their cardinalities satisfy
+
+`log C_{m,n}(a,b)=φ(m)φ(n)log b−T_{a/b}(m,n)`.
+
+The Abel energy thus comes from independent integral quotient counts.
+For self-interaction, the integral divided difference
+`P_{n,b}−P_{n,a}=(b−a)D_{a,b}` defines another actual finite ring,
+with count `R_n(a,b)`. Multiplication by `b−a` and reduction give the
+residual exact sequence and prove
+
+`C_{n,n}(a,b)=(b−a)^φ(n) R_n(a,b)`.
+
+At coincidence `D_{1,1}=φ(n)Φ_n−XΦ_n′`; the residue count is
+`R_n(1,1)=|disc Φ_n|`, with logarithm `I(n,n)`. Its dilation degree is
+`φ(n)(φ(n)−1)`. The normalized residual height retains the HHAC
+nonnegative quadratic radial error and converges, along consecutive integer
+radii, to the actual diagonal height.
+
+The [construction and proof](../../../docs/drafts/pipeline/3-formalized/riac-rational-abel-intersection-counts.md)
+identify arithmetic self-energy removal and both radius terms. Classical
+resultant and `q`-discriminant identities are credited there. These counts
+still require a quantitative bridge to signed conductor combinations and
+the local-index sum `1−M(N)`; no square-root estimate follows yet.

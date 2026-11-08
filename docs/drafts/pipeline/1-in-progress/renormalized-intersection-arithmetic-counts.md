@@ -3,7 +3,7 @@
 - **ID:** RIAC
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
-- **Source:** [review 0811 §2.11](../../../reports/review-0811/obstacles-summary.md)
+- **Source:** [review 0811](../../../reports/review-0811/obstacles-summary.md)
 - **Statement:** Prove square-root-scale signed cancellation of the actual local indices, using independent arithmetic counts, product-formula heights or completed invariants.
 
 ## Target and existing foundations
@@ -70,10 +70,13 @@ The [proper arithmetic intersection count](../3-formalized/riac-thickened-inters
 constructs actual finite rings `ℤ[X]/(P,Q)`, proves their resultant cardinality,
 and gives quadratic integer prime-local multiplicities and logarithmic heights
 under equal thickening. Distinct cyclotomic counts recover the established
-torsion intersection. The [rational-radius construction](riac-rational-abel-intersection-counts.md)
-asks for actual radial intersection counts and a divided-difference residue ring
-that removes the coincident-root self-factor. The critical sign and the
-comparison controlling the signed local-index sum remain open.
+torsion intersection. The [rational-radius construction](../3-formalized/riac-rational-abel-intersection-counts.md)
+now realizes Abel energy by actual integral quotient counts. An explicit
+residual exact sequence removes the coincident-root factor, prime by prime;
+the diagonal count is the absolute discriminant. Normalized residual counts
+converge to that diagonal height with the proved finite-radius error sign.
+The critical sign and the comparison controlling the signed local-index
+sum remain open.
 
 ## Necessary distinctions
 

@@ -77,7 +77,11 @@ def AntiunitaryInvol.toRealCLM {H : Type*} [NormedAddCommGroup H] [InnerProductS
       map_add' := J.map_add
       map_smul' := fun (r : ℝ) (x : H) => by
         have hr : ∀ y : H, r • y = (r : ℂ) • y := fun y => by
-          rw [← one_smul ℂ y, ← smul_assoc, Complex.real_smul, mul_one]
+          calc r • y = r • ((1 : ℂ) • y) := by rw [one_smul]
+            _ = (r • (1 : ℂ)) • y := (smul_assoc r (1 : ℂ) y).symm
+            _ = ((r : ℂ) * 1) • y := by rw [Complex.real_smul]
+            _ = (r : ℂ) • y := by rw [mul_one]
+        show J (r • x) = r • J x
         rw [hr x, J.map_smul, Complex.conj_ofReal, ← hr (J x)] }
     1
     (fun x => by simp [J.norm_map])
@@ -113,7 +117,7 @@ theorem posGen_eq_zero_of_comm_antiunitaryInvol {H : Type*} [NormedAddCommGroup 
     exact neg_eq_iff_eq_neg.mp hmul.symm
   have hsym : ∀ x y : H, inner ℂ (P x) y = inner ℂ x (P y) := fun x y => by
     calc inner ℂ (P x) y = inner ℂ x (ContinuousLinearMap.adjoint P y) :=
-          ContinuousLinearMap.adjoint_inner_right P x y
+          (ContinuousLinearMap.adjoint_inner_right P x y).symm
       _ = inner ℂ x ((star P) y) := by rw [← ContinuousLinearMap.star_eq_adjoint]
       _ = inner ℂ x (P y) := by rw [hsa]
   have hquad : ∀ x : H, inner ℂ x (P x) = 0 := fun x => by
@@ -146,9 +150,13 @@ theorem posGen_eq_zero_of_comm_antiunitaryInvol {H : Type*} [NormedAddCommGroup 
   simpa using inner_self_eq_zero.mp (hpol (P y))
 
 /-- Adjoint shift `α_s(A₀) = U(s) A₀ U(s)*` of a seed observable along an operator family `U`. -/
-def covShift {S H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+def covShift {S H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
     (U : S → H →L[ℂ] H) (s : S) (A₀ : H →L[ℂ] H) : H →L[ℂ] H :=
   U s * A₀ * star (U s)
+
+@[simp] theorem covShift_apply {S H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] (U : S → H →L[ℂ] H) (s : S) (A₀ : H →L[ℂ] H) (x : H) :
+    covShift U s A₀ x = U s (A₀ ((star (U s)) x)) := rfl
 
 /-- **Cross-horizon Hankel law.** In any standard-form von Neumann algebra `(H, M, ms)`, if an
 isometric representation `U` of a commutative semigroup `S` fixes `ms.Ω` and is inverted by `ms.J`
@@ -170,12 +178,9 @@ theorem StandardForm.naturalCone_partner_hankel
       _ = (star (U r) * U r) ms.Ω := rfl
       _ = ms.Ω := by rw [hiso r]; rfl
   have hright : ms.J.conjOp (covShift U t B₀) ms.Ω = (star (U t)) (ms.J (B₀ ms.Ω)) := by
-    change ms.J (U t (B₀ ((star (U t)) (ms.J ms.Ω)))) = _
-    rw [ms.J_omega, hstarΩ t, ← ms.J.invol (B₀ ms.Ω)]
-    change ms.J.conjOp (U t) (ms.J (B₀ ms.Ω)) = _
-    rw [hJ t]
-  rw [hright]
-  change inner ℂ ms.Ω (U s (A₀ ((star (U s)) ((star (U t)) (ms.J (B₀ ms.Ω)))))) = _
+    rw [AntiunitaryInvol.conjOp_apply, covShift_apply, ms.J_omega, hstarΩ t,
+      ← ms.J.invol (B₀ ms.Ω), ← AntiunitaryInvol.conjOp_apply, hJ t]
+  rw [hright, covShift_apply]
   have hadj1 : ∀ v : H, inner ℂ ms.Ω (U s v) = inner ℂ ms.Ω v := fun v => by
     calc inner ℂ ms.Ω (U s v) = inner ℂ (ContinuousLinearMap.adjoint (U s) ms.Ω) v :=
           (ContinuousLinearMap.adjoint_inner_left (U s) ms.Ω v).symm
@@ -272,9 +277,7 @@ theorem mulHankel_heckeInv_iff_factorsThrough_sqFreeCore {α : Type*} (K : ℕ+ 
     exact hsq (sqRootPart (m * n)) (sqFreeCore (m * n))
   · rintro ⟨h, hh⟩
     refine ⟨fun n => h (RHTower.dyadicSquarefreeSquareEquiv n).1, fun p k => ?_, hh⟩
-    congr 1
-    apply Subtype.ext
-    exact sqFreeCore_sq_mul p k
+    exact congr_arg h (Subtype.ext (sqFreeCore_sq_mul p k))
 
 /-- Logarithmic ratios `c * log(a / b)` (`a, b ∈ ℕ+`) are dense in `ℝ` for every `c ≠ 0`. -/
 theorem dense_mul_log_pnat_div {c : ℝ} (hc : c ≠ 0) :
@@ -303,13 +306,13 @@ theorem dense_mul_log_pnat_div {c : ℝ} (hc : c ≠ 0) :
   let b : ℕ+ := ⟨q.den, q.den_pos⟩
   have hdiv : ((a : ℝ) / (b : ℝ)) = (q : ℝ) := by
     have ha : (a : ℝ) = (q.num : ℝ) := by
-      have h1 : (q.num.natAbs : ℤ) = q.num := Int.natAbs_of_nonneg hnum_pos.le
-      exact_mod_cast h1
+      calc ((a : ℕ) : ℝ) = ((q.num.natAbs : ℤ) : ℝ) := by norm_cast
+        _ = (q.num : ℝ) := by rw [Int.natAbs_of_nonneg hnum_pos.le]
     have hb : (b : ℝ) = (q.den : ℝ) := rfl
     rw [ha, hb]
     exact_mod_cast Rat.num_div_den q
   refine ⟨c * Real.log ((a : ℝ) / (b : ℝ)), ?_, ⟨a, b, rfl⟩⟩
-  rw [hdiv, dist_comm, ← hval]
+  rw [Metric.mem_ball, hdiv, ← hval]
   exact hclose (by rw [dist_comm]; exact hqz.trans_le (min_le_left _ _))
 
 /-- **Constant collapse of continuous log-Toeplitz Hankel kernels.** Any continuous profile
@@ -331,9 +334,8 @@ theorem const_of_mulHankel_eq_logToeplitz {β : Type*} [TopologicalSpace β] [T2
     rw [hcast, Real.log_pow]
     ring
   have hprod : (a ^ 2 : ℕ+) * b ^ 2 = (a * b) * (a * b) := by
-    apply Subtype.ext
-    push_cast
-    ring
+    calc (a ^ 2 : ℕ+) * b ^ 2 = (a * a) * (b * b) := by rw [sq, sq]
+      _ = (a * b) * (a * b) := mul_mul_mul_comm a a b b
   have hlog_diag : (0 : ℝ) = Real.log (((a * b : ℕ+) : ℝ) / ((a * b : ℕ+) : ℝ)) := by
     have hpos : (0 : ℝ) < ((a * b : ℕ+) : ℝ) := by exact_mod_cast (a * b).pos
     rw [div_self hpos.ne', Real.log_one]
@@ -352,11 +354,11 @@ theorem const_of_sqClass_laplaceMeasure (μ : Measure ℝ) [IsFiniteMeasure μ]
     (hsupp : μ (Set.Iio 0) = 0) (h4 : laplaceProfile μ 4 = laplaceProfile μ 1) :
     μ (Set.Ioi 0) = 0 ∧ ∀ n : ℕ+, laplaceProfile μ n = laplaceProfile μ 1 := by
   have hae_nonneg : ∀ᵐ lam : ℝ ∂μ, 0 ≤ lam := by
-    rw [ae_iff]
-    simpa [not_le] using hsupp
+    rw [ae_iff, show {lam : ℝ | ¬ 0 ≤ lam} = Set.Iio 0 by ext lam; simp]
+    exact hsupp
   have hint_exp : ∀ n : ℕ+, Integrable (fun lam : ℝ => Real.exp (-lam * Real.log (n : ℝ))) μ := by
     intro n
-    have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast n.one_le
+    have hn1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast Nat.succ_le_of_lt n.pos
     have hlog : 0 ≤ Real.log (n : ℝ) := Real.log_nonneg hn1
     refine (integrable_const (1 : ℝ)).mono' (Continuous.aestronglyMeasurable (by fun_prop)) ?_
     filter_upwards [hae_nonneg] with lam hlam
@@ -400,19 +402,19 @@ section Mat2Realization
 /-- Hilbert–Schmidt `2 × 2` matrix space `ℓ²(Fin 2 × Fin 2, ℂ)`. -/
 private abbrev H2 : Type := lp (fun _ : Fin 2 × Fin 2 => ℂ) 2
 
+private theorem h2_memℓp (f : Fin 2 × Fin 2 → ℂ) : Memℓp f 2 :=
+  memℓp_gen (hasSum_fintype _).summable
+
 private theorem h2_norm_sq (X : H2) : ‖X‖ ^ 2 = ∑ p : Fin 2 × Fin 2, ‖X p‖ ^ 2 := by
-  have h1 : (inner ℂ X X).re = ‖X‖ ^ 2 := by
-    rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ), Complex.ofReal_pow, ← Complex.ofReal_pow,
-      Complex.ofReal_re]
+  have h1 : (inner ℂ X X).re = ‖X‖ ^ 2 := inner_self_eq_norm_sq (𝕜 := ℂ) X
   rw [← h1, lp.inner_eq_tsum, tsum_fintype, Complex.re_sum]
-  refine Finset.sum_congr rfl fun p _ => ?_
-  rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ), Complex.ofReal_pow, ← Complex.ofReal_pow,
-    Complex.ofReal_re]
+  exact Finset.sum_congr rfl fun p _ => inner_self_eq_norm_sq (𝕜 := ℂ) (X p)
 
 private theorem h2_entry_le_norm (X : H2) (q : Fin 2 × Fin 2) : ‖X q‖ ≤ ‖X‖ := by
   have hle : ‖X q‖ ^ 2 ≤ ‖X‖ ^ 2 := by
     rw [h2_norm_sq]
-    exact Finset.single_le_sum (fun _ _ => sq_nonneg _) (Finset.mem_univ q)
+    exact Finset.single_le_sum (f := fun p : Fin 2 × Fin 2 => ‖X p‖ ^ 2)
+      (fun _ _ => sq_nonneg _) (Finset.mem_univ q)
   nlinarith [norm_nonneg (X q), norm_nonneg X]
 
 private theorem h2_norm_le_of_entry_bound (Y : H2) {B : ℝ} (hB : 0 ≤ B)
@@ -430,7 +432,7 @@ private theorem h2_norm_le_of_entry_bound (Y : H2) {B : ℝ} (hB : 0 ≤ B)
 private def leftMul2 (A : Matrix (Fin 2) (Fin 2) ℂ) : H2 →L[ℂ] H2 :=
   LinearMap.mkContinuous
     { toFun := fun X => ⟨fun p => ∑ k : Fin 2, A p.1 k * X (k, p.2),
-        (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+        h2_memℓp _⟩
       map_add' := fun X Y => by ext p; simp [mul_add, Finset.sum_add_distrib]
       map_smul' := fun c X => by
         ext p
@@ -444,7 +446,7 @@ private def leftMul2 (A : Matrix (Fin 2) (Fin 2) ℂ) : H2 →L[ℂ] H2 :=
         Finset.single_le_sum (f := fun q : Fin 2 × Fin 2 => ‖A q.1 q.2‖)
           (fun _ _ => norm_nonneg _) (Finset.mem_univ (i, k))
       let Y : H2 := ⟨fun p => ∑ k : Fin 2, A p.1 k * X (k, p.2),
-        (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+        h2_memℓp _⟩
       show ‖Y‖ ≤ (4 * S) * ‖X‖
       rw [show (4 * S) * ‖X‖ = 2 * (2 * S * ‖X‖) by ring]
       refine h2_norm_le_of_entry_bound Y (by positivity) fun p => ?_
@@ -460,7 +462,7 @@ private def leftMul2 (A : Matrix (Fin 2) (Fin 2) ℂ) : H2 →L[ℂ] H2 :=
 private def rightMul2 (B : Matrix (Fin 2) (Fin 2) ℂ) : H2 →L[ℂ] H2 :=
   LinearMap.mkContinuous
     { toFun := fun X => ⟨fun p => ∑ k : Fin 2, X (p.1, k) * B k p.2,
-        (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+        h2_memℓp _⟩
       map_add' := fun X Y => by ext p; simp [add_mul, Finset.sum_add_distrib]
       map_smul' := fun c X => by
         ext p
@@ -474,7 +476,7 @@ private def rightMul2 (B : Matrix (Fin 2) (Fin 2) ℂ) : H2 →L[ℂ] H2 :=
         Finset.single_le_sum (f := fun q : Fin 2 × Fin 2 => ‖B q.1 q.2‖)
           (fun _ _ => norm_nonneg _) (Finset.mem_univ (k, j))
       let Y : H2 := ⟨fun p => ∑ k : Fin 2, X (p.1, k) * B k p.2,
-        (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+        h2_memℓp _⟩
       show ‖Y‖ ≤ (4 * S) * ‖X‖
       rw [show (4 * S) * ‖X‖ = 2 * (2 * S * ‖X‖) by ring]
       refine h2_norm_le_of_entry_bound Y (by positivity) fun p => ?_
@@ -544,7 +546,7 @@ private theorem star_rightMul2 (B : Matrix (Fin 2) (Fin 2) ℂ) :
 
 private def J2 : AntiunitaryInvol H2 where
   toFun X := ⟨fun p => starRingEnd ℂ (X (p.2, p.1)),
-    (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+    h2_memℓp _⟩
   invol' X := by ext p; exact Complex.conj_conj _
   map_add' X Y := by ext p; exact map_add _ _ _
   map_smul' c X := by ext p; exact map_mul _ _ _
@@ -574,7 +576,7 @@ private theorem J2_conjOp_rightMul2 (B : Matrix (Fin 2) (Fin 2) ℂ) :
 
 private def Ω2 : H2 :=
   ⟨fun p => if p.1 = p.2 then ((1 / Real.sqrt 2 : ℝ) : ℂ) else 0,
-    (Finite.of_fintype (Fin 2 × Fin 2)).memℓp _⟩
+    h2_memℓp _⟩
 
 @[simp] private theorem Ω2_apply (p : Fin 2 × Fin 2) :
     Ω2 p = if p.1 = p.2 then ((1 / Real.sqrt 2 : ℝ) : ℂ) else 0 := rfl
@@ -582,12 +584,12 @@ private def Ω2 : H2 :=
 private theorem leftMul2_Ω2 (A : Matrix (Fin 2) (Fin 2) ℂ) (p : Fin 2 × Fin 2) :
     leftMul2 A Ω2 p = ((1 / Real.sqrt 2 : ℝ) : ℂ) * A p.1 p.2 := by
   rcases p with ⟨i, j⟩
-  fin_cases i <;> fin_cases j <;> simp [Fin.sum_univ_two, mul_comm]
+  fin_cases i <;> fin_cases j <;> simp [mul_comm]
 
 private theorem rightMul2_Ω2 (B : Matrix (Fin 2) (Fin 2) ℂ) (p : Fin 2 × Fin 2) :
     rightMul2 B Ω2 p = ((1 / Real.sqrt 2 : ℝ) : ℂ) * B p.1 p.2 := by
   rcases p with ⟨i, j⟩
-  fin_cases i <;> fin_cases j <;> simp [Fin.sum_univ_two]
+  fin_cases i <;> fin_cases j <;> simp
 
 private def E2 (i j : Fin 2) : Matrix (Fin 2) (Fin 2) ℂ :=
   Matrix.of fun r s => if r = i ∧ s = j then 1 else 0
@@ -601,25 +603,25 @@ private theorem single_eq_rightMul2_Ω2 (i j : Fin 2) :
     lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 (i, j) 1 =
       ((Real.sqrt 2 : ℝ) : ℂ) • rightMul2 (E2 i j) Ω2 := by
   ext ⟨r, s⟩
-  simp only [lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, rightMul2_Ω2, E2, Matrix.of_apply,
-    lp.single_apply, Pi.single_apply, Prod.mk.injEq]
-  split_ifs with h1 h2
-  · rw [← mul_assoc, sqrt2_mul_inv_sqrt2, one_mul]
-  · exfalso; exact h2 ⟨h1.1.symm, h1.2.symm⟩
-  · exfalso; exact h1 ⟨h2.1.symm, h2.2.symm⟩
-  · simp
+  rcases eq_or_ne r i with rfl | hri
+  · rcases eq_or_ne s j with rfl | hsj
+    · simp [rightMul2_Ω2, E2, ← mul_assoc, sqrt2_mul_inv_sqrt2]
+    · have hne : (r, s) ≠ (r, j) := fun h => hsj (Prod.mk.inj h).2
+      simp [rightMul2_Ω2, E2, hsj, hne]
+  · have hne : (r, s) ≠ (i, j) := fun h => hri (Prod.mk.inj h).1
+    simp [rightMul2_Ω2, E2, hri, hne]
 
 private theorem single_eq_leftMul2_Ω2 (i j : Fin 2) :
     lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 (i, j) 1 =
       ((Real.sqrt 2 : ℝ) : ℂ) • leftMul2 (E2 i j) Ω2 := by
   ext ⟨r, s⟩
-  simp only [lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, leftMul2_Ω2, E2, Matrix.of_apply,
-    lp.single_apply, Pi.single_apply, Prod.mk.injEq]
-  split_ifs with h1 h2
-  · rw [← mul_assoc, sqrt2_mul_inv_sqrt2, one_mul]
-  · exfalso; exact h2 ⟨h1.1.symm, h1.2.symm⟩
-  · exfalso; exact h1 ⟨h2.1.symm, h2.2.symm⟩
-  · simp
+  rcases eq_or_ne r i with rfl | hri
+  · rcases eq_or_ne s j with rfl | hsj
+    · simp [leftMul2_Ω2, E2, ← mul_assoc, sqrt2_mul_inv_sqrt2]
+    · have hne : (r, s) ≠ (r, j) := fun h => hsj (Prod.mk.inj h).2
+      simp [leftMul2_Ω2, E2, hsj, hne]
+  · have hne : (r, s) ≠ (i, j) := fun h => hri (Prod.mk.inj h).1
+    simp [leftMul2_Ω2, E2, hri, hne]
 
 private theorem h2_eq_sum_single (X : H2) :
     X = ∑ p : Fin 2 × Fin 2, X p • lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 p 1 := by
@@ -684,7 +686,7 @@ private theorem eq_leftMul2_of_mem_mat2VN {T : H2 →L[ℂ] H2} (hT : T ∈ mat2
     Matrix.of fun i j => ((Real.sqrt 2 : ℝ) : ℂ) * T Ω2 (i, j)
   refine ⟨A, sub_eq_zero.mp (mat2VN_separating _ (sub_mem hT (leftMul2_mem_mat2VN A)) ?_)⟩
   ext ⟨i, j⟩
-  simp only [ContinuousLinearMap.sub_apply, lp.coeFn_sub, Pi.sub_apply, leftMul2_Ω2, A,
+  simp only [_root_.sub_apply, lp.coeFn_sub, Pi.sub_apply, leftMul2_Ω2, A,
     Matrix.of_apply, lp.coeFn_zero, Pi.zero_apply]
   rw [← mul_assoc, mul_comm ((1 / Real.sqrt 2 : ℝ) : ℂ), sqrt2_mul_inv_sqrt2, one_mul, sub_self]
 
@@ -702,7 +704,7 @@ private theorem eq_rightMul2_of_mem_commutant {T : H2 →L[ℂ] H2} (hT : T ∈ 
       have hcomm := (VonNeumannAlgebra.mem_commutant_iff.mp hS) (leftMul2 (E2 i j))
         (leftMul2_mem_mat2VN _)
       have happ : S (leftMul2 (E2 i j) Ω2) = leftMul2 (E2 i j) (S Ω2) :=
-        congr_arg (fun U : H2 →L[ℂ] H2 => U Ω2) hcomm
+        congr_arg (fun U : H2 →L[ℂ] H2 => U Ω2) hcomm.symm
       rw [h0, map_zero] at happ
       rw [single_eq_leftMul2_Ω2 i j, map_smul, happ, smul_zero]
     ext X
@@ -712,7 +714,7 @@ private theorem eq_rightMul2_of_mem_commutant {T : H2 →L[ℂ] H2} (hT : T ∈ 
     Matrix.of fun i j => ((Real.sqrt 2 : ℝ) : ℂ) * T Ω2 (i, j)
   refine ⟨B, sub_eq_zero.mp (hsep _ (sub_mem hT (rightMul2_mem_commutant B)) ?_)⟩
   ext ⟨i, j⟩
-  simp only [ContinuousLinearMap.sub_apply, lp.coeFn_sub, Pi.sub_apply, rightMul2_Ω2, B,
+  simp only [_root_.sub_apply, lp.coeFn_sub, Pi.sub_apply, rightMul2_Ω2, B,
     Matrix.of_apply, lp.coeFn_zero, Pi.zero_apply]
   rw [← mul_assoc, mul_comm ((1 / Real.sqrt 2 : ℝ) : ℂ), sqrt2_mul_inv_sqrt2, one_mul, sub_self]
 
@@ -757,7 +759,7 @@ private def mat2StandardForm : StandardForm mat2VN where
         _ = inner ℂ ((star (leftMul2 A)) Ω2) (leftMul2 Aᴴ Ω2) := by
             rw [← ContinuousLinearMap.star_eq_adjoint]
         _ = inner ℂ (leftMul2 Aᴴ Ω2) (leftMul2 Aᴴ Ω2) := by rw [star_leftMul2]
-    rw [hadj, inner_self_eq_norm_sq_to_K (𝕜 := ℂ), ← Complex.ofReal_pow, Complex.ofReal_re]
+    rw [hadj, inner_self_eq_norm_sq (𝕜 := ℂ)]
     exact sq_nonneg _
 
 /-- 2-adic valuation parity character `n ↦ (-1)^{v₂(n)}` on `ℕ+`. -/
@@ -794,9 +796,8 @@ private theorem D2_conjTranspose (n : ℕ+) : (D2 n)ᴴ = D2 n := by
   fin_cases i <;> fin_cases j <;> simp [D2, Matrix.conjTranspose_apply, RCLike.star_def, chi2_conj]
 
 private theorem D2_sq (n : ℕ+) : D2 n * D2 n = 1 := by
-  rw [← D2_mul, chi2]
   ext i j
-  fin_cases i <;> fin_cases j <;> simp [D2, chi2_mul, chi2_sq]
+  fin_cases i <;> fin_cases j <;> simp [D2, Matrix.mul_apply, Fin.sum_univ_two, chi2_sq]
 
 /-- **Nontrivial noncommutative `StandardForm` realization of a Hecke-isometric partner kernel.**
 On `M₂(ℂ)` in tracial standard form, 2-adic parity conjugation `U(n) X = D(n) X D(n)` fixes `Ω`,
@@ -915,14 +916,14 @@ theorem exists_nontrivial_vacuumFixing_partner_standardForm_heckeInv :
             rw [← ContinuousLinearMap.star_eq_adjoint]
         _ = inner ℂ (leftMul2 Bmᴴ Ω2) (leftMul2 Bnᴴ Ω2) := by rw [star_leftMul2]
     have hsq2 : ((1 / Real.sqrt 2 : ℝ) : ℂ) * ((1 / Real.sqrt 2 : ℝ) : ℂ) = (1 / 2 : ℂ) := by
-      have hs : (1 / Real.sqrt 2 : ℝ) * (1 / Real.sqrt 2 : ℝ) = 1 / 2 := by
-        rw [one_div_mul_one_div, Real.mul_self_sqrt zero_le_two]
-      exact_mod_cast hs
+      rw [← Complex.ofReal_mul, one_div_mul_one_div, Real.mul_self_sqrt zero_le_two]
+      push_cast; rfl
     rw [hadj, lp.inner_eq_tsum, tsum_fintype, Fintype.sum_prod_type, Fin.sum_univ_two,
       Fin.sum_univ_two, Fin.sum_univ_two]
     simp only [leftMul2_Ω2, Matrix.conjTranspose_apply, Bm, Bn, Matrix.of_apply,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, RCLike.inner_apply,
-      RCLike.star_def, chi2_conj, map_mul, Complex.conj_ofReal, mul_zero, add_zero]
+      Matrix.cons_val_zero, Matrix.cons_val_one, RCLike.inner_apply,
+      RCLike.star_def, chi2_conj, map_mul, map_one, map_zero, Complex.conj_ofReal,
+      mul_zero, add_zero]
     have hcomb : (((1 / Real.sqrt 2 : ℝ) : ℂ) * 1) * (((1 / Real.sqrt 2 : ℝ) : ℂ) * 1) +
         (((1 / Real.sqrt 2 : ℝ) : ℂ) * chi2 n) * (((1 / Real.sqrt 2 : ℝ) : ℂ) * chi2 m) =
         (1 / 2 : ℂ) * (1 + chi2 (m * n)) := by
@@ -934,8 +935,7 @@ theorem exists_nontrivial_vacuumFixing_partner_standardForm_heckeInv :
     ring
   have hsq_class : ∀ p k : ℕ+,
       (1 + (chi2 (p ^ 2 * k)).re) / 2 = (1 + (chi2 k).re) / 2 := fun p k => by
-    rw [sq, mul_assoc, chi2_mul, ← mul_assoc, ← chi2_mul, show chi2 (p * p) = 1 by
-      rw [chi2_mul, chi2_sq], one_mul]
+    rw [sq, mul_assoc, chi2_mul, chi2_mul, ← mul_assoc, chi2_sq, one_mul]
   obtain ⟨hHankel, hHecke⟩ := (isMulHankel_and_heckeInv_iff_sqClass K).mpr
     ⟨fun k => (1 + (chi2 k).re) / 2, hsq_class, hK_val⟩
   refine ⟨hHankel, hHecke, ?_, ?_⟩
@@ -948,7 +948,8 @@ end Mat2Realization
 
 /-- A strongly continuous unitary Borchers pair `(Δ, U)` on a complex Hilbert space satisfying the
 half-sided modular scaling relation `Δ(s) U(a) Δ(-s) = U(e^{-2πs} a)`. -/
-structure BorchersPair (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H] where
+structure BorchersPair (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] where
   U : ℝ → H →L[ℂ] H
   U_zero : U 0 = 1
   U_add : ∀ a b : ℝ, U (a + b) = U a * U b
@@ -963,7 +964,7 @@ structure BorchersPair (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ
 
 namespace BorchersPair
 
-variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
 theorem U_mul_neg (B : BorchersPair H) (a : ℝ) : B.U a * B.U (-a) = 1 := by
   rw [← B.U_add, add_neg_cancel, B.U_zero]
@@ -971,12 +972,12 @@ theorem U_mul_neg (B : BorchersPair H) (a : ℝ) : B.U a * B.U (-a) = 1 := by
 theorem U_neg_mul (B : BorchersPair H) (a : ℝ) : B.U (-a) * B.U a = 1 := by
   rw [← B.U_add, neg_add_cancel, B.U_zero]
 
-theorem star_U [CompleteSpace H] (B : BorchersPair H) (a : ℝ) : star (B.U a) = B.U (-a) := by
+theorem star_U (B : BorchersPair H) (a : ℝ) : star (B.U a) = B.U (-a) := by
   calc star (B.U a) = star (B.U a) * (B.U a * B.U (-a)) := by rw [B.U_mul_neg, mul_one]
     _ = (star (B.U a) * B.U a) * B.U (-a) := (mul_assoc _ _ _).symm
     _ = B.U (-a) := by rw [B.U_iso, one_mul]
 
-theorem U_mul_star [CompleteSpace H] (B : BorchersPair H) (a : ℝ) :
+theorem U_mul_star (B : BorchersPair H) (a : ℝ) :
     B.U a * star (B.U a) = 1 := by
   rw [B.star_U, B.U_mul_neg]
 
@@ -986,28 +987,28 @@ theorem Δ_mul_neg (B : BorchersPair H) (s : ℝ) : B.Δ s * B.Δ (-s) = 1 := by
 theorem Δ_neg_mul (B : BorchersPair H) (s : ℝ) : B.Δ (-s) * B.Δ s = 1 := by
   rw [← B.Δ_add, neg_add_cancel, B.Δ_zero]
 
-theorem inner_U [CompleteSpace H] (B : BorchersPair H) (a : ℝ) (x y : H) :
+theorem inner_U (B : BorchersPair H) (a : ℝ) (x y : H) :
     inner ℂ (B.U a x) (B.U a y) = inner ℂ x y := by
   calc inner ℂ (B.U a x) (B.U a y)
       = inner ℂ x (ContinuousLinearMap.adjoint (B.U a) (B.U a y)) :=
-        ContinuousLinearMap.adjoint_inner_right _ _ _
+        (ContinuousLinearMap.adjoint_inner_right (B.U a) x (B.U a y)).symm
     _ = inner ℂ x ((star (B.U a) * B.U a) y) := by
         rw [← ContinuousLinearMap.star_eq_adjoint]; rfl
     _ = inner ℂ x y := by rw [B.U_iso]; rfl
 
-theorem norm_U [CompleteSpace H] (B : BorchersPair H) (a : ℝ) (x : H) :
+theorem norm_U (B : BorchersPair H) (a : ℝ) (x : H) :
     ‖B.U a x‖ = ‖x‖ := by
   have hsq : ‖B.U a x‖ ^ 2 = ‖x‖ ^ 2 := by
     rw [← inner_self_eq_norm_sq (𝕜 := ℂ), ← inner_self_eq_norm_sq (𝕜 := ℂ), B.inner_U]
   have h := congr_arg Real.sqrt hsq
   rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq (norm_nonneg _)] at h
 
-theorem norm_Δ [CompleteSpace H] (B : BorchersPair H) (s : ℝ) (x : H) :
+theorem norm_Δ (B : BorchersPair H) (s : ℝ) (x : H) :
     ‖B.Δ s x‖ = ‖x‖ := by
   have hinner : inner ℂ (B.Δ s x) (B.Δ s x) = inner ℂ x x := by
     calc inner ℂ (B.Δ s x) (B.Δ s x)
         = inner ℂ x (ContinuousLinearMap.adjoint (B.Δ s) (B.Δ s x)) :=
-          ContinuousLinearMap.adjoint_inner_right _ _ _
+          (ContinuousLinearMap.adjoint_inner_right (B.Δ s) x (B.Δ s x)).symm
       _ = inner ℂ x ((star (B.Δ s) * B.Δ s) x) := by
           rw [← ContinuousLinearMap.star_eq_adjoint]; rfl
       _ = inner ℂ x x := by rw [B.Δ_iso]; rfl
@@ -1018,7 +1019,7 @@ theorem norm_Δ [CompleteSpace H] (B : BorchersPair H) (s : ℝ) (x : H) :
 
 /-- **Forced vacuum invariance.** Any vector fixed by the modular flow `Δ` is automatically fixed
 by the entire translation group `U`. -/
-theorem fix_of_delta_fix [CompleteSpace H] (B : BorchersPair H) {Ω : H}
+theorem fix_of_delta_fix (B : BorchersPair H) {Ω : H}
     (hΔ : ∀ s : ℝ, B.Δ s Ω = Ω) (a : ℝ) : B.U a Ω = Ω := by
   have hnorm_eq : ∀ s : ℝ, ‖B.U a Ω - Ω‖ = ‖B.U (Real.exp (-2 * Real.pi * s) * a) Ω - Ω‖ := by
     intro s
@@ -1027,9 +1028,14 @@ theorem fix_of_delta_fix [CompleteSpace H] (B : BorchersPair H) {Ω : H}
       _ = ‖(B.Δ s * B.U a * B.Δ (-s)) Ω - Ω‖ := rfl
       _ = ‖B.U (Real.exp (-2 * Real.pi * s) * a) Ω - Ω‖ := by rw [B.borchers]
   have htend_arg : Tendsto (fun s : ℝ => Real.exp (-2 * Real.pi * s) * a) atTop (𝓝 0) := by
-    have hlin : Tendsto (fun s : ℝ => -2 * Real.pi * s) atTop atBot :=
-      Tendsto.neg_const_mul_atTop (by linarith [Real.pi_pos]) tendsto_id
-    simpa only [zero_mul] using (Real.tendsto_exp_atBot.comp hlin).mul_const a
+    have hlin : Tendsto (fun s : ℝ => -(2 * Real.pi * s)) atTop atBot :=
+      tendsto_neg_atTop_atBot.comp (tendsto_id.const_mul_atTop (by positivity))
+    have hexp0 : Tendsto (fun s : ℝ => Real.exp (-2 * Real.pi * s)) atTop (𝓝 0) := by
+      have heq : (fun s : ℝ => Real.exp (-2 * Real.pi * s)) =
+          Real.exp ∘ fun s : ℝ => -(2 * Real.pi * s) := by ext s; simp [neg_mul]
+      rw [heq]
+      exact Real.tendsto_exp_atBot.comp hlin
+    simpa only [zero_mul] using hexp0.mul_const a
   have htend_norm : Tendsto (fun s : ℝ => ‖B.U (Real.exp (-2 * Real.pi * s) * a) Ω - Ω‖)
       atTop (𝓝 0) := by
     have hcont : Continuous (fun t : ℝ => ‖B.U t Ω - Ω‖) :=
@@ -1041,7 +1047,7 @@ theorem fix_of_delta_fix [CompleteSpace H] (B : BorchersPair H) {Ω : H}
 
 /-- **Strict externality.** In any standard-form von Neumann algebra `(H, M, ms)` whose vector
 `ms.Ω` is fixed by `B.Δ`, `B.U a` lies in `M` (or in `M'`) if and only if `B.U a = 1`. -/
-theorem mem_iff_eq_one [CompleteSpace H] (B : BorchersPair H) {M : VonNeumannAlgebra H}
+theorem mem_iff_eq_one (B : BorchersPair H) {M : VonNeumannAlgebra H}
     (ms : StandardForm M) (hΔ : ∀ s : ℝ, B.Δ s ms.Ω = ms.Ω) (a : ℝ) :
     (B.U a ∈ M ↔ B.U a = 1) ∧ (B.U a ∈ M.commutant ↔ B.U a = 1) := by
   have hUΩ : B.U a ms.Ω = ms.Ω := B.fix_of_delta_fix hΔ a
@@ -1058,7 +1064,7 @@ theorem mem_iff_eq_one [CompleteSpace H] (B : BorchersPair H) {M : VonNeumannAlg
 
 /-- **Absence of nonzero continuous eigenmodes.** In any `BorchersPair`, a vector `v` satisfying
 `U(t) v = e^{i ω t} v` for all `t ∈ ℝ` with `ω ≠ 0` vanishes identically. -/
-theorem eigenmode_eq_zero [CompleteSpace H] (B : BorchersPair H) {ω : ℝ} (hω : ω ≠ 0) {v : H}
+theorem eigenmode_eq_zero (B : BorchersPair H) {ω : ℝ} (hω : ω ≠ 0) {v : H}
     (hv : ∀ t : ℝ, B.U t v = Complex.exp (Complex.I * (ω : ℂ) * (t : ℂ)) • v) :
     v = 0 := by
   have hcomm_v : ∀ (s t : ℝ),
@@ -1105,8 +1111,6 @@ theorem eigenmode_eq_zero [CompleteSpace H] (B : BorchersPair H) {ω : ℝ} (hω
             -(((d * t₀ : ℝ) : ℂ) * Complex.I) := by
           simp only [d]; push_cast; ring
         rw [hc, hdt]
-        push_cast
-        rfl
       rw [harg, Complex.exp_neg, Complex.exp_pi_mul_I, inv_neg, inv_one]
     rw [hphase, neg_one_mul] at hunit
     linear_combination (1 / 2 : ℂ) * hunit
@@ -1132,7 +1136,7 @@ private def innerRightCLM (w : H) : H →L[ℂ] ℂ :=
 
 @[simp] private theorem innerRightCLM_apply (w y : H) : innerRightCLM w y = inner ℂ w y := rfl
 
-private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H)
+private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
     {a : ℝ} (ha : 0 < a) {μ : ℂ} (hnorm : ‖μ‖ = 1) (hμ : μ ≠ 1) {w : H} (hw : B.U a w = μ • w) :
     w = 0 := by
   set θ : ℝ := Complex.arg μ
@@ -1148,11 +1152,13 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
     refine div_ne_zero ?_ ha.ne'
     rcases lt_trichotomy k 0 with hk | rfl | hk
     · have hk1 : (k : ℝ) ≤ -1 := by exact_mod_cast Int.le_sub_one_of_lt hk
-      have hle := Complex.arg_le_pi μ
+      have hle : θ ≤ Real.pi := Complex.arg_le_pi μ
+      have hmul : 2 * Real.pi * (k : ℝ) ≤ -2 * Real.pi := by nlinarith [Real.pi_pos]
       linarith [Real.pi_pos]
     · simpa using hθ_ne
     · have hk1 : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-      have hgt := Complex.neg_pi_lt_arg μ
+      have hgt : -Real.pi < θ := Complex.neg_pi_lt_arg μ
+      have hmul : 2 * Real.pi ≤ 2 * Real.pi * (k : ℝ) := by nlinarith [Real.pi_pos]
       linarith [Real.pi_pos]
   let F : ℤ → ℝ → H := fun k t => Complex.exp (-Complex.I * (ω k : ℂ) * (t : ℂ)) • B.U t w
   have hF_cont : ∀ k : ℤ, Continuous (F k) := fun k => by
@@ -1160,12 +1166,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
     fun_prop
   have hF_per : ∀ k : ℤ, Function.Periodic (F k) a := fun k t => by
     have hUa : B.U (t + a) w = μ • B.U t w := by
-      change (B.U t * B.U a) w = _
-      rw [← B.U_add]
-      change B.U (t + a) w = _
-      rw [B.U_add]
-      change B.U t (B.U a w) = _
-      rw [hw, map_smul]
+      rw [B.U_add, ContinuousLinearMap.mul_apply, hw, map_smul]
     have hωa : ω k * a = θ + 2 * Real.pi * (k : ℝ) := div_mul_cancel₀ _ ha.ne'
     have hexp_shift : Complex.exp (-Complex.I * (ω k : ℂ) * ((t + a : ℝ) : ℂ)) =
         Complex.exp (-Complex.I * (ω k : ℂ) * (t : ℂ)) * μ⁻¹ := by
@@ -1199,7 +1200,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
     simp_rw [hstep]
     rw [intervalIntegral.integral_smul]
     congr 1
-    rw [intervalIntegral.integral_comp_add_right (fun u => F k u) x]
+    rw [intervalIntegral.integral_comp_add_right (fun u => F k u) x, add_comm a x]
     have hper := (hF_per k).intervalIntegral_add_eq x 0
     simpa [zero_add] using hper
   let α : ℤ → ℝ := fun k => 2 * Real.pi * (k : ℝ) / a
@@ -1274,7 +1275,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
           (Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * f t +
             Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * starRingEnd ℂ (f t)) := by
       ext t; rw [hre_id t]; ring
-    rw [hrew, intervalIntegral.integral_const_mul, ← hadd, mul_zero]
+    rw [hrew, intervalIntegral.integral_const_mul, hadd, mul_zero]
   let q : ℝ → ℝ := fun t => Real.sin (Real.pi * t / a) ^ 2
   have hq_cont : Continuous q := (Real.continuous_sin.comp (by fun_prop)).pow 2
   have hq_exp : ∀ t : ℝ, (q t : ℂ) =
@@ -1288,7 +1289,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
       linarith
     rw [show q t = Real.sin (Real.pi * t / a) ^ 2 from rfl, hsin2]
     push_cast
-    rw [Complex.ofReal_cos, Complex.cos]
+    rw [Complex.cos]
     have he1 : ((2 * (Real.pi : ℂ) * (t : ℂ) / (a : ℂ)) * Complex.I) =
         -Complex.I * (α (-1) : ℂ) * (t : ℂ) := by
       simp only [α, Int.cast_neg, Int.cast_one]; push_cast; ring
@@ -1325,7 +1326,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
             simp only [α, Int.cast_add]
             push_cast
             ring
-          rw [pow_succ', Complex.ofReal_mul, hq_exp t]
+          rw [pow_succ', Complex.ofReal_mul, hq_exp t, show k - 1 = k + (-1) from sub_eq_add_neg k 1]
           linear_combination
             -(1 / 4 : ℂ) * (((q t ^ m : ℝ) : ℂ) * (ψ t : ℂ)) * hexp_add 1 -
             (1 / 4 : ℂ) * (((q t ^ m : ℝ) : ℂ) * (ψ t : ℂ)) * hexp_add (-1)
@@ -1358,8 +1359,7 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
   have hw_pos : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (_root_.norm_pos_iff.mpr hw_ne)
   have hψ_mid : ψ (a / 2) = ‖w‖ ^ 2 := by
     simp only [ψ, f, g₁, F, sub_self, Complex.ofReal_zero, mul_zero, Complex.exp_zero, one_smul,
-      B.U_zero, ContinuousLinearMap.one_apply, inner_self_eq_norm_sq_to_K (𝕜 := ℂ),
-      ← Complex.ofReal_pow, Complex.ofReal_re]
+      B.U_zero, one_apply_eq_self, inner_self_eq_norm_sq (𝕜 := ℂ)]
   obtain ⟨δ₁, hδ₁_pos, hδ₁_close⟩ :=
     Metric.continuousAt_iff.mp hψ_cont.continuousAt (‖w‖ ^ 2 / 2) (half_pos hw_pos)
   set δ : ℝ := min (δ₁ / 2) (a / 4)
@@ -1390,9 +1390,10 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
     have hsc := Real.sin_sq_add_cos_sq (Real.pi * t / a)
     rcases eq_or_lt_of_le ht0 with rfl | ht0'
     · simp [q]
-    · rcases eq_or_lt_of_le hta with rfl | hta'
-      · have hpi : Real.pi * a / a = Real.pi := mul_div_cancel_right₀ Real.pi ha.ne'
-        simp [q, hpi]
+    · rcases eq_or_lt_of_le hta with hta_eq | hta'
+      · rw [hta_eq, show q a = Real.sin (Real.pi * a / a) ^ 2 from rfl,
+          mul_div_cancel_right₀ Real.pi ha.ne', Real.sin_pi]
+        norm_num
       · rcases lt_or_gt_of_ne htne with hlt | hgt
         · have hmem : Real.pi * t / a ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
             constructor
@@ -1432,8 +1433,8 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
   have hr₀_lt_one : r₀ < 1 := max_lt
     (hq_lt_one ht₁_m.1 (by linarith [ht₁_m.2]) (by linarith [ht₁_m.2]))
     (hq_lt_one (by linarith [ht₂_m.1]) ht₂_m.2 (by linarith [ht₂_m.1]))
-  set r₁ : ℝ := (1 + r₀) / 2
-  have hr₀_lt_r₁ : r₀ < r₁ := by linarith
+  set r₁ : ℝ := (1 + r₀) / 2 with hr₁_def
+  have hr₀_lt_r₁ : r₀ < r₁ := by linarith [hr₁_def]
   have hr₁_pos : 0 < r₁ := by linarith
   have hq_mid : q (a / 2) = 1 := by
     have harg : Real.pi * (a / 2) / a = Real.pi / 2 := by field_simp
@@ -1450,18 +1451,18 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
       exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hη_lt_η₁
     have hc := hη₁_close hd
     rw [Real.dist_eq, hq_mid] at hc
-    linarith [(abs_lt.mp hc).1]
+    linarith [(abs_lt.mp hc).1, hr₁_def]
   have hbound_pow : ∀ m : ℕ, η * (r₁ ^ m * (‖w‖ ^ 2 / 2)) ≤ a * (r₀ ^ m * ‖w‖ ^ 2) := fun m => by
     let G : ℝ → ℝ := fun t => q t ^ m * ψ t
     have hG_cont : Continuous G := (hq_cont.pow m).mul hψ_cont
     have hintG : ∀ c d : ℝ, IntervalIntegrable G volume c d := fun c d =>
       hG_cont.intervalIntegrable c d
-    set p₀ : ℝ := 0
-    set p₁ : ℝ := a / 2 - δ
-    set p₂ : ℝ := a / 2 - η
-    set p₃ : ℝ := a / 2 + η
-    set p₄ : ℝ := a / 2 + δ
-    set p₅ : ℝ := a
+    set p₀ : ℝ := 0 with hp₀
+    set p₁ : ℝ := a / 2 - δ with hp₁
+    set p₂ : ℝ := a / 2 - η with hp₂
+    set p₃ : ℝ := a / 2 + η with hp₃
+    set p₄ : ℝ := a / 2 + δ with hp₄
+    set p₅ : ℝ := a with hp₅
     have hsplit : (∫ t in p₀..p₅, G t) =
         (∫ t in p₀..p₁, G t) + (∫ t in p₁..p₂, G t) + (∫ t in p₂..p₃, G t) +
           (∫ t in p₃..p₄, G t) + (∫ t in p₄..p₅, G t) := by
@@ -1471,8 +1472,8 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
       have s4 := (intervalIntegral.integral_add_adjacent_intervals (hintG p₃ p₄) (hintG p₄ p₅)).symm
       linarith
     have hb1 : -(p₁ - p₀) * (r₀ ^ m * ‖w‖ ^ 2) ≤ ∫ t in p₀..p₁, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith : p₀ ≤ p₁)
-        (intervalIntegral_const (-(r₀ ^ m * ‖w‖ ^ 2))) (hintG p₀ p₁) fun t ht => by
+      have hm := intervalIntegral.integral_mono_on (by linarith [hp₀, hp₁] : p₀ ≤ p₁)
+        (continuous_const.intervalIntegrable p₀ p₁) (hintG p₀ p₁) fun t ht => by
         have hqt : q t ≤ r₀ := le_trans (ht₁_max ht) (le_max_left _ _)
         have hqm : q t ^ m ≤ r₀ ^ m := pow_le_pow_left₀ (sq_nonneg _) hqt m
         have hψt := hψ_abs t
@@ -1481,24 +1482,25 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
       rw [intervalIntegral.integral_const, smul_eq_mul] at hm
       linarith
     have hb2 : 0 ≤ ∫ t in p₁..p₂, G t := by
-      refine intervalIntegral.integral_nonneg (by linarith : p₁ ≤ p₂) fun t ht => ?_
+      refine intervalIntegral.integral_nonneg (by linarith [hp₁, hp₂] : p₁ ≤ p₂) fun t ht => ?_
       exact mul_nonneg (pow_nonneg (sq_nonneg _) m) (le_trans (half_pos hw_pos).le
-        (hψ_ge t ht.1 (by linarith [ht.2])))
+        (hψ_ge t (by linarith [ht.1, hp₁]) (by linarith [ht.2, hp₂])))
     have hb3 : (p₃ - p₂) * (r₁ ^ m * (‖w‖ ^ 2 / 2)) ≤ ∫ t in p₂..p₃, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith : p₂ ≤ p₃)
-        (intervalIntegral_const (r₁ ^ m * (‖w‖ ^ 2 / 2))) (hintG p₂ p₃) fun t ht => by
-        have hqm : r₁ ^ m ≤ q t ^ m := pow_le_pow_left₀ hr₁_pos.le (hq_ge_r₁ t ht.1 ht.2) m
-        have hψt : ‖w‖ ^ 2 / 2 ≤ ψ t := hψ_ge t (by linarith [ht.1]) (by linarith [ht.2])
+      have hm := intervalIntegral.integral_mono_on (by linarith [hp₂, hp₃] : p₂ ≤ p₃)
+        (continuous_const.intervalIntegrable p₂ p₃) (hintG p₂ p₃) fun t ht => by
+        have hqm : r₁ ^ m ≤ q t ^ m :=
+          pow_le_pow_left₀ hr₁_pos.le (hq_ge_r₁ t (by linarith [ht.1, hp₂]) (by linarith [ht.2, hp₃])) m
+        have hψt : ‖w‖ ^ 2 / 2 ≤ ψ t := hψ_ge t (by linarith [ht.1, hp₂]) (by linarith [ht.2, hp₃])
         exact mul_le_mul hqm hψt (half_pos hw_pos).le (pow_nonneg (sq_nonneg _) m)
       rw [intervalIntegral.integral_const, smul_eq_mul] at hm
       exact hm
     have hb4 : 0 ≤ ∫ t in p₃..p₄, G t := by
-      refine intervalIntegral.integral_nonneg (by linarith : p₃ ≤ p₄) fun t ht => ?_
+      refine intervalIntegral.integral_nonneg (by linarith [hp₃, hp₄] : p₃ ≤ p₄) fun t ht => ?_
       exact mul_nonneg (pow_nonneg (sq_nonneg _) m) (le_trans (half_pos hw_pos).le
-        (hψ_ge t (by linarith [ht.1]) ht.2))
+        (hψ_ge t (by linarith [ht.1, hp₃]) (by linarith [ht.2, hp₄])))
     have hb5 : -(p₅ - p₄) * (r₀ ^ m * ‖w‖ ^ 2) ≤ ∫ t in p₄..p₅, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith : p₄ ≤ p₅)
-        (intervalIntegral_const (-(r₀ ^ m * ‖w‖ ^ 2))) (hintG p₄ p₅) fun t ht => by
+      have hm := intervalIntegral.integral_mono_on (by linarith [hp₄, hp₅] : p₄ ≤ p₅)
+        (continuous_const.intervalIntegrable p₄ p₅) (hintG p₄ p₅) fun t ht => by
         have hqt : q t ≤ r₀ := le_trans (ht₂_max ht) (le_max_right _ _)
         have hqm : q t ^ m ≤ r₀ ^ m := pow_le_pow_left₀ (sq_nonneg _) hqt m
         have hψt := hψ_abs t
@@ -1506,9 +1508,11 @@ private theorem eigenvector_eq_zero_of_pos [CompleteSpace H] (B : BorchersPair H
         nlinarith [pow_nonneg (sq_nonneg (Real.sin (Real.pi * t / a))) m]
       rw [intervalIntegral.integral_const, smul_eq_mul] at hm
       linarith
-    have hzero : ∫ t in p₀..p₅, G t = 0 := hreal_int_zero m
-    have hlen : (p₁ - p₀) + (p₅ - p₄) ≤ a := by simp only [p₀, p₁, p₄, p₅]; linarith
-    have hp32 : 2 * η = p₃ - p₂ := by simp only [p₂, p₃]; ring
+    have hzero : ∫ t in p₀..p₅, G t = 0 := by
+      rw [hp₀, hp₅]
+      exact hreal_int_zero m
+    have hlen : (p₁ - p₀) + (p₅ - p₄) ≤ a := by linarith [hp₀, hp₁, hp₄, hp₅]
+    have hp32 : 2 * η = p₃ - p₂ := by linarith [hp₂, hp₃]
     have hr0w : 0 ≤ r₀ ^ m * ‖w‖ ^ 2 := mul_nonneg (pow_nonneg hr₀_nonneg m) hw_pos.le
     have hr1w : 0 ≤ r₁ ^ m * (‖w‖ ^ 2 / 2) := mul_nonneg (pow_nonneg hr₁_pos.le m) (half_pos hw_pos).le
     nlinarith

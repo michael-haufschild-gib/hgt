@@ -20,4 +20,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeExitBou
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.ThickenedArithmeticIntersections
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.RationalAbelArithmeticCounts
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/
