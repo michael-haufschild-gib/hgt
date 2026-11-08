@@ -62,6 +62,14 @@ The [common derivative bound](../3-formalized/ads3-narain-logarithmic-derivative
 
 The [central classification](../3-formalized/ads3-narain-central-order-classification.md) is formalized. With `Y*=exp(2−4 Re ξ′(1))`, the mean has order `1+2·1_{Y=Y*}+2·1_{Z=Y*}` at `u=0`. The exceptional target cubic jet is nonzero because `(logDeriv ξ)″(1)` is real and strictly negative. Every arithmetic pole still survives at every target height.
 
+[Every physical Mellin boundary moment](../3-formalized/ads3-narain-central-moment-sum-rules.md) is formalized:
+`∫₀∞ y^(−3/2+it)(log y)^n R(y)dy=M^(n)(it)`, absolutely convergently.
+The first nonzero central moment has index one, three or five according
+to the exceptional-height count. Its cubic and quintic coefficients are
+explicit; the doubly exceptional fifth moment is strictly positive.
+At fixed `P=YZ`, the first moment is exactly
+`4√P[(c−(log P)/2)²−((log Y−log Z)/2)²]`.
+
 ## Product detector: formalized
 
 Put `D(u)=ξ(1+2u)`, `N(u;x,Y)=D(u)E(1/2+u;x+iY)` and

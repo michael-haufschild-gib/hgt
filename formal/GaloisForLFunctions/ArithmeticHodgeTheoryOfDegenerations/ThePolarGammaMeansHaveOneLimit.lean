@@ -33,6 +33,27 @@ lemma continuous_polarFarMean (T : ℝ) : Continuous (polarFarMean T) :=
   (continuous_exponential_mean continuous_polarFarClampedKernel T).sub
     (continuous_exponential_mean continuous_polarFarClampedKernel 2)
 
+/-- On a fixed annulus, the scalar far mean changes at most linearly with atom width. -/
+theorem exists_abs_polarFarMean_sub_zero_le {T : ℝ} (hT : 2 ≤ T) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {w : ℝ}, |w| * T ≤ 1 / 2 →
+      |polarFarMean T w - polarFarMean T 0| ≤ C * |w| := by
+  obtain ⟨A, hA, hbound, _⟩ := exists_polarFarClampedKernel_bounds
+    contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero integral_tiltedUnitSpline_sq_pos
+  refine ⟨2 * A * (T ^ 2 + 4), by positivity, fun {w} hw => ?_⟩
+  have hbig := abs_exponential_mean_sub_le (by linarith only [hT] : 0 < T) hA
+    continuous_polarFarClampedKernel.continuousOn (fun t _ => hbound t) hw
+  have hw2 : |w| * 2 ≤ 1 / 2 :=
+    (mul_le_mul_of_nonneg_left hT (abs_nonneg w)).trans hw
+  have hsmall := abs_exponential_mean_sub_le (by norm_num : (0 : ℝ) < 2) hA
+    continuous_polarFarClampedKernel.continuousOn (fun t _ => hbound t) hw2
+  unfold polarFarMean
+  simp only [zero_mul, zero_div, Real.exp_zero, mul_one]
+  have hid (a b c d : ℝ) : (a - b) - (c - d) = (a - c) - (b - d) := by ring
+  rw [hid]
+  exact ((abs_sub _ _).trans (add_le_add hbig hsmall)).trans_eq (by ring)
+
+#print axioms exists_abs_polarFarMean_sub_zero_le
+
 /-- At zero width the logarithmic annulus mean is twice the positive far integral. -/
 theorem polarFarMean_zero {T : ℝ} (hT : 2 ≤ T) :
     polarFarMean T 0 = 2 * ∫ s in (2 : ℝ)..T, crossSingular tiltedUnitSpline (1 / s) := by

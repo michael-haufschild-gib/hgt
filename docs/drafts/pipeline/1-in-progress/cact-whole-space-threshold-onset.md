@@ -109,6 +109,14 @@ tests `h_N` satisfy `⟨v_N,h_N⟩ ≥ a > 0`, then
 This holds for varying Hilbert spaces. Lean: `PolarRowScalarIsFixedByOneWindow`;
 axioms `propext, Classical.choice, Quot.sound`.
 
+## Strict ratio reserve (Lean)
+
+For `0 < R < S`, polar payment at `S` implies
+`windowPencil(R,H) + 2t S(h) + t² D(R) ≥
+(1/R − 1/S)(7 tiltedJordanOne·M₈(H) + jordanCoefficient(1)·t²)`.
+Lean: `charged_window_ge_ratio_gap` in `PolarPaymentHasAStrictInteriorMargin`.
+Axioms: `propext, Classical.choice, Quot.sound`.
+
 ## Source continuity
 
 The physical polar source is `e^(−u/2) terminalPolarKernel(u)` on `u ≤ 0`.
@@ -116,4 +124,8 @@ Its dual exponential norm is `∫_{u≤0} e^u terminalPolarKernel(u)² du`.
 Deep kernel boundedness and a squared-logarithm terminal majorant make this finite.
 Combined with the existing `tendsto_exponentialSourceMass_sub`, Cauchy–Schwarz
 then transfers polar source pairings through strong `L²` limits with bounded eighth mass.
-The kernel estimate and source-continuity formalizations are drafted, not yet checked.
+Lean: `integrableOn_exp_mul_terminalPolarKernel_sq`,
+`integrable_weighted_polarSourceProfile_sq`, and
+`tendsto_integral_mul_polarSourceProfile` in
+`ThePolarSourceIsContinuousInTheWeightedNorm`. Proof bodies pass Lean with
+`propext, Classical.choice, Quot.sound` only.

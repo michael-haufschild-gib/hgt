@@ -14,14 +14,15 @@ through its trace norm.
   independent of the window (inverse Vandermonde matrix).
 * `exists_pos_forall_window_le_norm_levelSum`: a tower with a finite top set `F` whose visible points
   have modulus `R`, and a remainder of modulus `≤ r` and any rank, satisfies
-  `|S(ν)| ≥ εRᵛ − (Σ|b|) rᵛ` at some level of every window of `#F` levels.
+  `|S(ν)| ≥ εRᵛ − (Σ|b|) rᵛ` at some level of every window of `k` levels, `k` the number of distinct
+  top points.
 * `eventually_forall_window_exists_lt_norm_levelSum`: if `r < R`, every rate `ρ < R` is exceeded at
-  some level of every window of `#F` levels beyond some point: the excursion set is syndetic with gap
+  some level of every window of `k` levels beyond some point: the excursion set is syndetic with gap
   the exceptional rank.
 * `not_forall_mem_thick_norm_levelSum_le`: hence no **thick** set of levels (one containing
   arbitrarily long runs arbitrarily far out) carries a bound `Cρᵛ` with `ρ < R`. A crude bound on a
   thick set of levels self-improves past every isolated visible top.
-* `le_tsum_norm_of_levelSum_eq_zero_on_window`: a remainder of modulus `≤ 1` that cancels the level
+* `exists_pos_forall_window_vanish_le_tsum_norm`: a remainder of modulus `≤ 1` that cancels the level
   sums on a window at position `M` has trace norm `≥ εR^{M+1}`: the price of hiding a top grows
   exponentially with the position of the window.
 -/
@@ -142,13 +143,14 @@ theorem sum_mul_pow_eq_sum_image {ι : Type*} (z b : ι → ℂ) (F : Finset ι)
 
 /-- **Isolated-top window bound at infinite rank.** A finite top set `F` whose visible points (nonzero
 merged weight) all have modulus `R`, over a remainder of modulus `≤ r` and arbitrary rank:
-`|S(ν)| ≥ εRᵛ − (Σ|b|) rᵛ` at some level of every window of `#F` consecutive levels. -/
+`|S(ν)| ≥ εRᵛ − (Σ|b|) rᵛ` at some level of every window of `k` consecutive levels, `k` the number of
+distinct top points. -/
 theorem exists_pos_forall_window_le_norm_levelSum {ι : Type*} (z b : ι → ℂ)
     (hb : Summable fun i => ‖b i‖) (F : Finset ι) {R r : ℝ} (hR : 0 < R) (hr : 0 ≤ r)
     (hrest : ∀ i ∉ F, ‖z i‖ ≤ r)
     (htop : ∀ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0 → ‖z i‖ = R)
     (hvis : ∃ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ M : ℕ, ∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + F.card ∧
+    ∃ ε : ℝ, 0 < ε ∧ ∀ M : ℕ, ∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + (F.image z).card ∧
       ε * R ^ ν - (∑' i, ‖b i‖) * r ^ ν ≤ ‖levelSum z b ν‖ := by
   classical
   set c : ℂ → ℂ := fun w => ∑ j ∈ F with z j = w, b j with hc
@@ -162,7 +164,7 @@ theorem exists_pos_forall_window_le_norm_levelSum {ι : Type*} (z b : ι → ℂ
   obtain ⟨ε, hε, hwin⟩ := exists_pos_forall_window_le_norm_pointSum _ c hR htop' hvis'
   refine ⟨ε, hε, fun M => ?_⟩
   obtain ⟨ν, h1, h2, h3⟩ := hwin M
-  refine ⟨ν, h1, h2.trans (by have := card_image_le (s := F) (f := z); omega), ?_⟩
+  refine ⟨ν, h1, h2, ?_⟩
   -- the modes are bounded, so the level sum splits into top and remainder
   set B : ℝ := r + ∑ i ∈ F, ‖z i‖ with hB
   have hzB : ∀ i, ‖z i‖ ≤ B := by
@@ -207,14 +209,14 @@ theorem exists_pos_forall_window_le_norm_levelSum {ι : Type*} (z b : ι → ℂ
 /-! ### Self-improvement on windows and thick sets -/
 
 /-- **The excursion set is syndetic with gap the exceptional rank.** Under an isolated visible top
-(`r < R`), every rate `ρ < R` and constant `C` are exceeded at some level of every window of `#F`
-consecutive levels beyond some point. -/
+(`r < R`), every rate `ρ < R` and constant `C` are exceeded at some level of every window of `k`
+consecutive levels beyond some point, `k` the number of distinct top points. -/
 theorem eventually_forall_window_exists_lt_norm_levelSum {ι : Type*} (z b : ι → ℂ)
     (hb : Summable fun i => ‖b i‖) (F : Finset ι) {R r : ℝ} (hR : 0 < R) (hr : 0 ≤ r)
     (hrR : r < R) (hrest : ∀ i ∉ F, ‖z i‖ ≤ r)
     (htop : ∀ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0 → ‖z i‖ = R)
     (hvis : ∃ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0) {ρ C : ℝ} (hρ : 0 ≤ ρ) (hρR : ρ < R) :
-    ∃ M₀ : ℕ, ∀ M, M₀ ≤ M → ∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + F.card ∧
+    ∃ M₀ : ℕ, ∀ M, M₀ ≤ M → ∃ ν : ℕ, M + 1 ≤ ν ∧ ν ≤ M + (F.image z).card ∧
       C * ρ ^ ν < ‖levelSum z b ν‖ := by
   obtain ⟨ε, hε, hwin⟩ := exists_pos_forall_window_le_norm_levelSum z b hb F hR hr hrest htop hvis
   set W : ℝ := ∑' i, ‖b i‖ with hW
@@ -266,19 +268,19 @@ theorem not_forall_mem_thick_norm_levelSum_le {ι : Type*} (z b : ι → ℂ)
   intro hbd
   obtain ⟨M₀, hM₀⟩ := eventually_forall_window_exists_lt_norm_levelSum z b hb F hR hr hrR hrest
     htop hvis (C := C) hρ hρR
-  obtain ⟨M, hM, hwin⟩ := hG F.card M₀
+  obtain ⟨M, hM, hwin⟩ := hG (F.image z).card M₀
   obtain ⟨ν, h1, h2, h3⟩ := hM₀ M hM
   exact absurd (hbd ν (hwin ν h1 h2)) (not_le.mpr h3)
 
 /-- **The price of hiding a top.** A remainder of modulus `≤ 1` that makes the level sums vanish on
-the window `[M+1, M+#F]` has trace norm at least `εR^{M+1}`, with `ε > 0` depending only on the top
+the window `[M+1, M+k]`, `k` the number of top points, has trace norm at least `εR^{M+1}`, with `ε > 0` depending only on the top
 layer. -/
 theorem exists_pos_forall_window_vanish_le_tsum_norm {ι : Type*} (z b : ι → ℂ)
     (hb : Summable fun i => ‖b i‖) (F : Finset ι) {R : ℝ} (hR : 1 ≤ R)
     (hrest : ∀ i ∉ F, ‖z i‖ ≤ 1)
     (htop : ∀ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0 → ‖z i‖ = R)
     (hvis : ∃ i ∈ F, (∑ j ∈ F with z j = z i, b j) ≠ 0) :
-    ∃ ε : ℝ, 0 < ε ∧ ∀ M : ℕ, (∀ ν, M + 1 ≤ ν → ν ≤ M + F.card → levelSum z b ν = 0) →
+    ∃ ε : ℝ, 0 < ε ∧ ∀ M : ℕ, (∀ ν, M + 1 ≤ ν → ν ≤ M + (F.image z).card → levelSum z b ν = 0) →
       ε * R ^ (M + 1) ≤ ∑' i, ‖b i‖ := by
   obtain ⟨ε, hε, hwin⟩ := exists_pos_forall_window_le_norm_levelSum z b hb F
     (by linarith) zero_le_one hrest htop hvis

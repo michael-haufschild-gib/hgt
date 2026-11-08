@@ -66,6 +66,7 @@ theorem integral_narainMeanMomentDensity_two_exceptional_five_real :
       ((2560 / 3 * narainExceptionalHeight.val *
         (2 - (deriv (deriv (logDeriv xi)) (1 : ℂ)).re) ^ 2 : ℝ) : ℂ) := by
   rw [integral_narainMeanMomentDensity_two_exceptional_five, ← narainCentralXiCurvature_real]
+  simp only [Complex.ofReal_re]
   push_cast <;> ring
 
 /-- The first surviving moment at the doubly exceptional height is strictly positive. -/

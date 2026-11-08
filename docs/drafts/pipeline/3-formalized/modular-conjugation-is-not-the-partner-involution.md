@@ -1,15 +1,15 @@
 # Modular conjugation of the AdS₄ wedge is not the partner involution
 
 - **ID:** modular-conjugation-is-not-the-partner-involution
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean verified)
 - **Source:** ../../../reports/review-0811/obstacles-summary.md · §2.7 Q1, §2.10 Q1
 - **Statement:** On the `SL₂(ℤ)`-quotient of the AdS₄ Rindler wedge, geometric modular conjugation cannot realize the Eisenstein partner involution on integer sources; abstractly, on any standard-form von Neumann algebra `M` whose Tomita conjugation `J · J` preserves a subalgebra, `J · J` collapses to the Hilbert adjoint `star`, so a standard-form partner realization of the integer Born rule `Q` exists if and only if `RiemannHypothesis` holds.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `CountingHolography/ModularConjugationIsNotThePartnerInvolution.lean`, `lake --old env lean` green, `#print axioms` PASS
+- [x] 2 → 3  formalized: Lean module `CountingHolography/ModularConjugationIsNotThePartnerInvolution.lean`, `lake --old env lean` green, `#print axioms` PASS
 
 ## Exact result
 
@@ -35,7 +35,11 @@
 - **Exact killing theorem/mechanism:** Normalizer rigidity of `PSL₂(ℤ)` in `PGL₂(ℝ)` (`normalizer_psl2z_entries_int`) forbids any geometric cusp inversion `y ↦ 1/y` on `SL₂(ℤ) \ AdS₄`, and Tomita central collapse (`tomita_central_eq_star`) forces `J Z J = Z*` on every `J`-stable subalgebra, eliminating modular conjugation as an independent source of positivity beyond Hilbert-space `*`-positivity.
 - **Strongest positive survivor:** Complete characterization (`tomita_central_eq_star`, `exists_standardForm_partner_rep_iff_damped`, `riemannHypothesis_iff_exists_standardForm_bornRule`): a standard-form von Neumann algebra realizing the partner involution on rational dilations and Born rule `Q` on integer sources exists if and only if `RiemannHypothesis` holds, and in that realization `M` is abelian on the source algebra with `J U(r) J = U(r)*`.
 - **New insight:** Tomita–Takesaki modular theory cannot bypass the count half of a count law: requiring `J · J` to act internally on commutative arithmetic dilations forces those dilations into the center `M ∩ M'`, where natural-cone positivity is literally norm-square positivity `‖X Ω‖² ≥ 0`.
-- **Status:** Dependency-closed paper proof complete; formalizing in `CountingHolography/ModularConjugationIsNotThePartnerInvolution.lean`.
+- **Status:** Paper proof and Lean formalization complete in `CountingHolography/ModularConjugationIsNotThePartnerInvolution.lean`.
+
+## Verification
+
+`lake --old env lean` exits 0 with no output. All 21 audited main declarations and constructions depend only on `propext`, `Classical.choice`, and `Quot.sound`; temporary audit commands removed. No proof placeholders or raised limits.
 
 ## Lean declarations
 

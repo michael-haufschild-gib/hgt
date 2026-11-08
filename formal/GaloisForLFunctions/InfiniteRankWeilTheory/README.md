@@ -1,176 +1,237 @@
 # Infinite-Rank Weil Theory over Spec ℤ (IRW)
 
-Namespace `GaloisForLFunctions.InfiniteRankWeilTheory`; umbrella `InfiniteRankWeilTheory.lean`.
-Specification: §2.8b of [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
+Namespace `GaloisForLFunctions.InfiniteRankWeilTheory`; umbrella `InfiniteRankWeilTheory.lean`;
+11 modules. Specification: §2.8b of
+[the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
 
-Weil's theorem for a curve of genus `g` over `𝔽_q` has, in the form proved in this corpus for
-every hyperelliptic curve, three steps:
+Weil's theorem for a curve of genus `g` over `𝔽_q`, in the form the corpus proves for every
+hyperelliptic curve, has three steps:
 
-1. **Crude count.** At every level `n` of the base-change tower, `|N_n − qⁿ − 1| ≤ C q^{n/2}` with
-   `C` independent of `n` (Stepanov's auxiliary polynomial).
-2. **Self-improvement.** Power sums of `2g` numbers that are `O(1)` at every level have every
-   number of modulus `≤ 1` (finite-rank elimination). The constant `C` is irrelevant.
+1. **Crude count.** At every level `n` of the base-change tower, `|N_n − qⁿ − 1| ≤ C q^{n/2}` with `C`
+   independent of `n` (Stepanov's auxiliary polynomial).
+2. **Self-improvement.** Power sums of `2g` numbers that are `O(1)` at every level put every number in
+   the closed unit disc. The constant `C` does not matter.
 3. **Reflection.** The functional equation `β ↦ 1/β` turns `|β| ≤ 1` into `|β| = 1`.
 
-A fourth reading packages the result as a **count**: the channel numbers extend to an `ℕ`-valued
-count whose Tate limit is the intersection form.
+Read as a **count**, the channel numbers extend to an `ℕ`-valued count whose Tate limit is the
+intersection form.
 
-Over `Spec ℤ` the modes are the zeros of `ξ`: infinitely many, growing like `T log T`, with
-infinite Kronecker rank. Each step changes character at infinite rank:
+Over `Spec ℤ` the modes are the zeros of `ξ`: infinitely many, about `T log T` up to height `T`, with
+ordinates of infinite Kronecker rank. Every step changes character at infinite rank, and IRW is the
+theory of that change. It treats curves and `ζ` as two instances of one object, a **Weil tower** (modes
+closed under conjugation and `z ↦ 1/z`), and asks for each step what its infinite-rank form is, when it
+holds, what it costs, and which arithmetic input it needs that the finite-rank form gets for free.
 
-| Step | Finite rank (curve) | Infinite rank (`ℤ`) |
+| Step | Finite rank (curve) | Infinite rank (`ℤ`), as proved here |
 |---|---|---|
-| crude count | `O(q^{n/2})` at every level | false in the size coordinate (`|ψ(x)−x| ≤ C√x` fails); survives only in the exceptional coordinate as ZAL (finitely many zeros beyond each depth), which is ≥ quasi-RH |
-| self-improvement | finite elimination; any constant | AAL: a bound valid for all but finitely many modes holds for all; its base case at `σ=½` is B13 |
-| reflection | `β ↦ 1/β` | `ρ ↦ 1−ρ`; consistent with every finite off-line layer |
-| count | Tate limit of `ℕ`-valued counts | exists at weight `δ>0`; at the critical weight `δ=0` it is RH |
-
-IRW is the theory of Weil data of infinite rank. It asks, for each step, what its infinite-rank
-form is, exactly when it holds, what it costs, and which arithmetic input each infinite-rank form
-needs that the finite-rank form gets for free. Its working hypothesis is that every failure of a
-curve step over `ℤ` is a **rank phenomenon**, and that a proof of RH must build the infinite-rank
-version of each step at the place the corpus has located: the crude step at the dark range, the
-self-improvement at the critical line, the count at the critical weight.
+| crude count | `O(1)` traces at every level | a bound on the level sums along a **thick** set of levels of one tower; in primes, `|(X − ψ(X)) + X(Σ_{n≤X}Λ(n)/n − log X + γ)| ≤ C X^{½}` along `X = e^{νℓ}`, `ν` in a thick set |
+| self-improvement | finite elimination; any constant | works exactly when the outer part is **well-founded** (ZAL); the window length is the **exceptional rank**, and the infinite remainder enters only through its **trace norm** |
+| AAL | automatic (finite rank, periodic heads) | AAL fails exactly at an **isolated top**: a finite-rank datum riding on an infinite-rank remainder |
+| reflection | `β ↦ 1/β` | acts on level sums only by `S(−ν) = conj S(ν)`; consistent with every finite off-line layer |
+| count | Tate limit of a count | a count positive by damping survives the critical weight; a count positive by renormalization does not |
 
 ## 2. Objects
 
-| Object | Meaning |
-|---|---|
-| Weil tower `(z_i)_{i∈ι}` at base `ℓ` | countable family of nonzero modes `z_i = e^{ℓ(ρ_i−½)}`, closed under conjugation and under the reflection `z ↦ 1/z̄`; a curve datum is a tower of finite rank at `ℓ = log q`; a prime tower of `ζ` is the tower at `ℓ = log p` |
-| Weights `w_i` | summable (trace-class) coefficients attached to the modes by a test; `Σ|w_i|` is the **trace norm** |
-| Level sum `S(ν) = Σ w_i z_iⁿ` | the infinite-rank power sum; for `ζ` at base `ℓ` it is a sampled Weil lag / Lefschetz sequence |
-| Outer, critical, inner part | `|z|>1`, `|z|=1`, `|z|<1`; reflection exchanges outer and inner |
-| Top layer | modes of maximal modulus `R`; **isolated** if the rest has modulus `≤ r < R` |
-| Rank | number of modes of a layer; the **exceptional rank** is the rank of the top layer |
-| Configuration | multiset of modes `ρ` in the strip, closed under `ρ ↦ ρ̄` and `ρ ↦ 1−ρ` |
-| Abscissae | `Θ = sup Re ρ`, `Θ∞ = limsup_{|γ|→∞} Re ρ`; `Θ₂` the second abscissa |
-| Exceptional set at depth `h` | modes with `Re ρ > ½+h`; in a tower, `|z| > e^{ℓh}` |
-| Level sets of indices | sets `G ⊆ ℕ` of levels on which a bound is known: windows, thick sets (containing arbitrarily long intervals), syndetic sets, sets of positive density |
-| Dirichlet polynomial at a return | `A(s) = Σ_{n≤N} c_n n^{−s}` evaluated at heights `t` with `|p^{it}−1| ≤ δ` for `p ≤ y` |
-| Collision form | `Σ_{m,n} a_m ā_n K(T log(m/n))`, the off-diagonal of a mean value of a Dirichlet polynomial longer than the height |
-| Calibration battery | curve data (finite rank, complete proof); golden fake (FE, integrality, an outer mode); periodic configurations (function fields); cosh models (FE, order one, any finite layer); Beurling one-offs (Euler product, no FE); shifted products `ξ(s+a)ξ(s−a)` |
+| Object | Lean | Meaning |
+|---|---|---|
+| Weil tower | `WeilTower`, `reflPerm` | modes `z_i`, `i ∈ ι` (with multiplicity), closed under `z ↦ z̄` and `z ↦ 1/z` |
+| Level sum | `levelSum z b ν` | `S(ν) = Σ_i b_i z_iᵛ`, `ν ∈ ℤ`: the infinite-rank power sum |
+| Trace norm | `∑' i, ‖b i‖` | the currency in which an infinite remainder is paid |
+| Curve tower | `CurveDatum.toWeilTower` | normalized Frobenius eigenvalues, finite rank `2g` |
+| Tower of a configuration | `frobTower ℓ ρ` | `z_i = e^{ℓ(ρ_i − ½)}`: the prime tower at `ℓ = log p`, any base `ℓ > 0` |
+| Tower of `ζ` | `zetaTower ℓ`, `zetaConfig`, `lagWeight` | zeros of `ξ` with multiplicity; weights `1/(ρ(1−ρ))` |
+| Configuration | `ρ : ι → ℂ` | modes in the strip; `ZerosApproachLine`, `AsymptoticAbscissaLaw`, `RightRH`, `EventualToGlobal` |
+| Isolated top | `HasIsolatedTop` | finite nonempty layer on `Re = Θ > ½`, all other modes left of `Θ₂ < Θ` |
+| Well-founded outer part | `WellFoundedAbove z ρ` | finitely many modes above every radius `> ρ` |
+| Thick set of levels | `Thick G` | contains arbitrarily long runs arbitrarily far out |
+| Merged weight | `∑ j ∈ F with z j = z i, b j` | total weight at one point; a point is **visible** if it is nonzero |
+| Roots-of-unity tower | `rootsOfUnityTower R k` | outer `R·μ_k`, inner `R⁻¹·μ_k`: the barrier model |
+| Cosh model | `coshModel Q`, `quartet` | `cosh(s − ½) Π_{q∈Q}(s−q)(s−q̄)(s−1+q)(s−1+q̄)` |
+| Return | `IsReturn P δ t`, `phase` | `|p^{−it} − 1| ≤ δ` for all `p ∈ P` |
+| Smooth Dirichlet polynomial | `dpoly S c`, `logMoment`, `momentMap` | `Σ_{n∈S} c_n n^{−s}` on `P`-smooth `S`; its logarithmic moments = derivatives |
+| Fejér mean value | `fejerMean`, `fejerKernel`, `collisionCount` | `∫_0^T (1 − t/T)|Σ a_n n^{−it}|² dt`; kernel `(1 − cos λT)/(Tλ²)` |
+| Toeplitz kernel, damping | `toeplitz`, `ToeplitzPositive`, `dampWeight` | `[k(i − j)]`; `ρ^{|ν|}`, `ρ = e^{−δ}` |
+| Prime deviation | `primeDeviation X` | `(X − ψ(X)) + X(Σ_{n≤X}Λ(n)/n − log X + γ) − log 2π + O(X⁻²)` |
 
 ## 3. Language
 
-- **Level**: an exponent `ν` of the tower; for `ζ`, the scale `x = e^{νℓ}`.
-- **Crude bound** on `G`: `|S(ν)| ≤ C r^ν` for `ν ∈ G`, any constant `C`.
-- **Self-improves** on `G`: a crude bound on `G` at rate `r` forces every visible mode to `|z| ≤ r`.
-- **Visible**: the weight of the mode's modulus class is not cancelled (top-group weights bounded below).
-- **Well-founded outer part**: finitely many modes above every radius `> 1` (the tower form of ZAL).
-- **Isolated top**: finitely many modes of maximal modulus above a gap (the tower form of ¬AAL).
-- **Rank barrier**: any statement whose constants or windows depend on the total rank is void at
-  infinite rank; what survives depends only on the exceptional rank and the trace norm.
-- **Eventual-to-global**: a right bound valid above some height is valid at all heights (AAL).
-- **Reflection**: `ρ ↦ 1−ρ`, in towers `z ↦ 1/z`; with conjugation `z ↦ 1/z̄`.
-- **Return**: a height at which every prime phase up to `y` is within `δ` of `1`.
+- **Level**: an exponent `ν` of a tower; for `ζ` at base `ℓ`, the scale `X = e^{νℓ}`.
+- **Crude bound on `G`**: `|S(ν)| ≤ Cρᵛ` for `ν ∈ G`, any constant `C`.
+- **Self-improves on `G`**: a crude bound on `G` at rate `ρ` forces every visible mode into `|z| ≤ ρ`.
+- **Exceptional rank**: the number of distinct visible top points; for `ζ` without AAL, the number of
+  top zeros. **Total rank** is the number of all modes; at infinite rank it is `∞`.
+- **Rank barrier**: whatever depends on the total rank is void at infinite rank; only the exceptional
+  rank and the trace norm may enter.
+- **Exceptional coordinate**: the number of modes beyond each depth. ZAL is its crude statement, AAL its
+  self-improvement, B13 (finitely many off-line zeros ⇒ none) its base case at `σ = ½`.
 - **Forced vanishing**: approximate vanishing at every return, produced by moment conditions.
-- **Critical weight**: `δ = 0` in the weighted spaces `ℓ²(n^δ)` of the count.
+- **Collision**: a pair `m ≠ n` with `|log(n/m)| ≲ 1/T`.
+- **Damped count / renormalized count**: positive at weight `δ` because of a Schur product with
+  `ρ^{|ν|}`, or because a self-energy `c(δ) → ∞` was added.
 
 ## 4. Mechanisms
 
-1. **Turán windows.** A finite-rank power sum with a top mode of modulus `R` is `≥ c(k,M)R^ν` at some
-   level of every window of `k` consecutive levels, `c(k,M)` polynomial in `M`. One far window, or a
-   thick set of levels, therefore self-improves; at infinite rank the remainder below the top is paid
-   in trace norm and does not enter the window length.
-2. **Roots of unity.** A top layer `R·μ_k` has vanishing power sums off `kℤ`: a bound on a set of
-   density `1−1/k` does not self-improve. Windows of length equal to the exceptional rank are
-   necessary; at unbounded rank only thick sets work.
-3. **Vandermonde hiding.** Finitely many unimodular modes cancel a top mode on any finite window;
-   Turán fixes the trace norm such hiding costs. Trace norm, not rank, is the currency.
-4. **Well-founded elimination.** If the outer part is finite above every radius, a crude bound with
-   any constant at every large level removes it; reflection then puts every visible mode on the
-   unit circle. Without well-foundedness, Wolff configurations have vanishing level sums.
-5. **The exceptional coordinate.** ZAL is well-foundedness of the outer part; ¬AAL is an isolated
-   top of finite rank; so the ¬AAL world is a finite-rank Weil datum riding on an infinite-rank
-   remainder, which is exactly the regime of mechanisms 1–3.
-6. **Reflection is consistent with every finite layer.** `cosh(s−½)` times any finite reflection-closed
-   polynomial factor is an entire function of order one with functional equation, reality and any
-   prescribed finite off-line layer; the functional equation acts on level sums only by
-   `S(−ν) = conj S(ν)`.
-7. **Returns freeze smooth polynomials.** At a `δ`-return, a Dirichlet polynomial supported on
-   `y`-smooth integers moves by at most `δ` times its logarithmic mass; moment conditions give
-   approximate vanishing to high order at every return at once (the archimedean shadow of
-   `x^q − x`).
-8. **Long mean values are collision counts.** A band-limited mean value of a Dirichlet polynomial of
-   any length is the diagonal plus a form on pairs `|log(m/n)| < 1/T`; beyond the height the
-   off-diagonal dominates, and for prime coefficients it is a count of prime pairs in short
-   multiplicative ranges.
+1. **Inverse Vandermonde.** Distinct points on a circle with coefficients not all zero give an
+   exponential polynomial of size `≥ ε` at some level of every window of `k` levels, with `ε` independent
+   of the window. A remainder of modulus `≤ r < R` of any rank costs only `(Σ|b|) rᵛ`.
+2. **Polynomial window constants against geometric decay.** Under an isolated top, every rate `ρ < R` is
+   exceeded at some level of every window of `k` levels beyond some point; so a thick set of levels
+   self-improves.
+3. **Roots of unity.** A top layer `R·μ_k` has vanishing level sums off `kℤ`; no bound on a set of
+   density `< 1`, and no window shorter than the exceptional rank, self-improves.
+4. **Vandermonde hiding and its price.** `N` unimodular modes cancel any values on a window of `N`
+   levels; cancelling a visible top of modulus `R ≥ 1` at position `M` costs trace norm `≥ εR^{M+1}`.
+5. **Well-founded elimination.** If the outer part is finite above every radius, the largest visible
+   outer point is an isolated top and mechanism 2 removes it. With reflection-compatible weights the
+   inner part goes with it.
+6. **Isolated tops are the failures of AAL.** A finite nonempty exceptional set has a top layer with a
+   gap below it; conversely an isolated top is a finite nonempty exceptional set.
+7. **Cosh models.** `cosh(s − ½)` has all zeros on the critical line; multiplying by quartet polynomials
+   places any finite off-line layer while keeping the functional equation, reality and order one.
+8. **Freezing at returns.** `|n^{−it} − 1| ≤ Ω(n)δ` for `P`-smooth `n` at a `δ`-return; logarithmic
+   moments are derivatives; the `J`-th exponential tail bounds a polynomial with a zero of order `J`.
+9. **Linear independence of `log p`.** Two primes have no common exact return besides `t = 0`.
+10. **Fejér identity.** `∫_0^T (1 − t/T) cos(λt) dt = (1 − cos λT)/(Tλ²)`, a nonnegative kernel
+    `≥ 2T/π²` on `|λ| ≤ π/T`.
+11. **Kac–Murdock–Szegő and Schur.** `ρ^{|i−j|} = Σ_{k≤min(i,j)} c_k ρ^{i−k}ρ^{j−k}` with `c_0 = 1`,
+    `c_k = 1 − ρ²`; Hadamard products of positive matrices are positive.
 
-## 5. Questions
+## 5. Questions and their answers
 
-| # | Question (§2.8b) | Form in IRW |
-|---|---|---|
-| Q1 | What replaces "finitely many power sums" when the modes are infinite and grow like `T log T`? | which level sets `G` self-improve, at which exceptional rank, at which trace norm |
-| Q2 | Which exceptional-set bound self-improves under the FE? | classification of eventual-to-global laws over the calibration battery |
-| Q3 | What is the infinite-rank analogue of `|α| ≤ √q` from `Σαⁿ = O(q^{n/2})`? | elimination for well-founded towers; failure modes (sharp cutoffs, walls) |
-| Q4 | Is a finite top layer compatible with the FE once the bottom layer is reflected into the power sums? | reflection-closed models; what the FE forces on level sums |
-| Q5 | Which auxiliary function has forced vanishing at the returns of the prime orbit with controlled size? | moment-annihilated smooth Dirichlet polynomials; their size at returns |
-| Q6 | What survives of a positive count at `δ>0` as `δ→0`? | damped and tilted towers; positivity at the critical weight |
+| # | Question (§2.8b) | Answer | Lean |
+|---|---|---|---|
+| Q1 | What replaces "finitely many power sums" when the modes are infinite and grow like `T log T`? | Level sums on **windows of length the exceptional rank**, with the infinite remainder paid in **trace norm**; a crude bound on a **thick** set of levels self-improves past every isolated visible top. Sharp: windows shorter than the exceptional rank and sets of density `1 − 1/k` fail, also with an infinite critical remainder; hiding is possible on every finite window and costs trace norm `≥ εR^{M+1}`. | `exists_pos_forall_window_le_norm_levelSum`, `eventually_forall_window_exists_lt_norm_levelSum`, `not_forall_mem_thick_norm_levelSum_le`, `levelSum_rootsOfUnityTower_eq_zero`, `norm_levelSum_rootsOfUnity_add_le`, `exists_unimodular_cancelling_layer`, `le_tsum_norm_of_hides_top` |
+| Q2 | Which exceptional-set bound self-improves under the FE? | For every configuration RH = ZAL + AAL, and AAL fails exactly at an isolated top. **None** self-improves from the FE with order one and reality (cosh models carry every finite layer); **none** from an Euler product with integer norms and linear counting (one-off); **every** one under vertical periodicity (function fields); AAL is invariant under symmetric shifts. For `ζ`, AAL follows from lag growth exponent `0` along a thick set of levels of one tower, in primes from a thick-set crude count at every exponent `½ + a`. | `rightRH_iff_zerosApproachLine_and_asymptoticAbscissaLaw`, `not_asymptoticAbscissaLaw_iff_hasIsolatedTop`, `not_asymptoticAbscissaLaw_coshModelZeros`, `integerNormOneOff_zal_not_aal`, `asymptoticAbscissaLaw_of_vertical_period`, `asymptoticAbscissaLaw_shift_iff`, `asymptoticAbscissaLaw_of_thick_lag_bound`, `asymptoticAbscissaLaw_of_thick_primeDeviation_bound` |
+| Q3 | What is the infinite-rank analogue of `|α| ≤ √q` from `Σαⁿ = O(q^{n/2})`? | **Well-founded elimination**: in a tower whose outer part is finite above every radius `> ρ`, a bound `Cρᵛ` on a thick set of levels leaves no visible mode outside radius `ρ`, whatever `C`; with reflection only the unit circle stays visible. For curves this is RH from traces bounded on a thick set; for `ζ` it is `RH ⇔ ZAL ∧` one thick bounded lag, equivalently one thick crude count in primes at exponent `½`. Without well-foundedness Wolff walls defeat it. | `mergedWeight_eq_zero_of_thick_bound`, `WeilTower.mergedWeight_eq_zero_of_norm_ne_one`, `CurveDatum.unitary_of_thick_trace_bound`, `CurveDatum.unitary_of_thick_pointCount_bound`, `riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded`, `riemannHypothesis_iff_zerosApproachLine_and_thick_primeDeviation` |
+| Q4 | Is a finite top layer compatible with the FE once the bottom layer is reflected into the power sums? | **Yes.** On level sums the FE is the symmetry `S(−ν) = conj S(ν)` and the outer and inner parts have equal rank; the reflected bottom layer lies below the critical layer and enters every window only through the remainder. Every finite reflection-closed layer is the off-line zero set of an entire function of order one with FE and reality, all other zeros critical (ZAL holds, AAL fails). The Dirichlet series must enter. | `WeilTower.levelSum_neg`, `WeilTower.encard_outer_eq_encard_inner`, `coshModel_one_sub`, `coshModel_conj`, `norm_coshModel_le`, `coshModel_eq_zero_iff`, `zerosApproachLine_coshModelZeros`, `not_asymptoticAbscissaLaw_coshModelZeros` |
+| Q5 | Which auxiliary function has forced vanishing at the returns of the prime orbit with controlled size? | **Moment-annihilated smooth Dirichlet polynomials.** They exist on any `J + 1` integers; at every `δ`-return they are `≤ δ·(logarithmic mass) + (J-th exponential tail)` on the whole disc about `s₀ + it`: `J` linear conditions force approximate vanishing to order `J` at all returns at once. But the prime orbit has no exact return besides `t = 0`, so the vanishing is approximate only, and copying a zero of order `J` to a return needs `δ` below the `J`-th tail. That precision cost is the missing Frobenius. | `norm_phase_sub_one_le_of_smooth`, `norm_dpoly_shift_sub_le`, `exists_ne_zero_moments_eq_zero`, `norm_dpoly_le_expTail`, `norm_dpoly_near_return_le`, `eq_zero_of_exact_return` |
+| Q6 | What survives of a positive count at `δ>0` as `δ→0`? | **Everything, if the positivity comes from damping; nothing, if it comes from renormalization.** Damping `ρ^{|ν|}` is Toeplitz positive and preserves Toeplitz positivity, and positivity of all damped kernels gives positivity at `δ = 0`. A critical layer with nonnegative weights is positive at every weight. But every real symmetric form, indefinite ones included, is the renormalized limit of raw forms made positive by a divergent diagonal counterterm. The renormalized torsion forms are of this second kind, so a critical-weight count must be a damping of something positive. | `toeplitz_dampWeight_posSemidef`, `toeplitzPositive_damp`, `toeplitzPositive_of_damped`, `toeplitzPositive_criticalLayer`, `eventually_posSemidef_add_counterterm`, `not_posSemidef_swap` |
 
 ## 6. Tools
 
-| # | Tool (§2.8b) | IRW form |
-|---|---|---|
-| T1 | infinite-rank Turán theorem with tail controlled by the reflected bottom layer | window lower bounds depending only on the exceptional rank, remainder paid in trace norm, inner layer included |
-| T2 | Frobenius substitute for auxiliary functions at the archimedean place | freezing at returns, forced vanishing by moments |
-| T3 | mean-value theorems for Dirichlet polynomials longer than the height with main terms | band-limited mean value = diagonal + collision form; main terms |
-| T4 | count on correspondences at the critical weight | positivity of damped/tilted level kernels as `δ → 0` |
+| # | Tool (§2.8b) | Built | Module |
+|---|---|---|---|
+| T1 | infinite-rank Turán theorem with tail controlled by the reflected bottom layer | windows of length the exceptional rank; remainder of any rank, inner layer included, paid in trace norm; syndetic excursions; thick-set self-improvement; hiding cost | `TheExceptionalRankDecidesTheWindow`, `TheRankBarrier` |
+| T2 | Frobenius substitute for auxiliary functions at the archimedean place | freezing of smooth polynomials at returns; moment-annihilated auxiliary polynomials; forced near-vanishing on discs about every return; flatness bound; uniqueness of exact returns | `ReturnsFreezeSmoothPolynomials` |
+| T3 | mean values for Dirichlet polynomials longer than the height, with main terms | exact Fejér collision identity at every length; collision lower bounds; `≥ TN(N+1)/(π²(T+1))` for `Σ_{n≤N} n^{−it}`, against the diagonal `TN/2`; prime collisions = prime pairs at `|log(p'/p)| ≤ π/T` | `LongMeanValuesAreCollisionCounts` |
+| T4 | count on correspondences at the critical weight | Toeplitz positivity of damped counts at every weight, losslessly to `δ = 0`; positivity of critical layers; no-go for renormalized counts | `TheCriticalWeight` |
+
+T4 delivers the critical-weight count for damped objects. A count over `ℤ` whose Tate limit is the
+Weil form exists iff RH (`CountingHolography`), so the arithmetic count itself is the open core, not a tool.
 
 ## 7. Pillar theorems
 
-To be filled as the modules are proved; every entry will name its Lean declaration.
+| Theorem | Lean |
+|---|---|
+| Reflection on level sums; equal outer and inner rank | `WeilTower.levelSum_neg`, `WeilTower.encard_outer_eq_encard_inner` |
+| Vandermonde window bound | `exists_pos_forall_window_le_norm_expSum`, `exists_pos_forall_window_le_norm_pointSum` |
+| Isolated-top window bound at infinite rank | `exists_pos_forall_window_le_norm_levelSum` |
+| Syndetic excursions; thick sets self-improve | `eventually_forall_window_exists_lt_norm_levelSum`, `not_forall_mem_thick_norm_levelSum_le` |
+| Price of hiding a top | `exists_pos_forall_window_vanish_le_tsum_norm`, `le_tsum_norm_of_hides_top` |
+| Rank barrier | `levelSum_rootsOfUnityTower_eq_zero`, `card_Ioc_filter_not_dvd`, `norm_levelSum_rootsOfUnity_add_le`, `exists_unimodular_cancelling_layer` |
+| Infinite-rank Hasse–Weil | `mergedWeight_eq_zero_of_thick_bound`, `WeilTower.mergedWeight_eq_zero_of_norm_ne_one` |
+| Curves on thick sets of levels | `CurveDatum.unitary_of_thick_trace_bound`, `CurveDatum.unitary_of_thick_pointCount_bound` |
+| RH = ZAL + AAL for every configuration; AAL fails at isolated tops | `rightRH_iff_zerosApproachLine_and_asymptoticAbscissaLaw`, `not_asymptoticAbscissaLaw_iff_hasIsolatedTop` |
+| AAL = eventual-to-global; ZAL = well-founded tower | `asymptoticAbscissaLaw_iff_eventualToGlobal`, `wellFoundedAbove_frobTower_iff` |
+| Periodic heads; symmetric shifts | `asymptoticAbscissaLaw_of_vertical_period`, `asymptoticAbscissaLaw_shift_iff` |
+| FE admits every finite layer | `coshModel_one_sub`, `coshModel_conj`, `differentiable_coshModel`, `norm_coshModel_le`, `not_asymptoticAbscissaLaw_coshModelZeros` |
+| Towers of `ζ`: lag = level sum; every point visible | `zetaTower`, `weilLagFunction_mul_eq_levelSum`, `mergedLagWeight_ne_zero` |
+| Without AAL the lag is large once in every `k` levels, at every base | `exists_syndetic_lag_excursions_of_not_asymptoticAbscissaLaw` |
+| AAL from a thick lag bound; RH = ZAL + one thick bounded lag | `asymptoticAbscissaLaw_of_thick_lag_bound`, `riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded` |
+| The crude count in primes | `weilLagFunction_eq_primeDeviation`, `asymptoticAbscissaLaw_of_thick_primeDeviation_bound`, `riemannHypothesis_iff_zerosApproachLine_and_thick_primeDeviation` |
+| Returns freeze smooth polynomials; forced vanishing; one exact return | `norm_dpoly_shift_sub_le`, `norm_dpoly_near_return_le`, `eq_zero_of_exact_return` |
+| Long mean values are collision forms | `fejerMean_eq`, `collisionCount_le_fejerMean`, `fejerMean_one_ge`, `primeCollisions_le_fejerMean` |
+| Damping is lossless; renormalization carries no sign | `toeplitzPositive_damp`, `toeplitzPositive_of_damped`, `eventually_posSemidef_add_counterterm` |
+| Calibration | `goldenDatum_not_thick_trace_bounded`, `not_forall_thick_trace_le_of_outer`, `integerNormOneOff_zal_not_aal` |
+
+All are unconditional; the `ζ` statements depend only on `propext`, `Classical.choice`, `Quot.sound`.
 
 ## 8. Traps
 
 | Trap | Truth |
 |---|---|
-| A crude constant-factor bound over `ℤ` is the analogue of Stepanov's | `|ψ(x)−x| ≤ C√x` is false; smoothed it is RH; the crude regime is the exceptional coordinate |
-| Turán's theorem works at infinite rank | its constants decay like `(kM)^{−k}` in the total rank; only the exceptional rank may enter |
-| A bound on most levels self-improves | roots-of-unity layers vanish on density `1−1/k`; windows of the exceptional rank are needed |
-| The FE excludes a top layer through the power sums | every finite reflection-closed layer has an FE model of order one |
-| Elimination holds for every summable tower | Wolff configurations: walls make every level sum vanish |
-| AAL uses the position of the line | symmetric shifts preserve AAL; only the involution may be used |
-| Height averages see a finite layer | density statements miss every finite set |
-| Returns make every polynomial small | only moment-annihilated, smooth-supported ones, at precision set by the logarithmic mass |
-| A long mean value is a diagonal | beyond the height the collision form dominates; for primes it is a binary problem |
+| A constant-factor crude bound over `ℤ` is Stepanov's step | `|ψ(x) − x| ≤ C√x` is false; the crude statement lives on thick sets of levels of a smoothed tower, and the exceptional coordinate (ZAL) is what it needs |
+| Turán's theorem works at infinite rank | its constants decay in the total rank; only the exceptional rank may enter |
+| A bound on most levels self-improves | roots-of-unity tops vanish on density `1 − 1/k`, also over an infinite critical remainder |
+| Finite rank of the critical part is needed to cancel a top | it is not: `N` modes hide any top on `N` levels; the obstruction is trace norm |
+| Elimination holds for every summable tower | needs a well-founded outer part (ZAL); Wolff walls otherwise |
+| The FE excludes a top layer through the power sums | the FE is the symmetry `S(−ν) = conj S(ν)`; cosh models carry every finite layer |
+| Euler products with positive coefficients force AAL | the integer-norm one-off has ZAL and one top pair |
+| AAL uses the position of the line | symmetric shifts preserve AAL |
+| A thick-set bound is as strong as a bound at all levels | for self-improvement it is; producing it on a thick set is the crude step, and is open |
+| Returns make every polynomial vanish | only moment-annihilated smooth ones, approximately, and the precision must beat the `J`-th tail |
+| Forced vanishing at returns gives a Stepanov count | there are no exact returns besides `t = 0`; approximate vanishing forces no zeros without Rouché precision |
+| A long mean value is its diagonal | beyond the height the collision form dominates; for primes it is a prime-pair count |
+| A count positive at every `δ > 0` is positive at `δ = 0` | true for damping, false for renormalization |
 
 ## 9. Open research topics
 
-1. A producer of a crude bound on a thick set of levels of one tower, in the finite stratum.
-2. A reflection-sensitive statement on the critical line that a finite top layer violates.
-3. Rouché stability of forced vanishing at constant precision, and a Stepanov count of returns.
-4. Main terms of the prime collision form at lengths `T^{1+θ}`.
-5. The critical-weight count (B87/B88).
+1. **The crude step.** A bound on the lag (or on `primeDeviation`) along a thick set of levels of one
+   tower, at every exponent `½ + a`: it gives AAL. The same at exponent `½`, with ZAL, is RH. The dark
+   range enters here: the levels `ν ≈ log X/ℓ` with `X` between `log T` and `exp((log T)^{2/3})` are the
+   ones no estimate reaches.
+2. **The finite stratum.** B13 in tower form: a finite visible outer part that survives a bounded lag on
+   one thick set. The window length there is the off-line count `κ`.
+3. **Precision of forced vanishing.** A lower bound for `min_{|w|=r}|A(s₀ + w)|` for moment-annihilated
+   polynomials that beats the single-prime return count at constant precision (B97).
+4. **Main terms of prime collisions.** An asymptotic for the prime collision count at lengths
+   `T^{1+θ}`: a binary problem of Hardy–Littlewood type.
+5. **A damped arithmetic count.** A count on correspondences of `Spec ℤ` that is positive because it is
+   a damping, not a renormalization (B87, B88).
+6. **Non-well-founded towers.** Classify the towers with accumulating outer parts whose level sums are
+   bounded on thick sets (Wolff walls); decide whether `ζ`'s towers can have one without ZAL.
 
 ## 10. Calibration
 
-Every IRW statement must reduce to the corpus curve proof at finite rank, fail on the golden fake
-through the crude count, hold automatically on periodic configurations, be invariant under
-symmetric shifts, and fail on Beurling one-offs through the missing functional equation.
+| Model | Present | Absent | IRW reading |
+|---|---|---|---|
+| Curves of every genus | all three steps | — | finite rank; thick-set crude count ⇒ RH |
+| Golden fake, graph black holes | FE, integrality, rational zeta | damping | crude count fails on every thick set |
+| Function fields | periodic heads | — | AAL automatic |
+| Cosh models | FE, order one, reality, infinitely many critical zeros | Dirichlet series | ZAL, not AAL |
+| Integer-norm one-off | Euler product, integer norms, linear counting | FE | ZAL, not AAL |
+| Roots-of-unity tower | reflection, conjugation, visible top | — | bounded on density `1 − 1/k` |
+| Symmetric shifts `ξ(s+a)ξ(s−a)` | FE, Euler product | the line | AAL ⇔ AAL(`ξ`) |
 
 ## 11. Context
 
 | Neighbour | Interface |
 |---|---|
-| ArithmeticCastelnuovoSeveri | curve data, Frobenius eigenvalues `frobEig`, prime towers, Wolff walls |
-| ArithmeticOrientationGeometry | orbit correlations, eventual Hasse–Weil, rate = depth |
-| CountingHolography | count law of every hyperelliptic curve; crude count ⇔ count law |
-| ZeroConfigurationGeometry, RHTower | AAL, eventual-to-global, shift invariance, finite oscillation of `ψ` |
-| HTGeometry | Turán's second main theorem, separation-free, weighted |
-| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | finite stratum, Krein–Langer structure, towers decide |
-| ArithmeticPositiveDuality | one-offs, positive annihilators, relocation |
+| ArithmeticCastelnuovoSeveri | `CurveDatum`, `goldenDatum`, `frobEig`, prime towers, Wolff walls |
+| ArithmeticOrientationGeometry | orbit correlations, eventual Hasse–Weil, rate = depth (the continuous-level form of Q3) |
+| CountingHolography | crude count ⇔ count law on curves; the Tate door over `ℤ` |
+| RHTower | AAL, ZAL, `weilLagFunction` and its prime side, `XiZeroCopy` and its involutions |
+| ZeroConfigurationGeometry | eventual-to-global law and shift invariance for `ξ`; finite oscillation of `ψ` |
+| HTGeometry | Turán's second main theorem (quantitative windows over the zeros of `ξ`) |
+| HeckeKreinToeplitz, ArithmeticKreinLangerTheory | finite stratum, Krein–Langer structure, tower decides |
+| ArithmeticPositiveDuality | Beurling one-offs, positive annihilators |
 | TailArithmeticOfThePrimeOrbit, PrimeTorusTheory | returns, precision law, Kronecker scale |
-| HeightHomotopyArithmeticCounts | renormalized torsion forms on `ℓ²(n^δ)` |
+| HeightHomotopyArithmeticCounts | renormalized torsion forms on `ℓ²(n^δ)`: the renormalized side of Q6 |
 
-## 12. Success criteria
+## 12. Success criteria and contributions
 
-IRW succeeds when each of Q1–Q6 has a theorem-level answer (positive, or a sharp no-go with its
-positive survivor), each tool T1–T4 exists in Lean in its strongest unconditional form, every
-pillar reduces to the curve proof at finite rank, and the open core is stated as one precise
-infinite-rank statement per step.
+IRW succeeds when each step of the curve proof has a theorem-level infinite-rank form, each question
+Q1–Q6 has a theorem-level answer (positive, or a sharp no-go with its positive survivor), each tool
+exists in its strongest unconditional form, every statement reduces to the curve proof at finite rank,
+and the open core is one precise statement per step. That state is reached; what remains open is the
+crude step (topic 1), which is quasi-RH, and the arithmetic count (topic 5), which is RH.
 
-**A contribution** must: be unconditional; state its rank dependence (total, exceptional, or none);
-say which calibration models it holds on and which it fails on; be invariant under symmetric
-shifts or say why not; and not be an exact restatement of an RH-equivalent already in the corpus.
+A **contribution** must be unconditional; state its rank dependence (total, exceptional, none); say on
+which calibration models it holds and fails; be invariant under symmetric shifts or say why not; and not
+be an exact restatement of an RH-equivalent already in the corpus. A new producer must say on which set
+of levels it bounds which tower, at which exponent, and why that set is thick.
+
+## 13. Big picture
+
+At finite rank Weil's three steps are a crude count, algebra, and a symmetry. At infinite rank the
+algebra survives in a precise form: the self-improvement is the Vandermonde window theorem, its window
+is the exceptional rank, its remainder is paid in trace norm, and it applies exactly to well-founded
+towers on thick sets of levels. Both conditions are sharp. The symmetry survives as a symmetry and does
+nothing more: it is consistent with every finite top layer. What changes is the first step. On a curve
+the crude count is cheap because the Frobenius fixes the points; over `ℤ` the prime orbit has one exact
+return, forced vanishing is approximate, and its precision costs grow exponentially in the order. So
+the infinite-rank Weil proof needs exactly one new input — a crude count along a thick set of geometric
+scales of one tower, at every exponent above `½` for AAL and at `½` for RH — and every other step is now
+a theorem.

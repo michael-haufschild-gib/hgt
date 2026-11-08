@@ -19,6 +19,8 @@ The window theorem then reads, for `ζ`:
   constant `C`, beyond some level every window of `k` consecutive levels contains a level with
   `|Φ(νℓ)| > C e^{aνℓ}`. The rank of the window is the exceptional rank and does not depend on the
   base.
+* `eventually_lag_large_of_single_top_pair`: if the top is one conjugate pair `Θ ± iγ`, at the base
+  `π/γ` the exceptional rank is `1` and the lag is large at every level beyond some point.
 * `asymptoticAbscissaLaw_of_thick_lag_bound`: conversely, AAL follows if at one base the lag has
   growth exponent `0` along a thick set of levels.
 * `riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded`: RH is ZAL plus one bounded lag
@@ -132,9 +134,59 @@ theorem exists_syndetic_lag_excursions_of_not_asymptoticAbscissaLaw
     (C := C) (Real.exp_pos _).le hρR
   refine ⟨M₀, fun M hM => ?_⟩
   obtain ⟨ν, h1, h2, h3⟩ := hM₀ M hM
-  refine ⟨ν, h1, h2, ?_⟩
+  have hk : (F.image (frobTower ℓ zetaConfig)).card ≤ F.card := Finset.card_image_le
+  refine ⟨ν, h1, by omega, ?_⟩
   rw [weilLagFunction_mul_eq_levelSum, show (Θ - 1 / 2) / 2 * (ν : ℝ) * ℓ =
     ν * ((Θ - 1 / 2) / 2 * ℓ) by ring, Real.exp_nat_mul]
+  exact h3
+
+/-- **A single top pair is seen at every level of its resonant tower.** Suppose the zeros of `ξ` have
+an isolated top `F` on `Re = Θ` (all others left of `Θ₂ < Θ`) consisting of copies of one conjugate
+pair `Θ ± iγ`, `γ > 0`. At the base `ℓ = π/γ` the two top points coincide, the exceptional rank is
+`1`, and for every `a < Θ − ½` and every `C` the lag exceeds `C e^{aνℓ}` at **every** level beyond
+some point. This is the first rung (one off-line quartet) of the finite stratum in tower form. -/
+theorem eventually_lag_large_of_single_top_pair {F : Finset XiZeroCopy} {Θ Θ₂ γ : ℝ}
+    (hFne : F.Nonempty) (hΘ₂ : Θ₂ < Θ) (hγ : 0 < γ) (hF : ∀ q ∈ F, (zetaConfig q).re = Θ)
+    (hrest : ∀ q ∉ F, (zetaConfig q).re ≤ Θ₂) (hpair : ∀ q ∈ F, |(zetaConfig q).im| = γ)
+    {a : ℝ} (haΘ : a < Θ - 1 / 2) (C : ℝ) :
+    ∃ M₀ : ℕ, ∀ ν : ℕ, M₀ < ν →
+      C * Real.exp (a * ν * (Real.pi / γ)) < ‖weilLagFunction (ν * (Real.pi / γ))‖ := by
+  classical
+  set ℓ : ℝ := Real.pi / γ with hℓdef
+  have hℓ : 0 < ℓ := div_pos Real.pi_pos hγ
+  obtain ⟨hlow, htop, hvis, hlt⟩ := zeta_window_data hℓ hFne hΘ₂ hF hrest
+  -- all top points coincide: `e^{ℓ(Θ−½)} e^{±iπ} = −e^{ℓ(Θ−½)}`
+  set w₀ : ℂ := -((Real.exp (ℓ * (Θ - 1 / 2)) : ℝ) : ℂ) with hw₀
+  have hpoint : ∀ q ∈ F, frobTower ℓ zetaConfig q = w₀ := by
+    intro q hq
+    have hre := hF q hq
+    have him : ℓ * (zetaConfig q).im = Real.pi ∨ ℓ * (zetaConfig q).im = -Real.pi := by
+      rcases abs_eq hγ.le |>.1 (hpair q hq) with h | h
+      · left; rw [h, hℓdef, div_mul_cancel₀ _ hγ.ne']
+      · right; rw [h, hℓdef]; field_simp
+    have hsplit : (ℓ : ℂ) * (zetaConfig q - 1 / 2) =
+        ((ℓ * (Θ - 1 / 2) : ℝ) : ℂ) + ((ℓ * (zetaConfig q).im : ℝ) : ℂ) * Complex.I := by
+      conv_lhs => rw [← Complex.re_add_im (zetaConfig q)]
+      rw [hre]; push_cast; ring
+    rw [frobTower, hsplit, Complex.exp_add, ← Complex.ofReal_exp, hw₀]
+    rcases him with h | h
+    · rw [h, Complex.exp_pi_mul_I]; ring
+    · rw [h, Complex.ofReal_neg, neg_mul, Complex.exp_neg, Complex.exp_pi_mul_I]; ring
+  have hcard : (F.image (frobTower ℓ zetaConfig)).card ≤ 1 := by
+    refine (Finset.card_le_card fun w hw => ?_).trans (Finset.card_singleton w₀).le
+    obtain ⟨q, hq, rfl⟩ := Finset.mem_image.1 hw
+    exact Finset.mem_singleton.2 (hpoint q hq)
+  have hρR : Real.exp (a * ℓ) < Real.exp (ℓ * (Θ - 1 / 2)) :=
+    Real.exp_lt_exp.mpr (by nlinarith)
+  obtain ⟨M₀, hM₀⟩ := eventually_forall_window_exists_lt_norm_levelSum (frobTower ℓ zetaConfig)
+    lagWeight summable_norm_lagWeight F (Real.exp_pos _) (Real.exp_pos _).le hlt hlow htop hvis
+    (C := C) (Real.exp_pos (a * ℓ)).le hρR
+  refine ⟨M₀, fun ν hν => ?_⟩
+  obtain ⟨μ, h1, h2, h3⟩ := hM₀ (ν - 1) (by omega)
+  have hμ : μ = ν := by omega
+  subst hμ
+  rw [weilLagFunction_mul_eq_levelSum, show a * (μ : ℝ) * ℓ = μ * (a * ℓ) by ring,
+    Real.exp_nat_mul]
   exact h3
 
 /-- **AAL from a thick lag bound.** If at one base `ℓ > 0` the lag along a thick set of levels grows
@@ -191,8 +243,6 @@ def primeDeviation (X : ℝ) : ℂ :=
 theorem weilLagFunction_eq_primeDeviation {L : ℝ} (hL : 0 < L) :
     weilLagFunction L = Real.exp (-L / 2) * primeDeviation (Real.exp L) := by
   rw [RHTower.weilLagFunction_eq_prime_side hL, primeDeviation, Real.log_exp]
-  push_cast
-  ring
 
 theorem norm_weilLagFunction_eq {L : ℝ} (hL : 0 < L) :
     ‖weilLagFunction L‖ = Real.exp (-L / 2) * ‖primeDeviation (Real.exp L)‖ := by

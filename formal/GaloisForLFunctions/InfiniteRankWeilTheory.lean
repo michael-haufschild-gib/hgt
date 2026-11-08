@@ -8,6 +8,7 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.TheTowersOfZeta
 import GaloisForLFunctions.InfiniteRankWeilTheory.ReturnsFreezeSmoothPolynomials
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheCriticalWeight
 import GaloisForLFunctions.InfiniteRankWeilTheory.LongMeanValuesAreCollisionCounts
+import GaloisForLFunctions.InfiniteRankWeilTheory.TheCalibrationBattery
 
 /-!
 # Infinite-rank Weil theory over Spec ℤ

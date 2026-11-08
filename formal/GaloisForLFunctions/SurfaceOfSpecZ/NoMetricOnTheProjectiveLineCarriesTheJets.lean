@@ -50,8 +50,7 @@ theorem arakelovPairing_eq (φ : ℂ → ℝ) {m n : ℕ} (hm : 0 < m) (hn : 0 <
       -orbitIntersection m n + Nat.totient n * potentialSum φ m + Nat.totient m * potentialSum φ n := by
   unfold arakelovPairing orbitIntersection potentialSum
   simp only [sum_add_distrib, sum_neg_distrib, sum_const, nsmul_eq_mul]
-  rw [← sum_mul, card_primitiveRoots_complex hn, card_primitiveRoots_complex hm, mul_sum]
-  ring
+  rw [← mul_sum, card_primitiveRoots_complex hn, card_primitiveRoots_complex hm]
 
 /-- On coprime orders torsion orbits do not meet at finite places. -/
 theorem orbitIntersection_of_coprime {m n : ℕ} (hm : 1 < m) (hn : 1 < n) (h : Nat.Coprime m n) :
@@ -95,6 +94,7 @@ theorem archBlock_eq : archBlock = !![98 / 45, 242 / 117, 338 / 165;
 /-- **The jets have rank at least three.** -/
 theorem det_archBlock_ne_zero : Matrix.det archBlock ≠ 0 := by
   rw [archBlock_eq, Matrix.det_fin_three]
+  simp
   norm_num
 
 /-- **No metric on `ℙ¹_ℤ` carries the jets.** No potential `φ` and weights `α, β` make the

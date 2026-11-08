@@ -64,6 +64,49 @@ theorem tendsto_normalized_topWindow_polarSample {c : ℕ → ℝ} (hc : ∀ N, 
     with N hN hL
   exact normalized_topWindow_polarSample_le (hc N) hN hL (F N)
 
+/-- Addition preserves vanishing normalized top-window square mass. -/
+theorem tendsto_normalized_topWindow_add {δ : ℝ} {c : ℕ → ℝ}
+    {x y : (N : ℕ) → EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hx : Tendsto (fun N : ℕ => (Real.log (N : ℝ) / c N ^ 2) * topWindowResidualMass δ N (x N))
+      atTop (𝓝 0))
+    (hy : Tendsto (fun N : ℕ => (Real.log (N : ℝ) / c N ^ 2) * topWindowResidualMass δ N (y N))
+      atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => (Real.log (N : ℝ) / c N ^ 2) * topWindowResidualMass δ N (x N + y N))
+      atTop (𝓝 0) := by
+  have hlim := (hx.const_mul 2).add (hy.const_mul 2)
+  simp only [mul_zero, add_zero] at hlim
+  refine squeeze_zero (fun N => mul_nonneg
+    (div_nonneg (Real.log_natCast_nonneg N) (sq_nonneg _)) (topWindowResidualMass_nonneg δ N _))
+      (fun N => ?_) hlim
+  exact (mul_le_mul_of_nonneg_left (topWindowResidualMass_add_le δ N (x N) (y N))
+    (div_nonneg (Real.log_natCast_nonneg N) (sq_nonneg _))).trans_eq (by ring)
+
+/-- A fixed scalar preserves vanishing normalized top-window square mass. -/
+theorem tendsto_normalized_topWindow_smul {δ : ℝ} {c : ℕ → ℝ}
+    {x : (N : ℕ) → EuclideanSpace ℝ (PrimeHorizonIndex N)}
+    (hx : Tendsto (fun N : ℕ => (Real.log (N : ℝ) / c N ^ 2) * topWindowResidualMass δ N (x N))
+      atTop (𝓝 0)) (a : ℝ) :
+    Tendsto (fun N : ℕ => (Real.log (N : ℝ) / c N ^ 2) * topWindowResidualMass δ N (a • x N))
+      atTop (𝓝 0) := by
+  have hh := hx.const_mul (a ^ 2)
+  rw [mul_zero] at hh
+  exact hh.congr fun N => by rw [topWindowResidualMass_smul]; ring
+
+lemma polarSampleVector_add (c : ℝ) (N : ℕ) (f g : ℕ → ℝ) :
+    polarSampleVector c N (fun n => f n + g n) = polarSampleVector c N f + polarSampleVector c N g := by
+  ext idx
+  change _ * (f idx.1 + g idx.1) / _ = _ * f idx.1 / _ + _ * g idx.1 / _
+  ring
+
+lemma polarSampleVector_sub (c : ℝ) (N : ℕ) (f g : ℕ → ℝ) :
+    polarSampleVector c N (fun n => f n - g n) = polarSampleVector c N f - polarSampleVector c N g := by
+  ext idx
+  change _ * (f idx.1 - g idx.1) / _ = _ * f idx.1 / _ - _ * g idx.1 / _
+  ring
+
+#print axioms tendsto_normalized_topWindow_add
+#print axioms tendsto_normalized_topWindow_smul
+
 #print axioms normalized_topWindow_polarSample_le
 #print axioms tendsto_normalized_topWindow_polarSample
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -24,10 +24,10 @@ theorem dividedFilledEisensteinNumerator_eq_mean_add_tail
         2 * (2 * u - 1) * (1 + 2 * u) * eisTail u z.x z.y := by
   let G : ℂ → ℂ := fun v => dividedFilledNumeratorMean ⟨z.y, z.y_pos⟩ v +
     2 * (2 * v - 1) * (1 + 2 * v) * eisTail v z.x z.y
-  have hG : Differentiable ℂ G :=
-    (differentiable_dividedFilledNumeratorMean ⟨z.y, z.y_pos⟩).add
+  have hG : Differentiable ℂ G := by
+    convert! (differentiable_dividedFilledNumeratorMean ⟨z.y, z.y_pos⟩).add
       ((by fun_prop : Differentiable ℂ (fun v : ℂ => 2 * (2 * v - 1) * (1 + 2 * v))).mul
-        (fun v => differentiableAt_eisTail z.x z.y_pos v))
+        (fun v => differentiableAt_eisTail z.x z.y_pos v)) using 1
   have heq (v : ℂ) : v * dividedFilledEisensteinNumerator z v = v * G v := by
     rw [← filledEisensteinNumerator_eq_mul_divided]
     change filledNumeratorMean ⟨z.y, z.y_pos⟩ v +

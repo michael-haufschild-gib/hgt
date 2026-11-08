@@ -472,7 +472,7 @@ private theorem exists_regularPart_vk_rect {ψ : ℝ → ℂ} {a b : ℝ} (hψ :
   · have hw_anti : narainVKWidth δ T ≤ narainVKWidth δ T₀ := narainVKWidth_anti δ hexp_2T₀ hT
     have hub : u ∈ box0 := ⟨⟨by linarith, hhi⟩, abs_le.mp ht⟩
     have huim2 : u.im ^ 2 ≤ 1 := by
-        simpa only [sq_abs, one_pow] using pow_le_pow_left₀ (abs_nonneg u.im) ht 2
+      simpa only [sq_abs, one_pow] using pow_le_pow_left₀ (abs_nonneg u.im) ht 2
     have h1 : (1 + u.im ^ 2) ^ K ≤ 2 ^ K :=
       pow_le_pow_left₀ (by positivity) (by linarith) K
     rw [le_div_iff₀ hpos]
@@ -587,6 +587,266 @@ private theorem pow_le_succ_pow_mul_exp {x : ℝ} (hx : 0 ≤ x) (n : ℕ) :
   rw [div_pow, div_le_iff₀ (pow_pos hpos n)] at h2
   linarith
 
+/-- Mellin inversion on `Re w = -1/2`, with the factor `y^{1/2}` extracted. -/
+private theorem norm_horocycle_sub_exp_eq_line {ψ : ℝ → ℂ} {a b : ℝ}
+    (hψ : IsTest ψ a b) (ha : 1 < a) {y : ℝ} (hy : 0 < y) :
+    ‖horocycleMean (pseudoEisenstein ψ) y - residueConst ψ * ((Real.exp (-y) : ℝ) : ℂ)‖ =
+      (1 / (2 * Real.pi)) * y ^ (1 / 2 : ℝ) *
+        ‖∫ t : ℝ, Complex.exp (((-Real.log y : ℝ) : ℂ) * ((t : ℂ) * Complex.I)) *
+          regularPart ψ ((t : ℂ) * Complex.I - 1 / 2)‖ := by
+  have ha0 : 0 < a := by linarith
+  have hψa : ∀ t, t < a → ψ t = 0 := fun _ ht => hψ.eq_zero_of_le ht.le
+  have hψb : ∀ t, b < t → ψ t = 0 := fun _ ht => hψ.eq_zero_of_ge ht.le
+  have hΨ_strip := mellinRegularStrip_regularPart hψ zero_le_one le_rfl
+    (fun z hz => xi_ne_zero_of_one_lt_re hz)
+    (fun δ' hδ' d => ⟨1 + 1 / δ', 0, by positivity, fun z hz _ _ => by
+      simpa using _root_.RHTower.norm_inv_riemannZeta_le_of_le_re (by linarith : 1 < 1 + δ') hz⟩)
+  obtain ⟨B_pe, -, hB_pe⟩ := exists_norm_pseudoEisenstein_le hψ.continuous ha hψa hψb
+  have hFc := continuous_pseudoEisenstein hψ.continuous ha0 hψa
+  set c : ℂ := residueConst ψ
+  set L : ℝ := -Real.log y
+  have hy_half : y ^ (1 / 2 : ℝ) = Real.exp (-L / 2) := by
+    rw [Real.rpow_def_of_pos hy]
+    congr 1
+    simp only [L]
+    ring
+  set g : ℝ → ℂ := fun u => horocycleMean (pseudoEisenstein ψ) u -
+    c * ((Real.exp (-u) : ℝ) : ℂ)
+  have hconv : MellinConvergent g 1 := by
+    have h1 := mellinConvergent_horocycleMean hψ.continuous ha hψa hψb (s := 2) (by norm_num)
+    have h2 := (mellinConvergent_exp_neg (w := 1) (by norm_num)).const_smul c
+    norm_num at h1
+    refine (h1.sub h2).congr_fun (fun u _ => ?_) measurableSet_Ioi
+    simp only [Pi.sub_apply, g, smul_eq_mul]
+    ring
+  have hline : ∀ t : ℝ, mellin g ((1 : ℝ) + t * Complex.I) =
+      regularPart ψ ((1 : ℝ) + t * Complex.I) :=
+    fun t => mellin_sub_exp_eq_regularPart hψ ha (by simp)
+  have hvert : Complex.VerticalIntegrable (mellin g) 1 := by
+    refine (hΨ_strip.integrable_line (by norm_num) (by norm_num)).congr
+      (Eventually.of_forall fun t => (hline t).symm)
+  have hcont : ContinuousAt g y :=
+    (continuousAt_horocycleMean hFc hB_pe hy).sub (continuousAt_const.mul
+      (Complex.continuous_ofReal.comp (Real.continuous_exp.comp continuous_neg)).continuousAt)
+  have hgy_eq : g y = mellinInv (-1 / 2) (regularPart ψ) y := by
+    rw [← mellinInv_mellin_eq 1 g hy hconv hvert hcont]
+    have hinv1 : mellinInv 1 (mellin g) y = mellinInv 1 (regularPart ψ) y := by
+      unfold mellinInv
+      congr 1
+      exact integral_congr_ae (Eventually.of_forall fun t => by simp only; rw [hline t])
+    rw [hinv1, mellinInv_one_eq_neg_half hψ hy]
+  -- Factor `y^{1/2}` out of `mellinInv (-1/2) (regularPart ψ) y`
+  set G₀ : ℂ → ℂ := fun u => Complex.exp ((L : ℂ) * u) * regularPart ψ (u - 1 / 2)
+  have hy0_c : (y : ℂ) ≠ 0 := by exact_mod_cast hy.ne'
+  have hcpow_line : ∀ t : ℝ,
+      (y : ℂ) ^ (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) *
+        regularPart ψ (((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I) =
+      ((y ^ (1 / 2 : ℝ) : ℝ) : ℂ) * G₀ ((t : ℂ) * Complex.I) := by
+    intro t
+    rw [Complex.cpow_def_of_ne_zero hy0_c, ← Complex.ofReal_log hy.le]
+    have hexp_arg : ((Real.log y : ℝ) : ℂ) * (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) =
+        ((-L / 2 : ℝ) : ℂ) + (L : ℂ) * ((t : ℂ) * Complex.I) := by
+      simp only [L]
+      push_cast
+      ring
+    have harg_u : ((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I = (t : ℂ) * Complex.I - 1 / 2 := by
+      push_cast; ring
+    rw [hexp_arg, Complex.exp_add, ← Complex.ofReal_exp, ← hy_half, harg_u]
+    simp only [G₀, mul_assoc]
+  have hgy_norm : ‖g y‖ =
+      (1 / (2 * Real.pi)) * y ^ (1 / 2 : ℝ) * ‖∫ t : ℝ, G₀ ((t : ℂ) * Complex.I)‖ := by
+    rw [hgy_eq]
+    unfold mellinInv
+    have hint_eq :
+        (∫ t : ℝ, (y : ℂ) ^ (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) •
+          regularPart ψ (((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) =
+        ∫ t : ℝ, ((y ^ (1 / 2 : ℝ) : ℝ) : ℂ) * G₀ ((t : ℂ) * Complex.I) :=
+      integral_congr_ae (Eventually.of_forall fun t => by
+        simpa only [smul_eq_mul] using hcpow_line t)
+    rw [hint_eq, integral_const_mul, norm_smul, norm_mul, Real.norm_of_nonneg (by positivity),
+      Complex.norm_real, Real.norm_of_nonneg (Real.rpow_nonneg hy.le _)]
+    ring
+  exact hgy_norm
+
+/-- Rapid vertical decay gives integrability and a quantitative tail on the boundary line. -/
+private theorem regularPart_line_integrable_and_tail {ψ : ℝ → ℂ} {a b : ℝ}
+    (hψ : IsTest ψ a b) (L : ℝ) {K : ℕ} (hK1 : 1 ≤ K) {B_K : ℝ} (hB_K0 : 0 ≤ B_K)
+    (hB_K : ∀ w : ℂ, -1 / 2 ≤ w.re → w.re ≤ 1 →
+      ‖regularPart ψ w‖ ≤ B_K / (1 + w.im ^ 2) ^ K) {T : ℝ} (hT3 : 3 ≤ T) :
+    let G₀ : ℂ → ℂ := fun u => Complex.exp ((L : ℂ) * u) * regularPart ψ (u - 1 / 2)
+    Integrable (fun t : ℝ => G₀ ((t : ℂ) * Complex.I)) ∧
+      ‖∫ t : ℝ in (Ioc (-T) T)ᶜ, G₀ ((t : ℂ) * Complex.I)‖ ≤
+        B_K * (∫ t : ℝ, (1 + t ^ 2)⁻¹) / T ^ (2 * (K - 1)) := by
+  intro G₀
+  have hT0 : 0 ≤ T := by linarith
+  set I₀ : ℝ := ∫ t : ℝ, (1 + t ^ 2)⁻¹
+  have hG₀_norm_line : ∀ t : ℝ,
+      ‖G₀ ((t : ℂ) * Complex.I)‖ ≤ B_K / (1 + t ^ 2) ^ K := by
+    intro t
+    simp only [G₀, norm_mul, Complex.norm_exp]
+    have hre0 : ((L : ℂ) * ((t : ℂ) * Complex.I)).re = 0 := by simp
+    rw [hre0, Real.exp_zero, one_mul]
+    have hb := hB_K ((t : ℂ) * Complex.I - 1 / 2) (by simp; norm_num) (by simp; norm_num)
+    simpa using hb
+  have hG₀_cont : Continuous fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
+    have hline_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I) :=
+      Complex.continuous_ofReal.mul continuous_const
+    have hshift_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I - 1 / 2) :=
+      hline_cont.sub continuous_const
+    have hregular_cont : Continuous (fun t : ℝ => regularPart ψ ((t : ℂ) * Complex.I - 1 / 2)) := by
+      rw [continuous_iff_continuousAt]
+      intro t
+      have hw : DifferentiableAt ℂ (regularPart ψ) ((t : ℂ) * Complex.I - 1 / 2) :=
+        differentiableAt_regularPart_of_xi_ne_zero hψ (by simp; norm_num)
+          (_root_.RHTower.xi_ne_zero_of_one_le_re (by simp; norm_num))
+      exact ContinuousAt.comp (f := fun t : ℝ => (t : ℂ) * Complex.I - 1 / 2)
+        hw.continuousAt hshift_cont.continuousAt
+    exact (Complex.continuous_exp.comp (continuous_const.mul hline_cont)).mul hregular_cont
+  have hG₀_int : Integrable fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
+    refine (integrable_inv_one_add_sq.const_mul B_K).mono' hG₀_cont.aestronglyMeasurable
+      (Eventually.of_forall fun t => ?_)
+    have h1 : (1 + t ^ 2) ^ 1 ≤ (1 + t ^ 2) ^ K :=
+      pow_le_pow_right₀ (by nlinarith [sq_nonneg t]) hK1
+    rw [pow_one] at h1
+    calc ‖G₀ ((t : ℂ) * Complex.I)‖
+        ≤ B_K / (1 + t ^ 2) ^ K := hG₀_norm_line t
+      _ ≤ B_K / (1 + t ^ 2) := div_le_div_of_nonneg_left hB_K0 (by positivity) h1
+      _ = B_K * (1 + t ^ 2)⁻¹ := div_eq_mul_inv _ _
+  -- Bound the vertical tail on `(Ioc (-T) T)ᶜ`
+  have htail_bd : ‖∫ t : ℝ in (Ioc (-T) T)ᶜ, G₀ ((t : ℂ) * Complex.I)‖ ≤
+      B_K * I₀ / T ^ (2 * (K - 1)) := by
+    rw [← MeasureTheory.integral_indicator measurableSet_Ioc.compl]
+    refine (norm_integral_le_integral_norm _).trans ?_
+    have hpt_tail : ∀ t : ℝ, ‖(Ioc (-T) T)ᶜ.indicator (fun t : ℝ => G₀ ((t : ℂ) * Complex.I)) t‖ ≤
+        (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ := by
+      intro t
+      by_cases ht : t ∈ (Ioc (-T) T)ᶜ
+      · rw [Set.indicator_of_mem ht]
+        have hTt : T ≤ |t| := by
+          rw [Set.mem_compl_iff, Set.mem_Ioc, not_and_or, not_lt, not_le] at ht
+          rcases ht with h1 | h1
+          · linarith [neg_le_abs t]
+          · linarith [le_abs_self t]
+        have hTsq : T ^ 2 ≤ 1 + t ^ 2 := by
+          have : T ^ 2 ≤ |t| ^ 2 := pow_le_pow_left₀ hT0 hTt 2
+          rw [sq_abs] at this
+          linarith
+        have hpowK : T ^ (2 * (K - 1)) * (1 + t ^ 2) ≤ (1 + t ^ 2) ^ K := by
+          have hk_eq : (K - 1) + 1 = K := Nat.sub_add_cancel hK1
+          calc T ^ (2 * (K - 1)) * (1 + t ^ 2)
+              = (T ^ 2) ^ (K - 1) * (1 + t ^ 2) := by rw [pow_mul]
+            _ ≤ (1 + t ^ 2) ^ (K - 1) * (1 + t ^ 2) :=
+                mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hTsq _) (by positivity)
+            _ = (1 + t ^ 2) ^ K := by rw [← pow_succ, hk_eq]
+        calc ‖G₀ ((t : ℂ) * Complex.I)‖
+            ≤ B_K / (1 + t ^ 2) ^ K := hG₀_norm_line t
+          _ ≤ B_K / (T ^ (2 * (K - 1)) * (1 + t ^ 2)) :=
+              div_le_div_of_nonneg_left hB_K0 (by positivity) hpowK
+          _ = (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ := by field_simp
+      · rw [Set.indicator_of_notMem ht, norm_zero]
+        positivity
+    have hint_dom : Integrable (fun t : ℝ => (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹) :=
+      integrable_inv_one_add_sq.const_mul _
+    calc ∫ t : ℝ, ‖(Ioc (-T) T)ᶜ.indicator (fun t : ℝ => G₀ ((t : ℂ) * Complex.I)) t‖
+        ≤ ∫ t : ℝ, (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ :=
+          integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) hint_dom
+            (Eventually.of_forall hpt_tail)
+      _ = (B_K / T ^ (2 * (K - 1))) * I₀ := integral_const_mul _ _
+      _ = B_K * I₀ / T ^ (2 * (K - 1)) := by ring
+  exact ⟨hG₀_int, htail_bd⟩
+
+/-- Shift a finite boundary segment through a zero-free rectangle, retaining the edge costs. -/
+private theorem norm_regularPart_vk_segment_le {ψ : ℝ → ℂ} {L T d CK : ℝ} {K : ℕ}
+    (hL0 : 0 ≤ L) (hT3 : 3 ≤ T) (hd0 : 0 < d) (hCK0 : 0 ≤ CK)
+    (hcost0 : 0 ≤ narainVKCost T)
+    (hrect_T : ∀ u : ℂ, -d ≤ u.re → u.re ≤ 0 → |u.im| ≤ T →
+      DifferentiableAt ℂ (fun u => regularPart ψ (u - 1 / 2)) u ∧
+        ‖regularPart ψ (u - 1 / 2)‖ ≤ CK * narainVKCost T / (1 + u.im ^ 2) ^ K) :
+    let G₀ : ℂ → ℂ := fun u => Complex.exp ((L : ℂ) * u) * regularPart ψ (u - 1 / 2)
+    ‖∫ t : ℝ in (-T)..T, G₀ ((t : ℂ) * Complex.I)‖ ≤
+      2 * T * CK * narainVKCost T * Real.exp (-(d * L)) +
+        2 * d * CK * narainVKCost T / T ^ (2 * K) := by
+  intro G₀
+  have hT0 : 0 ≤ T := by linarith
+  have hd_nn : 0 ≤ d := hd0.le
+  have hdiff_G₀ : DifferentiableOn ℂ G₀ (uIcc (-d) 0 ×ℂ uIcc (-T) T) := by
+    intro u hu
+    rw [Set.uIcc_of_le (by linarith), Set.uIcc_of_le (by linarith)] at hu
+    have hF := (hrect_T u hu.1.1 hu.1.2 (abs_le.mpr hu.2)).1
+    exact ((Complex.differentiableAt_exp.comp u
+      (differentiableAt_id.const_mul (L : ℂ))).mul hF).differentiableWithinAt
+  have hshift := _root_.RHTower.Sieve.integral_vertical_sub_eq_horizontal_rect T hdiff_G₀
+  have hG₀_norm : ∀ u : ℂ, ‖G₀ u‖ = Real.exp (L * u.re) * ‖regularPart ψ (u - 1 / 2)‖ := by
+    intro u; simp [G₀, Complex.norm_exp, Complex.mul_re]
+  have hleft := intervalIntegral.norm_integral_le_of_norm_le_const
+    (a := -T) (b := T) (f := fun t : ℝ => G₀ ((-d : ℂ) + t * Complex.I))
+    (C := CK * narainVKCost T * Real.exp (-(d * L))) (fun t ht => by
+      rw [Set.uIoc_of_le (by linarith)] at ht
+      have habs : |t| ≤ T := abs_le.mpr ⟨ht.1.le, ht.2⟩
+      have hb := (hrect_T ((-d : ℂ) + t * Complex.I) (by simp) (by simpa using hd_nn)
+        (by simpa using habs)).2
+      have h1 : 1 ≤ (1 + ((-d : ℂ) + (t : ℂ) * Complex.I).im ^ 2) ^ K :=
+        one_le_pow₀ (by nlinarith [sq_nonneg (((-d : ℂ) + (t : ℂ) * Complex.I).im)])
+      have hb' : ‖regularPart ψ (((-d : ℂ) + (t : ℂ) * Complex.I) - 1 / 2)‖ ≤
+          CK * narainVKCost T :=
+        hb.trans (div_le_self (by positivity) h1)
+      rw [hG₀_norm, show ((-d : ℂ) + (t : ℂ) * Complex.I).re = -d by simp,
+        show L * -d = -(d * L) by ring]
+      calc Real.exp (-(d * L)) * ‖regularPart ψ (((-d : ℂ) + (t : ℂ) * Complex.I) - 1 / 2)‖
+          ≤ Real.exp (-(d * L)) * (CK * narainVKCost T) :=
+            mul_le_mul_of_nonneg_left hb' (Real.exp_nonneg _)
+        _ = CK * narainVKCost T * Real.exp (-(d * L)) := by ring)
+  have hedge : ∀ v : ℝ, |v| = T →
+      ‖∫ r : ℝ in (-d)..0, G₀ ((r : ℂ) + v * Complex.I)‖ ≤
+        (CK * narainVKCost T / T ^ (2 * K)) * d := by
+    intro v hv
+    have hi := intervalIntegral.norm_integral_le_of_norm_le_const
+      (a := -d) (b := 0) (f := fun r : ℝ => G₀ ((r : ℂ) + v * Complex.I))
+      (C := CK * narainVKCost T / T ^ (2 * K)) (fun r hr => by
+        rw [Set.uIoc_of_le (by linarith)] at hr
+        have hb := (hrect_T ((r : ℂ) + v * Complex.I) (by simpa using hr.1.le)
+          (by simpa using hr.2) (by simpa using hv.le)).2
+        have him_sq : ((r : ℂ) + (v : ℂ) * Complex.I).im ^ 2 = T ^ 2 := by
+          have him : ((r : ℂ) + (v : ℂ) * Complex.I).im = v := by simp
+          rw [him, ← sq_abs, hv]
+        rw [him_sq] at hb
+        have hTpow : T ^ (2 * K) ≤ (1 + T ^ 2) ^ K := by
+          rw [pow_mul]
+          exact pow_le_pow_left₀ (by positivity) (by linarith) K
+        have hb' : ‖regularPart ψ (((r : ℂ) + (v : ℂ) * Complex.I) - 1 / 2)‖ ≤
+            CK * narainVKCost T / T ^ (2 * K) :=
+          hb.trans (div_le_div_of_nonneg_left (by positivity) (by positivity) hTpow)
+        rw [hG₀_norm, show ((r : ℂ) + (v : ℂ) * Complex.I).re = r by simp]
+        have hexp1 : Real.exp (L * r) ≤ 1 :=
+          Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hL0 hr.2)
+        calc Real.exp (L * r) * ‖regularPart ψ (((r : ℂ) + (v : ℂ) * Complex.I) - 1 / 2)‖
+            ≤ 1 * (CK * narainVKCost T / T ^ (2 * K)) :=
+              mul_le_mul hexp1 hb' (norm_nonneg _) (by positivity)
+          _ = _ := one_mul _)
+    simpa only [sub_neg_eq_add, zero_add, abs_of_nonneg hd_nn] using hi
+  have htop := hedge T (abs_of_nonneg hT0)
+  have hbot := hedge (-T) (by rw [abs_neg, abs_of_nonneg hT0])
+  have hleft' : ‖∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I)‖ ≤
+      (CK * narainVKCost T * Real.exp (-(d * L))) * (2 * T) := by
+    simpa only [sub_neg_eq_add, ← two_mul, abs_of_nonneg (by positivity : 0 ≤ 2 * T)] using hleft
+  simp only [Complex.ofReal_zero, Complex.ofReal_neg] at hshift hbot
+  have hdiffnorm : ‖(∫ t : ℝ in (-T)..T, G₀ ((0 : ℂ) + t * Complex.I)) -
+      ∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I)‖ ≤
+        2 * (CK * narainVKCost T / T ^ (2 * K)) * d := by
+    rw [← smul_sub] at hshift
+    have hn := congrArg norm hshift
+    simp only [norm_smul, Complex.norm_I, one_mul] at hn
+    rw [hn]
+    exact (norm_sub_le _ _).trans (by linarith only [htop, hbot])
+  have htri := norm_add_le
+    ((∫ t : ℝ in (-T)..T, G₀ ((0 : ℂ) + t * Complex.I)) -
+      ∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I))
+    (∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I))
+  rw [sub_add_cancel] at htri
+  have htot := htri.trans (add_le_add hdiffnorm hleft')
+  simp only [zero_add] at htot
+  exact htot.trans_eq (by ring)
+
 /-- Core contour-shift bound into the shrinking Vinogradov–Korobov rectangle: every test profile
 above height `1` thermalizes at stretched-exponential super-square-root rate
 `O(y^{1/2} exp(-√(-log y)))` on `(0, 1]`. -/
@@ -595,9 +855,6 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
     ∃ C : ℝ, 0 < C ∧ ∀ y : ℝ, 0 < y → y ≤ 1 →
       ‖horocycleMean (pseudoEisenstein ψ) y - residueConst ψ‖ ≤
         C * y ^ (1 / 2 : ℝ) * Real.exp (-Real.sqrt (-Real.log y)) := by
-  have ha0 : 0 < a := by linarith
-  have hψa : ∀ t, t < a → ψ t = 0 := fun _ ht => hψ.eq_zero_of_le ht.le
-  have hψb : ∀ t, b < t → ψ t = 0 := fun _ ht => hψ.eq_zero_of_ge ht.le
   obtain ⟨δ, T₀, hδ, hT₀, hTexp1, hrect⟩ := exists_regularPart_vk_rect hψ
   set c₀ : ℝ := min δ 1 / 32
   have hmin0 : 0 < min δ 1 := lt_min hδ zero_lt_one
@@ -626,18 +883,12 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
   set L₀ : ℝ := (max (Real.log S_all / c₀) 1 + 1) ^ 2
   have hL₀_ge : 4 ≤ L₀ := by
     have : 2 ≤ max (Real.log S_all / c₀) 1 + 1 := by linarith [le_max_right (Real.log S_all / c₀) 1]
-    nlinarith
+    nlinarith only [this]
   obtain ⟨C_base, hC_base0, hbase⟩ := norm_horocycleMean_sub_le_of_zeroFree hψ ha (θ := 1)
     zero_le_one le_rfl (fun z hz => xi_ne_zero_of_one_lt_re hz)
     (fun δ' hδ' d => ⟨1 + 1 / δ', 0, by positivity, fun z hz _ _ => by
       simpa using _root_.RHTower.norm_inv_riemannZeta_le_of_le_re (by linarith : 1 < 1 + δ') hz⟩)
     (ε := 1 / 4) (by norm_num) (by norm_num)
-  have hΨ_strip := mellinRegularStrip_regularPart hψ zero_le_one le_rfl
-    (fun z hz => xi_ne_zero_of_one_lt_re hz)
-    (fun δ' hδ' d => ⟨1 + 1 / δ', 0, by positivity, fun z hz _ _ => by
-      simpa using _root_.RHTower.norm_inv_riemannZeta_le_of_le_re (by linarith : 1 < 1 + δ') hz⟩)
-  obtain ⟨B_pe, -, hB_pe⟩ := exists_norm_pseudoEisenstein_le hψ.continuous ha hψa hψb
-  have hFc := continuous_pseudoEisenstein hψ.continuous ha0 hψa
   set c := residueConst ψ
   set I₀ : ℝ := ∫ t : ℝ, (1 + t ^ 2)⁻¹
   have hI₀ : 0 ≤ I₀ := integral_nonneg fun t => by positivity
@@ -686,7 +937,7 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
     have hs_sq : s ^ 2 = L := Real.sq_sqrt hL0
     have hs_gt : max (Real.log S_all / c₀) 1 + 1 < s := by
       have h0 : 0 ≤ max (Real.log S_all / c₀) 1 + 1 := by positivity
-      nlinarith [Real.sqrt_nonneg L, hs_sq]
+      nlinarith only [hLL₀, h0, Real.sqrt_nonneg L, hs_sq]
     have hs1 : 1 < s := by linarith [le_max_right (Real.log S_all / c₀) 1]
     have hs0 : 0 < s := by linarith
     have hlog_lt : Real.log S_all < c₀ * s := by
@@ -700,235 +951,33 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
     have hT3 : 3 ≤ T := hS3.trans hS_le_T
     have hTT₀ : T₀ ≤ T := hST₀.trans hS_le_T
     have hT0 : 0 ≤ T := by linarith
+    have hcost0 : 0 ≤ narainVKCost T :=
+      zero_le_one.trans (one_le_narainVKCost (by linarith))
     obtain ⟨hd0, hd8, hrect_T⟩ := hCK T hTT₀
     set d : ℝ := narainVKWidth δ T
-    -- Step 1: Identify `g y = mellinInv (-1 / 2) (regularPart ψ) y`
     set g : ℝ → ℂ := fun u => horocycleMean (pseudoEisenstein ψ) u -
       c * ((Real.exp (-u) : ℝ) : ℂ)
-    have hconv : MellinConvergent g 1 := by
-      have h1 := mellinConvergent_horocycleMean hψ.continuous ha hψa hψb (s := 2) (by norm_num)
-      have h2 := (mellinConvergent_exp_neg (w := 1) (by norm_num)).const_smul c
-      norm_num at h1
-      refine (h1.sub h2).congr_fun (fun u _ => ?_) measurableSet_Ioi
-      simp only [Pi.sub_apply, g, smul_eq_mul]
-      ring
-    have hline : ∀ t : ℝ, mellin g ((1 : ℝ) + t * Complex.I) =
-        regularPart ψ ((1 : ℝ) + t * Complex.I) :=
-      fun t => mellin_sub_exp_eq_regularPart hψ ha (by simp)
-    have hvert : Complex.VerticalIntegrable (mellin g) 1 := by
-      refine (hΨ_strip.integrable_line (by norm_num) (by norm_num)).congr
-        (Eventually.of_forall fun t => (hline t).symm)
-    have hcont : ContinuousAt g y :=
-      (continuousAt_horocycleMean hFc hB_pe hy).sub (continuousAt_const.mul
-        (Complex.continuous_ofReal.comp (Real.continuous_exp.comp continuous_neg)).continuousAt)
-    have hgy_eq : g y = mellinInv (-1 / 2) (regularPart ψ) y := by
-      rw [← mellinInv_mellin_eq 1 g hy hconv hvert hcont]
-      have hinv1 : mellinInv 1 (mellin g) y = mellinInv 1 (regularPart ψ) y := by
-        unfold mellinInv
-        congr 1
-        exact integral_congr_ae (Eventually.of_forall fun t => by simp only; rw [hline t])
-      rw [hinv1, mellinInv_one_eq_neg_half hψ hy]
-    -- Step 2: Factor `y^{1/2}` out of `mellinInv (-1/2) (regularPart ψ) y`
     set G₀ : ℂ → ℂ := fun u => Complex.exp ((L : ℂ) * u) * regularPart ψ (u - 1 / 2)
-    have hy0_c : (y : ℂ) ≠ 0 := by exact_mod_cast hy.ne'
-    have hcpow_line : ∀ t : ℝ,
-        (y : ℂ) ^ (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) *
-          regularPart ψ (((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I) =
-        ((y ^ (1 / 2 : ℝ) : ℝ) : ℂ) * G₀ ((t : ℂ) * Complex.I) := by
-      intro t
-      rw [Complex.cpow_def_of_ne_zero hy0_c, ← Complex.ofReal_log hy.le]
-      have hexp_arg : ((Real.log y : ℝ) : ℂ) * (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) =
-          ((-L / 2 : ℝ) : ℂ) + (L : ℂ) * ((t : ℂ) * Complex.I) := by
-        simp only [L]
-        push_cast
-        ring
-      have harg_u : ((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I = (t : ℂ) * Complex.I - 1 / 2 := by
-        push_cast; ring
-      rw [hexp_arg, Complex.exp_add, ← Complex.ofReal_exp, ← hy_half, harg_u]
-      simp only [G₀, mul_assoc]
     have hgy_norm : ‖g y‖ =
-        (1 / (2 * Real.pi)) * y ^ (1 / 2 : ℝ) * ‖∫ t : ℝ, G₀ ((t : ℂ) * Complex.I)‖ := by
-      rw [hgy_eq]
-      unfold mellinInv
-      have hint_eq :
-          (∫ t : ℝ, (y : ℂ) ^ (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) •
-            regularPart ψ (((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) =
-          ∫ t : ℝ, ((y ^ (1 / 2 : ℝ) : ℝ) : ℂ) * G₀ ((t : ℂ) * Complex.I) :=
-        integral_congr_ae (Eventually.of_forall fun t => by
-          simpa only [smul_eq_mul] using hcpow_line t)
-      rw [hint_eq, integral_const_mul, norm_smul, norm_mul, Real.norm_of_nonneg (by positivity),
-        Complex.norm_real, Real.norm_of_nonneg (Real.rpow_nonneg hy.le _)]
-      ring
-    -- Step 3: Split `∫_ℝ G₀(it) dt` into `[-T, T]` and `(Ioc (-T) T)ᶜ`
-    have hG₀_norm_line : ∀ t : ℝ,
-        ‖G₀ ((t : ℂ) * Complex.I)‖ ≤ B_K / (1 + t ^ 2) ^ K := by
-      intro t
-      simp only [G₀, norm_mul, Complex.norm_exp]
-      have hre0 : ((L : ℂ) * ((t : ℂ) * Complex.I)).re = 0 := by simp
-      rw [hre0, Real.exp_zero, one_mul]
-      have hb := hB_K ((t : ℂ) * Complex.I - 1 / 2) (by simp; norm_num) (by simp; norm_num)
-      simpa using hb
-    have hG₀_cont : Continuous fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
-      have hline_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I) :=
-        Complex.continuous_ofReal.mul continuous_const
-      have hshift_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I - 1 / 2) :=
-        hline_cont.sub continuous_const
-      have hregular_cont : Continuous (fun t : ℝ => regularPart ψ ((t : ℂ) * Complex.I - 1 / 2)) := by
-        rw [continuous_iff_continuousAt]
-        intro t
-        have hw : DifferentiableAt ℂ (regularPart ψ) ((t : ℂ) * Complex.I - 1 / 2) :=
-          differentiableAt_regularPart_of_xi_ne_zero hψ (by simp; norm_num)
-            (_root_.RHTower.xi_ne_zero_of_one_le_re (by simp; norm_num))
-        exact hw.continuousAt.comp t hshift_cont.continuousAt
-      exact (Complex.continuous_exp.comp (continuous_const.mul hline_cont)).mul hregular_cont
-    have hG₀_int : Integrable fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
-      refine (integrable_inv_one_add_sq.const_mul B_K).mono' hG₀_cont.aestronglyMeasurable
-        (Eventually.of_forall fun t => ?_)
-      have h1 : (1 + t ^ 2) ^ 1 ≤ (1 + t ^ 2) ^ K :=
-        pow_le_pow_right₀ (by nlinarith [sq_nonneg t]) hK1
-      rw [pow_one] at h1
-      calc ‖G₀ ((t : ℂ) * Complex.I)‖
-          ≤ B_K / (1 + t ^ 2) ^ K := hG₀_norm_line t
-        _ ≤ B_K / (1 + t ^ 2) := div_le_div_of_nonneg_left hB_K0 (by positivity) h1
-        _ = B_K * (1 + t ^ 2)⁻¹ := div_eq_mul_inv _ _
+        (1 / (2 * Real.pi)) * y ^ (1 / 2 : ℝ) * ‖∫ t : ℝ, G₀ ((t : ℂ) * Complex.I)‖ :=
+      norm_horocycle_sub_exp_eq_line hψ ha hy
+    obtain ⟨hG₀_int, htail_bd⟩ := regularPart_line_integrable_and_tail hψ L hK1 hB_K0 hB_K hT3
     have hsplit_int : (∫ t : ℝ, G₀ ((t : ℂ) * Complex.I)) =
         (∫ t : ℝ in (-T)..T, G₀ ((t : ℂ) * Complex.I)) +
           (∫ t : ℝ in (Ioc (-T) T)ᶜ, G₀ ((t : ℂ) * Complex.I)) := by
       rw [intervalIntegral.integral_of_le (by linarith : -T ≤ T)]
       exact (MeasureTheory.integral_add_compl measurableSet_Ioc hG₀_int).symm
-    -- Step 4: Bound the vertical tail on `(Ioc (-T) T)ᶜ`
-    have htail_bd : ‖∫ t : ℝ in (Ioc (-T) T)ᶜ, G₀ ((t : ℂ) * Complex.I)‖ ≤
-        B_K * I₀ / T ^ (2 * (K - 1)) := by
-      rw [← MeasureTheory.integral_indicator measurableSet_Ioc.compl]
-      refine (norm_integral_le_integral_norm _).trans ?_
-      have hpt_tail : ∀ t : ℝ, ‖(Ioc (-T) T)ᶜ.indicator (fun t : ℝ => G₀ ((t : ℂ) * Complex.I)) t‖ ≤
-          (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ := by
-        intro t
-        by_cases ht : t ∈ (Ioc (-T) T)ᶜ
-        · rw [Set.indicator_of_mem ht]
-          have hTt : T ≤ |t| := by
-            rw [Set.mem_compl_iff, Set.mem_Ioc, not_and_or, not_lt, not_le] at ht
-            rcases ht with h1 | h1
-            · linarith [neg_le_abs t]
-            · linarith [le_abs_self t]
-          have hTsq : T ^ 2 ≤ 1 + t ^ 2 := by
-            have : T ^ 2 ≤ |t| ^ 2 := pow_le_pow_left₀ hT0 hTt 2
-            rw [sq_abs] at this
-            linarith
-          have hpowK : T ^ (2 * (K - 1)) * (1 + t ^ 2) ≤ (1 + t ^ 2) ^ K := by
-            have hk_eq : (K - 1) + 1 = K := Nat.sub_add_cancel hK1
-            calc T ^ (2 * (K - 1)) * (1 + t ^ 2)
-                = (T ^ 2) ^ (K - 1) * (1 + t ^ 2) := by rw [pow_mul]
-              _ ≤ (1 + t ^ 2) ^ (K - 1) * (1 + t ^ 2) :=
-                  mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hTsq _) (by positivity)
-              _ = (1 + t ^ 2) ^ K := by rw [← pow_succ, hk_eq]
-          calc ‖G₀ ((t : ℂ) * Complex.I)‖
-              ≤ B_K / (1 + t ^ 2) ^ K := hG₀_norm_line t
-            _ ≤ B_K / (T ^ (2 * (K - 1)) * (1 + t ^ 2)) :=
-                div_le_div_of_nonneg_left hB_K0 (by positivity) hpowK
-            _ = (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ := by field_simp
-        · rw [Set.indicator_of_notMem ht, norm_zero]
-          positivity
-      have hint_dom : Integrable (fun t : ℝ => (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹) :=
-        integrable_inv_one_add_sq.const_mul _
-      calc ∫ t : ℝ, ‖(Ioc (-T) T)ᶜ.indicator (fun t : ℝ => G₀ ((t : ℂ) * Complex.I)) t‖
-          ≤ ∫ t : ℝ, (B_K / T ^ (2 * (K - 1))) * (1 + t ^ 2)⁻¹ :=
-            integral_mono_of_nonneg (Eventually.of_forall fun _ => norm_nonneg _) hint_dom
-              (Eventually.of_forall hpt_tail)
-        _ = (B_K / T ^ (2 * (K - 1))) * I₀ := integral_const_mul _ _
-        _ = B_K * I₀ / T ^ (2 * (K - 1)) := by ring
-    -- Step 5: Shift the finite segment `[-T, T]` across `[-d, 0] × [-T, T]`
-    have hrect_bd : ‖∫ t : ℝ in (-T)..T, G₀ ((t : ℂ) * Complex.I)‖ ≤
-        2 * T * CK * narainVKCost T * Real.exp (-(d * L)) +
-          2 * d * CK * narainVKCost T / T ^ (2 * K) := by
-      have hd_nn : 0 ≤ d := hd0.le
-      have hdiff_G₀ : DifferentiableOn ℂ G₀ (uIcc (-d) 0 ×ℂ uIcc (-T) T) := by
-        intro u hu
-        rw [uIcc_of_le (by linarith), uIcc_of_le (by linarith)] at hu
-        have hF := (hrect_T u hu.1.1 hu.1.2 (abs_le.mpr hu.2)).1
-        exact ((Complex.differentiableAt_exp.comp u
-          (differentiableAt_id.const_mul (L : ℂ))).mul hF).differentiableWithinAt
-      have hshift := _root_.RHTower.Sieve.integral_vertical_sub_eq_horizontal_rect T hdiff_G₀
-      have hG₀_norm : ∀ u : ℂ, ‖G₀ u‖ = Real.exp (L * u.re) * ‖regularPart ψ (u - 1 / 2)‖ := by
-        intro u; simp [G₀, Complex.norm_exp, Complex.mul_re]
-      have hleft := intervalIntegral.norm_integral_le_of_norm_le_const
-        (a := -T) (b := T) (f := fun t : ℝ => G₀ ((-d : ℂ) + t * Complex.I))
-        (C := CK * narainVKCost T * Real.exp (-(d * L))) (fun t ht => by
-          rw [uIoc_of_le (by linarith)] at ht
-          have habs : |t| ≤ T := abs_le.mpr ⟨ht.1.le, ht.2⟩
-          have hb := (hrect_T ((-d : ℂ) + t * Complex.I) (by simp) (by simpa using hd_nn)
-            (by simpa using habs)).2
-          have h1 : 1 ≤ (1 + ((-d : ℂ) + (t : ℂ) * Complex.I).im ^ 2) ^ K :=
-            one_le_pow₀ (by nlinarith [sq_nonneg (((-d : ℂ) + (t : ℂ) * Complex.I).im)])
-          have hb' : ‖regularPart ψ (((-d : ℂ) + (t : ℂ) * Complex.I) - 1 / 2)‖ ≤
-              CK * narainVKCost T :=
-            hb.trans (div_le_self (by positivity) h1)
-          rw [hG₀_norm, show ((-d : ℂ) + (t : ℂ) * Complex.I).re = -d by simp,
-            show L * -d = -(d * L) by ring]
-          calc Real.exp (-(d * L)) * ‖regularPart ψ (((-d : ℂ) + (t : ℂ) * Complex.I) - 1 / 2)‖
-              ≤ Real.exp (-(d * L)) * (CK * narainVKCost T) :=
-                mul_le_mul_of_nonneg_left hb' (Real.exp_nonneg _)
-            _ = CK * narainVKCost T * Real.exp (-(d * L)) := by ring)
-      have hedge : ∀ v : ℝ, |v| = T →
-          ‖∫ r : ℝ in (-d)..0, G₀ ((r : ℂ) + v * Complex.I)‖ ≤
-            (CK * narainVKCost T / T ^ (2 * K)) * d := by
-        intro v hv
-        have hi := intervalIntegral.norm_integral_le_of_norm_le_const
-          (a := -d) (b := 0) (f := fun r : ℝ => G₀ ((r : ℂ) + v * Complex.I))
-          (C := CK * narainVKCost T / T ^ (2 * K)) (fun r hr => by
-            rw [uIoc_of_le (by linarith)] at hr
-            have hb := (hrect_T ((r : ℂ) + v * Complex.I) (by simpa using hr.1.le)
-              (by simpa using hr.2) (by simpa using hv.le)).2
-            have him_sq : ((r : ℂ) + (v : ℂ) * Complex.I).im ^ 2 = T ^ 2 := by
-              have him : ((r : ℂ) + (v : ℂ) * Complex.I).im = v := by simp
-              rw [him, ← sq_abs, hv]
-            rw [him_sq] at hb
-            have hTpow : T ^ (2 * K) ≤ (1 + T ^ 2) ^ K := by
-              rw [pow_mul]
-              exact pow_le_pow_left₀ (by positivity) (by linarith) K
-            have hb' : ‖regularPart ψ (((r : ℂ) + (v : ℂ) * Complex.I) - 1 / 2)‖ ≤
-                CK * narainVKCost T / T ^ (2 * K) :=
-              hb.trans (div_le_div_of_nonneg_left (by positivity) (by positivity) hTpow)
-            rw [hG₀_norm, show ((r : ℂ) + (v : ℂ) * Complex.I).re = r by simp]
-            have hexp1 : Real.exp (L * r) ≤ 1 :=
-              Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hL0 hr.2)
-            calc Real.exp (L * r) * ‖regularPart ψ (((r : ℂ) + (v : ℂ) * Complex.I) - 1 / 2)‖
-                ≤ 1 * (CK * narainVKCost T / T ^ (2 * K)) :=
-                  mul_le_mul hexp1 hb' (norm_nonneg _) (by positivity)
-              _ = _ := one_mul _)
-        simpa only [sub_neg_eq_add, zero_add, abs_of_nonneg hd_nn] using hi
-      have htop := hedge T (abs_of_nonneg hT0)
-      have hbot := hedge (-T) (by rw [abs_neg, abs_of_nonneg hT0])
-      have hleft' : ‖∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I)‖ ≤
-          (CK * narainVKCost T * Real.exp (-(d * L))) * (2 * T) := by
-        simpa only [sub_neg_eq_add, ← two_mul, abs_of_nonneg (by positivity : 0 ≤ 2 * T)] using hleft
-      simp only [Complex.ofReal_zero, Complex.ofReal_neg] at hshift hbot
-      have hdiffnorm : ‖(∫ t : ℝ in (-T)..T, G₀ ((0 : ℂ) + t * Complex.I)) -
-          ∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I)‖ ≤
-            2 * (CK * narainVKCost T / T ^ (2 * K)) * d := by
-        rw [← smul_sub] at hshift
-        have hn := congrArg norm hshift
-        simp only [norm_smul, Complex.norm_I, one_mul] at hn
-        rw [hn]
-        exact (norm_sub_le _ _).trans (by linarith only [htop, hbot])
-      have htri := norm_add_le
-        ((∫ t : ℝ in (-T)..T, G₀ ((0 : ℂ) + t * Complex.I)) -
-          ∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I))
-        (∫ t : ℝ in (-T)..T, G₀ ((-d : ℂ) + t * Complex.I))
-      rw [sub_add_cancel] at htri
-      have htot := htri.trans (add_le_add hdiffnorm hleft')
-      simp only [zero_add] at htot
-      exact htot.trans_eq (by ring)
-    -- Step 6: Absorb `T`, `narainVKCost T`, `exp(-d L)`, `T^{-2K}`, and `T^{-2(K-1)}` into `exp(-s)`
+    have hrect_bd := norm_regularPart_vk_segment_le hL0 hT3 hd0 hCK0 hcost0 hrect_T
+    -- Absorb `T`, `narainVKCost T`, `exp(-d L)`, `T^{-2K}`, and `T^{-2(K-1)}` into `exp(-s)`
     have hlog2T : Real.log (2 * T + 1) ≤ 2 * c₀ * s := by
       have h1 := log_double_add_one_le hT3
       rw [Real.log_exp] at h1
-      linarith
+      linarith only [h1]
     have hlog2T_pos : 0 < Real.log (2 * T + 1) := Real.log_pos (by linarith)
     have hdL : 2 * s ≤ d * L := by
       have hw := hS_width T (hSwidth.trans hS_le_T)
       have hden : 8 * Real.log (2 * T + 1) ≤ min δ 1 * s / 2 := by
-        calc 8 * Real.log (2 * T + 1) ≤ 16 * c₀ * s := by linarith
+        calc 8 * Real.log (2 * T + 1) ≤ 16 * c₀ * s := by linarith only [hlog2T]
           _ = min δ 1 * s / 2 := by simp only [c₀]; ring
       have hd_ge : 2 / s ≤ d := by
         calc 2 / s = min δ 1 / (min δ 1 * s / 2) := by field_simp [hmin0.ne']
@@ -940,7 +989,8 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
         _ = d * L := by rw [hs_sq]
     have hcost_exp : narainVKCost T ≤ D_vk * Real.exp (s / 2) := by
       have hc1 := hS_cost T (hScost.trans hS_le_T)
-      have hls : Real.log (2 * T + 1) ≤ s := by linarith [hc₀_le, hs0]
+      have hls : Real.log (2 * T + 1) ≤ s := by
+        nlinarith only [hlog2T, hc₀_le, hs0]
       have hp1 : Real.log (2 * T + 1) ^ (14 : ℕ) ≤ s ^ (14 : ℕ) :=
         pow_le_pow_left₀ hlog2T_pos.le hls 14
       have hp2 : s ^ (14 : ℕ) ≤ (30 : ℝ) ^ (14 : ℕ) * Real.exp (s / 2) := by
@@ -956,7 +1006,7 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
         _ = D_vk * Real.exp (s / 2) := by simp only [D_vk]; ring
     have hT_exp : T ≤ Real.exp (s / 2) := by
       apply Real.exp_le_exp.mpr
-      nlinarith [hc₀_le, hs0]
+      nlinarith only [hc₀_le, hs0]
     have hT_powK : Real.exp (4 * s) ≤ T ^ (2 * K) := by
       have heq : T ^ (2 * K) = Real.exp ((2 * (K : ℝ) * c₀) * s) := by
         simp only [T]
@@ -965,7 +1015,7 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
         push_cast
         ring
       rw [heq]
-      exact Real.exp_le_exp.mpr (by nlinarith [hK_mul, hs0])
+      exact Real.exp_le_exp.mpr (by nlinarith only [hK_mul, hs0])
     have hT_powK1 : Real.exp (4 * s) ≤ T ^ (2 * (K - 1)) := by
       have heq : T ^ (2 * (K - 1)) = Real.exp ((2 * ((K - 1 : ℕ) : ℝ) * c₀) * s) := by
         simp only [T]
@@ -974,11 +1024,11 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
         push_cast
         ring
       rw [heq]
-      exact Real.exp_le_exp.mpr (by nlinarith [hK_sub, hs0])
+      exact Real.exp_le_exp.mpr (by nlinarith only [hK_sub, hs0])
     have hterm1 : 2 * T * CK * narainVKCost T * Real.exp (-(d * L)) ≤
         2 * CK * D_vk * Real.exp (-s) := by
       have he1 : Real.exp (-(d * L)) ≤ Real.exp (-(2 * s)) :=
-        Real.exp_le_exp.mpr (by linarith)
+        Real.exp_le_exp.mpr (by linarith only [hdL])
       calc 2 * T * CK * narainVKCost T * Real.exp (-(d * L))
           = 2 * CK * (T * (narainVKCost T * Real.exp (-(d * L)))) := by ring
         _ ≤ 2 * CK * (Real.exp (s / 2) * ((D_vk * Real.exp (s / 2)) * Real.exp (-(2 * s)))) := by
@@ -997,16 +1047,16 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
           = (2 * d) * CK * narainVKCost T * (T ^ (2 * K))⁻¹ := by ring
         _ ≤ 1 * CK * (D_vk * Real.exp (s / 2)) * Real.exp (-(4 * s)) := by gcongr
         _ = CK * D_vk * Real.exp (-(7 / 2 * s)) := by
-            rw [one_mul, mul_assoc (CK * D_vk), ← Real.exp_add]
+            rw [one_mul, ← mul_assoc CK D_vk, mul_assoc (CK * D_vk), ← Real.exp_add]
             congr 1; ring_nf
         _ ≤ CK * D_vk * Real.exp (-s) := by
-            gcongr; linarith
+            gcongr; linarith only [hs0]
     have hterm3 : B_K * I₀ / T ^ (2 * (K - 1)) ≤ B_K * I₀ * Real.exp (-s) := by
       have hinvK1 : (T ^ (2 * (K - 1)))⁻¹ ≤ Real.exp (-s) := by
         calc (T ^ (2 * (K - 1)))⁻¹ ≤ (Real.exp (4 * s))⁻¹ :=
               inv_anti₀ (Real.exp_pos _) hT_powK1
           _ = Real.exp (-(4 * s)) := (Real.exp_neg _).symm
-          _ ≤ Real.exp (-s) := Real.exp_le_exp.mpr (by linarith)
+          _ ≤ Real.exp (-s) := Real.exp_le_exp.mpr (by linarith only [hs0])
       rw [div_eq_mul_inv]
       exact mul_le_mul_of_nonneg_left hinvK1 (by positivity)
     have hG₀_tot : ‖∫ t : ℝ, G₀ ((t : ℂ) * Complex.I)‖ ≤
@@ -1021,7 +1071,7 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
         _ ≤ (2 * CK * D_vk * Real.exp (-s) + CK * D_vk * Real.exp (-s)) +
             B_K * I₀ * Real.exp (-s) := add_le_add (add_le_add hterm1 hterm2) hterm3
         _ = (3 * CK * D_vk + B_K * I₀) * Real.exp (-s) := by ring
-    -- Step 7: Combine `‖g y‖` with the cutoff error `‖c (e^{-y} - 1)‖ ≤ ‖c‖ y`
+    -- Combine `‖g y‖` with the cutoff error `‖c (e^{-y} - 1)‖ ≤ ‖c‖ y`
     have hexp_cut : ‖((Real.exp (-y) : ℝ) : ℂ) - 1‖ ≤ y := by
       rw [show ((Real.exp (-y) : ℝ) : ℂ) - 1 = ((Real.exp (-y) - 1 : ℝ) : ℂ) by push_cast; ring,
         Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (by
@@ -1030,9 +1080,9 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
     have hy_le_target : y ≤ Real.exp (1 / 2) * (y ^ (1 / 2 : ℝ) * Real.exp (-s)) := by
       have hy_eq : y = Real.exp (-s ^ 2) := by
         rw [hs_sq]; simp only [L, neg_neg, Real.exp_log hy]
-      rw [hy_eq, hy_half, ← hs_sq, ← Real.exp_add, ← Real.exp_add]
+      rw [hy_half, hy_eq, ← hs_sq, ← Real.exp_add, ← Real.exp_add]
       apply Real.exp_le_exp.mpr
-      nlinarith [sq_nonneg (s - 1)]
+      nlinarith only [sq_nonneg (s - 1)]
     have hsplit_Ay : horocycleMean (pseudoEisenstein ψ) y - c =
         g y + c * (((Real.exp (-y) : ℝ) : ℂ) - 1) := by
       simp only [g]; ring
@@ -1052,7 +1102,8 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
           refine mul_le_mul_of_nonneg_right ?_ (Real.exp_nonneg _)
           refine mul_le_mul_of_nonneg_right ?_ (Real.rpow_nonneg hy.le _)
           simp only [C_tot]
-          linarith [hC_base0, Real.exp_nonneg (L₀ / 2 + Real.sqrt L₀)]
+          have hC_low0 : 0 ≤ C_low := by positivity
+          linarith only [hC_low0]
 
 /-- **Unconditional stretched-exponential super-square-root thermalization.** Every smooth compactly
 supported profile above height `1` thermalizes at rate `y^{1/2} exp(-√(-log y))` on `(0, 1]`. -/
@@ -1336,12 +1387,13 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
         ring
       have hf_cont : Continuous f := by unfold f; fun_prop
       have hL_cont : Continuous L_sec := by unfold L_sec; fun_prop
-      have hlo_int := intervalIntegral.integral_mono_on (μ := volume) (by linarith)
+      have hlo_int := intervalIntegral.integral_mono_on («μ» := volume) (by linarith)
         (hL_cont.intervalIntegrable _ _) (hf_cont.intervalIntegrable _ _)
         fun x hx => (hpt x hx).1
-      have hhi_int := intervalIntegral.integral_mono_on (μ := volume) (by linarith)
+      have hhi_int := intervalIntegral.integral_mono_on («μ» := volume) (by linarith)
         ((hf_cont.sub hL_cont).intervalIntegrable _ _) intervalIntegrable_const
         fun x hx => (hpt x hx).2
+      simp only [Pi.sub_apply] at hhi_int
       rw [intervalIntegral.integral_sub (hf_cont.intervalIntegrable _ _)
         (hL_cont.intervalIntegrable _ _), intervalIntegral.integral_const, smul_eq_mul, hint_L]
         at hhi_int
@@ -1351,7 +1403,7 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
     have hf_cont : Continuous f := by unfold f; fun_prop
     have hsum_int : ∑ k ∈ range N, ∫ x in (k : ℝ)..((k : ℝ) + 1), f x =
         ∫ x in (0 : ℝ)..(N : ℝ), f x := by
-      have h := intervalIntegral.sum_integral_adjacent_intervals (a := fun k : ℕ => (k : ℝ))
+      have h := intervalIntegral.sum_integral_adjacent_intervals («μ» := volume) (a := fun k : ℕ => (k : ℝ))
         (n := N) fun k _ => hf_cont.intervalIntegrable _ _
       simpa [Nat.cast_add, Nat.cast_one] using h
     have hsum_err : ∑ k ∈ range N, (((k : ℝ) + 1) / f ((k : ℝ) + 1) - (k : ℝ) / f k) =
@@ -1394,7 +1446,7 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
     have hint_tail_nn : 0 ≤ ∫ x in (N : ℝ)..Y, f x :=
       intervalIntegral.integral_nonneg (by linarith) fun _ _ => Real.sqrt_nonneg _
     have hint_tail_le : ∫ x in (N : ℝ)..Y, f x ≤ 4 * Real.sqrt Y := by
-      have hm := intervalIntegral.integral_mono_on (by linarith : (N : ℝ) ≤ Y)
+      have hm := intervalIntegral.integral_mono_on («μ» := volume) (by linarith : (N : ℝ) ≤ Y)
         (hf_cont.intervalIntegrable _ _) intervalIntegrable_const
         fun x hx => (antitoneOn_disc Y (Set.mem_Ici.mpr (Nat.cast_nonneg N))
           (Set.mem_Ici.mpr (hx.1.trans' (Nat.cast_nonneg N))) hx.1).trans hfN_le
@@ -2912,28 +2964,3 @@ theorem single_shell_rh_rate_iff_rh_and_moebius_circle {a b : ℝ} (ha : 1 < a) 
 end GaloisForLFunctions.CountingHolography
 
 end
-
-
-#print axioms GaloisForLFunctions.CountingHolography.exists_zeta_zero_on_critical_line
-#print axioms GaloisForLFunctions.CountingHolography.not_horocycle_rate_gt_three_quarters
-#print axioms GaloisForLFunctions.CountingHolography.not_fareyCount_rate_gt_three_quarters
-#print axioms GaloisForLFunctions.CountingHolography.not_horocycle_power_saving_gt_quarter
-#print axioms GaloisForLFunctions.CountingHolography.horocycle_rate_stretched_exp
-#print axioms GaloisForLFunctions.CountingHolography.fareyCount_rate_stretched_exp
-#print axioms GaloisForLFunctions.CountingHolography.horocycle_rate_sqrt_exact
-#print axioms GaloisForLFunctions.CountingHolography.horocycle_rate_log_pow
-#print axioms GaloisForLFunctions.CountingHolography.horocycle_div_sqrt_tendsto_zero
-#print axioms GaloisForLFunctions.CountingHolography.sum_Icc_one_div_sqrt_le
-#print axioms GaloisForLFunctions.CountingHolography.abs_circleRemainder_le_sqrt
-#print axioms GaloisForLFunctions.CountingHolography.horoballSum_eq_horoballSum_floor
-#print axioms GaloisForLFunctions.CountingHolography.abs_horoballSum_sub_le_linear
-#print axioms GaloisForLFunctions.CountingHolography.shell_rate_sqrt
-#print axioms GaloisForLFunctions.CountingHolography.differentiableAt_mellin_shell
-#print axioms GaloisForLFunctions.CountingHolography.mellin_shell_eq
-#print axioms GaloisForLFunctions.CountingHolography.mellin_shell_ne_zero
-#print axioms GaloisForLFunctions.CountingHolography.re_le_of_single_shell_rate
-#print axioms GaloisForLFunctions.CountingHolography.not_single_shell_rate_gt_three_quarters
-#print axioms GaloisForLFunctions.CountingHolography.riemannHypothesis_of_single_shell_rate
-#print axioms GaloisForLFunctions.CountingHolography.moebius_harmonic_and_sq_tail_of_rh
-#print axioms GaloisForLFunctions.CountingHolography.horoball_rh_rate_iff_rh_and_moebius_circle
-#print axioms GaloisForLFunctions.CountingHolography.single_shell_rh_rate_iff_rh_and_moebius_circle

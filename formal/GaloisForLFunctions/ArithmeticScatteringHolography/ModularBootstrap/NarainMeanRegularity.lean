@@ -29,10 +29,13 @@ private theorem meromorphic_slopeExt {f : ℂ → ℂ} (hf : Meromorphic f) (p :
 /-- The entire divided numerators express the main-pole numerator as a meromorphic quotient. -/
 theorem meromorphic_narainMeanMainPoleNumerator (Y Z : Height) :
     Meromorphic (narainMeanMainPoleNumerator Y Z) := by
-  have hn := (differentiable_id.mul (differentiable_dividedFilledNumeratorMean Y)).mul
-    (differentiable_dividedFilledNumeratorMean Z)
-  have hd := (by fun_prop : Differentiable ℂ (fun u : ℂ => 2 * (1 + 2 * u))).mul
-    differentiable_xi_shift
+  have hn : Differentiable ℂ (fun u : ℂ =>
+      u * dividedFilledNumeratorMean Y u * dividedFilledNumeratorMean Z u) := by
+    convert! (differentiable_id.mul (differentiable_dividedFilledNumeratorMean Y)).mul
+      (differentiable_dividedFilledNumeratorMean Z) using 1
+  have hd : Differentiable ℂ (fun u : ℂ => 2 * (1 + 2 * u) * xi (1 + 2 * u)) := by
+    convert! (by fun_prop : Differentiable ℂ (fun u : ℂ => 2 * (1 + 2 * u))).mul
+      differentiable_xi_shift using 1
   intro u
   have h := (hn.analyticAt u).meromorphicAt.div (hd.analyticAt u).meromorphicAt
   apply h.congr

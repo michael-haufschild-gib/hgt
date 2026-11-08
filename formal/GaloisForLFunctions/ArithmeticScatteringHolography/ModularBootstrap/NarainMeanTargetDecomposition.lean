@@ -65,8 +65,8 @@ theorem narainMellinMean_target_decomposition_of_re (Y Z : Height) {u : ℂ}
         narainMeanTargetCorrection Y Z u := by
   apply narainMellinMean_target_decomposition
   apply xi_ne_zero_of_one_le_re
-  simp only [Complex.add_re, Complex.one_re, Complex.mul_re, Complex.ofNat_re,
-    Complex.ofNat_im, zero_mul, sub_zero]
+  have hre : (1 + 2 * u).re = 1 + 2 * u.re := by simp
+  rw [hre]
   linarith only [hu]
 
 private theorem differentiable_target_power (Y : Height) (ε : ℂ) :
@@ -78,8 +78,10 @@ private theorem differentiable_target_power (Y : Height) (ε : ℂ) :
 /-- The target dilation is entire. -/
 theorem differentiable_narainMeanTargetDilation (Y Z : Height) :
     Differentiable ℂ (narainMeanTargetDilation Y Z) := by
-  simpa only [narainMeanTargetDilation, neg_one_mul, ← sub_eq_add_neg] using
-    (differentiable_target_power Y (-1)).mul (differentiable_target_power Z (-1))
+  convert! (differentiable_target_power Y (-1)).mul
+    (differentiable_target_power Z (-1)) using 1
+  funext u
+  simp only [narainMeanTargetDilation, Pi.mul_apply, neg_one_mul, sub_eq_add_neg]
 
 /-- The literal averaged continuation is meromorphic on the whole plane. -/
 theorem meromorphic_narainMellinMean (Y Z : Height) :
@@ -144,7 +146,7 @@ theorem narainMellinMean_target_decomposition_germ (Y Z : Height) (p : Resonance
   have hn : analyticOrderAt (fun u : ℂ => xi (1 + 2 * u)) p.val ≠ ⊤ := by
     obtain ⟨n, g, horder, _⟩ := exists_xi_shift_factor p.property
     rw [horder]
-    exact ENat.coe_ne_top
+    exact ENat.coe_ne_top _
   have hne : ∀ᶠ u in 𝓝[≠] p.val, xi (1 + 2 * u) ≠ 0 := by
     rcases ha.eventually_eq_zero_or_eventually_ne_zero with hzero | hne
     · exact False.elim (hn (analyticOrderAt_eq_top.mpr hzero))

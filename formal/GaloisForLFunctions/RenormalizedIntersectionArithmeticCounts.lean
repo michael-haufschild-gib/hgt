@@ -8,4 +8,10 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.UnitaryPrime
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicMangoldtTail
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexDynamics
+
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexLocalFlow
+
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexSingularIndex
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

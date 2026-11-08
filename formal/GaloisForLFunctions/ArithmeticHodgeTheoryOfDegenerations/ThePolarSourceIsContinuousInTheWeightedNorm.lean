@@ -265,8 +265,9 @@ theorem tendsto_integral_mul_polarSourceProfile {U : ℕ → ℝ → ℝ} {F : �
     rw [zero_mul] at hb
     exact squeeze_zero (fun n => sq_nonneg _)
       (fun n => sq_integral_mul_polarSourceProfile_le ((hU n).sub hF)) hb
-  have ha := Real.continuous_sqrt.continuousAt.tendsto.comp hs
-  simp only [Function.comp_apply, Real.sqrt_sq_eq_abs, Real.sqrt_zero] at ha
+  have ha : Tendsto (fun n : ℕ => Real.sqrt ((∫ u, (U n u - F u) * polarSourceProfile u) ^ 2))
+      atTop (𝓝 (Real.sqrt 0)) := Real.continuous_sqrt.continuousAt.tendsto.comp hs
+  simp only [Real.sqrt_sq_eq_abs, Real.sqrt_zero] at ha
   rw [tendsto_iff_norm_sub_tendsto_zero]
   apply ha.congr
   intro n
@@ -289,7 +290,7 @@ theorem generalTerminalPolarSource_eq_integral_polarSourceProfile {h : ℝ → �
       rw [Set.indicator_of_mem (show u ∈ Iic (0 : ℝ) from hu)]
       have he : Real.exp (u / 2) * Real.exp (-u / 2) = 1 := by
         rw [← Real.exp_add]
-        convert Real.exp_zero using 1 <;> ring
+        rw [show u / 2 + -u / 2 = 0 by ring, Real.exp_zero]
       calc
         _ = (Real.exp (u / 2) * Real.exp (-u / 2)) * (h u * terminalPolarKernel u) := by rw [he, one_mul]
         _ = _ := by ring

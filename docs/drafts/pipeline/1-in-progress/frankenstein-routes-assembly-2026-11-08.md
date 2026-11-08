@@ -42,6 +42,10 @@ Frobenius periodicity; weak recurrence is its function-level shadow, and AAL equ
 shadow. The JAS shell criterion reads the same proof in the Frobenius-eigenvalue coordinate:
 ZAL ↔ finite rank (free on curves), shell-sum growth ↔ Stepanov's count, Turán ↔ power sums.
 
+**Follow-up (Lean, `ZeroConfigurationGeometry/AbscissaLaws/TheCurveProofSplitsAtTheAbscissaLaw`).**
+`curve_template_split`: for every curve datum in the strip, AAL holds, and crude count at every
+level ⇔ ZAL ⇔ purity ⇔ unitarity. Stepanov and the power sums both live inside ZAL.
+
 ## F21 — critical-line firewall
 
 **Bridge (Lean, `ArithmeticPositiveDuality/TheCriticalLineFirewall`).** One function-level law
@@ -53,6 +57,12 @@ pair; ζ's law is invariant under every symmetric shift.
 
 **Learning.** The reflection `ρ ↦ 1 − ρ̄` keeps heights; AAL is vertical transport. A functional-
 equation input must turn the FE into transport in height — the zero-set symmetry gives nothing.
+
+**Follow-up (Lean, `ZeroConfigurationGeometry/AbscissaLaws/TheAbscissaLawIsNotAsymptotic`).**
+`exists_not_abscissaLawAt_zero_of_isAsymptotic`: any property of zero configurations that depends
+only on the zeros above some height and holds for one pure configuration also holds for a
+configuration with ZAL that violates the finite case of AAL (add one reflection pair). No large-height
+zero statistic decides B13 or AAL; the input must see zeros at bounded height.
 
 ## F18 — AAL tail form
 
@@ -99,5 +109,47 @@ proved from the corpus' Titchmarsh 4.11 (`norm_zetaStripError_le_grid`):
 `‖S_M(b) − ζ(½+ib)‖ ≤ 9M^{−½} + M^{½}/|b|` for `|b| ≤ πM`; for `M(b) = ⌈|b|/2⌉ + B` the error is
 `(9√2 + √(3 + 2B))|b|^{−½}`, and the squares differ by that error times `2|ζ| + error`.
 
+## F5 — typical-height layer
+
+**Bridge (Lean, `ArithmeticProduction/AnEulerMollifierNeedsThePrimesUpToLogSquared`).** The [D] step
+"any mollifier reaching it has Euler length of the primes `≤ c log²T`" is proved for Euler mollifiers:
+`M_y = Π_{p≤y}(1 − p^{−s})` is the Dirichlet polynomial `μ·[d | y#]` of length `y# ≤ 4^y`
+(`edPoly_eulerMollifierCoeff`), and a mollified second moment `≤ (1 + K₀/log T)T` forces
+`y ≥ min(1/24, 1/(14K₀)) log²T / log 4` (`eulerMollifier_needs_primes`).
+
+## F12 — the rigid ¬AAL world (zero-set level)
+
+**Bridge (Lean, `ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer`).**
+`not_abscissaLaw_iff_finite_layer`: AAL fails iff some top layer `{Re > ½ + h}` is finite and nonempty;
+`finite_layer_structure`: its reflection is a finite bottom layer at the same heights, and above them
+every zero lies in `|Re z − ½| ≤ h`. The [D] row "the FE maps the top layer to a bottom layer" is now
+[L] at the level of zero sets.
+
+## Rest of §2.3
+F1, F3, F4, F6, F9, F10, F11, F13, F14, F16, F17, F20, F25 are single [L] assemblies in the corpus; no
+bridge was missing. F7 is a meta-statement (one theorem with many proofs); equivalences of proved
+statements carry no content in Lean. F19: with Euler head coordinates the tail coordinate of `S` is
+`S·M_y`, Schur iff `|S| ≤ |E_y|` (`norm_tailCoordinate_le_one_iff`); this holds at the zeros of `S`, so
+"certificates exist exactly at tail-good heights" (tail-good = `|ζ − E_y|` small) is not the same
+condition — not bridged. F24: open (B106).
+
+## Conjecture loop
+- C15.1 (open): the Krein square of the integer probes is not integer-valued. Reduction: integral
+  values force `2 Re C(log(m/n)) ∈ ℤ`; `C` is continuous (`continuous_splineCorr`) and `log ℚ₊` is
+  dense, so `2 Re C` would be constant. Missing: non-constancy of the spline correlation, which needs
+  the explicit formula for `C`. Not attempted further.
+- C22.1 (refuted as stated, kept as a reading): "power sums ↔ AAL" — on curves AAL is free; the
+  power-sum step is inside ZAL (`curve_template_split`).
+- C21.1 (proved): asymptotic zero statistics cannot decide B13 (`TheAbscissaLawIsNotAsymptotic`).
+- C21.2 (proved): no verification up to a fixed height decides B13
+  (`exists_not_abscissaLawAt_zero_of_isLocalBelow`). AAL/B13 is two-scale: configuration-level
+  producers must relate bounded and large heights, as recurrence and transport do.
+- C18.1 (proved): AAL needs no head alignment; it is the transport of full-amplitude tail events.
+- C22.2 (proved, `ZeroConfigurationGeometry/AbscissaLaws/AlmostPeriodicZerosRecurWithBoundedGaps`): zeros of a
+  uniformly strip-almost-periodic holomorphic function recur with bounded gaps (Bohr), hence obey the
+  law; every Dirichlet series does so where its partial sums converge uniformly. The rational one-off
+  tends to `1` vertically (almost periodic at large height) and violates the law: almost periodicity
+  must hold uniformly in height. ζ is the Frobenius-periodic analogue only on `Re s > 1`.
+
 ## Log
-- 2026-11-08 — created; F22, F21, F18 bridges compiled and wired.
+- 2026-11-08 — created; F22, F21, F18, F15, F2, F8/F23, F5 bridges and two F21/F22 follow-ups compiled and wired.

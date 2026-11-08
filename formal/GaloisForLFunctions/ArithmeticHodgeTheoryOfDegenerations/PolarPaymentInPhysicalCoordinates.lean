@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.PolarPaymentHasAStrictInteriorMargin
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.ThePolarSourceIsContinuousInTheWeightedNorm
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalFormHasAGammaLiminf
 
 /-!
 # Polar payment in physical collar coordinates
@@ -14,6 +15,7 @@ noncomputable section
 open MeasureTheory Set
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open CriticalArithmeticCorrelationTheory SpacingScaleHarmonicAnalysis WindowTowerOfSpecZ
+  RenormalizedArithmeticPotentialTheory
 
 /-- Polar payment in physical coordinates retains the scalar pole energy and the exact
 continuous polar source. -/

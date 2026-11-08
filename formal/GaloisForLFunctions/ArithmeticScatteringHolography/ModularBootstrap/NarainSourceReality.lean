@@ -38,9 +38,7 @@ theorem narainScalarHeatAverage_conj (Y Z : Height) (y : ℝ) :
 theorem narainAverageConstant_conj (Y Z : Height) :
     (starRingEnd ℂ) (narainAverageConstant Y Z) = narainAverageConstant Y Z := by
   rw [narainAverageConstant_explicit]
-  simp only [map_add, map_mul, map_sub, map_div, map_neg, map_one, map_ofNat,
-    Complex.conj_ofReal, ← xi_deriv_conj, ← xi_conj]
-  norm_num
+  simp [map_ofNat, ← xi_deriv_conj, ← xi_conj]
 
 /-- The actual scalar remainder as a real-valued function. -/
 def narainAverageRemainderReal (Y Z : Height) (y : ℝ) : ℝ :=
@@ -72,9 +70,11 @@ theorem continuous_narainAverageRemainderReal_exp (Y Z : Height) :
   have hA : Continuous (fun L : ℝ => narainScalarHeatAverage Y Z (Real.exp (-L))) :=
     (continuousOn_narainScalarHeatAverage Y Z).comp_continuous
       (Real.continuous_exp.comp continuous_neg) (fun L => Real.exp_pos _)
+  have hAre : Continuous (fun L : ℝ => (narainScalarHeatAverage Y Z (Real.exp (-L))).re) := by
+    fun_prop
   unfold narainAverageRemainderReal
   simp_rw [Real.log_exp]
-  exact (((Real.continuous_exp.comp continuous_neg).mul hA.re).add
+  exact (((Real.continuous_exp.comp continuous_neg).mul hAre).add
     (continuous_const.mul continuous_neg)).sub continuous_const
 
 #print axioms narainScalarHeatAverage_conj

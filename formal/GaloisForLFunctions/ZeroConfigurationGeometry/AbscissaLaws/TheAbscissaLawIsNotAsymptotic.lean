@@ -11,9 +11,12 @@ zeros above some height: two configurations that agree, with multiplicities, at 
 some pure configuration, it holds for a configuration that approaches the line and violates the
 finite case of AAL (`h = 0`): add one reflection pair `{ρ, 1 − ρ̄}` off the line (`addPair`).
 
+**Theorem** (`exists_not_abscissaLawAt_zero_of_isLocalBelow`). The same holds for a property that
+depends only on the zeros up to a fixed height `T₀` (finite verification): add the pair above `T₀`.
+
 So no statement about the distribution of zeros at large height — densities, pair statistics, gaps,
-growth of counts — decides the finite stratum (B13) or AAL: an input for them must see the zeros at
-bounded height, i.e. the function itself.
+growth of counts — and no verification up to a fixed height decides the finite stratum (B13) or AAL:
+the law relates the two scales, and an input for it must see both.
 -/
 
 open Complex Set
@@ -126,5 +129,43 @@ theorem exists_not_abscissaLawAt_zero_of_isAsymptotic {P : ZeroConfig → Prop}
   obtain ⟨hρ, hρ', hZAL, hnot⟩ := addPair_not_abscissaLawAt_zero hZ
     (ρ := (3 / 4 : ℂ)) (by norm_num) (by norm_num) (by norm_num)
   refine ⟨_, (hP _ _ ⟨|(3 / 4 : ℂ).im|, addPair_agrees_above Z _ _ _ hρ hρ'⟩).mp hPZ, hZAL, hnot⟩
+
+/-- **Local properties** depend only on the zeros up to the height `T₀`, with multiplicities. -/
+def IsLocalBelow (T₀ : ℝ) (P : ZeroConfig → Prop) : Prop :=
+  ∀ Z Z' : ZeroConfig, (∀ z : ℂ, |z.im| ≤ T₀ →
+      (z ∈ Z.carrier ↔ z ∈ Z'.carrier) ∧ (z ∈ Z.carrier → Z.mult z = Z'.mult z)) → (P Z ↔ P Z')
+
+/-- Adding a pair above `T₀` does not change a configuration up to `T₀`. -/
+theorem addPair_agrees_below (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1)
+    (hρ : ρ ∉ Z.carrier) (hρ' : reflect ρ ∉ Z.carrier) {T₀ : ℝ} (hT : T₀ < |ρ.im|) :
+    ∀ z : ℂ, |z.im| ≤ T₀ →
+      (z ∈ Z.carrier ↔ z ∈ (addPair Z ρ h0 h1 hρ hρ').carrier) ∧
+        (z ∈ Z.carrier → Z.mult z = (addPair Z ρ h0 h1 hρ hρ').mult z) := by
+  intro z hz
+  have hne : z ≠ ρ := fun h => by rw [h] at hz; linarith
+  have hne' : z ≠ reflect ρ := fun h => by
+    rw [h] at hz
+    have him : (reflect ρ).im = ρ.im := by simp [reflect]
+    rw [him] at hz
+    linarith
+  refine ⟨⟨fun h => Or.inl h, ?_⟩, fun h => by simp [addPair, h]⟩
+  rintro (h | h | h)
+  · exact h
+  · exact absurd h hne
+  · exact absurd h hne'
+
+/-- **No finite verification decides the finite stratum.** -/
+theorem exists_not_abscissaLawAt_zero_of_isLocalBelow {T₀ : ℝ} {P : ZeroConfig → Prop}
+    (hP : IsLocalBelow T₀ P) {Z : ZeroConfig} (hZ : Pure Z) (hPZ : P Z) :
+    ∃ Z' : ZeroConfig, P Z' ∧ ApproachesLine Z' ∧ ¬ AbscissaLawAt Z' 0 := by
+  set ρ : ℂ := (3 / 4 : ℂ) + ((|T₀| + 1 : ℝ) : ℂ) * I with hρdef
+  have hre : ρ.re = 3 / 4 := by simp [hρdef]
+  have him : ρ.im = |T₀| + 1 := by simp [hρdef]
+  obtain ⟨hρ, hρ', hZAL, hnot⟩ := addPair_not_abscissaLawAt_zero hZ (ρ := ρ)
+    (by rw [hre]; norm_num) (by rw [hre]; norm_num) (by rw [hre]; norm_num)
+  have hT : T₀ < |ρ.im| := by
+    rw [him, abs_of_pos (by positivity)]
+    linarith [le_abs_self T₀]
+  exact ⟨_, (hP _ _ (addPair_agrees_below Z ρ _ _ hρ hρ' hT)).mp hPZ, hZAL, hnot⟩
 
 end GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa

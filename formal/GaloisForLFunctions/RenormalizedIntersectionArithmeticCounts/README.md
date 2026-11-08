@@ -124,6 +124,26 @@ zero locations through unitary invariants. The positive survivor is their
 exact norm and graph classification. Additional arithmetic structure and a
 zero-detection comparison remain necessary.
 
+## Actual prime-vertex dynamics and exit pairs
+
+[PrimeVertexDynamics.lean](PrimeVertexDynamics.lean) constructs
+`F(x)_p=(p+1)x_p/Σ_q(q+1)x_q` on the original prime-product complex.
+It preserves every face and cutoff, is explicitly homotopic to identity,
+and fixes exactly the arithmetic prime vertices.
+
+[PrimeVertexLocalFlow.lean](PrimeVertexLocalFlow.lean) identifies each open
+vertex star with its actual nonnegative link cone. Logarithmic diagonal
+flow has an explicit compact isolating block, compact exit and radial
+block contraction. The exit deformation retracts onto the upper-link
+realization. [PrimeVertexSingularIndex.lean](PrimeVertexSingularIndex.lean) defines the local
+integer by relative singular homology of this block and exit. For `p≤N≤p³`,
+it proves `index_p(N)=1−#{q>p prime : pq≤N}` in the full ambient realization.
+Bertrand intervals prove these actual local indices are unbounded below.
+The constructions, singular-homology comparison in this range and axiom audits
+are complete; see the [formalized result](../../../docs/drafts/pipeline/3-formalized/riac-prime-vertex-exit-indices.md).
+The full Mertens localization comparison remains on the
+[localization card](../../../docs/drafts/pipeline/1-in-progress/riac-prime-vertex-signed-localization.md).
+
 ## Literature and novelty boundary
 
 Connes–Consani construct integer dimensions and Riemann–Roch on the Arakelov

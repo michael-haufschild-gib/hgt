@@ -25,8 +25,11 @@ theorem laurentCoeff_narainMellinMean_eq_universal (Y Z : Height) (p : Resonance
     ⟨1, by norm_num [Height]⟩ ⟨1, by norm_num [Height]⟩ p.val
   have hD := (differentiable_narainMeanTargetDilation Y Z).analyticAt p.val
   have hC := analyticAt_narainMeanTargetCorrection_resonance Y Z p
+  have hDU : MeromorphicAt (fun u : ℂ => narainMeanTargetDilation Y Z u *
+      narainMellinMean ⟨1, by norm_num [Height]⟩ ⟨1, by norm_num [Height]⟩ u) p.val := by
+    convert! hD.meromorphicAt.mul hU using 1
   rw [laurentCoeff_congr hM (narainMellinMean_target_decomposition_germ Y Z p) ℓ,
-    laurentCoeff_add (hD.meromorphicAt.mul hU) hC.meromorphicAt,
+    laurentCoeff_add hDU hC.meromorphicAt,
     laurentCoeff_eq_zero_of_analyticAt hC hℓ, add_zero]
 
 /-- Fixed-product target families have identical full arithmetic principal parts, including multiple poles. -/

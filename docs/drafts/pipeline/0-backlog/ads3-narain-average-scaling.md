@@ -17,14 +17,15 @@ Thus all target dependence of the arithmetic part is a single dilation
 and amplitude. The remaining terms are explicit one-dimensional theta
 functions. The proposed identity is stronger than equality of pole sets.
 
-At each arithmetic pole `s₀=ρ/2`, it predicts the full principal part
-of `F_YZ(s)` is that of `(YZ)^(1−s)F_11(s)`, including multiple poles.
+At each arithmetic pole `s₀=ρ/2`, the full principal part
+of `F_YZ(s)` equals that of `(YZ)^(1−s)F_11(s)`, including multiple poles.
+This principal-part identity is formalized; the source identity above remains open.
 If the pole order is `m` and `a_j` are the Laurent coefficients of
 `F_11` at `s₀`, the coefficient at `(s−s₀)^(−k)`, `1≤k≤m`, should be
 `(YZ)^(1−s₀) Σ_(j=0)^(m−k) [−log(YZ)]^j a_(−k−j)/j!`.
 Thus the leading coefficient has a single dilation factor; lower
 principal coefficients mix by an explicit triangular logarithmic law.
-The existing pole-order theorem does not establish this coefficient law.
+The explicit finite convolution is not yet formalized.
 The corpus’s `BlackHoleRingdown.taylorCoeffZero_mul_exp` gives the
 finite convolution after clearing a pole and translating its center to
 zero. `laurentCoeff_eq_taylorCoeffZero` converts those Taylor coefficients
@@ -57,30 +58,36 @@ would read
 
 In particular, two pairs with the same product `YZ` should have
 remainders differing by only `O(exp(−c/y))`. Every arithmetic principal
-coefficient would agree along each fixed-product family, including at
-multiple poles. The ratio `Y/Z` would enter only the exponentially small
-correction after main-term subtraction. These consequences remain
-unformalized and supply no new arithmetic remainder exponent.
+coefficient agrees along each fixed-product family, including at
+multiple poles, by the formalized germ argument below. The ratio `Y/Z`
+would enter only the exponentially small correction after main-term
+subtraction. The physical remainder comparison remains unproved and supplies no new arithmetic remainder exponent.
 
 The same cancellation can first be expressed without completed-zeta
 normalization. Put `A=ξ(1+2u)`, `B=(1+2u)ξ(2u)/(2u−1)`,
 `p_Y=Y^(1/2+u)`, `m_Y=Y^(1/2−u)` and `K=2/[u(1+2u)]`.
-Away from `A=0`, direct expansion predicts
+Away from `A=0`, direct expansion proves
 
 `M_YZ−m_Y m_Z M_11=K[A(p_Yp_Z−m_Ym_Z)+B(p_Ym_Z+m_Yp_Z−2m_Ym_Z)]`.
 
 The right side is analytic near every arithmetic resonance: its only
 rational denominator zeros are `u=0,±1/2`, outside that divisor.
-This would isolate the full arithmetic principal part before source
+This isolates the full arithmetic principal part before source
 inversion. Equality at the totalized value of a pole is not claimed;
-principal-part comparison uses punctured germs. This algebraic
-cancellation and the analytic-germ transfer remain unformalized.
-`exists_xi_shift_factor` supplies isolated denominator zeros.
-`HTGeometry/MeromorphicLaurentTranslation.lean` supplies punctured-germ
-congruence, additivity and vanishing of negative coefficients of an
-analytic correction. Since the dilation depends only on `YZ`, these
-inputs would prove equality of every negative Laurent coefficient
-along fixed-product target families, without a simplicity assumption.
+principal-part comparison uses punctured germs. The exact decomposition,
+entire dilation, globally meromorphic mean and analytic correction at
+every arithmetic resonance are formalized in `NarainMeanTargetDecomposition`.
+`NarainMeanTargetPrincipalPart` proves equality of every negative Laurent
+coefficient with the dilated unit-height mean, and equality along every
+fixed-product target family, without a simplicity assumption.
+
+The denominator has an isolated zero of finite order at each resonance.
+On its punctured neighborhood the algebraic decomposition holds. Laurent
+coefficients are invariant under this germ equality, additive for
+meromorphic germs, and zero in negative degree for the analytic correction.
+The dilation depends only on `YZ`, giving fixed-product equality.
+Both modules passed direct Lean checks and seven endpoint axiom audits;
+dependencies use only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Entire correction refinement
 
@@ -99,10 +106,11 @@ A target-independent saving exponent is already
 [formalized directly from the contour](../3-formalized/ads3-narain-universal-saving-constant.md):
 `|R_YZ(y)|≤C√y exp(−Lw(L)/128)` with target-dependent prefactors and
 thresholds. The proposed scaling identity would additionally identify the
-complete arithmetic profile and its principal coefficients.
+complete physical arithmetic profile.
 
 ## Gates
 
-- [ ] 0 → 1: exact mean expansion and actual theta Mellin inputs audited.
+- [x] Exact arithmetic decomposition and full principal parts formalized.
+- [ ] 0 → 1: actual theta Mellin inputs and source inversion audited.
 - [ ] 1 → 2: Mellin uniqueness, scaling identity and theta error proved.
 - [ ] 2 → 3: Lean formalization and transitive axiom audit.
