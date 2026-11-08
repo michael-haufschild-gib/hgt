@@ -31,4 +31,6 @@ The disc centre `ρ`, radius `R>0`, and accuracy `η<1` are fixed before the hei
 
 `exists_isHeadReturn_le` bounds finite-head return height by `(7N)^N`; it does not establish the required long-arc zeta approximation. Existing head-resolution bounds control log modulus, not phase.
 
+Finite Euler-head approximation has a proved cost: with fixed disc and accuracy, `2π(−log η) log(2+|τ|) ≤ C+Σ_{p≤y}log(1+p^(−σ))`, where `σ` is the disc's left edge and `C` is independent of the cut and height. Thus a fixed cut cannot approximate this target at arbitrarily high inverse-logarithmic-gap returns. The bound holds for every choice of phases; it does not assert an approximation by the actual zeta translate. [Formalized prime-mass law](../3-formalized/short-arc-euler-prime-mass.md).
+
 No quantitative return producer or AAL consequence is proved here.

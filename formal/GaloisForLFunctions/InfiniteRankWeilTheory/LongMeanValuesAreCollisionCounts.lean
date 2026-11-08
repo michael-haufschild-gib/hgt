@@ -70,24 +70,22 @@ theorem integral_fejerWeight_cos {T : ℝ} (hT : 0 < T) (lam : ℝ) :
     field_simp
     ring
   · rw [fejerKernel, if_neg hl]
-    set F : ℝ → ℝ := fun t => (1 - t / T) * Real.sin (t * lam) / lam -
-      Real.cos (t * lam) / (T * lam ^ 2) with hF
-    have hderiv : ∀ t ∈ Set.uIcc 0 T, HasDerivAt F ((1 - t / T) * Real.cos (t * lam)) t := by
+    have hderiv : ∀ t ∈ Set.uIcc 0 T, HasDerivAt (fun t => (1 - t / T) * Real.sin (t * lam) / lam -
+        Real.cos (t * lam) / (T * lam ^ 2)) ((1 - t / T) * Real.cos (t * lam)) t := by
       intro t _
       have h1 : HasDerivAt (fun t => 1 - t / T) (-(1 / T)) t := by
         simpa using ((hasDerivAt_id t).div_const T).const_sub 1
-      have h2 : HasDerivAt (fun t => Real.sin (t * lam)) (Real.cos (t * lam) * lam) t := by
-        simpa using (Real.hasDerivAt_sin (t * lam)).comp t ((hasDerivAt_id t).mul_const lam)
-      have h3 : HasDerivAt (fun t => Real.cos (t * lam)) (-Real.sin (t * lam) * lam) t := by
-        simpa using (Real.hasDerivAt_cos (t * lam)).comp t ((hasDerivAt_id t).mul_const lam)
-      have := ((h1.mul h2).div_const lam).sub (h3.div_const (T * lam ^ 2))
-      convert this using 1
+      have h2 := (hasDerivAt_mul_const (x := t) lam).sin
+      have h3 := (hasDerivAt_mul_const (x := t) lam).cos
+      refine (((h1.mul h2).div_const lam).sub (h3.div_const (T * lam ^ 2))).congr_deriv ?_
       field_simp
       ring
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
-      (by exact (by fun_prop : Continuous fun t : ℝ => (1 - t / T) * Real.cos (t * lam)).intervalIntegrable _ _)]
-    simp only [hF, div_self hT.ne', sub_self, zero_mul, zero_div, zero_sub, mul_zero, Real.sin_zero,
-      Real.cos_zero, zero_div]
+      ((by fun_prop : Continuous fun t : ℝ => (1 - t / T) * Real.cos (t * lam)).intervalIntegrable
+        _ _)]
+    have e1 : Real.sin (0 * lam) = 0 := by simp
+    have e2 : Real.cos (0 * lam) = 1 := by simp
+    rw [e1, e2, div_self hT.ne', sub_self, zero_mul, zero_div, show T * lam = lam * T by ring]
     field_simp
     ring
 
@@ -111,7 +109,7 @@ theorem fejerMean_eq (S : Finset ℕ) (a : ℕ → ℝ) {T : ℝ} (hT : 0 < T) :
       ring
     · exact (by fun_prop : Continuous fun t : ℝ => (1 - t / T) *
         (a m * a n * Real.cos (t * (Real.log n - Real.log m)))).intervalIntegrable _ _
-  · exact (continuous_finset_sum _ fun n _ => by fun_prop).intervalIntegrable _ _
+  · exact (continuous_finsetSum _ fun n _ => by fun_prop).intervalIntegrable _ _
 
 /-! ### The Fejér kernel -/
 
@@ -180,7 +178,7 @@ theorem two_div_pi_sq_mul_le_fejerKernel {T : ℝ} (hT : 0 < T) {lam : ℝ}
 
 /-- The collision count `Σ_{|log n − log m| ≤ η} a_m a_n`. -/
 def collisionCount (S : Finset ℕ) (a : ℕ → ℝ) (η : ℝ) : ℝ :=
-  ∑ m ∈ S, ∑ n ∈ S with |Real.log n - Real.log m| ≤ η, a m * a n
+  ∑ m ∈ S, ∑ n ∈ S.filter (fun n : ℕ => |Real.log (n : ℝ) - Real.log (m : ℝ)| ≤ η), a m * a n
 
 /-- **Collisions bound the mean value from below.** For nonnegative coefficients,
 `(2T/π²) · (collision count at scale π/T) ≤ ∫_0^T (1 − t/T)|D(t)|² dt`. -/
@@ -201,7 +199,7 @@ theorem collisionCount_le_fejerMean (S : Finset ℕ) {a : ℕ → ℝ} (ha : ∀
 /-- Each `n ≤ N` collides with at least `n/(T+1)` integers `m ≤ n` at scale `1/T`. -/
 theorem le_card_collisions {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : 1 ≤ n) :
     (n : ℝ) / (T + 1) ≤
-      ((Finset.Icc 1 n).filter fun m => |Real.log n - Real.log m| ≤ 1 / T).card := by
+      ((Finset.Icc 1 n).filter fun m : ℕ => |Real.log (n : ℝ) - Real.log (m : ℝ)| ≤ 1 / T).card := by
   set x : ℝ := (n : ℝ) / (T + 1) with hxdef
   have hx0 : 0 ≤ x := by positivity
   have hxn : x < n := by
@@ -209,7 +207,7 @@ theorem le_card_collisions {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : 1 ≤ n) :
     have : (1 : ℝ) ≤ n := by exact_mod_cast hn
     nlinarith
   have hsub : (Finset.range (⌊x⌋₊ + 1)).image (fun j => n - j) ⊆
-      (Finset.Icc 1 n).filter fun m => |Real.log n - Real.log m| ≤ 1 / T := by
+      (Finset.Icc 1 n).filter fun m : ℕ => |Real.log (n : ℝ) - Real.log (m : ℝ)| ≤ 1 / T := by
     intro m hm
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.1 hm
     have hjx : (j : ℝ) ≤ x := by
@@ -249,7 +247,6 @@ theorem le_card_collisions {T : ℝ} (hT : 0 < T) {n : ℕ} (hn : 1 ≤ n) :
             ((Nat.cast_le.2 (Nat.lt_succ_iff.1 ‹k < _›)).trans (Nat.floor_le hx0)) hxn
           have : j < n := by exact_mod_cast hjx
           have : k < n := by exact_mod_cast hkx
-          simp only at h
           omega), Finset.card_range]
     _ ≤ _ := by exact_mod_cast Finset.card_le_card hsub
 
@@ -272,26 +269,17 @@ theorem fejerMean_one_ge (N : ℕ) {T : ℝ} (hT : 0 < T) :
         | succ k ih =>
           rw [Finset.sum_Icc_succ_top (by omega), ih]; push_cast; ring
       rw [this]; field_simp
-    rw [← hsum, Finset.sum_comm' (t' := Finset.Icc 1 N)
-      (s' := fun n => (Finset.Icc 1 N).filter fun m => |Real.log n - Real.log m| ≤ Real.pi / T)]
-    · refine Finset.sum_le_sum fun n hn => ?_
-      have hn1 : 1 ≤ n := (Finset.mem_Icc.1 hn).1
-      have hnN : n ≤ N := (Finset.mem_Icc.1 hn).2
-      refine (le_card_collisions hT hn1).trans ?_
-      simp only [Finset.sum_const, nsmul_eq_mul, mul_one]
-      refine Nat.cast_le.2 (Finset.card_le_card fun m hm => ?_)
-      obtain ⟨hmI, hml⟩ := Finset.mem_filter.1 hm
-      refine Finset.mem_filter.2 ⟨Finset.mem_Icc.2 ⟨(Finset.mem_Icc.1 hmI).1,
-        (Finset.mem_Icc.1 hmI).2.trans hnN⟩, ?_⟩
-      exact hml.trans hpiT
-    · intro m n
-      constructor
-      · rintro ⟨hm, hn⟩
-        exact ⟨Finset.mem_filter.1 hn |>.1, Finset.mem_filter.2 ⟨hm, by
-          rw [abs_sub_comm]; exact (Finset.mem_filter.1 hn).2⟩⟩
-      · rintro ⟨hn, hm⟩
-        exact ⟨(Finset.mem_filter.1 hm).1, Finset.mem_filter.2 ⟨hn, by
-          rw [abs_sub_comm]; exact (Finset.mem_filter.1 hm).2⟩⟩
+    rw [← hsum]
+    refine Finset.sum_le_sum fun n hn => ?_
+    have hn1 : 1 ≤ n := (Finset.mem_Icc.1 hn).1
+    have hnN : n ≤ N := (Finset.mem_Icc.1 hn).2
+    refine (le_card_collisions hT hn1).trans ?_
+    refine Nat.cast_le.2 (Finset.card_le_card fun m hm => ?_)
+    obtain ⟨hmI, hml⟩ := Finset.mem_filter.1 hm
+    refine Finset.mem_filter.2 ⟨Finset.mem_Icc.2 ⟨(Finset.mem_Icc.1 hmI).1,
+      (Finset.mem_Icc.1 hmI).2.trans hnN⟩, ?_⟩
+    rw [abs_sub_comm]
+    exact hml.trans hpiT
   calc T * (N * (N + 1)) / (Real.pi ^ 2 * (T + 1))
       = 2 * T / Real.pi ^ 2 * ((N * (N + 1) : ℝ) / (2 * (T + 1))) := by
         field_simp
@@ -306,28 +294,37 @@ theorem primeCollisions_le_fejerMean (S : Finset ℕ) {T : ℝ} (hT : 0 < T) :
         fejerMean S (fun n => if n.Prime then 1 else 0) T := by
   have h := collisionCount_le_fejerMean S (a := fun n => if n.Prime then 1 else 0)
     (fun n _ => by split_ifs <;> norm_num) hT
-  have hcount : collisionCount S (fun n => if n.Prime then (1 : ℝ) else 0) (Real.pi / T) =
-      (((S.filter Nat.Prime) ×ˢ (S.filter Nat.Prime)).filter
-        fun pq => |Real.log pq.2 - Real.log pq.1| ≤ Real.pi / T).card := by
+  set P := S.filter Nat.Prime
+  set close : ℕ → ℕ → Prop := fun m n => |Real.log (n : ℝ) - Real.log (m : ℝ)| ≤ Real.pi / T
+  have hL : collisionCount S (fun n => if n.Prime then (1 : ℝ) else 0) (Real.pi / T) =
+      ∑ m ∈ S, ∑ n ∈ S, if m.Prime ∧ n.Prime ∧ close m n then (1 : ℝ) else 0 := by
     unfold collisionCount
-    rw [Finset.card_filter, Finset.sum_product]
-    push_cast
-    refine Finset.sum_congr ?_ ?_ |>.trans ?_
-    · exact S
-    · rfl
-    · intro m _; rfl
+    refine Finset.sum_congr rfl fun m _ => ?_
     rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun n _ => ?_
+    by_cases hm : m.Prime <;> by_cases hn : n.Prime <;> by_cases hl : close m n <;>
+      simp_all [close]
+  have hR : ((((S.filter Nat.Prime) ×ˢ (S.filter Nat.Prime)).filter
+        fun pq => |Real.log pq.2 - Real.log pq.1| ≤ Real.pi / T).card : ℝ) =
+      ∑ m ∈ S, ∑ n ∈ S, if m.Prime ∧ n.Prime ∧ close m n then (1 : ℝ) else 0 := by
+    rw [Finset.card_filter, Nat.cast_sum, Finset.sum_product, Finset.sum_filter]
     refine Finset.sum_congr rfl fun m _ => ?_
     split_ifs with hm
-    · rw [Finset.sum_filter, Finset.sum_filter]
+    · rw [Finset.sum_filter]
       refine Finset.sum_congr rfl fun n _ => ?_
-      by_cases hn : n.Prime <;> by_cases hl : |Real.log n - Real.log m| ≤ Real.pi / T <;>
-        simp [hm, hn, hl]
+      by_cases hn : n.Prime <;> by_cases hl : close m n <;> simp_all [close]
     · simp [hm]
-  rw [hcount] at h
+  rw [hL, ← hR] at h
   have hpi : 0 < Real.pi ^ 2 / (2 * T) := by positivity
-  calc _ = Real.pi ^ 2 / (2 * T) * (2 * T / Real.pi ^ 2 * _) := by
-        field_simp
+  have hcoef : Real.pi ^ 2 / (2 * T) * (2 * T / Real.pi ^ 2) = 1 := by
+    field_simp
+  calc _ = Real.pi ^ 2 / (2 * T) * (2 * T / Real.pi ^ 2) *
+        ((((S.filter Nat.Prime) ×ˢ (S.filter Nat.Prime)).filter
+          fun pq => |Real.log pq.2 - Real.log pq.1| ≤ Real.pi / T).card : ℝ) := by
+        rw [hcoef, one_mul]
+    _ = Real.pi ^ 2 / (2 * T) * (2 * T / Real.pi ^ 2 *
+        ((((S.filter Nat.Prime) ×ˢ (S.filter Nat.Prime)).filter
+          fun pq => |Real.log pq.2 - Real.log pq.1| ≤ Real.pi / T).card : ℝ)) := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_left h hpi.le
 
 end GaloisForLFunctions.InfiniteRankWeilTheory

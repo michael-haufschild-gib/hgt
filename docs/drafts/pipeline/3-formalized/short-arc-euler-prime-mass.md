@@ -1,11 +1,11 @@
 # Prime mass required by an almost-closed Euler approximation
 
 - **ID:** AAL-EPM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean verification pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** A finite Euler head approximating a function with a central zero on an almost-closed circle must spend logarithmic prime mass proportional to the inverse omitted angle.
 
-## Target
+## Theorem
 
 Put `P_y(σ)=Σ_{p≤y} log(1+p^(−σ))`. Let `R>0`, `σ=c.re−R>0`, and let `f` be analytic near the closed disc, with `f(c)=0`. Choose a uniform circle bound `B≥|f|`. For `0<δ≤2π`, a relative approximation by `E_y(·+iτ)` with error `η∈(0,1)` on angles `[δ,2π]` implies
 
@@ -32,3 +32,15 @@ Multiply the relative Euler-head error by `|M_y|`. Since `E_y M_y=1`, the long-a
 Consequently `exp K≤1+B exp P_y(σ)≤(1+B)exp P_y(σ)`. Taking logs and multiplying by `δ>0` proves the first inequality. Write `L=−log η>0` and `A=L+log(1+B)+P_y(σ)>0`; then `2πL≤δA≤A/log(2+|τ|)`, proving the second.
 
 For an actual zeta zero and a fixed disc contained in `0<Re s<1`, analyticity away from `1` and compactness supply `B≥0`. Thus a constant depending only on the fixed disc and accuracy bounds `2πL log(2+|τ|)−P_y(σ)` for every such Euler-head approximation. No zero density or return existence assertion enters the proof.
+
+## Lean
+
+Module: `GaloisForLFunctions.TailArithmeticOfThePrimeOrbit.TheShortArcForcesPrimeMass`.
+
+- `primeBoundaryMass_le_sum`: `P_y(σ)≤Σ_{p≤y}p^(−σ)`.
+- `shortArc_eulerResidual_primeMass`: inverse-angle mass bound.
+- `logarithmicGap_eulerResidual_primeMass`: logarithmic-height mass bound.
+- `eulerHead_relative_error_iff`: exact conversion between relative head error and mollified residual.
+- `exists_zeta_euler_logarithmicGap_primeMass_bound`: uniform constant for the actual zeta target, with analyticity and the circle bound proved internally.
+
+Direct `lake --old env lean` check passes. The two mass bounds, prime-sum comparison, and zeta specialization have axiom sets contained in `{propext, Classical.choice, Quot.sound}`. No new hypotheses producing returns are introduced.

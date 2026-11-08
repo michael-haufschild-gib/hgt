@@ -31,7 +31,9 @@ Second formalized branch: [completed prime boundary](../3-formalized/riac-comple
 The faithful dense weighted embedding admits a closed extension of the actual
 augmentation exactly when `2 Re(s)+δ>1`, with unique bounded extension and
 exact norm. At and below the boundary, explicit finite packets obstruct every
-closed extension. The [higher-degree question](../0-backlog/riac-completed-prime-koszul.md)
+closed extension. The [graph-closure refinement](riac-prime-boundary-graph-closure.md)
+asks whether the exact closed relation there is the whole product.
+The [higher-degree question](../0-backlog/riac-completed-prime-koszul.md)
 is whether the standard completed complex remains contractible above that threshold.
 The [logarithmic compensation boundary](../3-formalized/riac-logarithmic-star-compensation.md)
 is also formalized: leaf growth `(log p)^α` admits finite payment exactly

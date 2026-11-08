@@ -1506,6 +1506,225 @@ private theorem exists_archForm_windowMollify_le_of_gammaLiminf {F₀ : ℝ → 
   simpa only [add_zero] using
     exists_archForm_windowMollify_le_of_gammaLiminf_bound _hF₀m hF₀i _hF₀8 hF₀_zero hliminf
 
+/-- Truncation and one-sided mollification approximate a rough negative-half-line profile
+in the exponential source norm while preserving an arbitrary finite Gamma-liminf upper bound. -/
+theorem exists_window_sequence_of_gammaLiminf_bound {F₀ : ℝ → ℝ} {Rstar B M₈ : ℝ}
+    (hF₀m : Measurable F₀) (hF₀i : Integrable F₀)
+    (hF₀2 : Integrable fun u => F₀ u ^ 2)
+    (hF₀8 : Integrable fun u => F₀ u ^ 2 * Real.exp (-(8 * u)))
+    (hF₀8_le : (∫ u, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
+    (hF₀_zero : ∀ u, 0 ≤ u → F₀ u = 0)
+    (hliminf : ∀ T : ℝ, Real.exp factorialSpanGammaOffset ≤ T →
+      truncatedWeilForm F₀ T + criticalAliasCoefficient Rstar *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) ≤ B) :
+    ∃ (C : ℝ) (A : ℕ → ℝ) (H : ℕ → ℝ → ℝ), 0 ≤ C ∧
+      (∀ k, 0 ≤ A k ∧ IsWindowTest (A k) (H k)) ∧
+      (∀ k, (∫ u, H k u ^ 2) ≤ ∫ u, F₀ u ^ 2) ∧
+      (∀ k, exponentialMass 8 (H k) ≤ Real.exp (8 / ((k : ℝ) + 1)) *
+        (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u)))) ∧
+      Tendsto (fun k => ∫ u, (H k u - F₀ u) ^ 2) atTop (𝓝 0) ∧
+      Tendsto (fun k => exponentialSourceMass (fun u => H k u - F₀ u)) atTop (𝓝 0) ∧
+      (∀ k, archForm (H k) ≤
+        primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
+          criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+          C / ((k : ℝ) + 1) + B) := by
+  obtain ⟨C_arch, _hC_arch, hex_n⟩ :=
+    exists_archForm_windowMollify_le_of_gammaLiminf_bound hF₀m hF₀i hF₀8 hF₀_zero hliminf
+  set δ : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
+  have hδ_pos : ∀ k, 0 < δ k := fun k => by dsimp only [δ]; positivity
+  have hδ_le1 : ∀ k, δ k ≤ 1 := fun k => by
+    dsimp only [δ]
+    exact div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) k]) (by positivity)
+  have hδ_lim : Tendsto δ atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
+  have hex_k : ∀ k : ℕ, ∃ n : ℕ, k ≤ n ∧
+      archForm (windowMollify F₀ ((n : ℝ) + 1) (δ k)) ≤
+        primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
+          criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+          (C_arch + 1) * δ k + B := fun k => hex_n (hδ_pos k) k
+  set n_seq : ℕ → ℕ := fun k => Classical.choose (hex_k k)
+  have hn_ge : ∀ k, k ≤ n_seq k := fun k => (Classical.choose_spec (hex_k k)).1
+  have hn_arch : ∀ k, archForm (windowMollify F₀ ((n_seq k : ℝ) + 1) (δ k)) ≤
+      primeSum F₀ - (2 * coshHalfMoment F₀ ^ 2 - 2 * sinhHalfMoment F₀ ^ 2) -
+        criticalAliasCoefficient Rstar * (∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))) +
+        (C_arch + 1) * δ k + B := fun k => (Classical.choose_spec (hex_k k)).2
+  set A_seq : ℕ → ℝ := fun k => (n_seq k : ℝ) + 1
+  set H : ℕ → ℝ → ℝ := fun k => windowMollify F₀ (A_seq k) (δ k)
+  have hA_pos : ∀ k, 0 < A_seq k := fun k => by dsimp only [A_seq]; positivity
+  have hH_win : ∀ k, IsWindowTest (A_seq k + δ k) (H k) := fun k =>
+    isWindowTest_windowMollify (hA_pos k) (hδ_pos k) hF₀i
+  have hH_cd : ∀ k, ContDiff ℝ 2 (H k) := fun k => (hH_win k).contDiff
+  have hH_cs : ∀ k, HasCompactSupport (H k) := fun k => (hH_win k).hasCompactSupport
+  have hH_supp1 : ∀ k y, 1 < y → H k y = 0 := fun k y hy =>
+    (hH_win k).vanish y fun hm => by linarith only [hy, hm.2]
+  have hH_mass : ∀ k, (∫ y, H k y ^ 2) ≤ ∫ y, F₀ y ^ 2 := by
+    intro k
+    set Gk : ℝ → ℝ := (Set.Ioo (-A_seq k) 0).indicator F₀
+    have hGkm : Measurable Gk := hF₀m.indicator measurableSet_Ioo
+    have hGk2 : Integrable fun y => Gk y ^ 2 := by
+      refine hF₀2.mono' (hGkm.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun y => ?_)
+      dsimp only [Gk]; rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      by_cases hy : y ∈ Set.Ioo (-A_seq k) 0 <;> simp [hy, sq_nonneg]
+    have hGk_le : (∫ y, Gk y ^ 2) ≤ ∫ y, F₀ y ^ 2 := by
+      refine integral_mono hGk2 hF₀2 fun y => ?_
+      dsimp only [Gk]
+      by_cases hy : y ∈ Set.Ioo (-A_seq k) 0 <;> simp [hy, sq_nonneg]
+    exact (HTGeometry.integral_sq_mollify_le_of_isProbabilityDensity
+      (contDiff_leftSplineMollifier (δ k)).continuous.measurable hGkm
+      (leftSplineMollifier_nonneg (hδ_pos k)) (integrable_leftSplineMollifier (hδ_pos k))
+      (integral_leftSplineMollifier (hδ_pos k)) hGk2
+      (((hH_cd k).continuous.pow 2).integrable_of_hasCompactSupport
+        (HTGeometry.hasCompactSupport_sq (hH_cs k)))).trans hGk_le
+  set I₈ : ℝ := ∫ u in Set.Iio 0, F₀ u ^ 2 * Real.exp (-(8 * u))
+  have hI₈_nonneg : 0 ≤ I₈ := setIntegral_nonneg measurableSet_Iio
+    (fun _ _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
+  have hI₈_le : I₈ ≤ M₈ :=
+    (setIntegral_le_integral hF₀8
+      (Eventually.of_forall fun _ => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)).trans hF₀8_le
+  have hH_exp8 : ∀ k, (∫ y, H k y ^ 2 * Real.exp (-(8 * y))) ≤ Real.exp 8 * M₈ := by
+    intro k
+    have hm1 := exponentialMass_windowMollify_le (A := A_seq k) (hδ_pos k) hF₀m hF₀2 hF₀8
+    have hexp_eq : (∫ y, H k y ^ 2 * Real.exp (-(8 * y))) = exponentialMass 8 (H k) :=
+      integral_congr_ae (Eventually.of_forall fun y => mul_comm _ _)
+    have hexp_le : Real.exp (8 * δ k) ≤ Real.exp 8 :=
+      Real.exp_le_exp.mpr (by linarith only [hδ_le1 k])
+    rw [hexp_eq]
+    exact hm1.trans (mul_le_mul hexp_le hI₈_le hI₈_nonneg (Real.exp_pos _).le)
+  have hH_L2 : Tendsto (fun k : ℕ => ∫ y, (H k y - F₀ y) ^ 2) atTop (𝓝 0) := by
+    have hmoll_lim := tendsto_integral_sq_lineConvolution_leftSplineMollifier_sub hF₀m hF₀2
+    have htail_lim : Tendsto (fun k : ℕ => 2 * (M₈ * Real.exp (-8 * ((k : ℝ) + 1))) +
+        2 * ∫ y, (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2)
+        atTop (𝓝 0) := by
+      have hexp_z : Tendsto (fun k : ℕ => M₈ * Real.exp (-8 * ((k : ℝ) + 1))) atTop (𝓝 0) := by
+        have hlin : Tendsto (fun k : ℕ => -8 * ((k : ℝ) + 1)) atTop atBot :=
+          (Filter.tendsto_neg_atTop_atBot.comp
+            ((tendsto_natCast_atTop_atTop.atTop_add (tendsto_const_nhds (x := (1 : ℝ)))).const_mul_atTop
+              (by norm_num : (0 : ℝ) < 8))).congr fun k => by
+            dsimp only [Function.comp_def]; ring
+        simpa only [Function.comp_def, mul_zero] using
+          (Real.tendsto_exp_atBot.comp hlin).const_mul M₈
+      simpa only [mul_zero, add_zero] using (hexp_z.const_mul 2).add (hmoll_lim.const_mul 2)
+    refine squeeze_zero (fun _ => integral_nonneg fun _ => sq_nonneg _) (fun k => ?_) htail_lim
+    set Gk : ℝ → ℝ := (Set.Ioo (-A_seq k) 0).indicator F₀
+    have hGkm : Measurable Gk := hF₀m.indicator measurableSet_Ioo
+    have hGk2 : Integrable fun y => Gk y ^ 2 := by
+      refine hF₀2.mono' (hGkm.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun y => ?_)
+      dsimp only [Gk]; rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      by_cases hy : y ∈ Set.Ioo (-A_seq k) 0 <;> simp [hy, sq_nonneg]
+    have hGF2 : Integrable fun y => (Gk y - F₀ y) ^ 2 := by
+      have hdom : Integrable fun y => 2 * Gk y ^ 2 + 2 * F₀ y ^ 2 :=
+        (hGk2.const_mul 2).add (hF₀2.const_mul 2)
+      refine hdom.mono' ((hGkm.sub hF₀m).pow_const 2).aestronglyMeasurable
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      nlinarith only [sq_nonneg (Gk y + F₀ y)]
+    have hρ_cont := (contDiff_leftSplineMollifier (δ k)).continuous
+    have hρ_cs := hasCompactSupport_leftSplineMollifier (hδ_pos k)
+    have hρ2 : Integrable fun s => leftSplineMollifier (δ k) s ^ 2 :=
+      (hρ_cont.pow 2).integrable_of_hasCompactSupport (HTGeometry.hasCompactSupport_sq hρ_cs)
+    have hconv_diff_int : Integrable fun y =>
+        HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y ^ 2 :=
+      HTGeometry.integrable_sq_lineConvolution hρ_cont hρ_cs (hGkm.sub hF₀m) hGF2
+    have hcontr := HTGeometry.integral_sq_mollify_le_of_isProbabilityDensity
+      hρ_cont.measurable (hGkm.sub hF₀m) (leftSplineMollifier_nonneg (hδ_pos k))
+      (integrable_leftSplineMollifier (hδ_pos k)) (integral_leftSplineMollifier (hδ_pos k))
+      hGF2 hconv_diff_int
+    have hGF_tail : (∫ y, (Gk y - F₀ y) ^ 2) ≤ M₈ * Real.exp (-8 * ((k : ℝ) + 1)) := by
+      have hpt : ∀ y, (Gk y - F₀ y) ^ 2 ≤
+          Real.exp (-8 * ((k : ℝ) + 1)) * (F₀ y ^ 2 * Real.exp (-(8 * y))) := by
+        intro y
+        dsimp only [Gk]
+        by_cases hy : y ∈ Set.Ioo (-A_seq k) 0
+        · rw [Set.indicator_of_mem hy, sub_self, sq, zero_mul]
+          positivity
+        · rw [Set.indicator_of_notMem hy, zero_sub, neg_sq]
+          rcases le_or_gt 0 y with hy0 | hy0
+          · rw [hF₀_zero y hy0, sq, zero_mul, zero_mul, mul_zero]
+          · have hyA : y ≤ -A_seq k := not_lt.mp fun hlt => hy ⟨hlt, hy0⟩
+            have hk_le : (k : ℝ) + 1 ≤ A_seq k := by
+              dsimp only [A_seq]; exact_mod_cast Nat.add_le_add_right (hn_ge k) 1
+            have hexp1 : 1 ≤ Real.exp (-8 * ((k : ℝ) + 1)) * Real.exp (-(8 * y)) := by
+              rw [← Real.exp_add]; exact Real.one_le_exp (by linarith only [hyA, hk_le])
+            have hm := mul_le_mul_of_nonneg_left hexp1 (sq_nonneg (F₀ y))
+            linarith only [hm]
+      exact (integral_mono hGF2 (hF₀8.const_mul _) hpt).trans
+        (by
+          rw [integral_const_mul, mul_comm]
+          exact mul_le_mul_of_nonneg_right hF₀8_le (Real.exp_pos _).le)
+    have hmoll_F_int : Integrable fun y =>
+        (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2 := by
+      have hc_int := HTGeometry.integrable_sq_lineConvolution hρ_cont hρ_cs hF₀m hF₀2
+      have hdom : Integrable fun y =>
+          2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y ^ 2 + 2 * F₀ y ^ 2 :=
+        (hc_int.const_mul 2).add (hF₀2.const_mul 2)
+      refine hdom.mono' (((HTGeometry.continuous_lineConvolution hρ_cont hρ_cs
+        (HTGeometry.locallyIntegrable_of_sq_integrable hF₀m.aestronglyMeasurable hF₀2)).measurable.sub
+          hF₀m).pow_const 2).aestronglyMeasurable (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      nlinarith only [sq_nonneg (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y + F₀ y)]
+    have hHF_int : Integrable fun y => (H k y - F₀ y) ^ 2 := by
+      have hH2 : Integrable fun y => H k y ^ 2 :=
+        ((hH_cd k).continuous.pow 2).integrable_of_hasCompactSupport
+          (HTGeometry.hasCompactSupport_sq (hH_cs k))
+      have hdom : Integrable fun y => 2 * H k y ^ 2 + 2 * F₀ y ^ 2 :=
+        (hH2.const_mul 2).add (hF₀2.const_mul 2)
+      refine hdom.mono' (((hH_cd k).continuous.measurable.sub hF₀m).pow_const 2).aestronglyMeasurable
+        (Eventually.of_forall fun y => ?_)
+      rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
+      nlinarith only [sq_nonneg (H k y + F₀ y)]
+    have hsplit_pt : ∀ y, (H k y - F₀ y) ^ 2 ≤
+        2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y ^ 2 +
+          2 * (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2 := by
+      intro y
+      have hintG := HTGeometry.integrable_kernel_mul_sq hρ_cont.aestronglyMeasurable hρ2
+        hGkm.aestronglyMeasurable hGk2 y
+      have hintF := HTGeometry.integrable_kernel_mul_sq hρ_cont.aestronglyMeasurable hρ2
+        hF₀m.aestronglyMeasurable hF₀2 y
+      have hsub : H k y - HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y =
+          HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y := by
+        dsimp only [H, windowMollify, HTGeometry.lineConvolution]
+        rw [← integral_sub hintG hintF]
+        exact integral_congr_ae (Eventually.of_forall fun s => by dsimp only; ring)
+      set a := HTGeometry.lineConvolution (leftSplineMollifier (δ k)) (fun t => Gk t - F₀ t) y
+      set b := HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y
+      have hab : H k y - F₀ y = a + b := by dsimp only [a, b]; linarith only [hsub]
+      rw [hab]
+      nlinarith only [sq_nonneg (a - b)]
+    have hm : (∫ y, (H k y - F₀ y) ^ 2) ≤
+        ∫ y, (2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+          (fun t => Gk t - F₀ t) y ^ 2 +
+          2 * (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2) :=
+      integral_mono hHF_int ((hconv_diff_int.const_mul 2).add (hmoll_F_int.const_mul 2))
+        hsplit_pt
+    have hadd_m : (∫ y, (2 * HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+        (fun t => Gk t - F₀ t) y ^ 2 +
+        2 * (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2)) =
+        2 * (∫ y, HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+          (fun t => Gk t - F₀ t) y ^ 2) +
+        2 * ∫ y, (HTGeometry.lineConvolution (leftSplineMollifier (δ k)) F₀ y - F₀ y) ^ 2 := by
+      rw [integral_add (hconv_diff_int.const_mul 2) (hmoll_F_int.const_mul 2),
+        integral_const_mul, integral_const_mul]
+    rw [hadd_m] at hm
+    have hcontr' : (∫ y, HTGeometry.lineConvolution (leftSplineMollifier (δ k))
+        (fun t => Gk t - F₀ t) y ^ 2) ≤ M₈ * Real.exp (-8 * ((k : ℝ) + 1)) :=
+      hcontr.trans hGF_tail
+    linarith only [hm, hcontr']
+  have hF₀_supp1 : ∀ᵐ y, 1 < y → F₀ y = 0 :=
+    Eventually.of_forall fun y hy => hF₀_zero y (zero_lt_one.trans hy).le
+  have hF₀W : WeightedTwo F₀ :=
+    (exponentialSourceMass_le_of_support zero_le_one hF₀m.aestronglyMeasurable hF₀2 hF₀8
+      hF₀_supp1).1
+  have hstrong : ∀ ε > 0, ∀ᶠ k in atTop, (∫ y, (H k y - F₀ y) ^ 2) ≤ ε := fun ε hε =>
+    (hH_L2.eventually (gt_mem_nhds hε)).mono fun _ hk => hk.le
+  have hd := tendsto_exponentialSourceMass_sub (fun k => (hH_cd k).continuous) hH_cs
+    hF₀m.aestronglyMeasurable hF₀2 hF₀8 hH_exp8 (Eventually.of_forall hH_supp1) hF₀_supp1 hstrong
+  refine ⟨C_arch + 1, (fun k => A_seq k + δ k), H, by linarith only [_hC_arch],
+    fun k => ⟨by positivity, hH_win k⟩, hH_mass, ?_, hH_L2, hd, ?_⟩
+  · intro k
+    have hh := exponentialMass_windowMollify_le (A := A_seq k) (hδ_pos k) hF₀m hF₀2 hF₀8
+    simpa only [H, δ, mul_one_div] using hh
+  · intro k
+    simpa only [H, δ, mul_one_div] using hn_arch k
+
 /-- A unit-norm `L²` profile `F₀` vanishing on `[0, ∞)` that satisfies the critical `Γ`-liminf
 inequality at `Rstar` cannot coexist with `∀ A ≥ 0, (R₁ : EReal) < windowThreshold A` for any
 `R₁ > Rstar`. -/
