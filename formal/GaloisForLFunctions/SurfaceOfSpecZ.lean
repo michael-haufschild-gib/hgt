@@ -1,5 +1,7 @@
 import GaloisForLFunctions.SurfaceOfSpecZ.TheFrobeniusZonotopeSurface
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTwoHalfProducts
+import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanPlaceIsNotToric
+import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimesAreTheJumpsOfTheHeckeKernel
 
 /-!
 # The surface of `Spec ℤ`
@@ -10,5 +12,8 @@ surface, and their torus part, the Frobenius zonotopes, carries a Castelnuovo–
 sum of squares of integer counts, equal after normalization to the first archimedean channel of
 Weil's form. The off-diagonal of Weil's form between atoms at `log m` and `log n` is assembled
 from one `𝔽₁`-cusp (`ℙ¹ × ℙ¹`), the archimedean jets of the trivial zeros, and the gcd-twisted
-torsion intersection on `ℙ¹_ℤ`.
+torsion intersection on `ℙ¹_ℤ`. No toric metric on `ℙ¹_ℤ` supplies the archimedean part (toric
+pairings of coprime orbits depend on the product of the orders, Weil's on the ratio), and no
+continuous Hecke kernel supplies the whole: the primes are jump discontinuities at the logarithms of
+prime powers.
 -/

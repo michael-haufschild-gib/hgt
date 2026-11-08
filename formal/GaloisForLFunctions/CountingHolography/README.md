@@ -1,6 +1,6 @@
 # Counting Holography (CTH)
 
-Namespace `GaloisForLFunctions.CountingHolography`; umbrella `CountingHolography.lean`; 19 modules.
+Namespace `GaloisForLFunctions.CountingHolography`; umbrella `CountingHolography.lean`.
 
 ## 1. Motivation
 
@@ -232,6 +232,17 @@ function of the ratios `m/n` (`atomGram_eq_ratio`), asymptotically Hecke invaria
 restriction to `ℕ` of the GNS form of `r ↦ C(log r)` on `ℚ_{>0}` (APD `dotProduct_weilGram_eq_ratCorr`), and
 not a linear count of the horizon.
 
+**Can modular conjugation supply the partner involution?** The boost-commuting wedge reflection is
+`-I₂`; the normalized `PSL₂(ℤ)` normalizer has integer entries, and its quotient action preserves
+pseudo-Eisenstein series. Integer shifts are not closed under negation. In a standard-form von Neumann
+algebra, `Z ∈ M` and `J Z J ∈ M` force `Z ∈ M ∩ M'`, `J Z J = Z*`, and natural-cone pairing
+`‖Z Ω‖²` (`StandardForm.tomita_central_eq_star`). Partner representations of rational dilations are
+central and unitary. A nontrivial graph realization exists exactly when `t² ≤ 4q`
+(`exists_standardForm_partner_rep_iff_damped`); an integer Born-rule realization, exact or in Tate
+limit, exists exactly when RH holds (`riemannHypothesis_iff_exists_standardForm_bornRule`,
+`riemannHypothesis_iff_exists_standardForm_tateLimit`). See
+[ModularConjugationIsNotThePartnerInvolution.lean](ModularConjugationIsNotThePartnerInvolution.lean).
+
 **Q2. What is the physical origin of the parallelogram law on a branched graph?** The delay. A quadratic
 count covariant under one tick is a Born rule; a nondegenerate one forces the partner law
 (`partner_of_bornRule`), and at genus one it is unique, `K(1)·𝒬` (`countLaw_covariant_eq`), so a covariant
@@ -283,17 +294,29 @@ horizon's own count is linear, and the rate is its square-root law.
 **Second physical question: does a long closed horocycle thermalize faster than `y^{1/2}` by any power?**
 Exactly when `ζ` has a zero-free strip: for `0 < δ ≤ 1/4`, every zero with `Re ρ > 0` has `Re ρ ≤ 1 − 2δ`
 iff every Farey count reaches its limit at rate `y^{1/2+δ−ε}` (`zeroFreeStrip_iff_fareyCount_rate`).
-Unconditionally the rate is `y^{1/2−ε}` (`fareyCount_rate`).
+Unconditionally smooth profiles have rate `y^{1/2} exp(-√(-log y))`
+(`horocycle_rate_stretched_exp`, `fareyCount_rate_stretched_exp`), hence `O(y^{1/2})`, every
+logarithmic power saving, and `o(y^{1/2})` (`horocycle_rate_sqrt_exact`, `horocycle_rate_log_pow`,
+`horocycle_div_sqrt_tendsto_zero`). Hardy's critical-line zero forbids any common exponent
+`α > 3/4` (`not_horocycle_rate_gt_three_quarters`, `not_fareyCount_rate_gt_three_quarters`).
 
 **Rates for sharp shells.** A shell `a ≤ Im < b` is a source with a jump. Its Farey kernel is explicit
 (`fareyKernel_shell`), the mean number of cusp images met is `4y(H(X_a) − H(X_b))` with the horoball
 profile `H(X) = Σ φ(c)√((X/c)² − 1)`, `X_a = (ay)^{-1/2}` (`horocycleMean_shell_eq`), and the horoball
 profile is a Möbius sum of quarter discs, `H(X) = Σ_d μ(d) Σ_{m ≥ 1} √((X/d)² − m²)`
-(`horoballSum_eq_moebius`). Unconditionally a sharp shell thermalizes at rate `y^{1/2} log(1/y)` to
-`(6/π)(1/a − 1/b)` (`shell_rate`). The error is exactly three terms (`horoballSum_decomposition`): the
-Möbius twist `Σ_{d ≤ X} μ(d) E(X/d)` of the quarter-disc remainder `|E(Y)| ≤ Y/2`
-(`abs_circleRemainder_le`), and two sums of `μ(d)/d` and `μ(d)/d²`. RH bounds the last two by
-`X^{1/2+ε}`; it does not bound the first, so it does not give `y^{3/4}` for sharp shells.
+(`horoballSum_eq_moebius`). Unconditionally a sharp shell thermalizes at rate `y^{1/2}` to
+`(6/π)(1/a − 1/b)`, with error at most `76(√(y/a) + √(y/b))` for `1 < a < b`, `0 < y ≤ 1/b`
+(`shell_rate_sqrt`). Concavity gives `|E(Y)| ≤ 8√Y` (`abs_circleRemainder_le_sqrt`); bounded
+harmonic Möbius sums then give `|H(X) − 3X²/(2π)| ≤ 19X` (`abs_horoballSum_sub_le_linear`).
+The error splits into `Σ_{d ≤ X} μ(d) E(X/d)` and two Möbius main-term remainders
+(`horoballSum_decomposition`). RH bounds the latter by `O_ε(X^{1/2+ε})`
+(`moebius_harmonic_and_sq_tail_of_rh`). For **any fixed shell** `1 < a < b`, rate
+`O_ε(y^{3/4−ε})` is equivalent to RH together with
+`Σ_{d ≤ X} μ(d) E(X/d) = O_ε(X^{1/2+ε})`
+(`single_shell_rh_rate_iff_rh_and_moebius_circle`, `horoball_rh_rate_iff_rh_and_moebius_circle`).
+Thus one shell's RH rate implies every shell's; no single shell admits exponent `α > 3/4`
+(`not_single_shell_rate_gt_three_quarters`). See
+[ClosedHorocycleThermalizationAndSharpShells.lean](ClosedHorocycleThermalizationAndSharpShells.lean).
 
 **Fail for non-arithmetic groups.** The count fails for the Hecke group `G₅ = ⟨S, T_φ⟩` at the second place
 of its trace field. A unimodular element counts nonnegatively at a place iff the conjugate trace satisfies
@@ -371,7 +394,7 @@ The same holds for every non-arithmetic Hecke group. For `G_q`, `q ≥ 3`, the i
 - **Horoball lattice-point counts attached to sources**: shell counts, coprime windows, Farey kernels,
   weights and counts (`TheFareyReadingOfTheHorocycle`, `TheHorocycleRateIsTheSquareRootFareyLaw`); for
   sharp sources the explicit kernel, the Möbius sum of quarter discs and the unconditional rate
-  (`TheRateOfASharpShell`).
+  (`TheRateOfASharpShell`, `ClosedHorocycleThermalizationAndSharpShells`).
 - **Counts at the places of a trace field**: the Krein square of the conjugate element, the universal words
   of a Hecke group over `ℤ[X]`, Niven's theorem for `λ_q²`, the Dickson polynomial whose roots are the real
   conjugates, places from roots of the minimal polynomial
@@ -411,7 +434,7 @@ the divisor swap, the Möbius form of `φ`, the harmonic bound and `Σ μ(d)/d²
 | The square of one linear count can be | It is degenerate, the Krein square only at the critical edge (`kreinSquare_through_linear_iff`) |
 | Heights at genus two need a genus-two height pairing | On bielliptic curves the sum of two elliptic heights is the count (`bielliptic_countLaw`) |
 | Non-arithmetic groups fail through their dynamics | `G_q` has a cusp, horocycles and hyperbolic words; it fails through the count at a second place (`hecke_count_fails`) |
-| RH gives every source the rate `y^{3/4}` | For sharp shells RH controls two of the three error terms, not the Möbius twist of the circle problem (`horoballSum_decomposition`) |
+| RH alone settles the sharp-shell rate | Every single shell's `O_ε(y^{3/4−ε})` rate is equivalent to RH plus Möbius–circle cancellation (`single_shell_rh_rate_iff_rh_and_moebius_circle`) |
 
 ## 9. Where it sits in the research, and the neighbouring programmes
 
@@ -498,5 +521,6 @@ programme ("a language until a count exists").
    (`bielliptic_countLaw`). Open: the height pairing of a simple Jacobian over `𝔽_q(T)` as a second producer.
 3. The Farey reading of a non-arithmetic Hecke group: its cusp images are not Farey fractions, and the
    horocycle mean of a source is a sum over the cusps of `G_q` with no totient weights.
-4. The RH rate for sharp shells: whether `Σ_{d ≤ X} μ(d) E(X/d) = O(X^{1/2+ε})` for the quarter-disc
-   remainder `E` (`horoballSum_decomposition`).
+4. The RH rate for sharp shells: whether RH implies `Σ_{d ≤ X} μ(d) E(X/d) = O_ε(X^{1/2+ε})`
+   for the quarter-disc remainder `E`. This is the exact remaining condition, independent of shell
+   endpoints (`single_shell_rh_rate_iff_rh_and_moebius_circle`).

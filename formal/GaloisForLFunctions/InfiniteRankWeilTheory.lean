@@ -7,6 +7,7 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.TheFunctionalEquationAdmitsEve
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheTowersOfZeta
 import GaloisForLFunctions.InfiniteRankWeilTheory.ReturnsFreezeSmoothPolynomials
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheCriticalWeight
+import GaloisForLFunctions.InfiniteRankWeilTheory.LongMeanValuesAreCollisionCounts
 
 /-!
 # Infinite-rank Weil theory over Spec ℤ

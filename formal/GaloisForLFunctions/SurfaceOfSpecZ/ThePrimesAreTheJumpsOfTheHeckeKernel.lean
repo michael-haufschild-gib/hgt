@@ -129,5 +129,3 @@ theorem not_exists_continuous_heckeKernel :
   linarith [Real.log_pos (one_lt_two : (1 : ℝ) < 2)]
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.not_exists_continuous_heckeKernel

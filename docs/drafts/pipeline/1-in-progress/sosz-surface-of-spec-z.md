@@ -29,7 +29,19 @@
 | # | Conjecture | Status | Insight |
 |---|---|---|---|
 | C1 | The 𝔽₁-torus `𝔾_m²` with power-map graphs `Γ_n : y = xⁿ` is an honest surface realizing the pole plane: `Γ_m·Γ_n = m + n = 2 min(m,n) + |m − n|` (two 𝔽₁-cusps, `|m−n|` torsion points) | proved (Lean) | the cusp multiplicity `min(m,n)` is the rank of `ℤ[[q]]/(q^m − q^n)`; Bernstein–Kushnirenko gives `|m−n|` as a mixed area of Newton segments |
-| C2 | The CS defect of the Frobenius zonotope surface is a sum of squares of integer counts, `2Σ_k(Σ_{n>k}a_n)²`, and normalized it is the first archimedean channel `e^{−|x|/2}` of Weil's kernel | proved (Lean) | toric geometry over 𝔽₁ supplies exactly one archimedean channel, with Hodge index by counting; it has no primes and a continuous (Cauchy) zero density |
+| C2 | The CS defect of the Frobenius zonotope surface is a sum of squares of integer counts, `2Σ_k(Σ_{n>k}a_n)²`, and normalized it is the first archimedean channel `e^{−|x|/2}` of Weil's kernel | proved (Lean) | toric geometry over 𝔽₁ supplies exactly one archimedean channel, with Hodge index by counting and an `ℕ`-valued count whose Tate limit is the defect (`zonotope_tateLimit`); it has no primes and a continuous (Cauchy) zero density |
+| C3 | The off-diagonal of Weil's form on atoms at `log m`, `log n` is assembled from the two existing half-products `ℙ¹×ℙ¹` and `ℙ¹_ℤ`: `Γ_m·Γ_n := (m+n) − √(mn)W(m,n) = min/(1 − (min/max)²) + G(m,n)I(m,n)` | proved (Lean) | one 𝔽₁-cusp, the jet tower of the trivial zeros, and the gcd-twisted torsion intersection on `ℙ¹_ℤ`; every local index is ≥ 0, so `Γ_m·Γ_n ≥ min(m,n)`. The sign of Weil's form lives only in the diagonal `Γ_n² = n(2−2g)`, `g = ∞`, which no half-product supplies |
+| C4 | The archimedean part comes from a toric metric on `ℙ¹_ℤ` | refuted (Lean) | toric pairings of coprime torsion orbits depend only on the product `mn` (CRT), Weil's on the ratio: `Γ_2·Γ_3 = 18/5`, `Γ_1·Γ_6 = 36/35`. Positive survivor: cusp (integral, toric), primes (torsion, `ℙ¹_ℤ`), jets (neither); `Γ_1·Γ_2 = 4/3 + log 2` |
+| C5 | Some Hecke-equivariant geometry with continuous moduli in the boost direction (planar convex bodies and mixed areas, hyperbolic orbital integrals, toric counts) realizes the Frobenius intersections | refuted (Lean) | no continuous kernel `F` with `Γ_m·Γ_n = √(mn)F(log m − log n)`: the primes are jump discontinuities at `log pᵏ` (pairs `(2j+1, j)` against `(2,1)`). The surface must see `n` as an integer, as torsion orbits do; continuous geometries carry only archimedean channels |
+
+## Open after C1–C5
+
+1. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's. The
+   off-diagonal is a nonnegative Lefschetz count; positivity is the statement that the renormalized
+   self-intersection pays it.
+2. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`, not
+   on `ℙ¹_ℤ` for toric metrics. The full-metric version (rank of Arakelov Green pairings of torsion
+   orbits on a genus-zero surface against the infinite rank of the jet kernel) is not yet in Lean.
 
 ## Log
-- 2026-11-08 — created; C1, C2 formalized in `SurfaceOfSpecZ/TheFrobeniusZonotopeSurface.lean`
+- 2026-11-08 — created; C1–C5 formalized in `SurfaceOfSpecZ/` (four modules, standard axioms)

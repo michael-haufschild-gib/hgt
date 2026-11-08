@@ -16,6 +16,8 @@ import GaloisForLFunctions.CountingHolography.TheFareyReadingOfTheHorocycle
 import GaloisForLFunctions.CountingHolography.TheHorocycleRateIsTheSquareRootFareyLaw
 import GaloisForLFunctions.CountingHolography.ThermalizationFasterThanTheSquareRootIsAZeroFreeStrip
 import GaloisForLFunctions.CountingHolography.TheRateOfASharpShell
+import GaloisForLFunctions.CountingHolography.ModularConjugationIsNotThePartnerInvolution
+import GaloisForLFunctions.CountingHolography.ClosedHorocycleThermalizationAndSharpShells
 import GaloisForLFunctions.CountingHolography.TheCountFailsAtTheSecondPlaceOfAHeckeTriangleGroup
 
 /-!
@@ -38,8 +40,11 @@ invariant trace field. Over `ℤ` RH is the statement that the Krein square
 of the integer probes is the Tate limit of a count. On the modular horizon the pseudo-Eisenstein series
 of a shell counts cusp images, its horocycle mean is a totient-weighted count of Farey points, and RH
 is the square-root law for that count; thermalization faster than the square root by `y^δ` is the
-zero-free strip `Re ρ ≤ 1 − 2δ`. A sharp shell thermalizes at rate `y^{1/2} log(1/y)` unconditionally:
-its horoball count is a Möbius sum of lattice-point counts of quarter discs. See
+zero-free strip `Re ρ ≤ 1 − 2δ`. Smooth profiles have unconditional rate
+`y^{1/2} exp(-√(-log y))`; sharp shells have rate `y^{1/2}`. Every single sharp shell has the
+RH rate iff RH and square-root cancellation of the Möbius-twisted quarter-disc remainder hold.
+Internal modular conjugation forces source operators to be central with `J Z J = Z*`; a
+standard-form realization of the integer Born rule exists iff RH. See
 `CountingHolography/README.md`.
 -/
 import GaloisForLFunctions.CountingHolography.TheCountDoorOfACurveAndOfZ
