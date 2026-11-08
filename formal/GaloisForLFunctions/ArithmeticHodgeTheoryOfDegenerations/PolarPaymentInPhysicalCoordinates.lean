@@ -47,9 +47,16 @@ theorem physical_charged_window_nonneg_of_polarPaymentAt {R A : ℝ}
   have hscaled := mul_nonneg (inv_pos.mpr hnorm).le hp
   have hI₁ : (∫ u, tiltedUnitSpline u) ≠ 0 := integral_tiltedUnitSpline_ne_zero
   have hI₂ : (∫ u, tiltedUnitSpline u ^ 2) ≠ 0 := integral_tiltedUnitSpline_sq_pos.ne'
-  convert hscaled using 1
-  unfold windowPencil splineAtom criticalAliasCoefficient
-  field_simp [hI₁, hI₂, hR.ne']
-  ring
+  have heq : splineAtom⁻¹ * (windowPencil R F +
+      2 * ((∫ u, tiltedUnitSpline u) * β) * (splineAtom * ∫ u, F u * polarSourceProfile u) +
+      ((∫ u, tiltedUnitSpline u) * β) ^ 2 * criticalPoleWindowCost R) =
+      weilQuad F + criticalAliasCoefficient R * exponentialMass 8 F +
+        (∫ u, tiltedUnitSpline u ^ 2) * criticalPoleWindowCost R * β ^ 2 +
+        2 * (∫ u, tiltedUnitSpline u) * β * (∫ u, F u * polarSourceProfile u) := by
+    unfold windowPencil splineAtom criticalAliasCoefficient
+    field_simp [hI₁, hI₂, hR.ne']
+    ring
+  rw [heq] at hscaled
+  exact hscaled
 #print axioms physical_charged_window_nonneg_of_polarPaymentAt
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

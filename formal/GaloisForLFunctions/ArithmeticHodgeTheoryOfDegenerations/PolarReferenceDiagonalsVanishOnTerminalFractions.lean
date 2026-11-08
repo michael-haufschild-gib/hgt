@@ -31,6 +31,7 @@ theorem tendsto_topWindow_polar_scalar_diagonal
   filter_upwards [eventually_ge_atTop 1,
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0]
     with N hN hL
+  change 0 < Real.log (N : ℝ) at hL
   have hpt : ∀ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
       primeHorizonExtension (normalizedRamanujanHorizonVector 1 N) n ^ 2 =
         (1 / Real.log N) * (1 / (n : ℝ)) := by

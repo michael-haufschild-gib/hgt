@@ -23,8 +23,9 @@ phase up to `y` is within `δ` of `1`.
   `J` at all returns simultaneously.
 * `eq_zero_of_exact_return`: but there are no exact returns: for two distinct primes, `p^{it} = 1` and
   `q^{it} = 1` force `t = 0`. Over `𝔽_q` every point is fixed by a power of Frobenius; the prime orbit
-  of `ℤ` has a single fixed point. Forced vanishing is therefore approximate only, and the copy of a
-  zero of order `J` at a return needs the precision `δ` to beat the `J`-th exponential tail.
+  of `ℤ` has a single fixed point. Forced vanishing is therefore approximate only: a Rouché copy of a
+  zero of order `J` at a return needs the freezing error `δ·(mass)` below `|A|` on a circle about
+  `s₀`, which is at most the `J`-th exponential tail.
 -/
 
 open Complex Finset

@@ -133,6 +133,19 @@ statements carry no content in Lean. F19: with Euler head coordinates the tail c
 "certificates exist exactly at tail-good heights" (tail-good = `|ζ − E_y|` small) is not the same
 condition — not bridged. F24: open (B106).
 
+## F16 / A43 — the Rankin–Selberg function of a Hecke eigenform
+
+**Bridge (Lean, `BlackHoleRingdown/TheRankinSelbergEulerProductOfTheCuspModes`,
+`BlackHoleRingdown/TheRankinSelbergSeriesOfAHeckeEigenform`).** For normalized Hecke sequences
+`σ, τ` (eigenvalues `λ, λ'`): the products `σ(p^e)τ(p^e)` obey the four-term recursion of
+`Q_p(x) = 1 − λλ'x + (λ²+λ'²−2)x² − λλ'x³ + x⁴`; `Q_p(x) Σ_e σ(p^e)τ(p^e)x^e = 1 − x²`; and
+`Σ σ(n)τ(n)n^{−s} = Π_p (1 − p^{−2s})/Q_p(p^{−s})`. For `τ = σ`, `Q_p = (1 − x)²(1 − (λ²−2)x + x²)`
+(`rsLocal_self`), i.e. `ζ(s)L(Sym² g, s)/ζ(2s)`. For a Hecke–Maass eigenform, Re s > 2:
+`Σ_{n≠0}|ρ(n)|²|n|^{−s} = (|ρ(1)|² + |ρ(−1)|²) Π_p (1 − p^{−2s})/Q_p(λ_p, λ̄_p; p^{−s})`, and the
+Rankin–Selberg integral `∫_𝒟|g|²E(s − ½)` is `(2π)^{−s}γ_ν(s)` times this (Re s > 2, Im s ≠ 0).
+Open for the symmetric-square reading of eigenforms: reality of `λ_p` (Hecke self-adjointness is not
+in the corpus).
+
 ## Conjecture loop
 - C15.1 (open): the Krein square of the integer probes is not integer-valued. Reduction: integral
   values force `2 Re C(log(m/n)) ∈ ℤ`; `C` is continuous (`continuous_splineCorr`) and `log ℚ₊` is
@@ -145,6 +158,10 @@ condition — not bridged. F24: open (B106).
   (`exists_not_abscissaLawAt_zero_of_isLocalBelow`). AAL/B13 is two-scale: configuration-level
   producers must relate bounded and large heights, as recurrence and transport do.
 - C18.1 (proved): AAL needs no head alignment; it is the transport of full-amplitude tail events.
+- C18.2 (proved, `near_full_tail_events_have_positive_density`): cancellation of the head by the
+  tail up to any fraction `η > 0` has positive lower density at every point of the strip and every cut
+  (universality with a small constant target, whose discs are zero-free); AAL needs `η = 0` near right
+  zeros, i.e. winding-one events, which are the density-zero ones.
 - C22.2 (proved, `ZeroConfigurationGeometry/AbscissaLaws/AlmostPeriodicZerosRecurWithBoundedGaps`): zeros of a
   uniformly strip-almost-periodic holomorphic function recur with bounded gaps (Bohr), hence obey the
   law; every Dirichlet series does so where its partial sums converge uniformly. The rational one-off

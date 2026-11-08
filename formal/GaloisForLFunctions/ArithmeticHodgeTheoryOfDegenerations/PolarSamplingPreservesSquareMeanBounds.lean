@@ -44,7 +44,6 @@ theorem normalized_topWindow_polarSample_le {c δ : ℝ} {N : ℕ} (hc : 0 < c)
       ((n : ℝ) / N) * (F n ^ 2 / N) := by
     rw [div_pow, mul_pow, mul_pow, div_pow, Real.sq_sqrt hn0.le, Real.sq_sqrt hL.le]
     field_simp [hc.ne', hN0.ne', hL.ne']
-    ring
   rw [he]
   have hx : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast hnN)
   exact (mul_le_mul_of_nonneg_right hx (by positivity)).trans_eq (one_mul _)

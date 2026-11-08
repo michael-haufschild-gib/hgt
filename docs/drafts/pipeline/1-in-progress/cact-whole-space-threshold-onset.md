@@ -101,6 +101,17 @@ The sampled finite-jump ramp estimate and compact smooth Lipschitz density have 
 Lean axiom audits (`SampledJumpsAdmitLipschitzApproximation`,
 `ContinuousWindowsAdmitCompactLipschitzApproximation`).
 
+### Weighted polar transfer (formalization target)
+
+For every critical curve and `ε > 0`, there is a compact Lipschitz `f` such that,
+eventually, `D₇(M,N; (√log N/c) r₁ − (I₁/√N) f(log(n/N))) ≤ ε`,
+where `M = N / linearDefectCutoff(c)` and `I₁ = ∫φ`.
+A logarithmic cutoff makes the discarded part cost `O(exp(a+2))`; the retained
+part is controlled by strong row convergence and sampled Lipschitz approximation.
+Weighted Cauchy–Schwarz and adjoint synthesis then give uniform physical transfer.
+For a smooth window, `Σ (N/n)⁷ horizonWeights(h,N,n)² → ∫e^(−7u)h(u)² du`;
+with `h=e^(−u/2)H/I₁`, this limit is `M₈(H)/I₁²`, independently of aperture.
+
 ## Verified scalar identification
 
 If `x_N` is arbitrarily close to the line spanned by bounded vectors `v_N`, and bounded

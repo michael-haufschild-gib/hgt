@@ -21,6 +21,8 @@ import GaloisForLFunctions.HodgeTheoryWithoutVarieties.CompatibleSimplexContract
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.FiniteConeComplexesHaveSphereBouquets
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.SquarefreePrimeComplexIsASphereBouquet
 
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.FiniteFaceSingularEuler
+
 /-!
 # Hodge Theory without Varieties over ℤ
 

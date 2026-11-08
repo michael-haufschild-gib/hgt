@@ -26,8 +26,8 @@ private theorem tailSource_clamped (Y Z : Height) :
       (fun y => narainScalarHeatAverage Y Z (max 1 y)) := by
   funext y
   by_cases hy : 1 < y
-  · simp only [narainMeanTailSource, indicator_of_mem hy, max_eq_right hy.le]
-  · simp only [narainMeanTailSource, indicator_of_notMem hy]
+  · simp [narainMeanTailSource, hy, max_eq_right hy.le]
+  · simp [narainMeanTailSource, hy]
 
 private theorem continuous_clamped_average (Y Z : Height) :
     Continuous (fun y : ℝ => narainScalarHeatAverage Y Z (max 1 y)) :=
@@ -49,13 +49,13 @@ private theorem tailSource_top (Y Z : Height) :
   obtain ⟨C, hC⟩ := htop.bound
   refine ⟨c, hc, IsBigO.of_bound C ?_⟩
   filter_upwards [hC, eventually_gt_atTop (1 : ℝ)] with y hCy hy
-  simpa only [narainMeanTailSource, indicator_of_mem hy] using hCy
+  simpa [narainMeanTailSource, hy] using hCy
 
 private theorem tailSource_bot (Y Z : Height) (b : ℝ) :
     narainMeanTailSource Y Z =O[𝓝[>] (0 : ℝ)] (fun y : ℝ => y ^ (-b)) := by
   refine IsBigO.of_bound 0 ?_
   filter_upwards [nhdsWithin_le_nhds (gt_mem_nhds (zero_lt_one : (0 : ℝ) < 1))] with y hy
-  simp only [narainMeanTailSource, indicator_of_notMem (not_lt.mpr hy.le), norm_zero, zero_mul, le_refl]
+  simp [narainMeanTailSource, not_lt.mpr hy.le]
 
 /-- Exponential decay makes the actual tail Mellin integral absolutely convergent at every parameter. -/
 theorem mellinConvergent_narainMeanTailSource (Y Z : Height) (s : ℂ) :

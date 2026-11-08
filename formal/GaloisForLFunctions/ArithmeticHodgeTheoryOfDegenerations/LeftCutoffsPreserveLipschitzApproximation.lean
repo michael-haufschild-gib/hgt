@@ -62,12 +62,12 @@ theorem exists_compact_leftCutoff_lipschitz_approximation {g : ℝ → ℝ} {a b
     apply LipschitzWith.of_dist_le_mul
     intro u v
     rw [Real.dist_eq, Real.dist_eq, Real.coe_toNNReal _ (by positivity)]
-    have hλ : |leftProfileCutoff a u| ≤ 1 := by
+    have hcut : |leftProfileCutoff a u| ≤ 1 := by
       rw [abs_of_nonneg (leftProfileCutoff_bounds a u).1]
       exact (leftProfileCutoff_bounds a u).2
     have hPL' : |P u - P v| ≤ (L : ℝ) * |u - v| := by
       simpa only [Real.dist_eq] using hPL.dist_le_mul u v
-    have hp := mul_le_mul hλ hPL' (abs_nonneg _) zero_le_one
+    have hp := mul_le_mul hcut hPL' (abs_nonneg _) zero_le_one
     have hq := mul_le_mul (abs_leftProfileCutoff_sub_le a u v) (hPb v)
       (abs_nonneg _) (by positivity)
     simp only [one_mul, ← abs_mul] at hp hq
@@ -80,14 +80,14 @@ theorem exists_compact_leftCutoff_lipschitz_approximation {g : ℝ → ℝ} {a b
     dsimp only [f]
     rw [leftProfileCutoff_eq_zero hu, zero_mul]
   · intro u hu
-    have hλ : |leftProfileCutoff a u| ≤ 1 := by
+    have hcut : |leftProfileCutoff a u| ≤ 1 := by
       rw [abs_of_nonneg (leftProfileCutoff_bounds a u).1]
       exact (leftProfileCutoff_bounds a u).2
     have he : f u - leftProfileCutoff a u * g u = leftProfileCutoff a u * (P u - g u) := by
       dsimp only [f]
       ring
     rw [he, abs_mul]
-    exact ((mul_le_mul_of_nonneg_right hλ (abs_nonneg _)).trans_eq (one_mul _)).trans_lt (happrox u hu)
+    exact ((mul_le_mul_of_nonneg_right hcut (abs_nonneg _)).trans_eq (one_mul _)).trans_lt (happrox u hu)
 
 #print axioms exists_compact_leftCutoff_lipschitz_approximation
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

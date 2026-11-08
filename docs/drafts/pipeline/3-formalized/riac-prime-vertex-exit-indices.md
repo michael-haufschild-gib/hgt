@@ -3,7 +3,7 @@
 - **ID:** RIAC-prime-exit-indices
 - **Stage:** 3-formalized
 - **Type:** CONSTRUCTION
-- **Source:** [Signed localization](../1-in-progress/riac-prime-vertex-signed-localization.md)
+- **Source:** [Signed localization](riac-prime-vertex-signed-localization.md)
 
 ## Actual objects
 
@@ -50,5 +50,5 @@ audits use only `propext`, `Classical.choice` and `Quot.sound`.
 
 This constructs signed local singular-homology indices independently of
 `M(N)` and `Q`. It supplies no cancellation bound, product-formula height
-or zero-dependent invariant. The all-vertex Mertens comparison and exact
-time-one comparison with `F` remain on the active localization card.
+or zero-dependent invariant. The all-vertex Mertens comparison and exact time-one comparison with `F` are
+also [formalized](riac-prime-vertex-signed-localization.md).

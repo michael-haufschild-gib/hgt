@@ -141,8 +141,21 @@ it proves `index_p(N)=1−#{q>p prime : pq≤N}` in the full ambient realization
 Bertrand intervals prove these actual local indices are unbounded below.
 The constructions, singular-homology comparison in this range and axiom audits
 are complete; see the [formalized result](../../../docs/drafts/pipeline/3-formalized/riac-prime-vertex-exit-indices.md).
-The full Mertens localization comparison remains on the
-[localization card](../../../docs/drafts/pipeline/1-in-progress/riac-prime-vertex-signed-localization.md).
+[PrimeVertexSignedLocalization.lean](PrimeVertexSignedLocalization.lean) proves the
+all-cutoff comparison with the independently defined upper-face count, finite dimensionality
+of every rational local relative homology group and exact time-one conjugacy with `F`.
+For `N≥1`, the actual local indices satisfy
+
+`Σ_p index_p(N)=1−M(N)`.
+
+For `N≥4`, the core sum is `1−M(N)−P_N`: every removed upper-half prime
+has index one. The [singular-homology bridge](../HodgeTheoryWithoutVarieties/FiniteFaceSingularEuler.lean)
+proves the alternating face formula by an actual open good cover and relative
+excision. No homology finiteness or index comparison is assumed.
+The [full localization theorem](../../../docs/drafts/pipeline/3-formalized/riac-prime-vertex-signed-localization.md)
+is formalized. An [exit-bouquet classification](../../../docs/drafts/pipeline/1-in-progress/riac-prime-exit-bouquet.md)
+seeks the actual local homotopy types. Quantitative cancellation and a canonical
+relative pair on the connected core with Euler number `M(N)` remain separate.
 
 ## Literature and novelty boundary
 
@@ -196,5 +209,7 @@ diagonal completion on every conductor. [LogarithmicMangoldtTail.lean](Logarithm
 required full Mangoldt tail for every exponent above one. The combined
 Schur estimate and completed-form classification remain unverified.
 
-The five constructions remain open. No critical positive form, arithmetic
-surface, square-root Mertens bound or RH proof is asserted.
+The independent surface count, critical positive completion, zero-detecting
+completion, relative core pair and modular cell comparison remain open.
+Signed localization is constructed, with no square-root Mertens bound or RH
+proof asserted.

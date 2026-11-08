@@ -155,6 +155,9 @@ theorem tendsto_normalized_square_mean_of_annular_limits
       dsimp only [D]
       rw [div_pow] at hm
       rw [div_pow] at htwo
+      have heD : 6 * a N ^ 2 + (6 * B ^ 2 + 3 * C ^ 2) / T ^ 2 =
+          6 * a N ^ 2 + 6 * (B ^ 2 / T ^ 2) + 3 * (C ^ 2 / T ^ 2) := by ring
+      rw [heD]
       nlinarith only [hh, ht, hm, htwo]
     have hs := sum_le_sum hp
     rw [sum_add_distrib, ← mul_sum, sum_const, nsmul_eq_mul] at hs
@@ -162,7 +165,7 @@ theorem tendsto_normalized_square_mean_of_annular_limits
       (show ((S N).card : ℝ) ≤ N by exact_mod_cast hS N) hD
     have htotal : (∑ n ∈ S N, (f N n - s) ^ 2) / N ≤
         3 * ((∑ n ∈ S N, (g T N n - m T) ^ 2) / N) + D := by
-      have hh := hs.trans (add_le_add_left hcard _)
+      have hh := hs.trans (_root_.add_le_add_left hcard _)
       exact (div_le_div_of_nonneg_right hh hN0.le).trans_eq (by field_simp [hN0.ne'])
     dsimp only [D] at htotal
     linarith only [htotal, hsmall, hsmallN]

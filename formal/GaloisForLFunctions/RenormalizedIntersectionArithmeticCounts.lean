@@ -14,4 +14,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexL
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexSingularIndex
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeVertexSignedLocalization
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

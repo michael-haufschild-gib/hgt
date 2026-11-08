@@ -83,7 +83,13 @@ theorem hasMellin_narainMeanSmallSource (Y Z : Height) {s : ℂ} (hs : 1 < s.re)
           show s - 1 / 2 - 1 / 2 = s - 1 by ring]
         ring
   refine ⟨hsmall.1, ?_⟩
-  simpa only [hregular, narainMeanSmallMellin, narainMeanMellinTail] using hsmall.2
+  change mellin (narainMeanSmallSource Y Z) s =
+    narainMellinMeanRegularPart Y Z (s - 1 / 2) - narainMeanMellinTail Y Z s
+  calc
+    _ = mellin (narainAverageRemainder Y Z
+        (-(3 / (Real.pi : ℂ))) (narainAverageConstant Y Z)) s -
+        narainMeanMellinTail Y Z s := hsmall.2
+    _ = _ := by rw [hregular]
 
 #print axioms mellinConvergent_narainMeanSmallSource
 #print axioms hasMellin_narainMeanSmallSource

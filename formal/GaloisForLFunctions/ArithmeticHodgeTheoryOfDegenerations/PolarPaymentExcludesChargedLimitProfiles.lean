@@ -15,6 +15,7 @@ open MeasureTheory Filter Topology Set RHTower
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open CriticalArithmeticCorrelationTheory SpacingScaleHarmonicAnalysis
   WindowTowerOfSpecZ ArithmeticCastelnuovoSeveri RenormalizedArithmeticPotentialTheory
+  ArithmeticPositivityTheory ArithmeticDegenerationTheory
 
 /-- A nonzero charged physical profile satisfying the critical Gamma upper bound cannot coexist
 with polar payment at every window of a strictly larger ratio. -/
@@ -46,7 +47,7 @@ theorem no_charged_limit_profile_below_polarPayment
     dsimp only [B, I₁, I₂, I₈]
     linarith only [hh]
   obtain ⟨C, A, H, hC, hwin, hmass, hweighted, hL2, hweightedLim, harch⟩ :=
-    exists_window_sequence_of_gammaLiminf_bound hFm hFi hF2 hF8 (le_rfl : M ≤ M) hFzero hbound
+    exists_window_sequence_of_gammaLiminf_bound (R := R) (B := B) hFm hFi hF2 hF8 (le_rfl : M ≤ M) hFzero hbound
   have hHd : ∀ k, ContDiff ℝ 2 (H k) := fun k => (hwin k).2.contDiff
   have hHc : ∀ k, HasCompactSupport (H k) := fun k => (hwin k).2.hasCompactSupport
   have hHs : ∀ k u, 1 < u → H k u = 0 := fun k u hu =>
@@ -66,7 +67,9 @@ theorem no_charged_limit_profile_below_polarPayment
     have hδ : (1 : ℝ) / ((k : ℝ) + 1) ≤ 1 :=
       div_le_one_of_le₀ (by linarith only [Nat.cast_nonneg (α := ℝ) k]) (by positivity)
     have he : Real.exp (8 / ((k : ℝ) + 1)) ≤ Real.exp 8 :=
-      Real.exp_le_exp.mpr (by linarith only [hδ])
+      Real.exp_le_exp.mpr (by
+        simpa only [mul_one_div, mul_one] using
+          mul_le_mul_of_nonneg_left hδ (by norm_num : (0 : ℝ) ≤ 8))
     have hh := (hweighted k).trans (mul_le_mul he hI₈M hI₈0 (Real.exp_pos _).le)
     simpa only [exponentialMass, mul_comm] using hh
   obtain ⟨hprime, hcosh, hsinh⟩ := tendsto_prime_and_pole_of_strong_limit
@@ -78,11 +81,11 @@ theorem no_charged_limit_profile_below_polarPayment
       apply integral_congr_ae
       exact Eventually.of_forall fun u => by
         by_cases hu : u < 0
-        · rw [Set.indicator_of_mem hu]
-        · rw [Set.indicator_of_notMem hu, hFzero u (not_lt.mp hu), zero_pow (by decide : 2 ≠ 0)]
+        · simp only [Set.mem_Iio, Set.indicator, hu, if_pos]
+        · simp only [Set.mem_Iio, Set.indicator, hu, if_neg, hFzero u (not_lt.mp hu), zero_pow (by decide : 2 ≠ 0)]
     rw [heq]
     exact setIntegral_mono_on hF2.integrableOn hF8.integrableOn measurableSet_Iio fun u hu =>
-      le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by linarith only [hu]))
+      le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by have hu0 : u < 0 := hu; linarith only [hu0]))
   have hAlias : criticalAliasCoefficient S < criticalAliasCoefficient R := by
     unfold criticalAliasCoefficient
     have hnum : 0 < 7 * (∫ u, tiltedUnitSpline u ^ 2) * tiltedJordanOne := by
@@ -103,7 +106,7 @@ theorem no_charged_limit_profile_below_polarPayment
   have hgap : 0 < gap := by
     have ha := sub_pos.mpr hAlias
     have hb := mul_pos hI₂ (sub_pos.mpr hcost)
-    have hsum : 0 < I₈ + β ^ 2 := lt_of_lt_of_le hnonzero (add_le_add_right hmass8 _)
+    have hsum : 0 < I₈ + β ^ 2 := lt_of_lt_of_le hnonzero (_root_.add_le_add_right hmass8 _)
     dsimp only [gap]
     rcases lt_or_eq_of_le hI₈0 with hi | hi
     · exact add_pos_of_pos_of_nonneg (mul_pos ha hi) (mul_nonneg hb.le (sq_nonneg _))

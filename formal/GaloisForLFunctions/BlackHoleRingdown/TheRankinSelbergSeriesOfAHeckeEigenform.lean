@@ -28,6 +28,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.BlackHoleRingdown
 
+open GaloisForLFunctions.RHTower GaloisForLFunctions.RHTower.Gamma0MaassHecke
+open GaloisForLFunctions.HTGeometry (modifiedBesselKOrder)
 open CuspEuler HeckeCusp CuspL CuspRSI
 
 variable {lamE : ℝ} {g : UpperHalfPlane → ℂ} {ρ : ℤ → ℂ}
@@ -101,7 +103,6 @@ theorem cusp_rankinSelberg_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → ℂ)
       · subst hn; simp [hρ0]
       have e1 := hP.eq_zero (by simpa using h01.1) n hn
       have e2 := hM.eq_zero (by simpa using h01.2) n hn
-      simp only at e1 e2
       rw [e1, e2]; simp
     simp_rw [hz, Complex.ofReal_zero, zero_mul] at hNat
     have htsum := hNat.unique hasSum_zero
@@ -180,7 +181,6 @@ theorem cusp_rankinSelberg_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → ℂ)
     exact (((Real.summable_abs_int_rpow hσ1).mul_left (C ^ 2)).comp_injective
       Nat.cast_injective).mul_left _
   have hE := hτ.rankinSelberg_euler hτc hτ1 hτc1 hτ0 (by linarith) hsumN
-  simp only at hE
   have hrhs : (((‖ρ 1‖ ^ 2 + ‖ρ (-1)‖ ^ 2 : ℝ) : ℂ) *
       ∏' p : Nat.Primes, (1 - ((p : ℂ) ^ (-s)) ^ 2) /
         rsLocal (heckeLam c p) ((starRingEnd ℂ) (heckeLam c p)) ((p : ℂ) ^ (-s))) =
@@ -188,7 +188,7 @@ theorem cusp_rankinSelberg_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → ℂ)
         (n : ℂ) ^ (-s) := by
     rw [hE, ← tsum_mul_left]
     exact tsum_congr fun n => by ring
-  rw [hrhs, ← hNat.tsum_eq]
+  rw [hrhs, hNat.tsum_eq]
   exact hsumZ.hasSum
 
 /-- **The Rankin–Selberg integral of a Hecke eigenform as an Euler product**, `Re s > 2`,
@@ -206,6 +206,5 @@ theorem rankinSelberg_eisenstein_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → 
   have hI := rankinSelberg_eisenstein hg hρ0 hρ (s := s) (by linarith) him
   have hD := cusp_rankinSelberg_euler hg c hc hρ0 hρ hs
   rw [← hI.tsum_eq, ← hD.tsum_eq, ← tsum_mul_left]
-  exact tsum_congr fun n => by ring
 
 end GaloisForLFunctions.BlackHoleRingdown

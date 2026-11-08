@@ -2199,6 +2199,112 @@ theorem exists_strong_negative_limit_of_bounded_weilQuad {V : ℕ → ℝ → �
 
 #print axioms exists_strong_negative_limit_of_bounded_weilQuad
 
+/-- The critical Gamma lower bound remains valid along arbitrary strictly increasing horizons. -/
+theorem eventually_lt_weilQuad_of_subsequence_L1_limit
+    {N_seq : ℕ → ℕ} (hN_strict : StrictMono N_seq)
+    {c_seq : ℕ → ℝ} (hc_seq : ∀ k, 1 ≤ c_seq k) {R : ℝ} (hR : 0 < R)
+    (hcrit_seq : Tendsto (fun k => c_seq k ^ 8 / Real.log (N_seq k : ℝ)) atTop (𝓝 R))
+    (y_norm : ℕ → ℕ → ℝ)
+    (hmass : ∀ k, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (y_norm k)
+      (c_seq k) (N_seq k) u ^ 2) ≤ 1)
+    {M₈ : ℝ} (hM₈0 : 0 ≤ M₈)
+    (hV_M₈ : ∀ k, (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (y_norm k)
+      (c_seq k) (N_seq k) u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
+    {F : ℝ → ℝ} (hFi : Integrable F)
+    (hL1 : Tendsto (fun k => ∫ u, ‖normalizedCentredAtomicTest tiltedUnitSpline
+      (y_norm k) (c_seq k) (N_seq k) u - F u‖) atTop (𝓝 0))
+    {T b : ℝ} (hT : Real.exp factorialSpanGammaOffset ≤ T)
+    (hb : b < truncatedWeilForm F T + criticalAliasCoefficient R *
+      (∫ u in Iio 0, F u ^ 2 * Real.exp (-(8 * u)))) :
+    ∀ᶠ k : ℕ in atTop, b < weilQuad
+      (normalizedCentredAtomicTest tiltedUnitSpline (y_norm k) (c_seq k) (N_seq k)) := by
+  let V : ℕ → ℝ → ℝ := fun k =>
+    normalizedCentredAtomicTest tiltedUnitSpline (y_norm k) (c_seq k) (N_seq k)
+  let N_sub : ℕ → ℕ := N_seq
+  have hN_sub : StrictMono N_sub := hN_strict
+  letI : DecidablePred (fun N : ℕ => ∃ j : ℕ, N_sub j = N) := Classical.decPred _
+  let c_full : ℕ → ℝ := fun N =>
+    if h : ∃ j : ℕ, N_sub j = N then c_seq (Classical.choose h) else localCriticalCurve R N
+  let x_full : ℕ → ℕ → ℝ := fun N =>
+    if h : ∃ j : ℕ, N_sub j = N then y_norm (Classical.choose h) else 0
+  have hc_full_sub : ∀ j : ℕ, c_full (N_sub j) = c_seq j := by
+    intro j
+    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
+    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
+    dsimp only [c_full]
+    rw [dif_pos hex, hch]
+  have hx_full_sub : ∀ j : ℕ, x_full (N_sub j) = y_norm j := by
+    intro j
+    have hex : ∃ i : ℕ, N_sub i = N_sub j := ⟨j, rfl⟩
+    have hch : Classical.choose hex = j := hN_sub.injective (Classical.choose_spec hex)
+    dsimp only [x_full]
+    rw [dif_pos hex, hch]
+  have hU_full_sub : ∀ j : ℕ,
+      normalizedCentredAtomicTest tiltedUnitSpline (x_full (N_sub j)) (c_full (N_sub j)) (N_sub j) =
+        V j := fun j => by
+    rw [hc_full_sub j, hx_full_sub j]
+  have hc1_full : ∀ N : ℕ, 1 ≤ c_full N := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with h | h
+    · have hc_eq : c_full N = c_seq (Classical.choose h) := by
+        dsimp only [c_full]; rw [dif_pos h]
+      rw [hc_eq]
+      exact hc_seq _
+    · have hc_eq : c_full N = localCriticalCurve R N := by
+        dsimp only [c_full]; rw [dif_neg h]
+      rw [hc_eq]
+      exact one_le_localCriticalCurve R N
+  have hmass_full : ∀ N : ℕ,
+      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2) ≤ 1 := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j]
+      exact hmass j
+    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
+      rw [hx0, normalizedCentredAtomicTest_zero]
+      simp
+  have hM_full : ∀ N : ℕ,
+      (∫ u, normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u ^ 2 *
+        Real.exp (-(8 * u))) ≤ M₈ := by
+    intro N
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hU_full_sub j]
+      exact hV_M₈ j
+    · have hx0 : x_full N = 0 := by dsimp only [x_full]; rw [dif_neg h]
+      rw [hx0, normalizedCentredAtomicTest_zero]
+      simpa using hM₈0
+  have hcrit_full : Tendsto (fun N : ℕ => c_full N ^ 8 / Real.log (N : ℝ)) atTop (𝓝 R) := by
+    have hsub_ratio : Tendsto (fun j : ℕ => c_seq j ^ 8 / Real.log (Nat.cast (N_sub j)))
+        atTop (𝓝 R) :=
+      hcrit_seq
+    have hloc_ratio := tendsto_localCriticalCurve_ratio hR
+    rw [Metric.tendsto_nhds]
+    intro ε hε
+    obtain ⟨J, hJ⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hsub_ratio) ε hε)
+    obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hloc_ratio) ε hε)
+    refine eventually_atTop.mpr ⟨max N₁ (N_sub J), fun N hN => ?_⟩
+    rcases Classical.em (∃ j : ℕ, N_sub j = N) with ⟨j, rfl⟩ | h
+    · rw [hc_full_sub j]
+      exact hJ j (hN_sub.le_iff_le.mp ((le_max_right N₁ (N_sub J)).trans hN))
+    · have hc_loc : c_full N = localCriticalCurve R N := by dsimp only [c_full]; rw [dif_neg h]
+      rw [hc_loc]
+      exact hN₁ N ((le_max_left N₁ (N_sub J)).trans hN)
+  let l : Filter ℕ := Filter.map N_sub atTop
+  have hl_le : l ≤ atTop := hN_sub.tendsto_atTop
+  have hL1_l : Tendsto (fun N : ℕ =>
+      ∫ u, ‖normalizedCentredAtomicTest tiltedUnitSpline (x_full N) (c_full N) N u - F u‖)
+      l (𝓝 0) := by
+    rw [Filter.tendsto_map'_iff]
+    refine hL1.congr fun j => ?_
+    dsimp only [Function.comp_def]
+    rw [hU_full_sub j]
+  have hev := eventually_lt_weilQuad_of_L1_limit_full hl_le hc1_full hR
+    hcrit_full hmass_full hM_full hFi hL1_l hT hb
+  rw [Filter.eventually_map] at hev
+  exact hev.mono fun j hj => by rwa [hU_full_sub j] at hj
+
+#print axioms eventually_lt_weilQuad_of_subsequence_L1_limit
+
 /-- A unit-mass critical atomic sequence with bounded eighth exponential mass cannot have
 asymptotically nonpositive Weil form below every continuum window threshold. -/
 theorem no_nonpositive_atomic_sequence_below_windowThreshold

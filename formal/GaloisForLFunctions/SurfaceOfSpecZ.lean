@@ -4,6 +4,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanPlaceIsNotToric
 import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimesAreTheJumpsOfTheHeckeKernel
 import GaloisForLFunctions.SurfaceOfSpecZ.NoMetricOnTheProjectiveLineCarriesTheJets
 import GaloisForLFunctions.SurfaceOfSpecZ.ThePointCountOfSpecZ
+import GaloisForLFunctions.SurfaceOfSpecZ.TheTorsionEnergyAgainstTheJets
 
 /-!
 # The surface of `Spec ℤ`
@@ -22,4 +23,6 @@ continuous Hecke kernel supplies the whole: the primes are jump discontinuities 
 prime powers. Over `𝔽_{1ⁿ}` the surface has `Λ(n) + 1 + 1/(n² − 1)` points (prime, cusp, jets) where
 `ℙ¹` has `n + 1`; the trace is of size `n`, so no finite genus passes the Hasse–Weil test on two-term
 probes: atomic Frobenius graphs force infinite genus, and smoothing performs the prime number theorem.
+Off the diagonal Weil's kernel is the archimedean compensation (pole plane minus cusp and jets) plus
+the Abel limit of the positive torsion energy of `ℙ¹_ℤ`.
 -/

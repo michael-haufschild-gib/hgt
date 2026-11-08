@@ -21,7 +21,8 @@ of its Hodge/scattering constructions.
    of `Q`, with independently proved sign control.
 2. Critical `δ=0` torsion compensation, including the archimedean place.
 3. A completed prime chain complex with proved `s`-dependent zero detection.
-4. A natural relative pair and signed-index localization recovering `M(N)`.
+4. A canonical relative pair on the connected core with Euler number `M(N)`;
+   signed localization of the full complex is constructed below.
 5. A Farey cell realization with a modular action and controlled cutoff boundary.
 
 First formalized branch: [prime-star compensation](../3-formalized/riac-prime-star-compensation.md):
@@ -49,6 +50,14 @@ it does not yet supply localization on the core.
 The [modular filtration candidate](../0-backlog/riac-modular-height-filtration.md)
 replaces an invariant finite cusp set by a moving cutoff with explicit matrix
 height distortion; the prime-face comparison remains missing.
+
+The [signed localization theorem](../3-formalized/riac-prime-vertex-signed-localization.md)
+constructs an arithmetic self-map, actual local isolating blocks and exits,
+and finite relative singular homology. Its local indices sum to `1−M(N)`;
+the core sum is `1−M(N)−P_N`. Local definitions use only prime products.
+The indices are unbounded below, allowing signed cancellation without a
+quantitative bound. The [exit-bouquet refinement](riac-prime-exit-bouquet.md)
+asks for the full arithmetic homotopy type of each exit.
 
 ## Necessary distinctions
 

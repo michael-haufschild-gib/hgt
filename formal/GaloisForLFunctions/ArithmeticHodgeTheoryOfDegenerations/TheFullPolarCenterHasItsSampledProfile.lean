@@ -85,6 +85,7 @@ theorem tendsto_topWindow_full_polarCenter_mean
   filter_upwards [eventually_ge_atTop 1,
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0]
     with N hN hL
+  change 0 < Real.log (N : ℝ) at hL
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
   have hshift : completeWeilPoleShift φ (c N) = c N * a := by
     unfold completeWeilPoleShift

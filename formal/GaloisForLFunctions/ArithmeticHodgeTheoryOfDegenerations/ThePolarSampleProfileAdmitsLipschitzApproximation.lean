@@ -12,7 +12,7 @@ gives a compact Lipschitz test with an exact left support cutoff.
 
 set_option autoImplicit false
 noncomputable section
-open MeasureTheory Filter Topology Finset Set
+open MeasureTheory Filter Topology Finset
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
 /-- The polar profile in logarithmic coordinates, with the square-root sampling density. -/
@@ -25,8 +25,8 @@ def polarLogSampleProfile (q u : ℝ) : ℝ :=
 lemma continuousOn_regularized_polarLogSampleProfile {a η : ℝ} (hη : 0 < η) (q : ℝ) :
     ContinuousOn (fun u => q * Real.sqrt (Real.exp u) *
       (polarCenterProfile (polarCenterCutoff (Real.exp a) η) (Real.exp u) -
-        chebyshevReciprocalRamp (Real.exp a) η (Real.exp u) - Real.log (2 * Real.pi))) (Icc a 0) := by
-  have he : MapsTo Real.exp (Icc a 0) (Icc (0 : ℝ) 1) := fun u hu =>
+        chebyshevReciprocalRamp (Real.exp a) η (Real.exp u) - Real.log (2 * Real.pi))) (Set.Icc a 0) := by
+  have he : Set.MapsTo Real.exp (Set.Icc a 0) (Set.Icc (0 : ℝ) 1) := fun u hu =>
     ⟨(Real.exp_pos u).le, by simpa only [Real.exp_zero] using Real.exp_le_exp.mpr hu.2⟩
   exact (continuous_const.mul (Real.continuous_sqrt.comp Real.continuous_exp)).continuousOn.mul
     (((continuousOn_polarCenterProfile_cutoff (Real.exp_pos a) hη).comp
@@ -94,23 +94,26 @@ theorem exists_polarLogSampleProfile_approximation_bound {a η ρ : ℝ}
     have hδx : δ ≤ (n : ℝ) / N := (le_div_iff₀ hN0).mpr
       ((Nat.floor_lt (by positivity : 0 ≤ δ * (N : ℝ))).mp (mem_Ioc.mp hn).1).le
     let u := Real.log ((n : ℝ) / N)
-    have hu : u ∈ Icc a 0 := ⟨(Real.le_log_iff_exp_le hx0).mpr hδx,
+    have hu : u ∈ Set.Icc a 0 := ⟨(Real.le_log_iff_exp_le hx0).mpr hδx,
       Real.log_nonpos hx0.le hx1⟩
     have hex : Real.exp u = (n : ℝ) / N := Real.exp_log hx0
     let t := leftProfileCutoff a u * q * Real.sqrt ((n : ℝ) / N)
     have ht2 : t ^ 2 ≤ q ^ 2 := by
-      obtain ⟨hλ0, hλ1⟩ := leftProfileCutoff_bounds a u
-      have hλ2 : leftProfileCutoff a u ^ 2 ≤ 1 := by
-        nlinarith only [hλ0, hλ1, mul_nonneg hλ0 (sub_nonneg.mpr hλ1)]
-      have hλx : leftProfileCutoff a u ^ 2 * ((n : ℝ) / N) ≤ 1 :=
-        (mul_le_mul hλ2 hx1 hx0.le zero_le_one).trans_eq (one_mul _)
-      have hh := mul_le_mul_of_nonneg_right hλx (sq_nonneg q)
+      obtain ⟨hcut0, hcut1⟩ := leftProfileCutoff_bounds a u
+      have hcut2 : leftProfileCutoff a u ^ 2 ≤ 1 := by
+        nlinarith only [hcut0, hcut1, mul_nonneg hcut0 (sub_nonneg.mpr hcut1)]
+      have hcutx : leftProfileCutoff a u ^ 2 * ((n : ℝ) / N) ≤ 1 :=
+        (mul_le_mul hcut2 hx1 hx0.le zero_le_one).trans_eq (one_mul _)
+      have hh := mul_le_mul_of_nonneg_right hcutx (sq_nonneg q)
       dsimp only [t]
       rw [mul_pow, mul_pow, Real.sq_sqrt hx0.le]
       nlinarith only [hh]
     have hd : (leftProfileCutoff a u * g u - f u) ^ 2 ≤ ρ ^ 2 := by
       have hh := pow_le_pow_left₀ (abs_nonneg _) (hfapprox u hu).le 2
-      simpa only [sq_abs, sub_sq] using hh
+      have he : (leftProfileCutoff a u * g u - f u) ^ 2 =
+          (f u - leftProfileCutoff a u * g u) ^ 2 := by ring
+      rw [he]
+      simpa only [sq_abs] using hh
     have he : E n = t * P n - t * J n + (leftProfileCutoff a u * g u - f u) := by
       dsimp only [E, polarLogSampleProfile, t, P, J, g, u]
       rw [Real.exp_log hx0]
@@ -131,14 +134,16 @@ theorem exists_polarLogSampleProfile_approximation_bound {a η ρ : ℝ}
   have hc := mul_le_mul_of_nonneg_right hcard (by positivity : 0 ≤ 3 * ρ ^ 2)
   have hdiv : (∑ n ∈ S, E n ^ 2) / N ≤
       3 * q ^ 2 * ((∑ n ∈ S, P n ^ 2) / N + (∑ n ∈ S, J n ^ 2) / N) + 3 * ρ ^ 2 := by
-    have hh := hs.trans (add_le_add_left hc _)
+    have hh : (∑ n ∈ S, E n ^ 2) ≤
+        3 * q ^ 2 * ((∑ n ∈ S, P n ^ 2) + ∑ n ∈ S, J n ^ 2) + N * (3 * ρ ^ 2) := by
+      nlinarith only [hs, hc]
     exact (div_le_div_of_nonneg_right hh hN0.le).trans_eq (by field_simp [hN0.ne']; ring)
   change (∑ n ∈ Icc 1 N, E n ^ 2) / N ≤ _
   rw [heq]
-  exact hdiv.trans (add_le_add_right (mul_le_mul_of_nonneg_left
+  exact hdiv.trans (_root_.add_le_add_right (mul_le_mul_of_nonneg_left
     (add_le_add (normalized_sum_polarCenterProfile_sub_cutoff_sq_le (Real.exp_pos a) hη hη4 hN)
       (normalized_sum_chebyshevPsi_sub_ramp_sq_le (Real.exp_pos a) hη hηa hN1))
-    (by positivity)) _)
+    (by positivity : 0 ≤ 3 * q ^ 2)) _)
 
 /-- The left-truncated polar profile is approximable to arbitrary sampled square accuracy by one
 compact Lipschitz test, uniformly for all sufficiently large horizons. -/
@@ -154,7 +159,7 @@ theorem exists_polarLogSampleProfile_lipschitz_approximation (a q : ℝ) {ε : �
   let t : ℕ → ℝ := fun k => 1 / ((k : ℝ) + 1)
   have ht : Tendsto t atTop (𝓝 0) := tendsto_one_div_add_atTop_nhds_zero_nat
   have hs : Tendsto (fun k => Real.sqrt (t k)) atTop (𝓝 0) := by
-    simpa only [Real.sqrt_zero] using Real.continuous_sqrt.continuousAt.tendsto.comp ht
+    simpa only [Function.comp_def, Real.sqrt_zero] using Real.continuous_sqrt.continuousAt.tendsto.comp ht
   let e : ℝ → ℝ := fun η => 3 * q ^ 2 * (18 * η + 64 * Real.sqrt η + J * (2 * η)) + 3 * η ^ 2
   have he : Tendsto (fun k => e (t k)) atTop (𝓝 0) := by
     have hh := ((((ht.const_mul 18).add (hs.const_mul 64)).add

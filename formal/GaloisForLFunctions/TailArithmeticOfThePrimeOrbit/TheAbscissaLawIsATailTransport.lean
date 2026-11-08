@@ -18,6 +18,11 @@ phases `p^{−iτ}`.
 **Heights** (`tailTransport_height_mem_tailBad`). The height of such an event is tail-bad at every cut
 on the disc spanned by `[Re ρ − ε, 1]`, with tolerance the head floor at `Re ρ − ε`.
 
+**Near-full cancellation is abundant** (`near_full_tail_events_have_positive_density`). At every
+point of the strip `½ < Re z < 1`, every cut `y` and every `η > 0`, the heights where the tail
+cancels the head up to the fraction `η`, `|ζ − E_y| ≥ (1 − η)|E_y|`, have positive lower density
+(Voronin universality with a small constant target). AAL asks for `η = 0` near right zeros.
+
 **Upper bounds only** (`exists_returns_tailBad_and_rare`). The events produced by returns of `ζ` to
 itself near a right zero have density zero at a tolerance independent of the cut. So AAL is the
 existence of rare events, and every density statement about the tail bounds them from above.
@@ -109,5 +114,38 @@ theorem tailTransport_height_mem_tailBad {σ : ℝ} (hσ : 0 < σ) {s : ℂ}
     rw [he]
     have h0 : 0 < s.re := hσ.trans hs
     exact (headFloor_mono y hs.le).trans (tailEvent_of_zero h0 hz y).2.2
+
+/-- **Near-full tail events have positive density.** -/
+theorem near_full_tail_events_have_positive_density {z₀ : ℂ} (h1 : 1 / 2 < z₀.re)
+    (h2 : z₀.re < 1) (y : ℕ) {η : ℝ} (hη : 0 < η) :
+    ∃ c > 0, ∀ᶠ T : ℝ in atTop, ENNReal.ofReal (c * T) ≤
+      volume ({τ : ℝ | (1 - η) * ‖RHTower.eulerHead y (z₀ + τ * I)‖ ≤
+        ‖RHTower.eulerTailFun y (z₀ + τ * I)‖} ∩ Icc 0 T) := by
+  obtain ⟨r, hr, huniv, -⟩ := tail_recurrence_dichotomy h1 h2
+  have hz0 : 0 < z₀.re := by linarith
+  set δ : ℝ := η * headFloor y z₀.re / 2 with hδ
+  have hδ0 : 0 < δ := by have := headFloor_pos y z₀.re; positivity
+  obtain ⟨c, hc, hev⟩ := huniv (fun _ => (δ : ℂ)) analyticOnNhd_const
+    (fun _ _ => by exact_mod_cast hδ0.ne') δ hδ0
+  refine ⟨c, hc, hev.mono fun T hT => hT.trans (measure_mono ?_)⟩
+  rintro τ ⟨hτ, hτT⟩
+  refine ⟨?_, hτT⟩
+  have hz := hτ z₀ (mem_closedBall_self hr.le)
+  have hre : (z₀ + (τ : ℂ) * I).re = z₀.re := by simp
+  have hhead := headFloor_le_norm_eulerHead y (s := z₀ + (τ : ℂ) * I) (by rw [hre]; exact hz0)
+  rw [hre] at hhead
+  have hζ : ‖riemannZeta (z₀ + (τ : ℂ) * I)‖ < 2 * δ := by
+    have h := norm_sub_norm_le (riemannZeta (z₀ + (τ : ℂ) * I)) (δ : ℂ)
+    rw [Complex.norm_real, Real.norm_of_nonneg hδ0.le] at h
+    linarith
+  show (1 - η) * ‖RHTower.eulerHead y (z₀ + τ * I)‖ ≤ ‖RHTower.eulerTailFun y (z₀ + τ * I)‖
+  rw [RHTower.eulerTailFun_eq]
+  have htri := norm_sub_norm_le (RHTower.eulerHead y (z₀ + (τ : ℂ) * I))
+    (riemannZeta (z₀ + (τ : ℂ) * I))
+  rw [norm_sub_rev] at htri
+  have hsmall : 2 * δ ≤ η * ‖RHTower.eulerHead y (z₀ + (τ : ℂ) * I)‖ := by
+    rw [hδ]
+    nlinarith [hhead]
+  nlinarith
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

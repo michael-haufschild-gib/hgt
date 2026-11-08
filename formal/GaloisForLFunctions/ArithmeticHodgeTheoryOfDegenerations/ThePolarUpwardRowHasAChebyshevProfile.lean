@@ -23,7 +23,7 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
       n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N →
       |reciprocalUpwardCoefficient tiltedUnitSpline c (linearPrimeStrip c) N 1 n -
         ((∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)) *
-          (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ))| ≤ C := by
+          (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ))| ≤ C := by
   have hφ := contDiff_tiltedUnitSpline
   have hsupp := tiltedUnitSpline_eq_zero
   have hM := integral_tiltedUnitSpline_sq_pos
@@ -52,8 +52,8 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
     affinePrimeShellCorrection_symm_eq_sum_upwardShellModel hφ hsupp hc0 (by norm_num)
       (mem_Icc.mpr ⟨hn1, hnN⟩)]
   let a : ℝ := (∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)
-  have hmean : a * (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ)) =
-      ∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, ((Λ k : ℝ) / k) * (a * (c * (k * n : ℕ) / N)) := by
+  have hmean : a * (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ)) =
+      ∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, ((ArithmeticFunction.vonMangoldt k : ℝ) / k) * (a * (c * (k * n : ℕ) / N)) := by
     rw [mul_sum]
     apply sum_congr rfl
     intro k hk
@@ -61,12 +61,12 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
     push_cast
     field_simp [hk0]
   change |(∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊,
-      ((Λ k : ℝ) / k) * upwardShellModel tiltedUnitSpline c N 1 ⌈c⌉₊ (k * n)) -
-      a * (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ))| ≤ _
+      ((ArithmeticFunction.vonMangoldt k : ℝ) / k) * upwardShellModel tiltedUnitSpline c N 1 ⌈c⌉₊ (k * n)) -
+      a * (c * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ))| ≤ _
   rw [hmean, ← sum_sub_distrib]
   have hterm : ∀ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊,
-      |((Λ k : ℝ) / k) * upwardShellModel tiltedUnitSpline c N 1 ⌈c⌉₊ (k * n) -
-        ((Λ k : ℝ) / k) * (a * (c * (k * n : ℕ) / N))| ≤ ((Λ k : ℝ) / k) * D := by
+      |((ArithmeticFunction.vonMangoldt k : ℝ) / k) * upwardShellModel tiltedUnitSpline c N 1 ⌈c⌉₊ (k * n) -
+        ((ArithmeticFunction.vonMangoldt k : ℝ) / k) * (a * (c * (k * n : ℕ) / N))| ≤ ((ArithmeticFunction.vonMangoldt k : ℝ) / k) * D := by
     intro k hk
     have hk1 := (mem_Icc.mp hk).1
     have hk0 : (0 : ℝ) < k := by exact_mod_cast hk1
@@ -99,7 +99,7 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
       (div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)
   have hcut : ⌊(N : ℝ) / n⌋₊ ≤ ⌊1 / δ⌋₊ :=
     Nat.floor_mono ((div_le_div_iff₀ hn0 hδ).mpr (by linarith only [hn_gt]))
-  have hsum : (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ) / k) ≤ ⌊1 / δ⌋₊ := by
+  have hsum : (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ) / k) ≤ ⌊1 / δ⌋₊ := by
     calc
       _ ≤ ∑ _k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (1 : ℝ) := by
         apply sum_le_sum
@@ -111,16 +111,16 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
         rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, mul_one]
       _ ≤ ⌊1 / δ⌋₊ := by exact_mod_cast hcut
   calc
-    _ ≤ ∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, ((Λ k : ℝ) / k) * D :=
+    _ ≤ ∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, ((ArithmeticFunction.vonMangoldt k : ℝ) / k) * D :=
       (abs_sum_le_sum_abs _ _).trans (sum_le_sum hterm)
-    _ = (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ) / k) * D := (sum_mul _ _ _).symm
+    _ = (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ) / k) * D := (sum_mul _ _ _).symm
     _ ≤ _ := mul_le_mul_of_nonneg_right hsum (by dsimp only [D]; positivity)
 
 /-- The finite Mangoldt profile of the polar upward row. -/
 def polarUpwardMeanVector (c : ℝ) (N : ℕ) : EuclideanSpace ℝ (PrimeHorizonIndex N) :=
   WithLp.toLp 2 (fun idx : PrimeHorizonIndex N =>
     (((∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)) *
-      (c * idx.1 / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / idx.1⌋₊, (Λ k : ℝ))) /
+      (c * idx.1 / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / idx.1⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ))) /
       (Real.sqrt idx.1 * Real.sqrt (Real.log N)))
 
 /-- The full polar upward row converges in the normalized top-window square norm to its
@@ -152,6 +152,7 @@ theorem tendsto_topWindow_upward_polar_mean
     filter_upwards [eventually_ge_atTop 1,
       (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0]
       with N hN hL
+    change 0 < Real.log (N : ℝ) at hL
     have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
     have hpt : ∀ n ∈ Ioc ⌊δ * (N : ℝ)⌋₊ N,
         primeHorizonExtension (v N - polarUpwardMeanVector (c N) N) n ^ 2 ≤
@@ -163,7 +164,7 @@ theorem tendsto_topWindow_upward_polar_mean
       have hext : primeHorizonExtension (v N - polarUpwardMeanVector (c N) N) n =
           (reciprocalUpwardCoefficient tiltedUnitSpline (c N) (linearPrimeStrip (c N)) N 1 n -
             ((∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)) *
-              (c N * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (Λ k : ℝ))) /
+              (c N * n / N) * (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ))) /
                 (Real.sqrt n * Real.sqrt (Real.log N)) := by
         change primeHorizonExtension (v N - polarUpwardMeanVector (c N) N) idx.1 = _
         rw [primeHorizonExtension_coe]

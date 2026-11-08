@@ -19,6 +19,8 @@ identity at every length.
   the collision count at scale `π/T`.
 * `fejerMean_one_ge`: for `a = 1` on `[1, N]` the mean value is at least `TN(N+1)/(π²(T+1))` at every
   height `T`, against a diagonal `TN/2`: beyond the height the collisions dominate.
+* `fejerMean_one_le`: and at most `TN/2 + 6N²`. So for `N ≥ T ≥ 1` the mean value has exact order
+  `N²`: the main term is the collision term, not the diagonal.
 * `primeCollisions_le_fejerMean`: for prime coefficients the collision count is a count of prime
   pairs `p, p'` with `|log(p'/p)| ≤ π/T`. A main term for the long mean value of the prime polynomial
   is therefore a binary statement about primes in short multiplicative ranges.
@@ -284,6 +286,197 @@ theorem fejerMean_one_ge (N : ℕ) {T : ℝ} (hT : 0 < T) :
       = 2 * T / Real.pi ^ 2 * ((N * (N + 1) : ℝ) / (2 * (T + 1))) := by
         field_simp
     _ ≤ _ := mul_le_mul_of_nonneg_left hcount (by positivity)
+
+/-- Distinct integers in `[1, N]` are `|n − m|/N` apart in logarithm. -/
+theorem abs_log_sub_ge {N m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (hmN : m ≤ N) (hnN : n ≤ N) :
+    |(n : ℝ) - m| / N ≤ |Real.log n - Real.log m| := by
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hmN' : (m : ℝ) ≤ N := by exact_mod_cast hmN
+  have hnN' : (n : ℝ) ≤ N := by exact_mod_cast hnN
+  -- `log(x/y) ≥ 1 − y/x = (x − y)/x ≥ (x − y)/N` for `y ≤ x`
+  have key : ∀ x y : ℝ, 0 < x → 0 < y → y ≤ x → x ≤ N → (x - y) / N ≤ Real.log x - Real.log y := by
+    intro x y hx hy hyx hxN
+    have h := Real.one_sub_inv_le_log_of_pos (show 0 < x / y by positivity)
+    rw [Real.log_div hx.ne' hy.ne', inv_div] at h
+    have h1 : (x - y) / N ≤ (x - y) / x := div_le_div_of_nonneg_left (by linarith) hx hxN
+    have h2 : (x - y) / x = 1 - y / x := by field_simp
+    linarith
+  rcases le_total (m : ℝ) n with h | h
+  · rw [abs_of_nonneg (by linarith), abs_of_nonneg (by linarith [Real.log_le_log hm0 h])]
+    exact key _ _ hn0 hm0 h hnN'
+  · rw [abs_of_nonpos (by linarith), abs_of_nonpos (by linarith [Real.log_le_log hn0 h])]
+    have h1 := key _ _ hm0 hn0 h hmN'
+    have h2 : ((m : ℝ) - n) / N = -(((n : ℝ) - m) / N) := by ring
+    rw [neg_div]; linarith
+
+/-- The row profile `g(0) = T/2`, `g(d) = min(T/2, 2N²/(Td²))`. -/
+def rowProfile (T : ℝ) (N d : ℕ) : ℝ := if d = 0 then T / 2 else min (T / 2) (2 * N ^ 2 / (T * d ^ 2))
+
+theorem rowProfile_nonneg {T : ℝ} (hT : 0 < T) (N d : ℕ) : 0 ≤ rowProfile T N d := by
+  unfold rowProfile; split_ifs <;> positivity
+
+theorem fejerKernel_le_rowProfile {T : ℝ} (hT : 0 < T) {N m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n)
+    (hmN : m ≤ N) (hnN : n ≤ N) :
+    fejerKernel T (Real.log n - Real.log m) ≤ rowProfile T N (Nat.dist n m) := by
+  unfold rowProfile
+  split_ifs with hd
+  · exact fejerKernel_le_half hT _
+  · have hne : n ≠ m := fun h => hd (by rw [h, Nat.dist_self])
+    have hlam : Real.log n - Real.log m ≠ 0 := by
+      intro h
+      have := Real.log_injOn_pos (Set.mem_Ioi.2 (by exact_mod_cast hn : (0 : ℝ) < n))
+        (Set.mem_Ioi.2 (by exact_mod_cast hm : (0 : ℝ) < m)) (by linarith)
+      exact hne (by exact_mod_cast this)
+    refine le_min (fejerKernel_le_half hT _) ((fejerKernel_le_inv_sq hT hlam).trans ?_)
+    have hdist : ((Nat.dist n m : ℕ) : ℝ) = |(n : ℝ) - m| := by
+      rcases le_total m n with h | h
+      · rw [Nat.dist_eq_sub_of_le_right h, Nat.cast_sub h,
+          abs_of_nonneg (sub_nonneg.2 (by exact_mod_cast h : (m : ℝ) ≤ n))]
+      · rw [Nat.dist_eq_sub_of_le h, Nat.cast_sub h,
+          abs_of_nonpos (sub_nonpos.2 (by exact_mod_cast h : (n : ℝ) ≤ m)), neg_sub]
+    have hd0 : (0 : ℝ) < Nat.dist n m := by exact_mod_cast Nat.pos_of_ne_zero hd
+    have hN0 : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+    have hlow := abs_log_sub_ge hm hn hmN hnN
+    rw [← hdist] at hlow
+    have hsq : ((Nat.dist n m : ℝ) / N) ^ 2 ≤ (Real.log n - Real.log m) ^ 2 := by
+      rw [← sq_abs (Real.log n - Real.log m)]
+      exact pow_le_pow_left₀ (by positivity) hlow 2
+    have hlsq : 0 < (Real.log n - Real.log m) ^ 2 := by positivity
+    rw [div_le_div_iff₀ (by positivity) (by positivity)]
+    rw [div_pow] at hsq
+    have : (Nat.dist n m : ℝ) ^ 2 ≤ (Real.log n - Real.log m) ^ 2 * N ^ 2 := by
+      rwa [div_le_iff₀ (by positivity)] at hsq
+    nlinarith
+
+/-- A row of the Fejér matrix of `1_{[1,N]}` is at most `T/2 + 2 Σ_{d ≤ N} g(d)`. -/
+theorem sum_rowProfile_dist_le {T : ℝ} (hT : 0 < T) {N n : ℕ} (hn : n ∈ Finset.Icc 1 N) :
+    ∑ m ∈ Finset.Icc 1 N, rowProfile T N (Nat.dist n m) ≤
+      T / 2 + 2 * ∑ d ∈ Finset.Icc 1 N, rowProfile T N d := by
+  classical
+  have hn1 := (Finset.mem_Icc.1 hn).1
+  have hnN := (Finset.mem_Icc.1 hn).2
+  set A := (Finset.Icc 1 N).filter (fun m => m < n)
+  set B := (Finset.Icc 1 N).filter (fun m => n < m)
+  have hsplit : ∑ m ∈ Finset.Icc 1 N, rowProfile T N (Nat.dist n m) =
+      ∑ m ∈ A, rowProfile T N (Nat.dist n m) + rowProfile T N 0 +
+        ∑ m ∈ B, rowProfile T N (Nat.dist n m) := by
+    have h1 := Finset.sum_filter_add_sum_filter_not (Finset.Icc 1 N) (fun m => m < n)
+      (fun m => rowProfile T N (Nat.dist n m))
+    have h2 := Finset.sum_filter_add_sum_filter_not ((Finset.Icc 1 N).filter fun m => ¬ m < n)
+      (fun m => n < m) (fun m => rowProfile T N (Nat.dist n m))
+    have hB : ((Finset.Icc 1 N).filter fun m => ¬ m < n).filter (fun m => n < m) = B := by
+      ext m; simp only [B, Finset.mem_filter]; constructor
+      · rintro ⟨⟨h1, -⟩, h2⟩; exact ⟨h1, h2⟩
+      · rintro ⟨h1, h2⟩; exact ⟨⟨h1, by omega⟩, h2⟩
+    have hC : ((Finset.Icc 1 N).filter fun m => ¬ m < n).filter (fun m => ¬ n < m) = {n} := by
+      ext m; simp only [Finset.mem_filter, Finset.mem_singleton]; constructor
+      · rintro ⟨⟨-, h1⟩, h2⟩; omega
+      · rintro rfl; exact ⟨⟨hn, lt_irrefl _⟩, lt_irrefl _⟩
+    rw [hB, hC, Finset.sum_singleton, Nat.dist_self] at h2
+    rw [← h1, ← h2]
+    ring
+  have hside : ∀ (C : Finset ℕ) (f : ℕ → ℕ), Set.InjOn f C → (∀ m ∈ C, f m ∈ Finset.Icc 1 N) →
+      (∀ m ∈ C, Nat.dist n m = f m) →
+      ∑ m ∈ C, rowProfile T N (Nat.dist n m) ≤ ∑ d ∈ Finset.Icc 1 N, rowProfile T N d := by
+    intro C f hinj hmaps hdist
+    rw [Finset.sum_congr rfl fun m hm => by rw [hdist m hm], ← Finset.sum_image hinj]
+    exact Finset.sum_le_sum_of_subset_of_nonneg (fun d hd => by
+      obtain ⟨m, hm, rfl⟩ := Finset.mem_image.1 hd; exact hmaps m hm)
+      (fun d _ _ => rowProfile_nonneg hT N d)
+  have hA := hside A (fun m => n - m) (fun a ha b hb h => by
+      have := (Finset.mem_filter.1 ha).2; have := (Finset.mem_filter.1 hb).2
+      simp only at h; omega)
+    (fun m hm => by
+      obtain ⟨hmI, hmn⟩ := Finset.mem_filter.1 hm
+      exact Finset.mem_Icc.2 ⟨by omega, by omega⟩)
+    (fun m hm => Nat.dist_eq_sub_of_le_right (Finset.mem_filter.1 hm).2.le)
+  have hB' := hside B (fun m => m - n) (fun a ha b hb h => by
+      have := (Finset.mem_filter.1 ha).2; have := (Finset.mem_filter.1 hb).2
+      simp only at h; omega)
+    (fun m hm => by
+      obtain ⟨hmI, hmn⟩ := Finset.mem_filter.1 hm
+      have := (Finset.mem_Icc.1 hmI).2
+      exact Finset.mem_Icc.2 ⟨by omega, by omega⟩)
+    (fun m hm => Nat.dist_eq_sub_of_le (Finset.mem_filter.1 hm).2.le)
+  rw [hsplit, show rowProfile T N 0 = T / 2 by simp [rowProfile]]
+  linarith
+
+/-- `Σ_{1≤d≤N} g(d) ≤ 3N`. -/
+theorem sum_rowProfile_le {T : ℝ} (hT : 0 < T) (N : ℕ) :
+    ∑ d ∈ Finset.Icc 1 N, rowProfile T N d ≤ 3 * N := by
+  classical
+  set K : ℕ := ⌊2 * N / T⌋₊ with hK
+  have hK1 : (K : ℝ) ≤ 2 * N / T := Nat.floor_le (by positivity)
+  have hK2 : 2 * N / T < K + 1 := Nat.lt_floor_add_one _
+  rw [← Finset.sum_filter_add_sum_filter_not (Finset.Icc 1 N) (fun d => d ≤ K)]
+  have hlow : ∑ d ∈ (Finset.Icc 1 N).filter (fun d => d ≤ K), rowProfile T N d ≤ N := by
+    calc _ ≤ ∑ _d ∈ (Finset.Icc 1 N).filter (fun d => d ≤ K), T / 2 :=
+          Finset.sum_le_sum fun d hd => by
+            have : d ≠ 0 := by have := (Finset.mem_Icc.1 (Finset.mem_filter.1 hd).1).1; omega
+            simp only [rowProfile, if_neg this]; exact min_le_left _ _
+      _ = ((Finset.Icc 1 N).filter (fun d => d ≤ K)).card * (T / 2) := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ K * (T / 2) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          have : (Finset.Icc 1 N).filter (fun d => d ≤ K) ⊆ Finset.Icc 1 K := fun d hd => by
+            obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hd
+            exact Finset.mem_Icc.2 ⟨(Finset.mem_Icc.1 h1).1, h2⟩
+          have := Finset.card_le_card this
+          rw [Nat.card_Icc] at this
+          exact_mod_cast (show _ ≤ K by omega)
+      _ ≤ 2 * N / T * (T / 2) := mul_le_mul_of_nonneg_right hK1 (by positivity)
+      _ = N := by field_simp
+  have hhigh : ∑ d ∈ (Finset.Icc 1 N).filter (fun d => ¬ d ≤ K), rowProfile T N d ≤ 2 * N := by
+    rcases Nat.eq_zero_or_pos N with hN0 | hNpos
+    · subst hN0; simp
+    have hNr : (0 : ℝ) < N := by exact_mod_cast hNpos
+    calc _ ≤ ∑ d ∈ Finset.Ioo K (N + 1), 2 * N ^ 2 / T * ((d : ℝ) ^ 2)⁻¹ := by
+          refine (Finset.sum_le_sum fun d hd => ?_).trans
+            (Finset.sum_le_sum_of_subset_of_nonneg (fun d hd => ?_) fun d _ _ => by positivity)
+          · have hd0 : d ≠ 0 := by
+              have := (Finset.mem_Icc.1 (Finset.mem_filter.1 hd).1).1; omega
+            simp only [rowProfile, if_neg hd0]
+            refine (min_le_right _ _).trans (le_of_eq ?_)
+            field_simp
+          · obtain ⟨h1, h2⟩ := Finset.mem_filter.1 hd
+            exact Finset.mem_Ioo.2 ⟨by omega, by have := (Finset.mem_Icc.1 h1).2; omega⟩
+      _ = 2 * N ^ 2 / T * ∑ d ∈ Finset.Ioo K (N + 1), ((d : ℝ) ^ 2)⁻¹ := by
+          rw [Finset.mul_sum]
+      _ ≤ 2 * N ^ 2 / T * (2 / (K + 1)) :=
+          mul_le_mul_of_nonneg_left (sum_Ioo_inv_sq_le K (N + 1)) (by positivity)
+      _ ≤ 2 * N ^ 2 / T * (T / N) := by
+          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+          rw [div_le_div_iff₀ (by positivity) hNr]
+          rw [div_lt_iff₀ hT] at hK2
+          nlinarith
+      _ = 2 * N := by field_simp
+  linarith
+
+/-- **The long mean value has collision size.** For `a = 1` on `[1, N]` and every `T > 0`,
+`∫_0^T (1 − t/T)|Σ_{n≤N} n^{−it}|² dt ≤ TN/2 + 6N²`. With `fejerMean_one_ge`, the mean value is of
+exact order `N²` once `N ≥ T ≥ 1`, while the diagonal is `TN/2`: beyond the height the main term is the
+collision term. -/
+theorem fejerMean_one_le (N : ℕ) {T : ℝ} (hT : 0 < T) :
+    fejerMean (Finset.Icc 1 N) (fun _ => 1) T ≤ T * N / 2 + 6 * N ^ 2 := by
+  rw [fejerMean_eq _ _ hT]
+  simp only [one_mul]
+  calc ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N, fejerKernel T (Real.log n - Real.log m)
+      ≤ ∑ m ∈ Finset.Icc 1 N, ∑ n ∈ Finset.Icc 1 N, rowProfile T N (Nat.dist m n) := by
+        refine Finset.sum_le_sum fun m hm => Finset.sum_le_sum fun n hn => ?_
+        rw [Nat.dist_comm]
+        exact fejerKernel_le_rowProfile hT (Finset.mem_Icc.1 hm).1 (Finset.mem_Icc.1 hn).1
+          (Finset.mem_Icc.1 hm).2 (Finset.mem_Icc.1 hn).2
+    _ ≤ ∑ _m ∈ Finset.Icc 1 N, (T / 2 + 2 * (3 * N)) := by
+        refine Finset.sum_le_sum fun m hm => ?_
+        have := sum_rowProfile_dist_le hT hm
+        have := sum_rowProfile_le hT N
+        linarith
+    _ = T * N / 2 + 6 * N ^ 2 := by
+        rw [Finset.sum_const, Nat.card_Icc, nsmul_eq_mul]
+        push_cast
+        ring
 
 /-- **Prime collisions.** For the indicator of the primes in `S`, the number of ordered prime pairs
 `p, p' ∈ S` with `|log p' − log p| ≤ π/T` is at most `π²/(2T)` times the mean value. -/

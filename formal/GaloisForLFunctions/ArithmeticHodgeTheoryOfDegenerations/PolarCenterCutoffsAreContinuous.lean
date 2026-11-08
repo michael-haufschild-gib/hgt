@@ -40,7 +40,7 @@ lemma polarCenterCutoff_eq_right {δ η x : ℝ} (hδ : 0 < δ) (hx : δ ≤ x) 
 lemma polarCenterCutoff_eq_zero_one {δ η : ℝ} (hη : 0 < η) :
     polarCenterCutoff δ η 1 = 0 := by
   unfold polarCenterCutoff
-  rw [descendingRamp_eq_zero (by positivity : 0 < η / 2) (by ring_nf), mul_zero]
+  rw [descendingRamp_eq_zero (by positivity : 0 < η / 2) (by linarith), mul_zero]
 
 /-- The two-ramp center cutoff has an explicit global Lipschitz bound. -/
 lemma abs_polarCenterCutoff_sub_le {δ η : ℝ} (hδ : 0 < δ) (hη : 0 < η) (x y : ℝ) :
@@ -55,11 +55,11 @@ lemma abs_polarCenterCutoff_sub_le {δ η : ℝ} (hδ : 0 < δ) (hη : 0 < η) (
         (1 - descendingRamp (3 * δ / 4) (δ / 4) y) =
         -(descendingRamp (3 * δ / 4) (δ / 4) x - descendingRamp (3 * δ / 4) (δ / 4) y) := by ring
     rw [he, abs_neg]
-    exact hh.trans_eq (by congr 1; field_simp; ring)
+    exact hh.trans_eq (by congr 1 <;> field_simp <;> ring)
   have hH : |H x - H y| ≤ (1 / η) * |x - y| := by
     have hh := (lipschitzWith_descendingRamp (by positivity : 0 < η / 2) (1 - η / 2)).dist_le_mul x y
     rw [Real.dist_eq, Real.dist_eq, Real.coe_toNNReal _ (by positivity)] at hh
-    exact hh.trans_eq (by congr 1; field_simp; ring)
+    exact hh.trans_eq (by congr 1 <;> field_simp <;> ring)
   have hL1 : |L y| ≤ 1 := by
     obtain ⟨h0, h1⟩ := descendingRamp_bounds (3 * δ / 4) (δ / 4) y
     rw [abs_of_nonneg (sub_nonneg.mpr h1)]
@@ -115,7 +115,8 @@ theorem normalized_sum_polarCenterProfile_sub_cutoff_sq_le {δ η : ℝ}
   have hN1 : 1 ≤ N := by omega
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   let K : ℕ := ⌊η * (N : ℝ)⌋₊ + 1
-  have hKlo : η * (N : ℝ) ≤ K := (Nat.lt_floor_add_one _).le
+  have hKlo : η * (N : ℝ) ≤ K := by
+    simpa only [K, Nat.cast_add, Nat.cast_one] using (Nat.lt_floor_add_one (η * (N : ℝ))).le
   have hKhi : (K : ℝ) ≤ η * N + 1 := by
     dsimp only [K]
     rw [Nat.cast_add, Nat.cast_one]
