@@ -927,9 +927,8 @@ theorem exists_nontrivial_vacuumFixing_partner_standardForm_heckeInv :
         (1 / 2 : ℂ) * (1 + chi2 (m * n)) := by
       rw [chi2_mul]
       linear_combination (1 + chi2 m * chi2 n) * hsq2
-    rw [hcomb]
-    simp only [one_div, Complex.mul_re, Complex.inv_re, Complex.re_ofNat, Complex.im_ofNat,
-      Complex.normSq_ofNat, Complex.add_re, Complex.one_re]
+    have hhalf : (1 / 2 : ℂ) = ((1 / 2 : ℝ) : ℂ) := by push_cast; rfl
+    rw [hcomb, hhalf, Complex.re_ofReal_mul, Complex.add_re, Complex.one_re]
     ring
   have hsq_class : ∀ p k : ℕ+,
       (1 + (chi2 (p ^ 2 * k)).re) / 2 = (1 + (chi2 k).re) / 2 := fun p k => by
@@ -1132,7 +1131,182 @@ private def innerRightCLM (w : H) : H →L[ℂ] ℂ :=
     ‖w‖
     (fun y => norm_inner_le_norm w y)
 
+omit [CompleteSpace H] in
 @[simp] private theorem innerRightCLM_apply (w y : H) : innerRightCLM w y = inner ℂ w y := rfl
+
+private theorem peaked_integral_pow_zero_imp_le_zero {a M : ℝ} (ha : 0 < a) (hM : 0 ≤ M)
+    {ψ : ℝ → ℝ} (hψ_cont : Continuous ψ) (hψ_mid : ψ (a / 2) = M)
+    (hψ_abs : ∀ t : ℝ, -M ≤ ψ t)
+    (hint_zero : ∀ m : ℕ,
+      (∫ t in (0 : ℝ)..a, (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) = 0) :
+    M ≤ 0 := by
+  by_contra hM_not
+  have hM_pos : 0 < M := lt_of_not_ge hM_not
+  have hq_cont : Continuous (fun t : ℝ => Real.sin (Real.pi * t / a) ^ 2) :=
+    (Real.continuous_sin.comp (by fun_prop)).pow 2
+  obtain ⟨δ₁, hδ₁_pos, hδ₁_close⟩ :=
+    Metric.continuousAt_iff.mp hψ_cont.continuousAt (M / 2) (half_pos hM_pos)
+  set δ : ℝ := min (δ₁ / 2) (a / 4)
+  have hδ_pos : 0 < δ := lt_min (half_pos hδ₁_pos) (by positivity)
+  have hδ_lt_δ₁ : δ < δ₁ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hδ₁_pos)
+  have hδ_le_a4 : δ ≤ a / 4 := min_le_right _ _
+  have hψ_ge : ∀ t : ℝ, a / 2 - δ ≤ t → t ≤ a / 2 + δ → M / 2 ≤ ψ t := fun t ht1 ht2 => by
+    have hd : dist t (a / 2) < δ₁ := by
+      rw [Real.dist_eq]
+      exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hδ_lt_δ₁
+    have hc := hδ₁_close hd
+    rw [Real.dist_eq, hψ_mid] at hc
+    linarith [(abs_lt.mp hc).1]
+  have hq_lt_one : ∀ {t : ℝ}, 0 ≤ t → t ≤ a → t ≠ a / 2 →
+      Real.sin (Real.pi * t / a) ^ 2 < 1 := fun {t} ht0 hta htne => by
+    have hsc := Real.sin_sq_add_cos_sq (Real.pi * t / a)
+    rcases eq_or_lt_of_le ht0 with rfl | ht0'
+    · simp
+    · rcases eq_or_lt_of_le hta with hta_eq | hta'
+      · rw [hta_eq, mul_div_cancel_right₀ Real.pi ha.ne', Real.sin_pi]
+        norm_num
+      · rcases lt_or_gt_of_ne htne with hlt | hgt
+        · have hmem : Real.pi * t / a ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
+            refine ⟨by linarith [Real.pi_pos, show 0 < Real.pi * t / a by positivity], ?_⟩
+            rw [div_lt_iff₀ ha]
+            have : Real.pi * t < Real.pi * (a / 2) := mul_lt_mul_of_pos_left hlt Real.pi_pos
+            linarith
+          have hcos : 0 < Real.cos (Real.pi * t / a) := Real.cos_pos_of_mem_Ioo hmem
+          linarith [sq_pos_of_pos hcos]
+        · have hmem : Real.pi - Real.pi * t / a ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
+            refine ⟨?_, ?_⟩
+            · have : Real.pi * t / a < Real.pi :=
+                (div_lt_iff₀ ha).mpr (mul_lt_mul_of_pos_left hta' Real.pi_pos)
+              linarith [Real.pi_pos]
+            · have : Real.pi / 2 < Real.pi * t / a := by
+                rw [lt_div_iff₀ ha]
+                have : Real.pi * (a / 2) < Real.pi * t := mul_lt_mul_of_pos_left hgt Real.pi_pos
+                linarith
+              linarith
+          have hcos' : 0 < Real.cos (Real.pi - Real.pi * t / a) := Real.cos_pos_of_mem_Ioo hmem
+          rw [Real.cos_pi_sub] at hcos'
+          linarith [sq_pos_of_neg (neg_pos.mp hcos')]
+  have hK₁_ne : (Set.Icc (0 : ℝ) (a / 2 - δ)).Nonempty := Set.nonempty_Icc.mpr (by linarith)
+  have hK₂_ne : (Set.Icc (a / 2 + δ) a).Nonempty := Set.nonempty_Icc.mpr (by linarith)
+  obtain ⟨t₁_m, ht₁_m, ht₁_max⟩ :=
+    isCompact_Icc.exists_isMaxOn hK₁_ne hq_cont.continuousOn
+  obtain ⟨t₂_m, ht₂_m, ht₂_max⟩ :=
+    isCompact_Icc.exists_isMaxOn hK₂_ne hq_cont.continuousOn
+  set r₀ : ℝ := max (Real.sin (Real.pi * t₁_m / a) ^ 2) (Real.sin (Real.pi * t₂_m / a) ^ 2)
+  have hr₀_nonneg : 0 ≤ r₀ := le_trans (sq_nonneg _) (le_max_left _ _)
+  have hr₀_lt_one : r₀ < 1 := max_lt
+    (hq_lt_one ht₁_m.1 (by linarith [ht₁_m.2]) (by linarith [ht₁_m.2]))
+    (hq_lt_one (by linarith [ht₂_m.1]) ht₂_m.2 (by linarith [ht₂_m.1]))
+  set r₁ : ℝ := (1 + r₀) / 2 with hr₁_def
+  have hr₀_lt_r₁ : r₀ < r₁ := by linarith [hr₁_def]
+  have hr₁_pos : 0 < r₁ := by linarith
+  have hq_mid : Real.sin (Real.pi * (a / 2) / a) ^ 2 = 1 := by
+    have harg : Real.pi * (a / 2) / a = Real.pi / 2 := by field_simp
+    simp [harg]
+  obtain ⟨η₁, hη₁_pos, hη₁_close⟩ :=
+    Metric.continuousAt_iff.mp hq_cont.continuousAt ((1 - r₀) / 2) (by linarith)
+  set η : ℝ := min (η₁ / 2) (δ / 2)
+  have hη_pos : 0 < η := lt_min (half_pos hη₁_pos) (half_pos hδ_pos)
+  have hη_lt_η₁ : η < η₁ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hη₁_pos)
+  have hη_le_δ : η ≤ δ := le_trans (min_le_right _ _) (half_le_self hδ_pos.le)
+  have hq_ge_r₁ : ∀ t : ℝ, a / 2 - η ≤ t → t ≤ a / 2 + η →
+      r₁ ≤ Real.sin (Real.pi * t / a) ^ 2 := fun t ht1 ht2 => by
+    have hd : dist t (a / 2) < η₁ := by
+      rw [Real.dist_eq]
+      exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hη_lt_η₁
+    have hc := hη₁_close hd
+    dsimp only at hc
+    rw [Real.dist_eq, hq_mid] at hc
+    linarith [(abs_lt.mp hc).1, hr₁_def]
+  have hbound_pow : ∀ m : ℕ, η * (r₁ ^ m * (M / 2)) ≤ a * (r₀ ^ m * M) := fun m => by
+    have hintG : ∀ c d : ℝ,
+        IntervalIntegrable (fun t => (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) volume c d :=
+      fun c d => ((hq_cont.pow m).mul hψ_cont).intervalIntegrable c d
+    have hs1 := (intervalIntegral.integral_add_adjacent_intervals
+      (hintG 0 (a / 2 - δ)) (hintG (a / 2 - δ) a)).symm
+    have hs2 := (intervalIntegral.integral_add_adjacent_intervals
+      (hintG (a / 2 - δ) (a / 2 - η)) (hintG (a / 2 - η) a)).symm
+    have hs3 := (intervalIntegral.integral_add_adjacent_intervals
+      (hintG (a / 2 - η) (a / 2 + η)) (hintG (a / 2 + η) a)).symm
+    have hs4 := (intervalIntegral.integral_add_adjacent_intervals
+      (hintG (a / 2 + η) (a / 2 + δ)) (hintG (a / 2 + δ) a)).symm
+    have hsum0 : (∫ t in (0 : ℝ)..(a / 2 - δ), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) +
+        ((∫ t in (a / 2 - δ)..(a / 2 - η), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) +
+          ((∫ t in (a / 2 - η)..(a / 2 + η), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) +
+            ((∫ t in (a / 2 + η)..(a / 2 + δ), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) +
+              (∫ t in (a / 2 + δ)..a, (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t)))) = 0 := by
+      rw [← hs4, ← hs3, ← hs2, ← hs1, hint_zero m]
+    have hb1 : -((a / 2 - δ) * (r₀ ^ m * M)) ≤
+        ∫ t in (0 : ℝ)..(a / 2 - δ), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t := by
+      have hm := intervalIntegral.integral_mono_on (by linarith)
+        (continuous_const.intervalIntegrable _ _) (hintG _ _) fun t ht =>
+        calc -(r₀ ^ m * M)
+            ≤ -((Real.sin (Real.pi * t / a) ^ 2) ^ m * M) :=
+              neg_le_neg (mul_le_mul_of_nonneg_right
+                (pow_le_pow_left₀ (sq_nonneg _) (le_trans (ht₁_max ht) (le_max_left _ _)) m) hM)
+          _ = (Real.sin (Real.pi * t / a) ^ 2) ^ m * (-M) := by ring
+          _ ≤ (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t :=
+              mul_le_mul_of_nonneg_left (hψ_abs t) (pow_nonneg (sq_nonneg _) m)
+      rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul, mul_neg] at hm
+      exact hm
+    have hb2 : 0 ≤ ∫ t in (a / 2 - δ)..(a / 2 - η), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t :=
+      intervalIntegral.integral_nonneg (by linarith) fun t ht =>
+        mul_nonneg (pow_nonneg (sq_nonneg _) m)
+          (le_trans (half_pos hM_pos).le (hψ_ge t ht.1 (by linarith [ht.2])))
+    have hb3 : (2 * η) * (r₁ ^ m * (M / 2)) ≤
+        ∫ t in (a / 2 - η)..(a / 2 + η), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t := by
+      have hm := intervalIntegral.integral_mono_on (by linarith)
+        (continuous_const.intervalIntegrable _ _) (hintG _ _) fun t ht =>
+        mul_le_mul (pow_le_pow_left₀ hr₁_pos.le (hq_ge_r₁ t ht.1 ht.2) m)
+          (hψ_ge t (by linarith [ht.1]) (by linarith [ht.2]))
+          (half_pos hM_pos).le (pow_nonneg (sq_nonneg _) m)
+      rw [intervalIntegral.integral_const, show (a / 2 + η) - (a / 2 - η) = 2 * η by ring,
+        smul_eq_mul] at hm
+      exact hm
+    have hb4 : 0 ≤ ∫ t in (a / 2 + η)..(a / 2 + δ), (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t :=
+      intervalIntegral.integral_nonneg (by linarith) fun t ht =>
+        mul_nonneg (pow_nonneg (sq_nonneg _) m)
+          (le_trans (half_pos hM_pos).le (hψ_ge t (by linarith [ht.1]) ht.2))
+    have hb5 : -((a - (a / 2 + δ)) * (r₀ ^ m * M)) ≤
+        ∫ t in (a / 2 + δ)..a, (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t := by
+      have hm := intervalIntegral.integral_mono_on (by linarith)
+        (continuous_const.intervalIntegrable _ _) (hintG _ _) fun t ht =>
+        calc -(r₀ ^ m * M)
+            ≤ -((Real.sin (Real.pi * t / a) ^ 2) ^ m * M) :=
+              neg_le_neg (mul_le_mul_of_nonneg_right
+                (pow_le_pow_left₀ (sq_nonneg _) (le_trans (ht₂_max ht) (le_max_right _ _)) m) hM)
+          _ = (Real.sin (Real.pi * t / a) ^ 2) ^ m * (-M) := by ring
+          _ ≤ (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t :=
+              mul_le_mul_of_nonneg_left (hψ_abs t) (pow_nonneg (sq_nonneg _) m)
+      rw [intervalIntegral.integral_const, smul_eq_mul, mul_neg] at hm
+      exact hm
+    have hsum_low : -((a - 2 * δ) * (r₀ ^ m * M)) + (2 * η) * (r₁ ^ m * (M / 2)) ≤ 0 := by
+      have h1 := add_le_add hb1 (add_le_add hb2 (add_le_add hb3 (add_le_add hb4 hb5)))
+      rw [hsum0] at h1
+      calc -((a - 2 * δ) * (r₀ ^ m * M)) + (2 * η) * (r₁ ^ m * (M / 2))
+          = -((a / 2 - δ) * (r₀ ^ m * M)) +
+              (0 + ((2 * η) * (r₁ ^ m * (M / 2)) +
+                (0 + -((a - (a / 2 + δ)) * (r₀ ^ m * M))))) := by ring
+        _ ≤ _ := h1
+    have hA_nonneg : 0 ≤ r₀ ^ m * M := mul_nonneg (pow_nonneg hr₀_nonneg m) hM
+    have hB_nonneg : 0 ≤ r₁ ^ m * (M / 2) :=
+      mul_nonneg (pow_nonneg hr₁_pos.le m) (half_pos hM_pos).le
+    calc η * (r₁ ^ m * (M / 2))
+        ≤ (2 * η) * (r₁ ^ m * (M / 2)) := mul_le_mul_of_nonneg_right (by linarith) hB_nonneg
+      _ ≤ (a - 2 * δ) * (r₀ ^ m * M) := (neg_add_le_iff_le_add.mp hsum_low).trans_eq (add_zero _)
+      _ ≤ a * (r₀ ^ m * M) := mul_le_mul_of_nonneg_right (by linarith) hA_nonneg
+  have hratio_le : ∀ m : ℕ, (η * (M / 2)) / (a * M) ≤ (r₀ / r₁) ^ m := fun m => by
+    have hm := hbound_pow m
+    rw [div_pow, div_le_div_iff₀ (mul_pos ha hM_pos) (pow_pos hr₁_pos m)]
+    calc (η * (M / 2)) * r₁ ^ m = η * (r₁ ^ m * (M / 2)) := by ring
+      _ ≤ a * (r₀ ^ m * M) := hm
+      _ = r₀ ^ m * (a * M) := by ring
+  have hratio_lt_one : r₀ / r₁ < 1 := (div_lt_one hr₁_pos).mpr hr₀_lt_r₁
+  have htend0 : Tendsto (fun m : ℕ => (r₀ / r₁) ^ m) atTop (𝓝 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg hr₀_nonneg hr₁_pos.le) hratio_lt_one
+  have hle0 : (η * (M / 2)) / (a * M) ≤ 0 := ge_of_tendsto' htend0 hratio_le
+  have hpos : 0 < (η * (M / 2)) / (a * M) := div_pos (mul_pos hη_pos (half_pos hM_pos)) (mul_pos ha hM_pos)
+  linarith
 
 private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
     {a : ℝ} (ha : 0 < a) {μ : ℂ} (hnorm : ‖μ‖ = 1) (hμ : μ ≠ 1) {w : H} (hw : B.U a w = μ • w) :
@@ -1164,7 +1338,9 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
     fun_prop
   have hF_per : ∀ k : ℤ, Function.Periodic (F k) a := fun k t => by
     have hUa : B.U (t + a) w = μ • B.U t w := by
-      rw [B.U_add, ContinuousLinearMap.mul_apply, hw, map_smul]
+      rw [B.U_add]
+      change B.U t (B.U a w) = _
+      rw [hw, map_smul]
     have hωa : ω k * a = θ + 2 * Real.pi * (k : ℝ) := div_mul_cancel₀ _ ha.ne'
     have hexp_shift : Complex.exp (-Complex.I * (ω k : ℂ) * ((t + a : ℝ) : ℂ)) =
         Complex.exp (-Complex.I * (ω k : ℂ) * (t : ℂ)) * μ⁻¹ := by
@@ -1246,7 +1422,7 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
     rw [hf_fourier (-k), map_zero] at h2
     have h2' : (∫ t in (0 : ℝ)..a,
         Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * starRingEnd ℂ (f t)) = 0 := by
-      refine ( Eq.trans ?_ h2 )
+      refine Eq.trans ?_ h2
       refine intervalIntegral.integral_congr fun t _ => ?_
       change _ = starRingEnd ℂ (Complex.exp (-Complex.I * (α (-k) : ℂ) * (t : ℂ)) * f t)
       rw [map_mul, ← Complex.exp_conj]
@@ -1255,10 +1431,10 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
       push_cast
       ring
     have hint_f : IntervalIntegrable
-        (fun t => Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * f t) volume 0 a :=
+        (fun t : ℝ => Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * f t) volume 0 a :=
       (Continuous.mul (by fun_prop) hf_cont).intervalIntegrable 0 a
     have hint_cf : IntervalIntegrable
-        (fun t => Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * starRingEnd ℂ (f t))
+        (fun t : ℝ => Complex.exp (-Complex.I * (α k : ℂ) * (t : ℂ)) * starRingEnd ℂ (f t))
         volume 0 a :=
       (Continuous.mul (by fun_prop) (Complex.continuous_conj.comp hf_cont)).intervalIntegrable 0 a
     have hadd := intervalIntegral.integral_add hint_f hint_cf
@@ -1288,10 +1464,10 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
     rw [show q t = Real.sin (Real.pi * t / a) ^ 2 from rfl, hsin2]
     push_cast
     rw [Complex.cos]
-    have he1 : ((2 * (Real.pi : ℂ) * (t : ℂ) / (a : ℂ)) * Complex.I) =
+    have he1 : (2 * (Real.pi : ℂ) * (t : ℂ) / (a : ℂ)) * Complex.I =
         -Complex.I * (α (-1) : ℂ) * (t : ℂ) := by
       simp only [α, Int.cast_neg, Int.cast_one]; push_cast; ring
-    have he2 : -((2 * (Real.pi : ℂ) * (t : ℂ) / (a : ℂ)) * Complex.I) =
+    have he2 : -(2 * (Real.pi : ℂ) * (t : ℂ) / (a : ℂ)) * Complex.I =
         -Complex.I * (α 1 : ℂ) * (t : ℂ) := by
       simp only [α, Int.cast_one]; push_cast; ring
     rw [he1, he2]
@@ -1343,34 +1519,22 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
           intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul,
           intervalIntegral.integral_const_mul, ih k, ih (k + 1), ih (k - 1)]
         ring
-  have hreal_int_zero : ∀ m : ℕ, (∫ t in (0 : ℝ)..a, q t ^ m * ψ t) = 0 := fun m => by
+  have hreal_int_zero : ∀ m : ℕ,
+      (∫ t in (0 : ℝ)..a, (Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t) = 0 := fun m => by
     have h0 := hpow_fourier m 0
     have hα0 : α 0 = 0 := by simp [α]
     have hsimp : (fun t : ℝ => Complex.exp (-Complex.I * (α 0 : ℂ) * (t : ℂ)) *
-        (((q t ^ m : ℝ) : ℂ) * (ψ t : ℂ))) = fun t : ℝ => ((q t ^ m * ψ t : ℝ) : ℂ) := by
+        (((q t ^ m : ℝ) : ℂ) * (ψ t : ℂ))) =
+        fun t : ℝ => (((Real.sin (Real.pi * t / a) ^ 2) ^ m * ψ t : ℝ) : ℂ) := by
       ext t
       rw [hα0]
-      simp [Complex.ofReal_mul]
+      simp [q, Complex.ofReal_mul]
     rw [hsimp, intervalIntegral.integral_ofReal] at h0
     exact Complex.ofReal_eq_zero.mp h0
-  by_contra hw_ne
-  have hw_pos : 0 < ‖w‖ ^ 2 := sq_pos_of_pos (_root_.norm_pos_iff.mpr hw_ne)
   have hψ_mid : ψ (a / 2) = ‖w‖ ^ 2 := by
     simp only [ψ, f, g₁, F, sub_self, Complex.ofReal_zero, mul_zero, Complex.exp_zero, one_smul,
-      B.U_zero, one_apply_eq_self, inner_self_eq_norm_sq (𝕜 := ℂ)]
-  obtain ⟨δ₁, hδ₁_pos, hδ₁_close⟩ :=
-    Metric.continuousAt_iff.mp hψ_cont.continuousAt (‖w‖ ^ 2 / 2) (half_pos hw_pos)
-  set δ : ℝ := min (δ₁ / 2) (a / 4)
-  have hδ_pos : 0 < δ := lt_min (half_pos hδ₁_pos) (by positivity)
-  have hδ_lt_δ₁ : δ < δ₁ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hδ₁_pos)
-  have hδ_le_a4 : δ ≤ a / 4 := min_le_right _ _
-  have hψ_ge : ∀ t : ℝ, a / 2 - δ ≤ t → t ≤ a / 2 + δ → ‖w‖ ^ 2 / 2 ≤ ψ t := fun t ht1 ht2 => by
-    have hd : dist t (a / 2) < δ₁ := by
-      rw [Real.dist_eq]
-      exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hδ_lt_δ₁
-    have hc := hδ₁_close hd
-    rw [Real.dist_eq, hψ_mid] at hc
-    linarith [(abs_lt.mp hc).1]
+      B.U_zero, one_apply_eq_self]
+    exact inner_self_eq_norm_sq (𝕜 := ℂ) w
   have hψ_abs : ∀ t : ℝ, -(‖w‖ ^ 2) ≤ ψ t := fun t => by
     have hnorm_g₁ : ‖g₁ t‖ = ‖w‖ := by
       simp only [g₁, F, norm_smul, B.norm_U]
@@ -1384,145 +1548,10 @@ private theorem eigenvector_eq_zero_of_pos (B : BorchersPair H)
         _ ≤ ‖w‖ * ‖g₁ t‖ := norm_inner_le_norm w (g₁ t)
         _ = ‖w‖ ^ 2 := by rw [hnorm_g₁, sq]
     linarith [(abs_le.mp hle).1]
-  have hq_lt_one : ∀ {t : ℝ}, 0 ≤ t → t ≤ a → t ≠ a / 2 → q t < 1 := fun {t} ht0 hta htne => by
-    have hsc := Real.sin_sq_add_cos_sq (Real.pi * t / a)
-    rcases eq_or_lt_of_le ht0 with rfl | ht0'
-    · simp [q]
-    · rcases eq_or_lt_of_le hta with hta_eq | hta'
-      · rw [hta_eq, show q a = Real.sin (Real.pi * a / a) ^ 2 from rfl,
-          mul_div_cancel_right₀ Real.pi ha.ne', Real.sin_pi]
-        norm_num
-      · rcases lt_or_gt_of_ne htne with hlt | hgt
-        · have hmem : Real.pi * t / a ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
-            constructor
-            · have hpos : 0 < Real.pi * t / a := by positivity
-              linarith [Real.pi_pos]
-            · rw [div_lt_iff₀ ha]
-              have : Real.pi * t < Real.pi * (a / 2) :=
-                mul_lt_mul_of_pos_left hlt Real.pi_pos
-              linarith
-          have hcos : 0 < Real.cos (Real.pi * t / a) := Real.cos_pos_of_mem_Ioo hmem
-          show Real.sin (Real.pi * t / a) ^ 2 < 1
-          nlinarith [sq_pos_of_pos hcos]
-        · have hmem : Real.pi - Real.pi * t / a ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) := by
-            constructor
-            · have : Real.pi * t / a < Real.pi := by
-                rw [div_lt_iff₀ ha]
-                exact mul_lt_mul_of_pos_left hta' Real.pi_pos
-              linarith [Real.pi_pos]
-            · have : Real.pi / 2 < Real.pi * t / a := by
-                rw [lt_div_iff₀ ha]
-                have : Real.pi * (a / 2) < Real.pi * t :=
-                  mul_lt_mul_of_pos_left hgt Real.pi_pos
-                linarith
-              linarith
-          have hcos' : 0 < Real.cos (Real.pi - Real.pi * t / a) := Real.cos_pos_of_mem_Ioo hmem
-          rw [Real.cos_pi_sub] at hcos'
-          show Real.sin (Real.pi * t / a) ^ 2 < 1
-          nlinarith [sq_pos_of_neg (neg_pos.mp hcos')]
-  have hK₁_ne : (Set.Icc (0 : ℝ) (a / 2 - δ)).Nonempty := Set.nonempty_Icc.mpr (by linarith)
-  have hK₂_ne : (Set.Icc (a / 2 + δ) a).Nonempty := Set.nonempty_Icc.mpr (by linarith)
-  obtain ⟨t₁_m, ht₁_m, ht₁_max⟩ :=
-    isCompact_Icc.exists_isMaxOn hK₁_ne hq_cont.continuousOn
-  obtain ⟨t₂_m, ht₂_m, ht₂_max⟩ :=
-    isCompact_Icc.exists_isMaxOn hK₂_ne hq_cont.continuousOn
-  set r₀ : ℝ := max (q t₁_m) (q t₂_m)
-  have hr₀_nonneg : 0 ≤ r₀ := le_trans (sq_nonneg _) (le_max_left _ _)
-  have hr₀_lt_one : r₀ < 1 := max_lt
-    (hq_lt_one ht₁_m.1 (by linarith [ht₁_m.2]) (by linarith [ht₁_m.2]))
-    (hq_lt_one (by linarith [ht₂_m.1]) ht₂_m.2 (by linarith [ht₂_m.1]))
-  set r₁ : ℝ := (1 + r₀) / 2 with hr₁_def
-  have hr₀_lt_r₁ : r₀ < r₁ := by linarith [hr₁_def]
-  have hr₁_pos : 0 < r₁ := by linarith
-  have hq_mid : q (a / 2) = 1 := by
-    have harg : Real.pi * (a / 2) / a = Real.pi / 2 := by field_simp
-    simp [q, harg]
-  obtain ⟨η₁, hη₁_pos, hη₁_close⟩ :=
-    Metric.continuousAt_iff.mp hq_cont.continuousAt ((1 - r₀) / 2) (by linarith)
-  set η : ℝ := min (η₁ / 2) (δ / 2)
-  have hη_pos : 0 < η := lt_min (half_pos hη₁_pos) (half_pos hδ_pos)
-  have hη_lt_η₁ : η < η₁ := lt_of_le_of_lt (min_le_left _ _) (half_lt_self hη₁_pos)
-  have hη_le_δ : η ≤ δ := le_trans (min_le_right _ _) (half_le_self hδ_pos.le)
-  have hq_ge_r₁ : ∀ t : ℝ, a / 2 - η ≤ t → t ≤ a / 2 + η → r₁ ≤ q t := fun t ht1 ht2 => by
-    have hd : dist t (a / 2) < η₁ := by
-      rw [Real.dist_eq]
-      exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hη_lt_η₁
-    have hc := hη₁_close hd
-    rw [Real.dist_eq, hq_mid] at hc
-    linarith [(abs_lt.mp hc).1, hr₁_def]
-  have hbound_pow : ∀ m : ℕ, η * (r₁ ^ m * (‖w‖ ^ 2 / 2)) ≤ a * (r₀ ^ m * ‖w‖ ^ 2) := fun m => by
-    let G : ℝ → ℝ := fun t => q t ^ m * ψ t
-    have hG_cont : Continuous G := (hq_cont.pow m).mul hψ_cont
-    have hintG : ∀ c d : ℝ, IntervalIntegrable G volume c d := fun c d =>
-      hG_cont.intervalIntegrable c d
-    set p₀ : ℝ := 0 with hp₀
-    set p₁ : ℝ := a / 2 - δ with hp₁
-    set p₂ : ℝ := a / 2 - η with hp₂
-    set p₃ : ℝ := a / 2 + η with hp₃
-    set p₄ : ℝ := a / 2 + δ with hp₄
-    set p₅ : ℝ := a with hp₅
-    have hsplit : (∫ t in p₀..p₅, G t) =
-        (∫ t in p₀..p₁, G t) + (∫ t in p₁..p₂, G t) + (∫ t in p₂..p₃, G t) +
-          (∫ t in p₃..p₄, G t) + (∫ t in p₄..p₅, G t) := by
-      have s1 := (intervalIntegral.integral_add_adjacent_intervals (hintG p₀ p₁) (hintG p₁ p₅)).symm
-      have s2 := (intervalIntegral.integral_add_adjacent_intervals (hintG p₁ p₂) (hintG p₂ p₅)).symm
-      have s3 := (intervalIntegral.integral_add_adjacent_intervals (hintG p₂ p₃) (hintG p₃ p₅)).symm
-      have s4 := (intervalIntegral.integral_add_adjacent_intervals (hintG p₃ p₄) (hintG p₄ p₅)).symm
-      linarith
-    have hb1 : -(p₁ - p₀) * (r₀ ^ m * ‖w‖ ^ 2) ≤ ∫ t in p₀..p₁, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith [hp₀, hp₁] : p₀ ≤ p₁)
-        (continuous_const.intervalIntegrable p₀ p₁) (hintG p₀ p₁) fun t ht => by
-        have hqt : q t ≤ r₀ := le_trans (ht₁_max ht) (le_max_left _ _)
-        have hqm : q t ^ m ≤ r₀ ^ m := pow_le_pow_left₀ (sq_nonneg _) hqt m
-        have hψt := hψ_abs t
-        show -(r₀ ^ m * ‖w‖ ^ 2) ≤ q t ^ m * ψ t
-        nlinarith [pow_nonneg (sq_nonneg (Real.sin (Real.pi * t / a))) m]
-      rw [intervalIntegral.integral_const, smul_eq_mul] at hm
-      linarith
-    have hb2 : 0 ≤ ∫ t in p₁..p₂, G t := by
-      refine intervalIntegral.integral_nonneg (by linarith [hp₁, hp₂] : p₁ ≤ p₂) fun t ht => ?_
-      exact mul_nonneg (pow_nonneg (sq_nonneg _) m) (le_trans (half_pos hw_pos).le
-        (hψ_ge t (by linarith [ht.1, hp₁]) (by linarith [ht.2, hp₂])))
-    have hb3 : (p₃ - p₂) * (r₁ ^ m * (‖w‖ ^ 2 / 2)) ≤ ∫ t in p₂..p₃, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith [hp₂, hp₃] : p₂ ≤ p₃)
-        (continuous_const.intervalIntegrable p₂ p₃) (hintG p₂ p₃) fun t ht => by
-        have hqm : r₁ ^ m ≤ q t ^ m :=
-          pow_le_pow_left₀ hr₁_pos.le (hq_ge_r₁ t (by linarith [ht.1, hp₂]) (by linarith [ht.2, hp₃])) m
-        have hψt : ‖w‖ ^ 2 / 2 ≤ ψ t := hψ_ge t (by linarith [ht.1, hp₂]) (by linarith [ht.2, hp₃])
-        exact mul_le_mul hqm hψt (half_pos hw_pos).le (pow_nonneg (sq_nonneg _) m)
-      rw [intervalIntegral.integral_const, smul_eq_mul] at hm
-      exact hm
-    have hb4 : 0 ≤ ∫ t in p₃..p₄, G t := by
-      refine intervalIntegral.integral_nonneg (by linarith [hp₃, hp₄] : p₃ ≤ p₄) fun t ht => ?_
-      exact mul_nonneg (pow_nonneg (sq_nonneg _) m) (le_trans (half_pos hw_pos).le
-        (hψ_ge t (by linarith [ht.1, hp₃]) (by linarith [ht.2, hp₄])))
-    have hb5 : -(p₅ - p₄) * (r₀ ^ m * ‖w‖ ^ 2) ≤ ∫ t in p₄..p₅, G t := by
-      have hm := intervalIntegral.integral_mono_on (by linarith [hp₄, hp₅] : p₄ ≤ p₅)
-        (continuous_const.intervalIntegrable p₄ p₅) (hintG p₄ p₅) fun t ht => by
-        have hqt : q t ≤ r₀ := le_trans (ht₂_max ht) (le_max_right _ _)
-        have hqm : q t ^ m ≤ r₀ ^ m := pow_le_pow_left₀ (sq_nonneg _) hqt m
-        have hψt := hψ_abs t
-        show -(r₀ ^ m * ‖w‖ ^ 2) ≤ q t ^ m * ψ t
-        nlinarith [pow_nonneg (sq_nonneg (Real.sin (Real.pi * t / a))) m]
-      rw [intervalIntegral.integral_const, smul_eq_mul] at hm
-      linarith
-    have hzero : ∫ t in p₀..p₅, G t = 0 := by
-      rw [hp₀, hp₅]
-      exact hreal_int_zero m
-    have hlen : (p₁ - p₀) + (p₅ - p₄) ≤ a := by linarith [hp₀, hp₁, hp₄, hp₅]
-    have hp32 : 2 * η = p₃ - p₂ := by linarith [hp₂, hp₃]
-    have hr0w : 0 ≤ r₀ ^ m * ‖w‖ ^ 2 := mul_nonneg (pow_nonneg hr₀_nonneg m) hw_pos.le
-    have hr1w : 0 ≤ r₁ ^ m * (‖w‖ ^ 2 / 2) := mul_nonneg (pow_nonneg hr₁_pos.le m) (half_pos hw_pos).le
-    nlinarith
-  have hratio_le : ∀ m : ℕ, η / (2 * a) ≤ (r₀ / r₁) ^ m := fun m => by
-    have hm := hbound_pow m
-    rw [div_pow, le_div_iff₀ (pow_pos hr₁_pos m), div_mul_eq_mul_div, div_le_iff₀ (by positivity)]
-    nlinarith
-  have hratio_lt_one : r₀ / r₁ < 1 := (div_lt_one hr₁_pos).mpr hr₀_lt_r₁
-  have htend0 : Tendsto (fun m : ℕ => (r₀ / r₁) ^ m) atTop (𝓝 0) :=
-    tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg hr₀_nonneg hr₁_pos.le) hratio_lt_one
-  have hle0 : η / (2 * a) ≤ 0 := ge_of_tendsto' htend0 hratio_le
-  linarith [div_pos hη_pos (by positivity : (0 : ℝ) < 2 * a)]
+  have hw_sq_le : ‖w‖ ^ 2 ≤ 0 :=
+    peaked_integral_pow_zero_imp_le_zero ha (sq_nonneg ‖w‖) hψ_cont hψ_mid hψ_abs hreal_int_zero
+  have hw_sq_eq : ‖w‖ ^ 2 = 0 := le_antisymm hw_sq_le (sq_nonneg ‖w‖)
+  exact norm_eq_zero.mp (sq_eq_zero_iff.mp hw_sq_eq)
 
 /-- **No non-identity eigenvectors at nonzero shift.** In any `BorchersPair`, if `a ≠ 0`, `μ ≠ 1`,
 and `U(a) w = μ • w`, then `w = 0`. -/
@@ -1631,10 +1660,10 @@ invariant under `B.U`, then `B.U` fixes every state `φ(z) Ω` identically. -/
 theorem no_nontrivial_borchers_on_quadraticAlgebra (B : BorchersPair H)
     {q t : ℝ} (φ : QuadraticAlgebra ℝ (-q) t →ₐ[ℝ] H →L[ℂ] H) (Ω : H)
     (hinv : ∀ (a : ℝ) (z : QuadraticAlgebra ℝ (-q) t),
-      B.U a (φ z Ω) ∈ Submodule.span ℂ ({Ω, φ QuadraticAlgebra.ω Ω} : Set H))
+      B.U a (φ z Ω) ∈ Submodule.span ℂ ({Ω, φ QuadraticAlgebra.omega Ω} : Set H))
     (a : ℝ) (z : QuadraticAlgebra ℝ (-q) t) :
     B.U a (φ z Ω) = φ z Ω := by
-  set V : Submodule ℂ H := Submodule.span ℂ ({Ω, φ QuadraticAlgebra.ω Ω} : Set H)
+  set V : Submodule ℂ H := Submodule.span ℂ ({Ω, φ QuadraticAlgebra.omega Ω} : Set H)
   haveI : FiniteDimensional ℂ V := FiniteDimensional.span_of_finite ℂ (Set.toFinite _)
   have hr_smul : ∀ (r : ℝ) (v : H), r • v = (r : ℂ) • v := fun r v => by
     calc r • v = r • ((1 : ℂ) • v) := by rw [one_smul]
@@ -1642,11 +1671,11 @@ theorem no_nontrivial_borchers_on_quadraticAlgebra (B : BorchersPair H)
       _ = ((r : ℂ) * 1) • v := by rw [Complex.real_smul]
       _ = (r : ℂ) • v := by rw [mul_one]
   have hz_mem : ∀ w : QuadraticAlgebra ℝ (-q) t, φ w Ω ∈ V := fun w => by
-    have hw_eq : w = algebraMap ℝ _ w.re + w.im • QuadraticAlgebra.ω := by
-      ext <;> simp [QuadraticAlgebra.ω]
-    have hφw : φ w Ω = (w.re : ℂ) • Ω + (w.im : ℂ) • (φ QuadraticAlgebra.ω Ω) := by
+    have hw_eq : w = algebraMap ℝ _ w.re + w.im • QuadraticAlgebra.omega := by
+      ext <;> simp [QuadraticAlgebra.omega]
+    have hφw : φ w Ω = (w.re : ℂ) • Ω + (w.im : ℂ) • (φ QuadraticAlgebra.omega Ω) := by
       rw [hw_eq, map_add, AlgHom.commutes, Algebra.algebraMap_eq_smul_one, map_smul]
-      change w.re • Ω + w.im • (φ QuadraticAlgebra.ω Ω) = _
+      change w.re • Ω + w.im • (φ QuadraticAlgebra.omega Ω) = _
       rw [hr_smul, hr_smul]
     rw [hφw]
     exact add_mem (V.smul_mem _ (Submodule.subset_span (by simp)))
@@ -1658,7 +1687,7 @@ theorem no_nontrivial_borchers_on_quadraticAlgebra (B : BorchersPair H)
     rcases Set.mem_insert_iff.mp hx with rfl | hx'
     · simpa [map_one] using hinv b 1
     · rw [Set.mem_singleton_iff.mp hx']
-      exact hinv b QuadraticAlgebra.ω
+      exact hinv b QuadraticAlgebra.omega
   exact B.trivial_on_finiteDimensional V hV_inv a (hz_mem z)
 
 /-- **Triviality of antiperiodic vectors.** In any `BorchersPair`, `U(τ) w = -w` (`τ ≠ 0`) forces

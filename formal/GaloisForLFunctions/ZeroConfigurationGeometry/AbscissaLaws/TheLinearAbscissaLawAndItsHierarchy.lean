@@ -521,7 +521,7 @@ theorem bumpRatioConfig_abscissas {a b : ℝ} (n₀ : ℕ) (ha : 0 ≤ a) (hab :
       · simp only [seqLower, δ, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im,
           mul_one, sub_self, add_zero] at hre
         split_ifs at hre <;> linarith
-    · refine le_csInf (asymptoticAbscissaSet_nonempty Z) fun σ ⟨h12, hfin⟩ => ?_
+    · refine le_csInf (asymptoticAbscissaSet_nonempty Z) fun σ ⟨_, hfin⟩ => ?_
       by_contra hlt
       push Not at hlt
       have hinj : Function.Injective (fun k : ℕ => seqUpper δ (n₀ + 1 + k)) := by
@@ -612,32 +612,50 @@ theorem exists_not_linearAbscissaLaw_of_isLocalBelow {T₀ : ℝ} {P : ZeroConfi
   obtain ⟨Z', hPZ', hZAL, hnot0⟩ := exists_not_abscissaLawAt_zero_of_isLocalBelow hP hZ hPZ
   exact ⟨Z', hPZ', hZAL, mt (abscissaLawAt_zero_of_linearAbscissaLaw Z') hnot0⟩
 
-/-- **No asymptotic or bounded-height property decides `LinearAbscissaLawAt · C` (`1 ≤ C < 2`)**,
-even among configurations with infinitely many off-line zeros. -/
+/-- **No asymptotic or bounded-height property decides `LinearAbscissaLawAt · C` at any real `C`**,
+even among configurations with infinitely many off-line zeros and strictly positive asymptotic
+excess (`¬ ApproachesLine`). -/
 theorem exists_infinite_offLine_not_linearAbscissaLawAt_of_isAsymptotic_and_isLocalBelow
-    {C : ℝ} (hC1 : 1 ≤ C) (hC2 : C < 2) :
-    ∃ Z₀ : ZeroConfig, AbscissaLaw Z₀ ∧ (rightOf Z₀ 0).Infinite ∧
+    (C : ℝ) :
+    ∃ Z₀ : ZeroConfig, AbscissaLaw Z₀ ∧ (rightOf Z₀ 0).Infinite ∧ ¬ ApproachesLine Z₀ ∧
       (∀ P : ZeroConfig → Prop, IsAsymptotic P → P Z₀ →
-        ∃ Z' : ZeroConfig, P Z' ∧ (rightOf Z' 0).Infinite ∧ ¬ LinearAbscissaLawAt Z' C) ∧
+        ∃ Z' : ZeroConfig, P Z' ∧ (rightOf Z' 0).Infinite ∧
+          ¬ ApproachesLine Z' ∧ ¬ LinearAbscissaLawAt Z' C) ∧
       (∀ (T₀ : ℝ) (P : ZeroConfig → Prop), IsLocalBelow T₀ P → P Z₀ →
-        ∃ Z' : ZeroConfig, P Z' ∧ (rightOf Z' 0).Infinite ∧ ¬ LinearAbscissaLawAt Z' C) := by
-  set Z₀ := bumpRatioConfig (1 / 8) (1 / 8) 0 (by norm_num) le_rfl (by norm_num)
-  obtain ⟨hΘ₀, hΘinf₀⟩ := bumpRatioConfig_abscissas (a := 1 / 8) (b := 1 / 8) 0
-    (by norm_num) le_rfl (by norm_num)
+        ∃ Z' : ZeroConfig, P Z' ∧ (rightOf Z' 0).Infinite ∧
+          ¬ ApproachesLine Z' ∧ ¬ LinearAbscissaLawAt Z' C) := by
+  set M : ℝ := max C 1
+  have hM1 : 1 ≤ M := le_max_right C 1
+  have hMC : C ≤ M := le_max_left C 1
+  set a : ℝ := 1 / (8 * M)
+  have ha0 : 0 < a := div_pos one_pos (by positivity)
+  have ha8 : a ≤ 1 / 8 := by
+    dsimp [a]
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    linarith
+  have ha4 : a ≤ 1 / 4 := by linarith
+  have ha2 : a ≤ 1 / 2 := by linarith
+  set Z₀ := bumpRatioConfig a a 0 ha0.le le_rfl ha2
+  obtain ⟨hΘ₀, hΘinf₀⟩ := bumpRatioConfig_abscissas (a := a) (b := a) 0 ha0.le le_rfl ha2
   have hA₀ : AbscissaLaw Z₀ :=
     (abscissaLaw_iff_asymptoticAbscissa_eq_zeroAbscissa Z₀).mpr (hΘinf₀.trans hΘ₀.symm)
-  have hinf_bump : ∀ (b : ℝ) (n₀ : ℕ) (hab : (1 / 8 : ℝ) ≤ b) (hb : b ≤ 1 / 2),
-      (rightOf (bumpRatioConfig (1 / 8) b n₀ (by norm_num) hab hb) 0).Infinite := by
-    intro b n₀ hab hb
-    obtain ⟨_, hΘinf⟩ := bumpRatioConfig_abscissas n₀ (by norm_num) hab hb
-    intro hfin
-    have hZAL : ApproachesLine (bumpRatioConfig (1 / 8) b n₀ (by norm_num) hab hb) :=
-      fun h hh => hfin.subset fun z ⟨hz, hre⟩ => ⟨hz, by linarith⟩
+  have hnotZAL_bump : ∀ (b : ℝ) (n₀ : ℕ) (hab : a ≤ b) (hb : b ≤ 1 / 2),
+      ¬ ApproachesLine (bumpRatioConfig a b n₀ ha0.le hab hb) := by
+    intro b n₀ hab hb hZAL
+    obtain ⟨_, hΘinf⟩ := bumpRatioConfig_abscissas n₀ ha0.le hab hb
     have := (approachesLine_iff_asymptoticAbscissa_eq_half _).mp hZAL
     linarith
-  refine ⟨Z₀, hA₀, hinf_bump (1 / 8) 0 le_rfl (by norm_num), ?_, ?_⟩
+  have hinf_bump : ∀ (b : ℝ) (n₀ : ℕ) (hab : a ≤ b) (hb : b ≤ 1 / 2),
+      (rightOf (bumpRatioConfig a b n₀ ha0.le hab hb) 0).Infinite := by
+    intro b n₀ hab hb hfin
+    exact hnotZAL_bump b n₀ hab hb
+      (fun h hh => hfin.subset fun z ⟨hz, hre⟩ => ⟨hz, by linarith⟩)
+  have hCa : C * a ≤ 1 / 8 := by
+    calc C * a ≤ M * a := mul_le_mul_of_nonneg_right hMC ha0.le
+      _ = 1 / 8 := by dsimp [a]; field_simp
+  refine ⟨Z₀, hA₀, hinf_bump a 0 le_rfl ha2, hnotZAL_bump a 0 le_rfl ha2, ?_, ?_⟩
   · intro P hP hPZ₀
-    set Z' := bumpRatioConfig (1 / 8) (1 / 4) 0 (by norm_num) (by norm_num) (by norm_num)
+    set Z' := bumpRatioConfig a (1 / 4) 0 ha0.le ha4 (by norm_num)
     have hag : ∃ T : ℝ, ∀ z : ℂ, T < |z.im| →
         (z ∈ Z₀.carrier ↔ z ∈ Z'.carrier) ∧ (z ∈ Z₀.carrier → Z₀.mult z = Z'.mult z) := by
       refine ⟨1, fun z hz => ⟨?_, fun _ => rfl⟩⟩
@@ -658,16 +676,17 @@ theorem exists_infinite_offLine_not_linearAbscissaLawAt_of_isAsymptotic_and_isLo
           exact Or.inl ⟨n, by simp [seqUpper, hn]⟩
         · have hn : n ≠ 0 := hne0 n (by simp [seqLower])
           exact Or.inr ⟨n, by simp [seqLower, hn]⟩
-    obtain ⟨hΘ', hΘinf'⟩ := bumpRatioConfig_abscissas (a := 1 / 8) (b := 1 / 4) 0
-      (by norm_num) (by norm_num) (by norm_num)
+    obtain ⟨hΘ', hΘinf'⟩ := bumpRatioConfig_abscissas (a := a) (b := 1 / 4) 0
+      ha0.le ha4 (by norm_num)
     have hnot : ¬ LinearAbscissaLawAt Z' C := by
       unfold LinearAbscissaLawAt
       rw [hΘ', hΘinf', not_le]
       linarith
-    exact ⟨Z', (hP Z₀ Z' hag).mp hPZ₀, hinf_bump (1 / 4) 0 (by norm_num) (by norm_num), hnot⟩
+    exact ⟨Z', (hP Z₀ Z' hag).mp hPZ₀, hinf_bump (1 / 4) 0 ha4 (by norm_num),
+      hnotZAL_bump (1 / 4) 0 ha4 (by norm_num), hnot⟩
   · intro T₀ P hP hPZ₀
     set n₀ : ℕ := ⌈|T₀|⌉₊ + 1
-    set Z' := bumpRatioConfig (1 / 8) (1 / 4) n₀ (by norm_num) (by norm_num) (by norm_num)
+    set Z' := bumpRatioConfig a (1 / 4) n₀ ha0.le ha4 (by norm_num)
     have hag : ∀ z : ℂ, |z.im| ≤ T₀ →
         (z ∈ Z₀.carrier ↔ z ∈ Z'.carrier) ∧ (z ∈ Z₀.carrier → Z₀.mult z = Z'.mult z) := by
       intro z hz
@@ -691,13 +710,14 @@ theorem exists_infinite_offLine_not_linearAbscissaLawAt_of_isAsymptotic_and_isLo
           exact Or.inl ⟨n, by simp [seqUpper, hn]⟩
         · have hn : n ≠ n₀ := hnen₀ n (by simp [seqLower])
           exact Or.inr ⟨n, by simp [seqLower, hn]⟩
-    obtain ⟨hΘ', hΘinf'⟩ := bumpRatioConfig_abscissas (a := 1 / 8) (b := 1 / 4) n₀
-      (by norm_num) (by norm_num) (by norm_num)
+    obtain ⟨hΘ', hΘinf'⟩ := bumpRatioConfig_abscissas (a := a) (b := 1 / 4) n₀
+      ha0.le ha4 (by norm_num)
     have hnot : ¬ LinearAbscissaLawAt Z' C := by
       unfold LinearAbscissaLawAt
       rw [hΘ', hΘinf', not_le]
       linarith
-    exact ⟨Z', (hP Z₀ Z' hag).mp hPZ₀, hinf_bump (1 / 4) n₀ (by norm_num) (by norm_num), hnot⟩
+    exact ⟨Z', (hP Z₀ Z' hag).mp hPZ₀, hinf_bump (1 / 4) n₀ ha4 (by norm_num),
+      hnotZAL_bump (1 / 4) n₀ ha4 (by norm_num), hnot⟩
 
 /-! ### De Bruijn–Newman heat family: existential linear AAL is RH -/
 
@@ -1509,13 +1529,16 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
       linarith
     have hxβ : 0 ≤ x ^ β₁ := Real.rpow_nonneg hx0.le _
     have hlast : 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * W * H := by
-      calc 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * x ^ β₁ * x ^ θ * W := by gcongr
+      calc 16 * x ^ β₁ * (x / H) ^ θ * W
+          ≤ 16 * x ^ β₁ * x ^ θ * W :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hratio (mul_nonneg (by norm_num) hxβ)) hW0
         _ = 16 * W * (x ^ β₁ * x ^ θ) := by ring
-        _ ≤ 16 * W * H := by gcongr
+        _ ≤ 16 * W * H := mul_le_mul_of_nonneg_left hβθ (mul_nonneg (by norm_num) hW0)
     have hc : (top.card : ℝ) * (2 * H) = 2 * top.card * H := by ring
     rw [hc]
     dsimp [H] at hH1 hlast ⊢
-    nlinarith [mul_nonneg hlog (sub_nonneg.mpr hH1)]
+    nlinarith [mul_nonneg hlog (sub_nonneg.mpr hH1), hW0]
 
 /-- **`zetaAsymptoticAbscissa` is the finite-rank Chebyshev error exponent.** The asymptotic zero
 abscissa `Θ_∞` equals the infimum of exponents `σ ≥ ½` for which `ψ(x) − x` is `O(x^σ)` modulo a

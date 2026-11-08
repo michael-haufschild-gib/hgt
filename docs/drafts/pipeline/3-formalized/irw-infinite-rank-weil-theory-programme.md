@@ -35,12 +35,13 @@ Folder `formal/GaloisForLFunctions/InfiniteRankWeilTheory/`, umbrella `InfiniteR
 | TheCrudeStepAndTheCount | count of a ζ tower: positive under RH, positive ⇒ crude bound ⇒ AAL, with ZAL ⇔ RH; damping lossless; continuous levels ⇔ zero-free half-plane; B13 tower forms | Q6, T4, crude step, B13 |
 | PrimeCollisionsHaveCollisionSize | Cauchy–Schwarz cells; prime mean value of order X² up to logs; diagonal bound | T3 for primes |
 | ThePrecisionCostOfForcedVanishing | exponential tail; flatness; δ J! < (r log N)^J N^{2r}; J ≤ e² r log N + log(1/δ) | Q5, T2 |
+| TheInfiniteRankWeilProof | `curveDatum_tfae`, `riemannHypothesis_tfae`, `finiteOffLine_tfae`: the curve proof at finite and infinite rank | main theorem |
 
-## Open core
-Each entry has its strength fixed by a theorem (README §9): the crude step along one tower (⇒ AAL,
+## Reductions (README §9)
+Each classical statement RH reduces to has its strength fixed by a theorem: the crude step along one tower (⇒ AAL,
 with ZAL ⇔ RH); ZAL (tower well-foundedness); B13 (⇔ positive count / thick bounded lag of one tower in
 the finite stratum); the Hardy–Littlewood pair constant (binary); B97 (beyond the auxiliary-function
 route, whose order cap is proved).
 
 ## Log
-- 2026-11-08 — created; 15 modules formalized; card to 3-formalized
+- 2026-11-08 — created; 16 modules formalized; card to 3-formalized

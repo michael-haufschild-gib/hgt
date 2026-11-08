@@ -10,4 +10,4 @@
 | 2 | B13, B112, reflected pairs | Sharp hyperbolic mass cost, positive extremizers at every even bandwidth, and strict unattained floor `2^δ`; reflection forces no uniform excess | [Proof and Lean audit](../3-formalized/reflected-pair-annihilator-hyperbolic-cost.md) |
 | 3 | B13, B112, prescribed heights | Explicit bandwidth-independent mass gap; reflected-pair mass approaches `2^δ` at fixed height `γ` iff `cos(γ log 2)=-1` | [Proof and Lean audit](../3-formalized/fixed-height-annihilator-mass-gap.md) |
 
-Next conjecture: [multiplicity and the hyperbolic mass budget](../0-backlog/annihilator-multiplicity-hyperbolic-budget.md). Unproved and uncounted.
+In progress: [multiplicity and the hyperbolic mass budget](annihilator-multiplicity-hyperbolic-budget.md). Lean audit pending; uncounted.

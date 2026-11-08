@@ -30,7 +30,7 @@ every `h ≥ 0`, finiteness of `{i : ½ + h < Re (ρ i)}` forces `Re (ρ i) ≤ 
   for every `C : ℝ`.
 -/
 
-open Complex Set
+open Complex Filter Topology Set
 open GaloisForLFunctions.ZeroConfigurationGeometry
 
 noncomputable section
@@ -222,7 +222,7 @@ theorem zetaLinearAbscissaLawAt_tfae {C : ℝ} (hC1 : 1 ≤ C) :
           mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le
       _ ≤ max M 0 * Real.exp ((C * (zetaAsymptoticAbscissa - 1 / 2) + ε) * (ν : ℝ) * 1) := by
           refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (le_max_right _ _)
-          have : 0 ≤ ε * (ν : ℝ) := by positivity
+          have : 0 ≤ ε * (ν : ℝ) := mul_nonneg hε.le (Nat.cast_nonneg ν)
           nlinarith
   tfae_have 5 → 6 := by
     rintro ⟨ℓ, hℓ, hlag⟩
@@ -314,7 +314,8 @@ theorem norm_twoScaleCoshModel_le (a : ℝ) (Q : Finset ℂ) :
   set A : ℝ := Real.exp ‖(1 / 2 + a : ℂ)‖ * Real.exp ‖(1 / 2 - a : ℂ)‖ * K ^ (4 * Q.card)
   refine ⟨A, by dsimp [A]; positivity, fun s => ?_⟩
   have hfac : ∀ x : ℂ, ‖x‖ ≤ K → ‖s - x‖ ≤ K * (1 + ‖s‖) := fun x hx => by
-    have := norm_sub_le s x; nlinarith
+    have := norm_sub_le s x
+    nlinarith [norm_nonneg s, hK1]
   have hq : ∀ q ∈ Q, ‖quartet q s‖ ≤ (K * (1 + ‖s‖)) ^ 4 := by
     intro q hqQ
     have hqK : ‖q‖ + 2 ≤ K := by
@@ -467,14 +468,15 @@ open ArithmeticPositiveDuality.IntegerNormOneOff in
 /-- **Positive Euler products with integer norms and linear counting violate linear AAL at every
 slope `C : ℝ`.** -/
 theorem integerNormOneOff_not_linearEventualToGlobal (γ : ℝ) :
-    ∃ q a : ℕ → ℕ, (∀ k, 2 ≤ q k) ∧ ∃ F : ℂ → ℂ,
+    ∃ q a : ℕ → ℕ, (∀ k, 2 ≤ q k) ∧ ∃ F : ℂ → ℂ, ∃ A : ℝ, 0 < A ∧
       (∀ s : ℂ, 1 < s.re →
         HasProd (fun k => (1 - cexp (-(s * Real.log (q k))))⁻¹) (F s) ∧
         LSeriesHasSum (fun n => (a n : ℂ)) s (F s)) ∧
+      Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N, (a n : ℝ)) / N) atTop (𝓝 A) ∧
       ZerosApproachLine (fun s : {s : ℂ // 1 / 2 < s.re ∧ s ≠ 1 ∧ F s = 0} => (s : ℂ)) ∧
       ∀ C : ℝ, ¬ LinearEventualToGlobalAt
         (fun s : {s : ℂ // 1 / 2 < s.re ∧ s ≠ 1 ∧ F s = 0} => (s : ℂ)) C := by
-  obtain ⟨q, a, hq, F, A, -, hF, -, -, hzeros⟩ := exists_integer_norm_linear_count_one_off γ
+  obtain ⟨q, a, hq, F, A, hA, hF, hcnt, -, hzeros⟩ := exists_integer_norm_linear_count_one_off γ
   let ρ : {s : ℂ // 1 / 2 < s.re ∧ s ≠ 1 ∧ F s = 0} → ℂ := fun s => (s : ℂ)
   have hZAL : ZerosApproachLine ρ := by
     intro h _
@@ -482,7 +484,7 @@ theorem integerNormOneOff_not_linearEventualToGlobal (γ : ℝ) :
       Subtype.val_injective.injOn).subset fun s _ => ?_
     have hs : (s : ℂ) ∈ {s : ℂ | 1 / 2 < s.re ∧ s ≠ 1 ∧ F s = 0} := s.2
     rwa [hzeros] at hs
-  refine ⟨q, a, hq, F, hF, hZAL, fun C hL => ?_⟩
+  refine ⟨q, a, hq, F, A, hA, hF, hcnt, hZAL, fun C hL => ?_⟩
   have hR := rightRH_of_zerosApproachLine_of_linearEventualToGlobalAt ρ hZAL hL
   have hmem : (3 / 5 : ℂ) + (γ : ℂ) * I ∈ {s : ℂ | 1 / 2 < s.re ∧ s ≠ 1 ∧ F s = 0} := by
     rw [hzeros]; exact Set.mem_insert _ _

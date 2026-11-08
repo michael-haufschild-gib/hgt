@@ -44,7 +44,7 @@ private theorem norm_eval_le_mass {P : MvPolynomial (Fin 2) ℝ≥0}
       simpa only [norm_one] using norm_add_le (1 : ℂ) _
     _ ≤ 1 + ∑ d ∈ P.support.erase 0,
         ‖(((P.coeff d : ℝ≥0) : ℝ) : ℂ) * Complex.exp (-(monomialLog d : ℂ) * s)‖ :=
-      add_le_add_left (norm_sum_le _ _) 1
+      add_le_add (le_refl 1) (norm_sum_le _ _)
     _ = 1 + dirichletTailMass P s.re := by
       congr 1
       unfold dirichletTailMass
@@ -67,6 +67,14 @@ private theorem eval_real_ne_zero {P : MvPolynomial (Fin 2) ℝ≥0}
   apply norm_pos_iff.mp
   rw [norm_eval_real hP]
   linarith only [dirichletTailMass_nonneg P x]
+
+private theorem zero_im_ne_zero {P : MvPolynomial (Fin 2) ℝ≥0}
+    (hP : MvPolynomial.constantCoeff P = 1) {ρ : ℂ} (hz : dirichletEval ρ P = 0) :
+    ρ.im ≠ 0 := by
+  intro him
+  have he : ρ = (ρ.re : ℂ) :=
+    Complex.ext rfl (by simpa only [Complex.ofReal_im] using him)
+  exact eval_real_ne_zero hP ρ.re (he ▸ hz)
 
 private def halfPlaneAnnihilator (P : MvPolynomial (Fin 2) ℝ≥0) (σ : ℝ) (s : ℂ) : ℂ :=
   dirichletEval (s + ((σ - 1 / 2 : ℝ) : ℂ)) P
@@ -284,11 +292,12 @@ private theorem greenCost_conj (σ x : ℝ) (ρ : ℂ) :
 because a positive Dirichlet polynomial has the conjugate zero as well. -/
 theorem conjugate_zero_mass_cost {P : MvPolynomial (Fin 2) ℝ≥0}
     (hP : MvPolynomial.constantCoeff P = 1) {σ x : ℝ} (hx : σ < x) {ρ : ℂ}
-    (hρ : σ < ρ.re) (hz : dirichletEval ρ P = 0) (hγ : ρ.im ≠ 0) :
+    (hρ : σ < ρ.re) (hz : dirichletEval ρ P = 0) :
     2 * (analyticOrderNatAt (fun s => dirichletEval s P) ρ : ℝ) *
       annihilatorGreenCost σ x ρ ≤
         Real.log (1 + dirichletTailMass P σ) - Real.log (1 + dirichletTailMass P x) := by
   classical
+  have hγ := zero_im_ne_zero hP hz
   let z : AnnihilatorZeroAbove P σ := ⟨ρ, hz, hρ⟩
   let zc : AnnihilatorZeroAbove P σ := ⟨conj ρ, by rw [eval_conj, hz, map_zero], by
     simpa only [Complex.conj_re] using hρ⟩
@@ -325,17 +334,17 @@ def multiplicityMassBase (σ : ℝ) (ρ : ℂ) : ℝ :=
   (Real.sqrt ((ρ.re - σ) ^ 2 + ρ.im ^ 2) + (ρ.re - σ)) /
     (Real.sqrt ((ρ.re - σ) ^ 2 + ρ.im ^ 2) - (ρ.re - σ))
 
-private theorem radius_gt_depth {σ : ℝ} {ρ : ℂ} (hρ : σ < ρ.re) (hγ : ρ.im ≠ 0) :
+private theorem radius_gt_depth {σ : ℝ} {ρ : ℂ} (hγ : ρ.im ≠ 0) :
     ρ.re - σ < Real.sqrt ((ρ.re - σ) ^ 2 + ρ.im ^ 2) := by
   have hg : 0 < ρ.im ^ 2 := sq_pos_of_ne_zero hγ
   have hs := Real.sq_sqrt (add_nonneg (sq_nonneg (ρ.re - σ)) (sq_nonneg ρ.im))
   have hn := Real.sqrt_nonneg ((ρ.re - σ) ^ 2 + ρ.im ^ 2)
-  nlinarith only [hg, hs, hn, hρ]
+  nlinarith only [hg, hs, hn]
 
 theorem multiplicityMassBase_gt_one {σ : ℝ} {ρ : ℂ}
     (hρ : σ < ρ.re) (hγ : ρ.im ≠ 0) : 1 < multiplicityMassBase σ ρ := by
   unfold multiplicityMassBase
-  apply (one_lt_div (sub_pos.mpr (radius_gt_depth hρ hγ))).mpr
+  apply (one_lt_div (sub_pos.mpr (radius_gt_depth (σ := σ) hγ))).mpr
   linarith only [hρ]
 
 private theorem two_green_eq_log_ratio (σ x : ℝ) (ρ : ℂ) :
@@ -363,7 +372,7 @@ private theorem balanced_green_cost {σ : ℝ} {ρ : ℂ} (hρ : σ < ρ.re) (h�
         Real.log (multiplicityMassBase σ ρ) := by
   let δ := ρ.re - σ
   let R := Real.sqrt (δ ^ 2 + ρ.im ^ 2)
-  have hR : δ < R := radius_gt_depth hρ hγ
+  have hR : δ < R := radius_gt_depth (σ := σ) hγ
   have hsq : R ^ 2 = δ ^ 2 + ρ.im ^ 2 :=
     Real.sq_sqrt (add_nonneg (sq_nonneg δ) (sq_nonneg ρ.im))
   have hγsq : 0 < ρ.im ^ 2 := sq_pos_of_ne_zero hγ
@@ -385,7 +394,7 @@ theorem real_green_cost_le_balanced {σ : ℝ} {ρ : ℂ}
   let t := x - σ
   let R := Real.sqrt (δ ^ 2 + ρ.im ^ 2)
   have hδ : 0 < δ := sub_pos.mpr hρ
-  have hR : δ < R := radius_gt_depth hρ hγ
+  have hR : δ < R := radius_gt_depth (σ := σ) hγ
   have hsq : R ^ 2 = δ ^ 2 + ρ.im ^ 2 :=
     Real.sq_sqrt (add_nonneg (sq_nonneg δ) (sq_nonneg ρ.im))
   have hg : 0 < ρ.im ^ 2 := sq_pos_of_ne_zero hγ
@@ -406,15 +415,16 @@ theorem real_green_cost_le_balanced {σ : ℝ} {ρ : ℂ}
 strictly right of the measurement line, without a frequency cutoff. -/
 theorem zero_multiplicity_forces_exponential_mass {P : MvPolynomial (Fin 2) ℝ≥0}
     (hP : MvPolynomial.constantCoeff P = 1) {σ : ℝ} {ρ : ℂ}
-    (hρ : σ < ρ.re) (hz : dirichletEval ρ P = 0) (hγ : ρ.im ≠ 0) (n : ℕ)
+    (hρ : σ < ρ.re) (hz : dirichletEval ρ P = 0) (n : ℕ)
     (hn : (n : ℕ∞) ≤ analyticOrderAt (fun s => dirichletEval s P) ρ) :
     multiplicityMassBase σ ρ ^ n ≤ 1 + dirichletTailMass P σ := by
+  have hγ := zero_im_ne_zero hP hz
   let x := σ + Real.sqrt ((ρ.re - σ) ^ 2 + ρ.im ^ 2)
   have hx : σ < x := by
-    have hr := radius_gt_depth hρ hγ
+    have hr := radius_gt_depth (σ := σ) hγ
     dsimp only [x]
     linarith only [hr, hρ]
-  have hb := conjugate_zero_mass_cost hP hx hρ hz hγ
+  have hb := conjugate_zero_mass_cost hP hx hρ hz
   have hm : (n : ℝ) ≤ (analyticOrderNatAt (fun s => dirichletEval s P) ρ : ℝ) := by
     have h := ENat.toNat_le_toNat hn (eval_order_ne_top hP ρ)
     rw [ENat.toNat_coe] at h

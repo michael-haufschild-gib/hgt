@@ -86,7 +86,8 @@ theorem zetaZeroWidth_le_of_hasseWeil_of_powGaps {θ : ℝ} (hθ : 1 / 2 ≤ θ)
     have hsmall : 2 * M * Real.exp (θ * t) ≤ Real.exp t := by
       have h1 : Real.log (2 * M + 1) ≤ (1 - θ) * t := by
         have := (le_max_right _ _).trans ht
-        rwa [div_le_iff₀ (by linarith), mul_comm] at this
+        rw [div_le_iff₀ (by linarith)] at this
+        linarith
       have h2 : 2 * M + 1 ≤ Real.exp ((1 - θ) * t) := by
         rw [← Real.exp_log (by positivity : (0 : ℝ) < 2 * M + 1)]
         exact Real.exp_le_exp.mpr h1
