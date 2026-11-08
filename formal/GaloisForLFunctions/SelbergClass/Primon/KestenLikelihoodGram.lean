@@ -150,7 +150,6 @@ private theorem primeCayley_kernel (p q : Nat.Primes) :
     nlinarith only [h, hp]
   rw [primeCayley_sum]
   field_simp [hp1, hq1, hd]
-  ring
 
 private theorem primeCayley_diagonal (p : Nat.Primes) :
     (2 / ((p : ℝ) - 1)) * ((p : ℝ) - 1)⁻¹ * (2 * primeCayley p)⁻¹ =
@@ -260,11 +259,3 @@ theorem integral_kestenLikelihood_combination_sq_eq_zero_iff {n : ℕ}
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenLikelihoodGram_apply
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenLikelihoodGram_quadratic_form
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenLikelihoodGram_posSemidef
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenLikelihoodGram
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenLikelihoodGram_pos
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenLikelihoodGram_posDef
-#print axioms GaloisForLFunctions.SelbergClass.Primon.integral_kestenLikelihood_combination_sq_eq_zero_iff

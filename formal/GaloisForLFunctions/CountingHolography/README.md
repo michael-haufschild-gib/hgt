@@ -1,6 +1,6 @@
 # Counting Holography (CTH)
 
-Namespace `GaloisForLFunctions.CountingHolography`; umbrella `CountingHolography.lean`; 18 modules.
+Namespace `GaloisForLFunctions.CountingHolography`; umbrella `CountingHolography.lean`; 19 modules.
 
 ## 1. Motivation
 
@@ -46,6 +46,7 @@ and the second half is RH.
 | Covariant count | `IsCovariant` | `K(t x − y, q x) = q K(x, y)`: the delay `π(y − xπ) = qx − (tx − y)π` on probes |
 | Rosati form | `ACP.rosatiDeg`, `AET.intRosatiDeg` | `Tr(P(F) P(F)′) = Σ P(α_i) P(q/α_i)` on the probe ring `ℤ[F]`: the height of a Jacobian |
 | True hyperelliptic curve | `AET.hyperellipticDatum` | the curve datum of `y² = f(x)`, `f` squarefree of odd degree, with its actual point counts |
+| Every hyperelliptic curve | `pointsAtInfinity`, `lRoots`, `rootProd` | `y² = f(x)`, `f` squarefree of any degree; one point at infinity in odd degree, `1 + χ(lc f)` in even degree; the reciprocal roots of `χ(Res(·, f))` |
 | Bielliptic genus-two curve | `bielliptic_countLaw`, `mirror_coprime` | `y² = h(x²)`, `h = X³ + aX² + bX + c` separable, `c ≠ 0`; its quotients `y² = h(u)` and `y² = m(v)`, `m = X³ + bX² + acX + c²` |
 | Echo state of a throat | `throatEcho` | the companion of `throatPoly`, modes multiplying to `(b − 1) q` |
 | Oscillator bank | `bankDelay`, `bankKrein`, `kreinMatrix`, `wronskianMatrix` | `g` oscillators `z² − t_k z + q` on pairs of echoes; Krein squares and the Wronskian |
@@ -154,27 +155,33 @@ and the second half is RH.
     (`eq_zero_of_additive_countLaw`); a count law constant along a line has a radical
     (`countLaw_through_linear_degenerate`).
 
+17. **Units of nonsquare norm.** For monic squarefree `g`, `Res(g, ·)` is the norm of `F[X]/(g)`
+    (`algebraMap_resultant`); a unit `1 + (g/P) w` takes a nonsquare value at a root of an irreducible
+    factor `P` (`exists_nonsquare_unit`), and twisting by it kills the high degree sums
+    (`degSumW_eq_zero_of_squarefree`) and gives the trivial root of even degree
+    (`chiC_leadingCoeff_mem_lRoots`).
+
 **Over `ℤ`.**
 
-17. **Tate.** A nonnegative function with quadratic growth `Q` along a ray forces `Q ≥ 0`
+18. **Tate.** A nonnegative function with quadratic growth `Q` along a ray forces `Q ≥ 0`
     (`nonneg_of_tateLimit`); the floor of a nonnegative form has that growth (`tendsto_floor_div_sq`).
-18. **Ratios.** The Gram entry of the atoms `m`, `n` is the spline correlation at `log(m/n)`
+19. **Ratios.** The Gram entry of the atoms `m`, `n` is the spline correlation at `log(m/n)`
     (`atomGram_eq_ratio`), so dilation by `p` preserves the form (`hermQuad_extend`, `integerProbe_dilate`).
 
 **The horizon.**
 
-19. **Coprime windows.** Every window of `c` consecutive integers contains `φ(c)` integers prime to `c`
+20. **Coprime windows.** Every window of `c` consecutive integers contains `φ(c)` integers prime to `c`
     (`card_coprime_Ico`); every point of the line lies in exactly `φ(c)` intervals `(d, d + c]` with `d`
     prime to `c` (`sum_indicator_coprime`).
-20. **Unfolding.** On the segment `0 ≤ x ≤ 1` of a horocycle the pseudo-Eisenstein series is a finite sum
+21. **Unfolding.** On the segment `0 ≤ x ≤ 1` of a horocycle the pseudo-Eisenstein series is a finite sum
     over a box of rows (`pseudoEisenstein_horoPoint`); the rows of denominator `c` unfold to `φ(c)/c ∫ g`
     (`integral_sum_coprime`).
-21. **Order.** The Farey kernel depends on `c² y` only (`fareyKernel_eq_weight`): the horocycle at height
+22. **Order.** The Farey kernel depends on `c² y` only (`fareyKernel_eq_weight`): the horocycle at height
     `C⁻²` reads the Farey points of order `C` with weight `w(c/C)` (`fareyCount_eq_order`).
-22. **Three circles right of a zero-free half-plane.** On discs about `3 + it` that avoid the pole and
+23. **Three circles right of a zero-free half-plane.** On discs about `3 + it` that avoid the pole and
     stay right of `σ₀`, `ζ` has a logarithm, and the two-radius bound gives `|ζ| ≥ exp(−B (K log t)^θ)`,
     `θ < 1`; so a zero-free half-plane is a polynomial lower bound (`zeroFree_iff_zeta_lower_bound`).
-23. **Möbius and the circle.** `φ = μ * id` turns the horoball profile of a sharp horoball into a Möbius
+24. **Möbius and the circle.** `φ = μ * id` turns the horoball profile of a sharp horoball into a Möbius
     sum of quarter-disc column sums (`horoballSum_eq_moebius`); each is within its radius of its area by
     sum–integral comparison for a decreasing profile (`quarterDisc_bounds`), and `Σ μ(d)/d²` is within
     `1/D` of `6/π²` (`RHTower.abs_sum_moebius_div_sq_sub_le`).
@@ -207,8 +214,11 @@ question is RH, in both directions, and the three natural candidates are refuted
   horizon's natural counts; the horizon remains a language until a quadratic count exists.
 
 **A32: Manin at higher genus through Jacobians; first case genus two.** At every genus the tower count law
-is Hasse–Weil (`towerCountLaw_iff_unitary`) and holds on every odd-degree hyperelliptic curve
-(`hyperelliptic_countLaw`), with Stepanov's polynomial as producer. At genus two heights produce it alone on
+is Hasse–Weil (`towerCountLaw_iff_unitary`). It holds on every hyperelliptic curve of every genus, of odd
+or even degree, at every level (`hyperelliptic_countLaw_every`): the even-degree Riemann hypothesis is
+proved here, by a unit of nonsquare norm, the trivial root at infinity and descent from the splitting field
+(`riemannHypothesis_evenHyperelliptic`). So every genus-two curve `y² = f(x)`, `deg f ∈ {5, 6}`, whatever
+its Jacobian, has the count law (`genusTwo_countLaw`). At genus two heights produce it alone on
 every bielliptic curve `y² = h(x²)`: the Jacobian is isogenous to the product of the quotients
 `y² = h(u)` and `y² = m(v)`, the sum of Manin's two height counts obeys the parallelogram law with the
 channel numbers `2`, `2q`, `N_C + q + 1` (`bielliptic_countLaw`), and Hasse–Weil `(q + 1 − N_C)² ≤ 16q`
@@ -315,6 +325,7 @@ The same holds for every non-arithmetic Hecke group. For `G_q`, `q ≥ 3`, the i
 | The count law of a true curve at every genus | `hyperelliptic_countLaw`, `splitHyperelliptic_countLaw` | unconditional, odd-degree hyperelliptic curves |
 | The Rosati height is the Born rule | `rosatiDeg_delay`, `rosatiDeg_twoTerm`, `rosati_tfae`, `hyperelliptic_naiveHeight` | unconditional |
 | The Jacobian count at genus two | `mirror_coprime`, `card_points_bielliptic`, `bielliptic_countLaw`, `bielliptic_weil`, `bielliptic_weil_tower` | unconditional, bielliptic curves, odd characteristic |
+| The count law of every hyperelliptic curve | `degSumW_eq_zero_of_squarefree`, `chiC_leadingCoeff_mem_lRoots`, `riemannHypothesis_evenHyperelliptic`, `abs_card_points_sub_le_hyperelliptic`, `hyperelliptic_countLaw_every`, `genusTwo_countLaw` | unconditional, every degree, odd characteristic |
 | The golden fake fails through the count | `golden_counts_without_law` | unconditional |
 | The genus-two rung | `genusTwo_firstLevel_iff`, `genusTwo_tower_iff`, `firstCountLaw_does_not_force_damping` | unconditional, `q ≥ 2` |
 | The two halves of a Born rule | `det_sq_of_bornRule`, `partner_of_bornRule`, `normSq_eq_of_bornRule`, `bornRule_pow` | unconditional, every delay |
@@ -345,7 +356,8 @@ The same holds for every non-arithmetic Hecke group. For `G_q`, `q ≥ 3`, the i
   law and damping are one condition (`TheRosatiHeightIsTheBornRule`); on the graph side the count law selects
   the equal-weight member of the family of Born rules (`genusForm_eq_kreinSum`). True curves of every genus
   satisfy all of it, with Stepanov's auxiliary polynomial as producer
-  (`TheCountLawOfATrueCurveAtEveryGenus`). At genus two heights are the producer on bielliptic curves: the
+  (`TheCountLawOfATrueCurveAtEveryGenus`), and every hyperelliptic curve of either parity satisfies the
+  count law (`TheCountLawOfEveryHyperellipticCurve`). At genus two heights are the producer on bielliptic curves: the
   height of the Jacobian is the sum of Manin's heights on the two factors
   (`TheJacobianCountOfABiellipticGenusTwoCurve`).
 - **A boundary operator algebra whose GNS form on sources is Krein**: the probe algebra `R[π]/(π² − tπ + q)`
@@ -428,7 +440,7 @@ calibration at every genus, and the precise shape of the missing object.
 
 | | Born rule (quadratic, covariant) | count (nonnegative) |
 |---|---|---|
-| true curve, every genus | yes: the Rosati form | yes (`hyperelliptic_countLaw`; genus one by Manin's height, ASH) |
+| true curve, every genus | yes: the Rosati form | yes (`hyperelliptic_countLaw_every` for every hyperelliptic curve; genus one by Manin's height, ASH) |
 | bielliptic genus-two curve | yes: the sum of two Rosati forms | yes, from heights alone (`bielliptic_countLaw`) |
 | fake | yes (`𝒬`) | `|𝒬|` is a count, not quadratic |
 | throat, `b ≠ 2` | none | — |
@@ -443,8 +455,10 @@ calibration at every genus, and the precise shape of the missing object.
 - **Recover Hasse from channels at all probes**: ASH (`hasse_of_countLaw`).
 - **Hasse–Weil at every genus (A32)**: the count law at every level is Hasse–Weil (`towerCountLaw_iff_unitary`),
   any crude count self-improves to it (`towerCountLaw_iff_crude_bound`), on every odd-degree hyperelliptic
-  curve the channel numbers extend to the count law at every level (`hyperelliptic_countLaw`), and on every
-  bielliptic genus-two curve heights of the Jacobian produce it (`bielliptic_countLaw`, `bielliptic_weil_tower`).
+  curve the channel numbers extend to the count law at every level (`hyperelliptic_countLaw`), so do they on
+  every hyperelliptic curve of even degree, hence on every genus-two curve (`hyperelliptic_countLaw_every`,
+  `genusTwo_countLaw`), and on every bielliptic genus-two curve heights of the Jacobian produce it
+  (`bielliptic_countLaw`, `bielliptic_weil_tower`).
 - **Fail on fakes through the count, not through dynamics**: `golden_counts_without_law`,
   `hecke_conservation_without_law`, `exists_probe_neg_of_overdamped`, `offCircle_quadruple`.
 - **Supply the partner law globally**: `partner_of_bornRule`, `throat_no_bornRule`.
@@ -479,9 +493,9 @@ are the open problems those answers expose; the first is RH itself, which §2.10
 programme ("a language until a count exists").
 
 1. A quadratic count over `ℤ` with Tate limit `Q`, defined without `Q`. This is RH.
-2. Heights on a simple genus-two Jacobian: the count law of a genus-two curve whose Jacobian is simple, from
-   its height pairing. The bielliptic case is `bielliptic_countLaw`; curves with a rational Weierstrass point
-   are covered by Stepanov's producer (`hyperelliptic_countLaw`).
+2. A height producer on a simple genus-two Jacobian. Every genus-two curve has the count law
+   (`genusTwo_countLaw`, produced by counting); on bielliptic curves heights produce it
+   (`bielliptic_countLaw`). Open: the height pairing of a simple Jacobian over `𝔽_q(T)` as a second producer.
 3. The Farey reading of a non-arithmetic Hecke group: its cusp images are not Farey fractions, and the
    horocycle mean of a source is a sum over the cusps of `G_q` with no totient weights.
 4. The RH rate for sharp shells: whether `Σ_{d ≤ X} μ(d) E(X/d) = O(X^{1/2+ε})` for the quarter-disc

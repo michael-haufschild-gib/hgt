@@ -33,6 +33,17 @@ does not fulfill these requirements.
   the full root-of-unity energy and the least common multiple of conductors;
   obtain a conductor-uniform modulus for the spacing-regulated diagonal and
   its quadratic form on arbitrary finite supports.
+- [Mixed spacing convergence](../3-formalized/hhac-weighted-mixed-spacing-convergence.md):
+  exact primitive-energy divisor formula, uniform power control of the full mixed
+  error on finite positively weighted unit balls, and absolute convergence of
+  the error for infinite probes of finite weighted square mass.
+- [Weighted torsion completion](../3-formalized/hhac-weighted-torsion-form-completion.md):
+  actual symmetric forms on an infinite-rank Hilbert carrier, absolute pair
+  series, raw positivity, exact scalar counterterm and operator-norm convergence
+  with a power rate for every positive conductor weight.
+- [Mixed spacing prime row](../5-failed/hhac-mixed-spacing-prime-row.md):
+  no uniform unweighted ℓ² bound; square summability holds exactly for positive
+  conductor weights, and the weighted squared error tends to zero.
 - [Isolated-prime obstruction](../5-failed/hhac-isolated-prime-fixed-points.md):
   literal square-root-sized fixed sets are impossible for identity-homotopic
   maps. The positive survivor is the exact component classification, connected
@@ -57,7 +68,7 @@ does not fulfill these requirements.
   actual nullhomotopy after tripling height, with a sharp augmented obstruction
   to doubling over the integers.
 - [Sharp weighted torsion exponent](../3-formalized/esg-prime-weighted-torsion-exponent.md):
-  exact boundary saturation, actual homology killed by two, and a nonzero
+  exact boundary saturation, torsion in actual homology killed by two, and a nonzero
   order-two class at height two.
 - [Integral weighted cycle coordinates](../3-formalized/esg-prime-weighted-cycle-coordinates.md):
   height-preserving inverse maps and a natural integral basis on bounded odd faces.
@@ -65,8 +76,17 @@ does not fulfill these requirements.
   exact augmented relations from low odd chains, doubled half-height chains,
   and half-height faces containing three; joint free/parity projection is
   surjective with exactly that kernel.
-- [Weighted torsion classification](esg-prime-weighted-torsion-classification.md):
-  proposed integral persistence with explicit free-to-torsion transition maps.
+- [Weighted torsion classification](../3-formalized/esg-prime-weighted-torsion-classification.md):
+  actual integral arithmetic persistence with free-to-parity reduction;
+  the canonical free quotient has no natural section already in empty degree.
+
+- [Two-prime normal form](../3-formalized/esg-two-prime-weighted-normal-form.md): the actual
+  weighted chain and homology persistence over every commutative ring is
+  naturally isomorphic to the two-prime differential; the comparison preserves
+  height and canonical integral coefficient extension. Actual core/tag block
+  coordinates have row `(2,3)` and column `(-3,2)`, naturally in height.
+  [Arbitrary-coefficient homology](esg-all-coefficient-weighted-homology.md)
+  remains in progress.
 
 The programme definitions are
 [EffectiveScalingGeometry/README.md](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md)

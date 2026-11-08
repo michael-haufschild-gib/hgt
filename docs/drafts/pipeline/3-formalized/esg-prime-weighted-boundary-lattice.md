@@ -91,5 +91,7 @@ All pass direct `lake --old env lean` audits; printed capstones use exactly
 The integral cycle equivalence is essential: arbitrary coefficient rings
 with two-torsion need not have the same cycle coordinates. Weighted homology
 itself is classical; this theorem identifies the exact prime-product boundary
-lattice. Transport of this coefficient functor to actual augmented homology remains
-the [classification target](../1-in-progress/esg-prime-weighted-torsion-classification.md).
+lattice. [PrimeWeightedAugmentedHomology.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedAugmentedHomology.lean)
+identifies this functor with actual augmented homology. The complete
+arithmetic statement and nonsplitting belong to the
+[classification theorem](esg-prime-weighted-torsion-classification.md).

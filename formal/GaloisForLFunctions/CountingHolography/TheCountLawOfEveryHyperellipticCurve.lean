@@ -6,20 +6,35 @@ import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 # The count law of every hyperelliptic curve
 
 The corpus proves the Riemann hypothesis for `y² = f(x)` with `f` squarefree of **odd** degree
-(`RHTower.Hyperelliptic.riemannHypothesis_oddHyperelliptic`). This module removes the parity, so the
-count law holds on every hyperelliptic curve, in particular on every genus-two curve `y² = f(x)`,
-`deg f ∈ {5, 6}`, whatever its Jacobian.
+(`RHTower.Hyperelliptic.riemannHypothesis_oddHyperelliptic`). This module removes the parity. So the
+count law holds on every hyperelliptic curve of every genus, and on every genus-two curve
+`y² = f(x)`, `deg f ∈ {5, 6}`, whatever its Jacobian.
 
-* **Norms of residues** (`algebraMap_resultant`): for monic `g`, `Res(g, r) = Π_{g(α)=0} r(α)` at
-  every formal degree, so it only sees `r mod g` and is multiplicative.
-* **A nonsquare norm** (`exists_nonsquare_unit`): for `g` squarefree of positive degree there is a
-  unit `v mod g` with `χ(Res(g, v)) = −1`: at an irreducible factor `P`, `v = 1 + (g/P) w` with
-  `v(α) = y₀` a nonsquare of `F[α]`, and `χ_F(N y₀) = χ_{F[α]}(y₀)`.
-* **Vanishing at every degree** (`degSumW_eq_zero_of_squarefree`): the twist `h ↦ h − h mod g +
-  v h mod g` permutes the monic polynomials of degree `k ≥ deg g` and multiplies `χ(Res(h, f))` by
-  `−1`, so the L-function of `χ(Res(·, f))` is a polynomial of degree `< deg f`.
+* **Norms of residues** (`algebraMap_resultant`): for monic `g`, `Res(g, r) = Π_{g(α)=0} r(α)` at every
+  formal degree, so it only sees `r mod g` and is multiplicative (`resultant_mul_monic`).
+* **A unit of nonsquare norm** (`exists_nonsquare_unit`): for `g` squarefree of positive degree there is
+  a unit `v mod g` with `χ(Res(g, v)) = −1`. At an irreducible factor `P`, `v = 1 + (g/P) w` takes a
+  nonsquare value `y₀` of `F[α]`, and `χ_F(N y₀) = χ_{F[α]}(y₀)`.
+* **Vanishing at every degree** (`degSumW_eq_zero_of_squarefree`): the twist `h ↦ h − h mod g + v h mod g`
+  permutes the monic polynomials of degree `k ≥ deg f` and multiplies `χ(Res(h, f))` by `−1`. So the
+  L-polynomial has degree `deg f − 1` for every squarefree `f`, and the corpus Newton chain applies
+  (`extHyp_eq_neg_sum_pow_of_squarefree`).
+* **The trivial root** (`chiC_leadingCoeff_mem_lRoots`): in even degree `χ(lc f)` is a reciprocal root.
+  The residues mod `g = f/lc` are permuted by the unit of nonsquare norm, and the nonzero ones are the
+  `a h`, `h` monic of degree `< deg f` (`sum_monic_lt_resultant_eq_zero`). This root comes from the two
+  points at infinity.
+* **The even split curve through its odd model** (`extHyp_even_split`): moving a root `c₀` to infinity
+  turns `c Π_{s ∈ S}(X − s)` into the odd-degree `G = Π_{s ≠ c₀}(X − (s − c₀)⁻¹)`.
+* **The Riemann hypothesis in even degree** (`riemannHypothesis_evenHyperelliptic`): the reciprocal roots
+  are `χ(lc f)` and `deg f − 2` roots of modulus `√q`, by descent from the splitting field. Hence the
+  Hasse–Weil bound over every extension (`abs_card_points_sub_le_evenHyperelliptic`,
+  `abs_card_points_sub_le_hyperelliptic`).
+* **The count law** (`hyperelliptic_countLaw_every`, `genusTwo_countLaw`): the channel numbers `g`,
+  `g|E|`, `N_E + (g − 1)(|E| + 1)` extend to a count law at every level.
+
+The sign is still produced by counting alone: Stepanov's auxiliary polynomial on the odd model and
+`|τ|² = q`.
 -/
-
 open Polynomial Finset
 
 noncomputable section
@@ -821,6 +836,8 @@ end Descent
 
 section CountLaw
 
+open ArithmeticScatteringHolography
+
 variable [Fintype F] {f : F[X]}
 
 /-- The points at infinity of the smooth model of `y² = f(x)` over `E`: one in odd degree,
@@ -864,7 +881,7 @@ theorem hyperelliptic_countLaw_every (hF : ringChar F ≠ 2) (hsq : Squarefree f
       (K 1 1 : ℤ) = (((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) +
         pointsAtInfinity f E) + (g - 1) * (Fintype.card E + 1) := by
   set N : ℤ := ((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) + pointsAtInfinity f E
-  set Q : ℤ := Fintype.card E
+  set Q : ℤ := (Fintype.card E : ℤ)
   have hb := abs_card_points_sub_le_hyperelliptic hF hsq hdeg E
   -- `(Q + 1 − N)² ≤ 4g²Q`
   have ha : (Q + 1 - N) ^ 2 ≤ 4 * (g : ℤ) ^ 2 * Q := by
@@ -902,3 +919,4 @@ end CountLaw
 end GaloisForLFunctions.CountingHolography
 
 end
+

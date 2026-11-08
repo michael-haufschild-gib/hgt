@@ -19,12 +19,30 @@ Here `B_YZ` is the derivative at `u=1/2` of
 coarse rate. At `σ₀=1/2`, it is a fixed-source RH criterion, not a proof of
 the RH-strength rate.
 
-## Unconditional boundary candidate
+The proposed equivalence also classifies the optimal exponent: if
+`Θ=sup{Re ρ: ξ(ρ)=0}`, then every positive target pair should have
+`sup{α: R_YZ(y)=O(y^α)}=1−Θ/2`. Thus target averaging preserves the
+entire zero-abscissa invariant, not only the RH threshold. This corollary
+still depends on the unproved sufficiency direction.
+
+An [unconditional corollary](../3-formalized/ads3-narain-average-pole-decay-boundary.md) needs no sufficiency theorem: Hardy's
+critical-line zero and the proved fixed-average pole obstruction exclude
+every `O(y^α)` remainder with `α>3/4`, for any logarithmic and constant
+subtraction. `RHTower.XiSeamSupremum.exists_xi_zero_on_line` supplies the
+actual zero. The Narain specialization is formalized as
+`narainScalarHeatAverage_no_better_than_three_quarters`.
+The [endpoint amplitude candidate](ads3-narain-pole-endpoint-amplitude.md)
+strengthens this to failure of little-o at the exact pole exponent and
+a lower amplitude carrying the pole multiplicity. It also predicts that
+an exact `O(y^(3/4))` bound would force simplicity as well as RH; the
+epsilon-loss criterion above makes no simplicity claim.
+
+## Formalized unconditional boundary
 
 The stronger endpoint
 `yA_YZ(y)+(3/π)log y−B_YZ = o(y^(1/2))`
-is developed in [the boundary-rate card](../1-in-progress/ads3-narain-average-boundary-rate.md).
-It remains a candidate until the actual-source contour proof is formalized.
+is [formalized](../3-formalized/ads3-narain-average-boundary-rate.md), including
+actual-source Mellin inversion, boundary integrability and vanishing horizontal edges.
 
 ## Proof obligations
 
@@ -42,8 +60,13 @@ xi bound. The product supplies twice that decay. The existing
 exponential. The elementary denominators are bounded away from zero at
 large imaginary height. This yields vertical integrability and vanishing
 horizontal edges. Remove the apparent central singularity at `u=0`,
-then shift past the sole double pole at `s=1`, whose weighted residue is
-`y⁻¹[−(3/π)log y+B_YZ]`.
+then use the proved source identity on `Re s=1/2`. Moving that boundary
+to any `a` with `σ₀/2<a<1/2` crosses no pole: the main pole at `s=1`
+has already been subtracted. Absolute integrability on `Re s=a` and
+Riemann–Lebesgue would give the stronger fixed-line conclusion
+`R_YZ(y)=o(y^(1−a))`. This contour argument belongs inside the
+zero-free-to-rate implication; it supplies no unconditional zero-free
+half-plane.
 
 Corpus inputs include `mellinInv_mellin_eq`,
 `HTGeometry.FinitePoleVerticalContourShift`,
@@ -51,14 +74,15 @@ Corpus inputs include `mellinInv_mellin_eq`,
 `BlackHoleRingdown/ThePolynomialGrowthOfTheEisensteinFunction.lean`, and
 the public `zeroFree_iff_zeta_lower_bound` in
 `CountingHolography/ThermalizationFasterThanTheSquareRootIsAZeroFreeStrip.lean`.
-For `σ₀=1`, use `RHTower.norm_inv_riemannZeta_le_of_le_re`:
-`‖ζ(s)⁻¹‖≤1+1/(a−1)` on `Re s≥a>1`. The reciprocal-zeta inputs'
-kernel audits remain open. The [central removal and exact weighted residue](../3-formalized/ads3-narain-average-principal-part.md)
-are formalized for this specific mean. Contour bounds remain to be proved;
-none are extra premises of the claimed equivalence.
+For `σ₀=1`, the already proved `o(y^(1/2))` boundary estimate implies
+every required epsilon-loss bound directly; no further contour is needed. The reciprocal-zeta inputs'
+transitive axiom audits contain only the standard three axioms. The [central removal and exact weighted residue](../3-formalized/ads3-narain-average-principal-part.md)
+are formalized for this specific mean. The contour at `Re s=1/2` is proved;
+transport to every zero-free interior line remains open. None of these
+bounds is an extra premise of the claimed equivalence.
 
 ## Gates
 
-- [ ] 0 → 1: complete source and pole-obstruction modules; audit contour inputs.
+- [ ] 0 → 1: transport the audited reciprocal-zeta bound to each zero-free interior line.
 - [ ] 1 → 2: dependency-closed paper proof of both directions.
 - [ ] 2 → 3: Lean formalization and transitive axiom audit.

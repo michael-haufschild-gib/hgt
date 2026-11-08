@@ -50,5 +50,5 @@ Direct `lake --old env lean` audit passes. Printed capstones use exactly
 Cartan contraction and weighted simplicial homology are classical. The result
 supplies the sharp integer dilation and actual persistence nullhomotopy for
 prime-product cutoffs. It does not identify all weighted torsion or establish
-Euler cancellation. Torsion classification remains on the
-[separate card](../1-in-progress/esg-prime-weighted-torsion-classification.md).
+Euler cancellation. The full torsion classification is proved on the
+[separate card](esg-prime-weighted-torsion-classification.md).

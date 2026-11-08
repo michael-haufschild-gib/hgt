@@ -7,7 +7,7 @@
 
 ## Proposed mechanism
 
-Concentrate logarithmic packets near zeros of the profile's Fourier transform. A zero of order `m` suppresses the nearby squared aliasing factor to order `2m`. A growing logarithmic separation could amplify the exceptional reflected pair faster than the remaining spectrum. Packet width, separation, and the arithmetic positivity range must be controlled together.
+Concentrate logarithmic packets near zeros of the profile's Fourier transform. A zero of order `m` suppresses each fixed harmonic to order `2m`; summing all harmonics requires separate control. A growing logarithmic separation could amplify the exceptional reflected pair faster than the remaining spectrum. Packet width, separation, and the arithmetic positivity range must be controlled together.
 
 ## Exact constraint
 
@@ -19,12 +19,12 @@ Concentrate logarithmic packets near zeros of the profile's Fourier transform. A
 
 Derive a complete energy estimate for these packets, including the archimedean concentration cost and every aliasing harmonic. No negative test in the certified positive matrix range has been constructed. No AAL conclusion is claimed.
 
-## Differential-spline candidate
+## Exact harmonic-sum constraint
 
-Let `B_m` be the convolution of `m` unit interval indicators. For even `m≥6`, the profile `B_m + (-1)^((m-4)/2) D^(m-4) B_m` has mean `1`, candidate Fourier multiplier `(1+ξ^(m-4))` times that of `B_m`, and fourth-power Fourier decay. Each nonzero integer harmonic retains a zero of order `m`.
+The centered family `φ_r=B_(2r+5)+Δ^(2r+1)B_4(·+(2r+1)/2)` has integral one and squared spectrum
 
-The harmonic sum requires a separate analysis. Near an integer overlap, its leading term is proportional to
+`|φ̂_r(2πt)|²=[1+(2πt)^(4r+2)] |B̂_(2r+5)(2πt)|²`.
 
-`Σ_{k≥1} k^(-8) sin(πkε)^(2m)`.
+Its full alias density has an exact seventh-order notch at every positive integer, with positive coefficient `∫(Δ^(2r+1)B_4)²/(2j^8)`. Increasing individual harmonic-zero multiplicity therefore does not increase the alias-notch order in this family. The exact formulas, paper proof and checked Lean declarations are in [the formalized spline card](../3-formalized/alias-notch-saturation-for-differentiated-splines.md).
 
-The conjectured order is `|ε|^7`, independent of `m≥4`: harmonics `k≈1/|ε|` contribute at that order. Thus high multiplicity of individual Fourier zeros need not give high multiplicity of the full aliasing zero. An exact dilation limit and its positive coefficient remain to be proved and formalized.
+This rules out that particular inference about notch order. It does not retire the broader route: profile-dependent arithmetic positivity and the full packet energy remain open.

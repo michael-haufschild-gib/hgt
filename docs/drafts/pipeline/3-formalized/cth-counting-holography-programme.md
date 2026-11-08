@@ -32,14 +32,15 @@ README there.
 | Q6 | horocycle mean = Farey count; RH ⟺ square-root Farey law | `TheFareyReadingOfTheHorocycle`, `TheHorocycleRateIsTheSquareRootFareyLaw` |
 | Second physical question | zero-free strip `Re ρ ≤ 1 − 2δ` ⟺ rate `y^{1/2+δ−ε}`; zero-free half-plane ⟺ polynomial lower bound of `ζ` | `zeroFreeStrip_iff_fareyCount_rate`, `zeroFree_iff_zeta_lower_bound` |
 | A32 (genus two through Jacobians) | bielliptic `y² = h(x²)`: sum of Manin's two height counts is the genus-two count law; Hasse–Weil `16q` at every level | `TheJacobianCountOfABiellipticGenusTwoCurve` |
+| Every hyperelliptic curve (A32 extension) | even-degree RH proved: unit of nonsquare norm kills high degree sums for every squarefree f; trivial root χ(lc) from infinity; descent from splitting field through the odd model; count law at every level for every hyperelliptic curve, every genus-two curve | `TheCountLawOfEveryHyperellipticCurve` |
 | Fail for non-arithmetic groups | every Hecke group `G_q`, `q ∉ {3,4,6}`: Niven + Dickson give a second real place of `ℚ(λ_q²)` where the count of `γₙ²` is negative; `G₃, G₄, G₆` one place | `TheCountFailsAtTheSecondPlaceOfAHeckeTriangleGroup` |
 | Boundary operator algebra (tool) | `R[π]/(π²−tπ+q)` with partner involution: GNS form = Krein square for every state; positive state ⟺ `*`-rep on ℂ ⟺ damped; bank faithful ⟺ strictly damped; Hilbert involution positive on every black hole (C* blindness) | `TheBoundaryAlgebraOfABlackHole` |
 | Sharp shells | horoball count = Möbius sum of quarter-disc lattice sums; unconditional rate `y^{1/2} log(1/y)`; exact three-term error | `TheRateOfASharpShell` |
 
 ## Open
-Count over ℤ (= RH); heights on a simple genus-two Jacobian; Farey reading of non-arithmetic Hecke groups;
+Count over ℤ (= RH); a height producer on simple genus-two Jacobians (the count law itself is proved for every genus-two curve); Farey reading of non-arithmetic Hecke groups;
 RH rate for sharp shells (`Σ μ(d) E(X/d) = O(X^{1/2+ε})`).
 
 ## Log
 - 2026-11-07 — created; 14 modules formalized
-- 2026-11-08 — 18 modules: Jacobian count at genus two, Hecke groups, sharp shells, boundary algebra
+- 2026-11-08 — 19 modules: Jacobian count at genus two, Hecke groups, sharp shells, boundary algebra, every hyperelliptic curve

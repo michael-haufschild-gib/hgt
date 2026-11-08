@@ -46,6 +46,16 @@ import GaloisForLFunctions.BlackHoleRingdown.TheHeckeEigenformsOfTheCuspChannel
 import GaloisForLFunctions.BlackHoleRingdown.TheHeckeRigidityOfTheCuspModes
 import GaloisForLFunctions.BlackHoleRingdown.TheMultiplicityOfTheHeckeModes
 import GaloisForLFunctions.BlackHoleRingdown.TheParityOfTheHeckeModes
+import GaloisForLFunctions.BlackHoleRingdown.TheWeylUpperBound
+import GaloisForLFunctions.BlackHoleRingdown.TheLFunctionsOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheEulerProductOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergBoundOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheEisensteinFunctionIsAutomorphic
+import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergIntegralOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergContinuation
+import GaloisForLFunctions.BlackHoleRingdown.TheMeanSquareLawOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleEquidistributionOfTheCuspEnergy
+import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleRateOfTheCuspEnergyReadsTheZeros
 import GaloisForLFunctions.BlackHoleRingdown.TheCosineFamilyOfTheHorizon
 import GaloisForLFunctions.BlackHoleRingdown.TheGeneralHorizonData
 import GaloisForLFunctions.BlackHoleRingdown.TheVectorModesOfTheMetric
@@ -85,7 +95,7 @@ with the echo train minus its mean growth, and the causal symbol is the transfer
 Every compact pulse gives an exact solution by the method of images, with the same echo identity and ringdown. Every
 square-integrable function on the horizon is a constant plus a limit of such fields plus a cusp form, and the wave evolution
 is a contractive cosine family on the complement of the constants. Cusp forms have `λ ≥ ¼` and undamped horizon modes, at the
-universal rate of the boundary condition; the mirror-odd sector is cuspidal, so they exist; their eigenvalues form a discrete unbounded sequence. The whole mirror-odd half of the horizon is cuspidal: the zeros couple only to mirror-even data. Their number below `Λ` is at least a multiple of `Λ` (a Weyl lower bound). The scalar wave of a pulse carries an exact vacuum perturbation of the metric, in the
+universal rate of the boundary condition; the mirror-odd sector is cuspidal, so they exist; their eigenvalues form a discrete unbounded sequence. The whole mirror-odd half of the horizon is cuspidal: the zeros couple only to mirror-even data. Their number below `Λ` is at least a multiple of `Λ` (a Weyl lower bound) and at most a multiple of `Λ + 1` (a Weyl upper bound, by a pointwise Bessel inequality and the monotone decay of the cusp modes), so the heat trace of the cusp channel is finite. The scalar wave of a pulse carries an exact vacuum perturbation of the metric, in the
 vector and in the scalar sector, in closed form and covariant under `SL₂(ℤ)`; each zero is a gravitational quasinormal mode, and
 each component of the metric rings down in these modes.
 
@@ -99,5 +109,5 @@ Each cusp space is finite-dimensional and carries the commuting Hecke operators 
 has a Hecke–Maass form, with the trivial bound `|λ_p| ≤ √p + 1/√p` on its normalized Hecke eigenvalues. A Hecke eigenform is determined by its
 eigenvalues and its first Fourier modes `a_{±1}`, and each mode lies in a line, so every joint eigenspace of the Laplacian and
 the Hecke operators has dimension at most two. The mirror commutes with all of them, and each joint eigenspace of definite
-parity is a line, nonzero at every eigenvalue of the cusp spectrum (strong multiplicity one).
+parity is a line, nonzero at every eigenvalue of the cusp spectrum (strong multiplicity one). Every cusp form carries an L-function `Σ ρ(n)|n|^{-s}`: entire, with completed function `¼π^{-s}Γ((s+ν)/2)Γ((s-ν)/2)L(s)` symmetric under `s ↦ 1 - s` (the Mellin transform of `y^{-1/2}g(iy)`, symmetric under `z ↦ -1/z`). For a Hecke eigenform the coefficients are multiplicative and `L(s) = (ρ(1)+ρ(-1)) Π_p (1 - λ_p p^{-s} + p^{-2s})⁻¹`. The coefficients are of size one on average, `Σ_{|n|≤N} |ρ(n)|² ≤ A N log N` (Rankin–Selberg), so `L` converges absolutely and has its Euler product on all of `Re s > 1`. The Eisenstein function, known to be automorphic on the critical line, is automorphic at every regular spectral parameter and its completion `ξ(1+2u)E/((1+2u)2u)` is even in `u` (identity theorem from the line). The energy density of a cusp mode pairs with the Eisenstein channel through its Rankin–Selberg series: `∫|g|²E(s-½) = π^{-s}/8 · Γ(s/2)²Γ(s/2+ν)Γ(s/2-ν)/Γ(s) · Σ|ρ(n)|²|n|^{-s}` for `Re s > 1`. The completed Rankin–Selberg function `∫|g|²E*(s-½)` is holomorphic on `ℂ∖{0,½,1}` and symmetric under `s ↦ 1-s`, so the Rankin–Selberg series continues to `Re s > ½` except `s = 1`; its further poles can only sit at zeros of `ξ(2s)`. Removing the pole at `s = 1` and applying Wiener–Ikehara gives the mean-square law `(1/N)Σ_{|n|<N}|ρ(n)|² → (24/π²) cosh(πt) ‖g‖²`: every horocyclic harmonic of a ringdown mode carries the same average energy. Abel summation then shows that long closed horocycles equidistribute that energy: `∫_{-1/2}^{1/2}|g(x+iy)|²dx → (3/π)‖g‖²` as `y → 0`. Its rate reads the zeros: a rate `y^α` forces `Λ_g(ρ/2) = 0` at every zero `ρ` of `ζ` with `Re ρ > 2 - 2α`, so a zero visible to `Λ_g` caps the rate at `y^{1 - Re ρ/2}`.
 -/

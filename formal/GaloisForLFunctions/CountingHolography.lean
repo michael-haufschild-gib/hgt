@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CountingHolography.TheCountLawAtEveryGenus
 import GaloisForLFunctions.CountingHolography.TheCountLawOfATrueCurveAtEveryGenus
 import GaloisForLFunctions.CountingHolography.TheRosatiHeightIsTheBornRule
+import GaloisForLFunctions.CountingHolography.TheCountLawOfEveryHyperellipticCurve
 import GaloisForLFunctions.CountingHolography.TheGenusTwoRung
 import GaloisForLFunctions.CountingHolography.TheJacobianCountOfABiellipticGenusTwoCurve
 import GaloisForLFunctions.CountingHolography.TheBornRuleOfABlackHole
@@ -27,7 +28,8 @@ damping. On a bank of oscillators the Born rules are Krein squares and Wronskian
 repeated oscillators, and a count exists iff every oscillator is damped. The boundary algebra
 `R[π]/(π² − tπ + q)` with the partner involution `π* = q/π` has the Krein square as its GNS form, and a
 positive state exactly when the black hole is damped. The tower count law is
-Hasse–Weil at every genus, it holds on every true odd-degree hyperelliptic curve, and the Rosati
+Hasse–Weil at every genus, it holds on every hyperelliptic curve of either parity, in particular on every
+genus-two curve (the even-degree Riemann hypothesis is proved here by descent), and the Rosati
 height of the probe ring is its equal-weight Born rule. On a bielliptic genus-two curve the count law is
 produced by heights alone: the sum of Manin's counts on the two elliptic factors of the Jacobian. Linear
 counts never obey the law; the genus-two graph has the first count law for `q ≤ 19` and the tower law

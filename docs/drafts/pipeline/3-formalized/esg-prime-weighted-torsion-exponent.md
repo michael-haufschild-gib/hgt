@@ -39,6 +39,6 @@ exactly `[propext, Classical.choice, Quot.sound]`.
 ## Scope
 
 The theorem determines the possible torsion exponent, not the number or
-persistence of torsion classes. Those questions remain in the
-[full classification target](../1-in-progress/esg-prime-weighted-torsion-classification.md).
+persistence of torsion classes. Those are determined by the
+[full classification](esg-prime-weighted-torsion-classification.md).
 No Euler-cancellation or height-positivity estimate follows from this result.

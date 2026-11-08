@@ -37,7 +37,13 @@ No selection of point targets depends on the zero. If rates
 `y^(1−σ₀/2−ε)` held for every positive `ε`, a zero with
 real part `β>σ₀` would contradict the obstruction at `ε=(β−σ₀)/4`.
 The corpus's exact xi zero-free characterization then gives RH at
-`σ₀=1/2`. No positive power rate is asserted.
+`σ₀=1/2`.
+
+Hardy's theorem supplies an actual critical-line xi zero. Its resonance
+has real part `−1/4`, so every fixed target average unconditionally fails
+all remainder bounds `O(y^α)` with `α>3/4`, for every choice of the two
+main coefficients. The separate [boundary theorem](ads3-narain-average-boundary-rate.md)
+proves the actual `o(y^(1/2))` remainder.
 
 ## Lean
 
@@ -54,10 +60,14 @@ Namespace `GaloisForLFunctions.ArithmeticScatteringHolography.ModularBootstrap`:
 - `riemannHypothesis_of_narainAverageRate`: the three-quarter rate of one
   fixed averaged source implies mathlib's `RiemannHypothesis`.
 
-Both modules pass direct Lean checks. Seven endpoint axiom audits use
+- `narainScalarHeatAverage_no_better_than_three_quarters` in
+  `NarainAverageCeiling`: Hardy's critical-line zero gives the unconditional
+  ceiling `α≤3/4`.
+
+All three modules pass final direct Lean checks. Eight endpoint axiom audits use
 only `propext`, `Classical.choice`, and `Quot.sound`; umbrella imports
-are wired. The rate-to-RH implication is proved; its rate premise remains
-open. The [exact constant term and weighted residue](ads3-narain-average-principal-part.md)
+are wired. The rate-to-RH implication is proved; its three-quarter rate
+premise remains open. The [exact constant term and weighted residue](ads3-narain-average-principal-part.md)
 are also formalized. The [converse rate implication](../0-backlog/ads3-narain-average-sharp-rate.md)
 remains open.
 

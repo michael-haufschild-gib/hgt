@@ -41,7 +41,6 @@ theorem rnDeriv_kesten_semicircle_toReal (p : Nat.Primes) :
       ((continuous_kestenBetaWeight p).measurable.ennreal_ofReal.comp
         continuous_heckeSquareCoordinate.measurable)
   filter_upwards [hr] with x hx
-  change ((kestenSpectralLaw p : Measure ℝ).rnDeriv (semicircleSpectralLaw : Measure ℝ) x).toReal = _
   rw [hx]
   exact ENNReal.toReal_ofReal (kestenLikelihood_pos p x).le
 
@@ -58,7 +57,6 @@ theorem rnDeriv_semicircle_kesten_toReal (p : Nat.Primes) :
     rw [semicircleSpectralLaw_eq_kesten_withDensity]
     exact Measure.rnDeriv_withDensity _ (hm.comp continuous_heckeSquareCoordinate.measurable)
   filter_upwards [hr] with x hx
-  change ((semicircleSpectralLaw : Measure ℝ).rnDeriv (kestenSpectralLaw p : Measure ℝ) x).toReal = _
   rw [hx]
   exact ENNReal.toReal_ofReal (inv_nonneg.mpr (kestenLikelihood_pos p x).le)
 
@@ -77,7 +75,6 @@ theorem rnDeriv_kesten_prime_toReal (p q : Nat.Primes) :
     rw [kestenSpectralLaw_eq_prime_withDensity p q]
     exact Measure.rnDeriv_withDensity _ (hm.comp continuous_heckeSquareCoordinate.measurable)
   filter_upwards [hr] with x hx
-  change ((kestenSpectralLaw p : Measure ℝ).rnDeriv (kestenSpectralLaw q : Measure ℝ) x).toReal = _
   rw [hx]
   exact ENNReal.toReal_ofReal (div_nonneg (kestenLikelihood_pos p x).le (kestenLikelihood_pos q x).le)
 
@@ -144,7 +141,8 @@ theorem semicircleKestenPearsonDivergence_eq (p : Nat.Primes) :
       (g := fun _ => 1) (hj.sub (hi.const_mul 2)) (integrable_const 1),
     integral_sub (g := fun x => 2 * (kestenLikelihood p x)⁻¹) hj (hi.const_mul 2),
     integral_const_mul, integral_kestenLikelihood_inv_sq, integral_kestenLikelihood_inv]
-  simp
+  simp only [integral_const, probReal_univ, smul_eq_mul, mul_one]
+  ring
 
 /-- Every ordered prime-pair Pearson divergence has an exact rational value. -/
 theorem kestenPearsonDivergence_eq (p q : Nat.Primes) :
@@ -170,11 +168,12 @@ theorem kestenPearsonDivergence_eq (p q : Nat.Primes) :
       (hj.sub (hi.const_mul 2)) (integrable_const 1),
     integral_sub (g := fun x => 2 * (kestenLikelihood p x / kestenLikelihood q x)) hj (hi.const_mul 2),
     integral_const_mul, integral_kestenLikelihood_ratio_sq, integral_kestenLikelihood_ratio]
-  simp
+  simp only [integral_const, probReal_univ, smul_eq_mul, mul_one]
+  ring
 
 /-- Directed prime-pair Pearson divergence is nonnegative as an actual squared integral. -/
 theorem kestenPearsonDivergence_nonneg (p q : Nat.Primes) : 0 ≤ kestenPearsonDivergence p q :=
-  integral_nonneg fun x => sq_nonneg _
+  integral_nonneg fun _ => sq_nonneg _
 
 /-- Pearson divergence distinguishes exactly the unequal prime labels. -/
 theorem kestenPearsonDivergence_eq_zero_iff (p q : Nat.Primes) :
@@ -248,18 +247,3 @@ theorem kestenPearsonDivergence_swap_lt_iff (p q : Nat.Primes) :
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.rnDeriv_kesten_semicircle_toReal
-#print axioms GaloisForLFunctions.SelbergClass.Primon.rnDeriv_semicircle_kesten_toReal
-#print axioms GaloisForLFunctions.SelbergClass.Primon.rnDeriv_kesten_prime_toReal
-#print axioms GaloisForLFunctions.SelbergClass.Primon.integrable_kesten_semicircle_pearson
-#print axioms GaloisForLFunctions.SelbergClass.Primon.integrable_semicircle_kesten_pearson
-#print axioms GaloisForLFunctions.SelbergClass.Primon.integrable_kesten_prime_pearson
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenSemicirclePearsonDivergence_eq
-#print axioms GaloisForLFunctions.SelbergClass.Primon.semicircleKestenPearsonDivergence_eq
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_eq
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_nonneg
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_eq_zero_iff
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_pos_iff
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_sub_swap
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPearsonDivergence_swap_lt_iff

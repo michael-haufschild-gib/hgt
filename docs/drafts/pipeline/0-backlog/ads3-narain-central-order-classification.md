@@ -51,6 +51,11 @@ The proved nonvanishing of
 `T_Y` at every arithmetic resonance holds at every height, so exceptional
 central cancellation cannot remove an arithmetic pole.
 
+The [logarithmic moment conjecture](ads3-narain-central-moment-sum-rules.md)
+would realize these same orders as the exact number of canceled boundary
+moments of the actual source after finite-part subtraction. It also
+requires the proposed quantitative boundary saving.
+
 ## Gates
 
 - [ ] 0 → 1: audit exact first jets, reflection inputs and order arithmetic.

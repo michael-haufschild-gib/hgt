@@ -66,127 +66,215 @@ self-energy regularization, a controlled approximate parallelogram, a
 fixed-point localization theorem for a natural nerve action, and a quadratic
 refinement with arithmetic polarization. Their existence is not assumed.
 
-The first proved analytic pillar is the radial chord identity. For a unit
-complex number `w`,
+### Finite-radius torsion energy and arithmetic spacing
+
+For a unit complex number `w`, the actual radial chord identity is
 
 `|1−rw|² = r|1−w|²+(1−r)²`.
 
-Consequently the logarithmic kernel has a universal first-order correction
-`−log(r)/2` and a nonnegative remainder
-`R = log(1+(1−r)²/(r|1−w|²))/2`, bounded by
-`(1−r)²/(2r|1−w|²)` for `r>0`, `w≠1`.
-[`RadialLogarithmicKernel.lean`](RadialLogarithmicKernel.lean) proves the
-identity and bound. These are estimates on the actual circle kernel,
-independent of the Weil form. They isolate the geometric cost of regularizing
-distinct torsion points; coincident points require a separate diagonal term.
-
-[`FiniteRadiusTorsionEnergy.lean`](FiniteRadiusTorsionEnergy.lean) applies
-this identity to the existing primitive torsion orbits. Writing `T°_r` for
-energy with coincident pairs removed, `c(m,n)` for their number, and
-`C(m,n)=Σ_{z≠w}|z−w|⁻²`, it proves
+It separates the logarithmic kernel into its boundary value, the universal
+correction `−log(r)/2`, and a nonnegative remainder. For primitive torsion
+orbits of orders `m,n`, let `T°_r` exclude coincident pairs, let `c(m,n)` count
+distinct ordered pairs, and put `C(m,n)=Σ_{z≠w}|z−w|⁻²`. Then
 
 `T°_r(m,n)+c(m,n)log(r)/2 = −I(m,n)−R_r(m,n)`,
 
-`0 ≤ R_r(m,n) ≤ (1−r)² C(m,n)/(2r)`.
+`0≤R_r(m,n)≤(1−r)² C(m,n)/(2r)`.
 
 For a self-orbit, the removed energy is exactly `−φ(n)log|1−r|`.
-For any finite signed pairing, the absolute remainder is bounded by the
-same radial factor times `Σ |a(m,n)| C(m,n)`. This is a finite-radius
-certificate, stronger than a boundary-limit identity. It provides no sign
-for the renormalized pairing and leaves diagonal payment open.
+[FiniteRadiusTorsionEnergy.lean](FiniteRadiusTorsionEnergy.lean) proves the
+identity and its bound for arbitrary signed finite pairings. This isolates
+self-energy; it supplies no sign after subtraction and no payment for that term.
 
-[`ConductorControlledRegularization.lean`](ConductorControlledRegularization.lean)
-removes the separation constant from this certificate:
+The geometric cost has an exact full-root calibration:
 
-`C(m,n) ≤ (mn)² c(m,n)`.
+`Σ_{u^L=1, u≠1}|1−u|⁻²=(L²−1)/12`, for `L≥1`.
 
-Here `c(m,n)=φ(m)φ(n)` for `m≠n`, and
-`c(n,n)=φ(n)(φ(n)−1)`. The proof uses a vanishing geometric sum to separate
-distinct torsion points, then sums the pointwise estimate. Thus
+The proof uses two logarithmic derivatives of `1+X+⋯+X^(L−1)` at one.
+Distinct ratios in each primitive-orbit row embed in the nontrivial roots of
+order `lcm(m,n)`. Thus
 
-`|Σ a(m,n)(T°_r(m,n)+c(m,n)log(r)/2+I(m,n))|`
-`≤ (1−r)²/(2r) Σ |a(m,n)|(mn)²c(m,n)`.
+`C(m,n)≤min(φ(m),φ(n))(lcm(m,n)²−1)/12`.
 
-This is uniform in the finite conductors with an explicit polynomial cost.
-Neither this bound nor its quadratic radial rate pays for the divergent diagonal.
+[SharpTorsionChordBounds.lean](SharpTorsionChordBounds.lean) proves this bound
+for the original orbit sum. It improves the direct separation estimate
+`C(m,n)≤(mn)²c(m,n)` and exposes cancellation of conductor factors at an
+arithmetic spacing scale.
 
-[`TorsionChordEnergy.lean`](TorsionChordEnergy.lean) proves the classical exact
-energy of the nontrivial `L`-th roots of unity:
+The existing spacing radius is `rε(m,n)=exp(−ε(1/m+1/n))`.
+On the diagonal, `rε(n,n)=exp(−2ε/n)` and the remainder satisfies
 
-`Σ_{u^L=1, u≠1} |1−u|⁻² = (L²−1)/12`, for `L≥1`.
+`R_r(n,n)≤φ(n)ε²exp(2ε)/6`.
 
-The proof uses the first two logarithmic derivatives of
-`1+X+⋯+X^(L−1)` at `1`.
-[`SharpTorsionChordBounds.lean`](SharpTorsionChordBounds.lean) applies this
-identity to the actual primitive orbits. Each row of distinct ratios embeds
-in the nontrivial roots of order `lcm(m,n)`, giving
-
-`C(m,n) ≤ min(φ(m),φ(n)) (lcm(m,n)²−1)/12`.
-
-For a self-orbit this bounds the radial remainder by
-`(1−r)²φ(n)(n²−1)/(24r)`. The arithmetic spacing scale can therefore cancel
-the quadratic conductor factor; a fixed-radius separation estimate alone
-does not exhibit this cancellation.
-
-[`UniformSpacingDiagonal.lean`](UniformSpacingDiagonal.lean) makes that
-cancellation uniform over all positive conductors. At the existing arithmetic
-spacing radius `r=exp(−2ε/n)`, `ε>0`, it proves
-
-`0 ≤ R_r(n,n) ≤ φ(n) ε² exp(2ε)/6`,
-
-`|T_r(n,n)+φ(n)log(1−r)+I(n,n)| ≤ φ(n) max(ε, ε² exp(2ε)/6)`.
-
-For the actual twisted energy and scalar counterterm, the stronger certificate is
+For the actual gcd-twisted energy and scalar counterterm,
+[UniformSpacingDiagonal.lean](UniformSpacingDiagonal.lean) proves
 
 `|twistedEnergy(r,n,n)+log(2ε)−tameDifferent(n)|`
-`≤ max(3ε, ε² exp(2ε)/6)`.
+`≤max(3ε,ε²exp(2ε)/6)`.
 
 The same modulus bounds every finite diagonal quadratic form by its squared
-coefficient norm, independently of the support. Thus the known pointwise
-diagonal limit has a conductor-uniform quantitative form. Mixed-conductor
-control and payment of the removed self-energy remain separate questions;
-the indefinite spacing limit is not an arithmetic height.
+coefficient norm, independently of the conductors. Uniform diagonal convergence
+does not imply uniform control of mixed entries.
 
-The topological localization question has a definite obstruction.
-[`PrimeComponentRigidity.lean`](PrimeComponentRigidity.lean) proves that every
-prime `N/2<p≤N` is an isolated vertex of the actual prime complex. A self-map
-homotopic to the identity fixes each such vertex individually.
-[`PrimeFixedPointObstruction.lean`](PrimeFixedPointObstruction.lean) combines
-this injection with the existing prime-window theorem: eventually there are
-at least `N/(4 log N)` forced fixed points. Their number divided by `√N` tends
-to infinity. Thus the proposed literal fixed set of square-root cardinality
-cannot exist, even without any naturality requirement on the maps. This does
-not rule out cancellation in a signed Lefschetz sum.
+For arbitrary positive conductors, the remainder also has an exact arithmetic
+representation. Put `F(u)=log u−log(1−exp(−u))`. Double Möbius inversion of
+full groups of roots gives
 
-The obstruction also identifies an exact positive replacement. At `N≥4`,
-all other points form one path component, the core containing prime two.
-[`PrimeCoreEuler.lean`](PrimeCoreEuler.lean) realizes this core by the faces
-whose vertices satisfy `2p≤N`, proves its path connectedness and preservation
-under maps homotopic to the identity, and computes
+`T_exp(−t)(m,n)+[m=n]φ(n)log t+I(m,n)`
+`=Σ_{d|m,e|n} μ(m/d)μ(n/e)gcd(d,e)F(t lcm(d,e))`.
 
-`coreEuler(N) = M(N) + #{p prime : N/2<p≤N}`.
+[PrimitiveTorsionDivisorFormula.lean](PrimitiveTorsionDivisorFormula.lean)
+proves this identity for the original energy. Its logarithmic divergence is
+exactly the common primitive-root multiplicity; the constant term is the
+existing orbit intersection. The formula reduces mixed-conductor control to
+an explicit finite arithmetic remainder.
+[PrimitiveSpacingRemainder.lean](PrimitiveSpacingRemainder.lean) controls it by
 
-Here `coreEuler` is the signed augmented face count; the core's reduced Euler
-characteristic is its negative. Removing the isolated vertices therefore
-requires an explicit arithmetic correction. The desired square-root bound
-concerns cancellation between that prime contribution and the core, rather
-than a small Euler characteristic of the core itself.
+`|R(t,m,n)|≤(1+1/α)τ(m)τ(n)gcd(m,n)(t lcm(m,n))^α`, for `0<α≤1`.
 
-[`PrimeCoreBouquet.lean`](PrimeCoreBouquet.lean) gives the stronger homotopy
-description: the core is a bouquet retaining exactly the original complementary
-facets with at least two vertices. These are the positive-dimensional spheres
-with odd squarefree composite labels. Their integral dimensions remain
-`ω(m)−1`; only the prime-labelled zero-spheres disappear. This supplies an
-actual connected target for a replacement action, not a contraction or an
-Euler-cancellation estimate.
+The scalar input is `0≤F(u)≤log(1+u)` and hence
+`F(u)≤(1+1/α)u^α`. The bound retains the gcd factor needed for summing mixed
+entries. The arithmetic summation mechanism is now formalized in
+[WeightedGcdForm.lean](WeightedGcdForm.lean): for every `δ>0`,
+
+`Σ_{m,n∈S} gcd(m,n)x_m x_n/√(mn) ≤ Cδ Σ_{n∈S} n^δ x_n²`
+
+on every finite positive support. The totient divisor-square identity,
+Cauchy–Schwarz on multiples and subpolynomial divisor growth prove the bound.
+Write the actual entrywise error as
+
+`Bε(m,n)=twistedEnergy(rε(m,n),m,n)+weilPrimeKernel(m,n)`
+`+[m=n](log(2ε)−tameDifferent(n))`.
+
+[SpacingErrorIdentity.lean](SpacingErrorIdentity.lean) identifies the actual
+entrywise error with `gcdTwist(m,n)R(ε(1/m+1/n),m,n)/√(mn)` and proves its
+finite quadratic-form identity. For `0<α≤1` and every `κ>0`,
+[SpacingKernelMajorant.lean](SpacingKernelMajorant.lean) proves
+
+`|Bε(m,n)|≤Cα,κ ε^α gcd(m,n)(mn)^(α+2κ)/√(mn)`.
+
+The gcd twist costs at most `τ(gcd(m,n))`; subpolynomial divisor growth
+absorbs all three divisor counts. Combining this envelope with the gcd estimate
+gives the full comparison in
+[WeightedSpacingConvergence.lean](WeightedSpacingConvergence.lean). For every
+`0<α≤1` and `δ>2α`, one constant satisfies
+
+`Σ_{m,n∈S}|x_m x_n Bε(m,n)|≤Cδ,α ε^α Σ_{n∈S} n^δ x_n²`.
+
+Consequently the actual scalar-renormalized spacing form converges uniformly
+on finite positively weighted unit balls. Every `δ>0` is admitted, for example
+with `α=min(δ/8,1)`. The error bound holds on arbitrary finite positive supports
+and retains the original product spacing radius. It supplies no sign for the
+limiting form.
+
+[InfiniteSpacingConvergence.lean](InfiniteSpacingConvergence.lean) passes this
+estimate to infinite probes satisfying `Σ n^δ x_n²<∞`. The entire absolute
+mixed-error series is summable, satisfies the same power bound, and tends to
+zero as `ε→0+`. This controls the error independently of a truncation.
+The limiting kernel has a separate uniform bound in
+[WeightedTorsionLimit.lean](WeightedTorsionLimit.lean). For positive conductors,
+
+`P(m,n)≤log(mn)gcd(m,n)/√(mn)`.
+
+Absorbing the logarithm into an arbitrarily small positive power and applying
+the weighted gcd estimate yields
+
+`Σ_{m,n∈S}|x_m x_n L(m,n)|≤Cδ Σ_{n∈S}n^δ x_n²`,
+
+where `L(m,n)=−P(m,n)+[m=n]tameDifferent(n)`. The diagonal uses
+`0≤tameDifferent(n)≤log n`. [InfiniteTorsionForms.lean](InfiniteTorsionForms.lean) passes this bound to the
+full absolutely convergent series. It also proves absolute convergence of the
+original scalar-renormalized series and the exact identity
+
+`Rε(x,x)−L(x,x)=Σ_{m,n}x_m x_n Bε(m,n)`.
+
+For `0<α≤1`, `2α<δ`, the same bound
+`|Rε(x,x)−L(x,x)|≤Cδ,α ε^α Σ n^δ x_n²` holds on every infinite probe of finite
+weighted square mass. Mixed-probe absolute summability follows by comparison
+with `|x|+|y|`. [WeightedProbeSpace.lean](WeightedProbeSpace.lean) constructs the Hilbert carrier
+through coordinates `u_k=(k+1)^(δ/2)x_(k+1)`. Every finite-mass arithmetic sequence
+has a unique representative; its norm squared is exactly `Σ n^δx_n²`.
+Finite conductor truncations converge, and the normalized conductor atoms form
+an infinite orthonormal family. [KernelHilbertCompletion.lean](KernelHilbertCompletion.lean) converts a proved
+finite absolute kernel bound `CΣ n^δx_n²` into a continuous bilinear form with
+bound `4C‖x‖δ‖y‖δ`, retaining the original series and kernel symmetry.
+[WeightedTorsionOperators.lean](WeightedTorsionOperators.lean) constructs the
+three actual continuous symmetric forms on this common infinite-dimensional
+space. Their original pair series are absolutely summable, the raw form obeys
+`Tε(x,x)≥0`, and the normalization is exactly
+
+`Rε(x,y)=Tε(x,y)+log(2ε)Σ_n x_ny_n`.
+
+For `0<α≤1` and `2α<δ`,
+
+`‖Rε−L‖op≤Cδ,α ε^α`.
+
+Thus the scalar-renormalized forms converge in operator norm as `ε→0+`.
+The counterterm uses the ordinary coefficient pairing; the weighted norm
+controls convergence. This coefficient addition law supplies neither the
+required arithmetic product formula nor a nonnegative renormalized height.
+
+### The mixed prime row and its sharp conductor weight
+
+For a prime `p`, put `r=rε(1,p)` and let `Eε(p)` be the difference between the
+actual twisted energy at `(1,p)` and its limit. The cyclotomic polynomial gives
+
+`Eε(p)=(log p−log(1+r+⋯+r^(p−1)))/√p`.
+
+The geometric sum lies between one and `p`, and is at most
+`1/(1−exp(−ε))`. Consequently
+
+`0≤Eε(p)≤log(p)/√p`,
+`Eε(p)≥(log p−log(1/(1−exp(−ε))))/√p`.
+
+For every fixed `ε>0`, the exact square-summability threshold is
+
+`Σ_p Eε(p)² p^(−δ)<∞ ⇔ δ>0`.
+
+At zero weight, finite prime-row square sums are unbounded: eventually the
+summands dominate `1/p`. For every positive weight, the logarithmic majorant
+is summable and dominated convergence gives
+
+`lim_{ε→0+} Σ_p Eε(p)² p^(−δ)=0`.
+
+[PrimeSpacingRow.lean](PrimeSpacingRow.lean) proves the identity, sharp threshold
+and weighted convergence for the actual energy. Together with the full weighted
+estimate above, this distinguishes fixed-conductor
+convergence from uniform control on arithmetic probe spaces. Positive conductor
+weights control the full mixed error; nonnegative renormalized heights still
+require a separate arithmetic mechanism.
+
+### Isolated components, the connected core and signed localization
+
+Every prime `N/2<p≤N` is an isolated vertex of the actual prime complex, fixed
+individually by every self-map homotopic to the identity. Eventually at least
+`N/(4 log N)` such points are forced; their count divided by `√N` tends to
+infinity. [PrimeFixedPointObstruction.lean](PrimeFixedPointObstruction.lean)
+therefore rules out the proposed literal fixed set of square-root cardinality,
+even without naturality of the maps. Signed fixed-point cancellation remains
+a separate possibility.
+
+The obstruction has an exact positive replacement. At `N≥4`, all other points
+form one connected core containing prime two, preserved by identity-homotopic
+maps. It consists of faces with vertices satisfying `2p≤N`. Its reduced Euler
+characteristic is
+
+`−M(N)−#{p prime : N/2<p≤N}`.
+
+[PrimeCoreEuler.lean](PrimeCoreEuler.lean) proves the component classification
+and correction. [PrimeCoreBouquet.lean](PrimeCoreBouquet.lean) identifies the
+core as the bouquet of positive-dimensional spheres labelled by odd squarefree
+composite integers `m`, in dimension `ω(m)−1`. Only the prime-labelled
+zero-spheres disappear. The sought square-root estimate concerns cancellation
+between this core and the isolated-prime contribution.
 
 The companion [effective scaling geometry programme](../EffectiveScalingGeometry/README.md)
-constructs the actual augmented prime-height homology persistence functor.
-Its Dirichlet-weighted boundary is naturally conjugate to the unweighted one
-at every complex parameter. Such scalar weights therefore preserve finite
-algebraic persistence. A cancellation mechanism must supply further structure;
-analytic completion, integral lattices and signed actions remain distinct
-possibilities requiring their own arithmetic estimates.
+constructs actual prime-height homology and its inclusion maps. Complex
+Dirichlet weights preserve that persistence by a natural chain gauge. Integral
+prime weights instead produce explicit free-to-parity transitions with no
+natural splitting. These structures refine the arithmetic object but supply
+no signed Euler bound. Analytic completion, integral relations and signed
+actions require their own comparison estimates.
 
 ## Mechanisms and tools
 

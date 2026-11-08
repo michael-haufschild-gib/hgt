@@ -52,7 +52,7 @@ All pass direct `lake --old env lean` audits. Printed capstones use exactly
 
 This identifies cycles and their height maps. The
 [boundary lattice](esg-prime-weighted-boundary-lattice.md) is also formalized;
-actual homology persistence remains in the
-[weighted torsion target](../1-in-progress/esg-prime-weighted-torsion-classification.md).
+actual homology persistence is determined by the
+[weighted torsion classification](esg-prime-weighted-torsion-classification.md).
 The inverse height bound uses integer saturation and is not asserted over
 rings with two-torsion.

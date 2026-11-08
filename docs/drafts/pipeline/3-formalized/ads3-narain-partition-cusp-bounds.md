@@ -3,7 +3,7 @@
 - **ID:** W11-NC
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Regularized overlap](../1-in-progress/ads3-narain-regularized-overlap.md)
+- **Source:** [Regularized overlap](ads3-narain-regularized-overlap.md)
 
 ## Statements
 
