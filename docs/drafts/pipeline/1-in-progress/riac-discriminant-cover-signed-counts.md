@@ -21,8 +21,8 @@ Frobenius cycles supply the number of irreducible factors.
 1. Actual square-root fibres, including the ramified fibre over zero.
 2. Discriminant character equals Frobenius permutation sign.
 3. Frobenius cycles correspond to irreducible factors; derive Pellet's formula.
-4. Apply the already proved `ArithmeticGaugeTheory.sum_monicOfDeg_polyMoebius`.
-   Do not duplicate its scalar cancellation proof.
+4. Compare with independently counted Frobenius-stable alternating orbits.
+   The existing polynomial Möbius sum remains a separate calibration.
 5. Direct Lean audit and transitive axiom check of the actual count.
 
 ## Relation to integer local indices
@@ -58,18 +58,19 @@ stabilizer and one alternating orbit; distinct roots give two alternating
 orbits, fixed or exchanged according to the Frobenius sign. The intended
 bridge identifies these fixed orbits with the discriminant-cover fibres.
 
-Neither the twisted orbit count nor this comparison is formalized here.
+The [independent twisted orbit count](../3-formalized/riac-independent-frobenius-orbit-counts.md)
+is formalized. The collision-aware cover comparison remains open.
 The [formalized normalization count](../3-formalized/riac-finite-field-orientation-counts.md)
 constructs residue-field trace-discriminant fibres; its aggregate count
 uses the already derived polynomial Möbius sums. That is a sign-retaining calibration, not an independent cancellation
 proof. The usual polynomial-discriminant comparison remains separate.
 
 
-A normal-basis construction supplies a candidate direct bijection for each
+The formalized normal-basis construction supplies a direct bijection for each
 twist: `x_i=Σ_σ a_(σ⁻¹·i) σ(θ)`, with unrestricted `a∈F^n`.
 The Galois action on labels is derived by sending Frobenius to the chosen
-permutation; its order divides the extension degree. This bijection and
-the transporter proof of twisted Burnside remain under Lean verification.
+permutation; its order divides the extension degree. Both this bijection
+and the transporter proof of the orbit count have direct Lean audits.
 
 ## Signed orbit refinement
 

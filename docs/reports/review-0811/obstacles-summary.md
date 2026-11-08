@@ -27,6 +27,8 @@ Elimination exists at infinite rank [L]. The exceptional rank — the number of 
 ### 1.4 The finite stratum
 Finite negative index of `K_ζ` ⇔ finite index on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded heat count ⇔ RH above some height ⇔ eventual slice positivity; in the stratum Lindelöf holds and one non-blind prime tower decides RH [L/K]. The finite stratum is AAL at `h=0` (B13). No asymptotic property and no finite verification decides it [L].
 
+Scope matters: finiteness at each positive heat time is already proved, while a bound uniform as `t→0⁺` is equivalent to finiteness of the original off-line set. Finite-stratum elimination for every sufficiently small positive heat deformation therefore implies RH; existential linear AAL on that heat family is explicitly equivalent to RH [L]. A ζ-only elimination law does not automatically extend to the heat family.
+
 ### 1.5 The window sign is one scalar flow
 The tower is a canonical system to contact with `H₁H₂=1`; `L′=q−sinh 2L`; `|L(x)|≤artanh e^{−2(x−c)}+2osc_{[c,x]}Ψ` [L]. **RH ⇔ `Ψ=½log H₁` is locally bounded**; off RH `L` is unbounded above every base [L]. RH ⇔ Hasse–Weil along the cubic-spline orbit; the orbit correlation grows at the zero width [L].
 
@@ -165,7 +167,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B10 | Top coprime stratum | RH | HF, ACS, ADT |
 | B11 | Exact SOS on a two-prime lattice | RH | HF, SC, ACS |
 | B12 | Index ceiling uniform in resolution | ≥qRH | CHMD, SRT, SC |
-| B13 | Finitely many off-line zeros ⇒ none (the finite stratum; AAL at `h=0`) | sub | whole programme (§3) |
+| B13 | Finitely many off-line zeros of ζ ⇒ none (AAL at `h=0`); distinguish the positive-heat-family extension | conditional for ζ; heat-family form RH | whole programme (§3) |
 | B14 | Any interior width value: window negativity exponent `<½`, a horocycle, Farey, pulse, Narain or spline-orbit exponent past the trivial one | ≥qRH | width axis |
 | B15 | Past Vinogradov–Korobov | sub | every route |
 | B16 | Decay law of `λ*(c)` | sub | CHT, RW |
@@ -267,8 +269,8 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B95 | Abelian group with Hecke endomorphisms whose trace form is `Q` | producer | ACS, AE |
 | B103 | Positive discrete Euler products with linear counting, continuation across `Re s=½` and an FE: AAL? (continuation alone fails for continuous systems) | method / sub | BAG, APD, ZCG |
 | B109 | Rankin–Selberg noncancellation: some cusp form `g` with `Λ_g(ρ/2)≠0` at every off-line zero | indep. | PM, BHR |
-| B111 | **Linear AAL**: `Θ−½≤C(Θ∞−½)` for one constant `C`, i.e. finitely many zeros right of `½+h` ⇒ none right of `½+Ch` | sub | BAG, ZCG, IWT |
-| B112 | A mechanism converting the FE (a height reflection) into vertical transport of zeros, using the Dirichlet series and coupling both scales | sub | BAG, ZCG, APD |
+| B111 | **Linear AAL**: `Θ−½≤C(Θ∞−½)` for one constant `C`, i.e. finitely many zeros right of `½+h` ⇒ none right of `½+Ch` | ζ: equivalent to ZAL ⇒ RH; heat-family form RH | BAG, ZCG, IWT |
+| B112 | A mechanism converting the FE (a height reflection) into vertical transport of zeros, using the Dirichlet series and coupling both scales | scope-dependent: AAL for ζ; RH if it also eliminates finite layers on small positive heat deformations | BAG, ZCG, APD |
 | B114 | A positive-energy (half-sided) carrier of the partner involution | producer | PM, CTH |
 | B115 | A carrier of the jets of the trivial zeros (rank `≥3` on coprime orders; not Arakelov on `ℙ¹_ℤ`, not toric) | producer | SOSZ, ACS, HF |
 | — | ZAL | ≥qRH | whole programme |
@@ -366,15 +368,17 @@ for `X=e^{νℓ}` with `ν` in a thick set — a set of levels containing arbitr
 | Lower bounds for tail events at the Kronecker scale (B96) | existence side of the dark range | T1 fails in the letter [D] | as hard as pair correlation past `α=1` [C] |
 | Rankin–Selberg noncancellation (B109) | turns the cusp-energy rate into a full receiver | T1 vacuous | adds a receiver |
 
-## 2.5 Breakthrough question below AAL, RH and quasi-RH: linear AAL
+## 2.5 Linear AAL: ζ-only implication and RH-equivalent heat-family extension
 
-**Question.** *Can the deepest zero sit arbitrarily far above the asymptotic abscissa?* Let `Θ=sup Re ρ` and `Θ∞=inf{σ≥½: finitely many zeros have Re ρ>σ}`. AAL is `Θ=Θ∞`; the finite stratum B13 is `Θ∞=½ ⇒ Θ=½`. **Linear AAL** (B111): is there a constant `C` with
+**Question.** *Can the deepest zero sit arbitrarily far above the asymptotic abscissa?* Let `Θ=sup Re ρ` and `Θ∞=inf{σ≥½: finitely many zeros have Re ρ>σ}`. AAL is `Θ=Θ∞`. B13 is `FiniteOffLine ⇒ RH`; it is not `Θ∞=½ ⇒ Θ=½`, since infinitely many off-line zeros can approach the line. **Linear AAL** (B111): is there a constant `C` with
 
   `Θ−½ ≤ C(Θ∞−½)`,
 
 equivalently: finitely many zeros right of `½+h` ⇒ no zero right of `½+Ch`, for every `h≥0`?
 
-**Structure [D].** Linear AAL with any `C` contains B13 (take `h=0`). As `C↓1` it becomes AAL. The constant is a dial between the finite stratum and the full law. In the ¬AAL world, linear AAL with constant `C` excludes every isolated top whose depth exceeds `C` times the depth of the remainder.
+**Structure [L].** Existential linear AAL is exactly `ZerosApproachLine ⇒ RH`, equivalently `Θ∞=½ ⇒ Θ=½` (`zetaLinearAbscissaLaw_tfae`). It implies B13. The strict separation from B13 is proved on general configurations by `harmonicConfig`: infinitely many depths `1/(n+3)` give `Θ∞=½`, `Θ=5/6`, and a vacuously true finite-stratum implication. At a fixed slope `C≥1`, linear AAL is equivalent to the relative thick Weil-lag and prime-deviation bounds in `zetaLinearAbscissaLawAt_tfae`. Requiring every `C>1` gives AAL.
+
+**Heat-family strength [L].** Every `H_t`, `t>0`, has finitely many nonreal zeros, hence zero asymptotic spectral depth. Therefore even allowing a separate constant `C(t)` at each sufficiently small positive time, linear AAL on `H_t` is equivalent to RH (`riemannHypothesis_iff_eventually_heat_linearAbscissaLaw`). Finite-stratum elimination on that family already suffices. Neither named file supplies a transfer from a ζ-only elimination or transport law to the heat family. B112 must specify this scope before being assigned a strength.
 
 **Why this question.**
 - **It is the quantitative core of AAL that the corpus can attack.** Under an isolated top `Θ` over a remainder of depth `Θ₂−½` with `Θ−½>C(Θ₂−½)`, the tower theorems give syndetic lag excursions `≍X^{Θ}` against a remainder of trace norm `≍X^{Θ₂}`: an exponent gap `≥(1−1/C)(Θ−½)` [L]. A crude count of the prime deviation at an exponent between `Θ₂` and `Θ`, on a thick set of scales and **relative to the asymptotic abscissa** — `O(X^{½+C(Θ∞−½)+ε})` — excludes the top. The question is B110 with a relative exponent.
@@ -384,9 +388,9 @@ equivalently: finitely many zeros right of `½+h` ⇒ no zero right of `½+Ch`, 
 
 **What an answer needs [L/D].** The Dirichlet series (FE models admit every layer), both scales (Γ140), and the FE converted into vertical transport (firewall). The natural form: an inequality that bounds the prime deviation at scale `X` by the zeros of depth `≥Θ∞−½` only up to a loss `X^{ε}`, on long runs of scales — a relative thick crude count.
 
-**Tests.** T1: implied by AAL, hence by RH; does not imply quasi-RH. T2: an inequality between `Θ` and `Θ∞`. T3: B13, and with `C=1` AAL. T4: no finite rung decides it (Γ140). T5: false on `cosh` models, one-reflection-pair configurations and Beurling one-offs, all of which have `Θ∞=½<Θ` [L]. T6: relative thick crude count; FE-to-transport. T7: moves Γ68, Γ136, Γ146.
+**Tests.** T1: implied by AAL, hence by RH; the ζ-only law still permits the alternative `¬ZAL`. T2: an inequality between `Θ` and `Θ∞`. T3: B13, and with `C=1` AAL; with ZAL, RH at every slope. T4: no finite rung decides it (Γ140). T5: false on `cosh` models, one-reflection-pair configurations and Beurling one-offs with `Θ∞=½<Θ` [L]. T6: relative thick crude count; FE-to-transport. T7: moves Γ68, Γ136, Γ146.
 
-**Limit.** It leaves AAL at the top of the dial: a layer only slightly deeper than the remainder is not excluded for `C>1`.
+**Limit.** For ζ alone, existential linear AAL does not supply ZAL: when `Θ∞>½`, a finite slope exists automatically. With ZAL it gives RH. Its positive-heat-family extension is RH-equivalent because the missing finiteness is already available there.
 
 ## 2.6 If positivity, Weil positivity and spectral methods are excluded
 
@@ -569,13 +573,13 @@ Holography, ringdown and counting holography are formalized; their positive resu
 
 ## 3. The one big question
 
-**Can ζ have finitely many, but not zero, zeros off the critical line?** (B13) It is AAL at depth `h=0`, strictly below AAL and below linear AAL (2.5), and below quasi-RH.
+**Can ζ have finitely many, but not zero, zeros off the critical line?** (B13) This is the ζ-only implication `FiniteOffLine ⇒ RH`, or AAL at depth `h=0`. General configurations strictly separate it from linear AAL; this is not an independence theorem for ζ. Extending finite-stratum elimination to every sufficiently small positive heat deformation proves RH, since each such deformation already has only finitely many nonreal zeros.
 
 | Form | Statement | Evidence |
 |---|---|---|
-| Configuration | `Θ∞=½ ⇒ Θ=½`; finitely many right zeros ⇒ none | `ConfigAbscissa.AbscissaLawAt`, `zetaZeroConfig_abscissaLaw_iff` [L] |
+| Configuration | finitely many right zeros ⇒ none; `AbscissaLawAt · 0` | `ConfigAbscissa.AbscissaLawAt`, `harmonicConfig_separates_linearAbscissaLaw_from_finiteStratum` [L] |
 | Index | the negative index of Weil's kernel is `0` or `∞`; equivalently on one two-prime lattice | `zetaKernel_finiteIndex_tfae` [L] |
-| Heat | a bounded number of non-real heat zeros for `t>0` forces none at `t=0` | `zetaKernel_finiteIndex_tfae` [L] |
+| Heat | a bound on nonreal heat counts uniform over `t>0` forces none at `t=0`; pointwise finiteness alone is already proved | `finite_nonreal_zeros_iff_exists_nonrealZeroCount_le`, `riemannHypothesis_iff_eventually_nonrealZeroCount_eq_zero` [L] |
 | Jensen | `N_d` bounded forces `N_d=0` | FFP [L] |
 | Slice | eventual slice positivity forces positivity | `eventualSlicePositivity_iff_finiteOffLine` [L] |
 | Tower | in the finite stratum, one non-blind prime tower is PD | `FiniteSupportMakesAlmostEveryPrimeDecideZeta` [K] |
@@ -651,7 +655,7 @@ Holography, ringdown and counting holography are formalized; their positive resu
 ### Validation
 | Test | Verdict |
 |---|---|
-| T1 | Pass. RH implies it; it does not imply quasi-RH [D]. |
+| T1 | RH implies the ζ-only conditional. Its premise remains unproved; the small-positive-heat-family extension is RH-strength [L/D]. |
 | T2 | Pass. A stated implication in each form. |
 | T3 | Pass. The effects table. |
 | T4 | Pass. No finite verification decides it [L]. |
@@ -660,7 +664,7 @@ Holography, ringdown and counting holography are formalized; their positive resu
 | T7 | Pass. Moves Σ4, Γ67, Γ68, Γ136, Γ140, Γ146 and block S8. |
 
 ### Limits
-- B13 leaves every world with infinitely many off-line zeros; linear AAL, AAL and ZAL remain for RH.
+- ζ-only B13 is vacuous in worlds with infinitely many off-line zeros. This does not apply to its positive-heat-family extension: finiteness at every positive heat time is already proved, so elimination there gives RH.
 - Its receivers become RH receivers, but their producers (finite index, bounded heat count, bounded `N_d`) are at least quasi-RH (B12, B23).
 - Positivity, Euler products, counting, continuation, positive Hecke combinations, rational surgery, the FE with analytic shape and scale-separated statistics cannot exclude a finite set [L].
 - Excluding finitely many zeros is an exceptional-zero problem; classical exceptional-zero repulsion is consistent with the finite stratum [D].

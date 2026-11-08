@@ -301,6 +301,20 @@ points in degrees zero, one, and at least two.
 The [formalized count](../../../docs/drafts/pipeline/3-formalized/riac-finite-field-orientation-counts.md)
 uses the existing derived polynomial Möbius degree sums. It retains an
 arithmetic orientation sign but supplies no independent cancellation
-estimate. Comparison with the usual polynomial discriminant, an independent
-Frobenius orbit count, and any integer-cutoff realization remain
+estimate. The independent orbit count below supplies a separate producer;
+its cover comparison, the usual polynomial-discriminant comparison and any
+integer-cutoff realization remain
 [construction problems](../../../docs/drafts/pipeline/1-in-progress/riac-discriminant-cover-signed-counts.md).
+
+## Independent Frobenius orbit count
+
+[FiniteFieldOrbitCounts.lean](FiniteFieldOrbitCounts.lean) constructs the
+finite extension of degree `|G|` for any finite permutation action on `n`
+labels. Its Frobenius-stable tuple orbits number exactly `q^n`. Explicit
+normal-basis bijections give `q^n` solutions to every permutation twist;
+transporter torsors then give the orbit total. No Möbius degree sum enters
+this proof, and repeated coordinates are retained.
+
+The [formalized construction](../../../docs/drafts/pipeline/3-formalized/riac-independent-frobenius-orbit-counts.md)
+supplies an independent finite-field count. Its comparison with the
+orientation cover and the integer local-index sum remains open.

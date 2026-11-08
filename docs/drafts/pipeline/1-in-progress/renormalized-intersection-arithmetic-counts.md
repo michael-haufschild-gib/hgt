@@ -81,8 +81,10 @@ sum remain open.
 The [finite-field orientation count](../3-formalized/riac-finite-field-orientation-counts.md)
 constructs actual square-root fibres of residue-field trace discriminants.
 Their signed fibre counts recover polynomial Möbius signs. The aggregate
-count uses established polynomial cancellation; an independent Frobenius
-orbit count and the integer comparison remain open.
+count uses established polynomial cancellation. A separate
+[independent Frobenius orbit count](../3-formalized/riac-independent-frobenius-orbit-counts.md)
+now derives `q^n` from normal-basis bijections and actual transporter sets.
+Its orientation-cover comparison and the integer comparison remain open.
 
 ## Necessary distinctions
 
