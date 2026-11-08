@@ -23,7 +23,9 @@ private theorem meromorphic_slopeExt {f : ℂ → ℂ} (hf : Meromorphic f) (p :
   · subst z
     filter_upwards [self_mem_nhdsWithin] with w hw
     exact (slopeExt_of_ne hw).symm
-  · filter_upwards [(isOpen_ne.mem_nhds hz).filter_mono nhdsWithin_le_nhds] with w hw
+  · have hnear : ∀ᶠ w in 𝓝[≠] z, w ≠ p :=
+      nhdsWithin_le_nhds (isOpen_ne.mem_nhds hz)
+    filter_upwards [hnear] with w hw
     exact (slopeExt_of_ne hw).symm
 
 /-- The entire divided numerators express the main-pole numerator as a meromorphic quotient. -/
@@ -77,7 +79,9 @@ theorem narainMellinMeanRegularPart_full_order (p : Resonance) (Y Z : Height) :
       (analyticAt_const.div hd (sub_ne_zero.mpr hp))).neg
   have heq : narainMellinMeanRegularPart Y Z =ᶠ[𝓝[≠] p.val]
       narainMellinMean Y Z + Q := by
-    filter_upwards [(isOpen_ne.mem_nhds hp).filter_mono nhdsWithin_le_nhds] with u hu
+    have hnear : ∀ᶠ u in 𝓝[≠] p.val, u ≠ (1 / 2 : ℂ) :=
+      nhdsWithin_le_nhds (isOpen_ne.mem_nhds hp)
+    filter_upwards [hnear] with u hu
     have h := narainMellinMean_principalPart Y Z hu
     dsimp only [Pi.add_apply, Q]
     linear_combination -h

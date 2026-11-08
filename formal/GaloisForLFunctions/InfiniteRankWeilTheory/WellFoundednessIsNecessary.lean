@@ -89,6 +89,19 @@ theorem norm_wolffMode {o c : Bool} {x : ℂ} (hx : x ∈ annulus (3 / 2) 2) :
     rw [inv_lt_comm₀ (by linarith) (by norm_num)]
     linarith
 
+theorem norm_wolffMode_lt_two (o c : Bool) {x : ℂ} (hx : x ∈ annulus (3 / 2) 2) :
+    ‖wolffMode o c x‖ < 2 := by
+  cases o
+  · have := (norm_wolffMode (o := false) (c := c) hx).2 rfl; linarith
+  · exact ((norm_wolffMode (o := true) (c := c) hx).1 rfl).2
+
+theorem norm_wolffMode_ne_one (o c : Bool) {x : ℂ} (hx : x ∈ annulus (3 / 2) 2) :
+    ‖wolffMode o c x‖ ≠ 1 := by
+  intro h
+  cases o
+  · have := (norm_wolffMode (o := false) (c := c) hx).2 rfl; linarith
+  · have := ((norm_wolffMode (o := true) (c := c) hx).1 rfl).1; linarith
+
 /-- **The Wolff tower is invisible.** Its level sums vanish at every level `ν ≥ 1`. -/
 theorem levelSum_wolffTower_eq_zero {t : Set ℂ} {c : ℂ → ℝ} (htA : t ⊆ annulus (3 / 2) 2)
     (hc : ∀ x ∈ t, 0 < c x) (hsum : Summable (fun x : t => c x))
@@ -99,40 +112,33 @@ theorem levelSum_wolffTower_eq_zero {t : Set ℂ} {c : ℂ → ℝ} (htA : t ⊆
       (fun p => (c p.2 : ℂ)) ν = 0 := by
   set f : (Bool × Bool) × t → ℂ := fun p => (c p.2 : ℂ) * wolffMode p.1.1 p.1.2 p.2 ^ (ν : ℤ)
     with hf
-  -- summability: every mode has modulus `< 2`
-  have hbound : ∀ p : (Bool × Bool) × t, ‖f p‖ ≤ c p.2 * 2 ^ ν := by
-    intro p
-    have hcp := (hc p.2 p.2.2).le
-    rw [hf, norm_mul, Complex.norm_real, Real.norm_of_nonneg hcp, zpow_natCast, norm_pow]
-    refine mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) ?_ ν) hcp
-    obtain ⟨ho1, ho2⟩ := norm_wolffMode (o := p.1.1) (c := p.1.2) (htA p.2.2)
-    cases h : p.1.1
-    · linarith [ho2 h]
-    · exact (ho1 h).2.le
-  have hsum2 : Summable fun p : (Bool × Bool) × t => c p.2 * 2 ^ ν := by
-    refine ((summable_prod_of_nonneg fun p => by
-      have := (hc p.2 p.2.2).le; positivity).2 ⟨fun _ => hsum.mul_right _, ?_⟩).mul_right _ |>.congr ?_
-    · exact Summable.of_finite
-    · intro p; ring
-  have hfs : Summable f := Summable.of_norm_bounded hsum2 hbound
+  have hbound : ∀ p, ‖f p‖ ≤ c p.2 * 2 ^ ν := by
+    rintro ⟨⟨o, c'⟩, x⟩
+    have hcp := (hc x x.2).le
+    simp only [hf]
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hcp, zpow_natCast, norm_pow]
+    exact mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ (norm_nonneg _) (norm_wolffMode_lt_two o c' (htA x.2)).le ν) hcp
+  have hsumP : Summable fun p : (Bool × Bool) × t => c (p.2 : ℂ) :=
+    (summable_prod_of_nonneg (f := fun p : (Bool × Bool) × t => c (p.2 : ℂ))
+      fun p => (hc p.2 p.2.2).le).2 ⟨fun _ => hsum, Summable.of_finite⟩
+  have hfs : Summable f := Summable.of_norm_bounded (hsumP.mul_right _) hbound
   have hslice : ∀ oc : Bool × Bool, Summable fun x : t => f (oc, x) := fun oc =>
     hfs.comp_injective (Prod.mk_right_injective oc)
-  -- the four slices vanish
-  have h1 := (hpos ν hν).tsum_eq
-  have h2 := ((hpos ν hν).map (starRingEnd ℂ) (continuous_conj)).tsum_eq
-  have h3 := (hneg ν hν).tsum_eq
-  have h4 := ((hneg ν hν).map (starRingEnd ℂ) (continuous_conj)).tsum_eq
+  have e1 : ∀ x : t, f ((true, false), x) = (c x : ℂ) * (x : ℂ) ^ ν := fun x => by
+    simp [hf, wolffMode, wolffBase]
+  have e2 : ∀ x : t, f ((true, true), x) = starRingEnd ℂ ((c x : ℂ) * (x : ℂ) ^ ν) := fun x => by
+    simp [hf, wolffMode, wolffBase]
+  have e3 : ∀ x : t, f ((false, true), x) = (c x : ℂ) * ((x : ℂ) ^ ν)⁻¹ := fun x => by
+    simp [hf, wolffMode, wolffBase]
+  have e4 : ∀ x : t, f ((false, false), x) = starRingEnd ℂ ((c x : ℂ) * ((x : ℂ) ^ ν)⁻¹) :=
+    fun x => by simp [hf, wolffMode, wolffBase]
   unfold levelSum
   change ∑' p, f p = 0
   rw [hfs.tsum_prod' hslice, tsum_fintype, Fintype.sum_prod_type, Fintype.sum_bool,
     Fintype.sum_bool, Fintype.sum_bool]
-  simp only [hf, wolffMode, wolffBase, if_true, Bool.false_eq_true, if_false, zpow_natCast,
-    Complex.conj_conj, inv_pow] at h2 h4 ⊢
-  simp only [Function.comp_def, map_mul, Complex.conj_ofReal, map_pow, map_inv₀, map_zero] at h2 h4
-  rw [h1, h3]
-  rw [show (∑' x : t, (c x : ℂ) * (starRingEnd ℂ (x : ℂ)) ^ ν) = 0 from h2,
-    show (∑' x : t, (c x : ℂ) * ((starRingEnd ℂ (x : ℂ)) ^ ν)⁻¹) = 0 from h4]
-  ring
+  simp only [e1, e2, e3, e4, ← conj_tsum, (hpos ν hν).tsum_eq, (hneg ν hν).tsum_eq, map_zero,
+    add_zero]
 
 /-- **The Wolff tower.** A Weil tower with positive real weights compatible with the reflection,
 every mode off the unit circle, outer modes accumulating at radius `2`, and level sums vanishing at
@@ -149,18 +155,12 @@ theorem exists_wolff_tower :
   · refine (summable_prod_of_nonneg fun p => norm_nonneg _).2 ⟨fun _ => ?_, Summable.of_finite⟩
     exact hsum.congr fun x => by
       rw [Complex.norm_real, Real.norm_of_nonneg (hc x x.2).le]
-  · rfl
+  · show (c (WeilTower.reflPerm _ p).2 : ℂ) = starRingEnd ℂ (c p.2 : ℂ)
+    rw [Complex.conj_ofReal]
+    rfl
   · exact ⟨by simpa using hc p.2 p.2.2, by simp⟩
-  · obtain ⟨ho1, ho2⟩ := norm_wolffMode (o := p.1.1) (c := p.1.2) (htA p.2.2)
-    show ‖wolffMode p.1.1 p.1.2 p.2‖ ≠ 1
-    cases h : p.1.1
-    · linarith [ho2 h]
-    · linarith [(ho1 h).1]
-  · obtain ⟨ho1, ho2⟩ := norm_wolffMode (o := p.1.1) (c := p.1.2) (htA p.2.2)
-    show ‖wolffMode p.1.1 p.1.2 p.2‖ < 2
-    cases h : p.1.1
-    · linarith [ho2 h]
-    · exact (ho1 h).2
+  · exact norm_wolffMode_ne_one p.1.1 p.1.2 (htA p.2.2)
+  · exact norm_wolffMode_lt_two p.1.1 p.1.2 (htA p.2.2)
   · obtain ⟨x, hx, hRx⟩ := hacc R' hR'
     exact ⟨((true, false), ⟨x, hx⟩), by simpa [wolffTower, wolffMode, wolffBase] using hRx⟩
 
@@ -195,7 +195,7 @@ theorem exists_tower_bounded_without_wellFounded :
   refine ⟨ι, T, b, hsum, hrefl, not_wellFoundedAbove_of_accumulates hlt2 hacc,
     ⟨‖levelSum T.z b 0‖, fun ν => ?_⟩, hne1, fun i F hF => ?_⟩
   · rcases Nat.eq_zero_or_pos ν with h | h
-    · rw [h]
+    · rw [h, Nat.cast_zero]
     · rw [hzero ν h, norm_zero]; exact norm_nonneg _
   · intro h0
     have hre := congrArg Complex.re h0

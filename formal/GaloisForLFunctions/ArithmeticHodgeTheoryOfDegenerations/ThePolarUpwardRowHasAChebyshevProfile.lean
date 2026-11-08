@@ -93,7 +93,7 @@ theorem exists_abs_reciprocalUpward_one_sub_mean_le {δ : ℝ} (hδ : 0 < δ) :
         _ ≤ (2 * (K : ℝ) * (2 * c)) / ((∫ u, tiltedUnitSpline u ^ 2) * (δ * c)) :=
           (div_le_div_of_nonneg_right hnum (by positivity)).trans
             (div_le_div_of_nonneg_left (by positivity) (by positivity) hden)
-        _ = D := by dsimp only [D]; field_simp [hc0.ne', hM.ne', hδ.ne']
+        _ = D := by dsimp only [D]; field_simp [hc0.ne', hM.ne', hδ.ne']; ring
     rw [← mul_sub, abs_mul, abs_of_nonneg (div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)]
     exact mul_le_mul_of_nonneg_left (hb.trans herr)
       (div_nonneg ArithmeticFunction.vonMangoldt_nonneg hk0.le)
@@ -168,7 +168,12 @@ theorem tendsto_topWindow_upward_polar_mean
                 (Real.sqrt n * Real.sqrt (Real.log N)) := by
         change primeHorizonExtension (v N - polarUpwardMeanVector (c N) N) idx.1 = _
         rw [primeHorizonExtension_coe]
-        change _ / _ - _ / _ = _
+        change (reciprocalUpwardCoefficient tiltedUnitSpline (c N) (linearPrimeStrip (c N)) N 1 n /
+            (Real.sqrt n * Real.sqrt (Real.log N))) -
+          ((((∫ u, tiltedUnitSpline u) ^ 2 / (∫ u, tiltedUnitSpline u ^ 2)) *
+            (c N * n / N) *
+              (∑ k ∈ Icc 1 ⌊(N : ℝ) / n⌋₊, (ArithmeticFunction.vonMangoldt k : ℝ))) /
+            (Real.sqrt n * Real.sqrt (Real.log N))) = _
         exact (sub_div _ _ _).symm
       have hs := pow_le_pow_left₀ (abs_nonneg _) (hrow (hc N) hN hn) 2
       rw [sq_abs] at hs

@@ -120,7 +120,7 @@ theorem normalized_sum_polarCenterProfile_sub_cutoff_sq_le {δ η : ℝ}
   have hKhi : (K : ℝ) ≤ η * N + 1 := by
     dsimp only [K]
     rw [Nat.cast_add, Nat.cast_one]
-    exact add_le_add_right (Nat.floor_le (by positivity)) _
+    exact add_le_add (Nat.floor_le (by positivity : 0 ≤ η * (N : ℝ))) le_rfl
   have h2K : 2 * K ≤ N := by
     have hh := mul_le_mul_of_nonneg_right hη4 hN0.le
     have hNr : (8 : ℝ) ≤ N := by exact_mod_cast hN8

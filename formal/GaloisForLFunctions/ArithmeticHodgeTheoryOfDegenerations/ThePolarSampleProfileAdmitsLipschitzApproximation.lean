@@ -137,13 +137,13 @@ theorem exists_polarLogSampleProfile_approximation_bound {a η ρ : ℝ}
     have hh : (∑ n ∈ S, E n ^ 2) ≤
         3 * q ^ 2 * ((∑ n ∈ S, P n ^ 2) + ∑ n ∈ S, J n ^ 2) + N * (3 * ρ ^ 2) := by
       nlinarith only [hs, hc]
-    exact (div_le_div_of_nonneg_right hh hN0.le).trans_eq (by field_simp [hN0.ne']; ring)
+    exact (div_le_div_of_nonneg_right hh hN0.le).trans_eq (by field_simp [hN0.ne'])
   change (∑ n ∈ Icc 1 N, E n ^ 2) / N ≤ _
   rw [heq]
-  exact hdiv.trans (_root_.add_le_add_right (mul_le_mul_of_nonneg_left
+  exact hdiv.trans (add_le_add (mul_le_mul_of_nonneg_left
     (add_le_add (normalized_sum_polarCenterProfile_sub_cutoff_sq_le (Real.exp_pos a) hη hη4 hN)
       (normalized_sum_chebyshevPsi_sub_ramp_sq_le (Real.exp_pos a) hη hηa hN1))
-    (by positivity : 0 ≤ 3 * q ^ 2)) _)
+    (by positivity : 0 ≤ 3 * q ^ 2)) le_rfl)
 
 /-- The left-truncated polar profile is approximable to arbitrary sampled square accuracy by one
 compact Lipschitz test, uniformly for all sufficiently large horizons. -/

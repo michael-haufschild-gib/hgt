@@ -144,13 +144,18 @@ condition — not bridged. F24: open (B106).
 `Σ_{n≠0}|ρ(n)|²|n|^{−s} = (|ρ(1)|² + |ρ(−1)|²) Π_p (1 − p^{−2s})/Q_p(λ_p, λ̄_p; p^{−s})`, and the
 Rankin–Selberg integral `∫_𝒟|g|²E(s − ½)` is `(2π)^{−s}γ_ν(s)` times this (Re s > 2, Im s ≠ 0).
 Open for the symmetric-square reading of eigenforms: reality of `λ_p` (Hecke self-adjointness is not
-in the corpus).
+in the corpus). Remaining paper step (not formalized): with `completedRS_eq` and
+`ζ(2s)Π_p(1 − p^{−2s}) = 1`, `Λ_g(s) = ½π^{−s}Γ(s)(2π)^{−s}γ_ν(s)(|ρ(1)|²+|ρ(−1)|²)Π_p Q_p(p^{−s})^{−1}`
+for `Re s > 2`, so the horocycle receiver `completedRS_half_eq_zero_of_rate` reads zeros of the
+continued `L(g × ḡ, s)` at `s = z/2`.
 
 ## Conjecture loop
-- C15.1 (open): the Krein square of the integer probes is not integer-valued. Reduction: integral
+- C15.1 (open, hard): the Krein square of the integer probes is not integer-valued. Reduction: integral
   values force `2 Re C(log(m/n)) ∈ ℤ`; `C` is continuous (`continuous_splineCorr`) and `log ℚ₊` is
-  dense, so `2 Re C` would be constant. Missing: non-constancy of the spline correlation, which needs
-  the explicit formula for `C`. Not attempted further.
+  dense, so `2 Re C` would be constant. Missing: non-constancy of `C`. The prime side gives only
+  `C(u) = o(e^{u/2})` (PNT), and constancy would be an RH-size smoothed prime count, not a
+  contradiction; the zero side (`zeta_W_eq_weilFullFunctional_mixed`) needs a uniqueness theorem for
+  `Σ_ρ m_ρ ĥ(γ_ρ)conj ĥ(γ̄_ρ) e^{iγ_ρ u}` with complex `γ_ρ`. Not formalized.
 - C22.1 (refuted as stated, kept as a reading): "power sums ↔ AAL" — on curves AAL is free; the
   power-sum step is inside ZAL (`curve_template_split`).
 - C21.1 (proved): asymptotic zero statistics cannot decide B13 (`TheAbscissaLawIsNotAsymptotic`).
@@ -162,6 +167,10 @@ in the corpus).
   tail up to any fraction `η > 0` has positive lower density at every point of the strip and every cut
   (universality with a small constant target, whose discs are zero-free); AAL needs `η = 0` near right
   zeros, i.e. winding-one events, which are the density-zero ones.
+- C21.3 (proved, `ZeroConfigurationGeometry/AbscissaLaws/TheFiniteStratumLawOnTheHeatFamilyIsRH`): any
+  property shared by all heat deformations `H_t` (`t > 0`) that forces the finite-stratum law implies RH
+  (each `H_t` is in the finite stratum by Ki–Kim–Lee). The `H_t` keep the FE and Pólya positivity and
+  lose the Euler product: a B13 input must use the Euler product together with the FE.
 - C22.2 (proved, `ZeroConfigurationGeometry/AbscissaLaws/AlmostPeriodicZerosRecurWithBoundedGaps`): zeros of a
   uniformly strip-almost-periodic holomorphic function recur with bounded gaps (Bohr), hence obey the
   law; every Dirichlet series does so where its partial sums converge uniformly. The rational one-off
@@ -169,4 +178,4 @@ in the corpus).
   must hold uniformly in height. ζ is the Frobenius-periodic analogue only on `Re s > 1`.
 
 ## Log
-- 2026-11-08 — created; F22, F21, F18, F15, F2, F8/F23, F5 bridges and two F21/F22 follow-ups compiled and wired.
+- 2026-11-08 — created; all §2.3 routes processed; bridges and firewalls compiled and wired.

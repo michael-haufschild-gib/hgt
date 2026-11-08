@@ -47,7 +47,7 @@ theorem no_charged_limit_profile_below_polarPayment
     dsimp only [B, I₁, I₂, I₈]
     linarith only [hh]
   obtain ⟨C, A, H, hC, hwin, hmass, hweighted, hL2, hweightedLim, harch⟩ :=
-    exists_window_sequence_of_gammaLiminf_bound (R := R) (B := B) hFm hFi hF2 hF8 (le_rfl : M ≤ M) hFzero hbound
+    exists_window_sequence_of_gammaLiminf_bound (Rstar := R) (B := B) hFm hFi hF2 hF8 (le_rfl : M ≤ M) hFzero hbound
   have hHd : ∀ k, ContDiff ℝ 2 (H k) := fun k => (hwin k).2.contDiff
   have hHc : ∀ k, HasCompactSupport (H k) := fun k => (hwin k).2.hasCompactSupport
   have hHs : ∀ k u, 1 < u → H k u = 0 := fun k u hu =>
@@ -106,7 +106,7 @@ theorem no_charged_limit_profile_below_polarPayment
   have hgap : 0 < gap := by
     have ha := sub_pos.mpr hAlias
     have hb := mul_pos hI₂ (sub_pos.mpr hcost)
-    have hsum : 0 < I₈ + β ^ 2 := lt_of_lt_of_le hnonzero (_root_.add_le_add_right hmass8 _)
+    have hsum : 0 < I₈ + β ^ 2 := lt_of_lt_of_le hnonzero (add_le_add hmass8 le_rfl)
     dsimp only [gap]
     rcases lt_or_eq_of_le hI₈0 with hi | hi
     · exact add_pos_of_pos_of_nonneg (mul_pos ha hi) (mul_nonneg hb.le (sq_nonneg _))

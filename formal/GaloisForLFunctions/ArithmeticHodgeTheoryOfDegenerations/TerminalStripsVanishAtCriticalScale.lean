@@ -165,7 +165,7 @@ theorem tendsto_normalized_square_mean_of_annular_limits
       (show ((S N).card : ℝ) ≤ N by exact_mod_cast hS N) hD
     have htotal : (∑ n ∈ S N, (f N n - s) ^ 2) / N ≤
         3 * ((∑ n ∈ S N, (g T N n - m T) ^ 2) / N) + D := by
-      have hh := hs.trans (_root_.add_le_add_left hcard _)
+      have hh := hs.trans (add_le_add le_rfl hcard)
       exact (div_le_div_of_nonneg_right hh hN0.le).trans_eq (by field_simp [hN0.ne'])
     dsimp only [D] at htotal
     linarith only [htotal, hsmall, hsmallN]

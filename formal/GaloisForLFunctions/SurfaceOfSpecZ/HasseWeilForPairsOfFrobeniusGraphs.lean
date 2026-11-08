@@ -63,7 +63,7 @@ theorem continuous_zetaOrbitCorr' (x : ScalingCycle) :
   have hlag := SquareRootThreshold.continuous_lagStructure Zeta23.zetaZeroConfig
     SquareRootThreshold.temperedConfig_zetaZeroConfig (cx_contDiff hf.1) hbs
   have heq : zetaScalingDatum.orbitCorr x =
-      fun v => (lagStructure Zeta23.zetaZeroConfig (cx x.2.2) v).re := by
+      fun v => (SquareRootThreshold.lagStructure Zeta23.zetaZeroConfig (cx x.2.2) v).re := by
     funext v
     rw [← configScalingDatum_zeta_orbitCorr, configScalingDatum_orbitCorr_eq,
       lagStructure_eq Zeta23.zetaZeroConfig hf]
@@ -119,6 +119,3 @@ theorem riemannHypothesis_iff_forall_frobeniusPair_hasseWeil :
     exact this
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.riemannHypothesis_iff_forall_frobeniusPair_hasseWeil
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.frobeniusPair_defect_nonneg_iff

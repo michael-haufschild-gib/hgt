@@ -126,7 +126,6 @@ theorem tendsto_topWindow_full_polarCenter_mean
           (polarCenterRow N n - polarCenterProfile (fun _ => 1) ((n : ℝ) / N)) ^ 2 := by
       rw [div_pow, mul_pow, mul_pow, Real.sq_sqrt hn0.le, Real.sq_sqrt hL.le]
       field_simp [hN0.ne', hL.ne', (hc N).ne']
-      ring
     rw [he]
     have hx : (n : ℝ) / N ≤ 1 := (div_le_one hN0).mpr (by exact_mod_cast hnN)
     exact mul_le_mul_of_nonneg_right
