@@ -310,7 +310,15 @@ original kernel entries by [WeightedProbeAtoms.lean](WeightedProbeAtoms.lean).
 [SpacingFiniteConstraints.lean](SpacingFiniteConstraints.lean) constructs definite
 subspaces of both signs in every finite dimension. Every finite family of linear
 constraints leaves both signs, so no finite-rank bilinear correction makes this
-form semidefinite. The Hilbert–Schmidt boundary remains open.
+form semidefinite.
+
+[TorsionHilbertSchmidtBoundary.lean](TorsionHilbertSchmidtBoundary.lean) proves
+that this operator is Hilbert–Schmidt exactly for `δ>1/2`, with squared norm
+
+`2(Σ_(m≥1) m^(−2δ))(Σ_(t≥1) Λ(t)²/t^(1+δ)) + Σ_(n≥1) d(n)²/n^(2δ)`.
+
+Divisor-pair reindexing gives the exact square mass; even-conductor diagonals
+force the sharp converse.
 
 ## Questions and open research topics
 

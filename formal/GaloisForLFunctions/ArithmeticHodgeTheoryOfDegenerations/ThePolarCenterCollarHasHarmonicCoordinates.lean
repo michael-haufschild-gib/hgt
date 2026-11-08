@@ -283,8 +283,8 @@ theorem abs_near_polarCenter_row_sub_interior_profile_le {c : ℝ} {N n : ℕ}
   have hsle : smooth ≤ 4 * Real.exp 2 * (c / N) :=
     sum_near_smooth_reciprocal_le hc hn (by
       have hcN : 0 < c / N := div_pos hc hN0
-      change 2 * c / N ≤ 1 / 8 at hw
-      linarith only [hw, hcN])
+      have hh : 2 * (c / N) ≤ 1 / 8 := by simpa only [mul_div_assoc] using hw
+      linarith only [hh, hcN])
   have hrow := near_polarCenter_row_eq_harmonics hc hn
   change (∑ j ∈ nearRowIndices c N n, archimedeanCenterKernel n j / Real.sqrt j) =
     (Real.sqrt n / 2) * ((harmonic (n - lo) : ℝ) + harmonic (min N hi - n) + smooth) at hrow

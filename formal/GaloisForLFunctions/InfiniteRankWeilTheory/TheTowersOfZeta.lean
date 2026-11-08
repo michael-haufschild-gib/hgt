@@ -147,7 +147,7 @@ theorem asymptoticAbscissaLaw_of_thick_lag_bound {ℓ : ℝ} (hℓ : 0 < ℓ)
     Real.exp_lt_exp.mpr (by nlinarith)
   refine not_forall_mem_thick_norm_levelSum_le (frobTower ℓ zetaConfig) lagWeight
     summable_norm_lagWeight F (Real.exp_pos _) (Real.exp_pos _).le hlt hlow htop hvis
-    (Real.exp_pos _).le hρR hG (fun ν hν => ?_)
+    (C := C) (Real.exp_pos _).le hρR hG (fun ν hν => ?_)
   have := hC ν hν
   rwa [weilLagFunction_mul_eq_levelSum, show (Θ - 1 / 2) / 2 * (ν : ℝ) * ℓ =
     ν * ((Θ - 1 / 2) / 2 * ℓ) by ring, Real.exp_nat_mul] at this
@@ -155,7 +155,7 @@ theorem asymptoticAbscissaLaw_of_thick_lag_bound {ℓ : ℝ} (hℓ : 0 < ℓ)
 /-- **RH is ZAL plus one thick bounded lag.** `RH ⇔ ZAL ∧` the lag is bounded along a thick set of
 levels of one tower. -/
 theorem riemannHypothesis_iff_zerosApproachLine_and_thick_lag_bounded :
-    RiemannHypothesis ↔ RHTower.ZerosApproachLine ∧
+    RiemannHypothesis ↔ RHTower.BacklundConverse.ZerosApproachLine ∧
       ∃ ℓ : ℝ, 0 < ℓ ∧ ∃ G : Set ℕ, Thick G ∧ ∃ C : ℝ,
         ∀ ν ∈ G, ‖weilLagFunction (ν * ℓ)‖ ≤ C := by
   constructor

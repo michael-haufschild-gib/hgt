@@ -1,9 +1,9 @@
 # Spectrum of the weighted torsion limit
 
 - **ID:** hhac-weighted-torsion-spectrum
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** SPECTRAL CLASSIFICATION
-- **Status:** Compactness and finite-rank sign obstruction formalized; complete Hilbert–Schmidt draft checked, production audit pending
+- **Status:** Complete classification formalized
 
 ## Exact classification
 
@@ -54,9 +54,9 @@ power series whenever `δ≤1/2`.
   `spacingLimitHilbertOperator_hilbertSchmidt_iff`,
   `spacingLimitHilbertOperator_hsNormSq`.
 
-The complete Hilbert–Schmidt draft passes eighteen transitive axiom audits
-with only `propext`, `Classical.choice` and `Quot.sound`. Its direct production
-check is pending. Earlier compactness and finite-rank sign modules are accepted.
+The direct production Lean check and eighteen transitive axiom audits pass
+with only `propext`, `Classical.choice` and `Quot.sound`. Compactness and
+finite-rank sign modules also pass their direct checks and axiom audits.
 
 ## Positive survivor and prior work
 

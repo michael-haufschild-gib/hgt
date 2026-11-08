@@ -121,7 +121,7 @@ theorem unitary_of_intSpanDefect_nonneg (h : ∀ S d, 0 ≤ intSpanDefect D S d)
       rw [one_div, ← div_eq_inv_mul, div_le_iff₀ hj]
       linarith
     have hlim : Tendsto (fun j : ℕ => d k - 1 / ((j : ℝ) + 1)) atTop (𝓝 (d k)) := by
-      simpa using tendsto_const_nhds.sub tendsto_one_div_add_atTop_nhds_zero_nat
+      simpa using tendsto_const_nhds.sub (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le hlim tendsto_const_nhds hlow hup
   exact ge_of_tendsto (((continuous_spanDefect D S).tendsto d).comp hconv)
     (Eventually.of_forall hnonneg)
@@ -175,6 +175,7 @@ theorem hyperelliptic_spanDefect_is_count (S : Finset ℕ) :
         ∀ m : ℕ, K (m • d) = m ^ 2 * K d := by
   set D := hyperellipticDatum hF hsq hodd
   choose N hN using hyperelliptic_pointCount_int hF hsq hodd
+  have hN' : ∀ j, D.pointCount j = N j := hN
   have hq : D.q = (Fintype.card F : ℝ) := rfl
   -- the integer value of the defect
   set Z : (ℕ → ℤ) → ℤ := fun d =>
@@ -182,7 +183,7 @@ theorem hyperelliptic_spanDefect_is_count (S : Finset ℕ) :
       ∑ k ∈ S, ∑ l ∈ S, d k * d l * ((Fintype.card F : ℤ) ^ min k l * N (Nat.dist k l)) with hZ
   have hval : ∀ d, intSpanDefect D S d = (Z d : ℝ) := by
     intro d
-    simp only [intSpanDefect, CurveDatum.spanDefect, CurveDatum.graphPair, hq, hZ, hN]
+    simp only [intSpanDefect, CurveDatum.spanDefect, CurveDatum.graphPair, hq, hZ, hN']
     push_cast
     ring
   have hnn : ∀ d, 0 ≤ Z d := by
@@ -192,12 +193,15 @@ theorem hyperelliptic_spanDefect_is_count (S : Finset ℕ) :
     have h' : (0 : ℝ) ≤ (Z d : ℝ) := by rw [← hval]; exact this
     exact_mod_cast h'
   refine ⟨fun d => (Z d).toNat, fun d => ⟨?_, fun m => ?_⟩⟩
-  · rw [hval, Int.toNat_of_nonneg (hnn d)]
+  · show (((Z d).toNat : ℕ) : ℝ) = _
+    rw [hval]
+    have h := Int.toNat_of_nonneg (hnn d)
+    exact_mod_cast h
   · have hsm : (Z (m • d) : ℝ) = (m : ℝ) ^ 2 * (Z d : ℝ) := by
       rw [← hval, ← hval, intSpanDefect_smul]
     have hzi : Z (m • d) = (m : ℤ) ^ 2 * Z d := by exact_mod_cast hsm
-    rw [hzi, Int.toNat_mul (by positivity) (hnn d)]
-    simp
+    show (Z (m • d)).toNat = m ^ 2 * (Z d).toNat
+    rw [hzi, Int.toNat_mul (by positivity) (hnn d), ← Nat.cast_pow, Int.toNat_natCast]
 
 end Hyperelliptic
 

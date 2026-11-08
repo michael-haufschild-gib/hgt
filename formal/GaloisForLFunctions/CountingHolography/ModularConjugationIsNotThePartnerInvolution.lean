@@ -398,44 +398,39 @@ theorem normalizer_psl2z_entries_int (g : Matrix (Fin 2) (Fin 2) ℝ)
     calc (D : ℝ) = ((m_d2.natAbs : ℤ) : ℝ) := by norm_cast
       _ = (m_d2 : ℝ) := by rw [Int.natAbs_of_nonneg h0]
       _ = d ^ 2 := hd2.symm
+  have hnatAbs_sq : ∀ m : ℤ, (m.natAbs : ℝ) ^ 2 = (m : ℝ) ^ 2 := fun m => by
+    rcases le_or_gt 0 m with hm | hm
+    · have h0 : (m.natAbs : ℤ) = m := Int.natAbs_of_nonneg hm
+      have h1 := congrArg (Int.cast (R := ℝ)) h0
+      rw [Int.cast_natCast] at h1
+      rw [h1]
+    · have h0 : ((-m).natAbs : ℤ) = -m := Int.natAbs_of_nonneg (by omega)
+      rw [Int.natAbs_neg] at h0
+      have h1 := congrArg (Int.cast (R := ℝ)) h0
+      rw [Int.cast_natCast, Int.cast_neg] at h1
+      rw [h1, neg_sq]
   have hAD_sq : A * D = m_ad.natAbs ^ 2 := by
     have hr : ((A * D : ℕ) : ℝ) = ((m_ad.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : (m_ad.natAbs : ℝ) ^ 2 = (m_ad : ℝ) ^ 2 := by
-        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_ad)
-        push_cast at h1z
-        exact h1z
-      rw [hA_eq, hD_eq, h1, ← had]
+      rw [hA_eq, hD_eq, hnatAbs_sq m_ad, ← had]
       ring
     exact_mod_cast hr
   have hBC_sq : B * C = m_bc.natAbs ^ 2 := by
     have hr : ((B * C : ℕ) : ℝ) = ((m_bc.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : (m_bc.natAbs : ℝ) ^ 2 = (m_bc : ℝ) ^ 2 := by
-        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_bc)
-        push_cast at h1z
-        exact h1z
-      rw [hB_eq, hC_eq, h1, ← hbc]
+      rw [hB_eq, hC_eq, hnatAbs_sq m_bc, ← hbc]
       ring
     exact_mod_cast hr
   have hAB_sq : A * B = m_ab.natAbs ^ 2 := by
     have hr : ((A * B : ℕ) : ℝ) = ((m_ab.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : (m_ab.natAbs : ℝ) ^ 2 = (m_ab : ℝ) ^ 2 := by
-        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_ab)
-        push_cast at h1z
-        exact h1z
-      rw [hA_eq, hB_eq, h1, ← hab]
+      rw [hA_eq, hB_eq, hnatAbs_sq m_ab, ← hab]
       ring
     exact_mod_cast hr
   have hCD_sq : C * D = m_cd.natAbs ^ 2 := by
     have hr : ((C * D : ℕ) : ℝ) = ((m_cd.natAbs ^ 2 : ℕ) : ℝ) := by
       push_cast
-      have h1 : (m_cd.natAbs : ℝ) ^ 2 = (m_cd : ℝ) ^ 2 := by
-        have h1z := congr_arg (Int.cast : ℤ → ℝ) (Int.natAbs_sq m_cd)
-        push_cast at h1z
-        exact h1z
-      rw [hC_eq, hD_eq, h1, ← hcd]
+      rw [hC_eq, hD_eq, hnatAbs_sq m_cd, ← hcd]
       ring
     exact_mod_cast hr
   have hcop_AD_BC : Nat.Coprime (A * D) (B * C) := by

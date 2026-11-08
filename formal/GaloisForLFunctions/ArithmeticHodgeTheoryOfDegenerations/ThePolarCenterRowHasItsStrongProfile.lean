@@ -63,7 +63,9 @@ theorem abs_polarCenterRow_sub_profile_le {N n : ℕ}
   rw [hid]
   have htri := (abs_add_le _ _).trans (add_le_add
     ((abs_sub _ _).trans (add_le_add ((abs_sub _ _).trans (add_le_add (he N hN) hb2)) hb3)) hb4)
-  exact htri.trans (by linarith only [h1, h2])
+  exact htri.trans (by
+    simp only [div_eq_mul_inv] at h1 h2 ⊢
+    linarith only [h1, h2])
 
 
 /-- The sampled logarithmic profile has the same summable terminal majorant as the exact row. -/
@@ -83,9 +85,9 @@ lemma abs_polarCenterProfile_one_le {N n : ℕ} (hn : n ∈ Icc 1 N) :
   by_cases htop : n = N
   · subst n
     simp only [div_self hN0.ne', polarCenterProfile, one_pow, sub_self, Real.log_zero,
-      one_mul, zero_div, sub_zero, abs_one]
+      one_mul, zero_div, sub_zero]
     have hln := Real.log_nonneg (show (1 : ℝ) ≤ N by exact_mod_cast hN1)
-    simp only [Nat.sub_self, zero_add, Nat.cast_one, div_one]
+    simp only [Nat.sub_self, zero_add, Nat.cast_one, div_one, abs_one]
     linarith only [hln]
   have hnlt : n < N := lt_of_le_of_ne hnN htop
   have hk1 : 1 ≤ N - n := by omega
@@ -117,7 +119,9 @@ lemma abs_polarCenterProfile_one_le {N n : ℕ} (hn : n ∈ Icc 1 N) :
       Real.log N - Real.log (N - n + 1 : ℕ) := Real.log_div hN0.ne' hk0.ne'
   have hlog2 : Real.log 2 ≤ 1 := by
     linarith only [Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)]
-  rw [hmodel, abs_of_nonneg (by have : 0 ≤ (N : ℝ) / n := by positivity; linarith only [this, hlog0])]
+  have hmodel0 : 0 ≤ (N : ℝ) / n - Real.log (1 - ((n : ℝ) / N) ^ 2) / 2 :=
+    sub_nonneg.mpr ((div_nonpos_of_nonpos_of_nonneg hlog0 (by norm_num)).trans (by positivity))
+  rw [hmodel, abs_of_nonneg hmodel0]
   linarith only [hlog, hratio_eq, hlog2, hratio]
 
 /-- The logarithmic model has a uniformly small squared terminal tail. -/
@@ -278,7 +282,7 @@ theorem tendsto_normalized_polarCenter_profile_error {δ : ℝ} (hδ : 0 < δ) :
     have hηN : 4 ≤ η * (N : ℝ) := by
       have h := (div_le_iff₀ hη).mp hlarge
       simpa only [mul_comm] using h
-    have hK1 : 1 ≤ K := Nat.le_floor (by linarith only [hηN])
+    have hK1 : 1 ≤ K := Nat.le_floor (by norm_num only [Nat.cast_one]; linarith only [hηN])
     have hK0 : (0 : ℝ) < K := by exact_mod_cast hK1
     have hKhi : (K : ℝ) ≤ η * N := Nat.floor_le (mul_nonneg hη.le hN0.le)
     have hKlo : η * (N : ℝ) / 2 ≤ K := by

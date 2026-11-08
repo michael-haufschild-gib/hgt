@@ -69,8 +69,14 @@ probes. Any eventual bound `D(p)≤C(log p)²` excludes finite central payment.
 For `D(p)=d(p)+p^η`, a positive completion exists exactly for `η>0`.
 Here `η` measures added diagonal growth, distinct from the Hilbert weight `δ`.
 [PrimeStarCompensation.lean](PrimeStarCompensation.lean) proves the matrix
-comparison, classification, minimizing probes and both boundaries. Its direct
-Lean check and fifteen transitive axiom audits pass with standard axioms only.
+comparison, classification, minimizing probes and both boundaries.
+
+[LogarithmicStarCompensation.lean](LogarithmicStarCompensation.lean) sharpens
+the growth scale: for `D(p)=d(p)+(log p)^α`, finite compensation exists exactly
+when `α>2`. The same series gives the least payment; at every `α≤2`, each
+central budget has an explicit finite negative probe. Prime-density
+summability supplies the full positive range, including exponents where
+comparison with all integers would fail. Both classifications are formalized.
 
 The positive survivor is an explicit minimal completion of the prime-star
 restriction. Composite interactions and nonlocal archimedean corrections
@@ -93,8 +99,8 @@ has the same exact range. In that range the bounded extension is unique,
 explicitly a Riesz functional, with squared norm `Σ_p p^(−2 Re(s)−δ)`.
 Outside it, finite chains have boundary one with arbitrarily small norm;
 `(0,1)` belongs to graph closure, ruling out every closed linear extension.
-The proof retains the exact gauge and finite-chain comparison. All twenty-one
-transitive axiom audits and the direct production Lean check pass.
+The formalization retains the exact gauge, finite-chain comparison and norm
+identity.
 
 At `δ=0`, the original augmentation therefore cannot survive as a closed
 operator on or left of the critical line in this Hilbert model. The positive

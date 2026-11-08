@@ -12,7 +12,7 @@ For every `δ>0` and finite-rank bilinear form `C` on `Hδ`, construct probes
 and satisfy `(Lδ+C)(u₋,u₋)<0<(Lδ+C)(u₊,u₊)`.
 
 This strengthens the real Hilbert-space obstruction in
-[the spectral classification](../1-in-progress/hhac-weighted-torsion-spectrum.md).
+[the spectral classification](../3-formalized/hhac-weighted-torsion-spectrum.md).
 It would rule out finite-rank repair even when the proposed arithmetic height
 is tested only on integer cycles. It asserts no exact annihilation of arbitrary
 real linear constraints by integer vectors.

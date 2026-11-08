@@ -31,7 +31,7 @@
 
 Paper-proof pipeline cards tracking the remaining Lean formalization:
 - [cact-whole-space-threshold-onset.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/1-in-progress/cact-whole-space-threshold-onset.md)
-- [critical-ratio-window-confinement-and-threshold-law.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/2-fully-proven/critical-ratio-window-confinement-and-threshold-law.md)
+- [critical-ratio-window-confinement-and-threshold-law.md](file:///Users/michael/Documents/code/hgt/docs/drafts/pipeline/1-in-progress/critical-ratio-window-confinement-and-threshold-law.md)
 
 Remaining mathematical obligations and validation:
 
@@ -41,6 +41,7 @@ Remaining mathematical obligations and validation:
    - Primitive compactness and whole-space window-localized Gårding are verified above. Validate the atomic-sequence compactness interface and resulting primitive threshold equality.
 
 2. **`m = 1` Top-Window Lipschitz Profile Approximation & Whole-Space Threshold Equality** (`formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarModeTopWindowLipschitzTransfer.lean` and `WholeSpaceCriticalThresholdEqualsPolarThreshold.lean` — not yet written):
+   - **Verified brick:** `AHD/PolarRowScalarIsFixedByOneWindow.lean` gives quantitative scalar identification and strong convergence from arbitrarily accurate scalar-line approximation plus one nonvanishing bounded weak test. Both axiom audits are clean.
    - **Verified brick:** `AHD/LogarithmicAnnuliHaveUniformRowMeans.lean` proves lattice quadrature, logarithmic-row Lipschitz control, and a two-sided annulus mean with explicit `O(1/n)` error. All three axiom audits are clean.
    - **Verified brick:** `AHD/PolarRowsHaveSummableTerminalTails.lean` proves logarithmically scaled polar Gram-defect cancellation and the endpoint estimate `(1/N) Σ_{N−K<n≤N} polarCenterRow(N,n)² ≤ 50 K/N + 64 √(K/N)` for `2K ≤ N`. Both axiom audits are clean; `.olean` built.
    - Build `.olean` for [PolarPaymentThresholdGrowsExponentially.lean](file:///Users/michael/Documents/code/hgt/formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/PolarPaymentThresholdGrowsExponentially.lean).

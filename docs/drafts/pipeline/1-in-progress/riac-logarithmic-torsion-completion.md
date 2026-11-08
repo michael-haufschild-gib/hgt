@@ -21,12 +21,29 @@ The divisor identity `Σ_(t|n) Λ(t)=log n` and `L≥1` then bound the entire
 row by `(K_a+1)L(n)^α`. Weighted two-variable square completion gives
 absolute finite-form control. Since the original tame diagonal is
 nonnegative and bounded by `log n`, this also gives an explicit positive
-diagonal completion of the full torsion matrix.
+diagonal completion of the full torsion matrix. The proposed positive
+correction is `(K_a+1)L(n)^α`; the absolute-form bound uses `K_a+2`.
 
 At `α≤2`, the conductor-one prime row has square mass comparable to
 `Σ_p (log p)²/(p L(p)^α)`, which diverges. The prime-star classification
 also excludes every finite constant diagonal compensation in that range.
-The exact arithmetic comparisons and the full Schur estimate remain unproved.
+The full finite absolute bound and sharp positive-compensation equivalence
+now have a complete Lean draft. Neither is accepted until that draft passes
+its direct check and transitive axiom audits.
+
+The generic finite weighted Schur test already exists as
+`weighted_double_sum_le_weightedRowBound` in `HTGeometry.WeightedSchurTest`.
+The required tail reduces to the existing prime reciprocal-log series and
+`RHTower.sum_nonprime_vonMangoldt_rpow_le` at exponent one; the latter
+uniformly bounds the proper-prime-power mass by `72`. Its conversion into
+the required summability theorem is under Lean verification.
+
+For necessity, the draft embeds every prime-star probe into its actual
+integer support `{1}∪S`. A full positive correction with constant `C` restricts
+to central diagonal `C` and leaf diagonal `d(p)+C L(p)^α`. The unrestricted
+star classification supplies strict leaf positivity and finite payment.
+For `α≤2`, eventual growth is at most `(1+4|C|)(log p)²`, contradicting that
+finite payment. Thus no sign assumption on the proposed constant is hidden.
 
 ## Further consequences to audit
 
@@ -41,6 +58,19 @@ These consequences require separate proofs and are not accepted results.
 
 The proposed survivor is a sharp completed carrier and an explicit positive
 completion on all conductor interactions, extending the prime-star restriction.
+The logarithmic Hilbert domain is still smaller than unweighted `ℓ²`;
+this would not make the original `δ=0` operator bounded.
 The added diagonal is a constructed compensation, not an archimedean height,
 product formula or integer arithmetic count. No sign for the uncorrected
 critical form or Weil form follows.
+
+## Related operator theory
+
+[Brevig–Perfekt–Seip, §3](https://arxiv.org/html/1602.04729v3#S3)
+write Dirichlet-series Volterra operators as divisor convolutions followed by
+an output logarithmic divisor. This supplies a related established operator
+framework. The present matrix has two-sided logarithmic normalization, its
+transpose and the original tame diagonal; no operator identification with
+that theorem is assumed. The [multiplicative Hilbert matrix](https://arxiv.org/abs/1411.7294)
+has entries `1/(√(mn) log(mn))`, a different kernel. Neither comparison
+establishes novelty for the candidate torsion threshold. No priority is claimed.

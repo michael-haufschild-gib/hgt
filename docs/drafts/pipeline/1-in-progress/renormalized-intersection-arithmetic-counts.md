@@ -32,9 +32,11 @@ augmentation exactly when `2 Re(s)+δ>1`, with unique bounded extension and
 exact norm. At and below the boundary, explicit finite packets obstruct every
 closed extension. The [higher-degree question](../0-backlog/riac-completed-prime-koszul.md)
 is whether the standard completed complex remains contractible above that threshold.
-Two active refinements are the [logarithmic compensation boundary](riac-logarithmic-star-compensation.md)
-and [vertical unitary graph equivalence](riac-unitary-prime-chain-gauge.md).
-Their candidate thresholds and exact arithmetic comparisons are not yet Lean-accepted.
+The [logarithmic compensation boundary](../3-formalized/riac-logarithmic-star-compensation.md)
+is also formalized: leaf growth `(log p)^α` admits finite payment exactly
+for `α>2`, with minimal positive completion and explicit negative probes.
+The [vertical unitary graph comparison](riac-unitary-prime-chain-gauge.md)
+remains under formalization.
 The [full logarithmic torsion candidate](riac-logarithmic-torsion-completion.md)
 asks for the sharp extension from prime stars to every conductor interaction.
 

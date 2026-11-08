@@ -275,6 +275,169 @@ theorem abs_logarithmic_row_sum_sub_mean_le {K : ℝ → ℝ} {α β T A L w : �
   rw [hint] at hquad
   exact hquad.trans hbudget
 
+/-- Including a possible lattice point at the left endpoint changes a logarithmic interval
+sum by at most one supremum bound. -/
+lemma abs_sum_Icc_ceil_floor_sub_sum_Ioc_floor_le {f : ℝ → ℝ} {a b A : ℝ}
+    (ha : 0 ≤ a) (hab : a ≤ b) (hA : 0 ≤ A)
+    (hf : ∀ x ∈ Set.Icc a b, |f x| ≤ A) :
+    |(∑ n ∈ Finset.Icc ⌈a⌉₊ ⌊b⌋₊, f n) -
+      ∑ n ∈ Finset.Ioc ⌊a⌋₊ ⌊b⌋₊, f n| ≤ A := by
+  let S := Finset.Icc ⌈a⌉₊ ⌊b⌋₊
+  let T := Finset.Ioc ⌊a⌋₊ ⌊b⌋₊
+  have hsub : T ⊆ S := by
+    intro n hn
+    obtain ⟨hlo, hhi⟩ := Finset.mem_Ioc.mp hn
+    have hal : a ≤ (n : ℝ) := (Nat.lt_floor_add_one a).le.trans
+      (by exact_mod_cast Nat.succ_le_of_lt hlo)
+    exact Finset.mem_Icc.mpr ⟨Nat.ceil_le.mpr hal, hhi⟩
+  have hdiff : S \ T ⊆ {⌊a⌋₊} := by
+    intro n hn
+    obtain ⟨hnS, hnT⟩ := Finset.mem_sdiff.mp hn
+    obtain ⟨hlo, hhi⟩ := Finset.mem_Icc.mp hnS
+    have hnlo : n ≤ ⌊a⌋₊ := le_of_not_gt (fun h => hnT (Finset.mem_Ioc.mpr ⟨h, hhi⟩))
+    have haN : a ≤ (n : ℝ) := (Nat.le_ceil a).trans (by exact_mod_cast hlo)
+    have hfn : (⌊a⌋₊ : ℝ) ≤ n := (Nat.floor_le ha).trans haN
+    have hn : n = ⌊a⌋₊ := le_antisymm hnlo (by exact_mod_cast hfn)
+    simpa only [Finset.mem_singleton] using hn
+  have hcard : ((S \ T).card : ℝ) ≤ 1 := by
+    exact_mod_cast (show (S \ T).card ≤ 1 by simpa using Finset.card_le_card hdiff)
+  have hbound : |∑ n ∈ S \ T, f n| ≤ A := by
+    calc
+      _ ≤ ∑ n ∈ S \ T, |f n| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _n ∈ S \ T, A := Finset.sum_le_sum fun n hn => by
+        obtain ⟨hlo, hhi⟩ := Finset.mem_Icc.mp (Finset.mem_sdiff.mp hn).1
+        have haN : a ≤ (n : ℝ) := (Nat.le_ceil a).trans (by exact_mod_cast hlo)
+        have hb : 0 ≤ b := ha.trans hab
+        exact hf n ⟨haN, (by exact_mod_cast hhi : (n : ℝ) ≤ ⌊b⌋₊).trans (Nat.floor_le hb)⟩
+      _ = ((S \ T).card : ℝ) * A := by rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ A := (mul_le_mul_of_nonneg_right hcard hA).trans_eq (one_mul A)
+  have hs := Finset.sum_sdiff hsub (f := fun n : ℕ => f n)
+  have he : (∑ n ∈ S, f n) - ∑ n ∈ T, f n = ∑ n ∈ S \ T, f n := by linarith only [hs]
+  change |(∑ n ∈ S, f n) - ∑ n ∈ T, f n| ≤ A
+  rw [he]
+  exact hbound
+
+
+/-- Closed logarithmic annuli obey the same uniform mean estimate; a possible left endpoint
+contributes one extra lattice value. -/
+theorem abs_closed_logarithmic_row_sum_sub_mean_le {K : ℝ → ℝ} {α β T A L w : ℝ}
+    (hT : 0 < T) (hα : -T ≤ α) (hαβ : α ≤ β) (hβ : β ≤ T)
+    (hw : 0 < w) (hTw : T * w ≤ 1 / 2) (hL0 : 0 ≤ L)
+    (hA : ∀ t ∈ Set.Icc α β, |K t| ≤ A)
+    (hL : ∀ s ∈ Set.Icc α β, ∀ t ∈ Set.Icc α β, |K s - K t| ≤ L * |s - t|)
+    {n : ℕ} (hn : 1 ≤ n) :
+    |(∑ j ∈ Finset.Icc ⌈(n : ℝ) * Real.exp (α * w)⌉₊
+        ⌊(n : ℝ) * Real.exp (β * w)⌋₊,
+      K (Real.log ((j : ℝ) / n) / w) / Real.sqrt ((n : ℝ) * j)) -
+        ∫ t in α..β, K t * (w * Real.exp (w * t / 2))| ≤
+      (32 * T * L + 16 * A) / n := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hA0 : 0 ≤ A := (abs_nonneg _).trans (hA α ⟨le_rfl, hαβ⟩)
+  let a : ℝ := n * Real.exp (α * w)
+  let b : ℝ := n * Real.exp (β * w)
+  let f : ℝ → ℝ := fun x => K (Real.log (x / n) / w) / Real.sqrt ((n : ℝ) * x)
+  have ha : 0 < a := by dsimp only [a]; positivity
+  have hab : a ≤ b := mul_le_mul_of_nonneg_left
+    (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right hαβ hw.le)) hn0.le
+  have halower : (n : ℝ) / 2 ≤ a := by
+    have hαw := mul_le_mul_of_nonneg_right hα hw.le
+    have he := Real.add_one_le_exp (α * w)
+    have hh : (1 / 2 : ℝ) ≤ Real.exp (α * w) := by linarith only [hαw, hTw, he]
+    calc
+      (n : ℝ) / 2 = n * (1 / 2 : ℝ) := by ring
+      _ ≤ n * Real.exp (α * w) := mul_le_mul_of_nonneg_left hh hn0.le
+      _ = a := rfl
+  have hfA : ∀ x ∈ Set.Icc a b, |f x| ≤ 2 * A / n := by
+    intro x hx
+    have hx0 : 0 < x := ha.trans_le hx.1
+    have hmem : Real.log (x / n) / w ∈ Set.Icc α β := by
+      constructor
+      · rw [le_div_iff₀ hw, Real.le_log_iff_exp_le (div_pos hx0 hn0), le_div_iff₀ hn0]
+        simpa only [a, mul_comm] using hx.1
+      · rw [div_le_iff₀ hw, Real.log_le_iff_le_exp (div_pos hx0 hn0), div_le_iff₀ hn0]
+        simpa only [b, mul_comm] using hx.2
+    have hs : (n : ℝ) / 2 ≤ Real.sqrt ((n : ℝ) * x) := by
+      apply (Real.le_sqrt (by positivity) (by positivity)).mpr
+      have hh := mul_le_mul_of_nonneg_left (halower.trans hx.1) hn0.le
+      nlinarith only [hh, sq_nonneg (n : ℝ)]
+    dsimp only [f]
+    rw [abs_div, abs_of_pos (Real.sqrt_pos.mpr (mul_pos hn0 hx0))]
+    exact (div_le_div₀ hA0 (hA _ hmem) (by positivity) hs).trans_eq (by ring)
+  have hclosed := abs_sum_Icc_ceil_floor_sub_sum_Ioc_floor_le ha.le hab (by positivity) hfA
+  have hopen := abs_logarithmic_row_sum_sub_mean_le hT hα hαβ hβ hw hTw hL0 hA hL hn
+  have htri := (abs_sub_le
+    (∑ j ∈ Finset.Icc ⌈a⌉₊ ⌊b⌋₊, f j)
+    (∑ j ∈ Finset.Ioc ⌊a⌋₊ ⌊b⌋₊, f j)
+    (∫ t in α..β, K t * (w * Real.exp (w * t / 2)))).trans
+      (add_le_add hclosed hopen)
+  exact htri.trans_eq (by ring)
+
+
+/-- A terminal multiplicative strip of logarithmic width `t` contains at most `Nt + 1`
+lattice points. -/
+lemma card_terminal_exponential_strip_le {N : ℕ} {t : ℝ} (ht : 0 ≤ t) :
+    (((Finset.Icc 1 N).filter (fun n : ℕ => (N : ℝ) < (n : ℝ) * Real.exp t)).card : ℝ) ≤ N * t + 1 := by
+  let a : ℝ := N * Real.exp (-t)
+  have ha : 0 ≤ a := by dsimp only [a]; positivity
+  have haN : a ≤ N := by
+    have he := Real.exp_le_one_iff.mpr (neg_nonpos.mpr ht)
+    exact (mul_le_mul_of_nonneg_left he (Nat.cast_nonneg N)).trans_eq (mul_one _)
+  have hfN : ⌊a⌋₊ ≤ N := Nat.floor_le_of_le haN
+  have hset : (Finset.Icc 1 N).filter (fun n : ℕ => (N : ℝ) < (n : ℝ) * Real.exp t) = Finset.Ioc ⌊a⌋₊ N := by
+    ext n
+    simp only [mem_filter, Finset.mem_Icc, Finset.mem_Ioc]
+    have hmul : (N : ℝ) < n * Real.exp t ↔ a < n := by
+      rw [← div_lt_iff₀ (Real.exp_pos t)]
+      have he : (N : ℝ) / Real.exp t = a := by
+        dsimp only [a]
+        rw [div_eq_mul_inv, ← Real.exp_neg]
+      rw [he]
+    rw [hmul, ← Nat.floor_lt ha]
+    omega
+  rw [hset, Nat.card_Ioc, Nat.cast_sub hfN]
+  have hlo := Nat.sub_one_lt_floor a
+  have hexp := mul_le_mul_of_nonneg_left (Real.add_one_le_exp (-t)) (Nat.cast_nonneg (α := ℝ) N)
+  dsimp only [a] at hlo ⊢
+  nlinarith only [hlo, hexp]
+
+/-- An interior uniform estimate and a terminal-strip envelope control the normalized square
+mean on any fixed terminal fraction. -/
+lemma normalized_sum_le_of_terminal_strip {N : ℕ} (hN : 1 ≤ N)
+    {δ t a b : ℝ} (ht : 0 ≤ t) {E : ℕ → ℝ}
+    (he : ∀ n ∈ Finset.Ioc ⌊δ * (N : ℝ)⌋₊ N, E n ≤ b ^ 2)
+    (hi : ∀ n ∈ Finset.Ioc ⌊δ * (N : ℝ)⌋₊ N,
+      (n : ℝ) * Real.exp t ≤ N → E n ≤ a ^ 2) :
+    (∑ n ∈ Finset.Ioc ⌊δ * (N : ℝ)⌋₊ N, E n) / N ≤
+      a ^ 2 + (t + 1 / N) * b ^ 2 := by
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  let S := Finset.Ioc ⌊δ * (N : ℝ)⌋₊ N
+  let T := (Finset.Icc 1 N).filter (fun n : ℕ => (N : ℝ) < (n : ℝ) * Real.exp t)
+  have hpoint : ∀ n ∈ S, E n ≤ a ^ 2 + if n ∈ T then b ^ 2 else 0 := by
+    intro n hn
+    have hnI : n ∈ Finset.Icc 1 N := Finset.mem_Icc.mpr
+      ⟨by have := (Finset.mem_Ioc.mp hn).1; omega, (Finset.mem_Ioc.mp hn).2⟩
+    by_cases hlate : n ∈ T
+    · rw [if_pos hlate]
+      exact (he n hn).trans (le_add_of_nonneg_left (sq_nonneg a))
+    · rw [if_neg hlate, add_zero]
+      exact hi n hn (le_of_not_gt (fun h => hlate (mem_filter.mpr ⟨hnI, h⟩)))
+  have hsum := sum_le_sum hpoint
+  rw [sum_add_distrib, sum_const, nsmul_eq_mul, ← sum_filter, sum_const, nsmul_eq_mul] at hsum
+  have hcardS : (S.card : ℝ) ≤ N := by
+    dsimp only [S]
+    rw [Nat.card_Ioc]
+    exact_mod_cast Nat.sub_le N ⌊δ * (N : ℝ)⌋₊
+  have hcardT : ((S.filter (fun n => n ∈ T)).card : ℝ) ≤ N * t + 1 := by
+    have hsub : S.filter (fun n => n ∈ T) ⊆ T := fun _ h => (mem_filter.mp h).2
+    exact (by exact_mod_cast Finset.card_le_card hsub : ((S.filter (fun n => n ∈ T)).card : ℝ) ≤ T.card).trans
+      (card_terminal_exponential_strip_le ht)
+  have hb := hsum.trans (add_le_add
+    (mul_le_mul_of_nonneg_right hcardS (sq_nonneg a))
+    (mul_le_mul_of_nonneg_right hcardT (sq_nonneg b)))
+  exact (div_le_div_of_nonneg_right hb hN0.le).trans_eq (by field_simp [hN0.ne'])
+
+#print axioms abs_closed_logarithmic_row_sum_sub_mean_le
+#print axioms normalized_sum_le_of_terminal_strip
 #print axioms abs_sum_Ioc_floor_sub_integral_le
 #print axioms abs_logarithmic_row_sub_le
 #print axioms abs_logarithmic_row_sum_sub_mean_le

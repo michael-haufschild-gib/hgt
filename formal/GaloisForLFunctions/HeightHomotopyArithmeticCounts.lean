@@ -37,4 +37,6 @@ import GaloisForLFunctions.HeightHomotopyArithmeticCounts.SpacingDefiniteFamilie
 
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.SpacingFiniteConstraints
 
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.TorsionHilbertSchmidtBoundary
+
 /-! Local heights, torsion regularization and homotopy invariants of arithmetic counts. -/

@@ -98,7 +98,7 @@ theorem newtonSegment_det (m n : ℤ) : |(m * (-1) - (-1) * n : ℤ)| = |m - n| 
 /-! ### Counts as squares -/
 
 /-- The cusp multiplicity is a count: `min(m, n)` integers lie below both `m` and `n`. -/
-theorem min_eq_sum_indicator {m n K : ℕ} (hm : m ≤ K) (hn : n ≤ K) :
+theorem min_eq_sum_indicator {m n K : ℕ} (hm : m ≤ K) :
     ((min m n : ℕ) : ℤ) =
       ∑ k ∈ range K, (if k < m then (1 : ℤ) else 0) * (if k < n then 1 else 0) := by
   have : ∀ k ∈ range K, ((if k < m then (1 : ℤ) else 0) * (if k < n then 1 else 0)) =
@@ -140,7 +140,7 @@ theorem cuspForm_eq_sum_sq {K : ℕ} (hS : ∀ n ∈ S, n ≤ K) :
   have hexp : ∀ m ∈ S, ∀ n ∈ S, a m * a n * ((min m n : ℕ) : ℤ) =
       ∑ k ∈ range K, F k m * F k n := by
     intro m hm n hn
-    rw [min_eq_sum_indicator (hS m hm) (hS n hn), mul_sum]
+    rw [min_eq_sum_indicator (n := n) (hS m hm), mul_sum]
     refine sum_congr rfl fun k _ => ?_
     by_cases h1 : k < m <;> by_cases h2 : k < n <;> simp [hF, h1, h2]
   have hswap : ∀ m ∈ S, ∑ n ∈ S, ∑ k ∈ range K, F k m * F k n =
@@ -227,7 +227,8 @@ theorem two_cosh_sub_two_abs_sinh (t : ℝ) :
   rcases le_total 0 t with h | h
   · rw [abs_of_nonneg (Real.sinh_nonneg_iff.mpr h), abs_of_nonneg h, Real.cosh_eq, Real.sinh_eq]
     ring
-  · rw [abs_of_nonpos (Real.sinh_nonpos_iff.mpr h), abs_of_nonpos h, Real.cosh_eq, Real.sinh_eq]
+  · rw [abs_of_nonpos (Real.sinh_nonpos_iff.mpr h), abs_of_nonpos h, neg_neg, Real.cosh_eq,
+      Real.sinh_eq]
     ring
 
 /-- **The archimedean Lévy density is the cusp channel plus the trivial-zero channels**:

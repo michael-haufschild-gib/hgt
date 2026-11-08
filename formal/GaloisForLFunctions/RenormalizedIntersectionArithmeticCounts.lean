@@ -2,4 +2,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.PrimeStarCom
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.CompletedPrimeBoundary
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicStarCompensation
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

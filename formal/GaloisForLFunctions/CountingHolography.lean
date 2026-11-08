@@ -42,3 +42,4 @@ zero-free strip `Re ρ ≤ 1 − 2δ`. A sharp shell thermalizes at rate `y^{1/2
 its horoball count is a Möbius sum of lattice-point counts of quarter discs. See
 `CountingHolography/README.md`.
 -/
+import GaloisForLFunctions.CountingHolography.TheCountDoorOfACurveAndOfZ

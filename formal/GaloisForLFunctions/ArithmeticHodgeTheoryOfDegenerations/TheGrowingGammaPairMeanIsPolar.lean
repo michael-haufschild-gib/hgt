@@ -159,7 +159,8 @@ theorem tendsto_nearArchimedeanRemainderPair_div_overlap {φ : ℝ → ℝ}
   rw [htarget] at h
   exact h.congr fun N => by ring
 
-private theorem exists_crossSingular_inverse_bounds {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
+/-- The reciprocal far profile is bounded and Lipschitz on scaled gaps at least two. -/
+theorem exists_crossSingular_inverse_bounds {φ : ℝ → ℝ} (hφ : ContDiff ℝ 2 φ)
     (hsupp : ∀ u, u ∉ Icc 0 1 → φ u = 0) (hM : 0 < ∫ u, φ u ^ 2) :
     ∃ C : ℝ, 0 ≤ C ∧ (∀ s : ℝ, 2 ≤ s → |crossSingular φ (1 / s)| ≤ C) ∧
       ∀ x y : ℝ, 2 ≤ x → 2 ≤ y →

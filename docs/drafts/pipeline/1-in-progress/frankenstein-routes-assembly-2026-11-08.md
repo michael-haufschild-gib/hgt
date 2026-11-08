@@ -65,5 +65,39 @@ are tail-bad at every cut (`tailTransport_height_mem_tailBad`).
 for full-amplitude tail events, not returns of the phases. Alignment enters only through the
 return-based producers, which ask for more than AAL.
 
+## F15 — count skeleton
+
+**Bridge (Lean, `CountingHolography/TheCountDoorOfACurveAndOfZ`).** The Tate principle in both
+directions (`exists_count_tateLimit_iff`): a degree-two homogeneous function is the Tate limit of an
+`ℕ`-valued count iff it is nonnegative. Curves (`curve_countDoor`): the integral Castelnuovo–Severi
+defect is a Tate limit of a count iff the datum is unitary (Hodge index on integral classes forces RH,
+by rational scaling and continuity). True curves (`hyperelliptic_spanDefect_is_count`): the defect of
+an integral class is an integer polynomial in `q` and the point counts, a natural number, exactly
+homogeneous — the count is the intersection number itself. Over ℤ the same door is
+`riemannHypothesis_iff_tateLimit_of_count` with a real-valued form.
+
+**Learning.** On curves the form is itself integral before any sign is known (it is a polynomial in
+point counts); over ℤ the Krein square of the integer probes is a real Toeplitz form in `log(m/n)`.
+Conjecture (open, not attempted in Lean): the integer-probe form takes non-integer values (would
+follow from continuity and non-constancy of the spline correlation, since `log(m/n)` is dense).
+
+## F2 — critical curve = window
+
+**Bridge (Lean, `ArithmeticHodgeTheoryOfDegenerations/TheCriticalMatrixIsDecidedByThePoleChannel`).**
+`posDef_iff_primitive_and_poleChannel` (positivity splits along any subspace);
+`eventuallyCriticalPosDef_iff_poleChannel_of_lt_iInf_windowThreshold` (below `W = ⨅ windowThreshold`
+the whole-space matrix at ratio `R` is positive iff its pole channel is, using `R_pole = W`);
+`criticalPositivityThreshold_eq_iInf_windowThreshold_iff_poleChannel`: B104 (`R_c = W`) ⇔ the pole
+channel pays at every ratio below `W`. Uses the committed, previously unwired module
+`PrimitiveCriticalThresholdEqualsWindowThreshold` (`R_pole = W`).
+
+## F8 / F23 — the critical partial sum
+
+**Bridge (Lean, `ArithmeticHodgeTheoryOfDegenerations/TheCriticalPartialSumOfHalfTheHeightIsZeta`).**
+The [C] item "a partial sum of length half the height approximates `ζ(½+ib)` to `O(|b|^{−½})`" is
+proved from the corpus' Titchmarsh 4.11 (`norm_zetaStripError_le_grid`):
+`‖S_M(b) − ζ(½+ib)‖ ≤ 9M^{−½} + M^{½}/|b|` for `|b| ≤ πM`; for `M(b) = ⌈|b|/2⌉ + B` the error is
+`(9√2 + √(3 + 2B))|b|^{−½}`, and the squares differ by that error times `2|ζ| + error`.
+
 ## Log
 - 2026-11-08 — created; F22, F21, F18 bridges compiled and wired.

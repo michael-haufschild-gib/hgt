@@ -12,11 +12,21 @@ For an isolating disc in `1/2 < Re s < 1`, seek arbitrarily high translates whos
 ## Exact open inputs
 
 - Quantitative recurrence on the long arc, with the omitted arc and return height controlled together.
-- A conditional lower bound for `Im ∫ (ζ M_y)'/(ζ M_y)` on the closing arc at some such returns.
+- Control on the closing arc at those same returns: a one-sided phase bound, or reciprocal mass below the threshold proved below.
 - An arithmetic property coupling the Euler product to the functional equation; contour identities alone also hold for one-off models.
 
-## Tests
+## Positive result
 
-Zero-free approximants must undo the long-arc winding on the omitted arc. Test whether this forces an exponential growth cost in the reciprocal arc length, and whether available high-height bounds can meet that cost at a realizable return scale. Existing head-resolution bounds control log modulus; a phase estimate requires its own proof.
+`HTGeometry.PartialBoundaryApproximationForcesSmallValues` proves the exact alternative for analytic `f,g` with `f(c)=0`: relative error at most `η` on the long arc forces either a zero of `g` in the disc or
 
-No transport estimate or AAL consequence is proved here.
+`−(2π−δ) log η ≤ ∫₀^δ log(1+|f|/|g|)`.
+
+If `g` remains zero-free, some point of the gap satisfies `(exp(−(2π−δ) log η/δ)−1)|g|≤|f|`. The general theorem and its actual zeta/all-cuts specialization pass direct Lean checks with only standard axioms. The missing winding has a compulsory reciprocal-value cost, independently of zero density. [Exact theorem and proof](../3-formalized/partial-boundary-returns-force-small-values.md).
+
+## Next conjecture
+
+Seek long-arc returns with fixed `0<η<1`, arbitrarily large height `τ`, and omitted angle `δ≤1/log(2+|τ|)`. The corpus's `InvZetaAbscissaSubpolynomial.exists_three_circles_zeta_lower_bound_of_zeroFree_above` gives a lower bound of the form `exp(−C(log T)^α)`, `α<1`, on strict substrips of an eventual zero-free half-plane. The unresolved issue is producing returns at a compatible gap/height scale.
+
+`exists_isHeadReturn_le` bounds finite-head return height by `(7N)^N`; it does not establish the required long-arc zeta approximation. Existing head-resolution bounds control log modulus, not phase.
+
+No quantitative return producer or AAL consequence is proved here.

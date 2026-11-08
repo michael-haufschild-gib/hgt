@@ -53,11 +53,11 @@ theorem coshModel_one_sub (Q : Finset ℂ) (s : ℂ) : coshModel Q (1 - s) = cos
 /-- **Reality.** `G_Q(s̄) = conj G_Q(s)`. -/
 theorem coshModel_conj (Q : Finset ℂ) (s : ℂ) :
     coshModel Q (starRingEnd ℂ s) = starRingEnd ℂ (coshModel Q s) := by
+  have h12 : starRingEnd ℂ (1 / 2 : ℂ) = 1 / 2 := by
+    rw [map_div₀, map_one, map_ofNat]
   unfold coshModel
-  rw [map_mul, map_prod, ← Complex.cosh_conj]
+  rw [map_mul, map_prod, ← Complex.cosh_conj, map_sub, h12]
   simp_rw [quartet_conj]
-  congr 2
-  simp [map_sub, map_one, map_div₀]
 
 theorem differentiable_quartet (q : ℂ) : Differentiable ℂ (quartet q) := by
   unfold quartet; fun_prop
@@ -66,15 +66,18 @@ theorem differentiable_quartet (q : ℂ) : Differentiable ℂ (quartet q) := by
 theorem differentiable_coshModel (Q : Finset ℂ) : Differentiable ℂ (coshModel Q) := by
   unfold coshModel
   refine (Complex.differentiable_cosh.comp (differentiable_id.sub_const _)).mul ?_
-  exact Differentiable.finset_prod fun q _ => differentiable_quartet q
+  have hfun : (fun s => ∏ q ∈ Q, quartet q s) = ∏ q ∈ Q, quartet q := by
+    ext s; rw [Finset.prod_apply]
+  rw [hfun]
+  exact Differentiable.finsetProd fun q _ => differentiable_quartet q
 
 /-- The zeros of `cosh(s − ½)` lie on the critical line. -/
 theorem re_eq_half_of_cosh_eq_zero {s : ℂ} (h : Complex.cosh (s - 1 / 2) = 0) : s.re = 1 / 2 := by
   set w := s - 1 / 2 with hw
   have h2 : Complex.exp (2 * w) = -1 := by
-    have hc : Complex.cosh w = (Complex.exp w + Complex.exp (-w)) / 2 := Complex.cosh_eq w
-    rw [h] at hc
-    have hsum : Complex.exp w + Complex.exp (-w) = 0 := by linear_combination -2 * hc
+    have hc := Complex.two_cosh w
+    rw [h, mul_zero] at hc
+    have hsum : Complex.exp w + Complex.exp (-w) = 0 := hc.symm
     have hmul := congrArg (· * Complex.exp w) hsum
     simp only [add_mul, zero_mul, ← Complex.exp_add, neg_add_cancel, Complex.exp_zero] at hmul
     rw [show 2 * w = w + w by ring]
@@ -122,7 +125,6 @@ theorem norm_coshModel_le (Q : Finset ℂ) :
     intro q hqQ
     have hqK : ‖q‖ + 2 ≤ K := by
       have := Finset.single_le_sum (f := fun x : ℂ => ‖x‖) (fun x _ => norm_nonneg x) hqQ
-      simp only at this
       linarith
     have h1 : ‖q‖ ≤ K := by linarith [norm_nonneg q]
     have h2 : ‖starRingEnd ℂ q‖ ≤ K := by rw [Complex.norm_conj]; exact h1
@@ -147,7 +149,10 @@ theorem norm_coshModel_le (Q : Finset ℂ) :
       rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith)
     have he3 : Real.exp 1 < 3 := lt_trans Real.exp_one_lt_d9 (by norm_num)
     have h2n : ‖(2 : ℂ)‖ = 2 := by norm_num
-    rw [Complex.cosh_eq, norm_div, h2n]
+    have hcw : Complex.cosh (s - 1 / 2) =
+        (Complex.exp (s - 1 / 2) + Complex.exp (-(s - 1 / 2))) / 2 := by
+      rw [← Complex.two_cosh]; ring
+    rw [hcw, norm_div, h2n]
     have hadd := norm_add_le (Complex.exp (s - 1 / 2)) (Complex.exp (-(s - 1 / 2)))
     have h1 := hb (s - 1 / 2)
     have h2 := hb (-(s - 1 / 2))
@@ -175,7 +180,7 @@ theorem zerosApproachLine_coshModelZeros (Q : Finset ℂ) :
   set P : Set ℂ := ⋃ q ∈ Q, ({q, starRingEnd ℂ q, 1 - q, 1 - starRingEnd ℂ q} : Set ℂ)
   have hP : P.Finite := Set.Finite.biUnion Q.finite_toSet fun q _ => Set.toFinite _
   refine (hP.preimage Subtype.val_injective.injOn).subset fun s hs => ?_
-  simp only [Set.mem_setOf_eq, coshModelZeros] at hs
+  have hs : 1 / 2 + h < s.1.re := hs
   rcases (coshModel_eq_zero_iff Q s.1).1 s.2 with hc | ⟨q, hq, hsq⟩
   · have := re_eq_half_of_cosh_eq_zero hc
     linarith

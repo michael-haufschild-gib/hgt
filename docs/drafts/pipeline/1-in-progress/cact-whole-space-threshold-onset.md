@@ -28,9 +28,10 @@ Answer §3: the whole-space critical threshold grows exponentially in the onset 
 ## Open steps
 - **A (threshold identity):** `R_c = R_c^{polar}`, i.e. `PolarPaymentAt R₁ A` for all `A ≥ 0` implies
   `EventuallyCriticalPosDef R` for `R < R₁`. Necessity is `polarPaymentAt_of_eventually_nonneg`.
-  Sufficiency: Schur-complete the low packet, `E(x) ≥ E(z) − Σ_{m≤Q} ⟪r_m, z⟫²/d_m` for
-  `z = P_{V_Q^⊥} x`; run the compactness of `eventuallyHighConductorPosDef_of_lt_iInf_windowThreshold`
-  on `z`. **Gap:** the limit of the Schur terms along an arbitrary bad sequence. Lean has the limit
+  Sufficiency: retain the exact pole energy and normalize by `‖U_w‖₂² + β² = 1`,
+  where `β = b₁/√(log N)`. Collar Gårding gives compactness; polar payment at a larger
+  ratio supplies a strict positive reserve in both limit coordinates. **Gap:** uniform
+  convergence of the polar cross term along an arbitrary bad sequence. Lean has the limit
   `√L/c ⟪B v_m, ·⟫ → S(h)` (`m = 1`) or `→ 0` (`m ≥ 2`) only on window vectors
   `horizonProfileVector (horizonWeights h N) N` (`tendsto_complete_terminal_pole`,
   `tendsto_complete_terminal_nonpolar`); the nonpolar `D₇` Schur cost now vanishes (below). The polar functional still needs uniform transfer.
@@ -94,3 +95,11 @@ the squared-log center tail; and the finite Mangoldt upward mean.
 The near Gram identity cancels the `log(n/N)` terms. Far gamma tails are `O(1/T)`
 after cutting at log-distance `Tc/N`. None of these reductions is being used as an
 assumption in a threshold theorem.
+
+## Verified scalar identification
+
+If `x_N` is arbitrarily close to the line spanned by bounded vectors `v_N`, and bounded
+tests `h_N` satisfy `⟨v_N,h_N⟩ ≥ a > 0`, then
+`⟨x_N,h_N⟩ − s⟨v_N,h_N⟩ → 0` implies `‖x_N − s v_N‖ → 0`.
+This holds for varying Hilbert spaces. Lean: `PolarRowScalarIsFixedByOneWindow`;
+axioms `propext, Classical.choice, Quot.sound`.

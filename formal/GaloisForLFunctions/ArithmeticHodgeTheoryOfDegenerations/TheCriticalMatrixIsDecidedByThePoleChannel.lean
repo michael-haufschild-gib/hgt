@@ -30,6 +30,7 @@ open scoped RealInnerProductSpace
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 
 open CompletedArithmeticForms RenormalizedArithmeticPotentialTheory BezoutValuationIncidence
+  SpacingScaleHarmonicAnalysis
 
 /-- **Positivity splits along a subspace.** On a finite-dimensional inner-product space, a
 function is positive off `0` iff it is positive on `Lᗮ ∖ 0` and on every `x + w` with
@@ -96,11 +97,11 @@ theorem criticalPositivityThreshold_eq_iInf_windowThreshold_iff_poleChannel :
       poleOrthogonalCriticalThreshold_eq_iInf_windowThreshold.le
   constructor
   · intro heq R hR hRW
-    rw [← heq] at hRW
-    obtain ⟨_, ⟨r, ⟨hr0, hr⟩, rfl⟩, hRr⟩ := lt_sSup_iff.mp hRW
+    have hRc : (R : EReal) < criticalPositivityThreshold := heq ▸ hRW
+    obtain ⟨_, ⟨r, ⟨hr0, hr⟩, rfl⟩, hRr⟩ := lt_sSup_iff.mp hRc
     have hRr' : R ≤ r := (EReal.coe_lt_coe_iff.mp hRr).le
-    refine (eventuallyCriticalPosDef_iff_poleChannel_of_lt_iInf_windowThreshold hR
-      (heq ▸ hRW)).mp (eventuallyCriticalPosDef_antitone hRr' hr)
+    exact (eventuallyCriticalPosDef_iff_poleChannel_of_lt_iInf_windowThreshold hR hRW).mp
+      (eventuallyCriticalPosDef_antitone hRr' hr)
   · intro hC
     refine le_antisymm hle (le_of_forall_lt fun a ha => ?_)
     have hpos := criticalPositivityThreshold_pos

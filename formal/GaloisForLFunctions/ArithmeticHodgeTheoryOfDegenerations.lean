@@ -205,3 +205,4 @@ resolution axis (overlap `c`, horizon `N`). See `ArithmeticHodgeTheoryOfDegenera
   by a scalar; a pure curve degenerates completely while the golden fake grows exponentially on a
   fixed hyperbolic plane; the exponential rate of every curve is its zero width `max|Re s − ½|`.
 -/
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalMatrixIsDecidedByThePoleChannel
