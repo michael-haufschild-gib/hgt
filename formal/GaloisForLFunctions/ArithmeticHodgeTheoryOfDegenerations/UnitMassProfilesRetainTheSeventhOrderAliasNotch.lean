@@ -72,7 +72,8 @@ theorem hasCompactSupport_centeredDifferenceSpline (n : ℕ) :
 
 theorem integral_centeredDifferenceSpline_succ (n : ℕ) :
     ∫ u, centeredDifferenceSpline (n + 1) u = 0 := by
-  rw [centeredDifferenceSpline, integral_add_right_eq_self, integral_differenceSpline_succ]
+  simp only [centeredDifferenceSpline]
+  rw [integral_add_right_eq_self, integral_differenceSpline_succ]
 
 theorem contDiff_unitNotchProfile (r : ℕ) : ContDiff ℝ 2 (unitNotchProfile r) :=
   (contDiff_cardinalSpline _).add (contDiff_centeredDifferenceSpline _)
@@ -83,9 +84,12 @@ theorem hasCompactSupport_unitNotchProfile (r : ℕ) : HasCompactSupport (unitNo
 theorem integral_unitNotchProfile (r : ℕ) : ∫ u, unitNotchProfile r u = 1 := by
   have hc₁ := (contDiff_cardinalSpline (2 * r + 1)).continuous
   have hc₂ := (contDiff_centeredDifferenceSpline (2 * r + 1)).continuous
-  have hi₁ := hc₁.integrable_of_hasCompactSupport (hasCompactSupport_cardinalSpline _)
-  have hi₂ := hc₂.integrable_of_hasCompactSupport (hasCompactSupport_centeredDifferenceSpline _)
-  rw [unitNotchProfile, integral_add hi₁ hi₂, integral_cardinalSpline,
+  have hi₁ : Integrable (cardinalSpline (2 * r + 1)) :=
+    hc₁.integrable_of_hasCompactSupport (hasCompactSupport_cardinalSpline _)
+  have hi₂ : Integrable (centeredDifferenceSpline (2 * r + 1)) :=
+    hc₂.integrable_of_hasCompactSupport (hasCompactSupport_centeredDifferenceSpline _)
+  simp only [unitNotchProfile]
+  rw [integral_add hi₁ hi₂, integral_cardinalSpline,
     integral_centeredDifferenceSpline_succ, add_zero]
 
 theorem differenceSpline_reflect (n : ℕ) (u : ℝ) :
@@ -97,7 +101,8 @@ theorem differenceSpline_reflect (n : ℕ) (u : ℝ) :
   | succ n ih =>
       have h₁ : ((n + 1 : ℕ) : ℝ) - u = (n : ℝ) - (u - 1) := by push_cast; ring
       have h₂ : ((n + 1 : ℕ) : ℝ) - u - 1 = (n : ℝ) - u := by push_cast; ring
-      simp only [differenceSpline, h₁, h₂, ih, pow_succ]
+      simp only [differenceSpline]
+      rw [h₂, h₁, ih, ih, pow_succ]
       ring
 
 theorem centeredDifferenceSpline_neg (n : ℕ) (u : ℝ) :
@@ -162,12 +167,13 @@ theorem shellSpectrum_unitNotchProfile (r : ℕ) (t : ℝ) :
     (RHTower.paperFT_ofReal_conj_of_even heven (2 * Real.pi * t))
     (RHTower.paperFT_ofReal_conj_of_odd hodd (2 * Real.pi * t))
   simp only [Complex.normSq_eq_norm_sq] at hnorm
-  calc shellSpectrum (unitNotchProfile r) t = shellSpectrum b t + shellSpectrum g t := by
+  calc
+    shellSpectrum (unitNotchProfile r) t = shellSpectrum b t + shellSpectrum g t := by
       unfold shellSpectrum
       rw [hFT]
       exact hnorm
     _ = _ := by rw [show g = centeredDifferenceSpline (2 * r + 1) from rfl,
-      shellSpectrum_centeredDifferenceSpline]; rfl
+      shellSpectrum_centeredDifferenceSpline]
 
 theorem aliasDensity_unitNotchProfile (r : ℕ) {s : ℝ} (hs : 0 < s) :
     aliasDensity (unitNotchProfile r) s =
@@ -175,7 +181,7 @@ theorem aliasDensity_unitNotchProfile (r : ℕ) {s : ℝ} (hs : 0 < s) :
         aliasDensity (differenceSpline (2 * r + 1)) s := by
   unfold aliasDensity
   simp_rw [shellSpectrum_unitNotchProfile]
-  exact tsum_add
+  exact Summable.tsum_add
     (summable_alias_harmonics (contDiff_cardinalSpline _) (hasCompactSupport_cardinalSpline _) hs)
     (summable_alias_harmonics (contDiff_differenceSpline _) (hasCompactSupport_differenceSpline _) hs)
 
@@ -223,7 +229,7 @@ theorem aliasDensity_cardinal_add_nat (n j : ℕ) {ε : ℝ} (hε : 0 < ε) :
       simpa only [mul_pow, mul_assoc] using hp
     rw [div_pow]
     field_simp [hs.ne']
-    exact he
+    simpa only [mul_comm (shellSpectrum _ _) _] using he
   unfold aliasDensity
   simp_rw [hterm]
   exact tsum_mul_left
@@ -312,7 +318,7 @@ theorem aliasDensity_unitNotchProfile_div_pow_seven (r j : ℕ) {ε : ℝ}
   have he : ε ^ (4 * r + 10) = ε ^ (4 * r + 2) * ε ^ 8 := by
     rw [show 4 * r + 10 = (4 * r + 2) + 8 by omega, pow_add]
   rw [he]
-  field_simp [hε.ne', hs.ne'] <;> ring
+  field_simp [hε.ne', hs.ne']
 
 /-- Restoring integral one preserves the exact seventh-order asymptotic. -/
 theorem tendsto_unitNotchProfile_alias_div_pow_seven (r j : ℕ) :
@@ -349,7 +355,6 @@ theorem tendsto_unitNotchProfile_alias_div_pow_seven (r j : ℕ) :
     have he := (lt_div_iff₀ hA).mp hsmallε
     linarith only [he]
   rw [aliasDensity_unitNotchProfile_div_pow_seven r (j + 1) hε0 hgap]
-  rfl
 
 theorem unitNotchProfile_alias_coefficient_pos (r j : ℕ) :
     0 < (∫ u, differenceSpline (2 * r + 1) u ^ 2) / (2 * ((j + 1 : ℕ) : ℝ) ^ 8) :=

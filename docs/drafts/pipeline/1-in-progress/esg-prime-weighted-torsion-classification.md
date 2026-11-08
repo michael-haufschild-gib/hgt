@@ -94,8 +94,16 @@ proves the joint free/parity projection is surjective with exactly this lattice
 as kernel, in every exterior degree; its direct audit uses the same axioms.
 [PrimeWeightedAugmentedBoundary.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedAugmentedBoundary.lean)
 proves the actual empty-degree boundary formula `primeValueZeroBoundary_eq_lattice`,
-with the same direct audit and axioms. Actual homology persistence remains
-unformalized.
+with the same direct audit and axioms.
+[PrimeWeightedCoordinatePersistence.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedCoordinatePersistence.lean)
+formalizes the coefficient height maps, including free-to-parity reduction,
+and their compatibility with odd-chain inclusions. Its direct audit uses the
+same axioms.
+[PrimeWeightedHomologyCoordinates.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedHomologyCoordinates.lean)
+proves `primeValueHomologyCoordinateIsoSucc`, the natural comparison with actual
+positive-degree homology, and its actual cycle-class formula. Its direct audit
+passes with the same three standard axioms. The empty-degree comparison and
+full arithmetic-label natural isomorphism remain unformalized.
 
 ## Formal tools for the classification
 
@@ -122,6 +130,22 @@ proves `primeOddConeKernel_eq_span_basis`: inside each odd cutoff, adjoining
 any prime has kernel exactly the coordinate span of faces containing that
 prime. Its direct audit passes with the three standard axioms. This identifies
 the third summand of the exact boundary lattice.
+
+[PrimeWeightedSquarefreeIndices.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedSquarefreeIndices.lean)
+reindexes parity coefficients by squarefree integers coprime to six, preserving
+exterior degree and every coefficient. Its direct audit passes with the same
+three standard axioms.
+
+## Nonsplitting target
+
+The canonical free quotient should have no natural section already in empty
+degree. More generally, a face omitting two and three has a free generator at
+its birth `m` whose coefficient reduces to one modulo two at `2m`, while its
+free quotient dies there. Every lift of that generator has the same transition:
+the face has no source torsion coefficient at height `m`. Naturality of a
+section would force this transition to be zero. This argument and its transport
+to actual homology are drafted for Lean; the nonsplitting assertion is not yet
+a formalized theorem.
 
 ## Existing theory and scope
 

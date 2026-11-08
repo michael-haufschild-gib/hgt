@@ -232,6 +232,24 @@ theorem resultant_twist' (hg : g.Monic) (v h : F[X]) :
     resultant g (twist g v h) = resultant g v * resultant g h := by
   rw [← resultant_modByMonic hg, twist_modByMonic hg, resultant_modByMonic hg, resultant_mul_monic hg]
 
+/-- The weight of `f` through its monic associate `g = f/lc`: on monic `h` of degree `k`,
+`w_f(h) = χ(lc^k (−1)^{km}) χ(Res(g, h))`. -/
+theorem hypW_eq_monic [Fintype F] {f : F[X]} (hf0 : f ≠ 0) {k : ℕ} {h : F[X]}
+    (hh : h ∈ monicDeg (F := F) k) :
+    hypW f h = chiC F (f.leadingCoeff ^ k * (-1) ^ (k * f.natDegree)) *
+      chiC F (resultant (f * C f.leadingCoeff⁻¹) h) := by
+  have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
+  have hgdeg : (f * C f.leadingCoeff⁻¹).natDegree = f.natDegree := natDegree_mul_C (inv_ne_zero hlc)
+  have hfg : f = C f.leadingCoeff * (f * C f.leadingCoeff⁻¹) := by
+    rw [mul_comm, mul_assoc, ← C_mul, inv_mul_cancel₀ hlc, C_1, mul_one]
+  obtain ⟨-, hhdeg⟩ := mem_monicDeg.mp hh
+  rw [hypW_eq_chiC, ← map_mul]
+  congr 1
+  conv_lhs => rw [hfg]
+  rw [show (C f.leadingCoeff * (f * C f.leadingCoeff⁻¹)).natDegree = f.natDegree by rw [← hfg],
+    resultant_C_mul_right, ← hgdeg, resultant_comm, hhdeg, hgdeg]
+  ring
+
 /-- **Vanishing at every degree.** For `f` squarefree of positive degree `m`, the degree sums
 `s_k = Σ_{deg h = k} χ(Res(h, f))` vanish for `k ≥ m`. -/
 theorem degSumW_eq_zero_of_squarefree [Fintype F] (hF : ringChar F ≠ 2) {f : F[X]} (hsq : Squarefree f)
@@ -242,23 +260,10 @@ theorem degSumW_eq_zero_of_squarefree [Fintype F] (hF : ringChar F ≠ 2) {f : F
   have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
   have hgm : g.Monic := monic_mul_leadingCoeff_inv hf0
   have hgdeg : g.natDegree = m := natDegree_mul_C (inv_ne_zero hlc)
-  have hfg : f = C f.leadingCoeff * g := by
-    rw [mul_comm, mul_assoc, ← C_mul, inv_mul_cancel₀ hlc, C_1, mul_one]
   have hgsq : Squarefree g :=
     (associated_mul_unit_right f _ (isUnit_C.mpr (inv_ne_zero hlc).isUnit)).squarefree_iff.mp hsq
-  -- reduce to the monic `g`, then to `Res(g, h)`
-  have hred : ∀ h ∈ monicDeg (F := F) k, hypW f h =
-      chiC F (f.leadingCoeff ^ k * (-1) ^ (k * m)) * chiC F (resultant g h) := by
-    intro h hh
-    obtain ⟨-, hhdeg⟩ := mem_monicDeg.mp hh
-    rw [hypW_eq_chiC, ← map_mul]
-    congr 1
-    conv_lhs => rw [hfg]
-    rw [show (C f.leadingCoeff * g).natDegree = m by rw [← hfg], resultant_C_mul_right, ← hgdeg,
-      resultant_comm, hhdeg, hgdeg]
-    ring
   unfold degSumW
-  rw [Finset.sum_congr rfl hred, ← Finset.mul_sum]
+  rw [Finset.sum_congr rfl fun h hh => hypW_eq_monic hf0 hh, ← Finset.mul_sum]
   refine mul_eq_zero_of_right _ ?_
   obtain ⟨v, a, hav, hv⟩ := exists_nonsquare_unit hF hgm hgsq (hgdeg ▸ hdeg)
   have hva : AdjoinRoot.mk g v * AdjoinRoot.mk g a = 1 := by rw [mul_comm]; exact hav
@@ -414,7 +419,7 @@ theorem sum_monic_lt_resultant_eq_zero (hF : ringChar F ≠ 2) (hg : g.Monic) (h
   have hfull : ∑ x, φ x = 0 := by
     set S := ∑ x, φ x
     have hu : IsUnit (AdjoinRoot.mk g v) := IsUnit.of_mul_eq_one_right (AdjoinRoot.mk g a) hav
-    have hbij : Function.Bijective (AdjoinRoot.mk g v * ·) := hu.mul_left_bijective
+    have hbij : Function.Bijective (AdjoinRoot.mk g v * ·) := IsUnit.isUnit_iff_mulLeft_bijective.mp hu
     have hS : S = chiC F (resultant g v) * S := by
       calc S = ∑ x, φ (AdjoinRoot.mk g v * x) :=
             (Fintype.sum_bijective _ hbij (fun x => φ (AdjoinRoot.mk g v * x)) φ fun _ => rfl).symm
@@ -516,6 +521,383 @@ theorem sum_monic_lt_resultant_eq_zero (hF : ringChar F ≠ 2) (hg : g.Monic) (h
   exact (mul_eq_zero.mp hsplit).resolve_left hq
 
 end TrivialZero
+
+/-! ### The trivial reciprocal root -/
+
+section TrivialRoot
+
+variable [Fintype F] {f : F[X]}
+
+theorem eval_lPoly (f : F[X]) (z : ℂ) :
+    (lPoly f).eval z = ∑ k ∈ range f.natDegree, degSum f k * z ^ (f.natDegree - 1 - k) := by
+  simp [lPoly, eval_finsetSum]
+
+/-- **The trivial reciprocal root.** For `f` squarefree of even degree `m > 0`, `χ(lc f)` is a
+reciprocal root of the L-function: `L(χ(lc f)) = Σ_{k<m} Σ_{deg h = k} χ(Res(f/lc, h)) = 0`. It is
+the contribution of the two points at infinity. -/
+theorem chiC_leadingCoeff_mem_lRoots (hF : ringChar F ≠ 2) (hsq : Squarefree f)
+    (hm : 0 < f.natDegree) (heven : Even f.natDegree) : chiC F f.leadingCoeff ∈ lRoots f := by
+  have hf0 : f ≠ 0 := by rintro rfl; simp at hm
+  have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
+  set m := f.natDegree
+  set g := f * C f.leadingCoeff⁻¹
+  have hgm : g.Monic := monic_mul_leadingCoeff_inv hf0
+  have hgdeg : g.natDegree = m := natDegree_mul_C (inv_ne_zero hlc)
+  have hgsq : Squarefree g :=
+    (associated_mul_unit_right f _ (isUnit_C.mpr (inv_ne_zero hlc).isUnit)).squarefree_iff.mp hsq
+  set ε := chiC F f.leadingCoeff
+  have hε2 : ε * ε = 1 := by rw [← sq]; exact chiC_sq hlc
+  -- `s_k(f) = ε^k Σ_{deg h = k} χ(Res(g, h))`
+  have hs : ∀ k, degSum f k = ε ^ k * ∑ h ∈ monicDeg (F := F) k, chiC F (resultant g h) := by
+    intro k
+    unfold RHTower.Hyperelliptic.degSum degSumW
+    rw [Finset.sum_congr rfl fun h hh => hypW_eq_monic hf0 hh, ← Finset.mul_sum, map_mul, map_pow,
+      (heven.mul_left k).neg_one_pow, map_one, mul_one]
+  have hT := sum_monic_lt_resultant_eq_zero hF hgm hgsq (hgdeg ▸ hm) (hgdeg ▸ heven)
+  have hrange : range m = range g.natDegree := by rw [hgdeg]
+  have heval : (lPoly f).eval ε = 0 := by
+    rw [eval_lPoly]
+    have hk : ∀ k ∈ range m, degSum f k * ε ^ (m - 1 - k) =
+        ε ^ (m - 1) * ∑ h ∈ monicDeg (F := F) k, chiC F (resultant g h) := by
+      intro k hk
+      have hkm := mem_range.mp hk
+      rw [hs k]
+      have e : ε ^ k * ε ^ (m - 1 - k) = ε ^ (m - 1) * (ε ^ k * ε ^ k) := by
+        rw [← pow_add, ← pow_add, ← pow_add]
+        rw [show k + (m - 1 - k) = m - 1 by omega]
+        rw [show m - 1 + (k + k) = (m - 1) + 2 * k by ring, pow_add, pow_mul, sq, hε2, one_pow, mul_one]
+      rw [← mul_pow, hε2, one_pow, mul_one] at e
+      linear_combination (∑ h ∈ monicDeg (F := F) k, chiC F (resultant g h)) * e
+    rw [Finset.sum_congr rfl hk, ← Finset.mul_sum, hrange, hT, mul_zero]
+  exact (mem_roots (lPoly_monic f hm).ne_zero).mpr heval
+
+end TrivialRoot
+
+/-! ### Even split curves through their odd model -/
+
+section Split
+
+variable {L : Type*} [Field L] [Fintype L]
+
+/-- `χ_E(a) = χ_L(a)^{[E:L]}` for `a ∈ L`. -/
+theorem chiC_algebraMap (hL : ringChar L ≠ 2) {E : Type*} [Field E] [Fintype E] [Algebra L E]
+    (a : L) : chiC E (algebraMap L E a) = chiC L a ^ Module.finrank L E := by
+  rw [chiC_apply, chiC_apply, quadraticChar_norm hL, Algebra.norm_algebraMap, map_pow]
+  push_cast
+  rfl
+
+/-- **The even split curve through its odd model.** For `f = c Π_{s ∈ S} (X − s)` with `|S|` even and
+`c₀ ∈ S`, moving `c₀` to infinity gives the odd model `G = Π_{s ≠ c₀} (X − (s − c₀)⁻¹)`; over every
+extension `E` of degree `n`, `Σ_{x ∈ E} χ(f(x)) = −Σ_ω (ε ω)^n − χ(c)^n` with `ε = χ(c Π_{s ≠ c₀}(c₀ − s))`. -/
+theorem extHyp_even_split (hL : ringChar L ≠ 2) {S : Finset L} {c₀ : L} (hc₀ : c₀ ∈ S)
+    (heven : Even S.card) (c : L) (E : Type*) [Field E] [Fintype E] [Algebra L E] :
+    extHyp (E := E) (C c * ∏ s ∈ S, (X - C s)) =
+      -((lRoots (rootPoly ((S.erase c₀).image fun s => (s - c₀)⁻¹))).map fun ω =>
+        (chiC L (c * ∏ s ∈ S.erase c₀, (c₀ - s)) * ω) ^ Module.finrank L E).sum -
+      chiC L c ^ Module.finrank L E := by
+  set n := Module.finrank L E
+  set ι := algebraMap L E
+  set T := (S.erase c₀).image fun s => (s - c₀)⁻¹
+  set K := ∏ s ∈ S.erase c₀, (c₀ - s)
+  set G0 := ∏ s ∈ S.erase c₀, (0 - (s - c₀)⁻¹)
+  have hinj : Set.InjOn (fun s => (s - c₀)⁻¹) (S.erase c₀ : Set L) := by
+    intro a _ b _ hab
+    simpa using hab
+  have hT : T.card = S.card - 1 := by
+    rw [Finset.card_image_of_injOn hinj, Finset.card_erase_of_mem hc₀]
+  have hTodd : Odd (rootPoly T).natDegree := by
+    have : 1 ≤ S.card := Finset.card_pos.mpr ⟨c₀, hc₀⟩
+    rw [natDegree_rootPoly, hT]
+    rcases heven with ⟨k, hk⟩
+    exact ⟨k - 1, by omega⟩
+  -- `K G0 = 1`
+  have hKG : K * G0 = 1 := by
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_eq_one fun s hs => ?_
+    have hs0 : s - c₀ ≠ 0 := sub_ne_zero.mpr (Finset.ne_of_mem_erase hs)
+    field_simp
+    ring
+  -- the corpus substitution over `E`
+  set SE := S.map ⟨ι, ι.injective⟩
+  have hsub := sum_quadraticChar_prod_eq_of_even (Finset.mem_map_of_mem ⟨ι, ι.injective⟩ hc₀)
+    (show Even SE.card by rwa [Finset.card_map])
+  rw [← Finset.map_erase] at hsub
+  simp only [Finset.prod_map, Function.Embedding.coeFn_mk] at hsub
+  have e1 : ∀ x : E, aeval x (C c * ∏ s ∈ S, (X - C s)) = ι c * ∏ s ∈ S, (x - ι s) := by
+    intro x
+    simp [ι, map_prod]
+  have e2 : ∏ s ∈ S.erase c₀, (ι c₀ - ι s) = ι K := by simp [K, ι, map_prod]
+  have e3 : ∀ u : E, ∏ s ∈ S.erase c₀, (u - (ι s - ι c₀)⁻¹) = aeval u (rootPoly T) := by
+    intro u
+    rw [rootPoly, map_prod, Finset.prod_image hinj]
+    refine Finset.prod_congr rfl fun s _ => ?_
+    simp [ι, map_sub, map_inv₀]
+  have e4 : ∏ s ∈ S.erase c₀, (0 - (ι s - ι c₀)⁻¹) = ι G0 := by
+    simp [G0, ι, map_prod, map_sub, map_inv₀]
+  have e4' : aeval (0 : E) (rootPoly T) = ι G0 := (e3 0).symm.trans e4
+  simp only [e2, e3, e4'] at hsub
+  -- assemble
+  have hext : extHyp (E := E) (C c * ∏ s ∈ S, (X - C s)) =
+      chiC E (ι c) * ∑ x : E, chiC E (∏ s ∈ S, (x - ι s)) := by
+    unfold extHyp
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [e1, ← chiC_apply, map_mul]
+  have hG : ∑ u : E, chiC E (aeval u (rootPoly T)) = extHyp (E := E) (rootPoly T) := rfl
+  simp only [← chiC_apply] at hsub
+  rw [hext, hsub, hG, extHyp_eq_neg_sum_pow hL hTodd E, chiC_algebraMap hL, chiC_algebraMap hL,
+    chiC_algebraMap hL]
+  have hKG' : chiC L K ^ n * chiC L G0 ^ n = 1 := by rw [← mul_pow, ← map_mul, hKG, map_one, one_pow]
+  have hmap : ((lRoots (rootPoly T)).map fun ω => (chiC L (c * K) * ω) ^ n).sum =
+      (chiC L c ^ n * chiC L K ^ n) * ((lRoots (rootPoly T)).map (· ^ n)).sum := by
+    rw [← Multiset.sum_map_mul_left]
+    refine congrArg Multiset.sum (Multiset.map_congr rfl fun ω _ => ?_)
+    rw [mul_pow, map_mul, mul_pow]
+  rw [hmap]
+  linear_combination (-(chiC L c ^ n)) * hKG'
+
+end Split
+
+/-! ### Descent: the Riemann hypothesis in even degree -/
+
+section Descent
+
+variable [Fintype F] {f : F[X]}
+
+/-- **The Riemann hypothesis for even-degree hyperelliptic curves.** For `f` squarefree of even degree
+`m ≥ 2`, the reciprocal roots are the trivial root `χ(lc f)` and `m − 2` roots of modulus `√q`. Over the
+splitting field `L` the `[L : F]`-th powers are `χ_L(lc f)` and `ε` times the roots of the odd model. -/
+theorem riemannHypothesis_evenHyperelliptic (hF : ringChar F ≠ 2) (hsq : Squarefree f)
+    (hm : 2 ≤ f.natDegree) (heven : Even f.natDegree) :
+    ∃ R : Multiset ℂ, lRoots f = chiC F f.leadingCoeff ::ₘ R ∧
+      Multiset.card R = f.natDegree - 2 ∧ ∀ ω ∈ R, ‖ω‖ = Real.sqrt (Fintype.card F) := by
+  have hm0 : 0 < f.natDegree := by omega
+  set L := f.SplittingField
+  set r := Module.finrank F L
+  set fL := f.map (algebraMap F L)
+  obtain ⟨hsqL, hsplitL, hdegL⟩ := map_splittingField hsq
+  have hL : ringChar L ≠ 2 := by rwa [ringChar_splittingField]
+  haveI : Fact (ringChar F).Prime := ⟨CharP.char_is_prime F _⟩
+  haveI : CharP L (ringChar F) := charP_of_injective_algebraMap (algebraMap F L).injective _
+  have hfL0 : fL ≠ 0 := by
+    intro h
+    have := congrArg natDegree h
+    rw [hdegL, natDegree_zero] at this
+    omega
+  -- `fL = c Π_{s ∈ S} (X − s)`
+  set S := rootSet' fL
+  have hS : S.card = f.natDegree := by rw [card_rootSet' hsqL hsplitL, hdegL]
+  set c := fL.leadingCoeff
+  have hc0 : c ≠ 0 := leadingCoeff_ne_zero.mpr hfL0
+  have hc : c = algebraMap F L f.leadingCoeff := by simp [c, fL, leadingCoeff_map]
+  have hfL : fL = C c * ∏ s ∈ S, (X - C s) := by
+    have h := C_leadingCoeff_mul_prod_multiset_X_sub_C (p := fL) (splits_iff_card_roots.mp hsplitL)
+    rw [prod_roots_eq_prod_rootSet' hsqL] at h
+    exact h.symm
+  obtain ⟨c₀, hc₀⟩ : S.Nonempty := Finset.card_pos.mp (by omega)
+  have hSeven : Even S.card := hS ▸ heven
+  set T := (S.erase c₀).image fun s => (s - c₀)⁻¹
+  set K := ∏ s ∈ S.erase c₀, (c₀ - s)
+  set ε := chiC L (c * K)
+  have hK0 : K ≠ 0 := Finset.prod_ne_zero_iff.mpr fun s hs =>
+    sub_ne_zero.mpr (Finset.ne_of_mem_erase hs).symm
+  have hinj : Set.InjOn (fun s => (s - c₀)⁻¹) (S.erase c₀ : Set L) :=
+    fun a _ b _ hab => sub_left_injective (inv_injective hab)
+  have hT : T.card = f.natDegree - 1 := by
+    rw [Finset.card_image_of_injOn hinj, Finset.card_erase_of_mem hc₀, hS]
+  have hTodd : Odd (rootPoly T).natDegree := by
+    rw [natDegree_rootPoly, hT]
+    rcases heven with ⟨k, hk⟩
+    exact ⟨k - 1, by omega⟩
+  obtain ⟨hcardG, hnormG, -⟩ :=
+    riemannHypothesis_oddHyperelliptic.{_, 0} hL (squarefree_rootPoly T) hTodd
+  rw [natDegree_rootPoly, hT] at hcardG
+  -- descent: `(lRoots f)^r = χ_L(c) :: ε · lRoots G`
+  have hdesc : (lRoots f).map (· ^ r) = chiC L c ::ₘ (lRoots (rootPoly T)).map (ε * ·) := by
+    refine GaloisForLFunctions.multiset_eq_of_powerSum_eq fun n => ?_
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp only [pow_zero, Multiset.map_const', Multiset.sum_replicate, Multiset.card_map,
+        Multiset.card_cons, card_lRoots f hm0, hcardG]
+      congr 1
+      omega
+    haveI : NeZero n := ⟨hn.ne'⟩
+    let E := FiniteField.Extension L (ringChar F) n
+    letI : Fintype E := Fintype.ofFinite E
+    letI : Algebra F E := ((algebraMap L E).comp (algebraMap F L)).toAlgebra
+    haveI : IsScalarTower F L E := IsScalarTower.of_algebraMap_eq fun _ => rfl
+    have hfin : Module.finrank F E = r * n := by
+      rw [← Module.finrank_mul_finrank F L E, FiniteField.finrank_extension]
+    have hsame : extHyp (F := F) (E := E) f = extHyp (F := L) (E := E) fL := by
+      unfold extHyp
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [aeval_map_algebraMap]
+    have hF' := extHyp_eq_neg_sum_pow_of_squarefree hF hsq hm0 E
+    have hL' := extHyp_even_split hL hc₀ hSeven c E
+    rw [← hfL, FiniteField.finrank_extension] at hL'
+    rw [hsame, hL', hfin] at hF'
+    have e : ((lRoots f).map (· ^ r)).map (· ^ n) = (lRoots f).map (· ^ (r * n)) := by
+      rw [Multiset.map_map]
+      exact Multiset.map_congr rfl fun ω _ => by simp [← pow_mul]
+    rw [e, Multiset.map_cons, Multiset.sum_cons, Multiset.map_map]
+    simp only [Function.comp_def]
+    linear_combination hF'
+  -- the trivial root and the rest
+  have htriv := chiC_leadingCoeff_mem_lRoots hF hsq hm0 heven
+  set R := (lRoots f).erase (chiC F f.leadingCoeff)
+  have hR : lRoots f = chiC F f.leadingCoeff ::ₘ R := (Multiset.cons_erase htriv).symm
+  have hcl : chiC L c = chiC F f.leadingCoeff ^ r := by rw [hc, chiC_algebraMap hF]
+  rw [hR, Multiset.map_cons, hcl, Multiset.cons_inj_right] at hdesc
+  refine ⟨R, hR, ?_, ?_⟩
+  · have := card_lRoots f hm0
+    rw [hR, Multiset.card_cons] at this
+    omega
+  · intro ω hω
+    have hmem : ω ^ r ∈ (lRoots (rootPoly T)).map (ε * ·) := hdesc ▸ Multiset.mem_map_of_mem _ hω
+    obtain ⟨ω', hω', he⟩ := Multiset.mem_map.mp hmem
+    have hε : ‖ε‖ = 1 := norm_chiC (mul_ne_zero hc0 hK0)
+    have h := hnormG ω' hω'
+    have hr : 0 < r := Module.finrank_pos
+    have hcardL : (Fintype.card L : ℝ) = (Fintype.card F : ℝ) ^ r := by
+      rw [Module.card_eq_pow_finrank (K := F) (V := L)]
+      push_cast
+      rfl
+    have hpow : Real.sqrt ((Fintype.card F : ℝ) ^ r) = Real.sqrt (Fintype.card F) ^ r := by
+      rw [Real.sqrt_eq_iff_eq_sq (by positivity) (by positivity), ← pow_mul, mul_comm, pow_mul,
+        Real.sq_sqrt (Nat.cast_nonneg _)]
+    have hnr : ‖ω‖ ^ r = Real.sqrt (Fintype.card F) ^ r := by
+      rw [← norm_pow, ← he, norm_mul, hε, one_mul, h, hcardL, hpow]
+    exact (pow_left_inj₀ (norm_nonneg ω) (Real.sqrt_nonneg _) hr.ne').mp hnr
+
+/-- **The Hasse–Weil bound in even degree.** For `y² = f(x)`, `f` squarefree of even degree `m ≥ 2`,
+over every finite extension `E`: the smooth model has the affine points and `1 + χ_E(lc f)` points at
+infinity, and `|#{y² = f(x)}(E) + χ_E(lc f) − |E|| ≤ (m − 2) √|E|`. -/
+theorem abs_card_points_sub_le_evenHyperelliptic (hF : ringChar F ≠ 2) (hsq : Squarefree f)
+    (hm : 2 ≤ f.natDegree) (heven : Even f.natDegree) (E : Type*) [Field E] [Fintype E]
+    [Algebra F E] :
+    |((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℝ) +
+        (quadraticChar E (algebraMap F E f.leadingCoeff) : ℝ) - Fintype.card E| ≤
+      (f.natDegree - 2 : ℕ) * Real.sqrt (Fintype.card E) := by
+  have hm0 : 0 < f.natDegree := by omega
+  obtain ⟨R, hR, hcardR, hnormR⟩ := riemannHypothesis_evenHyperelliptic hF hsq hm heven
+  have hE : ringChar E ≠ 2 := by rwa [← Algebra.ringChar_eq F E]
+  set n := Module.finrank F E
+  have hcardE : Fintype.card E = Fintype.card F ^ n := Module.card_eq_pow_finrank
+  have hcount := card_points_eq hE (f.map (algebraMap F E))
+  simp only [eval_map, ← aeval_def] at hcount
+  have hsum := extHyp_eq_neg_sum_pow_of_squarefree hF hsq hm0 E
+  rw [hR, Multiset.map_cons, Multiset.sum_cons] at hsum
+  have hχ : chiC E (algebraMap F E f.leadingCoeff) = chiC F f.leadingCoeff ^ n := chiC_algebraMap hF _
+  -- the real quantity is `−Σ_R ω^n`
+  have hkey : ((((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℝ) +
+      (quadraticChar E (algebraMap F E f.leadingCoeff) : ℝ) - Fintype.card E : ℝ) : ℂ) =
+      -(R.map (· ^ n)).sum := by
+    have h1 : (((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) : ℂ) =
+        extHyp (E := E) f + Fintype.card E := by
+      rw [hcount]
+      unfold extHyp
+      push_cast
+      rfl
+    push_cast
+    rw [← chiC_apply, hχ]
+    have h1' : (((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℕ) : ℂ) =
+        extHyp (E := E) f + Fintype.card E := by exact_mod_cast h1
+    rw [h1', hsum]
+    ring
+  rw [← Real.norm_eq_abs, ← Complex.norm_real, hkey, norm_neg]
+  calc ‖(R.map (· ^ n)).sum‖ ≤ (R.map (fun ω => ‖ω ^ n‖)).sum := by
+        simpa [Multiset.map_map] using norm_multiset_sum_le (R.map (· ^ n))
+    _ = (R.map (fun _ => Real.sqrt (Fintype.card F) ^ n)).sum := by
+        congr 1
+        exact Multiset.map_congr rfl fun ω hω => by rw [norm_pow, hnormR ω hω]
+    _ = (f.natDegree - 2 : ℕ) * Real.sqrt (Fintype.card E) := by
+        rw [Multiset.map_const', Multiset.sum_replicate, hcardR, nsmul_eq_mul, hcardE, Nat.cast_pow]
+        congr 1
+        rw [eq_comm, Real.sqrt_eq_iff_eq_sq (by positivity) (by positivity), ← pow_mul, mul_comm,
+          pow_mul, Real.sq_sqrt (Nat.cast_nonneg _)]
+
+end Descent
+
+/-! ### The count law of every hyperelliptic curve -/
+
+section CountLaw
+
+variable [Fintype F] {f : F[X]}
+
+/-- The points at infinity of the smooth model of `y² = f(x)` over `E`: one in odd degree,
+`1 + χ_E(lc f)` in even degree. -/
+def pointsAtInfinity (f : F[X]) (E : Type*) [Field E] [Fintype E] [Algebra F E] : ℤ :=
+  if Odd f.natDegree then 1 else 1 + quadraticChar E (algebraMap F E f.leadingCoeff)
+
+/-- **Hasse–Weil for every hyperelliptic curve.** For `f` squarefree of degree `2g + 1` or `2g + 2`
+and every finite extension `E`, `|N_E − |E| − 1| ≤ 2g √|E|`, where `N_E` counts the affine points and
+the points at infinity. -/
+theorem abs_card_points_sub_le_hyperelliptic (hF : ringChar F ≠ 2) (hsq : Squarefree f) {g : ℕ}
+    (hdeg : f.natDegree = 2 * g + 1 ∨ f.natDegree = 2 * g + 2) (E : Type*) [Field E] [Fintype E]
+    [Algebra F E] :
+    |((((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) + pointsAtInfinity f E : ℤ) : ℝ) -
+        Fintype.card E - 1| ≤ 2 * g * Real.sqrt (Fintype.card E) := by
+  rcases hdeg with h | h
+  · have hodd : Odd f.natDegree := ⟨g, h⟩
+    have hb := abs_card_points_sub_le_oddHyperelliptic hF hsq hodd E
+    rw [h, show 2 * g + 1 - 1 = 2 * g by omega] at hb
+    simp only [pointsAtInfinity, if_pos hodd]
+    push_cast at hb ⊢
+    convert hb using 2
+    ring
+  · have heven : Even f.natDegree := ⟨g + 1, by omega⟩
+    have hnodd : ¬ Odd f.natDegree := Nat.not_odd_iff_even.mpr heven
+    have hb := abs_card_points_sub_le_evenHyperelliptic hF hsq (by omega) heven E
+    rw [h, show 2 * g + 2 - 2 = 2 * g by omega] at hb
+    simp only [pointsAtInfinity, if_neg hnodd]
+    push_cast at hb ⊢
+    convert hb using 2
+    ring
+
+/-- **The count law of every hyperelliptic curve, at every level.** For `f` squarefree of degree
+`2g + 1` or `2g + 2`, `g ≥ 1`, odd characteristic, and every finite extension `E`, the channel
+numbers `g`, `g |E|`, `N_E + (g − 1)(|E| + 1)` extend to a count law, `N_E` the number of points of the
+smooth model. -/
+theorem hyperelliptic_countLaw_every (hF : ringChar F ≠ 2) (hsq : Squarefree f) {g : ℕ}
+    (hg : 1 ≤ g) (hdeg : f.natDegree = 2 * g + 1 ∨ f.natDegree = 2 * g + 2) (E : Type*) [Field E]
+    [Fintype E] [Algebra F E] :
+    ∃ K : ℤ → ℤ → ℕ, CountLaw K ∧ (K 0 1 : ℤ) = g ∧ (K 1 0 : ℤ) = g * Fintype.card E ∧
+      (K 1 1 : ℤ) = (((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) +
+        pointsAtInfinity f E) + (g - 1) * (Fintype.card E + 1) := by
+  set N : ℤ := ((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) + pointsAtInfinity f E
+  set Q : ℤ := Fintype.card E
+  have hb := abs_card_points_sub_le_hyperelliptic hF hsq hdeg E
+  -- `(Q + 1 − N)² ≤ 4g²Q`
+  have ha : (Q + 1 - N) ^ 2 ≤ 4 * (g : ℤ) ^ 2 * Q := by
+    have hQ : (0 : ℝ) ≤ Q := by simp [Q]
+    have hsq' : Real.sqrt (Q : ℝ) ^ 2 = Q := Real.sq_sqrt hQ
+    have h1 : |((Q + 1 - N : ℤ) : ℝ)| ≤ 2 * g * Real.sqrt Q := by
+      rw [show ((Q + 1 - N : ℤ) : ℝ) = -((N : ℝ) - Q - 1) by push_cast; ring, abs_neg]
+      exact_mod_cast hb
+    have h2 : ((Q + 1 - N : ℤ) : ℝ) ^ 2 ≤ (2 * g * Real.sqrt Q) ^ 2 := by
+      rw [← sq_abs]
+      exact pow_le_pow_left₀ (abs_nonneg _) h1 2
+    rw [mul_pow, mul_pow, hsq'] at h2
+    have : ((Q + 1 - N : ℤ) : ℝ) ^ 2 ≤ ((4 * (g : ℤ) ^ 2 * Q : ℤ) : ℝ) := by
+      push_cast at h2 ⊢
+      linarith
+    exact_mod_cast this
+  obtain ⟨K, hK, h01, h10, h11⟩ :=
+    (exists_genusCountLaw_iff (g := (g : ℤ)) (Q := Q) (a := Q + 1 - N) (by exact_mod_cast hg)).mpr ha
+  exact ⟨K, hK, h01, h10, by rw [h11]; ring⟩
+
+/-- **The count law of every genus-two curve.** Every curve `y² = f(x)` of genus two over a finite
+field of odd characteristic, `f` squarefree of degree `5` or `6`, whatever its Jacobian, has the count
+law at every level: channel numbers `2`, `2|E|`, `N_E + |E| + 1`. -/
+theorem genusTwo_countLaw (hF : ringChar F ≠ 2) (hsq : Squarefree f)
+    (hdeg : f.natDegree = 5 ∨ f.natDegree = 6) (E : Type*) [Field E] [Fintype E] [Algebra F E] :
+    ∃ K : ℤ → ℤ → ℕ, CountLaw K ∧ (K 0 1 : ℤ) = 2 ∧ (K 1 0 : ℤ) = 2 * Fintype.card E ∧
+      (K 1 1 : ℤ) = (((univ.filter fun q : E × E => q.2 ^ 2 = aeval q.1 f).card : ℤ) +
+        pointsAtInfinity f E) + (Fintype.card E + 1) := by
+  obtain ⟨K, hK, h01, h10, h11⟩ := hyperelliptic_countLaw_every hF hsq (g := 2) (by norm_num)
+    (by omega) E
+  exact ⟨K, hK, by rw [h01]; norm_num, by rw [h10]; norm_num, by rw [h11]; ring⟩
+
+end CountLaw
 
 end GaloisForLFunctions.CountingHolography
 

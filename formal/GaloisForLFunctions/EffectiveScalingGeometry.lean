@@ -46,4 +46,10 @@ import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedParityCoordinat
 
 import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedAugmentedBoundary
 
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedCoordinatePersistence
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedSquarefreeIndices
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeWeightedHomologyCoordinates
+
 /-! Arithmetic height filtrations, sections and effectivity on the scaling surface. -/

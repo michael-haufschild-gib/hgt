@@ -321,7 +321,8 @@ theorem aliasDensity_differenceSpline_nat (n j : ℕ) :
   unfold aliasDensity
   have ht : ∀ k : ℕ, shellSpectrum (differenceSpline n) (((k : ℝ) + 1) * (j + 1)) = 0 := by
     intro k
-    convert hzero ((k + 1) * (j + 1)) (by positivity) using 1 <;> push_cast <;> rfl
+    simpa only [Nat.cast_mul, Nat.cast_add, Nat.cast_one] using
+      hzero ((k + 1) * (j + 1)) (by positivity)
   simp only [ht, tsum_zero]
 
 /-- Every difference order has a seventh-order notch with a positive leading coefficient. -/

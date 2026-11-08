@@ -54,6 +54,18 @@ torsion window. In the last case its even coefficient puts it in the doubled
 summand. Free and torsion windows are disjoint; lifting each finitely supported
 parity coefficient to an integer proves joint surjectivity.
 
+The coefficient height map retains the old free part in the new free window
+and restricts `cast₂(old free)+old parity` to the new torsion window. For a
+born face with nonzero coefficient, the source height lies either below `2m`
+or at least `2m`; exactly one source component contributes. This proves
+compatibility with odd-chain inclusions. Surjectivity transfers identity and
+composition to these explicit coefficient maps.
+
+The prime divisors of a face product are exactly its vertices. Omitting two
+and three is therefore equivalent to coprimality with six. The existing
+squarefree product equivalence reindexes parity coefficients without changing
+their values or exterior degree.
+
 ## Lean and audit
 
 [PrimeWeightedBoundaryCoordinates.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedBoundaryCoordinates.lean)
@@ -66,6 +78,11 @@ proves `primeValueCoordinateLattice_iff`,
 `primeValueHomologyProjection_surjective`.
 [PrimeWeightedAugmentedBoundary.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedAugmentedBoundary.lean)
 proves `primeValueZeroBoundary_eq_lattice`.
+[PrimeWeightedCoordinatePersistence.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedCoordinatePersistence.lean)
+proves `primeValueHomologyProjection_natural` and defines the verified
+`primeValueCoordinatePersistence` functor.
+[PrimeWeightedSquarefreeIndices.lean](../../../../formal/GaloisForLFunctions/EffectiveScalingGeometry/PrimeWeightedSquarefreeIndices.lean)
+proves `primeFaceProduct_coprime_six_iff` and `primeTorsionArithmeticEquiv`.
 All pass direct `lake --old env lean` audits; printed capstones use exactly
 `[propext, Classical.choice, Quot.sound]`.
 
@@ -74,5 +91,5 @@ All pass direct `lake --old env lean` audits; printed capstones use exactly
 The integral cycle equivalence is essential: arbitrary coefficient rings
 with two-torsion need not have the same cycle coordinates. Weighted homology
 itself is classical; this theorem identifies the exact prime-product boundary
-lattice. Actual augmented homology and its free-to-parity transitions remain
+lattice. Transport of this coefficient functor to actual augmented homology remains
 the [classification target](../1-in-progress/esg-prime-weighted-torsion-classification.md).

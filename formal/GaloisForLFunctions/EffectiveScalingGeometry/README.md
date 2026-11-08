@@ -264,13 +264,33 @@ projects onto free coefficients on `m≤N<2m` and parity coefficients on
 kernel is exactly the relation lattice above. Equivalently, a chain belongs
 to that lattice precisely when it has half-height support and even coefficients
 in the torsion window. This quotient calculation holds in every exterior
-degree; its transport to actual augmented homology and height maps remains open.
+degree; its transport to actual augmented homology remains open.
 
 [`PrimeWeightedAugmentedBoundary.lean`](PrimeWeightedAugmentedBoundary.lean)
 proves the same boundary-lattice formula in empty degree, where coordinates
 are the identity. A prime cone is injective on empty chains because coordinate
 contraction recovers the chain. Thus the three-cone kernel contributes zero,
 and the remaining low and doubled half-height summands give all boundaries.
+
+[`PrimeWeightedCoordinatePersistence.lean`](PrimeWeightedCoordinatePersistence.lean)
+constructs the coefficient functor with its full transition maps. The new free
+part retains the old free coefficients in its window; the new parity part
+restricts the sum of reduced old free coefficients and old parity coefficients.
+This commutes with literal odd-chain inclusions. A free class can therefore
+become a nonzero torsion class before dying, a transition that an independent
+sum of free and torsion interval functors would lose.
+
+[`PrimeWeightedSquarefreeIndices.lean`](PrimeWeightedSquarefreeIndices.lean)
+identifies the parity labels with squarefree integers coprime to six in
+`2m≤N<3m`. The degree is their number of distinct prime factors. Reindexing
+preserves every parity coefficient and is linear over the integers.
+
+[`PrimeWeightedHomologyCoordinates.lean`](PrimeWeightedHomologyCoordinates.lean)
+identifies actual positive-degree integral homology naturally with the
+free/parity coefficient functor. The cycle-class comparison uses the actual
+boundary quotient and commutes with every height inclusion. Thus the transition
+formula describes the original weighted complex's homology maps, beyond its
+coordinate relation lattice. The empty-degree categorical comparison remains.
 
 ## Mechanisms and tools
 

@@ -34,10 +34,20 @@ The reduced mean has one further factor of `u` and a denominator nonzero
 at zero. Since `T_Y(1/2)=1`, these orders are finite. This gives the parity
 law and the exceptional lower bounds.
 
-Exact exceptional orders require proving `T'''_(Y*)(0)≠0`; oddness and
-the first jet do not discharge that input. Audit it separately after
-formalizing the first three statements. No RH-strength source estimate
-follows from this central classification. The proved nonvanishing of
+For the exceptional third jet, put `ℓ=log ξ` locally near `1`. The
+candidate identity is `T'''_(Y*)(0)=8√Y*[2−ℓ'''(1)]`.
+`RHTower.deriv2_xiRealLogDeriv_neg` in
+`XiMagnetizationGHSConcavity.lean` proves strict negativity of the
+second derivative of `w↦Re(ξ′/ξ)(1/2+w)` for `0<w` and `w²≤120`.
+At `w=1/2`, this supplies the required strict sign for `ℓ'''(1)`.
+Its proof uses the unconditional zero-height gap and the actual
+reciprocal-moment tower. Thus the remaining input is derivative
+transport and the exceptional jet identity, followed by vanishing-order
+arithmetic; no new numerical bound or zero-free assumption is needed.
+The imported sign theorem still needs a transitive axiom audit here.
+
+No RH-strength source estimate follows from this central classification.
+The proved nonvanishing of
 `T_Y` at every arithmetic resonance holds at every height, so exceptional
 central cancellation cannot remove an arithmetic pole.
 
