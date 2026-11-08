@@ -108,6 +108,22 @@ survivor is its exact extension classification, norm and explicit packets.
 Higher-degree contraction is a separate [construction problem](../../../docs/drafts/pipeline/0-backlog/riac-completed-prime-koszul.md).
 No completed homology or zero-detection theorem is asserted.
 
+## Vertical unitary equivalence
+
+[UnitaryPrimeChainGauge.lean](UnitaryPrimeChainGauge.lean) completes every
+actual prime exterior degree with squared face weight `∏_(p∈S)p^δ`.
+The finite-chain embedding is faithful and dense. Imaginary Dirichlet gauges
+extend to explicit unitaries, intertwining the original adjacent-degree
+boundaries. These unitaries transport the finite boundary graphs and their
+closures exactly along vertical lines, even when those closures are not
+operators. Up to this explicit equivalence, the closed relation depends
+only on `Re(s)`.
+
+Thus these diagonal Hilbert completions alone cannot distinguish imaginary
+zero locations through unitary invariants. The positive survivor is their
+exact norm and graph classification. Additional arithmetic structure and a
+zero-detection comparison remain necessary.
+
 ## Literature and novelty boundary
 
 Connes–Consani construct integer dimensions and Riemann–Roch on the Arakelov
@@ -130,8 +146,8 @@ a finite payment uniform over every finite prime set.
 The existing [prime-face graph gauge](../RHTower/PrimeFaceBoundaryGauge.lean)
 trivializes the row-summability graph family in the product topology for all
 complex parameters. That topology does not preserve a prescribed Hilbert norm.
-The weighted exterior programme must establish its own norm and domain
-comparisons; algebraic or product-topology conjugacy alone does not supply them.
+The weighted exterior theorem establishes its own norm and graph comparisons;
+algebraic or product-topology conjugacy alone does not supply them.
 
 ## Calibration and success criteria
 

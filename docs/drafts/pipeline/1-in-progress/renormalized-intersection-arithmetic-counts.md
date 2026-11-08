@@ -35,10 +35,17 @@ is whether the standard completed complex remains contractible above that thresh
 The [logarithmic compensation boundary](../3-formalized/riac-logarithmic-star-compensation.md)
 is also formalized: leaf growth `(log p)^α` admits finite payment exactly
 for `α>2`, with minimal positive completion and explicit negative probes.
-The [vertical unitary graph comparison](riac-unitary-prime-chain-gauge.md)
-remains under formalization.
+The [vertical unitary graph comparison](../3-formalized/riac-unitary-prime-chain-gauge.md)
+is formalized in every exterior degree, preserving the prescribed conductor
+norms and the actual finite boundary graph closures.
 The [full logarithmic torsion candidate](riac-logarithmic-torsion-completion.md)
 asks for the sharp extension from prime stars to every conductor interaction.
+The [canonical cone-pair candidate](../0-backlog/riac-relative-cone-normalization.md)
+separates an actual relative-homology construction from a mere Euler subtraction;
+it does not yet supply localization on the core.
+The [modular filtration candidate](../0-backlog/riac-modular-height-filtration.md)
+replaces an invariant finite cusp set by a moving cutoff with explicit matrix
+height distortion; the prime-face comparison remains missing.
 
 ## Necessary distinctions
 

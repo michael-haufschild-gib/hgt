@@ -27,6 +27,8 @@ If `g` remains zero-free, some point of the gap satisfies `(exp(−(2π−δ) lo
 
 Seek long-arc returns with fixed `0<η<1`, arbitrarily large height `τ`, and omitted angle `δ≤1/log(2+|τ|)`. The corpus's `InvZetaAbscissaSubpolynomial.exists_three_circles_zeta_lower_bound_of_zeroFree_above` gives a lower bound of the form `exp(−C(log T)^α)`, `α<1`, on strict substrips of an eventual zero-free half-plane. The unresolved issue is producing returns at a compatible gap/height scale.
 
+The disc centre `ρ`, radius `R>0`, and accuracy `η<1` are fixed before the height cutoff: for every `H`, seek `τ≥H` and `0<δ≤1/log(2+|τ|)` such that `|ζ(z+iτ)−ζ(z)|≤η|ζ(z+iτ)|` for `z=circleMap ρ R θ`, `δ≤θ≤2π`. The zero shift and a height-dependent accuracy tending to one do not meet this target.
+
 `exists_isHeadReturn_le` bounds finite-head return height by `(7N)^N`; it does not establish the required long-arc zeta approximation. Existing head-resolution bounds control log modulus, not phase.
 
 No quantitative return producer or AAL consequence is proved here.

@@ -49,9 +49,13 @@ theorem integrableOn_narainMeanMomentDensity (Y Z : Height) (n : ℕ) :
       (((continuous_ofReal.comp continuous_neg).pow n).mul
         (narainMeanClockSchwartz Y Z).continuous).aestronglyMeasurable
     filter_upwards [] with L
+    change ‖((-L : ℝ) : ℂ) ^ n * narainMeanClockSchwartz Y Z L‖ ≤
+      ‖L‖ ^ n * ‖narainMeanClockSchwartz Y Z L‖
     simp only [norm_mul, norm_pow, Complex.norm_real, norm_neg, le_refl]
   have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).integrable_comp_of_integrable hmoment
-  simpa only [Function.comp_apply, neg_neg, exp_smul_narainMeanMomentDensity] using hneg
+  change Integrable (fun u : ℝ => ((-(-u) : ℝ) : ℂ) ^ n *
+    narainMeanClockSchwartz Y Z (-u)) at hneg
+  simpa only [neg_neg, exp_smul_narainMeanMomentDensity] using hneg
 
 /-- The physical and logarithmic-clock moments agree, including the reflection sign. -/
 theorem integral_narainMeanMomentDensity_eq_clock (Y Z : Height) (n : ℕ) :

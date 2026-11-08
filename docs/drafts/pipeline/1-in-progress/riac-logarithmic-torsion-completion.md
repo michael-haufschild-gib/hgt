@@ -52,7 +52,9 @@ If boundedness is proved, inclusion from exponent `α` into any exponent
 Even conductors have tame diagonal at least `log 2`; their normalized
 diagonal square sum diverges for every finite logarithmic exponent.
 Thus this candidate compact operator should never be Hilbert–Schmidt.
-These consequences require separate proofs and are not accepted results.
+The [spectral branch](riac-logarithmic-torsion-spectrum.md) gives the exact
+coefficient-preserving factorization and even-prime diagonal argument.
+Its complete Lean drafts remain unchecked; these are not accepted results.
 
 ## Positive survivor and scope
 

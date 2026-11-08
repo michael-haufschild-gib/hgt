@@ -3,7 +3,7 @@
 - **ID:** W11-NJM
 - **Stage:** 0-backlog
 - **Type:** CANDIDATE
-- **Source:** [Central orders](ads3-narain-central-order-classification.md) · [Quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md)
+- **Source:** [Central orders](../3-formalized/ads3-narain-central-order-classification.md) · [Quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md)
 
 ## Conjecture
 
@@ -48,7 +48,7 @@ The zeroth moment always vanishes. The first is
 concavity. The central factorization predicts
 `μ₃(Y*,Z)=32√(Y*Z)(2−κ)(c−log Z)` and
 `μ₅(Y*,Y*)=(2560/3)Y*(2−κ)²>0`.
-These exact coefficient laws strengthen the proposed order classification.
+These exact coefficient laws would strengthen the proved order classification.
 In the central factorization `M(u)=u D_Y(u)D_Z(u)U(u)`, `U(0)=4`.
 At the exceptional height,
 `D(0)=D′(0)=0` and `D″(0)=(8/3)√Y*(2−κ)`.
@@ -132,9 +132,9 @@ No derivatives of `H` are required. The already proved analyticity of
 absolute moments alone are not being used to claim holomorphy of the
 integral across the boundary.
 
-The source saving and Schwartz moment domination are proved. The physical
-change of variables, Fourier differentiation and exact central-order
-classification still need Lean verification.
+The source saving, Schwartz moment domination and exact central-order
+classification are proved. The physical change of variables and Fourier
+differentiation still need Lean verification.
 A sign-change proof from moments alone needs a precise oscillation
 definition and a moment-separation theorem; the stronger arithmetic
 oscillation theorem would instead supply every finite sign count.

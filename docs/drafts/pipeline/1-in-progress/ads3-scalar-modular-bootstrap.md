@@ -60,6 +60,8 @@ The unconditional [half-power boundary rate](../3-formalized/ads3-narain-average
 
 The [common derivative bound](../3-formalized/ads3-narain-logarithmic-derivative-saving.md) is formalized: every order satisfies `|H^(n)(L)|≤C n! (16/π)^n exp(−Lw(L)/128)` with one threshold and prefactor independent of derivative order. A uniform complex disk estimate and Cauchy bounds prove the literal source statement.
 
+The [central classification](../3-formalized/ads3-narain-central-order-classification.md) is formalized. With `Y*=exp(2−4 Re ξ′(1))`, the mean has order `1+2·1_{Y=Y*}+2·1_{Z=Y*}` at `u=0`. The exceptional target cubic jet is nonzero because `(logDeriv ξ)″(1)` is real and strictly negative. Every arithmetic pole still survives at every target height.
+
 ## Product detector: formalized
 
 Put `D(u)=ξ(1+2u)`, `N(u;x,Y)=D(u)E(1/2+u;x+iY)` and

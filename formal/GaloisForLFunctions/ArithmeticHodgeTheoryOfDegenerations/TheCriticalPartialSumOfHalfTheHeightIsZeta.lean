@@ -87,8 +87,8 @@ theorem norm_adaptivePartialSum_sub_zeta_le (B : ℕ) {b : ℝ} (hb : 1 ≤ |b|)
     rw [Real.rpow_neg hM0.le, Real.rpow_neg hb0.le, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow]
     rw [← div_eq_mul_inv, le_div_iff₀ (Real.sqrt_pos.mpr hb0), inv_mul_eq_div,
       div_le_iff₀ (Real.sqrt_pos.mpr hM0), ← Real.sqrt_mul (by norm_num)]
-    calc Real.sqrt |b| ≤ Real.sqrt (2 * M) := Real.sqrt_le_sqrt (by linarith)
-      _ = 1 * Real.sqrt (2 * M) := (one_mul _).symm
+    rw [one_mul]
+    exact Real.sqrt_le_sqrt (by linarith)
   have h2 : (M : ℝ) ^ (1 / 2 : ℝ) / |b| ≤
       Real.sqrt (1 + 2 * ((B : ℝ) + 1)) * |b| ^ (-(1 / 2 : ℝ)) := by
     rw [Real.rpow_neg hb0.le, ← Real.sqrt_eq_rpow, ← Real.sqrt_eq_rpow, ← div_eq_mul_inv,

@@ -34,11 +34,12 @@ noncomputable section
 namespace GaloisForLFunctions.InfiniteRankWeilTheory
 
 /-- The phase `n^{−it} = e^{−it log n}`. -/
-def phase (n : ℕ) (t : ℝ) : ℂ := Complex.exp (-((t * Real.log n : ℝ) : ℂ) * I)
+def phase (n : ℕ) (t : ℝ) : ℂ := Complex.exp (((-(t * Real.log n) : ℝ) : ℂ) * I)
 
-theorem norm_phase (n : ℕ) (t : ℝ) : ‖phase n t‖ = 1 := by
-  rw [phase, Complex.norm_exp]
-  simp
+theorem norm_phase (n : ℕ) (t : ℝ) : ‖phase n t‖ = 1 := Complex.norm_exp_ofReal_mul_I _
+
+theorem complex_log_natCast (n : ℕ) : Complex.log (n : ℂ) = ((Real.log n : ℝ) : ℂ) := by
+  rw [Complex.ofReal_log (Nat.cast_nonneg n), Complex.ofReal_natCast]
 
 theorem phase_one (t : ℝ) : phase 1 t = 1 := by simp [phase]
 
@@ -90,11 +91,12 @@ def dpoly (S : Finset ℕ) (c : ℕ → ℂ) (s : ℂ) : ℂ := ∑ n ∈ S, c n
 theorem natCast_cpow_shift {n : ℕ} (hn : n ≠ 0) (s : ℂ) (t : ℝ) :
     (n : ℂ) ^ (-(s + t * I)) = (n : ℂ) ^ (-s) * phase n t := by
   have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hn
-  rw [neg_add, Complex.cpow_add _ _ hn', phase, Complex.cpow_def_of_ne_zero hn',
-    ← Complex.natCast_log]
-  congr 2
-  push_cast
-  ring
+  have h : (n : ℂ) ^ (-((t : ℂ) * I)) = phase n t := by
+    rw [Complex.cpow_def_of_ne_zero hn', complex_log_natCast, phase]
+    congr 1
+    push_cast
+    ring
+  rw [neg_add, Complex.cpow_add _ _ hn', h]
 
 /-- **Returns freeze smooth polynomials.** For `S` of `P`-smooth positive integers and a `δ`-return
 `t`, `|A(s + it) − A(s)| ≤ δ Σ_{n∈S} |c_n n^{−s}| Ω(n)`. -/
@@ -117,29 +119,37 @@ theorem norm_dpoly_shift_sub_le {P : Finset ℕ} {δ t : ℝ} (ht : IsReturn P �
 def logMoment (S : Finset ℕ) (c : ℕ → ℂ) (s₀ : ℂ) (j : ℕ) : ℂ :=
   ∑ n ∈ S, c n * (n : ℂ) ^ (-s₀) * (-(Real.log n : ℂ)) ^ j
 
+/-- The moment map `c ↦ (Σ_n c_n n^{−s₀} (−log n)^j)_{j<J}` on coefficient vectors over `S`. -/
+def momentMap (S : Finset ℕ) (s₀ : ℂ) (J : ℕ) : (S → ℂ) →ₗ[ℂ] (Fin J → ℂ) where
+  toFun x j := ∑ n : S, x n * ((n : ℕ) : ℂ) ^ (-s₀) * (-((Real.log (n : ℕ) : ℝ) : ℂ)) ^ (j : ℕ)
+  map_add' x y := by
+    ext j; simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
+  map_smul' a x := by
+    ext j
+    simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun _ _ => by ring
+
+theorem momentMap_apply (S : Finset ℕ) (s₀ : ℂ) (J : ℕ) (x : S → ℂ) (j : Fin J) :
+    momentMap S s₀ J x j =
+      ∑ n : S, x n * ((n : ℕ) : ℂ) ^ (-s₀) * (-((Real.log (n : ℕ) : ℝ) : ℂ)) ^ (j : ℕ) := rfl
+
 /-- **Existence.** On any set of more than `J` integers there is a nonzero coefficient vector whose
 first `J` logarithmic moments at `s₀` vanish. -/
 theorem exists_ne_zero_moments_eq_zero (S : Finset ℕ) {J : ℕ} (hJ : J < S.card) (s₀ : ℂ) :
     ∃ c : ℕ → ℂ, (∃ n ∈ S, c n ≠ 0) ∧ (∀ n ∉ S, c n = 0) ∧
       ∀ j < J, logMoment S c s₀ j = 0 := by
   classical
-  let L : (S → ℂ) →ₗ[ℂ] (Fin J → ℂ) :=
-    { toFun := fun x j => ∑ n : S, x n * ((n : ℕ) : ℂ) ^ (-s₀) * (-(Real.log (n : ℕ) : ℂ)) ^ (j : ℕ)
-      map_add' := fun x y => by
-        ext j; simp only [Pi.add_apply, add_mul, Finset.sum_add_distrib]
-      map_smul' := fun a x => by
-        ext j; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
-        exact Finset.sum_congr rfl fun _ _ => by ring }
   have hrank : Module.finrank ℂ (Fin J → ℂ) < Module.finrank ℂ (S → ℂ) := by
     simpa [Module.finrank_fintype_fun_eq_card] using hJ
-  obtain ⟨x, hxker, hx0⟩ := Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt hrank)
+  obtain ⟨x, hxker, hx0⟩ :=
+    Submodule.exists_mem_ne_zero_of_ne_bot (LinearMap.ker_ne_bot_of_finrank_lt (f := momentMap S s₀ J) hrank)
   refine ⟨fun n => if h : n ∈ S then x ⟨n, h⟩ else 0, ?_, fun n hn => by simp [hn], fun j hj => ?_⟩
   · by_contra hall
     push Not at hall
     exact hx0 (funext fun n => by simpa [n.2] using hall n n.2)
-  · have := congrFun (LinearMap.mem_ker.mp hxker) ⟨j, hj⟩
-    simp only [L, LinearMap.coe_mk, AddHom.coe_mk, Pi.zero_apply] at this
-    rw [logMoment, ← this, ← Finset.sum_coe_sort S]
+  · have h0 := congrFun (LinearMap.mem_ker.mp hxker) ⟨j, hj⟩
+    rw [momentMap_apply, Pi.zero_apply] at h0
+    rw [logMoment, ← h0, ← Finset.sum_coe_sort S]
     refine Finset.sum_congr rfl fun n _ => ?_
     simp [n.2]
 
@@ -153,9 +163,10 @@ theorem norm_dpoly_le_expTail {S : Finset ℕ} (hS0 : ∀ n ∈ S, n ≠ 0) {c :
   have hexp : ∀ n ∈ S, (n : ℂ) ^ (-(s₀ + w)) = (n : ℂ) ^ (-s₀) * Complex.exp (-w * Real.log n) := by
     intro n hn
     have hn' : (n : ℂ) ≠ 0 := by exact_mod_cast hS0 n hn
-    rw [neg_add, Complex.cpow_add _ _ hn', Complex.cpow_def_of_ne_zero hn', ← Complex.natCast_log]
-    congr 2
-    ring
+    have h : (n : ℂ) ^ (-w) = Complex.exp (-w * Real.log n) := by
+      rw [Complex.cpow_def_of_ne_zero hn', complex_log_natCast]
+      ring_nf
+    rw [neg_add, Complex.cpow_add _ _ hn', h]
   have hzero : ∑ n ∈ S, c n * (n : ℂ) ^ (-s₀) *
       ∑ j ∈ range J, (-w * Real.log n) ^ j / (j.factorial : ℂ) = 0 := by
     simp_rw [Finset.mul_sum]
@@ -220,26 +231,15 @@ theorem eq_zero_of_exact_return {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq :
   have hlp : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   have hlq : 0 < Real.log q := Real.log_pos (by exact_mod_cast hq.one_lt)
   have hpi : (0 : ℝ) < Real.pi := Real.pi_pos
-  -- compare imaginary parts: `−t log p = 2πa`, `−t log q = 2πb`
+  -- compare: `−t log p = 2πa`, `−t log q = 2πb`
   have ha' : -(t * Real.log p) = a * (2 * Real.pi) := by
-    have := congrArg Complex.im ha
-    simpa [Complex.mul_im] using this
+    have h1 : ((-(t * Real.log p) : ℝ) : ℂ) * I = ((a * (2 * Real.pi) : ℝ) : ℂ) * I := by
+      rw [ha]; push_cast; ring
+    exact_mod_cast mul_right_cancel₀ Complex.I_ne_zero h1
   have hb' : -(t * Real.log q) = b * (2 * Real.pi) := by
-    have := congrArg Complex.im hb
-    simpa [Complex.mul_im] using this
-  have ha0 : a ≠ 0 := by
-    rintro rfl
-    simp only [Int.cast_zero, zero_mul, neg_eq_zero, mul_eq_zero] at ha'
-    rcases ha' with h | h
-    · exact ht0 h
-    · exact hlp.ne' h
-  have hb0 : b ≠ 0 := by
-    rintro rfl
-    simp only [Int.cast_zero, zero_mul, neg_eq_zero, mul_eq_zero] at hb'
-    rcases hb' with h | h
-    · exact ht0 h
-    · exact hlq.ne' h
-  -- `b log p = a log q`, hence `p^|b| = q^|a|`
+    have h1 : ((-(t * Real.log q) : ℝ) : ℂ) * I = ((b * (2 * Real.pi) : ℝ) : ℂ) * I := by
+      rw [hb]; push_cast; ring
+    exact_mod_cast mul_right_cancel₀ Complex.I_ne_zero h1
   have hrel : (b : ℝ) * Real.log p = a * Real.log q := by
     have h1 : (b : ℝ) * (a * (2 * Real.pi)) = a * (b * (2 * Real.pi)) := by ring
     rw [← ha', ← hb'] at h1
@@ -247,31 +247,44 @@ theorem eq_zero_of_exact_return {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq :
     rcases mul_eq_zero.1 this with h | h
     · exact absurd h ht0
     · linarith
-  have hsign : (0 < a ∧ 0 < b) ∨ (a < 0 ∧ b < 0) := by
-    rcases lt_or_gt_of_ne ha0 with ha1 | ha1 <;> rcases lt_or_gt_of_ne hb0 with hb1 | hb1
-    · exact Or.inr ⟨ha1, hb1⟩
-    · have : (b : ℝ) * Real.log p > 0 := mul_pos (by exact_mod_cast hb1) hlp
-      have : (a : ℝ) * Real.log q < 0 := mul_neg_of_neg_of_pos (by exact_mod_cast ha1) hlq
-      linarith
-    · have : (b : ℝ) * Real.log p < 0 := mul_neg_of_neg_of_pos (by exact_mod_cast hb1) hlp
-      have : (a : ℝ) * Real.log q > 0 := mul_pos (by exact_mod_cast ha1) hlq
-      linarith
-    · exact Or.inl ⟨ha1, hb1⟩
-  obtain ⟨m, n, hm, hn, hmn⟩ : ∃ m n : ℕ, 0 < m ∧ 0 < n ∧ (m : ℝ) * Real.log p = n * Real.log q := by
-    rcases hsign with ⟨ha1, hb1⟩ | ⟨ha1, hb1⟩
-    · exact ⟨b.toNat, a.toNat, by omega, by omega, by
-        rw [show ((b.toNat : ℕ) : ℝ) = b by exact_mod_cast Int.toNat_of_nonneg hb1.le,
-          show ((a.toNat : ℕ) : ℝ) = a by exact_mod_cast Int.toNat_of_nonneg ha1.le]; exact hrel⟩
-    · refine ⟨(-b).toNat, (-a).toNat, by omega, by omega, ?_⟩
-      rw [show (((-b).toNat : ℕ) : ℝ) = -b by
-          rw [show ((-b : ℤ) : ℝ) = -(b : ℝ) by push_cast; ring] at *
-          exact_mod_cast Int.toNat_of_nonneg (by omega),
-        show (((-a).toNat : ℕ) : ℝ) = -a by exact_mod_cast Int.toNat_of_nonneg (by omega)]
-      linarith
+  have ha0 : a ≠ 0 := by
+    rintro rfl
+    have : t * Real.log p = 0 := by
+      simp only [Int.cast_zero, zero_mul] at ha'; linarith
+    rcases mul_eq_zero.1 this with h | h
+    · exact ht0 h
+    · exact hlp.ne' h
+  -- both coefficients have the same sign; normalize to positive integers
+  obtain ⟨a', b', ha'0, hb'0, hrel'⟩ : ∃ a' b' : ℤ, 0 < a' ∧ 0 < b' ∧
+      (b' : ℝ) * Real.log p = a' * Real.log q := by
+    rcases lt_or_gt_of_ne ha0 with ha1 | ha1
+    · have hb1 : b < 0 := by
+        by_contra hb1
+        push Not at hb1
+        have h1 : (0 : ℝ) ≤ b * Real.log p := mul_nonneg (by exact_mod_cast hb1) hlp.le
+        have h2 : (a : ℝ) * Real.log q < 0 := mul_neg_of_neg_of_pos (by exact_mod_cast ha1) hlq
+        linarith
+      exact ⟨-a, -b, by omega, by omega, by push_cast; linarith⟩
+    · have hb1 : 0 < b := by
+        by_contra hb1
+        push Not at hb1
+        have h1 : (b : ℝ) * Real.log p ≤ 0 :=
+          mul_nonpos_of_nonpos_of_nonneg (by exact_mod_cast hb1) hlp.le
+        have h2 : 0 < (a : ℝ) * Real.log q := mul_pos (by exact_mod_cast ha1) hlq
+        linarith
+      exact ⟨a, b, ha1, hb1, hrel⟩
+  obtain ⟨m, n, hm, hn, hmn⟩ : ∃ m n : ℕ, 0 < m ∧ 0 < n ∧
+      (m : ℝ) * Real.log p = n * Real.log q := by
+    refine ⟨b'.toNat, a'.toNat, by omega, by omega, ?_⟩
+    have e1 : ((b'.toNat : ℕ) : ℝ) = (b' : ℝ) := by
+      have := Int.toNat_of_nonneg hb'0.le; exact_mod_cast this
+    have e2 : ((a'.toNat : ℕ) : ℝ) = (a' : ℝ) := by
+      have := Int.toNat_of_nonneg ha'0.le; exact_mod_cast this
+    rw [e1, e2]; exact hrel'
   have hpow : (p : ℝ) ^ m = (q : ℝ) ^ n := by
     have := congrArg Real.exp hmn
-    rwa [← Real.log_pow, ← Real.log_pow, Real.exp_log (by positivity),
-      Real.exp_log (by positivity)] at this
+    rwa [← Real.log_pow, ← Real.log_pow, Real.exp_log (pow_pos (by exact_mod_cast hp.pos) m),
+      Real.exp_log (pow_pos (by exact_mod_cast hq.pos) n)] at this
   have hnat : p ^ m = q ^ n := by exact_mod_cast hpow
   have hdvd : p ∣ q ^ n := ⟨p ^ (m - 1), by rw [← hnat, ← pow_succ', Nat.sub_add_cancel hm]⟩
   exact hpq ((Nat.prime_dvd_prime_iff_eq hp hq).1 (hp.dvd_of_dvd_pow hdvd))

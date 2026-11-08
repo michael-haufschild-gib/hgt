@@ -203,7 +203,3 @@ theorem zonotope_tateLimit (S : Finset ℕ) (a : ℕ → ℤ) :
   rw [hq, mul_div_cancel_left₀ _ hm'.ne']
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.frobeniusIntersection_eq
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.min_le_frobeniusIntersection
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.zonotope_tateLimit
