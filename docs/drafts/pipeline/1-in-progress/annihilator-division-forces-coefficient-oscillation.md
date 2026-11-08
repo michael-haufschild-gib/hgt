@@ -25,4 +25,6 @@ At a zero `ρ` with `Re ρ>α`, the weighted terms are bounded by `K exp(−(Re 
 `P(ρ) Σ_d b_d exp(−ρL_d) = 1/((1−2^(−ρ))(1−3^(−ρ)))`.
 The left side vanishes; the right side is nonzero because `Re ρ>0`. Both one-sided envelopes are impossible. Replacing `C` by a bound for any prescribed finite set forces excursions outside that set, so both signs occur infinitely often.
 
+The same evaluation argument gives an endpoint refinement: `Σ_d |b_d| exp(−(Re ρ)L_d)` diverges. If this sum converged, the convolution identity would remain evaluable at `ρ` itself. This is part of the same contribution, not a separate result count.
+
 Lean formalization pending; uncounted.

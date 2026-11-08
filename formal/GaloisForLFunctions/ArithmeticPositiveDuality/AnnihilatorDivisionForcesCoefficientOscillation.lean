@@ -18,11 +18,13 @@ open scoped NNReal
 
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.PositiveAnnihilator
 
+private def geometricNumerator : MvPowerSeries (Fin 2) ℝ := fun _ => 1
+
 /-- Formal two-prime coefficient series of `ζ/P`, restricted to the semigroup generated
 by two and three. The all-one numerator is the formal product of the two geometric series. -/
 def annihilatorQuotient (P : MvPolynomial (Fin 2) ℝ≥0) : MvPowerSeries (Fin 2) ℝ :=
   (MvPolynomial.map NNReal.toRealHom P : MvPowerSeries (Fin 2) ℝ)⁻¹ *
-    ((fun _ : Fin 2 →₀ ℕ => (1 : ℝ)) : MvPowerSeries (Fin 2) ℝ)
+    geometricNumerator
 
 /-- The canonical real coefficient at `2^(d 0) 3^(d 1)`. -/
 def annihilatorQuotientCoeff (P : MvPolynomial (Fin 2) ℝ≥0) (d : Fin 2 →₀ ℕ) : ℝ :=
@@ -32,11 +34,14 @@ private theorem quotient_mul (P : MvPolynomial (Fin 2) ℝ≥0)
     (hP : MvPolynomial.constantCoeff P = 1) :
     (MvPolynomial.map NNReal.toRealHom P : MvPowerSeries (Fin 2) ℝ) *
       annihilatorQuotient P = ((fun _ : Fin 2 →₀ ℕ => (1 : ℝ)) : MvPowerSeries (Fin 2) ℝ) := by
-  rw [annihilatorQuotient, ← mul_assoc, MvPowerSeries.mul_inv_cancel, one_mul]
-  change ((P.coeff 0 : ℝ≥0) : ℝ) ≠ 0
-  change P.coeff 0 = 1 at hP
-  rw [hP]
-  exact one_ne_zero
+  have hc : MvPowerSeries.constantCoeff
+      (MvPolynomial.map NNReal.toRealHom P : MvPowerSeries (Fin 2) ℝ) ≠ 0 := by
+    change ((P.coeff 0 : ℝ≥0) : ℝ) ≠ 0
+    change P.coeff 0 = 1 at hP
+    rw [hP]
+    exact one_ne_zero
+  rw [annihilatorQuotient, ← mul_assoc, MvPowerSeries.mul_inv_cancel _ hc, one_mul]
+  rfl
 
 private theorem frequency_add (d e : Fin 2 →₀ ℕ) :
     monomialLog (d + e) = monomialLog d + monomialLog e := by
@@ -190,7 +195,7 @@ private theorem absolute_envelope_of_one_sided
         have hw := mul_le_mul_of_nonneg_left (hshift e) hC.le
         have hb : -(C * W) ≤ annihilatorQuotientCoeff P (d-e) := by linarith only [hv, hw]
         simpa only [mul_neg] using mul_le_mul_of_nonneg_left hb (P.coeff e).coe_nonneg
-      · positivity
+      · exact neg_nonpos.mpr (mul_nonneg (P.coeff e).coe_nonneg (mul_nonneg hC.le hW0))
     apply abs_le.mpr
     have hd := hl d
     change -(C * W) ≤ annihilatorQuotientCoeff P d at hd
@@ -248,7 +253,7 @@ private theorem quotient_evaluation (P : MvPolynomial (Fin 2) ℝ≥0)
   intro d
   have hc := congrArg (MvPowerSeries.coeff d) (quotient_mul P hP)
   rw [MvPowerSeries.coeff_mul] at hc
-  simp only [MvPolynomial.coeff_coe, MvPolynomial.coeff_map, MvPowerSeries.coeff_apply] at hc
+  simp only [MvPowerSeries.coeff_apply] at hc
   have hcc := congrArg Complex.ofReal hc
   push_cast at hcc
   calc
@@ -267,6 +272,24 @@ private theorem quotient_evaluation (P : MvPolynomial (Fin 2) ℝ≥0)
     _ = _ := by rw [show (∑ p ∈ Finset.HasAntidiagonal.antidiagonal d,
           (((P.coeff p.1 : ℝ≥0) : ℝ) : ℂ) * (annihilatorQuotientCoeff P p.2 : ℂ)) = 1
         from hcc, one_mul]
+
+/-- Even at a zero's own real part, the absolute weighted quotient mass diverges. -/
+theorem quotient_absolute_mass_diverges_at_zero
+    (P : MvPolynomial (Fin 2) ℝ≥0) (hP : MvPolynomial.constantCoeff P = 1)
+    {ρ : ℂ} (hρ : 0 < ρ.re) (hz : dirichletEval ρ P = 0) :
+    ¬ Summable (fun d : Fin 2 →₀ ℕ => |annihilatorQuotientCoeff P d| *
+      Real.exp (-monomialLog d * ρ.re)) := by
+  intro h
+  have hb : Summable (fun d : Fin 2 →₀ ℕ => ‖(annihilatorQuotientCoeff P d : ℂ) *
+      Complex.exp (-(monomialLog d : ℂ) * ρ)‖) := by
+    apply h.congr
+    intro d
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp,
+      Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.ofReal_re,
+      Complex.ofReal_im, neg_zero, zero_mul, sub_zero]
+  have he := quotient_evaluation P hP ρ hb
+  rw [hz, zero_mul] at he
+  exact frequency_geometric_sum_ne_zero hρ he.symm
 
 /-- A right-hand zero makes both signs of the canonical quotient coefficients exceed
 any exponential envelope with smaller nonnegative exponent. -/
@@ -323,6 +346,7 @@ theorem quotient_coefficient_excursions_escape_finite_sets
     have ha := habs hmem
     linarith only [hh, ha, hl e, he]
 
+#print axioms quotient_absolute_mass_diverges_at_zero
 #print axioms quotient_coefficients_have_two_sided_exponential_excursions
 #print axioms quotient_coefficient_excursions_escape_finite_sets
 
