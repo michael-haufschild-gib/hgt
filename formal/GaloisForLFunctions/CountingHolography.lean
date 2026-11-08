@@ -52,3 +52,4 @@ every graph black hole and cannot realize the integer probe form in either natur
 Tate limit. See `CountingHolography/README.md`.
 -/
 import GaloisForLFunctions.CountingHolography.TheCountDoorOfACurveAndOfZ
+import GaloisForLFunctions.CountingHolography.TheIntegerProbesAreNotIntegerValued

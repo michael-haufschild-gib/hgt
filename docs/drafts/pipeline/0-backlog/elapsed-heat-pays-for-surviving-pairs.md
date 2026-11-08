@@ -21,4 +21,8 @@ The explicit time derivative cancels the force of each root's own conjugate. Oth
 
 The paired-force condition may admit an exact classification: positivity for every `a,b>0` and every horizontal separation is equivalent to `g(y)=yF'(y)` being nonnegative and increasing. Equal heights with nonzero separation force `g≥0`; unequal heights with zero separation force monotonicity. This is convexity in logarithmic height, and explains why sharp depth cutoffs lie outside the admissible class.
 
+For the power profile, monotonicity also has an algebraic proof:
+`y²(y²+c)^(q−1) = [y²/(y²+c)] (y²+c)^q`.
+Both factors are nonnegative and increasing for `c≥0`, `q>0`, `y>0`. This avoids differentiating a negative power.
+
 Remaining proof work: audit the paired-force formula with multiplicities; carry comparison through polynomial collisions; transfer finite root sums to `H_t`, using continuous cutoffs away from the real axis. No Lean result claimed or counted.

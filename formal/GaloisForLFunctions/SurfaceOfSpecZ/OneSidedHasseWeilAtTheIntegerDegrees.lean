@@ -74,8 +74,8 @@ theorem evenCoeff_eq_zero_of_two_re_lagStructure_ge (Z : ZeroConfig) (hZ : Tempe
     have h0 := (two_re_lagStructure_eq Z hZ hb hbs 0).1.norm
     simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one] at h0
     exact h0
-  have hD : Summable fun t : ι => ‖-evenCoeff Z b t‖ := by
-    simpa only [norm_neg] using hD0.subtype ι
+  have hD : Summable fun t : ι => ‖-evenCoeff Z b t‖ :=
+    (hD0.subtype ι).congr fun t => by simp
   -- `φ = −2 Re S` as an exponential sum over `ι`
   set φ : ℝ → ℝ := fun u => -(2 * (lagStructure Z b u).re) with hφ
   have hφm : Measurable φ :=
@@ -159,7 +159,7 @@ theorem evenCoeff_eq_zero_of_two_re_lagStructure_ge (Z : ZeroConfig) (hZ : Tempe
 
 /-! ### The spline `U_1^{⋆4}` -/
 
-theorem cx_cubicSpline : cx BiScaleUncertainty.cubicSpline = boxSpline 1 3 := rfl
+theorem cx_cubicSpline : cx BiScaleUncertainty.ChebyshevGauge.cubicSpline = boxSpline 1 3 := rfl
 
 /-- `ζ` has no zero on the real segment of the strip. -/
 theorem not_mem_carrier_of_im_eq_zero {ρ : ℂ} (hρ : ρ ∈ zetaZeroConfig.carrier) : ρ.im ≠ 0 := by
@@ -304,7 +304,7 @@ theorem riemannHypothesis_iff_bddAbove_integerDegrees :
       linarith [le_abs_self K, neg_abs_le c0]
     have hre := (re_le_iff_lag_twoBump_ge_neg_exp_of_pos zetaZeroConfig
       SquareRootThreshold.temperedConfig_zetaZeroConfig
-      (fun ρ hρ => by have := (zetaZeroConfig.strip ρ hρ).2; simpa using this) (contDiff_boxSpline one_pos 2)
+      (fun ρ hρ => hρ.2.2) (contDiff_boxSpline one_pos 2)
       (boxSpline_support one_pos 3)
       (fun x hx _ him => absurd (by simp [him] : (1 / 2 + x).im = 0) (not_mem_carrier_of_im_eq_zero hx))
       (fun ρ hρ h => evenCoeff_spline_sees hρ h) le_rfl).mpr hrate

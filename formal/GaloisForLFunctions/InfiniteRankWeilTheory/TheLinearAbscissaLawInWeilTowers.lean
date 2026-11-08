@@ -32,7 +32,8 @@ every `h ≥ 0`, finiteness of `{i : ½ + h < Re (ρ i)}` forces `Re (ρ i) ≤ 
 
 open Complex Filter Topology Set
 open GaloisForLFunctions.ZeroConfigurationGeometry
-open RHTower (XiZeroCopy weilLagFunction zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le)
+open RHTower (XiZeroCopy weilLagFunction)
+open RHTower.CrossRouteReceiverBridges (zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le)
 
 noncomputable section
 
@@ -113,7 +114,7 @@ theorem asymptoticAbscissaLaw_iff_forall_gt_one_linearEventualToGlobalAt :
         linarith
       have hb := hall C hC1 h hh hfin i
       have hCh : C * h = h + ((ρ i).re - (1 / 2 + h)) / 2 := by
-        dsimp [C]; field_simp; ring
+        dsimp [C]; field_simp
       rw [hCh] at hb
       linarith
 
@@ -400,8 +401,8 @@ theorem exists_twoScaleCoshModel_not_linearEventualToGlobalAt (C : ℝ) :
     linarith
   have hre_cosh_add : ∀ s : ℂ, Complex.cosh (s - 1 / 2 + a) = 0 → s.re = 1 / 2 - a := by
     intro s hs
-    have h := re_eq_half_of_cosh_eq_zero (s := s + a)
-      (by simpa [show s + (a : ℂ) - 1 / 2 = s - 1 / 2 + a by ring] using hs)
+    have heq : s + (a : ℂ) - 1 / 2 = s - 1 / 2 + a := by ring
+    have h := re_eq_half_of_cosh_eq_zero (s := s + a) (by rwa [heq])
     simp only [Complex.add_re, Complex.ofReal_re] at h
     linarith
   have hstrip : ∀ s : ℂ, twoScaleCoshModel a Q s = 0 → 0 < s.re ∧ s.re < 1 := by
@@ -410,8 +411,7 @@ theorem exists_twoScaleCoshModel_not_linearEventualToGlobalAt (C : ℝ) :
     · have := hre_cosh_sub s hc1; exact ⟨by linarith, by linarith⟩
     · have := hre_cosh_add s hc2; exact ⟨by linarith, by linarith⟩
     · rw [Finset.mem_singleton.mp hq] at hsq
-      rcases hsq with rfl | rfl | rfl | rfl <;>
-        simp [q₀] <;> constructor <;> norm_num
+      rcases hsq with rfl | rfl | rfl | rfl <;> simp [q₀] <;> norm_num
   have hcol_zero : ∀ n : ℤ,
       twoScaleCoshModel a Q ((1 / 2 + a : ℝ) + (Real.pi * (n + 1 / 2) : ℝ) * I) = 0 := by
     intro n

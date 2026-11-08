@@ -294,6 +294,35 @@ theorem tendsto_heatGlobalVerticalEnergy_of_summable (hs : Summable xiUpperSquar
   filter_upwards [self_mem_nhdsWithin] with t ht
   exact (heatGlobalVerticalEnergy_eq_two_mul_upper ht).symm
 
+/-- Bounded total heat energy near zero is exactly finite initial squared-depth mass. -/
+theorem summable_initial_depth_iff_eventually_bounded_global_heat_energy :
+    Summable xiUpperSquaredDepth ↔
+      ∃ K : ℝ, ∀ᶠ t in 𝓝[>] (0 : ℝ), heatGlobalVerticalEnergy t ≤ K := by
+  constructor
+  · intro hs
+    refine ⟨2 * ∑' q, xiUpperSquaredDepth q, ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    rw [heatGlobalVerticalEnergy_eq_two_mul_upper ht]
+    exact mul_le_mul_of_nonneg_left (heatUpperDepthEnergy_le_of_initial_sums
+      (fun T => Summable.sum_le_tsum T (fun _ _ => sq_nonneg _) hs) ht) zero_le_two
+  · rintro ⟨K, hK⟩
+    apply summable_initial_depth_iff_eventually_bounded_heat_energy.mpr
+    refine ⟨K / 2, ?_⟩
+    filter_upwards [hK, self_mem_nhdsWithin] with t h ht
+    rw [heatGlobalVerticalEnergy_eq_two_mul_upper ht] at h
+    linarith only [h]
+
+/-- Infinite initial squared-depth mass gives an infinite right limit of total heat energy. -/
+theorem tendsto_heatGlobalVerticalEnergy_atTop_of_not_summable
+    (hs : ¬ Summable xiUpperSquaredDepth) :
+    Tendsto heatGlobalVerticalEnergy (𝓝[>] (0 : ℝ)) atTop := by
+  rw [Filter.tendsto_atTop]
+  intro M
+  have h := (Filter.tendsto_atTop.mp (tendsto_heatUpperDepthEnergy_atTop_of_not_summable hs)) (M / 2)
+  filter_upwards [h, self_mem_nhdsWithin] with t h ht
+  rw [heatGlobalVerticalEnergy_eq_two_mul_upper ht]
+  linarith only [h]
+
 /-- The surviving count is paid by the energy lost over a doubling interval. -/
 theorem time_mul_nonrealZeroCount_le_energy_drop {t : ℝ} (ht : 0 < t) :
     t * (nonrealZeroCount t : ℝ) ≤ heatGlobalVerticalEnergy (t / 2) - heatGlobalVerticalEnergy t := by
@@ -305,7 +334,7 @@ theorem time_mul_nonrealZeroCount_le_energy_drop {t : ℝ} (ht : 0 < t) :
       ((half_pos ht).trans_le hb.1) hab
   have hInt : (t - t / 2) * (nonrealZeroCount t : ℝ) ≤
       ∫ s in (t / 2)..t, (nonrealZeroCount s : ℝ) := by
-    have h := intervalIntegral.integral_mono_on hh
+    have h := intervalIntegral.integral_mono_on (μ := volume) hh
       (f := fun _ : ℝ => (nonrealZeroCount t : ℝ))
       (g := fun s : ℝ => (nonrealZeroCount s : ℝ))
       intervalIntegrable_const hanti.intervalIntegrable (fun s hs => by
@@ -343,6 +372,8 @@ theorem tendsto_time_mul_nonrealZeroCount_zero_of_summable (hs : Summable xiUppe
 #print axioms tendsto_heatUpperDepthEnergy_atTop_of_not_summable
 #print axioms heatGlobalVerticalEnergy_eq_two_mul_upper
 #print axioms tendsto_heatGlobalVerticalEnergy_of_summable
+#print axioms summable_initial_depth_iff_eventually_bounded_global_heat_energy
+#print axioms tendsto_heatGlobalVerticalEnergy_atTop_of_not_summable
 #print axioms time_mul_nonrealZeroCount_le_energy_drop
 #print axioms tendsto_time_mul_nonrealZeroCount_zero_of_summable
 

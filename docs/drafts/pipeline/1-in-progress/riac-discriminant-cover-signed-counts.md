@@ -100,3 +100,14 @@ the independently proved cardinalities `q^n` makes it bijective.
 The remaining cover comparison is `disc(f)=V(roots)^2`, with Vandermonde
 `V` transforming by permutation sign. This route does not use a polynomial
 Möbius degree sum. Neither comparison is yet claimed as formalized.
+
+An explicit intermediate cover is
+`{(f,y): f monic of degree n, y∈F, (ιy)²=V(x_f)²}`,
+where `x_f` orders the roots in the common extension and `ι:F→E`.
+Permutation sign makes the equation independent of that ordering.
+Collisions give the single point `y=0`; distinct roots should give two or
+zero points according to Frobenius orientation. Proving this fibre count
+and summing the independent orientation weights would give `q^n` directly.
+The existing integral symmetric discriminant polynomial provides a route
+to coefficient equations; identification with `Polynomial.discr` remains
+a separate obligation.
