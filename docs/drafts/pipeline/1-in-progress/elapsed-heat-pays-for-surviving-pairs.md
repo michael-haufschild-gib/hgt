@@ -30,6 +30,9 @@ For collision comparison, use the continuous corrected action
 At simple times its derivative is at most `−2q(2t)^(q−1) N_upper(t)`.
 Integrating and using nonincreasing nonreal count recovers monotonicity of
 `J_q(t)+(2t)^q N_upper(t)`, including real collisions.
+An initial offset `c=ε+2t`, `ε>0`, keeps the corrected weight differentiable
+at real roots even at time zero; taking `ε↓0` recovers the stated finite
+polynomial budget.
 
 Remaining proof work: connect the finite paired field to polynomial zero velocities;
 carry comparison through collisions; transfer finite root sums to `H_t`, using
@@ -43,3 +46,10 @@ nonnegative exponent, the finite packet drift inequality, its stability under
 additional downward velocity, and the actual chain-rule derivative of the
 elapsed-depth weight. Direct Lean check passes; all five audited capstones use
 only `propext`, `Classical.choice`, `Quot.sound`.
+
+`ArithmeticElectrostatics/TheConjugatePacketPaysElapsedHeat.lean` identifies
+the complex reciprocal field with the paired kernel and proves the same drift
+inequality for a complete finite conjugate packet, including any finite real
+exterior. Both capstones pass direct Lean check with the same standard axioms.
+Multiplicity across collisions and the polynomial/entire-flow comparison remain
+unformalized.

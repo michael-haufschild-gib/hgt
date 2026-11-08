@@ -30,4 +30,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FiniteFieldS
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FiniteFieldVieta
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FiniteFieldRootCover
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

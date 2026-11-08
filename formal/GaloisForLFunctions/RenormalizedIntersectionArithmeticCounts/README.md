@@ -301,9 +301,9 @@ points in degrees zero, one, and at least two.
 The [formalized count](../../../docs/drafts/pipeline/3-formalized/riac-finite-field-orientation-counts.md)
 uses the existing derived polynomial Möbius degree sums. It retains an
 arithmetic orientation sign but supplies no independent cancellation
-estimate. The independent orbit count below supplies a separate producer;
-its cover comparison, the usual polynomial-discriminant comparison and any
-integer-cutoff realization remain
+estimate. The independent root-cover count below supplies a separate producer.
+Comparisons with the factor-trace invariant, `Polynomial.discr` and the
+integer cutoff remain
 [construction problems](../../../docs/drafts/pipeline/1-in-progress/riac-discriminant-cover-signed-counts.md).
 
 ## Independent Frobenius orbit count
@@ -316,8 +316,8 @@ transporter torsors then give the orbit total. No Möbius degree sum enters
 this proof, and repeated coordinates are retained.
 
 The [formalized construction](../../../docs/drafts/pipeline/3-formalized/riac-independent-frobenius-orbit-counts.md)
-supplies an independent finite-field count. Its comparison with the
-orientation cover and the integer local-index sum remains open.
+supplies an independent finite-field count. Its signed refinement counts
+the actual root cover below. The integer local-index comparison remains open.
 
 ## Signed Frobenius orbits
 
@@ -349,5 +349,28 @@ independent normal-basis count both give `q^n`, making the injection onto.
 
 The [formalized correspondence](../../../docs/drafts/pipeline/3-formalized/riac-arithmetic-vieta.md)
 connects actual coefficient polynomials to the independently counted
-arithmetic orbits. The discriminant-cover comparison and the integer-cutoff
-estimate remain open.
+arithmetic orbits. The root-cover count below uses this correspondence.
+Identification with `Polynomial.discr` and the integer-cutoff estimate
+remain open.
+
+## Independent root-cover count
+
+[FiniteFieldRootCover.lean](FiniteFieldRootCover.lean) counts actual pairs
+`(f,y)` with `f` monic of degree `n`, `y∈F`, and
+`(ιy)²=V(x_f)²` in the constructed degree-`n!` extension. Here `x_f`
+orders the roots with multiplicities and `V` is their Vandermonde product.
+Its square is independent of the ordering.
+
+Collisions give one point. Distinct roots give two or zero points according
+to Frobenius orientation. Thus each fibre has cardinality `1+w`, and
+independent transporter cancellation proves exactly `q^n` points for
+`n≥2` over every odd finite field. No polynomial Möbius degree sum enters
+the [formalized count](../../../docs/drafts/pipeline/3-formalized/riac-root-orientation-cover.md).
+The ordinary polynomial-discriminant comparison remains separate.
+
+A [further construction problem](../../../docs/drafts/pipeline/1-in-progress/riac-curve-orientation-square-root.md)
+asks for actual orientation counts on hyperelliptic curves, with
+square-root-scale error derived from the existing Stepanov theorem.
+That requires an actual curve-count comparison; an abstract tuple of
+assumed Weil roots is insufficient. Neither finite-field construction
+currently controls the integer conductor cutoff in `1−M(N)`.

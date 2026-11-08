@@ -267,7 +267,3 @@ theorem atomForm_abs_le_iff (S : Finset ℕ) (hS : ∀ n ∈ S, 0 < n) :
     exact Finset.sum_le_sum fun i hi => Finset.sum_le_sum fun j hj => key i hi j hj
 
 end GaloisForLFunctions.SurfaceOfSpecZ
-
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.atomForm_abs_le_iff
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.weilDeltaKernel_ne_zero
-#print axioms GaloisForLFunctions.SurfaceOfSpecZ.weilDeltaKernel_pos_iff

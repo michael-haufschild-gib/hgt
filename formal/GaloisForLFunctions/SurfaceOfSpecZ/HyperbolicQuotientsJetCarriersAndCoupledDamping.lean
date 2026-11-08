@@ -2324,17 +2324,12 @@ theorem dampedJet_posSemidef {ι : Type*} (s : Finset ι) {r : ℝ} (hr0 : 0 ≤
         rcases not_and_or.mp hx with hx0 | hxmin
         · have hni : x ∉ Ioc 0 (n i : ℝ) := fun h => hx0 h.1
           simp [causalJetWave, indicator_of_notMem hni]
-        · rw [not_le, lt_min_iff] at hxmin
-          -- Wait: `¬ x ≤ min a b` means `min a b < x`, i.e. `a < x ∨ b < x`!
-          rcases lt_or_gt_of_ne (by
-            intro heq; rw [← heq] at hxmin; exact lt_irrefl _ hxmin : min (n i : ℝ) (n j : ℝ) ≠ x) with hlt | hgt
-          · rw [min_lt_iff] at hlt
-            rcases hlt with hi_lt | hj_lt
-            · have hni : x ∉ Ioc 0 (n i : ℝ) := fun h => not_lt_of_ge h.2 hi_lt
-              simp [causalJetWave, indicator_of_notMem hni]
-            · have hnj : x ∉ Ioc 0 (n j : ℝ) := fun h => not_lt_of_ge h.2 hj_lt
-              simp [causalJetWave, indicator_of_notMem hnj]
-          · exact absurd hgt.le hxmin
+        · rw [not_le, min_lt_iff] at hxmin
+          rcases hxmin with hi_lt | hj_lt
+          · have hni : x ∉ Ioc 0 (n i : ℝ) := fun h => not_lt_of_ge h.2 hi_lt
+            simp [causalJetWave, indicator_of_notMem hni]
+          · have hnj : x ∉ Ioc 0 (n j : ℝ) := fun h => not_lt_of_ge h.2 hj_lt
+            simp [causalJetWave, indicator_of_notMem hnj]
     rw [heq_ind]
     exact (hon.integrable_indicator measurableSet_Ioc).integrableOn
   have hmode_sq : ∑ i ∈ s, ∑ j ∈ s, f k i j =
@@ -2551,10 +2546,8 @@ theorem not_atomic_countertermFree_log_diag (C : ℝ) :
   have hn_pos : 0 < n := by have := (mem_Ico.mp hnB).1; omega
   have hn_lt : (n : ℝ) < 2 * N := by exact_mod_cast (mem_Ico.mp hnB).2
   have hhi := hdiag n hn_pos
-  -- Notice `1 + log n ≤ 1 + log (2 N) ≤ 2 + log N ≤ 2 * (log N - 17)` since `log N > 19` (`2 + log N < 2 log N - 34 ↔ 36 < log N`? Let's bound `1 + log n ≤ 2 * log N`!)
   have hlog2 : Real.log 2 ≤ 1 := (Real.log_le_sub_one_of_pos two_pos).trans (by norm_num)
   have hlog_n_le : 1 + Real.log n ≤ 2 * (Real.log N - 17) * 8 := by
-    -- Wait: for arbitrarily large `N` `log N` grows, while `N` grows exponentially! Let's bound `1 + log n` by `n`? No, `1 + log (2N) ≤ 2 + log N ≤ 16 * (log N - 17)` holds whenever `15 * log N ≥ 274`, i.e. `log N ≥ 19` (`15 * 19 = 285 > 274`)!!
     have hn_pos' : (0 : ℝ) < n := by exact_mod_cast hn_pos
     have hln : Real.log n ≤ Real.log (2 * N) := Real.log_le_log hn_pos' hn_lt.le
     rw [Real.log_mul two_ne_zero hN_pos.ne'] at hln
@@ -2571,7 +2564,6 @@ theorem not_atomic_countertermFree_log_diag (C : ℝ) :
     have hpos_diff : 0 < Real.log N - 17 := by linarith
     rw [lt_div_iff₀ (by norm_num)]
     have : 128 * C₀ < N := by
-      -- Wait: `⌊exp 19⌋₊ + 1 > 10` (`exp 19 ≥ 1 + 19 = 20`!), so `(⌊exp 19⌋₊ + 1) * (⌊32 * C₀⌋₊ + 1) > 20 * 32 * C₀ = 640 * C₀ > 128 * C₀`!
       have he19 : (20 : ℝ) ≤ Real.exp 19 := by linarith [Real.add_one_le_exp (19 : ℝ)]
       have hf1 : (20 : ℝ) ≤ (⌊Real.exp 19⌋₊ : ℝ) + 1 := by
         linarith [Nat.lt_floor_add_one (Real.exp 19)]
@@ -2723,25 +2715,6 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
     have hcard_lt : S' ⊂ S := Finset.erase_ssubset hi₀S
     have hA' : ∀ i ∈ S', 0 ≤ A i - c := fun i hi =>
       sub_nonneg.mpr (hi₀_min i (Finset.mem_of_mem_erase hi))
-    have hQ' : ∀ y : ι → ℝ, 0 ≤ ∑ i ∈ S', ∑ j ∈ S', y i * y j * Q i j := by
-      intro y
-      have h := hQ (fun i => if i ∈ S' then y i else 0)
-      refine le_of_le_of_eq h ?_
-      rw [← Finset.sum_filter]
-      have hf : S.filter (fun i => i ∈ S') = S' :=
-        Finset.filter_mem_eq_inter S S' |>.trans (Finset.inter_eq_right.mpr (Finset.erase_subset i₀ S))
-      -- Wait: simplify double sum with indicator directly
-      calc ∑ i ∈ S.filter (fun i => i ∈ S'),
-              ∑ j ∈ S, (if i ∈ S' then y i else 0) * (if j ∈ S' then y j else 0) * Q i j
-          = ∑ i ∈ S', ∑ j ∈ S', y i * y j * Q i j := by
-            rw [hf]
-            refine Finset.sum_congr rfl fun i hi => ?_
-            rw [if_pos hi]
-            have hrow_eq : ∀ j ∈ S, y i * (if j ∈ S' then y j else 0) * Q i j =
-                if j ∈ S' then y i * y j * Q i j else 0 := fun j _ => by
-              split_ifs <;> ring
-            rw [Finset.sum_congr rfl hrow_eq, ← Finset.sum_filter, hf]
-    -- Wait: check the outer `← Finset.sum_filter` step cleanly!
     have hQ'_clean : ∀ y : ι → ℝ, 0 ≤ ∑ i ∈ S', ∑ j ∈ S', y i * y j * Q i j := by
       intro y
       have h := hQ (fun i => if i ∈ S' then y i else 0)
@@ -2765,7 +2738,7 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
     have herase_eq : ∑ i ∈ S, ∑ j ∈ S, z i * z j * (min (A i - c) (A j - c) * Q i j) =
         ∑ i ∈ S', ∑ j ∈ S', z i * z j * (min (A i - c) (A j - c) * Q i j) := by
       rw [← Finset.add_sum_erase _ _ hi₀S]
-      have hzero_row : ∑ j ∈ S, z i₀ * z j * (min (A i₀ - c) (A j - c) * Q i j) = 0 := by
+      have hzero_row : ∑ j ∈ S, z i₀ * z j * (min (A i₀ - c) (A j - c) * Q i₀ j) = 0 := by
         refine Finset.sum_eq_zero fun j hj => ?_
         have hle : 0 ≤ A j - c := sub_nonneg.mpr (hi₀_min j hj)
         have hmin0 : min (A i₀ - c) (A j - c) = 0 := by
@@ -2819,7 +2792,6 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
           (𝓝 (zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n)))) := by
   constructor
   · intro hRH
-    -- Under RH, `splineCycle` has the orbit Hodge index, so `c_B(log m - log n)` is PSD on `ℕ₊`
     have hHW := riemannHypothesis_iff_splineOrbit_hasseWeil.mp hRH
     have hHW_cfg : ∀ v : ℝ,
         (configScalingDatum Zeta23.zetaZeroConfig
@@ -2834,7 +2806,6 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
         0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n *
           zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by
       intro S c
-      -- Group `S` along `n ↦ Real.log n` (`Real.log` is injective on `S` if `0 < n`, or push forward weights to `S.image (fun n => Real.log n)`)
       set T : Finset ℝ := S.image (fun n : ℕ => Real.log n)
       let w : ℝ → ℝ := fun g => ∑ n ∈ S.filter (fun n => Real.log n = g), c n
       have h0 := hOHI T w
@@ -2847,38 +2818,432 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
       refine le_of_le_of_eq h0 ?_
       have hfiber : ∀ F : ℝ → ℝ, ∑ g ∈ T, w g * F g = ∑ m ∈ S, c m * F (Real.log m) := by
         intro F
-        simp only [w, Finset.sum_mul]
-        rw [← Finset.sum_biUnion]
-        · have hunion : T.biUnion (fun g => S.filter (fun n => Real.log n = g)) = S := by
-            ext n; simp [T]
-          rw [hunion]
-          refine Finset.sum_congr rfl fun m _ => ?_
-          rfl
+        have hstep : ∀ g ∈ T, w g * F g =
+            ∑ m ∈ S.filter (fun n => Real.log n = g), c m * F (Real.log m) := by
+          intro g _
+          rw [Finset.sum_mul]
+          refine Finset.sum_congr rfl fun m hm => ?_
+          rw [(Finset.mem_filter.mp hm).2]
+        rw [Finset.sum_congr rfl hstep, ← Finset.sum_biUnion]
+        · congr 1
+          ext m
+          simp [T]
         · intro g₁ _ g₂ _ hg12
           rw [Finset.disjoint_left]
-          intro n hn1 hn2
-          rw [Finset.mem_filter] at hn1 hn2
-          exact hg12 (hn1.2.symm.trans hn2.2)
-      -- Wait: in `hfiber`, for `n ∈ S.filter (Real.log n = g)`, `c n * F g = c n * F (Real.log n)`!
+          intro m hm1 hm2
+          exact hg12 ((Finset.mem_filter.mp hm1).2.symm.trans (Finset.mem_filter.mp hm2).2)
       calc ∑ g ∈ T, ∑ h ∈ T, w g * w h * zetaScalingDatum.orbitCorr splineCycle (g - h)
           = ∑ g ∈ T, w g * (∑ h ∈ T, w h * zetaScalingDatum.orbitCorr splineCycle (g - h)) := by
             refine Finset.sum_congr rfl fun g _ => ?_
             rw [Finset.mul_sum]
             exact Finset.sum_congr rfl fun h _ => by ring
-        _ = ∑ g ∈ T, w g * (∑ n ∈ S, c n * zetaScalingDatum.orbitCorr splineCycle (g - Real.log n)) := by
-            refine Finset.sum_congr rfl fun g _ => congrArg (w g * ·) ?_
-            simp only [w, Finset.sum_mul]
-            rw [← Finset.sum_biUnion]
-            · have hunion : T.biUnion (fun h => S.filter (fun n => Real.log n = h)) = S := by
-                ext n; simp [T]
-              -- Wait: rewrite `g - h` to `g - Real.log n` inside each fiber BEFORE `sum_biUnion`!
-              sorry
-            · intro h₁ _ h₂ _ hh12
-              rw [Finset.disjoint_left]
-              intro n hn1 hn2
-              exact hh12 ((Finset.mem_filter.mp hn1).2.symm.trans (Finset.mem_filter.mp hn2).2)
-        _ = _ := sorry
-    sorry
-  · sorry
+        _ = ∑ g ∈ T, w g *
+              (∑ n ∈ S, c n * zetaScalingDatum.orbitCorr splineCycle (g - Real.log n)) :=
+            Finset.sum_congr rfl fun g _ =>
+              congrArg (w g * ·) (hfiber fun h => zetaScalingDatum.orbitCorr splineCycle (g - h))
+        _ = ∑ m ∈ S, c m *
+              (∑ n ∈ S, c n * zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n)) :=
+            hfiber fun g => ∑ n ∈ S, c n * zetaScalingDatum.orbitCorr splineCycle (g - Real.log n)
+        _ = ∑ m ∈ S, ∑ n ∈ S, c m * c n *
+              zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by
+            refine Finset.sum_congr rfl fun m _ => ?_
+            rw [Finset.mul_sum]
+            exact Finset.sum_congr rfl fun n _ => by ring
+    refine ⟨fun r m n => Real.exp (-(1 - r) * |Real.log m - Real.log n|) *
+      zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n), ?_, ?_⟩
+    · intro r _ hr1 S _ c
+      exact ornsteinUhlenbeck_schur_posSemidef S (sub_nonneg.mpr hr1.le) (fun n => Real.log n)
+        (hQ_psd S) c
+    · intro m n _ _
+      have hcont : Continuous fun r : ℝ =>
+          Real.exp (-(1 - r) * |Real.log m - Real.log n|) *
+            zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by fun_prop
+      have hval : Real.exp (-(1 - 1) * |Real.log m - Real.log n|) *
+          zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) =
+          zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by simp
+      exact tendsto_nhdsWithin_of_tendsto_nhds (hval ▸ hcont.tendsto 1)
+  · rintro ⟨K, hpsd, hlim⟩
+    rw [riemannHypothesis_iff_hasseWeil_integerDegrees]
+    have hQ : ∀ (S : Finset ℕ), (∀ k ∈ S, 0 < k) → ∀ c : ℕ → ℝ,
+        0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n *
+          zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by
+      intro S hS c
+      have htend : Tendsto (fun r => ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n) (𝓝[<] 1)
+          (𝓝 (∑ m ∈ S, ∑ n ∈ S, c m * c n *
+            zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n))) :=
+        tendsto_finset_sum S fun m hm => tendsto_finset_sum S fun n hn =>
+          (hlim m n (hS m hm) (hS n hn)).const_mul (c m * c n)
+      have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n := by
+        filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
+        exact hpsd r hr.1 hr.2 S hS c
+      exact ge_of_tendsto htend hev
+    intro n hn
+    rw [ScalingDatum.HasseWeilAt]
+    set c0 := zetaScalingDatum.orbitCorr splineCycle 0
+    set cn := zetaScalingDatum.orbitCorr splineCycle (Real.log n)
+    by_cases hn1 : n = 1
+    · subst hn1
+      have h11 := hQ {1} (fun k hk => by simp at hk; omega) (fun _ => 1)
+      simp only [sum_singleton, Nat.cast_one, Real.log_one, sub_self, one_mul] at h11
+      rw [Nat.cast_one, Real.log_one, abs_of_nonneg h11]
+    · have h1_ne : (1 : ℕ) ≠ n := Ne.symm hn1
+      have hpair_pos : ∀ k ∈ ({1, n} : Finset ℕ), 0 < k := by
+        intro k hk
+        rcases Finset.mem_insert.mp hk with rfl | hk'
+        · exact Nat.one_pos
+        · rw [Finset.mem_singleton.mp hk']; exact hn
+      have hplus := hQ {1, n} hpair_pos (fun k => if k = 1 then 1 else 1)
+      have hminus := hQ {1, n} hpair_pos (fun k => if k = 1 then 1 else -1)
+      simp only [Finset.sum_pair h1_ne, ↓reduceIte, h1_ne.symm, Nat.cast_one, Real.log_one,
+        sub_self, zero_sub, sub_zero, zetaScalingDatum.orbitCorr_neg] at hplus hminus
+      change |cn| ≤ c0
+      rw [abs_le]
+      constructor <;> linarith
+
+/-! ### Single-channel impossibility for smoothed prime and archimedean-plus-pole kernels -/
+
+/-- The smoothed prime-comb kernel on `ℕ × ℕ` associated to a real test `f`,
+`P_f(m, n) = -Re(weightedPrimePart Λ (f_m ⋆ f̃_n))` where `f_m = scaleShift (log m) f`. -/
+def smoothedPrimeKernel (f : ℝ → ℝ) (m n : ℕ) : ℝ :=
+  -(FrustratedArithmeticDirichletForms.weightedPrimePart
+    (fun k => (Λ k : ℝ))
+    (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f)))).re
+
+/-- The smoothed archimedean-plus-pole kernel on `ℕ × ℕ` associated to a real test `f`,
+`C_{∞, f}(m, n) = Re(weilFullFunctional 0 (f_m ⋆ f̃_n))`. -/
+def smoothedArchPoleKernel (f : ℝ → ℝ) (m n : ℕ) : ℝ :=
+  (RHTower.weilFullFunctional (fun _ => 0)
+    (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f)))).re
+
+/-- The sum of the smoothed prime kernel and the smoothed archimedean-plus-pole kernel is the exact
+orbit correlation `zetaScalingDatum.orbitCorr (0, 0, ⟨f, hf⟩) (log m - log n)`. -/
+theorem smoothedPrime_add_smoothedArchPole_eq_orbitCorr {f : ℝ → ℝ} (hf : f ∈ realTests)
+    (m n : ℕ) :
+    smoothedPrimeKernel f m n + smoothedArchPoleKernel f m n =
+      zetaScalingDatum.orbitCorr (0, 0, ⟨f, hf⟩) (Real.log m - Real.log n) := by
+  have hsplit := FrustratedArithmeticDirichletForms.weilFullFunctional_eq_sub_weightedPrimePart
+    (fun k => (Λ k : ℝ))
+    (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f)))
+  have hsum : smoothedPrimeKernel f m n + smoothedArchPoleKernel f m n =
+      weilPair (scaleShift (Real.log m) f) (scaleShift (Real.log n) f) := by
+    rw [weilPair, hsplit, Complex.sub_re, smoothedPrimeKernel, smoothedArchPoleKernel]
+    ring
+  rw [hsum, weilPair_scaleShift, ← configWeil_zeta_eq_weilPair
+    (scaleShift_mem (Real.log m - Real.log n) hf) hf, ← configScalingDatum_zeta_orbitCorr]
+  rw [ScalingDatum.orbitCorr]
+  change (configSurface Zeta23.zetaZeroConfig
+    SquareRootThreshold.temperedConfig_zetaZeroConfig).defect
+    (scalingAction (Real.log m - Real.log n) (0, 0, ⟨f, hf⟩)) (0, 0, ⟨f, hf⟩) = _
+  rw [configSurface_defect]
+  rfl
+
+private theorem integral_pos_of_nonneg_nonzero {g : ℝ → ℝ} (hg_cont : Continuous g)
+    (hg_int : Integrable g) (hg_nn : ∀ u, 0 ≤ g u) {u₀ : ℝ} (hu₀ : g u₀ ≠ 0) :
+    0 < ∫ u, g u := by
+  by_contra hle
+  have hzero : ∫ u, g u = 0 := le_antisymm (not_lt.mp hle) (integral_nonneg hg_nn)
+  have hae := (integral_eq_zero_iff_of_nonneg hg_nn hg_int).mp hzero
+  have hfun : g = 0 := (Continuous.ae_eq_iff_eq volume hg_cont continuous_const).mp hae
+  exact hu₀ (congrFun hfun u₀)
+
+/-- **Single-channel impossibility (prime comb).** For every non-zero nonnegative test
+`f ∈ realTests`, the smoothed prime kernel `smoothedPrimeKernel f` fails positive semidefiniteness
+on `{1, 2}` and therefore cannot be a counterterm-free pointwise limit of positive-semidefinite
+kernels `K r` (`0 ≤ r < 1`) on `ℕ₊ × ℕ₊`. -/
+theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf_nn : ∀ u, 0 ≤ f u)
+    (hf_ne : ∃ u₀, f u₀ ≠ 0) :
+    ¬ ∃ K : ℝ → ℕ → ℕ → ℝ,
+      (∀ r : ℝ, 0 ≤ r → r < 1 → ∀ S : Finset ℕ, (∀ n ∈ S, 0 < n) → ∀ c : ℕ → ℝ,
+        0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n) ∧
+      (∀ m n : ℕ, 0 < m → 0 < n →
+        Tendsto (fun r => K r m n) (𝓝[<] 1) (𝓝 (smoothedPrimeKernel f m n))) := by
+  obtain ⟨u₀, hu₀⟩ := hf_ne
+  have hf_sq_pos : 0 < ∫ u, f u ^ 2 :=
+    integral_pos_of_nonneg_nonzero (hf.1.continuous.pow 2)
+      ((hf.1.continuous.pow 2).integrable_of_hasCompactSupport
+        (by simpa [sq] using hf.2.mul_right))
+      (fun u => sq_nonneg (f u)) (pow_ne_zero 2 hu₀)
+  -- Every summand in `weightedPrimePart Λ (f_m ⋆ f̃_n)` is real and nonnegative when `f ≥ 0`
+  have hterm_nn : ∀ (m n k : ℕ), 0 ≤
+      (((if 2 ≤ k then (Λ k : ℝ) / Real.sqrt k else 0 : ℝ) : ℂ) *
+        (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
+            (Real.log k) +
+          Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
+            (-Real.log k))).re := by
+    intro m n k
+    have hw : 0 ≤ (if 2 ≤ k then (Λ k : ℝ) / Real.sqrt k else 0 : ℝ) := by
+      split_ifs with hk
+      · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+      · exact le_rfl
+    have hk_nn : ∀ x : ℝ, 0 ≤
+        (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
+          x).re := by
+      intro x
+      rw [weilTest_ofReal, Complex.ofReal_re]
+      exact integral_nonneg fun u => mul_nonneg (hf_nn _) (hf_nn _)
+    rw [Complex.re_ofReal_mul, Complex.add_re]
+    exact mul_nonneg hw (add_nonneg (hk_nn _) (hk_nn _))
+  have hsum_prime : ∀ m n : ℕ, Summable fun k : ℕ =>
+      (((if 2 ≤ k then (Λ k : ℝ) / Real.sqrt k else 0 : ℝ) : ℂ) *
+        (Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
+            (Real.log k) +
+          Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
+            (-Real.log k))).re := fun m n =>
+    (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
+      (cx_hasCompactSupport (scaleShift_mem (Real.log m) hf).2)
+      (cx_hasCompactSupport (scaleShift_mem (Real.log n) hf).2))).re
+  have hdiag_nonpos : ∀ n : ℕ, smoothedPrimeKernel f n n ≤ 0 := by
+    intro n
+    rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
+      Complex.re_tsum (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
+        (cx_hasCompactSupport (scaleShift_mem (Real.log n) hf).2)
+        (cx_hasCompactSupport (scaleShift_mem (Real.log n) hf).2)))]
+    exact neg_nonpos.mpr (tsum_nonneg (hterm_nn n n))
+  -- Off-diagonal `(2, 1)` and `(1, 2)` hit the `k = 2` bullseye with positive mass `‖f‖₂²`
+  have hoff_neg : smoothedPrimeKernel f 2 1 < 0 ∧ smoothedPrimeKernel f 1 2 < 0 := by
+    have hc_pos : 0 < Real.log 2 / Real.sqrt 2 * ∫ u, f u ^ 2 :=
+      mul_pos (div_pos (Real.log_pos one_lt_two) (Real.sqrt_pos.mpr two_pos)) hf_sq_pos
+    have hk0 : (Zeta23.EF.weilTest (cx f) (cx f) 0).re = ∫ u, f u ^ 2 := by
+      rw [weilTest_ofReal, Complex.ofReal_re]
+      exact integral_congr_ae (Eventually.of_forall fun u => by rw [sub_zero, sq])
+    constructor
+    · rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
+        Complex.re_tsum (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
+          (cx_hasCompactSupport (scaleShift_mem (Real.log (2 : ℕ)) hf).2)
+          (cx_hasCompactSupport (scaleShift_mem (Real.log (1 : ℕ)) hf).2)))]
+      have h2 := Summable.le_tsum (hsum_prime 2 1) 2 (fun k _ => hterm_nn 2 1 k)
+      have h2_val : Real.log 2 / Real.sqrt 2 * (∫ u, f u ^ 2) ≤
+          (((if 2 ≤ (2 : ℕ) then (Λ 2 : ℝ) / Real.sqrt (2 : ℕ) else 0 : ℝ) : ℂ) *
+            (Zeta23.EF.weilTest (cx (scaleShift (Real.log (2 : ℕ)) f))
+                (cx (scaleShift (Real.log (1 : ℕ)) f)) (Real.log (2 : ℕ)) +
+              Zeta23.EF.weilTest (cx (scaleShift (Real.log (2 : ℕ)) f))
+                (cx (scaleShift (Real.log (1 : ℕ)) f)) (-Real.log (2 : ℕ)))).re := by
+        rw [if_pos le_rfl, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
+          Complex.re_ofReal_mul, Complex.add_re, weilTest_scaleShift, Nat.cast_one, Real.log_one,
+          add_zero, sub_self, hk0]
+        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift (Real.log (2 : ℕ)) f))
+            (cx (scaleShift (Real.log (1 : ℕ)) f)) (-Real.log (2 : ℕ))).re := by
+          rw [weilTest_ofReal, Complex.ofReal_re]
+          exact integral_nonneg fun u => mul_nonneg (hf_nn _) (hf_nn _)
+        have hw : 0 ≤ Real.log 2 / Real.sqrt (2 : ℕ) :=
+          div_nonneg (Real.log_nonneg (by norm_num)) (Real.sqrt_nonneg _)
+        push_cast at hw ⊢
+        nlinarith
+      linarith
+    · rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
+        Complex.re_tsum (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
+          (cx_hasCompactSupport (scaleShift_mem (Real.log (1 : ℕ)) hf).2)
+          (cx_hasCompactSupport (scaleShift_mem (Real.log (2 : ℕ)) hf).2)))]
+      have h2 := Summable.le_tsum (hsum_prime 1 2) 2 (fun k _ => hterm_nn 1 2 k)
+      have h2_val : Real.log 2 / Real.sqrt 2 * (∫ u, f u ^ 2) ≤
+          (((if 2 ≤ (2 : ℕ) then (Λ 2 : ℝ) / Real.sqrt (2 : ℕ) else 0 : ℝ) : ℂ) *
+            (Zeta23.EF.weilTest (cx (scaleShift (Real.log (1 : ℕ)) f))
+                (cx (scaleShift (Real.log (2 : ℕ)) f)) (Real.log (2 : ℕ)) +
+              Zeta23.EF.weilTest (cx (scaleShift (Real.log (1 : ℕ)) f))
+                (cx (scaleShift (Real.log (2 : ℕ)) f)) (-Real.log (2 : ℕ)))).re := by
+        rw [if_pos le_rfl, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
+          Complex.re_ofReal_mul, Complex.add_re,
+          weilTest_scaleShift (Real.log (1 : ℕ)) (Real.log (2 : ℕ)) f f (-Real.log (2 : ℕ)),
+          Nat.cast_one, Real.log_one, sub_zero, neg_add_cancel, hk0]
+        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift (Real.log (1 : ℕ)) f))
+            (cx (scaleShift (Real.log (2 : ℕ)) f)) (Real.log (2 : ℕ))).re := by
+          rw [weilTest_ofReal, Complex.ofReal_re]
+          exact integral_nonneg fun u => mul_nonneg (hf_nn _) (hf_nn _)
+        have hw : 0 ≤ Real.log 2 / Real.sqrt (2 : ℕ) :=
+          div_nonneg (Real.log_nonneg (by norm_num)) (Real.sqrt_nonneg _)
+        push_cast at hw ⊢
+        nlinarith
+      linarith
+  rintro ⟨K, hpsd, hlim⟩
+  have hpair_pos : ∀ k ∈ ({1, 2} : Finset ℕ), 0 < k := by decide
+  have htend : Tendsto (fun r => ∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ),
+      (1 : ℝ) * 1 * K r m n) (𝓝[<] 1)
+      (𝓝 (∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ),
+        (1 : ℝ) * 1 * smoothedPrimeKernel f m n)) :=
+    tendsto_finset_sum _ fun m hm => tendsto_finset_sum _ fun n hn =>
+      (hlim m n (hpair_pos m hm) (hpair_pos n hn)).const_mul _
+  have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ),
+      0 ≤ ∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ), (1 : ℝ) * 1 * K r m n := by
+    filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
+    exact hpsd r hr.1 hr.2 {1, 2} hpair_pos (fun _ => 1)
+  have hge := ge_of_tendsto htend hev
+  have h12 : (1 : ℕ) ≠ 2 := by decide
+  simp only [Finset.sum_pair h12, one_mul] at hge
+  linarith [hdiag_nonpos 1, hdiag_nonpos 2, hoff_neg.1, hoff_neg.2]
+
+/-- **Single-channel impossibility (archimedean plus pole).** For every non-zero nonnegative test
+`f ∈ realTests`, the smoothed archimedean-plus-pole kernel `smoothedArchPoleKernel f` has constant
+diagonal `C_{∞, f}(1, 1)` while its off-diagonal pole term grows unboundedly with the degree ratio,
+so it fails positive semidefiniteness and cannot be a counterterm-free pointwise limit of
+positive-semidefinite kernels `K r` (`0 ≤ r < 1`) on `ℕ₊ × ℕ₊`. -/
+theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) (hf_nn : ∀ u, 0 ≤ f u)
+    (hf_ne : ∃ u₀, f u₀ ≠ 0) :
+    ¬ ∃ K : ℝ → ℕ → ℕ → ℝ,
+      (∀ r : ℝ, 0 ≤ r → r < 1 → ∀ S : Finset ℕ, (∀ n ∈ S, 0 < n) → ∀ c : ℕ → ℝ,
+        0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n) ∧
+      (∀ m n : ℕ, 0 < m → 0 < n →
+        Tendsto (fun r => K r m n) (𝓝[<] 1) (𝓝 (smoothedArchPoleKernel f m n))) := by
+  obtain ⟨u₀, hu₀⟩ := hf_ne
+  have hB_pos : 0 < poleB f := by
+    have he : (fun u => f u * Real.exp (-(1 / 2) * u)) = fun u => f u * Real.exp (-u / 2) := by
+      funext u; congr 2; ring
+    have hint := integrable_mul_exp hf (-(1 / 2))
+    rw [he] at hint
+    exact integral_pos_of_nonneg_nonzero
+      (hf.1.continuous.mul (Real.continuous_exp.comp (continuous_id.neg.div_const 2))) hint
+      (fun u => mul_nonneg (hf_nn u) (Real.exp_pos _).le)
+      (mul_ne_zero hu₀ (Real.exp_pos _).ne')
+  have hA_pos : 0 < poleA f := by
+    have he : (fun u => f u * Real.exp ((1 / 2) * u)) = fun u => f u * Real.exp (u / 2) := by
+      funext u; congr 2; ring
+    have hint := integrable_mul_exp hf (1 / 2)
+    rw [he] at hint
+    exact integral_pos_of_nonneg_nonzero
+      (hf.1.continuous.mul (Real.continuous_exp.comp (continuous_id.div_const 2))) hint
+      (fun u => mul_nonneg (hf_nn u) (Real.exp_pos _).le)
+      (mul_ne_zero hu₀ (Real.exp_pos _).ne')
+  have hBA_pos : 0 < poleB f * poleA f := mul_pos hB_pos hA_pos
+  -- Constant diagonal `C_{∞, f}(n, n) = C_{∞, f}(1, 1)` and symmetry `C_{∞, f}(1, n) = C_{∞, f}(n, 1)`
+  have hdiag_eq : ∀ n : ℕ, smoothedArchPoleKernel f n n = smoothedArchPoleKernel f 1 1 := by
+    intro n
+    simp only [smoothedArchPoleKernel, weilTest_scaleShift_same]
+  have hsymm : ∀ m n : ℕ, smoothedArchPoleKernel f m n = smoothedArchPoleKernel f n m := by
+    intro m n
+    rw [smoothedArchPoleKernel, smoothedArchPoleKernel,
+      ← RHTower.OddResolvent.tilde_weilTest_mixed, RHTower.WeilSpectral.weilFullFunctional_tilde,
+      Complex.conj_re]
+  -- Uniform bound `M` on the archimedean Gamma integral across all shifts `(n, 1)`
+  set k₀ := Zeta23.EF.weilTest (cx f) (cx f)
+  set M := (1 / (2 * Real.pi)) * ∫ r : ℝ, ‖Zeta23.paperFT k₀ r * (Zeta23.EF.gammaBracket r : ℂ)‖
+  have hM_nn : 0 ≤ M :=
+    mul_nonneg (by positivity) (integral_nonneg fun _ => norm_nonneg _)
+  have hoff_ge : ∀ n : ℕ, 1 ≤ n →
+      Real.exp (Real.log n / 2) * (poleB f * poleA f) - M ≤ smoothedArchPoleKernel f n 1 := by
+    intro n _
+    set fn := scaleShift (Real.log n) f
+    have hfn : fn ∈ realTests := scaleShift_mem (Real.log n) hf
+    set kn := Zeta23.EF.weilTest (cx fn) (cx f)
+    have hkn_eq : Zeta23.EF.weilTest (cx (scaleShift (Real.log n) f))
+        (cx (scaleShift (Real.log (1 : ℕ)) f)) = kn := by
+      simp [kn, fn]
+    -- Evaluate `weilFullFunctional 0 kn` into pole part + archimedean integral
+    have hzero_sum : (∑' k : ℕ, ((if 2 ≤ k then (0 : ℝ) / Real.sqrt k else 0 : ℝ) : ℂ) *
+        (kn (Real.log k) + kn (-Real.log k))) = 0 := by
+      have h0 : ∀ k : ℕ, ((if 2 ≤ k then (0 : ℝ) / Real.sqrt k else 0 : ℝ) : ℂ) *
+          (kn (Real.log k) + kn (-Real.log k)) = 0 := fun k => by split_ifs <;> simp
+      simp [h0]
+    have hW_eq : smoothedArchPoleKernel f n 1 =
+        (Zeta23.paperFT kn (Complex.I / 2) + Zeta23.paperFT kn (-Complex.I / 2)).re +
+          (((1 / (2 * Real.pi) : ℝ) : ℂ) *
+            ∫ r : ℝ, Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)).re := by
+      rw [smoothedArchPoleKernel, hkn_eq, RHTower.weilFullFunctional, hzero_sum, sub_zero,
+        Complex.add_re]
+      congr 2
+      push_cast; ring
+    -- Pole part equals `(e^{-log n / 2} + e^{log n / 2}) * poleB f * poleA f`
+    have hpFT_B : ∀ g : ℝ → ℝ, Zeta23.paperFT (cx g) (Complex.I / 2) = (poleB g : ℂ) := by
+      intro g
+      rw [RHTower.LebesgueAtomWeil.paperFT_I_div_two, poleB, ← integral_complex_ofReal]
+      exact integral_congr_ae (Eventually.of_forall fun u => by simp [cx])
+    have hpFT_A : ∀ g : ℝ → ℝ, Zeta23.paperFT (cx g) (-Complex.I / 2) = (poleA g : ℂ) := by
+      intro g
+      rw [RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, poleA, ← integral_complex_ofReal]
+      exact integral_congr_ae (Eventually.of_forall fun u => by simp [cx])
+    have hconj1 : conj (Complex.I / 2) = -Complex.I / 2 := by
+      rw [map_div₀, Complex.conj_I, map_ofNat]
+    have hconj2 : conj (-Complex.I / 2) = Complex.I / 2 := by
+      rw [neg_div, map_neg, hconj1, neg_div, neg_neg]
+    have hpole_eq : (Zeta23.paperFT kn (Complex.I / 2) + Zeta23.paperFT kn (-Complex.I / 2)).re =
+        (Real.exp (-Real.log n / 2) + Real.exp (Real.log n / 2)) * (poleB f * poleA f) := by
+      rw [Zeta23.EF.paperFT_weilTest (cx_contDiff hfn.1).continuous (cx_contDiff hf.1).continuous
+          (cx_hasCompactSupport hfn.2) (cx_hasCompactSupport hf.2) (Complex.I / 2),
+        Zeta23.EF.paperFT_weilTest (cx_contDiff hfn.1).continuous (cx_contDiff hf.1).continuous
+          (cx_hasCompactSupport hfn.2) (cx_hasCompactSupport hf.2) (-Complex.I / 2),
+        hconj1, hconj2, hpFT_B fn, hpFT_A f, hpFT_A fn, hpFT_B f]
+      simp only [Complex.conj_ofReal, ← Complex.ofReal_mul, ← Complex.ofReal_add,
+        Complex.ofReal_re, fn, poleB_scaleShift, poleA_scaleShift]
+      ring
+    -- Archimedean part has norm at most `M` because translation acts unitarily on real frequencies
+    have hnorm_eq : ∀ r : ℝ, ‖Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)‖ =
+        ‖Zeta23.paperFT k₀ r * (Zeta23.EF.gammaBracket r : ℂ)‖ := by
+      intro r
+      rw [Zeta23.EF.paperFT_weilTest (cx_contDiff hfn.1).continuous (cx_contDiff hf.1).continuous
+          (cx_hasCompactSupport hfn.2) (cx_hasCompactSupport hf.2) (r : ℂ),
+        Zeta23.EF.paperFT_weilTest (cx_contDiff hf.1).continuous (cx_contDiff hf.1).continuous
+          (cx_hasCompactSupport hf.2) (cx_hasCompactSupport hf.2) (r : ℂ),
+        Complex.conj_ofReal, paperFT_cx_scaleShift_apply]
+      have hcexp_norm : ‖Complex.exp ((Real.log n : ℂ) * (Complex.I * (r : ℂ)))‖ = 1 := by
+        rw [Complex.norm_exp]
+        have hre : ((Real.log n : ℂ) * (Complex.I * (r : ℂ))).re = 0 := by simp
+        rw [hre, Real.exp_zero]
+      simp only [norm_mul, hcexp_norm, one_mul]
+    have harch_le : |(((1 / (2 * Real.pi) : ℝ) : ℂ) *
+        ∫ r : ℝ, Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)).re| ≤ M := by
+      rw [Complex.re_ofReal_mul, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 1 / (2 * Real.pi))]
+      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+      calc |(∫ r : ℝ, Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)).re|
+          ≤ ‖∫ r : ℝ, Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)‖ :=
+            Complex.abs_re_le_norm _
+        _ ≤ ∫ r : ℝ, ‖Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)‖ :=
+            norm_integral_le_integral_norm _
+        _ = ∫ r : ℝ, ‖Zeta23.paperFT k₀ r * (Zeta23.EF.gammaBracket r : ℂ)‖ := by
+            simp_rw [hnorm_eq]
+    have hpole_ge : Real.exp (Real.log n / 2) * (poleB f * poleA f) ≤
+        (Real.exp (-Real.log n / 2) + Real.exp (Real.log n / 2)) * (poleB f * poleA f) := by
+      have : 0 < Real.exp (-Real.log n / 2) := Real.exp_pos _
+      nlinarith
+    have harch_lo : -M ≤ (((1 / (2 * Real.pi) : ℝ) : ℂ) *
+        ∫ r : ℝ, Zeta23.paperFT kn r * (Zeta23.EF.gammaBracket r : ℂ)).re :=
+      (abs_le.mp harch_le).1
+    rw [hW_eq, hpole_eq]
+    linarith
+  -- Choose `n ≥ 2` large enough that `smoothedArchPoleKernel f n 1 > smoothedArchPoleKernel f 1 1`
+  set C₀ := smoothedArchPoleKernel f 1 1
+  set R := max 1 ((|C₀| + M + 1) / (poleB f * poleA f))
+  have hR_pos : 0 < R := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
+  set n := ⌈Real.exp (2 * R)⌉₊ + 2
+  have hn_gt1 : 1 < n := by omega
+  have h1_ne : (1 : ℕ) ≠ n := hn_gt1.ne
+  have hn_gt_exp : Real.exp (2 * R) < n := by
+    have h1 : Real.exp (2 * R) ≤ ⌈Real.exp (2 * R)⌉₊ := Nat.le_ceil _
+    push_cast [n]
+    linarith
+  have hlog_gt : 2 * R < Real.log n :=
+    (Real.lt_log_iff_exp_lt (by positivity)).mpr hn_gt_exp
+  have hexp_gt_R : R < Real.exp (Real.log n / 2) := by
+    calc R < R + 1 := lt_add_one R
+      _ ≤ Real.exp R := by linarith [Real.add_one_le_exp R]
+      _ < Real.exp (Real.log n / 2) := Real.exp_lt_exp.mpr (by linarith)
+  have hR_ge : (|C₀| + M + 1) / (poleB f * poleA f) ≤ R := le_max_right _ _
+  have hprod_gt : |C₀| + M + 1 < Real.exp (Real.log n / 2) * (poleB f * poleA f) := by
+    have h1 := (div_le_iff₀ hBA_pos).mp hR_ge
+    nlinarith
+  have hoff_gt : C₀ < smoothedArchPoleKernel f n 1 := by
+    have hlo := hoff_ge n (by omega)
+    have habs : C₀ ≤ |C₀| := le_abs_self C₀
+    linarith
+  rintro ⟨K, hpsd, hlim⟩
+  have hpair_pos : ∀ k ∈ ({1, n} : Finset ℕ), 0 < k := by
+    intro k hk
+    rcases Finset.mem_insert.mp hk with rfl | hk'
+    · exact Nat.one_pos
+    · rw [Finset.mem_singleton.mp hk']; omega
+  let c : ℕ → ℝ := fun k => if k = 1 then 1 else -1
+  have htend : Tendsto (fun r => ∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ),
+      c i * c j * K r i j) (𝓝[<] 1)
+      (𝓝 (∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ),
+        c i * c j * smoothedArchPoleKernel f i j)) :=
+    tendsto_finset_sum _ fun i hi => tendsto_finset_sum _ fun j hj =>
+      (hlim i j (hpair_pos i hi) (hpair_pos j hj)).const_mul _
+  have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ),
+      0 ≤ ∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ), c i * c j * K r i j := by
+    filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
+    exact hpsd r hr.1 hr.2 {1, n} hpair_pos c
+  have hge := ge_of_tendsto htend hev
+  simp only [c, Finset.sum_pair h1_ne, ↓reduceIte, h1_ne.symm, hdiag_eq n, hsymm 1 n] at hge
+  linarith
+
+end GaloisForLFunctions.SurfaceOfSpecZ
+
 
 

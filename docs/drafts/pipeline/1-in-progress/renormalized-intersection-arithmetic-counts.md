@@ -89,8 +89,10 @@ constructs local weights in `{-1,0,1}`, proves collision cancellation and
 retains Frobenius sign on distinct roots. Their total cancels independently
 for at least two labels. The [arithmetic Vieta correspondence](../3-formalized/riac-arithmetic-vieta.md)
 now identifies these stable root orbits with actual monic coefficient
-polynomials, retaining all multiplicities. The discriminant-cover comparison
-and identification with integer local indices remain open.
+polynomials, retaining all multiplicities. The [actual root-cover count](../3-formalized/riac-root-orientation-cover.md)
+now proves `q^n` points independently of polynomial Möbius sums, through
+fibres of size one, two or zero. Identification with `Polynomial.discr`
+and the integer local indices remains open.
 
 ## Necessary distinctions
 
@@ -102,6 +104,9 @@ forms alone do not make their renormalized limit positive.
 ## Calibration
 
 Curves: Manin, Stepanov, Rosati; polynomial prime complexes over finite fields.
+The [curve orientation-count candidate](riac-curve-orientation-square-root.md)
+asks for square-root-scale error on actual hyperelliptic point sets using
+the derived Stepanov bound, without an assumed Weil-root condition.
 Countermodels: Golden, complex fake, shifted data and genus-two graph.
 Retain full probe rank, both degrees plus primitive data, linear Betti mass,
 isolated-prime fixed points and the square-root Euler lower law.

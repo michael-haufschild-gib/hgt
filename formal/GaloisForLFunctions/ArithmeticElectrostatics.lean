@@ -30,6 +30,7 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthHasItsZero
 import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthDissipates
 import GaloisForLFunctions.ArithmeticElectrostatics.TheInitialTraceOfHeatDepthEnergy
 import GaloisForLFunctions.ArithmeticElectrostatics.ConjugatePairsDissipateLogarithmicDepth
+import GaloisForLFunctions.ArithmeticElectrostatics.TheConjugatePacketPaysElapsedHeat
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor

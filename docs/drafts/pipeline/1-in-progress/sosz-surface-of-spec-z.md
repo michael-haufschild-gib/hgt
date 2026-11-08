@@ -52,6 +52,8 @@
 
 | C18 | One side of the crude bound at the integer degrees suffices (Bombieri–Stepanov) | proved (Lean) | `riemannHypothesis_iff_bddBelow_integerDegrees`: RH iff `c_B(log n) ≥ −K` for all `n` — an upper bound on the smoothed point counts, the side Stepanov's method gives on a curve; `riemannHypothesis_iff_bddAbove_integerDegrees`: RH iff `c_B(log n) ≤ K`. Pringsheim's theorem for `Σ(Cq^{n/2} + a_n)Tⁿ` becomes Landau's for `K ± c_B` (`evenCoeff_eq_zero_of_two_re_lagStructure_ge`), with "no real Frobenius eigenvalue above `√q`" replaced by "no real zero of `ζ` in the strip" |
 
+| C19 | The prime channel of the atomic surface is of lower order than the jets | proved (Lean), unconditional | in `y_n = √n x_n` the prime kernel `w(m, nt) = Λ(t)/√t` is the Hecke operator `Σ_t Λ(t)t^{−1/2}(T_t + T_t*)`; on `[1, N]` its form is `≤ (log N + log 4 + 4)Σy²` (`primeChannel_le`: weighted Schur test with weights `n^{−1/2}`, row sums `log(N/n) + O(1)` by Mertens plus `Σ_{t∣n}Λ(t) = log n`) and `≥ log M(log M − log 4 − 4)` at `y_n = n^{−1/2}` with energy `≤ 1 + log N`, `M = ⌊√N⌋` (`primeChannel_ge`). Spectral radius `≍ log N`, the pole of `ζ` at `1`, against `N log N` for the jets: at atom spacing `1/N` the archimedean channel is `N` times larger, and the zeros enter neither at leading order |
+
 ## Big picture
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -70,10 +72,17 @@ pairs them), and what is left is the zero sum itself.
 
 Smoothed by the cubic spline, the Frobenius graphs at integer degrees are a curve in every numerical
 respect: genus `c_B(0)/2`, traces `c_B(log n)`, Hasse–Weil at every degree iff RH, the self-improvement
-from a crude bound is free, the squares suffice, and the count door holds plane by plane. Over `𝔽_q`
-the crude bound is Stepanov's count; over `ℤ` it is the boundedness of `c_B` on `log ℕ`, which is RH.
-The object the corpus is missing is therefore a natural binary count on the planes `⟨Γ_1, Γ_n⟩`, i.e.
-a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
+from a crude bound is free, one side of the crude bound suffices (Landau in place of Pringsheim), the
+squares suffice, and the count door holds plane by plane. Over `𝔽_q` the crude bound is Stepanov's
+count, an upper bound on points; over `ℤ` it is `c_B(log n) ≥ −K`, which is RH. The object the corpus
+is missing is therefore a natural binary count on the planes `⟨Γ_1, Γ_n⟩`, i.e. a reason for an upper
+bound on the smoothed point counts at each integer degree.
+
+The atomic surface of degree `N` is, unconditionally, a curve of genus `≍ N log N`. In the normalized
+channels the jets have spectral radius `≍ N log N`, the pole (off the primitive part) `O(N log N)`,
+and the primes, a Hecke operator, `≍ log N`. Resolution decides what is seen: at the atom spacing
+`1/N` the archimedean self-energy dominates by a factor `N`; the arithmetic, and with it RH, appears
+only after smoothing at a fixed scale, where all channels are `O(1)`.
 
 ## Open
 
@@ -82,12 +91,12 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
    bound on the smoothed point counts (C11, C18).
 2. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's; the
    off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization is `Θ(N log N)` at
-   degree `N` and unconditional (C15, C17); a diagonal of bounded genus exists only for smoothed graphs,
-   and the RH content is in the `O(N)` prime part below the archimedean divergence.
+   degree `N` and unconditional (C15, C17); a diagonal of bounded genus exists only for smoothed graphs;
+   the prime channel is `≍ log N` there (C19).
 3. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`,
    carried by no metric on `ℙ¹_ℤ`; the even-sector trace of the dilation of `ℝ` at its fixed point.
 4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: width `≤ 1/12` (C16); RH by this
    route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C18 formalized in `SurfaceOfSpecZ/` (seventeen modules, standard axioms)
+- 2026-11-08 — created; C1–C19 formalized in `SurfaceOfSpecZ/` (eighteen modules, standard axioms)

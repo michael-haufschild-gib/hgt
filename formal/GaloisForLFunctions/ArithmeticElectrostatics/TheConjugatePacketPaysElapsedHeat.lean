@@ -1,7 +1,8 @@
 import GaloisForLFunctions.ArithmeticElectrostatics.ConjugatePairsDissipateLogarithmicDepth
 import Mathlib.Analysis.Complex.Basic
 
-/-!+# Elapsed-depth work of a complex zero packet
+/-!
+# Elapsed-depth work of a complex zero packet
 
 Splitting a conjugation-closed nonreal packet into its upper roots and their
 reflections identifies the complex reciprocal field with the paired real
@@ -97,7 +98,7 @@ theorem conjugate_packet_im_velocity (S : Finset ℂ)
     simp only [Finset.sum_ite_eq, haU, if_true]
   rw [hsum]
   simp only [Complex.mul_im, Complex.re_ofNat, Complex.im_ofNat, zero_mul,
-    add_zero, map_sum, im_reciprocal_conjugate_pair, Finset.sum_neg_distrib]
+    add_zero, Complex.im_sum, im_reciprocal_conjugate_pair, Finset.sum_neg_distrib]
   change 2 * -(∑ b ∈ U, upperPairField a.im b.im (a.re - b.re)) = _
   rw [hsplit, hself]
   ring
@@ -123,6 +124,42 @@ theorem elapsedDepth_complex_packet_drift_nonpos (S : Finset ℂ)
       (Finset.mem_filter.mp ha).1 (Finset.mem_filter.mp ha).2).le
 
 #print axioms elapsedDepth_complex_packet_drift_nonpos
+
+/-- Real zeros add a nonpositive imaginary field above the real axis. -/
+theorem real_packet_im_velocity_nonpos (R : Finset ℂ)
+    (hreal : ∀ b ∈ R, b.im = 0) {a : ℂ} (ha : 0 ≤ a.im) :
+    (2 * ∑ b ∈ R, (a - b)⁻¹).im ≤ 0 := by
+  simp only [Complex.mul_im, Complex.re_ofNat, Complex.im_ofNat, zero_mul,
+    add_zero, Complex.im_sum]
+  apply mul_nonpos_of_nonneg_of_nonpos (by positivity)
+  apply Finset.sum_nonpos
+  intro b hb
+  rw [Complex.inv_im, Complex.sub_im, hreal b hb, sub_zero]
+  exact div_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr ha) (Complex.normSq_nonneg _)
+
+/-- Adding any finite real packet preserves the elapsed-depth inequality. -/
+theorem elapsedDepth_complex_packet_with_real_drift_nonpos (S R : Finset ℂ)
+    (hnonreal : ∀ z ∈ S, z.im ≠ 0)
+    (hconj : ∀ z ∈ S, starRingEnd ℂ z ∈ S)
+    (hreal : ∀ z ∈ R, z.im = 0)
+    {q c : ℝ} (hq : 0 ≤ q) (hc : 0 ≤ c) :
+    (∑ a ∈ S.filter (fun z => 0 < z.im),
+      (2 * q * (a.im ^ 2 + c) ^ (q - 1) + elapsedDepthWeight q c a.im *
+        (2 * ∑ b ∈ S, (a - b)⁻¹ + 2 * ∑ b ∈ R, (a - b)⁻¹).im)) ≤ 0 := by
+  apply le_trans _ (elapsedDepth_complex_packet_drift_nonpos S hnonreal hconj hq hc)
+  apply Finset.sum_le_sum
+  intro a ha
+  have hai := (Finset.mem_filter.mp ha).2
+  have hw : 0 ≤ elapsedDepthWeight q c a.im := by
+    unfold elapsedDepthWeight
+    exact mul_nonneg (mul_nonneg (mul_nonneg (by positivity) hq) hai.le)
+      (Real.rpow_nonneg (add_nonneg (sq_nonneg _) hc) _)
+  have hrealwork := mul_nonpos_of_nonneg_of_nonpos hw
+    (real_packet_im_velocity_nonpos R hreal hai.le)
+  rw [Complex.add_im, mul_add]
+  linarith only [hrealwork]
+
+#print axioms elapsedDepth_complex_packet_with_real_drift_nonpos
 
 end
 

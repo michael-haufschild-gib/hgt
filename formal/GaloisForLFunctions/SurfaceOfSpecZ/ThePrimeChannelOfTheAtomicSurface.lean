@@ -13,8 +13,8 @@ prime kernel `w(m, nt) = Λ(t)/√t`. On the degrees `1 ≤ n ≤ N` the jets fo
 
   `Σ_{m,n ≤ N} |y_m||y_n| w(m, n) ≤ (log N + log 4 + 4) Σ y_n²`   (`primeChannel_le`),
 
-  `Σ_{m,n ≤ N} y_m y_n w(m, n) ≥ ((log N)²/4 − (log 4 + 4)(1 + log N))` at `y_n = n^{−1/2}`, whose
-  energy is at most `1 + log N`   (`primeChannel_ge`).
+  `Σ_{m,n ≤ N} y_m y_n w(m, n) ≥ log M (log M − log 4 − 4)`, `M = ⌊√N⌋`, at `y_n = n^{−1/2}`, whose
+  energy is at most `1 + log N`   (`primeChannel_ge`, with `log M ≥ ½ log N − log 2`).
 
 So the prime channel has spectral radius between `(log N)/4 − O(1)` and `log N + O(1)`.
 

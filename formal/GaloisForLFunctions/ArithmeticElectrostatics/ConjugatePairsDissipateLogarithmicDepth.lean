@@ -1,7 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Tactic
 
-/-!+# The exact dissipating class for conjugate pairs
+/-!
+# The exact dissipating class for conjugate pairs
 
 The interaction of two upper zeros includes both their direct interaction and
 their interactions with the reflected zeros. Its sign is controlled by the

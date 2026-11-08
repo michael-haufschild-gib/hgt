@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.IntegralCauchySchwarz
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 /-!
 # Strong square means preserve pairings
