@@ -998,15 +998,14 @@ theorem symmetricShift_xi_linearEventualToGlobal_unconditional {a : ℝ} (ha : 0
     mul_le_mul_of_nonneg_left hah (by positivity)
   linarith
 
-/-- **Uniformity across shifts `a → 0⁺` recovers `ZetaLinearAbscissaLawAt C`.** A single slope
-`C ≥ 0` works uniformly for `ξ(s + a)ξ(s − a)` across all `a > 0` iff `ZetaLinearAbscissaLawAt C`
-holds for `ζ`. -/
-theorem uniform_symmetricShift_linearEventualToGlobal_iff {C : ℝ} (hC : 0 ≤ C) :
+/-- **Uniformity across shifts `a → 0⁺` recovers `ZetaLinearAbscissaLawAt C`** for `C ≥ 1`. -/
+theorem uniform_symmetricShift_linearEventualToGlobal_iff {C : ℝ} (hC1 : 1 ≤ C) :
     (∀ a : ℝ, 0 < a → ∀ h : ℝ, 0 ≤ h →
       (∃ T : ℝ, 0 < T ∧ ∀ z : ℂ,
         symmetricShiftProduct xi a z = 0 → T ≤ |z.im| → z.re ≤ 1 / 2 + h) →
       ∀ z : ℂ, symmetricShiftProduct xi a z = 0 → z.re ≤ 1 / 2 + C * h) ↔
     ZetaLinearAbscissaLawAt C := by
+  have hC : 0 ≤ C := by linarith
   rw [zetaLinearAbscissaLawAt_iff_eventualToGlobalAt hC]
   constructor
   · intro hunif h hh hfin q
@@ -1032,7 +1031,7 @@ theorem uniform_symmetricShift_linearEventualToGlobal_iff {C : ℝ} (hC : 0 ≤ 
       dsimp [a]
       linarith
     linarith
-  · intro hE a ha h hh hev
+  · intro hE a ha h _ hev
     have hev_xi := (symmetricShiftProduct_eventualBound_iff ha.le (1 / 2 + h)).mp hev
     have hah : a ≤ h := by
       have := half_le_of_xi_eventualBound hev_xi
@@ -1047,10 +1046,541 @@ theorem uniform_symmetricShift_linearEventualToGlobal_iff {C : ℝ} (hC : 0 ≤ 
     obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hw
     have hb := hE (h - a) (by linarith) hfin q
     rw [← hq] at hb
-    rcases le_or_gt C 1 with hC1 | hC1
-    · have hlt1 : w.re < 1 := by rw [← hq]; exact (xi_divisor_support_re_mem_open_unit q.1).2
-      rcases eq_or_lt_of_le hC with rfl | hCpos
-      · -- Wait: check `C = 0`!
-        sorry
-      · sorry
-    · nlinarith
+    nlinarith
+
+/-- For `C < 1`, no uniform linear eventual-to-global bound across `a > 0` can hold, since Hardy's
+critical-line zeros shift to `Re s = ½ + a`. -/
+theorem not_uniform_symmetricShift_linearEventualToGlobal_of_lt_one {C : ℝ} (hC1 : C < 1) :
+    ¬ ∀ a : ℝ, 0 < a → ∀ h : ℝ, 0 ≤ h →
+      (∃ T : ℝ, 0 < T ∧ ∀ z : ℂ,
+        symmetricShiftProduct xi a z = 0 → T ≤ |z.im| → z.re ≤ 1 / 2 + h) →
+      ∀ z : ℂ, symmetricShiftProduct xi a z = 0 → z.re ≤ 1 / 2 + C * h := by
+  intro hunif
+  set a : ℝ := (|C| + 1) / (1 - C)
+  have ha : 0 < a := div_pos (by positivity) (by linarith)
+  have hev : ∃ T : ℝ, 0 < T ∧ ∀ z : ℂ,
+      symmetricShiftProduct xi a z = 0 → T ≤ |z.im| → z.re ≤ 1 / 2 + (1 / 2 + a) := by
+    refine (symmetricShiftProduct_eventualBound_iff ha.le (1 / 2 + (1 / 2 + a))).mpr
+      ⟨1, one_pos, fun z hz _ => ?_⟩
+    obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hz
+    have hlt1 : z.re < 1 := by rw [← hq]; exact (xi_divisor_support_re_mem_open_unit q.1).2
+    linarith
+  obtain ⟨t, _, hzero⟩ := exists_Xi_zero_gt 1
+  have hxi : xi ((1 / 2 : ℂ) + (t : ℂ) * I) = 0 := by
+    rw [xi_eq_XiC_comp]
+    have he : (((1 / 2 : ℂ) + (t : ℂ) * I - 1 / 2) * -I) = (t : ℂ) := by
+      ring_nf; simp only [Complex.I_sq, mul_neg, mul_one, neg_neg]
+    rw [he, XiC_ofReal, hzero, Complex.ofReal_zero]
+  have hglob := (symmetricShiftProduct_globalBound_iff ha.le (1 / 2 + C * (1 / 2 + a))).mp
+    (hunif a ha (1 / 2 + a) (by positivity) hev) _ hxi
+  have hre : ((1 / 2 : ℂ) + (t : ℂ) * I).re = 1 / 2 := by simp
+  rw [hre] at hglob
+  have ha_eq : (1 - C) * a = |C| + 1 := div_mul_cancel₀ _ (by linarith)
+  have hCabs : C / 2 ≤ |C| / 2 := div_le_div_of_nonneg_right (le_abs_self C) (by norm_num)
+  have hpos : 0 ≤ |C| := abs_nonneg C
+  linarith
+
+/-- Existentially, a uniform slope `C` across all symmetric shifts `a > 0` is equivalent to
+`ZetaLinearAbscissaLaw`. -/
+theorem exists_uniform_symmetricShift_linearEventualToGlobal_iff :
+    (∃ C : ℝ, ∀ a : ℝ, 0 < a → ∀ h : ℝ, 0 ≤ h →
+      (∃ T : ℝ, 0 < T ∧ ∀ z : ℂ,
+        symmetricShiftProduct xi a z = 0 → T ≤ |z.im| → z.re ≤ 1 / 2 + h) →
+      ∀ z : ℂ, symmetricShiftProduct xi a z = 0 → z.re ≤ 1 / 2 + C * h) ↔
+    ZetaLinearAbscissaLaw := by
+  rw [zetaLinearAbscissaLaw_tfae.out 0 1]
+  constructor
+  · rintro ⟨C, hunif⟩
+    have hC1 : 1 ≤ C := by
+      by_contra hlt
+      exact not_uniform_symmetricShift_linearEventualToGlobal_of_lt_one (not_le.mp hlt) hunif
+    exact ⟨C, hC1, (uniform_symmetricShift_linearEventualToGlobal_iff hC1).mp hunif⟩
+  · rintro ⟨C, hC1, hL⟩
+    exact ⟨C, (uniform_symmetricShift_linearEventualToGlobal_iff hC1).mpr hL⟩
+
+/-! ### Finite-rank Chebyshev error exponent equals `zetaAsymptoticAbscissa` -/
+
+/-- Prime error `ψ(x) − x` minus a finite complex exponential sum `Σ_{z ∈ S} d(z) x^z`. -/
+def expSumError (S : Finset ℂ) (d : ℂ → ℂ) (x : ℝ) : ℂ :=
+  ((Chebyshev.psi x - x : ℝ) : ℂ) - ∑ z ∈ S, d z * (x : ℂ) ^ z
+
+/-- Cutoff of `expSumError` to `(1, ∞)` for Mellin inversion. -/
+def expSumRemainder (S : Finset ℂ) (d : ℂ → ℂ) : ℝ → ℂ :=
+  (Ioi (1 : ℝ)).indicator (expSumError S d)
+
+/-- Denominator polynomial `Π_{z ∈ S} (s − z)` clearing the simple poles of the finite exponential
+sum. -/
+def expSumDenominator (S : Finset ℂ) (s : ℂ) : ℂ :=
+  ∏ z ∈ S, (s - z)
+
+/-- Numerator of `−P(s) Z'(s) / Z(s)` for `Z(s) = (s − 1)ζ(s)`. -/
+def expSumNumerator (S : Finset ℂ) (d : ℂ → ℂ) (s : ℂ) : ℂ :=
+  expSumDenominator S s * (1 + s * mellin (expSumRemainder S d) (-s))
+    + ∑ z ∈ S, d z * s * ∏ w ∈ S.erase z, (s - w)
+
+theorem locallyIntegrableOn_expSumError (S : Finset ℂ) (d : ℂ → ℂ) :
+    LocallyIntegrableOn (expSumError S d) (Ioi 0) := by
+  have hψ : LocallyIntegrableOn (fun x : ℝ => (Chebyshev.psi x : ℂ)) (Ioi 0) :=
+    ((Chebyshev.psi_mono.locallyIntegrable (μ := volume)).locallyIntegrableOn _).mono
+      (Complex.measurable_ofReal.comp Chebyshev.psi_mono.measurable).aestronglyMeasurable
+      (ae_of_all _ fun x => by simp)
+  have hx : LocallyIntegrableOn (fun x : ℝ => ((x : ℝ) : ℂ)) (Ioi 0) :=
+    (Complex.continuous_ofReal.continuousOn).locallyIntegrableOn measurableSet_Ioi
+  have hsum : LocallyIntegrableOn (fun x : ℝ => ∑ z ∈ S, d z * (x : ℂ) ^ z) (Ioi 0) := by
+    refine ContinuousOn.locallyIntegrableOn ?_ measurableSet_Ioi
+    refine continuousOn_finsetSum _ fun z _ => continuousOn_const.mul ?_
+    intro x hx
+    exact ((Complex.continuous_ofReal.continuousAt).cpow continuousAt_const
+      (Complex.ofReal_mem_slitPlane.mpr hx)).continuousWithinAt
+  refine ((hψ.sub hx).sub hsum).congr (ae_of_all _ fun x => ?_)
+  simp only [expSumError, Pi.sub_apply]
+  push_cast
+  ring
+
+theorem locallyIntegrableOn_expSumRemainder (S : Finset ℂ) (d : ℂ → ℂ) :
+    LocallyIntegrableOn (expSumRemainder S d) (Ioi 0) := by
+  intro x hx
+  obtain ⟨t, ht, hint⟩ := locallyIntegrableOn_expSumError S d x hx
+  exact ⟨t, ht, hint.indicator measurableSet_Ioi⟩
+
+theorem differentiableAt_mellin_expSumRemainder {S : Finset ℂ} {d : ℂ → ℂ} {K x₀ σ₀ : ℝ}
+    (hb : ∀ x, x₀ ≤ x → ‖expSumError S d x‖ ≤ K * x ^ σ₀) {s : ℂ} (hs : σ₀ < s.re) :
+    DifferentiableAt ℂ (fun w => mellin (expSumRemainder S d) (-w)) s := by
+  have hbigO : expSumRemainder S d =O[atTop] (fun x : ℝ => x ^ (-(-σ₀))) := by
+    refine IsBigO.of_bound |K| ?_
+    filter_upwards [eventually_ge_atTop x₀, eventually_gt_atTop (1 : ℝ)] with x hx h1
+    have hmem : x ∈ Ioi (1 : ℝ) := h1
+    rw [expSumRemainder, indicator_of_mem hmem, neg_neg,
+      Real.norm_of_nonneg (Real.rpow_nonneg (by linarith) _)]
+    exact (hb x hx).trans
+      (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.rpow_nonneg (by linarith) _))
+  have hzero : expSumRemainder S d =O[𝓝[>] 0] (fun x : ℝ => x ^ (-((-s).re - 1))) := by
+    refine (isBigO_zero _ _).congr' ?_ EventuallyEq.rfl
+    filter_upwards [mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds one_pos)] with x hx
+    have hnot : x ∉ Ioi (1 : ℝ) := fun h => lt_asymm (show (1 : ℝ) < x from h) hx
+    rw [expSumRemainder, indicator_of_notMem hnot]
+  have h : DifferentiableAt ℂ (mellin (expSumRemainder S d)) (-s) :=
+    mellin_differentiableAt_of_isBigO_rpow (a := -σ₀) (b := (-s).re - 1)
+      (locallyIntegrableOn_expSumRemainder S d) hbigO (by simpa using hs) hzero (by linarith)
+  exact h.comp s (differentiable_neg s)
+
+theorem mul_mellin_expSumRemainder {S : Finset ℂ} {d : ℂ → ℂ} {s : ℂ}
+    (h1 : 1 < s.re) (hS : ∀ z ∈ S, z.re < s.re) :
+    s * mellin (expSumRemainder S d) (-s) =
+      LSeries (fun n => (vonMangoldt n : ℂ)) s - s / (s - 1)
+        - ∑ z ∈ S, d z * (s / (s - z)) := by
+  have hm : mellin (expSumRemainder S d) (-s)
+      = ∫ t in Ioi (1 : ℝ), (t : ℂ) ^ (-s - 1) * expSumError S d t := by
+    rw [mellin]
+    have hfun : (fun t : ℝ => (t : ℂ) ^ (-s - 1) • expSumRemainder S d t)
+        = (Ioi (1 : ℝ)).indicator (fun t : ℝ => (t : ℂ) ^ (-s - 1) * expSumError S d t) := by
+      funext t
+      by_cases ht : t ∈ Ioi (1 : ℝ) <;> simp [expSumRemainder, ht]
+    rw [hfun, setIntegral_indicator measurableSet_Ioi,
+      inter_eq_right.mpr (Ioi_subset_Ioi zero_le_one)]
+  have hpt : ∀ t ∈ Ioi (1 : ℝ), (t : ℂ) ^ (-s - 1) * expSumError S d t
+      = (criticalCumulative (fun n => vonMangoldt n) t : ℂ) * (t : ℂ) ^ (-(s + 1))
+        - (t : ℂ) ^ (-s)
+        - ∑ z ∈ S, d z * (t : ℂ) ^ (z - s - 1) := by
+    intro t ht
+    have ht0 : (t : ℂ) ≠ 0 := by exact_mod_cast (ne_of_gt (lt_trans one_pos ht))
+    have e1 : (t : ℂ) ^ (-s) = (t : ℂ) ^ (-s - 1) * (t : ℂ) := by
+      have h := Complex.cpow_add (x := (t : ℂ)) (-s - 1) 1 ht0
+      rwa [Complex.cpow_one, show -s - 1 + 1 = -s by ring] at h
+    have e2 : ∀ z : ℂ, (t : ℂ) ^ (z - s - 1) = (t : ℂ) ^ z * (t : ℂ) ^ (-s - 1) := by
+      intro z
+      rw [← Complex.cpow_add _ _ ht0]
+      congr 1; ring
+    have e3 : ∑ z ∈ S, d z * (t : ℂ) ^ (z - s - 1)
+        = (t : ℂ) ^ (-s - 1) * ∑ z ∈ S, d z * (t : ℂ) ^ z := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun z _ => by rw [e2 z]; ring
+    rw [expSumError, criticalCumulative_vonMangoldt_eq_psi, e1,
+      show -(s + 1) = -s - 1 by ring, e3]
+    push_cast
+    ring
+  have hre1 : (-s).re < -1 := by simp only [Complex.neg_re]; linarith
+  have hre2 : ∀ z ∈ S, (z - s - 1).re < -1 := fun z hz => by
+    have := hS z hz
+    simp only [Complex.sub_re, Complex.one_re]
+    linarith
+  have hi0 := integrableOn_criticalCumulative_mul_cpow h1
+  have hi1 : IntegrableOn (fun t : ℝ => (t : ℂ) ^ (-s)) (Ioi 1) :=
+    integrableOn_Ioi_cpow_of_lt hre1 one_pos
+  have hi2 : ∀ z ∈ S, Integrable (fun t : ℝ => d z * (t : ℂ) ^ (z - s - 1))
+      (volume.restrict (Ioi 1)) :=
+    fun z hz => (integrableOn_Ioi_cpow_of_lt (hre2 z hz) one_pos).const_mul _
+  have hA : ∫ t in Ioi (1 : ℝ), (t : ℂ) ^ (-s) = 1 / (s - 1) := by
+    rw [integral_Ioi_cpow_of_lt hre1 one_pos, ofReal_one, one_cpow,
+      show -s + 1 = -(s - 1) by ring, neg_div_neg_eq]
+  have hB : ∀ z ∈ S, ∫ t in Ioi (1 : ℝ), d z * (t : ℂ) ^ (z - s - 1)
+      = d z * (1 / (s - z)) := fun z hz => by
+    rw [integral_const_mul, integral_Ioi_cpow_of_lt (hre2 z hz) one_pos, ofReal_one, one_cpow,
+      show z - s - 1 + 1 = -(s - z) by ring, neg_div_neg_eq]
+  have hint : ∫ t in Ioi (1 : ℝ), (t : ℂ) ^ (-s - 1) * expSumError S d t
+      = (∫ t in Ioi (1 : ℝ), (criticalCumulative (fun n => vonMangoldt n) t : ℂ) *
+            (t : ℂ) ^ (-(s + 1)))
+        - 1 / (s - 1) - ∑ z ∈ S, d z * (1 / (s - z)) := by
+    have hi01 : Integrable (fun t : ℝ =>
+        (criticalCumulative (fun n => vonMangoldt n) t : ℂ) * (t : ℂ) ^ (-(s + 1))
+          - (t : ℂ) ^ (-s)) (volume.restrict (Ioi 1)) := hi0.sub hi1
+    rw [setIntegral_congr_fun measurableSet_Ioi hpt,
+      integral_sub hi01 (integrable_finsetSum _ hi2), integral_sub hi0 hi1,
+      integral_finset_sum _ hi2, hA]
+    congr 1
+    exact Finset.sum_congr rfl fun z hz => hB z hz
+  rw [hm, hint, vonMangoldtLSeries_eq_mul_integral_criticalCumulative h1, mul_sub, mul_sub,
+    Finset.mul_sum]
+  congr 1
+  · congr 1; ring
+  · exact Finset.sum_congr rfl fun _ _ => by ring
+
+theorem neg_mul_deriv_zetaResidueUnit_eq_expSum {S : Finset ℂ} {d : ℂ → ℂ} {K x₀ σ₀ : ℝ}
+    (hb : ∀ x, x₀ ≤ x → ‖expSumError S d x‖ ≤ K * x ^ σ₀) {s : ℂ} (hs : σ₀ < s.re) :
+    -(expSumDenominator S s * deriv zetaResidueUnit s)
+      = zetaResidueUnit s * expSumNumerator S d s := by
+  have hPdiff : Differentiable ℂ (expSumDenominator S) :=
+    Differentiable.fun_finsetProd fun _ _ => differentiable_id.sub_const _
+  have hQdiff : ∀ w : ℂ, σ₀ < w.re → DifferentiableAt ℂ (expSumNumerator S d) w := fun w hw => by
+    refine ((hPdiff w).mul ((differentiableAt_const _).add
+      (differentiableAt_id.mul (differentiableAt_mellin_expSumRemainder hb hw)))).add ?_
+    refine DifferentiableAt.fun_sum fun _ _ =>
+      ((differentiableAt_const _).mul differentiableAt_id).mul
+        ((Differentiable.fun_finsetProd fun _ _ => differentiable_id.sub_const _) w)
+  have hright : ∀ w : ℂ, 1 < w.re → (∀ z ∈ S, z.re < w.re) →
+      -(expSumDenominator S w * deriv zetaResidueUnit w)
+        = zetaResidueUnit w * expSumNumerator S d w := by
+    intro w hw1 hwS
+    have hw_ne1 : w ≠ 1 := fun h => by rw [h, Complex.one_re] at hw1; exact lt_irrefl _ hw1
+    have hw_ne1' : w - 1 ≠ 0 := sub_ne_zero.mpr hw_ne1
+    have hζ : riemannZeta w ≠ 0 := riemannZeta_ne_zero_of_one_le_re hw1.le
+    have hZ : zetaResidueUnit w = (w - 1) * riemannZeta w :=
+      (zetaResidueUnit_eventuallyEq hw_ne1).eq_of_nhds
+    have hdZ : deriv zetaResidueUnit w = riemannZeta w + (w - 1) * deriv riemannZeta w := by
+      rw [(zetaResidueUnit_eventuallyEq hw_ne1).deriv_eq]
+      have h : HasDerivAt (fun u => (u - 1) * riemannZeta u)
+          (1 * riemannZeta w + (w - 1) * deriv riemannZeta w) w :=
+        ((hasDerivAt_id w).sub_const 1).mul (differentiableAt_riemannZeta hw_ne1).hasDerivAt
+      rw [h.deriv, one_mul]
+    have hL : LSeries (fun n => (vonMangoldt n : ℂ)) w = -deriv riemannZeta w / riemannZeta w :=
+      ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hw1
+    have hne : ∀ z ∈ S, w - z ≠ 0 := fun z hz h0 => by
+      have := congrArg Complex.re h0
+      simp only [Complex.sub_re, Complex.zero_re] at this
+      linarith [hwS z hz]
+    have hPe : ∀ z ∈ S, ∏ u ∈ S.erase z, (w - u) = expSumDenominator S w / (w - z) :=
+      fun z hz => by
+        rw [expSumDenominator, ← Finset.mul_prod_erase S _ hz,
+          mul_div_cancel_left₀ _ (hne z hz)]
+    have hsum : ∑ z ∈ S, d z * w * ∏ u ∈ S.erase z, (w - u)
+        = expSumDenominator S w * ∑ z ∈ S, d z * (w / (w - z)) := by
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun z hz => by rw [hPe z hz]; ring
+    rw [expSumNumerator, hsum, mul_mellin_expSumRemainder hw1 hwS, hL, hZ, hdZ]
+    generalize expSumDenominator S w = P
+    generalize (∑ z ∈ S, d z * (w / (w - z))) = B
+    generalize deriv riemannZeta w = z'
+    field_simp
+    ring
+  set U : Set ℂ := {w | σ₀ < w.re}
+  have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  set F : ℂ → ℂ := fun w => -(expSumDenominator S w * deriv zetaResidueUnit w)
+      - zetaResidueUnit w * expSumNumerator S d w
+  have hFd : DifferentiableOn ℂ F U := fun w hw =>
+    ((((hPdiff w).mul (analyticAt_zetaResidueUnit w).deriv.differentiableAt).neg).sub
+      ((analyticAt_zetaResidueUnit w).differentiableAt.mul (hQdiff w hw))).differentiableWithinAt
+  have hFa : AnalyticOnNhd ℂ F U := hFd.analyticOnNhd hUo
+  set βS : ℝ := ∑ z ∈ S, |z.re|
+  set r : ℝ := max (max 1 βS) σ₀ + 1
+  have hr1 : 1 < r := by
+    have := le_max_left 1 βS
+    have := le_max_left (max 1 βS) σ₀
+    linarith
+  have hrβ : βS < r := by
+    have := le_max_right 1 βS
+    have := le_max_left (max 1 βS) σ₀
+    linarith
+  have hrσ : σ₀ < r := by
+    have := le_max_right (max 1 βS) σ₀
+    linarith
+  have hz₀ : (r : ℂ) ∈ U := by simpa [U] using hrσ
+  have hV : {w : ℂ | 1 < w.re ∧ βS < w.re} ∈ 𝓝 (r : ℂ) := by
+    refine ((isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_re)).mem_nhds ?_
+    simpa using ⟨hr1, hrβ⟩
+  have hev : F =ᶠ[𝓝 (r : ℂ)] 0 := by
+    filter_upwards [hV] with w hw
+    simp only [F, Pi.zero_apply]
+    rw [hright w hw.1 (fun z hz => (le_abs_self z.re).trans
+      ((Finset.single_le_sum (fun _ _ => abs_nonneg _) hz).trans_lt hw.2)), sub_self]
+  have h0 : F s = 0 := hFa.eqOn_zero_of_preconnected_of_eventuallyEq_zero
+    (convex_halfSpace_re_gt σ₀).isPreconnected hz₀ hev hs
+  exact sub_eq_zero.mp h0
+
+/-- **Zero location modulo any finite exponential sum.** Every zero `ρ ≠ 1` of `ζ` right of `σ₀`
+belongs to the finite exponent set `S`. -/
+theorem mem_of_zeta_eq_zero_of_expSumError {S : Finset ℂ} {d : ℂ → ℂ} {K x₀ σ₀ : ℝ}
+    (hb : ∀ x, x₀ ≤ x → ‖expSumError S d x‖ ≤ K * x ^ σ₀) {ρ : ℂ} (hρ : σ₀ < ρ.re)
+    (hρ1 : ρ ≠ 1) (hζ : riemannZeta ρ = 0) : ρ ∈ S := by
+  by_contra hnot
+  have hP : expSumDenominator S ρ ≠ 0 :=
+    Finset.prod_ne_zero_iff.mpr fun z hz => sub_ne_zero.mpr fun h => hnot (h ▸ hz)
+  have hZ0 : zetaResidueUnit ρ = 0 := by
+    rw [(zetaResidueUnit_eventuallyEq hρ1).eq_of_nhds, hζ, mul_zero]
+  have hZa := analyticAt_zetaResidueUnit ρ
+  have hdZa : AnalyticAt ℂ (deriv zetaResidueUnit) ρ := hZa.deriv
+  have hPa : AnalyticAt ℂ (expSumDenominator S) ρ :=
+    (Differentiable.fun_finsetProd (fun _ _ => differentiable_id.sub_const _)).analyticAt ρ
+  have hUo : IsOpen {w : ℂ | σ₀ < w.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hQa : AnalyticAt ℂ (expSumNumerator S d) ρ := by
+    have hd : DifferentiableOn ℂ (expSumNumerator S d) {w : ℂ | σ₀ < w.re} := fun w hw => by
+      refine (((Differentiable.fun_finsetProd (fun _ _ => differentiable_id.sub_const _) w).mul
+        ((differentiableAt_const _).add
+          (differentiableAt_id.mul (differentiableAt_mellin_expSumRemainder hb hw)))).add ?_
+        ).differentiableWithinAt
+      exact DifferentiableAt.fun_sum fun _ _ =>
+        ((differentiableAt_const _).mul differentiableAt_id).mul
+          ((Differentiable.fun_finsetProd fun _ _ => differentiable_id.sub_const _) w)
+    exact hd.analyticOnNhd hUo ρ hρ
+  have hev : (fun w => expSumDenominator S w * deriv zetaResidueUnit w)
+      =ᶠ[𝓝 ρ] -(zetaResidueUnit * expSumNumerator S d) := by
+    filter_upwards [hUo.mem_nhds hρ] with w hw
+    have h := neg_mul_deriv_zetaResidueUnit_eq_expSum hb (s := w) hw
+    simp only [Pi.neg_apply, Pi.mul_apply]
+    rw [← h, neg_neg]
+  have hord := analyticOrderAt_congr hev
+  have hleft : analyticOrderAt (fun w => expSumDenominator S w * deriv zetaResidueUnit w) ρ
+      = analyticOrderAt (deriv zetaResidueUnit) ρ := by
+    rw [analyticOrderAt_mul (𝕜 := ℂ) hPa hdZa, hPa.analyticOrderAt_eq_zero.mpr hP, zero_add]
+  have hright : analyticOrderAt (-(zetaResidueUnit * expSumNumerator S d)) ρ
+      = analyticOrderAt zetaResidueUnit ρ + analyticOrderAt (expSumNumerator S d) ρ := by
+    rw [analyticOrderAt_neg, analyticOrderAt_mul hZa hQa]
+  have hstep : analyticOrderAt (deriv zetaResidueUnit) ρ + 1 = analyticOrderAt zetaResidueUnit ρ := by
+    simpa [hZ0] using hZa.analyticOrderAt_deriv_add_one
+  have htop : analyticOrderAt zetaResidueUnit ρ ≠ ⊤ := Sieve.zetaResidueUnit_order_ne_top ρ
+  rw [hleft, hright] at hord
+  rw [hord] at hstep
+  generalize analyticOrderAt zetaResidueUnit ρ = m at hstep htop
+  generalize analyticOrderAt (expSumNumerator S d) ρ = q at hstep
+  induction m using ENat.recTopCoe with
+  | top => exact htop rfl
+  | coe m =>
+    induction q using ENat.recTopCoe with
+    | top => simp at hstep
+    | coe q => norm_cast at hstep; omega
+
+/-- Exponents `σ ≥ ½` achievable for `ψ(x) − x` modulo a finite complex exponential sum. -/
+def chebyshevFiniteRankExponentSet : Set ℝ :=
+  {σ : ℝ | 1 / 2 ≤ σ ∧ ∃ (S : Finset ℂ) (d : ℂ → ℂ) (K x₀ : ℝ),
+    ∀ x, x₀ ≤ x → ‖expSumError S d x‖ ≤ K * x ^ σ}
+
+theorem zetaAsymptoticAbscissa_le_of_mem_chebyshevFiniteRankExponentSet {σ : ℝ}
+    (h : σ ∈ chebyshevFiniteRankExponentSet) :
+    zetaAsymptoticAbscissa ≤ σ := by
+  obtain ⟨h12, S, d, K, x₀, hb⟩ := h
+  refine csInf_le bddBelow_zetaAsymptoticAbscissaSet ⟨h12, ?_⟩
+  set M : ℝ := ∑ z ∈ S, |z.im|
+  refine (finite_abs_im_le M).subset fun q hq => ?_
+  have hmem := mem_of_zeta_eq_zero_of_expSumError hb hq (xiZeroCopy_ne_one q)
+    (riemannZeta_eq_zero_of_xiZeroCopy q)
+  exact Finset.single_le_sum (f := fun z : ℂ => |z.im|) (fun _ _ => abs_nonneg _) hmem
+
+theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoticAbscissa < σ) :
+    σ ∈ chebyshevFiniteRankExponentSet := by
+  classical
+  have h12 : 1 / 2 ≤ σ := half_le_zetaAsymptoticAbscissa.trans hgt.le
+  rcases le_or_gt 1 σ with h1σ | hσ1
+  · refine ⟨h12, ∅, 0, 6, 1, fun x hx => ?_⟩
+    have hx0 : 0 ≤ x := by linarith
+    have hfl_le : (⌊x⌋₊ : ℝ) ≤ x := Nat.floor_le hx0
+    have hψ_eq : Chebyshev.psi x = chebyshevPsi ⌊x⌋₊ := by
+      rw [← chebyshevPsi_eq_psi, Chebyshev.psi_eq_sum_Icc, Chebyshev.psi_eq_sum_Icc,
+        Nat.floor_natCast]
+    have hψ_nonneg : 0 ≤ Chebyshev.psi x := by rw [hψ_eq, chebyshevPsi_eq_psi]; exact psi_nat_nonneg _
+    have hψ_le : Chebyshev.psi x ≤ 6 * x := by
+      rw [hψ_eq, chebyshevPsi_eq_psi]
+      exact (psi_nat_le_six_mul ⌊x⌋₊).trans (by linarith)
+    have herr : expSumError ∅ 0 x = ((Chebyshev.psi x - x : ℝ) : ℂ) := by simp [expSumError]
+    rw [herr, Complex.norm_real, Real.norm_eq_abs]
+    have habs : |Chebyshev.psi x - x| ≤ 6 * x := by
+      rw [abs_le]; constructor <;> linarith
+    have hpow : x ^ (1 : ℝ) ≤ x ^ σ := Real.rpow_le_rpow_of_exponent_le hx h1σ
+    rw [Real.rpow_one] at hpow
+    exact habs.trans (mul_le_mul_of_nonneg_left hpow (by norm_num))
+  · set β₁ : ℝ := (zetaAsymptoticAbscissa + σ) / 2
+    have hltβ₁ : zetaAsymptoticAbscissa < β₁ := by dsimp [β₁]; linarith
+    have hβ₁σ : β₁ < σ := by dsimp [β₁]; linarith
+    obtain ⟨τ, hτ, hτlt⟩ := exists_lt_of_csInf_lt zetaAsymptoticAbscissaSet_nonempty hltβ₁
+    have hfin : {q : XiZeroCopy | β₁ < (q.1 : ℂ).re}.Finite :=
+      (zetaAsymptoticAbscissaSet_mono hτ hτlt.le).2
+    set top : Finset XiZeroCopy := hfin.toFinset
+    have hnon : ∀ q : XiZeroCopy, q ∉ top → (q.1 : ℂ).re ≤ β₁ := fun q hq => by
+      by_contra hlt
+      exact hq ((Set.Finite.mem_toFinset hfin).mpr (not_le.mp hlt))
+    set θ : ℝ := (σ - β₁) / 2
+    have hθ0 : 0 < θ := by dsimp [θ]; linarith
+    have hθ1 : θ ≤ 1 := by dsimp [θ, β₁]; linarith [half_le_zetaAsymptoticAbscissa]
+    have hσ0 : 0 < σ := by linarith
+    have hgap : 0 < 1 - σ := by linarith
+    set W : ℝ := ∑' q, zeroWeight θ q
+    have hW0 : 0 ≤ W := tsum_nonneg (zeroWeight_nonneg θ)
+    have hlog : 0 ≤ Real.log (2 * Real.pi) :=
+      Real.log_nonneg (by nlinarith [Real.pi_gt_three])
+    set S : Finset ℂ :=
+      top.image (fun q : XiZeroCopy => (q.1 : ℂ)) ∪
+        top.image (fun q : XiZeroCopy => conj (q.1 : ℂ))
+    set d : ℂ → ℂ := fun z =>
+      -(∑ q ∈ top with (q.1 : ℂ) = z, (1 / (2 * (q.1 : ℂ)))) -
+        (∑ q ∈ top with conj (q.1 : ℂ) = z, (1 / (2 * conj (q.1 : ℂ))))
+    refine ⟨h12, S, d, 2 + Real.log (2 * Real.pi) + 2 * top.card + 16 * W,
+      max 4 ((2 : ℝ) ^ (1 / (1 - σ))), fun x hx => ?_⟩
+    have hx4 : 4 ≤ x := (le_max_left _ _).trans hx
+    have hx2 : (2 : ℝ) ^ (1 / (1 - σ)) ≤ x := (le_max_right _ _).trans hx
+    have hx0 : 0 < x := by linarith
+    have hx1 : 1 ≤ x := by linarith
+    set H : ℝ := x ^ σ
+    have hH1 : 1 ≤ H := Real.one_le_rpow hx1 hσ0.le
+    have h2 : 2 ≤ x ^ (1 - σ) := by
+      have h := Real.rpow_le_rpow (by positivity) hx2 hgap.le
+      rwa [← Real.rpow_mul (by norm_num), one_div_mul_cancel hgap.ne', Real.rpow_one] at h
+    have hsplit : H * x ^ (1 - σ) = x := by
+      dsimp [H]; rw [← Real.rpow_add hx0]; simp
+    have hHx : H ≤ x / 2 := by rw [le_div_iff₀ (by norm_num)]; nlinarith
+    have hmain := abs_psi_sub_add_re_topSum_le (top := top) (β₁ := β₁) (θ := θ) (x := x) (H := H)
+      hnon hθ0 hθ1 hx4 hH1 hHx
+    have hsum_eq : ∑ z ∈ S, d z * (x : ℂ) ^ z
+        = -(((∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re : ℝ) : ℂ) := by
+      have hfib1 : ∑ z ∈ S, (∑ q ∈ top with (q.1 : ℂ) = z, (1 / (2 * (q.1 : ℂ)))) * (x : ℂ) ^ z
+          = ∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ)) := by
+        simp_rw [Finset.sum_mul]
+        rw [Finset.sum_fiberwise_of_maps_to (fun q hq =>
+          Finset.mem_union_left _ (Finset.mem_image_of_mem _ hq))]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        ring
+      have hfib2 : ∑ z ∈ S, (∑ q ∈ top with conj (q.1 : ℂ) = z,
+            (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z
+          = ∑ q ∈ top, (x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ)) := by
+        simp_rw [Finset.sum_mul]
+        rw [Finset.sum_fiberwise_of_maps_to (fun q hq =>
+          Finset.mem_union_right _ (Finset.mem_image_of_mem _ hq))]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        ring
+      have hconj_cpow : ∀ q : XiZeroCopy,
+          (x : ℂ) ^ conj (q.1 : ℂ) = conj ((x : ℂ) ^ (q.1 : ℂ)) := fun q => by
+        have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx0.ne'
+        rw [Complex.cpow_def_of_ne_zero hxC, Complex.cpow_def_of_ne_zero hxC,
+          ← Complex.ofReal_log hx0.le, ← Complex.exp_conj, map_mul, Complex.conj_ofReal]
+      have hd_split : ∑ z ∈ S, d z * (x : ℂ) ^ z =
+          -(∑ z ∈ S, (∑ q ∈ top with (q.1 : ℂ) = z, (1 / (2 * (q.1 : ℂ)))) * (x : ℂ) ^ z) -
+            (∑ z ∈ S, (∑ q ∈ top with conj (q.1 : ℂ) = z,
+              (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z) := by
+        rw [← Finset.sum_neg_distrib, ← Finset.sum_sub_distrib]
+        exact Finset.sum_congr rfl fun z _ => by dsimp [d]; ring
+      rw [hd_split, hfib1, hfib2, Complex.re_eq_add_conj, map_sum]
+      rw [sub_eq_add_neg, ← Finset.sum_neg_distrib, ← Finset.sum_neg_distrib,
+        ← Finset.sum_add_distrib]
+      calc (∑ q ∈ top, -((x : ℂ) ^ (q.1 : ℂ) / (2 * (q.1 : ℂ)))) +
+            (∑ q ∈ top, -((x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ))))
+          = ∑ q ∈ top, (-((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)) -
+              conj ((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ))) / 2 := by
+            rw [← Finset.sum_add_distrib]
+            refine Finset.sum_congr rfl fun q _ => ?_
+            rw [hconj_cpow q, map_div₀]
+            ring
+        _ = -(((∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)) +
+              ∑ q ∈ top, conj ((x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ))) / 2) := by
+            rw [← Finset.sum_div]
+            simp_rw [show ∀ a b : ℂ, (-a - b) / 2 = -(a + b) / 2 from fun _ _ => by ring]
+            rw [Finset.sum_div, ← Finset.sum_neg_distrib, Finset.sum_add_distrib, neg_div]
+            ring
+    have herr_eq : expSumError S d x =
+        ((Chebyshev.psi x - x + (∑ q ∈ top, (x : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re : ℝ) : ℂ) := by
+      rw [expSumError, hsum_eq]
+      push_cast
+      ring
+    rw [herr_eq, Complex.norm_real, Real.norm_eq_abs]
+    refine hmain.trans ?_
+    have hratio : (x / H) ^ θ ≤ x ^ θ :=
+      Real.rpow_le_rpow (by positivity) (div_le_self hx0.le hH1) hθ0.le
+    have hβθ : x ^ β₁ * x ^ θ ≤ H := by
+      rw [← Real.rpow_add hx0]
+      refine Real.rpow_le_rpow_of_exponent_le hx1 ?_
+      dsimp [θ, β₁]
+      linarith
+    have hxβ : 0 ≤ x ^ β₁ := Real.rpow_nonneg hx0.le _
+    have hlast : 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * W * H := by
+      calc 16 * x ^ β₁ * (x / H) ^ θ * W ≤ 16 * x ^ β₁ * x ^ θ * W := by gcongr
+        _ = 16 * W * (x ^ β₁ * x ^ θ) := by ring
+        _ ≤ 16 * W * H := by gcongr
+    have hc : (top.card : ℝ) * (2 * H) = 2 * top.card * H := by ring
+    rw [hc]
+    dsimp [H] at hH1 hlast ⊢
+    nlinarith [mul_nonneg hlog (sub_nonneg.mpr hH1)]
+
+/-- **`zetaAsymptoticAbscissa` is the finite-rank Chebyshev error exponent.** The asymptotic zero
+abscissa `Θ_∞` equals the infimum of exponents `σ ≥ ½` for which `ψ(x) − x` is `O(x^σ)` modulo a
+finite complex exponential sum. -/
+theorem zetaAsymptoticAbscissa_eq_sInf_chebyshevFiniteRank :
+    zetaAsymptoticAbscissa = sInf chebyshevFiniteRankExponentSet := by
+  have hne : chebyshevFiniteRankExponentSet.Nonempty :=
+    ⟨2, mem_chebyshevFiniteRankExponentSet_of_gt
+      (lt_of_le_of_lt zetaAsymptoticAbscissa_le_one one_lt_two)⟩
+  have hbdd : BddBelow chebyshevFiniteRankExponentSet := ⟨1 / 2, fun _ h => h.1⟩
+  refine le_antisymm
+    (le_csInf hne fun _ h => zetaAsymptoticAbscissa_le_of_mem_chebyshevFiniteRankExponentSet h)
+    (le_of_forall_pos_le_add fun ε hε => csInf_le hbdd
+      (mem_chebyshevFiniteRankExponentSet_of_gt (by linarith)))
+
+/-- **Finite-rank Chebyshev self-improvement characterization of `ZetaLinearAbscissaLawAt C`**
+(`C ≥ 0`). The linear abscissa law at slope `C` holds iff every `O(x^{½ + h})` bound on `ψ(x) − x`
+modulo a finite exponential sum implies an unmodified bound `|ψ(N) − N| = O(N^{½ + C h + ε})` for
+every `ε > 0`. -/
+theorem zetaLinearAbscissaLawAt_iff_chebyshevFiniteRank_selfImprovement {C : ℝ} (hC : 0 ≤ C) :
+    ZetaLinearAbscissaLawAt C ↔
+      ∀ h : ℝ, 0 ≤ h →
+        (∃ (S : Finset ℂ) (d : ℂ → ℂ) (K x₀ : ℝ),
+          ∀ x, x₀ ≤ x → ‖expSumError S d x‖ ≤ K * x ^ (1 / 2 + h)) →
+        ∀ ε : ℝ, 0 < ε → ∃ M : ℝ, 0 ≤ M ∧ ∀ N : ℕ, 1 ≤ N →
+          |psiRemainder N| ≤ M * (N : ℝ) ^ (1 / 2 + C * h + ε) := by
+  constructor
+  · intro hL h hh ⟨S, d, K, x₀, hexp⟩ ε hε
+    have hΘinf : zetaAsymptoticAbscissa ≤ 1 / 2 + h :=
+      zetaAsymptoticAbscissa_le_of_mem_chebyshevFiniteRankExponentSet
+        ⟨by linarith, S, d, K, x₀, hexp⟩
+    have hΘ : zetaZeroAbscissa ≤ 1 / 2 + C * h := by
+      have hmul : C * (zetaAsymptoticAbscissa - 1 / 2) ≤ C * h :=
+        mul_le_mul_of_nonneg_left (by linarith) hC
+      unfold ZetaLinearAbscissaLawAt at hL
+      linarith
+    obtain ⟨M, hM0, hM⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
+    refine ⟨M, hM0, fun N hN => (hM N hN).trans ?_⟩
+    exact mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN) (by linarith)) hM0
+  · intro hself
+    unfold ZetaLinearAbscissaLawAt
+    refine le_of_forall_pos_le_add fun δ hδ => ?_
+    set η : ℝ := δ / (2 * (C + 1))
+    have hη : 0 < η := div_pos hδ (by linarith)
+    set h : ℝ := zetaAsymptoticAbscissa - 1 / 2 + η
+    have hh : 0 ≤ h := by
+      dsimp [h]; linarith [half_le_zetaAsymptoticAbscissa]
+    have hgt : zetaAsymptoticAbscissa < 1 / 2 + h := by
+      dsimp [h]; linarith
+    obtain ⟨_, S, d, K, x₀, hexp⟩ := mem_chebyshevFiniteRankExponentSet_of_gt hgt
+    obtain ⟨M, hM0, hM⟩ := hself h hh ⟨S, d, K, x₀, hexp⟩ (δ / 2) (half_pos hδ)
+    have hΘle : zetaZeroAbscissa ≤ 1 / 2 + C * h + δ / 2 :=
+      BezoutValuationIncidence.zetaZeroAbscissa_le_of_psiRemainder_le hM0
+        (by nlinarith) hM
+    have hCη : C * η < δ / 2 := by
+      have : C * (δ / (2 * (C + 1))) < (C + 1) * (δ / (2 * (C + 1))) :=
+        mul_lt_mul_of_pos_right (by linarith) hη
+      have heq : (C + 1) * (δ / (2 * (C + 1))) = δ / 2 := by field_simp
+      rw [heq] at this
+      exact this
+    dsimp [h] at hΘle
+    linarith
+
+end ZetaAbscissa
+
+end GaloisForLFunctions.ZeroConfigurationGeometry
+

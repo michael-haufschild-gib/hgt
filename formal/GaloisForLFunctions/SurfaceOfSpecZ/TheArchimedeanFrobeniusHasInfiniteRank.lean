@@ -110,7 +110,7 @@ theorem not_finiteRank_on_coprime {r' : ℕ} (u v : Fin r' → ℕ → ℝ) :
         (Matrix.of fun (k : Fin r') (j : Fin r) => v k (n j)) := by
     ext i j
     rw [Matrix.mul_apply, Matrix.of_apply, h _ _ (hPprime _) (hPprime _) (hlt i j).ne]
-    simp
+    rfl
   have hrank : (Matrix.of fun i j => archKernel (m i) (n j)).rank = r :=
     by rw [Matrix.rank_of_isUnit _ ((Matrix.isUnit_iff_isUnit_det _).mpr (isUnit_iff_ne_zero.mpr hdet)),
       Fintype.card_fin]
@@ -138,7 +138,7 @@ theorem archCompensation_sign_eq {m n : ℕ} (hm : 0 < m) (hmn : m < n) :
     0 < archCompensation m n ↔ (m : ℝ) ^ 3 + n * m ^ 2 < n ^ 3 := by
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hmn' : (m : ℝ) < n := by exact_mod_cast hmn
-  have hsq : 0 < Real.sqrt ((m : ℝ) * n) := Real.sqrt_pos.mpr (by positivity)
+  have hsq : 0 < Real.sqrt ((m : ℝ) * n) := Real.sqrt_pos.mpr (mul_pos hm' (hm'.trans hmn'))
   have hd : 0 < (n : ℝ) ^ 2 - m ^ 2 := by nlinarith
   have h := sqrt_mul_archCompensation_eq_cubic hm hmn
   constructor
@@ -204,7 +204,7 @@ theorem archCompensation_neg_iff {m n : ℕ} (hm : 0 < m) (hmn : m < n) :
   constructor
   · intro h
     by_contra hc
-    push_neg at hc
+    push Not at hc
     rcases hc.lt_or_eq with hc | hc
     · have := (archCompensation_sign_eq hm hmn).mpr (by linarith)
       linarith

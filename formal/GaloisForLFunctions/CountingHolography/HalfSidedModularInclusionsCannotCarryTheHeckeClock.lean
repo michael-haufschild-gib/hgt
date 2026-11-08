@@ -65,7 +65,7 @@ open GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.RenormalizedIntersectionTheory
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros)
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
-open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
+open GaloisForLFunctions.SquareRootThreshold (zetaZeroConfig temperedConfig_zetaZeroConfig)
 
 /-! ### 1. Antiunitary generator–correlation dichotomy and cross-horizon Hankel law -/
 
@@ -178,17 +178,21 @@ theorem StandardForm.naturalCone_partner_hankel
       _ = (star (U r) * U r) ms.Ω := rfl
       _ = ms.Ω := by rw [hiso r]; rfl
   have hright : ms.J.conjOp (covShift U t B₀) ms.Ω = (star (U t)) (ms.J (B₀ ms.Ω)) := by
-    rw [AntiunitaryInvol.conjOp_apply, covShift_apply, ms.J_omega, hstarΩ t,
-      ← ms.J.invol (B₀ ms.Ω), ← AntiunitaryInvol.conjOp_apply, hJ t]
+    calc ms.J.conjOp (covShift U t B₀) ms.Ω
+        = ms.J (U t (B₀ ((star (U t)) ms.Ω))) := by
+            rw [AntiunitaryInvol.conjOp_apply, covShift_apply, ms.J_omega]
+      _ = ms.J (U t (ms.J (ms.J (B₀ ms.Ω)))) := by rw [hstarΩ t, ms.J.invol]
+      _ = (ms.J.conjOp (U t)) (ms.J (B₀ ms.Ω)) := rfl
+      _ = (star (U t)) (ms.J (B₀ ms.Ω)) := by rw [hJ t]
   rw [hright, covShift_apply]
   have hadj1 : ∀ v : H, inner ℂ ms.Ω (U s v) = inner ℂ ms.Ω v := fun v => by
     calc inner ℂ ms.Ω (U s v) = inner ℂ (ContinuousLinearMap.adjoint (U s) ms.Ω) v :=
-          (ContinuousLinearMap.adjoint_inner_left (U s) ms.Ω v).symm
+          (ContinuousLinearMap.adjoint_inner_left (U s) v ms.Ω).symm
       _ = inner ℂ ((star (U s)) ms.Ω) v := by rw [← ContinuousLinearMap.star_eq_adjoint]
       _ = inner ℂ ms.Ω v := by rw [hstarΩ s]
   have hadj2 : ∀ v : H, inner ℂ ms.Ω (A₀ v) = inner ℂ ((star A₀) ms.Ω) v := fun v => by
     calc inner ℂ ms.Ω (A₀ v) = inner ℂ (ContinuousLinearMap.adjoint A₀ ms.Ω) v :=
-          (ContinuousLinearMap.adjoint_inner_left A₀ ms.Ω v).symm
+          (ContinuousLinearMap.adjoint_inner_left A₀ v ms.Ω).symm
       _ = inner ℂ ((star A₀) ms.Ω) v := by rw [← ContinuousLinearMap.star_eq_adjoint]
   rw [hadj1, hadj2]
   have hprod : (star (U s)) ((star (U t)) (ms.J (B₀ ms.Ω))) =
@@ -603,25 +607,17 @@ private theorem single_eq_rightMul2_Ω2 (i j : Fin 2) :
     lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 (i, j) 1 =
       ((Real.sqrt 2 : ℝ) : ℂ) • rightMul2 (E2 i j) Ω2 := by
   ext ⟨r, s⟩
-  rcases eq_or_ne r i with rfl | hri
-  · rcases eq_or_ne s j with rfl | hsj
-    · simp [rightMul2_Ω2, E2, ← mul_assoc, sqrt2_mul_inv_sqrt2]
-    · have hne : (r, s) ≠ (r, j) := fun h => hsj (Prod.mk.inj h).2
-      simp [rightMul2_Ω2, E2, hsj, hne]
-  · have hne : (r, s) ≠ (i, j) := fun h => hri (Prod.mk.inj h).1
-    simp [rightMul2_Ω2, E2, hri, hne]
+  rw [lp.single_apply, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, rightMul2_Ω2, ← mul_assoc,
+    sqrt2_mul_inv_sqrt2, one_mul]
+  simp [E2, Pi.single_apply]
 
 private theorem single_eq_leftMul2_Ω2 (i j : Fin 2) :
     lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 (i, j) 1 =
       ((Real.sqrt 2 : ℝ) : ℂ) • leftMul2 (E2 i j) Ω2 := by
   ext ⟨r, s⟩
-  rcases eq_or_ne r i with rfl | hri
-  · rcases eq_or_ne s j with rfl | hsj
-    · simp [leftMul2_Ω2, E2, ← mul_assoc, sqrt2_mul_inv_sqrt2]
-    · have hne : (r, s) ≠ (r, j) := fun h => hsj (Prod.mk.inj h).2
-      simp [leftMul2_Ω2, E2, hsj, hne]
-  · have hne : (r, s) ≠ (i, j) := fun h => hri (Prod.mk.inj h).1
-    simp [leftMul2_Ω2, E2, hri, hne]
+  rw [lp.single_apply, lp.coeFn_smul, Pi.smul_apply, smul_eq_mul, leftMul2_Ω2, ← mul_assoc,
+    sqrt2_mul_inv_sqrt2, one_mul]
+  simp [E2, Pi.single_apply]
 
 private theorem h2_eq_sum_single (X : H2) :
     X = ∑ p : Fin 2 × Fin 2, X p • lp.single (E := fun _ : Fin 2 × Fin 2 => ℂ) 2 p 1 := by
@@ -755,11 +751,13 @@ private def mat2StandardForm : StandardForm mat2VN where
         inner ℂ (leftMul2 Aᴴ Ω2) (leftMul2 Aᴴ Ω2) := by
       calc inner ℂ Ω2 (leftMul2 A (leftMul2 Aᴴ Ω2))
           = inner ℂ (ContinuousLinearMap.adjoint (leftMul2 A) Ω2) (leftMul2 Aᴴ Ω2) :=
-            (ContinuousLinearMap.adjoint_inner_left _ _ _).symm
+            (ContinuousLinearMap.adjoint_inner_left (leftMul2 A) (leftMul2 Aᴴ Ω2) Ω2).symm
         _ = inner ℂ ((star (leftMul2 A)) Ω2) (leftMul2 Aᴴ Ω2) := by
             rw [← ContinuousLinearMap.star_eq_adjoint]
         _ = inner ℂ (leftMul2 Aᴴ Ω2) (leftMul2 Aᴴ Ω2) := by rw [star_leftMul2]
-    rw [hadj, inner_self_eq_norm_sq (𝕜 := ℂ)]
+    have hsq : (inner ℂ (leftMul2 Aᴴ Ω2) (leftMul2 Aᴴ Ω2)).re = ‖leftMul2 Aᴴ Ω2‖ ^ 2 :=
+      inner_self_eq_norm_sq (𝕜 := ℂ) _
+    rw [hadj, hsq]
     exact sq_nonneg _
 
 /-- 2-adic valuation parity character `n ↦ (-1)^{v₂(n)}` on `ℕ+`. -/
