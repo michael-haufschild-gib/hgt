@@ -320,7 +320,7 @@ Structure [D]: the three off-diagonal channels are a rank-two pole and two posit
 |---|---|---|
 | A51 | Prime-degree width bound with prime-gap exponent `0.525` (width `≤0.025`) [C] | — |
 | B87, B88 | Count; counterterm-free damping presentation of the diagonal | RH |
-| B118 | Arakelov–Hodge index for the `ℍ³`-fibred surface: the arithmetic diagonal counterterm as a Robin constant of a finite-volume quotient | producer |
+| B118′ | Hyperbolic carriers beyond the thin–thick obstruction (finite-volume quotients fold or diverge at cusps [S]); twisted infinite-volume Green functions | producer |
 | B119 | Prime gaps `O(x^{½+ε})` (prime planes decide RH through this route iff) | sub |
 
 ## 3. Live routes
@@ -576,7 +576,7 @@ Each needs its independent mechanism first (B81).
 |---|---|---|---|
 | IWT | towers, level sums, window theorem, rank barrier, Hasse–Weil principle at infinite rank, curve TFAE, Wolff towers, towers of ζ, crude step as Toeplitz count, continuous-level lag = zero-free region, linear six-way TFAE, two-scale `cosh` models, precision cost of forced vanishing, collision size of prime mean values | A47, A49 | B110, B111, B116, ZAL, B97, B121 |
 | ZCG (AbscissaLaws) | split, transport, two-scale theorem, linear hierarchy with separating configurations, quantifier collapse, shift non-invariance, finite-rank Chebyshev exponent, heat-family finite-stratum law | A50 | B13, B83, B111 |
-| SOSZ | zonotope, two half-products, point count, archimedean Frobenius as `ℍ³` Green function, damped Frobenius PSD, infinite rank and plastic sign [S], atomic genus `N log N` on blocks and on all degrees, integer/square/prime-pair Hasse–Weil = RH, crude bound = width, plane counts, prime planes width `≤1/12` [S] | A48, A49, A51 | B87, B88, B118, B119 |
+| SOSZ | zonotope, two half-products, point count, archimedean Frobenius as `ℍ³` Green function, damped Frobenius PSD, infinite rank and plastic sign [S], atomic genus `N log N` on blocks and on all degrees, integer/square/prime-pair Hasse–Weil = RH, crude bound = width, plane counts, prime planes width `≤1/12` [S] | A48, A49, A51 | B87, B88, B118′, B119 |
 | RIAC | completed prime boundary, prime-star and torsion compensation, prime-vertex dynamics, exits as bouquets, signed localization `Σ index=1−M(N)`, resultant counts, thickened intersections, rational Abel counts and discriminant height, Frobenius orbit counts `q^{|I|}`, finite-field orientation cover | A46 | B106, B88, B120 |
 | CTH | count law at every genus, every hyperelliptic curve, Born rules, boundary algebra, linear counts degenerate, Hecke conservation, second place, Farey reading, thermalization, sharp shells, modular conjugation ≠ partner involution, partner standard-form trichotomy, half-sided inclusions excluded, `Q` not integer-valued | A41 | B87, B95, B113, B114, B117 |
 | APD | Hamburger rigidity, FE-defect isolation, one-offs of every positive class, firewall, positive two-prime annihilators with multiplicity, harmonic-packet, left-growth, Chebyshev, hyperbolic, fixed-height and divisor costs, coefficient oscillation of annihilator inverses, relocation, Hecke state PD iff `s≥½` | none | B80, B84, B103 |

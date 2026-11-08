@@ -9,7 +9,7 @@
 ## Mathematical content
 
 Existing rigidity requires either residue at most one or defect norm at most 1/6400.
-Integer support should remove both restrictions. This is a classification of infinite Euler
+Integer support removes both restrictions. This is a classification of infinite Euler
 products, not an exclusion of zeros of ζ. Noninteger Beurling systems remain outside it.
 
 Let the distinct integer norms be 1 = λ₀ < λ₁ < … with multiplicities Aₙ.

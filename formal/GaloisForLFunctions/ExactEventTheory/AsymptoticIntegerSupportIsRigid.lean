@@ -33,7 +33,7 @@ theorem abelCos_gap_le_of_tail_phase {a lam : ℕ → ℝ}
     apply mul_le_of_le_one_right (ha0 n)
     apply Real.exp_le_one_iff.mpr
     have hl : 0 ≤ lam n := zero_le_one.trans (hlam n)
-    positivity
+    exact neg_nonpos.mpr (by positivity)
   have hb2 : ∀ n, b n ≤ 2 := fun n => by
     dsimp only [b]
     linarith only [Real.neg_one_le_cos (2 * Real.pi * lam n)]
@@ -48,7 +48,7 @@ theorem abelCos_gap_le_of_tail_phase {a lam : ℕ → ℝ}
     rw [← tsum_mul_left]
     exact sbt.tsum_le_tsum (fun n => by
       have hh := mul_le_mul_of_nonneg_left (hphase (n + M) (Nat.le_add_left M n)) (hw (n + M))
-      simpa only [mul_comm] using hh) (swt.mul_left δ)
+      simpa only [b, mul_comm] using hh) (swt.mul_left δ)
   have hmass : (∑' n, w (n + M)) ≤ ∑' n, w n := by
     have hh := sw.sum_add_tsum_nat_add M
     have hp : 0 ≤ ∑ n ∈ Finset.range M, w n := Finset.sum_nonneg fun n _ => hw n
@@ -117,7 +117,7 @@ theorem pole_residue_le_of_asymptotic_integer_support {a lam : ℕ → ℝ}
     have hlim : Tendsto (fun δ : ℝ => δ * (β / Real.pi)) (𝓝[>] 0) (𝓝 0) := by
       simpa using ((by fun_prop : Continuous fun δ : ℝ => δ * (β / Real.pi)).tendsto 0
         ).mono_left nhdsWithin_le_nhds
-    apply le_of_tendsto hlim
+    apply le_of_tendsto_of_tendsto tendsto_const_nhds hlim
     filter_upwards [self_mem_nhdsWithin] with δ hδ
     exact hgap δ hδ
   have hdiv : β / Real.pi ≤ a 0 / (2 * Real.pi) := sub_nonpos.mp hzero

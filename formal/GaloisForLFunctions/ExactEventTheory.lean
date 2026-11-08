@@ -1,1 +1,2 @@
 import GaloisForLFunctions.ExactEventTheory.IntegerSupportForcesExactArithmetic
+import GaloisForLFunctions.ExactEventTheory.AsymptoticIntegerSupportIsRigid

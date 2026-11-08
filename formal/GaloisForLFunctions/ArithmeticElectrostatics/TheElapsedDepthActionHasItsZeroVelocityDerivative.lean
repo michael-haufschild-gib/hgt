@@ -35,9 +35,9 @@ private theorem corrected_depth_hasDerivWithinAt {y : ℝ → ℝ} {v t q : ℝ}
   have hc : 2 * (t + 0) ≠ 0 := by positivity
   have hd := (((hy.pow 2).add htime).rpow_const (Or.inl hb) (p := q)).sub
     (htime.rpow_const (Or.inl hc) (p := q))
-  simp only [Pi.sub_apply, Pi.add_apply, Pi.pow_apply, id_eq, Nat.cast_ofNat,
+  simp only [Pi.add_apply, Pi.pow_apply, id_eq, Nat.cast_ofNat,
     Nat.reduceSub, pow_one, mul_one, add_zero] at hd
-  convert hd using 1
+  apply hd.congr_deriv
   unfold elapsedDepthWeight
   ring
 
@@ -215,12 +215,12 @@ private theorem sum_even_packet_eq_twice_upper (S : Finset ℂ)
     simp only [N, Finset.sum_filter]
     apply Finset.sum_congr rfl
     intro a _
-    by_cases hi : a.im = 0 <;> simp only [hi, hreal a hi, ne_eq,
-      not_true_eq_false, not_false_eq_true, if_true, if_false]
+    by_cases hi : a.im = 0
+    · simp only [hi, hreal a hi, ne_eq, not_true_eq_false, if_false]
+    · rw [if_pos hi]
   have hp := congrArg Complex.re (sum_conjugate_packet N hN hNc (fun a => (f a : ℂ)))
   simp only [Complex.re_sum, Complex.add_re, Complex.ofReal_re, heven, hU] at hp
-  rw [hdrop, hp, ← Finset.mul_sum]
-  congr 1
+  rw [hdrop, hp, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro a _
   ring
@@ -267,7 +267,10 @@ theorem heatGlobalPacket_elapsedDepthActionRate_le {t : ℝ} (ht : 0 < t) {S : F
         elapsedDepthWeight q (2 * t) a.im *
           (deriv (deriv (riemannHeat t)) a / deriv (riemannHeat t) a).im)) -
         (U.card : ℝ) * (2 * q * (2 * t) ^ (q - 1)) := by
-    rw [← nsmul_eq_mul, ← Finset.sum_const, ← Finset.sum_sub_distrib]
+    have hc : (∑ _a ∈ U, 2 * q * (2 * t) ^ (q - 1)) =
+        (U.card : ℝ) * (2 * q * (2 * t) ^ (q - 1)) := by
+      rw [Finset.sum_const, nsmul_eq_mul]
+    rw [← hc, ← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl
     intro a _
     unfold elapsedDepthActionRate
@@ -281,6 +284,63 @@ theorem heatGlobalPacket_elapsedDepthActionRate_le {t : ℝ} (ht : 0 < t) {S : F
   nlinarith only [hraw]
 
 #print axioms heatGlobalPacket_elapsedDepthActionRate_le
+
+/-- After each positive time, one forward interval supports the corrected-action
+derivative inequality for every nonnegative exponent. -/
+theorem heatElapsedDepthAction_forward_derivative :
+    ∀ t : ℝ, 0 < t → ∃ δ > 0, ∀ s ∈ Ioo t (t + δ), ∀ q : ℝ, 0 ≤ q →
+      ∃ D : ℝ, HasDerivWithinAt (heatElapsedDepthAction q) D (Ici s) s ∧
+        D ≤ -(2 * q * (2 * s) ^ (q - 1)) * (nonrealZeroCount s : ℝ) := by
+  classical
+  intro t ht
+  obtain ⟨R, hR⟩ := exists_heat_nonreal_norm_bound ht
+  obtain ⟨δ, hδ, hreg⟩ := exists_compact_simple_riemannHeat_zeros_forward ht
+    (isCompact_closedBall (0 : ℂ) R)
+  refine ⟨δ, hδ, fun s hs q hq => ?_⟩
+  have hs0 : 0 < s := ht.trans hs.1
+  have han : AnalyticOnNhd ℂ (riemannHeat s) (closedBall 0 R) :=
+    fun z _ => (riemannHeat_analytic hs0.le) z (mem_univ z)
+  have hfin := finite_zeros_closedBall han (fun z _ h =>
+    analyticOrderAt_riemannHeat_ne_top hs0.le z (analyticOrderAt_eq_top.mpr h))
+  let S := hfin.toFinset
+  have hpacket (a : ℂ) : a ∈ S ↔ riemannHeat s a = 0 ∧ ‖a‖ ≤ R := by
+    simp only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq, mem_closedBall,
+      dist_zero_right, and_comm]
+  have hsimple (a : ℂ) (ha : a ∈ S) : deriv (riemannHeat s) a ≠ 0 := by
+    obtain ⟨hz, hn⟩ := (hpacket a).mp ha
+    exact (hreg s hs.1 hs.2 a
+      (by simpa only [mem_closedBall, dist_zero_right] using hn) hz).1
+  have hconf : ∀ u, s ≤ u → ∀ z, riemannHeat u z = 0 → z.im ≠ 0 → ‖z‖ ≤ R :=
+    fun u hu z hz hi => (hR u (hs.1.le.trans hu) z hz hi).le
+  have hder := heatElapsedDepthAction_hasDerivWithinAt_of_simple q hs0 hconf hpacket hsimple
+  let D := ∑ a ∈ S, elapsedDepthActionRate q s a
+  have hder' : HasDerivWithinAt (fun h => heatElapsedDepthAction q (s + h))
+      D (Ici 0) (s - s) := by simpa only [D, sub_self] using hder
+  have hg : HasDerivWithinAt (fun r : ℝ => r - s) 1 (Ici s) s :=
+    ((hasDerivAt_id s).sub_const s).hasDerivWithinAt
+  have hc := hder'.comp (h := fun r : ℝ => r - s) s hg (by
+    intro r hr
+    change 0 ≤ r - s
+    exact sub_nonneg.mpr hr)
+  have hfun : (fun r => heatElapsedDepthAction q (s + (r - s))) = heatElapsedDepthAction q := by
+    funext r
+    congr 1
+    ring
+  have hactual : HasDerivWithinAt (heatElapsedDepthAction q) D (Ici s) s := by
+    change HasDerivWithinAt (fun r => heatElapsedDepthAction q (s + (r - s)))
+      (D * 1) (Ici s) s at hc
+    rwa [hfun, mul_one] at hc
+  refine ⟨D, hactual, heatGlobalPacket_elapsedDepthActionRate_le hs0
+    (fun a ha => ((hpacket a).mp ha).1) hsimple
+    (fun a hz hi => (hpacket a).mpr ⟨hz, hconf s le_rfl a hz hi⟩) ?_ hq⟩
+  intro a ha
+  obtain ⟨hz, hn⟩ := (hpacket a).mp ha
+  apply (hpacket (starRingEnd ℂ a)).mpr
+  constructor
+  · rw [riemannHeat_conj hs0.le, hz, map_zero]
+  · simpa only [Complex.norm_conj] using hn
+
+#print axioms heatElapsedDepthAction_forward_derivative
 
 end
 

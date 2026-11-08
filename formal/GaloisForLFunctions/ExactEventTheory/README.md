@@ -79,6 +79,28 @@ finite defect. Any nonclassical system in this subclass must fail at least one d
 regularity or integrability condition. It does not establish those conditions for the known
 one-offs, classify noninteger systems, or exclude exceptional zeros of ζ.
 
+## New pillar: asymptotic integer support is exact
+
+Exact integer support can be replaced by asymptotic phase alignment:
+cos(2πλₙ) → 1. For a strictly increasing positive spectrum with λ₀ = a₀ = 1,
+aₙ ≥ 1 and Σ aₙ/λₙ² < ∞, the same integrable defective theta identity forces
+λₙ = n+1 and aₙ = 1. No rate of alignment or bound on defect size is required.
+
+For every δ > 0, phase alignment gives an index M for which the Abel means satisfy
+
+    0 ≤ C₀(ε)−C₁(ε) ≤ 2ε Σ_{n<M} aₙ + δ C₀(ε).
+
+The finite initial segment disappears as ε ↓ 0. The remaining error tends to zero as
+δ ↓ 0, forcing pole residue at most one. Unit-density rigidity then identifies the
+whole spectrum. Thus decaying displacements of generalized integer norms cannot evade
+the classification. Near-integer prime labels alone do not supply this condition:
+their products need not approach the integer lattice.
+
+`AsymptoticIntegerSupportIsRigid.lean` proves `abelCos_gap_le_of_tail_phase`,
+`pole_residue_le_of_asymptotic_integer_support`, and
+`integer_spectrum_of_asymptotic_integer_support`. Its direct Lean check and transitive
+axiom audit pass with only `propext`, `Classical.choice` and `Quot.sound`.
+
 ## Tools and questions
 
 | Required tool | Question it must resolve |
@@ -91,9 +113,9 @@ one-offs, classify noninteger systems, or exclude exceptional zeros of ζ.
 | Euler–FE finite-layer classification (B103, B84) | Which precisely defined classes admit a finite layer; what FE defect is necessary? |
 | Shift-family stability | Does the trivial linear slope remain bounded as the shift tends to zero? |
 
-The classification question has the integer-supported result above; its general case and the
-other questions remain open here. An implication assuming its missing arithmetic input does
-not count as construction of the required tool.
+The classification question has the integer-supported and asymptotically aligned results above;
+its general case and the other questions remain open here. An implication assuming its missing
+arithmetic input does not count as construction of the required tool.
 
 ## Traps and calibration
 

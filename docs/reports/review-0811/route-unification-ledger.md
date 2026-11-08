@@ -261,7 +261,7 @@ Corpus checkpoint: commit `99bc99520c` (2026-11-08). Evidence: `[L]` Lean source
 | Dark-range inputs | B46, B57, B89, B96, B97, B121 | Dirichlet polynomials longer than the height |
 | Two-scale transport inputs | B13, B83, B84, B103, B110, B111, B112, B116 | a Dirichlet-series statement with Euler product and FE seeing low and high zeros together |
 | Critical-line sizes | TH head (B102), ZCG FE-pair flatness (B76), Lindelöf-type bounds | values of ζ on `Re s=½` near its zeros |
-| Diagonal sign | B87, B88, B95, B114, B118 | a positive object whose limit is Weil's kernel including the diagonal |
+| Diagonal sign | B87, B88, B95, B114, B118′ | a positive object whose limit is Weil's kernel including the diagonal |
 | Deformation families | ZCG heat, linear law on shifts, PTR cosine | uniformity of a law as the deformation parameter tends to `0` |
 
 ### 3.3 Classes

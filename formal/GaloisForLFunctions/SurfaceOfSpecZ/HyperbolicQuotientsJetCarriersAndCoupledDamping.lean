@@ -2708,7 +2708,7 @@ theorem ultraviolet_correlation_locking {H : Type*} [NormedAddCommGroup H] [Inne
     filter_upwards [hv.eventually_gt_atTop 0] with r hvr
     exact Real.sqrt_sq (div_nonneg (norm_nonneg _) hvr.le)
   have hsub_div : Tendsto (fun r => (‖u r‖ - ‖v r‖) / ‖v r‖) l (𝓝 0) := by
-    refine tendsto_zero_iff_norm_tendsto_zero.mpr (squeeze_zero_norm' ?_ hnorm_diff_div)
+    refine squeeze_zero_norm' ?_ hnorm_diff_div
     filter_upwards [hv.eventually_gt_atTop 0] with r hvr
     rw [Real.norm_eq_abs, abs_div, abs_of_pos hvr]
     exact div_le_div_of_nonneg_right (abs_norm_sub_norm_le (u r) (v r)) hvr.le
@@ -2758,8 +2758,10 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
     (hA : ∀ i ∈ S, 0 ≤ A i) {Q : ι → ι → ℝ}
     (hQ : ∀ y : ι → ℝ, 0 ≤ ∑ i ∈ S, ∑ j ∈ S, y i * y j * Q i j) (z : ι → ℝ) :
     0 ≤ ∑ i ∈ S, ∑ j ∈ S, z i * z j * (min (A i) (A j) * Q i j) := by
+  revert A hA hQ
   induction S using Finset.strongInduction with
   | H S ih =>
+    intro A hA hQ
     rcases S.eq_empty_or_nonempty with rfl | hS_ne
     · simp
     obtain ⟨i₀, hi₀S, hi₀_min⟩ := S.exists_min_image A hS_ne
@@ -2802,7 +2804,7 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
           · rw [if_pos hi]
             have hinner : ∀ j ∈ S, y i * (if j ∈ S' then y j else 0) * Q i j =
                 if j ∈ S' then y i * y j * Q i j else 0 := fun j _ => by split_ifs <;> ring
-            rw [Finset.sum_congr rfl hinner, ← Finset.sum_filter, hf]
+            rw [Finset.sum_congr rfl hinner, ← Finset.sum_filter, hf, if_pos hi]
           · simp [hi]
         rw [Finset.sum_congr rfl houter, ← Finset.sum_filter, hf]
       rwa [heq] at h
@@ -2824,7 +2826,7 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
         exact min_eq_right (hA' i hi)
       rw [hmin0']; simp [S']
     rw [herase_eq]
-    exact add_nonneg (mul_nonneg hc0 (hQ z)) (ih S' hcard_lt hA' hQ'_clean z)
+    exact add_nonneg (mul_nonneg hc0 (hQ z)) (ih S' hcard_lt (fun i => A i - c) hA' hQ'_clean)
 
 /-- Ornstein–Uhlenbeck Schur damping: multiplying any positive-semidefinite kernel `Q` pointwise by
 `exp(-λ |x_i - x_j|)` (`λ ≥ 0`) preserves positive semidefiniteness. -/
@@ -2878,7 +2880,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
           zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n) := by
       intro S c
       set T : Finset ℝ := S.image (fun n : ℕ => Real.log n)
-      let w : ℝ → ℝ := fun g => ∑ n ∈ S.filter (fun n => Real.log n = g), c n
+      let w : ℝ → ℝ := fun g => ∑ n ∈ S.filter (fun n : ℕ => Real.log (n : ℝ) = g), c n
       have h0 := hOHI T w
       have hcorr_eq : ∀ g h : ℝ,
           (configScalingDatum Zeta23.zetaZeroConfig
@@ -2890,7 +2892,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
       have hfiber : ∀ F : ℝ → ℝ, ∑ g ∈ T, w g * F g = ∑ m ∈ S, c m * F (Real.log m) := by
         intro F
         have hstep : ∀ g ∈ T, w g * F g =
-            ∑ m ∈ S.filter (fun n => Real.log n = g), c m * F (Real.log m) := by
+            ∑ m ∈ S.filter (fun n : ℕ => Real.log (n : ℝ) = g), c m * F (Real.log m) := by
           intro g _
           rw [Finset.sum_mul]
           refine Finset.sum_congr rfl fun m hm => ?_
@@ -2942,7 +2944,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
       have htend : Tendsto (fun r => ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n) (𝓝[<] 1)
           (𝓝 (∑ m ∈ S, ∑ n ∈ S, c m * c n *
             zetaScalingDatum.orbitCorr splineCycle (Real.log m - Real.log n))) :=
-        tendsto_finset_sum S fun m hm => tendsto_finset_sum S fun n hn =>
+        tendsto_finsetSum S fun m hm => tendsto_finsetSum S fun n hn =>
           (hlim m n (hS m hm) (hS n hn)).const_mul (c m * c n)
       have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n := by
         filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
@@ -2957,6 +2959,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
     · subst hn1
       have h11 := hQ {1} (fun k hk => by simp at hk; omega) (fun _ => 1)
       simp only [Finset.sum_singleton, Nat.cast_one, Real.log_one, sub_self, one_mul] at h11
+      dsimp only [cn, c0]
       rw [Nat.cast_one, Real.log_one, abs_of_nonneg h11]
     · have h1_ne : (1 : ℕ) ≠ n := Ne.symm hn1
       have hpair_pos : ∀ k ∈ ({1, n} : Finset ℕ), 0 < k := by
@@ -3002,6 +3005,7 @@ theorem smoothedPrime_add_smoothedArchPole_eq_orbitCorr {f : ℝ → ℝ} (hf : 
     ring
   rw [hsum, weilPair_scaleShift, ← configWeil_zeta_eq_weilPair
     (scaleShift_mem (Real.log m - Real.log n) hf) hf, ← configScalingDatum_zeta_orbitCorr]
+  symm
   rw [ScalingDatum.orbitCorr]
   change (configSurface Zeta23.zetaZeroConfig
     SquareRootThreshold.temperedConfig_zetaZeroConfig).defect
@@ -3077,7 +3081,7 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
       mul_pos (div_pos (Real.log_pos one_lt_two) (Real.sqrt_pos.mpr two_pos)) hf_sq_pos
     have hk0 : (Zeta23.EF.weilTest (cx f) (cx f) 0).re = ∫ u, f u ^ 2 := by
       rw [weilTest_ofReal, Complex.ofReal_re]
-      exact integral_congr_ae (Eventually.of_forall fun u => by rw [sub_zero, sq])
+      exact integral_congr_ae (Eventually.of_forall fun u => by dsimp only; rw [sub_zero, sq])
     constructor
     · rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
         Complex.re_tsum (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
@@ -3092,14 +3096,13 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
                 (cx (scaleShift (Real.log (1 : ℕ)) f)) (-Real.log (2 : ℕ)))).re := by
         rw [if_pos le_rfl, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
           Complex.re_ofReal_mul, Complex.add_re, weilTest_scaleShift, Nat.cast_one, Real.log_one,
-          add_zero, sub_self, hk0]
-        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift (Real.log (2 : ℕ)) f))
-            (cx (scaleShift (Real.log (1 : ℕ)) f)) (-Real.log (2 : ℕ))).re := by
+          add_zero, sub_self, hk0, Nat.cast_ofNat]
+        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift (Real.log 2) f))
+            (cx (scaleShift 0 f)) (-Real.log 2)).re := by
           rw [weilTest_ofReal, Complex.ofReal_re]
           exact integral_nonneg fun u => mul_nonneg (hf_nn _) (hf_nn _)
-        have hw : 0 ≤ Real.log 2 / Real.sqrt (2 : ℕ) :=
+        have hw : 0 ≤ Real.log 2 / Real.sqrt 2 :=
           div_nonneg (Real.log_nonneg (by norm_num)) (Real.sqrt_nonneg _)
-        push_cast at hw ⊢
         nlinarith
       linarith
     · rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
@@ -3116,14 +3119,13 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
         rw [if_pos le_rfl, ArithmeticFunction.vonMangoldt_apply_prime Nat.prime_two,
           Complex.re_ofReal_mul, Complex.add_re,
           weilTest_scaleShift (Real.log (1 : ℕ)) (Real.log (2 : ℕ)) f f (-Real.log (2 : ℕ)),
-          Nat.cast_one, Real.log_one, sub_zero, neg_add_cancel, hk0]
-        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift (Real.log (1 : ℕ)) f))
-            (cx (scaleShift (Real.log (2 : ℕ)) f)) (Real.log (2 : ℕ))).re := by
+          Nat.cast_one, Real.log_one, sub_zero, neg_add_cancel, hk0, Nat.cast_ofNat]
+        have hother : 0 ≤ (Zeta23.EF.weilTest (cx (scaleShift 0 f))
+            (cx (scaleShift (Real.log 2) f)) (Real.log 2)).re := by
           rw [weilTest_ofReal, Complex.ofReal_re]
           exact integral_nonneg fun u => mul_nonneg (hf_nn _) (hf_nn _)
-        have hw : 0 ≤ Real.log 2 / Real.sqrt (2 : ℕ) :=
+        have hw : 0 ≤ Real.log 2 / Real.sqrt 2 :=
           div_nonneg (Real.log_nonneg (by norm_num)) (Real.sqrt_nonneg _)
-        push_cast at hw ⊢
         nlinarith
       linarith
   rintro ⟨K, hpsd, hlim⟩
@@ -3135,7 +3137,7 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
       (1 : ℝ) * 1 * K r m n) (𝓝[<] 1)
       (𝓝 (∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ),
         (1 : ℝ) * 1 * smoothedPrimeKernel f m n)) :=
-    tendsto_finset_sum _ fun m hm => tendsto_finset_sum _ fun n hn =>
+    tendsto_finsetSum _ fun m hm => tendsto_finsetSum _ fun n hn =>
       (hlim m n (hpair_pos m hm) (hpair_pos n hn)).const_mul _
   have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ),
       0 ≤ ∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ), (1 : ℝ) * 1 * K r m n := by
@@ -3207,7 +3209,7 @@ theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) 
         (kn (Real.log k) + kn (-Real.log k))) = 0 := by
       have h0 : ∀ k : ℕ, ((if 2 ≤ k then (0 : ℝ) / Real.sqrt k else 0 : ℝ) : ℂ) *
           (kn (Real.log k) + kn (-Real.log k)) = 0 := fun k => by split_ifs <;> simp
-      simp [h0]
+      simp only [h0, tsum_zero]
     have hW_eq : smoothedArchPoleKernel f n 1 =
         (Zeta23.paperFT kn (Complex.I / 2) + Zeta23.paperFT kn (-Complex.I / 2)).re +
           (((1 / (2 * Real.pi) : ℝ) : ℂ) *
@@ -3250,7 +3252,9 @@ theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) 
         Complex.conj_ofReal, paperFT_cx_scaleShift_apply]
       have hcexp_norm : ‖Complex.exp ((Real.log n : ℂ) * (Complex.I * (r : ℂ)))‖ = 1 := by
         rw [Complex.norm_exp]
-        have hre : ((Real.log n : ℂ) * (Complex.I * (r : ℂ))).re = 0 := by simp
+        have hre : ((Real.log n : ℂ) * (Complex.I * (r : ℂ))).re = 0 := by
+          simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+            Complex.I_im, mul_zero, zero_mul, sub_zero]
         rw [hre, Real.exp_zero]
       simp only [norm_mul, hcexp_norm, one_mul]
     have harch_le : |(((1 / (2 * Real.pi) : ℝ) : ℂ) *
@@ -3309,7 +3313,7 @@ theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) 
       c i * c j * K r i j) (𝓝[<] 1)
       (𝓝 (∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ),
         c i * c j * smoothedArchPoleKernel f i j)) :=
-    tendsto_finset_sum _ fun i hi => tendsto_finset_sum _ fun j hj =>
+    tendsto_finsetSum _ fun i hi => tendsto_finsetSum _ fun j hj =>
       (hlim i j (hpair_pos i hi) (hpair_pos j hj)).const_mul _
   have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ),
       0 ≤ ∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ), c i * c j * K r i j := by
