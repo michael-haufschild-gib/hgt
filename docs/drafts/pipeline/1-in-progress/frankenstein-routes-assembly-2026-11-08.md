@@ -150,12 +150,7 @@ in the corpus). `completedRS_eq_rankinSelberg_euler`: for `Re s > 2`, `Im s ≠ 
 `completedRS_half_eq_zero_of_rate` reads zeros of the continued `L(g × ḡ, s)` at `s = z/2`.
 
 ## Conjecture loop
-- C15.1 (open, hard): the Krein square of the integer probes is not integer-valued. Reduction: integral
-  values force `2 Re C(log(m/n)) ∈ ℤ`; `C` is continuous (`continuous_splineCorr`) and `log ℚ₊` is
-  dense, so `2 Re C` would be constant. Missing: non-constancy of `C`. The prime side gives only
-  `C(u) = o(e^{u/2})` (PNT), and constancy would be an RH-size smoothed prime count, not a
-  contradiction; the zero side (`zeta_W_eq_weilFullFunctional_mixed`) needs a uniqueness theorem for
-  `Σ_ρ m_ρ ĥ(γ_ρ)conj ĥ(γ̄_ρ) e^{iγ_ρ u}` with complex `γ_ρ`. Not formalized.
+- C15.1 (proved, `CountingHolography/TheIntegerProbesAreNotIntegerValued`): the Krein square of the integer probes is not integer-valued. Integer values make `Re F` constant on the dense log-scales, hence RH; under RH the spline orbit is a nonconstant Bohr series with nonnegative weights.
 - C22.1 (refuted as stated, kept as a reading): "power sums ↔ AAL" — on curves AAL is free; the
   power-sum step is inside ZAL (`curve_template_split`).
 - C21.1 (proved): asymptotic zero statistics cannot decide B13 (`TheAbscissaLawIsNotAsymptotic`).

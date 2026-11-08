@@ -50,6 +50,8 @@
 
 | C17 | The atomic surface truncated at degree `N` satisfies the Hodge index with a finite genus | proved (Lean), unconditional | `genusDefect_Icc_nonneg_of_le`: genus `4N(1 + log N)` suffices on all `Σ_{n ≤ N} x_nΓ_n`; `genus_ge_of_genusDefect_Icc_nonneg`: `⌊N/2⌋(log⌊N/2⌋ − 17)/16` is necessary. Channel by channel: `Γ_m·Γ_n = √(mn)(ω + w)`; jets `ω ≤ N/|m−n|` (row sums `2N(1 + log N)`), primes `w ≤ 2` (row sums `2N`), pole rank two (`≥ −N(2 + log N)Σnx²`). The atomic genus is archimedean; the primes, where the zeros enter, are of lower order `O(N)`, so atoms cannot see RH |
 
+| C18 | One side of the crude bound at the integer degrees suffices (Bombieri–Stepanov) | proved (Lean) | `riemannHypothesis_iff_bddBelow_integerDegrees`: RH iff `c_B(log n) ≥ −K` for all `n` — an upper bound on the smoothed point counts, the side Stepanov's method gives on a curve; `riemannHypothesis_iff_bddAbove_integerDegrees`: RH iff `c_B(log n) ≤ K`. Pringsheim's theorem for `Σ(Cq^{n/2} + a_n)Tⁿ` becomes Landau's for `K ± c_B` (`evenCoeff_eq_zero_of_two_re_lagStructure_ge`), with "no real Frobenius eigenvalue above `√q`" replaced by "no real zero of `ζ` in the strip" |
+
 ## Big picture
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -76,7 +78,8 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
 ## Open
 
 1. A natural `ℕ`- or log-cardinality-valued count on each plane `⟨Γ_1, Γ_n⟩` with Tate limit `δ_n`,
-   defined without `c_B` (C13); equivalently a crude bound `|c_B(log n)| = O(1)` (C11).
+   defined without `c_B` (C13); equivalently a one-sided crude bound `c_B(log n) ≥ −K`, an upper
+   bound on the smoothed point counts (C11, C18).
 2. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's; the
    off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization is `Θ(N log N)` at
    degree `N` and unconditional (C15, C17); a diagonal of bounded genus exists only for smoothed graphs,
@@ -87,4 +90,4 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
    route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C17 formalized in `SurfaceOfSpecZ/` (sixteen modules, standard axioms)
+- 2026-11-08 — created; C1–C18 formalized in `SurfaceOfSpecZ/` (seventeen modules, standard axioms)

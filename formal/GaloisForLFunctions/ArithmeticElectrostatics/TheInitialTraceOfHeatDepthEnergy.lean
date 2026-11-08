@@ -230,7 +230,7 @@ theorem tendsto_heatUpperDepthEnergy_atTop_of_not_summable (hs : ¬ Summable xiU
   intro M
   have hex : ∃ T : Finset XiZeroCopy, M < ∑ q ∈ T, xiUpperSquaredDepth q := by
     by_contra h
-    push_neg at h
+    push Not at h
     exact hs (summable_of_sum_le (fun _ => sq_nonneg _) h)
   obtain ⟨T, hT⟩ := hex
   exact (eventually_initial_packet_lt_heat_energy T hT).mono fun _ h => h.le
@@ -261,6 +261,7 @@ theorem heatGlobalVerticalEnergy_eq_two_mul_upper {t : ℝ} (ht : 0 < t) :
     rw [heatGlobalVerticalEnergy_eq_weightedSum ht]
     apply tsum_eq_sum
     intro z hz
+    change (zeroMult (riemannHeat t) z : ℝ) * z.im ^ 2 = 0
     have hn : ¬ (riemannHeat t z = 0 ∧ z.im ≠ 0) := by
       simpa only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq] using hz
     by_cases hf : riemannHeat t z = 0
@@ -330,6 +331,7 @@ theorem time_mul_nonrealZeroCount_le_energy_drop {t : ℝ} (ht : 0 < t) :
   have hanti : AntitoneOn (fun s : ℝ => (nonrealZeroCount s : ℝ)) (uIcc (t / 2) t) := by
     rw [uIcc_of_le hh]
     intro a ha b hb hab
+    change (nonrealZeroCount b : ℝ) ≤ (nonrealZeroCount a : ℝ)
     exact_mod_cast nonrealZeroCount_antitoneOn ((half_pos ht).trans_le ha.1)
       ((half_pos ht).trans_le hb.1) hab
   have hInt : (t - t / 2) * (nonrealZeroCount t : ℝ) ≤
@@ -352,11 +354,13 @@ theorem tendsto_time_mul_nonrealZeroCount_zero_of_summable (hs : Summable xiUppe
       simpa only [zero_div] using (hc.tendsto 0).mono_left
         (nhdsWithin_le_nhds : (𝓝[>] (0 : ℝ)) ≤ 𝓝 (0 : ℝ))
     · filter_upwards [self_mem_nhdsWithin] with t ht
+      change 0 < t at ht
+      change 0 < t / 2
       exact half_pos ht
   have hE := tendsto_heatGlobalVerticalEnergy_of_summable hs
   have hdrop : Tendsto (fun t : ℝ => heatGlobalVerticalEnergy (t / 2) - heatGlobalVerticalEnergy t)
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    simpa only [sub_self] using (hE.comp hhalf).sub hE
+    simpa only [sub_self, Function.comp_def] using (hE.comp hhalf).sub hE
   apply tendsto_order.mpr
   constructor
   · intro a ha

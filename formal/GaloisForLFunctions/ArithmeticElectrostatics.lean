@@ -28,6 +28,7 @@ import GaloisForLFunctions.ArithmeticElectrostatics.TheSimpleHeatPacketDissipate
 import GaloisForLFunctions.ArithmeticElectrostatics.SimpleHeatZeroBranches
 import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthHasItsZeroVelocityDerivative
 import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthDissipates
+import GaloisForLFunctions.ArithmeticElectrostatics.TheInitialTraceOfHeatDepthEnergy
 
 /-!
 # Arithmetic Electrostatics of the Zero Divisor

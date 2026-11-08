@@ -87,8 +87,10 @@ now derives `q^n` from normal-basis bijections and actual transporter sets.
 The [signed orbit refinement](../3-formalized/riac-finite-field-signed-orbits.md)
 constructs local weights in `{-1,0,1}`, proves collision cancellation and
 retains Frobenius sign on distinct roots. Their total cancels independently
-for at least two labels. The polynomial comparison and the identification
-with integer local indices remain open.
+for at least two labels. The [arithmetic Vieta correspondence](../3-formalized/riac-arithmetic-vieta.md)
+now identifies these stable root orbits with actual monic coefficient
+polynomials, retaining all multiplicities. The discriminant-cover comparison
+and identification with integer local indices remain open.
 
 ## Necessary distinctions
 

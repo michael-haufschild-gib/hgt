@@ -1,7 +1,7 @@
 # The initial trace of heat depth energy
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Obstacles:** B13, B112; initial data for global heat-depth dissipation.
 - **Objects:** `H_t = riemannHeat t`, `u(q) = max (Im xiSpectralPoint(q)) 0`, and `E⁺(t) = Σ_z mult(H_t,z) max(Im z,0)²` for `t>0`.
 - **Statement:** For every real `K`, all finite sums `Σ_q u(q)²` are at most `K` iff `E⁺(t)≤K` for every `t>0`. Consequently `E⁺` is bounded near zero iff `Σ_q u(q)²` converges. In the convergent case `E⁺(t)→Σ_q u(q)²`; otherwise `E⁺(t)→∞` as `t→0⁺`.
@@ -19,4 +19,14 @@ For a finite initial sum, choose finite partial sums arbitrarily close to it. Th
 
 Conjugate pairing identifies total energy with twice upper energy. Since `N` is nonincreasing, its integral on `[t/2,t]` is at least `(t/2)N(t)`. Global dissipation therefore bounds `t N(t)` by `E(t/2)−E(t)`. The finite initial trace makes this difference tend to zero.
 
-Lean formalization pending; uncounted.
+## Lean certificate
+
+Module: `GaloisForLFunctions/ArithmeticElectrostatics/TheInitialTraceOfHeatDepthEnergy.lean`.
+Namespace: `GaloisForLFunctions.ArithmeticElectrostatics`.
+
+- `initial_depth_bound_iff_heat_energy_bound`: sharp equality of initial and positive-time upper-energy bounds.
+- `summable_initial_depth_iff_eventually_bounded_global_heat_energy`: the exact boundedness criterion for total heat energy.
+- `tendsto_heatGlobalVerticalEnergy_of_summable` and `tendsto_heatGlobalVerticalEnergy_atTop_of_not_summable`: finite and infinite initial traces.
+- `time_mul_nonrealZeroCount_le_energy_drop` and `tendsto_time_mul_nonrealZeroCount_zero_of_summable`: the quantitative count consequence.
+
+Final audit: `lake --old env lean GaloisForLFunctions/ArithmeticElectrostatics/TheInitialTraceOfHeatDepthEnergy.lean`, exit 0, no warnings. All ten printed declarations depend only on `propext`, `Classical.choice`, and `Quot.sound`. Umbrella import wired. This counts as one contribution; initial-energy finiteness, B13 and B112 remain open.

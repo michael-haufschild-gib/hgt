@@ -33,7 +33,6 @@ every `h ≥ 0`, finiteness of `{i : ½ + h < Re (ρ i)}` forces `Re (ρ i) ≤ 
 open Complex Filter Topology Set
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open RHTower (XiZeroCopy weilLagFunction)
-open RHTower.CrossRouteReceiverBridges (zetaZeroAbscissa_le_of_forall_xiZeroCopy_re_le)
 
 noncomputable section
 
@@ -239,8 +238,8 @@ theorem zetaLinearAbscissaLawAt_tfae {C : ℝ} (hC1 : 1 ≤ C) :
     have hlhs : Real.exp (((ν : ℝ) * ℓ) / 2) *
         (Real.exp (-((ν : ℝ) * ℓ) / 2) * ‖primeDeviation (Real.exp ((ν : ℝ) * ℓ))‖)
         = ‖primeDeviation (Real.exp ((ν : ℝ) * ℓ))‖ := by
-      rw [← mul_assoc, ← Real.exp_add]
-      simp
+      rw [← mul_assoc, ← Real.exp_add, show ((ν : ℝ) * ℓ) / 2 + -((ν : ℝ) * ℓ) / 2 = 0 by ring,
+        Real.exp_zero, one_mul]
     rw [hlhs] at hmul
     refine hmul.trans (le_of_eq ?_)
     rw [mul_left_comm, ← Real.exp_add]
@@ -411,7 +410,9 @@ theorem exists_twoScaleCoshModel_not_linearEventualToGlobalAt (C : ℝ) :
     · have := hre_cosh_sub s hc1; exact ⟨by linarith, by linarith⟩
     · have := hre_cosh_add s hc2; exact ⟨by linarith, by linarith⟩
     · rw [Finset.mem_singleton.mp hq] at hsq
-      rcases hsq with rfl | rfl | rfl | rfl <;> simp [q₀] <;> norm_num
+      have hq₀re : q₀.re = 3 / 4 := by simp [q₀]
+      rcases hsq with rfl | rfl | rfl | rfl <;>
+        simp [Complex.conj_re, hq₀re] <;> norm_num
   have hcol_zero : ∀ n : ℤ,
       twoScaleCoshModel a Q ((1 / 2 + a : ℝ) + (Real.pi * (n + 1 / 2) : ℝ) * I) = 0 := by
     intro n

@@ -86,8 +86,8 @@ The [direct signed construction](../3-formalized/riac-finite-field-signed-orbits
 now proves this orbit cancellation through actual transporter counts and
 normal-basis bijections. Every local weight is `−1`, `0` or `1`; repeated
 coordinates vanish and distinct coordinates retain Frobenius sign.
-The Vieta/factorization comparison and the integer cutoff comparison remain
-additional obligations.
+The factorization-sign comparison and the integer cutoff comparison remain
+additional obligations. The coefficient-orbit comparison is established below.
 
 ## Vieta comparison
 
@@ -97,9 +97,11 @@ embeds in that extension. Ordered roots then define a Frobenius-stable
 permutation orbit. The root product makes this map injective; equality of
 the independently proved cardinalities `q^n` makes it bijective.
 
+The [Vieta correspondence](../3-formalized/riac-arithmetic-vieta.md) is
+formalized, including repeated roots and the actual common extension.
 The remaining cover comparison is `disc(f)=V(roots)^2`, with Vandermonde
 `V` transforming by permutation sign. This route does not use a polynomial
-Möbius degree sum. Neither comparison is yet claimed as formalized.
+Möbius degree sum. The cover comparison is not yet formalized.
 
 An explicit intermediate cover is
 `{(f,y): f monic of degree n, y∈F, (ιy)²=V(x_f)²}`,

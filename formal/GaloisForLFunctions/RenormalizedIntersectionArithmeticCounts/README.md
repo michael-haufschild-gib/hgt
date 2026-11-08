@@ -337,3 +337,17 @@ The [formalized signed count](../../../docs/drafts/pipeline/3-formalized/riac-fi
 is a finite-field orientation mechanism. Its polynomial factorization
 comparison and identification with integer relative-homology indices
 remain open; it supplies no bound on `1−M(N)`.
+
+## Arithmetic Vieta correspondence
+
+[FiniteFieldVieta.lean](FiniteFieldVieta.lean) identifies monic degree-`n`
+polynomials with Frobenius-stable permutation orbits in the actual extension
+of degree `n!`. Every irreducible factor's residue field embeds there, so
+all roots exist. Equal root products give equal multiplicity fibres and
+hence a permutation, including collisions. The coefficient count and the
+independent normal-basis count both give `q^n`, making the injection onto.
+
+The [formalized correspondence](../../../docs/drafts/pipeline/3-formalized/riac-arithmetic-vieta.md)
+connects actual coefficient polynomials to the independently counted
+arithmetic orbits. The discriminant-cover comparison and the integer-cutoff
+estimate remain open.
