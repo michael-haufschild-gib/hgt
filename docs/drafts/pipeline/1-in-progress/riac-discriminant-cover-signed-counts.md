@@ -70,3 +70,18 @@ twist: `x_i=Σ_σ a_(σ⁻¹·i) σ(θ)`, with unrestricted `a∈F^n`.
 The Galois action on labels is derived by sending Frobenius to the chosen
 permutation; its order divides the extension degree. This bijection and
 the transporter proof of twisted Burnside remain under Lean verification.
+
+## Signed orbit refinement
+
+For a Frobenius-stable root orbit with transporter `g` and stabilizer `H`,
+the natural orientation index is `|H|⁻¹ Σ_(h∈H) sign(gh)`.
+A repeated root supplies an odd transposition in `H`, forcing this index
+to vanish. For distinct roots it is the Frobenius sign.
+[Gadish, Definition 1.1 and Corollary 1.4](https://arxiv.org/html/1703.01710v2)
+places this stabilizer average in a general ramified-cover trace formula.
+For the sign character its polynomial average is zero in degree at least two.
+
+The direct construction seeks this cancellation through actual transporter
+counts and normal-basis bijections. It must prove the local stabilizer
+averages and their global sum; neither is presently formalized here.
+The integer cutoff comparison remains an additional obligation.

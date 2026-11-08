@@ -63,10 +63,8 @@ open GaloisForLFunctions.AdelicKreinGeometry
 open GaloisForLFunctions.AdelicKreinGeometry.TowerCoupling
 open GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.RenormalizedIntersectionTheory
-open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros)
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx)
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
-open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
-open _root_.RHTower (zetaZeroConfig)
 
 /-! ### 1. Antiunitary generator–correlation dichotomy and cross-horizon Hankel law -/
 
@@ -2056,7 +2054,7 @@ theorem no_vacuumFixing_partner_tateLimit_integerProbe
       TowerCoupling.continuous_splineCorr hspline_hankel
   obtain ⟨u, _, v, _, hne⟩ := exists_coprimeCrossDiff_ratCorr_ne_zero
   apply hne
-  simp only [AdelicKreinGeometry.coprimeCrossDiff, ratCorr, hconst]
+  simp only [coprimeCrossDiff, ratCorr, hconst]
   ring
 
 /-- Exact cross-horizon Born-rule corollary of `no_vacuumFixing_partner_tateLimit_integerProbe`. -/
@@ -2178,10 +2176,6 @@ theorem no_borchers_gns_tateLimit_integerProbe
     exact (symmKernel_eq_splineCorr_of_integerProbe hCsym hCprobe m n).1
   -- Under RH, `splineCorr` is the critical-line Bohr series on `ℝ`.
   obtain ⟨e⟩ := exists_enum_onLine
-  have hR_empty : rightZeros zetaZeroConfig = ∅ :=
-    ArithmeticOrientationGeometry.riemannHypothesis_iff_no_rightZero.mp hRH
-  have hR : (rightZeros zetaZeroConfig).Finite := hR_empty ▸ Set.finite_empty
-  have hR_fin : hR.toFinset = ∅ := by ext ρ; simp [hR_empty]
   set bohrReal : ℝ → ℂ := fun y =>
     ∑' j : ℕ, (onLineWeight e j : ℂ) *
       Complex.exp (Complex.I * (((e j : ℂ).im : ℝ) : ℂ) * (y : ℂ))
@@ -2211,10 +2205,8 @@ theorem no_borchers_gns_tateLimit_integerProbe
       ring
     have hcorr_u : splineCorr (Real.log ((m : ℝ) / (n : ℝ))) = ratCorr u := by
       simp [ratCorr, hlog_u]
-    rw [hcorr_u, ratCorr_eq_zetaKernel, zetaKernel,
-      orbitKernel_eq_onLine_add_pairs temperedConfig_zetaZeroConfig
-        HeckeKreinToeplitz.cubicSpline_mem_realTests hR (posUnitsToHecke u),
-      hR_fin, Finset.sum_empty, add_zero,
+    rw [hcorr_u, ratCorr_eq_zetaKernel,
+      zetaKernel_eq_onLine_of_riemannHypothesis hRH (posUnitsToHecke u),
       congr_fun (orbitKernel_onLine_eq_bohrSum e) (posUnitsToHecke u)]
     unfold HeckeKreinToeplitz.bohrSum bohrReal
     refine tsum_congr fun j => ?_
