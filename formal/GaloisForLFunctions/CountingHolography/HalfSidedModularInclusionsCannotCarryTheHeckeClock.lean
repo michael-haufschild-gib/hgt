@@ -65,7 +65,8 @@ open GaloisForLFunctions.HeckeKreinToeplitz
 open GaloisForLFunctions.RenormalizedIntersectionTheory
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri (cx rightZeros)
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge (cubicSpline)
-open GaloisForLFunctions.SquareRootThreshold (zetaZeroConfig temperedConfig_zetaZeroConfig)
+open GaloisForLFunctions.SquareRootThreshold (temperedConfig_zetaZeroConfig)
+open _root_.RHTower (zetaZeroConfig)
 
 /-! ### 1. Antiunitary generator–correlation dichotomy and cross-horizon Hankel law -/
 
@@ -1215,7 +1216,6 @@ private theorem peaked_integral_pow_zero_imp_le_zero {a M : ℝ} (ha : 0 < a) (h
       rw [Real.dist_eq]
       exact lt_of_le_of_lt (abs_le.mpr ⟨by linarith, by linarith⟩) hη_lt_η₁
     have hc := hη₁_close hd
-    dsimp only at hc
     rw [Real.dist_eq, hq_mid] at hc
     linarith [(abs_lt.mp hc).1, hr₁_def]
   have hbound_pow : ∀ m : ℕ, η * (r₁ ^ m * (M / 2)) ≤ a * (r₀ ^ m * M) := fun m => by
@@ -1671,12 +1671,16 @@ theorem no_nontrivial_borchers_on_quadraticAlgebra (B : BorchersPair H)
       _ = ((r : ℂ) * 1) • v := by rw [Complex.real_smul]
       _ = (r : ℂ) • v := by rw [mul_one]
   have hz_mem : ∀ w : QuadraticAlgebra ℝ (-q) t, φ w Ω ∈ V := fun w => by
-    have hw_eq : w = algebraMap ℝ _ w.re + w.im • QuadraticAlgebra.omega := by
-      ext <;> simp [QuadraticAlgebra.omega]
-    have hφw : φ w Ω = (w.re : ℂ) • Ω + (w.im : ℂ) • (φ QuadraticAlgebra.omega Ω) := by
+    set r : ℝ := w.re
+    set s : ℝ := w.im
+    have hw_eq : w = algebraMap ℝ _ r + s • QuadraticAlgebra.omega := by
+      ext <;> simp [r, s, QuadraticAlgebra.omega]
+    have hφ : φ w = r • (1 : H →L[ℂ] H) + s • φ QuadraticAlgebra.omega := by
       rw [hw_eq, map_add, AlgHom.commutes, Algebra.algebraMap_eq_smul_one, map_smul]
-      change w.re • Ω + w.im • (φ QuadraticAlgebra.omega Ω) = _
-      rw [hr_smul, hr_smul]
+    have hφw : φ w Ω = (r : ℂ) • Ω + (s : ℂ) • (φ QuadraticAlgebra.omega Ω) := by
+      calc φ w Ω = (r • (1 : H →L[ℂ] H) + s • φ QuadraticAlgebra.omega) Ω := by rw [hφ]
+        _ = r • Ω + s • (φ QuadraticAlgebra.omega Ω) := rfl
+        _ = (r : ℂ) • Ω + (s : ℂ) • (φ QuadraticAlgebra.omega Ω) := by rw [hr_smul, hr_smul]
     rw [hφw]
     exact add_mem (V.smul_mem _ (Submodule.subset_span (by simp)))
       (V.smul_mem _ (Submodule.subset_span (by simp)))
@@ -1843,7 +1847,7 @@ theorem eq_of_quadratic_tateLimit {M : Type*} [AddCommMonoid M] {F : M → ℝ}
     filter_upwards [eventually_ge_atTop 1] with m hm
     have hm0 : (m : ℝ) ^ 2 ≠ 0 := by positivity
     rw [hsmul, mul_div_cancel_left₀ _ hm0]
-  exact tendsto_nhds_unique (htend.congr' hev) tendsto_const_nhds
+  exact (tendsto_nhds_unique (htend.congr' hev) tendsto_const_nhds).symm
 
 /-- Two symmetric real kernels agreeing as quadratic forms on `ℤ^N` agree entrywise. -/
 private theorem eq_of_symm_intQuad_eq {N : ℕ} {C₁ C₂ : Fin N → Fin N → ℝ}
@@ -1913,14 +1917,15 @@ private theorem atomGram_re_symm (N : ℕ) (i j : Fin N) :
 private theorem integerProbe_eq_sum (N : ℕ) (a : Fin N → ℤ) :
     integerProbe N a = ∑ i : Fin N, ∑ j : Fin N, (atomGram N i j).re * (a i : ℝ) * (a j : ℝ) := by
   unfold integerProbe HTGeometry.hermQuad
-  simp only [dotProduct, Matrix.mulVec, Pi.star_apply, Complex.star_def, conj_intCast,
+  simp only [dotProduct, Matrix.mulVec, Pi.star_apply, Complex.star_def, map_intCast,
     Finset.mul_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  have hreal : atomGram N i j = ((atomGram N i j).re : ℂ) :=
+  set r : ℝ := (atomGram N i j).re
+  have hreal : atomGram N i j = (r : ℂ) :=
     Complex.ext rfl (by simpa using atomGram_im N i j)
-  rw [hreal]
-  have hcast : (a i : ℂ) * (((atomGram N i j).re : ℂ) * (a j : ℂ)) =
-      (((atomGram N i j).re * (a i : ℝ) * (a j : ℝ) : ℝ) : ℂ) := by
+  have hcast : (a i : ℂ) * (atomGram N i j * (a j : ℂ)) =
+      ((r * (a i : ℝ) * (a j : ℝ) : ℝ) : ℂ) := by
+    rw [hreal]
     push_cast
     ring
   rw [hcast, Complex.ofReal_re]
@@ -2002,15 +2007,19 @@ theorem no_vacuumFixing_partner_tateLimit_integerProbe
     set X : H →L[ℂ] H := ∑ i : Fin N, (a i : ℂ) • covShift U (natPNat i) A₀
     have hJX : ms.J.conjOp X ms.Ω =
         ∑ j : Fin N, (a j : ℂ) • (ms.J.conjOp (covShift U (natPNat j) A₀) ms.Ω) := by
-      simp only [X, AntiunitaryInvol.conjOp_sum, AntiunitaryInvol.conjOp_smul, conj_intCast,
-        ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply]
+      simp only [X, AntiunitaryInvol.conjOp_sum, AntiunitaryInvol.conjOp_smul, map_intCast,
+        _root_.sum_apply, _root_.smul_apply]
     have hXJX : X (ms.J.conjOp X ms.Ω) =
         ∑ i : Fin N, ∑ j : Fin N,
           ((a i : ℂ) * (a j : ℂ)) •
             (covShift U (natPNat i) A₀ (ms.J.conjOp (covShift U (natPNat j) A₀) ms.Ω)) := by
       rw [hJX]
-      simp only [X, ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
-        map_sum, map_smul, Finset.smul_sum, smul_smul]
+      dsimp only [X]
+      rw [_root_.sum_apply]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [_root_.smul_apply, map_sum, Finset.smul_sum]
+      refine Finset.sum_congr rfl fun j _ => ?_
+      rw [map_smul, smul_smul]
     change (inner ℂ ms.Ω (X (ms.J.conjOp X ms.Ω))).re = _
     rw [hXJX, inner_sum, Complex.re_sum]
     refine Finset.sum_congr rfl fun i _ => ?_
@@ -2032,7 +2041,9 @@ theorem no_vacuumFixing_partner_tateLimit_integerProbe
     set FN : (Fin N → ℤ) → ℝ := fun b =>
       ∑ i : Fin N, ∑ j : Fin N, C (natPNat i) (natPNat j) * (b i : ℝ) * (b j : ℝ)
     have hsmul : ∀ (m : ℕ) (b : Fin N → ℤ), FN (m • b) = (m : ℝ) ^ 2 * FN b := fun m b => by
-      simp only [FN, Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast, Finset.mul_sum]
+      have hb : ∀ k : Fin N, (((m • b) k : ℤ) : ℝ) = (m : ℝ) * (b k : ℝ) := fun k => by
+        rw [Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast]
+      simp only [FN, hb, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
     have htend' : Tendsto (fun m : ℕ => FN (m • a) / (m : ℝ) ^ 2) atTop (𝓝 (integerProbe N a)) := by
       simpa only [hquad_exp N] using htate N a
@@ -2041,7 +2052,8 @@ theorem no_vacuumFixing_partner_tateLimit_integerProbe
       splineCorr (Real.log ((m : ℝ) / (n : ℝ))) = (g (m * n) : ℂ) := fun m n =>
     (symmKernel_eq_splineCorr_of_integerProbe hsym hprobe m n).2
   have hconst : ∀ y : ℝ, splineCorr y = splineCorr 0 :=
-    const_of_mulHankel_eq_logToeplitz continuous_splineCorr hspline_hankel
+    const_of_mulHankel_eq_logToeplitz (g := fun k => (g k : ℂ))
+      TowerCoupling.continuous_splineCorr hspline_hankel
   obtain ⟨u, _, v, _, hne⟩ := exists_coprimeCrossDiff_ratCorr_ne_zero
   apply hne
   simp only [AdelicKreinGeometry.coprimeCrossDiff, ratCorr, hconst]
@@ -2125,10 +2137,13 @@ theorem no_borchers_gns_tateLimit_integerProbe
     set v : H := ∑ i : Fin N, (a i : ℂ) • B.U (Real.log ((i : ℝ) + 1)) ψ₀
     have hv_sq : ‖v‖ ^ 2 = (inner ℂ v v).re := (inner_self_eq_norm_sq (𝕜 := ℂ) v).symm
     rw [hv_sq]
-    simp only [v, sum_inner, inner_sum, Complex.re_sum]
     symm
-    refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-    rw [inner_smul_left, inner_smul_right, conj_intCast, ← mul_assoc]
+    dsimp only [v]
+    rw [sum_inner, Complex.re_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [inner_sum, Complex.re_sum]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    rw [inner_smul_left, inner_smul_right, map_intCast, ← mul_assoc]
     have hshift : inner ℂ (B.U (Real.log ((i : ℝ) + 1)) ψ₀) (B.U (Real.log ((j : ℝ) + 1)) ψ₀) =
         inner ℂ ψ₀ (B.U (Real.log ((j : ℝ) + 1) - Real.log ((i : ℝ) + 1)) ψ₀) := by
       calc inner ℂ (B.U (Real.log ((i : ℝ) + 1)) ψ₀) (B.U (Real.log ((j : ℝ) + 1)) ψ₀)
@@ -2156,7 +2171,7 @@ theorem no_borchers_gns_tateLimit_integerProbe
   have hc_eq_spline : ∀ y : ℝ, c y = (splineCorr y).re := by
     intro y
     have hcl : IsClosed {t : ℝ | c t = (splineCorr t).re} :=
-      isClosed_eq hc_cont (Complex.continuous_re.comp continuous_splineCorr)
+      isClosed_eq hc_cont (Complex.continuous_re.comp TowerCoupling.continuous_splineCorr)
     refine (hcl.closure_subset_iff.mpr ?_) (dense_mul_log_pnat_div one_ne_zero y)
     rintro _ ⟨m, n, rfl⟩
     rw [one_mul]
@@ -2213,27 +2228,28 @@ theorem no_borchers_gns_tateLimit_integerProbe
   have hspline_eq_bohr : ∀ y : ℝ, splineCorr y = bohrReal y := by
     intro y
     have hcl : IsClosed {t : ℝ | splineCorr t = bohrReal t} :=
-      isClosed_eq continuous_splineCorr hbohr_cont
+      isClosed_eq TowerCoupling.continuous_splineCorr hbohr_cont
     refine (hcl.closure_subset_iff.mpr ?_) (dense_mul_log_pnat_div one_ne_zero y)
     rintro _ ⟨m, n, rfl⟩
     rw [one_mul]
     exact hspline_bohr_rat m n
   -- Choose a seen critical zero `ρ₀ ≠ 1/2`, so `γ₀ := ρ₀.im ≠ 0` and `onLineWeight e j₀ > 0`.
   obtain ⟨ρ₀, hρ₀_seen, hρ₀_ne⟩ :=
-    (criticalSeen_infinite.diff (Set.finite_singleton (1 / 2 : ℂ))).nonempty
+    (criticalSeen_infinite.sdiff (Set.finite_singleton (1 / 2 : ℂ))).nonempty
   set γ₀ : ℝ := ρ₀.im
   have hγ₀ : γ₀ ≠ 0 := by
     intro h0
     apply hρ₀_ne
     rw [Set.mem_singleton_iff]
-    exact Complex.ext hρ₀_seen.2.1 (by simpa [γ₀] using h0)
+    exact Complex.ext (by simp [hρ₀_seen.2.1]) (by simp [γ₀, h0])
   let j₀ : ℕ := e.symm ⟨ρ₀, criticalSeen_subset hρ₀_seen⟩
   have he_j₀ : (e j₀ : ℂ) = ρ₀ := congr_arg Subtype.val (e.apply_symm_apply _)
   have hw_j₀_pos : 0 < onLineWeight e j₀ := by
     have hs := criticalSeen_subset hρ₀_seen
     simp only [j₀, onLineWeight, Equiv.apply_symm_apply, Wsummand_onLine hs, Complex.ofReal_re]
     have hm : (1 : ℝ) ≤ zetaOnLine.mult ρ₀ := by exact_mod_cast zetaOnLine.one_le_mult ρ₀ hs
-    have hF : 0 < ‖Zeta23.paperFT (cx cubicSpline) (ρ₀.im : ℂ)‖ := norm_pos_iff.mpr hρ₀_seen.2.2
+    have hF : 0 < ‖Zeta23.paperFT (cx cubicSpline) (ρ₀.im : ℂ)‖ :=
+      _root_.norm_pos_iff.mpr hρ₀_seen.2.2
     positivity
   set τ : ℝ := Real.pi / γ₀
   set z : ℕ → ℂ := fun j =>
@@ -2275,22 +2291,26 @@ theorem no_borchers_gns_tateLimit_integerProbe
       exact tendsto_const_nhds.congr' hev.symm
     · rw [if_neg hz1]
       rw [tendsto_zero_iff_norm_tendsto_zero]
-      have hdenom : 0 < ‖z j - 1‖ := norm_pos_iff.mpr (sub_ne_zero.mpr hz1)
+      have hdenom : 0 < ‖z j - 1‖ := _root_.norm_pos_iff.mpr (sub_ne_zero.mpr hz1)
       have hbound : ∀ K : ℕ, ‖avg K j‖ ≤ (2 / ‖z j - 1‖) * ((K : ℝ))⁻¹ := by
         intro K
         rcases eq_or_ne K 0 with rfl | hK
         · simp [avg]
-        · rw [avg, geom_sum_eq hz1 K, norm_div, norm_div, Complex.norm_natCast, div_eq_mul_inv]
+        · dsimp only [avg]
+          rw [geom_sum_eq hz1 K, norm_div, norm_div, Complex.norm_natCast, div_eq_mul_inv]
           refine mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right ?_ hdenom.le) (by positivity)
           calc ‖z j ^ K - 1‖ ≤ ‖z j ^ K‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
             _ = 2 := by rw [_root_.norm_pow, hz_norm j, one_pow, norm_one]; norm_num
       have htend_inv : Tendsto (fun K : ℕ => (2 / ‖z j - 1‖) * ((K : ℝ))⁻¹) atTop (𝓝 0) := by
-        simpa only [mul_zero] using
-          tendsto_const_nhds.mul (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop)
+        have h0 : Tendsto (fun K : ℕ => ((K : ℝ))⁻¹) atTop (𝓝 0) :=
+          tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+        have hm := (tendsto_const_nhds (x := 2 / ‖z j - 1‖)).mul h0
+        rwa [mul_zero] at hm
       exact squeeze_zero (fun _ => norm_nonneg _) hbound htend_inv
   have htsum_tendsto : Tendsto (fun K : ℕ => ∑' j : ℕ, (onLineWeight e j : ℂ) * avg K j) atTop
       (𝓝 (∑' j : ℕ, if z j = 1 then (onLineWeight e j : ℂ) else 0)) := by
-    refine tendsto_tsum_of_dominated_convergence (summable_onLineWeight e) (fun j => ?_) (fun K j => ?_)
+    refine tendsto_tsum_of_dominated_convergence (summable_onLineWeight e) (fun j => ?_)
+      (Filter.Eventually.of_forall fun K j => ?_)
     · have h1 := tendsto_const_nhds (x := (onLineWeight e j : ℂ)).mul (havg_tendsto j)
       have heq : (onLineWeight e j : ℂ) * (if z j = 1 then (1 : ℂ) else 0) =
           if z j = 1 then (onLineWeight e j : ℂ) else 0 := by split_ifs <;> simp
@@ -2305,8 +2325,9 @@ theorem no_borchers_gns_tateLimit_integerProbe
   have hterm_tsum : ∀ k : ℕ, (∑' j : ℕ, (onLineWeight e j : ℂ) * z j ^ k) =
       (-1 : ℂ) ^ k * splineCorr ((k : ℝ) * Real.pi / γ₀) := by
     intro k
-    rw [hspline_eq_bohr, ← tsum_mul_left]
-    unfold bohrReal
+    rw [hspline_eq_bohr]
+    dsimp only [bohrReal]
+    rw [← tsum_mul_left]
     refine tsum_congr fun j => ?_
     have hpow : z j ^ k = (-1 : ℂ) ^ k *
         Complex.exp (Complex.I * (((e j : ℂ).im : ℝ) : ℂ) * (((k : ℝ) * Real.pi / γ₀ : ℝ) : ℂ)) := by
@@ -2341,7 +2362,8 @@ theorem no_borchers_gns_tateLimit_integerProbe
     have hcongr : (fun j : ℕ => (onLineWeight e j : ℂ) * avg K j) =
         fun j : ℕ => (∑ k ∈ Finset.range K, (onLineWeight e j : ℂ) * z j ^ k) * ((K : ℂ))⁻¹ := by
       ext j
-      simp only [avg, div_eq_mul_inv, Finset.mul_sum, mul_assoc]
+      dsimp only [avg]
+      rw [div_eq_mul_inv, ← mul_assoc, Finset.mul_sum]
     rw [hcongr, tsum_mul_right, hsum_interchange K, div_eq_mul_inv]
   simp_rw [hK_eq] at htsum_tendsto
   have hre_bohr_tendsto : Tendsto (fun K : ℕ =>
@@ -2352,7 +2374,8 @@ theorem no_borchers_gns_tateLimit_integerProbe
       ((∑ k ∈ Finset.range K,
         (-1 : ℂ) ^ k * inner ℂ ψ₀ (B.U ((k : ℝ) * Real.pi / γ₀) ψ₀)) / (K : ℂ)).re)
       atTop (𝓝 0) := by
-    simpa using Complex.continuous_re.continuousAt.tendsto.comp
+    change Tendsto (Complex.re ∘ _) atTop (𝓝 (0 : ℂ).re)
+    exact Complex.continuous_re.continuousAt.tendsto.comp
       (B.alternating_cesaro_tendsto_zero hγ₀ ψ₀)
   have hre_K_eq : ∀ K : ℕ,
       ((∑ k ∈ Finset.range K, (-1 : ℂ) ^ k * splineCorr ((k : ℝ) * Real.pi / γ₀)) / (K : ℂ)).re =
@@ -2376,10 +2399,10 @@ theorem no_borchers_gns_tateLimit_integerProbe
     tendsto_nhds_unique hre_bohr_tendsto hre_borchers_tendsto
   set wLim : ℕ → ℝ := fun j => if z j = 1 then onLineWeight e j else 0
   have hwLim_nonneg : ∀ j : ℕ, 0 ≤ wLim j := fun j => by
-    dsimp only [wLim]; split_ifs; · exact hw_nonneg j; · exact le_rfl
+    by_cases h : z j = 1 <;> simp [wLim, h, hw_nonneg j]
   have hwLim_sum : Summable wLim :=
     (summable_onLineWeight e).of_nonneg_of_le hwLim_nonneg fun j => by
-      dsimp only [wLim]; split_ifs; · exact le_rfl; · exact hw_nonneg j
+      by_cases h : z j = 1 <;> simp [wLim, h, hw_nonneg j]
   have htsum_re : (∑' j : ℕ, if z j = 1 then (onLineWeight e j : ℂ) else 0).re = ∑' j : ℕ, wLim j := by
     have hcast : (fun j : ℕ => if z j = 1 then (onLineWeight e j : ℂ) else 0) =
         fun j : ℕ => (wLim j : ℂ) := by
@@ -2444,8 +2467,10 @@ theorem no_halfSided_modular_inclusion_carries_integerProbe
          ‖X hs.ms.Ω‖ ^ 2) / (m : ℝ) ^ 2)
         atTop (𝓝 (integerProbe N a))) := by
   have hUΩ : ∀ a : ℝ, hs.B.U a hs.ms.Ω = hs.ms.Ω := hs.B.fix_of_delta_fix hs.Δ_omega
-  refine ⟨fun N a => sum_mem fun i _ => M.smul_mem _
-    (hs.half_sided (Real.log_nonneg (by linarith [Nat.cast_nonneg (α := ℝ) i])) hA₀), ?_, ?_⟩
+  refine ⟨fun N a => sum_mem fun i _ => M.smul_mem
+    (hs.half_sided (Real.log_nonneg (by
+      have hi0 : (0 : ℝ) ≤ ((i : ℕ) : ℝ) := Nat.cast_nonneg _
+      linarith)) hA₀) (a i : ℂ), ?_, ?_⟩
   · intro htate
     let U_pnat : ℕ+ → H →L[ℂ] H := fun n => hs.B.U (Real.log (n : ℝ))
     have hmul : ∀ m n : ℕ+, U_pnat (m * n) = U_pnat m * U_pnat n := fun m n => by
@@ -2462,16 +2487,17 @@ theorem no_halfSided_modular_inclusion_carries_integerProbe
         (∑ i : Fin N, (b i : ℂ) • covShift U_pnat (natPNat i) A₀) =
           ∑ i : Fin N, (b i : ℂ) • covShift hs.B.U (Real.log ((i : ℝ) + 1)) A₀ := fun b => by
       refine Finset.sum_congr rfl fun i _ => ?_
-      simp [U_pnat]
+      dsimp only [U_pnat, covShift]
+      rw [coe_natPNat_real]
     simpa only [hX_eq] using htate N a
   · intro htate
     refine no_borchers_gns_tateLimit_integerProbe hs.B (A₀ hs.ms.Ω) fun N a => ?_
     have hact : ∀ b : Fin N → ℤ,
         (∑ i : Fin N, (b i : ℂ) • covShift hs.B.U (Real.log ((i : ℝ) + 1)) A₀) hs.ms.Ω =
           ∑ i : Fin N, (b i : ℂ) • hs.B.U (Real.log ((i : ℝ) + 1)) (A₀ hs.ms.Ω) := fun b => by
-      rw [ContinuousLinearMap.sum_apply]
+      rw [_root_.sum_apply]
       refine Finset.sum_congr rfl fun i _ => ?_
-      rw [ContinuousLinearMap.smul_apply, covShift_apply, hs.B.star_U, hUΩ]
+      rw [_root_.smul_apply, covShift_apply, hs.B.star_U, hUΩ]
     simpa only [hact] using htate N a
 
 /-- **Partner Standard-Form Trichotomy over `ℤ`.** Across all Tomita–Takesaki standard-form
@@ -2519,14 +2545,15 @@ theorem partner_standardForm_trichotomy :
             (let X : H →L[ℂ] H :=
                ∑ i : Fin N, (((m • a) i : ℤ) : ℂ) • covShift hs.B.U (Real.log ((i : ℝ) + 1)) A₀
              ‖X hs.ms.Ω‖ ^ 2) / (m : ℝ) ^ 2)
-            atTop (𝓝 (integerProbe N a)))) :=
-  ⟨⟨fun ms h1 hmul hM hJ r =>
-      let ⟨hc, hs, _, _⟩ := standardForm_partner_rep_is_central_unitary ms h1 hmul hM hJ r
-      ⟨hc, hs⟩,
-    riemannHypothesis_iff_exists_standardForm_bornRule⟩,
-   fun ms hmul hiso hΩ hJ A₀ htate =>
-     no_vacuumFixing_partner_tateLimit_integerProbe ms hmul hiso hΩ hJ A₀ htate,
-   fun hs hA₀ => (no_halfSided_modular_inclusion_carries_integerProbe hs hA₀).2⟩
+            atTop (𝓝 (integerProbe N a)))) := by
+  refine ⟨⟨?_, riemannHypothesis_iff_exists_standardForm_bornRule⟩, ?_, ?_⟩
+  · intro H _ _ _ M ms U h1 hmul hM hJ r
+    obtain ⟨hc, hs, _, _⟩ := standardForm_partner_rep_is_central_unitary ms h1 hmul hM hJ r
+    exact ⟨hc, hs⟩
+  · intro H _ _ _ M ms U hmul hiso hΩ hJ A₀ htate
+    exact no_vacuumFixing_partner_tateLimit_integerProbe ms hmul hiso hΩ hJ A₀ htate
+  · intro H _ _ _ M hs A₀ hA₀
+    exact (no_halfSided_modular_inclusion_carries_integerProbe hs hA₀).2
 
 #print axioms posGen_eq_zero_of_comm_antiunitaryInvol
 #print axioms StandardForm.naturalCone_partner_hankel

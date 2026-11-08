@@ -78,6 +78,12 @@ converge to that diagonal height with the proved finite-radius error sign.
 The critical sign and the comparison controlling the signed local-index
 sum remain open.
 
+The [finite-field orientation count](../3-formalized/riac-finite-field-orientation-counts.md)
+constructs actual square-root fibres of residue-field trace discriminants.
+Their signed fibre counts recover polynomial Möbius signs. The aggregate
+count uses established polynomial cancellation; an independent Frobenius
+orbit count and the integer comparison remain open.
+
 ## Necessary distinctions
 
 `Σ_faces(−1)^card=M(N)+P_N` for the core. For `N≥4`, its ordinary

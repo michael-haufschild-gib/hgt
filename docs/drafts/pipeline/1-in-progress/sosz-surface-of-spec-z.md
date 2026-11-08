@@ -46,6 +46,8 @@
 
 | C15 | The diagonal of the atomic graphs admits a renormalization of bounded growth | refuted (Lean) | on the degrees `[N, 2N)` the genus must satisfy `N(log N − 17)/16 ≤ g` (`genus_ge_of_genusDefect_nonneg`), and `g ≥ N(4 log N + 6)` suffices (`genusDefect_nonneg_of_le`): order `N log N`, against `√n` from the planes `⟨Γ_1, Γ_n⟩` (C7). Inside a dyadic block no degree divides another, so no torsion orbits meet and `Γ_m·Γ_n` is the jets alone, between `N²/(4|m−n|)` and `4N²/|m−n|`; the defect is a negative harmonic matrix. The divergence of the diagonal is the logarithmic singularity of the archimedean kernel at the atom spacing `1/N` |
 
+| C16 | Hasse–Weil on the one-sided prime planes `⟨Γ_1, Γ_p⟩` decides RH | partial (Lean) | degrees with gaps `O(x^θ)` give `zetaZeroWidth ≤ θ − ½` (`zetaZeroWidth_le_of_hasseWeil_of_powGaps`); Huxley's `θ > 7/12` gives width `≤ 1/12` from the prime planes (`zetaZeroWidth_le_of_hasseWeil_primeDegrees`). Classically width `σ` gives prime gaps `x^{½+σ+ε}`: the transfer between Hasse–Weil at the primes and prime gaps is the identity on exponents, so this route reaches RH exactly at gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` (C14) avoid gaps entirely |
+
 ## Big picture
 
 The two half-products exist and assemble the whole off-diagonal: `Γ_m·Γ_n` = one `𝔽₁`-cusp (toric,
@@ -78,8 +80,8 @@ a reason for `|c_B(log n)| ≤ c_B(0)` at each integer degree.
    `N log N` at degree `N` (C15), so a diagonal of bounded genus exists only for smoothed graphs.
 3. An arithmetic carrier of the jets `Σ_{k≥1} r^{−2k}` (trivial zeros): integral only at `k = 0`,
    carried by no metric on `ℙ¹_ℤ`; the even-sector trace of the dilation of `ℝ` at its fixed point.
-4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: decided by the method of C12 once
-   prime gaps are `O(√p)`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
+4. Hasse–Weil on the one-sided planes `⟨Γ_1, Γ_p⟩` of prime degree: width `≤ 1/12` (C16); RH by this
+   route needs prime gaps `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` already decide RH (C14).
 
 ## Log
-- 2026-11-08 — created; C1–C15 formalized in `SurfaceOfSpecZ/` (fourteen modules, standard axioms)
+- 2026-11-08 — created; C1–C16 formalized in `SurfaceOfSpecZ/` (fifteen modules, standard axioms)

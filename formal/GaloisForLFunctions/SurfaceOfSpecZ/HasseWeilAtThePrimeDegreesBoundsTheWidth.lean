@@ -17,8 +17,8 @@ every `θ > 7/12` (`powGaps_primes`), hence (`zetaZeroWidth_le_of_hasseWeil_prim
 
   **Hasse–Weil on the planes `⟨Γ_1, Γ_p⟩`, `p` prime, puts every zero in `|Re ρ − ½| ≤ 1/12`.**
 
-The converse transfer runs at the same exponent: zeros of width `σ` give primes in intervals of
-length `x^{½+σ+ε}`. The two transfers compose to the identity on the exponent, so the prime planes
+Classically the converse transfer runs at the same exponent: zeros of width `σ` give primes in
+intervals of length `x^{½+σ+ε}`. The two transfers compose to the identity on the exponent, so the prime planes
 decide RH by this route exactly when the prime gaps are `x^{½+o(1)}`; the pairs `⟨Γ_p, Γ_q⟩` need no
 gap input (`HasseWeilForPairsOfPrimeDegrees`).
 -/

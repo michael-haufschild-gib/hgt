@@ -366,7 +366,7 @@ private theorem two_green_eq_log_ratio (σ x : ℝ) (ρ : ℂ) :
       norm_num [annihilatorGreenCost]
     _ = _ := by rw [div_pow, hn, hd]
 
-private theorem balanced_green_cost {σ : ℝ} {ρ : ℂ} (hρ : σ < ρ.re) (hγ : ρ.im ≠ 0) :
+private theorem balanced_green_cost {σ : ℝ} {ρ : ℂ} (_hρ : σ < ρ.re) (hγ : ρ.im ≠ 0) :
     2 * annihilatorGreenCost σ
       (σ + Real.sqrt ((ρ.re - σ) ^ 2 + ρ.im ^ 2)) ρ =
         Real.log (multiplicityMassBase σ ρ) := by

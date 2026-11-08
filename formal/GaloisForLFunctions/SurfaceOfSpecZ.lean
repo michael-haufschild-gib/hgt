@@ -11,8 +11,10 @@ import GaloisForLFunctions.SurfaceOfSpecZ.CrudeHasseWeilAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.SparseDegreesDecideRH
 import GaloisForLFunctions.SurfaceOfSpecZ.ThePlaneCountsAtTheIntegerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusIsAHyperbolicGreenFunction
+import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanFrobeniusHasInfiniteRank
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilForPairsOfPrimeDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicGenusIsNLogN
+import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWidth
 
 /-!
 # The surface of `Spec ℤ`
@@ -40,5 +42,6 @@ is RH, as Hasse–Weil for all powers of Frobenius is RH for a curve. A crude bo
 at the integer degrees already is RH (the self-improvement is free; the exponent of a crude bound is
 the zero width), and any set of degrees with gaps `O(√x)`, such as the squares, decides RH. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
-whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`.
+whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
+they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley.
 -/

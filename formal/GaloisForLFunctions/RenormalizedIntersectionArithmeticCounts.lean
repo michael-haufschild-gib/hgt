@@ -22,4 +22,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.ThickenedAri
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.RationalAbelArithmeticCounts
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FiniteFieldOrientationCounts
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

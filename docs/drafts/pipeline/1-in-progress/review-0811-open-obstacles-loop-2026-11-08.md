@@ -11,9 +11,11 @@
 | # | Problem | Result | Lean |
 |---|---|---|---|
 | 1 | B115, B88 | The archimedean Frobenius kernel `min/(1−(min/max)²)` is `2π√(mn)·G_{1/2}(d)`, `G_s(d)=e^{−(s−1)d}/(4π sinh d)` the Green function of `Δ−s(2−s)` on `ℍ³`, `d=|log(n/m)|` the distance of `z_m=(0,0,m)`, `z_n`; radial equation; Newtonian pole `4πd·G_s→1` (the diagonal is a Coulomb self-energy); `Δ=½` propagator = `Δ=3/2` propagator + complementary-series `1/(2cosh(d/2))`; damped kernels `√(mn)e^{−d/2}/(1−r²e^{−2d})` PSD (Ornstein–Uhlenbeck), lossless off the diagonal, diagonal `n/(1−r²)→∞`; Weil's archimedean-plus-pole weight `= 4πG_{1/2}(u)−4cosh(u/2)` | `SurfaceOfSpecZ/TheArchimedeanFrobeniusIsAHyperbolicGreenFunction` |
+| 2 | B115, B17, B88 | Every square block of `archKernel` on rows below columns is a scaled Cauchy matrix, hence nonsingular; on pairwise coprime orders the archimedean Frobenius agrees with no kernel of finite rank (no finite-dimensional fibre carries the jets). `√(mn)C_∞(m,n)=(n³−nm²−m³)/(n²−m²)`: the compensation is negative iff `n/m` is below the plastic number `ρ³=ρ+1`, positive above, never zero (`ρ` irrational) — the `log ρ` aperture is where the archimedean compensation changes sign | `SurfaceOfSpecZ/TheArchimedeanFrobeniusHasInfiniteRank` |
 
 ## Conjecture log
 - C1 (proved, #1): the jets carrier is hyperbolic three-space with dilations as translations along a geodesic.
+- C2 (proved, #2): every carrier of the jets on coprime orders is infinite-dimensional; the sign of `C_∞` is the plastic cubic.
 
 ## Log
-- 2026-11-08 — created; #1 formalized and wired.
+- 2026-11-08 — created; #1, #2 formalized and wired.

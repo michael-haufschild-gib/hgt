@@ -59,8 +59,14 @@ orbits, fixed or exchanged according to the Frobenius sign. The intended
 bridge identifies these fixed orbits with the discriminant-cover fibres.
 
 Neither the twisted orbit count nor this comparison is formalized here.
-The current draft instead constructs residue-field trace-discriminant
-fibres; its aggregate count uses the already derived polynomial Möbius
-sums. That is a sign-retaining calibration, not an independent cancellation
+The [formalized normalization count](../3-formalized/riac-finite-field-orientation-counts.md)
+constructs residue-field trace-discriminant fibres; its aggregate count
+uses the already derived polynomial Möbius sums. That is a sign-retaining calibration, not an independent cancellation
 proof. The usual polynomial-discriminant comparison remains separate.
 
+
+A normal-basis construction supplies a candidate direct bijection for each
+twist: `x_i=Σ_σ a_(σ⁻¹·i) σ(θ)`, with unrestricted `a∈F^n`.
+The Galois action on labels is derived by sending Frobenius to the chosen
+permutation; its order divides the extension degree. This bijection and
+the transporter proof of twisted Burnside remain under Lean verification.

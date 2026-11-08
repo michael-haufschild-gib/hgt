@@ -282,3 +282,25 @@ identify arithmetic self-energy removal and both radius terms. Classical
 resultant and `q`-discriminant identities are credited there. These counts
 still require a quantitative bridge to signed conductor combinations and
 the local-index sum `1−M(N)`; no square-root estimate follows yet.
+
+## Finite-field orientation counts
+
+[FiniteFieldOrientationCounts.lean](FiniteFieldOrientationCounts.lean)
+derives the orientation sign of an actual finite extension `K/F`:
+Frobenius has characteristic polynomial `X^d−1`, and the quadratic character
+of every basis trace discriminant is `(-1)^(d+1)`. Thus its square-root
+fibre has two points for odd degree and none for even degree.
+
+For monic `f`, take the product `D(f)` of power-basis trace discriminants
+of its irreducible residue fields on the squarefree locus, and zero
+elsewhere. This definition uses no Möbius coefficient. Its character is
+`χ(D(f))=(-1)^deg(f) μ(f)`. The actual set of pairs
+`(f,y)` with `deg(f)=n` and `y²=D(f)` has respectively `2`, `2q`, `q^n`
+points in degrees zero, one, and at least two.
+
+The [formalized count](../../../docs/drafts/pipeline/3-formalized/riac-finite-field-orientation-counts.md)
+uses the existing derived polynomial Möbius degree sums. It retains an
+arithmetic orientation sign but supplies no independent cancellation
+estimate. Comparison with the usual polynomial discriminant, an independent
+Frobenius orbit count, and any integer-cutoff realization remain
+[construction problems](../../../docs/drafts/pipeline/1-in-progress/riac-discriminant-cover-signed-counts.md).
