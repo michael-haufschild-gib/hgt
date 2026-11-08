@@ -35,7 +35,8 @@ private theorem correction_step (p : Nat.Primes) (n : ℕ) :
       kestenDirichletGrowth p n := by
   rw [kestenDirichletCorrection_eq, kestenDirichletCorrection_eq, kestenDirichletGrowth]
   field_simp [(denominator_pos p n).ne', (denominator_pos p (n + 1)).ne']
-  rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega, pow_add]
+  rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega,
+    pow_add (primeReciprocal p) (2 * n + 3) 2]
   ring
 
 private theorem terminal_step (p : Nat.Primes) (n : ℕ) (i : Fin (n + 1)) :
@@ -112,11 +113,3 @@ theorem kestenDirichletGreen_energy_step_eq_iff (p : Nat.Primes) (n : ℕ) (c : 
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGrowth_pos
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_entry_step
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_block_step
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_entry_lt_succ
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_energy_step
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_energy_le_succ
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_energy_step_eq_iff

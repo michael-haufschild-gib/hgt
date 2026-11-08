@@ -52,7 +52,7 @@ all actual-source inversion and contour premises are discharged.
 
 This proves no exponent above `1/2` and supplies no RH-strength rate.
 The [quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md)
-is a separate target.
+is also formalized and gives every fixed logarithmic saving.
 
 ## Gates
 

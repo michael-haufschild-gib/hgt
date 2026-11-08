@@ -37,9 +37,9 @@ def kestenDirichletVacuum (p : Nat.Primes) (n : ℕ) : ℝ := kestenDirichletGre
 theorem kestenDirichletVacuum_eq (p : Nat.Primes) (n : ℕ) :
     kestenDirichletVacuum p n = primeReciprocal p / (1 + primeReciprocal p) *
       (1 - primeReciprocal p ^ (2 * n + 2)) / (1 - primeReciprocal p ^ (2 * n + 3)) := by
-  rw [kestenDirichletVacuum, kestenDirichletGreen_entry_factor, vacuum_green]
+  rw [kestenDirichletVacuum, kestenDirichletGreen_entry_factor]
   simp only [Fin.val_zero, max_self, Nat.sub_zero]
-  rw [show 2 * (n + 1) = 2 * n + 2 by omega]
+  rw [vacuum_green, show 2 * (n + 1) = 2 * n + 2 by omega]
 
 /-- The exact vacuum deficit decays with the squared geometric depth. -/
 theorem kestenDirichletVacuum_defect (p : Nat.Primes) (n : ℕ) :
@@ -48,7 +48,7 @@ theorem kestenDirichletVacuum_defect (p : Nat.Primes) (n : ℕ) :
         ((1 + primeReciprocal p) * (1 - primeReciprocal p ^ (2 * n + 3))) := by
   rw [kestenDirichletVacuum_eq]
   field_simp [one_add_ne p, (denominator_pos p n).ne']
-  rw [show 2 * n + 3 = (2 * n + 2) + 1 by omega, pow_succ]
+  rw [show 2 * n + 3 = (2 * n + 2) + 1 by omega, pow_succ (primeReciprocal p) (2 * n + 2)]
   ring
 
 theorem kestenDirichletVacuum_pos (p : Nat.Primes) (n : ℕ) : 0 < kestenDirichletVacuum p n :=
@@ -71,7 +71,8 @@ theorem kestenDirichletVacuum_step (p : Nat.Primes) (n : ℕ) :
     _ = _ := by
       rw [kestenDirichletVacuum_defect, kestenDirichletVacuum_defect]
       field_simp [one_add_ne p, (denominator_pos p n).ne', (denominator_pos p (n + 1)).ne']
-      rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega, pow_add]
+      rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega,
+        pow_add (primeReciprocal p) (2 * n + 3) 2]
       ring
 
 theorem strictMono_kestenDirichletVacuum (p : Nat.Primes) : StrictMono (kestenDirichletVacuum p) := by
@@ -86,16 +87,10 @@ theorem strictMono_kestenDirichletVacuum (p : Nat.Primes) : StrictMono (kestenDi
 /-- Finite vacuum responses increase to the actual prime vacuum Green value. -/
 theorem tendsto_kestenDirichletVacuum (p : Nat.Primes) :
     Tendsto (kestenDirichletVacuum p) atTop (𝓝 (primeReciprocal p / (1 + primeReciprocal p))) := by
-  simpa only [Nat.zero_add, kestenDirichletVacuum, vacuum_green] using
-    tendsto_kestenDirichletGreen_fixedEntry p 0 0
+  have h := tendsto_kestenDirichletGreen_fixedEntry p 0 0
+  change Tendsto (fun N : ℕ => kestenDirichletVacuum p (0 + 0 + N))
+    atTop (𝓝 (kestenGreenEntry p 0 0)) at h
+  simpa only [Nat.zero_add, vacuum_green] using h
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletVacuum_eq
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletVacuum_defect
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletVacuum_pos
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletVacuum_lt_infinite
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletVacuum_step
-#print axioms GaloisForLFunctions.SelbergClass.Primon.strictMono_kestenDirichletVacuum
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tendsto_kestenDirichletVacuum

@@ -232,9 +232,29 @@ with the boundary, and their finite sum recovers every chain.
 [PrimeTwoPrimeHomologyCoreSum.lean](PrimeTwoPrimeHomologyCoreSum.lean)
 identifies actual augmented homology with the direct sum of their ranges.
 Each coordinate is the original core projection and retains the actual
-height map. Identifying each of these ranges with its truncated-block
-quotient, together with canonical coefficient changes, remains an explicit
-proof obligation.
+height map. Coordinate extraction and realization recover that projection
+in all three tagged chain degrees; their reverse composite is identity.
+[PrimeTwoPrimeBlockRetractions.lean](PrimeTwoPrimeBlockRetractions.lean)
+therefore realizes each upper block as an actual short-complex retract.
+[PrimeTwoPrimeUpperCoreHomology.lean](PrimeTwoPrimeUpperCoreHomology.lean)
+identifies the actual middle-degree range with the upper scalar quotient
+through its original cycle classes.
+[PrimeTwoPrimeCoreDegrees.lean](PrimeTwoPrimeCoreDegrees.lean) proves that
+only bottom and middle degrees can contribute: no other tags occur, and
+the top differential stays injective over every ring.
+[PrimeTwoPrimeLowerCoreHomology.lean](PrimeTwoPrimeLowerCoreHomology.lean)
+identifies the bottom range with the lower scalar quotient, including the
+empty core.
+[PrimeTwoPrimeCorePersistence.lean](PrimeTwoPrimeCorePersistence.lean) proves
+that both quotient comparisons preserve every original height map.
+[PrimeTwoPrimeBlockTransitions.lean](PrimeTwoPrimeBlockTransitions.lean)
+identifies the lower transition as reduction `R→R/2R` and the upper transition
+as inclusion `Ann_R(2)→R`; within each window, coefficients persist unchanged.
+[PrimeTwoPrimeBinaryPersistence.lean](PrimeTwoPrimeBinaryPersistence.lean)
+specializes actual core homology over `𝔽₂` to `[m,3m)` and `[2m,6m)` in
+consecutive degrees. Internal maps retain their coefficient, including across
+the intermediate tag births; both branches vanish outside these intervals.
+Canonical integer coefficient compatibility remains a proof obligation.
 
 ## Mechanisms and tools
 

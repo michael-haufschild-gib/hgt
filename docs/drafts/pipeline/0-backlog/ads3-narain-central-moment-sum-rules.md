@@ -18,6 +18,11 @@ the same mechanism predicts the absolutely convergent identity
 
 `∫₀∞ y^(−3/2+it)(log y)^n R(y)dy = M^(n)(it)`.
 
+The corpus’s `fourier_real_eq_integral_exp` in
+`StripSourceHardyTransfer.lean` fixes the oscillatory kernel exactly.
+Evaluating the differentiated Fourier identity at `t/(2π)` cancels
+the same `(2πi)^n` factor and gives `∫(−L)^n exp(−itL)H(L)dL`.
+
 The central moments are its specialization at `t=0`. This would identify
 the actual Mellin boundary and all its tangential derivatives with source
 moments; it does not assert convergence on an open strip to the left of
@@ -33,8 +38,19 @@ The zeroth moment always vanishes. The first is
 concavity. The central factorization predicts
 `μ₃(Y*,Z)=32√(Y*Z)(2−κ)(c−log Z)` and
 `μ₅(Y*,Y*)=(2560/3)Y*(2−κ)²>0`.
-These exact coefficient laws strengthen the proposed order classification;
-their derivative and source-integral identities remain unformalized.
+These exact coefficient laws strengthen the proposed order classification.
+In the central factorization `M(u)=u D_Y(u)D_Z(u)U(u)`, `U(0)=4`.
+At the exceptional height,
+`D(0)=D′(0)=0` and `D″(0)=(8/3)√Y*(2−κ)`.
+The third jet has only the derivative allocation `(1,2,0,0)`, with
+coefficient `3`; the fifth jet at two exceptional heights has only
+`(1,2,2,0)`, with coefficient `30`. These give the displayed constants.
+The corpus's `complex_iteratedDeriv_mul_at_add_order` and
+`complex_iteratedDeriv_mul_of_left_vanishing_below` in
+`ReflectedBiHeatMultiplicityTomography.lean` supply these exact Leibniz
+collapses; `complex_iteratedDeriv_mul_eq_zero_before_add_order` supplies
+the lower-jet vanishings. Their application and the source-integral
+identities remain unformalized.
 
 A further target is at least `1`, `3` or `5` sign changes of the actual
 real remainder, respectively. Vanishing moments through degree `k−1`
@@ -66,8 +82,8 @@ The proved boundary contour gives `H=FourierInv(G)` with mathlib's
 moment of `H` at positive infinity. At negative infinity, actual
 large-height heat decay gives
 `H(L)=exp(L/2)[−aL−B+o(1)]`, so every absolute moment exists there too.
-The proposed [Schwartz construction](../1-in-progress/ads3-narain-boundary-schwartz.md)
-would also supply all these clock moments directly, using spectral
+The proved [Schwartz construction](../3-formalized/ads3-narain-boundary-schwartz.md)
+supplies all these clock moments directly, using spectral
 moments and Landau interpolation without the moment identities below.
 Thus `H` and `G` are integrable; continuity of `G` permits pointwise
 Fourier inversion, giving `G=Fourier(H)`.
@@ -106,8 +122,9 @@ No derivatives of `H` are required. The already proved analyticity of
 absolute moments alone are not being used to claim holomorphy of the
 integral across the boundary.
 
-The source saving is proved. Moment domination, Fourier inversion/differentiation
-and exact central-order classification still need Lean verification.
+The source saving and Schwartz moment domination are proved. The physical
+change of variables, Fourier differentiation and exact central-order
+classification still need Lean verification.
 A sign-change proof from moments alone needs a precise oscillation
 definition and a moment-separation theorem; the stronger arithmetic
 oscillation theorem would instead supply every finite sign count.

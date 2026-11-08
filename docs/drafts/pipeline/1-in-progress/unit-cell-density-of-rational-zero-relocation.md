@@ -39,7 +39,15 @@ Then `γ>0`, `c<0`, and the quartet polynomial for `ρ` is exactly `D(s)+c s(s-1
 
 `((a+b+3/4)/2)²-h²=(a-b)²/4+(a+b)/8+1/64>0`.
 
-The corresponding density therefore has proposed limits `N²f(N)→-c/12>0` and `N²f(N+1/2)→c/24<0`. These explicit algebraic identities and the Mellin transform still require Lean proofs.
+The corresponding density has proposed limits `N²f(N)→-c/12>0` and `N²f(N+1/2)→c/24<0`. The algebraic identities are checked in `NormalizedQuartetRelocation.lean`, including strict negativity of `c` and both endpoint values; their transitive axioms are the three standard Lean axioms.
+
+This quartet does not satisfy the worklog's additional normalization `R′(1)=0`: its derivative is `c/D(1)<0`, now checked by `normalizedRelocation_deriv_one_neg`. No claim about a construction satisfying all three endpoint conditions follows from this example.
+
+Stronger algebraic candidate: for any single quartet, `R(1)=1` forces its quadratic trace `A≤0`; equality forces `Re ρ=1/2` and `γ₁²=γ₂²=(Im ρ)²`. Writing `δ=Re ρ−1/2`, `a=γ₁²`, `b=γ₂²`, the exact identity is
+
+`4(B+A/4)=A²+A(8δ²+2(a+b)+1)+16δ⁴+8δ²(a+b)+(a−b)²`.
+
+Normalization makes the left side zero. Every off-line single-quartet move therefore has `A<0`. The classification remains to be formalized.
 
 ## Mechanism and limits
 
@@ -47,4 +55,10 @@ Euler–Maclaurin gives the density from exact unit coefficients. The `ζ(r_j)` 
 
 ## Status
 
-Corpus audit located `ZetaEulerMaclaurinArbitraryOrder`, `IntegrableDefectsAtUnitDensityAreRigid`, and the unconditional Hardy critical-line census. `ArithmeticPositiveDuality/TheUnitCellTraceOfZeroRelocation.lean` is being developed; no capstone is checked yet. The uniform remainder, half-integer limit, concrete relocation, and Mellin-transform identity remain unformalized.
+The algebraic quartet, uniform Bernoulli remainder, and literal Mellin identity have passed Lean checking, with only `propext`, `Classical.choice`, and `Quot.sound`. Their modules are `NormalizedQuartetRelocation.lean`, `TheUnitCellTraceOfZeroRelocation.lean`, and `PowerSumDensitiesAndRationalMellinFactors.lean`.
+
+`NormalizedRelocationHasASignedDensity.lean` also passed direct checking without warnings. Its assumption-free existential capstone constructs the donors from Hardy's theorem and proves the literal density's opposite signs; `exists_quartetDensity_inverse_square_bound` supplies the global decay bound.
+
+`TheNormalizedRelocationDensityHasZeroMass.lean` now proves absolute integrability, zero total mass, and fixed-width sign bands: eventually `N²f(N+θ)≥−c/48` for `0≤θ≤1/12`, and `N²f(N+θ)≤c/48` for `1/3≤θ≤2/3`. Its Mellin transform is holomorphic on `Re s>−1` and satisfies `D(s)M(s)=cs(s−1)ζ(s)`, interpreted at `s=1` using the entire pole unit. Evaluating at zero proves the mass identity. All five capstones pass direct checking without warnings and use only the three standard axioms.
+
+Derivative jumps and the general endpoint classification remain under formalization. Actual AAL remains undecided.

@@ -1,7 +1,7 @@
 # Arithmetic saving for every logarithmic-clock derivative
 
 - **ID:** W11-NQD
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** [Quantitative boundary saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md)
 
@@ -43,7 +43,7 @@ The required derivative identity, weighted rectangle assembly and
 actual-source conclusion remain unformalized. No bound on derivatives
 of the reciprocal zeta factor is needed for this mechanism.
 
-A separate [Schwartz construction](../1-in-progress/ads3-narain-boundary-schwartz.md)
+The proved [Schwartz construction](../3-formalized/ads3-narain-boundary-schwartz.md)
 uses the corpus's Landau interpolation: the spectral exponential envelope
 gives bounded clock derivatives, while the source estimates give rapid
 function decay on both rays. That qualitative conclusion needs no new
@@ -92,6 +92,10 @@ Uniform complex-clock contours, their actual-source identification and
 the resulting quantifier order remain unformalized. The real-frequency
 bound alone does not establish the required disk supremum.
 
+The [universal-constant refinement](ads3-narain-universal-saving-constant.md)
+would further fix `c=1/128` independently of target heights, by removing
+the asymptotically inactive fixed ceiling in the contour width.
+
 ## Two-sided refinement
 
 For `L→−∞`, shift to the fixed line `Re u=1/4`. The actual mean is
@@ -103,11 +107,21 @@ Together with the positive-clock estimate, this would make `H` Schwartz.
 Fourier inversion would then give Schwartz regularity of `t↦M(it)` as well.
 This is a separate route to the stronger boundary-function claim in the
 [logarithmic-saving card](../3-formalized/ads3-narain-average-logarithmic-savings.md), avoiding
-spectral differentiation of the reciprocal zeta factor. The two-sided
-contours and Schwartz identifications remain unformalized.
+spectral differentiation of the reciprocal zeta factor. The two-sided derivative contours remain unformalized; Schwartz
+regularity itself is already proved by Landau interpolation and Fourier
+inversion.
+
+A sharper two-sided candidate allows every `0<γ<1/2`, with one fixed
+Cauchy radius and threshold for all orders:
+`|H^(n)(L)|≤C n! (π/16)^(−n) exp(γL)` as `L→−∞`.
+Use a fixed Mellin line `Re u=η` with `γ<η<1/2`; polynomial contour
+losses are absorbed by the gap `η−γ`. The actual large-height source
+also predicts `exp(−L/2)H(L)/(−L)→3/π`, so the endpoint bound
+`H(L)=O(exp(L/2))` should fail. These quantitative derivative bounds
+and the sharp endpoint obstruction remain unformalized.
 
 ## Gates
 
-- [ ] 0 → 1: source Fourier identity and moment differentiation audited.
+- [x] 0 → 1: actual Fourier identity, spectral moments, strip-analyticity and jet-transport inputs audited.
 - [ ] 1 → 2: all weighted contour estimates and derivative identities proved.
 - [ ] 2 → 3: direct Lean checks, transitive axiom audits and umbrella imports.

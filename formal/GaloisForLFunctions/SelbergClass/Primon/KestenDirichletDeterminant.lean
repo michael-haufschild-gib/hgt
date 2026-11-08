@@ -38,15 +38,22 @@ theorem det_kestenCompressedGreenPencil_mul_green (p : Nat.Primes) (n : ℕ) :
       Matrix.nonsing_inv_mul _ hG]
     congr 1
     ext i j
-    simp only [kestenTerminalSelfEnergy, Matrix.diagonal_mul, Matrix.mul_apply,
+    rw [kestenTerminalSelfEnergy, Matrix.diagonal_mul]
+    simp only [Matrix.mul_apply,
       Matrix.replicateCol_apply, Matrix.replicateRow_apply, kestenFiniteGreen,
       Finset.univ_unique, Finset.sum_singleton]
     by_cases hi : i = Fin.last n
     · subst i
       simp
-    · simp [Pi.single_apply, hi, eq_comm]
+    · simp [hi]
+  have hdet : (1 + Matrix.replicateCol (Fin 1) (Pi.single (Fin.last n) (primeReciprocal p)) *
+      Matrix.replicateRow (Fin 1) (fun j : Fin (n + 1) => kestenGreenEntry p n j)).det =
+        1 + (fun j : Fin (n + 1) => kestenGreenEntry p n j) ⬝ᵥ
+          Pi.single (Fin.last n) (primeReciprocal p) :=
+    Matrix.det_one_add_replicateCol_mul_replicateRow (ι := Fin 1)
+      (Pi.single (Fin.last n) (primeReciprocal p)) (fun j => kestenGreenEntry p n j)
   have hd := congrArg Matrix.det h
-  rw [Matrix.det_mul, Matrix.det_one_add_replicateCol_mul_replicateRow] at hd
+  rw [Matrix.det_mul, hdet] at hd
   simpa [dotProduct, Pi.single_apply, mul_comm] using hd
 
 /-- The finite source determinant is a geometric gap divided by its bulk factor. -/
@@ -106,7 +113,8 @@ theorem strictAnti_kestenDirichletGreen_det_ratio (p : Nat.Primes) :
   intro n
   rw [kestenDirichletGreen_det_ratio, kestenDirichletGreen_det_ratio]
   apply (div_lt_div_iff₀ (denominator_pos p (n + 1)) (denominator_pos p n)).mpr
-  rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega, pow_add]
+  rw [show 2 * (n + 1) + 3 = (2 * n + 3) + 2 by omega,
+    pow_add (primeReciprocal p) (2 * n + 3) 2]
   have h := mul_pos (gap_pos p)
     (mul_pos (pow_pos (primeReciprocal_pos p) (2 * n + 3)) (gap_pos p))
   nlinarith only [h]
@@ -126,12 +134,3 @@ theorem tendsto_kestenDirichletGreen_det_ratio (p : Nat.Primes) :
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenCompressedGreenPencil_mul_green
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenCompressedGreenPencil
-#print axioms GaloisForLFunctions.SelbergClass.Primon.det_kestenDirichletGreen
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_det_ratio_lower
-#print axioms GaloisForLFunctions.SelbergClass.Primon.kestenDirichletGreen_det_ratio_lt_one
-#print axioms GaloisForLFunctions.SelbergClass.Primon.strictAnti_kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tendsto_kestenDirichletGreen_det_ratio

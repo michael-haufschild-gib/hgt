@@ -74,4 +74,18 @@ import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeHomologyCoreSum
 
 import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBlockExtractions
 
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBlockRetractions
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeUpperCoreHomology
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeCoreDegrees
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeLowerCoreHomology
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeCorePersistence
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBlockTransitions
+
+import GaloisForLFunctions.EffectiveScalingGeometry.PrimeTwoPrimeBinaryPersistence
+
 /-! Arithmetic height filtrations, sections and effectivity on the scaling surface. -/

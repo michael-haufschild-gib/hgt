@@ -3,7 +3,7 @@
 - **ID:** esg-all-coefficient-weighted-homology
 - **Stage:** 1-in-progress
 - **Type:** ARITHMETIC PERSISTENCE CLASSIFICATION
-- **Status:** Natural truncated block homology formalized; global homology comparison pending
+- **Status:** Actual all-ring and binary persistence formalized; integer coefficient comparison pending
 
 ## Target
 
@@ -19,42 +19,64 @@ The comparison must use actual chain-induced classes, commute with height
 maps and identify canonical integral coefficient extension. Over `𝔽₂`, the
 predicted intervals are `[m,3m)` and `[2m,6m)` in consecutive degrees.
 
-## Available chain comparison
+## Established mathematics
 
 The [two-prime normal form](../3-formalized/esg-two-prime-weighted-normal-form.md)
-constructs the actual natural chain isomorphism, transformed bounded basis,
-core/tag partition and exact row `(2,3)` and column `(-3,2)`. It does not by
-itself identify the actual homology quotient with the displayed branches.
+preserves the actual height filtration and canonical integral coefficients.
+Its transformed basis partitions uniquely by core and tag, with births
+`m,2m,3m,6m`, row `(2,3)` and column `(-3,2)`.
 
-The truncated block classification is formalized. `PrimeTwoPrimeBlockAlgebra`
-gives the row kernel, top image and annihilator inclusion.
-`PrimeTwoPrimeTruncatedBlocks` constructs exact birth submodules and height
-maps. `PrimeTwoPrimeBlockHomology` identifies original categorical cycle
-classes with scalar quotient classes; `PrimeTwoPrimeBlockPersistence` makes
-these identifications natural. `PrimeTwoPrimeBlockWindows` proves the four
-coefficient windows above and vanishing outside them. All modules pass direct
-Lean audits; transitive axioms are subsets of `propext`, `Classical.choice`
-and `Quot.sound`.
+The isolated truncated blocks have the coefficient windows in the target,
+with zero homology outside those windows. Their categorical cycle classes
+are the corresponding scalar cosets, naturally for every height inclusion.
+Crossing the two-tag birth reduces the lower free coefficient modulo two;
+crossing the three-tag birth includes the upper annihilator coefficient
+into the ring. All within-window maps retain their coefficient
+(`twoPrimeLower_free_modTwo_transition`,
+`twoPrimeUpper_annihilator_free_transition`).
 
-`PrimeTwoPrimeBlockEmbeddings` realizes the truncated upper blocks inside
-the original adjacent cutoff complexes, naturally in height. Both actual
-boundary matrices commute with this realization. `PrimeTwoPrimeCoreProjections`
-constructs orthogonal idempotent endomorphisms of the original chain
-persistence, with exact finite sum equal to every chain. Both modules pass
-direct audits with the same standard axioms. Identifying each core's actual
-homology contribution with its truncated block remains open.
+The original chain complex has cutoff-preserving orthogonal idempotent
+core projections commuting with the boundary. Their finite sum recovers
+every chain. The induced original homology projections give the canonical
+linear equivalence
 
-`PrimeTwoPrimeHomologyProjections` passes this decomposition through the
-original cycle-class maps: actual homology has natural orthogonal
-idempotent core projections, and every class is their finite sum. Its direct
-audit uses only the same standard axioms.
+`Hₖ(C(N);R) ≃ ⨁c range(Pₖ,c)`.
 
-`PrimeTwoPrimeHomologyCoreSum` identifies original augmented homology with
-the direct sum of these actual projection ranges. Its inverse coordinate
-is precisely the original core projection, naturally for every height map.
-Direct Lean and axiom audits pass. The remaining comparison identifies
-each range with its lower or upper truncated-block quotient, including
-vanishing in other degrees and canonical integer coefficient maps.
+Its coordinate at `c` is exactly `Pₖ,c`, and each coordinate commutes with the
+original height map (`twoPrimeHomologyCoreEquiv`,
+`twoPrimeHomologyCoreEquiv_natural`). Scalar and middle block realizations
+have literal coordinate-extraction left inverses, so both are injective
+(`twoPrimeBlockScalarExtraction_realization`,
+`twoPrimeBlockMiddleExtraction_realization`). In the bottom, middle and top
+degrees, realization after extraction equals the full original core projection.
+The upper adjacent block is therefore an actual short-complex retract
+(`twoPrimeUpperBlock_section`, `twoPrimeUpperBlock_projection`). Passing its
+actual cycle classes through extraction and realization identifies the
+middle-degree range with the upper scalar quotient
+(`twoPrimeUpperCoreCoefficientEquiv`). Bottom representatives are actual
+cycles, including the empty core; their original class maps identify the
+bottom range with the lower scalar quotient (`twoPrimeLowerCoreCoefficientEquiv`).
+Outside bottom and middle degrees,
+core homology is zero: unsupported tags give zero chains, and top cycles
+vanish by injectivity of `(-3,2)` (`twoPrimeCoreHomologyProjection_supported`).
+Both quotient comparisons preserve every original height map
+(`twoPrimeLowerCoreCoefficientEquiv_natural`,
+`twoPrimeUpperCoreCoefficientEquiv_natural`).
+
+Over `𝔽₂`, the actual core ranges are one-dimensional on exactly `[m,3m)`
+and `[2m,6m)`, in consecutive degrees; all internal height maps retain their
+coefficient (`twoPrimeBinaryLowerCoreEquiv_natural`,
+`twoPrimeBinaryUpperCoreEquiv_natural`). Both ranges vanish outside their
+stated intervals.
+
+These statements pass direct Lean audits with transitive axioms contained
+in `propext`, `Classical.choice`, `Quot.sound`.
+
+## Remaining comparison
+
+Identify canonical integer coefficient extension. A plain tensor-homology
+base-change claim would miss the new annihilator classes over rings with
+2-torsion.
 
 ## Paper block calculation
 
@@ -66,17 +88,19 @@ differential injectively fills this kernel.
 
 Bottom inclusion gives reduction modulo two. Middle inclusion sends
 `a∈Ann_R(2)` to the same kernel coefficient because `(a,0)=(3a,−2a)`.
-Partitioning the actual coordinate basis by core should transfer these
-calculations to the original complex. That transfer and its quotient maps
-are the remaining proof obligations; no analytic input is assumed.
+Partitioning the actual coordinate basis by core transfers these
+calculations to the original homology through the verified range comparisons.
+Their height diagrams and binary interval specialization are formalized;
+canonical coefficient extension remains to be audited. No analytic input is assumed.
 
 For the transfer, project the transformed basis onto one core. The boundary
 deletes only two and three, so these projections commute with it. They
 preserve cutoffs, are pairwise orthogonal idempotents and sum to the identity
 on each chain's finite core support. Coordinate extraction is inverse to
 each tagged realization. Passing these identities through actual cycle
-classes should establish the global decomposition. The chain projection
-identities are formalized; their actual homology quotient comparison remains open.
+classes establishes the direct-sum decomposition and both core quotient
+comparisons, naturally in height. The remaining coefficient diagram must
+identify actual integer extension with the canonical scalar map.
 
 ## Existing work and boundary
 

@@ -22,6 +22,20 @@ def normalizedRelocationHeight (γ₁ γ₂ : ℝ) : ℝ :=
 def normalizedRelocationTarget (γ₁ γ₂ : ℝ) : ℂ :=
   3 / 4 + (normalizedRelocationHeight γ₁ γ₂ : ℂ) * I
 
+@[simp] theorem normalizedRelocationTarget_re (γ₁ γ₂ : ℝ) :
+    (normalizedRelocationTarget γ₁ γ₂).re = 3 / 4 := by
+  norm_num [normalizedRelocationTarget]
+
+@[simp] theorem normalizedRelocationTarget_im (γ₁ γ₂ : ℝ) :
+    (normalizedRelocationTarget γ₁ γ₂).im = normalizedRelocationHeight γ₁ γ₂ := by
+  norm_num [normalizedRelocationTarget]
+
+/-- The prescribed off-line target is an exact zero of the rational multiplier. -/
+theorem normalizedRelocation_target_zero (γ₁ γ₂ : ℝ) :
+    zeroRelocationFactor (normalizedRelocationTarget γ₁ γ₂) γ₁ γ₂
+      (normalizedRelocationTarget γ₁ γ₂) = 0 := by
+  simp only [zeroRelocationFactor, zeroRelocationNum, sub_self, zero_mul, zero_div]
+
 /-- The quadratic trace of the normalized rational multiplier. -/
 def normalizedRelocationTrace (γ₁ γ₂ : ℝ) : ℝ :=
   2 * normalizedRelocationHeight γ₁ γ₂ ^ 2 - 1 / 8 - γ₁ ^ 2 - γ₂ ^ 2
@@ -120,8 +134,50 @@ theorem normalizedRelocation_factor_eq {γ₁ γ₂ : ℝ}
   field_simp [hd]
   linear_combination he
 
+/-- The endpoint derivative records the same strictly negative quadratic trace. -/
+theorem normalizedRelocation_deriv_one {γ₁ γ₂ : ℝ}
+    (hγ₁ : 1 < γ₁) (hγ₂ : 1 < γ₂) :
+    deriv (zeroRelocationFactor (normalizedRelocationTarget γ₁ γ₂) γ₁ γ₂) 1 =
+      (normalizedRelocationTrace γ₁ γ₂ : ℂ) / zeroRelocationDen γ₁ γ₂ 1 := by
+  let D : ℂ → ℂ := zeroRelocationDen γ₁ γ₂
+  let c : ℂ := normalizedRelocationTrace γ₁ γ₂
+  have hd : D 1 ≠ 0 := zeroRelocationDen_ne_zero_of_re_ne_half γ₁ γ₂ (by norm_num)
+  have hD : DifferentiableAt ℂ D 1 := by
+    change DifferentiableAt ℂ (fun s => zeroRelocationDen γ₁ γ₂ s) 1
+    unfold zeroRelocationDen
+    fun_prop
+  have hP : HasDerivAt (fun s : ℂ => c * s * (s - 1)) c 1 := by
+    simpa [Pi.mul_def] using ((hasDerivAt_id (1 : ℂ)).const_mul c).mul
+      ((hasDerivAt_id (1 : ℂ)).sub_const 1)
+  have hnum : zeroRelocationNum (normalizedRelocationTarget γ₁ γ₂) =
+      fun s => D s + c * s * (s - 1) := by
+    funext s
+    have he := normalizedRelocation_polynomial hγ₁ hγ₂ s
+    dsimp only [D, c]
+    linear_combination he
+  have h := ((hD.hasDerivAt.add hP).div hD.hasDerivAt hd).deriv
+  change deriv (fun s => (D s + c * s * (s - 1)) / D s) 1 =
+    ((deriv D 1 + c) * D 1 - (D 1 + c * 1 * (1 - 1)) * deriv D 1) / (D 1) ^ 2 at h
+  change deriv (fun s => zeroRelocationNum (normalizedRelocationTarget γ₁ γ₂) s / D s) 1 = c / D 1
+  rw [hnum, h]
+  field_simp [hd]
+  ring
+
+/-- A normalized single-quartet move cannot also preserve the first derivative at one. -/
+theorem normalizedRelocation_deriv_one_neg {γ₁ γ₂ : ℝ}
+    (hγ₁ : 1 < γ₁) (hγ₂ : 1 < γ₂) :
+    (deriv (zeroRelocationFactor (normalizedRelocationTarget γ₁ γ₂) γ₁ γ₂) 1).re < 0 := by
+  rw [normalizedRelocation_deriv_one hγ₁ hγ₂]
+  have hd : zeroRelocationDen γ₁ γ₂ 1 =
+      (((γ₁ ^ 2 + 1 / 4) * (γ₂ ^ 2 + 1 / 4) : ℝ) : ℂ) := by
+    apply Complex.ext <;>
+      norm_num [zeroRelocationDen, pow_two, Complex.mul_re, Complex.mul_im] <;> ring
+  rw [hd, ← Complex.ofReal_div, Complex.ofReal_re]
+  exact div_neg_of_neg_of_pos (normalizedRelocationTrace_neg hγ₁ hγ₂) (by positivity)
+
 #print axioms normalizedRelocation_polynomial
 #print axioms normalizedRelocationTrace_neg
 #print axioms normalizedRelocation_endpoints
+#print axioms normalizedRelocation_deriv_one_neg
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

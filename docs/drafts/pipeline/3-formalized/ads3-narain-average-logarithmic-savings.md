@@ -36,11 +36,12 @@ Both endpoint axiom audits contain only `propext`, `Classical.choice`
 and `Quot.sound`. The module and all supporting quantitative modules passed final direct
 Lean checks and are imported by the umbrella.
 
-The separate [Schwartz candidate](../1-in-progress/ads3-narain-boundary-schwartz.md)
-would give rapid decay of every boundary and clock derivative. The
-[quantitative derivative candidate](../0-backlog/ads3-narain-logarithmic-derivative-saving.md)
+The proved [Schwartz theorem](../3-formalized/ads3-narain-boundary-schwartz.md)
+gives rapid decay of every boundary and clock derivative. The
+[quantitative derivative candidate](../1-in-progress/ads3-narain-logarithmic-derivative-saving.md)
 asks for a common arithmetic saving exponent across all derivative orders.
-Neither follows by differentiating the scalar error estimate.
+The Schwartz theorem uses Landau interpolation and Fourier inversion;
+differentiating the scalar error estimate alone would not justify it.
 
 ## Gates
 

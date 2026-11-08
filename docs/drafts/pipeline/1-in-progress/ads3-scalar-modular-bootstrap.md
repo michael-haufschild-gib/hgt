@@ -52,7 +52,11 @@ The [exact mean constant and weighted residue](../3-formalized/ads3-narain-avera
 are formalized, including rigidity of both main coefficients. The
 [converse rate implication](../0-backlog/ads3-narain-average-sharp-rate.md) and
 [universal-profile scaling identity](../0-backlog/ads3-narain-average-scaling.md)
-remain targets. The unconditional [half-power boundary rate](../3-formalized/ads3-narain-average-boundary-rate.md) is formalized: the actual remainder is `o(y^(1/2))`. The [quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md) is also proved: with `L=−log y`, the remainder is bounded by `C√y exp(−cL/[(log L)^(2/3)(log log L)^(5/3)])`. The moving contour retains the full Vinogradov–Korobov width. Consequently [every logarithmic saving](../3-formalized/ads3-narain-average-logarithmic-savings.md) holds: `R=o(√y/L^N)` for all `N≥0`. [Schwartz regularity of the actual boundary and clock remainder](../1-in-progress/ads3-narain-boundary-schwartz.md) remains a candidate; spectral moments, the two source tails and Landau interpolation give a proposed proof. The corresponding [pointwise saving at every target pair](../0-backlog/ads3-narain-pointwise-boundary-saving.md) should follow from the existing sharp Fourier-tail envelope and the full filled numerator.
+remain targets.
+
+The unconditional [half-power boundary rate](../3-formalized/ads3-narain-average-boundary-rate.md) is formalized: the actual remainder is `o(y^(1/2))`. The [quantitative saving](../3-formalized/ads3-narain-quantitative-boundary-saving.md) is also proved: with `L=−log y`, the remainder is bounded by `C√y exp(−cL/[(log L)^(2/3)(log log L)^(5/3)])`. The moving contour retains the full Vinogradov–Korobov width. Consequently [every logarithmic saving](../3-formalized/ads3-narain-average-logarithmic-savings.md) holds: `R=o(√y/L^N)` for all `N≥0`.
+
+[Schwartz regularity of the actual boundary and clock remainder](../3-formalized/ads3-narain-boundary-schwartz.md) is formalized. Both literal functions have all absolute polynomial moments, and the clock integral vanishes. Spectral moments, the two source tails, Landau interpolation and pointwise Fourier inversion prove these statements. The corresponding [pointwise saving at every target pair](../0-backlog/ads3-narain-pointwise-boundary-saving.md) should follow from the existing sharp Fourier-tail envelope and the full filled numerator.
 
 ## Product detector: formalized
 

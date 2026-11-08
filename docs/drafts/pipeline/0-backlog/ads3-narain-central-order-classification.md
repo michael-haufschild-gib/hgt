@@ -53,8 +53,27 @@ central cancellation cannot remove an arithmetic pole.
 
 The [logarithmic moment conjecture](ads3-narain-central-moment-sum-rules.md)
 would realize these same orders as the exact number of canceled boundary
-moments of the actual source after finite-part subtraction. It also
-requires the proposed quantitative boundary saving.
+moments of the actual source after finite-part subtraction. The required quantitative boundary saving is now formalized.
+
+## Further conjecture: local splitting of the exceptional zero
+
+Set `κ=(logDeriv ξ)″(1)`. The explicit filled numerator suggests an even
+analytic zero-height curve near `u=0`:
+
+`log Y(u)=[log(1+2u)−log(1−2u)+log ξ(1−2u)−log ξ(1+2u)]/(2u)`.
+
+Its removable value is `c`, and its proposed expansion is
+`log Y(u)=c+(4/3)(2−κ)u²+O(u⁴)`. Since `κ<0`, the quadratic coefficient
+is positive. Consequently the two noncentral zeros near zero should
+split along the real axis for `Y>Y*` and the imaginary axis for `Y<Y*`.
+This concerns target-numerator zeros, not arithmetic poles.
+
+The exact formula follows by solving the two-term numerator equation;
+local logarithms are available because `ξ(1)=1/2`. Evenness reduces local
+uniqueness to inversion in `u²`. The central jets, analytic extension,
+and local zero classification still require Lean proofs. Corpus searches
+found the filled-numerator formula and central removability, but no
+existing local splitting theorem for this source.
 
 ## Gates
 

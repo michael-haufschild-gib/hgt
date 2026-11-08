@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SelbergClass.Primon.KestenDirichletDeterminant
+import GaloisForLFunctions.SelbergClass.Primon.ThermalArithmeticProduct
 import GaloisForLFunctions.RHTower.PrimeZetaLogAsymptotic
 import GaloisForLFunctions.RHTower.RiemannXiZerosInfinite
 
@@ -10,9 +11,12 @@ At depth `N`, the exact local ratio is
 `ζ(2N+3)/ζ(2)`. The limiting boundary factor has product `1/ζ(2)`;
 finite-prime depth limits and the full arithmetic product have this
 same limit. Logarithms give the corresponding additive identity.
+Each local ratio also compares the actual thermal phase means at
+inverse temperatures `N+1` and `1/2`.
 -/
 
-open _root_.RHTower Filter Topology
+open _root_.RHTower Filter Topology MeasureTheory Set
+open GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.SelbergClass.Primon
 noncomputable section
 
@@ -36,6 +40,31 @@ private theorem zeta_odd_pos (n : ℕ) : 0 < (riemannZeta ((2 * n + 3 : ℕ) : �
   have hn : (1 : ℝ) < ((2 * n + 3 : ℕ) : ℝ) := by exact_mod_cast (show 1 < 2 * n + 3 by omega)
   simpa only [Complex.ofReal_natCast] using riemannZeta_re_pos_of_one_lt hn
 
+/-- The determinant ratio is the thermal phase mean at the matching depth, times the boundary factor. -/
+theorem kestenDirichletGreen_det_ratio_eq_thermal_mean (p : Nat.Primes) (n : ℕ) :
+    (kestenDirichletGreen p n).det / (kestenFiniteGreen p n).det =
+      (1 - primeReciprocal p ^ 2) * (∫ t in Ioo (0 : ℝ) 1,
+        kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p (Real.log ((n : ℝ) + 1))) t) := by
+  rw [kestenDirichletGreen_det_ratio, integral_kesten_thermalFactor,
+    Real.exp_log (by positivity : (0 : ℝ) < n + 1)]
+  rw [show (2 * ((n : ℝ) + 1) + 1) = ((2 * n + 3 : ℕ) : ℝ) by push_cast; ring,
+    prime_rpow_neg_nat]
+  rfl
+
+/-- The same ratio compares two actual thermal means, using the half-temperature mean as reference. -/
+theorem kestenDirichletGreen_det_ratio_eq_thermal_quotient (p : Nat.Primes) (n : ℕ) :
+    (kestenDirichletGreen p n).det / (kestenFiniteGreen p n).det =
+      (∫ t in Ioo (0 : ℝ) 1,
+        kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p (Real.log ((n : ℝ) + 1))) t) /
+      (∫ t in Ioo (0 : ℝ) 1,
+        kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p (Real.log (1 / 2))) t) := by
+  have hbase : (∫ t in Ioo (0 : ℝ) 1,
+      kestenMcKayDensity p t * phaseLocalFactor (thermalDiskParameter p (Real.log (1 / 2))) t) =
+      (1 - primeReciprocal p ^ 2)⁻¹ := by
+    rw [integral_kesten_thermalFactor, Real.exp_log (by norm_num : (0 : ℝ) < 1 / 2)]
+    rw [show (2 * (1 / 2 : ℝ) + 1) = ((2 : ℕ) : ℝ) by norm_num, prime_rpow_neg_nat]
+  rw [kestenDirichletGreen_det_ratio_eq_thermal_mean, hbase, div_inv_eq_mul, mul_comm]
+
 /-- The product of the limiting local boundary factors is the reciprocal zeta value at two. -/
 theorem hasProd_kestenDirichletBoundaryFactors :
     HasProd (fun p : Nat.Primes => 1 - primeReciprocal p ^ 2) (riemannZeta (2 : ℂ)).re⁻¹ := by
@@ -45,7 +74,7 @@ theorem hasProd_kestenDirichletBoundaryFactors :
   simp only [inv_inv]
 
 theorem tprod_kestenDirichletBoundaryFactors :
-    (∏' p : Nat.Primes, 1 - primeReciprocal p ^ 2) = (riemannZeta (2 : ℂ)).re⁻¹ :=
+    (∏' p : Nat.Primes, ((1 : ℝ) - primeReciprocal p ^ (2 : ℕ))) = (riemannZeta (2 : ℂ)).re⁻¹ :=
   hasProd_kestenDirichletBoundaryFactors.tprod_eq
 
 /-- At each finite depth, the product of the actual matrix determinant ratios is an odd zeta ratio. -/
@@ -60,7 +89,8 @@ theorem hasProd_kestenDirichletGreen_det_ratio (n : ℕ) :
   rw [← Finset.prod_div_distrib]
   apply Finset.prod_congr rfl
   intro p _
-  rw [inv_div_inv, kestenDirichletGreen_det_ratio]
+  rw [inv_div_inv]
+  exact (kestenDirichletGreen_det_ratio p n).symm
 
 theorem tprod_kestenDirichletGreen_det_ratio (n : ℕ) :
     (∏' p : Nat.Primes, (kestenDirichletGreen p n).det / (kestenFiniteGreen p n).det) =
@@ -87,8 +117,8 @@ theorem hasSum_log_kestenDirichletBoundaryFactors :
 /-- Depth limits commute with each fixed finite prime product. -/
 theorem tendsto_finset_kestenDirichletGreen_det_ratio (s : Finset Nat.Primes) :
     Tendsto (fun n => ∏ p ∈ s, (kestenDirichletGreen p n).det / (kestenFiniteGreen p n).det)
-      atTop (𝓝 (∏ p ∈ s, 1 - primeReciprocal p ^ 2)) :=
-  tendsto_finset_prod s (fun p _ => tendsto_kestenDirichletGreen_det_ratio p)
+      atTop (𝓝 (∏ p ∈ s, ((1 : ℝ) - primeReciprocal p ^ (2 : ℕ)))) :=
+  tendsto_finsetProd s (fun p _ => tendsto_kestenDirichletGreen_det_ratio p)
 
 /-- The full arithmetic determinant product converges to the product of the local boundary limits. -/
 theorem tendsto_tprod_kestenDirichletGreen_det_ratio :
@@ -97,7 +127,7 @@ theorem tendsto_tprod_kestenDirichletGreen_det_ratio :
   have hn : Tendsto (fun n : ℕ => 2 * n + 3) atTop atTop := by
     apply tendsto_atTop.mpr
     intro b
-    exact ⟨b, fun n hn => by omega⟩
+    exact eventually_atTop.mpr ⟨b, fun n hn => by omega⟩
   have hr : Tendsto (fun n : ℕ => ((2 * n + 3 : ℕ) : ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.comp hn
   have hz := (Complex.continuous_re.tendsto (1 : ℂ)).comp
@@ -108,12 +138,3 @@ theorem tendsto_tprod_kestenDirichletGreen_det_ratio :
 
 end
 end GaloisForLFunctions.SelbergClass.Primon
-
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasProd_kestenDirichletBoundaryFactors
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tprod_kestenDirichletBoundaryFactors
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasProd_kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tprod_kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasSum_log_kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.hasSum_log_kestenDirichletBoundaryFactors
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tendsto_finset_kestenDirichletGreen_det_ratio
-#print axioms GaloisForLFunctions.SelbergClass.Primon.tendsto_tprod_kestenDirichletGreen_det_ratio
