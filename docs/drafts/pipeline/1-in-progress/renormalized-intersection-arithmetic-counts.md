@@ -94,6 +94,13 @@ now proves `q^n` points independently of polynomial Möbius sums, through
 fibres of size one, two or zero. Identification with `Polynomial.discr`
 and the integer local indices remains open.
 
+The [orientation quotient](../3-formalized/riac-orientation-quotient-counts.md)
+realizes the total local weight as an integer difference of actual stable
+orbit counts, retaining all stabilizers and both orientation labels.
+The [elliptic divisor branch](riac-elliptic-squarefree-divisor-cancellation.md)
+constructs even/odd squarefree-divisor counts from actual closed places;
+its quantitative square-root estimate is under formalization.
+
 ## Necessary distinctions
 
 `Σ_faces(−1)^card=M(N)+P_N` for the core. For `N≥4`, its ordinary

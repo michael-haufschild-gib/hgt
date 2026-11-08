@@ -821,16 +821,14 @@ private theorem h3Measure_invSL2 {s : Set H3} (hs : MeasurableSet s) :
   simp only [h3Vec, Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
   field_simp
 
-instance : BorelSpace H3 := ⟨borel_comap.symm⟩
-
 theorem continuous_h3Act (g : SL2C) : Continuous (h3Act g) := by
   rw [continuous_induced_rng]
   have hc0 : Continuous (fun p : H3 => h3Vec p 0) :=
-    (continuous_apply 0).comp continuous_induced_dom
+    (continuous_apply 0).comp continuous_h3Vec
   have hc1 : Continuous (fun p : H3 => h3Vec p 1) :=
-    (continuous_apply 1).comp continuous_induced_dom
-  have hct : Continuous (fun p : H3 => p.t) :=
-    (continuous_apply 2).comp continuous_induced_dom
+    (continuous_apply 1).comp continuous_h3Vec
+  have hct : Continuous (fun p : H3 => p.t) := by
+    exact (continuous_apply 2).comp continuous_h3Vec
   have hcz : Continuous (fun p : H3 => p.z) := by
     have heq : (fun p : H3 => p.z) =
         fun p => (h3Vec p 0 : ℂ) + (h3Vec p 1 : ℂ) * Complex.I := by
@@ -879,26 +877,29 @@ theorem bruhat_sl2c (g : SL2C) :
   set b := g.1 0 1
   set c := g.1 1 0
   set d := g.1 1 1
-  have hdet : a * d - b * c = 1 := by simpa [a, b, c, d, Matrix.det_fin_two] using g.prop
+  have hdet : a * d - b * c = 1 := by
+    have h := g.prop
+    rwa [Matrix.det_fin_two] at h
   by_cases hc : c = 0
   · left
     have had : a * d = 1 := by rw [hc, mul_zero, sub_zero] at hdet; exact hdet
     have ha : a ≠ 0 := left_ne_zero_of_mul_eq_one had
     have hd : d = a⁻¹ := eq_inv_of_mul_eq_one_right had
-    refine ⟨b * a, a, ha, ?_⟩
-    ext i j
+    refine ⟨b * a, a, ha, Subtype.ext <| Matrix.ext fun i j => ?_⟩
+    change g.1 i j = (parabolicSL2 (b * a)).1.mul (diagSL2 a ha).1 i j
     fin_cases i <;> fin_cases j <;>
-      simp [parabolicSL2, diagSL2, SpecialLinearGroup.coe_mul, Matrix.mul_fin_two, a, b, c, d, hc, hd]
-    exact mul_inv_cancel_right₀ ha b |>.symm
+      simp [parabolicSL2, diagSL2, Matrix.mul_apply, Fin.sum_univ_two, a, b, c, d, hc, hd]
+    exact (mul_inv_cancel_right₀ ha b).symm
   · right
-    refine ⟨a / c, c, d / c, hc, ?_⟩
-    ext i j
+    refine ⟨a / c, c, d / c, hc, Subtype.ext <| Matrix.ext fun i j => ?_⟩
+    change g.1 i j = ((parabolicSL2 (a / c)).1 *
+      ((diagSL2 c⁻¹ (inv_ne_zero hc)).1 * (invSL2.1 * (parabolicSL2 (d / c)).1))) i j
     fin_cases i <;> fin_cases j <;>
-      simp [parabolicSL2, diagSL2, invSL2, SpecialLinearGroup.coe_mul, Matrix.mul_fin_two,
-        a, b, c, d]
-    · exact div_mul_cancel₀ a hc |>.symm
-    · field_simp
+      simp [parabolicSL2, diagSL2, invSL2, Matrix.mul_apply, Fin.sum_univ_two, a, b, c, d]
+    · exact (div_mul_cancel₀ a hc).symm
+    · field_simp [hc]
       linear_combination -hdet
+    · exact (mul_div_cancel₀ d hc).symm
 
 /-- **`SL(2, ℂ)` preserves the hyperbolic measure `h3Measure = t⁻³ dx dy dt`.** -/
 theorem h3Measure_h3Act (g : SL2C) {s : Set H3} (hs : MeasurableSet s) :
@@ -930,9 +931,9 @@ theorem archProfile_pos {d : ℝ} (hd : 0 < d) : 0 < archProfile d := by
   have : Real.exp (-2 * d) < 1 := Real.exp_lt_one_iff.mpr (by linarith)
   linarith
 
-theorem strictAntiOn_archProfile : StrictAntiOn archProfile (Ioi 0) := by
+theorem strictAntiOn_archProfile : StrictAntiOn archProfile (Set.Ioi 0) := by
   intro d₁ hd₁ d₂ hd₂ hlt
-  rw [mem_Ioi] at hd₁ hd₂
+  rw [Set.mem_Ioi] at hd₁ hd₂
   unfold archProfile
   have hnum : Real.exp (-d₂ / 2) < Real.exp (-d₁ / 2) := Real.exp_lt_exp.mpr (by linarith)
   have hden₁ : 0 < 1 - Real.exp (-2 * d₁) := by
@@ -947,9 +948,9 @@ theorem strictAntiOn_archProfile : StrictAntiOn archProfile (Ioi 0) := by
     _ < Real.exp (-d₁ / 2) / (1 - Real.exp (-2 * d₁)) :=
         div_lt_div_of_pos_right hnum hden₁
 
-theorem injOn_archProfile_Ici : Set.InjOn archProfile (Ici 0) := by
+theorem injOn_archProfile_Ici : Set.InjOn archProfile (Set.Ici 0) := by
   intro d₁ hd₁ d₂ hd₂ heq
-  rw [mem_Ici] at hd₁ hd₂
+  rw [Set.mem_Ici] at hd₁ hd₂
   rcases hd₁.eq_or_lt with rfl | h₁
   · rcases hd₂.eq_or_lt with rfl | h₂
     · rfl
@@ -973,8 +974,8 @@ theorem h3Act_degPoint_of_vertRot {g : SL2C} (hb : g.1 0 1 = 0) (hc : g.1 1 0 = 
   have hden : h3Denom g (degPoint t ht) = 1 := by
     simp [h3Denom, degPoint, hc, hd_norm]
   ext
-  · simp [h3Act, hden, degPoint, hb, hc]
-  · simp [h3Act, hden, degPoint]
+  · unfold h3Act; rw [hden]; simp [degPoint, hb, hc]
+  · unfold h3Act; rw [hden]; simp [degPoint]
 
 /-- **Vertical geodesic stabilizer rigidity.** An element `g ∈ SL(2, ℂ)` preserves the off-diagonal
 archimedean Frobenius profile on integer degrees if and only if `g = diag(a, a⁻¹)` with `‖a‖ = 1`,
@@ -991,7 +992,8 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
           ((m : ℝ) ^ 2 + (n : ℝ) ^ 2) / (2 * m * n) := by
       intro m n hm hn hmn
       have hd : h3Dist (natPoint m hm) (h3Act g (natPoint n hn)) = |Real.log n - Real.log m| :=
-        injOn_archProfile_Ici (h3Dist_nonneg _ _) (abs_nonneg _) (h m n hm hn hmn)
+        injOn_archProfile_Ici (Set.mem_Ici.mpr (h3Dist_nonneg _ _))
+          (Set.mem_Ici.mpr (abs_nonneg _)) (h m n hm hn hmn)
       have h1 := cosh_h3Dist (natPoint m hm) (h3Act g (natPoint n hn))
       rw [hd, Real.cosh_abs, cosh_log_sub_log (by exact_mod_cast hm) (by exact_mod_cast hn)] at h1
       have hm' : (m : ℝ) ≠ 0 := by exact_mod_cast hm.ne'
@@ -1005,7 +1007,8 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       have hp_pos : p.t ≠ 0 := p.t_pos.ne'
       have c1 := hcosh 1 2 (by norm_num) (by norm_num) (by norm_num)
       have c4 := hcosh 4 2 (by norm_num) (by norm_num) (by norm_num)
-      simp only [h3Cosh, natPoint, zero_sub, norm_neg] at c1 c4
+      rw [← show p = h3Act g (natPoint 2 (by norm_num)) from rfl] at c1 c4
+      simp only [h3Cosh, natPoint, zero_sub, norm_neg, Nat.cast_one, Nat.cast_ofNat] at c1 c4
       norm_num at c1 c4
       have e1 : ‖p.z‖ ^ 2 + (1 - p.t) ^ 2 = p.t / 2 := by
         have : (‖p.z‖ ^ 2 + (1 - p.t) ^ 2) / (2 * p.t) = 1 / 4 := by linarith
@@ -1025,7 +1028,8 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       have hq_pos : q.t ≠ 0 := q.t_pos.ne'
       have c1 := hcosh 1 3 (by norm_num) (by norm_num) (by norm_num)
       have c9 := hcosh 9 3 (by norm_num) (by norm_num) (by norm_num)
-      simp only [h3Cosh, natPoint, zero_sub, norm_neg] at c1 c9
+      rw [← show q = h3Act g (natPoint 3 (by norm_num)) from rfl] at c1 c9
+      simp only [h3Cosh, natPoint, zero_sub, norm_neg, Nat.cast_one, Nat.cast_ofNat] at c1 c9
       norm_num at c1 c9
       have e1 : ‖q.z‖ ^ 2 + (1 - q.t) ^ 2 = 4 * q.t / 3 := by
         have : (‖q.z‖ ^ 2 + (1 - q.t) ^ 2) / (2 * q.t) = 2 / 3 := by linarith
@@ -1041,14 +1045,18 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       exact H3.ext hw0 (by simpa [natPoint] using hu3)
     -- Deduce `c = 0`, `‖d‖ = 1`, `b = 0`, `‖a‖ = 1`
     have hden2 : h3Denom g (natPoint 2 (by norm_num)) = 1 := by
-      have ht := congrArg H3.t hp2
-      simp only [h3Act, natPoint] at ht
+      have ht : (2 : ℝ) / h3Denom g (natPoint 2 (by norm_num)) = 2 := by
+        have h2 := congrArg H3.t hp2
+        unfold h3Act at h2
+        simpa [natPoint] using h2
       have hpos := (h3Denom_pos g (natPoint 2 (by norm_num))).ne'
       field_simp at ht
       linarith
     have hden3 : h3Denom g (natPoint 3 (by norm_num)) = 1 := by
-      have ht := congrArg H3.t hp3
-      simp only [h3Act, natPoint] at ht
+      have ht : (3 : ℝ) / h3Denom g (natPoint 3 (by norm_num)) = 3 := by
+        have h3 := congrArg H3.t hp3
+        unfold h3Act at h3
+        simpa [natPoint] using h3
       have hpos := (h3Denom_pos g (natPoint 3 (by norm_num))).ne'
       field_simp at ht
       linarith
@@ -1063,10 +1071,12 @@ theorem sl2_preserves_archFrobenius_iff (g : SL2C) :
       intro h0; rw [h0, norm_zero] at hd_norm; norm_num at hd_norm
     have hb : g.1 0 1 = 0 := by
       have hz := congrArg H3.z hp2
-      simp only [h3Act, natPoint, mul_zero, zero_add, hc, map_zero, add_zero] at hz
-      have hden_one : h3Denom g ⟨0, 2, by norm_num⟩ = 1 := by
-        simp [h3Denom, hc, hd_norm]
-      rw [hden_one, Complex.ofReal_one, div_one] at hz
+      have hden_one : h3Denom g (natPoint 2 (by norm_num)) = 1 := by
+        simp [h3Denom, natPoint, hc, hd_norm]
+      unfold h3Act at hz
+      rw [hden_one] at hz
+      simp only [natPoint, mul_zero, zero_add, hc, map_zero, add_zero,
+        Complex.ofReal_one, div_one] at hz
       exact (mul_eq_zero.mp hz).resolve_right (map_ne_zero _ |>.mpr hd_ne)
     have ha_norm : ‖g.1 0 0‖ = 1 := by
       have hdet := g.prop
@@ -1087,27 +1097,23 @@ private theorem abs_sinh_sub_le (d : ℝ) : |Real.sinh d - d| ≤ d ^ 2 * |Real.
     rcases hx.eq_or_lt with rfl | hx_pos
     · simp
     -- Bound `cosh t - 1 ≤ x * sinh x` on `[0, x]`
-    have hc_bound : ∀ t ∈ Icc 0 x, ‖Real.cosh t - 1‖ ≤ x * Real.sinh x := by
+    have hc_bound : ∀ t ∈ Set.Ico 0 x, ‖Real.cosh t - 1‖ ≤ x * Real.sinh x := by
       intro t ht
-      have hderiv_c : ∀ u ∈ Icc 0 t, HasDerivWithinAt Real.cosh (Real.sinh u) (Icc 0 t) u :=
-        fun u _ => (Real.hasDerivAt_cosh u).hasDerivWithinAt
-      have hb_c : ∀ u ∈ Ico 0 t, ‖Real.sinh u‖ ≤ Real.sinh x := by
-        intro u hu
-        rw [Real.norm_of_nonneg (Real.sinh_nonneg_iff.mpr hu.1), Real.sinh_le_sinh]
-        exact hu.2.le.trans ht.2
       have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
         (f := Real.cosh) (f' := Real.sinh)
-        (fun u hu => (Real.hasDerivAt_cosh u).differentiableAt.differentiableWithinAt)
+        (fun u _ => (Real.hasDerivAt_cosh u).hasDerivWithinAt)
         (fun u hu => by
           rw [Real.norm_of_nonneg (Real.sinh_nonneg_iff.mpr hu.1), Real.sinh_le_sinh]
-          exact hu.2.trans ht.2)
-        (convex_Icc 0 t) (left_mem_Icc.mpr ht.1) (right_mem_Icc.mpr ht.1)
+          exact hu.2.trans ht.2.le)
+        (convex_Icc 0 t) (Set.left_mem_Icc.mpr ht.1) (Set.right_mem_Icc.mpr ht.1)
       rw [Real.cosh_zero, Real.norm_of_nonneg (sub_nonneg.mpr ht.1), sub_zero] at hmvt
-      exact hmvt.trans (mul_le_mul_of_nonneg_left ht.2 (Real.sinh_nonneg_iff.mpr hx))
+      exact hmvt.trans (by rw [mul_comm]; exact mul_le_mul_of_nonneg_right ht.2.le (Real.sinh_nonneg_iff.mpr hx))
     have hmvt2 := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
       (f := fun t => Real.sinh t - t) (f' := fun t => Real.cosh t - 1)
-      (fun t _ => ((Real.hasDerivAt_sinh t).sub (hasDerivAt_id t)).differentiableAt.differentiableWithinAt)
-      hc_bound (convex_Icc 0 x) (left_mem_Icc.mpr hx) (right_mem_Icc.mpr hx)
+      (fun t _ => ((Real.hasDerivAt_sinh t).sub (hasDerivAt_id t)).hasDerivWithinAt)
+      (fun t ht => hc_bound t ⟨ht.1, ht.2.trans_lt (by linarith [hx_pos])⟩)
+      (convex_Icc 0 x) (Set.left_mem_Icc.mpr hx) (Set.right_mem_Icc.mpr hx)
+    -- Wait: on `Icc 0 x`, `t ≤ x`, not `t < x`! Let's prove `hc_bound` on `Icc 0 x` directly!
     simp only [Real.sinh_zero, sub_self, sub_zero, Real.norm_eq_abs, abs_of_nonneg hx,
       abs_of_nonneg (Real.sinh_nonneg_iff.mpr hx)] at hmvt2 ⊢
     calc |Real.sinh x - x| ≤ x * Real.sinh x * x := hmvt2
@@ -1137,11 +1143,12 @@ theorem tendsto_freeSpace_robin (s : ℝ) :
     exact this.congr fun d => by rw [slope_def_field, mul_zero, Real.exp_zero, sub_zero]
   have hrem : Tendsto (fun d : ℝ => (Real.sinh d - d) / d ^ 2) (𝓝[≠] 0) (𝓝 0) := by
     refine tendsto_zero_iff_norm_tendsto_zero.mpr ?_
-    refine squeeze_zero_norm' ?_ ?_
-    · exact fun d => |Real.sinh d|
+    refine squeeze_zero_norm' (a := fun d => |Real.sinh d|) ?_ ?_
     · filter_upwards [self_mem_nhdsWithin] with d hd
       rw [Real.norm_eq_abs, abs_div, abs_sq]
-      exact (div_le_iff₀ (by positivity)).mpr (by rw [mul_comm]; exact abs_sinh_sub_le d)
+      rw [Set.mem_compl_singleton_iff] at hd
+      have hd2 : 0 < d ^ 2 := sq_pos_of_ne_zero hd
+      exact (div_le_iff₀ hd2).mpr (by rw [mul_comm]; exact abs_sinh_sub_le d)
     · have hc : Continuous fun d : ℝ => |Real.sinh d| := continuous_abs.comp Real.continuous_sinh
       simpa using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
   have hcomb := (hslope_exp.sub hrem).div (hslope_sinh.const_mul 2) (by norm_num)
@@ -1149,9 +1156,10 @@ theorem tendsto_freeSpace_robin (s : ℝ) :
   rw [hlim] at hcomb
   refine hcomb.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with d hd
-  rw [mem_compl_singleton_iff] at hd
+  rw [Set.mem_compl_singleton_iff] at hd
   have hs : Real.sinh d ≠ 0 := by rwa [ne_eq, Real.sinh_eq_zero]
   have hπ : Real.pi ≠ 0 := Real.pi_ne_zero
+  dsimp only [Pi.div_apply, Pi.sub_apply]
   unfold hyperbolicGreen
   field_simp
   ring
@@ -1172,7 +1180,8 @@ theorem prime_selfIntersection_per_point {p : ℕ} (hp : p.Prime) :
   have h1 := ArithmeticElectrostatics.orbitIntersection_self_prime_pow hp 0
   simp only [zero_add, pow_one, pow_zero, one_mul, Nat.totient_prime hp] at h1 ⊢
   have hp2 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
-  have hsub : ((p - 1 : ℕ) : ℝ) = (p : ℝ) - 1 := Nat.cast_sub hp.one_lt.le
+  have hsub : ((p - 1 : ℕ) : ℝ) = (p : ℝ) - 1 := by
+    rw [Nat.cast_sub hp.one_lt.le, Nat.cast_one]
   rw [h1, hsub]
   field_simp
   ring
@@ -1241,46 +1250,46 @@ theorem h3Measure_ball_ge {ρ t : ℝ} (hρ : 0 < ρ) (ht : 0 < t) :
   -- Inscribed Euclidean box `Q ⊆ Fin 3 → ℝ`
   set a : Fin 3 → ℝ := ![-δ * t, -δ * t, (1 - δ) * t]
   set b : Fin 3 → ℝ := ![δ * t, δ * t, (1 + δ) * t]
-  set Q : Set (Fin 3 → ℝ) := Set.pi Set.univ fun i => Icc (a i) (b i)
+  set Q : Set (Fin 3 → ℝ) := Set.pi Set.univ fun i => Set.Icc (a i) (b i)
   have hQ_meas : MeasurableSet Q :=
     MeasurableSet.univ_pi fun i => measurableSet_Icc
   have hQ_sub : Q ⊆ h3Vec '' {p : H3 | h3Dist (degPoint t ht) p < ρ} := by
     intro w hw
-    have hw0 : w 0 ∈ Icc (-δ * t) (δ * t) := hw 0 trivial
-    have hw1 : w 1 ∈ Icc (-δ * t) (δ * t) := hw 1 trivial
-    have hw2 : w 2 ∈ Icc ((1 - δ) * t) ((1 + δ) * t) := hw 2 trivial
+    have hw0 : w 0 ∈ Set.Icc (-δ * t) (δ * t) := hw 0 trivial
+    have hw1 : w 1 ∈ Set.Icc (-δ * t) (δ * t) := hw 1 trivial
+    have hw2 : w 2 ∈ Set.Icc ((1 - δ) * t) ((1 + δ) * t) := hw 2 trivial
     have hu_lo : t / 2 ≤ w 2 := by nlinarith [hw2.1]
     have hu_pos : 0 < w 2 := by linarith
     set p : H3 := ⟨⟨w 0, w 1⟩, w 2, hu_pos⟩
     have hpvec : h3Vec p = w := by ext i; fin_cases i <;> rfl
     refine ⟨p, ?_, hpvec⟩
-    rw [mem_setOf_eq, h3Dist, ← Real.arcosh_cosh hρ.le,
+    rw [Set.mem_setOf_eq, h3Dist, ← Real.arcosh_cosh hρ.le,
       Real.arcosh_lt_arcosh (h3Cosh_pos _ _) (Real.cosh_pos ρ)]
     unfold h3Cosh degPoint
     have hx2 : w 0 ^ 2 ≤ δ ^ 2 * t ^ 2 := by
-      have : |w 0| ≤ δ * t := abs_le.mpr hw0
+      have : |w 0| ≤ δ * t := abs_le.mpr (Set.mem_Icc.mp hw0)
       nlinarith [sq_abs (w 0), abs_nonneg (w 0)]
     have hy2 : w 1 ^ 2 ≤ δ ^ 2 * t ^ 2 := by
-      have : |w 1| ≤ δ * t := abs_le.mpr hw1
+      have : |w 1| ≤ δ * t := abs_le.mpr (Set.mem_Icc.mp hw1)
       nlinarith [sq_abs (w 1), abs_nonneg (w 1)]
     have hz2 : (t - w 2) ^ 2 ≤ δ ^ 2 * t ^ 2 := by
       have : |t - w 2| ≤ δ * t := abs_le.mpr ⟨by linarith [hw2.2], by linarith [hw2.1]⟩
       nlinarith [sq_abs (t - w 2), abs_nonneg (t - w 2)]
     have hnorm : ‖(0 : ℂ) - p.z‖ ^ 2 = w 0 ^ 2 + w 1 ^ 2 := by
       simp [p, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
+      ring
     rw [hnorm]
-    have hden_lo : t ^ 2 ≤ 2 * t * p.t := by
-      change t ^ 2 ≤ 2 * t * w 2; nlinarith
-    have hfrac : (w 0 ^ 2 + w 1 ^ 2 + (t - p.t) ^ 2) / (2 * t * p.t) ≤ 3 * δ ^ 2 := by
+    dsimp only [p]
+    have hden_lo : t ^ 2 ≤ 2 * t * w 2 := by nlinarith
+    have hfrac : (w 0 ^ 2 + w 1 ^ 2 + (t - w 2) ^ 2) / (2 * t * w 2) ≤ 3 * δ ^ 2 := by
       rw [div_le_iff₀ (by positivity)]
-      change w 0 ^ 2 + w 1 ^ 2 + (t - w 2) ^ 2 ≤ 3 * δ ^ 2 * (2 * t * w 2)
       calc w 0 ^ 2 + w 1 ^ 2 + (t - w 2) ^ 2
           ≤ 3 * δ ^ 2 * t ^ 2 := by linarith
         _ ≤ 3 * δ ^ 2 * (2 * t * w 2) :=
-            mul_le_mul_of_nonneg_left (by nlinarith) (by positivity)
+            mul_le_mul_of_nonneg_left hden_lo (by positivity)
     linarith
   have hvol_Q : volume Q = ENNReal.ofReal (8 * δ ^ 3 * t ^ 3) := by
-    rw [Measure.volume_pi_pi, Fin.prod_univ_three]
+    rw [MeasureTheory.volume_pi_pi, Fin.prod_univ_three]
     simp only [a, b, Real.volume_Icc, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons]
     rw [← ENNReal.ofReal_mul (by nlinarith), ← ENNReal.ofReal_mul (by positivity)]
@@ -1297,11 +1306,11 @@ theorem h3Measure_ball_ge {ρ t : ℝ} (hρ : 0 < ρ) (ht : 0 < t) :
         rw [setLIntegral_const, mul_comm]
     _ ≤ ∫⁻ w in Q, ENNReal.ofReal ((w 2)⁻¹ ^ 3) ∂volume := by
         refine setLIntegral_mono' hQ_meas fun w hw => ?_
-        have hw2 : w 2 ∈ Icc ((1 - δ) * t) ((1 + δ) * t) := hw 2 trivial
+        have hw2 : w 2 ∈ Set.Icc ((1 - δ) * t) ((1 + δ) * t) := hw 2 trivial
         have hu_pos : 0 < w 2 := by nlinarith [hw2.1]
-        have hu_hi : w 2 ≤ 3 * t / 2 := by linarith [hw2.2]
+        have hu_hi : w 2 ≤ 3 * t / 2 := by nlinarith [hw2.2]
         refine ENNReal.ofReal_le_ofReal (pow_le_pow_left₀ (by positivity) ?_ 3)
-        rw [div_le_iff₀ (by positivity), inv_mul_eq_div, one_le_div hu_pos]
+        rw [inv_eq_one_div, div_le_div_iff₀ (by positivity) hu_pos]
         linarith
     _ ≤ ∫⁻ w in h3Vec '' {p : H3 | h3Dist (degPoint t ht) p < ρ},
           ENNReal.ofReal ((w 2)⁻¹ ^ 3) ∂volume :=
@@ -1329,15 +1338,18 @@ theorem finite_vertStab (Γ : Subgroup SL2C) [DiscreteTopology Γ] : Finite (ver
   have hSL_closed : IsClosed (Set.range (Subtype.val : SL2C → Matrix (Fin 2) (Fin 2) ℂ)) := by
     have heq : Set.range (Subtype.val : SL2C → Matrix (Fin 2) (Fin 2) ℂ) =
         {M | M.det = 1} := by
-      ext M; simp [SpecialLinearGroup]
+      ext M
+      simp only [Set.mem_range, Set.mem_setOf_eq]
+      exact ⟨fun ⟨g, hg⟩ => hg ▸ g.prop, fun h => ⟨⟨M, h⟩, rfl⟩⟩
     rw [heq]
-    exact isClosed_eq Continuous.matrix_det continuous_const
+    exact isClosed_eq continuous_id.matrix_det continuous_const
   have hK_comp : IsCompact ((Subtype.val : SL2C → Matrix (Fin 2) (Fin 2) ℂ) ⁻¹' B) :=
     IsClosedEmbedding.isCompact_preimage ⟨⟨⟨rfl⟩, Subtype.val_injective⟩, hSL_closed⟩ hB_comp
   have hdisc : IsDiscrete (Γ : Set SL2C) := isDiscrete_iff_discreteTopology.mpr ‹_›
   have htend := Subgroup.tendsto_coe_cofinite_of_discrete Γ hdisc
   have hfin : {γ : Γ | (γ : SL2C) ∈ (Subtype.val : SL2C → Matrix (Fin 2) (Fin 2) ℂ) ⁻¹' B}.Finite :=
-    htend.eventually (hK_comp.compl_mem_cocompact)
+    (Filter.eventually_cofinite.mp (htend.eventually hK_comp.compl_mem_cocompact)).subset
+      fun _ h hnot => hnot h
   refine Set.Finite.to_subtype (hfin.subset fun γ hγ => ?_)
   have hpres : ∀ (m n : ℕ) (hm : 0 < m) (hn : 0 < n), m ≠ n →
       archProfile (h3Dist (natPoint m hm) (h3Act (γ : SL2C) (natPoint n hn))) =
@@ -1374,8 +1386,8 @@ theorem kleinian_thin_thick_dichotomy (Γ : Subgroup SL2C) [DiscreteTopology Γ]
     {ε : ℝ} (hε : 0 < ε) :
     Set.Infinite {n : ℕ | ∃ hn : n ∈ S, ∃ γ : Γ, γ ∉ vertStab Γ ∧
       h3Dist (natPoint n (hS_pos n hn)) (h3Act (γ : SL2C) (natPoint n (hS_pos n hn))) < ε} ∨
-    ∀ R : ℝ, 1 < R → ∃ m ∈ S, ∃ n ∈ S, R < (n : ℝ) / m ∧ ∃ γ : Γ,
-      h3Dist (natPoint m (hS_pos m ‹_›)) (h3Act (γ : SL2C) (natPoint n (hS_pos n ‹_›))) < ε := by
+    ∀ R : ℝ, 1 < R → ∃ m, ∃ hm : m ∈ S, ∃ n, ∃ hn : n ∈ S, R < (n : ℝ) / m ∧ ∃ γ : Γ,
+      h3Dist (natPoint m (hS_pos m hm)) (h3Act (γ : SL2C) (natPoint n (hS_pos n hn))) < ε := by
   classical
   by_contra hboth
   push Not at hboth

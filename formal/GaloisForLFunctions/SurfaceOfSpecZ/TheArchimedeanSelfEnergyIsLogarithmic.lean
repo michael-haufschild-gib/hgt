@@ -269,13 +269,13 @@ theorem tendsto_renormalized_selfEnergy {g : ℝ → ℝ} (hg : Integrable g) (h
     (hint : Integrable fun x => archProfile |x| * (g 0 - g x)) :
     Tendsto (fun r => ∫ x, archDamped r x * g x - g 0 * selfEnergy r) (𝓝[<] 1)
       (𝓝 (-∫ x, archProfile |x| * (g 0 - g x))) := by
-  have h := (tendsto_integral_archDamped_mul (hg.aestronglyMeasurable.const_sub (g 0))
+  have h := (tendsto_integral_archDamped_mul (aestronglyMeasurable_const.sub hg.aestronglyMeasurable)
     (fun x => sub_nonneg.mpr (hnn x)) hint).neg
   refine h.congr' ?_
   have h0 : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 < r :=
     nhdsWithin_le_nhds (lt_mem_nhds (by norm_num : (0 : ℝ) < 1))
   filter_upwards [h0, self_mem_nhdsWithin] with r hr0 hr1
-  rw [integral_archDamped_mul_eq hr0.le (mem_Iio.mp hr1) hg]
-  ring
+  have := integral_archDamped_mul_eq hr0.le (mem_Iio.mp hr1) hg
+  linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ

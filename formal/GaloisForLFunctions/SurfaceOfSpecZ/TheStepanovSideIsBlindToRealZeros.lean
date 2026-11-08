@@ -71,7 +71,8 @@ theorem onLine_of_two_re_lagStructure_ge (Z : ZeroConfig) (hZ : TemperedConfig Z
 abbrev realPair : ZeroConfig := _root_.RHTower.offLinePairConfig 0
 
 theorem temperedConfig_realPair : TemperedConfig realPair := by
-  haveI : Finite realPair.carrier := (Set.toFinite _).to_subtype
+  have hfin : realPair.carrier.Finite := (Set.finite_singleton _).insert _
+  haveI := hfin.to_subtype
   exact Summable.of_finite
 
 theorem mem_realPair_iff (ρ : ℂ) : ρ ∈ realPair.carrier ↔ ρ = 3 / 4 ∨ ρ = 1 / 4 := by
@@ -98,7 +99,8 @@ theorem paperFT_spline_quarter :
   have hreal : conj w = w := by
     have h := conj_paperFT_boxSpline 1 3 (-(I * (1 / 4)))
     rw [show conj (-(I * (1 / 4) : ℂ)) = -(I * (-1 / 4)) by
-      simp [map_neg, map_mul, Complex.conj_I]; ring, heven] at h
+      simp only [map_neg, map_mul, Complex.conj_I, map_div₀, map_one, map_ofNat]; ring,
+      heven] at h
     rw [hw]; exact h
   have him : w.im = 0 := by
     have := congrArg Complex.im hreal
