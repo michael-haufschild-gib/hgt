@@ -63,5 +63,36 @@ theorem tendsto_normalized_square_mean_of_terminal_strip
     simpa only [sq_abs] using hh
   exact normalized_sum_le_of_terminal_strip hN (by positivity) he hei
 
+/-- Two errors vanishing in normalized square mean still vanish after addition. -/
+theorem tendsto_normalized_square_mean_add {S : ℕ → Finset ℕ} {f g : ℕ → ℕ → ℝ}
+    (hf : Tendsto (fun N : ℕ => (∑ n ∈ S N, f N n ^ 2) / N) atTop (𝓝 0))
+    (hg : Tendsto (fun N : ℕ => (∑ n ∈ S N, g N n ^ 2) / N) atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => (∑ n ∈ S N, (f N n + g N n) ^ 2) / N) atTop (𝓝 0) := by
+  have hlim := (hf.const_mul 2).add (hg.const_mul 2)
+  simp only [mul_zero, add_zero] at hlim
+  refine squeeze_zero (fun N => by positivity) (fun N => ?_) hlim
+  have hh : (∑ n ∈ S N, (f N n + g N n) ^ 2) ≤
+      2 * (∑ n ∈ S N, f N n ^ 2) + 2 * (∑ n ∈ S N, g N n ^ 2) := by
+    rw [mul_sum, mul_sum, ← sum_add_distrib]
+    exact sum_le_sum fun n _ => by nlinarith only [sq_nonneg (f N n - g N n)]
+  exact (div_le_div_of_nonneg_right hh (Nat.cast_nonneg N)).trans_eq (by ring)
+
+/-- A scalar tending to zero has vanishing square mean over any subset of a horizon. -/
+theorem tendsto_normalized_square_mean_const {S : ℕ → Finset ℕ}
+    (hS : ∀ N, (S N).card ≤ N) {f : ℕ → ℝ} (hf : Tendsto f atTop (𝓝 0)) :
+    Tendsto (fun N : ℕ => (∑ _n ∈ S N, f N ^ 2) / N) atTop (𝓝 0) := by
+  have hlim := hf.pow 2
+  rw [zero_pow (by decide : 2 ≠ 0)] at hlim
+  refine squeeze_zero' (Eventually.of_forall fun N => by positivity) ?_ hlim
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hN0 : (0 : ℝ) < N := by exact_mod_cast hN
+  rw [sum_const, nsmul_eq_mul, div_le_iff₀ hN0]
+  have hh := mul_le_mul_of_nonneg_right (show ((S N).card : ℝ) ≤ N by exact_mod_cast hS N)
+    (sq_nonneg (f N))
+  simpa only [mul_comm] using hh
+
+#print axioms tendsto_normalized_square_mean_add
+#print axioms tendsto_normalized_square_mean_const
+
 #print axioms tendsto_normalized_square_mean_of_terminal_strip
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

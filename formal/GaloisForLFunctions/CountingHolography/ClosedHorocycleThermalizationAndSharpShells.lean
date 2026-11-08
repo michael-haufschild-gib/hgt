@@ -230,7 +230,8 @@ private theorem exists_norm_regularPart_closed_strip_le {ψ : ℝ → ℂ} {a b 
   have hpos : 0 < (1 + w.im ^ 2) ^ K := by positivity
   rcases le_or_gt |w.im| 1 with ht | ht
   · have hwb : w ∈ Set.Icc (-1 / 2 : ℝ) 1 ×ℂ Set.Icc (-1 : ℝ) 1 := ⟨⟨hw1, hw2⟩, abs_le.mp ht⟩
-    have him2 : w.im ^ 2 ≤ 1 := sq_le_one_iff_abs_le_one.mpr ht
+    have him2 : w.im ^ 2 ≤ 1 := by
+      simpa only [sq_abs, one_pow] using pow_le_pow_left₀ (abs_nonneg w.im) ht 2
     have h1 : (1 + w.im ^ 2) ^ K ≤ 2 ^ K :=
       pow_le_pow_left₀ (by positivity) (by linarith) K
     rw [le_div_iff₀ hpos]
@@ -276,7 +277,7 @@ private theorem exists_norm_regularPart_closed_strip_le {ψ : ℝ → ℂ} {a b 
           ≤ 2 * (‖scatterQ s‖ * ‖mellin ψ (-s)‖) + ‖residueConst ψ‖ * ‖Complex.Gamma s‖ := by
             refine (norm_sub_le _ _).trans ?_
             rw [norm_mul, norm_mul, norm_mul]
-            norm_num
+            norm_num [mul_assoc]
         _ ≤ 2 * (CQ * C₂ / (1 + w.im ^ 2) ^ K) +
             ‖residueConst ψ‖ * (CΓ * (CE / (1 + w.im ^ 2) ^ K)) := by gcongr
         _ = _ := by ring
@@ -337,7 +338,7 @@ private theorem exists_norm_scatterPrefactor_le :
         riemannZeta (2 * s - 1)‖ ≤ C * |s.im| ^ N := by
   obtain ⟨C₁, N₁, hC₁, hΓ₁⟩ := exists_sharp_bound_norm_Gamma_strip (-1 / 8) 0
   obtain ⟨C₂, N₂, hC₂, hΓ₂⟩ := HTGeometry.exists_bound_norm_inv_Gamma_strip (3 / 8) (1 / 2)
-  obtain ⟨C₃, N₃, hC₃, hζ⟩ := exists_bound_norm_riemannZeta_strip 1
+  obtain ⟨C₃, N₃, hC₃, hζ⟩ := _root_.RHTower.exists_bound_norm_riemannZeta_strip 1
   refine ⟨3 * (Real.pi ^ (1 / 2 : ℝ) * (C₁ * C₂)) * (C₃ * 2 ^ N₃), 1 + (N₁ + N₂) + N₃,
     by positivity, fun s hs0 hs1 ht => ?_⟩
   rw [norm_mul, norm_mul, norm_gammaℝ_div]
@@ -470,7 +471,8 @@ private theorem exists_regularPart_vk_rect {ψ : ℝ → ℂ} {a b : ℝ} (hψ :
   rcases le_or_gt |u.im| 1 with ht | ht
   · have hw_anti : narainVKWidth δ T ≤ narainVKWidth δ T₀ := narainVKWidth_anti δ hexp_2T₀ hT
     have hub : u ∈ box0 := ⟨⟨by linarith, hhi⟩, abs_le.mp ht⟩
-    have huim2 : u.im ^ 2 ≤ 1 := sq_le_one_iff_abs_le_one.mpr ht
+    have huim2 : u.im ^ 2 ≤ 1 := by
+        simpa only [sq_abs, one_pow] using pow_le_pow_left₀ (abs_nonneg u.im) ht 2
     have h1 : (1 + u.im ^ 2) ^ K ≤ 2 ^ K :=
       pow_le_pow_left₀ (by positivity) (by linarith) K
     rw [le_div_iff₀ hpos]
@@ -542,7 +544,7 @@ private theorem exists_regularPart_vk_rect {ψ : ℝ → ℂ} {a b : ℝ} (hψ :
           ≤ 2 * (‖scatterQ s‖ * ‖mellin ψ (-s)‖) + ‖residueConst ψ‖ * ‖Complex.Gamma s‖ := by
             refine (norm_sub_le _ _).trans ?_
             rw [norm_mul, norm_mul, norm_mul]
-            norm_num
+            norm_num [mul_assoc]
         _ ≤ 2 * ((Cpre * Cζ) * C₂ * narainVKCost T / (1 + u.im ^ 2) ^ K) +
               ‖residueConst ψ‖ * (CΓ * (CE / (1 + u.im ^ 2) ^ K)) * 1 := by
             rw [mul_one]; gcongr
@@ -752,7 +754,8 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
           (∫ t : ℝ, (y : ℂ) ^ (-(((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) •
             regularPart ψ (((-1 / 2 : ℝ) : ℂ) + (t : ℂ) * Complex.I)) =
           ∫ t : ℝ, ((y ^ (1 / 2 : ℝ) : ℝ) : ℂ) * G₀ ((t : ℂ) * Complex.I) :=
-        integral_congr_ae (Eventually.of_forall fun t => by rw [smul_eq_mul, hcpow_line t])
+        integral_congr_ae (Eventually.of_forall fun t => by
+          simpa only [smul_eq_mul] using hcpow_line t)
       rw [hint_eq, integral_const_mul, norm_smul, norm_mul, Real.norm_of_nonneg (by positivity),
         Complex.norm_real, Real.norm_of_nonneg (Real.rpow_nonneg hy.le _)]
       ring
@@ -766,14 +769,18 @@ private theorem norm_horocycleMean_sub_le_stretched_exp_test {ψ : ℝ → ℂ} 
       have hb := hB_K ((t : ℂ) * Complex.I - 1 / 2) (by simp; norm_num) (by simp; norm_num)
       simpa using hb
     have hG₀_cont : Continuous fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
-      rw [continuous_iff_continuousAt]
-      intro t
-      have hw : DifferentiableAt ℂ (regularPart ψ) ((t : ℂ) * Complex.I - 1 / 2) :=
-        differentiableAt_regularPart_of_xi_ne_zero hψ (by simp; norm_num)
-          (_root_.RHTower.xi_ne_zero_of_one_le_re (by simp; norm_num))
-      exact (((Complex.differentiableAt_exp.comp _
-        ((differentiableAt_id.const_mul (L : ℂ)))).continuousAt.comp (by fun_prop)).mul
-        (hw.continuousAt.comp (by fun_prop)))
+      have hline_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I) :=
+        Complex.continuous_ofReal.mul continuous_const
+      have hshift_cont : Continuous (fun t : ℝ => (t : ℂ) * Complex.I - 1 / 2) :=
+        hline_cont.sub continuous_const
+      have hregular_cont : Continuous (fun t : ℝ => regularPart ψ ((t : ℂ) * Complex.I - 1 / 2)) := by
+        rw [continuous_iff_continuousAt]
+        intro t
+        have hw : DifferentiableAt ℂ (regularPart ψ) ((t : ℂ) * Complex.I - 1 / 2) :=
+          differentiableAt_regularPart_of_xi_ne_zero hψ (by simp; norm_num)
+            (_root_.RHTower.xi_ne_zero_of_one_le_re (by simp; norm_num))
+        exact hw.continuousAt.comp t hshift_cont.continuousAt
+      exact (Complex.continuous_exp.comp (continuous_const.mul hline_cont)).mul hregular_cont
     have hG₀_int : Integrable fun t : ℝ => G₀ ((t : ℂ) * Complex.I) := by
       refine (integrable_inv_one_add_sq.const_mul B_K).mono' hG₀_cont.aestronglyMeasurable
         (Eventually.of_forall fun t => ?_)
@@ -1329,10 +1336,10 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
         ring
       have hf_cont : Continuous f := by unfold f; fun_prop
       have hL_cont : Continuous L_sec := by unfold L_sec; fun_prop
-      have hlo_int := intervalIntegral.integral_mono_on (by linarith)
+      have hlo_int := intervalIntegral.integral_mono_on (μ := volume) (by linarith)
         (hL_cont.intervalIntegrable _ _) (hf_cont.intervalIntegrable _ _)
         fun x hx => (hpt x hx).1
-      have hhi_int := intervalIntegral.integral_mono_on (by linarith)
+      have hhi_int := intervalIntegral.integral_mono_on (μ := volume) (by linarith)
         ((hf_cont.sub hL_cont).intervalIntegrable _ _) intervalIntegrable_const
         fun x hx => (hpt x hx).2
       rw [intervalIntegral.integral_sub (hf_cont.intervalIntegrable _ _)
@@ -1345,7 +1352,7 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
     have hsum_int : ∑ k ∈ range N, ∫ x in (k : ℝ)..((k : ℝ) + 1), f x =
         ∫ x in (0 : ℝ)..(N : ℝ), f x := by
       have h := intervalIntegral.sum_integral_adjacent_intervals (a := fun k : ℕ => (k : ℝ))
-        (k := N) fun k _ => hf_cont.intervalIntegrable _ _
+        (n := N) fun k _ => hf_cont.intervalIntegrable _ _
       simpa [Nat.cast_add, Nat.cast_one] using h
     have hsum_err : ∑ k ∈ range N, (((k : ℝ) + 1) / f ((k : ℝ) + 1) - (k : ℝ) / f k) =
         (N : ℝ) / f N := by
@@ -1421,7 +1428,7 @@ theorem abs_circleRemainder_le_sqrt {Y : ℝ} (hY : 0 ≤ Y) :
         ring
       linarith
     have hrem_id : circleRemainder Y =
-        -(∫ x in (0 : ℝ)..(N : ℝ), f x - ∑ k ∈ range N, (f k + f ((k : ℝ) + 1)) / 2) +
+        -((∫ x in (0 : ℝ)..(N : ℝ), f x) - ∑ k ∈ range N, (f k + f ((k : ℝ) + 1)) / 2) +
           f ((N : ℝ) + 1) + f N / 2 - ∫ x in (N : ℝ)..Y, f x := by
       unfold circleRemainder
       linarith [harea, htrap_sum]
@@ -1624,7 +1631,7 @@ private theorem shellTrap_eq_one_of_mem {a b ε t : ℝ} (hε : 0 < ε) (hta : a
   ring
 
 /-- Pointwise eventual equality `shellTrap a b (δ₀ / (n + 1)) t = 1_{[a, b)}(t)` at every `t : ℝ`. -/
-private theorem eventually_shellTrap_eq_indicator {a b δ₀ : ℝ} (hab : a < b) (hδ0 : 0 < δ₀)
+private theorem eventually_shellTrap_eq_indicator {a b δ₀ : ℝ} (_hab : a < b) (hδ0 : 0 < δ₀)
     (hδba : δ₀ ≤ (b - a) / 2) (t : ℝ) :
     ∀ᶠ n : ℕ in atTop,
       ((shellTrap a b (δ₀ / ((n : ℝ) + 1)) t : ℝ) : ℂ) = (Ico a b).indicator 1 t := by
@@ -1721,14 +1728,14 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
     have hfin := finite_rows_im_ge (isCompact_singleton (x := z)) ha₀0
     set S := hfin.toFinset
     have hall : ∀ᶠ n in atTop, ∀ p ∈ S,
-        ψn n (EisensteinSeries.gammaSetMatrix p • z).im =
-          ψ_sh (EisensteinSeries.gammaSetMatrix p • z).im :=
-      Filter.eventually_all_finset.mpr fun p _ =>
+        ψn n (gammaSetMatrix p • z).im =
+          ψ_sh (gammaSetMatrix p • z).im :=
+      (Filter.eventually_all_finset S).mpr fun p _ =>
         eventually_shellTrap_eq_indicator hab hδ0 hδba _
     filter_upwards [hall] with n hn
-    have hout_n : ∀ p ∉ S, ψn n (EisensteinSeries.gammaSetMatrix p • z).im = 0 := fun p hp =>
+    have hout_n : ∀ p ∉ S, ψn n (gammaSetMatrix p • z).im = 0 := fun p hp =>
       hψn_a₀ n _ (lt_of_not_ge fun hge => hp (hfin.mem_toFinset.2 ⟨z, rfl, hge⟩))
-    have hout_sh : ∀ p ∉ S, ψ_sh (EisensteinSeries.gammaSetMatrix p • z).im = 0 := fun p hp =>
+    have hout_sh : ∀ p ∉ S, ψ_sh (gammaSetMatrix p • z).im = 0 := fun p hp =>
       hψsh_a₀ _ (lt_of_not_ge fun hge => hp (hfin.mem_toFinset.2 ⟨z, rfl, hge⟩))
     rw [pseudoEisenstein_eq_sum hout_n, pseudoEisenstein_eq_sum hout_sh]
     exact Finset.sum_congr rfl hn
@@ -1809,6 +1816,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
     rw [smul_eq_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy0]
     have hre : ((s - 1) - 1).re = s.re - 2 := by simp; ring
     rw [hre]
+    dsimp only [dom]
     by_cases hyY : y ≤ Y
     · rw [Set.indicator_of_mem (show y ∈ Set.Ioc 0 Y from ⟨hy0, hyY⟩), mul_comm]
       exact mul_le_mul_of_nonneg_right (hm_norm_n n y) (Real.rpow_nonneg hy0.le _)
@@ -1822,6 +1830,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
     rw [smul_eq_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy0]
     have hre : ((s - 1) - 1).re = s.re - 2 := by simp; ring
     rw [hre]
+    dsimp only [dom]
     by_cases hyY : y ≤ Y
     · rw [Set.indicator_of_mem (show y ∈ Set.Ioc 0 Y from ⟨hy0, hyY⟩), mul_comm]
       exact mul_le_mul_of_nonneg_right (hm_norm_sh y) (Real.rpow_nonneg hy0.le _)
@@ -1851,7 +1860,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
           ((Complex.continuousAt_ofReal_cpow_const y (w - 1)
             (Or.inr (mem_Ioi.mp hy).ne')).smul (hψn_cont n).continuousAt).continuousWithinAt)
         measurableSet_Ioi
-    have hbd_ψn : ∀ n, ∀ᵐ y ∂volume.restrict (Ioi 0),
+    have hbd_ψn : ∀ n, ∀ᵐ (y : ℝ) ∂volume.restrict (Ioi (0 : ℝ)),
         ‖(y : ℂ) ^ (w - 1) • ψn n y‖ ≤ dom_w y := by
       intro n
       rw [ae_restrict_iff' measurableSet_Ioi]
@@ -1859,6 +1868,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
       have hy0 : (0 : ℝ) < y := hy
       rw [smul_eq_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy0,
         Complex.sub_re, Complex.one_re]
+      dsimp only [dom_w]
       by_cases hmem : y ∈ Icc a₀ b
       · rw [Set.indicator_of_mem hmem]
         exact mul_le_of_le_one_right (Real.rpow_nonneg hy0.le _) (hψn_norm n y)
@@ -1867,7 +1877,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
         · rw [hψn_a₀ n y hlt, norm_zero, mul_zero]
         · have hgt : b < y := lt_of_not_ge fun hle => hmem ⟨hge, hle⟩
           rw [hψn_b n y hgt, norm_zero, mul_zero]
-    have hpt_ψn : ∀ᵐ y ∂volume.restrict (Ioi 0),
+    have hpt_ψn : ∀ᵐ (y : ℝ) ∂volume.restrict (Ioi (0 : ℝ)),
         Tendsto (fun n => (y : ℂ) ^ (w - 1) • ψn n y) atTop
           (𝓝 ((y : ℂ) ^ (w - 1) • ψ_sh y)) := by
       rw [ae_restrict_iff' measurableSet_Ioi]
@@ -1889,7 +1899,7 @@ private theorem mellin_horocycleMean_shell {a b : ℝ} (ha : 1 < a) (hab : a < b
       (mellin_horocycleMean (hψn_cont n) ha₀1 (hψn_a₀ n) (hψn_b n) hs).symm)
 
 /-- The Mellin transform of a sharp shell indicator `1_{[a, b)}` (`0 < a ≤ b`) is entire. -/
-theorem differentiableAt_mellin_shell {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) (w : ℂ) :
+theorem differentiableAt_mellin_shell {a b : ℝ} (ha : 0 < a) (_hab : a ≤ b) (w : ℂ) :
     DifferentiableAt ℂ (mellin ((Ico a b).indicator (1 : ℝ → ℂ))) w := by
   have hint : Integrable ((Set.Ico a b).indicator (1 : ℝ → ℂ)) volume :=
     (integrableOn_const (C := (1 : ℂ)) (by simp)).integrable_indicator measurableSet_Ico
@@ -2433,7 +2443,7 @@ theorem horoball_rh_rate_iff_rh_and_moebius_circle :
                 4 * y * (C_H * y ^ (-(1 / 4 + δ / 2))) :=
               mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hXb_pow hC_H0) (by positivity)
             linarith
-        _ = C₁ * y ^ (3 / 4 - δ / 2) := by rw [hy_prod]; rfl
+        _ = C₁ * y ^ (3 / 4 - δ / 2) := by rw [hy_prod]
         _ ≤ max C₁ ((2 + |c₀|) / m₀) * y ^ (3 / 4 - ε) :=
             mul_le_mul (le_max_left _ _) hy_mon (by positivity)
               (le_trans (by positivity : 0 ≤ C₁) (le_max_left _ _))
@@ -2449,7 +2459,7 @@ theorem horoball_rh_rate_iff_rh_and_moebius_circle :
           ≤ ‖horocycleMean (fun z => (shellCount 2 3 z : ℂ)) y‖ + ‖(c₀ : ℂ)‖ := norm_sub_le _ _
         _ ≤ 2 + |c₀| := by
             rw [Complex.norm_real, Real.norm_eq_abs]
-            exact add_le_add_right (norm_horocycleMean_shellCount_le_two (by norm_num : (1 : ℝ) < 2) y) |c₀|
+            exact add_le_add (norm_horocycleMean_shellCount_le_two (b := 3) (by norm_num : (1 : ℝ) < 2) y) le_rfl
         _ = ((2 + |c₀|) / m₀) * m₀ := by rw [div_mul_cancel₀ _ hm₀.ne']
         _ ≤ max C₁ ((2 + |c₀|) / m₀) * y ^ (3 / 4 - ε) :=
             mul_le_mul (le_max_right _ _) hm_le hm₀.le
@@ -2893,7 +2903,7 @@ theorem single_shell_rh_rate_iff_rh_and_moebius_circle {a b : ℝ} (ha : 1 < a) 
           ≤ ‖horocycleMean (fun z => (shellCount a b z : ℂ)) y‖ + ‖(c₀ : ℂ)‖ := norm_sub_le _ _
         _ ≤ 2 + |c₀| := by
             rw [Complex.norm_real, Real.norm_eq_abs]
-            exact add_le_add_right (norm_horocycleMean_shellCount_le_two ha y) |c₀|
+            exact add_le_add (norm_horocycleMean_shellCount_le_two (b := b) ha y) le_rfl
         _ = ((2 + |c₀|) / m₀) * m₀ := by rw [div_mul_cancel₀ _ hm₀.ne']
         _ ≤ max C₁ ((2 + |c₀|) / m₀) * y ^ (3 / 4 - ε) :=
             mul_le_mul (le_max_right _ _) hm_le hm₀.le

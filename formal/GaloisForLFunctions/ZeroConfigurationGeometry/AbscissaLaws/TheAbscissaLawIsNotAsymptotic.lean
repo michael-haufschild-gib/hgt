@@ -76,20 +76,19 @@ def addPair (Z : ZeroConfig) (ρ : ℂ) (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1) (h
       · exact Or.inr hz
 
 /-- **One pair added to a pure configuration**: ZAL holds and the finite case of AAL fails. -/
-theorem addPair_not_abscissaLawAt_zero {Z : ZeroConfig} (hP : Pure Z) {ρ : ℂ} (h12 : 1 / 2 < ρ.re)
-    (h1 : ρ.re ≤ 1) :
+theorem addPair_not_abscissaLawAt_zero {Z : ZeroConfig} (hP : Pure Z) {ρ : ℂ} (h0 : 0 ≤ ρ.re)
+    (h12 : 1 / 2 < ρ.re) (h1 : ρ.re ≤ 1) :
     ∃ (hρ : ρ ∉ Z.carrier) (hρ' : reflect ρ ∉ Z.carrier),
-      ApproachesLine (addPair Z ρ (by linarith) h1 hρ hρ') ∧
-        ¬ AbscissaLawAt (addPair Z ρ (by linarith) h1 hρ hρ') 0 := by
+      ApproachesLine (addPair Z ρ h0 h1 hρ hρ') ∧ ¬ AbscissaLawAt (addPair Z ρ h0 h1 hρ hρ') 0 := by
   have hρ : ρ ∉ Z.carrier := fun h => by have := hP ρ h; linarith
   have hρ' : reflect ρ ∉ Z.carrier := fun h => by
     have := hP _ h
     rw [ArithmeticCastelnuovoSeveri.re_reflect] at this
     linarith
   refine ⟨hρ, hρ', ?_⟩
-  have hfin : ∀ h : ℝ, 0 ≤ h → (rightOf (addPair Z ρ (by linarith) h1 hρ hρ') h).Finite := by
+  have hfin : ∀ h : ℝ, 0 ≤ h → (rightOf (addPair Z ρ h0 h1 hρ hρ') h).Finite := by
     intro h hh
-    refine ((finite_singleton _).insert _).subset fun z ⟨hz, hre⟩ => ?_
+    refine ((finite_singleton (reflect ρ)).insert ρ).subset fun z ⟨hz, hre⟩ => ?_
     rcases hz with hz | hz
     · have := hP z hz; linarith
     · exact hz
@@ -125,7 +124,7 @@ theorem exists_not_abscissaLawAt_zero_of_isAsymptotic {P : ZeroConfig → Prop}
     (hP : IsAsymptotic P) {Z : ZeroConfig} (hZ : Pure Z) (hPZ : P Z) :
     ∃ Z' : ZeroConfig, P Z' ∧ ApproachesLine Z' ∧ ¬ AbscissaLawAt Z' 0 := by
   obtain ⟨hρ, hρ', hZAL, hnot⟩ := addPair_not_abscissaLawAt_zero hZ
-    (ρ := (3 / 4 : ℂ)) (by norm_num) (by norm_num)
+    (ρ := (3 / 4 : ℂ)) (by norm_num) (by norm_num) (by norm_num)
   refine ⟨_, (hP _ _ ⟨|(3 / 4 : ℂ).im|, addPair_agrees_above Z _ _ _ hρ hρ'⟩).mp hPZ, hZAL, hnot⟩
 
 end GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa

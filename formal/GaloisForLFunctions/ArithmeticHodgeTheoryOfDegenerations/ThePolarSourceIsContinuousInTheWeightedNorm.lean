@@ -124,6 +124,7 @@ lemma abs_terminalPolarKernel_le_deep {u : ℝ} (hu : u ≤ -2) :
       linarith only [he]
     have hl := Real.log_le_sub_one_of_pos (one_div_pos.mpr hy0)
     rw [one_div, Real.log_inv] at hl
+    rw [one_div] at hinv
     linarith only [hinv, hl]
   have hb := abs_terminalPolarKernel_le_log (by linarith only [hu] : u ≤ 0)
   linarith only [hb, hlog]
@@ -200,8 +201,8 @@ theorem integrable_weighted_polarSourceProfile_sq :
   exact Eventually.of_forall fun u => by
     by_cases hu : u ∈ Iic (0 : ℝ)
     · rw [Set.indicator_of_mem hu]
-      unfold polarSourceProfile
-      rw [Set.indicator_of_mem hu, abs_of_nonpos hu]
+      dsimp only [polarSourceProfile]
+      rw [Set.indicator_of_mem hu, abs_of_nonpos (show u ≤ 0 from hu)]
       have he : Real.exp (- -u) * Real.exp (-u / 2) = Real.exp (u / 2) := by
         rw [← Real.exp_add]
         congr 1
@@ -210,7 +211,7 @@ theorem integrable_weighted_polarSourceProfile_sq :
         rw [sq, ← Real.exp_add, add_halves]
       rw [← mul_assoc, he, mul_pow, he2, one_mul]
     · rw [Set.indicator_of_notMem hu]
-      unfold polarSourceProfile
+      dsimp only [polarSourceProfile]
       rw [Set.indicator_of_notMem hu, mul_zero, zero_pow (by decide : 2 ≠ 0)]
 
 /-- Weighted square integrability suffices for pairing with the polar source. -/
@@ -265,15 +266,15 @@ theorem tendsto_integral_mul_polarSourceProfile {U : ℕ → ℝ → ℝ} {F : �
     exact squeeze_zero (fun n => sq_nonneg _)
       (fun n => sq_integral_mul_polarSourceProfile_le ((hU n).sub hF)) hb
   have ha := Real.continuous_sqrt.continuousAt.tendsto.comp hs
-  simp only [Real.sqrt_sq_eq_abs, Real.sqrt_zero] at ha
+  simp only [Function.comp_apply, Real.sqrt_sq_eq_abs, Real.sqrt_zero] at ha
   rw [tendsto_iff_norm_sub_tendsto_zero]
   apply ha.congr
   intro n
   rw [Real.norm_eq_abs, ← integral_sub (integrable_mul_polarSourceProfile (hU n))
     (integrable_mul_polarSourceProfile hF)]
-  congr 2
-  funext u
-  ring
+  congr 1
+  apply integral_congr_ae
+  exact Eventually.of_forall fun u => by ring
 
 /-- The continuous polar functional agrees with the exact terminal-window source. -/
 theorem generalTerminalPolarSource_eq_integral_polarSourceProfile {h : ℝ → ℝ} {A : ℝ}
@@ -284,8 +285,8 @@ theorem generalTerminalPolarSource_eq_integral_polarSourceProfile {h : ℝ → �
   apply integral_congr_ae
   exact Eventually.of_forall fun u => by
     by_cases hu : u ≤ 0
-    · unfold halfWeight polarSourceProfile
-      rw [Set.indicator_of_mem hu]
+    · dsimp only [halfWeight, polarSourceProfile]
+      rw [Set.indicator_of_mem (show u ∈ Iic (0 : ℝ) from hu)]
       have he : Real.exp (u / 2) * Real.exp (-u / 2) = 1 := by
         rw [← Real.exp_add]
         convert Real.exp_zero using 1 <;> ring

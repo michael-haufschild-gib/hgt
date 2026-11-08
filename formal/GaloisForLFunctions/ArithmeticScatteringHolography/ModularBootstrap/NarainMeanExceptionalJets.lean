@@ -36,6 +36,10 @@ private theorem id_lower_jet (j : ℕ) (hj : j < 1) :
   subst j
   rfl
 
+private theorem id_first_jet : iteratedDeriv 1 (fun u : ℂ => u) 0 = 1 := by
+  rw [iteratedDeriv_one]
+  convert! (hasDerivAt_id (0 : ℂ)).deriv using 1
+
 /-- One exceptional target forces a cubic leading jet with an explicit other-height factor. -/
 theorem narainMellinMean_one_exceptional_third_jet (Z : Height) :
     iteratedDeriv 3 (narainMellinMean narainExceptionalHeight Z) 0 =
@@ -47,7 +51,12 @@ theorem narainMellinMean_one_exceptional_third_jet (Z : Height) :
   have hD : AnalyticAt ℂ D 0 := (differentiable_dividedFilledNumeratorMean _).analyticAt 0
   have hZ := (differentiable_dividedFilledNumeratorMean Z).analyticAt 0
   have hU := analyticAt_narainMeanCentralUnit_zero
-  have hf : AnalyticAt ℂ (fun u : ℂ => u * D u) 0 := (by fun_prop).mul hD
+  have hi : AnalyticAt ℂ (fun u : ℂ => u) 0 := by fun_prop
+  have hf : AnalyticAt ℂ (fun u : ℂ => u * D u) 0 := by
+    convert! hi.mul hD using 1
+  have hZU : AnalyticAt ℂ
+      (fun u : ℂ => dividedFilledNumeratorMean Z u * narainMeanCentralUnit u) 0 := by
+    convert! hZ.mul hU using 1
   have hvan : ∀ j < 3, iteratedDeriv j (fun u : ℂ => u * D u) 0 = 0 := by
     intro j hj
     exact complex_iteratedDeriv_mul_eq_zero_before_add_order
@@ -63,10 +72,10 @@ theorem narainMellinMean_one_exceptional_third_jet (Z : Height) :
     ring
   rw [hgerm.iteratedDeriv_eq]
   rw [complex_iteratedDeriv_mul_of_left_vanishing_below 3 hf.contDiffAt
-    (hZ.mul hU).contDiffAt hvan]
+    hZU.contDiffAt hvan]
   rw [hjet]
-  norm_num only [Nat.reduceAdd, Nat.choose, Nat.cast_ofNat, iteratedDeriv_one,
-    deriv_id, one_mul, mul_one, narainMeanCentralUnit_zero]
+  norm_num only [Nat.reduceAdd, Nat.choose, Nat.cast_ofNat, id_first_jet,
+    one_mul, mul_one, narainMeanCentralUnit_zero]
   change 3 * iteratedDeriv 2 (dividedFilledNumeratorMean narainExceptionalHeight) 0 *
     (dividedFilledNumeratorMean Z 0 * 4) = _
   rw [dividedFilledNumeratorMean_exceptional_second_jet,
@@ -88,7 +97,9 @@ theorem narainMellinMean_two_exceptional_fifth_jet :
       exceptional_divided_lower_jets exceptional_divided_lower_jets hj
   have hPjet := complex_iteratedDeriv_mul_at_add_order (m := 2) (n := 2)
     hD.contDiffAt hD.contDiffAt exceptional_divided_lower_jets exceptional_divided_lower_jets
-  have hf : AnalyticAt ℂ (fun u : ℂ => u * (D u * D u)) 0 := (by fun_prop).mul hP
+  have hi : AnalyticAt ℂ (fun u : ℂ => u) 0 := by fun_prop
+  have hf : AnalyticAt ℂ (fun u : ℂ => u * (D u * D u)) 0 := by
+    convert! hi.mul hP using 1
   have hvan : ∀ j < 5, iteratedDeriv j (fun u : ℂ => u * (D u * D u)) 0 = 0 := by
     intro j hj
     exact complex_iteratedDeriv_mul_eq_zero_before_add_order
@@ -106,8 +117,8 @@ theorem narainMellinMean_two_exceptional_fifth_jet :
   rw [complex_iteratedDeriv_mul_of_left_vanishing_below 5 hf.contDiffAt
     analyticAt_narainMeanCentralUnit_zero.contDiffAt hvan, hjet, hPjet,
     narainMeanCentralUnit_zero]
-  norm_num only [Nat.reduceAdd, Nat.choose, Nat.cast_ofNat, iteratedDeriv_one,
-    deriv_id, one_mul, mul_one]
+  norm_num only [Nat.reduceAdd, Nat.choose, Nat.cast_ofNat, id_first_jet,
+    one_mul, mul_one]
   change 5 * (6 * iteratedDeriv 2 (dividedFilledNumeratorMean narainExceptionalHeight) 0 *
     iteratedDeriv 2 (dividedFilledNumeratorMean narainExceptionalHeight) 0) * 4 = _
   rw [dividedFilledNumeratorMean_exceptional_second_jet]

@@ -66,7 +66,8 @@ theorem abs_polarFarMean_zero_sub_le {T : ℝ} (hT : 2 ≤ T) :
     (abs_integral_crossSingular_inv_sub_le contDiff_tiltedUnitSpline tiltedUnitSpline_eq_zero
       integral_tiltedUnitSpline_sq_pos hT) (by norm_num : (0 : ℝ) ≤ 2)).trans_eq (by ring)
 
-private lemma polarNearKernel_bounds :
+/-- The even near kernel is bounded and Lipschitz on its full collar. -/
+lemma polarNearKernel_bounds :
     ∃ A L : ℝ, 0 ≤ A ∧ 0 ≤ L ∧
     (∀ t ∈ Icc (-2 : ℝ) 2, |nearKernel tiltedUnitSpline |t| / (∫ u, tiltedUnitSpline u ^ 2)| ≤ A) ∧
     ∀ s ∈ Icc (-2 : ℝ) 2, ∀ t ∈ Icc (-2 : ℝ) 2,
