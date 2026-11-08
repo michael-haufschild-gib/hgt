@@ -24,6 +24,7 @@ private theorem simple_zero_copy_eq {f : ℂ → ℂ}
   apply Sigma.eq (Subtype.ext heq)
   have ho := (hf (zeroCopyPoint f r) (mem_univ _)).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
     (apply_zeroCopyPoint hf r) hd
+  change analyticOrderAt f (r.1 : ℂ) = 1 at ho
   have hm : ((MeromorphicOn.divisor f univ) (r.1 : ℂ)).toNat = 1 := by
     rw [divisor_univ_eq_analyticOrder hf, ho]
     rfl
@@ -67,7 +68,7 @@ theorem heatGlobalPacket_upper_velocity_le {t : ℝ} (ht : 0 < t) {S : Finset �
   have herase : (∑ r ∈ N.erase (q aS), (a - zeroCopyPoint (riemannHeat t) r)⁻¹) =
       ∑ b ∈ S, (a - b)⁻¹ := by
     rw [← hsum]
-    simpa only [hq aS, sub_self, inv_zero, add_zero] using
+    simpa only [hq aS, aS, sub_self, inv_zero, add_zero] using
       Finset.sum_erase_add N (fun r => (a - zeroCopyPoint (riemannHeat t) r)⁻¹) hqa
   obtain ⟨C, hC, hbound⟩ := (riemannKernel_superExp.mul_exp_sq ht.le).exists_envelope
   have h := im_mul_simple_regular_exterior_nonpos hC hf hf0 (riemannHeat_neg ht.le)
@@ -118,7 +119,7 @@ private theorem heatUpperElapsedDepthDrift_eq_packet {t : ℝ} (ht : 0 < t)
       Nat.cast_one, one_mul]
   · by_cases hz : riemannHeat t a = 0
     · have hi : ¬ 0 < a.im := fun hi => ha (hcover a hz hi.ne')
-      rw [if_neg hi, mul_zero]
+      simp only [if_neg hi, mul_zero]
     · rw [zeroMult_riemannHeat_eq_zero ht.le hz, Nat.cast_zero, zero_mul]
 
 /-- Immediately after every positive time, the actual heat divisor pays every
@@ -129,7 +130,7 @@ theorem heatUpperElapsedDepthDrift_nonpos_forward (t : ℝ) (ht : 0 < t) :
   classical
   obtain ⟨R, hR⟩ := exists_heat_nonreal_norm_bound ht
   obtain ⟨δ, hδ, hreg⟩ := exists_compact_simple_riemannHeat_zeros_forward ht
-    (Metric.isCompact_closedBall (0 : ℂ) R)
+    (isCompact_closedBall (0 : ℂ) R)
   refine ⟨δ, hδ, fun s hs q c hq hc => ?_⟩
   have hs0 : 0 < s := ht.trans hs.1
   have han : AnalyticOnNhd ℂ (riemannHeat s) (Metric.closedBall 0 R) :=

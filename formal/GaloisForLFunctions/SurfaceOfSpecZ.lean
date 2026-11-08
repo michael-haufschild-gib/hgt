@@ -19,6 +19,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.TheAtomicSurfaceHasGenusNLogN
 import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimeChannelOfTheAtomicSurface
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtThePrimeDegreesBoundsTheWidth
 import GaloisForLFunctions.SurfaceOfSpecZ.OneSidedHasseWeilAtTheIntegerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovSideIsBlindToRealZeros
 
 /-!
 # The surface of `Spec ℤ`
@@ -50,7 +51,10 @@ at the integer degrees already is RH (the self-improvement is free; the exponent
 the zero width), and any set of degrees with gaps `O(√x)`, such as the squares, decides RH. One
 side of the crude bound suffices, as for Bombieri–Stepanov: RH holds iff the traces at the integer
 degrees are bounded below (an upper bound on the smoothed point counts), and iff they are bounded
-above; Pringsheim's theorem becomes Landau's. The count
+above; Pringsheim's theorem becomes Landau's. The Stepanov side needs exactly that `ζ` has no real
+zeros in the strip: without real zeros it decides the line for every configuration, and on the real
+pair `{¼, ¾}` it holds while the pair is off the line, as a real Frobenius eigenvalue above `√q` passes
+an upper bound on point counts and needs the twist. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
 whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
 they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley.

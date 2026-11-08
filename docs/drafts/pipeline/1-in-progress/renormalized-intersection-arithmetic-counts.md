@@ -97,9 +97,13 @@ and the integer local indices remains open.
 The [orientation quotient](../3-formalized/riac-orientation-quotient-counts.md)
 realizes the total local weight as an integer difference of actual stable
 orbit counts, retaining all stabilizers and both orientation labels.
-The [elliptic divisor branch](riac-elliptic-squarefree-divisor-cancellation.md)
+The [elliptic divisor branch](../3-formalized/riac-elliptic-squarefree-divisor-cancellation.md)
 constructs even/odd squarefree-divisor counts from actual closed places;
-its quantitative square-root estimate is under formalization.
+it proves `|E_n−O_n|≤8(n+1)²(√3)^n` and the prefix bound
+`|Σ_(k≤n)(E_k−O_k)|≤24(n+1)²(√3)^n` on the actual elliptic curve over
+`F₃`. The closed-place cutoff is exhaustive, infinity is retained, and the
+Frobenius root bound is proved for the actual curve. These bounds do not
+transfer to integer local indices without a further arithmetic comparison.
 
 ## Necessary distinctions
 

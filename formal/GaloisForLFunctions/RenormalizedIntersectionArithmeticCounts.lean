@@ -36,4 +36,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.OrientationQ
 
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.SquarefreeDivisorCounts
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.EllipticSquarefreeCounts
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

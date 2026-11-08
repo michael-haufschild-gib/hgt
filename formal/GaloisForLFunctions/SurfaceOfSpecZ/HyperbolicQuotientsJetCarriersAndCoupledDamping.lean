@@ -1097,23 +1097,23 @@ private theorem abs_sinh_sub_le (d : ℝ) : |Real.sinh d - d| ≤ d ^ 2 * |Real.
     rcases hx.eq_or_lt with rfl | hx_pos
     · simp
     -- Bound `cosh t - 1 ≤ x * sinh x` on `[0, x]`
-    have hc_bound : ∀ t ∈ Set.Ico 0 x, ‖Real.cosh t - 1‖ ≤ x * Real.sinh x := by
+    have hc_bound : ∀ t ∈ Set.Icc 0 x, ‖Real.cosh t - 1‖ ≤ x * Real.sinh x := by
       intro t ht
       have hmvt := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
         (f := Real.cosh) (f' := Real.sinh)
         (fun u _ => (Real.hasDerivAt_cosh u).hasDerivWithinAt)
         (fun u hu => by
           rw [Real.norm_of_nonneg (Real.sinh_nonneg_iff.mpr hu.1), Real.sinh_le_sinh]
-          exact hu.2.trans ht.2.le)
+          exact hu.2.trans ht.2)
         (convex_Icc 0 t) (Set.left_mem_Icc.mpr ht.1) (Set.right_mem_Icc.mpr ht.1)
       rw [Real.cosh_zero, Real.norm_of_nonneg (sub_nonneg.mpr ht.1), sub_zero] at hmvt
-      exact hmvt.trans (by rw [mul_comm]; exact mul_le_mul_of_nonneg_right ht.2.le (Real.sinh_nonneg_iff.mpr hx))
+      exact hmvt.trans (by
+        rw [mul_comm]
+        exact mul_le_mul_of_nonneg_right ht.2 (Real.sinh_nonneg_iff.mpr hx))
     have hmvt2 := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
       (f := fun t => Real.sinh t - t) (f' := fun t => Real.cosh t - 1)
       (fun t _ => ((Real.hasDerivAt_sinh t).sub (hasDerivAt_id t)).hasDerivWithinAt)
-      (fun t ht => hc_bound t ⟨ht.1, ht.2.trans_lt (by linarith [hx_pos])⟩)
-      (convex_Icc 0 x) (Set.left_mem_Icc.mpr hx) (Set.right_mem_Icc.mpr hx)
-    -- Wait: on `Icc 0 x`, `t ≤ x`, not `t < x`! Let's prove `hc_bound` on `Icc 0 x` directly!
+      hc_bound (convex_Icc 0 x) (Set.left_mem_Icc.mpr hx) (Set.right_mem_Icc.mpr hx)
     simp only [Real.sinh_zero, sub_self, sub_zero, Real.norm_eq_abs, abs_of_nonneg hx,
       abs_of_nonneg (Real.sinh_nonneg_iff.mpr hx)] at hmvt2 ⊢
     calc |Real.sinh x - x| ≤ x * Real.sinh x * x := hmvt2
@@ -1689,9 +1689,9 @@ primes, any `Γ`-invariant kernel `K : H3 → H3 → ℝ` bounded below by a New
 real value on the diagonal) becomes arbitrarily large on prime pairs `(p, q)` of arbitrarily large
 ratio `q / p > R`, whereas `archProfile (log (q / p)) → 0`. -/
 theorem newtonian_quotient_unbounded_on_primes (Γ : Subgroup SL2C)
-    (hfold : ∀ ε : ℝ, 0 < ε → ∀ R : ℝ, 1 < R → ∃ p : ℕ, p.Prime ∧ ∃ q : ℕ, q.Prime ∧
+    (hfold : ∀ ε : ℝ, 0 < ε → ∀ R : ℝ, 1 < R → ∃ p, ∃ hp : p.Prime, ∃ q, ∃ hq : q.Prime,
       R < (q : ℝ) / p ∧ ∃ γ : Γ,
-        h3Dist (natPoint p ‹Nat.Prime p›.pos) (h3Act (γ : SL2C) (natPoint q ‹Nat.Prime q›.pos)) < ε)
+        h3Dist (natPoint p hp.pos) (h3Act (γ : SL2C) (natPoint q hq.pos)) < ε)
     {K : H3 → H3 → ℝ} {c₁ C₁ : ℝ} (hc₁ : 0 < c₁)
     (hK_inv : ∀ (γ : Γ) (x y : H3), K x (h3Act (γ : SL2C) y) = K x y)
     (hK_pole : ∀ x y : H3, x ≠ y → c₁ / h3Dist x y - C₁ ≤ K x y)
@@ -1733,13 +1733,17 @@ theorem parabolicSL2_pow (ω : ℂ) (k : ℕ) :
     parabolicSL2 ω ^ k = parabolicSL2 ((k : ℂ) * ω) := by
   induction k with
   | zero =>
-    ext i j; fin_cases i <;> fin_cases j <;> simp [parabolicSL2]
+    refine Subtype.ext <| Matrix.ext fun i j => ?_
+    change (1 : Matrix (Fin 2) (Fin 2) ℂ) i j = (parabolicSL2 ((0 : ℕ) * ω)).1 i j
+    fin_cases i <;> fin_cases j <;> simp [parabolicSL2]
   | succ k ih =>
     rw [pow_succ, ih]
-    ext i j
+    refine Subtype.ext <| Matrix.ext fun i j => ?_
+    change ((parabolicSL2 ((k : ℂ) * ω)).1 * (parabolicSL2 ω).1) i j =
+      (parabolicSL2 (((k + 1 : ℕ) : ℂ) * ω)).1 i j
     fin_cases i <;> fin_cases j <;>
-      simp [parabolicSL2, SpecialLinearGroup.coe_mul, Matrix.mul_fin_two]
-    push_cast; ring
+      simp [parabolicSL2, Matrix.mul_apply, Fin.sum_univ_two]
+    ring
 
 /-- **Parabolic cusp harmonic divergence at `s = 1 / 2`.** Every non-zero parabolic translation
 `!![1, ω; 0, 1]` generates a divergent cyclic Poincaré series of `G_{1/2}` between any two points on
@@ -1769,9 +1773,10 @@ theorem parabolic_poincare_not_summable_half {ω : ℂ} (hω : ω ≠ 0) {t u : 
       rw [parabolicSL2_pow]
       have hden : h3Denom (parabolicSL2 ((m : ℂ) * ω)) (degPoint u hu) = 1 := by
         simp [h3Denom, parabolicSL2, degPoint]
-      ext <;> simp [h3Act, hden, parabolicSL2, degPoint]
+      ext <;> (unfold h3Act; rw [hden]; simp [parabolicSL2, degPoint])
     set d := h3Dist (degPoint t ht) (h3Act (parabolicSL2 ω ^ m) (degPoint u hu))
     have hd_pos : 0 < d := by
+      dsimp only [d]
       rw [h3Dist]
       refine Real.arcosh_pos ?_
       rw [hp_act]
@@ -1803,7 +1808,7 @@ theorem parabolic_poincare_not_summable_half {ω : ℂ} (hω : ω ≠ 0) {t u : 
         rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
       have hrhs : (Real.sqrt (2 * C) * m) ^ 2 = 2 * C * (m : ℝ) ^ 2 := by
         rw [mul_pow, Real.sq_sqrt (by positivity)]
-      nlinarith [Real.exp_pos (d / 2)]
+      exact le_of_sq_le_sq (by linarith) (by positivity)
     have hsinh_lt : 2 * Real.sinh d ≤ Real.exp d := by
       rw [Real.sinh_eq]; linarith [Real.exp_pos (-d)]
     have hgreen_lo : (2 * Real.pi * Real.exp (d / 2))⁻¹ ≤ hyperbolicGreen (1 / 2) d := by
@@ -1837,14 +1842,14 @@ def horoDist (t u r : ℝ) : ℝ :=
 
 /-- Exact meromorphic horospherical cusp zero-mode `(min^s * max^{2 - s}) / (2 (s - 1) Λ_area)`. -/
 def cuspZeroMode (Λ_area s t u : ℝ) : ℝ :=
-  Real.rpow (min t u) s * Real.rpow (max t u) (2 - s) / (2 * (s - 1) * Λ_area)
+  (min t u) ^ s * (max t u) ^ (2 - s) / (2 * (s - 1) * Λ_area)
 
 /-- **Exact horospherical cusp zero-mode integral.** For `s > 1`, `t, u > 0`, and cusp covolume
 `Λ_area > 0`, integrating `2π r G_s(horoDist t u r)` over `r ∈ (0, ∞)` yields
 `cuspZeroMode Λ_area s t u`. -/
 theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area) (hs : 1 < s)
     (ht : 0 < t) (hu : 0 < u) :
-    Λ_area⁻¹ * (∫ r in Ioi 0, 2 * Real.pi * r * hyperbolicGreen s (horoDist t u r)) =
+    Λ_area⁻¹ * (∫ r in Set.Ioi 0, 2 * Real.pi * r * hyperbolicGreen s (horoDist t u r)) =
       cuspZeroMode Λ_area s t u := by
   set α := s - 1
   have hα : 0 < α := sub_pos.mpr hs
@@ -1861,9 +1866,9 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
     unfold F
     exact continuous_const.mul (Real.continuous_exp.comp (continuous_const.mul hcont_horo))
   -- Derivative on `(0, ∞)`
-  have hderiv : ∀ r ∈ Ioi (0 : ℝ), HasDerivAt F (F' r) r := by
+  have hderiv : ∀ r ∈ Set.Ioi (0 : ℝ), HasDerivAt F (F' r) r := by
     intro r hr
-    rw [mem_Ioi] at hr
+    rw [Set.mem_Ioi] at hr
     set C := 1 + (r ^ 2 + (t - u) ^ 2) / (2 * t * u)
     have hC1 : 1 < C := by
       simp only [C]
@@ -1894,9 +1899,9 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
     field_simp
     ring
   -- Nonnegativity of `F'` on `(0, ∞)`
-  have hnonneg : ∀ r ∈ Ioi (0 : ℝ), 0 ≤ F' r := by
+  have hnonneg : ∀ r ∈ Set.Ioi (0 : ℝ), 0 ≤ F' r := by
     intro r hr
-    rw [mem_Ioi] at hr
+    rw [Set.mem_Ioi] at hr
     have hd_pos : 0 < horoDist t u r := by
       unfold horoDist
       refine Real.arcosh_pos ?_
@@ -1926,8 +1931,11 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
         _ = Real.arcosh (Real.cosh (max 0 b)) := (Real.arcosh_cosh (le_max_left 0 b)).symm
         _ ≤ horoDist t u r :=
             (Real.arcosh_le_arcosh (Real.cosh_pos _) (by linarith [hge1 r])).mpr hC_ge
+    have htend_neg : Tendsto (fun r => -α * horoDist t u r) atTop atBot := by
+      have h := tendsto_neg_atTop_atBot.comp (htend_horo.const_mul_atTop hα)
+      exact h.congr fun r => by simp [neg_mul]
     have htend_exp : Tendsto (fun r => Real.exp (-α * horoDist t u r)) atTop (𝓝 0) :=
-      Real.tendsto_exp_atBot.comp (Tendsto.neg_const_mul_atTop (neg_lt_zero.mpr hα) htend_horo)
+      Real.tendsto_exp_atBot.comp htend_neg
     simpa [F] using htend_exp.const_mul (-(t * u / (2 * α)))
   -- Apply FTC on `(0, ∞)`
   have hint := MeasureTheory.integral_Ioi_of_hasDerivAt_of_nonneg
@@ -1937,7 +1945,7 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
     have h1 := h3Dist_degPoint ht hu
     simp only [h3Dist, h3Cosh, degPoint, sub_self, norm_zero, zero_pow two_ne_zero, zero_add] at h1
     simpa [horoDist] using h1
-  have hF0 : 0 - F 0 = Real.rpow (min t u) s * Real.rpow (max t u) (2 - s) / (2 * α) := by
+  have hF0 : 0 - F 0 = (min t u) ^ s * (max t u) ^ (2 - s) / (2 * α) := by
     simp only [F, zero_sub, neg_mul, neg_neg, hhoro0]
     have hmin_pos : 0 < min t u := lt_min ht hu
     have hmax_pos : 0 < max t u := lt_of_lt_of_le ht (le_max_left t u)
@@ -1948,8 +1956,7 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
           abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log ht htu))]
       · rw [min_eq_right hut, max_eq_left hut, abs_sub_comm,
           abs_of_nonneg (sub_nonneg.mpr (Real.log_le_log hu hut))]
-    rw [hprod, habs, Real.rpow_def_of_pos hmin_pos, Real.rpow_def_of_pos hmax_pos,
-      Real.rpow_def_of_pos hmin_pos, Real.rpow_def_of_pos hmax_pos]
+    rw [hprod, habs, Real.rpow_def_of_pos hmin_pos, Real.rpow_def_of_pos hmax_pos]
     conv_lhs =>
       rw [show min t u * max t u = Real.exp (Real.log (min t u)) * Real.exp (Real.log (max t u)) by
         rw [Real.exp_log hmin_pos, Real.exp_log hmax_pos]]
@@ -1965,7 +1972,7 @@ theorem integral_horospherical_green_eq {Λ_area s t u : ℝ} (hΛ : 0 < Λ_area
 `-min(t, u)^{1/2} * max(t, u)^{3/2} / Λ_area`. -/
 theorem cuspZeroMode_at_half (Λ_area t u : ℝ) :
     cuspZeroMode Λ_area (1 / 2) t u =
-      -(Real.rpow (min t u) (1 / 2) * Real.rpow (max t u) (3 / 2)) / Λ_area := by
+      -((min t u) ^ (1 / 2 : ℝ) * (max t u) ^ (3 / 2 : ℝ)) / Λ_area := by
   unfold cuspZeroMode
   rw [show (2 : ℝ) - 1 / 2 = 3 / 2 by ring]
   ring
@@ -1974,7 +1981,7 @@ theorem cuspZeroMode_at_half_diag {Λ_area : ℝ} (n : ℕ) :
     cuspZeroMode Λ_area (1 / 2) n n = -((n : ℝ) ^ 2) / Λ_area := by
   rw [cuspZeroMode_at_half, min_self, max_self,
     ← Real.rpow_add_of_nonneg (Nat.cast_nonneg n) (by positivity) (by positivity),
-    show (1 / 2 : ℝ) + 3 / 2 = (2 : ℕ) by norm_num, Real.rpow_natCast]
+    show (1 / 2 : ℝ) + 3 / 2 = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
 
 /-- On the diagonal `(n, n)`, the cusp zero-mode at `s = 1 / 2` dominates `log n` (`n² / log n → +∞`). -/
 theorem tendsto_abs_cuspZeroMode_diag_div_log {Λ_area : ℝ} (hΛ : 0 < Λ_area) :
@@ -2059,7 +2066,9 @@ theorem jetKernel_eq_sqrt_mul_jetProfile {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (
     have he5 : Real.exp (-5 * d / 2) = Real.exp (-d / 2) * Real.exp (-2 * d) := by
       rw [← Real.exp_add]; congr 1; ring
     rw [he5]
-    field_simp
+    set u := Real.exp (-2 * d)
+    have hu : 1 - u ≠ 0 := hden
+    field_simp [hu]
     ring
   rw [hjet, mul_sub, ← harch, ← hmin, hsplit]
   ring
@@ -2160,24 +2169,24 @@ theorem not_finiteRank_frobeniusSubCusp_on_coprime {r' : ℕ} (u v : Fin r' → 
 
 /-- Causal monomial jet wave `√(4k + 1) · 1_{(0, a]}(x) · (x / a)^{2k}` on `(0, ∞)`. -/
 def causalJetWave (a : ℝ) (k : ℕ) (x : ℝ) : ℝ :=
-  (Ioc 0 a).indicator (fun u => Real.sqrt (4 * (k : ℝ) + 1) * (u / a) ^ (2 * k)) x
+  (Set.Ioc 0 a).indicator (fun u => Real.sqrt (4 * (k : ℝ) + 1) * (u / a) ^ (2 * k)) x
 
 /-- Multiplicative dilation covariance of `causalJetWave`: scaling `x ↦ x / c` (`c > 0`) shifts the
 cutoff `a` to `c * a`. -/
 theorem causalJetWave_dilate {c a : ℝ} (hc : 0 < c) (k : ℕ) (x : ℝ) :
     causalJetWave a k (x / c) = causalJetWave (c * a) k x := by
   unfold causalJetWave
-  by_cases hx : x ∈ Ioc 0 (c * a)
-  · have hxc : x / c ∈ Ioc 0 a := by
-      rw [mem_Ioc] at hx ⊢
+  by_cases hx : x ∈ Set.Ioc 0 (c * a)
+  · have hxc : x / c ∈ Set.Ioc 0 a := by
+      rw [Set.mem_Ioc] at hx ⊢
       exact ⟨div_pos hx.1 hc, (div_le_iff₀ hc).mpr (by linarith [hx.2])⟩
     rw [indicator_of_mem hxc, indicator_of_mem hx]
     congr 2
     rw [div_div, mul_comm c a]
-  · have hxc : x / c ∉ Ioc 0 a := by
+  · have hxc : x / c ∉ Set.Ioc 0 a := by
       intro hmem
       apply hx
-      rw [mem_Ioc] at hmem ⊢
+      rw [Set.mem_Ioc] at hmem ⊢
       exact ⟨(div_pos_iff_of_pos_right hc).mp hmem.1,
         by linarith [(div_le_iff₀ hc).mp hmem.2]⟩
     rw [indicator_of_notMem hxc, indicator_of_notMem hx]
@@ -2186,17 +2195,17 @@ theorem causalJetWave_dilate {c a : ℝ} (hc : 0 < c) (k : ℕ) (x : ℝ) :
 causal waves at cutoffs `a, b > 0` equals `min(a, b) * (min(a, b) / max(a, b))^{2k}`: mode `0`
 carries the `𝔽₁`-cusp `min(a, b)`, and modes `k ≥ 1` carry the trivial-zero jets. -/
 theorem integral_causalJetWave_mul {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (k : ℕ) :
-    (∫ x in Ioi 0, causalJetWave a k x * causalJetWave b k x) =
+    (∫ x in Set.Ioi 0, causalJetWave a k x * causalJetWave b k x) =
       min a b * (min a b / max a b) ^ (2 * k) := by
   set m := min a b
   set M := max a b
   have hm : 0 < m := lt_min ha hb
   have hprod_ab : a * b = m * M := (min_mul_max a b).symm
   have hfun : (fun x => causalJetWave a k x * causalJetWave b k x) =
-      (Ioc 0 m).indicator (fun x => (4 * (k : ℝ) + 1) * x ^ (4 * k) / (a * b) ^ (2 * k)) := by
+      (Set.Ioc 0 m).indicator (fun x => (4 * (k : ℝ) + 1) * x ^ (4 * k) / (a * b) ^ (2 * k)) := by
     funext x
     simp only [causalJetWave]
-    rw [← Set.inter_indicator_mul, Ioc_inter_Ioc, max_self]
+    rw [← Set.inter_indicator_mul, Set.Ioc_inter_Ioc, max_self]
     refine indicator_congr fun u _ => ?_
     have hsq : Real.sqrt (4 * (k : ℝ) + 1) * Real.sqrt (4 * (k : ℝ) + 1) = 4 * (k : ℝ) + 1 :=
       Real.mul_self_sqrt (by positivity)
@@ -2209,7 +2218,8 @@ theorem integral_causalJetWave_mul {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (k : �
       _ = (4 * (k : ℝ) + 1) * u ^ (4 * k) / (a * b) ^ (2 * k) := by
           rw [← pow_add, show 2 * k + 2 * k = 4 * k by omega, mul_div_assoc]
   rw [hfun, MeasureTheory.setIntegral_indicator measurableSet_Ioc,
-    Set.Ioi_inter_Ioc, max_self, ← intervalIntegral.integral_of_le hm.le]
+    Set.inter_eq_self_of_subset_right Set.Ioc_subset_Ioi_self,
+    ← intervalIntegral.integral_of_le hm.le]
   -- Evaluate `∫ u in 0..m, (4k + 1) * u^{4k} / (a * b)^{2k}` via FTC
   let G : ℝ → ℝ := fun u => u ^ (4 * k + 1) / (a * b) ^ (2 * k)
   have hderiv : ∀ u ∈ Set.uIcc 0 m,
@@ -2225,14 +2235,13 @@ theorem integral_causalJetWave_mul {a b : ℝ} (ha : 0 < a) (hb : 0 < b) (k : �
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint_cont]
   simp only [G, zero_pow (Nat.succ_ne_zero _), zero_div, sub_zero, hprod_ab, mul_pow, div_pow]
   have hm_ne : m ^ (2 * k) ≠ 0 := pow_ne_zero _ hm.ne'
-  have hM_pos : 0 < M := hm.trans_le (min_le_max)
-  have hM_ne : M ^ (2 * k) ≠ 0 := pow_ne_zero _ hM_ne'
-    where hM_ne' : M ≠ 0 := hM_pos.ne'
+  have hM_pos : 0 < M := hm.trans_le min_le_max
+  have hM_ne : M ^ (2 * k) ≠ 0 := pow_ne_zero _ hM_pos.ne'
   rw [show 4 * k + 1 = 2 * k + 2 * k + 1 by omega, pow_succ, pow_add]
   field_simp
 
 theorem integral_causalJetWave_sq {a : ℝ} (ha : 0 < a) (k : ℕ) :
-    (∫ x in Ioi 0, causalJetWave a k x ^ 2) = a := by
+    (∫ x in Set.Ioi 0, causalJetWave a k x ^ 2) = a := by
   have h := integral_causalJetWave_mul ha ha k
   simp only [sq, min_self, max_self, div_self ha.ne', one_pow, mul_one] at h ⊢
   exact h
@@ -2245,13 +2254,13 @@ def dampedJet (r : ℝ) (m n : ℕ) : ℝ :=
 theorem hasSum_dampedFrobenius_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {m n : ℕ}
     (hm : 0 < m) (hn : 0 < n) :
     HasSum (fun k : ℕ =>
-      ∫ x in Ioi 0, (r ^ k * causalJetWave m k x) * (r ^ k * causalJetWave n k x))
+      ∫ x in Set.Ioi 0, (r ^ k * causalJetWave m k x) * (r ^ k * causalJetWave n k x))
       (dampedFrobenius r m n) := by
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   set d := Real.log m - Real.log n
   have hterm : ∀ k : ℕ,
-      (∫ x in Ioi 0, (r ^ k * causalJetWave m k x) * (r ^ k * causalJetWave n k x)) =
+      (∫ x in Set.Ioi 0, (r ^ k * causalJetWave m k x) * (r ^ k * causalJetWave n k x)) =
         Real.sqrt ((m : ℝ) * n) * (r ^ (2 * k) * Real.exp (-(2 * k + 1 / 2) * |d|)) := by
     intro k
     have hpull : (fun x => (r ^ k * causalJetWave m k x) * (r ^ k * causalJetWave n k x)) =
@@ -2263,7 +2272,7 @@ theorem hasSum_dampedFrobenius_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {m n
     have hrat : (min (m : ℝ) n / max (m : ℝ) n) ^ (2 * k) = Real.exp (-2 * (k : ℝ) * |d|) := by
       rw [pow_mul, ← exp_neg_two_abs_log_sub hm' hn', ← Real.exp_nat_mul]
       congr 1; simp only [d]; ring
-    rw [hmin, hrat]
+    rw [hrat, hmin]
     calc r ^ (2 * k) * (Real.sqrt ((m : ℝ) * n) * Real.exp (-|d| / 2) *
             Real.exp (-2 * (k : ℝ) * |d|))
         = Real.sqrt ((m : ℝ) * n) * (r ^ (2 * k) *
@@ -2277,13 +2286,13 @@ theorem hasSum_dampedFrobenius_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {m n
 theorem hasSum_dampedJet_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {m n : ℕ}
     (hm : 0 < m) (hn : 0 < n) :
     HasSum (fun k : ℕ =>
-      ∫ x in Ioi 0, (r ^ (k + 1) * causalJetWave m (k + 1) x) *
+      ∫ x in Set.Ioi 0, (r ^ (k + 1) * causalJetWave m (k + 1) x) *
         (r ^ (k + 1) * causalJetWave n (k + 1) x))
       (dampedJet r m n) := by
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   have hfull := hasSum_dampedFrobenius_gram hr0 hr1 hm hn
-  have h0 : (∫ x in Ioi 0, (r ^ 0 * causalJetWave m 0 x) * (r ^ 0 * causalJetWave n 0 x)) =
+  have h0 : (∫ x in Set.Ioi 0, (r ^ 0 * causalJetWave m 0 x) * (r ^ 0 * causalJetWave n 0 x)) =
       min (m : ℝ) n := by
     simp only [pow_zero, one_mul]
     simpa using integral_causalJetWave_mul hm' hn' 0
@@ -2299,7 +2308,7 @@ theorem dampedJet_posSemidef {ι : Type*} (s : Finset ι) {r : ℝ} (hr0 : 0 ≤
   classical
   let f : ℕ → ι → ι → ℝ := fun k i j =>
     if i ∈ s ∧ j ∈ s then
-      c i * c j * ∫ x in Ioi 0,
+      c i * c j * ∫ x in Set.Ioi 0,
         (r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
         (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)
     else 0
@@ -2327,41 +2336,40 @@ theorem dampedJet_posSemidef {ι : Type*} (s : Finset ι) {r : ℝ} (hr0 : 0 ≤
   -- Each mode `k + 1` is `r^{2(k+1)}` times an `L²(0, ∞)` square
   have hint_prod : ∀ i ∈ s, ∀ j ∈ s,
       IntegrableOn (fun x => (r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
-        (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) (Ioi 0) := by
+        (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) (Set.Ioi 0) := by
     intro i _ j _
-    set M := max (n i : ℝ) (n j : ℝ)
     have hcont : Continuous (fun u : ℝ =>
         (r ^ (k + 1) * (Real.sqrt (4 * ((k + 1 : ℕ) : ℝ) + 1) * (u / n i) ^ (2 * (k + 1)))) *
         (r ^ (k + 1) * (Real.sqrt (4 * ((k + 1 : ℕ) : ℝ) + 1) * (u / n j) ^ (2 * (k + 1))))) := by
       fun_prop
     have hon : IntegrableOn (fun x => (r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
-        (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) (Ioc 0 (min (n i : ℝ) (n j : ℝ))) := by
+        (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) (Set.Ioc 0 (min (n i : ℝ) (n j : ℝ))) := by
       refine hcont.integrableOn_Ioc.congr_fun (fun x hx => ?_) measurableSet_Ioc
-      have hxi : x ∈ Ioc 0 (n i : ℝ) := ⟨hx.1, hx.2.trans (min_le_left _ _)⟩
-      have hxj : x ∈ Ioc 0 (n j : ℝ) := ⟨hx.1, hx.2.trans (min_le_right _ _)⟩
+      have hxi : x ∈ Set.Ioc 0 (n i : ℝ) := ⟨hx.1, hx.2.trans (min_le_left _ _)⟩
+      have hxj : x ∈ Set.Ioc 0 (n j : ℝ) := ⟨hx.1, hx.2.trans (min_le_right _ _)⟩
       simp [causalJetWave, indicator_of_mem hxi, indicator_of_mem hxj]
     have heq_ind : (fun x => (r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
         (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) =
-        (Ioc 0 (min (n i : ℝ) (n j : ℝ))).indicator (fun x =>
+        (Set.Ioc 0 (min (n i : ℝ) (n j : ℝ))).indicator (fun x =>
           (r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
           (r ^ (k + 1) * causalJetWave (n j) (k + 1) x)) := by
       funext x
-      by_cases hx : x ∈ Ioc 0 (min (n i : ℝ) (n j : ℝ))
+      by_cases hx : x ∈ Set.Ioc 0 (min (n i : ℝ) (n j : ℝ))
       · rw [indicator_of_mem hx]
       · rw [indicator_of_notMem hx]
         rcases not_and_or.mp hx with hx0 | hxmin
-        · have hni : x ∉ Ioc 0 (n i : ℝ) := fun h => hx0 h.1
+        · have hni : x ∉ Set.Ioc 0 (n i : ℝ) := fun h => hx0 h.1
           simp [causalJetWave, indicator_of_notMem hni]
         · rw [not_le, min_lt_iff] at hxmin
           rcases hxmin with hi_lt | hj_lt
-          · have hni : x ∉ Ioc 0 (n i : ℝ) := fun h => not_lt_of_ge h.2 hi_lt
+          · have hni : x ∉ Set.Ioc 0 (n i : ℝ) := fun h => not_lt_of_ge h.2 hi_lt
             simp [causalJetWave, indicator_of_notMem hni]
-          · have hnj : x ∉ Ioc 0 (n j : ℝ) := fun h => not_lt_of_ge h.2 hj_lt
+          · have hnj : x ∉ Set.Ioc 0 (n j : ℝ) := fun h => not_lt_of_ge h.2 hj_lt
             simp [causalJetWave, indicator_of_notMem hnj]
     rw [heq_ind]
     exact (hon.integrable_indicator measurableSet_Ioc).integrableOn
   have hmode_sq : ∑ i ∈ s, ∑ j ∈ s, f k i j =
-      ∫ x in Ioi 0, (∑ i ∈ s, c i * (r ^ (k + 1) * causalJetWave (n i) (k + 1) x)) ^ 2 := by
+      ∫ x in Set.Ioi 0, (∑ i ∈ s, c i * (r ^ (k + 1) * causalJetWave (n i) (k + 1) x)) ^ 2 := by
     have hsq_exp : ∀ x, (∑ i ∈ s, c i * (r ^ (k + 1) * causalJetWave (n i) (k + 1) x)) ^ 2 =
         ∑ i ∈ s, ∑ j ∈ s, c i * c j *
           ((r ^ (k + 1) * causalJetWave (n i) (k + 1) x) *
@@ -2405,10 +2413,10 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
     (htend : ∀ m n : ℕ, 0 < m → 0 < n → Tendsto (fun r => K r m n) (𝓝[<] 1) (𝓝 (K₁ m n)))
     (hoff : ∀ m n : ℕ, 0 < m → 0 < n → m ≠ n → K₁ m n = weilDeltaKernel m n)
     {N : ℕ} (hN : 1 ≤ N) :
-    ((N : ℝ) ^ 3 / 4) * (Real.log N - 17) ≤ ∑ n ∈ Ico N (2 * N), (n : ℝ) * K₁ n n ∧
-      ∃ n ∈ Ico N (2 * N), (N : ℝ) * (Real.log N - 17) / 8 ≤ K₁ n n := by
-  set B := Ico N (2 * N)
-  have hB_pos : ∀ n ∈ B, 0 < n := fun n hn => by have := (mem_Ico.mp hn).1; omega
+    ((N : ℝ) ^ 3 / 4) * (Real.log N - 17) ≤ ∑ n ∈ Finset.Ico N (2 * N), (n : ℝ) * K₁ n n ∧
+      ∃ n ∈ Finset.Ico N (2 * N), (N : ℝ) * (Real.log N - 17) / 8 ≤ K₁ n n := by
+  set B := Finset.Ico N (2 * N)
+  have hB_pos : ∀ n ∈ B, 0 < n := fun n hn => by have := (Finset.mem_Ico.mp hn).1; omega
   -- Limit `K₁` is positive semidefinite on `B`
   have hK₁_psd : ∀ x : ℕ → ℝ, 0 ≤ ∑ m ∈ B, ∑ n ∈ B, x m * x n * K₁ m n := by
     intro x
@@ -2421,7 +2429,7 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
         nhdsWithin_le_nhds (lt_mem_nhds zero_lt_one)
       filter_upwards [hgt0, self_mem_nhdsWithin] with r hr0 hr1
       exact hpsd r hr0.le hr1 B hB_pos x
-    haveI : (𝓝[<] (1 : ℝ)).NeBot := nhdsWithin_Iio_neBot _
+    haveI : (𝓝[<] (1 : ℝ)).NeBot := nhdsWithin_Iio_neBot le_rfl
     exact ge_of_tendsto hlim hge
   -- Evaluate `K₁` on `x n = √n`
   have hx := hK₁_psd (fun n => Real.sqrt n)
@@ -2456,13 +2464,13 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
   have hcard : (B.card : ℝ) = N := by
     rw [Nat.card_Ico, show 2 * N - N = N by omega]
   have hrow : ∀ m ∈ B, (∑ n ∈ B, if m = n then (0 : ℝ) else (((m : ℝ) + n) - frobeniusIntersection m n)) ≤
-      4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
+      4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Finset.Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
     intro m hm
     have hpt : ∀ n ∈ B, (if m = n then (0 : ℝ) else (((m : ℝ) + n) - frobeniusIntersection m n)) ≤
         4 * N - (if m < n then (N : ℝ) ^ 2 / 4 * (1 / ((n : ℝ) - m)) else 0) := by
       intro n hn
-      have hm' := mem_Ico.mp hm
-      have hn' := mem_Ico.mp hn
+      have hm' := Finset.mem_Ico.mp hm
+      have hn' := Finset.mem_Ico.mp hn
       have hsum_le : (m : ℝ) + n ≤ 4 * N := by exact_mod_cast (by omega : m + n ≤ 4 * N)
       by_cases hmn : m = n
       · subst hmn; simp; positivity
@@ -2480,19 +2488,19 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
         linarith
     calc _ ≤ ∑ n ∈ B, (4 * (N : ℝ) - (if m < n then (N : ℝ) ^ 2 / 4 * (1 / ((n : ℝ) - m)) else 0)) :=
           Finset.sum_le_sum hpt
-      _ = 4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
+      _ = 4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Finset.Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
           rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, hcard, ← Finset.sum_filter,
             Finset.mul_sum]
-          have hf : B.filter (fun n => m < n) = Ico (m + 1) (2 * N) := by
-            have hm' := mem_Ico.mp hm
-            ext n; simp only [B, mem_filter, mem_Ico]; omega
+          have hf : B.filter (fun n => m < n) = Finset.Ico (m + 1) (2 * N) := by
+            have hm' := Finset.mem_Ico.mp hm
+            ext n; simp only [B, Finset.mem_filter, Finset.mem_Ico]; omega
           rw [hf]; ring
   have hoff_ub : (∑ m ∈ B, ∑ n ∈ B, if m = n then (0 : ℝ) else (((m : ℝ) + n) - frobeniusIntersection m n)) ≤
       4 * (N : ℝ) ^ 3 - (N : ℝ) ^ 2 / 4 * ((N : ℝ) * Real.log N - N) := by
-    calc _ ≤ ∑ m ∈ B, (4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m)) :=
+    calc _ ≤ ∑ m ∈ B, (4 * N * N - (N : ℝ) ^ 2 / 4 * ∑ n ∈ Finset.Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m)) :=
           Finset.sum_le_sum hrow
       _ = 4 * (N : ℝ) ^ 3 - (N : ℝ) ^ 2 / 4 *
-            ∑ m ∈ B, ∑ n ∈ Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
+            ∑ m ∈ B, ∑ n ∈ Finset.Ico (m + 1) (2 * N), 1 / ((n : ℝ) - m) := by
           rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, hcard, ← Finset.mul_sum]
           ring
       _ ≤ 4 * (N : ℝ) ^ 3 - (N : ℝ) ^ 2 / 4 * ((N : ℝ) * Real.log N - N) := by
@@ -2508,11 +2516,10 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
   have hterm_lt : ∀ n ∈ B, (n : ℝ) * K₁ n n < (N : ℝ) ^ 2 * (Real.log N - 17) / 4 := by
     intro n hn
     have hn_pos : (0 : ℝ) < n := by exact_mod_cast hB_pos n hn
-    have hn_lt : (n : ℝ) < 2 * N := by exact_mod_cast (mem_Ico.mp hn).2
+    have hn_lt : (n : ℝ) < 2 * N := by exact_mod_cast (Finset.mem_Ico.mp hn).2
     have hKn := hall n hn
     have hKn_pos_or : (n : ℝ) * K₁ n n < (n : ℝ) * ((N : ℝ) * (Real.log N - 17) / 8) :=
       mul_lt_mul_of_pos_left hKn hn_pos
-    -- Note `(N * (log N - 17) / 8)` may be negative when `log N < 17`, so test `0 ≤ K₁ n n`!
     have hK₁_nn : 0 ≤ K₁ n n := by
       have h1 := hK₁_psd (fun m => if m = n then 1 else 0)
       have heq : (∑ m ∈ B, ∑ l ∈ B, (if m = n then (1 : ℝ) else 0) *
@@ -2532,7 +2539,7 @@ theorem atomic_countertermFree_diag_lower_bound {K : ℝ → ℕ → ℕ → ℝ
       _ ≤ (2 * (N : ℝ)) * ((N : ℝ) * (Real.log N - 17) / 8) :=
           mul_le_mul_of_nonneg_right hn_lt.le hlog17
       _ = (N : ℝ) ^ 2 * (Real.log N - 17) / 4 := by ring
-  have hB_nonempty : B.Nonempty := nonempty_Ico.mpr (by omega)
+  have hB_nonempty : B.Nonempty := Finset.nonempty_Ico.mpr (by omega)
   have hsum_lt : ∑ n ∈ B, (n : ℝ) * K₁ n n < ((N : ℝ) ^ 3 / 4) * (Real.log N - 17) := by
     calc ∑ n ∈ B, (n : ℝ) * K₁ n n
         < ∑ _n ∈ B, (N : ℝ) ^ 2 * (Real.log N - 17) / 4 :=
@@ -2552,10 +2559,8 @@ theorem not_atomic_countertermFree_log_diag (C : ℝ) :
       (∀ m n : ℕ, 0 < m → 0 < n → m ≠ n → K₁ m n = weilDeltaKernel m n) ∧
       (∀ n : ℕ, 0 < n → K₁ n n ≤ C * (1 + Real.log n)) := by
   rintro ⟨K, K₁, hpsd, htend, hoff, hdiag⟩
-  -- Pick `N` large enough that `N * (log N - 17) / 8 > |C| * (1 + log (2 N))`
   set C₀ := max 1 |C|
   have hC₀_pos : 0 < C₀ := by positivity
-  -- Since `log N → ∞` and `N / (1 + log(2 N)) → ∞`, choose explicit `N = ⌈exp 19⌉₊ * (⌈32 * C₀⌉₊ + 1)`
   set N : ℕ := (⌊Real.exp 19⌋₊ + 1) * (⌊32 * C₀⌋₊ + 1)
   have hN1 : 1 ≤ N := Nat.mul_pos (Nat.succ_pos _) (Nat.succ_pos _)
   have hexp19_lt : Real.exp 19 < N := by
@@ -2565,14 +2570,9 @@ theorem not_atomic_countertermFree_log_diag (C : ℝ) :
     nlinarith
   have hN_pos : (0 : ℝ) < N := (Real.exp_pos 19).trans hexp19_lt
   have hlogN_gt : 19 < Real.log N := (Real.lt_log_iff_exp_lt hN_pos).mpr hexp19_lt
-  have hN_gt_C : 32 * C₀ < N := by
-    have h1 : 32 * C₀ < (⌊32 * C₀⌋₊ : ℝ) + 1 := Nat.lt_floor_add_one _
-    have h2 : (1 : ℝ) ≤ (⌊Real.exp 19⌋₊ : ℝ) + 1 := by positivity
-    push_cast [N]
-    nlinarith
   obtain ⟨-, n, hnB, hlo⟩ := atomic_countertermFree_diag_lower_bound hpsd htend hoff hN1
-  have hn_pos : 0 < n := by have := (mem_Ico.mp hnB).1; omega
-  have hn_lt : (n : ℝ) < 2 * N := by exact_mod_cast (mem_Ico.mp hnB).2
+  have hn_pos : 0 < n := by have := (Finset.mem_Ico.mp hnB).1; omega
+  have hn_lt : (n : ℝ) < 2 * N := by exact_mod_cast (Finset.mem_Ico.mp hnB).2
   have hhi := hdiag n hn_pos
   have hlog2 : Real.log 2 ≤ 1 := (Real.log_le_sub_one_of_pos two_pos).trans (by norm_num)
   have hlog_n_le : 1 + Real.log n ≤ 2 * (Real.log N - 17) * 8 := by
@@ -2623,8 +2623,8 @@ theorem tendsto_add_twistedEnergy_atTop {A : ℝ → ℕ → ℕ → ℝ} {S : F
       · have hc : Continuous (fun r : ℝ => |1 - r|) := by fun_prop
         simpa using (hc.tendsto 1).mono_left nhdsWithin_le_nhds
       · filter_upwards [self_mem_nhdsWithin] with r hr
-        rw [mem_Iio] at hr
-        exact mem_Ioi.mpr (abs_pos.mpr (by linarith))
+        rw [Set.mem_Iio] at hr
+        exact Set.mem_Ioi.mpr (abs_pos.mpr (by linarith))
     exact Filter.tendsto_neg_atBot_atTop.comp (Real.tendsto_log_nhdsGT_zero.comp hsub)
   have hdiv_T : Tendsto (fun r : ℝ => ∑ m ∈ S, ∑ n ∈ S, x m * x n * twistedEnergy r m n)
       (𝓝[<] 1) atTop := by
@@ -2747,7 +2747,7 @@ theorem schur_min_posSemidef {ι : Type*} [DecidableEq ι] (S : Finset ι) {A : 
       intro y
       have h := hQ (fun i => if i ∈ S' then y i else 0)
       have hf : S.filter (fun i => i ∈ S') = S' := by
-        ext i; simp only [S', mem_filter, mem_erase]; tauto
+        ext i; simp only [S', Finset.mem_filter, Finset.mem_erase]; tauto
       have heq : (∑ i ∈ S, ∑ j ∈ S,
           (if i ∈ S' then y i else 0) * (if j ∈ S' then y j else 0) * Q i j) =
           ∑ i ∈ S', ∑ j ∈ S', y i * y j * Q i j := by
@@ -2904,6 +2904,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
       have hev : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 ≤ ∑ m ∈ S, ∑ n ∈ S, c m * c n * K r m n := by
         filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
         exact hpsd r hr.1 hr.2 S hS c
+      haveI : (𝓝[<] (1 : ℝ)).NeBot := nhdsWithin_Iio_neBot le_rfl
       exact ge_of_tendsto htend hev
     intro n hn
     rw [ScalingDatum.HasseWeilAt]
@@ -2912,7 +2913,7 @@ theorem riemannHypothesis_iff_exists_damped_psd_limit :
     by_cases hn1 : n = 1
     · subst hn1
       have h11 := hQ {1} (fun k hk => by simp at hk; omega) (fun _ => 1)
-      simp only [sum_singleton, Nat.cast_one, Real.log_one, sub_self, one_mul] at h11
+      simp only [Finset.sum_singleton, Nat.cast_one, Real.log_one, sub_self, one_mul] at h11
       rw [Nat.cast_one, Real.log_one, abs_of_nonneg h11]
     · have h1_ne : (1 : ℕ) ≠ n := Ne.symm hn1
       have hpair_pos : ∀ k ∈ ({1, n} : Finset ℕ), 0 < k := by
@@ -3017,9 +3018,9 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
             (Real.log k) +
           Zeta23.EF.weilTest (cx (scaleShift (Real.log m) f)) (cx (scaleShift (Real.log n) f))
             (-Real.log k))).re := fun m n =>
-    (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
+    Complex.reCLM.summable (RHTower.summable_primeAtoms _ (Zeta23.EF.weilTest_hasCompactSupport
       (cx_hasCompactSupport (scaleShift_mem (Real.log m) hf).2)
-      (cx_hasCompactSupport (scaleShift_mem (Real.log n) hf).2))).re
+      (cx_hasCompactSupport (scaleShift_mem (Real.log n) hf).2)))
   have hdiag_nonpos : ∀ n : ℕ, smoothedPrimeKernel f n n ≤ 0 := by
     intro n
     rw [smoothedPrimeKernel, FrustratedArithmeticDirichletForms.weightedPrimePart,
@@ -3083,7 +3084,10 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
         nlinarith
       linarith
   rintro ⟨K, hpsd, hlim⟩
-  have hpair_pos : ∀ k ∈ ({1, 2} : Finset ℕ), 0 < k := by decide
+  have hpair_pos : ∀ k ∈ ({1, 2} : Finset ℕ), 0 < k := by
+    intro k hk
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hk
+    omega
   have htend : Tendsto (fun r => ∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ),
       (1 : ℝ) * 1 * K r m n) (𝓝[<] 1)
       (𝓝 (∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ),
@@ -3094,8 +3098,9 @@ theorem not_psd_limit_smoothedPrime {f : ℝ → ℝ} (hf : f ∈ realTests) (hf
       0 ≤ ∑ m ∈ ({1, 2} : Finset ℕ), ∑ n ∈ ({1, 2} : Finset ℕ), (1 : ℝ) * 1 * K r m n := by
     filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
     exact hpsd r hr.1 hr.2 {1, 2} hpair_pos (fun _ => 1)
+  haveI : (𝓝[<] (1 : ℝ)).NeBot := nhdsWithin_Iio_neBot le_rfl
   have hge := ge_of_tendsto htend hev
-  have h12 : (1 : ℕ) ≠ 2 := by decide
+  have h12 : (1 : ℕ) ≠ 2 := by omega
   simp only [Finset.sum_pair h12, one_mul] at hge
   linarith [hdiag_nonpos 1, hdiag_nonpos 2, hoff_neg.1, hoff_neg.2]
 
@@ -3267,6 +3272,7 @@ theorem not_psd_limit_smoothedArchPole {f : ℝ → ℝ} (hf : f ∈ realTests) 
       0 ≤ ∑ i ∈ ({1, n} : Finset ℕ), ∑ j ∈ ({1, n} : Finset ℕ), c i * c j * K r i j := by
     filter_upwards [Ico_mem_nhdsLT zero_lt_one] with r hr
     exact hpsd r hr.1 hr.2 {1, n} hpair_pos c
+  haveI : (𝓝[<] (1 : ℝ)).NeBot := nhdsWithin_Iio_neBot le_rfl
   have hge := ge_of_tendsto htend hev
   simp only [c, Finset.sum_pair h1_ne, ↓reduceIte, h1_ne.symm, hdiag_eq n, hsymm 1 n] at hge
   linarith

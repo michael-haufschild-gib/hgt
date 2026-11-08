@@ -50,9 +50,20 @@ identity and its actual-count interpretation are not yet formalized here.
 4. Derive the signed cycle-index coefficient identity from actual point counts.
 5. Instantiate the derived Stepanov bound and audit the resulting inequality.
 
-The [actual elliptic divisor branch](riac-elliptic-squarefree-divisor-cancellation.md)
+The [actual elliptic divisor branch](../3-formalized/riac-elliptic-squarefree-divisor-cancellation.md)
 uses existing closed places and their proved Euler product to construct a
 concrete nonzero square-root-scale calibration directly.
+
+For its orientation comparison,
+[FiniteFieldEllipticClosedPoints.lean](../../../../formal/GaloisForLFunctions/ArithmeticEffectivityTheory/FiniteFieldEllipticClosedPoints.lean)
+already identifies points over a closed place with its residue-field
+embeddings. The remaining geometric bridge is Frobenius transitivity on
+each such fibre. Stable subsets would then be unions of closed-place
+fibres, with cardinality equal to total residue degree. Collision
+cancellation should reduce the orientation sum to these subsets; a cycle
+of degree `d` contributes sign `(-1)^(d−1)`, giving the factor `(-1)^n`
+times the even-minus-odd divisor count in total degree `n`.
+This comparison is not yet formalized.
 
 Verified source inputs:
 [HyperellipticRiemannHypothesis.lean](../../../../formal/GaloisForLFunctions/RHTower/HyperellipticRiemannHypothesis.lean)

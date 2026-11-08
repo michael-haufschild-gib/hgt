@@ -385,3 +385,25 @@ sum is an integer difference of actual counts. Stabilizers and trivial
 characters are retained, including both orientation labels in degrees
 zero and one. This [count realization](../../../docs/drafts/pipeline/3-formalized/riac-orientation-quotient-counts.md)
 does not itself bound the difference.
+
+## Square-root cancellation of actual elliptic divisor counts
+
+[SquarefreeDivisorCounts.lean](SquarefreeDivisorCounts.lean) constructs
+even and odd support counts from finite sets of places with residue
+degrees. Their difference is the corresponding inverse Euler coefficient.
+[EllipticSquarefreeCounts.lean](EllipticSquarefreeCounts.lean) applies this
+construction to the actual closed points of `Y²Z=X³−XZ²` over `F₃`,
+including infinity. The degree cutoff omits no divisor. For every `n≥0`,
+
+`|E_n−O_n|≤8(n+1)²(√3)^n`,
+
+`|Σ_(k≤n)(E_k−O_k)|≤24(n+1)²(√3)^n`.
+
+These [formalized bounds](../../../docs/drafts/pipeline/3-formalized/riac-elliptic-squarefree-divisor-cancellation.md)
+use the proved actual-place Euler product, curve rationality and actual
+Frobenius root bound. No Weil-root, simplicity or cancellation assumption
+is added. At norm horizon `N=3^n`, the bound is `√N` times a quadratic
+logarithmic loss. The mechanism is classical; the contribution is its
+realization by actual finite arithmetic counts with complete Lean proofs.
+The orientation-quotient comparison and the integer conductor-height
+transfer remain open.

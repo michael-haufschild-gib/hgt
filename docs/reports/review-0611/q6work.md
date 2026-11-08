@@ -1,7 +1,5 @@
 # Critical thresholds and onset aperture
 
-**Complete proof assembly passes Lean. Individual module import checks and pipeline promotion remain.**
-
 For `a* = onsetAperture zetaZeroConfig`, the critical thresholds satisfy
 
 ```
@@ -53,5 +51,5 @@ No specific value of the whole-space exponent `c₂` is asserted.
 The complete proof assembly and all transitive axiom audits pass with only
 `propext, Classical.choice, Quot.sound`.
 
-Cards: [whole-space threshold and onset](../../drafts/pipeline/1-in-progress/cact-whole-space-threshold-onset.md),
-[prefix–collar decoupling and thresholds](../../drafts/pipeline/1-in-progress/critical-ratio-window-confinement-and-threshold-law.md).
+Cards: [whole-space threshold and onset](../../drafts/pipeline/3-formalized/cact-whole-space-threshold-onset.md),
+[prefix–collar decoupling and thresholds](../../drafts/pipeline/3-formalized/critical-ratio-window-confinement-and-threshold-law.md).

@@ -95,3 +95,4 @@ import GaloisForLFunctions.MetaplecticMobiusDescent
 import GaloisForLFunctions.PrimeTorusTheory
 import GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
 import GaloisForLFunctions.InfiniteRankWeilTheory
+import GaloisForLFunctions.ExactEventTheory

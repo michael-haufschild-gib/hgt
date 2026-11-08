@@ -9,7 +9,7 @@
 - **Difference from a depth cutoff:** The corpus quartic `(X²+1)(X²+9)` disproves counting only initial depths above `sqrt(2t)`. The proposed moment cost permits the deep pair to support the shallow pair, while charging every surviving pair elapsed time.
 - **Sharpness target:** An isolated quadratic pair `(X−x)²+y²` attains equality until `t=y²/2`; the coefficient `2` of elapsed heat cannot be increased.
 - **Novelty search:** Searches for heat power-depth moments, logarithmic majorization and moment count budgets surfaced squared-depth majorization, global quadratic dissipation and the quartic cutoff counterexample; no general positive-exponent budget surfaced.
-- **Existing boundary to sharpen:** `RHTower/AdmissibleFunctionalShape.lean` tests isolated pair terms and gives ordinary convexity as a sufficient condition. Grouping complete conjugate packets may enlarge the dissipating class to logarithmically convex profiles; `|y|^p` with `0<p<1` would distinguish the two criteria.
+- **Existing boundary to sharpen:** `RHTower/AdmissibleFunctionalShape.lean` tests isolated pair terms and gives ordinary convexity as a sufficient condition. Grouping complete conjugate packets admits profiles convex in logarithmic height; `|y|^p` with `0<p<1` distinguishes the two criteria.
 
 ## Candidate mechanism
 
@@ -30,13 +30,24 @@ For collision comparison, use the continuous corrected action
 At simple times its derivative is at most `−2q(2t)^(q−1) N_upper(t)`.
 Integrating and using nonincreasing nonreal count recovers monotonicity of
 `J_q(t)+(2t)^q N_upper(t)`, including real collisions.
+Equivalently, on `[a,b]` compare the continuous function
+`J_q(t)+(2t)^q N_upper(b)`. Its forward derivative is nonpositive because
+`N_upper(b)≤N_upper(t)`. Endpoint comparison then gives the full moment law,
+without integrating the discontinuous count.
 An initial offset `c=ε+2t`, `ε>0`, keeps the corrected weight differentiable
 at real roots even at time zero; taking `ε↓0` recovers the stated finite
 polynomial budget.
 
-Remaining proof work: connect the finite paired field to polynomial zero velocities;
-carry comparison through collisions; transfer finite root sums to `H_t`, using
-continuous cutoffs away from the real axis. No contribution counted yet.
+For the polynomial comparison, first take an initially separable polynomial:
+its heat discriminant is a polynomial in time, nonzero at time zero, so only
+finitely many collision times occur. Constant real perturbations `p+ε` avoid
+the finite critical-value set and approximate arbitrary nonzero real `p`.
+Continuity of finite root moments would then remove initial separability.
+
+Remaining proof work: carry moment comparison through collisions and prove the
+initial-time bound. Polynomial approximation remains a route to the initial
+bound; the actual positive-time field now has its own drift certificate.
+No contribution counted yet.
 
 ## Lean certificate for the paired mechanism
 
@@ -51,5 +62,11 @@ only `propext`, `Classical.choice`, `Quot.sound`.
 the complex reciprocal field with the paired kernel and proves the same drift
 inequality for a complete finite conjugate packet, including any finite real
 exterior. Both capstones pass direct Lean check with the same standard axioms.
-Multiplicity across collisions and the polynomial/entire-flow comparison remain
-unformalized.
+
+`ArithmeticElectrostatics/TheSimpleHeatPacketPaysElapsedDepth.lean` proves the
+upper-zero velocity comparison with the finite packet, the actual elapsed-depth
+drift inequality, and `heatUpperElapsedDepthDrift_nonpos_forward`: after every
+positive time, a punctured forward interval satisfies the drift inequality for
+all nonnegative powers and offsets. Compact forward simplicity is proved by
+the corpus, not assumed in this capstone. All three capstones pass direct Lean
+check with the standard axioms above.
