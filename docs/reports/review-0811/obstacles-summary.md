@@ -629,6 +629,7 @@ Holography, ringdown and counting holography are formalized; their positive resu
 | Annihilators | finite sets at any multiplicity; harmonic packets cost `≥m`; left-growth law | `ArithmeticPositiveDuality/{PositiveTwoPrimeAnnihilators,ArbitraryMultiplicityNearUnitAnnihilatorMass,HarmonicZeroPacketsForcePositiveAnnihilatorMass,PositiveAnnihilatorAccuracyForcesLeftGrowth}` [L] |
 | Annihilator bandwidth | order `r+1≥2` and tail mass `H` force a supported logarithmic frequency `≥log 2+2(log 2)r²/(H−1)`; full Chebyshev mass bound at fixed bandwidth | `ArithmeticPositiveDuality/TheChebyshevCostOfAnnihilatorMultiplicity` [K] |
 | Reflected-pair annihilation | pair `σ±δ+iγ`: sharp hyperbolic cost at finite bandwidth; central mass has unattained infimum `2^δ` over positive two-prime annihilators and heights | `ArithmeticPositiveDuality/TheHyperbolicCostOfReflectedZeroPairs` [K] |
+| Fixed-height annihilation | central mass approaches `2^δ` at prescribed height `γ` iff `cos(γ log 2)=-1`; every other fixed height has an explicit positive gap independent of bandwidth | `ArithmeticPositiveDuality/FixedHeightAnnihilatorsHaveAMassGap` [K] |
 | Rigid oscillation | finite oscillation of `ψ`, dilation annihilation | `ZeroConfigurationGeometry/{TheOneOffsAreFiniteOscillationsOfThePrimeError,MultiplicativeDilationAnnihilationOfPrimeError}` [L] |
 | Surgery | rational relocation fails at the first integer gap | `ArithmeticPositiveDuality/TheFirstIntegerGapDetectsRelocation` [L] |
 

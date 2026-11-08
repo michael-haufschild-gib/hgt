@@ -88,7 +88,7 @@ theorem frobeniusIntersection_block {N m n : ℕ} (hm : m ∈ Ico N (2 * N))
     rintro a b ha hab hb ⟨t, rfl⟩
     have ht : 2 ≤ t := by
       by_contra h
-      push_neg at h
+      push Not at h
       interval_cases t <;> omega
     have : a * 2 ≤ a * t := Nat.mul_le_mul_left a ht
     omega
@@ -174,7 +174,7 @@ theorem log_factorial_ge (N : ℕ) : (N : ℝ) * Real.log N - N ≤ Real.log (N.
   · simp
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN
   have hf : (0 : ℝ) < N.factorial := by exact_mod_cast Nat.factorial_pos N
-  have h := Real.pow_div_factorial_le_exp hN'.le N
+  have h := Real.pow_div_factorial_le_exp (N : ℝ) hN'.le N
   have h2 := Real.log_le_log (by positivity) h
   rw [Real.log_exp, Real.log_div (by positivity) hf.ne', Real.log_pow] at h2
   linarith
@@ -415,3 +415,6 @@ theorem genusDefect_nonneg_of_le {g : ℝ} {N : ℕ} (hN : 1 ≤ N)
   nlinarith [mul_le_mul_of_nonneg_right hρle hsq]
 
 end GaloisForLFunctions.SurfaceOfSpecZ
+
+#print axioms GaloisForLFunctions.SurfaceOfSpecZ.genus_ge_of_genusDefect_nonneg
+#print axioms GaloisForLFunctions.SurfaceOfSpecZ.genusDefect_nonneg_of_le
