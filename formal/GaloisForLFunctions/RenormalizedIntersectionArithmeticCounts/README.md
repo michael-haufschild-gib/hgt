@@ -1,6 +1,6 @@
 # Renormalized intersection theory of arithmetic counts
 
-Third programme, specified by §2.11 of [review 0811](../../../docs/reports/review-0811/obstacles-summary.md).
+Programme specified by §2.11 of [review 0811](../../../docs/reports/review-0811/obstacles-summary.md).
 Namespace: `GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts`.
 Companions: [effective scaling geometry](../EffectiveScalingGeometry/README.md)
 and [height and homotopy](../HeightHomotopyArithmeticCounts/README.md).
@@ -55,14 +55,26 @@ characteristic without this sign convention. Any relative construction must
 specify which invariant it recovers. Deleting isolated primes alone does not
 remove their arithmetic correction.
 
-## Active research
+## First formalized classification
 
-[Prime-star compensation](../../../docs/drafts/pipeline/1-in-progress/riac-prime-star-compensation.md)
-asks for the exact diagonal payment on the actual restriction to conductor
-one and prime conductors. Completing squares gives a candidate sharp budget
-`Σ_p (log p)²/(p D(p))`, where `D(p)>0` is the final prime diagonal.
-Finite and infinite classification, critical obstructions and positive
-survivors require Lean verification before being counted as results.
+[Prime-star compensation](../../../docs/drafts/pipeline/3-formalized/riac-prime-star-compensation.md)
+classifies the actual corrected torsion matrix on conductor one and primes.
+For arbitrary real central diagonal `a` and prime diagonals `D(p)`, positivity
+on every finite prime set is equivalent to
+
+`D(p)>0 for every p`, `Σ_p (log p)²/(p D(p))<∞`, and `Σ_p (log p)²/(p D(p))≤a`.
+
+The sum is the exact least payment. Divergence gives explicit finite negative
+probes. Any eventual bound `D(p)≤C(log p)²` excludes finite central payment.
+For `D(p)=d(p)+p^η`, a positive completion exists exactly for `η>0`.
+Here `η` measures added diagonal growth, distinct from the Hilbert weight `δ`.
+[PrimeStarCompensation.lean](PrimeStarCompensation.lean) proves the matrix
+comparison, classification, minimizing probes and both boundaries. Its direct
+Lean check and fifteen transitive axiom audits pass with standard axioms only.
+
+The positive survivor is an explicit minimal completion of the prime-star
+restriction. Composite interactions and nonlocal archimedean corrections
+remain separate; no integer count or full positive form follows.
 
 [Programme card](../../../docs/drafts/pipeline/1-in-progress/renormalized-intersection-arithmetic-counts.md)
 records the remaining mathematical targets.
@@ -104,7 +116,7 @@ The [Tate count theorem](../CountingHolography/TheTateLimitOfACount.lean)
 identifies the full count target with RH. The
 [Farey–horocycle comparison](../CountingHolography/TheHorocycleRateIsTheSquareRootFareyLaw.lean)
 provides an arithmetic observable, without a prime-core cell action.
-The [completed-boundary candidate](../../../docs/drafts/pipeline/0-backlog/riac-completed-prime-boundary.md)
+The [completed-boundary candidate](../../../docs/drafts/pipeline/1-in-progress/riac-completed-prime-boundary.md)
 asks for the exact domain threshold before introducing any homology.
 
 The five constructions remain open. No critical positive form, arithmetic

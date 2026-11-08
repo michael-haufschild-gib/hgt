@@ -1,5 +1,8 @@
 # Arbitrary multiplicity near unit annihilator mass
 
+- **Stage:** 1-in-progress — formalizing the existing proof.
+- **Lean target:** `ArithmeticPositiveDuality/ArbitraryMultiplicityNearUnitAnnihilatorMass.lean`.
+
 - **Candidate:** For every real `β`, positive integer `r`, and `ε>0`, there is a positive one-prime Dirichlet polynomial with constant coefficient one, a zero of order `r` at `β+iπ/log 2`, and nonconstant mass in `[1,1+ε)` on `Re s=β`. For `r≥2`, the mass is strictly greater than one.
 
 For odd `K`, set

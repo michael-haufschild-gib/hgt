@@ -10,12 +10,13 @@ its mass contradicts the continuum window pencil below its first threshold.
 
 set_option autoImplicit false
 noncomputable section
-open MeasureTheory Finset Filter Topology
+open MeasureTheory Finset Filter Topology RHTower Zeta23
 open scoped Classical BigOperators RealInnerProductSpace Matrix
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open CriticalArithmeticCorrelationTheory BezoutValuationIncidence CompletedArithmeticForms
   RenormalizedArithmeticPotentialTheory RenormalizedArithmeticPotentialTheory.CompletedShell
-  SpacingScaleHarmonicAnalysis
+  SpacingScaleHarmonicAnalysis CohomologyOfWindowsOfSpecZ WindowTowerOfSpecZ WindowVisibilityLaw
+  SquareRootThreshold
 
 /-- Every positive critical curve below all continuum window thresholds is eventually positive
 on the primitive hyperplane. -/
@@ -208,7 +209,41 @@ theorem poleOrthogonalCriticalThreshold_eq_iInf_windowThreshold :
       highConductorCriticalThreshold_eq_iInf_windowThreshold.le
   · exact iInf_windowThreshold_le_poleOrthogonalCriticalThreshold
 
+/-- Removing only the polar conductor gives the same threshold as removing the growing low packet. -/
+theorem poleOrthogonalCriticalThreshold_eq_highConductorCriticalThreshold :
+    poleOrthogonalCriticalThreshold = highConductorCriticalThreshold := by
+  rw [poleOrthogonalCriticalThreshold_eq_iInf_windowThreshold,
+    highConductorCriticalThreshold_eq_iInf_windowThreshold]
+
+/-- The primitive threshold grows at least as the sixth exponential of the onset aperture. -/
+theorem exp_six_mul_le_poleOrthogonalCriticalThreshold {a : ℝ} (ha0 : 0 ≤ a)
+    (ha : (a : EReal) ≤ onsetAperture zetaZeroConfig) :
+    ((windowThresholdExponentialConstant * Real.exp (6 * a) : ℝ) : EReal) ≤
+      poleOrthogonalCriticalThreshold := by
+  rw [poleOrthogonalCriticalThreshold_eq_highConductorCriticalThreshold]
+  exact exp_six_mul_le_highConductorCriticalThreshold ha0 ha
+
+/-- Every critical band below the exponential onset bound is positive on the primitive hyperplane. -/
+theorem eventuallyPoleOrthogonalPosDef_of_lt_exp_six_mul {a R : ℝ} (ha0 : 0 ≤ a)
+    (ha : (a : EReal) ≤ onsetAperture zetaZeroConfig) (hR : 0 < R)
+    (hlt : R < windowThresholdExponentialConstant * Real.exp (6 * a)) :
+    EventuallyPoleOrthogonalPosDef R :=
+  eventuallyPoleOrthogonalPosDef_of_lt_iInf_windowThreshold hR
+    ((EReal.coe_lt_coe_iff.mpr hlt).trans_le
+      (iInf_windowThreshold_ge_exp_six_mul_of_le_onsetAperture ha0 ha))
+
+/-- A finite primitive threshold satisfies the corresponding logarithmic onset bound. -/
+theorem log_poleOrthogonalCriticalThreshold_ge_six_mul_onsetAperture
+    (htop : poleOrthogonalCriticalThreshold ≠ ⊤) {a : ℝ} (ha0 : 0 ≤ a)
+    (ha : (a : EReal) ≤ onsetAperture zetaZeroConfig) :
+    Real.log windowThresholdExponentialConstant + 6 * a ≤
+      Real.log poleOrthogonalCriticalThreshold.toReal := by
+  rw [poleOrthogonalCriticalThreshold_eq_highConductorCriticalThreshold] at htop ⊢
+  exact log_highConductorCriticalThreshold_ge_six_mul_onsetAperture htop ha0 ha
+
 #print axioms eventually_primitive_positive_of_critical_curve
 #print axioms poleOrthogonalCriticalThreshold_eq_iInf_windowThreshold
+#print axioms exp_six_mul_le_poleOrthogonalCriticalThreshold
+#print axioms log_poleOrthogonalCriticalThreshold_ge_six_mul_onsetAperture
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

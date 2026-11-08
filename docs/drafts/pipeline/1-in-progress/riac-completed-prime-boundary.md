@@ -1,9 +1,9 @@
 # The domain of the completed prime boundary
 
 - **ID:** RIAC-completed-boundary
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Source:** [RIAC](../1-in-progress/renormalized-intersection-arithmetic-counts.md), completed topology
+- **Source:** [RIAC](renormalized-intersection-arithmetic-counts.md), completed topology
 - **Statement:** Classify boundedness and closability of the actual Dirichlet augmentation on weighted prime chains.
 
 ## Exact candidate
@@ -35,3 +35,12 @@ augmented degree zero and distinguish ordinary from reduced homology.
 Any obstruction must retain the exact extension range, explicit boundary
 representative and norm formula as positive survivors. No theorem is yet
 claimed on this card.
+
+## Verified source inputs
+
+`Nat.Primes.summable_rpow` gives the exact reciprocal-prime power boundary.
+`RHTower.Sieve.norm_prime_cpow_sq_eq` identifies the squared complex
+coefficient with `p^(−2 Re(s))`. The existing Hilbert basis and
+`summable_norm_apply_sq` provide the necessity mechanism for bounded
+extensions. Actual extension, finite-chain comparison and nonclosability
+still require their own proofs.

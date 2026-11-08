@@ -1,5 +1,8 @@
 # Harmonic zero packets force positive annihilator mass
 
+- **Stage:** 1-in-progress — formalizing the existing proof.
+- **Lean target:** `ArithmeticPositiveDuality/HarmonicZeroPacketsForcePositiveAnnihilatorMass.lean`.
+
 - **Candidate:** For a finite positive Dirichlet polynomial `P(s)=1+Σ a_n n^(−s)`, if `P(β+i kγ)=0` for `k=1,…,m`, then `H(β)=Σ a_n n^(−β)≥m`.
 - **Exact identity:** With `u_n=exp(−iγ log n)`,
   `Σ a_n n^(−β)|1+u_n+⋯+u_n^m|²=(m+1)(H(β)−m)`.

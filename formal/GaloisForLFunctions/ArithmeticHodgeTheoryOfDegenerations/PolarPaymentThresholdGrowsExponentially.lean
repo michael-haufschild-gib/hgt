@@ -79,7 +79,7 @@ theorem windowThreshold_ge_exp_six_mul_of_zetaWindowPositive {a : ℝ} (ha0 : 0 
   (iInf_windowThreshold_ge_exp_six_mul_of_le_onsetAperture ha0
     (le_onsetAperture_of_zetaWindowPositive ha0 hW)).trans (iInf_le_of_le A (iInf_le _ hA))
 
-/-- **Theorem 3 of the window-confinement card.** If `ZetaWindowPositive a` (`a ≥ 0`), then
+/-- If `ZetaWindowPositive a` (`a ≥ 0`), then
 `windowThresholdExponentialConstant * e^{(13/4) a} ≤ windowThreshold A` for every `A ≥ 0`. -/
 theorem windowThreshold_ge_exp_thirteen_quarters_mul_of_zetaWindowPositive {a : ℝ} (ha0 : 0 ≤ a)
     (hW : ZetaWindowPositive a) {A : ℝ} (hA : 0 ≤ A) :

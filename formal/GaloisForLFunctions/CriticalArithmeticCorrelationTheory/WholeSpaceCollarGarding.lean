@@ -10,12 +10,12 @@ The sole remaining scalar loss is the conductor-one coefficient square.
 
 set_option autoImplicit false
 noncomputable section
-open MeasureTheory Finset Filter Topology
+open MeasureTheory Finset Filter Topology RHTower
 open scoped Classical BigOperators RealInnerProductSpace Matrix
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open ArithmeticHodgeTheoryOfDegenerations BezoutValuationIncidence CompletedArithmeticForms
   RenormalizedArithmeticPotentialTheory RenormalizedArithmeticPotentialTheory.CompletedShell
-  SpacingScaleHarmonicAnalysis
+  SpacingScaleHarmonicAnalysis ArithmeticLorentzianGeometry ArithmeticElectrostatics
 
 /-- Whole-space Gårding retains the completed packet diagonal, collar reserves, and Lévy energy,
 with a single scalar polar loss. -/
@@ -49,8 +49,9 @@ theorem exists_wholeSpace_collar_garding_with_linear_mass :
   obtain ⟨B, _, hBbound, hGN⟩ := hG (show 0 < R + 1 by linarith)
   let κ_P := 1 / (64 * explicitConductorCutoffConstant)
   let κ_S := dyadicTopMassConstant / 128
-  have hκP : 0 < κ_P := by dsimp only [κ_P]; exact one_div_pos.mpr
-    (mul_pos (by norm_num) explicitConductorCutoffConstant_pos)
+  have hκP : 0 < κ_P := by
+    dsimp only [κ_P]
+    exact one_div_pos.mpr (mul_pos (by norm_num) explicitConductorCutoffConstant_pos)
   have hκS : 0 < κ_S := div_pos dyadicTopMassConstant_pos (by norm_num)
   obtain ⟨C, hC, hcross⟩ := eventually_lowPacket_cross_payment hc hR hcrit hκP hκS
   refine ⟨C, hC, ?_⟩
@@ -83,6 +84,7 @@ theorem exists_wholeSpace_collar_garding_with_linear_mass :
     integral_nonneg fun _ => sq_nonneg _
   have hBpay := mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left hBbound (zero_lt_one.trans_le (hc N)).le) hmass
+  simp only [div_eq_mul_inv, mul_inv_rev] at hGarding hcros henergy hnegative hnorm' hlowN hBpay ⊢
   ring_nf at hGarding hcros henergy hnegative hnorm' hlowN hBpay ⊢
   linarith only [hGarding, hcros, henergy, hnegative, hnorm', hlowN, hBpay]
 
@@ -148,8 +150,9 @@ theorem exists_critical_primitive_collar_garding_and_far_bridge
   obtain ⟨B, hB, hGN⟩ := hG (show 0 < R + 1 by linarith)
   let κ_P := 1 / (64 * explicitConductorCutoffConstant)
   let κ_S := dyadicTopMassConstant / 128
-  have hκP : 0 < κ_P := by dsimp only [κ_P]; exact one_div_pos.mpr
-    (mul_pos (by norm_num) explicitConductorCutoffConstant_pos)
+  have hκP : 0 < κ_P := by
+    dsimp only [κ_P]
+    exact one_div_pos.mpr (mul_pos (by norm_num) explicitConductorCutoffConstant_pos)
   have hκS : 0 < κ_S := div_pos dyadicTopMassConstant_pos (by norm_num)
   obtain ⟨C₀, hC₀, hcross₀⟩ := eventually_lowPacket_cross_payment hc hR hcrit hκP hκS
   refine ⟨c_W, B, hcW, hB, fun {η} hη => ?_⟩
@@ -190,7 +193,8 @@ theorem exists_critical_primitive_collar_garding_and_far_bridge
   have hnorm' := congrArg (fun t : ℝ => (tiltedSplineSpectralFloorConstant + 2) * t) hnorm
   dsimp only [κ_P, κ_S, y] at hcros₀ hcrosη henergy hnegative hnorm' hlowN
   constructor
-  · ring_nf at hGarding hcros₀ hp₀ henergy hnegative hnorm' hlowN ⊢
+  · simp only [div_eq_mul_inv, mul_inv_rev] at hGarding hcros₀ hp₀ henergy hnegative hnorm' hlowN ⊢
+    ring_nf at hGarding hcros₀ hp₀ henergy hnegative hnorm' hlowN ⊢
     linarith only [hGarding, hcros₀, hp₀, henergy, hnegative, hnorm', hlowN]
   · let L := Real.log (N : ℝ)
     let M := N / linearDefectCutoff (c N)
@@ -224,6 +228,7 @@ theorem exists_critical_primitive_collar_garding_and_far_bridge
     have hband1 : 0 ≤ (tiltedSplineSpectralFloorConstant + 2) * ‖u₁‖ ^ 2 := by
       have := tiltedSplineSpectralFloorConstant_pos; positivity
     dsimp only [P, S, M, L] at hres
+    simp only [div_eq_mul_inv, mul_inv_rev] at hbridge hcrosη hpη henergy hnegative hlowN hres hE0 hband0 hband1 ⊢
     ring_nf at hbridge hcrosη hpη henergy hnegative hlowN hres hE0 hband0 hband1 ⊢
     linarith only [hbridge, hcrosη, hpη, henergy, hnegative, hlowN, hres, hE0, hband0, hband1]
 
@@ -258,14 +263,18 @@ theorem exists_wholeSpace_window_localized_collar_garding :
   obtain ⟨c_W, C_B, hcW, hCB, hG⟩ := exists_wholeSpace_collar_garding_with_linear_mass
   let C_len := (1 / 8 : ℝ) * Real.log (4 * C_B / c_W + 1) + 1
   have hClen : 1 ≤ C_len := by
-    have hlog : 0 ≤ Real.log (4 * C_B / c_W + 1) := Real.log_nonneg (by have hh : 0 < 4 * C_B / c_W := by positivity; linarith only [hh])
+    have hlog : 0 ≤ Real.log (4 * C_B / c_W + 1) := Real.log_nonneg (by
+      have hh : 0 < 4 * C_B / c_W := by positivity
+      linarith only [hh])
     dsimp only [C_len]; linarith only [hlog]
   refine ⟨C_len, hClen, fun {c} hc {R} hR hcrit => ?_⟩
   obtain ⟨C, hC, hGN⟩ := hG hc hR hcrit
   let A := (1 / 8 : ℝ) * Real.log (2 * C_B * (R + 1) * (R + 2) / c_W + 1) + 1
   have hA : 1 ≤ A := by
     have hlog : 0 ≤ Real.log (2 * C_B * (R + 1) * (R + 2) / c_W + 1) :=
-      Real.log_nonneg (by have hh : 0 < 2 * C_B * (R + 1) * (R + 2) / c_W := by positivity; linarith only [hh])
+      Real.log_nonneg (by
+        have hh : 0 < 2 * C_B * (R + 1) * (R + 2) / c_W := by positivity
+        linarith only [hh])
     dsimp only [A]; linarith only [hlog]
   have hAlen : A ≤ (1 / 4 : ℝ) * Real.log (R + 1) + C_len := by
     have hR1 : 1 ≤ R + 1 := by linarith
@@ -274,13 +283,15 @@ theorem exists_wholeSpace_window_localized_collar_garding :
     have hh := mul_le_mul_of_nonneg_left hprod hcoeff
     have hsq := one_le_pow₀ hR1 (n := 2)
     have harg : 2 * C_B * (R + 1) * (R + 2) / c_W + 1 ≤
-        (4 * C_B / c_W + 1) * (R + 1) ^ 2 := by nlinarith only [hh, hsq]
+        (4 * C_B / c_W + 1) * (R + 1) ^ 2 := by
+      ring_nf at hh hsq ⊢
+      linarith only [hh, hsq]
     have hlog := Real.log_le_log (by positivity) harg
     rw [Real.log_mul (by positivity) (by positivity), Real.log_pow] at hlog
     dsimp only [A, C_len]
     norm_num only [Nat.cast_ofNat] at hlog
     linarith only [hlog]
-  refine ⟨A, C_B * (R + 2), C, c_W / (2 * (R + 1)), hA, hAlen,
+  refine ⟨A, C_B * (R + 2), C, (c_W / (R + 1)) / 2, hA, hAlen,
     by positivity, hC, by positivity, ?_⟩
   have hwidth : Tendsto (fun N : ℕ => c N / (N : ℝ)) atTop (𝓝 0) := by
     simpa only [pow_one, pow_zero, mul_one] using criticalCurve_pow_log_div_natCast hc hR hcrit 1 0
@@ -316,9 +327,11 @@ theorem exists_wholeSpace_window_localized_collar_garding :
   rw [hR2] at htail
   have hpaid := mul_le_mul_of_nonneg_left htail (show 0 ≤ c N / 2 by positivity)
   dsimp only [A] at hsplit
-  dsimp only at hg ⊢
+  dsimp only at hg
+  dsimp only [A] at ⊢
   dsimp only [U, y] at hsplit hpaid
   rw [hsplit, mul_add] at hg
+  simp only [div_eq_mul_inv, mul_inv_rev] at hg hpaid ⊢
   ring_nf at hg hpaid ⊢
   linarith only [hg, hpaid]
 

@@ -10,7 +10,7 @@ weighted mass and Lévy energy, and asymptotically nonpositive Weil form.
 
 set_option autoImplicit false
 noncomputable section
-open MeasureTheory Finset Filter Topology
+open MeasureTheory Finset Filter Topology RHTower
 open scoped Classical BigOperators RealInnerProductSpace Matrix
 namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 open ArithmeticHodgeTheoryOfDegenerations BezoutValuationIncidence CompletedArithmeticForms
@@ -181,6 +181,7 @@ theorem exists_critical_primitive_collar_weilQuad_bridge
   rw [hid] at herror
   dsimp only [P] at herror
   refine ⟨hpositive, hW, hLev, ?_⟩
+  simp only [div_eq_mul_inv, mul_inv_rev] at hpole herror hfar ⊢
   ring_nf at hpole herror hfar ⊢
   linarith only [hpole, herror, hfar]
 

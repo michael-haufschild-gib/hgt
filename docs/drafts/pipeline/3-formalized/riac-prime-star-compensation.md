@@ -1,9 +1,9 @@
 # Exact compensation on the prime star
 
 - **ID:** RIAC-prime-star
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (Lean; final module audit pending)
-- **Source:** [RIAC](renormalized-intersection-arithmetic-counts.md), critical torsion construction
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Source:** [RIAC](../1-in-progress/renormalized-intersection-arithmetic-counts.md), critical torsion construction
 - **Statement:** Positive diagonal completions of the actual prime-star torsion restriction are classified by a summable, sharp central payment.
 
 ## Exact theorem
@@ -64,9 +64,8 @@ Module: [PrimeStarCompensation.lean](../../../../formal/GaloisForLFunctions/Reno
 - `primeStar_power_completion_iff`: exact power boundary.
 - `primeStar_negative_of_log_square_bound`: logarithmic-square obstruction.
 
-All combined scratch proofs pass Lean; fifteen audited declarations have
-transitive axioms exactly `[propext, Classical.choice, Quot.sound]`.
-Direct final module audit is pending.
+Direct `lake --old env lean` module check passes. Fifteen audited declarations
+have transitive axioms exactly `[propext, Classical.choice, Quot.sound]`.
 
 ## Existing work and scope
 

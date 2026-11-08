@@ -23,9 +23,13 @@ of its Hodge/scattering constructions.
 4. A natural relative pair and signed-index localization recovering `M(N)`.
 5. A Farey cell realization with a modular action and controlled cutoff boundary.
 
-First active branch: [prime-star compensation](riac-prime-star-compensation.md).
-Next topology audit: determine whether the prime-two contraction extends to
-candidate completions; prove domain invariance before discussing homology.
+First formalized branch: [prime-star compensation](../3-formalized/riac-prime-star-compensation.md):
+exact minimal payment, unrestricted diagonal classification, explicit negative
+probes, logarithmic-square obstruction and sharp power boundary.
+Active [boundary audit](riac-completed-prime-boundary.md): classify the actual
+Dirichlet augmentation and its closed extensions before discussing homology.
+Then determine whether the prime-two contraction preserves the higher-degree
+domains of a proposed completion.
 
 ## Necessary distinctions
 
