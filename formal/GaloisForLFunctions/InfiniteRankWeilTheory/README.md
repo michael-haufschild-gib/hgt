@@ -1,7 +1,7 @@
 # Infinite-Rank Weil Theory over Spec ℤ (IRW)
 
 Namespace `GaloisForLFunctions.InfiniteRankWeilTheory`; umbrella `InfiniteRankWeilTheory.lean`;
-15 modules. Specification: §2.8b of
+16 modules. Specification: §2.8b of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -138,6 +138,7 @@ Weil form exists iff RH (`CountingHolography`).
 
 | Theorem | Lean |
 |---|---|
+| **The curve proof at finite and at infinite rank** | `curveDatum_tfae`, `riemannHypothesis_tfae`, `finiteOffLine_tfae` |
 | Reflection on level sums; equal outer and inner rank | `WeilTower.levelSum_neg`, `WeilTower.encard_outer_eq_encard_inner` |
 | Vandermonde window bound | `exists_pos_forall_window_le_norm_expSum`, `exists_pos_forall_window_le_norm_pointSum` |
 | Isolated-top window bound at infinite rank | `exists_pos_forall_window_le_norm_levelSum` |
@@ -190,21 +191,23 @@ All are unconditional; the `ζ` statements depend only on `propext`, `Classical.
 | A crude count along one tower is a zero-free region | that holds only on continuous levels; along one tower it gives AAL |
 | More precision makes forced vanishing a Stepanov count | the order of a copied zero is `≤ e² r log N + log(1/δ)` |
 
-## 9. The open core
+## 9. What the field reduces RH to
 
-Every topic of the programme is settled to the point where what remains is a classical open problem
-whose strength is fixed by a theorem here.
+The programme's agenda — Q1–Q6 and T1–T4 of §2.8b — is answered and built (§5, §6). Its main
+theorem (`riemannHypothesis_tfae`) puts the curve proof and the proof for `ζ` in one shape: for a
+curve the crude count on a thick set of levels is equivalent to RH for the curve (`curveDatum_tfae`);
+for `ζ`, RH is equivalent to ZAL together with the crude count along one tower, in any of its proved
+forms. The statements below are therefore not open topics of the programme but the classical problems
+the programme reduces RH and its milestones to, each with its strength fixed by a theorem. They are
+open as mathematics; no unconditional argument in the corpus or the literature decides them.
 
-| Open statement | Strength, by theorem | Settled around it |
+| Statement | Proved relation | Proved boundary |
 |---|---|---|
-| **The crude step**: a bound on the lag along a thick set of levels of one tower of `ζ`, equivalently on `primeDeviation` along a thick set of geometric scales; its stronger forms are a bounded lag at every level and a positive count of the tower | implies AAL; with ZAL equivalent to RH; implied by RH (`asymptoticAbscissaLaw_of_thick_lag_bound`, `asymptoticAbscissaLaw_of_toeplitzPositive_lagKernel`, `riemannHypothesis_iff_zerosApproachLine_and_toeplitzPositive_lagKernel`) | on continuous levels the same bound is exactly a zero-free half-plane (`lag_bound_iff_halfPlane`); thick sets are sharp (`levelSum_rootsOfUnityTower_eq_zero`); well-foundedness is necessary (`exists_tower_bounded_without_wellFounded`) |
-| **ZAL**: finitely many zeros beyond each depth | at least quasi-RH; it is well-foundedness of every tower (`wellFoundedAbove_frobTower_iff`) | RH = ZAL + AAL for every configuration |
-| **B13**: finitely many off-line zeros force none | equivalent to a positive count, or a thick-set bounded lag, of one tower in the finite stratum (`b13_iff_toeplitzPositive`, `b13_iff_thick_lag_bounded`) | a single top pair `Θ ± iγ` makes the lag large at every level of the tower at base `π/γ` (`eventually_lag_large_of_single_top_pair`) |
-| **The prime pair constant**: the asymptotic of prime collisions at scale `1/T` | a binary problem of Hardy–Littlewood type [C] | the order is `X²` up to logarithms (`fejerMean_vonMangoldt_ge_chebyshev`, `fejerMean_vonMangoldt_le`) |
-| **Constant-precision returns** (B97): how rare heavy returns are | quasi-RH up to shielding (review-0811 §2.6) [D] | the Rouché copy of forced vanishing caps the order of a copied zero at `e² r log N + log(1/δ)` (`order_le_of_rouche`), so this auxiliary-function route gives only the trivial count |
-
-A contribution that moves the core must produce the crude step along one tower; every other step of
-the infinite-rank Weil proof is a theorem.
+| **The crude step**: a bounded lag along a thick set of levels of one tower of `ζ` (equivalently a thick-set bound on `primeDeviation`); stronger forms: bounded lag at every level, positive count of the tower | implies AAL; with ZAL equivalent to RH; implied by RH (`riemannHypothesis_tfae`, `asymptoticAbscissaLaw_of_thick_lag_bound`, `asymptoticAbscissaLaw_of_toeplitzPositive_lagKernel`) | on continuous levels the bound is exactly a zero-free half-plane (`lag_bound_iff_halfPlane`); thick sets are sharp (`levelSum_rootsOfUnityTower_eq_zero`); well-foundedness is necessary (`exists_tower_bounded_without_wellFounded`) |
+| **ZAL**: finitely many zeros beyond each depth | well-foundedness of every tower (`wellFoundedAbove_frobTower_iff`); RH = ZAL + AAL for every configuration | at least quasi-RH |
+| **B13**: finitely many off-line zeros force none | in the finite stratum RH is equivalent to a positive count of some tower, of every tower, or a thick-set bounded lag (`finiteOffLine_tfae`, `b13_iff_toeplitzPositive`) | a single top pair `Θ ± iγ` makes the lag large at every level at base `π/γ` (`eventually_lag_large_of_single_top_pair`) |
+| **The prime pair constant** at scale `1/T` | the long prime mean value has order `X²` up to logarithms (`fejerMean_vonMangoldt_ge_chebyshev`, `fejerMean_vonMangoldt_le`) | the constant is a binary problem of Hardy–Littlewood type [C] |
+| **Constant-precision returns** (B97) | the Rouché copy of forced vanishing has order `≤ e² r log N + log(1/δ)` (`order_le_of_rouche`) | quasi-RH up to shielding (review-0811 §2.6) [D] |
 
 ## 10. Calibration
 
@@ -239,8 +242,9 @@ the infinite-rank Weil proof is a theorem.
 IRW succeeds when each step of the curve proof has a theorem-level infinite-rank form, each question
 Q1–Q6 has a theorem-level answer (positive, or a sharp no-go with its positive survivor), each tool
 exists in its strongest unconditional form, every statement reduces to the curve proof at finite rank,
-and the open core is one precise statement per step. That state is reached: §9 lists the open core,
-and each entry carries the theorem that fixes its strength.
+and RH is reduced to one precise statement per step. That state is reached: the agenda is answered
+and built, the main theorem `riemannHypothesis_tfae` assembles the infinite-rank Weil proof, and §9
+lists the classical statements it reduces RH to, each with the theorem that fixes its strength.
 
 A **contribution** must be unconditional; state its rank dependence (total, exceptional, none); say on
 which calibration models it holds and fails; be invariant under symmetric shifts or say why not; and not

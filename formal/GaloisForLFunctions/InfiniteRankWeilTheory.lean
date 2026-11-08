@@ -13,6 +13,7 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.WellFoundednessIsNecessary
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheCrudeStepAndTheCount
 import GaloisForLFunctions.InfiniteRankWeilTheory.PrimeCollisionsHaveCollisionSize
 import GaloisForLFunctions.InfiniteRankWeilTheory.ThePrecisionCostOfForcedVanishing
+import GaloisForLFunctions.InfiniteRankWeilTheory.TheInfiniteRankWeilProof
 
 /-!
 # Infinite-rank Weil theory over Spec ℤ

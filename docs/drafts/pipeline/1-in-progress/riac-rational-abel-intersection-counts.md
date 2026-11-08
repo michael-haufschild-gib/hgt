@@ -60,3 +60,14 @@ its Fourier Gram formula. The missing contribution here is the actual
 integral quotient and its arithmetic self-factor comparison.
 
 No Lean theorem for these rational-radius counts is claimed yet.
+
+## Literature boundary
+
+Radial resultants and discriminant deformations are classical. Apostol's
+[scaled cyclotomic resultant paper](https://doi.org/10.1090/S0025-5718-1975-0366801-7)
+treats dilated cyclotomic equations;
+[Tran, §1](https://arxiv.org/html/1601.04382v1) states the root-pair
+`q`-discriminant and its diagonal specialization, crediting Ismail.
+The contribution sought here is an actual integral residual quotient, its
+local-global count, and the exact bridge to the existing torsion energy.
+No classical resultant identity is claimed as new.
