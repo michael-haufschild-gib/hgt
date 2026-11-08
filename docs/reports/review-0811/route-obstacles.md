@@ -19,8 +19,8 @@ Scope: the 38 live route formulations, the 9 route candidates and the supporting
 | Fact | Evidence | Consequence |
 |---|---|---|
 | RH ⇔ ZAL ∧ AAL for every zero configuration; ZAL ⇒ qRH; `qRH ∨ AAL` | [L]/[D] | one half is at least quasi-RH, the other sits below it |
-| AAL ⇔ zero transport: every right zero `ρ` has, for every `ε` and height `T`, a zero with `Re>Re ρ−ε`, `|Im|>T` | [L] | AAL is vertical transport of zeros, the zero-level trace of recurrence |
-| AAL ⇔ tail transport: at such points every Euler tail `ζM_y` vanishes and `|ζ−E_y|=|E_y|≥Π_{p≤y}(1+p^{−σ})^{−1}`; events produced by returns have density zero | [L] | AAL is the existence of rare events; density statements only bound them from above |
+| AAL ⇔ zero transport: every right zero `ρ` has, for every `ε` and height `T`, a zero with `Re>Re ρ−ε`, `\|Im\|>T` | [L] | AAL is vertical transport of zeros, the zero-level trace of recurrence |
+| AAL ⇔ tail transport: at such points every Euler tail `ζM_y` vanishes and `\|ζ−E_y\|=\|E_y\|≥Π_{p≤y}(1+p^{−σ})^{−1}`; events produced by returns have density zero | [L] | AAL is the existence of rare events; density statements only bound them from above |
 | ¬AAL ⇔ an isolated top: a finite nonempty layer on `Re=Θ>½`, every other zero left of some `Θ₂<Θ`; the FE reflects it to a bottom layer at the same heights | [L] | the failure of AAL is a finite-rank Weil datum riding on an infinite-rank remainder |
 | No property depending only on zeros above a height, and no property depending only on zeros below a fixed height, decides the finite stratum | [L] | densities, pair statistics, gaps, counts and finite verification cannot touch B13 or AAL; the input must couple both scales |
 | FE + order one + reality admit every finite top layer (`cosh(s−½)·Π quartets`) | [L] | an argument excluding a finite layer must use the Dirichlet series |
@@ -31,7 +31,7 @@ Scope: the 38 live route formulations, the 9 route candidates and the supporting
 | Finite stratum: finite index of `K_ζ` ⇔ finite index on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded heat count ⇔ RH above some height; under it one non-blind prime tower decides | [L]/[K] | B13 turns every finite-stratum receiver into an RH receiver |
 | RH ⇔ `a*(ζ)=⊤` ⇔ `λ*(c)→0` ⇔ two-site PD ⇔ `Ψ` locally bounded | [L] | every window route measures one number |
 | `0<R_c≤R_pole=R_high=W`, `W=⊤` ⇔ RH; positivity on `ℝ^N` = primitive hyperplane + pole channel; below `W` the pole channel decides; `R_c=W` ⇔ the pole channel pays at every `R<W` | [L]/[S] | the critical curve is the window plus one channel |
-| The adaptive theta head has leading term `|ζ(½+ib)|²` up to `O(|ζ(½+ib)||b|^{−½}+|b|^{−1})` | [L] | the theta sign is decided near the critical zeros of ζ |
+| The adaptive theta head has leading term `\|ζ(½+ib)\|²` up to `O(\|ζ(½+ib)\|\|b\|^{−½}+\|b\|^{−1})` | [L] | the theta sign is decided near the critical zeros of ζ |
 | Off the diagonal, Weil's form = archimedean compensation `C_∞` + Abel limit of positive torsion energy of `ℙ¹_ℤ`; `C_∞` changes sign; the diagonal must be renormalized; renormalization carries no sign; damping is lossless | [L] | a count at the critical weight must be a damping of a positive object, not a renormalization |
 | RH ⇔ `Q` on integer probes is the Tate limit of an `ℕ`-count; on curves the defect is itself a count of points; over ℤ nothing plays that role | [L] | the count wall is the absence of a point count |
 | RH ⇔ a standard-form von Neumann algebra with rational dilations, `JU(r)J=U(r^{−1})`, natural-cone form `Q`; internal realizations collapse to the centre (Tomita) | [L] | the partner involution is not internal modular conjugation |
@@ -127,7 +127,7 @@ Structure [D]: all-height sign stops at the size curve `a≈log log X`; past it 
 
 Routes: ZCG, LA, PTR, HCF, PA, GTA, XN. Programmes: NGF, FFP, ADO, RHTower heat.
 
-Established [L]: collision criterion; horizon `(6600/9991+ε)/log X`; density-one `Λ_Xlog X→0`; crystal and reality at the critical scale; sharp depth law for isolated simple zeros; `N_d` law and inner-root reality; cosine Laguerre above VK; nonrepelling values of dimension zero; maximal-angle law; one-sided Gaussian prime ceiling at every rational height ⇔ RH; cosine-shift ξ has finitely many non-real zeros ⇔ ZAL; high-collision counts ⇔ ZAL. The extremal inequality alone has a polynomial model.
+Established [L]: collision criterion; horizon `(6600/9991+ε)/log X`; density-one `Λ_Xlog X→0`; crystal and reality at the critical scale; sharp depth law for isolated simple zeros; `N_d` law and inner-root reality; cosine Laguerre above VK; nonrepelling values of dimension zero; maximal-angle law; one-sided Gaussian prime ceiling at every rational height ⇔ RH; ZAL ⇔ LH ∧ every cosine-shift level of ξ has finitely many non-real zeros; high-collision counts ⇔ ZAL. The extremal inequality alone has a polynomial model.
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -238,7 +238,7 @@ Structure [D]: AAL needs a Dirichlet-series input that couples both scales and t
 
 | | Obstacle | Strength |
 |---|---|---|
-| A37 | Resonator mean of `|ζ|²` with resonators growing below the Kronecker scale (unverified) | — |
+| A37 | Resonator mean of `\|ζ\|²` with resonators growing below the Kronecker scale (unverified) | — |
 | A47 | Explicit window constants of the IWT tower theorems for one top quartet (rung `k=1` bookkeeping) (unverified) | — |
 | B83 | AAL | sub |
 | B89 | A bounded aligned return at each right zero on a right disc | sub |
@@ -247,7 +247,7 @@ Structure [D]: AAL needs a Dirichlet-series input that couples both scales and t
 | B84 | Smallest FE defect carrying a one-off | method |
 | B103 | Positive discrete Euler products with linear counting, continuation across `Re s=½` and an FE: AAL? | method / sub |
 | B110 | Thick crude count: `primeDeviation(X)=O(X^{½+a})` on a thick set of geometric scales of one base, every `a>0` | AAL |
-| B111 | AAL with depth loss `λ`: finitely many zeros right of `½+h` ⇒ none right of `½+h/λ` | sub |
+| B111 | Linear AAL: `Θ−½≤C(Θ∞−½)`, i.e. finitely many zeros right of `½+h` ⇒ none right of `½+Ch` | sub |
 | B112 | A mechanism turning the FE into vertical transport of zeros | sub |
 | B72 | Cutoff-uniform target mass | RH |
 | B82 | Inner-field decay | ≥qRH |
@@ -323,7 +323,7 @@ Established: see S10 (surface of Spec ℤ) [L/S].
 | | Obstacle | Strength |
 |---|---|---|
 | B87, B88 | Count; counterterm-free damping presentation of the diagonal | RH |
-| — | A carrier for the jets of the trivial zeros (rank `≥3` on coprime orders; neither toric nor Arakelov on `ℙ¹_ℤ`) | producer |
+| B115 | A carrier for the jets of the trivial zeros (rank `≥3` on coprime orders; neither toric nor Arakelov on `ℙ¹_ℤ`) | producer |
 
 ## 3. Live routes
 
@@ -610,7 +610,7 @@ Each needs its independent mechanism first (B81).
 | PBAP, W3 | blind positivity, exact null blind test | none | B18 |
 | WVL | universal threshold, two-lobe, cut crystal | none | none beyond B1 |
 | AHD / CACT | threshold chain, `R_pole=W` [S], pole channel decides, charged profiles [S], aperture exchange, top-window non-escape, conductor resolution | A9, A13, A44 | B6, B8, B101, B104 |
-| CAF, TCS | two-atom, chains, Euler product, current, rank 14, first-atom reserve, adaptive pair payment, head = `|ζ(½+ib)|²` | A4, A5, A24, A42 | B19–B21, B102 |
+| CAF, TCS | two-atom, chains, Euler product, current, rank 14, first-atom reserve, adaptive pair payment, head = `\|ζ(½+ib)\|²` | A4, A5, A24, A42 | B19–B21, B102 |
 | HWV, ADT | nerve, sphere bouquet, `M(N)=−χ̃`, Redheffer gluing, finite face singular Euler characteristic [S] | none | B10 |
 | AK, Representation | column and rank-`≤4` Young projections, Kloosterman traces, reciprocal quadric counts | A28 | B85, B86 |
 

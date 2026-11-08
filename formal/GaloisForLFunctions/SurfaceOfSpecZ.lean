@@ -6,6 +6,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.NoMetricOnTheProjectiveLineCarriesTheJ
 import GaloisForLFunctions.SurfaceOfSpecZ.ThePointCountOfSpecZ
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTorsionEnergyAgainstTheJets
 import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilForPairsOfFrobeniusGraphs
+import GaloisForLFunctions.SurfaceOfSpecZ.HasseWeilAtTheIntegerDegrees
 
 /-!
 # The surface of `Spec ℤ`
@@ -26,6 +27,6 @@ prime powers. Over `𝔽_{1ⁿ}` the surface has `Λ(n) + 1 + 1/(n² − 1)` poi
 probes: atomic Frobenius graphs force infinite genus, and smoothing performs the prime number theorem.
 Off the diagonal Weil's kernel is the archimedean compensation (pole plane minus cusp and jets) plus
 the Abel limit of the positive torsion energy of `ℙ¹_ℤ`. Smoothed by the cubic spline, the Frobenius
-graphs form a curve of finite genus exactly under RH: Hasse–Weil on every pair of integer degrees is
-RH.
+graphs form a curve of finite genus exactly under RH: Hasse–Weil on every plane `⟨Γ_1, Γ_n⟩`, `n ∈ ℕ`,
+is RH, as Hasse–Weil for all powers of Frobenius is RH for a curve.
 -/

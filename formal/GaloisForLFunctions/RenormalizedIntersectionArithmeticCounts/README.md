@@ -10,6 +10,14 @@ counts, critical torsion compensation and completed prime topology.
 
 ## Mathematical objective
 
+The governing target is **signed cancellation of the actual local indices at
+the square-root scale**. For `S(N)=Σ_p index_p(N)=1−M(N)`, the RH-scale
+target is `S(N)=Oε(N^(1/2+ε))` for every `ε>0`; a literal `O(√N)` bound
+is stronger and is not silently assumed. Counts, product-formula heights
+and completed invariants must supply an independently proved mechanism
+controlling this signed sum. Quadratic scaling, local index formulas and
+positive absolute counts alone do not meet that target.
+
 Construct an arithmetic count on integer Hecke correspondences independently
 of the Weil form `Q`, with quadratic Tate coefficient `Q`. Its geometric
 source should be a surface Riemann–Roch theorem, product formula or signed
@@ -153,9 +161,13 @@ has index one. The [singular-homology bridge](../HodgeTheoryWithoutVarieties/Fin
 proves the alternating face formula by an actual open good cover and relative
 excision. No homology finiteness or index comparison is assumed.
 The [full localization theorem](../../../docs/drafts/pipeline/3-formalized/riac-prime-vertex-signed-localization.md)
-is formalized. An [exit-bouquet classification](../../../docs/drafts/pipeline/1-in-progress/riac-prime-exit-bouquet.md)
-seeks the actual local homotopy types. Quantitative cancellation and a canonical
-relative pair on the connected core with Euler number `M(N)` remain separate.
+is formalized. [PrimeExitBouquet.lean](PrimeExitBouquet.lean) also classifies every actual exit:
+it is empty, or is homotopy equivalent to a finite sphere bouquet. With least
+upper neighbour `a`, the sphere labels are prime supports `S` with all `q>a`
+and `p·∏S≤N<p·a·∏S`; their dimensions are `|S|−1`. This
+[classification](../../../docs/drafts/pipeline/3-formalized/riac-prime-exit-bouquet.md)
+is formalized. Quantitative cancellation and a canonical relative pair on the
+connected core with Euler number `M(N)` remain separate.
 
 ## Literature and novelty boundary
 

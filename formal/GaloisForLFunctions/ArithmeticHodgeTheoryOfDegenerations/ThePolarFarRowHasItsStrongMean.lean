@@ -130,7 +130,7 @@ theorem tendsto_polarFarRow_square_mean
   have he : (4 * K) * (Real.sqrt (c N ^ 2 / N) / Real.sqrt δ) =
       (4 * K / Real.sqrt δ) * Real.sqrt (c N ^ 2 / N) := by ring
   rw [he] at hp
-  exact hh.trans (add_le_add_right (by simpa only [mul_div_assoc] using hp) _)
+  exact hh.trans (add_le_add (by simpa only [mul_div_assoc] using hp) le_rfl)
 
 #print axioms abs_polarFarRow_sub_annulus_le
 #print axioms tendsto_polarFarRow_square_mean

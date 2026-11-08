@@ -12,7 +12,7 @@ set_option autoImplicit false
 noncomputable section
 open MeasureTheory Filter Topology Set
 namespace GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
-open RHTower
+open RHTower SpacingScaleHarmonicAnalysis
 
 /-- Jointly normalized profiles and pole coordinates retain unit joint mass in a strong limit. -/
 theorem exists_strong_charged_limit_of_bounded_weilQuad {V : ℕ → ℝ → ℝ} {β : ℕ → ℝ}
@@ -20,7 +20,7 @@ theorem exists_strong_charged_limit_of_bounded_weilQuad {V : ℕ → ℝ → ℝ
     (hnorm : ∀ k, (∫ u, V k u ^ 2) + β k ^ 2 = 1)
     {M₈ : ℝ} (hM₈0 : 0 ≤ M₈)
     (hV₈ : ∀ k, (∫ u, V k u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
-    (hsupp : ∀ k u, 1 / ((k : ℝ) + 1) < u → V k u = 0)
+    (hsupp : ∀ (k : ℕ) (u : ℝ), 1 / ((k : ℝ) + 1) < u → V k u = 0)
     {b : ℝ} (hVq : ∀ k, weilQuad (V k) ≤ b) :
     ∃ (F : ℝ → ℝ) (β₀ : ℝ) (s : ℕ → ℕ), StrictMono s ∧
       Measurable F ∧ Integrable F ∧ Integrable (fun u => F u ^ 2) ∧

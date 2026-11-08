@@ -38,7 +38,7 @@
 
 | C7 | Over `𝔽_{1ⁿ}` the surface has `N(n) = Γ_1·Γ_n = Λ(n) + 1 + 1/(n²−1)` points, and with a finite genus `g` the defect on `⟨Γ_1, Γ_n⟩` is the genus form, nonnegative iff `a(n)² ≤ 4g²n`, `a(n) = n + 1 − N(n)` | proved (Lean) | `a(n) ≥ n − log n − 1`, so every finite genus fails for all large `n`: atomic Frobenius graphs force infinite genus because `Spec ℤ` has `log p` points where a curve has `p + 1 − O(g√p)`. Smoothing the atoms performs the prime number theorem and is what makes the trace `O(√n)` possible |
 | C8 | The jets are an archimedean Lefschetz trace | proved (Lean) | `ω(u) = ½(e^{u/2}/(eᵘ−1) + e^{u/2}/(eᵘ+1))`: the trace of the dilation `x ↦ eᵘx` of `ℝ` at its fixed point on even functions; the odd sector gives the trivial zeros `−2k−1` of odd characters. Read on `ℂ^×`: the transversal index of the Frobenius at the unit circle, the circle on which the torsion orbits lie |
-| C9 | Hasse–Weil for every pair of smoothed Frobenius graphs of integer degrees is RH | proved (Lean), `riemannHypothesis_iff_forall_frobeniusPair_hasseWeil`; the one-sided version with base `Γ_1` only (`t = log n`) open | the cubic spline sees every off-line zero (its transform vanishes only on the real axis), so the smoothed surface is a curve of finite genus `W(B,B)/2` exactly under RH; passing from `t ∈ log ℕ` to all `t` needs a derivative bound `O(e^{t/2})` for the orbit correlation |
+| C9 | Hasse–Weil for the smoothed Frobenius graphs at the integer degrees is RH | proved (Lean) | `riemannHypothesis_iff_hasseWeil_integerDegrees`: RH iff `|c_B(log n)| ≤ c_B(0)` for every `n ≥ 1`, the plane `⟨Γ_1, Γ_n⟩` for each integer degree, as for the powers of Frobenius on a curve; the gaps of `log ℕ` shrink like `e^{−t}` while the orbit correlation is Lipschitz with constant `e^{t/2}` (tempered zeros, `C²` spline). Pairs `⟨Γ_m, Γ_n⟩` also (`riemannHypothesis_iff_forall_frobeniusPair_hasseWeil`). Atoms: no finite genus (C7); smoothed: genus `c_B(0)/2` exactly under RH |
 | C10 | The Gamma/pole compensation asked by B88 is explicit | proved (Lean) | off the diagonal `W(m,n) = lim_{r→1}(C_∞(m,n) + T̃_r(m,n))` with `T̃_r` the positive gcd-twisted torsion energy of `ℙ¹_ℤ` and `√(mn)C_∞ = (m+n) − min/(1−(min/max)²)` (pole plane minus cusp and jets), positive for distant orders, negative for close ones (`√20 C_∞(4,5) = −19/9`); as a whole form the archimedean channels are the positive Lévy jump count `J` (off-diagonal `−ω`, diagonal `+∞`) plus the constant `Ω(0) < 0` |
 
 ## Big picture after C1–C8
@@ -69,4 +69,4 @@ pairs them), and what is left is the zero sum itself.
    point, `ω(u) = ½(1/(2 sinh(u/2)) + 1/(2 cosh(u/2)))`, an archimedean object of infinite rank.
 
 ## Log
-- 2026-11-08 — created; C1–C10 formalized in `SurfaceOfSpecZ/` (eight modules, standard axioms)
+- 2026-11-08 — created; C1–C10 formalized in `SurfaceOfSpecZ/` (nine modules, standard axioms)

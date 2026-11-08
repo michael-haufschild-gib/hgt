@@ -81,8 +81,9 @@ theorem no_charged_limit_profile_below_polarPayment
       apply integral_congr_ae
       exact Eventually.of_forall fun u => by
         by_cases hu : u < 0
-        · simp only [Set.mem_Iio, Set.indicator, hu, if_pos]
-        · simp only [Set.mem_Iio, Set.indicator, hu, if_neg, hFzero u (not_lt.mp hu), zero_pow (by decide : 2 ≠ 0)]
+        · rw [Set.indicator_of_mem (show u ∈ Iio (0 : ℝ) from hu)]
+        · rw [Set.indicator_of_notMem (show u ∉ Iio (0 : ℝ) from hu)]
+          simp only [hFzero u (not_lt.mp hu), zero_pow (by decide : 2 ≠ 0)]
     rw [heq]
     exact setIntegral_mono_on hF2.integrableOn hF8.integrableOn measurableSet_Iio fun u hu =>
       le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by have hu0 : u < 0 := hu; linarith only [hu0]))
@@ -120,7 +121,8 @@ theorem no_charged_limit_profile_below_polarPayment
       I₂ * criticalPoleWindowCost S * β ^ 2 +
       2 * I₁ * β * (∫ u, H k u * polarSourceProfile u)
   have hupper : Tendsto upper atTop (𝓝 (-gap)) := by
-    have hinv := tendsto_one_div_add_atTop_nhds_zero_nat
+    have hinv : Tendsto (fun k : ℕ => (1 : ℝ) / ((k : ℝ) + 1)) atTop (𝓝 0) :=
+      tendsto_one_div_add_atTop_nhds_zero_nat
     have hCzero : Tendsto (fun k : ℕ => C / ((k : ℝ) + 1)) atTop (𝓝 0) := by
       simpa only [mul_zero, mul_one_div] using hinv.const_mul C
     have h8zero : Tendsto (fun k : ℕ => 8 / ((k : ℝ) + 1)) atTop (𝓝 0) := by

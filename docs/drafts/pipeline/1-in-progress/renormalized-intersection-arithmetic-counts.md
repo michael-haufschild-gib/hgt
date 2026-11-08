@@ -4,9 +4,15 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** [review 0811 §2.11](../../../reports/review-0811/obstacles-summary.md)
-- **Statement:** Construct quadratic arithmetic counts and parameter-dependent completed invariants at the critical conductor weight.
+- **Statement:** Prove square-root-scale signed cancellation of the actual local indices, using independent arithmetic counts, product-formula heights or completed invariants.
 
 ## Target and existing foundations
+
+The governing quantity is `S(N)=Σ_p index_p(N)=1−M(N)`. The RH-scale
+objective is `|S(N)|≪ε N^(1/2+ε)` for every `ε>0`. A strict `O(√N)`
+estimate is a stronger question. Each auxiliary construction must identify
+its mechanism for controlling this signed sum; quadratic scaling alone
+is insufficient. No such cancellation estimate is proved.
 
 Programme [README](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/README.md).
 ESG supplies the actual cutoff complexes and persistence classification.
@@ -56,8 +62,9 @@ constructs an arithmetic self-map, actual local isolating blocks and exits,
 and finite relative singular homology. Its local indices sum to `1−M(N)`;
 the core sum is `1−M(N)−P_N`. Local definitions use only prime products.
 The indices are unbounded below, allowing signed cancellation without a
-quantitative bound. The [exit-bouquet refinement](riac-prime-exit-bouquet.md)
-asks for the full arithmetic homotopy type of each exit.
+quantitative bound. The [exit-bouquet classification](../3-formalized/riac-prime-exit-bouquet.md)
+constructs the full arithmetic homotopy type of each exit, with sphere labels
+in the exact multiplicative window determined by the least upper neighbour.
 
 ## Necessary distinctions
 

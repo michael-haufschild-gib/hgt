@@ -108,7 +108,7 @@ theorem levelSum_wolffTower_eq_zero {t : Set ℂ} {c : ℂ → ℝ} (htA : t ⊆
     (hpos : ∀ k : ℕ, 1 ≤ k → HasSum (fun x : t => (c x : ℂ) * (x : ℂ) ^ k) 0)
     (hneg : ∀ k : ℕ, 1 ≤ k → HasSum (fun x : t => (c x : ℂ) * ((x : ℂ) ^ k)⁻¹) 0)
     {ν : ℕ} (hν : 1 ≤ ν) :
-    levelSum (wolffTower t fun x hx => ne_zero_of_mem_annulus (htA hx)).z
+    levelSum (wolffTower t fun _ hx => ne_zero_of_mem_annulus (htA hx)).z
       (fun p => (c p.2 : ℂ)) ν = 0 := by
   set f : (Bool × Bool) × t → ℂ := fun p => (c p.2 : ℂ) * wolffMode p.1.1 p.1.2 p.2 ^ (ν : ℤ)
     with hf
@@ -149,7 +149,7 @@ theorem exists_wolff_tower :
       (∀ i, ‖T.z i‖ ≠ 1) ∧ (∀ i, ‖T.z i‖ < 2) ∧ (∀ R' < 2, ∃ i, R' < ‖T.z i‖) ∧
       ∀ ν : ℕ, 1 ≤ ν → levelSum T.z b ν = 0 := by
   obtain ⟨t, c, htA, hc, hacc, hsum, hpos, hneg⟩ := exists_wolff_family
-  refine ⟨(Bool × Bool) × t, wolffTower t fun x hx => ne_zero_of_mem_annulus (htA hx),
+  refine ⟨(Bool × Bool) × t, wolffTower t fun _ hx => ne_zero_of_mem_annulus (htA hx),
     fun p => (c p.2 : ℂ), ?_, fun p => ?_, fun p => ?_, fun p => ?_, fun p => ?_,
     fun R' hR' => ?_, fun ν hν => levelSum_wolffTower_eq_zero htA hc hsum hpos hneg hν⟩
   · refine (summable_prod_of_nonneg fun p => norm_nonneg _).2 ⟨fun _ => ?_, Summable.of_finite⟩

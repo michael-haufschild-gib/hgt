@@ -77,4 +77,6 @@ height or dependence on the imaginary zero parameter.
 and [Conley index foundations](https://www.impan.pl/en/publishing-house/banach-center-publications/all/47/0/110882/on-foundations-of-the-conley-index-theory)
 are classical predecessors. The construction concerns explicit arithmetic
 isolating pairs and their relative singular Euler characteristics. A general
-identification with Brouwer fixed-point index is a separate assertion.
+identification with Brouwer fixed-point index is a separate assertion. The
+[exit-bouquet classification](riac-prime-exit-bouquet.md) further identifies
+the actual exit homotopy types and their arithmetic sphere labels.

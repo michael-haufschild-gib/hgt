@@ -199,7 +199,7 @@ theorem tendsto_polarFarAnnulusRow_square_mean
       apply (div_le_div_iff₀ hn0 hδ).mpr
       simpa only [one_mul, mul_comm] using hnδ
     have hpay := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hratio hC) hc0.le
-    exact hh.trans (add_le_add_right (hpay.trans_eq (by ring)) _)
+    exact hh.trans (add_le_add (hpay.trans_eq (by ring)) le_rfl)
 
 /-- The zero-width far mean is the strong limit of every fixed annular row. -/
 theorem tendsto_polarFarAnnulusRow_zero_width_square_mean

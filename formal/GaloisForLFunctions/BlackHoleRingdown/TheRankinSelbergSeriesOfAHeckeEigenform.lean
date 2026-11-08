@@ -1,5 +1,7 @@
 import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergEulerProductOfTheCuspModes
 import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergIntegralOfTheCuspModes
+import GaloisForLFunctions.BlackHoleRingdown.TheRankinSelbergContinuation
+import GaloisForLFunctions.RHTower.XiCosineShiftNonrealZeroCount
 
 /-!
 # The Rankin–Selberg series of a Hecke eigenform
@@ -19,6 +21,13 @@ sequence with eigenvalues `λ̄_p` (`HeckeRec.conj`). For real eigenvalues `Q_p`
 **The Rankin–Selberg integral** (`rankinSelberg_eisenstein_euler`). For `Re s > 2`, `Im s ≠ 0`,
 
   `∫_𝒟 |g|² E(s − ½) = (2π)^{−s} γ_ν(s) (|ρ(1)|² + |ρ(−1)|²) Π_p (1 − p^{−2s}) / Q_p(λ_p, λ̄_p; p^{−s})`.
+
+**The completed Rankin–Selberg function** (`completedRS_eq_rankinSelberg_euler`). For `Re s > 2`,
+`Im s ≠ 0`, the factor `ξ(2s)/(2s(2s−1)) = ½ Γ_ℝ(2s) ζ(2s)` cancels the `ζ(2s)⁻¹` of the series:
+
+  `Λ_g(s) = ½ Γ_ℝ(2s) (2π)^{−s} γ_ν(s) (|ρ(1)|² + |ρ(−1)|²) Π_p Q_p(λ_p, λ̄_p; p^{−s})⁻¹`,
+
+so `Λ_g` is a Gamma factor times `L(g × ḡ, s)`, and for real eigenvalues times `ζ(s) L(Sym² g, s)`.
 -/
 
 open Complex MeasureTheory Set Filter Topology
@@ -30,7 +39,7 @@ namespace GaloisForLFunctions.BlackHoleRingdown
 
 open GaloisForLFunctions.RHTower GaloisForLFunctions.RHTower.Gamma0MaassHecke
 open GaloisForLFunctions.HTGeometry (modifiedBesselKOrder)
-open CuspEuler HeckeCusp CuspL CuspRSI
+open CuspEuler HeckeCusp CuspL CuspRSI CuspRSC
 
 variable {lamE : ℝ} {g : UpperHalfPlane → ℂ} {ρ : ℤ → ℂ}
 
@@ -206,5 +215,119 @@ theorem rankinSelberg_eisenstein_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → 
   have hI := rankinSelberg_eisenstein hg hρ0 hρ (s := s) (by linarith) him
   have hD := cusp_rankinSelberg_euler hg c hc hρ0 hρ hs
   rw [← hI.tsum_eq, ← hD.tsum_eq, ← tsum_mul_left]
+
+/-- **The normalized Hecke sequence of an eigenform.** If `ρ(1)` or `ρ(−1)` is nonzero, both
+`n ↦ ρ(n)` and `n ↦ ρ(−n)` are multiples of one normalized Hecke sequence `τ` with `|τ(n)| ≤ K√n`. -/
+theorem exists_normalized_heckeSequence (hg : g ∈ cuspSpace lamE) (c : ℕ → ℂ)
+    (hc : ∀ (p : ℕ) [Fact p.Prime], heckeH p g = c p • g) (hρ0 : ρ 0 = 0)
+    (hρ : ∀ n : ℤ, ∀ y, 0 < y → fourierCoeff g n y = ρ n * (Real.sqrt y : ℂ) *
+      modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (nu lamE))
+    (h01 : ¬ (ρ 1 = 0 ∧ ρ (-1) = 0)) :
+    ∃ τ : ℕ → ℂ, HeckeRec (heckeLam c) τ ∧ τ 1 = 1 ∧ τ 0 = 0 ∧
+      ∃ K : ℝ, 0 ≤ K ∧ ∀ n : ℕ, ‖τ n‖ ≤ K * Real.sqrt n := by
+  have hP := heckeRec_rho hg hρ c hc 1 (Or.inl rfl)
+  have hM := heckeRec_rho hg hρ c hc (-1) (Or.inr rfl)
+  simp only [one_mul, neg_one_mul] at hP hM
+  obtain ⟨C, hC0, hC⟩ := exists_coeff_bound hg hρ0 hρ
+  push Not at h01
+  set σ₀ : ℕ → ℂ := if ρ 1 ≠ 0 then (fun n => ρ n) else (fun n => ρ (-(n : ℤ)))
+  have hσ₀ : HeckeRec (heckeLam c) σ₀ := by
+    by_cases h : ρ 1 ≠ 0
+    · simp only [σ₀, if_pos h]; exact hP
+    · simp only [σ₀, if_neg h]; exact hM
+  have ha : σ₀ 1 ≠ 0 := by
+    by_cases h : ρ 1 ≠ 0
+    · simp only [σ₀, if_pos h]; simpa using h
+    · simp only [σ₀, if_neg h]; push Not at h; simpa using h01 h
+  have hσ0 : σ₀ 0 = 0 := by
+    by_cases h : ρ 1 ≠ 0
+    · simp only [σ₀, if_pos h]; simpa using hρ0
+    · simp only [σ₀, if_neg h]; simpa using hρ0
+  have hσn : ∀ n : ℕ, ‖σ₀ n‖ ≤ C * Real.sqrt n := fun n => by
+    by_cases h : ρ 1 ≠ 0
+    · simp only [σ₀, if_pos h]; simpa using hC n
+    · simp only [σ₀, if_neg h]; simpa using hC (-(n : ℤ))
+  refine ⟨fun n => (σ₀ 1)⁻¹ * σ₀ n + 0 * σ₀ n, hσ₀.lin hσ₀ _ _, by field_simp; ring,
+    by simp [hσ0], ‖σ₀ 1‖⁻¹ * C, by positivity, fun n => ?_⟩
+  simp only [zero_mul, add_zero, norm_mul, norm_inv, mul_assoc]
+  exact mul_le_mul_of_nonneg_left (hσn n) (inv_nonneg.2 (norm_nonneg _))
+
+/-- **The completed Rankin–Selberg function is a Gamma factor times `L(g × ḡ, s)`.** -/
+theorem completedRS_eq_rankinSelberg_euler (hg : g ∈ cuspSpace lamE) (c : ℕ → ℂ)
+    (hc : ∀ (p : ℕ) [Fact p.Prime], heckeH p g = c p • g) (hρ0 : ρ 0 = 0)
+    (hρ : ∀ n : ℤ, ∀ y, 0 < y → fourierCoeff g n y = ρ n * (Real.sqrt y : ℂ) *
+      modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (nu lamE)) {s : ℂ} (hs : 2 < s.re)
+    (him : s.im ≠ 0) :
+    completedRS g s = Complex.Gammaℝ (2 * s) / 2 *
+      ((2 * Real.pi : ℂ) ^ (-s) * gammaFactor (nu lamE) s) *
+        (((‖ρ 1‖ ^ 2 + ‖ρ (-1)‖ ^ 2 : ℝ) : ℂ) *
+          ∏' p : Nat.Primes,
+            (rsLocal (heckeLam c p) ((starRingEnd ℂ) (heckeLam c p)) ((p : ℂ) ^ (-s)))⁻¹) := by
+  have hs1 : 1 < s.re := by linarith
+  rw [completedRS_eq hg hρ0 hρ hs1 him, (cusp_rankinSelberg_euler hg c hc hρ0 hρ hs).tsum_eq]
+  -- `ξ(2s)/(2s(2s−1)) = ½ Γ_ℝ(2s) ζ(2s)`
+  have h2s : 1 < (2 * s).re := by simp; linarith
+  have hs0 : (2 * s) * (2 * s - 1) ≠ 0 := by
+    refine mul_ne_zero (fun h => ?_) (fun h => ?_)
+    · have := congrArg Complex.re h; simp at this; linarith
+    · have := congrArg Complex.re h; simp at this; linarith
+  have hxi : _root_.RHTower.xi (2 * s) / (2 * s * (2 * s - 1)) =
+      Complex.Gammaℝ (2 * s) * riemannZeta (2 * s) / 2 := by
+    rw [_root_.RHTower.xi_eq_mul_Gammaℝ_zeta h2s]
+    have hs0' : s * (2 * s - 1) ≠ 0 := by
+      refine mul_ne_zero (fun h => ?_) (fun h => ?_)
+      · have := congrArg Complex.re h; simp at this; linarith
+      · have := congrArg Complex.re h; simp at this; linarith
+    field_simp
+    rw [mul_assoc, mul_div_cancel_left₀ _ hs0']
+  rw [hxi]
+  by_cases h01 : ρ 1 = 0 ∧ ρ (-1) = 0
+  · rw [h01.1, h01.2]; simp
+  obtain ⟨τ, hτ, hτ1, hτ0, K, hK0, hK⟩ :=
+    exists_normalized_heckeSequence hg c hc hρ0 hρ h01
+  -- summability of `τ τ̄ n^{−s}` for `Re s > 2`
+  have hsumN : Summable fun n : ℕ => ‖τ n * (starRingEnd ℂ) (τ n) * (n : ℂ) ^ (-s)‖ := by
+    have hσ1 : 1 < s.re - 1 := by linarith
+    refine Summable.of_nonneg_of_le (fun n => norm_nonneg _) (fun n => ?_)
+      ((((Real.summable_abs_int_rpow hσ1).comp_injective Nat.cast_injective).mul_left (K ^ 2)))
+    rcases Nat.eq_zero_or_pos n with hn | hn
+    · subst hn; rw [hτ0]; simp; positivity
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+    rw [norm_mul, norm_mul, Complex.norm_conj,
+      show (n : ℂ) = ((n : ℝ) : ℂ) by norm_cast, norm_cpow_eq_rpow_re_of_pos hn0, neg_re]
+    have habs : |((n : ℤ) : ℝ)| = n := by simp
+    simp only [Function.comp_apply]
+    rw [habs, show -(s.re - 1) = 1 + -s.re by ring, Real.rpow_add hn0, Real.rpow_one]
+    have hτsq : ‖τ n‖ * ‖τ n‖ ≤ K ^ 2 * n := by
+      have h0 := norm_nonneg (τ n)
+      have hs2 := Real.mul_self_sqrt hn0.le
+      calc ‖τ n‖ * ‖τ n‖ ≤ (K * Real.sqrt n) * (K * Real.sqrt n) :=
+            mul_le_mul (hK n) (hK n) h0 (h0.trans (hK n))
+        _ = K ^ 2 * n := by linear_combination K ^ 2 * hs2
+    calc ‖τ n‖ * ‖τ n‖ * (n : ℝ) ^ (-s.re) ≤ K ^ 2 * n * (n : ℝ) ^ (-s.re) :=
+          mul_le_mul_of_nonneg_right hτsq (by positivity)
+      _ = K ^ 2 * (n * (n : ℝ) ^ (-s.re)) := by ring
+  have hRS := hτ.rankinSelberg_hasProd hτ.conj hτ1 (by simp [hτ1]) hτ0 (by linarith) hsumN
+  have hZ := riemannZeta_eulerProduct_hasProd h2s
+  have hprod := hZ.mul hRS
+  -- the factor at `p` is `Q_p⁻¹`
+  have hfac : ∀ p : Nat.Primes, (1 - (p : ℂ) ^ (-(2 * s)))⁻¹ *
+      ((1 - ((p : ℂ) ^ (-s)) ^ 2) /
+        rsLocal (heckeLam c p) ((starRingEnd ℂ) (heckeLam c p)) ((p : ℂ) ^ (-s))) =
+      (rsLocal (heckeLam c p) ((starRingEnd ℂ) (heckeLam c p)) ((p : ℂ) ^ (-s)))⁻¹ := by
+    intro p
+    have hsq : ((p : ℂ) ^ (-s)) ^ 2 = (p : ℂ) ^ (-(2 * s)) := by
+      rw [← cpow_nat_mul]; congr 1; push_cast; ring
+    have hne : 1 - (p : ℂ) ^ (-(2 * s)) ≠ 0 := by
+      intro h
+      have hn := congrArg norm (sub_eq_zero.mp h).symm
+      rw [norm_one, Complex.norm_natCast_cpow_of_pos p.prop.pos, neg_re] at hn
+      have hlt : (p : ℝ) ^ (-(2 * s).re) < 1 :=
+        Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast p.prop.one_lt) (by linarith)
+      linarith
+    rw [hsq, ← mul_div_assoc, inv_mul_cancel₀ hne, one_div]
+  simp_rw [hfac] at hprod
+  rw [hprod.tprod_eq, ← hRS.tprod_eq]
+  ring
 
 end GaloisForLFunctions.BlackHoleRingdown

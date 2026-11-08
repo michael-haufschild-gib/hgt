@@ -144,10 +144,10 @@ condition — not bridged. F24: open (B106).
 `Σ_{n≠0}|ρ(n)|²|n|^{−s} = (|ρ(1)|² + |ρ(−1)|²) Π_p (1 − p^{−2s})/Q_p(λ_p, λ̄_p; p^{−s})`, and the
 Rankin–Selberg integral `∫_𝒟|g|²E(s − ½)` is `(2π)^{−s}γ_ν(s)` times this (Re s > 2, Im s ≠ 0).
 Open for the symmetric-square reading of eigenforms: reality of `λ_p` (Hecke self-adjointness is not
-in the corpus). Remaining paper step (not formalized): with `completedRS_eq` and
-`ζ(2s)Π_p(1 − p^{−2s}) = 1`, `Λ_g(s) = ½π^{−s}Γ(s)(2π)^{−s}γ_ν(s)(|ρ(1)|²+|ρ(−1)|²)Π_p Q_p(p^{−s})^{−1}`
-for `Re s > 2`, so the horocycle receiver `completedRS_half_eq_zero_of_rate` reads zeros of the
-continued `L(g × ḡ, s)` at `s = z/2`.
+in the corpus). `completedRS_eq_rankinSelberg_euler`: for `Re s > 2`, `Im s ≠ 0`,
+`Λ_g(s) = ½Γ_ℝ(2s)(2π)^{−s}γ_ν(s)(|ρ(1)|²+|ρ(−1)|²)Π_p Q_p(λ_p, λ̄_p; p^{−s})^{−1}` (the `ζ(2s)` of
+`ξ(2s)` cancels the `ζ(2s)⁻¹` of the series), so the horocycle receiver
+`completedRS_half_eq_zero_of_rate` reads zeros of the continued `L(g × ḡ, s)` at `s = z/2`.
 
 ## Conjecture loop
 - C15.1 (open, hard): the Krein square of the integer probes is not integer-valued. Reduction: integral

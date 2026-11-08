@@ -52,7 +52,7 @@ def chebyshevReciprocalRamp (δ η x : ℝ) : ℝ :=
 lemma continuous_chebyshevReciprocalRamp (δ : ℝ) {η : ℝ} (hη : 0 < η) :
     Continuous (chebyshevReciprocalRamp δ η) := by
   unfold chebyshevReciprocalRamp
-  exact continuous_finset_sum _ fun k _ =>
+  exact continuous_finsetSum _ fun k _ =>
     (lipschitzWith_descendingRamp hη (1 / (k : ℝ))).continuous.const_mul _
 
 

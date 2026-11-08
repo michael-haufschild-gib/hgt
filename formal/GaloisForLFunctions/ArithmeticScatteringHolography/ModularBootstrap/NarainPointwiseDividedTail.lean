@@ -66,7 +66,8 @@ theorem exists_dividedFilledEisensteinNumerator_uniform_rect_bound
   have hm' : ‖dividedFilledNumeratorMean Y u‖ ≤ M := by
     simpa only [Complex.re_add_im] using hm u.re u.im (abs_le.mp hu).1 (abs_le.mp hu).2 ht
   have hY : Y.val ∈ Icc (Y.val / 2) (2 * Y.val) := by
-    constructor <;> linarith only [Y.property]
+    have hpos : 0 < Y.val := Y.property
+    constructor <;> linarith only [hpos]
   have htail := (eisTail_jets_le (hb u false x Y.val hu hY)
     (hb u true x Y.val hu hY)).1
   have he : Real.exp (-(Real.pi * |u.im| / 2)) ≤ 1 :=

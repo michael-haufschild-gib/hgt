@@ -51,18 +51,32 @@ comparison carriers to
 Its transform uses physical variable `s=z+β−1/4`; the comparison pole is
 `z=1/4`, while each relevant arithmetic pole lies strictly to its right.
 The divisor is `ξ(2z+2β−1/2)`. Initial convergence at `Re z>3/2` follows
-from the established Euler-region identity. Thus the existing fixed-reference
-tail measure and general meromorphic Landau theorem apply directly.
-Larger exponents follow by comparison with an intermediate exponent
-below one.
+from the established Euler-region identity. These are the proposed inputs for the existing fixed-reference tail
+measure and meromorphic Landau theorem; their concrete application remains
+open. Larger exponents would follow by comparison with an intermediate
+exponent below one.
 
-Reality of the actual remainder, the cutoff transform and both concrete
-Landau instantiations remain to be formalized.
+Reality of the actual remainder and continuity in logarithmic coordinates
+are formalized in `NarainSourceReality`. `NarainMeanMellinTail` proves
+absolute convergence at every parameter and entireness of the actual
+large-height Mellin tail. `NarainMeanSmallSource` identifies the source
+with `R(y)/y` on `0<y≤1`, zero above one, and proves its Mellin identity
+on `Re s>1` and absolute convergence on `Re s>1/2`.
+`NarainMeanRegularity` and `NarainMeanSmallRegularity` prove global
+meromorphy, positive-real analyticity and preservation of every arithmetic
+pole with full multiplicity. Five modules passed direct Lean checks and
+14 endpoint axiom audits, using only the standard three axioms.
+
+Both concrete Landau instantiations remain unproved. The displayed
+rescaled carriers still require exact Laplace identities and the full
+hypotheses of the one-sign theorem before either oscillation conclusion
+can be claimed.
 
 The logarithmic-coordinate identity is already public as
 `RHTower.mellin_eq_integral_exp_neg_mul_log` in
 `MobiusLaplaceMellinPlancherelBridge.lean`; its transitive axiom audit
-remains pending for this application. Cutting the source off at `y=1`
+contains only `propext`, `Classical.choice`, `Quot.sound`.
+Cutting the source off at `y=1`
 restricts the transformed integral to `L≥0`. The proved actual boundary
 rate gives `R(exp(−L))=o(exp(−L/2))`, so the comparison function above
 has exponential growth at most `exp((3/4−β)L)+exp(L/4)` at infinity.
@@ -71,6 +85,7 @@ integrability obligation needs no new small-height estimate.
 
 ## Gates
 
-- [ ] 0 → 1: exact source reality and meromorphic Landau input audited.
+- [x] Source reality, cutoff transform, pole preservation and Landau inputs audited.
+- [ ] 0 → 1: exact rescaled Laplace identities and concrete Landau hypotheses.
 - [ ] 1 → 2: both one-sign contradictions proved without lost poles.
 - [ ] 2 → 3: direct Lean checks, axiom audits and umbrella imports.

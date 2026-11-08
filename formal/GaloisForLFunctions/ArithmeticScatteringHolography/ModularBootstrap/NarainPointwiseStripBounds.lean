@@ -27,7 +27,8 @@ theorem exists_filledEisensteinNumerator_uniform_strip_bound
   refine ⟨C, N, by dsimp only [C]; positivity, ?_⟩
   intro x u hu ht
   have hY : Y.val ∈ Icc (Y.val / 2) (2 * Y.val) := by
-    constructor <;> linarith only [Y.property]
+    have hpos : 0 < Y.val := Y.property
+    constructor <;> linarith only [hpos]
   have hM := hmean u hu ht
   have hT := (eisTail_jets_le (htail u false x Y.val hu hY)
     (htail u true x Y.val hu hY)).1

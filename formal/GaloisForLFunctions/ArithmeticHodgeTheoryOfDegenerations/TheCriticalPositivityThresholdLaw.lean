@@ -2056,7 +2056,7 @@ theorem exists_strong_negative_limit_of_bounded_weilQuad {V : ℕ → ℝ → �
     (hmass : ∀ k, (∫ u, V k u ^ 2) ≤ 1)
     {M₈ : ℝ} (hM₈0 : 0 ≤ M₈)
     (hV_M₈ : ∀ k, (∫ u, V k u ^ 2 * Real.exp (-(8 * u))) ≤ M₈)
-    (hV_supp_k : ∀ k u, 1 / ((k : ℝ) + 1) < u → V k u = 0)
+    (hV_supp_k : ∀ (k : ℕ) (u : ℝ), 1 / ((k : ℝ) + 1) < u → V k u = 0)
     {b : ℝ} (hV_wq : ∀ k, weilQuad (V k) ≤ b) :
     ∃ (F : ℝ → ℝ) (s : ℕ → ℕ), StrictMono s ∧ Measurable F ∧ Integrable F ∧
       Integrable (fun u => F u ^ 2) ∧ (∫ u, F u ^ 2) ≤ 1 ∧

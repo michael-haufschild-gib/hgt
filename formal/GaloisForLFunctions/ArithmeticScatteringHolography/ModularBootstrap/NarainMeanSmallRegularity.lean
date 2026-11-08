@@ -49,7 +49,8 @@ theorem narainMeanSmallMellin_full_order (p : Resonance) (Y Z : Height) :
   have heq : (fun u : ℂ => narainMeanSmallMellin Y Z (u + 1 / 2)) =
       narainMellinMeanRegularPart Y Z + Q := by
     funext u
-    simp only [narainMeanSmallMellin, add_sub_cancel_right, Pi.add_apply, Q, sub_eq_add_neg]
+    dsimp only [narainMeanSmallMellin, Pi.add_apply, Q]
+    rw [add_sub_cancel_right, sub_eq_add_neg]
   have hord : meromorphicOrderAt (narainMellinMeanRegularPart Y Z) p.val =
       meromorphicOrderAt (narainMellinMean Y Z) p.val := by
     rw [narainMellinMeanRegularPart_full_order, narainMellinMean_full_order]
