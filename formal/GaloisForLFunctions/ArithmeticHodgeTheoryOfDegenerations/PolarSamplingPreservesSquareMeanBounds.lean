@@ -103,9 +103,4 @@ lemma polarSampleVector_sub (c : ℝ) (N : ℕ) (f g : ℕ → ℝ) :
   change _ * (f idx.1 - g idx.1) / _ = _ * f idx.1 / _ - _ * g idx.1 / _
   ring
 
-#print axioms tendsto_normalized_topWindow_add
-#print axioms tendsto_normalized_topWindow_smul
-
-#print axioms normalized_topWindow_polarSample_le
-#print axioms tendsto_normalized_topWindow_polarSample
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

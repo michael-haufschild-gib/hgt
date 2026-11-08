@@ -57,7 +57,4 @@ lemma abs_exponential_mean_sub_le {K : ℝ → ℝ} {T A w : ℝ}
   rw [Real.norm_eq_abs, abs_of_nonneg (by linarith only [hT] : 0 ≤ T - -T)] at hb
   exact hb.trans_eq (by ring)
 
-#print axioms integral_symmetric_even_eq_two_mul
-#print axioms continuous_exponential_mean
-#print axioms abs_exponential_mean_sub_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

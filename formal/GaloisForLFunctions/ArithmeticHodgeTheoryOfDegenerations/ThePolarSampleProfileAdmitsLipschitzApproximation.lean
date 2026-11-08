@@ -195,7 +195,4 @@ theorem exists_polarLogSampleProfile_lipschitz_approximation (a q : ℝ) {ε : �
   rw [heq] at hh
   exact hh.trans hsmall.le
 
-#print axioms exists_polarLogSampleProfile_lipschitz_approximation
-
-#print axioms exists_polarLogSampleProfile_approximation_bound
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

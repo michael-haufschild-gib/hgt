@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthIsContinuous
+import GaloisForLFunctions.ArithmeticElectrostatics.TheGlobalHeatDepthDissipates
 import GaloisForLFunctions.RHTower.DeBruijnNewmanEnergyUnitTime
 import GaloisForLFunctions.RHTower.DeBruijnNonrealCountRightLimit
 
@@ -9,12 +9,13 @@ The upper-half squared-depth energy has an exact initial trace: the sum of
 squared upper depths of the original ξ divisor, possibly infinite. Heat
 majorization gives the upper bound. Compact zero sums recover every finite
 initial packet and prevent energy from disappearing at time zero.
+Finite initial mass also forces `t N(t) → 0`, by dissipation on `[t/2,t]`.
 -/
 
 noncomputable section
 set_option autoImplicit false
 
-open Complex Filter Topology Set Metric
+open Complex Filter Topology Set Metric MeasureTheory
 open RHTower RHTower.DeBruijn
 open GaloisForLFunctions.HTGeometry
 
@@ -41,7 +42,8 @@ private theorem summable_upper_heat_weight {t : ℝ} (ht : 0 < t) :
   classical
   apply summable_of_ne_finset_zero (s := (riemannHeat_nonreal_zeros_finite ht).toFinset)
   intro z hz
-  exact upper_weight_zero_off_nonreal ht.le z (by simpa only [Set.Finite.mem_toFinset] using hz)
+  exact upper_weight_zero_off_nonreal ht.le z (by
+    simpa only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] using hz)
 
 private theorem heatUpperDepthEnergy_eq_sum {t : ℝ} (ht : 0 < t) :
     heatUpperDepthEnergy t = ∑ z ∈ (riemannHeat_nonreal_zeros_finite ht).toFinset,
@@ -49,7 +51,8 @@ private theorem heatUpperDepthEnergy_eq_sum {t : ℝ} (ht : 0 < t) :
   classical
   apply tsum_eq_sum
   intro z hz
-  exact upper_weight_zero_off_nonreal ht.le z (by simpa only [Set.Finite.mem_toFinset] using hz)
+  exact upper_weight_zero_off_nonreal ht.le z (by
+    simpa only [Set.Finite.mem_toFinset, Set.mem_setOf_eq] using hz)
 
 private theorem summable_compact_heat_weight {t : ℝ} (ht : 0 ≤ t)
     (Ψ : ℂ → ℝ) (R : ℝ) (hsupp : ∀ z, R ≤ ‖z‖ → Ψ z = 0) :
@@ -158,9 +161,12 @@ private theorem eventually_initial_packet_lt_heat_energy
   obtain ⟨Ψ, R, hΨ, hΨ0, hΨle, hsupp, hT⟩ := exists_initial_packet_cutoff T
   have hc := continuous_heatWeightedZeroSum_clamped_of_support hΨ R
     (fun _ _ z _ hz => hsupp z hz)
+  have h0 : Tendsto (fun t : ℝ => heatWeightedZeroSum Ψ (max t 0)) (𝓝 (0 : ℝ))
+      (𝓝 (heatWeightedZeroSum Ψ (max (0 : ℝ) 0))) := hc.tendsto 0
   have hlim : Tendsto (fun t => heatWeightedZeroSum Ψ (max t 0)) (𝓝[>] (0 : ℝ))
       (𝓝 (heatWeightedZeroSum Ψ 0)) := by
-    simpa only [max_self] using hc.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    simpa only [max_self] using h0.mono_left
+      (nhdsWithin_le_nhds : (𝓝[>] (0 : ℝ)) ≤ 𝓝 (0 : ℝ))
   filter_upwards [hlim.eventually (Ioi_mem_nhds (ha.trans_le hT)), self_mem_nhdsWithin]
     with t hlow ht
   change 0 < t at ht
@@ -220,7 +226,7 @@ theorem tendsto_heatUpperDepthEnergy_of_summable (hs : Summable xiUpperSquaredDe
 /-- If initial squared depths are not summable, heat energy tends to infinity at zero. -/
 theorem tendsto_heatUpperDepthEnergy_atTop_of_not_summable (hs : ¬ Summable xiUpperSquaredDepth) :
     Tendsto heatUpperDepthEnergy (𝓝[>] (0 : ℝ)) atTop := by
-  rw [tendsto_atTop]
+  rw [Filter.tendsto_atTop]
   intro M
   have hex : ∃ T : Finset XiZeroCopy, M < ∑ q ∈ T, xiUpperSquaredDepth q := by
     by_contra h
@@ -229,9 +235,115 @@ theorem tendsto_heatUpperDepthEnergy_atTop_of_not_summable (hs : ¬ Summable xiU
   obtain ⟨T, hT⟩ := hex
   exact (eventually_initial_packet_lt_heat_energy T hT).mono fun _ h => h.le
 
+/-- Conjugation identifies total energy with twice upper-half energy. -/
+theorem heatGlobalVerticalEnergy_eq_two_mul_upper {t : ℝ} (ht : 0 < t) :
+    heatGlobalVerticalEnergy t = 2 * heatUpperDepthEnergy t := by
+  classical
+  let S := (riemannHeat_nonreal_zeros_finite ht).toFinset
+  have hconj (z : ℂ) (hz : z ∈ S) : (starRingEnd ℂ) z ∈ S := by
+    have hh := (Set.Finite.mem_toFinset _).mp hz
+    apply (Set.Finite.mem_toFinset _).mpr
+    constructor
+    · rw [riemannHeat_conj ht.le, hh.1, map_zero]
+    · simpa only [Complex.conj_im, neg_ne_zero] using hh.2
+  have hsym : (∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * (max (-z.im) 0) ^ 2) =
+      ∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * (max z.im 0) ^ 2 := by
+    apply Finset.sum_bij (fun z _ => (starRingEnd ℂ) z) hconj
+    · intro z hz w hw he
+      have h := congrArg (starRingEnd ℂ) he
+      simpa only [Complex.conj_conj] using h
+    · intro z hz
+      exact ⟨(starRingEnd ℂ) z, hconj z hz, Complex.conj_conj z⟩
+    · intro z _
+      rw [zeroMult_riemannHeat_conj ht.le, Complex.conj_im]
+  have hfull : heatGlobalVerticalEnergy t =
+      ∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * z.im ^ 2 := by
+    rw [heatGlobalVerticalEnergy_eq_weightedSum ht]
+    apply tsum_eq_sum
+    intro z hz
+    have hn : ¬ (riemannHeat t z = 0 ∧ z.im ≠ 0) := by
+      simpa only [S, Set.Finite.mem_toFinset, Set.mem_setOf_eq] using hz
+    by_cases hf : riemannHeat t z = 0
+    · have hi : z.im = 0 := by simpa only [hf, true_and, not_not] using hn
+      rw [hi, zero_pow two_ne_zero, mul_zero]
+    · rw [zeroMult_riemannHeat_eq_zero ht.le hf, Nat.cast_zero, zero_mul]
+  have hsplit (x : ℝ) : x ^ 2 = (max x 0) ^ 2 + (max (-x) 0) ^ 2 := by
+    rcases le_total 0 x with hx | hx
+    · simp only [max_eq_left hx, max_eq_right (neg_nonpos.mpr hx),
+        zero_pow two_ne_zero, add_zero]
+    · simp only [max_eq_right hx, max_eq_left (neg_nonneg.mpr hx),
+        zero_pow two_ne_zero, neg_sq, zero_add]
+  rw [hfull, heatUpperDepthEnergy_eq_sum ht]
+  change (∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * z.im ^ 2) =
+    2 * ∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * (max z.im 0) ^ 2
+  calc
+    _ = (∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * (max z.im 0) ^ 2) +
+        ∑ z ∈ S, (zeroMult (riemannHeat t) z : ℝ) * (max (-z.im) 0) ^ 2 := by
+      rw [← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun z _ => by rw [hsplit z.im, mul_add]
+    _ = _ := by rw [hsym]; ring
+
+/-- Total heat energy has the same finite initial trace, with both conjugate halves counted. -/
+theorem tendsto_heatGlobalVerticalEnergy_of_summable (hs : Summable xiUpperSquaredDepth) :
+    Tendsto heatGlobalVerticalEnergy (𝓝[>] (0 : ℝ))
+      (𝓝 (2 * ∑' q, xiUpperSquaredDepth q)) := by
+  have h : Tendsto (fun t : ℝ => 2 * heatUpperDepthEnergy t) (𝓝[>] (0 : ℝ))
+      (𝓝 (2 * ∑' q, xiUpperSquaredDepth q)) :=
+    tendsto_const_nhds.mul (tendsto_heatUpperDepthEnergy_of_summable hs)
+  apply Tendsto.congr' _ h
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  exact (heatGlobalVerticalEnergy_eq_two_mul_upper ht).symm
+
+/-- The surviving count is paid by the energy lost over a doubling interval. -/
+theorem time_mul_nonrealZeroCount_le_energy_drop {t : ℝ} (ht : 0 < t) :
+    t * (nonrealZeroCount t : ℝ) ≤ heatGlobalVerticalEnergy (t / 2) - heatGlobalVerticalEnergy t := by
+  have hh : t / 2 ≤ t := half_le_self ht.le
+  have hanti : AntitoneOn (fun s : ℝ => (nonrealZeroCount s : ℝ)) (uIcc (t / 2) t) := by
+    rw [uIcc_of_le hh]
+    intro a ha b hb hab
+    exact_mod_cast nonrealZeroCount_antitoneOn ((half_pos ht).trans_le ha.1)
+      ((half_pos ht).trans_le hb.1) hab
+  have hInt : (t - t / 2) * (nonrealZeroCount t : ℝ) ≤
+      ∫ s in (t / 2)..t, (nonrealZeroCount s : ℝ) := by
+    have h := intervalIntegral.integral_mono_on hh
+      (f := fun _ : ℝ => (nonrealZeroCount t : ℝ))
+      (g := fun s : ℝ => (nonrealZeroCount s : ℝ))
+      intervalIntegrable_const hanti.intervalIntegrable (fun s hs => by
+        exact_mod_cast nonrealZeroCount_antitoneOn ((half_pos ht).trans_le hs.1) ht hs.2)
+    simpa only [intervalIntegral.integral_const, smul_eq_mul] using h
+  have hE := heatGlobalVerticalEnergy_add_integral_count_le (half_pos ht) hh
+  nlinarith only [hInt, hE]
+
+/-- Finite initial squared-depth mass forces strictly sub-reciprocal heat-count growth. -/
+theorem tendsto_time_mul_nonrealZeroCount_zero_of_summable (hs : Summable xiUpperSquaredDepth) :
+    Tendsto (fun t : ℝ => t * (nonrealZeroCount t : ℝ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have hhalf : Tendsto (fun t : ℝ => t / 2) (𝓝[>] (0 : ℝ)) (𝓝[>] (0 : ℝ)) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · have hc : Continuous (fun t : ℝ => t / 2) := continuous_id.div_const 2
+      simpa only [zero_div] using (hc.tendsto 0).mono_left
+        (nhdsWithin_le_nhds : (𝓝[>] (0 : ℝ)) ≤ 𝓝 (0 : ℝ))
+    · filter_upwards [self_mem_nhdsWithin] with t ht
+      exact half_pos ht
+  have hE := tendsto_heatGlobalVerticalEnergy_of_summable hs
+  have hdrop : Tendsto (fun t : ℝ => heatGlobalVerticalEnergy (t / 2) - heatGlobalVerticalEnergy t)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa only [sub_self] using (hE.comp hhalf).sub hE
+  apply tendsto_order.mpr
+  constructor
+  · intro a ha
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    exact ha.trans_le (mul_nonneg (le_of_lt ht) (Nat.cast_nonneg _))
+  · intro b hb
+    filter_upwards [hdrop.eventually (Iio_mem_nhds hb), self_mem_nhdsWithin] with t h ht
+    exact (time_mul_nonrealZeroCount_le_energy_drop ht).trans_lt h
+
 #print axioms initial_depth_bound_iff_heat_energy_bound
 #print axioms summable_initial_depth_iff_eventually_bounded_heat_energy
 #print axioms tendsto_heatUpperDepthEnergy_of_summable
 #print axioms tendsto_heatUpperDepthEnergy_atTop_of_not_summable
+#print axioms heatGlobalVerticalEnergy_eq_two_mul_upper
+#print axioms tendsto_heatGlobalVerticalEnergy_of_summable
+#print axioms time_mul_nonrealZeroCount_le_energy_drop
+#print axioms tendsto_time_mul_nonrealZeroCount_zero_of_summable
 
 end GaloisForLFunctions.ArithmeticElectrostatics

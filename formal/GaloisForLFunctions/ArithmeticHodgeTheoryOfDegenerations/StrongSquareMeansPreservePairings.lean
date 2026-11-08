@@ -50,5 +50,4 @@ theorem tendsto_integral_mul_of_square_mean {U : ℕ → ℝ → ℝ} {F f : ℝ
   apply integral_congr_ae
   exact Eventually.of_forall fun u => by ring
 
-#print axioms tendsto_integral_mul_of_square_mean
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

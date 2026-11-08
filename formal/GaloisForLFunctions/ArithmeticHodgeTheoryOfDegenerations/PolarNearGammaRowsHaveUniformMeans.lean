@@ -285,7 +285,4 @@ theorem exists_joint_near_polar_scalar_mean_bound :
   rw [he]
   exact ((abs_add_le _ _).trans (add_le_add hnearN hscaled)).trans_eq (by ring)
 
-#print axioms exists_joint_near_polar_scalar_mean_bound
-#print axioms abs_near_smooth_row_sub_mean_le
-#print axioms exists_nearGamma_polar_scalar_mean_bound
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

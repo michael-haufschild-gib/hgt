@@ -89,8 +89,4 @@ theorem windowThreshold_ge_exp_thirteen_quarters_mul_of_zetaWindowPositive {a : 
   exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith))
     windowThresholdExponentialConstant_pos.le
 
-#print axioms exp_mul_le_polarPaymentCriticalThreshold
-#print axioms log_polarPaymentCriticalThreshold_ge_mul_onsetAperture
-#print axioms windowThreshold_ge_exp_thirteen_quarters_mul_of_zetaWindowPositive
-
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

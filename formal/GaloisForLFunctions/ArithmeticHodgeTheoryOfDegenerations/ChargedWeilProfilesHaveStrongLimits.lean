@@ -51,5 +51,4 @@ theorem exists_strong_charged_limit_of_bounded_weilQuad {V : ℕ → ℝ → ℝ
   exact ⟨F, β₀, s ∘ t, hs.comp ht, hFm, hFi, hF2, hnormlim, hF8, hF8bound,
     hFzero, hL2.comp ht.tendsto_atTop, hL1.comp ht.tendsto_atTop, hβlim⟩
 
-#print axioms exists_strong_charged_limit_of_bounded_weilQuad
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

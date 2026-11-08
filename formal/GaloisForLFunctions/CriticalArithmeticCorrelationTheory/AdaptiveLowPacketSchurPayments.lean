@@ -331,9 +331,4 @@ theorem eventually_lowPacket_cross_sub_polar_le
   ring_nf at hpre hnon hpaySum hp hn hab ⊢
   linarith only [hpre, hnon, hpaySum, hp, hn, hab]
 
-#print axioms eventually_lowPacket_cross_sub_polar_le
-#print axioms eventually_critical_schur_pairing_with_multiplier
-#print axioms eventually_nonpolar_lowPacket_schur_payment_with_multiplier
-#print axioms eventually_lowPacket_noncollar_schur_payment_with_multiplier
-
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

@@ -100,8 +100,4 @@ theorem tendsto_topWindow_completed_polar_diagonal
         (div_le_self hC.le (one_le_pow₀ (hc N)))
   exact div_le_div_of_nonneg_right hE (hc0 N).le
 
-#print axioms tendsto_topWindow_polar_scalar_diagonal
-#print axioms tendsto_topWindow_completed_polar_diagonal
-
-#print axioms tendsto_topWindow_polar_reference_diagonal
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

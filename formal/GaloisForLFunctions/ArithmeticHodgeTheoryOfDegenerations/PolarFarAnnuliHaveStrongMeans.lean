@@ -223,9 +223,4 @@ theorem tendsto_polarFarAnnulusRow_zero_width_square_mean
     congr 1
     exact sum_congr rfl fun n _ => by congr 1; dsimp only [Function.comp_def]; ring
 
-#print axioms tendsto_polarFarAnnulusRow_square_mean
-#print axioms tendsto_polarFarAnnulusRow_zero_width_square_mean
-
-#print axioms exists_polarFarAnnulusRow_interior_bound
-#print axioms exists_polarFarAnnulusRow_global_bound
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

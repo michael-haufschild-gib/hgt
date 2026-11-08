@@ -146,8 +146,4 @@ lemma horizonLogCutoff_smul (a t : ℝ) {N : ℕ}
   change _ * (t * v i) = t * (_ * v i)
   ring
 
-#print axioms topCollarDualSeventhMass_logCutoff_le_topWindow
-
-#print axioms topCollarDualSeventhMass_sub_logCutoff_le
-#print axioms topWindowResidualMass_logCutoff_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -75,6 +75,4 @@ theorem generalTerminalPolarSource_physicalWindowWeights {F : ℝ → ℝ} {A : 
   unfold splineAtom
   field_simp [integral_tiltedUnitSpline_ne_zero, integral_tiltedUnitSpline_sq_pos.ne']
 
-#print axioms integral_weighted_physicalWindowWeights_sq
-#print axioms generalTerminalPolarSource_physicalWindowWeights
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

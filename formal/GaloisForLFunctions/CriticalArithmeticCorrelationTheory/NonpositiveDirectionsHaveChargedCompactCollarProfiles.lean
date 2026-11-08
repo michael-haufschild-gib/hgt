@@ -263,5 +263,4 @@ theorem exists_critical_charged_collar_weilQuad_bridge
     ring_nf at hpole herror hchargedUpper hpay hnonposScaled herrsmall ⊢
     linarith only [hpole, herror, hchargedUpper, hpay, hnonposScaled, herrsmall]
 
-#print axioms exists_critical_charged_collar_weilQuad_bridge
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

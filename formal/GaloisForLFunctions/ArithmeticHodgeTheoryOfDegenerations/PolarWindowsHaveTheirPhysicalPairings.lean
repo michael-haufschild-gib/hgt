@@ -73,8 +73,6 @@ theorem topCollarSeventhMass_horizonWindow_le (h : ℝ → ℝ) (M N : ℕ) :
     (fun n hn => mem_Icc.mpr ⟨by have := (mem_Ioc.mp hn).1; omega, (mem_Ioc.mp hn).2⟩)
     (fun n _ _ => by positivity)
 
-#print axioms eventually_horizonWindow_prefix_zero
-#print axioms topCollarSeventhMass_horizonWindow_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 end
 
@@ -147,8 +145,6 @@ theorem tendsto_polar_residual_window_pairing {h : ℝ → ℝ} {A : ℝ}
   rw [sub_zero] at ht
   exact ht.congr fun N => by rw [conductorResidualVector, inner_sub_left, mul_sub]
 
-#print axioms tendsto_polar_conductor_diagonal_window_pairing
-#print axioms tendsto_polar_residual_window_pairing
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 end
 
@@ -205,7 +201,5 @@ theorem tendsto_horizonWindow_atomic_pairing {h f : ℝ → ℝ} {A : ℝ}
     simp only [mul_assoc, integral_const_mul]
   rw [hlim]
   exact ht
-
-#print axioms tendsto_horizonWindow_atomic_pairing
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

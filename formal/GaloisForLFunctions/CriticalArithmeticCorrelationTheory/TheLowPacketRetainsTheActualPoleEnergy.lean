@@ -105,6 +105,4 @@ theorem eventually_lowPacket_ge_actual_pole_sub
   have hab := (abs_le.mp (hN b)).1
   nlinarith only [hab, hsingle]
 
-#print axioms eventually_lowPacket_actual_pole_energy_approx
-#print axioms eventually_lowPacket_ge_actual_pole_sub
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

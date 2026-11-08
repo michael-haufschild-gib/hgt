@@ -153,5 +153,4 @@ theorem exists_normalized_charged_collar_bridge
     rw [he]
     exact hb
 
-#print axioms exists_normalized_charged_collar_bridge
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

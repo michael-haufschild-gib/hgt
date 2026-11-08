@@ -106,6 +106,4 @@ theorem polar_nearGram_center_decomposition (φ : ℝ → ℝ) (c : ℝ) (N n : 
   rw [he]
   ring
 
-#print axioms abs_nearGammaDownwardRow_one_sub_smooth_le
-#print axioms polar_nearGram_center_decomposition
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -203,6 +203,4 @@ theorem tendsto_topWindow_upward_polar_mean
   exact (mul_le_mul_of_nonneg_left (topWindowResidualMass_add_le δ N _ _)
     (div_nonneg (Real.log_natCast_nonneg N) (sq_nonneg _))).trans_eq (by dsimp only [v]; ring)
 
-#print axioms exists_abs_reciprocalUpward_one_sub_mean_le
-#print axioms tendsto_topWindow_upward_polar_mean
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

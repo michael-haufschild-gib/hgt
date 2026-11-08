@@ -133,7 +133,6 @@ theorem no_charged_atomic_sequence_below_polarPayment
       dsimp only [q, I₁, I₂] at hh
       linarith only [hh])
 
-#print axioms no_charged_atomic_sequence_below_polarPayment
 
 /-- Every critical curve strictly below a ratio paying all polar windows is eventually positive
 on the entire horizon space. -/
@@ -209,7 +208,6 @@ theorem eventually_wholeSpace_positive_of_polarPayment
     (zero_lt_one.trans_le (hc (N_seq k))) (hstep k).1.1 (primeHorizonExtension (z k))
     ((hstep k).1.2.1.trans_lt hu)
 
-#print axioms eventually_wholeSpace_positive_of_polarPayment
 
 /-- Every closed critical band strictly below a paying ratio is eventually positive. -/
 theorem eventuallyCriticalPosDef_of_polarPayment {Rstar S : ℝ}
@@ -297,11 +295,5 @@ theorem criticalThresholds_eq_top_equivalences :
       riemannHypothesis_iff_onsetAperture_zeta_eq_top
   exact ⟨by rw [criticalPositivityThreshold_eq_polarPaymentCriticalThreshold],
     hp.trans ho.symm, ho, riemannHypothesis_iff_onsetAperture_zeta_eq_top.symm⟩
-
-#print axioms criticalPositivityThreshold_eq_polarPaymentCriticalThreshold
-#print axioms criticalNonnegativityThreshold_eq_polarPaymentCriticalThreshold
-#print axioms exp_mul_le_criticalPositivityThreshold
-#print axioms log_criticalPositivityThreshold_ge_mul_onsetAperture
-#print axioms criticalThresholds_eq_top_equivalences
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

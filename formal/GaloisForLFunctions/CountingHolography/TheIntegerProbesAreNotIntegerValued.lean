@@ -24,6 +24,10 @@ integer.
   (`RenormalizedIntersectionTheory.criticalSeen_infinite`), and at `t = π/γ₁` the sum is at least
   `2 w_{ρ₁} > 0` (`re_splineSeries_zero_sub_ge`): `Re F` is not constant.
 
+The same holds for any integral trace form: no kernel `C : ℕ × ℕ → ℤ`, e.g. the traces
+`Tr(T_m T_nᵗ)` of Hecke endomorphisms of a free abelian group, reproduces `Q` on the integer probes
+(`not_exists_intKernel_eq_integerProbe`).
+
 So integrality of the probes is refuted unconditionally, and its only route to a contradiction runs
 through RH: integer values would make the spline orbit constant, hence bounded, hence RH, and RH
 makes the orbit a nonconstant Bohr series with nonnegative weights. A count with Tate limit `Q`
@@ -329,7 +333,12 @@ theorem not_exists_intCount_eq_integerProbe :
     ¬ ∃ K : ∀ N, (Fin N → ℤ) → ℤ, ∀ N a, integerProbe N a = K N a :=
   fun ⟨K, hK⟩ => not_integerProbe_integerValued fun N a => ⟨K N a, hK N a⟩
 
-end GaloisForLFunctions.CountingHolography
+/-- **No integral trace form is the Weil form of the integer probes.** No kernel `C : ℕ × ℕ → ℤ`
+(for instance `C(m, n) = Tr(T_m T_nᵗ)` for endomorphisms `T_n` of a free abelian group of finite
+rank) has `Σ C(i+1, j+1) a_i a_j = Q(a)` on every integer probe. -/
+theorem not_exists_intKernel_eq_integerProbe :
+    ¬ ∃ C : ℕ → ℕ → ℤ, ∀ (N : ℕ) (a : Fin N → ℤ),
+      integerProbe N a = ((∑ i : Fin N, ∑ j : Fin N, C (i + 1) (j + 1) * a i * a j : ℤ) : ℝ) :=
+  fun ⟨C, hC⟩ => not_integerProbe_integerValued fun N a => ⟨_, hC N a⟩
 
-#print axioms GaloisForLFunctions.CountingHolography.not_integerProbe_integerValued
-#print axioms GaloisForLFunctions.CountingHolography.not_exists_intCount_eq_integerProbe
+end GaloisForLFunctions.CountingHolography

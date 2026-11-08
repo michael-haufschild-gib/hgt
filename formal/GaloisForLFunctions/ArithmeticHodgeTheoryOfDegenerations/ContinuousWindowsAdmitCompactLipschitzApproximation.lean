@@ -39,5 +39,4 @@ theorem exists_compact_lipschitz_uniform_approximation {g : ℝ → ℝ} {a b ε
     SchwartzMap.realCompactIntervalCutoff_apply_of_abs_le_add_one R hcore, mul_one]
   exact hP x hx
 
-#print axioms exists_compact_lipschitz_uniform_approximation
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

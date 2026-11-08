@@ -222,12 +222,4 @@ theorem tendsto_topWindow_polar_residual_profile
     simp only [neg_one_smul]
     module
 
-#print axioms tendsto_topWindow_polar_residual_profile
-
-#print axioms polar_matrix_sample_mean_identity
-#print axioms tendsto_topWindow_polar_matrix_profile
-
-#print axioms polar_near_vector_eq_sample
-#print axioms polar_far_vector_eq_sample
-#print axioms polarUpwardMeanVector_eq_sample
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

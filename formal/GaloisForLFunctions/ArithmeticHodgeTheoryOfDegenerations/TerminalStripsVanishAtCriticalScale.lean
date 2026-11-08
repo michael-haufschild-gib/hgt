@@ -170,12 +170,4 @@ theorem tendsto_normalized_square_mean_of_annular_limits
     dsimp only [D] at htotal
     linarith only [htotal, hsmall, hsmallN]
 
-#print axioms tendsto_normalized_square_mean_of_annular_limits
-
-#print axioms tendsto_normalized_square_mean_of_uniform_bound
-
-#print axioms tendsto_normalized_square_mean_add
-#print axioms tendsto_normalized_square_mean_const
-
-#print axioms tendsto_normalized_square_mean_of_terminal_strip
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

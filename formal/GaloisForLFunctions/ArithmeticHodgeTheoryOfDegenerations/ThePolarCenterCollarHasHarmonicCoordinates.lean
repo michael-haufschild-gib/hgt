@@ -315,6 +315,4 @@ theorem abs_near_polarCenter_row_sub_interior_profile_le {c : ℝ} {N n : ℕ}
     field_simp [hc.ne', hn0.ne', hN0.ne']
     ring)
 
-#print axioms near_polarCenter_row_eq_harmonics
-#print axioms abs_near_polarCenter_row_sub_interior_profile_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

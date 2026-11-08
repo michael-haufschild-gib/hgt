@@ -128,5 +128,4 @@ theorem exists_critical_wholeSpace_collar_garding_and_far_bridge
     ring_nf at hbridge hcrosη henergy hnegative hlowN hres hE0 hband0 hband1 ⊢
     linarith only [hbridge, hcrosη, henergy, hnegative, hlowN, hres, hE0, hband0, hband1]
 
-#print axioms exists_critical_wholeSpace_collar_garding_and_far_bridge
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

@@ -141,8 +141,6 @@ theorem exists_polar_residual_weighted_lipschitz_approximation
   have hinner := topCollarDualSeventhMass_add_le M N u₀ u₁
   linarith only [houter, hinner, h₀, h₁, h₂, hε]
 
-#print axioms normalized_polarSample_eq_logSample
-#print axioms exists_polar_residual_weighted_lipschitz_approximation
 
 /-- The normalized polar functional is uniformly approximated by one compact Lipschitz pairing
 on every bounded seventh-mass collar ball. -/
@@ -234,7 +232,6 @@ theorem exists_uniform_polar_functional_lipschitz_approximation
   rw [heq]
   exact ((abs_sub _ _).trans (add_le_add hinner hAdjSmall)).trans_eq (add_halves ε)
 
-#print axioms exists_uniform_polar_functional_lipschitz_approximation
 
 /-- One compact Lipschitz test simultaneously approximates the polar functional on a collar
 ball and the signed source of every window with bounded seventh weighted coefficient mass. -/
@@ -275,7 +272,6 @@ theorem exists_uniform_polar_test_and_window_identification
       hwlim.eventually (gt_mem_nhds hWlt)] with N hfN hz0 hmass
     exact hfN _ hz0 ((topCollarSeventhMass_horizonWindow_le h _ N).trans hmass.le)
 
-#print axioms exists_uniform_polar_test_and_window_identification
 
 /-- On bounded collar balls, the polar functional is uniformly continuous in physical `L²`
 when compared with a smooth window of bounded seventh weighted coefficient mass. -/
@@ -340,7 +336,6 @@ theorem exists_uniform_polar_window_L2_transfer
   rw [hsplit]
   exact (add_le_add (add_le_add hpolar hbound) hsource).trans_eq (by ring)
 
-#print axioms exists_uniform_polar_window_L2_transfer
 
 /-- Bounded Gamma profiles inherit the same compact-test identification as their smooth windows. -/
 theorem exists_uniform_polar_test_and_limit_identification
@@ -405,7 +400,6 @@ theorem exists_uniform_polar_test_and_limit_identification
     rw [generalTerminalPolarSource_physicalWindowWeights (hHd k) (hwin k).1 (hwin k).2.vanish] at hh
     simpa only [physicalWindowWeights_halfWeight] using hh
 
-#print axioms exists_uniform_polar_test_and_limit_identification
 
 /-- Along a critical sequence, bounded collar mass and strong physical convergence determine
 its signed polar pairing, provided the limit has a finite Gamma upper bound. -/
@@ -468,7 +462,5 @@ theorem tendsto_polar_residual_pairing_of_strong_limit
   rw [heq]
   apply lt_of_le_of_lt ((abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl))
   linarith only [hp, hsmall, hsource]
-
-#print axioms tendsto_polar_residual_pairing_of_strong_limit
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

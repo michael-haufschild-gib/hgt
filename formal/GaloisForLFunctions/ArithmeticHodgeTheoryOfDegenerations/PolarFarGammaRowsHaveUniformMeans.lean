@@ -204,7 +204,4 @@ theorem abs_polarFar_actual_sub_singular_row_le {φ : ℝ → ℝ}
       mul_le_mul_of_nonneg_left hsum (mul_nonneg hD hw.le)
     _ = _ := by dsimp only [D]; ring
 
-#print axioms abs_polarFar_actual_sub_singular_row_le
-#print axioms exists_polarFarClampedKernel_bounds
-#print axioms exists_polarFar_annulus_mean_bound
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

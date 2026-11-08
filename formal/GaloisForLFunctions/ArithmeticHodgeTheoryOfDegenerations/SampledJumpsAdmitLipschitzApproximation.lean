@@ -136,7 +136,4 @@ theorem normalized_sum_finite_jumps_sub_ramps_sq_le {N : ℕ} (hN : 1 ≤ N)
     _ = C * ∑ k ∈ S, (∑ n ∈ Icc 1 N, d k n ^ 2) / N := he
     _ ≤ _ := mul_le_mul_of_nonneg_left hs hC
 
-#print axioms normalized_sum_finite_jumps_sub_ramps_sq_le
-#print axioms lipschitzWith_descendingRamp
-#print axioms normalized_sum_indicator_sub_descendingRamp_sq_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

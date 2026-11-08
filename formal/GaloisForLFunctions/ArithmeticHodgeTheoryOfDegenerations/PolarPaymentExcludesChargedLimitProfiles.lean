@@ -159,5 +159,4 @@ theorem no_charged_limit_profile_below_polarPayment
     linarith only [ha, hm]
   exact (not_lt_of_ge (hnonneg.trans henergy)) hk
 
-#print axioms no_charged_limit_profile_below_polarPayment
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

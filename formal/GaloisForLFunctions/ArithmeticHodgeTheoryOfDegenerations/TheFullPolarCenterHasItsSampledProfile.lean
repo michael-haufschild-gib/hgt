@@ -135,6 +135,4 @@ theorem tendsto_topWindow_full_polarCenter_mean
   rw [mul_sum]
   exact (sum_le_sum hpt).trans_eq (by rw [← mul_sum]; ring)
 
-#print axioms fullWeilCenter_polar_coordinate
-#print axioms tendsto_topWindow_full_polarCenter_mean
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

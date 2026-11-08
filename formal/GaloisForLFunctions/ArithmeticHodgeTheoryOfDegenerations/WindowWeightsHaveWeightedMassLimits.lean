@@ -105,7 +105,4 @@ theorem tendsto_horizonWeights_sample_pairing {h f : ℝ → ℝ} {A : ℝ}
   rw [Real.sq_sqrt hn0.le]
   ring
 
-#print axioms tendsto_weighted_sum_horizonWeights_sq
-#print axioms tendsto_sum_log_window_div
-#print axioms tendsto_horizonWeights_sample_pairing
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

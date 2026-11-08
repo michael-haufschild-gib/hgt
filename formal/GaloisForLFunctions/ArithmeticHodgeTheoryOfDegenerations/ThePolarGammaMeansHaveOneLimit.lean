@@ -52,7 +52,6 @@ theorem exists_abs_polarFarMean_sub_zero_le {T : ℝ} (hT : 2 ≤ T) :
   rw [hid]
   exact ((abs_sub _ _).trans (add_le_add hbig hsmall)).trans_eq (by ring)
 
-#print axioms exists_abs_polarFarMean_sub_zero_le
 
 /-- At zero width the logarithmic annulus mean is twice the positive far integral. -/
 theorem polarFarMean_zero {T : ℝ} (hT : 2 ≤ T) :
@@ -185,7 +184,4 @@ theorem polarNearJointMean_sub_farFinitePart :
   unfold polarNearJointMean
   linarith only [heq]
 
-#print axioms polarNearJointMean_sub_farFinitePart
-#print axioms exists_abs_polarNearJointMean_sub_zero_le
-#print axioms abs_polarFarMean_zero_sub_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

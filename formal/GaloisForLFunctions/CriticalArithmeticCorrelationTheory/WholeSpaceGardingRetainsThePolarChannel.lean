@@ -152,5 +152,4 @@ theorem exists_critical_wholeSpace_garding_and_polar_bridge
       ring_nf at hbridge hcrosη henergy hcharged hpoleN hres hband0 hband1 ⊢
       linarith only [hbridge, hcrosη, henergy, hcharged, hpoleN, hres, hband0, hband1]
 
-#print axioms exists_critical_wholeSpace_garding_and_polar_bridge
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

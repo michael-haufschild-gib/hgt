@@ -92,6 +92,4 @@ theorem tendsto_norm_sub_smul_of_scalar_line_approximation
     have hb := norm_sub_smul_le_of_scalar_approximation (x N) (v N) (h N) ha hpN s t
     linarith only [hb, hfirst, hsecond]
 
-#print axioms norm_sub_smul_le_of_scalar_approximation
-#print axioms tendsto_norm_sub_smul_of_scalar_line_approximation
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

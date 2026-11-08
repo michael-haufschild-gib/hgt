@@ -89,5 +89,4 @@ theorem exists_compact_leftCutoff_lipschitz_approximation {g : ℝ → ℝ} {a b
     rw [he, abs_mul]
     exact ((mul_le_mul_of_nonneg_right hcut (abs_nonneg _)).trans_eq (one_mul _)).trans_lt (happrox u hu)
 
-#print axioms exists_compact_leftCutoff_lipschitz_approximation
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

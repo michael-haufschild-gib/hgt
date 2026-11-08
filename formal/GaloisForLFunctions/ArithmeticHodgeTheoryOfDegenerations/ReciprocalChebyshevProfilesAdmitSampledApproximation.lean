@@ -103,7 +103,4 @@ theorem normalized_sum_chebyshevPsi_sub_ramp_sq_le {δ η : ℝ}
     _ ≤ _ := normalized_sum_finite_jumps_sub_ramps_sq_le hN S
       (fun k => ArithmeticFunction.vonMangoldt k) (fun k => 1 / (k : ℝ)) hη hu
 
-#print axioms normalized_sum_chebyshevPsi_sub_ramp_sq_le
-
-#print axioms chebyshevPsi_reciprocal_eq_finite_jumps
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

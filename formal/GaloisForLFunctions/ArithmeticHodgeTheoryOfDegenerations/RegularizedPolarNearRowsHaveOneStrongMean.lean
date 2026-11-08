@@ -441,14 +441,4 @@ theorem tendsto_polarNearRow_square_mean
     unfold regularizedPolarNearRow polarNearRow
     ring
 
-#print axioms tendsto_polar_near_atom_correction_square_mean
-#print axioms tendsto_polarNearRow_square_mean
-
-#print axioms tendsto_polar_near_gram_correction_square_mean
-
-#print axioms exists_regularizedPolarNearRow_global_bound
-#print axioms tendsto_regularizedPolarNearRow_square_mean
-
-#print axioms exists_regularizedPolarNearRow_interior_bound
-#print axioms exists_regularizedPolarNearRow_sub_center_bound
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

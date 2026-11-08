@@ -58,5 +58,4 @@ theorem physical_charged_window_nonneg_of_polarPaymentAt {R A : ℝ}
     ring
   rw [heq] at hscaled
   exact hscaled
-#print axioms physical_charged_window_nonneg_of_polarPaymentAt
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

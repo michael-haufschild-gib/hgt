@@ -158,8 +158,4 @@ theorem normalized_sum_polarCenterProfile_sub_cutoff_sq_le {δ η : ℝ}
       (add_le_add (mul_le_mul_of_nonneg_left hratio (by norm_num))
         (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hratio) (by norm_num)))
 
-#print axioms normalized_sum_polarCenterProfile_sub_cutoff_sq_le
-
-#print axioms continuousOn_polarCenterProfile_cutoff
-#print axioms polarCenterProfile_sub_cutoff_sq_le
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
