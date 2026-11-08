@@ -4,20 +4,21 @@ The 38 live formulations and 9 candidates are faces of three core problems: **U-
 
 Transversal to the three, RH splits into **ZAL**, read by height-local receivers, and **AAL**, read by sparse receivers and recurrence. Below the three lie three structural gaps that every family meets: the **dark range**, primes past the Kronecker scale where conditioning on the head needs a Dirichlet polynomial longer than the height; the **missing count**, a nonnegative arithmetic function with quadratic Tate limit `Q`; and the **critical-line input**, the functional equation acting on `Re s=½`, which every one-off countermodel lacks.
 
-**Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes, and only an exact sign decides; a localized zero side (U-Π) lets a crude bound decide (one Gaussian prime ceiling per rational height ⇔ RH [L]) but leaves an infinite prime sum at square-root precision; U-Γ is the involution `ρ↦1−ρ` and the selection of ζ among objects sharing its local data. The Lean proof of RH for every hyperelliptic curve has finite rank, a finite prime side and the functional equation together: a crude count at every level (Stepanov), self-improvement by power sums, and the functional equation pinning the modes [L]. Over ℤ the crude statement is ZAL (finitely many zeros beyond each depth) and the self-improvement is AAL (eventual abscissa bound ⇒ global) [L]; there is no constant-factor crude regime between strips and RH (Π111).
+**Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes, and only an exact sign decides; a localized zero side (U-Π) lets a crude bound decide (one Gaussian prime ceiling per rational height ⇔ RH [L]) but leaves an infinite prime sum at square-root precision; U-Γ is the involution `ρ↦1−ρ` and the selection of ζ among objects sharing its local data. The Lean proof of RH for every hyperelliptic curve has finite rank, a finite prime side and the functional equation together: a crude count at every level (Stepanov), self-improvement by power sums, and the functional equation pinning the modes [L]. Over ℤ the crude statement is ZAL (finitely many zeros beyond each depth) and the self-improvement is AAL (eventual abscissa bound ⇒ global) [L/D]; there is no constant-factor crude regime between strips and RH (Π111).
 
-Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evidence: `[L]` Lean source; `[K]` Lean with transitive axiom audit; `[S]` unfinished, unintegrated or uncommitted; `[D]` deduction; `[N]` numerical; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md).
+Corpus checkpoint: commit `48ce5506c8` plus the working tree of 2026-11-08. Evidence: `[L]` Lean source; `[K]` Lean with transitive axiom audit; `[S]` unfinished, unintegrated or uncommitted; `[D]` deduction; `[N]` numerical; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. A shared endpoint is not a shared proof. Section 3 separates the two.
 
 ## 0. Unifying statements
 
 - **One split [L].** RH ⇔ ZAL ∧ AAL ⇔ ZAL ∧ zero-disc weak recurrence ⇔ ZAL ∧ subexponential polar ground energy. ZAL ⇒ qRH. Under AAL eight RH-level statements coincide. `qRH ∨ AAL` [D].
-- **One self-improvement [L].** AAL ⇔ for every `σ`, a bound `Re ρ≤σ` valid for all zeros beyond some height holds for all zeros; the law is invariant under `ξ(s)↦ξ(s+a)ξ(s−a)`, which keeps the FE and moves every abscissa by `a`.
+- **One self-improvement [L].** AAL ⇔ for every `σ`, a bound `Re ρ≤σ` valid for all zeros beyond some height holds for all zeros; the law is invariant under `ξ(s)↦ξ(s+a)ξ(s−a)`, which keeps the FE and moves every abscissa by `a`. At `σ=½` it is "RH above some height ⇒ RH", the finite-stratum law B13.
+- **One finite stratum [L/K].** Finite negative index of `K_ζ` ⇔ finite index on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded heat count ⇔ RH above some height; in the stratum Lindelöf holds and one non-blind prime tower decides RH.
 - **One rigid alternative [L].** ¬AAL ⇔ finite top and bottom layers ⇔ `ψ(x)−x` is one finite oscillation at leading order ⇔ two-prime dilation annihilation of `ψ`.
 - **One countermodel boundary [L].** Positive Euler products — continuous, discrete, integer-norm, rational-prime with multiplicative linear counting — carry a finite top layer; none continues to `Re s=½`; FE defect `≤1/6400` forces the rational primes. Positive two-prime polynomials and positive Hecke polynomials annihilate any finite zero set. Rational relocation of ζ's own zeros fails positivity at the first integer gap.
 - **One scalar [L].** Every window route measures `a*(ζ)`. Contact is `Ψ=½log H₁` blowing up; RH ⇔ `Ψ` locally bounded.
-- **The critical curve is the window [L/S].** `R_c≤R_polar≤R_high=⨅_A windowThreshold(A)`; at a fixed ratio every conductor channel except the pole is paid; the pole at every ratio is RH. The critical-curve problem of HF, SRT, AIP and ACS is the window problem of RW.
+- **The critical curve is the window [L].** `R_c≤R_polar≤R_high=⨅_A windowThreshold(A)`; at a fixed ratio every conductor channel except the pole is paid; the pole at every ratio is RH. The critical-curve problem of HF, SRT, AIP and ACS is the window problem of RW.
 - **One exchange [L].** Below the onset, aperture `a` buys a depth-`¼` zero-free region to height `e^{a/K}`, which buys a sharp pole and `R_polar≥c₁e^{c₂a}`; no step raises `a*(ζ)`.
 - **One splitting order [L].** Physical tearing at the collar boundary fails at Schur ratio `4/13`; conductor-adapted splitting decouples. Conductor first, position second.
 - **One sign plane [L/D].** `Ω(a,X)`: size reaches all heights to `a≈log log X`; typical heights to `a=δlog T/(64M²)` with Gaussian tails of the bad set.
@@ -29,7 +30,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 - **One width axis [L/D].** Floor rate, damping rate, abscissa, gauge exponent, stability line, long-moment slope, Möbius zero abscissa, integrality exponent, stencil rate, PTR `h`, TH `a`, Hecke level, ringdown gap, horocycle exponent, Farey count exponent, Narain remainder exponent, cusp-energy exponent: interior values are zero-free strips; all unconditional savings sit at VK.
 - **One Mertens level [L].** Stencil rate = Mertens level; producer = mollifier on `Re s=1`; Farey discrepancy, the nerve Euler characteristic, the core Euler characteristic minus `#primes(N/2,N]`, and the Farey count at order `C` are `M(N)`.
 - **One topology [L].** The prime-product complex is a sphere bouquet with classified persistence, independent of `s`; maps homotopic to the identity have `≥N/(4log N)` fixed points; `M(N)` is the signed count `Σμ(m)` of the barcode.
-- **One horizon [L/S].** Pulse ringdown, horocycle mean, Farey count, Lax–Phillips mode, Narain remainder and cusp energy read the same poles `ρ/2`; gain `δ` past the trivial rate ⇔ strip `2δ`; RH ⇔ `y^{¾}` ⇔ `e^{−t/4}`.
+- **One horizon [L].** Pulse ringdown, horocycle mean, Farey count, Lax–Phillips mode, Narain remainder and cusp energy read the same poles `ρ/2`; gain `δ` past the trivial rate ⇔ strip `2δ`; RH ⇔ `y^{¾}` ⇔ `e^{−t/4}`.
 - **One Born rule [L].** A count law = a nondegenerate Born rule (the functional equation, partner law `α↦q/α`) + positivity (universal damping). The boundary algebra with the partner involution has a positive state iff damped; with the Hilbert involution it is `C*` on every black hole.
 - **One count [L].** A degree-two form is nonnegative iff a function bounded below lies at bounded distance, iff it is the Tate limit of a nonnegative count. Curve: Stepanov's crude bound at every level gives the count. Fake: count, not quadratic. ℤ: quadratic (Hecke isometry of `Q`), count missing. Linear counts never obey the law; Hecke gives conservation only.
 - **One crude regime absent [L/D].** On curves constant-factor bounds self-improve (finite rank); over ℤ `|ψ(x)−x|≤C√x` is false and `x^{½+ε}` is RH.
@@ -54,6 +55,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 | Reading | Statement | Anchor |
 |---|---|---|
 | Index | `κ` counts distinct right zeros; RH ⇔ `κ=0` | HKT, AKLT, CWS [L] |
+| Finite stratum | `κ<∞` ⇔ two-prime lattice index finite ⇔ finite off-line set ⇔ bounded heat count ⇔ eventual RH; B13 asks that it be RH | HKT, AKLT, FFP, ZCG [L/K] |
 | Winding | predictor polynomial zero-free in the disc on every lattice | AIF [L/D] |
 | Onset aperture | nonnegative half-widths `[0,a*]` | WVL, AHD [L] |
 | Local onset | `Ω_ψ(a,X)≥0` everywhere | AIF [L] |
@@ -157,7 +159,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 | ZCG | `Λ_Xlog X` | below a fixed `κ₀` gives a strip | `≤6600/9991+ε` | ZCG [L] |
 | PM | Hecke level `β` | half-plane `β` | edge only | ACP [L] |
 | PM | horocycle / Farey / pulse exponent `½+δ` | `Re ρ≤1−2δ` | `δ=0` (`y^{½−ε}`) | BHR, CTH [L] |
-| PM | Narain remainder exponent | strip | VK saving at exponent `½` | ASH [L/S] |
+| PM | Narain remainder exponent | strip | VK saving at exponent `½` | ASH [L] |
 | PM | cusp-energy exponent `α` | `Λ_g(ρ/2)=0` for `Re ρ>2−2α` | `½` | BHR [L] |
 | AAD | stencil rate | `Re ρ≤1−a` | VK; RH gives `[¼,½]` | AAD [L] |
 | RAC | Liouville exponent | zero-free `Re s>Θ` | VK | RAC [L] |
@@ -181,6 +183,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 ### 2.5 Abscissa split
 | Half | Statement | Receivers / producers | Strength |
 |---|---|---|---|
+| Finite stratum (AAL at `σ=½`) | finitely many off-line zeros ⇒ none (B13) | finite index, lattice index, heat count, `N_d`, eventual RH, one non-blind tower [L/K] | sub |
 | ZAL | finitely many zeros beyond each positive depth | inner-field decay, subtracted lag, `Λ_Xlog X→0`, eventual Hadamard, cosine levels, uniform high-collision counts [L] | ≥qRH |
 | AAL | eventual abscissa bound ⇒ global; finite right of `½+h` forces none | not-attained top, lags on progressions, Abel-density-zero excursions, polar ground energy, prime-window grid, integer lag, plateaux, JAS (dressed, typical, shell via Turán power sums), towers, cone, weak recurrence, slow returns on right discs [L] | sub |
 
@@ -212,7 +215,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 | Log-mean | WD near-line, CTF budgets, ZCG depth law, RW onset at fixed constant, AIF `I` at infinity, BHR bulk log-mean | eight-way equivalence; depth density | CDG, AIF, ASH [L] |
 | Mertens level | MC, WL, AAD, AE, CTF defect, PBM, RB, Redheffer, RAC parity, Farey, nerve, core, Farey count | rate ⇔ level; band ⇔ classical criteria; `det=M(N)=−χ̃`; core Euler characteristic; Farey discrepancy and square-root Farey law ⇔ RH | AAD, RAC, RHTower, ADT, HWV, HHAC, CTH [L] |
 | Inner mass | CTF BSY, AIF budgets and dilation, MZF `N(ρ)`, KL index | one Blaschke product | AIF [L] |
-| Horizon | PM, BHR, ASH, RIT, CTH horocycle, Narain | one scattering matrix; pulse decay, horocycle rate, Farey count rate, Lax–Phillips decay, Narain remainder and cusp-energy rate read the poles `ρ/2` | RIT, BHR, ASH, CTH [L/S] |
+| Horizon | PM, BHR, ASH, RIT, CTH horocycle, Narain | one scattering matrix; pulse decay, horocycle rate, Farey count rate, Lax–Phillips decay, Narain remainder and cusp-energy rate read the poles `ρ/2` | RIT, BHR, ASH, CTH [L] |
 | One-offs | BAG, WL sparse, JAS shell, SC undamped, ZCG one-off layer, AKLT towers, AAD transport, TAPO, RW polar ground energy | ¬AAL as one rigid object; producers transfer; countermodels fail at the critical line | ZCG, AKLT, AAD, TAPO, APD [L] |
 | Count | ACS, HF, PM probes, CWS heights, LST Künneth, CTH Tate limit | one quadratic form on integer probes; count law = Born rule + positivity | AE, ASH, CWS, ACS, CTH [L] |
 | Tail | BAG returns, TH certificates, PTT Ξ-current, AIF dilation | zeros of ζ are zeros of the Euler tail; certificates = tail-good | TAPO, PTT, AIF [L] |
@@ -282,9 +285,9 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 | C46 Characters and weights | Young projections, global trace | ACS, HF | positivity through rank 4 and column shapes [L] |
 | C47 Bohr space | far dipoles, recurrence | RW, HF, BAG | profile decomposition [L] |
 | C48 Sign plane | `Ω(a,X)` | RW, ACS, SRT, ZCG, WD | typical-height sign with Gaussian tails [L] |
-| C49 Critical compactness | Γ-liminf, Gårding, non-escape, threshold chain, conductor resolution | HF, SRT, AIP | critical curve = window; only the pole channel [L/S] |
+| C49 Critical compactness | Γ-liminf, Gårding, non-escape, threshold chain, conductor resolution | HF, SRT, AIP | critical curve = window; only the pole channel [L] |
 | C50 Forced mollifier | near-extremal rigidity, Abel budgets | CTF, WD, AIF | rigidity; Szegő ratio [L] |
-| C51 Horizon scattering | ringdown, causal symbol, horocycles, Farey counts, Lax–Phillips, Narain, cusp energy | PM, BHR, ASH, CTH | exact solution; AdS₄ quotient; width-axis dictionary [L/S] |
+| C51 Horizon scattering | ringdown, causal symbol, horocycles, Farey counts, Lax–Phillips, Narain, cusp energy | PM, BHR, ASH, CTH | exact solution; AdS₄ quotient; width-axis dictionary [L] |
 | C52 Beurling isolation | FE defect, count distance | APD, SEL, BAG, SPAL | three isolation metrics; one-offs stop at the critical line [L] |
 | C53 Count and height | naive height, parallelogram, Tate limit | ACS, HF, PM, CWS, AE, ASH, CTH | every hyperelliptic curve [L]; ℤ RH-strength |
 | C54 Cut kernel | power-law solutions | WL, MC, RAC, AAD, CTF | kernel = zeros; finite energy decides [L] |
@@ -303,7 +306,7 @@ Corpus checkpoint: commit `2f84c625ef` plus the working tree of 2026-11-08. Evid
 | C67 Born rule | partner law, damping, boundary algebra | PM, ACS, CTH, ASH | quadratic half = FE; count half = damping [L] |
 | C68 Topology of the prime complex | homotopy, persistence, fixed points, torsion forms | MC, HF, ACS; ESG, HHAC, HWV, ADT | classified, `s`-blind [L] |
 | C69 Thermal averaging | primon gas, Kesten–McKay | SEL/Primon | Euler factors at real points `>1` [L] |
-| C70 Relocation positivity | first-gap negativity of relocation densities | APD; ZCG, BAG | rational surgery on ζ detected [L/S] |
+| C70 Relocation positivity | first-gap negativity of relocation densities | APD; ZCG, BAG | rational surgery on ζ detected [L] |
 
 C1, C4, C16, C19, C25, C26, C48 and C49 are exact window-form dictionaries. C5, C28, C33 require all-root or all-degree control. C11, C32, C40, C42 are weaker than RH; RH receivers need finite and shallow exceptions controlled, which is C43. C13 closes source supply, not effectivity. C8–C10 and C21 retain source-specific bounds. C23, C24, C31, C52 supply calibration or amplification. C45, C34, C65 and C68 are one axis (the Mertens level). C56, C57, C62, C63, C64 are one programme on the dark range. C43, C52, C66 and C70 are one programme on the critical line. C51, C53, C59, C60 and C67 are one programme on the count.
 
@@ -312,7 +315,7 @@ C1, C4, C16, C19, C25, C26, C48 and C49 are exact window-form dictionaries. C5, 
 | Sources / routes | Established transfer | Input not transported |
 |---|---|---|
 | RW/HF/SRT/AIP/ACS | exact receivers for form, band and source energy [L] | all-aperture sign |
-| CACT/AHD→RW | critical thresholds end at the window threshold; conductor resolution leaves only the pole; low packet at every ratio ⇒ RH [L/S] | the window sign itself |
+| CACT/AHD→RW | critical thresholds end at the window threshold; conductor resolution leaves only the pole; low packet at every ratio ⇒ RH [L] | the window sign itself |
 | AHD below the onset | aperture ⇄ ratio exchange [L] | any increase of `a*(ζ)` |
 | RW→flow | canonical system, restoring bound, `Ψ`-boundedness ⇔ RH [L] | bound on `osc Ψ` |
 | RW→count | cone points obey local density and PNT `5/6` on the window's range [L] | windows of every length |
@@ -327,7 +330,7 @@ C1, C4, C16, C19, C25, C26, C48 and C49 are exact window-form dictionaries. C5, 
 | PTT→TH | Ξ-current lift; frozen certificate exactly above the size curve [L] | below the size curve |
 | PM↔TH, PM↔BHR↔CTH | Eisenstein coefficients; same scattering; horocycle mean = Farey count [L] | off-axis positivity; any exponent past `½` |
 | BHR cusp energy→PM | rate `y^α` forces `Λ_g(ρ/2)=0` [L] | noncancellation (B109) |
-| ASH Narain→PM | Narain `¾` ⇒ RH; remainder carries the VK saving [L/S] | any rate past VK |
+| ASH Narain→PM | Narain `¾` ⇒ RH; remainder carries the VK saving [L] | any rate past VK |
 | RN→RW | two-ended formula, energy comparison [L] | joint-node exclusion |
 | SZ→Weil | first variation, Abel source [L] | bounded residual |
 | BAG/AAD/TAPO | transport on right discs; tail of a return; recurrence dichotomy [L] | a bounded return at a zero |
@@ -336,10 +339,10 @@ C1, C4, C16, C19, C25, C26, C48 and C49 are exact window-form dictionaries. C5, 
 | AAD↔MC | rate ⇔ Mertens level [L] | a level past VK |
 | AGT→MC | twin quarter floor [L] | the trivial gauge itself |
 | RAC↔CTF | finite-energy cut-kernel mass annihilation ⇒ RH [L] | the annihilation |
-| AE/HHAC→ASH/CTH | torsion intersection, renormalized torsion forms on `ℓ²(n^δ)` [L] | the sign at `δ=0` |
+| AE/HHAC→ASH/CTH | torsion intersection, renormalized torsion forms on `ℓ²(n^δ)`, compact self-adjoint limit, indefinite on `{p,2p}` [L] | Gamma/pole compensation at `δ=0` |
 | CTH curve→ℤ | count law from a crude bound at every level; Tate limit over ℤ [L] | a crude producer over ℤ (no Frobenius; no crude regime) |
 | ESG/HHAC→MC | `M(N)` as the signed barcode count and the core Euler characteristic [L] | any cancellation |
-| APD relocation→ZCG/BAG | rational surgery fails positivity at the first gap [L/S] | intrinsic top layers |
+| APD relocation→ZCG/BAG | rational surgery fails positivity at the first gap [L] | intrinsic top layers |
 | SPAL/RAC/APD→SEL | three isolation metrics; one-offs stop at the critical line [L/D] | anything about ζ's zeros |
 
 ## 4. U-Σ — the sign
@@ -442,7 +445,7 @@ Core problem: source-defined arithmetic control of `ρ↦1−ρ̄`; in count for
 | Π ∩ Γ: isolation | count distance `o(log)`; exact parity identity | SPAL, RAC [L] |
 | Π ∩ Γ: horocycle and Farey | horocycle rate = Farey count rate = zero-free region; Farey discrepancy = Mertens level | BHR, CTH, RHTower [L] |
 | Π ∩ Γ: mollifier and curve | Abel budgets reach 1 ⇔ Castelnuovo | AIF [L/K] |
-| Π ∩ Γ: relocation | rational relocation fails positivity at the first integer gap | APD [L/S] |
+| Π ∩ Γ: relocation | rational relocation fails positivity at the first integer gap | APD [L] |
 | Σ ∩ Π: gluing and topology | Redheffer = reduced Euler characteristic; core Euler characteristic; barcode | HWV, ADT, HHAC, ESG [L] |
 
 ## 8. Route → core map
@@ -508,7 +511,7 @@ Core problem: source-defined arithmetic control of `ρ↦1−ρ̄`; in count for
 | A crude producer | Stepanov over ℤ to Chebyshev; Gaussian ceiling receiver [L] | a Frobenius substitute; a crude zero-localized prime count |
 | Budget, not exact sign | bounded or subexponential floor ⇒ RH [L] | any such floor |
 | Sign of the minimal object | band ⇔ `1∈ℋ(c)` ⇔ `λ*→0` [L] | the band at every step |
-| Uniformity in length | each length a rung; critical ratios = windows; pole channel alone [L/S] | every length |
+| Uniformity in length | each length a rung; critical ratios = windows; pole channel alone [L] | every length |
 | Flow | canonical system, restoring bound, `Ψ`-boundedness ⇔ RH [L] | a bound on `osc Ψ` up to contact |
 | Heights | size curve [D]; typical-height sign with Gaussian tails [L] | sign past `log log X` at rare heights |
 | Across primes | columns add; brackets; Agler wall; Euler coordinates stop at `Re s=1` [L] | amplitude oscillation; tail-good heights below the size curve |
@@ -518,7 +521,8 @@ Core problem: source-defined arithmetic control of `ρ↦1−ρ̄`; in count for
 | Dark range | first-return brackets; conditional Gaussian tail below Kronecker; collision arithmetic; absolute savings [L] | the tail law at the Kronecker scale; lower bounds for tail events; proportional saving |
 | Opposite sign | second expression; Szegő ratio; Castelnuovo over `𝔽_q` [L] | near-unit holomorphic budgets |
 | Count from geometry | source cone and RR; Tate law; torsion intersection and renormalized torsion forms; Manin and Stepanov counts on curves; Tate limit over ℤ [L] | a nonnegative count with quadratic Tate limit `Q`, defined without `Q` |
-| Reflection | coefficient completion; dispersion; ringdown; horocycle, Farey, Lax–Phillips, Narain and cusp receivers; Born rule [L/S] | `D_s≥0`; a physical carrier; any horizon exponent past `½` |
+| Reflection | coefficient completion; dispersion; ringdown; horocycle, Farey, Lax–Phillips, Narain and cusp receivers; Born rule [L] | `D_s≥0`; a physical carrier; any horizon exponent past `½` |
 | Sparse exceptions | rigid ¬AAL; transport on right discs; tail of a return; recurrence dichotomy [L] | a bounded return at a zero or a contradiction in ¬AAL |
+| The finite stratum | TFAE of finite index, lattice index, finite off-line set, bounded heat count, eventual RH; towers decide; Lindelöf; annihilators with left-growth cost; Turán on a finite set [L/K] | the FE excluding a finite off-line set (B13) |
 | Production | exact integrality; VK rate; kernel; parity identity; twin floor; Frobenius = factorial stencil over `𝔽_q[T]` [L] | a level past VK; an input not blind to zeros |
 | Topology | classified persistence; core bouquet; fixed-point lower bound [L] | a natural relative pair or signed localization at `√N` |

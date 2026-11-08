@@ -361,10 +361,8 @@ theorem mellinRegularStrip_regR (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
       apply pow_le_pow_left₀ (by positivity)
       nlinarith [abs_nonneg w.im, sq_abs w.im]
     rw [le_div_iff₀ hden]
-    calc ‖regR lamE g Δ w‖ * (1 + w.im ^ 2) ^ K ≤ max B 0 * 2 ^ K := by
-          gcongr
-          · exact le_max_right _ _
-          · exact (hB w hmem).trans (le_max_left _ _)
+    calc ‖regR lamE g Δ w‖ * (1 + w.im ^ 2) ^ K ≤ max B 0 * 2 ^ K :=
+          mul_le_mul ((hB w hmem).trans (le_max_left _ _)) hpow (by positivity) (le_max_right _ _)
       _ ≤ max (B * 2 ^ K) (Cn * 2 ^ Nn * Ce) := by
           rcases le_total B 0 with hB0 | hB0
           · rw [max_eq_right hB0, zero_mul]
@@ -391,6 +389,172 @@ theorem mellinRegularStrip_regR (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
       _ ≤ max (B * 2 ^ K) (Cn * 2 ^ Nn * Ce) / (1 + w.im ^ 2) ^ K := by
           gcongr; exact le_max_right _ _
 
+
+/-! ### The difference as a Mellin inverse, and the bound -/
+
+theorem smSum_sub_eq (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
+    (hρ : ∀ n : ℤ, ∀ y, 0 < y → fourierCoeff g n y = ρ n * (Real.sqrt y : ℂ) *
+      modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (nu lamE)) {Δ : ℝ} (hΔ : 0 < Δ) {y : ℝ}
+    (hy : 0 < y) :
+    smSum ρ Δ y - (msConst lamE g : ℂ) * Complex.exp (Δ ^ 2) * ((y : ℂ)⁻¹ * Complex.exp (-(y : ℂ))) =
+      mellinInv (3 / 4) (regR lamE g Δ) y := by
+  have hΨ := mellinRegularStrip_regR hg hρ0 hρ hΔ
+  rw [← hΨ.mellinInv_eq (c₁ := 9 / 8) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hy,
+    smSum_eq_mellinInv hg hρ0 hρ hΔ (c := 9 / 8) (by norm_num) hy,
+    ← mellinInv_gamma_sub_one (c := 9 / 8) (by norm_num) hy]
+  set k : ℂ := (msConst lamE g : ℂ) * Complex.exp (Δ ^ 2)
+  have hbdd : ∀ t : ℝ, ‖(y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I))‖ ≤ y ^ (-(9 / 8 : ℝ)) := fun t => by
+    rw [norm_cpow_eq_rpow_re_of_pos hy]; simp
+  have hcont : Continuous fun t : ℝ => (y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) :=
+    continuous_const.cpow (by fun_prop) fun _ => ofReal_mem_slitPlane.2 hy
+  have hR : Integrable fun t : ℝ => (y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) *
+      regR lamE g Δ (((9 / 8 : ℝ) : ℂ) + t * I) :=
+    (hΨ.integrable_line (by norm_num) (by norm_num)).bdd_mul hcont.aestronglyMeasurable
+      (Eventually.of_forall hbdd)
+  have hG : Integrable fun t : ℝ => k * ((y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) *
+      Gamma (((9 / 8 : ℝ) : ℂ) + t * I - 1)) := by
+    have h1 := GaloisForLFunctions.SelbergClass.gamma_verticalIntegrable_of_pos (c := 1 / 8) (by norm_num)
+    have h2 : Integrable fun t : ℝ => Gamma (((9 / 8 : ℝ) : ℂ) + t * I - 1) := by
+      refine h1.congr (Eventually.of_forall fun t => ?_)
+      simp only
+      congr 1; push_cast; ring
+    exact (h2.bdd_mul hcont.aestronglyMeasurable (Eventually.of_forall hbdd)).const_mul k
+  have hline : ∀ t : ℝ, (y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) *
+      (LSeries (fun n => ((rsCoeff ρ n : ℝ) : ℂ)) (((9 / 8 : ℝ) : ℂ) + t * I) *
+        Complex.exp (Δ ^ 2 * (((9 / 8 : ℝ) : ℂ) + t * I) ^ 2)) =
+      (y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) * regR lamE g Δ (((9 / 8 : ℝ) : ℂ) + t * I) +
+        k * ((y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) * Gamma (((9 / 8 : ℝ) : ℂ) + t * I - 1)) := by
+    intro t
+    rw [regR_eq_sub hg hρ0 hρ Δ (by simp; norm_num)]
+    ring
+  have hF : Integrable fun t : ℝ => (y : ℂ) ^ (-(((9 / 8 : ℝ) : ℂ) + t * I)) *
+      (LSeries (fun n => ((rsCoeff ρ n : ℝ) : ℂ)) (((9 / 8 : ℝ) : ℂ) + t * I) *
+        Complex.exp (Δ ^ 2 * (((9 / 8 : ℝ) : ℂ) + t * I) ^ 2)) :=
+    (hR.add hG).congr (Eventually.of_forall fun t => (hline t).symm)
+  unfold mellinInv
+  simp only [smul_eq_mul]
+  rw [mul_smul_comm, ← smul_sub, ← integral_const_mul, ← integral_sub hF hG]
+  congr 1
+  refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  simp only
+  rw [hline t]
+  ring
+
+theorem integrable_poly_gauss (N : ℕ) : Integrable fun v : ℝ => (1 + |v|) ^ N * Real.exp (-v ^ 2) := by
+  have hb : Integrable fun v : ℝ => ((N.factorial : ℝ) * Real.exp (3 / 2)) * Real.exp (-(1 / 2) * v ^ 2) :=
+    (integrable_exp_neg_mul_sq (by norm_num : (0 : ℝ) < 1 / 2)).const_mul _
+  refine hb.mono' (by fun_prop) (Eventually.of_forall fun v => ?_)
+  rw [Real.norm_of_nonneg (by positivity)]
+  have h1 := Real.pow_div_factorial_le_exp (1 + |v|) (by positivity) N
+  have hf : (0 : ℝ) < N.factorial := by exact_mod_cast Nat.factorial_pos N
+  rw [div_le_iff₀ hf] at h1
+  have h2 : Real.exp (1 + |v|) * Real.exp (-v ^ 2) ≤ Real.exp (3 / 2) * Real.exp (-(1 / 2) * v ^ 2) := by
+    rw [← Real.exp_add, ← Real.exp_add]; apply Real.exp_le_exp.2
+    nlinarith [sq_abs v, sq_nonneg (|v| - 1)]
+  calc (1 + |v|) ^ N * Real.exp (-v ^ 2) ≤ (Real.exp (1 + |v|) * N.factorial) * Real.exp (-v ^ 2) := by
+        gcongr
+    _ = N.factorial * (Real.exp (1 + |v|) * Real.exp (-v ^ 2)) := by ring
+    _ ≤ N.factorial * (Real.exp (3 / 2) * Real.exp (-(1 / 2) * v ^ 2)) := by gcongr
+    _ = _ := by ring
+
+/-- **The line integral of `Ψ_Δ` on `Re w = 3/4` is `O(Δ^{-N-1})`.** -/
+theorem exists_line_integral_le (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
+    (hρ : ∀ n : ℤ, ∀ y, 0 < y → fourierCoeff g n y = ρ n * (Real.sqrt y : ℂ) *
+      modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (nu lamE)) :
+    ∃ K : ℝ, ∃ N : ℕ, 0 ≤ K ∧ ∀ Δ : ℝ, 0 < Δ → Δ ≤ 1 →
+      ∫ t : ℝ, ‖regR lamE g Δ (((3 / 4 : ℝ) : ℂ) + t * I)‖ ≤ K * (Δ⁻¹) ^ (N + 1) := by
+  obtain ⟨CR, NR, hCR, hR⟩ := exists_rsPhi_poly hg hρ0 hρ (a := 3 / 4) (by norm_num)
+  set A := msConst lamE g
+  set h : ℝ → ℝ := fun v => (1 + |v|) ^ NR * Real.exp (-v ^ 2) with hh
+  set J := ∫ v : ℝ, h v
+  set JΓ := ∫ t : ℝ, ‖Gamma (((3 / 4 : ℝ) : ℂ) + t * I)‖
+  have hJ : 0 ≤ J := integral_nonneg fun v => by simp only [h]; positivity
+  have hJΓ : 0 ≤ JΓ := integral_nonneg fun t => norm_nonneg _
+  have hΓint : Integrable fun t : ℝ => ‖Gamma (((3 / 4 : ℝ) : ℂ) + t * I)‖ :=
+    (GaloisForLFunctions.SelbergClass.gamma_verticalIntegrable_of_pos (c := 3 / 4) (by norm_num)).norm
+  have hhint : Integrable h := integrable_poly_gauss NR
+  refine ⟨4 * Real.exp 1 * (CR * J + |A| * JΓ), NR, by positivity, fun Δ hΔ hΔ1 => ?_⟩
+  have hΔi : 1 ≤ Δ⁻¹ := (one_le_inv₀ hΔ).2 hΔ1
+  have hpt : ∀ t : ℝ, ‖regR lamE g Δ (((3 / 4 : ℝ) : ℂ) + t * I)‖ ≤
+      4 * Real.exp 1 * (CR * (Δ⁻¹) ^ NR * h (Δ * t) + |A| * ‖Gamma (((3 / 4 : ℝ) : ℂ) + t * I)‖) := by
+    intro t
+    set w : ℂ := ((3 / 4 : ℝ) : ℂ) + t * I with hwdef
+    have hwre : w.re = 3 / 4 := by simp [w]
+    have hwim : w.im = t := by simp [w]
+    have hw1 : w ≠ 1 := fun h' => by
+      have := congrArg Complex.re h'; rw [hwre] at this; norm_num at this
+    have hwn : 1 / 4 ≤ ‖w - 1‖ := by
+      have := Complex.abs_re_le_norm (w - 1)
+      have hre : (w - 1).re = -(1 / 4) := by rw [sub_re, hwre, one_re]; norm_num
+      rw [hre] at this; norm_num at this; linarith
+    have hR' := hR w (by rw [hwre]) (by rw [hwre]; norm_num)
+    rw [hwim] at hR'
+    have hE : ‖Complex.exp (Δ ^ 2 * w ^ 2)‖ ≤ Real.exp 1 * Real.exp (-(Δ * t) ^ 2) := by
+      rw [norm_exp_sq, hwre, hwim, ← Real.exp_add]
+      apply Real.exp_le_exp.2
+      have : Δ ^ 2 ≤ 1 := by nlinarith
+      nlinarith
+    have hpow : (1 + |t|) ^ NR ≤ (Δ⁻¹) ^ NR * (1 + |Δ * t|) ^ NR := by
+      rw [← mul_pow]; apply pow_le_pow_left₀ (by positivity)
+      rw [abs_mul, abs_of_pos hΔ, mul_add, mul_one, ← mul_assoc, inv_mul_cancel₀ hΔ.ne', one_mul]
+      linarith [abs_nonneg t]
+    have hk : ‖(A : ℂ) * Complex.exp (Δ ^ 2)‖ ≤ |A| * Real.exp 1 := by
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_exp]
+      gcongr
+      have : ((Δ : ℂ) ^ 2).re = Δ ^ 2 := by norm_cast
+      rw [this]; nlinarith
+    rw [regR_eq hw1, norm_div]
+    calc ‖numR lamE g Δ w‖ / ‖w - 1‖ ≤ ‖numR lamE g Δ w‖ / (1 / 4) := by gcongr
+      _ = 4 * ‖numR lamE g Δ w‖ := by ring
+      _ ≤ 4 * (‖rsPhi lamE g w‖ * ‖Complex.exp (Δ ^ 2 * w ^ 2)‖ +
+          ‖(A : ℂ) * Complex.exp (Δ ^ 2)‖ * ‖Gamma w‖) := by
+          gcongr; unfold numR; refine (norm_sub_le _ _).trans ?_; rw [norm_mul, norm_mul (_ * _)]
+      _ ≤ 4 * ((CR * (1 + |t|) ^ NR) * (Real.exp 1 * Real.exp (-(Δ * t) ^ 2)) +
+          (|A| * Real.exp 1) * ‖Gamma w‖) := by gcongr
+      _ ≤ 4 * ((CR * ((Δ⁻¹) ^ NR * (1 + |Δ * t|) ^ NR)) * (Real.exp 1 * Real.exp (-(Δ * t) ^ 2)) +
+          (|A| * Real.exp 1) * ‖Gamma w‖) := by gcongr
+      _ = 4 * Real.exp 1 * (CR * (Δ⁻¹) ^ NR * h (Δ * t) + |A| * ‖Gamma w‖) := by simp only [h]; ring
+  have hcomp : Integrable fun t : ℝ => h (Δ * t) := hhint.comp_mul_left' hΔ.ne'
+  have hbint : Integrable fun t : ℝ => 4 * Real.exp 1 * (CR * (Δ⁻¹) ^ NR * h (Δ * t) +
+      |A| * ‖Gamma (((3 / 4 : ℝ) : ℂ) + t * I)‖) :=
+    ((hcomp.const_mul _).add (hΓint.const_mul _)).const_mul _
+  have hs := MeasureTheory.Measure.integral_comp_mul_left h Δ
+  rw [abs_inv, abs_of_pos hΔ, smul_eq_mul] at hs
+  calc ∫ t : ℝ, ‖regR lamE g Δ (((3 / 4 : ℝ) : ℂ) + t * I)‖
+      ≤ ∫ t : ℝ, 4 * Real.exp 1 * (CR * (Δ⁻¹) ^ NR * h (Δ * t) +
+          |A| * ‖Gamma (((3 / 4 : ℝ) : ℂ) + t * I)‖) :=
+        integral_mono_of_nonneg (Eventually.of_forall fun t => norm_nonneg _) hbint
+          (Eventually.of_forall hpt)
+    _ = 4 * Real.exp 1 * (CR * (Δ⁻¹) ^ NR * (Δ⁻¹ * J) + |A| * JΓ) := by
+        rw [integral_const_mul, integral_add (hcomp.const_mul _) (hΓint.const_mul _), integral_const_mul,
+          integral_const_mul, hs]
+    _ = 4 * Real.exp 1 * (CR * J) * (Δ⁻¹) ^ (NR + 1) + 4 * Real.exp 1 * (|A| * JΓ) := by ring
+    _ ≤ 4 * Real.exp 1 * (CR * J) * (Δ⁻¹) ^ (NR + 1) +
+        4 * Real.exp 1 * (|A| * JΓ) * (Δ⁻¹) ^ (NR + 1) := by
+        have h1 : 1 ≤ (Δ⁻¹) ^ (NR + 1) := one_le_pow₀ hΔi
+        have : 0 ≤ 4 * Real.exp 1 * (|A| * JΓ) := by positivity
+        nlinarith
+    _ = 4 * Real.exp 1 * (CR * J + |A| * JΓ) * (Δ⁻¹) ^ (NR + 1) := by ring
+
+/-- **Smoothed Rankin–Selberg sums with a power saving**: for `0 < Δ ≤ 1`, `y > 0`,
+`|Σ_m f(m) φ_Δ(m y) - A e^{Δ²} y⁻¹ e^{-y}| ≤ K Δ^{-(N+1)} y^{-3/4}`. -/
+theorem norm_smSum_sub_le (hg : g ∈ cuspSpace lamE) (hρ0 : ρ 0 = 0)
+    (hρ : ∀ n : ℤ, ∀ y, 0 < y → fourierCoeff g n y = ρ n * (Real.sqrt y : ℂ) *
+      modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (nu lamE)) :
+    ∃ K : ℝ, ∃ N : ℕ, 0 ≤ K ∧ ∀ Δ : ℝ, 0 < Δ → Δ ≤ 1 → ∀ y : ℝ, 0 < y →
+      ‖smSum ρ Δ y - (msConst lamE g : ℂ) * Complex.exp (Δ ^ 2) * ((y : ℂ)⁻¹ * Complex.exp (-(y : ℂ)))‖ ≤
+        K * (Δ⁻¹) ^ (N + 1) * y ^ (-(3 / 4 : ℝ)) := by
+  obtain ⟨K, N, hK, hb⟩ := exists_line_integral_le hg hρ0 hρ
+  refine ⟨K / (2 * Real.pi), N, by positivity, fun Δ hΔ hΔ1 y hy => ?_⟩
+  rw [smSum_sub_eq hg hρ0 hρ hΔ hy]
+  refine (norm_mellinInv_le (Ψ := regR lamE g Δ) (3 / 4) hy).trans ?_
+  calc 1 / (2 * Real.pi) * y ^ (-(3 / 4 : ℝ)) * ∫ t : ℝ, ‖regR lamE g Δ (((3 / 4 : ℝ) : ℂ) + t * I)‖
+      ≤ 1 / (2 * Real.pi) * y ^ (-(3 / 4 : ℝ)) * (K * (Δ⁻¹) ^ (N + 1)) := by
+        gcongr; exact hb Δ hΔ hΔ1
+    _ = K / (2 * Real.pi) * (Δ⁻¹) ^ (N + 1) * y ^ (-(3 / 4 : ℝ)) := by ring
+
 end CuspSRS
 
 end GaloisForLFunctions.BlackHoleRingdown
+#print axioms GaloisForLFunctions.BlackHoleRingdown.CuspSRS.norm_smSum_sub_le
+#print axioms GaloisForLFunctions.BlackHoleRingdown.CuspRSL.exists_rsPhi_poly

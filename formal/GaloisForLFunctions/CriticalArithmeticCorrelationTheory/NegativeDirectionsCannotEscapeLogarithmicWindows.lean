@@ -55,7 +55,8 @@ open BezoutValuationIncidence RenormalizedArithmeticPotentialTheory CompletedAri
 
 /-! ### 1. Window-localized collar Gårding and `L²` concentration -/
 
-private lemma integral_sq_eq_Iic_add_Ioc {A : ℝ} (_hA : 0 ≤ A) {U : ℝ → ℝ}
+/-- Split a compactly supported squared profile at a left cutoff. -/
+lemma integral_sq_eq_Iic_add_Ioc {A : ℝ} (_hA : 0 ≤ A) {U : ℝ → ℝ}
     (hU : Continuous U) (hUc : HasCompactSupport U) (hs : ∀ u, 1 < u → U u = 0) :
     (∫ u, U u ^ 2) =
       (∫ u, (Set.Iic (-A)).indicator (fun v => U v ^ 2) u) +
@@ -91,7 +92,8 @@ private lemma integral_sq_eq_Iic_add_Ioc {A : ℝ} (_hA : 0 ≤ A) {U : ℝ → 
           ∫ u in Set.Ioc (-A) 1, U u ^ 2 := by
         rw [integral_add hi_le hi_oc, MeasureTheory.integral_indicator measurableSet_Ioc]
 
-private lemma iic_mass_le_exponential_mass {C_B c_a R_max : ℝ}
+/-- Exponential mass absorbs the left tail beyond a logarithmic cutoff. -/
+lemma iic_mass_le_exponential_mass {C_B c_a R_max : ℝ}
     (hCB : 0 < C_B) (hca : 0 < c_a) (hR : 0 < R_max)
     {U : ℝ → ℝ} (hU : Continuous U) (hUc : HasCompactSupport U) :
     let A_R := (1 / 8 : ℝ) * Real.log (2 * C_B * R_max * (R_max + 1) / c_a + 1) + 1
@@ -2009,10 +2011,10 @@ there exists `B_far > 0` for which eventually in `N`, across all `1 ≤ c` with
 `(7/8) D_M`, `(g₀ / (8 c⁷)) log N · S₇`, `(c c_W / R_max) W₈(U_y)`, and `(c / (4 I₂)) levyEnergy U_y`
 at a prefix cost below `(1 / (16 D)) log N / (1 + log log N)⁵ · P` and a collar `L²` cost
 `(c B_far) ∫ U_y²`. -/
-theorem exists_all_ratio_far_garding :
-    ∃ c_W : ℝ, 0 < c_W ∧
+theorem exists_all_ratio_far_garding_with_linear_mass :
+    ∃ c_W C_B : ℝ, 0 < c_W ∧ 0 < C_B ∧
       ∀ {R_max : ℝ}, 0 < R_max →
-        ∃ B_far : ℝ, 0 < B_far ∧
+        ∃ B_far : ℝ, 0 < B_far ∧ B_far ≤ C_B * (R_max + 1) ∧
           ∀ᶠ N : ℕ in atTop,
             ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
               ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)}, z ∈ (conductorSubspace 1 N)ᗮ →
@@ -2042,29 +2044,45 @@ theorem exists_all_ratio_far_garding :
   have hC₈ : 0 < C₈ := by positivity
   set c_W0 := dyadicTopMassConstant / (8 * C₈)
   have hc_W0 : 0 < c_W0 := div_pos hg₀ (by positivity)
-  refine ⟨c_W0 / 2, div_pos hc_W0 zero_lt_two, ?_⟩
-  intro R_max hR
   set C_pole := Real.exp 1 / (∫ u, tiltedUnitSpline u) ^ 2
   have hκ0 : 0 ≤ splineWindowConstant := splineWindowConstant_nonneg
   set K_win := splineWindowConstant * 8 * Real.exp 2 * C_pole + 1
   have hK_win : 0 < K_win := by positivity
+  have h0_mv := vonMangoldtThreeHalvesMass_nonneg
+  have hG₀ := factorialSpanGammaOffset_nonneg
+  have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
+  let B₀ := (B_arch / 2 + 2 * Real.pi + (factorialSpanGammaOffset + Real.log 2) / 4 +
+    |gammaHardyPhaseRate 0| / 2 + 2 + 2 * vonMangoldtThreeHalvesMass) / I₂ + 4 * K_win
+  let B₁ := 4 * (2 * vonMangoldtThreeHalvesMass) ^ 2 * Real.exp 8 / (I₂ ^ 2 * c_W0) +
+    8 * K_win ^ 2 / c_W0
+  have hB₀ : 0 ≤ B₀ := by dsimp only [B₀]; positivity
+  have hB₁ : 0 ≤ B₁ := by dsimp only [B₁]; positivity
+  let C_B := B₀ + B₁ + 1
+  have hCB : 0 < C_B := by dsimp only [C_B]; positivity
+  refine ⟨c_W0 / 2, C_B, div_pos hc_W0 zero_lt_two, hCB, ?_⟩
+  intro R_max hR
   set ε_pr := I₂ * c_W0 / (4 * R_max)
   have hε_pr : 0 < ε_pr := by positivity
   set ε_win := c_W0 / (4 * R_max * K_win)
   have hε_win : 0 < ε_win := by positivity
-  have h0_mv := vonMangoldtThreeHalvesMass_nonneg
   set B_pr := 2 * vonMangoldtThreeHalvesMass +
     (2 * vonMangoldtThreeHalvesMass) ^ 2 * Real.exp 8 / ε_pr
-  obtain ⟨B_far, hB_far, hB_sum⟩ :
-      ∃ B_far : ℝ, 0 < B_far ∧
-        (B_arch / 2 + 2 * Real.pi + (factorialSpanGammaOffset + Real.log 2) / 4 +
-          |gammaHardyPhaseRate 0| / 2 + 2 + B_pr) / I₂ + K_win * (4 + 2 / ε_win) ≤ B_far := by
-    refine ⟨(B_arch / 2 + 2 * Real.pi + (factorialSpanGammaOffset + Real.log 2) / 4 +
-        |gammaHardyPhaseRate 0| / 2 + 2 + B_pr) / I₂ + K_win * (4 + 2 / ε_win) + 1, ?_, by linarith⟩
-    have hG₀ : 0 ≤ factorialSpanGammaOffset := factorialSpanGammaOffset_nonneg
-    have hlog2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
-    positivity
-  refine ⟨B_far, hB_far, ?_⟩
+  let B_far := C_B * (R_max + 1)
+  have hB_far : 0 < B_far := by dsimp only [B_far]; positivity
+  have hB_sum :
+      (B_arch / 2 + 2 * Real.pi + (factorialSpanGammaOffset + Real.log 2) / 4 +
+        |gammaHardyPhaseRate 0| / 2 + 2 + B_pr) / I₂ + K_win * (4 + 2 / ε_win) ≤ B_far := by
+    have heq : (B_arch / 2 + 2 * Real.pi + (factorialSpanGammaOffset + Real.log 2) / 4 +
+        |gammaHardyPhaseRate 0| / 2 + 2 + B_pr) / I₂ + K_win * (4 + 2 / ε_win) =
+        B₀ + B₁ * R_max := by
+      dsimp only [B_pr, ε_pr, ε_win, B₀, B₁]
+      field_simp [hI₂.ne', hc_W0.ne', hR.ne', hK_win.ne']
+      ring
+    rw [heq]
+    have hBR := mul_nonneg hB₀ hR.le
+    dsimp only [B_far, C_B]
+    nlinarith only [hB₀, hB₁, hR, hBR]
+  refine ⟨B_far, hB_far, le_rfl, ?_⟩
   set K_c : ℝ := (R_max + 1) ^ (1 / 8 : ℝ)
   set C_β : ℝ := 1 + 36 / c₀ ^ 2 + |Real.log t₀|
   set C_tr : ℝ := (1 + 2 * Real.exp 2) *
@@ -2146,6 +2164,33 @@ theorem exists_all_ratio_far_garding :
     hexp_b'
 
 /-! ### 4. All-ratio complement Gårding and deterministic far-sector bridge -/
+/-- The far-sector Gårding inequality at every bounded critical ratio. -/
+theorem exists_all_ratio_far_garding :
+    ∃ c_W : ℝ, 0 < c_W ∧
+      ∀ {R_max : ℝ}, 0 < R_max →
+        ∃ B_far : ℝ, 0 < B_far ∧
+          ∀ᶠ N : ℕ in atTop,
+            ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
+              ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)}, z ∈ (conductorSubspace 1 N)ᗮ →
+                let x := primeHorizonExtension z
+                let M := N / linearDefectCutoff c
+                let y := atomicTailCoefficients M x
+                let U_y := normalizedCentredAtomicTest tiltedUnitSpline y c N
+                (7 / 8 : ℝ) * poleDefect M x +
+                  (dyadicTopMassConstant / (8 * c ^ 7)) * Real.log (N : ℝ) *
+                    topCollarSeventhMass M N x +
+                  (c * c_W / R_max) * (∫ u, U_y u ^ 2 * Real.exp (-(8 * u))) +
+                  (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_y -
+                  ((1 / (16 * explicitConductorCutoffConstant)) * Real.log (N : ℝ) /
+                    (1 + Real.log (Real.log (N : ℝ))) ^ 5) *
+                    (∑ n ∈ Icc 1 M, x n ^ 2) ≤
+                completeWeilEnergy tiltedUnitSpline c N z +
+                  (c * B_far) * ∫ u, U_y u ^ 2 := by
+  obtain ⟨c_W, C_B, hcW, _, hall⟩ := exists_all_ratio_far_garding_with_linear_mass
+  refine ⟨c_W, hcW, fun {R_max} hR => ?_⟩
+  obtain ⟨B_far, hB, _, hN⟩ := hall hR
+  exact ⟨B_far, hB, hN⟩
+
 
 private lemma subexpCutoff_all_ratio_bounds {N : ℕ} {D : ℝ} (hD : 0 < D) (hN1 : 1 ≤ N)
     (hL3000 : 3000 ≤ Real.log (N : ℝ))
@@ -3367,10 +3412,10 @@ For every `R_max > 0`, splitting any `z ∈ (conductorSubspace ⌊(log N)^{13/32
    `completeWeilEnergy c N z + (c B_far) ∫ U_w²`;
 2. The deterministic energy bridge bounding `completeWeilEnergy c N w` above by
    `completeWeilEnergy c N z` plus an `O(1 / log log N)` fraction of the far block reserves. -/
-theorem exists_all_ratio_three_band_garding_and_far_bridge :
-    ∃ c_W : ℝ, 0 < c_W ∧
+theorem exists_all_ratio_three_band_garding_with_linear_mass :
+    ∃ c_W C_B : ℝ, 0 < c_W ∧ 0 < C_B ∧
       ∀ {R_max : ℝ}, 0 < R_max →
-        ∃ B_far : ℝ, 0 < B_far ∧
+        ∃ B_far : ℝ, 0 < B_far ∧ B_far ≤ C_B * (R_max + 1) ∧
           ∀ᶠ N : ℕ in atTop,
             ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
               ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
@@ -3407,7 +3452,7 @@ theorem exists_all_ratio_three_band_garding_and_far_bridge :
                       (1 / ℓ) * ((k₁ / 8) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
                         (dyadicTopMassConstant * L / (32 * c ^ 7)) *
                           topCollarSeventhMass M N x_w) := by
-  obtain ⟨c_W, hc_W, hfar_gen⟩ := exists_all_ratio_far_garding
+  obtain ⟨c_W, C_B, hc_W, hCB, hfar_gen⟩ := exists_all_ratio_far_garding_with_linear_mass
   obtain ⟨C_pr, C_up, C_upT, C_np, hCpr, hCup, hCupT, hCnp, hcross_shape⟩ :=
     exists_band_far_cross_le_reserve_shape
   obtain ⟨C_cross01, hC_cross01, hcross01⟩ := exists_band0_band1_cross_le
@@ -3425,9 +3470,9 @@ theorem exists_all_ratio_three_band_garding_and_far_bridge :
   rw [← hD_eq] at hD ⊢
   rw [← hg₀_eq] at hg₀ ⊢
   rw [← hκ₀_eq] at hκ₀ ⊢
-  refine ⟨c_W, hc_W, fun {R_max} hR => ?_⟩
-  obtain ⟨B_far, hB_far, hfar_ev⟩ := hfar_gen hR
-  refine ⟨B_far, hB_far, ?_⟩
+  refine ⟨c_W, C_B, hc_W, hCB, fun {R_max} hR => ?_⟩
+  obtain ⟨B_far, hB_far, hBbound, hfar_ev⟩ := hfar_gen hR
+  refine ⟨B_far, hB_far, hBbound, ?_⟩
   obtain ⟨K_c, hKc1, hKc_def⟩ : ∃ K_c : ℝ, 1 ≤ K_c ∧ K_c = (R_max + 1) ^ (1 / 8 : ℝ) :=
     ⟨(R_max + 1) ^ (1 / 8 : ℝ), Real.one_le_rpow (by linarith) (by norm_num), rfl⟩
   obtain ⟨M_bk, hMbk0, hMbk_def⟩ :
@@ -3717,6 +3762,52 @@ theorem exists_all_ratio_three_band_garding_and_far_bridge :
     hcr0w hcr1w hfl0 hfl1 hP_floor hS_floor hu₀_mem hu₀_orthQ hu₁_mem hu₁_orthR₀ hw_orthR₁ hband2'
   rw [hk₁_eq, hℓ_eq, hL_eq] at hbridge_raw hgarding_raw
   exact ⟨by linarith only [hgarding_raw, hE_def], by linarith only [hbridge_raw]⟩
+
+/-- Three-band Gårding and the far-energy bridge with a common decomposition. -/
+theorem exists_all_ratio_three_band_garding_and_far_bridge :
+    ∃ c_W : ℝ, 0 < c_W ∧
+      ∀ {R_max : ℝ}, 0 < R_max →
+        ∃ B_far : ℝ, 0 < B_far ∧
+          ∀ᶠ N : ℕ in atTop,
+            ∀ {c : ℝ}, 1 ≤ c → c ^ 8 ≤ R_max * Real.log (N : ℝ) →
+              ∀ {z : EuclideanSpace ℝ (PrimeHorizonIndex N)},
+                z ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ →
+                ∃ u₀ u₁ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+                  z = u₀ + u₁ + w ∧
+                  u₀ ∈ conductorSubspace ⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ N ∧
+                  u₀ ∈ (conductorSubspace ⌊Real.log (N : ℝ) ^ (13 / 32 : ℝ)⌋₊ N)ᗮ ∧
+                  u₁ ∈ conductorSubspace (subexpCutoff N) N ∧
+                  u₁ ∈ (conductorSubspace ⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ N)ᗮ ∧
+                  w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
+                  ‖z‖ ^ 2 = ‖u₀‖ ^ 2 + ‖u₁‖ ^ 2 + ‖w‖ ^ 2 ∧
+                  let x_w := primeHorizonExtension w
+                  let M := N / linearDefectCutoff c
+                  let y_w := atomicTailCoefficients M x_w
+                  let U_w := normalizedCentredAtomicTest tiltedUnitSpline y_w c N
+                  let L := Real.log (N : ℝ)
+                  let ℓ := 1 + Real.log L
+                  let k₁ := L / (2 * explicitConductorCutoffConstant * ℓ ^ 5)
+                  (tiltedSplineSpectralFloorConstant + 3) * ‖u₀‖ ^ 2 +
+                      (tiltedSplineSpectralFloorConstant + 2 + L ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 +
+                      (tiltedSplineSpectralFloorConstant + 2) * ‖w‖ ^ 2 +
+                      (k₁ / 16) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+                      (dyadicTopMassConstant * L / (64 * c ^ 7)) *
+                        topCollarSeventhMass M N x_w +
+                      (c * c_W / R_max) * (∫ u, U_w u ^ 2 * Real.exp (-(8 * u))) +
+                      (c / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U_w ≤
+                    completeWeilEnergy tiltedUnitSpline c N z +
+                      (c * B_far) * ∫ u, U_w u ^ 2 ∧
+                  (tiltedSplineSpectralFloorConstant + 3) * ‖u₀‖ ^ 2 +
+                      (tiltedSplineSpectralFloorConstant + 2 + L ^ (1 / 2 : ℝ) / 32) * ‖u₁‖ ^ 2 +
+                      completeWeilEnergy tiltedUnitSpline c N w ≤
+                    completeWeilEnergy tiltedUnitSpline c N z +
+                      (1 / ℓ) * ((k₁ / 8) * (∑ n ∈ Icc 1 M, x_w n ^ 2) +
+                        (dyadicTopMassConstant * L / (32 * c ^ 7)) *
+                          topCollarSeventhMass M N x_w) := by
+  obtain ⟨c_W, C_B, hcW, _, hall⟩ := exists_all_ratio_three_band_garding_with_linear_mass
+  refine ⟨c_W, hcW, fun {R_max} hR => ?_⟩
+  obtain ⟨B_far, hB, _, hN⟩ := hall hR
+  exact ⟨B_far, hB, hN⟩
 
 /-- Complement Gårding and the far-sector bridge after discarding the extra band reserves. -/
 theorem exists_all_ratio_complement_garding_and_far_bridge :
@@ -6219,6 +6310,8 @@ theorem eventually_negative_direction_window_confinement :
     mul_nonpos_of_nonneg_of_nonpos (by positivity) hle0
   linarith only [hpos_z, hnorm_win, hle_rhs]
 
+#print axioms exists_all_ratio_far_garding_with_linear_mass
+#print axioms exists_all_ratio_three_band_garding_with_linear_mass
 #print axioms exists_all_ratio_three_band_garding_and_far_bridge
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

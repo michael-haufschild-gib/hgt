@@ -1782,7 +1782,8 @@ private theorem contradiction_of_limit_profile_below_windowThreshold {Rstar R₁
   linarith only [hpen_ub, hk_neg, hpen_pos]
 
 
-private theorem normalizedCentredAtomicTest_const_mul (α : ℝ) (y : ℕ → ℝ) (c : ℝ) (N : ℕ) :
+/-- Scaling atomic coefficients scales the normalized centred test. -/
+theorem normalizedCentredAtomicTest_const_mul (α : ℝ) (y : ℕ → ℝ) (c : ℝ) (N : ℕ) :
     normalizedCentredAtomicTest tiltedUnitSpline (fun n => α * y n) c N =
       fun u => α * normalizedCentredAtomicTest tiltedUnitSpline y c N u := by
   funext u
@@ -2568,6 +2569,7 @@ theorem highConductorCriticalThreshold_eq_top_iff_onsetAperture_eq_top :
 #print axioms eventually_nonpos_completeWeilEnergy_not_escape_log_window
 #print axioms eventually_negative_direction_window_confinement
 #print axioms iInf_windowThreshold_ge_exp_six_mul_of_le_onsetAperture
+#print axioms no_nonpositive_atomic_sequence_below_windowThreshold
 #print axioms highConductorCriticalThreshold_eq_iInf_windowThreshold
 #print axioms exp_six_mul_le_highConductorCriticalThreshold
 #print axioms log_highConductorCriticalThreshold_ge_six_mul_onsetAperture

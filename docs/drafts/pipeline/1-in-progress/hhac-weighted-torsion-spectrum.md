@@ -61,6 +61,13 @@ formalize the coefficient-preserving compact inclusion for every `β<δ`.
 the original pair series with a compact self-adjoint Hilbert operator for
 every positive weight. Infinite sign directions and the Hilbert–Schmidt classification remain open.
 
+`spacingLimitKernel_primePair` and `spacingLimitKernel_primePairs_orthogonal`
+prove the exact arithmetic blocks and vanishing mixed entries.
+`spacingLimitKernel_primePair_sum`, `eventually_spacingPrimePair_energy_neg`
+and `spacingLimitKernel_prime_self_pos` prove their negative pair energies
+and positive prime diagonals. Their transfer to finite-dimensional definite
+subspaces of the actual Hilbert carrier remains under formalization.
+
 The existing `ArithmeticIntersectionTheory.spacingLimit_not_nonneg` already
 refutes positivity on `{1,2}`. The stronger target here concerns arbitrarily
 large positive and negative subspaces on the completed carrier, including

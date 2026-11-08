@@ -19,10 +19,11 @@ open ArithmeticHodgeTheoryOfDegenerations BezoutValuationIncidence CompletedArit
 
 /-- Whole-space Gårding retains the completed packet diagonal, collar reserves, and Lévy energy,
 with a single scalar polar loss. -/
-theorem exists_critical_wholeSpace_collar_garding
-    {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
-    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
-    ∃ c_W B C : ℝ, 0 < c_W ∧ 0 < B ∧ 0 < C ∧
+theorem exists_wholeSpace_collar_garding_with_linear_mass :
+    ∃ c_W C_B : ℝ, 0 < c_W ∧ 0 < C_B ∧
+    ∀ {c : ℕ → ℝ}, (∀ N, 1 ≤ c N) → ∀ {R : ℝ}, 0 < R →
+    Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R) →
+    ∃ C : ℝ, 0 < C ∧
     ∀ᶠ N : ℕ in atTop, ∀ b : ℕ → ℝ,
       ∀ z ∈ (conductorSubspace (lowPacketCutoff N) N)ᗮ,
       ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
@@ -42,16 +43,17 @@ theorem exists_critical_wholeSpace_collar_garding
         (c N / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U ≤
         completeWeilEnergy tiltedUnitSpline (c N) N
           ((∑ m ∈ Icc 1 (lowPacketCutoff N), b m • normalizedRamanujanHorizonVector m N) + z) +
-        (c N * B) * (∫ u, U u ^ 2) + (C * c N / L) * b 1 ^ 2 := by
-  obtain ⟨c_W, hcW, hG⟩ := exists_all_ratio_three_band_garding_and_far_bridge
-  obtain ⟨B, hB, hGN⟩ := hG (show 0 < R + 1 by linarith)
+        (c N * (C_B * (R + 2))) * (∫ u, U u ^ 2) + (C * c N / L) * b 1 ^ 2 := by
+  obtain ⟨c_W, C_B, hcW, hCB, hG⟩ := exists_all_ratio_three_band_garding_with_linear_mass
+  refine ⟨c_W, C_B, hcW, hCB, fun {c} hc {R} hR hcrit => ?_⟩
+  obtain ⟨B, _, hBbound, hGN⟩ := hG (show 0 < R + 1 by linarith)
   let κ_P := 1 / (64 * explicitConductorCutoffConstant)
   let κ_S := dyadicTopMassConstant / 128
   have hκP : 0 < κ_P := by dsimp only [κ_P]; exact one_div_pos.mpr
     (mul_pos (by norm_num) explicitConductorCutoffConstant_pos)
   have hκS : 0 < κ_S := div_pos dyadicTopMassConstant_pos (by norm_num)
   obtain ⟨C, hC, hcross⟩ := eventually_lowPacket_cross_payment hc hR hcrit hκP hκS
-  refine ⟨c_W, B, C, hcW, hB, hC, ?_⟩
+  refine ⟨C, hC, ?_⟩
   filter_upwards [hGN, hcross, eventually_completeWeil_low_packet_energy_ge hc hR hcrit,
     hcrit.eventually (gt_mem_nhds (by linarith : R < R + 1)),
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0]
@@ -76,7 +78,41 @@ theorem exists_critical_wholeSpace_collar_garding
   have hnegative := neg_abs_le ⟪Matrix.toEuclideanLin (completeWeilMatrix tiltedUnitSpline (c N) N) y, z⟫
   have hnorm' := congrArg (fun t : ℝ => (tiltedSplineSpectralFloorConstant + 2) * t) hnorm
   dsimp only [κ_P, κ_S, y] at hcros henergy hnegative hnorm' hlowN
-  linarith only [hGarding, hcros, henergy, hnegative, hnorm', hlowN]
+  have hmass : 0 ≤ ∫ u, (normalizedCentredAtomicTest tiltedUnitSpline
+      (atomicTailCoefficients (N / linearDefectCutoff (c N)) (primeHorizonExtension w)) (c N) N u) ^ 2 :=
+    integral_nonneg fun _ => sq_nonneg _
+  have hBpay := mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left hBbound (zero_lt_one.trans_le (hc N)).le) hmass
+  linarith only [hGarding, hcros, henergy, hnegative, hnorm', hlowN, hBpay]
+
+/-- Whole-space collar Gårding along a positive critical curve. -/
+theorem exists_critical_wholeSpace_collar_garding
+    {c : ℕ → ℝ} (hc : ∀ N, 1 ≤ c N) {R : ℝ} (hR : 0 < R)
+    (hcrit : Tendsto (fun N : ℕ => c N ^ 8 / Real.log N) atTop (𝓝 R)) :
+    ∃ c_W B C : ℝ, 0 < c_W ∧ 0 < B ∧ 0 < C ∧
+    ∀ᶠ N : ℕ in atTop, ∀ b : ℕ → ℝ,
+      ∀ z ∈ (conductorSubspace (lowPacketCutoff N) N)ᗮ,
+      ∃ w : EuclideanSpace ℝ (PrimeHorizonIndex N),
+        w ∈ (conductorSubspace (subexpCutoff N) N)ᗮ ∧
+        let M := N / linearDefectCutoff (c N)
+        let U := normalizedCentredAtomicTest tiltedUnitSpline
+          (atomicTailCoefficients M (primeHorizonExtension w)) (c N) N
+        let L := Real.log (N : ℝ)
+        (1 / 4 : ℝ) * (∑ m ∈ Icc 1 (lowPacketCutoff N),
+          completedConductorEnergy tiltedUnitSpline (c N) m * b m ^ 2) +
+        (tiltedSplineSpectralFloorConstant + 2) * ‖z‖ ^ 2 +
+        (L / (64 * explicitConductorCutoffConstant * (1 + Real.log L) ^ 5)) *
+          (∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2) +
+        (dyadicTopMassConstant * L / (128 * c N ^ 7)) *
+          topCollarSeventhMass M N (primeHorizonExtension w) +
+        (c N * c_W / (R + 1)) * (∫ u, U u ^ 2 * Real.exp (-(8 * u))) +
+        (c N / (4 * ∫ u, tiltedUnitSpline u ^ 2)) * levyEnergy U ≤
+        completeWeilEnergy tiltedUnitSpline (c N) N
+          ((∑ m ∈ Icc 1 (lowPacketCutoff N), b m • normalizedRamanujanHorizonVector m N) + z) +
+        (c N * B) * (∫ u, U u ^ 2) + (C * c N / L) * b 1 ^ 2 := by
+  obtain ⟨c_W, C_B, hcW, hCB, hall⟩ := exists_wholeSpace_collar_garding_with_linear_mass
+  obtain ⟨C, hC, hN⟩ := hall hc hR hcrit
+  exact ⟨c_W, C_B * (R + 2), C, hcW, by positivity, hC, hN⟩
 
 /-- Primitive packets retain collar Gårding and an arbitrarily accurate far-energy bridge
 for the same far component. -/

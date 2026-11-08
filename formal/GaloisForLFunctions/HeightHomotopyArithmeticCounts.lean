@@ -29,4 +29,6 @@ import GaloisForLFunctions.HeightHomotopyArithmeticCounts.WeightedTorsionCompact
 
 import GaloisForLFunctions.HeightHomotopyArithmeticCounts.WeightedProbeAtoms
 
+import GaloisForLFunctions.HeightHomotopyArithmeticCounts.TorsionPrimePairKernel
+
 /-! Local heights, torsion regularization and homotopy invariants of arithmetic counts. -/

@@ -38,6 +38,7 @@ theorem eventually_nonpolar_lowPacket_schur_payment
   filter_upwards [eventually_critical_schur_pairing_except_collar hc hR hcrit hκP, hcost,
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0]
     with N hpair hcostN hL
+  simp only [Function.comp_def] at hL
   intro u₀ hu₀ u₁ w
   have hc0 : 0 < c N := zero_lt_one.trans_le (hc N)
   let M := N / linearDefectCutoff (c N)
@@ -52,11 +53,14 @@ theorem eventually_nonpolar_lowPacket_schur_payment
     have hh := mul_le_mul_of_nonneg_right hcostN.le
       (show 0 ≤ 48 * Real.log (N : ℝ) / c N ^ 7 by positivity)
     have he : (c N ^ 7 / Real.log N * D) * (48 * Real.log N / c N ^ 7) = 48 * D := by
-      field_simp
+      field_simp [ne_of_gt hL, ne_of_gt hc0]
     rw [he] at hh
     exact hh.trans_eq (by ring)
   have hpay := mul_le_mul_of_nonneg_right hD (topCollarSeventhMass_nonneg M N (primeHorizonExtension w))
-  exact hb.trans (add_le_add_left hpay _)
+  dsimp only [D, M, conductorResidualVector] at hpay
+  dsimp only [M] at hb
+  dsimp only [conductorResidualVector]
+  linarith only [hb, hpay]
 
 /-- All low conductors, including the pole, decouple from the non-collar pieces. -/
 theorem eventually_lowPacket_noncollar_schur_payment
@@ -78,12 +82,12 @@ theorem eventually_lowPacket_noncollar_schur_payment
   have hprefix : (∑ n ∈ Icc 1 M, primeHorizonExtension (horizonPrefixVector M w) n ^ 2) =
       ∑ n ∈ Icc 1 M, primeHorizonExtension w n ^ 2 := by
     rw [primeHorizonExtension_horizonPrefixVector hMN]
-    exact sum_congr rfl fun n hn => by rw [if_pos (mem_Icc.mp hn).2]
+    exact sum_congr rfl fun n hn => by simp only [if_pos (mem_Icc.mp hn).2]
   have hcollar : topCollarSeventhMass M N (primeHorizonExtension (horizonPrefixVector M w)) = 0 := by
     rw [primeHorizonExtension_horizonPrefixVector hMN]
     unfold topCollarSeventhMass
     exact sum_eq_zero fun n hn => by
-      rw [if_neg (by have := (mem_Ioc.mp hn).1; omega), zero_pow (by decide), mul_zero]
+      simp only [if_neg (not_le.mpr (mem_Ioc.mp hn).1), zero_pow (by decide : 2 ≠ 0), mul_zero]
   rw [hprefix, hcollar, mul_zero, add_zero] at hb
   exact hb
 
@@ -143,6 +147,7 @@ theorem eventually_polar_collar_pairing_payment
     (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_gt_atTop 0,
     hcrit.eventually (gt_mem_nhds (by linarith : R < R + 1))]
     with N hb hL hratio b w
+  simp only [Function.comp_def] at hL
   let M := N / linearDefectCutoff (c N)
   let S := topCollarSeventhMass M N (primeHorizonExtension w)
   let D := topCollarDualSeventhMass M N (conductorResidualVector (c N) 1 N)
@@ -153,17 +158,17 @@ theorem eventually_polar_collar_pairing_payment
     have h := hb (m := 1) Nat.zero_lt_one
     norm_num only [Nat.cast_one, one_pow, mul_one] at h
     calc
-      D = ((Real.log N / c N ^ 2) * D) * (c N ^ 2 / Real.log N) := by field_simp
+      D = ((Real.log N / c N ^ 2) * D) * (c N ^ 2 / Real.log N) := by field_simp [ne_of_gt hL, ne_of_gt hc0]
       _ ≤ K * (c N ^ 2 / Real.log N) := mul_le_mul_of_nonneg_right h (by positivity)
       _ = _ := by ring
   have ht : t ^ 2 ≤ (2 * K * c N ^ 2 / Real.log N) * S := by
-    have h := inner_sq_le_prefix_add_topCollarSeventh (Nat.div_le_self N _)
+    have h := inner_sq_le_prefix_add_topCollarSeventh (M := M) (Nat.div_le_self N (linearDefectCutoff (c N)))
       (conductorResidualVector (c N) 1 N) (horizonCollarVector M w)
     rw [prefix_mass_horizonCollarVector, topCollarSeventhMass_horizonCollarVector,
       mul_zero, zero_add] at h
     exact h.trans ((mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hD (by norm_num)) hS).trans_eq (by ring))
   have hpay := two_abs_le_of_sq_le
-    (F := (2 * K * c N ^ 2 / Real.log N) * b ^ 2) (W := Real.sqrt S)
+    (Z := b * t) (F := (2 * K * c N ^ 2 / Real.log N) * b ^ 2) (W := Real.sqrt S)
     (γ := κ_S * Real.log N / c N ^ 7) (by positivity) (by positivity)
     (by rw [Real.sq_sqrt hS, mul_pow]; nlinarith only [mul_le_mul_of_nonneg_left ht (sq_nonneg b)])
   rw [Real.sq_sqrt hS] at hpay
@@ -171,9 +176,10 @@ theorem eventually_polar_collar_pairing_payment
       (2 * K * (R + 1) / κ_S) * c N / Real.log N := by
     have h := mul_le_mul_of_nonneg_left hratio.le
       (show 0 ≤ 2 * K * c N / (κ_S * Real.log N) by positivity)
-    convert h using 1 <;> field_simp <;> ring
+    convert h using 1 <;> ring
   have hlast := mul_le_mul_of_nonneg_right hcoef (sq_nonneg b)
-  dsimp only [S, t] at hpay
+  dsimp only [S, t, M] at hpay hlast ⊢
+  ring_nf at hpay hlast ⊢
   linarith only [hpay, hlast]
 
 /-- A packet paired with its orthogonal complement sees only conductor residuals. -/
@@ -234,11 +240,18 @@ theorem eventually_lowPacket_cross_payment
   have hsum : (∑ m ∈ Icc 1 Q, b m * ⟪r m, u₀ + u₁ + w⟫) = T₀ + (T₁ + T₂) := by
     have hw : u₀ + u₁ + w =
         (u₀ + u₁ + horizonPrefixVector M w) + horizonCollarVector M w := by
-      rw [add_assoc, horizonPrefixVector_add_collar]
-    simp_rw [hw, inner_add_right, mul_add]
-    rw [sum_add_distrib]
-    congr 1
-    rw [hsplit, sum_insert (by simp)]
+      rw [add_assoc (u₀ + u₁), horizonPrefixVector_add_collar]
+    calc
+      _ = T₀ + ∑ m ∈ Icc 1 Q, b m * ⟪r m, horizonCollarVector M w⟫ := by
+        dsimp only [T₀]
+        rw [← sum_add_distrib]
+        apply sum_congr rfl
+        intro m hm
+        rw [hw, inner_add_right, mul_add]
+      _ = T₀ + (T₁ + T₂) := by
+        congr 1
+        rw [hsplit, sum_insert (by simp)]
+
   have hpre := two_abs_weighted_sum_le (a := b)
     (t := fun m => ⟪r m, u₀ + u₁ + horizonPrefixVector M w⟫) hE
   have hnon := two_abs_weighted_sum_le (a := b)
@@ -254,7 +267,7 @@ theorem eventually_lowPacket_cross_payment
   have hab := abs_add_le T₀ (T₁ + T₂)
   have hab' := abs_add_le T₁ T₂
   rw [conductor_packet_cross_eq_residual_sum (c N) b horth, hsum]
-  dsimp only [T₀, T₁, T₂, E, r, Q, M] at hab hab' hpre hnon hsumE
+  dsimp only [T₀, T₁, T₂, E, r, Q, M] at hab hab' hpre hnon hsumE hp hn h₁ ⊢
   linarith only [hpre, hnon, hsumE, hp, hn, h₁, hab, hab']
 
 /-- Orthogonality to conductor one makes its coordinate a quadratic Gram error. -/
@@ -298,6 +311,7 @@ theorem eventually_primitive_polar_penalty_le
     hLlim.eventually (RHTower.eventually_const_mul_polylog_le_rpow 2
       (by norm_num : (0 : ℝ) < 1) (3888 * K * (R + 1) / (κ * ε)))]
     with N hcut hratio hL1 hN1 hLsq hsmall b hprim
+  simp only [Function.comp_def] at hL1 hsmall
   let L := Real.log (N : ℝ)
   let Q := lowPacketCutoff N
   have hL0 : 0 < L := zero_lt_one.trans_le hL1
@@ -312,14 +326,14 @@ theorem eventually_primitive_polar_penalty_le
     simp only [pow_zero, one_mul] at hLsq
     have hs : (Q : ℝ) ^ 2 ≤ (N : ℝ) :=
       (pow_le_pow_left₀ (Nat.cast_nonneg Q) hQL 2).trans ((div_lt_one hn0).mp hLsq).le
-    exact_mod_cast hs
+    simpa only [pow_two] using (show Q ^ 2 ≤ N by exact_mod_cast hs)
   have hlog : 18 * (1 + Real.log Q) ≤ L := by
     have hqlog := Real.log_le_log
-      (by exact_mod_cast (show 0 < Q by omega)) (show (Q : ℝ) ≤ _ by exact_mod_cast hQR)
+      (by exact_mod_cast (show 0 < Q by omega)) (show (Q : ℝ) ≤ (⌊Real.exp (Real.log (N : ℝ) ^ (1 / 2 : ℝ))⌋₊ : ℝ) by exact_mod_cast hQR)
     linarith only [h36, hqlog, Real.log_natCast_nonneg Q]
   have hb := polar_coefficient_sq_le_of_primitive hQ2 hQN hlog b hprim
   have hlogQ : 1 + Real.log (Q : ℝ) ≤ 1 + Real.log L :=
-    add_le_add_left (Real.log_le_log (by exact_mod_cast (show 0 < Q by omega)) hQL) 1
+    add_le_add_right (Real.log_le_log (by exact_mod_cast (show 0 < Q by omega)) hQL) 1
   have hlogQ0 : 0 ≤ 1 + Real.log (Q : ℝ) := by linarith only [Real.log_natCast_nonneg Q]
   have hE : (κ / (2 * c N ^ 7)) * (∑ m ∈ Icc 1 Q, b m ^ 2) ≤
       ∑ m ∈ Icc 1 Q, completedConductorEnergy tiltedUnitSpline (c N) m * b m ^ 2 := by
@@ -339,16 +353,19 @@ theorem eventually_primitive_polar_penalty_le
       have hh : (3888 * K * (R + 1) / (κ * ε)) * (1 + Real.log L) ^ 2 ≤ L := by
         simpa only [Function.comp_def, Real.rpow_one] using hsmall
       have hm := mul_le_mul_of_nonneg_right hh (show 0 ≤ κ * ε by positivity)
-      convert hm using 1 <;> field_simp <;> ring
+      convert hm using 1 <;> (try field_simp [hκ.ne', hε.ne']) <;> ring
     have hprod := mul_le_mul_of_nonneg_left hc8
       (show 0 ≤ 3888 * K * (1 + Real.log L) ^ 2 by positivity)
     have hsmallL := mul_le_mul_of_nonneg_right hsmall' hL0.le
-    have hL2 : L ^ 2 ≤ L ^ 3 := by nlinarith only [sq_nonneg L, mul_nonneg (sq_nonneg L) (sub_nonneg.mpr hL1)]
+    have hL2 : L ^ 2 ≤ L ^ 3 := by
+      have hh := mul_le_mul_of_nonneg_left (show 1 ≤ L from hL1) (sq_nonneg L)
+      nlinarith only [hh]
     have hend := mul_le_mul_of_nonneg_left hL2 (show 0 ≤ κ * ε by positivity)
     have hlogterm := mul_le_mul_of_nonneg_left hlogs (show 0 ≤ 3888 * K * c N ^ 8 by positivity)
-    apply (div_le_iff₀ (show 0 < 2 * c N ^ 7 by positivity)).mpr
-    field_simp
-    nlinarith only [hprod, hsmallL, hend, hlogterm]
+    have hendall : 3888 * K * c N ^ 8 * (1 + Real.log Q) ^ 2 ≤ κ * ε * L ^ 3 := by
+      linarith only [hprod, hsmallL, hend, hlogterm]
+    apply (mul_le_mul_iff_right₀ (show 0 < 2 * c N ^ 7 * L ^ 3 by positivity)).mp
+    convert hendall using 1 <;> (try field_simp [ne_of_gt hL0, ne_of_gt hc0]) <;> ring
   have hb' := mul_le_mul_of_nonneg_left hb (show 0 ≤ K * c N / L by positivity)
   have hc' := mul_le_mul_of_nonneg_right hcoef
     (show 0 ≤ ∑ m ∈ Icc 1 Q, b m ^ 2 from sum_nonneg fun _ _ => sq_nonneg _)
@@ -358,5 +375,7 @@ theorem eventually_primitive_polar_penalty_le
 
 #print axioms eventually_nonpolar_lowPacket_schur_payment
 #print axioms eventually_lowPacket_noncollar_schur_payment
+#print axioms eventually_lowPacket_cross_payment
+#print axioms eventually_primitive_polar_penalty_le
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory

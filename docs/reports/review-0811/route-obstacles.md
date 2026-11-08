@@ -2,7 +2,7 @@
 
 Scope: 38 live route formulations, 9 candidates and their supporting programmes. For each route: path, what is established, obstacles that are **(a) just work**, obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `2f84c625ef` plus the working tree of 2026-11-08.
+**Corpus checkpoint:** commit `48ce5506c8` plus the working tree of 2026-11-08.
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means an independent source mechanism or landing is missing. Formulations are not independent mechanisms: HJ is PA, BSH is CDC, FEL's BSY criterion belongs to CTF. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -20,17 +20,19 @@ Scope: 38 live route formulations, 9 candidates and their supporting programmes.
 |---|---|---|
 | RH ⇔ ZAL ∧ AAL; ZAL ⇒ qRH; ¬AAL ⇒ `Θ<1`; `qRH ∨ AAL` | [L]/[D] | one half is at least quasi-RH, the other sits below it |
 | AAL ⇔ every right abscissa bound valid beyond some height holds for all zeros; symmetric shifts `ξ(s+a)ξ(s−a)` preserve AAL | [L] | AAL is a configuration statement (finiteness of the top layer), not a statement about the line `½` |
+| Finite stratum: `κ(K_ζ)<∞` ⇔ index finite on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded heat count ⇔ every zero above some height on the line; under it RH ⇔ one non-blind prime tower is PD | [L]/[K] | AAL at the abscissa `½` is "finite stratum ⇒ RH" (B13): the milestone toward AAL |
 | Under AAL: RH ⇔ ZAL ⇔ finite off-line support ⇔ `κ(K_ζ)<∞` ⇔ bounded heat count ⇔ finite critical energy ⇔ eventual Hadamard ⇔ eventual central-gap budget | [L] | every large-height receiver reads RH once one-offs are gone |
 | ¬AAL ⇔ finite top layer ⇔ `ψ(x)−x=x^ΘT(log x)+O(x^{Θ−η})`, `T` a unique trigonometric polynomial ⇔ two-prime dilation annihilation | [L] | failure of AAL is one rigid object |
 | Positive Euler products with integer norms (holomorphic on `Re s>½`) or rational-prime labels (holomorphic on `Re s>17/30`) carry a finite top layer with linear counting; none continues to `Re s=½`; positive two-prime and positive Hecke polynomials annihilate every finite zero set | [L] | an AAL proof must use the critical line (FE, critical regularity), not positivity, Euler products or counting |
-| Rational relocation of ζ's own critical zeros, normalized at `0` and `1`, has a signed density, negative on `(1,1+ε)` under every finite Dirichlet filter | [L]/[S] | a top layer of ζ cannot be produced by surgery on ζ while keeping positive coefficients |
+| A positive annihilator of a zero that is `ε`-accurate right of the zero has mass `≥ε^{−(Re ρ−σ_lo)/(σ_hi−Re ρ)}` left of it | [L] | positivity can remove finitely many zeros only at a quantified cost on the critical side |
+| Rational relocation of ζ's own critical zeros, normalized at `0` and `1`, has a signed density, negative on `(1,1+ε)` under every finite Dirichlet filter | [L] | a top layer of ζ cannot be produced by surgery on ζ while keeping positive coefficients |
 | RH ⇔ `a*(ζ)=⊤` ⇔ `λ*(c)→0` ⇔ two-site PD ⇔ `Ψ` locally bounded | [L] | every window route measures one number |
-| `0<R_c≤R_polar≤R_high=⨅_A windowThreshold(A)`; each stage `=⊤` ⇔ RH; at each fixed ratio every conductor channel except the pole is paid; the pole at every ratio is RH | [L]/[S] | the critical curve carries no sub-RH content; it is the window |
+| `0<R_c≤R_polar≤R_high=⨅_A windowThreshold(A)`; each stage `=⊤` ⇔ RH; at each fixed ratio every conductor channel except the pole is paid; the pole at every ratio is RH | [L] | the critical curve carries no sub-RH content; it is the window |
 | Window positivity at aperture `a` excludes depth-`¼` zeros to height `e^{a/K}`, sharpens the pole self-energy and gives `R_polar≥c₁e^{c₂a}` | [L] | the form bootstraps by exchanging aperture for ratio; `a*(ζ)` is not raised |
 | The adaptive theta head has leading term `(4/√π)\|Σ_{n≤\|b\|/2}n^{−½+ib}\|²`, a critical-line partial sum of ζ | [L]/[C]/[D] | the theta sign is decided near the critical zeros of ζ |
 | Zeros of ζ are zeros of the Euler tail `ζM_y` at every cut; returns at right zeros are tail-bad at every cut; nonvanishing targets return at positive density | [L] | AAL in tail form needs an atypical tail event |
 | Conditional tail laws stop at the Kronecker scale; first return bracketed at every precision; proportional saving ⇔ no early heavy return | [L] | the dark range is the Kronecker scale |
-| Every unconditional saving carries the VK saving; stencil rate = Mertens level; the Narain AdS₃ remainder carries exactly the VK saving | [L]/[S] | production and holography have no content independent of the Mertens level |
+| Every unconditional saving carries the VK saving; stencil rate = Mertens level; the Narain AdS₃ remainder carries exactly the VK saving | [L] | production and holography have no content independent of the Mertens level |
 | Farey discrepancy, `M(N)`, the nerve Euler characteristic and the core Euler characteristic minus `#primes(N/2,N]` are one number; persistence of the prime complex is classified and independent of `s`; maps homotopic to the identity have `≥N/(4log N)` fixed points | [L] | topology of the prime complex carries `M(N)` only as a signed count of a fixed barcode |
 | Pulse ringdown, horocycle mean, Farey count, Lax–Phillips mode and cusp energy: a gain `δ` past the trivial rate ⇔ a strip of width `2δ`; the RH rates are `y^{¾}` and `e^{−t/4}`; sharp sources need cancellation beyond RH | [L] | every horizon observable is a receiver on the width axis |
 | A count law has a quadratic half (Born rule = FE) and a count half (positivity = damping); it holds on every hyperelliptic curve, produced by Stepanov from a crude bound at every level; over ℤ the quadratic half holds (Hecke isometry of `Q`) and RH ⇔ `Q` is the Tate limit of a count | [L] | the separating property is a count; over ℤ only its count half is missing |
@@ -70,7 +72,7 @@ Established:
 - Every fixed ratio: critical pencil `κQ+(7J/R)W₈`; low packet `m≤Q₁` keeps its diagonal and polar part [K]; polar capacity `S_A²/(J₁/R+κg)` [K].
 - Γ-liminf with weight `α_R>0`; strong `L²` limits; precompactness from physical and Fourier tails [L]. Unrestricted Gårding false; top-collar Gårding at every `R` [L].
 - **Threshold chain [L].** `0<R_c≤R_c^{PSD}≤R_polar≤R_high=R_high^{PSD}=⨅_{A≥0}windowThreshold(A)≥c₀e^{6a*(ζ)}`; each stage `=⊤` ⇔ `a*(ζ)=⊤` ⇔ RH. `R_polar≥c₁e^{c₂a}` for every `a≤a*(ζ)`. `windowThreshold A₀=⊤` ⇒ `windowThreshold A≥ce^{3A₀}` for every `A`.
-- **Conductor resolution at a fixed ratio [L/S].** Physical tearing has Schur ratio `→4/13`; conductor-adapted far complement decouples; for every `ε` a finite prefix `m₀(R,ε)` of conductors leaves residual low-packet coupling `≤ε`; eventual PSD gives polar payment on every window. Fixed nonpolar conductors have vanishing top-window rows uniformly on critical bands; deep conductor residuals vanish at every ratio [S].
+- **Conductor resolution at a fixed ratio [L].** Physical tearing has Schur ratio `→4/13`; conductor-adapted far complement decouples; for every `ε` a finite prefix `m₀(R,ε)` of conductors leaves residual low-packet coupling `≤ε`; eventual PSD gives polar payment on every window. Fixed nonpolar conductors have vanishing top-window rows uniformly on critical bands; deep conductor residuals vanish at every ratio; whole-space collar Gårding loses only the conductor-one coefficient square `b₁²`; primitive nonpositive directions have compact collar profiles with bounded weighted mass and Lévy energy [L].
 - **Aperture exchange [L].** Window positivity at `a` excludes depth-`¼` zeros up to height `e^{a/K}`; sharp pole self-energy and compressed pole cross pairing for `K(2s+2)≤a*`; Mertens lag `Cx^{−1/4}`; reciprocal-Mangoldt error `Ce^{−t/8}`.
 - **Low packet [L].** Payment at `R` on `[−A,0]` ⇒ `R≤windowThreshold A`; payment at every ratio on windows of length `→∞` ⇒ RH.
 
@@ -80,7 +82,6 @@ Structure [D]: at each ratio the critical form is paid on every channel except t
 |---|---|---|
 | A9 | Explicit `K₀`, eighth-root horizon, logarithmic profile, Beurling schedule | — |
 | A13 | Near-gcd charges and periods beyond `M₀(N)` (unverified) | — |
-| A38 | Integrate the conductor-resolution modules (top-window row cancellation, deep conductor pairings, nonpolar collar residuals) | — |
 | B6 | Full-space sign eventually at every `K`; equivalently every critical threshold `=⊤` | RH |
 | B8 | Head thresholds for every `d` | RH |
 | B101 | Low-packet polar payment at every ratio on growing windows (the pole channel) | RH |
@@ -184,8 +185,8 @@ Established [L unless marked]:
 - Scattering: resonance ⇔ `ζ(2s)=0`; `Q=2Re[WH,WH]`; `D_s≤0`, zero iff `Re s=¼`; Hecke dispersion `V_p`; every Hecke operator diagonal on Eisenstein; the Hecke algebra has a positive Poisson measure on truncated resonant states for every `Re u<0`; positive `T₂,T₃` polynomials annihilate any finite resonance set; scattering Blaschke product.
 - Horizon: exact modular horizon, quotient of the Rindler wedge of AdS₄ by `SL₂(ℤ)`; ringdown in the modes of zeros; metric of general `L²` data; pulse metrics regular across the horizon.
 - Width-axis dictionary: for `0<δ≤¼`, zero-free `Re ρ≤1−2δ` ⇔ every compact pulse rings down at `e^{−(δ−ε)τ}` ⇔ every horocycle mean converges at `y^{½+δ−ε}` ⇔ every smoothed Farey count converges at that rate; RH ⇔ `y^{¾−ε}` ⇔ square-root Farey law ⇔ every resonant mode decays at `e^{−t/4}` (Lax–Phillips semigroup of the modular surface).
-- Cusp channel: Maass cusp forms exist (mirror-odd sector is cuspidal); spectrum discrete, `N(Λ)≍Λ`; joint eigenspaces of dimension `≤2`; Rankin–Selberg continuation with FE and `e^{−π|t|}` decay; mean-square law; cusp energy rate `y^{½−ε}` unconditionally, `y^{¾−ε}` under RH; rate `y^α` forces `Λ_g(ρ/2)=0` for `Re ρ>2−2α`.
-- Narain AdS₃ source [L/S]: literal partition, modular invariance, Mellin continuation retaining every arithmetic pole; double average with exact main terms and Schwartz boundary; remainder with the VK saving at a target-independent exponent `1/128`; `¾` ⇒ RH; every exponent `>¾` impossible.
+- Cusp channel: Maass cusp forms exist (mirror-odd sector is cuspidal); spectrum discrete, `N(Λ)≍Λ`; joint eigenspaces of dimension `≤2`; Rankin–Selberg continuation with FE and `e^{−π|t|}` decay; mean-square law; smoothed Rankin–Selberg sums with power saving `X^{3/4}`; cusp energy rate `y^{½−ε}` unconditionally, `y^{¾−ε}` under RH; rate `y^α` forces `Λ_g(ρ/2)=0` for `Re ρ>2−2α`.
+- Narain AdS₃ source [L]: literal partition, modular invariance in all three moduli, mirror symmetry, Mellin continuation retaining every arithmetic pole; source clock holomorphic in a fixed complex strip; double average with exact main terms and Schwartz boundary; remainder with the VK saving at a target-independent exponent `1/128`; `¾` ⇒ RH; every exponent `>¾` impossible.
 - Graphs: black holes with flux, unitarity, Hecke at every degree and class; Krein flux law; Born rules (nondegenerate ⇔ FE, positive ⇔ damping); boundary algebra with partner involution (positive state ⇔ damped; `C*` blind); count law ⇔ `t²≤4q`; genus-two graph: FE for every `q`, first-level count law iff `q≤19`, all levels iff `q≤3`.
 - Sharp sources: sharp shells thermalize at `y^{½}log(1/y)`; their `¾` rate needs Möbius × circle-problem cancellation not controlled by RH.
 - Primon: arithmetic thermal means are Euler factors of `ζ(2e^β+1)`; Kesten–McKay densities, Gaussian Green processes, likelihood span = even semicircle `L²`.
@@ -195,7 +196,6 @@ Structure [D]: wave dynamics, unitarity, Hecke, KMS, `C*`-positivity, the functi
 | | Obstacle | Strength |
 |---|---|---|
 | A26 | Weyl asymptotic with its constant (`N(Λ)∼Λ/12`) [C]; order `N(Λ)≍Λ` is proved | — |
-| A39 | Integrate the untracked horizon modules (universal VK rate, complex Mellin shift, Rankin–Selberg growth) | — |
 | A43 | Identify `Λ_g` with the completed `L(g×g,s)=ζ(s)L(Sym²g,s)` for Hecke eigenforms [C] | — |
 | B68 | Independent `D_s≥0`, nonnegative Krein flux, integer-probe sign or all-zero dispersion bound | RH |
 | B69 | Positive physical carrier | producer |
@@ -206,12 +206,14 @@ Structure [D]: wave dynamics, unitarity, Hecke, KMS, `C*`-positivity, the functi
 
 ### S8. Index and support
 
-Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA. Established [L]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or decay; window index counts critical lengths; `sup_dN_d` off-line multiplicity; `K_ζ^n` PD ⇔ RH; finite support makes almost every prime tower decide.
+Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA; ZCG heat count. Established [L/K]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or decay; window index counts critical lengths; `sup_dN_d` off-line multiplicity; `K_ζ^n` PD ⇔ RH; TFAE: `κ(K_ζ)<∞` ⇔ index finite on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded non-real heat count for `t>0` ⇔ every zero above some height on the line; under finite support, RH ⇔ the kernel on one non-blind prime tower is PD ⇔ infinitely many prime towers are PD.
+
+Structure [D]: the finite stratum is one object read five ways, and AAL at the single abscissa `σ=½` is exactly "finite stratum ⇒ RH" (B13). Every receiver in the TFAE list becomes an RH receiver once B13 is known.
 
 | | Obstacle | Strength |
 |---|---|---|
 | B12 | Index ceiling uniform in resolution | ≥qRH |
-| B13 | Exclude finite nonzero off-line support | sub |
+| B13 | Exclude finite nonzero off-line support; equivalently `κ(K_ζ)∈{0,∞}`; equivalently eventual RH ⇒ RH | sub |
 | B23 | `N_d` bounded | ≥qRH |
 
 ### S9. Abscissa split, recurrence, one-offs
@@ -226,14 +228,14 @@ Established [L unless marked]:
 - Tail: zeros of ζ = zeros of `ζM_y` at every cut; returns at right zeros tail-bad and of density zero; nonvanishing targets return at positive density; head frozen below `1/log y`.
 - Hull: Haar-a.e., fair-coin-a.e. and order-two fibres extend zero-free to `Re s>½` with natural boundary `½`; the Liouville point extends iff RH.
 - Countermodels: continuous one-offs; discrete and integer-norm one-offs with linear counting; rational-prime one-offs with multiplicative linear counting on `Re s>17/30`; positive two-prime annihilators; positive Hecke annihilators. Every one-off fails to continue to `Re s=½`; FE defect `≤1/6400` forces the rational primes.
-- Relocation [L/S]: rational relocation of two critical pairs of ζ to `¼,¾`, normalized at `0` and `1`, has signed zero-mass density, negative on `(1,1+ε)` under every finite Dirichlet filter.
+- Annihilator cost [L]: a positive two-prime annihilator that is `ε`-accurate on a line right of its zero has mass `≥ε^{−(Re ρ−σ_lo)/(σ_hi−Re ρ)}` on every line left of it; at unit mass its zero is simple with `Re` derivative `≥log 2`.
+- Relocation [L]: rational relocation of two critical pairs of ζ to `¼,¾`, normalized at `0` and `1`, has signed zero-mass density, negative on `(1,1+ε)` under every finite Dirichlet filter.
 
 Structure [D]: the random Euler model does not reach targets with zeros, so a bounded return at a zero is an arithmetic event at the Kronecker scale. The one input no countermodel carries is the functional equation at the critical line. ¬AAL is a finite exceptional layer inside the strip, an exclusion problem of Landau–Siegel type. Since AAL is the eventual-to-global step and is shift-invariant, it is the ℤ-analogue of the self-improvement step of the curve proof (power-sum elimination plus FE), not of the crude count.
 
 | | Obstacle | Strength |
 |---|---|---|
 | A37 | Resonator mean of `\|ζ\|²` with resonators growing below the Kronecker scale (unverified) | — |
-| A40 | Integrate the relocation first-gap module | — |
 | B83 | AAL | sub |
 | B89 | A bounded aligned return at each right zero on a right disc, i.e. a tail event cancelling the head at every cut | sub |
 | B96 | Conditional law of the Euler tail at the Kronecker scale | sub |
@@ -247,7 +249,7 @@ Structure [D]: the random Euler model does not reach targets with zeros, so a bo
 
 Routes: ACS, HF, PM integer probes; RW through window naive heights. Programmes: AE, CWS, LST, KPA, ASH, CTH, RIT.
 
-Established [L]: polar surface calculus; Tate law (degree-two form `≥0` iff a function bounded below lies at bounded distance); five currencies; theta `h⁰` with exact RR; Künneth `h¹` split; Λ as an intersection number of torsion orbits; source cone and all-aperture RR; Bézout ⇔ RH; Young projections at rank `≤4`; reciprocal tangent quadrics with exact projective counts. On curves: count law at level `n` = genus form = half the Castelnuovo–Severi defect; tower count law ⇔ crude bound at every level ⇔ unitary; RH, Hasse–Weil and the count law for every hyperelliptic curve (any degree, odd characteristic); bielliptic genus-two count = sum of two Manin counts; Rosati form = Born rule, and naive height ⇔ nonnegativity ⇔ count law at every level ⇔ unitary. Over ℤ: `Q(a)=Σa_ma_nC(log(m/n))`; Hecke isometry of `Q`; RH ⇔ `Q` is the Tate limit of an `ℕ`-valued count; linear counts degenerate; Hecke gives conservation only; non-arithmetic Hecke triangle groups fail at a second place.
+Established [L]: polar surface calculus; Tate law (degree-two form `≥0` iff a function bounded below lies at bounded distance); five currencies; theta `h⁰` with exact RR; Künneth `h¹` split; Λ as an intersection number of torsion orbits, with an indefinite renormalized torsion limit; source cone and all-aperture RR; Bézout ⇔ RH; Young projections at rank `≤4`; reciprocal tangent quadrics with exact projective counts. On curves: count law at level `n` = genus form = half the Castelnuovo–Severi defect; tower count law ⇔ crude bound at every level ⇔ unitary; RH, Hasse–Weil and the count law for every hyperelliptic curve (any degree, odd characteristic); bielliptic genus-two count = sum of two Manin counts; Rosati form = Born rule, and naive height ⇔ nonnegativity ⇔ count law at every level ⇔ unitary. Over ℤ: `Q(a)=Σa_ma_nC(log(m/n))`; Hecke isometry of `Q`; RH ⇔ `Q` is the Tate limit of an `ℕ`-valued count; linear counts degenerate; Hecke gives conservation only; non-arithmetic Hecke triangle groups fail at a second place.
 
 Structure [D]: over curves the count comes from a crude producer at every level plus finite-rank self-improvement; over ℤ there is no crude regime (Π111), and the count must be produced exactly at square-root size by an object other than `Q`.
 
@@ -288,13 +290,12 @@ Structure [D]: between `log t` and `exp((log t)^{2/3})` the Taylor degree of `t 
 
 Routes: MC (nerve, Redheffer), HF and ACS through the coprime stratum. Programmes: HWV, ADT, ESG, HHAC.
 
-Established [L unless marked]: `det R_N=M(N)=−χ̃` of the prime-star nerve; squarefree prime complex ≃ wedge of spheres over odd squarefree `N/2<m≤N`; `χ̃=Ω±(√N)`; RH ⇔ `χ̃=O(N^{½+δ})`. Persistence: bar `[m,2m)` for every odd squarefree `m`, degree `ω(m)`, over every ring; Dirichlet weighting `n^{−s}` gives an isomorphic persistence functor for every `s`; prime-valued boundaries add `ℤ/2` classes on `[2m,3m)` for squarefree labels coprime to 6, torsion exponent 2, nonsplit extension; two-prime block quotients compute the core over every ring [L/S]. Fixed points: upper-half primes isolated; every map homotopic to the identity has `≥N/(4log N)` fixed points; the core ≃ bouquet of odd-squarefree composite spheres with augmented Euler characteristic `M(N)+#primes(N/2,N]`. Torsion forms: raw positive, renormalized convergent in operator norm on `ℓ²(n^δ)`, `δ>0`, at rate `O(ε^α)`; unweighted mixed row unbounded.
+Established [L unless marked]: `det R_N=M(N)=−χ̃` of the prime-star nerve; squarefree prime complex ≃ wedge of spheres over odd squarefree `N/2<m≤N`; `χ̃=Ω±(√N)`; RH ⇔ `χ̃=O(N^{½+δ})`. Persistence: bar `[m,2m)` for every odd squarefree `m`, degree `ω(m)`, over every ring; Dirichlet weighting `n^{−s}` gives an isomorphic persistence functor for every `s`; prime-valued boundaries add `ℤ/2` classes on `[2m,3m)` for squarefree labels coprime to 6, torsion exponent 2, nonsplit extension; two-prime block quotients compute the core over every ring [L]. Fixed points: upper-half primes isolated; every map homotopic to the identity has `≥N/(4log N)` fixed points; the core ≃ bouquet of odd-squarefree composite spheres with augmented Euler characteristic `M(N)+#primes(N/2,N]`. Torsion forms: raw positive, renormalized convergent in operator norm on `ℓ²(n^δ)`, `δ>0`, at rate `O(ε^α)`, represented by a compact self-adjoint operator; unweighted mixed row unbounded; the limit kernel is indefinite (negative on equal-coefficient vectors on `{p,2p}`, positive on single primes).
 
 Structure [D]: homotopy type, homology, persistence and fixed-point sets are computed exactly and carry `M(N)` only as the signed count `Σμ(m)` of a fixed barcode; nothing in them depends on `s`. Matchings and filtrations cannot go below the Betti number `≍N`; literal fixed points cannot go below `N/(4log N)`; the core's own Euler characteristic is not of square-root size. Cancellation at `√N` must come from structure outside the homotopy type.
 
 | | Obstacle | Strength |
 |---|---|---|
-| A40 | Integrate the untracked ESG and HHAC modules (arithmetic cores, integral persistence, weighted coefficients, compact probe inclusions) | — |
 | B10 | Top coprime stratum | RH |
 | B106 | A natural relative pair `(X,A)` with `χ(X,A)=M(N)`, or a natural self-map or group action whose signed fixed-point indices localize to `O(N^{½+ε})` | RH (≥qRH at exponent `θ<1`) |
 | B88 | Sign of the renormalized torsion form at the critical weight | RH |
@@ -353,7 +354,7 @@ Structure [D]: homotopy type, homology, persistence and fixed-point sets are com
 - **Path:** Jensen polynomials real-rooted or sublinear root height → RH.
 - **Established [L]:** block S4; infinitely many unshifted degrees ⇔ RH; inner roots real; `N_d≤300√(d log d)`.
 - **(a)** A20; A1.
-- **(b)** Outer roots (B22); `N_d` bounded gives finite support only (B23, B13).
+- **(b)** Outer roots (B22); `N_d` bounded gives finite support only (B23), which is RH once B13 is known.
 
 ### ZCG — Zero-configuration geometry / heat descent
 - **Path:** half-Gaussian source → no positive-time collision → RH.
@@ -369,8 +370,8 @@ Structure [D]: homotopy type, homology, persistence and fixed-point sets are com
 
 ### HF — Hodge / Hecke / complete cells
 - **Path:** complete arithmetic form `≥0` → Hodge index → RH.
-- **Established:** blocks S1, S10; source-work `≤2` ⇔ RH; threshold chain `R_c≤R_polar≤R_high=⨅windowThreshold` [L]; at a fixed ratio only the pole channel is unpaid [L/S]; `R_polar≥c₁e^{c₂a}` below the onset [L]; low packet at every ratio is RH [L]; unrestricted Gårding false [L].
-- **(a)** A9, A13, A38.
+- **Established:** blocks S1, S10; source-work `≤2` ⇔ RH; threshold chain `R_c≤R_polar≤R_high=⨅windowThreshold` [L]; at a fixed ratio only the pole channel is unpaid [L]; `R_polar≥c₁e^{c₂a}` below the onset [L]; low packet at every ratio is RH [L]; unrestricted Gårding false [L].
+- **(a)** A9, A13.
 - **(b)** Full-space sign at every `K` (B6); low packet at every ratio (B101); head windows (B8); source-work ceiling (B41); top coprime stratum (B10); zero modes (B9); exact SOS (B11); Rosati and band poles (B78, B79); count (B87).
 
 ### CHMD — Causal hyperbolic–modular duality
@@ -413,8 +414,8 @@ Structure [D]: homotopy type, homology, persistence and fixed-point sets are com
 
 ### PM — Gauss–Mayer physical model
 - **Path:** scattering source → Krein/Lewis positivity, integer-probe sign, dispersion bound, horocycle/Farey rate, resonant decay, Narain remainder or cusp-energy rate → RH.
-- **Established:** block S7; integer-probe positivity ⇔ RH; Krein flux sign ⇔ RH; horocycle rate `y^{¾−ε}` ⇔ square-root Farey law ⇔ RH; universal resonant decay `e^{−t/4}` ⇔ RH; Narain `¾` ⇒ RH, Narain remainder has the VK saving; cusp-energy rate reads `Λ_g(ρ/2)`; RH ⇔ `Q` is the Tate limit of a count; Born rules and the boundary algebra separate FE (quadratic half) from damping (count half); linear horizon counts degenerate [L/S].
-- **(a)** A26, A39, A43.
+- **Established:** block S7; integer-probe positivity ⇔ RH; Krein flux sign ⇔ RH; horocycle rate `y^{¾−ε}` ⇔ square-root Farey law ⇔ RH; universal resonant decay `e^{−t/4}` ⇔ RH; Narain `¾` ⇒ RH, Narain remainder has the VK saving; cusp-energy rate reads `Λ_g(ρ/2)`; RH ⇔ `Q` is the Tate limit of a count; Born rules and the boundary algebra separate FE (quadratic half) from damping (count half); linear horizon counts degenerate [L].
+- **(a)** A26, A43.
 - **(b)** `D_s≥0`, Krein flux, probe sign or dispersion bound (B68); physical carrier (B69); `V_p` lower bound (B70); any rate past `½` or `¾` (B14, B71); count (B87); Rankin–Selberg noncancellation (B109).
 
 ### PTR — Cosine source / photonic
@@ -486,7 +487,7 @@ Structure [D]: homotopy type, homology, persistence and fixed-point sets are com
 ### SRT — Lag localization
 - **Path:** complete two-bump sign or horizon-layer sign → RH.
 - **Established [L/K]:** full-family receivers; depth corridors; two-lobe bound; cut crystal; sharp location; local pair cost; isolated-zero entry; explicit Hausdorff shifts; critical threshold chain and conductor resolution (S1).
-- **(a)** A9, A38.
+- **(a)** A9.
 - **(b)** Complementary-window sign, remaining-depth control (B6, B12, B101); all-height column (B46).
 
 ### ACT — Single shift
@@ -498,7 +499,7 @@ Structure [D]: homotopy type, homology, persistence and fixed-point sets are com
 ### AIP — Incidence
 - **Path:** complete reflected-prime/pole allocation → subexponential cost → RH.
 - **Established [L/K]:** allocation; VK cost; capacity; channel law on gcd twists; non-gcd periodic twists coercive to the admissible period scale; conductor resolution at a fixed ratio (S1).
-- **(a)** A9, A13, A38.
+- **(a)** A9, A13.
 - **(b)** `C_σe^{2σr}` cost (B45); the pole channel at every ratio (B6, B101).
 
 ### SC — Stokes / Witt–Krein
@@ -556,9 +557,9 @@ Each needs its independent mechanism first (B81).
 | RAC | cut identity and kernel, unique fake, carry, ledger hierarchy, twin at every degree, parity exponent, exact parity identity, exchange law, bounded count with a new zero, maximal angle, extremal-law model, rotated relations | none | B67, B91, B92, B93 |
 | TAPO | first return and brackets, precision law, heavy returns, tail–head decoupling, conditional moments, resonator mean, arithmetic mean values, recurrence dichotomy, tail of a return, head resolution, moving jet, Euler coordinates, comb | A24, A37 | B89, B96, B97, B100 |
 | SPAL | shifted-product rigidity, collision cells, smooth × prime collision classes, count-distance rigidity, positive near-count model | none | B98, B103 |
-| APD | Hamburger rigidity, FE-defect isolation, continuous/discrete/integer-norm/rational-prime one-offs, positive two-prime annihilators, zero relocation (mean spectra, Bohr, vertical trace, signed zero-mass density, first-gap negativity) | A40 | B80, B84, B103 |
+| APD | Hamburger rigidity, FE-defect isolation, continuous/discrete/integer-norm/rational-prime one-offs, positive two-prime annihilators, zero relocation (mean spectra, Bohr, vertical trace, signed zero-mass density, first-gap negativity) | none | B80, B84, B103 |
 | PTT | Bohr isometry, boxes, savings, rounded orbit, discrepancy, mixing time, hull with natural boundary, Ξ-current lift, certificates | A24 | B46, B100 |
-| ASH | graph black holes, Krein law, Lax–Phillips rank two, one clock, KMS, rank barrier, bulk log-mean, count law at genus one, integer probes, Manin heights, throats, genus-two graph; ModularBootstrap: Narain partition, modularity, Mellin continuation, pole coverage, double-average main terms, Schwartz boundary, VK remainder, `¾` ⇒ RH, ceiling `¾` | A39 | B68, B71, B87 |
+| ASH | graph black holes, Krein law, Lax–Phillips rank two, one clock, KMS, rank barrier, bulk log-mean, count law at genus one, integer probes, Manin heights, throats, genus-two graph; ModularBootstrap: Narain partition, modularity, Mellin continuation, pole coverage, double-average main terms, Schwartz boundary, VK remainder, `¾` ⇒ RH, ceiling `¾` | none | B68, B71, B87 |
 | CTH | count law at every genus (genus form, tower ⇔ crude bound), every hyperelliptic curve (RH in even degree), bielliptic Jacobian count, Born rules, boundary algebra, linear counts degenerate, Hecke conservation, second place of Hecke triangle groups, Farey reading and square-root Farey law, thermalization = strip, sharp shells, Rosati = Born rule, Tate limit over ℤ | A41 | B87, B95 |
 | BHR | modular wave, metric, AdS₄ quotient, pulse regularity, echo train, ringdown = strip, two rates one exponent, horocycle Mellin formula and Zagier converse, Lax–Phillips semigroup, Maass cusp forms, discreteness, Weyl order, Rankin–Selberg continuation and decay, mean-square law, cusp-energy rates, Hecke multiplicity `≤2` | A26, A43 | B71, B109 |
 | RIT | Mayer scattering, Krein square, Hecke dispersion, Hecke algebra Poisson on resonant states | none | B68, B70 |
@@ -566,8 +567,8 @@ Each needs its independent mechanism first (B81).
 | SEL / Primon | degree-one classification, Euler rigidity; primon thermal Euler factors, Kesten–McKay densities, Green/Gaussian covariances, likelihood Hilbert space, principal series | none | B80 |
 | MMD | cubic Gauss conversion, cubic Eisenstein series, nonzero residue, continued Fourier modes | A33 | B94 |
 | AE, KPA | polar calculus, Tate law, naive heights, five currencies, torsion intersection, Stepanov over ℤ | none | B87, B88 |
-| HHAC | isolated-prime rigidity, fixed-point obstruction, core Euler characteristic, core bouquet, torsion chord energies, weighted torsion operators, sharp weight of the prime row | A40 | B88, B106 |
-| ESG | prime-height filtration, arithmetic barcode, `s`-independence of persistence, prime-weighted homology with `ℤ/2` torsion, two-prime block quotients | A40 | B106 |
+| HHAC | isolated-prime rigidity, fixed-point obstruction, core Euler characteristic, core bouquet, torsion chord energies, weighted torsion operators, sharp weight of the prime row | none | B88, B106 |
+| ESG | prime-height filtration, arithmetic barcode, `s`-independence of persistence, prime-weighted homology with `ℤ/2` torsion, two-prime block quotients | none | B106 |
 | CSTW | canonical system, scalar flow, soft kick, Green corner, AC traces, `L¹` drift, sampling | A16 | B2, B3 |
 | CHT | margin law, pinning, datum region, bands, local density, support density, cone PNT `5/6`, bounded extremals, edge law | A6 | B16 |
 | VHR | height 67; window, Li, Hausdorff, heat, Jensen, PF, theta rungs | A1, A2 | none; decides no all-aperture statement |
@@ -580,7 +581,7 @@ Each needs its independent mechanism first (B81).
 | AGT | gauge torus, pole-subtracted spectrum, twin quarter floor | none | B50 |
 | PBAP, W3 | blind positivity, exact null blind test | none | B18 |
 | WVL | universal threshold, two-lobe, cut crystal | none | none beyond B1 |
-| AHD / CACT | aliasing limits, Γ-liminf, polar capacity, far margin, collar Gårding, threshold chain with `R_polar`, continuum threshold growth, aperture exchange, top-window non-escape, splitting order, conductor resolution | A9, A13, A38 | B6, B8, B101, B104 |
+| AHD / CACT | aliasing limits, Γ-liminf, polar capacity, far margin, collar Gårding, threshold chain with `R_polar`, continuum threshold growth, aperture exchange, top-window non-escape, splitting order, conductor resolution | A9, A13 | B6, B8, B101, B104 |
 | CAF, TCS | two-atom, chains, Euler product, current, rank 14, first-atom Bessel/Gamma reserve, adaptive pair payment, fixed-head asymptotic, compact-core boundary, weighted Legendre kernels | A4, A5, A24, A42 | B19–B21, B102 |
 | HWV, ADT | nerve of the star cover, sphere bouquet, `M(N)=−χ̃`, Redheffer gluing, effective depth laws | none | B10 |
 | AK, Representation | column and rank-`≤4` Young projections, curve characters, Kloosterman traces, reciprocal quadric counts | A28 | B85, B86 |
