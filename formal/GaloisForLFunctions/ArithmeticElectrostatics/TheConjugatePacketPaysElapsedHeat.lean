@@ -161,6 +161,59 @@ theorem elapsedDepth_complex_packet_with_real_drift_nonpos (S R : Finset ℂ)
 
 #print axioms elapsedDepth_complex_packet_with_real_drift_nonpos
 
+/-- A finite conjugation-closed configuration, including its real roots,
+pays the same elapsed-depth credit. -/
+theorem elapsedDepth_conjugation_closed_drift_nonpos (S : Finset ℂ)
+    (hconj : ∀ z ∈ S, starRingEnd ℂ z ∈ S)
+    {q c : ℝ} (hq : 0 ≤ q) (hc : 0 ≤ c) :
+    (∑ a ∈ S.filter (fun z => 0 < z.im),
+      (2 * q * (a.im ^ 2 + c) ^ (q - 1) + elapsedDepthWeight q c a.im *
+        (2 * ∑ b ∈ S, (a - b)⁻¹).im)) ≤ 0 := by
+  classical
+  let N := S.filter (fun z => z.im ≠ 0)
+  let R := S.filter (fun z => z.im = 0)
+  have hN (z : ℂ) (hz : z ∈ N) : z.im ≠ 0 := (Finset.mem_filter.mp hz).2
+  have hNc (z : ℂ) (hz : z ∈ N) : starRingEnd ℂ z ∈ N := by
+    refine Finset.mem_filter.mpr ⟨hconj z (Finset.mem_filter.mp hz).1, ?_⟩
+    simpa only [Complex.conj_im, neg_ne_zero] using hN z hz
+  have hR (z : ℂ) (hz : z ∈ R) : z.im = 0 := (Finset.mem_filter.mp hz).2
+  have hU : N.filter (fun z => 0 < z.im) = S.filter (fun z => 0 < z.im) := by
+    ext z
+    simp only [N, Finset.mem_filter]
+    exact ⟨fun h => ⟨h.1.1, h.2⟩, fun h => ⟨⟨h.1, h.2.ne'⟩, h.2⟩⟩
+  have hsum (a : ℂ) :
+      2 * ∑ b ∈ N, (a - b)⁻¹ + 2 * ∑ b ∈ R, (a - b)⁻¹ =
+        2 * ∑ b ∈ S, (a - b)⁻¹ := by
+    rw [← mul_add]
+    congr 1
+    simp only [N, R, Finset.sum_filter]
+    rw [← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro b _
+    by_cases hb : b.im = 0 <;> simp only [hb, ne_eq, not_true_eq_false,
+      not_false_eq_true, if_true, if_false, zero_add, add_zero]
+  have h := elapsedDepth_complex_packet_with_real_drift_nonpos N R hN hNc hR hq hc
+  simpa only [hU, hsum] using h
+
+/-- Any additional downward field preserves the sharp elapsed-depth credit. -/
+theorem elapsedDepth_drift_nonpos_of_upper_velocity_le (S : Finset ℂ)
+    (hconj : ∀ z ∈ S, starRingEnd ℂ z ∈ S) (v : ℂ → ℝ)
+    {q c : ℝ} (hq : 0 ≤ q) (hc : 0 ≤ c)
+    (hv : ∀ a ∈ S, 0 < a.im → v a ≤ (2 * ∑ b ∈ S, (a - b)⁻¹).im) :
+    (∑ a ∈ S.filter (fun z => 0 < z.im),
+      (2 * q * (a.im ^ 2 + c) ^ (q - 1) + elapsedDepthWeight q c a.im * v a)) ≤ 0 := by
+  apply le_trans _ (elapsedDepth_conjugation_closed_drift_nonpos S hconj hq hc)
+  apply Finset.sum_le_sum
+  intro a ha
+  have hai := (Finset.mem_filter.mp ha).2
+  apply add_le_add le_rfl
+  apply mul_le_mul_of_nonneg_left (hv a (Finset.mem_filter.mp ha).1 hai)
+  exact mul_nonneg (mul_nonneg (mul_nonneg (by positivity) hq) hai.le)
+    (Real.rpow_nonneg (add_nonneg (sq_nonneg _) hc) _)
+
+#print axioms elapsedDepth_conjugation_closed_drift_nonpos
+#print axioms elapsedDepth_drift_nonpos_of_upper_velocity_le
+
 end
 
 end GaloisForLFunctions.ArithmeticElectrostatics

@@ -79,7 +79,7 @@ damped jet kernel `dampedJet` (`hasSum_dampedFrobenius_gram`, `hasSum_dampedJet_
 -/
 
 open Finset Filter Topology Set MeasureTheory Matrix
-open scoped ComplexConjugate ENNReal ArithmeticFunction.vonMangoldt
+open scoped ComplexConjugate ENNReal Pointwise ArithmeticFunction.vonMangoldt
 
 noncomputable section
 
@@ -131,6 +131,8 @@ theorem isOpen_range_h3Vec : IsOpen (Set.range h3Vec) := by
   rw [range_h3Vec]
   exact isOpen_lt continuous_const (continuous_apply 2)
 
+theorem continuous_h3Vec : Continuous h3Vec := continuous_induced_dom
+
 theorem measurableEmbedding_h3Vec : MeasurableEmbedding h3Vec where
   injective := h3Vec_injective
   measurable _ hs := ⟨_, hs, rfl⟩
@@ -138,6 +140,15 @@ theorem measurableEmbedding_h3Vec : MeasurableEmbedding h3Vec where
     rintro _ ⟨u, hu, rfl⟩
     rw [Set.image_preimage_eq_inter_range]
     exact hu.inter isOpen_range_h3Vec.measurableSet
+
+instance : BorelSpace H3 := measurableEmbedding_h3Vec.borelSpace ⟨rfl⟩
+
+instance : IsFiniteMeasureOnCompacts (volume.comap h3Vec) :=
+  .comap' _ continuous_h3Vec measurableEmbedding_h3Vec
+
+instance : IsLocallyFiniteMeasure (volume.comap h3Vec) := inferInstance
+instance : SigmaFinite (volume.comap h3Vec) := inferInstance
+instance : SFinite (volume.comap h3Vec) := inferInstance
 
 /-- Point `(0, t)` on the vertical dilation geodesic of `ℍ³`. -/
 def degPoint (t : ℝ) (ht : 0 < t) : H3 := ⟨0, t, ht⟩
@@ -232,8 +243,7 @@ theorem toHermMat_injective : Function.Injective toHermMat := by
     Complex.ofReal_re, one_div] at h11
   have ht : p.t = q.t := inv_injective h11
   have h01 : toHermMat p 0 1 = toHermMat q 0 1 := congrFun₂ h 0 1
-  simp only [toHermMat, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons, ht] at h01
+  simp only [toHermMat, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, ht] at h01
   have hqt : (q.t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr q.t_pos.ne'
   have hz : p.z = q.z := div_left_inj' hqt |>.mp h01
   exact H3.ext hz ht
@@ -242,16 +252,15 @@ theorem re_trace_toHermMat_mul_adjugate (p q : H3) :
     ((toHermMat p * (toHermMat q).adjugate).trace).re = 2 * h3Cosh p q := by
   have hp : p.t ≠ 0 := p.t_pos.ne'
   have hq : q.t ≠ 0 := q.t_pos.ne'
-  simp only [toHermMat, Matrix.adjugate_fin_two, Matrix.mul_fin_two, Matrix.trace_fin_two,
-    Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-    Matrix.cons_val_fin_one]
-  have hnorm : ‖p.z - q.z‖ ^ 2 = ‖p.z‖ ^ 2 + ‖q.z‖ ^ 2 - 2 * (p.z.re * q.z.re + p.z.im * q.z.im) := by
-    simp only [ ← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
-    ring
-  simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply] at hnorm ⊢
   unfold h3Cosh
+  simp only [toHermMat, Matrix.adjugate_fin_two, Matrix.mul_fin_two, Matrix.trace_fin_two,
+    Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+  have hnorm : ‖p.z - q.z‖ ^ 2 = ‖p.z‖ ^ 2 + ‖q.z‖ ^ 2 - 2 * (p.z.re * q.z.re + p.z.im * q.z.im) := by
+    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im]
+    ring
   rw [hnorm]
-  simp only [Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.div_ofReal_re,
+  simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply,
+    Complex.add_re, Complex.sub_re, Complex.mul_re, Complex.div_ofReal_re,
     Complex.ofReal_re, Complex.ofReal_im, Complex.conj_re, Complex.conj_im, Complex.neg_re,
     Complex.neg_im]
   field_simp
@@ -293,42 +302,33 @@ theorem toHermMat_h3Act (g : SL2C) (p : H3) :
   have hden : h3Denom g p ≠ 0 := (h3Denom_pos g p).ne'
   have hdenc : (h3Denom g p : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hden
   have hdet : g.1 0 0 * g.1 1 1 - g.1 0 1 * g.1 1 0 = 1 := by
-    simpa [Matrix.det_fin_two] using g.prop
-  have hdet_re := congrArg Complex.re hdet
-  have hdet_im := congrArg Complex.im hdet
-  simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
-    Complex.one_re, Complex.one_im] at hdet_re hdet_im
-  -- Lagrange identity in real and imaginary coordinates
+    have h := g.prop
+    rwa [Matrix.det_fin_two] at h
   set A := g.1 0 0 * p.z + g.1 0 1
   set C := g.1 1 0 * p.z + g.1 1 1
   have hAC : A * g.1 1 0 - C * g.1 0 0 = -1 := by
     simp only [A, C]
     linear_combination -hdet
-  have hAC_re := congrArg Complex.re hAC
-  have hAC_im := congrArg Complex.im hAC
-  simp only [Complex.sub_re, Complex.sub_im, Complex.mul_re, Complex.mul_im,
-    Complex.neg_re, Complex.neg_im, Complex.one_re, Complex.one_im] at hAC_re hAC_im
   have hlag : ‖A * conj C + g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2‖ ^ 2 + p.t ^ 2 =
       (‖A‖ ^ 2 + ‖g.1 0 0‖ ^ 2 * p.t ^ 2) * (‖C‖ ^ 2 + ‖g.1 1 0‖ ^ 2 * p.t ^ 2) := by
-    simp only [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.add_re, Complex.add_im,
-      Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im, sq (p.t : ℂ),
-      Complex.ofReal_re, Complex.ofReal_im]
-    have h1 : (A.re * (g.1 1 0).im + A.im * (g.1 1 0).re - C.re * (g.1 0 0).im -
-        C.im * (g.1 0 0).re) ^ 2 +
-        (A.re * (g.1 1 0).re - A.im * (g.1 1 0).im - C.re * (g.1 0 0).re +
-        C.im * (g.1 0 0).im) ^ 2 = 1 := by
-      rw [show A.re * (g.1 1 0).im + A.im * (g.1 1 0).re - C.re * (g.1 0 0).im -
-          C.im * (g.1 0 0).re = 0 by linarith,
-        show A.re * (g.1 1 0).re - A.im * (g.1 1 0).im - C.re * (g.1 0 0).re +
-          C.im * (g.1 0 0).im = -1 by linarith]
-      norm_num
-    linear_combination p.t ^ 2 * h1
+    have hlag_c : Complex.normSq (A * conj C + g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2) +
+        Complex.normSq ((A * g.1 1 0 - C * g.1 0 0) * (p.t : ℂ)) =
+        (Complex.normSq A + Complex.normSq (g.1 0 0) * p.t ^ 2) *
+          (Complex.normSq C + Complex.normSq (g.1 1 0) * p.t ^ 2) := by
+      simp only [Complex.normSq_apply, Complex.add_re, Complex.add_im, Complex.sub_re,
+        Complex.sub_im, Complex.mul_re, Complex.mul_im, Complex.conj_re, Complex.conj_im,
+        sq (p.t : ℂ), Complex.ofReal_re, Complex.ofReal_im]
+      ring
+    rw [hAC, neg_one_mul, Complex.normSq_neg, Complex.normSq_ofReal, ← sq] at hlag_c
+    simpa only [Complex.normSq_eq_norm_sq] using hlag_c
+  have hmul_conj : ∀ z : ℂ, ((‖z‖ ^ 2 : ℝ) : ℂ) = z * conj z := fun z => by
+    rw [← Complex.normSq_eq_norm_sq, Complex.mul_conj]
   ext i j
   fin_cases i <;> fin_cases j
   · -- Entry (0, 0)
-    simp only [toHermMat, h3Act, h3Denom, Matrix.mul_fin_two, Matrix.conjTranspose_apply,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      Matrix.cons_val_fin_one, star_def]
+    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
+      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one]
     change (((‖(A * conj C + g.1 0 0 * conj (g.1 1 0) * (p.t : ℂ) ^ 2) / (h3Denom g p : ℂ)‖ ^ 2 +
         (p.t / h3Denom g p) ^ 2) / (p.t / h3Denom g p) : ℝ) : ℂ) = _
     have hnum_simp :
@@ -340,39 +340,37 @@ theorem toHermMat_h3Act (g : SL2C) (p : H3) :
       have hden_eq : ‖C‖ ^ 2 + ‖g.1 1 0‖ ^ 2 * p.t ^ 2 = h3Denom g p := rfl
       rw [hden_eq]
       field_simp
-    rw [hnum_simp]
-    simp only [A, ← Complex.normSq_eq_norm_sq]
-    rw [Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_mul, Complex.ofReal_pow,
-      Complex.ofReal_normSq, Complex.ofReal_normSq, Complex.ofReal_add, Complex.ofReal_pow,
-      Complex.ofReal_normSq]
+    rw [hnum_simp, Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_mul, hmul_conj A,
+      hmul_conj (g.1 0 0), Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow,
+      Complex.ofReal_div, Complex.ofReal_one]
+    simp only [A, map_add, map_mul]
     field_simp
-    simp only [map_add, map_mul]
     ring
   · -- Entry (0, 1)
-    simp only [toHermMat, h3Act, Matrix.mul_fin_two, Matrix.conjTranspose_apply,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      Matrix.cons_val_fin_one, star_def, Complex.ofReal_div]
-    rw [Complex.ofReal_add, Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq,
-      Complex.ofReal_normSq]
+    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
+      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one, Complex.ofReal_div, Complex.ofReal_one]
+    rw [Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow]
     field_simp
     simp only [map_add, map_mul]
     ring
   · -- Entry (1, 0)
-    simp only [toHermMat, h3Act, Matrix.mul_fin_two, Matrix.conjTranspose_apply,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      Matrix.cons_val_fin_one, star_def, Complex.ofReal_div, map_div₀, map_add, map_mul,
-      map_pow, Complex.conj_conj, Complex.conj_ofReal]
-    rw [Complex.ofReal_add, Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq,
-      Complex.ofReal_normSq]
+    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
+      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one, Complex.ofReal_div, Complex.ofReal_one,
+      map_div₀, map_add, map_mul, map_pow, Complex.conj_conj, Complex.conj_ofReal]
+    rw [Complex.ofReal_add, hmul_conj p.z, Complex.ofReal_pow]
     field_simp
     ring
   · -- Entry (1, 1)
-    simp only [toHermMat, h3Act, h3Denom, Matrix.mul_fin_two, Matrix.conjTranspose_apply,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      Matrix.cons_val_fin_one, star_def, Complex.ofReal_div]
-    rw [Complex.ofReal_one, Complex.ofReal_add, Complex.ofReal_mul, Complex.ofReal_pow,
-      Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
-      Complex.ofReal_normSq, Complex.ofReal_normSq]
+    simp only [toHermMat, h3Act, Matrix.mul_apply, Fin.sum_univ_two, Matrix.conjTranspose_apply,
+      Complex.star_def, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one]
+    unfold h3Denom
+    rw [Complex.ofReal_div, Complex.ofReal_div, Complex.ofReal_one,
+      Complex.ofReal_add, Complex.ofReal_mul, hmul_conj (g.1 1 0 * p.z + g.1 1 1),
+      hmul_conj (g.1 1 0), Complex.ofReal_pow, Complex.ofReal_add, hmul_conj p.z,
+      Complex.ofReal_pow]
     field_simp
     simp only [map_add, map_mul]
     ring
@@ -386,7 +384,9 @@ theorem h3Act_one (p : H3) : h3Act 1 p = p := by
 theorem h3Act_mul (g h : SL2C) (p : H3) : h3Act (g * h) p = h3Act g (h3Act h p) := by
   apply toHermMat_injective
   rw [toHermMat_h3Act, toHermMat_h3Act, toHermMat_h3Act]
-  simp only [SpecialLinearGroup.coe_mul, Matrix.conjTranspose_mul, Matrix.mul_assoc]
+  change (g.1 * h.1) * toHermMat p * (g.1 * h.1).conjTranspose = _
+  rw [Matrix.conjTranspose_mul]
+  simp only [Matrix.mul_assoc]
 
 instance : MulAction SL2C H3 where
   smul := h3Act
@@ -400,13 +400,19 @@ theorem h3Cosh_h3Act (g : SL2C) (p q : H3) :
     h3Cosh (h3Act g p) (h3Act g q) = h3Cosh p q := by
   have h1 := re_trace_toHermMat_mul_adjugate (h3Act g p) (h3Act g q)
   have h2 := re_trace_toHermMat_mul_adjugate p q
+  have hdet : g.1 0 0 * g.1 1 1 - g.1 0 1 * g.1 1 0 = 1 := by
+    have h := g.prop
+    rwa [Matrix.det_fin_two] at h
   have hadj_g : g.1.adjugate * g.1 = 1 := by
-    rw [Matrix.adjugate_mul_self, g.prop, one_smul]
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      simp [Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two] <;>
+      linear_combination hdet
   have hadj_gh : g.1.conjTranspose * g.1.conjTranspose.adjugate = 1 := by
     rw [Matrix.mul_adjugate, Matrix.det_conjTranspose, g.prop, star_one, one_smul]
   have htr : (toHermMat (h3Act g p) * (toHermMat (h3Act g q)).adjugate).trace =
       (toHermMat p * (toHermMat q).adjugate).trace := by
-    rw [toHermMat_h3Act, toHermMat_h3Act, Matrix.adjugate_mul, Matrix.adjugate_mul]
+    rw [toHermMat_h3Act g p, toHermMat_h3Act g q, Matrix.adjugate_mul, Matrix.adjugate_mul]
     calc (g.1 * toHermMat p * g.1.conjTranspose *
             (g.1.conjTranspose.adjugate * ((toHermMat q).adjugate * g.1.adjugate))).trace
         = (g.1 * (toHermMat p * (g.1.conjTranspose * g.1.conjTranspose.adjugate) *
@@ -433,6 +439,7 @@ def borelToPoint (q : H3) : SL2C :=
   ⟨!![(Real.sqrt q.t : ℂ), q.z / (Real.sqrt q.t : ℂ);
       0, (1 / Real.sqrt q.t : ℂ)], by
     rw [Matrix.det_fin_two]
+    simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
     have hsq : (Real.sqrt q.t : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr q.t_pos).ne'
     field_simp⟩
@@ -443,19 +450,23 @@ theorem h3Act_borelToPoint_origin (q : H3) :
   have hsq : Real.sqrt q.t ^ 2 = q.t := Real.sq_sqrt q.t_pos.le
   have hden : h3Denom (borelToPoint q) (degPoint 1 zero_lt_one) = 1 / q.t := by
     unfold h3Denom borelToPoint degPoint
-    simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_fin_one, zero_mul, zero_add, norm_zero, zero_pow two_ne_zero, add_zero,
       one_div, norm_inv, Complex.norm_real, Real.norm_of_nonneg hsq_pos.le, inv_pow, hsq]
   ext
-  · simp only [h3Act, hden, borelToPoint, degPoint, Matrix.of_apply, Matrix.cons_val_zero,
-      Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_fin_one, mul_zero, zero_add,
-      conj_zero, add_zero, one_div, map_inv₀, Complex.conj_ofReal, Complex.ofReal_inv]
+  · unfold h3Act
+    rw [hden]
+    simp only [borelToPoint, degPoint, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, mul_zero, zero_add,
+      map_zero, add_zero, one_div, map_inv₀, Complex.conj_ofReal, Complex.ofReal_inv]
     have hsqc : (Real.sqrt q.t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hsq_pos.ne'
     have htc : (q.t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr q.t_pos.ne'
     have hsqc2 : (Real.sqrt q.t : ℂ) ^ 2 = (q.t : ℂ) := by exact_mod_cast hsq
     field_simp
     rw [sq, ← hsqc2]; ring
-  · simp only [h3Act, hden, degPoint]
+  · unfold h3Act
+    rw [hden]
+    simp only [degPoint]
     field_simp
 
 /-- **Hyperbolic triangle inequality on `ℍ³`.** -/
@@ -548,15 +559,15 @@ theorem h3Measure_eq_lintegral (s : Set H3) :
 
 /-- Parabolic translation matrix `!![1, ω; 0, 1]` in `SL(2, ℂ)`. -/
 def parabolicSL2 (ω : ℂ) : SL2C :=
-  ⟨!![1, ω; 0, 1], by rw [Matrix.det_fin_two]; ring⟩
+  ⟨!![1, ω; 0, 1], by simp [Matrix.det_fin_two]⟩
 
 /-- Diagonal loxodromic/elliptic matrix `!![a, 0; 0, a⁻¹]` (`a ≠ 0`) in `SL(2, ℂ)`. -/
 def diagSL2 (a : ℂ) (ha : a ≠ 0) : SL2C :=
-  ⟨!![a, 0; 0, a⁻¹], by rw [Matrix.det_fin_two, mul_inv_cancel₀ ha]; ring⟩
+  ⟨!![a, 0; 0, a⁻¹], by simp [Matrix.det_fin_two, mul_inv_cancel₀ ha]⟩
 
 /-- Inversion matrix `S = !![0, -1; 1, 0]` in `SL(2, ℂ)`. -/
 def invSL2 : SL2C :=
-  ⟨!![0, -1; 1, 0], by rw [Matrix.det_fin_two]; ring⟩
+  ⟨!![0, -1; 1, 0], by simp [Matrix.det_fin_two]⟩
 
 theorem h3Vec_parabolicSL2 (ω : ℂ) (p : H3) :
     h3Vec (h3Act (parabolicSL2 ω) p) = h3Vec p + ![ω.re, ω.im, 0] := by
@@ -564,7 +575,7 @@ theorem h3Vec_parabolicSL2 (ω : ℂ) (p : H3) :
     simp [h3Denom, parabolicSL2]
   ext i
   fin_cases i <;>
-    simp [h3Vec, h3Act, hden, parabolicSL2]
+    (unfold h3Vec h3Act; rw [hden]; simp [parabolicSL2])
 
 /-- Linear map on `Fin 3 → ℝ` representing `diagSL2 a ha`. -/
 def diagVecMat (a : ℂ) : Matrix (Fin 3) (Fin 3) ℝ :=
@@ -587,36 +598,33 @@ theorem h3Vec_diagSL2 {a : ℂ} (ha : a ≠ 0) (p : H3) :
   have hden : h3Denom (diagSL2 a ha) p = ‖a‖⁻¹ ^ 2 := by
     simp [h3Denom, diagSL2]
   have hna : ‖a‖ ≠ 0 := norm_ne_zero_iff.mpr ha
-  have hnac : (‖a‖ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hna
-  have hz : (a * p.z * conj a⁻¹) / (‖a‖⁻¹ ^ 2 : ℂ) = a ^ 2 * p.z := by
-    have hconj : conj a⁻¹ * (‖a‖ ^ 2 : ℂ) = a := by
-      rw [map_inv₀, Complex.norm_eq_sqrt_sq_add_sq]
-      have hmul : a * conj a = (‖a‖ ^ 2 : ℂ) := by
-        rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
-      have hca : conj a ≠ 0 := map_ne_zero _ |>.mpr ha
-      calc (conj a)⁻¹ * (a * conj a) = a := by field_simp
-        _ = a := rfl
-    rw [inv_pow, Complex.ofReal_inv, div_inv_eq_mul, Complex.ofReal_pow]
-    calc a * p.z * conj a⁻¹ * (‖a‖ : ℂ) ^ 2
-        = a * (conj a⁻¹ * (‖a‖ ^ 2 : ℂ)) * p.z := by push_cast; ring
-      _ = a ^ 2 * p.z := by rw [hconj, sq]
+  have hz : (a * p.z * conj a⁻¹) / ((‖a‖⁻¹ ^ 2 : ℝ) : ℂ) = a ^ 2 * p.z := by
+    have hmul : ((‖a‖ ^ 2 : ℝ) : ℂ) = a * conj a := by
+      rw [← Complex.normSq_eq_norm_sq, Complex.mul_conj]
+    have hca : conj a ≠ 0 := map_ne_zero _ |>.mpr ha
+    rw [inv_pow, Complex.ofReal_inv, div_inv_eq_mul, hmul, map_inv₀]
+    field_simp
+    ring
   ext i
   fin_cases i
-  · simp only [h3Vec, h3Act, hden, diagSL2, Matrix.of_apply, Matrix.cons_val_zero,
-      Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_fin_one, add_zero, zero_mul,
-      map_zero, mul_zero, Complex.ofReal_pow, Complex.ofReal_inv]
-    rw [show (a * p.z * conj a⁻¹) / ((‖a‖ : ℂ)⁻¹ ^ 2) = a ^ 2 * p.z by simpa using hz]
+  · unfold h3Vec h3Act
+    rw [hden]
+    simp only [diagSL2, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one, add_zero, zero_mul, map_zero, mul_zero]
+    rw [hz]
     simp [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
     ring
-  · simp only [h3Vec, h3Act, hden, diagSL2, Matrix.of_apply, Matrix.cons_val_zero,
-      Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_fin_one, add_zero, zero_mul,
-      map_zero, mul_zero, Complex.ofReal_pow, Complex.ofReal_inv]
-    rw [show (a * p.z * conj a⁻¹) / ((‖a‖ : ℂ)⁻¹ ^ 2) = a ^ 2 * p.z by simpa using hz]
+  · unfold h3Vec h3Act
+    rw [hden]
+    simp only [diagSL2, Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Matrix.cons_val_fin_one, add_zero, zero_mul, map_zero, mul_zero]
+    rw [hz]
     simp [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three]
-  · simp only [h3Vec, h3Act, hden, Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons]
-    simp only [diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
-      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-      Matrix.head_cons, Matrix.tail_cons]
+  · unfold h3Vec h3Act
+    rw [hden]
+    simp only [Matrix.cons_val_two, Matrix.tail_cons, Matrix.head_cons,
+      diagVecMat, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three,
+      Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one]
     field_simp
 
 /-- Coordinate map on `Fin 3 → ℝ` representing `invSL2 = !![0, -1; 1, 0]`. -/
@@ -627,13 +635,14 @@ def invVecMap (w : Fin 3 → ℝ) : Fin 3 → ℝ :=
 theorem h3Vec_invSL2 (p : H3) : h3Vec (h3Act invSL2 p) = invVecMap (h3Vec p) := by
   have hden : h3Denom invSL2 p = p.z.re ^ 2 + p.z.im ^ 2 + p.t ^ 2 := by
     unfold h3Denom invSL2
-    simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+    simp only [Matrix.of_apply, Matrix.cons_val_zero, Matrix.cons_val_one,
       Matrix.cons_val_fin_one, one_mul, add_zero, norm_one, one_pow,
       ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     ring
   ext i
   fin_cases i <;>
-    simp [h3Vec, h3Act, hden, invSL2, invVecMap, Complex.div_ofReal_re, Complex.div_ofReal_im]
+    (unfold h3Vec h3Act; rw [hden];
+      simp [invSL2, invVecMap, Complex.div_ofReal_re, Complex.div_ofReal_im])
 
 theorem invVecMap_involutive {w : Fin 3 → ℝ} (hw : 0 < w 2) : invVecMap (invVecMap w) = w := by
   set r2 := w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2
@@ -643,10 +652,13 @@ theorem invVecMap_involutive {w : Fin 3 → ℝ} (hw : 0 < w 2) : invVecMap (inv
     field_simp
     linear_combination hnum
   ext i
-  fin_cases i <;>
-    simp only [invVecMap, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-      Matrix.head_cons, Matrix.tail_cons] <;>
-    (dsimp only; rw [hsq]; field_simp)
+  fin_cases i
+  · change -(-w 0 / r2) / ((-w 0 / r2) ^ 2 + (w 1 / r2) ^ 2 + (w 2 / r2) ^ 2) = w 0
+    rw [hsq]; field_simp
+  · change (w 1 / r2) / ((-w 0 / r2) ^ 2 + (w 1 / r2) ^ 2 + (w 2 / r2) ^ 2) = w 1
+    rw [hsq]; field_simp
+  · change (w 2 / r2) / ((-w 0 / r2) ^ 2 + (w 1 / r2) ^ 2 + (w 2 / r2) ^ 2) = w 2
+    rw [hsq]; field_simp
 
 /-- Explicit `3 × 3` Jacobian matrix of `invVecMap` at `w`. -/
 def invVecJac (w : Fin 3 → ℝ) : Matrix (Fin 3) (Fin 3) ℝ :=
@@ -670,7 +682,8 @@ theorem det_invVecJac {w : Fin 3 → ℝ} (hw : 0 < w 2) :
 
 theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
     HasFDerivAt invVecMap (Matrix.toLin' (invVecJac w)).toContinuousLinearMap w := by
-  rw [hasFDerivAt_pi]
+  have heq : invVecMap = fun v i => invVecMap v i := rfl
+  rw [heq, hasFDerivAt_pi]
   set p0 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 0
   set p1 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 1
   set p2 : (Fin 3 → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj 2
@@ -686,15 +699,18 @@ theorem hasFDerivAt_invVecMap {w : Fin 3 → ℝ} (hw : 0 < w 2) :
   have hr2_ne : w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2 ≠ 0 := (by positivity : 0 < w 0 ^ 2 + w 1 ^ 2 + w 2 ^ 2).ne'
   intro i
   fin_cases i
-  · refine (hd0.neg.div hdr2 hr2_ne).congr_fderiv ?_
+  · change HasFDerivAt (fun v : Fin 3 → ℝ => -v 0 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
+    refine (hd0.neg.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
     simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring
-  · refine (hd1.div hdr2 hr2_ne).congr_fderiv ?_
+  · change HasFDerivAt (fun v : Fin 3 → ℝ => v 1 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
+    refine (hd1.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
     simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring
-  · refine (hd2.div hdr2 hr2_ne).congr_fderiv ?_
+  · change HasFDerivAt (fun v : Fin 3 → ℝ => v 2 / (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2)) _ w
+    refine (hd2.div hdr2 hr2_ne).congr_fderiv ?_
     ext v
     simp [invVecJac, Matrix.toLin'_apply, Matrix.mulVec, dotProduct, Fin.sum_univ_three, p0, p1, p2]
     ring

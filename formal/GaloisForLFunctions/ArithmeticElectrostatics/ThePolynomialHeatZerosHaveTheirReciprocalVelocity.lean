@@ -79,7 +79,7 @@ theorem contDiff_heatFlow_eval (p : ℂ[X]) :
     (Polynomial.contDiff_aeval (𝕜 := ℂ) (derivative^[2 * k] p) ⊤).comp contDiff_snd
   have hc : ContDiff ℂ ⊤ (fun u : ℂ × ℂ => (-u.1) ^ k / (k.factorial : ℂ)) := by
     fun_prop
-  simpa only [Polynomial.aeval_def, Polynomial.eval₂_id] using
+  simpa only [Polynomial.aeval_def, Algebra.algebraMap_self, Polynomial.eval₂_id] using
     hc.mul hpoly
 
 #print axioms hasDerivAt_heatFlow_eval_time
@@ -141,6 +141,85 @@ theorem exists_polynomial_heat_zero_branch (p : ℂ[X]) {t : ℝ} {a : ℂ}
 
 #print axioms exists_analytic_polynomial_heat_zero_branch
 #print axioms exists_polynomial_heat_zero_branch
+
+/-- At a root of a finite product, the second derivative is twice the first
+derivative times the reciprocal field of the other roots. -/
+theorem eval_second_derivative_finset_roots (S : Finset ℂ) {a : ℂ} (ha : a ∈ S) :
+    (derivative (derivative (∏ b ∈ S, (X - C b)))).eval a =
+      2 * (derivative (∏ b ∈ S, (X - C b))).eval a *
+        ∑ b ∈ S.erase a, (a - b)⁻¹ := by
+  classical
+  let Q := ∏ b ∈ S.erase a, (X - C b)
+  have hfac : (∏ b ∈ S, (X - C b)) = (X - C a) * Q :=
+    (Finset.mul_prod_erase S _ ha).symm
+  have hQ : Q.derivative.eval a = Q.eval a * ∑ b ∈ S.erase a, (a - b)⁻¹ := by
+    dsimp only [Q]
+    rw [derivative_prod_finset, eval_finsetSum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun b hb => ?_
+    rw [derivative_X_sub_C, mul_one, eval_prod, eval_prod]
+    have hn : a - b ≠ 0 := sub_ne_zero.mpr (Finset.mem_erase.mp hb).1.symm
+    have hprod : (∏ c ∈ S.erase a, eval a (X - C c)) =
+        (∏ c ∈ (S.erase a).erase b, eval a (X - C c)) * (a - b) := by
+      simpa only [eval_sub, eval_X, eval_C] using
+        (Finset.prod_erase_mul (S.erase a) (fun c : ℂ => eval a ((X : ℂ[X]) - C c)) hb).symm
+    rw [hprod, mul_assoc, mul_inv_cancel₀ hn, mul_one]
+  rw [hfac, derivative_mul, derivative_X_sub_C, one_mul, derivative_add,
+    derivative_mul, derivative_X_sub_C, one_mul]
+  simp only [eval_add, eval_mul, eval_sub, eval_X, eval_C, sub_self, zero_mul, add_zero]
+  rw [hQ]
+  ring
+
+/-- For a polynomial with distinct roots, its heat-velocity quotient is the
+full reciprocal field; the self term is zero under totalized inversion. -/
+theorem polynomial_heat_quotient_eq_reciprocal_field {p : ℂ[X]} {a : ℂ}
+    (hnodup : p.roots.Nodup) (ha : a ∈ p.roots)
+    (hsimple : p.derivative.eval a ≠ 0) :
+    p.derivative.derivative.eval a / p.derivative.eval a =
+      2 * ∑ b ∈ p.roots.toFinset, (a - b)⁻¹ := by
+  classical
+  let S := p.roots.toFinset
+  let P := ∏ b ∈ S, (X - C b)
+  have haS : a ∈ S := Multiset.mem_toFinset.mpr ha
+  have hroots : p.roots = S.val := by
+    change p.roots = p.roots.toFinset.val
+    rw [Multiset.toFinset_val, Multiset.dedup_eq_self.mpr hnodup]
+  have hfac : p = C p.leadingCoeff * P := by
+    have h := (IsAlgClosed.splits p).eq_prod_roots
+    rw [hroots] at h
+    exact h
+  have hfirst : p.derivative.eval a = p.leadingCoeff * P.derivative.eval a := by
+    conv_lhs => rw [hfac, derivative_C_mul, eval_mul, eval_C]
+  have hsecond : p.derivative.derivative.eval a =
+      p.leadingCoeff * P.derivative.derivative.eval a := by
+    conv_lhs => rw [hfac, derivative_C_mul, derivative_C_mul, eval_mul, eval_C]
+  have hfield : (∑ b ∈ S.erase a, (a - b)⁻¹) = ∑ b ∈ S, (a - b)⁻¹ := by
+    simpa only [sub_self, inv_zero, add_zero] using
+      Finset.sum_erase_add S (fun b => (a - b)⁻¹) haS
+  apply (div_eq_iff hsimple).mpr
+  rw [hfirst, hsecond, show P.derivative.derivative.eval a =
+    2 * P.derivative.eval a * ∑ b ∈ S.erase a, (a - b)⁻¹ from
+      eval_second_derivative_finset_roots S haS, hfield]
+  ring
+
+/-- Actual simple polynomial heat branches move by twice the reciprocal field. -/
+theorem exists_polynomial_heat_reciprocal_branch (p : ℂ[X]) {t : ℝ} {a : ℂ}
+    (hnodup : (heatFlow (t : ℂ) p).roots.Nodup)
+    (ha : a ∈ (heatFlow (t : ℂ) p).roots)
+    (hsimple : (heatFlow (t : ℂ) p).derivative.eval a ≠ 0) :
+    ∃ g : ℝ → ℂ, g t = a ∧
+      HasDerivAt g (2 * ∑ b ∈ (heatFlow (t : ℂ) p).roots.toFinset, (a - b)⁻¹) t ∧
+      ∀ᶠ u : ℝ in 𝓝 t, (heatFlow (u : ℂ) p).eval (g u) = 0 := by
+  have hp : heatFlow (t : ℂ) p ≠ 0 := by
+    intro h
+    apply hsimple
+    rw [h, derivative_zero, eval_zero]
+  obtain ⟨g, hg0, hgd, hroot⟩ := exists_polynomial_heat_zero_branch p
+    ((mem_roots hp).mp ha) hsimple
+  rw [polynomial_heat_quotient_eq_reciprocal_field hnodup ha hsimple] at hgd
+  exact ⟨g, hg0, hgd, hroot⟩
+
+#print axioms polynomial_heat_quotient_eq_reciprocal_field
+#print axioms exists_polynomial_heat_reciprocal_branch
 
 end
 

@@ -38,7 +38,6 @@ def selfEnergy (r : ℝ) : ℝ := ∫ x, archDamped r x
 
 theorem integral_exp_neg_mul_abs {a : ℝ} (ha : 0 < a) : ∫ x, Real.exp (-(a * |x|)) = 2 / a := by
   have h := integral_comp_abs (f := fun y => Real.exp (-(a * y)))
-  simp only at h
   rw [h]
   have h2 := integral_exp_mul_Ioi (a := -a) (by linarith) 0
   simp only [mul_zero, Real.exp_zero] at h2
@@ -88,11 +87,13 @@ theorem hasSum_selfEnergy {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
     rw [div_le_iff₀ (hpos k)]; nlinarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
   have h := hasSum_integral_of_summable_integral_norm hF_int (by simpa only [hF_norm] using hsum)
   simp only [hF_val] at h
-  convert h using 1
-  unfold selfEnergy
-  congr 1; funext x
-  rw [← (hasSum_archDamped hr0 hr1 x).tsum_eq]
-  exact tsum_congr fun k => archDamped_term_eq r k x
+  have hsE : selfEnergy r = ∫ x, ∑' k, F k x := by
+    rw [selfEnergy]
+    congr 1; funext x
+    rw [← (hasSum_archDamped hr0 hr1 x).tsum_eq]
+    exact tsum_congr fun k => archDamped_term_eq r k x
+  rw [hsE]
+  exact h
 
 /-- **The self-energy is logarithmic.** `log(1/(1 − r²)) + 4 − π²/24 ≤ Z(r) ≤ log(1/(1 − r²)) + 4`. -/
 theorem selfEnergy_bounds {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
@@ -102,10 +103,9 @@ theorem selfEnergy_bounds {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
   have hlog := hasSum_pow_div_log_of_abs_lt_one hq
   have hZ := hasSum_selfEnergy hr0 hr1
   -- split off the term `k = 0`
-  have hZ' : HasSum (fun k : ℕ => r ^ (2 * (k + 1)) * (2 / (2 * ((k + 1 : ℕ) : ℝ) + 1 / 2)))
-      (selfEnergy r - 4) := by
-    have := (hasSum_nat_add_iff' 1).mpr hZ
-    simpa [Finset.sum_range_one] using this
+  have hZ' := (hasSum_nat_add_iff' 1).mpr hZ
+  have h0 : ∑ i ∈ Finset.range 1, r ^ (2 * i) * (2 / (2 * (i : ℝ) + 1 / 2)) = 4 := by norm_num
+  rw [h0] at hZ'
   have hz2 := hasSum_zeta_two
   have hz2' : HasSum (fun k : ℕ => (r ^ 2) ^ (k + 1) * (1 / (4 * ((k + 1 : ℕ) : ℝ) ^ 2)))
       (∑' k : ℕ, (r ^ 2) ^ (k + 1) * (1 / (4 * ((k + 1 : ℕ) : ℝ) ^ 2))) := by
@@ -133,24 +133,31 @@ theorem selfEnergy_bounds {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) :
   · -- `4/(4k+1) ≥ 1/k − 1/(4k²)`
     have hle := hasSum_le (fun k : ℕ => ?_) (hlog.sub hz2') hZ'
     · linarith
-    · have hk : (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos k
-      rw [show (2 : ℕ) * (k + 1) = 2 * (k + 1) from rfl, pow_mul, Nat.cast_succ]
-      push_cast at hk ⊢
-      have hq0 : 0 ≤ (r ^ 2) ^ (k + 1) := by positivity
-      rw [← mul_sub]
-      refine mul_le_mul_of_nonneg_left ?_ hq0
-      rw [div_sub_div _ _ (by positivity) (by positivity), div_le_div_iff₀ (by positivity)
-        (by positivity)]
-      nlinarith
+    · simp only [pow_mul]
+      push_cast
+      set a := (r ^ 2) ^ (k + 1)
+      set t : ℝ := (k : ℝ) + 1
+      have ht : 1 ≤ t := by simp only [t]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+      have ha : 0 ≤ a := by positivity
+      have key : 1 / t - 1 / (4 * t ^ 2) ≤ 2 / (2 * t + 1 / 2) := by
+        rw [div_sub_div _ _ (by positivity) (by positivity), div_le_div_iff₀ (by positivity)
+          (by positivity)]
+        nlinarith
+      calc a / t - a * (1 / (4 * t ^ 2)) = a * (1 / t - 1 / (4 * t ^ 2)) := by ring
+        _ ≤ a * (2 / (2 * t + 1 / 2)) := mul_le_mul_of_nonneg_left key ha
   · -- `4/(4k+1) ≤ 1/k`
     have hle := hasSum_le (fun k : ℕ => ?_) hZ' hlog
     · linarith
-    · have hk : (1 : ℝ) ≤ ((k + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos k
-      rw [pow_mul, Nat.cast_succ]
-      push_cast at hk ⊢
-      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      nlinarith
+    · simp only [pow_mul]
+      push_cast
+      set a := (r ^ 2) ^ (k + 1)
+      set t : ℝ := (k : ℝ) + 1
+      have ht : 1 ≤ t := by simp only [t]; linarith [(Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
+      have ha : 0 ≤ a := by positivity
+      have key : 2 / (2 * t + 1 / 2) ≤ 1 / t := by
+        rw [div_le_div_iff₀ (by positivity) (by positivity)]; nlinarith
+      calc a * (2 / (2 * t + 1 / 2)) ≤ a * (1 / t) := mul_le_mul_of_nonneg_left key ha
+        _ = a / t := by ring
 
 /-- **The self-energy diverges** as `r → 1`. -/
 theorem tendsto_selfEnergy_atTop : Tendsto selfEnergy (𝓝[<] 1) atTop := by
@@ -164,10 +171,9 @@ theorem tendsto_selfEnergy_atTop : Tendsto selfEnergy (𝓝[<] 1) atTop := by
           nhdsWithin_le_nhds (lt_mem_nhds (by norm_num : (0 : ℝ) < 1))
         filter_upwards [h0, self_mem_nhdsWithin] with r hr0 hr1
         exact mem_Ioi.mpr (by nlinarith [mem_Iio.mp hr1])
-    have h2 := (Real.tendsto_log_nhdsGT_zero.comp h1).neg
-    simp only [Function.comp_def] at h2
-    exact (tendsto_neg_atBot_atTop.comp h2).atTop_add tendsto_const_nhds |>.congr fun r => by
-      simp [Function.comp_def]; ring
+    have h3 : Tendsto (fun r : ℝ => -Real.log (1 - r ^ 2)) (𝓝[<] 1) atTop :=
+      tendsto_neg_atBot_atTop.comp (Real.tendsto_log_nhdsGT_zero.comp h1)
+    exact (tendsto_atTop_add_const_right _ (4 - π ^ 2 / 24) h3).congr fun r => by ring
   refine tendsto_atTop_mono' _ ?_ hlog
   have h0 : ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 < r :=
     nhdsWithin_le_nhds (lt_mem_nhds (by norm_num : (0 : ℝ) < 1))
@@ -240,20 +246,18 @@ theorem integrable_archDamped {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) : Integrab
   have hr2 : r ^ 2 < 1 := by nlinarith
   have he2 : Real.exp (-2 * |x|) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [abs_nonneg x])
   unfold archDamped
-  rw [div_le_iff₀ (by nlinarith [Real.exp_pos (-2 * |x|)]),
-    show -(1 / 2 * |x|) = -|x| / 2 by ring]
-  have hpos : 0 < (1 - r ^ 2)⁻¹ := inv_pos.mpr (by linarith)
-  have hmul : (1 - r ^ 2)⁻¹ * (1 - r ^ 2) = 1 := inv_mul_cancel₀ (by linarith)
-  nlinarith [Real.exp_pos (-|x| / 2), Real.exp_pos (-2 * |x|)]
+  rw [show -(1 / 2 * |x|) = -|x| / 2 by ring, ← div_eq_inv_mul]
+  exact div_le_div_of_nonneg_left (Real.exp_pos _).le (by linarith)
+    (by nlinarith [Real.exp_pos (-2 * |x|)])
 
 /-- **Splitting off the diagonal.** `∫ K_r g = g(0) Z(r) − ∫ K_r (g(0) − g)`. -/
 theorem integral_archDamped_mul_eq {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {g : ℝ → ℝ} (hg : Integrable g) :
     ∫ x, archDamped r x * g x = g 0 * selfEnergy r - ∫ x, archDamped r x * (g 0 - g x) := by
   have hK := integrable_archDamped hr0 hr1
   have hKg : Integrable fun x => archDamped r x * g x :=
-    hg.bdd_mul (continuous_archDamped hr0 hr1).aestronglyMeasurable
-      ⟨(1 - r ^ 2)⁻¹, fun x => by
-        rw [Real.norm_of_nonneg (archDamped_nonneg hr0 hr1 x)]; exact archDamped_le_inv hr0 hr1 x⟩
+    hg.bdd_mul (c := (1 - r ^ 2)⁻¹) (continuous_archDamped hr0 hr1).aestronglyMeasurable
+      (Eventually.of_forall fun x => by
+        rw [Real.norm_of_nonneg (archDamped_nonneg hr0 hr1 x)]; exact archDamped_le_inv hr0 hr1 x)
   have hsplit : (fun x => archDamped r x * (g 0 - g x)) =
       fun x => g 0 * archDamped r x - archDamped r x * g x := funext fun x => by ring
   rw [hsplit, integral_sub (hK.const_mul _) hKg, integral_const_mul, selfEnergy]

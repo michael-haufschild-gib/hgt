@@ -374,3 +374,14 @@ square-root-scale error derived from the existing Stepanov theorem.
 That requires an actual curve-count comparison; an abstract tuple of
 assumed Weil roots is insufficient. Neither finite-field construction
 currently controls the integer conductor cutoff in `1−M(N)`.
+
+## Actual orientation quotient
+
+[OrientationQuotientCounts.lean](OrientationQuotientCounts.lean) constructs
+the action on `X×{±1}` from an orientation character. Its arithmetic stable
+orbit count `A` and the ordinary count `B` satisfy
+`|G|(A−B)=Σ_x Σ_{g·x=φ(x)} χ(g)`. Thus the normalized local orientation
+sum is an integer difference of actual counts. Stabilizers and trivial
+characters are retained, including both orientation labels in degrees
+zero and one. This [count realization](../../../docs/drafts/pipeline/3-formalized/riac-orientation-quotient-counts.md)
+does not itself bound the difference.

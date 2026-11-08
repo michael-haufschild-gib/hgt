@@ -41,11 +41,18 @@ identity and its actual-count interpretation are not yet formalized here.
 
 ## Inputs and obligations
 
-1. Construct the finite curve point sets, orientation action and Frobenius.
-2. Identify the cover-minus-base count with signed transporter mass.
+1. Construct the finite curve point sets and Frobenius. The general
+   [orientation action and quotient](../3-formalized/riac-orientation-quotient-counts.md)
+   are formalized.
+2. The cover-minus-base identity with signed transporter mass is formalized
+   for every finite equivariant action; instantiate it on the actual curves.
 3. Prove the fixed-field comparison for each permutation cycle length.
 4. Derive the signed cycle-index coefficient identity from actual point counts.
 5. Instantiate the derived Stepanov bound and audit the resulting inequality.
+
+The [actual elliptic divisor branch](riac-elliptic-squarefree-divisor-cancellation.md)
+uses existing closed places and their proved Euler product to construct a
+concrete nonzero square-root-scale calibration directly.
 
 Verified source inputs:
 [HyperellipticRiemannHypothesis.lean](../../../../formal/GaloisForLFunctions/RHTower/HyperellipticRiemannHypothesis.lean)
