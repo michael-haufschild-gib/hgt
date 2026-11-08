@@ -71,7 +71,7 @@ theorem atomGram_eq_splineSeries (N : ℕ) (i j : Fin N) :
         (ArithmeticCastelnuovoSeveri.translate 0 (cx cubicSpline)) := by rw [← h0]
   rw [hW, h2, W_shiftTest_shiftTest, splineSeries]
   refine tsum_congr fun τ => ?_
-  rw [sub_zero]
+  simp only [Complex.ofReal_zero, sub_zero]
 
 /-- The zero-side terms of the spline series are absolutely summable at every scale. -/
 theorem summable_norm_splineTerm' (t : ℝ) :
@@ -115,14 +115,14 @@ theorem integerProbe_single (N : ℕ) (i : Fin N) :
   rw [integerProbe_eq_sum]
   simp [Pi.single_apply]
 
-theorem integerProbe_pair (N : ℕ) {i j : Fin N} (hij : i ≠ j) :
+theorem integerProbe_pair (N : ℕ) (i j : Fin N) :
     integerProbe N (Pi.single i 1 + Pi.single j 1) =
       (atomGram N i i).re + (atomGram N j j).re + 2 * (atomGram N i j).re := by
   have hji : (atomGram N j i).re = (atomGram N i j).re := by
     have hH : starRingEnd ℂ (atomGram N j i) = atomGram N i j :=
       congr_fun (congr_fun (atomGram_isHermitian N) i) j
     have := congr_arg Complex.re hH
-    simpa using this.symm
+    simpa using this
   rw [integerProbe_eq_sum]
   simp only [Pi.add_apply, Pi.single_apply, Int.cast_add, Int.cast_ite, Int.cast_one, Int.cast_zero,
     mul_add, add_mul, Finset.sum_add_distrib, mul_ite, ite_mul, mul_one, mul_zero, zero_mul,
@@ -145,22 +145,13 @@ theorem two_re_splineSeries_mem (hint : ∀ (N : ℕ) (a : Fin N → ℤ), ∃ k
     simp only [j]; rw [Nat.cast_sub (by omega)]; push_cast; ring
   have hii : (atomGram N i i).re = (splineSeries 0).re := by
     rw [atomGram_eq_splineSeries, sub_self]
+  have hjj : (atomGram N j j).re = (splineSeries 0).re := by
+    rw [atomGram_eq_splineSeries, sub_self]
   obtain ⟨k₁, hk₁⟩ := hint N (Pi.single i 1)
   rw [integerProbe_single, hii] at hk₁
-  by_cases hmn : m = n
-  · subst hmn
-    refine ⟨2 * k₁, ?_⟩
-    rw [sub_self, hk₁]; push_cast; ring
-  · have hij : i ≠ j := by
-      intro h
-      have := congr_arg Fin.val h
-      simp only [i, j] at this
-      omega
-    obtain ⟨k₂, hk₂⟩ := hint N (Pi.single i 1 + Pi.single j 1)
-    have hjj : (atomGram N j j).re = (splineSeries 0).re := by
-      rw [atomGram_eq_splineSeries, sub_self]
-    rw [integerProbe_pair N hij, hii, hjj, atomGram_eq_splineSeries, hi, hj, hk₁] at hk₂
-    exact ⟨k₂ - 2 * k₁, by push_cast; linarith⟩
+  obtain ⟨k₂, hk₂⟩ := hint N (Pi.single i 1 + Pi.single j 1)
+  rw [integerProbe_pair N i j, hii, hjj, atomGram_eq_splineSeries, hi, hj, hk₁] at hk₂
+  exact ⟨k₂ - 2 * k₁, by push_cast; linarith⟩
 
 /-- **Integer squares make the real part of the spline series constant.** -/
 theorem re_splineSeries_eq_const (hint : ∀ (N : ℕ) (a : Fin N → ℤ), ∃ k : ℤ, integerProbe N a = k)
@@ -277,7 +268,7 @@ theorem exists_re_splineSeries_lt (hRH : RiemannHypothesis) :
   have hline := RHTower.CrossRouteReceiverBridges.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH
   -- a critical zero seen by the spline, off the real point `1/2`
   obtain ⟨ρ₁, hρ₁, hne⟩ : ∃ ρ ∈ criticalSeen, ρ ≠ 1 / 2 := by
-    obtain ⟨ρ, hρ⟩ := (criticalSeen_infinite.diff (Set.finite_singleton (1 / 2 : ℂ))).nonempty
+    obtain ⟨ρ, hρ⟩ := (criticalSeen_infinite.sdiff (Set.finite_singleton (1 / 2 : ℂ))).nonempty
     exact ⟨ρ, hρ.1, fun h => hρ.2 (Set.mem_singleton_iff.mpr h)⟩
   obtain ⟨hcar, hre₁, hseen⟩ := hρ₁
   have him : ρ₁.im ≠ 0 := by
@@ -290,15 +281,15 @@ theorem exists_re_splineSeries_lt (hRH : RiemannHypothesis) :
   set t₁ : ℝ := π / ρ₁.im
   refine ⟨t₁, ?_⟩
   -- the real parts as real series
-  have hsum : ∀ t, Summable fun τ : zetaZeroConfig.carrier =>
+  have hsum : ∀ t : ℝ, Summable fun τ : zetaZeroConfig.carrier =>
       cexp ((t : ℂ) * ((τ : ℂ) - 1 / 2)) * zetaZeroConfig.Wsummand (cx cubicSpline) (cx cubicSpline) τ :=
     fun t => (summable_norm_splineTerm' t).of_norm
-  have hre : ∀ t, (splineSeries t).re =
+  have hre : ∀ t : ℝ, (splineSeries t).re =
       ∑' τ : zetaZeroConfig.carrier, criticalWeight τ * Real.cos (t * (τ : ℂ).im) := by
     intro t
     rw [splineSeries, Complex.re_tsum (hsum t)]
     exact tsum_congr fun τ => re_splineTerm_of_re (hline τ τ.2) t
-  have hsr : ∀ t, Summable fun τ : zetaZeroConfig.carrier =>
+  have hsr : ∀ t : ℝ, Summable fun τ : zetaZeroConfig.carrier =>
       criticalWeight τ * Real.cos (t * (τ : ℂ).im) := fun t => by
     refine ((hsum t).mapL Complex.reCLM).congr fun τ => ?_
     exact re_splineTerm_of_re (hline τ τ.2) t
@@ -339,3 +330,6 @@ theorem not_exists_intCount_eq_integerProbe :
   fun ⟨K, hK⟩ => not_integerProbe_integerValued fun N a => ⟨K N a, hK N a⟩
 
 end GaloisForLFunctions.CountingHolography
+
+#print axioms GaloisForLFunctions.CountingHolography.not_integerProbe_integerValued
+#print axioms GaloisForLFunctions.CountingHolography.not_exists_intCount_eq_integerProbe

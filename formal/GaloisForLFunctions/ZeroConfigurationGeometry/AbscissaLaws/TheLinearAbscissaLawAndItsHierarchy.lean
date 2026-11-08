@@ -206,18 +206,14 @@ theorem linearAbscissaLawAt_iff_eventualToGlobalAt {C : ℝ} (hC : 0 ≤ C) :
       have := hE (1 / 2) (by norm_num) hfin12 ρ hρ
       linarith
     · rw [← div_le_iff₀' hCpos]
-      refine le_of_le_of_eq (b := sInf ((fun σ : ℝ => σ - 1 / 2) '' asymptoticAbscissaSet Z)) ?_ ?_
-      · refine le_csInf ((asymptoticAbscissaSet_nonempty Z).image _) ?_
-        rintro _ ⟨σ, ⟨h12, hfin⟩, rfl⟩
-        rw [div_le_iff₀' hCpos]
+      have hle : 1 / 2 + (zeroAbscissa Z - 1 / 2) / C ≤ asymptoticAbscissa Z := by
+        refine le_csInf (asymptoticAbscissaSet_nonempty Z) fun σ ⟨h12, hfin⟩ => ?_
         have hΘ : zeroAbscissa Z ≤ 1 / 2 + C * (σ - 1 / 2) :=
           (zeroAbscissa_le_iff Z).mpr ⟨by nlinarith, hE (σ - 1 / 2) (by linarith) hfin⟩
+        have hdiv : (zeroAbscissa Z - 1 / 2) / C ≤ σ - 1 / 2 :=
+          (div_le_iff₀' hCpos).mpr (by linarith)
         linarith
-      · have htr : (fun σ : ℝ => σ - 1 / 2) = (fun σ : ℝ => -1 / 2 + σ) := by
-          funext σ; ring
-        rw [htr, Real.sInf_image_add]
-        unfold asymptoticAbscissa
-        ring
+      linarith
 
 theorem linearAbscissaLawAt_mono {C₁ C₂ : ℝ} (h12 : C₁ ≤ C₂) (h : LinearAbscissaLawAt Z C₁) :
     LinearAbscissaLawAt Z C₂ :=
@@ -270,12 +266,12 @@ theorem abscissaLaw_iff_forall_gt_one_linearAbscissaLawAt :
       unfold LinearAbscissaLawAt at h1
       rw [← heq] at h1
       linarith
-    · set C : ℝ := 1 + (zeroAbscissa Z - asymptoticAbscissa Z) /
-          (2 * (asymptoticAbscissa Z - 1 / 2)) with hCdef
+    · set C : ℝ := 1 + ((zeroAbscissa Z - asymptoticAbscissa Z) / 2) /
+          (asymptoticAbscissa Z - 1 / 2) with hCdef
       have hC1 : 1 < C := by
         rw [hCdef]
-        have : 0 < (zeroAbscissa Z - asymptoticAbscissa Z) /
-            (2 * (asymptoticAbscissa Z - 1 / 2)) :=
+        have : 0 < ((zeroAbscissa Z - asymptoticAbscissa Z) / 2) /
+            (asymptoticAbscissa Z - 1 / 2) :=
           div_pos (by linarith) (by linarith)
         linarith
       have hL := hall C hC1
@@ -283,12 +279,7 @@ theorem abscissaLaw_iff_forall_gt_one_linearAbscissaLawAt :
       have hval : C * (asymptoticAbscissa Z - 1 / 2) =
           (asymptoticAbscissa Z - 1 / 2) + (zeroAbscissa Z - asymptoticAbscissa Z) / 2 := by
         have hne : asymptoticAbscissa Z - 1 / 2 ≠ 0 := by linarith
-        calc C * (asymptoticAbscissa Z - 1 / 2)
-            = (asymptoticAbscissa Z - 1 / 2) +
-                ((zeroAbscissa Z - asymptoticAbscissa Z) / 2) / (asymptoticAbscissa Z - 1 / 2) *
-                  (asymptoticAbscissa Z - 1 / 2) := by rw [hCdef]; ring
-          _ = (asymptoticAbscissa Z - 1 / 2) + (zeroAbscissa Z - asymptoticAbscissa Z) / 2 := by
-                rw [div_mul_cancel₀ _ hne]
+        rw [hCdef, add_mul, one_mul, div_mul_cancel₀ _ hne]
       rw [hval] at hL
       linarith
 
@@ -513,8 +504,10 @@ theorem bumpRatioConfig_abscissas {a b : ℝ} (n₀ : ℕ) (ha : 0 ≤ a) (hab :
         split_ifs <;> linarith
     · have hmem : seqUpper δ n₀ ∈ Z.carrier := Or.inl ⟨n₀, rfl⟩
       have h0 := re_le_zeroAbscissa Z hmem
-      simp only [seqUpper, if_true, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im,
+      simp only [seqUpper, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im,
         I_im, mul_one, sub_self, add_zero] at h0
+      dsimp only [δ] at h0
+      rw [if_pos rfl] at h0
       exact h0
   have hΘinf : asymptoticAbscissa Z = 1 / 2 + a := by
     refine le_antisymm ?_ ?_
@@ -1495,8 +1488,8 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
           rw [← (Finset.mem_filter.mp hq).2]
           ring
         simp_rw [hinner]
-        exact Finset.sum_fiberwise_of_maps_to fun q hq =>
-          Finset.mem_union_left _ (Finset.mem_image_of_mem _ hq)
+        exact Finset.sum_fiberwise_of_maps_to (t := S)
+          (fun q hq => Finset.mem_union_left _ (Finset.mem_image_of_mem _ hq)) _
       have hfib2 : ∑ z ∈ S, (∑ q ∈ top with conj (q.1 : ℂ) = z,
             (1 / (2 * conj (q.1 : ℂ)))) * (x : ℂ) ^ z
           = ∑ q ∈ top, (x : ℂ) ^ conj (q.1 : ℂ) / (2 * conj (q.1 : ℂ)) := by
@@ -1509,8 +1502,8 @@ theorem mem_chebyshevFiniteRankExponentSet_of_gt {σ : ℝ} (hgt : zetaAsymptoti
           rw [← (Finset.mem_filter.mp hq).2]
           ring
         simp_rw [hinner]
-        exact Finset.sum_fiberwise_of_maps_to fun q hq =>
-          Finset.mem_union_right _ (Finset.mem_image_of_mem _ hq)
+        exact Finset.sum_fiberwise_of_maps_to (t := S)
+          (fun q hq => Finset.mem_union_right _ (Finset.mem_image_of_mem _ hq)) _
       have hconj_cpow : ∀ q : XiZeroCopy,
           (x : ℂ) ^ conj (q.1 : ℂ) = conj ((x : ℂ) ^ (q.1 : ℂ)) := fun q => by
         have hxC : (x : ℂ) ≠ 0 := by exact_mod_cast hx0.ne'
