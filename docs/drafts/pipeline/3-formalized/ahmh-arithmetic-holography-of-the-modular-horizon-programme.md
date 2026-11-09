@@ -26,8 +26,10 @@ Folder `formal/GaloisForLFunctions/ArithmeticHolographyOfTheModularHorizon/`, um
 | T9 | Reflection Krein index law: `Λ(s)Λ̄(s*) + Λ(s*)Λ̄(s)` on tent energies has one negative square exactly off the line; RH ⟺ positivity | done | `TheReflectionKreinFormCountsTheOffLineResonances` |
 | T10 | The ringdown rate of a seed with `e^{−π|t|}`-decaying polar transform is its zero-free region | done | `TheRingdownRateOfASeedIsTheZeroFreeRegion` |
 | T11 | Zagier's theorem for the cavity: RH ⟺ two-mode energies ring down at `y^{3/4−ε}`; zero-free strip ⟺ common rate `α > ½` (M4, M5) | done | `TheTwoModeEnergiesRingDownAtTheZeroFreeRate` |
-| T13 | Hecke pairs: `T_p` self-adjoint on `L²(𝒟)`; joint Hecke eigenbasis of each Laplace eigenspace; pairs of Hecke–Maass eigenforms see every resonance | in progress | — |
 | T12 | One sharp receiver: one cuspidal function `g` of Maass forms with RH ⟺ rate `y^{3/4−ε}` of `|g|²`, strip ⟺ rate `α > ½` | done | `OneCavityFunctionIsASharpReceiver` |
+| T13 | Hecke pairs: `T_p` self-adjoint on `L²(𝒟)`; Hecke eigenforms span each cusp space; pairs of Hecke–Maass eigenforms see every resonance; sharp Hecke receiver | done | `TheHeckeCosetsOfDeterminantP`, `TheHeckeOperatorIsSelfAdjoint`, `TheHeckeEigenformsSeeEveryResonanceInPairs` |
+| T14 | Shimura's continuation for level-one cusp forms: weight-½ kernel, decay, holomorphic fold on `Re w > ¼`, unfolding | done | `TheShimuraIntegralOfACuspForm` |
+| T15 | One-eigenform B109: diagonal = `ζ(s)` × Shimura integral; blindness to halving pairs; exact criterion | done | `OneHeckeEigenformIsBlindToHalvingPairs` |
 
 ## Paper derivations
 
@@ -109,12 +111,28 @@ polar kernel is integrable on `𝒟` with `∫|·| ≤ ‖x‖² 2^{−j−k} B`
 integrals and `|P_{|g|²}| ≤ Σ ‖x‖² 2^{−j−k}(1+|t|)^N e^{−π|t|} = 4‖x‖²(1+|t|)^N e^{−π|t|}`. T10 gives the rate; T3 with
 pairwise visibility (T8) gives a generic `x` seeing every right zero; the every-seed receiver closes both equivalences.
 
-**T13 (plan).** (a) For `M ∈ M₂(ℤ)`, `det M = p`: columns proportional mod `p`, so `M = γ' α_k` with `k = ∞` iff
+**T13.** (a) For `M ∈ M₂(ℤ)`, `det M = p`: columns proportional mod `p`, so `M = γ' α_k` with `k = ∞` iff
 `p | m₁₁, m₂₁`, else `(m₁₂, m₂₂) ≡ b (m₁₁, m₂₁)`, `k = b`; rows proportional, so `M = α_i^* γ` (`α^*` = adjugate).
 (b) `⟨T_p f, g⟩ = Σ_i ∫_ℍ 1_𝒟(α_i^{-1}w) f(w) ḡ(α_i^{-1}w) = ∫_𝒟 f(w) Σ_{i,γ} (1_𝒟 ḡ)(α_i^* γ w)`; the bijection
 `(i, γ) ↦ (γ', k)` with `α_i^* γ = γ' α_k` (mod `±1`) and `Σ_{γ'} 1_𝒟(γ' x) = 1` a.e. give `Σ_k ḡ(α_k w)`.
-(c) Transport `cuspSpace λ ↪ L²` (injective), commuting symmetric `T_p` ⇒ joint eigenbasis; sesquilinearity moves
-`b_s(v_l, v_i) ≠ 0` to Hecke eigenforms.
+Exactly one `γ'` contributes off the null set `⋃_γ γ^{-1}(𝒟 ∖ 𝒟°)`, and the orbit family is finitely supported, so
+the iterated sums may be exchanged. (c) Transport `cuspSpace λ ↪ L²` (injective), commuting symmetric `T_p` ⇒ the
+joint eigenspaces span (Mathlib `iSup_iInf_eq_top_of_commute`); sesquilinearity of `b_s` on cusp forms (integrable
+pair integrands) moves `b_s(v_l, v_i) ≠ 0` to Hecke eigenforms by induction over the spans; a finite Hecke basis per
+eigenvalue, enumerated over the countable spectrum, feeds the cavity construction and the sharp receiver, which only
+needs a sequence of cusp forms that sees in pairs.
+
+**T14.** `4γz = γ'(4z)` (`conjFour`) and the multiplier of `θ` give the weight-½ law on `Γ₀(4)`; the Hermite form
+`4gz = h((ez+β)/δ)` with `eδ = 4` gives decay `e^{−π Im z/4}` of every translate, so the corpus fold
+`RHTower.HalfWeight.rsFold` is holomorphic on `Re w > ¼`. For `Re w > 7/4`: theta unfolding of the zeroth
+coefficient, `a_{j²}(4y) = ρ_W(j²) W_ν(8πj²y)`, termwise Mellin transforms `∫ y^{w−7/4}e^{−Ay}W_ν(Ay) = A^{3/4−w}Mel_ν(w−¼)`
+(complex order, `|Re ν| < Re w − ¼`), dominated by `|K_ν| ≤ √π√(2/t)` for `|Re ν| ≤ ½`.
+
+**T15.** Hecke eigenvalues are real (Petersson symmetry); `τ = ρ/ρ(1)` is multiplicative with the Chebyshev
+recursion, and `U_{2k+2} = U_{k+1}² − U_k²`, `U_{2k+3} = U_{k+1}(U_{k+2} − U_k)` give `τ² = ζ * τ(·²)`. For `Re s > 3`,
+`Im s ≠ 0`: `Λ_u = ξ(2s)/(2s(2s−1))(2π)^{−s}G N ζ(s)T(s)` and `Sh_u(w) = 4(2s−2)(2s−1)ζ(2s) c(w) ρ(1) T(s) Mel_ν(s/2)` with
+`T = Σ τ(m²)m^{−s}`, `s = 2w − ½`; the identity `4ρ(1)(s−1)c Mel P_u = Γ_ℝ(2s)(2π)^{−s}G N s (s−1)ζ(s) Sh_u` continues to
+the half-plane `Re s > 0` (both sides holomorphic there; convex domain). Mirror symmetry of `E*` handles `ρ(1) = 0`.
 
 ## Log
 - 2026-11-08 — created; README first draft written.
@@ -124,6 +142,8 @@ pairwise visibility (T8) gives a generic `x` seeing every right zero; the every-
 - 2026-11-09 — T8, T9 formalized; phase law made quantitative.
 - 2026-11-09 — T10, T11 formalized.
 - 2026-11-09 — T12 formalized.
+- 2026-11-09 — T13 formalized.
+- 2026-11-09 — T14, T15 formalized.
 
 ## No-go closure
 - **Exact killing theorem/mechanism:** position rigidity (`differentiableAt_responseContinuation`): the kinematic
@@ -137,6 +157,9 @@ pairwise visibility (T8) gives a generic `x` seeing every right zero; the every-
   resonance pair, whose index is one exactly off the line (T9): RH ⟺ positivity.
 - **New insight:** the holographic dictionary is a residue dictionary; physics contributes visibility, never
   positions.
-- **Status:** twelve Lean modules, each checked clean. M4 and M5 are proved equivalent to ringdown rates of one
-  cuspidal energy (they are the zero-free strip and RH). Open: B109 for one eigenform (needs `ζ(ρ/2) ≠ 0` and
-  `L(ρ/2, sym² u) ≠ 0`), pairs of Hecke eigenforms (needs Hecke self-adjointness).
+- **One-eigenform B109:** killed as an unconditional target by the halving obstruction (`pairing_half_eq_zero`);
+  positive survivor: the exact criterion `Λ_u(ρ/2) ≠ 0 ⟺ ζ(ρ/2) ≠ 0 ∧ Sh_u((ρ+1)/4) ≠ 0` and the implication
+  one-eigenform B109 ⟹ no halving pairs (`zeta_half_ne_zero_of_hecke_seeing`), both in Lean.
+- **Status:** seventeen Lean modules, each checked clean. M4 and M5 are proved equivalent to ringdown rates of one
+  cuspidal energy of Hecke–Maass forms (they are the zero-free strip and RH). Open: the converse direction of
+  one-eigenform B109 (absence of halving pairs and nonvanishing of `L(ρ/2, sym² u)` in the Hecke family).

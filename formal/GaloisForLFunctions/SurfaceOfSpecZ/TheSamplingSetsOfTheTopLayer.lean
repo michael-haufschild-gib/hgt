@@ -53,11 +53,17 @@ theorem ofReal_wSum (w : ℕ → ℝ) (σ : ℝ) : ((wSum w σ : ℝ) : ℂ) = w
   rw [Complex.ofReal_mul, ofReal_add_one_rpow j (-σ)]
   push_cast; ring
 
-/-- A sampling weight: `0 ≤ w ≤ Λ`, `Σ w(n) n^{−σ} → ∞` as `σ ↓ 1`, and
-`Σ w(n) n^{−σ−c} = o(Σ w(n) n^{−σ})` for `c ≠ 0`, `Re c ≥ 0`. -/
+/-- A weight below `Λ` has a convergent series on `σ > 1`. -/
+theorem summable_of_le_vonMangoldt {w : ℕ → ℝ} (h0 : ∀ j, 0 ≤ w j) (hle : ∀ j, w j ≤ Λ (j + 1)) :
+    ∀ σ : ℝ, 1 < σ → Summable fun j : ℕ => w j * ((j : ℝ) + 1) ^ (-σ) := fun σ hσ =>
+  Summable.of_nonneg_of_le (fun j => mul_nonneg (h0 j) (by positivity))
+    (fun j => mul_le_mul_of_nonneg_right (hle j) (by positivity)) (summable_vonMangoldt_rpow hσ)
+
+/-- A sampling weight: `w ≥ 0` with `Σ w(n) n^{−σ} < ∞` for `σ > 1`, `Σ w(n) n^{−σ} → ∞` as `σ ↓ 1`,
+and `Σ w(n) n^{−σ−c} = o(Σ w(n) n^{−σ})` for `c ≠ 0`, `Re c ≥ 0`. -/
 structure SamplingWeight (w : ℕ → ℝ) : Prop where
   nonneg : ∀ j, 0 ≤ w j
-  le_vonMangoldt : ∀ j, w j ≤ Λ (j + 1)
+  summable' : ∀ σ : ℝ, 1 < σ → Summable fun j : ℕ => w j * ((j : ℝ) + 1) ^ (-σ)
   tendsto_atTop : Tendsto (wSum w) (𝓝[>] 1) atTop
   tendsto_off : ∀ c : ℂ, c ≠ 0 → 0 ≤ c.re →
     Tendsto (fun σ : ℝ => wSeries w ((σ : ℂ) + c) / (wSum w σ : ℂ)) (𝓝[>] 1) (𝓝 0)
@@ -68,9 +74,7 @@ variable {w : ℕ → ℝ} (hw : SamplingWeight w)
 include hw
 
 theorem summable {σ : ℝ} (hσ : 1 < σ) : Summable fun j : ℕ => w j * ((j : ℝ) + 1) ^ (-σ) :=
-  Summable.of_nonneg_of_le (fun j => mul_nonneg (hw.nonneg j) (by positivity))
-    (fun j => mul_le_mul_of_nonneg_right (hw.le_vonMangoldt j) (by positivity))
-    (summable_vonMangoldt_rpow hσ)
+  hw.summable' σ hσ
 
 theorem summable_series {s : ℂ} (hs : 1 < s.re) :
     Summable fun j : ℕ => (w j : ℂ) * ((j : ℂ) + 1) ^ (-s) := by
@@ -78,6 +82,13 @@ theorem summable_series {s : ℂ} (hs : 1 < s.re) :
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hw.nonneg j),
     norm_natCast_add_one_cpow]
   simp
+
+theorem summable_series_of_le {v : ℕ → ℝ} (h0 : ∀ j, 0 ≤ v j) (hle : ∀ j, v j ≤ w j) {s : ℂ}
+    (hs : 1 < s.re) : Summable fun j : ℕ => (v j : ℂ) * ((j : ℂ) + 1) ^ (-s) := by
+  refine Summable.of_norm_bounded (hw.summable hs) fun j => ?_
+  rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (h0 j),
+    norm_natCast_add_one_cpow, Complex.neg_re]
+  exact mul_le_mul_of_nonneg_right (hle j) (by positivity)
 
 theorem norm_wSeries_le {s : ℂ} (hs : 1 < s.re) : ‖wSeries w s‖ ≤ wSum w s.re := by
   calc ‖wSeries w s‖ ≤ ∑' j : ℕ, ‖(w j : ℂ) * ((j : ℂ) + 1) ^ (-s)‖ :=
@@ -502,7 +513,8 @@ theorem onLine_of_bddBelow_of_samplingWeight {w : ℕ → ℝ} (hw : SamplingWei
 
 /-- **The prime powers form a sampling set**: `−ζ'/ζ(σ + c)/Σ Λ(n)n^{−σ} → 0` off `c = 0`. -/
 theorem samplingWeight_vonMangoldt : SamplingWeight fun j => Λ (j + 1) := by
-  refine ⟨fun j => vonMangoldt_nonneg, fun j => le_rfl, tendsto_vmSum_atTop, fun c hc hre => ?_⟩
+  refine ⟨fun j => vonMangoldt_nonneg, fun σ hσ => summable_vonMangoldt_rpow hσ, tendsto_vmSum_atTop,
+    fun c hc hre => ?_⟩
   have h := (tendsto_logDeriv_div_vmSum hre hc).neg
   rw [neg_zero] at h
   refine h.congr' ?_
@@ -591,7 +603,7 @@ theorem tendsto_wSum_residueWeight (ha : IsUnit a) :
 /-- **The primes in a residue class form a sampling set.** Off `c = 0` the series
 `Σ Λ(n) 1_{n ≡ a} n^{−σ−c}` has the finite limit `Aux(1 + c) + φ(q)⁻¹/c`. -/
 theorem samplingWeight_residueClass (ha : IsUnit a) : SamplingWeight (residueWeight a) := by
-  refine ⟨residueWeight_nonneg, residueWeight_le,
+  refine ⟨residueWeight_nonneg, summable_of_le_vonMangoldt residueWeight_nonneg residueWeight_le,
     tendsto_wSum_residueWeight ha, fun c hc hre => ?_⟩
   have hlim : Tendsto (fun σ : ℝ => wSeries (residueWeight a) ((σ : ℂ) + c)) (𝓝[>] 1)
       (𝓝 (vonMangoldt.LFunctionResidueClassAux a (1 + c) + (q.totient : ℂ)⁻¹ / c)) := by

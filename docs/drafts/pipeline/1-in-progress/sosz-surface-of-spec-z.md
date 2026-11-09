@@ -72,8 +72,19 @@
 | C42 | The primes in a residue class, from both sides | proved (Lean) | `SamplingWeight.of_le_of_summable_sub` (removing a part with `Σ (w − w')(n)/n < ∞` keeps sampling); `samplingWeight_primeResidue` (primes alone `≡ a (mod q)`); `onLine_of_bddAbove_of_samplingWeight` (upper side at any sampling set, real zeros included, attained top). For `ζ`: a bound from either side at the primes `p ≡ a (mod q)` leaves no deepest off-line zero (`exists_re_gt_of_bddBelow_primes_mod`, `…_bddAbove_…`), so RH iff that bound holds and the off-line zeros, if any, have a deepest one (`riemannHypothesis_iff_bddBelow_primes_mod_and_topAttained`, `…_bddAbove_…`). Attainment enters because the series of these degrees carries every `L(s, χ)` mod `q` |
 | C43 | The lower side sees the sign of the top layer | proved (Lean) | With `F = F_top + F_low`, `F_top(u) = Re Σ_{Re z = b} e_z e^{(z−b)u}` almost periodic and `F_low → 0` (`tendsto_normTrace_sub_topTrace`): a lower bound at a sampling set gives `Re Σ_k p_k e_{b−iλ_k} ≥ 0` for every exponential polynomial `P = Σ p_k e^{iλ_k u}` with `Re P ≥ 0` (`re_sum_topCoeff_nonneg_of_bddBelow`; twisted means `→ e_{b−iλ}`, `tendsto_wTwistMean`), hence Fejér `|e_{b+iλ}| ≤ e_b` (`norm_evenCoeff_le_of_bddBelow`): a real zero masks only top zeros it dominates. Conversely `F_top ≥ δ > 0` gives a lower bound at every `u ≥ 0` (`bddBelow_of_topTrace_ge`). The lower side's blind set is the nonnegative top layers, up to `inf F_top = 0` |
 | C44 | Almost all primes suffice | proved (Lean) | `SamplingWeight.of_le_of_tendsto_ratio`: removing a part with `Σ(w − w')(n)n^{−σ} = o(Σ w(n)n^{−σ})` keeps sampling (the removed series may diverge). `samplingWeight_primeWeight` (primes alone), `samplingWeight_primeOff`: the primes off an exceptional set `E` of relative logarithmic density zero are sampling; `onLine_of_bddBelow_primes_off_null_of_max`, and for `ζ` `exists_re_gt_of_bddBelow_primes_off_null`. The count of the prime planes is needed only on a density-one set of primes |
-| C45 | The gap method iterates | proved (Lean) | At width `a` the lag structure is Lipschitz with constant `L e^{at}` (`norm_lagStructure_sub_le_of_width`), so a lower bound at a degree set with gaps `O(x^θ)` gives width `max(β₀, a + θ − 1)` (`width_step_of_powGaps`), `β₀` the depth of the deepest real zero. `re_le_of_bddBelow_of_powGaps_of_realDepth`: every tempered configuration, every `θ < 1`: width `≤ β₀`. Without real zeros: `onLine_of_bddBelow_of_powGaps`, at the primes (`onLine_of_bddBelow_primes`, Huxley) and the `pᵏ` (`onLine_of_bddBelow_kthPrimePowers`), with no attained maximum and no Dirichlet series; for `L(s, χ)` the primes see every zero above the deepest real zero (`re_le_of_bddBelow_primes_L`) |
-| C46 | The other side at every gap set | proved (Lean) | `width_step_of_powGaps_above` (via the odd two-bump width criterion, which carries real zeros with positive coefficients), `onLine_of_bddAbove_of_powGaps`: for every tempered configuration in the open strip and every degree set with gaps `O(x^θ)`, `θ < 1`, an upper bound at the degrees puts every zero on the line, real zeros included, no attainment. At the primes (`onLine_of_bddAbove_primes`), the `pᵏ`; `grh_of_bddAbove_primes`: an upper bound at the primes is GRH for `L(s, χ)`, Siegel zeros included |
+| C45 | The gap method iterates | proved (Lean) | At width `a` the lag structure is Lipschitz with constant `L e^{at}` (`norm_lagStructure_sub_le_of_width`), so a lower bound at a degree set with gaps `O(x^θ)` gives width `max(β₀, a + θ − 1)` (`width_step_of_powGaps`), `β₀` the depth of the deepest real zero. `re_le_of_bddBelow_rpow_of_powGaps`: every tempered configuration, every `θ < 1`, a bound `−K d^σ`, `σ ≤ β`, `β` above the real zeros: width `≤ β`. Without real zeros: `onLine_of_bddBelow_of_powGaps`, at the primes (`onLine_of_bddBelow_primes`, Huxley) and the `pᵏ` (`onLine_of_bddBelow_kthPrimePowers`), with no attained maximum and no Dirichlet series; for `L(s, χ)` the primes see every zero above the deepest real zero (`re_le_of_bddBelow_primes_L`) |
+| C46 | The other side at every gap set | proved (Lean) | `width_step_of_powGaps_above`, `re_le_of_bddAbove_rpow_of_powGaps` (via the odd two-bump width criterion, which carries real zeros with positive coefficients; bounds `K d^σ` give width `≤ σ`), `onLine_of_bddAbove_of_powGaps`: for every tempered configuration in the open strip and every degree set with gaps `O(x^θ)`, `θ < 1`, an upper bound at the degrees puts every zero on the line, real zeros included, no attainment. At the primes (`onLine_of_bddAbove_primes`), the `pᵏ`; `grh_of_bddAbove_primes`: an upper bound at the primes is GRH for `L(s, χ)`, Siegel zeros included |
+| C47 | Polynomially sparse degrees suffice | proved (Lean) | `powGaps_kthPowers`: the `nᵏ` have gaps `x^{1−1/k}`; `onLine_of_bddBelow_kthPowers`, `onLine_of_bddAbove_kthPowers` for every configuration (cubic spline, every `k`); `riemannHypothesis_iff_bddBelow_kthPowers`, `…_bddAbove_…`: RH iff the smoothed point counts at the degrees `nᵏ` are bounded on one side, for every `k ≥ 1` (C22 needed splines of order `r ≥ r₀(k)`). A degree set with `O(x^{1/k})` elements decides RH for every `k`; the `qⁿ` (`O(log x)` elements) alias |
+| C48 | The count door at every gap set | proved (Lean) | `riemannHypothesis_iff_effectiveCounts_of_powGaps`: for every `D ⊂ ℕ` with gaps `O(x^θ)`, `θ < 1`, RH iff each class `Γ_1 + Γ_d`, `d ∈ D`, carries an `ℕ`-count along its ray with Tate limit `δ_d(1,1) = 2c_B(0) + 2c_B(log d)`; `riemannHypothesis_iff_copositive_of_powGaps` (copositivity of those planes); `riemannHypothesis_iff_effectiveCounts_kthPowers` (the degrees `nᵏ`, any `k`). The missing count is needed on one ray per degree of a polynomially sparse set |
+| C49 | The width law at every gap set | proved (Lean) | `re_le_iff_bddBelow_rpow_of_powGaps` (no real zeros, `0 ≤ a < ½`) and `re_le_iff_bddAbove_rpow_of_powGaps` (open strip, `a ≥ 0`, real zeros included): every zero has `Re ρ ≤ ½ + a` iff `2 Re S(log d) ≥ −K d^a`, resp. `≤ K d^a`, on a degree set with gaps `O(x^θ)`, `θ < 1`. For `ζ`: `zetaZeroWidth_le_iff_bddBelow_of_powGaps`, `…_bddAbove_…`: the zero width is the growth exponent of a one-sided bound at any such set (C26/C31 at the primes by Landau) |
+| C50 | Two Frobenii suffice; one aliases | proved (Lean) | `wSeries_unitWeight`: `Σ_{a,b}(pᵃqᵇ)^{1−s} = (1 − p^{1−s})⁻¹(1 − q^{1−s})⁻¹`, a double pole at `s = 1`; `not_both_resonant`: `p^{−c} = q^{−c} = 1` forces `c = 0` (`pᴹ ≠ qᴺ`), so off `s = 1` on `Re s = 1` at most a simple pole; `samplingWeight_unitWeight`: the weight `n·1_{n = pᵃqᵇ}` is sampling (`SamplingWeight` now asks only summability on `σ > 1`). `onLine_of_bddBelow_twoPrimes_of_max`, `onLine_or_re_mem_of_bddBelow_twoPrimes`, `onLine_of_bddAbove_twoPrimes_of_max`, and for `ζ` `exists_re_gt_of_bddBelow_twoPrimes`. The degree lattice `ℕ²` of two Frobenii (`O(log² x)` degrees) samples the zeros; one Frobenius aliases every height `2πm/log p` (C33) |
+| C51 | Two Frobenii from both sides | proved (Lean) | `riemannHypothesis_iff_twoPrimePlanes_hasseWeil`: for two distinct primes, RH iff Hasse–Weil `|c_B(log m − log n)| ≤ c_B(0)` on every plane `⟨Γ_m, Γ_n⟩`, `m, n ∈ ⟨p, q⟩`; the lags fill `ℤ log p + ℤ log q`, dense since `pᴹ ≠ qᴺ` (`exists_lag_of_mem_closure`, `RHTower.dense_addSubgroup_log_primes`), and the two-sided bound extends by continuity. No attainment: the pair planes are dense, the one-sided planes of C50 discrete. C14 with two primes in place of all, Kronecker in place of the prime number theorem. Count door: `riemannHypothesis_iff_twoPrimePlaneCounts` (one binary `ℕ`-count per plane with Tate limit `lagDefect`; by Hecke invariance one per point of the lattice `ℤ² ≅ p^ℤq^ℤ`). Full positive definiteness on `ℤ²` and the positive measure on `T²` are `ArithmeticPositiveDuality.riemannHypothesis_iff_isPosDefOnLattice_twoPrimeCorr`, `…_exists_torusMeasure`; here only the `2 × 2` minors are used |
+| C52 | One Frobenius is not a sampling set | proved (Lean) | `wSeries_geomWeight`: `Σ_a(pᵃ)^{1−s} = (1 − p^{1−s})⁻¹`, invariant under `s ↦ s + 2πi/log p`; `not_samplingWeight_geomWeight`: the twisted ratio at `c = 2πi/log p` is `1`. With C50: a monoid of prime degrees samples once its rank is two; rank one resonates (the aliasing of C33) |
+| C53 | The tensor powers at every gap set | proved (Lean) | `onLine_iff_tensorPowers_commonAbscissa_of_powGaps`: for a tempered configuration without real zeros and `D` with gaps `O(x^θ)`, `θ < 1`, every zero is on the line iff some `σ₀` has `Σ_{d∈D}(2 Re S(log d))^{2k} d^{−σ₀} < ∞` for all `k ≥ 1` (one term + the width law at `D` + `k → ∞`). Deligne's uniformity in `k` at any polynomially sparse set of degrees (C41 at the prime powers) |
+| C54 | The Stepanov bound is a prime count | proved (Lean) | `orbitCorr_log_eq_archPoleWindow_sub_primeWindow`: `c_B(log d) = A(d) − P(d)`, `P(d)` the smoothed von Mangoldt count in the window of `d`, `A(d)` its archimedean-plus-pole prediction (explicit formula, `smoothedPrime_add_smoothedArchPole_eq_orbitCorr`). `riemannHypothesis_iff_primeWindow_le_of_powGaps`: for any degree set with power-saving gaps, RH iff `P(d) ≤ A(d) + K` on it; at the primes and at the `nᵏ`. Both sides are `≍ √d`; only the excess is bounded — Stepanov's `N_n ≤ qⁿ + 1 + Cq^{n/2}` at sparse degrees |
+| C55 | The prime number theorem in every window | proved (Lean), unconditional | `tendsto_normTrace_half_of_re_lt_one`: in the open strip `2 Re S(u) e^{−u/2} → 0`; for `ζ`, `tendsto_primeWindow_sub_archPoleWindow_div_sqrt`: `(P(d) − A(d))/√d → 0`. The trivial Stepanov exponent `½` holds with `o(·)`; RH is `O(1)` at one gap set (C54), an exponent `σ < ½` a zero-free strip (C49) |
+| C56 | The effective classes of two Frobenii | proved (Lean) | `riemannHypothesis_iff_bddBelow_twoFrobeniiLags`: RH iff `c_B(log m − log n) ≥ −K` for all `m, n ∈ ⟨p, q⟩` — one-sided, no attainment, because the lags are dense; `riemannHypothesis_iff_twoFrobeniiEffectiveCounts`: RH iff every effective class `Γ_m + Γ_n`, `m, n ∈ ⟨p, q⟩`, carries an `ℕ`-count along its ray with Tate limit `2c_B(0) + 2c_B(log m − log n)`. The count door of C25 with two primes in place of all of them |
+| C57 | Two Frobenii see every configuration | proved (Lean) | the traces are continuous, so a one-sided bound at the dense lags `log m − log n`, `m, n ∈ ⟨p, q⟩`, holds at every lag (`forall_of_twoFrobeniiLags`); then for every tempered configuration: from below without real zeros the line (`onLine_of_bddBelow_twoFrobeniiLags`), with real zeros depth `≤` the deepest real zero (`re_le_of_bddBelow_twoFrobeniiLags_of_realDepth`), from above the line, real zeros included (`onLine_of_bddAbove_twoFrobeniiLags`); `grh_of_bddAbove_twoFrobeniiLags` for `L(s, χ)`, Siegel zeros included. No attainment, no gaps |
 
 ## Big picture
 
@@ -94,19 +105,23 @@ pairs them), and what is left is the zero sum itself.
 Smoothed by the cubic spline, the Frobenius graphs at integer degrees are a curve in every numerical
 respect: genus `c_B(0)/2`, traces `c_B(log n)`, Hasse–Weil at every degree iff RH, the self-improvement
 from a crude bound is free, and one side of the crude bound suffices (Landau in place of Pringsheim).
-The degrees can be thinned: the squares; the powers `nᵏ` (base change, through the trace zeta function
-`Σ_z e_z ζ(s − kz)`); the primes, from either side, and the prime powers `pᵏ` for every fixed `k`. The gap method
-alone reaches the line: at width `a` the traces are Lipschitz with constant `≍ e^{au}`, so gaps
-`x^θ` lower the width by `1 − θ` per step, for every configuration down to its deepest real zero
-(C45); the von Mangoldt series `Σ_z e_z ζ'/ζ(s − kz)` gives a second bootstrap for `ζ`, `b ↦ b − (½ − b)/k`
-(C32). The
-sampling itself is not special to `ζ`: the prime powers see the top layer of every configuration
-without real zeros whose maximal depth is attained, from `ζ(1 + it) ≠ 0` alone (C35). Any weight
-whose series has a pole at `s = 1` and no other singularity on `Re s = 1` samples, e.g. the primes in
-a residue class (C38), where the Dirichlet-series bootstrap would meet the zeros of every `L(s, χ)`.
-The Rankin square of the traces diverges exactly at twice the top weight (C36). The growth exponent of a
-one-sided bound at the primes is the zero width. In Weil's terms, positivity on the prime two-bumps
-`B ± τ_{log p}B` is RH, and the count door needs only the effective classes `Γ_1 + Γ_p`.
+In Weil's terms, positivity on the prime two-bumps `B ± τ_{log p}B` is RH. The growth exponent of a
+one-sided bound is the zero width, at the primes and at every degree set with power-saving gaps (C49).
+
+Which degrees decide. Gaps: at width `a` the traces are Lipschitz with constant `≍ e^{au}`, so gaps
+`x^θ` lower the width by `1 − θ` per step; every degree set with power-saving gaps decides the line from
+below for every configuration down to its deepest real zero (C45), and from above for every
+configuration (C46): the primes, the `pᵏ`, the `nᵏ` with `O(x^{1/k})` elements (C47). Sampling: a weight
+whose series has a pole at `s = 1` and no other singularity on `Re s = 1` sees every attained top layer,
+from `ζ(1 + it) ≠ 0` alone (C35, C38): the primes in a residue class, density-one sets of primes (C44),
+the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). One prime resonates at the heights
+`2πm/log p` and aliases (C33, C52); two cannot resonate together. Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
+the monoid `⟨p, q⟩` decide RH with no attainment, their lags being dense (C51), and so do their
+effective classes `Γ_m + Γ_n`, one-sided (C56), for every configuration and for `L(s, χ)` (C57);
+positivity on the
+whole group ring of the two Frobenii is the Bochner problem on `T²` of `ArithmeticPositiveDuality`. For `ζ` the von Mangoldt series
+`Σ_z e_z ζ'/ζ(s − kz)` gives a second bootstrap, `b ↦ b − (½ − b)/k` (C32). The Rankin square of the
+traces diverges exactly at twice the top weight (C36).
 
 Over `𝔽_q` the crude bound is Stepanov's count, an upper bound on points, the side blind to real
 eigenvalues. Over `ℤ` the same side is blind exactly to the zeros shallower than the deepest real zero;
@@ -115,9 +130,14 @@ sampling set this is exact for attained tops: a lower bound forces the top to co
 (C39), and a top consisting of one real zero keeps the traces bounded below at all degrees (C40).
 Exactly: the lower side sees the sign of the top layer `F_top`, an almost periodic function, through
 its Bohr pairings with nonnegative exponential polynomials (C43). The other side has no blind spot
-(C37). The object the corpus is missing is therefore a natural count on the effective
-classes `Γ_1 + Γ_p` of the prime planes, i.e. a reason for an upper bound on the smoothed point counts
-at the prime degrees.
+(C37).
+
+The object the corpus is missing is therefore a natural count: on the effective classes `Γ_1 + Γ_d`
+of the planes of one degree set with power-saving gaps (C48), i.e. a reason for an upper bound on the
+smoothed point counts there; or, two-sided, a binary count on each plane of the rank-two lattice
+`p^ℤq^ℤ` of two Frobenii (C51), or one-sided on the effective classes `Γ_m + Γ_n`, `m, n ∈ ⟨p, q⟩`
+(C56). Positivity of Weil's form on their group ring `ℤ[x^{±1}, y^{±1}]`,
+a positive measure on `T²` (`ArithmeticPositiveDuality`), is the corresponding Rosati positivity.
 
 Reading. The traces at the prime powers are point counts: for the virtual motive
 `M = Σ_z e_z ℤ(−z)` over `Spec ℤ`, `#M(𝔽_{pᵏ}) = Σ_z e_z p^{kz} = 2 Re S(k log p)`, with
@@ -127,7 +147,8 @@ theorems are Deligne's Landau–Rankin purity argument for `M`: positivity of th
 `−ζ_M'/ζ_M` (here the one-sided hypothesis) and Landau's theorem against the poles `1 + z`. Deligne
 gets positivity by squaring, as the even powers `M^{⊗2k}` have nonnegative point counts
 `(2 Re S(log p))^{2k}`, and controls their weights by cohomology. Over `ℤ` the second input, a bound on
-the growth of the moments uniform in `k`, is RH.
+the growth of the moments uniform in `k`, is RH (C34); equivalently, a half-plane of convergence
+common to all `−L'/L(M^{⊗2k})` (C41).
 
 The atomic surface of degree `N` is, unconditionally, a curve of genus `≍ N log N`. In the normalized
 channels the jets have spectral radius `≍ N log N`, the pole (off the primitive part) `O(N log N)`,
@@ -137,9 +158,12 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
 
 ## Open
 
-1. A natural `ℕ`- or log-cardinality-valued count `K_p(m)` on the ray of each effective prime class
-   `Γ_1 + Γ_p` with `K_p(m)/m² → 2c_B(0) + 2c_B(log p)`, defined without `c_B` (C13, C25); equivalently
-   an upper bound on the smoothed point counts at the prime degrees, `c_B(log p) ≥ −K` (C24).
+1. A natural `ℕ`- or log-cardinality-valued count `K_d(m)` on the rays of the effective classes
+   `Γ_1 + Γ_d` for `d` in one degree set with power-saving gaps, e.g. the primes or the `nᵏ`, with
+   `K_d(m)/m² → 2c_B(0) + 2c_B(log d)`, defined without `c_B` (C48); equivalently a nontrivial
+   Stepanov exponent `σ < ½` there, `2 Re S(log d) ≥ −K d^σ`, which is the zero-free strip
+   `Re s > ½ + σ` (C49), the trivial exponent `½` being free. Two-sided: binary counts on the planes
+   `⟨Γ_m, Γ_n⟩` of the monoid `⟨p, q⟩` of two Frobenii (C51).
 2. The diagonal: a renormalized self-intersection of Frobenius graphs whose sign is Weil's; the
    off-diagonal is a nonnegative Lefschetz count. For atoms the renormalization is `Θ(N log N)` at
    degree `N` and unconditional (C15, C17); a diagonal of bounded genus exists only for smoothed graphs;
@@ -150,8 +174,15 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    (C45); sampling weights need only a pole at `1` and no other singularity on `Re s = 1`, but an
    attained top (C38, C44). Open: removing attainment without gaps, e.g. for the primes in a
    residue class (whose gaps would need zero-density estimates for every `L(s, χ)` mod `q`) or for
-   density-one sets of primes; the geometric degrees `qⁿ` of one prime alias every height
-   `2πm/log q`.
+   density-one sets of primes, or one-sided at the `pᵃqᵇ` of two primes (C50); one prime alone
+   is not a sampling set (C52) and its degrees `qⁿ` alias every height `2πm/log q` (C33).
+   Conjecture (sharpness of C50, positive-weight model): there are points `ρ_k = ½ + x_k ± iγ_k`,
+   `x_k ↑ Θ` not attained, with positive weights `c_k`, whose samples `Σ_k c_k e^{(ρ_k − ½)λ}` (with
+   conjugates and reflections) are bounded below at every `λ = a log p + b log q`. Sketch: quartet
+   `k` dominates the others on a window `[U_k, U_{k+1}]` (weights chosen after the `x_k`), and
+   `γ_k = 2πn/log p` with `‖n log q/log p‖ ≤ 1/Q`, `Q ≍ U_{k+1}` (Dirichlet), keeps `γ_kλ` within
+   `π/4` of `2πℤ` at all degrees of the window. Pairs `log m − log n` are dense and need no
+   attainment (C56, C57); single degrees would.
 
 ## Log
-- 2026-11-08 — created; C1–C46 formalized in `SurfaceOfSpecZ/` (forty-five modules)
+- 2026-11-08 — created; C1–C57 formalized in `SurfaceOfSpecZ/` (fifty-six modules)

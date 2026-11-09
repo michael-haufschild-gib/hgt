@@ -10,6 +10,11 @@ import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheReflection
 import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheRingdownRateOfASeedIsTheZeroFreeRegion
 import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheTwoModeEnergiesRingDownAtTheZeroFreeRate
 import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.OneCavityFunctionIsASharpReceiver
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheHeckeCosetsOfDeterminantP
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheHeckeOperatorIsSelfAdjoint
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheHeckeEigenformsSeeEveryResonanceInPairs
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.TheShimuraIntegralOfACuspForm
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.OneHeckeEigenformIsBlindToHalvingPairs
 
 /-!
 # Arithmetic Holography of the Modular Horizon
@@ -25,6 +30,10 @@ the resonance Krein form of the cavity has infinite index of both signs at every
 reflection Krein form has exactly one negative square at each off-line zero (RH ⟺ positivity); the
 ringdown rate of every seed with exponentially decaying completed transform is its zero-free region, and
 RH ⟺ every two-mode cavity energy rings down at `y^{3/4−ε}` (Zagier's theorem for the cavity); one
-cuspidal function of Maass forms is a sharp receiver: RH ⟺ its energy rings down at `y^{3/4−ε}`. See
-`ArithmeticHolographyOfTheModularHorizon/README.md`.
+cuspidal function of Maass forms is a sharp receiver: RH ⟺ its energy rings down at `y^{3/4−ε}`; the
+Hecke cosets of determinant `p` and the self-adjointness of `T_p`, so Hecke eigenforms span every cusp
+space, pairs of Hecke eigenforms see every resonance, and one cavity function of Hecke eigenforms is a
+sharp receiver; Shimura's weight-½ integral of a level-one cusp form and its continuation, so the diagonal
+entry of a Hecke eigenform is `ζ(s)` times Shimura's integral and one eigenform is blind to every zero
+`ρ` with `ζ(ρ/2) = 0`. See `ArithmeticHolographyOfTheModularHorizon/README.md`.
 -/

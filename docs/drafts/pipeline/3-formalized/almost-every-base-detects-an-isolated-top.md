@@ -1,10 +1,11 @@
 # Almost every base detects an isolated top
 
-- **Stage:** 2-fully-proven; formalization in progress, not yet a verified contribution.
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Contribution count:** One (#17), including finite-jet sublevel control, metric sampling, infinite-rank transfer, actual-zeta detection, and the RH criteria.
 - **Obstacles:** B13, B112; detection beyond the exceptional-rank density barrier.
 - **Statement:** For an absolutely summable exponential trace with a finite visible isolated top exponent `Theta`, almost every positive sampling base `ell` has `|S(n ell)|>C exp(a n ell)` at every sufficiently large integer level, simultaneously for every `a<Theta` and `C>=0`. For actual zeta AAL failure, `Theta` is the rightmost real part minus `1/2`.
-- **RH criterion:** RH is equivalent to zeros approaching the line together with a positive-measure set of positive bases having infinitely many subexponential lag readings at every positive exponent. Constants and subsequences may depend on the base and exponent; no thickness or density condition is imposed on the levels.
+- **RH criterion:** RH is equivalent to zeros approaching the line together with positive-measure recurrence at every positive exponent: for each `a>0`, a positive-measure set of positive bases has infinitely many readings bounded by `C exp(a n ell)`. The base set may vary with `a`; constants and subsequences may vary with the base. A common positive-measure base set across all exponents gives another equivalent criterion. Neither requires thickness or density of the reading levels.
 - **Novelty boundary:** Bounded gaps and coefficient-dependent lower density hold at every base. Periodic root packets show that eventual detection at every level cannot hold at every base. The exceptional bases retaining infinitely many exponentially small readings form a null set.
 
 ## Proof
@@ -33,7 +34,7 @@ For the full trace, absolute summability and the isolated gap give
 `|exp(-Theta t)S(t)-P(t)|<=W exp(-(Theta-Theta2)t)` for `t>=0`.
 Given `a<Theta`, choose `0<delta<min(Theta-a,Theta-Theta2)`. Exponential domination makes the normalized remainder and `C exp(-(Theta-a)t)` together smaller than `exp(-delta t)` eventually. This proves the full-trace assertion. Failure of actual zeta AAL supplies the finite isolated top; actual lag weights are summable and merged coefficients are nonzero by positive real parts.
 
-If subexponential lag readings recur infinitely often at a positive-measure set of bases, failure of AAL contradicts the almost-everywhere eventual lower bound at the positive rate `(Theta-1/2)/2`. Thus AAL holds. Combining it with zeros approaching the line gives RH. Conversely, RH bounds the lag uniformly at every base, supplying the metric condition on the interval `[1,2]`.
+If readings at each positive rate recur infinitely often at a positive-measure set of bases, failure of AAL contradicts the almost-everywhere eventual lower bound at the rate `(zetaZeroAbscissa-1/2)/2`. Only the base set at this one rate is needed, so no common positive-measure intersection across rates is required. Thus AAL holds. Combining it with zeros approaching the line gives RH. Conversely, RH bounds the lag uniformly at every base, supplying even the common-base metric condition on `[1,2]`.
 
 ## Corpus audit
 
@@ -43,6 +44,20 @@ If subexponential lag readings recur infinitely often at a positive-measure set 
 - `WeilLagAlmostEverySpacingBlind`: finite-measure bad-time transfer by Borel–Cantelli. Its infinite-layer counterexample concerns a one-sided real-part bound and does not contradict this absolute-value statement.
 - Existing lag integral and finite-measure excursion criteria control continuous sets of times. The metric criterion here requires only infinitely many readings in each of a positive-measure family of progressions.
 
-## Formalization gate
+## Lean certificate
 
-Formalize absolute sublevel control, uniform finite-jet separation, finite bad-time measure, and actual-zeta metric detection. Count only after direct Lean and transitive-axiom audits.
+Paths are relative to `formal/GaloisForLFunctions/InfiniteRankWeilTheory/`.
+
+| Module | Certificate |
+|---|---|
+| `FiniteJetSublevelMeasure.lean` | `volume_sublevel_le_of_derivative_lower` |
+| `UniformOscillatoryJets.lean` | `exists_uniform_oscillatoryJet_window` |
+| `OscillatorySublevelMeasure.lean` | `exists_uniform_oscillatory_sublevel_bound` |
+| `OscillatoryExceptionalTimes.lean` | `volume_oscillatory_exp_small_lt_top` |
+| `AlmostEveryOscillatorySampling.lean` | `ae_eventually_finset_oscillatory_exp_lower` |
+| `AlmostEveryIsolatedTopSampling.lean` | `ae_eventually_isolatedTop_exp_lower` |
+| `ZetaMetricTopDetection.lean` | `not_asymptoticAbscissaLaw_implies_metric_top_detection`, `riemannHypothesis_iff_zerosApproachLine_and_metric_lag_bound`, `riemannHypothesis_iff_zerosApproachLine_and_metric_recurrence_at_each_rate` |
+
+All seven modules pass direct `lake --old env lean` audits without warnings. The capstones use only `propext`, `Classical.choice`, and `Quot.sound` transitively. All seven modules are umbrella-wired.
+
+The actual-zeta detection theorem uses the exact threshold `zetaZeroAbscissa-1/2`, quantifies over all real constants, and places all rates and constants inside one almost-everywhere assertion. Absolute summability and merged-coefficient visibility are discharged from actual lag weights. The positive-measure recurrence condition and zeros approaching the line remain inputs to the RH equivalences; neither is established by this contribution.

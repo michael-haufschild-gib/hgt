@@ -84,6 +84,27 @@ The actual `¬AAL` top layer supplies this subtraction throughout the interval
 between top and tail. Direct checks and standard-axiom audits pass. The
 reflected infinite field cannot be truncated on the strength of this result.
 
+`../3-formalized/euler-fe-two-scale-zero-multiplicity.md` extends the calculus
+to every actual complex zero. The full nonresonant Gamma field is absolutely
+admitted; the resonant logarithm has exact divisor multiplicity. Comparing
+scales `y` and `cy` cancels the finite part and gives `−mρ log(c)/2` for every
+`c>0`, without rightmostness or simplicity. Direct checks and standard-axiom
+audits pass. Divisor-defined counterterms remain in this observable.
+
+`../3-formalized/euler-fe-prime-only-top-multiplicity.md` removes these
+counterterms from the observable at any actual rightmost zero:
+`Gρ(e^(−u))/u→−mρ/2`. The full nonresonant field is uniformly bounded,
+without a finite-layer or uniform-gap hypothesis. The actual finite top
+under `¬AAL` supplies an off-line point satisfying this law. Direct checking
+and both standard-axiom audits pass. No new height or contradiction follows.
+
+`../3-formalized/euler-fe-height-uniform-archimedean-damping.md` proves
+`|A_y,c(s)−e^(−y)A(s)|≤ye^(−y)/Re s`, uniformly at every height in the
+right half-plane. The renormalized error tends uniformly to zero on
+`Re s≥σ₀>0`; `e^(−y)` is the unique scalar leaving bounded vertical error.
+The full trivial-zero series and four terminal standard-axiom audits pass.
+The complete nontrivial-zero field still needs joint height/damping control.
+
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`
 on bounded parts of the open strip. It also proves that, for any escaping

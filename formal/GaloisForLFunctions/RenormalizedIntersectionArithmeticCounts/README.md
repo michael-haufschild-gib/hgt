@@ -614,6 +614,44 @@ square-root-scale discrepancy derived from Stepanov's theorem. Its
 arithmetic fixed-point and signed coefficient comparisons are proved.
 The integer conductor-cutoff comparison with `1−M(N)` remains open.
 
+## Integer prime-quadratic fibres
+
+For `n>0`, form the integral polynomial `F_n(X)=∏_(p^a∥n)(X²+p)^a`
+from prime factorization alone. Write `r=Ω(n)` and let `Δ_n` be the product
+of pairwise differences in its prime-factor list.
+[PrimeQuadraticDiscriminant.lean](PrimeQuadraticDiscriminant.lean) proves
+
+`disc(F_n)=(-4)^r n Δ_n^4`, `sign(disc(F_n))=μ(n)`.
+
+[PrimeQuadraticOrientationCounts.lean](PrimeQuadraticOrientationCounts.lean)
+counts actual real solutions of `y²=disc(F_n)`, including one branch point
+at repeated factors. Its disjoint union through `N` has `R_N=N+M(N)` points.
+For `N≥1`, the original relative singular indices satisfy
+`Σ_p index_p(N)=N+1−R_N`.
+This is a real-place comparison. Transferring the finite-field square-root
+estimate to this integer-conductor family remains open.
+
+[PrimeQuadraticDifferentCounts.lean](PrimeQuadraticDifferentCounts.lean)
+uses the same equation to construct `A_n=ℤ[X]/(F_n,F_n')`. At squarefree
+conductors this ring is finite with `C_n=#A_n=|disc(F_n)|`, and
+`Σ_p v_p(C_n)log p=log|disc(F_n)|`. At repeated factors it is infinite.
+The [integral cokernel theorem](../HTGeometry/SingularIntegralCokernel.lean)
+extends determinant cardinality to this nonproper case by constructing a
+nonzero integral functional on every singular cokernel.
+
+Conductor multiplication gives `F_(mn)=F_mF_n` and
+`C_(mn)=C_m C_n |Res(F_m,F_n)|²`. Every nontrivial conductor square has an
+infinite different quotient, obstructing finite Tate counts under powers
+within this family. The actual global rational fibres are classified in
+[PrimeQuadraticRationalFibres.lean](PrimeQuadraticRationalFibres.lean): their
+total for `N≥1` is `N+2−Q(N)`, where `Q(N)` counts squarefree integers.
+They retain squarefree support and lose the Möbius orientation.
+
+The [formalized comparisons](../../../docs/drafts/pipeline/3-formalized/riac-prime-quadratic-counts.md)
+construct counts and a product formula independently of the signed sum.
+The trace-discriminant comparison for the full monogenic order, uniform
+geometric control, and an independent bound for `|N+1−R_N|` remain open.
+
 ## Actual orientation quotient
 
 [OrientationQuotientCounts.lean](OrientationQuotientCounts.lean) constructs

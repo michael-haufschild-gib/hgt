@@ -113,7 +113,57 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_metric_lag_bound :
     exact RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr
       ⟨hZ, asymptoticAbscissaLaw_of_pos_volume_subexponentialLagBases hmetric⟩
 
+/-- Bases with infinitely many readings below some constant multiple of one fixed exponential
+rate. The constant and the subsequence may depend on the base. -/
+def lagRecurrenceBases (a : ℝ) : Set ℝ :=
+  {ℓ : ℝ | 0 < ℓ ∧ ∃ C : ℝ, ∃ᶠ n : ℕ in atTop,
+    ‖RHTower.weilLagFunction ((n : ℝ) * ℓ)‖ ≤ C * Real.exp (a * (n : ℝ) * ℓ)}
+
+/-- Under failure of AAL, recurrent readings at any sub-top rate occur on a null set of bases. -/
+theorem volume_lagRecurrenceBases_eq_zero_of_not_asymptoticAbscissaLaw
+    (hnot : ¬ RHTower.AsymptoticAbscissaLaw) {a : ℝ}
+    (ha : a < RHTower.zetaZeroAbscissa - 1 / 2) : volume (lagRecurrenceBases a) = 0 := by
+  have hae : ∀ᵐ ℓ ∂volume, ℓ ∉ lagRecurrenceBases a := by
+    filter_upwards [(not_asymptoticAbscissaLaw_implies_metric_top_detection hnot).2] with ℓ hℓ
+    rintro ⟨hℓpos, C, hC⟩
+    obtain ⟨n, hnle, hnlt⟩ := (hC.and_eventually (hℓ hℓpos a ha C)).exists
+    exact (not_lt_of_ge hnle) hnlt
+  have hset : {ℓ : ℝ | ¬ ℓ ∉ lagRecurrenceBases a} = lagRecurrenceBases a := by
+    ext ℓ
+    exact not_not
+  have hz := ae_iff.mp hae
+  rw [hset] at hz
+  exact hz
+
+/-- AAL follows from positive-measure recurrence at each positive rate, even when the set of
+bases varies with the rate. -/
+theorem asymptoticAbscissaLaw_of_forall_pos_volume_lagRecurrenceBases
+    (hpos : ∀ a : ℝ, 0 < a → 0 < volume (lagRecurrenceBases a)) :
+    RHTower.AsymptoticAbscissaLaw := by
+  by_contra hnot
+  have hΘ := (not_asymptoticAbscissaLaw_implies_metric_top_detection hnot).1
+  have ha : 0 < (RHTower.zetaZeroAbscissa - 1 / 2) / 2 := by linarith only [hΘ]
+  exact (ne_of_gt (hpos _ ha))
+    (volume_lagRecurrenceBases_eq_zero_of_not_asymptoticAbscissaLaw hnot
+      (a := (RHTower.zetaZeroAbscissa - 1 / 2) / 2) (by linarith only [hΘ]))
+
+/-- RH is zeros approaching the line plus positive-measure recurrence at each positive rate.
+The positive-measure sets need not have a common positive-measure intersection. -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_metric_recurrence_at_each_rate :
+    RiemannHypothesis ↔ RHTower.BacklundConverse.ZerosApproachLine ∧
+      ∀ a : ℝ, 0 < a → 0 < volume (lagRecurrenceBases a) := by
+  constructor
+  · intro hRH
+    obtain ⟨hZ, hpos⟩ := riemannHypothesis_iff_zerosApproachLine_and_metric_lag_bound.mp hRH
+    refine ⟨hZ, fun a ha => hpos.trans_le (measure_mono ?_)⟩
+    intro ℓ hℓ
+    exact ⟨hℓ.1, hℓ.2 a ha⟩
+  · rintro ⟨hZ, hpos⟩
+    exact RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr
+      ⟨hZ, asymptoticAbscissaLaw_of_forall_pos_volume_lagRecurrenceBases hpos⟩
+
 #print axioms not_asymptoticAbscissaLaw_implies_metric_top_detection
 #print axioms riemannHypothesis_iff_zerosApproachLine_and_metric_lag_bound
+#print axioms riemannHypothesis_iff_zerosApproachLine_and_metric_recurrence_at_each_rate
 
 end GaloisForLFunctions.InfiniteRankWeilTheory

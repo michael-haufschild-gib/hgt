@@ -50,9 +50,10 @@ theorem SamplingWeight.of_le_of_summable_sub {w w' : ℕ → ℝ} (hw : Sampling
     SamplingWeight w' := by
   set h : ℕ → ℝ := fun j => w j - w' j with hhdef
   have hh0 : ∀ j, 0 ≤ h j := fun j => sub_nonneg.mpr (hle j)
-  have hhle : ∀ j, h j ≤ Λ (j + 1) := fun j => by
-    have := hw.le_vonMangoldt j; have := h0 j; simp only [hhdef]; linarith
-  have hw'le : ∀ j, w' j ≤ Λ (j + 1) := fun j => (hle j).trans (hw.le_vonMangoldt j)
+  have hhw : ∀ j, h j ≤ w j := fun j => by have := h0 j; simp only [hhdef]; linarith
+  have hw's : ∀ σ : ℝ, 1 < σ → Summable fun j : ℕ => w' j * ((j : ℝ) + 1) ^ (-σ) := fun σ hσ =>
+    Summable.of_nonneg_of_le (fun j => mul_nonneg (h0 j) (by positivity))
+      (fun j => mul_le_mul_of_nonneg_right (hle j) (by positivity)) (hw.summable hσ)
   set H := ∑' j : ℕ, h j * ((j : ℝ) + 1) ^ (-(1 : ℝ)) with hHdef
   -- the removed part is bounded by `H` on `Re s ≥ 1`
   have hpow : ∀ j : ℕ, ∀ t : ℝ, 1 ≤ t → ((j : ℝ) + 1) ^ (-t) ≤ ((j : ℝ) + 1) ^ (-(1 : ℝ)) :=
@@ -74,20 +75,20 @@ theorem SamplingWeight.of_le_of_summable_sub {w w' : ℕ → ℝ} (hw : Sampling
     filter_upwards [self_mem_nhdsWithin] with σ hσ
     rw [hsub σ hσ]
     linarith [hHb σ (le_of_lt hσ)]
-  refine ⟨h0, hw'le, hatTop, fun c hc hre => ?_⟩
+  refine ⟨h0, hw's, hatTop, fun c hc hre => ?_⟩
   have hsubC : ∀ σ : ℝ, 1 < σ →
       wSeries w' ((σ : ℂ) + c) = wSeries w ((σ : ℂ) + c) - wSeries h ((σ : ℂ) + c) := by
     intro σ hσ
     have hs : 1 < ((σ : ℂ) + c).re := by simp; linarith
     rw [wSeries, wSeries, wSeries, ← (hw.summable_series hs).tsum_sub
-      (summable_wSeries_of_le hh0 hhle hs)]
+      (hw.summable_series_of_le hh0 hhw hs)]
     refine tsum_congr fun j => ?_
     simp only [hhdef]; push_cast; ring
   have hnormh : ∀ σ : ℝ, 1 < σ → ‖wSeries h ((σ : ℂ) + c)‖ ≤ H := by
     intro σ hσ
     have hs : 1 < ((σ : ℂ) + c).re := by simp; linarith
     calc ‖wSeries h ((σ : ℂ) + c)‖ ≤ ∑' j : ℕ, ‖(h j : ℂ) * ((j : ℂ) + 1) ^ (-((σ : ℂ) + c))‖ :=
-          norm_tsum_le_tsum_norm (summable_wSeries_of_le hh0 hhle hs).norm
+          norm_tsum_le_tsum_norm (hw.summable_series_of_le hh0 hhw hs).norm
       _ = wSum h ((σ : ℂ) + c).re := by
           rw [wSum]
           refine tsum_congr fun j => ?_

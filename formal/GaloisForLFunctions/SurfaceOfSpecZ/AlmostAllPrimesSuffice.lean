@@ -32,12 +32,13 @@ theorem SamplingWeight.of_le_of_tendsto_ratio {w w' : ℕ → ℝ} (hw : Samplin
     SamplingWeight w' := by
   set h : ℕ → ℝ := fun j => w j - w' j with hhdef
   have hh0 : ∀ j, 0 ≤ h j := fun j => sub_nonneg.mpr (hle j)
-  have hhle : ∀ j, h j ≤ Λ (j + 1) := fun j => by
-    have := hw.le_vonMangoldt j; have := h0 j; simp only [hhdef]; linarith
-  have hw'le : ∀ j, w' j ≤ Λ (j + 1) := fun j => (hle j).trans (hw.le_vonMangoldt j)
+  have hhw : ∀ j, h j ≤ w j := fun j => by have := h0 j; simp only [hhdef]; linarith
+  have hw's : ∀ σ : ℝ, 1 < σ → Summable fun j : ℕ => w' j * ((j : ℝ) + 1) ^ (-σ) := fun σ hσ =>
+    Summable.of_nonneg_of_le (fun j => mul_nonneg (h0 j) (by positivity))
+      (fun j => mul_le_mul_of_nonneg_right (hle j) (by positivity)) (hw.summable hσ)
   have hhs : ∀ σ : ℝ, 1 < σ → Summable fun j : ℕ => h j * ((j : ℝ) + 1) ^ (-σ) := fun σ hσ =>
     Summable.of_nonneg_of_le (fun j => mul_nonneg (hh0 j) (by positivity))
-      (fun j => mul_le_mul_of_nonneg_right (hhle j) (by positivity)) (summable_vonMangoldt_rpow hσ)
+      (fun j => mul_le_mul_of_nonneg_right (hhw j) (by positivity)) (hw.summable hσ)
   have hsub : ∀ σ : ℝ, 1 < σ → wSum w' σ = wSum w σ - wSum h σ := by
     intro σ hσ
     rw [wSum, wSum, wSum, ← (hw.summable hσ).tsum_sub (hhs σ hσ)]
@@ -53,20 +54,20 @@ theorem SamplingWeight.of_le_of_tendsto_ratio {w w' : ℕ → ℝ} (hw : Samplin
     rw [hsub σ hσ]; linarith
   have hatTop : Tendsto (wSum w') (𝓝[>] 1) atTop :=
     tendsto_atTop_mono' _ hw'half (hw.tendsto_atTop.atTop_div_const (by norm_num))
-  refine ⟨h0, hw'le, hatTop, fun c hc hre => ?_⟩
+  refine ⟨h0, hw's, hatTop, fun c hc hre => ?_⟩
   have hsubC : ∀ σ : ℝ, 1 < σ →
       wSeries w' ((σ : ℂ) + c) = wSeries w ((σ : ℂ) + c) - wSeries h ((σ : ℂ) + c) := by
     intro σ hσ
     have hs : 1 < ((σ : ℂ) + c).re := by simp; linarith
     rw [wSeries, wSeries, wSeries, ← (hw.summable_series hs).tsum_sub
-      (summable_wSeries_of_le hh0 hhle hs)]
+      (hw.summable_series_of_le hh0 hhw hs)]
     refine tsum_congr fun j => ?_
     simp only [hhdef]; push_cast; ring
   have hnormh : ∀ σ : ℝ, 1 < σ → ‖wSeries h ((σ : ℂ) + c)‖ ≤ wSum h σ := by
     intro σ hσ
     have hs : 1 < ((σ : ℂ) + c).re := by simp; linarith
     calc ‖wSeries h ((σ : ℂ) + c)‖ ≤ ∑' j : ℕ, ‖(h j : ℂ) * ((j : ℂ) + 1) ^ (-((σ : ℂ) + c))‖ :=
-          norm_tsum_le_tsum_norm (summable_wSeries_of_le hh0 hhle hs).norm
+          norm_tsum_le_tsum_norm (hw.summable_series_of_le hh0 hhw hs).norm
       _ = wSum h ((σ : ℂ) + c).re := by
           rw [wSum]
           refine tsum_congr fun j => ?_

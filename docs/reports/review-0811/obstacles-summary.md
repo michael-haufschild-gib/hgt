@@ -591,6 +591,36 @@ and tail. `TheFinitePartOfTheGaussianPrimeCurrent.lean` retains the unscaled
 continued background and proves these laws with standard-axiom audits.
 Reflection still involves the full field; new-height replication remains open.
 
+**Gaussian resonance at actual zeros [L].** At every actual zero `ρ` of
+multiplicity `mρ`, retain all nonresonant modes in `Bρ(y)`. Their full Gamma
+series is absolutely convergent at each positive damping. With
+`Cq=(½−ρ)/[(ρq−½)(ρq−ρ)]`, the exact logarithmic finite part is
+`Gρ+Bρ−(mρ/2)log y → A(ρ)−mρ/(ρ−½)−Σoff Cq+mργE/2`.
+Consequently `Gρ(y)−Gρ(cy)+Bρ(y)−Bρ(cy) → −mρ log(c)/2` for every `c>0`.
+`GaussianRenormalizationAtZeros.lean` proves these laws without rightmostness,
+simplicity or a finite exceptional layer; all terminal axiom audits are standard.
+At arbitrary zeros the counterterms use the divisor; this law alone gives
+no new-height replication.
+
+**Prime-only multiplicity at a rightmost zero [L].** If `ρ` is an actual
+rightmost zero, `Gρ(e^(−u))/u→−mρ/2`, with no divisor counterterm in the
+observable. The entire nonresonant Gamma field is bounded by its summable
+amplitudes at damping `1`. Equal-abscissa zeros and an infinite tail with no
+uniform gap are admitted. `ThePrimeCurrentReadsTopMultiplicity.lean` also
+produces such an off-line observation point from the actual finite top under
+`¬AAL`. Direct checks and both standard-axiom audits pass. This reads an
+existing top; it supplies neither a contradiction nor replication.
+
+**Uniform archimedean damping [L].** The actual Gaussian transform satisfies
+`|A_y,c(s)−e^(−y)A(s)|≤ye^(−y)/Re s` for every `y,c>0`, `Re s>0`.
+Thus the error tends uniformly to zero on whole half-planes `Re s≥σ₀>0`,
+with no restriction coupling escaping height to damping. For fixed positive
+`y,c,σ`, a scalar `z` leaves `A_y,c(σ+it)−zA(σ+it)` bounded for all `t`
+exactly when `z=e^(−y)`. `TheArchimedeanDampingErrorIsUniform.lean` proves
+the full correction series, telescoping bound and unique normalization;
+all four terminal axiom audits are standard. Control of the complete
+nontrivial-zero field and height replication remain open.
+
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.
 The actual error `N_t(s)ζ(s+it)−conj(ζ(R(s)+it))` tends uniformly to zero

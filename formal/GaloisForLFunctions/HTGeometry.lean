@@ -6703,6 +6703,7 @@ import GaloisForLFunctions.HTGeometry.IsogenyIndexArithmetic
 import GaloisForLFunctions.HTGeometry.IsogenyKernel
 import GaloisForLFunctions.HTGeometry.IsogenyKernelClosure
 import GaloisForLFunctions.HTGeometry.IsogenyLattice
+import GaloisForLFunctions.HTGeometry.SingularIntegralCokernel
 import GaloisForLFunctions.HTGeometry.IsogenyRegular
 import GaloisForLFunctions.HTGeometry.IsogenyTailMaurerCartanHolography
 import GaloisForLFunctions.HTGeometry.IsolateVariable

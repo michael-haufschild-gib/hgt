@@ -30,6 +30,9 @@ import GaloisForLFunctions.EulerFETransportTheory.SignedEulerCorrectionCannotRep
 import GaloisForLFunctions.EulerFETransportTheory.TheNormalizedHeightReflection
 import GaloisForLFunctions.EulerFETransportTheory.TheWholeQuadrantCannotSupportReturns
 import GaloisForLFunctions.EulerFETransportTheory.TheFinitePartOfTheGaussianPrimeCurrent
+import GaloisForLFunctions.EulerFETransportTheory.GaussianRenormalizationAtZeros
+import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentReadsTopMultiplicity
+import GaloisForLFunctions.EulerFETransportTheory.TheArchimedeanDampingErrorIsUniform
 
 /-!
 # Euler–functional-equation transport
@@ -77,4 +80,13 @@ The full Gaussian prime current has a continued finite part after subtraction
 of its Gamma zero modes. A finite exceptional layer suffices whenever every
 complementary zero lies strictly left of the observation line. Reflection of
 the full finite part retains exactly the polar and archimedean background.
+At every actual zero, the full nonresonant Gamma field is absolutely admitted.
+Its subtraction leaves a logarithmic term with the exact divisor multiplicity;
+comparison of two positive damping scales cancels the finite-part constant.
+At a rightmost zero the nonresonant field is uniformly bounded. The raw
+prime-minus-continuum current divided by logarithmic damping scale therefore
+recovers its divisor multiplicity. Failure of AAL supplies such an off-line zero.
+The archimedean Gaussian current differs from `exp (-y)` times its undamped
+value by at most `y * exp (-y) / re s`, uniformly over the whole right half-plane.
+This is the unique scalar normalization with bounded error on a positive vertical line.
 -/

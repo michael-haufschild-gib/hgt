@@ -128,6 +128,17 @@ converge to that diagonal height with the proved finite-radius error sign.
 The critical sign and the comparison controlling the signed local-index
 sum remain open.
 
+The [prime-quadratic arithmetic family](../3-formalized/riac-prime-quadratic-counts.md)
+defines `F_n=∏_(p^a∥n)(X²+p)^a` independently of Möbius coefficients.
+For `N≥1`, its actual real orientation count is `R_N=N+M(N)`, with original
+local indices `Σ_p index_p(N)=N+1−R_N`. The same equation gives actual different
+quotients and prime-local/archimedean product-formula heights. Repeated
+factors make those quotients infinite; every nontrivial conductor square
+therefore leaves the finite-count locus. Global rational fibres instead
+give `N+2−Q(N)` and lose the signed orientation. The exact cross-resultant
+multiplication law survives. A [uniform geometric bound](riac-prime-quadratic-orientation-cover.md)
+for the centred real count and the monogenic trace comparison remain open.
+
 The [finite-field orientation count](../3-formalized/riac-finite-field-orientation-counts.md)
 constructs actual square-root fibres of residue-field trace discriminants.
 Their signed fibre counts recover polynomial Möbius signs. The aggregate

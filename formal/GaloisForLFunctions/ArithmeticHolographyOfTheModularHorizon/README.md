@@ -1,7 +1,7 @@
 # Arithmetic Holography of the Modular Horizon (AHMH)
 
 Namespace `GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon`; umbrella
-`ArithmeticHolographyOfTheModularHorizon.lean`; 12 modules.
+`ArithmeticHolographyOfTheModularHorizon.lean`; 17 modules.
 
 ## 1. Motivation
 
@@ -32,16 +32,19 @@ zeros of `ξ(2s)`, fixed by the group, and the seed enters only through the resi
 holds collectively (unitary seeds see every resonance) and never kinematically (no seed, weight or spectrum
 moves a resonance); the frequency form of B117 is a Hilbert–Pólya realization and is RH. Positivity cannot
 enter through the back door either: a one-sided bound on the dual (black-hole) side is as strong as the rate
-itself. The residue question B109 has a positive answer: pairs of Maass cusp eigenforms see every resonance, and
-one cavity function — of odd tent fields, or of Maass eigenforms — sees all of them, so the horocycle rate of its
-energy is a complete receiver. The Krein structure of the channel lives on reflection pairs of resonances: the
+itself. The residue question B109 has a positive answer: pairs of Hecke–Maass eigenforms see every resonance, and
+one cavity function — of odd tent fields, of Maass eigenforms, or of Hecke eigenforms — sees all of them, so the
+horocycle rate of its energy is a complete receiver. The Krein structure of the channel lives on reflection pairs of resonances: the
 Krein form of one resonance has infinite index of both signs, on the line or off it, while the reflection Krein
 form `Λ(s) Λ̄(s*) + Λ(s*) Λ̄(s)` of the cavity has exactly one negative square at each off-line zero and none on
 the line, so RH is the positivity of these forms. The receivers are sharp: the ringdown rate of every seed whose
 completed transform decays like `e^{−π|t|}` is its zero-free region, and RH holds iff every two-mode state of the
-cavity rings down at `y^{3/4−ε}` (Zagier's theorem for the cavity); one cuspidal function `g` of Maass forms is a
+cavity rings down at `y^{3/4−ε}` (Zagier's theorem for the cavity); one cuspidal function `g` of Hecke–Maass forms is a
 sharp receiver on its own: RH ⟺ `|g|²` rings down at `y^{3/4−ε}`, and a zero-free strip ⟺ some rate `y^α`, `α > ½`.
-Universal damping is thereby an exact statement about one cavity energy, and it is RH.
+Universal damping is thereby an exact statement about one cavity energy, and it is RH. A single eigenform is
+not enough: the diagonal entry of a Hecke eigenform is `ζ(s)` times Shimura's weight-½ integral, so one Hecke
+eigenform is blind to every zero `ρ` for which `ρ/2` is also a zero, and B109 for one eigenform already excludes
+such halving pairs.
 
 ## 2. The holographic triangle
 
@@ -85,6 +88,15 @@ Universal damping is thereby an exact statement about one cavity energy, and it 
 | Resonance coefficient | `resonanceCoefficient` | `κ(u) = ξ(2u)/((2u − 1)2u)`, the surviving constant term at a resonance |
 | Resonance Krein form, Krein Gram matrix | `resonanceKrein`, `kreinGram` | `𝒦_s(g, h) = ½(b_s(g, h) + conj b_s(h, g))`; its Gram matrix on tents |
 | Pair Gamma factor | `pairGamma` | `2^{s−3}/Γ(s) Π Γ((s ± ν₁ ± ν₂)/2)` |
+| Hecke representatives, adjugates | `HeckeCoset.A`, `HeckeCoset.Astar` | `α_∞ = (p 0; 0 1)`, `α_b = (1 b; 0 p)`; `α_∞^* = (1 0; 0 p)`, `α_b^* = (p −b; 0 1)` |
+| Hecke bijection | `HeckeCoset.heckeEquiv`, `HeckeAdjoint.pslEquiv` | `(i, γ) ↦ (γ', k)` with `α_i^* γ = γ' α_k`, on `SL₂(ℤ)` and on `PSL₂(ℤ)` |
+| Hecke form | `IsHeckeForm` | a cusp form of eigenvalue `λ` that is an eigenfunction of every `T_p` |
+| `L²` image of a cusp space | `L2Image`, `toImage` | `S(λ) ≅` its class in `L²(𝒟)`, with the Petersson product |
+| Hecke basis | `heckeBasis`, `heckeV` | a finite spanning set of Hecke forms of `S(λ)`; their enumeration over the spectrum |
+| Shimura kernel and integral | `Shimura.kernel`, `RHTower.HalfWeight.rsFold 1 (Shimura.kernel g)` | `G(z) = g(4z) θ̄(z) y^{1/4}`; its fold against the weight-½ Eisenstein series of level `4` |
+| Shimura series | `Shimura.zCoef`, `Shimura.melC` | `ρ_W(j²)(8πj²)^{3/4−w}`; `Mel_ν(μ) = 2^{μ−1}Γ(μ)Γ(μ+ν)Γ(μ−ν)/Γ(2μ)` |
+| Normalized Hecke sequence | `HalvingPairs.tauOf` | `τ(n) = ρ(n)/ρ(1)`, real, multiplicative, `τ(n)² = Σ_{d∣n} τ((n/d)²)` |
+| Diagonal identity | `HalvingPairs.lhsD`, `HalvingPairs.rhsD` | the two sides of `4ρ(1)(s−1)c(w)Mel_ν(s/2)P_u(s) = Γ_ℝ(2s)(2π)^{−s}G(s)N s (s−1)ζ(s) Sh_u(w)`, `w = s/2 + ¼` |
 | Modular horizon, pulses | `BlackHoleRingdown.pulseField`, `pseudoEisenstein`, `horocycleMean` | the exact wave theory |
 | Echo train | `BlackHoleRingdown.echoKernel`, `bounceKernel` | the scattering as a train of single-image bounces |
 | Worldline | `SurfaceOfSpecZ.archProfile`, `hyperbolicGreen` | `Σ_k e^{−(2k+½)d}`, `G_s(d) = e^{−(s−1)d}/(4π sinh d)` |
@@ -223,7 +235,39 @@ Universal damping is thereby an exact statement about one cavity energy, and it 
     (`pairPolar_right_bound`); normalizers `M_j = envelope · (1 + Σ_{m ≤ j}(D_{jm} + D_{mj}))` give `D_{jk} ≤ M_j M_k`
     (`pairD_le`), so the energy of `g_x = Σ x_j 2^{−j} v_j/M_j`, integrated term by term over its double series, obeys
     `|P_{|g_x|²}(5/4 + it)| ≤ 4‖x‖²(1 + |t|)^N e^{−π|t|}` (`cavity_polar_right`); with a Baire-generic `x` this is a
-    sharp receiver (`exists_sharp_cavity_receiver`).
+    sharp receiver (`exists_sharp_cavity_receiver`). The construction uses only that the sequence of cusp forms sees
+    every right resonance in pairs (`sharp_receiver_of_pairs`).
+28. *Hecke cosets.* Modulo `p` a matrix of determinant `p` has rank one, so its columns are proportional and so are
+    its rows: `M = γ' α_k` with `k = ∞` iff the first column vanishes mod `p`, and `M = α_i^* γ` with `i = ∞` iff the
+    second row does (`leftQuot_mul`, `leftIndex_mul`, `Astar_mul_rightQuot`, `rightIndex_Astar_mul`). Matching the
+    two decompositions is a bijection `P¹(𝔽_p) × SL₂(ℤ) ≃ SL₂(ℤ) × P¹(𝔽_p)`, `α_i^* γ = γ' α_k`
+    (`heckeEquiv`, `heckeEquiv_spec`), compatible with `γ ↦ −γ` and so defined on `PSL₂(ℤ)` (`pslEquiv`).
+29. *Self-adjointness of `T_p`.* Substitute `z = α_i^* w` (`α_i α_i^* = p` is scalar, `GL₂⁺(ℝ)` preserves the
+    hyperbolic measure) and unfold `ℍ = ⋃ γ𝒟`: `∫_𝒟 (T_p f) ḡ = ∫_𝒟 f(w) Σ_{γ, i} (1_𝒟 ḡ)(α_i^* γ w)`. By the Hecke
+    bijection the inner sum is `Σ_k Σ_{γ'} (1_𝒟 ḡ)(γ' α_k w)`, and off the null set of points with a translate on
+    `∂𝒟` exactly one `γ'` puts `α_k w` into `𝒟` (`eq_of_smul_mem_fd`, `tsum_sum_astar`). Hence
+    `∫_𝒟 (T_p f) ḡ = ∫_𝒟 f (T_p g)‾` for bounded measurable invariant `f, g` (`integral_heckeH_mul_conj`).
+30. *Hecke eigenforms.* On the `L²` image of `S(λ)` the Hecke operators are symmetric and commute, so the joint
+    eigenspaces span it (`iSup_jointEigenspace_eq_top`): Hecke forms span every cusp space, finitely many suffice
+    (`span_heckeForms`, `exists_finite_heckeForms`). The pair entry is additive and homogeneous in the first slot,
+    conjugate-homogeneous in the second, so seeing passes from any pair of eigenforms to a pair from any spanning
+    sets (`exists_pair_seeing_of_span`): pairs of Hecke–Maass forms see every resonance (`exists_hecke_pair_seeing`),
+    and the enumerated Hecke basis gives a complete receiver and a sharp receiver of Hecke forms
+    (`exists_hecke_cavity_seeing_every_right_zero`, `exists_sharp_hecke_receiver`).
+31. *Shimura's integral of a level-one cusp form.* `G(z) = g(4z) θ̄(z) y^{1/4}` obeys `G(γz) = \overline{j(γ,z)} G(z)` on
+    `Γ₀(4)` because `4γz = γ'(4z)` with `γ' ∈ SL₂(ℤ)` (`kernel_smul`); `4gz` is an `SL₂(ℤ)`-translate of `(ez+β)/δ`,
+    `eδ = 4`, so every translate decays faster than any power on `𝒟` (`kernel_hdec`). The fold against the regularised
+    weight-½ Eisenstein series is holomorphic on `Re w > ¼` (`differentiableAt_fold`); for `Re w > 7/4` the theta
+    unfolding `∫_0^1 g(4z)θ̄(z)dx = Σ_j ρ_W(j²)e^{−8πj²y}W_ν(8πj²y)` and the Mellin transform of `K_ν e^{−t}` give
+    `rsFold = 2ρ(w) Mel_ν(w−¼) Σ_j ρ_W(j²)(8πj²)^{3/4−w}` (`fold_eq`), with `ρ(w) = (4w−3)(4w−2)ζ(4w−1)`.
+32. *The diagonal of a Hecke eigenform.* The eigenvalues are real (`conj_eigenvalue`), the Hecke sequence satisfies
+    `τ(p^{2k+2}) = τ(p^{k+1})² − τ(p^k)²` (`double`), hence `τ(n)² = Σ_{d∣n} τ((n/d)²)` (`sq_eq_zeta_mul`) and
+    `Σ τ(n)² n^{−s} = ζ(s) Σ τ(m²) m^{−s}` (`lseries_sq_eq`). In `s = 2w − ½` the factor `ζ(2s)` of `ξ(2s)` in `E*`
+    and the factor `ζ(4w−1)` of `ρ(w)` coincide, so `Λ_u(s)` and `ζ(s) · Sh_u(w)` agree up to Gamma factors for
+    `Re s > 3` (`identity_of_re`), and by analytic continuation on `Re s > 0` (`diagonal_identity`). `E*` is even in
+    `x`, so the mirror form has the same diagonal (`pairing_comp_mirror`) and covers `ρ(1) = 0`. At every zero `s₀`
+    of `ζ` in `Re s > 0` every Hecke form has `Λ_u(s₀) = 0` (`pairing_self_eq_zero_of_zeta`), and for `ρ(1) ≠ 0`
+    `Λ_u(s₀) ≠ 0 ⟺ ζ(s₀) ≠ 0 ∧ Sh_u(s₀/2 + ¼) ≠ 0` (`pairing_self_ne_zero_iff_of_rho`).
 
 ## 6. Questions the programme answers
 
@@ -272,12 +316,21 @@ constant term `κ y^{1−s}` up to a bounded tail, and `κ ≠ 0`. So there is a
 `g`, with `|g| ≤ C e^{−π Im z}` and zero mean on every closed horocycle, such that a horocycle rate `y^α` of `|g|²`
 forces `Re ρ ≤ 2 − 2α` at every zero (`exists_odd_cavity_receiver`): rate `y^{½+δ}` is a zero-free strip and
 rate `y^{3/4}` leaves no zero right of the line. The cavity receiver is complete; no L-value enters.
-*True for pairs of Maass cusp forms.* At every resonance `ρ/2`, `Re ρ > 0`, two cuspidal Laplace eigenforms have a
+*True for pairs of Hecke–Maass forms.* At every resonance `ρ/2`, `Re ρ > 0`, two cuspidal Laplace eigenforms have a
 nonzero pair entry (`exists_maass_pair_seeing`): the tent field that sees the resonance is a superposition of
-eigenforms, and the pair entry is continuous on `L²` in each slot. For Maass cusp forms the pair entry is the
+eigenforms, and the pair entry is continuous on `L²` in each slot. Since `T_p` is self-adjoint, Hecke eigenforms
+span each eigenspace, and the two eigenforms can be taken to be Hecke eigenforms (`exists_hecke_pair_seeing`).
+*Not for one eigenform without a statement about ζ.* The diagonal entry of a Hecke eigenform is `ζ(s)` times
+Shimura's integral (`diagonal_identity`), so a single Hecke eigenform never sees a resonance `ρ/2` for which `ρ/2`
+is itself a zero (`pairing_half_eq_zero`). B109 for one Hecke eigenform therefore implies that no zero `ρ` with
+`Re ρ > ½` has `ζ(ρ/2) = 0` (`zeta_half_ne_zero_of_hecke_seeing`), a property of the zeros that RH gives (there
+are no right zeros) and nothing else is known to give. Exactly: `u` sees `ρ/2` iff `ζ(ρ/2) ≠ 0` and Shimura's
+integral of `u` does not vanish at `w = (ρ + 1)/4` (`pairing_self_ne_zero_iff_of_rho`). Pairs are the
+unconditional form of B109. For Maass cusp forms the pair entry is the
 continued Rankin–Selberg series `Σ ρ_u(n) conj(ρ_v(n)) |n|^{−s}` (`pairing_eq_rankinSelberg`), so this is
-pairwise noncancellation of Rankin–Selberg functions at `ρ/2`. Hence one cavity function of Maass cusp forms sees
-every right resonance and its energy is a complete receiver (`exists_maass_cavity_seeing_every_right_zero`).
+pairwise noncancellation of Rankin–Selberg functions at `ρ/2`. Hence one cavity function of Maass cusp forms, or of
+Hecke–Maass forms, sees every right resonance and its energy is a complete receiver
+(`exists_maass_cavity_seeing_every_right_zero`, `exists_hecke_cavity_seeing_every_right_zero`).
 
 **Krein-space holography for the mirror-even channel.** *At one resonance* the Hermitian part `𝒦_s` of the energy
 pairing has infinite index of both signs on the odd cavity, at every resonance `ρ/2`, critical or not
@@ -306,8 +359,9 @@ mechanism 6. M4 (a positive universal decay rate) and M5 (rate `¼`) are exact s
 
   **RH ⟺ every two-mode energy rings down at `y^{3/4−ε}` for every `ε > 0`** (`riemannHypothesis_iff_twoMode_rate`).
 
-and for one cuspidal function `g` of Maass forms: RH ⟺ `|g|²` rings down at `y^{3/4−ε}` for every `ε`, and a
-zero-free strip ⟺ `|g|²` rings down at some `y^α`, `α > ½` (`exists_sharp_cavity_receiver`).
+and for one cuspidal function `g` of Maass forms, or of Hecke–Maass forms: RH ⟺ `|g|²` rings down at `y^{3/4−ε}` for
+every `ε`, and a zero-free strip ⟺ `|g|²` rings down at some `y^α`, `α > ½` (`exists_sharp_cavity_receiver`,
+`exists_sharp_hecke_receiver`).
 
 They are the zero-free strip and RH themselves: the programme decides what they are, not whether they hold.
 
@@ -337,7 +391,14 @@ They are the zero-free strip and RH themselves: the programme decides what they 
 | The ringdown rate of a seed is its zero-free region | `exists_polarTransform_decay`, `norm_response_sub_le_of_zeroFree`, `response_rate_of_zeroFree`, `response_rate_of_riemannHypothesis` | unconditional implications |
 | Pair energies decay like `e^{−π|t|}`; two-mode energies ring down at the zero-free rate | `exists_pairPolar_decay`, `twoMode_rate_of_zeroFree` | unconditional implication |
 | Zagier's theorem for the cavity (M5); zero-free strip ⟺ universal two-mode rate (M4) | `riemannHypothesis_iff_twoMode_rate`, `zeroFreeStrip_iff_twoMode_rate` | equivalences |
-| One sharp receiver: RH ⟺ rate `y^{3/4−ε}` of one cuspidal energy; zero-free strip ⟺ rate `y^α`, `α > ½` | `cavity_polar_right`, `exists_sharp_cavity_receiver` | equivalences |
+| One sharp receiver: RH ⟺ rate `y^{3/4−ε}` of one cuspidal energy; zero-free strip ⟺ rate `y^α`, `α > ½` | `cavity_polar_right`, `sharp_receiver_of_pairs`, `exists_sharp_cavity_receiver`, `exists_sharp_hecke_receiver` | equivalences |
+| Hecke cosets of determinant `p`; the Hecke bijection | `leftQuot_mul`, `leftIndex_mul`, `Astar_mul_rightQuot`, `rightIndex_Astar_mul`, `heckeEquiv_spec`, `pslEquiv` | unconditional |
+| `T_p` is self-adjoint for the Petersson product | `tsum_sum_astar`, `integral_heckeH_mul_conj` | unconditional |
+| Hecke eigenforms span every cusp space | `iSup_jointEigenspace_eq_top`, `span_heckeForms`, `exists_finite_heckeForms` | unconditional |
+| Pairwise visibility of Hecke–Maass forms; B109 for Hecke forms | `exists_pair_seeing_of_span`, `exists_hecke_pair_seeing`, `exists_hecke_cavity_seeing_every_right_zero` | unconditional |
+| Shimura's continuation for level-one cusp forms | `Shimura.kernel_smul`, `Shimura.kernel_hdec`, `Shimura.differentiableAt_fold`, `Shimura.fold_eq` | unconditional |
+| The diagonal of a Hecke eigenform is `ζ(s)` times Shimura's integral | `HalvingPairs.conj_eigenvalue`, `HalvingPairs.sq_eq_zeta_mul`, `HalvingPairs.lseries_sq_eq`, `HalvingPairs.diagonal_identity` | unconditional |
+| One Hecke eigenform is blind to halving pairs; B109 for one eigenform excludes them | `HalvingPairs.pairing_half_eq_zero`, `HalvingPairs.zeta_half_ne_zero_of_hecke_seeing`, `HalvingPairs.pairing_self_ne_zero_iff_of_rho` | unconditional |
 | Pair entries are Rankin–Selberg series | `hasSum_response_mul_conj`, `hasSum_mellin_pairResponse`, `pairing_eq_rankinSelberg` | unconditional |
 | One-sided bounds on the dual side are two-sided | `seedTransform_eq_zero_of_oneSided`, `seedTransform_eq_zero_of_oneSided_lower`, `not_oneSided_of_seen` | unconditional |
 | Analytic structure of the response | `differentiableOn_numeratorTransform`, `polarNumerator_half`, `eisensteinNumerator_zero`, `analyticAt_lowerTransform`, `integral_lower_eq` | unconditional |
@@ -356,7 +417,10 @@ They are the zero-free strip and RH themselves: the programme decides what they 
   Baire genericity of seeing, the converse by truncation, cuspidal cavity functions, pair entries as
   Rankin–Selberg series; odd cusp fields, the strip unfolding of their pairings, the constant term of `E*` at a
   resonance, the phase law and size of the tent energies, B109 for cavity functions, transfer of seeing to pairs of
-  eigenforms through the odd spectral expansion, B109 for Maass cusp forms.
+  eigenforms through the odd spectral expansion, B109 for Maass cusp forms; the Hecke cosets of determinant `p`,
+  self-adjointness of `T_p` by unfolding, Hecke eigenbases of the cusp spaces, B109 for Hecke–Maass forms;
+  Shimura's weight-½ integral of a level-one cusp form with its continuation to `Re w > ¼`, and the factorization
+  of the diagonal entry of a Hecke eigenform as `ζ(s)` times that integral.
 - **Krein-space holography for the mirror-even channel** (developed): the resonance Krein form, its
   diagonalization by tents, the Krein sign law, infinite index of both signs at every resonance; the reflection
   Krein form of a resonance pair, its index law (one negative square exactly off the line) and RH as its
@@ -364,7 +428,8 @@ They are the zero-free strip and RH themselves: the programme decides what they 
   and the orientation index law (`ArithmeticOrientationGeometry.orientationIndex_law`).
 - **Arithmetic S-duality, the rate side** (developed): the polar transform of a seed, its oddness and growth,
   Phragmén–Lindelöf from one line, the Mellin regular part and the contour shift for every seed; pair and two-mode
-  energies; Zagier's theorem for the cavity; one sharp cuspidal receiver.
+  energies; Zagier's theorem for the cavity; one sharp cuspidal receiver, for any sequence of cusp forms that sees
+  in pairs, in particular for Hecke–Maass forms.
 - **Rademacher expansions with arithmetic poles** (developed): the echo train of the constant channel (BHR) and,
   at momentum `n`, the Ramanujan image sum `σ_{1−w}(n)/ζ(w)` (`RHTower.LSeries_d4BMRamanujanNaturalCoefficient_eq_div_riemannZeta`)
   with its full pole order at every zero; nonvanishing of complex divisor sums off `Re w = 0`.
@@ -380,7 +445,9 @@ They are the zero-free strip and RH themselves: the programme decides what they 
 | A Hilbert space of the confined side can be found inside the horizon algebra | Internal, vacuum-fixing and half-sided realizations are excluded (CTH) |
 | One cavity mode must be an eigenform | The natural object is a cavity function; seeing is generic among them once pairs see |
 | Some momentum channel might miss a resonance | Every channel has the full order at every zero; the channels differ only in the residues `σ_{1−ρ}(n)` |
-| B109 needs a nonvanishing theorem for L-values | Not for pairs: a tent field sees every resonance through the constant term `κ y^{1−s}`, and seeing passes to pairs of eigenforms by `L²` continuity; only the diagonal (one eigenform) needs more |
+| B109 needs a nonvanishing theorem for L-values | Not for pairs: a tent field sees every resonance through the constant term `κ y^{1−s}`, and seeing passes to pairs of eigenforms by `L²` continuity and to pairs of Hecke eigenforms by spanning; only the diagonal (one eigenform) needs more |
+| One Hecke eigenform is a universal receiver if the L-values cooperate | Its diagonal carries the factor `ζ(s)`: it is blind at every `ρ/2` that is a zero, so one-eigenform B109 needs the absence of halving pairs |
+| Laplace eigenforms might see a resonance that Hecke eigenforms miss | Hecke eigenforms span every cusp space (`T_p` is self-adjoint), and the pair entry is sesquilinear on cusp forms |
 | The Krein form of one resonance detects off-line resonances | At every resonance, on the line or off, it has infinite index of both signs; the line is seen by the reflection pair `s ↔ ½ − s̄` |
 | Positivity of the reflection Krein forms can come from the horizon | It is equivalent to RH; the negative square is the mismatch of two ringdown rates |
 | A receiver needs a sign | Rates force residues to vanish with no positivity anywhere |
@@ -399,8 +466,11 @@ They are the zero-free strip and RH themselves: the programme decides what they 
 | RHTower | `ξ`, the completed and numerator Eisenstein models, Landau's theorem with exponential bounds, Ramanujan Dirichlet series |
 
 Imports: BlackHoleRingdown (receiver of cusp energies, Whittaker coefficients, the mirror and odd cusp profiles of
-`TheCuspFormsExist`, the bounded Whittaker tail), RHTower (`FiniteOffLineLandau`, the Ramanujan and line-eigen
-modules of `ThetaCusp`, the row sum, `ZetaRealStrip`), HTGeometry (strip unfolding, `HermitianInertia`). Used by:
+`TheCuspFormsExist`, the bounded Whittaker tail, the cusp spaces and Hecke operators of `HeckeCusp`), RHTower
+(`FiniteOffLineLandau`, the Ramanujan and line-eigen modules of `ThetaCusp`, the row sum, `ZetaRealStrip`, the Hecke
+matrices of `Gamma0MaassHeckeOperator`, the weight-½ theory of `HalfWeight*`: `θ`, the regularised Eisenstein series of
+level `4M` and its fold `rsFold`), HTGeometry (strip unfolding, `HermitianInertia`, the fundamental domain as a
+measurable fundamental domain of `PSL₂(ℤ)` and its finite volume). Used by:
 MainTheorems.
 
 AHMH is the holographic reading of these programmes. It shows that the physical dictionary is a residue
@@ -424,12 +494,10 @@ sub-RH statement or name the exact place where it becomes RH.
 
 ## 12. Open research topics
 
-1. **B109 for one eigenform.** A single Maass cusp eigenform `u` with `Λ_{|u|²}(ρ/2) ≠ 0` at every right zero. For a
-   Hecke eigenform `Σ|ρ_u(n)|² n^{−s} = |ρ_u(1)|² ζ(s) L(s, sym² u)/ζ(2s)` (the Euler product is
-   `BlackHoleRingdown.cusp_rankinSelberg_euler`), so with the holomorphy of `L(s, sym² u)` at `ρ/2` the diagonal
-   entry vanishes whenever `ζ(ρ/2) = 0`: one eigenform cannot see a zero `ρ` for which `ρ/2` is also a zero. Under RH
-   there are no right zeros and the statement is empty; unconditionally it asks for `ζ(ρ/2) L(ρ/2, sym² u) ≠ 0` at
-   points that exist only if RH fails. Pairs of *Hecke* eigenforms (rather than Laplace eigenforms) need a Hecke
-   eigenbasis of each eigenspace, i.e. self-adjointness of `T_p` for the Petersson product.
+1. **B109 for one eigenform.** Decided up to two statements that exist only if RH fails. The obstruction is proved:
+   one Hecke eigenform is blind to halving pairs (`pairing_half_eq_zero`), so one-eigenform B109 implies that no
+   right zero `ρ` has `ζ(ρ/2) = 0`. What remains open is the converse: for every right zero `ρ` with `ζ(ρ/2) ≠ 0`,
+   some Hecke eigenform whose Shimura integral does not vanish at `w = (ρ + 1)/4`, i.e. nonvanishing of
+   `L(s, sym² u)` at `s = ρ/2` somewhere in the Hecke family; and the absence of halving pairs among the zeros.
 2. **The rate itself.** A universal damping rate (M4, the zero-free strip) or the rate `¼` (M5, RH) for the energy of
    the sharp receiver `g`.

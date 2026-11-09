@@ -114,8 +114,8 @@ theorem abs_two_re_lagStructure_sub_le_of_width {Z : ZeroConfig} (hZ : TemperedC
 
 /-- Near every large `u` a degree `d ∈ D` has `0 ≤ log d ≤ u ≤ log d + 2M e^{(θ−1)u}`. -/
 theorem exists_log_degree_near {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ} (hD : PowGaps θ D) :
-    ∃ M T₀ : ℝ, 0 ≤ M ∧ 0 ≤ T₀ ∧ ∀ u : ℝ, T₀ ≤ u → ∃ d ∈ D, 0 ≤ Real.log d ∧
-      Real.log d ≤ u ∧ u - Real.log d ≤ 2 * M * Real.exp ((θ - 1) * u) := by
+    ∃ M T₀ : ℝ, 0 ≤ M ∧ 0 ≤ T₀ ∧ ∀ u : ℝ, T₀ ≤ u → ∃ d ∈ D, (d : ℝ) ≤ Real.exp u ∧
+      0 ≤ Real.log d ∧ Real.log d ≤ u ∧ u - Real.log d ≤ 2 * M * Real.exp ((θ - 1) * u) := by
   obtain ⟨hpos, M, X, hM0, hgapD⟩ := hD
   set T₀ : ℝ := max (max (Real.log (max X 1)) (Real.log (2 * M + 1) / (1 - θ))) 0 with hT₀
   refine ⟨M, T₀, hM0, le_max_right _ _, fun u hu => ?_⟩
@@ -141,8 +141,8 @@ theorem exists_log_degree_near {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ} (hD : Po
     nlinarith
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hpos d hdD
   have hd0 : (0 : ℝ) < d := by linarith
-  refine ⟨d, hdD, Real.log_nonneg hd1, by rw [← Real.log_exp u]; exact Real.log_le_log hd0 hdle,
-    ?_⟩
+  refine ⟨d, hdD, hdle, Real.log_nonneg hd1,
+    by rw [← Real.log_exp u]; exact Real.log_le_log hd0 hdle, ?_⟩
   have h1 : u - Real.log d = Real.log (Real.exp u / d) := by
     rw [Real.log_div (Real.exp_pos u).ne' hd0.ne', Real.log_exp]
   have h2 := Real.log_le_sub_one_of_pos (div_pos (Real.exp_pos u) hd0)
@@ -162,7 +162,7 @@ theorem exists_log_degree_near {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ} (hD : Po
 theorem exists_degree_trace_near {Z : ZeroConfig} (hZ : TemperedConfig Z) {a : ℝ} (ha0 : 0 ≤ a)
     (hwid : ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + a) {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ}
     (hD : PowGaps θ D) :
-    ∃ C T₀ : ℝ, 0 ≤ C ∧ 0 ≤ T₀ ∧ ∀ u : ℝ, T₀ ≤ u → ∃ d ∈ D,
+    ∃ C T₀ : ℝ, 0 ≤ C ∧ 0 ≤ T₀ ∧ ∀ u : ℝ, T₀ ≤ u → ∃ d ∈ D, (d : ℝ) ≤ Real.exp u ∧
       |2 * (lagStructure Z (boxSpline 1 3) u).re -
         2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re| ≤
           C * Real.exp ((a + θ - 1) * u) := by
@@ -170,8 +170,8 @@ theorem exists_degree_trace_near {Z : ZeroConfig} (hZ : TemperedConfig Z) {a : �
   set L := ∑' z : ℂ, ‖lagCoeff Z (boxSpline 1 3) z‖ * ‖z‖ with hLdef
   have hL0 : 0 ≤ L := tsum_nonneg fun _ => by positivity
   refine ⟨4 * L * M, T₀, by positivity, hT₀0, fun u hu => ?_⟩
-  obtain ⟨d, hdD, hlogd0, hlogd, hgap⟩ := hnear u hu
-  refine ⟨d, hdD, ?_⟩
+  obtain ⟨d, hdD, hdle, hlogd0, hlogd, hgap⟩ := hnear u hu
+  refine ⟨d, hdD, hdle, ?_⟩
   have hl := abs_two_re_lagStructure_sub_le_of_width hZ ha0 hwid hlogd0 hlogd
   have h2L : 0 ≤ 2 * L := by linarith
   have h1 : 2 * L * (u - Real.log d) * Real.exp (a * u) ≤
@@ -184,33 +184,41 @@ theorem exists_degree_trace_near {Z : ZeroConfig} (hZ : TemperedConfig Z) {a : �
     _ = 4 * L * M * (Real.exp ((θ - 1) * u) * Real.exp (a * u)) := by ring
     _ = 4 * L * M * Real.exp ((a + θ - 1) * u) := by rw [h2]
 
-/-- **One step of the gap method.** A lower bound at a degree set with gaps `O(x^θ)`, at width `a`,
-gives width `max(β₀, a + θ − 1)`. -/
-theorem width_step_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z) {β₀ : ℝ} (hβ₀0 : 0 ≤ β₀)
-    (hβ₀ : β₀ < 1 / 2) (hreal0 : ∀ ρ ∈ Z.carrier, ρ.im = 0 → ρ.re ≤ 1 / 2 + β₀) {θ a : ℝ}
+/-- **One step of the gap method.** At width `a`, a lower bound `−K d^σ` at a degree set with gaps
+`O(x^θ)` gives width `max(β, a + θ − 1)`, for any `β ≥ σ` above the real zeros. -/
+theorem width_step_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z) {β σ : ℝ} (hβ0 : 0 ≤ β)
+    (hβ : β < 1 / 2) (hσ0 : 0 ≤ σ) (hσβ : σ ≤ β)
+    (hreal0 : ∀ ρ ∈ Z.carrier, ρ.im = 0 → ρ.re ≤ 1 / 2 + β) {θ a : ℝ}
     (hθ1 : θ < 1) (ha0 : 0 ≤ a) (ha : a ≤ 1 / 2) (hwid : ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + a)
     {D : Set ℕ} (hD : PowGaps θ D) {K : ℝ}
-    (hK : ∀ d ∈ D, -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
-    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + max β₀ (a + θ - 1) := by
+    (hK : ∀ d ∈ D, -(K * (d : ℝ) ^ σ) ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + max β (a + θ - 1) := by
   have hb : ContDiff ℝ 2 (boxSpline 1 3) := contDiff_boxSpline (r := 1) one_pos 2
   have hbc := hasCompactSupport_of_support_subset_abs (boxSpline_support (r := 1) one_pos 3)
   have hbs := boxSpline_support (r := 1) one_pos 3
-  set a' := max β₀ (a + θ - 1) with ha'
-  have ha'0 : 0 ≤ a' := hβ₀0.trans (le_max_left _ _)
-  have ha'1 : a' < 1 / 2 := max_lt hβ₀ (by linarith)
+  set a' := max β (a + θ - 1) with ha'
+  have ha'0 : 0 ≤ a' := hβ0.trans (le_max_left _ _)
+  have ha'1 : a' < 1 / 2 := max_lt hβ (by linarith)
   obtain ⟨C, T₀, hC0, hT₀0, htrans⟩ := exists_degree_trace_near hZ ha0 hwid hθ1 hD
   -- far from `0`, through the nearest degree
   have hfar : ∀ u : ℝ, T₀ ≤ u →
       -((|K| + C) * Real.exp (a' * u)) ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re := by
     intro u hu
     have hu0 : 0 ≤ u := hT₀0.trans hu
-    obtain ⟨d, hdD, hvar⟩ := htrans u hu
+    obtain ⟨d, hdD, hdle, hvar⟩ := htrans u hu
+    have hd0 : (0 : ℝ) < d := by exact_mod_cast hD.1 d hdD
     have he : Real.exp ((a + θ - 1) * u) ≤ Real.exp (a' * u) :=
       Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (le_max_right _ _) hu0)
+    have hdσ : (d : ℝ) ^ σ ≤ Real.exp (a' * u) :=
+      calc (d : ℝ) ^ σ ≤ Real.exp u ^ σ := Real.rpow_le_rpow hd0.le hdle hσ0
+        _ = Real.exp (σ * u) := by rw [← Real.exp_mul, mul_comm]
+        _ ≤ Real.exp (a' * u) :=
+            Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (hσβ.trans (le_max_left _ _)) hu0)
+    have hKd : K * (d : ℝ) ^ σ ≤ |K| * Real.exp (a' * u) :=
+      (mul_le_mul_of_nonneg_right (le_abs_self K) (by positivity)).trans
+        (mul_le_mul_of_nonneg_left hdσ (abs_nonneg K))
     have hvar' := (abs_le.mp hvar).1
     have hCe := mul_le_mul_of_nonneg_left he hC0
-    have hone : 1 ≤ Real.exp (a' * u) := Real.one_le_exp (by positivity)
-    have hKe : K ≤ |K| * Real.exp (a' * u) := by nlinarith [le_abs_self K, abs_nonneg K]
     linarith [hK d hdD]
   -- near `0`, through `u = 0`
   set L := ∑' z : ℂ, ‖lagCoeff Z (boxSpline 1 3) z‖ * ‖z‖ with hLdef
@@ -249,12 +257,12 @@ theorem width_step_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z) {β₀ : 
       have : C₀ ≤ C₀ * Real.exp (a' * u) := le_mul_of_one_le_right hC₀0 hone
       have : 0 ≤ (|K| + C) * Real.exp (a' * u) := mul_nonneg (by positivity) he0
       nlinarith
-  -- real exponents lie at depth `≤ β₀`
+  -- real exponents lie at depth `≤ β`
   have hreal : ∀ x : ℂ, evenCoeff Z (boxSpline 1 3) x ≠ 0 → x.im = 0 → x.re ≤ a' := by
     intro x hx him
     rcases mem_of_evenCoeff_ne_zero hx with h | h
-    · have := hreal0 _ h (by simp [him]); simp at this; linarith [le_max_left β₀ (a + θ - 1)]
-    · have := hreal0 _ h (by simp [him]); simp at this; linarith [le_max_left β₀ (a + θ - 1)]
+    · have := hreal0 _ h (by simp [him]); simp at this; linarith [le_max_left β (a + θ - 1)]
+    · have := hreal0 _ h (by simp [him]); simp at this; linarith [le_max_left β (a + θ - 1)]
   intro ρ hρ
   by_contra hlt
   push Not at hlt
@@ -266,45 +274,56 @@ theorem width_step_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z) {β₀ : 
     (by simp; linarith))
 
 /-- **The gap method iterates.** For a tempered configuration whose real zeros have
-`Re ρ ≤ ½ + β₀`, `0 ≤ β₀ < ½`, a lower bound at a degree set with power-saving gaps puts every zero
-at `Re ρ ≤ ½ + β₀`. -/
-theorem re_le_of_bddBelow_of_powGaps_of_realDepth (Z : ZeroConfig) (hZ : TemperedConfig Z) {β₀ : ℝ}
-    (hβ₀0 : 0 ≤ β₀) (hβ₀ : β₀ < 1 / 2) (hreal0 : ∀ ρ ∈ Z.carrier, ρ.im = 0 → ρ.re ≤ 1 / 2 + β₀)
+`Re ρ ≤ ½ + β`, `0 ≤ β < ½`, a lower bound `−K d^σ`, `0 ≤ σ ≤ β`, at a degree set with
+power-saving gaps puts every zero at `Re ρ ≤ ½ + β`. -/
+theorem re_le_of_bddBelow_rpow_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z) {β σ : ℝ}
+    (hβ0 : 0 ≤ β) (hβ : β < 1 / 2) (hσ0 : 0 ≤ σ) (hσβ : σ ≤ β)
+    (hreal0 : ∀ ρ ∈ Z.carrier, ρ.im = 0 → ρ.re ≤ 1 / 2 + β)
     {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ} (hD : PowGaps θ D) {K : ℝ}
-    (hK : ∀ d ∈ D, -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
-    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + β₀ := by
-  have hstep : ∀ n : ℕ, ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + max β₀ (1 / 2 - n * (1 - θ)) := by
+    (hK : ∀ d ∈ D, -(K * (d : ℝ) ^ σ) ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + β := by
+  have hstep : ∀ n : ℕ, ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + max β (1 / 2 - n * (1 - θ)) := by
     intro n
     induction n with
     | zero =>
       intro ρ hρ
       have h1 : ρ.re ≤ 1 := by have := (Z.strip ρ hρ).2; simpa using this
-      have : max β₀ (1 / 2 - ((0 : ℕ) : ℝ) * (1 - θ)) = 1 / 2 := by
-        rw [Nat.cast_zero, zero_mul, sub_zero, max_eq_right hβ₀.le]
+      have : max β (1 / 2 - ((0 : ℕ) : ℝ) * (1 - θ)) = 1 / 2 := by
+        rw [Nat.cast_zero, zero_mul, sub_zero, max_eq_right hβ.le]
       rw [this]; linarith
     | succ n ih =>
-      have ha0 : 0 ≤ max β₀ (1 / 2 - n * (1 - θ)) := hβ₀0.trans (le_max_left _ _)
-      have ha : max β₀ (1 / 2 - n * (1 - θ)) ≤ 1 / 2 :=
-        max_le hβ₀.le (by nlinarith [Nat.cast_nonneg (α := ℝ) n])
-      have h := width_step_of_powGaps Z hZ hβ₀0 hβ₀ hreal0 hθ1 ha0 ha ih hD hK
-      have hnew : max β₀ (max β₀ (1 / 2 - n * (1 - θ)) + θ - 1) ≤
-          max β₀ (1 / 2 - ((n + 1 : ℕ) : ℝ) * (1 - θ)) := by
+      have ha0 : 0 ≤ max β (1 / 2 - n * (1 - θ)) := hβ0.trans (le_max_left _ _)
+      have ha : max β (1 / 2 - n * (1 - θ)) ≤ 1 / 2 :=
+        max_le hβ.le (by nlinarith [Nat.cast_nonneg (α := ℝ) n])
+      have h := width_step_of_powGaps Z hZ hβ0 hβ hσ0 hσβ hreal0 hθ1 ha0 ha ih hD hK
+      have hnew : max β (max β (1 / 2 - n * (1 - θ)) + θ - 1) ≤
+          max β (1 / 2 - ((n + 1 : ℕ) : ℝ) * (1 - θ)) := by
         push_cast
         apply max_le (le_max_left _ _)
-        rcases le_total β₀ (1 / 2 - n * (1 - θ)) with h0 | h0
+        rcases le_total β (1 / 2 - n * (1 - θ)) with h0 | h0
         · rw [max_eq_right h0]; exact le_max_of_le_right (by linarith)
         · rw [max_eq_left h0]; exact le_max_of_le_left (by linarith)
       intro ρ hρ
       linarith [h ρ hρ]
   obtain ⟨n, hn⟩ := exists_nat_gt (1 / (2 * (1 - θ)))
   have hθ0 : 0 < 1 - θ := by linarith
-  have hn' : 1 / 2 - n * (1 - θ) ≤ β₀ := by
+  have hn' : 1 / 2 - n * (1 - θ) ≤ β := by
     rw [div_lt_iff₀ (by positivity)] at hn
     nlinarith
   intro ρ hρ
   have := hstep n ρ hρ
   rw [max_eq_left hn'] at this
   exact this
+
+/-- The bounded case `σ = 0`. -/
+theorem re_le_of_bddBelow_of_powGaps_of_realDepth (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    {β₀ : ℝ} (hβ₀0 : 0 ≤ β₀) (hβ₀ : β₀ < 1 / 2)
+    (hreal0 : ∀ ρ ∈ Z.carrier, ρ.im = 0 → ρ.re ≤ 1 / 2 + β₀)
+    {θ : ℝ} (hθ1 : θ < 1) {D : Set ℕ} (hD : PowGaps θ D) {K : ℝ}
+    (hK : ∀ d ∈ D, -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + β₀ :=
+  re_le_of_bddBelow_rpow_of_powGaps Z hZ hβ₀0 hβ₀ le_rfl hβ₀0 hreal0 hθ1 hD (K := K)
+    fun d hd => by rw [Real.rpow_zero, mul_one]; exact hK d hd
 
 /-- **Without real zeros, every degree set with power-saving gaps decides the line.** -/
 theorem onLine_of_bddBelow_of_powGaps (Z : ZeroConfig) (hZ : TemperedConfig Z)

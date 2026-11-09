@@ -334,6 +334,82 @@ the prime oscillation remains open. The identity supplies no new zero height.
 `TheFinitePartOfTheGaussianPrimeCurrent.lean` contains the full-series,
 finite-layer and reflected laws.
 
+### Resonance and comparison of damping scales
+
+At an actual zero `ρ`, the Gamma mode at that point must be replaced by a
+logarithmic term. Let `mρ` be its divisor multiplicity and retain every
+nonresonant zero copy in
+
+    Bρ(y)=Σ_{q:ρq≠ρ} ½Γ((ρq−ρ)/2)y^(−(ρq−ρ)/2),
+    Cq=(½−ρ)/[(ρq−½)(ρq−ρ)].
+
+For every `y>0`, this entire Gamma field converges absolutely. At every actual
+zero, without an extremal-abscissa or simplicity assumption,
+
+    Gρ(y)+Bρ(y)−(mρ/2)log y
+      → A(ρ)−mρ/(ρ−½)−Σoff Cq+mργE/2,
+
+where `γE` is Euler's constant. Translated reciprocal families are square
+summable. Cauchy–Schwarz therefore controls the complete paired finite part
+and the error after two incomplete-Mellin recursions. The resonant fibre
+contributes `mρE(y,0)`, whose exponential-integral asymptotic supplies the
+logarithm and Euler constant.
+
+Comparing any two positive damping scales cancels the finite-part constant:
+
+    Gρ(y)−Gρ(cy)+Bρ(y)−Bρ(cy) → −mρ log(c)/2,       c>0.
+
+`GaussianRenormalizationAtZeros.lean` proves these laws with the full infinite
+prime and zero sums. The counterterms depend on the divisor; this identity
+does not provide an independent prime-only multiplicity test or a new zero
+height. Same-depth replication remains a separate obligation.
+
+### Prime-only resonance at a rightmost zero
+
+Rightmostness removes the counterterms from the limiting observable. If `ρ`
+is any actual rightmost zero, then
+
+    Gρ(e^(−u))/u → −mρ/2,       u→∞.
+
+This retains the full prime current and continuum. There is no assumption
+of a finite top, a uniform gap below it, or simplicity. Every nonresonant
+Gamma mode has magnitude at most its magnitude at damping `1`; the sum of
+these amplitudes is finite. Thus the entire nonresonant field is bounded
+and vanishes after division by `u`. The logarithmic finite-part identity
+leaves exactly the multiplicity term.
+
+Under `¬AAL`, the actual finite-top theorem supplies such a zero with
+`Re ρ>½`. `ThePrimeCurrentReadsTopMultiplicity.lean` proves this specialization
+and the general rightmost-zero limit. This reads an existing top through a
+prime-only observable. It neither contradicts that top nor produces a new
+height; the arithmetic replication mechanism is still missing.
+
+### Uniform archimedean damping and its unique normalization
+
+Let `A_y,c(s)` be the actual Gaussian Mellin–Barnes transform of
+`A(s)=1/s+Γℝ′/Γℝ(s)`, with `y,c>0`. Throughout `Re s>0`,
+
+    |A_y,c(s)−e^(−y)A(s)| ≤ ye^(−y)/Re s.
+
+The error therefore tends to zero uniformly on every whole half-plane
+`Re s≥σ₀>0`. Height can escape arbitrarily as damping vanishes. The
+unrenormalized estimate contains `y|s−2|` and cannot give this conclusion.
+
+One incomplete-Mellin recursion in the full trivial-zero expansion gives
+
+    A_y,c(s)−e^(−y)A(s)=Σₙ 2y E(y,−s−2n)/(s+2n+2).
+
+The endpoint bound `|E(y,a)|≤e^(−y)/(−Re a)` for `Re a<0` gives a telescoping
+majorant whose sum is `ye^(−y)/Re s`. For fixed `y,c,σ>0`, the error
+`A_y,c(σ+it)−zA(σ+it)` is bounded for all real `t` exactly when `z=e^(−y)`:
+every other scalar retains a nonzero multiple of the logarithmically growing
+archimedean current.
+
+`TheArchimedeanDampingErrorIsUniform.lean` proves the exact series, uniform
+bound, uniform convergence and scalar classification. These laws remove
+height dependence from the archimedean error. Joint control of the complete
+nontrivial-zero field remains a separate requirement for transport.
+
 ### Conductor-normalized height reflection
 
 The reflected high profile carries a conductor power. With
