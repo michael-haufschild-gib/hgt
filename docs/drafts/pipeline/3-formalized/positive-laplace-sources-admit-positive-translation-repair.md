@@ -15,6 +15,9 @@ such that, with `Q(X)=∏(X+rᵢ)` and `τ_h f(x)=f(x-h)`,
 `Q(τ_h)f(x)≥0` for every real `x`.
 
 All coefficients of `Q` are nonnegative. Its zeros are strictly negative real.
+The repaired source retains all absolute exponential moments. Any prescribed
+nonzero complex Laplace value can also be retained: choose
+`h |Im w|<π/2`, so `Q(exp(hw))≠0`.
 
 ## Proof
 
@@ -48,6 +51,10 @@ Namespace `GaloisForLFunctions.HTGeometry.PositiveTranslationRepair`:
 - `LaplaceBounds.lean`: `laplace_pos_of_outer_bands`,
   `laplace_sub_le_of_compact_error`, `exists_laplace_margin`.
 - `PolynomialAverages.lean`: `exists_positive_average_of_polynomial_lower_bound`.
+- `SpectralPreservation.lean`: `polynomialAverage_abs_moment`,
+  `exists_positive_average_preserving_character`.
+- `PolynomialTransforms.lean`: `integral_polynomialAverage_cexp`,
+  `negativeRootMultiplier_eval₂_exp_ne_zero`.
 
 Polynomial factor repair:
 `ArithmeticLocalDivisorGeometry/PositiveMultipliers.lean`,
@@ -57,6 +64,6 @@ Polynomial factor repair:
 Capstone axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 No raised limits or trusted computation shortcuts.
 
-This supplies positive translation repair for a prospective theta quotient
-annihilator. Its actual zeta specialization and logarithmic prime-window
-criterion remain open; no arithmetic B130 bound follows from this theorem alone.
+This is an independent positive-repair theorem. The zeta localization route
+can instead use the existing `ThetaSeedTransferQuartet.quartet_seed_transfer`
+directly. No arithmetic B130 bound follows from this theorem alone.

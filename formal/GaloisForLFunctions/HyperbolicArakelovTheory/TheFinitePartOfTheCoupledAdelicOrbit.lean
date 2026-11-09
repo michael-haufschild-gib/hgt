@@ -22,6 +22,41 @@ namespace GaloisForLFunctions.HyperbolicArakelovTheory.CoupledOrbit
 /-- Integral mean of the smooth remainder fixed by the local Green profile. -/
 def regularMean : ℝ := ∫ r in (0 : ℝ)..1, regularProfile r
 
+/-- The smooth density has a fixed elementary normalization. -/
+theorem regularMean_eq : regularMean = Real.log 2 / 4 + Real.pi / 8 := by
+  have hc : ContinuousOn regularProfile (Set.uIcc 0 1) := by
+    rw [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
+    apply ContinuousOn.add
+    · apply continuousOn_const.div (continuousOn_const.mul (continuousOn_const.add continuousOn_id))
+      intro x hx
+      have hx0 := hx.1
+      change 4 * (1 + x) ≠ 0
+      positivity
+    · apply continuousOn_const.div
+        (continuousOn_const.mul (continuousOn_const.add (continuousOn_id.pow 2)))
+      intro x hx
+      change 2 * (1 + x ^ 2) ≠ 0
+      positivity
+  have hd : ∀ x ∈ Set.uIcc (0 : ℝ) 1,
+      HasDerivAt (fun r : ℝ => Real.log (1 + r) / 4 + Real.arctan r / 2)
+        (regularProfile x) x := by
+    intro x hx
+    have hx0 : 0 ≤ x := (Set.mem_Icc.mp
+      (by simpa only [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hx)).1
+    have hlog := ((hasDerivAt_id x).const_add 1).log (by positivity)
+    have he : (1 / (1 + x)) / 4 + (1 / (1 + x ^ 2)) / 2 = regularProfile x := by
+      simp only [regularProfile, div_eq_mul_inv, mul_inv_rev]
+      ring
+    rw [← he]
+    apply HasDerivAt.add
+    · exact hlog.div_const 4
+    · exact (Real.hasDerivAt_arctan x).div_const 2
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hd hc.intervalIntegrable
+  norm_num only [add_zero, Real.log_one, Real.arctan_zero,
+    zero_div, sub_zero, Real.arctan_one, one_add_one_eq_two] at h
+  unfold regularMean
+  convert h using 1 <;> ring
+
 /-- The right-endpoint row, including its endpoint for divisor reindexing. -/
 def smoothRow (n : ℕ) : ℝ :=
   ∑ a ∈ Icc 1 n, regularProfile ((a : ℝ) / n)
@@ -56,6 +91,7 @@ private theorem smoothRow_eq_range {n : ℕ} (hn : 0 < n) :
   rw [sum_sub_distrib] at ht
   have hnR : (n : ℝ) ≠ 0 := by exact_mod_cast hn.ne'
   simp only [Nat.cast_zero, zero_div, div_self hnR] at ht
+  simp only [Nat.add_comm 1]
   linarith only [ht]
 
 /-- Monotone quadrature controls the unweighted row error uniformly in its height. -/
@@ -84,13 +120,13 @@ theorem abs_rowError_le (n : ℕ) : |rowError n| ≤ 3 / 4 := by
       regularProfile 0 - regularProfile 1 := by field_simp
   rw [he'] at hmul
   rw [rowError, smoothRow_eq_range hn]
-  have ht := abs_add ((∑ a ∈ range n, regularProfile ((a : ℝ) / n)) -
+  have ht := abs_add_le ((∑ a ∈ range n, regularProfile ((a : ℝ) / n)) -
     (n : ℝ) * regularMean) (regularProfile 1 - regularProfile 0)
   rw [regularProfile_endpoints.1, regularProfile_endpoints.2] at hmul ht ⊢
   norm_num at ht
   convert ht.trans (by linarith only [hmul] :
       |(∑ a ∈ range n, regularProfile ((a : ℝ) / n)) - (n : ℝ) * regularMean| +
-        3 / 8 ≤ 3 / 4) using 1 <;> congr 1 <;> ring
+        3 / 8 ≤ 3 / 4) using 1 <;> (congr 1; ring)
 
 /-- Primitive quadrature is the exact Möbius transform of ordinary quadrature. -/
 theorem primitiveSmoothRow_moebius {n : ℕ} (hn : 0 < n) :
@@ -265,6 +301,7 @@ theorem tendsto_orbit_finitePart :
   exact h.congr fun N => by simp only [renormalizedRow, sum_sub_distrib]
 
 #print axioms primitiveSmoothRow_moebius
+#print axioms regularMean_eq
 #print axioms abs_rowError_le
 #print axioms geometricRow_eq_localGreenSum
 #print axioms summable_renormalizedRow

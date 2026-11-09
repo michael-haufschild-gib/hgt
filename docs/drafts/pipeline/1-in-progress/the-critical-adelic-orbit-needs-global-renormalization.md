@@ -41,8 +41,8 @@ At height `b`, subtract the collision row
 `(4b)⁻¹ Σ_{0<a<b,(a,b)=1} a⁻¹` and the density row
 `c₀ φ(b)/b²`. Möbius inversion should express the remaining row as
 `b⁻² Σ_{d|b} μ(d) E(b/d)`, where
-`E(n)=Σ_{0<a<n} h(a/n)−n c₀` is uniformly bounded by monotone quadrature.
+`E(n)=Σ_{1≤a≤n} h(a/n)−n c₀` is uniformly bounded by monotone quadrature.
 Absolute convergence then gives the global remainder
-`ζ(2)⁻¹ Σ_{n≥1} E(n)/n²`, with the height-one convention handled explicitly.
+`ζ(2)⁻¹ Σ_{n≥1} E(n)/n²+c₀−h(1)`, where the final terms remove height one.
 This is a candidate finite part for the product profile, not an identification
 with Weil's diagonal. The primitive quadrature identity and convergence are open.

@@ -167,6 +167,24 @@ supplies the saving, and the horizontal edges and Euler tails decay faster.
 Thus the prime filter tends to zero also at `dκ=a(1−σ)/2`, unconditionally.
 The subexponential saving still leaves the fixed exceptional-layer rate gap.
 
+`VinogradovKorobovBoundsForDampingFilters.lean` improves this saving to
+`a t w(2t+1)/4`, where the corpus proves
+`w(T)=(log T)^(−2/3)(log log T)^(−5/3)/10^8`. The uniform bound is
+`C h^d(1+t)^(d+5) exp(a(1−σ)t/2−a t w(2t+1)/4)`, without a finite-layer
+assumption. Thus even the enlarged spacing
+`h(t)=exp((−a(1−σ)/2+a w(2t+1)/8)t/d)` forces raw decay.
+The improvement remains subexponential; the fixed gap to a selected
+exceptional mode is unchanged.
+
+`ComplexGaussianDamping.lean` changes the damping to
+`exp(−at) exp(i(−π/2+1/t))`. The literal rotated prime filter still obeys
+`C h^d t^N exp(at(c−σ)/2)` for every `c>max(1,σ)`, uniformly for
+`0≤h≤1` and `t≥1`. Complex Mellin inversion retains every filter factor;
+rescaling the Mellin height bounds the angular cost polynomially.
+The selected kernel mode now grows for every `a(Re ρ−σ)>0`: rotation
+removes its fixed `π/4` Gamma penalty. A rotated finite-layer contour
+identity is still needed to turn this mode growth into prime-filter recovery.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

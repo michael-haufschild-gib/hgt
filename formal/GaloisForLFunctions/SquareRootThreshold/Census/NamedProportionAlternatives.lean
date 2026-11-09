@@ -13,15 +13,6 @@ open Zeta23
 noncomputable section
 namespace GaloisForLFunctions.SquareRootThreshold.Census
 
-/-- Failure of seventy-five percent forces the `HD(1) - 1/2` near-line alternative. -/
-theorem three_quarters_or_simple_offLine_near_line (A : ℝ) (hA : 0 < A) :
-    ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
-      3 / 4 * (Ncount T (2 * T) : ℝ) ≤ N0 T (2 * T) ∨
-        (ThmD.HD 1 - 1 / 2 - 1 / A - ε) * (Ncount T (2 * T) : ℝ) ≤
-          RHTower.offLineSimpleNear zetaZeroConfig (A / Real.log T) T (2 * T) := by
-  have he : 1 + ThmD.HD 1 - 2 * (3 / 4 : ℝ) = ThmD.HD 1 - 1 / 2 := by ring
-  simpa only [he] using RHTower.critical_proportion_or_simple_offLine_near_line (3 / 4) A hA
-
 /-- Failure of eighty percent forces the `HD(1) - 3/5` near-line alternative. -/
 theorem four_fifths_or_simple_offLine_near_line (A : ℝ) (hA : 0 < A) :
     ∀ ε > 0, ∃ T₀ : ℝ, ∀ T ≥ T₀,
@@ -31,7 +22,8 @@ theorem four_fifths_or_simple_offLine_near_line (A : ℝ) (hA : 0 < A) :
   have he : 1 + ThmD.HD 1 - 2 * (4 / 5 : ℝ) = ThmD.HD 1 - 3 / 5 := by ring
   simpa only [he] using RHTower.critical_proportion_or_simple_offLine_near_line (4 / 5) A hA
 
-#print axioms three_quarters_or_simple_offLine_near_line
+#print axioms RHTower.seventy_percent_or_simple_offLine_near_line
+#print axioms RHTower.three_quarters_or_simple_offLine_near_line
 #print axioms four_fifths_or_simple_offLine_near_line
 
 end GaloisForLFunctions.SquareRootThreshold.Census

@@ -44,6 +44,20 @@ It forces decay when `dκ≥a(1−σ)/2`, including equality. The exceptional-la
 growth theorem applies when `dκ<a(β−σ)/2−π/4`; the two regimes are disjoint.
 No independent bound contradicting the exceptional-layer signal is proved.
 
+The sharper independent estimate is now
+`|A_h(t)|≤C h^d(1+t)^(d+5) exp(a(1−σ)t/2−a t w(2t+1)/4)`,
+where `w(T)=(log T)^(−2/3)(log log T)^(−5/3)/10^8`.
+It permits contraction relaxed by a positive multiple of the actual width;
+see `../3-formalized/b13-vinogradov-korobov-prime-filter-bound.md`.
+This remains a subexponential saving and does not close the fixed gap.
+
+Complex damping supplies a different observable: at angle `−π/2+1/t`,
+the complete literal prime filter has bound `C h^d t^N exp(at(c−σ)/2)`
+for every `c>max(1,σ)`, while its selected kernel mode has rate
+`a(Re ρ−σ)/2` without a fixed Gamma penalty. These are formalized in
+`ComplexGaussianDamping.lean`. The rotated finite-layer recovery theorem
+remains missing; the kernel improvement alone is not a contradiction.
+
 The normalized divisor limit now holds for every positive `h(t)→0`.
 Thus raw decay at the arithmetic threshold coexists with nonzero normalized
 recovery; contraction-induced smallness is not a contradictory upper estimate.

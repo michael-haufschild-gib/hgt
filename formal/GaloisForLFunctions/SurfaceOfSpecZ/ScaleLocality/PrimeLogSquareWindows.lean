@@ -2,6 +2,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaLogSquareWindows
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeWindowTransfer
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimePowerWindowTransfer
 import GaloisForLFunctions.SurfaceOfSpecZ.TheWidthLawAtEveryGapSet
+import GaloisForLFunctions.SquareRootThreshold.TheWallsMeasureOneZeroWidth
 
 /-!
 # Logarithmic-square prime windows decide RH
@@ -142,7 +143,8 @@ theorem zeta_re_le_iff_prime_logSquare_power_windows {α : ℝ} (hα : 0 ≤ α)
           2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log p)).re := by
   constructor
   · intro hwidth
-    refine ⟨_, fun U => ⟨U, le_rfl, fun p hp _ => ?_⟩⟩
+    refine ⟨∑' z, ‖evenCoeff zetaZeroConfig (boxSpline 1 3) z‖,
+      fun U => ⟨U, le_rfl, fun p hp _ => ?_⟩⟩
     exact (abs_le.mp (abs_two_re_lagStructure_log_le_of_width
       temperedConfig_zetaZeroConfig hwidth hp.pos)).1
   · rintro ⟨K, hprime⟩
@@ -200,5 +202,27 @@ theorem riemannHypothesis_iff_abs_prime_logSquare_windows :
 #print axioms zeta_re_le_iff_prime_logSquare_power_windows
 #print axioms zeta_re_le_iff_abs_prime_logSquare_power_windows
 #print axioms riemannHypothesis_iff_abs_prime_logSquare_windows
+
+/-- Quasi-RH is a one-sided power saving on arbitrarily sparse log-square prime windows. -/
+theorem quasiRH_iff_prime_logSquare_power_windows :
+    _root_.RHTower.zetaZeroAbscissa < 1 ↔
+      ∃ α : ℝ, 0 ≤ α ∧ α < 1 / 2 ∧ ∃ K : ℝ,
+        ∀ U : ℝ, ∃ T : ℝ, U ≤ T ∧ ∀ p : ℕ, p.Prime →
+          |Real.log p - T| ≤ primeLogSquareRadius T →
+          -(K * (p : ℝ) ^ α) ≤
+            2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log p)).re := by
+  constructor
+  · intro hΘ
+    have hα : 0 ≤ _root_.RHTower.zetaZeroAbscissa - 1 / 2 :=
+      sub_nonneg.mpr _root_.RHTower.half_le_zetaZeroAbscissa
+    refine ⟨_, hα, by linarith only [hΘ], ?_⟩
+    apply (zeta_re_le_iff_prime_logSquare_power_windows hα).mp
+    exact (zetaZeroAbscissa_le_iff_zetaZeroConfig_re_le hα).mp (by linarith only)
+  · rintro ⟨α, hα, hαhalf, hK⟩
+    have hΘ := (zetaZeroAbscissa_le_iff_zetaZeroConfig_re_le hα).mpr
+      ((zeta_re_le_iff_prime_logSquare_power_windows hα).mpr hK)
+    linarith only [hΘ, hαhalf]
+
+#print axioms quasiRH_iff_prime_logSquare_power_windows
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

@@ -103,6 +103,7 @@
 | C73 | Only deep ordinates need separation | proved (Lean) | `DeepSeparatedOrdinates Z c δ`: distinct exponents of depth `> c ≥ 0` have ordinates `δ` apart; zeros of depth `≤ c` (the critical line included) are arbitrary. `re_le_of_bddBelow_exp_windows_of_deepSeparated`: `−Ke^{su}`, `s ≥ c`, on windows of length `80/δ` beyond every bound gives `Re ρ ≤ ½ + s`; `re_le_of_bddBelow_prime_windows_of_deepSeparated`: a bounded trace at the primes of `[x, e^{80/δ+1}x]` gives `Re ρ ≤ ½ + c`. Deep exponents leak through the resolution, `O(1/(δℓ)²)` (`sum_term_deep_le`); shallow ones leak at most their weight `(Σ|D_z|)e^{ℓ}e^{cu₀}` (`sum_term_shallow_le`), below the dominant weight `≥ e^{(s+ε)u₀}`; the reflection of the dominant exponent is shallow. For `ζ`: if the off-line zeros have `δ`-separated ordinates, RH follows from a bounded trace at the primes of one sparse sequence of windows of fixed ratio (`riemannHypothesis_of_prime_windows_of_offLine_separated`) |
 | C74 | The other side on windows | proved (Lean) | `re_le_of_bddAbove_exp_windows_of_deepSeparated`: an upper bound `2 Re S ≤ Ke^{su}`, `s ≥ c`, on windows of length `80/δ` beyond every bound gives `Re ρ ≤ ½ + s` under deep separation, real zeros allowed; `re_le_of_bddAbove_prime_windows_of_deepSeparated` at the primes of `[x, e^{80/δ+1}x]`; for `ζ`, `riemannHypothesis_of_prime_windows_bddAbove_of_offLine_separated`. Landau's inequality for `K − F` with the zero-frequency coefficient kept with its sign (`norm_le_re_add_of_window_lower`, `neg_le_re_sum_of_window_lower`): a deep real exponent contributes `−D_x e^{xu₀}σ_ℓ(x − x₀)² ≤ 0` (`re_term_nonneg_of_real`), so real zeros do not mask from above on windows either; a real dominant exponent is read at frequency zero by the same test |
 | C75 | Counts on one sequence of prime windows | proved (Lean) | `riemannHypothesis_iff_effectiveCounts_prime_windows_of_offLine_separated`: if the off-line zeros of `ζ` have `δ`-separated ordinates, RH ⇔ for arbitrarily large `T` every class `Γ_1 + Γ_p`, `p` prime with `log p ∈ [T, T + 80/δ + 1]`, carries an `ℕ`-count with `K(m)/m² → δ_p(1,1)`. The count door (C25, C48) is then needed only on the rays of one sparse sequence of prime windows of fixed ratio; the hypothesis on `ζ` is separation of the off-line ordinates, not ZAL |
+| C76 | Chart-uniform windows for separated ordinates | proved (Lean) | `exists_lt_in_window_of_chart`: for off-line ordinates `δ`-separated, a zero `ρ₁` with `Re ρ₁ > ½`, `ℓ ≥ 40/δ`, `M ≥ 2ℓ` and every `a ≥ 0` with `3(|K|+1)e^{ℓ/2} + 3(Σ|D_z|)e^{ℓ} < |D_{ρ₁−½}|e^{(Re ρ₁ − ½)a}`, the window `[a, a + (M+1)ℓ]` contains a scale with `2 Re S < −K`. The threshold depends on the chart `(Re ρ₁ − ½, |D_{ρ₁−½}|, Σ|D_z|, δ, K)` only: the dominant depth is monotone in the scale (`re_le_re_of_dominant`), so one of `M` consecutive subwindows has depth increment `≤ 2/M ≤ 1/ℓ` (`exists_small_depth_increment`), and there the drift is `≤ e` (`expWeight_drift_le_of_increment`); no convergence of the dominant depth is used |
 
 ## Big picture
 
@@ -255,13 +256,19 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    periodic function whose infimum over its Bohr hull is `≤ −‖·‖₂²/(2‖·‖_W) ≤ −c e^{(2x₀ − a)U}/E`
    for any level `x₀ > a/2`, with no separation of heights (Parseval on the hull). The gap: long
    windows reach the hull, but across them the weights `e^{xu}` drift by `e^{(x − x')|R|}` between
-   levels. Proved for separated ordinates (C70, C71): without near-coincidences the dominant
-   exponent is seen in every window of length `80/δ`, real or prime, so a counterexample needs
-   ordinate gaps tending to zero among the exponents of comparable weight. Windows of radius
-   `r√(log x)` decide every configuration (peer, `ScaleLocality/`, positive annihilating filters).
-   Separation is needed only among the exponents deeper than the level tested (C73); the length
-   `80/δ` is sharp up to the constant (C72). Open: windows between fixed ratio and
-   `e^{r√(log x)}` when the deep ordinates have gaps tending to zero.
+   levels. B139 status: prime windows of radius `r√(log x)` decide every tempered configuration
+   without real zeros, and for `ζ` radius `C log² T` suffices (peer, `ScaleLocality/`, positive
+   annihilating filters). With off-line ordinates `δ`-separated, windows of fixed ratio
+   `e^{80/δ+1}` decide, real or prime, from either side, with a chart-explicit threshold (C70, C71,
+   C73, C74, C76), and the length is sharp up to the constant (C72). No fixed window length
+   decides every configuration at scales adapted to it (C72). Open (review 0911's B140): the
+   slowest decisive radius when the deep ordinates have gaps tending to zero, in particular
+   bounded windows for configurations with `ζ`'s counting. Estimates: a Landau test with a
+   compactly supported kernel isolates an exponent only if the window radius is `≳` (depth gap) ×
+   scale, so below that a countermodel would have to mask old exponents by deeper clusters; each
+   cluster with ordinates `γ + sθ`, multiplicities `C(2N, N+s)`, has amplitude
+   `(2cos(θu/2))^{2N}`, quiet on windows around `u ≡ π/θ (mod 2π/θ)` only while
+   `|D|e^{xu}(θL)^{2N} ≲ K`.
 
 ## Log
-- 2026-11-08 — created; C1–C75 formalized in `SurfaceOfSpecZ/` (seventy-five modules)
+- 2026-11-08 — created; C1–C76 formalized in `SurfaceOfSpecZ/` (seventy-six modules)
