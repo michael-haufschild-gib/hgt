@@ -28,6 +28,34 @@ The contour identity and this error estimate are not yet formalized.
 The independent Euler upper rate remains `a(1−σ)/2`, so even the proposed
 receiver leaves arithmetic gap `a(1−Re ρ)/2`.
 
+## Derivation
+
+The rotated weight is an entire exponential multiplier of the real-damping
+weight. The same finite residue rectangle therefore cancels the pole and
+every unwanted zero exactly. On horizontal edges the sharp Gamma estimate
+leaves angular margin `δ=π/4−|φ|/2>0`; its polynomial factors are dominated
+by `exp(−δT)` as the rectangle height tends to infinity.
+
+The regular vertical integral has the full spacing factor and one weighted
+kernel moment. At angle `−π/2+1/t`, the proved moment estimate costs only
+polynomial height. Consequently its complete error is bounded by
+`C h^d t^N exp(at(c−σ)/2)`. The reciprocal selected mode has bound
+`D t^M exp(−a(Re ρ−σ)t/2)`. Dividing cancels `h^d` exactly and leaves
+`CD t^(N+M) exp(−a(Re ρ−c)t/2)→0` for every `a>0`.
+
+For `h=exp(−κt)`, the predicted literal prime growth range is
+`dκ<a(Re ρ−σ)/2`. Independent arithmetic decay holds above
+`dκ>a(1−σ)/2`. The fixed Gamma gap disappears; the arithmetic gap remains.
+
+## Lean target
+
+- `RotatedContoursForFiniteDivisorFilters.lean`: rotated residue identity,
+  horizontal decay, full boundary-angle remainder estimate.
+- `BoundaryDampingReadsTheDivisor.lean`: arbitrary-contraction recovery at
+  every positive speed, actual-divisor capstone, and literal growth/decay ranges.
+
+Source proofs are written; direct audits remain pending.
+
 ## Available inputs
 
 - `ComplexGaussianDamping.lean`: exact literal-prime Mellin identity,

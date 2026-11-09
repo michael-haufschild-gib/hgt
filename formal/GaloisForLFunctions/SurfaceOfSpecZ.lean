@@ -147,3 +147,4 @@ whose Tate limit is its defect. The prime degrees alone decide RH through their 
 they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley. In hyperbolic three-space `ℍ³`, only pointwise rotations around the vertical degree geodesic preserve the off-diagonal archimedean Frobenius, any discrete finite-covolume quotient triggers a thin–thick folding dichotomy while parabolic cusps diverge harmonically at `s = ½`, the pure trivial-zero jets have infinite rank on coprime primes and are carried by a dilation-covariant causal monomial bundle on `L²(0, ∞)`, and counterterm-free positive damping requires coherent archimedean–torsion correlation locking (impossible on atomic degrees below `N log N`, equivalent to RH on smoothed Frobenius graphs, and impossible on either channel alone).
 -/
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ThetaLogMoment
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.QuartetLogMoments

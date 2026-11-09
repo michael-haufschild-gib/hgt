@@ -162,12 +162,11 @@ instance : IsProbabilityMeasure quarterTwoMeasure := by
   constructor
   simp only [quarterTwoMeasure, Measure.smul_apply, Measure.coe_finsetSum, Finset.sum_apply,
     Measure.dirac_apply' _ MeasurableSet.univ, Set.mem_univ, Set.indicator_of_mem, Pi.one_apply,
-    Fin.sum_univ_four, smul_eq_mul]
-  rw [show (1 + 1 + 1 + 1 : ℝ≥0∞) = 4 by norm_num, one_div]
+    Finset.sum_const, Finset.card_fin, nsmul_eq_mul, mul_one, smul_eq_mul, one_div]
   exact ENNReal.inv_mul_cancel (by norm_num) (by norm_num)
 
 private theorem integral_quarterTwoMeasure {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    (f : GaugeTorus → E) (hf : Continuous f) :
+    [CompleteSpace E] (f : GaugeTorus → E) (hf : Continuous f) :
     ∫ x, f x ∂quarterTwoMeasure = (1 / 4 : ℝ) • ∑ j : Fin 4, f (j.1 • quarterTwoPoint) := by
   unfold quarterTwoMeasure
   rw [integral_smul_measure, integral_finsetSum_measure fun j _ =>
@@ -199,7 +198,7 @@ private theorem measureReal_quarterTwoMeasure_singleton (j₀ : Fin 4) :
 private theorem twist_quarterOrbit_four (k : ℕ) :
     twist (k • quarterTwoPoint) 4 = (-1 : ℂ) ^ k := by
   rw [show (4 : ℕ) = 2 * 2 by rfl, twist_mul _ (by decide) (by decide),
-    twist_nsmul, twist_quarterTwoPoint_two, ← pow_mul, mul_comm, pow_mul, I_sq]
+    twist_nsmul, twist_quarterTwoPoint_two, ← mul_pow, I_mul_I]
 
 private theorem twist_quarterOrbit_six (j : Fin 4) :
     twist (j.1 • quarterTwoPoint) 6 = I ^ j.1 := by

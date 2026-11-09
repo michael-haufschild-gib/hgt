@@ -121,14 +121,11 @@ theorem abs_rowError_le (n : ℕ) : |rowError n| ≤ 3 / 4 := by
       regularProfile 0 - regularProfile 1 := by field_simp
   rw [he'] at hmul
   rw [rowError, smoothRow_eq_range hn]
-  have ht := abs_add_le ((∑ a ∈ range n, regularProfile ((a : ℝ) / n)) -
-    (n : ℝ) * regularMean) (regularProfile 1 - regularProfile 0)
-  rw [regularProfile_endpoints.1, regularProfile_endpoints.2] at hmul ht ⊢
-  norm_num at ht
-  convert ht.trans (by linarith only [hmul] :
-      |(∑ a ∈ range n, regularProfile ((a : ℝ) / n)) - (n : ℝ) * regularMean| +
-        3 / 8 ≤ 3 / 4) using 1
-  congr 1 <;> ring
+  rw [regularProfile_endpoints.1, regularProfile_endpoints.2] at hmul ⊢
+  apply abs_le.mpr
+  constructor
+  · linarith only [(abs_le.mp hmul).1]
+  · linarith only [(abs_le.mp hmul).2]
 
 /-- Primitive quadrature is the exact Möbius transform of ordinary quadrature. -/
 theorem primitiveSmoothRow_moebius {n : ℕ} (hn : 0 < n) :

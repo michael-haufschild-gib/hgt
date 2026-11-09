@@ -30,8 +30,10 @@ With `a=s+6`, integration against `exp(-|x|)` yields
 Theta domination transfers this bound to `k`. The same kernel therefore
 isolates the selected quartet with logarithmic absolute moment growth.
 `ScaleLocality.ThetaLogMoment.exists_theta_logarithmic_moment_bound` passes
-Lean with only `propext`, `Classical.choice`, `Quot.sound`. The quartet
-specialization remains under formalization.
+Lean with only `propext`, `Classical.choice`, `Quot.sound`.
+`QuartetLogMoments.exists_positive_quartet_log_moments` proves the quartet
+specialization with the same axiom audit. Its exact statement and proof are
+in `3-formalized/positive-quartet-kernels-have-logarithmic-moment-growth.md`.
 
 ## Localization — paper derivation, Lean assembly pending
 
@@ -61,8 +63,8 @@ prime windows after the existing width iteration `1/2→1/6→0`.
 ## Status
 
 - Existing positive quartet isolation is reused, not claimed as new.
-- The theta moment bound is proved. Its quartet specialization, integral
-  interchange, and logarithmic leakage are under formalization.
+- Theta and positive quartet moment bounds are proved. Integral interchange,
+  logarithmic leakage, and the zeta window criteria are under formalization.
 - Continuous and prime logarithmic-window criteria remain unproved.
 - No arithmetic Stepanov lower bound has been produced. B130 remains open.
 - The independently formalized generic positive translation-repair theorem is

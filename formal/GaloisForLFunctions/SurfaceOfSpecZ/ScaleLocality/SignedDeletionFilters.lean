@@ -162,7 +162,8 @@ theorem multipliable_signedDeletionFactor_ne_zero {ι : Type*} (a h : ι → ℝ
   have hn := tprod_one_add_ne_zero_of_summable
     (f := fun i => signedDeletionFactor (a i) (h i) w - 1)
     (fun i => by
-      simpa only [add_sub_cancel] using
+      simpa only [show 1 + (signedDeletionFactor (a i) (h i) w - 1) =
+        signedDeletionFactor (a i) (h i) w by ring] using
         signedDeletionFactor_ne_zero_of_small (a i) (h i) w (hsmall i)) hs
   rw [he] at hm hn
   exact ⟨hm, hn⟩

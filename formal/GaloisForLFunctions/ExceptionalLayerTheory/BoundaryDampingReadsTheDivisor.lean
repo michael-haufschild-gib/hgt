@@ -148,6 +148,111 @@ theorem boundary_contracting_prime_filter_reads_selected_zero
   field_simp [hk, pow_ne_zero d (Complex.ofReal_ne_zero.mpr ht.ne')]
   ring
 
+
+/-- Exponential contraction spends only horizontal amplification after
+boundary rotation; there is no additional fixed Gamma loss. -/
+theorem tendsto_norm_boundary_contracted_mode_atTop (d : ℕ) {κ : ℝ}
+    (hκ : 0 ≤ κ) (ρ : ℂ) (σ a : ℝ)
+    (hr : (d : ℝ) * κ < a * (ρ.re - σ) / 2) :
+    Tendsto (fun t : ℝ => ‖((Real.exp (-κ * t) : ℝ) : ℂ) ^ d *
+      rotatedGaussianKernel (Real.exp (-a * t)) (boundaryDampingAngle t)
+        (ρ - ((σ : ℂ) + t * I))‖) atTop atTop := by
+  let K : ℝ → ℂ := fun t => rotatedGaussianKernel (Real.exp (-a * t))
+    (boundaryDampingAngle t) (ρ - ((σ : ℂ) + t * I))
+  let g : ℝ → ℂ := fun t => ((Real.exp (-κ * t) : ℝ) : ℂ) ^ d * K t
+  obtain ⟨D, M, hD, hb⟩ := exists_boundaryGaussianMode_inverse_bound ρ σ
+  have hi : Tendsto (fun t : ℝ => (g t)⁻¹) atTop (𝓝 0) := by
+    apply HTGeometry.tendsto_zero_of_eventually_norm_le_polyExp
+      (C := D) (N := M) (sub_pos.mpr hr)
+    filter_upwards [eventually_ge_atTop (|ρ.im| + 2), eventually_ge_atTop (1 : ℝ)]
+      with t ht ht1
+    rw [g, mul_inv, norm_mul, norm_inv, norm_pow, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul, ← Real.exp_neg]
+    rw [show -((d : ℝ) * (-κ * t)) = (d : ℝ) * κ * t by ring]
+    calc
+      _ ≤ Real.exp ((d : ℝ) * κ * t) *
+          (D * t ^ M * Real.exp (-(a * (ρ.re - σ) / 2 * t))) :=
+        mul_le_mul_of_nonneg_left (hb t ht ht1 a) (Real.exp_pos _).le
+      _ = _ := by
+        rw [show -((a * (ρ.re - σ) / 2 - (d : ℝ) * κ) * t) =
+          (d : ℝ) * κ * t + -(a * (ρ.re - σ) / 2 * t) by ring, Real.exp_add]
+        ring
+  have hr0 : 0 < a * (ρ.re - σ) := by
+    have hn := mul_nonneg (Nat.cast_nonneg d) hκ
+    linarith only [hr, hn]
+  have hK := tendsto_norm_boundaryGaussianMode_atTop ρ σ a hr0
+  have hp : ∀ᶠ t : ℝ in atTop, 0 < ‖(g t)⁻¹‖ := by
+    filter_upwards [hK.eventually (eventually_gt_atTop (0 : ℝ))] with t ht
+    apply norm_pos_iff.mpr
+    apply inv_ne_zero
+    exact mul_ne_zero
+      (pow_ne_zero d (Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero _))) (norm_pos_iff.mp ht)
+  have hright := tendsto_nhdsWithin_iff.mpr
+    ⟨by simpa only [norm_zero] using hi.norm, hp⟩
+  simpa only [Function.comp_def, norm_inv, inv_inv, g, K] using
+    tendsto_inv_nhdsGT_zero.comp hright
+
+/-- The literal prime filter diverges throughout the full horizontal
+contraction range, with the complete complementary divisor retained. -/
+theorem tendsto_norm_boundary_prime_filter_atTop
+    (F : Finset XiZeroCopy) {θ σ β a κ : ℝ} (hσ : 1 / 2 < σ)
+    (hgap : θ < σ) (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
+    (ha : 0 < a) (hκ : 0 < κ) (ρ : ℂ)
+    (hρσ : σ < ρ.re) (hρ1 : ρ.re < 1) (hρ : xi ρ = 0)
+    (hr : ((1 + (F.filter (fun q => xiZero q ≠ ρ)).card : ℕ) : ℝ) * κ <
+      a * (ρ.re - σ) / 2) :
+    Tendsto (fun t : ℝ => ‖rotatedPrimeDampingFilter
+      (divisorDampingFilter F ρ β (Real.exp (-κ * t)))
+        σ β a (Real.exp (-κ * t)) (boundaryDampingAngle t) t‖) atTop atTop := by
+  have hlim : Tendsto (fun t : ℝ => Real.exp (-κ * t)) atTop (𝓝 0) := by
+    simpa only [pow_zero, one_mul, neg_mul] using HTGeometry.tendsto_pow_mul_exp_neg_scaled 0 hκ
+  have hread := boundary_contracting_prime_filter_reads_selected_zero F hσ hgap hrest
+    ha ρ hρσ hρ1 hρ hlim (Eventually.of_forall fun t => Real.exp_pos _)
+  exact norm_tendsto_atTop_of_ratio
+    (divisorDampingFilter_limit_constant_ne_zero F ρ
+      (by linarith only [hσ, hρσ]) hρ1 hρ) hread
+    (tendsto_norm_boundary_contracted_mode_atTop _ hκ.le ρ σ a hr)
+
+/-- The independent boundary-rotation Euler bound still forces decay above
+the absolute arithmetic contraction threshold. -/
+theorem tendsto_boundary_prime_filter_zero_of_fast_contraction
+    (F : Finset XiZeroCopy) (ρ : ℂ) (σ β a κ : ℝ)
+    (hσ : σ < 1) (ha : 0 < a) (hκ : 0 < κ)
+    (hr : a * (1 - σ) / 2 <
+      ((1 + (F.filter (fun q => xiZero q ≠ ρ)).card : ℕ) : ℝ) * κ) :
+    Tendsto (fun t : ℝ => rotatedPrimeDampingFilter
+      (divisorDampingFilter F ρ β (Real.exp (-κ * t)))
+        σ β a (Real.exp (-κ * t)) (boundaryDampingAngle t) t) atTop (𝓝 0) := by
+  let d := 1 + (F.filter (fun q => xiZero q ≠ ρ)).card
+  let r := (d : ℝ) * κ - a * (1 - σ) / 2
+  let c := 1 + r / a
+  have hr0 : 0 < r := sub_pos.mpr hr
+  have hc : 1 < c := by dsimp only [c]; linarith only [div_pos hr0 ha]
+  have hrate : a * (c - σ) / 2 < (d : ℝ) * κ := by
+    have he : a * (c - σ) / 2 = a * (1 - σ) / 2 + r / 2 := by
+      dsimp only [c]
+      field_simp [ha.ne']
+      ring
+    rw [he]
+    dsimp only [r] at hr0 ⊢
+    linarith only [hr0]
+  obtain ⟨C, N, hC, hb⟩ := exists_boundaryPrimeDampingFilter_arithmetic_bound
+    F ρ σ β c hc (hσ.trans hc)
+  apply HTGeometry.tendsto_zero_of_eventually_norm_le_polyExp
+    (C := C) (N := N) (sub_pos.mpr hrate)
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+  have ht0 : 0 ≤ t := zero_le_one.trans ht
+  have hh : Real.exp (-κ * t) ≤ 1 := by
+    rw [Real.exp_le_one_iff, neg_mul]
+    exact neg_nonpos.mpr (mul_nonneg hκ.le ht0)
+  calc
+    _ ≤ C * Real.exp (-κ * t) ^ d * t ^ N * Real.exp (a * t * (c - σ) / 2) :=
+      hb a _ t ht (Real.exp_pos _).le hh
+    _ = _ := by
+      rw [← Real.exp_nat_mul, show -(((d : ℝ) * κ - a * (c - σ) / 2) * t) =
+        (d : ℝ) * (-κ * t) + a * t * (c - σ) / 2 by ring, Real.exp_add]
+      ring
+
 /-- Failure of the abscissa law yields an actual nonzero divisor reading at
 every positive speed and every positive contracting damping grid. -/
 theorem not_asymptoticAbscissaLaw_has_boundary_contracting_prime_filters :
@@ -188,8 +293,37 @@ theorem not_asymptoticAbscissaLaw_has_boundary_contracting_prime_filters :
   exact boundary_contracting_prime_filter_reads_selected_zero F hσ hgap hrest ha
     (xiZero q) (by rwa [hqβ]) hρ1 (xi_xiZero q) hlim hpos
 
+/-- An actual exceptional top forces growth of literal boundary-damped
+prime filters throughout the horizontal contraction range. -/
+theorem not_asymptoticAbscissaLaw_has_boundary_prime_growth :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (F : Finset XiZeroCopy) (σ β : ℝ),
+        1 / 2 < σ ∧ σ < β ∧ β < 1 ∧
+        (∃ q ∈ F, (xiZero q).re = β) ∧
+        (∀ q : XiZeroCopy, (xiZero q).re ≤ β) ∧
+        ∀ q ∈ F, (xiZero q).re = β → ∀ a κ : ℝ, 0 < a → 0 < κ →
+          ((1 + (F.filter (fun p => xiZero p ≠ xiZero q)).card : ℕ) : ℝ) * κ <
+            a * (β - σ) / 2 →
+          Tendsto (fun t : ℝ => ‖rotatedPrimeDampingFilter
+            (divisorDampingFilter F (xiZero q) β (Real.exp (-κ * t)))
+              σ β a (Real.exp (-κ * t)) (boundaryDampingAngle t) t‖) atTop atTop := by
+  intro hnot
+  obtain ⟨F, σ, β, hσ, hσβ, hβ1, htop, hall, hread⟩ :=
+    not_asymptoticAbscissaLaw_has_boundary_contracting_prime_filters hnot
+  refine ⟨F, σ, β, hσ, hσβ, hβ1, htop, hall, ?_⟩
+  intro q hq hqβ a κ ha hκ hr
+  obtain ⟨hC, hreadq⟩ := hread q hq hqβ
+  have hlim : Tendsto (fun t : ℝ => Real.exp (-κ * t)) atTop (𝓝 0) := by
+    simpa only [pow_zero, one_mul, neg_mul] using HTGeometry.tendsto_pow_mul_exp_neg_scaled 0 hκ
+  exact norm_tendsto_atTop_of_ratio hC
+    (hreadq a ha _ hlim (Eventually.of_forall fun t => Real.exp_pos _))
+    (tendsto_norm_boundary_contracted_mode_atTop _ hκ.le (xiZero q) σ a (by simpa only [hqβ] using hr))
+
 #print axioms exists_boundaryGaussianMode_inverse_bound
 #print axioms boundary_contracting_prime_filter_reads_selected_zero
 #print axioms not_asymptoticAbscissaLaw_has_boundary_contracting_prime_filters
+#print axioms tendsto_norm_boundary_prime_filter_atTop
+#print axioms not_asymptoticAbscissaLaw_has_boundary_prime_growth
+#print axioms tendsto_boundary_prime_filter_zero_of_fast_contraction
 
 end GaloisForLFunctions.ExceptionalLayerTheory
