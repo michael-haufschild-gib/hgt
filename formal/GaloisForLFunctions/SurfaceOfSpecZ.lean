@@ -86,6 +86,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ConfigurationTailIsolati
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SquareRootWindowsDetectEveryDepth
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeSquareRootWindows
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.MixedPositiveMoments
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaMixedMomentBounds
 
 /-!
 # The surface of `Spec ℤ`

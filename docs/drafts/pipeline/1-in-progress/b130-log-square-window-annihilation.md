@@ -58,7 +58,8 @@ the prime-gap transfer. These inequalities await the Lean audit.
 ## Gaps
 
 The mixed moment bound and its infinite translated leakage inequality
-pass Lean in `ScaleLocality/MixedPositiveMoments.lean`, with only the
-standard three axioms. Uniform zeta prefix estimates, log-square leakage,
-and prime-window transfer remain under formalization. The arithmetic lower bound itself and
+pass Lean in `ScaleLocality/MixedPositiveMoments.lean`. Uniform zeta prefix
+estimates pass Lean in `ZetaMixedMomentBounds.lean`; both axiom audits
+contain only the standard three axioms. Log-square leakage and prime-window
+transfer remain under formalization. The arithmetic lower bound itself and
 arbitrarily slowly growing windows remain open. No external novelty claim.
