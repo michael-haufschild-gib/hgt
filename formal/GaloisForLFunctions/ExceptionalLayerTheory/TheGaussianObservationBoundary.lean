@@ -228,7 +228,7 @@ theorem not_asymptoticAbscissaLaw_has_exponential_passage :
   have hsum : Tendsto (fun t : ℝ => ∑ q ∈ F,
       gaussianMBKernel (Real.exp (-a * t)) (xiZero q - ((u : ℂ) + t * I)))
       atTop (𝓝 0) := by
-    simpa only [Finset.sum_const_zero] using tendsto_finset_sum F
+    simpa only [Finset.sum_const_zero] using tendsto_finsetSum F
       (fun q hq => tendsto_gaussianMode_zero_of_negative_rate (xiZero q) u a (hr q hq))
   have hsub := ((hfinite a ha).tendsto_at ⟨hσu, hu1⟩).sub hsum
   simp only [sub_zero] at hsub

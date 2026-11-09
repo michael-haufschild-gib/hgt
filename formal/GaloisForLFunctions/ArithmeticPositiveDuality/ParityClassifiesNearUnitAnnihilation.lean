@@ -44,13 +44,14 @@ theorem exists_exact_mass_annihilator_of_even_relations (γ : ι → ℝ)
     rw [← Finset.sum_div, hsum]
     simp only [r, one_div, inv_inv]
   have hphase (i : ι) : ∑ k, ((w k : ℝ) : ℂ) * monomialPhase (γ i) (d k) = -1 := by
+    change (∑ k, ((a k / r : ℝ) : ℂ) * monomialPhase (γ i) (d k)) = -1
     have hc := congrFun hcomb i
     simp only [Finset.sum_apply, Pi.smul_apply, Complex.real_smul] at hc
     have hz' (k : κ) : z k i = monomialPhase (γ i) (d k) := (congrFun (he k) i).symm
     simp_rw [hz'] at hc
     calc
       _ = (∑ k, (a k : ℂ) * monomialPhase (γ i) (d k)) / (r : ℂ) := by
-        simp only [w, NNReal.coe_mk, Complex.ofReal_div, Finset.sum_div]
+        simp only [Complex.ofReal_div, Finset.sum_div]
         apply Finset.sum_congr rfl
         intro k _
         ring
@@ -72,7 +73,9 @@ private theorem exists_near_antipodal_monomial {P : MvPolynomial (Fin 2) ℝ≥0
     obtain ⟨i, hi⟩ := h d (Finset.mem_erase.mp hd).1
     have hs : ε ^ 2 ≤ ‖monomialPhase (γ i) d + 1‖ ^ 2 := by
       simpa only [pow_two] using mul_le_mul hi hi hε.le (norm_nonneg _)
-    exact hs.trans (Finset.single_le_sum (fun j _ => sq_nonneg _) (Finset.mem_univ i))
+    exact hs.trans (Finset.single_le_sum
+      (f := fun j : ι => ‖monomialPhase (γ j) d + 1‖ ^ 2)
+      (fun j _ => sq_nonneg ‖monomialPhase (γ j) d + 1‖) (Finset.mem_univ i))
   have henergy : (∑ i, ∑ d ∈ P.support.erase 0,
       ((P.coeff d : ℝ≥0) : ℝ) * Real.exp (-monomialLog d * β) *
         ‖monomialPhase (γ i) d + 1‖ ^ 2) =

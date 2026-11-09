@@ -1,7 +1,7 @@
 # Fixed-height prime return mass
 
 - **ID:** CDG-MASS
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** CALIBRATION
 - **Source:** Collective Diophantine Geometry, heavy-subset breadth question.
 
@@ -38,13 +38,18 @@ of the finite union `P_N`. A member of its `j`th window satisfies
 `2π(N−j)−δ<log p≤2π(N−j)+δ`, proving the phase condition.
 Finally `x_N→∞` and `θ(x_N)/x_N→1`, giving the claimed relative mass.
 Convergence above any smaller fraction and unboundedness of `x_N` give
-the final existence statement.
+the final existence statement. At `δ=1/2` the limit exceeds `1/2`, since
+`e>2` and `0<e^(−2π)<1`. Hence even a half-mass requirement permits
+height-one returns with half-radian precision.
 
 ## Scope and novelty
 
 The positive survivor is an exact mass law for infinitely many cutoffs,
-with actual returning prime subsets. It calibrates the admissible heaviness
+with actual returning prime subsets. It calibrates the admissible logarithmic-mass
 parameter; it does not exclude near-full returns in the remaining range.
+The existing TTPO `MainConjecture` instead uses `p^(−1/2)` weights and
+existentially chooses a sufficiently small missing-mass allowance. This
+result does not refute that precise conjecture or silently transfer weights.
 
 The underlying nonuniform logarithmic phase distribution is classical:
 Wintner (1935), reviewed in Hutson, *On the distribution of log(p)* (2003),
@@ -53,4 +58,16 @@ No new prime-distribution estimate or breadth lower bound is claimed.
 
 ## Lean status
 
-Paper proof dependency-closed. Formalization in progress.
+Module: `CollectiveDiophantineGeometry/FixedHeightPrimeMass.lean`.
+
+- `geometricPrimeMass_ratio_limit`: infinite geometric-comb law.
+- `mem_returningPrimeComb`: actual primes, cutoff bound, and radian return.
+- `alignedCutoff_atTop`: unbounded cutoff sequence.
+- `returningPrimeComb_mass_limit`: exact relative logarithmic mass.
+- `arbitrarily_large_heavy_returns_at_one`: every fraction below the limit.
+- `arbitrarily_large_half_mass_returns`: half-mass, half-radian witnesses.
+
+All six declarations compiled and passed `#print axioms`: only `propext`,
+`Classical.choice`, and `Quot.sound`. Final direct check passed:
+`lake --old env lean GaloisForLFunctions/CollectiveDiophantineGeometry/FixedHeightPrimeMass.lean`.
+The programme umbrella imports the module; no umbrella build was run.

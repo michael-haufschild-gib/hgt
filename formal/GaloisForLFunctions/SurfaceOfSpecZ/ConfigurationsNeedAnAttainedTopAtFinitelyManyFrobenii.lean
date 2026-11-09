@@ -12,6 +12,13 @@ for primes `P₁, …, P_r` and `0 < Θ ≤ ½` there is a tempered configuratio
 Such a monoid has `≍ (log x)^r` elements up to `x`; the primes, with power-saving gaps, need no
 attainment (`TheGapMethodIterates`).
 
+**The blind side is a sign.** For the spline of order `o` the coefficient at the zero `2πM` of `B̂`
+is `(−1)^{o+1}` times a positive number, so the same towers satisfy `(−1)^{o+1} 2 Re S ≥ −5` at every
+degree (`exists_zeroConfig_finPrimes_signed_nonattained`): from below for the cubic spline, from above
+for the quartic one (`exists_zeroConfig_finPrimes_bddAbove_nonattained_quartic`). The other side
+would need coefficients of the opposite sign at resonant heights, i.e. heights at a prescribed
+offset from `πℤ`: inhomogeneous Kronecker on `(1, log P₁, …, log P_r)`.
+
 **Construction.** Level `k` is the pair `½ ± x_k + 2πiM_k`, `x_k = Θ(1 − 2^{−k−1})`, its height at a
 zero of `B̂`. Its coefficient `c_k = sinc(2πM_k − ix_k)⁸` is in phase (`re_sincPow_mul_exp_ge`) and
 `2 Re S(λ) = Σ_k (e^{x_kλ} a_k + e^{−x_kλ} b_k)`, `a_k = 2 Re(c_k e^{2πiM_kλ})`, `|a_k|, |b_k| ≤ 2|c_k|`
@@ -302,7 +309,8 @@ theorem key_ineq {Θ s C : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hC : 1 ≤
       rw [le_div_iff₀ (by positivity)]
       have := mul_le_mul_of_nonneg_right hsW hs0
       nlinarith
-    have f1 : T * C ≤ T * C * s := by nlinarith
+    have f1 : T * C ≤ T * C * s := by
+      have h := mul_le_mul_of_nonneg_left hs1 (by positivity : (0 : ℝ) ≤ T * C); linarith
     have f2 : (n : ℝ) * T ≤ s * T := mul_le_mul_of_nonneg_right hns (by linarith)
     have f3 : 12 * T ≤ 12 * T * s := by nlinarith
     have f4 : 5 * (N : ℝ) + 2 ≤ 7 * T * s := by
@@ -351,9 +359,22 @@ theorem key_ineq {Θ s C : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hC : 1 ≤
       _ ≤ _ := Real.exp_le_exp.mpr hexpo
   have hid : 8 * (CR * X * 16 * (Y * Z)) ^ N =
       2 * (Θ / 2) ^ N * (CR ^ N * X ^ N * 2 ^ (5 * N + 2) * (1 / Θ) ^ N * Y ^ N * Z ^ N) := by
-    rw [show (16 : ℝ) = 2 ^ 4 by norm_num, show (8 : ℝ) = 2 ^ 3 by norm_num]
-    field_simp
-    ring
+    have e1 : (Θ / 2) ^ N * (1 / Θ) ^ N = (1 / 2) ^ N := by
+      rw [← mul_pow]; congr 1; field_simp
+    have e3 : (2 : ℝ) ^ (5 * N + 2) = 2 ^ N * 16 ^ N * 4 := by
+      rw [show (16 : ℝ) = 2 ^ 4 by norm_num, ← pow_mul, ← pow_add, show (4 : ℝ) = 2 ^ 2 by norm_num,
+        ← pow_add]
+      congr 1; ring
+    have e2 : (1 / 2 : ℝ) ^ N * 2 ^ (5 * N + 2) = 4 * 16 ^ N := by
+      rw [e3, show (1 / 2 : ℝ) ^ N * (2 ^ N * 16 ^ N * 4) = ((1 / 2) * 2) ^ N * 16 ^ N * 4 by
+        rw [mul_pow]; ring]
+      norm_num; ring
+    calc 8 * (CR * X * 16 * (Y * Z)) ^ N = 2 * (4 * 16 ^ N) * (CR ^ N * X ^ N * Y ^ N * Z ^ N) := by
+          ring
+      _ = 2 * ((1 / 2) ^ N * 2 ^ (5 * N + 2)) * (CR ^ N * X ^ N * Y ^ N * Z ^ N) := by rw [e2]
+      _ = 2 * ((Θ / 2) ^ N * (1 / Θ) ^ N * 2 ^ (5 * N + 2)) *
+            (CR ^ N * X ^ N * Y ^ N * Z ^ N) := by rw [e1]
+      _ = _ := by ring
   rw [hid]
   exact mul_le_mul_of_nonneg_left hfin (by positivity)
 
@@ -466,7 +487,11 @@ theorem one_le_towerW (o r : ℕ) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2
   have ho : (0 : ℝ) ≤ o := Nat.cast_nonneg o
   have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
   rw [towerW, le_div_iff₀ hΘ]
-  nlinarith
+  have h1 : (54 : ℝ) ≤ (27 + o) * (2 * (o + 1) * (r + 1)) := by
+    have h2 : (2 : ℝ) ≤ 2 * (o + 1) * (r + 1) := by nlinarith
+    nlinarith
+  have h3 : 0 ≤ 2 * ((o : ℝ) + 1) * Real.log (1 / Θ) := by positivity
+  linarith
 
 /-- **The takeover.** For `V ≥ 8W`, the weight of level `n + 1` exceeds the earlier ones from the
 start of its window: `2|c_{n+1}| e^{(x_{n+1} − x_n)U_{n+1}} ≥ 8`. -/
@@ -487,8 +512,10 @@ theorem eight_le_wt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hV : 8 * tower
     rw [towerW, show Θ * (2 ^ (n + 2) * (((27 + o) * (2 * (o + 1) * (r + 1)) +
       2 * (o + 1) * Real.log (1 / Θ)) / Θ)) = 2 ^ (n + 2) * ((27 + o) * (2 * (o + 1) * (r + 1)) +
       2 * (o + 1) * Real.log (1 / Θ)) by field_simp] at this
-    simp only [N, R, C]; push_cast
-    convert this using 3; ring
+    have hnum : (25 + C) * ((N : ℝ) * R) + N * Real.log (1 / Θ) =
+        (27 + o) * (2 * (o + 1) * (r + 1)) + 2 * (o + 1) * Real.log (1 / Θ) := by
+      simp only [N, R, C]; push_cast; ring
+    rw [hnum]; exact this
   have h2n : (1 : ℝ) ≤ 2 ^ (n + 2) := one_le_pow₀ (by norm_num)
   have hs1 : 1 ≤ s := le_trans (by nlinarith) hsW
   have hns : (n : ℝ) ≤ s := by
@@ -580,7 +607,7 @@ theorem pt_injective (hΘ : 0 < Θ) : Function.Injective (pt o Θ V P) := by
 theorem reflect_pt (k : ℕ) (b : Bool) : reflect (pt o Θ V P (k, b)) = pt o Θ V P (k, !b) := by
   apply Complex.ext <;> cases b <;> simp [reflect, pt] <;> ring
 
-variable (V)
+variable (o V)
 
 /-- **The configuration** `{½ ± x_k + 2πiM_k}` with multiplicity one. -/
 def config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig where
@@ -609,7 +636,7 @@ def config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig where
     have : (k : ℝ) ≤ T₂ := by nlinarith [Real.pi_gt_three]
     exact Nat.le_floor this
 
-variable {V}
+variable {o V}
 
 theorem gammaOf_pt_true (k : ℕ) :
     gammaOf (pt o Θ V P (k, true)) = splinePoint (height o Θ V P k) (depth Θ k) := by
@@ -837,7 +864,10 @@ theorem exists_zeroConfig_finPrimes_bddBelow_nonattained {r : ℕ} (P : Fin r �
       ∀ a : Fin r → ℕ,
         -5 ≤ 2 * (lagStructure Z (boxSpline 1 3) (∑ i, (a i : ℝ) * Real.log (P i))).re := by
   obtain ⟨Z, h1, h2, h3, h4, h5⟩ := exists_zeroConfig_finPrimes_signed_nonattained le_rfl P hP hΘ hΘ2
-  exact ⟨Z, h1, h2, h3, h4, fun a => by simpa using h5 a⟩
+  refine ⟨Z, h1, h2, h3, h4, fun a => ?_⟩
+  have := h5 a
+  norm_num at this
+  exact this
 
 /-- **The other side for the quartic spline.** For the spline of order `4` the coefficients at the
 zeros of `B̂` are negative, and the same towers keep the traces bounded above at every degree of a

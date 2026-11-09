@@ -29,6 +29,23 @@ The rate theorem uses a Laplace transform, analytic continuation and residues.
 The final direct Lean check passed; the programme umbrella imports the module.
 Paper proof: [CDG-GAP](../3-formalized/cdg-two-sided-gap-iteration.md).
 
+## Fixed-height mass boundary
+
+For logarithmic prime weights, the geometric-comb mass tends to
+`M(δ)=(1−e^(−2δ))/(1−e^(−2π))` along `x_N=e^(2πN+δ)`.
+Every selected prime returns at height `1` with radian error at most `δ`.
+Thus any required mass fraction below `M(δ)` fails to admit a growing
+first-return lower bound. In particular, more than half the logarithmic
+mass returns with error `1/2` radian at arbitrarily large cutoffs.
+
+`FixedHeightPrimeMass.lean` proves the infinite-comb limit, its identification
+with actual prime subsets, and these witnesses. This is classical phase-mass
+calibration, not a new breadth estimate. TTPO's precise `MainConjecture` uses
+`p^(−1/2)` weights and existentially chooses the missing-mass allowance;
+that statement is not refuted. No transfer between weights is assumed.
+The direct Lean check and six public-declaration axiom audits passed.
+Paper proof: [CDG-MASS](../3-formalized/cdg-fixed-height-return-mass.md).
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

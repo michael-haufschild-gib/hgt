@@ -2,7 +2,7 @@
 
 - **Scope:** `docs/reports/review-0811/obstacles-summary.md`, §2.2.
 - **Target:** At least 250 distinct significant mathematical contributions, each proved in Lean and audited. Helpers and corollaries of one result count together.
-- **Verified:** 23 / 250. Original obstacles remain open unless explicitly closed below.
+- **Verified:** 24 / 250. Original obstacles remain open unless explicitly closed below.
 
 | # | Obstacle | New result | Certificate |
 |---|---|---|---|
@@ -29,3 +29,4 @@
 | 21 | B13, B112, sparse harmonic annihilation | Accuracy `epsilon` at harmonics 1 and 4 has exact positive-mass threshold `(sqrt(5)-1)(1-epsilon)`, independently of bandwidth. Extremal phases are classified; positive three-term polynomials attain every accuracy in `[0,1]` at every real abscissa | [Proof and Lean audit](../3-formalized/sparse-harmonic-annihilation-has-a-golden-mass-cost.md) |
 | 22 | B13, B112, additive relations among annihilation targets | Odd near-relations force `2H <= Delta J + q sqrt(2H(H-1+epsilon))`. Near-unit exact annihilation pays mean logarithmic frequency at least `1/Delta`; exact relations force a bandwidth-independent mass gap | [Proof and Lean audit](../3-formalized/odd-ordinate-relations-force-annihilator-frequency-cost.md) |
 | 23 | B13, B112, sharp odd-relation obstruction | Every odd zero-sum list of length `q>=3` forces `H cos(pi/q)>=1-epsilon`. This threshold is optimal over all such lists; positive three-term polynomials attain it at every real abscissa and accuracy in `[0,1]` | [Proof and Lean audit](../3-formalized/odd-relation-cycle-spectrum-controls-annihilator-mass.md) |
+| 24 | B13, B112, complete near-unit mass classification | Fixed finite ordinates admit near-unit exact positive annihilation iff every integer relation has even coefficient sum. Under this condition every mass `H>1` is attained at every real abscissa | [Proof and Lean audit](../3-formalized/parity-of-ordinate-relations-and-the-unit-mass-infimum.md) |

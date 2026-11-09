@@ -106,6 +106,36 @@ logarithms from rounded commensurable systems. Phase counting and two-sided
 absolute estimates are admissible; spectral positivity, Landau's theorem,
 and an assumed zero-free region are not producers here.
 
+## Fixed-height mass calibration
+
+[FixedHeightPrimeMass.lean](FixedHeightPrimeMass.lean) proves an exact law
+for all geometric prime windows:
+
+`Σ_{j≥0}(θ(xq^j)−θ(rxq^j))/x → (1−r)/(1−q)` for `0<q<r<1`.
+
+At `x_N=exp(2πN+δ)`, take the primes in the disjoint windows
+`(exp(−2δ)x_N exp(−2πj), x_N exp(−2πj)]`. Every selected prime returns at
+height `1` with radian error at most `δ`. For `0<δ<1`, their logarithmic
+mass fraction tends to
+
+`M(δ) = (1−exp(−2δ))/(1−exp(−2π))`.
+
+Thus any required fraction strictly below `M(δ)` admits height-one returns
+at arbitrarily large cutoffs. In particular, more than half the logarithmic
+prime mass can return with error `1/2` radian. A uniform growing lower bound
+for `R_log(y,δ,κ)` therefore requires `1−κ≥M(δ)`; this necessary condition
+is not sufficient.
+
+The proof uses the prime number theorem, a summable geometric majorant,
+and an exact identification with finite sets of actual primes. It is the
+logarithmic-weight form of the classical nonuniform phase-distribution
+phenomenon reviewed by
+[Hutson, *On the distribution of log(p)*, Theorem 2.1](https://www.ijpam.eu/contents/2003-7-4/6/6.pdf).
+Its role here is to calibrate the conjecture, not to claim a new breadth
+estimate. TTPO's precise `MainConjecture` uses `p^(−1/2)` weights and
+existentially chooses a sufficiently small missing-mass allowance; this
+result does not refute that statement or transfer between the two weights.
+
 ## Tools to develop
 
 **Return tubes and relation bodies.** Put `ℓ_p=log p/(2π)`. The integer

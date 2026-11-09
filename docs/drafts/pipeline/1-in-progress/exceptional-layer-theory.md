@@ -27,16 +27,27 @@ factor amplifies real-part excess. Determine the joint-scale boundary with
 the infinite complementary divisor retained. This decides which observations
 can compare top-layer persistence against the continued current.
 
-For y=exp(−aT), Gamma decay suggests a competition between a(Re ρ−σ)/2
-and π/4. This is a proposed asymptotic, not a proved passage or repulsion law.
-The pole at 1 has a different threshold and cannot be dropped from the raw current.
+For y=exp(−aT), the exponential mode rate is a(Re ρ−σ)/2−π/4.
+Upper and reciprocal bounds prove both strict sides of this boundary.
+The complete pole-plus-finite-layer raw expansion converges uniformly
+at every positive exponential speed. Some speeds make the current
+asymptotic to a divergent pole mode while every exceptional mode decays.
+These results are Lean checked in `TheGaussianObservationBoundary` and
+`ThePrimeCurrentAtExponentialScales`; no repulsion or replication follows.
+
+The normalized top-layer profile is now Lean proved in
+`TheExceptionalLayerAtEscapingHeights`: its phase is `(at+log(t/2))/2`,
+with ordinate weights `exp(π Im ρ/4)`. See
+`../3-formalized/elt-moving-layer-phase.md`. The sharp recurrent envelope
+is the next refinement (`elt-recurrent-layer-envelope.md`).
 
 ## Foundations and gaps
 
 `OnlyExceptionalGaussianModesRemain` bounds the complete complementary field
 by C(y+y^((σ−θ)/2))(1+log t). `ThePrimeCurrentPassesAcrossDyadicWindows`
 removes finite modes and continuum at inverse-height damping.
-Neither establishes arbitrary joint limits or changes a zero's height.
+The new exponential expansion resolves this family of joint limits.
+None of these results changes a zero's height.
 
 Foundational programme document:
 `formal/GaloisForLFunctions/ExceptionalLayerTheory/README.md`.

@@ -47,6 +47,50 @@ The following are inherited corpus results, not new claims of this programme.
 Before using a pillar, check its exact Lean statement and transitive axioms. In particular,
 uniformity in one parameter does not authorize a diagonal limit in two parameters.
 
+## Exponential observation laws
+
+Write `K(y,w)=½Γ(w/2)y^(−w/2)`, `s=σ+it`, and `y=e^(−at)`.
+The Gaussian mode of a fixed zero ρ has exponential rate
+
+    r(ρ,σ,a)=a(Re ρ−σ)/2−π/4.
+
+Polynomial upper bounds for the mode and its reciprocal prove decay for
+`r<0` and norm tending to infinity for `r>0`. The equality case is not
+settled by these bounds. Under failure of AAL, finite F and `½≤θ<σ<1`
+exist such that every omitted zero lies left of θ and, for every `a>0`,
+
+    ΣΛ(n)n^(−s)e^(−yn²) + e^(−y)ζ′/ζ(s)
+      − K(y,1−s) + Σ_{ρ∈F}K(y,ρ−s) → 0.
+
+Convergence is uniform in `Re s∈[σ,1]`. The complete infinite complementary
+divisor is bounded before taking the limit; no finite truncation replaces it.
+
+The pole at 1 crosses its growth threshold before any member of F.
+Consequently, some positive speeds make every retained zero mode vanish
+while the literal prime current divided by `K(y,1−s)` tends to 1 and its
+norm tends to infinity. This rules out extrapolating inverse-height raw-current
+passage to arbitrary exponential observations. It also identifies the pole
+subtraction needed before attributing high-current excursions to the layer.
+
+These are the programme's first proved interaction laws:
+`TheGaussianObservationBoundary.lean` supplies the mode boundary and
+complete finite-part passage; `ThePrimeCurrentAtExponentialScales.lean`
+supplies the raw expansion and pole dominance. They establish observation
+scales, not repulsion or zero replication.
+
+Above the top-layer boundary, the pole-subtracted current recovers the
+actual top ordinates at escaping heights. Let β be the top and
+`a(β−σ)>π/2`. Dividing the corrected current by `K(y,β−s)` gives
+
+    [ΣΛ(n)n^(−s)e^(−yn²) + e^(−y)ζ′/ζ(s) − K(y,1−s)] / K(y,β−s)
+      + Σ_{Re ρ=β} exp(π Im ρ/4) exp(i Im ρ·(at+log(t/2))/2) → 0.
+
+`TheExceptionalLayerAtEscapingHeights.lean` proves this formula, including
+the vertical Gamma quotient and the vanishing ratios of every lower layer.
+The phase has a logarithmic correction; its coefficients retain multiplicity
+and a Gamma weight. This is a high-height reading of low zeros through the
+infinite prime current. It does not locate new zeros at those heights.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

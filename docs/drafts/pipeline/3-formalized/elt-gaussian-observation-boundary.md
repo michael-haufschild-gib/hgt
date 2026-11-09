@@ -1,8 +1,8 @@
 # Gaussian observation boundary of an exceptional layer
 
 - **ID:** ELT-GOB
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** review-0911/obstacles-summary.md §2.10, observation-scale question
 - **Statement:** Exponential damping has a mode boundary `a(Re ρ−σ)/2=π/4`; after finite exceptional subtraction the complete prime-current error vanishes at every positive exponential speed.
 
@@ -58,17 +58,40 @@ Its normalized continued finite part is `e^(−y)(A(s)−ξ′/ξ(s))`.
    so this identity uses no additional zero-free assumption. The expansion
    holds uniformly in its observation abscissa at every positive exponential speed.
 
+6. At the speeds from step 4, the literal raw current divided by its pole
+   mode tends to 1; its norm tends to infinity. The high zero-free strip
+   gives `|ζ′/ζ(σ+it)|=O(log t)`. The reciprocal pole mode is bounded by
+   a polynomial times a strictly decaying exponential, so the normalized
+   logarithmic derivative divided by that mode tends to zero. Divide step 5
+   by the pole mode; the finite exceptional sum and the complete error tend
+   to zero, and their quotients also tend to zero.
+
 ## Mathematical consequence and limits
 
 Inverse-height passage does not license arbitrary joint limits. Exponential
 observations distinguish the pole from the exceptional layer. The finite
 subtraction gives a valid infinite-current formula at every exponential speed;
 the individual mode bounds identify when a discarded term can grow.
-No conclusion about cancellation among several growing modes is asserted.
+The divergent raw current in step 6 is caused by the pole, with all retained
+exceptional modes decaying. No conclusion about cancellation among several growing modes is asserted.
 These laws neither repel zeros nor replicate them.
 
 ## Formalization
 
 `formal/GaloisForLFunctions/ExceptionalLayerTheory/TheGaussianObservationBoundary.lean`.
 `formal/GaloisForLFunctions/ExceptionalLayerTheory/ThePrimeCurrentAtExponentialScales.lean`.
-Lean check and transitive axiom audit pending.
+Both modules passed `lake --old env lean` without output artifacts.
+Transitive audits use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+Exact declarations:
+- `exists_gaussianMode_exponential_bounds`
+- `tendsto_gaussianMode_zero_of_negative_rate`
+- `tendsto_norm_gaussianMode_atTop_of_positive_rate`
+- `not_asymptoticAbscissaLaw_has_exponential_finite_part`
+- `not_asymptoticAbscissaLaw_has_exponential_passage`
+- `not_asymptoticAbscissaLaw_has_passage_beyond_pole_boundary`
+- `not_asymptoticAbscissaLaw_has_full_exponential_expansion`
+- `not_asymptoticAbscissaLaw_has_pole_dominated_prime_current`
+
+All are in namespace `GaloisForLFunctions.ExceptionalLayerTheory`.
+The programme umbrella imports both modules; `MainTheorems` imports it.

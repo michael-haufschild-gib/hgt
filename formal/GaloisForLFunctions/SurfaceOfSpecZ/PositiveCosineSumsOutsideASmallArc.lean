@@ -398,9 +398,11 @@ theorem tentCorr_div_le_poisson_pow {N m : ℕ} (hN : 10 ≤ N) (hm : 2 ≤ m) :
                 (tentCorr_zero_le N)
     have hmR : (2 : ℝ) ≤ m := by exact_mod_cast hm
     have hcmp : (m : ℝ) / (256 * (N : ℝ) ^ 2) ≤ (m : ℝ) ^ 2 / (4 * (N : ℝ) ^ 2) := by
-      rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      have hNsq : 0 ≤ (N : ℝ) ^ 2 := sq_nonneg (N : ℝ)
-      nlinarith
+      have hm2 : (m : ℝ) ≤ 64 * (m : ℝ) ^ 2 := by nlinarith
+      calc (m : ℝ) / (256 * (N : ℝ) ^ 2)
+          ≤ (64 * (m : ℝ) ^ 2) / (256 * (N : ℝ) ^ 2) :=
+            div_le_div_of_nonneg_right hm2 (by positivity)
+        _ = (m : ℝ) ^ 2 / (4 * (N : ℝ) ^ 2) := by ring
     linarith
   · -- Large shifts `N/2 < m < 2N`: the prefix `∑_{s < N/2} a_s^2` exceeds `c_{N, 0} / 50`.
     push Not at hmhalf
@@ -848,7 +850,7 @@ theorem exists_nat_cosine_sum_pos_off_hole {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ
       (Finset.mem_Icc.mpr ⟨le_rfl, hM1⟩))
   · have hIcc_eq : ∀ f : ℕ → ℝ, ∑ m ∈ Finset.Icc 1 M, f m = ∑ j ∈ Finset.range M, f (j + 1) := by
       intro f
-      have hset : Finset.Icc 1 M = Finset.Ico 1 (M + 1) := by ext x; simp; omega
+      have hset : Finset.Icc 1 M = Finset.Ico 1 (M + 1) := by ext x; simp
       rw [hset, Finset.sum_Ico_eq_sum_range]
       refine Finset.sum_congr rfl fun j _ => by rw [add_comm]
     have hD_le : (∑ m ∈ Finset.Icc 1 M, (p m : ℝ)) ≤ 5 * (M : ℝ) * Q := by

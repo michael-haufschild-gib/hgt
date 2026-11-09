@@ -89,6 +89,7 @@
 | C59 | Stepanov bounds produce the asymptotic abscissa law | proved (Lean) | `asymptoticAbscissaLaw_of_noDeepest` (no deepest off-line zero ⇒ `RHTower.AsymptoticAbscissaLaw`, via `asymptoticAbscissaLaw_of_not_attainedTop`); producers from a one-sided bound at the primes `≡ a (mod q)` (both sides), at the primes off a set of relative density zero, at the `pᵃqᵇ` of two primes. These sets are not known to give RH (other `L`-functions, no power-saving gaps, C58), but they give the abscissa law; no resonant steps are excluded. Since RH = `ZerosApproachLine` ∧ AAL, each bound is RH exactly when the zeros approach the line (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_primes_mod`, from above, at the `pᵃqᵇ`) |
 | C60 | The width law at every sampling set | proved (Lean) | `re_mem_of_bddBelow_rpow_of_samplingWeight`: a lower bound `−K n^s` at a sampling weight puts a real zero in every attained top deeper than `s` (`F ≥ −|K|n^{−(b−s)}`, `Σ w n^{−σ−(b−s)} = o(Σ w n^{−σ})`). For `ζ`: bounds `−Kp^s` at `p ≡ a (mod q)`, at density-one primes, `−Ke^{sλ}` at the `pᵃqᵇ`, leave no deepest zero right of `½ + s`; under `ZerosApproachLine`, `zetaZeroWidth ≤ s` iff such a bound holds (`zetaZeroWidth_le_iff_bddBelow_rpow_primes_mod_of_zerosApproachLine` and companions). Tensor powers at a residue class: moments `Σ_{p≤N, p≡a} log p (2 Re S)^{2k} ≤ C_k N^{1+A}` uniform in `k` give AAL, and with ZAL RH (`riemannHypothesis_iff_zerosApproachLine_and_moments_primes_mod`). Sampling sets carry the width law and Deligne's argument modulo ZAL, gap sets without it (C49, C53) |
 | C61 | Genuine zero configurations need an attained top at finitely many Frobenii | proved (Lean) | `exists_zeroConfig_finPrimes_bddBelow_nonattained`: for primes `P₁, …, P_r` and `0 < Θ ≤ ½` a tempered `ZeroConfig` without real zeros, `sup Re ρ = ½ + Θ` not attained, with `2 Re S(Σ aᵢ log Pᵢ) ≥ −5` for all `a ∈ ℕ^r`; for `r = 2` (`exists_zeroConfig_twoPrimes_bddBelow_nonattained`) the hypothesis `hmax` of C50 cannot be dropped. For `ζ` in count form: `ℕ`-counts on the single-degree classes `Γ_1 + Γ_{pᵃqᵇ}` give the abscissa law (`asymptoticAbscissaLaw_of_planeDefect_nonneg_twoPrimes`), and RH exactly with `ZerosApproachLine` (`riemannHypothesis_iff_zerosApproachLine_and_effectiveCounts_twoPrimes`). Mechanism (`HeightsAtTheZerosOfTheSplineAreInPhase`): heights at the zeros `2πM` of `B̂`, where `sinc(2πM − ix)⁸ = sinh⁸x/(2πM − ix)⁸` has phase `O(x/M)`; resonance then needs only homogeneous Dirichlet above a height (`M ∈ [A, 2A + (2AQ)²]`), with explicit heights, so multiplicity one keeps the configuration tempered; windows `U_k = V^{2^k}`, weights in `[8e^{−δ_{k−1}U_k}, 2^{−k}e^{−ΘU_{k−1}}]`, dominance on each window (`neg_five_le_tsum_of_window`) |
+| C62 | The blind side of finitely many Frobenii is the sign of `B̂²` at the zeros of `B̂` | proved (Lean) | `exists_zeroConfig_finPrimes_signed_nonattained`: for the spline of order `o ≥ 3` the coefficient at the zero `2πM` of `B̂ = sinc^{o+1}` is `(−1)^{o+1} sinh^{2(o+1)}x/(2πM − ix)^{2(o+1)}` (`re_sincPow_mul_exp_ge`), and the C61 towers give `(−1)^{o+1} 2 Re S(Σ aᵢ log Pᵢ) ≥ −5` at every degree with an unattained top: from below for the cubic spline (C61), from above for the quartic (`exists_zeroConfig_finPrimes_bddAbove_nonattained_quartic`). The cheap blind side is fixed by the test; the other side needs coefficients of the opposite sign at resonant heights, i.e. inhomogeneous Kronecker on `(1, log P₁, …, log P_r)` |
 
 ## Big picture
 
@@ -123,7 +124,9 @@ the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). One prime resonat
 at the single degrees of any finitely generated monoid: quartets made resonant by simultaneous
 Dirichlet approximation on successive windows keep the samples bounded below (C58), and so do
 genuine tempered configurations at the degrees of any finite set of primes, their heights placed at
-the zeros of `B̂` where the spline coefficients are in phase (C61); the primes, infinitely generated with power-saving gaps,
+the zeros of `B̂` where the spline coefficients are in phase (C61). Which side these towers blind is the sign `(−1)^{o+1}` of
+`B̂²` at the zeros of the spline `B̂ = sinc^{o+1}`: the lower side for the cubic spline, the upper
+side for the quartic (C62); the primes, infinitely generated with power-saving gaps,
 need no attainment (C45). The heights of C61 are simultaneous returns of the prime logarithms
 (homogeneous Dirichlet), and the tower needs them early: a return of `m` generators to precision
 `1/U` below height `e^{o(U)}`. By the estimates, Dirichlet's bound `(AQ)^m` leaves room for
@@ -195,8 +198,9 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    `log m − log n` are dense and need none (C56, C57). Open: whether attainment can be removed for
    every configuration at the primes in a residue class (their gaps need zero-density estimates for
    every `L(s, χ)` mod `q`) or at density-one sets of primes; for `ζ` at the sampling sets, what a
-   bound gives without attainment is the abscissa law (C59, C60). From above at the `pᵃqᵇ` the
-   construction of C61 needs coefficients of phase `π` at resonant heights, i.e. heights with
+   bound gives without attainment is the abscissa law (C59, C60). For the quartic spline the upper side
+   needs attainment (C62). For the cubic spline the upper side at the `pᵃqᵇ` would need coefficients
+   of phase `π` at resonant heights, i.e. heights with
    `γ log p, γ log q ≡ 0 (mod 2π)` at a prescribed offset from `πℤ`: inhomogeneous Kronecker on
    `(1, log p, log q)` with polynomial return heights, i.e. an effective inhomogeneous Baker bound
    `|2c + a log p + b log q| ≥ H^{−C}`, while the lower side needs only homogeneous Dirichlet. The
@@ -205,4 +209,4 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    side at the `pᵃqᵇ` needs attainment is open.
 
 ## Log
-- 2026-11-08 — created; C1–C61 formalized in `SurfaceOfSpecZ/` (sixty-two modules)
+- 2026-11-08 — created; C1–C62 formalized in `SurfaceOfSpecZ/` (sixty-two modules)
