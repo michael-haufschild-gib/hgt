@@ -59,7 +59,11 @@ def SharpEnergyRate (g : ℍ → ℂ) : Prop :=
 theorem sharpEnergyRate_of_riemannHypothesis {lam : ℝ} {g : ℍ → ℂ}
     (hg : g ∈ HeckeCusp.cuspSpace lam) (hRH : RiemannHypothesis) : SharpEnergyRate g := by
   intro ε hε
-  have heps : 0 < min ε (1 / 4 : ℝ) := min_pos hε (by norm_num)
+  have heps : 0 < min ε (1 / 4 : ℝ) := by
+    rcases le_total ε (1 / 4 : ℝ) with h | h
+    · rwa [min_eq_left h]
+    · rw [min_eq_right h]
+      norm_num
   obtain ⟨a, C, hC, hbound⟩ := pair_rate_of_zeroFree hg hg (Θ := 1 / 2)
     le_rfl (by norm_num)
     (_root_.RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re.mp hRH)
@@ -90,6 +94,8 @@ variable {lam : ℝ} {g : ℍ → ℂ} (hg : g ∈ HeckeCusp.cuspSpace lam) {c :
   (hc : ∀ (p : ℕ) [Fact p.Prime], heckeH p g = c p • g) {r : ℤ → ℂ} (hr0 : r 0 = 0)
   (hr : ∀ n : ℤ, ∀ y, 0 < y → HeckeCusp.fourierCoeff g n y = r n * (Real.sqrt y : ℂ) *
     HTGeometry.modifiedBesselKOrder (2 * Real.pi * |(n : ℝ)| * y) (CuspL.nu lam))
+
+include hg hc hr0 hr
 
 /-- If a sharp Hecke energy rate coexists with failure of RH, its Shimura integral
 vanishes at a nonhalving right zero, at a point with real part between `3/8` and `1/2`. -/

@@ -55,7 +55,8 @@ theorem regularMean_eq : regularMean = Real.log 2 / 4 + Real.pi / 8 := by
   norm_num only [add_zero, Real.log_one, Real.arctan_zero,
     zero_div, sub_zero, Real.arctan_one, one_add_one_eq_two] at h
   unfold regularMean
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 /-- The right-endpoint row, including its endpoint for divisor reindexing. -/
 def smoothRow (n : ℕ) : ℝ :=
@@ -126,7 +127,8 @@ theorem abs_rowError_le (n : ℕ) : |rowError n| ≤ 3 / 4 := by
   norm_num at ht
   convert ht.trans (by linarith only [hmul] :
       |(∑ a ∈ range n, regularProfile ((a : ℝ) / n)) - (n : ℝ) * regularMean| +
-        3 / 8 ≤ 3 / 4) using 1 <;> (congr 1; ring)
+        3 / 8 ≤ 3 / 4) using 1
+  congr 1 <;> ring
 
 /-- Primitive quadrature is the exact Möbius transform of ordinary quadrature. -/
 theorem primitiveSmoothRow_moebius {n : ℕ} (hn : 0 < n) :

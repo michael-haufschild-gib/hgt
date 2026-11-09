@@ -9,7 +9,7 @@
 
 | Item | Required result | Status |
 |---|---|---|
-| 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Open; one-sided RH criterion exists |
+| 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Width, quasi-RH, and absolute criteria checked; transfer-module final audits pending. Signed proof open: `signed-deletion-for-log-square-windows.md` |
 | 11.6 | Quasi-RH ∨ AAL; quasi-RH iff tail abscissa < 1; consequences under ¬AAL | First two checked in `quasi-rh-is-a-tail-law.md`; heavy-return and Mertens consequences open |
 | 11.6 | Exact simple near-line census alternatives at 70%, 75%, 80% | Complete: `near-line-census-at-seventy-seventy-five-eighty-percent.md`; existing 70% and 75%, new 80%, all audited |
 | 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Open assembly; halving descent and diagonal factorization exist separately |
@@ -43,6 +43,11 @@ direct `lake --old env lean` audit, and transitive axiom audit.
   proves a different, balanced-fibre statistic at
   `h = exp((log x)^(99/100))`; it explicitly leaves ordinary integer-start
   intervals open. This does not discharge §11.4.
+- [Matomäki–Radziwiłł–Tao](https://arxiv.org/abs/1503.05121):
+  the correlation target includes the absolute values:
+  `Σ_{h≤H}|Σ_{n≤X} λ(n)λ(n+h)| = o(HX)` for `H→∞`, `H≤X`.
+  Unmodulated short-interval cancellation alone does not supply this;
+  the published argument also proves uniform additive Fourier cancellation.
 - [Sheats](https://arxiv.org/abs/math/9801158): Goss zeta for `𝔽_q[T]`,
   for every prime power `q`; not the complex Hasse–Weil zeta of a curve.
 - [Bettin–Chandee–Radziwiłł, Theorem 1](https://www.math.mcgill.ca/radziwill/BCR.pdf):
@@ -51,3 +56,9 @@ direct `lake --old env lean` audit, and transitive axiom audit.
   `O(T^(3/20+ε) N^(33/20) + T^(1/3+ε))`. Its Kloosterman-fraction estimate
   must be proved, not supplied as an assumption. Applicability to the fourth
   Gram moment is a further theorem, not a consequence of the shared word “bilinear”.
+- [Selberg spectral zeros](https://www.cambridge.org/core/journals/nagoya-mathematical-journal/article/on-the-distribution-of-zeros-of-the-derivative-of-selbergs-zeta-function-associated-to-finite-volume-riemann-surfaces/D00CFAABD97A4F9082CF43296184B4DF):
+  for a compact hyperbolic surface, strip zeros satisfy `s(1−s)=λ`.
+  The corpus's `SelbergSpectralParameter` proves the parameter algebra;
+  `SelbergExceptionalCompactModel` realizes a complementary-series
+  representation, not a compact surface with its geodesic Euler product.
+  The geometric realization and Selberg-zeta identity remain necessary.
