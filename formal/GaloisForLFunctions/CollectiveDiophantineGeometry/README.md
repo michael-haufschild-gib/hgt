@@ -22,20 +22,29 @@ centred at one half and the actual arithmetic coefficients.
 - **Phase error:** distance from `t log p` to `2πℤ`, in radians.
 - **Return:** simultaneous phase control on a specified set of primes. A first
   return must exclude the neighbourhood of `t = 0`.
-- **Breadth:** logarithmic prime mass of the returning coordinates, measured
-  against `θ(y) = Σ_{p≤y} log p`. The required mass fraction is a parameter.
+- **Breadth:** weighted mass fraction of returning coordinates. The
+  logarithmic profile uses `w(p)=log p`, total `θ(y)`; the critical-column
+  profile uses `w(p)=p^(−1/2)`. The weight and required fraction are parameters,
+  and changing them requires a proved transfer.
 - **Depth:** phase precision of a return at a given height.
 - **Bohr set:** heights satisfying a specified family of phase constraints.
 - **Approximate relation:** an integer vector with small scalar product with
   the prime logarithms. Exact homogeneous integer relations are trivial by
-  unique factorization. Geometry of numbers must therefore use an augmented
-  approximation lattice, not a nonzero lattice of exact relations.
+  unique factorization. Geometry of numbers must therefore use the integer
+  lattice with an approximation body, or an equivalent augmented lattice.
 - **Dual polynomial:** a Dirichlet polynomial supported on integers composed
   of the selected primes; exponent vectors encode its frequencies.
 - **Freezing:** replacement of orbit phases by a fixed torus point, with an
   explicit error controlled by the auxiliary's coefficients and degree.
 
 ## Questions and success criteria
+
+For a chosen weight `w`, let `R_w(y,δ,κ)` be the infimum of heights `t≥1`
+at which primes with phase error at most `δ` carry at least `1−κ` of the
+total weight below `y`. The all-prime return is the case `κ=0`. The breadth
+target is `log R_w(y,δ,κ)≥y^c` for some fixed `c>0`, at constant precision
+and a specified admissible mass fraction, for every sufficiently large `y`.
+The admissible range of `(δ,κ)` is part of the question.
 
 1. Count returns up to height `T` with errors uniform in the number of primes,
    including families of size comparable to powers of `log y`.
@@ -59,11 +68,36 @@ criteria, and unsupported interfaces do not meet that standard.
 
 ## Mechanisms and foundational pillars
 
-The existing corpus supplies leads: the two-prime transcendence depth law,
-Dirichlet recurrence, bounded-height rounding obstructions, reciprocity of
-returns with zero clusters, exact Adams operations on torsion, and
-Turán–Vandermonde elimination. Their precise statements and dependencies must
-be checked before importing them as pillars of this programme.
+The decision theorem is [two-sided gap iteration](TwoSidedGapIteration.lean).
+For any degree set with gaps `O(x^θ)`, `θ<1`, and every `σ≥0`,
+
+`zetaZeroWidth ≤ σ ↔ ∃ K, ∀ d∈D, |2 Re S(log d)| ≤ K d^σ`.
+
+At current width `a`, interpolation from the degree set costs
+`O(exp((a+θ−1)u))`. The absolute-convergence rate theorem then improves the
+width to `max(σ,a+θ−1)`. Iterating from the unconditional width `1/2` reaches
+`σ`. The analytic mechanism is a Laplace transform and residue comparison
+on a horizontal strip; no one-sided Landau criterion enters. The prime
+specialization at `σ=0` is RH. This proves a receiver, not its arithmetic
+input.
+
+| Pillar | Declaration | Scope |
+|---|---|---|
+| Absolute interpolation step | `twoSided_width_step` | width `a` becomes `max(σ,a+θ−1)` |
+| Exact sampling exponent | `zeroWidth_iff_twoSided_powGaps` | every degree set with power-saving gaps |
+| Prime-degree decision | `riemannHypothesis_iff_twoSided_primes` | bounded absolute trace iff RH |
+
+Two existing return tools fix the baseline. TTPO's
+`le_of_isDeltaReturn_pair` gives an explicit power lower bound in inverse
+precision for two primes. TAPO's `firstReturn_le_pow` gives
+`R≤Q^|P|` when `2π²≤ηQ²`, in cosine-defect precision `η`.
+These statements concern different precision conventions and opposite
+directions of inequality; neither supplies the missing breadth law.
+
+Further interfaces are bounded-height rounding obstructions, reciprocity
+of returns with zero clusters, exact Adams operations on torsion, and
+Turán–Vandermonde elimination. Their quantitative costs must be retained
+when used.
 
 The proposed new mechanism is collective arithmetic control: combine many
 relations or count smooth-number frequencies with an error that survives
@@ -71,6 +105,35 @@ growing dimension. A successful estimate must distinguish actual prime
 logarithms from rounded commensurable systems. Phase counting and two-sided
 absolute estimates are admissible; spectral positivity, Landau's theorem,
 and an assumed zero-free region are not producers here.
+
+## Tools to develop
+
+**Return tubes and relation bodies.** Put `ℓ_p=log p/(2π)`. The integer
+windings of returns up to height `T` lie in the tube
+`{tℓ+e : |t|≤T, ‖e‖∞≤δ}`. Its support function is
+`T|m·ℓ|+δ‖m‖₁`. Thus both the small scalar product and the total coefficient
+height matter in dual approximation. Successive-minimum estimates must
+control these bodies as the prime set grows; exact linear independence
+alone provides no quantitative estimate.
+
+**Smooth-number duality.** Integer exponent vectors index rational ratios
+of smooth integers. Their logarithmic separation controls Fourier errors.
+The required tool must retain the distribution of many such ratios rather
+than replacing every denominator by its worst lower bound.
+
+**Integer auxiliaries at sign returns.** For an integer Laurent polynomial
+`F` and a sign vector `ε`, a nonzero value `F(ε)` has absolute value at least
+one. Freezing near `ε` pays the coefficient mass weighted by total degree,
+`Σν |cν|‖ν‖₁`. To use growing-degree auxiliaries at constant precision, one
+must control their actual error collectively; discarding cancellation
+recovers the bounded-height obstruction.
+
+**Uniform zero estimates and elimination.** Zero estimates must retain
+their dependence on the number of logarithms, degree and observation
+height. Turán elimination on thick sets then tests whether the resulting
+bound controls the infinite trace, rather than only a finite exceptional
+layer. The functional equation must enter any passage from frequency
+geometry to the zeros of the actual zeta function.
 
 ## Traps and calibration
 

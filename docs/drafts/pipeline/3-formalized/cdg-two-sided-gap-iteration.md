@@ -1,8 +1,8 @@
 # Two-sided gap iteration without Landau
 
 - **ID:** CDG-GAP
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean audit pending)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0911/obstacles-summary.md`, §§2.6 and 2.11.
 - **Statement:** For `σ≥0` and any positive degree set `D` with gaps
   `O(x^θ)`, `θ<1`, the cubic-spline trace satisfies
@@ -52,3 +52,10 @@ Lean source: `CollectiveDiophantineGeometry/TwoSidedGapIteration.lean`.
 Public declarations: `twoSided_width_step`,
 `zeroWidth_iff_twoSided_powGaps`, `zeroWidth_iff_twoSided_primes`,
 `riemannHypothesis_iff_twoSided_primes`.
+
+## Verification
+
+`lake --old env lean GaloisForLFunctions/CollectiveDiophantineGeometry/TwoSidedGapIteration.lean`
+passes. Each public declaration has transitive axiom set
+`{propext, Classical.choice, Quot.sound}`. Programme umbrella imports the
+module; no umbrella build was run.

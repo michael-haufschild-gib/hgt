@@ -16,15 +16,19 @@ the prime torus with `F = ψ_q` the Adams operation.
 * **(S2) Inseparability lives at `ℓ`** (`map_adams_eq_pow`, `map_pderiv_adams_eq_zero`). For a prime
   `ℓ`, `ψ_ℓ(g) ≡ g^ℓ (mod ℓ)` and every partial derivative of `ψ_ℓ(g)` is divisible by `ℓ`
   (`exists_pderiv_adams_eq`). Over `ℂ` it is not: `∂(g(u^ℓ)) = ℓ u^{ℓ−1} (∂g)(u^ℓ)`.
-* **(S1)+(S2)+(S3): the `ℓ`-adic Stepanov amplifier** (`pderiv_stepanov_eq_zero_of_lt`). If moreover
-  `Σ_i (∂_j f_i) g_i = 0`, then at an `(ℓ−1)`-torsion point `∂_j h = ℓ R` for an integer polynomial
+* **The `ℓ`-adic Stepanov amplifier** (`pderiv_stepanov_eq_zero_of_lt`). Under the identity
+  `Σ_i (∂_j f_i) g_i = 0` alone, at an `(ℓ−1)`-torsion point `∂_j h = ℓ R` for an integer polynomial
   `R` (`aeval_pderiv_stepanov_eq`), and the norm amplifier works with threshold `ℓ^{φ(m)}` instead of
   `1`: if `Π_{μ prim} |∂_j h(μ^b)| < ℓ^{φ(m)}`, then `∂_j h` vanishes on the whole closed point.
 
-The archimedean place enters only through that threshold: the derivative values must be below `ℓ`
-in geometric mean over the closed point. Over `𝔽_ℓ` there is no archimedean place and the
-condition is void; over `ℤ` the values of `∂_j h`, a polynomial of degree about `ℓ deg g`, are not
-small, and the order gained `ℓ`-adically is not an order of vanishing on the prime orbit.
+If both displayed polynomial identities hold, differentiating `Σ f_i g_i=0` forces
+`Σ f_i ∂_j g_i=0` as well: the first derivative vanishes exactly on the fixed torus,
+without a norm bound. The all-order Euler transfer expresses this cancellation through
+polynomial moments in `TheEulerJetsOfStepanovsAuxiliary`.
+
+The archimedean threshold is relevant when only the derivative syzygy is available.
+Neither divisibility nor the exact cancellation supplies cheap multiplicity: in characteristic
+zero every exact order still costs degree, and the torsion points lie off the prime orbit.
 -/
 
 open Finset
@@ -117,9 +121,9 @@ theorem aeval_pderiv_stepanov_eq (ℓ : ℕ) [Fact ℓ.Prime] {r : ℕ} (f g : F
     rw [map_mul, map_mul, aeval_torsionPoint_adams_of_pow_eq hμ]
   rw [hzero, zero_add]
 
-/-- **The `ℓ`-adic Stepanov amplifier.** Under `Σ f_i g_i = 0` and `Σ (∂_j f_i) g_i = 0`, on a closed
+/-- **The `ℓ`-adic Stepanov amplifier.** Under `Σ (∂_j f_i) g_i = 0`, on a closed
 point of order `m ∣ ℓ − 1`: if `Π_{μ prim} |∂_j h(μ^b)| < ℓ^{φ(m)}`, then `∂_j h` vanishes on the
-whole closed point (and `h` itself vanishes there by `aeval_stepanov_eq_zero`). -/
+whole closed point. -/
 theorem pderiv_stepanov_eq_zero_of_lt (ℓ : ℕ) [hℓ : Fact ℓ.Prime] {r : ℕ}
     (f g : Fin r → MvPolynomial σ ℤ) (j : σ) (hdf : ∑ i, MvPolynomial.pderiv j (f i) * g i = 0)
     {m : ℕ} (hm : 0 < m) (hmℓ : m ∣ ℓ - 1) (b : σ → ℕ)

@@ -58,8 +58,6 @@ private theorem range_twoPrimePhase (γ : ι → ℝ) :
     rw [twoPrimePhase_eq_nsmul]
     simp
 
-variable [Fintype ι]
-
 /-- Two-prime monomial phases fill the continuous relation hull densely. -/
 theorem closure_range_twoPrimePhase (γ : ι → ℝ) :
     closure (Set.range (twoPrimePhase γ)) = screwHull γ := by
@@ -111,9 +109,7 @@ theorem closure_nonconstant_twoPrimePhase (γ : ι → ℝ) :
     apply subset_closure
     exact ⟨a + d, hne d, twoPrimePhase_add γ a d⟩
   have hclosed : IsClosed ((fun x => twoPrimePhase γ a + x) ⁻¹' closure D) :=
-    isClosed_closure.preimage (show Continuous
-      (fun x : ι → UnitAddCircle => twoPrimePhase γ a + x) from
-        continuous_const.add continuous_id)
+    isClosed_closure.preimage (by fun_prop)
   have hhull := closure_minimal hshift hclosed
   rw [closure_range_twoPrimePhase] at hhull
   apply Set.Subset.antisymm

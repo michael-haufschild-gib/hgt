@@ -203,23 +203,21 @@ theorem heavyWeight_prime_ge {y : ℕ} {p : ℕ} (hp : p.Prime) (hpy : p ≤ y)
 /-- The primes `p` with `y/8 < p ≤ ye^{−1/10}` carry `log`-mass at least `θ(ye^{−1/10}) − θ(y/8)`. -/
 theorem theta_sub_le_sum_window (y : ℕ) :
     Chebyshev.theta (y * Real.exp (-(1 / 10))) - Chebyshev.theta ((y : ℝ) / 8) ≤
-      ∑ p ∈ (Nat.primesLE ⌊(y : ℝ) * Real.exp (-(1 / 10))⌋₊).filter (fun p => (y : ℝ) / 8 < p),
+      ∑ p ∈ (Nat.primesLE ⌊(y : ℝ) * Real.exp (-(1 / 10))⌋₊).filter (fun p : ℕ => (y : ℝ) / 8 < (p : ℝ)),
         Real.log p := by
   set X := (y : ℝ) * Real.exp (-(1 / 10))
   rw [Chebyshev.theta_eq_sum_primesLE X, Chebyshev.theta_eq_sum_primesLE ((y : ℝ) / 8),
-    ← sum_filter_add_sum_filter_not (Nat.primesLE ⌊X⌋₊) (fun p => (y : ℝ) / 8 < p)]
-  have hsub : ((Nat.primesLE ⌊X⌋₊).filter (fun p => ¬ (y : ℝ) / 8 < p)) ⊆
+    ← sum_filter_add_sum_filter_not (Nat.primesLE ⌊X⌋₊) (fun p : ℕ => (y : ℝ) / 8 < (p : ℝ))]
+  have hsub : ((Nat.primesLE ⌊X⌋₊).filter (fun p : ℕ => ¬ (y : ℝ) / 8 < (p : ℝ))) ⊆
       Nat.primesLE ⌊(y : ℝ) / 8⌋₊ := fun p hp => by
-    rw [mem_filter] at hp
-    rw [Nat.primesLE, Nat.mem_primesBelow] at hp ⊢
+    rw [mem_filter, Nat.primesLE_eq_filter_range, mem_filter, mem_range] at hp
+    rw [Nat.primesLE_eq_filter_range, mem_filter, mem_range]
     refine ⟨?_, hp.1.2⟩
     have : (p : ℝ) ≤ (y : ℝ) / 8 := not_lt.mp hp.2
     have : p ≤ ⌊(y : ℝ) / 8⌋₊ := Nat.le_floor this
     omega
-  have hle := sum_le_sum_of_subset_of_nonneg hsub fun p hp _ =>
-    Real.log_nonneg (by
-      rw [Nat.primesLE, Nat.mem_primesBelow] at hp
-      exact_mod_cast hp.2.one_lt.le)
+  have hle := sum_le_sum_of_subset_of_nonneg (f := fun p : ℕ => Real.log p) hsub
+    fun p _ _ => Real.log_natCast_nonneg p
   linarith
 
 /-- **The pole at `t = 0`.** For large `y`, `P_{φ_y}(0) ≥ √y/4`. -/
@@ -234,8 +232,8 @@ theorem eventually_orbitPoly_heavyTest_zero_ge :
   set Y : ℝ := (y : ℝ)
   have hY0 : 0 < Y := by linarith
   have hy1 : 1 ≤ y := by
-    have : (1 : ℝ) ≤ Y := by linarith
-    exact_mod_cast this
+    have h : (1 : ℝ) ≤ (y : ℝ) := by linarith
+    exact_mod_cast h
   have hsq : Y ^ (1 / 2 : ℝ) = Real.sqrt Y := (Real.sqrt_eq_rpow Y).symm
   have hlogY : Real.log Y ≤ Real.sqrt Y / 100 := by
     have h0 : 0 ≤ Real.log Y := Real.log_nonneg (by linarith)
@@ -273,27 +271,185 @@ theorem eventually_orbitPoly_heavyTest_zero_ge :
     nlinarith
   have hwin := theta_sub_le_sum_window y
   -- the weights on the window
-  have hS : ∑ p ∈ (Nat.primesLE ⌊X⌋₊).filter (fun p => Y / 8 < p), Real.log p / Real.sqrt Y ≤
+  have hS : ∑ p ∈ (Nat.primesLE ⌊X⌋₊).filter (fun p : ℕ => Y / 8 < (p : ℝ)), Real.log p / Real.sqrt Y ≤
       ∑ n ∈ range (y + 1), heavyWeight y n := by
-    have hsub : (Nat.primesLE ⌊X⌋₊).filter (fun p => Y / 8 < p) ⊆ range (y + 1) := fun p hp => by
-      rw [mem_filter, Nat.primesLE, Nat.mem_primesBelow] at hp
-      have : p ≤ ⌊X⌋₊ := by omega
-      have : (p : ℝ) ≤ X := (Nat.le_floor_iff (by linarith)).mp this |>.trans le_rfl
-      have : p ≤ y := by exact_mod_cast this.trans hXY
-      simp; omega
+    have hsub : (Nat.primesLE ⌊X⌋₊).filter (fun p : ℕ => Y / 8 < (p : ℝ)) ⊆ range (y + 1) := fun p hp => by
+      rw [mem_filter, Nat.primesLE_eq_filter_range, mem_filter, mem_range] at hp
+      have h1 : p ≤ ⌊X⌋₊ := by omega
+      have h2 : (p : ℝ) ≤ X := (Nat.le_floor_iff (by linarith)).mp h1
+      have h3 : (p : ℝ) ≤ (y : ℝ) := h2.trans hXY
+      have : p ≤ y := by exact_mod_cast h3
+      rw [mem_range]; omega
     refine (sum_le_sum fun p hp => ?_).trans
       (sum_le_sum_of_subset_of_nonneg hsub fun n _ _ => heavyWeight_nonneg _ _)
-    rw [mem_filter, Nat.primesLE, Nat.mem_primesBelow] at hp
+    rw [mem_filter, Nat.primesLE_eq_filter_range, mem_filter, mem_range] at hp
     have hpX : (p : ℝ) ≤ X := Nat.le_floor_iff (by linarith) |>.mp (by omega)
-    exact heavyWeight_prime_ge hp.1.2 (by exact_mod_cast hpX.trans hXY) hp.2 hpX
+    have hpy : (p : ℝ) ≤ (y : ℝ) := hpX.trans hXY
+    exact heavyWeight_prime_ge hp.1.2 (by exact_mod_cast hpy) hp.2 hpX
   rw [re_orbitPoly_heavyTest hy1 0]
   simp only [zero_mul, Real.cos_zero, mul_one]
   rw [← sum_div] at hS
   calc Real.sqrt Y / 4 = (Y / 4) / Real.sqrt Y := by
         field_simp; nlinarith [hYsq]
-    _ ≤ (∑ p ∈ (Nat.primesLE ⌊X⌋₊).filter (fun p => Y / 8 < p), Real.log p) / Real.sqrt Y :=
+    _ ≤ (∑ p ∈ (Nat.primesLE ⌊X⌋₊).filter (fun p : ℕ => Y / 8 < (p : ℝ)), Real.log p) / Real.sqrt Y :=
         div_le_div_of_nonneg_right (by linarith) (Real.sqrt_nonneg _)
     _ ≤ _ := hS
+
+/-! ## A heavy return copies the pole -/
+
+/-- `1 − cos(2πx) ≤ 2π²‖x‖²`. -/
+theorem one_sub_cos_le_dist01 (x : ℝ) : 1 - Real.cos (2 * π * x) ≤ 2 * π ^ 2 * dist01 x ^ 2 := by
+  have e : Real.cos (2 * π * x) = Real.cos (2 * π * (x - round x)) := by
+    have : 2 * π * x = 2 * π * (x - round x) + (round x : ℤ) * (2 * π) := by ring
+    rw [this, Real.cos_add_int_mul_two_pi]
+  rw [e]
+  have h := Real.one_sub_sq_div_two_le_cos (x := 2 * π * (x - round x))
+  have hd : dist01 x ^ 2 = (x - round x) ^ 2 := by unfold dist01; rw [sq_abs]
+  rw [hd]; nlinarith
+
+/-- The prime powers that are not primes carry `O(log y)` of the orbit mass. -/
+theorem sum_heavyWeight_not_prime_le {y : ℕ} (hy : 9 ≤ y) :
+    ∑ n ∈ (range (y + 1)).filter (fun n => ¬ n.Prime), heavyWeight y n ≤ 6 * Real.log y := by
+  have hy0 : (0 : ℝ) < y := by exact_mod_cast (by omega : 0 < y)
+  have hsq0 : 0 < Real.sqrt y := Real.sqrt_pos.mpr hy0
+  have hterm : ∀ n ∈ (range (y + 1)).filter (fun n => ¬ n.Prime),
+      heavyWeight y n ≤ 3 / Real.sqrt y * ArithmeticFunction.vonMangoldt n := fun n _ => by
+    by_cases hb : windowBump (Real.log n - Real.log y) = 0
+    · unfold heavyWeight; rw [hb, mul_zero]
+      exact mul_nonneg (by positivity) ArithmeticFunction.vonMangoldt_nonneg
+    have hs := windowBump_support hb
+    have hn0 : (0 : ℝ) < n := by
+      by_contra h0
+      have : (n : ℝ) = 0 := le_antisymm (not_lt.mp h0) (Nat.cast_nonneg n)
+      rw [this, Real.log_zero] at hs
+      have h9 : Real.log 9 ≤ Real.log y := Real.log_le_log (by norm_num) (by exact_mod_cast hy)
+      linarith [log_nine_sub_log_eight, log_eight_gt]
+    have hlog : Real.log ((y : ℝ) / 9) < Real.log n := by
+      rw [Real.log_div hy0.ne' (by norm_num)]; linarith [log_nine_sub_log_eight, hs.1]
+    have hn9 : (y : ℝ) / 9 < n := (Real.log_lt_log_iff (by positivity) hn0).mp hlog
+    have hsqn : Real.sqrt y / 3 ≤ Real.sqrt n := by
+      rw [show Real.sqrt y / 3 = Real.sqrt ((y : ℝ) / 9) by
+        rw [Real.sqrt_div hy0.le, show (9 : ℝ) = 3 ^ 2 by norm_num, Real.sqrt_sq (by norm_num)]]
+      exact Real.sqrt_le_sqrt hn9.le
+    unfold heavyWeight
+    have hΛ := ArithmeticFunction.vonMangoldt_nonneg (n := n)
+    calc ArithmeticFunction.vonMangoldt n / Real.sqrt n * windowBump (Real.log n - Real.log y)
+        ≤ ArithmeticFunction.vonMangoldt n / Real.sqrt n * 1 :=
+          mul_le_mul_of_nonneg_left windowBump.le_one (by positivity)
+      _ ≤ ArithmeticFunction.vonMangoldt n / (Real.sqrt y / 3) := by
+          rw [mul_one]; exact div_le_div_of_nonneg_left hΛ (by positivity) hsqn
+      _ = 3 / Real.sqrt y * ArithmeticFunction.vonMangoldt n := by field_simp
+  have hsum : ∑ n ∈ (range (y + 1)).filter (fun n => ¬ n.Prime), ArithmeticFunction.vonMangoldt n =
+      Chebyshev.psi y - Chebyshev.theta y := by
+    rw [Chebyshev.psi_sub_theta_eq_sum_not_prime, Nat.floor_natCast]
+    symm
+    refine sum_subset (fun n hn => ?_) (fun n hn hn' => ?_)
+    · rw [mem_filter, mem_Ioc] at hn; rw [mem_filter, mem_range]; exact ⟨by omega, hn.2⟩
+    · rw [mem_filter, mem_range] at hn
+      have : n = 0 := by
+        by_contra h0
+        exact hn' (mem_filter.mpr ⟨mem_Ioc.mpr ⟨Nat.pos_of_ne_zero h0, by omega⟩, hn.2⟩)
+      rw [this]; simp
+  have hpt := Chebyshev.psi_sub_theta_le (show (1 : ℝ) ≤ y by exact_mod_cast (by omega : 1 ≤ y))
+  calc ∑ n ∈ (range (y + 1)).filter (fun n => ¬ n.Prime), heavyWeight y n
+      ≤ ∑ n ∈ (range (y + 1)).filter (fun n => ¬ n.Prime),
+          3 / Real.sqrt y * ArithmeticFunction.vonMangoldt n := sum_le_sum hterm
+    _ = 3 / Real.sqrt y * (Chebyshev.psi y - Chebyshev.theta y) := by rw [← mul_sum, hsum]
+    _ ≤ 3 / Real.sqrt y * (2 * Real.sqrt y * Real.log y) :=
+        mul_le_mul_of_nonneg_left hpt (by positivity)
+    _ = 6 * Real.log y := by field_simp; ring
+
+/-- **A heavy return copies the pole.** For large `y`, at a `δ`-return of a `κ`-heavy subset of
+the primes `≤ y`, `Re P_{φ_y}(t) ≥ (1 − 2π²δ²) P_{φ_y}(0) − 6κ√y − 12 log y`. -/
+theorem eventually_re_orbitPoly_heavyTest_ge {κ : ℝ} (hκ : 0 ≤ κ) :
+    ∀ᶠ y : ℕ in Filter.atTop, ∀ H : Finset ℕ, IsHeavy y κ H → ∀ δ t : ℝ, 0 ≤ δ →
+      IsDeltaReturn H (fun p : ℕ => Real.log p) δ t →
+        (1 - 2 * π ^ 2 * δ ^ 2) * (orbitPoly (heavyTest y) 0).re - 6 * κ * Real.sqrt y -
+          12 * Real.log y ≤ (orbitPoly (heavyTest y) t).re := by
+  filter_upwards [RHTower.eventually_abs_sum_primesLE_half_sub_le (show (0 : ℝ) < 1 by norm_num),
+    Filter.eventually_ge_atTop 9] with y hprime hy H hH δ t hδ hret
+  have hy1 : 1 ≤ y := by omega
+  have hy0 : (0 : ℝ) < y := by exact_mod_cast (by omega : 0 < y)
+  have hlogy : 0 < Real.log y := Real.log_pos (by exact_mod_cast (by omega : 1 < y))
+  rw [re_orbitPoly_heavyTest hy1 t, re_orbitPoly_heavyTest hy1 0]
+  simp only [zero_mul, Real.cos_zero, mul_one]
+  set R := range (y + 1)
+  set w := heavyWeight (y : ℝ)
+  -- the loss splits into the returned primes and the rest
+  have hloss : ∀ n ∈ R, w n - w n * Real.cos (t * Real.log n) ≤
+      2 * π ^ 2 * δ ^ 2 * w n + (if n ∈ H then 0 else 2 * w n) := fun n _ => by
+    have hw := heavyWeight_nonneg (y : ℝ) n
+    by_cases hn : n ∈ H
+    · rw [if_pos hn, add_zero]
+      have h1 := one_sub_cos_le_dist01 (t * Real.log n / (2 * π))
+      have e : 2 * π * (t * Real.log n / (2 * π)) = t * Real.log n := by field_simp
+      rw [e] at h1
+      have hd := hret n hn
+      have hd0 := PrimeTorusTheory.dist01_nonneg (t * Real.log n / (2 * π))
+      have hsq : dist01 (t * Real.log n / (2 * π)) ^ 2 ≤ δ ^ 2 := pow_le_pow_left₀ hd0 hd 2
+      have h2 : 1 - Real.cos (t * Real.log n) ≤ 2 * π ^ 2 * δ ^ 2 :=
+        h1.trans (mul_le_mul_of_nonneg_left hsq (by positivity))
+      have h3 := mul_le_mul_of_nonneg_left h2 hw
+      linarith
+    · rw [if_neg hn]
+      have hc := Real.neg_one_le_cos (t * Real.log n)
+      have h3 := mul_le_mul_of_nonneg_left (show 1 - Real.cos (t * Real.log n) ≤ 2 by linarith) hw
+      have h4 : 0 ≤ 2 * π ^ 2 * δ ^ 2 * w n := by positivity
+      linarith
+  have htot : ∑ n ∈ R, w n - ∑ n ∈ R, w n * Real.cos (t * Real.log n) ≤
+      2 * π ^ 2 * δ ^ 2 * ∑ n ∈ R, w n + 2 * ∑ n ∈ R.filter (fun n => n ∉ H), w n := by
+    rw [← sum_sub_distrib, mul_sum, mul_sum, sum_filter, ← sum_add_distrib]
+    refine sum_le_sum fun n hn => ?_
+    have := hloss n hn
+    by_cases h : n ∈ H
+    · simp only [h, if_true, not_true_eq_false, if_false, mul_zero, add_zero] at this ⊢
+      linarith
+    · simp only [h, if_false, not_false_eq_true, if_true] at this ⊢
+      linarith
+  -- the rest: missing primes and prime powers
+  have hsplit : ∑ n ∈ R.filter (fun n => n ∉ H), w n ≤
+      ∑ n ∈ Nat.primesLE y \ H, w n + ∑ n ∈ R.filter (fun n => ¬ n.Prime), w n := by
+    rw [← sum_filter_add_sum_filter_not (R.filter (fun n => n ∉ H)) Nat.Prime]
+    refine add_le_add (sum_le_sum_of_subset_of_nonneg (fun n hn => ?_)
+      fun n _ _ => heavyWeight_nonneg _ _) (sum_le_sum_of_subset_of_nonneg (fun n hn => ?_)
+      fun n _ _ => heavyWeight_nonneg _ _)
+    · rw [mem_filter, mem_filter, mem_range] at hn
+      rw [mem_sdiff, Nat.primesLE_eq_filter_range, mem_filter, mem_range]
+      exact ⟨⟨hn.1.1, hn.2⟩, hn.1.2⟩
+    · rw [mem_filter, mem_filter] at hn
+      rw [mem_filter]; exact ⟨hn.1.1, hn.2⟩
+  have hmiss : ∑ n ∈ Nat.primesLE y \ H, w n ≤ 3 * κ * Real.sqrt y := by
+    have hle : ∀ p ∈ Nat.primesLE y \ H, w p ≤ Real.log y * (p : ℝ) ^ (-(1 / 2 : ℝ)) := by
+      intro p hp
+      rw [mem_sdiff, Nat.primesLE_eq_filter_range, mem_filter, mem_range] at hp
+      have hpp := hp.1.2
+      have hp0 : (0 : ℝ) < p := by exact_mod_cast hpp.pos
+      have hpy : (p : ℝ) ≤ y := by exact_mod_cast (by omega : p ≤ y)
+      simp only [w, heavyWeight, ArithmeticFunction.vonMangoldt_apply_prime hpp]
+      have hlp : Real.log p ≤ Real.log y := Real.log_le_log hp0 hpy
+      have hlp0 : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hpp.one_lt.le)
+      rw [Real.rpow_neg hp0.le, ← Real.sqrt_eq_rpow]
+      calc Real.log p / Real.sqrt p * windowBump (Real.log p - Real.log y)
+          ≤ Real.log p / Real.sqrt p * 1 :=
+            mul_le_mul_of_nonneg_left windowBump.le_one (by positivity)
+        _ ≤ Real.log y * (Real.sqrt p)⁻¹ := by
+            rw [mul_one, div_eq_mul_inv]
+            exact mul_le_mul_of_nonneg_right hlp (by positivity)
+    have hheavy := hH.2
+    have hsumle : ∑ p ∈ Nat.primesLE y, (p : ℝ) ^ (-(1 / 2 : ℝ)) ≤ 3 * (Real.sqrt y / Real.log y) := by
+      have h := (abs_le.mp hprime).2
+      rw [← Real.sqrt_eq_rpow] at h
+      linarith
+    calc ∑ n ∈ Nat.primesLE y \ H, w n ≤ ∑ p ∈ Nat.primesLE y \ H, Real.log y * (p : ℝ) ^ (-(1 / 2 : ℝ)) :=
+          sum_le_sum hle
+      _ = Real.log y * ∑ p ∈ Nat.primesLE y \ H, (p : ℝ) ^ (-(1 / 2 : ℝ)) := by rw [mul_sum]
+      _ ≤ Real.log y * (κ * (3 * (Real.sqrt y / Real.log y))) := by
+          gcongr
+          exact hheavy.trans (mul_le_mul_of_nonneg_left hsumle hκ)
+      _ = 3 * κ * Real.sqrt y := by field_simp
+  have hpp := sum_heavyWeight_not_prime_le hy
+  have hw0 : 0 ≤ ∑ n ∈ R, w n := sum_nonneg fun n _ => heavyWeight_nonneg _ _
+  nlinarith
 
 end
 

@@ -3,14 +3,15 @@ import GaloisForLFunctions.SurfaceOfSpecZ.TheWidthLawAtEverySamplingSet
 /-!
 # Heights at the zeros of the spline are in phase
 
-The zero `½ + x + iγ` enters the spline traces with the coefficient `sinc(γ − ix)⁸` (`B̂ = sinc⁴`,
-`k̂ = B̂²`), whose phase is uncontrolled in general. At the zeros `γ = 2πM` of `B̂` it is not:
-`sin(2πM − ix) = −i sinh x`, so
+The zero `½ + x + iγ` enters the traces of the spline of order `o` with the coefficient
+`sinc(γ − ix)^{2k}`, `k = o + 1` (`B̂ = sinc^k`, `k̂ = B̂²`), whose phase is uncontrolled in general.
+At the zeros `γ = 2πM` of `B̂` it is not: `sin(2πM − ix) = −i sinh x`, so
 
-  `sinc(2πM − ix)⁸ = sinh⁸ x / (2πM − ix)⁸`
+  `sinc(2πM − ix)^{2k} = (−1)^k sinh^{2k} x / (2πM − ix)^{2k}`
 
-has phase `O(x/M)` (`re_sincPow_mul_exp_ge`), modulus between `x⁸/(7M)⁸` and `1/M⁸`
-(`norm_sincPow_le`, `le_norm_sincPow`). Together with simultaneous Dirichlet approximation above a
+is real up to a phase `O(kx/M)`, with the sign `(−1)^k` (`re_sincPow_mul_exp_ge`): positive for
+the cubic spline (`k = 4`), negative for the quartic (`k = 5`). Its modulus lies between
+`x^{2k}/(7M)^{2k}` and `1/M^{2k}` (`norm_sincPow_le`, `le_norm_sincPow`). Together with simultaneous Dirichlet approximation above a
 prescribed height (`exists_resonant_ge`), this places zeros in phase with every degree
 `a log p + b log q` of a window, with explicitly bounded heights.
 
@@ -97,14 +98,17 @@ theorem splinePoint_ne_zero {M : ℕ} (hM : 1 ≤ M) (x : ℝ) : splinePoint M x
   have hM' : (1 : ℝ) ≤ M := by exact_mod_cast hM
   nlinarith [Real.pi_pos]
 
-/-- **At the zeros of `B̂`:** `sinc(2πM − ix)⁸ = sinh⁸ x / (2πM − ix)⁸`. -/
-theorem sincC_splinePoint_pow {M : ℕ} (hM : 1 ≤ M) (x : ℝ) :
-    sincC (splinePoint M x) ^ 8 = ((Real.sinh x ^ 8 : ℝ) : ℂ) / splinePoint M x ^ 8 := by
+/-- **At the zeros of `B̂`:** `sinc(2πM − ix)^{2k} = (−1)^k sinh^{2k} x / (2πM − ix)^{2k}`. -/
+theorem sincC_splinePoint_pow {M : ℕ} (hM : 1 ≤ M) (x : ℝ) (k : ℕ) :
+    sincC (splinePoint M x) ^ (2 * k) =
+      (-1) ^ k * (((Real.sinh x ^ (2 * k) : ℝ) : ℂ) / splinePoint M x ^ (2 * k)) := by
   rw [sincC, if_neg (splinePoint_ne_zero hM x), splinePoint, sin_two_pi_nat_sub, div_pow,
     ← splinePoint]
-  congr 1
-  have hI : (-(I * (Real.sinh x : ℂ))) ^ 8 = (I ^ 2) ^ 4 * (Real.sinh x : ℂ) ^ 8 := by ring
-  rw [hI, Complex.I_sq]; push_cast; ring
+  have hI : (-(I * (Real.sinh x : ℂ))) ^ (2 * k) = (-1) ^ k * (Real.sinh x : ℂ) ^ (2 * k) := by
+    have h2 : (-(I * (Real.sinh x : ℂ))) ^ 2 = -((Real.sinh x : ℂ) ^ 2) := by
+      ring_nf; rw [Complex.I_sq]; ring
+    rw [pow_mul, h2, neg_pow, ← pow_mul]
+  rw [hI]; push_cast; ring
 
 theorem norm_splinePoint_ge (M : ℕ) (x : ℝ) : 2 * Real.pi * M ≤ ‖splinePoint M x‖ := by
   have h := Complex.abs_re_le_norm (splinePoint M x)
@@ -116,10 +120,11 @@ theorem norm_splinePoint_le (M : ℕ) (x : ℝ) : ‖splinePoint M x‖ ≤ 2 * 
   rw [splinePoint_re, splinePoint_im, abs_neg] at h
   rwa [abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * Real.pi * M)] at h
 
-theorem norm_sincPow_eq {M : ℕ} (hM : 1 ≤ M) (x : ℝ) :
-    ‖sincC (splinePoint M x) ^ 8‖ = Real.sinh x ^ 8 / ‖splinePoint M x‖ ^ 8 := by
-  rw [sincC_splinePoint_pow hM, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_nonneg (by positivity : (0 : ℝ) ≤ Real.sinh x ^ 8)]
+theorem norm_sincPow_eq {M : ℕ} (hM : 1 ≤ M) (x : ℝ) (k : ℕ) :
+    ‖sincC (splinePoint M x) ^ (2 * k)‖ = Real.sinh x ^ (2 * k) / ‖splinePoint M x‖ ^ (2 * k) := by
+  rw [sincC_splinePoint_pow hM, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul,
+    norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg ((even_two_mul k).pow_nonneg (Real.sinh x))]
 
 theorem sinh_le_one {x : ℝ} (hx1 : x ≤ 1 / 2) : Real.sinh x ≤ 1 := by
   rw [Real.sinh_eq]
@@ -131,23 +136,23 @@ theorem sinh_le_one {x : ℝ} (hx1 : x ≤ 1 / 2) : Real.sinh x ≤ 1 := by
   have h3 : 0 < Real.exp (-x) := Real.exp_pos _
   linarith
 
-/-- **Modulus from above:** `‖sinc(2πM − ix)⁸‖ ≤ 1/M⁸` for `0 ≤ x ≤ ½`. -/
-theorem norm_sincPow_le {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) :
-    ‖sincC (splinePoint M x) ^ 8‖ ≤ 1 / (M : ℝ) ^ 8 := by
+/-- **Modulus from above:** `‖sinc(2πM − ix)^{2k}‖ ≤ 1/M^{2k}` for `0 ≤ x ≤ ½`. -/
+theorem norm_sincPow_le {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) (k : ℕ) :
+    ‖sincC (splinePoint M x) ^ (2 * k)‖ ≤ 1 / (M : ℝ) ^ (2 * k) := by
   rw [norm_sincPow_eq hM]
   have hM' : (1 : ℝ) ≤ M := by exact_mod_cast hM
   have hw : (M : ℝ) ≤ ‖splinePoint M x‖ :=
     le_trans (by nlinarith [Real.pi_gt_three]) (norm_splinePoint_ge M x)
   have hs0 : 0 ≤ Real.sinh x := Real.sinh_nonneg_iff.mpr hx0
-  have hs : Real.sinh x ^ 8 ≤ 1 := pow_le_one₀ hs0 (sinh_le_one hx1)
-  calc Real.sinh x ^ 8 / ‖splinePoint M x‖ ^ 8 ≤ 1 / ‖splinePoint M x‖ ^ 8 :=
+  have hs : Real.sinh x ^ (2 * k) ≤ 1 := pow_le_one₀ hs0 (sinh_le_one hx1)
+  calc Real.sinh x ^ (2 * k) / ‖splinePoint M x‖ ^ (2 * k) ≤ 1 / ‖splinePoint M x‖ ^ (2 * k) :=
         div_le_div_of_nonneg_right hs (by positivity)
-    _ ≤ 1 / (M : ℝ) ^ 8 :=
-        one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ (by positivity) hw 8)
+    _ ≤ 1 / (M : ℝ) ^ (2 * k) :=
+        one_div_le_one_div_of_le (by positivity) (pow_le_pow_left₀ (by positivity) hw _)
 
-/-- **Modulus from below:** `‖sinc(2πM − ix)⁸‖ ≥ x⁸/(7M)⁸` for `0 ≤ x ≤ ½`. -/
-theorem le_norm_sincPow {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) :
-    x ^ 8 / (7 * M : ℝ) ^ 8 ≤ ‖sincC (splinePoint M x) ^ 8‖ := by
+/-- **Modulus from below:** `‖sinc(2πM − ix)^{2k}‖ ≥ x^{2k}/(7M)^{2k}` for `0 ≤ x ≤ ½`. -/
+theorem le_norm_sincPow {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) (k : ℕ) :
+    x ^ (2 * k) / (7 * M : ℝ) ^ (2 * k) ≤ ‖sincC (splinePoint M x) ^ (2 * k)‖ := by
   rw [norm_sincPow_eq hM]
   have hM' : (1 : ℝ) ≤ M := by exact_mod_cast hM
   have hw0 : 0 < ‖splinePoint M x‖ := norm_pos_iff.mpr (splinePoint_ne_zero hM x)
@@ -156,11 +161,11 @@ theorem le_norm_sincPow {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 
     rw [abs_of_nonneg hx0] at this
     nlinarith [Real.pi_lt_d2]
   have hs : x ≤ Real.sinh x := Real.self_le_sinh_iff.mpr hx0
-  calc x ^ 8 / (7 * M : ℝ) ^ 8 ≤ Real.sinh x ^ 8 / (7 * M : ℝ) ^ 8 :=
-        div_le_div_of_nonneg_right (pow_le_pow_left₀ hx0 hs 8) (by positivity)
-    _ ≤ Real.sinh x ^ 8 / ‖splinePoint M x‖ ^ 8 :=
+  calc x ^ (2 * k) / (7 * M : ℝ) ^ (2 * k) ≤ Real.sinh x ^ (2 * k) / (7 * M : ℝ) ^ (2 * k) :=
+        div_le_div_of_nonneg_right (pow_le_pow_left₀ hx0 hs _) (by positivity)
+    _ ≤ Real.sinh x ^ (2 * k) / ‖splinePoint M x‖ ^ (2 * k) :=
         div_le_div_of_nonneg_left (by positivity) (by positivity)
-          (pow_le_pow_left₀ hw0.le hw 8)
+          (pow_le_pow_left₀ hw0.le hw _)
 
 /-- `‖vⁿ − 1‖ ≤ n‖v − 1‖` on the unit circle. -/
 theorem norm_pow_sub_one_le {v : ℂ} (hv : ‖v‖ = 1) (n : ℕ) : ‖v ^ n - 1‖ ≤ n * ‖v - 1‖ := by
@@ -169,29 +174,31 @@ theorem norm_pow_sub_one_le {v : ℂ} (hv : ‖v‖ = 1) (n : ℕ) : ‖v ^ n - 
   calc ‖∑ i ∈ Finset.range n, v ^ i‖ ≤ ∑ i ∈ Finset.range n, ‖v ^ i‖ := norm_sum_le _ _
     _ = n := by simp [norm_pow, hv]
 
-/-- **In phase.** If `M ≥ 6`, `0 ≤ x ≤ ½` and `‖e^{iθ} − 1‖ ≤ ¼`, then
-`Re(sinc(2πM − ix)⁸ e^{iθ}) ≥ ½ ‖sinc(2πM − ix)⁸‖`. -/
-theorem re_sincPow_mul_exp_ge {M : ℕ} (hM : 6 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2)
-    {θ : ℝ} (hθ : ‖cexp (θ * I) - 1‖ ≤ 1 / 4) :
-    ‖sincC (splinePoint M x) ^ 8‖ / 2 ≤ (sincC (splinePoint M x) ^ 8 * cexp (θ * I)).re := by
+/-- **In phase, with the sign `(−1)^k`.** If `1 ≤ k`, `M ≥ 2k`, `0 ≤ x ≤ ½` and
+`‖e^{iθ} − 1‖ ≤ ¼`, then `(−1)^k Re(sinc(2πM − ix)^{2k} e^{iθ}) ≥ ½ ‖sinc(2πM − ix)^{2k}‖`. -/
+theorem re_sincPow_mul_exp_ge {k M : ℕ} (hk : 1 ≤ k) (hM : 2 * k ≤ M) {x : ℝ} (hx0 : 0 ≤ x)
+    (hx1 : x ≤ 1 / 2) {θ : ℝ} (hθ : ‖cexp (θ * I) - 1‖ ≤ 1 / 4) :
+    ‖sincC (splinePoint M x) ^ (2 * k)‖ / 2 ≤
+      (-1) ^ k * (sincC (splinePoint M x) ^ (2 * k) * cexp (θ * I)).re := by
   have hM1 : 1 ≤ M := by omega
   set w := splinePoint M x with hwdef
   have hw0 : w ≠ 0 := splinePoint_ne_zero hM1 x
   have hwn : 0 < ‖w‖ := norm_pos_iff.mpr hw0
-  set s : ℝ := Real.sinh x ^ 8 / ‖w‖ ^ 8 with hs
+  set s : ℝ := Real.sinh x ^ (2 * k) / ‖w‖ ^ (2 * k) with hs
   set v : ℂ := (‖w‖ : ℂ) / w with hv
   have hvn : ‖v‖ = 1 := by
     rw [hv, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hwn, div_self hwn.ne']
   have hwc : (‖w‖ : ℂ) ≠ 0 := by exact_mod_cast hwn.ne'
-  have hc : sincC w ^ 8 = (s : ℂ) * v ^ 8 := by
+  have hc : sincC w ^ (2 * k) = (-1) ^ k * ((s : ℂ) * v ^ (2 * k)) := by
     rw [hwdef, sincC_splinePoint_pow hM1, ← hwdef, hs, hv, div_pow]
     push_cast
     field_simp
-  have hnc : ‖sincC w ^ 8‖ = s := by
-    rw [hc, norm_mul, norm_pow, hvn, one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (by positivity)]
-  -- `‖v − 1‖ ≤ 2x/‖w‖ ≤ 1/37`
-  have hM' : (6 : ℝ) ≤ M := by exact_mod_cast hM
+  have hnc : ‖sincC w ^ (2 * k)‖ = s := by
+    rw [hc, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul, norm_mul, norm_pow, hvn,
+      one_pow, mul_one, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  -- `‖v − 1‖ ≤ 2x/‖w‖ ≤ 1/(2πM)`, so `‖v^{2k} − 1‖ ≤ k/(πM) ≤ 1/(2π)`
+  have hM' : (2 * k : ℝ) ≤ M := by exact_mod_cast hM
+  have hk' : (1 : ℝ) ≤ k := by exact_mod_cast hk
   have hwge : 2 * Real.pi * M ≤ ‖w‖ := norm_splinePoint_ge M x
   have hnum : ‖(‖w‖ : ℂ) - w‖ ≤ 2 * x := by
     have hre : ((‖w‖ : ℂ) - w).re = ‖w‖ - 2 * Real.pi * M := by
@@ -203,30 +210,45 @@ theorem re_sincPow_mul_exp_ge {M : ℕ} (hM : 6 ≤ M) {x : ℝ} (hx0 : 0 ≤ x)
     have hup := norm_splinePoint_le M x
     rw [abs_of_nonneg hx0, ← hwdef] at hup
     linarith
-  have hv1 : ‖v - 1‖ ≤ 1 / 37 := by
+  have hv1 : ‖v - 1‖ * (2 * Real.pi * M) ≤ 1 := by
     have : v - 1 = ((‖w‖ : ℂ) - w) / w := by rw [hv]; field_simp
-    rw [this, norm_div, div_le_iff₀ hwn]
-    have h37 : 37 ≤ ‖w‖ := le_trans (by nlinarith [Real.pi_gt_d2]) hwge
+    rw [this, norm_div]
+    have h1 : ‖(‖w‖ : ℂ) - w‖ / ‖w‖ * (2 * Real.pi * M) ≤ ‖(‖w‖ : ℂ) - w‖ / ‖w‖ * ‖w‖ :=
+      mul_le_mul_of_nonneg_left hwge (by positivity)
+    rw [div_mul_cancel₀ _ hwn.ne'] at h1
     linarith
-  have hv8 : ‖v ^ 8 - 1‖ ≤ 8 / 37 := by
-    have := norm_pow_sub_one_le hvn 8
-    push_cast at this
-    linarith
-  -- `Re(v⁸ e^{iθ}) ≥ ½`
+  have hvk : ‖v ^ (2 * k) - 1‖ ≤ 1 / 5 := by
+    have h := norm_pow_sub_one_le hvn (2 * k)
+    push_cast at h
+    have hpi : 0 < 2 * Real.pi * M := by positivity
+    have h2 : ‖v - 1‖ ≤ 1 / (2 * Real.pi * M) := by rw [le_div_iff₀ hpi]; linarith
+    have h3 : (2 * k : ℝ) * (1 / (2 * Real.pi * M)) ≤ 1 / 5 := by
+      rw [mul_one_div, div_le_div_iff₀ hpi (by norm_num)]
+      nlinarith [Real.pi_gt_three]
+    calc ‖v ^ (2 * k) - 1‖ ≤ 2 * k * ‖v - 1‖ := h
+      _ ≤ 2 * k * (1 / (2 * Real.pi * M)) := mul_le_mul_of_nonneg_left h2 (by positivity)
+      _ ≤ 1 / 5 := h3
+  -- `Re(v^{2k} e^{iθ}) ≥ ½`
   have he : ‖cexp (θ * I)‖ = 1 := by rw [Complex.norm_exp_ofReal_mul_I]
-  have hre : 1 / 2 ≤ (v ^ 8 * cexp (θ * I)).re := by
-    have hsplit : v ^ 8 * cexp (θ * I) - 1 = (v ^ 8 - 1) * cexp (θ * I) + (cexp (θ * I) - 1) := by
-      ring
-    have hn : ‖v ^ 8 * cexp (θ * I) - 1‖ ≤ 8 / 37 + 1 / 4 := by
+  have hre : 1 / 2 ≤ (v ^ (2 * k) * cexp (θ * I)).re := by
+    have hsplit : v ^ (2 * k) * cexp (θ * I) - 1 =
+        (v ^ (2 * k) - 1) * cexp (θ * I) + (cexp (θ * I) - 1) := by ring
+    have hn : ‖v ^ (2 * k) * cexp (θ * I) - 1‖ ≤ 1 / 5 + 1 / 4 := by
       rw [hsplit]
       refine (norm_add_le _ _).trans ?_
       rw [norm_mul, he, mul_one]
       linarith
-    have h1 := Complex.abs_re_le_norm (v ^ 8 * cexp (θ * I) - 1)
+    have h1 := Complex.abs_re_le_norm (v ^ (2 * k) * cexp (θ * I) - 1)
     rw [Complex.sub_re, Complex.one_re] at h1
-    have := neg_abs_le ((v ^ 8 * cexp (θ * I)).re - 1)
+    have := neg_abs_le ((v ^ (2 * k) * cexp (θ * I)).re - 1)
     linarith
-  rw [hnc, hc, mul_assoc, Complex.re_ofReal_mul]
+  have hsq : ((-1 : ℝ) ^ k) * (-1) ^ k = 1 := by rw [← mul_pow]; norm_num
+  have e : (sincC w ^ (2 * k) * cexp (θ * I)).re =
+      (-1 : ℝ) ^ k * (s * (v ^ (2 * k) * cexp (θ * I)).re) := by
+    rw [hc, show (-1 : ℂ) ^ k * ((s : ℂ) * v ^ (2 * k)) * cexp (θ * I) =
+        (((-1 : ℝ) ^ k : ℝ) : ℂ) * ((s : ℂ) * (v ^ (2 * k) * cexp (θ * I))) by push_cast; ring,
+      Complex.re_ofReal_mul, Complex.re_ofReal_mul]
+  rw [hnc, e, ← mul_assoc, hsq, one_mul]
   have hs0 : 0 ≤ s := by positivity
   nlinarith
 

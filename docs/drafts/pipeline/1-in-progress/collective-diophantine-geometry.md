@@ -16,14 +16,18 @@
 4. A sign-free decision theorem at prime degrees and an arithmetic producer
    using the functional equation centred at one half.
 
-## First proof target
+## Established decision mechanism
 
-Prove the two-sided gap iteration without Landau's theorem. A width bound
+The two-sided gap iteration avoids Landau's theorem. A width bound
 `a`, degree gaps `O(x^θ)`, and trace bound `O(d^σ)` give the new width
 `max(σ, a+θ−1)` by Lipschitz propagation and the absolute-convergence rate
-theorem. Iterating removes the initial width for every `θ<1`. Unlike the
-one-sided theorem, real zeros need no separate exclusion. Audit the rate
-theorem's proof before treating this as a sign-free result.
+theorem. Iterating removes the initial width for every `θ<1`.
+`CollectiveDiophantineGeometry/TwoSidedGapIteration.lean` proves the exact
+width law and its prime specialization. All four public theorems passed
+the axiom audit with only `propext`, `Classical.choice`, and `Quot.sound`.
+The rate theorem uses a Laplace transform, analytic continuation and residues.
+The final direct Lean check passed; the programme umbrella imports the module.
+Paper proof: [CDG-GAP](../3-formalized/cdg-two-sided-gap-iteration.md).
 
 ## Open core
 
@@ -32,6 +36,13 @@ smooth-head moment estimates, and a positive-resonator finite-time Bohr
 isometry. Repackaging those is not a new breadth estimate. No unconditional
 growing-family return exclusion or RH producer has been proved here.
 
+The existing comb estimate propagates prime precision to a smooth integer
+with `k` factors at cost `k` times that precision. Its useful counting range
+is past integer length comparable to the height. The unresolved collective
+tool must control growing smooth supports below that range without losing
+constant prime precision. This is an arithmetic counting problem, not a
+missing wrapper around the existing moment estimates.
+
 `README.md` gives the foundational draft. A return starts at `t≥1`; heaviness
 must specify its weight and fraction. Exact prime-log relation lattices are
-zero; successive minima concern an augmented approximation lattice.
+zero; successive minima concern approximation bodies in the integer lattice.

@@ -20,8 +20,7 @@ zero of `B̂`. Its coefficient `c_k = sinc(2πM_k − ix_k)⁸` is in phase (`re
 `e^{2πiM_kλ}` is within `¼` of `1` at every degree `λ ≤ U_{k+1}` (`norm_exp_height_sub_one_le`); and
 `A_k ≥ 2^{k+1}e^{ΘU_{k−1}}` gives `2|c_k| ≤ 2^{−k}e^{−ΘU_{k−1}}`. Since `M_k = e^{O(√U_k)}`, the weight
 `2|c_k| ≥ 2x_k⁸/(7M_k)⁸` takes over from the earlier levels within the window once
-`V ≥ 8(182(r + 1) + 8 log(1/Θ))/Θ` (`eight_le_wt_mul_exp`), and the dominance lemma applies on every
-window.
+`V ≥ 8W` (`towerW`, `eight_le_wt_mul_exp`), and the dominance lemma applies on every window.
 -/
 
 open Complex Filter Topology
@@ -35,7 +34,7 @@ open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThresho
 
 namespace SplineTower
 
-variable (Θ V : ℝ)
+variable (o : ℕ) (Θ V : ℝ)
 
 /-- The depths `x_k = Θ(1 − 2^{−k−1})`. -/
 def depth (k : ℕ) : ℝ := Θ * (1 - (1 / 2) ^ (k + 1))
@@ -50,41 +49,41 @@ def hiW : ℕ → ℝ
   | 0 => 1
   | k + 1 => (1 / 2) ^ (k + 1) * Real.exp (-(Θ * win V k))
 
-/-- The least height `⌈2/hi_k⌉ + k + 6`. -/
-def lowH (k : ℕ) : ℕ := ⌈2 / hiW Θ V k⌉₊ + k + 6
+/-- The least height `⌈(2o + 4)/hi_k⌉ + k + 2(o + 1)`. -/
+def lowH (k : ℕ) : ℕ := ⌈(2 * (o : ℝ) + 4) / hiW Θ V k⌉₊ + k + 2 * (o + 1)
 
 /-- The precision `⌈8πU_{k+1}/log 2⌉ + 1`. -/
 def prec (k : ℕ) : ℕ := ⌈8 * Real.pi * win V (k + 1) / Real.log 2⌉₊ + 1
 
 variable {r : ℕ} (P : Fin r → ℕ)
 
-theorem exists_height (k : ℕ) : ∃ M : ℕ, lowH Θ V k ≤ M ∧
-    M ≤ 2 * lowH Θ V k + (2 * lowH Θ V k * prec V k) ^ r ∧
+theorem exists_height (k : ℕ) : ∃ M : ℕ, lowH o Θ V k ≤ M ∧
+    M ≤ 2 * lowH o Θ V k + (2 * lowH o Θ V k * prec V k) ^ r ∧
     ∀ i, ∃ z : ℤ, |(M : ℝ) * Real.log (P i) - z| ≤ 1 / (prec V k : ℝ) :=
   exists_resonant_ge (fun i => Real.log (P i)) (by unfold lowH; omega) (by unfold prec; omega)
 
 /-- The heights `M_k`, resonant with every `log Pᵢ`. -/
-def height (k : ℕ) : ℕ := Classical.choose (exists_height Θ V P k)
+def height (k : ℕ) : ℕ := Classical.choose (exists_height o Θ V P k)
 
-theorem height_spec (k : ℕ) : lowH Θ V k ≤ height Θ V P k ∧
-    height Θ V P k ≤ 2 * lowH Θ V k + (2 * lowH Θ V k * prec V k) ^ r ∧
-    ∀ i, ∃ z : ℤ, |(height Θ V P k : ℝ) * Real.log (P i) - z| ≤ 1 / (prec V k : ℝ) :=
-  Classical.choose_spec (exists_height Θ V P k)
+theorem height_spec (k : ℕ) : lowH o Θ V k ≤ height o Θ V P k ∧
+    height o Θ V P k ≤ 2 * lowH o Θ V k + (2 * lowH o Θ V k * prec V k) ^ r ∧
+    ∀ i, ∃ z : ℤ, |(height o Θ V P k : ℝ) * Real.log (P i) - z| ≤ 1 / (prec V k : ℝ) :=
+  Classical.choose_spec (exists_height o Θ V P k)
 
-/-- The coefficient `c_k = sinc(2πM_k − ix_k)⁸`. -/
-def coef (k : ℕ) : ℂ := sincC (splinePoint (height Θ V P k) (depth Θ k)) ^ 8
+/-- The coefficient `c_k = sinc(2πM_k − ix_k)^{2(o+1)}` of the spline of order `o`. -/
+def coef (k : ℕ) : ℂ := sincC (splinePoint (height o Θ V P k) (depth Θ k)) ^ (2 * (o + 1))
 
 /-- The weight `2|c_k|`. -/
-def wt (k : ℕ) : ℝ := 2 * ‖coef Θ V P k‖
+def wt (k : ℕ) : ℝ := 2 * ‖coef o Θ V P k‖
 
 /-- The points `½ ± x_k + 2πiM_k`. -/
 def pt : ℕ × Bool → ℂ
-  | (k, true) => (1 / 2 : ℂ) + (depth Θ k : ℂ) + ((2 * Real.pi * height Θ V P k : ℝ) : ℂ) * I
-  | (k, false) => (1 / 2 : ℂ) - (depth Θ k : ℂ) + ((2 * Real.pi * height Θ V P k : ℝ) : ℂ) * I
+  | (k, true) => (1 / 2 : ℂ) + (depth Θ k : ℂ) + ((2 * Real.pi * height o Θ V P k : ℝ) : ℂ) * I
+  | (k, false) => (1 / 2 : ℂ) - (depth Θ k : ℂ) + ((2 * Real.pi * height o Θ V P k : ℝ) : ℂ) * I
 
 /-! ### The depths and windows -/
 
-variable {Θ V}
+variable {o Θ V}
 
 theorem depth_nonneg (hΘ : 0 < Θ) (k : ℕ) : 0 ≤ depth Θ k := by
   unfold depth
@@ -154,12 +153,12 @@ theorem exists_le_win (hV : 2 ≤ V) (lam : ℝ) : ∃ n, lam ≤ win V n := by
 
 /-! ### Heights and weights -/
 
-theorem lowH_le_height (k : ℕ) : lowH Θ V k ≤ height Θ V P k := (height_spec Θ V P k).1
+theorem lowH_le_height (k : ℕ) : lowH o Θ V k ≤ height o Θ V P k := (height_spec o Θ V P k).1
 
-theorem six_le_height (k : ℕ) : 6 ≤ height Θ V P k :=
+theorem two_mul_le_height (k : ℕ) : 2 * (o + 1) ≤ height o Θ V P k :=
   le_trans (by unfold lowH; omega) (lowH_le_height P k)
 
-theorem k_le_height (k : ℕ) : k ≤ height Θ V P k :=
+theorem k_le_height (k : ℕ) : k ≤ height o Θ V P k :=
   le_trans (by unfold lowH; omega) (lowH_le_height P k)
 
 theorem hiW_pos (k : ℕ) : 0 < hiW Θ V k := by
@@ -167,32 +166,33 @@ theorem hiW_pos (k : ℕ) : 0 < hiW Θ V k := by
   · simp [hiW]
   · simp only [hiW]; positivity
 
-theorem wt_le_hiW (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (k : ℕ) : wt Θ V P k ≤ hiW Θ V k := by
-  have hM := six_le_height (Θ := Θ) (V := V) P k
-  have hM1 : 1 ≤ height Θ V P k := by omega
+theorem wt_le_hiW (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (k : ℕ) : wt o Θ V P k ≤ hiW Θ V k := by
+  have hM := two_mul_le_height (o := o) (Θ := Θ) (V := V) P k
+  have hM1 : 1 ≤ height o Θ V P k := by omega
   have hx0 := depth_nonneg hΘ k
   have hx1 : depth Θ k ≤ 1 / 2 := (depth_lt hΘ k).le.trans hΘ2
-  have h1 := norm_sincPow_le hM1 hx0 hx1
-  have hMr : (1 : ℝ) ≤ height Θ V P k := by exact_mod_cast hM1
-  have hceil : 2 / hiW Θ V k ≤ height Θ V P k := by
-    have h2 : (2 / hiW Θ V k) ≤ (lowH Θ V k : ℝ) := by
-      unfold lowH; push_cast
-      linarith [Nat.le_ceil (2 / hiW Θ V k)]
-    exact h2.trans (by exact_mod_cast lowH_le_height P k)
-  have hpow : (height Θ V P k : ℝ) ≤ (height Θ V P k : ℝ) ^ 8 :=
-    le_self_pow₀ hMr (by norm_num)
+  have h1 := norm_sincPow_le hM1 hx0 hx1 (o + 1)
+  have hMr : (1 : ℝ) ≤ height o Θ V P k := by exact_mod_cast hM1
   have hhi := hiW_pos (Θ := Θ) (V := V) k
+  have hceil : 2 / hiW Θ V k ≤ height o Θ V P k := by
+    have h2 : 2 / hiW Θ V k ≤ (2 * (o : ℝ) + 4) / hiW Θ V k :=
+      div_le_div_of_nonneg_right (by have : (0 : ℝ) ≤ o := Nat.cast_nonneg o; linarith) hhi.le
+    have h3 : (2 * (o : ℝ) + 4) / hiW Θ V k ≤ (lowH o Θ V k : ℝ) := by
+      unfold lowH; push_cast
+      linarith [Nat.le_ceil ((2 * (o : ℝ) + 4) / hiW Θ V k)]
+    exact h2.trans (h3.trans (by exact_mod_cast lowH_le_height P k))
+  have hpow : (height o Θ V P k : ℝ) ≤ (height o Θ V P k : ℝ) ^ (2 * (o + 1)) :=
+    le_self_pow₀ hMr (by omega)
   unfold wt coef
-  calc 2 * ‖sincC (splinePoint (height Θ V P k) (depth Θ k)) ^ 8‖
-      ≤ 2 * (1 / (height Θ V P k : ℝ) ^ 8) := by linarith
-    _ ≤ 2 * (1 / (height Θ V P k : ℝ)) := by
-        gcongr
+  calc 2 * ‖sincC (splinePoint (height o Θ V P k) (depth Θ k)) ^ (2 * (o + 1))‖
+      ≤ 2 * (1 / (height o Θ V P k : ℝ) ^ (2 * (o + 1))) := by linarith
+    _ ≤ 2 * (1 / (height o Θ V P k : ℝ)) := by gcongr
     _ ≤ hiW Θ V k := by
         rw [div_le_iff₀ hhi] at hceil
         rw [mul_one_div, div_le_iff₀ (by positivity)]
         linarith
 
-theorem wt_nonneg (k : ℕ) : 0 ≤ wt Θ V P k := by unfold wt; positivity
+theorem wt_nonneg (k : ℕ) : 0 ≤ wt o Θ V P k := by unfold wt; positivity
 
 /-! ### Resonance -/
 
@@ -205,11 +205,11 @@ theorem norm_exp_I_sub_one_le (t : ℝ) : ‖cexp ((t : ℂ) * I) - 1‖ ≤ |t|
 `e^{2πiM_kλ}` is within `¼` of `1`. -/
 theorem norm_exp_height_sub_one_le (hP : ∀ i, (P i).Prime) (hV : 1 ≤ V) (k : ℕ) (a : Fin r → ℕ)
     (hlam : ∑ i, (a i : ℝ) * Real.log (P i) ≤ win V (k + 1)) :
-    ‖cexp (((2 * Real.pi * height Θ V P k * ∑ i, (a i : ℝ) * Real.log (P i) : ℝ) : ℂ) * I) -
+    ‖cexp (((2 * Real.pi * height o Θ V P k * ∑ i, (a i : ℝ) * Real.log (P i) : ℝ) : ℂ) * I) -
       1‖ ≤ 1 / 4 := by
-  obtain ⟨-, -, hres⟩ := height_spec Θ V P k
+  obtain ⟨-, -, hres⟩ := height_spec o Θ V P k
   choose z hz using hres
-  set M : ℝ := (height Θ V P k : ℝ)
+  set M : ℝ := (height o Θ V P k : ℝ)
   set Q : ℝ := (prec V k : ℝ)
   set U : ℝ := win V (k + 1)
   have hl2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
@@ -279,65 +279,79 @@ theorem two_pow_mul_le_pow {W : ℝ} (hW1 : 1 ≤ W) (hV : 8 * W ≤ V) (n : ℕ
     _ ≤ V ^ (n + 1) := h2
     _ ≤ _ := h1
 
-/-- **The exponential comparison.** If `Θ ≤ ½`, `R ≥ 1`, `1 ≤ s`, `n ≤ s` and
-`2^{n+2}(182R + 8 log(1/Θ)) ≤ Θs`, then `8 (2^{(n+12)R+4} e^{RΘs} s^{4R})⁸ ≤ 2(Θ/2)⁸ e^{Θs²/2^{n+2}}`:
-the exponent `8(n+12)R + 42 + 8 log(1/Θ) + 8RΘs + 32Rs` is at most
-`(182R + 8 log(1/Θ))s ≤ Θs²/2^{n+2}`. -/
-theorem key_ineq {Θ s : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (n R : ℕ) (hR : 1 ≤ R) (hs1 : 1 ≤ s)
-    (hns : (n : ℝ) ≤ s) (hsW : 2 ^ (n + 2) * (182 * R + 8 * Real.log (1 / Θ)) ≤ Θ * s) :
-    8 * (2 ^ ((n + 12) * R) * 16 * (Real.exp (Θ * s) ^ R * s ^ (4 * R))) ^ 8 ≤
-      2 * (Θ / 2) ^ 8 * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := by
+/-- **The exponential comparison.** If `Θ ≤ ½`, `C, R, N ≥ 1`, `1 ≤ s`, `n ≤ s` and
+`2^{n+2}((25 + C)NR + N log(1/Θ)) ≤ Θs`, then
+`8 (C^R 2^{(n+12)R} 16 e^{RΘs} s^{4R})^N ≤ 2(Θ/2)^N e^{Θs²/2^{n+2}}`: the exponent
+`RNC + (n+12)RN + 5N + 2 + N log(1/Θ) + NRΘs + 4RNs` is at most
+`((25 + C)NR + N log(1/Θ))s ≤ Θs²/2^{n+2}`. -/
+theorem key_ineq {Θ s C : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hC : 1 ≤ C) (n R N : ℕ)
+    (hR : 1 ≤ R) (hN : 1 ≤ N) (hs1 : 1 ≤ s) (hns : (n : ℝ) ≤ s)
+    (hsW : 2 ^ (n + 2) * ((25 + C) * (N * R) + N * Real.log (1 / Θ)) ≤ Θ * s) :
+    8 * (C ^ R * 2 ^ ((n + 12) * R) * 16 * (Real.exp (Θ * s) ^ R * s ^ (4 * R))) ^ N ≤
+      2 * (Θ / 2) ^ N * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := by
   set L := Real.log (1 / Θ) with hL
   have hL0 : 0 ≤ L := Real.log_nonneg (by rw [le_div_iff₀ hΘ]; linarith)
   have hR1 : (1 : ℝ) ≤ R := by exact_mod_cast hR
+  have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hs0 : (0 : ℝ) ≤ s := by linarith
-  have hexpo : 8 * ((n + 12) * R) + 42 + 8 * L + 8 * R * (Θ * s) + 32 * R * s ≤
+  set T : ℝ := (N : ℝ) * R with hT
+  have hT1 : 1 ≤ T := by rw [hT]; nlinarith
+  have hexpo : T * C + (n + 12) * T + (5 * N + 2) + N * L + T * (Θ * s) + 4 * T * s ≤
       Θ * s ^ 2 / 2 ^ (n + 2) := by
-    have h1 : (182 * R + 8 * L) * s ≤ Θ * s ^ 2 / 2 ^ (n + 2) := by
+    have h1 : ((25 + C) * T + N * L) * s ≤ Θ * s ^ 2 / 2 ^ (n + 2) := by
       rw [le_div_iff₀ (by positivity)]
       have := mul_le_mul_of_nonneg_right hsW hs0
       nlinarith
-    have ha : (n : ℝ) * R ≤ s * R := mul_le_mul_of_nonneg_right hns (by linarith)
-    have hb : (R : ℝ) ≤ R * s := by nlinarith
-    have hc : 8 * L ≤ 8 * L * s := by nlinarith
-    have hd : R * (Θ * s) ≤ R * (s / 2) :=
+    have f1 : T * C ≤ T * C * s := by nlinarith
+    have f2 : (n : ℝ) * T ≤ s * T := mul_le_mul_of_nonneg_right hns (by linarith)
+    have f3 : 12 * T ≤ 12 * T * s := by nlinarith
+    have f4 : 5 * (N : ℝ) + 2 ≤ 7 * T * s := by
+      have : (N : ℝ) ≤ T := by rw [hT]; nlinarith
+      nlinarith
+    have f5 : N * L ≤ N * L * s := by nlinarith
+    have f6 : T * (Θ * s) ≤ T * (s / 2) :=
       mul_le_mul_of_nonneg_left (by nlinarith) (by linarith)
     nlinarith
-  have e2 : ((2 : ℝ) ^ ((n + 12) * R)) ^ 8 ≤ Real.exp (8 * ((n + 12) * R)) := by
-    have he : (2 : ℝ) ≤ Real.exp 1 := by have := Real.add_one_le_exp 1; linarith
-    calc ((2 : ℝ) ^ ((n + 12) * R)) ^ 8 = 2 ^ (8 * ((n + 12) * R)) := by
-          rw [← pow_mul, mul_comm]
-      _ ≤ Real.exp 1 ^ (8 * ((n + 12) * R)) := pow_le_pow_left₀ (by norm_num) he _
-      _ = Real.exp (8 * ((n + 12) * R)) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
-  have e42 : (2 : ℝ) ^ 42 ≤ Real.exp 42 := by
-    have he : (2 : ℝ) ≤ Real.exp 1 := by have := Real.add_one_le_exp 1; linarith
-    calc (2 : ℝ) ^ 42 ≤ Real.exp 1 ^ 42 := pow_le_pow_left₀ (by norm_num) he _
-      _ = Real.exp 42 := by rw [← Real.exp_nat_mul]; norm_num
-  have eΘ : (1 / Θ) ^ 8 = Real.exp (8 * L) := by
-    rw [show 8 * L = ((8 : ℕ) : ℝ) * L by norm_num, Real.exp_nat_mul, hL,
-      Real.exp_log (by positivity)]
-  have eE : (Real.exp (Θ * s) ^ R) ^ 8 = Real.exp (8 * R * (Θ * s)) := by
-    rw [← pow_mul, ← Real.exp_nat_mul]; push_cast; ring_nf
-  have es : (s ^ (4 * R)) ^ 8 ≤ Real.exp (32 * R * s) := by
+  have he : (2 : ℝ) ≤ Real.exp 1 := by have := Real.add_one_le_exp 1; linarith
+  have eC : (C ^ R) ^ N ≤ Real.exp (T * C) := by
+    have hCe : C ≤ Real.exp C := by have := Real.add_one_le_exp C; linarith
+    calc (C ^ R) ^ N = C ^ (N * R) := by rw [← pow_mul, mul_comm]
+      _ ≤ Real.exp C ^ (N * R) := pow_le_pow_left₀ (by linarith) hCe _
+      _ = Real.exp (T * C) := by rw [← Real.exp_nat_mul, hT]; push_cast; ring_nf
+  have eX : ((2 : ℝ) ^ ((n + 12) * R)) ^ N ≤ Real.exp ((n + 12) * T) := by
+    calc ((2 : ℝ) ^ ((n + 12) * R)) ^ N = 2 ^ ((n + 12) * R * N) := by rw [← pow_mul]
+      _ ≤ Real.exp 1 ^ ((n + 12) * R * N) := pow_le_pow_left₀ (by norm_num) he _
+      _ = Real.exp ((n + 12) * T) := by rw [← Real.exp_nat_mul, hT]; push_cast; ring_nf
+  have e2 : (2 : ℝ) ^ (5 * N + 2) ≤ Real.exp (5 * N + 2) := by
+    calc (2 : ℝ) ^ (5 * N + 2) ≤ Real.exp 1 ^ (5 * N + 2) := pow_le_pow_left₀ (by norm_num) he _
+      _ = Real.exp (5 * N + 2) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
+  have eΘ : (1 / Θ) ^ N = Real.exp (N * L) := by
+    rw [Real.exp_nat_mul, hL, Real.exp_log (by positivity)]
+  have eE : (Real.exp (Θ * s) ^ R) ^ N = Real.exp (T * (Θ * s)) := by
+    rw [← pow_mul, ← Real.exp_nat_mul, hT]; push_cast; ring_nf
+  have es : (s ^ (4 * R)) ^ N ≤ Real.exp (4 * T * s) := by
     have h := Real.add_one_le_exp s
-    calc (s ^ (4 * R)) ^ 8 = s ^ (32 * R) := by rw [← pow_mul]; ring_nf
-      _ ≤ Real.exp s ^ (32 * R) := pow_le_pow_left₀ hs0 (by linarith) _
-      _ = Real.exp (32 * R * s) := by rw [← Real.exp_nat_mul]; push_cast; ring_nf
+    calc (s ^ (4 * R)) ^ N = s ^ (4 * R * N) := by rw [← pow_mul]
+      _ ≤ Real.exp s ^ (4 * R * N) := pow_le_pow_left₀ hs0 (by linarith) _
+      _ = Real.exp (4 * T * s) := by rw [← Real.exp_nat_mul, hT]; push_cast; ring_nf
+  set CR := C ^ R
   set X := (2 : ℝ) ^ ((n + 12) * R)
   set Y := Real.exp (Θ * s) ^ R
   set Z := s ^ (4 * R)
-  have hfin : X ^ 8 * 2 ^ 42 * (1 / Θ) ^ 8 * Y ^ 8 * Z ^ 8 ≤
+  have hCR : 0 ≤ CR := by positivity
+  have hfin : CR ^ N * X ^ N * 2 ^ (5 * N + 2) * (1 / Θ) ^ N * Y ^ N * Z ^ N ≤
       Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := by
     rw [eΘ, eE]
-    calc X ^ 8 * 2 ^ 42 * Real.exp (8 * L) * Real.exp (8 * R * (Θ * s)) * Z ^ 8
-        ≤ Real.exp (8 * ((n + 12) * R)) * Real.exp 42 * Real.exp (8 * L) *
-            Real.exp (8 * R * (Θ * s)) * Real.exp (32 * R * s) := by
+    calc CR ^ N * X ^ N * 2 ^ (5 * N + 2) * Real.exp (N * L) * Real.exp (T * (Θ * s)) * Z ^ N
+        ≤ Real.exp (T * C) * Real.exp ((n + 12) * T) * Real.exp (5 * N + 2) * Real.exp (N * L) *
+            Real.exp (T * (Θ * s)) * Real.exp (4 * T * s) := by
           gcongr
-      _ = Real.exp (8 * ((n + 12) * R) + 42 + 8 * L + 8 * R * (Θ * s) + 32 * R * s) := by
-          rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
+      _ = Real.exp (T * C + (n + 12) * T + (5 * N + 2) + N * L + T * (Θ * s) + 4 * T * s) := by
+          simp only [← Real.exp_add]
       _ ≤ _ := Real.exp_le_exp.mpr hexpo
-  have hid : 8 * (X * 16 * (Y * Z)) ^ 8 =
-      2 * (Θ / 2) ^ 8 * (X ^ 8 * 2 ^ 42 * (1 / Θ) ^ 8 * Y ^ 8 * Z ^ 8) := by
+  have hid : 8 * (CR * X * 16 * (Y * Z)) ^ N =
+      2 * (Θ / 2) ^ N * (CR ^ N * X ^ N * 2 ^ (5 * N + 2) * (1 / Θ) ^ N * Y ^ N * Z ^ N) := by
+    rw [show (16 : ℝ) = 2 ^ 4 by norm_num, show (8 : ℝ) = 2 ^ 3 by norm_num]
     field_simp
     ring
   rw [hid]
@@ -348,12 +362,12 @@ theorem win_le_base (hV0 : 0 ≤ V) (n : ℕ) : win V n ≤ V ^ 2 ^ n := by
   · rw [win_zero]; positivity
   · rw [win_succ]
 
-/-- The least height at level `n + 1`: `A ≤ 2^{n+5} e^{Θ V^{2^n}}`. -/
+/-- The least height at level `n + 1`: `A ≤ (o + 2) 2^{n+5} e^{Θ V^{2^n}}`. -/
 theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
-    (lowH Θ V (n + 1) : ℝ) ≤ 2 ^ (n + 5) * Real.exp (Θ * V ^ 2 ^ n) := by
+    (lowH o Θ V (n + 1) : ℝ) ≤ (o + 2) * 2 ^ (n + 5) * Real.exp (Θ * V ^ 2 ^ n) := by
   set s := V ^ 2 ^ n
   have hs0 : 0 ≤ s := by positivity
-  have hy : 2 / hiW Θ V (n + 1) = 2 ^ (n + 2) * Real.exp (Θ * win V n) := by
+  have hy0 : 2 / hiW Θ V (n + 1) = 2 ^ (n + 2) * Real.exp (Θ * win V n) := by
     rw [div_eq_iff (hiW_pos (Θ := Θ) (V := V) (n + 1)).ne']
     simp only [hiW]
     have h1 : (2 : ℝ) ^ (n + 2) * (1 / 2) ^ (n + 1) = 2 := by
@@ -365,10 +379,13 @@ theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
     calc (2 : ℝ) = 2 ^ (n + 2) * (1 / 2) ^ (n + 1) *
           (Real.exp (Θ * win V n) * Real.exp (-(Θ * win V n))) := by rw [h1, h2, mul_one]
       _ = _ := by ring
+  have hy : (2 * (o : ℝ) + 4) / hiW Θ V (n + 1) =
+      (o + 2) * (2 ^ (n + 2) * Real.exp (Θ * win V n)) := by
+    rw [← hy0]; ring
   have hexp : Real.exp (Θ * win V n) ≤ Real.exp (Θ * s) :=
     Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (win_le_base (by linarith) n) hΘ.le)
   have hexp1 : 1 ≤ Real.exp (Θ * s) := Real.one_le_exp (by positivity)
-  have hceil := ceil_le_add_one (le_of_lt (div_pos (by norm_num : (0 : ℝ) < 2)
+  have hceil := ceil_le_add_one (le_of_lt (div_pos (by positivity : (0 : ℝ) < 2 * (o : ℝ) + 4)
     (hiW_pos (Θ := Θ) (V := V) (n + 1))))
   rw [hy] at hceil
   have hn : (n : ℝ) + 8 ≤ 2 ^ (n + 4) := by
@@ -382,11 +399,17 @@ theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
     rw [show n + 5 = (n + 2) + 3 by ring, pow_add]; norm_num
   have e4 : (2 : ℝ) ^ (n + 4) = 2 ^ (n + 2) * 4 := by
     rw [show n + 4 = (n + 2) + 2 by ring, pow_add]; norm_num
+  have ho0 : (0 : ℝ) ≤ o := Nat.cast_nonneg o
   unfold lowH; push_cast
   rw [hy, e5]
   rw [e4] at hn
   have h6 := mul_le_mul_of_nonneg_left hexp h5.le
   have h7 := mul_le_mul_of_nonneg_left hexp1 h5.le
+  have h8 := mul_le_mul_of_nonneg_left h6 (by linarith : (0 : ℝ) ≤ o + 2)
+  have h9 : (n : ℝ) + 4 + 2 * o ≤ (o + 2) * (4 * (2 ^ (n + 2) * Real.exp (Θ * s))) := by
+    have h10 : (n : ℝ) + 4 ≤ 4 * (2 ^ (n + 2) * Real.exp (Θ * s)) := by nlinarith
+    have h11 : (n : ℝ) + 4 + 2 * o ≤ (o + 2) * (n + 4) := by nlinarith [Nat.cast_nonneg (α := ℝ) n]
+    nlinarith
   nlinarith
 
 /-- The precision at level `n + 1`: `Q ≤ 39 (V^{2^n})⁴`. -/
@@ -406,51 +429,66 @@ theorem prec_succ_le (hV1 : 1 ≤ V) (n : ℕ) : (prec V (n + 1) : ℝ) ≤ 39 *
   linarith
 
 /-- The height: `M ≤ 6A²Q²`. -/
-theorem height_le (k : ℕ) : (height Θ V P k : ℝ) ≤
-    2 * (2 * (lowH Θ V k : ℝ) * (prec V k : ℝ)) ^ (r + 1) := by
-  have h := (height_spec Θ V P k).2.1
-  have hA : (1 : ℝ) ≤ lowH Θ V k := by exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH Θ V k)
+theorem height_le (k : ℕ) : (height o Θ V P k : ℝ) ≤
+    2 * (2 * (lowH o Θ V k : ℝ) * (prec V k : ℝ)) ^ (r + 1) := by
+  have h := (height_spec o Θ V P k).2.1
+  have hA : (1 : ℝ) ≤ lowH o Θ V k := by exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH o Θ V k)
   have hQ : (1 : ℝ) ≤ prec V k := by exact_mod_cast (by unfold prec; omega : 1 ≤ prec V k)
-  have h' : (height Θ V P k : ℝ) ≤ 2 * lowH Θ V k + (2 * lowH Θ V k * prec V k) ^ r := by
+  have h' : (height o Θ V P k : ℝ) ≤ 2 * lowH o Θ V k + (2 * lowH o Θ V k * prec V k) ^ r := by
     exact_mod_cast h
-  set y : ℝ := 2 * (lowH Θ V k : ℝ) * (prec V k : ℝ)
+  set y : ℝ := 2 * (lowH o Θ V k : ℝ) * (prec V k : ℝ)
   have hy1 : 1 ≤ y := by nlinarith
-  have h1 : 2 * (lowH Θ V k : ℝ) ≤ y ^ (r + 1) :=
+  have h1 : 2 * (lowH o Θ V k : ℝ) ≤ y ^ (r + 1) :=
     le_trans (by nlinarith) (le_self_pow₀ hy1 (by omega))
   have h2 : y ^ r ≤ y ^ (r + 1) := pow_le_pow_right₀ hy1 (by omega)
   linarith
 
-/-- The weight from below: `2|c_k| ≥ 2(Θ/2)⁸/(7M_k)⁸`. -/
+/-- The weight from below: `2|c_k| ≥ 2(Θ/2)^{2(o+1)}/(7M_k)^{2(o+1)}`. -/
 theorem wt_ge (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (k : ℕ) :
-    2 * (Θ / 2) ^ 8 / (7 * (height Θ V P k : ℝ)) ^ 8 ≤ wt Θ V P k := by
-  have hM1 : 1 ≤ height Θ V P k := by have := six_le_height (Θ := Θ) (V := V) P k; omega
-  have h1 := le_norm_sincPow hM1 (depth_nonneg hΘ k) ((depth_lt hΘ k).le.trans hΘ2)
-  have h2 : (Θ / 2) ^ 8 / (7 * (height Θ V P k : ℝ)) ^ 8 ≤
-      depth Θ k ^ 8 / (7 * (height Θ V P k : ℝ)) ^ 8 :=
-    div_le_div_of_nonneg_right (pow_le_pow_left₀ (by positivity) (half_le_depth hΘ k) 8)
+    2 * (Θ / 2) ^ (2 * (o + 1)) / (7 * (height o Θ V P k : ℝ)) ^ (2 * (o + 1)) ≤ wt o Θ V P k := by
+  have hM1 : 1 ≤ height o Θ V P k := by
+    have := two_mul_le_height (o := o) (Θ := Θ) (V := V) P k; omega
+  have h1 := le_norm_sincPow hM1 (depth_nonneg hΘ k) ((depth_lt hΘ k).le.trans hΘ2) (o + 1)
+  have h2 : (Θ / 2) ^ (2 * (o + 1)) / (7 * (height o Θ V P k : ℝ)) ^ (2 * (o + 1)) ≤
+      depth Θ k ^ (2 * (o + 1)) / (7 * (height o Θ V P k : ℝ)) ^ (2 * (o + 1)) :=
+    div_le_div_of_nonneg_right (pow_le_pow_left₀ (by positivity) (half_le_depth hΘ k) _)
       (by positivity)
   unfold wt coef
   rw [mul_div_assoc]
   linarith
 
-/-- **The takeover.** For `V ≥ 8(306 + 8 log(1/Θ))/Θ`, the weight of level `n + 1` exceeds the earlier
-ones from the start of its window: `2|c_{n+1}| e^{(x_{n+1} − x_n)U_{n+1}} ≥ 8`. -/
-theorem eight_le_wt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
-    (hV : 8 * ((182 * (r + 1) + 8 * Real.log (1 / Θ)) / Θ) ≤ V) (n : ℕ) :
-    8 ≤ wt Θ V P (n + 1) * Real.exp ((depth Θ (n + 1) - depth Θ n) * win V (n + 1)) := by
+/-- The constant `W = ((27 + o) 2(o+1)(r+1) + 2(o+1) log(1/Θ))/Θ` of the windows. -/
+def towerW (o r : ℕ) (Θ : ℝ) : ℝ :=
+  ((27 + o) * (2 * (o + 1) * (r + 1)) + 2 * (o + 1) * Real.log (1 / Θ)) / Θ
+
+theorem one_le_towerW (o r : ℕ) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : 1 ≤ towerW o r Θ := by
   have hL0 : 0 ≤ Real.log (1 / Θ) := Real.log_nonneg (by rw [le_div_iff₀ hΘ]; linarith)
-  have hW1 : 1 ≤ (182 * (r + 1) + 8 * Real.log (1 / Θ)) / Θ := by
-    rw [le_div_iff₀ hΘ]; have : (0 : ℝ) ≤ r := Nat.cast_nonneg r; linarith
+  have ho : (0 : ℝ) ≤ o := Nat.cast_nonneg o
+  have hr : (0 : ℝ) ≤ r := Nat.cast_nonneg r
+  rw [towerW, le_div_iff₀ hΘ]
+  nlinarith
+
+/-- **The takeover.** For `V ≥ 8W`, the weight of level `n + 1` exceeds the earlier ones from the
+start of its window: `2|c_{n+1}| e^{(x_{n+1} − x_n)U_{n+1}} ≥ 8`. -/
+theorem eight_le_wt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hV : 8 * towerW o r Θ ≤ V)
+    (n : ℕ) :
+    8 ≤ wt o Θ V P (n + 1) * Real.exp ((depth Θ (n + 1) - depth Θ n) * win V (n + 1)) := by
+  have hW1 := one_le_towerW o r hΘ hΘ2
   have hV1 : 1 ≤ V := by linarith
   set s := V ^ 2 ^ n with hs
   have hsW := two_pow_mul_le_pow hW1 hV n
   rw [← hs] at hsW
-  have hsW' : 2 ^ (n + 2) * (182 * ((r + 1 : ℕ) : ℝ) + 8 * Real.log (1 / Θ)) ≤ Θ * s := by
+  set N : ℕ := 2 * (o + 1)
+  set R : ℕ := r + 1
+  set C : ℝ := (o : ℝ) + 2
+  have hC : 1 ≤ C := by have : (0 : ℝ) ≤ o := Nat.cast_nonneg o; simp only [C]; linarith
+  have hsW' : 2 ^ (n + 2) * ((25 + C) * ((N : ℝ) * R) + N * Real.log (1 / Θ)) ≤ Θ * s := by
     have := mul_le_mul_of_nonneg_left hsW hΘ.le
-    rw [show Θ * (2 ^ (n + 2) * ((182 * (r + 1) + 8 * Real.log (1 / Θ)) / Θ)) =
-      2 ^ (n + 2) * (182 * (r + 1) + 8 * Real.log (1 / Θ)) by field_simp] at this
-    push_cast
-    exact this
+    rw [towerW, show Θ * (2 ^ (n + 2) * (((27 + o) * (2 * (o + 1) * (r + 1)) +
+      2 * (o + 1) * Real.log (1 / Θ)) / Θ)) = 2 ^ (n + 2) * ((27 + o) * (2 * (o + 1) * (r + 1)) +
+      2 * (o + 1) * Real.log (1 / Θ)) by field_simp] at this
+    simp only [N, R, C]; push_cast
+    convert this using 3; ring
   have h2n : (1 : ℝ) ≤ 2 ^ (n + 2) := one_le_pow₀ (by norm_num)
   have hs1 : 1 ≤ s := le_trans (by nlinarith) hsW
   have hns : (n : ℝ) ≤ s := by
@@ -458,73 +496,74 @@ theorem eight_le_wt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
       have : n ≤ 2 ^ (n + 2) := (Nat.lt_two_pow_self (n := n + 2)).le.trans' (by omega)
       exact_mod_cast this
     nlinarith
-  have hkey := key_ineq hΘ hΘ2 n (r + 1) (by omega) hs1 hns hsW'
-  have hA := lowH_succ_le (Θ := Θ) hΘ hV1 n
+  have hkey := key_ineq hΘ hΘ2 hC n R N (by omega) (by omega) hs1 hns hsW'
+  have hA := lowH_succ_le (o := o) (Θ := Θ) hΘ hV1 n
   have hQ := prec_succ_le hV1 n
-  have hM := height_le (Θ := Θ) (V := V) P (n + 1)
-  have hwt := wt_ge (V := V) P hΘ hΘ2 (n + 1)
+  have hM := height_le (o := o) (Θ := Θ) (V := V) P (n + 1)
+  have hwt := wt_ge (o := o) (V := V) P hΘ hΘ2 (n + 1)
   rw [← hs] at hA hQ
-  have hA1 : (1 : ℝ) ≤ (lowH Θ V (n + 1) : ℝ) := by
-    exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH Θ V (n + 1))
+  have hA1 : (1 : ℝ) ≤ (lowH o Θ V (n + 1) : ℝ) := by
+    exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH o Θ V (n + 1))
   have hQ1 : (1 : ℝ) ≤ (prec V (n + 1) : ℝ) := by
     exact_mod_cast (by unfold prec; omega : 1 ≤ prec V (n + 1))
-  have hM1 : (1 : ℝ) ≤ (height Θ V P (n + 1) : ℝ) := by
-    exact_mod_cast (by have := six_le_height (Θ := Θ) (V := V) P (n + 1); omega :
-      1 ≤ height Θ V P (n + 1))
-  set A : ℝ := (lowH Θ V (n + 1) : ℝ)
+  have hM1 : (1 : ℝ) ≤ (height o Θ V P (n + 1) : ℝ) := by
+    exact_mod_cast (by have := two_mul_le_height (o := o) (Θ := Θ) (V := V) P (n + 1); omega :
+      1 ≤ height o Θ V P (n + 1))
+  set A : ℝ := (lowH o Θ V (n + 1) : ℝ)
   set Q : ℝ := (prec V (n + 1) : ℝ)
-  set M : ℝ := (height Θ V P (n + 1) : ℝ)
-  -- `7M ≤ 14(2AQ)^{r+1} ≤ 2^{(n+12)(r+1)+4} e^{(r+1)Θs} s^{4(r+1)}`
-  have hbase : 7 * M ≤ 2 ^ ((n + 12) * (r + 1)) * 16 *
-      (Real.exp (Θ * s) ^ (r + 1) * s ^ (4 * (r + 1))) := by
-    have h2AQ : 2 * A * Q ≤ 2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4) := by
-      have h1 : 2 * A * Q ≤ 2 * (2 ^ (n + 5) * Real.exp (Θ * s)) * (39 * s ^ 4) :=
-        mul_le_mul (by linarith) hQ (by linarith) (by positivity)
+  set M : ℝ := (height o Θ V P (n + 1) : ℝ)
+  -- `7M ≤ 14(2AQ)^R ≤ C^R 2^{(n+12)R} 16 e^{RΘs} s^{4R}`
+  have hbase : 7 * M ≤ C ^ R * 2 ^ ((n + 12) * R) * 16 *
+      (Real.exp (Θ * s) ^ R * s ^ (4 * R)) := by
+    have h2AQ : 2 * A * Q ≤ C * (2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4)) := by
+      have h1 : 2 * A * Q ≤ 2 * (C * 2 ^ (n + 5) * Real.exp (Θ * s)) * (39 * s ^ 4) :=
+        mul_le_mul (by simp only [C]; linarith) hQ (by linarith) (by positivity)
       have e : (2 : ℝ) ^ (n + 12) = 2 ^ (n + 5) * 128 := by
         rw [show n + 12 = (n + 5) + 7 by ring, pow_add]; norm_num
-      have hpos : 0 ≤ 2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4) := by positivity
-      calc 2 * A * Q ≤ 2 * (2 ^ (n + 5) * Real.exp (Θ * s)) * (39 * s ^ 4) := h1
-        _ = 78 * (2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4)) := by ring
-        _ ≤ 128 * (2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4)) :=
+      have hpos : 0 ≤ C * (2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4)) := by positivity
+      calc 2 * A * Q ≤ 2 * (C * 2 ^ (n + 5) * Real.exp (Θ * s)) * (39 * s ^ 4) := h1
+        _ = 78 * (C * (2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4))) := by ring
+        _ ≤ 128 * (C * (2 ^ (n + 5) * (Real.exp (Θ * s) * s ^ 4))) :=
             mul_le_mul_of_nonneg_right (by norm_num) hpos
-        _ = 2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4) := by rw [e]; ring
-    have hpow := pow_le_pow_left₀ (by nlinarith) h2AQ (r + 1)
-    have e : (2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4)) ^ (r + 1) =
-        2 ^ ((n + 12) * (r + 1)) * (Real.exp (Θ * s) ^ (r + 1) * s ^ (4 * (r + 1))) := by
-      rw [mul_pow, mul_pow, ← pow_mul, ← pow_mul]
+        _ = C * (2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4)) := by rw [e]; ring
+    have hpow := pow_le_pow_left₀ (by nlinarith) h2AQ R
+    have e : (C * (2 ^ (n + 12) * (Real.exp (Θ * s) * s ^ 4))) ^ R =
+        C ^ R * 2 ^ ((n + 12) * R) * (Real.exp (Θ * s) ^ R * s ^ (4 * R)) := by
+      rw [mul_pow, mul_pow, mul_pow, ← pow_mul, ← pow_mul]; ring
     rw [e] at hpow
-    have hpos : 0 ≤ 2 ^ ((n + 12) * (r + 1)) * (Real.exp (Θ * s) ^ (r + 1) * s ^ (4 * (r + 1))) :=
-      by positivity
+    have hpos : 0 ≤ C ^ R * 2 ^ ((n + 12) * R) * (Real.exp (Θ * s) ^ R * s ^ (4 * R)) := by
+      positivity
+    have hM' : M ≤ 2 * (2 * A * Q) ^ R := hM
     nlinarith
   have hdelta : (depth Θ (n + 1) - depth Θ n) * win V (n + 1) = Θ * s ^ 2 / 2 ^ (n + 2) := by
     rw [depth_succ_sub, win_succ, hs, ← pow_mul, ← pow_succ, one_div_pow]; ring
   rw [hdelta]
-  set B := 2 ^ ((n + 12) * (r + 1)) * 16 * (Real.exp (Θ * s) ^ (r + 1) * s ^ (4 * (r + 1)))
+  set B := C ^ R * 2 ^ ((n + 12) * R) * 16 * (Real.exp (Θ * s) ^ R * s ^ (4 * R))
   have hB : 0 < B := by positivity
-  have hwt' : 2 * (Θ / 2) ^ 8 / B ^ 8 ≤ wt Θ V P (n + 1) :=
-    le_trans (div_le_div_of_nonneg_left (by positivity) (pow_pos (by linarith) 8)
-      (pow_le_pow_left₀ (by linarith) hbase 8)) hwt
+  have hwt' : 2 * (Θ / 2) ^ N / B ^ N ≤ wt o Θ V P (n + 1) :=
+    le_trans (div_le_div_of_nonneg_left (by positivity) (pow_pos (by linarith) _)
+      (pow_le_pow_left₀ (by linarith) hbase _)) hwt
   have hE : 0 < Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := Real.exp_pos _
-  calc (8 : ℝ) = 8 * B ^ 8 / B ^ 8 := by field_simp
-    _ ≤ 2 * (Θ / 2) ^ 8 * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) / B ^ 8 :=
+  calc (8 : ℝ) = 8 * B ^ N / B ^ N := by field_simp
+    _ ≤ 2 * (Θ / 2) ^ N * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) / B ^ N :=
         div_le_div_of_nonneg_right hkey (by positivity)
-    _ = 2 * (Θ / 2) ^ 8 / B ^ 8 * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := by ring
-    _ ≤ wt Θ V P (n + 1) * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) :=
+    _ = 2 * (Θ / 2) ^ N / B ^ N * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := by ring
+    _ ≤ wt o Θ V P (n + 1) * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) :=
         mul_le_mul_of_nonneg_right hwt' hE.le
 
 /-! ### The configuration -/
 
-theorem pt_true_re (k : ℕ) : (pt Θ V P (k, true)).re = 1 / 2 + depth Θ k := by simp [pt]
+theorem pt_true_re (k : ℕ) : (pt o Θ V P (k, true)).re = 1 / 2 + depth Θ k := by simp [pt]
 
-theorem pt_false_re (k : ℕ) : (pt Θ V P (k, false)).re = 1 / 2 - depth Θ k := by simp [pt]
+theorem pt_false_re (k : ℕ) : (pt o Θ V P (k, false)).re = 1 / 2 - depth Θ k := by simp [pt]
 
-theorem pt_im (kb : ℕ × Bool) : (pt Θ V P kb).im = 2 * Real.pi * height Θ V P kb.1 := by
+theorem pt_im (kb : ℕ × Bool) : (pt o Θ V P kb).im = 2 * Real.pi * height o Θ V P kb.1 := by
   rcases kb with ⟨k, _ | _⟩ <;> simp [pt]
 
 theorem depth_pos (hΘ : 0 < Θ) (k : ℕ) : 0 < depth Θ k :=
   lt_of_lt_of_le (by positivity) (half_le_depth hΘ k)
 
-theorem pt_injective (hΘ : 0 < Θ) : Function.Injective (pt Θ V P) := by
+theorem pt_injective (hΘ : 0 < Θ) : Function.Injective (pt o Θ V P) := by
   rintro ⟨k, b⟩ ⟨k', b'⟩ h
   have hre := congrArg Complex.re h
   have hd := (strictMono_depth hΘ).injective
@@ -538,14 +577,14 @@ theorem pt_injective (hΘ : 0 < Θ) : Function.Injective (pt Θ V P) := by
   · rw [pt_true_re, pt_true_re] at hre
     rw [hd (by linarith : depth Θ k = depth Θ k')]
 
-theorem reflect_pt (k : ℕ) (b : Bool) : reflect (pt Θ V P (k, b)) = pt Θ V P (k, !b) := by
+theorem reflect_pt (k : ℕ) (b : Bool) : reflect (pt o Θ V P (k, b)) = pt o Θ V P (k, !b) := by
   apply Complex.ext <;> cases b <;> simp [reflect, pt] <;> ring
 
 variable (V)
 
 /-- **The configuration** `{½ ± x_k + 2πiM_k}` with multiplicity one. -/
 def config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig where
-  carrier := Set.range (pt Θ V P)
+  carrier := Set.range (pt o Θ V P)
   mult := fun _ => 1
   one_le_mult := fun _ _ => le_rfl
   strip := by
@@ -561,44 +600,44 @@ def config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig where
   mult_reflect := fun _ _ => rfl
   finite_window := by
     intro T₁ T₂
-    refine (((Set.finite_Iic ⌊T₂⌋₊).prod (Set.finite_univ (α := Bool))).image (pt Θ V P)).subset ?_
+    refine (((Set.finite_Iic ⌊T₂⌋₊).prod (Set.finite_univ (α := Bool))).image (pt o Θ V P)).subset ?_
     rintro ρ ⟨⟨⟨k, b⟩, rfl⟩, -, hT⟩
     refine ⟨(k, b), ⟨Set.mem_Iic.mpr ?_, Set.mem_univ _⟩, rfl⟩
     rw [pt_im] at hT
-    have hk : (k : ℝ) ≤ height Θ V P k := by exact_mod_cast k_le_height P k
-    have hM0 : (0 : ℝ) ≤ height Θ V P k := Nat.cast_nonneg _
+    have hk : (k : ℝ) ≤ height o Θ V P k := by exact_mod_cast k_le_height P k
+    have hM0 : (0 : ℝ) ≤ height o Θ V P k := Nat.cast_nonneg _
     have : (k : ℝ) ≤ T₂ := by nlinarith [Real.pi_gt_three]
     exact Nat.le_floor this
 
 variable {V}
 
 theorem gammaOf_pt_true (k : ℕ) :
-    gammaOf (pt Θ V P (k, true)) = splinePoint (height Θ V P k) (depth Θ k) := by
+    gammaOf (pt o Θ V P (k, true)) = splinePoint (height o Θ V P k) (depth Θ k) := by
   apply Complex.ext <;> simp [gammaOf, pt, splinePoint, Complex.div_I]
 
 theorem gammaOf_pt_false (k : ℕ) :
-    gammaOf (pt Θ V P (k, false)) = conj (splinePoint (height Θ V P k) (depth Θ k)) := by
+    gammaOf (pt o Θ V P (k, false)) = conj (splinePoint (height o Θ V P k) (depth Θ k)) := by
   apply Complex.ext <;> simp [gammaOf, pt, splinePoint, Complex.div_I]
 
 theorem normSq_gammaOf_pt_ge (kb : ℕ × Bool) :
-    (kb.1 : ℝ) ^ 2 ≤ Complex.normSq (gammaOf (pt Θ V P kb)) := by
-  have hre : (gammaOf (pt Θ V P kb)).re = 2 * Real.pi * height Θ V P kb.1 := by
+    (kb.1 : ℝ) ^ 2 ≤ Complex.normSq (gammaOf (pt o Θ V P kb)) := by
+  have hre : (gammaOf (pt o Θ V P kb)).re = 2 * Real.pi * height o Θ V P kb.1 := by
     rcases kb with ⟨k, _ | _⟩
     · rw [gammaOf_pt_false, Complex.conj_re, splinePoint_re]
     · rw [gammaOf_pt_true, splinePoint_re]
   rw [Complex.normSq_apply, hre]
-  have hk : (kb.1 : ℝ) ≤ height Θ V P kb.1 := by exact_mod_cast k_le_height P kb.1
+  have hk : (kb.1 : ℝ) ≤ height o Θ V P kb.1 := by exact_mod_cast k_le_height P kb.1
   have h0 : (0 : ℝ) ≤ kb.1 := Nat.cast_nonneg _
-  have hM0 : (0 : ℝ) ≤ height Θ V P kb.1 := Nat.cast_nonneg _
-  have h1 : (kb.1 : ℝ) ≤ 2 * Real.pi * height Θ V P kb.1 := by nlinarith [Real.pi_gt_three]
+  have hM0 : (0 : ℝ) ≤ height o Θ V P kb.1 := Nat.cast_nonneg _
+  have h1 : (kb.1 : ℝ) ≤ 2 * Real.pi * height o Θ V P kb.1 := by nlinarith [Real.pi_gt_three]
   have h2 := mul_le_mul h1 h1 h0 (h0.trans h1)
-  nlinarith [mul_self_nonneg (gammaOf (pt Θ V P kb)).im]
+  nlinarith [mul_self_nonneg (gammaOf (pt o Θ V P kb)).im]
 
 theorem temperedConfig_config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
-    TemperedConfig (config V P hΘ hΘ2) := by
+    TemperedConfig (config o V P hΘ hΘ2) := by
   unfold TemperedConfig
-  set e := Equiv.ofInjective (pt Θ V P) (pt_injective P hΘ)
-  show Summable fun ρ : Set.range (pt Θ V P) => ((1 : ℕ) : ℝ) / (1 + Complex.normSq (gammaOf ρ))
+  set e := Equiv.ofInjective (pt o Θ V P) (pt_injective P hΘ)
+  show Summable fun ρ : Set.range (pt o Θ V P) => ((1 : ℕ) : ℝ) / (1 + Complex.normSq (gammaOf ρ))
   refine (e.summable_iff).mp ?_
   have hg : Summable fun kb : ℕ × Bool => 1 / (1 + (kb.1 : ℝ) ^ 2) := by
     refine (summable_prod_of_nonneg (fun kb => by positivity)).mpr ⟨fun k => ?_, ?_⟩
@@ -618,15 +657,19 @@ theorem temperedConfig_config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
       linarith
   simp only [Function.comp_def, e, Equiv.ofInjective_apply, Nat.cast_one]
   refine Summable.of_nonneg_of_le (fun kb => div_nonneg zero_le_one
-    (by linarith [Complex.normSq_nonneg (gammaOf (pt Θ V P kb))])) (fun kb => ?_) hg
-  exact one_div_le_one_div_of_le (by positivity) (by linarith [normSq_gammaOf_pt_ge (Θ := Θ) (V := V) P kb])
+    (by linarith [Complex.normSq_nonneg (gammaOf (pt o Θ V P kb))])) (fun kb => ?_) hg
+  exact one_div_le_one_div_of_le (by positivity) (by linarith [normSq_gammaOf_pt_ge (o := o) (Θ := Θ) (V := V) P kb])
 
 /-! ### The traces -/
 
-theorem paperFT_weilTest_spline (w : ℂ) :
-    paperFT (EF.weilTest (boxSpline 1 3) (boxSpline 1 3)) w = sincC w ^ 8 := by
-  have hb := (contDiff_boxSpline (r := 1) one_pos 2).continuous
-  have hbc := hasCompactSupport_of_support_subset_abs (boxSpline_support (r := 1) one_pos 3)
+theorem contDiff_two_boxSpline {o : ℕ} (ho : 3 ≤ o) : ContDiff ℝ 2 (boxSpline 1 o) := by
+  obtain ⟨m, rfl⟩ : ∃ m, o = m + 3 := ⟨o - 3, by omega⟩
+  exact (contDiff_boxSpline (r := 1) one_pos (m + 2)).of_le (by exact_mod_cast (by omega : 2 ≤ m + 2))
+
+theorem paperFT_weilTest_spline {o : ℕ} (ho : 3 ≤ o) (w : ℂ) :
+    paperFT (EF.weilTest (boxSpline 1 o) (boxSpline 1 o)) w = sincC w ^ (2 * (o + 1)) := by
+  have hb := (contDiff_two_boxSpline ho).continuous
+  have hbc := hasCompactSupport_of_support_subset_abs (boxSpline_support (r := 1) one_pos o)
   rw [EF.paperFT_weilTest hb hb hbc hbc, conj_paperFT_boxSpline, paperFT_boxSpline_eq]
   ring
 
@@ -648,84 +691,81 @@ theorem I_mul_conj_splinePoint (M : ℕ) (x u : ℝ) : I * conj (splinePoint M x
 
 /-- **The traces of the tower.** `2 Re S(u) = Σ_k (e^{x_k u} 2 Re(c_k e^{iγ_k u}) +
 e^{−x_k u} 2 Re(c̄_k e^{iγ_k u}))`, `γ_k = 2πM_k`. -/
-theorem two_re_lagStructure_config (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (u : ℝ) :
-    2 * (lagStructure (config V P hΘ hΘ2) (boxSpline 1 3) u).re =
-      ∑' k, (Real.exp (depth Θ k * u) * (2 * (coef Θ V P k *
-          cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I)).re) +
-        Real.exp (-(depth Θ k * u)) * (2 * (conj (coef Θ V P k) *
-          cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I)).re)) := by
-  set Z := config V P hΘ hΘ2
-  have hb3 := contDiff_boxSpline (r := 1) one_pos 2
-  have hbs := boxSpline_support (r := 1) one_pos 3
+theorem two_re_lagStructure_config (ho : 3 ≤ o) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (u : ℝ) :
+    2 * (lagStructure (config o V P hΘ hΘ2) (boxSpline 1 o) u).re =
+      ∑' k, (Real.exp (depth Θ k * u) * (2 * (coef o Θ V P k *
+          cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I)).re) +
+        Real.exp (-(depth Θ k * u)) * (2 * (conj (coef o Θ V P k) *
+          cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I)).re)) := by
+  set Z := config o V P hΘ hΘ2
+  have hb3 := contDiff_two_boxSpline ho
+  have hbs := boxSpline_support (r := 1) one_pos o
   have hs := summable_lagStructure Z (temperedConfig_config P hΘ hΘ2) hb3 hbs u
-  set e := Equiv.ofInjective (pt Θ V P) (pt_injective P hΘ)
-  set F : ℕ × Bool → ℂ := fun kb => paperFT (EF.weilTest (boxSpline 1 3) (boxSpline 1 3))
-    (gammaOf (pt Θ V P kb)) * cexp (I * gammaOf (pt Θ V P kb) * u) with hF
-  have hcomp : ∀ kb, ((Z.mult (e kb) : ℂ) * paperFT (EF.weilTest (boxSpline 1 3) (boxSpline 1 3))
+  set e := Equiv.ofInjective (pt o Θ V P) (pt_injective P hΘ)
+  set F : ℕ × Bool → ℂ := fun kb => paperFT (EF.weilTest (boxSpline 1 o) (boxSpline 1 o))
+    (gammaOf (pt o Θ V P kb)) * cexp (I * gammaOf (pt o Θ V P kb) * u) with hF
+  have hcomp : ∀ kb, ((Z.mult (e kb) : ℂ) * paperFT (EF.weilTest (boxSpline 1 o) (boxSpline 1 o))
       (gammaOf (e kb)) * cexp (I * gammaOf (e kb) * u)) = F kb := by
     intro kb
     simp only [Z, config, e, Equiv.ofInjective_apply, Nat.cast_one, one_mul, hF]
-  have hS : HasSum F (lagStructure Z (boxSpline 1 3) u) := by
+  have hS : HasSum F (lagStructure Z (boxSpline 1 o) u) := by
     have h1 := ((e.hasSum_iff).mpr hs.hasSum)
     simp only [Function.comp_def, hcomp] at h1
     exact h1
   -- the fibre over level `k`
-  set g : ℕ → ℂ := fun k => coef Θ V P k * (Real.exp (depth Θ k * u) : ℂ) *
-      cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I) +
-    conj (coef Θ V P k) * (Real.exp (-(depth Θ k * u)) : ℂ) *
-      cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I) with hg
+  set g : ℕ → ℂ := fun k => coef o Θ V P k * (Real.exp (depth Θ k * u) : ℂ) *
+      cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I) +
+    conj (coef o Θ V P k) * (Real.exp (-(depth Θ k * u)) : ℂ) *
+      cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I) with hg
   have hfib : ∀ k, HasSum (fun b : Bool => F (k, b)) (g k) := by
     intro k
     have h := hasSum_fintype (fun b : Bool => F (k, b))
     rw [Fintype.sum_bool] at h
     convert h using 1
-    simp only [hF, hg, gammaOf_pt_true, gammaOf_pt_false, paperFT_weilTest_spline, sincC_conj,
+    simp only [hF, hg, gammaOf_pt_true, gammaOf_pt_false, paperFT_weilTest_spline ho, sincC_conj,
       map_pow, I_mul_splinePoint, I_mul_conj_splinePoint, Complex.exp_add, ← Complex.ofReal_exp,
       coef]
     ring
-  have hG : HasSum g (lagStructure Z (boxSpline 1 3) u) := hS.prod_fiberwise hfib
+  have hG : HasSum g (lagStructure Z (boxSpline 1 o) u) := hS.prod_fiberwise hfib
   have hre := (Complex.reCLM.hasSum hG).mul_left 2
   simp only [Complex.reCLM_apply] at hre
   rw [← hre.tsum_eq]
   refine tsum_congr fun k => ?_
   simp only [hg, Complex.add_re]
-  rw [show coef Θ V P k * (Real.exp (depth Θ k * u) : ℂ) *
-      cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I) =
-      (Real.exp (depth Θ k * u) : ℂ) * (coef Θ V P k *
-        cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I)) by ring,
-    show conj (coef Θ V P k) * (Real.exp (-(depth Θ k * u)) : ℂ) *
-      cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I) =
-      (Real.exp (-(depth Θ k * u)) : ℂ) * (conj (coef Θ V P k) *
-        cexp (((2 * Real.pi * height Θ V P k * u : ℝ) : ℂ) * I)) by ring,
+  rw [show coef o Θ V P k * (Real.exp (depth Θ k * u) : ℂ) *
+      cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I) =
+      (Real.exp (depth Θ k * u) : ℂ) * (coef o Θ V P k *
+        cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I)) by ring,
+    show conj (coef o Θ V P k) * (Real.exp (-(depth Θ k * u)) : ℂ) *
+      cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I) =
+      (Real.exp (-(depth Θ k * u)) : ℂ) * (conj (coef o Θ V P k) *
+        cexp (((2 * Real.pi * height o Θ V P k * u : ℝ) : ℂ) * I)) by ring,
     Complex.re_ofReal_mul, Complex.re_ofReal_mul]
   ring
 
 end SplineTower
 
 open SplineTower in
-/-- **Zero configurations need an attained top at finitely many Frobenii.** For every finite family
-of primes `P₁, …, P_r` and `0 < Θ ≤ ½` there is a tempered zero configuration without real zeros
-whose real parts have the supremum `½ + Θ`, not attained, and whose spline traces are bounded below
-at every degree `Π Pᵢ^{aᵢ}`. -/
-theorem exists_zeroConfig_finPrimes_bddBelow_nonattained {r : ℕ} (P : Fin r → ℕ)
-    (hP : ∀ i, (P i).Prime) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+/-- **The blind side of finitely many Frobenii is the sign of `B̂²` at the zeros of `B̂`.** For the
+spline of order `o ≥ 3`, every finite family of primes `P₁, …, P_r` and `0 < Θ ≤ ½`, there is a
+tempered zero configuration without real zeros whose real parts have the supremum `½ + Θ`, not
+attained, and whose spline traces satisfy `(−1)^{o+1} 2 Re S(Σ aᵢ log Pᵢ) ≥ −5` at every degree. -/
+theorem exists_zeroConfig_finPrimes_signed_nonattained {o : ℕ} (ho : 3 ≤ o) {r : ℕ}
+    (P : Fin r → ℕ) (hP : ∀ i, (P i).Prime) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
     ∃ Z : ZeroConfig, TemperedConfig Z ∧ (∀ ρ ∈ Z.carrier, ρ.im ≠ 0) ∧
       (∀ ρ ∈ Z.carrier, ρ.re < 1 / 2 + Θ) ∧ (∀ β < 1 / 2 + Θ, ∃ ρ ∈ Z.carrier, β < ρ.re) ∧
-      ∀ a : Fin r → ℕ,
-        -5 ≤ 2 * (lagStructure Z (boxSpline 1 3) (∑ i, (a i : ℝ) * Real.log (P i))).re := by
-  set V : ℝ := 8 * ((182 * (r + 1) + 8 * Real.log (1 / Θ)) / Θ) with hVdef
-  have hL0 : 0 ≤ Real.log (1 / Θ) := Real.log_nonneg (by rw [le_div_iff₀ hΘ]; linarith)
-  have hV8 : 8 ≤ V := by
-    rw [hVdef]
-    have : 1 ≤ (182 * (r + 1) + 8 * Real.log (1 / Θ)) / Θ := by
-      rw [le_div_iff₀ hΘ]; have : (0 : ℝ) ≤ r := Nat.cast_nonneg r; linarith
-    linarith
+      ∀ a : Fin r → ℕ, -5 ≤ (-1) ^ (o + 1) *
+        (2 * (lagStructure Z (boxSpline 1 o) (∑ i, (a i : ℝ) * Real.log (P i))).re) := by
+  set V : ℝ := 8 * towerW o r Θ with hVdef
+  have hW1 := one_le_towerW o r hΘ hΘ2
+  have hV8 : 8 ≤ V := by rw [hVdef]; linarith
   have hV1 : 1 ≤ V := by linarith
-  refine ⟨config V P hΘ hΘ2, temperedConfig_config P hΘ hΘ2, ?_, ?_, ?_, fun a => ?_⟩
+  refine ⟨config o V P hΘ hΘ2, temperedConfig_config P hΘ hΘ2, ?_, ?_, ?_, fun a => ?_⟩
   · rintro ρ ⟨kb, rfl⟩
     rw [pt_im]
-    have := six_le_height (Θ := Θ) (V := V) P kb.1
-    have hM : (0 : ℝ) < height Θ V P kb.1 := by exact_mod_cast (by omega : 0 < height Θ V P kb.1)
+    have := two_mul_le_height (o := o) (Θ := Θ) (V := V) P kb.1
+    have hM : (0 : ℝ) < height o Θ V P kb.1 := by
+      exact_mod_cast (by omega : 0 < height o Θ V P kb.1)
     positivity
   · rintro ρ ⟨⟨k, b⟩, rfl⟩
     have h1 := depth_lt hΘ k
@@ -735,43 +775,84 @@ theorem exists_zeroConfig_finPrimes_bddBelow_nonattained {r : ℕ} (P : Fin r �
     · rw [pt_true_re]; linarith
   · intro β hβ
     obtain ⟨k, hk⟩ := exists_depth_gt hΘ (show β - 1 / 2 < Θ by linarith)
-    exact ⟨pt Θ V P (k, true), ⟨(k, true), rfl⟩, by rw [pt_true_re]; linarith⟩
+    exact ⟨pt o Θ V P (k, true), ⟨(k, true), rfl⟩, by rw [pt_true_re]; linarith⟩
   · set lam := ∑ i, (a i : ℝ) * Real.log (P i) with hlam
     have hlam0 : 0 ≤ lam := Finset.sum_nonneg fun i _ => mul_nonneg (Nat.cast_nonneg _)
       (Real.log_nonneg (by exact_mod_cast (hP i).one_lt.le))
-    rw [two_re_lagStructure_config P hΘ hΘ2]
+    rw [two_re_lagStructure_config P ho hΘ hΘ2, ← tsum_mul_left]
     obtain ⟨k, hkl, hku⟩ := exists_window (monotone_win hV1) (by rw [win_zero]; exact hlam0)
       (exists_le_win (by linarith) lam)
+    set σ : ℝ := (-1) ^ (o + 1)
+    have hσ : |σ| = 1 := by simp [σ]
     -- the phases of level `j` are within `¼` of `1` on `[0, U_{j+1}]`
-    have hph : ∀ j, lam ≤ win V (j + 1) → wt Θ V P j / 2 ≤
-        2 * (coef Θ V P j * cexp (((2 * Real.pi * height Θ V P j * lam : ℝ) : ℂ) * I)).re := by
+    have hph : ∀ j, lam ≤ win V (j + 1) → wt o Θ V P j / 2 ≤
+        σ * (2 * (coef o Θ V P j * cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) : ℂ) *
+          I)).re) := by
       intro j hj
-      have hres := norm_exp_height_sub_one_le (Θ := Θ) P hP hV1 j a hj
-      have h := re_sincPow_mul_exp_ge (six_le_height (Θ := Θ) (V := V) P j)
+      have hres := norm_exp_height_sub_one_le (o := o) (Θ := Θ) P hP hV1 j a hj
+      have h := re_sincPow_mul_exp_ge (k := o + 1) (by omega)
+        (two_mul_le_height (o := o) (Θ := Θ) (V := V) P j)
         (depth_nonneg hΘ j) ((depth_lt hΘ j).le.trans hΘ2) hres
       unfold wt coef
+      simp only [σ]
       linarith
-    have hnorm : ∀ j (c : ℂ), |2 * (c * cexp (((2 * Real.pi * height Θ V P j * lam : ℝ) : ℂ) *
-        I)).re| ≤ 2 * ‖c‖ := by
+    have hnorm : ∀ j (c : ℂ), |σ * (2 * (c * cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) :
+        ℂ) * I)).re)| ≤ 2 * ‖c‖ := by
       intro j c
-      rw [abs_mul, abs_two]
+      rw [abs_mul, hσ, one_mul, abs_mul, abs_two]
       refine mul_le_mul_of_nonneg_left ((Complex.abs_re_le_norm _).trans ?_) (by norm_num)
       rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
-    refine neg_five_le_tsum_of_window hΘ (x := depth Θ) (w := wt Θ V P) (U := win V)
+    have hterm : ∀ j, σ * (Real.exp (depth Θ j * lam) * (2 * (coef o Θ V P j *
+        cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) : ℂ) * I)).re) +
+        Real.exp (-(depth Θ j * lam)) * (2 * (conj (coef o Θ V P j) *
+          cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) : ℂ) * I)).re)) =
+        Real.exp (depth Θ j * lam) * (σ * (2 * (coef o Θ V P j *
+          cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) : ℂ) * I)).re)) +
+        Real.exp (-(depth Θ j * lam)) * (σ * (2 * (conj (coef o Θ V P j) *
+          cexp (((2 * Real.pi * height o Θ V P j * lam : ℝ) : ℂ) * I)).re)) := fun j => by ring
+    simp only [hterm]
+    refine neg_five_le_tsum_of_window hΘ (x := depth Θ) (w := wt o Θ V P) (U := win V)
       (fun j => depth_nonneg hΘ j) (fun j => (depth_lt hΘ j).le) (strictMono_depth hΘ).monotone
       (wt_nonneg P) ?_ ?_ (monotone_win hV1) (le_of_eq win_zero.symm) (fun j => ?_) (fun j => ?_)
       hlam0 hkl hku (hph k hku) ?_ ?_
-    · have := wt_le_hiW (V := V) P hΘ hΘ2 0
+    · have := wt_le_hiW (o := o) (V := V) P hΘ hΘ2 0
       simpa [hiW] using this
     · intro j
-      have := wt_le_hiW (V := V) P hΘ hΘ2 (j + 1)
+      have := wt_le_hiW (o := o) (V := V) P hΘ hΘ2 (j + 1)
       simpa [hiW] using this
     · exact hnorm j _
-    · have h := hnorm j (conj (coef Θ V P j))
+    · have h := hnorm j (conj (coef o Θ V P j))
       rwa [Complex.norm_conj] at h
-    · exact le_trans (by have := wt_nonneg (Θ := Θ) (V := V) P (k + 1); linarith)
+    · exact le_trans (by have := wt_nonneg (o := o) (Θ := Θ) (V := V) P (k + 1); linarith)
         (hph (k + 1) (hku.trans (monotone_win hV1 (Nat.le_succ _))))
     · rintro n rfl
       exact eight_le_wt_mul_exp P hΘ hΘ2 le_rfl n
+
+/-- **Zero configurations need an attained top at finitely many Frobenii** (cubic spline, from
+below). -/
+theorem exists_zeroConfig_finPrimes_bddBelow_nonattained {r : ℕ} (P : Fin r → ℕ)
+    (hP : ∀ i, (P i).Prime) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+    ∃ Z : ZeroConfig, TemperedConfig Z ∧ (∀ ρ ∈ Z.carrier, ρ.im ≠ 0) ∧
+      (∀ ρ ∈ Z.carrier, ρ.re < 1 / 2 + Θ) ∧ (∀ β < 1 / 2 + Θ, ∃ ρ ∈ Z.carrier, β < ρ.re) ∧
+      ∀ a : Fin r → ℕ,
+        -5 ≤ 2 * (lagStructure Z (boxSpline 1 3) (∑ i, (a i : ℝ) * Real.log (P i))).re := by
+  obtain ⟨Z, h1, h2, h3, h4, h5⟩ := exists_zeroConfig_finPrimes_signed_nonattained le_rfl P hP hΘ hΘ2
+  exact ⟨Z, h1, h2, h3, h4, fun a => by simpa using h5 a⟩
+
+/-- **The other side for the quartic spline.** For the spline of order `4` the coefficients at the
+zeros of `B̂` are negative, and the same towers keep the traces bounded above at every degree of a
+finite family of primes, with an unattained top. -/
+theorem exists_zeroConfig_finPrimes_bddAbove_nonattained_quartic {r : ℕ} (P : Fin r → ℕ)
+    (hP : ∀ i, (P i).Prime) {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+    ∃ Z : ZeroConfig, TemperedConfig Z ∧ (∀ ρ ∈ Z.carrier, ρ.im ≠ 0) ∧
+      (∀ ρ ∈ Z.carrier, ρ.re < 1 / 2 + Θ) ∧ (∀ β < 1 / 2 + Θ, ∃ ρ ∈ Z.carrier, β < ρ.re) ∧
+      ∀ a : Fin r → ℕ,
+        2 * (lagStructure Z (boxSpline 1 4) (∑ i, (a i : ℝ) * Real.log (P i))).re ≤ 5 := by
+  obtain ⟨Z, h1, h2, h3, h4, h5⟩ :=
+    exists_zeroConfig_finPrimes_signed_nonattained (by norm_num : 3 ≤ 4) P hP hΘ hΘ2
+  refine ⟨Z, h1, h2, h3, h4, fun a => ?_⟩
+  have := h5 a
+  norm_num at this
+  linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ
