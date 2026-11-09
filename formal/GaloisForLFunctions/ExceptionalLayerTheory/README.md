@@ -182,8 +182,17 @@ exceptional mode is unchanged.
 `0≤h≤1` and `t≥1`. Complex Mellin inversion retains every filter factor;
 rescaling the Mellin height bounds the angular cost polynomially.
 The selected kernel mode now grows for every `a(Re ρ−σ)>0`: rotation
-removes its fixed `π/4` Gamma penalty. A rotated finite-layer contour
-identity is still needed to turn this mode growth into prime-filter recovery.
+removes its fixed `π/4` Gamma penalty.
+
+`RotatedContoursForFiniteDivisorFilters.lean` proves the exact rotated
+contour identity and complete remainder `O(h^d t^N exp(at(c−σ)/2))`
+on every regular line `σ<c<Re ρ` inside the finite-layer gap.
+`BoundaryDampingReadsTheDivisor.lean` consequently recovers the same nonzero
+normalized divisor limit for every `a>0` and every eventually positive
+`h(t)→0`. For `h=exp(−κt)`, literal prime-filter growth holds throughout
+`dκ<a(Re ρ−σ)/2`. Independent decay holds above `dκ>a(1−σ)/2`.
+The fixed Gamma penalty is removed from the actual prime-filter theorem;
+the positive arithmetic gap `a(1−Re ρ)/2` remains.
 
 ## Mechanisms and tools
 

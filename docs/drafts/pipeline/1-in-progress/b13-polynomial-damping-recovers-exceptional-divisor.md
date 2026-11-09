@@ -31,6 +31,8 @@ No prime cancellation estimate at this scale is claimed.
 ## Status
 
 Corpus search found fixed exponential-speed receivers but no corresponding
-polynomial-radius theorem. The proposed varying-speed limit, kernel
-nonvanishing and cutoff comparison remain to be formalized after the
-boundary-contour source audits.
+polynomial-radius theorem. The boundary-contour and fixed-speed recovery
+modules now pass direct source audits; see
+`../3-formalized/b13-boundary-damping-recovers-exceptional-divisor.md`.
+The proposed varying-speed limit, kernel nonvanishing and cutoff comparison
+remain to be formalized.

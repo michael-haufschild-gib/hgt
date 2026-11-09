@@ -69,14 +69,14 @@ Euler products and their mixtures:
 -/
 
 open MeasureTheory Finset Filter Topology Complex
-open scoped ComplexConjugate ENNReal ArithmeticFunction.vonMangoldt Classical
+open scoped ComplexConjugate ENNReal ArithmeticFunction.vonMangoldt
 
 noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticWeightTheory
 
 open ArithmeticCorrelationGeometry ArithmeticGaugeTheory SurfaceOfSpecZ
-open ArithmeticOrientationGeometry
+open ArithmeticOrientationGeometry SquareRootThreshold Zeta23
 
 /-! ## Section 1. The five canonical family classes -/
 
@@ -91,6 +91,7 @@ theorem gaugeHaar_singleton_zero : gaugeHaar {(0 : GaugeTorus)} = 0 := by
     ‖twist (0 : GaugeTorus) p - 1‖ * ((p : ℕ) : ℝ) ^ (-(1 / 2 : ℝ))
   simp only [twist_trivial, sub_self, norm_zero, zero_mul, summable_zero]
 
+open Classical in
 /-- **Gauge-torus fixed-part decoupling.** On `(GaugeTorus, gaugeHaar)`, the trivial fibre `{0}`,
 every isozeric deformation class `isozericClass σ₀` (`½ ≤ σ₀ < 1`), and the entire pretentious jump
 locus have Haar measure `0`, and any value `c₀` placed at `0` cancels identically from every
@@ -134,7 +135,7 @@ theorem dirichletGauge_eq_zero_iff {q : ℕ} [NeZero q] (χ : DirichletCharacter
 def dirichletGaugeMeasure (q : ℕ) [NeZero q] : Measure GaugeTorus :=
   (q.totient : ℝ≥0∞)⁻¹ • ∑ χ : DirichletCharacter ℂ q, Measure.dirac (dirichletGauge χ)
 
-private theorem card_dirichletCharacter_eq_totient (q : ℕ) :
+private theorem card_dirichletCharacter_eq_totient (q : ℕ) [NeZero q] :
     Fintype.card (DirichletCharacter ℂ q) = q.totient := by
   rw [← Nat.card_eq_fintype_card, DirichletCharacter.card_eq_totient_of_hasEnoughRootsOfUnity ℂ]
 
@@ -151,6 +152,7 @@ instance (q : ℕ) [NeZero q] : IsProbabilityMeasure (dirichletGaugeMeasure q) :
 /-- At modulus `q`, the trivial fibre `{0}` (the principal character) has mass `1 / φ(q)`. -/
 theorem measureReal_dirichletGaugeMeasure_zero (q : ℕ) [NeZero q] :
     (dirichletGaugeMeasure q).real {0} = 1 / q.totient := by
+  classical
   unfold Measure.real dirichletGaugeMeasure
   simp only [Measure.smul_apply, Measure.coe_finsetSum, Finset.sum_apply,
     Measure.dirac_apply' _ (isClosed_singleton.measurableSet)]
@@ -188,7 +190,7 @@ theorem tendsto_cumulative_principal_fraction :
     have hr : |(4 : ℝ) ^ (-(3 / 4 : ℝ))| < 1 := by
       rw [abs_of_pos (by positivity)]
       exact Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) (by norm_num)
-    simpa only [mul_zero] using
+    simpa only [Function.comp_def, mul_zero] using
       ((tendsto_pow_atTop_nhds_zero_of_abs_lt_one hr).comp hk_top).const_mul 16
   refine squeeze_zero' ?_ ?_ hmaj
   · exact Eventually.of_forall fun Q =>
@@ -211,7 +213,8 @@ theorem tendsto_cumulative_principal_fraction :
         rwa [Real.rpow_mul (by norm_num), Real.rpow_natCast]
       exact_mod_cast Nat.le_floor hfl.le
     have hfs_half : (4 : ℝ) ^ ((3 / 4 : ℝ) * k) / 2 ≤ flipSize (3 / 4) k := by
-      have := Nat.lt_floor_add_one ((4 : ℝ) ^ ((3 / 4 : ℝ) * k))
+      have hlt1 : (4 : ℝ) ^ ((3 / 4 : ℝ) * k) < (flipSize (3 / 4) k : ℝ) + 1 :=
+        Nat.lt_floor_add_one _
       linarith
     have htot_lb : (4 : ℝ) ^ ((3 / 4 : ℝ) * k) / 2 * (4 : ℝ) ^ k ≤
         ∑ q ∈ Icc 1 Q, (q.totient : ℝ) := by
@@ -257,7 +260,9 @@ theorem measureReal_verticalHeightMeasure_Icc_le {T H : ℝ} (hT : 0 < T) (hH : 
       (verticalHeightMeasure T).real (Set.Icc (-H) H) ≤ H / T := by
   refine ⟨?_, ?_⟩
   · unfold Measure.real verticalHeightMeasure
-    simp [Measure.restrict_apply (isClosed_singleton.measurableSet)]
+    rw [Measure.smul_apply, Measure.restrict_apply (isClosed_singleton.measurableSet),
+      measure_mono_null Set.inter_subset_left Real.volume_singleton]
+    simp
   · unfold Measure.real verticalHeightMeasure
     rw [Measure.smul_apply, Measure.restrict_apply measurableSet_Icc, smul_eq_mul,
       ENNReal.toReal_mul, ENNReal.toReal_inv, ENNReal.toReal_ofReal (by linarith)]
@@ -274,29 +279,29 @@ theorem measureReal_verticalHeightMeasure_Icc_le {T H : ℝ} (hT : 0 < T) (hH : 
 theorem tendsto_verticalHeightMeasure_Icc {H : ℝ} (hH : 0 ≤ H) :
     Tendsto (fun T : ℝ => (verticalHeightMeasure T).real (Set.Icc (-H) H)) atTop (𝓝 0) := by
   refine squeeze_zero' (Eventually.of_forall fun _ => measureReal_nonneg) ?_
-    (tendsto_const_nhds.div_atTop tendsto_id)
+    ((tendsto_const_nhds (x := H)).div_atTop tendsto_id)
   filter_upwards [eventually_gt_atTop 0] with T hT
   exact (measureReal_verticalHeightMeasure_Icc_le hT hH).2
 
 /-! ### 1.4 Hecke eigenforms under the Weyl law and Rankin–Selberg -/
 
 /-- **Weyl-law mass vanishing.** By `weyl_lower_bound`, any fixed finite set of `r` cuspidal modes
-has uniform Weyl counting mass `r / cuspCount Λ → 0` as the eigenvalue cutoff `Λ → ∞`. -/
+has uniform Weyl counting mass `r / cuspCount L → 0` as the eigenvalue cutoff `L → ∞`. -/
 theorem tendsto_weyl_finiteMode_mass (r : ℕ) :
-    Tendsto (fun Λ : ℝ => (r : ℝ) / (BlackHoleRingdown.cuspCount Λ : ℝ)) atTop (𝓝 0) := by
-  obtain ⟨c, hc0, Λ₀, hweyl⟩ := BlackHoleRingdown.WeylBound.weyl_lower_bound
-  have hmaj : Tendsto (fun Λ : ℝ => ((r : ℝ) / c) / Λ) atTop (𝓝 0) :=
-    tendsto_const_nhds.div_atTop tendsto_id
+    Tendsto (fun L : ℝ => (r : ℝ) / (BlackHoleRingdown.cuspCount L : ℝ)) atTop (𝓝 0) := by
+  obtain ⟨c, hc0, L₀, hweyl⟩ := BlackHoleRingdown.WeylBound.weyl_lower_bound
+  have hmaj : Tendsto (fun L : ℝ => ((r : ℝ) / c) / L) atTop (𝓝 0) :=
+    (tendsto_const_nhds (x := (r : ℝ) / c)).div_atTop tendsto_id
   refine squeeze_zero' ?_ ?_ hmaj
-  · filter_upwards [eventually_ge_atTop (max Λ₀ 1)] with Λ _
+  · filter_upwards [eventually_ge_atTop (max L₀ 1)] with L _
     exact div_nonneg (Nat.cast_nonneg r) (Nat.cast_nonneg _)
-  · filter_upwards [eventually_ge_atTop (max Λ₀ 1)] with Λ hΛ
-    have hΛ₀ : Λ₀ ≤ Λ := (le_max_left _ _).trans hΛ
-    have hΛ1 : 0 < Λ := lt_of_lt_of_le zero_lt_one ((le_max_right _ _).trans hΛ)
-    have hcΛ : c * Λ ≤ (BlackHoleRingdown.cuspCount Λ : ℝ) := hweyl Λ hΛ₀
-    calc (r : ℝ) / (BlackHoleRingdown.cuspCount Λ : ℝ)
-        ≤ (r : ℝ) / (c * Λ) := div_le_div₀ (Nat.cast_nonneg r) le_rfl (mul_pos hc0 hΛ1) hcΛ
-      _ = ((r : ℝ) / c) / Λ := (div_div (r : ℝ) c Λ).symm
+  · filter_upwards [eventually_ge_atTop (max L₀ 1)] with L hL
+    have hL₀ : L₀ ≤ L := (le_max_left _ _).trans hL
+    have hL1 : 0 < L := lt_of_lt_of_le zero_lt_one ((le_max_right _ _).trans hL)
+    have hcL : c * L ≤ (BlackHoleRingdown.cuspCount L : ℝ) := hweyl L hL₀
+    calc (r : ℝ) / (BlackHoleRingdown.cuspCount L : ℝ)
+        ≤ (r : ℝ) / (c * L) := div_le_div₀ (Nat.cast_nonneg r) le_rfl (mul_pos hc0 hL1) hcL
+      _ = ((r : ℝ) / c) / L := (div_div (r : ℝ) c L).symm
 
 /-- Real symmetric-square cofactor `m ↦ τ(m²)` of a real Hecke sequence `τ : ℕ → ℝ`. -/
 def realTauSqAF (τ : ℕ → ℝ) (h0 : τ 0 = 0) : ArithmeticFunction ℝ :=
@@ -445,7 +450,7 @@ theorem commonFactor_moment_realizable_for_all_c {Ω : Type*} [MeasurableSpace �
 /-- Quantitative `2k`-th moment bound for a fixed-part perturbation supported on a set `S` of
 small `μ`-measure. -/
 theorem abs_integral_vanishingMass_sub_le {Ω : Type*} [MeasurableSpace Ω] (μ : Measure Ω)
-    [IsFiniteMeasure μ] {S : Set Ω} (hS : MeasurableSet S) {F V : Ω → ℝ} {M : ℝ} (hM : 0 ≤ M)
+    [IsFiniteMeasure μ] {S : Set Ω} (hS : MeasurableSet S) {F V : Ω → ℝ} {M : ℝ}
     (k : ℕ) (hFV_int : Integrable (fun ω => (F ω + V ω) ^ (2 * k)) μ)
     (hV_int : Integrable (fun ω => V ω ^ (2 * k)) μ)
     (hoff : ∀ ω, ω ∉ S → F ω = 0)
@@ -491,7 +496,7 @@ theorem tendsto_mixture_moment_decomp {Ω₁ Ω₂ : Type*} [MeasurableSpace Ω�
     {lam : ℕ → ℝ} (hlam0 : ∀ n, 0 ≤ lam n) (hlam1 : ∀ n, lam n ≤ 1)
     {S : ℕ → Set Ω₁} (hS : ∀ n, MeasurableSet (S n))
     (hS_lim : Tendsto (fun n => (μ n).real (S n)) atTop (𝓝 0))
-    {F V : ℕ → Ω₁ → ℝ} (W : ℕ → Ω₂ → ℝ) (c : ℝ) {M : ℝ} (hM : 0 ≤ M) (k : ℕ)
+    {F V : ℕ → Ω₁ → ℝ} (W : ℕ → Ω₂ → ℝ) (c M : ℝ) (k : ℕ)
     (hFV_int : ∀ n, Integrable (fun ω => (F n ω + V n ω) ^ (2 * k)) (μ n))
     (hV_int : ∀ n, Integrable (fun ω => V n ω ^ (2 * k)) (μ n))
     (hoff : ∀ n ω, ω ∉ S n → F n ω = 0)
@@ -519,7 +524,7 @@ theorem tendsto_mixture_moment_decomp {Ω₁ Ω₂ : Type*} [MeasurableSpace Ω�
         mul_le_mul_of_nonneg_right h1 (abs_nonneg _)
     _ = |(∫ ω, (F n ω + V n ω) ^ (2 * k) ∂(μ n)) - ∫ ω, V n ω ^ (2 * k) ∂(μ n)| := one_mul _
     _ ≤ 2 * M ^ (2 * k) * (μ n).real (S n) :=
-        abs_integral_vanishingMass_sub_le (μ n) (hS n) hM k (hFV_int n) (hV_int n) (hoff n)
+        abs_integral_vanishingMass_sub_le (μ n) (hS n) k (hFV_int n) (hV_int n) (hoff n)
           (hbFV n) (hbV n)
 
 /-! ## Section 3. Jensen–Minkowski coercivity and the RH equivalence for cover-family moments -/
@@ -611,7 +616,7 @@ theorem integral_re_fibreTrace_eq_zero (g : ℝ → ℝ) (R u : ℝ) :
     (continuous_fibreTrace g R u).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hmean : ∫ x, fibreTrace g R u x ∂gaugeHaar = 0 := by
-    unfold fibreTrace
+    unfold fibreTrace windowPrimes
     rw [integral_twistSum (fun p hp => (Nat.mem_primesLE.mp hp).2.ne_zero),
       if_neg (fun h1 => Nat.not_prime_one (Nat.mem_primesLE.mp h1).2)]
   have hre := Complex.reCLM.integral_comp_comm hint
@@ -629,12 +634,12 @@ theorem riemannHypothesis_iff_coverFamily_tensorExponent_sublinear {g : ℝ → 
     RiemannHypothesis ↔
       ∀ ε : ℝ, 0 < ε → ∀ᶠ k : ℕ in atTop, ∃ C : ℝ, ∀ N : ℕ,
         ∑ p ∈ (range (N + 1)).filter Nat.Prime,
-          Real.log p * (∫ x, (2 * (Zeta23.lagStructure Zeta23.zetaZeroConfig
-            (Zeta23.boxSpline 1 3) (Real.log p)).re +
+          Real.log p * (∫ x, (2 * (lagStructure zetaZeroConfig
+            (boxSpline 1 3) (Real.log p)).re +
               (fibreTrace g R (Real.log p) x).re) ^ (2 * k) ∂gaugeHaar) ≤
           C * ((N : ℝ) + 1) ^ (1 + ε * k) := by
   set tr0 : ℕ → ℝ := fun p =>
-    2 * (Zeta23.lagStructure Zeta23.zetaZeroConfig (Zeta23.boxSpline 1 3) (Real.log p)).re
+    2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log p)).re
   constructor
   · intro hRH ε hε
     obtain ⟨A, hA⟩ := riemannHypothesis_iff_moments_primeTraces.mp hRH
@@ -723,9 +728,10 @@ theorem riemannHypothesis_iff_coverFamily_tensorExponent_sublinear {g : ℝ → 
         ∫ x, fibreMoment g R k N x ∂gaugeHaar := by
       rw [hset_eq]
       unfold fibreMoment
-      rw [integral_finsetSum _ fun p _ =>
-        (((continuous_fibreTrace g R _).norm.pow _).integrable_of_hasCompactSupport
-          (HasCompactSupport.of_compactSpace _)).const_mul _]
+      rw [integral_finsetSum (f := fun p x =>
+        Real.log p * ‖fibreTrace g R (Real.log p) x‖ ^ (2 * k)) _ fun p _ =>
+        (continuous_const.mul ((continuous_fibreTrace g R _).norm.pow _)).integrable_of_hasCompactSupport
+          (HasCompactSupport.of_compactSpace _)]
       exact sum_congr rfl fun p _ => (integral_const_mul _ _).symm
     have hlog_le : Real.log N + R ≤ (1 / ε + R) * ((N : ℝ) + 1) ^ ε := by
       have h1 : Real.log N ≤ ((N : ℝ) + 1) ^ ε / ε :=
@@ -836,7 +842,7 @@ theorem riemannHypothesis_iff_coverFamily_tensorExponent_sublinear {g : ℝ → 
       have : 0 < 1 / η := by positivity
       linarith
     have hw : zetaZeroWidth ≤ a := by
-      rw [ArithmeticOrientationGeometry.zetaZeroWidth_le_iff_bddBelow_primeDegrees ha0 ha1]
+      rw [zetaZeroWidth_le_iff_bddBelow_primeDegrees ha0 ha1]
       set B : ℝ := |C| * (2 : ℝ) ^ (1 + ε * k) / Real.log 2
       have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
       have hB0 : 0 ≤ B := by dsimp only [B]; positivity
@@ -901,7 +907,7 @@ theorem zeroMotive_is_fixedPart_of_every_arithmeticFamily :
       Tendsto (fun Q : ℕ => (Q : ℝ) / ∑ q ∈ Icc 1 Q, (q.totient : ℝ)) atTop (𝓝 0) ∧
       (∀ H : ℝ, 0 ≤ H →
         Tendsto (fun T : ℝ => (verticalHeightMeasure T).real (Set.Icc (-H) H)) atTop (𝓝 0)) ∧
-      (∀ r : ℕ, Tendsto (fun Λ : ℝ => (r : ℝ) / (BlackHoleRingdown.cuspCount Λ : ℝ)) atTop (𝓝 0))) ∧
+      (∀ r : ℕ, Tendsto (fun L : ℝ => (r : ℝ) / (BlackHoleRingdown.cuspCount L : ℝ)) atTop (𝓝 0))) ∧
     (∀ (g : ArithmeticFunction ℝ),
       (∀ n : ℕ, 0 ≤ ((ArithmeticFunction.zeta : ArithmeticFunction ℝ) * g) n) →
       ∀ (lamVar : ℕ → ℝ), (∀ n : ℕ, 0 ≤ (Λ n : ℝ) + lamVar n) →
@@ -916,8 +922,8 @@ theorem zeroMotive_is_fixedPart_of_every_arithmeticFamily :
     (RiemannHypothesis ↔
       ∀ ε : ℝ, 0 < ε → ∀ᶠ k : ℕ in atTop, ∃ C : ℝ, ∀ N : ℕ,
         ∑ p ∈ (range (N + 1)).filter Nat.Prime,
-          Real.log p * (∫ x, (2 * (Zeta23.lagStructure Zeta23.zetaZeroConfig
-            (Zeta23.boxSpline 1 3) (Real.log p)).re +
+          Real.log p * (∫ x, (2 * (lagStructure zetaZeroConfig
+            (boxSpline 1 3) (Real.log p)).re +
               (fibreTrace (fun _ => 1) 1 (Real.log p) x).re) ^ (2 * k) ∂gaugeHaar) ≤
           C * ((N : ℝ) + 1) ^ (1 + ε * k)) := by
   refine ⟨fun ν _ s a ha A hA k => measureReal_singleton_zero_mul_amplified_pow_le ν s ha hA k, ?_,

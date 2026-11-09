@@ -79,10 +79,46 @@ divisors `p^{v_p(m)+1}`, `q^{v_q(m)+1}` are coprime. ∎
 `f(a) ≠ 0` and `p^m ∣ f(a)` for `p ∈ S`, then `m·θ(S) ≤ log |f(a)|`, with equality iff
 `f(a) = ±Π_{p∈S} p^m`. For `n ≥ 2` the fixed scheme of `ψ_n` on `f` contains `V(e^{Λ(n)})`.
 
+**A10 (the restriction to the Frobenius graph).** `x_p = x_1^p + p(δ_p x)_1`. If `x_1 = 0` then
+`(δ_p x)_1 = b_p(x)` and `v_p(x_{p^j}) ≥ m` iff `p^{m−1} ∣ b_p(x)` (`j ≥ 1`, `m ≥ 1`): first order
+at every prime is the one condition `x_1 = 0`; the conditions of higher order at different primes
+are divisibility conditions on independent coordinates.
+
 **B1 (carry).** `log binom(a+b, a) = Σ_{k≥1} Λ(k)(⌊(a+b)/k⌋ − ⌊a/k⌋ − ⌊b/k⌋)`;
 `v_p binom(a+b,a)` = number of carries (Kummer, Mathlib).
 
-**B2 (window).** `Σ_{k≤N} Λ(k)⌊q{N/k}⌋ + Σ_{N<k≤qN} Λ(k)⌊qN/k⌋ = log((qN)!/(N!)^q)`.
+**B2 (window).** `Σ_{k≤N} Λ(k)⌊q{N/k}⌋ + Σ_{N<k≤qN} Λ(k)⌊qN/k⌋ = log((qN)!/(N!)^q)`. By the prime
+number theorem the first sum is `c_q N + o(N)` with `c_q > 0`: a fixed positive proportion.
+
+**D1 (jets).** `τ = (n^{−2})_n ∈ ℚ^{ℕ₊}`, `𝒜 = ℚ[τ]`. `F_kτ^j = k^{−2j}τ^j`;
+`Σ_{j≥0} n^{−2j} = 1 + 1/(n²−1)` for `n ≥ 2`. On a weight line (`F_n = n^z`), `F_nV_n = n` forces
+`V_n = n^{1−z}`.
+
+**D2 (gluing).** For `m < n`: `Σ_{j≥0} m^{1+2j}n^{−2j} = m/(1−(m/n)²)`, the trace of
+`V_mF_n` on the weights `−2j`. With A5:
+`frobeniusIntersection m n = g·log#(ℤ/J(m/g,n/g)) + Σ_j m^{1+2j}n^{−2j}`. For `k ≥ 2`:
+`frobeniusIntersection m (mk) = m·N(k)`.
+
+**D3 (support).** Let `R ⊂ ℚ^{ℕ₊}` be a subring containing `e_k`, and `V : R → R` additive with
+`V(x·F_k y) = V(x)·y` whenever `x, y, F_k y ∈ R`. Then `(V y)_n = 0` for `k ∤ n`.
+*Proof.* `F_k e_k = k`, so `kV(y) = V(y·F_ke_k) = V(y)e_k` and `V(y)(e_k − k) = 0`; `(e_k)_n = 0`
+for `k ∤ n`. ∎
+Witt's `V_k` on `𝒢` satisfies the projection formula. Hence no Verschiebung with the projection
+formula gives a nonzero number at `(2,3)`, where Weil's is `18/5`; and `kF_k^{-1}` on `𝒜` has
+`V(1) = k ≠ e_k`.
+
+**E1 (lattice).** The Teichmüller points `[1],…,[K]` are linearly independent over `ℤ`; the lattice
+`L(A,K) = {Σ_{k≤K} c_k[k] : |c_k| ≤ A}` has `(2A+1)^K` elements, and `|x_n| ≤ K·A·Kⁿ` on it.
+
+**E2 (forced zeros).** For a commutative ring `R`, ring homomorphisms `r_1, r_n : R → ℤ`,
+`I = ker r_1`: `r_n(I^ℓ) = r_n(I)^ℓ`. On `𝒢`: `r_n(I^ℓ) = J(1,n)^ℓ`, and `e_p^ℓ ∈ I^ℓ` has
+`n`-th component `p^ℓ` for `n = p^j`.
+
+## Answers to the kill conditions
+
+- **A** met: A9, A10. **B** met: B2. **D** met in the form D3; survivor D1, D2.
+  **E** met: E2 with A4 (one forced point per graph); survivor E1.
+- **C** open: the comparison of the torus-invariant finite part with Weil's diagonal ((G)).
 
 ## Gates
 - [x] 0 → 1
@@ -93,13 +129,17 @@ divisors `p^{v_p(m)+1}`, `q^{v_q(m)+1}` are coprime. ∎
 
 | Theorem | Module | State |
 |---|---|---|
-| A1, A2 | `TheGhostRingOfTheArithmeticSquare` | not started |
-| A3 | `TheArithmeticSquareIsCofree` | not started |
-| A4, A5 | `TheFrobeniusGraphsMeetInThePrimes` | not started |
-| A6–A9 | — | not started |
+| A1, A2 | `TheGhostRingOfTheArithmeticSquare` | checked |
+| A4 | `TheFrobeniusGraphsMeetInThePrimes` | checked |
+| A3, A9 | `TheArithmeticSquareIsCofree` | not started |
+| A5, D2 | — | not started |
+| A6, A7, A8, A10 | — | not started |
 | B1, B2 | — | not started |
+| D1, D3 | — | not started |
+| E1, E2 | — | not started |
+| test suite C1–C6 | — | not started |
 
 ## Open
 
-Q4 (ampleness), the archimedean fibre of the square, the global tilt statement, construction C
-beyond A5, criterion C6, Stepanov's method for the fibres of the first carry polynomial.
+Q4 (ampleness), Q7 (normal direction), Q9 and construction C ((G)), the global tilt, criterion C6,
+a geometry in which the square is not a union of graphs.

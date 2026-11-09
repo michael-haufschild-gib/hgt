@@ -4,6 +4,12 @@
 averaging or negative-excursion arguments. The existing one-sided theorem
 does not provide this proof.
 
+**Exact theorem.** For every `α ≥ 0`, all zeta zeros in the critical strip
+have real part at most `1/2+α` if and only if some `K` bounds
+`|2 Re lagStructure(log p)| ≤ K p^α` for every prime in arbitrarily late
+windows `|log p−T| ≤ primeLogSquareRadius T`. The radius is the existing
+explicit constant times `log²(T+2)`. At `α=0`, this is equivalent to RH.
+
 ## Complex deletion kernel
 
 For a deleted exponent `λ=a+iγ`, put `h=2π/(3γ)` and
@@ -42,10 +48,9 @@ Its triangle inequality forces a large absolute value within a fixed
 distance of every `T` when `Re z₀>0`. No conjugation symmetry, absence
 of real exponents, or sign of the trace is needed.
 
-**Lean status:** `SignedDeletionFilters`, `SignedConvolutionBounds`,
-`SignedInfiniteDeletion`, and `SignedFiniteSpectrum`
-compile with only `propext`, `Classical.choice`, `Quot.sound`; final direct
-audits remain. `SignedZetaTailDeletion`, `SignedLogSquareWindows`,
-`AbsolutePrimeWindowTransfer`, and `SignedPrimeLogSquareWindows` contain
-the remaining proof and await successful audits. The infinite norm bound
-uses total variation and dominated convergence, not order preservation.
+**Lean status:** all eight modules compile. Direct check of
+`SignedPrimeLogSquareWindows.lean` passed; both final criteria depend only
+on `propext`, `Classical.choice`, `Quot.sound`. Direct helper-module audits
+remain. The infinite norm bound uses total variation and dominated
+convergence, not order preservation. All modules are wired into the owning
+umbrella.

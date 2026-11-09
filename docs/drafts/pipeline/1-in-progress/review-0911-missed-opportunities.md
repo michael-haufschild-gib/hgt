@@ -9,16 +9,28 @@
 
 | Item | Required result | Status |
 |---|---|---|
-| 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Width, quasi-RH, and absolute criteria checked; transfer-module final audits pending. Signed proof open: `signed-deletion-for-log-square-windows.md` |
+| 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Final signed criteria pass direct and axiom audits; helper/transfer final audits pending. See `signed-deletion-for-log-square-windows.md` |
 | 11.6 | Quasi-RH ∨ AAL; quasi-RH iff tail abscissa < 1; consequences under ¬AAL | First two checked in `quasi-rh-is-a-tail-law.md`; heavy-return and Mertens consequences open |
 | 11.6 | Exact simple near-line census alternatives at 70%, 75%, 80% | Complete: `near-line-census-at-seventy-seventy-five-eighty-percent.md`; existing 70% and 75%, new 80%, all audited |
 | 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Complete assembly: `halving-descent-and-shimura-obstruction.md`. Sharp decay alone still requires the stated Shimura nonvanishing |
-| 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Scope and strongest justified theorem require audit |
+| 11.1 | Shimura nonvanishing for one eigenform at every relevant nonhalving zero | Open; one eigenform for each zero does not give one eigenform for all zeros |
+| 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Revised report marks paper/source theorem; scope and Lean audit still require verification |
 | 11.3 | Compact-surface Selberg calibration with finitely many exceptional real zeros | Open; distinguish nontrivial zeros from other Selberg zeros |
+| 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Existing theorem; calibration audit open |
+| 11.3 | Exceptional-character filter for sign-free producers | Open assembly from upper/lower Dirichlet trace laws |
 | 11.4 | Short-interval multiplicative cancellation and averaged correlations | Open; published statements and proof dependencies require audit |
 | 11.4 | Carlitz–Goss RH | Open; exact field and zeta statement require audit |
 | 11.4 | Bilinear mollified-moment bounds past length T^(1/2) | Open; precise theorem and range require audit |
+| 11.4 | Stepanov bounds for Heilbronn sums and Fermat quotients | Open published input |
+| 11.4 | Effective lower bounds for linear forms in three logarithms | Open published input; distinguish homogeneous and inhomogeneous bounds |
 | 11.5 | Audit recommended route closures, retain exact positive survivors | Open; recommendations are not mathematical proofs |
+| 11.6 | Logarithmic prime-window criterion at radius `32 log(T+2)` | Other active work supplies kernel/filter infrastructure; criterion requires audit |
+| 11.6 | Coupled-orbit density row `4 regularMean = −2 gammaHardyPhaseRate(0)−(log(4π)+γ)` | Open assembly |
+| 11.6 | Census covariance ceiling `4π(1−0.67250071)` | Open assembly; existing ceiling `4π/3` |
+| 11.6 | Exchange rates `H*(4)=7/10`, `λ*=10/9`, Frobenius constant `13/10` at `4/3` | Open assembly |
+| 11.6 | Graded recurrence from Guth–Maynard zero density | Open assembly; returns must be one-separated and numerous enough |
+| 11.6 | Upper side at degrees `p^a q^b` without attainment | Open; effective inhomogeneous three-logarithm input |
+| 11.6 | A65 two-prime local criterion, A67 dominant-ordinate divergence, A50 finite-stratum laws | Open assemblies |
 
 ## Existing anchors
 
@@ -46,10 +58,10 @@ direct `lake --old env lean` audit, and transitive axiom audit.
 - [Matomäki–Radziwiłł, Theorem 1](https://arxiv.org/html/1501.04585):
   uniform comparison of short and long averages of real multiplicative
   functions bounded by one, for `2 ≤ h ≤ X`, with an explicit exceptional-set
-  bound. The existing `matomaki-radziwill-moebius-short-interval-mean-square.md`
-  proves a different, balanced-fibre statistic at
-  `h = exp((log x)^(99/100))`; it explicitly leaves ordinary integer-start
-  intervals open. This does not discharge §11.4.
+  bound. The revised report identifies a balanced-fibre Möbius theorem for
+  every `h→∞`, `h≤√x`. Its precise Lean range requires verification;
+  ordinary integer-start intervals for general bounded multiplicative
+  functions remain distinct. The fibre theorem does not discharge §11.4.
 - [Matomäki–Radziwiłł–Tao](https://arxiv.org/abs/1503.05121):
   the correlation target includes the absolute values:
   `Σ_{h≤H}|Σ_{n≤X} λ(n)λ(n+h)| = o(HX)` for `H→∞`, `H≤X`.

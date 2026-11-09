@@ -7,8 +7,9 @@
 ## Required estimate
 
 For the actual pole-and-divisor filter, find a prime-side bound smaller than
-`h(t)^d K(exp(−at),ρ₀−σ−it)` at some supercritical speed. Its exponential
-rate is `a(β−σ)/2−π/4−dκ` when `h(t)=exp(−κt)`.
+`h(t)^d Kφ(exp(−at),ρ₀−σ−it)` at some positive speed, with
+`φ(t)=−π/2+1/t`. Its exponential rate is `a(β−σ)/2−dκ` when
+`h(t)=exp(−κt)`. The former real-Gaussian rate also lost `π/4`.
 The bound must not assume the zero exclusion it is intended to prove.
 
 ## Arithmetic candidates
@@ -55,8 +56,14 @@ Complex damping supplies a different observable: at angle `−π/2+1/t`,
 the complete literal prime filter has bound `C h^d t^N exp(at(c−σ)/2)`
 for every `c>max(1,σ)`, while its selected kernel mode has rate
 `a(Re ρ−σ)/2` without a fixed Gamma penalty. These are formalized in
-`ComplexGaussianDamping.lean`. The rotated finite-layer recovery theorem
-remains missing; the kernel improvement alone is not a contradiction.
+`ComplexGaussianDamping.lean`. The complete rotated finite-layer recovery
+is now proved in `BoundaryDampingReadsTheDivisor.lean`, with its full
+contour error in `RotatedContoursForFiniteDivisorFilters.lean`.
+Every positive speed and every eventually positive spacing tending to zero
+recover the nonzero normalized divisor. Raw growth holds below
+`dκ<a(β−σ)/2`; independent rotated Euler decay holds above
+`dκ>a(1−σ)/2`. The remaining arithmetic gap is `a(1−β)/2>0`.
+See `../3-formalized/b13-boundary-damping-recovers-exceptional-divisor.md`.
 
 The normalized divisor limit now holds for every positive `h(t)→0`.
 Thus raw decay at the arithmetic threshold coexists with nonzero normalized

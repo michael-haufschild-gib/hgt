@@ -45,9 +45,9 @@ Direct source audit passes without warnings. All five transitive dependency
 lists contain only `propext`, `Classical.choice`, and `Quot.sound`.
 The module is imported by the exceptional-layer umbrella.
 
-## Remaining receiver
+## Divisor recovery
 
-Mode growth alone does not recover a zero from the prime sum. The rotated
-finite-layer contour identity remains open; see
-`../1-in-progress/b13-boundary-damping-recovers-exceptional-divisor.md`.
-Even the proposed receiver leaves arithmetic gap `a(1−Re ρ)/2`.
+The complete rotated contour identity and actual prime-filter recovery are
+now formalized in `b13-boundary-damping-recovers-exceptional-divisor.md`.
+Every positive speed and every eventually positive spacing tending to zero
+recover the normalized divisor. Arithmetic gap `a(1−Re ρ)/2` remains.

@@ -188,6 +188,14 @@ def archimedeanSymbol (s : ℂ) : ℂ :=
 /-- A scalar subtraction on each vertical line, independent of its spectral height. -/
 def robinCounterterm (x : ℝ) : ℂ := archimedeanSymbol (x : ℂ)
 
+theorem robinCounterterm_eq {x : ℝ} (hx : 0 < x) :
+    robinCounterterm x = ((Real.log (x / 2) / 2 - Real.log Real.pi / 2 : ℝ) : ℂ) := by
+  unfold robinCounterterm archimedeanSymbol
+  rw [show (x : ℂ) / 2 = ((x / 2 : ℝ) : ℂ) by push_cast; rfl,
+    ← Complex.ofReal_log (by positivity : 0 ≤ x / 2)]
+  push_cast
+  ring
+
 private theorem norm_log_sub_log_re {s : ℂ} (hs : 0 < s.re) :
     ‖Complex.log s - Complex.log (s.re : ℂ)‖ ≤ |s.im| / s.re := by
   have hslit : ∀ z : ℂ, s.re ≤ z.re → z ∈ Complex.slitPlane :=
@@ -200,13 +208,13 @@ private theorem norm_log_sub_log_re {s : ℂ} (hs : 0 < s.re) :
       have hle := hz.trans ((le_abs_self z.re).trans (Complex.abs_re_le_norm z))
       exact (inv_le_inv₀ (hs.trans_le hle) hs).mpr hle)
     (convex_halfSpace_re_ge s.re)
-    (x := (s.re : ℂ)) (y := s) (by simp) le_rfl
+    (x := (s.re : ℂ)) (y := s) (by simp) (by change s.re ≤ s.re; exact le_rfl)
   have hdist : ‖s - (s.re : ℂ)‖ = |s.im| := by
     rw [show s - (s.re : ℂ) = (s.im : ℂ) * I by
-      conv_lhs => rw [← Complex.re_add_im s]
-      ring, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+      apply Complex.ext <;> simp,
+      norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
   rw [hdist] at h
-  simpa only [one_div, div_eq_mul_inv, mul_comm] using h
+  simpa only [one_div, div_eq_mul_inv, mul_comm, mul_one, one_mul] using h
 
 theorem norm_gamma_sub_archimedeanSymbol {s : ℂ} (hs : 4 ≤ s.re) :
     ‖logDeriv Complex.Gammaℝ s - archimedeanSymbol s‖ ≤ 3 / s.re := by
@@ -215,11 +223,11 @@ theorem norm_gamma_sub_archimedeanSymbol {s : ℂ} (hs : 4 ≤ s.re) :
   have hh : 2 ≤ ‖s / 2‖ := by rw [norm_div, Complex.norm_ofNat]; linarith
   have h := norm_digamma_sub_log_le_of_re_pos
     (z := s / 2) (by simp; linarith) hh
-  rw [GaloisForLFunctions.logDeriv_Gammaℝ hre, gammaRealLogConnection, archimedeanSymbol]
-  rw [show -((Real.log Real.pi : ℝ) : ℂ) / 2 + Complex.digamma (s / 2) / 2 -
-      (-((Real.log Real.pi : ℝ) : ℂ) / 2 + Complex.log (s / 2) / 2) =
-      (Complex.digamma (s / 2) - Complex.log (s / 2)) / 2 by ring]
-  rw [norm_div, Complex.norm_ofNat]
+  have heq : logDeriv Complex.Gammaℝ s - archimedeanSymbol s =
+      (Complex.digamma (s / 2) - Complex.log (s / 2)) / 2 := by
+    rw [GaloisForLFunctions.logDeriv_Gammaℝ hre, gammaRealLogConnection, archimedeanSymbol]
+    ring
+  rw [heq, norm_div, Complex.norm_ofNat]
   calc ‖Complex.digamma (s / 2) - Complex.log (s / 2)‖ / 2
       ≤ (3 / ‖s / 2‖) / 2 := div_le_div_of_nonneg_right h (by norm_num)
     _ = 3 / ‖s‖ := by rw [norm_div, Complex.norm_ofNat]; ring
@@ -262,6 +270,42 @@ theorem renormalizedTower_sub_symbol {s : ℂ} (hs : 1 < s.re) (him : s.im ≠ 0
   rw [renormalizedTower, logDeriv_xi_eq_arithmetic hs]
   simp only [one_div]
   linear_combination h
+
+/-- A uniform vertical-line error estimate for the scalar-normalized geometric tower. -/
+theorem norm_renormalizedTower_sub_symbol {s : ℂ} (hs : 1 < s.re)
+    (him : s.im ≠ 0) (N : ℕ) (hN : 4 ≤ s.re + N) :
+    ‖renormalizedTower s N - logDeriv xi s‖ ≤
+      (2 : ℝ) ^ (-(N : ℝ)) * eulerMajorant s.re +
+        (3 + |s.im| / 2) / (s.re + N) := by
+  have hshift : s.re ≤ (s + N).re := by simp
+  have he := norm_eulerTail_le hs hshift
+  have hg := norm_gamma_sub_robinCounterterm (s := s + N) (by simpa using hN)
+  simp only [Complex.add_re, Complex.natCast_re, Complex.add_im, Complex.natCast_im,
+    add_zero] at he hg
+  rw [show s.re - (s.re + (N : ℝ)) = -(N : ℝ) by ring] at he
+  rw [renormalizedTower_sub_symbol hs him]
+  exact (norm_sub_le _ _).trans (add_le_add he hg)
+
+/-- The scalar Robin normalization identifies the completed symbol on both nonreal chambers. -/
+theorem tendsto_renormalizedTower {s : ℂ} (hs : 1 < s.re) (him : s.im ≠ 0) :
+    Tendsto (renormalizedTower s) atTop (𝓝 (logDeriv xi s)) := by
+  have hr : Tendsto (fun N : ℕ => s.re + (N : ℝ)) atTop atTop :=
+    Filter.tendsto_atTop_add_const_left _ _ tendsto_natCast_atTop_atTop
+  have hgamma : Tendsto (fun N : ℕ =>
+      logDeriv Complex.Gammaℝ (s + N) - robinCounterterm (s.re + N)) atTop (𝓝 0) := by
+    refine squeeze_zero_norm' ?_ (hr.const_div_atTop (3 + |s.im| / 2))
+    filter_upwards [hr.eventually_ge_atTop 4] with N hN
+    simpa using norm_gamma_sub_robinCounterterm (s := s + N) (by simpa using hN)
+  have hr' : Tendsto (fun N : ℕ => (s + N).re) atTop atTop := by simpa using hr
+  have h := ((tendsto_eulerTail hr').sub hgamma).add_const (logDeriv xi s)
+  simp only [sub_self, zero_add] at h
+  refine h.congr fun N => ?_
+  rw [← renormalizedTower_sub_symbol hs him N, sub_add_cancel]
+
+#print axioms geometricDiagonal_eq
+#print axioms gammaNormalizedTower_eq
+#print axioms norm_renormalizedTower_sub_symbol
+#print axioms tendsto_renormalizedTower
 
 end
 

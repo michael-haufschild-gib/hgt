@@ -102,6 +102,10 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedDeletionFilters
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedConvolutionBounds
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedInfiniteDeletion
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedFiniteSpectrum
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedZetaTailDeletion
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedLogSquareWindows
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.AbsolutePrimeWindowTransfer
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedPrimeLogSquareWindows
 
 /-!
 # The surface of `Spec ℤ`
@@ -155,3 +159,6 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.QuartetLogMoments
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelLeakage
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelConvolution
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaQuartetFilter
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.KernelLogarithmicTrace
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaLogarithmicWindows
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeLogarithmicWindows

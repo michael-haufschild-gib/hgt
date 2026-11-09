@@ -55,14 +55,28 @@ Eisenstein model supplies both halves of the integration line.
 For a compactly supported C² autocorrelation, its symmetrized Mellin
 transform decays as `(1+t²)^(−2)`. Thus the error bound is integrable,
 and the corpus's vertical-line formula identifies the limiting tower
-pairing with the full Weil functional. This requires formalizing the
-scalar estimate and passage under the integral; the finite telescope
-alone does not establish the target.
+pairing with the full Weil functional. The scalar estimate and pointwise
+limit are formalized in `TheWeilSymbolFromTheGeometricScatteringTower`
+(standard-three-axiom audit); passage under the integral remains to audit.
 
 Even that packet identity would not identify a torus-periodized Green
 operator on the adelic carrier. The missing geometric comparison is
 between the modular scattering tower and the sum of local Green channels
 on the split-torus quotient. No positivity conclusion is part of this route.
+
+## Intrinsic geometric normalization
+
+Remove the completed normalization from the construction itself. Let `φ(P)`
+be the height-one zero Fourier coefficient of the raw primitive-pair
+Poincare series, minus one, and let `P_raw` be its actual truncated pairing.
+The target diagonal is
+
+`(φ(P)^(-1)−φ(P))/(4(P.s−1/2)) − P_raw/(2φ(P))`.
+
+The completed zero-Fourier theorem gives `Aφ=B`; actual-to-canonical
+Fourier uniqueness gives `P_completed=A²P_raw`. These identities cancel
+the completion factor in the diagonal. Transport the packet limit to
+this raw geometric definition, which contains no ζ values or zero divisor.
 
 ## Sources
 

@@ -47,5 +47,7 @@ The positive quartet deformation is existing corpus work; the new result is
 its explicit logarithmic moment bound. No external novelty claim.
 
 This supplies the kernel estimate for logarithmic-window localization.
-The full trace and prime-window criteria and the arithmetic Stepanov
-inequality remain unproved.
+`ZetaLogarithmicWindows.zeta_re_le_of_logarithmic_windows` now proves
+continuous exact-depth detection at radius `16log(T+2)`, with only the
+standard three axioms. Prime-window criteria remain under formalization;
+the arithmetic Stepanov inequality remains open.

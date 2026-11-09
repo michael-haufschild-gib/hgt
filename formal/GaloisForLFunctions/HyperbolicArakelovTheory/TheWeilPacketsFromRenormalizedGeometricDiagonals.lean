@@ -131,7 +131,7 @@ private theorem xi_symbol_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ t : ℝ,
   refine ⟨A, hA, fun t => ?_⟩
   have h := hb t
   rw [weilFunction_mangoldt (by norm_num)] at h
-  exact h
+  simpa only [Complex.ofReal_div, Complex.ofReal_ofNat] using h
 
 /-- The scalar-normalized geometric diagonal recovers the full Weil functional on packets. -/
 theorem tendsto_geometricWeilEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
@@ -148,6 +148,7 @@ theorem tendsto_geometricWeilEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
       (fun t : ℝ => F t * renormalizedTower ((3 / 2 : ℂ) + t * I) N) := by
     intro N
     have hc := hFc.mul (continuous_analyticTower (c := 3 / 2) (by norm_num) N)
+    simp only [Complex.ofReal_div, Complex.ofReal_ofNat] at hc
     refine hc.aestronglyMeasurable.congr ?_
     filter_upwards [volume.ae_ne (0 : ℝ)] with t ht
     change F t * analyticTower ((3 / 2 : ℂ) + t * I) N = _
@@ -159,33 +160,38 @@ theorem tendsto_geometricWeilEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
     filter_upwards [volume.ae_ne (0 : ℝ)] with t ht
     have hden : 1 ≤ (3 / 2 : ℝ) + N := by linarith [Nat.cast_nonneg (α := ℝ) N]
     have hlarge : 4 ≤ (((3 / 2 : ℂ) + t * I).re + N) := by
+      have hNr : (4 : ℝ) ≤ N := by exact_mod_cast hN
       norm_num
-      exact_mod_cast (show 4 ≤ 3 / 2 + (N : ℝ) by exact_mod_cast hN; linarith)
+      linarith
     have he := norm_renormalizedTower_sub_symbol (s := (3 / 2 : ℂ) + t * I)
       (by norm_num) (by simpa using ht) N hlarge
-    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re,
-      Complex.ofReal_im, Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero,
-      Complex.div_ofNat_re, Complex.ofNat_re, Complex.add_im, Complex.mul_im,
-      Complex.div_ofNat_im, Complex.ofNat_im, zero_div, mul_one, zero_add] at he
+    rw [show ((3 / 2 : ℂ) + t * I).re = (3 / 2 : ℝ) by norm_num,
+      show ((3 / 2 : ℂ) + t * I).im = t by norm_num] at he
     have hpow : (2 : ℝ) ^ (-(N : ℝ)) ≤ 1 :=
-      Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by positivity)
+      Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (neg_nonpos.mpr (Nat.cast_nonneg N))
     have hg : (3 + |t| / 2) / ((3 / 2 : ℝ) + N) ≤ 3 + |t| / 2 :=
       div_le_self (by positivity) hden
     have hR : ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖ ≤ B * (1 + |t|) := by
-      have hn := norm_le_norm_sub_add
-        (renormalizedTower ((3 / 2 : ℂ) + t * I) N)
-        (logDeriv xi ((3 / 2 : ℂ) + t * I))
+      have hn : ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖ ≤
+          ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N -
+            logDeriv xi ((3 / 2 : ℂ) + t * I)‖ +
+              ‖logDeriv xi ((3 / 2 : ℂ) + t * I)‖ := by
+        calc ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖ =
+            ‖(renormalizedTower ((3 / 2 : ℂ) + t * I) N -
+              logDeriv xi ((3 / 2 : ℂ) + t * I)) +
+                logDeriv xi ((3 / 2 : ℂ) + t * I)‖ := by rw [sub_add_cancel]
+          _ ≤ _ := norm_add_le _ _
       have hp := mul_le_mul_of_nonneg_right hpow (eulerMajorant_nonneg (3 / 2))
       have ha := hAb t
       dsimp [B]
-      nlinarith [abs_nonneg t, eulerMajorant_nonneg (3 / 2)]
+      nlinarith [abs_nonneg t, mul_nonneg (eulerMajorant_nonneg (3 / 2)) (abs_nonneg t)]
     have hsq : 1 + |t| ≤ 2 * (1 + t ^ 2) := by nlinarith [sq_abs t, abs_nonneg t]
     rw [norm_mul]
     calc ‖F t‖ * ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖
         ≤ (C / (1 + t ^ 2) ^ 2) * (B * (1 + |t|)) :=
           mul_le_mul (hFb t) hR (norm_nonneg _) (by positivity)
       _ ≤ (C / (1 + t ^ 2) ^ 2) * (B * (2 * (1 + t ^ 2))) := by gcongr
-      _ = 2 * C * B * (1 + t ^ 2)⁻¹ := by field_simp; ring
+      _ = 2 * C * B * (1 + t ^ 2)⁻¹ := by field_simp
   have hlim := tendsto_integral_filter_of_dominated_convergence
     (fun t : ℝ => 2 * C * B * (1 + t ^ 2)⁻¹)
     (Eventually.of_forall hmeas) hbound
@@ -206,13 +212,54 @@ theorem tendsto_geometricWeilEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
         ((3 / 2 : ℝ) + t * I)) =
       ∫ t : ℝ, F t * logDeriv xi ((3 / 2 : ℂ) + t * I) := by
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-    rw [weilFunction_mangoldt (by norm_num)]
-    rfl
+    dsimp only
+    rw [weilFunction_mangoldt (s := ((3 / 2 : ℝ) : ℂ) + t * I) (by norm_num)]
+    simp only [F, Complex.ofReal_div, Complex.ofReal_ofNat]
   rw [hident] at hw
   rw [hw]
   exact hlim.const_mul (1 / (2 * Real.pi) : ℂ)
 
-end
+private theorem integral_line_packet {k : ℝ → ℂ} (hk : ContDiff ℝ 2 k)
+    (hkc : HasCompactSupport k) (c : ℝ) :
+    (1 / (2 * Real.pi) : ℂ) * ∫ t : ℝ, lineF k c t = 2 * k 0 := by
+  have hsingle (g : ℝ → ℂ) (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
+      (1 / (2 * Real.pi) : ℂ) * ∫ t : ℝ, Hfn g ((c : ℂ) + t * I) = g 0 := by
+    simp_rw [Hfn_line]
+    simpa using line_integral_term hg hgc c (fun _ => (1 : ℂ)) 1
+  have hint (g : ℝ → ℂ) (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) :
+      Integrable (fun t : ℝ => Hfn g ((c : ℂ) + t * I)) := by
+    simp_rw [Hfn_line]
+    exact Zeta23.EF.integrable_paperFT_ofReal
+      (Zeta23.EF.integrable_fourier_of_contDiff_two (tilt_contDiff hg _)
+        (tilt_hasCompactSupport hgc _))
+  have hkn : ContDiff ℝ 2 (fun u : ℝ => k (-u)) := hk.comp contDiff_neg
+  have hknc : HasCompactSupport (fun u : ℝ => k (-u)) :=
+    hkc.comp_homeomorph (Homeomorph.neg ℝ)
+  simp_rw [lineF, Hfn_mirror]
+  rw [integral_add (hint k hk hkc) (hint _ hkn hknc), mul_add,
+    hsingle k hk hkc, hsingle _ hkn hknc, neg_zero]
+  ring
+
+/-- The subtraction is a local diagonal mass, exactly twice the Robin constant times `‖f‖₂²`. -/
+theorem robinCounterterm_packet {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) (c x : ℝ) :
+    (1 / (2 * Real.pi) : ℂ) * ∫ t : ℝ,
+      lineF (EF.weilTest f f) c t * robinCounterterm x =
+        2 * robinCounterterm x * ((∫ u : ℝ, ‖f u‖ ^ 2 : ℝ) : ℂ) := by
+  have hzero : EF.weilTest f f 0 = ((∫ u : ℝ, ‖f u‖ ^ 2 : ℝ) : ℂ) := by
+    unfold EF.weilTest
+    rw [convolution_def, ← integral_complex_ofReal]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    simp only [ContinuousLinearMap.mul_apply', EF.tilde, zero_sub, neg_neg,
+      Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  rw [integral_mul_const, ← mul_assoc,
+    integral_line_packet (EF.weilTest_contDiff hf hf.continuous hfc)
+      (EF.weilTest_hasCompactSupport hfc hfc), hzero]
+  ring
+
+#print axioms tendsto_geometricWeilEnergy
+#print axioms robinCounterterm_packet
+
 end
 
 end GaloisForLFunctions.HyperbolicArakelovTheory.ScatteringTower
