@@ -149,7 +149,9 @@ theorem mul_sum_log_le_log_abs {S : Finset ℕ} (hS : ∀ p ∈ S, p.Prime) (m :
     rw [Nat.cast_prod, Real.log_prod fun p hp => by
       exact_mod_cast (pow_pos (hS p hp).pos m).ne', Finset.mul_sum]
     exact Finset.sum_congr rfl fun p _ => by rw [Nat.cast_pow, Real.log_pow]
-  rw [hlog, ← Int.cast_natAbs, Int.cast_natCast]
+  have habs : |(a : ℝ)| = (a.natAbs : ℝ) := by
+    rw [Nat.cast_natAbs, Int.cast_abs]
+  rw [hlog, habs]
   exact Real.log_le_log hpos (by exact_mod_cast hle)
 
 omit [Fact p.Prime] in

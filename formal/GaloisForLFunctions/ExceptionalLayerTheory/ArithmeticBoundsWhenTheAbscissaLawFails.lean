@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 /-- The abscissa law or a power saving for the actual Mertens sum. -/
 theorem asymptoticAbscissaLaw_or_mertens_power_saving :
     AsymptoticAbscissaLaw ∨ ∃ C β : ℝ, 0 ≤ C ∧ 0 ≤ β ∧ β < 1 ∧
-      ∀ x : ℕ, 1 ≤ x → |∑ e ∈ Icc 1 x, moebiusReal e| ≤ C * (x : ℝ) ^ β := by
+      ∀ x : ℕ, 1 ≤ x → |∑ e ∈ Icc 1 x, BezoutValuationIncidence.moebiusReal e| ≤ C * (x : ℝ) ^ β := by
   rcases ZeroConfigurationGeometry.quasiRH_or_asymptoticAbscissaLaw with hstrip | hA
   · exact Or.inr (BezoutValuationIncidence.zetaZeroAbscissa_lt_one_iff_moebius_rate.mp hstrip)
   · exact Or.inl hA

@@ -21,11 +21,13 @@ def signedDeletionCenter (x : ℝ) : ℂ :=
 
 @[simp] theorem signedDeletionCenter_re (x : ℝ) :
     (signedDeletionCenter x).re = Real.cosh x / 2 := by
-  simp [signedDeletionCenter]
+  simp only [signedDeletionCenter, Complex.sub_re, Complex.ofReal_re, Complex.mul_re,
+    Complex.I_re, Complex.I_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero]
 
 @[simp] theorem signedDeletionCenter_im (x : ℝ) :
     (signedDeletionCenter x).im = -(Real.sinh x * Real.sin (2 * Real.pi / 3)) := by
-  simp [signedDeletionCenter]
+  simp only [signedDeletionCenter, Complex.sub_im, Complex.ofReal_im, Complex.mul_im,
+    Complex.I_re, Complex.I_im, Complex.ofReal_re, mul_one, mul_zero, add_zero, zero_sub]
 
 theorem norm_signedDeletionCenter_sq (x : ℝ) :
     ‖signedDeletionCenter x‖ ^ 2 = Real.cosh x ^ 2 / 4 + 3 * Real.sinh x ^ 2 / 4 := by

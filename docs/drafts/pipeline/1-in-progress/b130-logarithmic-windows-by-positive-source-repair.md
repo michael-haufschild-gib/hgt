@@ -46,6 +46,9 @@ The pointwise proof uses the local floor inside the window and the global
 strip envelope outside; no boundary regularity is needed. Countable-support
 summation commutes with integration by the absolute moment bound. The
 filtered spectrum is exactly the selected quartet.
+`PositiveKernelConvolution.integral_kernel_cexp_tsum` formalizes the
+interchange for arbitrary index sets by restricting to countable coefficient
+support. The tilt moment and transform identities are also proved.
 
 Set `q=T`, `R=8log(T+2)`, `|t|≤T+B`. For `0≤b≤T`, `T≥6`,
 
@@ -76,7 +79,8 @@ unchecked; they do not produce the arithmetic bound.
 
 - Existing positive quartet isolation is reused, not claimed as new.
 - Theta and positive quartet moment bounds and logarithmic leakage are proved.
-  Integral interchange and the zeta window criteria are under formalization.
+  Integral interchange and tilt compensation are proved. The zeta-specific
+  spectral assembly and window criteria are under formalization.
 - Continuous and prime logarithmic-window criteria remain unproved.
 - No arithmetic Stepanov lower bound has been produced. B130 remains open.
 - The independently formalized generic positive translation-repair theorem is

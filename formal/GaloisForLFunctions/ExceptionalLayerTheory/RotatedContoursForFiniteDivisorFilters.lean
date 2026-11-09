@@ -152,7 +152,7 @@ theorem exists_rotated_filtered_regular_line_moment_bound (F : Finset XiZeroCopy
       _ ≤ ∫ v : ℝ, ‖Q v‖ := norm_integral_le_integral_norm _
       _ ≤ ∫ v : ℝ, (B ^ d * E * Z) * W v :=
         integral_mono hQi.norm (hWi.const_mul _) hpoint
-      _ = _ := by rw [integral_const_mul]; dsimp only [C₀, J]; ring
+      _ = _ := by rw [integral_const_mul]
   refine hnorm.trans ?_
   have he : d + 1 = 2 + (F.filter (fun q => xiZero q ≠ ρ)).card := by dsimp only [d]; omega
   calc
@@ -377,7 +377,7 @@ theorem tendsto_finite_layer_rotated_divisorFilter_horizontal (F : Finset XiZero
     have hx0 : 0 ≤ x := by linarith only [hc, hx]
     have hxs : 0 < x - σ := sub_pos.mpr (hσc.trans_le hx)
     have hp := hfilter x h 0 v (by rwa [abs_of_nonneg hx0]) hh hh1
-    simp only [abs_zero, add_zero, mul_one, zero_add] at hp
+    simp only [abs_zero, Complex.ofReal_zero, add_zero, mul_one, zero_add] at hp
     have hk := hkernel y φ (x - σ) (v - t) hy
       (by linarith only [hx]) (by linarith only [hx2]) hvt
     have hdiff : (x : ℂ) + v * I - ((σ : ℂ) + t * I) =
@@ -386,7 +386,7 @@ theorem tendsto_finite_layer_rotated_divisorFilter_horizontal (F : Finset XiZero
       rw [← mul_pow]
       apply pow_le_pow_left₀ (by positivity)
       have htri' : |v - t| ≤ |v| + |t| := by
-      simpa only [sub_eq_add_neg, abs_neg] using abs_add_le v (-t)
+        simpa only [sub_eq_add_neg, abs_neg] using abs_add_le v (-t)
       nlinarith only [htri', mul_nonneg (abs_nonneg v) (abs_nonneg t)]
     have hyb : y ^ (-((x - σ) / 2)) ≤ Y := by
       rw [Real.rpow_def_of_pos hy]
@@ -394,7 +394,7 @@ theorem tendsto_finite_layer_rotated_divisorFilter_horizontal (F : Finset XiZero
       have hn := neg_le_abs (Real.log y)
       have hnon := abs_nonneg (Real.log y)
       nlinarith only [hn, hnon, hxs, hx2]
-    have hexp : Real.exp (-(δ * |v - t|)) ≤
+    have hexp : Real.exp (-δ * |v - t|) ≤
         Real.exp (δ * |t|) * Real.exp (-(δ * |v|)) := by
       rw [← Real.exp_add]
       apply Real.exp_le_exp.mpr

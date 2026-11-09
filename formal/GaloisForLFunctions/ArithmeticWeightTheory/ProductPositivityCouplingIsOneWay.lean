@@ -75,7 +75,7 @@ theorem geom_weighted_sum_ge_sum {c : ℕ → ℝ} {r : ℝ} (hr : 1 ≤ r) :
       refine sum_congr rfl fun j hj => ?_
       have hjm : j ≤ m := Nat.lt_succ_iff.mp (mem_range.mp hj)
       rw [Nat.succ_sub hjm, pow_succ', mul_assoc]
-    rw [sum_range_succ, sum_range_succ, Nat.sub_self, pow_zero, one_mul, hstep]
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Nat.sub_self, pow_zero, one_mul, hstep]
     linarith
 
 /-- Real power arithmetic function `n ↦ n^a` (`0 ↦ 0`), representing `ζ(s − a)`. -/
@@ -125,8 +125,9 @@ theorem zeta_mul_le_idRpow_mul {g : ArithmeticFunction ℝ} (hg : g.IsMultiplica
       have hjm : j ≤ m := Nat.lt_succ_iff.mp (mem_range.mp hj)
       have hpow_ne : p ^ (m - j) ≠ 0 := pow_ne_zero _ hp.ne_zero
       rw [Nat.pow_div hjm hp.pos, idRpow_apply_of_ne_zero a hpow_ne, Nat.cast_pow,
-        ← Real.rpow_natCast ((p : ℝ) ^ a), ← Real.rpow_mul (Nat.cast_nonneg p), mul_comm,
-        Real.rpow_mul (Nat.cast_nonneg p), Real.rpow_natCast]
+        ← Real.rpow_natCast (p : ℝ) (m - j), ← Real.rpow_mul (Nat.cast_nonneg p),
+        mul_comm ((m - j : ℕ) : ℝ) a, Real.rpow_mul (Nat.cast_nonneg p), Real.rpow_natCast,
+        mul_comm]
     rw [hzeta m, hid]
     refine geom_weighted_sum_ge_sum (Real.one_le_rpow (by exact_mod_cast hp.one_lt.le) ha) m ?_
     intro k _
@@ -249,7 +250,8 @@ theorem summable_flipVM_rpow {θ σ : ℝ} (hθ0 : 0 < θ) (hθσ : θ < σ) :
   set g : ℕ → ℝ := fun k => Real.log 4 / (1 - q) * (((k : ℝ) + 1) ^ 1 * r ^ k)
   have hg_sum : Summable g := (summable_poly_mul_geometric 1 hr0 hr1).mul_left _
   have hg_nn : ∀ k, 0 ≤ g k := fun k => by dsimp only [g]; positivity
-  refine summable_of_sum_range_le (fun n => mul_nonneg (flipVM_nonneg θ n) (by positivity))
+  refine summable_of_sum_range_le (c := ∑' k, g k)
+    (fun n => mul_nonneg (flipVM_nonneg θ n) (by positivity))
     (fun N => ?_)
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · exact tsum_nonneg hg_nn
@@ -431,9 +433,18 @@ theorem splineAutoCorr_zero_pos : 0 < splineAutoCorr 0 := by
     funext u; rw [sub_zero, sq]
   rw [heq]
   have hsq_cont : Continuous fun u => cubicSpline u ^ 2 := hc_cont.pow 2
+  have hsq_supp : HasCompactSupport fun u => cubicSpline u ^ 2 := by
+    refine HasCompactSupport.of_support_subset_isCompact isCompact_Icc
+      (f := fun u => cubicSpline u ^ 2) (K := Set.Icc (-4 : ℝ) 4) fun u hu => ?_
+    by_contra hI
+    have habs : 4 < |u| := by
+      rw [Set.mem_Icc, not_and_or, not_le, not_le] at hI
+      rcases hI with h | h
+      · exact lt_abs.mpr (Or.inr (by linarith))
+      · exact lt_abs.mpr (Or.inl h)
+    exact hu (by simp [cubicSpline_eq_zero habs])
   have hsq_int : Integrable fun u => cubicSpline u ^ 2 :=
-    hsq_cont.integrable_of_hasCompactSupport
-      (by simpa [sq] using hasCompactSupport_cubicSpline.mul_right)
+    hsq_cont.integrable_of_hasCompactSupport hsq_supp
   by_contra hle
   have hzero : ∫ u, cubicSpline u ^ 2 = 0 :=
     le_antisymm (not_lt.mp hle) (integral_nonneg fun u => sq_nonneg _)
@@ -609,7 +620,7 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
     mem_range.mpr ((min_le_left _ _).trans_lt (Nat.sub_lt hM1 zero_lt_one))
   have hsum_fib : ∑ j ∈ range M, ((flipBlock θ k).filter (fun q => logBin M k q = j)).card =
       (flipBlock θ k).card :=
-    Finset.card_eq_sum_card_fiberwise hmaps
+    (Finset.card_eq_sum_card_fiberwise hmaps).symm
   have hsum_le : ∑ _j ∈ range M, (((flipBlock θ k).card : ℝ) / M) ≤
       ∑ j ∈ range M, (((flipBlock θ k).filter (fun q => logBin M k q = j)).card : ℝ) := by
     rw [sum_const, card_range, nsmul_eq_mul, mul_div_cancel₀ _ hM_pos.ne', ← Nat.cast_sum,
@@ -629,7 +640,8 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
   have hp_blk : p ∈ flipBlock θ k := (mem_filter.mp hpS).1
   obtain ⟨hp_prime, h4p, hp2⟩ := mem_flipBlock hp_blk
   refine ⟨p, hp_blk, ?_⟩
-  rw [← primeWindowOf_vonMangoldt, doubledVM, primeWindowOf_add hp_prime.one_le,
+  have hdub : doubledVM θ = fun n => (Λ n : ℝ) + flipVM θ n := rfl
+  rw [← primeWindowOf_vonMangoldt, hdub, primeWindowOf_add hp_prime.one_le,
     add_sub_cancel_left]
   have hlow := sum_le_primeWindowOf hp_prime.one_le (flipVM_nonneg θ)
     (fun q hq => (mem_flipBlock (mem_filter.mp hq).1).1.two_le)
@@ -738,12 +750,14 @@ theorem not_both_primeWindowOf_power_bound {θ a : ℝ} (hθ : 1 / 2 < θ) (hθ1
   have hgt_D : D / c₀ < (p : ℝ) ^ (θ - 1 / 2 - a) := by
     rw [← Real.rpow_natCast ((4 : ℝ) ^ (θ - 1 / 2 - a)) k, ← Real.rpow_mul (by norm_num)] at hk_big
     exact hk_big.trans_le hgap
+  have hp0 : (0 : ℝ) < p := by linarith
   have hmul : D * (p : ℝ) ^ a < c₀ * (p : ℝ) ^ (θ - 1 / 2) := by
     have h1 := (div_lt_iff₀ hc₀).mp hgt_D
-    have h2 := mul_lt_mul_of_pos_right h1 (Real.rpow_pos_of_pos (by linarith) a)
-    rwa [mul_assoc, ← Real.rpow_add (by linarith), sub_add_cancel] at h2
+    have h2 := mul_lt_mul_of_pos_right h1 (Real.rpow_pos_of_pos hp0 a)
+    rw [mul_assoc, ← Real.rpow_add hp0, sub_add_cancel] at h2
+    linarith
   have hD_strict : (|K₀| + |K₁|) * (p : ℝ) ^ a < D * (p : ℝ) ^ a :=
-    mul_lt_mul_of_pos_right (by dsimp only [D]; linarith) (Real.rpow_pos_of_pos (by linarith) a)
+    mul_lt_mul_of_pos_right (by dsimp only [D]; linarith) (Real.rpow_pos_of_pos hp0 a)
   linarith
 
 /-- **One-way product-positivity coupling.** Let `(g, lamVar)` be any variable arithmetic cofactor

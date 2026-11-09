@@ -69,7 +69,7 @@ theorem finite_spectrum_dense_norm (S : Finset ℂ) (c : ℂ → ℂ)
       η * Real.exp (z₀.re * T) ≤ ‖∑ z ∈ S, c z * Complex.exp (z * t)‖ := by
   classical
   obtain ⟨δ, hδ, hinj⟩ := exists_step_exp_injOn S
-  let P : Polynomial ℂ := ∏ z ∈ S.erase z₀, Polynomial.X - Polynomial.C (Complex.exp (z * δ))
+  let P : Polynomial ℂ := ∏ z ∈ S.erase z₀, (Polynomial.X - Polynomial.C (Complex.exp (z * δ)))
   have hPkeep : P.eval (Complex.exp (z₀ * δ)) ≠ 0 := by
     simp only [P, Polynomial.eval_prod, Polynomial.eval_sub, Polynomial.eval_X,
       Polynomial.eval_C]
@@ -131,7 +131,7 @@ theorem finite_spectrum_dense_norm (S : Finset ℂ) (c : ℂ → ℂ)
         (η * Real.exp (z₀.re * T)) < C * (η * Real.exp (z₀.re * T)) :=
       mul_lt_mul_of_pos_right (by dsimp only [C]; linarith only)
         (mul_pos hη (Real.exp_pos _))
-    rw [← mul_assoc, hCη] at hlt
+    rw [← mul_assoc C η, hCη] at hlt
     exact (not_lt_of_ge hu) hlt
   obtain ⟨j, hj, hlarge⟩ := hexists
   refine ⟨T + j * δ, ⟨?_, ?_⟩, hlarge⟩
