@@ -49,6 +49,14 @@ Further work must directly advance repulsion, replication or exclusion.
 Additional observation bounds without such a consequence do not advance
 the programme's targets.
 
+The available arithmetic return theorem
+`not_asymptoticAbscissaLaw_has_joint_primePhase_returns` controls one
+continued-current value together with finitely many prime phases. Its
+Euler head depends on the cutoff and is zero-free on `Re s>0`.
+It supplies no return of the complete tail around a zero-containing
+contour. Such contour control, or an independent arithmetic exclusion,
+remains unproved. Classical Dirichlet repulsion does not supply it.
+
 ## Foundations and gaps
 
 `OnlyExceptionalGaussianModesRemain` bounds the complete complementary field

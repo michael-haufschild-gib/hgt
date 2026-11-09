@@ -363,7 +363,7 @@ private theorem isClosed_protected (K : ℕ) :
   exact (isClosed_le continuous_const ((continuous_slot_re n).sub continuous_const).abs).inter
     (isClosed_le continuous_const (continuous_slot_im n).abs)
 
-/-- Integer-multiplicity configurations with bounded inverse-square mass admit compact charts. -/
+/-- Bounded inverse-square mass and a protected off-line occurrence give compact charts. -/
 theorem isCompact_family (K : ℕ) : IsCompact (family K) := by
   have hc : IsClosed (family K) := (isClosed_coordinateBound K).inter
     ((isClosed_massBound K).inter (isClosed_protected K))

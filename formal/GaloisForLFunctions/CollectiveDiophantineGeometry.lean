@@ -4,6 +4,7 @@ import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveExtrapolation
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveLogarithmBound
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveRankDepth
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FixedHeightPrimeMass
+import GaloisForLFunctions.CollectiveDiophantineGeometry.ReciprocalRankBounds
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
 
 /-!
@@ -24,4 +25,6 @@ Collective integral auxiliaries retain every prime frequency while reducing
 the jet dimension by the rank of the small-form family. Their explicit
 parameters preserve this gain through the integer-kernel construction
 and analytic extrapolation, yielding a simultaneous logarithm lower bound.
+Its exponent has reciprocal-rank dependence and gives a uniform rank profile
+for the whole approximation body.
 -/

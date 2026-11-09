@@ -153,7 +153,7 @@ theorem not_summable_tensorTerm_of_max {Z : ZeroConfig} (hZ : TemperedConfig Z) 
       _ ≤ Λ (j + 1) * (1 / k * (c ^ (2 * k) * ((j : ℝ) + 1) ^ (-σ)) +
             (1 - 1 / k) * ((j : ℝ) + 1) ^ (-(1 + δ))) := mul_le_mul_of_nonneg_left hamgm hΛ
       _ = 1 / k * tensorTerm Z k σ j + (1 - 1 / k) * (Λ (j + 1) * ((j : ℝ) + 1) ^ (-(1 + δ))) := by
-          unfold tensorTerm; push_cast; ring
+          unfold tensorTerm; ring
 
 /-- **The abscissa of every tensor power is `1 + 2kb`.** -/
 theorem summable_tensorTerm_iff_of_max {Z : ZeroConfig} (hZ : TemperedConfig Z) {ρ₀ : ℂ}
@@ -263,10 +263,16 @@ theorem riemannHypothesis_iff_tensorExponent_sublinear :
     have hk0 : (0 : ℝ) < k := by have : 0 < 1 / η := by positivity
                                  linarith
     have habs : |ε * k| = ε * k := abs_of_nonneg (by positivity)
-    have hlt : 1 + |ε * k| < k := by rw [habs]; nlinarith
+    have hk3 : (3 : ℝ) ≤ k := by
+      have : 0 < 1 / η := by positivity
+      linarith
+    have hlt : 1 + |ε * k| < k := by
+      rw [habs]
+      have := mul_le_mul_of_nonneg_right hε2 hk0.le
+      linarith
     have hw := zetaZeroWidth_le_of_primeTraceMoment_le hC hlt
     rw [habs] at hw
-    have hsplit : (1 + ε * k) / (2 * k) = 1 / (2 * k) + ε / 2 := by field_simp; ring
+    have hsplit : (1 + ε * k) / (2 * k) = 1 / (2 * k) + ε / 2 := by field_simp
     have hinv : 1 / (2 * (k : ℝ)) ≤ η / 2 := by
       rw [div_le_iff₀ (by positivity)]
       have : 1 / η ≤ k := by linarith

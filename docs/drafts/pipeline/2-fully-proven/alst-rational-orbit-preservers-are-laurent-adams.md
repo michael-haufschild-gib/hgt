@@ -2,7 +2,7 @@
 
 - **ID:** alst-rational-orbit-preservers-are-laurent-adams
 - **Stage:** 2-fully-proven
-- **Type:** PAPER PROOF; Lean assembly incomplete, not counted
+- **Type:** THEOREM; final Lean audits pending, not counted
 - **Statement:** For a finite prime set containing two distinct primes, every rational self-map defined on the entire prime orbit and preserving it has coordinates `p^(−ib)X_p^n`, with unique `n∈ℤ`, `b∈ℝ`. Real or integer coefficients force `b=0`.
 
 ## Research consequence
@@ -49,7 +49,7 @@ For real coefficients, evaluation at the all-one point makes every `c_p`
 real and unimodular. Squaring gives a common torsion return; two-prime torsion
 rigidity forces `b=0`.
 
-## Formal components and remaining gap
+## Formalization
 | Mathematical component | Lean declaration |
 |---|---|
 | No clock regularity needed | `common_exponential_clock_log_deriv` |

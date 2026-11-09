@@ -68,7 +68,7 @@ theorem exists_pointKernel_bound {β : ℝ → ℂ} (hβ : ContDiff ℝ 2 β)
   have hF' : ‖conj (paperFT β (conj (gammaOf z)))‖ ≤ N * z.im⁻¹ ^ 2 := by
     have hh := hbound (conj (gammaOf z)) (by simpa using hγ)
     simp only [norm_conj] at hh ⊢
-    exact hh.trans (by simpa only [div_eq_mul_inv, one_div] using
+    exact hh.trans (by simpa only [div_eq_mul_inv, one_div, one_mul] using
       mul_le_mul_of_nonneg_left (inverse_normWeight_le z hzim) hN)
   have he : ‖Complex.exp (I * gammaOf z * v)‖ ≤ Real.exp |v| := by
     rw [Complex.norm_exp]
@@ -134,11 +134,16 @@ theorem continuous_slotKernel {β : ℝ → ℂ} (hβ : ContDiff ℝ 2 β)
     have hc : Continuous (fun b : Slot => C * b.2 ^ 4) := by fun_prop
     simpa only [ha, zero_pow (by norm_num : 4 ≠ 0), mul_zero] using hc.tendsto a
   · have hc : ContinuousAt slotPoint a := by
-      have he : slotPoint = fun b : Slot => ((b.1 : ℝ) : ℂ) + (b.2⁻¹ : ℂ) * I := by
+      have he : slotPoint = fun b : Slot => ((b.1 : ℝ) : ℂ) + ((b.2⁻¹ : ℝ) : ℂ) * I := by
         funext b
         apply Complex.ext <;> simp [slotPoint]
       rw [he]
-      fun_prop
+      have hre : Continuous (fun b : Slot => (b.1 : ℝ)) :=
+        continuous_subtype_val.comp continuous_fst
+      have him : ContinuousAt (fun b : Slot => b.2⁻¹) a :=
+        continuous_snd.continuousAt.inv₀ ha
+      exact (Complex.continuous_ofReal.continuousAt.comp hre.continuousAt).add
+        ((Complex.continuous_ofReal.continuousAt.comp him).mul continuousAt_const)
     have hr : Continuous (reflect : ℂ → ℂ) := by unfold reflect; fun_prop
     have hk := continuous_pointKernel hβ.continuous hbc v
     have hp := (hk.continuousAt.comp hc).add (hk.continuousAt.comp (hr.continuousAt.comp hc))

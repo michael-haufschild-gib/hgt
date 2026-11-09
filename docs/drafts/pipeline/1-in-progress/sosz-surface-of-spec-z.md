@@ -94,6 +94,7 @@
 | C64 | Very smooth degrees need an attained top | proved (Lean) | `exists_zeroConfig_verySmooth_signed_nonattained`: for the spline of order `o ≥ 3` and `0 < Θ ≤ ½` a tempered configuration without real zeros, `sup Re ρ = ½ + Θ` not attained, has `(−1)^{o+1} 2 Re S(log d) ≥ −1` at every `d` whose prime factors satisfy `p⁴ ≤ log d`; cubic corollary `exists_zeroConfig_verySmooth_bddBelow_nonattained`. Every prime eventually takes part, so the obstruction of C61 is not finite generation but the number of generators per window. Level `k` returns simultaneously with `log j` for all `j ≤ U_{k+1}^{1/4} = U_k^{1/2}` (Dirichlet, `log M_k = O(U_k^{1/2} log U_k)`); every later level is in phase on each window, so the weights need no ceiling and the heights start at `2^{k+1}` (`neg_one_le_tsum_of_resonant`). With attainment they decide (`onLine_of_bddBelow_verySmooth_of_max`: they contain the `2ᵃ3ᵇ` beyond `log = 81`); for `ζ`, RH ⇔ ZAL ∧ the Stepanov bound at the very smooth degrees (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_verySmooth`), so although every prime eventually divides such a degree they give only AAL. By the same count, windows `U_{k+1} = U_k^{1+η}` allow `(log d)^c`-smooth degrees for every `c < 1` (estimate, not formalized): towers need `π(U^c) log U ≪ U`, i.e. a degree set with `x^{o(1)}` elements; at `c > 1` the `(log x)^c`-smooth integers number `x^{1−1/c+o(1)}` |
 | C65 | Bohr-dense sets sample every attained top | proved (Lean) | `IsBohrDenseAtTop T`: beyond every bound `T ⊂ ℝ` approximates every finite family of phases `e^{iλv}`. `onLine_of_bddBelow_of_isBohrDenseAtTop`: a lower bound `2 Re S ≥ −K` on such `T` puts every zero of a tempered configuration without real zeros on the line if the top is attained. Mechanism: `F_top(u) = Σ_{Re z = b} e_z e^{i Im z·u}` is almost periodic and real (`topTraceC_im`); `F − F_top → 0` and Bohr density give `F_top ≥ 0` on `ℝ` (`topTrace_nonneg_of_isBohrDenseAtTop`); without real zeros its mean is `0` (`bohrMean_topTraceC`), so `F_top = 0` (Bohr uniqueness), against the coefficient `e_{ρ₀−½} ≠ 0`. Sets with arbitrarily long intervals are Bohr-dense (`isBohrDenseAtTop_of_long_intervals`); so for `D ⊂ ℕ` containing every integer of `[x, e^L x]` for arbitrarily large `x, L` (`onLine_of_bddBelow_integer_runs_of_max`), a set that may have density zero and no power-saving gaps. For `ζ`: RH ⇔ ZAL ∧ the Stepanov bound on any runs of integers ⇔ ZAL ∧ an `ℕ`-count with Tate limit `δ_d(1,1)` on every `Γ_1 + Γ_d`, `d` in the runs (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs`, `..._effectiveCounts_integer_runs`). Attained-top sampling needs Bohr density, not density; one Frobenius is not Bohr-dense |
 | C66 | The Stepanov bound has the Vinogradov–Korobov saving | proved (Lean), unconditional | `exists_norm_lagStructure_le_vk`: `‖S(u)‖ ≤ C e^{u/2 − u^{3/5}/(10⁸ log u)}` for `u ≥ e`; `exists_abs_primeWindow_sub_archPoleWindow_le_vk`: `|P(n) − A(n)| ≤ C √n exp(−(log n)^{3/5}/(10⁸ log log n))`. From the corpus region `β ≤ 1 − (log t)^{−2/3}(log log t)^{−5/3}/10⁸` above `t₀` (`exists_re_le_vk`); the budget `6L + u L^{−2/3}(log L)^{−5/3}/10⁸ ≥ u^{3/5}/(10⁸ log u)` (`vk_budget`: for `L ≥ u^{3/5}/log u` the decay of `B̂` pays, below it the width); lower zeros `β ≤ 1 − δ` and `u^{3/5} ≤ δu + δ^{−3/2}`. The exponent `3/5` is that of the zero-free region; the classical width `(log log t)^{−1/3}` would give `(log u)^{−1/5}` |
+| C67 | The other side at every Bohr-dense set | proved (Lean) | `onLine_of_bddAbove_of_isBohrDenseAtTop`: an upper bound `2 Re S ≤ K` on a Bohr-dense set puts every zero of a tempered configuration on the line if the top is attained, real zeros allowed (no masking from above); `onLine_of_bddAbove_long_intervals_of_max` for long runs. `F_top ≤ 0` on `ℝ`; its mean is the coefficient `e_b` at the real exponent (`bohrCoefficient_topTraceC`), `0` or positive (`evenCoeff_spline_pos_of_real`); `e_b − F_top ≥ 0` has mean `0`, so `F_top = e_b = 0`, against `e_{ρ₀−½} ≠ 0`. With C65: Bohr density decides attained tops from both sides, as the sampling weights do (C37, C39) |
 
 ## Big picture
 
@@ -123,7 +124,9 @@ below for every configuration down to its deepest real zero (C45), and from abov
 configuration (C46): the primes, the `pᵏ`, the `nᵏ` with `O(x^{1/k})` elements (C47). Sampling: a weight
 whose series has a pole at `s = 1` and no other singularity on `Re s = 1` sees every attained top layer,
 from `ζ(1 + it) ≠ 0` alone (C35, C38): the primes in a residue class, density-one sets of primes (C44),
-the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). One prime resonates at the heights
+the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). The exact criterion for attained tops is
+Bohr density of the log-degrees, from both sides, real zeros masking only from below (C65, C67): long
+runs of integers `[x, e^L x]` qualify, at density zero and without power-saving gaps. One prime resonates at the heights
 `2πm/log p` and aliases (C33, C52); two cannot resonate together. The attained top cannot be dropped
 at the single degrees of any finitely generated monoid: quartets made resonant by simultaneous
 Dirichlet approximation on successive windows keep the samples bounded below (C58), and so do
@@ -134,9 +137,10 @@ degrees, where every prime takes part (C64). Which side these towers blind is th
 side for the quartic (C62); the primes, infinitely generated with power-saving gaps,
 need no attainment (C45). The heights of C61 are simultaneous returns of the prime logarithms
 (homogeneous Dirichlet), and the tower needs them early: a return of `m` generators to precision
-`1/U` below height `e^{o(U)}`. By the estimates, Dirichlet's bound `(AQ)^m` leaves room for
-`m ≈ U^{1/2−ε}` generators at window `U`, i.e. `(log d)^{1/4−ε}`-smooth degrees (not formalized);
-denser smooth degree sets would need earlier returns of all primes `≤ y`, which the quantitative
+`1/U` below height `e^{o(U)}`. When every later level is in phase on each window the weights need no
+ceiling, and Dirichlet's bound leaves room for the `(log d)^{1/4}`-smooth degrees (C64), for every
+`(log d)^c`-smooth set with `c < 1` by finer windows (estimate): towers live on degree sets with
+`x^{o(1)}` elements. Denser smooth degree sets would need earlier returns of all primes `≤ y`, which the quantitative
 Kronecker conjecture of review 0811 §2.11 (B97: late returns) excludes, consistently with the integer
 degrees deciding without attainment (C18). Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
 the monoid `⟨p, q⟩` decide RH with no attainment, their lags being dense (C51), and so do their
@@ -160,7 +164,10 @@ of the planes of one degree set with power-saving gaps (C48), i.e. a reason for 
 smoothed point counts there; or, two-sided, a binary count on each plane of the rank-two lattice
 `p^ℤq^ℤ` of two Frobenii (C51), or one-sided on the effective classes `Γ_m + Γ_n`, `m, n ∈ ⟨p, q⟩`
 (C56). Counts on the single-degree classes `Γ_1 + Γ_{pᵃqᵇ}` alone give only the abscissa law, and
-for general configurations nothing more (C61). Positivity of Weil's form on their group ring
+for general configurations nothing more (C61); so do counts at the very smooth degrees (C64), and
+counts on any Bohr-dense set of degrees, such as runs of integers, give the abscissa law (C65). The
+support of the count decides which half of RH it carries: Bohr density gives AAL, power-saving gaps
+give RH. Positivity of Weil's form on their group ring
 `ℤ[x^{±1}, y^{±1}]`,
 a positive measure on `T²` (`ArithmeticPositiveDuality`), is the corresponding Rosati positivity.
 
@@ -222,8 +229,12 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    unbounded length, and window means of `|A_k|` converge uniformly to its Bohr mean `> 0`
    (estimate, not formalized). The known countermodels (C58, C61, C64, harmonic clusters) all place
    their negative values in holes resonant with the heights, periodic in `log d`. Open: whether runs
-   of integers decide every configuration without attainment; the remaining configurations spread the
-   mass at each scale over many depths, where no level dominates. A yes answers B136 in the negative.
+   of integers decide every configuration without attainment. Route (estimate): on a run `R` at scale
+   `U`, `F ≥ −K`, `|F| ≤ S_U = Σ|a_z|` and a small weighted mean give `Σ|a_z|² ≲ K S_U`, `a_z = e_z e^{x_z U}`;
+   so the mass must be spread over `≳ |e_{z₀}|e^{x₀U}/K` zeros of size `≍ K`, which the decay of `B̂`
+   puts below height `e^{aU/8}`, at a cost `≳ e^{(x₀ − a/4)U}` in `Σ m/(1 + |γ|²)`: temperedness fails
+   once `x₀ > a/4`. The missing step is the `L²` lower bound on `R` when heights cluster within `1/|R|`.
+   A yes answers B136 in the negative.
 
 ## Log
-- 2026-11-08 — created; C1–C66 formalized in `SurfaceOfSpecZ/` (sixty-six modules)
+- 2026-11-08 — created; C1–C67 formalized in `SurfaceOfSpecZ/` (sixty-seven modules)

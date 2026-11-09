@@ -113,8 +113,16 @@ parameters. The integer system and terminal count use `q`; only analytic
 majorants use `Q=kq`. Thus the rank-dependent root degree survives the
 complete argument. Direct checks and the capstone's transitive axiom audit
 passed. Proof: [CDG-SIM](../3-formalized/cdg-simultaneous-logarithm-bounds.md).
-A simpler dimension-and-rank exponent and the uniform approximation rank
-profile are the next targets in [CDG-EXP](cdg-rank-sensitive-exponent.md).
+
+`ReciprocalRankBounds.lean` bounds `C′+1` by
+`U^(100h(k+1))`, where `U=10⁴(W+1)(k+1)²`, `h=floor((k−r)/r)+1`.
+The exponent degree times rank is at most `100k(k+1)` and is linear in
+dimension at half rank. Below the resulting uniform floor, the entire
+height-`H` approximation body spans at most `r−1` rational dimensions and
+has at most `(2H+1)^(r−1)` integer points. The maximum-floor theorem retains
+the earlier scalar and full-rank bounds. Direct verification and six
+transitive axiom audits passed.
+Proof: [CDG-EXP](../3-formalized/cdg-rank-sensitive-exponent.md).
 
 ## Open core
 

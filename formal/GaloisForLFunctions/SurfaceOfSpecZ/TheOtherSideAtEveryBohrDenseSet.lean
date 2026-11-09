@@ -170,7 +170,7 @@ theorem onLine_of_bddAbove_of_isBohrDenseAtTop {T : Set ℝ} (hT : IsBohrDenseAt
   have hmean : bohrMean g = c := by
     have h0 := bohrCoefficient_topTraceC (b := b) hZ (z₁ := (b : ℂ)) (by simp)
     rw [Complex.ofReal_im] at h0
-    rw [← h0]
+    rw [hcdef, ← h0, hgdef]
     unfold bohrCoefficient
     congr 1
     funext t
@@ -199,7 +199,7 @@ theorem onLine_of_bddAbove_of_isBohrDenseAtTop {T : Set ℝ} (hT : IsBohrDenseAt
   have hc0 : c = 0 := by
     have h1 := hgre 0
     rw [hgc' 0] at h1
-    exact Complex.ext (by linarith) hcim
+    exact Complex.ext (by rw [Complex.zero_re]; linarith) (by rw [Complex.zero_im]; exact hcim)
   -- then `F_top = 0`, against the top coefficient
   have hz₀re : (ρ₀ - 1 / 2).re = b := by simp [hbdef]
   have hcoef := bohrCoefficient_topTraceC (b := b) hZ hz₀re

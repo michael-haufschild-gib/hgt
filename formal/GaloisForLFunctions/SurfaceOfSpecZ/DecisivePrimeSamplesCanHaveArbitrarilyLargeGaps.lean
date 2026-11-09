@@ -25,7 +25,7 @@ theorem exists_prime_trace_lt (Z : ZeroConfig) (hZ : TemperedConfig Z)
       2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re < -T := by
   classical
   by_contra h
-  push_neg at h
+  push Not at h
   let f : ℕ → ℝ := fun p => 2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re
   let B := max T (∑ p ∈ Finset.range A, |f p|)
   have hb : ∀ p : ℕ, p.Prime → -B ≤ f p := by
@@ -139,7 +139,7 @@ theorem onLine_of_bddBelow_decisiveSample (Z : ZeroConfig) (hZ : TemperedConfig 
       -T ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re) :
     ∀ z ∈ Z.carrier, z.re = 1 / 2 := by
   by_contra h
-  push_neg at h
+  push Not at h
   obtain ⟨K, hK⟩ := exists_family_encoding Z hZ hnoreal h
   obtain ⟨k, hk⟩ := exists_nat_gt (max (K : ℝ) (2 * T))
   have hKk : K ≤ k := by exact_mod_cast (le_max_left (K : ℝ) (2 * T)).trans hk.le
@@ -148,7 +148,7 @@ theorem onLine_of_bddBelow_decisiveSample (Z : ZeroConfig) (hZ : TemperedConfig 
   have hbound := hT p ⟨k, hp⟩
   rw [traceSum_encoding cubic_contDiff cubic_compact (Real.log p) Z hZ hnoreal] at hneg
   have hkT : 2 * T < (k : ℝ) := (le_max_right (K : ℝ) (2 * T)).trans_lt hk
-  simp only [Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero] at hneg
+  simp only [two_mul, Complex.add_re] at hneg
   linarith
 /-- The multiplicative ratios of omitted intervals are unbounded. -/
 theorem decisiveSample_has_large_gaps (R N : ℕ) :
@@ -168,7 +168,7 @@ theorem not_powGaps_decisiveSample {θ : ℝ} (hθ : θ < 1) :
   rintro ⟨_, M, X, _, hgap⟩
   have hlim : Tendsto (fun x : ℝ => M * (x ^ (1 - θ))⁻¹) atTop (𝓝 0) := by
     have h := (tendsto_inv_atTop_zero.comp (tendsto_rpow_atTop (by linarith : 0 < 1 - θ))).const_mul M
-    simpa only [mul_zero] using h
+    simpa only [mul_zero, Function.comp_apply] using h
   obtain ⟨Y, hY⟩ := eventually_atTop.mp (hlim.eventually_lt_const (by norm_num : (0 : ℝ) < 1 / 4))
   obtain ⟨k, hk⟩ := exists_nat_gt (max X Y)
   have hcut : (k : ℝ) + 1 ≤ cut k := by exact_mod_cast cut_ge k

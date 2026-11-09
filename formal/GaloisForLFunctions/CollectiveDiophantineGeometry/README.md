@@ -225,6 +225,33 @@ It does not yet count returns or remove the height-times-phase-error loss
 in applying forms to constant-precision returns. The full-rank determinant
 floor and scalar reductions remain useful additional bounds.
 
+### Reciprocal-rank approximation profile
+
+[ReciprocalRankBounds.lean](ReciprocalRankBounds.lean) gives a common bound
+for the full simultaneous exponent. With `h=floor((k−r)/r)+1`, put
+
+`U=10⁴(W+1)(k+1)²`, `C=U^(100h(k+1))`,
+`Δ_r(H)=exp(−C(log(r!H^r)+2))/(r·r!H^(r−1))`.
+
+Every rank-`r` integer coefficient matrix of height `H≥1` has a form of
+size at least `Δ_r(H)`. For integral `H`, all vectors in the height-`H`
+box whose forms have size below `ε≤Δ_r(H)` span at most `r−1` rational
+dimensions and number at most `(2H+1)^(r−1)`.
+
+The exponent degree `e=100h(k+1)` satisfies `re≤100k(k+1)`.
+At rank at least half the dimension, `e≤200(k+1)`; strictly above half
+rank, `e=100(k+1)`. The proof bounds the exponential step factor directly
+from its binary-logarithm formula, retaining the reciprocal-rank gain
+through all analytic parameters. Taking the maximum of this floor and
+the scalar-elimination floor preserves both arithmetic regimes.
+
+This controls the whole approximation body uniformly in coefficient
+height and dimension. It does not count orbit returns. At fixed Fourier
+height, elementary separation of distinct smooth rational numbers can
+already be much stronger than this transcendence floor; a useful return
+estimate must exploit a regime or structure that survives that comparison.
+The complete proof is [CDG-EXP](../../../docs/drafts/pipeline/3-formalized/cdg-rank-sensitive-exponent.md).
+
 ## Fixed-height mass calibration
 
 [FixedHeightPrimeMass.lean](FixedHeightPrimeMass.lean) proves an exact law
