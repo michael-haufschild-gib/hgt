@@ -1,10 +1,10 @@
 # Conditioned rough variance of the continued Euler current
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Euler–FE transport: coupling the full arithmetic mean to analytic continuation.
 
-## Target
+## Theorem
 
 Under `¬AAL`, find `1/2<σ<1` below an actual exceptional abscissa such that,
 for every finite smooth head probe `R(t)=Σ_S w_s s^(it)`,
@@ -16,7 +16,7 @@ Here `C_Y(s)=Σ_{p<Y}log p/(p^s−1)`, `W₀=Σ_S|w_s|²`, and
 Both the continued current and the infinite rough arithmetic tail are literal.
 No phase-return or approximation premise may be added.
 
-## Mechanism and obligations
+## Proof
 
 1. Strengthen raw-prime passage to damping `1/T` uniformly over
    `T≤Im s≤2T`, `σ≤Re s≤1`. The complementary Gamma field has error
@@ -55,8 +55,21 @@ convergence then removes its Gaussian damping uniformly in height.
 This mean-square target still does not prove pointwise control at every
 prime return, same-depth zero replication, `LinAt C`, or AAL.
 
-Formalization home:
-`EulerFETransportTheory/TheContinuedCurrentRetainsTheRoughVariance.lean`.
-The terminal continued-current mean and its finite Euler-head identification
-remain under formalization. Low exceptional zeros require a regularity check
-before transferring means; an unrestricted prefix integral need not be admitted.
+## Formalization
+
+`EulerFETransportTheory/TheContinuedCurrentRetainsTheRoughVariance.lean`:
+
+- `summable_norm_smallPrimeVonMangoldtCoeff`.
+- `smallPrime_gaussianDamping_uniformly_vanishes`.
+- `gaussianDampedPrimeSum_eq_heightCurrent`.
+- `gaussianDampedPrimeSum_eq_small_add_rough`.
+- `not_asymptoticAbscissaLaw_has_regular_roughPassage`.
+- `not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean`.
+- `smallPrime_heightSeries_eq_eulerCurrent`.
+- `not_asymptoticAbscissaLaw_has_conditioned_roughMean`.
+
+The final theorem retains a positive height above which the same observation
+line is zero-free. Direct `lake --old env lean` checking and all eight
+transitive axiom audits pass with only `propext`, `Classical.choice`, and
+`Quot.sound`. Low exceptional zeros can obstruct an unrestricted prefix
+integral; the conclusion uses escaping dyadic windows.

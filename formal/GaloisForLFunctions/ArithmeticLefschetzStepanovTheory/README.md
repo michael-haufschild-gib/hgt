@@ -1,7 +1,7 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`; 14 modules. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 16 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -267,6 +267,17 @@ exactly. Consequently, complex vanishing to order `r` on the full grid is
 precisely membership in the ordinary power `J_q^r` over `ℤ`, where
 `J_q = (u_p^q−1 : p∈P)` (`fullTorsionMultiplicity_iff_mem_gridIdeal_pow`).
 There is no denominator obstruction to integral descent on this grid.
+
+Integral torsion interpolation has an exact length cost. Removing Newton
+coordinates of quotient order at least `r` gives the unique reduced
+representative modulo `J_q^r`, and it minimizes length in its class. For
+nonempty prime support and `r>0`, every integral class has a representative
+of length at most `N` exactly when
+`N ≥ (∏_p p^(q−1)) p_max^(q(r−1))`
+(`universal_torsion_interpolation_iff_cutoff`). The least prime controls the
+first nonzero vanishing auxiliary; the largest prime controls the last
+necessary interpolation coordinate. Order zero has cutoff `0`; empty prime
+support at positive order has cutoff `1`.
 
 The two halves of Weil's proof meet exactly at the fixed points: the prime Lefschetz numbers of the
 Frobenius graphs of degree `≤ N` are the degree of the minimal integer auxiliary vanishing at their

@@ -88,7 +88,7 @@
 | C58 | Two Frobenii need an attained top at single degrees | proved (Lean) | `exists_twoPrime_samples_bddBelow_nonattained`: in the positive-weight model (as `RHTower.WeilLagSingleBaseWolffConfiguration`) there are points `½ ± x_k ± iγ_k`, `x_k ↑ Θ` not attained, `γ_k → ∞`, positive summable weights, whose symmetric samples are `≥ −2` at every `a log p + b log q`. Recursive weights/windows `c_{k+1} = (c_k/16)e^{−ΘU_k}`, `U_{k+1} = max(U_k + 1, log(16/c_{k+1})/(x_{k+1} − x_k))` make quartets `k, k+1` dominate on `[U_k, U_{k+1}]`; `γ_k = 2πN_k/log p` with Dirichlet's `|N_k log q/log p − r_k| ≤ 1/Q_k`, `Q_k ≍ U_{k+1}`, keeps `cos(γ_kλ) ≥ ½` there (`half_le_cos_freq`). C50's attainment is sharp; the pairs of C56/C57 are what removes it. `exists_finPrimes_samples_bddBelow_nonattained`: the same at the degrees `Π P_i^{a_i}` of any finite set of primes (simultaneous Dirichlet): no finitely generated monoid of degrees removes the attained top, the primes with power-saving gaps do (C45) |
 | C59 | Stepanov bounds produce the asymptotic abscissa law | proved (Lean) | `asymptoticAbscissaLaw_of_noDeepest` (no deepest off-line zero ⇒ `RHTower.AsymptoticAbscissaLaw`, via `asymptoticAbscissaLaw_of_not_attainedTop`); producers from a one-sided bound at the primes `≡ a (mod q)` (both sides), at the primes off a set of relative density zero, at the `pᵃqᵇ` of two primes. These sets are not known to give RH (other `L`-functions, no power-saving gaps, C58), but they give the abscissa law; no resonant steps are excluded. Since RH = `ZerosApproachLine` ∧ AAL, each bound is RH exactly when the zeros approach the line (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_primes_mod`, from above, at the `pᵃqᵇ`) |
 | C60 | The width law at every sampling set | proved (Lean) | `re_mem_of_bddBelow_rpow_of_samplingWeight`: a lower bound `−K n^s` at a sampling weight puts a real zero in every attained top deeper than `s` (`F ≥ −|K|n^{−(b−s)}`, `Σ w n^{−σ−(b−s)} = o(Σ w n^{−σ})`). For `ζ`: bounds `−Kp^s` at `p ≡ a (mod q)`, at density-one primes, `−Ke^{sλ}` at the `pᵃqᵇ`, leave no deepest zero right of `½ + s`; under `ZerosApproachLine`, `zetaZeroWidth ≤ s` iff such a bound holds (`zetaZeroWidth_le_iff_bddBelow_rpow_primes_mod_of_zerosApproachLine` and companions). Tensor powers at a residue class: moments `Σ_{p≤N, p≡a} log p (2 Re S)^{2k} ≤ C_k N^{1+A}` uniform in `k` give AAL, and with ZAL RH (`riemannHypothesis_iff_zerosApproachLine_and_moments_primes_mod`). Sampling sets carry the width law and Deligne's argument modulo ZAL, gap sets without it (C49, C53) |
-| C61 | Genuine zero configurations need an attained top at two Frobenii | proved (Lean) | `exists_zeroConfig_twoPrimes_bddBelow_nonattained`: for all primes `p, q` and `0 < Θ ≤ ½` a tempered `ZeroConfig` without real zeros, `sup Re ρ = ½ + Θ` not attained, with `2 Re S(a log p + b log q) ≥ −5` for all `a, b`; the hypothesis `hmax` of C50 cannot be dropped. Mechanism (`HeightsAtTheZerosOfTheSplineAreInPhase`): heights at the zeros `2πM` of `B̂`, where `sinc(2πM − ix)⁸ = sinh⁸x/(2πM − ix)⁸` has phase `O(x/M)`; resonance then needs only homogeneous Dirichlet above a height (`M ∈ [A, 2A + (2AQ)²]`), with explicit heights, so multiplicity one keeps the configuration tempered; windows `U_k = V^{2^k}`, weights in `[8e^{−δ_{k−1}U_k}, 2^{−k}e^{−ΘU_{k−1}}]`, dominance on each window (`neg_five_le_tsum_of_window`) |
+| C61 | Genuine zero configurations need an attained top at finitely many Frobenii | proved (Lean) | `exists_zeroConfig_finPrimes_bddBelow_nonattained`: for primes `P₁, …, P_r` and `0 < Θ ≤ ½` a tempered `ZeroConfig` without real zeros, `sup Re ρ = ½ + Θ` not attained, with `2 Re S(Σ aᵢ log Pᵢ) ≥ −5` for all `a ∈ ℕ^r`; for `r = 2` (`exists_zeroConfig_twoPrimes_bddBelow_nonattained`) the hypothesis `hmax` of C50 cannot be dropped. Mechanism (`HeightsAtTheZerosOfTheSplineAreInPhase`): heights at the zeros `2πM` of `B̂`, where `sinc(2πM − ix)⁸ = sinh⁸x/(2πM − ix)⁸` has phase `O(x/M)`; resonance then needs only homogeneous Dirichlet above a height (`M ∈ [A, 2A + (2AQ)²]`), with explicit heights, so multiplicity one keeps the configuration tempered; windows `U_k = V^{2^k}`, weights in `[8e^{−δ_{k−1}U_k}, 2^{−k}e^{−ΘU_{k−1}}]`, dominance on each window (`neg_five_le_tsum_of_window`) |
 
 ## Big picture
 
@@ -122,9 +122,15 @@ the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). One prime resonat
 `2πm/log p` and aliases (C33, C52); two cannot resonate together. The attained top cannot be dropped
 at the single degrees of any finitely generated monoid: quartets made resonant by simultaneous
 Dirichlet approximation on successive windows keep the samples bounded below (C58), and so do
-genuine tempered configurations at the `pᵃqᵇ`, their heights placed at the zeros of `B̂` where the
-spline coefficients are in phase (C61); the primes, infinitely generated with power-saving gaps,
-need no attainment (C45). Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
+genuine tempered configurations at the degrees of any finite set of primes, their heights placed at
+the zeros of `B̂` where the spline coefficients are in phase (C61); the primes, infinitely generated with power-saving gaps,
+need no attainment (C45). The heights of C61 are simultaneous returns of the prime logarithms
+(homogeneous Dirichlet), and the tower needs them early: a return of `m` generators to precision
+`1/U` below height `e^{o(U)}`. By the estimates, Dirichlet's bound `(AQ)^m` leaves room for
+`m ≈ U^{1/2−ε}` generators at window `U`, i.e. `(log d)^{1/4−ε}`-smooth degrees (not formalized);
+denser smooth degree sets would need earlier returns of all primes `≤ y`, which the quantitative
+Kronecker conjecture of review 0811 §2.11 (B97: late returns) excludes, consistently with the integer
+degrees deciding without attainment (C18). Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
 the monoid `⟨p, q⟩` decide RH with no attainment, their lags being dense (C51), and so do their
 effective classes `Γ_m + Γ_n`, one-sided (C56), for every configuration and for `L(s, χ)` (C57);
 positivity on the
@@ -182,17 +188,19 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
 4. Sparser degree sets: gaps with a power saving suffice for every configuration without real zeros
    (C45); sampling weights need only a pole at `1` and no other singularity on `Re s = 1`, but an
    attained top (C38, C44); one prime alone is not a sampling set (C52) and its degrees `qⁿ` alias
-   every height `2πm/log q` (C33). At the `pᵃqᵇ` attainment is necessary for genuine configurations
-   (C61), and at every finitely generated monoid in the positive-weight model (C58); the pairs
+   every height `2πm/log q` (C33). At the degrees of every finite set of primes attainment is
+   necessary, for genuine configurations (C61) as in the positive-weight model (C58); the pairs
    `log m − log n` are dense and need none (C56, C57). Open: whether attainment can be removed for
    every configuration at the primes in a residue class (their gaps need zero-density estimates for
    every `L(s, χ)` mod `q`) or at density-one sets of primes; for `ζ` at the sampling sets, what a
    bound gives without attainment is the abscissa law (C59, C60). From above at the `pᵃqᵇ` the
    construction of C61 needs coefficients of phase `π` at resonant heights, i.e. heights with
-   `γ log p, γ log q ≡ 0 (mod 2π)` at a prescribed offset from `πℤ`: an inhomogeneous Kronecker
-   problem on `(1, log p, log q)`, quantitatively a transcendence measure of `eⁿ` against `⟨p, q⟩`,
-   while the lower side needs only homogeneous Dirichlet. Whether the upper side at the `pᵃqᵇ` needs
-   attainment is open.
+   `γ log p, γ log q ≡ 0 (mod 2π)` at a prescribed offset from `πℤ`: inhomogeneous Kronecker on
+   `(1, log p, log q)` with polynomial return heights, i.e. an effective inhomogeneous Baker bound
+   `|2c + a log p + b log q| ≥ H^{−C}`, while the lower side needs only homogeneous Dirichlet. The
+   corpus has the homogeneous prime-log bound (`effectiveBakerBound_holds`) and the qualitative
+   inhomogeneous theorem (`bakerTheorem_holds`), not the effective inhomogeneous one; whether the upper
+   side at the `pᵃqᵇ` needs attainment is open.
 
 ## Log
-- 2026-11-08 — created; C1–C61 formalized in `SurfaceOfSpecZ/` (sixty-one modules)
+- 2026-11-08 — created; C1–C61 formalized in `SurfaceOfSpecZ/` (sixty-two modules)

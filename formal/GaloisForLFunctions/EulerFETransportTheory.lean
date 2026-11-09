@@ -39,6 +39,7 @@ import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAcrossDya
 import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAtInverseHeight
 import GaloisForLFunctions.EulerFETransportTheory.TheHeadDoesNotChangeTheInfiniteRoughMean
 import GaloisForLFunctions.EulerFETransportTheory.TheGaussianRoughMeanSurvivesVanishingDamping
+import GaloisForLFunctions.EulerFETransportTheory.TheContinuedCurrentRetainsTheRoughVariance
 
 /-!
 # Euler–functional-equation transport
@@ -116,4 +117,10 @@ retains its exact diagonal mean square as damping vanishes at reciprocal
 observation height, on both initial and escaping dyadic windows.
 The literal rough von Mangoldt coefficients are admitted for every abscissa
 greater than one half; their variance vanishes as the prime cutoff grows.
+The small-prime series, including all prime powers, is absolutely admitted
+at every positive abscissa and equals the finite Euler logarithmic current.
+Under failure of AAL, the continued current after adding back this head
+has exactly the same conditioned rough variance on escaping dyadic windows.
+One line below an exceptional abscissa serves every fixed head probe and
+is zero-free above a finite height.
 -/

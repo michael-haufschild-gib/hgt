@@ -137,8 +137,13 @@ the exact mean-square law for the entire rough Gaussian current under any
 fixed smooth head probe, with damping `1/T` on both `[0,T]` and `[T,2T]`.
 The literal von Mangoldt tail is admitted for every `σ>1/2`; its variance
 vanishes as the prime cutoff grows. The error retains explicit weighted
-head dependence. Seven terminal standard-axiom audits pass. Matching this
-mean to the continued current and obtaining same-depth replication remain open.
+head dependence. Seven terminal standard-axiom audits pass.
+
+`../3-formalized/euler-fe-continued-conditioned-rough-mean.md` identifies this
+mean with the actual continued current after adding its complete finite
+Euler head. One high zero-free line below an exceptional abscissa serves
+every cutoff and fixed smooth probe. All eight terminal axiom audits are
+standard. Joint phase-return selection and same-depth replication remain open.
 
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`

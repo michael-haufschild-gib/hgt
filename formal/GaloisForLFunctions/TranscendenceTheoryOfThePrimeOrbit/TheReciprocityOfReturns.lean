@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.ZetaSmoothedLandauFormula
+import Zeta23.Final
 import GaloisForLFunctions.RHTower.IsolatedDeepZeroWeilDetection
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.SurvivalAtADeepReturn
 
@@ -170,20 +170,54 @@ theorem tendsto_finiteLayer_footprint {φ : ℝ → ℂ} {a : ℝ} (hφ : ContDi
 
 /-! ## The Gamma term -/
 
-/-- **The Gamma term grows at most like `log t`.** -/
-theorem exists_norm_gammaTerm_le {φ : ℝ → ℂ} {a : ℝ} (hφ : ContDiff ℝ 2 φ)
-    (hsupp : ∀ u, φ u ≠ 0 → |u| ≤ a) :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ t : ℝ, ‖gammaTerm φ t‖ ≤ K * (1 + Real.log (2 + |t|)) := by
-  obtain ⟨A, hA⟩ := RHTower.exists_abs_mu_le
+/-- `|μ(τ)| ≤ A + log(2 + |τ|)`. -/
+theorem exists_abs_mu_le' : ∃ A : ℝ, ∀ τ : ℝ, |mu τ| ≤ A + Real.log (2 + |τ|) := by
+  obtain ⟨C, hC⟩ := gammaFacts.stirling
+  obtain ⟨B, hB⟩ := IsCompact.exists_bound_of_continuousOn (isCompact_Icc (a := (-1 : ℝ)) (b := 1))
+    gammaFacts.smooth.continuous.continuousOn
+  refine ⟨max (|C| + Real.log (2 * π)) B, fun τ => ?_⟩
+  have hlog0 : 0 ≤ Real.log (2 + |τ|) := Real.log_nonneg (by linarith [abs_nonneg τ])
+  rcases le_or_gt |τ| 1 with h | h
+  · have hτ : τ ∈ Set.Icc (-1 : ℝ) 1 := ⟨by linarith [neg_abs_le τ], by linarith [le_abs_self τ]⟩
+    have := hB τ hτ
+    rw [Real.norm_eq_abs] at this
+    linarith [le_max_right (|C| + Real.log (2 * π)) B]
+  · have h1 : 1 ≤ |τ| := h.le
+    have hs := hC τ h1
+    have hτ2 : (1 : ℝ) ≤ τ ^ 2 := by nlinarith [sq_abs τ]
+    have hCτ : C / τ ^ 2 ≤ |C| := by
+      rw [div_le_iff₀ (by positivity)]
+      nlinarith [le_abs_self C, abs_nonneg C]
+    have hpi : 0 < 2 * π := by positivity
+    have hlogτ : 0 ≤ Real.log |τ| := Real.log_nonneg h1
+    have hlogpi : 0 ≤ Real.log (2 * π) := Real.log_nonneg (by linarith [Real.pi_gt_three])
+    have habs : |Real.log (|τ| / (2 * π))| ≤ Real.log (2 + |τ|) + Real.log (2 * π) := by
+      rw [Real.log_div (by linarith) hpi.ne']
+      have : Real.log |τ| ≤ Real.log (2 + |τ|) := Real.log_le_log (by linarith) (by linarith)
+      rw [abs_le]; constructor <;> linarith
+    have hfac : |(1 / (2 * π)) * Real.log (|τ| / (2 * π))| ≤ |Real.log (|τ| / (2 * π))| := by
+      rw [abs_mul, abs_of_pos (by positivity)]
+      have : 1 / (2 * π) ≤ 1 := by rw [div_le_one hpi]; linarith [Real.pi_gt_three]
+      nlinarith [abs_nonneg (Real.log (|τ| / (2 * π)))]
+    have := abs_sub_abs_le_abs_sub (mu τ) ((1 / (2 * π)) * Real.log (|τ| / (2 * π)))
+    linarith [le_max_left (|C| + Real.log (2 * π)) B]
+
+
+/-- **The Gamma term grows at most like `log t`**, with a constant `C_φ K` uniform in `φ`. -/
+theorem exists_norm_gammaTerm_le :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (φ : ℝ → ℂ) (a : ℝ), ContDiff ℝ 2 φ → (∀ u, φ u ≠ 0 → |u| ≤ a) →
+      ∀ t : ℝ, ‖gammaTerm φ t‖ ≤ decayMass φ * K * (1 + Real.log (2 + |t|)) := by
+  obtain ⟨A, hA⟩ := exists_abs_mu_le'
   set A' := max A 0
-  set C := decayMass φ
-  have hC := decayMass_nonneg φ
   have hInt : Integrable (fun v : ℝ => (1 + |v|) ^ (-(3 / 2 : ℝ))) := by
     have := integrable_one_add_norm (E := ℝ) (μ := volume) (r := 3 / 2) (by norm_num)
     simpa [Real.norm_eq_abs] using this
   set K₀ := ∫ v : ℝ, (1 + |v|) ^ (-(3 / 2 : ℝ))
   have hK₀ : 0 ≤ K₀ := integral_nonneg fun v => by positivity
-  refine ⟨C * K₀ * (A' + 2), by positivity, fun t => ?_⟩
+  have hA0' : 0 ≤ A' := le_max_right _ _
+  refine ⟨K₀ * (A' + 2), by positivity, fun φ a hφ hsupp t => ?_⟩
+  set C := decayMass φ
+  have hC := decayMass_nonneg φ
   set L := Real.log (2 + |t|)
   have hL : 0 ≤ L := Real.log_nonneg (by linarith [abs_nonneg t])
   -- the majorant
@@ -237,9 +271,9 @@ theorem exists_norm_gammaTerm_le {φ : ℝ → ℂ} {a : ℝ} (hφ : ContDiff �
   unfold gammaTerm
   calc ‖∫ τ : ℝ, paperFT φ ((τ : ℂ) - t) * (mu τ : ℂ)‖ ≤ C * (A' + L + 2) * K₀ :=
         hnorm.trans (hmono.trans hgint.le)
-    _ ≤ C * K₀ * (A' + 2) * (1 + L) := by
+    _ ≤ C * (K₀ * (A' + 2)) * (1 + L) := by
         have hA0 : 0 ≤ A' := le_max_right _ _
-        have e : C * K₀ * (A' + 2) * (1 + L) - C * (A' + L + 2) * K₀ = C * K₀ * (A' + 1) * L := by
+        have e : C * (K₀ * (A' + 2)) * (1 + L) - C * (A' + L + 2) * K₀ = C * K₀ * (A' + 1) * L := by
           ring
         have : 0 ≤ C * K₀ * (A' + 1) * L := by positivity
         linarith

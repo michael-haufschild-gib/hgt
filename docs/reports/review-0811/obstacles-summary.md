@@ -668,7 +668,17 @@ for every `σ>1/2`, and their variance tends to zero as the prime cutoff grows.
 `TheHeadDoesNotChangeTheInfiniteRoughMean.lean` and
 `TheGaussianRoughMeanSurvivesVanishingDamping.lean` retain the entire series;
 all seven terminal axiom audits are standard. These unconditional mean laws
-do not yet couple the continued Euler current to same-depth zero replication.
+do not by themselves give same-depth zero replication.
+
+**Conditioned variance of the continued current [L].** Under `¬AAL`, one line
+`1/2<σ<Re ρ<1`, zero-free above a finite height, satisfies
+`T⁻¹∫_T^(2T)|R(t)|²|ζ′/ζ(σ+it)+Σ_{p<Y}log p/(p^(σ+it)−1)|²dt → W₀A_Y(σ)`
+for every fixed smooth head probe. The same line serves every cutoff and
+probe, and `A_Y(σ)→0` as `Y→∞`. Absolute admission of all small-prime powers,
+their exact geometric sum, and fixed-window Gaussian passage identify this
+literal continued observable. `TheContinuedCurrentRetainsTheRoughVariance.lean`
+proves the law; all eight terminal axiom audits are standard. Joint return
+selection and same-depth zero replication remain open.
 
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.

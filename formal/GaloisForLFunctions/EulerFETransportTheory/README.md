@@ -520,9 +520,35 @@ do not assert pointwise control at every prime return.
 through finite mean-value brackets.
 `TheGaussianRoughMeanSurvivesVanishingDamping.lean` proves both limits and
 the arithmetic specialization. The dyadic passage above matches its damping
-scale. Transferring this conditioned mean to the continued Euler current
-through the small-prime split remains open; same-depth zero transport is a
-further obligation.
+scale and permits the continued-current identification below.
+
+### The continued current retains the rough variance
+
+Under `¬AAL`, one line `1/2<σ<1`, below an actual exceptional abscissa and
+zero-free above a finite height, satisfies for every fixed smooth head probe:
+
+    C_Y(s)=Σ_{p<Y}log p/(p^s−1),
+    J_Y(t)=ζ′/ζ(σ+it)+C_Y(σ+it),
+    T⁻¹∫_T^(2T)|R(t)|²|J_Y(t)|²dt → W₀ A_Y(σ).
+
+Here `A_Y(σ)` is the complete rough von Mangoldt square mass above, tending
+to zero as `Y→∞`. The line and its zero-free height are independent of `Y`
+and the probe. The arithmetic observable has no Gaussian damping or divisor
+counterterm.
+
+All powers of the finitely many small primes are absolutely summable at
+every positive abscissa. Their Gaussian damping disappears uniformly in
+height; prime-power reindexing identifies their sum with `C_Y`. The fixed
+dyadic passage then makes `J_Y` uniformly the negative rough Gaussian current.
+Conjugation matches its negative phases to the arithmetic mean theorem.
+The bounded second mean controls the cross term in this approximation.
+
+`TheContinuedCurrentRetainsTheRoughVariance.lean` proves this law, retaining
+the high zero-free line. Low exceptional zeros may obstruct an initial-window
+integral, so the continued-current conclusion uses escaping windows. Fixed
+head conditioning is now coupled to the full continued current; selecting
+joint prime-phase returns and obtaining same-depth zero transport remain
+further obligations.
 
 ### Conductor-normalized height reflection
 

@@ -28,8 +28,9 @@ One Mellin recursion bounds the continuum, whenever `Im s≥T≥1`, by
 `O((1+log(2T))/T)` on the separated high strip. Each error vanishes uniformly.
 
 This supplies the damping regime needed by the infinite rough mean theorem.
-Transferring that mean through the small-prime split remains a separate
-obligation; no new zero or replication law follows from passage alone.
+The small-prime transfer is proved in
+`euler-fe-continued-conditioned-rough-mean.md`; no new zero or replication
+law follows from passage alone.
 
 ## Formalization
 

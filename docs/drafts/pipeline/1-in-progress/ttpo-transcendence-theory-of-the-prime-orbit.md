@@ -19,17 +19,19 @@ No sign, spectral or positivity input (C1). No computations.
 ## Modules
 | # | Module | Agenda | Content | Status |
 |---|---|---|---|---|
-| 1 | TheReturnFormDuality | Q1, Q2 | return ⇒ forms near ℤ; window exclusion; rounded system matches bounded-height forms and returns exactly (breadth cap) | open |
-| 2 | LinearFormsWithExplicitDependenceOnTheirNumber | T1, M2, Q2 | explicit Fel'dman parameters; explicit `C(k, W)`; pigeonhole necessity `C ≥ k − 1` | open |
-| 3 | TheDepthLawOfReturns | Q1, M1, M2, C3 | Baker ⇒ `R(P, δ) ≥ cδ^{−a}`, uniform over subsets of primes `≤ y` | open |
-| 4 | SurvivalAtADeepReturn | Q3, T2 | jets at returns = jets at 0 up to `δ`; order one survives below explicit Baker threshold | open |
-| 5 | Turán module | Q4, T3, M5 | window theorem for the finite-rank part; obstruction on the remainder | open |
-| 6 | Reciprocity module | T4 | AFE / Estermann reflection along the orbit | open |
-| 7 | TheQuestionsOfTheField | all | bundle | open |
+| 1 | TheReturnFormDuality | Q1, Q2 | return ⇒ forms near ℤ; windows; two-step depth form; Liouville `y^{−|ν|₁}`; rounded system matches height-`≤K` forms, exact return at `T ≥ 2πKy^K` | checked |
+| 2 | LinearFormsWithExplicitDependenceOnTheirNumber | T1, M2, Q2 | explicit Fel'dman `R`; `C(k,W) ≤ (10⁴(W+1)(k+1)²)^{30(k+1)²}`; primes `≤ y` version; pigeonhole: no exponent `< k−1` | checked |
+| 3 | TheDepthLawOfReturns | Q1, M1, C3 | any two primes `≤ y`: `t ≥ e^{−2}(2δ log y)^{−1/C(y)}/(2 log y)`; every set with two primes (heavy subsets); Dirichlet upper law | checked |
+| 4 | SurvivalAtADeepReturn | Q3, T2 | jets at returns; multiples (approximate group); order 0 integrality; order 1 below Baker threshold; order 2 two primes (Gelfond–Schneider); no algebraic orbit point (six exponentials) | checked |
+| 5 | TheReciprocityOfReturns | T4, Q1, Q4 | modulated explicit formula `P_φ(t) = π + Γ − Z`; localization `y^{depth}/(1+|γ−t|)²`; pole `O(t^{−2})`; Gamma `O(log t)`; finite-layer footprint → 0; pole imitation at returns | checked |
+| 6 | TheFunctionFieldCase | C2 | rank one ⇒ exact returns, exact Frobenius (periodic frozen jets); rounded system is rank one; no exact return over ℤ | checked |
+| 7 | ReturnBoundsAreLabelStatements | Q4, calibration | `MainConjecture` (B97) defined; `ζ(s−h)` Euler product over ℚ-primes, ¬ZAL; uniform route ⇒ ¬B97 | checked |
+| 8 | TuranOnThickSetsOfLevels | T3, Q4 | explicit Turán window theorem with remainder at radius `R`; thick sets see the top part | checked |
+| 9 | TheQuestionsOfTheField | all | bundle | open |
 
 ## Approach
 Organizing principle: depth (precision at fixed primes) vs breadth (number of primes at fixed precision).
 Transcendence controls depth; B97 is breadth at constant depth.
 
 ## Log
-- 2026-11-09 — created; README draft written.
+- 2026-11-09 — created; README draft written; modules 1–8 checked.

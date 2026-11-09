@@ -6,7 +6,7 @@ Transversal to the three, RH splits into **ZAL** (finitely many zeros beyond eac
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides; a localized zero side (U-Π) lets a crude bound decide (one Gaussian prime ceiling per rational height ⇔ RH; one side of a crude bound at the prime degrees ⇔ RH; ZAL plus a square-root prime deviation on a thick set of scales ⇔ RH [L]) but leaves the prime side at square-root precision; U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ and the transport of its zeros. The curve proof uses two freebies that ζ lacks: finite rank, which makes elimination algebraic and ZAL in tower form automatic, and zeros periodic in height, which make AAL automatic [L]. At finite rank Euler product + FE force purity by local squares; at infinite rank FE + Euler product with integrable defect force the rational primes [L]; over ℤ the elimination step exists at infinite rank on thick sets and at the prime degrees by Landau's theorem, and the crude step is open.
 
-Corpus checkpoint: commit `ff6ebf7224` (2026-11-09). Evidence: `[L]` Lean source; `[K]` with transitive axiom audit; `[S]` unfinished or unintegrated; `[D]` deduction; `[N]` numerical; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: commit `ad80866fec` (2026-11-09). Evidence: `[L]` Lean source; `[K]` with transitive axiom audit; `[S]` unfinished or unintegrated; `[D]` deduction; `[N]` numerical; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. Section 3 separates the two.
 
@@ -36,7 +36,7 @@ Corpus checkpoint: commit `ff6ebf7224` (2026-11-09). Evidence: `[L]` Lean source
 - **One frequency diagonal [L].** Weil's form is the average of its frequency packets.
 - **One scale [L/D].** A near-unit mollifier needs length `exp(c log²T)`; an Euler mollifier reaching it uses every prime up to `≍log²T`; absolute non-alignment begins at length `≈L²`; conditional tail laws hold only below the Kronecker scale; past the height long mean values are collision counts of order `X²` whose constant is binary.
 - **One tail [L].** Zeros of ζ are zeros of the Euler tail at every cut; returns at right zeros are tail-bad; every certificate past `Re s=1` is a tail-good condition.
-- **One first return [L/S].** `R(y,η)` bracketed at every precision; weak return = extreme value of `ζ(1+it)`; proportional saving = no early heavy return; transcendence bounds the depth of a return (`t≥poly(1/δ)` for two primes) and bounded-height forms cannot bound its breadth past the Kronecker scale [S].
+- **One first return [L].** `R(y,η)` bracketed at every precision; weak return = extreme value of `ζ(1+it)`; proportional saving = no early heavy return; transcendence bounds the depth of a return (`t≥poly(1/δ)` for two primes) and bounded-height forms cannot bound its breadth past the Kronecker scale; by reciprocity a heavy return at height `t` is a configuration of zeros near `t` imitating the pole; return bounds are shared by `ζ(s−h)`, so a route from returns to ZAL must use the FE [S].
 - **One Frobenius substitute, capped [L].** Returns freeze smooth Dirichlet polynomials; `J` moment conditions force approximate vanishing at every return; a Rouché copy needs `J≤e²r log N+log(1/δ)`. The exact Frobenius of integer auxiliaries is the Adams operation, Galois on the torsion of the prime torus and dilation on the orbit; integrality creates zeros only on the torsion; exact order costs the degree; the minimal auxiliary at the fixed points of all `Γ_n`, `n≤N`, has log length `ψ(N)`. Over ℤ the exact Stepanov count is Chebyshev's.
 - **One collision arithmetic [L].** Smooth × prime mean squares are diagonal plus collision counts fixed by gcd classes.
 - **One width axis [L/D].** Floor rate, damping rate, abscissa, gauge exponent, stability line, long-moment slope, Möbius zero abscissa, integrality exponent, stencil rate, PTR `h`, TH `a`, Hecke level, ringdown gap, horocycle, Farey, Narain, seed and cavity-energy exponents, spline-orbit growth rate, growth exponent of either side of Hasse–Weil at the primes or at any power-saving gap set: interior values are zero-free strips; all unconditional savings sit at VK.
@@ -259,7 +259,7 @@ Corpus checkpoint: commit `ff6ebf7224` (2026-11-09). Evidence: `[L]` Lean source
 ### 3.1 Same problem by source identity or proved transport
 | Family | Routes | Identity | Anchor |
 |---|---|---|---|
-| **Prime-degree inequality** | ACS (Frobenius graphs), SRT (prime two-bumps), WL (prime-window count), HF and RW through Σ141, ALST (Stepanov), SOSZ count door | `c_B(log p)=A(p)−P(p)=Re W(B+τ_{log p}B)/2−c_B(0)`: one quantity per prime is the Weil test, the Hasse–Weil defect, the prime-window error and the Tate limit on the effective ray | SOSZ [L] |
+| **Prime-degree inequality** | ACS (Frobenius graphs), SRT (prime two-bumps), WL (prime-window count), HF and RW through Σ141, ALST (Stepanov), SOSZ count door | `c_B(log p)=A(p)−P(p)` and `Re W(B+τ_{log p}B)=2c_B(0)+2c_B(log p)`: one quantity per prime is the Weil test, the Hasse–Weil defect, the prime-window error and the Tate limit on the effective ray | SOSZ [L] |
 | Window scalar | RW, EWU, OWU, ACT, CHMD (odd), TT (odd), SZ, RN energy, ACS atomic, LI on primitives, HF, SRT, AIP critical branches | one form on one window; sectors exact; first variation = Weil energy; critical thresholds are the window threshold plus polar payment plus ground-state orthogonality | SWC, SZ, ALG, ACS, CACT, AHD [L] |
 | Two-site / Frobenius graphs | GWZ two-site, AOG spline orbit, SOSZ Frobenius pairs and prime degrees, SRT two-bump | one rank-two test per scale; the prime degrees suffice from one side | GWZ, AOG, SOSZ [L] |
 | Log-mean | WD near-line, CTF budgets, ZCG depth law, RW onset, AIF `I` at infinity, BHR bulk log-mean | eight-way equivalence; depth density | CDG, AIF, ASH [L] |
@@ -372,7 +372,7 @@ Corpus checkpoint: commit `ff6ebf7224` (2026-11-09). Evidence: `[L]` Lean source
 | C81 Lefschetz–Stepanov over ℤ | Adams Frobenius, torsion auxiliaries, closed-point counts | ACS, BAG, WL; ALST | exact count = Chebyshev; RH = degree bound `ψ(N)` [L] |
 | C82 Cavity receivers | seeds, odd tents, Maass and Hecke pairs, Baire | PM; AHMH, BHR | one cavity function sees every resonance; rate open [L] |
 | C83 Heat divisor budgets | elapsed-depth and logarithmic-depth actions | ZCG, LA, WD; AES | initial budgets pay survival; finiteness of budgets open [L] |
-| C84 Returns and transcendence | depth law, return–form duality, breadth cap | BAG, TH, SRT; TTPO, ALST | depth bounded by Baker, breadth dark [S] |
+| C84 Returns and transcendence | depth law, return–form duality, breadth cap, reciprocity of returns | BAG, TH, SRT; TTPO, ALST | depth bounded by Baker, breadth dark; a return is a pole-imitating zero cluster [L] |
 
 C1, C4, C16, C19, C25, C26, C48, C49 and C79 are exact window-form dictionaries; C19 and C79 are the minimal one (one test per prime). C5, C28, C33 require all-root or all-degree control. C11, C32, C40, C42, C48 are asymptotic and weaker than RH; by C71 they cannot reach any level of the dial. C13 closes source supply, not effectivity. C8–C10 and C21 retain source-specific bounds. C23, C24, C31, C52 supply calibration or amplification. C45, C34, C65 and C68 are one axis (the Mertens level). C56, C57, C62, C63, C64, C74, C84 are one programme on the dark range. C43, C52, C66, C70, C71, C72, C73, C77, C79, C80 are one programme on the exceptional coordinate. C51, C53, C59, C60, C67, C75, C76, C78, C82 are one programme on the count and the diagonal.
 
@@ -413,7 +413,7 @@ C1, C4, C16, C19, C25, C26, C48, C49 and C79 are exact window-form dictionaries;
 | APD firewall→ZCG/BAG | positive classes, continuation and reflection carry finite layers [L] | intrinsic layers of ζ |
 | RHTower/EFT Euler FE→ZCG | Euler product + FE force purity at finite rank and the rational primes at infinite rank with integrable defect [L] | transport (B112) |
 | EFT finite-layer world→BAG/ZCG | ¬AAL ⇒ raw prime-current passage, top multiplicity, rough variance; FE preserves height [L] | replication (B128) |
-| TTPO→BAG/PTT | depth of returns polynomial in `1/δ`; breadth cap at the Kronecker scale [S] | breadth (B97) |
+| TTPO→BAG/PTT | depth of returns polynomial in `1/δ`; breadth cap at the Kronecker scale; reciprocity of returns with the zeros near the height [L] | breadth (B97); an FE-dependent step from returns to zeros |
 
 ## 4. U-Σ — the sign
 
@@ -521,7 +521,7 @@ Core problem: source-defined arithmetic control of `ρ↦1−ρ̄` and of vertic
 | Π ∩ Γ: relocation | rational relocation fails positivity at the first gap | APD [L] |
 | Π ∩ Γ: annihilators | positive annihilators kill finite layers at exponential cost; inverses oscillate | APD [L] |
 | Σ ∩ Π: gluing and topology | Redheffer = reduced Euler characteristic; prime-vertex localization `1−M(N)` | HWV, ADT, HHAC, ESG, RIAC [L] |
-| Σ ∩ Π ∩ Γ: one test per prime | `Re W(B+τ_{log p}B)/2−c_B(0)=c_B(log p)=A(p)−P(p)`; the defect of `Γ_1+Γ_p` | SOSZ [L] |
+| Σ ∩ Π ∩ Γ: one test per prime | `Re W(B+τ_{log p}B)=2c_B(0)+2c_B(log p)`, `c_B(log p)=A(p)−P(p)`; the defect of `Γ_1+Γ_p` | SOSZ [L] |
 | Π ∩ Γ: sampling | a one-sided bound at a sampling set of primes leaves no deepest off-line zero | SOSZ [L] |
 | Σ ∩ Γ: adelic Green formula | Weil's off-diagonal = pole − Green functions of `ℍ³` and of the trees `T_p` at the critical parameter | HAT [L] |
 | Π ∩ Γ: exactness | integrality exact only on the torsion; minimal fixed-point auxiliary has log length `ψ(N)` | ALST [L] |

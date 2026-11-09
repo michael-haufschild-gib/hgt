@@ -75,9 +75,16 @@ fixed finite head do not supply it. See
 The complete Gaussian rough tail also has its exact diagonal mean square
 under every fixed smooth prime-head probe, with damping `1/T` on `[T,2T]`.
 For the literal von Mangoldt coefficients at `σ>1/2`, this variance tends
-to zero as the prime cutoff grows. This provides conditioned tail control;
-passing it to the continued current and exact zero events remains open. See
+to zero as the prime cutoff grows. This provides conditioned tail control. See
 [infinite rough variance](../EulerFETransportTheory/README.md#infinite-rough-variance-under-prime-head-conditioning).
+
+Under `¬AAL`, the same conditioned variance holds for the actual continued
+current `ζ′/ζ+Σ_{p<Y}log p/(p^s−1)` on one high zero-free line below an
+exceptional abscissa. Every small-prime power and the entire rough tail are
+retained; Gaussian damping is removed from the observable. See
+[continued-current variance](../EulerFETransportTheory/README.md#the-continued-current-retains-the-rough-variance).
+This supplies averaged joint arithmetic control. Prime-phase return selection
+and exact zero transport remain separate obligations.
 
 ## New pillar: integer support forces exact arithmetic
 

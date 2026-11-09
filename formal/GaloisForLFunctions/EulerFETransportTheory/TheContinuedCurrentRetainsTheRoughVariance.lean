@@ -444,7 +444,9 @@ sees exactly the full rough variance of the continued Euler current after
 adding back all small-prime powers. The line is independent of the probe. -/
 theorem not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean
     (hnot : ¬ AsymptoticAbscissaLaw) :
-    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+    ∃ σ H : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ 0 < H ∧
+      (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+      (∀ t : ℝ, H ≤ t → riemannZeta ((σ : ℂ) + t * I) ≠ 0) ∧
       ∀ (Y : ℕ) (S : Finset ℕ) (w : ℕ → ℂ),
         (∀ s ∈ S, s ∈ Nat.smoothNumbers Y) →
         Tendsto (fun T : ℝ => (∫ t in T..(2 * T), ‖integerHeightPoly S w t‖ ^ 2 *
@@ -454,7 +456,7 @@ theorem not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean
             ∑' n : ℕ, ‖roughVonMangoldtCoeff Y σ n‖ ^ 2)) := by
   obtain ⟨σ, H, hσ, hσ1, hH, hq, hregular, hrough⟩ :=
     not_asymptoticAbscissaLaw_has_regular_roughPassage hnot
-  refine ⟨σ, hσ, hσ1, hq, fun Y S w hS => ?_⟩
+  refine ⟨σ, H, hσ, hσ1, hH, hq, hregular, fun Y S w hS => ?_⟩
   have hσ0 : 0 < σ := by linarith only [hσ]
   let f : ℝ → ℂ := fun t => integerHeightPoly S w (max H t) *
     (logDeriv riemannZeta ((σ : ℂ) + (max H t : ℝ) * I) +
@@ -476,7 +478,8 @@ theorem not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean
     have ha := RHTower.analyticAt_riemannZeta hz1
     have hc : ContinuousAt (logDeriv riemannZeta) ((σ : ℂ) + (max H t : ℝ) * I) :=
       (ha.deriv.div ha (hregular (max H t) (le_max_left _ _))).continuousAt
-    exact hc.comp hline.continuousAt
+    exact hc.comp (f := fun u : ℝ => (σ : ℂ) + (max H u : ℝ) * I)
+      (x := t) hline.continuousAt
   have hsmall : Continuous (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ)) :=
     (PhaseSeries.continuous_phaseSeries (smallPrimeVonMangoldtCoeff_zero Y σ)
       (summable_norm_smallPrimeVonMangoldtCoeff Y hσ0)).comp continuous_neg
@@ -636,7 +639,7 @@ theorem smallPrime_heightSeries_eq_eulerCurrent (Y : ℕ) {σ : ℝ} (hσ : 0 < 
     have hp : (p : ℕ).Prime := (Nat.mem_primesBelow.mp p.property).2
     have hn : ¬ ((p : ℕ) ^ (k + 1) ≠ 0 ∧
         ∀ q ∈ Nat.primesBelow Y, ¬q ∣ (p : ℕ) ^ (k + 1)) := fun h =>
-      (h.2 p p.property) (dvd_pow_self p (Nat.succ_ne_zero k))
+      (h.2 p p.property) (dvd_pow_self (p : ℕ) (Nat.succ_ne_zero k))
     dsimp only [a, j]
     rw [smallPrimeVonMangoldtCoeff, roughVonMangoldtCoeff, if_neg hn, sub_zero,
       woldVonMangoldtWeightedCoefficient, Complex.ofReal_mul,
@@ -645,18 +648,26 @@ theorem smallPrime_heightSeries_eq_eulerCurrent (Y : ℕ) {σ : ℝ} (hσ : 0 < 
       ArithmeticFunction.vonMangoldt_apply_prime hp, primePower_cpow hp]
   have hpowers : HasSum (fun x : {p : ℕ // p ∈ Nat.primesBelow Y} × ℕ =>
       (Real.log (x.1 : ℕ) : ℂ) * (((x.1 : ℕ) : ℂ) ^ (-((σ : ℂ) + t * I))) ^ (x.2 + 1))
-      (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t)) :=
-    hj.congr hterm
+      (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t)) := by
+    have he : (fun x : {p : ℕ // p ∈ Nat.primesBelow Y} × ℕ =>
+        (Real.log (x.1 : ℕ) : ℂ) *
+          (((x.1 : ℕ) : ℂ) ^ (-((σ : ℂ) + t * I))) ^ (x.2 + 1)) = a ∘ j :=
+      funext fun x => (hterm x).symm
+    rw [he]
+    exact hj
   have hheads := hpowers.prod_fiberwise (fun p =>
     hasSum_primePowerCurrent (Nat.mem_primesBelow.mp p.property).2 (by simpa using hσ))
-  rw [← hheads.tsum_eq, tsum_fintype, Finset.sum_coe_sort]
-  rfl
+  rw [← hheads.tsum_eq, tsum_fintype]
+  exact Finset.sum_coe_sort (Nat.primesBelow Y)
+    (fun p : ℕ => (Real.log p : ℂ) / ((p : ℂ) ^ ((σ : ℂ) + t * I) - 1))
 
 /-- The continued Euler current has exactly the rough arithmetic variance
 under every smooth head probe, on one line below an exceptional abscissa. -/
 theorem not_asymptoticAbscissaLaw_has_conditioned_roughMean
     (hnot : ¬ AsymptoticAbscissaLaw) :
-    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+    ∃ σ H : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ 0 < H ∧
+      (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+      (∀ t : ℝ, H ≤ t → riemannZeta ((σ : ℂ) + t * I) ≠ 0) ∧
       ∀ (Y : ℕ) (S : Finset ℕ) (w : ℕ → ℂ),
         (∀ s ∈ S, s ∈ Nat.smoothNumbers Y) →
         Tendsto (fun T : ℝ => (∫ t in T..(2 * T), ‖integerHeightPoly S w t‖ ^ 2 *
@@ -664,9 +675,9 @@ theorem not_asymptoticAbscissaLaw_has_conditioned_roughMean
             smallPrimeEulerCurrent Y ((σ : ℂ) + t * I)‖ ^ 2) / T)
           atTop (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) *
             ∑' n : ℕ, ‖roughVonMangoldtCoeff Y σ n‖ ^ 2)) := by
-  obtain ⟨σ, hσ, hσ1, hq, hm⟩ :=
+  obtain ⟨σ, H, hσ, hσ1, hH, hq, hregular, hm⟩ :=
     not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean hnot
-  refine ⟨σ, hσ, hσ1, hq, fun Y S w hS => ?_⟩
+  refine ⟨σ, H, hσ, hσ1, hH, hq, hregular, fun Y S w hS => ?_⟩
   simpa only [smallPrime_heightSeries_eq_eulerCurrent Y (by linarith only [hσ] : 0 < σ)]
     using hm Y S w hS
 
