@@ -230,7 +230,7 @@ theorem powGaps_primes_diff_of_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 < θ) (
     have hsum_le : (∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log (p : ℝ)) ≤
         ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
           Real.log (p : ℝ) :=
-      Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp =>
+      Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ =>
         Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.1.one_lt.le)
     have : (c + 1) / 2 * y ^ θ < c * y ^ θ := htot.trans_le (hsum_le.trans hc)
     have : c * y ^ θ < (c + 1) / 2 * y ^ θ :=

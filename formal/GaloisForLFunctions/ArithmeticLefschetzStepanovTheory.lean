@@ -15,6 +15,12 @@ import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.StepanovsConstructi
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.StepanovJetTransfer
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheEulerJetsOfStepanovsAuxiliary
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialSyzygiesForceTheMixedJets
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.IntegralDiagonalJets
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.EulerJetsDetectTheDiagonal
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.ThePolynomialImageOfStepanovSyzygies
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.ArithmeticMonicBases
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.UniformMonicGridPowers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheSharpCostOfPolynomialStepanovSyzygies
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheLefschetzNumbersAreStepanovDegrees
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheStepanovBoundSeparatesZetaFromTheOneOff
 
@@ -29,5 +35,8 @@ is confined to countably many heights; exact order at any point costs the degree
 of the prime circles are counted at Chebyshev's price. The Lefschetz numbers of the Frobenius
 graphs of degree `≤ N` are the degree of the minimal auxiliary vanishing at their fixed points, so
 RH is an upper bound on that degree; the bound fails for the integer-norm one-off. Siegel
-auxiliaries and a zero estimate uniform in the number of logarithms are the tools. See `ArithmeticLefschetzStepanovTheory/README.md`.
+auxiliaries and a zero estimate uniform in the number of logarithms are the tools. Polynomial
+syzygies have image exactly the powers of the full affine Adams fixed-point ideal; integral
+Newton coordinates give their sharp arithmetic length and all minimal auxiliaries.
+See `ArithmeticLefschetzStepanovTheory/README.md`.
 -/

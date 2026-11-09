@@ -1454,7 +1454,7 @@ theorem sum_union_le_of_nonneg {α : Type*} [DecidableEq α] {s₁ s₂ : Finset
     (hf : ∀ x ∈ s₁ ∪ s₂, 0 ≤ f x) :
     (∑ x ∈ s₁ ∪ s₂, f x) ≤ (∑ x ∈ s₁, f x) + ∑ x ∈ s₂, f x := by
   rw [← Finset.union_sdiff_self_eq_union, Finset.sum_union Finset.disjoint_sdiff]
-  refine add_le_add_left (Finset.sum_le_sum_of_subset_of_nonneg Finset.sdiff_subset ?_) _
+  refine add_le_add le_rfl (Finset.sum_le_sum_of_subset_of_nonneg Finset.sdiff_subset ?_)
   intro x hx _
   exact hf x (Finset.mem_union_right _ hx)
 
@@ -1473,7 +1473,7 @@ theorem sum_biUnion_le_of_nonneg {ι α : Type*} [DecidableEq ι] [DecidableEq �
         · obtain ⟨i, hi, hxi⟩ := Finset.mem_biUnion.mp hxs
           exact hf i (Finset.mem_insert_of_mem hi) x hxi
       exact (sum_union_le_of_nonneg hf_union).trans
-        (add_le_add_left (ih fun i hi x hx => hf i (Finset.mem_insert_of_mem hi) x hx) _)
+        (add_le_add le_rfl (ih fun i hi x hx => hf i (Finset.mem_insert_of_mem hi) x hx))
 
 theorem exp_sub_one_le_two_mul {t : ℝ} (ht0 : 0 ≤ t) (ht1 : t ≤ 1 / 2) :
     Real.exp t - 1 ≤ 2 * t := by
@@ -1573,7 +1573,7 @@ theorem sum_prime_log_subHole_le {B m r : ℕ} {δ : ℝ} (hB : 1 ≤ B) (hr : r
   calc (∑ p ∈ F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ subHole B m r δ),
           Real.log (p : ℝ))
       ≤ ∑ p ∈ (Finset.Ioc ⌊a⌋₊ ⌊b⌋₊).filter Nat.Prime, Real.log (p : ℝ) :=
-        Finset.sum_le_sum_of_subset_of_nonneg hsub_finset fun p hp =>
+        Finset.sum_le_sum_of_subset_of_nonneg hsub_finset fun p hp _ =>
           Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.one_lt.le)
     _ ≤ Chebyshev.psi b - Chebyshev.psi a := sum_prime_log_Ioc_le_psi_sub hab
     _ ≤ 6 * (b - a) := psi_sub_le_six_mul haX hb_sub_lo hb_sub_le_a
@@ -1606,7 +1606,7 @@ theorem sum_prime_log_holeSet_inter_Icc_le {B m : ℕ} {δ : ℝ} (hB : 1 ≤ B)
       ≤ ∑ p ∈ (Finset.range B).biUnion
           (fun r => F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ subHole B m r δ)),
           Real.log (p : ℝ) :=
-        Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp => by
+        Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ => by
           obtain ⟨r, _, hp'⟩ := Finset.mem_biUnion.mp hp
           exact Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp').2.1.one_lt.le)
     _ ≤ ∑ r ∈ Finset.range B,
@@ -1665,7 +1665,7 @@ theorem sum_prime_log_unitHole_le {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2
   calc (∑ p ∈ F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m), Real.log (p : ℝ))
       ≤ ∑ p ∈ F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ S₁) ∪
           F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ S₂), Real.log (p : ℝ) :=
-        Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp => by
+        Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ => by
           rcases Finset.mem_union.mp hp with hp1 | hp2
           · exact Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp1).2.1.one_lt.le)
           · exact Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp2).2.1.one_lt.le)
@@ -1810,7 +1810,7 @@ theorem tendsto_chebyshev_exPrimes {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 
             ((Finset.range (L + 1)).filter (M₀ ≤ ·)).biUnion
               (fun m => F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m)),
             Real.log (p : ℝ) :=
-          Finset.sum_le_sum_of_subset_of_nonneg hsub hnn_union
+          Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ => hnn_union p hp
       _ ≤ C₀ + ∑ p ∈ ((Finset.range (L + 1)).filter (M₀ ≤ ·)).biUnion
               (fun m => F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m)),
               Real.log (p : ℝ) :=
@@ -1818,11 +1818,13 @@ theorem tendsto_chebyshev_exPrimes {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 
       _ ≤ C₀ + ∑ m ∈ (Finset.range (L + 1)).filter (M₀ ≤ ·),
               ∑ p ∈ F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m),
                 Real.log (p : ℝ) :=
-          add_le_add_left (sum_biUnion_le_of_nonneg _ _ fun _ _ p hp =>
-            Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.1.one_lt.le)) C₀
+          add_le_add le_rfl (sum_biUnion_le_of_nonneg ((Finset.range (L + 1)).filter (M₀ ≤ ·))
+            (fun m => F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m))
+            (f := fun p : ℕ => Real.log (p : ℝ)) fun _ _ p hp =>
+              Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.1.one_lt.le))
       _ ≤ C₀ + ∑ m ∈ (Finset.range (L + 1)).filter (M₀ ≤ ·), δ_ε * Real.exp ((m : ℝ) + 1) :=
-          add_le_add_left (Finset.sum_le_sum htail_each) C₀
-      _ ≤ C₀ + (ε / 2) * X := add_le_add_left htail_sum C₀
+          add_le_add le_rfl (Finset.sum_le_sum htail_each)
+      _ ≤ C₀ + (ε / 2) * X := add_le_add le_rfl htail_sum
   have hC₀_lt : C₀ < (ε / 2) * X := by
     have := (div_le_iff₀ hε).mp hXC
     linarith
@@ -1859,7 +1861,8 @@ theorem eventually_wSum_primeWeight_ge :
     have h2 : (1 : ℂ) / ((σ : ℂ) - 1) = ((1 / (σ - 1) : ℝ) : ℂ) := by push_cast; rfl
     rw [h1, h2, ← Complex.ofReal_sub, Complex.ofReal_re]
   have hvm' : -(γ + 1) < vmSum σ - 1 / (σ - 1) := by
-    simpa [Function.comp_apply, hvm_eq] using hvm
+    dsimp only [Function.comp_apply] at hvm
+    rwa [hvm_eq] at hvm
   -- Compare `wSum primeWeight σ = vmSum σ - wSum higherWeight σ`
   have hp_sum := samplingWeight_primeWeight.summable hσ_gt
   have hh_sum := summable_higherWeight (by linarith : (1 : ℝ) / 2 < σ)
@@ -1874,7 +1877,7 @@ theorem eventually_wSum_primeWeight_ge :
       (Real.rpow_le_rpow_of_exponent_le hj1 (by linarith)) (higherWeight_nonneg j)
   have hγ_le : -γ ≤ |γ| := neg_le_abs γ
   have hw_ge : 1 / (σ - 1) - C ≤ wSum primeWeight σ := by
-    have : C = |γ| + 1 + H := rfl
+    change 1 / (σ - 1) - (|γ| + 1 + H) ≤ wSum primeWeight σ
     linarith
   have hC_small : C ≤ 1 / (2 * (σ - 1)) := by
     have hlt : σ - 1 < 1 / (2 * (C + 1)) := by linarith [hσ_close.2]
@@ -2006,13 +2009,15 @@ theorem tendsto_relLogDensity_exPrimes {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 
             mul_le_mul_of_nonneg_right (sum_prime_log_unitHole_le hΘ hΘ2 hm1 F)
               (Real.exp_pos _).le
         _ ≤ (δ_ε * Real.exp ((m : ℝ) + 1)) * Real.exp (-σ * m) := by
-            have := Real.exp_pos ((m : ℝ) + 1)
-            have := Real.exp_pos (-σ * m)
-            nlinarith
+            rw [show 24 * Real.exp ((m : ℝ) + 1) * holeWidth (winIdx Θ m) =
+                (24 * holeWidth (winIdx Θ m)) * Real.exp ((m : ℝ) + 1) by ring]
+            exact mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right hw (Real.exp_pos _).le) (Real.exp_pos _).le
         _ = (Real.exp 1 * δ_ε) * (Real.exp (-(σ - 1))) ^ m := by
-            rw [← Real.exp_nat_mul, mul_assoc, ← Real.exp_add, add_comm ((m : ℝ)) 1,
+            rw [← Real.exp_nat_mul, mul_assoc, ← Real.exp_add,
+              show ((m : ℝ) + 1) + (-σ * (m : ℝ)) = 1 + (m : ℝ) * (-(σ - 1)) by ring,
               Real.exp_add]
-            ring_nf
+            ring
     -- Geometric sum over `m`
     set q : ℝ := Real.exp (-(σ - 1))
     have hq0 : 0 ≤ q := (Real.exp_pos _).le
@@ -2063,7 +2068,7 @@ theorem tendsto_relLogDensity_exPrimes {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 
             ((Finset.range (N + 1)).filter (M₀ ≤ ·)).biUnion
               (fun m => F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m)),
             Real.log (p : ℝ) * (p : ℝ) ^ (-σ) :=
-          Finset.sum_le_sum_of_subset_of_nonneg hsub hnn_union
+          Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp _ => hnn_union p hp
       _ ≤ C₀ + ∑ m ∈ (Finset.range (N + 1)).filter (M₀ ≤ ·),
               ∑ p ∈ F.filter (fun p : ℕ => p.Prime ∧ Real.log (p : ℝ) ∈ unitHole Θ m),
                 Real.log (p : ℝ) * (p : ℝ) ^ (-σ) := by
@@ -2075,8 +2080,8 @@ theorem tendsto_relLogDensity_exPrimes {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 
               exact mul_nonneg (Real.log_nonneg hp1) (by positivity)
           exact hu1.trans (add_le_add hhead hu2)
       _ ≤ C₀ + ∑ m ∈ (Finset.range (N + 1)).filter (M₀ ≤ ·), (Real.exp 1 * δ_ε) * q ^ m :=
-          add_le_add_left (Finset.sum_le_sum hblock) C₀
-      _ ≤ C₀ + 2 * Real.exp 1 * δ_ε / (σ - 1) := add_le_add_left htail_tot C₀
+          add_le_add le_rfl (Finset.sum_le_sum hblock)
+      _ ≤ C₀ + 2 * Real.exp 1 * δ_ε / (σ - 1) := add_le_add le_rfl htail_tot
   -- Combine numerator upper bound with denominator lower bound `1 / (4 * (σ - 1))`
   set σ_max : ℝ := min (3 / 2) (1 + ε / (16 * (C₀ + 1)))
   have hσ_max_gt : 1 < σ_max := lt_min (by norm_num) (by linarith [show 0 < ε / (16 * (C₀ + 1)) by positivity])
