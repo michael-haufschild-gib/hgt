@@ -35,8 +35,8 @@ theorem smoothGreen_deficit (f : ℝ → ℝ) (hf : ContDiff ℝ 2 f)
     change archLevyDensity u * (autocorr f 0 - autocorr f u) = _
     ring
   have hF : IntegrableOn F (Ioi 0) := by
-    simp_rw [heq]
-    exact (integrableOn_levyIntegrand hf hfc).const_mul (1 / 2)
+    exact ((integrableOn_levyIntegrand hf hfc).const_mul (1 / 2 : ℝ)).congr_fun
+      (fun u _ => (heq u).symm) measurableSet_Ioi
   have hpos : IntegrableOn (fun u => F |u|) (Ioi 0) :=
     hF.congr_fun (fun u hu => by rw [abs_of_pos hu]) measurableSet_Ioi
   have hneg : IntegrableOn (fun u => F |u|) (Iic 0) := by
@@ -44,7 +44,7 @@ theorem smoothGreen_deficit (f : ℝ → ℝ) (hf : ContDiff ℝ 2 f)
     let m : MeasurableEmbedding fun u : ℝ => -u := (Homeomorph.neg ℝ).measurableEmbedding
     rw [m.integrableOn_map_iff]
     simp_rw [Function.comp_def, abs_neg, neg_preimage, neg_Iic, neg_zero]
-    exact integrableOn_Ici_iff_integrableOn_Ioi.mpr hpos
+    exact Iff.mpr integrableOn_Ici_iff_integrableOn_Ioi hpos
   have hall : Integrable (fun u => F |u|) := by
     have h := hneg.union hpos
     rwa [Iic_union_Ioi, integrableOn_univ] at h
@@ -71,7 +71,8 @@ theorem tendsto_smoothGreenEnergy_sub_mass (f : ℝ → ℝ) (hf : ContDiff ℝ 
   have hcorr : Integrable (autocorr f) :=
     (continuous_autocorr hf hfc).integrable_of_hasCompactSupport (hasCompactSupport_autocorr hfc)
   have hmax (u : ℝ) : autocorr f u ≤ autocorr f 0 := by
-    have h := integral_nonneg (fun v : ℝ => sq_nonneg (f v - f (v + u)))
+    have h : (0 : ℝ) ≤ ∫ v, (f v - f (v + u)) ^ 2 :=
+      integral_nonneg (fun v : ℝ => sq_nonneg (f v - f (v + u)))
     rw [ArchimedeanAnomaly.integral_sub_shift_sq hfc hf.continuous] at h
     linarith
   have hdef := smoothGreen_deficit f hf hfc

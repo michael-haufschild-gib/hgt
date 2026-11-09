@@ -1881,7 +1881,7 @@ theorem eventually_wSum_primeWeight_ge :
     have hj1 : (1 : ℝ) ≤ (j : ℝ) + 1 := by linarith [Nat.cast_nonneg (α := ℝ) j]
     exact mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_exponent_le hj1 (by linarith)) (higherWeight_nonneg j)
-  have hγ_le : -γ ≤ |γ| := neg_le_abs γ
+  have hγ_le : γ ≤ |γ| := le_abs_self γ
   have hw_ge : 1 / (σ - 1) - C ≤ wSum primeWeight σ := by
     linarith [hvm', hsplit, hγ_le, hhigh_le, hC_def]
   have hC_small : C ≤ 1 / (2 * (σ - 1)) := by

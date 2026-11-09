@@ -131,8 +131,8 @@ def baseHeight (k : ℕ) : ℕ := 2 ^ (k + 1) + 2 * (o + 1)
 theorem exists_smoothHeight (k : ℕ) : ∃ M : ℕ, baseHeight o k ≤ M ∧
     M ≤ 2 * baseHeight o k + (2 * baseHeight o k * prec V k) ^ gens V k ∧
     ∀ i : Fin (gens V k), ∃ z : ℤ, |(M : ℝ) * Real.log (i : ℕ) - z| ≤ 1 / (prec V k : ℝ) :=
-  exists_resonant_ge (fun i : Fin (gens V k) => Real.log (i : ℕ)) (by unfold baseHeight; omega)
-    (by unfold prec; omega)
+  exists_resonant_ge (fun i : Fin (gens V k) => Real.log (i : ℕ))
+    (by unfold baseHeight; exact le_add_left (by omega)) (by unfold prec; omega)
 
 /-- The heights `M_k`, resonant with `log j` for every `j < gens k`. -/
 def smoothHeight (k : ℕ) : ℕ := Classical.choose (exists_smoothHeight o V k)
@@ -159,10 +159,10 @@ variable {o Θ V}
 /-! ### Heights and weights -/
 
 theorem two_mul_le_smoothHeight (k : ℕ) : 2 * (o + 1) ≤ smoothHeight o V k :=
-  le_trans (by unfold baseHeight; omega) (smoothHeight_spec o V k).1
+  le_trans (Nat.le_add_left _ _) (smoothHeight_spec o V k).1
 
 theorem two_pow_le_smoothHeight (k : ℕ) : 2 ^ (k + 1) ≤ smoothHeight o V k :=
-  le_trans (by unfold baseHeight; omega) (smoothHeight_spec o V k).1
+  le_trans (Nat.le_add_right _ _) (smoothHeight_spec o V k).1
 
 theorem k_le_smoothHeight (k : ℕ) : k ≤ smoothHeight o V k :=
   le_trans ((Nat.lt_two_pow_self (n := k)).le.trans (Nat.pow_le_pow_right (by norm_num) k.le_succ))
@@ -175,9 +175,10 @@ theorem smoothWt_le (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (k : ℕ) :
     smoothWt o Θ V k ≤ (1 / 2) ^ (k + 1) := by
   have hM1 : 1 ≤ smoothHeight o V k := by have := two_mul_le_smoothHeight (o := o) (V := V) k; omega
   have h := norm_sincPow_le hM1 (depth_nonneg hΘ k) ((depth_lt hΘ k).le.trans hΘ2) (o + 1)
+  have hm1 : (1 : ℝ) ≤ (smoothHeight o V k : ℝ) := by exact_mod_cast hM1
+  have hm2 : (2 : ℝ) ^ (k + 1) ≤ (smoothHeight o V k : ℝ) := by
+    exact_mod_cast two_pow_le_smoothHeight (o := o) (V := V) k
   set m : ℝ := (smoothHeight o V k : ℝ)
-  have hm1 : 1 ≤ m := by exact_mod_cast hM1
-  have hm2 : (2 : ℝ) ^ (k + 1) ≤ m := by exact_mod_cast two_pow_le_smoothHeight (o := o) (V := V) k
   have hp : m ^ 2 ≤ m ^ (2 * (o + 1)) := pow_le_pow_right₀ hm1 (by omega)
   have hq : ((2 : ℝ) ^ (k + 1)) ^ 2 ≤ m ^ 2 := pow_le_pow_left₀ (by positivity) hm2 2
   have h2k : (2 : ℝ) ≤ 2 ^ (k + 1) := by
@@ -323,14 +324,16 @@ def smoothV (o : ℕ) (Θ : ℝ) : ℝ := Real.exp (smoothK o Θ / Θ)
 theorem log_two_div_nonneg {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : 0 ≤ Real.log (2 / Θ) :=
   Real.log_nonneg (by rw [le_div_iff₀ hΘ]; linarith)
 
-theorem le_smoothV (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : 2304 ≤ smoothV o Θ := by
+theorem le_smoothK (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : 304 * (2 * ((o : ℝ) + 1)) ≤ smoothK o Θ := by
   have hL := log_two_div_nonneg hΘ hΘ2
+  unfold smoothK
+  have : 0 ≤ 2 * ((o : ℝ) + 1) * Real.log (2 / Θ) := by positivity
+  linarith
+
+theorem le_smoothV (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : 1000 ≤ smoothV o Θ := by
   have ho : (0 : ℝ) ≤ o := Nat.cast_nonneg o
-  have hK : 2304 ≤ smoothK o Θ := by
-    unfold smoothK
-    have : 0 ≤ 2 * ((o : ℝ) + 1) * Real.log (2 / Θ) := by positivity
-    nlinarith
-  have hKΘ : smoothK o Θ ≤ smoothK o Θ / Θ := by
+  have hK : 600 ≤ smoothK o Θ := by have := le_smoothK (o := o) hΘ hΘ2; nlinarith
+  have hKΘ : 2 * smoothK o Θ ≤ smoothK o Θ / Θ := by
     rw [le_div_iff₀ hΘ]; nlinarith
   unfold smoothV
   have := Real.add_one_le_exp (smoothK o Θ / Θ)
@@ -349,48 +352,49 @@ theorem budget {Θ s : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (hs : 1 ≤ s) 
     (hℓ : Real.log s = 2 ^ n * Real.log (smoothV o Θ)) :
     (2 + 2 * (o + 1) * Real.log (2 / Θ)) + 19 * (2 * (o + 1)) * s * Real.log s ≤
       Θ * s ^ 2 / 2 ^ (n + 2) := by
-  set N : ℝ := 2 * ((o : ℝ) + 1) with hN
-  set c : ℝ := 2 + N * Real.log (2 / Θ) with hc
-  set ℓ := Real.log s with hℓdef
+  have hKN := le_smoothK (o := o) hΘ hΘ2
+  obtain ⟨N, hN⟩ : ∃ N : ℝ, N = 2 * ((o : ℝ) + 1) := ⟨_, rfl⟩
+  rw [← hN]
+  rw [← hN] at hKN
+  obtain ⟨c, hc⟩ : ∃ c : ℝ, c = 2 + N * Real.log (2 / Θ) := ⟨_, rfl⟩
+  rw [← hc]
   have hN0 : 0 ≤ N := by rw [hN]; positivity
   have hc0 : 0 ≤ c := by rw [hc]; have := log_two_div_nonneg hΘ hΘ2; positivity
-  have hℓ0 : 0 ≤ ℓ := Real.log_nonneg hs
+  have hℓ0 : 0 ≤ Real.log s := Real.log_nonneg hs
   have hsq := Real.sqrt_nonneg s
   have hss := Real.mul_self_sqrt (show 0 ≤ s by linarith)
-  have hℓ2 : ℓ ≤ 2 * Real.sqrt s := log_le_two_sqrt hs
+  have hℓ2 : Real.log s ≤ 2 * Real.sqrt s := log_le_two_sqrt hs
   have hsqs : Real.sqrt s ≤ s := by
     have h1 : 1 ≤ Real.sqrt s := Real.one_le_sqrt.mpr hs
     nlinarith
-  have hℓs : ℓ ≤ 2 * s := by linarith
-  have hℓsq : ℓ ^ 2 ≤ 4 * s := by nlinarith
+  have hℓs : Real.log s ≤ 2 * s ^ 2 := by nlinarith
+  have hℓsq : Real.log s ^ 2 ≤ 4 * s := by nlinarith
   have hLV : Real.log (smoothV o Θ) = smoothK o Θ / Θ := by unfold smoothV; rw [Real.log_exp]
-  have hK : smoothK o Θ = 8 * c + 304 * N := by rw [smoothK, hc, hN]; push_cast; ring
-  -- `(c + 19 N s ℓ) 4ℓ ≤ K s²`
-  have h1 : (c + 19 * N * s * ℓ) * (4 * ℓ) ≤ smoothK o Θ * s ^ 2 := by
-    rw [hK]
-    have e1 : 4 * c * ℓ ≤ 8 * c * s ^ 2 := by
-      have : ℓ ≤ 2 * s ^ 2 := by nlinarith
-      nlinarith
-    have e2 : 76 * N * s * ℓ ^ 2 ≤ 304 * N * s ^ 2 := by
+  have hK : smoothK o Θ = 8 * c + 304 * N := by rw [hc, hN]; unfold smoothK; ring
+  have h1 : (c + 19 * N * s * Real.log s) * (4 * Real.log s) ≤ smoothK o Θ * s ^ 2 := by
+    have e1 : 4 * c * Real.log s ≤ 8 * c * s ^ 2 := by
+      have := mul_le_mul_of_nonneg_left hℓs (by positivity : (0 : ℝ) ≤ 4 * c)
+      linarith
+    have e2 : 76 * N * s * Real.log s ^ 2 ≤ 304 * N * s ^ 2 := by
       have := mul_le_mul_of_nonneg_left hℓsq (by positivity : (0 : ℝ) ≤ 76 * N * s)
-      nlinarith
-    nlinarith
+      linarith
+    have expand : (c + 19 * N * s * Real.log s) * (4 * Real.log s) =
+        4 * c * Real.log s + 76 * N * s * Real.log s ^ 2 := by ring
+    rw [expand, hK]
+    linarith
   have h2pos : (0 : ℝ) < 2 ^ (n + 2) := by positivity
   have hL0 : 0 < Real.log (smoothV o Θ) := by
-    rw [hLV]
-    exact div_pos (by have := le_smoothV (o := o) hΘ hΘ2; unfold smoothV at this
-                      by_contra h; push Not at h
-                      have := Real.exp_le_one_iff.mpr (div_nonpos_of_nonpos_of_nonneg h hΘ.le)
-                      linarith) hΘ
-  rw [le_div_iff₀ h2pos]
-  -- multiply by `log V > 0`: `2^{n+2} log V = 4ℓ` and `Θ log V = K`
-  have h4 : 2 ^ (n + 2) * Real.log (smoothV o Θ) = 4 * ℓ := by
-    rw [hℓdef, hℓ, pow_add]; ring
+    rw [hLV]; exact div_pos (by nlinarith) hΘ
+  have h4 : 2 ^ (n + 2) * Real.log (smoothV o Θ) = 4 * Real.log s := by
+    rw [hℓ, pow_add]; ring
   have hΘL : Θ * Real.log (smoothV o Θ) = smoothK o Θ := by rw [hLV]; field_simp
-  have key : (c + 19 * N * s * ℓ) * 2 ^ (n + 2) * Real.log (smoothV o Θ) ≤
+  have key : (c + 19 * N * s * Real.log s) * 2 ^ (n + 2) * Real.log (smoothV o Θ) ≤
       Θ * s ^ 2 * Real.log (smoothV o Θ) := by
-    rw [mul_assoc, h4, mul_comm Θ, mul_assoc, hΘL, mul_comm (s ^ 2)]
-    exact h1
+    calc (c + 19 * N * s * Real.log s) * 2 ^ (n + 2) * Real.log (smoothV o Θ)
+        = (c + 19 * N * s * Real.log s) * (4 * Real.log s) := by rw [mul_assoc, h4]
+      _ ≤ smoothK o Θ * s ^ 2 := h1
+      _ = Θ * s ^ 2 * Real.log (smoothV o Θ) := by rw [← hΘL]; ring
+  rw [le_div_iff₀ h2pos]
   exact le_of_mul_le_mul_right key hL0
 
 /-- **The takeover.** With `V = e^{K/Θ}`, level `n + 1` outweighs the earlier levels by `8` from the
@@ -412,11 +416,7 @@ theorem eight_le_smoothWt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (n : ℕ)
   have hNR : (N : ℝ) = 2 * ((o : ℝ) + 1) := by rw [hN]; push_cast; ring
   have ho : (0 : ℝ) ≤ o := Nat.cast_nonneg o
   have hNs : (N : ℝ) ≤ s := by
-    have h1 : 304 * (2 * ((o : ℝ) + 1)) ≤ smoothK o Θ := by
-      unfold smoothK
-      have : 0 ≤ 2 * ((o : ℝ) + 1) * Real.log (2 / Θ) := by
-        have := log_two_div_nonneg hΘ hΘ2; positivity
-      nlinarith
+    have h1 := le_smoothK (o := o) hΘ hΘ2
     have hK0 : 0 ≤ smoothK o Θ := le_trans (by positivity) h1
     have h3 : smoothK o Θ ≤ smoothK o Θ / Θ := by
       rw [le_div_iff₀ hΘ]; nlinarith
@@ -443,18 +443,25 @@ theorem eight_le_smoothWt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (n : ℕ)
     rw [hwin2, Real.sqrt_sq (by positivity), Real.sqrt_sq hs0]
     linarith [Nat.floor_le hs0]
   -- `M ≤ 2(2AQ)^{g+1}` and `2AQ ≤ s⁶`
+  have hA1 : (1 : ℝ) ≤ (baseHeight o (n + 1) : ℝ) := by
+    have h : 1 ≤ baseHeight o (n + 1) := by unfold baseHeight; exact le_add_left (by omega)
+    exact_mod_cast h
+  have hQ1 : (1 : ℝ) ≤ (prec V (n + 1) : ℝ) := by
+    have h : 1 ≤ prec V (n + 1) := by unfold prec; omega
+    exact_mod_cast h
+  have hM1 : (1 : ℝ) ≤ (smoothHeight o V (n + 1) : ℝ) := by
+    have h : 1 ≤ smoothHeight o V (n + 1) := by
+      have := two_mul_le_smoothHeight (o := o) (V := V) (n + 1); omega
+    exact_mod_cast h
+  have hspec : (smoothHeight o V (n + 1) : ℝ) ≤ 2 * (baseHeight o (n + 1) : ℝ) +
+      (2 * (baseHeight o (n + 1) : ℝ) * (prec V (n + 1) : ℝ)) ^ gens V (n + 1) := by
+    exact_mod_cast (smoothHeight_spec o V (n + 1)).2.1
   set A : ℝ := (baseHeight o (n + 1) : ℝ)
   set Q : ℝ := (prec V (n + 1) : ℝ)
   set g : ℕ := gens V (n + 1)
   set M : ℝ := (smoothHeight o V (n + 1) : ℝ)
-  have hA1 : (1 : ℝ) ≤ A := by
-    exact_mod_cast (by unfold baseHeight; omega : 1 ≤ baseHeight o (n + 1))
-  have hQ1 : (1 : ℝ) ≤ Q := by exact_mod_cast (by unfold prec; omega : 1 ≤ prec V (n + 1))
-  have hM1 : (1 : ℝ) ≤ M := by
-    exact_mod_cast (by have := two_mul_le_smoothHeight (o := o) (V := V) (n + 1); omega :
-      1 ≤ smoothHeight o V (n + 1))
   have hMle : M ≤ 2 * (2 * A * Q) ^ (g + 1) := by
-    have h : M ≤ 2 * A + (2 * A * Q) ^ g := by exact_mod_cast (smoothHeight_spec o V (n + 1)).2.1
+    have h : M ≤ 2 * A + (2 * A * Q) ^ g := hspec
     set y : ℝ := 2 * A * Q
     have hy1 : 1 ≤ y := by nlinarith
     have h1 : 2 * A ≤ y ^ (g + 1) := le_trans (by nlinarith) (le_self_pow₀ hy1 (by omega))
@@ -474,7 +481,7 @@ theorem eight_le_smoothWt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (n : ℕ)
       pow_le_pow_left₀ (by nlinarith) h2AQ _
     have h1 : 7 * M ≤ s ^ (6 * g + 7) := by
       have e : s ^ (6 * g + 7) = s * (s ^ 6) ^ (g + 1) := by
-        rw [← pow_mul, ← pow_succ']; congr 1; ring
+        rw [show 6 * g + 7 = 1 + 6 * (g + 1) by ring, pow_add, pow_one, pow_mul]
       rw [e]
       have : 0 ≤ (s ^ 6) ^ (g + 1) := by positivity
       nlinarith

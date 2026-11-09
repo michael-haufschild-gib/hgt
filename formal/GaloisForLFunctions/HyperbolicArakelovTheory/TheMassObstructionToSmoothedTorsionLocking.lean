@@ -5,16 +5,18 @@ import GaloisForLFunctions.RHTower.MarkovOddSectorFarkasAndOneSidedPBAP
 import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
 
 /-!
-# Smoothing retains the torsion discriminant
+# The mass obstruction to smoothed torsion locking
 
 Place a compact C² profile at the integer logarithms below their spacing. Its
 prime energy is exactly the torsion prime form times the profile mass. Coupling
 the raw Abel torsion energy to the smooth Green energy therefore has a definite
 meaning on these probes, without assuming an extension to arbitrary profiles.
 
-One scalar locking cancels the logarithmic divergences. Its finite part is Weil's
-form minus the profile mass times the discriminant diagonal. Changing the scalar
-normalization adds only a multiple of total mass; it cannot remove that diagonal.
+For arbitrary packets the divergent coefficients are discrete mass and actual L²
+mass. A scalar locking has a finite limit exactly when those masses agree. An
+explicit overlapping profile proves that no common radius gives finite limits
+on all packets. Below the atom spacing the masses agree, and the finite part is
+Weil's form minus the profile mass times the discriminant diagonal.
 -/
 
 open MeasureTheory Filter Topology Set Finset
@@ -61,10 +63,16 @@ theorem tendsto_smoothTorsionPacket_renormalized {ρ : ℝ → ℝ}
     (contDiff_atomicTest hg N x) (compact_atomicTest hgc N x)
   have h := (hT.sub hA).add_const
     (2 * coshHalfMoment (atomicTest N x g) ^ 2 - 2 * sinhHalfMoment (atomicTest N x g) ^ 2)
-  convert h.congr (fun r => show _ = smoothTorsionPacket ρ r N x g +
+  have hv : (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x -
+      -levyEnergy (atomicTest N x g) +
+      (2 * coshHalfMoment (atomicTest N x g) ^ 2 - 2 * sinhHalfMoment (atomicTest N x g) ^ 2) =
+      (2 * coshHalfMoment (atomicTest N x g) ^ 2 - 2 * sinhHalfMoment (atomicTest N x g) ^ 2) +
+      levyEnergy (atomicTest N x g) + (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x := by ring
+  rw [hv] at h
+  exact h.congr (fun r => show _ = smoothTorsionPacket ρ r N x g +
       Real.log |1 - ρ r| * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2) +
       (∫ u, atomicTest N x g u ^ 2) * selfEnergy r by
-    dsimp only [Function.comp_def, smoothTorsionPacket]; ring) using 1 <;> congr 1 <;> ring
+    dsimp only [Function.comp_def, smoothTorsionPacket]; ring)
 
 /-- A scalar locking with an adjustable finite mass normalization. -/
 def smoothLockingRadius (c r : ℝ) : ℝ := 1 - Real.exp (-selfEnergy r - c)
@@ -147,77 +155,6 @@ theorem tendsto_smoothLockedPacket_weil_normalization {g : ℝ → ℝ} {w : ℝ
   simpa only [sub_self, zero_mul, add_zero] using
     tendsto_smoothLockedPacket hg hgc hsupp hw x (2 * gammaHardyPhaseRate 0)
 
-/-- The locked diagonal for one translated profile at a torsion orbit.
-Both continuum terms are translation invariant. -/
-def smoothLockedOrbit (ρ : ℝ → ℝ) (r : ℝ) (n : ℕ) (g : ℝ → ℝ) : ℝ :=
-  (2 * coshHalfMoment g ^ 2 - 2 * sinhHalfMoment g ^ 2) - smoothGreenEnergy r g +
-    (∫ u, g u ^ 2) * twistedEnergy (ρ r) n n
-
-/-- Every scalar locking retains the same discriminant difference between smooth orbits. -/
-theorem tendsto_smoothLockedOrbit_sub_one {ρ : ℝ → ℝ}
-    (hρ : Tendsto ρ (𝓝[<] 1) (𝓝 1)) (g : ℝ → ℝ) {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun r => smoothLockedOrbit ρ r n g - smoothLockedOrbit ρ r 1 g) (𝓝[<] 1)
-      (𝓝 (-(∫ u, g u ^ 2) * selfIntersection n)) := by
-  have h := ((tendsto_twistedEnergy_self_add_log hn).sub
-    (tendsto_twistedEnergy_self_add_log one_pos)).comp hρ
-  change Tendsto _ _ (𝓝 (-selfIntersection n - -selfIntersection 1)) at h
-  have h1 : selfIntersection 1 = 0 := by rw [selfIntersection_eq one_pos]; simp [tameDifferent]
-  rw [h1, neg_zero, sub_zero] at h
-  have h' := h.const_mul (∫ u, g u ^ 2)
-  have hv : (∫ u, g u ^ 2) * -selfIntersection n =
-      -(∫ u, g u ^ 2) * selfIntersection n := by ring
-  rw [hv] at h'
-  refine h'.congr (fun r => ?_)
-  dsimp only [Function.comp_def, smoothLockedOrbit]
-  ring
-
-/-- Calibrating one orbit fixes every diagonal, including its arithmetic defect. -/
-theorem tendsto_smoothLockedOrbit_of_one {ρ : ℝ → ℝ}
-    (hρ : Tendsto ρ (𝓝[<] 1) (𝓝 1)) (g : ℝ → ℝ) {B : ℝ}
-    (hB : Tendsto (fun r => smoothLockedOrbit ρ r 1 g) (𝓝[<] 1) (𝓝 B))
-    {n : ℕ} (hn : 0 < n) :
-    Tendsto (fun r => smoothLockedOrbit ρ r n g) (𝓝[<] 1)
-      (𝓝 (B - (∫ u, g u ^ 2) * selfIntersection n)) := by
-  have h := hB.add (tendsto_smoothLockedOrbit_sub_one hρ g hn)
-  have hv : B + -(∫ u, g u ^ 2) * selfIntersection n =
-      B - (∫ u, g u ^ 2) * selfIntersection n := by ring
-  rw [hv] at h
-  exact h.congr (fun r => by ring)
-
-/-- No scalar locking gives Weil's energy on every translated nonzero smooth orbit.
-Degrees one and four already contradict translation invariance. -/
-theorem not_exists_scalar_locking_weil_orbits (g : ℝ → ℝ)
-    (hM : 0 < ∫ u, g u ^ 2) :
-    ¬ ∃ ρ : ℝ → ℝ, Tendsto ρ (𝓝[<] 1) (𝓝 1) ∧
-      ∀ n : ℕ, 0 < n →
-        Tendsto (fun r => smoothLockedOrbit ρ r n g) (𝓝[<] 1)
-          (𝓝 (weilQuad (fun u => g (u - Real.log n)))) := by
-  rintro ⟨ρ, hρ, hlim⟩
-  have h1 := hlim 1 one_pos
-  have h4 := hlim 4 (by norm_num)
-  rw [weilQuad_comp_sub] at h1 h4
-  have h4' := tendsto_smoothLockedOrbit_of_one hρ g h1 (by norm_num : 0 < (4 : ℕ))
-  have hdiscr : selfIntersection 4 = Real.log 2 := by
-    have h := selfIntersection_two_pow (k := 2) (by norm_num)
-    norm_num at h
-    exact h
-  rw [hdiscr] at h4'
-  have heq := tendsto_nhds_unique h4 h4'
-  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-  nlinarith [mul_pos hM hlog]
-
-/-- The failure occurs among actual nonzero compact C² probes. -/
-theorem not_exists_scalar_locking_all_smooth_orbits :
-    ¬ ∃ ρ : ℝ → ℝ, Tendsto ρ (𝓝[<] 1) (𝓝 1) ∧
-      ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
-        ∀ n : ℕ, 0 < n →
-          Tendsto (fun r => smoothLockedOrbit ρ r n g) (𝓝[<] 1)
-            (𝓝 (weilQuad (fun u => g (u - Real.log n)))) := by
-  rintro ⟨ρ, hρ, hlim⟩
-  exact not_exists_scalar_locking_weil_orbits (evenNarrowBump 0)
-    (integral_evenNarrowBump_sq_pos 0)
-    ⟨ρ, hρ, hlim _ (contDiff_evenNarrowBump 0) (hasCompactSupport_evenNarrowBump 0)⟩
-
 private theorem atomicTest_one (g : ℝ → ℝ) : atomicTest 1 (fun _ => 1) g = g := by
   funext u
   simp [atomicTest]
@@ -272,18 +209,63 @@ private theorem not_tendsto_positive_selfEnergy {a : ℝ} (ha : 0 < a) (B : ℝ)
   have := (div_lt_iff₀ ha).mp hr
   linarith
 
-/-- Overlap prevents a common radius from giving finite limits on all compact C² packets.
-The contradiction uses just the same profile at one orbit and at the two orders `1,2`:
-their discrete masses are in ratio two, while their L² masses have a positive overlap term. -/
-theorem not_exists_scalar_locking_all_smooth_packets :
-    ¬ ∃ ρ : ℝ → ℝ, Tendsto ρ (𝓝[<] 1) (𝓝 1) ∧
-      ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
-        ∀ (N : ℕ) (x : ℕ → ℝ), ∃ B : ℝ,
-          Tendsto (fun r => smoothTorsionPacket ρ r N x g) (𝓝[<] 1) (𝓝 B) := by
-  rintro ⟨ρ, hρ, hlim⟩
+private theorem eq_zero_of_tendsto_mul_selfEnergy {a B : ℝ}
+    (h : Tendsto (fun r => a * selfEnergy r) (𝓝[<] 1) (𝓝 B)) : a = 0 := by
+  rcases lt_trichotomy a 0 with ha | ha | ha
+  · have h' : Tendsto (fun r => (-a) * selfEnergy r) (𝓝[<] 1) (𝓝 (-B)) := by
+      simpa only [neg_mul] using h.neg
+    exact False.elim (not_tendsto_positive_selfEnergy (neg_pos.mpr ha) _ h')
+  · exact ha
+  · exact False.elim (not_tendsto_positive_selfEnergy ha _ h)
+
+/-- The exact asymptotic on every smooth packet, including overlapping packets.
+Its divergence is precisely discrete mass minus continuum mass. -/
+theorem tendsto_smoothLockedPacket_sub_mass_defect {g : ℝ → ℝ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (N : ℕ) (x : ℕ → ℝ) (c : ℝ) :
+    Tendsto (fun r => smoothLockedPacket c r N x g -
+        ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2 - ∫ u, atomicTest N x g u ^ 2) * selfEnergy r)
+      (𝓝[<] 1)
+      (𝓝 ((2 * coshHalfMoment (atomicTest N x g) ^ 2 -
+        2 * sinhHalfMoment (atomicTest N x g) ^ 2) + levyEnergy (atomicTest N x g) +
+        (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x +
+        c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2))) := by
+  have h := (tendsto_smoothTorsionPacket_renormalized (tendsto_smoothLockingRadius c)
+    hg hgc N x).add_const (c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2))
+  refine h.congr (fun r => ?_)
+  simp only [log_smoothLockingRadius, smoothTorsionPacket, smoothLockedPacket]
+  ring
+
+/-- A packet has a finite scalar-locked limit exactly when smoothing preserves its discrete mass.
+Separation is sufficient, but the exact boundary is the vanishing total overlap. -/
+theorem finite_smoothLockedPacket_iff_mass_balance {g : ℝ → ℝ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (N : ℕ) (x : ℕ → ℝ) (c : ℝ) :
+    (∃ B : ℝ, Tendsto (fun r => smoothLockedPacket c r N x g) (𝓝[<] 1) (𝓝 B)) ↔
+      (∫ u, atomicTest N x g u ^ 2) = (∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2 := by
+  have hR := tendsto_smoothLockedPacket_sub_mass_defect hg hgc N x c
+  constructor
+  · rintro ⟨B, hB⟩
+    have h := hR.sub hB
+    have hz := eq_zero_of_tendsto_mul_selfEnergy (a :=
+      (∫ u, atomicTest N x g u ^ 2) - (∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2)
+      (h.congr (fun r => by ring))
+    exact sub_eq_zero.mp hz
+  · intro hm
+    simp only [hm, sub_self, zero_mul, sub_zero] at hR
+    exact ⟨_, hR⟩
+
+/-- One compact C² profile already prevents every radius from giving finite limits at both
+the one-orbit packet and the two orders `1,2`. Their discrete masses are in ratio two,
+while their L² masses have a strictly positive overlap term. -/
+theorem exists_smooth_profile_without_scalar_locking :
+    ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+      ∀ ρ : ℝ → ℝ, Tendsto ρ (𝓝[<] 1) (𝓝 1) →
+        ¬ ((∃ B : ℝ, Tendsto (fun r => smoothTorsionPacket ρ r 1 (fun _ => 1) g)
+              (𝓝[<] 1) (𝓝 B)) ∧
+          (∃ B : ℝ, Tendsto (fun r => smoothTorsionPacket ρ r 2 (fun _ => 1) g)
+              (𝓝[<] 1) (𝓝 B))) := by
   obtain ⟨g, hg, hgc, hexcess⟩ := positive_mass_excess
-  obtain ⟨B₁, h₁⟩ := hlim g hg hgc 1 (fun _ => 1)
-  obtain ⟨B₂, h₂⟩ := hlim g hg hgc 2 (fun _ => 1)
+  refine ⟨g, hg, hgc, ?_⟩
+  rintro ρ hρ ⟨⟨B₁, h₁⟩, ⟨B₂, h₂⟩⟩
   have hR₁ := tendsto_smoothTorsionPacket_renormalized hρ hg hgc 1 (fun _ => 1)
   have hR₂ := tendsto_smoothTorsionPacket_renormalized hρ hg hgc 2 (fun _ => 1)
   have hs₁ : (∑ _n ∈ (Icc 1 1 : Finset ℕ), (1 : ℝ) ^ 2) = 1 := by norm_num
@@ -298,6 +280,5 @@ theorem not_exists_scalar_locking_all_smooth_packets :
 end GaloisForLFunctions.HyperbolicArakelovTheory
 
 #print axioms GaloisForLFunctions.HyperbolicArakelovTheory.tendsto_smoothLockedPacket_weil_normalization
-#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_weil_orbits
-#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_all_smooth_orbits
-#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_all_smooth_packets
+#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.exists_smooth_profile_without_scalar_locking
+#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.finite_smoothLockedPacket_iff_mass_balance

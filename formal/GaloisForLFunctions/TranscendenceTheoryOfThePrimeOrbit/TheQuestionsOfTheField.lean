@@ -2,7 +2,7 @@ import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TheDepthLawOfRetur
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.SurvivalAtADeepReturn
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TheFunctionFieldCase
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TuranOnThickSetsOfLevels
-import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.AZeroFreeRegionBoundsTheHeavyReturns
+import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.HeavySubsetsDoNotReturnBeforeTheVinogradovKorobovHeight
 
 /-!
 # The questions of the field
@@ -34,7 +34,8 @@ power of `log y`; Dirichlet returns them by `⌈π/2δ⌉^{|P|}`. *Breadth:* bou
 data cannot see past `2πK y^K` (the rounded system matches every form of height `≤ K` and returns
 exactly). *Heavy subsets at constant precision:* unconditionally (Vinogradov–Korobov),
 `√y ≤ K(y^{½ − w(2t)} log t + log(2 + t))` at every return beyond `T₁` of a `1/1000`-heavy subset at
-precision `≤ 1/20`; under a strip of width `h`, `log t ≥ c y^{½−h}`. -/
+precision `≤ 1/20`, so no such return occurs at `T₁ ≤ t ≤ exp((log y)^{3/2−ε})`; under a strip of
+width `h`, `log t ≥ c y^{½−h}`. -/
 theorem question_one :
     (∀ {y : ℕ} {S : Finset ℕ}, (∀ p ∈ S, p.Prime ∧ p ≤ y) → ∀ {p q : ℕ}, p ∈ S → q ∈ S → p ≠ q →
       ∀ {δ t : ℝ}, 0 < δ → δ ≤ 1 / 10 → 1 ≤ t →
@@ -56,13 +57,18 @@ theorem question_one :
       (∀ ρ ∈ zetaZeroConfig.carrier, T₀ ≤ |ρ.im| → |ρ.re - 1 / 2| ≤ h) →
       ∃ c : ℝ, 0 < c ∧ ∃ T₁ : ℝ, ∀ᶠ y : ℕ in atTop, ∀ H : Finset ℕ, IsHeavy y (1 / 1000) H →
         ∀ δ t : ℝ, 0 ≤ δ → δ ≤ 1 / 20 → T₁ ≤ t →
-          IsDeltaReturn H (fun p : ℕ => Real.log p) δ t → c * (y : ℝ) ^ (1 / 2 - h) ≤ Real.log t) :=
+          IsDeltaReturn H (fun p : ℕ => Real.log p) δ t → c * (y : ℝ) ^ (1 / 2 - h) ≤ Real.log t) ∧
+    (∀ {ε : ℝ}, 0 < ε → ε < 3 / 2 →
+      ∃ T₁ : ℝ, ∀ᶠ y : ℕ in atTop, ∀ H : Finset ℕ, IsHeavy y (1 / 1000) H →
+        ∀ δ t : ℝ, 0 ≤ δ → δ ≤ 1 / 20 → T₁ ≤ t → Real.log t ≤ Real.log y ^ ((3 : ℝ) / 2 - ε) →
+          ¬ IsDeltaReturn H (fun p : ℕ => Real.log p) δ t) :=
   ⟨fun hS _ _ hp hq hpq _ _ hδ0 hδ ht hret =>
       le_of_isDeltaReturn_of_two_mem hS hp hq hpq hδ0 hδ ht hret,
     fun s _ hδ _ hQ hδQ => exists_isDeltaReturn_le_pow s _ hδ hQ hδQ,
     fun hs K _ hT0 hT => let h := exists_matching_system_with_exact_return hs K hT0 hT; ⟨h.1, h.2.1⟩,
     heavy_return_bound_vinogradovKorobov,
-    fun hh hstrip => log_ge_of_heavy_return_of_strip hh hstrip⟩
+    fun hh hstrip => log_ge_of_heavy_return_of_strip hh hstrip,
+    fun hε hε1 => eventually_no_heavy_return_before_vk hε hε1⟩
 
 /-- **Question 2.** For `m + 1` distinct primes with `Σ log p ≤ W`, explicitly
 `|Λ_ν| ≥ exp(−U^{30(m+2)²}(log|ν|₁ + 2))`, `U = 10⁴(W+1)(m+2)²`: the exponent is `exp(O(k² log kW))`.

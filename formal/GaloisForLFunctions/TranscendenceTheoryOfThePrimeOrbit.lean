@@ -8,6 +8,8 @@ import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.ReturnBoundsAreLab
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TuranOnThickSetsOfLevels
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TheTestOfAHeavyReturn
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.AZeroFreeRegionBoundsTheHeavyReturns
+import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.HeavySubsetsDoNotReturnBeforeTheVinogradovKorobovHeight
+import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit.TheQuestionsOfTheField
 
 /-!
 # Transcendence theory of the prime orbit
@@ -20,6 +22,7 @@ Liouville is sharp for them, and the rounded system shows that no bounded-height
 excludes a return past the Kronecker scale. Integrality turns approximate vanishing at a return into
 exact vanishing at order `0` at constant precision, at order `1` below the Baker threshold, at
 order `2` only qualitatively. The explicit formula is the reciprocity of returns: a return at
-height `t` is a configuration of zeros near `t` imitating the pole. See
+height `t` is a configuration of zeros near `t` imitating the pole, so zero-free regions bound heavy
+returns — unconditionally no heavy subset returns before `exp((log y)^{3/2−ε})`. See
 `TranscendenceTheoryOfThePrimeOrbit/README.md`.
 -/
