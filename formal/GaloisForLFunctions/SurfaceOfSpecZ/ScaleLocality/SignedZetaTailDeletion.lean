@@ -119,7 +119,11 @@ theorem summable_zetaSignedVariation (α : ℝ) (M : ℕ) :
   simp only [← sq, sq_abs] at hd
   have hm := mul_le_mul_of_nonneg_left hd
     (show 0 ≤ 3 / 2 * zetaSignedDeletionShift (n + M) ^ 2 by positivity)
-  convert hm using 1 <;> ring
+  calc
+    _ = (3 / 2 * zetaSignedDeletionShift (n + M) ^ 2) *
+        zetaDeletionDepth α (n + M) ^ 2 := by ring
+    _ ≤ (3 / 2 * zetaSignedDeletionShift (n + M) ^ 2) * (1 / 2 + |α|) ^ 2 := hm
+    _ = _ := by ring
 
 /-- Smaller signed shifts spend no more than the established ordinate moment bound. -/
 theorem zeta_signed_mixedMomentCost_le (α : ℝ) (M N : ℕ) (s : ℝ) {H : ℝ}

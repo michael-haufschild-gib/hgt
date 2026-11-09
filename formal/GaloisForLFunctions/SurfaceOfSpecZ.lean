@@ -98,6 +98,10 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaTailDeletion
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaLogSquareWindows
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeWindowTransfer
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeLogSquareWindows
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedDeletionFilters
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedConvolutionBounds
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedInfiniteDeletion
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedFiniteSpectrum
 
 /-!
 # The surface of `Spec ℤ`

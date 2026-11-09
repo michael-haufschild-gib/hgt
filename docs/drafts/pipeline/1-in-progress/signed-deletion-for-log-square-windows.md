@@ -42,10 +42,10 @@ Its triangle inequality forces a large absolute value within a fixed
 distance of every `T` when `Re z₀>0`. No conjugation symmetry, absence
 of real exponents, or sign of the trace is needed.
 
-**Lean status:** `SignedDeletionFilters` and `SignedConvolutionBounds`
+**Lean status:** `SignedDeletionFilters`, `SignedConvolutionBounds`,
+`SignedInfiniteDeletion`, and `SignedFiniteSpectrum`
 compile with only `propext`, `Classical.choice`, `Quot.sound`; final direct
-audits remain. `SignedInfiniteDeletion`, `SignedZetaTailDeletion`,
-`SignedFiniteSpectrum`, `SignedLogSquareWindows`,
+audits remain. `SignedZetaTailDeletion`, `SignedLogSquareWindows`,
 `AbsolutePrimeWindowTransfer`, and `SignedPrimeLogSquareWindows` contain
 the remaining proof and await successful audits. The infinite norm bound
 uses total variation and dominated convergence, not order preservation.

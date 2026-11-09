@@ -76,5 +76,13 @@ This resolves the named obstacle of `fable.md` §5.2: coupling `L_{\mathrm{base}
      $$\mathrm{RiemannHypothesis} \iff \forall \varepsilon > 0,\; \forall^\infty k,\; \exists C,\; \forall N,\; \sum_{p \le N} \log p \int_G |C_x(p)|^{2k} \, d\mathrm{Haar}(x) \le C (N + 1)^{1 + \varepsilon k}.$$
    Thus Deligne's uniform tensor-moment hypothesis on a cover family containing `ζ` does not bypass RH: it is unconditionally equivalent to RH. ∎
 
+## Lean 4 modules (`GaloisForLFunctions.ArithmeticWeightTheory`)
+1. `AmplifiedMonodromyBreaksOnlyOffTheTrivialFibre.lean`:
+   `measureReal_singleton_zero_mul_amplified_pow_le`, `integral_amplified_centred_sub_uncentred`, `integral_amplified_compl_zero_eq`, `twistOrthonormalOn_quarterTwoMeasure`, `exists_amplified_orthonormal_strict_saving`.
+2. `ProductPositivityCouplingIsOneWay.lean`:
+   `geom_weighted_sum_ge_sum`, `zeta_mul_le_idRpow_mul`, `symmShift_mul_nonneg_of_zeta_mul_nonneg`, `symmShift_vonMangoldt_add_nonneg`, `summable_flipVM_rpow`, `flipSmooth_mul_nonneg`, `eventually_exists_primeWindowOf_doubledVM_sub_ge`, `not_both_primeWindowOf_power_bound`, `no_reverse_weight_bound_from_product_positivity`.
+3. `TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily.lean`:
+   `gaugeHaar_singleton_zero`, `gaugeTorus_fixedPart_decoupling`, `measureReal_dirichletGaugeMeasure_zero`, `tendsto_dirichletGaugeMeasure_zero`, `tendsto_cumulative_principal_fraction`, `measureReal_verticalHeightMeasure_Icc_le`, `tendsto_verticalHeightMeasure_Icc`, `tendsto_weyl_finiteMode_mass`, `rankinSelberg_family_commonFactor`, `numberField_counting_fixedPart`, `commonFactor_moment_realizable_for_all_c`, `tendsto_mixture_moment_decomp`, `even_pow_tangent_le`, `pow_two_mul_le_integral_add_of_integral_eq_zero`, `riemannHypothesis_iff_coverFamily_tensorExponent_sublinear`, `zeroMotive_is_fixedPart_of_every_arithmeticFamily`.
+
 ## Log
 - 2026-11-09 — created in `2-fully-proven` with complete dependency-closed proofs; proceeding immediately to Lean 4 formalization in `ArithmeticWeightTheory`.
