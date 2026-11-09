@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CollectiveDiophantineGeometry.AbsoluteValuesForceHeavyReturns
+import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveAuxiliaryConstruction
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveRankDepth
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FixedHeightPrimeMass
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
@@ -17,4 +18,7 @@ counts with constants independent of the number of prime coordinates.
 Maximal-minor elimination bounds the rational span of integer near relations,
 using only codimension plus one logarithms. Scalar coordinate slicing supplies
 cardinality bounds and separates those counts from collective span control.
+Collective integral auxiliaries retain every prime frequency while reducing
+the jet dimension by the rank of the small-form family. Their explicit
+parameters preserve this gain through the integer-kernel construction.
 -/

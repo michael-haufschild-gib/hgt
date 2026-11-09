@@ -66,10 +66,37 @@ Siegel lemma is not automatically necessary in this rational specialization.
 The corpus's `Matveev/FeldmanSiegelSystem.lean` and
 `Matveev/FeldmanAuxiliaryBounds.lean` give the one-pivot construction.
 
-The unresolved step is a parameter choice retaining this rank gain through
-analytic extrapolation, denominator clearing, and final coefficient
-vanishing. A count of unknowns alone is not a proof of a simultaneous bound.
-Only a dependency-closed argument can advance to stage 2 and formalization.
+## Collective normalization and parameter closure
+
+`CollectiveAuxiliaryConstruction.lean` proves the bounded projection and
+exact frequency defect. The same pivot determinant clears every free jet.
+The companion retains all original prime frequencies, so a nonzero
+coefficient vector has a nonzero value before `(N+1)q^k`.
+
+Put `d=k−r`, `h=floor(d/r)+1`, and `E=1000Wk(R+1)`. The parameters
+
+`q=E^h(R+1)`, `M=1000Wkq`, `S=RM+1`,
+`c=16k²(R+1)q`, `a=2cE^h`
+
+satisfy the Siegel count, analytic growth inequality, and terminal count
+provided `4(1000Wk)^(h(k+1))(R+1)^(h(k+1)+k)≤2^R`.
+An explicit binary-logarithmic `R` satisfies this inequality. The polynomial
+degree is `h(k+1)+k≤3k+2` when `r≥d`; it is quadratic at rank one.
+These exact arithmetic statements are proved in Lean, not assumed as
+parameter fields. They do not establish the analytic bounds for the new
+auxiliary family.
+
+The bounded-height integer-kernel construction is also formalized:
+`exists_collective_auxiliary` gives exact initial vanishing and a nonzero
+true value before the full interpolation length. Its proof and scope are
+in [CDG-AUX](../3-formalized/cdg-collective-auxiliary.md).
+
+Analytic extrapolation remains. The growth and error majorants can use
+the enlarged box parameter `Q=kq`, since `(r+1)q≤2kq` and `d≤k−1`.
+The integer system and terminal count must retain the actual `q`.
+The scalar `FeldmanParams` structure imposes the wrong Siegel count here;
+its parameter-free growth and error inequalities are the reusable inputs.
+Only the closed logarithm argument can advance this card to stage 2.
 
 ## Scope
 

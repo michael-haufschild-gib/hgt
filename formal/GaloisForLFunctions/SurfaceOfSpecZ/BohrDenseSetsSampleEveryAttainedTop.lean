@@ -484,9 +484,11 @@ theorem onLine_of_bddBelow_integer_runs_of_max (D : Set ℕ)
       have h1 : u ≤ Real.log (n + 1) := by
         rw [← Real.log_exp u]; exact Real.log_le_log (Real.exp_pos _) hn1.le
       have h2 : Real.log (n + 1) - Real.log n ≤ 1 / n := by
-        rw [← Real.log_div (by linarith) (by linarith)]
-        have := Real.log_le_sub_one_of_pos (show 0 < ((n : ℝ) + 1) / n by positivity)
-        have e : ((n : ℝ) + 1) / n - 1 = 1 / n := by field_simp
+        have hn0 : (n : ℝ) ≠ 0 := (show (0 : ℝ) < n by linarith).ne'
+        rw [← Real.log_div (show (0 : ℝ) < n + 1 by linarith).ne' hn0]
+        have := Real.log_le_sub_one_of_pos
+          (show 0 < ((n : ℝ) + 1) / n from div_pos (by linarith) (by linarith))
+        have e : ((n : ℝ) + 1) / n - 1 = 1 / n := by rw [div_sub_one hn0]; congr 1; ring
         linarith
       linarith
     have hL := norm_lagStructure_sub_le hZ hb3 (by positivity) hbs hlog0 hlogn

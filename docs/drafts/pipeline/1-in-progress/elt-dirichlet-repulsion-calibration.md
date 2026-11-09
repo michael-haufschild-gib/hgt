@@ -29,8 +29,8 @@ This is the classical calibration required by §2.10, not a claim of new
 repulsion for ζ. Corpus search found Siegel's theorem and the two-torsion
 positivity exception; no declaration named Deuring–Heilbronn was found.
 Exact divisor identities and the target statement remain under audit.
-The infinite power-sum lemma and the all-order Euler inequality are proved
-in Lean; no Dirichlet repulsion theorem is claimed.
+The infinite power-sum lemma, all-order Euler inequality, and completed
+divisor identities are proved in Lean; no Dirichlet repulsion theorem is claimed.
 
 Euler input: `ExceptionalLayerTheory/ThePositiveDirichletMomentKernel.lean`,
 `exceptionalEuler_odd_jet_nonneg`. It proves
@@ -70,7 +70,7 @@ Normalize the completed Dirichlet function by `q^(s/2)`. Its reflection
 equation cancels the unknown affine Hadamard factor, giving the paired
 logarithmic-derivative sum without assuming a nonzero central value.
 For `σ=1+α`, every completed zero lies in `0≤Re ρ≤1`, so
-`α Σ|σ+it−ρ|⁻² ≤ Re E′/E(σ+it)`.
+`α Σ|σ+it−ρ|⁻² ≤ 2 Re E′/E(σ+it)`.
 The Euler series bounds `|L′/L(σ+it)|` by `−ζ′/ζ(σ)`; the Gamma
 factor contributes `O(log(q(|t|+3)))`. Thus the required nontrivial-zero
 mass is `O(α⁻²+log(q(|t|+3))/α)`.
@@ -87,4 +87,9 @@ Corpus inputs: `CompletionZeroPairs.hasSum_logDeriv_zeroPairs`,
 `CompletionZeroPairs.exists_reflect_zeroCopy`,
 `completedLFunction_orderOneEnvelope`, and
 `SelbergClass.DegreeOne.orderOneEnvelope_LFunction`.
-The arithmetic instantiation and its Lean proof remain pending.
+Lean: `ExceptionalLayerTheory/TheCompletedDirichletDivisor.lean` proves
+`exceptionalCompletion_logarithmic_moments` and
+`exceptionalCompletion_mass_le_logDeriv` for the actual completed product
+`ξ(s)q^(s/2)Λχ(s)`. Central zeros and multiplicities are retained.
+The conductor bound, Gamma-sign comparison, exceptional-copy removal,
+and final repulsion law remain pending.

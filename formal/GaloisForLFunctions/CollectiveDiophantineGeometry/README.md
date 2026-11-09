@@ -176,6 +176,28 @@ rank threshold. The additional collective information is the dimension of
 the rational span of **all** near relations, not this cardinal exponent.
 Return-height counts and a stronger first-minimum bound remain open.
 
+### Collective integral auxiliaries
+
+[CollectiveAuxiliaryConstruction.lean](CollectiveAuxiliaryConstruction.lean)
+separates the number `k` of prime frequencies from the `d=k−r` free
+directions of a rank-`r` family of integer forms. A maximal absolute pivot
+minor gives normalized projected coordinates bounded by `(r+1)q`,
+independently of the matrix's coefficient height. The frequency defect is
+exactly an adjugate-weighted combination of the original forms.
+
+The integer jet system has `XS^(d+1)` equations and `(N+1)q^k` unknowns.
+Explicit parameters use `h=floor(d/r)+1`; the polynomial controlling the
+extrapolation length has degree `h(k+1)+k≤3k+2` when `r≥d`.
+`exists_collective_auxiliary` constructs a nonzero integer coefficient
+vector of bounded height, proves exact initial jet vanishing, and retains
+a nonzero true value before the full prime-frequency interpolation length.
+The proof uses integer Siegel, Fel'dman's common divisor, and unique
+factorization followed by confluent interpolation.
+
+This is a collective auxiliary construction. Analytic extrapolation for
+these jets is still required to obtain a simultaneous logarithm lower
+bound; no breadth estimate or Gaudron bound is assumed.
+
 ## Fixed-height mass calibration
 
 [FixedHeightPrimeMass.lean](FixedHeightPrimeMass.lean) proves an exact law

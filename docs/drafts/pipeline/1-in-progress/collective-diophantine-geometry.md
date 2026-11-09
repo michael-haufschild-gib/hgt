@@ -88,6 +88,18 @@ The exact scalar comparison and projection theorem are formalized in
 The published simultaneous-logarithm benchmark and its missing proof inputs
 are isolated in [CDG-SIM](cdg-simultaneous-logarithm-bounds.md).
 
+## Collective auxiliary construction
+
+The integral auxiliary retains `k` prime-frequency coordinates and only
+`d=k−r` free jet directions. Its system has `XS^(d+1)` equations against
+`(N+1)q^k` coefficients. The explicit parameter degree is
+`(floor(d/r)+1)(k+1)+k`, at most `3k+2` when `r≥d`.
+`CollectiveAuxiliaryConstruction.lean` constructs a nonzero bounded-height
+integer kernel, exact initial jet vanishing, and a nonzero true value
+before the full interpolation length. Analytic extrapolation for this
+family remains necessary for a simultaneous logarithm bound.
+Proof and formalization: [CDG-AUX](../3-formalized/cdg-collective-auxiliary.md).
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

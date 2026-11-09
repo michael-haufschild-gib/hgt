@@ -143,8 +143,19 @@ for a real Dirichlet character χ. Put `Dχ=ζ′/ζ+L′/L`. For every `k≥0`,
 
 The exact infinite Euler series has weights
 `(1+χ(n))Λ(n)(log n)^(2k+1)n^(−σ)(1+cos(t log n))≥0`.
-The functional equation and completed divisor must connect this inequality
-to the zero moments; the Dirichlet calibration is not yet a repulsion theorem.
+`TheCompletedDirichletDivisor.lean` supplies the complete nontrivial divisor
+of `Eχ(s)=ξ(s)q^(s/2)Λχ(s)` for primitive nonprincipal χ. All its zeros lie
+in the open critical strip. With multiplicities, every `n≥0` satisfies
+
+    (log Eχ)^(n+2)(s) = (−1)^(n+1)(n+1)! Σρ(s−ρ)^(−n−2).
+
+The sum converges absolutely for `Re s>1`. For real χ, reflection gives
+
+    (Re s−1) Σρ |s−ρ|⁻² ≤ 2 Re(Eχ′/Eχ)(s).
+
+Neither identity assumes a nonzero central value. The Euler inequality
+must still be joined to the Gamma ladders and exceptional pole–zero
+cancellation; the Dirichlet calibration is not yet a repulsion theorem.
 
 ## Questions and milestones
 
