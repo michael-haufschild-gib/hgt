@@ -250,7 +250,7 @@ private theorem orderOne_entire_logarithmic_moments {f : ℂ → ℂ} {C : ℝ}
   rw [heq.iteratedDeriv_eq (n + 1), iteratedDeriv_const_add (Nat.succ_pos n)]
   exact iteratedDeriv_tsum_regularized_resolvent ha hsum n hz
 
-open GaloisForLFunctions.HTGeometry RHTower
+open GaloisForLFunctions.HTGeometry _root_.RHTower
 
 variable {q : ℕ} [NeZero q]
 
