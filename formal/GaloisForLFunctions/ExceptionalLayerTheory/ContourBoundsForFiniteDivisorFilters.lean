@@ -18,11 +18,11 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 private theorem norm_logDeriv_line_abs (x v : ℝ) :
     ‖logDeriv riemannZeta ((x : ℂ) + v * I)‖ =
-      ‖logDeriv riemannZeta ((x : ℂ) + (|v| : ℂ) * I)‖ := by
+      ‖logDeriv riemannZeta ((x : ℂ) + ((|v| : ℝ) : ℂ) * I)‖ := by
   by_cases hv : 0 ≤ v
   · rw [abs_of_nonneg hv]
   · have he : (x : ℂ) + v * I =
-        (starRingEnd ℂ) ((x : ℂ) + (|v| : ℂ) * I) := by
+        (starRingEnd ℂ) ((x : ℂ) + ((|v| : ℝ) : ℂ) * I) := by
       apply Complex.ext <;> simp [abs_of_neg (lt_of_not_ge hv)]
     rw [he, logDeriv_riemannZeta_conj, Complex.norm_conj]
 
@@ -94,7 +94,9 @@ theorem finite_layer_high_strip_logDeriv_bounds (F : Finset XiZeroCopy)
     exact (not_le_of_gt hδ) hh
   refine ⟨hz, ?_⟩
   have hb := norm_logDeriv_zeta_le (hc.trans hx) hx2 hv4 hδ hδ1
-    (fun q => by simpa only [abs_abs] using hsep x |v| hx (by simpa only [abs_abs] using hv) q)
+    (fun q => by
+      change δ ≤ ‖((x : ℂ) + (|v| : ℝ) * I) - xiZero q‖
+      exact hsep x |v| hx (by simpa only [abs_abs] using hv) q)
   rw [norm_logDeriv_line_abs]
   calc
     _ ≤ (logDerivZetaConstant / δ) * Real.log |v| := by convert hb using 1 <;> ring
@@ -280,6 +282,7 @@ theorem analyticOnNhd_divisorFilteredMellinWeight (F : Finset XiZeroCopy) (ρ : 
     intro z hz
     let w := z - ((σ : ℂ) + t * I)
     have hw : 0 < w.re := by
+      change σ < z.re at hz
       dsimp only [w]
       simpa using sub_pos.mpr hz
     have hΓ : DifferentiableAt ℂ Complex.Gamma (w / 2) := by
@@ -324,13 +327,11 @@ theorem finite_layer_residueUnit_zero_mem (F : Finset XiZeroCopy)
   rw [hqw] at hh
   linarith only [hh, hw, hgap]
 
-/-- The shifted integral keeps every spacing factor, uniformly as the damping
-spacing tends to zero. The logarithmic derivative costs one height power. -/
-theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
-    (ρ : ℂ) (σ β : ℝ) {θ c : ℝ} (hc : 1 / 2 ≤ c) (hc1 : c < 1)
-    (hσc : σ < c) (hgap : θ < c)
-    (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
-    (havoid : ∀ q ∈ F, c ≠ (xiZero q).re) :
+private theorem exists_filtered_regular_line_bound (F : Finset XiZeroCopy)
+    (ρ : ℂ) (σ β c : ℝ) (hc1 : c ≠ 1) (hσc : σ < c)
+    (hnz : ∀ v : ℝ, riemannZeta ((c : ℂ) + v * I) ≠ 0)
+    (hbound : ∃ E : ℝ, 0 < E ∧ ∀ v : ℝ,
+      ‖logDeriv riemannZeta ((c : ℂ) + v * I)‖ ≤ E * (1 + |v|)) :
     ∃ C : ℝ, 0 < C ∧ ∀ y h t : ℝ, 0 < y → 0 ≤ h → h ≤ 1 →
       let Q := fun v : ℝ =>
         (divisorDampingFilter F ρ β h).eval
@@ -346,8 +347,7 @@ theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
   let δ := c - σ
   have hδ : 0 < δ := sub_pos.mpr hσc
   obtain ⟨B, hB, hfilter⟩ := exists_divisorDampingFilter_euler_bound F ρ β c
-  obtain ⟨E, hE, hlog⟩ :=
-    exists_finite_layer_regular_line_logDeriv_bound F hc hc1 hgap hrest havoid
+  obtain ⟨E, hE, hlog⟩ := hbound
   let W : ℝ → ℝ := fun v =>
     ‖gaussianMBKernel 1 ((δ : ℂ) + v * I)‖ * (1 + |v|) ^ (d + 1)
   have hWi : Integrable W :=
@@ -403,12 +403,10 @@ theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
       intro he
       have hh := congrArg Complex.re he
       simp at hh
-      linarith only [hc1, hh]
+      exact hc1 hh
     have ha := analyticOn_riemannZeta ((c : ℂ) + u * I) hs1
-    have hnz := finite_layer_regular_line_zeta_ne_zero F
-      (by linarith only [hc]) hc1 hgap hrest havoid u
     have hd : ContinuousAt (logDeriv riemannZeta) ((c : ℂ) + u * I) :=
-      ha.deriv.continuousAt.div ha.continuousAt hnz
+      ha.deriv.continuousAt.div ha.continuousAt (hnz u)
     exact hd.comp (f := fun u : ℝ => (c : ℂ) + u * I) (by fun_prop)
   have hcont : Continuous Q := by
     have hp : Continuous (fun v : ℝ => (divisorDampingFilter F ρ β h).eval
@@ -416,10 +414,8 @@ theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
       simp_rw [Polynomial.eval_eq_sum_range]
       fun_prop
     have hl : Continuous (fun v : ℝ => -logDeriv riemannZeta ((c : ℂ) + (t + v) * I)) := by
-      convert (hlogcont.comp (show Continuous (fun v : ℝ => t + v) by fun_prop)).neg using 1
-      funext v
-      push_cast
-      rfl
+      simpa only [Function.comp_apply, Pi.neg_apply, Complex.ofReal_add] using
+        (hlogcont.comp (show Continuous (fun v : ℝ => t + v) by fun_prop)).neg
     exact (hp.mul (continuous_gaussianMBKernel_line hy hδ)).mul hl
   have hQi : Integrable Q :=
     (hWi.const_mul (B ^ d * E * Z)).mono' hcont.aestronglyMeasurable
@@ -433,11 +429,31 @@ theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
       _ = _ := by rw [integral_const_mul]; dsimp only [C₀, J]; ring
   refine hnorm.trans ?_
   have he : d + 1 = 2 + (F.filter (fun q => xiZero q ≠ ρ)).card := by dsimp only [d]; omega
-  change C₀ * Z ≤ _
-  convert mul_le_mul_of_nonneg_right (show C₀ ≤ C₀ + 1 by linarith) hZ using 1
-  dsimp only [Z, δ]
-  rw [he]
-  ring
+  calc
+    C₀ * Z ≤ (C₀ + 1) * Z :=
+      mul_le_mul_of_nonneg_right (by linarith) hZ
+    _ = _ := by dsimp only [Z, δ]; rw [he]; ring
+
+/-- The shifted integral keeps every spacing factor, uniformly as the damping
+spacing tends to zero. The logarithmic derivative costs one height power. -/
+theorem exists_finite_layer_filtered_line_bound (F : Finset XiZeroCopy)
+    (ρ : ℂ) (σ β : ℝ) {θ c : ℝ} (hc : 1 / 2 ≤ c) (hc1 : c < 1)
+    (hσc : σ < c) (hgap : θ < c)
+    (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
+    (havoid : ∀ q ∈ F, c ≠ (xiZero q).re) :
+    ∃ C : ℝ, 0 < C ∧ ∀ y h t : ℝ, 0 < y → 0 ≤ h → h ≤ 1 →
+      let Q := fun v : ℝ =>
+        (divisorDampingFilter F ρ β h).eval
+          (Complex.exp ((h : ℂ) * ((c : ℂ) + (t + v) * I - β))) *
+          gaussianMBKernel y (((c - σ : ℝ) : ℂ) + v * I) *
+            (-logDeriv riemannZeta ((c : ℂ) + (t + v) * I))
+      Integrable Q ∧ ‖∫ v : ℝ, Q v‖ ≤
+        C * h ^ (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) *
+          (1 + |t|) ^ (2 + (F.filter (fun q => xiZero q ≠ ρ)).card) *
+            y ^ (-(c - σ) / 2) :=
+  exists_filtered_regular_line_bound F ρ σ β c hc1.ne hσc
+    (finite_layer_regular_line_zeta_ne_zero F (by linarith only [hc]) hc1 hgap hrest havoid)
+    (exists_finite_layer_regular_line_logDeriv_bound F hc hc1 hgap hrest havoid)
 
 /-- A sufficiently tall positive-strip rectangle extracts exactly the selected
 zero. Pole cancellation and unwanted-zero cancellation are exact. -/
@@ -468,7 +484,8 @@ theorem finite_layer_divisorFilter_rectangle (F : Finset XiZeroCopy)
     intro z hz
     have hh := (Complex.mem_reProdIm.mp hz).1
     have hc2 : c ≤ 2 := by linarith only [hc1]
-    have hzre : c ≤ z.re := by simpa [z₁, z₂, uIcc_of_le hc2] using hh.1
+    have hzI : z.re ∈ Icc c 2 := by simpa [z₁, z₂, uIcc_of_le hc2] using hh
+    have hzre : c ≤ z.re := hzI.1
     exact hσc.trans_le hzre
   have hedge : ∀ x v : ℝ, c ≤ x → x ≤ 2 → H ≤ |v| → v ≠ 0 →
       zetaResidueUnit ((x : ℂ) + v * I) ≠ 0 := by
@@ -550,5 +567,86 @@ theorem finite_layer_divisorFilter_rectangle (F : Finset XiZeroCopy)
   change rectIntegral (fun z => g z * (-logDeriv riemannZeta z)) z₁ z₂ = _
   rw [hid, hpole, hsum]
   ring
+
+/-- Horizontal edges of the complete filtered contour vanish at both ends
+of the finite exceptional packet. -/
+theorem tendsto_finite_layer_divisorFilter_horizontal (F : Finset XiZeroCopy)
+    (ρ : ℂ) (σ β h t e : ℝ) {θ c y : ℝ} (hy : 0 < y)
+    (hc : 1 / 2 ≤ c) (hc2 : c ≤ 2) (hσc : σ < c) (hgap : θ < c)
+    (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
+    (hh : 0 ≤ h) (hh1 : h ≤ 1) (he : |e| = 1) :
+    Tendsto (fun T : ℝ => ∫ x in c..2,
+      divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + (e * T) * I) *
+        (-logDeriv riemannZeta ((x : ℂ) + (e * T) * I))) atTop (𝓝 0) := by
+  classical
+  let d := 1 + (F.filter (fun q => xiZero q ≠ ρ)).card
+  obtain ⟨H, E, hH, hE, hlog⟩ := finite_layer_high_strip_logDeriv_bounds F hc hgap hrest
+  obtain ⟨A, hA, hkernel⟩ := exists_divisorFilter_kernel_strip_envelope
+    F ρ σ β (c - σ) (2 - σ) (sub_pos.mpr hσc)
+  let Y := Real.exp (|Real.log y| * ((2 - σ) / 2))
+  let D := A * h ^ d * (1 + |t|) ^ d * Y * E * Real.exp (|t| / 2)
+  have hD : 0 ≤ D := by dsimp only [D, Y]; positivity
+  have hpt (x v : ℝ) (hx : c ≤ x) (hx2 : x ≤ 2) (hv : H ≤ |v|) :
+      ‖divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + v * I) *
+        (-logDeriv riemannZeta ((x : ℂ) + v * I))‖ ≤
+        D * (1 + |v|) * Real.exp (-(|v| / 2)) := by
+    have hxs : 0 < x - σ := sub_pos.mpr (hσc.trans_le hx)
+    have hk := hkernel y h t (x - σ) (v - t) hy hh hh1
+      (by linarith only [hx]) (by linarith only [hx2])
+    have hsum : ((σ : ℂ) + t * I) + (((x - σ : ℝ) : ℂ) + (v - t) * I) =
+        (x : ℂ) + v * I := by push_cast; ring
+    have hdiff : (x : ℂ) + v * I - ((σ : ℂ) + t * I) =
+        ((x - σ : ℝ) : ℂ) + (v - t) * I := by push_cast; ring
+    have hk' : ‖divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + v * I)‖ ≤
+        A * h ^ d * (1 + |t|) ^ d * y ^ (-((x - σ) / 2)) *
+          Real.exp (-(|v - t| / 2)) := by
+      simpa only [divisorFilteredMellinWeight, hsum, hdiff, d] using hk
+    have hyb : y ^ (-((x - σ) / 2)) ≤ Y := by
+      rw [Real.rpow_def_of_pos hy]
+      apply Real.exp_le_exp.mpr
+      dsimp only [Y]
+      have hn := neg_le_abs (Real.log y)
+      have hnon := abs_nonneg (Real.log y)
+      nlinarith only [hn, hnon, hxs, hx2]
+    have hve : Real.exp (-(|v - t| / 2)) ≤
+        Real.exp (|t| / 2) * Real.exp (-(|v| / 2)) := by
+      rw [← Real.exp_add]
+      apply Real.exp_le_exp.mpr
+      have hvabs := abs_add_le (v - t) t
+      rw [sub_add_cancel] at hvabs
+      linarith only [hvabs]
+    rw [norm_mul, norm_neg]
+    calc
+      _ ≤ (A * h ^ d * (1 + |t|) ^ d * Y *
+          (Real.exp (|t| / 2) * Real.exp (-(|v| / 2)))) * (E * (1 + |v|)) := by
+        apply mul_le_mul
+        · exact hk'.trans (by gcongr)
+        · exact (hlog x v hx hx2 hv).2
+        · exact norm_nonneg _
+        · positivity
+      _ = _ := by dsimp only [D]; ring
+  apply HTGeometry.tendsto_zero_of_eventually_norm_le_polyExp
+    (C := 2 * D * (2 - c)) (N := 1) (by norm_num : (0 : ℝ) < 1 / 2)
+  filter_upwards [eventually_ge_atTop H] with T hT
+  have hT1 : 1 ≤ T := by linarith only [hT, hH]
+  have hT0 : 0 ≤ T := zero_le_one.trans hT1
+  have heT : |e * T| = T := by rw [abs_mul, he, one_mul, abs_of_nonneg hT0]
+  have heT' : ((e : ℂ) * T) = ((e * T : ℝ) : ℂ) := by push_cast; rfl
+  have hb : ∀ x ∈ uIoc c 2,
+      ‖divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + (e * T) * I) *
+        (-logDeriv riemannZeta ((x : ℂ) + (e * T) * I))‖ ≤
+        D * (1 + T) * Real.exp (-(T / 2)) := by
+    intro x hx
+    rw [uIoc_of_le hc2] at hx
+    have hv : H ≤ |e * T| := by rwa [heT]
+    simpa only [Complex.ofReal_mul, heT] using hpt x (e * T) hx.1.le hx.2 hv
+  have hi := intervalIntegral.norm_integral_le_of_norm_le_const hb
+  rw [abs_of_nonneg (sub_nonneg.mpr hc2)] at hi
+  refine hi.trans ?_
+  have ht : 1 + T ≤ 2 * T := by linarith only [hT1]
+  calc
+    D * (1 + T) * Real.exp (-(T / 2)) * (2 - c) ≤
+        D * (2 * T) * Real.exp (-(T / 2)) * (2 - c) := by gcongr
+    _ = _ := by simp only [pow_one]; congr 1 <;> ring
 
 end GaloisForLFunctions.ExceptionalLayerTheory

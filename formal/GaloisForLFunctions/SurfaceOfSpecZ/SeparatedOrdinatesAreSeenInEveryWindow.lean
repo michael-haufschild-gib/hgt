@@ -190,29 +190,68 @@ theorem landau_multiplier (z₀ ω : ℂ) (v : ℝ) :
   rw [add_assoc, this, hadd]
   push_cast; ring
 
+/-- **The zero-frequency test on a window.** If `Re Σ_{z∈S} D_z e^{z(u₀+v)} ≥ −K` for `|v| ≤ ℓ`,
+then `Re Σ_S D_z e^{zu₀} σ_ℓ(z − x)² ≥ −K e^{|x|ℓ}` for every real `x`: the triangle average of
+`(F + K) e^{−xv}`. -/
+theorem neg_le_re_sum_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} (x : ℝ) {u₀ ℓ K : ℝ}
+    (hℓ : 0 < ℓ) (hK : 0 ≤ K)
+    (hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K ≤ (∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re) :
+    -(K * Real.exp (|x| * ℓ)) ≤
+      (∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - x) ^ 2).re := by
+  classical
+  let a : Option ℂ → ℂ := fun o => o.elim (K : ℂ) fun z => D z * cexp (z * u₀)
+  let w : Option ℂ → ℂ := fun o => o.elim 0 id - (x : ℂ)
+  have hG : ∀ v : ℝ, ∑ o ∈ Finset.insertNone S, a o * cexp (w o * v) =
+      ((K : ℂ) + ∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ))) *
+        ((Real.exp (-x * v) : ℝ) : ℂ) := by
+    intro v
+    have hr : cexp (-(x : ℂ) * v) = ((Real.exp (-x * v) : ℝ) : ℂ) := by
+      rw [Complex.ofReal_exp]; push_cast; ring_nf
+    rw [Finset.sum_insertNone, ← hr, add_mul, Finset.sum_mul]
+    simp only [a, w, Option.elim, zero_sub, id]
+    congr 1
+    refine Finset.sum_congr rfl fun z _ => ?_
+    push_cast
+    rw [mul_assoc, mul_assoc, ← Complex.exp_add, ← Complex.exp_add]; ring_nf
+  have hpos : 0 ≤ (triAvg ℓ fun v => ∑ o ∈ Finset.insertNone S, a o * cexp (w o * v)).re := by
+    refine re_triAvg_nonneg hℓ fun v hv => ?_
+    rw [hG v, Complex.re_mul_ofReal, Complex.add_re, Complex.ofReal_re]
+    exact mul_nonneg (by linarith [hlow v hv]) (Real.exp_pos _).le
+  rw [triAvg_expSum, Finset.sum_insertNone] at hpos
+  simp only [a, w, Option.elim, zero_sub, id] at hpos
+  rw [Complex.add_re] at hpos
+  have hb : ((K : ℂ) * boxAvg ℓ (-(x : ℂ)) ^ 2).re ≤ K * Real.exp (|x| * ℓ) := by
+    refine (Complex.re_le_norm _).trans ?_
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hK, norm_pow]
+    have := norm_boxAvg_sq_le_exp hℓ (-(x : ℂ))
+    rw [Complex.neg_re, Complex.ofReal_re, abs_neg] at this
+    exact mul_le_mul_of_nonneg_left this hK
+  linarith
+
 /-- **Landau's inequality on a window.** If `Re Σ_{z∈S} D_z e^{z(u₀+v)} ≥ −K` for `|v| ≤ ℓ`, the
 weight `|D_{z₀} e^{z₀u₀}|` of an exponent `z₀` with `z̄₀ ∈ S` and `D_{z̄₀} = \bar D_{z₀}` is at most
-the leakage of the other exponents through `σ_ℓ` plus `2K e^{|Re z₀| ℓ}`. The test is the triangle
-average of `(F + K) e^{−x₀v}(1 + Re(ω e^{iγ₀v}))`, `ω` opposite to the phase of `D_{z₀} e^{z₀u₀}`. -/
-theorem norm_le_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} (hz₀ : z₀ ∈ S)
+the zero-frequency coefficient `Re Σ_S D_z e^{zu₀} σ_ℓ(z − x₀)²`, plus the leakage of the other
+exponents through `σ_ℓ` at `±γ₀`, plus `2K e^{|Re z₀| ℓ}`. The test is the triangle average of
+`(F + K) e^{−x₀v}(1 + Re(ω e^{iγ₀v}))`, `ω` opposite to the phase of `D_{z₀} e^{z₀u₀}`. -/
+theorem norm_le_re_add_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} (hz₀ : z₀ ∈ S)
     (hz₀' : conj z₀ ∈ S) (hD : D (conj z₀) = conj (D z₀)) {u₀ ℓ K : ℝ} (hℓ : 0 < ℓ)
     (hK : 0 ≤ K)
     (hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K ≤ (∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re) :
     ‖D z₀ * cexp (z₀ * u₀)‖ ≤
-      ∑ z ∈ S, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2‖ +
+      (∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2).re +
       (∑ z ∈ S.erase (conj z₀), ‖D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2‖ +
         ∑ z ∈ S.erase z₀, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2‖) / 2 +
       2 * K * Real.exp (|z₀.re| * ℓ) := by
   classical
   set P : ℂ := D z₀ * cexp (z₀ * u₀) with hPdef
-  set R₀ := ∑ z ∈ S, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2‖
   set Rp := ∑ z ∈ S.erase (conj z₀), ‖D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2‖
   set Rm := ∑ z ∈ S.erase z₀, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2‖
-  have hR₀ : 0 ≤ R₀ := Finset.sum_nonneg fun _ _ => norm_nonneg _
   have hRp : 0 ≤ Rp := Finset.sum_nonneg fun _ _ => norm_nonneg _
   have hRm : 0 ≤ Rm := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hzero := neg_le_re_sum_of_window_lower (D := D) z₀.re hℓ hK hlow
+  have hKe : 0 ≤ K * Real.exp (|z₀.re| * ℓ) := by positivity
   by_cases hP : P = 0
-  · rw [hP, norm_zero]; positivity
+  · rw [hP, norm_zero]; linarith
   have hPn : 0 < ‖P‖ := norm_pos_iff.mpr hP
   set ω : ℂ := -(P / (‖P‖ : ℂ)) with hω
   have hωn : ‖ω‖ = 1 := by
@@ -322,7 +361,6 @@ theorem norm_le_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} 
   have hhalf : ‖ω / 2‖ = 1 / 2 := by rw [norm_div, hωn, Complex.norm_ofNat]
   have hhalf' : ‖conj ω / 2‖ = 1 / 2 := by
     rw [norm_div, Complex.norm_conj, hωn, Complex.norm_ofNat]
-  have n₀ := norm_sum_le S fun z => D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2
   have np := norm_sum_le (S.erase (conj z₀)) fun z => D z * cexp (z * u₀) *
     boxAvg ℓ (z - conj z₀) ^ 2
   have nm := norm_sum_le (S.erase z₀) fun z => D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2
@@ -340,13 +378,27 @@ theorem norm_le_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} 
     ring
   rw [hre] at hpos
   have b1 := Complex.re_le_norm Kc
-  have b2 := Complex.re_le_norm X₀
   have b3 : (ω / 2 * Xp).re ≤ Rp / 2 := by
     refine (Complex.re_le_norm _).trans ?_
     rw [norm_mul, hhalf]; linarith
   have b4 : (conj ω / 2 * Xm).re ≤ Rm / 2 := by
     refine (Complex.re_le_norm _).trans ?_
     rw [norm_mul, hhalf']; linarith
+  linarith
+
+/-- Landau's inequality on a window, with the zero-frequency coefficient bounded by norms. -/
+theorem norm_le_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} (hz₀ : z₀ ∈ S)
+    (hz₀' : conj z₀ ∈ S) (hD : D (conj z₀) = conj (D z₀)) {u₀ ℓ K : ℝ} (hℓ : 0 < ℓ)
+    (hK : 0 ≤ K)
+    (hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K ≤ (∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re) :
+    ‖D z₀ * cexp (z₀ * u₀)‖ ≤
+      ∑ z ∈ S, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2‖ +
+      (∑ z ∈ S.erase (conj z₀), ‖D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2‖ +
+        ∑ z ∈ S.erase z₀, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2‖) / 2 +
+      2 * K * Real.exp (|z₀.re| * ℓ) := by
+  have h := norm_le_re_add_of_window_lower hz₀ hz₀' hD hℓ hK hlow
+  have h2 := (Complex.re_le_norm _).trans
+    (norm_sum_le S fun z => D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2)
   linarith
 
 /-! ### Separated reals -/

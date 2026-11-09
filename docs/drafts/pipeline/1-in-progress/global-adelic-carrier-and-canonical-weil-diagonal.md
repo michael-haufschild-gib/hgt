@@ -78,6 +78,22 @@ arithmetic quotient must sum over these neighbours before taking quotient
 classes, preserving multiplicity when distinct neighbours become identified.
 The exact local degree and quotient descent are not yet formalized.
 
+## Local Green construction
+
+For `g∈GL₂(ℚ_p)`, put `R(g)=|det g|_p/(maxᵢⱼ |gᵢⱼ|_p)²`.
+The next target is to descend `R(g_x⁻¹g_y)` to local vertices and prove
+the actual adjacency identity for
+
+`G_s(x,y)=p^s/(p^(2s)-1) · R(g_x⁻¹g_y)^s`, `s>0`.
+
+Integral row and column reduction should give `diag(1,d)`, `|d|_p≤1`.
+Away from the base class, one neighbour should have ratio `pR` and the
+other `p` neighbours ratio `R/p`; at the base all ratios should be `1/p`.
+This would realize the existing radial Green recurrence on actual vertices
+without assuming a tree identification. Invariance, the reduction and this
+neighbour law remain unproved. Global descent of a Green kernel and its
+diagonal regularization remain separate requirements.
+
 ## Verification gates
 
 - [ ] Actual global quotient and operator constructed.
