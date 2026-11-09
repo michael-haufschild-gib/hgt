@@ -437,9 +437,44 @@ still lies strictly right of `σ`. No separate zero-free or recurrence input
 is assumed in this specialization.
 
 `TheFullGaussianCurrentAtEscapingHeights.lean` proves these statements with
-the complete prime and zero fields. The Gamma counterterm remains in the
-observable. Its removal and same-depth replication require further arithmetic
-control.
+the complete prime and zero fields.
+
+If a finite set `F` contains every zero copy with real part greater than `θ`,
+and `θ<σ₀`, only its exceptional modes are needed. For `0<y≤1`,
+
+    |G_s(y)+Σ_{ρ∈F}½Γ((ρ−s)/2)y^(−(ρ−s)/2)
+      −e^(−y)(A(s)−ξ′/ξ(s))|
+      ≤ C[y+y^((σ₀−θ)/2)](1+log Im s).
+
+Gamma recursion bounds the unit-damping amplitudes by a constant times the
+complete squared resolvent. Every complementary mode gains
+`y^((σ₀−θ)/2)`. Thus the infinite complementary field is bounded explicitly
+and tends to zero after division by logarithmic height. The actual `¬AAL`
+layer supplies such `F,θ,σ₀` and a whole high strip, while an exceptional
+zero remains strictly right of `σ₀`.
+`OnlyExceptionalGaussianModesRemain.lean` proves this finite subtraction law
+and its uniform limit.
+
+### Raw prime passage at inverse-height damping
+
+Coupling damping to height removes the remaining counterterms. Under `¬AAL`,
+there is `1/2<σ<1`, strictly left of an actual exceptional zero, such that
+uniformly for `σ≤Re s≤1` as `t=Im s→+∞`,
+
+    ΣₙΛ(n)n^(−s)e^(−n²/t) + ζ′/ζ(s) → 0.
+
+The observable is the literal infinite prime sum. The complementary Gamma
+field contributes `O(t^(−p)(1+log t))`, where `p=(σ−θ)/2>0`. Every exceptional
+mode has squared-resolvent decay `O(t⁻²)` and damping amplification at most
+`t`, giving a finite total `O(t⁻¹)`. One Mellin recursion bounds the continuum
+by `t⁻¹+Γ(3/2)t^(−1/2)`. All three errors therefore vanish uniformly.
+
+`ThePrimeCurrentPassesAtInverseHeight.lean` proves the continuum estimate,
+prime-discrepancy passage and full prime-sum passage. The identity
+`A−ξ′/ξ=−ζ′/ζ−(s−1)⁻¹`, the high-strip bound `|ζ′/ζ|=O(log t)` and
+`|1−e^(−1/t)|≤1/t` remove scalar and polar terms at cost `O((1+log t)/t)`.
+This admits arithmetic data at escaping heights; same-depth replication still
+requires control of prime phases at those heights.
 
 ### Conductor-normalized height reflection
 

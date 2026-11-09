@@ -26,17 +26,20 @@ theorem primeWeightedBoundary_closure_eq_univ (s : ℂ) (δ : ℝ) (h : 2*s.re+�
   let T := (primeWeightedGraphSubmodule s δ).topologicalClosure
   have hT : (T : Set (PrimeChainHilbert × ℂ))=closure (primeWeightedBoundaryGraph s δ) := rfl
   have hu : ((0:PrimeChainHilbert),(1:ℂ))∈T := by
-    rw [hT]
+    change ((0:PrimeChainHilbert),(1:ℂ))∈closure (primeWeightedBoundaryGraph s δ)
     exact primeWeightedBoundary_graph_closure_unit s δ h
   have hv (z : ℂ) : ((0:PrimeChainHilbert),z)∈T := by
     have hh := T.smul_mem z hu
     simpa only [Prod.smul_mk,smul_zero,smul_eq_mul,mul_one] using hh
   have hf (a) : (primeWeightedChainEmbedding δ a,(0:ℂ))∈T := by
     have hg : (primeWeightedChainEmbedding δ a,dirichletPrimeChainFunctional s a)∈T := by
-      rw [hT]
+      change (primeWeightedChainEmbedding δ a,dirichletPrimeChainFunctional s a)∈
+        closure (primeWeightedBoundaryGraph s δ)
       exact subset_closure ⟨a,rfl⟩
     have hh := T.sub_mem hg (hv (dirichletPrimeChainFunctional s a))
-    simpa only [Prod.sub_mk,sub_zero,sub_self] using hh
+    change (primeWeightedChainEmbedding δ a-0,
+      dirichletPrimeChainFunctional s a-dirichletPrimeChainFunctional s a)∈T at hh
+    simpa only [sub_zero,sub_self] using hh
   have hTc : IsClosed (T : Set (PrimeChainHilbert × ℂ)) := by
     rw [hT]
     exact isClosed_closure
@@ -47,10 +50,11 @@ theorem primeWeightedBoundary_closure_eq_univ (s : ℂ) (δ : ℝ) (h : 2*s.re+�
     obtain ⟨a,rfl⟩ := hv
     exact hf a
   apply Set.eq_univ_of_forall
-  intro z
+  rintro ⟨u,v⟩
   rw [←hT]
-  have hz := T.add_mem (hh z.1) (hv z.2)
-  simpa only [Prod.add_mk,add_zero,zero_add] using hz
+  have hz := T.add_mem (hh u) (hv v)
+  change (u+0,0+v)∈T at hz
+  simpa only [add_zero,zero_add] using hz
 
 /-- In the bounded region, closure retains exactly the graph of the arithmetic Riesz extension. -/
 theorem primeWeightedBoundary_closure_eq_graph (s : ℂ) (δ : ℝ) (h : 1 < 2*s.re+δ) :
@@ -70,6 +74,8 @@ theorem primeWeightedBoundary_closure_eq_graph (s : ℂ) (δ : ℝ) (h : 1 < 2*s
     have hmem : (z.1,φ z.1)∈closure (primeWeightedBoundaryGraph s δ) := by
       apply (closure_minimal (fun v hv => ?_) hc) (primeWeightedChainEmbedding_dense δ z.1)
       obtain ⟨a,rfl⟩ := hv
+      change (primeWeightedChainEmbedding δ a,φ (primeWeightedChainEmbedding δ a))∈
+        closure (primeWeightedBoundaryGraph s δ)
       rw [hf]
       exact subset_closure ⟨a,rfl⟩
     change φ z.1=z.2 at hz
@@ -87,8 +93,7 @@ theorem primeWeightedBoundaryGraph_dense_iff (s : ℂ) (δ : ℝ) :
     change primeWeightedBoundaryExtension s δ h 0=1 at hu
     rw [map_zero] at hu
     exact zero_ne_one hu
-  · intro h
-    intro z
+  · intro h z
     rw [primeWeightedBoundary_closure_eq_univ s δ h]
     trivial
 

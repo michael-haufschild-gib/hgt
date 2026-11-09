@@ -87,8 +87,9 @@ summability supplies the full positive range, including exponents where
 comparison with all integers would fail. Both classifications are formalized.
 
 The positive survivor is an explicit minimal completion of the prime-star
-restriction. Composite interactions and nonlocal archimedean corrections
-remain separate; no integer count or full positive form follows.
+restriction. The logarithmic completion below treats full conductor
+interactions. An independently constructed arithmetic count or archimedean
+height supplying the critical correction remains open.
 
 [Programme card](../../../docs/drafts/pipeline/1-in-progress/renormalized-intersection-arithmetic-counts.md)
 records the remaining mathematical targets.
@@ -448,11 +449,23 @@ provides an arithmetic observable, without a prime-core cell action.
 The [completed-boundary theorem](../../../docs/drafts/pipeline/3-formalized/riac-completed-prime-boundary.md)
 settles the exact augmentation domain before introducing higher homology.
 
-The [logarithmic full-form candidate](../../../docs/drafts/pipeline/1-in-progress/riac-logarithmic-torsion-completion.md)
-asks whether the sharp prime-star exponent extends to boundedness and positive
-diagonal completion on every conductor. [LogarithmicMangoldtTail.lean](LogarithmicMangoldtTail.lean) proves its
-required full Mangoldt tail for every exponent above one. The combined
-Schur estimate and completed-form classification remain unverified.
+The [logarithmic full-form theorem](../../../docs/drafts/pipeline/3-formalized/riac-logarithmic-torsion-completion.md)
+proves boundedness and constant diagonal compensation exactly for `α>2`
+on the carrier with mass `Σ_n(1+log n)^α x_n²`.
+[LogarithmicTorsionBound.lean](LogarithmicTorsionBound.lean) combines the full
+Mangoldt tail with the logarithmic divisor identity in a weighted Schur bound.
+[LogarithmicTorsionCompletion.lean](LogarithmicTorsionCompletion.lean)
+constructs the unique bounded extension, retaining the original absolutely
+convergent arithmetic pair series and its self-adjoint Hilbert representative.
+The same explicit diagonal compensates every completed probe. This diagonal
+is a constructed correction; it is not an arithmetic height or count.
+
+[LogarithmicTorsionCompactness.lean](LogarithmicTorsionCompactness.lean)
+factors the original form through coefficient-preserving compact inclusions
+between logarithmic weights. Its Hilbert operator is therefore compact.
+[LogarithmicTorsionNotHilbertSchmidt.lean](LogarithmicTorsionNotHilbertSchmidt.lean)
+proves that this operator is never Hilbert–Schmidt: even prime conductors
+already force divergent diagonal square mass at every logarithmic exponent.
 
 The independent surface count, critical positive completion, zero-detecting
 completion, relative core pair and modular cell comparison remain open.
@@ -657,8 +670,8 @@ They retain squarefree support and lose the Möbius orientation.
 
 The [formalized comparisons](../../../docs/drafts/pipeline/3-formalized/riac-prime-quadratic-counts.md)
 construct counts and a product formula independently of the signed sum.
-The signed trace-discriminant equality, uniform geometric control, and
-an independent bound for `|N+1−R_N|` remain open.
+Signed trace-discriminant equality still needs formalization. Uniform
+geometric control and an independent bound for `|N+1−R_N|` remain open.
 
 ## Actual orientation quotient
 

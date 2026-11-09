@@ -32,8 +32,11 @@ windows), develop the tools of §2.13, formalize every answer.
 | H6 | Weil's `p`-kernel = tree Green function at the Ramanujan edge `2√p`; `λ_s = 2√p ⇔ s = ½`; adelic Green formula | proved | `TheFinitePlacesAreTrees` |
 | H7 | Poincaré convergence at `½` + `diag(a, a⁻¹) ∈ Γ` (`‖a‖ > 1`) ⇒ no carrier (resonant primes `Σ1/p < ∞`, `⌈Q^j⌉` returns) | proved | `CarriersWithAClosedDegreeGeodesic` |
 | H8 | Poincaré convergence at `½` + conical degree end ⇒ no carrier (≲ `S e^R √P` near elements, each spoils ≤ 1 prime ≤ P; Chebyshev) | proved | `CarriersAtAConicalLimitPoint` |
-| H9 | B118′(1): every embedding with a cluster point fails for Newtonian kernels; cusp-escaping embeddings | partial | open |
-| H10 | B118′(2) at non-conical limit points (geometrically infinite groups) | — | open |
+| H9 | B118′(1): Newtonian kernel with a cusp expansion (zero modes `t^{½}, t^{3/2}`, Wronskian `b₁ ≠ a₂`) on a space with proper height and finitely many cusps ⇒ no injective embedding carries the Frobenius intersection (cluster ⇒ Newtonian; escape ⇒ zero mode) | proved | `EmbeddingsIntoACompactQuotient`, `EmbeddingsIntoAFiniteVolumeQuotient` |
+| H10 | Poincaré convergence at `½` + `D_Γ(M) = Σ_{γ≠1}e^{−d(z_M,γz_M)/2} ≤ C` for infinitely many `M` ⇒ no carrier; conical ⇒ `D_Γ ≤ e^R S` | proved | `CarriersAlongAnEndOfBoundedSelfEnergy`, `CarriersAtAConicalLimitPoint` |
+| H11 | Convergence at `½` excludes parabolics (`γ^k = ±(1 + kN)`, harmonic series); `∞ ∈ Ω(Γ)` ⇒ endpoint Eisenstein; B118′(2) for finitely generated groups (with Beardon–Maskit, Canary + tameness) | proved | `TheBoundaryOfAGroupConvergentAtOneHalf` |
+| H12 | Orientation cover over ℤ (RIAC discriminant cover): centred count `M(N) = Ω_±(√N)`; weight `½` ⇔ RH | proved | `TheMiddleCohomologyOfTheOrientationCover` |
+| H13 | B118′(2) for infinitely generated torsion-free groups: self-energy bounded on the thick part (Sullivan `λ₀ = 1`, elliptic estimate), thin forever ⇒ loxodromic end ⇒ conical | classical sketch | open (thick-part bound not in Lean) |
 
 ## Log
-- 2026-11-09 — programme created; README; H1–H8 formalized.
+- 2026-11-09 — programme created; README; H1–H12 formalized.

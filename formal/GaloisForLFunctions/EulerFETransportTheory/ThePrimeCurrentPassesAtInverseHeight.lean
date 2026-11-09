@@ -6,8 +6,9 @@ import GaloisForLFunctions.RHTower.Sieve.LogLogSmall
 
 At damping `1 / im s`, the finitely many exceptional Gamma modes vanish at
 high ordinates, and the entire complementary field vanishes by its horizontal
-gap. The Gaussian prime current therefore recovers the normalized continued
-finite part on a high interior strip, with no divisor counterterm.
+gap. The Gaussian prime current recovers the continued Euler current `-ζ'/ζ`
+uniformly on an interior high strip. The continuum, scalar normalization and
+polar correction also vanish; no divisor counterterm remains.
 -/
 
 open Complex Filter Topology RHTower XiAtlasFinitePart
@@ -42,7 +43,7 @@ theorem norm_gaussianContinuum_inverseHeight_le {s : ℂ}
     rw [norm_mul, norm_div, norm_mul, Complex.norm_two, Complex.norm_real,
       Real.norm_eq_abs, abs_of_pos hy]
     exact mul_le_mul (div_le_div_of_nonneg_left (by positivity) ht0 hnorm)
-      hE (norm_nonneg _) (by positivity)
+      (by simpa only [neg_div] using hE) (norm_nonneg _) (by positivity)
   have hpow : y ^ 2 * y ^ (-(3 : ℝ) / 2) = y ^ (1 / 2 : ℝ) := by
     rw [← Real.rpow_natCast, ← Real.rpow_add hy]
     congr 1
@@ -245,8 +246,145 @@ theorem not_asymptoticAbscissaLaw_has_rawPrime_highGaussianPassage
   rw [heq]
   exact (norm_add_le _ _).trans_lt (by linarith)
 
+/-- The scalar and polar corrections cost only logarithmic height divided by
+height on a strip separated from the actual divisor. -/
+theorem norm_normalizedGaussianFinitePart_add_logDeriv_le {s : ℂ} {δ : ℝ}
+    (hs : 1 / 2 ≤ s.re) (hs1 : s.re ≤ 1) (ht : 4 ≤ s.im)
+    (hδ : 0 < δ) (hδ1 : δ ≤ 1) (hsep : ∀ q : XiZeroCopy, δ ≤ ‖xiZero q - s‖) :
+    ‖(Real.exp (-(1 / s.im)) : ℂ) *
+        (gaussianArchimedeanCurrent s - logDeriv xi s) + logDeriv riemannZeta s‖ ≤
+      (logDerivZetaConstant / δ) * (Real.log s.im / s.im) + 1 / s.im := by
+  have hs0 : 0 < s.re := by linarith
+  have ht0 : 0 < s.im := by linarith
+  have hsne0 : s ≠ 0 := by intro h; simp [h] at hs0
+  have hsne1 : s ≠ 1 := by
+    intro h
+    have hh := congrArg Complex.im h
+    simp only [Complex.one_im] at hh
+    linarith
+  have hxi := xi_ne_zero_of_separated hδ hsep
+  have hζ : riemannZeta s ≠ 0 := by
+    intro hz
+    apply hxi
+    rw [xi_eq_xiUnit_mul_zeta hsne0 hsne1 hs0, hz, mul_zero]
+  have hdec : gaussianArchimedeanCurrent s - logDeriv xi s =
+      -logDeriv riemannZeta s - (s - 1)⁻¹ := by
+    rw [logDeriv_zeta_eq_logDeriv_xi hs0 hsne1 hζ, gaussianArchimedeanCurrent]
+    ring
+  have hL : ‖logDeriv riemannZeta s‖ ≤ logDerivZetaConstant * Real.log s.im / δ := by
+    have hh := norm_logDeriv_zeta_le hs (by linarith : s.re ≤ 2) ht hδ hδ1
+      (fun q => by simpa only [Complex.re_add_im, norm_sub_rev, xiZero] using hsep q)
+    simpa only [Complex.re_add_im] using hh
+  let y : ℝ := 1 / s.im
+  have hy : 0 < y := by dsimp [y]; positivity
+  have he1 : Real.exp (-y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+  have hscalar : ‖(1 : ℂ) - (Real.exp (-y) : ℂ)‖ ≤ y := by
+    rw [← Complex.ofReal_one, ← Complex.ofReal_sub, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr he1)]
+    linarith [Real.add_one_le_exp (-y)]
+  have hexp : ‖(Real.exp (-y) : ℂ)‖ ≤ 1 := by
+    simpa only [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)] using he1
+  have hinv : ‖(s - 1)⁻¹‖ ≤ 1 / s.im := by
+    rw [norm_inv, one_div]
+    apply inv_anti₀ ht0
+    simpa only [Complex.sub_im, Complex.one_im, sub_zero] using Complex.im_le_norm (s - 1)
+  have heq : (Real.exp (-y) : ℂ) * (gaussianArchimedeanCurrent s - logDeriv xi s) +
+      logDeriv riemannZeta s =
+      (1 - (Real.exp (-y) : ℂ)) * logDeriv riemannZeta s -
+        (Real.exp (-y) : ℂ) * (s - 1)⁻¹ := by rw [hdec]; ring
+  change ‖(Real.exp (-y) : ℂ) * (gaussianArchimedeanCurrent s - logDeriv xi s) +
+    logDeriv riemannZeta s‖ ≤ _
+  rw [heq]
+  calc
+    _ ≤ ‖(1 - (Real.exp (-y) : ℂ)) * logDeriv riemannZeta s‖ +
+        ‖(Real.exp (-y) : ℂ) * (s - 1)⁻¹‖ := norm_sub_le _ _
+    _ ≤ y * (logDerivZetaConstant * Real.log s.im / δ) + 1 * (1 / s.im) := by
+      simp only [norm_mul]
+      exact add_le_add (mul_le_mul hscalar hL (norm_nonneg _) hy.le)
+        (mul_le_mul hexp hinv (norm_nonneg _) zero_le_one)
+    _ = _ := by dsimp [y]; ring
+
+/-- In the actual finite-layer world, inverse-height Gaussian damping recovers
+`-ζ'/ζ` uniformly on an interior high strip. The observable and target contain
+no divisor, continuum, scalar, or polar counterterm. -/
+theorem not_asymptoticAbscissaLaw_has_rawEuler_highGaussianPassage
+    (hnot : ¬ AsymptoticAbscissaLaw) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+      ∀ ε : ℝ, 0 < ε → ∃ T : ℝ, 0 < T ∧ ∀ s : ℂ,
+        σ ≤ s.re → s.re ≤ 1 → T ≤ s.im →
+        ‖gaussianDampedPrimeSum s (1 / s.im) + logDeriv riemannZeta s‖ < ε := by
+  classical
+  obtain ⟨σ₁, hσ₁, hσ₁1, hq₁, hraw⟩ :=
+    not_asymptoticAbscissaLaw_has_rawPrime_highGaussianPassage hnot
+  obtain ⟨F, θ, σ₂, _, _, hθ, hgap, hσ₂1, _, _, hq₂, hrest, _, _⟩ :=
+    not_asymptoticAbscissaLaw_has_finiteGaussianControl hnot
+  let σ : ℝ := max σ₁ σ₂
+  let δ : ℝ := min (σ₂ - θ) 1
+  have hδ : 0 < δ := lt_min (sub_pos.mpr hgap) zero_lt_one
+  have hδ1 : δ ≤ 1 := min_le_right _ _
+  let M : ℝ := ∑ q ∈ F, |(q.1 : ℂ).im|
+  have hM0 : 0 ≤ M := Finset.sum_nonneg fun q _ => abs_nonneg _
+  have hM : ∀ q ∈ F, |(q.1 : ℂ).im| ≤ M := fun q hq =>
+    Finset.single_le_sum (fun p _ => abs_nonneg (p.1 : ℂ).im) hq
+  let H : ℝ := M + δ + 4
+  have hdomain : ∀ s : ℂ, σ ≤ s.re → H ≤ s.im →
+      4 ≤ s.im ∧ ∀ q : XiZeroCopy, δ ≤ ‖xiZero q - s‖ := by
+    intro s hs ht
+    have hs₂ : σ₂ ≤ s.re := (le_max_right _ _).trans hs
+    have ht4 : 4 ≤ s.im := by dsimp [H] at ht; linarith
+    refine ⟨ht4, fun q => ?_⟩
+    by_cases hq : q ∈ F
+    · have him : δ ≤ s.im - (q.1 : ℂ).im := by
+        have hm := hM q hq
+        dsimp [H] at ht
+        linarith [le_abs_self (q.1 : ℂ).im]
+      have hn := Complex.im_le_norm (s - (q.1 : ℂ))
+      rw [Complex.sub_im, norm_sub_rev] at hn
+      exact him.trans hn
+    · have hre : δ ≤ s.re - (q.1 : ℂ).re := by
+        have hr := hrest q hq
+        have hd : δ ≤ σ₂ - θ := min_le_left _ _
+        change (q.1 : ℂ).re ≤ θ at hr
+        linarith
+      have hn := Complex.re_le_norm (s - (q.1 : ℂ))
+      rw [Complex.sub_re, norm_sub_rev] at hn
+      exact hre.trans hn
+  have hlim : Tendsto (fun t : ℝ =>
+      (logDerivZetaConstant / δ) * (Real.log t / t) + 1 / t) atTop (𝓝 0) := by
+    have hlog : Tendsto (fun t : ℝ => Real.log t / t) atTop (𝓝 0) := by
+      simpa only [Real.rpow_one] using Sieve.tendsto_log_div_rpow (δ := 1) zero_lt_one
+    simpa only [one_div, mul_zero, add_zero] using
+      (hlog.const_mul (logDerivZetaConstant / δ)).add tendsto_inv_atTop_zero
+  have hσ : 1 / 2 < σ := hσ₁.trans_le (le_max_left _ _)
+  refine ⟨σ, hσ, max_lt hσ₁1 hσ₂1, ?_, fun ε hε => ?_⟩
+  · rcases le_total σ₁ σ₂ with h | h
+    · obtain ⟨q, _, hq⟩ := hq₂
+      exact ⟨q, by simpa only [σ, max_eq_right h] using hq⟩
+    · obtain ⟨q, hq⟩ := hq₁
+      exact ⟨q, by simpa only [σ, max_eq_left h] using hq⟩
+  · have hε2 : 0 < ε / 2 := by positivity
+    obtain ⟨T₁, hT₁, hr⟩ := hraw (ε / 2) hε2
+    obtain ⟨T₂, hT₂⟩ := eventually_atTop.mp
+      ((eventually_ge_atTop H).and (hlim.eventually (eventually_lt_nhds hε2)))
+    refine ⟨max T₁ T₂, hT₁.trans_le (le_max_left _ _), fun s hs hs1 ht => ?_⟩
+    have ht₁ : T₁ ≤ s.im := (le_max_left _ _).trans ht
+    have ht₂ : T₂ ≤ s.im := (le_max_right _ _).trans ht
+    have hd := hdomain s hs (hT₂ s.im ht₂).1
+    have hc := (norm_normalizedGaussianFinitePart_add_logDeriv_le
+      (hσ.le.trans hs) hs1 hd.1 hδ hδ1 hd.2).trans_lt (hT₂ s.im ht₂).2
+    have hp := hr s ((le_max_left _ _).trans hs) hs1 ht₁
+    have heq : gaussianDampedPrimeSum s (1 / s.im) + logDeriv riemannZeta s =
+        (gaussianDampedPrimeSum s (1 / s.im) -
+          (Real.exp (-(1 / s.im)) : ℂ) * (gaussianArchimedeanCurrent s - logDeriv xi s)) +
+        ((Real.exp (-(1 / s.im)) : ℂ) * (gaussianArchimedeanCurrent s - logDeriv xi s) +
+          logDeriv riemannZeta s) := by ring
+    rw [heq]
+    exact (norm_add_le _ _).trans_lt (by linarith)
+
 #print axioms norm_gaussianContinuum_inverseHeight_le
 #print axioms not_asymptoticAbscissaLaw_has_countertermFree_highGaussianPassage
 #print axioms not_asymptoticAbscissaLaw_has_rawPrime_highGaussianPassage
+#print axioms norm_normalizedGaussianFinitePart_add_logDeriv_le
+#print axioms not_asymptoticAbscissaLaw_has_rawEuler_highGaussianPassage
 
 end GaloisForLFunctions.EulerFETransportTheory

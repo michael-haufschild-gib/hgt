@@ -52,8 +52,14 @@ for `α>2`, with minimal positive completion and explicit negative probes.
 The [vertical unitary graph comparison](../3-formalized/riac-unitary-prime-chain-gauge.md)
 is formalized in every exterior degree, preserving the prescribed conductor
 norms and the actual finite boundary graph closures.
-The [full logarithmic torsion candidate](riac-logarithmic-torsion-completion.md)
-asks for the sharp extension from prime stars to every conductor interaction.
+The [full logarithmic torsion theorem](../3-formalized/riac-logarithmic-torsion-completion.md)
+extends the sharp threshold `α>2` to every conductor interaction. It constructs
+the unique bounded form with the original absolutely convergent arithmetic
+pair series, a self-adjoint Hilbert representative, and an explicit positive
+diagonal compensation. This correction is not an arithmetic count or height.
+The [spectral theorem](../3-formalized/riac-logarithmic-torsion-spectrum.md)
+proves that the original logarithmic operator is compact and self-adjoint,
+but never Hilbert–Schmidt, with its arithmetic coefficients preserved.
 The [canonical cone-pair candidate](../0-backlog/riac-relative-cone-normalization.md)
 separates an actual relative-homology construction from a mere Euler subtraction;
 it does not yet supply localization on the core.
@@ -141,7 +147,7 @@ for the centred real count remains open. The
 [residue-duality comparison](../3-formalized/monic-residue-duality.md)
 identifies the actual trace cokernel of the monogenic order with its different
 quotient, including repeated factors, and proves equality of absolute trace
-and polynomial discriminants. Their signed equality remains open.
+and polynomial discriminants. Their signed equality has not been formalized.
 
 The [finite-field orientation count](../3-formalized/riac-finite-field-orientation-counts.md)
 constructs actual square-root fibres of residue-field trace discriminants.

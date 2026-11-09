@@ -34,6 +34,8 @@ import GaloisForLFunctions.EulerFETransportTheory.GaussianRenormalizationAtZeros
 import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentReadsTopMultiplicity
 import GaloisForLFunctions.EulerFETransportTheory.TheArchimedeanDampingErrorIsUniform
 import GaloisForLFunctions.EulerFETransportTheory.TheFullGaussianCurrentAtEscapingHeights
+import GaloisForLFunctions.EulerFETransportTheory.OnlyExceptionalGaussianModesRemain
+import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAtInverseHeight
 
 /-!
 # Euler–functional-equation transport
@@ -96,4 +98,12 @@ Its logarithmically weighted error vanishes uniformly at arbitrary heights;
 its absolute error vanishes when damping times logarithmic height tends to zero.
 Failure of AAL supplies a whole high strip with these laws, strictly left of
 an actual exceptional zero.
+With a finite exceptional layer, the entire complementary Gamma field gains
+the damping power set by its horizontal gap. Only the finitely many
+exceptional modes are needed in the high-strip renormalization.
+At inverse-height damping, those finite modes and the continuum also vanish.
+The literal infinite von Mangoldt sum recovers the normalized continued
+finite part uniformly on an interior high strip supplied by failure of AAL.
+The scalar and polar corrections vanish too, leaving the continued Euler
+current `-ζ'/ζ` as the limit.
 -/

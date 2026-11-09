@@ -2,7 +2,7 @@
 
 - **Scope:** `docs/reports/review-0811/obstacles-summary.md`, §2.2.
 - **Target:** At least 250 distinct significant mathematical contributions, each proved in Lean and audited. Helpers and corollaries of one result count together.
-- **Verified:** 18 / 250. Original obstacles remain open unless explicitly closed below.
+- **Verified:** 19 / 250. Original obstacles remain open unless explicitly closed below.
 
 | # | Obstacle | New result | Certificate |
 |---|---|---|---|
@@ -24,3 +24,4 @@
 | 16 | B13, B112, isolated top detection | Merged top coefficients force excursion density at least `max |c_j|/sum |c_j|`, uniformly over all windows, with explicit bounded discrepancy and arbitrary summable lower layers. Actual zeta AAL failure forces this density at every positive base; root packets attain the bound | [Proof and Lean audit](../3-formalized/top-coefficients-force-excursion-density.md) |
 | 17 | B13, B112, metric isolated top detection | At almost every base, each sub-top exponential threshold is exceeded at every sufficiently large level. Actual zeta specialization gives RH iff ZAL plus positive-measure lag recurrence at each positive rate; base sets may vary with the rate | [Proof and Lean audit](../3-formalized/almost-every-base-detects-an-isolated-top.md) |
 | 18 | B13, B112, exceptional sampling bases | One dimension-zero set contains all sub-top recurrent bases. Under zeta AAL failure, recurrence dimension jumps from zero to one at the global exponent. RH iff ZAL plus positive-dimensional recurrence at each positive rate; a positive cosine pair supplies residual, uncountable dimension-zero sharpness | [Proof and Lean audit](../3-formalized/exceptional-sampling-bases-have-zero-dimension.md) |
+| 19 | B13, B112, topological recurrence | Actual Weil lag unconditionally has residual sampling bases meeting any countable family of positive accuracy schedules. One residual set gives recurrence at every real rate; under AAL failure its positive part has dimension zero. Residual recurrence adds no arithmetic restriction | [Proof and Lean audit](../3-formalized/actual-weil-lag-has-residual-cancellation-bases.md) |

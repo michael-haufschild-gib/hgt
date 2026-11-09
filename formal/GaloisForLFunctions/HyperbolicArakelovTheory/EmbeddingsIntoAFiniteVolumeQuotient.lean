@@ -48,7 +48,7 @@ theorem eq_zero_of_bounded_zeroMode {u : ℕ → ℝ} (hu : Tendsto u atTop atTo
     have hs1 : 1 ≤ Real.sqrt (u n) := Real.one_le_sqrt.mpr hu1
     have h1 : |α| + |C| + 1 ≤ |β| * u n := by rwa [div_le_iff₀ hβ0, mul_comm] at hu2
     have h2 : |β| * u n - |α| ≤ (|β| * u n - |α|) * Real.sqrt (u n) :=
-      le_mul_of_one_le_right (by linarith) hs1
+      le_mul_of_one_le_right (by linarith [abs_nonneg C]) hs1
     have h3 : |β| * (u n * Real.sqrt (u n)) - |α| * Real.sqrt (u n) ≤
         |α * Real.sqrt (u n) + β * (u n * Real.sqrt (u n))| := by
       have := abs_sub_abs_le_abs_sub (β * (u n * Real.sqrt (u n))) (-(α * Real.sqrt (u n)))
@@ -147,20 +147,19 @@ theorem not_eq_frobenius_of_finiteVolume {Y ι : Type*} [PseudoMetricSpace Y] [F
     have hev1 := hlim.eventually (Metric.ball_mem_nhds 0 one_pos)
     have hev2 : ∀ᶠ k in atTop, 2 * φ j ≤ φ k := hφ.tendsto_atTop.eventually_ge_atTop _
     filter_upwards [hev1, hev2] with k hk1 hk2
-    rw [Metric.mem_ball, Real.dist_eq, sub_zero] at hk1
     have heq := h (φ j) (φ k) (by omega) (by omega) (by omega)
     have hbd := abs_frobeniusTarget_le (by omega : 0 < φ j) hk2 κ₀
-    simp only [hy, Function.comp_apply] at hk1 ⊢
+    rw [Real.dist_eq, sub_zero] at hk1
+    change |K (w (φ j)) (w (φ k)) - _| < 1 at hk1
     rw [heq] at hk1
-    have := abs_sub_abs_le_abs_sub
-      (archProfile |Real.log (φ k) - Real.log (φ j)| + κ₀ * weilPrimeKernel (φ j) (φ k))
-      ((E κ).A (w (φ j)) * Real.sqrt (ht (w (φ k))) +
-        (E κ).B (w (φ j)) * (ht (w (φ k)) * Real.sqrt (ht (w (φ k)))))
-    rw [abs_sub_comm] at this
-    linarith [abs_sub_abs_le_abs_sub
-      ((E κ).A (w (φ j)) * Real.sqrt (ht (w (φ k))) +
-        (E κ).B (w (φ j)) * (ht (w (φ k)) * Real.sqrt (ht (w (φ k)))))
-      (archProfile |Real.log (φ k) - Real.log (φ j)| + κ₀ * weilPrimeKernel (φ j) (φ k))]
+    set Z := (E κ).A (y j) * Real.sqrt (ht (y k)) +
+      (E κ).B (y j) * (ht (y k) * Real.sqrt (ht (y k))) with hZ
+    set Tg := archProfile |Real.log (φ k) - Real.log (φ j)| + κ₀ * weilPrimeKernel (φ j) (φ k)
+      with hTg
+    change |Z| ≤ C₀ + 1
+    have h1 := abs_sub_abs_le_abs_sub Z Tg
+    have h2 : |Z - Tg| = |Tg - Z| := abs_sub_comm _ _
+    linarith
   have hev : ∀ᶠ j in atTop, (E κ).A (y j) = 0 ∧ (E κ).B (y j) = 0 :=
     ((eventually_ge_atTop 1).and (hyt.eventually_gt_atTop (E κ).T₀)).mono
       fun j ⟨hj, hjT⟩ => hAB j hj hjT
@@ -171,7 +170,7 @@ theorem not_eq_frobenius_of_finiteVolume {Y ι : Type*} [PseudoMetricSpace Y] [F
     intro F c₁ c₂ hF hlim
     refine eq_zero_of_bounded_zeroMode hyt (C := 1) ?_
     filter_upwards [hlim.eventually (Metric.ball_mem_nhds 0 one_pos), hF] with n hn hFn
-    rw [Metric.mem_ball, Real.dist_eq, sub_zero, hFn, zero_sub, abs_neg] at hn
+    rw [Real.dist_eq, sub_zero, hFn, zero_sub, abs_neg] at hn
     exact hn.le
   have ha := hcoef (E κ).A (E κ).a₁ (E κ).a₂ (hev.mono fun j hj => hj.1)
     ((E κ).zeroModeA y hφκ hyt)

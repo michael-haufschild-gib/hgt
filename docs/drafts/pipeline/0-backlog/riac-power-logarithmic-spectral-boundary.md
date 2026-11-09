@@ -3,7 +3,7 @@
 - **ID:** RIAC-power-log-spectrum
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Source:** [Logarithmic torsion](../1-in-progress/riac-logarithmic-torsion-completion.md)
+- **Source:** [Logarithmic torsion](../3-formalized/riac-logarithmic-torsion-completion.md)
 - **Statement:** Classify boundedness, compactness and Hilbert–Schmidt membership on weights `w(n)=n^δ(1+log n)^α`, retaining the original arithmetic matrix.
 
 ## Proposed exact ranges

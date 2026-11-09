@@ -46,10 +46,14 @@ theorem logarithmicProbeInclusion_coefficients (α β : ℝ) (h : β ≤ α) (u 
     simp only [logProbeCoefficients,probeCoefficients_succ,neg_zero,zero_div,Real.rpow_zero,mul_one,
       logarithmicProbeInclusion_apply,logProbeWeightFactor,logProbeWeight]
     have hn : 0 < logConductor (n+1) := lt_of_lt_of_le zero_lt_one (one_le_logConductor (n+1))
-    rw [div_eq_mul_inv,div_eq_mul_inv,←Real.rpow_neg hn.le,←Real.rpow_neg hn.le]
-    calc _ = u n*((logConductor (n+1))^((β-α)/2)*(logConductor (n+1))^(-(β/2))) := by ring
-         _ = _ := by
-          rw [←Real.rpow_add hn,show (β-α)/2 + -(β/2) = -(α/2) by ring]
+    change ((logConductor (n+1))^((β-α)/2) * u n) / (logConductor (n+1))^(β/2) =
+      u n / (logConductor (n+1))^(α/2)
+    apply (div_eq_div_iff (Real.rpow_pos_of_pos hn (β/2)).ne'
+      (Real.rpow_pos_of_pos hn (α/2)).ne').mpr
+    calc
+      _ = u n * ((logConductor (n+1))^((β-α)/2) * (logConductor (n+1))^(α/2)) := by ring
+      _ = u n * (logConductor (n+1))^(β/2) := by
+        rw [←Real.rpow_add hn, show (β-α)/2 + α/2 = β/2 by ring]
 
 /-- A strict decrease of logarithmic exponent gives a compact inclusion. -/
 theorem logarithmicProbeInclusion_compact (α β : ℝ) (h : β < α) :

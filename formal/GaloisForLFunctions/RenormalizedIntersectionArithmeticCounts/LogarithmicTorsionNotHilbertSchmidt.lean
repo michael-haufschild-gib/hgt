@@ -39,6 +39,7 @@ theorem logarithmicTorsionDiagonal_not_summable (α : ℝ) :
   have hA : 0 < A := div_pos (sq_pos_of_pos hl2) (pow_pos hc N)
   have hi : Function.Injective (fun p : Nat.Primes => 2*(p:ℕ)-1) := by
     intro p q h
+    change 2 * (p : ℕ) - 1 = 2 * (q : ℕ) - 1 at h
     apply Subtype.ext
     have hp := p.property.pos
     have hq := q.property.pos
@@ -46,7 +47,11 @@ theorem logarithmicTorsionDiagonal_not_summable (α : ℝ) :
   have he : Summable (fun p : Nat.Primes =>
       (logarithmicTorsionKernel α (2*(p:ℕ)) (2*(p:ℕ)))^2) := by
     have h := hs.comp_injective (i := fun p : Nat.Primes => 2*(p:ℕ)-1) hi
-    exact h.congr (fun p => by rw [Nat.sub_add_cancel (by have := p.property.pos; omega)])
+    apply h.congr
+    intro p
+    change (logarithmicTorsionKernel α (2*(p:ℕ)-1+1) (2*(p:ℕ)-1+1))^2 =
+      (logarithmicTorsionKernel α (2*(p:ℕ)) (2*(p:ℕ)))^2
+    rw [Nat.sub_add_cancel (by have := p.property.pos; omega)]
   have ht : Tendsto (fun p : Nat.Primes => Real.log p) cofinite atTop :=
     Real.tendsto_log_atTop.comp RHTower.tendsto_prime_coe_real_cofinite_atTop
   have hbound : ∀ᶠ p : Nat.Primes in cofinite,

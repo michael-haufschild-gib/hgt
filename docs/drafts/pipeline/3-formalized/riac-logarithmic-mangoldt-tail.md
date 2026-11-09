@@ -3,7 +3,7 @@
 - **ID:** RIAC-logarithmic-Mangoldt
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Source:** [Full logarithmic torsion](../1-in-progress/riac-logarithmic-torsion-completion.md)
+- **Source:** [Full logarithmic torsion](riac-logarithmic-torsion-completion.md)
 - **Lean:** [LogarithmicMangoldtTail.lean](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/LogarithmicMangoldtTail.lean)
 
 ## Exact result

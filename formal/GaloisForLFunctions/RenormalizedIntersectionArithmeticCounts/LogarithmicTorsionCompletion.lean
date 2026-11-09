@@ -156,6 +156,7 @@ theorem logarithmicTorsion_bounded_extension_iff (α : ℝ) :
     have hs := HTGeometry.summable_norm_apply_sq (weightedProbeBasis 0) (B (weightedProbeBasis 0 0))
     have hinj : Function.Injective (fun p : Nat.Primes => (p:ℕ)-1) := by
       intro p q h
+      change (p : ℕ) - 1 = (q : ℕ) - 1 at h
       apply Subtype.ext
       have hp := p.property.pos
       have hq := q.property.pos

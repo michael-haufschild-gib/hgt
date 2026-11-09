@@ -22,6 +22,10 @@ At these degree sets the bounds are not known to give RH: their Dirichlet series
 (`TwoFrobeniiNeedAnAttainedTop`). They give the abscissa law, which is what remains without
 attainment. Unlike the geometric grids of `RHTower.CrossRouteReceiverBridges`, no resonant steps
 are excluded.
+
+Since RH is the abscissa law together with `ZerosApproachLine` (finitely many zeros beyond every
+positive depth), each bound is RH exactly when the zeros approach the line
+(`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_primes_mod` and its companions).
 -/
 
 noncomputable section
@@ -84,5 +88,52 @@ theorem asymptoticAbscissaLaw_of_bddBelow_twoPrimes {p q : ℕ} (hp : p.Prime) (
     _root_.RHTower.AsymptoticAbscissaLaw :=
   asymptoticAbscissaLaw_of_noDeepest fun _ hρ₀ hoff =>
     exists_re_gt_of_bddBelow_twoPrimes hp hq hpq hK hρ₀ hoff
+
+/-! ### RH is the approach to the line plus a bound at a sampling set -/
+
+theorem log_nonneg_of_prime {p : ℕ} (hp : p.Prime) : 0 ≤ Real.log p :=
+  Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
+
+/-- **RH from below at a residue class.** -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_bddBelow_primes_mod {q : ℕ} [NeZero q]
+    {a : ZMod q} (ha : IsUnit a) :
+    RiemannHypothesis ↔ _root_.RHTower.BacklundConverse.ZerosApproachLine ∧ ∃ K : ℝ,
+      ∀ p : ℕ, p.Prime → (p : ZMod q) = a →
+        -K ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log p)).re := by
+  rw [_root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
+  refine ⟨fun ⟨hZ, hA⟩ => ⟨hZ, ?_⟩, fun ⟨hZ, K, hK⟩ =>
+    ⟨hZ, asymptoticAbscissaLaw_of_bddBelow_primes_mod ha hK⟩⟩
+  have hRH :=
+    _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
+  exact ⟨_, fun p hp _ =>
+    neg_le_of_abs_le (abs_two_re_lagStructure_le_of_RH hRH (log_nonneg_of_prime hp))⟩
+
+/-- **RH from above at a residue class.** -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_bddAbove_primes_mod {q : ℕ} [NeZero q]
+    {a : ZMod q} (ha : IsUnit a) :
+    RiemannHypothesis ↔ _root_.RHTower.BacklundConverse.ZerosApproachLine ∧ ∃ K : ℝ,
+      ∀ p : ℕ, p.Prime → (p : ZMod q) = a →
+        2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log p)).re ≤ K := by
+  rw [_root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
+  refine ⟨fun ⟨hZ, hA⟩ => ⟨hZ, ?_⟩, fun ⟨hZ, K, hK⟩ =>
+    ⟨hZ, asymptoticAbscissaLaw_of_bddAbove_primes_mod ha hK⟩⟩
+  have hRH :=
+    _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
+  exact ⟨_, fun p hp _ =>
+    le_of_abs_le (abs_two_re_lagStructure_le_of_RH hRH (log_nonneg_of_prime hp))⟩
+
+/-- **RH from below at the degrees of two primes.** -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_bddBelow_twoPrimes {p q : ℕ} (hp : p.Prime)
+    (hq : q.Prime) (hpq : p ≠ q) :
+    RiemannHypothesis ↔ _root_.RHTower.BacklundConverse.ZerosApproachLine ∧ ∃ K : ℝ,
+      ∀ a b : ℕ, -K ≤
+        2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (a * Real.log p + b * Real.log q)).re := by
+  rw [_root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
+  refine ⟨fun ⟨hZ, hA⟩ => ⟨hZ, ?_⟩, fun ⟨hZ, K, hK⟩ =>
+    ⟨hZ, asymptoticAbscissaLaw_of_bddBelow_twoPrimes hp hq hpq hK⟩⟩
+  have hRH :=
+    _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
+  exact ⟨_, fun a b => neg_le_of_abs_le (abs_two_re_lagStructure_le_of_RH hRH (by
+    have := log_nonneg_of_prime hp; have := log_nonneg_of_prime hq; positivity))⟩
 
 end GaloisForLFunctions.SurfaceOfSpecZ

@@ -62,6 +62,16 @@ The exact law and domain obstruction are in the
 [Euler–FE foundations](../EulerFETransportTheory/README.md#conductor-normalized-height-reflection).
 They constrain recurrence receivers; same-depth replication remains open.
 
+The Euler–FE programme also admits the full prime current at escaping heights.
+Under `¬AAL`, on an interior high strip whose left boundary lies below an actual
+exceptional abscissa, `ΣΛ(n)n^(−s)e^(−n²/Im s)+ζ′/ζ(s)→0` uniformly as `Im s→+∞`.
+The entire infinite tail is controlled; finite exceptional modes, continuum,
+scalar and polar corrections vanish. This supplies a continued arithmetic
+observable for transport. Recurrence still requires control of the prime
+phases in this jointly changing damping and height regime; returns of a
+fixed finite head do not supply it. See
+[raw prime passage](../EulerFETransportTheory/README.md#raw-prime-passage-at-inverse-height-damping).
+
 ## New pillar: integer support forces exact arithmetic
 
 For a nonempty countable Beurling system whose generalized integers have natural-number

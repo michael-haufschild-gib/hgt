@@ -57,10 +57,13 @@ Hasse–Weil at every integer degree, i.e. RH.
 | Locked kernel | `lockedKernel` | pole − archimedean damping at `r` + torsion damping at `ρ(r)` |
 | Carriers | `carrierSum`, `endWeight`, `EndpointEisenstein`, `ResonanceFree`, `dilationLimit`, `BoundedGeometryAt` | twisted Green sum `F(t, u) = Σ_i w_i·2πG_{1/2}(d(z_t, γ_i z_u))`, its endpoint weight and dilation limit |
 | Groups | `Nontriv`, `conjEquiv`, `poincareWeight`, `basePoint` | `Γ∖{1}`, conjugation, Poincaré weight `e^{−d(z_1, γz_1)/2}` at `s = ½` |
+| Self-energy along the degree ray | `rayWeight`, `selfEnergy` | `D_Γ(t) = Σ_{γ≠1} e^{−d(z_t, γz_t)/2}`, dominated by the regularized diagonal of the automorphic Green function |
+| Boundary of a group | `mobius`, `WanderingEnd`, `MapsOff`, `IsParabolic` | Möbius action on `ℂ`; `∞ ∈ Ω(Γ)`; parabolic elements (trace `±2`, not `±1`) |
+| Kernels on quotients | `IsNewtonian`, `CuspExpansion` | unbounded on merging points; zero modes `t^{½}, t^{3/2}` in a cusp with Wronskian `b₁ ≠ a₂` |
 | Trees | `treeAdj`, `treeEigen`, `treeGreen` | radial adjacency of the `(q+1)`-regular tree; `λ_s = q^s + q^{1−s}`; `G_s(d) = q^s/(q^{2s} − 1)·q^{−sd}` |
 | Smoothed graphs | `splineCycle`, `zetaScalingDatum.orbitCorr` | cubic spline `B`; `c_B(log n) = Γ_1·Γ_n` smoothed; genus `c_B(0)/2` |
 | Windows | `windowThreshold` | tests supported in `[−A, 0]`; `windowThreshold A = ⊤` for `A ≤ 181/250` |
-| Orientation covers | `factorOrientationCover`, `coefficientOrientationCover` (RIAC) | Möbius as point defect over `𝔽_q[T]` |
+| Orientation covers | `factorOrientationCover`, `coefficientOrientationCover`, `primeQuadraticOrientationCount` (RIAC); `coverDefect` | Möbius as point defect over `𝔽_q[T]`; over ℤ the real points of `disc(primeQuadraticPolynomial n)`, `1 + μ(n)` of them; centred count `D(N) = M(N)` |
 
 ## 3. Language
 
@@ -78,6 +81,11 @@ Hasse–Weil at every integer degree, i.e. RH.
   translates `ℓ` by `−log r`.
 - **Dilation limit**: the limit of `F(Mt, Mu)` as `M → ∞`. **Bounded geometry at `(M, pM)`**: no image
   of `z_{pM}` hits `z_M` and the untwisted Green majorant is bounded.
+- **Self-energy** of a degree point: `D_Γ(t)`; an end has **bounded self-energy** if `D_Γ(M) ≤ C` for
+  infinitely many degrees. **Point of discontinuity** (wandering end): `{‖z‖ > R}` meets its image
+  under finitely many elements.
+- **Cusp expansion** of a kernel on a cusped quotient: Fourier expansion in the horizontal variables;
+  **zero mode** `t^{½}, t^{3/2}` in each variable; **Wronskian** = the jump of the Green function.
 - **Damping** `K_r → K` (`r → 1`) by PSD kernels; **counterterm**: a divergent diagonal subtraction;
   **locking**: running the two channels at matched radii so that their divergences cancel;
   **coupled damping**: a PSD damping of the whole pairing.
@@ -85,7 +93,8 @@ Hasse–Weil at every integer degree, i.e. RH.
   the least genus that makes the atomic defect nonnegative on degrees `≤ N`.
 - **Ample class**: the pole plane `⟨H, V⟩`; **primitive class**: orthogonal to `H` and `V`.
 - **Hyperbolic Hodge index**: `δ ≥ 0` on the span of the (smoothed) graphs.
-- **Orientation cover**, **point defect**, **local index**, **Lefschetz localization** (topological
+- **Orientation cover**, **point defect**, **local index**, **Lefschetz localization**; **weight** of a
+  cover: the exponent `w` with centred count `D(N) = O(N^{w+ε})`; **purity**: weight `½` (topological
   branch).
 
 ## 4. Mechanisms
@@ -133,12 +142,26 @@ Hasse–Weil at every integer degree, i.e. RH.
     `(p+1)`-regular tree; `λ_s ≥ 2√p` with equality exactly at `s = ½` (the critical line is the
     Ramanujan edge); Weil's `p`-kernel is `log p·((p−1)/√p)·G_{1/2}(k)` along a `p`-ladder. So Weil's
     off-diagonal kernel is the pole minus the local Green kernels of all places (adelic Green formula).
-15. *Poincaré domination and conical returns* (`exists_gap`, `summable_greenOfCosh_imageCosh`,
+15. *Poincaré domination and the self-energy of the end* (`exists_gap`, `summable_greenOfCosh_imageCosh`,
     `exists_prime_nonsingular_of_diag`, `not_carrierSum_eq_torsion_of_loxodromic`,
-    `not_carrierSum_eq_torsion_of_conical`). Convergence of the Poincaré series at `½` bounds the
-    Green majorant at every pair no image hits; resonant primes have `Σ 1/p < ∞`; at a conical return
-    at most `≲ S e^{R}√P` group elements come near, each spoils at most one prime `≤ P`, and the primes
-    outnumber them (Chebyshev); so bounded geometry holds along a prime ratio.
+    `not_carrierSum_eq_torsion_of_selfEnergy`, `selfEnergy_le_of_near_orbit`). Convergence of the
+    Poincaré series at `½` bounds the Green majorant at every pair no image hits; resonant primes have
+    `Σ 1/p < ∞`. At a degree `M` of self-energy `≤ C` only `C e^{½}√P` elements move `z_M` by at most
+    `1 + log P`; each comes near `z_{pM}` for at most one prime `p ≤ P`, and the primes outnumber them
+    (Chebyshev). So bounded geometry holds along a prime ratio. A conical return has self-energy
+    `≤ e^R S`.
+16. *The boundary* (`not_summable_poincareWeight_of_parabolic`, `endpointEisenstein_of_wandering`).
+    A parabolic `γ` has `γ^k = ±(1 + kN)`, `N² = 0`, and a harmonic Poincaré series, so convergence at
+    `½` excludes parabolics. At a point of discontinuity every element outside a finite set has
+    `‖a‖, ‖d‖ ≤ R‖c‖` and `‖c‖ ≥ 1/(2R + 1)` (test points near the pole `−d/c`), which is the
+    endpoint Eisenstein condition.
+17. *Finite volume* (`not_eq_frobenius_of_finiteVolume`). With a proper height, degrees of bounded
+    height cluster (Newtonian singularity). Degrees that escape put infinitely many points in one cusp.
+    Boundedness of the target along pairs of ratio `→ ∞` kills the zero mode `A u^{½} + B u^{3/2}` at
+    every lower point, then its coefficients, against the Wronskian of the Green function.
+18. *The orientation cover has weight `≥ ½`* (`coverDefect_omega`, `riemannHypothesis_iff_coverDefect_le`).
+    The centred count of the discriminant cover over ℤ is `M(N)`. Zeros on the critical line make it
+    `Ω_±(√N)`, and weight `½` is Littlewood's criterion.
 
 **Calibration (classical).** Over `𝔽_q(T)` every place, `∞` included, is a tree, and Weil's local
 kernel at a place of norm `N` is `log N·N^{−j/2}`, the tree Green function at the Ramanujan edge as in
@@ -159,8 +182,9 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
   and the ample pole is RH-strength. The genus of a smoothing is half its Weil energy, the weighted
   number of zeros `Re Σ_ρ m_ρ h(γ_ρ) conj h(γ̄_ρ)` (`ArithmeticOrientationGeometry.configScalingDatum_orbitCorr_eq`
   at `t = 0`); the atomic genus is the archimedean Green potential of the configuration.
-- An **orientation cover over ℤ** with a weight-`½` cohomology: its square-root estimate is the Mertens
-  bound `M(N) = O(N^{½+ε})`, i.e. RH.
+- **Purity of the orientation cover over ℤ.** The cover exists and its middle cohomology is nonzero of
+  weight `≥ ½` (Lean). Weight `½` is RH. A self-map with bounded local indices and Lefschetz number
+  `#cover` would give it; the prime-vertex indices localize `1 − M(N)` but are unbounded.
 
 ## 5. Questions
 
@@ -169,8 +193,8 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
 | Q1 | Which Hilbert space carries the causal jet waves and the twisted torsion energies together, with locked divergences? | Atoms: **no** — locking produces the discriminant diagonal, which the `N log N` wall excludes (Lean). Smoothed graphs: equivalent to RH (SOSZ). |
 | Q2 | What are the sheaves (Euler characteristics) whose linear terms are the genera `N log N` and `c_B(0)/2`? | `2g(B) = c_B(0)` is the weighted zero count `Re Σ_ρ m_ρ h(γ_ρ)conj h(γ̄_ρ)`, the trace of the identity on the spectral `H¹` (AOG); the atomic genus is the archimedean Green potential of the configuration, not a locked self-intersection (Lean + SOSZ). An `h⁰` with Riemann–Roch is RH-strength (Q3). |
 | Q3 | Which class is ample, and does Hodge index follow from Riemann–Roch plus that class? | The pole plane; on the fibre it is the spherical pair `(3/2)φ_{3/2} + ½φ_{1/2}` (Lean). Hodge index ⇔ Riemann–Roch on an effective cone with the ample pole (ACS), and on the scaling surface Hodge index ⇔ RH; so the reduction holds both ways and its input is RH-strength. |
-| Q4 | (B118′) Does any hyperbolic 3-manifold carry Weil's form? (1) finite volume, every embedding; (2) twisted infinite-volume carriers | (2): **no.** For a group with Poincaré series convergent at `½` and any weights `‖w‖ ≤ 1`: excluded when the degree end `∞` is a point of discontinuity (bounded `γ^{±1}(∞)`, bounded isometric radii, finite stabilizer) and when it is a conical limit point (Lean); for geometrically finite groups with `δ < ½` every boundary point is one of the two (classical). Also excluded: every carrier of bounded geometry along one prime ratio, every group whose degree geodesic is the axis of a loxodromic. Open: non-conical limit points of geometrically infinite groups. (1): every embedding with a bounded subsequence is excluded for every kernel with a Newtonian singularity, so every embedding into a compact quotient (Lean); the vertical embedding into a cusp is excluded (SOSZ); general embeddings escaping into cusps open. |
-| Q5 | Which trace discriminant defines an orientation cover over ℤ, and what is its cohomology? | Delegated to RIAC: the prime-quadratic family `F_n = Π(X² + p)^a` has `sign disc F_n = μ(n)`; the square-root estimate is open. |
+| Q4 | (B118′) Does any hyperbolic 3-manifold carry Weil's form? (1) finite volume, every embedding; (2) twisted infinite-volume carriers | **No.** (1): for every Newtonian kernel with a cusp expansion (every moderate-growth Green function of `Δ − ¾` on a lattice quotient), no injective embedding of the degrees reproduces the Frobenius intersection (Lean). (2): for a group with Poincaré series convergent at `½` and weights `‖w‖ ≤ 1`, no carrier when the degree end is a point of discontinuity, or the self-energy stays bounded along it, in particular at a conical limit point (Lean). Such a group has no parabolic elements (Lean), so for geometrically finite groups every boundary point is one of these (Beardon–Maskit), and every finitely generated group with `δ < 2` is geometrically finite (Canary, tameness). Residue: infinitely generated groups whose degree ray has unbounded self-energy at every degree (topic 1). |
+| Q5 | Which trace discriminant defines an orientation cover over ℤ, and what is its cohomology? | The discriminant of `primeQuadraticPolynomial n`: its real points number `1 + μ(n)` (RIAC). Its middle cohomology is nonzero of weight `≥ ½`: `D(N) = Ω_±(√N)` unconditionally. Weight exactly `½` ⇔ RH (Lean). Over `𝔽_q[T]` the cover has no middle cohomology. |
 | Q6 | (M2, M4) A locked presentation on windows of aperture `≤ 181/250`; Hodge index on windows of growing aperture | Smoothings: the counterterm-free presentation is the Lévy–Khintchine form `weilQuad = 2c₀‖f‖² + levyEnergy − primeSum + pole` (SpacingScaleHarmonicAnalysis, RHTower), whose Lévy density is the `ℍ³` Green function; its positivity on windows `≤ 181/250` is the corpus window theorem. Atoms: no locked presentation (Q1). M4 at all apertures is RH. |
 
 ## 6. Tools
@@ -183,10 +207,13 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
 | Spherical analysis of the fibre | `sphericalFn`, `sphericalFn_radial`, `compensation_eq_spherical` |
 | Locked dampings | `lockedKernel`, `tendsto_lockedKernel_of_ne`, `tendsto_lockedKernel_self` |
 | Riemann–Roch for Frobenius graphs | axiomatic form in ACS (`RiemannRochAxiom`, `AmpleAxiom`); an `h⁰` with these axioms is RH-strength |
-| Poincaré domination, gaps, finiteness of near orbit points | `exists_gap`, `finite_near`, `card_near_le`, `greenOfCosh_imageCosh_le_poincare`, `exp_neg_half_h3Dist_le` |
+| Poincaré domination, gaps, finiteness of near orbit points | `exists_gap`, `finite_near`, `greenOfCosh_imageCosh_le_poincare`, `exp_neg_half_dist_le` |
 | Loxodromic and conical carriers | `imageCosh_diag_conj`, `exists_prime_nonsingular_of_diag`, `exists_nat_card_primes_gt` |
 | Tree Green functions | `treeGreen_resolvent`, `sum_treeGreen_apartment_nonneg`, `weilDeltaKernel_mul_pow` |
-| Twisted Green functions at non-conical limit points | to build |
+| Self-energy of the degree end | `rayWeight`, `selfEnergy`, `summable_rayWeight`, `finite_card_le_of_summable_exp`, `selfEnergy_le_of_near_orbit` |
+| Boundary classification of groups convergent at `½` | `coe_pow_of_trace_eq_two`, `poincareWeight_pow_ge`, `mobius_shift`, `norm_mobius_shift_ge`, `norm_a_le_of_mapsOff`, `one_le_of_mapsOff` |
+| Cusp zero modes | `CuspExpansion`, `eq_zero_of_bounded_zeroMode`, `abs_frobeniusTarget_le` |
+| Weight of an orientation cover | `coverDefect`, `coverDefect_eq_mertensPartialSum`, `coverDefect_eq_mertensFunctionReal` |
 
 ## 7. Pillar theorems
 
@@ -199,8 +226,11 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
 | No Eisenstein carrier carries the torsion | `not_carrierSum_eq_torsion`, `not_carrierSum_eq_torsion_of_poincare` | proved |
 | No bounded-geometry carrier carries the torsion | `not_carrierSum_eq_torsion_of_boundedGeometry`, `not_carrierSum_eq_torsion_of_frequently_boundedGeometry` | proved |
 | No carrier of a group with a loxodromic along the degree geodesic | `not_carrierSum_eq_torsion_of_loxodromic` | proved |
-| No carrier at a conical degree end | `not_carrierSum_eq_torsion_of_conical` | proved |
-| No embedding into a compact quotient | `not_eq_frobenius_of_mapClusterPt`, `not_eq_frobenius_of_compact` | proved |
+| No carrier along an end of bounded self-energy; in particular at a conical end | `not_carrierSum_eq_torsion_of_selfEnergy`, `not_carrierSum_eq_torsion_of_conical` | proved |
+| Convergence at `½` excludes parabolic elements | `not_summable_poincareWeight_of_parabolic`, `not_isParabolic_of_summable` | proved |
+| No carrier at a point of discontinuity | `endpointEisenstein_of_wandering`, `not_carrierSum_eq_torsion_of_wandering`, `not_carrierSum_eq_torsion_of_convergent` | proved |
+| No embedding into a compact or finite-volume quotient | `not_eq_frobenius_of_mapClusterPt`, `not_eq_frobenius_of_compact`, `not_eq_frobenius_of_finiteVolume` | proved |
+| The orientation cover over ℤ has weight `≥ ½`; weight `½` ⇔ RH | `coverDefect_omega`, `riemannHypothesis_iff_coverDefect_le` | proved |
 | Weil's `p`-kernel is the tree Green function at the Ramanujan point; adelic Green formula | `weilPrimeKernel_mul_pow_eq_treeGreen`, `treeEigen_eq_iff`, `weilDeltaKernel_mul_pow`, `weilDeltaKernel_of_offLadder` | proved |
 | Finite-volume vertical carriers fold or diverge | `kleinian_thin_thick_dichotomy`, `parabolic_poincare_not_summable_half` | corpus (SOSZ) |
 | Pole and Frobenius are spherical; the compensation is `(3/2)φ_{3/2} − 2πG_{3/2}` | `compensation_eq_spherical`, `weilKernel_eq_spherical` | proved |
@@ -214,7 +244,9 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
 
 | Trap | Truth |
 |---|---|
-| A hyperbolic 3-manifold carries the finite places | finite volume folds or diverges; twisted infinite-volume carriers are excluded at points of discontinuity and at conical limit points; the finite part jumps in the ratio |
+| A hyperbolic 3-manifold carries the finite places | in finite volume the degrees cluster (Newtonian pole) or escape into a cusp (zero mode with nonzero Wronskian); twisted infinite-volume carriers need an end of unbounded self-energy; the finite part jumps in the ratio |
+| A cusp can absorb the degrees | the Poincaré series diverges there, and every Green function grows like `t^{½}u^{3/2}` or `t^{3/2}u^{½}` along the cusp |
+| The orientation cover over ℤ may have no middle cohomology, as over `𝔽_q[T]` | its centred count is `M(N) = Ω_±(√N)` |
 | A limit-point end can hide the jump | at a conical return only `≲ √P` group elements come near and each spoils at most one prime `≤ P`; the primes win |
 | The finite places have no geometry | each is a Bruhat–Tits tree, Weil's `p`-kernel its Green function at the Ramanujan edge |
 | A twisted character can cancel the jump | the dilation limit is a sum over the stabilizer of the end, continuous at resonance-free ratios; resonant primes have `Σ p^{−1/2} < ∞` |
@@ -228,16 +260,20 @@ the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` o
 
 ## 9. Open research topics
 
-1. B118′(2) at non-conical limit points (geometrically infinite groups with `δ < ½`).
-2. B118′(1) for embeddings escaping into a cusp of a lattice, with the automorphic resolvent at
-   eigenvalue `¾` as carrier (its cusp zero mode is the expected obstruction).
+1. B118′(2) for infinitely generated groups: a carrier needs the self-energy to diverge along the
+   whole degree end. For torsion-free `Γ` this is excluded classically: on the `ε`-thick part the
+   self-energy is bounded (Sullivan's `λ₀ = 1` for `δ ≤ 1` and an interior elliptic estimate), and a
+   ray that stays in one Margulis tube ends at a loxodromic fixed point, which is conical. Lean
+   formalization of the thick-part bound.
+2. A Lean construction of the cusp expansion for the continued Poincaré series of a Bianchi group.
 3. Hodge index on windows of growing aperture (M4); at every aperture it is RH.
 4. An `h⁰` on classes of `S` constructed from the archimedean and tree Green functions, with Riemann–Roch
    (RH-strength by Q3; a construction would be a new object, not a new equivalence).
 5. The archimedean asymmetry: at `p` the critical parameter is the edge of the tempered spectrum, at
    `∞` it is the complementary point `¾` of `ℍ³`, and the pole cancels exactly that complementary
    piece. A Hodge index statement place by place in standard quantization.
-6. Orientation covers (with RIAC): the square-root estimate for the prime-quadratic family.
+6. Purity of the orientation cover (with RIAC): a self-map of the discriminant cover with bounded local
+   indices and Lefschetz number `#cover` (weight `½` is RH).
 
 ## 10. Context
 
@@ -271,14 +307,17 @@ mathematical content; not optimize constants.
 The archimedean fibre of the surface of `Spec ℤ` is rigid. Its isometries act on the degree geodesic
 through four Arakelov coordinates. A hyperbolic carrier that sees the end of the geodesic as a point
 of discontinuity produces only kernels continuous in the ratio of degrees, periodizations of the
-archimedean Green function; at a conical end the group has too few near elements to spoil every
-prime ratio. Either way the primes, which are jumps in the ratio, cannot live in a hyperbolic
-3-manifold. They live in the integer structure of `ℙ¹_ℤ`, and each prime has its own rank-one space,
+archimedean Green function; along an end of bounded self-energy, conical ends included, the group has
+too few near elements to spoil every prime ratio. Convergence at `½` leaves no parabolic points, so for
+every finitely generated group these cases are all. In finite volume the degrees cluster or run into a
+cusp, where every Green function grows through its zero mode. Either way the primes, which are jumps
+in the ratio, cannot live in a hyperbolic 3-manifold. They live in the integer structure of `ℙ¹_ℤ`, and each prime has its own rank-one space,
 the Bruhat–Tits tree, whose Green function at the Ramanujan edge is Weil's local kernel; the
-critical line is that edge at every finite place. The
-pole is not foreign to the fibre: it is a pair of spherical functions, and its complementary piece
+critical line is that edge at every finite place. The pole is not foreign to the fibre: it is a pair of spherical functions, and its complementary piece
 cancels that of the Frobenius, so the archimedean compensation is the `ν = 3/2` spherical function
 against the standard resolvent, with the plastic ratio as their balance. What the fibre cannot
 supply is the diagonal. Locking the two natural dampings reproduces only the discriminant, while
 the Hodge index needs the Green potential of the whole configuration; the sign of RH sits in the
-diagonal of a smoothing, which no counterterm and no locking of atoms provides.
+diagonal of a smoothing, which no counterterm and no locking of atoms provides. The topological
+shadow says the same: the orientation cover over ℤ exists, its middle cohomology never vanishes, and
+RH is its purity.

@@ -626,10 +626,29 @@ For `σ₀≤Re s≤1`, `Im s≥4`, at distance at least `δ>0` from every actua
 The logarithmically weighted error tends uniformly to zero; absolute error
 vanishes along every admitted path with `y(1+log Im s)→0`. Under `¬AAL`,
 the finite exceptional layer supplies a whole high strip with this control,
-strictly left of an actual exceptional zero.
+whose left boundary lies below an actual exceptional abscissa.
 `TheFullGaussianCurrentAtEscapingHeights.lean` retains both infinite fields;
-six terminal axiom audits are standard. Removing Gamma counterterms and
-proving height replication remain open.
+six terminal axiom audits are standard.
+
+**Finite exceptional subtraction [L].** If finite `F` contains every zero
+with real part greater than `θ<σ₀`, replace the full Gamma counterterm by
+its sum over `F`. The error is at most
+`C[y+y^((σ₀−θ)/2)](1+log Im s)` on the same regular high strip, for `0<y≤1`.
+The complete complementary field gains the horizontal-gap power of damping.
+`OnlyExceptionalGaussianModesRemain.lean` proves this law and the uniform
+weighted limit; the actual `¬AAL` layer supplies a whole high strip whose left
+boundary lies below an exceptional abscissa. Four terminal axiom audits are standard.
+
+**Raw prime passage at inverse height [L].** Under `¬AAL`, an interior strip
+`σ≤Re s≤1`, with `1/2<σ<Re ρ` for an actual exceptional zero `ρ`,
+satisfies, uniformly as `t=Im s→+∞`,
+`ΣΛ(n)n^(−s)e^(−n²/t)+ζ′/ζ(s)→0`.
+The infinite complementary field is `O(t^(−p)(1+log t))`, `p>0`; the finite
+exceptional modes are `O(t⁻¹)`; the continuum is `O(t^(−1/2))`.
+`ThePrimeCurrentPassesAtInverseHeight.lean` removes all divisor and continuum
+counterterms from the observable. Scalar and polar corrections cost
+`O((1+log t)/t)` and vanish too. Five terminal axiom audits are standard.
+New-height replication, `LinAt C`, and AAL remain open.
 
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.

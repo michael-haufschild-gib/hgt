@@ -110,7 +110,22 @@ the divisor. The logarithmically weighted error tends uniformly to zero;
 absolute error vanishes along every regular path with `y(1+log Im s)→0`.
 The actual `¬AAL` layer supplies a whole high strip satisfying the law while
 an exceptional zero remains to its right. Six terminal standard-axiom audits
-pass. The Gamma counterterm is retained; replication remains open.
+pass.
+
+`../3-formalized/euler-fe-finite-layer-joint-damping.md` removes the infinite
+Gamma counterterm when a finite exceptional set has complementary abscissa
+`θ<σ`. The remaining error is `O((y+y^((σ−θ)/2))(1+log Im s))`, uniformly
+on the regular high strip. The actual `¬AAL` layer supplies that strip with
+left boundary below an exceptional abscissa. Four terminal standard-axiom audits pass.
+Only the finite exceptional modes remain in the subtraction.
+
+`../3-formalized/euler-fe-counterterm-free-high-gaussian-passage.md` removes
+those modes at damping `1/Im s`. The continuum vanishes too, so the literal
+infinite von Mangoldt sum approaches `−ζ′/ζ(s)`, uniformly
+on an interior high strip supplied by `¬AAL`. The tail, exceptional modes
+and continuum have explicit vanishing bounds; scalar and polar corrections
+are `O((1+log Im s)/Im s)`. Five terminal standard-axiom audits pass.
+No new zero height follows.
 
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`

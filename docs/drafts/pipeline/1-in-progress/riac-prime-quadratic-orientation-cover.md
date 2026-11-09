@@ -23,7 +23,7 @@ discriminants and the same product-formula height.
 
 1. Identify the signs of the polynomial and monomial-basis trace discriminants
    of `ℤ[X]/(F_n)`. Their absolute values and actual cokernel counts are
-   identified; the signed equality remains open.
+   identified; the signed equality still needs formalization.
 2. Construct compatible geometry across the integer conductor cutoff with
    an independent estimate `|N+1−R_N|≪ε N^(1/2+ε)` for every `ε>0`.
    The real fibre identity alone supplies no such estimate or transfer of
