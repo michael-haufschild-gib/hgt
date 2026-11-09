@@ -116,11 +116,8 @@ private theorem tendsto_exp_difference_div_contractingStep {κ : ℝ}
       (Complex.exp ((contractingDampingStep κ t : ℂ) * z) -
         Complex.exp ((contractingDampingStep κ t : ℂ) * w)) /
           (contractingDampingStep κ t : ℂ)) atTop (𝓝 (z - w)) := by
-  have hderiv : HasDerivAt (fun u : ℂ => Complex.exp (u * z) -
-      Complex.exp (u * w)) (z - w) 0 := by
-    simpa using
-      (((hasDerivAt_id (x := (0 : ℂ))).mul_const z).cexp.sub
-        (((hasDerivAt_id (x := (0 : ℂ))).mul_const w).cexp))
+  have hderiv := (((hasDerivAt_id (x := (0 : ℂ))).mul_const z).cexp.sub
+    (((hasDerivAt_id (x := (0 : ℂ))).mul_const w).cexp))
   have hstep : Tendsto (fun t : ℝ => (contractingDampingStep κ t : ℂ)) atTop
       (𝓝[≠] (0 : ℂ)) := by
     apply tendsto_nhdsWithin_iff.mpr
@@ -131,8 +128,9 @@ private theorem tendsto_exp_difference_div_contractingStep {κ : ℝ}
           contractingDampingStep]
           using Real.exp_ne_zero (-κ * t)
   have hs := hderiv.tendsto_slope_zero.comp hstep
-  simpa only [Function.comp_def, zero_add, zero_mul, mul_zero, Complex.exp_zero, sub_self,
-    sub_zero, smul_eq_mul, div_eq_mul_inv, mul_comm] using hs
+  simpa only [Function.comp_def, Pi.sub_apply, id_eq, zero_add, zero_mul, mul_zero,
+    Complex.exp_zero, one_mul, mul_one, sub_self, sub_zero, smul_eq_mul,
+    div_eq_mul_inv, mul_comm] using hs
 
 private theorem divisorDampingFilter_degree (F : Finset XiZeroCopy)
     (ρ : ℂ) (β h : ℝ) :

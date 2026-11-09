@@ -56,3 +56,13 @@ values. The exact full-field decomposition in
 `EulerFETransportTheory/TheFullGaussianCurrentAtEscapingHeights.lean` and
 `OnlyExceptionalGaussianModesRemain.lean` supplies the starting identities.
 No paper proof or Lean claim for this stronger limit yet.
+
+For a single root `λ`, write `T_h f(y)=exp(h(s−β))f(y exp(−2h))` and
+`L_λ f(y)=(s−λ)f(y)−2y f′(y)`. The fundamental theorem of calculus gives
+
+`(T_h−exp(h(λ−β)))f(y)`
+`= h exp(h(λ−β)) ∫₀¹ exp(uh(s−λ)) L_λ f(y exp(−2uh))du`.
+
+The operators `L_λ` commute. Iterating this identity exposes the required
+`h^d` before taking norms; its exponential weights depend only on real parts,
+while the differential coefficients cost polynomial powers of height.

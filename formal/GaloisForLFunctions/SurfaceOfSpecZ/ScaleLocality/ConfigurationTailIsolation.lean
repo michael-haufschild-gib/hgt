@@ -76,7 +76,8 @@ theorem exists_configuration_tail_deletion (Z : ZeroConfig) (hZ : TemperedConfig
       apply Finset.mem_union_left
       convert hm using 1 <;> ring
     have hh := hkill _ hw₁ hout
-    convert hh using 1 <;> congr 2 <;> ring
+    have he : (1 / 2 : ℂ) + w - 1 / 2 - (α : ℂ) = w - (α : ℂ) := by ring
+    rwa [he] at hh
   · have hout : (1 / 2 : ℂ) + conj w - 1 / 2 ∉ S₀ := by
       intro hm
       apply hw

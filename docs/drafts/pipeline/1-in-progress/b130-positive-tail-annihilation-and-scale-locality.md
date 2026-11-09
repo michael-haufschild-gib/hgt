@@ -10,7 +10,8 @@
 For every tempered zero configuration without real zeros, a uniform lower
 bound for its spline trace on all primes in windows
 `[exp(T_k-L_k), exp(T_k+L_k)]`, where `T_k→∞` and
-`L_k≥c√T_k` for a fixed `c>0`, implies RH. No attained-top premise.
+`L_k≥c√T_k` for a fixed `c>0`, implies purity. For zeta this implies RH.
+No attained-top premise.
 
 Stronger target: replace `√T_k` by a multiple of `(log T_k)²`, using
 the Riemann–von Mangoldt count. Arbitrarily slowly growing `L_k` remains open.
@@ -74,7 +75,8 @@ the improved derivative envelope makes a second passage bounded.
 - [ ] Generic tempered tail isolation: `ConfigurationTailIsolation.lean`.
 - [x] Finite-spectrum growing sign changes: `FiniteSpectrumOscillation.lean`;
   Lean/axiom audit passed, using the existing uniform sign theorem.
-- [ ] Continuous depth criterion: `SquareRootWindowsDetectEveryDepth.lean`.
+- [x] Zeta continuous depth criterion: `SquareRootWindowsDetectEveryDepth.lean`;
+  Lean/axiom audit passed. Generic extension under formalization.
 - [ ] Two-step prime-window criterion: `PrimeSquareRootWindows.lean`;
   audit all dependencies and final source.
 

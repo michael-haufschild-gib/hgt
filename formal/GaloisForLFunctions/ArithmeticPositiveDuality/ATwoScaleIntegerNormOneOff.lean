@@ -2,7 +2,7 @@ import GaloisForLFunctions.ArithmeticPositiveDuality.AnIntegerNormOneOffCrossesT
 import GaloisForLFunctions.ZeroConfigurationGeometry.AbscissaLaws.TheLinearAbscissaLawAndItsHierarchy
 
 /-!
-# A two-scale integer-norm Euler product across the critical line
+# Wave Euler products with integer norms across the critical line
 
 `AnIntegerNormOneOffCrossesTheCriticalLine` plants a single off-line conjugate pair `β ± i γ` in a
 convergent Euler product `∏_k (1 - q_k^{-s})^{-1} = ∑_n a_n n^{-s}` with natural norms `q_k ≥ 2`,
@@ -10,10 +10,12 @@ natural coefficients `a_n`, linear counting `∑_{n<N} a_n ∼ A N`, and zero-fr
 `Re s = 1/2`. Because that witness has only finitely many off-line zeros (`Θ_∞ = 1/2`), it satisfies
 `ExtremeDeuringHeilbronn` (`¬AAL → FiniteOffLine`) while violating `LinearAbscissaLaw`.
 
-Here we construct, for **every** prescribed triple `1/2 < θ ≤ θ₂ < β < 2/3` and height `γ > 0`, a
-convergent integer-norm Euler product with linear counting and critical-line continuation whose
-zeros on `{Re s > 1/3, s ≠ 1}` consist of the top pair `β ± i γ` together with an infinite sequence
-of higher-ordinate conjugate pairs `θ_n ± i ω_n` (`θ_0 = θ₂`, `θ_{n+1} = θ`, `ω_n > γ`, `ω_n → ∞`):
+Here we construct, for **every** wave datum (`WaveSpec`: a top pair `β ± i γ`, `β < 2/3`, `γ > 0`,
+and remainder real parts `½ < θ_n ≤ θ₂ < β`), a convergent integer-norm Euler product with linear
+counting and critical-line continuation whose zeros on `{Re s > 1/3, s ≠ 1}` consist of the top pair
+together with the higher-ordinate conjugate pairs `θ_n ± i ω_n` (`ω_n > γ`, `ω_n → ∞`); its
+asymptotic abscissa is `lim θ_n` whenever the limit exists
+(`zeroConfig_asymptoticAbscissa_of_tendsto`):
 
 * **Entire cutoff-Frullani factors** (`differentiable_frullaniCutoffFactor`,
   `norm_frullaniCutoffLog_le_of_im_ne_zero`). Splitting Frullani's integral at `A > 0` defines an
@@ -25,11 +27,12 @@ of higher-ordinate conjugate pairs `θ_n ± i ω_n` (`θ_0 = θ₂`, `θ_{n+1} =
   each cutoff wave `-2 e^{θ_n t} cos(ω_n t)/t · 1_{[A_n, ∞)}(t)` is continuous on `ℝ`, bounded in
   total sum by `(1/4) w₀(t)`, and exponentiates to a factor `remFactor` holomorphic on `Re s > 0`
   whose exact zero set there is `{θ_n ± i ω_n : n ∈ ℕ}`.
-* **Two-scale integer-norm Euler product and strip `ZeroConfig`**
-  (`exists_two_scale_integer_norm_euler_product`, `twoScaleZeroConfig_properties`). Prime-square
-  quantile discretization and upward integer rounding preserve continuation to `{Re s > 1/3, s ≠ 1}`,
-  Wiener–Ikehara linear counting, and nonvanishing on `Re s = 1/2`, realizing `(Θ, Θ₂, Θ_∞) =
-  (β, θ₂, θ)` simultaneously. In particular `θ = θ₂` attains `Θ_∞ = Θ₂`, refuting extreme,
+* **Wave Euler product and strip `ZeroConfig`** (`WaveSpec.exists_integer_norm_euler_product`).
+  Prime-square quantile discretization and upward integer rounding preserve continuation to
+  `{Re s > 1/3, s ≠ 1}`, Wiener–Ikehara linear counting, and nonvanishing on `Re s = 1/2`.
+* **Two-scale instance** (`exists_two_scale_integer_norm_euler_product`,
+  `twoScaleZeroConfig_properties`). `θ_0 = θ₂`, `θ_{n+1} = θ` realizes
+  `(Θ, Θ₂, Θ_∞) = (β, θ₂, θ)`. In particular `θ = θ₂` attains `Θ_∞ = Θ₂`, refuting extreme,
   asymptotic, and sub-`Θ₂` graded Deuring–Heilbronn on positive integer-norm Euler products.
 -/
 
@@ -373,21 +376,24 @@ theorem norm_frullaniCutoffLog_le_of_im_ne_zero {A : ℝ} (hA : 0 < A) {z : ℂ}
 
 /-! ### Two-scale specification, continuous density perturbation, and `remFactor` -/
 
-/-- Prescribed two-scale abscissa parameters `1/2 < θ ≤ θ₂ < β < 2/3` and top ordinate `γ > 0`. -/
-structure TwoScaleSpec where
-  θ : ℝ
+/-- Wave data: a top pair `β ± i γ` with `β < 2/3`, `γ > 0`, a ceiling `θ₂ < β`, and remainder
+real parts `½ < θ_n ≤ θ₂`. -/
+structure WaveSpec where
   θ₂ : ℝ
   β : ℝ
   γ : ℝ
-  h12 : 1 / 2 < θ
-  hθ₂ : θ ≤ θ₂
+  θSeq : ℕ → ℝ
+  half_lt_θSeq : ∀ n, 1 / 2 < θSeq n
+  θSeq_le_θ₂ : ∀ n, θSeq n ≤ θ₂
   hβ : θ₂ < β
   h23 : β < 2 / 3
   hγ : 0 < γ
 
-namespace TwoScaleSpec
+namespace WaveSpec
 
-variable (S : TwoScaleSpec)
+variable (S : WaveSpec)
+
+theorem half_lt_θ₂ : 1 / 2 < S.θ₂ := (S.half_lt_θSeq 0).trans_le (S.θSeq_le_θ₂ 0)
 
 /-- Base single-pair Beurling parameters placing the top conjugate pair at `β ± i γ`. -/
 def P : DiscreteOneOff.Params where
@@ -395,7 +401,7 @@ def P : DiscreteOneOff.Params where
   ν := (3 * (1 - S.β) - 1) / 2
   γ := S.γ
   hμ1 := by linarith [S.h23]
-  hμ2 := by linarith [S.h12, S.hθ₂, S.hβ]
+  hμ2 := by linarith [S.half_lt_θ₂, S.hβ]
   hν0 := by linarith [S.h23]
   hν := by linarith [S.h23]
 
@@ -404,15 +410,6 @@ def c₀ : ℝ := (1 - Real.exp (-S.P.μ)) ^ 3
 
 theorem c₀_pos : 0 < S.c₀ := S.P.c₀_pos
 theorem c₀_le_one : S.c₀ ≤ 1 := S.P.c₀_le_one
-
-/-- Remainder real-part sequence: `θ_0 = θ₂` and `θ_{n+1} = θ`. -/
-def θSeq (n : ℕ) : ℝ := if n = 0 then S.θ₂ else S.θ
-
-theorem half_lt_θSeq (n : ℕ) : 1 / 2 < S.θSeq n := by
-  unfold θSeq; split_ifs <;> linarith [S.h12, S.hθ₂]
-
-theorem θSeq_le_θ₂ (n : ℕ) : S.θSeq n ≤ S.θ₂ := by
-  unfold θSeq; split_ifs <;> linarith [S.hθ₂]
 
 /-- Initial logarithmic cutoff `U₀` ensuring `|w_∞(t)| ≤ (1/4) P.w(t)` for all `t > 0`. -/
 def U₀ : ℝ := max 2 (32 / (S.c₀ * (1 - S.θ₂) ^ 2))
@@ -1705,14 +1702,14 @@ theorem crContinuation_ne_zero_critical_line {s : ℂ} (hs : s.re = 1 / 2) :
   have hs1 : s ≠ 1 := by intro h; rw [h] at hs; norm_num at hs
   intro h0
   rcases (S.crContinuation_eq_zero_iff hs3 hs1).mp h0 with rfl | rfl | ⟨n, rfl | rfl⟩
-  · simp at hs; linarith [S.h12, S.hθ₂, S.hβ]
-  · simp at hs; linarith [S.h12, S.hθ₂, S.hβ]
+  · simp at hs; linarith [S.half_lt_θ₂, S.hβ]
+  · simp at hs; linarith [S.half_lt_θ₂, S.hβ]
   · simp [remZero] at hs; linarith [S.half_lt_θSeq n]
   · simp [remZero] at hs; linarith [S.half_lt_θSeq n]
 
-/-! ### Reflection-symmetrized strip `ZeroConfig` realizing `(Θ, Θ₂, Θ_∞) = (β, θ₂, θ)` -/
+/-! ### Reflection-symmetrized strip `ZeroConfig` -/
 
-/-- Right-half zero set `{s : 1/2 < Re s < 1, F(s) = 0}` of the two-scale Euler product. -/
+/-- Right-half zero set `{s : 1/2 < Re s < 1, F(s) = 0}` of the wave Euler product. -/
 def rightZeroSet : Set ℂ :=
   {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ S.crContinuation s = 0}
 
@@ -1729,8 +1726,8 @@ theorem mem_rightZeroSet_iff (s : ℂ) :
   · intro h
     have hre : 1 / 2 < s.re ∧ s.re < 1 := by
       rcases h with rfl | rfl | ⟨n, rfl | rfl⟩
-      · simp; exact ⟨by linarith [S.h12, S.hθ₂, S.hβ], by linarith [S.h23]⟩
-      · simp; exact ⟨by linarith [S.h12, S.hθ₂, S.hβ], by linarith [S.h23]⟩
+      · simp; exact ⟨by linarith [S.half_lt_θ₂, S.hβ], by linarith [S.h23]⟩
+      · simp; exact ⟨by linarith [S.half_lt_θ₂, S.hβ], by linarith [S.h23]⟩
       · simp only [remZero_re]
         exact ⟨S.half_lt_θSeq n, (S.θSeq_le_θ₂ n).trans_lt (S.hβ.trans (S.h23.trans (by norm_num)))⟩
       · simp only [Complex.conj_re, remZero_re]
@@ -1797,7 +1794,7 @@ def zeroConfig : ZeroConfig where
 
 theorem zeroConfig_zeroAbscissa : zeroAbscissa S.zeroConfig = S.β := by
   refine le_antisymm ?_ ?_
-  · refine (zeroAbscissa_le_iff S.zeroConfig).mpr ⟨by linarith [S.h12, S.hθ₂, S.hβ], ?_⟩
+  · refine (zeroAbscissa_le_iff S.zeroConfig).mpr ⟨by linarith [S.half_lt_θ₂, S.hβ], ?_⟩
     rintro z (hz | ⟨w, hw, rfl⟩)
     · rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
       · simp
@@ -1805,50 +1802,72 @@ theorem zeroConfig_zeroAbscissa : zeroAbscissa S.zeroConfig = S.β := by
       · simp [remZero]; exact (S.θSeq_le_θ₂ n).trans S.hβ.le
       · simp [remZero]; exact (S.θSeq_le_θ₂ n).trans S.hβ.le
     · rw [re_reflect]
-      linarith [hw.1, S.h12, S.hθ₂, S.hβ]
+      linarith [hw.1, S.half_lt_θ₂, S.hβ]
   · have hmem : (S.β : ℂ) + (S.γ : ℂ) * I ∈ S.zeroConfig.carrier :=
       Or.inl ((S.mem_rightZeroSet_iff _).mpr (Or.inl rfl))
     simpa using re_le_zeroAbscissa S.zeroConfig hmem
 
-theorem zeroConfig_asymptoticAbscissa : asymptoticAbscissa S.zeroConfig = S.θ := by
-  refine le_antisymm ?_ ?_
-  · refine csInf_le (bddBelow_asymptoticAbscissaSet S.zeroConfig) ⟨S.h12.le, ?_⟩
-    let F₄ : Set ℂ :=
-      {(S.β : ℂ) + (S.γ : ℂ) * I, (S.β : ℂ) - (S.γ : ℂ) * I,
-        S.remZero 0, starRingEnd ℂ (S.remZero 0)}
-    have hF₄ : F₄.Finite :=
-      (((finite_singleton _).insert _).insert _).insert _
-    refine hF₄.subset ?_
-    rintro z ⟨(hz | ⟨w, hw, rfl⟩), hre⟩
-    · have hre' : S.θ < z.re := by linarith
-      rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
-      · exact Or.inl rfl
-      · exact Or.inr (Or.inl rfl)
-      · rcases n with _ | m
-        · exact Or.inr (Or.inr (Or.inl rfl))
-        · simp [remZero, θSeq] at hre'
-      · rcases n with _ | m
-        · exact Or.inr (Or.inr (Or.inr rfl))
-        · simp [remZero, θSeq] at hre'
-    · rw [re_reflect] at hre
-      linarith [hw.1, S.h12]
+/-- Above depth `h ≥ 0`, the configuration keeps the top pair and the remainder pairs with
+`θ_n > ½ + h`. -/
+theorem rightOf_subset {h : ℝ} (hh : 0 ≤ h) {N : ℕ} (hN : ∀ n, N ≤ n → S.θSeq n ≤ 1 / 2 + h) :
+    rightOf S.zeroConfig h ⊆
+      {(S.β : ℂ) + (S.γ : ℂ) * I, (S.β : ℂ) - (S.γ : ℂ) * I} ∪
+        (S.remZero '' (Finset.range N : Set ℕ)) ∪
+        ((fun n => starRingEnd ℂ (S.remZero n)) '' (Finset.range N : Set ℕ)) := by
+  rintro z ⟨(hz | ⟨w, hw, rfl⟩), hre⟩
+  · rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
+    · exact Or.inl (Or.inl (Or.inl rfl))
+    · exact Or.inl (Or.inl (Or.inr rfl))
+    · by_cases hn : n < N
+      · exact Or.inl (Or.inr ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hn), rfl⟩)
+      · simp only [remZero_re] at hre; linarith [hN n (not_lt.mp hn)]
+    · by_cases hn : n < N
+      · exact Or.inr ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hn), rfl⟩
+      · simp only [Complex.conj_re, remZero_re] at hre; linarith [hN n (not_lt.mp hn)]
+  · rw [re_reflect] at hre
+    linarith [hw.1]
+
+/-- Infinitely many remainder zeros lie right of every line below `limsup θ_n`. -/
+theorem rightOf_infinite_of_frequently {σ : ℝ} (hσ : ∀ N, ∃ n, N ≤ n ∧ σ < S.θSeq n) :
+    (rightOf S.zeroConfig (σ - 1 / 2)).Infinite := by
+  intro hfin
+  obtain ⟨B, hB⟩ := (hfin.image Complex.im).bddAbove
+  -- a remainder zero with `θ_m > σ` and ordinate `ω_m > m > B`
+  obtain ⟨m, hm, hσm⟩ := hσ (⌊max B 0⌋₊ + 1)
+  have hmem : S.remZero m ∈ rightOf S.zeroConfig (σ - 1 / 2) :=
+    ⟨Or.inl ((S.mem_rightZeroSet_iff _).mpr (Or.inr (Or.inr ⟨m, Or.inl rfl⟩))), by
+      simp only [remZero_re]; linarith⟩
+  have him := hB ⟨_, hmem, rfl⟩
+  simp only [remZero_im] at him
+  have hω := S.ω_gt_bound m
+  have hp : 0 ≤ S.γ + (2 : ℝ) ^ m * Real.exp (2 * S.A m) := by have := S.hγ; positivity
+  have hmB : max B 0 < (m : ℝ) := by
+    have h1 : max B 0 < (⌊max B 0⌋₊ + 1 : ℝ) := Nat.lt_floor_add_one _
+    have h2 : (⌊max B 0⌋₊ + 1 : ℝ) ≤ m := by exact_mod_cast (by omega : ⌊max B 0⌋₊ + 1 ≤ m)
+    linarith
+  linarith [le_max_left B 0]
+
+/-- **The asymptotic abscissa is the limit of the remainder real parts.** -/
+theorem zeroConfig_asymptoticAbscissa_of_tendsto {L : ℝ} (hL : Tendsto S.θSeq atTop (𝓝 L)) :
+    asymptoticAbscissa S.zeroConfig = L := by
+  have hL12 : 1 / 2 ≤ L := ge_of_tendsto' hL fun n => (S.half_lt_θSeq n).le
+  refine le_antisymm (le_of_forall_pos_le_add fun ε hε => ?_) ?_
+  · obtain ⟨N, hN⟩ := eventually_atTop.mp (hL.eventually (gt_mem_nhds (by linarith : L < L + ε)))
+    refine csInf_le (bddBelow_asymptoticAbscissaSet S.zeroConfig) ⟨by linarith, ?_⟩
+    refine ((((finite_singleton _).insert _).union ((Finset.range N).finite_toSet.image _)).union
+      ((Finset.range N).finite_toSet.image _)).subset (S.rightOf_subset (by linarith) fun n hn => ?_)
+    linarith [hN n hn]
   · refine le_csInf (asymptoticAbscissaSet_nonempty S.zeroConfig) fun σ ⟨_, hfin⟩ => ?_
     by_contra hlt
     push Not at hlt
-    obtain ⟨B, hB⟩ := (hfin.image Complex.im).bddAbove
-    let m : ℕ := ⌊max B 0⌋₊ + 1
-    have hm_mem : S.remZero m ∈ rightOf S.zeroConfig (σ - 1 / 2) := by
-      refine ⟨Or.inl ((S.mem_rightZeroSet_iff _).mpr (Or.inr (Or.inr ⟨m, Or.inl rfl⟩))), ?_⟩
-      have hm0 : m ≠ 0 := Nat.succ_ne_zero _
-      simp only [remZero_re, θSeq, hm0, ↓reduceIte]
-      linarith
-    have him_le : S.ω m ≤ B := by
-      simpa [remZero_im] using hB ⟨S.remZero m, hm_mem, rfl⟩
-    have hω := S.ω_gt_bound m
-    have hp : 0 ≤ S.γ + (2 : ℝ) ^ m * Real.exp (2 * S.A m) := by have := S.hγ; positivity
-    have hBm : B < (m : ℝ) :=
-      (le_max_left B 0).trans_lt (by exact_mod_cast Nat.lt_floor_add_one (max B 0))
-    linarith
+    refine S.rightOf_infinite_of_frequently (σ := σ) (fun N => ?_) hfin
+    obtain ⟨M, hM⟩ := eventually_atTop.mp (hL.eventually (lt_mem_nhds hlt))
+    exact ⟨max N M, le_max_left _ _, hM _ (le_max_right _ _)⟩
+
+/-- The remainder zeros are infinitely many and all lie right of the line. -/
+theorem zeroConfig_rightOf_zero_infinite : (rightOf S.zeroConfig 0).Infinite := by
+  have h := S.rightOf_infinite_of_frequently (σ := 1 / 2) fun N => ⟨N, le_rfl, S.half_lt_θSeq N⟩
+  simpa using h
 
 theorem zeroConfig_right_carrier :
     {s ∈ S.zeroConfig.carrier | 1 / 2 < s.re} = S.rightZeroSet := by
@@ -1866,7 +1885,7 @@ theorem zeroConfig_top_layer :
     {s ∈ S.zeroConfig.carrier | 1 / 2 < s.re ∧ |s.im| ≤ S.γ} =
       {(S.β : ℂ) + (S.γ : ℂ) * I, (S.β : ℂ) - (S.γ : ℂ) * I} := by
   ext s
-  have hreβ : 1 / 2 < S.β := by linarith [S.h12, S.hθ₂, S.hβ]
+  have hreβ : 1 / 2 < S.β := by linarith [S.half_lt_θ₂, S.hβ]
   simp only [mem_setOf_eq, mem_insert_iff, mem_singleton_iff]
   constructor
   · rintro ⟨hs, h12, him⟩
@@ -1890,22 +1909,97 @@ theorem zeroConfig_top_layer :
       · simp [abs_of_pos S.hγ]
 
 theorem zeroConfig_remainder_le_θ₂ :
+    ∀ z ∈ S.zeroConfig.carrier, S.γ < |z.im| → z.re ≤ S.θ₂ := by
+  rintro z (hz | ⟨w, hw, rfl⟩) him
+  · rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
+    · simp [abs_of_pos S.hγ] at him
+    · simp [abs_of_pos S.hγ] at him
+    · simp only [remZero_re]
+      exact S.θSeq_le_θ₂ n
+    · simp only [Complex.conj_re, remZero_re]
+      exact S.θSeq_le_θ₂ n
+  · rw [re_reflect]
+    linarith [hw.1, S.half_lt_θ₂]
+
+/-- **The wave Euler product.** Natural generators `q_k ≥ 2` and natural coefficients `a_n` with
+`∏_k (1 - q_k^{-s})^{-1} = ∑_n a_n n^{-s} = F(s)` on `Re s > 1` and `∑_{n<N} a_n ∼ A N`, whose
+continuation to `{Re s > 1/3, s ≠ 1}` is nonvanishing on `Re s = 1/2` and whose zeros in
+`1/2 < Re s < 1` are the right half of `S.zeroConfig`. -/
+theorem exists_integer_norm_euler_product :
+    ∃ q a : ℕ → ℕ, (∀ k, 2 ≤ q k) ∧ ∃ F : ℂ → ℂ, ∃ A : ℝ, 0 < A ∧
+      (∀ s : ℂ, 1 < s.re →
+        HasProd (fun k => (1 - cexp (-(s * Real.log (q k))))⁻¹) (F s) ∧
+        LSeriesHasSum (fun n => (a n : ℂ)) s (F s)) ∧
+      Tendsto (fun N : ℕ => (∑ n ∈ Finset.range N, (a n : ℝ)) / N) atTop (𝓝 A) ∧
+      DifferentiableOn ℂ F {s : ℂ | 1 / 3 < s.re ∧ s ≠ 1} ∧
+      (∀ s : ℂ, s.re = 1 / 2 → F s ≠ 0) ∧
+      {s : ℂ | 1 / 2 < s.re ∧ s.re < 1 ∧ F s = 0} = {s ∈ S.zeroConfig.carrier | 1 / 2 < s.re} := by
+  have hq := S.cPrimeNorm_ge_two
+  have hmono : ∀ k, Real.log (S.cPrimeNorm 0) ≤ Real.log (S.cPrimeNorm k) := S.cRounded_zero_le
+  have hsum : ∀ a : ℝ, 1 < a → Summable fun k => Real.exp (-(a * Real.log (S.cPrimeNorm k))) :=
+    fun a ha => S.summable_exp_cRounded ha
+  obtain ⟨A, hA, -, hcount⟩ := tendsto_genCoeff_count hq hmono hsum (H := S.crPoleFactor)
+    (σ₁ := 1 / 3) (by norm_num) S.differentiableOn_crPoleFactor S.crPoleFactor_one_ne_zero
+    fun s hs => by rw [S.genEulerLog_eq_crContinuation hs, S.crContinuation_eq_poleFactor]
+  refine ⟨S.cPrimeNorm, genCoeff S.cPrimeNorm, hq, S.crContinuation, A, hA,
+    fun s hs => ⟨S.hasProd_crContinuation hs, ?_⟩, hcount, S.differentiableOn_crContinuation,
+    fun s hs => S.crContinuation_ne_zero_critical_line hs, S.zeroConfig_right_carrier.symm⟩
+  rw [← S.genEulerLog_eq_crContinuation hs]
+  exact hasSum_genCoeff hq hmono hsum hs
+
+end WaveSpec
+
+/-! ### The two-scale instance -/
+
+/-- Prescribed two-scale abscissa parameters `1/2 < θ ≤ θ₂ < β < 2/3` and top ordinate `γ > 0`. -/
+structure TwoScaleSpec where
+  θ : ℝ
+  θ₂ : ℝ
+  β : ℝ
+  γ : ℝ
+  h12 : 1 / 2 < θ
+  hθ₂ : θ ≤ θ₂
+  hβ : θ₂ < β
+  h23 : β < 2 / 3
+  hγ : 0 < γ
+
+namespace TwoScaleSpec
+
+variable (S : TwoScaleSpec)
+
+/-- Remainder real parts `θ_0 = θ₂` and `θ_{n+1} = θ`. -/
+def θSeq (n : ℕ) : ℝ := if n = 0 then S.θ₂ else S.θ
+
+/-- The two-scale wave data. -/
+def toWaveSpec : WaveSpec where
+  θ₂ := S.θ₂
+  β := S.β
+  γ := S.γ
+  θSeq := S.θSeq
+  half_lt_θSeq n := by unfold θSeq; split_ifs <;> linarith [S.h12, S.hθ₂]
+  θSeq_le_θ₂ n := by unfold θSeq; split_ifs <;> linarith [S.hθ₂]
+  hβ := S.hβ
+  h23 := S.h23
+  hγ := S.hγ
+
+/-- Strip configuration of the two-scale Euler product. -/
+abbrev zeroConfig : ZeroConfig := S.toWaveSpec.zeroConfig
+
+theorem tendsto_θSeq : Tendsto S.θSeq atTop (𝓝 S.θ) :=
+  tendsto_const_nhds.congr' (eventually_atTop.mpr ⟨1, fun n hn => by
+    simp [θSeq, show n ≠ 0 by omega]⟩)
+
+theorem zeroConfig_asymptoticAbscissa : asymptoticAbscissa S.zeroConfig = S.θ :=
+  S.toWaveSpec.zeroConfig_asymptoticAbscissa_of_tendsto S.tendsto_θSeq
+
+theorem zeroConfig_remainder_le_θ₂ :
     (∀ z ∈ S.zeroConfig.carrier, S.γ < |z.im| → z.re ≤ S.θ₂) ∧
       ∃ z ∈ S.zeroConfig.carrier, S.γ < |z.im| ∧ z.re = S.θ₂ := by
-  refine ⟨?_, S.remZero 0, Or.inl ((S.mem_rightZeroSet_iff _).mpr
-    (Or.inr (Or.inr ⟨0, Or.inl rfl⟩))), ?_, by simp only [remZero_re, θSeq, ↓reduceIte]⟩
-  · rintro z (hz | ⟨w, hw, rfl⟩) him
-    · rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
-      · simp [abs_of_pos S.hγ] at him
-      · simp [abs_of_pos S.hγ] at him
-      · simp only [remZero_re]
-        exact S.θSeq_le_θ₂ n
-      · simp only [Complex.conj_re, remZero_re]
-        exact S.θSeq_le_θ₂ n
-    · rw [re_reflect]
-      linarith [hw.1, S.h12, S.hθ₂]
-  · simp only [remZero_im, abs_of_pos (S.hγ.trans (S.ω_gt_γ 0))]
-    exact S.ω_gt_γ 0
+  refine ⟨S.toWaveSpec.zeroConfig_remainder_le_θ₂, S.toWaveSpec.remZero 0,
+    Or.inl ((S.toWaveSpec.mem_rightZeroSet_iff _).mpr (Or.inr (Or.inr ⟨0, Or.inl rfl⟩))), ?_, ?_⟩
+  · simp only [WaveSpec.remZero_im, abs_of_pos (S.hγ.trans (S.toWaveSpec.ω_gt_γ 0))]
+    exact S.toWaveSpec.ω_gt_γ 0
+  · simp [WaveSpec.remZero_re, toWaveSpec, θSeq]
 
 theorem twoScaleZeroConfig_properties :
     zeroAbscissa S.zeroConfig = S.β ∧
@@ -1915,26 +2009,18 @@ theorem twoScaleZeroConfig_properties :
       ¬ AbscissaLaw S.zeroConfig ∧
       (rightOf S.zeroConfig 0).Infinite ∧
       ¬ ApproachesLine S.zeroConfig := by
-  have hΘ := S.zeroConfig_zeroAbscissa
+  have hΘ : zeroAbscissa S.zeroConfig = S.β := S.toWaveSpec.zeroConfig_zeroAbscissa
   have hΘ_inf := S.zeroConfig_asymptoticAbscissa
   have hnot_zal : ¬ ApproachesLine S.zeroConfig := by
     rw [approachesLine_iff_asymptoticAbscissa_eq_half, hΘ_inf]
     linarith [S.h12]
   have hlin : LinearAbscissaLaw S.zeroConfig :=
     ⟨_, linearAbscissaLawAt_of_not_approachesLine S.zeroConfig hnot_zal⟩
-  have hlaw0 : AbscissaLawAt S.zeroConfig 0 :=
-    abscissaLawAt_zero_of_linearAbscissaLaw S.zeroConfig hlin
   have hnot_aal : ¬ AbscissaLaw S.zeroConfig := by
     rw [abscissaLaw_iff_asymptoticAbscissa_eq_zeroAbscissa, hΘ, hΘ_inf]
     linarith [S.hθ₂, S.hβ]
-  have hinf : (rightOf S.zeroConfig 0).Infinite := by
-    intro hfin
-    have hmem : (1 / 2 : ℝ) ∈ asymptoticAbscissaSet S.zeroConfig :=
-      ⟨le_rfl, by simpa using hfin⟩
-    have hle := csInf_le (bddBelow_asymptoticAbscissaSet S.zeroConfig) hmem
-    change asymptoticAbscissa S.zeroConfig ≤ 1 / 2 at hle
-    linarith [hΘ_inf, S.h12]
-  exact ⟨hΘ, hΘ_inf, hlin, hlaw0, hnot_aal, hinf, hnot_zal⟩
+  exact ⟨hΘ, hΘ_inf, hlin, abscissaLawAt_zero_of_linearAbscissaLaw S.zeroConfig hlin, hnot_aal,
+    S.toWaveSpec.zeroConfig_rightOf_zero_infinite, hnot_zal⟩
 
 end TwoScaleSpec
 
@@ -1968,21 +2054,13 @@ theorem exists_two_scale_integer_norm_euler_product
       (rightOf Z 0).Infinite ∧
       ¬ ApproachesLine Z := by
   let S : TwoScaleSpec := ⟨θ, θ₂, β, γ, h12, hθ₂, hβ, h23, hγ⟩
-  have hq := S.cPrimeNorm_ge_two
-  have hmono : ∀ k, Real.log (S.cPrimeNorm 0) ≤ Real.log (S.cPrimeNorm k) := S.cRounded_zero_le
-  have hsum : ∀ a : ℝ, 1 < a → Summable fun k => Real.exp (-(a * Real.log (S.cPrimeNorm k))) :=
-    fun a ha => S.summable_exp_cRounded ha
-  obtain ⟨A, hA, -, hcount⟩ := tendsto_genCoeff_count hq hmono hsum (H := S.crPoleFactor)
-    (σ₁ := 1 / 3) (by norm_num) S.differentiableOn_crPoleFactor S.crPoleFactor_one_ne_zero
-    fun s hs => by rw [S.genEulerLog_eq_crContinuation hs, S.crContinuation_eq_poleFactor]
+  obtain ⟨q, a, hq, F, A, hA, hEuler, hcount, hdiff, hcrit, hright⟩ :=
+    S.toWaveSpec.exists_integer_norm_euler_product
   obtain ⟨hrem_le, hrem_eq⟩ := S.zeroConfig_remainder_le_θ₂
   obtain ⟨hΘ, hΘ_inf, hlin, -, hnot_aal, hinf, hnot_zal⟩ := S.twoScaleZeroConfig_properties
-  refine ⟨S.cPrimeNorm, genCoeff S.cPrimeNorm, hq, S.crContinuation, A, hA, S.zeroConfig,
-    fun s hs => ⟨S.hasProd_crContinuation hs, ?_⟩, hcount, S.differentiableOn_crContinuation,
-    fun s hs => S.crContinuation_ne_zero_critical_line hs, S.zeroConfig_right_carrier.symm,
-    S.zeroConfig_top_layer, hrem_le, hrem_eq, hΘ, hΘ_inf, hlin, hnot_aal, hinf, hnot_zal⟩
-  rw [← S.genEulerLog_eq_crContinuation hs]
-  exact hasSum_genCoeff hq hmono hsum hs
+  exact ⟨q, a, hq, F, A, hA, S.zeroConfig, hEuler, hcount, hdiff, hcrit, hright,
+    S.toWaveSpec.zeroConfig_top_layer, hrem_le, hrem_eq, hΘ, hΘ_inf, hlin, hnot_aal, hinf,
+    hnot_zal⟩
 
 end
 

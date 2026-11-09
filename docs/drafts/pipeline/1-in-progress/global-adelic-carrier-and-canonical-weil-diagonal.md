@@ -58,9 +58,12 @@ The first has representative `(z_1, (K_p)_p)`; the second has representative
 integer entries. Integral modular transformations cannot identify distinct
 points of the degree ray at heights at least one. Thus opposite finite
 orientation should retain all square degrees. Local apartment distances are
-unchanged by this reversal. This changes the original configuration and does
-not assert a Green or Robin identity. The adelic orbit statement is being
-formalized using actual p-adic matrix cosets.
+unchanged by this reversal. Equivalently, retain the original degree points
+and conjugate the arithmetic group by `(1, (w)_p)`, where `w` is the integral
+Weyl element. This stays within the original configuration question: only the
+group changes. The adelic orbit and discreteness statements are being
+formalized using actual p-adic matrix cosets. No Green or Robin identity is
+asserted.
 
 ## Verification gates
 

@@ -1,15 +1,16 @@
-import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaTailIsolation
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ConfigurationTailIsolation
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FiniteSpectrumOscillation
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SquareRootWindowLeakage
 
 /-!
-# Square-root logarithmic windows detect every zeta depth
+# Square-root logarithmic windows detect every zero depth
 
 A lower bound of exponential order `α` on arbitrarily late windows of
 radius `r√T` excludes every zero deeper than `α`. Infinite positive
 annihilation preserves a chosen deeper zero and leaves a finite spectrum.
 Its bounded-gap negative excursions contradict the exponentially small
-leakage from the observation windows. No maximal zeta real part is assumed.
+leakage from the observation windows. Temperedness suffices; no maximal
+real part is assumed.
 -/
 
 open Complex Filter Topology Set
@@ -19,35 +20,37 @@ noncomputable section
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 
 /-- Arbitrarily late square-root windows detect every depth above their lower-bound exponent. -/
-theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0 < r)
+theorem configuration_re_le_of_squareRoot_windows {Z : ZeroConfig} (hZ : TemperedConfig Z)
+    (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {α r K : ℝ} (hα : 0 ≤ α) (hr : 0 < r)
     (hwindow : ∀ U : ℝ, ∃ T : ℝ, U ≤ T ∧ ∀ u : ℝ, |u - T| ≤ r * Real.sqrt T →
-      -(K * Real.exp (α * u)) ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) u).re) :
-    ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re ≤ 1 / 2 + α := by
+      -(K * Real.exp (α * u)) ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + α := by
   classical
   intro ρ hρ
   by_contra hρle
   have hρdeep : 1 / 2 + α < ρ.re := lt_of_not_ge hρle
   let z₀ : ℂ := ρ - 1 / 2
-  let c : ℂ → ℂ := evenCoeff zetaZeroConfig (boxSpline 1 3)
+  let c : ℂ → ℂ := evenCoeff Z (boxSpline 1 3)
   let D : ℝ := 1 / 2 + |α|
   have hD : 0 ≤ D := by dsimp only [D]; positivity
-  have hc : Summable fun z => ‖c z‖ := summable_norm_evenCoeff_spline temperedConfig_zetaZeroConfig
+  have hc : Summable fun z => ‖c z‖ := summable_norm_evenCoeff_spline hZ
   have hw : ∀ z, c z ≠ 0 → |(z - (α : ℂ)).re| ≤ D :=
-    fun z hz => zeta_shifted_exponent_bound α hz
-  have hc₀ : c z₀ ≠ 0 := evenCoeff_spline_sees hρ (by linarith only [hρdeep, hα])
+    fun z hz => configuration_shifted_exponent_bound α hz
+  have hc₀ : c z₀ ≠ 0 :=
+    evenCoeff_sub_half_ne_zero_of_conj_symm Z (contDiff_boxSpline one_pos 2).continuous
+      (hasCompactSupport_of_support_subset_abs (boxSpline_support one_pos 3))
+      (conj_paperFT_boxSpline _ _) (paperFT_boxSpline_neg _ _) hρ
+      (paperFT_boxSpline_ne_zero one_pos 3
+        (im_gammaOf_ne_zero (by linarith only [hρdeep, hα])))
   obtain ⟨a, h, S, hsq, hcost, hkeep, hdelete⟩ :=
-    exists_zeta_tail_deletion α (z₀ - (α : ℂ)) (windowSquareBudget_pos hD hr)
+    exists_configuration_tail_deletion Z hZ hnoreal α (z₀ - (α : ℂ))
+      (windowSquareBudget_pos hD hr)
   let d : ℂ → ℂ := fun z => c z * ∏' n, quartetFactor (a n) (h n) (z - (α : ℂ))
   have hdout : ∀ z ∉ S, d z = 0 := by
     intro z hz
     by_cases hcz : c z = 0
     · simp only [d, hcz, zero_mul]
-    obtain ⟨n, hn, hp⟩ := hdelete z hz hcz
-    have he : (a n : ℂ) + ((z - (α : ℂ)).im : ℂ) * I = z - (α : ℂ) := by
-      rw [← hn, Complex.re_add_im]
-    have hzM := tprod_quartetFactor_root a h hsq n hp
-    rw [he] at hzM
-    simp only [d, hzM, mul_zero]
+    simp only [d, hdelete z hz hcz, mul_zero]
   let R : Finset ℂ := S.filter fun z => d z ≠ 0
   have hmem (z : ℂ) : z ∈ R ↔ d z ≠ 0 := by
     simp only [R, Finset.mem_filter]
@@ -65,7 +68,10 @@ theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0
   have hRreal : ∀ z ∈ R, z.im ≠ 0 := by
     intro z hz
     have hcz : c z ≠ 0 := fun hn => (hmem z).mp hz (by simp [d, hn])
-    exact evenCoeff_spline_real hcz
+    intro him
+    rcases mem_of_evenCoeff_ne_zero hcz with h | h
+    · exact hnoreal _ h (by simp [him])
+    · exact hnoreal _ h (by simp [him])
   have hz₀R : z₀ ∈ R := (hmem z₀).mpr (mul_ne_zero hc₀ hkeep)
   obtain ⟨z₁, hz₁, hmax⟩ := R.exists_max_image Complex.re ⟨z₀, hz₀R⟩
   have hβα : 0 < z₁.re - α := by
@@ -117,7 +123,7 @@ theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0
         simp only [neg_mul, neg_add_cancel, Real.exp_zero]
       calc _ = -K * (Real.exp (-α * u) * Real.exp (α * u)) := by ring
         _ = _ := by rw [hp, mul_one]
-    rw [he, zeta_shifted_trace_series] at hh
+    rw [he, configuration_shifted_trace_series hZ] at hh
     exact (neg_le_neg (le_abs_self K)).trans hh
   have hfloor := infinite_tail_squareRoot_floor a h hsq c (fun z => z - (α : ℂ))
     hD hr hc hw hcost.le (abs_nonneg K) hT htB hlocal
@@ -145,6 +151,15 @@ theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0
   rw [he] at hneg
   nlinarith only [hscaled, hneg, hmul]
 
+/-- The continuous square-root criterion for the actual zeta zeros. -/
+theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0 < r)
+    (hwindow : ∀ U : ℝ, ∃ T : ℝ, U ≤ T ∧ ∀ u : ℝ, |u - T| ≤ r * Real.sqrt T →
+      -(K * Real.exp (α * u)) ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) u).re) :
+    ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re ≤ 1 / 2 + α :=
+  configuration_re_le_of_squareRoot_windows temperedConfig_zetaZeroConfig
+    (fun _ hρ hzero => not_mem_carrier_of_im_eq_zero hρ hzero) hα hr hwindow
+
+#print axioms configuration_re_le_of_squareRoot_windows
 #print axioms zeta_re_le_of_squareRoot_windows
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
