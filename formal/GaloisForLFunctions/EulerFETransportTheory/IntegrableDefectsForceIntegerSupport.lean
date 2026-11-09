@@ -177,10 +177,10 @@ theorem beurling_intNorm_nat_of_integrable_theta_defect
     ∀ x : B.Integer, ∃ k : ℕ, B.intNorm x = k := by
   have hsum : Summable fun i : B.Integer =>
       (Real.sin (Real.pi * B.intNorm i) / (Real.pi * B.intNorm i)) ^ 2 := by
-    simpa only [tentFourierWeight, one_mul, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (sq_nonneg _)] using
-        summable_norm_tentFourierCoefficient B.intNorm_pos (summable_beurling_inv_sq B hBsum)
-          (h := 1) zero_lt_one
+    refine (summable_norm_tentFourierCoefficient B.intNorm_pos (summable_beurling_inv_sq B hBsum)
+      (h := 1) zero_lt_one).congr fun i => ?_
+    simp only [tentFourierWeight, one_mul, Complex.norm_real, Real.norm_eq_abs]
+    exact abs_of_nonneg (sq_nonneg _)
   have hz := beurling_integral_sinc_sq_eq_zero B hBsum hgm hgb hgi hθ
   rw [integral_beurlingSystemIntegerMeasure_eq_tsum] at hz
   intro x

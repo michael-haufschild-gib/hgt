@@ -3,7 +3,7 @@
 - **ID:** RIAC-arithmetic-Vieta
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean); classical finite-field calibration
-- **Source:** [discriminant-cover construction](../1-in-progress/riac-discriminant-cover-signed-counts.md)
+- **Source:** [discriminant-cover construction](riac-discriminant-cover-signed-counts.md)
 - **Statement:** Monic degree-`n` polynomials over a finite field correspond bijectively to Frobenius-stable permutation orbits of `n` roots in the actual extension of degree `n!`, including repeated roots.
 
 ## Construction and proof
@@ -30,8 +30,10 @@ extension; no splitting or surjectivity premise remains unproved.
 ## Exact scope
 
 This identifies the actual coefficient space underlying the signed orbit
-construction. The discriminant-square/Vandermonde comparison and the
-resulting cover count remain separate. There is still no map identifying
+construction. The [integral discriminant equation](riac-integral-discriminant-cover.md)
+and [cross-resultant comparison](riac-discriminant-cover-signed-counts.md)
+give the actual cover count and identify the signed weights with polynomial
+Möbius signs. There is still no map identifying
 these finite-field weights with the integer local indices and no bound on
 `Σ_p index_p(N)=1−M(N)`.
 

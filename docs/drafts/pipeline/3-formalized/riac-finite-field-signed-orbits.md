@@ -3,7 +3,7 @@
 - **ID:** RIAC-finite-field-signed-orbits
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean); classical finite-field calibration
-- **Source:** [discriminant-cover construction](../1-in-progress/riac-discriminant-cover-signed-counts.md)
+- **Source:** [discriminant-cover construction](riac-discriminant-cover-signed-counts.md)
 - **Statement:** Actual Frobenius transporter counts define orbit orientation weights in `{-1,0,1}`. Repeated coordinates have weight zero, distinct coordinates retain Frobenius sign, and the total cancels exactly for at least two labels.
 
 ## Actual local counts
@@ -52,8 +52,8 @@ The construction and cancellation work in every finite characteristic.
 
 These are orientation weights of arithmetic orbit counts. They are not
 identified with the relative singular-homology indices of the integer
-prime complex. The polynomial factorization/discriminant comparison also
-remains separate. Integer cancellation
+prime complex. The [discriminant comparison](riac-discriminant-cover-signed-counts.md)
+identifies them with `(-1)^deg(f) μ(f)` over odd finite fields. Integer cancellation
 `Σ_p index_p(N)=1−M(N)=Oε(N^(1/2+ε))` is not proved.
 
 ## Formalization

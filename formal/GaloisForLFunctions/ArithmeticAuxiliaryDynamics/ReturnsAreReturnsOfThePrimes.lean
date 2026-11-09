@@ -16,10 +16,10 @@ translates locally bounded there. Then:
 * **The price at the pole.** The translates converge to `ζ` on `Re s > 1`, and `ζ` has a pole. So they
   cannot stay bounded on any disc around `s = 1`: a return is paid by a spike of `ζ` near `1 + iτ_j`.
 
-This answers why primes recur at a zero if they do: they must. Every bounded return at a zero lies in
-the Bohr sets of all prime phases, which have positive density, while returns at an off-line zero have
-density zero (`exists_zetaSelfReturn_density_zero`). So the phases are never the obstruction. It is
-the tail that fails at almost every Bohr time.
+The whole-quadrant local boundedness premise is impossible when the shifts tend to positive
+infinity: bounded reflected values and Gamma decay force a zero Vitali limit, contradicting
+the uniform Euler lower bound. These implications are conditional; recurrence receivers
+must use smaller domains or retain the conductor normalization.
 -/
 
 open Complex Filter Topology Metric Set

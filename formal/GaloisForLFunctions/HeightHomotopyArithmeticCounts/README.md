@@ -72,6 +72,30 @@ self-energy regularization, a controlled approximate parallelogram, a
 fixed-point localization theorem for a natural nerve action, and a quadratic
 refinement with arithmetic polarization. Their existence is not assumed.
 
+RIAC's [integral section theory](../RenormalizedIntersectionArithmeticCounts/IntegralSectionHeight.lean)
+now supplies an actual quotient addition law and minimum-section height.
+For squarefree count `q` and charge `k=qa+r`, its minimum is
+`k²/q+r(q−r)/q`; an exact nonpositive parallelogram defect yields Tate
+height `k²/q`. On the original arithmetic gluing class this is squared
+transverse distance. The actual minimizer count is `binomial(q,r)`, whose
+logarithm has zero Tate limit. RIAC's
+[full Gaussian section sum](../RenormalizedIntersectionArithmeticCounts/GaussianSectionHeight.lean)
+supplies a genuine log-count height. Its
+[finite-height comparison](../RenormalizedIntersectionArithmeticCounts/GaussianSectionPositivity.lean)
+is `tk²/q≤H_N(c,t)≤tE_N(c)`, with error at most `tq/4` and actual addition
+defect in `[-tq,tq/2]`. Poisson summation and paired integral sections
+prove both signs without a height assumption. Its Tate limit is `tk²/q`;
+the full real-parameter limit `H_N(c,t)/t` as `t→∞` recovers `E_N(c)`.
+On the original gluing class these yield `tD_N²` and `|1−M(N)|`.
+The [uniform finite-rate theorem](../RenormalizedIntersectionArithmeticCounts/GaussianSectionUniformity.lean)
+chooses `a_N=π+2log(4(N+1))` and `t_N=π²/(2a_N)` using only the conductor.
+Every class satisfies `0≤H_N(c,t_N)−t_N k²/q≤2/(N+1)`; on the gluing class,
+`0≤H_N([b],t_N)/t_N−D_N²≤4a_N/(π²(N+1))`. Integer coding of the dual lattice
+and a quantitative Poisson bound prove this directly from actual counts.
+The domain is the rank-one divisor quotient. A full Hecke comparison and
+the independent conductor-height bound needed for signed cancellation
+remain open.
+
 ### Finite-radius torsion energy and arithmetic spacing
 
 For a unit complex number `w`, the actual radial chord identity is
@@ -352,6 +376,12 @@ positive form as input. It must fail on Golden and on shifted data with
 nonnegative Tate coefficients. The prime complex over `𝔽_q[T]` tests the
 fixed-point language; elliptic and hyperelliptic curves test arithmetic heights;
 the complex fake and genus-two graph test false positivity mechanisms.
+
+RIAC's [integral discriminant cover](../../../docs/drafts/pipeline/3-formalized/riac-integral-discriminant-cover.md)
+supplies an actual coefficient family over `ℤ`, with independent finite-field
+counts and a pointwise identification of signed arithmetic fibres. This
+calibrates the counting language; it does not bound the integer gluing height
+or the local-index sum.
 
 The integer construction must use torsion through `ℤ ⊂ ℝ`, detect a source
 beyond its two degrees, and have infinite rank in the limit. A finite-dimensional

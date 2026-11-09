@@ -3,7 +3,7 @@
 - **ID:** RIAC-finite-field-orientation-counts
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean); classical arithmetic calibration
-- **Source:** [discriminant-cover construction](../1-in-progress/riac-discriminant-cover-signed-counts.md)
+- **Source:** [discriminant-cover construction](riac-discriminant-cover-signed-counts.md)
 - **Statement:** Residue-field trace discriminants define actual finite covers whose signed fibre counts recover polynomial Möbius signs and cancel exactly in every degree at least two.
 
 ## Construction and proof
@@ -35,10 +35,12 @@ unconditionally derived polynomial Möbius degree sums yield
 
 ## Exact scope
 
-`D(f)` uses residue-field normalization data. Its comparison, up to a
-nonzero square, with the usual `Polynomial.discr f` is not established
-here. No uniform scheme over coefficient space is asserted. The result is
-an actual finite-set count with an arithmetic sign comparison.
+`D(f)` uses residue-field normalization data. The
+[cross-resultant comparison](riac-discriminant-cover-signed-counts.md)
+identifies its actual fibres with those of `Polynomial.discr f`, including
+ramification. It supplies an independent aggregate count and recovers
+polynomial Möbius cancellation from the root-orbit counts. The integral
+coefficient equation belongs to the polynomial-discriminant cover.
 
 This is a calibration for the governing integer target
 `Σ_p index_p(N)=1−M(N)=Oε(N^(1/2+ε))`. No compatible integer cutoff family,

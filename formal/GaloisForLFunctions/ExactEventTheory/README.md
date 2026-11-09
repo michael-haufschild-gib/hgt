@@ -53,14 +53,24 @@ These are inherited results, not contributions claimed by this programme.
 | Finite Euler product plus appropriate FE forces local squares | Finite-rank calibration, not the infinite theorem |
 | Two-scale blindness, precision cap, positive one-offs | Tests for invalid proposed mechanisms |
 
+High reflected profiles require conductor normalization. The actual normalized
+ζ-translate differs from its conjugate reflected profile by an error tending
+uniformly to zero on every bounded part of the open strip. Ordinary escaping
+translates cannot be locally bounded on a connected upper-half-plane domain
+meeting `Re s>1` and crossing the critical line, regardless of prime phases.
+The exact law and domain obstruction are in the
+[Euler–FE foundations](../EulerFETransportTheory/README.md#conductor-normalized-height-reflection).
+They constrain recurrence receivers; same-depth replication remains open.
+
 ## New pillar: integer support forces exact arithmetic
 
 For a nonempty countable Beurling system whose generalized integers have natural-number
 norms, an integrable **uncompleted** Riemann FE defect forces exactly the rational primes.
 There is no smallness condition on the defect and no upper bound assumed for the pole residue.
-The precise analytic class requires the inverse-3/2 moment and the displayed Hamburger strip
-continuity, holomorphy, decay and boundary identities; the defect is measurable, polynomially
-bounded and integrable.
+The precise analytic class requires the inverse-3/2 moment and the Hamburger strip
+continuity, holomorphy, decay and boundary identities stated in the
+[Euler–FE foundations](../EulerFETransportTheory/README.md); the defect is measurable,
+polynomially bounded and integrable.
 
 The mechanism is an exact event in the Abel transform. Integer support identifies the cosine
 means at frequencies zero and one. Integrable defects have zero radial residue, while the
@@ -117,8 +127,8 @@ integer norm has a unique prime-label factorization.
 `intNorm_injective_of_integrable_theta_defect` and
 `intNorm_injective_of_integrable_critical_line_defect`.
 The first two pillars locate the spectrum under lattice alignment; this pillar forces
-unit multiplicities without alignment. Multiplicatively independent noninteger systems
-remain outside the classification.
+unit multiplicities without alignment. Locating arbitrary real norms requires the
+boundary and recurrence argument below.
 
 ## Boundary calculus for finite defects
 
@@ -150,9 +160,25 @@ value, while the threshold forces their vanishing. Conjugation of the actual Lap
 identity proves evenness, hence vanishing also for `−1 < y < 0`. Both terminal theorems
 are kernel checked with the three standard axioms.
 
-These supply the analytic and recurrence inputs for B122. The origin Fejér pairing and
-the resulting integer-support classification are developed jointly with
-`EulerFETransportTheory`; their assembly remains unfinished.
+## Complete integrable-defect rigidity
+
+The joint classification with `EulerFETransportTheory` resolves B122 in the stated
+Hamburger strip class. Its `IntegrableDefectsForceIntegerSupport.lean` pairs at the origin:
+unit-gap vanishing and the locally integrable boundary majorant give
+`Σ_x sinc²(π‖x‖) = 0`. Positivity forces natural-number norms without an alignment premise.
+
+`IntegrableFunctionalEquationsDetermineThePrimes.lean` derives pole reality, excludes
+empty prime-label systems, and applies integer-support rigidity. The conclusion is exactly
+the rational-prime system: β = 1/2, unit integer masses, unique norm factorization, and
+ζ_B = ζ on Re s > 1. No lattice, recurrence, residue bound or defect-size assumption is added.
+The original inverse-3/2 moment, Hamburger strip conditions, and measurable polynomially
+bounded uncompleted defect remain explicit.
+
+`beurlingSystem_rigidity_of_integrable_defect` and
+`nonclassical_beurling_defect_cost_eq_top` pass direct Lean checks with the three standard
+axioms only. Every nonclassical system in this class has extended defect cost infinity;
+therefore the nonclassical finite-layer cost `D_layer` is infinite. This settles the
+finite-defect classification branch, without excluding exceptional zeros of ζ itself.
 
 ## Tools and questions
 
@@ -163,14 +189,32 @@ the resulting integer-support classification are developed jointly with
 | FE-to-transport principle (B112) | How can height reflection and Euler arithmetic jointly produce new heights? |
 | Relative thick crude count (B116) | Can a bound tied to Θ∞ force a finite slope, and ultimately slope one? |
 | Finite-layer exclusion over an approaching remainder (B111) | Does Θ∞ = ½ force Θ = ½? |
-| Euler–FE finite-layer classification (B103, B84) | Which precisely defined classes admit a finite layer; what FE defect is necessary? |
-| Arbitrary finite-defect rigidity (B122) | Does every countable Beurling system with integrable uncompleted FE defect have exactly the rational primes? |
+| Euler–FE finite-layer classification (B103, B84) | Nonclassical systems in the stated Hamburger strip class have infinite defect cost; finite layers of ζ remain open. |
+| Arbitrary finite-defect rigidity (B122) | Proved in that class for integrable or square-integrable uncompleted defects: exactly the rational primes. |
 | Shift-family stability | Does the trivial linear slope remain bounded as the shift tends to zero? |
 
-The classification question has the integer-supported and asymptotically aligned results above,
-and finite defect forces unique norm factorization in the general class. Locating a noninteger
-spectrum and the other questions remain open here. An implication assuming its missing arithmetic
-input does not count as construction of the required tool.
+The finite-defect classification is complete in its explicit analytic class. The other
+questions, including exact-event existence and zero transport, remain open here.
+`EulerFETransportTheory` also proves the complete classification for square-integrable
+defects. Strong Hardy boundaries, tent recurrence and Lebesgue differentiation
+remove the origin Fejér error and force integer support. Vanishing radial residues
+fix the pole and atomic masses; integer periodicity fills the lattice. The terminal
+theorems are `beurlingSystem_rigidity_of_finiteEnergy_defect` and
+`nonclassical_beurling_defect_energy_eq_top`: every nonclassical system in the same
+strip class has infinite square energy. Both pass direct Lean checks with standard
+axioms only. The `L¹` and `L²` conditions give separate admissible defect classes.
+In the finite-energy branch, `FiniteEnergyRigidityAnnihilatesTheDefect.lean` also
+proves that the defect itself is zero almost everywhere under the theta identity,
+and pointwise under the original strip identity.
+For the entire polynomial-growth class, `LocalThetaDataDetermineTheDefect.lean`
+shows that the actual theta kernel on any nonempty open interval of positive
+scales determines the defect almost everywhere. Gamma damping gives a holomorphic
+Fourier transform in logarithmic scale; analytic continuation and Fourier
+injectivity recover the source. `IntegrableRigidityAnnihilatesTheDefect.lean`
+uses this identification to prove pointwise vanishing of the original integrable
+strip defect as well. These statements concern the full infinite transform.
+An implication assuming its missing arithmetic input does not count as construction
+of the required tool.
 
 ## Traps and calibration
 
@@ -178,6 +222,31 @@ Positive-density near-cancellation does not supply exact cancellation. Convergen
 values need not retain a nonzero analytic limit. The functional equation preserves absolute
 height. A fixed Euler cutoff is a nonvanishing multiplier and cannot remove a zero. Absolute
 convergence cannot be silently extended into the critical strip.
+
+Rational zero relocation preserves ζ's Cesàro square means and Fourier means in
+`½<Re s<1`, while destroying exact Dirichlet-series realization on `Re s>1`
+(`ArithmeticPositiveDuality/FiniteZeroRelocationPreservesTheMeanSpectrum.lean`).
+Agreement of mean spectra therefore cannot replace the exact Euler identity.
+
+Even exact outward Euler resolvent covariance, positive source and seed, smooth
+reflection and preservation of every real zero survive the corpus's finite
+off-line quartet surgery. The literal Gaussian seed equation and complete
+monotonicity under every prime deletion distinguish these deformations; the
+[Euler–FE calibration](../EulerFETransportTheory/README.md#calibration-and-traps)
+states the precise scope. Excluding a modified source does not exclude an
+exceptional zero of the original ζ.
+
+For the literal Gaussian, `EulerFETransportTheory/TheCausalGaussianDefect.lean`
+identifies a complete admissible causal density from its differential defect on
+one open interval. The domain includes every measurable complex kernel of
+exponential order. An exact Gaussian rate substitution and local Laplace
+uniqueness leave only the scalar identity term invisible. This supplies a
+source-deformation test without asserting recurrence of ζ's original zeros.
+The full-measure extension also recovers infinite atomic and singular continuous
+sources from local defects. Gaussian-weighted admission is closed under
+convolution, and a normalized real signed atomic Euler correction repairs continuous
+surgery only in the trivial case; see
+[causal measure reconstruction](../EulerFETransportTheory/README.md#infinite-atomic-corrections-and-the-causal-measure-algebra).
 
 Gamma-completed decay is weaker than integrability of the uncompleted FE defect used in B84.
 Subexponential growth of a Mellin correction alone cannot bridge that distinction.
@@ -212,4 +281,4 @@ closed, kernel checked, and free of unproved arithmetic assumptions or numerical
 
 The programme is complete only when the original tools and questions above are resolved,
 with the scope of every classification specified and all asserted proofs formalized. AAL,
-ZAL ⇒ RH, and Euler–FE finite-layer exclusion are not asserted as established.
+ZAL ⇒ RH, and exclusion of an exceptional finite layer of ζ remain unproved here.

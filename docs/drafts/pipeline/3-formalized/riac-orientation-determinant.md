@@ -3,7 +3,7 @@
 - **ID:** RIAC-orientation-determinant
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Lean:** [OrientationDeterminant.lean](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/OrientationDeterminant.lean)
 
 ## Exact count identity
@@ -46,5 +46,6 @@ Direct Lean check and five transitive axiom audits: only `propext`,
 For curve Frobenius, the arithmetic trace values are supplied by the
 [actual fixed-point theorem](riac-hyperelliptic-fixed-points.md). Their
 finite-degree comparison with the curve's rational generating function
-still needs proof. The determinant realization alone gives no
-square-root estimate and no bound for the integer sum `1−M(N)`.
+is supplied by the [trace-comparison theorem](riac-truncated-trace-comparison.md).
+The determinant realization alone gives no square-root estimate and no
+bound for the integer sum `1−M(N)`.

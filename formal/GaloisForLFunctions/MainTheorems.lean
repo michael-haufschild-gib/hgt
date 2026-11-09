@@ -87,6 +87,7 @@ import GaloisForLFunctions.ArithmeticInnerFunctionTheory
 import GaloisForLFunctions.BlackHoleRingdown
 import GaloisForLFunctions.ArithmeticScatteringHolography
 import GaloisForLFunctions.CountingHolography
+import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon
 import GaloisForLFunctions.SurfaceOfSpecZ
 import GaloisForLFunctions.HeckeKreinToeplitz
 import GaloisForLFunctions.ArithmeticKreinLangerTheory
@@ -96,4 +97,5 @@ import GaloisForLFunctions.PrimeTorusTheory
 import GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
 import GaloisForLFunctions.InfiniteRankWeilTheory
 import GaloisForLFunctions.ExactEventTheory
+import GaloisForLFunctions.EulerFETransportTheory
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory

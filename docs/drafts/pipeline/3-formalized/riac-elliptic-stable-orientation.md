@@ -3,7 +3,7 @@
 - **ID:** RIAC-elliptic-stable-orientation
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Statement:** Actual Frobenius-stable point configurations correspond to squarefree divisors; their intrinsic permutation signs satisfy the curve's square-root bound.
 
 On `Y²Z=X³−XZ²` over `F₃`, let `E/F₃` be the actual extension of

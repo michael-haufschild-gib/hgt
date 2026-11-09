@@ -105,12 +105,19 @@ External: `stepWeight`, `IsBalanced`, `stencilSlope`, `stencilErrorConst` (Arith
 
 **Transport.**
 
-18. **Propagation.** A return on a disc with locally bounded translates spreads to the whole upper quadrant, by Vitali and the identity theorem.
+18. **Conditional propagation.** Vitali propagates a disc return under whole-quadrant local boundedness. For escaping shifts that boundedness premise is impossible.
 19. **Phases.** Dirichlet coefficients are read off at large `Re s`, so every phase returns, and a limit of translates is a point of the gauge torus.
 20. **Pole.** The translates converge to `ζ` on `Re s > 1`, so they cannot stay bounded near `s = 1`.
 21. **Minimum modulus.** A return of strength `m/2` on an isolating disc puts a zero in the translated disc, so the returns are counted by zeros.
 22. **Propagation from the right.** Phase returns always exist and converge on `Re s > 1`. With bounded translates on a connected domain they converge on all of it, and Rouché moves the zero.
 23. **Three circles.** An aligned shift is within `4/N` of `ζ` on `Re s ≥ 2`. A bound `M` on a larger disc interpolates to `(4/N)^{1−t} (2M)^t` at the zero, so `M = N^A` is enough.
+
+The restriction does not require a phase return. For every escaping shift sequence,
+a connected open boundedness domain in the upper half-plane meeting `Re s>1`
+lies in `Re s>½`. Reflection and Gamma decay force a zero limit near any crossing;
+Vitali propagation contradicts the Euler lower bound. The precise restriction
+and the surviving conductor-normalized reflection law are proved in
+[Euler–FE transport theory](../EulerFETransportTheory/README.md#conductor-normalized-height-reflection).
 
 **Compensation.**
 

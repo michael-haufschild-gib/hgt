@@ -30,7 +30,8 @@ def annihilatorQuotient (P : MvPolynomial (Fin 2) ℝ≥0) : MvPowerSeries (Fin 
 def annihilatorQuotientCoeff (P : MvPolynomial (Fin 2) ℝ≥0) (d : Fin 2 →₀ ℕ) : ℝ :=
   MvPowerSeries.coeff d (annihilatorQuotient P)
 
-private theorem quotient_mul (P : MvPolynomial (Fin 2) ℝ≥0)
+/-- The normalized positive polynomial cancels its canonical quotient formally. -/
+theorem quotient_mul (P : MvPolynomial (Fin 2) ℝ≥0)
     (hP : MvPolynomial.constantCoeff P = 1) :
     (MvPolynomial.map NNReal.toRealHom P : MvPowerSeries (Fin 2) ℝ) *
       annihilatorQuotient P = ((fun _ : Fin 2 →₀ ℕ => (1 : ℝ)) : MvPowerSeries (Fin 2) ℝ) := by
@@ -43,18 +44,18 @@ private theorem quotient_mul (P : MvPolynomial (Fin 2) ℝ≥0)
   rw [annihilatorQuotient, ← mul_assoc, MvPowerSeries.mul_inv_cancel _ hc, one_mul]
   rfl
 
-private theorem frequency_add (d e : Fin 2 →₀ ℕ) :
+theorem frequency_add (d e : Fin 2 →₀ ℕ) :
     monomialLog (d + e) = monomialLog d + monomialLog e := by
   simp only [monomialLog, Finsupp.add_apply, Nat.cast_add]
   ring
 
-private theorem frequency_nonneg (d : Fin 2 →₀ ℕ) : 0 ≤ monomialLog d := by
+theorem frequency_nonneg (d : Fin 2 →₀ ℕ) : 0 ≤ monomialLog d := by
   unfold monomialLog
   apply add_nonneg <;> apply mul_nonneg (Nat.cast_nonneg _)
   · exact Real.log_nonneg (by norm_num [primeBase])
   · exact Real.log_nonneg (by norm_num [primeBase])
 
-private theorem frequency_mono {d e : Fin 2 →₀ ℕ} (h : d ≤ e) :
+theorem frequency_mono {d e : Fin 2 →₀ ℕ} (h : d ≤ e) :
     monomialLog d ≤ monomialLog e := by
   apply add_le_add
   · exact mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (h 0))
@@ -83,20 +84,20 @@ private theorem primeNome_contracts {s : ℂ} (hs : 0 < s.re) (i : Fin 2) :
   exact mul_neg_of_neg_of_pos (neg_neg_of_pos (Real.log_pos (by
     fin_cases i <;> norm_num [primeBase]))) hs
 
-private theorem frequency_geometric {s : ℂ} (hs : 0 < s.re) :
+theorem frequency_geometric {s : ℂ} (hs : 0 < s.re) :
     HasSum (fun d : Fin 2 →₀ ℕ => Complex.exp (-(monomialLog d : ℂ) * s))
       (∏ i : Fin 2, (1 - primeNome s i)⁻¹) := by
   have h := (Finsupp.equivFunOnFinite (α := Fin 2) (M := ℕ)).hasSum_iff.mpr
     (HTGeometry.hasSum_pi_geometric (primeNome s) (primeNome_contracts hs))
   exact h.congr_fun fun d => (frequency_exp d s).symm
 
-private theorem frequency_geometric_norm {s : ℂ} (hs : 0 < s.re) :
+theorem frequency_geometric_norm {s : ℂ} (hs : 0 < s.re) :
     Summable (fun d : Fin 2 →₀ ℕ => ‖Complex.exp (-(monomialLog d : ℂ) * s)‖) := by
   have h := (Finsupp.equivFunOnFinite (α := Fin 2) (M := ℕ)).summable_iff.mpr
     (HTGeometry.summable_norm_pi_geometric (primeNome s) (primeNome_contracts hs))
   exact h.congr fun d => congrArg norm (frequency_exp d s)
 
-private theorem frequency_geometric_sum_ne_zero {s : ℂ} (hs : 0 < s.re) :
+theorem frequency_geometric_sum_ne_zero {s : ℂ} (hs : 0 < s.re) :
     (∑' d : Fin 2 →₀ ℕ, Complex.exp (-(monomialLog d : ℂ) * s)) ≠ 0 := by
   rw [(frequency_geometric hs).tsum_eq]
   apply Finset.prod_ne_zero_iff.mpr
@@ -108,7 +109,7 @@ private theorem frequency_geometric_sum_ne_zero {s : ℂ} (hs : 0 < s.re) :
   rw [← h, norm_one] at hc
   exact lt_irrefl _ hc
 
-private theorem coeff_polynomial_mul (Q : MvPolynomial (Fin 2) ℝ)
+theorem coeff_polynomial_mul (Q : MvPolynomial (Fin 2) ℝ)
     (B : MvPowerSeries (Fin 2) ℝ) (d : Fin 2 →₀ ℕ) :
     MvPowerSeries.coeff d ((Q : MvPowerSeries (Fin 2) ℝ) * B) =
       ∑ e ∈ Q.support, if e ≤ d then Q.coeff e * MvPowerSeries.coeff (d - e) B else 0 := by
@@ -120,7 +121,8 @@ private theorem coeff_polynomial_mul (Q : MvPolynomial (Fin 2) ℝ)
   simp only [map_sum, MvPolynomial.coeToMvPowerSeries.ringHom_apply,
     MvPolynomial.coe_monomial, Finset.sum_mul, MvPowerSeries.coeff_monomial_mul]
 
-private theorem quotient_recurrence (P : MvPolynomial (Fin 2) ℝ≥0)
+/-- The positive finite recurrence satisfied by every canonical quotient coefficient. -/
+theorem quotient_recurrence (P : MvPolynomial (Fin 2) ℝ≥0)
     (hP : MvPolynomial.constantCoeff P = 1) (d : Fin 2 →₀ ℕ) :
     annihilatorQuotientCoeff P d +
       (∑ e ∈ (MvPolynomial.map NNReal.toRealHom P).support.erase 0,

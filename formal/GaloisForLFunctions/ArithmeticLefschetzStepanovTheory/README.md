@@ -1,167 +1,267 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 11 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
 
-Weil's theorem for a curve `C/𝔽_q` has a proof with two halves that never mention a positivity of
-forms:
+Weil's theorem for a curve `C/𝔽_q` has a proof with two halves that never use a positivity of forms:
 
-1. **Lefschetz.** The number of fixed points of `Fⁿ` is a trace:
+1. **Lefschetz.** The fixed points of `Fⁿ` are counted by a trace:
    `#C(𝔽_{qⁿ}) = Γ_{Fⁿ}·Δ = qⁿ + 1 − Σ αᵢⁿ`.
-2. **Stepanov.** An auxiliary function `h` vanishes to order `J` at every fixed point and has pole
-   order `D` at one point; the product formula `#C(𝔽_{qⁿ})·J ≤ D` gives
+2. **Stepanov.** An auxiliary function vanishes to order `J` at every fixed point and has pole order
+   `D` at one point; the product formula gives `#C(𝔽_{qⁿ})·J ≤ D`, hence
    `#C(𝔽_{qⁿ}) ≤ qⁿ + O(q^{n/2})` (Bombieri's form, even `n`).
 
 Self-improvement turns the crude count into `|αᵢ| = √q`. Over `Spec ℤ` the corpus has the Lefschetz
-half and the self-improvement: the smoothed Frobenius graphs `Γ_n` meet with
-`c_B(log n) = Γ_1·Γ_n`, a bound `|c_B(log n)| ≤ K` at every integer degree is RH, a lower bound at the
-square degrees already suffices (`SurfaceOfSpecZ`), and crude bounds on thick sets self-improve
-(`InfiniteRankWeilTheory`). The missing half is Stepanov's. ALST is the theory of that half over `ℤ`:
-which Frobenius, which auxiliaries, which orders of vanishing, which degrees, and which identity plays
-the role of `x^q = x`.
+half and the self-improvement: the smoothed Frobenius graphs meet with `c_B(log n) = Γ_1·Γ_n`; a
+bound `|c_B(log n)| ≤ K` at every integer degree is RH, a lower bound at the square degrees already
+suffices (`SurfaceOfSpecZ`); crude bounds on thick sets self-improve (`InfiniteRankWeilTheory`). The
+missing half is Stepanov's. ALST is the theory of that half over `ℤ`, and of the point where the two
+halves meet: the Lefschetz numbers of the Frobenius graphs are the degree of the auxiliary that
+vanishes at their fixed points.
 
 Stepanov's count rests on three exact facts over `𝔽_q`:
 
-| | Fact over `𝔽_q` | Role |
+| | Fact over `𝔽_q` | Role in the count |
 |---|---|---|
-| (S1) | the Frobenius is a ring endomorphism fixing every rational point (`x^q = x`) | an auxiliary built from `g∘F` restricts on the points to a low-degree function |
-| (S2) | the Frobenius is inseparable: `d(g^q) = 0`, and `(Σfᵢgᵢ^{p})` is a `p`-th power | vanishing at a point costs one condition but has order `p^μ` |
-| (S3) | the product formula: zeros counted with order and degree equal the pole order | the count `#points·J ≤ deg h` |
+| (S1) | the Frobenius is a ring endomorphism fixing every rational point (`x^q = x`) | an auxiliary built from `g∘F` restricts to the points as a low-degree function |
+| (S2) | the Frobenius is inseparable: `d(g^q) = 0` | vanishing at a point costs one condition and has order `p^μ` |
+| (S3) | the product formula | zeros counted with order and degree are at most the pole order |
 
-ALST locates each fact over `ℤ`, proves what each gives there, and isolates what is missing. Its
-working thesis: (S3) holds exactly (Bézout of `𝔾_m(ℚ)`, Jensen, the product formula); (S1) holds
-exactly on the **torsion of the prime torus**, where the Galois action of `ℚ(μ_m)` is the power map;
-(S2) holds exactly at every finite place `ℓ` (`ψ_ℓ(x) ≡ x^ℓ mod ℓ`) and never at the archimedean place,
-where the zeros live. The archimedean Frobenius exists only approximately (returns of the prime
-orbit), and approximate vanishing at returns is capped by precision (`InfiniteRankWeilTheory`).
+ALST locates each fact over `ℤ` and proves what it gives there:
+
+- (S3) holds exactly: the closed points of every prime circle, counted with order and degree, are
+  bounded by the length of the auxiliary.
+- (S1) holds exactly on the **torsion of the prime torus**, where the Galois action of `ℚ(μ_m)` is
+  the power map, and nowhere else: on the prime orbit the Frobenius is the dilation `t ↦ at` with the
+  single fixed point `0`. Stepanov's construction `h = Σ f_i ψ_q(g_i)` runs verbatim there: one
+  identity `Σ f_i g_i = 0` kills `h` at every `(q−1)`-torsion point.
+- (S2) holds at every finite place `ℓ`: `ψ_ℓ(g) ≡ g^ℓ (mod ℓ)` and the derivatives of `ψ_ℓ(g)` are
+  divisible by `ℓ`, so under the further identity `Σ (∂_j f_i) g_i = 0` the derivatives of
+  Stepanov's `h` at the `(ℓ−1)`-torsion are `ℓ` times algebraic integers and the norm amplifier works
+  with threshold `ℓ^{φ(m)}`. It fails at the archimedean
+  place: there the order of exact vanishing at any point costs the degree, one order per unit of
+  `log₂ N`.
+
+The archimedean Frobenius exists only approximately (returns of the prime orbit). Exact vanishing
+is available off the orbit (closed torsion points), at its one fixed point, and along the closed
+points of the prime circles, which the orbit crosses at countably many heights; everywhere it is paid
+in degree, at the circles at Chebyshev's price. On the orbit vanishing is cheap only approximately,
+and the Rouché copy of an approximate zero is capped by the precision. Stepanov's count needs vanishing that is cheap **and**
+exact; over `ℤ` no place supplies both.
 
 ## 2. Objects
 
-| Object | Meaning | Corpus |
+| Object | Lean | Meaning |
 |---|---|---|
-| Frobenius graph of degree `n` | `Γ_n`, the graph of `x ↦ nx` on the scaling line (Hecke correspondence `T_n`), smoothed by a test `B` | `SurfaceOfSpecZ`, `ArithmeticCastelnuovoSeveri` |
-| Lefschetz number | `c_B(log n) = Γ_1·Γ_n`; atomic: `N(n) = Λ(n) + 1 + 1/(n² − 1)` | `pointCount_eq`, `orbitCorr_eq_re_lagStructure` |
-| Fixed points of degree `n` | closed orbits of length `log n` (primes `p` with `pᵏ = n`, index `log p`), the archimedean fixed point (jets), the cusp (pole) | `smoothedPrime_add_smoothedArchPole_eq_orbitCorr` |
-| Prime torus | `T_P = (S¹)^P` for a finite set `P` of primes; the Bohr lift `A(s) = F(p^{−s})` of a `P`-smooth Dirichlet polynomial to a Laurent polynomial `F ∈ ℤ[u_p^{±1}]` | — |
-| Prime orbit | `γ(t) = (p^{−it})_{p∈P}`, a one-parameter subgroup, dense in `T_P` | `PrimeTorusTheory` |
-| Torsion point | `ω ∈ μ_m^P`; its closed point `[ω]` = Galois orbit `{ω^a : a ∈ (ℤ/m)^×}`; character torsion point `ω_χ = (χ(p))_p` | — |
-| Galois–Adams Frobenius | `ψ_a : u ↦ u^a` on `T_P`; on torsion of order `m` it is `σ_a ∈ Gal(ℚ(μ_m)/ℚ)` | — |
-| Return | `δ`-return to `ω`: `\|p^{−it} − ω_p\| ≤ δ` for `p ∈ P`; returns to `1` freeze `P`-smooth polynomials | `IsReturn`, `norm_dpoly_near_return_le` |
-| Frobenius orbit of a return | the dilates `a·t`, `a ∈ (ℤ/m)^×`: returns to the conjugates `ω^a` at precision `aδ` | — |
-| Integer auxiliary | `A(s) = Σ_{n∈S} a_n n^{−s}`, `a_n ∈ ℤ`, `S` `P`-smooth: an element of `ℤ[Γ_P]` | `IntegerCoeffs`, `dpoly` |
-| Degree, height | `deg A = log max S` (length `N`), height `‖a‖₁` | `EffectiveArithmeticHodgeTheory` |
-| Order of vanishing | along a Frobenius progression `2πiℤ/log p` (divisibility by `1 − p^{−s}`), at a closed torsion point (Hasse derivatives of `F`), along the prime orbit at `s₀` (derivatives in `s`) | `VanishesAlong` |
-| Factorial auxiliary | `Π_d ⌊x/d⌋!^{c_d}`, the `ℓ`-adic Frobenius auxiliaries (Legendre, Kummer) | — |
+| Integer auxiliary | `F : MvPolynomial P ℤ` | `P`-smooth integer Dirichlet polynomial `A(s) = F((p^{-s})_{p∈P})` |
+| Prime orbit | `orbitPoint P t`, `orbitValue F t`, `orbitFun F s` | `(p^{-it})_p`; `A(it)`; the entire function `A(s)` |
+| Frequency, weight | `frequency α`, `weight α` | `λ_α = Σ α_p log p = log n_α`, `n_α = Π p^{α_p}` |
+| Length, height, Lipschitz weight | `length F`, `height F`, `lipWeight F` | `N = max n_α`; `H = Σ|c_α|`; `L(F) = Σ |c_α| |α|` |
+| Adams operation | `adams a` | `ψ_a F = F(u^a)`, a ring endomorphism |
+| Torsion point, closed point | `torsionPoint μ b`, `primitiveRoots m ℂ` | `μ^b = (μ^{b_p})_p`; its conjugates `{μ'^b : μ'` primitive`}` |
+| One-variable pullback | `pullback b F` | `F(X^b)`: values at torsion points are values at roots of unity |
+| Uniform order | `iterDeriv`, `VanishesToOrder F ω J` | all partial derivatives of order `< J` vanish at `ω` |
+| Circle factor | `circlePoly h p`, `circleProduct L` | `h(u_p)`; `Φ_m(u_p)^J` is vanishing to order `J` along the closed point of degree `φ(m)` of the circle of `p` |
+| Orbit and power moments | `orbitMoment`, `powerMoment` (two primes), `orbitMomentF`, `powerMomentF` (any `P`), `firstMoment`, `firstPowerMoment` | `Σ c_α λ_α^k = (−1)^k A^{(k)}(0)`; `Σ c_α α^β` |
+| Relation among logarithms | `logVec`, `LogRelation P d` | a nonzero integer homogeneous form of degree `d` vanishing at `(log p)_{p∈P}` |
+| Siegel data | `pairing`, `auxOf`, `classSum`, `classMatrix` | `b·α`; auxiliary on a set `S`; class sums `C_r = Σ_{b·α≡r} c_α` |
+| Closed-point auxiliary | `closedPointAux κ` | `Π_p (u_p − 1)^{κ(p)}`, vanishing to order `κ(p)` at the fixed point `p` |
+| Fixed-point auxiliary | `fixedPointAux N`, `primeAux N` | `A_N = Π_{p≤N} (u_p − 1)^{⌊log_p N⌋}`: the fixed points of all `Γ_n`, `n ≤ N`, counted once per degree; the squarefree `Π_{p≤N}(u_p − 1)` |
+| Stepanov auxiliary | `stepanovAux q f g` | `h = Σ f_i ψ_q(g_i)` |
+| Corpus | `phase`, `IsReturn`, `order_le_of_rouche` (IRW); `pointCount_eq`, `riemannHypothesis_iff_bddBelow_squareDegrees` (SOSZ); `prod_pow_le_of_vanishesAlong` (EAHT) | returns, cap; point count, Stepanov side; Bézout of `𝔾_m(ℚ)` |
 
 ## 3. Language
 
-- **Point count of degree `n`**: `Fix_B(n) = Σ_m Λ(m) m^{−½} K_B(log n − log m)` plus the archimedean
-  index; **main term** `M_B(n)`: the pole (the `qⁿ` of a curve). **Arithmetic Stepanov bound**:
-  `Fix_B(n²) ≤ M_B(n²) + K`.
-- **Exact Frobenius**: an operator fixing a point set exactly, acting on auxiliaries as a ring
-  endomorphism. **Approximate Frobenius**: the flow at a return time.
-- **Inseparable at `ℓ`**: `ψ_ℓ(F) ≡ F^ℓ (mod ℓ)`.
-- **Integrality amplifier**: a mechanism turning smallness of an integer auxiliary into exact
-  vanishing (an integer of modulus `< 1` is `0`; a nonzero algebraic integer has norm `≥ 1`).
-- **Precision cap**: a Rouché copy of a zero of order `J` at a `δ`-return within radius `r` forces
-  `J ≤ e² r log N + log(1/δ)`.
-- **Blind**: a count whose error term does not depend on the zeros of `ζ`.
-- **Uniform order** at a torus point: vanishing of all partial derivatives of `F`; **orbit order**:
-  vanishing of the `s`-derivatives of `A` along the prime orbit only.
+- **Exact Frobenius**: a ring endomorphism of the auxiliaries with a fixed-point set on which it
+  acts trivially. **Approximate Frobenius**: the flow at a return time, close to the identity on the
+  whole torus.
+- **Closed torsion point**: the Galois orbit of a torsion point; **closed point of a circle**: the
+  hypersurface `u_p ∈ μ_m^{prim}`, of degree `φ(m)` and weight `log p`.
+- **Integrality amplifier**: a mechanism turning smallness into exact vanishing (a nonzero algebraic
+  integer has norm of modulus `≥ 1`).
+- **Uniform order** at a point (all partial derivatives) versus **orbit order** (derivatives in `s`
+  along the prime orbit only). Orbit order exceeds uniform order only through relations among the
+  `log p`.
+- **Frobenius orbit of a return**: the dilates `at`, `a < m` prime to `m`, of a return to a torsion
+  point of order `m`; they are returns to its conjugates.
+- **Cheap / exact**: a vanishing condition is cheap if its order is not paid in length, exact if it
+  holds without approximation.
 
 ## 4. Mechanisms
 
-**Built on (corpus).**
-1. Integer-degree Hasse–Weil: any constant `K` at every integer degree is RH; the lower bound at the
-   squares suffices; the Stepanov side is blind exactly to real zeros (`SurfaceOfSpecZ`).
-2. Infinite-rank elimination: thick-set crude bounds self-improve in well-founded towers
-   (`InfiniteRankWeilTheory`).
-3. Bézout and Riemann–Roch of `𝔾_m(ℚ)`: vanishing to order `m_p` along `p`'s progression forces
-   `Π p^{m_p} ≤ N`, `h⁰(N, m) = ⌊N/Π p^{m_p}⌋`; small integer auxiliaries on a progression are
-   divisible (`EffectiveArithmeticHodgeTheory`).
-4. Freezing at returns, forced near-vanishing, the precision cap (`InfiniteRankWeilTheory`).
-5. Stepanov over `𝔽_q` for hyperelliptic curves and character sums (`RHTower.Stepanov`,
-   `ArithmeticKreinLangerTheory`); Baker's and Gelfond–Schneider's theorems (`RHTower`).
+1. **Galois = Adams on torsion.** `ψ_a F(μ^b) = F((μ^a)^b)`; on the `(q−1)`-torsion `ψ_q F = F`
+   (`aeval_torsionPoint_adams`, `aeval_torsionPoint_adams_of_pow_eq`).
+2. **The norm.** `Π_{μ prim} |G(μ)|` is the modulus of the norm of the cyclotomic integer `G(ζ_m)`:
+   `0` or `≥ 1` (`one_le_prod_norm_aeval_primitiveRoots`); a closed point vanishes as a whole
+   (`aeval_eq_zero_of_mem_primitiveRoots`).
+3. **Lipschitz transfer.** On the unit polydisc `|F(u) − F(v)| ≤ L(F) max|u_p − v_p|`
+   (`norm_aeval_sub_le`); dilates of a `δ`-return are `aδ`-returns to the conjugates
+   (`norm_orbitPoint_mul_sub_le`).
+4. **Transcendence separates moments.** For two primes an orbit moment is a binary form in
+   `(log p, log q)` with integer power moments as coefficients (`orbitMoment_eq`); Gelfond–Schneider
+   (`RHTower.log_ratio_transcendental`) separates them.
+5. **Unisolvence.** Lagrange polynomials on the simplex: power moments of order `≤ D` determine a
+   coefficient vector on `|α| ≤ D`, in two variables (`eq_zero_of_powerMoment_eq_zero`) and in
+   `|P|` variables (`eq_zero_of_powerMomentF_eq_zero`); by the multinomial theorem an orbit moment
+   is the moment form evaluated at `(log p)_p` (`orbitMomentF_eq`).
+6. **Derivatives lower the degree; an integer polynomial with zero gradient is constant**
+   (`totalDegree_pderiv_lt`, `eq_C_of_forall_pderiv_eq_zero`).
+7. **Countability.** A nonzero integer auxiliary is a nonzero entire function (the smallest frequency
+   dominates on the real axis, `exists_orbitFun_ne_zero`); there are countably many integer
+   auxiliaries.
+8. **Top-coefficient shift.** Multiplying by `h(u_p)` moves the top monomial up by `p^{deg h}` with
+   coefficient `lc(h)·c_top` (`pow_natDegree_mul_length_le`).
+9. **Class sums.** `F(μ^b) = Σ_r C_r μ^r`; equal class sums kill the closed point
+   (`aeval_torsionPoint_eq_zero_of_classSum`).
+10. **Jensen with an integral centre.** `|A(it + w)| ≤ H N^{|w|}` at every height
+    (`norm_orbitFun_shift_le`); integrality gives centres with `|A| ≥ 1/2`.
+11. **Stepanov's construction on the torsion.** `h = Σ f_i ψ_q(g_i)` with `Σ f_i g_i = 0` vanishes on
+    the `(q−1)`-torsion (`aeval_stepanov_eq_zero`); `ψ_ℓ(g) ≡ g^ℓ` and `∂ψ_ℓ(g) ≡ 0 (mod ℓ)`
+    (`map_adams_eq_pow`, `map_pderiv_adams_eq_zero`); with `Σ (∂_j f_i) g_i = 0`, `∂_j h = ℓR` at the
+    `(ℓ−1)`-torsion and the amplifier threshold is `ℓ^{φ(m)}` (`pderiv_stepanov_eq_zero_of_lt`).
 
-**Developed here.**
-6. **Galois = Adams on torsion.** For `F ∈ ℤ[u^{±1}]` and `ω ∈ μ_m^P`, `σ_a(F(ω)) = F(ω^a)`. The fixed
-   points of `ψ_q` are the `(q−1)`-torsion, on which `ψ_q F = F`: the identity `x^q = x` holds exactly,
-   in characteristic zero, on the torsion of every prime torus.
-7. **The prime orbit meets the torsion only at `t = 0`** (two primes), and returns to every torsion
-   point; the dilates `a·t` of a return to `ω` are returns to `ω^a`.
-8. **Norm amplifier.** `Π_a F(ω^a) = N_{ℚ(μ_m)/ℚ}(F(ω)) ∈ ℤ`; smallness of `A` along the Frobenius
-   orbit of a torsion return forces exact vanishing of `F` on the closed point `[ω]`. The required
-   precision is polynomial in the height and does not grow with the order: the amplifier beats the
-   precision cap, off the prime orbit.
-9. **`ℓ`-adic inseparability is blind.** Factorial auxiliaries satisfy Legendre's identity
-   `log Π⌊x/d⌋!^{c_d} = Σ_m Λ(m) Σ_d c_d⌊x/(dm)⌋` and Stirling's formula: their prime counts equal a
-   main term up to `O(log x)` whatever the zeros of `ζ` are.
-10. **Integrality on the orbit stops at order two.** At the common fixed point `s = 0`, smallness of
-    an integer auxiliary forces exact vanishing of `A` and `A'` (an integer; the logarithm of a
-    rational); exactness of `A''` is a question about quadratic relations among `log p`.
+## 5. Questions and answers
 
-## 5. Questions
-
-| # | Question (§2.9) | Approach |
-|---|---|---|
-| Q1 | What is the degree-`n` Frobenius of `Spec ℤ` as a correspondence, and what are its fixed points? | `Γ_n` with fixed points the closed orbits of length `log n`; its exact form is the Galois–Adams Frobenius on torsion; the prime orbit carries only the dilation `s ↦ as` with the single fixed point `0` |
-| Q2 | What is the Lefschetz identity for `Γ_1·Γ_n` with its main term? | fixed-point form `c_B(log n) = M_B(n) − Fix_B(n)`; the arithmetic Stepanov bound in point-count form at square degrees |
-| Q3 | Which auxiliary integer Dirichlet polynomials vanish at all fixed points, to what order, of what degree? | cyclotomic Riemann–Roch: vanishing at all closed torsion points of the prime circles is divisibility by `Π Φ_m(p^{−s})^{J}`; degree `Σ φ(m) J log p`; uniform order at a torus point `≤ deg/log 2` |
-| Q4 | When does integrality force a `δ`-small auxiliary to vanish exactly at a return of the prime orbit? | at torsion returns on the torus (norm amplifier); on the orbit itself: at progression points of one prime, and at `s = 0` through order two; never at a generic return |
+| # | Question (§2.9) | Answer | Lean |
+|---|---|---|---|
+| Q1 | What is the degree-`n` Frobenius of `Spec ℤ` as a correspondence, and what are its fixed points? | As a correspondence it is the Hecke graph `Γ_n` of `x ↦ nx`; its fixed points are the closed orbits of length `log n` (the prime `p` with weight `log p` if `n = pᵏ`), the cusp and the archimedean fixed point (jets): `Γ_1·Γ_n = Λ(n) + 1 + 1/(n²−1)` (SOSZ). Its **exact** form as a ring endomorphism of the integer auxiliaries is the Adams operation `ψ_a`: on torsion points it is the Galois action of `ℚ(μ_m)`, fixing the `(q−1)`-torsion pointwise (`x^q = x` in characteristic zero); on the prime orbit it is the dilation `t ↦ at`, whose only fixed point is `t = 0` — two primes have no common torsion return. The orbit returns to every torsion point at arbitrarily large heights. | `aeval_torsionPoint_adams`, `aeval_torsionPoint_adams_of_pow_eq`, `orbitValue_adams`, `eq_zero_of_torsion_return`, `exists_torsion_return`; `SurfaceOfSpecZ.pointCount_eq` |
+| Q2 | What is the Lefschetz identity for `Γ_1·Γ_n` with its main term? | Fixed-point form: `Γ_1·Γ_n = Λ(n) + 1 + 1/(n²−1)` — prime fixed points of index `log p`, the cusp, the archimedean index (the even Lefschetz trace of the dilation of `ℝ`); main term `n + 1`, the `𝔽₁`-line. **Lefschetz = Stepanov**: the prime Lefschetz numbers of all `Γ_n`, `2 ≤ n ≤ N`, add up to the degree of the minimal integer auxiliary vanishing at their fixed points, `Σ_{2≤n≤N}(Γ_1·Γ_n − 1 − 1/(n²−1)) = ψ(N) = log N(A_N)`, `N(A_N) = lcm(1,…,N)`, as `deg(x^{qⁿ} − x) = qⁿ` counts the points of degree dividing `n`; on the orbit `A_N(s) = Π_{p≤N}(p^{-s} − 1)^{⌊log_p N⌋}`. The **main term** of the summed identity is `N`, and the arithmetic Stepanov bound is the upper bound `log N(A_N) ≤ N + C√N(log N)²`, equivalent to RH (also with the squarefree auxiliary of degree `θ(N)`). | `log_length_fixedPointAux_eq_sum_lefschetz`, `length_fixedPointAux`, `log_length_fixedPointAux`, `orbitFun_fixedPointAux`, `lcmUpto_le_length_of_dvd`, `riemannHypothesis_iff_log_length_fixedPointAux_le`, `riemannHypothesis_iff_log_length_primeAux_le`; `SurfaceOfSpecZ.pointCount_eq`, `archLevyDensity_eq_even_trace` |
+| Q3 | Which auxiliary integer Dirichlet polynomials vanish at all fixed points, to what order, of what degree? | **Closed points of the circles** (exact fixed points on the orbit): vanishing to order `J` along the closed point of degree `φ(m)` of the circle of `p` is divisibility by `Φ_m(p^{-s})^J`, and then `Π p^{φ(m)J} ≤ N` — sharp, attained by `Φ_m(p^{-s})^J`. **Closed torsion points of the torus**: `m − 1` integer conditions with coefficients in `{−1,0,1}` each; Siegel gives auxiliaries of height `\|S\|^{M/(\|S\|−M)}`. **All `(q−1)`-torsion points at once**: Stepanov's `h = Σ f_i ψ_q(g_i)` with the single identity `Σ f_i g_i = 0`; order two `ℓ`-adically from `Σ (∂_j f_i) g_i = 0`. **Order at any point** (uniform): at most the total degree, so order `J` needs length `2^J`. **The common fixed point `s = 0`**: for any `P`, orbit order `J` forces a term `n_α ≥ 2^J` unless the `log p` satisfy a nonzero integer homogeneous relation of degree `< J`; for two primes there is none (Gelfond–Schneider), and the bound is sharp at `(2^{-s} − 1)^J`; real coefficients reach order `≍ (log N)²/(2 log p log q)`. | `stepanov_count_closedPoints`, `length_circlePoly`, `orbitFun_circlePoly_mul`, `exists_siegel_auxiliary`, `aeval_stepanov_eq_zero`, `aeval_pderiv_stepanov_eq`, `two_pow_le_length_of_vanishesToOrder`, `exists_two_pow_le_or_relation`, `exists_two_pow_le_of_orbitMoment_eq_zero`, `orbitMoment_binomial_eq_zero` |
+| Q4 | When does integrality force a `δ`-small auxiliary to vanish exactly at a return of the prime orbit? | **Never at a generic return**: the heights at which some nonzero integer auxiliary on `P` vanishes are countable, and every return window contains heights outside them. **On the torus, at torsion returns**: if `A` is small along the Frobenius orbit `{at}` of a `δ`-return to `μ^b`, `Π_a(\|A(iat)\| + aδL) < 1`, then `F` vanishes exactly on the closed point; precision `δ ≤ 1/(4mL)` suffices, with no factorial; the threshold `1` is sharp. Contrapositively, integer auxiliaries are not small along Frobenius orbits: at sign returns `\|A(it)\| ≥ 1 − δL`. **At `s = 0`**: integrality makes orders `0` and `1` exact (`\|A'(0)\| < 1/H` forces `A'(0) = 0`); a vanishing orbit moment of order `d` is a block of vanishing integer power moments or a relation of degree `d` among the `log p`, so for two primes every order is exact (Gelfond–Schneider). **On progressions**: small integer auxiliaries are divisible (EAHT). | `countable_setOf_exists_orbitValue_eq_zero`, `exists_return_forall_orbitValue_ne_zero`, `eq_zero_of_small_on_frobeniusOrbit`, `eq_zero_of_frobeniusOrbit_le_half`, `norm_amplifier_threshold_sharp`, `one_le_prod_frobeniusOrbit`, `one_sub_le_norm_orbitValue`, `firstMoment_eq_zero_of_lt`, `firstPowerMoment_eq_zero`, `powerMomentF_eq_zero_or_relation`, `powerMoment_eq_zero_of_orbitMoment_eq_zero`; `EffectiveArithmeticHodgeTheory.vanishesAlong_of_small` |
 
 ## 6. Tools
 
-| # | Tool (§2.9) | Form |
+| # | Tool (§2.9) | Built | Module |
+|---|---|---|---|
+| T1 | Siegel lemmas for Dirichlet polynomials on smooth numbers | nonzero integer auxiliary on any exponent set `S` vanishing on prescribed closed torsion points of orders `m_i`, height `\|S\|^{M/(\|S\|−M)}`, `M = Σ(m_i − 1)`; at every `δ`-return to them `\|A\| ≤ δ L(F)` | `SiegelAuxiliariesOnTheTorsion` |
+| T2 | zero estimates in many logarithms, uniform in their number | `\|A(it + w)\| ≤ H N^{\|w\|}` at every height; at a sign return (or some Frobenius dilate of a torsion return) where `F` does not vanish, the zeros of `A(it + ·)` in `\|w\| ≤ r` number at most `(log 2H + 2r log N)/log 2`, independent of `\|P\|` and of the number of terms | `TheZeroEstimateAtTheReturns` |
+| T3 | integrality amplifier | the norm amplifier on closed torsion points, at every uniform order; its orbit form at Frobenius orbits of returns; its `ℓ`-adic form on Stepanov's auxiliary, threshold `ℓ^{φ(m)}`; its price: order `J` needs length `2^J` | `TheFrobeniusOfTheTorsionIsGalois`, `StepanovsConstructionOnTheTorsion`, `ExactVanishingCostsTheDegree` |
+| T4 | Lefschetz fixed-point form of Frobenius-graph intersections | the summed fixed-point formula as a Stepanov degree: `Σ_{n≤N}` prime Lefschetz numbers `= log N(A_N)`, with `A_N` minimal among auxiliaries vanishing at the same fixed points to the same orders; closed-point auxiliaries `Π_p(u_p − 1)^{κ(p)}` have length exactly `Π_p p^{κ(p)}`; length is multiplicative on circle factors | `TheLefschetzNumbersAreStepanovDegrees` (on `SurfaceOfSpecZ.pointCount_eq`) |
+| T5 | Stepanov counting `#fixed·J ≤ deg A` | `Σ_{(p,m,J)} φ(m) J log p ≤ log N` over closed points of the prime circles; sharp; for the fixed points of the Frobenius graphs of degree `≤ N` the count is `ψ(N) ≤ log N(F)` | `TheStepanovCountOfTheClosedPoints`, `TheLefschetzNumbersAreStepanovDegrees` |
+
+## 7. Criteria and milestones
+
+| Item (§2.9) | Answer | Lean |
 |---|---|---|
-| T1 | Siegel lemmas for Dirichlet polynomials on smooth numbers | integer auxiliaries on `P`-smooth `n ≤ N` vanishing to prescribed uniform order at prescribed closed torsion points, with explicit height |
-| T2 | zero estimates in many logarithms, uniform in their number | zero counts of integer Dirichlet polynomials in discs with constants independent of `\|P\|`; integrality supplies the centre value |
-| T3 | integrality amplifier | the norm amplifier at torsion returns; divisibility on progressions |
-| T4 | Lefschetz fixed-point form of Frobenius-graph intersections | `Γ_1·Γ_n` as a sum of local indices at fixed points with main term |
-| T5 | Stepanov counting `#fixed·J ≤ deg A` | cyclotomic Bézout: `Σ_{p,m} φ(m) J_{p,m} log p ≤ deg A` |
+| C1 reproduce Stepanov–Bombieri over `𝔽_q` as the finite-rank case | Stepanov's construction runs verbatim on the torsion of the prime torus with the Adams operation as Frobenius; reduced modulo `ℓ` it is the construction over `𝔽_ℓ`, inseparability included, and the archimedean threshold of the `ℓ`-adic amplifier is then void. The count over `𝔽_q` is in the corpus for hyperelliptic curves and character sums | `aeval_stepanov_eq_zero`, `map_adams_eq_pow`, `map_pderiv_adams_eq_zero`, `pderiv_stepanov_eq_zero_of_lt`; `RHTower.Stepanov.stepanov_count`, `ArithmeticKreinLangerTheory.stepanov_order_hyperelliptic` |
+| C2 crude bound with a constant at every integer degree, or on the squares | the main conjecture, in two equivalent exact forms: `c_B(log n²) ≥ −K`, and the Stepanov degree bound `log N(A_N) ≤ N + C√N(log N)²`; each is equivalent to RH | `riemannHypothesis_iff_log_length_fixedPointAux_le`; `SurfaceOfSpecZ.riemannHypothesis_iff_bddBelow_squareDegrees` |
+| C3 use the Euler product and the FE; fail on one-offs, `cosh` models, the heat family | The Stepanov degree bound is formulated through the fixed points of the Frobenius graphs, i.e. through the Euler product of `ζ`; `cosh` models and the heat family have no Euler product and no fixed points. It **fails on the integer-norm one-off** (an Euler product over integer norms, continued past `½`, zeros `3/5 ± i`, no FE) for every constant, and **holds on the real one-off** (zero `3/5`): it uses more than the Euler product and is blind exactly to real zeros, like the Stepanov side over `𝔽_q`. The integrality mechanisms of §4 do not involve the coefficients of `ζ`; they hold for every Euler product over the rational primes, so they are tools, not the separating input | `one_off_violates_stepanov_bound`, `real_one_off_satisfies_stepanov_bound`, `riemannHypothesis_iff_log_length_primeAux_le` |
+| C4 beat the precision cap by exact vanishing | on the torus: the norm amplifier gives exact vanishing on closed torsion points at precision `δ ≍ 1/(mL)`, independent of the order. On the orbit exact vanishing is confined to countably many heights, and exact order costs length `2^J` at every torus point and at the fixed point `0` | `eq_zero_of_frobeniusOrbit_le_half`, `countable_setOf_exists_orbitValue_eq_zero`, `two_pow_le_length_of_vanishesToOrder`, `exists_two_pow_le_or_relation` |
+| M1 Lefschetz identity on the smoothed graphs | the fixed-point formula and its summed form `ψ(N) = log N(A_N)` | `log_length_fixedPointAux_eq_sum_lefschetz`; `SurfaceOfSpecZ.smoothedPrime_add_smoothedArchPole_eq_orbitCorr` |
+| M2 amplifier at returns of `k` fixed primes, order `J ≫ k log N` | answered negatively, with the exact price: integer auxiliaries reach exact order `J` at a point only with length `2^J`, so `J ≤ log N/log 2`; at the fixed point `0` the same holds for two primes, and for `k` primes unless the `log p` satisfy a homogeneous relation of degree `< J`; real coefficients reach order `≍ (log N)²` but only approximately | `two_pow_le_length_of_small`, `exists_two_pow_le_of_orbitMoment_eq_zero`, `exists_two_pow_le_or_relation` |
+| M3 amplifier with `k → ∞` at the rate the squares need | the torus amplifier needs precision `1/(mL)` independent of `k`; the height of a `δ`-return of `k` primes is the constant-precision first-return problem B97 | `eq_zero_of_frobeniusOrbit_le_half`, `exists_torsion_return` |
+| M4 `\|c_B(log k²)\| ≤ k^{2σ}`, `σ < ½` | a zero-free strip: quasi-RH | `SurfaceOfSpecZ.zetaZeroWidth_le_iff_crude_integerDegrees` |
+| M5 constant `K` | RH | `riemannHypothesis_iff_log_length_fixedPointAux_le` |
 
-## 7. Criteria (§2.9)
+## 8. Pillar theorems
 
-1. Reproduce Stepanov–Bombieri over `𝔽_q` as the finite-rank case.
-2. Give the crude bound with a constant at every integer degree, or on the squares.
-3. Use the Euler product and the functional equation (fail on one-offs, `cosh` models, the heat
-   family).
-4. Beat the precision cap by exact vanishing, not by approximation.
+| Theorem | Lean |
+|---|---|
+| The norm bound and the closed-point law | `one_le_prod_norm_aeval_primitiveRoots`, `aeval_eq_zero_of_mem_primitiveRoots`, `norm_amplifier`, `norm_amplifier_threshold_sharp` |
+| Galois = Adams on torsion; `x^q = x` on the `(q−1)`-torsion | `aeval_torsionPoint_adams`, `aeval_torsionPoint_adams_of_pow_eq` |
+| The Frobenius on the orbit is the dilation; no common torsion return | `orbitValue_adams`, `eq_zero_of_torsion_return` |
+| Torsion returns exist at every height | `exists_torsion_return` |
+| Norm amplifier on the torus and on Frobenius orbits of returns | `torus_norm_amplifier`, `vanishesToOrder_of_small`, `eq_zero_of_small_on_frobeniusOrbit`, `one_le_prod_frobeniusOrbit`, `eq_zero_of_frobeniusOrbit_le_half` |
+| No exact vanishing at generic returns | `countable_setOf_exists_orbitValue_eq_zero`, `exists_return_forall_orbitValue_ne_zero` |
+| Repulsion at sign returns | `one_sub_le_norm_orbitValue` |
+| Bézout at the common fixed point (two primes), sharp | `exists_le_of_orbitMoment_eq_zero`, `exists_two_pow_le_of_orbitMoment_eq_zero`, `orbitMoment_binomial_eq_zero` |
+| Integrality at `s = 0` through order two, any `P` | `firstMoment_eq_zero_of_lt`, `firstPowerMoment_eq_zero` |
+| The excess order at `s = 0` is a relation among the logarithms, any `P` | `orbitMomentF_eq`, `powerMomentF_eq_zero_or_relation`, `eq_zero_of_powerMomentF_eq_zero`, `exists_large_or_relation`, `exists_two_pow_le_or_relation` |
+| Exact order costs the degree, any point, any `P` | `le_totalDegree_of_vanishesToOrder`, `two_pow_le_length_of_vanishesToOrder`, `two_pow_le_length_of_small` |
+| Stepanov count of the closed points of the prime circles, sharp | `stepanov_count_closedPoints`, `prod_pow_mul_length_le`, `length_circlePoly` |
+| Siegel's lemma on smooth numbers | `exists_siegel_auxiliary`, `norm_orbitValue_le_of_siegel` |
+| Lefschetz = Stepanov: the prime Lefschetz numbers of degree `≤ N` are the degree `ψ(N)` of the minimal fixed-point auxiliary; length is multiplicative on circle factors | `log_length_fixedPointAux_eq_sum_lefschetz`, `length_fixedPointAux`, `length_circleProduct`, `prod_pow_le_length_of_dvd`, `orbitFun_fixedPointAux` |
+| The arithmetic Stepanov bound in exact form is RH | `riemannHypothesis_iff_log_length_fixedPointAux_le`, `riemannHypothesis_iff_log_length_primeAux_le` |
+| Calibration: the bound fails on the integer-norm one-off, holds on the real one-off | `one_off_violates_stepanov_bound`, `real_one_off_satisfies_stepanov_bound` |
+| Stepanov's construction on the torsion; inseparability at `ℓ`; the `ℓ`-adic amplifier | `aeval_stepanov_eq_zero`, `map_adams_eq_pow`, `map_pderiv_adams_eq_zero`, `aeval_pderiv_stepanov_eq`, `pderiv_stepanov_eq_zero_of_lt` |
+| Zero estimate at returns, uniform in the number of logarithms | `norm_orbitFun_shift_le`, `zeroCount_le_of_half_le`, `zeroCount_le_of_sign_return`, `exists_dilate_zeroCount_le` |
 
-Criterion 2 is RH. A mechanism of ALST meets criterion 3 only if it distinguishes `ζ` from the
-integer-norm one-off; every mechanism of §4 is tested against that model.
+All are unconditional.
 
-## 8. Traps
+## 9. Traps
 
 | Trap | Truth |
 |---|---|
-| Returns are fixed points of a Frobenius | at a return the flow is close to the identity on the whole torus: there is no point set, only freezing |
-| Integrality turns forced near-vanishing at returns into zeros | exact vanishing of an integer auxiliary at a generic point of the orbit is impossible; integrality acts at torsion points of the torus and on progressions of single primes |
-| High order at a point is cheap with integer coefficients | the uniform order of a length-`N` auxiliary at a torus point is at most `log N/log 2`; orbit order beyond two needs relations among `log p` |
-| `ℓ`-adic Frobenius congruences give a Stepanov count | they give factorial auxiliaries, whose counts are blind to the zeros |
-| Vanishing at all fixed points can be cheap over `ℤ[Γ]` | Riemann–Roch of `𝔾_m(ℚ)` is exact; cheapness needs an identity that `ℤ[Γ]` does not supply |
+| Returns are fixed points of a Frobenius | at a return the flow is close to the identity on the whole torus; the only exact fixed points common to all primes are torsion points (off the orbit) and `t = 0`; each prime has its own, the closed points of its circle |
+| Integrality turns forced near-vanishing at returns into zeros | only countably many heights carry a zero of any nonzero integer auxiliary; every return window avoids them |
+| The norm amplifier lifts the precision cap on the orbit | it gives exact vanishing at the torsion point, off the orbit; the orbit passes at distance `δ` and the zero copied to it is a Rouché copy, capped as before |
+| High order at a point is cheap with integer coefficients | uniform order is at most the total degree, so order `J` costs length `2^J`; for two primes the same holds for orbit order at `0` |
+| Real-coefficient auxiliaries are as good as integer ones | they reach orbit order `≍ (log N)²` at `0` but only approximately at returns; integer ones are exact and pay `log₂ N` per order |
+| Vanishing at the exact fixed points of `ℤ` can be cheap | along a closed point of degree `φ(m)` on the circle of `p` it costs `p^{φ(m)}` per order, exactly; the count is Chebyshev's |
+| `ℓ`-adic Frobenius congruences give a Stepanov count | on the torsion they give Stepanov's multiplicity `ℓ`-adically, with an archimedean threshold `ℓ` per conjugate that the auxiliary does not meet; on integers they give factorial auxiliaries, whose prime counts are fixed by Stirling's formula and see no zero |
+| An integrality mechanism on the prime torus can separate `ζ` from fakes | the integrality mechanisms do not involve the coefficients of `ζ` and hold for every Euler product over the rational primes; what separates is the Stepanov degree bound itself, which fails on the integer-norm one-off |
+| The Stepanov degree bound is a two-sided statement | it is an upper bound only; the real one-off satisfies it, as the Stepanov side over `𝔽_q` misses a real eigenvalue `> √q` |
+| Torsion returns place the zero-estimate centres where needed | they sit at heights fixed by simultaneous approximation of `log p`; their height is the first-return problem |
 
-## 9. Context
+## 10. What the field reduces the Stepanov step to
+
+The agenda of §2.9 — Q1–Q4, T1–T5, criteria C1–C4, milestones M1–M3 — is answered and built (§5–§7).
+The statements below are not open topics of the programme but the classical problems it reduces the
+Stepanov step to, each with its strength fixed by a theorem; no unconditional argument in the corpus
+or the literature decides them.
+
+| Statement | Proved relation | Boundary |
+|---|---|---|
+| **The Stepanov degree bound** `log N(A_N) ≤ N + C√N(log N)²` (equivalently `c_B(log n²) ≥ −K`) | equivalent to RH (`riemannHypothesis_iff_log_length_fixedPointAux_le`; SOSZ) | fails on the integer-norm one-off, holds on the real one-off (`one_off_violates_stepanov_bound`, `real_one_off_satisfies_stepanov_bound`); the Stepanov side alone is blind exactly to real zeros (SOSZ) |
+| **A coupling of the torsion Frobenius to the prime orbit**: an identity relating values of integer auxiliaries at torsion points to their zeros on the orbit, with error below the Rouché cap | would give exact vanishing at returns with cheap order | exact vanishing on the orbit is impossible at generic heights (`countable_setOf_exists_orbitValue_eq_zero`); exact order costs `log₂ N` per order at every point (`two_pow_le_length_of_vanishesToOrder`); approximate copies are capped (`order_le_of_rouche`); the `ℓ`-adic multiplicity of Stepanov's auxiliary becomes exact only below an archimedean threshold `ℓ` per conjugate (`pderiv_stepanov_eq_zero_of_lt`) — the coupling must be inseparable at the archimedean place |
+| **Relations among `log p`** for three or more primes | an integer auxiliary of orbit order `J` at `0` has a term `≥ 2^J` unless `LogRelation P d` for some `d < J` (`exists_two_pow_le_or_relation`); for two primes `LogRelation` never holds (`exists_two_pow_le_of_orbitMoment_eq_zero`, Gelfond–Schneider) | algebraic independence of logarithms of primes (a consequence of Schanuel's conjecture) [C] |
+| **Heights of torsion returns** (M3) | the amplifier needs precision `1/(mL)` independent of `k` | the first `δ`-return of `k` primes is B97 (`TailArithmeticOfThePrimeOrbit`, `PrimeTorusTheory`) |
+
+## 11. Context
 
 | Programme | Interface |
 |---|---|
-| SurfaceOfSpecZ | integer-degree Hasse–Weil, point count, Stepanov side at squares, smoothed kernels |
-| InfiniteRankWeilTheory | self-improvement on thick sets, returns, forced vanishing, precision cap |
-| EffectiveArithmeticHodgeTheory | Bézout and Riemann–Roch of `𝔾_m(ℚ)`, divisibility of small integer auxiliaries |
-| ArithmeticCastelnuovoSeveri | scaling surface, Hecke and Adams operations, curve data, fake curves |
-| PrimeTorusTheory, TailArithmeticOfThePrimeOrbit | non-alignment, torsion avoidance, returns, precision law |
-| RHTower | Stepanov over `𝔽_q`, Baker, Gelfond–Schneider, zero estimates |
-| CountingHolography | count laws on curves; the count door over `ℤ` |
+| SurfaceOfSpecZ | integer-degree Hasse–Weil, point count and its indices (used by `TheLefschetzNumbersAreStepanovDegrees`), Stepanov side at the squares, smoothed kernels |
+| ArithmeticPositiveDuality | the integer-norm one-off and its prime oscillation (the calibration of C3) |
+| InfiniteRankWeilTheory | self-improvement on thick sets, returns, freezing, forced vanishing, the precision cap |
+| EffectiveArithmeticHodgeTheory | Bézout and Riemann–Roch of `𝔾_m(ℚ)` along progressions (the closed point `m = 1`), divisibility of small integer auxiliaries |
+| ArithmeticKreinLangerTheory, ArithmeticOfSquareRootPrecision | factorial (`ℓ`-adic) auxiliaries, their producers and obstructions; Chebyshev ledger |
+| RHTower | Gelfond–Schneider, Baker, Stepanov over `𝔽_q`, Jensen zero counts, countability of zeros |
+| HTGeometry | Kronecker density and recurrence, prime-log independence, norms of cyclotomic integers |
+| PrimeTorusTheory, TailArithmeticOfThePrimeOrbit | torsion avoidance at large heights, returns, precision law |
+| ArithmeticCastelnuovoSeveri, ArithmeticOrientationGeometry | scaling surface, Hecke and Adams operations, Lefschetz identities, curve data |
 
-## 10. Success criteria and contributions
+## 12. Success criteria and contributions
 
 ALST succeeds when Q1–Q4 have theorem-level answers, T1–T5 exist in their strongest unconditional
-form, each criterion of §7 is met or shown impossible for a named mechanism with its strongest
-positive survivor, and RH is reduced to one precise Stepanov statement whose strength is fixed by a
-theorem.
+form in the programme, each criterion is met or shown impossible for a named mechanism with its
+strongest positive survivor, the main conjecture has an exact form calibrated on the fakes, and the
+Stepanov step is reduced to precise statements whose strength is fixed by theorems. That state is
+reached (§5–§7, §10).
 
 A **contribution** must be unconditional; say which of (S1), (S2), (S3) it realizes over `ℤ` and at
-which place; state whether it holds for the integer-norm one-off; and say whether its vanishing is
-exact or approximate and at which points (orbit, torus, progression).
+which place; say whether its vanishing is exact or approximate and at which points (orbit, torus,
+circle, progression); price its order in length; and say whether it separates `ζ` from the
+integer-norm one-off. A proposed Frobenius over `ℤ` must name its fixed points and show that it is
+a ring endomorphism of the auxiliaries.
+
+## 13. Big picture
+
+Over `𝔽_q` Stepanov's count works because one operation is three things at once: a ring
+endomorphism, the identity on the points, and inseparable. Over `ℤ` the three come apart. The ring
+endomorphism exists (the Adams operations) and is the identity exactly on the torsion of the prime
+torus, where it is the Galois action and the norm turns smallness into exact vanishing — a genuine
+characteristic-zero Frobenius with an integrality amplifier. But the torsion is off the prime orbit,
+which meets it only at its single fixed point, and inseparability is absent at the archimedean place:
+every exact order costs a unit of `log₂ N` at every point of the torus, and at the fixed point
+of the orbit unless the `log p` satisfy an algebraic relation (never for two primes). On the orbit
+itself integer auxiliaries vanish at only countably many heights; at the returns integrality is a
+repulsion, not a source of zeros. What the product formula counts with exact vanishing — the closed
+points of the prime circles — it counts at Chebyshev's price.
+
+The two halves of Weil's proof meet exactly at the fixed points: the prime Lefschetz numbers of the
+Frobenius graphs of degree `≤ N` are the degree of the minimal integer auxiliary vanishing at their
+fixed points, `ψ(N) = log lcm(1,…,N)`, the analogue of `deg(x^{qⁿ} − x) = qⁿ`. RH is then the
+Stepanov degree bound `log N(A_N) ≤ N + O(√N log²N)` — an upper bound on the degree of one explicit
+integer auxiliary — which the integer-norm one-off violates and the real one-off satisfies.
+
+So each ingredient of Stepanov's method available over `ℤ` — the exact Frobenius, integrality, the
+product formula, `ℓ`-adic inseparability — is located and priced, and none of them yields cheap exact
+vanishing on the prime orbit, which is what the arithmetic Stepanov bound (RH) would need. A proof
+along this line needs an identity coupling the exact torsion Frobenius to zeros on the orbit
+that behaves inseparably at the archimedean place — the one ingredient of Stepanov's method that
+characteristic zero lacks — and that uses the coefficients of `ζ`, since every mechanism built here
+holds for all Euler products over the rational primes.

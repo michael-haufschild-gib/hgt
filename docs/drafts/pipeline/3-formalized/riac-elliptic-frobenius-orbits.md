@@ -3,7 +3,7 @@
 - **ID:** RIAC-elliptic-frobenius-orbits
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Statement:** Frobenius is transitive on finite residue-field embeddings; its orbits on actual elliptic points are precisely the closed-place fibres.
 
 For finite fields `F,K,E` and embeddings `f,g:K→_F E`, there is `n≥0`

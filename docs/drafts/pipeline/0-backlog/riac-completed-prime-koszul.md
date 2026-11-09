@@ -16,8 +16,11 @@ When `2 Re(s)+δ>1`, construct bounded differentials on every completed exterior
 degree, with norm at most `(Σ_p |b_p|²)^(1/2)`. Extend the actual prime-two cone
 with norm at most `2^(Re(s)+δ/2)` and prove `dh+hd=id`, including degree zero.
 This would force every reduced completed homology group to vanish throughout
-the exact bounded-extension region. The degree-one result excludes closed
-boundary extensions throughout the complementary closed half-plane.
+the exact bounded-extension region. In the complementary closed half-plane,
+the [critical exterior theorem](../3-formalized/riac-critical-exterior-graph-closure.md)
+identifies every finite-support boundary graph closure with the whole
+source–target Hilbert product. The bounded contraction proposed here remains
+unconstructed.
 
 ## Proof obligations and positive survivor
 

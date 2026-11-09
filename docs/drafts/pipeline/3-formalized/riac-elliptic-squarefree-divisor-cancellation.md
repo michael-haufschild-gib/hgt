@@ -3,7 +3,7 @@
 - **ID:** RIAC-elliptic-squarefree-divisor-cancellation
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Statement:** Actual even/odd squarefree-divisor counts on `Y²Z=X³−XZ²` over `F₃` have square-root-scale signed cancellation.
 
 ## Arithmetic counts and bounds

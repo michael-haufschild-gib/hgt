@@ -3,7 +3,7 @@
 - **ID:** RIAC-root-orientation-cover
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean); classical finite-field calibration
-- **Source:** [discriminant-cover construction](../1-in-progress/riac-discriminant-cover-signed-counts.md)
+- **Source:** [discriminant-cover construction](riac-discriminant-cover-signed-counts.md)
 - **Statement:** Over an odd finite field with `q` elements, the actual root-orientation cover of monic degree-`n` polynomials has `q^n` points for `n≥2`, independently of any polynomial Möbius sum.
 
 ## Actual finite set
@@ -37,11 +37,13 @@ labels. Summing fibres and using Vieta gives `#C_n(F)=q^n`.
 
 ## Exact scope
 
-The construction and count concern the displayed root equation. The
-identification with Mathlib's `Polynomial.discr`, and a formal presentation
-by one polynomial in coefficient coordinates, remain separate obligations.
-The existing integral symmetric discriminant construction supplies a
-candidate for the latter comparison.
+The [integral discriminant construction](riac-integral-discriminant-cover.md)
+now presents this same finite set by one polynomial in ordinary coefficient
+coordinates and identifies it with Mathlib's `Polynomial.discr`. It also
+identifies each signed transporter weight with the discriminant character.
+The [cross-resultant comparison](riac-discriminant-cover-signed-counts.md)
+also identifies the factor-trace cover by actual fibre rescaling and proves
+that each root-orbit weight is `(-1)^deg(f) μ(f)` over odd fields.
 
 No conductor-height estimate or identification with integer relative-homology
 indices is supplied. In particular, this theorem does not bound

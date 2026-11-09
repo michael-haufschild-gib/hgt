@@ -2,7 +2,7 @@
 
 - **Scope:** `docs/reports/review-0811/obstacles-summary.md`, §2.2.
 - **Target:** At least 250 distinct significant mathematical contributions, each proved in Lean and audited. Helpers and corollaries of one result count together.
-- **Verified:** 6 / 250. Original obstacles remain open unless explicitly closed below.
+- **Verified:** 16 / 250. Original obstacles remain open unless explicitly closed below.
 
 | # | Obstacle | New result | Certificate |
 |---|---|---|---|
@@ -12,5 +12,13 @@
 | 4 | B13, B112, full zero divisor | Complete Green-weighted divisor consumes logarithmic mass drop; optimized conjugate-pair test forces exponential multiplicity cost without a bandwidth cutoff; exact-order witnesses attain exponential growth | [Proof and Lean audit](../3-formalized/annihilator-multiplicity-hyperbolic-budget.md) |
 | 5 | B13, B112, annihilator division | Canonical quotient coefficients have unbounded excursions of both signs at every nonnegative exponent below a right-hand zero; absolute weighted mass diverges at the endpoint | [Proof and Lean audit](../3-formalized/annihilator-division-forces-coefficient-oscillation.md) |
 | 6 | B13, B112, initial heat energy | Exact finite or infinite initial trace; bounded heat energy iff initial squared upper-depths are summable; finite mass forces `t N(t)→0` | [Proof and Lean audit](../3-formalized/the-initial-trace-of-heat-depth-energy.md) |
-
-Candidate: [elapsed heat pays for surviving pairs](elapsed-heat-pays-for-surviving-pairs.md).
+| 7 | B13, B112, heat survival | Every positive elapsed-depth moment is bounded by the initial divisor; sharp coefficient `2`; exact conjugate-pair dissipation class is convexity in logarithmic height | [Proof and Lean audit](../3-formalized/elapsed-heat-pays-for-surviving-pairs.md) |
+| 8 | B13, B112, finite depth layers | Every logarithmic threshold budgets polynomial and actual heat survival; exact largest-product equivalence; sharp clock `2`; explicit separation from all power moments | [Proof and Lean audit](../3-formalized/elapsed-heat-logarithmic-majorization.md) |
+| 9 | B13, B112, shrinking transport discs | Universal growth `T^(δ√δ/(32π))`; reflected boundary arcs force `δ√δ log(γ+τ)≲A log log τ+1` at aligned returns | [Proof and Lean audit](../3-formalized/shrinking-crossing-boundary-arc-cost.md) |
+| 10 | B13, B112, flat transport domains | A full reflected edge forces growth `T^(bδ)` with explicit universal `b>0`; aligned-return rectangles obey `δ log(γ+τ)≲A log log τ+1` | [Proof and Lean audit](../3-formalized/a-flat-crossing-edge-pays-linear-depth.md) |
+| 11 | B13, B112, heat survival | Confined packets pay extra damping `(N−2)E/R²`; the actual heat divisor obeys an exponential population-survival budget through collisions | [Proof and Lean audit](../3-formalized/conjugate-pair-crowding-accelerates-heat-extinction.md) |
+| 12 | B13, B112, annihilator division | Both quotient signs carry uniform positive mass at the critical exponent in every high logarithmic band of width twice the annihilator's frequency span; applies to actual finite xi divisors | [Proof and Lean audit](../3-formalized/annihilator-quotient-signs-have-bounded-logarithmic-gaps.md) |
+| 13 | B13, B112, finite zero surgery | Two off-line quartets preserve both first endpoint jets; one quartet cannot. Four actual critical-line donor pairs yield an entire finite surgery on xi with unchanged reflection, reality, and endpoint jets | [Proof and Lean audit](../3-formalized/two-quartets-preserve-the-endpoint-jet.md) |
+| 14 | B13, B112, finite endpoint data | Arbitrary finite endpoint jets survive finite rational surgery on actual xi; every replacement zero lies off-line within any prescribed positive strip width. Sharp monic degree bound, actual donor clusters, reflection, reality, and vertical normalization | [Proof and Lean audit](../3-formalized/arbitrary-endpoint-jets-survive-finite-zero-surgery.md) |
+| 15 | B13, B112, source positivity and finite divisors | Arbitrarily close positive smooth theta sources realize finite rational surgery on actual xi, preserving arbitrary endpoint jets and positivity after every finite prime deletion on the positive half-line. All replacement zeros lie off-line within any prescribed positive width; uniform division and deletion bounds supply the construction | [Proof and Lean audit](../3-formalized/positive-theta-sources-with-finite-endpoint-jet-surgery.md) |
+| 16 | B13, B112, isolated top detection | Merged top coefficients force excursion density at least `max |c_j|/sum |c_j|`, uniformly over all windows, with explicit bounded discrepancy and arbitrary summable lower layers. Actual zeta AAL failure forces this density at every positive base; root packets attain the bound | [Proof and Lean audit](../3-formalized/top-coefficients-force-excursion-density.md) |

@@ -1,33 +1,23 @@
-# Exact closed relation of the prime augmentation
+# Bounded-region graph comparison for the prime augmentation
 
 - **ID:** RIAC-prime-boundary-closure
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** [Completed prime boundary](../3-formalized/riac-completed-prime-boundary.md)
-- **Statement:** The closure of the actual finite weighted boundary graph is the graph of its bounded Riesz extension when `2 Re(s)+δ>1`, and the entire Hilbert-space product when `2 Re(s)+δ≤1`.
+- **Statement:** When `2 Re(s)+δ>1`, the closure of the actual finite-support
+  weighted augmentation graph is the graph of its bounded Riesz extension.
 
-## Proposed exact classification
+The finite embedding is dense and faithful, and its boundary has the
+constructed unique bounded extension. Its closed graph contains the
+finite-support graph. Continuity and density should give the reverse
+containment after taking closure. This exact set equality remains to be
+formalized in the scalar augmentation coordinates.
 
-The existing finite embedding is dense and faithful. Above the threshold,
-its boundary extends continuously and uniquely. The closed graph of that
-extension contains the finite graph; density and continuity should give the
-reverse inclusion in the closure.
+The [critical exterior theorem](../3-formalized/riac-critical-exterior-graph-closure.md)
+settles the complementary closed half-plane in every actual exterior
+degree: the graph closure is the entire source–target Hilbert product.
+It retains the canonical face embedding and original arithmetic boundary.
 
-At and below the threshold, the existing explicit packets put `(0,1)` in
-graph closure. This closure is a complex linear subspace, hence contains
-every `(0,z)`. Subtracting the vertical part of each finite boundary pair
-gives `(Jδa,0)`. Density of `Jδ` then gives every horizontal pair, so the
-closed relation is the whole product. Thus the original graph should be
-dense exactly in this latter range.
-
-## Positive survivor and scope
-
-This would sharpen failure of closability to an exact classification of the
-closed arithmetic relation. Inside the obstructed region even the closed
-relation carries no distinction between parameters on the same fixed
-carrier. The surviving bounded region retains the explicit Riesz functional
-and its exact prime-series norm.
-
-This is a consequence of the already formalized density and packet results,
-not a new prime-density estimate. The graph-closure classification itself
-remains to be checked in Lean; no higher homology or zero detection follows.
+The bounded-region [higher-degree contraction](../0-backlog/riac-completed-prime-koszul.md),
+zero detection and square-root signed cancellation remain separate open
+requirements.

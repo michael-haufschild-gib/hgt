@@ -3,7 +3,7 @@
 - **ID:** RIAC-hyperelliptic-fixed-points
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Lean:** [HyperellipticFixedPoints.lean](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/HyperellipticFixedPoints.lean)
 
 ## Arithmetic comparison

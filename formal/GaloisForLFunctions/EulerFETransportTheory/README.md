@@ -25,9 +25,13 @@ cannot support that isolated oscillation.
 - **Resonant tower:** the evaluations at powers of a base such as `exp(π/γ)`, detecting
   the mode of ordinate `γ`; the desired law couples `γ` to `(2k+1)γ`.
 - **FE defect:** the uncompleted critical-line discrepancy `g` in the Hamburger strip
-  identity, with size `D = ∫ ‖g‖`. Gamma-weighted integrability is a different condition.
-- **Layer cost:** the infimum of `D` over nonclassical countable Beurling systems in that
-  analytic class carrying a finite nonempty off-line layer; it is infinite if this class is empty.
+  identity. Its two costs are `D₁=∫⁻‖g‖ₑ` and `D₂=∫⁻‖g‖ₑ²`.
+  Gamma-weighted integrability is a different condition.
+- **Canonical boundary:** the strong `L²` limit `Bg` of the actual Hamburger Laplace
+  defect on vertical lines approaching the imaginary axis; `‖Bg‖²=π⁻¹‖g‖²`.
+- **Layer cost:** the infimum of either defect cost over nonclassical countable Beurling
+  systems in the stated analytic class carrying a finite nonempty off-line layer.
+  Both infima are infinite.
 
 ## Foundations and the missing mechanism
 
@@ -52,15 +56,15 @@ of the transport operator.
 
 | Milestone | Required mathematical outcome |
 |---|---|
-| M1 | Resolve B122: complete rigidity for arbitrary integrable FE defect, or construct the nonclassical finite-defect class. |
-| M2 | Determine `D_layer`; in particular prove its infinitude or construct a finite-defect finite-layer system. |
+| M1 | Proved in the explicit Hamburger strip class for `g∈L¹` or `g∈L²`: exactly the rational primes (B122). |
+| M2 | Proved in that class: every nonclassical system has `D₁=D₂=∞`, hence infinite layer cost (B84). |
 | M3 | Prove replication for one exceptional quartet of ζ at the same depth. |
 | M4 | Prove `LinAt C` for an actual finite `C`, coupling the global and asymptotic depths. |
 | M5 | Prove AAL, with the corpus's ZAL implication then giving RH. |
 
-M1 and M2 classify other Euler systems. Even complete rigidity does not exclude a finite
-layer of ζ. If M1 is true, perturbations within the integrable-defect class provide no
-nonclassical models; transport must use exact identities of ζ. M3 is an endpoint target:
+M1 and M2 classify other Euler systems. Complete rigidity does not exclude a finite
+layer of ζ. Perturbations with integrable or square-integrable defects provide no nonclassical
+models; transport must use exact identities of ζ. M3 is an endpoint target:
 AAL permits arbitrarily small positive loss and does not by itself give same-depth copies.
 
 ## Tools to develop and open questions
@@ -70,24 +74,302 @@ AAL permits arbitrarily small positive loss and does not by itself give same-dep
 | FE-to-transport operator, B112 | Which exact combination of reflection and Euler factorization changes height? |
 | Quantitative recurrence of the rigid oscillation | Which returns survive coupling to the complete prime and zero tails? |
 | Resonant-tower identities | How do the modes at `γ` and `(2k+1)γ` constrain each other without a growing frozen head? |
-| Conditional prime-discrepancy defect calculus | Can a conditionally convergent Euler discrepancy have integrable uncompleted defect? |
+| Conditional prime-discrepancy defect calculus | Nonclassical systems have infinite defect in the stated class, regardless of conditional convergence; what exact identity supplies transport instead? |
 | Same-depth replication theorem | Why must one exceptional top force infinitely many tops at its exact real part? |
 
 The critical-zero coupling must be derived from the actual continued Euler product.
 Counting zeros, mean-square bounds, or phase recurrence alone do not identify the needed
 joint arithmetic information.
 
-## Shared analytic pillars
+## Defect transport and arithmetic rigidity
 
-`ExactEventTheory` develops the finite-defect side of M1. It proves arbitrary-defect
-rigidity under integer support or asymptotic integer alignment, and unique norm
-factorization without alignment. Its Laplace boundary calculus gives continuous values
-away from zero, a locally integrable `|y|⁻¹ᐟ²` bound, and decay at infinity.
-Its variable-width tent identity separates atomic mass into a sinc-squared cosine pairing,
-the pole term, and a decaying boundary error. Atomic recurrence now forces the real
-boundary defect to vanish throughout `0 < |y| < 1`. The origin pairing must still turn
-this into integer support and complete M1. These are shared inputs, not zero-replication
-theorems. Full M1–M5 remain open here.
+The classification uses a countable positive Beurling system with
+`Σ_x ‖x‖^(-3/2)<∞`. Its Hamburger strip data consist of a function `E` continuous
+on `½≤Re s≤3/2`, holomorphic inside, with `‖E(s)‖≤C/(1+Im(s)²)`, and identities
+
+    Γℝ(s) ζ_B(s) = E(s) + β Γℝ(s−1),                     Re s = 3/2,
+    E(s)−E(1−s) = −β[Γℝ(s−1)−Γℝ(−s)] + Γℝ(s)g(Im s/2), Re s = 1/2.
+
+The uncompleted defect `g` is measurable and polynomially bounded. If `g∈L¹` or
+`g∈L²`, then `β=½`, the generalized-integer counting measure is the ordinary one,
+each positive integer has exactly one generalized-integer factorization, `ζ_B=ζ`
+on `Re s>1`, and the prime labels are in norm-preserving bijection with rational
+primes. No lattice, nonempty-label, recurrence, residue-bound or defect-size premise
+is added. Every nonclassical system in this strip class has both `D₁=∞` and `D₂=∞`.
+In either finite-cost class, the original strip defect vanishes pointwise. The
+finite-energy theta formulation also gives almost-everywhere vanishing directly.
+
+The terminal classification and infinite-cost theorems are in
+`IntegrableFunctionalEquationsDetermineThePrimes.lean` and
+`FiniteEnergyFunctionalEquationsDetermineThePrimes.lean`.
+`FiniteEnergyRigidityAnnihilatesTheDefect.lean` proves vanishing of the defect itself.
+Their direct Lean checks and transitive axiom audits use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+### The exact analytic operator
+
+Euler reflection writes the defect kernel as
+`z^(-½+2it)/sin(π/4+πit)`. On the two imaginary rays its squared Mellin weights are
+`4/(1+exp(4πt))` and `4/(1+exp(-4πt))`; their sum is `4`. Mellin–Plancherel gives
+
+    ∫ℝ |J_g(iy)|²dy = π⁻¹∫ℝ |g(t)|²dt,       g∈L¹∩L².
+
+Density defines the unique continuous extension `B:L²(ℝ)→L²(ℝ)` with the same
+norm law. It represents the actual transform: put `s(t)=½+2it` and
+`A(t)=2^s(t)Γ(s(t)/2)/(√πΓ((1-s(t))/2))`. Then
+`|A(t)|=√(2/π)` and `A(t)Γ(1-s(t))=1/sin(πs(t)/2)`. The half-line Mellin unitary
+`M` determines a bijective source map by
+
+    (Mψ_g)(ξ)=½g(-πξ)A(-πξ),       ‖ψ_g‖²=(2π²)⁻¹‖g‖²,
+    J_g(z)=∫₀∞ψ_g(u)e^(-zu)du,    Re z>0.
+
+These transforms exhaust the right-half-plane Hardy class. Their vertical traces
+converge strongly in `L²` to `Bg`; every `L²` test pairing passes to the boundary.
+The range of `B` is exactly the Fourier image of positive-half-line data, and
+`√πB` is unitary onto that space. Thus the analytic transform alone permits every
+Hardy boundary value; the restriction comes from the actual positive atomic theta law.
+
+The constructions are in `TheBoundaryPreservesDefectEnergy.lean`,
+`FiniteEnergyDefectsHaveCanonicalBoundaries.lean`,
+`TheDefectHasAUnitaryMellinSource.lean`,
+`FiniteEnergyDefectsAreLaplaceTransforms.lean`, and
+`FiniteEnergyDefectsConvergeToTheirBoundary.lean`.
+
+### How arithmetic removes the defect's freedom
+
+For a physical tent `T_(h,a)(y)=max(1-|y-a|/h,0)`, the actual theta identity gives
+
+    ½∫ T_(h,a)(u)dν_B(u)
+      = hβ + hΣ_x sinc²(πh‖x‖)cos(2π‖x‖a) + E_g(h,a),
+    E_g(h,a)=∫ T_(h,a)(y)Re(Bg(y))dy,       0<h≤1, a>h.
+
+Cauchy–Schwarz gives `|E_g(h,a)|≤√(2h)‖Bg‖₂`, uniformly in the centre.
+At fixed width, the moving window's `L²` tail gives `E_g(h,a)→0` as `a→∞`.
+The absolutely convergent cosine sums have common distant almost periods.
+The unit atomic mass floor therefore forces the exact two-width law
+`P_h(a)<¼ ⇒ P_(h/2)(a)=0`. In the atom-free interval `(0,1)`, sufficiently small
+tent errors vanish. Lebesgue differentiation gives `Re Bg=0` almost everywhere
+there. Reflection of the actual interior identity makes this real boundary even.
+Consequently its origin tent pairing is zero.
+
+Strong boundary convergence now removes the origin Fejér defect, leaving
+
+    Σ_x sinc²(π‖x‖)=0.
+
+Positivity forces every norm to be a natural number. Independently, the source
+representation gives the height-uniform radial estimate
+
+    |εJ_g(ε+iy)|≤‖ψ_g‖₂√(2ε)/2 → 0.
+
+Thus defects change no atomic Abel residue, and the pole is real. Integer
+periodicity identifies Abel means at zero and one, fixing `β=½`. Positivity fixes
+every atomic multiplicity at one. A missing positive integer would have zero
+atomic residue but the same positive Abel density as zero, a contradiction.
+Finite norm fibres recover the generalized integers and prime generators.
+An empty prime-label system would force both `2β=1` and `β=0`.
+
+The exact tent, recurrence, unit-gap, integer-support and residue theorems are in
+`FiniteEnergyDefectsObeyTheTentIdentity.lean` through
+`FiniteEnergyDefectsPreserveAtomicResidues.lean`; their proof cards are
+`docs/drafts/pipeline/3-formalized/euler-fe-finite-energy-tent-transport.md` and
+`docs/drafts/pipeline/3-formalized/euler-fe-finite-energy-integer-support.md`.
+The integrable boundary argument belongs jointly to `ExactEventTheory`.
+These results settle the stated classification branches; M3–M5 still require
+height transport for ζ itself.
+
+Finally, the bijective Mellin source and injectivity of the half-line Laplace
+transform make `g↦J_g` injective on `L²`. The classified integer measure obeys
+Jacobi's exact theta law; subtracting its Laplace identity from the original law
+gives `J_g=0`, hence `g=0` almost everywhere. In the strip formulation, the actual
+boundary identity makes `Γℝ(½+2it)g(t)` continuous. Its almost-everywhere vanishing
+and the nonzero Gamma factor give pointwise vanishing without an extra continuity
+assumption on `g`.
+
+### Local identification at arbitrary defect cost
+
+Theta data retain the entire polynomially bounded defect even when both unweighted
+costs are infinite. Put `H_g(t)=Γℝ(½+2it)g(t)`. Gamma decay absorbs polynomial
+growth, giving `|H_g(t)|≤K exp(-|t|/2)`. In logarithmic scale the actual kernel is
+
+    K_g(exp u) = (2π)⁻¹ exp(-u/4) ∫ H_g(t) exp(-iut)dt.
+
+The Fourier integral extends holomorphically to `|Im u|<½`. Consequently equality
+of `K_g` and `K_h` on any interval `(a,b)`, `0<a<b`, determines `g=h` almost
+everywhere. The identity theorem propagates equality to all logarithmic scales;
+Fourier injectivity and the nonvanishing Gamma factor recover the original
+defects. This is an exact uniqueness theorem, without a stability estimate or
+an arithmetic recurrence premise.
+
+`LocalThetaDataDetermineTheDefect.lean` constructs this local identification.
+It also closes the integrable classification's defect endpoint: Jacobi's exact
+theta law makes the classified kernel zero, so the uncompleted defect vanishes
+almost everywhere. The original strip identity upgrades this to pointwise
+vanishing, as formalized in `IntegrableRigidityAnnihilatesTheDefect.lean`.
+Thus in either finite-cost class the defect itself is zero; classification does
+not merely identify its underlying Euler system.
+
+### Local Gaussian defects identify complete causal tails
+
+The literal Gaussian imposes a separate rigidity on source deformations. Put
+`ψ(x)=exp(x/2−π exp(2x))`, `a(x)=π exp(2x)` and
+`L=∂x−(1/2−2a(x))`. An outward causal density acts by
+
+    T_K ψ(x) = ∫₀∞ K(t)ψ(x+t)dt.
+
+Its admissibility condition is integrability of the explicit rate density
+
+    q_K(u)=½ exp(−¾ log(1+u)−u) K(½log(1+u)),       u>0.
+
+This includes every measurable complex kernel of exponential order, with
+arbitrary signs and infinite support. The rate change `u=exp(2t)−1` gives,
+for `a(x)>1`,
+
+    T_K ψ(x)=ψ(x) ∫₀∞ q_K(u) exp(−(a(x)−1)u)du,
+    L(T_K ψ)(x)=−2a(x)ψ(x) ∫₀∞ u q_K(u) exp(−(a(x)−1)u)du.
+
+For any open interval `(A,B)` with `π exp(2A)>1`, the local defects of
+`cψ+T_Kψ` and `dψ+T_Hψ` agree exactly when `K=H` almost everywhere on
+the entire positive ray; `c,d` remain arbitrary. The first rate moment is
+holomorphic in the right half-plane. Local equality propagates, and Laplace
+uniqueness applied to `u(q_K−q_H)exp(−u)` identifies the rate densities.
+The strictly positive change-of-variables Jacobian then recovers the original
+causal kernels. No undamped moment assumption is needed.
+An admissible infinite causal correction therefore restores the literal Gaussian
+equation only by cancelling the entire non-scalar kernel.
+
+`TheGaussianDefectDeterminesTheCausalTail.lean` constructs local rate-moment
+recovery. `TheCausalGaussianDefect.lean` proves the actual integral identity,
+exponential-order admission and `causalGaussian_defect_local_iff`, the exact
+scalar ambiguity. This extends the
+Gaussian source constraint beyond finite rational zero surgery. It identifies
+causal deformations from their defect; it does not produce height replication
+for the undeformed ζ.
+
+### Infinite atomic corrections and the causal measure algebra
+
+The source constraint also detects atoms and singular continuous measures.
+For a positive causal measure `μ`, put
+
+    r(t)=exp(2t)−1,   w(t)=exp(t/2−r(t)),   Q_μ=r_*(w μ).
+
+The admission condition is `∫w dμ<∞`; total mass may be infinite. Every causal
+measure with any convergent Laplace transform satisfies it, so logarithmic
+Euler measures in a Dirichlet half-plane are included. The exact identities are
+
+    T_μψ(x)=ψ(x)∫exp(−(a(x)−1)u)dQ_μ(u),
+    L(T_μψ)(x)=−2a(x)ψ(x)∫u exp(−(a(x)−1)u)dQ_μ(u).
+
+Equality of defects on one open interval with `a(x)>1` determines
+`μ|(0,∞)`. Exponential tilting turns the locally observed moment into a finite
+Laplace measure. Analytic uniqueness determines that measure; cancelling the
+positive tilt and the injective rate chart recovers the original source off
+zero. For countably supported `A,B` and absolutely continuous `K,H`, equal
+defects of `T_(A+K)ψ` and `T_(B+H)ψ` therefore force `A|(0,∞)=B|(0,∞)` and
+`K=H`. Signed atomic and continuous corrections cannot cancel each other.
+
+Composition retains the complete infinite sources:
+`w(t+u)≤w(t)w(u)` makes weighted admission closed under causal convolution,
+and Fubini proves `T_(μ*ν)ψ=T_μ(T_νψ)`. In particular, if `A` is a positive
+countably supported causal measure with `A{0}=1`, then
+
+    L T_(A+A*K)ψ = L T_(δ₀+A*H)ψ locally
+      ⇒ A=δ₀ and K=H.
+
+Here `K,H` are positive absolutely continuous causal measures; their difference
+is the signed continuous surgery. Thus even an infinite normalized positive
+Euler correction cannot repair a nonzero continuous Gaussian surgery. The
+positive survivor is local reconstruction of the whole causal source, together
+with its convolution algebra.
+
+The exclusion also holds for normalized real signed atomic operators. Write the
+operator as `A−B`, with `A{0}=B{0}+1`, and put
+
+    μ=A+A*K+B*H,   ν=B+A*H+B*K.
+
+Equal local defects of `T_μψ` and `T_νψ` force `A=B+δ₀` and `K=H`.
+Source separation first fixes the atomic operator. After convolution distributes,
+both continuous sides contain `B*K+B*H`. Gaussian weighting makes this common
+measure finite, so cancellation is valid even when its undamped mass is infinite.
+Removing the strictly positive weight then identifies the original continuous
+measures. This remains a source calibration, not a height-replication theorem for ζ.
+
+The formalizations are `TheGaussianRateMeasureIsLocallyVisible.lean`,
+`TheGaussianDefectDeterminesCausalMeasures.lean`, and
+`AtomicEulerCorrectionCannotRepairGaussianSurgery.lean`, and
+`SignedEulerCorrectionCannotRepairGaussianSurgery.lean`.
+
+### Gaussian prime currents and their continued finite part
+
+The Gaussian transform of the full prime discrepancy has an unscaled finite
+part throughout `0<σ≤1`. Put
+
+    Gσ(y)=Σₙ Λ(n)n^(−σ)e^(−yn²)−∫₁∞u^(−σ)e^(−yu²)du,
+    Bσ(y)=Σρ ½Γ((ρ−σ)/2)y^(−(ρ−σ)/2),
+    A(s)=1/s+Γℝ′/Γℝ(s).
+
+The zero sum is multiplicity-exact. Without any zero-free assumption,
+
+    Gσ(y)+Bσ(y) → A(σ)−ξ′/ξ(σ),       y→0⁺.
+
+The Gamma-subtracted germ of each zero tends to
+`(ρ−½)⁻¹+(σ−ρ)⁻¹`. A summable inverse-square majorant justifies the limit
+through the entire zero series; the trivial-zero and archimedean terms tend
+to `A(σ)`. Thus this law retains the continued background that disappears
+when only the leading oscillation is normalized.
+
+If a finite set `F` contains every zero with `Re ρ≥σ`, the same limit holds
+with `Bσ` replaced by its finite sum over `F`. Every complementary mode tends
+to zero, dominated by the absolutely summable Gamma amplitudes. No uniform
+gap below `σ` is required. In the rigid `¬AAL` world, the actual finite top
+layer therefore suffices at every observation point between top and tail.
+
+For `0<σ<1`, the exact functional equation gives the reflected law
+
+    [Gσ(y)+Bσ(y)]+[G_(1−σ)(y)+B_(1−σ)(y)] → A(σ)+A(1−σ).
+
+The infinite fields on both sides are essential to this statement. Removing
+the finite top on one side does not justify truncating the reflected field.
+This reflects the Mellin weight `σ`; identifying the literal theta action on
+the prime oscillation remains open. The identity supplies no new zero height.
+`TheFinitePartOfTheGaussianPrimeCurrent.lean` contains the full-series,
+finite-layer and reflected laws.
+
+### Conductor-normalized height reflection
+
+The reflected high profile carries a conductor power. With
+`χ(s)=Γℝ(1−s)/Γℝ(s)` and `R(s)=1−conj(s)`, put
+
+    N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it),
+    F_t(s)=N_t(s)ζ(s+it),   J_t(s)=conj(ζ(R(s)+it)).
+
+The exact functional equation gives
+`F_t−J_t=(N_t χ(s+it)−1)J_t`. The normalized Gamma ratio differs from one
+by `O_D(t⁻¹)` on `0<Re s<1`, `|s−½|≤D`, for every radius `D≥0`.
+Convexity bounds the entire reflected ζ-profile there by `O(t^(3/4))`, so
+
+    sup_{0<Re s<1, |s−½|≤D} |F_t(s)−J_t(s)| ≤ C_D t^(−1/4) → 0.
+
+`TheNormalizedHeightReflection.lean` proves this uniform law for actual ζ,
+without a return or boundedness premise. No separation from the strip's
+vertical edges is required. The normalization retains the archimedean drift;
+the law still relates profiles at the same height and does not produce
+same-depth copies at a new height.
+
+There is also an unconditional restriction on ordinary translates. For any
+`τ_j→+∞`, let `U` be a connected open set in the upper half-plane meeting
+`Re s>1`. If `ζ(s+iτ_j)` is locally bounded on `U`, then `U⊆{Re s>½}`.
+No phase alignment or prescribed limit is assumed. A crossing of the critical
+line would contain a reflected disc; boundedness on its left half and Gamma
+decay force convergence to zero on its right half. Vitali and analytic
+uniqueness propagate the zero limit through `U`, contradicting the uniform
+positive Euler lower bound on any fixed line `Re s>1`.
+
+`TheWholeQuadrantCannotSupportReturns.lean` proves this restriction and excludes
+whole-quadrant local boundedness for every escaping sequence. It strengthens the
+corpus's corresponding phase-return restriction by removing phase alignment.
+The whole-quadrant receiver in `ArithmeticAuxiliaryDynamics` therefore has an
+impossible premise. Recurrence on smaller domains strictly right of the line
+remains a separate arithmetic question.
 
 ## Calibration and traps
 
@@ -99,6 +381,21 @@ An exact zero cannot be replaced by a near-zero event. A return of finitely many
 phases does not control a continued Euler tail. A positive pairing does not locate zeros
 unless the arithmetic input preventing fake configurations is proved. Removing a finite
 layer must preserve and verify all Euler, reflection and analytic conditions used.
+
+The source calibration is stronger than positivity alone. The existing
+`RHTower/ThetaSeedTransferQuartet.lean` construction can relocate a hypothetical
+off-line quartet while preserving positive source and seed, exact outward Euler
+resolvent covariance, smooth reflection, mass, leading theta tail and the complete
+real-zero divisor. `ThetaTwoEndedTailLaw.lean` and `ThetaTailGermExpansion.lean`
+identify the resulting rational deformation from its full tail expansion.
+Consequently these properties, even together, do not select the literal theta
+source. The exact Gaussian seed equation is an additional constraint:
+`ThetaGaussianBaseCommutator.lean` proves that one nonzero Green division violates
+it. `ThetaZeroDivisionRateTomography.lean` and
+`ThetaZeroDivisionRateDerivativeWitness.lean` detect finite rational surgeries
+through the loss of complete monotonicity after sufficiently deep prime deletion.
+These are tests of deformed sources. They do not imply that an exceptional zero
+of the original source violates its own Gaussian identity.
 
 ## Position and contribution criteria
 

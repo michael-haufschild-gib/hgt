@@ -3,7 +3,7 @@
 - **ID:** RIAC-elliptic-orientation-quotients
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Statement:** The original orientation-cover and ordinary tuple-orbit counts on the actual elliptic curve satisfy a square-root-scale discrepancy bound.
 
 For `C:Y²Z=X³−XZ²` over `F₃`, take the actual extension `E/F₃` of

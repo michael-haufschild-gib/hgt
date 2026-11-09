@@ -296,7 +296,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | B116 | Linear AAL at one fixed slope `C≥1` (⇔ thick relative crude count at exponent `½+C(Θ∞−½)+ε`) | sub | ZCG, IWT, WL |
 | B117 | A confined companion of the modular horizon (§2.7) | producer | PM, BHR, ASH, CTH |
 | B118′ | Hyperbolic carriers beyond the thin–thick obstruction: every finite-volume embedding excluded? a twisted infinite-volume Green function carrying the torsion? (§2.8) | producer | SOSZ, ACS, HF |
-| B122 | Complete rigidity of Riemann's FE: integrable defect forces the rational primes (§3) | method | APD, BAG, ZCG, SEL, ACS |
+| B122 | Complete rigidity of Riemann's FE: integrable or square-integrable defect forces the rational primes (§3), proved in the Hamburger strip class [L] | method | APD, BAG, ZCG, SEL, ACS |
 | — | ZAL | ≥qRH | whole programme |
 
 ## 2.3 Frankenstein routes
@@ -400,29 +400,37 @@ hold?
 | Rankin–Selberg noncancellation (B109) | completes the cusp-energy receiver | open as to difficulty | adds a receiver |
 | Carriers beyond finite volume (B118′, §2.8) | decides the geometric family | passes | geometry only |
 
-## 2.5 Breakthrough question below AAL, RH and quasi-RH: how much functional equation does a finite layer cost?
+## 2.5 Functional-equation cost of a nonclassical finite layer
 
-**Why not a zero law.** On configurations the dial is strict, `AAL ⊊ LinAt C ⊊ (ZAL⇒RH) ⊊ B13` [L]; every transport law, linear slope and `ZAL⇒RH` contains B13. A T8 question below AAL is a question about the AAL mechanism. Five theorems leave one ingredient, Euler product and FE together (§1.3); §3 asks whether the FE is completely rigid on Euler products. This section is its finite-layer face.
+**Answer (B84) [L].** `D_layer = ∞` in the corpus's Hamburger strip class. Every
+nonclassical countable Beurling system in that class has infinite uncompleted FE defect
+cost `D₁=∫⁻‖g‖ₑ` and infinite defect energy `D₂=∫⁻‖g‖ₑ²`, whether or not it carries
+a finite layer. This follows from complete rigidity (B122, §3).
 
-**The question (B84).** *What is the smallest integrable FE defect of a countable Beurling system other than the rational primes that carries a finite nonempty off-line layer?* The defect is the corpus one: `E(s)−E(1−s)=−β(Γ_ℝ(s−1)−Γ_ℝ(−s))+Γ_ℝ(s)g(Im s/2)` on `Re s=½` with `Γ_ℝζ_B=E+βΓ_ℝ(s−1)` on `Re s=3/2`, and `D=∫‖g‖`. Defect `≤1/6400` forces the rational primes; defect `M` fixes the primes up to height `≍M^{−½}` [L]. So `D_layer≥1/6400`; is it finite?
+The class requires the inverse-3/2 generalized-integer moment; continuity of `E` on
+`½ ≤ Re s ≤ 3/2`; holomorphy inside; `‖E(s)‖ ≤ C/(1+Im(s)²)`; the right-boundary identity
+`Γ_ℝζ_B = E + βΓ_ℝ(s−1)`; and the critical-line identity
+`E(s)−E(1−s)=−β(Γ_ℝ(s−1)−Γ_ℝ(−s))+Γ_ℝ(s)g(Im s/2)`, with measurable,
+polynomially bounded `g`. If either `D₁<∞` or `D₂<∞`, the prime labels are exactly
+the rational primes with their usual norms.
+No smallness, norm-lattice, nonempty-label or recurrence premise is added.
 
-**What a finite-defect fake must look like [D].** On the line, up to the pole term, `|g|=2|ζ_B(½+it)||sin(arg ζ_B(½+it)+θ(t))|` with `θ` the Riemann–Siegel phase. Integrability forces either phase-locking to `θ`, which by the argument principle gives about `(T/2π)log(T/2π)` zeros up to height `T`, or integrability of `ζ_B` on the line. Hence:
-- the corpus one-offs (continuous, discrete, integer-norm) have infinite defect: `ζ_c→1` on vertical lines and they have no critical zeros; the discrete one-off even blows up at `s=½` [L];
-- `ζ·R` with `R` an Euler-factor ratio absolutely convergent on the line has `|g|=2|ζ(½+it)|e^{Re D}|sin Im D|`, `D=log R(½+it)` almost periodic; integrability forces `D` real on the line, hence `R` constant (with an exact FE this is the subcritical Euler rigidity [L]).
+The terminal results are `beurlingSystem_rigidity_of_integrable_defect`,
+`nonclassical_beurling_defect_cost_eq_top`, `beurlingSystem_rigidity_of_finiteEnergy_defect`,
+and `nonclassical_beurling_defect_energy_eq_top` in the two corresponding
+`EulerFETransportTheory/*FunctionalEquationsDetermineThePrimes.lean` modules.
+Direct Lean and transitive axiom audits pass with `propext`, `Classical.choice`,
+`Quot.sound` only.
 
-A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-many critical zeros and an Euler discrepancy from the rational primes that is not absolutely convergent on the critical line.
+**Mechanism.** The defect's boundary tent errors decay. Common almost-periodic returns of
+nested tent pairings transfer the atomic mass floor to the recurrent parts. This kills
+the real boundary defect in the unit gap. The origin sinc-squared pairing then forces
+integer support, and unit-density rigidity recovers the rational primes.
 
-**First step.** Construct, or exclude, a countable system whose primes agree with the rational primes up to height `M^{−½}` and differ beyond it at a positive proportion of primes in every dyadic range, with discrepancy conditionally convergent on the line and defect `O(M)`. Named obstacle: integrability of `ζ(½+it)·Im D(½+it)` for a conditionally convergent prime series `D`.
-
-**What either answer gives.**
-| Answer | Effect on AAL research |
-|---|---|
-| finite `D_layer` | the FE excludes finite layers only by pinning the system: every B13/AAL argument must use the exact FE of ζ; stability, deformation and compactness arguments in spaces of Euler products are dead; the first fake class with Euler product, near-FE and Riemann–von Mangoldt count exists for testing every receiver |
-| `D_layer=∞` | finite defect and a finite layer are incompatible off ζ: a stable Euler–FE exclusion exists in the non-ζ class, the first theorem of the type B112 asks for |
-
-**Tests.** T1: method question. T2: the quantity `D_layer`. T3: the table. T4: no finite rung. T5: calibrated on the fakes. T6: conditionally convergent discrepancies; unrefuted. T7: moves Γ73, Γ124, Γ145, B84, B103. T8: construction problem with one named obstacle.
-
-**Limit.** It decides the form of the mechanism, not AAL.
+**Consequence.** A conditionally convergent prime discrepancy cannot produce a nonclassical
+finite-defect system in this class. Finite-defect deformation supplies no new Euler model;
+the transport mechanism must use exact identities of ζ itself. The theorem does not
+exclude a finite exceptional layer of ζ, prove a finite linear slope, or establish AAL.
 
 ## 2.6 If positivity, Weil positivity and spectral methods are excluded
 
@@ -509,18 +517,96 @@ A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-ma
 |---|---|
 | What it is about | The functional equation as a dynamics on heights, coupled across scales by the Euler product: how a reflection `s↦1−s̄` and a positive prime measure together force an exceptional zero to recur at every larger height. |
 | What it would be like | A rigidity theory of almost-periodic oscillations under a reflection and a positivity constraint. The rigid ¬AAL world (one isolated top, one finite oscillation of `ψ`) plays the role of a hypothetical counterexample, and theorems take it apart by transport. It resembles ergodic rigidity (measure classification) and Hamburger-type uniqueness more than estimates. |
-| Criteria it must meet | Use the Euler product and the FE together and at two scales, so that it fails on the heat family, the `cosh` models, the one-offs and Wolff towers [L]. Act stably or by exact identity, as decided by B122 (§3). Reduce to the local-squares purity theorem at finite rank. Prove transport at the same depth (`η=0`), not near-full tail events. |
+| Criteria it must meet | Use the Euler product and the FE together and at two scales, so that it fails on the heat family, the `cosh` models, the one-offs and Wolff towers [L]. Use exact identities of ζ: B122 excludes nonclassical finite-defect perturbations in the Hamburger strip class (§3). Reduce to the local-squares purity theorem at finite rank. Prove transport at the same depth (`η=0`), not near-full tail events. |
 | Questions it must answer | How does theta modularity transform the oscillation `x^ΘT(log x)`? Why must a positive Euler product that continues to ℂ carry its atoms by zeros, and how does that couple the top to the critical zeros? What forces recurrence at larger heights: the resonant tower at `π/γ`, Poisson reciprocity, or the Euler factorization of the reflected side? What does a finite layer cost in FE defect? |
 | Tools it aims to develop | An FE-to-transport operator (B112); quantitative almost periodicity of the rigid oscillation; resonant-tower identities coupling height `γ` to `(2k+1)γ`; a defect calculus for conditionally convergent prime discrepancies; replication theorems ("one top ⇒ infinitely many tops at the same depth"). |
-| Objects | Zero configurations and the dial `(Θ,Θ∞)`; the rigid ¬AAL world; Euler heads and tails; returns; theta and its reflection; Beurling systems with integrable FE defect; resonant towers; one-offs as calibration. |
+| Objects | Zero configurations and the dial `(Θ,Θ∞)`; the rigid ¬AAL world; Euler heads and tails; returns; theta and its reflection; Beurling systems with integrable or square-integrable FE defect; resonant towers; one-offs as calibration. |
 | Language | transport, replication, isolated top, rigid oscillation, reflection, two-scale coupling, FE defect, layer cost, depth, resonant base. |
-| Mechanisms | Built on: AAL ⇔ zero transport ⇔ tail transport; the strict dial and quantifier collapse; FE rigidity at defect `1/6400` and stability up to height `M^{−½}`; subcritical Euler rigidity; local squares at finite rank. To discover: the replication law, i.e. how the FE turns a height reflection into vertical transport. |
+| Mechanisms | Built on: AAL ⇔ zero transport ⇔ tail transport; the strict dial and quantifier collapse; complete rigidity for integrable or square-integrable uncompleted FE defects in the Hamburger strip class; subcritical Euler rigidity; local squares at finite rank. To discover: the replication law, i.e. how the FE turns a height reflection into vertical transport. |
 
 **Main conjecture (replication law).** A positive Euler product satisfying Riemann's FE cannot carry an isolated almost-periodic oscillation of `ψ` at exponent `Θ>Θ∞`; any top zero recurs at every larger height at the same depth.
 
 **Route.** (1) [L] AAL ⇔ transport; ¬AAL is rigid. (2) The theta reflection maps the top oscillation to exponent `1−Θ`. (3) Positivity between atoms forces the critical zeros to reproduce the reflected oscillation at every scale. (4) Coherent reproduction needs zeros at depth `Θ−½` above every height ⇒ AAL.
 
-**Milestones.** M1 complete FE rigidity or the fake class (§3). M2 `D_layer=∞` in the finite-defect class (§2.5). M3 one quartet of ζ replicates (`k=1`). M4 `LinAt C` for one `C`. M5 AAL.
+**Milestones.** M1 [L] complete FE rigidity in the Hamburger strip class (§3). M2 [L] `D_layer=∞` in the nonclassical part of that class (§2.5). M3 one quartet of ζ replicates (`k=1`). M4 `LinAt C` for one `C`. M5 AAL. M3–M5 remain open.
+
+**Defect calculus and finite-energy rigidity [L].** The actual Hamburger transform
+of every `g∈L²` is the Laplace transform of an explicit bijective Gamma–Mellin source
+with energy `(2π²)⁻¹‖g‖²`. Its vertical traces converge strongly to the canonical
+boundary `Bg`, with `‖Bg‖²=π⁻¹‖g‖²`; `√πB` is unitary onto the Hardy boundary space.
+The actual arithmetic tent identity, vanishing translated-tent errors and the atom
+mass floor force `Re Bg=0` almost everywhere in the unit gap. Reflection and the
+origin Fejér identity force integer support. The bound
+`|εJ_g(ε+iy)|≤‖ψ_g‖₂√(2ε)/2` preserves every atomic residue; integer periodicity
+then fixes `β=½`, unit multiplicities and the full integer lattice.
+`FiniteEnergyFunctionalEquationsDetermineThePrimes.lean` recovers the rational-prime
+labels and proves infinite square energy for every nonclassical system in the
+Hamburger strip class. `FiniteEnergyRigidityAnnihilatesTheDefect.lean` proves that
+the defect itself is zero almost everywhere for the theta identity and pointwise
+for the original strip identity. Direct checks and transitive axiom audits pass. These
+classification results do not supply height transport; M3–M5 remain open.
+
+**Local defect identification [L].** For every measurable polynomially bounded
+defect, its actual theta kernel on one open interval of positive scales determines
+the defect almost everywhere. Gamma damping makes the logarithmic Fourier
+transform holomorphic; analytic continuation and Fourier injectivity recover the
+source even at infinite unweighted cost. This also proves pointwise vanishing of
+the original integrable strip defect after rational-prime classification
+(`LocalThetaDataDetermineTheDefect.lean`, `IntegrableRigidityAnnihilatesTheDefect.lean`).
+
+**Literal Gaussian source constraint [L].** The differential defect of an outward
+causal deformation of `ψ(x)=exp(x/2−π exp(2x))`, observed on one open interval,
+determines its full causal density almost everywhere. The explicit domain admits
+every measurable complex kernel of exponential order. Gaussian rate substitution
+turns the defect into a first-moment Laplace transform; local analytic uniqueness
+and the positive Jacobian recover the kernel. Scalar identity terms are exactly
+the invisible directions (`TheCausalGaussianDefect.lean`). This extends the source
+test beyond finite rational surgery, without establishing replication for ζ.
+
+**Infinite atomic repair obstruction [L].** Local Gaussian-defect data determine
+every causal measure off zero under the admission condition
+`∫exp(t/2−exp(2t)+1)dμ<∞`, allowing infinite undamped mass. Atomic and continuous
+parts are separately determined. This domain contains every causal measure with
+some convergent Laplace transform and is closed under convolution. For a positive
+countably supported `A` with `A{0}=1` and absolutely continuous causal `K,H`,
+local equality `L T_(A+A*K)ψ=L T_(δ₀+A*H)ψ` forces `A=δ₀` and `K=H`.
+`TheGaussianDefectDeterminesCausalMeasures.lean` and
+`AtomicEulerCorrectionCannotRepairGaussianSurgery.lean` prove full source recovery,
+literal composition and exclusion of infinite positive atomic repair. This
+extends to normalized real signed atomic operators: for `A{0}=B{0}+1`, equal
+local defects of `A+A*K+B*H` and `B+A*H+B*K` force `A=B+δ₀` and `K=H`.
+`SignedEulerCorrectionCannotRepairGaussianSurgery.lean` closes the required
+cancellation through a finite Gaussian-weighted common measure. These results
+strengthen the source calibration without settling M3–M5.
+
+**Gaussian finite-part reflection [L].** For the full discrepancy
+`Gσ(y)=ΣΛ(n)n^(−σ)e^(−yn²)−∫₁∞u^(−σ)e^(−yu²)du`, put
+`Bσ(y)=Σρ ½Γ((ρ−σ)/2)y^(−(ρ−σ)/2)` and `A(s)=1/s+Γℝ′/Γℝ(s)`.
+For every `0<σ≤1`, `Gσ+Bσ→A(σ)−ξ′/ξ(σ)` without a zero-free assumption.
+For `0<σ<1`, the sum of reflected finite parts tends to `A(σ)+A(1−σ)`.
+A finite set containing every zero with `Re ρ≥σ` suffices in place of `Bσ`:
+the whole complementary Gamma series vanishes without a uniform gap below `σ`.
+The actual finite top layer under `¬AAL` supplies this subtraction between top
+and tail. `TheFinitePartOfTheGaussianPrimeCurrent.lean` retains the unscaled
+continued background and proves these laws with standard-axiom audits.
+Reflection still involves the full field; new-height replication remains open.
+
+**Conductor-normalized reflection [L].** Put
+`N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.
+The actual error `N_t(s)ζ(s+it)−conj(ζ(R(s)+it))` tends uniformly to zero
+on every bounded part of `0<Re s<1`, with bound `C_D t^(−1/4)`.
+The exact functional equation, normalized Gamma ratio and ζ convexity supply
+the law without a recurrence or boundedness premise
+(`TheNormalizedHeightReflection.lean`). It preserves height; replication remains open.
+
+**Boundedness-domain obstruction [L].** For every `τ_j→+∞`, a connected open
+upper-half-plane domain meeting `Re s>1` on which `ζ(s+iτ_j)` is locally bounded
+lies strictly in `Re s>½`. No phase-return assumption is needed. Reflected
+boundedness and Gamma decay force a local zero limit at any crossing, while
+Vitali propagation and the Euler lower bound forbid that limit. Thus the
+whole-quadrant boundedness receiver has an impossible premise
+(`TheWholeQuadrantCannotSupportReturns.lean`). The normalized reflection law
+above survives; neither result settles M3–M5.
 
 ## 2.11 New field for RH without positivity: transcendence theory of the prime orbit
 
@@ -585,13 +671,21 @@ A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-ma
 
 **Milestones.** M1 carriers beyond finite volume (B118′). M2 a locked presentation on windows of aperture `≤181/250` (every threshold `⊤` there [L]). M3 Riemann–Roch reproducing both genera. M4 Hodge index on windows of growing aperture (§2.4). M5 Hodge index on `S` (RH). Topological: covers over `ℤ[ω]` [L], Jacobi symbols as permutation signs [C], the cover over ℤ, its cohomology.
 
-## 3. The one big question
+## 3. Complete functional-equation rigidity
 
 **Is Riemann's functional equation completely rigid on Euler products?** Precisely (B122): does every countable Beurling system whose zeta satisfies Riemann's FE on the critical line with an **integrable** defect `g` (`∫‖g‖<∞`, the corpus defect of §2.5) have the rational primes as its primes?
+
+**Answer [L].** Yes in the explicit Hamburger strip class of §2.5, for either
+integrable or square-integrable defects, with no bound on the finite norm. The
+proof derives integer support and pole reality; neither
+is assumed. Nonclassical finite-defect systems are excluded, including systems whose
+prime discrepancy is only conditionally convergent on the critical line.
 
 **What is proved [L].**
 | Fact | Module |
 |---|---|
+| arbitrary integrable uncompleted FE defect forces the rational primes and vanishes identically in the strip formulation; every nonclassical defect cost is infinite | `EulerFETransportTheory/IntegrableFunctionalEquationsDetermineThePrimes`, `IntegrableRigidityAnnihilatesTheDefect` |
+| arbitrary square-integrable uncompleted FE defect forces the rational primes and vanishes identically in the strip formulation; every nonclassical defect energy is infinite | `EulerFETransportTheory/FiniteEnergyFunctionalEquationsDetermineThePrimes`, `FiniteEnergyRigidityAnnihilatesTheDefect` |
 | exact FE forces the rational primes (theta-relation rigidity) | `ArithmeticPositiveDuality/BeurlingRiemannFunctionalEquationRigidity` |
 | defect `≤1/6400` forces the rational primes | `ArithmeticPositiveDuality/SmallIntegrableDefectsForceTheRationalPrimes` |
 | defect `M` fixes the primes up to height `≍M^{−½}`; prime mismatch below `N` forces defect `>1/(400N²)` | `ArithmeticPositiveDuality/ApproximateFunctionalEquationDeterminesThePrimes`, `BeurlingOneOffZeroCountermodelsAndDefectTradeoff` |
@@ -599,18 +693,17 @@ A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-ma
 | degree three: FE, principal parts and finitely many coefficients allow right-hand zeros | `SelbergClass/FunctionalEquationTwinsWithRightHandZeros` |
 | one-offs of every positive class carry finite layers; none satisfies the FE | `ArithmeticPositiveDuality/TheCriticalLineFirewall`, `ADiscreteBeurlingOneOff` |
 
-**What is deduced [D].** Integrability of the defect forces phase-locking of `ζ_B(½+it)` to the Riemann–Siegel phase, hence Riemann–von Mangoldt-many zeros, unless `ζ_B` is integrable on the line; absolutely convergent Euler perturbations of ζ have non-integrable defect. So a non-ζ system with finite defect differs from the rational primes beyond height `M^{−½}` by a discrepancy that is conditionally convergent on the line (§2.5).
-
-**What an answer does.**
-| Answer | Effect |
-|---|---|
-| **B122 true (complete rigidity)** | The FE is an identity that only ζ satisfies to integrable precision. Every argument that excludes off-line zeros in a neighbourhood of ζ in the space of Euler products is dead: deformation and stability arguments for B13, AAL and `ZAL⇒RH`, FE-to-transport by perturbation (B112), compactness in spaces of approximate Euler–FE functions (B84, B103, B80 within Beurling systems). The Γ core must use exact identities of ζ itself — the integer-degree Hasse–Weil identity, the `ℍ³` identity, local squares — and the firewall table of fakes is complete. |
-| **B122 false** | A new fake class exists: Euler products with near-FE and Riemann–von Mangoldt-many critical zeros, the closest objects to ζ the corpus can build. Every receiver of the finite stratum and every AAL mechanism must be tested against it; §2.5 asks whether it carries finite layers; if it never does, a stable Euler–FE exclusion exists and becomes the template for B13. |
+**Effect on the research programme.** The finite-defect class contains only ζ's prime
+system. Deformation, stability and compactness within this class cannot produce a
+nonclassical neighbour against which to test an exceptional layer. The Γ core must
+construct height transport from exact identities of ζ. The integer-degree Hasse–Weil
+identity, the `ℍ³` identity and local squares remain possible inputs; the classification
+alone proves no transport law and excludes no off-line zero of ζ.
 
 **Why this one.**
-- **It decides the last unrefuted ingredient.** Positivity, Euler products alone, counting, continuation, FE alone, family-uniform laws and scale-separated statistics are refuted [L]. Whether Euler + FE can act stably decides the strategy of the whole Γ core and of every finite-stratum receiver (HF, HKT, AKLT, CWS, SC, ZCG, WD, LA, FFP reach RH only through B13).
+- **It decides the last unrefuted ingredient.** Positivity, Euler products alone, counting, continuation, FE alone, family-uniform laws and scale-separated statistics are refuted [L]. Complete finite-defect rigidity selects the exact-identity branch for the Γ core and every finite-stratum receiver (HF, HKT, AKLT, CWS, SC, ZCG, WD, LA, FFP reach RH only through B13).
 - **It kills or establishes either way.** True: kills the stability strategies of BAG, APD, ZCG, SEL, ACS. False: establishes the calibration class every route must pass.
-- **It is tractable.** Rigidity at `1/6400`, the height-`M^{−½}` stability and the subcritical rigidity are in Lean; the open case is one named obstacle — conditionally convergent prime discrepancies on the critical line. It is not a famous problem in disguise: neither answer says anything about the zeros of ζ.
+- **Its analytic scope is explicit.** Neither conditional convergence of the prime discrepancy nor large finite defect evades the proved classification. Outside the stated strip and defect classes, those analytic conditions must be established separately. The classification alone says nothing about the zeros of ζ.
 - **It has a first rung.** Systems that equal the rational primes up to height `P` and move a positive proportion of primes in every dyadic range beyond `P` by relative amounts `δ_p`: compute the defect as a function of `(P,δ)` and decide whether it can be finite.
 
 | Kind | Best form | T8 verdict | Evidence |
@@ -619,10 +712,10 @@ A finite-layer fake with finite defect therefore needs Riemann–von Mangoldt-ma
 | Configuration laws | AAL (B83), `ZAL⇒RH` (B111), `LinAt C` (B116) | fail: contain B13 | [L] |
 | Tower crude count | B110 | fails: contains AAL | [L] |
 | Critical curve | `R_polar=W` (B104, §2.4) | passes; Σ only | [L] |
-| FE layer cost | `D_layer` (B84, §2.5) | passes; nested in B122 | [L/D] |
+| FE layer cost | `D_layer` (B84, §2.5) | infinite in the nonclassical Hamburger strip class | [L] |
 | Geometric carriers | B118′ (§2.8) | passes; geometry only | [S/D] |
 | Count, damping | B87, B88 | fail: RH | [L/S] |
-| **FE rigidity** | **B122** | **passes; decides the Γ core and the finite-stratum receivers** | **[L/D]** |
+| **FE rigidity** | **B122** | **proved in the Hamburger strip class; selects the exact-identity branch** | **[L]** |
 
 ### First steps
 1. Write the defect of a system equal to the rational primes up to `P`, with primes `p(1+δ_p)` beyond `P`, as `2|ζ(½+it)|e^{Re D}|sin Im D|` plus lower-order terms, and identify the `δ` for which `Im D(½+it)` is small in mean against `|ζ(½+it)|`.

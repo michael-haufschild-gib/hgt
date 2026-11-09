@@ -24,6 +24,29 @@ import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovSideIsBlindToRealZeros
 import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtTheSquareDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTraceZetaFunctionAtThePowerDegrees
 import GaloisForLFunctions.SurfaceOfSpecZ.BaseChangeAtThePowerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtThePrimePowerDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.TheStepanovCountAtThePrimeDegrees
+import GaloisForLFunctions.SurfaceOfSpecZ.TheEffectiveClassesOfThePrimePlanes
+import GaloisForLFunctions.SurfaceOfSpecZ.TheWidthIsTheStepanovExponentAtThePrimes
+import GaloisForLFunctions.SurfaceOfSpecZ.WeilPositivityAtThePrimeTwoBumps
+import GaloisForLFunctions.SurfaceOfSpecZ.TheOtherSideSeesEveryZero
+import GaloisForLFunctions.SurfaceOfSpecZ.ARealZeroMasksTheShallowerZeros
+import GaloisForLFunctions.SurfaceOfSpecZ.TheTwoSidesOfADirichletLFunction
+import GaloisForLFunctions.SurfaceOfSpecZ.TheOtherSideAtThePrimes
+import GaloisForLFunctions.SurfaceOfSpecZ.TheZeroFreeStripImprovesItself
+import GaloisForLFunctions.SurfaceOfSpecZ.TheGeometricDegreesAlias
+import GaloisForLFunctions.SurfaceOfSpecZ.TheTensorPowerTrick
+import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimesSampleEveryTopLayer
+import GaloisForLFunctions.SurfaceOfSpecZ.TheRankinSquareDivergesAtTwiceTheTopWeight
+import GaloisForLFunctions.SurfaceOfSpecZ.TheOtherSideSamplesEveryTopLayer
+import GaloisForLFunctions.SurfaceOfSpecZ.TheSamplingSetsOfTheTopLayer
+import GaloisForLFunctions.SurfaceOfSpecZ.ARealTopKeepsTheLowerSideBounded
+import GaloisForLFunctions.SurfaceOfSpecZ.TheTensorPowersHaveACommonAbscissa
+import GaloisForLFunctions.SurfaceOfSpecZ.ThePrimesInAResidueClassFromBothSides
+import GaloisForLFunctions.SurfaceOfSpecZ.TheLowerSideSeesTheSignOfTheTopLayer
+import GaloisForLFunctions.SurfaceOfSpecZ.AlmostAllPrimesSuffice
+import GaloisForLFunctions.SurfaceOfSpecZ.TheGapMethodIterates
+import GaloisForLFunctions.SurfaceOfSpecZ.TheOtherSideAtEveryGapSet
 import GaloisForLFunctions.SurfaceOfSpecZ.HyperbolicQuotientsJetCarriersAndCoupledDamping
 
 /-!
@@ -62,7 +85,13 @@ pair `{¼, ¾}` it holds while the pair is off the line, as a real Frobenius eig
 an upper bound on point counts and needs the twist. As Bombieri needs only the even extensions, the
 square degrees suffice: an upper bound on the smoothed point counts at the degrees `n²` is RH. Base
 change holds as for curves: for every `k` the degrees `nᵏ` decide RH from one side, through the trace
-zeta function `Σ_z e_z ζ(s − kz)`, whose poles `1 + kz` are the zeros moved by the base change. The count
+zeta function `Σ_z e_z ζ(s − kz)`, whose poles `1 + kz` are the zeros moved by the base change. The
+prime powers decide RH from one side: the prime gaps put the zeros in `Re ρ ≤ 5/8`, and then the
+von Mangoldt series `−Σ_z e_z ζ'/ζ(s − z)` continues right of `1`. The primes alone suffice (the
+higher prime powers add a series holomorphic on `Re s > 7/8`), so RH is the copositivity of the prime
+planes: `δ_p ≥ 0` on the effective classes `xΓ_1 + yΓ_p`, already on `Γ_1 + Γ_p`. Quantitatively,
+for `0 ≤ a < ½` the zero width is `≤ a` iff `2 Re S(log p) ≥ −K p^a` at every prime. In Weil's
+language: positivity on the countable family of two-bump tests `B + τ_{log p}B` is RH. The count
 door is decided plane by plane: RH holds iff each plane `⟨Γ_1, Γ_n⟩` carries an `ℕ`-valued binary count
 whose Tate limit is its defect. The prime degrees alone decide RH through their pairs `⟨Γ_p, Γ_q⟩`; on the planes `⟨Γ_1, Γ_p⟩`
 they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `1/12` by Huxley. In hyperbolic three-space `ℍ³`, only pointwise rotations around the vertical degree geodesic preserve the off-diagonal archimedean Frobenius, any discrete finite-covolume quotient triggers a thin–thick folding dichotomy while parabolic cusps diverge harmonically at `s = ½`, the pure trivial-zero jets have infinite rank on coprime primes and are carried by a dilation-covariant causal monomial bundle on `L²(0, ∞)`, and counterterm-free positive damping requires coherent archimedean–torsion correlation locking (impossible on atomic degrees below `N log N`, equivalent to RH on smoothed Frobenius graphs, and impossible on either channel alone).

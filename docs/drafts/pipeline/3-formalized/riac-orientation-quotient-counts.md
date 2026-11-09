@@ -3,7 +3,7 @@
 - **ID:** RIAC-orientation-quotient-counts
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Source:** [Curve orientation counts](../1-in-progress/riac-curve-orientation-square-root.md)
+- **Source:** [Curve orientation counts](riac-curve-orientation-square-root.md)
 - **Statement:** The signed transporter mass is the difference of two independently defined arithmetic orbit counts.
 
 For a finite group acting on a finite set `X`, a character `χ:G→{±1}`

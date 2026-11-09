@@ -3,7 +3,7 @@
 - **ID:** RIAC-independent-Frobenius-orbits
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean); classical finite-field calibration
-- **Source:** [discriminant-cover construction](../1-in-progress/riac-discriminant-cover-signed-counts.md)
+- **Source:** [discriminant-cover construction](riac-discriminant-cover-signed-counts.md)
 - **Statement:** For any finite group acting on a finite label set, an explicitly constructed finite extension supplies exactly `q^n` Frobenius-stable tuple orbits. The proof uses actual bijections and no Möbius cancellation theorem.
 
 ## Construction
