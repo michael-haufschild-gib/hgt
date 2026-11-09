@@ -1,8 +1,8 @@
 # Divisor recovery under arbitrary damping contraction
 
 - **Obstacle:** B13, B134.
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE — Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 
 ## Statement
 
@@ -17,7 +17,7 @@ For the pole-and-divisor filter of degree `d`, every eventually positive
 Here `mρ` is the actual analytic multiplicity. No contraction-rate condition
 such as `dκ<r` remains. Raw growth still depends on the attenuated Gamma mode.
 
-## Proof route
+## Proof
 
 Choose `σ<c<Re ρ` outside the finitely many exceptional abscissae, with
 `a(c−σ)/2<r`. Shift the complete filtered Euler integral from `Re z=2`
@@ -59,6 +59,15 @@ exponential gap remains `a(1−Re ρ)/2+π/4`.
   arbitrary-contraction limit, simultaneous raw decay and normalized recovery,
   and actual-divisor consequence of failure of AAL.
 
+The arbitrary-contraction module passes direct source audit without warnings.
+Its five audited declarations are:
+
+- `tendsto_divisorDampingFilter_scaled_value_of_tendsto`
+- `arbitrary_contracting_prime_filter_reads_selected_zero`
+- `prime_filter_decay_and_normalized_divisor_recovery`
+- `divisorDampingFilter_limit_constant_ne_zero`
+- `not_asymptoticAbscissaLaw_has_arbitrarily_contracting_prime_filters`
+
 The contour module compiles without warnings; all six transitive audits contain
-only `propext`, `Classical.choice`, and `Quot.sound`. Its final direct source
-audit and verification of the arbitrary-contraction module remain required.
+only `propext`, `Classical.choice`, and `Quot.sound`, as do all five limit-module
+audits. The final direct contour source audit is pending.

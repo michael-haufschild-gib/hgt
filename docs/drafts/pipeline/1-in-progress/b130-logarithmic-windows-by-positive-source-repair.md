@@ -72,7 +72,9 @@ The first coefficient is positive since `g(-R)≥u`.
   lower grid errors, grid polynomial transform, positive outer bands, compact
   Laplace margins, and uniform weighted approximation bounds proved.
   Checked capstones depend only on `propext`, `Classical.choice`, `Quot.sound`.
-- Complete positive-source repair assembly is undergoing Lean checking.
+- `PositiveLaplaceRepair.exists_positive_average_of_laplace_positive` proves
+  complete positive-source repair at arbitrarily small mesh. Its transitive
+  axiom audit contains only the standard three axioms.
 - Missing: actual quartet source specialization, preservation of its selected
   mode, theta moment bound `O(|s| log(2+|s|))`, logarithmic leakage, and
   continuous and prime-window conclusions.

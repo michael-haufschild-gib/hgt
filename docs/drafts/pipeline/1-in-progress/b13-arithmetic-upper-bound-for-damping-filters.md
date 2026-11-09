@@ -44,6 +44,11 @@ It forces decay when `dκ≥a(1−σ)/2`, including equality. The exceptional-la
 growth theorem applies when `dκ<a(β−σ)/2−π/4`; the two regimes are disjoint.
 No independent bound contradicting the exceptional-layer signal is proved.
 
+The normalized divisor limit now holds for every positive `h(t)→0`.
+Thus raw decay at the arithmetic threshold coexists with nonzero normalized
+recovery; contraction-induced smallness is not a contradictory upper estimate.
+See `../3-formalized/b13-unrestricted-contracting-damping-limit.md`.
+
 An upper estimate on one unbounded sequence of heights would suffice,
 because the filtered lower law holds at every sufficiently large height.
 A fixed-damping mean-square limit does not establish such a sequence for

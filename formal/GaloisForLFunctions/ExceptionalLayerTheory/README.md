@@ -137,8 +137,18 @@ prime sum divided by `h(t)^d K(y,ρ₀−s)` tends to
 `−mρ₀(ρ₀−1)Π_{ρq≠ρ₀}(ρ₀−ρq)≠0`, and its norm tends to infinity.
 The full infinite error is controlled before taking this diagonal limit.
 Thus exponentially narrowing damping windows still recover the exceptional
-divisor at all large heights. The equality boundary and unrestricted
-contraction in the normalized limit remain open.
+divisor at all large heights. The raw equality boundary remains open.
+
+`ArbitraryDampingContractionReadsTheDivisor.lean` removes the contraction-rate
+restriction from normalized recovery: every eventually positive `h(t)→0`
+gives the same nonzero quotient limit whenever `r>0`.
+`ContourBoundsForFiniteDivisorFilters.lean` shifts the complete Euler integral
+to a regular line `σ<c<Re ρ₀`. No Gamma pole is crossed, and the full error is
+`O(h^d(1+|t|)^(d+1) exp(at(c−σ)/2))`. Choosing `a(c−σ)/2<r` makes its
+normalized value tend to zero independently of the spacing. At
+`dκ≥a(1−σ)/2`, raw arithmetic decay therefore coexists with nonzero normalized
+divisor recovery. Smallness produced by contraction cannot itself exclude
+an exceptional layer.
 
 `EulerBoundsForDampingFilters.lean` proves the independent arithmetic bound
 `|A(t)|≤C h^d(1+|t|)^d exp(at(c−σ)/2)` for every `c>max(1,σ)` and
