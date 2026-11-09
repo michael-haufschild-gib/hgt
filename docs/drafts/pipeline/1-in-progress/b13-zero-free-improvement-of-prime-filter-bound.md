@@ -12,7 +12,7 @@ prove independently of a finite-layer assumption that, eventually in `t`,
 `|A_{P_h}(t)| ≤ C h^d (1+t)^N`
 `  · exp(a(1−σ)t/2 − b t/log(2t))`, uniformly for `0≤h≤1`,
 
-with `b>0`. This would include the previously missing contraction boundary
+for every prescribed `b>0`, with constants depending on `b`. This would include the previously missing contraction boundary
 `dκ=a(1−σ)/2`: the raw prime filter would still tend to zero there.
 It would not close the fixed rate gap to an exceptional zero `β<1`.
 
@@ -30,6 +30,15 @@ contributes `h` uniformly across the rectangle. Horizontal edges and the
 unshifted Euler tails have Gaussian decay at `|v|≥t/2`; choosing `ε`
 small makes their exponential rate strictly lower than `a(1−σ)/2`.
 No pole regularization or zero subtraction is required for this local shift.
+
+Concretely, take `ε=min(1/16,1/(16a))`, `η=2b/a`, and use the
+Littlewood arbitrary-constant zero-free and derivative bounds. The fixed
+kernel strip is `[(1−σ)/2,9/8−σ]`; eventually it contains the contour.
+After polynomial weights are absorbed, the Gamma envelope is `exp(−|v|/2)`.
+Truncation at `t/2` then costs `exp(−t/8)`, and each horizontal edge
+costs `exp(−t/4)`. Since `aε/2≤1/32`, both errors are absorbed by
+`exp(a(1−σ)t/2−bt/log(2t))` eventually. The left segment has precisely
+this exponent; its length and `log²(2t)` cost only three polynomial powers.
 
 ## Dependencies and status
 

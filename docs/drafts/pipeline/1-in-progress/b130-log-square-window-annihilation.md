@@ -37,7 +37,7 @@ Put `A=xiLineTwoLogDerivConstant`, `E=log(T+2)`, and
 
 `head(T)≤40π(A+2)E²`, `tailSquare(T)≤16π²E/T`.
 
-For `T≥D`, `E≥1`, and `s=D+T≤2T`, the mixed moment is at most
+For `D≥0`, `T≥max(3,exp(12),D)`, `E≥1`, and `s=D+T≤2T`, the mixed moment is at most
 `C₀TE²`. Set `r₀=2(C₀+1)` and local radius `r₀E²/2`.
 If `E²≥D+1` and `|t|≤T+B`, then
 
@@ -45,7 +45,8 @@ If `E²≥D+1` and `|t|≤T+B`, then
 
 Thus radius `r₀E²` should suffice continuously, uniformly in the chosen
 depth exponent. Prime windows of radius `2r₀E²` leave this radius after
-the prime-gap transfer. These inequalities await the Lean audit.
+the prime-gap transfer. These inequalities pass Lean in
+`LogSquareWindowLeakage.lean`, with only the standard three axioms.
 
 ## Corpus inputs
 
@@ -60,6 +61,7 @@ the prime-gap transfer. These inequalities await the Lean audit.
 The mixed moment bound and its infinite translated leakage inequality
 pass Lean in `ScaleLocality/MixedPositiveMoments.lean`. Uniform zeta prefix
 estimates pass Lean in `ZetaMixedMomentBounds.lean`; both axiom audits
-contain only the standard three axioms. Log-square leakage and prime-window
-transfer remain under formalization. The arithmetic lower bound itself and
+contain only the standard three axioms. The log-square leakage estimate
+also passes Lean. Explicit tail deletion, continuous depth detection, and
+prime-window transfer await their checks. The arithmetic lower bound itself and
 arbitrarily slowly growing windows remain open. No external novelty claim.

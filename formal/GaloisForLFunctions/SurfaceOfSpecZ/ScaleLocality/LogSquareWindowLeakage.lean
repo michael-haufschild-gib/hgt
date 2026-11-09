@@ -83,8 +83,10 @@ theorem zetaMixedMomentBound_le_logSquare {D T : ℝ} (hD : 0 ≤ D) (hDT : D �
   have htail : zetaTailSquareBound T ≤ 16 * Real.pi ^ 2 * E / T := by
     have hh := mul_le_mul_of_nonneg_left
       (div_le_div_of_nonneg_right hlog hT0.le) (show 0 ≤ 16 * Real.pi ^ 2 by positivity)
-    dsimp only [zetaTailSquareBound]
-    convert hh using 1 <;> ring
+    calc
+      zetaTailSquareBound T = 16 * Real.pi ^ 2 * (Real.log T / T) := rfl
+      _ ≤ 16 * Real.pi ^ 2 * (E / T) := hh
+      _ = _ := by ring
   have hsq : (D + T) ^ 2 / 2 ≤ 2 * T ^ 2 := by
     have hh := pow_le_pow_left₀ hs0 hs 2
     nlinarith only [hh]
