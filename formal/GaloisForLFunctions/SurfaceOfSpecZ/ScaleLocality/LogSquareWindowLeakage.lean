@@ -34,7 +34,9 @@ private theorem zetaHeadShiftBound_le_logSquare {T : ℝ} (hT : 3 ≤ T)
   have hlog6 : Real.log (T + 6) ≤ 2 * E := by
     have hh := Real.log_le_log (show 0 < T + 6 by linarith only [hT])
       (show T + 6 ≤ (T + 2) ^ 2 by nlinarith only [hT, sq_nonneg T])
-    simpa only [Real.log_pow, Nat.cast_ofNat] using hh
+    rw [Real.log_pow] at hh
+    norm_num at hh
+    exact hh
   have hlog1 : Real.log (T + 1) ≤ E :=
     Real.log_le_log (by linarith only [hT]) (by linarith)
   have ha : A + Real.log (T + 6) ≤ (A + 2) * E := by
@@ -49,7 +51,8 @@ private theorem zetaHeadShiftBound_le_logSquare {T : ℝ} (hT : 3 ≤ T)
     linarith only [hh]
   have hm := mul_le_mul ha hb hb0 (show 0 ≤ (A + 2) * E by positivity)
   have hm' := mul_le_mul_of_nonneg_left hm (show 0 ≤ 20 * Real.pi by positivity)
-  calc zetaHeadShiftBound T = 20 * Real.pi *
+  calc
+    zetaHeadShiftBound T = 20 * Real.pi *
         ((A + Real.log (T + 6)) * (1 + Real.log (T + 1))) := by
       unfold zetaHeadShiftBound A
       ring
@@ -70,7 +73,8 @@ theorem zetaMixedMomentBound_le_logSquare {D T : ℝ} (hD : 0 ≤ D) (hDT : D �
   have hs : D + T ≤ 2 * T := by linarith only [hDT]
   have hh := zetaHeadShiftBound_le_logSquare hT hE
   have hhead : (D + T) * zetaHeadShiftBound T ≤ 80 * Real.pi * (A + 2) * T * E ^ 2 := by
-    calc _ ≤ (D + T) * (40 * Real.pi * (A + 2) * E ^ 2) :=
+    calc
+      _ ≤ (D + T) * (40 * Real.pi * (A + 2) * E ^ 2) :=
         mul_le_mul_of_nonneg_left hh hs0
       _ ≤ (2 * T) * (40 * Real.pi * (A + 2) * E ^ 2) :=
         mul_le_mul_of_nonneg_right hs (by positivity)
@@ -88,7 +92,8 @@ theorem zetaMixedMomentBound_le_logSquare {D T : ℝ} (hD : 0 ≤ D) (hDT : D �
     change 1 ≤ E at hE
     nlinarith only [hE, sq_nonneg (E - 1)]
   have hquad : ((D + T) ^ 2 / 2) * zetaTailSquareBound T ≤ 32 * Real.pi ^ 2 * T * E ^ 2 := by
-    calc _ ≤ ((D + T) ^ 2 / 2) * (16 * Real.pi ^ 2 * E / T) :=
+    calc
+      _ ≤ ((D + T) ^ 2 / 2) * (16 * Real.pi ^ 2 * E / T) :=
         mul_le_mul_of_nonneg_left htail (by positivity)
       _ ≤ (2 * T ^ 2) * (16 * Real.pi ^ 2 * E / T) :=
         mul_le_mul_of_nonneg_right hsq (by positivity)

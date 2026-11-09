@@ -117,7 +117,7 @@ window length `L>0`, small fixed shifts have distinct ordinate nodes
 selected multiplicity, because `Wγ(t+jh)/Wγ(t)→zγ^j`. Consequently every
 sufficiently late interval `[t,t+L]` contains an arbitrarily large corrected
 current reading. This strengthens bounded-gap recurrence to every positive
-window length; it still needs an independent arithmetic upper estimate.
+window length; a contradictory arithmetic upper estimate remains missing.
 
 `DampingFiltersReadTheExceptionalDivisor.lean` gives same-height detection
 using literal prime sums. Geometric damping changes multiply Mellin modes
@@ -127,7 +127,8 @@ quotient tends to its nonzero multiplicity-weighted polynomial value, so the
 filtered prime sum grows at every large height. All damping samples can lie
 inside any prescribed positive logarithmic window. The observable has no
 continued-zeta term; the continued term appearing in its proof is `O(t)` and
-vanishes after normalization. An arithmetic upper estimate is still missing.
+vanishes after normalization. The independent Euler bound below is insufficient
+to contradict this growth.
 
 `ExponentiallyNarrowDampingReadsTheDivisor.lean` permits spacing
 `h(t)=exp(−κt)`. For a selected zero `ρ₀`, let
@@ -138,6 +139,15 @@ The full infinite error is controlled before taking this diagonal limit.
 Thus exponentially narrowing damping windows still recover the exceptional
 divisor at all large heights. The equality boundary and unrestricted
 contraction in the normalized limit remain open.
+
+`EulerBoundsForDampingFilters.lean` proves the independent arithmetic bound
+`|A(t)|≤C h^d(1+|t|)^d exp(at(c−σ)/2)` for every `c>max(1,σ)` and
+`0≤h≤1`. Absolute Euler convergence and Mellin inversion retain the whole
+filter before taking norms. Consequently exponential contraction forces the
+literal prime filter to zero when `dκ>a(1−σ)/2`, without a finite-layer
+assumption. This decay regime is disjoint from exceptional-layer growth:
+the remaining rate gap is `a(1−β)/2+π/4`. A sharper arithmetic estimate
+must retain additional cancellation of the prime phases.
 
 ## Mechanisms and tools
 

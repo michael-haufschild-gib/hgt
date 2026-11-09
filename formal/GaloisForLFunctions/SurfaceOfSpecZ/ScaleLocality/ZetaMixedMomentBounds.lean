@@ -50,7 +50,8 @@ theorem sum_zetaCopyShift_abs_le {H : ℝ} (hH : 0 ≤ H) (F : Finset XiZeroCopy
   have hsum : ∑ q ∈ F, 1 / |zeroOrdinate q| ≤
       ∑ q ∈ xiCopiesBelow H, 1 / |zeroOrdinate q| :=
     Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => by positivity)
-  calc (∑ q ∈ F, |zetaCopyShift q|) = Real.pi * ∑ q ∈ F, 1 / |zeroOrdinate q| := by
+  calc
+    (∑ q ∈ F, |zetaCopyShift q|) = Real.pi * ∑ q ∈ F, 1 / |zeroOrdinate q| := by
       rw [Finset.mul_sum]
       apply Finset.sum_congr rfl
       intro q _
@@ -84,7 +85,8 @@ private theorem zetaCopyShift_sq_le_norm_inv (q : XiZeroCopy) :
     exact hh
   have hγ0 : zeroOrdinate q ≠ 0 := xiCopyOrdinate_ne_zero q
   have hn0 : 0 < ‖xiSpectralPoint q‖ := norm_pos_iff.mpr (xiSpectralPoint_ne_zero q)
-  calc zetaCopyShift q ^ 2 = Real.pi ^ 2 / zeroOrdinate q ^ 2 := by
+  calc
+    zetaCopyShift q ^ 2 = Real.pi ^ 2 / zeroOrdinate q ^ 2 := by
       rw [zetaCopyShift, div_pow]
     _ ≤ (4 * Real.pi ^ 2) / ‖xiSpectralPoint q‖ ^ 2 := by
       apply (div_le_div_iff₀ (sq_pos_of_ne_zero hγ0) (sq_pos_of_pos hn0)).mpr
@@ -99,7 +101,8 @@ theorem sum_zetaCopyShift_sq_le {H : ℝ} (hH : Real.exp 12 ≤ H) (F : Finset X
   have hre (q : XiZeroCopy) : (xiSpectralPoint q).re = zeroOrdinate q := by
     simp [xiSpectralPoint, zeroOrdinate]
   have htail := sum_inv_norm_sq_le hH F (fun q hq => by rw [hre]; exact hF q hq)
-  calc (∑ q ∈ F, zetaCopyShift q ^ 2) ≤
+  calc
+    (∑ q ∈ F, zetaCopyShift q ^ 2) ≤
         4 * Real.pi ^ 2 * ∑ q ∈ F, (‖xiSpectralPoint q‖ ^ 2)⁻¹ := by
       rw [Finset.mul_sum]
       exact Finset.sum_le_sum fun q _ => zetaCopyShift_sq_le_norm_inv q
@@ -123,7 +126,8 @@ theorem zeta_mixed_finite_cost_le {H : ℝ} (hH : Real.exp 12 ≤ H)
     (fun q hq => lt_of_not_ge (Finset.mem_filter.mp hq).2)
   have hlo : (∑ q ∈ L, min |zetaCopyShift q * s| (s ^ 2 * zetaCopyShift q ^ 2 / 2)) ≤
       |s| * zetaHeadShiftBound H := by
-    calc _ ≤ ∑ q ∈ L, |s| * |zetaCopyShift q| := by
+    calc
+      _ ≤ ∑ q ∈ L, |s| * |zetaCopyShift q| := by
         apply Finset.sum_le_sum
         intro q _
         simpa only [abs_mul, mul_comm] using
@@ -132,7 +136,8 @@ theorem zeta_mixed_finite_cost_le {H : ℝ} (hH : Real.exp 12 ≤ H)
       _ ≤ _ := mul_le_mul_of_nonneg_left hhead (abs_nonneg s)
   have hhi : (∑ q ∈ R, min |zetaCopyShift q * s| (s ^ 2 * zetaCopyShift q ^ 2 / 2)) ≤
       (s ^ 2 / 2) * zetaTailSquareBound H := by
-    calc _ ≤ ∑ q ∈ R, (s ^ 2 / 2) * zetaCopyShift q ^ 2 := by
+    calc
+      _ ≤ ∑ q ∈ R, (s ^ 2 / 2) * zetaCopyShift q ^ 2 := by
         apply Finset.sum_le_sum
         intro q _
         calc _ ≤ s ^ 2 * zetaCopyShift q ^ 2 / 2 := min_le_right _ _

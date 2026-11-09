@@ -1,8 +1,8 @@
 # Arithmetic upper bound and fast contraction of the prime filter
 
 - **Obstacle:** B13.
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 
 ## Statement
 
@@ -56,4 +56,8 @@ is their complete-filter upper estimate uniform in spacing and height,
 and its unconditional fast-contraction consequence.
 
 Source: `ExceptionalLayerTheory/EulerBoundsForDampingFilters.lean`.
-Direct Lean verification is in progress; no successful audit claimed yet.
+Direct source audit passed without warnings. The four audited declarations are
+`exists_divisorDampingFilter_euler_bound`, `primeDampingFilter_eq_euler_integral`,
+`exists_primeDampingFilter_arithmetic_bound`, and
+`tendsto_primeDampingFilter_zero_of_fast_contraction`.
+Their transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`.

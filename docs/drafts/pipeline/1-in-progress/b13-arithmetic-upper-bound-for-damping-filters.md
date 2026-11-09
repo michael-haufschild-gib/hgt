@@ -15,14 +15,14 @@ The bound must not assume the zero exclusion it is intended to prove.
 
 The absolutely convergent Euler region gives the bound
 `|A(t)| ≤ C h^d (1+t)^d exp(a(c−σ)t/2)` for each fixed `c>1`.
-A Mellin–Barnes integral on `Re z=c` should retain every filter factor:
+A Mellin–Barnes integral on `Re z=c` retains every filter factor:
 `P_h(exp(h(z−β)))=O(h^d(1+|z|)^d)`.
 Gamma decay makes the vertical integral finite; the literal Euler series
 bounds `|ζ′/ζ(c+iv)|` independently of the exceptional divisor.
 This estimate still exceeds the selected mode by exponential rate
 `a(c−β)/2+π/4`. Contraction subtracts `dκ` from both rates.
-Its complete paper proof and ongoing Lean verification are recorded in
-`b13-euler-bound-and-fast-contraction.md`.
+Its paper proof and successful Lean audit are recorded in
+`../3-formalized/b13-euler-bound-and-fast-contraction.md`.
 
 Existing prime–pole estimates include
 `ArithmeticIndexDescent.exists_screwPrimeSum_explicit_classical_rate` and

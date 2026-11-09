@@ -818,16 +818,102 @@ theorem exists_finset_trace_approx (hZ : TemperedConfig Z) {ε : ℝ} (R : ℝ) 
         mul_le_mul_of_nonneg_right (hS₀ S hS).le (Real.exp_pos _).le
     _ = ε := by field_simp
 
+/-- **Truncation on a window.** A lower bound `−c` on the window `[u₀ − ℓ, u₀ + ℓ]` passes, up to
+`1`, to a finite set of exponents containing any prescribed exponents with nonzero coefficient. -/
+theorem exists_finset_window_lower (hZ : TemperedConfig Z) (u₀ ℓ : ℝ) {c : ℝ}
+    (hall : ∀ u ∈ Icc (u₀ - ℓ) (u₀ + ℓ), -c ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re)
+    (T : Finset ℂ) :
+    ∃ S : Finset ℂ, (∀ z ∈ T, evenCoeff Z (boxSpline 1 3) z ≠ 0 → z ∈ S) ∧
+      (∀ z ∈ S, z ∈ zeroExps Z) ∧ ∀ v ∈ Icc (-ℓ) ℓ, -(c + 1) ≤
+        (∑ z ∈ S, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re := by
+  classical
+  obtain ⟨S₀, hS₀⟩ := exists_finset_trace_approx hZ (|u₀| + ℓ) one_pos
+  refine ⟨(S₀ ∪ T).filter (fun z => evenCoeff Z (boxSpline 1 3) z ≠ 0),
+    fun z hz h => Finset.mem_filter.mpr ⟨by simp [hz], h⟩,
+    fun z hz => mem_of_evenCoeff_ne_zero (Finset.mem_filter.mp hz).2, fun v hv => ?_⟩
+  have hsumS : ∑ z ∈ (S₀ ∪ T).filter (fun z => evenCoeff Z (boxSpline 1 3) z ≠ 0),
+      evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)) =
+      ∑ z ∈ S₀ ∪ T, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)) :=
+    Finset.sum_filter_of_ne fun z _ h => left_ne_zero_of_mul h
+  have hR : |u₀ + v| ≤ |u₀| + ℓ :=
+    (abs_add_le _ _).trans (by linarith [abs_le.mpr ⟨hv.1, hv.2⟩])
+  have happ := hS₀ (S₀ ∪ T) Finset.subset_union_left (u₀ + v) hR
+  have hK1 := hall (u₀ + v) ⟨by linarith [hv.1], by linarith [hv.2]⟩
+  rw [hsumS]
+  have hd := Complex.re_le_norm (((2 * (lagStructure Z (boxSpline 1 3) (u₀ + v)).re : ℝ) : ℂ) -
+    ∑ z ∈ S₀ ∪ T, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)))
+  rw [Complex.sub_re, Complex.ofReal_re] at hd
+  linarith
+
+/-- **The dominant weight on a window.** If `z₀` and `z̄₀` lie in a finite set `S` of exponents
+with `Re Σ_S D_z e^{z(u₀+v)} ≥ −K'` on `|v| ≤ ℓ`, `δℓ ≥ 40`, the drift bound `B ≤ 3M₀` holds and the
+reflection is damped (`e^{−2 Re z₀ (u₀ − ℓ)} ≤ 1/4`), then the weight `M₀` of `z₀` is at most
+`5K' e^{ℓ/2}`: Landau's inequality with leakage `(2/25 + 1/50) B + M₀/4`. -/
+theorem expWeight_le_of_window_lower (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ)
+    (hsep : SeparatedOrdinates Z δ) {S : Finset ℂ} (hSE : ∀ z ∈ S, z ∈ zeroExps Z) {z₀ : ℂ}
+    (hz₀S : z₀ ∈ S) (hz₀'S : conj z₀ ∈ S) {u₀ ℓ K' B : ℝ} (hℓ0 : 0 < ℓ) (hK'0 : 0 ≤ K')
+    (hδℓ : 40 ≤ δ * ℓ) (hx₀ : 0 ≤ z₀.re)
+    (hdrift : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - z₀.re| * ℓ) ≤ B)
+    (hBle : B ≤ 3 * expWeight Z u₀ z₀)
+    (hdec : Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ 1 / 4)
+    (hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K' ≤
+      (∑ z ∈ S, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re) :
+    expWeight Z u₀ z₀ ≤ 5 * K' * Real.exp (ℓ / 2) := by
+  set M₀ := expWeight Z u₀ z₀ with hM₀
+  have hz₀E := hSE z₀ hz₀S
+  have hz₀'E := hSE _ hz₀'S
+  have hL := norm_le_of_window_lower (D := evenCoeff Z (boxSpline 1 3)) hz₀S hz₀'S
+    (evenCoeff_conj Z z₀) hℓ0 hK'0 hlow
+  have hM : ‖evenCoeff Z (boxSpline 1 3) z₀ * cexp (z₀ * u₀)‖ = M₀ := by
+    rw [norm_mul, norm_cexp_mul_ofReal]; rfl
+  rw [hM] at hL
+  have h0 := sum_term_zero_le hnoreal hδ hsep hSE hℓ0 hdrift
+  have hm := sum_term_erase_le hδ hsep hSE hz₀E hx₀ hℓ0 hdrift
+  have hdrift' : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - (conj z₀).re| * ℓ) ≤ B := by
+    simpa only [Complex.conj_re] using hdrift
+  have hp := sum_term_erase_le hδ hsep hSE hz₀'E (by rw [Complex.conj_re]; exact hx₀) hℓ0 hdrift'
+  have hwc : expWeight Z u₀ (conj z₀) = M₀ := by
+    rw [hM₀]; unfold expWeight; rw [evenCoeff_conj, Complex.norm_conj, Complex.conj_re]
+  rw [hwc, Complex.conj_re] at hp
+  have hM0 : 0 ≤ M₀ := expWeight_nonneg _ _
+  have hB0 : 0 ≤ B := le_trans (mul_nonneg (expWeight_nonneg _ _) (Real.exp_pos _).le) (hdrift 0)
+  have h1600 : (1600 : ℝ) ≤ (δ * ℓ) ^ 2 :=
+    calc (1600 : ℝ) = 40 * 40 := by norm_num
+      _ ≤ (δ * ℓ) * (δ * ℓ) := mul_le_mul hδℓ hδℓ (by norm_num) (by linarith)
+      _ = (δ * ℓ) ^ 2 := by ring
+  have hq0 : 4 / ℓ ^ 2 * (32 / δ ^ 2) ≤ 2 / 25 := by
+    rw [show 4 / ℓ ^ 2 * (32 / δ ^ 2) = 128 / (δ * ℓ) ^ 2 by field_simp; ring]
+    calc 128 / (δ * ℓ) ^ 2 ≤ 128 / 1600 :=
+          div_le_div_of_nonneg_left (by norm_num) (by norm_num) h1600
+      _ = 2 / 25 := by norm_num
+  have hq1 : 4 / ℓ ^ 2 * (8 / δ ^ 2) ≤ 1 / 50 := by
+    rw [show 4 / ℓ ^ 2 * (8 / δ ^ 2) = 32 / (δ * ℓ) ^ 2 by field_simp; ring]
+    calc 32 / (δ * ℓ) ^ 2 ≤ 32 / 1600 :=
+          div_le_div_of_nonneg_left (by norm_num) (by norm_num) h1600
+      _ = 1 / 50 := by norm_num
+  have t0 : B * (4 / ℓ ^ 2) * (32 / δ ^ 2) ≤ B * (2 / 25) := by
+    rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hq0 hB0
+  have t1 : B * (4 / ℓ ^ 2) * (8 / δ ^ 2) ≤ B * (1 / 50) := by
+    rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hq1 hB0
+  have t2 : M₀ * Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ M₀ * (1 / 4) :=
+    mul_le_mul_of_nonneg_left hdec hM0
+  have hKexp : 2 * K' * Real.exp (|z₀.re| * ℓ) ≤ 2 * K' * Real.exp (ℓ / 2) := by
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)
+    calc |z₀.re| * ℓ ≤ 1 / 2 * ℓ :=
+          mul_le_mul_of_nonneg_right (abs_re_le_of_mem_zeroExps hz₀E) hℓ0.le
+      _ = ℓ / 2 := by ring
+  have hKE : 0 ≤ K' * Real.exp (ℓ / 2) := by positivity
+  linarith
+
 /-- **The windowed width law for separated ordinates.** Let `Z` be tempered, without real zeros,
 with `δ`-separated ordinates, and with a zero `ρ₁` of real part `> ½ + s`, `s ≥ 0`. For every `K` and
 every `ℓ ≥ 40/δ`, far enough out every window `[u₀ − ℓ, u₀ + ℓ]` contains a scale with
 `2 Re S(u) < −K e^{su}`.
 
-The exponent `z₀` of maximal weight at `u₀` is tested by Landau's inequality on the window
-(`norm_le_of_window_lower`) with `K' = (|K| + 1) e^{s(u₀ + ℓ)}`. Its weight `M₀` is at most
-`(2/25 + 1/50) e^{ηℓ} M₀` of leakage from other ordinates, `M₀/4` from its reflection, and
-`2K' e^{ℓ/2}`; with `ηℓ ≤ 1` this bounds `M₀`, while `M₀ e^{−su₀} ≥ |D_z| e^{(Re z − s)u₀} → ∞` for
-`z = ρ₁ − ½`. -/
+The exponent `z₀` of maximal weight at `u₀` has depth near the supremum `b`, so on the window the
+weights drift by at most `e^{ηℓ} ≤ 3` (`expWeight_drift_le`); Landau's inequality bounds its weight
+by `5K' e^{ℓ/2}`, `K' = |K| e^{s(u₀+ℓ)} + 1` (`expWeight_le_of_window_lower`), while
+`M₀ e^{−su₀} ≥ |D_z| e^{(Re z − s)u₀} → ∞` for `z = ρ₁ − ½`. -/
 theorem exists_lt_exp_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z δ)
     {s : ℝ} (hs : 0 ≤ s) {ρ₁ : ℂ} (hρ₁ : ρ₁ ∈ Z.carrier) (hρ₁re : 1 / 2 + s < ρ₁.re) {ℓ : ℝ}
@@ -871,114 +957,58 @@ theorem exists_lt_exp_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
   have hu0ℓ : 0 ≤ u₀ - ℓ := by linarith
   by_contra hall
   push Not at hall
-  set K' : ℝ := (|K| + 1) * Real.exp (s * (u₀ + ℓ)) with hK'
-  have hE1 : 1 ≤ Real.exp (s * (u₀ + ℓ)) := Real.one_le_exp (mul_nonneg hs (by linarith))
-  have hK'0 : 0 ≤ K' := by positivity
+  set E := Real.exp (s * (u₀ + ℓ)) with hE
+  have hE1 : 1 ≤ E := Real.one_le_exp (mul_nonneg hs (by linarith))
+  have hall' : ∀ u ∈ Icc (u₀ - ℓ) (u₀ + ℓ),
+      -(|K| * E) ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re := fun u hu => by
+    have hKe : K * Real.exp (s * u) ≤ |K| * E :=
+      mul_le_mul (le_abs_self K) (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hu.2 hs))
+        (Real.exp_pos _).le (abs_nonneg K)
+    linarith [hall u hu]
   -- dominant exponents at `u₀`, `u₀ + ℓ`, `u₀ − ℓ`
   obtain ⟨z₀, hz₀, h₀⟩ := exists_dominant hZ u₀ hzp
   obtain ⟨zA, hzA, hA⟩ := exists_dominant hZ (u₀ + ℓ) hzp
   obtain ⟨zB, -, hB⟩ := exists_dominant hZ (u₀ + -ℓ) hzp
   have hz₀b : b - η ≤ z₀.re := hdom u₀ (by linarith) z₀ h₀
   have hzBb : b - η ≤ zB.re := hdom (u₀ + -ℓ) (by linarith) zB hB
-  set M₀ := expWeight Z u₀ z₀ with hM₀
-  set B := Real.exp (η * ℓ) * M₀ with hBdef
-  have hdrift : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - z₀.re| * ℓ) ≤ B :=
-    expWeight_drift_le hℓ0.le hb h₀ hz₀ hz₀b hA hzA hB hzBb
-  have hx₀ : b / 2 ≤ z₀.re := by linarith
-  have hz₀E : z₀ ∈ zeroExps Z := mem_of_evenCoeff_ne_zero hz₀
-  have hz₀'E : conj z₀ ∈ zeroExps Z := conj_mem_zeroExps hz₀E
-  have hconj0 : evenCoeff Z (boxSpline 1 3) (conj z₀) ≠ 0 := by
-    rw [evenCoeff_conj]; exact (map_ne_zero _).mpr hz₀
-  -- truncation to finitely many exponents
-  obtain ⟨S₀, hS₀⟩ := exists_finset_trace_approx hZ (|u₀| + ℓ) one_pos
-  classical
-  set S := (S₀ ∪ {z₀, conj z₀}).filter (fun z => evenCoeff Z (boxSpline 1 3) z ≠ 0) with hS
-  have hSE : ∀ z ∈ S, z ∈ zeroExps Z := fun z hz =>
-    mem_of_evenCoeff_ne_zero (Finset.mem_filter.mp hz).2
-  have hz₀S : z₀ ∈ S := Finset.mem_filter.mpr ⟨by simp, hz₀⟩
-  have hz₀'S : conj z₀ ∈ S := Finset.mem_filter.mpr ⟨by simp, hconj0⟩
-  have hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K' ≤
-      (∑ z ∈ S, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re := by
-    intro v hv
-    have hsumS : ∑ z ∈ S, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)) =
-        ∑ z ∈ S₀ ∪ {z₀, conj z₀}, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)) :=
-      Finset.sum_filter_of_ne fun z _ h => left_ne_zero_of_mul h
-    have hR : |u₀ + v| ≤ |u₀| + ℓ :=
-      (abs_add_le _ _).trans (by linarith [abs_le.mpr ⟨hv.1, hv.2⟩])
-    have happ := hS₀ (S₀ ∪ {z₀, conj z₀}) Finset.subset_union_left (u₀ + v) hR
-    have hK1 := hall (u₀ + v) ⟨by linarith [hv.1], by linarith [hv.2]⟩
-    have hKe : K * Real.exp (s * (u₀ + v)) ≤ |K| * Real.exp (s * (u₀ + ℓ)) :=
-      mul_le_mul (le_abs_self K) (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left
-        (by linarith [hv.2]) hs)) (Real.exp_pos _).le (abs_nonneg K)
-    rw [hsumS]
-    have hd := Complex.re_le_norm (((2 * (lagStructure Z (boxSpline 1 3) (u₀ + v)).re : ℝ) : ℂ) -
-      ∑ z ∈ S₀ ∪ {z₀, conj z₀}, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)))
-    rw [Complex.sub_re, Complex.ofReal_re] at hd
-    have hK'e : K' = |K| * Real.exp (s * (u₀ + ℓ)) + Real.exp (s * (u₀ + ℓ)) := by
-      rw [hK']; ring
-    linarith
-  -- Landau's inequality and the leakage bounds
-  have hL := norm_le_of_window_lower (D := evenCoeff Z (boxSpline 1 3)) hz₀S hz₀'S
-    (evenCoeff_conj Z z₀) hℓ0 hK'0 hlow
-  have hM : ‖evenCoeff Z (boxSpline 1 3) z₀ * cexp (z₀ * u₀)‖ = M₀ := by
-    rw [norm_mul, norm_cexp_mul_ofReal]; rfl
-  rw [hM] at hL
-  have h0 := sum_term_zero_le hnoreal hδ hsep hSE hℓ0 hdrift
-  have hm := sum_term_erase_le hδ hsep hSE hz₀E (by linarith) hℓ0 hdrift
-  have hdrift' : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - (conj z₀).re| * ℓ) ≤ B := by
-    simpa only [Complex.conj_re] using hdrift
-  have hp := sum_term_erase_le hδ hsep hSE hz₀'E (by rw [Complex.conj_re]; linarith) hℓ0 hdrift'
-  have hwc : expWeight Z u₀ (conj z₀) = M₀ := by
-    rw [hM₀]; unfold expWeight; rw [evenCoeff_conj, Complex.norm_conj, Complex.conj_re]
-  rw [hwc, Complex.conj_re] at hp
-  -- numerics
-  have hM0 : 0 ≤ M₀ := expWeight_nonneg _ _
-  have hB0 : 0 ≤ B := mul_nonneg (Real.exp_pos _).le hM0
-  have h1600 : (1600 : ℝ) ≤ (δ * ℓ) ^ 2 := by nlinarith
-  have hq0 : 4 / ℓ ^ 2 * (32 / δ ^ 2) ≤ 2 / 25 := by
-    rw [show 4 / ℓ ^ 2 * (32 / δ ^ 2) = 128 / (δ * ℓ) ^ 2 by field_simp; ring]
-    calc 128 / (δ * ℓ) ^ 2 ≤ 128 / 1600 :=
-          div_le_div_of_nonneg_left (by norm_num) (by norm_num) h1600
-      _ = 2 / 25 := by norm_num
-  have hq1 : 4 / ℓ ^ 2 * (8 / δ ^ 2) ≤ 1 / 50 := by
-    rw [show 4 / ℓ ^ 2 * (8 / δ ^ 2) = 32 / (δ * ℓ) ^ 2 by field_simp; ring]
-    calc 32 / (δ * ℓ) ^ 2 ≤ 32 / 1600 :=
-          div_le_div_of_nonneg_left (by norm_num) (by norm_num) h1600
-      _ = 1 / 50 := by norm_num
-  have t0 : B * (4 / ℓ ^ 2) * (32 / δ ^ 2) ≤ B * (2 / 25) := by
-    rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hq0 hB0
-  have t1 : B * (4 / ℓ ^ 2) * (8 / δ ^ 2) ≤ B * (1 / 50) := by
-    rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hq1 hB0
+  have hdrift := expWeight_drift_le hℓ0.le hb h₀ hz₀ hz₀b hA hzA hB hzBb
+  have hM0 : 0 ≤ expWeight Z u₀ z₀ := expWeight_nonneg _ _
+  have hBle : Real.exp (η * ℓ) * expWeight Z u₀ z₀ ≤ 3 * expWeight Z u₀ z₀ :=
+    mul_le_mul_of_nonneg_right ((Real.exp_le_exp.mpr hηℓ).trans
+      (by linarith [Real.exp_one_lt_d9])) hM0
   have hdec : Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ 1 / 4 := by
     have hlog : Real.log 4 ≤ b * (u₀ - ℓ) := by
       have : Real.log 4 / b ≤ u₀ - ℓ := by linarith
       rwa [div_le_iff₀ hb0, mul_comm] at this
-    have hle : -(2 * z₀.re) * (u₀ - ℓ) ≤ -Real.log 4 := by nlinarith
-    calc Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ Real.exp (-Real.log 4) := Real.exp_le_exp.mpr hle
+    have h2 : b * (u₀ - ℓ) ≤ 2 * z₀.re * (u₀ - ℓ) :=
+      mul_le_mul_of_nonneg_right (by linarith) hu0ℓ
+    calc Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ Real.exp (-Real.log 4) :=
+          Real.exp_le_exp.mpr (by linarith)
       _ = 1 / 4 := by rw [Real.exp_neg, Real.exp_log (by norm_num)]; norm_num
-  have t2 : M₀ * Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ M₀ * (1 / 4) :=
-    mul_le_mul_of_nonneg_left hdec hM0
-  have hBle : B ≤ 3 * M₀ := by
-    have : Real.exp (η * ℓ) ≤ 3 :=
-      (Real.exp_le_exp.mpr hηℓ).trans (by linarith [Real.exp_one_lt_d9])
-    rw [hBdef]; exact mul_le_mul_of_nonneg_right this hM0
-  have hKexp : 2 * K' * Real.exp (|z₀.re| * ℓ) ≤ 2 * K' * Real.exp (ℓ / 2) := by
-    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)
-    have := abs_re_le_of_mem_zeroExps hz₀E
-    nlinarith
-  -- growth: `5 K' e^{ℓ/2} < M₀`
-  have hgr : 5 * K' * Real.exp (ℓ / 2) < M₀ := by
-    have h1 := hU₃ u₀ hu₃
-    have h2 : expWeight Z u₀ zp * Real.exp (-(s * u₀)) * Real.exp (s * u₀) =
-        expWeight Z u₀ zp := by rw [mul_assoc, ← Real.exp_add]; simp
-    have h3 : 5 * K' * Real.exp (ℓ / 2) = C * Real.exp (s * u₀) := by
-      rw [hK', hCdef, mul_add, Real.exp_add]; ring
-    rw [h3]
+  have hconj0 : evenCoeff Z (boxSpline 1 3) (conj z₀) ≠ 0 := by
+    rw [evenCoeff_conj]; exact (map_ne_zero _).mpr hz₀
+  classical
+  obtain ⟨S, hTS, hSE, hlow⟩ := exists_finset_window_lower hZ u₀ ℓ hall' {z₀, conj z₀}
+  have hz₀S : z₀ ∈ S := hTS z₀ (by simp) hz₀
+  have hz₀'S : conj z₀ ∈ S := hTS _ (by simp) hconj0
+  have hle := expWeight_le_of_window_lower hnoreal hδ hsep hSE hz₀S hz₀'S hℓ0
+    (by positivity : 0 ≤ |K| * E + 1) hδℓ (by linarith) hdrift hBle hdec hlow
+  -- growth: `5 (|K| E + 1) e^{ℓ/2} < M₀`
+  have h1 := hU₃ u₀ hu₃
+  have h2 : expWeight Z u₀ zp * Real.exp (-(s * u₀)) * Real.exp (s * u₀) =
+      expWeight Z u₀ zp := by rw [mul_assoc, ← Real.exp_add]; simp
+  have h3 : 5 * (|K| * E + 1) * Real.exp (ℓ / 2) ≤ C * Real.exp (s * u₀) := by
+    have hEe : E = Real.exp (s * ℓ) * Real.exp (s * u₀) := by
+      rw [hE, ← Real.exp_add]; ring_nf
+    have hu1 : 1 ≤ Real.exp (s * ℓ) * Real.exp (s * u₀) := hEe ▸ hE1
+    rw [hCdef, hEe]
+    have hx : 0 ≤ Real.exp (ℓ / 2) := (Real.exp_pos _).le
+    nlinarith [abs_nonneg K]
+  have h4 : C * Real.exp (s * u₀) < expWeight Z u₀ z₀ :=
     calc C * Real.exp (s * u₀) < expWeight Z u₀ zp * Real.exp (-(s * u₀)) * Real.exp (s * u₀) :=
           mul_lt_mul_of_pos_right h1 (Real.exp_pos _)
       _ = expWeight Z u₀ zp := h2
-      _ ≤ M₀ := h₀ zp
-  have hKE : 0 ≤ K' * Real.exp (ℓ / 2) := by positivity
+      _ ≤ expWeight Z u₀ z₀ := h₀ zp
   linarith
 
 /-- **Separated ordinates are seen in every window.** Let `Z` be tempered, without real zeros,
