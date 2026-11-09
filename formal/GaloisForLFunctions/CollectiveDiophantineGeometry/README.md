@@ -345,6 +345,26 @@ and the prime-degree trace producer remain open.
 Proof and exact declarations:
 [CDG-COUNT](../../../docs/drafts/pipeline/3-formalized/cdg-finite-time-rank-counts.md).
 
+### Weighted heavy-return measure
+
+[WeightedReturnCounts.lean](WeightedReturnCounts.lean) gives the weighted
+version at the separation horizon. For `0≤a_j≤A`, `A>0`, total mass `S`,
+`N≥16` and `δ=hereditaryDepthFloor k W (N−1)`, every interval of length `T`
+and every target phase vector satisfy
+
+`vol{at least 7S/8 returns at precision 1/(2N)}`
+`≤(5π/2) max(T/2,δ⁻¹) exp(−S/(8A))`.
+
+Both chord and radian precision are covered. Weighted separation retains
+coordinates of mass at least `S/2`. A positive product of geometric kernels
+detects the returning mass, while every subproduct has only diagonal
+frequencies below `δ`. Its integral retains the product of constant
+coefficients, avoiding a union-bound loss over returning subsets.
+
+This closes the weighted detector argument at its stated horizon. It does
+not improve the scalar separation benchmark or control returns before that
+horizon. Proof: [CDG-ENTROPY](../../../docs/drafts/pipeline/3-formalized/cdg-weighted-return-entropy.md).
+
 ## Fixed-height mass calibration
 
 [FixedHeightPrimeMass.lean](FixedHeightPrimeMass.lean) proves an exact law

@@ -42,6 +42,7 @@ theorem configuration_re_le_of_squareRoot_windows {Z : ZeroConfig} (hZ : Tempere
       (conj_paperFT_boxSpline _ _) (paperFT_boxSpline_neg _ _) hρ
       (paperFT_boxSpline_ne_zero one_pos 3
         (im_gammaOf_ne_zero (by linarith only [hρdeep, hα])))
+  -- Delete a cofinite tail while retaining this deeper exponent.
   obtain ⟨a, h, S, hsq, hcost, hkeep, hdelete⟩ :=
     exists_configuration_tail_deletion Z hZ hnoreal α (z₀ - (α : ℂ))
       (windowSquareBudget_pos hD hr)
@@ -73,6 +74,7 @@ theorem configuration_re_le_of_squareRoot_windows {Z : ZeroConfig} (hZ : Tempere
     · exact hnoreal _ h (by simp [him])
     · exact hnoreal _ h (by simp [him])
   have hz₀R : z₀ ∈ R := (hmem z₀).mpr (mul_ne_zero hc₀ hkeep)
+  -- Only the retained finite spectrum needs a greatest real part.
   obtain ⟨z₁, hz₁, hmax⟩ := R.exists_max_image Complex.re ⟨z₀, hz₀R⟩
   have hβα : 0 < z₁.re - α := by
     have hmax₀ := hmax z₀ hz₀R
@@ -107,6 +109,7 @@ theorem configuration_re_le_of_squareRoot_windows {Z : ZeroConfig} (hZ : Tempere
   obtain ⟨t, ht, hneg⟩ := hnegative T hTU₀
   have ht0 : 0 ≤ t := hT.trans ht.1
   have htB : |t| ≤ T + B := by rw [abs_of_nonneg ht0]; exact ht.2
+  -- The negative excursion lies inside an observation window with half its radius to spare.
   have hlocal : ∀ u, |u - t| ≤ r * Real.sqrt T / 2 →
       -|K| ≤ ∑' z : ℂ, (c z * Complex.exp ((z - (α : ℂ)) * u)).re := by
     intro u hu
@@ -136,6 +139,7 @@ theorem configuration_re_le_of_squareRoot_windows {Z : ZeroConfig} (hZ : Tempere
   change -|K| - 2 * A * Real.exp (D * B + D ^ 2 * windowSquareBudget D r - T) ≤
     ∑' z : ℂ, (d z * Complex.exp ((z - (α : ℂ)) * t)).re at hfloor
   rw [hsum] at hfloor
+  -- Leakage is bounded, whereas the retained negative excursion grows exponentially.
   have hlower : -(|K| + 1) ≤ (∑ z ∈ R, d z * Complex.exp ((z - (α : ℂ)) * t)).re := by
     linarith only [hfloor, herror]
   have hscaled := mul_le_mul_of_nonneg_right hlower (Real.exp_pos (α * t)).le

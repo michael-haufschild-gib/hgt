@@ -129,6 +129,16 @@ inside any prescribed positive logarithmic window. The observable has no
 continued-zeta term; the continued term appearing in its proof is `O(t)` and
 vanishes after normalization. An arithmetic upper estimate is still missing.
 
+`ExponentiallyNarrowDampingReadsTheDivisor.lean` permits spacing
+`h(t)=exp(−κt)`. For a selected zero `ρ₀`, let
+`d=1+#{q∈F : ρq≠ρ₀}` and `r=a(β−σ)/2−π/4`. If `0<dκ<r`, the filtered
+prime sum divided by `h(t)^d K(y,ρ₀−s)` tends to
+`−mρ₀(ρ₀−1)Π_{ρq≠ρ₀}(ρ₀−ρq)≠0`, and its norm tends to infinity.
+The full infinite error is controlled before taking this diagonal limit.
+Thus exponentially narrowing damping windows still recover the exceptional
+divisor at all large heights. The equality boundary and unrestricted
+contraction in the normalized limit remain open.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

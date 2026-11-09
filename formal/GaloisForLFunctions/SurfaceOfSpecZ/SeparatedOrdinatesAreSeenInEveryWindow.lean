@@ -896,7 +896,7 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     have hd := Complex.re_le_norm (((2 * (lagStructure Z (boxSpline 1 3) (u₀ + v)).re : ℝ) : ℂ) -
       ∑ z ∈ S₀ ∪ {z₀, conj z₀}, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)))
     rw [Complex.sub_re, Complex.ofReal_re] at hd
-    linarith [neg_abs_le K]
+    linarith [le_abs_self K]
   -- Landau's inequality and the leakage bounds
   have hL := norm_le_of_window_lower (D := evenCoeff Z (boxSpline 1 3)) hz₀S hz₀'S
     (evenCoeff_conj Z z₀) hℓ0 hK'0 hlow
@@ -933,7 +933,7 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     have hlog : Real.log 4 ≤ b * (u₀ - ℓ) := by
       have : Real.log 4 / b ≤ u₀ - ℓ := by linarith
       rwa [div_le_iff₀ hb0, mul_comm] at this
-    have hpos : 0 ≤ u₀ - ℓ := le_trans (div_nonneg (Real.log_nonneg (by norm_num)) hb0.le)
+    have hpos : 0 ≤ u₀ - ℓ := le_trans (div_nonneg (Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4)) hb0.le)
       (by linarith)
     have hle : -(2 * z₀.re) * (u₀ - ℓ) ≤ -Real.log 4 := by nlinarith
     calc Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ Real.exp (-Real.log 4) := Real.exp_le_exp.mpr hle
@@ -942,7 +942,7 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     mul_le_mul_of_nonneg_left hdec hM0
   have hBle : B ≤ 3 * M₀ := by
     have : Real.exp (η * ℓ) ≤ 3 :=
-      (Real.exp_le_exp.mpr hηℓ).trans (by rw [Real.exp_one_rpow]; linarith [Real.exp_one_lt_d9])
+      (Real.exp_le_exp.mpr hηℓ).trans (by linarith [Real.exp_one_lt_d9])
     rw [hBdef]; exact mul_le_mul_of_nonneg_right this hM0
   have hKexp : 2 * K' * Real.exp (|z₀.re| * ℓ) ≤ 2 * K' * Real.exp (ℓ / 2) := by
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)

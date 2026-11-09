@@ -10,6 +10,7 @@ import GaloisForLFunctions.CollectiveDiophantineGeometry.HereditaryRankBounds
 import GaloisForLFunctions.CollectiveDiophantineGeometry.ReciprocalRankBounds
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
 import GaloisForLFunctions.CollectiveDiophantineGeometry.WeightedCoordinateSeparation
+import GaloisForLFunctions.CollectiveDiophantineGeometry.WeightedReturnCounts
 
 /-!
 # Collective Diophantine geometry of the prime logarithms
@@ -39,4 +40,6 @@ half of any nonnegative prime weight on separated coordinates.
 Injective coordinate projection and the Fejér window inequality turn that
 profile into finite-time return-measure bounds, uniform in target phase and
 dimension, with an explicit polynomial observation horizon.
+Positive products of geometric kernels give weighted heavy-return counts,
+with exponential decay in total mass divided by maximum coordinate weight.
 -/

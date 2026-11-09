@@ -34,7 +34,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticWeightTheory
 
-open ArithmeticOrientationGeometry SquareRootThreshold SurfaceOfSpecZ ArithmeticFunction
+open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThreshold Zeta23 SurfaceOfSpecZ
+open ArithmeticFunction
 
 /-! ### Powers of absolutely convergent series -/
 
@@ -122,7 +123,7 @@ theorem tensorSeries_eq_tsum {Z : ZeroConfig} (hZ : TemperedConfig Z) {b : ℝ} 
     have hfj : Summable fun z => ‖e z * cexp (z * (L : ℂ))‖ := by
       refine (hE.mul_right (Real.exp (b * L))).of_nonneg_of_le (fun _ => norm_nonneg _) fun z => ?_
       by_cases hz : e z = 0
-      · simp [hz]
+      · rw [hz, zero_mul, norm_zero]; positivity
       have h1 := htop z hz
       rw [norm_mul, Complex.norm_exp]
       refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
@@ -139,7 +140,6 @@ theorem tensorSeries_eq_tsum {Z : ZeroConfig} (hZ : TemperedConfig Z) {b : ℝ} 
       rw [natCast_add_one_cpow_eq, natCast_add_one_cpow_eq, ← Complex.exp_add]
       congr 1
       rw [hLdef]
-      push_cast
       ring
     unfold tensorSeriesTerm
     rw [Complex.ofReal_pow, ← hLdef, htr, hpow, tsum_congr hterm, mul_assoc, ← tsum_mul_right,
@@ -161,6 +161,6 @@ theorem tensorSeries_eq_tsum {Z : ZeroConfig} (hZ : TemperedConfig Z) {b : ℝ} 
     simp only [hFdef]
     ring
   refine ⟨(hFsum.prod).congr fun j => (hj j).symm, ?_⟩
-  rw [tsum_congr hj, hFsum.tsum_comm, tsum_congr hw]
+  rw [tsum_congr hj, hFsum.tsum_comm.symm, tsum_congr hw]
 
 end GaloisForLFunctions.ArithmeticWeightTheory

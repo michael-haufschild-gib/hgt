@@ -173,6 +173,15 @@ return detector using only worst separation would therefore be insufficient
 as the next contribution; it must control small-ratio distributions before
 that horizon.
 
+The written weighted detector argument is formalized in
+[CDG-ENTROPY](../3-formalized/cdg-weighted-return-entropy.md). For weights
+`0≤a_j≤A`, total mass `S`, and `N≥16`, the measure of `7/8`-heavy returns
+at precision `1/(2N)` is at most
+`(5π/2) max(T/2,δ⁻¹) exp(−S/(8A))`, with the hereditary separation floor
+`δ` at height `N−1`. Both chord and radian bounds hold for arbitrary targets.
+The four capstones have clean axiom audits and the direct source check passed.
+This estimate does not cross the separation horizon.
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

@@ -1,8 +1,8 @@
-# Weighted return counts without subset enumeration
+# Weighted heavy-return measure at the separation horizon
 
 - **ID:** CDG-ENTROPY
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Control weighted heavy-return measure by the weight ratio
   `S/A`, with an explicit observation horizon and no union over prime subsets.
 
@@ -34,7 +34,7 @@ coefficient `1/N` and value at least `1/4` at precision `1/(2N)`. Set
 On the heavy-return set, `F≥exp(3τS_J/4)`. Expanding the product into
 squared smooth-box sums and applying the Fejér window removes every
 off-diagonal frequency at the separation horizon. The remaining factor is
-`∏(1+u_j/N)≤exp(8τS_J/N)≤exp(τS_J/2)`, giving the proposed entropy loss.
+`∏(1+u_j/N)≤exp(8τS_J/N)≤exp(τS_J/2)`, giving the entropy loss.
 
 For every subset `K⊆J`, exponent differences of its smooth box extend by
 zero to height-`H` integer vectors supported on `J`. Separation implies
@@ -86,4 +86,13 @@ included in this theorem.
 
 ## Formalization
 
-`CollectiveDiophantineGeometry/WeightedReturnCounts.lean`: in progress.
+`CollectiveDiophantineGeometry/WeightedReturnCounts.lean` proves:
+
+- `integral_returnKernel_product_le`: exact diagonal cost for every subproduct.
+- `integral_weightedReturnDetector_le`: product of constant coefficients.
+- `measure_weightedChordReturnWindow_le`: actual weighted prime-return measure.
+- `measure_weightedRadianReturnWindow_le`: the same bound with integer windings.
+
+Direct `lake --old env lean` source verification passed. All four transitive
+axiom audits contain only `propext`, `Classical.choice` and `Quot.sound`.
+The programme umbrella imports the module.

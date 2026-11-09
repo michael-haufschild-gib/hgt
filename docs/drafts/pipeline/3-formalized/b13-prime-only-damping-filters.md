@@ -53,7 +53,8 @@ transitive axiom lists contain only `propext`, `Classical.choice`, `Quot.sound`.
 
 This removes cancellation between top ordinates at the same height and
 replaces the corrected B134 observable by a literal finite combination of prime
-sums. Earlier prime-only multiplicity recovery observes at a fixed existing
+sums. Existing Gaussian pole filters act on Fourier test profiles; this filter
+acts on actual prime sums at one escaping height. Earlier prime-only multiplicity recovery observes at a fixed existing
 zero and sends damping to zero; this theorem observes the high zero-free part
 of a vertical line. An independent arithmetic upper estimate is still required; the identity
 alone does not prove B13.
