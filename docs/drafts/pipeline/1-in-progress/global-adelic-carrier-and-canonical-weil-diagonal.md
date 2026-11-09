@@ -64,6 +64,13 @@ the quotient must be realized as Hecke correspondences; the normal form alone
 does not identify a Green operator. No global kernel or Robin identity follows
 from the orbit classification.
 
+For all degrees, use the full local homothety cosets of `GL₂(ℚ_p)`.
+The base stabilizer satisfies `‖Mᵢⱼ‖²≤‖det M‖`. Applied to the opposite
+degree vertices, all-place integrality should force `c²/(mn)` and `d²m/n`
+to be integers for an orbit matrix with bottom row `(c,d)`. Together with
+`n=m/(c²m²+d²)` and the inverse orbit, this should force `m=n`, without
+restricting the degrees to squares. This extension is not yet formalized.
+
 ## Verification gates
 
 - [ ] Actual global quotient and operator constructed.

@@ -30,6 +30,23 @@ cost is `O(T(log T)²)`. A sufficiently large fixed log-square radius
 should dominate this cost and the trace envelope `exp(DT)`. The existing
 finite-spectrum comparison and two prime-gap steps can then apply.
 
+## Candidate constants
+
+Put `A=xiLineTwoLogDerivConstant`, `E=log(T+2)`, and
+`C₀=80π(A+2)+32π²`. The corpus head and tail estimates give
+
+`head(T)≤40π(A+2)E²`, `tailSquare(T)≤16π²E/T`.
+
+For `T≥D`, `E≥1`, and `s=D+T≤2T`, the mixed moment is at most
+`C₀TE²`. Set `r₀=2(C₀+1)` and local radius `r₀E²/2`.
+If `E²≥D+1` and `|t|≤T+B`, then
+
+`D|t|-T(r₀E²/2)+C₀TE²≤DB-T`.
+
+Thus radius `r₀E²` should suffice continuously, uniformly in the chosen
+depth exponent. Prime windows of radius `2r₀E²` leave this radius after
+the prime-gap transfer. These inequalities await the Lean audit.
+
 ## Corpus inputs
 
 - `RHTower.sum_xiCopiesBelow_inv_abs_le` in `VonKochChebyshevBound.lean`.

@@ -61,7 +61,8 @@ theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
   let S := F.filter (fun q => xiZero q ≠ ρ)
   let R : ℝ := 1 + |c| + ∑ q ∈ S, ‖xiZero q‖
   have hsum : 0 ≤ ∑ q ∈ S, ‖xiZero q‖ := Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hR : 1 ≤ R := by dsimp only [R]; positivity
+  have hR : 1 ≤ R := by dsimp only [R]; linarith only [hsum, abs_nonneg c]
+  have hR0 : 0 < R := zero_lt_one.trans_le hR
   have hcR : |c| ≤ R := by dsimp only [R]; linarith only [hsum]
   let B := (2 * R + 1) * Real.exp (R + |β|)
   refine ⟨B, by dsimp only [B]; positivity, ?_⟩
@@ -215,8 +216,13 @@ theorem exists_primeDampingFilter_arithmetic_bound (F : Finset XiZeroCopy)
       gaussianMBKernel (Real.exp (-a * t)) ((δ : ℂ) + v * I) *
         LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
           (s + ((δ : ℂ) + v * I))
-  have hre (v : ℝ) : (s + ((δ : ℂ) + v * I)).re = c := by simp [s, δ]
-  have hsδ : 1 < s.re + δ := by simpa [s, δ] using hc
+  have hre (v : ℝ) : (s + ((δ : ℂ) + v * I)).re = c := by
+    simp only [s, δ, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero]
+    ring
+  have hsδ : 1 < s.re + δ := by
+    have he : s.re + δ = c := by simpa using hre 0
+    rwa [he]
   have hpoint (v : ℝ) : ‖Q v‖ ≤ (B ^ d * E * Z) * W v := by
     have hp := hfilter h t v hh hh1
     have hline : s + ((δ : ℂ) + v * I) = (c : ℂ) + (t + v) * I := by
@@ -289,11 +295,11 @@ theorem tendsto_primeDampingFilter_zero_of_fast_contraction (F : Finset XiZeroCo
   let r := (d : ℝ) * κ - a * (1 - σ) / 2
   have hr0 : 0 < r := sub_pos.mpr hr
   let c := 1 + r / a
-  have hc : 1 < c := by dsimp only [c]; positivity
+  have hc : 1 < c := by dsimp only [c]; linarith only [div_pos hr0 ha]
   have hrate : a * (c - σ) / 2 < (d : ℝ) * κ := by
     have he : a * (c - σ) / 2 = a * (1 - σ) / 2 + r / 2 := by
       dsimp only [c]
-      field_simp
+      field_simp [ha.ne']
       ring
     rw [he]
     dsimp only [r] at hr0 ⊢
@@ -305,7 +311,8 @@ theorem tendsto_primeDampingFilter_zero_of_fast_contraction (F : Finset XiZeroCo
   have ht0 : 0 ≤ t := zero_le_one.trans ht
   have hh : Real.exp (-κ * t) ≤ 1 := by
     rw [Real.exp_le_one_iff]
-    exact neg_mul_nonpos_of_nonneg_of_nonneg hκ.le ht0
+    rw [neg_mul]
+    exact neg_nonpos.mpr (mul_nonneg hκ.le ht0)
   have hpow : (1 + t) ^ d ≤ (2 : ℝ) ^ d * t ^ d := by
     rw [← mul_pow]
     exact pow_le_pow_left₀ (by positivity) (by linarith only [ht]) d
