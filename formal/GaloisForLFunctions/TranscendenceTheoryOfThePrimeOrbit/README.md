@@ -1,7 +1,7 @@
 # Transcendence Theory of the Prime Orbit (TTPO)
 
 Namespace `GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit`; umbrella
-`TranscendenceTheoryOfThePrimeOrbit.lean`; 12 modules. Specification: §2.11 of
+`TranscendenceTheoryOfThePrimeOrbit.lean`; 13 modules. Specification: §2.11 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 Throughout, `ω_t = (p^{−it})_p` is the point of the prime orbit at height `t`, `‖x‖` the distance of
@@ -96,7 +96,7 @@ return into a statement about the zeros, which then bounds heavy returns by zero
 
 | # | Question (§2.11) | Answer | Lean |
 |---|---|---|---|
-| Q1 | How early can the primes `≤ y` return to `δ`-precision, and how early can a heavy subset? | **Depth:** every set of `≥ 2` primes `≤ y` (every heavy subset) returns to precision `δ ≤ 1/10` no earlier than `e^{−2}(2δ log y)^{−1/C(y)}/(2 log y)`, `C(y)` an explicit power of `log y`; Dirichlet returns it by `⌈π/2δ⌉^{|P|}`. **Breadth cap:** for `T ≥ 2πKy^K` the rounded system matches every form of height `≤ K` and returns exactly at `T`, so no Diophantine data of height `K` excludes a return there. **Heavy subsets at constant precision:** at every return of a `1/1000`-heavy subset at precision `≤ 1/20` and height `t ≥ T₁`, unconditionally `√y ≤ K(y^{½ − w(2t)} log t + log(2+t))`, `w` the Vinogradov–Korobov width; under a zero-free strip of width `h` above some height, `log t ≥ c y^{½−h}` (RH: `log t ≫ √y`). | `question_one`; `le_of_isDeltaReturn_of_two_mem`, `exists_isDeltaReturn_le_pow`, `exists_matching_system_with_exact_return`, `heavy_return_bound_vinogradovKorobov`, `log_ge_of_heavy_return_of_strip` |
+| Q1 | How early can the primes `≤ y` return to `δ`-precision, and how early can a heavy subset? | **Depth:** every set of `≥ 2` primes `≤ y` (every heavy subset) returns to precision `δ ≤ 1/10` no earlier than `e^{−2}(2δ log y)^{−1/C(y)}/(2 log y)`, `C(y)` an explicit power of `log y`; Dirichlet returns it by `⌈π/2δ⌉^{|P|}`. **Breadth cap:** for `T ≥ 2πKy^K` the rounded system matches every form of height `≤ K` and returns exactly at `T`, so no Diophantine data of height `K` excludes a return there. **Heavy subsets at constant precision:** at every return of a `1/1000`-heavy subset at precision `≤ 1/20` and height `t ≥ T₁`, unconditionally `√y ≤ K(y^{½ − w(2t)} log t + log(2+t))`, `w` the Vinogradov–Korobov width, so no such return occurs at `T₁ ≤ t ≤ exp((log y)^{3/2−ε})`, for every `ε > 0`; under a zero-free strip of width `h` above some height, `log t ≥ c y^{½−h}` (RH: `log t ≫ √y`). | `question_one`; `le_of_isDeltaReturn_of_two_mem`, `exists_isDeltaReturn_le_pow`, `exists_matching_system_with_exact_return`, `heavy_return_bound_vinogradovKorobov`, `eventually_no_heavy_return_before_vk`, `log_ge_of_heavy_return_of_strip` |
 | Q2 | How does the lower bound for linear forms in `k` logarithms depend on `k`; uniform for `k ≍ π(y)`? | `|Λ_ν| ≥ exp(−(10⁴(W+1)(k+1)²)^{30(k+1)²}(log|ν|₁ + 2))`: the exponent is `exp(O(k² log kW))`. Every exponent is `≥ k − 1`. At `k ≍ π(y)` the explicit exponent is `exp(O(y²/log y))`, and uniformity is beside the point for constant-precision returns: only forms of height `< 1/2δ` act, Liouville `y^{−|ν|₁}` holds for them, and the breadth cap defeats them past `2πKy^K`. | `question_two`; `abs_primeLogForm_ge_explicit`, `abs_primeLogForm_ge_of_le`, `le_exponent_of_bakerBound`, `exists_small_primeLogForm`, `inv_pow_le_abs_linForm_log` |
 | Q3 | Which integer auxiliaries on smooth numbers survive the passage from approximate to exact vanishing? | Jets at a `δ`-return equal the jets at `0` up to `2πδM_j`, and at `mt` up to `2πmδM_j`. **Order 0** survives at constant precision: `|A(it)| + 2πδM₀ < 1` forces `Σ c_n = 0`. **Order 1** survives below the explicit Baker threshold: `|A′(it)| + 2πδM₁ < exp(−C(log|μ|₁+2))` forces all first moments `μ_i = Σ c_n v_{p_i}(n)` to vanish; Dirichlet shows no threshold above `W/H^{k−1}` works. **Order 2** at two primes: an integer quadratic form in `log p, log q` vanishes only trivially, so exact second-order vanishing is three integer identities; an approximate threshold needs a transcendence measure of `log q/log p`, and at three primes even exact vanishing is algebraic independence of logarithms. The orbit meets no algebraic point of three prime coordinates away from `t = 0`, so the norm is never available on the orbit. | `question_three`; `norm_auxJet_nsmul_sub_le`, `sum_coeff_eq_zero_of_small`, `firstMoment_eq_zero_of_small`, `quadratic_log_form_eq_zero`, `not_isAlgebraic_orbit` |
 | Q4 | How does Turán's power-sum method give ZAL on the finite-rank remainder of `ψ`? | It does not. Turán's second main theorem sees the finite top part on every thick set of levels with a loss polynomial in the position, so a thick crude count removes an isolated top (AAL); ZAL concerns infinitely many modes, where Wolff towers defeat every power-sum argument on levels. Return bounds cannot supply ZAL either: they are label statements, `ζ(s − h)` is an Euler product over the rational primes violating ZAL, and a route uniform over a class containing it refutes B97. Through reciprocity a zero of depth `h` weighs `y^h` on the orbit polynomial of length `y`, while a return asks for `√y`: return bounds see only zeros of depth near `½`. | `question_four`; `exists_mem_thick_ge`, `not_zerosApproachLine_shift`, `not_mainConjecture_of_uniform_route`, `norm_paperFT_gammaOf_sub_le`; `InfiniteRankWeilTheory.exists_tower_bounded_without_wellFounded` |
@@ -117,10 +117,10 @@ return into a statement about the zeros, which then bounds heavy returns by zero
 | C1 no sign, spectral decomposition or positivity | every TTPO argument is an identity, a size bound, integrality or transcendence; zero-free regions and local counts enter only as inputs of `AZeroFreeRegionBoundsTheHeavyReturns` | — |
 | C2 Stepanov over `𝔽_q` as the degenerate case | rank one gives exact returns at every precision and a `2π/log q`-periodic frozen jet: the Frobenius, which Stepanov's method needs; the rounded system is such a function field with `q = e^{2π/T}`, and `ℤ` has no exact return | `isDeltaReturn_zero_of_isRankOne`, `frozenJet_add_period`, `isRankOne_roundedStep`, `not_isDeltaReturn_zero_pair` |
 | C3 two primes and fixed `k` | the depth law for every pair of primes `≤ y`, with explicit `y`-dependence; explicit Baker for every fixed `k` | `le_of_isDeltaReturn_pair`, `abs_primeLogForm_ge_explicit` |
-| C4 a producer past the caps | transcendence produces depth only: at constant precision the depth law is a constant and the breadth cap stops every linear-form argument at the Kronecker scale. The surviving producer is reciprocity: heavy returns are bounded by zero-free regions, at VK strength unconditionally | `exists_matching_system_with_exact_return`, `heavy_return_bound_vinogradovKorobov` |
+| C4 a producer past the caps | transcendence produces depth only: at constant precision the depth law is a constant and the breadth cap stops every linear-form argument at the Kronecker scale. The surviving producer is reciprocity: heavy returns are bounded by zero-free regions, at VK strength unconditionally (`log R ≥ (log y)^{3/2−ε}` for heavy subsets), past VK under any zero-free strip | `exists_matching_system_with_exact_return`, `eventually_no_heavy_return_before_vk`, `log_ge_of_heavy_return_of_strip` |
 | M1 two primes | the depth law for any two primes | `le_of_isDeltaReturn_pair` |
 | M2 `k ≍ (log y)^A` logarithms, explicit `k`-dependence | `exp(−U^{30(k+1)²}(log|ν|₁+2))`, `U = 10⁴(⌈k log y⌉+1)(k+1)²` | `abs_primeLogForm_ge_of_le` |
-| M3 `log R ≥ (log y)²` | equivalent, through reciprocity, to the absence of zeros near `t ≤ exp((log y)²)` imitating the pole; beyond the VK region | `norm_zeroSide_add_orbitPoly_zero_le` |
+| M3 `log R ≥ (log y)²` | proved for heavy subsets up to `(log y)^{3/2−ε}` (VK); exponent `2` asks, through reciprocity, that no zeros near `t ≤ exp((log y)²)` imitate the pole; the depth-profile theorem reduces it to a zero-free region `Re s ≤ 1 − c(log t)^{−θ}` with `θ < ½`, inverted as for VK | `eventually_no_heavy_return_before_vk`, `heavy_return_bound_of_depthProfile` |
 | M4 `log R ≥ y^c` | holds for heavy returns beyond a fixed height under any zero-free strip `Re s ≤ ½ + h`, `c < ½ − h` | `log_ge_of_heavy_return_of_strip` |
 | M5 sign-free ZAL | not reachable by power sums or label statements | `question_four` |
 
@@ -136,6 +136,7 @@ return into a statement about the zeros, which then bounds heavy returns by zero
 | The reciprocity of returns | `orbit_reciprocity`, `norm_paperFT_gammaOf_sub_le`, `norm_poleTerm_le`, `exists_norm_gammaTerm_le`, `tendsto_finiteLayer_footprint`, `norm_zeroSide_add_orbitPoly_zero_le` |
 | The test of a heavy return | `eventually_orbitPoly_heavyTest_zero_ge`, `eventually_re_orbitPoly_heavyTest_ge`, `decayMass_heavyTest` |
 | Zero-free regions bound heavy returns | `norm_zeroSide_le_profile`, `tendsto_badMass`, `heavy_return_bound_of_depthProfile`, `log_ge_of_heavy_return_of_strip`, `exists_vk_depthProfile`, `heavy_return_bound_vinogradovKorobov` |
+| Heavy subsets do not return before the VK height | `eventually_vk_decay`, `eventually_no_heavy_return_before_vk` |
 | The function-field case | `isDeltaReturn_zero_of_isRankOne`, `frozenJet_add_period`, `isRankOne_roundedStep`, `not_isDeltaReturn_zero_pair` |
 | Return bounds are label statements | `riemannZeta_shift_eulerProduct`, `not_zerosApproachLine_shift`, `not_mainConjecture_of_uniform_route` |
 | Turán on thick sets | `exists_window_ge`, `exists_mem_thick_ge` |
@@ -162,15 +163,13 @@ All are unconditional.
 1. **Breadth beyond the zero-free region.** B97 past VK for heavy returns is the statement that no
    zeros near `t ≤ exp(y^c)` imitate the pole at length `y`; any zero-density input that limits zeros
    of depth near `½` in short height windows moves Q1.
-2. **The inversion of the VK inequality.** Read `√y ≤ K(y^{½−w(2t)} log t + log(2 + t))` as an explicit
-   first-return height for heavy subsets.
-3. **Survival at order two.** Lower bounds for `|a + bβ + cβ²|`, `β = log q/log p`; at three primes,
+2. **Survival at order two.** Lower bounds for `|a + bβ + cβ²|`, `β = log q/log p`; at three primes,
    algebraic independence of logarithms.
-4. **Returns at bounded heights.** The heavy-return bounds hold beyond a fixed height `T₁`; the range
+3. **Returns at bounded heights.** The heavy-return bounds hold beyond a fixed height `T₁`; the range
    `[1, T₁]` needs the oscillation of `φ̂(−i/2 − t)` at bounded `t`.
-5. **A reciprocity that moves heights.** Every reciprocity built here preserves the height; transport
+4. **A reciprocity that moves heights.** Every reciprocity built here preserves the height; transport
    to new heights is Euler–FE transport theory (B112).
-6. **ZAL from power sums with an arithmetic input** excluding Wolff conspiracies of the zeros.
+5. **ZAL from power sums with an arithmetic input** excluding Wolff conspiracies of the zeros.
 
 ## 11. Context
 
@@ -207,6 +206,7 @@ vanishing into exact vanishing only at order `0` at constant precision and at or
 threshold. What crosses from depth to breadth is reciprocity: the explicit formula read at height `t`
 says that a return copies the pole of `ζ` to height `t`, and the zeros near `t` must reproduce it.
 Because a zero of depth `h` weighs only `y^h` against the pole's `√y`, zero-free regions bound heavy
-returns — the Vinogradov–Korobov region unconditionally, a strip of width `h` with exponent `½ − h`.
+returns: the Vinogradov–Korobov region unconditionally, so that no heavy subset returns before
+`exp((log y)^{3/2−ε})`, and a strip of width `h` with `log R ≥ c y^{½−h}`.
 The main conjecture is thus a zero-density statement in disguise: no configuration of zeros below
 `exp(y^c)` imitates the pole at length `y`.

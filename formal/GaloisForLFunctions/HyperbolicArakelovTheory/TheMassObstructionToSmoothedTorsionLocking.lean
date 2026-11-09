@@ -13,7 +13,7 @@ the raw Abel torsion energy to the smooth Green energy therefore has a definite
 meaning on these probes, without assuming an extension to arbitrary profiles.
 
 For arbitrary packets the divergent coefficients are discrete mass and actual L²
-mass. A scalar locking has a finite limit exactly when those masses agree. An
+mass. The exponential locking has a finite limit exactly when those masses agree. An
 explicit overlapping profile proves that no common radius gives finite limits
 on all packets. Below the atom spacing the masses agree, and the finite part is
 Weil's form minus the profile mass times the discriminant diagonal.
@@ -40,7 +40,10 @@ private theorem compact_atomicTest {g : ℝ → ℝ} (hgc : HasCompactSupport g)
     (N : ℕ) (x : ℕ → ℝ) : HasCompactSupport (atomicTest N x g) := by
   unfold atomicTest
   induction (Icc 1 N : Finset ℕ) using Finset.induction_on with
-  | empty => simpa using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ))
+  | empty =>
+    convert (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ)) using 1
+    funext u
+    exact Finset.sum_empty _
   | insert n S hn ih =>
     simp only [Finset.sum_insert hn]
     exact ((hgc.comp_homeomorph (Homeomorph.subRight (Real.log n))).mul_left).add ih
@@ -88,7 +91,8 @@ theorem tendsto_smoothLockingRadius (c : ℝ) :
     filter_upwards [tendsto_selfEnergy_atTop.eventually_ge_atTop (-b - c)] with r hr
     linarith
   have he := Real.tendsto_exp_atBot.comp hz
-  simpa only [smoothLockingRadius, sub_zero] using he.const_sub 1
+  change Tendsto (fun r => 1 - Real.exp (-selfEnergy r - c)) (𝓝[<] 1) (𝓝 1)
+  simpa only [Function.comp_def, sub_zero] using he.const_sub 1
 
 theorem eventually_smoothLockingRadius_mem (c : ℝ) :
     ∀ᶠ r in 𝓝[<] (1 : ℝ), 0 < smoothLockingRadius c r ∧ smoothLockingRadius c r < 1 := by
@@ -105,6 +109,15 @@ def smoothLockedPacket (c r : ℝ) (N : ℕ) (x : ℕ → ℝ) (g : ℝ → ℝ)
   let f := atomicTest N x g
   (2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2) - smoothGreenEnergy r f +
     (∫ u, g u ^ 2) * torsionForm (smoothLockingRadius c r) (Icc 1 N) x
+
+/-- The finite defect after removing the mass divergence: the prime discrepancy,
+the scalar normalization, and the torsion discriminant. -/
+def smoothPacketWeilDefect (c : ℝ) (N : ℕ) (x : ℕ → ℝ) (g : ℝ → ℝ) : ℝ :=
+  let f := atomicTest N x g
+  primeSum f - (∫ u, g u ^ 2) * atomicWeilForm N x +
+    c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2) -
+    2 * gammaHardyPhaseRate 0 * (∫ u, f u ^ 2) -
+    (∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2 * selfIntersection n
 
 /-- The exact discriminant defect for separated smooth packets. -/
 theorem tendsto_smoothLockedPacket {g : ℝ → ℝ} {w : ℝ}
@@ -140,7 +153,6 @@ theorem tendsto_smoothLockedPacket {g : ℝ → ℝ} {w : ℝ}
   refine h.congr (fun r => ?_)
   simp only [Function.comp_def, log_smoothLockingRadius]
   rw [hmass]
-  change _ = smoothLockedPacket c r N x g
   dsimp only [smoothLockedPacket, f]
   ring
 
@@ -164,16 +176,11 @@ private theorem atomicTest_two (g : ℝ → ℝ) :
   funext u
   norm_num [atomicTest, show (Icc 1 2 : Finset ℕ) = {1, 2} by decide]
 
-private theorem positive_mass_excess :
-    ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
-      0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2 := by
-  let b := evenNarrowBump 0
+private theorem overlap_mass_excess {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b)
+    (hbc : HasCompactSupport b) (hb0 : ∀ u, 0 ≤ b u) (hM : 0 < ∫ u, b u ^ 2) :
+    0 < (∫ u, atomicTest 2 (fun _ => 1) (fun v => b v + b (v - Real.log 2)) u ^ 2) -
+      2 * ∫ u, (b u + b (u - Real.log 2)) ^ 2 := by
   let g : ℝ → ℝ := fun u => b u + b (u - Real.log 2)
-  have hb : ContDiff ℝ 2 b := contDiff_evenNarrowBump 0
-  have hbc : HasCompactSupport b := hasCompactSupport_evenNarrowBump 0
-  have hb0 (u : ℝ) : 0 ≤ b u := by
-    dsimp [b, evenNarrowBump, evenPartReal]
-    exact div_nonneg (add_nonneg (narrowBump 0).nonneg (narrowBump 0).nonneg) (by norm_num)
   have hg : ContDiff ℝ 2 g := hb.add (hb.comp (contDiff_id.sub contDiff_const))
   have hgc : HasCompactSupport g :=
     hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2)))
@@ -193,13 +200,28 @@ private theorem positive_mass_excess :
         (show b u ≤ b (u + Real.log 2) + b u by linarith [hb0 (u + Real.log 2)])
         (hb0 u) (add_nonneg (hb0 u) (hb0 (u - Real.log 2)))
       simpa only [pow_two] using h
-    exact (integral_evenNarrowBump_sq_pos 0).trans_le hle
-  refine ⟨g, hg, hgc, ?_⟩
+    exact hM.trans_le hle
+  change 0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2
   rw [atomicTest_two]
   simp_rw [sub_eq_add_neg]
   rw [BiScaleUncertainty.integral_add_shift_sq hgc hg.continuous,
     autocorr_neg, ← BiScaleUncertainty.integral_sq_eq_autocorr_zero]
   linarith only [hcorr]
+
+private theorem positive_mass_excess :
+    ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+      0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2 := by
+  have hb := contDiff_evenNarrowBump 0
+  have hbc := hasCompactSupport_evenNarrowBump 0
+  have hb0 (u : ℝ) : 0 ≤ evenNarrowBump 0 u := by
+    unfold evenNarrowBump evenPartReal
+    exact div_nonneg
+      (add_nonneg (WeilOneSided.narrowBump 0).nonneg (WeilOneSided.narrowBump 0).nonneg)
+      (by norm_num)
+  exact ⟨fun u => evenNarrowBump 0 u + evenNarrowBump 0 (u - Real.log 2),
+    hb.add (hb.comp (contDiff_id.sub contDiff_const)),
+    hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2))),
+    overlap_mass_excess hb hbc hb0 (integral_evenNarrowBump_sq_pos 0)⟩
 
 private theorem not_tendsto_positive_selfEnergy {a : ℝ} (ha : 0 < a) (B : ℝ) :
     ¬ Tendsto (fun r => a * selfEnergy r) (𝓝[<] 1) (𝓝 B) := by
@@ -223,14 +245,21 @@ Its divergence is precisely discrete mass minus continuum mass. -/
 theorem tendsto_smoothLockedPacket_sub_mass_defect {g : ℝ → ℝ}
     (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (N : ℕ) (x : ℕ → ℝ) (c : ℝ) :
     Tendsto (fun r => smoothLockedPacket c r N x g -
-        ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2 - ∫ u, atomicTest N x g u ^ 2) * selfEnergy r)
+        ((∫ u, g u ^ 2) * (∑ n ∈ Icc 1 N, x n ^ 2) -
+          (∫ u, atomicTest N x g u ^ 2)) * selfEnergy r)
       (𝓝[<] 1)
-      (𝓝 ((2 * coshHalfMoment (atomicTest N x g) ^ 2 -
-        2 * sinhHalfMoment (atomicTest N x g) ^ 2) + levyEnergy (atomicTest N x g) +
-        (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x +
-        c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2))) := by
+      (𝓝 (weilQuad (atomicTest N x g) + smoothPacketWeilDefect c N x g)) := by
   have h := (tendsto_smoothTorsionPacket_renormalized (tendsto_smoothLockingRadius c)
     hg hgc N x).add_const (c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2))
+  have hv : (2 * coshHalfMoment (atomicTest N x g) ^ 2 -
+      2 * sinhHalfMoment (atomicTest N x g) ^ 2) + levyEnergy (atomicTest N x g) +
+      (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x +
+      c * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2) =
+      weilQuad (atomicTest N x g) + smoothPacketWeilDefect c N x g := by
+    rw [weilQuad_eq (contDiff_atomicTest hg N x) (compact_atomicTest hgc N x)]
+    unfold smoothPacketWeilDefect renormalizedTorsionForm atomicWeilForm
+    ring
+  rw [hv] at h
   refine h.congr (fun r => ?_)
   simp only [log_smoothLockingRadius, smoothTorsionPacket, smoothLockedPacket]
   ring

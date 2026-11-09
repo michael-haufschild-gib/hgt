@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CollectiveDiophantineGeometry.AbsoluteValuesForceHeavyReturns
+import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveRankDepth
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FixedHeightPrimeMass
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
 
@@ -13,4 +14,6 @@ prime-mass law calibrates which logarithmic mass fractions can admit a
 growing lower bound for returns.
 Bounded integer dilations transfer heavy-return counts to absolute large-value
 counts with constants independent of the number of prime coordinates.
+Maximal-minor elimination gives rank-dependent depth floors and counts
+for integer near relations, using only codimension plus one logarithms.
 -/

@@ -35,8 +35,10 @@ theorem smoothGreen_deficit (f : ℝ → ℝ) (hf : ContDiff ℝ 2 f)
     change archLevyDensity u * (autocorr f 0 - autocorr f u) = _
     ring
   have hF : IntegrableOn F (Ioi 0) := by
-    exact ((integrableOn_levyIntegrand hf hfc).const_mul (1 / 2 : ℝ)).congr_fun
-      (fun u _ => (heq u).symm) measurableSet_Ioi
+    have hi : IntegrableOn
+        (fun u => (1 / 2 : ℝ) * (archLevyDensity u * ∫ v, (f v - f (v + u)) ^ 2))
+        (Ioi 0) := (integrableOn_levyIntegrand hf hfc).const_mul (1 / 2 : ℝ)
+    exact hi.congr_fun (fun u _ => (heq u).symm) measurableSet_Ioi
   have hpos : IntegrableOn (fun u => F |u|) (Ioi 0) :=
     hF.congr_fun (fun u hu => by rw [abs_of_pos hu]) measurableSet_Ioi
   have hneg : IntegrableOn (fun u => F |u|) (Iic 0) := by

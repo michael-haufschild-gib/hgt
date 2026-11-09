@@ -32,6 +32,9 @@ centred at one half and the actual arithmetic coefficients.
   the prime logarithms. Exact homogeneous integer relations are trivial by
   unique factorization. Geometry of numbers must therefore use the integer
   lattice with an approximation body, or an equivalent augmented lattice.
+- **Rank profile:** rational rank of the integer vectors in a coefficient box
+  whose scalar products with the prime logarithms are small. This records
+  simultaneous small forms, beyond the smallest individual form.
 - **Dual polynomial:** a Dirichlet polynomial supported on integers composed
   of the selected primes; exponent vectors encode its frequencies.
 - **Freezing:** replacement of orbit phases by a fixed torus point, with an
@@ -133,6 +136,38 @@ This transfers an arithmetic return exclusion or count to complex modulus
 control. It supplies neither the arithmetic estimate nor the final trace
 bound. Cosine precision is `1−cos(phase)≤η`; conversion to radian precision
 must be explicit.
+
+### Rank bounds and counts for near relations
+
+[CollectiveRankDepth.lean](CollectiveRankDepth.lean) controls independent
+families of integer forms in `k` distinct prime logarithms `log p_j`, `p_j≤y`.
+For `1≤r≤k` independent coefficient rows with `|ν_ij|≤H`, `H≥1`, put
+`d=k−r`. Some row satisfies
+
+`|Σ_j ν_ij log p_j| ≥ Δ(r,d,y,H)>0`.
+
+For `d≥1`, the explicit floor is
+
+`Δ=exp(−B_{d+1}(y)(log((d+1)r!H^r)+2))/(r!H^(r−1))`,
+
+where `B_{d+1}(y)` is the proved explicit Baker exponent for `d+1`
+prime logarithms at most `y`. At full rank, the stronger elementary floor
+is `Δ(r,0,y,H)=log 2/(r!H^(r−1))`.
+
+Cramer's rule on a nonzero maximal minor retains one pivot logarithm and
+the `d` complementary logarithms. Its integer coefficient height is at
+most `(d+1)r!H^r`; the adjugate costs `r!H^(r−1)`. Thus penultimate rank
+uses only **two logarithms**, independently of the number of coordinates.
+Full rank needs only integrality of the determinant.
+
+For integer `H` and `ε≤Δ`, all near relations
+`|ν_j|≤H`, `|Σν_j log p_j|<ε` span at most `r−1` rational dimensions
+and number at most `(2H+1)^(r−1)`. A basis selected from these relations
+cannot have rank `r`; an injective coordinate projection then gives the count.
+The parameters retain their dependence on dimension, height, and cutoff.
+
+This is an elementary collective consequence of the existing scalar Baker
+bound. Return-height counts and a stronger first-minimum bound remain open.
 
 ## Fixed-height mass calibration
 

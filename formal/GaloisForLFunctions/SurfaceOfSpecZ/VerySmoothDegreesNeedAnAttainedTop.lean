@@ -795,4 +795,68 @@ theorem exists_zeroConfig_verySmooth_bddBelow_nonattained {Θ : ℝ} (hΘ : 0 < 
   norm_num at this
   linarith
 
+/-! ### Attained tops are sampled -/
+
+/-- The degrees `2ᵃ3ᵇ` with `log(2ᵃ3ᵇ) ≥ 81` are very smooth. -/
+theorem verySmooth_two_pow_mul_three_pow {a b : ℕ}
+    (h81 : 81 ≤ Real.log ((2 ^ a * 3 ^ b : ℕ) : ℝ)) :
+    ∀ p ∈ Nat.primeFactors (2 ^ a * 3 ^ b), ((p : ℕ) : ℝ) ^ 4 ≤
+      Real.log ((2 ^ a * 3 ^ b : ℕ) : ℝ) := by
+  intro p hp
+  obtain ⟨hpp, hpd, -⟩ := Nat.mem_primeFactors.mp hp
+  have h23 : p = 2 ∨ p = 3 := by
+    rcases (Nat.Prime.dvd_mul hpp).mp hpd with h | h
+    · exact Or.inl ((Nat.prime_dvd_prime_iff_eq hpp Nat.prime_two).mp (hpp.dvd_of_dvd_pow h))
+    · exact Or.inr ((Nat.prime_dvd_prime_iff_eq hpp Nat.prime_three).mp (hpp.dvd_of_dvd_pow h))
+  rcases h23 with rfl | rfl <;> norm_num <;> linarith
+
+theorem log_two_pow_mul_three_pow (a b : ℕ) :
+    Real.log ((2 ^ a * 3 ^ b : ℕ) : ℝ) = a * Real.log 2 + b * Real.log 3 := by
+  push_cast
+  rw [Real.log_mul (by positivity) (by positivity), Real.log_pow, Real.log_pow]
+
+/-- **The very smooth degrees sample every attained top.** A lower bound on the spline traces at the
+degrees `d` with `p⁴ ≤ log d` for every prime `p ∣ d` puts every zero of a tempered configuration
+without real zeros on the line, provided `sup Re ρ` is attained: they contain the `2ᵃ3ᵇ` beyond
+`log = 81` (`TwoFrobeniiSuffice`), and below it the traces are bounded. -/
+theorem onLine_of_bddBelow_verySmooth_of_max (Z : ZeroConfig) (hZ : TemperedConfig Z)
+    (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {ρ₀ : ℂ} (hρ₀ : ρ₀ ∈ Z.carrier)
+    (hmax : ∀ ρ ∈ Z.carrier, ρ.re ≤ ρ₀.re) {K : ℝ}
+    (hK : ∀ d : ℕ, d ≠ 0 → (∀ p ∈ d.primeFactors, (p : ℝ) ^ 4 ≤ Real.log d) →
+      -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log d)).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2 := by
+  set a : ℝ := ρ₀.re - 1 / 2
+  have hE : 0 ≤ ∑' z, ‖evenCoeff Z (boxSpline 1 3) z‖ := tsum_nonneg fun _ => norm_nonneg _
+  have hwid : ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + a := fun ρ hρ => by
+    have := hmax ρ hρ; simp only [a]; linarith
+  refine onLine_of_bddBelow_twoPrimes_of_max Nat.prime_two Nat.prime_three (by norm_num) Z hZ
+    hnoreal hρ₀ hmax (K := |K| + (∑' z, ‖evenCoeff Z (boxSpline 1 3) z‖) * Real.exp (81 * |a|))
+    fun m n => ?_
+  obtain ⟨u, hu⟩ : ∃ u : ℝ, u = m * Real.log 2 + n * Real.log 3 := ⟨_, rfl⟩
+  rw [← hu]
+  have hu0 : 0 ≤ u := by
+    rw [hu]
+    have h2 := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 2)
+    have h3 := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 3)
+    positivity
+  have hEe : 0 ≤ (∑' z, ‖evenCoeff Z (boxSpline 1 3) z‖) * Real.exp (81 * |a|) :=
+    mul_nonneg hE (Real.exp_pos _).le
+  rcases le_or_gt 81 u with h81 | h81
+  · have hlog := log_two_pow_mul_three_pow m n
+    have hd : (2 ^ m * 3 ^ n : ℕ) ≠ 0 := by positivity
+    have h := hK _ hd (verySmooth_two_pow_mul_three_pow (by rw [hlog, ← hu]; exact h81))
+    rw [hlog, ← hu] at h
+    have := neg_abs_le K
+    linarith
+  · have hb := abs_two_re_lagStructure_le_exp_of_width hZ hwid hu0
+    have hexp : Real.exp (a * u) ≤ Real.exp (81 * |a|) := by
+      refine Real.exp_le_exp.mpr ?_
+      calc a * u ≤ |a| * u := mul_le_mul_of_nonneg_right (le_abs_self a) hu0
+        _ ≤ |a| * 81 := mul_le_mul_of_nonneg_left h81.le (abs_nonneg a)
+        _ = 81 * |a| := mul_comm _ _
+    have h1 := mul_le_mul_of_nonneg_left hexp hE
+    have h2 := (abs_le.mp hb).1
+    have := abs_nonneg K
+    linarith
+
 end GaloisForLFunctions.SurfaceOfSpecZ

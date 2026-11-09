@@ -41,7 +41,7 @@ neither attainment nor `ZerosApproachLine` is needed:
 -/
 
 open Complex Filter Topology Set
-open scoped Chebyshev Classical
+open scoped Classical
 
 noncomputable section
 
@@ -88,15 +88,18 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_primeWindow_le_primes_off_nu
 theorem tendsto_relLogDensity_empty :
     Tendsto (fun σ : ℝ => wSum (fun j => primeWeight j - primeOffWeight (∅ : Set ℕ) j) σ /
       wSum primeWeight σ) (𝓝[>] 1) (𝓝 0) := by
-  have hzero : ∀ σ : ℝ,
-      wSum (fun j => primeWeight j - primeOffWeight (∅ : Set ℕ) j) σ / wSum primeWeight σ = 0 := by
-    intro σ
+  have hzero : (fun σ : ℝ =>
+      wSum (fun j => primeWeight j - primeOffWeight (∅ : Set ℕ) j) σ / wSum primeWeight σ) =
+      fun _ => 0 := by
+    ext σ
     have hdiff : (fun j => primeWeight j - primeOffWeight (∅ : Set ℕ) j) = fun _ => 0 := by
       ext j
       unfold primeWeight primeOffWeight
       simp
-    simp [wSum, hdiff]
-  simpa [hzero] using (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℝ)) (𝓝[>] 1) (𝓝 0))
+    rw [hdiff]
+    simp [wSum]
+  rw [hzero]
+  exact tendsto_const_nhds
 
 /-- **Existential `ζ` characterization at relative logarithmic density zero:** `RiemannHypothesis`
 is equivalent to `ZerosApproachLine` together with the existence of a prime set `E` of relative
@@ -210,7 +213,7 @@ theorem powGaps_primes_diff_of_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 < θ) (
     filter_upwards [htheta_ev, hc_ev, eventually_gt_atTop (1 : ℝ)] with y hth hc hy1
     have hy0 : 0 < y := by linarith
     have hyθ : 0 < y ^ θ := Real.rpow_pos_of_pos hy0 θ
-    rw [Set.mem_Ioi, lt_div_iff₀ hyθ] at hth
+    rw [lt_div_iff₀ hyθ] at hth
     have htot : (c + 1) / 2 * y ^ θ <
         ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log (p : ℝ) := by
       rwa [← RHTower.Sieve.theta_sub_eq_sum_Ioc (by linarith)]
@@ -264,7 +267,6 @@ theorem shortPrimeSparse_of_card_le_rpow {α C : ℝ} (hα1 : α < 1) {E : Set �
   set θ : ℝ := max ((α + 1) / 2) (2 / 3)
   have hθ_gt_α : α < θ := lt_of_lt_of_le (by linarith) (le_max_left _ _)
   have hθ_lt_1 : θ < 1 := max_lt (by linarith) (by norm_num)
-  have hθ_pos : 0 < θ := lt_of_lt_of_le (by norm_num) (le_max_right _ _)
   refine ⟨1 / 2, by norm_num, ?_⟩
   have h2x_ev : ∀ᶠ x : ℝ in atTop,
       (((Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤
@@ -401,7 +403,8 @@ theorem prime_stepanov_phase_transition :
       (RiemannHypothesis ↔
         ∃ K : ℝ, ∀ p : ℕ, p.Prime → p ∉ E → primeWindow p ≤ archPoleWindow p + K)) :=
   ⟨exists_zeroConfig_primes_off_null_bddBelow_sup_eq_one,
-    fun hα1 hE => ⟨fun Z hZ hnoreal {_} hK => onLine_of_bddBelow_primes_off_card_rpow hα1 hE Z hZ
-      hnoreal hK, riemannHypothesis_iff_primeWindow_le_primes_off_card_rpow hα1 hE⟩⟩
+    fun {_ _} hα1 {_} hE => ⟨fun Z hZ hnoreal {_} hK =>
+      onLine_of_bddBelow_primes_off_card_rpow hα1 hE Z hZ hnoreal hK,
+      riemannHypothesis_iff_primeWindow_le_primes_off_card_rpow hα1 hE⟩⟩
 
 end GaloisForLFunctions.SurfaceOfSpecZ

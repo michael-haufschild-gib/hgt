@@ -1,7 +1,7 @@
 # Transcendence theory of the prime orbit (TTPO)
 
 - **ID:** ttpo
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** THEOREM (Lean) programme
 - **Source:** docs/reports/review-0811/obstacles-summary.md §2.11
 - **Statement:** develop the field: answer Q1–Q4, build T1–T4, test C1–C4, address M1–M5 of §2.11.
@@ -13,8 +13,8 @@ No sign, spectral or positivity input (C1). No computations.
 
 ## Gates
 - [x] 0 → 1  agenda fixed from §2.11; README first draft
-- [ ] 1 → 2  paper proofs of each module
-- [ ] 2 → 3  each module checked with `lake --old env lean`, standard axioms only
+- [x] 1 → 2  paper proofs in the module docstrings
+- [x] 2 → 3  each module checked with `lake --old env lean`; bundle theorems use only `propext`, `Classical.choice`, `Quot.sound`
 
 ## Modules
 | # | Module | Agenda | Content | Status |
@@ -31,11 +31,11 @@ No sign, spectral or positivity input (C1). No computations.
 | 10 | TheTestOfAHeavyReturn | Q1 | bump test `φ_y`; decay mass independent of y; `P_{φ_y}(0) ≥ √y/4`; heavy return `Re P(t) ≥ (1−2π²δ²)P(0) − 6κ√y − 12 log y` | checked |
 | 11 | AZeroFreeRegionBoundsTheHeavyReturns | Q1, M4, C4 | zero side under depth profile (Tannery for far zeros, local density); heavy returns `√y ≤ K(y^{d(2t)} log t + log(2+t))`; strip ⇒ `log t ≥ c y^{½−h}`; VK profile ⇒ unconditional bound | checked |
 | 12 | TheQuestionsOfTheField | all | `question_one`…`question_four`, `the_tools` | checked |
-| 13 | inversion of the VK inequality | Q1 | heavy subsets: no return in `[T₁, exp((log y)^{3/2−ε})]` | open |
+| 13 | HeavySubsetsDoNotReturnBeforeTheVinogradovKorobovHeight | Q1, M3 | heavy subsets: no return at `T₁ ≤ t ≤ exp((log y)^{3/2−ε})` | checked |
 
 ## Approach
 Organizing principle: depth (precision at fixed primes) vs breadth (number of primes at fixed precision).
 Transcendence controls depth; B97 is breadth at constant depth.
 
 ## Log
-- 2026-11-09 — created; modules 1–12 checked; README rewritten.
+- 2026-11-09 — created; 13 modules checked; README rewritten; moved to 3-formalized.

@@ -62,6 +62,22 @@ This supplies the modulus transfer; it does not estimate arithmetic returns.
 Paper proof and audited declarations:
 [CDG-MOD](../3-formalized/cdg-absolute-values-and-returns.md).
 
+## Collective rank and near-relation counts
+
+For `r` independent integer forms in `k` distinct prime logarithms, maximal-minor
+elimination reduces the Baker input to `k−r+1` logarithms. At height `H`, the
+explicit floor is
+`exp(−B_{k−r+1}(y)(log((k−r+1)r!H^r)+2))/(r!H^(r−1))`.
+Full rank has the stronger floor `log 2/(r!H^(r−1))`.
+
+Below the rank-`r` floor, integer near relations in the height-`H` box span
+at most `r−1` dimensions and number at most `(2H+1)^(r−1)`.
+`CollectiveRankDepth.lean` proves the rank law, penultimate-rank two-logarithm
+specialization, and actual near-relation count. The first-rank estimate
+retains the existing scalar Baker bound; return-height counts remain open.
+Paper proof and audited declarations:
+[CDG-RANK](../3-formalized/cdg-collective-rank-depth.md).
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

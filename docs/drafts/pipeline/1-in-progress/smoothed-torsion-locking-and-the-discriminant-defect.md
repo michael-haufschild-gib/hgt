@@ -1,32 +1,47 @@
-# Smoothed torsion locking and the discriminant defect
+# The mass obstruction to smoothed torsion locking
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Obstacle:** B129, scalar locking of the actual Abel torsion energy with the smoothed archimedean Green energy.
+- **Type:** CANDIDATE
+- **Obstacle:** B129, for the raw torsion lift of smooth packets.
+- **Statement:** A fixed compact C² profile prevents every scalar radius from giving finite limits on both its one-orbit and two-orbit packets. For the exponential locking, finite convergence is equivalent to equality of discrete and continuum mass; separated packets have an exact discriminant defect.
 
-## Exact target
+## Construction and scope
 
-For a real compactly supported C² profile `g`, put copies at `log n` with coefficients `x_n`, below the atom spacing. Let `f` be this packet and `M=∫g²`. Use the actual torsion channel `M·torsionForm(ρ,S,x)` and the actual smoothed archimedean channel `∫archDamped(r,u)·autocorr(f,u)du`.
+For `f(u)=Σ_{1≤n≤N}x_n g(u−log n)`, set `M=∫g²`, `D=MΣx_n²`, `H=∫f²`, and `a₀=gammaHardyPhaseRate 0`. The actual channels are
 
-Conjecture: a scalar locking normalized to Weil's form at degree one has limit
+`L_r = pole(f) − ∫archDamped(r,u)autocorr(f,u)du + M·torsionForm(ρ(r),Icc 1 N,x)`.
 
-`weilQuad(f) − M Σ_n x_n² selfIntersection(n)`.
+This is a precise lift of the existing torsion form to labelled smooth packets. It agrees with the exact prime bridge below the atom spacing. The theorem does not identify every possible continuum extension of torsion damping with this lift; B129 in that broader sense remains open.
 
-Consequently it cannot reproduce Weil's form on all smoothed probes: identical translated profiles at degrees 1 and 4 have equal Weil energy but limiting locked energies differing by `−M log 2`. This tests B129 on source-compatible smooth probes where the existing prime bridge is exact. It does not identify an unspecified alternative torsion smoothing with this channel.
+## Proof
 
-## Proof obligations
+The autocorrelation identity `∫(f(v)−f(v+u))²dv=2(autocorr(f,0)−autocorr(f,u))` identifies the archimedean finite part as `−levyEnergy(f)`. The existing torsion limit gives
 
-1. Derive the archimedean renormalized limit for autocorrelations of actual C² compact probes, including its identification with the Lévy energy.
-2. Construct a probe-independent admissible scalar locking and calculate its limit using the actual torsion form.
-3. Prove the discriminant defect for every separated packet, and impossibility of simultaneous Weil limits at degrees 1 and 4 for every scalar locking.
-4. Identify the correction forced by the defect and its relation to the existing spacing regulator. Do not count reformulations of the atomic anomaly as separate contributions.
-5. Remove separation: the divergent coefficients are `M Σx_n²` and `∫f²`. Prove no common radius gives finite limits on every compact smooth packet. An explicit overlapping profile `g=b+b(·−log 2)`, with `b` a nonnegative compact smooth bump, has `∫(g+g(·−log 2))²>2∫g²`; subtracting twice the one-orbit energy from the two-orbit energy cancels the torsion divergence but retains a nonzero multiple of `Z(r)`.
+`L_r + log|1−ρ(r)|D + H Z(r) → pole(f)+levyEnergy(f)+M·renormalizedTorsionForm(Icc 1 N,x)`.
 
-## Corpus inputs
+For `ρ_c(r)=1−exp(−Z(r)−c)`, the radius tends to one and eventually lies in `(0,1)`. Hence
 
-- `SurfaceOfSpecZ/TheArchimedeanSelfEnergyIsLogarithmic.lean`.
-- `ArithmeticIntersectionTheory/TheHeckeCocycleOfRenormalization.lean`.
-- `ArithmeticElectrostatics/TheStabilityLawAtAtomicResolution.lean`: exact packet mass and prime form below the spacing.
-- `SpacingScaleHarmonicAnalysis/WeilsFormIsContinuousInTheLevyNorm.lean`: actual Weil form and translation invariance.
+`L_r−(D−H)Z(r) → pole(f)+levyEnergy(f)+M·renormalizedTorsionForm(Icc 1 N,x)+cD`.
 
-**Status:** conjecture; no new theorem verified; B129 not marked solved.
+The finite part is `weilQuad(f)+smoothPacketWeilDefect`, where
+
+`smoothPacketWeilDefect = primeSum(f)−M·atomicWeilForm(N,x)+cD−2a₀H−MΣx_n² selfIntersection(n)`.
+
+Since `Z(r)→∞`, a finite limit exists exactly when `D=H`. Below the atom spacing, the exact mass and prime bridges give `D=H` and the limit becomes
+
+`weilQuad(f)+(c−2a₀)H−MΣx_n² selfIntersection(n)`.
+
+For failure under **every** radius, take a nonnegative nonzero compact smooth bump `b` and `g(u)=b(u)+b(u−log 2)`. Then `autocorr(g,log 2)≥∫b²>0`. Its one-orbit packet has mass `M`; its two-orbit packet has mass `2M+2autocorr(g,log 2)`. Their discrete masses are `M` and `2M`. Subtracting twice the first renormalized identity from the second cancels the torsion logarithm for any `ρ(r)→1`. Finite limits for both energies would force the positive multiple `2autocorr(g,log 2)Z(r)` to converge finitely, a contradiction.
+
+## No-go closure
+
+- **Killing mechanism:** overlapping copies alter the continuum Gram form but not the torsion divergence's discrete diagonal. Even a radius chosen for this single profile cannot fix both packets.
+- **Positive survivor:** exact asymptotic for every packet; finite convergence iff total overlap vanishes; exact finite discriminant defect in the separated regime.
+- **Forced correction:** in the separated regime, adding `MΣx_n² selfIntersection(n)+(2a₀−c)H` restores the Weil limit. The spacing regulator supplies continuum self-energy, but scalar mass calibration cannot supply the degree-dependent discriminant correction.
+- **New constraint:** an alternative torsion smoothing must reproduce the continuum Gram form, including overlaps. Matching only the diagonal mass on isolated packets is insufficient. The obstruction already uses orders 1 and 2, whose torsion self-intersections vanish; it precedes the discriminant anomaly.
+- **Status:** paper argument closed using corpus inputs; Lean verification pending. No claim of closing all versions of B129.
+
+## Lean targets
+
+- `HyperbolicArakelovTheory/TheGreenDampingOnSmoothProbes.lean`.
+- `HyperbolicArakelovTheory/TheMassObstructionToSmoothedTorsionLocking.lean`: `exists_smooth_profile_without_scalar_locking`, `finite_smoothLockedPacket_iff_mass_balance`, `tendsto_smoothLockedPacket_sub_mass_defect`, `tendsto_smoothLockedPacket_weil_normalization`.

@@ -1,8 +1,8 @@
 # Almost all primes do not force purity without attainment, and the sharp Stepanov prime boundary
 
 - **ID:** SOSZ-B132
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0911/obstacles-summary.md`, §2.2 (B132) and §3.
 - **Statement:**
   1. *(Negative resolution of B132 for configurations and density-zero Landau extension)* For every
@@ -23,6 +23,31 @@
      configuration `Z` on the critical line, and `RiemannHypothesis ↔ ∃ K, ∀ p ∉ E, P(p) ≤ A(p) + K`
      holds unconditionally.
 
+## Gates
+- [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
+- [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
+- [x] 2 → 3  formalized: Lean modules `PositiveCosineSumsOutsideASmallArc`, `ConfigurationsNeedAnAttainedTopAtAlmostAllPrimes`, `AlmostAllPrimesAndTheStepanovBoundary` checked with `lake --old env lean` (zero warnings, unconditional)
+
+## Lean formalization
+- `GaloisForLFunctions.SurfaceOfSpecZ.PositiveCosineSumsOutsideASmallArc`
+  - `exists_nat_cosine_sum_pos_off_hole`
+- `GaloisForLFunctions.SurfaceOfSpecZ.ConfigurationsNeedAnAttainedTopAtAlmostAllPrimes`
+  - `exists_zeroConfig_primes_off_null_bddBelow_nonattained`
+  - `exists_zeroConfig_primes_off_null_bddBelow_sup_eq_one`
+  - `not_forall_onLine_of_bddBelow_primes_off_null`
+- `GaloisForLFunctions.SurfaceOfSpecZ.AlmostAllPrimesAndTheStepanovBoundary`
+  - `asymptoticAbscissaLaw_of_primeWindow_le_primes_off_null`
+  - `riemannHypothesis_iff_zerosApproachLine_and_primeWindow_le_primes_off_null`
+  - `riemannHypothesis_iff_zerosApproachLine_and_exists_primeWindow_le_primes_off_null`
+  - `tendsto_theta_short_window_div_seven_twelfths`
+  - `powGaps_primes_diff_of_shortPrimeSparse`
+  - `shortPrimeSparse_of_card_le_rpow`
+  - `onLine_of_bddBelow_primes_off_shortPrimeSparse`
+  - `onLine_of_bddBelow_primes_off_card_rpow`
+  - `riemannHypothesis_iff_primeWindow_le_primes_off_shortPrimeSparse`
+  - `riemannHypothesis_iff_primeWindow_le_primes_off_card_rpow`
+  - `prime_stepanov_phase_transition`
+
 ## Mathematical content
 
 Question B132 asks whether a one-sided crude bound `2 Re S_Z(log p) ≥ −K` off a set `E` of primes of
@@ -41,8 +66,8 @@ Integer multiplicities `m^8 p_{k,m}` cancel the `m^{−8}` decay of `sinc(2π m 
 concentrate all negative excursions of level `k` into periodic logarithmic holes of fractional width
 `δ_k → 0`, while `B_k` depends only on `U_{k−1}`. On `[U_k, U_{k+1}]` the holes have multiplicative
 width between `x^{15/16}` and `x^{1−o(1)}`: wide enough at `U_k` to break every power-saving gap
-law `O(x^θ)` (`θ < 1`), yet above `x^{3/4}` everywhere so Huxley's short-interval prime bound transfers
-`δ_k → 0` directly to Chebyshev and relative logarithmic prime density zero.
+law `O(x^θ)` (`θ < 1`), yet above `x^{3/4}` everywhere so Huxley's short-interval prime bound
+transfers `δ_k → 0` directly to Chebyshev and relative logarithmic prime density zero.
 
 ## No-go closure
 
@@ -63,6 +88,10 @@ law `O(x^θ)` (`θ < 1`), yet above `x^{3/4}` everywhere so Huxley's short-inter
   precisely in sparse multiplicative holes of width `x^{1−o(1)}`. Any power-saving exceptional set
   `O(X^α)` (`α < 1`) eliminates `ZerosApproachLine` unconditionally; `o(X / log X)` density-zero
   exceptional sets stop strictly at `AsymptoticAbscissaLaw`.
+- **Status:** Dependency-closed on paper and unconditionally formalized in Lean 4 in
+  `SurfaceOfSpecZ/PositiveCosineSumsOutsideASmallArc.lean`,
+  `SurfaceOfSpecZ/ConfigurationsNeedAnAttainedTopAtAlmostAllPrimes.lean`, and
+  `SurfaceOfSpecZ/AlmostAllPrimesAndTheStepanovBoundary.lean`.
 
 ## Proof
 
@@ -99,36 +128,35 @@ Truncating `P_r` at `M` where `2 r^{M+1}/(1 − r) ≤ 1/(4096 N^2)` yields nonn
 
 **[PROVED HERE]** Fix `0 < Θ ≤ 1/2` and set `x_k = Θ(1 − 2^{−k−1})`, `δ_k = 1/(k + 4)`. Let
 `(M_k, p_k, η_k)` be the integer cosine data for `δ_k`, with `D_k = ∑_{m=1}^{M_k} p_{k,m} ≥ 1`.
-Define `(U_k, B_k)` recursively:
-- `U_0 = 0`, `B_0 = ⌈(2 D_0 : ℝ)⌉₊ + ⌈4 / η_0⌉₊ + 6`;
-- Given `U_k` and `B_k` (hence the level-`k` total spline weight
-  `W_k = 2 ∑_{m=1}^{M_k} m^8 p_{k,m} ‖sincC(splinePoint (m B_k) x_k)^8‖ > 0`), note that for any
-  candidate `U > 0`, choosing
-  `B_{k+1}(U) = ⌈2 D_{k+1} · 2^{k+1} e^{Θ U}⌉₊ + ⌈4 / η_{k+1}⌉₊ + k + 7`
-  depends monotonically on `U` with `B_{k+1}(U) ≤ C_{k+1} e^{U/2}`? Even better: since
-  `‖sincC(splinePoint (m B) x)^8‖ ≤ 1 / (m B)^8`, `W_{k+1} ≤ 2 D_{k+1} / B_{k+1}^8`, so we only need
-  `B_{k+1}^8 ≥ 2 D_{k+1} · 2^{k+1} e^{Θ U_k}`, i.e.
-  `B_{k+1}(U_k) = ⌈(2 D_{k+1} · 2^{k+1} : ℝ)⌉₊ * ⌈e^{(Θ/8) U_k}⌉₊ + ⌈4 / η_{k+1}⌉₊ + k + 7`!
-  Since `Θ/8 ≤ 1/16`, choosing `U_{k+1}` larger than `U_k + 4`, the takeover threshold
-  `log(16 / (η_k W_k)) / (x_k − x_{k−1})` (when `k ≥ 1`), `log X_0`, and a constant threshold for
-  `C_{k+2} / δ_{k+2}` ensures simultaneously:
-  1. `W_0 ≤ 1` and `W_{k+1} ≤ 2^{−k−1} e^{−Θ U_k}`;
-  2. For `k ≥ 1`, `(η_k / 4) W_k e^{(x_k − x_{k−1}) U_k} ≥ 4`;
-  3. On `[U_k, U_{k+1}]` (`k ≥ 1`), both `B_k / δ_k` and `B_{k+1} / δ_{k+1}` are at most `e^{U_k / 8}`.
+Since `‖sincC(splinePoint (m B) x)^8‖ ≤ 1 / (m B)^8`, the level-`k` total spline weight
+`W_k = 2 ∑_{m=1}^{M_k} m^8 p_{k,m} ‖sincC(splinePoint (m B_k) x_k)^8‖ > 0` satisfies
+`W_k ≤ 2 D_k / B_k^8`. Define `(U_k, B_k)` recursively with `U_0 = 0`,
+`B_0 = ⌈(2 D_0 : ℝ)⌉₊ + ⌈4 / η_0⌉₊ + M_0^6 D_0 + 6`, and for `k ≥ 0`:
+- `B_{k+1}` chosen above `(M_k + 1) B_k`, `2^{k+1} M_{k+1}^6 D_{k+1}`, `⌈4 / η_{k+1}⌉₊`, and
+  `⌈(2 D_{k+1} · 2^{k+1} : ℝ)⌉₊ * ⌈e^{(Θ/8) U_k}⌉₊` so that `B_{k+1}^8 ≥ 2 D_{k+1} · 2^{k+1} e^{Θ U_k}`
+  while `B_{k+1} = O_k(e^{(Θ/8) U_k})`;
+- `U_{k+1}` chosen above `U_k + 4`, the takeover threshold
+  `log(16 / (η_k W_k)) / (x_k − x_{k−1})` (when `k ≥ 1`), `1 + log X_0`, and the logarithmic growth
+  threshold ensuring `B_{k+1} / δ_{k+1} ≤ e^{U_{k+1} / 8}` and `B_{k+2} / δ_{k+2} ≤ e^{U_{k+1} / 8}`
+  (since `Θ / 8 ≤ 1 / 16 < 1 / 8`).
+
+This recursion guarantees simultaneously:
+1. `W_0 ≤ 1` and `W_{k+1} ≤ 2^{−k−1} e^{−Θ U_k}`;
+2. For `k ≥ 1`, `(η_k / 4) W_k e^{(x_k − x_{k−1}) U_k} ≥ 4`;
+3. On `[U_k, U_{k+1}]` (`k ≥ 1`), both `B_k / δ_k` and `B_{k+1} / δ_{k+1}` are at most `e^{U_k / 8}`.
 
 Place at each `(k, m)` with `1 ≤ m ≤ M_k` and `p_{k,m} > 0` the four symmetric points
-`1/2 ± x_k ± 2π i m B_k` with multiplicity `m^8 p_{k,m}`. Distinct `(k, m)` have strictly disjoint
-ordinates if we also enforce `B_{k+1} > M_k B_k` in the definition of `B_{k+1}`, so every carrier
-point determines `(k, m, sign_re, sign_im)` uniquely! Since `B_k → ∞`, horizontal strips contain
-finitely many points, `0 < 1/2 ± x_k < 1`, no zero is real, and
-`∑_{m=1}^{M_k} m^8 p_{k,m} / (m B_k)^2 ≤ M_k^6 D_k / B_k^2` is summable in `k` (guaranteed by
-including `2^k M_{k+1}^6 D_{k+1}` in `B_{k+1}`!), giving `TemperedConfig Z`.
+`1/2 ± x_k ± 2π i m B_k` with multiplicity `m^8 p_{k,m}`. Because `B_{k+1} > M_k B_k`, distinct
+`(k, m)` have strictly disjoint ordinates, so every carrier point determines `(k, m, sign_re, sign_im)`
+uniquely. Since `B_k → ∞`, horizontal strips contain finitely many points, `0 < 1/2 ± x_k < 1`, no
+zero is real, and `∑_{m=1}^{M_k} m^8 p_{k,m} / (m B_k)^2 ≤ M_k^6 D_k / B_k^2 ≤ 2^{−k}` is summable in
+`k`, giving `TemperedConfig Z`.
 
 At `(k, m)`, `m^8 sincC(splinePoint (m B_k) x_k)^8 = (sinh^8 x_k / (2π B_k)^8) z_{k,m}^8` where
 `z_{k,m} = 2π m B_k / (2π m B_k − i x_k)` has `‖z_{k,m}‖ ≤ 1` and `‖z_{k,m}^8 − 1‖ ≤ 8 x_k / (2π B_k) ≤ 1/B_k`.
 Hence for `u ∉ H_k := {u : ∃ n ∈ ℤ, |B_k u − (n + 1/2)| < δ_k / 2}`, the level-`k` forward sum
 `a_k(u)` satisfies `a_k(u) ≥ (η_k / 4) W_k` (since `B_k ≥ 4 / η_k` and `W_k ≤ 2 D_k sinh^8 x_k / (2π B_k)^8`).
-Applying the window dominance inequality on `[U_k, U_{k+1}]` shows `2 Re S_Z(u) ≥ −5` for all
+Applying the two-adjacent-level dominance bound on `[U_k, U_{k+1}]` shows `2 Re S_Z(u) ≥ −5` for all
 `u ≥ 0` outside `S := ⋃_{k ≥ 0} ((H_k ∪ H_{k+1}) ∩ [U_k, U_{k+1}])`.
 
 ### 3. Upper Lebesgue, Chebyshev, and relative logarithmic density zero
@@ -146,7 +174,7 @@ satisfies `e^{−U_k / 8} ≤ δ_j / B_j ≤ 1/4` and `a = e^{u_0} ≥ e^{U_k - 
 `∑ log p ≤ 16 e^{u_0} (δ_j / B_j)` and `∑ log p · p^{−σ} ≤ 16 (δ_j / B_j) e^{−(σ−1) u_0}` (`σ > 1`).
 Grouping periods by unit blocks `[m, m + 1]` cancels `B_j`, bounding the `[m, m + 1]` contribution by
 `O((δ_k + δ_{k+1}) e^m)` for `∑_{p ≤ X} log p` and `O((δ_k + δ_{k+1}) e^{−(σ−1) m})` for `wSum`.
-Since `δ_k → 0` and `(σ − 1) wSum primeWeight σ → 1` as `σ ↓ 1` (from
+Since `δ_k → 0` and `wSum primeWeight σ ≥ 1 / (4(σ − 1))` near `σ = 1⁺` (from
 `tendsto_neg_logDeriv_riemannZeta_sub_one_div_real` and `summable_higherWeight`), `E` has both
 Chebyshev density zero and relative logarithmic density zero.
 
@@ -154,12 +182,12 @@ Chebyshev density zero and relative logarithmic density zero.
 
 **[PROVED HERE]** Translating `orbitCorr_log_eq_archPoleWindow_sub_primeWindow` into
 `asymptoticAbscissaLaw_of_bddBelow_primes_off_null` gives `AsymptoticAbscissaLaw` from
-`P(p) ≤ A(p) + K` (`p ∉ E`), and combining with `rightRH_iff_zerosApproachLine_and_asymptoticAbscissaLaw`
+`P(p) ≤ A(p) + K` (`p ∉ E`), and combining with `riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw`
 gives `RiemannHypothesis ↔ ZerosApproachLine ∧ (Stepanov off E)`.
 
 Conversely, if `E` satisfies `ShortPrimeSparse θ E` (`7/12 < θ < 1`), Huxley's asymptotic on
-`(x − x^θ, x]` plus prime-power leakage `O(x^{1/2} log^2 x)` leaves a positive prime log-sum off `E`
-in every large `(x − 2 x^θ, x]`, proving `PowGaps θ {p | p.Prime ∧ p ∉ E}`. If `#(E ∩ [1, X]) ≤ C X^α`
+`(y, y + y^θ]` plus prime-power leakage `O(y^{1/2} log y)` leaves a positive prime log-sum off `E`
+in every large `(x − x^θ, x]`, proving `PowGaps θ {p | p.Prime ∧ p ∉ E}`. If `#(E ∩ [1, X]) ≤ C X^α`
 (`α < 1`), setting `θ = max ((α + 1)/2) (2/3) ∈ (7/12, 1)` gives `∑_{p ∈ E, p ≤ 2x} log p = o(x^θ)`,
 hence `ShortPrimeSparse θ E`. Applying `onLine_of_bddBelow_of_powGaps` and
 `riemannHypothesis_iff_primeWindow_le_of_powGaps` yields unconditional purity for all real-zero-free
@@ -175,3 +203,4 @@ tempered `Z` and `RH ↔ ∃ K, ∀ p ∉ E, P(p) ≤ A(p) + K` without `ZerosAp
 - `SurfaceOfSpecZ/StepanovBoundsProduceTheAbscissaLaw.lean`
 - `RHTower/PrimeShortIntervalsHuxleyAsymptotic.lean`
 - `RHTower/MertensVonMangoldtEulerConstant.lean`
+- `RHTower/Sieve/PrimeWindowRayleighFloor.lean`

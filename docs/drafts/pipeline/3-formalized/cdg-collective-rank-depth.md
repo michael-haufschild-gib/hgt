@@ -1,14 +1,14 @@
 # Collective rank and depth of prime-logarithm forms
 
 - **ID:** CDG-RANK
-- **Stage:** 2-fully-proven
-- **Type:** COLLECTIVE APPROXIMATION TOOL
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 
 ## Statement
 
 Let `p₁,…,p_k≤y` be distinct primes and `1≤r≤k`. Put `d=k−r` and
 let `B_{d+1}(y)=bakerExponent d ceil((d+1)log y)` be the explicit corpus
-exponent for `d+1` logarithms. For `H≥1`, define
+exponent for `d+1` logarithms. For `H≥1` and `d≥1`, define
 
 `Δ(r,d,y,H)=exp(−B_{d+1}(y)(log((d+1)r!H^r)+2))/(r!H^(r−1))`.
 
@@ -85,4 +85,13 @@ scalar estimate or prove the missing return-count or breadth law.
 
 ## Lean status
 
-Paper proof dependency-closed. Formalization in progress.
+Module: `CollectiveDiophantineGeometry/CollectiveRankDepth.lean`.
+
+- `exists_large_form_of_independent_rows`: rank-depth law, including the elementary full-rank floor.
+- `penultimate_rank_depth`: two-logarithm exponent at penultimate rank.
+- `nearRelationBox_finrank_le`: dimension bound for all near relations in the box.
+- `nearRelationBox_card_le`: uniform count `(2H+1)^(r−1)`.
+
+The direct repository-file Lean check passed. Six principal declarations
+passed transitive axiom audits with only `propext`, `Classical.choice`, and
+`Quot.sound`. The programme umbrella imports the module.
