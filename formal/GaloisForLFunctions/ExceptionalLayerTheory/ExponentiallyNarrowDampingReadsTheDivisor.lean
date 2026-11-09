@@ -51,8 +51,8 @@ private theorem exists_attenuatedGaussianMode_inverse_bound (d : ℕ) (κ : ℝ)
         Real.exp_add]
       ring
 
-/-- Gaussian growth survives contraction precisely above the degree-weighted
-rate loss, up to the polynomial Gamma factors. -/
+/-- Gaussian growth survives contraction above the degree-weighted rate loss,
+despite the polynomial Gamma factors. -/
 theorem tendsto_attenuatedGaussianMode_inv_zero (d : ℕ) (κ : ℝ)
     (ρ : ℂ) (σ a : ℝ) (hr : (d : ℝ) * κ < gaussianObservationRate ρ σ a) :
     Tendsto (fun t : ℝ => (attenuatedGaussianMode d κ ρ σ a t)⁻¹) atTop (𝓝 0) := by
@@ -106,7 +106,8 @@ private theorem tendsto_logDeriv_div_attenuatedGaussianMode (F : Finset XiZeroCo
 
 private theorem tendsto_contractingDampingStep {κ : ℝ} (hκ : 0 < κ) :
     Tendsto (contractingDampingStep κ) atTop (𝓝 0) := by
-  simpa only [contractingDampingStep, pow_zero, one_mul, neg_mul] using
+  change Tendsto (fun t : ℝ => Real.exp (-κ * t)) atTop (𝓝 0)
+  simpa only [pow_zero, one_mul, neg_mul] using
     HTGeometry.tendsto_pow_mul_exp_neg_scaled 0 hκ
 
 private theorem tendsto_exp_difference_div_contractingStep {κ : ℝ}
@@ -117,7 +118,7 @@ private theorem tendsto_exp_difference_div_contractingStep {κ : ℝ}
           (contractingDampingStep κ t : ℂ)) atTop (𝓝 (z - w)) := by
   have hderiv : HasDerivAt (fun u : ℂ => Complex.exp (u * z) -
       Complex.exp (u * w)) (z - w) 0 := by
-    simpa only [id_eq, zero_mul, Complex.exp_zero, one_mul] using
+    simpa using
       (((hasDerivAt_id (x := (0 : ℂ))).mul_const z).cexp.sub
         (((hasDerivAt_id (x := (0 : ℂ))).mul_const w).cexp))
   have hstep : Tendsto (fun t : ℝ => (contractingDampingStep κ t : ℂ)) atTop
@@ -126,10 +127,11 @@ private theorem tendsto_exp_difference_div_contractingStep {κ : ℝ}
     constructor
     · exact Complex.continuous_ofReal.continuousAt.tendsto.comp (tendsto_contractingDampingStep hκ)
     · exact Eventually.of_forall fun t => by
-        simpa only [Set.mem_compl_iff, Set.mem_singleton_iff, Complex.ofReal_eq_zero]
+        simpa only [Set.mem_compl_iff, Set.mem_singleton_iff, Complex.ofReal_eq_zero,
+          contractingDampingStep]
           using Real.exp_ne_zero (-κ * t)
   have hs := hderiv.tendsto_slope_zero.comp hstep
-  simpa only [Function.comp_def, zero_add, zero_mul, Complex.exp_zero, sub_self,
+  simpa only [Function.comp_def, zero_add, zero_mul, mul_zero, Complex.exp_zero, sub_self,
     sub_zero, smul_eq_mul, div_eq_mul_inv, mul_comm] using hs
 
 private theorem divisorDampingFilter_degree (F : Finset XiZeroCopy)
@@ -141,7 +143,7 @@ private theorem divisorDampingFilter_degree (F : Finset XiZeroCopy)
     (Finset.prod_ne_zero_iff.mpr (fun q _ => Polynomial.X_sub_C_ne_zero _)),
     Polynomial.natDegree_X_sub_C,
     Polynomial.natDegree_prod_of_monic _ _ (fun q _ => Polynomial.monic_X_sub_C _)]
-  simp only [Polynomial.natDegree_X_sub_C, Finset.sum_const, nsmul_eq_mul, mul_one]
+  simp
 
 private theorem tendsto_polynomial_product_coeff {ι : Type*} {l : Filter ι}
     {P Q : ι → Polynomial ℂ} {P₀ Q₀ : Polynomial ℂ}
@@ -190,8 +192,8 @@ private theorem tendsto_divisorDampingFilter_coeff (F : Finset XiZeroCopy)
     tendsto_polynomial_product_coeff (tendsto_damping_linear_factor_coeff hκ (1 - β))
       (hprod (F.filter (fun q => xiZero q ≠ ρ))) j
 
-/-- Dividing by the exact contraction order exposes the product of the
-selected zero's distances from the pole and every deleted zero copy. -/
+/-- Dividing by the exact contraction order exposes the product of differences
+between the selected zero and the pole and every deleted zero copy. -/
 theorem tendsto_divisorDampingFilter_scaled_value (F : Finset XiZeroCopy)
     (ρ : ℂ) (β : ℝ) {κ : ℝ} (hκ : 0 < κ) :
     Tendsto (fun t : ℝ =>
@@ -206,7 +208,8 @@ theorem tendsto_divisorDampingFilter_scaled_value (F : Finset XiZeroCopy)
       (Complex.exp ((contractingDampingStep κ t : ℂ) * (ρ - β)) -
         Complex.exp ((contractingDampingStep κ t : ℂ) * (z - β))) /
           (contractingDampingStep κ t : ℂ)) atTop (𝓝 (ρ - z)) := by
-    convert hfactor z using 1 <;> ring
+    have he : (ρ - (β : ℂ)) - (z - β) = ρ - z := by ring
+    simpa only [he] using hfactor z
   have hlim := (hfactor' 1).mul
     (tendsto_finsetProd (F.filter (fun q => xiZero q ≠ ρ)) fun q _ => hfactor' (xiZero q))
   apply hlim.congr
@@ -216,7 +219,7 @@ theorem tendsto_divisorDampingFilter_scaled_value (F : Finset XiZeroCopy)
   rw [Finset.prod_div_distrib, Finset.prod_const, ← mul_div_mul_comm, pow_add, pow_one]
 
 /-- The complete arithmetic current survives an exponentially contracting
-damping grid after division by its exact finite-rank attenuation. -/
+damping grid after division by its exact attenuation. -/
 theorem contracting_prime_filter_reads_selected_zero (F : Finset XiZeroCopy)
     {θ σ β a κ : ℝ} (hσ : 1 / 2 < σ) (hσ1 : σ < 1) (hgap : θ < σ)
     (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
@@ -311,6 +314,8 @@ theorem contracting_prime_filter_reads_selected_zero (F : Finset XiZeroCopy)
           m * ((P t).eval (Complex.exp ((h t : ℂ) * (ρ - β))) / (h t : ℂ) ^ d) := by
       change _ / ((h t : ℂ) ^ d *
         gaussianMBKernel (Real.exp (-a * t)) (ρ - ((σ : ℂ) + t * I))) = _
+      generalize hk : gaussianMBKernel (Real.exp (-a * t))
+        (ρ - ((σ : ℂ) + t * I)) = K at hKne ⊢
       field_simp [hKne, pow_ne_zero d (Complex.ofReal_ne_zero.mpr (hh t).ne')] <;> ring
     rw [hcancel] at heq
     change E t / D t - continuedDampingCorrection (P t) σ β a (h t) t / D t -

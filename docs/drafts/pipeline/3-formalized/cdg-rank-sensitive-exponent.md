@@ -82,9 +82,11 @@ For `d≤r`, `h≤2`; for `d<r`, `h=1`.
 
 This makes the rank gain in the collective auxiliary method explicit and
 uniform over every small-form family in the same prime-coordinate space.
-At proportional rank the degree is linear in `k`, whereas scalar
-elimination at proportional codimension retains a quadratic dimension
-degree. The maximum-floor result preserves the useful near-full-rank
+At proportional rank the degree is linear in `k`, whereas the earlier
+formal scalar elimination at proportional codimension retains a quadratic
+dimension degree. Published scalar Matveev bounds already have linear
+degree; that comparison is recorded in the programme README.
+The maximum-floor result preserves the useful near-full-rank
 regimes of scalar elimination and integrality.
 
 Gaudron remains the external benchmark recorded in CDG-SIM; no external

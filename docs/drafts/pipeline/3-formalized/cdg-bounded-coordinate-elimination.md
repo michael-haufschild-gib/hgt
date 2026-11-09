@@ -45,9 +45,10 @@ Selecting a basis from the finite spanning family proves the last assertion.
 ## Contribution
 
 This discharges the bounded elimination input to
-`cdg-weighted-coordinate-separation.md`: small forms in a coordinate
+[weighted coordinate separation](cdg-weighted-coordinate-separation.md): small forms in a coordinate
 intersection retain an explicit value bound after denominators are cleared.
-Hereditary arithmetic sparsity and weighted selection remain separate inputs.
+[Hereditary arithmetic sparsity](cdg-hereditary-rank-bounds.md) and weighted
+selection are proved separately.
 
 ## Formalization
 

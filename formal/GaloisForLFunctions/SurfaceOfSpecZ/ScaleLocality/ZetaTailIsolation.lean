@@ -46,7 +46,9 @@ theorem exists_zeta_tail_deletion (α : ℝ) (w₀ : ℂ) {ε : ℝ} (hε : 0 < 
   have hρ : (1 / 2 : ℂ) + z ∈ zetaZeroConfig.carrier := by
     rcases mem_of_evenCoeff_ne_zero hcz with hz | hz
     · exact hz
-    · simpa using conj_mem_zetaZeroConfig hz
+    · have hhalf : conj (1 / 2 : ℂ) = 1 / 2 := by
+        rw [show (2 : ℂ) = 1 + 1 by norm_num, map_div₀, map_add, map_one]
+      simpa only [map_add, hhalf, Complex.conj_conj] using conj_mem_zetaZeroConfig hz
   have hne1 : (1 / 2 : ℂ) + z ≠ 1 := by
     intro he
     have hr := hρ.2.2
@@ -66,12 +68,12 @@ theorem exists_zeta_tail_deletion (α : ℝ) (w₀ : ℂ) {ε : ℝ} (hε : 0 < 
     rw [hen]
     ring
   refine ⟨n - N, ?_, ?_⟩
-  · rw [Nat.sub_add_cancel hN]
+  · simp only [Nat.sub_add_cancel hN]
     dsimp only [a]
     rw [hen]
     simp only [Complex.sub_re, Complex.add_re, Complex.ofReal_re]
     norm_num <;> ring
-  · rw [Nat.sub_add_cancel hN]
+  · simp only [Nat.sub_add_cancel hN]
     have him : xiCopyOrdinate (e n) = z.im := by
       dsimp only [xiCopyOrdinate]
       rw [hen]
@@ -87,7 +89,7 @@ theorem zeta_shifted_exponent_bound (α : ℝ) {z : ℂ}
     |(z - (α : ℂ)).re| ≤ 1 / 2 + |α| := by
   have htri : |z.re - α| ≤ |z.re| + |α| := by
     simpa only [Real.norm_eq_abs] using norm_sub_le z.re α
-  exact htri.trans (add_le_add_right (abs_re_le_of_evenCoeff_ne_zero hz) _)
+  exact htri.trans (add_le_add (abs_re_le_of_evenCoeff_ne_zero hz) le_rfl)
 
 /-- The shifted spline trace is an absolutely convergent real exponential series. -/
 theorem zeta_shifted_trace_series (α t : ℝ) :
@@ -116,7 +118,9 @@ theorem zeta_shifted_trace_series (α t : ℝ) :
       Complex.exp ((z - (α : ℂ)) * t)).re =
       ∑' z : ℂ, (evenCoeff zetaZeroConfig (boxSpline 1 3) z *
         Complex.exp ((z - (α : ℂ)) * t)).re from Complex.reCLM.map_tsum hs] at hre
-  simpa only [normTrace, Complex.ofReal_re, neg_mul, mul_comm] using hre
+  simp only [Complex.ofReal_re] at hre
+  rw [neg_mul, mul_comm]
+  exact hre
 
 #print axioms exists_zeta_tail_deletion
 #print axioms zeta_shifted_trace_series

@@ -72,6 +72,9 @@ This is an arithmetic application of the collective theorem, not a new
 Fourier inequality or an improvement over the strongest published
 transcendence estimates. The external benchmark remains
 [Gaudron's simultaneous bound](../3-formalized/cdg-simultaneous-logarithm-bounds.md#external-benchmark).
+Published scalar Matveev bounds already have linear dimension degree and
+give full-dimensional separation at a stronger floor. Linear degree alone
+therefore establishes no new counting regime beyond those results.
 
 The result concerns shrinking precision. Fixed Fourier height is already
 served by stronger elementary separation; this argument does not supply

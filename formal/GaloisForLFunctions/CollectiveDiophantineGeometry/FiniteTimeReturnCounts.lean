@@ -111,22 +111,24 @@ theorem card_close_smoothBox_pairs_le {d r H : ℕ}
       Nat.mul_le_mul_left _ (Nat.pow_le_pow_right (by omega) hdim)
     _ = (H + 1) ^ (d + r + 1 + r) := (pow_add _ _ _).symm
 
-private def phaseExp (x : ℝ) : ℂ := Complex.exp (Complex.I * (x : ℂ))
+/-- Unit phase in the radian convention. -/
+def phaseExp (x : ℝ) : ℂ := Complex.exp (Complex.I * (x : ℂ))
 
-private theorem norm_phaseExp (x : ℝ) : ‖phaseExp x‖ = 1 := by
+theorem norm_phaseExp (x : ℝ) : ‖phaseExp x‖ = 1 := by
   simpa only [phaseExp, mul_comm] using Complex.norm_exp_ofReal_mul_I x
 
-private theorem phaseExp_mul (x y : ℝ) : phaseExp x * phaseExp y = phaseExp (x + y) := by
+theorem phaseExp_mul (x y : ℝ) : phaseExp x * phaseExp y = phaseExp (x + y) := by
   unfold phaseExp
   rw [← Complex.exp_add]
   congr 1
   push_cast
   ring
 
-private def phaseSum {ι : Type*} [Fintype ι] (ω θ : ι → ℝ) (t : ℝ) : ℂ :=
+/-- A finite exponential sum with independent frequency and target phase. -/
+def phaseSum {ι : Type*} [Fintype ι] (ω θ : ι → ℝ) (t : ℝ) : ℂ :=
   ∑ a, phaseExp (ω a * t - θ a)
 
-private theorem continuous_phaseSum {ι : Type*} [Fintype ι] (ω θ : ι → ℝ) :
+theorem continuous_phaseSum {ι : Type*} [Fintype ι] (ω θ : ι → ℝ) :
     Continuous (phaseSum ω θ) := by
   unfold phaseSum phaseExp
   fun_prop
@@ -179,7 +181,8 @@ private theorem phase_collisionWeight_le {ι : Type*} [Fintype ι]
           split_ifs <;> norm_num
     _ = _ := by rw [← sum_filter]; simp only [sum_const, nsmul_eq_mul, mul_one]
 
-private theorem integral_phaseSum_norm_sq_le_collision {ι : Type*} [Fintype ι]
+/-- A finite phase sum is controlled by its actual close-frequency pairs. -/
+theorem integral_phaseSum_norm_sq_le_collision {ι : Type*} [Fintype ι]
     (ω θ : ι → ℝ) {T Δ : ℝ} (hT : 0 ≤ T) (hΔ : 0 < Δ) (A : ℝ) :
     (∫ t in A..A + T, ‖phaseSum ω θ t‖ ^ 2) ≤
       (5 * π / 2) * max (T / 2) Δ⁻¹ *
@@ -259,30 +262,38 @@ private theorem phaseExp_pow (x : ℝ) (n : ℕ) : phaseExp x ^ n = phaseExp ((n
     push_cast
     ring
 
-private theorem smoothBoxSum_eq_prod {k : ℕ}
-    (p : Fin k → ℕ) (θ : Fin k → ℝ) (H : ℕ) (t : ℝ) :
-    smoothBoxSum p θ H t =
-      ∏ j, ∑ n : Fin (H + 1), phaseExp (log (p j) * t - θ j) ^ (n : ℕ) := by
+/-- An exponent-box sum factors into its coordinate geometric sums. -/
+theorem phaseSum_box_eq_prod {ι : Type*} [Fintype ι]
+    (ℓ θ : ι → ℝ) (H : ℕ) (t : ℝ) :
+    phaseSum (fun a : ι → Fin (H + 1) => ∑ j, (a j : ℝ) * ℓ j)
+      (fun a => ∑ j, (a j : ℝ) * θ j) t =
+      ∏ j, ∑ n : Fin (H + 1), phaseExp (ℓ j * t - θ j) ^ (n : ℕ) := by
   classical
-  have hp := Finset.prod_univ_sum (fun _ : Fin k => (univ : Finset (Fin (H + 1))))
-    (fun j n => phaseExp (log (p j) * t - θ j) ^ (n : ℕ))
+  have hp := Finset.prod_univ_sum (fun _ : ι => (univ : Finset (Fin (H + 1))))
+    (fun j n => phaseExp (ℓ j * t - θ j) ^ (n : ℕ))
   simp only [Fintype.piFinset_univ] at hp
   rw [hp]
-  unfold smoothBoxSum
+  unfold phaseSum
   apply sum_congr rfl
   intro a _
   simp only [phaseExp_pow]
   simp only [phaseExp]
   rw [← Complex.exp_sum]
   congr 1
-  unfold smoothBoxFrequency
   push_cast
   rw [sum_mul, ← sum_sub_distrib, mul_sum]
   apply sum_congr rfl
   intro j _
   ring
 
-private theorem half_le_norm_phase_average {H : ℕ} {z : ℂ} (hz : ‖z‖ = 1)
+private theorem smoothBoxSum_eq_prod {k : ℕ}
+    (p : Fin k → ℕ) (θ : Fin k → ℝ) (H : ℕ) (t : ℝ) :
+    smoothBoxSum p θ H t =
+      ∏ j, ∑ n : Fin (H + 1), phaseExp (log (p j) * t - θ j) ^ (n : ℕ) :=
+  phaseSum_box_eq_prod (fun j => log (p j)) θ H t
+
+/-- A short geometric sum detects a chord return without dimension loss. -/
+theorem half_le_norm_phase_average {H : ℕ} {z : ℂ} (hz : ‖z‖ = 1)
     (hnear : ‖z - 1‖ ≤ 1 / (2 * (H + 1 : ℝ))) :
     (H + 1 : ℝ) / 2 ≤ ‖∑ n : Fin (H + 1), z ^ (n : ℕ)‖ := by
   have hN : (0 : ℝ) < H + 1 := by positivity

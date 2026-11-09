@@ -1,8 +1,8 @@
 # Weighted coordinate separation from collective small forms
 
 - **ID:** CDG-WEIGHT
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Retain at least half of any nonnegative prime weight in a
   coordinate subfamily with a scalar separation floor of linear dimension degree.
 
@@ -25,7 +25,7 @@ Let `V` be the rational span of all height-`H` integer forms of size below
 `ε`. The set is finite, also for real `H`, by containment in the integer box
 of height `ceil(H)`.
 
-[Bounded elimination](../3-formalized/cdg-bounded-coordinate-elimination.md)
+[Bounded elimination](cdg-bounded-coordinate-elimination.md)
 and the strict-majority collective floor give
 
 `2 dim(V ∩ ℚ^J) ≤ |J|` for every coordinate set `J`.
@@ -84,4 +84,6 @@ exclusion and the prime-degree trace producer remain separate open inputs.
 - `exists_weighted_prime_coordinate_separation`: the actual prime-logarithm
   theorem, with the hereditary premise discharged and arbitrary real `H≥1`.
 
-Final direct Lean verification and transitive axiom audits are pending.
+The direct `lake --old env lean` source check passed. Both transitive axiom
+audits contain only `propext`, `Classical.choice` and `Quot.sound`.
+The programme umbrella imports the module.

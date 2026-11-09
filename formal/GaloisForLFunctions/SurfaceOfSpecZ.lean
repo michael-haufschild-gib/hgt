@@ -80,6 +80,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.DecisiveSamplesOfZeroConvergenceExpone
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveTailFilters
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveTailIsolation
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SquareRootWindowLeakage
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FiniteSpectrumOscillation
 
 /-!
 # The surface of `Spec ℤ`

@@ -479,16 +479,16 @@ theorem conj_mem_zeroExps {z : ℂ} (hz : z ∈ zeroExps Z) : conj z ∈ zeroExp
   · exact Or.inr (by rwa [Complex.conj_conj])
   · exact Or.inl h
 
-theorem abs_re_lt_of_mem_zeroExps {z : ℂ} (hz : z ∈ zeroExps Z) : |z.re| < 1 / 2 := by
+theorem abs_re_le_of_mem_zeroExps {z : ℂ} (hz : z ∈ zeroExps Z) : |z.re| ≤ 1 / 2 := by
   rcases hz with h | h
   · have h2 := Z.strip _ h
     have e : (1 / 2 + z).re = 1 / 2 + z.re := by simp
     rw [e] at h2
-    exact abs_lt.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
+    exact abs_le.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
   · have h2 := Z.strip _ h
     have e : (1 / 2 + conj z).re = 1 / 2 + z.re := by simp
     rw [e] at h2
-    exact abs_lt.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
+    exact abs_le.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
 
 theorem im_ne_zero_of_mem_zeroExps (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {z : ℂ}
     (hz : z ∈ zeroExps Z) : z.im ≠ 0 := by
@@ -520,10 +520,10 @@ theorem expWeight_le (u : ℝ) (z : ℂ) :
   by_cases h : evenCoeff Z (boxSpline 1 3) z = 0
   · simp [h]
   refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
-  have hr := abs_re_lt_of_mem_zeroExps (mem_of_evenCoeff_ne_zero h)
+  have hr := abs_re_le_of_mem_zeroExps (mem_of_evenCoeff_ne_zero h)
   calc z.re * u ≤ |z.re * u| := le_abs_self _
     _ = |z.re| * |u| := abs_mul _ _
-    _ ≤ 1 / 2 * |u| := mul_le_mul_of_nonneg_right hr.le (abs_nonneg _)
+    _ ≤ 1 / 2 * |u| := mul_le_mul_of_nonneg_right hr (abs_nonneg _)
     _ = |u| / 2 := by ring
 
 theorem summable_expWeight (hZ : TemperedConfig Z) (u : ℝ) : Summable (expWeight Z u) :=
@@ -543,7 +543,8 @@ theorem exists_dominant (hZ : TemperedConfig Z) (u : ℝ) {z₁ : ℂ}
     have h := (summable_expWeight hZ u).tendsto_cofinite_zero.eventually (gt_mem_nhds hpos)
     rw [Filter.eventually_cofinite] at h
     simpa [not_lt] using h
-  obtain ⟨z, hz, hmax⟩ := Set.exists_max_image _ (expWeight Z u) hfin ⟨z₁, le_refl _⟩
+  obtain ⟨z, hz, hmax⟩ := Set.exists_max_image _ (expWeight Z u) hfin
+    ⟨z₁, show expWeight Z u z₁ ≤ expWeight Z u z₁ from le_refl _⟩
   refine ⟨z, fun h0 => ?_, fun z' => ?_⟩
   · have h0' : expWeight Z u z = 0 := by simp [expWeight, h0]
     have : expWeight Z u z₁ ≤ expWeight Z u z := hz
@@ -676,12 +677,15 @@ theorem sum_term_zero_le (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ
     (hdrift : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - x₀| * ℓ) ≤ B) :
     ∑ z ∈ S, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - x₀) ^ 2‖ ≤
       B * (4 / ℓ ^ 2) * (32 / δ ^ 2) := by
-  have hB : 0 ≤ B := le_trans (by positivity) (hdrift 0)
+  have hB : 0 ≤ B :=
+    le_trans (mul_nonneg (expWeight_nonneg _ _) (Real.exp_pos _).le) (hdrift 0)
   have hterm : ∀ z ∈ S, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - x₀) ^ 2‖ ≤
       B * (4 / ℓ ^ 2) * (1 / (z.im - 0) ^ 2) := fun z hz => by
-    have h := norm_term_le (Z := Z) (w := z - x₀) hℓ (by simpa using
-      im_ne_zero_of_mem_zeroExps hnoreal (hS z hz)) (by simp) (hdrift z)
-    simpa using h
+    have hi : (z - (x₀ : ℂ)).im = z.im - 0 := by rw [Complex.sub_im, Complex.ofReal_im]
+    have hw : (z - (x₀ : ℂ)).im ≠ 0 := by
+      rw [hi, sub_zero]; exact im_ne_zero_of_mem_zeroExps hnoreal (hS z hz)
+    have h := norm_term_le (Z := Z) (w := z - x₀) hℓ hw (by simp) (hdrift z)
+    rwa [hi] at h
   have hcount := sum_inv_sq_im_le (S := S) (t := 0) (half_pos hδ)
     (fun z hz z' hz' h1 h2 => le_trans (by linarith) (hsep z (hS z hz) z' (hS z' hz') h1 h2))
     (fun z hz _ => by rw [sub_zero]; exact half_le_abs_im hnoreal hsep (hS z hz))
@@ -702,7 +706,8 @@ theorem sum_term_erase_le {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z
     ∑ z ∈ S.erase zm, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - zm) ^ 2‖ ≤
       B * (4 / ℓ ^ 2) * (8 / δ ^ 2) + expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * (u₀ - ℓ)) := by
   classical
-  have hB : 0 ≤ B := le_trans (by positivity) (hdrift 0)
+  have hB : 0 ≤ B :=
+    le_trans (mul_nonneg (expWeight_nonneg _ _) (Real.exp_pos _).le) (hdrift 0)
   set f : ℂ → ℝ := fun z =>
     ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - zm) ^ 2‖
   rw [← Finset.sum_filter_add_sum_filter_not _ (fun z => z.im ≠ zm.im)]
@@ -713,9 +718,10 @@ theorem sum_term_erase_le {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z
     have hterm : ∀ z ∈ (S.erase zm).filter (fun z => z.im ≠ zm.im),
         f z ≤ B * (4 / ℓ ^ 2) * (1 / (z.im - zm.im) ^ 2) := fun z hz => by
       have hne := (Finset.mem_filter.mp hz).2
-      have h := norm_term_le (Z := Z) (w := z - zm) (x₀ := zm.re) hℓ
-        (by simpa [sub_eq_zero] using hne) (by simp) (hdrift z)
-      simpa using h
+      have hw : (z - zm).im ≠ 0 := by rw [Complex.sub_im]; exact sub_ne_zero.mpr hne
+      have h := norm_term_le (Z := Z) (w := z - zm) (x₀ := zm.re) hℓ hw (by simp) (hdrift z)
+      rw [Complex.sub_im] at h
+      exact h
     have hcount := sum_inv_sq_im_le (S := S.erase zm) (t := zm.im) hδ
       (fun z hz z' hz' h1 h2 => hsep z (hS' z hz) z' (hS' z' hz') h1 h2)
       (fun z hz hne => by
@@ -740,12 +746,11 @@ theorem sum_term_erase_le {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z
       rw [hzi, sub_self, abs_zero] at h
       linarith
     refine (Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => norm_nonneg _).trans ?_
-    rw [Finset.sum_singleton]
-    simp only [f]
-    rw [norm_term_eq, norm_pow]
+    rw [Finset.sum_singleton, norm_term_eq, norm_pow]
     have hσ := norm_boxAvg_sq_le_exp hℓ (-conj zm - zm)
     have hre : |(-conj zm - zm).re| = 2 * zm.re := by
-      rw [show (-conj zm - zm).re = -(2 * zm.re) by simp; ring, abs_neg,
+      rw [show (-conj zm - zm).re = -(2 * zm.re) by
+        rw [Complex.sub_re, Complex.neg_re, Complex.conj_re]; ring, abs_neg,
         abs_of_nonneg (by linarith)]
     rw [hre] at hσ
     have hw : expWeight Z u₀ (-conj zm) = expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * u₀) := by

@@ -146,8 +146,9 @@ At `T≥2/Δ`, relative measure is at most `(5π/4)·4^k/N^(k−r+1)`.
 The horizon is exactly `B H^(rC+r−1)`, with
 `B=2r·r!·exp(C(log(r!)+2))` and the proved collective exponent `C`.
 The shared small-form span bounds close smooth-number pairs; the Fejér
-window theorem removes the far-frequency error. This improves the
-shrinking-precision counting regime, not constant-precision breadth.
+window theorem removes the far-frequency error. This supplies a formal
+shrinking-precision counting tool; no improvement over published scalar
+separation or constant-precision breadth is claimed.
 Direct Lean verification and five transitive axiom audits passed.
 Proof: [CDG-COUNT](../3-formalized/cdg-finite-time-rank-counts.md).
 
@@ -159,6 +160,10 @@ dimension at most half its support size. A minimum-weight coordinate basis
 and Hall matching then retain at least half of any nonnegative prime weight
 on coordinates whose nonzero height-`H` forms have size at least `δ`.
 This closes the hereditary localization and weighted selection mechanisms.
+Direct Lean checks and four capstone axiom audits passed; both modules
+are imported by the programme umbrella.
+Proofs: [CDG-HERED](../3-formalized/cdg-hereditary-rank-bounds.md),
+[CDG-WEIGHT](../3-formalized/cdg-weighted-coordinate-separation.md).
 
 The comparison with quadratic scalar dimension degree applies only to the
 earlier formal Fel'dman estimate. Published Matveev scalar bounds already

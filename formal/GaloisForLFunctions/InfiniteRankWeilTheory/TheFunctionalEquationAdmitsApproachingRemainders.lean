@@ -70,7 +70,7 @@ theorem norm_conj_plantZero (δ : ℕ → ℝ) (n : ℕ) : ‖conj (plantZero δ
   Complex.norm_conj _
 
 /-- Uniform bound `‖E_n(w) − 1‖ ≤ (2R² + R⁴)/γ_n` on `‖w‖ ≤ R`. -/
-theorem norm_quartetFactor_sub_one_le (δ : ℕ → ℝ) (n : ℕ) {R : ℝ} (hR : 0 ≤ R) {w : ℂ}
+theorem norm_quartetFactor_sub_one_le (δ : ℕ → ℝ) (n : ℕ) {R : ℝ} {w : ℂ}
     (hw : ‖w‖ ≤ R) : ‖quartetFactor δ n w - 1‖ ≤ (2 * R ^ 2 + R ^ 4) * (1 / plantHeight n) := by
   have hγ1 := one_le_plantHeight n
   have hγ : 0 < plantHeight n := by linarith
@@ -107,7 +107,7 @@ theorem norm_quartetFactor_sub_one_le (δ : ℕ → ℝ) (n : ℕ) {R : ℝ} (hR
 theorem summable_norm_quartetFactor_sub_one (δ : ℕ → ℝ) (w : ℂ) :
     Summable fun n => ‖quartetFactor δ n w - 1‖ :=
   Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
-    (fun n => norm_quartetFactor_sub_one_le δ n (norm_nonneg w) le_rfl)
+    (fun n => norm_quartetFactor_sub_one_le δ n le_rfl)
     (summable_inv_plantHeight.mul_left _)
 
 theorem multipliable_quartetFactor (δ : ℕ → ℝ) (w : ℂ) :
@@ -131,11 +131,10 @@ theorem hasProdLocallyUniformlyOn_quartetFactor (δ : ℕ → ℝ) :
   intro K _ hK
   obtain ⟨C, hC⟩ := hK.bddAbove_image (continuous_norm (E := ℂ)).continuousOn
   set R : ℝ := max C 0
-  have hR : 0 ≤ R := le_max_right _ _
   have hKR : ∀ z ∈ K, ‖z‖ ≤ R := fun z hz => (hC (mem_image_of_mem _ hz)).trans (le_max_left _ _)
   have hprod := Summable.hasProdUniformlyOn_one_add hK
     (summable_inv_plantHeight.mul_left (2 * R ^ 2 + R ^ 4))
-    (Eventually.of_forall fun n z hz => norm_quartetFactor_sub_one_le δ n hR (hKR z hz))
+    (Eventually.of_forall fun n z hz => norm_quartetFactor_sub_one_le δ n (hKR z hz))
     (fun n => ((differentiable_quartetFactor δ n).continuous.sub continuous_const).continuousOn)
   have heq : (fun (n : ℕ) (z : ℂ) => 1 + (quartetFactor δ n z - 1)) = quartetFactor δ := by
     funext n z; ring
@@ -165,7 +164,8 @@ theorem quartetFactor_conj (δ : ℕ → ℝ) (n : ℕ) (w : ℂ) :
 theorem quartetProduct_conj (δ : ℕ → ℝ) (w : ℂ) :
     quartetProduct δ (conj w) = conj (quartetProduct δ w) := by
   have h := (multipliable_quartetFactor δ w).hasProd.map (starRingEnd ℂ) Complex.continuous_conj
-  rw [quartetProduct, ← h.tprod_eq]
+  unfold quartetProduct
+  rw [← h.tprod_eq]
   exact tprod_congr fun n => quartetFactor_conj δ n w
 
 theorem quartetProduct_zero (δ : ℕ → ℝ) : quartetProduct δ 0 = 1 := by
@@ -202,7 +202,7 @@ theorem norm_quartetProduct_le (δ : ℕ → ℝ) (w : ℂ) :
     ‖quartetProduct δ w‖ ≤ Real.exp (4 * ‖w‖ * ∑' n, 1 / plantHeight n) := by
   have hlim := ((multipliable_quartetFactor δ w).hasProd).norm
   refine le_of_tendsto' hlim fun S => ?_
-  rw [norm_prod]
+  simp only []
   calc ∏ n ∈ S, ‖quartetFactor δ n w‖
       ≤ ∏ n ∈ S, Real.exp (4 * ‖w‖ * (1 / plantHeight n)) :=
         Finset.prod_le_prod (fun _ _ => norm_nonneg _) fun n _ => norm_quartetFactor_le δ n w
@@ -251,7 +251,8 @@ theorem approachingModel_one_sub (δ : ℕ → ℝ) (s : ℂ) :
 /-- **Reality.** -/
 theorem approachingModel_conj (δ : ℕ → ℝ) (s : ℂ) :
     approachingModel δ (conj s) = conj (approachingModel δ s) := by
-  have h : conj s - 1 / 2 = conj (s - 1 / 2) := by simp [map_sub, map_div₀]
+  have h : conj s - 1 / 2 = conj (s - 1 / 2) := by
+    rw [map_sub, map_div₀, map_one, map_ofNat]
   rw [approachingModel, approachingModel, h, Complex.cosh_conj, quartetProduct_conj, map_mul]
 
 theorem approachingModel_half (δ : ℕ → ℝ) : approachingModel δ (1 / 2) = 1 := by
@@ -266,7 +267,8 @@ theorem norm_cosh_le_exp_norm (z : ℂ) : ‖Complex.cosh z‖ ≤ Real.exp ‖z
     rw [Complex.norm_exp]; exact Real.exp_le_exp.mpr (Complex.re_le_norm z)
   have h3 : ‖Complex.exp (-z)‖ ≤ Real.exp ‖z‖ := by
     rw [Complex.norm_exp]
-    exact Real.exp_le_exp.mpr (by simpa using Complex.neg_re_le_norm z)
+    exact Real.exp_le_exp.mpr (by
+      rw [Complex.neg_re]; exact (neg_le_abs z.re).trans (Complex.abs_re_le_norm z))
   rw [hc, norm_div, Complex.norm_two]
   linarith [norm_add_le (Complex.exp z) (Complex.exp (-z))]
 
@@ -341,8 +343,9 @@ def approachingConfig (hδ0 : ∀ n, 0 < δ n) (hδ12 : ∀ n, δ n < 1 / 2) : Z
   mult _ := 1
   one_le_mult _ _ := le_rfl
   strip s hs := by
-    rcases re_of_approachingModel_eq_zero δ hs with h | ⟨n, h | h⟩ <;>
-      constructor <;> linarith [hδ0 n, hδ12 n]
+    rcases re_of_approachingModel_eq_zero δ hs with h | ⟨n, h | h⟩
+    · constructor <;> linarith
+    all_goals constructor <;> linarith [hδ0 n, hδ12 n]
   reflect_mem s hs := by
     show approachingModel δ (1 - conj s) = 0
     rw [approachingModel_one_sub, approachingModel_conj, hs.out, map_zero]
@@ -360,12 +363,15 @@ def approachingConfig (hδ0 : ∀ n, 0 < δ n) (hδ12 : ∀ n, δ n < 1 / 2) : Z
       (isCompact_closedBall (0 : ℂ) (1 + |T₁| + |T₂|)) (subset_univ _)).subset ?_
     rintro s ⟨hs, h₁, h₂⟩
     refine ⟨?_, hs⟩
-    rw [mem_closedBall, dist_zero_right]
+    rw [Metric.mem_closedBall, dist_zero_right]
     have hre : |s.re| ≤ 1 := by
-      rcases re_of_approachingModel_eq_zero δ hs with h | ⟨n, h | h⟩ <;>
-        rw [abs_le] <;> constructor <;> linarith [hδ0 n, hδ12 n]
+      rw [abs_le]
+      rcases re_of_approachingModel_eq_zero δ hs with h | ⟨n, h | h⟩
+      · constructor <;> linarith
+      all_goals constructor <;> linarith [hδ0 n, hδ12 n]
     have him : |s.im| ≤ |T₁| + |T₂| := by
-      rw [abs_le]; constructor <;> linarith [neg_abs_le T₁, le_abs_self T₂, abs_nonneg T₁]
+      rw [abs_le]; constructor <;>
+        linarith [neg_abs_le T₁, le_abs_self T₂, abs_nonneg T₁, abs_nonneg T₂]
     linarith [Complex.norm_le_abs_re_add_abs_im s]
 
 /-- **The functional equation admits a remainder that approaches the line without landing.** For
@@ -391,7 +397,8 @@ theorem exists_approachingModel_not_landingLaw (hδ0 : ∀ n, 0 < δ n) (hδ12 :
     simp only [add_im, plantZero_im] at him
     norm_num at him
     have hpos : ∀ k : ℕ, (0 : ℝ) ≤ (k : ℝ) + 1 := fun k => by positivity
-    have := (pow_left_injective₀ (hpos m) (hpos n) two_ne_zero) (by simpa [plantHeight] using him)
+    have h2 : ((m : ℝ) + 1) ^ 2 = ((n : ℝ) + 1) ^ 2 := by simpa [plantHeight] using him
+    have := (pow_left_inj₀ (hpos m) (hpos n) two_ne_zero).mp h2
     exact_mod_cast (add_right_cancel this : (m : ℝ) = n)
   have hinf : (rightOf Z 0).Infinite :=
     (infinite_range_of_injective hinj).mono (range_subset_iff.mpr hmem)
@@ -409,11 +416,13 @@ theorem exists_approachingModel_not_landingLaw (hδ0 : ∀ n, 0 < δ n) (hδ12 :
       simp [plantZero] at hre'
     · have hnN : n < N := by
         by_contra hge; have := hN n (not_lt.mp hge); linarith
-      exact Or.inl ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hnN), by rw [← hn]; ring⟩
+      exact Or.inl ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hnN), by
+        simp only; rw [← hn]; ring⟩
     · linarith [hδ0 n]
     · have hnN : n < N := by
         by_contra hge; have := hN n (not_lt.mp hge); linarith
-      exact Or.inr ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hnN), by rw [← hn]; ring⟩
+      exact Or.inr ⟨n, Finset.mem_coe.mpr (Finset.mem_range.mpr hnN), by
+        simp only; rw [← hn]; ring⟩
     · linarith [hδ0 n]
   exact ⟨approachingModel δ, differentiable_approachingModel δ, approachingModel_one_sub δ,
     approachingModel_conj δ, norm_approachingModel_le δ, approachingModel_critical_zero δ,
@@ -434,6 +443,6 @@ theorem exists_fe_function_approaching_without_landing :
       tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop
     have h4 : Tendsto (fun n : ℕ => 4 * ((n : ℝ) + 1)) atTop atTop :=
       h.const_mul_atTop (by norm_num)
-    simpa using h4.inv_tendsto_atTop
+    exact h4.inv_tendsto_atTop.congr fun n => by rw [Pi.inv_apply, one_div]
 
 end GaloisForLFunctions.InfiniteRankWeilTheory

@@ -310,6 +310,8 @@ These are formal coefficient-body tools. Their linear exponent degree
 improves the scalar Fel'dman estimate used earlier in this corpus, not the
 published scalar benchmark below. They do not establish a new
 constant-precision breadth bound.
+Proofs: [hereditary rank](../../../docs/drafts/pipeline/3-formalized/cdg-hereditary-rank-bounds.md)
+and [weighted separation](../../../docs/drafts/pipeline/3-formalized/cdg-weighted-coordinate-separation.md).
 
 ### Finite-time return counts
 
@@ -335,9 +337,10 @@ The Fejér window inequality retains only these close pairs; the product
 of coordinate geometric sums detects the return set. There is no separate
 far-frequency error requiring an additional power of `N` in the horizon.
 
-The quantitative gain concerns shrinking precision and partial-dimensional
-density. At fixed Fourier height, elementary separation is stronger in the
-growing-dimension regime. First-return exclusion, constant-precision breadth,
+The comparison with the earlier formal scalar bound concerns shrinking
+precision and partial-dimensional density. Published scalar bounds already
+have linear dimension degree. At fixed Fourier height, elementary separation
+is stronger in the growing-dimension regime. First-return exclusion, constant-precision breadth,
 and the prime-degree trace producer remain open.
 Proof and exact declarations:
 [CDG-COUNT](../../../docs/drafts/pipeline/3-formalized/cdg-finite-time-rank-counts.md).

@@ -408,6 +408,7 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.11 assume that neither positivity, weil positivity, "spektral" in any form can be part of any rh proof. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
    2.12 assume that RH is the mathematical face of a physical phenomen in Anti-DeSitter space with modular horizon. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
    2.13 assume that RH is a problem of topology or geometry. ideate whether solving all obstacles to reach the RH proof would require a new field of mathematics, what this field would be about, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover
+   2.14 design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 3. What is the one big question the is less hard than proving AAL, RH or quasiRH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
 4. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 5. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
@@ -644,8 +645,11 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-0911/obstacles-summary.md
 
-under "## 3. The one big question: do almost all primes decide RH?" it asks a question:
-"Let `Z` be a tempered zero configuration in the open strip without real zeros, and let `E` be a set of primes of relative logarithmic density zero, `Σ_{p∈E}log p·p^{−σ}=o(Σ_plog p·p^{−σ})` as `σ↓1`. *Does a one-sided crude bound `2Re S_Z(log p)≥−K` at every prime `p∉E` put every zero of `Z` on the critical line, without assuming that the maximal real part is attained?* For ζ: is RH equivalent to the arithmetic Stepanov bound `P(p)≤A(p)+K` for all primes outside a set of relative logarithmic density zero?"
+under "## 3. The one big question: does a remainder that approaches the line land on it?" it asks a question:
+"*Is there a landing law for ζ?* Suppose ZAL: for every `σ>½` only finitely many zeros lie right of `σ`. Must all but finitely many zeros then lie on the line, `ZAL ⇒ FiniteOffLine`? Equivalent forms [D from L]:
+- **Hadamard threshold.** Eventual Hadamard positivity (`Re ξ′/ξ≥0` on `Re s≥σ` above a height `T_σ`, every `σ>½`) is ZAL, and its uniform version on `Re s>½` is FiniteOffLine; B138 says that `T_σ` stays bounded as `σ↓½`.
+- **Krein index.** Finite Krein–Langer index of the Weil kernel `K_ζ` is FiniteOffLine (`zetaKernel_finiteIndex_tfae`); B138 says that eventual Hadamard positivity forces a finite index.
+- **Tail law.** Under ZAL the critical line holds above some height."
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
@@ -673,14 +677,14 @@ Goal is met when there are no more open or partially solved or sharpened walls.
 
 Do not use the hgtl7 skill.
 
-read: docs/reports/review-0811/obstacles-summary.md
+read: docs/reports/review-0911/obstacles-summary.md
 
 on every turn:
-conjecture, derive, formalize a significant contribution to solving a problem under ## 2.2 Open mathematical obstacles
+conjecture, derive, formalize a significant contribution to solve open mathematical obstacle B13.
  
-your ultimate goal is to solve all the problems, but do not attempt to solve them outright, but the research towards solving them is the valuable activitity. 
+your ultimate goal is to solve the problems, but do not attempt to solve them outright, but the research towards solving them is the valuable activitity. 
 
-we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you create tangible significant progress to solve B13 or you are wasting time and token.
   
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -703,9 +707,9 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
-Goal is met when you have made at least 250 such significant contributions.
+Goal is met when you fully solved B13.
 
-Do not use the wall ledger as diary. Only update status, do not add more.
+Do not edit the summary. Keep a working log in logs/ for documenting mathematical facts you find, not for documenting work activity that has no value for anybody.
 
 ## Deep understanding
 

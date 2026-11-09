@@ -1,8 +1,8 @@
 # Hereditary half-rank bounds for prime-logarithm forms
 
 - **ID:** CDG-HERED
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Below one explicit floor, every coordinate intersection of
   the small-form span has dimension at most half its coordinate support.
 
@@ -53,8 +53,14 @@ it is not a claim of improvement over published scalar estimates.
 
 ## Dependencies and formalization
 
-- [CDG-ELIM](../3-formalized/cdg-bounded-coordinate-elimination.md): exact
+- [CDG-ELIM](cdg-bounded-coordinate-elimination.md): exact
   coordinate intersection with controlled integer height and value.
-- [CDG-EXP](../3-formalized/cdg-rank-sensitive-exponent.md): simultaneous
+- [CDG-EXP](cdg-rank-sensitive-exponent.md): simultaneous
   lower bound and exact root-degree-one regime.
 - `CollectiveDiophantineGeometry/HereditaryRankBounds.lean`: formalization.
+
+`hereditary_small_forms_finrank_le` proves the finite-family theorem;
+`nearRelationBox_hereditary_finrank_le` applies it to the entire integer
+approximation body. The direct `lake --old env lean` source check passed.
+Both transitive axiom audits contain only `propext`, `Classical.choice`
+and `Quot.sound`. The programme umbrella imports the module.

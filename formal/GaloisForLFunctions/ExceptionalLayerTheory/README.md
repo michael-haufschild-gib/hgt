@@ -119,6 +119,16 @@ sufficiently late interval `[t,t+L]` contains an arbitrarily large corrected
 current reading. This strengthens bounded-gap recurrence to every positive
 window length; it still needs an independent arithmetic upper estimate.
 
+`DampingFiltersReadTheExceptionalDivisor.lean` gives same-height detection
+using literal prime sums. Geometric damping changes multiply Mellin modes
+by exact exponential characters. A polynomial with roots at the pole and
+unwanted exceptional points cancels their modes exactly. The selected-mode
+quotient tends to its nonzero multiplicity-weighted polynomial value, so the
+filtered prime sum grows at every large height. All damping samples can lie
+inside any prescribed positive logarithmic window. The observable has no
+continued-zeta term; the continued term appearing in its proof is `O(t)` and
+vanishes after normalization. An arithmetic upper estimate is still missing.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

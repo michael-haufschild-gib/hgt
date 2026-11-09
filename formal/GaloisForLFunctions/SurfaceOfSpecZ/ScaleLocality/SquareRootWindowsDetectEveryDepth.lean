@@ -82,8 +82,9 @@ theorem zeta_re_le_of_squareRoot_windows {α r K : ℝ} (hα : 0 ≤ α) (hr : 0
     have ht := Real.tendsto_exp_neg_atTop_nhds_zero.const_mul
       (2 * A * Real.exp (D * B + D ^ 2 * windowSquareBudget D r))
     simpa only [mul_zero, sub_eq_add_neg, Real.exp_add, mul_assoc] using ht
-  have hgrowth : Tendsto (fun T : ℝ => η * Real.exp ((z₁.re - α) * T)) atTop atTop :=
-    (Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop hβα)).const_mul_atTop hη
+  have hgrowth : Tendsto (fun T : ℝ => η * Real.exp ((z₁.re - α) * T)) atTop atTop := by
+    simpa only [Function.comp_def, id_eq] using
+      (Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop hβα)).const_mul_atTop hη
   have hlate : ∀ᶠ T : ℝ in atTop, 0 ≤ T ∧ U₀ ≤ T ∧
       2 * A * Real.exp (D * B + D ^ 2 * windowSquareBudget D r - T) ≤ 1 ∧
       |K| + 1 < η * Real.exp ((z₁.re - α) * T) ∧ B ≤ r * Real.sqrt T / 2 := by
