@@ -1,7 +1,7 @@
 # Absolute values and heavy returns
 
 - **ID:** CDG-MOD
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Type:** TRANSFER MECHANISM
 
 ## Missing mechanism
@@ -67,13 +67,32 @@ bound therefore hold at any prescribed positive precision and missing-mass
 allowance. These choices are explicit and independent of the dimension,
 frequencies, weights, and cutoff.
 
+For actual primes `p≤y`, set `a_p=ℓ_p=log p`, so `S=θ(y)`.
+Conjugation identifies the modulus of `P(t)` with that of
+`Σ_{p≤y} log p·p^(−it)`. At every cutoff and height, either this modulus
+is at most `(1−c)θ(y)`, or some `m≤Q` returns an actual prime subset
+with more than `(1−κ)θ(y)` logarithmic mass. This dichotomy has no
+arithmetic hypothesis.
+
 ## Scope
 
 This closes the real-part/modulus gap in the breadth-to-large-value transfer.
 It does not assume or prove the missing arithmetic return-count bound, and
 it does not by itself cross the bounded-height barrier. The intended output
 is a uniform quantitative transfer, not a renamed first-return criterion.
+It also applies to rounded frequencies: distinguishing actual prime logarithms
+must occur in the arithmetic return estimate.
 
 ## Lean status
 
-Paper proof dependency-closed. Formalization in progress.
+Module: `CollectiveDiophantineGeometry/AbsoluteValuesForceHeavyReturns.lean`.
+
+- `rotated_defect`: exact modulus-deficit identity.
+- `exists_dilation_defect_le`: dimension-independent dilation bound.
+- `absoluteLargeSet_subset_heavy_dilations`: prescribed precision and mass.
+- `absoluteLargeSet_measure_le_heavy_returns`: harmonic measure transfer.
+- `prime_modulus_or_heavy_return`: actual prime-polynomial dichotomy.
+
+The direct repository-file Lean check passed. Eleven principal declarations
+passed transitive axiom audits with only `propext`, `Classical.choice`, and
+`Quot.sound`. The programme umbrella imports the module.

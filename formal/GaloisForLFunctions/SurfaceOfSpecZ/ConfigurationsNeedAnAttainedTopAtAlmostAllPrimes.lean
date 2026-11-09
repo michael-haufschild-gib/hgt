@@ -35,7 +35,7 @@ Huxley's short-interval bound to control the prime logarithmic mass block by blo
 -/
 
 open Complex Filter Topology MeasureTheory Set
-open scoped ComplexConjugate Chebyshev
+open scoped ComplexConjugate Chebyshev Classical
 
 noncomputable section
 
@@ -171,16 +171,16 @@ theorem norm_clusterHarmonic_le (p : ℕ → ℕ) {B m : ℕ} (hB : 1 ≤ B) (hm
     {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) :
     ‖clusterHarmonic p B x m‖ ≤ (p m : ℝ) / (B : ℝ) ^ 8 := by
   have hmB : 1 ≤ m * B := Nat.mul_pos hm hB
-  have hsinc := norm_sincPow_le hmB hx0 hx1 4
+  have hsinc : ‖sincC (splinePoint (m * B) x) ^ 8‖ ≤ 1 / ((m : ℝ) * B) ^ 8 := by
+    simpa [Nat.cast_mul] using norm_sincPow_le hmB hx0 hx1 4
   have hm0 : (m : ℝ) ≠ 0 := by exact_mod_cast (by omega : m ≠ 0)
   have hB0 : (0 : ℝ) < B := by exact_mod_cast hB
   rw [clusterHarmonic, norm_mul, Complex.norm_natCast]
   calc ((p m * m ^ 8 : ℕ) : ℝ) * ‖sincC (splinePoint (m * B) x) ^ 8‖
-      ≤ ((p m : ℝ) * (m : ℝ) ^ 8) * (1 / ((m * B : ℕ) : ℝ) ^ 8) := by
+      ≤ ((p m : ℝ) * (m : ℝ) ^ 8) * (1 / ((m : ℝ) * B) ^ 8) := by
         push_cast
         exact mul_le_mul_of_nonneg_left hsinc (by positivity)
     _ = (p m : ℝ) / (B : ℝ) ^ 8 := by
-        push_cast
         field_simp
 
 theorem abs_clusterMain_le (M : ℕ) (p : ℕ → ℕ) {B : ℕ} (hB : 1 ≤ B)
@@ -273,6 +273,7 @@ theorem clusterMain_ge_off_hole {M : ℕ} {p : ℕ → ℕ} {η δ : ℝ} (hη :
       have hdiff : z - 1 = ((x : ℂ) * I) / w := by
         dsimp only [z, w]
         rw [div_sub_one hw0, splinePoint]
+        push_cast
         congr 1
         ring
       rw [hdiff, norm_div, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hx0,
@@ -296,7 +297,6 @@ theorem clusterMain_ge_off_hole {M : ℕ} {p : ℕ → ℕ} {η δ : ℝ} (hη :
       have hpi0 : (Real.pi : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
       push_cast
       field_simp
-      ring
     set E : ℂ := cexp (((2 * Real.pi * (m * B : ℕ) * u : ℝ) : ℂ) * I)
     have hEn : ‖E‖ = 1 := Complex.norm_exp_ofReal_mul_I _
     have hEre : E.re = Real.cos (2 * Real.pi * (m : ℝ) * ((B : ℝ) * u)) := by
@@ -321,13 +321,20 @@ theorem clusterMain_ge_off_hole {M : ℕ} {p : ℕ → ℕ} {η δ : ℝ} (hη :
   rw [Finset.sum_sub_distrib] at hsum
   set D : ℝ := ∑ m ∈ Finset.Icc 1 M, (p m : ℝ)
   have hD0 : 0 ≤ D := Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
-  have hcos_val := hcos ((B : ℝ) * u) (dist_ge_of_notMem_holeSet hu)
+  have hcos_val : η * D ≤
+      ∑ m ∈ Finset.Icc 1 M, (p m : ℝ) * Real.cos (2 * Real.pi * (m : ℝ) * ((B : ℝ) * u)) :=
+    hcos ((B : ℝ) * u) (dist_ge_of_notMem_holeSet hu)
   have h1 : 2 * s * (η * D) ≤
       ∑ m ∈ Finset.Icc 1 M,
         2 * (p m : ℝ) * s * Real.cos (2 * Real.pi * (m : ℝ) * ((B : ℝ) * u)) := by
-    have hm := mul_le_mul_of_nonneg_left hcos_val (by positivity : 0 ≤ 2 * s)
-    rw [Finset.mul_sum] at hm
-    refine hm.trans (le_of_eq (Finset.sum_congr rfl fun m _ => by ring))
+    calc 2 * s * (η * D)
+        ≤ 2 * s * ∑ m ∈ Finset.Icc 1 M,
+            (p m : ℝ) * Real.cos (2 * Real.pi * (m : ℝ) * ((B : ℝ) * u)) :=
+          mul_le_mul_of_nonneg_left hcos_val (by positivity)
+      _ = ∑ m ∈ Finset.Icc 1 M,
+            2 * (p m : ℝ) * s * Real.cos (2 * Real.pi * (m : ℝ) * ((B : ℝ) * u)) := by
+          rw [Finset.mul_sum]
+          exact Finset.sum_congr rfl fun m _ => by ring
   have h2 : (∑ m ∈ Finset.Icc 1 M, 2 * (p m : ℝ) * s * (1 / (B : ℝ))) =
       2 * s * D * (1 / (B : ℝ)) := by
     dsimp only [D]
@@ -376,7 +383,8 @@ theorem exists_level_cosine (k : ℕ) :
       ∀ t : ℝ, (∀ n : ℤ, holeWidth k / 2 ≤ |t - (n + 1 / 2)|) →
         η * (∑ m ∈ Finset.Icc 1 M, (p m : ℝ)) ≤
           ∑ m ∈ Finset.Icc 1 M, (p m : ℝ) * Real.cos (2 * Real.pi * m * t) :=
-  exists_nat_cosine_sum_pos_off_hole (holeWidth_pos k) (holeWidth_lt_one k)
+  exists_nat_cosine_sum_pos_off_hole (holeWidth_pos k)
+    ((holeWidth_le_quarter k).trans (by norm_num))
 
 /-- Degree `M_k` of the positive cosine polynomial at level `k`. -/
 def cosDeg (k : ℕ) : ℕ := Classical.choose (exists_level_cosine k)
@@ -392,12 +400,17 @@ def cosFloor (k : ℕ) : ℝ :=
 /-- Total natural-number coefficient sum `D_k = ∑_{m=1}^{M_k} p_{k,m}`. -/
 def cosMass (k : ℕ) : ℕ := ∑ m ∈ Finset.Icc 1 (cosDeg k), cosWeight k m
 
+theorem cosMass_cast (k : ℕ) :
+    (cosMass k : ℝ) = ∑ m ∈ Finset.Icc 1 (cosDeg k), (cosWeight k m : ℝ) := by
+  unfold cosMass; push_cast; rfl
+
 theorem level_cosine_spec (k : ℕ) :
     1 ≤ cosDeg k ∧ 1 ≤ cosMass k ∧ 0 < cosFloor k ∧
     ∀ t : ℝ, (∀ n : ℤ, holeWidth k / 2 ≤ |t - (n + 1 / 2)|) →
       cosFloor k * (cosMass k : ℝ) ≤
-        ∑ m ∈ Finset.Icc 1 (cosDeg k), (cosWeight k m : ℝ) * Real.cos (2 * Real.pi * m * t) :=
-  Classical.choose_spec
+        ∑ m ∈ Finset.Icc 1 (cosDeg k), (cosWeight k m : ℝ) * Real.cos (2 * Real.pi * m * t) := by
+  rw [cosMass_cast]
+  exact Classical.choose_spec
     (Classical.choose_spec (Classical.choose_spec (exists_level_cosine k)))
 
 theorem one_le_cosDeg (k : ℕ) : 1 ≤ cosDeg k := (level_cosine_spec k).1
@@ -405,10 +418,6 @@ theorem one_le_cosDeg (k : ℕ) : 1 ≤ cosDeg k := (level_cosine_spec k).1
 theorem one_le_cosMass (k : ℕ) : 1 ≤ cosMass k := (level_cosine_spec k).2.1
 
 theorem cosFloor_pos (k : ℕ) : 0 < cosFloor k := (level_cosine_spec k).2.2.1
-
-theorem cosMass_cast (k : ℕ) :
-    (cosMass k : ℝ) = ∑ m ∈ Finset.Icc 1 (cosDeg k), (cosWeight k m : ℝ) := by
-  unfold cosMass; push_cast; rfl
 
 /-- Nonzero harmonics `1 ≤ m ≤ M_k` with `p_{k,m} ≥ 1`. -/
 def activeHarmonics (k : ℕ) : Finset ℕ :=
@@ -420,6 +429,7 @@ theorem sum_activeHarmonics_eq {α : Type*} [AddCommMonoid α] (k : ℕ) (f : �
   unfold activeHarmonics
   refine Finset.sum_subset (Finset.filter_subset _ _) fun m hm hnot => ?_
   rw [Finset.mem_filter] at hnot
+  have hle : ¬ 1 ≤ cosWeight k m := fun h1 => hnot ⟨hm, h1⟩
   exact hf m (by omega)
 
 /-- Threshold `X₀ ≥ 4` above which `ψ(y + y^{3/4}) − ψ(y) ≤ 2 y^{3/4}`. -/
@@ -502,7 +512,7 @@ theorem log_huxleyX_le_winNat_one (Θ : ℝ) : Real.log huxleyX ≤ (winNat Θ 1
   have hcast : (⌈Real.log huxleyX⌉₊ : ℝ) ≤ winNat Θ 1 := by exact_mod_cast (by omega : ⌈Real.log huxleyX⌉₊ ≤ winNat Θ 1)
   exact (Nat.le_ceil _).trans hcast
 
-theorem one_le_ceil_exp_tower {Θ : ℝ} (hΘ : 0 < Θ) (k : ℕ) :
+theorem one_le_ceil_exp_tower {Θ : ℝ} (_hΘ : 0 < Θ) (k : ℕ) :
     1 ≤ ⌈Real.exp ((Θ / 8) * (winNat Θ k : ℝ))⌉₊ :=
   Nat.one_le_iff_ne_zero.mpr (Nat.ceil_pos.mpr (Real.exp_pos _)).ne'
 
@@ -560,6 +570,7 @@ theorem clusterWeight_succ_le {Θ : ℝ} (hΘ : 0 < Θ) (j : ℕ) :
     have hmul : 2 * cosMass (j + 1) * 1 * 2 ^ (j + 1) ≤
         2 * cosMass (j + 1) * cosDeg (j + 1) ^ 8 * 2 ^ (j + 1) :=
       Nat.mul_le_mul_right _ (Nat.mul_le_mul_left _ hMpow)
+    rw [mul_one] at hmul
     omega
   have hC1 : (1 : ℝ) ≤ baseConst (j + 1) := by
     exact_mod_cast (by have := ten_le_baseConst (j + 1); omega : 1 ≤ baseConst (j + 1))
@@ -629,7 +640,7 @@ theorem four_le_exp_mul_clusterFloor {Θ : ℝ} (hΘ : 0 < Θ) (n : ℕ) :
 
 /-- On window `n + 1`, both `B_{n+1} / δ_{n+1}` and `B_{n+2} / δ_{n+2}` are bounded by
 `exp(U_{n+1} / 8)`. -/
-theorem baseFreq_div_holeWidth_succ_le {Θ : ℝ} (hΘ : 0 < Θ) (n : ℕ) :
+theorem baseFreq_div_holeWidth_succ_le {Θ : ℝ} (_hΘ : 0 < Θ) (n : ℕ) :
     (baseFreq Θ (n + 1) : ℝ) / holeWidth (n + 1) ≤
       Real.exp ((winNat Θ (n + 1) : ℝ) / 8) := by
   have hU_ge : ⌈8 * Real.log ((baseFreq Θ (n + 1) : ℝ) / holeWidth (n + 1) + 1)⌉₊ ≤
@@ -801,10 +812,8 @@ def clusterConfig {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) : ZeroConfig w
     let S : Set ClusterIdx :=
       {idx : ClusterIdx | idx.1 ≤ ⌊T₂⌋₊ ∧ idx.2.1.1 ≤ ⌊T₂⌋₊}
     have hSfin : S.Finite := by
-      let f : ↥(Finset.Iic ⌊T₂⌋₊) → Set ClusterIdx := fun k =>
-        (Set.finite_univ (α := ↥(activeHarmonics k.1) × Bool)).image fun mb => ⟨k.1, mb⟩
-      refine (Set.finite_univ.biUnion fun k _ =>
-        (Set.finite_univ (α := ↥(activeHarmonics k.1) × Bool)).image
+      refine ((Set.finite_univ (α := ↥(Finset.Iic ⌊T₂⌋₊))).biUnion
+        fun k _ => (Set.finite_univ (α := ↥(activeHarmonics k.1) × Bool)).image
           (fun mb => (⟨k.1, mb⟩ : ClusterIdx))).subset ?_
       intro idx hidx
       simp only [Set.mem_iUnion, Set.mem_image, Set.mem_univ, true_and]
@@ -835,7 +844,7 @@ theorem gammaOf_clusterPt_false (Θ : ℝ) (k : ℕ) (m : ↥(activeHarmonics k)
       conj (splinePoint (m.1 * baseFreq Θ k) (SplineTower.depth Θ k)) := by
   apply Complex.ext <;> simp [gammaOf, clusterPt, splinePoint, Complex.div_I]
 
-theorem normSq_gammaOf_clusterPt_ge {Θ : ℝ} (hΘ : 0 < Θ) (idx : ClusterIdx) :
+theorem normSq_gammaOf_clusterPt_ge {Θ : ℝ} (_hΘ : 0 < Θ) (idx : ClusterIdx) :
     (baseFreq Θ idx.1 : ℝ) ^ 2 ≤ Complex.normSq (gammaOf (clusterPt Θ idx)) := by
   have hre : (gammaOf (clusterPt Θ idx)).re =
       2 * Real.pi * (idx.2.1.1 * baseFreq Θ idx.1 : ℕ) := by
@@ -1142,7 +1151,7 @@ theorem one_le_winIdx_of_ge (Θ : ℝ) {m : ℕ} (hm : winNat Θ 1 ≤ m) : 1 �
   by_contra hlt
   have h0 : winIdx Θ m = 0 := by omega
   have := winIdx_lt_succ Θ m
-  rw [h0] at this
+  rw [h0, zero_add] at this
   omega
 
 theorem le_winIdx_of_winNat_le (Θ : ℝ) {K m : ℕ} (hm : winNat Θ K ≤ m) : K ≤ winIdx Θ m := by
@@ -1188,7 +1197,7 @@ theorem measurableSet_unitHole {Θ : ℝ} (hΘ : 0 < Θ) (m : ℕ) :
 theorem measurableSet_exSet {Θ : ℝ} (hΘ : 0 < Θ) : MeasurableSet (exSet Θ) :=
   MeasurableSet.iUnion (measurableSet_unitHole hΘ)
 
-theorem volume_unitHole_le_one {Θ : ℝ} (hΘ : 0 < Θ) (m : ℕ) :
+theorem volume_unitHole_le_one {Θ : ℝ} (_hΘ : 0 < Θ) (m : ℕ) :
     volume (unitHole Θ m) ≤ ENNReal.ofReal 1 := by
   refine (measure_mono (unitHole_subset_Icc Θ m)).trans ?_
   rw [Real.volume_Icc]
@@ -1201,9 +1210,9 @@ theorem volume_unitHole_le_two_holeWidth {Θ : ℝ} (hΘ : 0 < Θ) {m : ℕ}
   rw [unitHole, if_neg (not_lt.mpr hm), Set.union_inter_distrib_right]
   refine (measure_union_le _ _).trans ?_
   have h1 := volume_holeSet_inter_Icc_le (one_le_baseFreq hΘ (winIdx Θ m))
-    (holeWidth_pos _) (holeWidth_le_quarter _) m
+    (holeWidth_pos (winIdx Θ m)) (holeWidth_le_quarter (winIdx Θ m)) m
   have h2 := volume_holeSet_inter_Icc_le (one_le_baseFreq hΘ (winIdx Θ m + 1))
-    (holeWidth_pos _) (holeWidth_le_quarter _) m
+    (holeWidth_pos (winIdx Θ m + 1)) (holeWidth_le_quarter (winIdx Θ m + 1)) m
   refine (add_le_add h1 h2).trans ?_
   rw [← ENNReal.ofReal_add (holeWidth_pos _).le (holeWidth_pos _).le]
   exact ENNReal.ofReal_le_ofReal (by
@@ -1264,8 +1273,10 @@ theorem upperDensityZero_exSet {Θ : ℝ} (hΘ : 0 < Θ) :
       _ = (M₀ : ℝ) + ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) := by
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
   have hfl_le : (⌊T⌋₊ : ℝ) ≤ T := Nat.floor_le (by linarith)
-  have hεT : 2 * (M₀ : ℝ) + 2 ≤ ε * T := (div_le_iff₀ hε).mp hT_large
-  nlinarith
+  have hfl_mul : ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) ≤ (T + 1) * (ε / 2) :=
+    mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+  have hεT : 2 * (M₀ : ℝ) + 2 ≤ T * ε := (div_le_iff₀ hε).mp hT_large
+  linarith
 
 /-- **Lower bound `-5` on `2 Re S_Z(u)` outside `exSet Θ`.** -/
 theorem two_re_lagStructure_ge_off_exSet {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
@@ -1279,7 +1290,7 @@ theorem two_re_lagStructure_ge_off_exSet {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ �
   have hm_ge : winNat Θ 1 ≤ m := by
     by_contra hlt
     apply hnot_unit
-    rw [unitHole, if_pos hlt]
+    rw [unitHole, if_pos (not_le.mp hlt)]
     exact huIcc
   have hk1 : 1 ≤ winIdx Θ m := one_le_winIdx_of_ge Θ hm_ge
   have hnot_holes :
@@ -1318,7 +1329,7 @@ theorem two_re_lagStructure_ge_off_exSet {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ �
     (clusterWeight_nonneg Θ)
     (clusterWeight_zero_le_one Θ)
     (clusterWeight_succ_le hΘ)
-    (fun i j hij => by exact_mod_cast (strictMono_winNat Θ).monotone hij)
+    (fun i j hij => Nat.cast_le.mpr ((strictMono_winNat Θ).monotone hij))
     (by simp)
     (fun j => by
       have h := abs_clusterMain_le (cosDeg j) (cosWeight j) (one_le_baseFreq hΘ j)

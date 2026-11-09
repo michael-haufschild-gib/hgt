@@ -84,8 +84,9 @@ theorem sqrt_div_ten_le_mul {u δ : ℝ} (hu : 0 ≤ u) (hδ : 0 < δ) :
     have : 0 ≤ 1 / (100 * δ) := by positivity
     nlinarith
   · have h1 : Real.sqrt u / 10 < 1 / (100 * δ) := by
-      rw [div_lt_iff₀ (by positivity)] at h
-      rw [div_lt_div_iff₀ (by norm_num) (by positivity)]; nlinarith
+      have e : 1 / (100 * δ) = 1 / (10 * δ) / 10 := by field_simp; ring
+      rw [e]
+      exact div_lt_div_of_pos_right h (by norm_num)
     have : 0 ≤ δ * u := by positivity
     linarith
 
@@ -147,9 +148,9 @@ theorem exists_norm_lagStructure_le : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
   set A : ℝ := 2 ^ (3 + 1) * Real.exp ((3 + 1) / 2)
   have hT := temperedConfig_zetaZeroConfig
   unfold TemperedConfig at hT
-  set Σw := ∑' ρ : zetaZeroConfig.carrier,
+  set Sw := ∑' ρ : zetaZeroConfig.carrier,
     (zetaZeroConfig.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))
-  refine ⟨2 * A ^ 2 * K * Σw, fun u hu => ?_⟩
+  refine ⟨2 * A ^ 2 * K * Sw, fun u hu => ?_⟩
   set E := Real.exp (u / 2 - Real.sqrt u / 10)
   set f : zetaZeroConfig.carrier → ℂ := fun ρ => (zetaZeroConfig.mult ρ : ℂ) *
     paperFT (EF.weilTest (boxSpline 1 3) (boxSpline 1 3)) (gammaOf ρ) * cexp (I * gammaOf ρ * u)
@@ -169,14 +170,15 @@ theorem exists_norm_lagStructure_le : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
     have hwim2 : |w.im| ≤ 1 / 2 := by rw [hwim, abs_le]; constructor <;> linarith
     have hty : |t| ≤ ‖w‖ := by rw [← hwre]; exact Complex.abs_re_le_norm w
     have hB1 := norm_paperFT_boxSpline_le' 3 hwim2 (abs_nonneg t) hty
-    have hB2 := norm_paperFT_boxSpline_le' 3 (w := conj w) (by rw [Complex.conj_im, abs_neg];
-      exact hwim2) (abs_nonneg t) (by rw [Complex.norm_conj]; exact hty)
+    have hcim : |(conj w).im| ≤ 1 / 2 := by rw [Complex.conj_im, abs_neg]; exact hwim2
+    have hcn : |t| ≤ ‖conj w‖ := by rw [Complex.norm_conj]; exact hty
+    have hB2 := norm_paperFT_boxSpline_le' 3 hcim (abs_nonneg t) hcn
     have hF : ‖paperFT (EF.weilTest (boxSpline 1 3) (boxSpline 1 3)) w‖ ≤ A ^ 2 / (1 + |t|) ^ 8 := by
       rw [EF.paperFT_weilTest hb hb hbc hbc, norm_mul, Complex.norm_conj]
       calc ‖paperFT (boxSpline 1 3) w‖ * ‖paperFT (boxSpline 1 3) (conj w)‖
           ≤ (A / (1 + |t|) ^ (3 + 1)) * (A / (1 + |t|) ^ (3 + 1)) :=
             mul_le_mul hB1 hB2 (norm_nonneg _) (by positivity)
-        _ = A ^ 2 / (1 + |t|) ^ 8 := by ring
+        _ = A ^ 2 / (1 + |t|) ^ 8 := by field_simp; ring
     have hE : ‖cexp (I * w * u)‖ = Real.exp (((ρ : ℂ).re - 1 / 2) * u) := by
       rw [Complex.norm_exp]
       congr 1
@@ -189,7 +191,7 @@ theorem exists_norm_lagStructure_le : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
       have h1 : ((1 / 2 - (ρ : ℂ).re) * (1 / 2 - (ρ : ℂ).re)) ≤ 1 := by nlinarith
       nlinarith [abs_nonneg t, sq_abs t]
     have hm : (0 : ℝ) ≤ zetaZeroConfig.mult ρ := Nat.cast_nonneg _
-    have hpos : 0 < 1 + Complex.normSq w := by positivity
+    have hpos : 0 < 1 + Complex.normSq w := by have := Complex.normSq_nonneg w; linarith
     simp only [f]
     rw [norm_mul, norm_mul, Complex.norm_natCast, hE]
     -- `m · A²/(1+|t|)⁸ · e^{(β−½)u} ≤ 2A²K E · m/(1 + |w|²)`
@@ -198,14 +200,10 @@ theorem exists_norm_lagStructure_le : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
       have h6 : A ^ 2 / (1 + |t|) ^ 8 * Real.exp (((ρ : ℂ).re - 1 / 2) * u) =
           A ^ 2 * (1 / (1 + |t|) ^ 2) *
             (1 / (1 + |t|) ^ 6 * Real.exp (((ρ : ℂ).re - 1 / 2) * u)) := by
-        field_simp; ring
-      have h7 : 1 / (1 + |t|) ^ 2 ≤ 2 * (1 / (1 + Complex.normSq w)) := by
-        rw [div_le_iff₀ (by positivity)]
-        rw [mul_one_div, le_div_iff₀ hpos] at *
-        have : (1 + |t|) ^ 2 > 0 := by positivity
         field_simp
-        rw [div_le_iff₀ (by positivity)]
-        nlinarith
+      have h7 : 1 / (1 + |t|) ^ 2 ≤ 2 * (1 / (1 + Complex.normSq w)) := by
+        rw [mul_one_div, div_le_div_iff₀ (by positivity) hpos]
+        linarith
       rw [h6]
       calc A ^ 2 * (1 / (1 + |t|) ^ 2) *
             (1 / (1 + |t|) ^ 6 * Real.exp (((ρ : ℂ).re - 1 / 2) * u))
@@ -230,7 +228,7 @@ theorem exists_norm_lagStructure_le : ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u →
     _ ≤ ∑' ρ : zetaZeroConfig.carrier, 2 * A ^ 2 * K * E *
           ((zetaZeroConfig.mult ρ : ℝ) / (1 + Complex.normSq (gammaOf ρ))) :=
         Summable.tsum_le_tsum hterm hsum (hT.mul_left _)
-    _ = 2 * A ^ 2 * K * Σw * E := by rw [tsum_mul_left]; ring
+    _ = 2 * A ^ 2 * K * Sw * E := by rw [tsum_mul_left]; ring
 
 /-- **The prime number theorem in every window, with the classical error.** -/
 theorem exists_abs_primeWindow_sub_archPoleWindow_le : ∃ C : ℝ, ∀ n : ℕ, 1 ≤ n →
@@ -243,8 +241,9 @@ theorem exists_abs_primeWindow_sub_archPoleWindow_le : ∃ C : ℝ, ∀ n : ℕ,
   have h := hC _ hlog
   have he : Real.exp (Real.log n / 2 - Real.sqrt (Real.log n) / 10) =
       Real.sqrt n * Real.exp (-(Real.sqrt (Real.log n) / 10)) := by
-    rw [sub_eq_add_neg, Real.exp_add, Real.sqrt_eq_rpow, Real.rpow_def_of_pos hn0]
-    ring_nf
+    have e1 : Real.exp (Real.log n / 2) = Real.sqrt n := by
+      rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hn0]; ring_nf
+    rw [sub_eq_add_neg, Real.exp_add, e1]
   have hid : primeWindow n - archPoleWindow n =
       -(lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log n)).re := by
     rw [← orbitCorr_eq_re_lagStructure_spline, orbitCorr_log_eq_archPoleWindow_sub_primeWindow]

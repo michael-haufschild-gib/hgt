@@ -100,7 +100,7 @@ theorem monicGridNewtonPolynomial_shift (q : ℕ) [NeZero q] (G : P → MvPolyno
       (X s ^ (a s % q) * G s ^ (a s / q)) * (if s = p then G p else 1) := by
     by_cases hs : s = p
     · subst s
-      simp only [Finsupp.add_apply, Finsupp.single_eq_same, hdiv, hmod, if_pos rfl,
+      simp only [Finsupp.add_apply, Finsupp.single_eq_same, hdiv, hmod, if_true,
         pow_succ, mul_assoc]
     · simp only [Finsupp.add_apply, Finsupp.single_eq_of_ne hs, add_zero, if_neg hs, mul_one]
   unfold monicGridNewtonPolynomial
@@ -116,7 +116,7 @@ theorem torsionQuotientOrder_shift (q : ℕ) [NeZero q] (a : P →₀ ℕ) (p : 
   have hterm (s : P) : (a + Finsupp.single p q) s / q =
       a s / q + if s = p then 1 else 0 := by
     by_cases hs : s = p
-    · subst s; simp only [Finsupp.add_apply, Finsupp.single_eq_same, hdiv, if_pos rfl]
+    · subst s; simp only [Finsupp.add_apply, Finsupp.single_eq_same, hdiv, if_true]
     · simp only [Finsupp.add_apply, Finsupp.single_eq_of_ne hs, add_zero, if_neg hs]
   unfold torsionQuotientOrder
   simp_rw [hterm]
@@ -151,7 +151,9 @@ theorem mem_ideal_pow_of_mem_monicGridSpan (q r : ℕ) (G : P → MvPolynomial P
     exact monicGridNewtonPolynomial_mem_ideal_pow q r G a ha
   | zero => exact (monicGridIdeal G ^ r).zero_mem
   | add F H hF hH ihF ihH => exact (monicGridIdeal G ^ r).add_mem ihF ihH
-  | smul c F hF ih => exact (monicGridIdeal G ^ r).smul_mem c ih
+  | smul c F hF ih =>
+    rw [MvPolynomial.smul_eq_C_mul]
+    exact Ideal.mul_mem_left _ _ ih
 
 /-- Ideal powers retain precisely the Newton indices of sufficient quotient order. -/
 theorem mem_monicGridIdeal_pow_iff (q : ℕ) [NeZero q] (G : P → MvPolynomial P ℤ)
@@ -274,9 +276,10 @@ theorem minimal_monicGridIdeal_pow_eq (q : ℕ) [NeZero q]
   have he := arithmeticMonicSynthesis_repr (monicGridNewtonPolynomial_monic q G hG) F
   change arithmeticMonicSynthesis (monicGridNewtonPolynomial q G) (b.repr F) = F at he
   rw [hc, arithmeticMonicSynthesis_single] at he
-  rw [← he]
-  change (b.repr F a₀) • monicGridNewtonPolynomial q G (Finsupp.single p (q * r)) = _
-  rw [monicGridNewtonPolynomial_single_mul, MvPolynomial.smul_eq_C_mul]
+  calc
+    F = (b.repr F a₀) • monicGridNewtonPolynomial q G (Finsupp.single p (q * r)) := he.symm
+    _ = C (b.repr F a₀) * G p ^ r := by
+      rw [monicGridNewtonPolynomial_single_mul, MvPolynomial.smul_eq_C_mul]
 
 #print axioms minimal_monicGridIdeal_pow_eq
 

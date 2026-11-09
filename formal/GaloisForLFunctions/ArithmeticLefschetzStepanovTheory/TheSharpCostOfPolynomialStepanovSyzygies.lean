@@ -42,6 +42,14 @@ theorem arithmeticMonicAt_adamsFixed (q : ℕ) (hq : 2 ≤ q) (p : P) :
 def adamsNewtonPolynomial (q : ℕ) (a : P →₀ ℕ) : MvPolynomial P ℤ :=
   monicGridNewtonPolynomial q (fun p => X p ^ q - X p) a
 
+theorem arithmeticMonicAt_adamsFixed_pow (q : ℕ) (hq : 2 ≤ q) (r : ℕ) (p : P) :
+    ArithmeticMonicAt (((X p : MvPolynomial P ℤ) ^ q - X p) ^ r)
+      (Finsupp.single p (q * r)) := by
+  letI : NeZero q := ⟨by omega⟩
+  have h := monicGridNewtonPolynomial_monic q (fun p => X p ^ q - X p)
+    (arithmeticMonicAt_adamsFixed q hq) (Finsupp.single p (q * r))
+  rwa [monicGridNewtonPolynomial_single_mul] at h
+
 /-- Integral coordinates adapted to the full affine fixed locus. -/
 def adamsNewtonBasis (q : ℕ) (hq : 2 ≤ q) :
     Module.Basis (P →₀ ℕ) ℤ (MvPolynomial P ℤ) := by
@@ -86,5 +94,49 @@ theorem minimal_stepanov_syzygies_eq (q : ℕ) (hq : 2 ≤ q) (r : ℕ)
 #print axioms stepanov_syzygies_iff_adamsNewton_support
 #print axioms minPrime_pow_le_length_stepanov_syzygies
 #print axioms minimal_stepanov_syzygies_eq
+
+/-- The entire first nonzero filtered piece consists of integer multiples of one equation power. -/
+theorem minimal_stepanov_image_iff (q : ℕ) (hq : 2 ≤ q) (r : ℕ)
+    (p : P) (hmin : ∀ s : P, ((p : Nat.Primes) : ℕ) ≤ ((s : Nat.Primes) : ℕ))
+    (F : MvPolynomial P ℤ) :
+    ((∃ m, ∃ f g : Fin m → MvPolynomial P ℤ,
+      (∀ L : List P, L.length < r → stepanovWordMoment L f g = 0) ∧
+        stepanovAux q f g = F) ∧ length F ≤ ((p : Nat.Primes) : ℕ) ^ (q * r)) ↔
+      ∃ c : ℤ, F = C c * (X p ^ q - X p) ^ r := by
+  constructor
+  · rintro ⟨⟨m, f, g, hsy, rfl⟩, hlen⟩
+    exact minimal_stepanov_syzygies_eq q hq r p hmin f g hsy hlen
+  · rintro ⟨c, rfl⟩
+    constructor
+    · apply (mem_adamsFixedIdeal_pow_iff_stepanov_syzygies q r _).mp
+      apply Ideal.mul_mem_left
+      exact Ideal.pow_mem_pow (Ideal.subset_span ⟨p, rfl⟩) r
+    · apply Finset.sup_le
+      intro a ha
+      have ha' : a ∈ (((X p : MvPolynomial P ℤ) ^ q - X p) ^ r).support := by
+        rw [MvPolynomial.mem_support_iff, MvPolynomial.coeff_C_mul] at ha
+        exact MvPolynomial.mem_support_iff.mpr (mul_ne_zero_iff.mp ha).2
+      have h := (arithmeticMonicAt_adamsFixed_pow q hq r p).2 a ha'
+      rwa [weight_single] at h
+
+/-- The lower bound is attained by an actual polynomial syzygy construction. -/
+theorem exists_stepanov_syzygies_at_sharp_length (q : ℕ) (hq : 2 ≤ q) (r : ℕ) (p : P) :
+    ∃ m, ∃ f g : Fin m → MvPolynomial P ℤ,
+      (∀ L : List P, L.length < r → stepanovWordMoment L f g = 0) ∧
+        stepanovAux q f g = (X p ^ q - X p) ^ r ∧
+        stepanovAux q f g ≠ 0 ∧
+        length (stepanovAux q f g) = ((p : Nat.Primes) : ℕ) ^ (q * r) := by
+  letI : NeZero q := ⟨by omega⟩
+  have hm := arithmeticMonicAt_adamsFixed_pow q hq r p
+  have hi : ((X p : MvPolynomial P ℤ) ^ q - X p) ^ r ∈ adamsFixedIdeal q ^ r :=
+    Ideal.pow_mem_pow (Ideal.subset_span ⟨p, rfl⟩) r
+  obtain ⟨m, f, g, hsy, he⟩ :=
+    (mem_adamsFixedIdeal_pow_iff_stepanov_syzygies q r _).mp hi
+  refine ⟨m, f, g, hsy, he, ?_, ?_⟩
+  · rw [he]; exact hm.ne_zero
+  · rw [he, hm.length, weight_single]
+
+#print axioms exists_stepanov_syzygies_at_sharp_length
+#print axioms minimal_stepanov_image_iff
 
 end GaloisForLFunctions.ArithmeticLefschetzStepanovTheory

@@ -2,65 +2,54 @@
 
 - **ID:** alst-stepanov-image-fixed-ideal
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Statement:** For `q≥2`, the integer auxiliaries `Σ_i f_i ψ_q(g_i)` obtained from global mixed first-factor syzygies of every order below `r` are exactly the ordinary ideal power `(X_j^q−X_j : j∈σ)^r`.
+- **Type:** THEOREM CANDIDATE
+- **Statement:** Over `ℤ`, auxiliaries `Σ_i f_i ψ_q(g_i)` with every global mixed first-factor Euler moment below order `r` zero are exactly `(X_j^q−X_j : j∈σ)^r`, for every `q`. For `q≥2` and nonempty finite prime support with least prime `p`, their least nonzero arithmetic length is `p^(qr)`; all minimizers are `c(X_p^q−X_p)^r` with `c≠0`.
 
-## Mathematical purpose
-The fixed torus omits coordinates equal to zero. A polynomial construction
-may therefore obey a stronger algebraic constraint than torsion vanishing.
-Classifying its image would identify precisely which auxiliaries the
-syzygy method can construct, including its forced vanishing off the torus.
-The expected least arithmetic length is `p_min^(qr)`, attained by
-`(X_p^q−X_p)^r`, rather than the torsion-only threshold `p_min^((q−1)r)`.
+## Significance and novelty
+Polynomial syzygies impose multiplicity on the full affine fixed locus,
+including coordinate hyperplanes. Torsion vanishing alone costs
+`p^((q−1)r)`. Thus the construction pays an extra factor `p^r` and cannot
+produce torsion-only minimizers. This realizes exact (S1) without cheap
+(S2); it does not distinguish ζ from other Euler products on these primes.
+Corpus searches for diagonal syzygies and Adams fixed ideals found torsion
+resolution and the earlier jet transfer, but no pre-existing image theorem.
+The image classification and sharp filtration count together once.
 
-## Proof route to audit
-Represent the paired family by a polynomial in two copies of the variables.
-Global derivative syzygies should mean membership in the `r`th power of the
-diagonal ideal. Integral Taylor coefficients must justify this without
-dividing by factorials. Substitute the second copy by `X^q` to obtain the
-fixed-point ideal power. Conversely, diagonal differences give its generators;
-products supply every order. Euler and ordinary polynomial syzygies must be
-proved equivalent, including coordinate hyperplanes.
+## Paper proof
+Write `Q(U,V)=Σ_i f_i(U)g_i(V)`. Its diagonal Euler jets are the moment
+polynomials. Over the coefficient domain `ℤ[V]`, ordinary jets below `r`
+vanish exactly for membership in `(U_j−V_j)^r`: translate to the origin,
+then use derivative coefficients to detect every term of degree below `r`.
+Positive integer factors cancel without division. Multiplication by `U_j`
+is injective modulo this ideal power since `V_j≠0`; induction therefore
+identifies the Euler and ordinary jet criteria, even though `V_j` is not a
+unit.
 
-## Evidence and open obligations
-The corpus supplies torsion-grid ideal descent and mixed Euler transfer,
-but the searches for Adams fixed-point polynomial ideals and diagonal Taylor
-syzygies have not found this image classification. This is a lead, not a
-completed novelty audit. The integral diagonal statement, converse image,
-sharp length, and boundary cases remain unproved. Nothing is counted.
+The substitution `U↦X`, `V↦X^q` is surjective, using the outer variables
+as a section. It sends the diagonal ideal to `(X_j^q−X_j)`. Ideal images
+commute with powers, and expansion in outer monomials expresses every
+bivariate polynomial as a finite paired sum. This proves both image
+inclusions, including `q=0,1`.
 
-The origin-ideal support criterion is already available as
-`MvPolynomial.mem_pow_idealOfVars_iff'`. A denominator-free route is to
-induct on the order: the constant coefficient is evaluation at zero; each
-positive exponent is detected by `coeff_pderiv`, whose positive integer
-factor is cancellable over the polynomial coefficient ring. Translating
-the first variables by the second then identifies the diagonal filtration.
+More generally, let `G_p` have leading arithmetic monomial `X_p^q` with
+coefficient one. The polynomials
+`B_a=∏_p X_p^(a_p mod q)G_p^(a_p div q)` form an integral basis: subtracting
+the leading coefficient strictly lowers integer arithmetic length.
+Triangularity preserves length exactly. Put `N_r=spanℤ{B_a:Σ floor(a_p/q)≥r}`.
+Factorization gives `N_r⊆(G_p)^r`. Conversely, multiplication by `G_p`
+sends `B_a` to `B_(a+q e_p)`. Induct on `r`, expand the final factor of an
+ideal product in the generators, and apply this shift to obtain
+`(G_p)^r⊆N_r`.
 
-## Formalized input
-`IntegralDiagonalJets.polynomialVanishesToOrder_iff_mem_pointIdeal_pow`
-identifies ordinary jets with the point-ideal power over any characteristic-zero
-domain, including integer polynomial coefficient rings. Its plain Lean check
-and axiom audit passed; the image classification and sharp length remain open.
-`EulerJetsDetectTheDiagonal.polynomialEulerVanishesToOrder_iff_mem_pointIdeal_pow`
-also passes: nonzero point coordinates suffice, even if they are not units
-of the coefficient ring. Thus the tuple of coefficient indeterminates
-detects the diagonal ideal integrally through Euler jets.
+For `G_p=X_p^q−X_p`, `q≥2`, every surviving Newton index has weight at
+least `p_min^(qr)`. The pure generator power attains equality. Below this
+cutoff only the index `qr e_p` can survive, since prime weights uniquely
+determine exponent vectors. Hence the entire minimal filtered piece is
+`ℤ·(X_p^q−X_p)^r`.
 
-## Image mechanism
-For `Q(U,V)=Σ_i f_i(U)g_i(V)`, the diagonal Euler jets equal the original
-moment polynomials. The substitution `U↦X`, `V↦X^q` is surjective because
-every integer polynomial lifts through the `U` variables. It sends each
-diagonal generator `U_j−V_j` to `X_j−X_j^q`; ideal images commute with
-powers. Conversely, every bivariate polynomial is a finite paired sum,
-by expansion in the outer monomials. These facts give the proposed image
-classification for every `q`, including `0` and `1`; the sharp length
-statement still requires `q≥2` and a separate filtration argument.
-
-## Filtration route
-For generators `G_p` with arithmetic leading monomial `X_p^q` and coefficient
-one, use `B_a=∏_p X_p^(a_p mod q) G_p^(a_p div q)`. Arithmetic triangularity
-gives an integral basis preserving length. Multiplication by `G_p` shifts
-the index by `q e_p`, so the `r`th ideal power should retain exactly the
-indices with `Σ floor(a_p/q)≥r`. For `G_p=X_p^q−X_p`, this would yield the
-sharp cost and its least-prime minimizer. This filtration claim still
-requires a proof; it is not inferred from the generator degrees alone.
+## Lean status
+`ThePolynomialImageOfStepanovSyzygies.mem_adamsFixedIdeal_pow_iff_stepanov_syzygies`
+passed its final plain check; its transitive axioms are `propext`,
+`Classical.choice`, `Quot.sound`. Integral diagonal and Euler criteria are
+verified. Generic Newton filtration and sharp cost are written but remain
+under verification. Nothing is counted until all required audits pass.

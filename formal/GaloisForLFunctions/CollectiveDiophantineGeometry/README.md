@@ -106,6 +106,34 @@ logarithms from rounded commensurable systems. Phase counting and two-sided
 absolute estimates are admissible; spectral positivity, Landau's theorem,
 and an assumed zero-free region are not producers here.
 
+### From heavy returns to absolute large values
+
+For a nonnegative weighted column `P(t)=Σ a_i exp(itℓ_i)` of total weight
+`S`, a large modulus aligns phases around an arbitrary common angle.
+Returning that angle to zero needs only one-dimensional approximation.
+[AbsoluteValuesForceHeavyReturns.lean](AbsoluteValuesForceHeavyReturns.lean)
+proves, for every integer `Q≥1`,
+
+`min_{1≤m≤Q} D(mt) ≤ 2Q²(S−|P(t)|)+4π²S/Q²`,
+
+where `D(u)=Σ a_i(1−cos(uℓ_i))`. Thus prescribed cosine precision
+`η>0` and missing-mass allowance `κ>0` give explicit constants
+
+`Q=ceil(sqrt(8π²/(κη)))+1`, `c=κη/(4Q²)>0`.
+
+Every height with `|P(t)|>(1−c)S` has a multiple `mt`, `1≤m≤Q`,
+returning a subset of mass greater than `(1−κ)S`. For heights in `[A,B]`,
+`A≥0`, the absolute-large-value measure is at most
+`H_Q vol(R∩[A,QB])`, where `H_Q=Σ_{m≤Q}1/m` and `R` is the
+heavy-return set. Constants are independent of dimension, cutoff, and
+weights. The prime specialization uses the actual polynomial
+`Σ_{p≤y}log p·p^(−it)` and total mass `θ(y)`.
+
+This transfers an arithmetic return exclusion or count to complex modulus
+control. It supplies neither the arithmetic estimate nor the final trace
+bound. Cosine precision is `1−cos(phase)≤η`; conversion to radian precision
+must be explicit.
+
 ## Fixed-height mass calibration
 
 [FixedHeightPrimeMass.lean](FixedHeightPrimeMass.lean) proves an exact law

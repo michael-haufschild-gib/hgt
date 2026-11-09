@@ -46,7 +46,7 @@ private theorem tendsto_exceptionalObservationPhase {a : ℝ} (ha : 0 < a) :
   have hlin : Tendsto (fun t : ℝ => a * t / 2) atTop atTop := by
     have h := Filter.Tendsto.const_mul_atTop (div_pos ha (by norm_num : (0 : ℝ) < 2))
       (tendsto_id : Tendsto (fun t : ℝ => t) atTop atTop)
-    exact h.congr fun t => by ring
+    exact h.congr fun t => by simp only [id_eq]; ring
   refine tendsto_atTop.2 fun b => ?_
   filter_upwards [eventually_ge_atTop (2 : ℝ), hlin.eventually_ge_atTop b] with t ht hb
   have hlog : 0 ≤ Real.log (t / 2) := Real.log_nonneg (by linarith only [ht])
@@ -59,14 +59,18 @@ private theorem exists_observationPhase_preimage {a T ξ : ℝ}
   have hc : ContinuousOn (exceptionalObservationPhase a) (Ici T) := by
     intro t ht
     have hp : 0 < t / 2 := div_pos (hT.trans_le ht) (by norm_num)
-    exact (((continuousAt_const.mul continuousAt_id).add
-      ((Real.continuousAt_log (ne_of_gt hp)).comp
-        (continuousAt_id.div_const 2))).div_const 2).continuousWithinAt
+    have hdiv : ContinuousAt (fun x : ℝ => x / 2) t := continuousAt_id.div_const (2 : ℝ)
+    have hlog : ContinuousAt (fun x : ℝ => Real.log (x / 2)) t :=
+      ContinuousAt.comp (g := Real.log) (f := fun x : ℝ => x / 2) (x := t)
+        (Real.continuousAt_log (ne_of_gt hp)) hdiv
+    have hlin : ContinuousAt (fun x : ℝ => a * x) t :=
+      continuousAt_const.mul continuousAt_id
+    exact ((hlin.add hlog).div_const (2 : ℝ)).continuousWithinAt
   exact intermediate_value_Ici hc (tendsto_exceptionalObservationPhase ha) hξ
 
 private theorem exceptionalLayerMass_nonneg (F : Finset XiZeroCopy) :
     0 ≤ exceptionalLayerMass F :=
-  Finset.sum_nonneg fun q _ => (Real.exp_pos _).le
+  Finset.sum_nonneg fun _ _ => (Real.exp_pos _).le
 
 private theorem exceptionalLayerMass_pos {F : Finset XiZeroCopy} (hF : F.Nonempty) :
     0 < exceptionalLayerMass F := by
@@ -79,27 +83,53 @@ private theorem norm_ordinateWave_sum_le (F : Finset XiZeroCopy) (a t : ℝ) :
   refine (norm_sum_le _ _).trans_eq ?_
   exact Finset.sum_congr rfl fun q _ => norm_exceptionalOrdinateWave _ _ _
 
-private theorem exists_large_ordinateWave_sum_near_mass (F : Finset XiZeroCopy)
-    {a ε : ℝ} (ha : 0 < a) (hε : 0 < ε) (R : ℝ) :
-    ∃ t : ℝ, R ≤ t ∧ ‖(∑ q ∈ F, exceptionalOrdinateWave (xiZero q).im a t) -
-      (exceptionalLayerMass F : ℂ)‖ ≤ ε := by
+private theorem exists_bounded_gap_ordinateWave_revival (F : Finset XiZeroCopy)
+    {a ε : ℝ} (ha : 0 < a) (hε : 0 < ε) :
+    ∃ L : ℝ, 0 < L ∧ ∀ R : ℝ, 2 ≤ R →
+      ∃ t : ℝ, R ≤ t ∧ t ≤ R + L ∧
+        ‖(∑ q ∈ F, exceptionalOrdinateWave (xiZero q).im a t) -
+          (exceptionalLayerMass F : ℂ)‖ ≤ ε := by
   classical
   let S := exceptionalLayerMass F
   have hS : 0 ≤ S := exceptionalLayerMass_nonneg F
   let δ := ε / (S + 1)
   have hδ : 0 < δ := by dsimp only [δ]; positivity
-  let T : ℝ := max R 2
-  have hT : 0 < T := (by norm_num : (0 : ℝ) < 2).trans_le (le_max_right _ _)
   let u : Fin F.card → ℝ := fun j => (xiZero (F.equivFin.symm j)).im
-  obtain ⟨ξ, hξ, hchar⟩ := exists_large_simultaneous_almostPeriod u hδ
-    (exceptionalObservationPhase a T)
-  obtain ⟨t, ht, hphase⟩ := exists_observationPhase_preimage ha hT hξ
+  obtain ⟨L, hL, hdense⟩ := isBohrAlmostPeriodic_bohrCharVector F.card
+    (fun j => -(u j)) δ hδ
+  refine ⟨2 * L / a, by positivity, fun R hR => ?_⟩
+  have hR0 : 0 < R := (by norm_num : (0 : ℝ) < 2).trans_le hR
+  obtain ⟨ξ, hξ, hperiod⟩ := hdense (exceptionalObservationPhase a R)
+  obtain ⟨t, ht, hphase⟩ := exists_observationPhase_preimage ha hR0 hξ.1
+  have hchar : ∀ j, ‖Complex.exp (I * ((ξ : ℂ) * ((u j : ℝ) : ℂ))) - 1‖ ≤ δ := by
+    have hh := hperiod 0
+    rw [pi_norm_le_iff_of_nonneg hδ.le] at hh
+    intro j
+    have hj := hh j
+    simp only [Pi.sub_apply, zero_add, bohrCharVector_zero] at hj
+    have heq : bohrCharVector (fun j => -(u j)) ξ j =
+        Complex.exp (I * ((ξ : ℂ) * ((u j : ℝ) : ℂ))) := by
+      rw [bohrCharVector, bohrChar]
+      push_cast
+      ring_nf
+    rwa [heq] at hj
+  have hspan : t ≤ R + 2 * L / a := by
+    have hlog : Real.log (R / 2) ≤ Real.log (t / 2) :=
+      Real.log_le_log (div_pos hR0 (by norm_num))
+        (div_le_div_of_nonneg_right ht (by norm_num))
+    have hp : exceptionalObservationPhase a t ≤ exceptionalObservationPhase a R + L := by
+      rw [hphase]
+      exact hξ.2
+    dsimp only [exceptionalObservationPhase] at hp
+    have hmul : (t - R) * a ≤ 2 * L := by nlinarith only [hp, hlog]
+    have hh := (le_div_iff₀ ha).mpr hmul
+    linarith only [hh]
   have hreturn : ∀ q ∈ F,
       ‖Complex.exp (I * ((exceptionalObservationPhase a t : ℂ) * ((xiZero q).im : ℂ))) - 1‖ ≤ δ := by
     intro q hq
     have hh := hchar (F.equivFin ⟨q, hq⟩)
     simpa only [u, Equiv.symm_apply_apply, hphase] using hh
-  refine ⟨t, (le_max_left _ _).trans ht, ?_⟩
+  refine ⟨t, ht, hspan, ?_⟩
   have heq : (∑ q ∈ F, exceptionalOrdinateWave (xiZero q).im a t) -
       (exceptionalLayerMass F : ℂ) =
       ∑ q ∈ F, (Real.exp (Real.pi * (xiZero q).im / 4) : ℂ) *
@@ -109,6 +139,7 @@ private theorem exists_large_ordinateWave_sum_near_mass (F : Finset XiZeroCopy)
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun q _ => ?_
     rw [exceptionalOrdinateWave_eq_character]
+    push_cast
     ring
   rw [heq]
   calc
@@ -120,14 +151,15 @@ private theorem exists_large_ordinateWave_sum_near_mass (F : Finset XiZeroCopy)
       rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
         abs_of_pos (Real.exp_pos _)]
       exact mul_le_mul_of_nonneg_left (hreturn q hq) (Real.exp_pos _).le
-    _ = S * δ := by rw [Finset.sum_mul]; rfl
+    _ = S * δ := by rw [← Finset.sum_mul]; rfl
     _ ≤ (S + 1) * δ := by gcongr; linarith
     _ = ε := by
       dsimp only [δ]
       field_simp [ne_of_gt (by linarith only [hS] : 0 < S + 1)]
 
 /-- The actual top-layer mass is the sharp recurrent envelope of the full
-normalized prime current. Readings recur near the negative real mass itself. -/
+normalized prime current. Readings recur near the negative real mass itself
+with bounded gaps in height. -/
 theorem not_asymptoticAbscissaLaw_has_sharp_recurrent_envelope :
     ¬ AsymptoticAbscissaLaw →
       ∃ (G : Finset XiZeroCopy) (σ β : ℝ),
@@ -139,8 +171,9 @@ theorem not_asymptoticAbscissaLaw_has_sharp_recurrent_envelope :
           ∀ ε : ℝ, 0 < ε →
             (∀ᶠ t : ℝ in atTop,
               ‖normalizedExceptionalCurrent σ β a t‖ ≤ exceptionalLayerMass G + ε) ∧
-            ∀ R : ℝ, ∃ t : ℝ, R ≤ t ∧
-              ‖normalizedExceptionalCurrent σ β a t + (exceptionalLayerMass G : ℂ)‖ < ε := by
+            ∃ L : ℝ, 0 < L ∧ ∀ᶠ R : ℝ in atTop,
+              ∃ t : ℝ, R ≤ t ∧ t ≤ R + L ∧
+                ‖normalizedExceptionalCurrent σ β a t + (exceptionalLayerMass G : ℂ)‖ < ε := by
   classical
   intro hnot
   obtain ⟨F, θ, σ, β, hθ, hgap, hσβ, hβ1, ⟨q₀, hq₀F, hq₀β⟩,
@@ -178,13 +211,15 @@ theorem not_asymptoticAbscissaLaw_has_sharp_recurrent_envelope :
     rw [add_sub_cancel_right] at hn
     have hb := norm_ordinateWave_sum_le G a t
     linarith only [hn, ht, hb]
-  · intro R
-    have hhalf := hpn.eventually (eventually_lt_nhds (by positivity : (0 : ℝ) < ε / 2))
+  · have hhalf := hpn.eventually (eventually_lt_nhds (by positivity : (0 : ℝ) < ε / 2))
     obtain ⟨T, hT⟩ := eventually_atTop.1 hhalf
-    obtain ⟨t, ht, hmass⟩ := exists_large_ordinateWave_sum_near_mass G ha
-      (by positivity : 0 < ε / 2) (max R T)
-    refine ⟨t, (le_max_left _ _).trans ht, ?_⟩
-    have he := hT t ((le_max_right _ _).trans ht)
+    obtain ⟨L, hL, hreturn⟩ := exists_bounded_gap_ordinateWave_revival G ha
+      (by positivity : 0 < ε / 2)
+    refine ⟨L, hL, ?_⟩
+    filter_upwards [eventually_ge_atTop (max T 2)] with R hR
+    obtain ⟨t, ht, hspan, hmass⟩ := hreturn R ((le_max_right _ _).trans hR)
+    refine ⟨t, ht, hspan, ?_⟩
+    have he := hT t (((le_max_left _ _).trans hR).trans ht)
     have hn := norm_sub_le
       (normalizedExceptionalCurrent σ β a t + ∑ q ∈ G, exceptionalOrdinateWave (xiZero q).im a t)
       ((∑ q ∈ G, exceptionalOrdinateWave (xiZero q).im a t) - (exceptionalLayerMass G : ℂ))
@@ -218,12 +253,15 @@ theorem not_asymptoticAbscissaLaw_has_unbounded_corrected_current :
     gaussianMBKernel (Real.exp (-a * t)) ((β : ℂ) - ((σ : ℂ) + t * I))
   have hP : Tendsto (fun t => ‖P t‖) atTop atTop :=
     tendsto_norm_gaussianMode_atTop_of_positive_rate (β : ℂ) σ a hr
-  have hrec := (henvelope a ha hsuper (S / 2) (by change 0 < exceptionalLayerMass G / 2; positivity)).2
+  obtain ⟨L, _, hrec⟩ := (henvelope a ha hsuper (S / 2)
+    (by change 0 < exceptionalLayerMass G / 2; positivity)).2
+  obtain ⟨U, hU⟩ := eventually_atTop.1 hrec
   refine ⟨σ, a, hσ, hσβ.trans hβ1, ha, fun B R => ?_⟩
   obtain ⟨T, hT⟩ := eventually_atTop.1
     (hP.eventually (eventually_ge_atTop (2 * (|B| + 1) / S)))
-  obtain ⟨t, ht, hnear⟩ := hrec (max R T)
-  have hp := hT t ((le_max_right _ _).trans ht)
+  obtain ⟨t, ht, _, hnear⟩ := hU (max (max R T) U) (le_max_right _ _)
+  have hRT : max R T ≤ t := (le_max_left _ _).trans ht
+  have hp := hT t ((le_max_right _ _).trans hRT)
   have hS0 : 0 < S := hS
   have hp0 : 0 < ‖P t‖ := (by positivity : 0 < 2 * (|B| + 1) / S).trans_le hp
   have hpne : P t ≠ 0 := norm_pos_iff.mp hp0
@@ -242,7 +280,7 @@ theorem not_asymptoticAbscissaLaw_has_unbounded_corrected_current :
     rw [← norm_mul]
     exact congrArg norm (div_mul_cancel₀ _ hpne)
   rw [heq] at hbig
-  exact ⟨t, (le_max_left _ _).trans ht, by linarith only [hb, hbig, le_abs_self B]⟩
+  exact ⟨t, (le_max_left _ _).trans hRT, by linarith only [hb, hbig, le_abs_self B]⟩
 
 #print axioms not_asymptoticAbscissaLaw_has_sharp_recurrent_envelope
 #print axioms not_asymptoticAbscissaLaw_has_unbounded_corrected_current

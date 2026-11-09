@@ -46,6 +46,22 @@ that statement is not refuted. No transfer between weights is assumed.
 The direct Lean check and six public-declaration axiom audits passed.
 Paper proof: [CDG-MASS](../3-formalized/cdg-fixed-height-return-mass.md).
 
+## Absolute modulus and heavy returns
+
+For `P(t)=Σ a_i exp(itℓ_i)`, `a_i≥0`, `S=Σa_i`, a bounded integer
+dilation satisfies `D(mt)≤2Q²(S−|P(t)|)+4π²S/Q²`, `1≤m≤Q`.
+Given cosine precision `η>0` and missing-mass allowance `κ>0`, take
+`Q=ceil(sqrt(8π²/(κη)))+1` and `c=κη/(4Q²)>0`.
+Every absolute large value `|P(t)|>(1−c)S` yields a heavy return at `mt`.
+On `[A,B]`, `A≥0`, its measure is at most `H_Q` times the heavy-return
+measure on `[A,QB]`. All constants are independent of dimension and weights.
+
+`AbsoluteValuesForceHeavyReturns.lean` proves the dilation bound, measure
+transfer, and the exact dichotomy for `Σ_{p≤y}log p·p^(−it)` with `S=θ(y)`.
+This supplies the modulus transfer; it does not estimate arithmetic returns.
+Paper proof and audited declarations:
+[CDG-MOD](../3-formalized/cdg-absolute-values-and-returns.md).
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

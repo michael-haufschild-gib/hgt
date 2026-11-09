@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CollectiveDiophantineGeometry.AbsoluteValuesForceHeavyReturns
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FixedHeightPrimeMass
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
 
@@ -10,4 +11,6 @@ prime-degree trace bound determines the zero width. Producing that bound
 from collective phase arithmetic remains the central problem. The fixed-height
 prime-mass law calibrates which logarithmic mass fractions can admit a
 growing lower bound for returns.
+Bounded integer dilations transfer heavy-return counts to absolute large-value
+counts with constants independent of the number of prime coordinates.
 -/

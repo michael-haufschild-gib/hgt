@@ -16,6 +16,20 @@ namespace GaloisForLFunctions.ArithmeticLefschetzStepanovTheory
 
 variable {P : Finset Nat.Primes}
 
+theorem ArithmeticMonicAt.ne_zero {F : MvPolynomial P ℤ} {a : P →₀ ℕ}
+    (hF : ArithmeticMonicAt F a) : F ≠ 0 := by
+  intro h
+  have hc := hF.1
+  rw [h, MvPolynomial.coeff_zero] at hc
+  exact zero_ne_one hc
+
+theorem ArithmeticMonicAt.length {F : MvPolynomial P ℤ} {a : P →₀ ℕ}
+    (hF : ArithmeticMonicAt F a) : length F = weight a := by
+  apply le_antisymm (Finset.sup_le hF.2)
+  apply le_sup (f := weight)
+  rw [MvPolynomial.mem_support_iff, hF.1]
+  exact one_ne_zero
+
 /-- Finite integral synthesis in a family indexed by prime exponent vectors. -/
 def arithmeticMonicSynthesis (B : (P →₀ ℕ) → MvPolynomial P ℤ) :
     ((P →₀ ℕ) →₀ ℤ) →ₗ[ℤ] MvPolynomial P ℤ := Finsupp.linearCombination ℤ B
