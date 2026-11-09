@@ -63,9 +63,12 @@ force `b=0`. Coefficient-map injectivity gives the real and integer identities.
 The corpus inputs `SixExponentials.six_exponentials`,
 `SixExponentials.prime_logs_independent`, and the finite classification's
 analytic and Baker inputs have only `propext`, `Classical.choice`, and
-`Quot.sound` as transitive axioms. `GlobalPrimeOrbitPolynomials.lean` passed its plain Lean check: full-orbit
-restriction is injective, quotient characters have finite signed prime
-frequencies, and entire extensions have subquadratic proximity. Its axiom
-audits contain only the same three standard axioms. The integer-clock
-theorem, classification, and real/integer descent remain under formalization.
-No contribution is counted yet.
+`Quot.sound` as transitive axioms.
+
+Two modules passed plain Lean checks with those same axiom audits:
+
+- `GlobalPrimeOrbitPolynomials.lean`: injective full-orbit restriction, finite signed quotient frequencies, and entire extensions with subquadratic proximity.
+- `GlobalPrimeClockMultipliers.lean`: `global_prime_frequency_dilation_is_int` and `global_prime_character_clock_linear` remove the finite invariant prime-set premise.
+
+The classification, converse, uniqueness, fixed-point theorem, and
+real/integer descent remain under verification. No contribution is counted yet.

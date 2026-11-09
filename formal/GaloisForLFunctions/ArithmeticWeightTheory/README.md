@@ -1,6 +1,6 @@
 # Arithmetic Weight Theory of Spec ℤ (AWT)
 
-Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 6 modules.
+Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 7 modules.
 All results unconditional; RH appears only inside equivalences.
 
 Notation. `z = ρ − ½` for a zero `ρ`; `b = sup Re z` the **weight** (zero width) of a configuration;
@@ -31,7 +31,8 @@ AWT asks what plays this role over `ℤ` and answers it in three steps.
    pairings, at most `k!`, of weight zero. Deligne's argument then runs: Haar-almost every fibre has
    uniform tensor weights (milestone M2).
 3. **The special fibre does not inherit it.** `ζ` is the trivial fibre, the bad character of this
-   Mellin family. Its pole is a coinvariant jump; trace constants specialize but blow up there;
+   Mellin family. Its pole is a coinvariant jump, and the jump locus is exactly the pretentious
+   neighbourhood of the archimedean line `n^{it}`; trace constants specialize but blow up there;
    exponents do not specialize; Baire-generic fibres carry the pole; isozeric deformations are
    null; and any family with exact coinvariants prices every fibre at the trivial bound.
 
@@ -53,6 +54,7 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 | Euler deformation | `deformationPrimeSum`, `deformationExponent`, `isozericClass` | `ζ_x = ζ e^F`; summable prime perturbations |
 | Orthonormal family | `TwistOrthonormalOn ν s` | a probability family with exact coinvariants on `s` |
 | Reset fibre | `resetOutside I x` | agrees with `x` on `I`, trivial elsewhere |
+| Pretentious distance | `pretTerm`, `pretSum`, `polePoint` | `1 − Re(χ_x(p)p^{−iτ})`; `D_δ = Σ_p p^{−1−δ}·pretTerm`; `1 + δ + iτ` |
 
 ## 3. Language
 
@@ -66,6 +68,7 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 - **Specialize (Deligne direction)**: special `≤` generic. **Coherent direction**: special `≥` generic.
 - **Isozeric**: same zeros with multiplicities on a half-plane.
 - **Pricing**: the bound a family transfers to one fibre by positivity.
+- **Jump locus**: fibres with a pole on `Re s = 1`; **pretentious** to `n^{iτ}`: `Σ_p (1 − Re χ_x(p)p^{−iτ})/p < ∞`.
 
 ## 4. Mechanisms
 
@@ -96,6 +99,8 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
     square by the `2k`-th tensor series.
 12. *Pricing.* Exact orthonormality on `s` gives `ν{x₀} · #s ≤ 1`; with Cauchy–Schwarz on the
     `k`-fold products, `ν{x₀}(Σ a_n)^{2k} ≤ ∫|S|^{2k} dν`.
+13. *Jump locus.* `|ζ_x(1 + δ + iτ)| = |ζ(1 + δ)| e^{−D_δ + O(1)}` with the fibre-logarithm remainder
+    bounded by `2Σ p^{−2}` and `δζ(1 + δ) → 1`; `D_δ` stays below `D²` or tends to infinity.
 
 ## 5. Pillar theorems
 
@@ -111,6 +116,8 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 | Tensor powers have exactly their weight | `summable_tensorTerm`, `not_summable_tensorTerm_of_max`, `summable_tensorTerm_iff_of_max` | unconditional |
 | Moment exponent `A_k ≥ 2k·width − 1`; M4 ⇔ RH | `zetaZeroWidth_le_of_primeTraceMoment_le`, `riemannHypothesis_iff_tensorExponent_sublinear` | unconditional; RH-equivalence |
 | Uncertainty and pricing | `measureReal_singleton_mul_card_le`, `measureReal_singleton_mul_pow_le` | unconditional |
+| Pole iff pretentious; poles have order `≤ 1` | `pole_iff_pretentious`, `tendsto_mul_norm_gaugeFibre_of_not_pretentious`, `eventually_mul_norm_gaugeFibre_le` | unconditional |
+| Jump locus contains the archimedean line, is Haar-null | `pretentious_archimedeanLine`, `gaugeHaar_jumpLocus_eq_zero` | unconditional |
 | Tensor trick, common abscissa (M1) | `riemannHypothesis_iff_moments_primeTraces`, `riemannHypothesis_iff_tensorPowers_commonAbscissa` (SoSZ) | RH-equivalence, built on |
 | Strip specialization is RH | `riemannHypothesis_iff_limits_zeroFree` (PTT), `riemannHypothesis_iff_zetaStronglyRecurrent` (RHTower) | RH-equivalence, built on |
 
@@ -138,7 +145,10 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 exists and M4 is RH. For the gauge family: the multiplicative pairings, weight `0`, size `≤ k!`
 (`integral_norm_twistSum_pow_le`). At the special fibre the jump is the pole, computed by the FE
 (the explicit formula subtracts it exactly; `ThePrimeNumberTheoremInEveryWindow`, SoSZ); the FE also
-supplies Deligne's weight-zero pairing `z ↔ −z`, but not big monodromy.
+supplies Deligne's weight-zero pairing `z ↔ −z`, but not big monodromy. The jump locus of the family
+— fibres with a pole on `Re s = 1` — is the pretentious neighbourhood of the archimedean line
+(`pole_iff_pretentious`): the analogue of generic vanishing, with the line `n^{it}` as subtorus and
+finite pretentious distance as torsion translation; it is Haar-null.
 
 **Q3. In which topology are weights semicontinuous?**
 - *Product topology on `G`.* Constants specialize in Deligne's direction (closed sets) but tend to
@@ -166,6 +176,7 @@ topology; its application to `ζ` is RH. M4 is RH (`riemannHypothesis_iff_tensor
 - Euler-deformation exponent `F`, isozeric continuation and analytic order transfer.
 - Exact abscissa of every tensor power at an attained top; AM–GM transfer between tensor powers.
 - Uncertainty and pricing for arbitrary probability families of twists.
+- Pole detection on `Re s = 1` by pretentious distance; order-one bound for every fibre.
 
 **To build.**
 - A coinvariant computation that is not orthogonality of a measure (a trace formula for a family
@@ -229,7 +240,7 @@ bound, with the cohomological input named.
 
 | Direction | Programmes (module imports) |
 |---|---|
-| Uses | ArithmeticCorrelationGeometry 3, SurfaceOfSpecZ 2, PrimeTorusTheory 2, TailArithmeticOfThePrimeOrbit 1 |
+| Uses | ArithmeticCorrelationGeometry 3, SurfaceOfSpecZ 2, PrimeTorusTheory 2, TailArithmeticOfThePrimeOrbit 1, mathlib (Chebyshev, Borel–Cantelli, Baire) |
 | Cites | ArithmeticGaugeTheory, ArithmeticKunnethTheory, RHTower, CountingHolography, ArithmeticCastelnuovoSeveri |
 
 | Neighbour | Interface |
@@ -247,7 +258,8 @@ half works and the specialization half is exactly what is missing. The gauge tor
 Deligne family: big monodromy with weight-zero coinvariants and uniform tensor weights at the
 generic fibre. `ζ` is its trivial fibre, and every route from the family to that fibre is closed by
 a theorem: the virtual motive of the zeros is geometrically constant and its tensor powers have
-exactly their weight; the pole is a jump; constants specialize but blow up; exponents are not
+exactly their weight; the pole is a jump whose locus is the pretentious archimedean line;
+constants specialize but blow up; exponents are not
 semicontinuous (residual against null); analytically connected fibres keep the zeros; and positivity
 against any exact monodromy returns the trivial bound. What remains is the structure that over `𝔽_q`
 is cohomology: a Frobenius-preserving specialization from the generic to the special fibre.

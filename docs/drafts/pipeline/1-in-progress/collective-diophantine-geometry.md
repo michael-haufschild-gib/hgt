@@ -80,7 +80,7 @@ least one, its threshold is at least the collective threshold. The genuinely
 collective conclusion is the bound on the
 rational span; transferring only cardinality to smooth-box mean squares does
 not use that extra information. The first-rank estimate retains the existing
-scalar Baker bound; return-height counts remain open.
+scalar Baker bound; a stronger first-minimum estimate remains open.
 Paper proof and audited declarations:
 [CDG-RANK](../3-formalized/cdg-collective-rank-depth.md).
 The exact scalar comparison and projection theorem are formalized in
@@ -123,6 +123,23 @@ has at most `(2H+1)^(r−1)` integer points. The maximum-floor theorem retains
 the earlier scalar and full-rank bounds. Direct verification and six
 transitive axiom audits passed.
 Proof: [CDG-EXP](../3-formalized/cdg-rank-sensitive-exponent.md).
+
+## Finite-time return counts
+
+For `k` distinct primes, rank threshold `r`, and `N≥2`, put `H=N−1`
+and `Δ=Δ_r(H)`. In every interval of length `T`, the measure of returns
+to any target phase vector at chord or radian precision `1/(2N)` is at most
+
+`(5π/2)·4^k·max(T/2,Δ⁻¹)/N^(k−r+1)`.
+
+At `T≥2/Δ`, relative measure is at most `(5π/4)·4^k/N^(k−r+1)`.
+The horizon is exactly `B H^(rC+r−1)`, with
+`B=2r·r!·exp(C(log(r!)+2))` and the proved collective exponent `C`.
+The shared small-form span bounds close smooth-number pairs; the Fejér
+window theorem removes the far-frequency error. This improves the
+shrinking-precision counting regime, not constant-precision breadth.
+Direct Lean verification and five transitive axiom audits passed.
+Proof: [CDG-COUNT](../3-formalized/cdg-finite-time-rank-counts.md).
 
 ## Open core
 

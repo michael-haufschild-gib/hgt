@@ -57,6 +57,15 @@ It supplies no return of the complete tail around a zero-containing
 contour. Such contour control, or an independent arithmetic exclusion,
 remains unproved. Classical Dirichlet repulsion does not supply it.
 
+The classical calibration is complete in `TheDeuringHeilbronnRepulsionLaw.lean`,
+theorem `GaloisForLFunctions.ExceptionalLayerTheory.exists_deuring_heilbronn_repulsion`.
+An actual real exceptional L-zero gives the logarithmic conductor-scale
+repulsion law for distinct nontrivial zeros of ζLχ with real part at least ½.
+The multiplicity version
+exempts exactly one zero copy. This discharges the Dirichlet calibration;
+targets 1–3 remain open. Proof and Lean audit:
+`../3-formalized/elt-dirichlet-repulsion-calibration.md`.
+
 ## Foundations and gaps
 
 `OnlyExceptionalGaussianModesRemain` bounds the complete complementary field

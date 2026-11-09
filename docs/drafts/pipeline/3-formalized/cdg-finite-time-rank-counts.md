@@ -1,8 +1,8 @@
 # Finite-time return counts from the collective rank profile
 
 - **ID:** CDG-COUNT
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean verification in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Convert the uniform small-form rank bound into actual
   return-measure estimates, retaining its smaller dimension exponent.
 
@@ -14,6 +14,11 @@ uniform over an interval of length `T` and every target phase vector, is
 
 `vol{t: every prime phase is within chord distance 1/(2N) of target}`
 `  ≤ (5π/2)·4^k·max(T/2,Δ⁻¹)/N^(k−r+1)`.
+
+Explicitly, with `H=N−1`, `W=ceil(Σ log p_j)+1`,
+`h=floor((k−r)/r)+1`, `U=10⁴(W+1)(k+1)²`, and `C=U^(100h(k+1))`,
+
+`Δ_r(H)=exp(−C(log(r!H^r)+2))/(r·r!H^(r−1))`.
 
 ## Proof
 
@@ -44,6 +49,14 @@ and the preceding mass bound give the stated measure estimate.
 Radian returns at precision `1/(2N)` satisfy the same chord condition,
 since `|exp(ix)−1|≤|x|` after removing an integral multiple of `2π`.
 
+The observation horizon has the exact polynomial form
+
+`2/Δ_r(H) = B H^E`,
+`B=2r·r!·exp(C(log(r!)+2))`, `E=rC+r−1`.
+
+This follows from `log(r!H^r)=log(r!)+r log H` and
+`exp(rC log H)=H^(rC)`, where `C` is a positive integer.
+
 ## Quantitative boundary
 
 For `T≥2/Δ`, the return fraction is at most
@@ -51,9 +64,9 @@ For `T≥2/Δ`, the return fraction is at most
 at half rank, the exponent coefficient has degree linear in dimension.
 Elementary separation instead gives an exponential-in-`N` horizon. The
 formalized scalar Baker bound used in CDG-RANK has a quadratic dimension
-degree. For growing dimension and sufficiently large `N`, the collective
-bound therefore improves the horizon for a partial-dimensional density
-estimate. It does not assert the full torus density `N^(−k)`.
+degree. With a common dimension and logarithmic-mass bound, proportional
+rank replaces that quadratic degree by a linear one. The density saving
+is partial-dimensional; it does not assert the full torus density `N^(−k)`.
 
 This is an arithmetic application of the collective theorem, not a new
 Fourier inequality or an improvement over the strongest published
@@ -71,12 +84,16 @@ near-frequency rank into spectral-moment bounds. The time-window input is
 `RHTower.Sieve.integral_Icc_normSq_finiteFrequencyPoly_le_collisionWeight`
 in `HeathBrownSparseMeanValueBasic.lean`; its proof uses the triangular
 Fourier kernel and absolute bounds for complex coefficients.
-The missing arithmetic application is an actual return set, with the
+The arithmetic application bounds actual return windows, with the
 collective threshold discharged and the dimension dependence retained.
-No generic conditional rank receiver alone qualifies as the result.
 
 ## Lean
 
-Target: `CollectiveDiophantineGeometry/FiniteTimeReturnCounts.lean`.
-The final theorem must discharge the arithmetic threshold and bound the
-actual return-window measure. Source verification and axiom audit remain.
+Module: `CollectiveDiophantineGeometry/FiniteTimeReturnCounts.lean`.
+Direct `lake --old env lean` verification passed. Transitive axiom audits of
+`card_close_smoothBox_pairs_le`,
+`integral_smoothBoxSum_norm_sq_le_collision`,
+`measure_radianReturnWindow_le`,
+`relative_measure_radianReturnWindow_le`, and
+`collective_return_horizon_eq` use only `propext`, `Classical.choice`,
+and `Quot.sound`.

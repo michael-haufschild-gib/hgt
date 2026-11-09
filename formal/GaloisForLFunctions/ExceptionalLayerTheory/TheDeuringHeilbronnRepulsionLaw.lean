@@ -48,11 +48,10 @@ private theorem repulsion_mass_normalization {δ L S R : ℝ}
   refine ⟨?_, hRadius⟩
   have hscale : (32 * (1 / a ^ 2 + L / a)) * (4 * a ^ 2) = 128 * (1 + a * L) := by
     field_simp
-    <;> ring
+    ring
   have haL : a * L = δ * L + 1 / 2 := by
     dsimp only [a]
     field_simp
-    <;> ring
   calc
     S / R = S * R⁻¹ := div_eq_mul_inv _ _
     _ ≤ (32 * (1 / a ^ 2 + L / a)) * (4 * a ^ 2) :=

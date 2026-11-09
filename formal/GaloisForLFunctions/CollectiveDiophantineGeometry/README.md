@@ -174,7 +174,8 @@ injective. For one omitted prime, the threshold is `log 2/2`, independent
 of coefficient height. For `r≥2,H≥1`, the scalar threshold is at least the
 rank threshold. The additional collective information is the dimension of
 the rational span of **all** near relations, not this cardinal exponent.
-Return-height counts and a stronger first-minimum bound remain open.
+The stronger first-minimum bound remains open; finite-time counts from the
+collective profile are given below.
 
 ### Collective integral auxiliaries
 
@@ -221,8 +222,9 @@ The parameter degree `h(k+1)+k` remains at most `3k+2` when `r≥k−r`.
 The full formulas and proof are in
 [the simultaneous-bound theorem](../../../docs/drafts/pipeline/3-formalized/cdg-simultaneous-logarithm-bounds.md).
 This supplies collective small-form control at every coefficient height.
-It does not yet count returns or remove the height-times-phase-error loss
-in applying forms to constant-precision returns. The full-rank determinant
+It supplies the arithmetic input to finite-time counting below. The
+height-times-phase-error loss remains for constant-precision return
+exclusion. The full-rank determinant
 floor and scalar reductions remain useful additional bounds.
 
 ### Reciprocal-rank approximation profile
@@ -246,11 +248,40 @@ through all analytic parameters. Taking the maximum of this floor and
 the scalar-elimination floor preserves both arithmetic regimes.
 
 This controls the whole approximation body uniformly in coefficient
-height and dimension. It does not count orbit returns. At fixed Fourier
-height, elementary separation of distinct smooth rational numbers can
-already be much stronger than this transcendence floor; a useful return
-estimate must exploit a regime or structure that survives that comparison.
+height and dimension. The time-window count below uses the common rational
+span to bound close smooth-number pairs.
 The complete proof is [CDG-EXP](../../../docs/drafts/pipeline/3-formalized/cdg-rank-sensitive-exponent.md).
+
+### Finite-time return counts
+
+[FiniteTimeReturnCounts.lean](FiniteTimeReturnCounts.lean) bounds the measure
+of actual prime-torus returns. Let `N≥2`, `H=N−1`, and `Δ=Δ_r(H)`.
+For every target phase vector and every interval of length `T≥0`,
+
+`vol{returns at precision 1/(2N)} ≤ (5π/2)·4^k·max(T/2,Δ⁻¹)/N^(k−r+1)`.
+
+This holds in both chord and radian precision. At `T≥2/Δ`, the relative
+measure is at most `(5π/4)·4^k/N^(k−r+1)`. The observation threshold has
+the exact polynomial form
+
+`2/Δ_r(H)=B H^E`, `B=2r·r!·exp(C(log(r!)+2))`, `E=rC+r−1`,
+
+where `C=U^(100h(k+1))` is the collective exponent above. At proportional
+rank, its degree in the common base is linear in dimension.
+
+All close frequency differences in the smooth exponent box lie in one
+rational subspace of dimension at most `r−1`. An injective coordinate
+projection gives at most `N^(r−1)` partners for each exponent vector.
+The Fejér window inequality retains only these close pairs; the product
+of coordinate geometric sums detects the return set. There is no separate
+far-frequency error requiring an additional power of `N` in the horizon.
+
+The quantitative gain concerns shrinking precision and partial-dimensional
+density. At fixed Fourier height, elementary separation is stronger in the
+growing-dimension regime. First-return exclusion, constant-precision breadth,
+and the prime-degree trace producer remain open.
+Proof and exact declarations:
+[CDG-COUNT](../../../docs/drafts/pipeline/3-formalized/cdg-finite-time-rank-counts.md).
 
 ## Fixed-height mass calibration
 

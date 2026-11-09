@@ -447,7 +447,7 @@ private def singleScalePairConfig (γ : ℝ) : ZeroConfig where
 
 /-- **Positive integer-norm Euler product satisfying `ExtremeDeuringHeilbronn` while violating
 `LinearAbscissaLaw`.** -/
-theorem oneOff_euler_product_extremeDeuringHeilbronn_not_linear {γ : ℝ} (hγ : 0 < γ) :
+theorem oneOff_euler_product_extremeDeuringHeilbronn_not_linear (γ : ℝ) :
     ∃ q a : ℕ → ℕ, (∀ k, 2 ≤ q k) ∧ ∃ F : ℂ → ℂ, ∃ A : ℝ, 0 < A ∧ ∃ Z : ZeroConfig,
       (∀ s : ℂ, 1 < s.re →
         HasProd (fun k => (1 - cexp (-(s * Real.log (q k))))⁻¹) (F s) ∧
@@ -494,7 +494,10 @@ theorem oneOff_euler_product_extremeDeuringHeilbronn_not_linear {γ : ℝ} (hγ 
       · intro hmem
         have hmem' : s ∈ {w : ℂ | 1 / 3 < w.re ∧ w ≠ 1 ∧ F w = 0} := by rwa [hzeros]
         rcases hmem with rfl | rfl <;> exact ⟨by simp; norm_num, by simp; norm_num, hmem'.2.2⟩
-    simp only [mem_setOf_eq, hF_iff, Z, singleScalePairConfig, mem_union, mem_image]
+    change (1 / 2 < s.re ∧ s.re < 1 ∧ F s = 0) ↔
+      s ∈ ({(3 / 5 : ℂ) + (γ : ℂ) * I, (3 / 5 : ℂ) - (γ : ℂ) * I} ∪
+        reflect '' {(3 / 5 : ℂ) + (γ : ℂ) * I, (3 / 5 : ℂ) - (γ : ℂ) * I}) ∧ 1 / 2 < s.re
+    rw [hF_iff]
     constructor
     · intro hs
       refine ⟨Or.inl hs, ?_⟩
@@ -502,7 +505,6 @@ theorem oneOff_euler_product_extremeDeuringHeilbronn_not_linear {γ : ℝ} (hγ 
     · rintro ⟨hs | ⟨w, hw, rfl⟩, hre⟩
       · exact hs
       · rcases hw with rfl | rfl <;> rw [re_reflect] at hre <;> simp at hre <;> norm_num at hre
-  have _ := hγ
   exact ⟨q, a, hq, F, A, hA, Z, hEuler, hcount, hdiff, hcrit, hright,
     hEDH, hADH, hZAL, hnotL, hnot0, hnotA⟩
 
@@ -576,3 +578,5 @@ theorem no_sub_ceiling_graded_deuring_heilbronn_on_integer_norm_euler_products
     exact hf
 
 end GaloisForLFunctions.ExceptionalLayerTheory
+
+end

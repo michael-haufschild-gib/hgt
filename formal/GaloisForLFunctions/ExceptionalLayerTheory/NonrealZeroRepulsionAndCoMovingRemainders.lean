@@ -394,3 +394,5 @@ theorem tendsto_coMoving_div_top_zero_above_masking_threshold {ρ_top : ℂ} {σ
       ring
 
 end GaloisForLFunctions.ExceptionalLayerTheory
+
+end

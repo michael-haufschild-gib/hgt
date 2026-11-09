@@ -166,8 +166,20 @@ from each observation. The remaining reciprocal-square family z satisfies
 The mass bound holds uniformly for `1<σ≤2`; the moment bound holds for
 every positive k and every `σ>1`. All sums retain the infinite divisor,
 and repeated copies of β₁ remain. These arithmetic estimates supply the
-inputs for the power-sum detector; the final Dirichlet repulsion theorem
-is not yet proved.
+inputs for the power-sum detector.
+
+`TheDeuringHeilbronnRepulsionLaw.lean` completes the classical Dirichlet
+calibration. There is an absolute C>0 such that a real zero β₁>0 of a
+primitive nonprincipal quadratic Lχ repels every distinct zero ρ of ζ or
+Lχ with Re ρ≥½ and ρ≠1:
+
+    1−Re ρ ≥ log(1/[C(1−β₁)log(q(|Im ρ|+3))])/[C log(q(|Im ρ|+3))].
+
+The multiplicity-copy version removes only one copy of β₁. Choosing
+α=(1−Re ρ)+1/(2L) bounds the normalized mass by O(1+(1−Re ρ)L),
+so the detected moment yields the logarithmic repulsion law. All analytic
+inputs are proved for the complete divisor. This is classical real-zero
+repulsion; it does not prove repulsion from a nonreal exceptional layer of ζ.
 
 ## Questions and milestones
 

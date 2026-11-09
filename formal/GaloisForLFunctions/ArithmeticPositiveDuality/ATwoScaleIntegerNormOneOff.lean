@@ -38,6 +38,7 @@ set_option autoImplicit false
 open MeasureTheory Set Filter Topology Complex
 open scoped BigOperators
 open GaloisForLFunctions.HTGeometry
+open Zeta23
 open RHTower.BeurlingOverRegularIntegers
 open GaloisForLFunctions.ArithmeticPositiveDuality.DiscreteOneOff
 open GaloisForLFunctions.ArithmeticPositiveDuality.IntegerNormOneOff
@@ -69,7 +70,8 @@ def frullaniCutoffLog (A : ℝ) (z : ℂ) : ℂ :=
 private theorem norm_frullaniIntegrand_le {A : ℝ} (hA : 0 < A) (z : ℂ) {t : ℝ}
     (ht0 : 0 < t) (htA : t ≤ A) :
     ‖(cexp (-t) - cexp (-(z * t))) / t‖ ≤ ‖z - 1‖ * Real.exp ((1 + ‖z‖) * A) := by
-  rw [← intervalIntegral_seg_cexp (1 : ℂ) z ht0]
+  rw [show (cexp (-t) - cexp (-(z * t))) / t = (cexp (-((1 : ℂ) * t)) - cexp (-(z * t))) / t by
+    simp, ← intervalIntegral_seg_cexp (1 : ℂ) z ht0]
   have hpt : ∀ u ∈ uIoc (0 : ℝ) 1,
       ‖(z - 1) * cexp (-(seg 1 z u * t))‖ ≤ ‖z - 1‖ * Real.exp ((1 + ‖z‖) * A) := by
     intro u hu
@@ -92,8 +94,8 @@ private theorem aestronglyMeasurable_frullaniIntegrand {A : ℝ} (hA : 0 < A) (z
     AEStronglyMeasurable (fun t : ℝ => (cexp (-t) - cexp (-(z * t))) / t)
       (volume.restrict (uIoc 0 A)) := by
   rw [uIoc_of_le hA.le]
-  refine (ContinuousOn.div (by fun_prop) continuousOn_ofReal ?_).aestronglyMeasurable
-    measurableSet_Ioc
+  refine (ContinuousOn.div (by fun_prop) Complex.continuous_ofReal.continuousOn ?_)
+    |>.aestronglyMeasurable measurableSet_Ioc
   intro t ht
   exact Complex.ofReal_ne_zero.mpr (ne_of_gt ht.1)
 
@@ -122,7 +124,7 @@ theorem hasDerivAt_frullaniHead {A : ℝ} (hA : 0 < A) (z₀ : ℂ) :
     rw [norm_cexp_neg_mul_ofReal]
     apply Real.exp_le_exp.mpr
     have hzn : ‖z‖ ≤ ‖z₀‖ + 1 := by
-      have hd : ‖z - z₀‖ < 1 := Metric.mem_ball.mp hz
+      have hd : ‖z - z₀‖ < 1 := by simpa only [dist_eq_norm] using Metric.mem_ball.mp hz
       have htri := norm_add_le (z - z₀) z₀
       rw [sub_add_cancel] at htri
       linarith
@@ -222,11 +224,11 @@ private theorem integrableOn_cexp_div_Ioi {A : ℝ} (hA : 0 < A) {z : ℂ} (hz :
   have hdom : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-(z.re * t))) (Ioi A) := by
     have h : IntegrableOn (fun t : ℝ => Real.exp (-z.re * t)) (Ioi A) :=
       exp_neg_integrableOn_Ioi A hz
-    simpa only [neg_mul] using h.const_mul A⁻¹
+    exact (h.const_mul A⁻¹).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
   have hmeas : AEStronglyMeasurable (fun t : ℝ => cexp (-(z * t)) / t)
       (volume.restrict (Ioi A)) := by
-    refine (ContinuousOn.div (continuous_cexp_neg_mul z).continuousOn continuousOn_ofReal ?_)
-      |>.aestronglyMeasurable measurableSet_Ioi
+    refine (ContinuousOn.div (continuous_cexp_neg_mul z).continuousOn
+      Complex.continuous_ofReal.continuousOn ?_).aestronglyMeasurable measurableSet_Ioi
     intro t ht
     exact Complex.ofReal_ne_zero.mpr (ne_of_gt (hA.trans ht))
   refine hdom.mono' hmeas ?_
@@ -266,8 +268,6 @@ theorem frullaniCutoffLog_eq_neg_integral_of_re_pos {A : ℝ} (hA : 0 < A) {z : 
     rw [frullaniTailConst, ← integral_complex_ofReal]
     refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
     push_cast
-    rw [Complex.ofReal_exp]
-    simp
   rw [frullaniCutoffLog, ← hfr, hsplit, hhead_eq, htail]
   ring
 
@@ -277,10 +277,10 @@ theorem norm_frullaniCutoffLog_le_of_re_pos {A : ℝ} (hA : 0 < A) {z : ℂ} (hz
   have hdom : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-(z.re * t))) (Ioi A) := by
     have h : IntegrableOn (fun t : ℝ => Real.exp (-z.re * t)) (Ioi A) :=
       exp_neg_integrableOn_Ioi A hz
-    simpa only [neg_mul] using h.const_mul A⁻¹
+    exact (h.const_mul A⁻¹).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
   have hb : ‖∫ t in Ioi A, cexp (-(z * t)) / t‖ ≤
       ∫ t in Ioi A, A⁻¹ * Real.exp (-(z.re * t)) := by
-    refine norm_setIntegral_le_of_norm_le hdom ?_
+    refine norm_integral_le_of_norm_le hdom ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
     have ht0 : 0 < t := hA.trans ht
     rw [norm_div, norm_cexp_neg_mul_ofReal, Complex.norm_real, Real.norm_of_nonneg ht0.le,
@@ -303,13 +303,14 @@ theorem norm_frullaniCutoffLog_le_of_im_ne_zero {A : ℝ} (hA : 0 < A) {z : ℂ}
     intro x
     have h1 : HasDerivAt (fun r : ℝ => z + (r : ℂ)) 1 x :=
       (Complex.ofRealCLM.hasDerivAt (x := x)).const_add z
-    simpa [f, g] using (hasDerivAt_frullaniCutoffLog hA (hslit x)).comp x h1
+    simpa [f, g] using (hasDerivAt_frullaniCutoffLog hA (hslit x)).scomp x h1
   have hcont : ContinuousWithinAt f (Ici 0) 0 := (hf_deriv 0).continuousAt.continuousWithinAt
   have hdom : IntegrableOn (fun x : ℝ =>
       (Real.exp (-(z.re * A)) / |z.im|) * Real.exp (-(A * x))) (Ioi 0) := by
     have h : IntegrableOn (fun x : ℝ => Real.exp (-A * x)) (Ioi 0) :=
       exp_neg_integrableOn_Ioi 0 hA
-    simpa only [neg_mul] using h.const_mul (Real.exp (-(z.re * A)) / |z.im|)
+    exact (h.const_mul (Real.exp (-(z.re * A)) / |z.im|)).congr_fun
+      (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
   have hg_bound : ∀ x : ℝ, ‖g x‖ ≤
       (Real.exp (-(z.re * A)) / |z.im|) * Real.exp (-(A * x)) := by
     intro x
@@ -357,10 +358,10 @@ theorem norm_frullaniCutoffLog_le_of_im_ne_zero {A : ℝ} (hA : 0 < A) {z : ℂ}
   have hval := integral_Ioi_of_hasDerivAt_of_tendsto hcont (fun x _ => hf_deriv x) hg_int htend
   have hf0 : frullaniCutoffLog A z = -∫ x in Ioi (0 : ℝ), g x := by
     have h0 : f 0 = frullaniCutoffLog A z := by simp [f]
-    rw [← h0]
-    linear_combination -hval
+    rw [h0, zero_sub] at hval
+    exact neg_eq_iff_eq_neg.mp hval.symm
   rw [hf0, norm_neg]
-  refine (norm_setIntegral_le_of_norm_le hdom (Eventually.of_forall hg_bound)).trans (le_of_eq ?_)
+  refine (norm_integral_le_of_norm_le hdom (Eventually.of_forall hg_bound)).trans (le_of_eq ?_)
   rw [integral_const_mul, integral_Ioi_exp_neg_mul hA]
   simp only [mul_zero, neg_zero, Real.exp_zero]
   field_simp
@@ -458,7 +459,7 @@ theorem tendsto_ω_atTop : Tendsto S.ω atTop atTop := by
 theorem cos_ω_mul_A (n : ℕ) : Real.cos (S.ω n * S.A n) = 0 := by
   have hmul : S.ω n * S.A n = Real.pi / 2 + (S.M n : ℝ) * (2 * Real.pi) :=
     div_mul_cancel₀ _ (S.A_pos n).ne'
-  rw [hmul, (Real.periodic_cos.nat_mul (S.M n)) (Real.pi / 2), Real.cos_pi_div_two]
+  rw [hmul, Real.cos_add_nat_mul_two_pi, Real.cos_pi_div_two]
 
 /-- `n`-th upper remainder zero `ρ_n = θ_n + i ω_n`. -/
 def remZero (n : ℕ) : ℂ := (S.θSeq n : ℂ) + (S.ω n : ℂ) * I
@@ -474,7 +475,7 @@ theorem continuous_wave (n : ℕ) : Continuous (S.wave n) := by
   rw [continuous_iff_continuousAt]
   intro t₀
   rcases lt_trichotomy t₀ (S.A n) with hlt | rfl | hgt
-  · refine continuousAt_const.congr ?_
+  · refine (continuousAt_const : ContinuousAt (fun _ : ℝ => (0 : ℝ)) t₀).congr ?_
     filter_upwards [(isOpen_gt' (S.A n)).mem_nhds hlt] with t ht
     exact (if_neg (not_le.mpr ht)).symm
   · let g : ℝ → ℝ := fun t => -2 * Real.exp (S.θSeq n * t) * Real.cos (S.ω n * t) / t
@@ -507,9 +508,9 @@ theorem wRem_eq_sum_of_lt {N : ℕ} {t : ℝ} (ht : t < S.A N) :
     S.wRem t = ∑ n ∈ Finset.range N, S.wave n t := by
   unfold wRem
   refine tsum_eq_sum fun n hn => ?_
-  have hN : N ≤ n := Finset.mem_range.not.mp hn
-  have hAn : S.A N ≤ S.A n := by unfold A; exact_mod_cast Nat.cast_le (α := ℝ) |>.mpr hN |>
-    fun h => by linarith
+  have hN : N ≤ n := not_lt.mp (Finset.mem_range.not.mp hn)
+  have hn' : (N : ℝ) ≤ (n : ℝ) := Nat.cast_le.mpr hN
+  have hAn : S.A N ≤ S.A n := by unfold A; linarith
   exact if_neg (not_le.mpr (ht.trans_le hAn))
 
 theorem wRem_eq_zero_of_lt {t : ℝ} (ht : t < S.A 0) : S.wRem t = 0 := by
@@ -526,7 +527,7 @@ theorem continuous_wRem : Continuous S.wRem := by
     unfold A
     linarith
   have hc : Continuous (fun t : ℝ => ∑ n ∈ Finset.range N, S.wave n t) :=
-    continuous_finset_sum _ fun n _ => S.continuous_wave n
+    continuous_finsetSum _ fun n _ => S.continuous_wave n
   refine hc.continuousAt.congr ?_
   filter_upwards [(isOpen_gt' (S.A N)).mem_nhds htN] with t ht
   exact (S.wRem_eq_sum_of_lt ht).symm
@@ -570,7 +571,7 @@ theorem abs_wRem_le {t : ℝ} (ht : 0 < t) : |S.wRem t| ≤ (1 / 4) * S.P.w t :=
     have hgap : 0 < 1 - S.θ₂ := by linarith [S.hβ, S.h23]
     have hU32 : 32 / (S.c₀ * (1 - S.θ₂) ^ 2) ≤ t := (le_max_right 2 _).trans htU
     have hcpos : 0 < S.c₀ * (1 - S.θ₂) ^ 2 := mul_pos S.c₀_pos (sq_pos_of_pos hgap)
-    have hquad : 32 ≤ S.c₀ * (1 - S.θ₂) ^ 2 * t := (div_le_iff₀ hcpos).mp hU32
+    have hquad : 32 ≤ t * (S.c₀ * (1 - S.θ₂) ^ 2) := (div_le_iff₀ hcpos).mp hU32
     have hexp_sq : ((1 - S.θ₂) * t) ^ 2 / 4 ≤ Real.exp ((1 - S.θ₂) * t) := by
       have hhalf := Real.add_one_le_exp (((1 - S.θ₂) * t) / 2)
       have h0 : 0 ≤ (1 - S.θ₂) * t / 2 + 1 := by positivity
@@ -585,9 +586,10 @@ theorem abs_wRem_le {t : ℝ} (ht : 0 < t) : |S.wRem t| ≤ (1 / 4) * S.P.w t :=
     have hdom : 2 * Real.exp (S.θ₂ * t) ≤ (1 / 4) * (S.c₀ * Real.exp t / t) := by
       rw [mul_div_assoc', le_div_iff₀ ht]
       have hmul := mul_le_mul_of_nonneg_right h8t (Real.exp_pos (S.θ₂ * t)).le
-      have hex : Real.exp ((1 - S.θ₂) * t) * Real.exp (S.θ₂ * t) = Real.exp t := by
-        rw [← Real.exp_add]; congr 1; ring
-      rw [mul_assoc, hex] at hmul
+      have hex : S.c₀ * Real.exp ((1 - S.θ₂) * t) * Real.exp (S.θ₂ * t) =
+          S.c₀ * Real.exp t := by
+        rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+      rw [hex] at hmul
       linarith
     exact hdom.trans (mul_le_mul_of_nonneg_left (S.P.w_ge ht1) (by norm_num))
 
@@ -628,8 +630,10 @@ private theorem norm_tailTerm_le {K m : ℕ} {s : ℂ} (hs0 : 0 < s.re)
   let n : ℕ := m + K
   have hnK : (K : ℝ) ≤ (n : ℝ) := by exact_mod_cast Nat.le_add_left K m
   have hω : S.γ + 4 + (n : ℝ) + (2 : ℝ) ^ n * Real.exp (2 * S.A n) < S.ω n := S.ω_gt_bound n
+  have hp : 0 < (2 : ℝ) ^ n * Real.exp (2 * S.A n) := by positivity
   have hgap : (2 : ℝ) ^ n * Real.exp (2 * S.A n) < S.ω n - |s.im| := by
     linarith [S.hγ, hsim, hnK, hω]
+  have hgap_pos : 0 < S.ω n - |s.im| := hp.trans hgap
   have him1 : (2 : ℝ) ^ n * Real.exp (2 * S.A n) < |(s - S.remZero n).im| := by
     have h1 : (s - S.remZero n).im = s.im - S.ω n := by simp [remZero]
     have h2 : S.ω n - |s.im| ≤ |s.im - S.ω n| := by
@@ -657,29 +661,34 @@ private theorem norm_tailTerm_le {K m : ℕ} {s : ℂ} (hs0 : 0 < s.re)
   have hA1 : 1 ≤ S.A n := by linarith [S.three_le_A n]
   have hb1 : ‖frullaniCutoffLog (S.A n) (s - S.remZero n)‖ ≤ (1 / 2 : ℝ) ^ n := by
     have hne : (s - S.remZero n).im ≠ 0 := by
-      intro h0; rw [h0, abs_zero] at him1; linarith [ show (0 : ℝ) < 2 ^ n * Real.exp (2 * S.A n) by positivity]
+      intro h0; rw [h0, abs_zero] at him1; linarith
     refine (norm_frullaniCutoffLog_le_of_im_ne_zero (S.A_pos n) hne).trans ?_
     have he := hexp_le (s - S.remZero n) (by simp [remZero])
-    have hd : (2 : ℝ) ^ n * Real.exp (2 * S.A n) ≤ S.A n * |(s - S.remZero n).im| := by
-      nlinarith [him1, hA1]
+    have hd : (2 : ℝ) ^ n * Real.exp (2 * S.A n) ≤ S.A n * |(s - S.remZero n).im| :=
+      calc (2 : ℝ) ^ n * Real.exp (2 * S.A n)
+          = 1 * ((2 : ℝ) ^ n * Real.exp (2 * S.A n)) := (one_mul _).symm
+        _ ≤ S.A n * |(s - S.remZero n).im| := mul_le_mul hA1 him1.le hp.le (by linarith)
     calc Real.exp (-((s - S.remZero n).re * S.A n)) / (S.A n * |(s - S.remZero n).im|)
         ≤ Real.exp (2 * S.A n) / ((2 : ℝ) ^ n * Real.exp (2 * S.A n)) :=
-          div_le_div₀ (by positivity) he (by positivity) hd
+          div_le_div₀ (by positivity) he hp hd
       _ = (1 / 2 : ℝ) ^ n := by
           rw [one_div_pow]
           field_simp
   have hb2 : ‖frullaniCutoffLog (S.A n) (s - starRingEnd ℂ (S.remZero n))‖ ≤ (1 / 2 : ℝ) ^ n := by
     have hne : (s - starRingEnd ℂ (S.remZero n)).im ≠ 0 := by
-      intro h0; rw [h0, abs_zero] at him2; linarith [show (0 : ℝ) < 2 ^ n * Real.exp (2 * S.A n) by positivity]
+      intro h0; rw [h0, abs_zero] at him2; linarith
     refine (norm_frullaniCutoffLog_le_of_im_ne_zero (S.A_pos n) hne).trans ?_
     have he := hexp_le (s - starRingEnd ℂ (S.remZero n)) (by simp [remZero])
     have hd : (2 : ℝ) ^ n * Real.exp (2 * S.A n) ≤
-        S.A n * |(s - starRingEnd ℂ (S.remZero n)).im| := by
-      nlinarith [him2, hA1]
+        S.A n * |(s - starRingEnd ℂ (S.remZero n)).im| :=
+      calc (2 : ℝ) ^ n * Real.exp (2 * S.A n)
+          = 1 * ((2 : ℝ) ^ n * Real.exp (2 * S.A n)) := (one_mul _).symm
+        _ ≤ S.A n * |(s - starRingEnd ℂ (S.remZero n)).im| :=
+          mul_le_mul hA1 him2.le hp.le (by linarith)
     calc Real.exp (-((s - starRingEnd ℂ (S.remZero n)).re * S.A n)) /
           (S.A n * |(s - starRingEnd ℂ (S.remZero n)).im|)
         ≤ Real.exp (2 * S.A n) / ((2 : ℝ) ^ n * Real.exp (2 * S.A n)) :=
-          div_le_div₀ (by positivity) he (by positivity) hd
+          div_le_div₀ (by positivity) he hp hd
       _ = (1 / 2 : ℝ) ^ n := by
           rw [one_div_pow]
           field_simp
@@ -748,18 +757,12 @@ private theorem differentiableOn_patch (K : ℕ) :
   have hhead : DifferentiableOn ℂ
       (fun s : ℂ => ∏ n ∈ Finset.range K,
         frullaniCutoffFactor (S.A n) (s - S.remZero n) *
-          frullaniCutoffFactor (S.A n) (s - starRingEnd ℂ (S.remZero n))) U := by
-    intro s _
-    have hd : DifferentiableAt ℂ
-        (fun z : ℂ => ∏ n ∈ Finset.range K,
-          frullaniCutoffFactor (S.A n) (z - S.remZero n) *
-            frullaniCutoffFactor (S.A n) (z - starRingEnd ℂ (S.remZero n))) s := by
-      refine DifferentiableAt.finset_prod fun n _ => ?_
-      exact ((differentiable_frullaniCutoffFactor (S.A_pos n) _).comp s
-        (differentiableAt_id.sub_const _)).mul
-        ((differentiable_frullaniCutoffFactor (S.A_pos n) _).comp s
-          (differentiableAt_id.sub_const _))
-    exact hd.differentiableWithinAt
+          frullaniCutoffFactor (S.A n) (s - starRingEnd ℂ (S.remZero n))) U :=
+    (Differentiable.fun_finsetProd fun n _ =>
+      ((differentiable_frullaniCutoffFactor (S.A_pos n)).comp
+        (differentiable_id.sub_const _)).mul
+      ((differentiable_frullaniCutoffFactor (S.A_pos n)).comp
+        (differentiable_id.sub_const _))).differentiableOn
   have hmaj : Summable fun m : ℕ => (2 * (1 / 2 : ℝ) ^ K) * (1 / 2 : ℝ) ^ m :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left _
   have hterm_diff : ∀ m : ℕ, DifferentiableOn ℂ
@@ -874,7 +877,7 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
     dsimp only [φ]
     rw [frullaniCutoffLog_eq_neg_integral_of_re_pos (S.A_pos n) hr1,
       frullaniCutoffLog_eq_neg_integral_of_re_pos (S.A_pos n) hr2,
-      ← integral_add (integrableOn_cexp_div_Ioi (S.A_pos n) hr1)
+      ← neg_add, ← integral_add (integrableOn_cexp_div_Ioi (S.A_pos n) hr1)
         (integrableOn_cexp_div_Ioi (S.A_pos n) hr2), ← integral_neg]
     have hind : ∀ t : ℝ, G n t = (Ici (S.A n)).indicator
         (fun u : ℝ => -(cexp (-((s - S.remZero n) * u)) / u +
@@ -882,7 +885,7 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       intro t
       dsimp only [G, wave]
       by_cases ht : S.A n ≤ t
-      · rw [if_pos ht, Set.indicator_of_mem ht]
+      · rw [if_pos ht, Set.indicator_of_mem (mem_Ici.mpr ht)]
         have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ((S.A_pos n).trans_le ht).ne'
         have ecos : cexp (((S.ω n : ℂ) * t) * I) + cexp (-(((S.ω n : ℂ) * t) * I)) =
             2 * Complex.cos ((S.ω n : ℂ) * t) := by
@@ -899,11 +902,12 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
         rw [Complex.ofReal_exp, Complex.ofReal_cos, e1, e2, mul_div_assoc', ← add_div]
         congr 1
         · linear_combination -(cexp (-(s * t)) * cexp ((S.θSeq n : ℂ) * t)) * ecos
-      · rw [if_neg ht, Set.indicator_of_not_mem ht, Complex.ofReal_zero, mul_zero]
+      · rw [if_neg ht, Set.indicator_of_notMem (show t ∉ Ici (S.A n) from ht),
+          Complex.ofReal_zero, mul_zero]
     simp_rw [hind]
     rw [setIntegral_indicator measurableSet_Ici,
       inter_eq_right.mpr (Ici_subset_Ioi.mpr (S.A_pos n)),
-      Measure.restrict_Ici_eq_restrict_Ioi]
+      integral_Ici_eq_integral_Ioi]
   have hG_int : ∀ n : ℕ, Integrable (G n) (volume.restrict (Ioi 0)) := by
     intro n
     have hmeas : AEStronglyMeasurable (G n) (volume.restrict (Ioi 0)) :=
@@ -914,13 +918,13 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       have hi : IntegrableOn (fun u : ℝ => 2 * Real.exp (-(δ * u))) (Ici (S.A n)) := by
         rw [integrableOn_Ici_iff_integrableOn_Ioi]
         have h := exp_neg_integrableOn_Ioi (S.A n) hδ
-        simpa only [neg_mul] using h.const_mul 2
+        exact (h.const_mul 2).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
       exact (hi.integrable_indicator measurableSet_Ici).restrict
     refine hdom.mono' hmeas ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t _
     dsimp only [G, wave]
     by_cases ht : S.A n ≤ t
-    · rw [if_pos ht, Set.indicator_of_mem ht, norm_mul, norm_cexp_neg_mul_ofReal,
+    · rw [if_pos ht, Set.indicator_of_mem (mem_Ici.mpr ht), norm_mul, norm_cexp_neg_mul_ofReal,
         Complex.norm_real, Real.norm_eq_abs, abs_div]
       have ht1 : 1 ≤ t := (by linarith [S.three_le_A n] : (1 : ℝ) ≤ S.A n).trans ht
       have ht0 : 0 < t := by linarith
@@ -941,7 +945,8 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
             mul_le_mul_of_nonneg_left hnum (Real.exp_pos _).le
         _ = 2 * Real.exp (-(δ * t)) := by
             rw [mul_left_comm, ← Real.exp_add]; congr 2; dsimp only [δ]; ring
-    · rw [if_neg ht, Set.indicator_of_not_mem ht, Complex.ofReal_zero, mul_zero, norm_zero]
+    · rw [if_neg ht, Set.indicator_of_notMem (show t ∉ Ici (S.A n) from ht),
+        Complex.ofReal_zero, mul_zero, norm_zero]
   have hG_sum : Summable fun n : ℕ => ∫ t in Ioi (0 : ℝ), ‖G n t‖ := by
     have hgeom : Summable fun n : ℕ =>
         (2 * Real.exp (-(δ * (S.U₀ + 1))) / δ) * (Real.exp (-δ)) ^ n := by
@@ -954,7 +959,7 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
         (2 * Real.exp (-(δ * (S.U₀ + 1))) / δ) * (Real.exp (-δ)) ^ n := by
       rw [setIntegral_indicator measurableSet_Ici,
         inter_eq_right.mpr (Ici_subset_Ioi.mpr (S.A_pos n)),
-        Measure.restrict_Ici_eq_restrict_Ioi, integral_const_mul, integral_Ioi_exp_neg_mul hδ,
+        integral_Ici_eq_integral_Ioi, integral_const_mul, integral_Ioi_exp_neg_mul hδ,
         ← Real.exp_nat_mul]
       have hex : -(δ * S.A n) = -(δ * (S.U₀ + 1)) + (n : ℝ) * (-δ) := by unfold A; ring
       rw [hex, Real.exp_add]
@@ -965,12 +970,12 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       have hi : IntegrableOn (fun u : ℝ => 2 * Real.exp (-(δ * u))) (Ici (S.A n)) := by
         rw [integrableOn_Ici_iff_integrableOn_Ioi]
         have h := exp_neg_integrableOn_Ioi (S.A n) hδ
-        simpa only [neg_mul] using h.const_mul 2
+        exact (h.const_mul 2).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
       exact (hi.integrable_indicator measurableSet_Ici).restrict
     refine setIntegral_mono_on (hG_int n).norm hdom measurableSet_Ioi fun t _ => ?_
     dsimp only [G, wave]
     by_cases ht : S.A n ≤ t
-    · rw [if_pos ht, Set.indicator_of_mem ht, norm_mul, norm_cexp_neg_mul_ofReal,
+    · rw [if_pos ht, Set.indicator_of_mem (mem_Ici.mpr ht), norm_mul, norm_cexp_neg_mul_ofReal,
         Complex.norm_real, Real.norm_eq_abs, abs_div]
       have ht1 : 1 ≤ t := (by linarith [S.three_le_A n] : (1 : ℝ) ≤ S.A n).trans ht
       have ht0 : 0 < t := by linarith
@@ -991,7 +996,8 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
             mul_le_mul_of_nonneg_left hnum (Real.exp_pos _).le
         _ = 2 * Real.exp (-(δ * t)) := by
             rw [mul_left_comm, ← Real.exp_add]; congr 2; dsimp only [δ]; ring
-    · rw [if_neg ht, Set.indicator_of_not_mem ht, Complex.ofReal_zero, mul_zero, norm_zero]
+    · rw [if_neg ht, Set.indicator_of_notMem (show t ∉ Ici (S.A n) from ht),
+        Complex.ofReal_zero, mul_zero, norm_zero]
   have hswap := integral_tsum_of_summable_integral_norm hG_int hG_sum
   have hφ_sum : Summable φ := by
     refine Summable.of_norm_bounded hG_sum fun n => ?_
@@ -1002,22 +1008,17 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
     dsimp only [G, wRem]
     rw [Complex.ofReal_tsum, ← tsum_mul_left]
   have hrem_patch0 : S.remFactor s = S.patch 0 s := by
-    unfold remFactor
-    have hs0 : 0 < s.re := by linarith
-    have hsim : |s.im| < (0 : ℝ) + 2 ∨ (0 : ℝ) + 2 ≤ |s.im| := lt_or_ge _ _
-    -- Direct algebraic equality `patch 0 s = patch K s` since `Re (s - ρ_n) > 0` for all `n`.
+    change S.patch K s = S.patch 0 s
     unfold patch
     rw [Finset.range_zero, Finset.prod_empty, one_mul,
       Finset.prod_congr rfl fun n hn => hK n (Finset.mem_range.mp hn), ← Complex.exp_sum,
       ← Complex.exp_add]
     congr 1
-    have hsplit := (sum_add_tsum_nat_add K hφ_sum).symm
-    simpa only [φ, zero_add] using hsplit.symm
+    exact (hφ_sum.sum_add_tsum_nat_add K).symm
   rw [hrem_patch0]
   unfold patch
   rw [Finset.range_zero, Finset.prod_empty, one_mul]
   congr 1
-  simp only [zero_add]
   calc (∑' m : ℕ, φ m) = ∑' m : ℕ, ∫ t in Ioi (0 : ℝ), G m t := tsum_congr fun m => (hG_eq m).symm
     _ = ∫ t in Ioi (0 : ℝ), ∑' m : ℕ, G m t := hswap.symm
     _ = ∫ t in Ioi (0 : ℝ), cexp (-(s * t)) * (S.wRem t : ℂ) := by simp_rw [hpt]
@@ -1047,7 +1048,7 @@ theorem integrableOn_w_Ioc (b : ℝ) : IntegrableOn S.w (Ioc 0 b) := by
   have h := (S.integrableOn_exp_mul_w (σ := 2) (by norm_num)).mono_set
     (Ioc_subset_Ioi_self : Ioc (0 : ℝ) b ⊆ Ioi 0)
   have hIcc : IntegrableOn (fun u => Real.exp (-(2 * u)) * S.w u) (Icc 0 b) :=
-    integrableOn_Icc_iff_integrableOn_Ioc.mpr h
+    Iff.mpr integrableOn_Icc_iff_integrableOn_Ioc h
   have hc : ContinuousOn (fun u : ℝ => Real.exp (2 * u)) (Icc 0 b) := by fun_prop
   have h2 := (hIcc.mul_continuousOn hc isCompact_Icc).mono_set Ioc_subset_Icc_self
   refine h2.congr_fun (fun u _ => ?_) measurableSet_Ioc
@@ -1055,7 +1056,7 @@ theorem integrableOn_w_Ioc (b : ℝ) : IntegrableOn S.w (Ioc 0 b) := by
   rw [mul_right_comm, ← Real.exp_add]; simp
 
 theorem integrableOn_wt_Icc (b : ℝ) : IntegrableOn S.wt (Icc 0 b) := by
-  refine integrableOn_Icc_iff_integrableOn_Ioc.mpr ?_
+  refine Iff.mpr integrableOn_Icc_iff_integrableOn_Ioc ?_
   refine (S.integrableOn_w_Ioc b).congr_fun (fun u hu => ?_) measurableSet_Ioc
   simp [wt, Set.indicator_of_mem (show u ∈ Ioi (0 : ℝ) from hu.1)]
 
@@ -1150,8 +1151,7 @@ theorem correctedDensity_pos {u : ℝ} (hu : S.u₁ ≤ u) : 0 < S.w u - S.w (u 
     have h2 := S.P.w_le (t := u / 2) (by linarith)
     exact (S.w_bounds (by linarith)).2.trans (mul_le_mul_of_nonneg_left h2 (by norm_num))
   have key : (5 / 4) * (5 * y / (u / 2)) / 4 < (3 / 4) * (S.c₀ * (y * y) / u) := by
-    rw [mul_div_assoc', mul_div_assoc', div_div, div_div,
-      div_lt_div_iff₀ (by positivity) hu0]
+    rw [mul_div_assoc', mul_div_assoc', div_div, div_lt_div_iff₀ (by positivity) hu0]
     nlinarith [mul_le_mul_of_nonneg_left hcy (mul_pos hy0 hu0).le, mul_pos hy0 hu0]
   linarith
 
@@ -1410,7 +1410,11 @@ theorem differentiableOn_logZeta : DifferentiableOn ℂ S.logZeta {z : ℂ | 1 <
     have hL := (differentiableOn_boundedLaplace_of_le hEm (by linarith : (0 : ℝ) < C + 1)
       hEb).differentiableAt ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds
         (show (0 : ℝ) < (z₀ - (b : ℂ)).re by simp [b]; linarith))
-    exact differentiableAt_id.mul (hL.comp z₀ (differentiableAt_id.sub_const _))
+    have hsub : DifferentiableAt ℂ (fun z : ℂ => z - (b : ℂ)) z₀ :=
+      differentiableAt_id.sub_const _
+    have hcomp := DifferentiableAt.comp (𝕜 := ℂ) (g := boundedLaplace E)
+      (f := fun z : ℂ => z - (b : ℂ)) z₀ hL hsub
+    exact differentiableAt_id.mul hcomp
   exact (hgd.congr_of_eventuallyEq heq).differentiableWithinAt
 
 private theorem integral_cexp_W_half (z : ℂ) :
@@ -1453,8 +1457,12 @@ private theorem mul_integral_cexp_catomCount {z : ℂ} (hz : 1 < z.re) :
   have hsplit : ∫ x in Ioi (0 : ℝ), cexp (-(z * x)) * (atomCount S.catom x : ℂ) =
       boundedLaplace S.cerror z + (∫ x in Ioi (0 : ℝ), cexp (-(z * x)) * (S.W x : ℂ)) -
         (∫ x in Ioi (0 : ℝ), cexp (-(z * x)) * (S.W (x / 2) : ℂ)) / 2 := by
-    have hAB := hEint.add hWint
-    have hC := hW2int.div_const 2
+    have hAB : IntegrableOn (fun x : ℝ =>
+        cexp (-(z * x)) * (S.cerror x : ℂ) + cexp (-(z * x)) * (S.W x : ℂ)) (Ioi 0) :=
+      hEint.add hWint
+    have hC : IntegrableOn (fun x : ℝ =>
+        cexp (-(z * x)) * (S.W (x / 2) : ℂ) / 2) (Ioi 0) :=
+      hW2int.div_const 2
     have hpt : (fun x : ℝ => cexp (-(z * x)) * (atomCount S.catom x : ℂ)) = fun x : ℝ =>
         (cexp (-(z * x)) * (S.cerror x : ℂ) + cexp (-(z * x)) * (S.W x : ℂ)) -
           cexp (-(z * x)) * (S.W (x / 2) : ℂ) / 2 := by
@@ -1475,7 +1483,7 @@ private theorem cexp_logZeta_eq {s : ℂ} (hs : 1 < s.re) :
   have hi_P := S.P.integrableOn_cexp_mul_w hs
   have hi_rem : IntegrableOn (fun u : ℝ => cexp (-(s * u)) * (S.wRem u : ℂ)) (Ioi 0) := by
     refine (hi_tot.sub hi_P).congr_fun (fun u _ => ?_) measurableSet_Ioi
-    simp only [w]; push_cast; ring
+    simp only [w, Pi.sub_apply]; push_cast; ring
   have hadd : S.logZeta s = S.P.logZeta s +
       ∫ u in Ioi (0 : ℝ), cexp (-(s * u)) * (S.wRem u : ℂ) := by
     unfold logZeta Params.logZeta
@@ -1673,12 +1681,11 @@ theorem crContinuation_eq_zero_iff {s : ℂ} (hs : 1 / 3 < s.re) (hs1 : s ≠ 1)
   have hden := overRegularZeta_denom_ne_zero (μ := S.P.μ) S.P.hν0.le (by linarith [S.P.hlow]) hs1
   have h4 : s + (4 * S.P.μ - 1) ≠ 0 := by
     intro h; have := congrArg Complex.re h; simp at this; linarith [S.P.hμ1]
-  have hβ_eq : 1 - S.P.μ = S.β := by dsimp [P]; ring
+  have hβ_eq : (1 : ℂ) - S.P.μ = S.β := by dsimp [P]; push_cast; ring
   have hγ_eq : S.P.γ = S.γ := rfl
   have hfac : (s - (1 - S.P.μ)) ^ 2 + (S.P.γ : ℂ) ^ 2 =
       (s - ((S.β : ℂ) + (S.γ : ℂ) * I)) * (s - ((S.β : ℂ) - (S.γ : ℂ) * I)) := by
     rw [hβ_eq, hγ_eq]
-    push_cast
     linear_combination ((S.γ : ℂ) ^ 2) * Complex.I_sq
   rw [crContinuation, mul_eq_zero, or_iff_left (Complex.exp_ne_zero _), mul_eq_zero,
     S.remFactor_eq_zero_iff (by linarith), overRegularZeta, div_eq_zero_iff, or_iff_left hden,
@@ -1716,8 +1723,10 @@ theorem mem_rightZeroSet_iff (s : ℂ) :
       rcases h with rfl | rfl | ⟨n, rfl | rfl⟩
       · simp; exact ⟨by linarith [S.h12, S.hθ₂, S.hβ], by linarith [S.h23]⟩
       · simp; exact ⟨by linarith [S.h12, S.hθ₂, S.hβ], by linarith [S.h23]⟩
-      · simp [remZero]; exact ⟨S.half_lt_θSeq n, (S.θSeq_le_θ₂ n).trans_lt (S.hβ.trans (S.h23.trans (by norm_num)))⟩
-      · simp [remZero]; exact ⟨S.half_lt_θSeq n, (S.θSeq_le_θ₂ n).trans_lt (S.hβ.trans (S.h23.trans (by norm_num)))⟩
+      · simp only [remZero_re]
+        exact ⟨S.half_lt_θSeq n, (S.θSeq_le_θ₂ n).trans_lt (S.hβ.trans (S.h23.trans (by norm_num)))⟩
+      · simp only [Complex.conj_re, remZero_re]
+        exact ⟨S.half_lt_θSeq n, (S.θSeq_le_θ₂ n).trans_lt (S.hβ.trans (S.h23.trans (by norm_num)))⟩
     have hs1 : s ≠ 1 := by intro he; rw [he] at hre; norm_num at hre
     exact ⟨hre.1, hre.2, (S.crContinuation_eq_zero_iff (by linarith [hre.1]) hs1).mpr h⟩
 
@@ -1821,7 +1830,8 @@ theorem zeroConfig_asymptoticAbscissa : asymptoticAbscissa S.zeroConfig = S.θ :
     let m : ℕ := ⌊max B 0⌋₊ + 1
     have hm_mem : S.remZero m ∈ rightOf S.zeroConfig (σ - 1 / 2) := by
       refine ⟨Or.inl ((S.mem_rightZeroSet_iff _).mpr (Or.inr (Or.inr ⟨m, Or.inl rfl⟩))), ?_⟩
-      simp only [remZero_re, θSeq, Nat.add_eq_zero_iff, one_ne_zero, and_false, ↓reduceIte]
+      have hm0 : m ≠ 0 := Nat.succ_ne_zero _
+      simp only [remZero_re, θSeq, hm0, ↓reduceIte]
       linarith
     have him_le : S.ω m ≤ B := by
       simpa [remZero_im] using hB ⟨S.remZero m, hm_mem, rfl⟩
@@ -1834,7 +1844,7 @@ theorem zeroConfig_asymptoticAbscissa : asymptoticAbscissa S.zeroConfig = S.θ :
 theorem zeroConfig_right_carrier :
     {s ∈ S.zeroConfig.carrier | 1 / 2 < s.re} = S.rightZeroSet := by
   ext s
-  simp only [zeroConfig, mem_setOf_eq, mem_union, mem_image]
+  change s ∈ S.rightZeroSet ∪ (reflect '' S.rightZeroSet) ∧ 1 / 2 < s.re ↔ s ∈ S.rightZeroSet
   constructor
   · rintro ⟨hs | ⟨w, hw, rfl⟩, hre⟩
     · exact hs
@@ -1874,7 +1884,7 @@ theorem zeroConfig_remainder_le_θ₂ :
     (∀ z ∈ S.zeroConfig.carrier, S.γ < |z.im| → z.re ≤ S.θ₂) ∧
       ∃ z ∈ S.zeroConfig.carrier, S.γ < |z.im| ∧ z.re = S.θ₂ := by
   refine ⟨?_, S.remZero 0, Or.inl ((S.mem_rightZeroSet_iff _).mpr
-    (Or.inr (Or.inr ⟨0, Or.inl rfl⟩))), ?_, by simp [remZero, θSeq]⟩
+    (Or.inr (Or.inr ⟨0, Or.inl rfl⟩))), ?_, by simp only [remZero_re, θSeq, ↓reduceIte]⟩
   · rintro z (hz | ⟨w, hw, rfl⟩) him
     · rcases (S.mem_rightZeroSet_iff z).mp hz with rfl | rfl | ⟨n, rfl | rfl⟩
       · simp [abs_of_pos S.hγ] at him
@@ -1966,7 +1976,5 @@ theorem exists_two_scale_integer_norm_euler_product
   exact hasSum_genCoeff hq hmono hsum hs
 
 end
-
-#print axioms GaloisForLFunctions.ArithmeticPositiveDuality.TwoScaleIntegerNormOneOff.exists_two_scale_integer_norm_euler_product
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.TwoScaleIntegerNormOneOff

@@ -101,7 +101,7 @@ theorem global_frequency_algebraic_multiple (p : Nat.Primes) (a : ℝ)
   have hp := primeLog_algebraic_relation c hc hrel pP
   have he : a = (α p : ℝ) - (β p : ℝ) := by
     have hpeq : (α p : ℝ) - (β p : ℝ) - a = 0 := by
-      simpa only [c, if_pos rfl, pP] using hp
+      simpa only [c, pP, if_true] using hp
     linarith only [hpeq]
   refine ⟨(α p : ℤ) - (β p : ℤ), ?_⟩
   simpa only [Int.cast_sub, Int.cast_natCast] using he
@@ -115,13 +115,14 @@ theorem global_prime_frequency_dilation_is_int (a : ℝ)
   have halg (p : Nat.Primes) :
       IsAlgebraic ℚ (Complex.exp ((a : ℂ) * (Real.log (p : ℕ) : ℂ))) := by
     obtain ⟨α, β, hαβ⟩ := h p
-    have he : Complex.exp ((a : ℂ) * (Real.log (p : ℕ) : ℂ)) =
-        (((primeProduct α : ℚ) / (primeProduct β : ℚ)) : ℂ) := by
+    let q : ℚ := (primeProduct α : ℚ) / (primeProduct β : ℚ)
+    have he : Complex.exp ((a : ℂ) * (Real.log (p : ℕ) : ℂ)) = (q : ℂ) := by
       rw [← Complex.ofReal_mul, ← Complex.ofReal_exp, hαβ,
         Real.exp_sub, exp_globalFrequency, exp_globalFrequency]
-      norm_cast
+      simp only [q, Complex.ofReal_div, Complex.ofReal_natCast,
+        Rat.cast_div, Rat.cast_natCast]
     rw [he]
-    exact isAlgebraic_rat ℚ _
+    exact isAlgebraic_rat ℚ q
   have ha : IsAlgebraic ℤ a := algebraic_of_three_prime_exp
     Nat.prime_two Nat.prime_three Nat.prime_five
     (by norm_num) (by norm_num) (by norm_num)
@@ -136,7 +137,7 @@ theorem global_prime_frequency_dilation_is_int (a : ℝ)
 theorem globalOrbitPoint_injective : Function.Injective globalOrbitPoint := by
   intro s t h
   apply sub_eq_zero.mp
-  apply eq_zero_of_exact_return Nat.prime_two Nat.prime_three (by norm_num)
+  apply InfiniteRankWeilTheory.eq_zero_of_exact_return Nat.prime_two Nat.prime_three (by norm_num)
   · rw [phase_sub, show InfiniteRankWeilTheory.phase 2 s =
       InfiniteRankWeilTheory.phase 2 t from congrFun h ⟨2, Nat.prime_two⟩]
     exact div_self (Complex.exp_ne_zero _)

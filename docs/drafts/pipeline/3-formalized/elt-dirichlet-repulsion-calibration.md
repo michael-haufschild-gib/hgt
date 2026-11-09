@@ -1,20 +1,20 @@
 # Dirichlet exceptional-zero repulsion calibration
 
 - **ID:** ELT-DH
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / FORMALIZATION TARGET
-- **Target:** A complete Deuring–Heilbronn law for the actual infinite divisor of `ζ(s)L(s,χ)`, with χ primitive, real and nonprincipal. A real zero β₁ near 1 forces every other zero ρ near 1 to satisfy
+- **Stage:** 3-formalized
+- **Type:** THEOREM
+- **Statement:** A complete Deuring–Heilbronn law for the actual infinite divisor of `ζ(s)L(s,χ)`, with χ primitive, quadratic and nonprincipal. A real L-zero β₁>0 forces every distinct zero ρ of ζ or Lχ with Re ρ≥½ and ρ≠1 to satisfy
   `1−Re ρ ≥ log(1/[C(1−β₁)log(q(|Im ρ|+3))])/[C log(q(|Im ρ|+3))]`
   for an absolute positive constant C.
 
-## Mechanism to validate
+## Proof mechanism
 
 Positive coefficients `(1+χ(n))(1+cos(t log n))Λ(n)` control all even
 reciprocal moments of the complete divisor at `σ` and `σ+it`.
 Removing β₁ from both copies pairs its moments with the pole at 1;
 their difference is bounded by `4k(1−β₁)/(σ−1)^(2k+1)`.
 
-An infinite power-sum lemma must detect a remaining zero with order
+An infinite power-sum lemma detects a remaining zero with order
 `k≤C M`, where M is the total normalized reciprocal-square mass.
 Put `H=1+log q+log(|t|+3)`. For a target at `1−δ+it`, with
 `0≤δ≤½`, choose `α=δ+1/(2H)` and `σ=1+α≤2`.
@@ -24,15 +24,18 @@ The detected moment and pole cancellation give
 `1≤C(1−β₁)H exp(CδH)`. Finally
 `H≤(1+1/log 3)log(q(|t|+3))`, giving the stated logarithmic law
 after changing the absolute constant.
-All nontrivial and trivial zeros, multiplicities, and Gamma terms must
-be retained. No finite truncation may replace the divisor.
+All nontrivial and trivial zeros, multiplicities, and Gamma terms are
+retained. No finite truncation replaces the divisor.
 
 ## Status and role
 
 This is the classical calibration, not a claim of new repulsion for ζ.
-The final logarithmic repulsion statement is not proved.
-The infinite power-sum lemma, all-order Euler inequality, and completed
-divisor identities are proved in Lean; no Dirichlet repulsion theorem is claimed.
+`exists_deuring_heilbronn_repulsion` in namespace
+`GaloisForLFunctions.ExceptionalLayerTheory` is the final logarithmic
+statement. The constant is uniform in conductor,
+character, height and both zeros. The proof derives β₁<1 and Re ρ<1.
+`exists_dirichlet_exceptional_zero_repulsion` gives the stronger
+multiplicity-copy statement: only one exceptional copy is exempted.
 
 Euler input: `ExceptionalLayerTheory/ThePositiveDirichletMomentKernel.lean`,
 `exceptionalEuler_odd_jet_nonneg`. It proves
@@ -99,4 +102,8 @@ exceptional copy. Its `pairedExceptionalResolvent_mass_le` and
 `pairedExceptionalResolvent_moment_le` are the two arithmetic inputs to
 the power-sum detector. Its direct source-file check and transitive axiom
 audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
-The final logarithmic repulsion law remains pending.
+The final module `TheDeuringHeilbronnRepulsionLaw.lean` combines these
+inputs with the detector and the normalization α=δ+1/(2H).
+Its direct source check passes without warnings. Both terminal theorems'
+transitive axiom audits contain only `propext`, `Classical.choice`, and
+`Quot.sound`. The module is imported by `ExceptionalLayerTheory.lean`.

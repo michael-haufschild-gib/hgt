@@ -96,6 +96,7 @@
 | C66 | The Stepanov bound has the Vinogradov–Korobov saving | proved (Lean), unconditional | `exists_norm_lagStructure_le_vk`: `‖S(u)‖ ≤ C e^{u/2 − u^{3/5}/(10⁸ log u)}` for `u ≥ e`; `exists_abs_primeWindow_sub_archPoleWindow_le_vk`: `|P(n) − A(n)| ≤ C √n exp(−(log n)^{3/5}/(10⁸ log log n))`. From the corpus region `β ≤ 1 − (log t)^{−2/3}(log log t)^{−5/3}/10⁸` above `t₀` (`exists_re_le_vk`); the budget `6L + u L^{−2/3}(log L)^{−5/3}/10⁸ ≥ u^{3/5}/(10⁸ log u)` (`vk_budget`: for `L ≥ u^{3/5}/log u` the decay of `B̂` pays, below it the width); lower zeros `β ≤ 1 − δ` and `u^{3/5} ≤ δu + δ^{−3/2}`. The exponent `3/5` is that of the zero-free region; the classical width `(log log t)^{−1/3}` would give `(log u)^{−1/5}` |
 | C67 | The other side at every Bohr-dense set | proved (Lean) | `onLine_of_bddAbove_of_isBohrDenseAtTop`: an upper bound `2 Re S ≤ K` on a Bohr-dense set puts every zero of a tempered configuration on the line if the top is attained, real zeros allowed (no masking from above); `onLine_of_bddAbove_long_intervals_of_max` for long runs. `F_top ≤ 0` on `ℝ`; its mean is the coefficient `e_b` at the real exponent (`bohrCoefficient_topTraceC`), `0` or positive (`evenCoeff_spline_pos_of_real`); `e_b − F_top ≥ 0` has mean `0`, so `F_top = e_b = 0`, against `e_{ρ₀−½} ≠ 0`. With C65: Bohr density decides attained tops from both sides, as the sampling weights do (C37, C39) |
 | C68 | Sampling weights are Bohr-dense | proved (Lean) | `isBohrDenseAtTop_of_samplingWeight`: the log-support `{log n : w(n) ≠ 0}` of every sampling weight is Bohr-dense at `+∞`, so the attained-top sampling theorems (primes, residue classes, density-one sets of primes, two Frobenii) are instances of C65/C67. If the support avoided a Bohr neighbourhood beyond `U`, the nonnegative polynomial `Q = Π_{λ∈S} cos(λ(t − v)/2)^{2K}` would have `w`-mean `≤ (1 − η²/4)^K`, while the twisted means kill every nonzero frequency (`tendsto_phaseForm_mean`) and leave its constant term `≥ (2K + 1)^{−|S|}` (`exists_phaseForm_prod`, nonnegative coefficients) |
+| C69 | The width law at every Bohr-dense set | proved (Lean) | `exists_re_gt_of_bddBelow_exp_of_isBohrDenseAtTop`: a lower bound `−K e^{su}` on a Bohr-dense set excludes attained tops right of `½ + s` (`topTrace_nonneg_of_isBohrDenseAtTop_exp`, `false_of_topTrace_nonneg`). For `ζ`, modulo ZAL: zero width `≤ s` ⇔ `2 Re S ≥ −K e^{su}` on a Bohr-dense set (`zetaZeroWidth_le_iff_bddBelow_exp_isBohrDense_of_zerosApproachLine`) ⇔ `P(n) ≤ A(n) + K n^s` on runs of integers (`..._rpow_integer_runs_of_zerosApproachLine`); C60 at every Bohr-dense sample. Without ZAL the bound is the abscissa law above `s`: `Θ − ½ ≤ max(s, Θ∞ − ½)` (`re_le_of_finite_of_bddBelow_exp_isBohrDense`) |
 
 ## Big picture
 
@@ -225,7 +226,9 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    the tensor powers at the `pᵃqᵇ`) reduce to the same input: levels pairing a phase-`0` and a phase-`π`
    resonant height, weights matched by multiplicities and by moving the second height inside its
    resonance interval (estimate, not formalized).
-5. B136 (review 0911 §2.5: are power-saving gaps necessary for a decisive degree set?). Runs of
+5. B136 (review 0911 §2.5: are power-saving gaps necessary for a decisive degree set?). No by a
+   compactness diagonal: finite prime blocks behind growing gaps detect every impure configuration
+   (`exists_decisive_prime_sample_without_power_saving_gaps`, peer module). For natural samples: runs of
    integers `[x, e^L x]`, `L → ∞`, decide every attained top (C65) and defeat every tower whose levels
    are almost periodic with a dominant level per window: such a level must be `≥ −o(1)` on runs of
    unbounded length, and window means of `|A_k|` converge uniformly to its Bohr mean `> 0`
@@ -236,7 +239,7 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    so the mass must be spread over `≳ |e_{z₀}|e^{x₀U}/K` zeros of size `≍ K`, which the decay of `B̂`
    puts below height `e^{aU/8}`, at a cost `≳ e^{(x₀ − a/4)U}` in `Σ m/(1 + |γ|²)`: temperedness fails
    once `x₀ > a/4`. The missing step is the `L²` lower bound on `R` when heights cluster within `1/|R|`.
-   A yes answers B136 in the negative.
+   A yes would make the runs a natural decisive sample without power-saving gaps.
 
 ## Log
-- 2026-11-08 — created; C1–C68 formalized in `SurfaceOfSpecZ/` (sixty-eight modules)
+- 2026-11-08 — created; C1–C69 formalized in `SurfaceOfSpecZ/` (sixty-nine modules)

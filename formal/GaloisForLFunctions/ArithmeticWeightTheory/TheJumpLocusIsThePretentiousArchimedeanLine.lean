@@ -196,13 +196,14 @@ theorem eventually_mul_norm_gaugeFibre_le (x : GaugeTorus) (τ : ℝ) :
 theorem exists_pole_of_pretentious {x : GaugeTorus} {τ : ℝ}
     (hD : Summable fun p : Nat.Primes => pretTerm x τ p / (p : ℕ)) :
     ∃ c > 0, ∀ᶠ δ in 𝓝[>] (0 : ℝ), c ≤ δ * ‖gaugeFibre x (polePoint δ τ)‖ := by
-  set H := 2 * ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-2 : ℝ)
-  set S := ∑' p : Nat.Primes, pretTerm x τ p / (p : ℕ)
+  obtain ⟨H, hH⟩ : ∃ H : ℝ, H = 2 * ∑' p : Nat.Primes, ((p : ℕ) : ℝ) ^ (-2 : ℝ) := ⟨_, rfl⟩
+  obtain ⟨S, hS⟩ : ∃ S : ℝ, S = ∑' p : Nat.Primes, pretTerm x τ p / (p : ℕ) := ⟨_, rfl⟩
   refine ⟨Real.exp (-(S + 2 * H)) / 2, by positivity, ?_⟩
   filter_upwards [tendsto_mul_norm_zeta_polePoint.eventually (lt_mem_nhds (by norm_num : (1 / 2 : ℝ) < 1)),
     self_mem_nhdsWithin] with δ hζ hδ
   have hδ0 : (0 : ℝ) < δ := hδ
   have hDS : pretSum x τ δ ≤ S := by
+    rw [hS]
     refine Summable.tsum_le_tsum (fun p => ?_) (summable_pretSum_terms x τ hδ0) hD
     have hp1 : (1 : ℝ) ≤ ((p : ℕ) : ℝ) := by exact_mod_cast p.2.one_lt.le
     have hpow : ((p : ℕ) : ℝ) ^ (-(1 + δ)) ≤ ((p : ℕ) : ℝ)⁻¹ := by
@@ -216,13 +217,15 @@ theorem exists_pole_of_pretentious {x : GaugeTorus} {τ : ℝ}
     have h1 := (neg_re_le_norm' _).trans
       (norm_hullRem_le x (s := polePoint δ τ) (by simp; linarith))
     have h2 := (Complex.re_le_norm _).trans (norm_hullRem_le 0 (s := polePoint δ 0) (by simp; linarith))
+    rw [hH]
     linarith
   have hmain : 1 / 2 * Real.exp (-(S + 2 * H)) ≤ δ * ‖riemannZeta (polePoint δ 0)‖ *
       Real.exp (-pretSum x τ δ + ((hullRem (polePoint δ τ) (twist x)).re -
         (hullRem (polePoint δ 0) (twist 0)).re)) :=
     mul_le_mul hζ.le (Real.exp_le_exp.mpr hE) (by positivity) (by positivity)
   rw [norm_gaugeFibre_polePoint_eq x τ hδ0, ← mul_assoc]
-  linarith
+  calc Real.exp (-(S + 2 * H)) / 2 = 1 / 2 * Real.exp (-(S + 2 * H)) := by ring
+    _ ≤ _ := hmain
 
 /-- **A non-pretentious fibre has no pole.** -/
 theorem tendsto_mul_norm_gaugeFibre_of_not_pretentious {x : GaugeTorus} {τ : ℝ}

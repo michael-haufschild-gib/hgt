@@ -10,7 +10,9 @@ for every tempered configuration without real zeros. Its Dirichlet series conver
 at every positive real argument: counting growth alone does not decide sampling power.
 -/
 
+set_option autoImplicit false
 open Set Finset Filter Topology Complex
+open scoped Classical
 noncomputable section
 namespace GaloisForLFunctions.SurfaceOfSpecZ
 open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThreshold Zeta23
@@ -76,7 +78,7 @@ private theorem block_spec (k : ℕ) :
     (∀ p ∈ block k, p.Prime) ∧
       ∀ q ∈ family k, ∃ p ∈ block k,
         2 * (traceSum (boxSpline 1 3) ((k + 1) * Real.log p) q).re < -(k : ℝ) := by
-  simpa only [Nat.cast_add, Nat.cast_one] using
+  simpa only [block, Nat.cast_add, Nat.cast_one] using
     Classical.choose_spec (exists_finite_power_block k (k + 1) (by omega) k)
 
 private abbrev Occurrence := Σ k : ℕ, {p : ℕ // p ∈ block k}
@@ -108,7 +110,7 @@ theorem onLine_of_bddBelow (Z : ZeroConfig) (hZ : TemperedConfig Z)
   rw [traceSum_encoding cubic_contDiff cubic_compact _ Z hZ hnoreal] at hneg
   have hkT : 2 * T < (k : ℝ) := (le_max_right (K : ℝ) (2 * T)).trans_lt hk
   simp only [Nat.cast_add, Nat.cast_one, two_mul, Complex.add_re] at hbound hneg
-  linarith
+  linarith only [hbound, hneg, hkT]
 
 private theorem summable_occurrence {s : ℝ} (hs : 0 < s) :
     Summable (fun a : Occurrence => (degree a : ℝ) ^ (-s)) := by
@@ -156,7 +158,11 @@ private theorem summable_occurrence {s : ℝ} (hs : 0 < s) :
   apply (summable_sigma_of_nonneg
     (fun a : Occurrence => Real.rpow_nonneg (Nat.cast_nonneg (degree a)) (-s))).mpr
   refine ⟨fun k => (hasSum_fintype _).summable, ?_⟩
-  simpa only [degree, tsum_fintype, Finset.sum_coe_sort] using hrow
+  apply hrow.congr
+  intro k
+  rw [tsum_fintype]
+  exact (Finset.sum_coe_sort (block k)
+    (fun p : ℕ => ((p ^ (k + 1) : ℕ) : ℝ) ^ (-s))).symm
 
 /-- Every positive Dirichlet exponent is summable on this universal decisive sample. -/
 theorem summable_sample {s : ℝ} (hs : 0 < s) :
@@ -170,7 +176,7 @@ theorem summable_sample {s : ℝ} (hs : 0 < s) :
     apply Subtype.ext
     rw [← hselect a, ← hselect b, hab]
   exact ((summable_occurrence hs).comp_injective hinj).congr
-    (fun d => by rw [hselect d])
+    (fun d => by simp only [Function.comp_apply, hselect])
 
 /-- Every finite portion of the sample obeys each positive power counting bound. -/
 theorem finite_count_le_rpow {s : ℝ} (hs : 0 < s) (F : Finset ℕ)
@@ -181,12 +187,13 @@ theorem finite_count_le_rpow {s : ℝ} (hs : 0 < s) (F : Finset ℕ)
   let i : {d : ℕ // d ∈ F} → sample := fun d => ⟨d.val, hF d.val d.property⟩
   have hi : Function.Injective i := by
     intro a b hab
-    exact Subtype.ext (congrArg Subtype.val hab)
+    exact Subtype.ext (congrArg (fun d : sample => d.val) hab)
   have hpartial : (∑ d ∈ F, (d : ℝ) ^ (-s)) ≤
       ∑' d : sample, (d.val : ℝ) ^ (-s) := by
     have h := tsum_comp_le_tsum_of_inj (summable_sample hs)
       (fun d => Real.rpow_nonneg (Nat.cast_nonneg d.val) (-s)) hi
-    simpa only [Function.comp_apply, i, tsum_fintype, Finset.sum_coe_sort] using h
+    rw [← Finset.sum_coe_sort F (fun d : ℕ => (d : ℝ) ^ (-s))]
+    simpa only [Function.comp_apply, i, tsum_fintype] using h
   have hunit : ∀ d ∈ F, (1 : ℝ) ≤ X ^ s * (d : ℝ) ^ (-s) := by
     intro d hd
     obtain ⟨p, k, hp, _, heq⟩ := sample_prime_power (hF d hd)
