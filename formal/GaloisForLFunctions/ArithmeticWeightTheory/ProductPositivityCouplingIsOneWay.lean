@@ -75,7 +75,9 @@ theorem geom_weighted_sum_ge_sum {c : ℕ → ℝ} {r : ℝ} (hr : 1 ≤ r) :
       refine sum_congr rfl fun j hj => ?_
       have hjm : j ≤ m := Nat.lt_succ_iff.mp (mem_range.mp hj)
       rw [Nat.succ_sub hjm, pow_succ', mul_assoc]
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Nat.sub_self, pow_zero, one_mul, hstep]
+    rw [Finset.sum_range_succ c (m + 1),
+      Finset.sum_range_succ (fun j => r ^ (m + 1 - j) * c j) (m + 1),
+      Nat.sub_self, pow_zero, one_mul, hstep]
     linarith
 
 /-- Real power arithmetic function `n ↦ n^a` (`0 ↦ 0`), representing `ζ(s − a)`. -/
@@ -233,6 +235,21 @@ theorem flipSmooth_mul_nonneg (θ : ℝ) {g : ArithmeticFunction ℝ}
   · unfold doubledVM
     linarith [hlam n, flipVM_nonneg θ n]
 
+private theorem sum_biUnion_le_of_nonneg {ι α : Type*} [DecidableEq α] (s : Finset ι)
+    (t : ι → Finset α) {f : α → ℝ} (hf : ∀ x, 0 ≤ f x) :
+    ∑ x ∈ s.biUnion t, f x ≤ ∑ i ∈ s, ∑ x ∈ t i, f x := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.biUnion_insert, Finset.sum_insert ha]
+    calc ∑ x ∈ t a ∪ s.biUnion t, f x
+        = ∑ x ∈ t a, f x + ∑ x ∈ s.biUnion t \ t a, f x := by
+          rw [← Finset.sum_union disjoint_sdiff_self_right, union_sdiff_self_eq_union]
+      _ ≤ ∑ x ∈ t a, f x + ∑ x ∈ s.biUnion t, f x :=
+          add_le_add_left (sum_le_sum_of_subset_of_nonneg sdiff_subset fun x _ _ => hf x) _
+      _ ≤ ∑ x ∈ t a, f x + ∑ i ∈ s, ∑ x ∈ t i, f x := add_le_add_left ih _
+
 /-- **Analyticity across `s = 1` (simple pole preserved).** For every `0 < θ` and `σ > θ` (in
 particular at `σ = 1` when `θ < 1`), `Σ_n flipVM θ n · n^{−σ} < ∞`. Hence `-F_θ′/F_θ` differs
 from `-ζ′/ζ` by a Dirichlet series converging absolutely on `Re s > θ`, preserving the exact
@@ -312,8 +329,8 @@ theorem summable_flipVM_rpow {θ σ : ℝ} (hθ0 : 0 < θ) (hθσ : θ < σ) :
             ArithmeticFunction.vonMangoldt_apply_prime hp, Nat.cast_pow,
             ← Real.rpow_natCast (p : ℝ), ← Real.rpow_mul hp0.le,
             show ((j + 1 : ℕ) : ℝ) * -σ = -σ + -σ * (j : ℝ) by push_cast; ring,
-            Real.rpow_add hp0, mul_comm (-σ) (j : ℝ), Real.rpow_mul hp0.le, Real.rpow_natCast,
-            ← mul_assoc]
+            Real.rpow_add hp0, Real.rpow_mul hp0.le (-σ) (j : ℝ),
+            Real.rpow_natCast ((p : ℝ) ^ (-σ)) j, ← mul_assoc]
           exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hpq j)
             (mul_nonneg (Real.log_nonneg (by linarith)) (by positivity))
       _ = Real.log p * (p : ℝ) ^ (-σ) * ∑ j ∈ range N, q ^ j := by rw [← mul_sum]
@@ -382,7 +399,8 @@ theorem summable_flipVM_rpow {θ σ : ℝ} (hθ0 : 0 < θ) (hθσ : θ < σ) :
         obtain ⟨k, _, hk⟩ := mem_biUnion.mp hp
         exact hp_sum p (mem_flipBlock hk).1
     _ ≤ ∑ k ∈ range K, ∑ p ∈ flipBlock θ k, Real.log p * (p : ℝ) ^ (-σ) / (1 - q) :=
-        sum_biUnion_le
+        sum_biUnion_le_of_nonneg (range K) (flipBlock θ) fun n =>
+          div_nonneg (mul_nonneg (Real.log_natCast_nonneg n) (by positivity)) h1q.le
     _ ≤ ∑ k ∈ range K, g k := sum_le_sum fun k _ => hblock_le k
     _ ≤ ∑' k, g k := hg_sum.sum_le_tsum (range K) fun k _ => hg_nn k
 
@@ -643,7 +661,7 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
   have hdub : doubledVM θ = fun n => (Λ n : ℝ) + flipVM θ n := rfl
   rw [← primeWindowOf_vonMangoldt, hdub, primeWindowOf_add hp_prime.one_le,
     add_sub_cancel_left]
-  have hlow := sum_le_primeWindowOf hp_prime.one_le (flipVM_nonneg θ)
+  have hlow := sum_le_primeWindowOf (S := S) hp_prime.one_le (flipVM_nonneg θ)
     (fun q hq => (mem_flipBlock (mem_filter.mp hq).1).1.two_le)
   -- Lower bound each `q ∈ S`
   have hterm_ge : ∀ q ∈ S,
@@ -753,9 +771,9 @@ theorem not_both_primeWindowOf_power_bound {θ a : ℝ} (hθ : 1 / 2 < θ) (hθ1
   have hp0 : (0 : ℝ) < p := by linarith
   have hmul : D * (p : ℝ) ^ a < c₀ * (p : ℝ) ^ (θ - 1 / 2) := by
     have h1 := (div_lt_iff₀ hc₀).mp hgt_D
+    rw [mul_comm] at h1
     have h2 := mul_lt_mul_of_pos_right h1 (Real.rpow_pos_of_pos hp0 a)
-    rw [mul_assoc, ← Real.rpow_add hp0, sub_add_cancel] at h2
-    linarith
+    rwa [mul_assoc, ← Real.rpow_add hp0, sub_add_cancel] at h2
   have hD_strict : (|K₀| + |K₁|) * (p : ℝ) ^ a < D * (p : ℝ) ^ a :=
     mul_lt_mul_of_pos_right (by dsimp only [D]; linarith) (Real.rpow_pos_of_pos hp0 a)
   linarith

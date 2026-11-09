@@ -61,6 +61,21 @@ theorem polynomial_translation_cexp (P : Polynomial ℂ) (S : Finset ℂ)
   rw [he, Complex.exp_add, Complex.exp_nat_mul]
   ring
 
+/-- A real exponent shift extracts the same positive scale from the complex norm. -/
+theorem finite_sum_cexp_norm_scale (S : Finset ℂ) (c : ℂ → ℂ) (b t : ℝ) :
+    ‖∑ z ∈ S, c z * Complex.exp ((z - (b : ℂ)) * t)‖ * Real.exp (b * t) =
+      ‖∑ z ∈ S, c z * Complex.exp (z * t)‖ := by
+  have he : (∑ z ∈ S, c z * Complex.exp ((z - (b : ℂ)) * t)) *
+      (Real.exp (b * t) : ℂ) = ∑ z ∈ S, c z * Complex.exp (z * t) := by
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro z _
+    rw [Complex.ofReal_exp, Complex.ofReal_mul, mul_assoc, ← Complex.exp_add]
+    congr 2
+    ring
+  simpa only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_pos (Real.exp_pos _)] using congrArg norm he
+
 /-- Every nonzero coefficient forces a large absolute sample within a fixed distance
 of every center, even when the other coefficients have arbitrary phases. -/
 theorem finite_spectrum_dense_norm (S : Finset ℂ) (c : ℂ → ℂ)

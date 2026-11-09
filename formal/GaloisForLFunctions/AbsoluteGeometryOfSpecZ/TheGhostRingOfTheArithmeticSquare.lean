@@ -59,6 +59,11 @@ theorem natCast_dvd_of_forall_prime_pow {n : ℕ} (hn : n ≠ 0) {a : ℤ}
     exact (hq.pow_dvd_iff_le_factorization ha').mp this
   · rw [Nat.factorization_eq_zero_of_not_prime n hq]; exact Nat.zero_le _
 
+/-- A sum over the divisors splits off the term at `n`. -/
+theorem sum_divisors_eq_add_self (f : ℕ → ℤ) {n : ℕ} (hn : n ≠ 0) :
+    ∑ d ∈ n.divisors, f d = ∑ d ∈ n.properDivisors, f d + f n := by
+  rw [← Nat.cons_self_properDivisors hn, Finset.sum_cons, add_comm]
+
 /-! ### The ghost ring -/
 
 /-- **Dwork congruences**: `p^{v_p(n)+1} ∣ x_{pn} − x_n` for all primes `p` and all `n`. -/
@@ -262,18 +267,20 @@ theorem orbit_mul_orbit (d d' : ℕ+) :
 def toNat (x : ℕ+ → ℤ) (n : ℕ) : ℤ := if h : 0 < n then x ⟨n, h⟩ else 0
 
 @[simp] theorem toNat_coe (x : ℕ+ → ℤ) (n : ℕ+) : toNat x n = x n := by
-  simp [toNat, n.pos]
+  rw [toNat, dif_pos n.pos]
+  rfl
 
 /-- The Dwork congruences in terms of natural indices. -/
 theorem IsGhost.toNat_dvd {x : ℕ+ → ℤ} (hx : IsGhost x) {p n : ℕ} (hp : p.Prime) (hn : n ≠ 0) :
     (p : ℤ) ^ (n.factorization p + 1) ∣ toNat x (p * n) - toNat x n := by
-  have h := hx ⟨p, hp.pos⟩ hp ⟨n, Nat.pos_of_ne_zero hn⟩
-  have e1 : toNat x (p * n) = x (⟨p, hp.pos⟩ * ⟨n, Nat.pos_of_ne_zero hn⟩) := by
-    rw [← toNat_coe]; rfl
-  have e2 : toNat x n = x ⟨n, Nat.pos_of_ne_zero hn⟩ := by
-    rw [← toNat_coe]; rfl
+  have hn' := Nat.pos_of_ne_zero hn
+  let P : ℕ+ := ⟨p, hp.pos⟩
+  let N : ℕ+ := ⟨n, hn'⟩
+  have e1 : toNat x (p * n) = x (P * N) := by
+    rw [toNat, dif_pos (Nat.mul_pos hp.pos hn')]; rfl
+  have e2 : toNat x n = x N := by rw [toNat, dif_pos hn']
   rw [e1, e2]
-  exact h
+  exact hx P hp N
 
 /-- Necklace coordinates of a sequence, by recursion over the proper divisors:
 `n b_n = y_n − Σ_{d ∣ n, d < n} d b_d`. -/
@@ -321,7 +328,7 @@ theorem IsGhost.eq_sum_necklace {x : ℕ+ → ℤ} (hx : IsGhost x) (n : ℕ) (h
     have hbn : (n : ℤ) * b n = toNat x n - S := by
       rw [hb, necklace_eq, ← hb, ← hS]
       exact Int.mul_ediv_cancel' hdvd
-    rw [Nat.sum_divisors_eq_sum_properDivisors_add_self, ← hS, hbn]
+    rw [sum_divisors_eq_add_self _ hn, ← hS, hbn]
     ring
 
 /-- **Necklace decomposition, converse.** A sequence of the form `Σ_{d ∣ n} d b_d` satisfies the
@@ -353,8 +360,7 @@ theorem necklace_unique {b b' : ℕ → ℤ}
   induction n using Nat.strong_induction_on with
   | _ n ih =>
     have h1 := h n hn
-    rw [Nat.sum_divisors_eq_sum_properDivisors_add_self,
-      Nat.sum_divisors_eq_sum_properDivisors_add_self] at h1
+    rw [sum_divisors_eq_add_self _ hn, sum_divisors_eq_add_self _ hn] at h1
     have h2 : ∑ d ∈ n.properDivisors, (d : ℤ) * b d = ∑ d ∈ n.properDivisors, (d : ℤ) * b' d :=
       Finset.sum_congr rfl fun d hd => by
         have hd' := Nat.mem_properDivisors.mp hd

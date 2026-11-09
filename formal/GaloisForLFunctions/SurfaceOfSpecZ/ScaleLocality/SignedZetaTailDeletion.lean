@@ -100,7 +100,11 @@ theorem abs_zetaDeletionDepth_le (α : ℝ) (n : ℕ) :
   have hc : |((xiZeroCopyThermalEquiv n).1 : ℂ).re - 1 / 2| ≤ 1 / 2 := by
     rw [abs_le]
     constructor <;> linarith only [hs.1, hs.2]
-  exact (abs_sub _ _).trans (add_le_add hc le_rfl)
+  have htri : |((xiZeroCopyThermalEquiv n).1 : ℂ).re - 1 / 2 - α| ≤
+      |((xiZeroCopyThermalEquiv n).1 : ℂ).re - 1 / 2| + |α| := by
+    simpa only [Real.norm_eq_abs] using
+      norm_sub_le (((xiZeroCopyThermalEquiv n).1 : ℂ).re - 1 / 2) α
+  exact htri.trans (add_le_add hc le_rfl)
 
 /-- The signed zeta kernels have finite total-variation cost. -/
 theorem summable_zetaSignedVariation (α : ℝ) (M : ℕ) :
@@ -162,8 +166,8 @@ theorem infinite_signed_zeta_logSquare_norm {ι : Type*} (α : ℝ) (M : ℕ) (c
     unfold zetaLogSquareRadius
     nlinarith only [hh, he]
   exact hf.trans (mul_le_mul_of_nonneg_left
-    (add_le_add_left (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr harg)
-      (by positivity)) K) (Real.exp_pos _).le)
+    (add_le_add le_rfl (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr harg)
+      (by positivity))) (Real.exp_pos _).le)
 
 #print axioms exists_signed_zeta_deletion_tail
 #print axioms infinite_signed_zeta_logSquare_norm

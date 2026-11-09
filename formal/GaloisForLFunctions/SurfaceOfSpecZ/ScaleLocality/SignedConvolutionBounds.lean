@@ -71,7 +71,7 @@ theorem norm_signedAverage_le (a h : ℝ) (f : ℝ → ℂ) (t : ℝ) :
     _ ≤ ‖f (t - h) / 2 + signedDeletionCenter (h * a) * f t‖ +
         ‖f (t + h) / 2‖ := norm_add_le _ _
     _ ≤ (‖f (t - h) / 2‖ + ‖signedDeletionCenter (h * a) * f t‖) +
-        ‖f (t + h) / 2‖ := add_le_add_right (norm_add_le _ _) _
+        ‖f (t + h) / 2‖ := add_le_add (norm_add_le _ _) le_rfl
     _ = _ := by simp only [norm_div, norm_mul, norm_ofNat]
 
 /-- Complex exponential modes diagonalize signed translation. -/
@@ -80,7 +80,7 @@ theorem signedAverage_cexp (a h : ℝ) (c w : ℂ) (t : ℝ) :
       c * signedDeletionFactor a h w * Complex.exp (w * t) := by
   have hl : w * ((t - h : ℝ) : ℂ) = w * t + -((h : ℂ) * w) := by push_cast; ring
   have hr : w * ((t + h : ℝ) : ℂ) = w * t + (h : ℂ) * w := by push_cast; ring
-  unfold signedAverage
+  dsimp only [signedAverage]
   rw [hl, hr, Complex.exp_add, Complex.exp_add, signedDeletionFactor, Complex.cosh]
   ring
 

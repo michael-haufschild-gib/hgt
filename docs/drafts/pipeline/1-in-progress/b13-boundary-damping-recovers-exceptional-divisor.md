@@ -24,7 +24,8 @@ horizontal-edge decay for every interior angle and a uniform boundary error
 `O(h^d t^N exp(at(c−σ)/2))`. The proved reciprocal-mode bound then gives
 exponential separation `a(Re ρ−c)/2` after normalization.
 
-The contour identity and this error estimate are not yet formalized.
+The contour identity and this error estimate are formalized and pass direct
+source audit. The normalized divisor limit still awaits its source audit.
 The independent Euler upper rate remains `a(1−σ)/2`, so even the proposed
 receiver leaves arithmetic gap `a(1−Re ρ)/2`.
 
@@ -54,7 +55,10 @@ For `h=exp(−κt)`, the predicted literal prime growth range is
 - `BoundaryDampingReadsTheDivisor.lean`: arbitrary-contraction recovery at
   every positive speed, actual-divisor capstone, and literal growth/decay ranges.
 
-Source proofs are written; direct audits remain pending.
+`RotatedContoursForFiniteDivisorFilters.lean` passes direct source audit
+without warnings; all six transitive dependency lists contain only
+`propext`, `Classical.choice`, and `Quot.sound`.
+The divisor-limit module remains unaudited.
 
 ## Available inputs
 

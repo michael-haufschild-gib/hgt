@@ -67,3 +67,25 @@ An upper estimate on one unbounded sequence of heights would suffice,
 because the filtered lower law holds at every sufficiently large height.
 A fixed-damping mean-square limit does not establish such a sequence for
 `y=exp(−at)`; the required interchange of cutoff and height limits remains open.
+
+## Candidate boundary-angle zero-free bound
+
+For the rotated observable, enlarge the local Mellin rectangle to height
+`H=t³`. Its angular decay is `exp(−|v|/(2t))`, so the horizontal edges and
+Euler tails should cost `exp(−t²/2)` up to polynomial factors. The actual
+zero-free width at total zeta height `O(t³)` would then permit a shift to
+`Re z=1−w(O(t³))/2`, with the pole residue killed exactly by the filter.
+The predicted independent bound is
+
+`|A_h^rot(t)|≤C h^d t^N exp(a(1−σ)t/2−a t w(O(t³))/4)`.
+
+This is unproved. Required inputs are a uniform zero-free rectangle including
+small zeta heights, a pole-cancelled contour identity, and spacing-preserving
+bounds on its entire boundary. The previous rectangle of height `t/2`
+does not suffice: its rotated tail has only constant angular decay.
+
+The low-height nonvanishing input is available:
+`RHTower.zetaResidueUnit_ne_zero_near_one_line` proves it in the explicit
+strip `Re z>1−1/(58 log(|Im z|+4))`. On a fixed compact low-height box,
+continuity then bounds the unit's logarithmic derivative; the remaining
+pole term on the shifted line costs only the reciprocal zero-free width.

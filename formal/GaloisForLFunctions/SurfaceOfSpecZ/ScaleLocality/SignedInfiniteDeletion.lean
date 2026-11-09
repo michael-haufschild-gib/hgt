@@ -108,9 +108,9 @@ theorem norm_signedDeletionFactor_le (a h : ℝ) (w : ℂ) :
     unfold signedDeletionFactor signedVariationMoment
     rw [norm_div]
     exact div_le_div_of_nonneg_right
-      ((norm_add_le _ _).trans (add_le_add_right hc _)) (norm_nonneg _)
+      ((norm_add_le _ _).trans (add_le_add hc le_rfl)) (norm_nonneg _)
   exact (hm.trans (signedVariationMoment_le a h w.re)).trans
-    (Real.exp_le_exp.mpr (add_le_add_left (min_le_right _ _) _))
+    (Real.exp_le_exp.mpr (add_le_add le_rfl (min_le_right _ _)))
 
 theorem norm_signedTailFactor_le (l : List (ℝ × ℝ)) (w : ℂ) :
     ‖signedTailFactor l w‖ ≤
@@ -297,7 +297,7 @@ theorem infinite_signed_tail_translated_norm {ι : Type*} (a h : ℕ → ℝ)
   apply mul_le_mul
     (Real.exp_le_exp.mpr (signedVariationCost_filterPrefix_le a h hv N))
       _ (by positivity) (Real.exp_pos _).le
-  apply add_le_add_left
+  apply add_le_add le_rfl
   have he : Real.exp (D * |t| - q * L + B) =
       Real.exp (D * |t|) * Real.exp (-q * L + B) := by
     rw [← Real.exp_add]
@@ -305,7 +305,7 @@ theorem infinite_signed_tail_translated_norm {ι : Type*} (a h : ℕ → ℝ)
     ring
   rw [he]
   have hm := mul_le_mul_of_nonneg_left
-    (Real.exp_le_exp.mpr (add_le_add_left (hcost N) (-q * L)))
+    (Real.exp_le_exp.mpr (add_le_add (show -q * L ≤ -q * L from le_rfl) (hcost N)))
     (show 0 ≤ 2 * (A * Real.exp (D * |t|)) by positivity)
   convert hm using 1 <;> dsimp only [A] <;> ring
 

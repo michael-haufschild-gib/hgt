@@ -1,6 +1,6 @@
 # Arithmetic Weight Theory of Spec ℤ (AWT)
 
-Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 13 modules.
+Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 16 modules.
 All results unconditional; RH appears only inside equivalences.
 
 Notation. `z = ρ − ½` for a zero `ρ`; `b = sup Re z` the **weight** (zero width) of a configuration;
@@ -60,6 +60,9 @@ cohomology supplies over `𝔽_q` (middle extension, invariants of local monodro
 | Reset fibre | `resetOutside I x` | agrees with `x` on `I`, trivial elsewhere |
 | Edge distances | `pretTerm`, `antiTerm`, `pretSum`, `antiSum`, `polePoint` | `1 ∓ Re(χ_x(p)p^{−iτ})`; damped sums; `1 + δ + iτ` |
 | Prime restriction | `primeRestrict`, `windowObservable` | `G → (ℝ/ℤ)^{primes}`; `φ` of a window sum |
+| Amplified subgroup | `quarterTwoPoint`, `quarterTwoMeasure` | order-`4` subgroup on `{2, 3}` breaking trivial pricing off `0` |
+| Positivity-coupled weights | `idRpow`, `flipVM`, `doubledVM`, `flipSmoothAF`, `primeWindowOf`, `splineAutoCorr` | symmetric shifts, Euler-factor doubling, general spline prime window |
+| Family measures & cofactors | `dirichletGaugeMeasure`, `verticalHeightMeasure`, `realTauSqAF`, `varPermChar` | canonical family measures, Hecke symmetric-square cofactor, zero-mean field character |
 
 ## 3. Language
 
@@ -107,6 +110,22 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
    restriction to prime coordinates is a measure-preserving surjective homomorphism; the prime
    frequencies `log p` are rationally independent (unique ergodicity); the windowed vertical moment
    is the multiplicative diagonal below the threshold plus a nonnegative off-diagonal above it.
+10. *Amplified monodromy symmetry-breaking.* At `0`, coherent phases force
+    `ν{0}|A(0)|²(Σa_n)^{2k} ≤ ∫|A|²|S|^{2k}dν` for every measure and continuous amplifier `A`, and pole
+    subtraction cancels `c₀` from the orthogonality identity; at a nontrivial torsion fibre `x₀ ≠ 0`
+    on `{2, 3}`, collision cancellation at `6 = 2·3 = 3·2` gives `∫|A|²|S|²dν = 2 < 4 = ν{x₀}|A(x₀)|²(a₂+a₃)²`.
+11. *One-way product-positivity coupling.* Prime-power Abel monotonicity transfers `(ζ * g)(n) ≥ 0`
+    to `(idRpow (-a) * (idRpow a * g))(n) ≥ 0`; doubling the Euler factors of `ζ` on `flipPrimes θ`
+    (`½ < θ < 1`) preserves the simple pole of residue `1` at `s = 1` and all product nonnegativity
+    conditions while shifting `primeWindowOf (doubledVM θ) p` by `≫ p^{θ − ½}` via pigeonhole
+    clustering in the positive core of `splineAutoCorr`.
+12. *Fixed-part decoupling across all arithmetic families.* In pure families (`GaugeTorus`, Dirichlet
+    characters modulo `q ≤ Q`, vertical line `[−T, T]`, Weyl cuspidal eigenforms) `ζ` enters with
+    vanishing mass; in product families (Rankin–Selberg, number-field counting, isozeric deformations)
+    it enters as an exact common factor whose pushforward law `Measure.map (c + V ·) ρ` is a valid
+    probability measure for every `c ∈ ℝ`; and by weighted AM–GM tangent coercivity
+    (`c^{2k} + 2k c^{2k−1} v ≤ (c + v)^{2k}`), sublinear `2k`-th tensor moments on a cover family
+    containing `ζ` are unconditionally equivalent to RH.
 
 ## 5. Pillar theorems
 
@@ -128,6 +147,9 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
 | Edge divisor of `ζ`: one simple pole; `ζ(1+iτ) ≠ 0 ⇔ Σ_p (1+cos(τ log p))/p = ∞` | `edgeDivisor_zeta`, `riemannZeta_ne_zero_iff_not_antiPretentious` | unconditional |
 | Vertical family has the generic moments below the threshold, more above | `vertical_moment_eq_generic`, `generic_moment_le_vertical_moment` | unconditional |
 | Vertical Frobenius of `ζ` has the generic law | `tendsto_verticalAverage_fibreTrace` | unconditional |
+| Amplified monodromy breaks the trivial bound iff `x₀ ≠ 0` | `measureReal_singleton_zero_mul_amplified_pow_le`, `integral_amplified_centred_sub_uncentred`, `exists_amplified_orthonormal_strict_saving` | unconditional |
+| Product-positivity coupling is one-way | `zeta_mul_le_idRpow_mul`, `summable_flipVM_rpow`, `not_both_primeWindowOf_power_bound`, `no_reverse_weight_bound_from_product_positivity` | unconditional |
+| Fixed-part theorem `(FP)` across all arithmetic families and mixtures; cover-family M4 ⇔ RH | `gaugeTorus_fixedPart_decoupling`, `tendsto_cumulative_principal_fraction`, `tendsto_weyl_finiteMode_mass`, `rankinSelberg_family_commonFactor`, `numberField_counting_fixedPart`, `commonFactor_moment_realizable_for_all_c`, `tendsto_mixture_moment_decomp`, `riemannHypothesis_iff_coverFamily_tensorExponent_sublinear`, `zeroMotive_is_fixedPart_of_every_arithmeticFamily` | unconditional; RH-equivalence |
 | Tensor trick, common abscissa (M1) | `riemannHypothesis_iff_moments_primeTraces`, `riemannHypothesis_iff_tensorPowers_commonAbscissa` (SoSZ) | RH-equivalence, built on |
 | Strip specialization is RH | `riemannHypothesis_iff_limits_zeroFree` (PTT), `riemannHypothesis_iff_zetaStronglyRecurrent` (RHTower) | RH-equivalence, built on |
 
@@ -147,6 +169,14 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
 - *Dirichlet twists.* Each point reads its own GRH; the special locus is typical on average
   (`dirichletGRH_iff_dirichletGauge_typical`, `card_atypical_dirichletGauge_le_rpow`, AGT).
 - *Euler deformations keeping the pole.* Isozeric on `Re s > σ₀`, a Haar-null class.
+- *Fixed-part theorem `(FP)` across all arithmetic families and mixtures.* Across the gauge torus,
+  characters modulo `q ≤ Q`, the vertical line, Weyl Hecke eigenforms, Rankin–Selberg squares,
+  number-field counting, and their mixtures, the `2k`-th moment identity controls the variable traces
+  only: `ζ` enters with vanishing mass or as an exact common factor (`zeroMotive_is_fixedPart_of_every_arithmeticFamily`),
+  amplification beats `(Σ a_n)^{2k}` only off `0` (`exists_amplified_orthonormal_strict_saving`),
+  product-positivity couplings transfer in one direction only (`no_reverse_weight_bound_from_product_positivity`),
+  and sublinear cover-family tensor moments are equivalent to RH
+  (`riemannHypothesis_iff_coverFamily_tensorExponent_sublinear`).
 
 **Q2. What is the analogue of `H²_c`?** For `M`: all of `M^{⊗m}`. The Künneth trace formula
 (`tensorSeries_eq_tsum`) decomposes the tensor series into the constituents `−ζ′/ζ(s − z₁ − ⋯ − z_m)`,

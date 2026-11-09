@@ -42,6 +42,10 @@ Its triangle inequality forces a large absolute value within a fixed
 distance of every `T` when `Re z₀>0`. No conjugation symmetry, absence
 of real exponents, or sign of the trace is needed.
 
-**Lean status:** kernel, variation estimate, infinite passage, and local
-criterion unformalized. Existing `ZetaMixedMomentBounds` supplies the
-ordinate estimates, not the signed convolution argument.
+**Lean status:** `SignedDeletionFilters` and `SignedConvolutionBounds`
+compile with only `propext`, `Classical.choice`, `Quot.sound`; final direct
+audits remain. `SignedInfiniteDeletion`, `SignedZetaTailDeletion`,
+`SignedFiniteSpectrum`, `SignedLogSquareWindows`,
+`AbsolutePrimeWindowTransfer`, and `SignedPrimeLogSquareWindows` contain
+the remaining proof and await successful audits. The infinite norm bound
+uses total variation and dominated convergence, not order preservation.

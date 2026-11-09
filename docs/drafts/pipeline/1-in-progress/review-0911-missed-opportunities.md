@@ -31,6 +31,13 @@
 - `ZeroConfigurationGeometry/AsymptoticAbscissaSpectralGapAndTopAnnihilator.lean`:
   `not_asymptoticAbscissaLaw_iff_bilateral_spectralGap`.
 
+The new `ArithmeticWeightTheory/TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily`
+packages null-fibre moments, vanishing masses, a product-positivity
+counterexample, and an RH-equivalent gauge-cover moment condition. Its
+statement does not quantify over every arithmetic family or every derived
+inequality. These precise results do not yet justify the universal route
+closure in §11.2; its module-level description is stronger than its theorem.
+
 No item is complete until its exact statement has a dependency-closed Lean proof,
 direct `lake --old env lean` audit, and transitive axiom audit.
 
