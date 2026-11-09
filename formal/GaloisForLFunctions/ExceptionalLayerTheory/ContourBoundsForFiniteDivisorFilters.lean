@@ -1,6 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.ZeroFreeBoundsForDampingFilters
 import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitRectanglePeeling
-import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitGlobalZeroCount
 import GaloisForLFunctions.RHTower.CompletedSplitRightHalfPlane
 
 /-!
@@ -738,11 +737,7 @@ theorem finite_layer_divisorFilter_line_shift (F : Finset XiZeroCopy)
       ((c : ℂ) + (-T : ℝ) * I) ((2 : ℂ) + T * I)) atTop
       (𝓝 (I • (∫ v : ℝ, G ((2 : ℂ) + v * I)) -
         I • (∫ v : ℝ, G ((c : ℂ) + v * I)))) := by
-    simpa only [rectIntegral, G, Complex.add_re, Complex.add_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
-      Complex.ofReal_neg, Complex.neg_re, Complex.neg_im, Complex.ofNat_re,
-      Complex.ofNat_im, mul_zero, zero_mul, sub_zero, mul_one, add_zero, zero_add,
-      neg_one_mul, one_mul, zero_sub, zero_smul] using hlimit
+    simpa [rectIntegral, G] using hlimit
   obtain ⟨H, _, hrect⟩ := finite_layer_divisorFilter_rectangle F ρ σ β h t hy
     hc hc1 hσc hgap hrest havoid hρc hρ1 hρ
   have hevent : (fun T : ℝ => rectIntegral G
@@ -803,7 +798,8 @@ theorem primeDampingFilter_eq_selected_mode_add_line (F : Finset XiZeroCopy)
       have hvt : ((v + t : ℝ) : ℂ) = (t : ℂ) + v := by push_cast; ring
       rw [hvt]
       dsimp only [G]
-      rw [divisorFilteredMellinWeight_shift]
+      exact congrArg (fun z : ℂ => z * (-logDeriv riemannZeta ((2 : ℂ) + (t + v) * I)))
+        (divisorFilteredMellinWeight_shift F ρ σ β h y t 2 v).symm
     change (k : ℂ) * ∫ v : ℝ, _ = _
     rw [hfun, integral_add_right_eq_self (fun v : ℝ => G ((2 : ℂ) + v * I)) t]
   have hs := finite_layer_divisorFilter_line_shift F ρ σ β h t (Real.exp_pos (-a * t))
@@ -868,6 +864,7 @@ theorem exists_primeDampingFilter_spacing_preserving_error_bound
         apply integral_congr_ae
         refine Eventually.of_forall fun v => ?_
         have hvt : ((v + t : ℝ) : ℂ) = (t : ℂ) + v := by push_cast; ring
+        change G ((c : ℂ) + ((v + t : ℝ) : ℂ) * I) = Q v
         rw [hvt]
         dsimp only [G, Q]
         rw [divisorFilteredMellinWeight_shift]
@@ -889,3 +886,10 @@ theorem exists_primeDampingFilter_spacing_preserving_error_bound
   exact (mul_le_mul_of_nonneg_left hnorm hk.le).trans_eq (by ring)
 
 end GaloisForLFunctions.ExceptionalLayerTheory
+
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.finite_layer_high_strip_logDeriv_bounds
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_finite_layer_filtered_line_bound
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.finite_layer_divisorFilter_rectangle
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.finite_layer_divisorFilter_line_shift
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.primeDampingFilter_eq_selected_mode_add_line
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_primeDampingFilter_spacing_preserving_error_bound

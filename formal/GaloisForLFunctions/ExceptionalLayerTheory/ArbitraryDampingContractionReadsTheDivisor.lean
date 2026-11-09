@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.ContourBoundsForFiniteDivisorFilters
+import GaloisForLFunctions.RHTower.Sieve.ZetaResidueUnitGlobalZeroCount
 
 /-!
 # Divisor recovery under arbitrary contraction
@@ -172,5 +173,98 @@ theorem arbitrary_contracting_prime_filter_reads_selected_zero
     m * (P t / (h t : ℂ) ^ d) = A t / ((h t : ℂ) ^ d * K t)
   field_simp [hk, pow_ne_zero d (Complex.ofReal_ne_zero.mpr ht.ne')]
   ring
+
+/-- Arithmetic decay caused by contraction coexists with exact normalized
+divisor recovery, even at the unconditional arithmetic decay threshold. -/
+theorem prime_filter_decay_and_normalized_divisor_recovery
+    (F : Finset XiZeroCopy) {θ σ β a κ : ℝ} (hσ : 1 / 2 < σ)
+    (hgap : θ < σ) (hrest : ∀ q : XiZeroCopy, q ∉ F → (xiZero q).re ≤ θ)
+    (ha : 0 < a) (hκ : 0 < κ) (ρ : ℂ)
+    (hρσ : σ < ρ.re) (hρ1 : ρ.re < 1) (hρ : xi ρ = 0)
+    (hr : 0 < gaussianObservationRate ρ σ a)
+    (hcrit : a * (1 - σ) / 2 ≤
+      ((1 + (F.filter (fun q => xiZero q ≠ ρ)).card : ℕ) : ℝ) * κ) :
+    let A := fun t : ℝ => primeDampingFilter
+      (divisorDampingFilter F ρ β (Real.exp (-κ * t))) σ β a (Real.exp (-κ * t)) t
+    Tendsto A atTop (𝓝 0) ∧
+      Tendsto (fun t : ℝ => A t /
+        (((Real.exp (-κ * t) : ℝ) : ℂ) ^
+          (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) *
+            gaussianMBKernel (Real.exp (-a * t)) (ρ - ((σ : ℂ) + t * I)))) atTop
+        (𝓝 (-((analyticOrderAt zetaResidueUnit ρ).toNat : ℂ) *
+          ((ρ - 1) * ∏ q ∈ F.filter (fun q => xiZero q ≠ ρ), (ρ - xiZero q)))) := by
+  have hlim : Tendsto (fun t : ℝ => Real.exp (-κ * t)) atTop (𝓝 0) := by
+    simpa only [pow_zero, one_mul, neg_mul] using
+      HTGeometry.tendsto_pow_mul_exp_neg_scaled 0 hκ
+  exact ⟨tendsto_primeDampingFilter_zero_of_critical_contraction F ρ σ β a κ
+    (hρσ.trans hρ1) ha hκ hcrit,
+    arbitrary_contracting_prime_filter_reads_selected_zero F hσ hgap hrest ha ρ
+      hρσ hρ1 hρ hr hlim (Eventually.of_forall fun t => Real.exp_pos _)⟩
+
+/-- The limiting divisor constant is nonzero at every actual zero in the
+open critical strip; multiplicity and each retained difference are nonzero. -/
+theorem divisorDampingFilter_limit_constant_ne_zero (F : Finset XiZeroCopy) (ρ : ℂ)
+    (hρ0 : 0 < ρ.re) (hρ1 : ρ.re < 1) (hρ : xi ρ = 0) :
+    -((analyticOrderAt zetaResidueUnit ρ).toNat : ℂ) *
+      ((ρ - 1) * ∏ q ∈ F.filter (fun q => xiZero q ≠ ρ), (ρ - xiZero q)) ≠ 0 := by
+  classical
+  have hm : (analyticOrderAt zetaResidueUnit ρ).toNat ≠ 0 := by
+    rw [Sieve.analyticOrderAt_zetaResidueUnit_eq_xi_of_mem_strip ⟨hρ0, hρ1⟩]
+    exact xi_order_toNat_ne_zero hρ
+  have hpole : ρ - 1 ≠ 0 := by
+    apply sub_ne_zero.mpr
+    intro he
+    simp [he] at hρ1
+  have hprod : (∏ q ∈ F.filter (fun q => xiZero q ≠ ρ), (ρ - xiZero q)) ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro q hq
+    exact sub_ne_zero.mpr (Finset.mem_filter.mp hq).2.symm
+  exact mul_ne_zero (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr hm)) (mul_ne_zero hpole hprod)
+
+/-- An actual exceptional top remains visible after normalization for every
+positive contracting damping grid, including superexponential contraction. -/
+theorem not_asymptoticAbscissaLaw_has_arbitrarily_contracting_prime_filters :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ (F : Finset XiZeroCopy) (σ β : ℝ),
+        1 / 2 < σ ∧ σ < β ∧ β < 1 ∧
+        (∃ q ∈ F, (xiZero q).re = β) ∧
+        (∀ q : XiZeroCopy, (xiZero q).re ≤ β) ∧
+        ∀ q ∈ F, (xiZero q).re = β →
+          let d := 1 + (F.filter (fun p => xiZero p ≠ xiZero q)).card
+          let C : ℂ := -((analyticOrderAt zetaResidueUnit (xiZero q)).toNat : ℂ) *
+            ((xiZero q - 1) * ∏ p ∈ F.filter (fun p => xiZero p ≠ xiZero q),
+              (xiZero q - xiZero p))
+          C ≠ 0 ∧ ∀ a : ℝ, 0 < a → 0 < gaussianObservationRate (xiZero q) σ a →
+            ∀ h : ℝ → ℝ, Tendsto h atTop (𝓝 0) → (∀ᶠ t : ℝ in atTop, 0 < h t) →
+              Tendsto (fun t : ℝ =>
+                primeDampingFilter (divisorDampingFilter F (xiZero q) β (h t))
+                  σ β a (h t) t /
+                    ((h t : ℂ) ^ d * gaussianMBKernel (Real.exp (-a * t))
+                      (xiZero q - ((σ : ℂ) + t * I)))) atTop (𝓝 C) := by
+  classical
+  intro hnot
+  obtain ⟨F, θ, σ, β, hθ, hgap, hσβ, hβ1, htop, hmax, hrest, _⟩ :=
+    not_asymptoticAbscissaLaw_has_escaping_layer_profile hnot
+  have hσ : 1 / 2 < σ := by linarith only [hθ, hgap]
+  have hall : ∀ q : XiZeroCopy, (xiZero q).re ≤ β := by
+    intro q
+    by_cases hq : q ∈ F
+    · exact hmax q hq
+    · exact (hrest q hq).trans (hgap.trans hσβ).le
+  refine ⟨F, σ, β, hσ, hσβ, hβ1, htop, hall, ?_⟩
+  intro q _ hqβ
+  dsimp only
+  have hρpos : 0 < (xiZero q).re := by rw [hqβ]; linarith only [hσ, hσβ]
+  have hρ1 : (xiZero q).re < 1 := by rwa [hqβ]
+  refine ⟨divisorDampingFilter_limit_constant_ne_zero F (xiZero q) hρpos hρ1 (xi_xiZero q), ?_⟩
+  intro a ha hr h hlim hpos
+  exact arbitrary_contracting_prime_filter_reads_selected_zero F hσ hgap hrest ha
+    (xiZero q) (by rwa [hqβ]) hρ1 (xi_xiZero q) hr hlim hpos
+
+#print axioms tendsto_divisorDampingFilter_scaled_value_of_tendsto
+#print axioms arbitrary_contracting_prime_filter_reads_selected_zero
+#print axioms prime_filter_decay_and_normalized_divisor_recovery
+#print axioms divisorDampingFilter_limit_constant_ne_zero
+#print axioms not_asymptoticAbscissaLaw_has_arbitrarily_contracting_prime_filters
 
 end GaloisForLFunctions.ExceptionalLayerTheory

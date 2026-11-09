@@ -4,105 +4,81 @@
 - **Type:** CONJECTURE
 - **Target:** B130 scale locality: replace log-square prime windows by `C log(T+2)`.
 
-## Proposed mechanism
+## Positive quartet quotient
 
-Delete the full multiplicity of one off-line quartet from the Xi transform.
-The inverse transform `g` is real and even, has every exponential moment,
-and should be strictly positive outside a compact interval by the existing
-zero-division tail asymptotic. Its bilateral Laplace transform is positive
-on the real axis: the removed quartet polynomial is strictly positive there.
+Let `a` be a first-quadrant Xi zero, `L=quadrantListOf [a]`,
+`d=|L|=2 xiZeroMult a`, and `P=listDivisor L`. Thus `P` removes the
+whole selected quartet with full multiplicity; no simple-zero premise occurs.
+Use `N(z)=z^(2d)+c`, choosing `c=1` unless `N(a)=0`, and `c=2` otherwise.
+Then `c>0`, `N(a)≠0`, and `N(is)=s^(2d)+c>0` because `d` is even.
 
-Seek a finite positive translation average making `g` nonnegative everywhere,
-while preserving the selected off-line exponent. Compact translation changes
-the theta moment growth only by `O(|s|)`. A resulting positive annihilator
-would have logarithmic moment `O(|s| log(2+|s|))`; Chernoff parameter `q=T`
-would then give exponentially small leakage at radius `C log(T+2)`.
+The quotient `XiC(z) N(z)/P(z)` has positive real Laplace values.
+`listComb_spec` gives a real even Lipschitz source with every exponential
+moment, bounded by a constant times the theta source, and asymptotic to
+`Π thetaCuspFullSource` at both ends, where `Π=∏_(β∈L)(-β²)>0`.
+Hence both tails are strictly positive. The positive leading numerator avoids
+needing a sharper tail asymptotic for `XiC/P`.
 
-## Positivity-repair conjecture
+Relevant corpus declarations: `thetaDivisionList_quadrantListOf`,
+`count_quadrantListOf`, `perm_map_conj_quadrantListOf`,
+`prod_neg_sq_quadrantListOf`, `listComb_spec`,
+`listComb_thetaListDivision_eq_ofReal`, `exists_lipschitz_listComb`,
+`XiC_I_mul`, `thetaSourceLaplace_pos`.
+Quartet specialization and full-multiplicity survival remain to be assembled.
 
-If continuous real `g` has every exponential moment, is strictly positive
-outside a compact interval, and `∫exp(sx)g(x)dx>0` for every real `s`, then
-there exist `δ>0` and `N` such that
+## Positive translation repair
 
-`Σ_(j=0)^N binomial(N,j) g(x+jδ) ≥ 0` for every real `x`.
+Proposed sufficient theorem: a Lipschitz real source with every exponential
+moment, strictly positive tails, and strictly positive real Laplace values
+admits a finite positive translation average that is nonnegative everywhere.
+The mesh may be arbitrarily small.
 
-Candidate proof: choose a compact step function `l≤g` with strictly positive
-bilateral Laplace transform. Positive outer intervals dominate the compact
-negative part for large `|s|`; truncation and uniform approximation handle
-the remaining compact range of `s`. Its transform is a positive factor times
-a Laurent polynomial `P(exp(δs))`, with positive extreme coefficients.
-A Pólya multiplier `(1+X)^N` makes every coefficient nonnegative. Translating
-`l` by the corresponding binomial weights therefore gives a nonnegative step
-function, and the same weights preserve the inequality `l≤g`.
+Construct a compact lower grid step `l≤g` preserving every real Laplace sign.
+Its transform is a positive interval factor times `P(exp(hs))`; a positive
+first cell supplies positivity of `P(0)`. Real factorization and sharp
+quadratic repair give `Q=∏(X+r_j)`, `r_j>0`, with `PQ` coefficientwise
+nonnegative. Thus `Q(τ_h)l≥0`; positivity of the coefficients of `Q`
+implies `Q(τ_h)g≥0`.
 
-For the step approximation, fix positive intervals strictly beyond the compact
-negative part on both sides. Their masses dominate all negative contributions
-when `|s|≥S`, uniformly over sufficiently fine meshes. On `[-S,S]`, the Laplace
-transform has a positive minimum. Truncate the weighted integrable tail, then
-use cell minima and uniform continuity on the remaining compact interval to
-make the Laplace error smaller than half that minimum. Extend the step function
-by zero only where `g>0`. This gives a global lower approximation with every
-real Laplace sign preserved. The mesh may be arbitrarily small.
+`Q` has only negative real roots. Choosing `h` with
+`h |Im w₀|<π/2` ensures `Q(exp(hw₀))≠0`, preserving the selected mode.
+Finite translations add only `O(|s|)` to logarithmic moment growth.
+Evenness of the repaired source is unnecessary.
 
-The multiplier `(1+exp(δw))^N` is nonzero whenever `Re w≠0`. Thus repair cannot
-erase the chosen positive-depth mode. Exponential tilting supplies the shifted
-depth tests needed for prime-gap iteration.
+## Uniform lower approximation
 
-## Inputs and gaps
+Take `A≥1` with `g>0` for `|x|>A`, a Lipschitz constant `L>0`, and
+`B=1+sup_(|x|≤A+1)|g(x)|`. Let `m>0` bound `g` below on
+`A+2≤|x|≤A+5`. Choose `S≥1` with `(m/2)exp(S)>2(A+2)B`, and put
+`η=min_(|s|≤S)∫exp(sx)g(x)dx>0`.
 
-- `ThetaZeroDivisionRealization.ThetaDivisionList` admits repeated roots up to
-  their full Xi multiplicity; `sourceTransform_thetaListDivision_mul` proves
-  the entire quotient identity. `ThetaDivisorCardinalSource` proves survival
-  after complete multiplicity removal. No simple-zero premise is needed.
-- `ThetaTailScalingAsymptotics.tendsto_thetaListDivision` gives leading tail
-  coefficient `∏β²/(2π)^(2|L|)`. For full conjugate pairs this is positive.
-  `ThetaZeroDivisionRateTomography.listComb_thetaListDivision_eq_ofReal`
-  handles conjugate-invariant admissible lists. Quartet specialization pending.
-- `ThetaZeroDivisionLipschitz.exists_lipschitz_thetaListDivision` provides a
-  global Lipschitz constant. On each mesh cell, the left value minus `Lδ`
-  is a lower bound and differs from the source by at most `2Lδ`; this can
-  replace cell minima in the compact approximation proof.
-- `local-divisor-coefficient-repair`: sharp quadratic binomial repair already
-  formalized. `ArithmeticLocalDivisorGeometry/PositiveMultipliers.lean` now proves
-  `exists_negativeRootMultiplier_repair`: every polynomial positive on `[0,∞)`
-  has a coefficientwise nonnegative multiple using only correcting factors
-  `X+r`, `r>0`. It also proves those correcting factors nonzero in the closed
-  right half-plane. Both axiom audits contain only the standard three axioms.
-- Missing: compact lower step approximation preserving every real Laplace sign,
-  complete positivity-repair theorem, zeta specialization, logarithmic leakage,
-  and prime-window conclusion. No theorem in this card is claimed formalized.
+Choose `R>A+6` with
+`exp(-R)∫exp((S+1)|x|)|g(x)|dx<η/4`; let `u>0` bound `g` below on
+`A+1≤|x|≤R`. Choose `h=2R/M` below the prescribed mesh bound and
+`min(1,1/L,u/(2L),m/(2L),η/(16RL exp(SR)))`.
 
-This changes the observation scale only. It supplies no arithmetic lower bound.
-No external novelty claim; no web search used.
+On each cell use its left value minus `Lh`, and use zero outside `(-R,R]`.
+The step lies below `g`, loses at most `2Lh` within the grid, has negative
+part supported in `[-A-2,A+2]` and bounded by `B`, and is at least `m/2`
+on both outer unit bands. Those bands prove Laplace positivity for `|s|≥S`.
+For `|s|≤S`, compact error is below `η/4`, as is the discarded weighted tail.
+The first coefficient is positive since `g(-R)≥u`.
 
-## Weaker repair sufficient for detection
+## Lean status and remaining work
 
-Equal binomial weights are unnecessary. It suffices to use coefficients of
-`Q(X)=∏(X+r_j)^(n_j)`, `r_j>0`. For any polynomial positive on `[0,∞)`,
-factorization into real linear factors and conjugate quadratic factors,
-followed by the quadratic repair theorem, supplies such a `Q`
-with coefficientwise nonnegative `PQ`. The repair factor has only negative
-real roots. Choose the step mesh with `δ |Im w₀|<π`; then `exp(δw₀)` is
-not negative real, so `Q(exp(δw₀))≠0`. This suffices for the chosen mode
-and avoids requiring a new equal-factor Pólya theorem.
+- `ArithmeticLocalDivisorGeometry/PositiveMultipliers.lean`: polynomial repair
+  and nonvanishing in the closed right half-plane proved.
+- `HTGeometry/PositiveTranslationRepair/`: polynomial translation order,
+  lower grid errors, grid polynomial transform, positive outer bands, compact
+  Laplace margins, and uniform weighted approximation bounds proved.
+  Checked capstones depend only on `propext`, `Classical.choice`, `Quot.sound`.
+- Complete positive-source repair assembly is undergoing Lean checking.
+- Missing: actual quartet source specialization, preservation of its selected
+  mode, theta moment bound `O(|s| log(2+|s|))`, logarithmic leakage, and
+  continuous and prime-window conclusions.
 
-## Uniform approximation parameters
-
-For a Lipschitz source, take `A≥1` with `g>0` for `|x|>A`, Lipschitz
-constant `L>0`, and `B=1+sup_(|x|≤A+2)|g(x)|`. Let `m>0` be a lower
-bound on `A+2≤|x|≤A+5`. Choose `S≥1` with
-`(m/2)exp(S)>2(A+2)B`; put `η=min_(|s|≤S)∫exp(sx)g(x)dx>0`.
-Choose `R>A+6` so that
-`exp(-R)∫exp((S+1)|x|)|g(x)|dx<η/4`, and let `u>0` bound `g`
-below on `A+1≤|x|≤R`.
-
-Use grid mesh `h=2R/M`, smaller than the prescribed mesh bound and
-`min(1,1/L,u/(2L),m/(2L),η/(16RL exp(SR)))`. On each cell take its
-left value minus `Lh`, and use zero outside `(-R,R]`. This is a global
-lower approximation, its negative part is supported in `[-A-2,A+2]`
-and bounded by `B`, and it is at least `m/2` on both outer unit bands.
-Those bands prove Laplace positivity for `|s|≥S`. For `|s|≤S`, compact
-error is at most `4RLh exp(SR)≤η/4`, and discarded weighted tail is
-less than `η/4`. The first coefficient is positive because `g(-R)≥u`.
-Thus the associated polynomial is positive on `[0,∞)` and admits the
-negative-root correcting multiplier. These analytic estimates still await Lean.
+Chernoff parameter `q=T` would turn that moment bound into exponentially
+small leakage at radius `C log(T+2)`. Exponential tilting then supplies the
+shifted-depth tests for prime-gap iteration. This changes observation scale;
+it supplies no arithmetic lower bound. B130 remains open. No external novelty
+claim; no web search used.
