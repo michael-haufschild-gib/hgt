@@ -85,8 +85,8 @@ Paper proof and audited declarations:
 [CDG-RANK](../3-formalized/cdg-collective-rank-depth.md).
 The exact scalar comparison and projection theorem are formalized in
 [CDG-SLICE](../3-formalized/cdg-coordinate-slicing.md).
-The published simultaneous-logarithm benchmark and its missing proof inputs
-are isolated in [CDG-SIM](cdg-simultaneous-logarithm-bounds.md).
+The closed simultaneous bound and published benchmark are in
+[CDG-SIM](../3-formalized/cdg-simultaneous-logarithm-bounds.md).
 
 ## Collective auxiliary construction
 
@@ -96,9 +96,25 @@ The integral auxiliary retains `k` prime-frequency coordinates and only
 `(floor(d/r)+1)(k+1)+k`, at most `3k+2` when `r≥d`.
 `CollectiveAuxiliaryConstruction.lean` constructs a nonzero bounded-height
 integer kernel, exact initial jet vanishing, and a nonzero true value
-before the full interpolation length. Analytic extrapolation for this
-family remains necessary for a simultaneous logarithm bound.
+before the full interpolation length. The free-direction analytic
+extrapolation preserves the original coefficient box through the terminal
+interpolation count.
 Proof and formalization: [CDG-AUX](../3-formalized/cdg-collective-auxiliary.md).
+
+## Simultaneous logarithm bound
+
+`CollectiveLogarithmBound.lean` proves, for rank `r`, height `H≥1`,
+and `W=ceil(Σ log p_j)+1`, that some original form has size at least
+
+`exp(−(C′+1)(log(r!H^r)+2))/(r·r!H^(r−1))`.
+
+`C′` is the explicit `collectiveLambdaExponent` of the collective
+parameters. The integer system and terminal count use `q`; only analytic
+majorants use `Q=kq`. Thus the rank-dependent root degree survives the
+complete argument. Direct checks and the capstone's transitive axiom audit
+passed. Proof: [CDG-SIM](../3-formalized/cdg-simultaneous-logarithm-bounds.md).
+A simpler dimension-and-rank exponent and the uniform approximation rank
+profile are the next targets in [CDG-EXP](cdg-rank-sensitive-exponent.md).
 
 ## Open core
 

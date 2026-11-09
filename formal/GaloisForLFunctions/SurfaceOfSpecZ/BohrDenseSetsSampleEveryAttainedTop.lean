@@ -24,7 +24,10 @@ Sets containing arbitrarily long intervals are Bohr-dense (`isBohrDenseAtTop_of_
 and so are the log-degrees of any `D ⊂ ℕ` containing every integer of `[x, e^L x]` for arbitrarily
 large `x` and `L` (`onLine_of_bddBelow_integer_runs_of_max`): attained tops need no density of the
 sample, only long runs of it. For `ζ` a Stepanov bound on such runs gives the abscissa law, and RH is
-that bound together with `ZerosApproachLine` (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs`). One Frobenius `{n log q}` is not
+that bound together with `ZerosApproachLine` (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs`),
+equivalently `ZerosApproachLine` together with an `ℕ`-count with Tate limit `δ_d(1, 1)` on every
+effective class `Γ_1 + Γ_d`, `d` in the runs
+(`riemannHypothesis_iff_zerosApproachLine_and_effectiveCounts_integer_runs`). One Frobenius `{n log q}` is not
 Bohr-dense: the phase `e^{2πiu/log q}` is `1` on it.
 -/
 
@@ -541,5 +544,42 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs (D : S
     _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
   exact ⟨_, fun n _ =>
     neg_le_of_abs_le (abs_two_re_lagStructure_le_of_RH hRH (Real.log_natCast_nonneg n))⟩
+
+open CountingHolography in
+/-- **RH is the approach to the line plus counts on runs of integers.** Every effective class
+`Γ_1 + Γ_d`, `d` in a set of runs of integers, carries an `ℕ`-count with Tate limit its defect. -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_effectiveCounts_integer_runs (D : Set ℕ)
+    (hD : ∀ L U : ℝ, ∃ x : ℕ, U ≤ x ∧ ∀ n : ℕ, x ≤ n → (n : ℝ) ≤ Real.exp L * x → n ∈ D) :
+    RiemannHypothesis ↔ _root_.RHTower.BacklundConverse.ZerosApproachLine ∧ ∀ d ∈ D, 0 < d →
+      ∃ K : ℕ → ℕ, Tendsto (fun m : ℕ => (K m : ℝ) / (m : ℝ) ^ 2) atTop
+        (𝓝 (planeDefect d (1, 1))) := by
+  rw [_root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
+  constructor
+  · rintro ⟨hZ, hA⟩
+    have hRH :=
+      _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
+    refine ⟨hZ, fun d _ hd => ?_⟩
+    have h := planeDefect_nonneg_of_RH hRH hd 1 1
+    exact ⟨fun m => ⌊(m : ℝ) ^ 2 * planeDefect d (1, 1)⌋₊,
+      tendsto_floor_div_sq h⟩
+  · rintro ⟨hZ, h⟩
+    -- the positive part of `D` still contains the runs
+    set D' : Set ℕ := {n | n ∈ D ∧ 0 < n}
+    have hD' : ∀ L U : ℝ, ∃ x : ℕ, U ≤ x ∧ ∀ n : ℕ, x ≤ n → (n : ℝ) ≤ Real.exp L * x → n ∈ D' := by
+      intro L U
+      obtain ⟨x, hx, hxD⟩ := hD L (max U 1)
+      refine ⟨x, le_trans (le_max_left _ _) hx, fun n hxn hn => ⟨hxD n hxn hn, ?_⟩⟩
+      have h1 : (1 : ℝ) ≤ x := le_trans (le_max_right _ _) hx
+      have h2 : (1 : ℝ) ≤ n := le_trans h1 (by exact_mod_cast hxn)
+      exact_mod_cast (show (0 : ℝ) < n by linarith)
+    refine ⟨hZ, asymptoticAbscissaLaw_of_bddBelow_integer_runs D' hD'
+      (K := 2 * zetaScalingDatum.orbitCorr splineCycle 0)
+      fun n hn => ?_⟩
+    obtain ⟨K, hK⟩ := h n hn.1 hn.2
+    have hnn := ge_of_tendsto' hK fun m => div_nonneg (Nat.cast_nonneg _) (sq_nonneg _)
+    rw [planeDefect_one_one, orbitCorr_eq_re_lagStructure_spline,
+      orbitCorr_eq_re_lagStructure_spline] at hnn
+    rw [orbitCorr_eq_re_lagStructure_spline]
+    linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ

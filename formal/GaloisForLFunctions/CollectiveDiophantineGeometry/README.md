@@ -194,9 +194,36 @@ a nonzero true value before the full prime-frequency interpolation length.
 The proof uses integer Siegel, Fel'dman's common divisor, and unique
 factorization followed by confluent interpolation.
 
-This is a collective auxiliary construction. Analytic extrapolation for
-these jets is still required to obtain a simultaneous logarithm lower
-bound; no breadth estimate or Gaudron bound is assumed.
+### Simultaneous logarithm bounds
+
+[CollectiveExtrapolation.lean](CollectiveExtrapolation.lean) and
+[CollectiveLogarithmBound.lean](CollectiveLogarithmBound.lean) close the
+analytic argument. For a rank-`r` integer matrix in `k` distinct prime
+logarithms, coefficient height `H≥1`, and `W=ceil(Σ log p_j)+1`, some row
+satisfies
+
+`|Σ_j M_ij log p_j| ≥ exp(−(C′+1)(log(r!H^r)+2))/(r·r!H^(r−1))`.
+
+Here `C′=collectiveLambdaExponent(P)` is an explicit expression in the
+collective parameters, independent of `H`. The stronger normalized bound is
+
+`Σ_i |(B⁻¹M log p)_i| ≥ exp(−(C′+1)(log|det B|+2))`.
+
+The analytic family differentiates only in the free directions. Its
+frequency defect is at most `q` times the normalized-form sum. Growth and
+error bounds use the enlarged analytic box `Q=kq`, while integer Siegel
+and terminal interpolation keep the original `q`. Hermite–Schwarz doubles
+the zero interval at each stage; the common divisor turns small companion
+values into exact zeros. The explicit thresholds force enough zeros to
+contradict prime-frequency interpolation.
+
+The parameter degree `h(k+1)+k` remains at most `3k+2` when `r≥k−r`.
+The full formulas and proof are in
+[the simultaneous-bound theorem](../../../docs/drafts/pipeline/3-formalized/cdg-simultaneous-logarithm-bounds.md).
+This supplies collective small-form control at every coefficient height.
+It does not yet count returns or remove the height-times-phase-error loss
+in applying forms to constant-precision returns. The full-rank determinant
+floor and scalar reductions remain useful additional bounds.
 
 ## Fixed-height mass calibration
 

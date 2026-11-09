@@ -153,9 +153,21 @@ The sum converges absolutely for `Re s>1`. For real χ, reflection gives
 
     (Re s−1) Σρ |s−ρ|⁻² ≤ 2 Re(Eχ′/Eχ)(s).
 
-Neither identity assumes a nonzero central value. The Euler inequality
-must still be joined to the Gamma ladders and exceptional pole–zero
-cancellation; the Dirichlet calibration is not yet a repulsion theorem.
+Neither identity assumes a nonzero central value.
+
+`TheDirichletPoleControlsTheInfiniteDivisor.lean` joins Euler positivity
+to the complete Gamma ladders. Every paired even nontrivial-zero moment
+is at most the corresponding pole moment. Put `α=σ−1`,
+`L=1+log q+log(|t|+3)`, and remove exactly one copy of a real zero β₁
+from each observation. The remaining reciprocal-square family z satisfies
+
+    Σ|z_j| ≪ α⁻²+L/α,       Re Σz_j^k ≤ 4k(1−β₁)α^(−2k−1).
+
+The mass bound holds uniformly for `1<σ≤2`; the moment bound holds for
+every positive k and every `σ>1`. All sums retain the infinite divisor,
+and repeated copies of β₁ remain. These arithmetic estimates supply the
+inputs for the power-sum detector; the final Dirichlet repulsion theorem
+is still being formalized.
 
 ## Questions and milestones
 

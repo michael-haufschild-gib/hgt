@@ -16,10 +16,14 @@ their difference is bounded by `4k(1−β₁)/(σ−1)^(2k+1)`.
 
 An infinite power-sum lemma must detect a remaining zero with order
 `k≤C M`, where M is the total normalized reciprocal-square mass.
-Put `L=log(q(|t|+3))`. For a target at `1−δ+it`, choose
-`σ=1+δ+1/L`; the required mass bound is `M≤C(1+δL)`.
-The moment comparison then gives `1≤C(1−β₁)L exp(CδL)`,
-which yields the stated logarithmic repulsion.
+Put `H=1+log q+log(|t|+3)`. For a target at `1−δ+it`, with
+`0≤δ≤½`, choose `α=δ+1/(2H)` and `σ=1+α≤2`.
+The target contributes a reciprocal square of modulus `(α+δ)⁻²`.
+Since `δ≤α`, the normalized mass satisfies `M≤C(1+δH)`.
+The detected moment and pole cancellation give
+`1≤C(1−β₁)H exp(CδH)`. Finally
+`H≤(1+1/log 3)log(q(|t|+3))`, giving the stated logarithmic law
+after changing the absolute constant.
 All nontrivial and trivial zeros, multiplicities, and Gamma terms must
 be retained. No finite truncation may replace the divisor.
 
@@ -28,7 +32,7 @@ be retained. No finite truncation may replace the divisor.
 This is the classical calibration required by §2.10, not a claim of new
 repulsion for ζ. Corpus search found Siegel's theorem and the two-torsion
 positivity exception; no declaration named Deuring–Heilbronn was found.
-Exact divisor identities and the target statement remain under audit.
+The final logarithmic repulsion statement remains under formalization.
 The infinite power-sum lemma, all-order Euler inequality, and completed
 divisor identities are proved in Lean; no Dirichlet repulsion theorem is claimed.
 
@@ -91,5 +95,8 @@ Lean: `ExceptionalLayerTheory/TheCompletedDirichletDivisor.lean` proves
 `exceptionalCompletion_logarithmic_moments` and
 `exceptionalCompletion_mass_le_logDeriv` for the actual completed product
 `ξ(s)q^(s/2)Λχ(s)`. Central zeros and multiplicities are retained.
-The conductor bound, Gamma-sign comparison, exceptional-copy removal,
-and final repulsion law remain pending.
+`TheDirichletPoleControlsTheInfiniteDivisor.lean` proves the Gamma-sign
+comparison, logarithmic conductor mass bound, and removal of exactly one
+exceptional copy. Its `pairedExceptionalResolvent_mass_le` and
+`pairedExceptionalResolvent_moment_le` are the two arithmetic inputs to
+the power-sum detector. The final logarithmic repulsion law remains pending.

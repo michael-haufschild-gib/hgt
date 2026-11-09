@@ -352,7 +352,7 @@ private theorem isClosed_massBound (C : ℝ) :
   simp only [MassBound, Set.setOf_forall]
   apply isClosed_iInter
   intro N
-  exact isClosed_le (continuous_finset_sum _ (fun n _ => (continuous_slot_im n).pow 2))
+  exact isClosed_le (continuous_finsetSum _ (fun n _ => (continuous_slot_im n).pow 2))
     continuous_const
 
 private theorem isClosed_protected (K : ℕ) :
@@ -360,7 +360,7 @@ private theorem isClosed_protected (K : ℕ) :
   simp only [Protected, Set.setOf_exists]
   apply isClosed_iUnion_of_finite
   intro n
-  exact (isClosed_le continuous_const ((continuous_slot_re n).sub_const _).abs).inter
+  exact (isClosed_le continuous_const ((continuous_slot_re n).sub continuous_const).abs).inter
     (isClosed_le continuous_const (continuous_slot_im n).abs)
 
 /-- Integer-multiplicity configurations with bounded inverse-square mass admit compact charts. -/
@@ -482,7 +482,7 @@ theorem family_mono {K L : ℕ} (hKL : K ≤ L) : family K ⊆ family L := by
   obtain ⟨n, hr, ht⟩ := hp.2.2
   have hε : 1 / ((L : ℝ) + 1) ≤ 1 / ((K : ℝ) + 1) :=
     one_div_le_one_div_of_le (by positivity) (by linarith)
-  exact ⟨⟨n, Nat.lt_of_lt_of_le n.property (Nat.add_le_add_right hKL 1)⟩,
+  exact ⟨⟨n, Nat.lt_of_lt_of_le n.isLt (Nat.add_le_add_right hKL 1)⟩,
     hε.trans hr, hε.trans ht⟩
 
 private theorem reciprocal_index_le {a : ℝ} (ha : 0 < a) {K : ℕ}
@@ -565,17 +565,17 @@ theorem tsum_encoding_eq_double {E : Type*} [NormedAddCommGroup E] [CompleteSpac
   let e := (activeEquiv Z hZ hnoreal).prodCongr (Equiv.refl Bool)
   have hcopies : Summable (fun i : Copy Z × Bool =>
       F (if i.2 then reflect i.1.1.val else i.1.1.val)) := by
-    have he := e.summable_iff.mpr hs
-    simpa only [Function.comp_apply, Equiv.prodCongr_apply, Equiv.refl_apply,
-      node_activeEquiv Z hZ hnoreal] using he
+    apply (e.summable_iff.mpr hs).congr
+    intro i
+    exact congrArg F (node_activeEquiv Z hZ hnoreal i.1 i.2)
   have h0 : Summable (fun i : Copy Z => F i.1.val) := by
     have hh := hcopies.comp_injective
       (show Function.Injective (fun i : Copy Z => (i, false)) from fun _ _ h => congrArg Prod.fst h)
-    simpa only [Function.comp_apply, Bool.false_eq_true, ↓reduceIte] using hh
+    exact hh.congr (fun i => by simp only [Function.comp_apply, Bool.false_eq_true, ↓reduceIte])
   have h1 : Summable (fun i : Copy Z => F (reflect i.1.val)) := by
     have hh := hcopies.comp_injective
       (show Function.Injective (fun i : Copy Z => (i, true)) from fun _ _ h => congrArg Prod.fst h)
-    simpa only [Function.comp_apply, ↓reduceIte] using hh
+    exact hh.congr (fun i => by simp only [Function.comp_apply, ↓reduceIte])
   have h0sum : (∑' i : Copy Z, F i.1.val) = ∑' z : Z.carrier, Z.mult z • F z := by
     simpa only [tsum_const, Nat.card_fin] using h0.tsum_sigma
   have h1sum : (∑' i : Copy Z, F (reflect i.1.val)) =
@@ -594,14 +594,20 @@ theorem tsum_encoding_eq_double {E : Type*} [NormedAddCommGroup E] [CompleteSpac
     _ = ∑' i : Occurrence (encoding Z), F (node (encoding Z) i) :=
       (hasSum_node hc F hs).tsum_eq
     _ = ∑' i : Copy Z × Bool, F (if i.2 then reflect i.1.1.val else i.1.1.val) := by
-      symm
-      simpa only [Equiv.prodCongr_apply, Equiv.refl_apply, node_activeEquiv Z hZ hnoreal] using
-        e.tsum_eq (fun i : Occurrence (encoding Z) => F (node (encoding Z) i))
+      rw [← e.tsum_eq (fun i : Occurrence (encoding Z) => F (node (encoding Z) i))]
+      apply tsum_congr
+      intro i
+      exact congrArg F (node_activeEquiv Z hZ hnoreal i.1 i.2)
     _ = ∑' i : Copy Z, (F i.1.val + F (reflect i.1.val)) := by
       rw [hcopies.tsum_prod]
       apply tsum_congr
       intro i
       simp only [tsum_bool, Bool.false_eq_true, ↓reduceIte]
     _ = _ := by rw [h0.tsum_add h1, h0sum, h1sum, hr, two_nsmul]
+
+#print axioms tempered_config
+#print axioms isCompact_family
+#print axioms exists_family_encoding
+#print axioms tsum_encoding_eq_double
 
 end GaloisForLFunctions.ZeroConfigurationGeometry.CompactCoordinates

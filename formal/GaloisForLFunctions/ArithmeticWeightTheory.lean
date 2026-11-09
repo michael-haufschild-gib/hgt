@@ -1,2 +1,3 @@
 import GaloisForLFunctions.ArithmeticWeightTheory.TheGenericFibreHasUniformWeights
 import GaloisForLFunctions.ArithmeticWeightTheory.TheTrivialFibreIsTheJump
+import GaloisForLFunctions.ArithmeticWeightTheory.EulerDeformationsOfZetaAreIsozeric

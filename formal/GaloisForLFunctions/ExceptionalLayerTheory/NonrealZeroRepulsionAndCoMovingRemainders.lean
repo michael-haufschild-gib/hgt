@@ -269,8 +269,8 @@ theorem tendsto_fixed_gap_mul_log_atTop {β : ℝ} (hβ : β < 1) :
 /-! ### Co-moving remainder modes and the `exp(-a t)` observation phase transition -/
 
 /-- Exact evaluation of a Gaussian Mellin–Barnes mode for a co-moving zero `β_r + i t` observed at
-`σ + i t` (`σ < β_r`): the imaginary offset vanishes, removing Stirling's `e^{-π t / 4}` damping. -/
-theorem gaussianMBKernel_coMoving_eq {β_r σ : ℝ} (hσ : σ < β_r) (a t : ℝ) :
+`σ + i t`: the imaginary offset vanishes, removing Stirling's `e^{-π t / 4}` damping. -/
+theorem gaussianMBKernel_coMoving_eq (β_r σ a t : ℝ) :
     gaussianMBKernel (Real.exp (-a * t)) (((β_r : ℂ) + t * I) - ((σ : ℂ) + t * I)) =
       (((1 / 2 : ℝ) * Real.Gamma ((β_r - σ) / 2) *
         Real.exp (a * (β_r - σ) / 2 * t) : ℝ) : ℂ) := by
@@ -295,7 +295,7 @@ theorem norm_gaussianMBKernel_coMoving {β_r σ : ℝ} (hσ : σ < β_r) (a t : 
     ‖gaussianMBKernel (Real.exp (-a * t)) (((β_r : ℂ) + t * I) - ((σ : ℂ) + t * I))‖ =
       (1 / 2 : ℝ) * Real.Gamma ((β_r - σ) / 2) * Real.exp (a * (β_r - σ) / 2 * t) := by
   have hΓ : 0 < Real.Gamma ((β_r - σ) / 2) := Real.Gamma_pos_of_pos (by linarith)
-  rw [gaussianMBKernel_coMoving_eq hσ, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
+  rw [gaussianMBKernel_coMoving_eq, Complex.norm_real, Real.norm_of_nonneg (by positivity)]
 
 /-- The observation abscissa `σ` cancels identically from the exponential rate difference between a
 fixed top-layer mode `ρ_top` and a co-moving remainder mode at `β_r + i t`. -/

@@ -83,8 +83,9 @@ The construction separates prime-frequency dimension `k` from jet dimension
 `3k+2`, instead of the quadratic degree at rank one. All dimensions and
 coefficient-height scales are unrestricted.
 
-Analytic extrapolation for these collective jets remains open. This result
-neither imports Gaudron's theorem nor proves a breadth law or an RH producer.
+The analytic closure and simultaneous logarithm bound are proved in
+[CDG-SIM](cdg-simultaneous-logarithm-bounds.md). This construction imports
+no Gaudron theorem and does not prove a breadth law or an RH producer.
 
 ## Lean
 

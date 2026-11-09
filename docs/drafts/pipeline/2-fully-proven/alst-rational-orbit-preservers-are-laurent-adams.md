@@ -59,11 +59,14 @@ rigidity forces `b=0`.
 | Entire quotients of unit modulus are characters | `entire_quotient_eq_character` |
 | Integer scalar endomorphisms of the prime-logarithm lattice | `prime_log_lattice_dilation_is_int` |
 | Polynomial quotient characters have signed prime frequencies | `polynomial_quotient_character_frequency` |
+| Complete rational classification and converse | `rationalPreservesPrimeOrbit_iff`, `rationalPreservesPrimeOrbit_laurentAdams` |
+| Unique exponent and translation | `laurentAdamsRelation_parameters_unique` |
+| Two fixed orbit points force the identity | `rational_preserver_two_fixed_points` |
+| Real and integer coefficients remove translation | `real_rational_preserver_is_laurentAdams`, `integer_rational_preserver_is_laurentAdams` |
 
 These components and the corpus inputs
 `logDeriv_residue_of_meromorphicOrder`,
 `EntireQuotient.exists_entire_nonvanishing_quotient`,
 `OrderOneRigidity.exists_expAffine_of_entire_quotient`
 have only `propext`, `Classical.choice`, `Quot.sound` as transitive axioms.
-Classification assembly and the real/integer consequences still require
-final Lean verification.
+All statements are formalized. Final plain module audits remain.

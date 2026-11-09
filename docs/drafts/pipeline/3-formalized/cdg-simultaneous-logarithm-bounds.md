@@ -1,8 +1,8 @@
 # Simultaneous logarithm bounds with explicit collective parameters
 
 - **ID:** CDG-SIM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean verification in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** A rank-sensitive simultaneous lower bound for independent
   integer forms in any finite family of distinct prime logarithms.
 
@@ -118,6 +118,10 @@ published version.
 
 `CollectiveExtrapolation.lean` proves the actual free-direction analytic
 identities, error bounds, arithmetic small-value step, and doubling.
-`CollectiveLogarithmBound.lean` is the target for the closed bound and
-`exists_explicit_collective_logarithm_bound`. Final source verification and
-transitive axiom audits are pending.
+`CollectiveLogarithmBound.lean` proves the closed bound in
+`exists_explicit_collective_logarithm_bound`.
+
+Both modules passed direct `lake --old env lean` verification. Axiom audits
+of the capstone, `collective_pivot_bound_of_params`,
+`collective_extrapolation`, and `collective_stage_threshold` use only
+`propext`, `Classical.choice`, and `Quot.sound`.

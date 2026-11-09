@@ -33,7 +33,7 @@ theorem rational_preserver_of_real_origin (p q : P) (hpq : p ≠ q)
   have hconj (r : P) : (starRingEnd ℂ) (orbitPoint P b r) = orbitPoint P b r := by
     have hb := hc 0 r
     simp only [mul_zero, zero_add] at hb
-    rw [← hb, map_div, hN r, hD r]
+    rw [← hb, map_div₀, hN r, hD r]
   have hpow (r : P) : phase ((r : Nat.Primes) : ℕ) b ^ 2 = 1 := by
     change (orbitPoint P b r) ^ 2 = 1
     calc
