@@ -50,23 +50,25 @@ private theorem norm_damping_root_factor_le {R h : ℝ} (hR : 0 ≤ R)
 
 /-- On a vertical Euler line, a degree `d` divisor filter retains its full
 `h^d` gain, with only polynomial losses in the two height coordinates. -/
-theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
-    (ρ : ℂ) (β c : ℝ) :
-    ∃ B : ℝ, 0 < B ∧ ∀ h t v : ℝ, 0 ≤ h → h ≤ 1 →
+theorem exists_divisorDampingFilter_strip_bound (F : Finset XiZeroCopy)
+    (ρ : ℂ) (β R₀ : ℝ) :
+    ∃ B : ℝ, 0 < B ∧ ∀ c h t v : ℝ, |c| ≤ R₀ → 0 ≤ h → h ≤ 1 →
       ‖(divisorDampingFilter F ρ β h).eval
         (Complex.exp ((h : ℂ) * (((c : ℂ) + (t + v) * I) - β)))‖ ≤
       (h * B * (1 + |t|) * (1 + |v|)) ^
         (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) := by
   classical
   let S := F.filter (fun q => xiZero q ≠ ρ)
-  let R : ℝ := 1 + |c| + ∑ q ∈ S, ‖xiZero q‖
+  let R : ℝ := 1 + |R₀| + ∑ q ∈ S, ‖xiZero q‖
   have hsum : 0 ≤ ∑ q ∈ S, ‖xiZero q‖ := Finset.sum_nonneg fun _ _ => norm_nonneg _
-  have hR : 1 ≤ R := by dsimp only [R]; linarith only [hsum, abs_nonneg c]
+  have hR : 1 ≤ R := by dsimp only [R]; linarith only [hsum, abs_nonneg R₀]
   have hR0 : 0 < R := zero_lt_one.trans_le hR
-  have hcR : |c| ≤ R := by dsimp only [R]; linarith only [hsum]
   let B := (2 * R + 1) * Real.exp (R + |β|)
   refine ⟨B, by dsimp only [B]; positivity, ?_⟩
-  intro h t v hh hh1
+  intro c h t v hc hh hh1
+  have hcR : |c| ≤ R := by
+    dsimp only [R]
+    linarith only [hc, le_abs_self R₀, hsum]
   let z : ℂ := (c : ℂ) + (t + v) * I
   have hzre : z.re ≤ R := by simpa [z] using (le_abs_self c).trans hcR
   have hz : ‖z‖ ≤ |c| + |t| + |v| := by
@@ -107,7 +109,7 @@ theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
         apply hfactor
         have hqsum := Finset.single_le_sum (fun p _ => norm_nonneg (xiZero p)) hq
         dsimp only [R]
-        linarith only [hqsum, abs_nonneg c]
+        linarith only [hqsum, abs_nonneg R₀]
       _ = _ := by simp
   calc
     _ ≤ (h * B * (1 + |t|) * (1 + |v|)) *
@@ -115,6 +117,17 @@ theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
       mul_le_mul (hfactor 1 (by simpa using hR)) hprod
         (Finset.prod_nonneg fun _ _ => norm_nonneg _) (by positivity)
     _ = _ := by rw [pow_add]; simp [S]
+
+/-- The strip estimate specialized to one Euler line. -/
+theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
+    (ρ : ℂ) (β c : ℝ) :
+    ∃ B : ℝ, 0 < B ∧ ∀ h t v : ℝ, 0 ≤ h → h ≤ 1 →
+      ‖(divisorDampingFilter F ρ β h).eval
+        (Complex.exp ((h : ℂ) * (((c : ℂ) + (t + v) * I) - β)))‖ ≤
+      (h * B * (1 + |t|) * (1 + |v|)) ^
+        (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) := by
+  obtain ⟨B, hB, hb⟩ := exists_divisorDampingFilter_strip_bound F ρ β |c|
+  exact ⟨B, hB, fun h t v hh hh1 => hb c h t v le_rfl hh hh1⟩
 
 private theorem integrable_gaussian_euler_line {s : ℂ} {c y : ℝ}
     (hy : 0 < y) (hc : 0 < c) (hs : 1 < s.re + c) :
@@ -337,6 +350,7 @@ theorem tendsto_primeDampingFilter_zero_of_fast_contraction (F : Finset XiZeroCo
 
 end GaloisForLFunctions.ExceptionalLayerTheory
 
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_divisorDampingFilter_strip_bound
 #print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_divisorDampingFilter_euler_bound
 #print axioms GaloisForLFunctions.ExceptionalLayerTheory.primeDampingFilter_eq_euler_integral
 #print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_primeDampingFilter_arithmetic_bound
