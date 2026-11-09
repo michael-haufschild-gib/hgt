@@ -20,7 +20,7 @@ theorem monic_trace_discriminant_natAbs {f : ℤ[X]} (hf : f.Monic) :
     (Algebra.discr ℤ (AdjoinRoot.powerBasis' hf).basis).natAbs = f.discr.natAbs := by
   letI := hf.free_adjoinRoot
   letI := hf.finite_adjoinRoot
-  rw [← card_traceCokernel_eq_natAbs_discr]
+  rw [← card_traceCokernel_eq_natAbs_discr (AdjoinRoot.powerBasis' hf).basis]
   change Nat.card (MonicTraceCokernel f) = _
   rw [Nat.card_congr (monicTraceCokernelEquivDifferent hf).toEquiv]
   exact monicDifferent_count hf

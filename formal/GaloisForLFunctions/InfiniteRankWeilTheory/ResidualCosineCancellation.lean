@@ -48,14 +48,14 @@ private theorem dense_cosineCancellationWindow (m N : ℕ) :
   have hlo : Real.pi / 2 + (j : ℝ) * Real.pi ≤ ν * x := by
     have h := mul_le_mul_of_nonneg_right (Int.floor_le (ν * x / Real.pi - 1 / 2)) Real.pi_pos.le
     have heq : (ν * x / Real.pi - 1 / 2) * Real.pi = ν * x - Real.pi / 2 := by
-      field_simp <;> ring
+      field_simp
     rw [heq] at h
     change (j : ℝ) * Real.pi ≤ ν * x - Real.pi / 2 at h
     linarith only [h]
   have hhi : ν * x < Real.pi / 2 + (j : ℝ) * Real.pi + Real.pi := by
     have h := mul_lt_mul_of_pos_right (Int.lt_floor_add_one (ν * x / Real.pi - 1 / 2)) Real.pi_pos
     have heq : (ν * x / Real.pi - 1 / 2) * Real.pi = ν * x - Real.pi / 2 := by
-      field_simp <;> ring
+      field_simp
     rw [heq] at h
     change ν * x - Real.pi / 2 < ((j : ℝ) + 1) * Real.pi at h
     linarith only [h]
@@ -122,7 +122,7 @@ theorem cosine_eq_positive_oscillatory_pair (t : ℝ) :
     (Real.cos t : ℂ) = oscillatoryJet ![1, -1] (fun _ : Fin 2 => (1 / 2 : ℂ)) 0 t := by
   rw [Complex.ofReal_cos]
   simp only [oscillatoryJet, TrigSum.trigSum, pow_zero, mul_one, Fin.sum_univ_two,
-    Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, Complex.ofReal_one,
+    Matrix.cons_val_zero, Matrix.cons_val_one, Complex.ofReal_one,
     Complex.ofReal_neg, one_mul, neg_one_mul]
   have h := Complex.two_cos (t : ℂ)
   rw [mul_comm (t : ℂ) Complex.I, show -(t : ℂ) * Complex.I = Complex.I * -(t : ℂ) by ring] at h
@@ -152,7 +152,7 @@ theorem dimH_positive_cosineCancellationBases_eq_zero :
     dimH (cosineCancellationBases ∩ Ioi 0) = 0 := by
   have hfreq : Function.Injective (![1, -1] : Fin 2 → ℝ) := by
     intro i j h
-    fin_cases i <;> fin_cases j <;> norm_num at h ⊢
+    fin_cases i <;> fin_cases j <;> first | rfl | norm_num at h
   have hc : (fun _ : Fin 2 => (1 / 2 : ℂ)) ≠ 0 := by
     intro h
     have h0 := congrFun h 0

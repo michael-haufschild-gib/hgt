@@ -85,6 +85,8 @@
 | C55 | The prime number theorem in every window | proved (Lean), unconditional | `tendsto_normTrace_half_of_re_lt_one`: in the open strip `2 Re S(u) e^{−u/2} → 0`; for `ζ`, `tendsto_primeWindow_sub_archPoleWindow_div_sqrt`: `(P(d) − A(d))/√d → 0`. The trivial Stepanov exponent `½` holds with `o(·)`; RH is `O(1)` at one gap set (C54), an exponent `σ < ½` a zero-free strip (C49) |
 | C56 | The effective classes of two Frobenii | proved (Lean) | `riemannHypothesis_iff_bddBelow_twoFrobeniiLags`: RH iff `c_B(log m − log n) ≥ −K` for all `m, n ∈ ⟨p, q⟩` — one-sided, no attainment, because the lags are dense; `riemannHypothesis_iff_twoFrobeniiEffectiveCounts`: RH iff every effective class `Γ_m + Γ_n`, `m, n ∈ ⟨p, q⟩`, carries an `ℕ`-count along its ray with Tate limit `2c_B(0) + 2c_B(log m − log n)`. The count door of C25 with two primes in place of all of them |
 | C57 | Two Frobenii see every configuration | proved (Lean) | the traces are continuous, so a one-sided bound at the dense lags `log m − log n`, `m, n ∈ ⟨p, q⟩`, holds at every lag (`forall_of_twoFrobeniiLags`); then for every tempered configuration: from below without real zeros the line (`onLine_of_bddBelow_twoFrobeniiLags`), with real zeros depth `≤` the deepest real zero (`re_le_of_bddBelow_twoFrobeniiLags_of_realDepth`), from above the line, real zeros included (`onLine_of_bddAbove_twoFrobeniiLags`); `grh_of_bddAbove_twoFrobeniiLags` for `L(s, χ)`, Siegel zeros included. No attainment, no gaps |
+| C58 | Two Frobenii need an attained top at single degrees | proved (Lean) | `exists_twoPrime_samples_bddBelow_nonattained`: in the positive-weight model (as `RHTower.WeilLagSingleBaseWolffConfiguration`) there are points `½ ± x_k ± iγ_k`, `x_k ↑ Θ` not attained, `γ_k → ∞`, positive summable weights, whose symmetric samples are `≥ −2` at every `a log p + b log q`. Recursive weights/windows `c_{k+1} = (c_k/16)e^{−ΘU_k}`, `U_{k+1} = max(U_k + 1, log(16/c_{k+1})/(x_{k+1} − x_k))` make quartets `k, k+1` dominate on `[U_k, U_{k+1}]`; `γ_k = 2πN_k/log p` with Dirichlet's `|N_k log q/log p − r_k| ≤ 1/Q_k`, `Q_k ≍ U_{k+1}`, keeps `cos(γ_kλ) ≥ ½` there (`half_le_cos_freq`). C50's attainment is sharp; the pairs of C56/C57 are what removes it. `exists_finPrimes_samples_bddBelow_nonattained`: the same at the degrees `Π P_i^{a_i}` of any finite set of primes (simultaneous Dirichlet): no finitely generated monoid of degrees removes the attained top, the primes with power-saving gaps do (C45) |
+| C59 | Stepanov bounds produce the asymptotic abscissa law | proved (Lean) | `asymptoticAbscissaLaw_of_noDeepest` (no deepest off-line zero ⇒ `RHTower.AsymptoticAbscissaLaw`, via `asymptoticAbscissaLaw_of_not_attainedTop`); producers from a one-sided bound at the primes `≡ a (mod q)` (both sides), at the primes off a set of relative density zero, at the `pᵃqᵇ` of two primes. These sets are not known to give RH (other `L`-functions, no power-saving gaps, C58), but they give the abscissa law; no resonant steps are excluded |
 
 ## Big picture
 
@@ -115,7 +117,10 @@ configuration (C46): the primes, the `pᵏ`, the `nᵏ` with `O(x^{1/k})` elemen
 whose series has a pole at `s = 1` and no other singularity on `Re s = 1` sees every attained top layer,
 from `ζ(1 + it) ≠ 0` alone (C35, C38): the primes in a residue class, density-one sets of primes (C44),
 the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). One prime resonates at the heights
-`2πm/log p` and aliases (C33, C52); two cannot resonate together. Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
+`2πm/log p` and aliases (C33, C52); two cannot resonate together. The attained top cannot be dropped
+at the single degrees of any finitely generated monoid: quartets made resonant by simultaneous
+Dirichlet approximation on successive windows keep the samples bounded below (C58); the primes,
+infinitely generated with power-saving gaps, need no attainment (C45). Two-sided, the planes `⟨Γ_m, Γ_n⟩` of
 the monoid `⟨p, q⟩` decide RH with no attainment, their lags being dense (C51), and so do their
 effective classes `Γ_m + Γ_n`, one-sided (C56), for every configuration and for `L(s, χ)` (C57);
 positivity on the
@@ -176,13 +181,10 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    residue class (whose gaps would need zero-density estimates for every `L(s, χ)` mod `q`) or for
    density-one sets of primes, or one-sided at the `pᵃqᵇ` of two primes (C50); one prime alone
    is not a sampling set (C52) and its degrees `qⁿ` alias every height `2πm/log q` (C33).
-   Conjecture (sharpness of C50, positive-weight model): there are points `ρ_k = ½ + x_k ± iγ_k`,
-   `x_k ↑ Θ` not attained, with positive weights `c_k`, whose samples `Σ_k c_k e^{(ρ_k − ½)λ}` (with
-   conjugates and reflections) are bounded below at every `λ = a log p + b log q`. Sketch: quartet
-   `k` dominates the others on a window `[U_k, U_{k+1}]` (weights chosen after the `x_k`), and
-   `γ_k = 2πn/log p` with `‖n log q/log p‖ ≤ 1/Q`, `Q ≍ U_{k+1}` (Dirichlet), keeps `γ_kλ` within
-   `π/4` of `2πℤ` at all degrees of the window. Pairs `log m − log n` are dense and need no
-   attainment (C56, C57); single degrees would.
+   In the positive-weight model single degrees of any finitely generated monoid need an attained
+   top (C58); pairs `log m − log n` are dense and need none (C56, C57). Open: the same for
+   configurations with spline weights `m|B̂(γ − ix)|²`, whose size is tied to the height (windows
+   fixed first, heights chosen resonant inside prescribed weight ranges).
 
 ## Log
-- 2026-11-08 — created; C1–C57 formalized in `SurfaceOfSpecZ/` (fifty-six modules)
+- 2026-11-08 — created; C1–C59 formalized in `SurfaceOfSpecZ/` (fifty-eight modules)

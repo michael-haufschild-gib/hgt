@@ -407,8 +407,39 @@ archimedean current.
 
 `TheArchimedeanDampingErrorIsUniform.lean` proves the exact series, uniform
 bound, uniform convergence and scalar classification. These laws remove
-height dependence from the archimedean error. Joint control of the complete
-nontrivial-zero field remains a separate requirement for transport.
+height dependence from the archimedean error.
+
+### The complete finite part at escaping heights
+
+The full Gamma-subtracted current admits joint control of damping and height.
+For complex `s`, retain every zero with multiplicity in
+
+    B_s(y)=Σρ ½Γ((ρ−s)/2)y^(−(ρ−s)/2),
+    R_s(y)=G_s(y)+B_s(y)−e^(−y)(A(s)−ξ′/ξ(s)).
+
+Fix `σ₀,δ>0`. Throughout `σ₀≤Re s≤1`, `Im s≥4`, at distance at least `δ`
+from every actual zero, there is a constant depending only on `σ₀,δ` such that
+
+    |R_s(y)| ≤ C y(1+y)(1+log Im s),       y>0.
+
+The complete Gamma field is absolutely admitted. Two Mellin recursions bound
+each renormalized germ by `6y(1+y)|ρ−s|⁻²`. Local zero counts control the
+nearby copies; the infinite far-field second moment bounds the remainder.
+Together they give `Σρ|ρ−s|⁻²=O_δ(1+log Im s)`. The archimedean estimate
+then closes the exact prime-current bound.
+
+Consequently `R_s(y)/(1+log Im s)→0` uniformly on that whole domain.
+Absolute error tends to zero along every admitted path with `y→0⁺` and
+`y(1+log Im s)→0`, even when height escapes. Under `¬AAL`, the actual finite
+exceptional layer supplies a whole high strip `σ≤Re s≤1`, `Im s≥H`, with
+`1/2<σ<1`, on which both the estimate and uniform limit hold; an actual zero
+still lies strictly right of `σ`. No separate zero-free or recurrence input
+is assumed in this specialization.
+
+`TheFullGaussianCurrentAtEscapingHeights.lean` proves these statements with
+the complete prime and zero fields. The Gamma counterterm remains in the
+observable. Its removal and same-depth replication require further arithmetic
+control.
 
 ### Conductor-normalized height reflection
 

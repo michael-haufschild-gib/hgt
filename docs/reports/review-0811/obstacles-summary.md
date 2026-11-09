@@ -618,8 +618,18 @@ with no restriction coupling escaping height to damping. For fixed positive
 `y,c,σ`, a scalar `z` leaves `A_y,c(σ+it)−zA(σ+it)` bounded for all `t`
 exactly when `z=e^(−y)`. `TheArchimedeanDampingErrorIsUniform.lean` proves
 the full correction series, telescoping bound and unique normalization;
-all four terminal axiom audits are standard. Control of the complete
-nontrivial-zero field and height replication remain open.
+all four terminal axiom audits are standard.
+
+**Joint height/damping finite part [L].** Retain the full Gamma field `B_s(y)`.
+For `σ₀≤Re s≤1`, `Im s≥4`, at distance at least `δ>0` from every actual zero,
+`|G_s(y)+B_s(y)−e^(−y)(A(s)−ξ′/ξ(s))|≤C_(σ₀,δ)y(1+y)(1+log Im s)`.
+The logarithmically weighted error tends uniformly to zero; absolute error
+vanishes along every admitted path with `y(1+log Im s)→0`. Under `¬AAL`,
+the finite exceptional layer supplies a whole high strip with this control,
+strictly left of an actual exceptional zero.
+`TheFullGaussianCurrentAtEscapingHeights.lean` retains both infinite fields;
+six terminal axiom audits are standard. Removing Gamma counterterms and
+proving height replication remain open.
 
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.

@@ -33,6 +33,7 @@ import GaloisForLFunctions.EulerFETransportTheory.TheFinitePartOfTheGaussianPrim
 import GaloisForLFunctions.EulerFETransportTheory.GaussianRenormalizationAtZeros
 import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentReadsTopMultiplicity
 import GaloisForLFunctions.EulerFETransportTheory.TheArchimedeanDampingErrorIsUniform
+import GaloisForLFunctions.EulerFETransportTheory.TheFullGaussianCurrentAtEscapingHeights
 
 /-!
 # Euler–functional-equation transport
@@ -89,4 +90,10 @@ recovers its divisor multiplicity. Failure of AAL supplies such an off-line zero
 The archimedean Gaussian current differs from `exp (-y)` times its undamped
 value by at most `y * exp (-y) / re s`, uniformly over the whole right half-plane.
 This is the unique scalar normalization with bounded error on a positive vertical line.
+The complete Gamma-subtracted prime current has error
+`O(y * (1 + y) * (1 + log (im s)))` on a positive strip away from the divisor.
+Its logarithmically weighted error vanishes uniformly at arbitrary heights;
+its absolute error vanishes when damping times logarithmic height tends to zero.
+Failure of AAL supplies a whole high strip with these laws, strictly left of
+an actual exceptional zero.
 -/

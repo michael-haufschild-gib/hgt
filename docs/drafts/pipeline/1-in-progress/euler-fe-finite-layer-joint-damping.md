@@ -17,7 +17,7 @@ The infinite complementary field must be bounded, not discarded. The actual
 finite top under `¬AAL` should supply this estimate on a whole high strip
 strictly left of the top.
 
-## Mechanism to formalize
+## Proof mechanism
 
 For `a=ρ−s`, `−1<Re a<1`. Gamma recursion gives
 `½Γ(a/2)=2Γ(a/2+2)/(a(a+2))`. The numerator is uniformly bounded on a fixed
@@ -31,3 +31,6 @@ This is an infinite-tail theorem in the actual finite-layer world. It would
 remove the infinite counterterm, but still leave the finite exceptional modes.
 Further height/damping control is needed to remove those modes from the
 observable. No replication or contradiction is claimed.
+
+Formalization: `EulerFETransportTheory/OnlyExceptionalGaussianModesRemain.lean`.
+Lean verification is pending.

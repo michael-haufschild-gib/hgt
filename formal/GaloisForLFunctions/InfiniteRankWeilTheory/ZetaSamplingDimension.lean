@@ -1,5 +1,6 @@
 import GaloisForLFunctions.InfiniteRankWeilTheory.IsolatedTopSamplingDimension
 import GaloisForLFunctions.InfiniteRankWeilTheory.ZetaMetricTopDetection
+import GaloisForLFunctions.RHTower.WeilLagFunctionExponentialExceptionCriterion
 
 /-!
 # Positive-dimensional recurrence and the zeta abscissa law
@@ -40,7 +41,8 @@ theorem dimH_lagRecurrenceBases_eq_one_of_abscissa_le {a : ℝ}
     (ha : RHTower.zetaZeroAbscissa - 1 / 2 ≤ a) : dimH (lagRecurrenceBases a) = 1 := by
   rw [lagRecurrenceBases_eq_Ioi_of_abscissa_le ha]
   simpa only [Module.finrank_self, Nat.cast_one] using
-    (Real.dimH_of_mem_nhds (x := (1 : ℝ)) (s := Ioi 0) (isOpen_Ioi.mem_nhds zero_lt_one))
+    (Real.dimH_of_mem_nhds (x := (1 : ℝ)) (s := Ioi 0)
+      (isOpen_Ioi.mem_nhds (show (1 : ℝ) ∈ Ioi (0 : ℝ) by norm_num)))
 
 /-- Under failure of actual zeta AAL, one dimension-zero set contains all sub-top recurrence
 bases, simultaneously over all rates and constants. -/

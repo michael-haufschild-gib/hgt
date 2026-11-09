@@ -140,21 +140,36 @@ Hasse–Weil at every integer degree, i.e. RH.
     at most `≲ S e^{R}√P` group elements come near, each spoils at most one prime `≤ P`, and the primes
     outnumber them (Chebyshev); so bounded geometry holds along a prime ratio.
 
-**To discover.**
-- The **diagonal of a smoothing**: a coupled damping of smoothed graphs whose divergences cancel
-  between channels without a counterterm.
-- **Riemann–Roch on `S`**: an `h⁰` on classes of `S` whose Euler characteristic has the genera as linear
-  terms, and **Hodge index from Riemann–Roch plus the ample pole**.
-- An **orientation cover over ℤ** with a weight-`½` cohomology.
+**Calibration (classical).** Over `𝔽_q(T)` every place, `∞` included, is a tree, and Weil's local
+kernel at a place of norm `N` is `log N·N^{−j/2}`, the tree Green function at the Ramanujan edge as in
+`weilPrimeKernel_mul_pow_eq_treeGreen`. For `ℙ¹` the local kernels add up to the pole exactly, because
+`Σ_{deg P^j = k} deg P = q^k` and `∞` contributes `q^{−k/2}`: genus zero, defect zero. For a curve of
+genus `g` the defect is the sum over the `2g` Frobenius eigenvalues and Castelnuovo–Severi is its sign
+(ACS). Over `ℤ` the archimedean fibre is `ℍ³` rather than a tree; its jets are the trivial zeros, and
+the zonotope (`𝔽₁`) realizes the pole plane and the cusp term `min(m, n)` of `ℍ³`, with Hodge index
+`2Σ_k(Σ_{n>k} a_n)² ≥ 0` by counting (`zonotopeDefect_eq`).
+
+**What remains to discover, and its strength.**
+- The **diagonal of a smoothing.** For smoothings the archimedean channel locks with itself: the
+  Lévy–Khintchine form of Weil's functional has the `ℍ³` Green function as Lévy density and needs no
+  counterterm. A damping that makes the whole smoothed form positive is RH (SOSZ).
+- **Riemann–Roch on `S`.** In the axiomatics of ACS, Hodge index holds iff some effective cone satisfies
+  Riemann–Roch and the ampleness of the pole (`PolarSurface.exists_effectivity_iff_hodgeIndex`), and
+  on the scaling surface Hodge index is RH (`scalingSurface_hodgeIndex_iff`): an `h⁰` with Riemann–Roch
+  and the ample pole is RH-strength. The genus of a smoothing is half its Weil energy, the weighted
+  number of zeros `Re Σ_ρ m_ρ h(γ_ρ) conj h(γ̄_ρ)` (`ArithmeticOrientationGeometry.configScalingDatum_orbitCorr_eq`
+  at `t = 0`); the atomic genus is the archimedean Green potential of the configuration.
+- An **orientation cover over ℤ** with a weight-`½` cohomology: its square-root estimate is the Mertens
+  bound `M(N) = O(N^{½+ε})`, i.e. RH.
 
 ## 5. Questions
 
 | # | Question | Status |
 |---|---|---|
 | Q1 | Which Hilbert space carries the causal jet waves and the twisted torsion energies together, with locked divergences? | Atoms: **no** — locking produces the discriminant diagonal, which the `N log N` wall excludes (Lean). Smoothed graphs: equivalent to RH (SOSZ). |
-| Q2 | What are the sheaves (Euler characteristics) whose linear terms are the genera `N log N` and `c_B(0)/2`? | The atomic genus is the archimedean Green potential of the configuration, not a locked self-intersection (Lean + SOSZ); a sheaf-theoretic `h⁰` is open. |
-| Q3 | Which class is ample, and does Hodge index follow from Riemann–Roch plus that class? | The pole plane; on the fibre it is the spherical pair `(3/2)φ_{3/2} + ½φ_{1/2}` (Lean). The abstract reduction HI ⇔ RR + ample is in ACS/AET; an `h⁰` on `S` is open. |
-| Q4 | (B118′) Does any hyperbolic 3-manifold carry Weil's form? (1) finite volume, every embedding; (2) twisted infinite-volume carriers | (2): **no.** For a group with Poincaré series convergent at `½` and any weights `‖w‖ ≤ 1`: excluded when the degree end `∞` is a point of discontinuity (bounded `γ^{±1}(∞)`, bounded isometric radii, finite stabilizer) and when it is a conical limit point (Lean); for geometrically finite groups with `δ < ½` every boundary point is one of the two (classical). Also excluded: every carrier of bounded geometry along one prime ratio, every group whose degree geodesic is the axis of a loxodromic. Open: non-conical limit points of geometrically infinite groups. (1): vertical embedding excluded (SOSZ); in finite volume the Poincaré series at `½` diverges (`δ = 2`), so a carrier there is a continued resolvent; general embeddings into cusps open. |
+| Q2 | What are the sheaves (Euler characteristics) whose linear terms are the genera `N log N` and `c_B(0)/2`? | `2g(B) = c_B(0)` is the weighted zero count `Re Σ_ρ m_ρ h(γ_ρ)conj h(γ̄_ρ)`, the trace of the identity on the spectral `H¹` (AOG); the atomic genus is the archimedean Green potential of the configuration, not a locked self-intersection (Lean + SOSZ). An `h⁰` with Riemann–Roch is RH-strength (Q3). |
+| Q3 | Which class is ample, and does Hodge index follow from Riemann–Roch plus that class? | The pole plane; on the fibre it is the spherical pair `(3/2)φ_{3/2} + ½φ_{1/2}` (Lean). Hodge index ⇔ Riemann–Roch on an effective cone with the ample pole (ACS), and on the scaling surface Hodge index ⇔ RH; so the reduction holds both ways and its input is RH-strength. |
+| Q4 | (B118′) Does any hyperbolic 3-manifold carry Weil's form? (1) finite volume, every embedding; (2) twisted infinite-volume carriers | (2): **no.** For a group with Poincaré series convergent at `½` and any weights `‖w‖ ≤ 1`: excluded when the degree end `∞` is a point of discontinuity (bounded `γ^{±1}(∞)`, bounded isometric radii, finite stabilizer) and when it is a conical limit point (Lean); for geometrically finite groups with `δ < ½` every boundary point is one of the two (classical). Also excluded: every carrier of bounded geometry along one prime ratio, every group whose degree geodesic is the axis of a loxodromic. Open: non-conical limit points of geometrically infinite groups. (1): every embedding with a bounded subsequence is excluded for every kernel with a Newtonian singularity, so every embedding into a compact quotient (Lean); the vertical embedding into a cusp is excluded (SOSZ); general embeddings escaping into cusps open. |
 | Q5 | Which trace discriminant defines an orientation cover over ℤ, and what is its cohomology? | Delegated to RIAC: the prime-quadratic family `F_n = Π(X² + p)^a` has `sign disc F_n = μ(n)`; the square-root estimate is open. |
 | Q6 | (M2, M4) A locked presentation on windows of aperture `≤ 181/250`; Hodge index on windows of growing aperture | Smoothings: the counterterm-free presentation is the Lévy–Khintchine form `weilQuad = 2c₀‖f‖² + levyEnergy − primeSum + pole` (SpacingScaleHarmonicAnalysis, RHTower), whose Lévy density is the `ℍ³` Green function; its positivity on windows `≤ 181/250` is the corpus window theorem. Atoms: no locked presentation (Q1). M4 at all apertures is RH. |
 
@@ -167,7 +182,7 @@ Hasse–Weil at every integer degree, i.e. RH.
 | Green function as a function of `cosh d`: bounds, monotonicity, log-Lipschitz | `greenOfCosh_le`, `greenOfCosh_anti`, `le_greenOfCosh_of_le_two`, `mul_abs_deriv_greenOfCosh_le`, `abs_greenOfCosh_sub_le` |
 | Spherical analysis of the fibre | `sphericalFn`, `sphericalFn_radial`, `compensation_eq_spherical` |
 | Locked dampings | `lockedKernel`, `tendsto_lockedKernel_of_ne`, `tendsto_lockedKernel_self` |
-| Riemann–Roch for Frobenius graphs | to build |
+| Riemann–Roch for Frobenius graphs | axiomatic form in ACS (`RiemannRochAxiom`, `AmpleAxiom`); an `h⁰` with these axioms is RH-strength |
 | Poincaré domination, gaps, finiteness of near orbit points | `exists_gap`, `finite_near`, `card_near_le`, `greenOfCosh_imageCosh_le_poincare`, `exp_neg_half_h3Dist_le` |
 | Loxodromic and conical carriers | `imageCosh_diag_conj`, `exists_prime_nonsingular_of_diag`, `exists_nat_card_primes_gt` |
 | Tree Green functions | `treeGreen_resolvent`, `sum_treeGreen_apartment_nonneg`, `weilDeltaKernel_mul_pow` |
@@ -185,14 +200,15 @@ Hasse–Weil at every integer degree, i.e. RH.
 | No bounded-geometry carrier carries the torsion | `not_carrierSum_eq_torsion_of_boundedGeometry`, `not_carrierSum_eq_torsion_of_frequently_boundedGeometry` | proved |
 | No carrier of a group with a loxodromic along the degree geodesic | `not_carrierSum_eq_torsion_of_loxodromic` | proved |
 | No carrier at a conical degree end | `not_carrierSum_eq_torsion_of_conical` | proved |
+| No embedding into a compact quotient | `not_eq_frobenius_of_mapClusterPt`, `not_eq_frobenius_of_compact` | proved |
 | Weil's `p`-kernel is the tree Green function at the Ramanujan point; adelic Green formula | `weilPrimeKernel_mul_pow_eq_treeGreen`, `treeEigen_eq_iff`, `weilDeltaKernel_mul_pow`, `weilDeltaKernel_of_offLadder` | proved |
 | Finite-volume vertical carriers fold or diverge | `kleinian_thin_thick_dichotomy`, `parabolic_poincare_not_summable_half` | corpus (SOSZ) |
 | Pole and Frobenius are spherical; the compensation is `(3/2)φ_{3/2} − 2πG_{3/2}` | `compensation_eq_spherical`, `weilKernel_eq_spherical` | proved |
 | Plastic law as a spectral crossing | `compensation_neg_iff`, `compensation_pos_iff` | proved |
 | Locked dampings give the discriminant; no locked atomic presentation | `tendsto_lockedKernel_self`, `not_eventually_posSemidef_lockedKernel` | proved |
 | Hyperbolic Hodge index ⇔ RH | `riemannHypothesis_iff_hasseWeil_integerDegrees` (SOSZ) | corpus |
-| Locked presentation of smoothings on windows | — | open |
-| Riemann–Roch on `S` reproducing both genera | — | open |
+| Counterterm-free presentation of smoothings | Lévy–Khintchine form `weilQuad_eq` (SSHA), `archForm_eq_levyEnergy` (RHTower) | corpus |
+| Riemann–Roch with the ample pole ⇔ Hodge index ⇔ RH | `PolarSurface.exists_effectivity_iff_hodgeIndex`, `scalingSurface_hodgeIndex_iff` (ACS) | corpus |
 
 ## 8. Traps
 
@@ -213,10 +229,11 @@ Hasse–Weil at every integer degree, i.e. RH.
 ## 9. Open research topics
 
 1. B118′(2) at non-conical limit points (geometrically infinite groups with `δ < ½`).
-2. B118′(1) for general embeddings: embeddings escaping into a cusp of a lattice, with the
-   automorphic resolvent at eigenvalue `¾` as carrier.
-3. The diagonal of smoothed graphs as a coupled damping (M2 on windows `≤ 181/250`, M4).
-4. An `h⁰` on classes of `S` with a Riemann–Roch formula.
+2. B118′(1) for embeddings escaping into a cusp of a lattice, with the automorphic resolvent at
+   eigenvalue `¾` as carrier (its cusp zero mode is the expected obstruction).
+3. Hodge index on windows of growing aperture (M4); at every aperture it is RH.
+4. An `h⁰` on classes of `S` constructed from the archimedean and tree Green functions, with Riemann–Roch
+   (RH-strength by Q3; a construction would be a new object, not a new equivalence).
 5. The archimedean asymmetry: at `p` the critical parameter is the edge of the tempered spectrum, at
    `∞` it is the complementary point `¾` of `ℍ³`, and the pole cancels exactly that complementary
    piece. A Hodge index statement place by place in standard quantization.

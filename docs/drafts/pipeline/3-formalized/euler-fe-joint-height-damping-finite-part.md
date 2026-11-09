@@ -1,21 +1,22 @@
 # Joint height and damping control of the full Gaussian finite part
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Euler–FE conditional prime-discrepancy calculus.
 
-## Target
+## Theorems
 
 Put `G_s(y)=ΣΛ(n)n^(−s)e^(−yn²)−∫₁∞v^(−s)e^(−yv²)dv`,
 `B_s(y)=Σρ ½Γ((ρ−s)/2)y^(−(ρ−s)/2)`, and `A(s)=1/s+Γℝ′/Γℝ(s)`.
-For each `σ₀,δ>0`, seek a constant `C` such that
+For each `σ₀,δ>0`, there is a constant `C>0` such that
 
 `|G_s(y)+B_s(y)−e^(−y)(A(s)−ξ′/ξ(s))| ≤ C y(1+y)(1+log Im s)`
 
 for `y>0`, `σ₀≤Re s≤1`, `Im s≥4`, and distance at least `δ` from every
 actual zero. Both prime and zero sums must remain infinite and multiplicity-exact.
-The resulting error divided by `1+log Im s` should converge uniformly to zero
-as `y→0⁺`; absolute convergence holds along every such path with `y log Im s→0`.
+The resulting error divided by `1+log Im s` converges uniformly to zero
+as `y→0⁺`; absolute error vanishes along every such path with
+`y(1+log Im s)→0`.
 
 The actual `¬AAL` finite exceptional layer supplies `1/2<σ<1` and `H>0`
 such that this estimate and uniform limit hold throughout
@@ -41,7 +42,18 @@ the required fixed distance from every zero.
 
 ## Scope
 
-This would control the full renormalized current jointly in both parameters.
+This controls the full renormalized current jointly in both parameters.
 It neither bounds the unsubtracted Gamma modes nor supplies height replication.
 Formalization: `EulerFETransportTheory/TheFullGaussianCurrentAtEscapingHeights.lean`.
-Lean verification is pending.
+
+## Lean declarations and audit
+
+- `exists_zeroResolvent_logHeight_bound`: the complete squared-resolvent bound.
+- `gaussianPrimeGap_add_modes_sub_finitePart`: exact infinite-field decomposition.
+- `exists_gaussianFinitePartError_logHeight_bound`: joint quantitative estimate.
+- `tendstoUniformlyOn_gaussianFinitePartError_logHeight`: uniform weighted limit.
+- `tendsto_gaussianFinitePartError_of_joint_scale`: absolute limit on joint paths.
+- `not_asymptoticAbscissaLaw_has_jointGaussianControl`: actual `¬AAL` specialization.
+
+Direct `lake --old env lean` checking passes. All six transitive axiom audits
+contain only `propext`, `Classical.choice`, and `Quot.sound`.

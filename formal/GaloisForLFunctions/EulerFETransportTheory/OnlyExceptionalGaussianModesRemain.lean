@@ -33,7 +33,6 @@ theorem exists_gaussianMode_unit_bound :
     intro hz
     have hh := congrArg Complex.re hz
     dsimp [a] at hh
-    simp at hh
     linarith
   have hh : a / 2 + 1 ≠ 0 := by
     intro hz
@@ -45,11 +44,11 @@ theorem exists_gaussianMode_unit_bound :
       (a / 2 + 1) * (a / 2) * Complex.Gamma (a / 2) := by
     rw [show a / 2 + 2 = (a / 2 + 1) + 1 by ring,
       Complex.Gamma_add_one _ hh, Complex.Gamma_add_one _ (div_ne_zero ha0 two_ne_zero)]
+    ring
   have hid : (1 / 2 : ℂ) * Complex.Gamma (a / 2) =
       2 * Complex.Gamma (a / 2 + 2) / (a * (a + 2)) := by
     rw [hrec]
     field_simp
-    ring
   have hΓ : ‖Complex.Gamma (a / 2 + 2)‖ ≤ B := by
     apply hb
     · dsimp [a]; simp; linarith
@@ -240,7 +239,8 @@ theorem not_asymptoticAbscissaLaw_has_finiteGaussianControl
     by_contra hn
     apply hp
     change p ∈ hfin.toFinset
-    exact Set.Finite.mem_toFinset.mpr (lt_of_not_ge hn)
+    rw [Set.Finite.mem_toFinset]
+    exact lt_of_not_ge hn
   have hdomain : ∀ s : ℂ, σ ≤ s.re → s.re ≤ 1 → H ≤ s.im →
       s ∈ gaussianRegularHighStrip σ δ := by
     intro s hsσ hs1 hsH

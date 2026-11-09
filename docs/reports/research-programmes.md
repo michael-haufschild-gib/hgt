@@ -93,3 +93,7 @@
 - formal/GaloisForLFunctions/CountingHolography/README.md
 - formal/GaloisForLFunctions/EffectiveScalingGeometry/README.md
 - formal/GaloisForLFunctions/HeightHomotopyArithmeticCounts/README.md
+- formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/README.md
+- formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/README.md
+- formal/GaloisForLFunctions/EulerFETransportTheory/README.md
+- formal/GaloisForLFunctions/HyperbolicArakelovTheory/README.md

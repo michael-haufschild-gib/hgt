@@ -103,7 +103,14 @@ and both standard-axiom audits pass. No new height or contradiction follows.
 right half-plane. The renormalized error tends uniformly to zero on
 `Re s≥σ₀>0`; `e^(−y)` is the unique scalar leaving bounded vertical error.
 The full trivial-zero series and four terminal standard-axiom audits pass.
-The complete nontrivial-zero field still needs joint height/damping control.
+
+`../3-formalized/euler-fe-joint-height-damping-finite-part.md` controls the
+complete Gamma-subtracted prime current by `Cy(1+y)(1+log Im s)` away from
+the divisor. The logarithmically weighted error tends uniformly to zero;
+absolute error vanishes along every regular path with `y(1+log Im s)→0`.
+The actual `¬AAL` layer supplies a whole high strip satisfying the law while
+an exceptional zero remains to its right. Six terminal standard-axiom audits
+pass. The Gamma counterterm is retained; replication remains open.
 
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`
