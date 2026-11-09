@@ -11,6 +11,7 @@ how many factors have been used.
 -/
 
 open Complex Filter Topology
+open scoped ComplexConjugate
 noncomputable section
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 
@@ -84,6 +85,30 @@ theorem tendsto_tailFactor (a h : ℕ → ℝ) (hsq : Summable fun i => h i ^ 2)
       (𝓝 (∏' i, quartetFactor (a i) (h i) w)) := by
   simpa only [tailFactor_filterPrefix] using
     (multipliable_quartetFactor a h hsq w).hasProd.tendsto_prod_nat
+
+/-- Real symmetric averaging commutes with complex conjugation. -/
+theorem quartetFactor_conj (a h : ℝ) (w : ℂ) :
+    quartetFactor a h (conj w) = conj (quartetFactor a h w) := by
+  simp only [quartetFactor, map_div₀, map_add, map_one, ← Complex.cosh_conj,
+    map_mul, Complex.conj_ofReal]
+
+theorem tailFactor_conj (l : List (ℝ × ℝ)) (w : ℂ) :
+    tailFactor l (conj w) = conj (tailFactor l w) := by
+  induction l with
+  | nil => simp [tailFactor]
+  | cons p l ih => simp only [tailFactor, quartetFactor_conj, ih, map_mul]
+
+/-- Infinite deletion preserves the conjugate symmetry of trace coefficients. -/
+theorem tprod_quartetFactor_conj (a h : ℕ → ℝ)
+    (hsq : Summable fun i => h i ^ 2) (w : ℂ) :
+    (∏' i, quartetFactor (a i) (h i) (conj w)) =
+      conj (∏' i, quartetFactor (a i) (h i) w) := by
+  have hcont : Continuous (conj : ℂ → ℂ) := by fun_prop
+  have ht := (hcont.tendsto _).comp (tendsto_tailFactor a h hsq w)
+  have he : (fun N => conj (tailFactor (filterPrefix a h N) w)) =ᶠ[atTop]
+      (fun N => tailFactor (filterPrefix a h N) (conj w)) :=
+    Filter.Eventually.of_forall fun N => (tailFactor_conj (filterPrefix a h N) w).symm
+  exact tendsto_nhds_unique (tendsto_tailFactor a h hsq (conj w)) (ht.congr' he)
 
 /-- One positive average commutes with an absolutely convergent real series. -/
 theorem quartetAverage_tsum {ι : Type*} (a h : ℝ) (F : ι → ℝ → ℝ)
@@ -174,6 +199,29 @@ theorem summable_cexp_re {ι : Type*} (c w : ι → ℂ) {D : ℝ}
     _ ≤ ‖c i‖ * Real.exp (D * |t|) := by
       rw [norm_mul]
       exact mul_le_mul_of_nonneg_left (norm_exp_le_strip (hw i hi) t) (norm_nonneg _)
+
+/-- The coefficient mass is a global exponential envelope for the real trace. -/
+theorem abs_cexp_series_le {ι : Type*} (c w : ι → ℂ) {D : ℝ}
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D) (t : ℝ) :
+    |∑' i, (c i * Complex.exp (w i * t)).re| ≤ (∑' i, ‖c i‖) * Real.exp (D * |t|) := by
+  have hs := summable_cexp_re c w hc hw t
+  apply (norm_tsum_le_tsum_norm hs.norm).trans
+  rw [← tsum_mul_right]
+  apply Summable.tsum_le_tsum _ hs.norm (hc.mul_right _)
+  intro i
+  by_cases hi : c i = 0
+  · simp [hi]
+  apply (Complex.abs_re_le_norm _).trans
+  rw [norm_mul]
+  exact mul_le_mul_of_nonneg_left (norm_exp_le_strip (hw i hi) t) (norm_nonneg _)
+
+/-- Positive deletion commutes with translating the observation interval. -/
+theorem tailAverage_translate (l : List (ℝ × ℝ)) (f : ℝ → ℝ) (s t : ℝ) :
+    tailAverage l (fun u => f (s + u)) t = tailAverage l f (s + t) := by
+  induction l generalizing t with
+  | nil => rfl
+  | cons p l ih =>
+      simp only [tailAverage, quartetAverage, ih, add_assoc, add_sub_assoc]
 
 /-- A strip bound controls all filtered modes independently of the prefix length. -/
 theorem norm_filtered_mode_le (a h : ℕ → ℝ)
@@ -311,6 +359,55 @@ theorem infinite_tail_local_floor {ι : Type*} (a h : ℕ → ℝ)
     exact squareCost_filterPrefix_le a h hsq N
   nlinarith only [mul_le_mul_of_nonneg_left he (show 0 ≤ 2 * C by positivity)]
 
+/-- A local trace bound controls the isolated spectrum at any center, with explicit leakage. -/
+theorem infinite_tail_translated_floor {ι : Type*} (a h : ℕ → ℝ)
+    (hsq : Summable fun i => h i ^ 2) (c w : ι → ℂ) {D : ℝ} (hD : 0 ≤ D)
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D)
+    {K q L t : ℝ} (hK : 0 ≤ K) (hq : 0 ≤ q)
+    (hlocal : ∀ u, |u - t| ≤ L → -K ≤ ∑' i, (c i * Complex.exp (w i * u)).re) :
+    -K - 2 * (∑' i, ‖c i‖) *
+        Real.exp (D * |t| - q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) ≤
+      ∑' i, (c i * (∏' n, quartetFactor (a n) (h n) (w i)) *
+        Complex.exp (w i * t)).re := by
+  let A : ℝ := ∑' i, ‖c i‖
+  have hA : 0 ≤ A := tsum_nonneg fun _ => norm_nonneg _
+  have hglobal (u : ℝ) : -(A * Real.exp (D * |t|)) * Real.exp (D * |u|) ≤
+      ∑' i, (c i * Complex.exp (w i * ((t + u : ℝ) : ℂ))).re := by
+    have hb := abs_cexp_series_le c w hc hw (t + u)
+    have he : Real.exp (D * |t + u|) ≤ Real.exp (D * |t|) * Real.exp (D * |u|) := by
+      rw [← Real.exp_add]
+      apply Real.exp_le_exp.mpr
+      have habs : |t + u| ≤ |t| + |u| := by
+        simpa only [Real.norm_eq_abs] using norm_add_le t u
+      nlinarith only [mul_le_mul_of_nonneg_left habs hD]
+    have hh := mul_le_mul_of_nonneg_left he hA
+    have hn := neg_abs_le (∑' i, (c i * Complex.exp (w i * ((t + u : ℝ) : ℂ))).re)
+    dsimp only [A] at hh ⊢
+    nlinarith only [hb, hh, hn]
+  apply ge_of_tendsto (tendsto_tailAverage_series a h hsq c w hc hw t)
+  apply Filter.Eventually.of_forall
+  intro N
+  have hf := tailAverage_local_floor (filterPrefix a h N) hK
+    (mul_nonneg hA (Real.exp_pos _).le) hq hglobal
+    (fun u hu => hlocal (t + u) (by simpa only [add_sub_cancel_left] using hu))
+  rw [tailAverage_translate (filterPrefix a h N)
+    (fun u : ℝ => ∑' i, (c i * Complex.exp (w i * u)).re) t 0, add_zero] at hf
+  have he : Real.exp (-q * L + (D + q) ^ 2 * squareCost (filterPrefix a h N) / 2) ≤
+      Real.exp (-q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) := by
+    apply Real.exp_le_exp.mpr
+    gcongr
+    exact squareCost_filterPrefix_le a h hsq N
+  have hm := mul_le_mul_of_nonneg_left he
+    (show 0 ≤ 2 * (A * Real.exp (D * |t|)) by positivity)
+  have hexp : Real.exp (D * |t| - q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) =
+      Real.exp (D * |t|) * Real.exp (-q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [hexp]
+  dsimp only [A] at hm hf
+  nlinarith only [hm, hf]
+
 #print axioms multipliable_quartetFactor
 #print axioms exists_nonzero_tail_multiplier
 #print axioms tendsto_tailFactor
@@ -321,5 +418,7 @@ theorem infinite_tail_local_floor {ι : Type*} (a h : ℕ → ℝ)
 #print axioms tendsto_tailAverage_finite_head
 #print axioms exists_small_nonzero_tail_multiplier
 #print axioms infinite_tail_local_floor
+#print axioms tprod_quartetFactor_conj
+#print axioms infinite_tail_translated_floor
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

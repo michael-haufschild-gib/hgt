@@ -272,8 +272,44 @@ by its nonzero pivot determinant; its image therefore spans the whole
 intersection. Selecting a basis loses no surviving rank.
 
 This supplies height control for applying the simultaneous logarithm bound
-to coordinate intersections. Hereditary rank estimates still require a
-uniform comparison of those restricted arithmetic floors.
+to coordinate intersections.
+
+### Hereditary rank and weighted separation
+
+[HereditaryRankBounds.lean](HereditaryRankBounds.lean) controls every
+coordinate intersection with one threshold. For `k≥1`, put
+
+`H′=k!H^k`, `K=k!H^(k−1)`, `δ=Δ_k(H′)/K`,
+
+where `Δ_k` uses the full-dimension exponent `U^(100(k+1))` above.
+If `V` is the rational span of the height-`H` integer forms of size below
+`δ`, then every coordinate set satisfies
+
+`2 dim(V∩ℚ^J) ≤ |J|`.
+
+Indeed, bounded elimination gives a basis of the intersection at height
+`H′` and value below `Kδ`. If its rank exceeds half its support size,
+the restricted simultaneous bound has root degree one. Monotonicity in
+dimension, logarithmic mass and factorials makes its floor at least `Kδ`,
+a contradiction.
+
+[WeightedCoordinateSeparation.lean](WeightedCoordinateSeparation.lean)
+converts this hereditary bound into weighted selection. For every
+nonnegative weight `w`, a coordinate set `J` carries at least half the
+total weight, and every nonzero integer form supported on `J` of height
+at most `H` has absolute value at least `δ`.
+
+Choose a coordinate basis of `V` with minimum total weight. Its normalized
+rows satisfy Hall's condition on the unchosen coordinates: hereditary rank
+bounds the support of every row subset. Matching each pivot to a nonzero
+unchosen coordinate and exchanging basis columns shows that the complement
+carries at least half the weight. Injectivity of the chosen projection
+gives `V∩ℚ^J=0` on that complement.
+
+These are formal coefficient-body tools. Their linear exponent degree
+improves the scalar Fel'dman estimate used earlier in this corpus, not the
+published scalar benchmark below. They do not establish a new
+constant-precision breadth bound.
 
 ### Finite-time return counts
 
@@ -412,3 +448,15 @@ on the scalar Baker reduction above. That theorem is not formalized or
 assumed here. A collective contribution must be compared with this benchmark,
 while retaining the sharper elementary bounds near full rank. Neither
 comparison supplies the missing constant-precision return exclusion.
+
+Scalar estimates also require calibration against
+[Matveev, Corollary 2.3](https://www.mathnet.ru/php/getFT.phtml?jrnid=im&option_lang=eng&paperid=314&what=fullteng).
+For distinct primes, that result gives every nonzero height-`H` form a
+floor `exp(−C_M(1+log H))`, with
+`C_M=(e/2)30^(k+3)k^(9/2)∏ log p_j`.
+Thus scalar bounds already have linear dimension degree in a common base
+dominating the prime logarithms. Keeping only half the weight at the much
+smaller hereditary floor is not an improvement over this published result.
+This benchmark is not imported as a Lean assumption. Arithmetic progress
+beyond it must exploit the distribution of small forms or smooth ratios,
+rather than only their worst individual separation.

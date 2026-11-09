@@ -6,8 +6,10 @@ import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveLogarithmBoun
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveRankDepth
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FiniteTimeReturnCounts
 import GaloisForLFunctions.CollectiveDiophantineGeometry.FixedHeightPrimeMass
+import GaloisForLFunctions.CollectiveDiophantineGeometry.HereditaryRankBounds
 import GaloisForLFunctions.CollectiveDiophantineGeometry.ReciprocalRankBounds
 import GaloisForLFunctions.CollectiveDiophantineGeometry.TwoSidedGapIteration
+import GaloisForLFunctions.CollectiveDiophantineGeometry.WeightedCoordinateSeparation
 
 /-!
 # Collective Diophantine geometry of the prime logarithms
@@ -31,6 +33,9 @@ Its exponent has reciprocal-rank dependence and gives a uniform rank profile
 for the whole approximation body.
 Bounded integer elimination preserves the exact rational coordinate intersection,
 with explicit height and value losses for an independent spanning family.
+One arithmetic floor bounds every coordinate intersection by half its support
+dimension. A minimum-weight coordinate basis and Hall matching then retain
+half of any nonnegative prime weight on separated coordinates.
 Injective coordinate projection and the Fejér window inequality turn that
 profile into finite-time return-measure bounds, uniform in target phase and
 dimension, with an explicit polynomial observation horizon.

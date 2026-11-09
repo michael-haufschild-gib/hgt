@@ -110,6 +110,15 @@ proves the actual-divisor dichotomy: either two distinct positive top
 ordinates exist or this pointwise growth holds. Excluding a quartet still
 requires an incompatible arithmetic constraint at the same scale.
 
+`LocalFiltersRecoverTheTopDivisor.lean` removes cancellation for arbitrary
+finite top layers using finitely many height probes. In every prescribed
+window length `L>0`, small fixed shifts have distinct ordinate nodes
+`zγ=exp(iγah/2)`. A polynomial vanishing at unwanted nodes extracts the
+selected multiplicity, because `Wγ(t+jh)/Wγ(t)→zγ^j`. Consequently every
+sufficiently late interval `[t,t+L]` contains an arbitrarily large corrected
+current reading. This strengthens bounded-gap recurrence to every positive
+window length; it still needs an independent arithmetic upper estimate.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

@@ -151,6 +151,23 @@ shrinking-precision counting regime, not constant-precision breadth.
 Direct Lean verification and five transitive axiom audits passed.
 Proof: [CDG-COUNT](../3-formalized/cdg-finite-time-rank-counts.md).
 
+## Hereditary rank and weighted separation
+
+Put `H′=k!H^k`, `K=k!H^(k−1)` and `δ=Δ_k(H′)/K`.
+Below `δ`, every coordinate intersection of the small-form span has
+dimension at most half its support size. A minimum-weight coordinate basis
+and Hall matching then retain at least half of any nonnegative prime weight
+on coordinates whose nonzero height-`H` forms have size at least `δ`.
+This closes the hereditary localization and weighted selection mechanisms.
+
+The comparison with quadratic scalar dimension degree applies only to the
+earlier formal Fel'dman estimate. Published Matveev scalar bounds already
+have linear degree and keep all coordinates at a stronger floor. These
+formal tools do not claim an improvement on that benchmark. A weighted
+return detector using only worst separation would therefore be insufficient
+as the next contribution; it must control small-ratio distributions before
+that horizon.
+
 ## Open core
 
 The corpus already has fixed-prime depth laws, bounded-height obstructions,

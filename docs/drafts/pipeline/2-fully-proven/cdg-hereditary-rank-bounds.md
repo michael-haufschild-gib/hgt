@@ -47,7 +47,9 @@ The total rank bound alone permits all exceptional directions to concentrate
 on heavily weighted coordinates. This hereditary bound rules out every
 coordinate concentration of density above one half, while retaining linear
 dimension degree in the collective exponent. Weighted coordinate selection
-still requires a separate linear-algebra argument.
+is proved in [CDG-WEIGHT](cdg-weighted-coordinate-separation.md).
+The dimension-degree comparison concerns the earlier formal scalar bound;
+it is not a claim of improvement over published scalar estimates.
 
 ## Dependencies and formalization
 

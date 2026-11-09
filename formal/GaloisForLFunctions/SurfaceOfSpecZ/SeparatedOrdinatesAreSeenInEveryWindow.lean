@@ -1,0 +1,767 @@
+import GaloisForLFunctions.SurfaceOfSpecZ.BohrDenseSetsSampleEveryAttainedTop
+import GaloisForLFunctions.SquareRootThreshold.InghamInequalityForSeparatedSpectra
+import GaloisForLFunctions.SquareRootThreshold.OneParameterLagFamilyDeterminesTheConfiguration
+
+/-!
+# Separated ordinates are seen in every window
+
+Let a tempered configuration without real zeros have *separated ordinates*: two exponents
+`z = ρ − ½` (zeros and their conjugates) that are neither equal nor reflections `z' = −z̄` have
+ordinates at least `δ` apart (`SeparatedOrdinates`). If some zero is off the line, then for every
+`K` and every `ℓ ≥ 40/δ` the trace falls below `−K` in every window `[u₀ − ℓ, u₀ + ℓ]` far enough
+out (`exists_lt_in_window_of_separatedOrdinates`). No attainment of the maximal real part is
+assumed, and the window length depends on `δ` only.
+
+* **Triangle average** (`triAvg`, `triAvg_expSum`). The mean `A_ℓ f = ℓ⁻² ∫∫ f(s + t)` over
+  `s, t ∈ [−ℓ/2, ℓ/2]` takes `e^{wv}` to `σ_ℓ(w)²`, `σ_ℓ(w) = ℓ⁻¹ ∫ e^{ws} ds`, and
+  `|σ_ℓ(w)| ≤ 2 e^{|Re w| ℓ/2}/(|w| ℓ)` (`norm_boxAvg_le_div`).
+* **Landau on a window** (`norm_le_of_window_lower`). Testing `F + K ≥ 0` against
+  `e^{−x₀v}(1 + Re(ω e^{iγ₀v}))` isolates the weight `|D_{z₀}| e^{x₀u₀}` of one exponent, up to the
+  leakage of every other exponent through `σ_ℓ`.
+* **Dominance** (`exists_dominant`, `le_re_of_dominant`, `weight_drift_le`). Take `z₀` of maximal
+  weight `|D_z| e^{Re z · u₀}`. The depth of the dominant exponent tends to the supremum `b` of
+  the depths, so on `[u₀ − ℓ, u₀ + ℓ]` no weight exceeds that of `z₀` by more than `e^{ηℓ}`: deeper
+  exponents are controlled at `u₀ + ℓ`, shallower ones at `u₀ − ℓ`.
+* **Counting** (`sum_inv_sq_im_le`). Separation bounds `Σ (Im z − t)⁻²` by `8/g²`, so the
+  leakage is `O(1/(δℓ)²)` of the dominant weight; the reflection `−z̄₀` of the dominant exponent
+  is damped by `e^{−2x₀(u₀ − ℓ)}`. The dominant weight is then `O(K e^{ℓ/2})`, against its growth.
+
+Consequences: an impure configuration bounded below on windows of length `80/δ` beyond every
+bound is not `δ`-separated (`onLine_of_bddBelow_windows_of_separatedOrdinates`); on the integers,
+windows `[x, e^{80/δ} x]` suffice (`onLine_of_bddBelow_integer_windows_of_separatedOrdinates`).
+On windows of unbounded length an impure configuration bounded below has no positive
+separation (`not_separatedOrdinates_of_bddBelow_long_intervals`): a configuration that defeats
+growing windows must carry near-coincident ordinates.
+-/
+
+open Complex Filter Topology Set
+open scoped ComplexConjugate
+
+noncomputable section
+
+namespace GaloisForLFunctions.SurfaceOfSpecZ
+
+open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThreshold Zeta23
+
+/-! ### The triangle average -/
+
+/-- The box average `σ_ℓ(w) = ℓ⁻¹ ∫_{−ℓ/2}^{ℓ/2} e^{ws} ds`. -/
+def boxAvg (ℓ : ℝ) (w : ℂ) : ℂ := (ℓ : ℂ)⁻¹ * ∫ s in -(ℓ / 2)..ℓ / 2, cexp (w * s)
+
+/-- The triangle average `A_ℓ f = ℓ⁻² ∫∫_{[−ℓ/2, ℓ/2]²} f(s + t)`: the mean of `f` against the
+Fejér triangle on `[−ℓ, ℓ]`. -/
+def triAvg (ℓ : ℝ) (f : ℝ → ℂ) : ℂ :=
+  ((ℓ : ℂ)⁻¹) ^ 2 * ∫ s in -(ℓ / 2)..ℓ / 2, ∫ t in -(ℓ / 2)..ℓ / 2, f (s + t)
+
+/-- **The triangle average of an exponential sum** is `Σ c_i σ_ℓ(w_i)²`. -/
+theorem triAvg_expSum {ι : Type*} (S : Finset ι) (c w : ι → ℂ) (ℓ : ℝ) :
+    triAvg ℓ (fun v => ∑ i ∈ S, c i * cexp (w i * v)) = ∑ i ∈ S, c i * boxAvg ℓ (w i) ^ 2 := by
+  set J : ι → ℂ := fun i => ∫ t in -(ℓ / 2)..ℓ / 2, cexp (w i * t) with hJ
+  have hinner : ∀ s : ℝ, (∫ t in -(ℓ / 2)..ℓ / 2, ∑ i ∈ S, c i * cexp (w i * ((s + t : ℝ) : ℂ))) =
+      ∑ i ∈ S, (c i * J i) * cexp (w i * s) := by
+    intro s
+    rw [intervalIntegral.integral_finsetSum fun i _ => (by fun_prop : Continuous fun t : ℝ =>
+      c i * cexp (w i * ((s + t : ℝ) : ℂ))).intervalIntegrable _ _]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    have h : (fun t : ℝ => c i * cexp (w i * ((s + t : ℝ) : ℂ))) =
+        fun t : ℝ => (c i * cexp (w i * s)) * cexp (w i * t) := by
+      funext t; push_cast; rw [mul_add, Complex.exp_add]; ring
+    rw [h, intervalIntegral.integral_const_mul]; ring
+  unfold triAvg
+  simp only []
+  simp_rw [hinner]
+  rw [intervalIntegral.integral_finsetSum fun i _ => (by fun_prop : Continuous fun s : ℝ =>
+    (c i * J i) * cexp (w i * s)).intervalIntegrable _ _, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [intervalIntegral.integral_const_mul, boxAvg]
+  ring
+
+/-- An interval integral of a function with nonnegative real part has nonnegative real part. -/
+theorem re_intervalIntegral_nonneg {g : ℝ → ℂ} {a b : ℝ} (hab : a ≤ b)
+    (h : ∀ x ∈ Icc a b, 0 ≤ (g x).re) : 0 ≤ (∫ x in a..b, g x).re := by
+  by_cases hg : IntervalIntegrable g MeasureTheory.volume a b
+  · have e := ContinuousLinearMap.intervalIntegral_comp_comm Complex.reCLM hg
+    simp only [Complex.reCLM_apply] at e
+    rw [← e]
+    exact intervalIntegral.integral_nonneg hab h
+  · rw [intervalIntegral.integral_undef hg, Complex.zero_re]
+
+/-- **Positivity of the triangle average.** -/
+theorem re_triAvg_nonneg {ℓ : ℝ} (hℓ : 0 < ℓ) {f : ℝ → ℂ}
+    (hf : ∀ v ∈ Icc (-ℓ) ℓ, 0 ≤ (f v).re) : 0 ≤ (triAvg ℓ f).re := by
+  have hab : -(ℓ / 2) ≤ ℓ / 2 := by linarith
+  have h2 : 0 ≤ (∫ s in -(ℓ / 2)..ℓ / 2, ∫ t in -(ℓ / 2)..ℓ / 2, f (s + t)).re :=
+    re_intervalIntegral_nonneg hab fun s hs => re_intervalIntegral_nonneg hab fun t ht =>
+      hf _ ⟨by linarith [hs.1, ht.1], by linarith [hs.2, ht.2]⟩
+  have hc : ((ℓ : ℂ)⁻¹) ^ 2 = ((ℓ⁻¹ ^ 2 : ℝ) : ℂ) := by push_cast; ring
+  unfold triAvg
+  rw [hc, Complex.re_ofReal_mul]
+  exact mul_nonneg (by positivity) h2
+
+theorem boxAvg_zero {ℓ : ℝ} (hℓ : 0 < ℓ) : boxAvg ℓ 0 = 1 := by
+  unfold boxAvg
+  simp only [zero_mul, Complex.exp_zero, intervalIntegral.integral_const]
+  have : ((ℓ / 2 - -(ℓ / 2) : ℝ) : ℂ) = (ℓ : ℂ) := by push_cast; ring
+  rw [Complex.real_smul, mul_one, this, inv_mul_cancel₀ (by exact_mod_cast hℓ.ne')]
+
+theorem norm_cexp_mul_ofReal (w : ℂ) (s : ℝ) : ‖cexp (w * s)‖ = Real.exp (w.re * s) := by
+  rw [Complex.norm_exp]; congr 1; simp
+
+theorem re_mul_le_abs {x s ℓ : ℝ} (hs : |s| ≤ ℓ / 2) : x * s ≤ |x| * ℓ / 2 :=
+  calc x * s ≤ |x * s| := le_abs_self _
+    _ = |x| * |s| := abs_mul _ _
+    _ ≤ |x| * (ℓ / 2) := mul_le_mul_of_nonneg_left hs (abs_nonneg _)
+    _ = |x| * ℓ / 2 := by ring
+
+/-- `|σ_ℓ(w)| ≤ e^{|Re w| ℓ/2}`. -/
+theorem norm_boxAvg_le {ℓ : ℝ} (hℓ : 0 < ℓ) (w : ℂ) :
+    ‖boxAvg ℓ w‖ ≤ Real.exp (|w.re| * ℓ / 2) := by
+  have hb : ‖∫ s in -(ℓ / 2)..ℓ / 2, cexp (w * s)‖ ≤
+      Real.exp (|w.re| * ℓ / 2) * |ℓ / 2 - -(ℓ / 2)| := by
+    refine intervalIntegral.norm_integral_le_of_norm_le_const fun s hs => ?_
+    rw [Set.uIoc_of_le (by linarith)] at hs
+    rw [norm_cexp_mul_ofReal]
+    exact Real.exp_le_exp.mpr (re_mul_le_abs (abs_le.mpr ⟨by linarith [hs.1], hs.2⟩))
+  have hl : |ℓ / 2 - -(ℓ / 2)| = ℓ := by rw [abs_of_pos (by linarith)]; ring
+  rw [hl] at hb
+  unfold boxAvg
+  rw [norm_mul, norm_inv, Complex.norm_real, Real.norm_of_nonneg hℓ.le]
+  calc ℓ⁻¹ * ‖∫ s in -(ℓ / 2)..ℓ / 2, cexp (w * s)‖ ≤ ℓ⁻¹ * (Real.exp (|w.re| * ℓ / 2) * ℓ) :=
+        mul_le_mul_of_nonneg_left hb (by positivity)
+    _ = Real.exp (|w.re| * ℓ / 2) := by field_simp
+
+/-- `|σ_ℓ(w)| ≤ 2 e^{|Re w| ℓ/2}/(|w| ℓ)` for `w ≠ 0`. -/
+theorem norm_boxAvg_le_div {ℓ : ℝ} (hℓ : 0 < ℓ) {w : ℂ} (hw : w ≠ 0) :
+    ‖boxAvg ℓ w‖ ≤ 2 * Real.exp (|w.re| * ℓ / 2) / (‖w‖ * ℓ) := by
+  have hwp : 0 < ‖w‖ := norm_pos_iff.mpr hw
+  have h1 : ‖cexp (w * ((ℓ / 2 : ℝ) : ℂ))‖ ≤ Real.exp (|w.re| * ℓ / 2) := by
+    rw [norm_cexp_mul_ofReal]
+    exact Real.exp_le_exp.mpr (re_mul_le_abs (by rw [abs_of_pos (by linarith)]))
+  have h2 : ‖cexp (w * ((-(ℓ / 2) : ℝ) : ℂ))‖ ≤ Real.exp (|w.re| * ℓ / 2) := by
+    rw [norm_cexp_mul_ofReal]
+    exact Real.exp_le_exp.mpr (re_mul_le_abs (by rw [abs_neg, abs_of_pos (by linarith)]))
+  have hn := (norm_sub_le (cexp (w * ((ℓ / 2 : ℝ) : ℂ))) (cexp (w * ((-(ℓ / 2) : ℝ) : ℂ)))).trans
+    (add_le_add h1 h2)
+  unfold boxAvg
+  rw [integral_exp_mul_complex hw, norm_mul, norm_div, norm_inv, Complex.norm_real,
+    Real.norm_of_nonneg hℓ.le]
+  calc ℓ⁻¹ * (‖cexp (w * ((ℓ / 2 : ℝ) : ℂ)) - cexp (w * ((-(ℓ / 2) : ℝ) : ℂ))‖ / ‖w‖)
+      ≤ ℓ⁻¹ * ((Real.exp (|w.re| * ℓ / 2) + Real.exp (|w.re| * ℓ / 2)) / ‖w‖) := by gcongr
+    _ = 2 * Real.exp (|w.re| * ℓ / 2) / (‖w‖ * ℓ) := by field_simp; ring
+
+/-- `|σ_ℓ(w)|² ≤ e^{|Re w| ℓ} · 4/(|w| ℓ)²` for `w ≠ 0`. -/
+theorem norm_boxAvg_sq_le {ℓ : ℝ} (hℓ : 0 < ℓ) {w : ℂ} (hw : w ≠ 0) :
+    ‖boxAvg ℓ w‖ ^ 2 ≤ Real.exp (|w.re| * ℓ) * (4 / (‖w‖ * ℓ) ^ 2) := by
+  have h := norm_boxAvg_le_div hℓ hw
+  have hwp : 0 < ‖w‖ * ℓ := mul_pos (norm_pos_iff.mpr hw) hℓ
+  have he : Real.exp (|w.re| * ℓ) = Real.exp (|w.re| * ℓ / 2) ^ 2 := by
+    rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+  calc ‖boxAvg ℓ w‖ ^ 2 ≤ (2 * Real.exp (|w.re| * ℓ / 2) / (‖w‖ * ℓ)) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) h 2
+    _ = Real.exp (|w.re| * ℓ) * (4 / (‖w‖ * ℓ) ^ 2) := by rw [he]; field_simp; ring
+
+/-- `|σ_ℓ(w)|² ≤ e^{|Re w| ℓ}`. -/
+theorem norm_boxAvg_sq_le_exp {ℓ : ℝ} (hℓ : 0 < ℓ) (w : ℂ) :
+    ‖boxAvg ℓ w‖ ^ 2 ≤ Real.exp (|w.re| * ℓ) := by
+  have he : Real.exp (|w.re| * ℓ) = Real.exp (|w.re| * ℓ / 2) ^ 2 := by
+    rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+  rw [he]; exact pow_le_pow_left₀ (norm_nonneg _) (norm_boxAvg_le hℓ w) 2
+
+/-! ### Landau's inequality on a window -/
+
+/-- The Landau multiplier `e^{−x₀v}(1 + Re(ω e^{iγ₀v}))` as a sum of three exponentials. -/
+theorem landau_multiplier (z₀ ω : ℂ) (v : ℝ) :
+    cexp (-(z₀.re : ℂ) * v) + ω / 2 * cexp (-(conj z₀) * v) + conj ω / 2 * cexp (-z₀ * v) =
+      ((Real.exp (-z₀.re * v) * (1 + (ω * cexp (I * z₀.im * v)).re) : ℝ) : ℂ) := by
+  have hc : -(conj z₀) * (v : ℂ) = -(z₀.re : ℂ) * v + I * z₀.im * v := by
+    apply Complex.ext <;> simp
+  have hz : -z₀ * (v : ℂ) = -(z₀.re : ℂ) * v + conj (I * z₀.im * v) := by
+    apply Complex.ext <;> simp
+  have hr : cexp (-(z₀.re : ℂ) * v) = ((Real.exp (-z₀.re * v) : ℝ) : ℂ) := by
+    rw [Complex.ofReal_exp]; push_cast; ring_nf
+  rw [hc, hz, Complex.exp_add, Complex.exp_add, Complex.exp_conj, hr]
+  set E := cexp (I * z₀.im * v)
+  have hadd : ω * E + conj (ω * E) = (((ω * E).re * 2 : ℝ) : ℂ) := by
+    rw [Complex.add_conj]; push_cast; ring
+  have : ω / 2 * (((Real.exp (-z₀.re * v) : ℝ) : ℂ) * E) +
+      conj ω / 2 * (((Real.exp (-z₀.re * v) : ℝ) : ℂ) * conj E) =
+      ((Real.exp (-z₀.re * v) : ℝ) : ℂ) * ((ω * E + conj (ω * E)) / 2) := by
+    rw [map_mul]; ring
+  rw [add_assoc, this, hadd]
+  push_cast; ring
+
+/-- **Landau's inequality on a window.** If `Re Σ_{z∈S} D_z e^{z(u₀+v)} ≥ −K` for `|v| ≤ ℓ`, the
+weight `|D_{z₀} e^{z₀u₀}|` of an exponent `z₀` with `z̄₀ ∈ S` and `D_{z̄₀} = \bar D_{z₀}` is at most
+the leakage of the other exponents through `σ_ℓ` plus `2K e^{|Re z₀| ℓ}`. The test is the triangle
+average of `(F + K) e^{−x₀v}(1 + Re(ω e^{iγ₀v}))`, `ω` opposite to the phase of `D_{z₀} e^{z₀u₀}`. -/
+theorem norm_le_of_window_lower {S : Finset ℂ} {D : ℂ → ℂ} {z₀ : ℂ} (hz₀ : z₀ ∈ S)
+    (hz₀' : conj z₀ ∈ S) (hD : D (conj z₀) = conj (D z₀)) {u₀ ℓ K : ℝ} (hℓ : 0 < ℓ)
+    (hK : 0 ≤ K)
+    (hlow : ∀ v ∈ Icc (-ℓ) ℓ, -K ≤ (∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ))).re) :
+    ‖D z₀ * cexp (z₀ * u₀)‖ ≤
+      ∑ z ∈ S, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2‖ +
+      (∑ z ∈ S.erase (conj z₀), ‖D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2‖ +
+        ∑ z ∈ S.erase z₀, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2‖) / 2 +
+      2 * K * Real.exp (|z₀.re| * ℓ) := by
+  classical
+  set P : ℂ := D z₀ * cexp (z₀ * u₀) with hPdef
+  set R₀ := ∑ z ∈ S, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2‖
+  set Rp := ∑ z ∈ S.erase (conj z₀), ‖D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2‖
+  set Rm := ∑ z ∈ S.erase z₀, ‖D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2‖
+  have hR₀ : 0 ≤ R₀ := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hRp : 0 ≤ Rp := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hRm : 0 ≤ Rm := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  by_cases hP : P = 0
+  · rw [hP, norm_zero]; positivity
+  have hPn : 0 < ‖P‖ := norm_pos_iff.mpr hP
+  set ω : ℂ := -(P / (‖P‖ : ℂ)) with hω
+  have hωn : ‖ω‖ = 1 := by
+    rw [hω, norm_neg, norm_div, Complex.norm_real, Real.norm_of_nonneg hPn.le, div_self hPn.ne']
+  -- the test function as an exponential sum
+  let a : Option ℂ → ℂ := fun o => o.elim (K : ℂ) fun z => D z * cexp (z * u₀)
+  let β : Option ℂ → ℂ := fun o => o.elim 0 id
+  let κ : Fin 3 → ℂ := ![1, ω / 2, conj ω / 2]
+  let θ : Fin 3 → ℂ := ![(z₀.re : ℂ), conj z₀, z₀]
+  let c : Option ℂ × Fin 3 → ℂ := fun p => a p.1 * κ p.2
+  let w : Option ℂ × Fin 3 → ℂ := fun p => β p.1 - θ p.2
+  set T := Finset.insertNone S ×ˢ (Finset.univ : Finset (Fin 3)) with hT
+  have hG : ∀ v : ℝ, ∑ p ∈ T, c p * cexp (w p * v) =
+      (((K : ℂ) + ∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ)))) *
+        ((Real.exp (-z₀.re * v) * (1 + (ω * cexp (I * z₀.im * v)).re) : ℝ) : ℂ) := by
+    intro v
+    rw [← landau_multiplier, hT, Finset.sum_product]
+    have hf : (K : ℂ) + ∑ z ∈ S, D z * cexp (z * ((u₀ + v : ℝ) : ℂ)) =
+        ∑ o ∈ Finset.insertNone S, a o * cexp (β o * v) := by
+      rw [Finset.sum_insertNone]
+      simp only [a, β, Option.elim, zero_mul, Complex.exp_zero, mul_one, id]
+      congr 1
+      refine Finset.sum_congr rfl fun z _ => ?_
+      push_cast; rw [mul_add, Complex.exp_add]; ring
+    rw [hf, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun o _ => ?_
+    rw [Fin.sum_univ_three]
+    simp only [c, w, κ, θ, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+      Matrix.head_cons, Matrix.tail_cons]
+    have e : ∀ q : ℂ, cexp ((β o - q) * v) = cexp (β o * v) * cexp (-q * v) := fun q => by
+      rw [← Complex.exp_add]; ring_nf
+    rw [e, e, e]; ring
+  -- positivity of the test
+  have hpos : 0 ≤ (triAvg ℓ fun v => ∑ p ∈ T, c p * cexp (w p * v)).re := by
+    refine re_triAvg_nonneg hℓ fun v hv => ?_
+    rw [hG v, Complex.re_mul_ofReal, Complex.add_re, Complex.ofReal_re]
+    have hm : 0 ≤ Real.exp (-z₀.re * v) * (1 + (ω * cexp (I * z₀.im * v)).re) := by
+      refine mul_nonneg (Real.exp_pos _).le ?_
+      have h1 : |(ω * cexp (I * z₀.im * v)).re| ≤ 1 := by
+        refine (Complex.abs_re_le_norm _).trans ?_
+        rw [norm_mul, hωn, one_mul, show I * (z₀.im : ℂ) * (v : ℂ) = ((z₀.im * v : ℝ) : ℂ) * I by
+          push_cast; ring, Complex.norm_exp_ofReal_mul_I]
+      linarith [(abs_le.mp h1).1]
+    exact mul_nonneg (by linarith [hlow v hv]) hm
+  -- its value
+  have hval : (triAvg ℓ fun v => ∑ p ∈ T, c p * cexp (w p * v)) =
+      (K : ℂ) * (boxAvg ℓ (-(z₀.re : ℂ)) ^ 2 + ω / 2 * boxAvg ℓ (-(conj z₀)) ^ 2 +
+        conj ω / 2 * boxAvg ℓ (-z₀) ^ 2) +
+      (∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2 +
+        ω / 2 * ∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2 +
+        conj ω / 2 * ∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2) := by
+    rw [triAvg_expSum, hT, Finset.sum_product, Finset.sum_insertNone, Finset.mul_sum,
+      Finset.mul_sum, ← Finset.sum_add_distrib, ← Finset.sum_add_distrib]
+    congr 1
+    · rw [Fin.sum_univ_three]
+      simp only [c, w, a, β, κ, θ, Option.elim, Matrix.cons_val_zero, Matrix.cons_val_one,
+        Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons, zero_sub]
+      ring
+    · refine Finset.sum_congr rfl fun z _ => ?_
+      rw [Fin.sum_univ_three]
+      simp only [c, w, a, β, κ, θ, Option.elim, Matrix.cons_val_zero, Matrix.cons_val_one,
+        Matrix.cons_val_two, Matrix.head_cons, Matrix.tail_cons, id]
+      ring
+  -- the two main terms
+  have hσ0 : boxAvg ℓ 0 = 1 := boxAvg_zero hℓ
+  have hAm : ∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2 =
+      P + ∑ z ∈ S.erase z₀, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2 := by
+    rw [← Finset.add_sum_erase _ _ hz₀, sub_self, hσ0, one_pow, mul_one]
+  have hAp : ∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2 =
+      conj P + ∑ z ∈ S.erase (conj z₀), D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2 := by
+    rw [← Finset.add_sum_erase _ _ hz₀', sub_self, hσ0, one_pow, mul_one, hD, hPdef, map_mul,
+      ← Complex.exp_conj, map_mul, Complex.conj_ofReal]
+  have hmain : ω / 2 * conj P + conj ω / 2 * P = -(‖P‖ : ℂ) := by
+    have hPP : P * conj P = ((‖P‖ ^ 2 : ℝ) : ℂ) := by
+      rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
+    have hPc : (‖P‖ : ℂ) ≠ 0 := by exact_mod_cast hPn.ne'
+    rw [hω, map_neg, map_div₀, Complex.conj_ofReal]
+    field_simp
+    rw [hPP]; push_cast; ring
+  -- the constant term
+  have hKc : ‖(K : ℂ) * (boxAvg ℓ (-(z₀.re : ℂ)) ^ 2 + ω / 2 * boxAvg ℓ (-(conj z₀)) ^ 2 +
+      conj ω / 2 * boxAvg ℓ (-z₀) ^ 2)‖ ≤ 2 * K * Real.exp (|z₀.re| * ℓ) := by
+    have hb : ∀ q : ℂ, q.re = -z₀.re → ‖boxAvg ℓ q‖ ^ 2 ≤ Real.exp (|z₀.re| * ℓ) := fun q hq => by
+      have := norm_boxAvg_sq_le_exp hℓ q; rwa [hq, abs_neg] at this
+    have h1 := hb (-(z₀.re : ℂ)) (by simp)
+    have h2 := hb (-(conj z₀)) (by simp)
+    have h3 := hb (-z₀) (by simp)
+    have hωc : ‖conj ω‖ = 1 := by rw [Complex.norm_conj, hωn]
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hK]
+    have hin : ‖boxAvg ℓ (-(z₀.re : ℂ)) ^ 2 + ω / 2 * boxAvg ℓ (-(conj z₀)) ^ 2 +
+        conj ω / 2 * boxAvg ℓ (-z₀) ^ 2‖ ≤ 2 * Real.exp (|z₀.re| * ℓ) := by
+      refine norm_add₃_le.trans ?_
+      rw [norm_mul, norm_mul, norm_div, norm_div, hωn, hωc, norm_pow, norm_pow, norm_pow,
+        Complex.norm_ofNat]
+      linarith
+    calc K * ‖_‖ ≤ K * (2 * Real.exp (|z₀.re| * ℓ)) := mul_le_mul_of_nonneg_left hin hK
+      _ = 2 * K * Real.exp (|z₀.re| * ℓ) := by ring
+  -- assemble
+  rw [hval, hAm, hAp] at hpos
+  have hsplit : ω / 2 * (conj P + ∑ z ∈ S.erase (conj z₀),
+        D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2) +
+      conj ω / 2 * (P + ∑ z ∈ S.erase z₀, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2) =
+      -(‖P‖ : ℂ) + (ω / 2 * ∑ z ∈ S.erase (conj z₀),
+        D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2 +
+        conj ω / 2 * ∑ z ∈ S.erase z₀, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2) := by
+    rw [← hmain]; ring
+  have hhalf : ‖ω / 2‖ = 1 / 2 := by rw [norm_div, hωn, Complex.norm_ofNat]
+  have hhalf' : ‖conj ω / 2‖ = 1 / 2 := by
+    rw [norm_div, Complex.norm_conj, hωn, Complex.norm_ofNat]
+  have n₀ := norm_sum_le S fun z => D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2
+  have np := norm_sum_le (S.erase (conj z₀)) fun z => D z * cexp (z * u₀) *
+    boxAvg ℓ (z - conj z₀) ^ 2
+  have nm := norm_sum_le (S.erase z₀) fun z => D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2
+  set X₀ := ∑ z ∈ S, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀.re) ^ 2
+  set Xp := ∑ z ∈ S.erase (conj z₀), D z * cexp (z * u₀) * boxAvg ℓ (z - conj z₀) ^ 2
+  set Xm := ∑ z ∈ S.erase z₀, D z * cexp (z * u₀) * boxAvg ℓ (z - z₀) ^ 2
+  set Kc := (K : ℂ) * (boxAvg ℓ (-(z₀.re : ℂ)) ^ 2 + ω / 2 * boxAvg ℓ (-(conj z₀)) ^ 2 +
+      conj ω / 2 * boxAvg ℓ (-z₀) ^ 2)
+  have hre : (Kc + (X₀ + ω / 2 * (conj P + Xp) + conj ω / 2 * (P + Xm))).re =
+      Kc.re + X₀.re - ‖P‖ + (ω / 2 * Xp).re + (conj ω / 2 * Xm).re := by
+    have e : Kc + (X₀ + ω / 2 * (conj P + Xp) + conj ω / 2 * (P + Xm)) =
+        Kc + X₀ + (ω / 2 * (conj P + Xp) + conj ω / 2 * (P + Xm)) := by ring
+    rw [e, hsplit]
+    simp only [Complex.add_re, Complex.neg_re, Complex.ofReal_re]
+    ring
+  rw [hre] at hpos
+  have b1 := Complex.re_le_norm Kc
+  have b2 := Complex.re_le_norm X₀
+  have b3 : (ω / 2 * Xp).re ≤ Rp / 2 := by
+    refine (Complex.re_le_norm _).trans ?_
+    rw [norm_mul, hhalf]; linarith
+  have b4 : (conj ω / 2 * Xm).re ≤ Rm / 2 := by
+    refine (Complex.re_le_norm _).trans ?_
+    rw [norm_mul, hhalf']; linarith
+  linarith
+
+/-! ### Separated reals -/
+
+/-- **Separated reals.** If `A ∪ {t}` is `g`-separated, then `Σ_{a ∈ A} (a − t)⁻² ≤ 4/g²`: the
+`n`-th point on each side of `t` lies at distance at least `ng`, and `Σ 1/n² = π²/6 < 2`. -/
+theorem sum_inv_sq_le_of_separated {A : Finset ℝ} {t g : ℝ} (hg : 0 < g) (htA : t ∉ A)
+    (hA : ∀ a ∈ A, ∀ a' ∈ A, a ≠ a' → g ≤ |a - a'|) (ht : ∀ a ∈ A, g ≤ |a - t|) :
+    ∑ a ∈ A, 1 / (a - t) ^ 2 ≤ 4 / g ^ 2 := by
+  classical
+  set B : Finset ℝ := insert t A with hB
+  let γ : B → ℝ := fun x => x.1
+  have hsep : ∀ j l : B, j ≠ l → g ≤ |γ j - γ l| := by
+    rintro ⟨x, hx⟩ ⟨y, hy⟩ hxy
+    have hne : x ≠ y := fun h => hxy (Subtype.ext h)
+    simp only [γ]
+    rcases Finset.mem_insert.mp hx with rfl | hx' <;> rcases Finset.mem_insert.mp hy with rfl | hy'
+    · exact absurd rfl hne
+    · rw [abs_sub_comm]; exact ht y hy'
+    · exact ht x hx'
+    · exact hA x hx' y hy' hne
+  have hψ0 : ∀ x, g ≤ x → 0 ≤ 1 / x ^ 2 := fun x _ => by positivity
+  have hψmono : ∀ x y, g ≤ x → x ≤ y → 1 / y ^ 2 ≤ 1 / x ^ 2 := fun x y hx hxy =>
+    one_div_le_one_div_of_le (by have : 0 < x := by linarith
+                                 positivity) (pow_le_pow_left₀ (by linarith) hxy 2)
+  have hz : HasSum (fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2) (Real.pi ^ 2 / 6) := by
+    have h := (hasSum_nat_add_iff' 1).mpr hasSum_zeta_two
+    simpa using h
+  have hψs : HasSum (fun n : ℕ => 1 / (((n : ℝ) + 1) * g) ^ 2) (Real.pi ^ 2 / 6 / g ^ 2) := by
+    have hfun : (fun n : ℕ => 1 / (((n : ℝ) + 1) * g) ^ 2) =
+        fun n : ℕ => 1 / ((n : ℝ) + 1) ^ 2 / g ^ 2 := by
+      funext n; rw [mul_pow, div_div]
+    rw [hfun]; exact hz.div_const _
+  have key := sum_offDiag_le_two_tsum γ hg hsep hψ0 hψmono hψs.summable
+    ⟨t, Finset.mem_insert_self t A⟩
+  rw [hψs.tsum_eq] at key
+  have hL : ∑ l ∈ Finset.univ.filter (· ≠ (⟨t, Finset.mem_insert_self t A⟩ : B)),
+      1 / |γ ⟨t, Finset.mem_insert_self t A⟩ - γ l| ^ 2 = ∑ a ∈ A, 1 / (a - t) ^ 2 := by
+    rw [Finset.sum_filter]
+    have e : ∀ l : B, (if l ≠ (⟨t, Finset.mem_insert_self t A⟩ : B) then
+        1 / |γ ⟨t, Finset.mem_insert_self t A⟩ - γ l| ^ 2 else 0) =
+        (fun x : ℝ => if x ≠ t then 1 / (x - t) ^ 2 else 0) l.1 := fun l => by
+      simp only [γ, ne_eq, Subtype.ext_iff, sq_abs]
+      split_ifs <;> ring
+    rw [Finset.sum_congr rfl fun l _ => e l, Finset.sum_coe_sort B
+      (fun x : ℝ => if x ≠ t then 1 / (x - t) ^ 2 else 0), ← Finset.sum_filter, hB,
+      Finset.filter_insert, if_neg (by simp)]
+    exact Finset.sum_congr (Finset.filter_true_of_mem fun a ha (h : a = t) => htA (h ▸ ha))
+      fun _ _ => rfl
+  rw [hL] at key
+  have hpi : Real.pi ^ 2 / 6 ≤ 2 := by nlinarith [Real.pi_lt_d2, Real.pi_pos]
+  calc ∑ a ∈ A, 1 / (a - t) ^ 2 ≤ 2 * (Real.pi ^ 2 / 6 / g ^ 2) := key
+    _ ≤ 2 * (2 / g ^ 2) := by gcongr
+    _ = 4 / g ^ 2 := by ring
+
+/-- **Separated ordinates up to reflection.** If distinct points of `S` that are not reflections
+`z' = −z̄` of each other have ordinates `g` apart, and ordinates different from `t` are `g` apart
+from `t`, then `Σ_{Im z ≠ t} (Im z − t)⁻² ≤ 8/g²`: on each half `Re z ≥ 0`, `Re z < 0` the ordinate
+is injective. -/
+theorem sum_inv_sq_im_le {S : Finset ℂ} {t g : ℝ} (hg : 0 < g)
+    (hS : ∀ z ∈ S, ∀ z' ∈ S, z' ≠ z → z' ≠ -conj z → g ≤ |z.im - z'.im|)
+    (ht : ∀ z ∈ S, z.im ≠ t → g ≤ |z.im - t|) :
+    ∑ z ∈ S.filter (fun z => z.im ≠ t), 1 / (z.im - t) ^ 2 ≤ 8 / g ^ 2 := by
+  classical
+  have half : ∀ (p : ℂ → Prop) [DecidablePred p],
+      (∀ z z', p z → p z' → z' = -conj z → z' = z) →
+      ∑ z ∈ (S.filter (fun z => z.im ≠ t)).filter p, 1 / (z.im - t) ^ 2 ≤ 4 / g ^ 2 := by
+    intro p _ hp
+    set Q := (S.filter (fun z => z.im ≠ t)).filter p with hQ
+    have memQ : ∀ z ∈ Q, z ∈ S ∧ z.im ≠ t ∧ p z := fun z hz => by
+      rw [hQ, Finset.mem_filter, Finset.mem_filter] at hz; exact ⟨hz.1.1, hz.1.2, hz.2⟩
+    have hinj : Set.InjOn Complex.im Q := by
+      intro z hz z' hz' h
+      by_contra hne
+      have h1 := memQ z hz
+      have h2 := memQ z' hz'
+      by_cases hr : z' = -conj z
+      · exact hne (hp z z' h1.2.2 h2.2.2 hr).symm
+      · have := hS z h1.1 z' h2.1 (Ne.symm hne) hr
+        rw [show z.im - z'.im = 0 by rw [h]; ring, abs_zero] at this
+        linarith
+    rw [← Finset.sum_image (f := fun a : ℝ => 1 / (a - t) ^ 2) hinj]
+    refine sum_inv_sq_le_of_separated hg ?_ ?_ ?_
+    · intro hm
+      obtain ⟨z, hz, hzt⟩ := Finset.mem_image.mp hm
+      exact (memQ z hz).2.1 hzt
+    · intro a ha a' ha' hne
+      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp ha
+      obtain ⟨z', hz', rfl⟩ := Finset.mem_image.mp ha'
+      have hzz : z' ≠ z := fun h => hne (by rw [h])
+      by_cases hr : z' = -conj z
+      · exact absurd (hp z z' (memQ z hz).2.2 (memQ z' hz').2.2 hr) hzz
+      · exact hS z (memQ z hz).1 z' (memQ z' hz').1 hzz hr
+    · intro a ha
+      obtain ⟨z, hz, rfl⟩ := Finset.mem_image.mp ha
+      exact ht z (memQ z hz).1 (memQ z hz).2.1
+  have h1 := half (fun z => 0 ≤ z.re) fun z z' hz hz' hr => by
+    have hre : z'.re = -z.re := by rw [hr]; simp
+    have h0 : z.re = 0 := by linarith
+    rw [hr]; apply Complex.ext <;> simp [h0]
+  have h2 := half (fun z => ¬ 0 ≤ z.re) fun z z' hz hz' hr => by
+    have hre : z'.re = -z.re := by rw [hr]; simp
+    exact absurd (by linarith [not_le.mp hz, not_le.mp hz'] : False) id
+  rw [← Finset.sum_filter_add_sum_filter_not _ (fun z => 0 ≤ z.re)]
+  calc _ ≤ 4 / g ^ 2 + 4 / g ^ 2 := add_le_add h1 h2
+    _ = 8 / g ^ 2 := by ring
+
+/-! ### Separated ordinates -/
+
+/-- The exponents `z = ρ − ½` of the zeros and of their conjugates. -/
+def zeroExps (Z : ZeroConfig) : Set ℂ :=
+  {z | 1 / 2 + z ∈ Z.carrier ∨ 1 / 2 + conj z ∈ Z.carrier}
+
+/-- **Separated ordinates.** Two exponents that are neither equal nor reflections `z' = −z̄` of each
+other have ordinates at least `δ` apart: each ordinate carries one zero up to reflection, and the
+distinct ordinates, taken with both signs, are `δ`-separated. -/
+def SeparatedOrdinates (Z : ZeroConfig) (δ : ℝ) : Prop :=
+  ∀ z ∈ zeroExps Z, ∀ z' ∈ zeroExps Z, z' ≠ z → z' ≠ -conj z → δ ≤ |z.im - z'.im|
+
+/-- The weight `|D_z| e^{Re z · u}` of the exponent `z` in the cubic spline trace at log-scale `u`. -/
+def expWeight (Z : ZeroConfig) (u : ℝ) (z : ℂ) : ℝ :=
+  ‖evenCoeff Z (boxSpline 1 3) z‖ * Real.exp (z.re * u)
+
+section Config
+
+variable {Z : ZeroConfig}
+
+theorem conj_mem_zeroExps {z : ℂ} (hz : z ∈ zeroExps Z) : conj z ∈ zeroExps Z := by
+  rcases hz with h | h
+  · exact Or.inr (by rwa [Complex.conj_conj])
+  · exact Or.inl h
+
+theorem abs_re_lt_of_mem_zeroExps {z : ℂ} (hz : z ∈ zeroExps Z) : |z.re| < 1 / 2 := by
+  rcases hz with h | h
+  · have h2 := Z.strip _ h
+    have e : (1 / 2 + z).re = 1 / 2 + z.re := by simp
+    rw [e] at h2
+    exact abs_lt.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
+  · have h2 := Z.strip _ h
+    have e : (1 / 2 + conj z).re = 1 / 2 + z.re := by simp
+    rw [e] at h2
+    exact abs_lt.mpr ⟨by linarith [h2.1], by linarith [h2.2]⟩
+
+theorem im_ne_zero_of_mem_zeroExps (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {z : ℂ}
+    (hz : z ∈ zeroExps Z) : z.im ≠ 0 := by
+  rcases hz with h | h
+  · have := hnoreal _ h; simpa using this
+  · have := hnoreal _ h; simpa using this
+
+/-- Conjugate exponents are separated too: `|Im z| ≥ δ/2`. -/
+theorem half_le_abs_im (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ}
+    (hsep : SeparatedOrdinates Z δ) {z : ℂ} (hz : z ∈ zeroExps Z) : δ / 2 ≤ |z.im| := by
+  have him := im_ne_zero_of_mem_zeroExps hnoreal hz
+  have h1 : conj z ≠ z := fun h => him (by have := congrArg Complex.im h; simp at this; linarith)
+  have h2 : conj z ≠ -conj z := fun h => him (by
+    have := congrArg Complex.im h; simp at this; linarith)
+  have h := hsep z hz (conj z) (conj_mem_zeroExps hz) h1 h2
+  rw [Complex.conj_im, sub_neg_eq_add, ← two_mul, abs_mul, abs_two] at h
+  linarith
+
+theorem expWeight_add (u s : ℝ) (z : ℂ) :
+    expWeight Z (u + s) z = expWeight Z u z * Real.exp (z.re * s) := by
+  unfold expWeight; rw [mul_add, Real.exp_add]; ring
+
+theorem expWeight_nonneg (u : ℝ) (z : ℂ) : 0 ≤ expWeight Z u z := by
+  unfold expWeight; positivity
+
+theorem expWeight_le (u : ℝ) (z : ℂ) :
+    expWeight Z u z ≤ ‖evenCoeff Z (boxSpline 1 3) z‖ * Real.exp (|u| / 2) := by
+  unfold expWeight
+  by_cases h : evenCoeff Z (boxSpline 1 3) z = 0
+  · simp [h]
+  refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+  have hr := abs_re_lt_of_mem_zeroExps (mem_of_evenCoeff_ne_zero h)
+  calc z.re * u ≤ |z.re * u| := le_abs_self _
+    _ = |z.re| * |u| := abs_mul _ _
+    _ ≤ 1 / 2 * |u| := mul_le_mul_of_nonneg_right hr.le (abs_nonneg _)
+    _ = |u| / 2 := by ring
+
+theorem summable_expWeight (hZ : TemperedConfig Z) (u : ℝ) : Summable (expWeight Z u) :=
+  Summable.of_nonneg_of_le (expWeight_nonneg u) (expWeight_le u)
+    ((summable_norm_evenCoeff_spline hZ).mul_right _)
+
+theorem norm_term_eq (z : ℂ) (u : ℝ) (q : ℂ) :
+    ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u) * q‖ = expWeight Z u z * ‖q‖ := by
+  rw [norm_mul, norm_mul, norm_cexp_mul_ofReal]; rfl
+
+/-- **A dominant exponent.** At every scale some exponent has maximal weight. -/
+theorem exists_dominant (hZ : TemperedConfig Z) (u : ℝ) {z₁ : ℂ}
+    (hz₁ : evenCoeff Z (boxSpline 1 3) z₁ ≠ 0) :
+    ∃ z, evenCoeff Z (boxSpline 1 3) z ≠ 0 ∧ ∀ z', expWeight Z u z' ≤ expWeight Z u z := by
+  have hpos : 0 < expWeight Z u z₁ := mul_pos (norm_pos_iff.mpr hz₁) (Real.exp_pos _)
+  have hfin : {z | expWeight Z u z₁ ≤ expWeight Z u z}.Finite := by
+    have h := (summable_expWeight hZ u).tendsto_cofinite_zero.eventually (gt_mem_nhds hpos)
+    rw [Filter.eventually_cofinite] at h
+    simpa [not_lt] using h
+  obtain ⟨z, hz, hmax⟩ := Set.exists_max_image _ (expWeight Z u) hfin ⟨z₁, le_refl _⟩
+  refine ⟨z, fun h0 => ?_, fun z' => ?_⟩
+  · have h0' : expWeight Z u z = 0 := by simp [expWeight, h0]
+    have : expWeight Z u z₁ ≤ expWeight Z u z := hz
+    linarith
+  · by_cases h : expWeight Z u z₁ ≤ expWeight Z u z'
+    · exact hmax z' h
+    · exact (not_le.mp h).le.trans hz
+
+/-- The supremum `b` of the depths `Re z` of the exponents. -/
+theorem exists_depth_sup {z₁ : ℂ} (hz₁ : evenCoeff Z (boxSpline 1 3) z₁ ≠ 0) :
+    ∃ b : ℝ, (∀ z, evenCoeff Z (boxSpline 1 3) z ≠ 0 → z.re ≤ b) ∧
+      ∀ η > 0, ∃ z, evenCoeff Z (boxSpline 1 3) z ≠ 0 ∧ b - η < z.re := by
+  set s : Set ℝ := {x | ∃ z, evenCoeff Z (boxSpline 1 3) z ≠ 0 ∧ z.re = x}
+  have hne : s.Nonempty := ⟨z₁.re, z₁, hz₁, rfl⟩
+  have hbdd : BddAbove s := ⟨1 / 2, by rintro _ ⟨z, hz, rfl⟩; exact re_le_of_evenCoeff_ne_zero hz⟩
+  refine ⟨sSup s, fun z hz => le_csSup hbdd ⟨z, hz, rfl⟩, fun η hη => ?_⟩
+  obtain ⟨_, ⟨z, hz, rfl⟩, hlt⟩ := exists_lt_of_lt_csSup hne (by linarith : sSup s - η < sSup s)
+  exact ⟨z, hz, hlt⟩
+
+/-- **The dominant depth tends to the supremum.** Far out, every exponent of maximal weight has
+depth at least `b − η`: an exponent of depth `> b − η/2` outweighs every shallower one by
+`e^{(η/2)u}`. -/
+theorem le_re_of_dominant (hZ : TemperedConfig Z) {b η : ℝ} (hη : 0 < η)
+    {z₁ : ℂ} (hz₁ : evenCoeff Z (boxSpline 1 3) z₁ ≠ 0) (hz₁b : b - η / 2 < z₁.re) :
+    ∃ U : ℝ, ∀ u, U ≤ u → ∀ z, (∀ z', expWeight Z u z' ≤ expWeight Z u z) → b - η ≤ z.re := by
+  set A := ∑' z, ‖evenCoeff Z (boxSpline 1 3) z‖
+  have hs := summable_norm_evenCoeff_spline hZ
+  have hle : ∀ z, ‖evenCoeff Z (boxSpline 1 3) z‖ ≤ A := fun z =>
+    hs.le_tsum z fun _ _ => norm_nonneg _
+  have hc : 0 < ‖evenCoeff Z (boxSpline 1 3) z₁‖ := norm_pos_iff.mpr hz₁
+  have hA : 0 < A := lt_of_lt_of_le hc (hle z₁)
+  set L := Real.log (A / ‖evenCoeff Z (boxSpline 1 3) z₁‖)
+  refine ⟨max 1 (2 * L / η), fun u hu z hz => ?_⟩
+  by_contra hlt
+  push Not at hlt
+  have hu0 : 0 < u := lt_of_lt_of_le one_pos ((le_max_left _ _).trans hu)
+  have hLu : L ≤ η / 2 * u := by
+    have h := (le_max_right _ _).trans hu
+    rw [div_le_iff₀ hη] at h; linarith
+  have h1 : L < (z₁.re - z.re) * u := by nlinarith
+  have h2 : A / ‖evenCoeff Z (boxSpline 1 3) z₁‖ < Real.exp ((z₁.re - z.re) * u) := by
+    rw [← Real.exp_log (div_pos hA hc)]; exact Real.exp_lt_exp.mpr h1
+  have h4 : Real.exp ((z₁.re - z.re) * u) ≤ A / ‖evenCoeff Z (boxSpline 1 3) z₁‖ := by
+    rw [le_div_iff₀ hc, sub_mul, Real.exp_sub, div_mul_eq_mul_div, div_le_iff₀ (Real.exp_pos _)]
+    calc Real.exp (z₁.re * u) * ‖evenCoeff Z (boxSpline 1 3) z₁‖ = expWeight Z u z₁ := by
+          unfold expWeight; ring
+      _ ≤ expWeight Z u z := hz z₁
+      _ ≤ A * Real.exp (z.re * u) := mul_le_mul_of_nonneg_right (hle z) (Real.exp_pos _).le
+  linarith
+
+/-- **Drift on a window.** If `z₀` has maximal weight at `u₀` and depth `≥ b − η`, the maximal
+exponent at `u₀ − ℓ` has depth `≥ b − η`, and all depths are `≤ b`, then on `[u₀ − ℓ, u₀ + ℓ]` no
+weight exceeds that of `z₀` by more than `e^{ηℓ}`: `|D_z| e^{Re z · u₀} e^{|Re z − Re z₀| ℓ} ≤
+e^{ηℓ} |D_{z₀}| e^{Re z₀ · u₀}`. Deeper exponents are compared at `u₀ + ℓ`, shallower at `u₀ − ℓ`. -/
+theorem expWeight_drift_le {b η ℓ u₀ : ℝ} (hℓ : 0 ≤ ℓ)
+    (hb : ∀ z, evenCoeff Z (boxSpline 1 3) z ≠ 0 → z.re ≤ b) {z₀ z₁ z₂ : ℂ}
+    (h₀ : ∀ z', expWeight Z u₀ z' ≤ expWeight Z u₀ z₀) (hz₀ : evenCoeff Z (boxSpline 1 3) z₀ ≠ 0)
+    (hz₀b : b - η ≤ z₀.re)
+    (h₁ : ∀ z', expWeight Z (u₀ + ℓ) z' ≤ expWeight Z (u₀ + ℓ) z₁)
+    (hz₁ : evenCoeff Z (boxSpline 1 3) z₁ ≠ 0)
+    (h₂ : ∀ z', expWeight Z (u₀ + -ℓ) z' ≤ expWeight Z (u₀ + -ℓ) z₂) (hz₂b : b - η ≤ z₂.re)
+    (z : ℂ) :
+    expWeight Z u₀ z * Real.exp (|z.re - z₀.re| * ℓ) ≤ Real.exp (η * ℓ) * expWeight Z u₀ z₀ := by
+  have hw0 := expWeight_nonneg (Z := Z) u₀ z₀
+  rcases le_or_gt z₀.re z.re with h | h
+  · rw [abs_of_nonneg (by linarith)]
+    have e : expWeight Z u₀ z * Real.exp ((z.re - z₀.re) * ℓ) =
+        expWeight Z (u₀ + ℓ) z * Real.exp (-z₀.re * ℓ) := by
+      rw [expWeight_add, mul_assoc, ← Real.exp_add]; ring_nf
+    have e1 : expWeight Z (u₀ + ℓ) z₁ * Real.exp (-z₀.re * ℓ) =
+        expWeight Z u₀ z₁ * Real.exp ((z₁.re - z₀.re) * ℓ) := by
+      rw [expWeight_add, mul_assoc, ← Real.exp_add]; ring_nf
+    have hx : (z₁.re - z₀.re) * ℓ ≤ η * ℓ :=
+      mul_le_mul_of_nonneg_right (by linarith [hb z₁ hz₁]) hℓ
+    calc expWeight Z u₀ z * Real.exp ((z.re - z₀.re) * ℓ)
+        = expWeight Z (u₀ + ℓ) z * Real.exp (-z₀.re * ℓ) := e
+      _ ≤ expWeight Z (u₀ + ℓ) z₁ * Real.exp (-z₀.re * ℓ) :=
+          mul_le_mul_of_nonneg_right (h₁ z) (Real.exp_pos _).le
+      _ = expWeight Z u₀ z₁ * Real.exp ((z₁.re - z₀.re) * ℓ) := e1
+      _ ≤ expWeight Z u₀ z₀ * Real.exp (η * ℓ) :=
+          mul_le_mul (h₀ z₁) (Real.exp_le_exp.mpr hx) (Real.exp_pos _).le hw0
+      _ = Real.exp (η * ℓ) * expWeight Z u₀ z₀ := by ring
+  · rw [abs_of_neg (by linarith)]
+    have e : expWeight Z u₀ z * Real.exp (-(z.re - z₀.re) * ℓ) =
+        expWeight Z (u₀ + -ℓ) z * Real.exp (z₀.re * ℓ) := by
+      rw [expWeight_add, mul_assoc, ← Real.exp_add]; ring_nf
+    have e2 : expWeight Z (u₀ + -ℓ) z₂ * Real.exp (z₀.re * ℓ) =
+        expWeight Z u₀ z₂ * Real.exp ((z₀.re - z₂.re) * ℓ) := by
+      rw [expWeight_add, mul_assoc, ← Real.exp_add]; ring_nf
+    have hx : (z₀.re - z₂.re) * ℓ ≤ η * ℓ :=
+      mul_le_mul_of_nonneg_right (by linarith [hb z₀ hz₀]) hℓ
+    calc expWeight Z u₀ z * Real.exp (-(z.re - z₀.re) * ℓ)
+        = expWeight Z (u₀ + -ℓ) z * Real.exp (z₀.re * ℓ) := e
+      _ ≤ expWeight Z (u₀ + -ℓ) z₂ * Real.exp (z₀.re * ℓ) :=
+          mul_le_mul_of_nonneg_right (h₂ z) (Real.exp_pos _).le
+      _ = expWeight Z u₀ z₂ * Real.exp ((z₀.re - z₂.re) * ℓ) := e2
+      _ ≤ expWeight Z u₀ z₀ * Real.exp (η * ℓ) :=
+          mul_le_mul (h₀ z₂) (Real.exp_le_exp.mpr hx) (Real.exp_pos _).le hw0
+      _ = Real.exp (η * ℓ) * expWeight Z u₀ z₀ := by ring
+
+/-- **Leakage of one exponent.** Under the drift bound `B`, the term of `z` in the test at
+`w` (`Re w = Re z − x₀`, `Im w ≠ 0`) is at most `B · 4/ℓ² · (Im w)⁻²`. -/
+theorem norm_term_le {z w : ℂ} {u₀ ℓ x₀ B : ℝ} (hℓ : 0 < ℓ) (hw : w.im ≠ 0)
+    (hwre : w.re = z.re - x₀) (hdrift : expWeight Z u₀ z * Real.exp (|z.re - x₀| * ℓ) ≤ B) :
+    ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ w ^ 2‖ ≤
+      B * (4 / ℓ ^ 2) * (1 / w.im ^ 2) := by
+  have hw0 : w ≠ 0 := fun h => hw (by rw [h, Complex.zero_im])
+  rw [norm_term_eq, norm_pow]
+  have hσ := norm_boxAvg_sq_le hℓ hw0
+  rw [hwre] at hσ
+  have him : w.im ^ 2 ≤ ‖w‖ ^ 2 := by
+    rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) (Complex.abs_im_le_norm w) 2
+  have hq : 4 / (‖w‖ * ℓ) ^ 2 ≤ 4 / ℓ ^ 2 * (1 / w.im ^ 2) := by
+    rw [mul_pow, div_mul_div_comm, mul_one, mul_comm (ℓ ^ 2)]
+    exact div_le_div_of_nonneg_left (by norm_num) (by positivity)
+      (mul_le_mul_of_nonneg_right him (by positivity))
+  calc expWeight Z u₀ z * ‖boxAvg ℓ w‖ ^ 2
+      ≤ expWeight Z u₀ z * (Real.exp (|z.re - x₀| * ℓ) * (4 / ℓ ^ 2 * (1 / w.im ^ 2))) :=
+        mul_le_mul_of_nonneg_left (hσ.trans (mul_le_mul_of_nonneg_left hq (Real.exp_pos _).le))
+          (expWeight_nonneg _ _)
+    _ = expWeight Z u₀ z * Real.exp (|z.re - x₀| * ℓ) * (4 / ℓ ^ 2 * (1 / w.im ^ 2)) := by ring
+    _ ≤ B * (4 / ℓ ^ 2 * (1 / w.im ^ 2)) :=
+        mul_le_mul_of_nonneg_right hdrift (by positivity)
+    _ = B * (4 / ℓ ^ 2) * (1 / w.im ^ 2) := by ring
+
+/-- **The zero-frequency leakage.** -/
+theorem sum_term_zero_le (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ)
+    (hsep : SeparatedOrdinates Z δ) {S : Finset ℂ} (hS : ∀ z ∈ S, z ∈ zeroExps Z)
+    {u₀ ℓ x₀ B : ℝ} (hℓ : 0 < ℓ)
+    (hdrift : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - x₀| * ℓ) ≤ B) :
+    ∑ z ∈ S, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - x₀) ^ 2‖ ≤
+      B * (4 / ℓ ^ 2) * (32 / δ ^ 2) := by
+  have hB : 0 ≤ B := le_trans (by positivity) (hdrift 0)
+  have hterm : ∀ z ∈ S, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - x₀) ^ 2‖ ≤
+      B * (4 / ℓ ^ 2) * (1 / (z.im - 0) ^ 2) := fun z hz => by
+    have h := norm_term_le (Z := Z) (w := z - x₀) hℓ (by simpa using
+      im_ne_zero_of_mem_zeroExps hnoreal (hS z hz)) (by simp) (hdrift z)
+    simpa using h
+  have hcount := sum_inv_sq_im_le (S := S) (t := 0) (half_pos hδ)
+    (fun z hz z' hz' h1 h2 => le_trans (by linarith) (hsep z (hS z hz) z' (hS z' hz') h1 h2))
+    (fun z hz _ => by rw [sub_zero]; exact half_le_abs_im hnoreal hsep (hS z hz))
+  rw [Finset.filter_true_of_mem fun z hz => im_ne_zero_of_mem_zeroExps hnoreal (hS z hz)]
+    at hcount
+  calc _ ≤ ∑ z ∈ S, B * (4 / ℓ ^ 2) * (1 / (z.im - 0) ^ 2) := Finset.sum_le_sum hterm
+    _ = B * (4 / ℓ ^ 2) * ∑ z ∈ S, 1 / (z.im - 0) ^ 2 := by rw [Finset.mul_sum]
+    _ ≤ B * (4 / ℓ ^ 2) * (8 / (δ / 2) ^ 2) := mul_le_mul_of_nonneg_left hcount (by positivity)
+    _ = B * (4 / ℓ ^ 2) * (32 / δ ^ 2) := by ring
+
+/-- **The leakage at a dominant ordinate.** The exponents of other ordinates leak
+`O(B/(δℓ)²)`; the only exponent of the same ordinate is the reflection `−z̄_m`, damped by
+`e^{−2 Re z_m (u₀ − ℓ)}`. -/
+theorem sum_term_erase_le {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z δ) {S : Finset ℂ}
+    (hS : ∀ z ∈ S, z ∈ zeroExps Z) {zm : ℂ} (hzm : zm ∈ zeroExps Z) (hxm : 0 ≤ zm.re)
+    {u₀ ℓ B : ℝ} (hℓ : 0 < ℓ)
+    (hdrift : ∀ z, expWeight Z u₀ z * Real.exp (|z.re - zm.re| * ℓ) ≤ B) :
+    ∑ z ∈ S.erase zm, ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - zm) ^ 2‖ ≤
+      B * (4 / ℓ ^ 2) * (8 / δ ^ 2) + expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * (u₀ - ℓ)) := by
+  classical
+  have hB : 0 ≤ B := le_trans (by positivity) (hdrift 0)
+  set f : ℂ → ℝ := fun z =>
+    ‖evenCoeff Z (boxSpline 1 3) z * cexp (z * u₀) * boxAvg ℓ (z - zm) ^ 2‖
+  rw [← Finset.sum_filter_add_sum_filter_not _ (fun z => z.im ≠ zm.im)]
+  have hS' : ∀ z ∈ S.erase zm, z ∈ zeroExps Z := fun z hz => hS z (Finset.mem_of_mem_erase hz)
+  -- other ordinates
+  have h1 : ∑ z ∈ (S.erase zm).filter (fun z => z.im ≠ zm.im), f z ≤
+      B * (4 / ℓ ^ 2) * (8 / δ ^ 2) := by
+    have hterm : ∀ z ∈ (S.erase zm).filter (fun z => z.im ≠ zm.im),
+        f z ≤ B * (4 / ℓ ^ 2) * (1 / (z.im - zm.im) ^ 2) := fun z hz => by
+      have hne := (Finset.mem_filter.mp hz).2
+      have h := norm_term_le (Z := Z) (w := z - zm) (x₀ := zm.re) hℓ
+        (by simpa [sub_eq_zero] using hne) (by simp) (hdrift z)
+      simpa using h
+    have hcount := sum_inv_sq_im_le (S := S.erase zm) (t := zm.im) hδ
+      (fun z hz z' hz' h1 h2 => hsep z (hS' z hz) z' (hS' z' hz') h1 h2)
+      (fun z hz hne => by
+        have h := hsep zm hzm z (hS' z hz)
+          (fun h => hne (by rw [h])) (fun h => hne (by rw [h]; simp))
+        rwa [abs_sub_comm] at h)
+    calc _ ≤ ∑ z ∈ (S.erase zm).filter (fun z => z.im ≠ zm.im),
+          B * (4 / ℓ ^ 2) * (1 / (z.im - zm.im) ^ 2) := Finset.sum_le_sum hterm
+      _ = B * (4 / ℓ ^ 2) * ∑ z ∈ (S.erase zm).filter (fun z => z.im ≠ zm.im),
+          1 / (z.im - zm.im) ^ 2 := by rw [Finset.mul_sum]
+      _ ≤ B * (4 / ℓ ^ 2) * (8 / δ ^ 2) := mul_le_mul_of_nonneg_left hcount (by positivity)
+  -- the same ordinate: only the reflection
+  have h2 : ∑ z ∈ (S.erase zm).filter (fun z => ¬ z.im ≠ zm.im), f z ≤
+      expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * (u₀ - ℓ)) := by
+    have hsub : (S.erase zm).filter (fun z => ¬ z.im ≠ zm.im) ⊆ {-conj zm} := by
+      intro z hz
+      obtain ⟨hzS, hzi⟩ := Finset.mem_filter.mp hz
+      push Not at hzi
+      rw [Finset.mem_singleton]
+      by_contra hr
+      have h := hsep zm hzm z (hS' z hzS) (Finset.ne_of_mem_erase hzS) hr
+      rw [hzi, sub_self, abs_zero] at h
+      linarith
+    refine (Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => norm_nonneg _).trans ?_
+    rw [Finset.sum_singleton]
+    simp only [f]
+    rw [norm_term_eq, norm_pow]
+    have hσ := norm_boxAvg_sq_le_exp hℓ (-conj zm - zm)
+    have hre : |(-conj zm - zm).re| = 2 * zm.re := by
+      rw [show (-conj zm - zm).re = -(2 * zm.re) by simp; ring, abs_neg,
+        abs_of_nonneg (by linarith)]
+    rw [hre] at hσ
+    have hw : expWeight Z u₀ (-conj zm) = expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * u₀) := by
+      unfold expWeight
+      rw [evenCoeff_neg_conj Z (contDiff_boxSpline (r := 1) one_pos 2).continuous
+        (hasCompactSupport_of_support_subset_abs (boxSpline_support (r := 1) one_pos 3)),
+        Complex.norm_conj, mul_assoc, ← Real.exp_add]
+      congr 2; simp; ring
+    rw [hw]
+    calc expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * u₀) * ‖boxAvg ℓ (-conj zm - zm)‖ ^ 2
+        ≤ expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * u₀) * Real.exp (2 * zm.re * ℓ) :=
+          mul_le_mul_of_nonneg_left hσ (mul_nonneg (expWeight_nonneg _ _) (Real.exp_pos _).le)
+      _ = expWeight Z u₀ zm * Real.exp (-(2 * zm.re) * (u₀ - ℓ)) := by
+          rw [mul_assoc, ← Real.exp_add]; ring_nf
+  linarith
+
+end Config
+
+end GaloisForLFunctions.SurfaceOfSpecZ

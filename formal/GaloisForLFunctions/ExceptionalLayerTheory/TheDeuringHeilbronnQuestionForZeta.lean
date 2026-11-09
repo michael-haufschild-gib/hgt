@@ -349,7 +349,8 @@ theorem riemannHypothesis_iff_zerosApproachLine_and_b13_of_extremeDeuringHeilbro
   have hiff : ZetaExtremeDeuringHeilbronn ↔
       (AsymptoticAbscissaLaw ↔ (FiniteOffLine → RiemannHypothesis)) :=
     zetaExtremeDeuringHeilbronn_tfae.out 0 1
-  rw [riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw, hiff.mp hEDH]
+  exact riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.trans
+    (and_congr_right' (hiff.mp hEDH))
 
 /-- **Nine-way collapse under `ZetaExtremeDeuringHeilbronn` and `FiniteOffLine → RiemannHypothesis`.** -/
 theorem riemannHypothesis_tfae_of_extremeDeuringHeilbronn_and_b13

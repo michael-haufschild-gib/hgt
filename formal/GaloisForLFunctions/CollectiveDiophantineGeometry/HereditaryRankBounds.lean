@@ -55,21 +55,21 @@ theorem collectiveDepthFloor_le_of_majority {r d k W V : ℕ}
     unfold collectiveBase
     gcongr
   have hbase1 : (1 : ℝ) ≤ collectiveBase k V := by
-    exact_mod_cast (show 1 ≤ collectiveBase k V by unfold collectiveBase; positivity)
+    exact_mod_cast (Nat.one_le_iff_ne_zero.mpr
+      (show collectiveBase k V ≠ 0 by unfold collectiveBase; positivity))
   have hC : collectiveExponent r d W ≤ collectiveExponent k 0 V := by
     rw [collectiveExponent_of_large_rank hdr,
       collectiveExponent_of_large_rank (show 0 < k by omega), zero_add]
     calc
       _ ≤ (collectiveBase k V : ℝ) ^ (100 * (d + r + 1)) := by
-        gcongr
-        exact_mod_cast hbase
+        exact_mod_cast Nat.pow_le_pow_left hbase (100 * (d + r + 1))
       _ ≤ _ := pow_le_pow_right₀ hbase1 (by omega)
   have hnum : exp (-(collectiveExponent k 0 V *
       (log ((k.factorial : ℝ) * H ^ k) + 2))) ≤
       exp (-(collectiveExponent r d W * (log ((r.factorial : ℝ) * H ^ r) + 2))) := by
     apply Real.exp_le_exp.mpr
     apply neg_le_neg
-    exact mul_le_mul hC hlog hlog0 (by unfold collectiveExponent; positivity)
+    exact mul_le_mul hC hlog hlog0 (pow_nonneg (Nat.cast_nonneg _) _)
   have hden : (r : ℝ) * (r.factorial : ℝ) * H ^ (r - 1) ≤
       (k : ℝ) * (k.factorial : ℝ) * H ^ (k - 1) := by
     apply mul_le_mul
@@ -175,7 +175,7 @@ theorem hereditary_small_forms_finrank_le {k : ℕ}
       (collectiveLogBound_comp_le p hprime f hf) hH'
   have heval : (∑ j, (M a (f j) : ℝ) * log ((p ∘ f) j)) =
       ∑ j, (M a j : ℝ) * log (p j) := by
-    apply sum_coordinate_restriction J e
+    apply sum_coordinate_restriction J e (fun j => (M a j : ℝ) * log (p j))
     intro j hj
     rw [hsupp a j hj, Int.cast_zero, zero_mul]
   rw [heval] at ha
@@ -189,7 +189,7 @@ theorem hereditary_small_forms_finrank_le {k : ℕ}
       (collectiveDepthFloor (k + 1) 0 (collectiveLogBound p) (hereditaryHeight (k + 1) H) /
         hereditaryValueLoss (k + 1) H) at h
     simpa only [mul_div_assoc, mul_comm (hereditaryValueLoss (k + 1) H),
-      mul_div_cancel₀ _ hK] using h
+      div_mul_cancel₀ _ hK] using h
   exact (not_lt_of_ge (hfloor.trans ha)) hsmall'
 
 /-- The entire integer approximation body has hereditary coordinate density
@@ -200,7 +200,7 @@ theorem nearRelationBox_hereditary_finrank_le {k H : ℕ}
     (hε : ε ≤ hereditaryDepthFloor (k + 1) (collectiveLogBound p) H)
     (J : Finset (Fin (k + 1))) :
     2 * Module.finrank ℚ ↥(integerRowSpan (nearRelationBox p H ε) ⊓ coordinateSubspace J) ≤ J.card := by
-  apply hereditary_small_forms_finrank_le p hp hprime (nearRelationBox p H ε)
+  apply hereditary_small_forms_finrank_le p hp hprime (nearRelationBox p H ε) (H := (H : ℝ))
     (by exact_mod_cast hH)
   · intro v hv j
     have h := ((mem_nearRelationBox p H ε v).mp hv).1 j

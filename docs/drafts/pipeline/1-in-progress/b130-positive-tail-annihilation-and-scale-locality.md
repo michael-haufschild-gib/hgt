@@ -37,8 +37,9 @@ finite head has a positive-depth oscillation with bounded gaps. This
 would exclude long windows with no negative excursion without requiring
 the original configuration to attain its top.
 
-For prime sampling, first propagate the bound using Huxley gaps and the
-global derivative envelope. The resulting error exponent is `1/12+ε`.
+For prime sampling, first propagate the bound using the corpus's
+`x^(2/3)` prime gaps and the global derivative envelope. The resulting
+error exponent is `1/6`.
 Tail deletion should then exclude zeros deeper than that exponent;
 the improved derivative envelope makes a second passage bounded.
 
@@ -53,8 +54,13 @@ the improved derivative envelope makes a second passage bounded.
 - [x] Nonzero multiplier convergence, exact tail deletion, dominated trace
   passage, and arbitrarily small tail cost: `PositiveTailIsolation.lean`.
 - [x] Gaussian local lower bound survives infinite deletion; same module.
-- [ ] Prove local tail estimates and the continuous scale-local theorem.
-- [ ] Transfer to prime windows; formalize and audit all dependencies.
+- [x] Cost `r²/(16(D+1))` gives `O(exp(-T))` leakage at square-root
+  windows: `SquareRootWindowLeakage.lean`; Lean/axiom audit passed.
+- [ ] Actual zeta tail isolation: `ZetaTailIsolation.lean`.
+- [ ] Finite-spectrum growing sign changes: `FiniteSpectrumOscillation.lean`.
+- [ ] Continuous depth criterion: `SquareRootWindowsDetectEveryDepth.lean`.
+- [ ] Two-step prime-window criterion: `PrimeSquareRootWindows.lean`;
+  audit all dependencies and final source.
 
 ## Scope
 

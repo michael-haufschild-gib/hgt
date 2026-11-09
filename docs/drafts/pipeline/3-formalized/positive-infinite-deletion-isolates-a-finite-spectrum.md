@@ -27,6 +27,10 @@ The local lower bound from the finite-filter theorem passes to the limit:
 when `f(u)≥-C exp(D'|u|)` globally and `f(u)≥-K` for `|u|≤L`,
 with `V=Σh_n²` and `C,K,q≥0`.
 
+At center `t`, the coefficient mass gives the automatic envelope
+`C=(Σ|c_j|)exp(D|t|)`. The corresponding translated floor and conjugate
+symmetry of the limiting multiplier are also formalized.
+
 ## Proof
 
 Square summability makes all late shifts small. The quadratic multiplier
@@ -44,7 +48,8 @@ is uniform over prefixes, so closedness of the order preserves it.
 
 Direct `lake --old env lean` passed. Main declarations:
 `tendsto_tailAverage_finite_head`, `exists_small_nonzero_tail_multiplier`,
-`infinite_tail_local_floor`. Transitive axioms are only `propext`,
+`infinite_tail_local_floor`, `infinite_tail_translated_floor`, and
+`tprod_quartetFactor_conj`. Transitive axioms are only `propext`,
 `Classical.choice`, and `Quot.sound`. Umbrella import added.
 
 This proves the infinite analytic deletion step. Instantiation on the

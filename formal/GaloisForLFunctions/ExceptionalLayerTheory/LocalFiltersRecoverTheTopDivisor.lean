@@ -40,10 +40,11 @@ theorem tendsto_ordinateWave_shift_ratio (γ a h : ℝ) :
     Tendsto (fun t : ℝ => exceptionalOrdinateWave γ a (t + h) /
       exceptionalOrdinateWave γ a t) atTop (𝓝 (ordinateShiftNode γ a h)) := by
   have hl := (Complex.continuous_ofReal.tendsto 0).comp (tendsto_log_shift_difference h)
-  have he := (Complex.continuous_exp.tendsto (((γ * a * h / 2 : ℝ) : ℂ) * I)).comp
-    ((hl.const_mul (((γ / 2 : ℝ) : ℂ) * I)).const_add
-      (((γ * a * h / 2 : ℝ) : ℂ) * I))
-  simp only [Complex.ofReal_zero, mul_zero, add_zero, Function.comp_def] at he
+  have hx := (hl.const_mul (((γ / 2 : ℝ) : ℂ) * I)).const_add
+    (((γ * a * h / 2 : ℝ) : ℂ) * I)
+  simp only [Complex.ofReal_zero, mul_zero, add_zero, Function.comp_def] at hx
+  have he := (Complex.continuous_exp.tendsto _).comp hx
+  simp only [Function.comp_def] at he
   apply he.congr
   intro t
   rw [exceptionalOrdinateWave, exceptionalOrdinateWave, ← Complex.exp_sub]
@@ -65,7 +66,7 @@ private theorem tendsto_ordinateWave_shift_error (γ a h : ℝ) :
     ordinateShiftNode γ a h * exceptionalOrdinateWave γ a t =
       exceptionalOrdinateWave γ a t *
         (exceptionalOrdinateWave γ a (t + h) / exceptionalOrdinateWave γ a t -
-          ordinateShiftNode γ a h) by field_simp; ring,
+          ordinateShiftNode γ a h) by field_simp,
     norm_mul, norm_exceptionalOrdinateWave]
 
 private theorem ordinateShiftNode_nat_mul (γ a h : ℝ) (j : ℕ) :
@@ -114,7 +115,7 @@ private theorem tendsto_filtered_current_profile
   simp only [mul_zero, Finset.sum_const_zero, sub_zero] at hh
   apply hh.congr
   intro t
-  simp only [Function.comp_def, filteredExceptionalCurrent, mul_add,
+  simp only [Function.comp_def, id_eq, filteredExceptionalCurrent, mul_add,
     Finset.sum_add_distrib, Finset.sum_sub_distrib, Finset.mul_sum]
   rw [Finset.sum_comm (s := Finset.range (P.natDegree + 1)) (t := G)]
   ring
@@ -159,7 +160,8 @@ private theorem filtered_current_extracts_ordinate
   simp only [zero_sub] at hh'
   have hfinal : Tendsto (fun t : ℝ => filteredExceptionalCurrent P σ β a h t /
       exceptionalOrdinateWave γ a t) atTop (𝓝 (-c)) := hh'.congr fun t => by
-    rw [heq, add_div, mul_div_cancel_right₀ _ (Complex.exp_ne_zero _)]
+    have hne : exceptionalOrdinateWave γ a t ≠ 0 := Complex.exp_ne_zero _
+    rw [heq, add_div, mul_div_cancel_right₀ _ hne]
     ring
   simpa only [c, neg_mul] using hfinal
 
@@ -172,7 +174,7 @@ private theorem exists_small_ordinateShift_injective (S : Finset ℝ)
   have hM : 0 ≤ M := Finset.sum_nonneg fun _ _ => abs_nonneg _
   have hden : 0 < a * (M + 1) := mul_pos ha (by linarith only [hM])
   obtain ⟨h, hh0, hh⟩ := exists_between
-    (lt_min hB (div_pos (mul_pos (by norm_num) Real.pi_pos) hden))
+    (lt_min hB (div_pos (mul_pos (by norm_num : (0 : ℝ) < 2) Real.pi_pos) hden))
   have hhB : h < B := hh.trans_le (min_le_left _ _)
   have hhm : h * (a * (M + 1)) < 2 * Real.pi :=
     (lt_div_iff₀ hden).mp (hh.trans_le (min_le_right _ _))
@@ -306,7 +308,8 @@ private theorem exists_positive_local_reading (P : Polynomial ℂ) (σ β a h γ
   let ε : ℝ := ‖c‖ * E / (2 * (K + 1))
   have hε : 0 < ε := by dsimp only [ε]; positivity
   refine ⟨ε, hε, ?_⟩
-  filter_upwards [hlim.norm.eventually_gt_const (show ‖c‖ / 2 < ‖c‖ by linarith only [hc0])]
+  filter_upwards [hlim.norm.eventually
+    (eventually_gt_nhds (show ‖c‖ / 2 < ‖c‖ by linarith only [hc0]))]
     with t ht
   rw [norm_div, norm_exceptionalOrdinateWave] at ht
   have hlarge : ‖c‖ / 2 * E < ‖filteredExceptionalCurrent P σ β a h t‖ :=
