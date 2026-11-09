@@ -101,6 +101,15 @@ has arbitrarily large excursions above every height.
 from Bohr recurrence to physical height uses
 `φ_a(t)−φ_a(R)≥a(t−R)/2` for `t≥R≥2`.
 
+For a top with one positive ordinate γ, conjugation pairs equal
+multiplicities but unequal weights `exp(±πγ/4)`. The reverse triangle
+inequality bounds its profile away from zero. Consequently the corrected
+current's norm tends to infinity at every supercritical speed, at all
+sufficiently large heights. `ASingleTopQuartetCannotCancelItsCurrent.lean`
+proves the actual-divisor dichotomy: either two distinct positive top
+ordinates exist or this pointwise growth holds. Excluding a quartet still
+requires an incompatible arithmetic constraint at the same scale.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

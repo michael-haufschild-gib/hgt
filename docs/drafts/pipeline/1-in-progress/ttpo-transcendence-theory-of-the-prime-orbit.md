@@ -27,11 +27,15 @@ No sign, spectral or positivity input (C1). No computations.
 | 6 | TheFunctionFieldCase | C2 | rank one ⇒ exact returns, exact Frobenius (periodic frozen jets); rounded system is rank one; no exact return over ℤ | checked |
 | 7 | ReturnBoundsAreLabelStatements | Q4, calibration | `MainConjecture` (B97) defined; `ζ(s−h)` Euler product over ℚ-primes, ¬ZAL; uniform route ⇒ ¬B97 | checked |
 | 8 | TuranOnThickSetsOfLevels | T3, Q4 | explicit Turán window theorem with remainder at radius `R`; thick sets see the top part | checked |
-| 9 | TheQuestionsOfTheField | all | bundle | open |
+| 9 | TheReciprocityOfReturns (Gamma bound uniform in φ) | T4 | `Γ_φ(t) ≤ C_φ K (1 + log(2+t))`, K independent of φ | checked |
+| 10 | TheTestOfAHeavyReturn | Q1 | bump test `φ_y`; decay mass independent of y; `P_{φ_y}(0) ≥ √y/4`; heavy return `Re P(t) ≥ (1−2π²δ²)P(0) − 6κ√y − 12 log y` | checked |
+| 11 | AZeroFreeRegionBoundsTheHeavyReturns | Q1, M4, C4 | zero side under depth profile (Tannery for far zeros, local density); heavy returns `√y ≤ K(y^{d(2t)} log t + log(2+t))`; strip ⇒ `log t ≥ c y^{½−h}`; VK profile ⇒ unconditional bound | checked |
+| 12 | TheQuestionsOfTheField | all | `question_one`…`question_four`, `the_tools` | checked |
+| 13 | inversion of the VK inequality | Q1 | heavy subsets: no return in `[T₁, exp((log y)^{3/2−ε})]` | open |
 
 ## Approach
 Organizing principle: depth (precision at fixed primes) vs breadth (number of primes at fixed precision).
 Transcendence controls depth; B97 is breadth at constant depth.
 
 ## Log
-- 2026-11-09 — created; README draft written; modules 1–8 checked.
+- 2026-11-09 — created; modules 1–12 checked; README rewritten.

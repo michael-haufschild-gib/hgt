@@ -41,8 +41,13 @@ with ordinate weights `exp(π Im ρ/4)`. See
 `../3-formalized/elt-moving-layer-phase.md`. The sharp recurrent envelope
 is also Lean proved (`../3-formalized/elt-recurrent-layer-envelope.md`):
 readings recur near the negative tilted multiplicity with bounded gaps.
-The single-positive-ordinate case is under formalization
-(`elt-quartet-noncancellation.md`).
+The single-positive-ordinate case is Lean proved
+(`../3-formalized/elt-quartet-noncancellation.md`): its corrected current
+grows pointwise at every supercritical speed. This does not exclude a quartet.
+
+Further work must directly advance repulsion, replication or exclusion.
+Additional observation bounds without such a consequence do not advance
+the programme's targets.
 
 ## Foundations and gaps
 

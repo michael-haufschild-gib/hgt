@@ -1234,9 +1234,9 @@ theorem upperDensityZero_exSet {Θ : ℝ} (hΘ : 0 < Θ) :
     have hw : holeWidth (winIdx Θ m) < ε / 4 := hK _ hmK
     exact (volume_unitHole_le_two_holeWidth hΘ hm1).trans
       (ENNReal.ofReal_le_ofReal (by linarith))
-  refine ⟨max 1 ((2 * (M₀ : ℝ) + 2) / ε), fun T hT => ?_⟩
+  refine ⟨max 1 (2 * (M₀ : ℝ) / ε + 1), fun T hT => ?_⟩
   have hT1 : 1 ≤ T := (le_max_left _ _).trans hT
-  have hT_large : (2 * (M₀ : ℝ) + 2) / ε ≤ T := (le_max_right _ _).trans hT
+  have hT_large : 2 * (M₀ : ℝ) / ε + 1 ≤ T := (le_max_right _ _).trans hT
   have hsub : exSet Θ ∩ Set.Icc 0 T ⊆ ⋃ m ∈ Finset.range (⌊T⌋₊ + 1), unitHole Θ m := by
     rintro u ⟨huS, hu0, huT⟩
     rw [exSet, Set.mem_iUnion] at huS
@@ -1275,12 +1275,16 @@ theorem upperDensityZero_exSet {Θ : ℝ} (hΘ : 0 < Θ) :
       _ = (M₀ : ℝ) + ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) := by
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
   have hfl_le : (⌊T⌋₊ : ℝ) ≤ T := Nat.floor_le (by linarith)
-  have hfl_mul : ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) ≤ (T + 1) * (ε / 2) :=
-    mul_le_mul_of_nonneg_right (by linarith) (by positivity)
-  have hεT : 2 * (M₀ : ℝ) + 2 ≤ ε * T := by
-    have := (div_le_iff₀ hε).mp hT_large
-    rwa [mul_comm] at this
-  linarith
+  have hM_le : (M₀ : ℝ) + ε / 2 ≤ (ε / 2) * T := by
+    calc (M₀ : ℝ) + ε / 2 = (ε / 2) * (2 * (M₀ : ℝ) / ε + 1) := by field_simp; ring
+      _ ≤ (ε / 2) * T := mul_le_mul_of_nonneg_left hT_large (by positivity)
+  calc (∑ m ∈ Finset.range (⌊T⌋₊ + 1), if m < M₀ then (1 : ℝ) else ε / 2)
+      ≤ (M₀ : ℝ) + ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) := hsum_le
+    _ ≤ (M₀ : ℝ) + (T + 1) * (ε / 2) :=
+        add_le_add le_rfl (mul_le_mul_of_nonneg_right (by linarith) (by positivity))
+    _ = ((M₀ : ℝ) + ε / 2) + (ε / 2) * T := by ring
+    _ ≤ (ε / 2) * T + (ε / 2) * T := add_le_add hM_le le_rfl
+    _ = ε * T := by ring
 
 /-- **Lower bound `-5` on `2 Re S_Z(u)` outside `exSet Θ`.** -/
 theorem two_re_lagStructure_ge_off_exSet {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
@@ -1837,15 +1841,16 @@ theorem eventually_wSum_primeWeight_ge :
     ∀ᶠ σ : ℝ in 𝓝[>] 1, 1 / (4 * (σ - 1)) ≤ wSum primeWeight σ := by
   have hre := (Complex.continuous_re.tendsto _).comp
     _root_.RHTower.tendsto_neg_logDeriv_riemannZeta_sub_one_div_real
-  set γ : ℝ := Real.eulerMascheroniConstant
+  obtain ⟨γ, rfl⟩ : ∃ γ : ℝ, γ = Real.eulerMascheroniConstant := ⟨_, rfl⟩
   have hlim_ev := hre.eventually
     (lt_mem_nhds (show -(γ + 1) < (-(γ : ℂ)).re by simp))
   have hhigh_sum : Summable fun j : ℕ => higherWeight j * ((j : ℝ) + 1) ^ (-1 : ℝ) :=
     summable_higherWeight (by norm_num : (1 : ℝ) / 2 < 1)
-  set H : ℝ := ∑' j : ℕ, higherWeight j * ((j : ℝ) + 1) ^ (-1 : ℝ)
-  have hH_nn : 0 ≤ H := tsum_nonneg fun j => mul_nonneg (higherWeight_nonneg j) (by positivity)
-  set C : ℝ := |γ| + 1 + H
-  have hC_pos : 0 < C + 1 := by positivity
+  obtain ⟨H, hH_def⟩ : ∃ H : ℝ, H = ∑' j : ℕ, higherWeight j * ((j : ℝ) + 1) ^ (-1 : ℝ) :=
+    ⟨_, rfl⟩
+  have hH_nn : 0 ≤ H := hH_def ▸ tsum_nonneg fun j => mul_nonneg (higherWeight_nonneg j) (by positivity)
+  obtain ⟨C, hC_def⟩ : ∃ C : ℝ, C = |γ| + 1 + H := ⟨_, rfl⟩
+  have hC_pos : 0 < C + 1 := by linarith [abs_nonneg γ, hH_nn, hC_def]
   filter_upwards [self_mem_nhdsWithin, hlim_ev,
     Ioo_mem_nhdsGT (lt_add_of_pos_right (1 : ℝ) (show 0 < 1 / (2 * (C + 1)) by positivity))]
     with σ hσ1 hvm hσ_close
@@ -1871,14 +1876,14 @@ theorem eventually_wSum_primeWeight_ge :
     refine tsum_congr fun j => ?_
     rw [← add_mul, primeWeight_add_higherWeight]
   have hhigh_le : wSum higherWeight σ ≤ H := by
+    rw [hH_def]
     refine Summable.tsum_le_tsum (fun j => ?_) hh_sum hhigh_sum
     have hj1 : (1 : ℝ) ≤ (j : ℝ) + 1 := by linarith [Nat.cast_nonneg (α := ℝ) j]
     exact mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow_of_exponent_le hj1 (by linarith)) (higherWeight_nonneg j)
   have hγ_le : -γ ≤ |γ| := neg_le_abs γ
   have hw_ge : 1 / (σ - 1) - C ≤ wSum primeWeight σ := by
-    change 1 / (σ - 1) - (|γ| + 1 + H) ≤ wSum primeWeight σ
-    linarith
+    linarith [hvm', hsplit, hγ_le, hhigh_le, hC_def]
   have hC_small : C ≤ 1 / (2 * (σ - 1)) := by
     have hlt : σ - 1 < 1 / (2 * (C + 1)) := by linarith [hσ_close.2]
     rw [lt_div_iff₀ (by positivity)] at hlt

@@ -1,8 +1,8 @@
 # A single top quartet cannot cancel its high current
 
 - **ID:** ELT-QUARTET-CURRENT
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** ELT-PHASE; the single-quartet question in §2.10
 - **Statement:** In the finite-layer world, either the top contains two distinct positive ordinates, or the norm of the corrected prime current tends to infinity at every supercritical exponential speed.
 
@@ -26,14 +26,16 @@ that the top is a quartet.
 
 ## Consequence and limit
 
-This would remove phase cancellation as a loophole in comparisons aimed at
-one quartet. It would not exclude the quartet: an independently proved
+This removes phase cancellation as a loophole in comparisons aimed at
+one quartet. It does not exclude the quartet: an independently proved
 upper bound for this same corrected current and observation scale is still
 missing. The full infinite remainder must remain in the proof.
 
 ## Status
 
-ELT-PHASE is Lean proved. Conjugation acts involutively on exact zero copies
-in `DeningerDivisorSchwarzMonodromy`. Corpus search found no matching
-high-height, pointwise-current theorem. The Lean proof is drafted; validation
-and transitive axiom audits remain pending.
+`ExceptionalLayerTheory/ASingleTopQuartetCannotCancelItsCurrent.lean`:
+`not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy`.
+Conjugation acts involutively on exact zero copies via
+`DeningerDivisorSchwarzMonodromy`. The complete infinite remainder is
+controlled by ELT-PHASE. Final `lake --old env lean` audit passed;
+transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`.

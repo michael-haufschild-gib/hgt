@@ -47,6 +47,21 @@ The denominator and exponential are positive. Selecting a maximal minor
 and its complementary columns changes neither coefficient bounds nor the
 values of the forms.
 
+## Counting near relations
+
+For integer `H≥1` and `ε≤Δ(r,k−r,y,H)`, let
+`S={ν∈ℤ^k: |ν_j|≤H, |ν·log p|<ε}`. Then
+
+`dim_Q span_Q S ≤ r−1`, and `#S ≤ (2H+1)^(r−1)`.
+
+Choose a basis from the finite set `S`. If its size were at least `r`,
+selecting `r` basis vectors would contradict the collective depth floor.
+A rational subspace of dimension `s` admits an injective projection onto
+`s` coordinate axes: select a nonzero maximal minor of a basis matrix.
+Each selected integer coordinate has `2H+1` possibilities, so
+`#S≤(2H+1)^s≤(2H+1)^(r−1)`. The coordinate-projection and integer-box
+counting lemmas already exist in the corpus.
+
 ## Mathematical consequence
 
 For the penultimate rank `r=k−1`, the transcendence exponent is the
