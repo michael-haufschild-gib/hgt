@@ -13,7 +13,7 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 
 ## Gates
 - [x] 0 → 1 in-progress
-- [x] contributions 1–8 formalized (clean compiles, wired into umbrella; umbrella wired into MainTheorems)
+- [x] contributions 1–12 formalized (clean compiles, wired into umbrella; umbrella wired into MainTheorems)
 
 ## Contributions (Lean modules; status)
 1. `TheGenericFibreHasUniformWeights` — big monodromy `k!` bound; a.e. uniform tensor moments (M2). **compiled**
@@ -24,6 +24,10 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 6. `TheBaireGenericFibreCarriesThePole` — trace-constant sets nowhere dense; no-constant fibres residual & null. **compiled**
 7. `TheJumpLocusIsThePretentiousArchimedeanLine` — pole at `1+iτ` ⇔ `Σ_p (1−Re χ_x(p)p^{−iτ})/p < ∞`; archimedean line in locus; locus Haar-null; poles simple uniformly. **compiled**
 8. `TheEdgeDivisorOfAFibre` — edge zero ⇔ anti-pretentious; zeros simple uniformly; never pole and zero; Liouville zero at 1; edge-zero locus Haar-null. **compiled**
+9. `TheEdgeDivisorOfZeta` — `ζ(1+iτ) ≠ 0 ⇔ Σ_p (1+cos(τ log p))/p = ∞`; ζ's edge divisor = one simple pole at 1. **compiled**
+10. `TheArchimedeanLineHasTheGenericMoments` — vertical windowed 2k-moment of ζ = generic (gauge) moment below the square-root threshold; ≥ generic at every length (nonneg windows). **compiled**
+11. `TheGenericFrobeniusIsGaussian` — `k!(V−kM)^k ≤ E|T|^{2k} ≤ k!V^k`; moment ratio → k! (Sato–Tate law of the gauge family). **compiled**
+12. `TheVerticalFrobeniusIsEquidistributed` — prime restriction measure preserving; ζ's vertical window traces have the generic law at every fixed degree (Kronecker–Weyl). **compiled**
 
 ## No-go closure (family + positivity route to the sixth move)
 - **Exact killing theorems:** geometric constancy (`summable_tensorTerm_iff_of_max`, M4 ⇔ RH); pricing (`measureReal_singleton_mul_pow_le`); constants blow up at `ζ` (`trivial_fibre_is_the_jump`); exponents residual vs null (`residual_and_null_of_traceExponent`); isozeric class null (`gaugeHaar_isozericClass_eq_zero`).
@@ -38,4 +42,4 @@ Q1 none in Deligne's sense (gauge: generic only; any exact family: trivial bound
 Middle extension at `0`; non-geometrically-constant motives; `X^k` (surface, Hodge index); finite top layer; coinvariants not from orthogonality.
 
 ## Log
-- 2026-11-09 — created; contributions 1–8 compiled; README rewritten with results and answers.
+- 2026-11-09 — created; contributions 1–12 compiled; README rewritten with results, answers, tools and residual open topics.

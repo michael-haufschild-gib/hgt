@@ -31,6 +31,15 @@ The continued correction should similarly be bounded by
 
 For the complete complementary Gamma field, exponential differences supply
 `h^d Π|ρ−ρj|`; Gamma decay should pay the polynomial in translated ordinate.
+More precisely, the segment integral for the exponential gives
+`|exp(hz)−exp(hw)|≤h|z−w| exp(h max(Re z,Re w))`.
+For `−1<Re w<1` and `w≠0`, Gamma recursion gives
+`(1+|w|)^d |Γ(w/2)|≤C_d |w|^(−2)`: use `d+2` recursions when `|w|≥1`
+and two when `|w|<1`, since `|w+2k|≥|w|` for `k≥1`.
+With `w=ρ−s`, each root difference is at most `|w|+|s−ρj|`.
+The existing logarithmic squared-resolvent bound then predicts the required
+`h^d(1+t)^d y^η(1+log t)` bound for the complete complementary Gamma field,
+uniformly for `0<h≤1`. This part requires no damping derivatives of an infinite sum.
 For the incomplete Mellin and archimedean errors, finite differences must
 be bounded before taking norms. Two Mellin recursions express each zero error as
 

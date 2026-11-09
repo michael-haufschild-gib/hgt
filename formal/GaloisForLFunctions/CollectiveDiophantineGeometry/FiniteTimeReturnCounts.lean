@@ -263,7 +263,7 @@ private theorem phaseExp_pow (x : ℝ) (n : ℕ) : phaseExp x ^ n = phaseExp ((n
     ring
 
 /-- An exponent-box sum factors into its coordinate geometric sums. -/
-theorem phaseSum_box_eq_prod {ι : Type*} [Fintype ι]
+theorem phaseSum_box_eq_prod {ι : Type*} [Fintype ι] [DecidableEq ι]
     (ℓ θ : ι → ℝ) (H : ℕ) (t : ℝ) :
     phaseSum (fun a : ι → Fin (H + 1) => ∑ j, (a j : ℝ) * ℓ j)
       (fun a => ∑ j, (a j : ℝ) * θ j) t =

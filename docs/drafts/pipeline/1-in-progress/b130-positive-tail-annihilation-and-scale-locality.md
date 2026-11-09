@@ -7,7 +7,8 @@
 
 ## Conjecture
 
-For the zeta spline trace, a uniform lower bound on all primes in windows
+For every tempered zero configuration without real zeros, a uniform lower
+bound for its spline trace on all primes in windows
 `[exp(T_k-L_k), exp(T_k+L_k)]`, where `T_k→∞` and
 `L_k≥c√T_k` for a fixed `c>0`, implies RH. No attained-top premise.
 
@@ -16,7 +17,10 @@ the Riemann–von Mangoldt count. Arbitrarily slowly growing `L_k` remains open.
 
 Continuous depth target: for `α≥0` and `r>0`, lower bounds
 `f(u)≥-K exp(αu)` on arbitrarily late windows `|u-T|≤r√T`
-force every zeta zero to satisfy `Re ρ≤1/2+α`.
+force every configuration zero to satisfy `Re ρ≤1/2+α`.
+The generic reciprocal-square input already follows from temperedness:
+`CompactCoordinates.summable_inverse_ordinate_sq`. Its existing natural
+number encoding also covers finite configurations and multiplicities.
 
 ## Mechanism to prove
 
@@ -66,7 +70,8 @@ the improved derivative envelope makes a second passage bounded.
 - [x] Gaussian local lower bound survives infinite deletion; same module.
 - [x] Cost `r²/(16(D+1))` gives `O(exp(-T))` leakage at square-root
   windows: `SquareRootWindowLeakage.lean`; Lean/axiom audit passed.
-- [ ] Actual zeta tail isolation: `ZetaTailIsolation.lean`.
+- [x] Actual zeta tail isolation: `ZetaTailIsolation.lean`; Lean/axiom audit passed.
+- [ ] Generic tempered tail isolation: `ConfigurationTailIsolation.lean`.
 - [x] Finite-spectrum growing sign changes: `FiniteSpectrumOscillation.lean`;
   Lean/axiom audit passed, using the existing uniform sign theorem.
 - [ ] Continuous depth criterion: `SquareRootWindowsDetectEveryDepth.lean`.

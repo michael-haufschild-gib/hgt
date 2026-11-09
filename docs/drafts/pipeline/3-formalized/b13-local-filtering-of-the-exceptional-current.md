@@ -10,12 +10,15 @@
 Write the known normalized current as
 `J(t) = -Σγ mγ exp(πγ/4) exp(iγ φ(t)) + o(1)`,
 where `φ(t)=(at+log(t/2))/2` and the sum runs over distinct top ordinates.
-For any window length `L>0`, choose `h>0` small enough that the nodes
-`zγ=exp(iγah/2)` are distinct and `(r−1)h<L`, where `r` is their number.
-For a target `γ₀`, let `P(X)=Πγ≠γ₀(X−zγ)`.
+Let `G` be the top zero copies. For any window length `L>0`, choose `h>0`
+small enough that the nodes `zγ=exp(iγah/2)` are distinct for distinct
+ordinates and `|G|h<L`. For a target `γ₀`, let
+`P(X)=Π_{q∈G, Im ρq≠γ₀}(X−z_{Im ρq})`, retaining zero copies.
 The extraction is
 
-`Σj P.coeff(j) J(t+jh) / exp(iγ₀φ(t)) → -mγ₀ exp(πγ₀/4) P(zγ₀) ≠ 0`.
+`Σj P.coeff(j) J(t+jh) / Wγ₀(t) → -mγ₀ P(zγ₀) ≠ 0`,
+
+where `Wγ(t)=exp(πγ/4)exp(iγφ(t))`.
 
 The logarithmic phase correction tends to zero under each fixed height shift.
 Polynomial evaluation annihilates the other ordinates. This forces a

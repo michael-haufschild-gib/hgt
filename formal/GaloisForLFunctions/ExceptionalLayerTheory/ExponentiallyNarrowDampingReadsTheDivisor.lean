@@ -316,7 +316,7 @@ theorem contracting_prime_filter_reads_selected_zero (F : Finset XiZeroCopy)
         gaussianMBKernel (Real.exp (-a * t)) (ρ - ((σ : ℂ) + t * I))) = _
       generalize hk : gaussianMBKernel (Real.exp (-a * t))
         (ρ - ((σ : ℂ) + t * I)) = K at hKne ⊢
-      field_simp [hKne, pow_ne_zero d (Complex.ofReal_ne_zero.mpr (hh t).ne')] <;> ring
+      field_simp [hKne, pow_ne_zero d (Complex.ofReal_ne_zero.mpr (hh t).ne')]
     rw [hcancel] at heq
     change E t / D t - continuedDampingCorrection (P t) σ β a (h t) t / D t -
       m * ((P t).eval (Complex.exp ((h t : ℂ) * (ρ - β))) / (h t : ℂ) ^ d) = _
