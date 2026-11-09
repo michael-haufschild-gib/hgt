@@ -43,7 +43,7 @@ private theorem compact_atomicTest {g : ℝ → ℝ} (hgc : HasCompactSupport g)
   | empty =>
     convert (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ)) using 1
     funext u
-    exact Finset.sum_empty _
+    exact Finset.sum_empty
   | insert n S hn ih =>
     simp only [Finset.sum_insert hn]
     exact ((hgc.comp_homeomorph (Homeomorph.subRight (Real.log n))).mul_left).add ih
@@ -176,52 +176,58 @@ private theorem atomicTest_two (g : ℝ → ℝ) :
   funext u
   norm_num [atomicTest, show (Icc 1 2 : Finset ℕ) = {1, 2} by decide]
 
-private theorem overlap_mass_excess {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b)
+/-- A profile with a guaranteed positive overlap at the first prime lag. -/
+private def overlapProfile (b : ℝ → ℝ) (u : ℝ) : ℝ := b u + b (u - Real.log 2)
+
+private theorem contDiff_overlapProfile {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b) :
+    ContDiff ℝ 2 (overlapProfile b) :=
+  hb.add (hb.comp (contDiff_id.sub contDiff_const))
+
+private theorem compact_overlapProfile {b : ℝ → ℝ} (hbc : HasCompactSupport b) :
+    HasCompactSupport (overlapProfile b) :=
+  hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2)))
+
+private theorem autocorr_overlapProfile_pos {b : ℝ → ℝ} (hb : ContDiff ℝ 2 b)
     (hbc : HasCompactSupport b) (hb0 : ∀ u, 0 ≤ b u) (hM : 0 < ∫ u, b u ^ 2) :
-    0 < (∫ u, atomicTest 2 (fun _ => 1) (fun v => b v + b (v - Real.log 2)) u ^ 2) -
-      2 * ∫ u, (b u + b (u - Real.log 2)) ^ 2 := by
-  let g : ℝ → ℝ := fun u => b u + b (u - Real.log 2)
-  have hg : ContDiff ℝ 2 g := hb.add (hb.comp (contDiff_id.sub contDiff_const))
-  have hgc : HasCompactSupport g :=
-    hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2)))
+    0 < autocorr (overlapProfile b) (Real.log 2) := by
   have hbi : Integrable (fun u => b u ^ 2) :=
-    hb.continuous.pow 2 |>.integrable_of_hasCompactSupport
-      (hbc.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
-  have hgi : Integrable (fun u => g u * g (u + Real.log 2)) :=
-    (hg.continuous.mul (hg.continuous.comp (continuous_add_const _))).integrable_of_hasCompactSupport
-      hgc.mul_right
-  have hcorr : 0 < autocorr g (Real.log 2) := by
-    have hle : (∫ u, b u ^ 2) ≤ autocorr g (Real.log 2) := by
-      apply integral_mono hbi hgi
-      intro u
-      dsimp only [g]
-      rw [add_sub_cancel_right]
-      have h := mul_le_mul (show b u ≤ b u + b (u - Real.log 2) by linarith [hb0 (u - Real.log 2)])
-        (show b u ≤ b (u + Real.log 2) + b u by linarith [hb0 (u + Real.log 2)])
-        (hb0 u) (add_nonneg (hb0 u) (hb0 (u - Real.log 2)))
-      simpa only [pow_two] using h
-    exact hM.trans_le hle
-  change 0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2
+    WeilMarkovPole.integrable_sq hb.continuous hbc
+  have hg : Continuous (overlapProfile b) := (contDiff_overlapProfile hb).continuous
+  have hgi : Integrable (fun u => overlapProfile b u * overlapProfile b (u + Real.log 2)) :=
+    WeilMarkovPole.integrable_mul_shift hg (compact_overlapProfile hbc) (Real.log 2)
+  apply hM.trans_le
+  apply integral_mono hbi hgi
+  intro u
+  dsimp only [overlapProfile]
+  rw [add_sub_cancel_right, pow_two]
+  exact mul_le_mul (le_add_of_nonneg_right (hb0 (u - Real.log 2)))
+    (le_add_of_nonneg_left (hb0 (u + Real.log 2))) (hb0 u)
+    (add_nonneg (hb0 u) (hb0 (u - Real.log 2)))
+
+private theorem two_atom_mass_excess {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
+    (hgc : HasCompactSupport g) :
+    (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * (∫ u, g u ^ 2) =
+      2 * autocorr g (Real.log 2) := by
   rw [atomicTest_two]
   simp_rw [sub_eq_add_neg]
   rw [BiScaleUncertainty.integral_add_shift_sq hgc hg.continuous,
     autocorr_neg, ← BiScaleUncertainty.integral_sq_eq_autocorr_zero]
-  linarith only [hcorr]
+  ring
 
 private theorem positive_mass_excess :
     ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
       0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2 := by
-  have hb := contDiff_evenNarrowBump 0
-  have hbc := hasCompactSupport_evenNarrowBump 0
   have hb0 (u : ℝ) : 0 ≤ evenNarrowBump 0 u := by
     unfold evenNarrowBump evenPartReal
     exact div_nonneg
       (add_nonneg (WeilOneSided.narrowBump 0).nonneg (WeilOneSided.narrowBump 0).nonneg)
       (by norm_num)
-  exact ⟨fun u => evenNarrowBump 0 u + evenNarrowBump 0 (u - Real.log 2),
-    hb.add (hb.comp (contDiff_id.sub contDiff_const)),
-    hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2))),
-    overlap_mass_excess hb hbc hb0 (integral_evenNarrowBump_sq_pos 0)⟩
+  have hg := contDiff_overlapProfile (contDiff_evenNarrowBump 0)
+  have hgc := compact_overlapProfile (hasCompactSupport_evenNarrowBump 0)
+  refine ⟨overlapProfile (evenNarrowBump 0), hg, hgc, ?_⟩
+  rw [two_atom_mass_excess hg hgc]
+  exact mul_pos two_pos (autocorr_overlapProfile_pos (contDiff_evenNarrowBump 0)
+    (hasCompactSupport_evenNarrowBump 0) hb0 (integral_evenNarrowBump_sq_pos 0))
 
 private theorem not_tendsto_positive_selfEnergy {a : ℝ} (ha : 0 < a) (B : ℝ) :
     ¬ Tendsto (fun r => a * selfEnergy r) (𝓝[<] 1) (𝓝 B) := by

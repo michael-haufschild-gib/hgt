@@ -14,6 +14,7 @@ prime-mass law calibrates which logarithmic mass fractions can admit a
 growing lower bound for returns.
 Bounded integer dilations transfer heavy-return counts to absolute large-value
 counts with constants independent of the number of prime coordinates.
-Maximal-minor elimination gives rank-dependent depth floors and counts
-for integer near relations, using only codimension plus one logarithms.
+Maximal-minor elimination bounds the rational span of integer near relations,
+using only codimension plus one logarithms. Scalar coordinate slicing supplies
+cardinality bounds and separates those counts from collective span control.
 -/

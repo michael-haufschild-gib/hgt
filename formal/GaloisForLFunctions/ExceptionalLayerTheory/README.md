@@ -126,6 +126,26 @@ estimates for the infinite divisor; positive kernels with an explicitly retained
 Gaussian-current laws at zeros and on high strips; Bohr sampling and tower density laws
 that preserve the arithmetic relation between the layer and remainder.
 
+`InfinitePowerSumsDetectAMaximalTerm.lean` supplies the infinite Turán tool.
+For any nonzero absolutely summable complex family, its maximal modulus R
+is attained, and some `1≤k≤64 Σ|z_j|/R` satisfies
+`Re Σz_j^k>R^k/8`. A Fejér polynomial gives a summable lower bound,
+so the argument retains every term. No separation below R is required.
+Applied to reciprocal squares of a zero divisor, this detects a zero
+using an order controlled by the divisor's normalized mass. An arithmetic
+upper bound for those moments is still needed to deduce repulsion.
+
+`ThePositiveDirichletMomentKernel.lean` proves the arithmetic inequality
+for a real Dirichlet character χ. Put `Dχ=ζ′/ζ+L′/L`. For every `k≥0`,
+`σ>1` and real t,
+
+    Re[Dχ^(2k+1)(σ)+Dχ^(2k+1)(σ+it)] ≥ 0.
+
+The exact infinite Euler series has weights
+`(1+χ(n))Λ(n)(log n)^(2k+1)n^(−σ)(1+cos(t log n))≥0`.
+The functional equation and completed divisor must connect this inequality
+to the zero moments; the Dirichlet calibration is not yet a repulsion theorem.
+
 ## Questions and milestones
 
 | Milestone | Required result |

@@ -11,7 +11,9 @@ nonzero maximal minor reduces the transcendence estimate to `k-r+1`
 logarithms. In particular, the penultimate rank uses only two logarithms.
 Full rank has an elementary determinant floor. Below the rank-`r` floor,
 near relations span at most `r-1` dimensions and their number in a height-`H`
-box is at most `(2H+1)^(r-1)`.
+box is at most `(2H+1)^(r-1)`. Scalar coordinate slicing supplies that
+cardinal exponent at a separate threshold; the collective information is
+the dimension of the rational span.
 -/
 
 open Finset Real Matrix
@@ -456,5 +458,188 @@ theorem nearRelationBox_card_le {n k y H : ℕ}
   refine hc.trans ?_
   exact pow_le_pow_right₀ (by omega)
     (nearRelationBox_finrank_le p hp hprime hy hH hε)
+
+/-! ## Scalar slicing and collective rank -/
+
+/-- The scalar floor sufficient for injectivity after retaining all but
+`d+1` coordinates. Differences of height-`H` vectors have height at most
+`2(d+1)H` on the omitted coordinates. One omitted prime has a constant floor. -/
+def coordinateSliceFloor (d y H : ℕ) : ℝ :=
+  (if d = 0 then log 2 else
+    exp (-(bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ *
+      (log (2 * (d + 1 : ℝ) * H) + 2)))) / 2
+
+/-- One nonzero integer coefficient already costs at least `log 2`. -/
+theorem coordinateSliceFloor_zero (y H : ℕ) :
+    coordinateSliceFloor 0 y H = log 2 / 2 := rfl
+
+/-- Below the scalar slice floor, every choice of the retained coordinates
+determines a near relation uniquely. No collective rank estimate is needed. -/
+theorem nearRelationBox_projection_injective {n d y H : ℕ}
+    (p : Fin (n + (d + 1)) → ℕ) (hp : Function.Injective p)
+    (hprime : ∀ j, (p j).Prime) (hy : ∀ j, p j ≤ y) {ε : ℝ}
+    (hε : ε ≤ coordinateSliceFloor d y H) :
+    Set.InjOn (fun ν : Fin (n + (d + 1)) → ℤ =>
+      fun j : Fin n => ν (Fin.castAdd (d + 1) j)) (nearRelationBox p H ε) := by
+  classical
+  intro e he f hf hef
+  have he' := (mem_nearRelationBox p H ε e).mp he
+  have hf' := (mem_nearRelationBox p H ε f).mp hf
+  let q : Fin (d + 1) → ℕ := fun j => p (Fin.natAdd n j)
+  let ν : Fin (d + 1) → ℤ := fun j => e (Fin.natAdd n j) - f (Fin.natAdd n j)
+  have hform : primeLogForm q ν = primeLogForm p e - primeLogForm p f := by
+    simp only [primeLogForm, ← Finset.sum_sub_distrib, ← sub_mul]
+    rw [Fin.sum_univ_add (a := n) (b := d + 1)]
+    have hz : (∑ j : Fin n,
+        ((e (Fin.castAdd (d + 1) j) : ℝ) - (f (Fin.castAdd (d + 1) j) : ℝ)) *
+          log (p (Fin.castAdd (d + 1) j))) = 0 := by
+      apply Finset.sum_eq_zero
+      intro j hj
+      have h : e (Fin.castAdd (d + 1) j) = f (Fin.castAdd (d + 1) j) := congrFun hef j
+      rw [h, sub_self, zero_mul]
+    rw [hz, zero_add]
+    simp only [q, ν, Int.cast_sub]
+  have hνzero : ν = 0 := by
+    by_contra hν
+    have hheight : (coeffHeight ν : ℝ) ≤ 2 * (d + 1 : ℝ) * H := by
+      have hcoeff : ∀ j, |(ν j : ℝ)| ≤ 2 * H := by
+        intro j
+        have heh := he'.1 (Fin.natAdd n j)
+        have hfh := hf'.1 (Fin.natAdd n j)
+        have hdiff : |ν j| ≤ (2 * H : ℕ) := by
+          change |e (Fin.natAdd n j) - f (Fin.natAdd n j)| ≤ _
+          calc
+            _ ≤ |e (Fin.natAdd n j)| + |f (Fin.natAdd n j)| := abs_sub _ _
+            _ ≤ (H : ℤ) + H := add_le_add heh hfh
+            _ = _ := by push_cast; ring
+        exact_mod_cast hdiff
+      simp only [coeffHeight, Nat.cast_sum, Nat.cast_natAbs, Int.cast_abs]
+      calc
+        _ ≤ ∑ _j : Fin (d + 1), 2 * (H : ℝ) := Finset.sum_le_sum (fun j _ => hcoeff j)
+        _ = _ := by simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+          nsmul_eq_mul, Nat.cast_add, Nat.cast_one]; ring
+    have hpos : 0 < coeffHeight ν := by
+      by_contra h
+      have hz : coeffHeight ν = 0 := by omega
+      apply hν
+      funext j
+      have hj : (ν j).natAbs ≤ coeffHeight ν :=
+        Finset.single_le_sum (fun i _ => Nat.zero_le (ν i).natAbs) (mem_univ j)
+      rw [hz] at hj
+      simpa only [Pi.zero_apply] using Int.natAbs_eq_zero.mp (Nat.eq_zero_of_le_zero hj)
+    have hB : 0 ≤ bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ := by
+      unfold bakerExponent
+      positivity
+    have hbound := abs_primeLogForm_ge_of_le q (hp.comp (Fin.natAdd_injective (d + 1) n))
+      (fun j => hprime _) (fun j => hy _) ν hν
+    have hlog : log (coeffHeight ν) ≤ log (2 * (d + 1 : ℝ) * H) :=
+      log_le_log (by exact_mod_cast hpos) hheight
+    have hlower : 2 * coordinateSliceFloor d y H ≤ |primeLogForm q ν| := by
+      by_cases hd : d = 0
+      · subst d
+        have hν₀ : ν 0 ≠ 0 := by
+          intro hz
+          apply hν
+          funext j
+          have hj : j = 0 := Fin.ext (by have h := j.isLt; omega)
+          rw [hj]
+          exact hz
+        have hone : (1 : ℝ) ≤ |(ν 0 : ℝ)| := by
+          have hpos : (0 : ℤ) < |ν 0| := abs_pos.mpr hν₀
+          have hle : (1 : ℤ) ≤ |ν 0| := by omega
+          exact_mod_cast hle
+        have hlog : log 2 ≤ log (q 0) :=
+          log_le_log (by norm_num) (by exact_mod_cast (hprime (Fin.natAdd n 0)).two_le)
+        have hlogpos : 0 ≤ log (q 0) := (log_pos (by norm_num : (1 : ℝ) < 2)).le.trans hlog
+        have hf : primeLogForm q ν = (ν 0 : ℝ) * log (q 0) := by
+          simp [primeLogForm]
+        rw [hf, abs_mul, abs_of_nonneg hlogpos]
+        have heq : 2 * coordinateSliceFloor 0 y H = log 2 := by
+          rw [coordinateSliceFloor_zero]
+          ring
+        rw [heq]
+        exact hlog.trans (le_mul_of_one_le_left hlogpos hone)
+      · calc
+          _ = exp (-(bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ *
+              (log (2 * (d + 1 : ℝ) * H) + 2))) := by
+                simp only [coordinateSliceFloor, if_neg hd]
+                ring
+          _ ≤ exp (-(bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ *
+              (log (coeffHeight ν) + 2))) := by
+            apply exp_le_exp.mpr
+            apply neg_le_neg
+            exact mul_le_mul_of_nonneg_left (by linarith :
+              log (coeffHeight ν) + 2 ≤ log (2 * (d + 1 : ℝ) * H) + 2) hB
+          _ ≤ _ := hbound
+    have hupper : |primeLogForm q ν| < 2 * ε := by
+      rw [hform]
+      exact (abs_sub _ _).trans_lt (by linarith [he'.2, hf'.2])
+    linarith
+  funext j
+  refine Fin.addCases (fun i => congrFun hef i) (fun i => ?_) j
+  have hi := congrFun hνzero i
+  simpa only [ν, Pi.zero_apply, sub_eq_zero] using hi
+
+/-- Coordinate slicing already gives the same cardinal exponent as the
+rank bound, at a scalar threshold involving only the omitted logarithms. -/
+theorem nearRelationBox_card_le_slice {n d y H : ℕ}
+    (p : Fin (n + (d + 1)) → ℕ) (hp : Function.Injective p)
+    (hprime : ∀ j, (p j).Prime) (hy : ∀ j, p j ≤ y) {ε : ℝ}
+    (hε : ε ≤ coordinateSliceFloor d y H) :
+    (nearRelationBox p H ε).card ≤ (2 * H + 1) ^ n := by
+  simpa only [Fintype.card_fin] using
+    HTGeometry.card_le_coordinateBox_of_injective_projection (nearRelationBox p H ε)
+      (Fin.castAdd (d + 1) : Fin n → Fin (n + (d + 1))) H
+      (fun ν hν => ((mem_nearRelationBox p H ε ν).mp hν).1)
+      (nearRelationBox_projection_injective p hp hprime hy hε)
+
+
+/-- For rank at least two, scalar slicing permits every width admitted by
+the collective count. The extra collective conclusion is span dimension. -/
+theorem rankDepthFloor_le_coordinateSliceFloor (n d y H : ℕ) (hH : 1 ≤ H) :
+    rankDepthFloor (n + 2) d y H ≤ coordinateSliceFloor d y H := by
+  have hHr : (1 : ℝ) ≤ H := by exact_mod_cast hH
+  have hHpos : (0 : ℝ) < H := lt_of_lt_of_le zero_lt_one hHr
+  have hfac : (2 : ℝ) ≤ ((n + 2).factorial : ℝ) := by
+    have hfn : 2 ≤ (n + 2).factorial := by
+      rw [show n + 2 = (n + 1) + 1 by omega, Nat.factorial_succ]
+      have h := Nat.mul_le_mul (by omega : 2 ≤ n + 1 + 1)
+        (Nat.succ_le_of_lt (Nat.factorial_pos (n + 1)))
+      simpa only [Nat.mul_one] using h
+    exact_mod_cast hfn
+  have hden : (2 : ℝ) ≤ ((n + 2).factorial : ℝ) * (H : ℝ) ^ (n + 1) :=
+    hfac.trans (le_mul_of_one_le_right (Nat.cast_nonneg _) (one_le_pow₀ hHr))
+  have hdenpos : (0 : ℝ) < ((n + 2).factorial : ℝ) * (H : ℝ) ^ (n + 1) := by
+    positivity
+  have hsub : n + 2 - 1 = n + 1 := by omega
+  by_cases hd : d = 0
+  · simp only [rankDepthFloor, coordinateSliceFloor, if_pos hd, hsub]
+    apply (div_le_div_iff₀ hdenpos (by norm_num : (0 : ℝ) < 2)).mpr
+    exact mul_le_mul_of_nonneg_left hden (log_nonneg (by norm_num))
+  · have hB : 0 ≤ bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ := by
+      unfold bakerExponent
+      positivity
+    have hheight : 2 * (d + 1 : ℝ) * H ≤
+        (d + 1 : ℝ) * ((n + 2).factorial : ℝ) * (H : ℝ) ^ (n + 2) := by
+      calc
+        _ = ((d + 1 : ℝ) * H) * 2 := by ring
+        _ ≤ ((d + 1 : ℝ) * H) *
+            (((n + 2).factorial : ℝ) * (H : ℝ) ^ (n + 1)) :=
+          mul_le_mul_of_nonneg_left hden (by positivity)
+        _ = _ := by rw [show n + 2 = (n + 1) + 1 by omega, pow_succ]; ring
+    have hlog := log_le_log (by positivity : 0 < 2 * (d + 1 : ℝ) * H) hheight
+    have hnum :
+        exp (-(bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ *
+          (log ((d + 1 : ℝ) * ((n + 2).factorial : ℝ) * (H : ℝ) ^ (n + 2)) + 2))) ≤
+        exp (-(bakerExponent d ⌈(d + 1 : ℝ) * log y⌉₊ *
+          (log (2 * (d + 1 : ℝ) * H) + 2))) := by
+      apply exp_le_exp.mpr
+      apply neg_le_neg
+      exact mul_le_mul_of_nonneg_left (by linarith) hB
+    simp only [rankDepthFloor, coordinateSliceFloor, if_neg hd, hsub]
+    apply (div_le_div_iff₀ hdenpos (by norm_num : (0 : ℝ) < 2)).mpr
+    exact (mul_le_mul_of_nonneg_right hnum (by norm_num : (0 : ℝ) ≤ 2)).trans
+      (mul_le_mul_of_nonneg_left hden (exp_pos _).le)
+
 end
 end GaloisForLFunctions.CollectiveDiophantineGeometry

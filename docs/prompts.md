@@ -291,9 +291,7 @@ Not valid are improvements of numbers, nogos, redressing existing knowledge in n
 do not use the hgtl7 skill. this is open research into developing a new fields of mathematics. 
 
 research programmes in focus of this task:
-- formal/GaloisForLFunctions/ArithmeticScatteringHolography
-- formal/GaloisForLFunctions/BlackHoleRingdown
-- anything related to AdS and black holes and Hawking
+- formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/README.md
               
 on every turn: 
 research, derive, formalize a significant contribution to the field that significantly helps to either:
@@ -385,10 +383,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 earlier we created these documents:
-- docs/reports/review-0811/walls-ledger.md
-- docs/reports/review-0811/route-obstacles.md
-- docs/reports/review-0811/route-unification-ledger.md
-- docs/reports/review-0811/obstacles-summary.md
+- docs/reports/review-0911/walls-ledger.md
+- docs/reports/review-0911/route-obstacles.md
+- docs/reports/review-0911/route-unification-ledger.md
+- docs/reports/review-0911/obstacles-summary.md
   
 read:
 - docs/reports/rh-current-frontier-map.md
@@ -421,7 +419,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0811/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-0911/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 
@@ -487,9 +485,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0811/obstacles-summary.md
+read and understand docs/reports/review-0911/obstacles-summary.md
 
-under "## 2.10 Does an AAL proof or falsification need a new field?" it suggest a new fields/research programme called "exact-event theory of Euler products"
+under "## 2.9 New field for RH: arithmetic weight theory of Spec ℤ" it suggest a new fields/research programme called "arithmetic weight theory of Spec ℤ"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -644,19 +642,14 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0811/obstacles-summary.md
+read and understand docs/reports/review-0911/obstacles-summary.md
 
-under "## 2.5 Breakthrough question below AAL, RH and quasi-RH: linear AAL" it asks a question:
-"*Can the deepest zero sit arbitrarily far above the asymptotic abscissa?* Let `Θ=sup Re ρ` and `Θ∞=inf{σ≥½: finitely many zeros have Re ρ>σ}`. AAL is `Θ=Θ∞`; the finite stratum B13 is `Θ∞=½ ⇒ Θ=½`. **Linear AAL** (B111): is there a constant `C` with
-
-  `Θ−½ ≤ C(Θ∞−½)`,
-
-equivalently: finitely many zeros right of `½+h` ⇒ no zero right of `½+Ch`, for every `h≥0`?"
+under "## 3. The one big question: do almost all primes decide RH?" it asks a question:
+"Let `Z` be a tempered zero configuration in the open strip without real zeros, and let `E` be a set of primes of relative logarithmic density zero, `Σ_{p∈E}log p·p^{−σ}=o(Σ_plog p·p^{−σ})` as `σ↓1`. *Does a one-sided crude bound `2Re S_Z(log p)≥−K` at every prime `p∉E` put every zero of `Z` on the critical line, without assuming that the maximal real part is attained?* For ζ: is RH equivalent to the arithmetic Stepanov bound `P(p)≤A(p)+K` for all primes outside a set of relative logarithmic density zero?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
 We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
-
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 

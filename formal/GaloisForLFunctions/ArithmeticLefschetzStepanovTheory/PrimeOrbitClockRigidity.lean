@@ -65,7 +65,8 @@ theorem additive_character_clock (f : ℝ →+ ℝ) (β γ : ℝ)
       change Complex.exp (((β * f t - γ * t : ℝ) : ℂ) * I) = 1
       rw [Complex.ofReal_sub, sub_mul, Complex.exp_sub]
       change expChar β (f t) / expChar γ t = 1
-      rw [h t, div_self (Complex.exp_ne_zero _)]
+      rw [h t]
+      exact div_self (Complex.exp_ne_zero _)
     obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.mp he
     apply AddSubgroup.mem_zmultiples_iff.mpr
     refine ⟨k, ?_⟩
@@ -136,7 +137,7 @@ theorem prime_character_clock_linear (p q : P) (hpq : p ≠ q)
     change (-Real.log ((p : Nat.Primes) : ℕ)) * f t = _
     rw [hlinear p t]
     dsimp [a]
-    field_simp
+    field_simp [neg_ne_zero.mp hp0]
   refine ⟨a, hf, fun r => ?_⟩
   have hr := hlinear r 1
   change -Real.log ((r : Nat.Primes) : ℕ) * τ 1 = γ r * 1 at hr

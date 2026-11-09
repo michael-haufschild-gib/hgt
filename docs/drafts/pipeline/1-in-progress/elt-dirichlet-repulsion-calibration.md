@@ -28,8 +28,15 @@ be retained. No finite truncation may replace the divisor.
 This is the classical calibration required by §2.10, not a claim of new
 repulsion for ζ. Corpus search found Siegel's theorem and the two-torsion
 positivity exception; no declaration named Deuring–Heilbronn was found.
-Exact divisor identities, the infinite power-sum lemma, and the target
-statement remain under audit. No proof or formalization is claimed.
+Exact divisor identities and the target statement remain under audit.
+The infinite power-sum lemma and the all-order Euler inequality are proved
+in Lean; no Dirichlet repulsion theorem is claimed.
+
+Euler input: `ExceptionalLayerTheory/ThePositiveDirichletMomentKernel.lean`,
+`exceptionalEuler_odd_jet_nonneg`. It proves
+`Re[Dχ^(2k+1)(σ)+Dχ^(2k+1)(σ+it)]≥0` for actual
+`Dχ=ζ′/ζ+L′/L`, every quadratic χ, σ>1, real t and k≥0.
+Absolute convergence and the exact logarithmic weights are discharged.
 
 The ζ analogue must explain how to replace real pole–zero cancellation
 when the isolated layer is a nonreal conjugate pair.
@@ -53,5 +60,31 @@ Choose `N=ceil(32M)+9`. Since `M≥1`, some `1≤k≤64M` has
 `Re Σ z_j^k>1/8`. Absolute summability justifies every exchange;
 no gap below the maximal modulus or finite-support premise is needed.
 
-This argument is being formalized as a component of the full calibration,
-not as a completed repulsion result.
+Lean: `ExceptionalLayerTheory/InfinitePowerSumsDetectAMaximalTerm.lean`,
+`infinite_real_power_sum_detects_maximal_term`. The maximal modulus is
+proved to be attained. This is a component of the calibration.
+
+## Full-divisor inputs
+
+Normalize the completed Dirichlet function by `q^(s/2)`. Its reflection
+equation cancels the unknown affine Hadamard factor, giving the paired
+logarithmic-derivative sum without assuming a nonzero central value.
+For `σ=1+α`, every completed zero lies in `0≤Re ρ≤1`, so
+`α Σ|σ+it−ρ|⁻² ≤ Re E′/E(σ+it)`.
+The Euler series bounds `|L′/L(σ+it)|` by `−ζ′/ζ(σ)`; the Gamma
+factor contributes `O(log(q(|t|+3)))`. Thus the required nontrivial-zero
+mass is `O(α⁻²+log(q(|t|+3))/α)`.
+
+The higher completed identity retains the entire trivial-zero series.
+For each real trivial zero b≤0 and every k≥1,
+`Re[(σ−b)^(-2k)+(σ+it−b)^(-2k)]≥0`, since the second term's
+modulus is at most the first term. Consequently the full trivial-zero
+contribution has the sign needed to bound the nontrivial moments from
+above. This avoids transporting the uncompleted divisor through Gamma
+poles; it does not discard an uncontrolled remainder.
+
+Corpus inputs: `CompletionZeroPairs.hasSum_logDeriv_zeroPairs`,
+`CompletionZeroPairs.exists_reflect_zeroCopy`,
+`completedLFunction_orderOneEnvelope`, and
+`SelbergClass.DegreeOne.orderOneEnvelope_LFunction`.
+The arithmetic instantiation and its Lean proof remain pending.

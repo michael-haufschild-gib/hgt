@@ -80,8 +80,10 @@ coefficient height, and prime cutoff.
 
 The mechanism is elementary Cramer transference of the existing Baker bound;
 no new transcendence estimate is claimed. It supplies a collective
-approximation tool. It does not bound the first minimum beyond the existing
-scalar estimate or prove the missing return-count or breadth law.
+approximation tool. The cardinal exponent also follows from scalar coordinate
+slicing; the additional conclusion here is the rational-span dimension.
+It does not bound the first minimum beyond the existing scalar estimate or
+prove the missing return-count or breadth law.
 
 ## Lean status
 

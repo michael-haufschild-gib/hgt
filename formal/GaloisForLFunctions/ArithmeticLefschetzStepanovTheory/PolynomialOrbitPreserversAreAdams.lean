@@ -24,6 +24,14 @@ def PreservesPrimeOrbit (F : P → MvPolynomial P ℂ) : Prop :=
 def translatedAdams (n : ℕ) (b : ℝ) (p : P) : MvPolynomial P ℂ :=
   MvPolynomial.monomial (Finsupp.single p n) (orbitPoint P b p)
 
+/-- The unit Adams exponent with zero translation is the identity map. -/
+theorem translatedAdams_one_zero :
+    translatedAdams (P := P) 1 0 = fun r => MvPolynomial.X r := by
+  funext r
+  simp only [translatedAdams, orbitPoint, InfiniteRankWeilTheory.phase,
+    zero_mul, neg_zero, Complex.ofReal_zero, Complex.exp_zero,
+    ← MvPolynomial.X_pow_eq_monomial, pow_one]
+
 /-- Every polynomial orbit preserver is a translated Adams operation. -/
 theorem preservesPrimeOrbit_eq_translatedAdams (p q : P) (hpq : p ≠ q)
     (F : P → MvPolynomial P ℂ) (hF : PreservesPrimeOrbit F) :
@@ -52,7 +60,6 @@ theorem preservesPrimeOrbit_eq_translatedAdams (p q : P) (hpq : p ≠ q)
     (fun t => u t - b) (fun r => -frequency (A r)) hnorm
   have hA (r : P) : frequency (A r) = a * Real.log ((r : Nat.Primes) : ℕ) := by
     have hr := hfreq r
-    dsimp at hr
     linarith only [hr]
   obtain ⟨n, hn, hAn⟩ := prime_frequency_dilation_is_nat p a A hA
   refine ⟨n, b, funext fun r => ?_⟩
@@ -94,7 +101,8 @@ theorem translatedAdams_eq_iff (p q : P) (hpq : p ≠ q)
     have hb : b = d := by simpa only [mul_zero, zero_add] using he 0
     have hn : (n : ℝ) = m := by
       have h1 := he 1
-      simpa only [mul_one, hb, add_left_inj] using h1
+      simp only [mul_one, hb] at h1
+      exact add_right_cancel h1
     exact ⟨by exact_mod_cast hn, hb⟩
   · rintro ⟨rfl, rfl⟩
     rfl
@@ -112,6 +120,25 @@ theorem translatedAdams_fixed_iff (p q : P) (hpq : p ≠ q)
   · intro h r
     have he : (n : ℝ) * t + b = t := by linarith only [h]
     rw [he]
+
+/-- A nontranslation has exactly one fixed orbit point. -/
+theorem translatedAdams_fixed_iff_of_ne_one (p q : P) (hpq : p ≠ q)
+    (n : ℕ) (hn : n ≠ 1) (b t : ℝ) :
+    (∀ r, complexOrbitValue (translatedAdams (P := P) n b r) t = orbitPoint P t r) ↔
+      t = -b / ((n : ℝ) - 1) := by
+  rw [translatedAdams_fixed_iff p q hpq]
+  have hn0 : (n : ℝ) - 1 ≠ 0 := by
+    intro he
+    apply hn
+    exact_mod_cast sub_eq_zero.mp he
+  rw [eq_div_iff hn0]
+  constructor <;> intro h <;> linarith only [h]
+
+/-- A time translation has a fixed orbit point exactly when it is the identity. -/
+theorem translatedAdams_translation_fixed_iff (p q : P) (hpq : p ≠ q) (b t : ℝ) :
+    (∀ r, complexOrbitValue (translatedAdams (P := P) 1 b r) t = orbitPoint P t r) ↔ b = 0 := by
+  rw [translatedAdams_fixed_iff p q hpq]
+  simp only [Nat.cast_one, sub_self, zero_mul, zero_add]
 
 /-- A polynomial orbit preserver fixing two distinct orbit points is the identity. -/
 theorem preservesPrimeOrbit_two_fixed_points (p q : P) (hpq : p ≠ q)

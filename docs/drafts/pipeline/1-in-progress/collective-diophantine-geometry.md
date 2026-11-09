@@ -3,7 +3,8 @@
 - **ID:** CDG
 - **Stage:** 1-in-progress
 - **Type:** RESEARCH PROGRAMME
-- **Source:** `docs/reports/review-0911/obstacles-summary.md`, §2.11.
+- **Source:** `docs/reports/review-0911/obstacles-summary.md`, original §2.11,
+  commit `718eee62deb23075e72f3bddae2c486b026e4211`.
 - **Goal:** Growing-dimension return counting, collective approximation tools,
   and a sign-free producer of the two-sided prime-degree crude bound.
 
@@ -73,10 +74,17 @@ Full rank has the stronger floor `log 2/(r!H^(r−1))`.
 Below the rank-`r` floor, integer near relations in the height-`H` box span
 at most `r−1` dimensions and number at most `(2H+1)^(r−1)`.
 `CollectiveRankDepth.lean` proves the rank law, penultimate-rank two-logarithm
-specialization, and actual near-relation count. The first-rank estimate
-retains the existing scalar Baker bound; return-height counts remain open.
+specialization, and actual near-relation count. Scalar coordinate slicing
+already gives that cardinal exponent. For rank at least two and height at
+least one, its threshold is at least the collective threshold. The genuinely
+collective conclusion is the bound on the
+rational span; transferring only cardinality to smooth-box mean squares does
+not use that extra information. The first-rank estimate retains the existing
+scalar Baker bound; return-height counts remain open.
 Paper proof and audited declarations:
 [CDG-RANK](../3-formalized/cdg-collective-rank-depth.md).
+The exact scalar comparison and projection theorem are formalized in
+[CDG-SLICE](../3-formalized/cdg-coordinate-slicing.md).
 
 ## Open core
 

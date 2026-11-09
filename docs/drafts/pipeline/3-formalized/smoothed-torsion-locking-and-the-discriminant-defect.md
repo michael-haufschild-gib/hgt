@@ -1,8 +1,8 @@
 # The mass obstruction to smoothed torsion locking
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
-- **Obstacle:** B129, for the raw torsion lift of smooth packets.
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
+- **Obstacle:** former B129, scalar locking of the raw torsion lift; B135 is the coupled successor.
 - **Statement:** A fixed compact C² profile prevents every scalar radius from giving finite limits on both its one-orbit and two-orbit packets. For the exponential locking, finite convergence is equivalent to equality of discrete and continuum mass; separated packets have an exact discriminant defect.
 
 ## Construction and scope
@@ -11,7 +11,7 @@ For `f(u)=Σ_{1≤n≤N}x_n g(u−log n)`, set `M=∫g²`, `D=MΣx_n²`, `H=∫f
 
 `L_r = pole(f) − ∫archDamped(r,u)autocorr(f,u)du + M·torsionForm(ρ(r),Icc 1 N,x)`.
 
-This is a precise lift of the existing torsion form to labelled smooth packets. It agrees with the exact prime bridge below the atom spacing. The theorem does not identify every possible continuum extension of torsion damping with this lift; B129 in that broader sense remains open.
+This is a precise lift of the existing torsion form to labelled smooth packets. It agrees with the exact prime bridge below the atom spacing. The theorem does not identify every possible continuum extension of torsion damping with this lift; coupled smoothing is the remaining B135 problem.
 
 ## Proof
 
@@ -39,9 +39,9 @@ For failure under **every** radius, take a nonnegative nonzero compact smooth bu
 - **Positive survivor:** exact asymptotic for every packet; finite convergence iff total overlap vanishes; exact finite discriminant defect in the separated regime.
 - **Forced correction:** in the separated regime, adding `MΣx_n² selfIntersection(n)+(2a₀−c)H` restores the Weil limit. The spacing regulator supplies continuum self-energy, but scalar mass calibration cannot supply the degree-dependent discriminant correction.
 - **New constraint:** an alternative torsion smoothing must reproduce the continuum Gram form, including overlaps. Matching only the diagonal mass on isolated packets is insufficient. The obstruction already uses orders 1 and 2, whose torsion self-intersections vanish; it precedes the discriminant anomaly.
-- **Status:** paper argument closed using corpus inputs; Lean verification pending. No claim of closing all versions of B129.
+- **Status:** paper proof and Lean formalization complete. Both source files pass `lake --old env lean`; the principal theorems audit to `propext`, `Classical.choice`, and `Quot.sound` only. Both modules are imported by the HyperbolicArakelovTheory umbrella. B135 remains open.
 
-## Lean targets
+## Lean declarations
 
 - `HyperbolicArakelovTheory/TheGreenDampingOnSmoothProbes.lean`.
 - `HyperbolicArakelovTheory/TheMassObstructionToSmoothedTorsionLocking.lean`: `exists_smooth_profile_without_scalar_locking`, `finite_smoothLockedPacket_iff_mass_balance`, `tendsto_smoothLockedPacket_sub_mass_defect`, `tendsto_smoothLockedPacket_weil_normalization`.

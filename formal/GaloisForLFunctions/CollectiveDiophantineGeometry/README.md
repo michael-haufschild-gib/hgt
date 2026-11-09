@@ -167,7 +167,14 @@ cannot have rank `r`; an injective coordinate projection then gives the count.
 The parameters retain their dependence on dimension, height, and cutoff.
 
 This is an elementary collective consequence of the existing scalar Baker
-bound. Return-height counts and a stronger first-minimum bound remain open.
+bound. The cardinal exponent alone is also available by scalar coordinate
+slicing: fixing all but `s` coordinates leaves an `s`-logarithm difference
+of height at most `2sH`. Below half its scalar floor, that projection is
+injective. For one omitted prime, the threshold is `log 2/2`, independent
+of coefficient height. For `r≥2,H≥1`, the scalar threshold is at least the
+rank threshold. The additional collective information is the dimension of
+the rational span of **all** near relations, not this cardinal exponent.
+Return-height counts and a stronger first-minimum bound remain open.
 
 ## Fixed-height mass calibration
 

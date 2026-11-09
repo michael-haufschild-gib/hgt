@@ -1,7 +1,7 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`; 25 modules. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 31 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -36,7 +36,9 @@ ALST locates each fact over `ℤ` and proves what it gives there:
   bounded by the length of the auxiliary.
 - (S1) holds exactly on the **torsion of the prime torus**, where the Galois action of `ℚ(μ_m)` is
   the power map. The full affine fixed locus also allows zero coordinates. On the prime orbit
-  the Frobenius is the dilation `t ↦ at` with the single fixed point `0`. Stepanov's construction
+  every integral polynomial self-map preserving a finite prime orbit with two distinct primes
+  is an Adams operation. Its clock is `t ↦ nt`, and every nonidentity map fixes only `0`.
+  This classification assumes no regularity of the clock. Stepanov's construction
   `h = Σ f_i ψ_q(g_i)` runs verbatim on the fixed locus: one polynomial identity `Σ f_i g_i = 0`
   kills `h` there.
 - (S2) holds at every finite place `ℓ`: `ψ_ℓ(g) ≡ g^ℓ (mod ℓ)` and the derivatives of `ψ_ℓ(g)` are
@@ -144,6 +146,18 @@ exact; over `ℤ` no place supplies both.
     Torsion vanishing alone costs `p^((q−1)r)`. This comparison concerns the polynomial
     auxiliary before any division by a monomial.
 
+
+12. **Orbit preservation forces Adams operations.** For any finite prime set with two distinct
+    primes, every complex polynomial self-map carrying the prime orbit into itself has the
+    unique form `X_p↦p^(−ib)X_p^n`, with `n∈ℕ`, `b∈ℝ`
+    (`preservesPrimeOrbit_iff`, `translatedAdams_eq_iff`). Constant-modulus finite spectra force
+    monomials. Divisibility removes hidden period-lattice terms from the clock; the determinant
+    trick and Baker independence force a common integer exponent. Over `ℤ`, common torsion
+    rigidity removes the translation (`integer_endomorphism_is_adams`). The fixed orbit points
+    satisfy `(n−1)t+b=0`, so any map fixing two distinct orbit points is the identity
+    (`preservesPrimeOrbit_two_fixed_points`). Arbitrary polynomial replacements for Adams
+    operations therefore cannot supply many fixed orbit points in this auxiliary algebra.
+
 ## 5. Questions and answers
 
 | # | Question (§2.9) | Answer | Lean |
@@ -184,6 +198,7 @@ exact; over `ℤ` no place supplies both.
 | The norm bound and the closed-point law | `one_le_prod_norm_aeval_primitiveRoots`, `aeval_eq_zero_of_mem_primitiveRoots`, `norm_amplifier`, `norm_amplifier_threshold_sharp` |
 | Galois = Adams on torsion; `x^q = x` on the `(q−1)`-torsion | `aeval_torsionPoint_adams`, `aeval_torsionPoint_adams_of_pow_eq` |
 | The Frobenius on the orbit is the dilation; no common torsion return | `orbitValue_adams`, `eq_zero_of_torsion_return` |
+| All polynomial orbit preservers are translated Adams; integral endomorphisms are exactly Adams; two fixed orbit points force identity | `preservesPrimeOrbit_iff`, `integer_endomorphism_is_adams`, `preservesPrimeOrbit_two_fixed_points` |
 | Torsion returns exist at every height | `exists_torsion_return` |
 | Norm amplifier on the torus and on Frobenius orbits of returns | `torus_norm_amplifier`, `vanishesToOrder_of_small`, `eq_zero_of_small_on_frobeniusOrbit`, `one_le_prod_frobeniusOrbit`, `eq_zero_of_frobeniusOrbit_le_half` |
 | No exact vanishing at generic returns | `countable_setOf_exists_orbitValue_eq_zero`, `exists_return_forall_orbitValue_ne_zero` |
@@ -206,6 +221,7 @@ All are unconditional.
 
 | Trap | Truth |
 |---|---|
+| A different polynomial endomorphism can create many prime-orbit fixed points | every complex polynomial orbit preserver is translated Adams; any nonidentity one fixes at most one orbit point |
 | Returns are fixed points of a Frobenius | at a return the flow is close to the identity on the whole torus; the only exact fixed points common to all primes are torsion points (off the orbit) and `t = 0`; each prime has its own, the closed points of its circle |
 | Integrality turns forced near-vanishing at returns into zeros | only countably many heights carry a zero of any nonzero integer auxiliary; every return window avoids them |
 | The norm amplifier lifts the precision cap on the orbit | it gives exact vanishing at the torsion point, off the orbit; the orbit passes at distance `δ` and the zero copied to it is a Rouché copy, capped as before |

@@ -24,6 +24,13 @@ import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheSharpCostOfPolyn
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheLefschetzNumbersAreStepanovDegrees
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheStepanovBoundSeparatesZetaFromTheOneOff
 
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.FiniteUnitSpectrum
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialUnitOrbit
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PrimeOrbitClockRigidity
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.FinitePrimeClockMultipliers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialOrbitPreserversAreAdams
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.IntegralOrbitPreserversAreAdams
+
 /-!
 # Arithmetic Lefschetz–Stepanov theory
 
@@ -37,6 +44,9 @@ graphs of degree `≤ N` are the degree of the minimal auxiliary vanishing at th
 RH is an upper bound on that degree; the bound fails for the integer-norm one-off. Siegel
 auxiliaries and a zero estimate uniform in the number of logarithms are the tools. Polynomial
 syzygies have image exactly the powers of the full affine Adams fixed-point ideal; integral
-Newton coordinates give their sharp arithmetic length and all minimal auxiliaries.
+Newton coordinates give their sharp arithmetic length and all minimal auxiliaries. Every
+polynomial self-map preserving a finite prime orbit with two distinct primes is a translated
+Adams operation, without an assumed regularity of its clock. Over the integers the translation
+vanishes. A nonidentity polynomial orbit preserver cannot fix two orbit points.
 See `ArithmeticLefschetzStepanovTheory/README.md`.
 -/
