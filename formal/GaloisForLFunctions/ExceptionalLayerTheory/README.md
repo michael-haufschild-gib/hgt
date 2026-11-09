@@ -127,8 +127,8 @@ quotient tends to its nonzero multiplicity-weighted polynomial value, so the
 filtered prime sum grows at every large height. All damping samples can lie
 inside any prescribed positive logarithmic window. The observable has no
 continued-zeta term; the continued term appearing in its proof is `O(t)` and
-vanishes after normalization. The independent Euler bound below is insufficient
-to contradict this growth.
+vanishes after normalization. The independent arithmetic bounds below remain
+insufficient to contradict this growth.
 
 `ExponentiallyNarrowDampingReadsTheDivisor.lean` permits spacing
 `h(t)=exp(−κt)`. For a selected zero `ρ₀`, let
@@ -148,6 +148,14 @@ literal prime filter to zero when `dκ>a(1−σ)/2`, without a finite-layer
 assumption. This decay regime is disjoint from exceptional-layer growth:
 the remaining rate gap is `a(1−β)/2+π/4`. A sharper arithmetic estimate
 must retain additional cancellation of the prime phases.
+
+`ZeroFreeBoundsForDampingFilters.lean` strengthens the arithmetic estimate to
+`|A(t)|≤C_b h^d(1+t)^(d+3) exp(a(1−σ)t/2−bt/log(2t))`, eventually in
+`t`, for every fixed `b>0`, uniformly in `0≤h≤1`. The local Mellin contour
+uses zeta heights between `t/2` and `3t/2`; the actual zero-free region
+supplies the saving, and the horizontal edges and Euler tails decay faster.
+Thus the prime filter tends to zero also at `dκ=a(1−σ)/2`, unconditionally.
+The subexponential saving still leaves the fixed exceptional-layer rate gap.
 
 ## Mechanisms and tools
 

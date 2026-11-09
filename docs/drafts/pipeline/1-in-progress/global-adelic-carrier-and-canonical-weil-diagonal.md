@@ -48,28 +48,35 @@ realizes the complete Weil form as a trace, but its Hilbert realization has the
 zero-indexed basis `xiDivisorHilbertBasis`; no Green carrier on the requested
 adelic quotient is identified by that theorem.
 
-## Proved carrier geometry on square degrees
+## Proved projective carrier geometry
 
-[Finite Weyl conjugation](../3-formalized/finite-weyl-conjugation-retains-the-global-degree-configuration.md)
-constructs a faithful discrete rational group in `SL₂(ℂ)×Π'_p SL₂(ℚ_p)`
-and actual finite coset vertices. For `g_q=diag(q,q⁻¹)`, the split configuration
-`(z_{(ab)²},(g_{a/b}K_p)_p)` has normal form `(z_{b⁴},(K_p)_p)`;
-two classes agree exactly when `b` agrees. Conjugating the arithmetic group
-by the finite integral Weyl element retains every original square-degree point.
-Discreteness and injectivity are formalized with standard axioms only.
+[The full projective carrier](../3-formalized/full-projective-adelic-carrier-retains-every-degree.md)
+constructs the discrete group `Γ=J⁻¹SL₂(ℚ)J` in
+`SL₂(ℂ)×Π'_p PGL₂(ℚ_p)`, where `J` is the finite integral Weyl element.
+Its ordinary action on `ℍ³×Π'_p(PGL₂(ℚ_p)/PGL₂(ℤ_p))` retains every original
+point `x_n=(z_n,(diag(n,1)K_p)_p)` distinctly. Both local parity classes and
+all positive integer degrees are included. Projective integrality forces
+quadratic entry quotients to be integers; an orbit forces `(m/n)²∈ℤ`, and
+the inverse orbit forces `m=n`. Discreteness and injectivity are formalized
+with standard axioms only.
 
-The construction presently uses determinant-one local vertex spaces. Extending
-to all degrees and full `PGL₂` trees remains open. Finite-factor adjacency on
-the quotient must be realized as Hecke correspondences; the normal form alone
-does not identify a Green operator. No global kernel or Robin identity follows
-from the orbit classification.
+The earlier [split-degree classification](../3-formalized/finite-weyl-conjugation-retains-the-global-degree-configuration.md)
+gives exact fourth-power height normal forms on the determinant-one cover.
+Local finiteness of the full degree image and finite-factor adjacency on the
+quotient remain to be proved. The latter must be realized as Hecke
+correspondences. These orbit results do not yet identify a Green operator,
+its off-diagonal kernel, or its Robin diagonal.
 
-For all degrees, use the full local homothety cosets of `GL₂(ℚ_p)`.
-The base stabilizer satisfies `‖Mᵢⱼ‖²≤‖det M‖`. Applied to the opposite
-degree vertices, all-place integrality should force `c²/(mn)` and `d²m/n`
-to be integers for an orbit matrix with bottom row `(c,d)`. Together with
-`n=m/(c²m²+d²)` and the inverse orbit, this should force `m=n`, without
-restricting the degrees to squares. This extension is not yet formalized.
+## Prime adjacency construction
+
+At `p`, the orbit of `diag(1,p)K_p` under `K_p` should have the `p+1`
+representatives `diag(1,p)` and `[[p,-b],[0,1]]`, `b∈𝔽_p`.
+Reduction of the first column gives the representative; integrality of the
+transition matrix proves equality of lattice classes. This defines local
+adjacency independently of the target kernel. The prime operator on the
+arithmetic quotient must sum over these neighbours before taking quotient
+classes, preserving multiplicity when distinct neighbours become identified.
+The exact local degree and quotient descent are not yet formalized.
 
 ## Verification gates
 

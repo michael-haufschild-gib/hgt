@@ -36,7 +36,11 @@ comparable to `X` do not control these readings.
 
 ## Status
 
-The Euler bound forces decay when `dκ>a(1−σ)/2`. The exceptional-layer
+The zero-free improvement gives, for every fixed `b>0`,
+`|A(t)|≤C_b h^d(1+t)^(d+3) exp(a(1−σ)t/2−bt/log(2t))`, uniformly in spacing.
+Its complete proof and Lean audit are recorded in
+`../3-formalized/b13-zero-free-improvement-of-prime-filter-bound.md`.
+It forces decay when `dκ≥a(1−σ)/2`, including equality. The exceptional-layer
 growth theorem applies when `dκ<a(β−σ)/2−π/4`; the two regimes are disjoint.
 No independent bound contradicting the exceptional-layer signal is proved.
 

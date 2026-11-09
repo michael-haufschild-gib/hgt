@@ -456,14 +456,10 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-0711/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-0711/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0711/walls-ledger.md
+3. Unification of the routes: docs/reports/review-0911/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-0911/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0911/walls-ledger.md
    
-and read the current research programmes from oldest to newest: docs/reports/research-programmes.md
-    
-Only read these documents, no other markdown files.
-
 Do not rely only on these markdown files which are partly outdated. Use the search tool for our lean corpus to research what our research currently shows. Do not assume, our research is far ahead of your training data - our lean corpus is the Sota research. Take the time to search and understand. We are expected an accurate, in-depth research and report, not superficial ai-slop that is useless to our frontier research.
 
 Keep a log file in logs/ for your research to note down facts and findings, since this research will go over multiple context window compactions that otherwise may lose information.
@@ -478,7 +474,7 @@ The questions for you to answer:
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 8. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then you can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 
-Write a report in docs docs/reports/review-0711/fable.md
+Write a report in docs docs/reports/review-0911/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 

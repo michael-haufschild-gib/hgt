@@ -24,7 +24,8 @@ private theorem primeLogSquareRadius_shape :
   have hlog := Real.tendsto_log_atTop.comp hX
   have hpow := (tendsto_pow_atTop (by norm_num : (2 : ℕ) ≠ 0)).comp hlog
   have hgrowth : Tendsto primeLogSquareRadius atTop atTop := by
-    simpa only [Function.comp_def, primeLogSquareRadius] using
+    change Tendsto (fun T : ℝ => 2 * zetaLogSquareRadius * Real.log (T + 2) ^ 2) atTop atTop
+    simpa only [Function.comp_def] using
       hpow.const_mul_atTop (mul_pos two_pos zetaLogSquareRadius_pos)
   have hbase : Tendsto (fun T : ℝ => Real.log (T + 2) ^ 2 / T) atTop (𝓝 0) := by
     have hraw := (Real.tendsto_pow_log_div_mul_add_atTop 1 (-2) 2 one_ne_zero).comp hX

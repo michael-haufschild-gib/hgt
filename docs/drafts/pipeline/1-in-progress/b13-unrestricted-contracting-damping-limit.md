@@ -18,7 +18,29 @@ speed `κ>0`, without the coarse sufficient restriction `dκ<r`.
 The expected raw-observable boundary is then `r−dκ`: growth above zero,
 decay below zero. The equality case needs the precise polynomial Gamma factor.
 
-## Missing estimate
+## Positive-strip contour route
+
+Choose `ε>0` with `σ+ε<β`, `aε/2<r`, and with the vertical line
+`Re z=σ+ε` avoiding the finite exceptional divisor. Shift the complete
+filtered Euler integral to that line. Its Mellin coordinate has positive
+real part `ε`, so no Gamma pole or continued-current residue is crossed.
+The polynomial kills the zeta pole and every unwanted exceptional residue.
+The selected residue is exactly `−mρ₀ P_h(exp(h(ρ₀−β))) K(y,ρ₀−s)`.
+
+The proved strip envelope retains `h^d` on both vertical lines and the
+horizontal edges. A polynomial bound for the logarithmic derivative on
+the globally separated left line then gives residual
+`O(h^d(1+t)^N exp(aεt/2))`. Dividing by `h^d K(y,ρ₀−s)` leaves a
+polynomial times `exp(−(r−aε/2)t)`, independently of the contraction speed.
+The finite product limit as `h→0` supplies the stated nonzero constant.
+
+The remaining analytic obligations are the finite-pole contour identity,
+the actual globally separated-line logarithmic-derivative bound, and the
+vanishing horizontal edges. At a killed simple zero, the literal product
+of the filter and `ζ′/ζ` need not equal its removable value; use a finite-pole
+residue theorem or prove the removable extension explicitly.
+
+## Alternative derivative estimate
 
 The existing zeroth-order error estimate loses `h^d` upon normalization.
 The needed full-current bound is

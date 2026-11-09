@@ -56,8 +56,9 @@ is their complete-filter upper estimate uniform in spacing and height,
 and its unconditional fast-contraction consequence.
 
 Source: `ExceptionalLayerTheory/EulerBoundsForDampingFilters.lean`.
-Direct source audit passed without warnings. The four audited declarations are
-`exists_divisorDampingFilter_euler_bound`, `primeDampingFilter_eq_euler_integral`,
+Direct source audit passed without warnings. The five audited declarations are
+`exists_divisorDampingFilter_strip_bound`, `exists_divisorDampingFilter_euler_bound`,
+`primeDampingFilter_eq_euler_integral`,
 `exists_primeDampingFilter_arithmetic_bound`, and
 `tendsto_primeDampingFilter_zero_of_fast_contraction`.
 Their transitive axioms are exactly `propext`, `Classical.choice`, `Quot.sound`.
