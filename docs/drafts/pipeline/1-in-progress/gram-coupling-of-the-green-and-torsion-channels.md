@@ -6,16 +6,16 @@
 
 ## Exact construction
 
-For `f=Σ_{1≤n≤N}x_n g(·−log n)`, let `G_{mn}=∫g(u−log m)g(u−log n)du` be its actual L² Gram matrix. Put `C=G^(1/2)`, the positive square root, and `y=Cx`. Define the coupled torsion channel as the actual `torsionForm(ρ,Icc 1 N,y)`. It is positive whenever the raw torsion channel is positive, and its divergent coefficient is `Σy_n²=xᵀGx=∫f²`.
+For a compact continuous profile g, set v₀=0 and vₙ=g(·−log n) in real L² for n≥1. Let eₙ be their ordered normalized Gram–Schmidt vectors; retain zero vectors when a step is dependent. For f=Σ₁≤n≤N xₙvₙ, put yₙ=⟨eₙ,f⟩. Prefix reconstruction gives yₙ=0 for n>N and Σ₁≤n≤N yₙ²=∫f². The coordinates depend on g and f, independently of unused degrees in a presentation.
 
-Conjecture: with `ρ_c(r)=1−exp(−selfEnergy(r)−c)`, pole minus the actual smooth Green energy plus this coupled torsion channel converges for every compact C² profile and every packet, with no separation condition. The limit is
+Couple the actual torsion form Qρ(y) to pole(f)−smoothGreenEnergy(r,f), with ρ=1−exp(−selfEnergy(r)−c). Its torsion part stays positive. Its two divergent masses agree, including overlaps. Conjectured limit:
 
-`weilQuad(f)+primeSum(f)−atomicWeilForm(N,y)+(c−2a₀)∫f²−Σy_n² selfIntersection(n)`,
+`weilQuad(f)+primeSum(f)−atomicWeilForm(N,y)+(c−2a₀)∫f²−Σyₙ² selfIntersection(n)`,
 
-where `a₀=gammaHardyPhaseRate 0`. Below the atom spacing, `G=M I`, so `y=√M x` and this construction reduces exactly to the raw packet lift already proved.
+where a₀=gammaHardyPhaseRate 0. Below the atom spacing, y=√M x with M=∫g², recovering the separated scalar lift.
 
 ## Required closure
 
-Prove the Gram positivity and square-root mass identity for actual smooth translates; construct the coupled positive torsion family and prove its finite limit; calculate the full defect against Weil's form; recover the separated regime. No abstract Gram-matching premise may replace the actual construction.
+Construct the coordinates from actual smooth translates; prove prefix reconstruction, mass equality, vanishing tail and presentation compatibility; prove positivity of the coupled torsion channel, finite locking and the full defect against Weil; recover the separated regime. No assumed mass-matching interface replaces the construction.
 
-The construction is indexed by a finite packet presentation. Independence under changes of presentation or refinement is a separate question and must not be silently assumed. The result concerns existence and the explicit defect, not positivity of the limiting Weil form.
+A finite positive Gram square root supplies mass matching but need not respect adjoining unused degrees. Ordered triangular factorization addresses this compatibility. The theorem concerns finite limits and their defect, not positivity of Weil's form.

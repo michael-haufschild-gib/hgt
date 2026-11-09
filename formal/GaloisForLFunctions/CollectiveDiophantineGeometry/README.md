@@ -273,3 +273,12 @@ give an explicit interval length ensuring approximation to every target.
 An existence bound of this kind is not an exclusion of early returns.
 Growing-dimension estimates here must state both their error and their
 height range before being compared with the breadth target.
+
+Simultaneous lower bounds are also established transcendence theory.
+[Gaudron, Theorem 1.1, published version](https://lmbp.uca.fr/~gaudron/art12.pdf)
+has dimension factor `(10k)^(58k²/r)` for `r` independent forms in `k`
+independent logarithms. At proportional rank this can improve substantially
+on the scalar Baker reduction above. That theorem is not formalized or
+assumed here. A collective contribution must be compared with this benchmark,
+while retaining the sharper elementary bounds near full rank. Neither
+comparison supplies the missing constant-precision return exclusion.

@@ -161,6 +161,10 @@ theorem preservesPrimeOrbit_two_fixed_points (p q : P) (hpq : p ≠ q)
   rw [hn', hb]
 
 #print axioms preservesPrimeOrbit_iff
+#print axioms translatedAdams_eq_iff
+#print axioms translatedAdams_one_zero
+#print axioms translatedAdams_fixed_iff_of_ne_one
+#print axioms translatedAdams_translation_fixed_iff
 #print axioms preservesPrimeOrbit_two_fixed_points
 
 end GaloisForLFunctions.ArithmeticLefschetzStepanovTheory

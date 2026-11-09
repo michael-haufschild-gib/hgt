@@ -85,6 +85,8 @@ Paper proof and audited declarations:
 [CDG-RANK](../3-formalized/cdg-collective-rank-depth.md).
 The exact scalar comparison and projection theorem are formalized in
 [CDG-SLICE](../3-formalized/cdg-coordinate-slicing.md).
+The published simultaneous-logarithm benchmark and its missing proof inputs
+are isolated in [CDG-SIM](cdg-simultaneous-logarithm-bounds.md).
 
 ## Open core
 

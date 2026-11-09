@@ -1,15 +1,15 @@
 # Polynomial orbit preservers are translated Adams operations
 
 - **ID:** alst-orbit-preserving-endomorphisms-are-adams
-- **Stage:** 2-fully-proven
-- **Status:** Paper proof complete; Lean formalization pending. Uncounted.
+- **Stage:** 3-formalized
+- **Status:** FORMALIZED. All six modules passed final plain Lean checks and transitive axiom audits.
 - **Statement:** Let `P` be a finite set containing two distinct primes. Every complex polynomial self-map preserving `O(t)=(p^(−it))_{p∈P}` has the unique form `F_p(X)=p^(−ib)X_p^n`, with `n∈ℕ`, `b∈ℝ`. Its clock is `t↦nt+b`, without any regularity assumption. Over `ℤ`, `b=0`: the endomorphisms are exactly Adams operations.
 
 ## Research consequence
 This classifies all exact polynomial Frobenius candidates preserving the
 prime orbit. A nonidentity candidate cannot fix two orbit points. Changing
-the polynomial map within this algebra cannot supply a Frobenius with many
-fixed orbit points. The positive result is the full classification,
+the polynomial map while preserving the whole orbit cannot supply a
+Frobenius with many fixed orbit points. The positive result is the full classification,
 including translations, constant maps, and the induced clocks.
 
 ## Proof
@@ -46,15 +46,24 @@ A fixed orbit point is exactly a solution of `(n−1)t+b=0`. Two distinct
 solutions force `n=1,b=0`, the identity. If `n=1,b≠0` there are no fixed
 points; if `n≠1` there is exactly one, `t=−b/(n−1)`.
 
-## Formal inputs and obligations
-- `finiteExpWave_unit_support`, `complexOrbitValue_unit_monomial`, `prime_character_clock_linear`, `prime_frequency_dilation_is_nat`: Lean checked; standard axioms only.
-- `preservesPrimeOrbit_iff`, `preservesPrimeOrbit_two_fixed_points`: Lean checked; standard axioms only.
-- `RHTower.primeLog_algIndep`: transitive audit contains only `propext`, `Classical.choice`, `Quot.sound`.
-- `isIntegral_of_smul_mem_submodule`: the determinant trick.
-- `addSubgroup_eq_bot_of_le_fg_of_nsmulDivisible`: period-lattice rigidity.
-- `eq_zero_of_torsion_return`: removes integral translation factors.
+## Lean verification
+All six modules passed final `lake --old env lean <module>.lean` checks.
+Every audited declaration uses only `propext`, `Classical.choice`, and
+`Quot.sound`. Uniqueness, identity, both fixed-point cases, and the
+integral endomorphism classification were audited explicitly.
 
-`integerPreservesPrimeOrbit_iff` and `integer_endomorphism_is_adams` passed
-the final plain module check with standard axioms only. Final plain checks
-of the five supporting modules remain required.
+| Module | Main declaration |
+|---|---|
+| `FiniteUnitSpectrum` | `finiteExpWave_unit_support` |
+| `PolynomialUnitOrbit` | `complexOrbitValue_unit_monomial` |
+| `PrimeOrbitClockRigidity` | `prime_character_clock_linear` |
+| `FinitePrimeClockMultipliers` | `prime_frequency_dilation_is_nat` |
+| `PolynomialOrbitPreserversAreAdams` | `preservesPrimeOrbit_iff`, `translatedAdams_eq_iff`, `translatedAdams_fixed_iff`, `preservesPrimeOrbit_two_fixed_points` |
+| `IntegralOrbitPreserversAreAdams` | `integerPreservesPrimeOrbit_iff`, `integer_endomorphism_is_adams` |
+
+The determinant trick is `isIntegral_of_smul_mem_submodule`; algebraic
+prime-logarithm independence is `RHTower.primeLog_algIndep` (standard
+transitive axioms). Period-lattice rigidity uses
+`addSubgroup_eq_bot_of_le_fg_of_nsmulDivisible`. Integral descent uses
+`eq_zero_of_torsion_return`. The umbrella imports all six modules.
 Corpus searches found no matching classification outside the new modules.

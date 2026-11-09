@@ -1,7 +1,7 @@
 # Rational orbit preservers are Laurent Adams operations
 
 - **ID:** alst-rational-orbit-preservers-are-laurent-adams
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Statement:** For a finite prime set containing two distinct primes, every rational self-map defined on the entire prime orbit and carrying that orbit into itself has coordinates `p^(−ib)X_p^n`, with a common `n∈ℤ`, `b∈ℝ`. Over real or integer coefficients, `b=0`.
 

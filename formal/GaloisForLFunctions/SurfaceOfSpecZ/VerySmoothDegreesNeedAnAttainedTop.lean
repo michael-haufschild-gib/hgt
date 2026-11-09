@@ -10,7 +10,9 @@ spline of order `o ≥ 3` and `0 < Θ ≤ ½` there is a tempered configuration 
 with `sup Re ρ = ½ + Θ` not attained, such that `(−1)^{o+1} 2 Re S(log d) ≥ −1` at every very
 smooth `d` (`exists_zeroConfig_verySmooth_signed_nonattained`); from below for the cubic spline
 (`exists_zeroConfig_verySmooth_bddBelow_nonattained`). With attainment they do decide: they contain
-the `2ᵃ3ᵇ` beyond `log = 81` (`onLine_of_bddBelow_verySmooth_of_max`). The very smooth integers up to
+the `2ᵃ3ᵇ` beyond `log = 81` (`onLine_of_bddBelow_verySmooth_of_max`). For `ζ` a Stepanov bound
+there gives the abscissa law, and RH is that bound together with `ZerosApproachLine`
+(`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_verySmooth`). The very smooth integers up to
 `x` number `x^{o(1)}`; the primes, with power-saving gaps, need no attainment
 (`TheGapMethodIterates`).
 
@@ -870,7 +872,8 @@ theorem onLine_of_bddBelow_verySmooth_of_max (Z : ZeroConfig) (hZ : TemperedConf
   have hwid : ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + (ρ₀.re - 1 / 2) := fun ρ hρ => by
     have := hmax ρ hρ; linarith
   refine onLine_of_bddBelow_twoPrimes_of_max Nat.prime_two Nat.prime_three (by norm_num) Z hZ
-    hnoreal hρ₀ hmax fun m n => ?_
+    hnoreal hρ₀ hmax (K := |K| + (∑' z, ‖evenCoeff Z (boxSpline 1 3) z‖) *
+      Real.exp (81 * |ρ₀.re - 1 / 2|)) fun m n => ?_
   simp only [Nat.cast_ofNat]
   exact bddBelow_twoThree_of_bddBelow_verySmooth hZ hwid hK m n
 
@@ -888,6 +891,7 @@ theorem asymptoticAbscissaLaw_of_bddBelow_verySmooth {K : ℝ}
       -K ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log d)).re) :
     _root_.RHTower.AsymptoticAbscissaLaw := by
   refine asymptoticAbscissaLaw_of_bddBelow_twoPrimes Nat.prime_two Nat.prime_three (by norm_num)
+    (K := |K| + (∑' z, ‖evenCoeff zetaZeroConfig (boxSpline 1 3) z‖) * Real.exp (81 * |(1 : ℝ) / 2|))
     fun m n => ?_
   simp only [Nat.cast_ofNat]
   exact bddBelow_twoThree_of_bddBelow_verySmooth temperedConfig_zetaZeroConfig

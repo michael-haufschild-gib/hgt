@@ -35,8 +35,8 @@ ALST locates each fact over `ℤ` and proves what it gives there:
 - (S3) holds exactly: the closed points of every prime circle, counted with order and degree, are
   bounded by the length of the auxiliary.
 - (S1) holds exactly on the **torsion of the prime torus**, where the Galois action of `ℚ(μ_m)` is
-  the power map. The full affine fixed locus also allows zero coordinates. On the prime orbit
-  every integral polynomial self-map preserving a finite prime orbit with two distinct primes
+  the power map. The full affine fixed locus also allows zero coordinates.
+  Every integral polynomial self-map preserving a finite prime orbit with two distinct primes
   is an Adams operation. Its clock is `t ↦ nt`, and every nonidentity map fixes only `0`.
   This classification assumes no regularity of the clock. Stepanov's construction
   `h = Σ f_i ψ_q(g_i)` runs verbatim on the fixed locus: one polynomial identity `Σ f_i g_i = 0`
@@ -146,7 +146,6 @@ exact; over `ℤ` no place supplies both.
     Torsion vanishing alone costs `p^((q−1)r)`. This comparison concerns the polynomial
     auxiliary before any division by a monomial.
 
-
 12. **Orbit preservation forces Adams operations.** For any finite prime set with two distinct
     primes, every complex polynomial self-map carrying the prime orbit into itself has the
     unique form `X_p↦p^(−ib)X_p^n`, with `n∈ℕ`, `b∈ℝ`
@@ -155,7 +154,7 @@ exact; over `ℤ` no place supplies both.
     trick and Baker independence force a common integer exponent. Over `ℤ`, common torsion
     rigidity removes the translation (`integer_endomorphism_is_adams`). The fixed orbit points
     satisfy `(n−1)t+b=0`, so any map fixing two distinct orbit points is the identity
-    (`preservesPrimeOrbit_two_fixed_points`). Arbitrary polynomial replacements for Adams
+    (`preservesPrimeOrbit_two_fixed_points`). Orbit-preserving polynomial replacements for Adams
     operations therefore cannot supply many fixed orbit points in this auxiliary algebra.
 
 ## 5. Questions and answers
@@ -221,7 +220,7 @@ All are unconditional.
 
 | Trap | Truth |
 |---|---|
-| A different polynomial endomorphism can create many prime-orbit fixed points | every complex polynomial orbit preserver is translated Adams; any nonidentity one fixes at most one orbit point |
+| A nonidentity polynomial map can preserve the prime orbit and fix many of its points | every complex polynomial orbit preserver is translated Adams; any nonidentity one fixes at most one orbit point |
 | Returns are fixed points of a Frobenius | at a return the flow is close to the identity on the whole torus; the only exact fixed points common to all primes are torsion points (off the orbit) and `t = 0`; each prime has its own, the closed points of its circle |
 | Integrality turns forced near-vanishing at returns into zeros | only countably many heights carry a zero of any nonzero integer auxiliary; every return window avoids them |
 | The norm amplifier lifts the precision cap on the orbit | it gives exact vanishing at the torsion point, off the orbit; the orbit passes at distance `δ` and the zero copied to it is a Rouché copy, capped as before |
