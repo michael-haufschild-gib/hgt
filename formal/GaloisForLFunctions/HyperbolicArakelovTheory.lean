@@ -12,6 +12,7 @@ import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersWithAClosedDegreeGeo
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheArithmeticPrimeUnitCollapsesTheLadder
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheOppositeAdelicDegreeConfiguration
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheFullAdelicDegreeConfiguration
+import GaloisForLFunctions.HyperbolicArakelovTheory.ThePrimeAdjacencyOnTheAdelicCarrier
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersAlongAnEndOfBoundedSelfEnergy
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersAtAConicalLimitPoint
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheBoundaryOfAGroupConvergentAtOneHalf
@@ -32,6 +33,6 @@ locked dampings; the mass obstruction to scalar locking and ordered Gram couplin
 the finite places as Bruhat–Tits trees with the adelic Green formula; the arithmetic-unit obstruction
 to descending a degree ladder and its reconstruction from positive twisted tree fibres; a discrete
 adelic arithmetic group whose finite Weyl conjugate retains every original degree in the projective
-vertex carrier; and the
+vertex carrier, with commuting prime Hecke operators retaining neighbour multiplicities; and the
 weight of the orientation cover over ℤ. See `HyperbolicArakelovTheory/README.md`.
 -/
