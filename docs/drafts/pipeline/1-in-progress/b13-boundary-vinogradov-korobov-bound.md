@@ -40,3 +40,11 @@ quadratic exponential decay, dominated by the shifted main bound.
 
 The proposed saving is subexponential. Even if proved, it leaves the fixed
 gap `a(1−β)/2` to the exceptional-layer signal; it is not B13 exclusion.
+
+## Lean status
+
+`BoundaryZeroFreeContours.lean` passes direct source audit without warnings.
+Its weighted kernel estimate, full zero-free rectangle, pole cancellation
+and literal-prime inversion have standard-axiom-only transitive audits.
+`VinogradovKorobovBoundsForBoundaryDamping.lean` contains the upper bound,
+critical decay and relaxed-contraction proofs; its direct audit is pending.

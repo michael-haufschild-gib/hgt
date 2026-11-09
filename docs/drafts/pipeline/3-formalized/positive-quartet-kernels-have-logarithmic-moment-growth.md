@@ -49,5 +49,6 @@ its explicit logarithmic moment bound. No external novelty claim.
 This supplies the kernel estimate for logarithmic-window localization.
 `ZetaLogarithmicWindows.zeta_re_le_of_logarithmic_windows` now proves
 continuous exact-depth detection at radius `16log(T+2)`, with only the
-standard three axioms. Prime-window criteria remain under formalization;
-the arithmetic Stepanov inequality remains open.
+standard three axioms. `PrimeLogarithmicWindows.lean` proves the prime
+criterion at radius `32log(T+2)` with the same axiom audit; the arithmetic
+Stepanov inequality remains open.

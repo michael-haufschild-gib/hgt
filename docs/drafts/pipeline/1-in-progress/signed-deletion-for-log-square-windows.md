@@ -48,6 +48,28 @@ Its triangle inequality forces a large absolute value within a fixed
 distance of every `T` when `Re z₀>0`. No conjugation symmetry, absence
 of real exponents, or sign of the trace is needed.
 
+## Local criterion
+
+Normalize the spline trace by `exp(−αu)` and retain any zero exponent
+with `Re z₀>α`. Its coefficient stays nonzero after sufficiently late
+signed deletion. All but finitely many other coefficients vanish. Let
+`A` be the original coefficient mass, `D=1/2+|α|`, and `V` the total
+variation exponent of the chosen tail. Dominated convergence passes the
+finite-convolution norm bound to the infinite deletion. On a log-square
+window centered at `T`, every observation point `t∈[T,T+B]` satisfies
+
+`|filtered trace(t)| ≤ exp(V) (|K| + 2A exp(DB−T))`.
+
+The finite-spectrum endpoint instead forces growth with exponent
+`Re z₀−α>0`, a contradiction at arbitrarily large centers. Hence the
+continuous window bound gives width at most `α`.
+
+Prime gaps transfer an absolute bound of exponent `α`, starting with
+width `a`, to continuous exponent `max(α,a−1/3)`. Starting at `a=1/2`,
+the first signed deletion gives width `max(α,1/6)`; the second gives
+width `α`. Conversely, width `α` bounds every prime trace by the
+summable coefficient mass times `p^α`.
+
 **Lean status:** all eight modules compile. Direct check of
 `SignedPrimeLogSquareWindows.lean` passed; both final criteria depend only
 on `propext`, `Classical.choice`, `Quot.sound`. Direct helper-module audits

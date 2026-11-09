@@ -68,7 +68,7 @@ theorem exists_boundaryGaussianKernel_strip_envelope {l u : ℝ}
     apply pow_le_pow_left₀ (by positivity)
     have he : t * (1 + z) = t + |v| := by
       dsimp only [z]
-      field_simp [ht0.ne'] <;> ring
+      field_simp [ht0.ne']
     rw [he]
     linarith only [ht]
   have hdom : (1 + z) ^ q * Real.exp (-(z / 4)) ≤ D := by
@@ -221,7 +221,7 @@ theorem eventually_zeta_vk_full_rectangle :
   have hunit : zetaResidueUnit z ≠ 0 := by
     by_cases hz1 : z = 1
     · rw [hz1, zetaResidueUnit_one]; exact one_ne_zero
-    · exact (zetaResidueUnit_ne_zero_iff hz1).mpr (hnz z H hH hzH hzlo' hz1)
+    · exact (Sieve.zetaResidueUnit_ne_zero_iff hz1).mpr (hnz z H hH hzH hzlo' hz1)
   refine ⟨hunit, ?_⟩
   intro hdist
   have hz1 : z ≠ 1 := by
@@ -315,7 +315,10 @@ theorem boundaryFilteredWeight_zero_free_rectangle (F : Finset XiZeroCopy)
   have hpole : g 1 = 0 := by
     dsimp only [g, rotatedDivisorFilteredMellinWeight]
     rw [divisorDampingFilter_pole, zero_mul]
-  simpa only [hsum, sub_zero, hpole, mul_zero] using hid
+  change rectIntegral (fun z => g z * (-logDeriv riemannZeta z)) z₁ z₂ =
+    2 * Real.pi * I * (g 1 - ∑ z ∈ Sieve.zetaResidueUnitClosedRectangleZeros z₁ z₂,
+      ((analyticOrderAt zetaResidueUnit z).toNat : ℂ) * g z) at hid
+  simpa only [hsum, hpole, sub_self, mul_zero] using hid
 
 /-- Only the vanishing boundary integral is needed to compare vertical edges;
 the integrand may have removable singularities inside the rectangle. -/

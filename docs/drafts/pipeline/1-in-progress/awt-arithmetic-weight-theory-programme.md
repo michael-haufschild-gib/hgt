@@ -13,7 +13,7 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 
 ## Gates
 - [x] 0 → 1 in-progress
-- [x] contributions 1–13 formalized (clean compiles, wired into umbrella; umbrella wired into MainTheorems)
+- [x] contributions 1–16 formalized (clean compiles, wired into umbrella; umbrella wired into MainTheorems)
 
 ## Contributions (Lean modules; status)
 1. `TheGenericFibreHasUniformWeights` — big monodromy `k!` bound; a.e. uniform tensor moments (M2). **compiled**
@@ -31,7 +31,7 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 13. `TheKunnethFormulaForTheTensorPowers` — `Σ_n Λ(n) t(log n)^m n^{−s} = Σ_{z⃗} Π e_{z_i}·(−ζ′/ζ)(s − Σz_i)` for `Re s > 1 + mb` (geometric constancy as a theorem). **compiled**
 14. `AmplifiedMonodromyBreaksOnlyOffTheTrivialFibre` — coherent amplified pricing at `0` vs strict amplified saving `2 < 4` off `0` under exact orthonormality on `{4, 6, 9}`; centred jump cancellation. **compiled**
 15. `ProductPositivityCouplingIsOneWay` — Abel–divisor monotonicity under symmetric shifts; simple-pole Euler-factor doubling on `flipPrimes θ` preserves product positivity while shifting `primeWindowOf` by `≫ p^{θ − ½}` (`no_reverse_weight_bound_from_product_positivity`). **compiled**
-16. `TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily` — `(FP)` across all five canonical family classes and mixtures; pushforward realizability; weighted AM–GM tangent coercivity; cover-family sublinear tensor moments ⇔ RH (`zeroMotive_is_fixedPart_of_every_arithmeticFamily`). **pending check**
+16. `TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily` — `(FP)` across all five canonical family classes and mixtures; pushforward realizability; weighted AM–GM tangent coercivity; cover-family sublinear tensor moments ⇔ RH (`zeroMotive_is_fixedPart_of_every_arithmeticFamily`). **compiled**
 
 ## No-go closure (family + positivity route to the sixth move)
 - **Exact killing theorems:** geometric constancy (`summable_tensorTerm_iff_of_max`, M4 ⇔ RH); pricing (`measureReal_singleton_mul_pow_le`); constants blow up at `ζ` (`trivial_fibre_is_the_jump`); exponents residual vs null (`residual_and_null_of_traceExponent`); isozeric class null (`gaugeHaar_isozericClass_eq_zero`).

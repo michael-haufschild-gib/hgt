@@ -94,7 +94,8 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
       congr 1
       ring
     rw [hyexp] at hb
-    convert hb using 1 <;> dsimp only [δ] <;> congr 1 <;> ring
+    have heδ : -(δ * |v|) = -(|v| / (4 * t)) := by dsimp only [δ]; ring
+    simpa only [M, heδ] using hb
   have hnz (x v : ℝ) (hx : c ≤ x) (hxr : x ≤ r) (hv : |v| ≤ H) :
       zetaResidueUnit ((x : ℂ) + v * I) ≠ 0 :=
     (htR ((x : ℂ) + v * I) (by simpa using hv)
@@ -170,7 +171,11 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
       rw [uIoc_of_le (by linarith only [hH0])] at hv
       have hvH : |v| ≤ H := abs_le.mpr ⟨hv.1.le, hv.2⟩
       have hd := Complex.abs_re_le_norm (((c : ℂ) + v * I) - 1)
-      have he : (((c : ℂ) + v * I) - 1).re = -(w / 2) := by simp [c]; ring
+      have he : (((c : ℂ) + v * I) - 1).re = -(w / 2) := by
+        simp only [c, Complex.sub_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+          Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_mul,
+          sub_zero, add_zero, Complex.one_re]
+        ring
       rw [he, abs_neg, abs_of_pos (by positivity : 0 < w / 2)] at hd
       have hld := hlog c v le_rfl hcr hvH hd
       dsimp only [G]
@@ -289,7 +294,8 @@ theorem tendsto_polynomial_mul_exp_neg_boundary_vk_width (n : ℕ) {b : ℝ} (hb
     have ht1 : 1 ≤ t := by linarith only [ht2]
     have hlog : 0 < Real.log t := Real.log_pos (by linarith only [ht2])
     have hw := vkHadamardWidth_pos htE
-    have hL0 : 0 ≤ Real.log (t ^ 3 + 1) := Real.log_nonneg (by positivity)
+    have hL0 : 0 ≤ Real.log (t ^ 3 + 1) :=
+      Real.log_nonneg (by linarith only [pow_nonneg ht0.le 3])
     have hL : Real.log (t ^ 3 + 1) ≤ 4 * Real.log t := by
       have hc : (1 : ℝ) ≤ t ^ 3 := one_le_pow₀ ht1
       have hm := mul_le_mul_of_nonneg_left ht2 (by positivity : 0 ≤ t ^ 3)

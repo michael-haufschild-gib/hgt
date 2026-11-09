@@ -55,9 +55,11 @@ Eisenstein model supplies both halves of the integration line.
 For a compactly supported C² autocorrelation, its symmetrized Mellin
 transform decays as `(1+t²)^(−2)`. Thus the error bound is integrable,
 and the corpus's vertical-line formula identifies the limiting tower
-pairing with the full Weil functional. The scalar estimate and pointwise
-limit are formalized in `TheWeilSymbolFromTheGeometricScatteringTower`
-(standard-three-axiom audit); passage under the integral remains to audit.
+pairing with the full Weil functional. The scalar estimate, pointwise
+limit, and packet limit are formalized in
+`TheWeilSymbolFromTheGeometricScatteringTower` and
+`TheWeilPacketsFromRenormalizedGeometricDiagonals` (standard-three-axiom
+audits). The counterterm is exactly `2r(c+N)‖f‖₂²`.
 
 Even that packet identity would not identify a torus-periodized Green
 operator on the adelic carrier. The missing geometric comparison is

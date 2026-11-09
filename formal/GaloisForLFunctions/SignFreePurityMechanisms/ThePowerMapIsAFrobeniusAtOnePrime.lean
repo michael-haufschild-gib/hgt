@@ -7,7 +7,7 @@ On the multiplicative monoid of `ℤ` the maps `F_n : x ↦ x ^ n` commute and s
 `F_m F_n = F_{mn}`. At a prime `q` two things can happen to `F_n`.
 
 * `F_n` fixes every point of the fibre `𝔽_q` exactly when `q − 1 ∣ n − 1`
-  (`forall_pow_eq_self_iff`).
+  (`forall_pow_eq_self_iff`), hence on at most `d(n − 1)` fibres (`ncard_fixed_fibres_le`).
 * `F_n` is additive in characteristic `q`, that is a Frobenius, exactly when `n` is a power of `q`
   (`isFrobeniusAt_iff`).
 
@@ -43,6 +43,25 @@ theorem forall_pow_eq_self_iff (p : ℕ) [Fact p.Prime] {n : ℕ} (hn : 1 ≤ n)
     rcases eq_or_ne x 0 with rfl | hx
     · simp
     · rw [pow_succ, pow_mul, ZMod.pow_card_sub_one_eq_one hx, one_pow, one_mul]
+
+/-- The `n`-th power map fixes pointwise at most `d(n − 1)` fibres of `Spec ℤ`: one for each
+divisor `p − 1` of `n − 1`. -/
+theorem ncard_fixed_fibres_le {n : ℕ} (hn : 2 ≤ n) :
+    {p : ℕ | p.Prime ∧ ∀ x : ZMod p, x ^ n = x}.ncard ≤ (n - 1).divisors.card := by
+  have hmaps : ∀ p ∈ {p : ℕ | p.Prime ∧ ∀ x : ZMod p, x ^ n = x},
+      p - 1 ∈ ((n - 1).divisors : Set ℕ) := by
+    rintro p ⟨hp, hfix⟩
+    haveI : Fact p.Prime := ⟨hp⟩
+    exact Finset.mem_coe.mpr (Nat.mem_divisors.mpr
+      ⟨(forall_pow_eq_self_iff p (by omega)).mp hfix, by omega⟩)
+  have hinj : Set.InjOn (fun p : ℕ => p - 1) {p : ℕ | p.Prime ∧ ∀ x : ZMod p, x ^ n = x} := by
+    rintro p ⟨hp, -⟩ q ⟨hq, -⟩ hpq
+    have hp1 := hp.pos
+    have hq1 := hq.pos
+    simp only at hpq
+    omega
+  have hle := Set.ncard_le_ncard_of_injOn _ hmaps hinj (Finset.finite_toSet _)
+  rwa [Set.ncard_coe_finset] at hle
 
 /-! ### Where the power map is a Frobenius -/
 
@@ -127,6 +146,7 @@ theorem vonMangoldt_eq_finsum_log_isFrobeniusAt {n : ℕ} (hn : 2 ≤ n) :
     rw [hset, finsum_mem_empty, vonMangoldt_eq_zero_iff.mpr hpp]
 
 #print axioms forall_pow_eq_self_iff
+#print axioms ncard_fixed_fibres_le
 #print axioms isFrobeniusAt_iff
 #print axioms vonMangoldt_eq_finsum_log_isFrobeniusAt
 

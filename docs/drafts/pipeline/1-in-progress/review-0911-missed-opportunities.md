@@ -10,7 +10,7 @@
 | Item | Required result | Status |
 |---|---|---|
 | 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Final signed criteria pass direct and axiom audits; helper/transfer final audits pending. See `signed-deletion-for-log-square-windows.md` |
-| 11.6 | Quasi-RH ∨ AAL; quasi-RH iff tail abscissa < 1; consequences under ¬AAL | First two checked in `quasi-rh-is-a-tail-law.md`; heavy-return and Mertens consequences open |
+| 11.6 | Quasi-RH ∨ AAL; quasi-RH iff tail abscissa < 1; consequences under ¬AAL | Complete: `quasi-rh-is-a-tail-law.md` and `arithmetic-bounds-without-the-abscissa-law.md`; includes the stronger tail-based heavy-return exponent |
 | 11.6 | Exact simple near-line census alternatives at 70%, 75%, 80% | Complete: `near-line-census-at-seventy-seventy-five-eighty-percent.md`; existing 70% and 75%, new 80%, all audited |
 | 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Complete assembly: `halving-descent-and-shimura-obstruction.md`. Sharp decay alone still requires the stated Shimura nonvanishing |
 | 11.1 | Shimura nonvanishing for one eigenform at every relevant nonhalving zero | Open; one eigenform for each zero does not give one eigenform for all zeros |

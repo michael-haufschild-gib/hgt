@@ -28,8 +28,8 @@ late logarithmic window, for every `δ<1`.
   `shortPrimeSparse_of_card_le_rpow` give the global exception theorem.
 - `tendsto_theta_short_window_div_seven_twelfths`: prime logarithmic mass in
   `(x,x+x^β]` is asymptotic to `x^β` for `7/12<β<1`.
-- The logarithmic-window depth criterion is still under formalization on
-  `1-in-progress/b130-logarithmic-windows-by-positive-source-repair.md`.
+- The logarithmic-window depth and prime criteria are formalized on
+  `3-formalized/b130-logarithmic-windows-by-positive-source-repair.md`.
 
 ## Proposed mechanism
 

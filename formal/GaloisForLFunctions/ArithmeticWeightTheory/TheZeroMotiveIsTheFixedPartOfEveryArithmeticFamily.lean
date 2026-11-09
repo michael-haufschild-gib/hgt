@@ -268,7 +268,8 @@ theorem measureReal_verticalHeightMeasure_Icc_le {T H : ℝ} (hT : 0 < T) (hH : 
       ENNReal.toReal_mul, ENNReal.toReal_inv, ENNReal.toReal_ofReal (by linarith)]
     have hsub : Set.Icc (-H) H ∩ Set.Icc (-T) T ⊆ Set.Icc (-H) H := Set.inter_subset_left
     have hvol : (volume (Set.Icc (-H) H ∩ Set.Icc (-T) T)).toReal ≤ 2 * H := by
-      have hle := measure_mono hsub
+      have hle : volume (Set.Icc (-H) H ∩ Set.Icc (-T) T) ≤ volume (Set.Icc (-H) H) :=
+        measure_mono hsub
       rw [Real.volume_Icc, sub_neg_eq_add, ← two_mul] at hle
       exact (ENNReal.toReal_mono ENNReal.ofReal_ne_top hle).trans
         (by rw [ENNReal.toReal_ofReal (by linarith)])
@@ -728,8 +729,8 @@ theorem riemannHypothesis_iff_coverFamily_tensorExponent_sublinear {g : ℝ → 
         ∫ x, fibreMoment g R k N x ∂gaugeHaar := by
       rw [hset_eq]
       unfold fibreMoment
-      rw [integral_finsetSum (f := fun p x =>
-        Real.log p * ‖fibreTrace g R (Real.log p) x‖ ^ (2 * k)) _ fun p _ =>
+      rw [integral_finsetSum (f := fun (p : ℕ) x =>
+        Real.log (p : ℝ) * ‖fibreTrace g R (Real.log (p : ℝ)) x‖ ^ (2 * k)) _ fun p _ =>
         (continuous_const.mul ((continuous_fibreTrace g R _).norm.pow _)).integrable_of_hasCompactSupport
           (HasCompactSupport.of_compactSpace _)]
       exact sum_congr rfl fun p _ => (integral_const_mul _ _).symm

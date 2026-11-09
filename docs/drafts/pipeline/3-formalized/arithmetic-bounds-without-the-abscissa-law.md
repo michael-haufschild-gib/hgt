@@ -1,6 +1,7 @@
 # Arithmetic bounds without the abscissa law
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Module:** `ExceptionalLayerTheory/ArithmeticBoundsWhenTheAbscissaLawFails.lean`.
 
 ## Statements
@@ -23,9 +24,11 @@ The bilateral spectral-gap theorem also bounds all sufficiently high
 zeros in a narrower strip with endpoint `β < Θ`. Applying the heavy-return
 theorem to that tail gives exponent `1−β`.
 
-## Lean status
+## Lean verification
 
-The heavy-return declaration passed its transitive axiom audit. A corrected
-namespace qualification in the Mertens statement awaits the final direct
-module check. No assertion that AAL fails, quasi-RH holds, or these
-alternatives contradict one another.
+Direct `lake --old env lean` check exited 0. Declarations
+`asymptoticAbscissaLaw_or_mertens_power_saving` and
+`asymptoticAbscissaLaw_or_stronger_heavy_return_power_bound` depend only on
+`propext`, `Classical.choice`, `Quot.sound`. Imported by
+`ExceptionalLayerTheory.lean`. These alternatives assert neither failure
+of AAL nor quasi-RH, and do not contradict one another.

@@ -11,7 +11,7 @@ uniqueness cancels the completed normalization and transfers the scalar
 Robin limit to this intrinsic geometric construction.
 -/
 
-open Complex Filter Topology MeasureTheory Set UpperHalfPlane ModularGroup
+open Complex Filter Topology MeasureTheory Set ModularGroup
 open scoped BigOperators FourierTransform
 open RHTower Zeta23 RHTower.WeilLineAnyAbscissa
 open GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScatteringNormalization
@@ -54,11 +54,13 @@ theorem completion_mul_scattering (P : D4BMEisensteinAbsoluteConvergenceParamete
     msA (P.s - 1 / 2) * actualScattering P = msB (P.s - 1 / 2) := by
   have h : msA (P.s - 1 / 2) * (actualScattering P + 1) =
       msB (P.s - 1 / 2) + msA (P.s - 1 / 2) := by
-    calc msA (P.s - 1 / 2) * (actualScattering P + 1) =
+    calc
+      msA (P.s - 1 / 2) * (actualScattering P + 1) =
         ∫ x in Ioc (0 : ℝ) 1, fourier (0 : ℤ) (x : UnitAddCircle) *
           d4BMCompletedEisensteinHorizontalFunction basePoint P x := by
         rw [actualScattering, sub_add_cancel, ← integral_const_mul]
         refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+        dsimp only
         rw [d4BM_completedEisensteinHorizontalFunction_eq_lambda_mul_raw, completion_eq]
         ring
       _ = msB (P.s - 1 / 2) + msA (P.s - 1 / 2) := by
@@ -104,7 +106,8 @@ theorem completed_pairing_eq (P : D4BMEisensteinAbsoluteConvergenceParameter) :
   unfold truncatedPairing pairing
   rw [← integral_const_mul]
   refine integral_congr_ae (Eventually.of_forall fun z => ?_)
-  rw [← completion_mul_truncated]
+  dsimp only
+  rw [← completion_mul_truncated P z]
   ring
 
 /-- The completed normalization cancels entirely from the geometric diagonal. -/
@@ -118,8 +121,8 @@ theorem diagonal_eq (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     rw [h] at hr
     norm_num at hr
   rw [diagonal, geometricDiagonal, completed_pairing_eq, ← completion_mul_scattering]
-  field_simp
-  ring
+  generalize hscalar : msA (P.s - 1 / 2) = a at hA ⊢
+  field_simp [hA, hφ, hu] <;> ring
 
 /-- Absolute-chamber parameters of the primitive-pair tower on `Re s=3/2`. -/
 def packetParameter (t : ℝ) (n : ℕ) : D4BMEisensteinAbsoluteConvergenceParameter where
@@ -147,6 +150,7 @@ theorem energy_eq (f : ℝ → ℂ) (N : ℕ) : energy f N = geometricWeilEnergy
   unfold energy geometricWeilEnergy
   congr 1
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+  dsimp only
   rw [hsum, renormalizedTower]
   norm_num
 
