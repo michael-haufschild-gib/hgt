@@ -1,8 +1,8 @@
 # Sharp integral torsion interpolation
 
 - **ID:** alst-sharp-integral-torsion-interpolation
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For `q>0`, modulo `J_q^r`, every integer polynomial has a unique Newton remainder supported on `Σ_p floor(a_p/q)<r`; it minimizes arithmetic length in its class. For nonempty `P` and `r>0`, all integral classes admit representatives of length at most `N` exactly when `N ≥ (∏_p p^(q−1)) p_max^(q(r−1))`.
 
 ## Purpose
@@ -14,12 +14,12 @@ Split the integral Newton coordinates into quotient orders below and at least `r
 ## Gates
 - [x] Corpus search found no exact integral interpolation threshold or length-minimizing quotient representative.
 - [x] Dependency-closed paper proof and boundary cases.
-- [ ] Lean formalization and transitive axiom audit.
+- [x] Lean formalization and transitive axiom audit.
 
 ## Dependency
 Filtered integral torsion normal form: `torsionNewtonBasis`,
 `length_torsionNewtonSynthesis`, and `fullTorsionMultiplicity_iff_mem_gridIdeal_pow`
-in `TheFilteredTorsionKernelHasAnIntegralBasis.lean`. No interpolation result is counted as proved.
+in `TheFilteredTorsionKernelHasAnIntegralBasis.lean`.
 
 ## Boundary cases
 For `r=0`, the quotient is zero and the universal cutoff is `0`. For empty
@@ -41,3 +41,12 @@ by `s_p=q−1` for every prime and `k_p=0` except `k_pmax=r−1`. Its single
 Newton coordinate survives in every congruent polynomial, proving the
 matching lower bound. All dependencies are the formalized integral basis,
 its exact length identity, and its ideal-power characterization.
+
+## Lean
+- `TorsionNewtonRemainders.lean`: `exists_unique_torsionRemainder`, `length_torsionRemainder_le_of_congruent`, and `exists_bounded_torsion_representative_iff` give the canonical representative and its exact minimum-length property.
+- `TheLargestPrimeControlsTorsionInterpolation.lean`: `universal_torsion_interpolation_iff_cutoff` gives the universal cutoff for every finite prime set and every order, including the empty and zero-order cases. `torsionInterpolationIndex` attains the nonempty positive-order threshold.
+
+Both modules passed final plain `lake --old env lean` checks. Transitive
+axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Umbrella imports are wired. The remainder theorem and sharp cutoff count
+together as one contribution.

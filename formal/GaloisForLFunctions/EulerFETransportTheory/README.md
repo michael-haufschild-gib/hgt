@@ -545,10 +545,34 @@ The bounded second mean controls the cross term in this approximation.
 
 `TheContinuedCurrentRetainsTheRoughVariance.lean` proves this law, retaining
 the high zero-free line. Low exceptional zeros may obstruct an initial-window
-integral, so the continued-current conclusion uses escaping windows. Fixed
-head conditioning is now coupled to the full continued current; selecting
-joint prime-phase returns and obtaining same-depth zero transport remain
-further obligations.
+integral, so the continued-current conclusion uses escaping windows. This
+conditioned mean supplies the joint return law below.
+
+### The continued current returns with its prime head
+
+Under `¬AAL`, the same regular line satisfies the following law. For every
+cutoff `Y`, finite set `P` of primes below `Y`, prescribed unit phases `α_p`,
+and `η,δ>0`, every sufficiently high window `[T,2T]` contains a height `t` with
+
+    |p^(it)−α_p|<η  for all p∈P,
+    |ζ′/ζ(σ+it)+C_Y(σ+it)|² < A_Y(σ)+δ.
+
+The line is independent of all these choices; the threshold for `T` may
+depend on them. The complete rough current and every small-prime power are
+retained, with no phase-return premise.
+
+For `R_k(t)=Π_{p∈P}Σ_{j=0}^k α_p^(−j)p^(ijt)`, unique factorization gives
+mean square `D=(k+1)^|P|`. Multiplication by one phase error telescopes its
+geometric factor, giving weighted error mean `2D/(k+1)`. Combine these means
+with the conditioned rough mean `D A_Y`, and put
+`λ=(A_Y+δ)/η²`. For large `k`, the weighted mean of
+`|J_Y|²+λΣ_{p∈P}|p^(it)−α_p|²` is strictly below `D(A_Y+δ)`.
+Integral monotonicity forces a point below this threshold in each high window.
+
+`TheContinuedCurrentReturnsWithItsPrimeHead.lean` proves the exact probe
+means, the dyadic return law, and its unbounded-height consequence. This
+controls a scalar observable. The finite Euler head changes with `Y`;
+no fixed low holomorphic profile or same-depth zero replication follows.
 
 ### Conductor-normalized height reflection
 

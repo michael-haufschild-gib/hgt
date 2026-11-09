@@ -143,7 +143,14 @@ head dependence. Seven terminal standard-axiom audits pass.
 mean with the actual continued current after adding its complete finite
 Euler head. One high zero-free line below an exceptional abscissa serves
 every cutoff and fixed smooth probe. All eight terminal axiom audits are
-standard. Joint phase-return selection and same-depth replication remain open.
+standard.
+
+`../3-formalized/euler-fe-phase-conditioned-current-returns.md` selects arbitrary
+finite prime phases together with continued rough energy below `A_Y(σ)+δ`
+in every sufficiently high dyadic window. Exact geometric-probe error means
+and the conditioned variance give the common height. The observation line
+serves every cutoff and probe; all four terminal axiom audits are standard.
+Same-depth replication remains open.
 
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`

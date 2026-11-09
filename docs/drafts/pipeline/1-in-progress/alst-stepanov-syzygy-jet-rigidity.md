@@ -35,10 +35,18 @@ expansion gives the displayed identity and makes every possible
 archimedean vanishing input explicit.
 
 ## Gates
-- [ ] Corpus novelty audit for the all-order identity.
+- [x] Corpus novelty audit: existing first-derivative divisibility and generic iterated Leibniz rules do not give the all-order Stepanov transfer identity.
 - [ ] Complete paper proof, including mixed Euler words and boundary cases.
 - [ ] Lean formalization and transitive axiom audit.
 
 No jet-rigidity result is counted as proved. This concerns exact torsion
 vanishing; arithmetic length still prices the order, and the construction
 contains no zeta-specific input.
+
+## Transfer mechanism
+For `M_g(f)=fg`, set `T_q(U)=qDU+(1−q)UD`. Left and right composition commute,
+so `T_q^k` has the claimed binomial expansion. Leibniz gives
+`T_q(M_g)=M_gD+qM_Dg`, and `T_q` commutes with right composition by `D`.
+This recurrence is precisely the recurrence for `D^k(fψ_q(g))` after
+evaluation at a fixed point. It proves the scalar identity for arbitrary
+families, before imposing any polynomial syzygies.

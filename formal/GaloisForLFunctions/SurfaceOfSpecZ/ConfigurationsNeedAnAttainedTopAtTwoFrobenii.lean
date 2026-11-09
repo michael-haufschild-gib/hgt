@@ -39,13 +39,6 @@ theorem exists_zeroConfig_twoPrimes_bddBelow_nonattained {p q : ℕ} (hp : p.Pri
 
 /-! ### For `ζ`: counts on the single-degree classes -/
 
-theorem log_pow_mul_pow {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (a b : ℕ) :
-    Real.log ((p ^ a * q ^ b : ℕ) : ℝ) = a * Real.log p + b * Real.log q := by
-  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
-  have hq0 : (0 : ℝ) < q := by exact_mod_cast hq.pos
-  push_cast
-  rw [Real.log_mul (pow_pos hp0 a).ne' (pow_pos hq0 b).ne', Real.log_pow, Real.log_pow]
-
 /-- **Copositivity of the single-degree planes of two Frobenii gives the abscissa law.** -/
 theorem asymptoticAbscissaLaw_of_planeDefect_nonneg_twoPrimes {p q : ℕ} (hp : p.Prime)
     (hq : q.Prime) (hpq : p ≠ q) (h : ∀ a b : ℕ, 0 ≤ planeDefect (p ^ a * q ^ b) (1, 1)) :

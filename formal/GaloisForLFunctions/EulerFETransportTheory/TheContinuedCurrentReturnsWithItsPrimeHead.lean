@@ -42,12 +42,17 @@ private theorem smooth_head_dyadic_mean {Y : ℕ} (S : Finset ℕ) (w : ℕ → 
   let C : ℝ := 4 * ((S.sup (id : ℕ → ℕ) : ℕ) : ℝ) *
     (1 + Real.log (S.sup (id : ℕ → ℕ) : ℕ)) * D
   have hb : ∀ T : ℝ, |(∫ t in (0 : ℝ)..T, ‖integerHeightPoly S w t‖ ^ 2) - T * D| ≤ C :=
-    fun T => norm_integral_normSq_head_sub_diag_le T hS (fun n hn => Finset.le_sup hn)
-  have hc := (continuous_integerHeightPoly S w).norm.pow 2
+    fun T => norm_integral_normSq_head_sub_diag_le T hS
+      (fun n hn => Finset.le_sup (f := (id : ℕ → ℕ)) hn)
+  have hc : Continuous (fun t : ℝ => ‖integerHeightPoly S w t‖ ^ 2) :=
+    (continuous_integerHeightPoly S w).norm.pow 2
   apply mean_limit_of_bounded_error _ _ (2 * C)
   intro T
-  rw [← intervalIntegral.integral_interval_sub_left
-    (hc.intervalIntegrable 0 (2 * T)) (hc.intervalIntegrable 0 T)]
+  have h2 : IntervalIntegrable (fun t : ℝ => ‖integerHeightPoly S w t‖ ^ 2)
+      volume 0 (2 * T) := hc.intervalIntegrable _ _
+  have h1 : IntervalIntegrable (fun t : ℝ => ‖integerHeightPoly S w t‖ ^ 2)
+      volume 0 T := hc.intervalIntegrable _ _
+  rw [← intervalIntegral.integral_interval_sub_left h2 h1]
   have he : (∫ t in (0 : ℝ)..(2 * T), ‖integerHeightPoly S w t‖ ^ 2) -
       (∫ t in (0 : ℝ)..T, ‖integerHeightPoly S w t‖ ^ 2) - T * D =
     ((∫ t in (0 : ℝ)..(2 * T), ‖integerHeightPoly S w t‖ ^ 2) - (2 * T) * D) -
@@ -257,7 +262,7 @@ private theorem phaseBox_boundary_identity (q : ι → Nat.Primes) (α : ι → 
     · subst i
       simp only [boundaryExponents, boundaryCoefficients, Function.update_self]
       rw [Finset.sum_pair (Ne.symm (Nat.succ_ne_zero k))]
-      simp only [prime_phase_pow, pow_zero, mul_one, if_pos rfl,
+      simp only [prime_phase_pow, pow_zero, mul_one,
         if_neg (Nat.succ_ne_zero k)]
       exact (phase_geometric_boundary (α j) (primeHeightPhase (q j) t) k).symm
     · simp only [boundaryExponents, boundaryCoefficients, Function.update_of_ne hi]
@@ -269,6 +274,7 @@ private theorem phaseBox_boundary_identity (q : ι → Nat.Primes) (α : ι → 
   rw [Finset.sdiff_singleton_eq_erase, mul_assoc,
     Finset.mul_prod_erase Finset.univ f (Finset.mem_univ j)]
 
+omit [Fintype ι] in
 private theorem norm_boundaryCoefficients (α : ι → Circle) (k : ℕ) (j i : ι) (n : ℕ) :
     ‖boundaryCoefficients α k j i n‖ = 1 := by
   by_cases hi : i = j
@@ -401,7 +407,7 @@ private theorem eventually_exists_joint_phase_good {ι : Type*} [Fintype ι] [De
   let L : ℝ := D * A + lam * ∑ _i : ι, (2 / N) * D
   have hCostMean : Tendsto (fun T : ℝ => (∫ t in T..(2 * T), ‖R t‖ ^ 2 * cost t) / T)
       atTop (𝓝 L) := by
-    have hsum := tendsto_finset_sum Finset.univ (fun i _ => hEmean i)
+    have hsum := tendsto_finsetSum Finset.univ (fun i _ => hEmean i)
     have hlim := hFmean.add (hsum.const_mul lam)
     refine hlim.congr' (Filter.Eventually.of_forall fun T => ?_)
     have heq : (fun t => ‖R t‖ ^ 2 * cost t) =
@@ -409,13 +415,18 @@ private theorem eventually_exists_joint_phase_good {ι : Type*} [Fintype ι] [De
       funext t
       dsimp only [cost]
       rw [mul_add, mul_left_comm (‖R t‖ ^ 2) lam, Finset.mul_sum]
-    rw [heq, intervalIntegral.integral_add
-      (((hR.norm.pow 2).mul (hf.norm.pow 2)).intervalIntegrable _ _)
-      ((continuous_const.mul (continuous_finsetSum _ fun i _ =>
-        (hR.norm.pow 2).mul (hE i))).intervalIntegrable _ _),
+    have hri : IntervalIntegrable (fun t => ‖R t‖ ^ 2 * ‖f t‖ ^ 2) volume T (2 * T) :=
+      ((hR.norm.pow 2).mul (hf.norm.pow 2)).intervalIntegrable _ _
+    have hsi : IntervalIntegrable (fun t => lam * ∑ i, ‖R t‖ ^ 2 * E i t) volume T (2 * T) :=
+      (continuous_const.mul (continuous_finsetSum _ fun i _ =>
+        (hR.norm.pow 2).mul (hE i))).intervalIntegrable _ _
+    have hei : ∀ i, IntervalIntegrable (fun t => ‖R t‖ ^ 2 * E i t) volume T (2 * T) :=
+      fun i => ((hR.norm.pow 2).mul (hE i)).intervalIntegrable _ _
+    rw [heq]
+    dsimp only
+    rw [intervalIntegral.integral_add hri hsi,
       intervalIntegral.integral_const_mul,
-      intervalIntegral.integral_finset_sum (fun i _ =>
-        ((hR.norm.pow 2).mul (hE i)).intervalIntegrable _ _),
+      intervalIntegral.integral_finsetSum (s := Finset.univ) (fun i _ => hei i),
       add_div, mul_div_assoc, Finset.sum_div]
   have hLC : L < C * D := by
     have hp := mul_lt_mul_of_pos_right hphase hD
@@ -428,9 +439,12 @@ private theorem eventually_exists_joint_phase_good {ι : Type*} [Fintype ι] [De
   have hex : ∃ t ∈ Set.Icc T (2 * T), cost t < C := by
     by_contra h
     push Not at h
+    have hleft : IntervalIntegrable (fun t => C * ‖R t‖ ^ 2) volume T (2 * T) :=
+      (continuous_const.mul (hR.norm.pow 2)).intervalIntegrable _ _
+    have hright : IntervalIntegrable (fun t => ‖R t‖ ^ 2 * cost t) volume T (2 * T) :=
+      ((hR.norm.pow 2).mul hcost).intervalIntegrable _ _
     have hi := intervalIntegral.integral_mono_on (by linarith only [hT0] : T ≤ 2 * T)
-      ((continuous_const.mul (hR.norm.pow 2)).intervalIntegrable T (2 * T))
-      (((hR.norm.pow 2).mul hcost).intervalIntegrable T (2 * T))
+      hleft hright
       (fun t ht => by
         have hh := mul_le_mul_of_nonneg_left (h t ht) (sq_nonneg ‖R t‖)
         simpa only [mul_comm C] using hh)
@@ -446,7 +460,8 @@ private theorem eventually_exists_joint_phase_good {ι : Type*} [Fintype ι] [De
     linarith only [hct, hp]
   refine ⟨t, ht, fun i => ?_, hfsmall⟩
   have hi : E i t ≤ ∑ j, E j t :=
-    Finset.single_le_sum (fun j _ => sq_nonneg _) (Finset.mem_univ i)
+    Finset.single_le_sum (f := fun j => E j t)
+      (fun j _ => sq_nonneg ‖primeHeightPhase (q j) t - (α j : ℂ)‖) (Finset.mem_univ i)
   have hmul : lam * E i t < C := by
     have hh := mul_le_mul_of_nonneg_left hi hlam.le
     have hf0 := sq_nonneg ‖f t‖
@@ -454,7 +469,7 @@ private theorem eventually_exists_joint_phase_good {ι : Type*} [Fintype ι] [De
     linarith only [hh, hf0, hct]
   have hCeq : C = lam * η ^ 2 := by dsimp [lam]; field_simp
   rw [hCeq] at hmul
-  have he := (mul_lt_mul_left hlam).mp hmul
+  have he : E i t < η ^ 2 := by nlinarith only [hmul, hlam]
   dsimp only [E] at he
   nlinarith only [he, hη, norm_nonneg (primeHeightPhase (q i) t - (α i : ℂ))]
 

@@ -40,6 +40,7 @@ import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAtInverse
 import GaloisForLFunctions.EulerFETransportTheory.TheHeadDoesNotChangeTheInfiniteRoughMean
 import GaloisForLFunctions.EulerFETransportTheory.TheGaussianRoughMeanSurvivesVanishingDamping
 import GaloisForLFunctions.EulerFETransportTheory.TheContinuedCurrentRetainsTheRoughVariance
+import GaloisForLFunctions.EulerFETransportTheory.TheContinuedCurrentReturnsWithItsPrimeHead
 
 /-!
 # Euler–functional-equation transport
@@ -123,4 +124,8 @@ Under failure of AAL, the continued current after adding back this head
 has exactly the same conditioned rough variance on escaping dyadic windows.
 One line below an exceptional abscissa serves every fixed head probe and
 is zero-free above a finite height.
+Geometric prime probes then select any prescribed finite prime phases together
+with rough energy below its variance plus any positive slack, in every
+sufficiently high dyadic window. This is a scalar current return law;
+same-depth zero replication remains open.
 -/

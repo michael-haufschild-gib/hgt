@@ -677,8 +677,18 @@ for every fixed smooth head probe. The same line serves every cutoff and
 probe, and `A_Y(σ)→0` as `Y→∞`. Absolute admission of all small-prime powers,
 their exact geometric sum, and fixed-window Gaussian passage identify this
 literal continued observable. `TheContinuedCurrentRetainsTheRoughVariance.lean`
-proves the law; all eight terminal axiom audits are standard. Joint return
-selection and same-depth zero replication remain open.
+proves the law; all eight terminal axiom audits are standard.
+
+**Joint returns of the continued current [L].** On that same line, prescribe
+any finite set of phases at primes below `Y`. For any `η,δ>0`, every sufficiently
+high dyadic window contains `t` with all phase errors below `η` and
+`|ζ′/ζ(σ+it)+Σ_{p<Y}log p/(p^(σ+it)−1)|²<A_Y(σ)+δ`.
+Geometric box probes have phase-error energy exactly `2/(k+1)` times their
+mass; the conditioned rough mean and a weighted-integral contradiction select
+the common height. `TheContinuedCurrentReturnsWithItsPrimeHead.lean` proves
+this law and its unbounded-height consequence. All four terminal axiom audits
+are standard. The changing Euler head does not identify a fixed low profile;
+same-depth zero replication, `LinAt C`, and AAL remain open.
 
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.

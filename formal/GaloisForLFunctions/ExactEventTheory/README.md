@@ -67,9 +67,8 @@ Under `¬AAL`, on an interior high strip whose left boundary lies below an actua
 exceptional abscissa, `ΣΛ(n)n^(−s)e^(−n²/Im s)+ζ′/ζ(s)→0` uniformly as `Im s→+∞`.
 The entire infinite tail is controlled; finite exceptional modes, continuum,
 scalar and polar corrections vanish. This supplies a continued arithmetic
-observable for transport. Recurrence still requires control of the prime
-phases in this jointly changing damping and height regime; returns of a
-fixed finite head do not supply it. See
+observable for transport. Its joint arithmetic control is supplied by the
+conditioned mean and return law below. See
 [raw prime passage](../EulerFETransportTheory/README.md#raw-prime-passage-at-inverse-height-damping).
 
 The complete Gaussian rough tail also has its exact diagonal mean square
@@ -83,8 +82,12 @@ current `ζ′/ζ+Σ_{p<Y}log p/(p^s−1)` on one high zero-free line below an
 exceptional abscissa. Every small-prime power and the entire rough tail are
 retained; Gaussian damping is removed from the observable. See
 [continued-current variance](../EulerFETransportTheory/README.md#the-continued-current-retains-the-rough-variance).
-This supplies averaged joint arithmetic control. Prime-phase return selection
-and exact zero transport remain separate obligations.
+Geometric box probes now select arbitrary prescribed finite prime phases
+together with squared rough current below `A_Y(σ)+δ`, for any `δ>0`, in every
+sufficiently high dyadic window. See
+[joint prime-phase returns](../EulerFETransportTheory/README.md#the-continued-current-returns-with-its-prime-head).
+The line is fixed across all cutoffs and probes. This scalar return law does
+not identify a fixed low holomorphic profile; exact zero transport remains open.
 
 ## New pillar: integer support forces exact arithmetic
 
