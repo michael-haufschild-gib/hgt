@@ -34,9 +34,13 @@ private theorem sparseHarmonicAnnihilator_eval (β ε : ℝ) (hε : ε ≤ 1) (s
           dirichletEval s (scaledTwoMonomial β) ^ 3) := by
   have hn : 0 ≤ (1 - ε) / Real.goldenRatio :=
     div_nonneg (sub_nonneg.mpr hε) Real.goldenRatio_pos.le
+  have hc : dirichletEval s (MvPolynomial.C (sparseHarmonicCoefficient ε)) =
+      (((1 - ε) / Real.goldenRatio : ℝ) : ℂ) := by
+    simp only [dirichletEval, MvPolynomial.eval₂Hom_C]
+    change ((max ((1 - ε) / Real.goldenRatio) 0 : ℝ) : ℂ) = _
+    rw [max_eq_left hn]
   simp only [sparseHarmonicAnnihilator, map_add, map_one, map_mul, map_pow]
-  congr 2
-  simp [dirichletEval, sparseHarmonicCoefficient, max_eq_left hn]
+  rw [hc]
 
 theorem sparseHarmonicAnnihilator_tail_mass (β ε : ℝ) (hε : ε ≤ 1) :
     dirichletTailMass (sparseHarmonicAnnihilator β ε) β =
@@ -47,8 +51,11 @@ theorem sparseHarmonicAnnihilator_tail_mass (β ε : ℝ) (hε : ε ≤ 1) :
   have hr := congrArg Complex.re he
   simp only [one_pow, Complex.add_re, Complex.one_re, Complex.mul_re,
     Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] at hr
-  unfold sparseHarmonicMassConstant
-  linarith only [hr]
+  have hm : (1 - ε) / Real.goldenRatio * (1 + 1) =
+      sparseHarmonicMassConstant * (1 - ε) := by
+    unfold sparseHarmonicMassConstant
+    ring
+  linarith only [hr, hm]
 
 private def fifthUnit : ℂ := Complex.exp (-(2 * (Real.pi : ℂ)) * I / 5)
 
@@ -58,6 +65,7 @@ private theorem fifthUnit_norm : ‖fifthUnit‖ = 1 := by
 private theorem fifthUnit_pow_five : fifthUnit ^ 5 = 1 := by
   unfold fifthUnit
   rw [← Complex.exp_nat_mul]
+  norm_num only [Nat.cast_ofNat]
   have he : (5 : ℂ) * (-(2 * (Real.pi : ℂ)) * I / 5) =
       -(Real.pi * I) + -(Real.pi * I) := by ring
   rw [he, Complex.exp_add, Complex.exp_neg, Complex.exp_pi_mul_I]
@@ -67,11 +75,12 @@ private theorem fifthUnit_pair : fifthUnit ^ 2 + fifthUnit ^ 3 = -(Real.goldenRa
   have hreal : (fifthUnit ^ 2).re = -Real.goldenRatio / 2 := by
     unfold fifthUnit
     rw [← Complex.exp_nat_mul]
+    norm_num only [Nat.cast_ofNat]
     have he : (2 : ℂ) * (-(2 * (Real.pi : ℂ)) * I / 5) =
         ((-(4 * Real.pi / 5) : ℝ) : ℂ) * I := by push_cast; ring
     rw [he, Complex.exp_re]
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
-      Complex.I_im, mul_zero, zero_mul, sub_self, Complex.mul_im, mul_one, add_zero,
+      Complex.I_im, mul_zero, sub_self, Complex.mul_im, mul_one, add_zero,
       Real.exp_zero, one_mul, Real.cos_neg]
     rw [show 4 * Real.pi / 5 = Real.pi - Real.pi / 5 by ring,
       Real.cos_pi_sub, Real.cos_pi_div_five]
@@ -112,10 +121,11 @@ private theorem scaledTwoMonomial_at_fifth (β : ℝ) (k : ℕ) :
   have he : (Real.log 2 : ℂ) *
       ((β : ℂ) - harmonicPacketPoint β (harmonicPacketStep 4) k) =
       (k : ℂ) * (-(2 * (Real.pi : ℂ)) * I / 5) := by
-    unfold harmonicPacketPoint harmonicPacketStep
-    push_cast
-    norm_num
-    field_simp
+    simp only [harmonicPacketPoint, harmonicPacketStep, Complex.ofReal_div,
+      Complex.ofReal_mul, Complex.ofReal_add, Complex.ofReal_one,
+      Nat.cast_ofNat, Complex.ofReal_ofNat]
+    norm_num only
+    field_simp [hl]
     ring
   rw [he, Complex.exp_nat_mul]
   rfl
@@ -129,8 +139,8 @@ theorem sparseHarmonicAnnihilator_at_harmonic (β ε : ℝ) (hε : ε ≤ 1)
     fifthUnit_sparse_pair k hk]
   have hp : (Real.goldenRatio : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr Real.goldenRatio_ne_zero
-  push_cast
-  field_simp
+  rw [Complex.ofReal_div, Complex.ofReal_sub, Complex.ofReal_one]
+  field_simp [hp]
   ring
 
 /-- At every abscissa and every accuracy in `[0,1]`, the mass bound is attained by a positive

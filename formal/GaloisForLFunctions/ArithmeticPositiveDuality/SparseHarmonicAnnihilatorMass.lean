@@ -83,13 +83,15 @@ private theorem harmonic_eval_re {P : MvPolynomial (Fin 2) ℝ≥0}
   rw [map_sum]
   apply Finset.sum_congr rfl
   intro d _
+  change ((((P.coeff d : ℝ≥0) : ℝ) : ℂ) *
+    Complex.exp (-(monomialLog d : ℂ) * harmonicPacketPoint β γ k)).re = _
   simp only [harmonicPacketPoint, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     zero_mul, sub_zero, Complex.exp_re, Complex.neg_re, Complex.neg_im, Complex.mul_im,
     Complex.add_re, Complex.add_im, Complex.natCast_re, Complex.natCast_im,
     Complex.I_re, Complex.I_im, mul_zero, add_zero, zero_add, mul_one, neg_zero,
     neg_mul, Real.cos_neg]
   rw [mul_assoc]
-  congr 2
+  congr 3
   ring
 
 /-- The exact positive energy measuring joint cancellation at the sparse harmonic pair. -/
@@ -105,11 +107,11 @@ theorem sparseHarmonic_mass_energy {P : MvPolynomial (Fin 2) ℝ≥0}
   have hs : (∑ d ∈ P.support.erase 0, ((P.coeff d : ℝ≥0) : ℝ) *
       Real.exp (-monomialLog d * β) * sparseHarmonicCertificate (monomialLog d * γ)) =
       ∑ d ∈ P.support.erase 0,
-        (5 * Real.goldenRatio / 2) * (((P.coeff d : ℝ≥0) : ℝ) * Real.exp (-monomialLog d * β)) +
+        ((5 * Real.goldenRatio / 2) * (((P.coeff d : ℝ≥0) : ℝ) * Real.exp (-monomialLog d * β)) +
         4 * (((P.coeff d : ℝ≥0) : ℝ) * Real.exp (-monomialLog d * β) *
           Real.cos (monomialLog d * γ)) +
         ((P.coeff d : ℝ≥0) : ℝ) * Real.exp (-monomialLog d * β) *
-          Real.cos (4 * (monomialLog d * γ)) := by
+          Real.cos (4 * (monomialLog d * γ))) := by
     apply Finset.sum_congr rfl
     intro d _
     unfold sparseHarmonicCertificate
@@ -151,9 +153,14 @@ theorem sparseHarmonic_accuracy_mass_bound {P : MvPolynomial (Fin 2) ℝ≥0}
   have hr4 := (Complex.re_le_norm _).trans h4
   have h := sparseHarmonic_joint_evaluation_bound hP β γ
   have hA : 0 < 5 * Real.goldenRatio / 2 := by positivity
-  apply (mul_le_mul_left hA).mp
-  rw [← mul_assoc, certificate_constant_mul]
-  linarith only [h, hr1, hr4]
+  have hfrac : 5 * (1 - ε) / (5 * Real.goldenRatio / 2) ≤ dirichletTailMass P β := by
+    apply (div_le_iff₀ hA).mpr
+    linarith only [h, hr1, hr4]
+  have he : 5 * (1 - ε) / (5 * Real.goldenRatio / 2) =
+      sparseHarmonicMassConstant * (1 - ε) := by
+    unfold sparseHarmonicMassConstant
+    field_simp
+  rwa [he] at hfrac
 
 /-- At exact cancellation, minimal mass is equivalent to concentration on the two extremal
 fifth-root phases. -/

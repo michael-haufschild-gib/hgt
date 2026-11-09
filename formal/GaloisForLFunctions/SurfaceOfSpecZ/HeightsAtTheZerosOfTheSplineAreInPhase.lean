@@ -300,6 +300,7 @@ theorem neg_one_le_tail (hΘ : 0 ≤ Θ) (hxΘ : ∀ j, x j ≤ Θ)
       simp_rw [pow_add]
       rw [tsum_mul_right, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
       norm_num
+      ring
     rw [e]
     have : (1 / 2 : ℝ) ^ (k + 2) ≤ 1 / 2 :=
       calc (1 / 2 : ℝ) ^ (k + 2) ≤ (1 / 2) ^ 1 :=

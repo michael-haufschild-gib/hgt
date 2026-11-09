@@ -191,7 +191,7 @@ theorem auxJet_one_zero {p : Fin d → ℕ} (hp : Function.Injective p) {N : Fin
   unfold primeLogForm firstMoment
   rw [sum_comm]
   congr 1; refine sum_congr rfl fun i _ => ?_
-  push_cast
+  push_cast; rw [sum_mul]
 
 /-- **Order `1` survives below the Baker threshold.** At a `δ`-return of `m + 1` distinct primes
 with `Σ log p ≤ W`, if `|A′(it)| + 2πδM₁ < exp(−C(log|μ|₁ + 2))`, `C = bakerExponent m W`, then
@@ -228,7 +228,7 @@ theorem quadratic_log_form_eq_zero {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hp
     have e : (a : ℝ) + b * β + c * β ^ 2 =
         ((a : ℝ) * Real.log p ^ 2 + b * Real.log p * Real.log q + c * Real.log q ^ 2) /
           Real.log p ^ 2 := by
-      simp only [β]; field_simp; ring
+      simp only [β]; field_simp
     rw [e, h, zero_div]
   by_contra hne
   apply hT

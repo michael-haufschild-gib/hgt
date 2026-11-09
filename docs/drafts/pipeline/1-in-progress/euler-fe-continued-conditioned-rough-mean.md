@@ -50,3 +50,9 @@ convergence then removes its Gaussian damping uniformly in height.
 
 This mean-square target still does not prove pointwise control at every
 prime return, same-depth zero replication, `LinAt C`, or AAL.
+
+Formalization home:
+`EulerFETransportTheory/TheContinuedCurrentRetainsTheRoughVariance.lean`.
+The terminal continued-current mean and its finite Euler-head identification
+remain under formalization. Low exceptional zeros require a regularity check
+before transferring means; an unrestricted prefix integral need not be admitted.
