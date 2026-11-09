@@ -131,7 +131,7 @@ theorem sum_sq_gramTorsionCoordinates (g : ℝ → ℝ) (hg : Continuous g)
       ∫ u, atomicTest N x g u ^ 2 := by
   have h := normedGS_parseval (smoothAtomL2 g hg hgc) N (packet_mem_prefix g hg hgc N x)
   change (∑ n ∈ Iic N, gramTorsionCoordinates g hg hgc N x n ^ 2) = _ at h
-  have hset : (Iic N : Finset ℕ) = Finset.insert 0 (Finset.Icc 1 N) := by
+  have hset : (Iic N : Finset ℕ) = insert 0 (Finset.Icc 1 N) := by
     ext n
     simp only [Finset.mem_Iic, Finset.mem_insert, Finset.mem_Icc]
     omega
@@ -294,6 +294,7 @@ private theorem gramSchmidt_eq_of_prefix_orthogonal (v : ℕ → E) (N : ℕ)
       rw [ih i hij (hij.le.trans hj), hv i (hij.le.trans hj) j hj hij.ne]
       simp only [zero_div, zero_smul]
     have h := gramSchmidt_def'' ℝ v j
+    simp only [RCLike.ofReal_real_eq_id, id_eq] at h
     rw [hsum, add_zero] at h
     exact h.symm
 
@@ -323,33 +324,34 @@ private theorem separated_atoms_orthogonal (g : ℝ → ℝ) (hg : Continuous g)
       inner ℝ (smoothAtomL2 g hg hgc i) (smoothAtomL2 g hg hgc j) = 0 := by
   intro i hi j hj hij
   by_cases hi0 : i = 0
-  · simp only [hi0, smoothAtomL2, if_pos rfl, inner_zero_left]
+  · simp [hi0, smoothAtomL2]
   by_cases hj0 : j = 0
-  · simp only [hj0, smoothAtomL2, if_pos rfl, inner_zero_right]
+  · simp [hj0, smoothAtomL2]
   rw [smoothAtomL2_inner g hg hgc hi0 hj0]
-  convert integral_zero ℝ ℝ using 1
-  apply integral_congr
-  intro u
-  exact bump_mul_eq_zero hsupp hw (Nat.one_le_iff_ne_zero.mpr hi0)
-    (Nat.one_le_iff_ne_zero.mpr hj0) ((min_le_left i j).trans hi) hij u
+  have hzero : (fun u => g (u - Real.log i) * g (u - Real.log j)) = fun _ => 0 := by
+    funext u
+    exact bump_mul_eq_zero hsupp hw (Nat.one_le_iff_ne_zero.mpr hi0)
+      (Nat.one_le_iff_ne_zero.mpr hj0) ((min_le_left i j).trans hi) hij u
+  rw [hzero]
+  exact integral_zero _ _
 
 /-- Below the atom spacing, ordered coupling recovers the original profile-mass scaling. -/
 theorem gramTorsionCoordinates_of_separated (g : ℝ → ℝ) (hg : Continuous g)
     (hgc : HasCompactSupport g) {w : ℝ} (hsupp : ∀ u, u ∉ Set.Icc 0 w → g u = 0)
-    {N : ℕ} (hw : w < atomSpacing N) (x : ℕ → ℝ) {i : ℕ} (hi : i ∈ Icc 1 N) :
+    {N : ℕ} (hw : w < atomSpacing N) (x : ℕ → ℝ) {i : ℕ} (hi : i ∈ Finset.Icc 1 N) :
     gramTorsionCoordinates g hg hgc N x i = Real.sqrt (∫ u, g u ^ 2) * x i := by
   have hi0 : i ≠ 0 := Nat.ne_of_gt (Finset.mem_Icc.mp hi).1
   have horth := separated_atoms_orthogonal g hg hgc hsupp hw
   have hgs := gramSchmidt_eq_of_prefix_orthogonal (smoothAtomL2 g hg hgc) N horth
   unfold gramTorsionCoordinates
   rw [gramSchmidtNormed, hgs i (Finset.mem_Icc.mp hi).2, real_inner_smul_left]
+  simp only [RCLike.ofReal_real_eq_id, id_eq]
   unfold smoothPacketL2
   rw [inner_sum, Finset.sum_eq_single_of_mem i hi]
   · rw [inner_smul_right, real_inner_self_eq_norm_sq, smoothAtomL2_norm g hg hgc hi0]
     by_cases hm : Real.sqrt (∫ u, g u ^ 2) = 0
     · simp only [hm, inv_zero, zero_mul]
     · field_simp
-      <;> ring
   · intro j hj hji
     rw [inner_smul_right, horth i (Finset.mem_Icc.mp hi).2 j (Finset.mem_Icc.mp hj).2 hji.symm,
       mul_zero]

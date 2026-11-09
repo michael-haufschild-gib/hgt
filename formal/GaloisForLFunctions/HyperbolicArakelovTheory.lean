@@ -5,6 +5,7 @@ import GaloisForLFunctions.HyperbolicArakelovTheory.TheArchimedeanCompensationIs
 import GaloisForLFunctions.HyperbolicArakelovTheory.LockingTheDampingsGivesTheDiscriminant
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheGreenDampingOnSmoothProbes
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheMassObstructionToSmoothedTorsionLocking
+import GaloisForLFunctions.HyperbolicArakelovTheory.TheGramCouplingOfTheGreenAndTorsionChannels
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheFinitePlacesAreTrees
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersWithAClosedDegreeGeodesic
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersAlongAnEndOfBoundedSelfEnergy
@@ -23,7 +24,7 @@ of twisted carriers, carriers of bounded geometry, along a loxodromic axis and a
 self-energy (conical ends included), the boundary of a group convergent at `½` (no parabolic elements,
 points of discontinuity), and embeddings into compact and finite-volume quotients; the spherical
 structure of the archimedean compensation and the plastic crossing; the discriminant diagonal of
-locked dampings; the mass obstruction to scalar locking on smooth packets; the finite places as
-Bruhat–Tits trees with the adelic Green formula; and the weight
-of the orientation cover over ℤ. See `HyperbolicArakelovTheory/README.md`.
+locked dampings; the mass obstruction to scalar locking and ordered Gram coupling on smooth packets;
+the finite places as Bruhat–Tits trees with the adelic Green formula; and the weight of the orientation
+cover over ℤ. See `HyperbolicArakelovTheory/README.md`.
 -/
