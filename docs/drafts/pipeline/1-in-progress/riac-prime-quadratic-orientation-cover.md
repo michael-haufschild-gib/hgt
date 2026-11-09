@@ -14,13 +14,16 @@ For `N≥1`, the original relative singular indices satisfy
 The same integral equation gives actual different quotients
 `ℤ[X]/(F_n,F_n')`, their finite/infinite classification, and prime-local
 product-formula heights. These comparisons are formalized.
+The [residue-duality comparison](../3-formalized/monic-residue-duality.md)
+identifies the actual integral trace cokernel with this different quotient,
+including repeated factors. It proves equality of absolute trace and polynomial
+discriminants and the same product-formula height.
 
 ## Remaining theorems
 
-1. Identify `disc(F_n)` with the trace discriminant of the monomial basis
-   of the actual monogenic order `ℤ[X]/(F_n)`, including repeated factors.
-   The existing power-basis comparison for a separable field extension
-   does not apply to this product or nonreduced algebra.
+1. Identify the signs of the polynomial and monomial-basis trace discriminants
+   of `ℤ[X]/(F_n)`. Their absolute values and actual cokernel counts are
+   identified; the signed equality remains open.
 2. Construct compatible geometry across the integer conductor cutoff with
    an independent estimate `|N+1−R_N|≪ε N^(1/2+ε)` for every `ε>0`.
    The real fibre identity alone supplies no such estimate or transfer of

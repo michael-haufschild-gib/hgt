@@ -639,6 +639,14 @@ The [integral cokernel theorem](../HTGeometry/SingularIntegralCokernel.lean)
 extends determinant cardinality to this nonproper case by constructing a
 nonzero integral functional on every singular cokernel.
 
+[PrimeQuadraticTraceCounts.lean](PrimeQuadraticTraceCounts.lean) identifies
+the actual integral trace cokernel of `ℤ[X]/(F_n)` with `A_n`. The
+[residue pairing](../HTGeometry/MonicResiduePairing.lean) is perfect even
+at repeated factors: its coefficient-tail dual basis has Casimir `F_n'(t)`,
+and `Tr(x)=λ(xF_n'(t))`. Thus the trace cokernel and different intersection
+are integrally equivalent, and the absolute trace discriminant equals
+`|disc(F_n)|`. Both presentations give the same product-formula height.
+
 Conductor multiplication gives `F_(mn)=F_mF_n` and
 `C_(mn)=C_m C_n |Res(F_m,F_n)|²`. Every nontrivial conductor square has an
 infinite different quotient, obstructing finite Tate counts under powers
@@ -649,8 +657,8 @@ They retain squarefree support and lose the Möbius orientation.
 
 The [formalized comparisons](../../../docs/drafts/pipeline/3-formalized/riac-prime-quadratic-counts.md)
 construct counts and a product formula independently of the signed sum.
-The trace-discriminant comparison for the full monogenic order, uniform
-geometric control, and an independent bound for `|N+1−R_N|` remain open.
+The signed trace-discriminant equality, uniform geometric control, and
+an independent bound for `|N+1−R_N|` remain open.
 
 ## Actual orientation quotient
 

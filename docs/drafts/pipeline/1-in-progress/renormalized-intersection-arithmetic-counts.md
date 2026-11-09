@@ -137,7 +137,11 @@ factors make those quotients infinite; every nontrivial conductor square
 therefore leaves the finite-count locus. Global rational fibres instead
 give `N+2−Q(N)` and lose the signed orientation. The exact cross-resultant
 multiplication law survives. A [uniform geometric bound](riac-prime-quadratic-orientation-cover.md)
-for the centred real count and the monogenic trace comparison remain open.
+for the centred real count remains open. The
+[residue-duality comparison](../3-formalized/monic-residue-duality.md)
+identifies the actual trace cokernel of the monogenic order with its different
+quotient, including repeated factors, and proves equality of absolute trace
+and polynomial discriminants. Their signed equality remains open.
 
 The [finite-field orientation count](../3-formalized/riac-finite-field-orientation-counts.md)
 constructs actual square-root fibres of residue-field trace discriminants.

@@ -20,10 +20,16 @@ theorem monic_trace_discriminant_natAbs {f : ℤ[X]} (hf : f.Monic) :
     (Algebra.discr ℤ (AdjoinRoot.powerBasis' hf).basis).natAbs = f.discr.natAbs := by
   letI := hf.free_adjoinRoot
   letI := hf.finite_adjoinRoot
-  rw [← card_traceCokernel_eq_natAbs_discr (AdjoinRoot.powerBasis' hf).basis]
-  change Nat.card (MonicTraceCokernel f) = _
-  rw [Nat.card_congr (monicTraceCokernelEquivDifferent hf).toEquiv]
-  exact monicDifferent_count hf
+  have hc : Nat.card (MonicTraceCokernel f) =
+      (Algebra.discr ℤ (AdjoinRoot.powerBasis' hf).basis).natAbs := by
+    have h := card_bilinearCokernel_eq_natAbs_det (AdjoinRoot.powerBasis' hf).basis
+      (Algebra.traceForm ℤ (AdjoinRoot f))
+    simpa only [Algebra.discr_def, Algebra.traceMatrix_of_basis] using h
+  calc
+    _ = Nat.card (MonicTraceCokernel f) := hc.symm
+    _ = Nat.card (MonicDifferentQuotient f) :=
+      Nat.card_congr (monicTraceCokernelEquivDifferent hf).toEquiv
+    _ = f.discr.natAbs := monicDifferent_count hf
 
 /-- The actual dual lattice modulo the image of the prime-quadratic trace pairing. -/
 abbrev PrimeQuadraticTraceQuotient (n : ℕ) := MonicTraceCokernel (primeQuadraticPolynomial n)

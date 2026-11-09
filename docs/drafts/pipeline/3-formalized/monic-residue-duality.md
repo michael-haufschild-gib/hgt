@@ -1,8 +1,8 @@
 # Residue duality for monic quotient algebras
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Parent:** [Prime-quadratic orientation cover](../1-in-progress/riac-prime-quadratic-orientation-cover.md)
-- **Lean:** `HTGeometry/MonicResiduePairing.lean` — verification in progress.
 
 ## Statement
 
@@ -56,3 +56,15 @@ the prime-quadratic order, including repeated factors. It supplies no
 uniform bound for the signed sum `1−M(N)`.
 The absolute discriminant comparison alone does not identify the signs
 of the trace and polynomial discriminants.
+
+## Lean statements
+
+| Module | Main declarations |
+|---|---|
+| [MonicResiduePairing](../../../../formal/GaloisForLFunctions/HTGeometry/MonicResiduePairing.lean) | `monicResidue_root_pow_mul_dual`, `monicResidue_casimir`, `monicResidueEquiv`, `monic_traceForm_eq_residueMap_comp` |
+| [MonicTraceCokernel](../../../../formal/GaloisForLFunctions/HTGeometry/MonicTraceCokernel.lean) | `monicTraceCokernelEquivDifferent` |
+| [IntegralTraceCokernel](../../../../formal/GaloisForLFunctions/HTGeometry/IntegralTraceCokernel.lean) | `card_bilinearCokernel_eq_natAbs_det`, `card_traceCokernel_eq_natAbs_discr` |
+| [PrimeQuadraticTraceCounts](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionArithmeticCounts/PrimeQuadraticTraceCounts.lean) | `monic_trace_discriminant_natAbs`, `primeQuadraticTraceQuotientEquivDifferent`, `primeQuadraticTrace_productFormula` |
+
+Four direct module checks pass. All 18 printed axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

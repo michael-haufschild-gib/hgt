@@ -61,9 +61,12 @@ the product formula.
 
 The real count is an archimedean count, not an integer- or rational-point
 count. No coherent family with uniformly controlled geometry or bound for
-`|N+1−R_N|` has been proved. The trace-discriminant comparison for the full
-monogenic order, including nonreduced factors, remains separate. No
-RH-scale signed cancellation or Weil-form Tate height follows.
+`|N+1−R_N|` has been proved. The separate
+[residue-duality theorem](monic-residue-duality.md) identifies the actual
+trace cokernel with the different quotient and proves equality of absolute
+trace and polynomial discriminants, including nonreduced factors. Their
+signed equality remains open. No RH-scale signed cancellation or Weil-form
+Tate height follows.
 
 ## Lean statements
 
