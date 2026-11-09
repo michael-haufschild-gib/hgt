@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SurfaceOfSpecZ.TheLowerSideSeesTheSignOfTheTopLayer
 import GaloisForLFunctions.SurfaceOfSpecZ.TheSamplingSetsOfTheTopLayer
+import GaloisForLFunctions.SurfaceOfSpecZ.StepanovBoundsProduceTheAbscissaLaw
 import GaloisForLFunctions.HTGeometry.BohrUniqueness
 import GaloisForLFunctions.HTGeometry.BohrParseval
 import GaloisForLFunctions.HTGeometry.BohrMeanInvariance
@@ -22,7 +23,8 @@ Bohr coefficient `e_{ρ₀ − ½} ≠ 0` at the top zero.
 Sets containing arbitrarily long intervals are Bohr-dense (`isBohrDenseAtTop_of_long_intervals`),
 and so are the log-degrees of any `D ⊂ ℕ` containing every integer of `[x, e^L x]` for arbitrarily
 large `x` and `L` (`onLine_of_bddBelow_integer_runs_of_max`): attained tops need no density of the
-sample, only long runs of it. One Frobenius `{n log q}` is not
+sample, only long runs of it. For `ζ` a Stepanov bound on such runs gives the abscissa law, and RH is
+that bound together with `ZerosApproachLine` (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs`). One Frobenius `{n log q}` is not
 Bohr-dense: the phase `e^{2πiu/log q}` is `1` on it.
 -/
 
@@ -511,5 +513,33 @@ theorem onLine_of_bddBelow_integer_runs_of_max (D : Set ℕ)
         rw [mul_assoc]; exact mul_le_mul_of_nonneg_left hfac hC0
       linarith
     linarith [(abs_le.mp hdiff).1]
+
+/-! ### For `ζ`: the Stepanov bound on runs of integers -/
+
+/-- **A Stepanov bound on runs of integers gives the abscissa law.** -/
+theorem asymptoticAbscissaLaw_of_bddBelow_integer_runs (D : Set ℕ)
+    (hD : ∀ L U : ℝ, ∃ x : ℕ, U ≤ x ∧ ∀ n : ℕ, x ≤ n → (n : ℝ) ≤ Real.exp L * x → n ∈ D) {K : ℝ}
+    (hK : ∀ n ∈ D, -K ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log n)).re) :
+    _root_.RHTower.AsymptoticAbscissaLaw := by
+  refine asymptoticAbscissaLaw_of_noDeepest fun ρ₀ hρ₀ hoff => ?_
+  by_contra hno
+  push Not at hno
+  have h := onLine_of_bddBelow_integer_runs_of_max D hD zetaZeroConfig temperedConfig_zetaZeroConfig
+    zetaZeroConfig_im_ne_zero' hρ₀ hno hK ρ₀ hρ₀
+  linarith
+
+/-- **RH is the approach to the line plus a Stepanov bound on runs of integers.** The runs may have
+density zero and no power-saving gaps. -/
+theorem riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs (D : Set ℕ)
+    (hD : ∀ L U : ℝ, ∃ x : ℕ, U ≤ x ∧ ∀ n : ℕ, x ≤ n → (n : ℝ) ≤ Real.exp L * x → n ∈ D) :
+    RiemannHypothesis ↔ _root_.RHTower.BacklundConverse.ZerosApproachLine ∧ ∃ K : ℝ,
+      ∀ n ∈ D, -K ≤ 2 * (lagStructure zetaZeroConfig (boxSpline 1 3) (Real.log n)).re := by
+  rw [_root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
+  refine ⟨fun ⟨hZ, hA⟩ => ⟨hZ, ?_⟩, fun ⟨hZ, K, hK⟩ =>
+    ⟨hZ, asymptoticAbscissaLaw_of_bddBelow_integer_runs D hD hK⟩⟩
+  have hRH :=
+    _root_.RHTower.riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZ, hA⟩
+  exact ⟨_, fun n _ =>
+    neg_le_of_abs_le (abs_two_re_lagStructure_le_of_RH hRH (Real.log_natCast_nonneg n))⟩
 
 end GaloisForLFunctions.SurfaceOfSpecZ

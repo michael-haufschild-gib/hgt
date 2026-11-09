@@ -56,12 +56,14 @@ rigidity forces `b=0`.
 | Global cleared differential identity | `common_exponential_clock_cross_identity` |
 | Equal complex zero divisors | `equal_divisors_of_common_exponential_clock` |
 | Entire orbit extension and subquadratic proximity | `entirePrimeOrbitValue_proximity` |
+| Entire quotients of unit modulus are characters | `entire_quotient_eq_character` |
 | Integer scalar endomorphisms of the prime-logarithm lattice | `prime_log_lattice_dilation_is_int` |
+| Polynomial quotient characters have signed prime frequencies | `polynomial_quotient_character_frequency` |
 
 These components and the corpus inputs
 `logDeriv_residue_of_meromorphicOrder`,
 `EntireQuotient.exists_entire_nonvanishing_quotient`,
 `OrderOneRigidity.exists_expAffine_of_entire_quotient`
 have only `propext`, `Classical.choice`, `Quot.sound` as transitive axioms.
-Character and frequency extraction, classification assembly, and the
-real/integer consequences still require final Lean verification.
+Classification assembly and the real/integer consequences still require
+final Lean verification.

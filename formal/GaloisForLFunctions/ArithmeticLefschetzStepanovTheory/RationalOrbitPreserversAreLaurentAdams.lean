@@ -229,7 +229,7 @@ theorem rationalPreservesPrimeOrbit_laurentAdams (n : ℤ) (b : ℝ) :
       complexOrbitValue (translatedAdams (-n).toNat 0 r) t ≠ 0 := by
     rw [complexOrbitValue_translatedAdams]
     exact Complex.exp_ne_zero _
-  have hrel : LaurentAdamsRelation (translatedAdams n.toNat b)
+  have hrel : LaurentAdamsRelation (P := P) (translatedAdams n.toNat b)
       (translatedAdams (-n).toNat 0) n b := fun r => mul_comm _ _
   exact ⟨hD, fun t => ⟨(n : ℝ) * t + b,
     (laurentAdamsRelation_iff_clock _ _ hD n b).mp hrel t⟩⟩
@@ -261,6 +261,7 @@ theorem rational_preserver_two_fixed_points (p q : P) (hpq : p ≠ q)
 #print axioms laurentAdamsRelation_parameters_unique
 #print axioms rational_preserver_integer_affine_clock
 #print axioms rationalPreservesPrimeOrbit_iff
+#print axioms rationalPreservesPrimeOrbit_laurentAdams
 #print axioms rational_preserver_two_fixed_points
 
 end GaloisForLFunctions.ArithmeticLefschetzStepanovTheory

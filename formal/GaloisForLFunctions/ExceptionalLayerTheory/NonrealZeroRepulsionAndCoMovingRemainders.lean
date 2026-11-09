@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TheExceptionalLayerAtEscapingHeights
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.XiRealReciprocalField
 import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionAllZeros
+import Mathlib.NumberTheory.LSeries.Dirichlet
 
 /-!
 # Nonreal zero repulsion, absence of the Siegel regime, and co-moving remainder modes
@@ -70,12 +71,11 @@ private theorem zero_le_two_phase_vonMangoldt_term (n : ℕ) (σ γ₁ γ₂ : �
   · simp only [RHTower.Sieve.re_lseries_term_vonMangoldt hn, Complex.ofReal_re, Complex.ofReal_im,
       Complex.add_re, Complex.add_im, Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im,
       mul_zero, mul_one, sub_self, add_zero, zero_add]
-    have hz : Real.log (n : ℝ) * 0 = 0 := mul_zero _
     have hp : Real.log (n : ℝ) * (γ₂ + γ₁) = Real.log (n : ℝ) * γ₂ + Real.log (n : ℝ) * γ₁ := by
       ring
     have hm : Real.log (n : ℝ) * (γ₂ - γ₁) = Real.log (n : ℝ) * γ₂ - Real.log (n : ℝ) * γ₁ := by
       ring
-    rw [hz, Real.cos_zero, hp, hm]
+    rw [Real.cos_zero, hp, hm]
     exact zero_le_two_phase_cosine_scalar ArithmeticFunction.vonMangoldt_nonneg (Real.exp_nonneg _)
 
 /-- **Nonnegative 5-point von Mangoldt inequality for `-Re (ζ'/ζ)` on `1 < σ`.** -/
@@ -92,10 +92,18 @@ theorem zero_le_five_point_neg_re_logDeriv_riemannZeta {σ : ℝ} (hσ : 1 < σ)
         (pt t) n).re := by
     intro t
     rw [← RHTower.Sieve.neg_div_re_eq_neg_logDeriv_re,
-      ← LSeries_vonMangoldt_eq_deriv_riemannZeta_div (hre t),
+      ← ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (hre t),
       RHTower.Sieve.re_lseries_vonMangoldt (hre t)]
-  have hp0 : (σ : ℂ) = pt 0 := by simp [pt]
-  rw [hp0, hval 0, hval γ₁, hval γ₂, hval (γ₂ + γ₁), hval (γ₂ - γ₁)]
+  have hval0 : -(logDeriv riemannZeta (σ : ℂ)).re =
+      ∑' n : ℕ, (LSeries.term (fun m => ((ArithmeticFunction.vonMangoldt m : ℝ) : ℂ))
+        (pt 0) n).re := by
+    simpa [pt] using hval 0
+  change 0 ≤ 2 * (-(logDeriv riemannZeta (σ : ℂ)).re) +
+      2 * (-(logDeriv riemannZeta (pt γ₁)).re) +
+      2 * (-(logDeriv riemannZeta (pt γ₂)).re) +
+      (-(logDeriv riemannZeta (pt (γ₂ + γ₁))).re) +
+      (-(logDeriv riemannZeta (pt (γ₂ - γ₁))).re)
+  rw [hval0, hval γ₁, hval γ₂, hval (γ₂ + γ₁), hval (γ₂ - γ₁)]
   have s0 := RHTower.Sieve.summable_re_lseries_term_vonMangoldt (hre 0)
   have s1 := RHTower.Sieve.summable_re_lseries_term_vonMangoldt (hre γ₁)
   have s2 := RHTower.Sieve.summable_re_lseries_term_vonMangoldt (hre γ₂)
@@ -107,7 +115,8 @@ theorem zero_le_five_point_neg_re_logDeriv_riemannZeta {σ : ℝ} (hσ : 1 < σ)
     ← (((s0.mul_left 2).add (s1.mul_left 2)).add (s2.mul_left 2)).tsum_add s3,
     ← ((((s0.mul_left 2).add (s1.mul_left 2)).add (s2.mul_left 2)).add s3).tsum_add s4]
   refine tsum_nonneg fun n => ?_
-  simpa only [← hp0, pt] using zero_le_two_phase_vonMangoldt_term n σ γ₁ γ₂
+  have hp0 : pt 0 = (σ : ℂ) := by simp [pt]
+  simpa only [hp0, pt] using zero_le_two_phase_vonMangoldt_term n σ γ₁ γ₂
 
 /-- On `1 ≤ s.re` away from `ξ`-zeros, `Re (ξ'/ξ)(s)` dominates the full multiplicity fibre of any
 zero copy `q₀`. -/
@@ -127,7 +136,7 @@ theorem fiber_resolvent_le_re_logDeriv_xi {s : ℂ} (hs : xi s ≠ 0) (h1 : 1 �
   have hconst : ∀ q ∈ xiZeroCopyFiber q₀.1,
       xiRealReciprocal s 0 q = (s.re - (q₀.1 : ℂ).re) / Complex.normSq (s - (q₀.1 : ℂ)) := by
     intro q hq
-    have hpt : (q.1 : ℂ) = (q₀.1 : ℂ) := congrArg Subtype.val (xiZeroCopyFiber_point hq)
+    have hpt : (q.1 : ℂ) = (q₀.1 : ℂ) := xiZeroCopyFiber_point q₀ q hq
     simp [xiRealReciprocal, Complex.inv_re, hpt]
   rwa [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul] at hle
 
@@ -157,9 +166,12 @@ theorem neg_re_logDeriv_riemannZeta_le_half_sub_fiber {σ : ℝ} (hσ1 : 1 < σ)
     field_simp
   rw [hsimp] at hfib
   have hfour := logDeriv_xi_fourFactor h1
+  have hG : logDeriv Complex.Gammaℝ s =
+      Complex.digamma (s / 2) / 2 - ((Real.log Real.pi : ℝ) : ℂ) / 2 :=
+    logDeriv_Gammaℝ_digamma (by rw [hsre]; linarith)
   have hzeta : logDeriv riemannZeta s =
       logDeriv xi s - 1 / s - 1 / (s - 1) - logDeriv Complex.Gammaℝ s := by
-    rw [hfour]; ring
+    rw [hG, hfour]; ring
   rw [hzeta]
   simp only [Complex.sub_re]
   have hnormSq : Complex.normSq s = σ ^ 2 + γ ^ 2 := by
@@ -192,18 +204,23 @@ theorem two_zero_five_point_repulsion_inequality {σ : ℝ} (hσ1 : 1 < σ) (hσ
       2 / (σ - 1) + Real.log (q₁.1 : ℂ).im + Real.log (q₂.1 : ℂ).im +
         (Real.log ((q₂.1 : ℂ).im + (q₁.1 : ℂ).im) +
           Real.log ((q₂.1 : ℂ).im - (q₁.1 : ℂ).im)) / 2 + 13 / 5 := by
-  set γ₁ : ℝ := (q₁.1 : ℂ).im
-  set γ₂ : ℝ := (q₂.1 : ℂ).im
-  have hbase := zero_le_five_point_neg_re_logDeriv_riemannZeta hσ1 γ₁ γ₂
+  have hbase := zero_le_five_point_neg_re_logDeriv_riemannZeta hσ1 (q₁.1 : ℂ).im (q₂.1 : ℂ).im
   have hb0 : -(logDeriv riemannZeta (σ : ℂ)).re ≤ 1 / (σ - 1) - 1 / 5 := by
     have h := neg_re_logDeriv_riemannZeta_real_le_neg hσ1 hσ2
     rw [RHTower.Sieve.neg_div_re_eq_neg_logDeriv_re] at h
     linarith
   have hb1 := neg_re_logDeriv_riemannZeta_le_half_sub_fiber hσ1 hσ2 q₁ hγ₁
   have hb2 := neg_re_logDeriv_riemannZeta_le_half_sub_fiber hσ1 hσ2 q₂ (by linarith)
-  have hb3 := neg_re_logDeriv_riemannZeta_le_half (σ := σ) (t := γ₂ + γ₁) hσ1 hσ2 (by linarith)
-  have hb4 := neg_re_logDeriv_riemannZeta_le_half (σ := σ) (t := γ₂ - γ₁) hσ1 hσ2 (by linarith)
-  linarith [hbase, hb0, hb1, hb2, hb3, hb4]
+  have hb3 := neg_re_logDeriv_riemannZeta_le_half (σ := σ)
+    (t := (q₂.1 : ℂ).im + (q₁.1 : ℂ).im) hσ1 hσ2 (by linarith)
+  have hb4 := neg_re_logDeriv_riemannZeta_le_half (σ := σ)
+    (t := (q₂.1 : ℂ).im - (q₁.1 : ℂ).im) hσ1 hσ2 (by linarith)
+  have he1 : 2 * (((xiZeroCopyFiber q₁.1).card : ℝ) / (σ - (q₁.1 : ℂ).re)) =
+      2 * ((xiZeroCopyFiber q₁.1).card : ℝ) / (σ - (q₁.1 : ℂ).re) := mul_div_assoc' _ _ _
+  have he2 : 2 * (((xiZeroCopyFiber q₂.1).card : ℝ) / (σ - (q₂.1 : ℂ).re)) =
+      2 * ((xiZeroCopyFiber q₂.1).card : ℝ) / (σ - (q₂.1 : ℂ).re) := mul_div_assoc' _ _ _
+  have he0 : 2 * (1 / (σ - 1)) = 2 / (σ - 1) := by ring
+  linarith [hbase, hb0, hb1, hb2, hb3, hb4, he1, he2, he0]
 
 /-- For a simple top zero (`m₁ = 1`), the pole main term `2 / (σ - 1)` strictly exceeds the
 top-zero main term `2 / (σ - β₁)` at every `σ > 1`. -/
@@ -262,11 +279,11 @@ theorem gaussianMBKernel_coMoving_eq {β_r σ : ℝ} (hσ : σ < β_r) (a t : �
   have hdiv : (((β_r - σ : ℝ) : ℂ) / 2) = (((β_r - σ) / 2 : ℝ) : ℂ) := by
     push_cast; ring
   have hy : (Real.exp (-a * t) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.exp_ne_zero _)
-  rw [hsub, gaussianMBKernel, hdiv, ← Complex.ofReal_gamma,
+  rw [hsub, gaussianMBKernel, hdiv, Complex.Gamma_ofReal,
     Complex.cpow_def_of_ne_zero hy, ← Complex.ofReal_log (Real.exp_pos _).le, Real.log_exp]
   have hexp : Complex.exp (((-a * t : ℝ) : ℂ) * -(((β_r - σ) / 2 : ℝ) : ℂ)) =
       (Real.exp (a * (β_r - σ) / 2 * t) : ℂ) := by
-    rw [← Complex.ofReal_exp]
+    rw [Complex.ofReal_exp]
     congr 1
     push_cast
     ring
@@ -375,5 +392,10 @@ theorem tendsto_coMoving_div_top_zero_above_masking_threshold {ρ_top : ℂ} {σ
         unfold gaussianObservationRate; ring
       rw [← hex, Real.exp_add]
       ring
+
+#print axioms two_zero_five_point_repulsion_inequality
+#print axioms zeta_no_siegel_regime
+#print axioms tendsto_top_div_coMoving_zero_in_supercritical_window
+#print axioms tendsto_coMoving_div_top_zero_above_masking_threshold
 
 end GaloisForLFunctions.ExceptionalLayerTheory
