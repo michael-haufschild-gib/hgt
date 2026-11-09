@@ -148,3 +148,4 @@ they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `
 -/
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ThetaLogMoment
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.QuartetLogMoments
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelLeakage

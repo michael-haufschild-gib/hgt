@@ -97,6 +97,14 @@ without assuming a tree identification. Invariance, the reduction and this
 neighbour law remain unproved. Global descent of a Green kernel and its
 diagonal regularization remain separate requirements.
 
+## A product-profile finite part
+
+The [critical rational Green product](../3-formalized/a-height-finite-part-of-the-critical-adelic-green-product.md)
+has sharp height threshold `s>2`. Removing its collision pole and the
+primitive density `c₀φ(n)/n²`, `c₀=log 2/4+π/8`, leaves absolutely
+summable height rows. This does not establish torus automorphy or identify
+the product profile with the required sum of local channels.
+
 ## Verification gates
 
 - [x] Actual discrete global quotient retaining all original degrees.

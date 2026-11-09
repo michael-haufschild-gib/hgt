@@ -12,7 +12,7 @@
 | 11.6 | Width and two-sided log-square prime-window criteria; signed-deletion proof | Width, quasi-RH, and absolute criteria checked; transfer-module final audits pending. Signed proof open: `signed-deletion-for-log-square-windows.md` |
 | 11.6 | Quasi-RH ∨ AAL; quasi-RH iff tail abscissa < 1; consequences under ¬AAL | First two checked in `quasi-rh-is-a-tail-law.md`; heavy-return and Mertens consequences open |
 | 11.6 | Exact simple near-line census alternatives at 70%, 75%, 80% | Complete: `near-line-census-at-seventy-seventy-five-eighty-percent.md`; existing 70% and 75%, new 80%, all audited |
-| 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Open assembly; halving descent and diagonal factorization exist separately |
+| 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Complete assembly: `halving-descent-and-shimura-obstruction.md`. Sharp decay alone still requires the stated Shimura nonvanishing |
 | 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Scope and strongest justified theorem require audit |
 | 11.3 | Compact-surface Selberg calibration with finitely many exceptional real zeros | Open; distinguish nontrivial zeros from other Selberg zeros |
 | 11.4 | Short-interval multiplicative cancellation and averaged correlations | Open; published statements and proof dependencies require audit |

@@ -35,7 +35,8 @@ theorem analyticOnNhd_rotatedDivisorFilteredMellinWeight
   rw [he]
   apply AnalyticOnNhd.mul
   · intro z _
-    exact (((analyticAt_id.sub_const _).const_mul _).div_const 2).cexp
+    exact ((analyticAt_const.mul (analyticAt_id.sub analyticAt_const)).div_const
+      (c := (2 : ℂ))).cexp
   · exact analyticOnNhd_divisorFilteredMellinWeight F ρ σ β h t hy
 
 /-- Rotation preserves continuity on every positive Mellin line. -/

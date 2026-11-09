@@ -47,4 +47,5 @@ The positive quartet deformation is existing corpus work; the new result is
 its explicit logarithmic moment bound. No external novelty claim.
 
 This supplies the kernel estimate for logarithmic-window localization.
-That localization and the arithmetic Stepanov inequality remain unproved.
+The full trace and prime-window criteria and the arithmetic Stepanov
+inequality remain unproved.

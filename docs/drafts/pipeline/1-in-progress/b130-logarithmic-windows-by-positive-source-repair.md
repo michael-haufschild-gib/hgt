@@ -35,7 +35,7 @@ Lean with only `propext`, `Classical.choice`, `Quot.sound`.
 specialization with the same axiom audit. Its exact statement and proof are
 in `3-formalized/positive-quartet-kernels-have-logarithmic-moment-growth.md`.
 
-## Localization — paper derivation, Lean assembly pending
+## Localization — leakage formalized, spectral assembly pending
 
 For a strip trace `F(t)=Σc_j exp(w_j t)`, `|Re w_j|≤D`, put `A=Σ|c_j|`.
 A local floor `F(t+x)≥−K` for `|x|≤R` and a positive kernel imply
@@ -52,19 +52,31 @@ Set `q=T`, `R=8log(T+2)`, `|t|≤T+B`. For `0≤b≤T`, `T≥6`,
 `(b+T+6)log(b+T+6)≤6Tlog(T+2)`.
 
 Hence the leakage is `O(exp(DB−T))` once `log(T+2)≥D+1`.
+`PositiveKernelLeakage.positive_kernel_logarithmic_floor` proves the exact
+error bound `AC exp(DB−T)`. Its local-floor and exponent estimates pass Lean;
+all three capstone audits contain only the standard three axioms.
 For the shifted trace `exp(-αt)F(t)`, tilt the kernel by `exp(αx)`;
 this keeps the original spectral multiplier and replaces `b=D` by
 `D+|α|`. Fixed constants affect only the starting height.
 
 Finite-spectrum bounded-gap negative excursions would then force depth
-detection on continuous logarithmic windows. Prime-gap transfer supplies
-prime windows after the existing width iteration `1/2→1/6→0`.
+detection on continuous windows `|u−T|≤16log(T+2)`. Prime-gap transfer
+supplies prime windows `|log p−T|≤32log(T+2)` after the existing width
+iteration `1/2→1/6→0`.
+
+The exact drafted criterion, for `α≥0`, is
+
+`(∀ρ, Re ρ≤1/2+α) ↔ ∃K, arbitrarily late windows of radius 32log(T+2)
+have trace ≥−Kp^α at every prime in the window`.
+
+Absolute bounds give the same width. These window conclusions remain
+unchecked; they do not produce the arithmetic bound.
 
 ## Status
 
 - Existing positive quartet isolation is reused, not claimed as new.
-- Theta and positive quartet moment bounds are proved. Integral interchange,
-  logarithmic leakage, and the zeta window criteria are under formalization.
+- Theta and positive quartet moment bounds and logarithmic leakage are proved.
+  Integral interchange and the zeta window criteria are under formalization.
 - Continuous and prime logarithmic-window criteria remain unproved.
 - No arithmetic Stepanov lower bound has been produced. B130 remains open.
 - The independently formalized generic positive translation-repair theorem is
