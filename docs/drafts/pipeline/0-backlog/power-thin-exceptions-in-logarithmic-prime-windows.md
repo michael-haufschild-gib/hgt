@@ -33,16 +33,25 @@ late logarithmic window, for every `δ<1`.
 
 ## Proposed mechanism
 
-Choose `max(δ,7/12)<β<1`. In the interior of a selected window,
-`log x=T+O(log T)`. The total exceptional prime logarithmic mass is at most
-`C exp(δT)(T+O(log T))=o(x^β)`, uniformly over that interior.
-The short-interval prime theorem therefore supplies a good prime within
-`O(x^β)` of every interior point, uniformly across the selected windows.
+Choose `δ<γ<β<1` with `β>7/12`. Short-interval prime mass gives, uniformly
+for every finite set `E` with `#E≤C y^γ`, a prime outside `E` in
+`(y,y+y^β]`, once `y` is large: the total mass is asymptotic to `y^β`,
+whereas the excluded mass is at most `C y^γ log(2y)=o(y^β)`.
+The threshold depends on `C,γ,β`, not on `E`.
 
-The gap derivative estimate should lower a current width `a` to
-`max(σ,a+β−1)`. Repeated application, starting at `a=1/2`, reaches `σ`.
-The same prime windows are reused at each step; the interior radius is
-always half the original radius.
+In the interior of a selected window, `u=T+O(log T)`. Set
+`x=exp u`, `y=x-x^β`. Then `log y=u+o(1)` and
+`δT≤γ log y` eventually, uniformly over the interior. Hence the window's
+exception count `C exp(δT)` is at most `C y^γ`. The prime just obtained
+satisfies `x-x^β<p≤x`, remains in the full window, and avoids its finite
+exception set. Thus `0≤u-log p≤2 exp((β-1)u)`.
+
+The derivative estimate at current width `a` transfers the good-prime
+bound to a continuous floor of exponent `max(σ,a+β−1)`. Starting at
+`a=1/2`, iteration gives `a_n=max(σ,1/2-n(1-β))`, which reaches `σ`
+after finitely many steps. Each step reuses the same prime windows; the
+continuous criterion uses their interior halves. The reverse implication
+has no exceptions, by the global trace bound at width `σ`.
 
 ## Missing proof
 

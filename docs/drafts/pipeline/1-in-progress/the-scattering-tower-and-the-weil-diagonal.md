@@ -38,6 +38,32 @@ rational boundary terms `1/s+1/(s−1)` give the completed ξ symbol.
 The existing bound `|ψ(z)−log z|≤3/|z|` on the right half-plane controls
 the Gamma remainder uniformly; the Euler remainder decays with the shift.
 
+## Scalar normalization and packet target
+
+For `s=c+it`, choose the scalar counterterm
+`r(c+N)=½log((c+N)/2)−½log π`. If `c+N≥4`, the error of the
+completed geometric tower is bounded by
+
+`2^(−N) M_c + (3+|t|/2)/(c+N)`,
+
+where `M_c=Σ_m Λ(m)m^(−c)` is finite for `c>1`.
+The Gamma estimate follows from the half-plane digamma bound and
+`|log z−log(Re z)|≤|Im z|/Re z`. The latter is the mean-value bound
+for `1/z` on a right half-plane. Conjugation of the actual truncated
+Eisenstein model supplies both halves of the integration line.
+
+For a compactly supported C² autocorrelation, its symmetrized Mellin
+transform decays as `(1+t²)^(−2)`. Thus the error bound is integrable,
+and the corpus's vertical-line formula identifies the limiting tower
+pairing with the full Weil functional. This requires formalizing the
+scalar estimate and passage under the integral; the finite telescope
+alone does not establish the target.
+
+Even that packet identity would not identify a torus-periodized Green
+operator on the adelic carrier. The missing geometric comparison is
+between the modular scattering tower and the sum of local Green channels
+on the split-torus quotient. No positivity conclusion is part of this route.
+
 ## Sources
 
 - `GaussMayerScatteringNormalization.actualScattering_eq` and

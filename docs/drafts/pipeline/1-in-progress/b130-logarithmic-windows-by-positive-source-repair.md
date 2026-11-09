@@ -79,8 +79,10 @@ unchecked; they do not produce the arithmetic bound.
 
 - Existing positive quartet isolation is reused, not claimed as new.
 - Theta and positive quartet moment bounds and logarithmic leakage are proved.
-  Integral interchange and tilt compensation are proved. The zeta-specific
-  spectral assembly and window criteria are under formalization.
+  Integral interchange and tilt compensation are proved.
+  `ZetaQuartetFilter.exists_zeta_quartet_log_filter` now supplies the actual-zeta
+  spectral filter, with only the standard three axioms. The normalized-trace
+  inequality and window criteria remain under formalization.
 - Continuous and prime logarithmic-window criteria remain unproved.
 - No arithmetic Stepanov lower bound has been produced. B130 remains open.
 - The independently formalized generic positive translation-repair theorem is

@@ -247,8 +247,8 @@ private theorem sum_biUnion_le_of_nonneg {ι α : Type*} [DecidableEq α] (s : F
         = ∑ x ∈ t a, f x + ∑ x ∈ s.biUnion t \ t a, f x := by
           rw [← Finset.sum_union disjoint_sdiff_self_right, union_sdiff_self_eq_union]
       _ ≤ ∑ x ∈ t a, f x + ∑ x ∈ s.biUnion t, f x :=
-          add_le_add_left (sum_le_sum_of_subset_of_nonneg sdiff_subset fun x _ _ => hf x) _
-      _ ≤ ∑ x ∈ t a, f x + ∑ i ∈ s, ∑ x ∈ t i, f x := add_le_add_left ih _
+          add_le_add le_rfl (sum_le_sum_of_subset_of_nonneg sdiff_subset fun x _ _ => hf x)
+      _ ≤ ∑ x ∈ t a, f x + ∑ i ∈ s, ∑ x ∈ t i, f x := add_le_add le_rfl ih
 
 /-- **Analyticity across `s = 1` (simple pole preserved).** For every `0 < θ` and `σ > θ` (in
 particular at `σ = 1` when `θ < 1`), `Σ_n flipVM θ n · n^{−σ} < ∞`. Hence `-F_θ′/F_θ` differs
@@ -677,7 +677,7 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
       Real.sqrt_le_sqrt (by exact_mod_cast hq2)
     have hsqrt_pos : 0 < Real.sqrt q := Real.sqrt_pos.mpr (by exact_mod_cast hq_prime.pos)
     have hdiv_ge : Real.log 2 / Real.sqrt (2 * (4 : ℝ) ^ k) ≤ Real.log q / Real.sqrt q :=
-      div_le_div₀ hlog2.le hlog_ge hsqrt_pos hsqrt_le
+      div_le_div₀ (hlog2.le.trans hlog_ge) hlog_ge hsqrt_pos hsqrt_le
     have hbin_eq : logBin M k q = logBin M k p := hqj.trans (mem_filter.mp hpS).2.symm
     have hK_ge := hK_near (Real.log q - Real.log p) (abs_log_sub_le_of_logBin_eq hM1 hq_blk hp_blk hbin_eq)
     exact mul_le_mul hdiv_ge hK_ge (by positivity) (by positivity)
@@ -693,7 +693,7 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
       _ ≤ S.card := hS_card
   have hsqrt_ub : Real.sqrt (2 * (4 : ℝ) ^ k) ≤ 2 * (2 : ℝ) ^ k := by
     have h42 : (4 : ℝ) ^ k = ((2 : ℝ) ^ k) ^ 2 := by
-      rw [← mul_pow, show (2 : ℝ) * 2 = 4 by norm_num]
+      rw [← pow_mul, mul_comm k 2, pow_mul]; norm_num
     calc Real.sqrt (2 * (4 : ℝ) ^ k) ≤ Real.sqrt (4 * (4 : ℝ) ^ k) :=
           Real.sqrt_le_sqrt (by nlinarith [pow_pos (by norm_num : (0 : ℝ) < 4) k])
       _ = Real.sqrt ((2 * (2 : ℝ) ^ k) ^ 2) := by rw [h42]; ring_nf
@@ -708,7 +708,8 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
           mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le one_le_two (by linarith))
             (by positivity)
       _ = (2 : ℝ) ^ θ * (4 : ℝ) ^ ((θ - 1 / 2) * k) := by
-          rw [← Real.rpow_natCast (4 : ℝ) k, ← Real.rpow_mul (by norm_num), mul_comm]
+          rw [← Real.rpow_natCast (4 : ℝ) k, ← Real.rpow_mul (by norm_num),
+            mul_comm (k : ℝ) (θ - 1 / 2)]
   have h4_ratio : (4 : ℝ) ^ (θ * k) / (2 : ℝ) ^ k = (4 : ℝ) ^ ((θ - 1 / 2) * k) := by
     have h2k : (2 : ℝ) ^ k = (4 : ℝ) ^ ((1 / 2 : ℝ) * k) := by
       rw [show (4 : ℝ) = (2 : ℝ) ^ (2 : ℝ) by norm_num, ← Real.rpow_mul zero_le_two,
@@ -720,7 +721,7 @@ theorem eventually_exists_primeWindowOf_doubledVM_sub_ge {θ : ℝ} (hθ : 1 / 2
         mul_le_mul_of_nonneg_left hp_rpow_le hc₀.le
     _ = Real.log 2 * (splineAutoCorr 0 / 2) *
           ((4 : ℝ) ^ (θ * k) / (2 * M)) / (2 * (2 : ℝ) ^ k) := by
-        rw [← h4_ratio]; dsimp only [c₀]; field_simp
+        rw [← h4_ratio]; dsimp only [c₀]; field_simp; ring
     _ ≤ Real.log 2 * (splineAutoCorr 0 / 2) * (S.card : ℝ) / Real.sqrt (2 * (4 : ℝ) ^ k) := by
         have hnum : Real.log 2 * (splineAutoCorr 0 / 2) * ((4 : ℝ) ^ (θ * k) / (2 * M)) ≤
             Real.log 2 * (splineAutoCorr 0 / 2) * (S.card : ℝ) :=
