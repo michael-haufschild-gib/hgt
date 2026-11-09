@@ -2,7 +2,8 @@ import GaloisForLFunctions.RHTower.WeilLagFunctionInteger
 import Mathlib.Analysis.Calculus.SmoothSeries
 import Mathlib.Analysis.Calculus.Deriv.ZPow
 
-/-!+# Curvature of the complete trivial-zero correction
+/-!
+# Curvature of the complete trivial-zero correction
 
 The first two derivative series converge uniformly on every half-line bounded away from one.
 The second derivative sums to `1 / (x² (x² - 1))`. This is smaller than half the curvature of

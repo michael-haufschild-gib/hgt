@@ -27,8 +27,8 @@ private theorem lagCellCover_radius_eq {R : ℝ} (hR : 0 < R) (t : ℝ) :
     derivativeCoverConstant 2 (1 / (2 * R)) *
         (2 * R * Real.exp (-t)) ^ ((2 : ℝ)⁻¹) =
       lagSamplingCoverConstant * R * Real.exp (-t / 2) := by
-  change 2 * (6 / (1 / (2 * R))) ^ (1 / 2 : ℝ) *
-    (2 * R * Real.exp (-t)) ^ (1 / 2 : ℝ) = _
+  simp only [derivativeCoverConstant, show (2 + 1).factorial = 6 by rfl, Nat.cast_ofNat]
+  rw [show (2 : ℝ)⁻¹ = (1 / 2 : ℝ) by norm_num]
   have hden : (6 : ℝ) / (1 / (2 * R)) = 12 * R := by field_simp; ring
   have hA : (12 * R) ^ (1 / 2 : ℝ) = (12 : ℝ) ^ (1 / 2 : ℝ) * R ^ (1 / 2 : ℝ) :=
     Real.mul_rpow (by norm_num) hR.le
@@ -132,7 +132,7 @@ theorem exists_actualLag_sampled_cover {U : ℝ} (hU : 0 ≤ U) (m n : ℕ) :
       have h := abs_max_sub_max_le_abs x z 1
       rwa [max_eq_left hx1, max_comm z 1] at h
     have hlog : |Real.log x - Real.log (max 1 z)| ≤ |x - max 1 z| := by
-      have h := RHTower.abs_log_sub_log_le (L := 2) (by norm_num)
+      have h := RHTower.abs_log_sub_log_le (L := 2) (x := x) (y := max 1 z) (by norm_num)
         (by simpa using hx1) (by simpa using le_max_left (1 : ℝ) z)
       simpa only [div_self (by norm_num : (2 : ℝ) ≠ 0), one_mul] using h
     have heq : ℓ - Real.log (max 1 z) / (n : ℝ) =
@@ -152,7 +152,7 @@ theorem exists_actualLag_sampled_cover {U : ℝ} (hU : 0 ≤ U) (m n : ℕ) :
           Real.exp (-(((m : ℝ) + 1) / 2 - U) * (n : ℝ)) := by
         dsimp only [R, t]
         rw [mul_assoc, ← Real.exp_add]
-        congr 1
+        congr 2
         ring
 
 #print axioms exists_actualLag_sampled_cover

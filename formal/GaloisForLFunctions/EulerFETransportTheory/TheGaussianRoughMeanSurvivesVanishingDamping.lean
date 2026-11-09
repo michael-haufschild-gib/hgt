@@ -181,6 +181,51 @@ theorem abs_integral_dyadic_head_mul_gaussianRough_sub_diag_le {Y : ℕ}
   simp only [sub_zero, zero_sub, abs_neg] at hab
   exact hab.trans (by dsimp [f, D] at *; linarith)
 
+private theorem tendsto_mean_of_sqrt_bracket (I D : ℝ → ℝ) (C L : ℝ)
+    (hdiag : Tendsto D atTop (𝓝 L))
+    (hbound : ∀ T : ℝ, 0 < T → |I T - T * D T| ≤ C * Real.sqrt T) :
+    Tendsto (fun T : ℝ => I T / T) atTop (𝓝 L) := by
+  have hb : ∀ T : ℝ, 0 < T → |I T / T - D T| ≤ C / Real.sqrt T := by
+    intro T hT
+    have hs : 0 < Real.sqrt T := Real.sqrt_pos.mpr hT
+    have h := hbound T hT
+    have he : I T / T - D T = (I T - T * D T) / T := by field_simp
+    rw [he, abs_div, abs_of_pos hT]
+    calc
+      _ ≤ (C * Real.sqrt T) / T :=
+        div_le_div_of_nonneg_right h hT.le
+      _ = C / Real.sqrt T := by
+        field_simp
+        rw [Real.sq_sqrt hT.le]
+  have hlim : Tendsto (fun T : ℝ => C / Real.sqrt T) atTop (𝓝 0) := by
+    simpa only [div_eq_mul_inv, mul_zero, Function.comp_def] using
+      (tendsto_inv_atTop_zero.comp Real.tendsto_sqrt_atTop).const_mul C
+  have herr : Tendsto (fun T : ℝ => I T / T - D T) atTop (𝓝 0) := by
+    rw [tendsto_zero_iff_norm_tendsto_zero]
+    simp only [Real.norm_eq_abs]
+    refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_ hlim
+    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
+    exact hb T hT
+  simpa only [sub_add_cancel, zero_add] using herr.add hdiag
+
+/-- Exact diagonal variance while the observation horizon grows and Gaussian
+damping vanishes at its reciprocal scale. -/
+theorem tendsto_head_gaussianRough_mean {Y : ℕ}
+    (S : Finset ℕ) (w a : ℕ → ℂ)
+    (hS : ∀ s ∈ S, s ∈ Nat.smoothNumbers Y) (ha0 : a 0 = 0)
+    (hr : ∀ n : ℕ, a n ≠ 0 → ∀ p ∈ Nat.primesBelow Y, ¬ p ∣ n)
+    (ha : Summable fun n => ‖a n‖ ^ 2) :
+    Tendsto (fun T : ℝ => (∫ t in (0 : ℝ)..T,
+      ‖integerHeightPoly S w t‖ ^ 2 * ‖gaussianHeightCurrent a T t‖ ^ 2) / T)
+      atTop (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖a n‖ ^ 2)) := by
+  apply tendsto_mean_of_sqrt_bracket _
+    (fun T => (∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖gaussianHeightCoeff a T n‖ ^ 2)
+    (104 * (∑ s ∈ S, (s : ℝ) * ‖w s‖ ^ 2) * ∑' n : ℕ, ‖a n‖ ^ 2)
+  · exact (tendsto_gaussianHeight_squareMass ha).const_mul (∑ s ∈ S, ‖w s‖ ^ 2)
+  · intro T hT
+    simpa only [mul_assoc, mul_comm, mul_left_comm] using
+      abs_integral_head_mul_gaussianRough_sub_diag_le S w a hS ha0 hr ha hT T
+
 /-- Exact diagonal variance on an escaping height window, with damping
 vanishing at that window's scale. Every rough coefficient is retained. -/
 theorem tendsto_dyadic_head_gaussianRough_mean {Y : ℕ}
@@ -191,35 +236,13 @@ theorem tendsto_dyadic_head_gaussianRough_mean {Y : ℕ}
     Tendsto (fun T : ℝ => (∫ t in T..(2 * T),
       ‖integerHeightPoly S w t‖ ^ 2 * ‖gaussianHeightCurrent a T t‖ ^ 2) / T)
       atTop (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖a n‖ ^ 2)) := by
-  let I : ℝ → ℝ := fun T => ∫ t in T..(2 * T),
-    ‖integerHeightPoly S w t‖ ^ 2 * ‖gaussianHeightCurrent a T t‖ ^ 2
-  let D : ℝ → ℝ := fun T => (∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖gaussianHeightCoeff a T n‖ ^ 2
-  let C : ℝ := 208 * (∑ s ∈ S, (s : ℝ) * ‖w s‖ ^ 2) * ∑' n : ℕ, ‖a n‖ ^ 2
-  have hb : ∀ T : ℝ, 0 < T → |I T / T - D T| ≤ C / Real.sqrt T := by
-    intro T hT
-    have hs : 0 < Real.sqrt T := Real.sqrt_pos.mpr hT
-    have h := abs_integral_dyadic_head_mul_gaussianRough_sub_diag_le S w a hS ha0 hr ha hT
-    have he : I T / T - D T = (I T - T * D T) / T := by field_simp
-    rw [he, abs_div, abs_of_pos hT]
-    calc
-      _ ≤ (208 * (∑ s ∈ S, (s : ℝ) * ‖w s‖ ^ 2) * Real.sqrt T * ∑' n : ℕ, ‖a n‖ ^ 2) / T :=
-        div_le_div_of_nonneg_right h hT.le
-      _ = C / Real.sqrt T := by
-        dsimp [C]
-        field_simp
-        rw [Real.sq_sqrt hT.le]
-        ring
-  have hlim : Tendsto (fun T : ℝ => C / Real.sqrt T) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv, mul_zero, Function.comp_def] using
-      (tendsto_inv_atTop_zero.comp Real.tendsto_sqrt_atTop).const_mul C
-  have herr : Tendsto (fun T : ℝ => I T / T - D T) atTop (𝓝 0) := by
-    rw [tendsto_zero_iff_norm_tendsto_zero]
-    simp only [Real.norm_eq_abs]
-    refine squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) ?_ hlim
-    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
-    exact hb T hT
-  have hdiag := (tendsto_gaussianHeight_squareMass ha).const_mul (∑ s ∈ S, ‖w s‖ ^ 2)
-  simpa only [I, D, sub_add_cancel, zero_add] using herr.add hdiag
+  apply tendsto_mean_of_sqrt_bracket _
+    (fun T => (∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖gaussianHeightCoeff a T n‖ ^ 2)
+    (208 * (∑ s ∈ S, (s : ℝ) * ‖w s‖ ^ 2) * ∑' n : ℕ, ‖a n‖ ^ 2)
+  · exact (tendsto_gaussianHeight_squareMass ha).const_mul (∑ s ∈ S, ‖w s‖ ^ 2)
+  · intro T hT
+    simpa only [mul_assoc, mul_comm, mul_left_comm] using
+      abs_integral_dyadic_head_mul_gaussianRough_sub_diag_le S w a hS ha0 hr ha hT
 
 /-- The complete von Mangoldt coefficients after deleting every prime below
 `Y`. Prime powers of every remaining prime are included. -/
@@ -296,6 +319,7 @@ theorem tendsto_roughVonMangoldt_squareMass_zero {σ : ℝ} (hσ : 1 / 2 < σ) :
   simpa only [tsum_zero] using tendsto_tsum_of_dominated_convergence hbase hpoint hdom
 
 #print axioms abs_integral_head_mul_gaussianRough_sub_diag_le
+#print axioms tendsto_head_gaussianRough_mean
 #print axioms tendsto_dyadic_head_gaussianRough_mean
 #print axioms tendsto_dyadic_head_gaussianVonMangoldt_mean
 #print axioms tendsto_roughVonMangoldt_squareMass_zero

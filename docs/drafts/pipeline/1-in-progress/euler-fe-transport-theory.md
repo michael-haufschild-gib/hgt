@@ -108,9 +108,9 @@ The full trivial-zero series and four terminal standard-axiom audits pass.
 complete Gamma-subtracted prime current by `Cy(1+y)(1+log Im s)` away from
 the divisor. The logarithmically weighted error tends uniformly to zero;
 absolute error vanishes along every regular path with `y(1+log Im s)→0`.
-The actual `¬AAL` layer supplies a whole high strip satisfying the law while
-an exceptional zero remains to its right. Six terminal standard-axiom audits
-pass.
+The actual `¬AAL` layer supplies a whole high strip satisfying the law whose
+left boundary lies below an exceptional abscissa. Six terminal standard-axiom
+audits pass.
 
 `../3-formalized/euler-fe-finite-layer-joint-damping.md` removes the infinite
 Gamma counterterm when a finite exceptional set has complementary abscissa
@@ -126,6 +126,14 @@ on an interior high strip supplied by `¬AAL`. The tail, exceptional modes
 and continuum have explicit vanishing bounds; scalar and polar corrections
 are `O((1+log Im s)/Im s)`. Five terminal standard-axiom audits pass.
 No new zero height follows.
+
+`../3-formalized/euler-fe-infinite-conditioned-gaussian-recurrence.md` proves
+the exact mean-square law for the entire rough Gaussian current under any
+fixed smooth head probe, with damping `1/T` on both `[0,T]` and `[T,2T]`.
+The literal von Mangoldt tail is admitted for every `σ>1/2`; its variance
+vanishes as the prime cutoff grows. The error retains explicit weighted
+head dependence. Seven terminal standard-axiom audits pass. Matching this
+mean to the continued current and obtaining same-depth replication remain open.
 
 `../3-formalized/euler-fe-height-reflection-normalization.md` proves the actual
 conductor-normalized reflected-height law, with uniform error `C_D t^(−1/4)`

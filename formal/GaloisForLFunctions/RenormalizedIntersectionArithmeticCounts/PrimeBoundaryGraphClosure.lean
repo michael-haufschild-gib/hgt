@@ -51,7 +51,7 @@ theorem primeWeightedBoundary_closure_eq_univ (s : ℂ) (δ : ℝ) (h : 2*s.re+�
     exact hf a
   apply Set.eq_univ_of_forall
   rintro ⟨u,v⟩
-  rw [←hT]
+  change (u,v)∈T
   have hz := T.add_mem (hh u) (hv v)
   change (u+0,0+v)∈T at hz
   simpa only [add_zero,zero_add] using hz

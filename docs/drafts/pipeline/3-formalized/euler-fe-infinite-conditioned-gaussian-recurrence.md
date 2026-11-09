@@ -1,24 +1,25 @@
 # Infinite rough currents at prime-head returns
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** Euler–FE transport: simultaneous height escape, vanishing damping and head conditioning.
 
-## Target
+## Theorems
 
 Let `R(t)=Σ_{s∈S}w_s s^(it)` be supported on integers smooth below `Y`.
 For square-summable coefficients `a_n` supported on positive `Y`-rough
 integers, set `D_T(t)=Σ_n a_n exp(−n²/T)n^(it)`.
-Prove the actual-height identity
+The actual-height identity is
 
 `T⁻¹∫₀ᵀ |R(t)|²|D_T(t)|²dt → (Σ_S|w_s|²)(Σ_n|a_n|²)`.
 
-The same limit must hold on the escaping window `[T,2T]`, with damping still
+The same limit holds on the escaping window `[T,2T]`, with damping still
 `1/T`; subtracting two fixed-damping brackets doubles only the error constant.
 
 The damping and observation horizon change together. The entire rough series
-must be admitted, including the literal rough von Mangoldt coefficients
+is admitted, including the literal rough von Mangoldt coefficients
 `a_n=Λ(n)n^(−σ)`, `σ>1/2`. Fixed finite rough polynomials do not settle this target.
+For these coefficients, the limiting rough variance tends to zero as `Y→∞`.
 
 ## Proof mechanism
 
@@ -32,7 +33,7 @@ the absolutely convergent Gaussian series. With
 Gaussian damping gives `A₁(T)≤√T Σ_n|a_n|²`; dominated convergence gives
 `A₀(T)→Σ_n|a_n|²`. Thus the off-diagonal error divided by `T` vanishes.
 Prime-head conditioning costs its weighted mass `W₁`; it does not inflate
-the limiting rough variance. The theorem must retain explicit dependence on
+the limiting rough variance. The theorem retains explicit dependence on
 the head so that subsequent growing-head schedules can be assessed.
 
 ## Arithmetic use and remaining gap
@@ -50,6 +51,14 @@ bracket for absolutely summable coefficients with finite weighted square mass.
 Its finite precursor and infinite theorem pass direct Lean checking; both
 transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
 
-The joint Gaussian limit and literal von Mangoldt specialization in
-`TheGaussianRoughMeanSurvivesVanishingDamping.lean` remain under formalization.
-Both modules belong to `EulerFETransportTheory/`.
+`TheGaussianRoughMeanSurvivesVanishingDamping.lean` proves:
+
+- `abs_integral_head_mul_gaussianRough_sub_diag_le`: the full bracket, with independent damping and observation horizons.
+- `tendsto_head_gaussianRough_mean`: exact variance on `[0,T]`.
+- `tendsto_dyadic_head_gaussianRough_mean`: exact variance on `[T,2T]`.
+- `tendsto_dyadic_head_gaussianVonMangoldt_mean`: literal infinite arithmetic specialization for `σ>1/2`.
+- `tendsto_roughVonMangoldt_squareMass_zero`: vanishing variance as the prime cutoff grows.
+
+Both modules belong to `EulerFETransportTheory/`. Direct `lake --old env lean`
+checks pass. All seven terminal transitive axiom audits contain only
+`propext`, `Classical.choice`, and `Quot.sound`.

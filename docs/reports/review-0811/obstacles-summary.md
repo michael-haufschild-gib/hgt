@@ -650,6 +650,18 @@ counterterms from the observable. Scalar and polar corrections cost
 `O((1+log t)/t)` and vanish too. Five terminal axiom audits are standard.
 New-height replication, `LinAt C`, and AAL remain open.
 
+**Infinite head-conditioned rough variance [L].** For a fixed smooth head
+`R(t)=Σ_S w_s s^(it)` and the complete Gaussian rough current
+`D_T(t)=Σ a_n exp(−n²/T)n^(it)`, both normalized means on `[0,T]` and `[T,2T]`
+tend to `(Σ_S|w_s|²)(Σ_n|a_n|²)`. The mean-value error before normalization
+is at most `104 W₁√T Σ|a_n|²` on `[0,T]`, doubled on `[T,2T]`, where
+`W₁=Σ_S s|w_s|²`. The actual rough von Mangoldt coefficients are admitted
+for every `σ>1/2`, and their variance tends to zero as the prime cutoff grows.
+`TheHeadDoesNotChangeTheInfiniteRoughMean.lean` and
+`TheGaussianRoughMeanSurvivesVanishingDamping.lean` retain the entire series;
+all seven terminal axiom audits are standard. These unconditional mean laws
+do not yet couple the continued Euler current to same-depth zero replication.
+
 **Conductor-normalized reflection [L].** Put
 `N_t(s)=exp((s−½)log(t/(2π)))/χ(½+it)` and `R(s)=1−conj(s)`.
 The actual error `N_t(s)ζ(s+it)−conj(ζ(R(s)+it))` tends uniformly to zero

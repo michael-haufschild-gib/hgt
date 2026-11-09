@@ -42,8 +42,10 @@ closed extension. The [critical exterior classification](../3-formalized/riac-cr
 now identifies that relation as the whole source–target Hilbert product in
 every exterior degree, retaining the original finite-support chains and
 their conductor norm. These critical closures retain no boundary constraint.
-The [bounded-region graph comparison](riac-prime-boundary-graph-closure.md)
-remains separate.
+The [scalar graph classification](../3-formalized/riac-prime-boundary-graph-closure.md)
+also identifies the closure above the threshold: exactly the graph of the
+bounded Riesz extension. The finite scalar graph is dense in the whole
+product exactly when `2 Re(s)+δ≤1`.
 The [higher-degree question](../0-backlog/riac-completed-prime-koszul.md)
 is whether the standard completed complex remains contractible above that threshold.
 The [logarithmic compensation boundary](../3-formalized/riac-logarithmic-star-compensation.md)

@@ -72,6 +72,13 @@ phases in this jointly changing damping and height regime; returns of a
 fixed finite head do not supply it. See
 [raw prime passage](../EulerFETransportTheory/README.md#raw-prime-passage-at-inverse-height-damping).
 
+The complete Gaussian rough tail also has its exact diagonal mean square
+under every fixed smooth prime-head probe, with damping `1/T` on `[T,2T]`.
+For the literal von Mangoldt coefficients at `σ>1/2`, this variance tends
+to zero as the prime cutoff grows. This provides conditioned tail control;
+passing it to the continued current and exact zero events remains open. See
+[infinite rough variance](../EulerFETransportTheory/README.md#infinite-rough-variance-under-prime-head-conditioning).
+
 ## New pillar: integer support forces exact arithmetic
 
 For a nonempty countable Beurling system whose generalized integers have natural-number

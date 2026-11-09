@@ -476,6 +476,42 @@ prime-discrepancy passage and full prime-sum passage. The identity
 This admits arithmetic data at escaping heights; same-depth replication still
 requires control of prime phases at those heights.
 
+### Infinite rough variance under prime-head conditioning
+
+Let `R(t)=Σ_{s∈S}w_s s^(it)` have finite support on integers smooth below `Y`.
+For a square-summable sequence supported on positive `Y`-rough integers, put
+
+    D_H(t)=Σₙ a_n exp(−n²/H)n^(it),
+    W_j=Σ_{s∈S}s^j|w_s|²,   A=Σₙ|a_n|².
+
+All coefficients are retained. Smooth–rough unique factorization and the sharp
+integer-frequency mean-value theorem give, for every `H>0` and real `L`,
+
+    |∫₀ᴸ |R(t)|²|D_H(t)|²dt − L W₀ Σₙ|a_n|²exp(−2n²/H)| ≤ 104 W₁√H A.
+
+At `H=T→∞`, dominated convergence removes damping from the diagonal mass.
+The error divided by `T` vanishes. Consequently both observation windows obey
+
+    T⁻¹∫₀ᵀ |R|²|D_T|² → W₀ A,
+    T⁻¹∫_T^(2T) |R|²|D_T|² → W₀ A.
+
+The dyadic bracket has constant `208`. Head conditioning retains the exact
+rough variance; its quantitative error records the weighted head mass `W₁`.
+This dependence matters when a future argument lets the head grow.
+
+The literal coefficients `a_n=Λ(n)n^(−σ)` restricted to `Y`-rough integers
+are square-summable for every `σ>1/2`. Their variance tends to zero as
+`Y→∞`. Thus these laws control the complete moving Gaussian arithmetic tail
+without AAL or a recurrence premise. They concern a fixed head probe; they
+do not assert pointwise control at every prime return.
+
+`TheHeadDoesNotChangeTheInfiniteRoughMean.lean` admits the infinite series
+through finite mean-value brackets.
+`TheGaussianRoughMeanSurvivesVanishingDamping.lean` proves both limits and
+the arithmetic specialization. Passing this conditioned mean to the continued
+Euler current requires matching its damping scale uniformly on the dyadic
+window; same-depth zero transport remains a further obligation.
+
 ### Conductor-normalized height reflection
 
 The reflected high profile carries a conductor power. With

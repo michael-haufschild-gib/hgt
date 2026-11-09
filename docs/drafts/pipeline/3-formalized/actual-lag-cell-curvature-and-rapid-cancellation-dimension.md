@@ -1,7 +1,7 @@
 # Actual lag cell curvature and rapid cancellation dimension
 
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM on paper; not yet counted
+- **Stage:** 3-formalized
+- **Type:** THEOREM; contribution 20
 - **Obstacles:** B13, B112; unconditional geometry of recurrent cancellation bases.
 - **Statement:** The scaled actual lag is strictly concave on every integer cell beyond `2`, with a quantitative second-derivative bound. This gives at most two zeros per cell and makes the positive bases with recurrence at every exponential decay rate Hausdorff-dimension zero, unconditionally.
 - **Consequence:** The actual residual rapid-cancellation family has dimension zero independently of AAL. Its small size comes from local arithmetic-cell curvature, not a finite isolated top.
@@ -37,6 +37,17 @@ The total `s`-dimensional diameter cost at level `n` is then at most
 
 The preceding unconditional residual-recurrence theorem makes this same set dense G-delta and uncountable in every positive open interval. No RH, AAL, or isolated-top assumption occurs in the dimension argument.
 
-## Novelty and formalization gate
+## Novelty
 
-The corpus has discrete integer-lag curvature and one-sided chord estimates. The new mechanism is uniform continuous curvature inside arithmetic cells, giving finite sublevel covers and unconditional zero dimension for actual rapid-cancellation bases. The curvature law, cell zero bound, covering estimate, and residual dimension-zero specialization count together. Lean and transitive-axiom audits remain.
+The corpus has discrete integer-lag curvature and one-sided chord estimates. The new mechanism is uniform continuous curvature inside arithmetic cells, giving finite sublevel covers and unconditional zero dimension for actual rapid-cancellation bases. The curvature law, cell zero bound, covering estimate, and residual dimension-zero specialization count together.
+
+## Lean certificate
+
+Modules under `formal/GaloisForLFunctions/InfiniteRankWeilTheory/`:
+
+- `TrivialZeroSeriesCurvature.lean`: `hasDerivAt_trivialZeroSeriesReal`, `hasDerivAt_trivialZeroSlope`, `half_reciprocal_le_log_sub_trivialZero_curvature`.
+- `ActualLagCellCurvature.lean`: `strictConcaveOn_scaledActualLag_cell`, `not_three_actualLag_zeros_in_cell`, `exists_lagCellModel_sublevel_cover`.
+- `ActualLagSamplingCover.lean`: `exists_actualLag_sampled_cover`.
+- `ActualLagRapidCancellationDimension.lean`: `hausdorffMeasure_lagRapidCancellationBases_inter_Icc_eq_zero`, `dimH_positive_lagRapidCancellationBases_eq_zero`, `actualLag_rapidCancellation_geometry`.
+
+All four modules checked with `lake --old env lean`; final capstone audit passed. Transitive axioms: only `propext`, `Classical.choice`, `Quot.sound`. No RH, AAL, or isolated-top premise. All four imports are wired into the programme umbrella.

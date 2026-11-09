@@ -65,8 +65,8 @@ count. No coherent family with uniformly controlled geometry or bound for
 [residue-duality theorem](monic-residue-duality.md) identifies the actual
 trace cokernel with the different quotient and proves equality of absolute
 trace and polynomial discriminants, including nonreduced factors. Their
-signed equality has not been formalized here. No RH-scale signed cancellation or Weil-form
-Tate height follows.
+signed equality has not been formalized here. No RH-scale signed cancellation
+or Weil-form Tate height follows.
 
 ## Lean statements
 

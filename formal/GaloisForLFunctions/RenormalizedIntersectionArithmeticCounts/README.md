@@ -111,6 +111,13 @@ Outside it, finite chains have boundary one with arbitrarily small norm;
 The formalization retains the exact gauge, finite-chain comparison and norm
 identity.
 
+[PrimeBoundaryGraphClosure.lean](PrimeBoundaryGraphClosure.lean) identifies
+the closed relation exactly. Above the threshold it is the graph of the
+bounded Riesz extension; at and below it, it is the whole Hilbert product
+`PrimeChainHilbert × ℂ`. Thus the actual finite-support graph is dense in
+that product exactly when `2 Re(s)+δ≤1`. This concerns all finite chains,
+the union of conductor cutoffs.
+
 At `δ=0`, the original augmentation therefore cannot survive as a closed
 operator on or left of the critical line in this Hilbert model. The positive
 survivor is its exact extension classification, norm and explicit packets.

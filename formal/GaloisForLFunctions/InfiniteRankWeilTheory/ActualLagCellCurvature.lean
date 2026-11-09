@@ -2,7 +2,8 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.TrivialZeroSeriesCurvature
 import GaloisForLFunctions.InfiniteRankWeilTheory.FiniteJetSublevelCover
 import Mathlib.Analysis.Convex.Deriv
 
-/-!+# Arithmetic-cell curvature of the actual Weil lag
+/-!
+# Arithmetic-cell curvature of the actual Weil lag
 
 Within each integer cell, the scaled lag has an affine arithmetic part. The logarithmic
 curvature dominates the complete trivial-zero correction, giving a uniform two-ball sublevel
@@ -29,14 +30,14 @@ private theorem hasDerivAt_lagCellModel (A B : ℝ) {x : ℝ} (hx : 1 < x) :
     HasDerivAt (lagCellModel A B) (lagCellSlope A x) x := by
   have h := ((((hasDerivAt_id x).const_mul A).add_const B).sub
     (Real.hasDerivAt_mul_log (zero_lt_one.trans hx).ne')).add (hasDerivAt_trivialZeroSeriesReal hx)
-  simpa only [lagCellModel, lagCellSlope, mul_one] using h
+  simpa only [lagCellModel, lagCellSlope, mul_one] using! h
 
 private theorem hasDerivAt_lagCellSlope (A : ℝ) {x : ℝ} (hx : 1 < x) :
     HasDerivAt (lagCellSlope A) (lagCellCurvature x) x := by
   have h := ((hasDerivAt_const x A).sub
     ((Real.hasDerivAt_log (zero_lt_one.trans hx).ne').add_const 1)).add
       (hasDerivAt_trivialZeroSlope hx)
-  simpa only [lagCellSlope, lagCellCurvature, zero_sub] using h
+  simpa only [lagCellSlope, lagCellCurvature, zero_sub] using! h
 
 private theorem lagCellCurvature_neg {x : ℝ} (hx : 2 ≤ x) : lagCellCurvature x < 0 := by
   have h := half_reciprocal_le_log_sub_trivialZero_curvature hx
@@ -48,7 +49,8 @@ private theorem lagCellCurvature_neg {x : ℝ} (hx : 2 ≤ x) : lagCellCurvature
 theorem strictConcaveOn_lagCellModel (A B : ℝ) :
     StrictConcaveOn ℝ (Ici 2) (lagCellModel A B) := by
   apply strictConcaveOn_of_deriv2_neg (convex_Ici 2)
-    (fun x hx => (hasDerivAt_lagCellModel A B (by linarith only [hx])).continuousAt.continuousWithinAt)
+    (fun x hx => (hasDerivAt_lagCellModel A B
+      (lt_of_lt_of_le (by norm_num : (1 : ℝ) < 2) hx)).continuousAt.continuousWithinAt)
   intro x hx
   have hx2 : 2 ≤ x := interior_subset hx
   have hx1 : 1 < x := by linarith only [hx2]
