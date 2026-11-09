@@ -99,7 +99,7 @@ theorem finite_layer_high_strip_logDeriv_bounds (F : Finset XiZeroCopy)
       exact hsep x |v| hx (by simpa only [abs_abs] using hv) q)
   rw [norm_logDeriv_line_abs]
   calc
-    _ ≤ (logDerivZetaConstant / δ) * Real.log |v| := by convert hb using 1 <;> ring
+    _ ≤ (logDerivZetaConstant / δ) * Real.log |v| := by convert hb using 1; ring
     _ ≤ (logDerivZetaConstant / δ) * (1 + |v|) :=
       mul_le_mul_of_nonneg_left (by linarith only [Real.log_le_self (abs_nonneg v)]) hbase
     _ ≤ C * (1 + |v|) := by
@@ -201,7 +201,7 @@ theorem rectIntegral_weighted_neg_logDeriv_zeta
   have hb : ∀ x ∈ uIcc z₁.re z₂.re, (x : ℂ) + z₁.im * I ∈ S := by
     intro x hx
     refine ⟨hsub (Complex.mem_reProdIm.mpr ⟨by simpa using hx,
-      by simpa using (left_mem_uIcc : z₁.im ∈ uIcc z₁.im z₂.im)⟩), ?_, hbot x hx⟩
+      by simp⟩), ?_, hbot x hx⟩
     intro he
     have hi := congrArg Complex.im he
     simp at hi
@@ -209,7 +209,7 @@ theorem rectIntegral_weighted_neg_logDeriv_zeta
   have ht : ∀ x ∈ uIcc z₁.re z₂.re, (x : ℂ) + z₂.im * I ∈ S := by
     intro x hx
     refine ⟨hsub (Complex.mem_reProdIm.mpr ⟨by simpa using hx,
-      by simpa using (right_mem_uIcc : z₂.im ∈ uIcc z₁.im z₂.im)⟩), ?_, htop x hx⟩
+      by simp⟩), ?_, htop x hx⟩
     intro he
     have hi := congrArg Complex.im he
     simp at hi
@@ -217,7 +217,7 @@ theorem rectIntegral_weighted_neg_logDeriv_zeta
   have hr : ∀ v ∈ uIcc z₁.im z₂.im, (z₂.re : ℂ) + v * I ∈ S := by
     intro v hv
     refine ⟨hsub (Complex.mem_reProdIm.mpr
-      ⟨by simpa using (right_mem_uIcc : z₂.re ∈ uIcc z₁.re z₂.re),
+      ⟨by simp,
         by simpa using hv⟩), ?_, hright v hv⟩
     intro he
     have hi := congrArg Complex.re he
@@ -226,7 +226,7 @@ theorem rectIntegral_weighted_neg_logDeriv_zeta
   have hl : ∀ v ∈ uIcc z₁.im z₂.im, (z₁.re : ℂ) + v * I ∈ S := by
     intro v hv
     refine ⟨hsub (Complex.mem_reProdIm.mpr
-      ⟨by simpa using (left_mem_uIcc : z₁.re ∈ uIcc z₁.re z₂.re),
+      ⟨by simp,
         by simpa using hv⟩), ?_, hleft v hv⟩
     intro he
     have hi := congrArg Complex.re he
@@ -312,8 +312,8 @@ theorem finite_layer_residueUnit_zero_mem (F : Finset XiZeroCopy)
     {w : ℂ} (hw : c ≤ w.re) (hG : zetaResidueUnit w = 0) :
     ∃ q ∈ F, xiZero q = w := by
   have hwpos : 0 < w.re := hc.trans_le hw
-  have hw0 : w ≠ 0 := by intro he; simpa [he] using hwpos
-  have hw1 : w ≠ 1 := by intro he; simpa [he, zetaResidueUnit_one] using hG
+  have hw0 : w ≠ 0 := by intro he; simp [he] at hwpos
+  have hw1 : w ≠ 1 := by intro he; simp [he, zetaResidueUnit_one] at hG
   have hz : riemannZeta w = 0 := by
     by_contra hn
     exact ((Sieve.zetaResidueUnit_ne_zero_iff hw1).2 hn) hG
@@ -532,7 +532,7 @@ theorem finite_layer_divisorFilter_rectangle (F : Finset XiZeroCopy)
   have hρG : zetaResidueUnit ρ = 0 := by
     have hz := (xi_zero_iff_zeta_zero_of_mem_strip (hc0.trans hρc) hρ1).1 hρ
     by_contra hn
-    have hr1 : ρ ≠ 1 := by intro he; simpa [he] using hρ1
+    have hr1 : ρ ≠ 1 := by intro he; simp [he] at hρ1
     exact ((Sieve.zetaResidueUnit_ne_zero_iff hr1).1 hn) hz
   have hρmem : ρ ∈ Sieve.zetaResidueUnitClosedRectangleZeros z₁ z₂ := by
     apply Sieve.mem_zetaResidueUnitClosedRectangleZeros.mpr
@@ -599,10 +599,10 @@ theorem tendsto_finite_layer_divisorFilter_horizontal (F : Finset XiZeroCopy)
     have hxs : 0 < x - σ := sub_pos.mpr (hσc.trans_le hx)
     have hk := hkernel y h t (x - σ) (v - t) hy hh hh1
       (by linarith only [hx]) (by linarith only [hx2])
-    have hsum : ((σ : ℂ) + t * I) + (((x - σ : ℝ) : ℂ) + (v - t) * I) =
+    have hsum : ((σ : ℂ) + t * I) + (((x - σ : ℝ) : ℂ) + ((v - t : ℝ) : ℂ) * I) =
         (x : ℂ) + v * I := by push_cast; ring
     have hdiff : (x : ℂ) + v * I - ((σ : ℂ) + t * I) =
-        ((x - σ : ℝ) : ℂ) + (v - t) * I := by push_cast; ring
+        ((x - σ : ℝ) : ℂ) + ((v - t : ℝ) : ℂ) * I := by push_cast; ring
     have hk' : ‖divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + v * I)‖ ≤
         A * h ^ d * (1 + |t|) ^ d * y ^ (-((x - σ) / 2)) *
           Real.exp (-(|v - t| / 2)) := by
@@ -636,7 +636,6 @@ theorem tendsto_finite_layer_divisorFilter_horizontal (F : Finset XiZeroCopy)
   have hT1 : 1 ≤ T := by linarith only [hT, hH]
   have hT0 : 0 ≤ T := zero_le_one.trans hT1
   have heT : |e * T| = T := by rw [abs_mul, he, one_mul, abs_of_nonneg hT0]
-  have heT' : ((e : ℂ) * T) = ((e * T : ℝ) : ℂ) := by push_cast; rfl
   have hb : ∀ x ∈ uIoc c 2,
       ‖divisorFilteredMellinWeight F ρ σ β h y t ((x : ℂ) + (e * T) * I) *
         (-logDeriv riemannZeta ((x : ℂ) + (e * T) * I))‖ ≤
@@ -652,7 +651,10 @@ theorem tendsto_finite_layer_divisorFilter_horizontal (F : Finset XiZeroCopy)
   calc
     D * (1 + T) * Real.exp (-(T / 2)) * (2 - c) ≤
         D * (2 * T) * Real.exp (-(T / 2)) * (2 - c) := by gcongr
-    _ = _ := by simp only [pow_one]; congr 1 <;> ring
+    _ = _ := by
+      rw [show -(T / 2) = -((1 / 2 : ℝ) * T) by ring]
+      simp only [pow_one]
+      ring
 
 private theorem divisorFilteredMellinWeight_shift (F : Finset XiZeroCopy) (ρ : ℂ)
     (σ β h y t c v : ℝ) :
@@ -696,7 +698,7 @@ private theorem filtered_euler_line_integrable (F : Finset XiZeroCopy) (ρ : ℂ
     refine ⟨E + 1, by positivity, fun v => ?_⟩
     have hn := norm_LSeries_vonMangoldt_le (s := (2 : ℂ) + v * I) (by simp)
     rw [ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div (by simp),
-      ← logDeriv_apply, norm_neg] at hn
+      neg_div, ← logDeriv_apply, norm_neg] at hn
     have hn' : ‖logDeriv riemannZeta ((2 : ℂ) + v * I)‖ ≤ E := by simpa [E] using hn
     exact hn'.trans (by nlinarith only [hE, abs_nonneg v, mul_nonneg hE (abs_nonneg v)])
   obtain ⟨C, _, hC⟩ := exists_filtered_regular_line_bound F ρ σ β 2 (by norm_num) hσ

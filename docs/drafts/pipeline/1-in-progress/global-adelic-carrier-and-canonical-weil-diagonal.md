@@ -62,21 +62,24 @@ with standard axioms only.
 
 The earlier [split-degree classification](../3-formalized/finite-weyl-conjugation-retains-the-global-degree-configuration.md)
 gives exact fourth-power height normal forms on the determinant-one cover.
-Local finiteness of the full degree image and finite-factor adjacency on the
-quotient remain to be proved. The latter must be realized as Hecke
-correspondences. These orbit results do not yet identify a Green operator,
+Local finiteness of the full degree image remains to be proved. Finite-factor
+adjacency on the quotient is now realized by the Hecke operators below.
+These orbit results do not yet identify a Green operator,
 its off-diagonal kernel, or its Robin diagonal.
 
-## Prime adjacency construction
+## Proved prime Hecke operators
 
-At `p`, the orbit of `diag(1,p)K_p` under `K_p` should have the `p+1`
+At `p`, the orbit of `diag(1,p)K_p` under `K_p` has exactly the `p+1`
 representatives `diag(1,p)` and `[[p,-b],[0,1]]`, `b∈𝔽_p`.
 Reduction of the first column gives the representative; integrality of the
 transition matrix proves equality of lattice classes. This defines local
 adjacency independently of the target kernel. The prime operator on the
-arithmetic quotient must sum over these neighbours before taking quotient
+arithmetic quotient sums over these neighbours before taking quotient
 classes, preserving multiplicity when distinct neighbours become identified.
-The exact local degree and quotient descent are not yet formalized.
+The [formalized construction](../3-formalized/prime-hecke-operators-on-the-projective-adelic-carrier.md)
+proves equivariance, local symmetry and absence of loops, arithmetic descent,
+`A_p 1=p+1`, linearity, preservation of nonnegative functions and
+`A_p A_q=A_q A_p`. All nine capstone audits use standard axioms only.
 
 ## Local Green construction
 
@@ -96,7 +99,9 @@ diagonal regularization remain separate requirements.
 
 ## Verification gates
 
-- [ ] Actual global quotient and operator constructed.
+- [x] Actual discrete global quotient retaining all original degrees.
+- [x] Commuting prime Hecke operators with arithmetic multiplicities.
+- [ ] Coupled archimedean–finite operator and analytic domain constructed.
 - [ ] Local resolvent expansion gives the existing off-diagonal kernel.
 - [ ] The same regularization derives Weil's diagonal with no free counterterm.
 - [ ] Lean source checks, transitive axiom audit, and umbrella integration.
