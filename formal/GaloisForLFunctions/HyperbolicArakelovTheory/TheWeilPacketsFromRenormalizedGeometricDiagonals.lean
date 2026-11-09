@@ -101,6 +101,118 @@ private theorem continuous_analyticTower {c : ℝ} (hc : 1 < c) (N : ℕ) :
       add_zero, Complex.one_re, Complex.zero_re] at hh
     linarith
 
+private theorem packet_decay {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) :
+    Continuous (lineF (EF.weilTest f f) (3 / 2)) ∧
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ t : ℝ,
+        ‖lineF (EF.weilTest f f) (3 / 2) t‖ ≤ C / (1 + t ^ 2) ^ 2 := by
+  have hk := EF.weilTest_contDiff hf hf.continuous hfc
+  have hkc := EF.weilTest_hasCompactSupport hfc hfc
+  have hH := (differentiable_Hfn hk hkc).continuous
+  refine ⟨(hH.comp (by fun_prop)).add (hH.comp (by fun_prop)), ?_⟩
+  obtain ⟨D, hD, hbound⟩ := norm_Hfn_weilTest_le_wide hf hfc (3 / 2)
+  refine ⟨2 * D, by positivity, fun t => ?_⟩
+  have h1 := hbound (3 / 2) t (by norm_num)
+  have h2 := hbound (-(1 / 2)) (-t) (by norm_num)
+  have hpoint : (1 : ℂ) - (3 / 2 : ℝ) - t * I =
+      ((-(1 / 2) : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I := by push_cast; ring
+  rw [lineF, hpoint]
+  rw [neg_sq] at h2
+  calc ‖Hfn (EF.weilTest f f) ((3 / 2 : ℝ) + t * I) +
+      Hfn (EF.weilTest f f) (((-(1 / 2) : ℝ) : ℂ) + ((-t : ℝ) : ℂ) * I)‖
+      ≤ D / (1 + t ^ 2) ^ 2 + D / (1 + t ^ 2) ^ 2 :=
+        (norm_add_le _ _).trans (add_le_add h1 h2)
+    _ = 2 * D / (1 + t ^ 2) ^ 2 := by ring
+
+private theorem xi_symbol_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ t : ℝ,
+    ‖logDeriv xi ((3 / 2 : ℂ) + t * I)‖ ≤ A * (1 + |t|) := by
+  obtain ⟨A, hA, hb⟩ := WeilAtomic.norm_weilFunction_le summable_mangoldt
+    (c := 3 / 2) (by norm_num) le_rfl
+  refine ⟨A, hA, fun t => ?_⟩
+  have h := hb t
+  rw [weilFunction_mangoldt (by norm_num)] at h
+  exact h
+
+/-- The scalar-normalized geometric diagonal recovers the full Weil functional on packets. -/
+theorem tendsto_geometricWeilEnergy {f : ℝ → ℂ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) :
+    Tendsto (geometricWeilEnergy f) atTop
+      (𝓝 (weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        (EF.weilTest f f))) := by
+  obtain ⟨hFc, C, hC, hFb⟩ := packet_decay hf hfc
+  obtain ⟨A, hA, hAb⟩ := xi_symbol_bound
+  let F : ℝ → ℂ := lineF (EF.weilTest f f) (3 / 2)
+  let B : ℝ := A + eulerMajorant (3 / 2) + 3
+  have hB : 0 ≤ B := by dsimp [B]; linarith [eulerMajorant_nonneg (3 / 2)]
+  have hmeas : ∀ N : ℕ, AEStronglyMeasurable
+      (fun t : ℝ => F t * renormalizedTower ((3 / 2 : ℂ) + t * I) N) := by
+    intro N
+    have hc := hFc.mul (continuous_analyticTower (c := 3 / 2) (by norm_num) N)
+    refine hc.aestronglyMeasurable.congr ?_
+    filter_upwards [volume.ae_ne (0 : ℝ)] with t ht
+    change F t * analyticTower ((3 / 2 : ℂ) + t * I) N = _
+    rw [renormalizedTower_eq_analytic (by norm_num) (by simpa using ht)]
+  have hbound : ∀ᶠ N : ℕ in atTop, ∀ᵐ t : ℝ,
+      ‖F t * renormalizedTower ((3 / 2 : ℂ) + t * I) N‖ ≤
+        2 * C * B * (1 + t ^ 2)⁻¹ := by
+    filter_upwards [eventually_ge_atTop 4] with N hN
+    filter_upwards [volume.ae_ne (0 : ℝ)] with t ht
+    have hden : 1 ≤ (3 / 2 : ℝ) + N := by linarith [Nat.cast_nonneg (α := ℝ) N]
+    have hlarge : 4 ≤ (((3 / 2 : ℂ) + t * I).re + N) := by
+      norm_num
+      exact_mod_cast (show 4 ≤ 3 / 2 + (N : ℝ) by exact_mod_cast hN; linarith)
+    have he := norm_renormalizedTower_sub_symbol (s := (3 / 2 : ℂ) + t * I)
+      (by norm_num) (by simpa using ht) N hlarge
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.I_re,
+      Complex.ofReal_im, Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero,
+      Complex.div_ofNat_re, Complex.ofNat_re, Complex.add_im, Complex.mul_im,
+      Complex.div_ofNat_im, Complex.ofNat_im, zero_div, mul_one, zero_add] at he
+    have hpow : (2 : ℝ) ^ (-(N : ℝ)) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by positivity)
+    have hg : (3 + |t| / 2) / ((3 / 2 : ℝ) + N) ≤ 3 + |t| / 2 :=
+      div_le_self (by positivity) hden
+    have hR : ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖ ≤ B * (1 + |t|) := by
+      have hn := norm_le_norm_sub_add
+        (renormalizedTower ((3 / 2 : ℂ) + t * I) N)
+        (logDeriv xi ((3 / 2 : ℂ) + t * I))
+      have hp := mul_le_mul_of_nonneg_right hpow (eulerMajorant_nonneg (3 / 2))
+      have ha := hAb t
+      dsimp [B]
+      nlinarith [abs_nonneg t, eulerMajorant_nonneg (3 / 2)]
+    have hsq : 1 + |t| ≤ 2 * (1 + t ^ 2) := by nlinarith [sq_abs t, abs_nonneg t]
+    rw [norm_mul]
+    calc ‖F t‖ * ‖renormalizedTower ((3 / 2 : ℂ) + t * I) N‖
+        ≤ (C / (1 + t ^ 2) ^ 2) * (B * (1 + |t|)) :=
+          mul_le_mul (hFb t) hR (norm_nonneg _) (by positivity)
+      _ ≤ (C / (1 + t ^ 2) ^ 2) * (B * (2 * (1 + t ^ 2))) := by gcongr
+      _ = 2 * C * B * (1 + t ^ 2)⁻¹ := by field_simp; ring
+  have hlim := tendsto_integral_filter_of_dominated_convergence
+    (fun t : ℝ => 2 * C * B * (1 + t ^ 2)⁻¹)
+    (Eventually.of_forall hmeas) hbound
+    (integrable_inv_one_add_sq.const_mul (2 * C * B))
+    (show ∀ᵐ t : ℝ, Tendsto
+      (fun N : ℕ => F t * renormalizedTower ((3 / 2 : ℂ) + t * I) N) atTop
+      (𝓝 (F t * logDeriv xi ((3 / 2 : ℂ) + t * I))) from by
+      filter_upwards [volume.ae_ne (0 : ℝ)] with t ht
+      exact (tendsto_renormalizedTower (by norm_num) (by simpa using ht)).const_mul (F t))
+  have hsum : LSeriesSummable
+      (WeilHerglotz.lamC (fun n => (ArithmeticFunction.vonMangoldt n : ℝ)))
+      ((3 / 2 : ℝ) : ℂ) := by
+    rw [lamC_mangoldt]
+    exact ArithmeticFunction.LSeriesSummable_vonMangoldt (by norm_num)
+  have hw := weilFullFunctional_weilTest_eq_line (c := 3 / 2) le_rfl hsum hf hfc
+  have hident : (∫ t : ℝ, lineF (EF.weilTest f f) (3 / 2) t *
+      WeilHerglotz.weilFunction (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
+        ((3 / 2 : ℝ) + t * I)) =
+      ∫ t : ℝ, F t * logDeriv xi ((3 / 2 : ℂ) + t * I) := by
+    refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    rw [weilFunction_mangoldt (by norm_num)]
+    rfl
+  rw [hident] at hw
+  rw [hw]
+  exact hlim.const_mul (1 / (2 * Real.pi) : ℂ)
+
+end
 end
 
 end GaloisForLFunctions.HyperbolicArakelovTheory.ScatteringTower

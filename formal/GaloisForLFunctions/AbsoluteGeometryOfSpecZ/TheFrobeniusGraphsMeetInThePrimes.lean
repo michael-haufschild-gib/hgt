@@ -69,11 +69,10 @@ theorem graphIdeal_eq_span (m n : ℕ+) :
     rintro _ ⟨d, hd, rfl⟩
     have key : ∀ (a b : ℕ+), d ∣ (a : ℕ) → ¬ d ∣ (b : ℕ) → (d : ℤ) ∈ graphIdeal a b := by
       intro a b ha hb
-      have hpos : 0 < d := Nat.pos_of_dvd_of_pos ha a.pos
-      refine Ideal.subset_span ⟨orbit ⟨d, hpos⟩, ?_⟩
-      change (orbit ⟨d, hpos⟩).1 a - (orbit ⟨d, hpos⟩).1 b = (d : ℤ)
+      obtain ⟨D, rfl⟩ : ∃ D : ℕ+, (D : ℕ) = d := ⟨⟨d, Nat.pos_of_dvd_of_pos ha a.pos⟩, rfl⟩
+      refine Ideal.subset_span ⟨orbit D, ?_⟩
+      change (orbit D).1 a - (orbit D).1 b = ((D : ℕ) : ℤ)
       rw [orbit_apply, orbit_apply, if_pos ha, if_neg hb, sub_zero]
-      rfl
     rcases hd with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · exact key m n h1 h2
     · rw [graphIdeal_comm]; exact key n m h1 h2
@@ -106,7 +105,9 @@ theorem graphIdeal_mul_prime_pow (m : ℕ+) {p : ℕ+} (hp : p.Prime) {j : ℕ} 
     rcases hd with ⟨h1, h2⟩ | ⟨h1, h2⟩
     · exact absurd (h1.mul_right _) h2
     · refine Ideal.mem_span_singleton.mpr ?_
-      exact_mod_cast pow_succ_factorization_dvd_of_dvd_mul_pow hp' m.ne_zero h1 h2
+      have := pow_succ_factorization_dvd_of_dvd_mul_pow hp' m.ne_zero h1 h2
+      change (((p : ℕ) : ℤ) ^ ((m : ℕ).factorization p + 1)) ∣ (d : ℤ)
+      exact_mod_cast this
   · rintro _ rfl
     refine Ideal.subset_span ⟨(p : ℕ) ^ ((m : ℕ).factorization p + 1), Or.inr ⟨?_, ?_⟩, by
       push_cast; rfl⟩
@@ -175,18 +176,19 @@ theorem graphIdeal_eq_top_or {m n : ℕ+} (hmn : m ≠ n) :
   · obtain ⟨q, hq, hqr, hq2⟩ := hex
     exact Or.inl (graphIdeal_eq_top_of_two_primes hr hq (Ne.symm hqr) hne hq2)
   · push Not at hex
-    refine Or.inr ⟨⟨r, hr.pos⟩, hr, ?_⟩
+    obtain ⟨R, rfl⟩ : ∃ R : ℕ+, (R : ℕ) = r := ⟨⟨r, hr.pos⟩, rfl⟩
+    refine Or.inr ⟨R, hr, ?_⟩
     -- the degrees agree away from `r`: the larger is the smaller times a power of `r`
-    have key : ∀ a b : ℕ+, (∀ q : ℕ, q.Prime → q ≠ r →
+    have key : ∀ a b : ℕ+, (∀ q : ℕ, q.Prime → q ≠ (R : ℕ) →
         (a : ℕ).factorization q = (b : ℕ).factorization q) →
-        (a : ℕ).factorization r < (b : ℕ).factorization r →
-        b = a * (⟨r, hr.pos⟩ : ℕ+) ^ ((b : ℕ).factorization r - (a : ℕ).factorization r) := by
+        (a : ℕ).factorization R < (b : ℕ).factorization R →
+        b = a * R ^ ((b : ℕ).factorization R - (a : ℕ).factorization R) := by
       intro a b hab hlt
       refine PNat.eq (Nat.eq_of_factorization_eq b.ne_zero (PNat.ne_zero _) fun q => ?_)
-      rw [PNat.mul_coe, PNat.pow_coe, PNat.mk_coe,
+      rw [PNat.mul_coe, PNat.pow_coe,
         Nat.factorization_mul a.ne_zero (pow_ne_zero _ hr.ne_zero), Nat.factorization_pow,
         hr.factorization, Finsupp.add_apply, Finsupp.smul_apply]
-      by_cases hq : q = r
+      by_cases hq : q = (R : ℕ)
       · subst hq
         rw [Finsupp.single_eq_same, smul_eq_mul, mul_one]
         omega
@@ -230,10 +232,11 @@ theorem log_card_quotient_graphIdeal_one {n : ℕ+} (hn : 1 < n) :
     Real.log (Nat.card (ℤ ⧸ graphIdeal 1 n)) = Λ (n : ℕ) := by
   by_cases hpp : IsPrimePow (n : ℕ)
   · obtain ⟨p, k, hp, hk, hpk⟩ := (isPrimePow_nat_iff _).mp hpp
-    have hn' : n = (⟨p, hp.pos⟩ : ℕ+) ^ k := PNat.eq (by rw [PNat.pow_coe, PNat.mk_coe, hpk])
-    have hI : graphIdeal 1 n = Ideal.span {(p : ℤ)} := by
-      rw [hn']; exact graphIdeal_one_prime_pow (p := ⟨p, hp.pos⟩) hp hk.ne'
-    rw [hI, Nat.card_congr (Int.quotientSpanNatEquivZMod p).toEquiv, Nat.card_zmod, ← hpk,
+    obtain ⟨P, rfl⟩ : ∃ P : ℕ+, (P : ℕ) = p := ⟨⟨p, hp.pos⟩, rfl⟩
+    have hn' : n = P ^ k := PNat.eq (by rw [PNat.pow_coe, hpk])
+    have hI : graphIdeal 1 n = Ideal.span {((P : ℕ) : ℤ)} := by
+      rw [hn']; exact graphIdeal_one_prime_pow hp hk.ne'
+    rw [hI, Nat.card_congr (Int.quotientSpanNatEquivZMod (P : ℕ)).toEquiv, Nat.card_zmod, ← hpk,
       ArithmeticFunction.vonMangoldt_apply_pow hk.ne', ArithmeticFunction.vonMangoldt_apply_prime hp]
   · have hI := graphIdeal_one_eq_top hn hpp
     haveI : Subsingleton (ℤ ⧸ graphIdeal 1 n) := Ideal.Quotient.subsingleton_iff.mpr hI
