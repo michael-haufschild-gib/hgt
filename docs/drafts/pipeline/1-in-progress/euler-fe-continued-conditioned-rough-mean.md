@@ -26,9 +26,13 @@ No phase-return or approximation premise may be added.
 2. Split the entire von Mangoldt current into the rough part and all powers
    of primes below `Y`. Absolute convergence at positive abscissa removes
    Gaussian damping from the latter uniformly in height.
-3. Transfer the proved Gaussian mean-square identity through this uniform
-   approximation. Cauchy–Schwarz and the bounded Gaussian second mean
-   control the cross term.
+3. Reindex the small-prime series by `(p,k)↦p^(k+1)`. Unique factorization
+   makes this injective; its geometric sums are exactly `log p/(p^s−1)`.
+4. Transfer the Gaussian mean-square identity through uniform approximation.
+   The bounded Gaussian second mean controls the cross term. The actual
+   finite exceptional layer supplies a zero-free line above a finite height;
+   clipping below that height gives continuous functions and disappears on
+   escaping dyadic windows.
 
 The first obligation is a uniform two-variable statement: convergence at
 damping `1/Im s` alone does not justify it. The Gaussian mean theorem uses

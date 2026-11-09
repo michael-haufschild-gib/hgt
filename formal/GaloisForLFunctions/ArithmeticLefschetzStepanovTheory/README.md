@@ -1,7 +1,7 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`; 12 modules. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 14 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -257,6 +257,16 @@ least prime `p`, multiplicity `r` costs length `p^(qr)`, and every integer auxil
 threshold is exactly `c(u_p^q − 1)^r` (`minimal_torsion_auxiliary_iff`). Minimal auxiliaries use
 only the least prime; adding more prime coordinates creates no additional minimizers. Fourier
 extraction detects the remainder after removing this single binomial.
+
+The entire torsion kernel has integral Newton coordinates:
+`B_a = ∏_p u_p^(a_p mod q)(u_p^q−1)^(a_p div q)` form a basis over `ℤ`.
+Full multiplicity `r` retains exactly the indices with `Σ_p floor(a_p/q) ≥ r`;
+length at most `N` retains exactly those with `weight(a) ≤ N`
+(`filtered_torsion_kernel_iff_unique_expansion`). Synthesis preserves length
+exactly. Consequently, complex vanishing to order `r` on the full grid is
+precisely membership in the ordinary power `J_q^r` over `ℤ`, where
+`J_q = (u_p^q−1 : p∈P)` (`fullTorsionMultiplicity_iff_mem_gridIdeal_pow`).
+There is no denominator obstruction to integral descent on this grid.
 
 The two halves of Weil's proof meet exactly at the fixed points: the prime Lefschetz numbers of the
 Frobenius graphs of degree `≤ N` are the degree of the minimal integer auxiliary vanishing at their

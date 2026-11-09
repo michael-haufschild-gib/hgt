@@ -100,3 +100,4 @@ import GaloisForLFunctions.ExactEventTheory
 import GaloisForLFunctions.EulerFETransportTheory
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory
 import GaloisForLFunctions.HyperbolicArakelovTheory
+import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit

@@ -426,10 +426,257 @@ private theorem tendsto_dyadicMean_of_uniformApproximation {f : ℝ → ℂ} {g 
     exact ((mul_le_mul_of_nonneg_left hMA hδ.le).trans hδε).trans_lt (by linarith)
   simpa only [sub_add_cancel, zero_add] using herr.add hmean
 
+private theorem continuous_gaussianHeightCurrent {a : ℕ → ℂ} (ha0 : a 0 = 0)
+    (ha : Summable fun n => ‖a n‖ ^ 2) {H : ℝ} (hH : 0 < H) :
+    Continuous (gaussianHeightCurrent a H) := by
+  have h0 : gaussianHeightCoeff a H 0 = 0 := by simp [gaussianHeightCoeff, ha0]
+  exact (PhaseSeries.continuous_phaseSeries h0 (summable_norm_gaussianHeightCoeff ha hH)).comp
+    continuous_neg
+
+private theorem norm_head_le (S : Finset ℕ) (w : ℕ → ℂ) (t : ℝ) :
+    ‖integerHeightPoly S w t‖ ≤ ∑ s ∈ S, ‖w s‖ := by
+  unfold integerHeightPoly familyHeightPoly
+  refine (norm_sum_le _ _).trans_eq ?_
+  simp only [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+
+/-- On one interior line supplied by failure of AAL, every smooth head probe
+sees exactly the full rough variance of the continued Euler current after
+adding back all small-prime powers. The line is independent of the probe. -/
+theorem not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean
+    (hnot : ¬ AsymptoticAbscissaLaw) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+      ∀ (Y : ℕ) (S : Finset ℕ) (w : ℕ → ℂ),
+        (∀ s ∈ S, s ∈ Nat.smoothNumbers Y) →
+        Tendsto (fun T : ℝ => (∫ t in T..(2 * T), ‖integerHeightPoly S w t‖ ^ 2 *
+          ‖logDeriv riemannZeta ((σ : ℂ) + t * I) +
+            integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t)‖ ^ 2) / T)
+          atTop (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) *
+            ∑' n : ℕ, ‖roughVonMangoldtCoeff Y σ n‖ ^ 2)) := by
+  obtain ⟨σ, H, hσ, hσ1, hH, hq, hregular, hrough⟩ :=
+    not_asymptoticAbscissaLaw_has_regular_roughPassage hnot
+  refine ⟨σ, hσ, hσ1, hq, fun Y S w hS => ?_⟩
+  have hσ0 : 0 < σ := by linarith only [hσ]
+  let f : ℝ → ℂ := fun t => integerHeightPoly S w (max H t) *
+    (logDeriv riemannZeta ((σ : ℂ) + (max H t : ℝ) * I) +
+      integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-(max H t)))
+  let g : ℝ → ℝ → ℂ := fun T t => -integerHeightPoly S w t *
+    gaussianHeightCurrent (roughVonMangoldtCoeff Y σ) (max T 1) (-t)
+  have hmax : Continuous (fun t : ℝ => max H t) := continuous_const.max continuous_id
+  have hline : Continuous (fun t : ℝ => (σ : ℂ) + (max H t : ℝ) * I) := by fun_prop
+  have hlog : Continuous (fun t : ℝ => logDeriv riemannZeta
+      ((σ : ℂ) + (max H t : ℝ) * I)) := by
+    apply continuous_iff_continuousAt.mpr
+    intro t
+    have hz1 : (σ : ℂ) + (max H t : ℝ) * I ≠ 1 := by
+      intro he
+      have hr := congrArg Complex.re he
+      have hre : ((σ : ℂ) + (max H t : ℝ) * I).re = σ := by simp
+      rw [hre, Complex.one_re] at hr
+      linarith only [hr, hσ1]
+    have ha := RHTower.analyticAt_riemannZeta hz1
+    have hc : ContinuousAt (logDeriv riemannZeta) ((σ : ℂ) + (max H t : ℝ) * I) :=
+      (ha.deriv.div ha (hregular (max H t) (le_max_left _ _))).continuousAt
+    exact hc.comp hline.continuousAt
+  have hsmall : Continuous (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ)) :=
+    (PhaseSeries.continuous_phaseSeries (smallPrimeVonMangoldtCoeff_zero Y σ)
+      (summable_norm_smallPrimeVonMangoldtCoeff Y hσ0)).comp continuous_neg
+  have hf : Continuous f :=
+    ((continuous_integerHeightPoly S w).comp hmax).mul (hlog.add (hsmall.comp hmax.neg))
+  have hg : ∀ T : ℝ, Continuous (g T) := by
+    intro T
+    have hc := continuous_gaussianHeightCurrent (roughVonMangoldtCoeff_zero Y σ)
+      (summable_sq_roughVonMangoldtCoeff Y hσ)
+      (zero_lt_one.trans_le (le_max_right T 1))
+    exact (continuous_integerHeightPoly S w).neg.mul (hc.comp continuous_neg)
+  have hmean : Tendsto (fun T : ℝ => dyadicSquareMean (g T) T) atTop
+      (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) * ∑' n : ℕ, ‖roughVonMangoldtCoeff Y σ n‖ ^ 2)) := by
+    refine (tendsto_dyadic_head_gaussianVonMangoldt_mean S w hS hσ).congr' ?_
+    filter_upwards [eventually_ge_atTop (1 : ℝ)] with T hT
+    unfold dyadicSquareMean
+    apply congrArg (fun u : ℝ => u / T)
+    apply intervalIntegral.integral_congr
+    intro t _
+    simp only [g, max_eq_left hT, norm_mul, norm_neg, mul_pow,
+      norm_gaussianRough_neg Y hσ (by linarith only [hT] : 0 < T) t]
+  have hclose : ∀ ε : ℝ, 0 < ε → ∀ᶠ T : ℝ in atTop,
+      ∀ t ∈ Set.Icc T (2 * T), ‖f t - g T t‖ ≤ ε := by
+    intro ε hε
+    let B : ℝ := ∑ s ∈ S, ‖w s‖
+    have hB0 : 0 ≤ B := Finset.sum_nonneg fun _ _ => norm_nonneg _
+    have hB1 : 0 < B + 1 := by linarith only [hB0]
+    let δ : ℝ := ε / (B + 1)
+    have hδ : 0 < δ := by dsimp [δ]; positivity
+    obtain ⟨T₀, hT₀H, hr⟩ := hrough Y δ hδ
+    filter_upwards [eventually_ge_atTop (max T₀ 1)] with T hT
+    intro t ht
+    have hT₀ : T₀ ≤ T := (le_max_left _ _).trans hT
+    have hT1 : 1 ≤ T := (le_max_right _ _).trans hT
+    have htH : H ≤ t := hT₀H.trans (hT₀.trans ht.1)
+    have he := hr T hT₀ t ht
+    have heq : f t - g T t = integerHeightPoly S w t *
+        (logDeriv riemannZeta ((σ : ℂ) + t * I) +
+          integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t) +
+          gaussianHeightCurrent (roughVonMangoldtCoeff Y σ) T (-t)) := by
+      dsimp [f, g]
+      rw [max_eq_right htH, max_eq_left hT1]
+      ring
+    rw [heq, norm_mul]
+    have hRB : ‖integerHeightPoly S w t‖ ≤ B + 1 :=
+      (norm_head_le S w t).trans (by dsimp [B]; linarith)
+    refine le_of_lt ((mul_le_mul_of_nonneg_right hRB (norm_nonneg _)).trans_lt ?_)
+    calc
+      _ < (B + 1) * δ := mul_lt_mul_of_pos_left he hB1
+      _ = ε := by dsimp [δ]; field_simp
+  have hlim := tendsto_dyadicMean_of_uniformApproximation hf hg hclose hmean
+  refine hlim.congr' ?_
+  filter_upwards [eventually_ge_atTop H] with T hT
+  have hT0 : 0 < T := hH.trans_le hT
+  unfold dyadicSquareMean
+  apply congrArg (fun u : ℝ => u / T)
+  apply intervalIntegral.integral_congr
+  intro t ht
+  rw [Set.uIcc_of_le (by linarith only [hT0] : T ≤ 2 * T)] at ht
+  have htH : H ≤ t := hT.trans ht.1
+  simp only [f, max_eq_right htH, norm_mul, mul_pow]
+
+/-- The logarithmic current of the complete finite Euler head. -/
+def smallPrimeEulerCurrent (Y : ℕ) (s : ℂ) : ℂ :=
+  ∑ p ∈ Nat.primesBelow Y, (Real.log p : ℂ) / ((p : ℂ) ^ s - 1)
+
+private theorem smallPrimePower_injective (Y : ℕ) : Function.Injective
+    (fun x : {p : ℕ // p ∈ Nat.primesBelow Y} × ℕ => (x.1 : ℕ) ^ (x.2 + 1)) := by
+  intro x y h
+  let f : ({p : ℕ // p ∈ Nat.primesBelow Y} × ℕ) → Nat.Primes × ℕ := fun z =>
+    (⟨z.1, (Nat.mem_primesBelow.mp z.1.property).2⟩, z.2)
+  have he : Nat.Primes.prodNatEquiv (f x) = Nat.Primes.prodNatEquiv (f y) := Subtype.ext h
+  have hh := Nat.Primes.prodNatEquiv.injective he
+  exact Prod.ext (Subtype.ext (congrArg (fun z : Nat.Primes × ℕ => (z.1 : ℕ)) hh))
+    (congrArg (fun z : Nat.Primes × ℕ => z.2) hh)
+
+private theorem primePower_cpow {p : ℕ} (hp : p.Prime) (k : ℕ) (s : ℂ) :
+    ((p ^ (k + 1) : ℕ) : ℂ) ^ (-s) = ((p : ℂ) ^ (-s)) ^ (k + 1) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hpk0 : (0 : ℝ) < (p ^ (k + 1) : ℕ) := by exact_mod_cast pow_pos hp.pos _
+  rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast pow_ne_zero _ hp.ne_zero),
+    Complex.cpow_def_of_ne_zero (by exact_mod_cast hp.ne_zero), ← Complex.exp_nat_mul]
+  congr 1
+  rw [← Complex.ofReal_natCast, ← Complex.ofReal_log hpk0.le,
+    Nat.cast_pow, Real.log_pow, Complex.ofReal_mul]
+  have hlog : Complex.log (p : ℂ) = (Real.log p : ℂ) := by
+    rw [← Complex.ofReal_natCast, ← Complex.ofReal_log hp0.le]
+  rw [hlog]
+  push_cast
+  ring
+
+private theorem hasSum_primePowerCurrent {p : ℕ} (hp : p.Prime) {s : ℂ} (hs : 0 < s.re) :
+    HasSum (fun k : ℕ => (Real.log p : ℂ) * ((p : ℂ) ^ (-s)) ^ (k + 1))
+      ((Real.log p : ℂ) / ((p : ℂ) ^ s - 1)) := by
+  have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
+  have hq : ‖(p : ℂ) ^ (-s)‖ < 1 := by
+    rw [← Complex.ofReal_natCast, Complex.norm_cpow_eq_rpow_re_of_pos hp0, Complex.neg_re]
+    exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast hp.one_lt) (by linarith)
+  have hg : HasSum (fun k : ℕ => (Real.log p : ℂ) * ((p : ℂ) ^ (-s)) ^ (k + 1))
+      ((Real.log p : ℂ) * (p : ℂ) ^ (-s) / (1 - (p : ℂ) ^ (-s))) := by
+    simpa only [pow_succ, mul_assoc, mul_comm, mul_left_comm, div_eq_mul_inv] using
+      HasSum.mul_left ((Real.log p : ℂ) * (p : ℂ) ^ (-s))
+        (hasSum_geometric_of_norm_lt_one hq)
+  have hz : (p : ℂ) ^ s ≠ 0 := by
+    rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast hp.ne_zero)]
+    exact Complex.exp_ne_zero _
+  have hz1 : (p : ℂ) ^ s - 1 ≠ 0 := by
+    intro h
+    have hh : (p : ℂ) ^ s = 1 := sub_eq_zero.mp h
+    rw [Complex.cpow_neg, hh, inv_one, norm_one] at hq
+    exact (lt_irrefl _ hq)
+  convert hg using 1
+  rw [Complex.cpow_neg]
+  field_simp
+
+/-- Absolute prime-power reindexing identifies the admitted small-prime
+series with the finite Euler head at every positive abscissa. -/
+theorem smallPrime_heightSeries_eq_eulerCurrent (Y : ℕ) {σ : ℝ} (hσ : 0 < σ) (t : ℝ) :
+    integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t) =
+      smallPrimeEulerCurrent Y ((σ : ℂ) + t * I) := by
+  classical
+  let a : ℕ → ℂ := fun n => smallPrimeVonMangoldtCoeff Y σ n *
+    Complex.exp (-(((t * Real.log n : ℝ) : ℂ) * I))
+  let j : ({p : ℕ // p ∈ Nat.primesBelow Y} × ℕ) → ℕ := fun x => (x.1 : ℕ) ^ (x.2 + 1)
+  have hs : Summable a := ((summable_norm_smallPrimeVonMangoldtCoeff Y hσ).congr
+    (fun n => by simp only [a, norm_mul, PhaseSeries.norm_exp_neg_phase, mul_one])).of_norm
+  have hsum : HasSum a (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t)) := by
+    simpa only [integerHeightSeries, neg_neg,
+      PhaseSeries.phaseSeries_eq_tsum (smallPrimeVonMangoldtCoeff_zero Y σ)] using hs.hasSum
+  have hz : ∀ n ∉ Set.range j, a n = 0 := by
+    intro n hn
+    by_cases hb : smallPrimeVonMangoldtCoeff Y σ n = 0
+    · simp only [a, hb, zero_mul]
+    exfalso
+    have hΛ : ArithmeticFunction.vonMangoldt n ≠ 0 := by
+      intro h
+      apply hb
+      simp [smallPrimeVonMangoldtCoeff, roughVonMangoldtCoeff,
+        woldVonMangoldtWeightedCoefficient, h]
+    have hpp : IsPrimePow n := by
+      by_contra h
+      exact hΛ (ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr h)
+    obtain ⟨p, k, hp, hk, hpk⟩ := hpp
+    have hp' : p.Prime := Nat.prime_iff.mpr hp
+    have hpn : p ∣ n := hpk ▸ dvd_pow_self p (by omega : k ≠ 0)
+    have hpY : p ∈ Nat.primesBelow Y := Nat.mem_primesBelow.mpr
+      ⟨Nat.mem_smoothNumbers'.mp (smallPrimeVonMangoldtCoeff_smooth hb) p hp' hpn, hp'⟩
+    apply hn
+    refine ⟨(⟨p, hpY⟩, k - 1), ?_⟩
+    change p ^ (k - 1 + 1) = n
+    rw [Nat.sub_add_cancel hk, hpk]
+  have hj := ((smallPrimePower_injective Y).hasSum_iff hz).mpr hsum
+  have hterm : ∀ x : {p : ℕ // p ∈ Nat.primesBelow Y} × ℕ,
+      a (j x) = (Real.log (x.1 : ℕ) : ℂ) *
+        (((x.1 : ℕ) : ℂ) ^ (-((σ : ℂ) + t * I))) ^ (x.2 + 1) := by
+    rintro ⟨p, k⟩
+    have hp : (p : ℕ).Prime := (Nat.mem_primesBelow.mp p.property).2
+    have hn : ¬ ((p : ℕ) ^ (k + 1) ≠ 0 ∧
+        ∀ q ∈ Nat.primesBelow Y, ¬q ∣ (p : ℕ) ^ (k + 1)) := fun h =>
+      (h.2 p p.property) (dvd_pow_self p (Nat.succ_ne_zero k))
+    dsimp only [a, j]
+    rw [smallPrimeVonMangoldtCoeff, roughVonMangoldtCoeff, if_neg hn, sub_zero,
+      woldVonMangoldtWeightedCoefficient, Complex.ofReal_mul,
+      ← line_term (fun n => (ArithmeticFunction.vonMangoldt n : ℂ)) (by simp) σ t,
+      LSeries.term_def₀ (by simp), ArithmeticFunction.vonMangoldt_apply_pow (Nat.succ_ne_zero k),
+      ArithmeticFunction.vonMangoldt_apply_prime hp, primePower_cpow hp]
+  have hpowers : HasSum (fun x : {p : ℕ // p ∈ Nat.primesBelow Y} × ℕ =>
+      (Real.log (x.1 : ℕ) : ℂ) * (((x.1 : ℕ) : ℂ) ^ (-((σ : ℂ) + t * I))) ^ (x.2 + 1))
+      (integerHeightSeries (smallPrimeVonMangoldtCoeff Y σ) (-t)) :=
+    hj.congr hterm
+  have hheads := hpowers.prod_fiberwise (fun p =>
+    hasSum_primePowerCurrent (Nat.mem_primesBelow.mp p.property).2 (by simpa using hσ))
+  rw [← hheads.tsum_eq, tsum_fintype, Finset.sum_coe_sort]
+  rfl
+
+/-- The continued Euler current has exactly the rough arithmetic variance
+under every smooth head probe, on one line below an exceptional abscissa. -/
+theorem not_asymptoticAbscissaLaw_has_conditioned_roughMean
+    (hnot : ¬ AsymptoticAbscissaLaw) :
+    ∃ σ : ℝ, 1 / 2 < σ ∧ σ < 1 ∧ (∃ q : XiZeroCopy, σ < (q.1 : ℂ).re) ∧
+      ∀ (Y : ℕ) (S : Finset ℕ) (w : ℕ → ℂ),
+        (∀ s ∈ S, s ∈ Nat.smoothNumbers Y) →
+        Tendsto (fun T : ℝ => (∫ t in T..(2 * T), ‖integerHeightPoly S w t‖ ^ 2 *
+          ‖logDeriv riemannZeta ((σ : ℂ) + t * I) +
+            smallPrimeEulerCurrent Y ((σ : ℂ) + t * I)‖ ^ 2) / T)
+          atTop (𝓝 ((∑ s ∈ S, ‖w s‖ ^ 2) *
+            ∑' n : ℕ, ‖roughVonMangoldtCoeff Y σ n‖ ^ 2)) := by
+  obtain ⟨σ, hσ, hσ1, hq, hm⟩ :=
+    not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean hnot
+  refine ⟨σ, hσ, hσ1, hq, fun Y S w hS => ?_⟩
+  simpa only [smallPrime_heightSeries_eq_eulerCurrent Y (by linarith only [hσ] : 0 < σ)]
+    using hm Y S w hS
+
 #print axioms summable_norm_smallPrimeVonMangoldtCoeff
 #print axioms smallPrime_gaussianDamping_uniformly_vanishes
 #print axioms gaussianDampedPrimeSum_eq_heightCurrent
 #print axioms gaussianDampedPrimeSum_eq_small_add_rough
 #print axioms not_asymptoticAbscissaLaw_has_regular_roughPassage
+#print axioms not_asymptoticAbscissaLaw_has_conditioned_seriesRoughMean
+#print axioms smallPrime_heightSeries_eq_eulerCurrent
+#print axioms not_asymptoticAbscissaLaw_has_conditioned_roughMean
 
 end GaloisForLFunctions.EulerFETransportTheory

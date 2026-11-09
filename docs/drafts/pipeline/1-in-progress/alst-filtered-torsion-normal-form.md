@@ -24,3 +24,10 @@ finitely supported integer array `c` such that `F=Σ_a c_a B_a`, with every
 nonzero `c_a` satisfying both `weight(a)≤N` and `Σ_p floor(a_p/q)≥r`.
 Each `B_a` has leading coefficient one at `a` and length exactly `weight(a)`.
 Thus the representation is integral, unique, and preserves every arithmetic cutoff.
+
+## Integral ideal consequence
+Let `J = (u_p^q−1 : p∈P)` in `ℤ[u_p]`. Full complex torsion multiplicity
+`r` is exactly membership in `J^r`: each admissible Newton polynomial lies
+in `J^r`, while each generator maps into every complex torsion point ideal.
+The expansion therefore proves integral descent of the full multiplicity
+condition, without denominators or an additional saturation hypothesis.

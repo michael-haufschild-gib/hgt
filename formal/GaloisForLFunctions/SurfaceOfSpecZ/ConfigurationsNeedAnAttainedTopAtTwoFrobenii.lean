@@ -322,7 +322,7 @@ theorem key_ineq {Θ s : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) (n : ℕ) (hs
   rw [hid]
   exact mul_le_mul_of_nonneg_left hfin (by positivity)
 
-theorem win_le_base (n : ℕ) : win V n ≤ V ^ 2 ^ n := by
+theorem win_le_base (hV0 : 0 ≤ V) (n : ℕ) : win V n ≤ V ^ 2 ^ n := by
   rcases n with _ | m
   · rw [win_zero]; positivity
   · rw [win_succ]
@@ -333,7 +333,7 @@ theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
   set s := V ^ 2 ^ n
   have hs0 : 0 ≤ s := by positivity
   have hy : 2 / hiW Θ V (n + 1) = 2 ^ (n + 2) * Real.exp (Θ * win V n) := by
-    rw [div_eq_iff (hiW_pos (n + 1)).ne']
+    rw [div_eq_iff (hiW_pos (Θ := Θ) (V := V) (n + 1)).ne']
     simp only [hiW]
     have h1 : (2 : ℝ) ^ (n + 2) * (1 / 2) ^ (n + 1) = 2 := by
       rw [show n + 2 = (n + 1) + 1 by ring, pow_succ, mul_comm (2 ^ (n + 1)) 2, mul_assoc,
@@ -345,9 +345,10 @@ theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
           (Real.exp (Θ * win V n) * Real.exp (-(Θ * win V n))) := by rw [h1, h2, mul_one]
       _ = _ := by ring
   have hexp : Real.exp (Θ * win V n) ≤ Real.exp (Θ * s) :=
-    Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (win_le_base n) hΘ.le)
+    Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left (win_le_base (by linarith) n) hΘ.le)
   have hexp1 : 1 ≤ Real.exp (Θ * s) := Real.one_le_exp (by positivity)
-  have hceil := ceil_le_add_one (le_of_lt (div_pos (by norm_num : (0 : ℝ) < 2) (hiW_pos (n + 1))))
+  have hceil := ceil_le_add_one (le_of_lt (div_pos (by norm_num : (0 : ℝ) < 2)
+    (hiW_pos (Θ := Θ) (V := V) (n + 1))))
   rw [hy] at hceil
   have hn : (n : ℝ) + 8 ≤ 2 ^ (n + 4) := by
     have h : n + 8 ≤ 2 ^ (n + 4) := by
@@ -361,6 +362,8 @@ theorem lowH_succ_le (hΘ : 0 < Θ) (hV1 : 1 ≤ V) (n : ℕ) :
   have e4 : (2 : ℝ) ^ (n + 4) = 2 ^ (n + 2) * 4 := by
     rw [show n + 4 = (n + 2) + 2 by ring, pow_add]; norm_num
   unfold lowH; push_cast
+  rw [hy, e5]
+  rw [e4] at hn
   have h6 := mul_le_mul_of_nonneg_left hexp h5.le
   have h7 := mul_le_mul_of_nonneg_left hexp1 h5.le
   nlinarith
@@ -433,35 +436,44 @@ theorem eight_le_wt_mul_exp (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2)
   have hM := height_le (Θ := Θ) (V := V) p q (n + 1)
   have hwt := wt_ge (V := V) p q hΘ hΘ2 (n + 1)
   rw [← hs] at hA hQ
+  have hA1 : (1 : ℝ) ≤ (lowH Θ V (n + 1) : ℝ) := by
+    exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH Θ V (n + 1))
+  have hQ1 : (1 : ℝ) ≤ (prec V (n + 1) : ℝ) := by
+    exact_mod_cast (by unfold prec; omega : 1 ≤ prec V (n + 1))
+  have hM1 : (1 : ℝ) ≤ (height Θ V p q (n + 1) : ℝ) := by
+    exact_mod_cast (by have := six_le_height (Θ := Θ) (V := V) p q (n + 1); omega :
+      1 ≤ height Θ V p q (n + 1))
   set A : ℝ := (lowH Θ V (n + 1) : ℝ)
   set Q : ℝ := (prec V (n + 1) : ℝ)
   set M : ℝ := (height Θ V p q (n + 1) : ℝ)
-  have hA1 : 1 ≤ A := by exact_mod_cast (by unfold lowH; omega : 1 ≤ lowH Θ V (n + 1))
-  have hQ1 : 1 ≤ Q := by exact_mod_cast (by unfold prec; omega : 1 ≤ prec V (n + 1))
-  have hM1 : 1 ≤ M := by
-    exact_mod_cast (by have := six_le_height (Θ := Θ) (V := V) p q (n + 1); omega :
-      1 ≤ height Θ V p q (n + 1))
   -- `7M ≤ 42A²Q² ≤ 2^{2n+26} e^{2Θs} s⁸`
   have hbase : 7 * M ≤ 2 ^ (2 * n + 26) * (Real.exp (Θ * s) ^ 2 * s ^ 8) := by
     have h1 : A ^ 2 ≤ (2 ^ (n + 5) * Real.exp (Θ * s)) ^ 2 := pow_le_pow_left₀ (by linarith) hA 2
     have h2 : Q ^ 2 ≤ (39 * s ^ 4) ^ 2 := pow_le_pow_left₀ (by linarith) hQ 2
     have h3 : A ^ 2 * Q ^ 2 ≤ (2 ^ (n + 5) * Real.exp (Θ * s)) ^ 2 * (39 * s ^ 4) ^ 2 :=
       mul_le_mul h1 h2 (by positivity) (by positivity)
+    have hp : ((2 : ℝ) ^ (n + 5)) ^ 2 = 2 ^ (2 * n + 10) := by rw [← pow_mul]; congr 1; ring
     have e : 42 * ((2 ^ (n + 5) * Real.exp (Θ * s)) ^ 2 * (39 * s ^ 4) ^ 2) =
-        63882 * 2 ^ (2 * n + 10) * (Real.exp (Θ * s) ^ 2 * s ^ 8) := by
-      rw [show 2 * n + 10 = 2 * (n + 5) by ring, pow_mul]; ring
+        63882 * (2 ^ (2 * n + 10) * (Real.exp (Θ * s) ^ 2 * s ^ 8)) := by
+      rw [mul_pow, mul_pow, hp]; ring
     have e2 : (2 : ℝ) ^ (2 * n + 26) = 2 ^ (2 * n + 10) * 65536 := by
       rw [show 2 * n + 26 = (2 * n + 10) + 16 by ring, pow_add]; norm_num
     have hpos : 0 ≤ 2 ^ (2 * n + 10) * (Real.exp (Θ * s) ^ 2 * s ^ 8) := by positivity
-    nlinarith
+    calc 7 * M ≤ 42 * (A ^ 2 * Q ^ 2) := by linarith
+      _ ≤ 42 * ((2 ^ (n + 5) * Real.exp (Θ * s)) ^ 2 * (39 * s ^ 4) ^ 2) :=
+          mul_le_mul_of_nonneg_left h3 (by norm_num)
+      _ = 63882 * (2 ^ (2 * n + 10) * (Real.exp (Θ * s) ^ 2 * s ^ 8)) := e
+      _ ≤ 65536 * (2 ^ (2 * n + 10) * (Real.exp (Θ * s) ^ 2 * s ^ 8)) :=
+          mul_le_mul_of_nonneg_right (by norm_num) hpos
+      _ = 2 ^ (2 * n + 26) * (Real.exp (Θ * s) ^ 2 * s ^ 8) := by rw [e2]; ring
   have hdelta : (depth Θ (n + 1) - depth Θ n) * win V (n + 1) = Θ * s ^ 2 / 2 ^ (n + 2) := by
     rw [depth_succ_sub, win_succ, hs, ← pow_mul, ← pow_succ, one_div_pow]; ring
   rw [hdelta]
   set B := 2 ^ (2 * n + 26) * (Real.exp (Θ * s) ^ 2 * s ^ 8)
   have hB : 0 < B := by positivity
   have hwt' : 2 * (Θ / 2) ^ 8 / B ^ 8 ≤ wt Θ V p q (n + 1) :=
-    le_trans (div_le_div_of_nonneg_left (by positivity) (by positivity)
-      (pow_le_pow_left₀ (by positivity) hbase 8)) hwt
+    le_trans (div_le_div_of_nonneg_left (by positivity) (pow_pos (by linarith) 8)
+      (pow_le_pow_left₀ (by linarith) hbase 8)) hwt
   have hE : 0 < Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) := Real.exp_pos _
   calc (8 : ℝ) = 8 * B ^ 8 / B ^ 8 := by field_simp
     _ ≤ 2 * (Θ / 2) ^ 8 * Real.exp (Θ * s ^ 2 / 2 ^ (n + 2)) / B ^ 8 :=

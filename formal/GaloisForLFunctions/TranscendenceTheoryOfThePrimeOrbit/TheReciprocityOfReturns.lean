@@ -224,8 +224,9 @@ theorem exists_norm_gammaTerm_le {φ : ℝ → ℂ} {a : ℝ} (hφ : ContDiff �
           rw [hw32, ← mul_div_assoc]
           exact div_le_div_of_nonneg_right hlogw (by positivity)
       _ = g τ := by simp only [g, w]; ring
-  have hnorm := norm_integral_le_integral_norm (fun τ : ℝ => paperFT φ ((τ : ℂ) - t) * (mu τ : ℂ))
-  have hmono : ∫ τ, ‖paperFT φ ((τ : ℂ) - t) * (mu τ : ℂ)‖ ≤ ∫ τ, g τ :=
+  have hnorm := norm_integral_le_integral_norm (μ := volume)
+    (fun τ : ℝ => paperFT φ ((τ : ℂ) - t) * (mu τ : ℂ))
+  have hmono : ∫ τ : ℝ, ‖paperFT φ ((τ : ℂ) - t) * (mu τ : ℂ)‖ ≤ ∫ τ, g τ :=
     integral_mono_of_nonneg (Filter.Eventually.of_forall fun _ => norm_nonneg _) hg
       (Filter.Eventually.of_forall hpt)
   have hgint : ∫ τ, g τ = C * (A' + L + 2) * K₀ := by
@@ -238,7 +239,10 @@ theorem exists_norm_gammaTerm_le {φ : ℝ → ℂ} {a : ℝ} (hφ : ContDiff �
         hnorm.trans (hmono.trans hgint.le)
     _ ≤ C * K₀ * (A' + 2) * (1 + L) := by
         have hA0 : 0 ≤ A' := le_max_right _ _
-        nlinarith [mul_nonneg hC hK₀]
+        have e : C * K₀ * (A' + 2) * (1 + L) - C * (A' + L + 2) * K₀ = C * K₀ * (A' + 1) * L := by
+          ring
+        have : 0 ≤ C * K₀ * (A' + 1) * L := by positivity
+        linarith
 
 /-! ## Pole imitation at a return -/
 
@@ -248,7 +252,7 @@ def orbitMass (φ : ℝ → ℂ) : ℝ :=
 
 /-- At a `δ`-return of the primes `≤ e^a`, the orbit polynomial at height `t` is the orbit
 polynomial at `0` up to `2πδ(a/log 2)M_φ`. -/
-theorem norm_orbitPoly_sub_le {φ : ℝ → ℂ} (hφ0 : ∀ u ≤ 0, φ u = 0) {a : ℝ}
+theorem norm_orbitPoly_sub_le {φ : ℝ → ℂ} {a : ℝ}
     (hsupp : ∀ u, φ u ≠ 0 → |u| ≤ a) {δ t : ℝ} (hδ : 0 ≤ δ)
     (hret : ∀ p : ℕ, p.Prime → Real.log p ≤ a → dist01 (t * Real.log p / (2 * π)) ≤ δ) :
     ‖orbitPoly φ t - orbitPoly φ 0‖ ≤ 2 * π * δ * (a / Real.log 2) * orbitMass φ := by
@@ -330,7 +334,7 @@ theorem norm_zeroSide_add_orbitPoly_zero_le {φ : ℝ → ℂ} (hφ : ContDiff �
     ‖zeroSide φ t + orbitPoly φ 0‖ ≤
       ‖poleTerm φ t‖ + ‖gammaTerm φ t‖ + 2 * π * δ * (a / Real.log 2) * orbitMass φ := by
   have hrec := orbit_reciprocity hφ hφc hφ0 t
-  have hdiff := norm_orbitPoly_sub_le hφ0 hsupp hδ hret
+  have hdiff := norm_orbitPoly_sub_le hsupp hδ hret
   have e : zeroSide φ t + orbitPoly φ 0 =
       poleTerm φ t + gammaTerm φ t - (orbitPoly φ t - orbitPoly φ 0) := by
     rw [hrec]; ring
