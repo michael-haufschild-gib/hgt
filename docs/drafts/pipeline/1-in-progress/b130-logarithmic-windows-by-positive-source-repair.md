@@ -63,7 +63,11 @@ depth tests needed for prime-gap iteration.
   is a lower bound and differs from the source by at most `2Lδ`; this can
   replace cell minima in the compact approximation proof.
 - `local-divisor-coefficient-repair`: sharp quadratic binomial repair already
-  formalized; a suitable general Pólya multiplier statement still needs proof.
+  formalized. `ArithmeticLocalDivisorGeometry/PositiveMultipliers.lean` now proves
+  `exists_negativeRootMultiplier_repair`: every polynomial positive on `[0,∞)`
+  has a coefficientwise nonnegative multiple using only correcting factors
+  `X+r`, `r>0`. It also proves those correcting factors nonzero in the closed
+  right half-plane. Both axiom audits contain only the standard three axioms.
 - Missing: compact lower step approximation preserving every real Laplace sign,
   complete positivity-repair theorem, zeta specialization, logarithmic leakage,
   and prime-window conclusion. No theorem in this card is claimed formalized.
@@ -76,8 +80,29 @@ No external novelty claim; no web search used.
 Equal binomial weights are unnecessary. It suffices to use coefficients of
 `Q(X)=∏(X+r_j)^(n_j)`, `r_j>0`. For any polynomial positive on `[0,∞)`,
 factorization into real linear factors and conjugate quadratic factors,
-followed by the existing quadratic repair theorem, should supply such a `Q`
+followed by the quadratic repair theorem, supplies such a `Q`
 with coefficientwise nonnegative `PQ`. The repair factor has only negative
 real roots. Choose the step mesh with `δ |Im w₀|<π`; then `exp(δw₀)` is
 not negative real, so `Q(exp(δw₀))≠0`. This suffices for the chosen mode
 and avoids requiring a new equal-factor Pólya theorem.
+
+## Uniform approximation parameters
+
+For a Lipschitz source, take `A≥1` with `g>0` for `|x|>A`, Lipschitz
+constant `L>0`, and `B=1+sup_(|x|≤A+2)|g(x)|`. Let `m>0` be a lower
+bound on `A+2≤|x|≤A+5`. Choose `S≥1` with
+`(m/2)exp(S)>2(A+2)B`; put `η=min_(|s|≤S)∫exp(sx)g(x)dx>0`.
+Choose `R>A+6` so that
+`exp(-R)∫exp((S+1)|x|)|g(x)|dx<η/4`, and let `u>0` bound `g`
+below on `A+1≤|x|≤R`.
+
+Use grid mesh `h=2R/M`, smaller than the prescribed mesh bound and
+`min(1,1/L,u/(2L),m/(2L),η/(16RL exp(SR)))`. On each cell take its
+left value minus `Lh`, and use zero outside `(-R,R]`. This is a global
+lower approximation, its negative part is supported in `[-A-2,A+2]`
+and bounded by `B`, and it is at least `m/2` on both outer unit bands.
+Those bands prove Laplace positivity for `|s|≥S`. For `|s|≤S`, compact
+error is at most `4RLh exp(SR)≤η/4`, and discarded weighted tail is
+less than `η/4`. The first coefficient is positive because `g(-R)≥u`.
+Thus the associated polynomial is positive on `[0,∞)` and admits the
+negative-root correcting multiplier. These analytic estimates still await Lean.

@@ -192,4 +192,18 @@ theorem exists_separatedOrdinates_bddBelow_on_short_windows {δ : ℝ} (hδ : 0 
     exact Real.cos_nonneg_of_mem_Icc ⟨by linarith, by linarith⟩
   linarith
 
+/-- **No fixed window length decides every configuration.** For every `L > 0` some tempered
+configuration without real zeros and with a zero off the line is bounded below on windows of
+length `L` beyond every bound: decisive windows must grow, or be long against the separation. -/
+theorem exists_impure_bddBelow_on_windows_of_length {L : ℝ} (hL : 0 < L) :
+    ∃ Z : ZeroConfig, TemperedConfig Z ∧ (∀ ρ ∈ Z.carrier, ρ.im ≠ 0) ∧
+      (∃ ρ ∈ Z.carrier, ρ.re ≠ 1 / 2) ∧ ∃ K : ℝ, ∀ U : ℝ, ∃ u₀, U ≤ u₀ ∧
+        ∀ u ∈ Icc (u₀ - L / 2) (u₀ + L / 2),
+          -K ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re := by
+  obtain ⟨Z, hZ, hnr, -, himp, K, hK⟩ :=
+    exists_separatedOrdinates_bddBelow_on_short_windows (δ := 2 * π / L) (by positivity)
+  have e : π / (2 * π / L) = L / 2 := by field_simp
+  rw [e] at hK
+  exact ⟨Z, hZ, hnr, himp, K, hK⟩
+
 end GaloisForLFunctions.SurfaceOfSpecZ
