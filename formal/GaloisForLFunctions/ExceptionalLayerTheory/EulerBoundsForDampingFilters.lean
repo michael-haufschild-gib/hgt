@@ -45,7 +45,7 @@ private theorem norm_damping_root_factor_le {R h : ℝ} (hR : 0 ≤ R)
         Real.exp (R + |β|) * (h * ‖z - w‖) := he
     _ ≤ Real.exp (R + |β|) * (h * (‖z‖ + R)) := by
       gcongr
-      exact (norm_sub_le z w).trans (add_le_add_left hw _)
+      exact (norm_sub_le z w).trans (add_le_add le_rfl hw)
     _ = _ := by ring
 
 /-- On a vertical Euler line, a degree `d` divisor filter retains its full
@@ -71,8 +71,12 @@ theorem exists_divisorDampingFilter_euler_bound (F : Finset XiZeroCopy)
   have hzre : z.re ≤ R := by simpa [z] using (le_abs_self c).trans hcR
   have hz : ‖z‖ ≤ |c| + |t| + |v| := by
     calc
-      ‖z‖ ≤ ‖(c : ℂ)‖ + ‖((t + v : ℝ) : ℂ) * I‖ := norm_add_le _ _
-      _ = |c| + |t + v| := by simp
+      ‖z‖ ≤ ‖(c : ℂ)‖ + ‖((t + v : ℝ) : ℂ) * I‖ := by
+        dsimp only [z]
+        rw [← Complex.ofReal_add]
+        exact norm_add_le _ _
+      _ = |c| + |t + v| := by
+        simp only [norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
       _ ≤ |c| + |t| + |v| := by linarith only [abs_add_le t v]
   have hzR : ‖z‖ + R ≤ (2 * R + 1) * (1 + |t|) * (1 + |v|) := by
     have htv := mul_nonneg (abs_nonneg t) (abs_nonneg v)
@@ -154,15 +158,17 @@ theorem primeDampingFilter_eq_euler_integral (P : Polynomial ℂ)
       k * ∫ v : ℝ, P.coeff j * dampingSampleWeight β h s j *
         (gaussianMBKernel (geometricGaussianDamping a h t j) ((c : ℂ) + v * I) * L v) := by
     rw [gaussianDampedPrimeSum, tsum_term_mul_exp_neg_eq_line_integral
-      (Real.exp_pos _) hc _ s (summable_vonMangoldt_rpow_neg hs'), integral_const_mul]
+      (y := geometricGaussianDamping a h t j)
+      (by exact Real.exp_pos _) hc _ s (summable_vonMangoldt_rpow_neg hs'), integral_const_mul]
     ring
   calc
     primeDampingFilter P σ β a h t = k * ∫ v : ℝ,
         ∑ j ∈ J, P.coeff j * dampingSampleWeight β h s j *
           (gaussianMBKernel (geometricGaussianDamping a h t j) ((c : ℂ) + v * I) * L v) := by
-      change (∑ j ∈ J, _) = _
+      change (∑ j ∈ J, P.coeff j * dampingSampleWeight β h s j *
+        gaussianDampedPrimeSum s (geometricGaussianDamping a h t j)) = _
       simp_rw [he]
-      rw [← Finset.mul_sum, integral_finset_sum J (fun j _ => hi j)]
+      rw [← Finset.mul_sum, integral_finsetSum J (fun j _ => hi j)]
     _ = _ := by
       congr 1
       apply integral_congr_ae

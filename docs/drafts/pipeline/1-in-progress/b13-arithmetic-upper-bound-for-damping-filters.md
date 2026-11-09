@@ -13,7 +13,7 @@ The bound must not assume the zero exclusion it is intended to prove.
 
 ## Arithmetic candidates
 
-The absolutely convergent Euler region gives the candidate bound
+The absolutely convergent Euler region gives the bound
 `|A(t)| ≤ C h^d (1+t)^d exp(a(c−σ)t/2)` for each fixed `c>1`.
 A Mellin–Barnes integral on `Re z=c` should retain every filter factor:
 `P_h(exp(h(z−β)))=O(h^d(1+|z|)^d)`.
@@ -21,7 +21,8 @@ Gamma decay makes the vertical integral finite; the literal Euler series
 bounds `|ζ′/ζ(c+iv)|` independently of the exceptional divisor.
 This estimate still exceeds the selected mode by exponential rate
 `a(c−β)/2+π/4`. Contraction subtracts `dκ` from both rates.
-This is a candidate derivation, not a claimed formal theorem.
+Its complete paper proof and ongoing Lean verification are recorded in
+`b13-euler-bound-and-fast-contraction.md`.
 
 Existing prime–pole estimates include
 `ArithmeticIndexDescent.exists_screwPrimeSum_explicit_classical_rate` and
@@ -35,5 +36,11 @@ comparable to `X` do not control these readings.
 
 ## Status
 
-No independent bound contradicting the exceptional-layer signal proved.
-No new arithmetic upper bound formalized on this card yet.
+The Euler bound forces decay when `dκ>a(1−σ)/2`. The exceptional-layer
+growth theorem applies when `dκ<a(β−σ)/2−π/4`; the two regimes are disjoint.
+No independent bound contradicting the exceptional-layer signal is proved.
+
+An upper estimate on one unbounded sequence of heights would suffice,
+because the filtered lower law holds at every sufficiently large height.
+A fixed-damping mean-square limit does not establish such a sequence for
+`y=exp(−at)`; the required interchange of cutoff and height limits remains open.

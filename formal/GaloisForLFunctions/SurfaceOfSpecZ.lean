@@ -85,6 +85,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FiniteSpectrumOscillatio
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ConfigurationTailIsolation
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SquareRootWindowsDetectEveryDepth
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeSquareRootWindows
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.MixedPositiveMoments
 
 /-!
 # The surface of `Spec ℤ`

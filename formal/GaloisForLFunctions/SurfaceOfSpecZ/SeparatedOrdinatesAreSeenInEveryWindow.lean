@@ -818,22 +818,31 @@ theorem exists_finset_trace_approx (hZ : TemperedConfig Z) {ε : ℝ} (R : ℝ) 
         mul_le_mul_of_nonneg_right (hS₀ S hS).le (Real.exp_pos _).le
     _ = ε := by field_simp
 
-/-- **Separated ordinates are seen in every window.** Let `Z` be tempered, without real zeros,
-with `δ`-separated ordinates, and with a zero off the line. For every `K` and every `ℓ ≥ 40/δ`,
-far enough out every window `[u₀ − ℓ, u₀ + ℓ]` contains a scale with `2 Re S(u) < −K`.
+/-- **The windowed width law for separated ordinates.** Let `Z` be tempered, without real zeros,
+with `δ`-separated ordinates, and with a zero `ρ₁` of real part `> ½ + s`, `s ≥ 0`. For every `K` and
+every `ℓ ≥ 40/δ`, far enough out every window `[u₀ − ℓ, u₀ + ℓ]` contains a scale with
+`2 Re S(u) < −K e^{su}`.
 
 The exponent `z₀` of maximal weight at `u₀` is tested by Landau's inequality on the window
-(`norm_le_of_window_lower`). Its weight `M₀` is at most `(2/25 + 1/50) e^{ηℓ} M₀` of leakage from
-other ordinates, `M₀/4` from its reflection, and `2(|K| + 1)e^{ℓ/2}`; with `ηℓ ≤ 1` this bounds
-`M₀`, while `M₀ ≥ |D_z| e^{Re z · u₀} → ∞` for any exponent of positive depth. -/
-theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
+(`norm_le_of_window_lower`) with `K' = (|K| + 1) e^{s(u₀ + ℓ)}`. Its weight `M₀` is at most
+`(2/25 + 1/50) e^{ηℓ} M₀` of leakage from other ordinates, `M₀/4` from its reflection, and
+`2K' e^{ℓ/2}`; with `ηℓ ≤ 1` this bounds `M₀`, while `M₀ e^{−su₀} ≥ |D_z| e^{(Re z − s)u₀} → ∞` for
+`z = ρ₁ − ½`. -/
+theorem exists_lt_exp_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z δ)
-    {ρ₁ : ℂ} (hρ₁ : ρ₁ ∈ Z.carrier) (hρ₁re : ρ₁.re ≠ 1 / 2) {ℓ : ℝ} (hℓ : 40 / δ ≤ ℓ) (K : ℝ) :
+    {s : ℝ} (hs : 0 ≤ s) {ρ₁ : ℂ} (hρ₁ : ρ₁ ∈ Z.carrier) (hρ₁re : 1 / 2 + s < ρ₁.re) {ℓ : ℝ}
+    (hℓ : 40 / δ ≤ ℓ) (K : ℝ) :
     ∃ U : ℝ, ∀ u₀, U ≤ u₀ → ∃ u ∈ Icc (u₀ - ℓ) (u₀ + ℓ),
-      2 * (lagStructure Z (boxSpline 1 3) u).re < -K := by
-  obtain ⟨zp, hzp, hzpre⟩ := exists_pos_re_evenCoeff_ne_zero hρ₁ hρ₁re
+      2 * (lagStructure Z (boxSpline 1 3) u).re < -(K * Real.exp (s * u)) := by
+  set zp : ℂ := ρ₁ - 1 / 2 with hzpdef
+  have hzp : evenCoeff Z (boxSpline 1 3) zp ≠ 0 :=
+    evenCoeff_sub_half_ne_zero_of_conj_symm Z (contDiff_boxSpline (r := 1) one_pos 2).continuous
+      (hasCompactSupport_of_support_subset_abs (boxSpline_support (r := 1) one_pos 3))
+      (conj_paperFT_boxSpline _ _) (paperFT_boxSpline_neg _ _) hρ₁
+      (paperFT_boxSpline_ne_zero one_pos 3 (im_gammaOf_ne_zero (by linarith)))
+  have hzpre : s < zp.re := by simp [zp]; linarith
   obtain ⟨b, hb, hbsup⟩ := exists_depth_sup hzp
-  have hb0 : 0 < b := lt_of_lt_of_le hzpre (hb zp hzp)
+  have hb0 : 0 < b := lt_of_le_of_lt hs (lt_of_lt_of_le hzpre (hb zp hzp))
   have hδℓ : 40 ≤ δ * ℓ := by rw [div_le_iff₀ hδ] at hℓ; linarith
   have hℓ0 : 0 < ℓ := by
     by_contra h; push Not at h; nlinarith
@@ -845,20 +854,26 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
       _ = 1 := by field_simp
   obtain ⟨z₁, hz₁, hz₁b⟩ := hbsup (η / 2) (half_pos hη)
   obtain ⟨U₁, hdom⟩ := le_re_of_dominant hZ hη hz₁ hz₁b
-  set K' := |K| + 1 with hK'
-  have hK'0 : 0 ≤ K' := by positivity
-  have hgrow : Tendsto (fun u => expWeight Z u zp) atTop atTop := by
-    unfold expWeight
+  set C : ℝ := 5 * (|K| + 1) * Real.exp (s * ℓ) * Real.exp (ℓ / 2) with hCdef
+  have hgrow : Tendsto (fun u => expWeight Z u zp * Real.exp (-(s * u))) atTop atTop := by
+    have e : (fun u => expWeight Z u zp * Real.exp (-(s * u))) =
+        fun u => ‖evenCoeff Z (boxSpline 1 3) zp‖ * Real.exp ((zp.re - s) * u) := by
+      funext u; unfold expWeight; rw [mul_assoc, ← Real.exp_add]; ring_nf
+    rw [e]
     exact Tendsto.const_mul_atTop (norm_pos_iff.mpr hzp)
-      (Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop hzpre))
-  obtain ⟨U₃, hU₃⟩ := Filter.eventually_atTop.mp
-    (hgrow.eventually_gt_atTop (5 * K' * Real.exp (ℓ / 2)))
+      (Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop (by linarith)))
+  obtain ⟨U₃, hU₃⟩ := Filter.eventually_atTop.mp (hgrow.eventually_gt_atTop C)
   refine ⟨max (U₁ + ℓ) (max U₃ (ℓ + Real.log 4 / b)), fun u₀ hu₀ => ?_⟩
   have hu₁ : U₁ + ℓ ≤ u₀ := (le_max_left _ _).trans hu₀
   have hu₃ : U₃ ≤ u₀ := ((le_max_left _ _).trans (le_max_right _ _)).trans hu₀
   have hu₄ : ℓ + Real.log 4 / b ≤ u₀ := ((le_max_right _ _).trans (le_max_right _ _)).trans hu₀
+  have hlog4 : 0 ≤ Real.log 4 / b := div_nonneg (Real.log_nonneg (by norm_num)) hb0.le
+  have hu0ℓ : 0 ≤ u₀ - ℓ := by linarith
   by_contra hall
   push Not at hall
+  set K' : ℝ := (|K| + 1) * Real.exp (s * (u₀ + ℓ)) with hK'
+  have hE1 : 1 ≤ Real.exp (s * (u₀ + ℓ)) := Real.one_le_exp (mul_nonneg hs (by linarith))
+  have hK'0 : 0 ≤ K' := by positivity
   -- dominant exponents at `u₀`, `u₀ + ℓ`, `u₀ − ℓ`
   obtain ⟨z₀, hz₀, h₀⟩ := exists_dominant hZ u₀ hzp
   obtain ⟨zA, hzA, hA⟩ := exists_dominant hZ (u₀ + ℓ) hzp
@@ -892,11 +907,16 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
       (abs_add_le _ _).trans (by linarith [abs_le.mpr ⟨hv.1, hv.2⟩])
     have happ := hS₀ (S₀ ∪ {z₀, conj z₀}) Finset.subset_union_left (u₀ + v) hR
     have hK1 := hall (u₀ + v) ⟨by linarith [hv.1], by linarith [hv.2]⟩
+    have hKe : K * Real.exp (s * (u₀ + v)) ≤ |K| * Real.exp (s * (u₀ + ℓ)) :=
+      mul_le_mul (le_abs_self K) (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left
+        (by linarith [hv.2]) hs)) (Real.exp_pos _).le (abs_nonneg K)
     rw [hsumS]
     have hd := Complex.re_le_norm (((2 * (lagStructure Z (boxSpline 1 3) (u₀ + v)).re : ℝ) : ℂ) -
       ∑ z ∈ S₀ ∪ {z₀, conj z₀}, evenCoeff Z (boxSpline 1 3) z * cexp (z * ((u₀ + v : ℝ) : ℂ)))
     rw [Complex.sub_re, Complex.ofReal_re] at hd
-    linarith [le_abs_self K]
+    have hK'e : K' = |K| * Real.exp (s * (u₀ + ℓ)) + Real.exp (s * (u₀ + ℓ)) := by
+      rw [hK']; ring
+    linarith
   -- Landau's inequality and the leakage bounds
   have hL := norm_le_of_window_lower (D := evenCoeff Z (boxSpline 1 3)) hz₀S hz₀'S
     (evenCoeff_conj Z z₀) hℓ0 hK'0 hlow
@@ -933,8 +953,6 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     have hlog : Real.log 4 ≤ b * (u₀ - ℓ) := by
       have : Real.log 4 / b ≤ u₀ - ℓ := by linarith
       rwa [div_le_iff₀ hb0, mul_comm] at this
-    have hpos : 0 ≤ u₀ - ℓ := le_trans (div_nonneg (Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4)) hb0.le)
-      (by linarith)
     have hle : -(2 * z₀.re) * (u₀ - ℓ) ≤ -Real.log 4 := by nlinarith
     calc Real.exp (-(2 * z₀.re) * (u₀ - ℓ)) ≤ Real.exp (-Real.log 4) := Real.exp_le_exp.mpr hle
       _ = 1 / 4 := by rw [Real.exp_neg, Real.exp_log (by norm_num)]; norm_num
@@ -948,10 +966,62 @@ theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)
     have := abs_re_le_of_mem_zeroExps hz₀E
     nlinarith
-  have hgr : 5 * K' * Real.exp (ℓ / 2) < expWeight Z u₀ zp := hU₃ u₀ hu₃
-  have hzp_le : expWeight Z u₀ zp ≤ M₀ := h₀ zp
+  -- growth: `5 K' e^{ℓ/2} < M₀`
+  have hgr : 5 * K' * Real.exp (ℓ / 2) < M₀ := by
+    have h1 := hU₃ u₀ hu₃
+    have h2 : expWeight Z u₀ zp * Real.exp (-(s * u₀)) * Real.exp (s * u₀) =
+        expWeight Z u₀ zp := by rw [mul_assoc, ← Real.exp_add]; simp
+    have h3 : 5 * K' * Real.exp (ℓ / 2) = C * Real.exp (s * u₀) := by
+      rw [hK', hCdef, mul_add, Real.exp_add]; ring
+    rw [h3]
+    calc C * Real.exp (s * u₀) < expWeight Z u₀ zp * Real.exp (-(s * u₀)) * Real.exp (s * u₀) :=
+          mul_lt_mul_of_pos_right h1 (Real.exp_pos _)
+      _ = expWeight Z u₀ zp := h2
+      _ ≤ M₀ := h₀ zp
   have hKE : 0 ≤ K' * Real.exp (ℓ / 2) := by positivity
   linarith
+
+/-- **Separated ordinates are seen in every window.** Let `Z` be tempered, without real zeros,
+with `δ`-separated ordinates, and with a zero off the line. For every `K` and every `ℓ ≥ 40/δ`,
+far enough out every window `[u₀ − ℓ, u₀ + ℓ]` contains a scale with `2 Re S(u) < −K`: the case
+`s = 0` of `exists_lt_exp_in_window_of_separatedOrdinates`, after reflecting the zero to the right
+of the line. -/
+theorem exists_lt_in_window_of_separatedOrdinates (hZ : TemperedConfig Z)
+    (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z δ)
+    {ρ₁ : ℂ} (hρ₁ : ρ₁ ∈ Z.carrier) (hρ₁re : ρ₁.re ≠ 1 / 2) {ℓ : ℝ} (hℓ : 40 / δ ≤ ℓ) (K : ℝ) :
+    ∃ U : ℝ, ∀ u₀, U ≤ u₀ → ∃ u ∈ Icc (u₀ - ℓ) (u₀ + ℓ),
+      2 * (lagStructure Z (boxSpline 1 3) u).re < -K := by
+  obtain ⟨ρ, hρ, hre⟩ : ∃ ρ ∈ Z.carrier, 1 / 2 + 0 < ρ.re := by
+    rcases lt_or_gt_of_ne hρ₁re with h | h
+    · refine ⟨_, Z.reflect_mem ρ₁ hρ₁, ?_⟩
+      have : (Zeta23.reflect ρ₁).re = 1 - ρ₁.re := by simp [Zeta23.reflect]
+      linarith
+    · exact ⟨ρ₁, hρ₁, by linarith⟩
+  obtain ⟨U, hU⟩ := exists_lt_exp_in_window_of_separatedOrdinates hZ hnoreal hδ hsep le_rfl hρ hre
+    hℓ K
+  refine ⟨U, fun u₀ hu₀ => ?_⟩
+  obtain ⟨u, hu, hlt⟩ := hU u₀ hu₀
+  exact ⟨u, hu, by simpa using hlt⟩
+
+/-- **The width law on windows.** If `2 Re S ≥ −K e^{su}`, `s ≥ 0`, on a set containing a window of
+length `80/δ` beyond every bound, every zero of a tempered configuration without real zeros and with
+`δ`-separated ordinates has real part `≤ ½ + s`. -/
+theorem re_le_of_bddBelow_exp_windows_of_separatedOrdinates (hZ : TemperedConfig Z)
+    (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {δ : ℝ} (hδ : 0 < δ) (hsep : SeparatedOrdinates Z δ)
+    {s : ℝ} (hs : 0 ≤ s) {T : Set ℝ} (hT : ∀ U : ℝ, ∃ a, U ≤ a ∧ Icc a (a + 80 / δ) ⊆ T) {K : ℝ}
+    (hK : ∀ u ∈ T, -(K * Real.exp (s * u)) ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re) :
+    ∀ ρ ∈ Z.carrier, ρ.re ≤ 1 / 2 + s := by
+  intro ρ₁ hρ₁
+  by_contra h
+  push Not at h
+  obtain ⟨U, hU⟩ := exists_lt_exp_in_window_of_separatedOrdinates hZ hnoreal hδ hsep hs hρ₁ h
+    (le_refl (40 / δ)) K
+  obtain ⟨a, ha, hsub⟩ := hT U
+  have h40 : 0 < 40 / δ := by positivity
+  have h80 : 80 / δ = 40 / δ + 40 / δ := by ring
+  obtain ⟨u, hu, hlt⟩ := hU (a + 40 / δ) (by linarith)
+  have hmem : u ∈ T := hsub ⟨by linarith [hu.1], by linarith [hu.2]⟩
+  linarith [hK u hmem]
 
 /-- **Windows of length `80/δ` decide separated configurations.** If `T` contains a window of
 length `80/δ` beyond every bound and `2 Re S ≥ −K` on `T`, every zero of a tempered configuration
