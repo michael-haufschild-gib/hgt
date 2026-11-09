@@ -178,4 +178,153 @@ theorem primeDampingFilter_eq_euler_integral (P : Polynomial ℂ)
           ring
         _ = _ := by rw [hm]
 
+/-- An arithmetic upper bound for the complete prime-only filter, uniform in
+height and in `0 ≤ h ≤ 1`. The line `c > 1` uses only absolute convergence
+of the actual Euler series; no zero-free strip or finite-layer law enters. -/
+theorem exists_primeDampingFilter_arithmetic_bound (F : Finset XiZeroCopy)
+    (ρ : ℂ) (σ β c : ℝ) (hc : 1 < c) (hσc : σ < c) :
+    ∃ C : ℝ, 0 < C ∧ ∀ a h t : ℝ, 0 ≤ h → h ≤ 1 →
+      ‖primeDampingFilter (divisorDampingFilter F ρ β h) σ β a h t‖ ≤
+        C * h ^ (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) *
+          (1 + |t|) ^ (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) *
+            Real.exp (a * t * (c - σ) / 2) := by
+  classical
+  let d := 1 + (F.filter (fun q => xiZero q ≠ ρ)).card
+  let δ := c - σ
+  have hδ : 0 < δ := sub_pos.mpr hσc
+  obtain ⟨B, hB, hfilter⟩ := exists_divisorDampingFilter_euler_bound F ρ β c
+  let E : ℝ := ∑' n : ℕ, ArithmeticFunction.vonMangoldt n / (n : ℝ) ^ c
+  have hE : 0 ≤ E := tsum_nonneg fun n => div_nonneg
+    ArithmeticFunction.vonMangoldt_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)
+  let W : ℝ → ℝ := fun v => ‖gaussianMBKernel 1 ((δ : ℂ) + v * I)‖ * (1 + |v|) ^ d
+  have hWi : Integrable W := integrable_norm_gaussianMBKernel_mul_pow zero_lt_one hδ d
+  let I₀ : ℝ := ∫ v : ℝ, W v
+  have hI₀ : 0 ≤ I₀ := integral_nonneg fun v => by dsimp only [W]; positivity
+  let k : ℝ := 1 / (2 * Real.pi)
+  have hk : 0 ≤ k := by dsimp only [k]; positivity
+  let C₀ := k * B ^ d * E * I₀
+  have hC₀ : 0 ≤ C₀ := by dsimp only [C₀]; positivity
+  refine ⟨C₀ + 1, by positivity, ?_⟩
+  intro a h t hh hh1
+  let s : ℂ := (σ : ℂ) + t * I
+  let P := divisorDampingFilter F ρ β h
+  let Z := h ^ d * (1 + |t|) ^ d * Real.exp (a * t * δ / 2)
+  have hZ : 0 ≤ Z := by dsimp only [Z]; positivity
+  let Q : ℝ → ℂ := fun v =>
+    P.eval (Complex.exp ((h : ℂ) * ((s + ((δ : ℂ) + v * I)) - β))) *
+      gaussianMBKernel (Real.exp (-a * t)) ((δ : ℂ) + v * I) *
+        LSeries (fun n => (ArithmeticFunction.vonMangoldt n : ℂ))
+          (s + ((δ : ℂ) + v * I))
+  have hre (v : ℝ) : (s + ((δ : ℂ) + v * I)).re = c := by simp [s, δ]
+  have hsδ : 1 < s.re + δ := by simpa [s, δ] using hc
+  have hpoint (v : ℝ) : ‖Q v‖ ≤ (B ^ d * E * Z) * W v := by
+    have hp := hfilter h t v hh hh1
+    have hline : s + ((δ : ℂ) + v * I) = (c : ℂ) + (t + v) * I := by
+      dsimp only [s, δ]
+      push_cast
+      ring
+    have hL := norm_LSeries_vonMangoldt_le
+      (s := s + ((δ : ℂ) + v * I)) (by rw [hre]; exact hc)
+    rw [hre] at hL
+    have hK : ‖gaussianMBKernel (Real.exp (-a * t)) ((δ : ℂ) + v * I)‖ =
+        Real.exp (a * t * δ / 2) * ‖gaussianMBKernel 1 ((δ : ℂ) + v * I)‖ := by
+      rw [norm_gaussianMBKernel_line (Real.exp_pos _),
+        norm_gaussianMBKernel_line zero_lt_one, Real.one_rpow, mul_one,
+        Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp]
+      rw [show (-a * t) * -(δ / 2) = a * t * δ / 2 by ring]
+      ring
+    dsimp only [Q]
+    rw [norm_mul, norm_mul]
+    calc
+      _ ≤ (h * B * (1 + |t|) * (1 + |v|)) ^ d *
+          ‖gaussianMBKernel (Real.exp (-a * t)) ((δ : ℂ) + v * I)‖ * E := by
+        apply mul_le_mul
+        · apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+          simpa only [hline, P, d] using hp
+        · exact hL
+        · exact norm_nonneg _
+        · positivity
+      _ = _ := by
+        rw [hK]
+        dsimp only [W, Z]
+        simp only [mul_pow]
+        ring
+  have hcont : Continuous Q := by
+    have hp : Continuous (fun v : ℝ => P.eval (Complex.exp
+        ((h : ℂ) * ((s + ((δ : ℂ) + v * I)) - β)))) := by
+      simp_rw [Polynomial.eval_eq_sum_range]
+      fun_prop
+    exact (hp.mul (continuous_gaussianMBKernel_line (Real.exp_pos _) hδ)).mul
+      (continuous_LSeries_vonMangoldt_line hsδ)
+  have hQi : Integrable Q :=
+    (hWi.const_mul (B ^ d * E * Z)).mono' hcont.aestronglyMeasurable
+      (Eventually.of_forall hpoint)
+  have hnorm : ‖∫ v : ℝ, Q v‖ ≤ (B ^ d * E * Z) * I₀ := by
+    calc
+      _ ≤ ∫ v : ℝ, ‖Q v‖ := norm_integral_le_integral_norm _
+      _ ≤ ∫ v : ℝ, (B ^ d * E * Z) * W v :=
+        integral_mono hQi.norm (hWi.const_mul _) hpoint
+      _ = _ := integral_const_mul _ _
+  have heq := primeDampingFilter_eq_euler_integral P σ β a h t δ hδ
+    (by dsimp only [δ]; linarith only [hc])
+  change primeDampingFilter P σ β a h t = (k : ℂ) * ∫ v : ℝ, Q v at heq
+  rw [heq, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hk]
+  calc
+    k * ‖∫ v : ℝ, Q v‖ ≤ k * ((B ^ d * E * Z) * I₀) :=
+      mul_le_mul_of_nonneg_left hnorm hk
+    _ = C₀ * Z := by dsimp only [C₀]; ring
+    _ ≤ (C₀ + 1) * Z := mul_le_mul_of_nonneg_right (by linarith) hZ
+    _ = _ := by dsimp only [Z, d, δ]; ring
+
+/-- Sufficiently fast contraction forces the literal prime filter to zero,
+unconditionally. The threshold comes from the absolute Euler abscissa. -/
+theorem tendsto_primeDampingFilter_zero_of_fast_contraction (F : Finset XiZeroCopy)
+    (ρ : ℂ) (σ β a κ : ℝ) (hσ : σ < 1) (ha : 0 < a) (hκ : 0 < κ)
+    (hr : a * (1 - σ) / 2 <
+      (1 + (F.filter (fun q => xiZero q ≠ ρ)).card : ℕ) * κ) :
+    Tendsto (fun t : ℝ =>
+      primeDampingFilter (divisorDampingFilter F ρ β (Real.exp (-κ * t)))
+        σ β a (Real.exp (-κ * t)) t) atTop (𝓝 0) := by
+  let d := 1 + (F.filter (fun q => xiZero q ≠ ρ)).card
+  let r := (d : ℝ) * κ - a * (1 - σ) / 2
+  have hr0 : 0 < r := sub_pos.mpr hr
+  let c := 1 + r / a
+  have hc : 1 < c := by dsimp only [c]; positivity
+  have hrate : a * (c - σ) / 2 < (d : ℝ) * κ := by
+    have he : a * (c - σ) / 2 = a * (1 - σ) / 2 + r / 2 := by
+      dsimp only [c]
+      field_simp
+      ring
+    rw [he]
+    dsimp only [r] at hr0 ⊢
+    linarith only [hr0]
+  obtain ⟨C, hC, hb⟩ := exists_primeDampingFilter_arithmetic_bound F ρ σ β c hc (hσ.trans hc)
+  apply HTGeometry.tendsto_zero_of_eventually_norm_le_polyExp
+    (C := C * 2 ^ d) (N := d) (sub_pos.mpr hrate)
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+  have ht0 : 0 ≤ t := zero_le_one.trans ht
+  have hh : Real.exp (-κ * t) ≤ 1 := by
+    rw [Real.exp_le_one_iff]
+    exact neg_mul_nonpos_of_nonneg_of_nonneg hκ.le ht0
+  have hpow : (1 + t) ^ d ≤ (2 : ℝ) ^ d * t ^ d := by
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by positivity) (by linarith only [ht]) d
+  calc
+    _ ≤ C * Real.exp (-κ * t) ^ d * (1 + |t|) ^ d *
+        Real.exp (a * t * (c - σ) / 2) := hb a _ t (Real.exp_pos _).le hh
+    _ = C * (1 + t) ^ d *
+        Real.exp (-(((d : ℝ) * κ - a * (c - σ) / 2) * t)) := by
+      rw [abs_of_nonneg ht0, ← Real.exp_nat_mul,
+        show -(((d : ℝ) * κ - a * (c - σ) / 2) * t) =
+          (d : ℝ) * (-κ * t) + a * t * (c - σ) / 2 by ring, Real.exp_add]
+      ring
+    _ ≤ C * (2 ^ d * t ^ d) *
+        Real.exp (-(((d : ℝ) * κ - a * (c - σ) / 2) * t)) := by gcongr
+    _ = _ := by ring
+
 end GaloisForLFunctions.ExceptionalLayerTheory
+
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_divisorDampingFilter_euler_bound
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.primeDampingFilter_eq_euler_integral
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.exists_primeDampingFilter_arithmetic_bound
+#print axioms GaloisForLFunctions.ExceptionalLayerTheory.tendsto_primeDampingFilter_zero_of_fast_contraction

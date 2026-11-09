@@ -1,6 +1,6 @@
 # Arithmetic Weight Theory of Spec ℤ (AWT)
 
-Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 12 modules.
+Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 13 modules.
 All results unconditional; RH appears only inside equivalences.
 
 Notation. `z = ρ − ½` for a zero `ρ`; `b = sup Re z` the **weight** (zero width) of a configuration;
@@ -23,7 +23,8 @@ carry no poles.
 
 AWT determines what plays this role over `ℤ`, in three steps.
 
-1. **`M` alone has no `H²_c`.** Its Frobenius acts through `log n`; every constituent of `M^{⊗2k}`
+1. **`M` alone has no `H²_c`.** Its Frobenius acts through `log n`; the Künneth trace formula writes
+   every tensor power as `Σ_{z₁…z_m} Π e_{z_i}·(−ζ′/ζ)(s − Σz_i)`, so every constituent of `M^{⊗m}`
    is a Tate twist whose L-function `ζ(s − Σz_i)` has a pole. The top pole of every tensor power
    sits exactly at `1 + 2kb`. The tensor trick for `M` reads the weight and nothing else; one curve
    over `Spec 𝔽_q` is the same.
@@ -49,7 +50,7 @@ cohomology supplies over `𝔽_q` (middle extension, invariants of local monodro
 |---|---|---|
 | Configuration, weight, top | `ZeroConfig`, `zetaZeroWidth`, `TopDepth` (SRT, SoSZ) | zeros; `b`; exponents `≤ b` |
 | Spline trace | `lagStructure Z (boxSpline 1 3)` (AOG) | `S_Z(u) = Σ_z e_z e^{zu}` |
-| Tensor series | `tensorTerm`; `tensorLogDerivTerm`, `primeTraceMoment` (SoSZ) | `Λ(n) t(log n)^{2k} n^{−σ}`; moments at primes |
+| Tensor series | `tensorTerm`, `tensorSeriesTerm`; `tensorLogDerivTerm`, `primeTraceMoment` (SoSZ) | `Λ(n) t(log n)^{m} n^{−s}`; moments at primes |
 | Gauge family | `GaugeTorus`, `twist`, `gaugeHaar`, `twistSum` (ACG); `gaugeFibre` (PTT) | fibres, `χ_x(n)`, monodromy measure, `ζ_x` |
 | Window trace, moment | `windowPrimes`, `windowWeight`, `windowWeightReal`, `fibreTrace`, `fibreMoment` | `T_x(u)`; `Σ_{p≤N} log p |T_x(log p)|^{2k}` |
 | Variance, pairings | `windowVariance`, `injSum`, `tupleWeight` | `V(u) = ∫|T_x(u)|²`; sums over injective tuples |
@@ -95,7 +96,9 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
    (resetting all but finitely many coordinates reproduces the pole).
 5. *Isozeric deformations.* `ζ_x = ζ e^F` on `Re s > 1`; `F` analytic where the prime perturbation is
    summable; the residue of `ζ` at `1` excludes such fibres from the a.e. zero-free set.
-6. *Exact tensor weight.* Weighted AM–GM dominates the Rankin square by any tensor power.
+6. *Exact tensor weight and Künneth.* Weighted AM–GM dominates the Rankin square by any tensor
+   power. Powers of absolutely convergent series are sums over tuples (`Fin.cons` induction); with
+   `|e_{z⃗} n^{Σz − s}| ≤ Λ(n) n^{mb − Re s} Π|e_{z_i}|` the prime and zero sums exchange.
 7. *Pricing.* Exact orthonormality on `s` gives `ν{x₀}·#s ≤ 1`; Cauchy–Schwarz on the products.
 8. *Edge divisor.* `|ζ_x(1+δ+iτ)| = |ζ(1+δ)| e^{−D_δ + O(1)}` and
    `|ζ(1+δ)||ζ_x(1+δ+iτ)| = e^{A_δ + O(1)}`; the remainder of the fibre logarithm is bounded by
@@ -116,6 +119,7 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
 | Constants specialize, blow up at `ζ` | `isClosed_traceConstantSet`, `tendsto_measure_traceConstantSet`, `trivial_fibre_is_the_jump` | unconditional |
 | Baire-generic pole, Haar-generic purity | `isNowhereDense_traceConstantSet`, `residual_and_null_of_traceExponent` | unconditional |
 | Every fibre is `ζ e^F`; isozeric deformations; null class | `gaugeFibre_eq_zeta_mul_exp`, `exists_isozeric`, `analyticOrderAt_isozeric`, `gaugeHaar_isozericClass_eq_zero` | unconditional |
+| Künneth trace formula: `M^{⊗m}` is a sum of shifted `−ζ′/ζ` | `tensorSeries_eq_tsum`, `hasSum_pow_tuple` | unconditional |
 | Tensor powers have exactly their weight | `summable_tensorTerm_iff_of_max` | unconditional |
 | `A_k ≥ 2k·width − 1`; M4 ⇔ RH | `zetaZeroWidth_le_of_primeTraceMoment_le`, `riemannHypothesis_iff_tensorExponent_sublinear` | unconditional; RH-equivalence |
 | Uncertainty and pricing | `measureReal_singleton_mul_card_le`, `measureReal_singleton_mul_pow_le` | unconditional |
@@ -144,8 +148,10 @@ prime torus (HTGeometry); Chebyshev bounds, Borel–Cantelli, Baire category (ma
   (`dirichletGRH_iff_dirichletGauge_typical`, `card_atypical_dirichletGauge_le_rpow`, AGT).
 - *Euler deformations keeping the pole.* Isozeric on `Re s > σ₀`, a Haar-null class.
 
-**Q2. What is the analogue of `H²_c`?** For `M`: all of `M^{⊗2k}`; the top pole is at exactly
-`1 + 2kb` for every `k` at an attained top, so no a priori control exists and M4 is RH. For the
+**Q2. What is the analogue of `H²_c`?** For `M`: all of `M^{⊗m}`. The Künneth trace formula
+(`tensorSeries_eq_tsum`) decomposes the tensor series into the constituents `−ζ′/ζ(s − z₁ − ⋯ − z_m)`,
+each with a pole; none is geometrically nontrivial. The top pole is at exactly `1 + 2kb` for every
+`k` at an attained top, so no a priori control exists and M4 is RH. For the
 gauge family: the multiplicative pairings, weight `0`, dimension `k!` on distinct primes, with
 Gaussian Frobenius. The jump locus — fibres with a pole on `Re s = 1` — is the pretentious
 neighbourhood of the archimedean line, Haar-null (the analogue of generic vanishing: the line
@@ -180,6 +186,8 @@ principle holds in the strip topology; at `ζ` it is RH. M4 is RH: `A_k ≥ 2k·
 - Trace-constant sets: closedness, exhaustion in measure, nowhere density, residual/null dichotomy.
 - Chebyshev window bound and the pole at the trivial fibre; window variance `≥ c²(u − 1)`.
 - Euler-deformation exponent `F`, isozeric continuation and analytic order transfer.
+- Künneth trace formula for the tensor powers of the zero motive; powers of absolutely convergent
+  series as tuple sums.
 - Exact abscissa of every tensor power; AM–GM transfer between tensor powers.
 - Uncertainty and pricing for arbitrary probability families of twists.
 - Edge divisor by (anti-)pretentious distance; uniform order-one bounds; classical form at `ζ`.
@@ -196,7 +204,8 @@ of §5 and is stated with the reduction AWT proves.
    zero-free fibres iff RH (PTT). Which structure on `G`, finer than law and Haar measure, forces a
    middle extension?
 2. **Non-orthogonal coinvariants.** Every family whose coinvariants are computed by orthogonality is
-   priced at the trivial bound; along the archimedean line the non-invariant part is nonnegative.
+   priced at the trivial bound; along the archimedean line the non-invariant part is nonnegative;
+   for `M` itself the identity exists (Künneth) but every non-invariant constituent carries a pole.
    The sixth move needs a family identity whose non-invariant part is pole-free (cohomology over
    `𝔽_q`).
 3. **Non-geometrically-constant motives.** An object over `Spec ℤ` whose local Frobenius at `p` is not

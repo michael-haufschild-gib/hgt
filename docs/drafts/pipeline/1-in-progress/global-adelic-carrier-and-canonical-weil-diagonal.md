@@ -48,22 +48,21 @@ realizes the complete Weil form as a trace, but its Hilbert realization has the
 zero-indexed basis `xiDivisorHilbertBasis`; no Green carrier on the requested
 adelic quotient is identified by that theorem.
 
-## Opposite finite orientation
+## Proved carrier geometry on square degrees
 
-Candidate configuration on square degrees: let `g_n = diag(n,n⁻¹)` and
-`K_p = SL₂(ℤ_p)`. In the diagonal `SL₂(ℚ)` quotient, compare
-`(z_{n²}, (g_n K_p)_p)` with `(z_{n²}, (g_n⁻¹ K_p)_p)`.
-The first has representative `(z_1, (K_p)_p)`; the second has representative
-`(z_{n⁴}, (K_p)_p)`. A rational matrix fixing every finite base vertex has
-integer entries. Integral modular transformations cannot identify distinct
-points of the degree ray at heights at least one. Thus opposite finite
-orientation should retain all square degrees. Local apartment distances are
-unchanged by this reversal. Equivalently, retain the original degree points
-and conjugate the arithmetic group by `(1, (w)_p)`, where `w` is the integral
-Weyl element. This stays within the original configuration question: only the
-group changes. The adelic orbit and discreteness statements are being
-formalized using actual p-adic matrix cosets. No Green or Robin identity is
-asserted.
+[Finite Weyl conjugation](../3-formalized/finite-weyl-conjugation-retains-the-global-degree-configuration.md)
+constructs a faithful discrete rational group in `SL₂(ℂ)×Π'_p SL₂(ℚ_p)`
+and actual finite coset vertices. For `g_q=diag(q,q⁻¹)`, the split configuration
+`(z_{(ab)²},(g_{a/b}K_p)_p)` has normal form `(z_{b⁴},(K_p)_p)`;
+two classes agree exactly when `b` agrees. Conjugating the arithmetic group
+by the finite integral Weyl element retains every original square-degree point.
+Discreteness and injectivity are formalized with standard axioms only.
+
+The construction presently uses determinant-one local vertex spaces. Extending
+to all degrees and full `PGL₂` trees remains open. Finite-factor adjacency on
+the quotient must be realized as Hecke correspondences; the normal form alone
+does not identify a Green operator. No global kernel or Robin identity follows
+from the orbit classification.
 
 ## Verification gates
 

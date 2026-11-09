@@ -179,7 +179,7 @@ theorem infinite_tail_translated_mixed_floor {ι : Type*} (a h : ℕ → ℝ)
     (fun u : ℝ => ∑' i, (c i * Complex.exp (w i * u)).re) t 0, add_zero] at hf
   have he : Real.exp (-q * L + mixedMomentCost (filterPrefix a h N) (D + q)) ≤
       Real.exp (-q * L + B) :=
-    Real.exp_le_exp.mpr (add_le_add_left (hcost N) _)
+    Real.exp_le_exp.mpr (add_le_add le_rfl (hcost N))
   have hm := mul_le_mul_of_nonneg_left he
     (show 0 ≤ 2 * (A * Real.exp (D * |t|)) by positivity)
   have hexp : Real.exp (D * |t| - q * L + B) =
