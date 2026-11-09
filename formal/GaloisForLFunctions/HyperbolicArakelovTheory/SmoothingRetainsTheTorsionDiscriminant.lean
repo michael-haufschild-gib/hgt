@@ -2,6 +2,7 @@ import GaloisForLFunctions.HyperbolicArakelovTheory.TheGreenDampingOnSmoothProbe
 import GaloisForLFunctions.ArithmeticIntersectionTheory.TheHeckeCocycleOfRenormalization
 import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.WeilsFormIsContinuousInTheLevyNorm
 import GaloisForLFunctions.RHTower.MarkovOddSectorFarkasAndOneSidedPBAP
+import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
 
 /-!
 # Smoothing retains the torsion discriminant
@@ -23,7 +24,47 @@ noncomputable section
 namespace GaloisForLFunctions.HyperbolicArakelovTheory
 
 open SurfaceOfSpecZ ArithmeticEffectivityTheory ArithmeticIntersectionTheory
-open ArithmeticElectrostatics SpacingScaleHarmonicAnalysis RHTower
+open ArithmeticElectrostatics SpacingScaleHarmonicAnalysis _root_.RHTower
+open _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.ArchimedeanExactForm
+
+/-- The raw torsion lift of a smooth packet, with an arbitrary common radius. -/
+def smoothTorsionPacket (ρ : ℝ → ℝ) (r : ℝ) (N : ℕ) (x : ℕ → ℝ)
+    (g : ℝ → ℝ) : ℝ :=
+  let f := atomicTest N x g
+  (2 * coshHalfMoment f ^ 2 - 2 * sinhHalfMoment f ^ 2) - smoothGreenEnergy r f +
+    (∫ u, g u ^ 2) * torsionForm (ρ r) (Icc 1 N) x
+
+private theorem compact_atomicTest {g : ℝ → ℝ} (hgc : HasCompactSupport g)
+    (N : ℕ) (x : ℕ → ℝ) : HasCompactSupport (atomicTest N x g) := by
+  unfold atomicTest
+  induction (Icc 1 N : Finset ℕ) using Finset.induction_on with
+  | empty => simpa using (HasCompactSupport.zero : HasCompactSupport (0 : ℝ → ℝ))
+  | insert n S hn ih =>
+    simp only [Finset.sum_insert hn]
+    exact ((hgc.comp_homeomorph (Homeomorph.subRight (Real.log n))).mul_left).add ih
+
+/-- Before imposing separation, the two divergent coefficients are different quadratic forms:
+the torsion coefficient is the discrete mass; the Green coefficient is the packet's L² mass. -/
+theorem tendsto_smoothTorsionPacket_renormalized {ρ : ℝ → ℝ}
+    (hρ : Tendsto ρ (𝓝[<] 1) (𝓝 1)) {g : ℝ → ℝ}
+    (hg : ContDiff ℝ 2 g) (hgc : HasCompactSupport g) (N : ℕ) (x : ℕ → ℝ) :
+    Tendsto (fun r => smoothTorsionPacket ρ r N x g +
+        Real.log |1 - ρ r| * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2) +
+        (∫ u, atomicTest N x g u ^ 2) * selfEnergy r) (𝓝[<] 1)
+      (𝓝 ((2 * coshHalfMoment (atomicTest N x g) ^ 2 -
+        2 * sinhHalfMoment (atomicTest N x g) ^ 2) + levyEnergy (atomicTest N x g) +
+        (∫ u, g u ^ 2) * renormalizedTorsionForm (Icc 1 N) x)) := by
+  have hT := ((tendsto_torsionForm
+    (S := Icc 1 N) (fun n hn => (Finset.mem_Icc.mp hn).1) x).comp hρ).const_mul
+      (∫ u, g u ^ 2)
+  have hA := tendsto_smoothGreenEnergy_sub_mass (atomicTest N x g)
+    (contDiff_atomicTest hg N x) (compact_atomicTest hgc N x)
+  have h := (hT.sub hA).add_const
+    (2 * coshHalfMoment (atomicTest N x g) ^ 2 - 2 * sinhHalfMoment (atomicTest N x g) ^ 2)
+  convert h.congr (fun r => show _ = smoothTorsionPacket ρ r N x g +
+      Real.log |1 - ρ r| * ((∫ u, g u ^ 2) * ∑ n ∈ Icc 1 N, x n ^ 2) +
+      (∫ u, atomicTest N x g u ^ 2) * selfEnergy r by
+    dsimp only [Function.comp_def, smoothTorsionPacket]; ring) using 1 <;> congr 1 <;> ring
 
 /-- A scalar locking with an adjustable finite mass normalization. -/
 def smoothLockingRadius (c r : ℝ) : ℝ := 1 - Real.exp (-selfEnergy r - c)
@@ -34,7 +75,10 @@ theorem log_smoothLockingRadius (c r : ℝ) :
 
 theorem tendsto_smoothLockingRadius (c : ℝ) :
     Tendsto (smoothLockingRadius c) (𝓝[<] 1) (𝓝 1) := by
-  have hz := (tendsto_neg_atTop_atBot.comp tendsto_selfEnergy_atTop).sub_const c
+  have hz : Tendsto (fun r => -selfEnergy r - c) (𝓝[<] 1) atBot := by
+    refine tendsto_atBot.2 fun b => ?_
+    filter_upwards [tendsto_selfEnergy_atTop.eventually_ge_atTop (-b - c)] with r hr
+    linarith
   have he := Real.tendsto_exp_atBot.comp hz
   simpa only [smoothLockingRadius, sub_zero] using he.const_sub 1
 
@@ -174,8 +218,86 @@ theorem not_exists_scalar_locking_all_smooth_orbits :
     (integral_evenNarrowBump_sq_pos 0)
     ⟨ρ, hρ, hlim _ (contDiff_evenNarrowBump 0) (hasCompactSupport_evenNarrowBump 0)⟩
 
+private theorem atomicTest_one (g : ℝ → ℝ) : atomicTest 1 (fun _ => 1) g = g := by
+  funext u
+  simp [atomicTest]
+
+private theorem atomicTest_two (g : ℝ → ℝ) :
+    atomicTest 2 (fun _ => 1) g = fun u => g u + g (u - Real.log 2) := by
+  funext u
+  norm_num [atomicTest, show (Icc 1 2 : Finset ℕ) = {1, 2} by decide]
+
+private theorem positive_mass_excess :
+    ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+      0 < (∫ u, atomicTest 2 (fun _ => 1) g u ^ 2) - 2 * ∫ u, g u ^ 2 := by
+  let b := evenNarrowBump 0
+  let g : ℝ → ℝ := fun u => b u + b (u - Real.log 2)
+  have hb : ContDiff ℝ 2 b := contDiff_evenNarrowBump 0
+  have hbc : HasCompactSupport b := hasCompactSupport_evenNarrowBump 0
+  have hb0 (u : ℝ) : 0 ≤ b u := by
+    dsimp [b, evenNarrowBump, evenPartReal]
+    exact div_nonneg (add_nonneg (narrowBump 0).nonneg (narrowBump 0).nonneg) (by norm_num)
+  have hg : ContDiff ℝ 2 g := hb.add (hb.comp (contDiff_id.sub contDiff_const))
+  have hgc : HasCompactSupport g :=
+    hbc.add (hbc.comp_homeomorph (Homeomorph.subRight (Real.log 2)))
+  have hbi : Integrable (fun u => b u ^ 2) :=
+    hb.continuous.pow 2 |>.integrable_of_hasCompactSupport
+      (hbc.comp_left (g := fun t : ℝ => t ^ 2) (by norm_num))
+  have hgi : Integrable (fun u => g u * g (u + Real.log 2)) :=
+    (hg.continuous.mul (hg.continuous.comp (continuous_add_const _))).integrable_of_hasCompactSupport
+      hgc.mul_right
+  have hcorr : 0 < autocorr g (Real.log 2) := by
+    have hle : (∫ u, b u ^ 2) ≤ autocorr g (Real.log 2) := by
+      apply integral_mono hbi hgi
+      intro u
+      dsimp only [g]
+      rw [add_sub_cancel_right]
+      have h := mul_le_mul (show b u ≤ b u + b (u - Real.log 2) by linarith [hb0 (u - Real.log 2)])
+        (show b u ≤ b (u + Real.log 2) + b u by linarith [hb0 (u + Real.log 2)])
+        (hb0 u) (add_nonneg (hb0 u) (hb0 (u - Real.log 2)))
+      simpa only [pow_two] using h
+    exact (integral_evenNarrowBump_sq_pos 0).trans_le hle
+  refine ⟨g, hg, hgc, ?_⟩
+  rw [atomicTest_two]
+  simp_rw [sub_eq_add_neg]
+  rw [BiScaleUncertainty.integral_add_shift_sq hgc hg.continuous,
+    autocorr_neg, ← BiScaleUncertainty.integral_sq_eq_autocorr_zero]
+  linarith only [hcorr]
+
+private theorem not_tendsto_positive_selfEnergy {a : ℝ} (ha : 0 < a) (B : ℝ) :
+    ¬ Tendsto (fun r => a * selfEnergy r) (𝓝[<] 1) (𝓝 B) := by
+  intro h
+  obtain ⟨r, hr, hB⟩ := ((tendsto_selfEnergy_atTop.eventually_gt_atTop ((B + 1) / a)).and
+    (h.eventually_lt_const (show B < B + 1 by linarith))).exists
+  have := (div_lt_iff₀ ha).mp hr
+  linarith
+
+/-- Overlap prevents a common radius from giving finite limits on all compact C² packets.
+The contradiction uses just the same profile at one orbit and at the two orders `1,2`:
+their discrete masses are in ratio two, while their L² masses have a positive overlap term. -/
+theorem not_exists_scalar_locking_all_smooth_packets :
+    ¬ ∃ ρ : ℝ → ℝ, Tendsto ρ (𝓝[<] 1) (𝓝 1) ∧
+      ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
+        ∀ (N : ℕ) (x : ℕ → ℝ), ∃ B : ℝ,
+          Tendsto (fun r => smoothTorsionPacket ρ r N x g) (𝓝[<] 1) (𝓝 B) := by
+  rintro ⟨ρ, hρ, hlim⟩
+  obtain ⟨g, hg, hgc, hexcess⟩ := positive_mass_excess
+  obtain ⟨B₁, h₁⟩ := hlim g hg hgc 1 (fun _ => 1)
+  obtain ⟨B₂, h₂⟩ := hlim g hg hgc 2 (fun _ => 1)
+  have hR₁ := tendsto_smoothTorsionPacket_renormalized hρ hg hgc 1 (fun _ => 1)
+  have hR₂ := tendsto_smoothTorsionPacket_renormalized hρ hg hgc 2 (fun _ => 1)
+  have hs₁ : (∑ _n ∈ (Icc 1 1 : Finset ℕ), (1 : ℝ) ^ 2) = 1 := by norm_num
+  have hs₂ : (∑ _n ∈ (Icc 1 2 : Finset ℕ), (1 : ℝ) ^ 2) = 2 := by
+    norm_num [show (Icc 1 2 : Finset ℕ) = {1, 2} by decide]
+  simp only [hs₁, mul_one, atomicTest_one] at hR₁
+  simp only [hs₂] at hR₂
+  have h := (hR₂.sub (hR₁.const_mul 2)).sub (h₂.sub (h₁.const_mul 2))
+  apply not_tendsto_positive_selfEnergy hexcess _
+  exact h.congr (fun r => by ring)
+
 end GaloisForLFunctions.HyperbolicArakelovTheory
 
 #print axioms GaloisForLFunctions.HyperbolicArakelovTheory.tendsto_smoothLockedPacket_weil_normalization
 #print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_weil_orbits
 #print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_all_smooth_orbits
+#print axioms GaloisForLFunctions.HyperbolicArakelovTheory.not_exists_scalar_locking_all_smooth_packets

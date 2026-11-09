@@ -12,6 +12,9 @@ exponent for `d+1` logarithms. For `H≥1`, define
 
 `Δ(r,d,y,H)=exp(−B_{d+1}(y)(log((d+1)r!H^r)+2))/(r!H^(r−1))`.
 
+At full rank `d=0`, use the stronger elementary floor
+`Δ(r,0,y,H)=log 2/(r!H^(r−1))`.
+
 Every family of `r` rationally independent integer coefficient vectors
 `ν₁,…,ν_r`, with `|ν_ij|≤H`, satisfies
 
@@ -46,6 +49,11 @@ at most `r!H^(r−1) max_h |v_h|`. Division proves the stated bound.
 The denominator and exponential are positive. Selecting a maximal minor
 and its complementary columns changes neither coefficient bounds nor the
 values of the forms.
+
+At full rank there are no complementary columns. The left side is
+`det(A) log p_i`, whose absolute value is at least `log 2`: the determinant
+is a nonzero integer and `p_i≥2`. The same adjugate bound therefore gives
+the stronger full-rank floor without a transcendence estimate.
 
 ## Counting near relations
 

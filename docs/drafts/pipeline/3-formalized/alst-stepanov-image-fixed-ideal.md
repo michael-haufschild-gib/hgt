@@ -1,8 +1,8 @@
 # The exact image of polynomial Stepanov syzygies
 
 - **ID:** alst-stepanov-image-fixed-ideal
-- **Stage:** 1-in-progress
-- **Type:** THEOREM CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Statement:** Over `ℤ`, auxiliaries `Σ_i f_i ψ_q(g_i)` with every global mixed first-factor Euler moment below order `r` zero are exactly `(X_j^q−X_j : j∈σ)^r`, for every `q`. For `q≥2` and nonempty finite prime support with least prime `p`, their least nonzero arithmetic length is `p^(qr)`; all minimizers are `c(X_p^q−X_p)^r` with `c≠0`.
 
 ## Significance and novelty
@@ -47,9 +47,16 @@ cutoff only the index `qr e_p` can survive, since prime weights uniquely
 determine exponent vectors. Hence the entire minimal filtered piece is
 `ℤ·(X_p^q−X_p)^r`.
 
-## Lean status
-`ThePolynomialImageOfStepanovSyzygies.mem_adamsFixedIdeal_pow_iff_stepanov_syzygies`
-passed its final plain check; its transitive axioms are `propext`,
-`Classical.choice`, `Quot.sound`. Integral diagonal and Euler criteria are
-verified. Generic Newton filtration and sharp cost are written but remain
-under verification. Nothing is counted until all required audits pass.
+## Lean formalization
+- `mem_adamsFixedIdeal_pow_iff_stepanov_syzygies`: exact construction image.
+- `mem_monicGridIdeal_pow_iff_repr`: integral Newton coordinates for every ideal power.
+- `stepanov_syzygies_iff_adamsNewton_support`: the full construction filtration.
+- `minimal_stepanov_image_iff`: complete minimal filtered piece.
+- `exists_stepanov_syzygies_at_sharp_length`: nonzero attainment.
+
+All six supporting modules passed final plain `lake --old env lean` checks:
+`IntegralDiagonalJets`, `EulerJetsDetectTheDiagonal`,
+`ThePolynomialImageOfStepanovSyzygies`, `ArithmeticMonicBases`,
+`UniformMonicGridPowers`, `TheSharpCostOfPolynomialStepanovSyzygies`.
+Transitive axiom audits contain only `propext`, `Classical.choice`, `Quot.sound`.
+The umbrella imports all six modules and was not compiled.

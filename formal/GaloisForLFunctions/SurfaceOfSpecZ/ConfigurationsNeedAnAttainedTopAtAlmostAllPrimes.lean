@@ -1276,7 +1276,7 @@ theorem upperDensityZero_exSet {Θ : ℝ} (hΘ : 0 < Θ) :
             rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, mul_one]
   have hfl_le : (⌊T⌋₊ : ℝ) ≤ T := Nat.floor_le (by linarith)
   have hM_le : (M₀ : ℝ) + ε / 2 ≤ (ε / 2) * T := by
-    calc (M₀ : ℝ) + ε / 2 = (ε / 2) * (2 * (M₀ : ℝ) / ε + 1) := by field_simp; ring
+    calc (M₀ : ℝ) + ε / 2 = (ε / 2) * (2 * (M₀ : ℝ) / ε + 1) := by field_simp
       _ ≤ (ε / 2) * T := mul_le_mul_of_nonneg_left hT_large (by positivity)
   calc (∑ m ∈ Finset.range (⌊T⌋₊ + 1), if m < M₀ then (1 : ℝ) else ε / 2)
       ≤ (M₀ : ℝ) + ((⌊T⌋₊ : ℝ) + 1) * (ε / 2) := hsum_le
@@ -1841,9 +1841,9 @@ theorem eventually_wSum_primeWeight_ge :
     ∀ᶠ σ : ℝ in 𝓝[>] 1, 1 / (4 * (σ - 1)) ≤ wSum primeWeight σ := by
   have hre := (Complex.continuous_re.tendsto _).comp
     _root_.RHTower.tendsto_neg_logDeriv_riemannZeta_sub_one_div_real
-  obtain ⟨γ, rfl⟩ : ∃ γ : ℝ, γ = Real.eulerMascheroniConstant := ⟨_, rfl⟩
+  obtain ⟨γ, hγ_def⟩ : ∃ γ : ℝ, γ = Real.eulerMascheroniConstant := ⟨_, rfl⟩
   have hlim_ev := hre.eventually
-    (lt_mem_nhds (show -(γ + 1) < (-(γ : ℂ)).re by simp))
+    (lt_mem_nhds (show -(γ + 1) < (-(Real.eulerMascheroniConstant : ℂ)).re by rw [← hγ_def]; simp))
   have hhigh_sum : Summable fun j : ℕ => higherWeight j * ((j : ℝ) + 1) ^ (-1 : ℝ) :=
     summable_higherWeight (by norm_num : (1 : ℝ) / 2 < 1)
   obtain ⟨H, hH_def⟩ : ∃ H : ℝ, H = ∑' j : ℕ, higherWeight j * ((j : ℝ) + 1) ^ (-1 : ℝ) :=
@@ -1888,7 +1888,7 @@ theorem eventually_wSum_primeWeight_ge :
     have hlt : σ - 1 < 1 / (2 * (C + 1)) := by linarith [hσ_close.2]
     rw [lt_div_iff₀ (by positivity)] at hlt
     rw [le_div_iff₀ (by positivity)]
-    nlinarith
+    linarith
   have hfrac : 1 / (σ - 1) - 1 / (2 * (σ - 1)) = 1 / (2 * (σ - 1)) := by field_simp; ring
   have hhalf : 1 / (4 * (σ - 1)) ≤ 1 / (2 * (σ - 1)) :=
     one_div_le_one_div_of_le (by positivity) (by linarith)

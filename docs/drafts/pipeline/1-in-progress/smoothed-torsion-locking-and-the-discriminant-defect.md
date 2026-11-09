@@ -20,6 +20,7 @@ Consequently it cannot reproduce Weil's form on all smoothed probes: identical t
 2. Construct a probe-independent admissible scalar locking and calculate its limit using the actual torsion form.
 3. Prove the discriminant defect for every separated packet, and impossibility of simultaneous Weil limits at degrees 1 and 4 for every scalar locking.
 4. Identify the correction forced by the defect and its relation to the existing spacing regulator. Do not count reformulations of the atomic anomaly as separate contributions.
+5. Remove separation: the divergent coefficients are `M Σx_n²` and `∫f²`. Prove no common radius gives finite limits on every compact smooth packet. An explicit overlapping profile `g=b+b(·−log 2)`, with `b` a nonnegative compact smooth bump, has `∫(g+g(·−log 2))²>2∫g²`; subtracting twice the one-orbit energy from the two-orbit energy cancels the torsion divergence but retains a nonzero multiple of `Z(r)`.
 
 ## Corpus inputs
 

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanSelfEnergyIsLogarithmic
 import GaloisForLFunctions.RHTower.WeilArchimedeanExactForm
+import Mathlib.MeasureTheory.Measure.Lebesgue.Integral
 
 /-!
 # The Green damping on smooth probes
@@ -15,7 +16,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.HyperbolicArakelovTheory
 
-open SurfaceOfSpecZ RHTower RHTower.ArchimedeanAnomaly RHTower.ArchimedeanExactForm
+open SurfaceOfSpecZ _root_.RHTower
+open _root_.RHTower.ArchimedeanAnomaly _root_.RHTower.ArchimedeanExactForm
 
 /-- The archimedean Green energy of a real probe. -/
 def smoothGreenEnergy (r : ℝ) (f : ℝ → ℝ) : ℝ :=
