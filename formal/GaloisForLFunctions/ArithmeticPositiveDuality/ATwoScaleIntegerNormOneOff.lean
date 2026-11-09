@@ -38,7 +38,7 @@ set_option autoImplicit false
 open MeasureTheory Set Filter Topology Complex
 open scoped BigOperators
 open GaloisForLFunctions.HTGeometry
-open Zeta23
+open Zeta23 hiding Params
 open RHTower.BeurlingOverRegularIntegers
 open GaloisForLFunctions.ArithmeticPositiveDuality.DiscreteOneOff
 open GaloisForLFunctions.ArithmeticPositiveDuality.IntegerNormOneOff
@@ -67,7 +67,7 @@ def frullaniCutoffFactor (A : ℝ) (z : ℂ) : ℂ :=
 def frullaniCutoffLog (A : ℝ) (z : ℂ) : ℂ :=
   Complex.log z - frullaniHead A z - (frullaniTailConst A : ℂ)
 
-private theorem norm_frullaniIntegrand_le {A : ℝ} (hA : 0 < A) (z : ℂ) {t : ℝ}
+private theorem norm_frullaniIntegrand_le {A : ℝ} (_ : 0 < A) (z : ℂ) {t : ℝ}
     (ht0 : 0 < t) (htA : t ≤ A) :
     ‖(cexp (-t) - cexp (-(z * t))) / t‖ ≤ ‖z - 1‖ * Real.exp ((1 + ‖z‖) * A) := by
   rw [show (cexp (-t) - cexp (-(z * t))) / t = (cexp (-((1 : ℂ) * t)) - cexp (-(z * t))) / t by
@@ -84,7 +84,7 @@ private theorem norm_frullaniIntegrand_le {A : ℝ} (hA : 0 < A) (z : ℂ) {t : 
       have hzre : -z.re ≤ ‖z‖ := (neg_le_abs z.re).trans (Complex.abs_re_le_norm z)
       have hu0 : 0 ≤ u := hu.1.le
       have hu1 : u ≤ 1 := hu.2
-      nlinarith
+      nlinarith [norm_nonneg z]
     calc -((seg 1 z u).re * t) = (-(seg 1 z u).re) * t := by ring
       _ ≤ (1 + ‖z‖) * t := mul_le_mul_of_nonneg_right hre ht0.le
       _ ≤ (1 + ‖z‖) * A := mul_le_mul_of_nonneg_left htA (by positivity)
@@ -224,7 +224,8 @@ private theorem integrableOn_cexp_div_Ioi {A : ℝ} (hA : 0 < A) {z : ℂ} (hz :
   have hdom : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-(z.re * t))) (Ioi A) := by
     have h : IntegrableOn (fun t : ℝ => Real.exp (-z.re * t)) (Ioi A) :=
       exp_neg_integrableOn_Ioi A hz
-    exact (h.const_mul A⁻¹).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
+    have hc : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-z.re * t)) (Ioi A) := h.const_mul A⁻¹
+    exact hc.congr_fun (fun _ _ => by dsimp only; rw [neg_mul]) measurableSet_Ioi
   have hmeas : AEStronglyMeasurable (fun t : ℝ => cexp (-(z * t)) / t)
       (volume.restrict (Ioi A)) := by
     refine (ContinuousOn.div (continuous_cexp_neg_mul z).continuousOn
@@ -267,7 +268,7 @@ theorem frullaniCutoffLog_eq_neg_integral_of_re_pos {A : ℝ} (hA : 0 < A) {z : 
     congr 1
     rw [frullaniTailConst, ← integral_complex_ofReal]
     refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
-    push_cast
+    push_cast; rfl
   rw [frullaniCutoffLog, ← hfr, hsplit, hhead_eq, htail]
   ring
 
@@ -277,7 +278,8 @@ theorem norm_frullaniCutoffLog_le_of_re_pos {A : ℝ} (hA : 0 < A) {z : ℂ} (hz
   have hdom : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-(z.re * t))) (Ioi A) := by
     have h : IntegrableOn (fun t : ℝ => Real.exp (-z.re * t)) (Ioi A) :=
       exp_neg_integrableOn_Ioi A hz
-    exact (h.const_mul A⁻¹).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
+    have hc : IntegrableOn (fun t : ℝ => A⁻¹ * Real.exp (-z.re * t)) (Ioi A) := h.const_mul A⁻¹
+    exact hc.congr_fun (fun _ _ => by dsimp only; rw [neg_mul]) measurableSet_Ioi
   have hb : ‖∫ t in Ioi A, cexp (-(z * t)) / t‖ ≤
       ∫ t in Ioi A, A⁻¹ * Real.exp (-(z.re * t)) := by
     refine norm_integral_le_of_norm_le hdom ?_
@@ -301,16 +303,19 @@ theorem norm_frullaniCutoffLog_le_of_im_ne_zero {A : ℝ} (hA : 0 < A) {z : ℂ}
     Complex.mem_slitPlane_iff.mpr (Or.inr (by simpa using hz))
   have hf_deriv : ∀ x : ℝ, HasDerivAt f (g x) x := by
     intro x
-    have h1 : HasDerivAt (fun r : ℝ => z + (r : ℂ)) 1 x :=
-      (Complex.ofRealCLM.hasDerivAt (x := x)).const_add z
-    simpa [f, g] using (hasDerivAt_frullaniCutoffLog hA (hslit x)).scomp x h1
+    have hc : HasDerivAt (fun w : ℂ => frullaniCutoffLog A (z + w)) (g x) (x : ℂ) :=
+      ((hasDerivAt_frullaniCutoffLog hA (hslit x)).comp (x : ℂ)
+        ((hasDerivAt_id (x : ℂ)).const_add z)).congr_deriv (mul_one _)
+    exact hc.comp_ofReal
   have hcont : ContinuousWithinAt f (Ici 0) 0 := (hf_deriv 0).continuousAt.continuousWithinAt
   have hdom : IntegrableOn (fun x : ℝ =>
       (Real.exp (-(z.re * A)) / |z.im|) * Real.exp (-(A * x))) (Ioi 0) := by
     have h : IntegrableOn (fun x : ℝ => Real.exp (-A * x)) (Ioi 0) :=
       exp_neg_integrableOn_Ioi 0 hA
-    exact (h.const_mul (Real.exp (-(z.re * A)) / |z.im|)).congr_fun
-      (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
+    have hc : IntegrableOn (fun x : ℝ =>
+        (Real.exp (-(z.re * A)) / |z.im|) * Real.exp (-A * x)) (Ioi 0) :=
+      h.const_mul (Real.exp (-(z.re * A)) / |z.im|)
+    exact hc.congr_fun (fun _ _ => by dsimp only; rw [neg_mul]) measurableSet_Ioi
   have hg_bound : ∀ x : ℝ, ‖g x‖ ≤
       (Real.exp (-(z.re * A)) / |z.im|) * Real.exp (-(A * x)) := by
     intro x
@@ -385,7 +390,7 @@ namespace TwoScaleSpec
 variable (S : TwoScaleSpec)
 
 /-- Base single-pair Beurling parameters placing the top conjugate pair at `β ± i γ`. -/
-def P : Params where
+def P : DiscreteOneOff.Params where
   μ := 1 - S.β
   ν := (3 * (1 - S.β) - 1) / 2
   γ := S.γ
@@ -487,7 +492,7 @@ theorem continuous_wave (n : ℕ) : Continuous (S.wave n) := by
       dsimp only [g]
       exact (ContinuousAt.div (by fun_prop) continuousAt_id (S.A_pos n).ne')
     rw [ContinuousAt, hw0]
-    refine squeeze_zero_norm (fun t => ?_) ?_
+    refine squeeze_zero_norm (a := fun t => ‖g t‖) (fun t => ?_) ?_
     · dsimp only [wave]
       split_ifs
       · exact le_rfl
@@ -636,18 +641,20 @@ private theorem norm_tailTerm_le {K m : ℕ} {s : ℂ} (hs0 : 0 < s.re)
   have hgap_pos : 0 < S.ω n - |s.im| := hp.trans hgap
   have him1 : (2 : ℝ) ^ n * Real.exp (2 * S.A n) < |(s - S.remZero n).im| := by
     have h1 : (s - S.remZero n).im = s.im - S.ω n := by simp [remZero]
+    have ha1 : |s.im - S.ω n| = -(s.im - S.ω n) :=
+      abs_of_neg (by linarith [le_abs_self s.im, hgap_pos])
     have h2 : S.ω n - |s.im| ≤ |s.im - S.ω n| := by
-      have := le_abs_self s.im
-      rw [abs_of_neg (by linarith)]
-      linarith
+      rw [ha1]
+      linarith [le_abs_self s.im]
     rw [h1]
     exact hgap.trans_le h2
   have him2 : (2 : ℝ) ^ n * Real.exp (2 * S.A n) < |(s - starRingEnd ℂ (S.remZero n)).im| := by
     have h1 : (s - starRingEnd ℂ (S.remZero n)).im = s.im + S.ω n := by simp [remZero]
+    have ha2 : |s.im + S.ω n| = s.im + S.ω n :=
+      abs_of_pos (by linarith [neg_le_abs s.im, hgap_pos])
     have h2 : S.ω n - |s.im| ≤ |s.im + S.ω n| := by
-      have := neg_le_abs s.im
-      rw [abs_of_pos (by linarith)]
-      linarith
+      rw [ha2]
+      linarith [neg_le_abs s.im]
     rw [h1]
     exact hgap.trans_le h2
   have hexp_le : ∀ z : ℂ, z.re = s.re - S.θSeq n →
@@ -899,9 +906,9 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
             cexp (-(s * t)) * (cexp ((S.θSeq n : ℂ) * t) * cexp (-(((S.ω n : ℂ) * t) * I))) := by
           rw [← Complex.exp_add, ← Complex.exp_add]; simp [remZero]; ring_nf
         push_cast
-        rw [Complex.ofReal_exp, Complex.ofReal_cos, e1, e2, mul_div_assoc', ← add_div]
+        rw [e1, e2, mul_div_assoc', ← add_div, ← neg_div]
         congr 1
-        · linear_combination -(cexp (-(s * t)) * cexp ((S.θSeq n : ℂ) * t)) * ecos
+        linear_combination -(cexp (-(s * t)) * cexp ((S.θSeq n : ℂ) * t)) * ecos
       · rw [if_neg ht, Set.indicator_of_notMem (show t ∉ Ici (S.A n) from ht),
           Complex.ofReal_zero, mul_zero]
     simp_rw [hind]
@@ -918,7 +925,8 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       have hi : IntegrableOn (fun u : ℝ => 2 * Real.exp (-(δ * u))) (Ici (S.A n)) := by
         rw [integrableOn_Ici_iff_integrableOn_Ioi]
         have h := exp_neg_integrableOn_Ioi (S.A n) hδ
-        exact (h.const_mul 2).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
+        have hc : IntegrableOn (fun u : ℝ => 2 * Real.exp (-δ * u)) (Ioi (S.A n)) := h.const_mul 2
+        exact hc.congr_fun (fun _ _ => by dsimp only; rw [neg_mul]) measurableSet_Ioi
       exact (hi.integrable_indicator measurableSet_Ici).restrict
     refine hdom.mono' hmeas ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with t _
@@ -970,7 +978,8 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       have hi : IntegrableOn (fun u : ℝ => 2 * Real.exp (-(δ * u))) (Ici (S.A n)) := by
         rw [integrableOn_Ici_iff_integrableOn_Ioi]
         have h := exp_neg_integrableOn_Ioi (S.A n) hδ
-        exact (h.const_mul 2).congr_fun (fun _ _ => by rw [neg_mul]) measurableSet_Ioi
+        have hc : IntegrableOn (fun u : ℝ => 2 * Real.exp (-δ * u)) (Ioi (S.A n)) := h.const_mul 2
+        exact hc.congr_fun (fun _ _ => by dsimp only; rw [neg_mul]) measurableSet_Ioi
       exact (hi.integrable_indicator measurableSet_Ici).restrict
     refine setIntegral_mono_on (hG_int n).norm hdom measurableSet_Ioi fun t _ => ?_
     dsimp only [G, wave]
@@ -1014,13 +1023,13 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       Finset.prod_congr rfl fun n hn => hK n (Finset.mem_range.mp hn), ← Complex.exp_sum,
       ← Complex.exp_add]
     congr 1
-    exact (hφ_sum.sum_add_tsum_nat_add K).symm
+    exact hφ_sum.sum_add_tsum_nat_add K
   rw [hrem_patch0]
   unfold patch
   rw [Finset.range_zero, Finset.prod_empty, one_mul]
   congr 1
   calc (∑' m : ℕ, φ m) = ∑' m : ℕ, ∫ t in Ioi (0 : ℝ), G m t := tsum_congr fun m => (hG_eq m).symm
-    _ = ∫ t in Ioi (0 : ℝ), ∑' m : ℕ, G m t := hswap.symm
+    _ = ∫ t in Ioi (0 : ℝ), ∑' m : ℕ, G m t := hswap
     _ = ∫ t in Ioi (0 : ℝ), cexp (-(s * t)) * (S.wRem t : ℂ) := by simp_rw [hpt]
 
 /-! ### Prime-square quantile discretization and integer-norm rounding -/
@@ -1738,13 +1747,14 @@ def zeroConfig : ZeroConfig where
   one_le_mult _ _ := le_rfl
   strip := by
     rintro z (hz | ⟨w, hw, rfl⟩)
-    · exact ⟨by linarith [hz.1], hz.2.1⟩
+    · exact ⟨by linarith [hz.1], hz.2.1.le⟩
     · rw [re_reflect]
       exact ⟨by linarith [hw.2.1], by linarith [hw.1]⟩
   reflect_mem := by
     rintro z (hz | ⟨w, hw, rfl⟩)
     · exact Or.inr ⟨z, hz, rfl⟩
-    · rw [reflect_involutive w]
+    · have hinv : reflect (reflect w) = w := by simp [reflect]
+      rw [hinv]
       exact Or.inl hw
   mult_reflect _ _ := rfl
   finite_window T₁ T₂ := by
@@ -1752,8 +1762,8 @@ def zeroConfig : ZeroConfig where
     let N : ℕ := ⌊B⌋₊ + 1
     let F_right : Set ℂ :=
       {(S.β : ℂ) + (S.γ : ℂ) * I, (S.β : ℂ) - (S.γ : ℂ) * I} ∪
-        ((Finset.range N).finite_toSet.image S.remZero) ∪
-        ((Finset.range N).finite_toSet.image (fun n => starRingEnd ℂ (S.remZero n)))
+        (S.remZero '' (Finset.range N : Set ℕ)) ∪
+        ((fun n => starRingEnd ℂ (S.remZero n)) '' (Finset.range N : Set ℕ))
     have hF_fin : F_right.Finite :=
       (((finite_singleton _).insert _).union ((Finset.range N).finite_toSet.image _)).union
         ((Finset.range N).finite_toSet.image _)

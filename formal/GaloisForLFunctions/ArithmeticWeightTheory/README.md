@@ -1,6 +1,6 @@
 # Arithmetic Weight Theory of Spec ℤ (AWT)
 
-Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 7 modules.
+Namespace `GaloisForLFunctions.ArithmeticWeightTheory`; umbrella `ArithmeticWeightTheory.lean`; 8 modules.
 All results unconditional; RH appears only inside equivalences.
 
 Notation. `z = ρ − ½` for a zero `ρ`; `b = sup Re z` the **weight** (zero width) of a configuration;
@@ -55,6 +55,7 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 | Orthonormal family | `TwistOrthonormalOn ν s` | a probability family with exact coinvariants on `s` |
 | Reset fibre | `resetOutside I x` | agrees with `x` on `I`, trivial elsewhere |
 | Pretentious distance | `pretTerm`, `pretSum`, `polePoint` | `1 − Re(χ_x(p)p^{−iτ})`; `D_δ = Σ_p p^{−1−δ}·pretTerm`; `1 + δ + iτ` |
+| Anti-pretentious distance | `antiTerm`, `antiSum` | `1 + Re(χ_x(p)p^{−iτ})`; `A_δ` |
 
 ## 3. Language
 
@@ -69,6 +70,7 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 - **Isozeric**: same zeros with multiplicities on a half-plane.
 - **Pricing**: the bound a family transfers to one fibre by positivity.
 - **Jump locus**: fibres with a pole on `Re s = 1`; **pretentious** to `n^{iτ}`: `Σ_p (1 − Re χ_x(p)p^{−iτ})/p < ∞`.
+- **Edge divisor**: poles and zeros of a fibre on `Re s = 1`; **anti-pretentious**: pretending `−n^{iτ}`.
 
 ## 4. Mechanisms
 
@@ -101,6 +103,8 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
     `k`-fold products, `ν{x₀}(Σ a_n)^{2k} ≤ ∫|S|^{2k} dν`.
 13. *Jump locus.* `|ζ_x(1 + δ + iτ)| = |ζ(1 + δ)| e^{−D_δ + O(1)}` with the fibre-logarithm remainder
     bounded by `2Σ p^{−2}` and `δζ(1 + δ) → 1`; `D_δ` stays below `D²` or tends to infinity.
+14. *Edge divisor.* `|ζ(1 + δ)| |ζ_x(1 + δ + iτ)| = e^{A_δ + O(1)}`: zeros on the edge are read by the
+    anti-pretentious sum; `pretTerm + antiTerm = 2` and `Σ 1/p = ∞` exclude pole and zero together.
 
 ## 5. Pillar theorems
 
@@ -118,6 +122,8 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 | Uncertainty and pricing | `measureReal_singleton_mul_card_le`, `measureReal_singleton_mul_pow_le` | unconditional |
 | Pole iff pretentious; poles have order `≤ 1` | `pole_iff_pretentious`, `tendsto_mul_norm_gaugeFibre_of_not_pretentious`, `eventually_mul_norm_gaugeFibre_le` | unconditional |
 | Jump locus contains the archimedean line, is Haar-null | `pretentious_archimedeanLine`, `gaugeHaar_jumpLocus_eq_zero` | unconditional |
+| Edge zero iff anti-pretentious; edge zeros simple; never pole and zero | `edgeZero_iff_antiPretentious`, `eventually_mul_le_norm_gaugeFibre`, `not_pretentious_and_antiPretentious` | unconditional |
+| Liouville point has its edge zero at `1`; edge-zero locus Haar-null | `antiPretentious_of_twist_eq_neg_one`, `gaugeHaar_edgeZeroLocus_eq_zero` | unconditional |
 | Tensor trick, common abscissa (M1) | `riemannHypothesis_iff_moments_primeTraces`, `riemannHypothesis_iff_tensorPowers_commonAbscissa` (SoSZ) | RH-equivalence, built on |
 | Strip specialization is RH | `riemannHypothesis_iff_limits_zeroFree` (PTT), `riemannHypothesis_iff_zetaStronglyRecurrent` (RHTower) | RH-equivalence, built on |
 
@@ -125,11 +131,12 @@ of the kind cohomology supplies over `𝔽_q` (middle extension, invariants of l
 
 **Q1. Which family carries `ζ` as a fibre with big monodromy?** None in Deligne's sense.
 - *Gauge torus.* Exact big monodromy (pairings, `≤ k!`); generic fibre has uniform weights; `ζ` is
-  the trivial fibre: a Haar-null, meagre point carrying a coinvariant jump (§7).
+  the trivial fibre: a Haar-null, meagre point carrying a coinvariant jump (§5).
 - *Any probability family with exact coinvariants* (Haar, finite Dirichlet families exact up to the
   needed length, any `ν`): every fibre has mass `≤ 1/length`, and positivity transfers at best the
   trivial bound `(Σ a_n)^{2k}` (`measureReal_singleton_mul_pow_le`). Exactness at tensor power `k`
-  costs volume `≥ length^k`; over `𝔽_q` a finite group is exact at every power with fixed volume.
+  costs volume `≥ length^k`. Over `𝔽_q` Deligne does not compute coinvariants by orthogonality:
+  cohomology bounds the non-invariant constituents, which sit in `H¹` and carry no poles.
 - *Vertical shifts.* Every fibre is `ζ`; moments are the gauge diagonal below the square-root
   threshold and exceed it by a nonnegative off-diagonal past it (`integral_pairTransform_mul_normSq_pow_eq_diag`,
   `integral_normSq_pow_eq_diag_add_offDiag_nonneg`, AKT): weights constant, information only in the
@@ -148,7 +155,11 @@ exists and M4 is RH. For the gauge family: the multiplicative pairings, weight `
 supplies Deligne's weight-zero pairing `z ↔ −z`, but not big monodromy. The jump locus of the family
 — fibres with a pole on `Re s = 1` — is the pretentious neighbourhood of the archimedean line
 (`pole_iff_pretentious`): the analogue of generic vanishing, with the line `n^{it}` as subtorus and
-finite pretentious distance as torsion translation; it is Haar-null.
+finite pretentious distance as torsion translation; it is Haar-null. The whole edge divisor is
+classified: at each `1 + iτ` a fibre has a simple pole (pretending `n^{iτ}`), a simple zero
+(pretending `−n^{iτ}`, e.g. the Liouville point at `1`), or neither. The uniform pole and zero
+bounds over the family (order `≤ 1` with universal constants) come from the Euler product — local
+roots of modulus one — not from the FE: this is the family's a priori control of `H⁰` and `H²`.
 
 **Q3. In which topology are weights semicontinuous?**
 - *Product topology on `G`.* Constants specialize in Deligne's direction (closed sets) but tend to
@@ -156,7 +167,9 @@ finite pretentious distance as torsion translation; it is Haar-null.
   are residual and Haar-null. The Baire-generic fibre looks like the special one (the pole), the
   Haar-generic fibre is pure.
 - *Strip topology (locally uniform convergence on `Re s > ½`).* Weights are lower semicontinuous
-  (Hurwitz); `ζ` is a limit of zero-free fibres or translates iff RH (PTT, RHTower).
+  (Hurwitz, `eventually_eq_zero_of_limit`, PTT); every limit of vertical translates of `ζ` is zero-free
+  or `0` iff RH (`riemannHypothesis_iff_limits_zeroFree`), and `ζ` returns to itself on compacta iff
+  RH (`riemannHypothesis_iff_zetaStronglyRecurrent`).
 - *Direction.* Over `ℤ` every natural family runs coherently, special `≥` generic: the trivial point
   is never better than typical (AGT), the heat flow lowers weights (de Bruijn, RHTower), isozeric and
   vertical families are constant. Over `𝔽_q[T]` the trivial point is better than typical (AGT
@@ -176,7 +189,7 @@ topology; its application to `ζ` is RH. M4 is RH (`riemannHypothesis_iff_tensor
 - Euler-deformation exponent `F`, isozeric continuation and analytic order transfer.
 - Exact abscissa of every tensor power at an attained top; AM–GM transfer between tensor powers.
 - Uncertainty and pricing for arbitrary probability families of twists.
-- Pole detection on `Re s = 1` by pretentious distance; order-one bound for every fibre.
+- Pole and zero detection on `Re s = 1` by (anti-)pretentious distance; uniform order-one bounds.
 
 **To build.**
 - A coinvariant computation that is not orthogonality of a measure (a trace formula for a family
@@ -196,8 +209,9 @@ topology; its application to `ζ` is RH. M4 is RH (`riemannHypothesis_iff_tensor
    Hodge index (⇔ RH). Is there a fibration of the surface with loss independent of `k`?
 4. **Finite top layer.** Under ¬AAL the top layer is finite-dimensional; Deligne's semicontinuity
    is a statement about finitely many eigenvalues. Does a family specialize a finite top layer?
-5. **Families with torsion monodromy.** Exactness over `ℤ` lives on torsion; can a family of finite
-   order twists be exact at every tensor power with volume independent of `k`?
+5. **Coinvariants with collisions.** Pricing closes every route that computes coinvariants by
+   orthogonality. A family whose non-invariant tensor constituents are bounded by an identity (a
+   trace formula with a pole-free non-invariant part) is the remaining shape of the sixth move.
 
 ## 9. Traps
 

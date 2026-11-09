@@ -100,8 +100,17 @@ private theorem periodized_parity {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
       pow_succ z j]
     simp only [mul_inv_rev, inv_pow, div_eq_mul_inv, mul_pow]
     ring
-  have hp' := (hp.mul_left ((r : ℂ) ^ e)).congr (fun j => (ep j).symm)
-  have hn' := (hn.mul_left ((r : ℂ) ^ (2 - e) / z)).congr (fun j => (en j).symm)
+  have hp' : HasSum
+      (fun j : ℕ => ((r ^ ((e : ℤ) + 2 * j).natAbs : ℝ) : ℂ) * z ^ (j : ℤ))
+      ((r : ℂ) ^ e * (1 - (r : ℂ) ^ 2 * z)⁻¹) := by
+    convert hp.mul_left ((r : ℂ) ^ e) using 1
+    exact funext ep
+  have hn' : HasSum
+      (fun j : ℕ => ((r ^ ((e : ℤ) + 2 * (-(j + 1 : ℤ))).natAbs : ℝ) : ℂ) *
+        z ^ (-(j + 1 : ℤ)))
+      (((r : ℂ) ^ (2 - e) / z) * (1 - (r : ℂ) ^ 2 / z)⁻¹) := by
+    convert hn.mul_left ((r : ℂ) ^ (2 - e) / z) using 1
+    exact funext en
   rw [periodized, tsum_of_nat_of_neg_add_one hp'.summable hn'.summable,
     hp'.tsum_eq, hn'.tsum_eq]
 
@@ -256,20 +265,52 @@ theorem fourierCoeff_treeFibre {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (n j : ℤ)
   exact GaloisForLFunctions.RHTower.SelbergPeterssonKloosterman.coeff_tsum_characters
     one_pos hsum j
 
+/-- Only the two parity fibres are needed to reconstruct the entire apartment. -/
+theorem treeGreen_eq_two_fibre_coefficient {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (k : ℕ) :
+    (treeGreen q s k : ℂ) =
+      _root_.RHTower.deningerFourierCoeff 1 (treeFibre q s (k % 2)) (k / 2) := by
+  rw [fourierCoeff_treeFibre hq hs]
+  have he : ((k % 2 : ℕ) : ℤ) + 2 * ((k / 2 : ℕ) : ℤ) = (k : ℤ) := by
+    exact_mod_cast Nat.mod_add_div k 2
+  rw [he, Int.natAbs_natCast]
+
+theorem treeFibre_eq (q s : ℝ) (n : ℤ) (θ : ℝ) :
+    treeFibre q s n θ = ((q ^ s / (q ^ (2 * s) - 1) : ℝ) : ℂ) *
+      periodized (q ^ (-s)) (phase θ) n := by
+  simp only [treeFibre, treeGreen, Complex.ofReal_mul, periodized, mul_assoc, tsum_mul_left]
+
+/-- Every unitary fibre of the actual tree Green kernel is positive definite, including at
+its critical spectral parameter. -/
+theorem treeFibre_energy_pos {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (θ : ℝ)
+    (u v : ℂ) (hne : u ≠ 0 ∨ v ≠ 0) :
+    0 < (treeFibre q s 0 θ).re * (Complex.normSq u + Complex.normSq v) +
+      2 * (treeFibre q s 1 θ * u * conj v).re := by
+  have hq0 : 0 < q := lt_trans zero_lt_one hq
+  have hr0 : 0 ≤ q ^ (-s) := Real.rpow_nonneg hq0.le _
+  have hr1 : q ^ (-s) < 1 := Real.rpow_lt_one_of_one_lt_of_neg hq (neg_neg_of_pos hs)
+  have hc : 0 < q ^ s / (q ^ (2 * s) - 1) :=
+    div_pos (Real.rpow_pos_of_pos hq0 s)
+      (sub_pos.mpr (Real.one_lt_rpow hq (by linarith only [hs])))
+  have h := mul_pos hc (fibre_energy_pos hr0 hr1 (norm_phase θ) u v hne)
+  rw [treeFibre_eq, treeFibre_eq]
+  simpa only [mul_assoc, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+    zero_mul, sub_zero, mul_add, mul_left_comm] using h
+
 /-- Specialization to the critical parameter recovers Weil's prime-ladder entry. -/
 theorem weilPrimeKernel_eq_treeFibre_coefficient {p m k : ℕ}
     (hp : p.Prime) (hm : 0 < m) (hk : 1 ≤ k) :
     (ArithmeticEffectivityTheory.weilPrimeKernel m (m * p ^ k) : ℂ) =
       (Real.log p * (((p : ℝ) - 1) / Real.sqrt p) : ℝ) *
-        _root_.RHTower.deningerFourierCoeff 1 (treeFibre p (1 / 2) k) 0 := by
-  rw [fourierCoeff_treeFibre (by exact_mod_cast hp.one_lt) (by norm_num)]
-  simp only [mul_zero, add_zero, Int.natAbs_natCast]
+        _root_.RHTower.deningerFourierCoeff 1 (treeFibre p (1 / 2) (k % 2)) (k / 2) := by
+  rw [← treeGreen_eq_two_fibre_coefficient (by exact_mod_cast hp.one_lt) (by norm_num)]
   rw [weilPrimeKernel_mul_pow_eq_treeGreen hp hm hk, Complex.ofReal_mul]
 
 #print axioms periodized_add_two
 #print axioms fourierCoeff_periodized
 #print axioms fibre_gram
 #print axioms fibre_energy_pos
+#print axioms treeFibre_energy_pos
+#print axioms treeGreen_eq_two_fibre_coefficient
 #print axioms fourierCoeff_treeFibre
 #print axioms weilPrimeKernel_eq_treeFibre_coefficient
 

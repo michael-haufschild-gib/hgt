@@ -28,11 +28,12 @@ The stronger intermediate target is hereditary coordinate sparsity:
 
 If a coordinate intersection has dimension exceeding half its support,
 eliminate the other coordinates from a basis selected among the original
-small forms. Maximal-minor elimination should produce independent forms
-supported on `J`, with coefficient height at most `k!H^k` and values at
-most `k!H^(k−1)ε`. At strict majority rank the collective root degree is
+small forms. Maximal-minor elimination produces independent forms
+supported on `J`, with coefficient height at most `k!H^k` and values below
+`k!H^(k−1)ε`. At strict majority rank the collective root degree is
 one, so the common exponent `C` is sufficient for every restriction.
-The precise elimination constants and independence must be proved.
+The elimination proof is [CDG-ELIM](../2-fully-proven/cdg-bounded-coordinate-elimination.md);
+its Lean certification is pending.
 
 ## Weighted selection mechanism
 

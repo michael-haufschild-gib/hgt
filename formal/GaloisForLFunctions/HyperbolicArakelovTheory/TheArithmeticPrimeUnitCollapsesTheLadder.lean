@@ -79,7 +79,7 @@ theorem frobeniusIntersection_one_cube_lt (p : ℕ) (hp : p.Prime) :
   have h1 := frobeniusIntersection_one_prime_pow p hp (k := 1) le_rfl
   rw [pow_one] at h1
   rw [frobeniusIntersection_one_prime_pow p hp (by decide : 1 ≤ 3), h1]
-  exact add_lt_add_right h _
+  simpa only [pow_one, add_comm] using add_lt_add_right h (Real.log p)
 
 /-- No scalar kernel invariant under the arithmetic prime unit carries the off-diagonal
 Frobenius intersections, already on the single prime ladder. -/

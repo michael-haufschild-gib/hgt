@@ -239,7 +239,17 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    so the mass must be spread over `≳ |e_{z₀}|e^{x₀U}/K` zeros of size `≍ K`, which the decay of `B̂`
    puts below height `e^{aU/8}`, at a cost `≳ e^{(x₀ − a/4)U}` in `Σ m/(1 + |γ|²)`: temperedness fails
    once `x₀ > a/4`. The missing step is the `L²` lower bound on `R` when heights cluster within `1/|R|`.
-   A yes would make the runs a natural decisive sample without power-saving gaps.
+   This is review 0911's B139 (prime windows `[x_k, λ_k x_k]`, `λ_k → ∞`). Obstacles (estimates): a
+   local test at a fixed zero leaks the deeper zeros of other heights by a factor `e^{(x_z − x₀)|R|}`
+   that no smooth window kills; a pair of equal depth with ordinates `γ, γ + Δ` cancels at the scales
+   where `Δ U ≡ π`, but a fixed `Δ ≠ 0` cannot stay quiet on windows of growing length, so a
+   counterexample needs new near-coincident pairs at every scale, quiet at all later scales; a fixed
+   finite cluster cannot be, since an almost periodic envelope small on windows of unbounded length
+   vanishes. Hull form: with the level weights frozen at `e^{xU}`, the trace is a mean-zero almost
+   periodic function whose infimum over its Bohr hull is `≤ −‖·‖₂²/(2‖·‖_W) ≤ −c e^{(2x₀ − a)U}/E`
+   for any level `x₀ > a/2`, with no separation of heights (Parseval on the hull). The gap: long
+   windows reach the hull, but across them the weights `e^{xu}` drift by `e^{(x − x')|R|}` between
+   levels. A yes would make the runs a natural decisive sample without power-saving gaps.
 
 ## Log
 - 2026-11-08 — created; C1–C69 formalized in `SurfaceOfSpecZ/` (sixty-nine modules)

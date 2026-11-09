@@ -1,0 +1,56 @@
+# Positive tail annihilation and scale-local prime sampling
+
+- **ID:** B130-PTA
+- **Stage:** 1-in-progress
+- **Type:** CONJECTURE
+- **Target:** B130; scale locality B139.
+
+## Conjecture
+
+For the zeta spline trace, a uniform lower bound on all primes in windows
+`[exp(T_k-L_k), exp(T_k+L_k)]`, where `T_k→∞` and
+`L_k/√T_k→∞`, implies RH. No attained-top premise.
+
+Stronger target: replace `√T_k` by a multiple of `(log T_k)²`, using
+the Riemann–von Mangoldt count. Arbitrarily slowly growing `L_k` remains open.
+
+## Mechanism to prove
+
+For a quartet exponent `a+iγ`, put `h=π/|γ|` and
+
+`Q_(a,h)(w) = (cosh(hw)+cosh(ha))/(1+cosh(ha))`.
+
+This is the Laplace transform of a symmetric probability measure on
+`{-h,0,h}`. It annihilates `±a±iγ`. For real `s`,
+`Q_(a,h)(s) ≤ exp(s²h²/2)`. Products therefore have a Gaussian moment
+bound governed by `Σh²`, independently of the number of deleted zeros.
+High-ordinate factors preserve every fixed low exponent, and differ from
+one by `O(h²)` there. Reciprocal-square summability should give a nonzero
+limiting multiplier on a finite head and exact deletion of the tail.
+
+Positive averaging transfers a local lower bound to the filtered trace.
+The contribution of shifts outside radius `L` is bounded by
+`C exp(T/2-cL²)` using the unconditional trace envelope. The retained
+finite head has a positive-depth oscillation with bounded gaps. This
+would exclude long windows with no negative excursion without requiring
+the original configuration to attain its top.
+
+For prime sampling, first propagate the bound using Huxley gaps and the
+global derivative envelope. The resulting error exponent is `1/12+ε`.
+Tail deletion should then exclude zeros deeper than that exponent;
+the improved derivative envelope makes a second passage bounded.
+
+## Gates
+
+- [x] Existing finite positive annihilators, finite-head oscillation, and
+  reciprocal-square summability located in the corpus.
+- [ ] Prove the finite symmetric filter, exact zeros, and uniform moment bound.
+- [ ] Prove nonzero multiplier convergence and tail deletion.
+- [ ] Prove local tail estimates and the continuous scale-local theorem.
+- [ ] Transfer to prime windows; formalize and audit all dependencies.
+
+## Scope
+
+No bound on the actual prime trace is asserted. This is a sampling
+mechanism, not an arithmetic producer for B130. No external novelty
+claim; web search excluded by user.

@@ -437,7 +437,8 @@ private def singleScalePairConfig (γ : ℝ) : ZeroConfig where
   reflect_mem := by
     rintro z (hz | ⟨w, hw, rfl⟩)
     · exact Or.inr ⟨z, hz, rfl⟩
-    · rw [reflect_involutive w]
+    · have hinv : reflect (reflect w) = w := by simp [reflect]
+      rw [hinv]
       exact Or.inl hw
   mult_reflect _ _ := rfl
   finite_window _ _ := by

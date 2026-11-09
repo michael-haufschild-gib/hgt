@@ -102,3 +102,4 @@ import GaloisForLFunctions.ExceptionalLayerTheory
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory
 import GaloisForLFunctions.HyperbolicArakelovTheory
 import GaloisForLFunctions.TranscendenceTheoryOfThePrimeOrbit
+import GaloisForLFunctions.ArithmeticWeightTheory

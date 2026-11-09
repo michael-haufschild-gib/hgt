@@ -13,8 +13,7 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 
 ## Gates
 - [x] 0 → 1 in-progress
-- [x] contributions 1–6 formalized (clean compiles)
-- [ ] contribution 7 (jump locus) — compiling
+- [x] contributions 1–8 formalized (clean compiles, wired into umbrella; umbrella wired into MainTheorems)
 
 ## Contributions (Lean modules; status)
 1. `TheGenericFibreHasUniformWeights` — big monodromy `k!` bound; a.e. uniform tensor moments (M2). **compiled**
@@ -23,7 +22,14 @@ Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `Arit
 4. `TheTensorPowersHaveExactlyTheirWeight` — abscissa of every tensor power `= 1 + 2kb` at attained top; M4 ⇔ RH. **compiled**
 5. `ExactMonodromyPricesEveryFibreAtTheTrivialBound` — uncertainty `ν{x₀}#s ≤ 1`; positivity transfer ≥ trivial bound. **compiled**
 6. `TheBaireGenericFibreCarriesThePole` — trace-constant sets nowhere dense; no-constant fibres residual & null. **compiled**
-7. `TheJumpLocusIsThePretentiousArchimedeanLine` — pole at `1+iτ` ⇔ `Σ_p (1−Re χ_x(p)p^{−iτ})/p < ∞`; archimedean line in locus; locus Haar-null. **compiling**
+7. `TheJumpLocusIsThePretentiousArchimedeanLine` — pole at `1+iτ` ⇔ `Σ_p (1−Re χ_x(p)p^{−iτ})/p < ∞`; archimedean line in locus; locus Haar-null; poles simple uniformly. **compiled**
+8. `TheEdgeDivisorOfAFibre` — edge zero ⇔ anti-pretentious; zeros simple uniformly; never pole and zero; Liouville zero at 1; edge-zero locus Haar-null. **compiled**
+
+## No-go closure (family + positivity route to the sixth move)
+- **Exact killing theorems:** geometric constancy (`summable_tensorTerm_iff_of_max`, M4 ⇔ RH); pricing (`measureReal_singleton_mul_pow_le`); constants blow up at `ζ` (`trivial_fibre_is_the_jump`); exponents residual vs null (`residual_and_null_of_traceExponent`); isozeric class null (`gaugeHaar_isozericClass_eq_zero`).
+- **Strongest positive survivors:** generic uniform weights (M2, `ae_fibreMoment_le`); edge divisor classification by (anti-)pretentious distance with uniform order-one bounds from the Euler product (`pole_iff_pretentious`, `edgeZero_iff_antiPretentious`).
+- **New insight:** the sixth move needs coinvariants computed by an identity whose non-invariant part is pole-free (cohomology over `𝔽_q`), not by orthogonality; the gauge family is the Mellin family with jump locus = pretentious archimedean line.
+- **Status:** all survivors formalized in Lean (folder above).
 
 ## Answers recorded in README §6
 Q1 none in Deligne's sense (gauge: generic only; any exact family: trivial bound; vertical: AKT; Dirichlet: AGT; Euler deformations: isozeric). Q2 for `M` all of `M^{⊗2k}` (exact weight), for gauge family pairings. Q3 product topology: constants specialize, exponents not (residual vs null); strip: Hurwitz, `ζ` ⇔ RH; direction over ℤ coherent.
@@ -32,4 +38,4 @@ Q1 none in Deligne's sense (gauge: generic only; any exact family: trivial bound
 Middle extension at `0`; non-geometrically-constant motives; `X^k` (surface, Hodge index); finite top layer; coinvariants not from orthogonality.
 
 ## Log
-- 2026-11-09 — created; README draft; contributions 1–6 compiled; README rewritten with results; contribution 7 written.
+- 2026-11-09 — created; contributions 1–8 compiled; README rewritten with results and answers.

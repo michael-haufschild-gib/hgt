@@ -65,10 +65,10 @@ The corpus inputs `SixExponentials.six_exponentials`,
 analytic and Baker inputs have only `propext`, `Classical.choice`, and
 `Quot.sound` as transitive axioms.
 
-Two modules passed plain Lean checks with those same axiom audits:
+Three modules passed plain Lean checks with those same axiom audits:
 
 - `GlobalPrimeOrbitPolynomials.lean`: injective full-orbit restriction, finite signed quotient frequencies, and entire extensions with subquadratic proximity.
 - `GlobalPrimeClockMultipliers.lean`: `global_prime_frequency_dilation_is_int` and `global_prime_character_clock_linear` remove the finite invariant prime-set premise.
+- `GlobalRationalOrbitPreservers.lean`: `globalRationalPreservesPrimeOrbit_iff`, its explicit converse, parameter uniqueness, and `global_rational_preserver_two_fixed_points` give the full complex classification.
 
-The classification, converse, uniqueness, fixed-point theorem, and
-real/integer descent remain under verification. No contribution is counted yet.
+Real/integer descent remains under verification. No contribution is counted yet.
