@@ -57,15 +57,15 @@ theorem phaseConst_mul_le {ι κ : Type} [Fintype ι] [Fintype κ] {r f : ι →
   unfold phaseConst
   rw [Finset.sum_mul_sum, ← Finset.univ_product_univ, Finset.sum_product]
   refine Finset.sum_le_sum fun i _ => Finset.sum_le_sum fun k _ => ?_
-  by_cases hf : f i = 0
-  · by_cases hg : g k = 0
-    · simp [hf, hg]
-    · simp only [hf, hg, if_true, if_false, mul_zero]
-      split_ifs <;> positivity
-  · simp only [hf, if_false, zero_mul]
+  have hrs : 0 ≤ (if f i + g k = 0 then r i * s k else 0) := by
     split_ifs
     · exact mul_nonneg (hr i) (hs k)
     · exact le_refl _
+  by_cases hf : f i = 0 <;> by_cases hg : g k = 0
+  · simp [hf, hg]
+  · rw [if_pos hf, if_neg hg, mul_zero]; exact hrs
+  · rw [if_neg hf, zero_mul]; exact hrs
+  · rw [if_neg hf, zero_mul]; exact hrs
 
 /-! ### The binomial block -/
 
@@ -123,11 +123,9 @@ theorem exists_phaseForm_prod (K : ℕ) (v : ℝ) (S : Finset ℝ) :
       simp only [hf0, if_true] at hle
       refine le_trans ?_ hle
       simp only [r₀]
-      have hcb := Nat.four_pow_le_two_mul_add_one_mul_central_binom K
       have hcb' : (4 : ℝ) ^ K ≤ (2 * K + 1) * (Nat.choose (2 * K) K : ℝ) := by
-        exact_mod_cast hcb
+        exact_mod_cast Nat.four_pow_le_two_mul_add_one_mul_central_binom K
       rw [div_le_div_iff₀ (by positivity) (by positivity)]
-      simp only [Nat.centralBinom_eq_two_mul_choose] at hcb'
       linarith
     refine ⟨Fin (2 * K + 1) × ι, inferInstance, fun p => r₀ p.1 * r p.2, fun p => f₀ p.1 + f p.2,
       fun p => mul_nonneg (hr₀ p.1) (hr p.2), ?_, fun t => ?_⟩
@@ -178,7 +176,7 @@ theorem tendsto_phaseForm_mean {w : ℕ → ℝ} (hw : SamplingWeight w) {ι : T
   have hlim : Tendsto (fun σ : ℝ => ∑ i, (r i : ℂ) * cexp (((-(f i * v) : ℝ) : ℂ) * I) *
       (wSeries w ((σ : ℂ) + (-(f i : ℂ) * I)) / (wSum w σ : ℂ))) (𝓝[>] 1)
         (𝓝 (∑ i, (r i : ℂ) * cexp (((-(f i * v) : ℝ) : ℂ) * I) * (if f i = 0 then 1 else 0))) := by
-    refine tendsto_finset_sum _ fun i _ => (Tendsto.const_mul _ ?_)
+    refine tendsto_finsetSum _ fun i _ => (Tendsto.const_mul _ ?_)
     by_cases hf : f i = 0
     · rw [if_pos hf]
       refine tendsto_const_nhds.congr' ?_
@@ -221,7 +219,7 @@ theorem norm_bohrExp_sub (lam u v : ℝ) :
   set θ := lam * (u - v)
   have h := Complex.norm_exp_I_mul_ofReal_sub_one θ
   rw [mul_comm] at h
-  rw [h]
+  rw [h, Real.norm_eq_abs, abs_mul, abs_two]
 
 /-- **Sampling weights are Bohr-dense.** -/
 theorem isBohrDenseAtTop_of_samplingWeight {w : ℕ → ℝ} (hw : SamplingWeight w) :
@@ -269,17 +267,22 @@ theorem isBohrDenseAtTop_of_samplingWeight {w : ℕ → ℝ} (hw : SamplingWeigh
       have := Real.sin_sq_add_cos_sq (lam * (u - v) / 2)
       have := min_le_left (η ^ 2 / 4) (1 / 2)
       rw [hθ₀]; linarith
-    calc Q u = Real.cos (lam * (u - v) / 2) ^ (2 * K) *
-          ∏ mu ∈ S.erase lam, Real.cos (mu * (u - v) / 2) ^ (2 * K) := by
-            rw [hQdef, ← Finset.mul_prod_erase S _ hlam]
-      _ ≤ θ₀ ^ K * 1 := by
-          refine mul_le_mul ?_ (Finset.prod_le_one (fun mu _ => by rw [pow_mul]; positivity)
-            fun mu _ => by
-              rw [pow_mul]
-              exact pow_le_one₀ (by positivity) (by nlinarith [Real.cos_sq_le_one (mu * (u - v) / 2)]))
-            (Finset.prod_nonneg fun mu _ => by rw [pow_mul]; positivity) hθ₀0.le.trans' ?_
-          · rw [pow_mul]; exact pow_le_pow_left₀ (by positivity) hcos K
-          · positivity
+    have hfirst : Real.cos (lam * (u - v) / 2) ^ (2 * K) ≤ θ₀ ^ K := by
+      rw [pow_mul]; exact pow_le_pow_left₀ (sq_nonneg _) hcos K
+    have hrest : ∏ mu ∈ S.erase lam, Real.cos (mu * (u - v) / 2) ^ (2 * K) ≤ 1 :=
+      Finset.prod_le_one (fun mu _ => by rw [pow_mul]; positivity) fun mu _ => by
+        rw [pow_mul]
+        exact pow_le_one₀ (by positivity) (by nlinarith [Real.cos_sq_le_one (mu * (u - v) / 2)])
+    have hrest0 : 0 ≤ ∏ mu ∈ S.erase lam, Real.cos (mu * (u - v) / 2) ^ (2 * K) :=
+      Finset.prod_nonneg fun mu _ => by rw [pow_mul]; positivity
+    have hsplit : Q u = Real.cos (lam * (u - v) / 2) ^ (2 * K) *
+        ∏ mu ∈ S.erase lam, Real.cos (mu * (u - v) / 2) ^ (2 * K) := by
+      simp only [hQdef]
+      rw [Finset.mul_prod_erase S (fun mu => Real.cos (mu * (u - v) / 2) ^ (2 * K)) hlam]
+    rw [hsplit]
+    calc Real.cos (lam * (u - v) / 2) ^ (2 * K) *
+          ∏ mu ∈ S.erase lam, Real.cos (mu * (u - v) / 2) ^ (2 * K)
+        ≤ θ₀ ^ K * 1 := mul_le_mul hfirst hrest hrest0 (by positivity)
       _ = θ₀ ^ K := mul_one _
   -- the finite part below `U`
   obtain ⟨N₀, hN₀⟩ : ∃ N₀ : ℕ, ∀ j : ℕ, N₀ ≤ j → U ≤ Real.log (j + 1) := by
@@ -331,7 +334,8 @@ theorem isBohrDenseAtTop_of_samplingWeight {w : ℕ → ℝ} (hw : SamplingWeigh
         have h2 : w j * Q (Real.log (j + 1)) ≤ w j := by nlinarith [hQ0 (Real.log (j + 1))]
         have h3 : w j * Q (Real.log (j + 1)) * ((j : ℝ) + 1) ^ (-σ) ≤ w j * 1 :=
           mul_le_mul h2 hp1 hp hwj
-        nlinarith
+        have h4 : 0 ≤ θ₀ ^ K * (w j * ((j : ℝ) + 1) ^ (-σ)) := by positivity
+        linarith
       · by_cases hw0 : w j = 0
         · rw [hw0]; simp
         · have hmem : Real.log (j + 1) ∈ logSupport w := ⟨j, hw0, rfl⟩
@@ -356,7 +360,7 @@ theorem isBohrDenseAtTop_of_samplingWeight {w : ℕ → ℝ} (hw : SamplingWeigh
         rw [Finset.mem_range] at hj; simp [hj]
   -- the limit of `C₀/wSum + θ₀^K` is `θ₀^K`
   have hlimR : Tendsto (fun σ : ℝ => C₀ / wSum w σ + θ₀ ^ K) (𝓝[>] 1) (𝓝 (0 + θ₀ ^ K)) :=
-    (hw.tendsto_atTop.const_div_atTop' C₀ |>.add tendsto_const_nhds)
+    ((tendsto_const_nhds (x := C₀)).div_atTop hw.tendsto_atTop |>.add tendsto_const_nhds)
   have hle : phaseConst r f ≤ 0 + θ₀ ^ K := by
     refine le_of_tendsto_of_tendsto hreal hlimR ?_
     filter_upwards [self_mem_nhdsWithin, hw.eventually_pos] with σ hσ hpos

@@ -95,6 +95,7 @@
 | C65 | Bohr-dense sets sample every attained top | proved (Lean) | `IsBohrDenseAtTop T`: beyond every bound `T ⊂ ℝ` approximates every finite family of phases `e^{iλv}`. `onLine_of_bddBelow_of_isBohrDenseAtTop`: a lower bound `2 Re S ≥ −K` on such `T` puts every zero of a tempered configuration without real zeros on the line if the top is attained. Mechanism: `F_top(u) = Σ_{Re z = b} e_z e^{i Im z·u}` is almost periodic and real (`topTraceC_im`); `F − F_top → 0` and Bohr density give `F_top ≥ 0` on `ℝ` (`topTrace_nonneg_of_isBohrDenseAtTop`); without real zeros its mean is `0` (`bohrMean_topTraceC`), so `F_top = 0` (Bohr uniqueness), against the coefficient `e_{ρ₀−½} ≠ 0`. Sets with arbitrarily long intervals are Bohr-dense (`isBohrDenseAtTop_of_long_intervals`); so for `D ⊂ ℕ` containing every integer of `[x, e^L x]` for arbitrarily large `x, L` (`onLine_of_bddBelow_integer_runs_of_max`), a set that may have density zero and no power-saving gaps. For `ζ`: RH ⇔ ZAL ∧ the Stepanov bound on any runs of integers ⇔ ZAL ∧ an `ℕ`-count with Tate limit `δ_d(1,1)` on every `Γ_1 + Γ_d`, `d` in the runs (`riemannHypothesis_iff_zerosApproachLine_and_bddBelow_integer_runs`, `..._effectiveCounts_integer_runs`). Attained-top sampling needs Bohr density, not density; one Frobenius is not Bohr-dense |
 | C66 | The Stepanov bound has the Vinogradov–Korobov saving | proved (Lean), unconditional | `exists_norm_lagStructure_le_vk`: `‖S(u)‖ ≤ C e^{u/2 − u^{3/5}/(10⁸ log u)}` for `u ≥ e`; `exists_abs_primeWindow_sub_archPoleWindow_le_vk`: `|P(n) − A(n)| ≤ C √n exp(−(log n)^{3/5}/(10⁸ log log n))`. From the corpus region `β ≤ 1 − (log t)^{−2/3}(log log t)^{−5/3}/10⁸` above `t₀` (`exists_re_le_vk`); the budget `6L + u L^{−2/3}(log L)^{−5/3}/10⁸ ≥ u^{3/5}/(10⁸ log u)` (`vk_budget`: for `L ≥ u^{3/5}/log u` the decay of `B̂` pays, below it the width); lower zeros `β ≤ 1 − δ` and `u^{3/5} ≤ δu + δ^{−3/2}`. The exponent `3/5` is that of the zero-free region; the classical width `(log log t)^{−1/3}` would give `(log u)^{−1/5}` |
 | C67 | The other side at every Bohr-dense set | proved (Lean) | `onLine_of_bddAbove_of_isBohrDenseAtTop`: an upper bound `2 Re S ≤ K` on a Bohr-dense set puts every zero of a tempered configuration on the line if the top is attained, real zeros allowed (no masking from above); `onLine_of_bddAbove_long_intervals_of_max` for long runs. `F_top ≤ 0` on `ℝ`; its mean is the coefficient `e_b` at the real exponent (`bohrCoefficient_topTraceC`), `0` or positive (`evenCoeff_spline_pos_of_real`); `e_b − F_top ≥ 0` has mean `0`, so `F_top = e_b = 0`, against `e_{ρ₀−½} ≠ 0`. With C65: Bohr density decides attained tops from both sides, as the sampling weights do (C37, C39) |
+| C68 | Sampling weights are Bohr-dense | proved (Lean) | `isBohrDenseAtTop_of_samplingWeight`: the log-support `{log n : w(n) ≠ 0}` of every sampling weight is Bohr-dense at `+∞`, so the attained-top sampling theorems (primes, residue classes, density-one sets of primes, two Frobenii) are instances of C65/C67. If the support avoided a Bohr neighbourhood beyond `U`, the nonnegative polynomial `Q = Π_{λ∈S} cos(λ(t − v)/2)^{2K}` would have `w`-mean `≤ (1 − η²/4)^K`, while the twisted means kill every nonzero frequency (`tendsto_phaseForm_mean`) and leave its constant term `≥ (2K + 1)^{−|S|}` (`exists_phaseForm_prod`, nonnegative coefficients) |
 
 ## Big picture
 
@@ -125,8 +126,9 @@ configuration (C46): the primes, the `pᵏ`, the `nᵏ` with `O(x^{1/k})` elemen
 whose series has a pole at `s = 1` and no other singularity on `Re s = 1` sees every attained top layer,
 from `ζ(1 + it) ≠ 0` alone (C35, C38): the primes in a residue class, density-one sets of primes (C44),
 the `pᵃqᵇ` of two primes with `O(log² x)` elements (C50). The exact criterion for attained tops is
-Bohr density of the log-degrees, from both sides, real zeros masking only from below (C65, C67): long
-runs of integers `[x, e^L x]` qualify, at density zero and without power-saving gaps. One prime resonates at the heights
+Bohr density of the log-degrees, from both sides, real zeros masking only from below (C65, C67); every
+sampling weight has Bohr-dense support (C68), and so has every set of long runs of integers
+`[x, e^L x]`, at density zero and without power-saving gaps. One prime resonates at the heights
 `2πm/log p` and aliases (C33, C52); two cannot resonate together. The attained top cannot be dropped
 at the single degrees of any finitely generated monoid: quartets made resonant by simultaneous
 Dirichlet approximation on successive windows keep the samples bounded below (C58), and so do
@@ -237,4 +239,4 @@ only after smoothing at a fixed scale, where all channels are `O(1)`.
    A yes answers B136 in the negative.
 
 ## Log
-- 2026-11-08 — created; C1–C67 formalized in `SurfaceOfSpecZ/` (sixty-seven modules)
+- 2026-11-08 — created; C1–C68 formalized in `SurfaceOfSpecZ/` (sixty-eight modules)

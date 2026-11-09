@@ -7,28 +7,29 @@
 - **Statement:** Develop the field: families of Euler products with monodromy, `ζ` a special fibre, pure generic fibre, specialization of weights; answer Q1–Q3 of §2.9, build its tools.
 
 ## Goal
-Answer: (Q1) which family carries `ζ` with big monodromy; (Q2) the analogue of `H²_c`; (Q3) the topology/direction of weight semicontinuity. Milestones M2 (generic fibre uniform moments), M3 (semicontinuity), M4 (`A_k = o(k)`).
+Answer (Q1) which family carries `ζ` with big monodromy; (Q2) the analogue of `H²_c`; (Q3) the topology/direction of weight semicontinuity. Milestones M2–M4.
 
-Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `ArithmeticWeightTheory.lean`, README there.
+Lean folder `formal/GaloisForLFunctions/ArithmeticWeightTheory/`, umbrella `ArithmeticWeightTheory.lean`, README there (foundational, rewritten with results).
 
 ## Gates
 - [x] 0 → 1 in-progress
-- [ ] 1 → 2 / 2 → 3 per contribution below
+- [x] contributions 1–6 formalized (clean compiles)
+- [ ] contribution 7 (jump locus) — compiling
 
-## Approach (contributions; status)
-1. `TheGenericFibreHasUniformWeights` — big monodromy `∫|Σ_p a_pχ_x(p)|^{2k} ≤ k!(Σ|a_p|²)^k`; a.e. fibre: uniform tensor moments `≪ N^{1+ε}` all `k`, traces `p^{o(1)}` (M2). **Lean, compiled.**
-2. The jump at the trivial fibre: pole lower bound `T_0(log p) ≫ √p`; constant sets closed, conull union, miss a neighbourhood of `0`. — next.
-3. Euler deformations: absolutely convergent prime perturbations are isozeric on `Re s > σ`; Haar-null class. — planned.
-4. Geometric constancy of `M`: tensor series as sums over tuples of exponents; M4 ⇔ RH (`A_k ≥ 2k·width − 1`). — planned.
-5. Top-layer monodromy: abscissa `1 + 2kb` for all `k` at an attained top; residue = Bohr mean of `F^{2k}`. — planned.
-6. Curve calibration. — planned.
+## Contributions (Lean modules; status)
+1. `TheGenericFibreHasUniformWeights` — big monodromy `k!` bound; a.e. uniform tensor moments (M2). **compiled**
+2. `TheTrivialFibreIsTheJump` — pole `≫ √p` at `x = 0`; trace-constant sets closed, conull union, miss a nbhd of `0`. **compiled**
+3. `EulerDeformationsOfZetaAreIsozeric` — `ζ_x = ζ e^F`; summable perturbations isozeric (analytic order); class Haar-null. **compiled**
+4. `TheTensorPowersHaveExactlyTheirWeight` — abscissa of every tensor power `= 1 + 2kb` at attained top; M4 ⇔ RH. **compiled**
+5. `ExactMonodromyPricesEveryFibreAtTheTrivialBound` — uncertainty `ν{x₀}#s ≤ 1`; positivity transfer ≥ trivial bound. **compiled**
+6. `TheBaireGenericFibreCarriesThePole` — trace-constant sets nowhere dense; no-constant fibres residual & null. **compiled**
+7. `TheJumpLocusIsThePretentiousArchimedeanLine` — pole at `1+iτ` ⇔ `Σ_p (1−Re χ_x(p)p^{−iτ})/p < ∞`; archimedean line in locus; locus Haar-null. **compiling**
 
-## Insights (for README)
-- `M` is geometrically constant (Frobenius through `log n`); same for one curve over `𝔽_q`; Deligne's uniformity is a family statement (`X^k`, Lefschetz pencils).
-- Gauge family is the Mellin family of the constant sheaf; trivial point = bad character: jump in `H⁰/H²` (pole), generic fibres have no cohomology right of `½`.
-- Coherence: for nonnegative prime data the trivial fibre dominates every fibre; inequalities from the family run special ≥ generic.
-- Constants vs exponents: constant sets are closed (Deligne direction holds for constants), exponents are tail invariants; the pole makes constants blow up at `0`.
-- M4 as stated is RH.
+## Answers recorded in README §6
+Q1 none in Deligne's sense (gauge: generic only; any exact family: trivial bound; vertical: AKT; Dirichlet: AGT; Euler deformations: isozeric). Q2 for `M` all of `M^{⊗2k}` (exact weight), for gauge family pairings. Q3 product topology: constants specialize, exponents not (residual vs null); strip: Hurwitz, `ζ` ⇔ RH; direction over ℤ coherent.
+
+## Open (README §8)
+Middle extension at `0`; non-geometrically-constant motives; `X^k` (surface, Hodge index); finite top layer; coinvariants not from orthogonality.
 
 ## Log
-- 2026-11-09 — created; README draft; contribution 1 compiled.
+- 2026-11-09 — created; README draft; contributions 1–6 compiled; README rewritten with results; contribution 7 written.
