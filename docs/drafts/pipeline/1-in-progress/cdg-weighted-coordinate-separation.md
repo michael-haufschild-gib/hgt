@@ -32,8 +32,8 @@ small forms. Maximal-minor elimination produces independent forms
 supported on `J`, with coefficient height at most `k!H^k` and values below
 `k!H^(k−1)ε`. At strict majority rank the collective root degree is
 one, so the common exponent `C` is sufficient for every restriction.
-The elimination proof is [CDG-ELIM](../2-fully-proven/cdg-bounded-coordinate-elimination.md);
-its Lean certification is pending.
+The elimination theorem is formalized as `exists_bounded_coordinate_basis`:
+[CDG-ELIM](../3-formalized/cdg-bounded-coordinate-elimination.md).
 
 ## Weighted selection mechanism
 
@@ -60,8 +60,7 @@ exclusion and the prime-degree trace producer remain separate open inputs.
 
 ## Dependencies to close
 
-1. Height-controlled independent integer rows in a coordinate intersection.
-2. Uniform comparison with every strict-majority collective floor.
-3. Weighted projection selection from hereditary sparsity, with no matroid
+1. Uniform comparison with every strict-majority collective floor.
+2. Weighted projection selection from hereditary sparsity, with no matroid
    packing or matching premise left unproved.
-4. Exact arithmetic capstone and transitive Lean axiom audit.
+3. Exact arithmetic capstone and transitive Lean axiom audit.

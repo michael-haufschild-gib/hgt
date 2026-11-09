@@ -323,7 +323,9 @@ private theorem exists_restriction_pivot {k : ℕ} {I : Type*} [Fintype I]
     have hd := finrank_span_eq_card hbind
     rw [Subtype.range_coe] at hd
     have hle := (Submodule.span ℚ b).finrank_le
-    simpa [hd] using hle
+    change Fintype.card b ≤ Fintype.card I
+    rw [← hd]
+    simpa using hle
   obtain ⟨t, -, ht⟩ := HTGeometry.exists_injective_det_submatrix_ne_zero hind
   refine ⟨q, M, t, hq, hM, ?_, ?_⟩
   · intro hz

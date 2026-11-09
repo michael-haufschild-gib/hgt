@@ -1,8 +1,8 @@
 # Bounded elimination onto coordinate intersections
 
 - **ID:** CDG-ELIM
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** A coordinate intersection of the rational span of bounded
   small integer forms has a spanning family with controlled height and value.
 
@@ -51,5 +51,10 @@ Hereditary arithmetic sparsity and weighted selection remain separate inputs.
 
 ## Formalization
 
-`CollectiveDiophantineGeometry/BoundedCoordinateElimination.lean`.
-The theorem is not certified until its direct Lean check and axiom audit pass.
+`CollectiveDiophantineGeometry/BoundedCoordinateElimination.lean`:
+
+- `exists_bounded_coordinate_elimination`: exact spanning family and both bounds.
+- `exists_bounded_coordinate_basis`: independent integer rows of the full intersection rank.
+
+Direct `lake --old env lean` check passed. Both transitive axiom audits contain
+only `propext`, `Classical.choice`, and `Quot.sound`. The programme umbrella imports the module.

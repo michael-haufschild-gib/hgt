@@ -893,7 +893,6 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
       dsimp only [G, wave]
       by_cases ht : S.A n ≤ t
       · rw [if_pos ht, Set.indicator_of_mem (mem_Ici.mpr ht)]
-        have htne : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ((S.A_pos n).trans_le ht).ne'
         have ecos : cexp (((S.ω n : ℂ) * t) * I) + cexp (-(((S.ω n : ℂ) * t) * I)) =
             2 * Complex.cos ((S.ω n : ℂ) * t) := by
           rw [Complex.exp_mul_I, show -(((S.ω n : ℂ) * t) * I) = (-((S.ω n : ℂ) * t)) * I by ring,
@@ -908,7 +907,7 @@ theorem remFactor_eq_cexp_integral {s : ℂ} (hs : 1 < s.re) :
         push_cast
         rw [e1, e2, mul_div_assoc', ← add_div, ← neg_div]
         congr 1
-        linear_combination -(cexp (-(s * t)) * cexp ((S.θSeq n : ℂ) * t)) * ecos
+        linear_combination (cexp (-(s * t)) * cexp ((S.θSeq n : ℂ) * t)) * ecos
       · rw [if_neg ht, Set.indicator_of_notMem (show t ∉ Ici (S.A n) from ht),
           Complex.ofReal_zero, mul_zero]
     simp_rw [hind]

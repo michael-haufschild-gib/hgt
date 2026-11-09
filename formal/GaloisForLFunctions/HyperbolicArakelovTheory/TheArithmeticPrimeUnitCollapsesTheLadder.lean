@@ -11,6 +11,8 @@ identified. Their Frobenius intersections with degree one differ: the prime term
 is constant, while the archimedean jet term strictly decreases. Consequently the
 actual Frobenius intersection cannot descend as a scalar kernel under this action.
 The torsion self-intersection changes by `2 log p` under the same identification.
+Unitary automorphy cannot repair the descent: it preserves absolute values, while
+the two positive Frobenius intersections have distinct absolute values.
 -/
 
 set_option autoImplicit false
@@ -93,6 +95,37 @@ theorem not_exists_invariant_frobenius_kernel (p : ℕ) (hp : p.Prime) :
   rw [action_point, hvalues 0 3 (by decide), hvalues 0 1 (by decide), pow_zero, pow_one] at h
   exact (frobeniusIntersection_one_cube_lt p hp).ne h
 
+private theorem frobeniusIntersection_one_prime_pow_pos (p : ℕ) (hp : p.Prime)
+    {k : ℕ} (hk : 1 ≤ k) : 0 < frobeniusIntersection 1 (p ^ k) := by
+  have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
+  have hpow : (1 : ℝ) < (p : ℝ) ^ k := one_lt_pow₀ hp1 (by omega)
+  have hp0 : (0 : ℝ) < (p : ℝ) ^ k := zero_lt_one.trans hpow
+  have hr0 : 0 < 1 / (p : ℝ) ^ k := one_div_pos.mpr hp0
+  have hr1 : 1 / (p : ℝ) ^ k < 1 := (div_lt_one hp0).mpr hpow
+  have hd : 0 < 1 - (1 / (p : ℝ) ^ k) ^ 2 := by
+    have h := mul_pos (sub_pos.mpr hr1) (by linarith only [hr0] : 0 < 1 + 1 / (p : ℝ) ^ k)
+    nlinarith only [h]
+  rw [frobeniusIntersection_one_prime_pow p hp hk]
+  exact add_pos (div_pos one_pos hd) (Real.log_pos hp1)
+
+/-- Even unitary automorphy fails to carry the Frobenius intersection: its positive
+values change in absolute value along an arithmetic-unit orbit. This includes
+point-dependent unitary cocycles, since only preservation of the norm is used. -/
+theorem not_exists_norm_invariant_frobenius_kernel (p : ℕ) (hp : p.Prime) :
+    ¬ ∃ K : Apartment → Apartment → ℂ,
+      (∀ x y, ‖K x (action p hp y)‖ = ‖K x y‖) ∧
+      (∀ m n : ℕ, m ≠ n → K (point p hp m) (point p hp n) =
+        (frobeniusIntersection (p ^ m) (p ^ n) : ℂ)) := by
+  rintro ⟨K, hK, hvalues⟩
+  have h := hK (point p hp 0) (point p hp 1)
+  have h1 : 0 < frobeniusIntersection 1 p := by
+    simpa only [pow_one] using frobeniusIntersection_one_prime_pow_pos p hp (k := 1) le_rfl
+  have h3 := frobeniusIntersection_one_prime_pow_pos p hp (by decide : 1 ≤ 3)
+  rw [action_point, hvalues 0 3 (by decide), hvalues 0 1 (by decide), pow_zero, pow_one,
+    Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs,
+    abs_of_pos h3, abs_of_pos h1] at h
+  exact (frobeniusIntersection_one_cube_lt p hp).ne h
+
 /-- The torsion diagonal has nonzero additive holonomy along the prime-unit orbit. -/
 theorem selfIntersection_cube_sub_prime (p : ℕ) (hp : p.Prime) :
     selfIntersection (p ^ 3) - selfIntersection p = 2 * Real.log p := by
@@ -118,6 +151,7 @@ theorem not_exists_invariant_torsion_robin (p : ℕ) (hp : p.Prime) :
 #print axioms action_point
 #print axioms frobeniusIntersection_one_cube_lt
 #print axioms not_exists_invariant_frobenius_kernel
+#print axioms not_exists_norm_invariant_frobenius_kernel
 #print axioms selfIntersection_cube_sub_prime
 #print axioms not_exists_invariant_torsion_robin
 

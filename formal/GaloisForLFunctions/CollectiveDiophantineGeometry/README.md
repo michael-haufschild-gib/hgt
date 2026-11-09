@@ -252,6 +252,29 @@ height and dimension. The time-window count below uses the common rational
 span to bound close smooth-number pairs.
 The complete proof is [CDG-EXP](../../../docs/drafts/pipeline/3-formalized/cdg-rank-sensitive-exponent.md).
 
+### Bounded elimination onto coordinate intersections
+
+[BoundedCoordinateElimination.lean](BoundedCoordinateElimination.lean) controls
+the cost of localizing a small-form span to any coordinate set. If a finite
+family `S⊂ℤ^k` has coefficient height at most `H≥1` and values below `ε>0`
+under a real linear form `L`, then every intersection
+
+`span_ℚ(S) ∩ ℚ^J`
+
+has a rational basis of integer rows supported on `J`, with coefficient
+height at most `k!H^k` and values below `k!H^(k−1)ε`.
+The exact basis theorem is `exists_bounded_coordinate_basis`.
+
+A pivot minor of order `q` gives the sharper bounds
+`(q+1)!H^(q+1)` and `(q+1)!H^q ε`. Cramer's rule kills all excluded
+coordinates. On the coordinate intersection, elimination is multiplication
+by its nonzero pivot determinant; its image therefore spans the whole
+intersection. Selecting a basis loses no surviving rank.
+
+This supplies height control for applying the simultaneous logarithm bound
+to coordinate intersections. Hereditary rank estimates still require a
+uniform comparison of those restricted arithmetic floors.
+
 ### Finite-time return counts
 
 [FiniteTimeReturnCounts.lean](FiniteTimeReturnCounts.lean) bounds the measure

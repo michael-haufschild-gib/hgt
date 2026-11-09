@@ -39,6 +39,13 @@ diagonal p-unit. The off-diagonal and torsion-Robin obstructions are formalized 
 audit passes, with only `propext`, `Classical.choice`, and `Quot.sound`. Twisted
 reconstruction and positivity remain under Lean verification.
 
+The same obstruction extends to every unitary automorphy law: the intersections
+at (1,p) and (1,p³) are positive and unequal, while unitary translation preserves
+their absolute values. Thus one unitary twist cannot carry the full Frobenius
+kernel either. This strengthening has an exact paper proof; Lean verification is
+pending. The positive survivor below reconstructs the tree channel, not the full
+Frobenius kernel, from a family of twists.
+
 ## Positive survivor: exact proof
 
 Put E_e(z)=∑_{j∈ℤ}r^{|e+2j|}z^j, |z|=1, 0≤r<1. Absolute convergence follows

@@ -91,7 +91,6 @@ theorem riemannZeta_ne_zero_iff_not_antiPretentious {τ : ℝ} (hτ : τ ≠ 0) 
   · -- a zero at `1 + iτ` is an edge zero
     intro hnz
     by_contra hz
-    push Not at hz
     apply hnz
     have hO := hdiff.hasDerivAt.isBigO_sub
     rw [hz] at hO

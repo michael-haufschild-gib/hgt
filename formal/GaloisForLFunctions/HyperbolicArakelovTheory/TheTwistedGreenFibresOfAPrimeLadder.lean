@@ -26,10 +26,12 @@ private theorem coefficient_summable {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (n 
     Summable (fun j : ℤ => ‖((r ^ (n + 2 * j).natAbs : ℝ) : ℂ)‖) := by
   have hi : Function.Injective (fun j : ℤ => n + 2 * j) := by
     intro a b hab
+    change n + 2 * a = n + 2 * b at hab
     omega
   have h := (_root_.RHTower.summable_pow_natAbs hr0 hr1).comp_injective hi
   exact h.congr fun j => by
-    simp only [Function.comp_apply, Complex.norm_real, abs_of_nonneg (pow_nonneg hr0 _)]
+    simp only [Function.comp_apply, Complex.norm_real, Real.norm_eq_abs,
+      abs_of_nonneg (pow_nonneg hr0 _)]
 
 /-- Unitary periodization is absolutely convergent. -/
 theorem summable_periodized {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
@@ -54,7 +56,8 @@ theorem periodized_add_two (r : ℝ) {z : ℂ} (hz : z ≠ 0) (n : ℤ) :
     periodized r z (n + 2) = ∑' j : ℤ, z⁻¹ * f (j + 1) := tsum_congr heq
     _ = z⁻¹ * ∑' j : ℤ, f (j + 1) := tsum_mul_left
     _ = z⁻¹ * periodized r z n := by
-      rw [(Equiv.addRight (1 : ℤ)).tsum_eq f]
+      congr 1
+      exact (Equiv.addRight (1 : ℤ)).tsum_eq f
 
 private theorem norm_scaled_phase_lt {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
     {z : ℂ} (hz : ‖z‖ = 1) :
@@ -62,17 +65,17 @@ private theorem norm_scaled_phase_lt {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
   have hr2 : r ^ 2 < 1 := by
     have h := mul_pos (by linarith only [hr0] : 0 < r + 1) (sub_pos.mpr hr1)
     nlinarith only [h]
-  simpa only [norm_mul, norm_div, norm_pow, Complex.norm_real,
+  simpa only [norm_mul, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg hr0, hz, mul_one, div_one] using And.intro hr2 hr2
 
 private theorem phase_ne_zero {z : ℂ} (hz : ‖z‖ = 1) : z ≠ 0 := by
   intro h
-  simpa [h] using hz
+  simp [h] at hz
 
 private theorem one_sub_ne_zero_of_norm_lt_one {z : ℂ} (hz : ‖z‖ < 1) : 1 - z ≠ 0 := by
   intro h
   have he : z = 1 := (sub_eq_zero.mp h).symm
-  simpa [he] using hz
+  simp [he] at hz
 
 private theorem periodized_parity {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
     {z : ℂ} (hz : ‖z‖ = 1) (e : ℕ) (he : e ≤ 1) :
@@ -103,20 +106,26 @@ private theorem periodized_parity {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
   have hp' : HasSum
       (fun j : ℕ => ((r ^ ((e : ℤ) + 2 * j).natAbs : ℝ) : ℂ) * z ^ (j : ℤ))
       ((r : ℂ) ^ e * (1 - (r : ℂ) ^ 2 * z)⁻¹) := by
-    convert hp.mul_left ((r : ℂ) ^ e) using 1
-    exact funext ep
+    exact (hp.mul_left ((r : ℂ) ^ e)).congr_fun ep
   have hn' : HasSum
       (fun j : ℕ => ((r ^ ((e : ℤ) + 2 * (-(j + 1 : ℤ))).natAbs : ℝ) : ℂ) *
         z ^ (-(j + 1 : ℤ)))
       (((r : ℂ) ^ (2 - e) / z) * (1 - (r : ℂ) ^ 2 / z)⁻¹) := by
-    convert hn.mul_left ((r : ℂ) ^ (2 - e) / z) using 1
-    exact funext en
-  rw [periodized, tsum_of_nat_of_neg_add_one hp'.summable hn'.summable,
+    exact (hn.mul_left ((r : ℂ) ^ (2 - e) / z)).congr_fun en
+  rw [periodized, tsum_of_nat_of_neg_add_one
+    (f := fun j : ℤ => ((r ^ ((e : ℤ) + 2 * j).natAbs : ℝ) : ℂ) * z ^ j)
+    hp'.summable hn'.summable,
     hp'.tsum_eq, hn'.tsum_eq]
 
 /-- The denominator of the two-level Green fibre. -/
 def denominator (r : ℝ) (z : ℂ) : ℂ :=
   (1 - (r : ℂ) ^ 2 * z) * (1 - (r : ℂ) ^ 2 / z)
+
+private theorem add_inv_mul (a b x y : ℂ) (ha : a ≠ 0) (hb : b ≠ 0) :
+    (x * a⁻¹ + y * b⁻¹) * (a * b) = x * b + y * a := by
+  calc
+    _ = x * (a⁻¹ * a) * b + y * (b⁻¹ * b) * a := by ring
+    _ = _ := by rw [inv_mul_cancel₀ ha, inv_mul_cancel₀ hb]; ring
 
 /-- The even diagonal entry is a Poisson kernel with ratio `r²`. -/
 theorem periodized_zero {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
@@ -127,8 +136,10 @@ theorem periodized_zero {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
   have hb := one_sub_ne_zero_of_norm_lt_one hnorm.2
   have hz0 := phase_ne_zero hz
   rw [show (0 : ℤ) = ((0 : ℕ) : ℤ) by rfl, periodized_parity hr0 hr1 hz 0 (by omega)]
-  simp only [pow_zero, Nat.sub_zero, one_mul, denominator]
-  field_simp [ha, hb, hz0]
+  simp only [pow_zero, Nat.sub_zero, denominator]
+  apply (eq_div_iff (mul_ne_zero ha hb)).mpr
+  rw [add_inv_mul _ _ _ _ ha hb]
+  field_simp [hz0]
   ring
 
 /-- The odd entry contains the transition between the two parity classes. -/
@@ -143,7 +154,9 @@ theorem periodized_one {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1)
   rw [show (1 : ℤ) = ((1 : ℕ) : ℤ) by rfl, periodized_parity hr0 hr1 hz 1 le_rfl]
   norm_num only [pow_one, Nat.reduceSub]
   unfold denominator
-  field_simp [ha, hb, hz0]
+  apply (eq_div_iff (mul_ne_zero ha hb)).mpr
+  rw [add_inv_mul _ _ _ _ ha hb]
+  field_simp [hz0]
   ring
 
 private theorem inv_eq_conj_of_norm_one {z : ℂ} (hz : ‖z‖ = 1) : z⁻¹ = conj z := by
@@ -191,6 +204,7 @@ theorem fibre_gram {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {z : ℂ} (hz : ‖z�
       (r * (1 - r ^ 2) / D) * (((1 + conj z) * u * conj v).re) := by
     rw [mul_assoc, mul_assoc, Complex.mul_re]
     simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero]
+    rw [mul_assoc]
   rw [hcross]
   dsimp only [D]
   ring
@@ -218,7 +232,7 @@ theorem fibre_energy_pos {r : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) {z : ℂ} (hz :
     intro h
     have heq : z = (r : ℂ) ^ 2 := sub_eq_zero.mp h
     have hn := congrArg norm heq
-    rw [hz, norm_pow, Complex.norm_real, abs_of_nonneg hr0] at hn
+    rw [hz, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hr0] at hn
     linarith only [hn, hr2]
   have hv : (z - (r : ℂ) ^ 2) * v = 0 := by linear_combination he2 - (r : ℂ) * he1
   have hv0 : v = 0 := (mul_eq_zero.mp hv).resolve_left hz2
@@ -261,14 +275,17 @@ theorem fourierCoeff_treeFibre {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (n j : ℤ)
     have h := (coefficient_summable hr0 hr1 n).mul_left
       ‖((q ^ s / (q ^ (2 * s) - 1) : ℝ) : ℂ)‖
     simpa only [treeGreen, Complex.ofReal_mul, norm_mul] using h
-  simp only [treeFibre, phase_zpow]
+  change _root_.RHTower.deningerFourierCoeff 1
+    (fun θ => ∑' j : ℤ, (treeGreen q s (n + 2 * j).natAbs : ℂ) * phase θ ^ j) j = _
+  simp only [phase_zpow]
   exact GaloisForLFunctions.RHTower.SelbergPeterssonKloosterman.coeff_tsum_characters
     one_pos hsum j
 
 /-- Only the two parity fibres are needed to reconstruct the entire apartment. -/
 theorem treeGreen_eq_two_fibre_coefficient {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (k : ℕ) :
     (treeGreen q s k : ℂ) =
-      _root_.RHTower.deningerFourierCoeff 1 (treeFibre q s (k % 2)) (k / 2) := by
+      _root_.RHTower.deningerFourierCoeff 1
+        (treeFibre q s ((k % 2 : ℕ) : ℤ)) ((k / 2 : ℕ) : ℤ) := by
   rw [fourierCoeff_treeFibre hq hs]
   have he : ((k % 2 : ℕ) : ℤ) + 2 * ((k / 2 : ℕ) : ℤ) = (k : ℤ) := by
     exact_mod_cast Nat.mod_add_div k 2
@@ -293,15 +310,17 @@ theorem treeFibre_energy_pos {q s : ℝ} (hq : 1 < q) (hs : 0 < s) (θ : ℝ)
       (sub_pos.mpr (Real.one_lt_rpow hq (by linarith only [hs])))
   have h := mul_pos hc (fibre_energy_pos hr0 hr1 (norm_phase θ) u v hne)
   rw [treeFibre_eq, treeFibre_eq]
-  simpa only [mul_assoc, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-    zero_mul, sub_zero, mul_add, mul_left_comm] using h
+  simp only [mul_assoc, Complex.re_ofReal_mul]
+  simp only [mul_assoc] at h
+  nlinarith only [h]
 
 /-- Specialization to the critical parameter recovers Weil's prime-ladder entry. -/
 theorem weilPrimeKernel_eq_treeFibre_coefficient {p m k : ℕ}
     (hp : p.Prime) (hm : 0 < m) (hk : 1 ≤ k) :
     (ArithmeticEffectivityTheory.weilPrimeKernel m (m * p ^ k) : ℂ) =
       (Real.log p * (((p : ℝ) - 1) / Real.sqrt p) : ℝ) *
-        _root_.RHTower.deningerFourierCoeff 1 (treeFibre p (1 / 2) (k % 2)) (k / 2) := by
+        _root_.RHTower.deningerFourierCoeff 1
+          (treeFibre p (1 / 2) ((k % 2 : ℕ) : ℤ)) ((k / 2 : ℕ) : ℤ) := by
   rw [← treeGreen_eq_two_fibre_coefficient (by exact_mod_cast hp.one_lt) (by norm_num)]
   rw [weilPrimeKernel_mul_pow_eq_treeGreen hp hm hk, Complex.ofReal_mul]
 

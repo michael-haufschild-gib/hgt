@@ -44,7 +44,10 @@ the improved derivative envelope makes a second passage bounded.
 
 - [x] Existing finite positive annihilators, finite-head oscillation, and
   reciprocal-square summability located in the corpus.
-- [ ] Prove the finite symmetric filter, exact zeros, and uniform moment bound.
+- [x] Finite symmetric filter, exact zeros, uniform moment bound, and local
+  Gaussian leakage: `ScaleLocality/PositiveTailFilters.lean`.
+- [x] Nonzero product convergence at a retained exponent when every
+  shift satisfies `|h| |w|≤1`; same module, direct Lean/axiom audit passed.
 - [ ] Prove nonzero multiplier convergence and tail deletion.
 - [ ] Prove local tail estimates and the continuous scale-local theorem.
 - [ ] Transfer to prime windows; formalize and audit all dependencies.

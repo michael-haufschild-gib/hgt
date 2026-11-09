@@ -235,8 +235,147 @@ theorem tailAverage_local_floor (l : List (ℝ × ℝ)) {f : ℝ → ℝ}
   rw [tailAverage_mul] at h
   linarith only [h]
 
+/-- Cancellation of the linear exponential terms makes the multiplier error quadratic. -/
+theorem norm_cosh_sub_one_le_sq {z : ℂ} (hz : ‖z‖ ≤ 1) :
+    ‖Complex.cosh z - 1‖ ≤ ‖z‖ ^ 2 := by
+  have hp := Complex.norm_exp_sub_one_sub_id_le hz
+  have hm := Complex.norm_exp_sub_one_sub_id_le (x := -z) (by simpa using hz)
+  have he : Complex.cosh z - 1 =
+      ((Complex.exp z - 1 - z) + (Complex.exp (-z) - 1 - (-z))) / 2 := by
+    rw [Complex.cosh]
+    ring
+  rw [he, norm_div, norm_ofNat]
+  calc _ ≤ (‖Complex.exp z - 1 - z‖ + ‖Complex.exp (-z) - 1 - (-z)‖) / 2 := by
+        gcongr
+        exact norm_add_le _ _
+    _ ≤ (‖z‖ ^ 2 + ‖z‖ ^ 2) / 2 :=
+        div_le_div_of_nonneg_right (add_le_add hp (by simpa only [norm_neg] using hm))
+          (by norm_num)
+    _ = _ := by ring
+
+private theorem one_le_real_cosh (x : ℝ) : 1 ≤ Real.cosh x := by
+  nlinarith only [Real.cosh_pos x, Real.cosh_sq x, sq_nonneg (Real.sinh x)]
+
+/-- The error of one deletion at a retained exponent is paid by its squared shift. -/
+theorem norm_quartetFactor_sub_one_le (a h : ℝ) (w : ℂ)
+    (hsmall : |h| * ‖w‖ ≤ 1) :
+    ‖quartetFactor a h w - 1‖ ≤ h ^ 2 * ‖w‖ ^ 2 / 2 := by
+  have he : quartetFactor a h w - 1 =
+      (Complex.cosh ((h : ℂ) * w) - 1) / (1 + (Real.cosh (h * a) : ℂ)) := by
+    unfold quartetFactor
+    apply (eq_div_iff (denominator_ne_zero a h)).mpr
+    rw [sub_mul, div_mul_cancel₀ _ (denominator_ne_zero a h), one_mul]
+    ring
+  have hz : ‖(h : ℂ) * w‖ ≤ 1 := by
+    simpa only [norm_mul, Complex.norm_real, Real.norm_eq_abs] using hsmall
+  have hden : ‖1 + (Real.cosh (h * a) : ℂ)‖ = 1 + Real.cosh (h * a) := by
+    rw [← Complex.ofReal_one, ← Complex.ofReal_add, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (denominator_pos a h)]
+  rw [he, norm_div, hden]
+  calc _ ≤ ‖(h : ℂ) * w‖ ^ 2 / (1 + Real.cosh (h * a)) :=
+        div_le_div_of_nonneg_right (norm_cosh_sub_one_le_sq hz) (denominator_pos a h).le
+    _ ≤ ‖(h : ℂ) * w‖ ^ 2 / 2 :=
+        div_le_div_of_nonneg_left (sq_nonneg _) (by norm_num)
+          (by linarith only [one_le_real_cosh (h * a)])
+    _ = _ := by rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_pow, sq_abs]
+
+/-- A sufficiently short deletion cannot kill a retained exponent. -/
+theorem quartetFactor_ne_zero_of_small (a h : ℝ) (w : ℂ)
+    (hsmall : |h| * ‖w‖ ≤ 1) : quartetFactor a h w ≠ 0 := by
+  intro hz
+  have hb := norm_quartetFactor_sub_one_le a h w hsmall
+  rw [hz, zero_sub, norm_neg, norm_one] at hb
+  have hs : h ^ 2 * ‖w‖ ^ 2 ≤ 1 := by
+    have hh := mul_self_le_mul_self (by positivity : 0 ≤ |h| * ‖w‖) hsmall
+    simpa only [← sq, mul_pow, sq_abs, one_pow] using hh
+  linarith only [hb, hs]
+
+/-- Square-summable shifts give a summable error on every retained exponent. -/
+theorem summable_quartetFactor_sub_one {ι : Type*} (a h : ι → ℝ) (w : ℂ)
+    (hsq : Summable fun i => h i ^ 2) (hsmall : ∀ i, |h i| * ‖w‖ ≤ 1) :
+    Summable fun i => ‖quartetFactor (a i) (h i) w - 1‖ := by
+  apply Summable.of_nonneg_of_le (fun i => norm_nonneg _) _
+    (hsq.mul_right (‖w‖ ^ 2 / 2))
+  intro i
+  simpa only [mul_div_assoc] using norm_quartetFactor_sub_one_le (a i) (h i) w (hsmall i)
+
+/-- The infinite deletion multiplier exists and remains nonzero at the retained exponent. -/
+theorem multipliable_quartetFactor_ne_zero {ι : Type*} (a h : ι → ℝ) (w : ℂ)
+    (hsq : Summable fun i => h i ^ 2) (hsmall : ∀ i, |h i| * ‖w‖ ≤ 1) :
+    Multipliable (fun i => quartetFactor (a i) (h i) w) ∧
+      (∏' i, quartetFactor (a i) (h i) w) ≠ 0 := by
+  have he : (fun i => 1 + (quartetFactor (a i) (h i) w - 1)) =
+      fun i => quartetFactor (a i) (h i) w := by funext i; ring
+  have hs := summable_quartetFactor_sub_one a h w hsq hsmall
+  have hm := multipliable_one_add_of_summable hs
+  have hn := tprod_one_add_ne_zero_of_summable
+    (f := fun i => quartetFactor (a i) (h i) w - 1)
+    (fun i => by simpa only [show 1 + (quartetFactor (a i) (h i) w - 1) =
+      quartetFactor (a i) (h i) w by ring] using
+        quartetFactor_ne_zero_of_small (a i) (h i) w (hsmall i)) hs
+  rw [he] at hm hn
+  exact ⟨hm, hn⟩
+
+/-- The complex multiplier is controlled by the real exponential moment. -/
+theorem norm_quartetFactor_le (a h : ℝ) (w : ℂ) :
+    ‖quartetFactor a h w‖ ≤ Real.exp (w.re ^ 2 * h ^ 2 / 2) := by
+  have hc : ‖Complex.cosh ((h : ℂ) * w)‖ ≤ Real.cosh (h * w.re) := by
+    rw [Complex.cosh, norm_div, norm_ofNat, Real.cosh_eq]
+    apply div_le_div_of_nonneg_right _ (by norm_num)
+    simpa only [Complex.norm_exp, Complex.neg_re, Complex.mul_re,
+      Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] using
+      norm_add_le (Complex.exp ((h : ℂ) * w)) (Complex.exp (-((h : ℂ) * w)))
+  have hden : ‖1 + (Real.cosh (h * a) : ℂ)‖ = 1 + Real.cosh (h * a) := by
+    rw [← Complex.ofReal_one, ← Complex.ofReal_add, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_pos (denominator_pos a h)]
+  unfold quartetFactor
+  rw [norm_div, hden]
+  calc _ ≤ (Real.cosh (h * w.re) + Real.cosh (h * a)) / (1 + Real.cosh (h * a)) := by
+        apply div_le_div_of_nonneg_right _ (denominator_pos a h).le
+        have hn := norm_add_le (Complex.cosh ((h : ℂ) * w)) (Real.cosh (h * a) : ℂ)
+        rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.cosh_pos _)] at hn
+        linarith only [hn, hc]
+    _ ≤ _ := quartet_mgf_le a h w.re
+
+/-- Multiplier of a finite composition. -/
+def tailFactor : List (ℝ × ℝ) → ℂ → ℂ
+  | [], _ => 1
+  | (a, h) :: l, w => quartetFactor a h w * tailFactor l w
+
+/-- Deletion multipliers are uniformly bounded on each vertical strip by their square cost. -/
+theorem norm_tailFactor_le (l : List (ℝ × ℝ)) (w : ℂ) :
+    ‖tailFactor l w‖ ≤ Real.exp (w.re ^ 2 * squareCost l / 2) := by
+  induction l with
+  | nil => simp [tailFactor, squareCost]
+  | cons p l ih =>
+      rw [tailFactor, norm_mul]
+      calc _ ≤ Real.exp (w.re ^ 2 * p.2 ^ 2 / 2) *
+            Real.exp (w.re ^ 2 * squareCost l / 2) :=
+              mul_le_mul (norm_quartetFactor_le p.1 p.2 w) ih (norm_nonneg _)
+                (Real.exp_pos _).le
+        _ = _ := by
+          rw [← Real.exp_add]
+          congr 1
+          simp only [squareCost, List.map_cons, List.sum_cons]
+          ring
+
+/-- Every prescribed quartet is deleted as soon as its factor is included. -/
+theorem tailFactor_root (l : List (ℝ × ℝ)) {a h γ : ℝ}
+    (hmem : (a, h) ∈ l) (hphase : h * γ = Real.pi) :
+    tailFactor l ((a : ℂ) + (γ : ℂ) * I) = 0 := by
+  induction l with
+  | nil => simp at hmem
+  | cons p l ih =>
+      rcases List.mem_cons.mp hmem with he | ht
+      · subst p
+        rw [tailFactor, quartetFactor_root a h γ hphase, zero_mul]
+      · rw [tailFactor, ih ht, mul_zero]
+
 #print axioms quartetFactor_root
 #print axioms tailAverage_exp_le
 #print axioms tailAverage_local_floor
+#print axioms multipliable_quartetFactor_ne_zero
+#print axioms norm_tailFactor_le
+#print axioms tailFactor_root
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CollectiveDiophantineGeometry.AbsoluteValuesForceHeavyReturns
+import GaloisForLFunctions.CollectiveDiophantineGeometry.BoundedCoordinateElimination
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveAuxiliaryConstruction
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveExtrapolation
 import GaloisForLFunctions.CollectiveDiophantineGeometry.CollectiveLogarithmBound
@@ -28,6 +29,8 @@ parameters preserve this gain through the integer-kernel construction
 and analytic extrapolation, yielding a simultaneous logarithm lower bound.
 Its exponent has reciprocal-rank dependence and gives a uniform rank profile
 for the whole approximation body.
+Bounded integer elimination preserves the exact rational coordinate intersection,
+with explicit height and value losses for an independent spanning family.
 Injective coordinate projection and the Fejér window inequality turn that
 profile into finite-time return-measure bounds, uniform in target phase and
 dimension, with an explicit polynomial observation horizon.

@@ -1,8 +1,8 @@
 # Global rational orbit preservers are Laurent Adams maps
 
 - **ID:** alst-global-rational-orbit-preservers-are-laurent-adams
-- **Stage:** 2-fully-proven
-- **Type:** PAPER PROOF; Lean formalization incomplete, not counted
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** Let `N_p,D_p : MvPolynomial Nat.Primes ℂ` be a rational coordinate family defined on the whole prime orbit and preserving it. No common finite invariant prime set is assumed. Then there are unique `n∈ℤ`, `b∈ℝ` with `N_p X_p^{(-n).toNat}=C(p^(−ib)) D_p X_p^{n.toNat}` for every prime `p`. Real or integer coefficients force `b=0`.
 
 ## Research consequence
@@ -65,10 +65,14 @@ The corpus inputs `SixExponentials.six_exponentials`,
 analytic and Baker inputs have only `propext`, `Classical.choice`, and
 `Quot.sound` as transitive axioms.
 
-Three modules passed plain Lean checks with those same axiom audits:
+All four modules passed final plain `lake --old env lean` checks with those same axiom audits:
 
 - `GlobalPrimeOrbitPolynomials.lean`: injective full-orbit restriction, finite signed quotient frequencies, and entire extensions with subquadratic proximity.
 - `GlobalPrimeClockMultipliers.lean`: `global_prime_frequency_dilation_is_int` and `global_prime_character_clock_linear` remove the finite invariant prime-set premise.
 - `GlobalRationalOrbitPreservers.lean`: `globalRationalPreservesPrimeOrbit_iff`, its explicit converse, parameter uniqueness, and `global_rational_preserver_two_fixed_points` give the full complex classification.
+- `GlobalRealRationalOrbitPreservers.lean`: `global_real_rational_preserver_is_laurentAdams` and `global_integer_rational_preserver_is_laurentAdams` remove translation and give the cross-polynomial identities over the original coefficient rings.
 
-Real/integer descent remains under verification. No contribution is counted yet.
+The [complex classification](../../../../formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/GlobalRationalOrbitPreservers.lean)
+and [real/integer descent](../../../../formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/GlobalRealRationalOrbitPreservers.lean)
+are complete and wired into the programme umbrella. No placeholders,
+kernel bypasses, or raised proof limits occur in the four modules.

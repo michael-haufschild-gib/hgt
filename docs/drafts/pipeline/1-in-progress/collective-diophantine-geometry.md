@@ -124,6 +124,16 @@ the earlier scalar and full-rank bounds. Direct verification and six
 transitive axiom audits passed.
 Proof: [CDG-EXP](../3-formalized/cdg-rank-sensitive-exponent.md).
 
+## Bounded coordinate elimination
+
+For integer forms of height `H≥1` and values below `ε`, every coordinate
+intersection of their rational span has a rational basis of integer rows
+with height at most `k!H^k` and values below `k!H^(k−1)ε`.
+Cramer elimination preserves the full intersection rank. The theorem applies
+to every real linear form; it supplies the height-controlled localization
+needed for hereditary small-form rank bounds.
+Proof and audited Lean declarations: [CDG-ELIM](../3-formalized/cdg-bounded-coordinate-elimination.md).
+
 ## Finite-time return counts
 
 For `k` distinct primes, rank threshold `r`, and `N≥2`, put `H=N−1`

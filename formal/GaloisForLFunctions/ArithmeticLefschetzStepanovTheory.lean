@@ -38,6 +38,10 @@ import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.SignedPrimeClockMul
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialQuotientFrequencies
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.RationalOrbitPreserversAreLaurentAdams
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.RealRationalOrbitPreservers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.GlobalPrimeOrbitPolynomials
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.GlobalPrimeClockMultipliers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.GlobalRationalOrbitPreservers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.GlobalRealRationalOrbitPreservers
 
 /-!
 # Arithmetic Lefschetz–Stepanov theory
@@ -57,5 +61,8 @@ self-map defined on and preserving a finite prime orbit with two distinct primes
 Laurent Adams map, without an assumed regularity of its clock. Polynomial maps have nonnegative
 exponents; rational maps allow every integer exponent. Real or integer coefficients remove the
 translation. A nonidentity rational orbit preserver cannot fix two orbit points.
+The same rational classification holds on the full prime algebra, even when successive
+coordinates introduce new primes. Six exponentials and Baker independence remove the
+finite invariant prime-set restriction.
 See `ArithmeticLefschetzStepanovTheory/README.md`.
 -/

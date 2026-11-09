@@ -1,7 +1,7 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`; 39 modules. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 43 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -37,8 +37,9 @@ ALST locates each fact over `ℤ` and proves what it gives there:
 - (S1) holds exactly on the **torsion of the prime torus**, where the Galois action of `ℚ(μ_m)` is
   the power map. The full affine fixed locus also allows zero coordinates.
   Every integral polynomial self-map preserving a finite prime orbit with two distinct primes
-  is an Adams operation. Real or integer rational coordinates extend this exactly to
-  signed Adams exponents `n∈ℤ`. Their clocks are `t ↦ nt`, and every nonidentity map fixes only `0`.
+  is an Adams operation. Rational preservers of those finite orbits, and of the full prime
+  orbit with arbitrary coordinate supports, are signed Adams operations over `ℝ` or `ℤ`.
+  Their clocks are `t ↦ nt`, with `n∈ℤ`, and every nonidentity map fixes only `0`.
   This classification assumes no regularity of the clock. Stepanov's construction
   `h = Σ f_i ψ_q(g_i)` runs verbatim on the fixed locus: one polynomial identity `Σ f_i g_i = 0`
   kills `h` there.
@@ -170,6 +171,16 @@ exact; over `ℤ` no place supplies both.
     Fixed times still satisfy `(n−1)t+b=0`, so two distinct fixed orbit points force the identity
     (`rational_preserver_two_fixed_points`).
 
+    The classification also holds in the full prime-variable algebra, with no common finite
+    invariant prime set (`globalRationalPreservesPrimeOrbit_iff`). Three output primes and
+    six exponentials force an algebraic clock slope; Baker independence on one coordinate's
+    finite frequency support makes it an integer (`global_prime_frequency_dilation_is_int`).
+    Every rational coordinate therefore reduces to its own prime power, even if its given
+    numerator and denominator use other primes. Uniqueness, the fixed-point law, and real/integer
+    descent persist (`globalLaurentAdamsRelation_parameters_unique`,
+    `global_rational_preserver_two_fixed_points`, `global_real_rational_preserver_is_laurentAdams`,
+    `global_integer_rational_preserver_is_laurentAdams`).
+
 ## 5. Questions and answers
 
 | # | Question (§2.9) | Answer | Lean |
@@ -211,7 +222,7 @@ exact; over `ℤ` no place supplies both.
 | Galois = Adams on torsion; `x^q = x` on the `(q−1)`-torsion | `aeval_torsionPoint_adams`, `aeval_torsionPoint_adams_of_pow_eq` |
 | The Frobenius on the orbit is the dilation; no common torsion return | `orbitValue_adams`, `eq_zero_of_torsion_return` |
 | All polynomial orbit preservers are translated Adams; integral endomorphisms are exactly Adams; two fixed orbit points force identity | `preservesPrimeOrbit_iff`, `integer_endomorphism_is_adams`, `preservesPrimeOrbit_two_fixed_points` |
-| Rational preservers of a finite orbit with at least two primes are uniquely translated Laurent Adams; real/integer coefficients remove translation | `rationalPreservesPrimeOrbit_iff`, `laurentAdamsRelation_parameters_unique`, `real_rational_preserver_is_laurentAdams`, `integer_rational_preserver_is_laurentAdams` |
+| Rational orbit preservers are uniquely translated Laurent Adams, both on finite prime sets with at least two primes and on the full prime algebra; real/integer coefficients remove translation | `rationalPreservesPrimeOrbit_iff`, `globalRationalPreservesPrimeOrbit_iff`, `globalLaurentAdamsRelation_parameters_unique`, `global_real_rational_preserver_is_laurentAdams`, `global_integer_rational_preserver_is_laurentAdams` |
 | Torsion returns exist at every height | `exists_torsion_return` |
 | Norm amplifier on the torus and on Frobenius orbits of returns | `torus_norm_amplifier`, `vanishesToOrder_of_small`, `eq_zero_of_small_on_frobeniusOrbit`, `one_le_prod_frobeniusOrbit`, `eq_zero_of_frobeniusOrbit_le_half` |
 | No exact vanishing at generic returns | `countable_setOf_exists_orbitValue_eq_zero`, `exists_return_forall_orbitValue_ne_zero` |
@@ -234,7 +245,7 @@ All are unconditional.
 
 | Trap | Truth |
 |---|---|
-| Arbitrary rational coordinates can preserve the whole finite prime orbit and fix many of its points | with at least two primes, every rational map defined on the whole orbit and preserving it is translated Laurent Adams; any nonidentity one fixes at most one orbit point |
+| Rational coordinates can introduce new primes and thereby preserve the full prime orbit while fixing many of its points | even without a finite invariant prime set, every rational map defined on the whole orbit and preserving it is translated Laurent Adams; any nonidentity one fixes at most one orbit point |
 | Returns are fixed points of a Frobenius | at a return the flow is close to the identity on the whole torus; the only exact fixed points common to all primes are torsion points (off the orbit) and `t = 0`; each prime has its own, the closed points of its circle |
 | Integrality turns forced near-vanishing at returns into zeros | only countably many heights carry a zero of any nonzero integer auxiliary; every return window avoids them |
 | The norm amplifier lifts the precision cap on the orbit | it gives exact vanishing at the torsion point, off the orbit; the orbit passes at distance `δ` and the zero copied to it is a Rouché copy, capped as before |
@@ -302,9 +313,9 @@ itself integer auxiliaries vanish at only countably many heights; at the returns
 repulsion, not a source of zeros. What the product formula counts with exact vanishing — the closed
 points of the prime circles — it counts at Chebyshev's price.
 
-Allowing arbitrary rational denominators does not change the fixed-point obstruction on a
-finite prime orbit with two distinct primes. Every globally defined orbit-preserving rational
-map has coordinates `p^(−ib)X_p^n`, with one integer exponent and one real translation.
+Arbitrary rational denominators and coordinatewise introduction of new primes do not change
+the fixed-point obstruction. On the full prime orbit, every globally defined orbit-preserving
+rational map has coordinates `p^(−ib)X_p^n`, with one integer exponent and one real translation.
 Real or integer coefficients remove the translation. Denominators add negative exponents,
 while fixed times remain `(n−1)t+b=0`; two distinct fixed orbit points force the identity.
 
