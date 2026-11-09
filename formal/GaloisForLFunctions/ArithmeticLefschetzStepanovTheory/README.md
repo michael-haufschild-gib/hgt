@@ -1,7 +1,7 @@
 # Arithmetic Lefschetz–Stepanov Theory (ALST)
 
 Namespace `GaloisForLFunctions.ArithmeticLefschetzStepanovTheory`; umbrella
-`ArithmeticLefschetzStepanovTheory.lean`; 11 modules. Specification: §2.9 of
+`ArithmeticLefschetzStepanovTheory.lean`; 12 modules. Specification: §2.9 of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -251,6 +251,12 @@ of the orbit unless the `log p` satisfy an algebraic relation (never for two pri
 itself integer auxiliaries vanish at only countably many heights; at the returns integrality is a
 repulsion, not a source of zeros. What the product formula counts with exact vanishing — the closed
 points of the prime circles — it counts at Chebyshev's price.
+
+On the complete order-`q` torsion locus the price is more rigid: for an allowed prime set with
+least prime `p`, multiplicity `r` costs length `p^(qr)`, and every integer auxiliary at that
+threshold is exactly `c(u_p^q − 1)^r` (`minimal_torsion_auxiliary_iff`). Minimal auxiliaries use
+only the least prime; adding more prime coordinates creates no additional minimizers. Fourier
+extraction detects the remainder after removing this single binomial.
 
 The two halves of Weil's proof meet exactly at the fixed points: the prime Lefschetz numbers of the
 Frobenius graphs of degree `≤ N` are the degree of the minimal integer auxiliary vanishing at their

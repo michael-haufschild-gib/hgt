@@ -38,10 +38,8 @@ the independent head weight may have complex coefficients.
 
 ## Analytic input
 
-`ThePrimeCurrentPassesAcrossDyadicWindows.lean` contains the dyadic passage
-proof under Lean checking. It strengthens the inverse-height passage without
-changing the actual finite-layer input. Once checked, the inverse-height
-statements can be recovered at the lower endpoint of each window.
+`../3-formalized/euler-fe-fixed-damping-dyadic-passage.md` discharges the
+first obligation, with all five terminal axiom audits standard.
 
 For the arithmetic split, a nonzero von Mangoldt coefficient is supported
 on one prime power. A coefficient excluded by the rough restriction therefore

@@ -85,14 +85,18 @@ External: `GaugeTorus`, `twist`, `twistSum` (ArithmeticCorrelationGeometry); `ad
 
 **To build**
 - Higher-order vertical-jet faithfulness for algebraic data (needs independence beyond homogeneous degree).
-- Classification of minimum-support auxiliaries (rigidity at 2^{qr}).
+- Classification of minimum-support auxiliaries with arbitrary complex coefficients. For integer
+  auxiliaries ALST proves the full classification: at length `p^(qr)`, where `p` is the least
+  allowed prime, every auxiliary is `c(u_p^q−1)^r` (`minimal_torsion_auxiliary_iff`).
 - Coefficient-height and evaluation-size costs (support law says nothing about them).
 - A coupling of successor constraints with Adams vanishing that improves the support cost.
 
 ## 7. Open questions
 
 1. Can additive (successor) constraints lower the 2^{qr} support cost of multiplicity r on Adams loci?
-2. Are all auxiliaries of support exactly 2^{qr} with multiplicity r equivalent to (z₂^q − 1)^r?
+2. For integer auxiliaries the answer is yes: every minimizer is an integer scalar multiple of
+   `(z₂^q−1)^r` (ALST, `TheMinimalTorsionAuxiliaryIsRigid`). The complex-coefficient extension
+   remains to be formalized.
 3. For algebraic data, do vertical jets of order < r detect full multiplicity r?
 4. What height/size bound accompanies the support law, and does it beat the divisibility ledger?
 5. Which quantitative successor observations determine a gauge point beyond the prime cutoff N?

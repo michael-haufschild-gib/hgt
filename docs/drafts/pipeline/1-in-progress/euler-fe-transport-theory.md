@@ -127,6 +127,11 @@ and continuum have explicit vanishing bounds; scalar and polar corrections
 are `O((1+log Im s)/Im s)`. Five terminal standard-axiom audits pass.
 No new zero height follows.
 
+`../3-formalized/euler-fe-fixed-damping-dyadic-passage.md` strengthens this to
+one damping scale `1/T` throughout `T≤Im s≤2T`. The entire prime current
+approaches `−ζ′/ζ` uniformly on the interior strip. Five terminal axiom
+audits are standard. This matches the arithmetic mean's observation scale.
+
 `../3-formalized/euler-fe-infinite-conditioned-gaussian-recurrence.md` proves
 the exact mean-square law for the entire rough Gaussian current under any
 fixed smooth head probe, with damping `1/T` on both `[0,T]` and `[T,2T]`.

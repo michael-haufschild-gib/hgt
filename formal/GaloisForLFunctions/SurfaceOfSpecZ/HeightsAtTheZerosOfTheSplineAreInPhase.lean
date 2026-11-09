@@ -51,16 +51,18 @@ theorem exists_resonant_ge {m : ℕ} (α : Fin m → ℝ) {A Q : ℕ} (hA : 1 �
     have h1 : A / d * d ≤ A := Nat.div_mul_le_self A d
     have h2 : A < A / d * d + d := Nat.lt_div_mul_add hd0
     have hjA : A / d + 1 ≤ 2 * A := by have := Nat.div_le_self A d; omega
-    refine ⟨(A / d + 1) * d, ?_, ?_, fun i => ?_⟩
-    · rw [add_mul, one_mul]; generalize A / d * d = t at *; omega
-    · rw [add_mul, one_mul]; generalize A / d * d = t at *; omega
+    obtain ⟨j, hj⟩ : ∃ j, j = A / d + 1 := ⟨_, rfl⟩
+    have hjd : j * d = A / d * d + d := by rw [hj, add_mul, one_mul]
+    rw [← hj] at hjA
+    refine ⟨j * d, ?_, ?_, fun i => ?_⟩
+    · rw [hjd]; generalize A / d * d = t at *; omega
+    · rw [hjd]; generalize A / d * d = t at *; omega
     · obtain ⟨r, hr⟩ := hd i
-      refine ⟨((A / d + 1 : ℕ) : ℤ) * r, ?_⟩
-      have hjle : ((A / d + 1 : ℕ) : ℝ) ≤ 2 * A := by exact_mod_cast hjA
-      rw [show (((A / d + 1) * d : ℕ) : ℝ) * α i - (((A / d + 1 : ℕ) : ℤ) * r : ℤ) =
-          ((A / d + 1 : ℕ) : ℝ) * ((d : ℝ) * α i - r) by push_cast; ring, abs_mul,
-        abs_of_nonneg (by positivity : (0 : ℝ) ≤ ((A / d + 1 : ℕ) : ℝ))]
-      calc ((A / d + 1 : ℕ) : ℝ) * |(d : ℝ) * α i - r|
+      refine ⟨(j : ℤ) * r, ?_⟩
+      have hjle : (j : ℝ) ≤ 2 * A := by exact_mod_cast hjA
+      rw [show ((j * d : ℕ) : ℝ) * α i - (((j : ℤ) * r : ℤ) : ℝ) = (j : ℝ) * ((d : ℝ) * α i - r) by
+          push_cast; ring, abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ (j : ℝ))]
+      calc (j : ℝ) * |(d : ℝ) * α i - r|
           ≤ 2 * A * (1 / ((2 * A * Q : ℕ) : ℝ)) :=
             mul_le_mul hjle hr.le (abs_nonneg _) (by positivity)
         _ = 1 / Q := by rw [hden]; field_simp
@@ -119,12 +121,13 @@ theorem norm_sincPow_eq {M : ℕ} (hM : 1 ≤ M) (x : ℝ) :
   rw [sincC_splinePoint_pow hM, norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs,
     abs_of_nonneg (by positivity : (0 : ℝ) ≤ Real.sinh x ^ 8)]
 
-theorem sinh_le_one {x : ℝ} (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) : Real.sinh x ≤ 1 := by
+theorem sinh_le_one {x : ℝ} (hx1 : x ≤ 1 / 2) : Real.sinh x ≤ 1 := by
   rw [Real.sinh_eq]
   have h1 : Real.exp x ≤ Real.exp (1 / 2) := Real.exp_le_exp.mpr hx1
-  have h2 : Real.exp (1 / 2) < 2 := by
-    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-    exact Real.exp_lt_exp.mpr (by linarith [Real.log_two_gt_d9])
+  have h2 : Real.exp (1 / 2) < 2 :=
+    calc Real.exp (1 / 2) < Real.exp (Real.log 2) :=
+          Real.exp_lt_exp.mpr (by linarith [Real.log_two_gt_d9])
+      _ = 2 := Real.exp_log (by norm_num)
   have h3 : 0 < Real.exp (-x) := Real.exp_pos _
   linarith
 
@@ -136,7 +139,7 @@ theorem norm_sincPow_le {M : ℕ} (hM : 1 ≤ M) {x : ℝ} (hx0 : 0 ≤ x) (hx1 
   have hw : (M : ℝ) ≤ ‖splinePoint M x‖ :=
     le_trans (by nlinarith [Real.pi_gt_three]) (norm_splinePoint_ge M x)
   have hs0 : 0 ≤ Real.sinh x := Real.sinh_nonneg_iff.mpr hx0
-  have hs : Real.sinh x ^ 8 ≤ 1 := pow_le_one₀ hs0 (sinh_le_one hx0 hx1)
+  have hs : Real.sinh x ^ 8 ≤ 1 := pow_le_one₀ hs0 (sinh_le_one hx1)
   calc Real.sinh x ^ 8 / ‖splinePoint M x‖ ^ 8 ≤ 1 / ‖splinePoint M x‖ ^ 8 :=
         div_le_div_of_nonneg_right hs (by positivity)
     _ ≤ 1 / (M : ℝ) ^ 8 :=
@@ -179,6 +182,7 @@ theorem re_sincPow_mul_exp_ge {M : ℕ} (hM : 6 ≤ M) {x : ℝ} (hx0 : 0 ≤ x)
   set v : ℂ := (‖w‖ : ℂ) / w with hv
   have hvn : ‖v‖ = 1 := by
     rw [hv, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hwn, div_self hwn.ne']
+  have hwc : (‖w‖ : ℂ) ≠ 0 := by exact_mod_cast hwn.ne'
   have hc : sincC w ^ 8 = (s : ℂ) * v ^ 8 := by
     rw [hwdef, sincC_splinePoint_pow hM1, ← hwdef, hs, hv, div_pow]
     push_cast
@@ -202,7 +206,8 @@ theorem re_sincPow_mul_exp_ge {M : ℕ} (hM : 6 ≤ M) {x : ℝ} (hx0 : 0 ≤ x)
   have hv1 : ‖v - 1‖ ≤ 1 / 37 := by
     have : v - 1 = ((‖w‖ : ℂ) - w) / w := by rw [hv]; field_simp
     rw [this, norm_div, div_le_iff₀ hwn]
-    nlinarith [Real.pi_gt_three]
+    have h37 : 37 ≤ ‖w‖ := le_trans (by nlinarith [Real.pi_gt_d2]) hwge
+    linarith
   have hv8 : ‖v ^ 8 - 1‖ ≤ 8 / 37 := by
     have := norm_pow_sub_one_le hvn 8
     push_cast at this
@@ -227,6 +232,86 @@ theorem re_sincPow_mul_exp_ge {M : ℕ} (hM : 6 ≤ M) {x : ℝ} (hx0 : 0 ≤ x)
 
 /-! ### Dominance windows -/
 
+section Dominance
+
+/-- A term `e·a` with `e ≥ 0`, `|a| ≤ w` is at least `−e·w`. -/
+theorem neg_mul_le_mul_of_abs_le {e w a : ℝ} (he : 0 ≤ e) (ha : |a| ≤ w) : -(e * w) ≤ e * a := by
+  have h1 : -w ≤ a := by have := neg_abs_le a; linarith
+  have := mul_le_mul_of_nonneg_left h1 he
+  linarith
+
+/-- A reflected term `e·b` with `0 ≤ e ≤ 1`, `|b| ≤ w` is at least `−w`. -/
+theorem neg_le_mul_of_abs_le {e w b : ℝ} (he0 : 0 ≤ e) (he1 : e ≤ 1) (hb : |b| ≤ w) :
+    -w ≤ e * b := by
+  have h := neg_mul_le_mul_of_abs_le he0 hb
+  have hw : 0 ≤ w := (abs_nonneg b).trans hb
+  have : e * w ≤ w := by have := mul_le_mul_of_nonneg_right he1 hw; linarith
+  linarith
+
+variable {Θ : ℝ} {x w U a b : ℕ → ℝ} {lam : ℝ}
+
+/-- The weights of a tower are dominated by `2 · 2^{−j}`. -/
+theorem weight_le_geom (hw0 : w 0 ≤ 1)
+    (hwhi : ∀ j, w (j + 1) ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U j))) (hΘ : 0 ≤ Θ)
+    (hUm : Monotone U) (hU0 : 0 ≤ U 0) (j : ℕ) : w j ≤ 2 * (1 / 2) ^ j := by
+  rcases j with _ | j
+  · simp only [pow_zero, mul_one]; linarith
+  · have h2 : Real.exp (-(Θ * U j)) ≤ 1 :=
+      Real.exp_le_one_iff.mpr (neg_nonpos.mpr (mul_nonneg hΘ (hU0.trans (hUm (Nat.zero_le j)))))
+    have h3 : (0 : ℝ) ≤ (1 / 2) ^ (j + 1) := by positivity
+    calc w (j + 1) ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U j)) := hwhi j
+      _ ≤ (1 / 2) ^ (j + 1) * 1 := mul_le_mul_of_nonneg_left h2 h3
+      _ ≤ 2 * (1 / 2) ^ (j + 1) := by linarith
+
+/-- The tail beyond the window contributes at least `−1`. -/
+theorem neg_one_le_tail (hΘ : 0 ≤ Θ) (hxΘ : ∀ j, x j ≤ Θ)
+    (hwhi : ∀ j, w (j + 1) ≤ (1 / 2) ^ (j + 1) * Real.exp (-(Θ * U j))) (hUm : Monotone U)
+    (ha : ∀ j, |a j| ≤ w j) (hlam : 0 ≤ lam) {k : ℕ} (hku : lam ≤ U (k + 1))
+    (hmain : Summable fun j => Real.exp (x j * lam) * a j) :
+    -1 ≤ ∑' i, Real.exp (x (i + (k + 2)) * lam) * a (i + (k + 2)) := by
+  have hle : ∀ i, -((1 / 2 : ℝ) ^ (i + (k + 2))) ≤
+      Real.exp (x (i + (k + 2)) * lam) * a (i + (k + 2)) := by
+    intro i
+    have h1 := hwhi (i + (k + 1))
+    rw [show i + (k + 1) + 1 = i + (k + 2) by ring] at h1
+    have hU : lam ≤ U (i + (k + 1)) := hku.trans (hUm (by omega))
+    have h5 : 0 < Real.exp (x (i + (k + 2)) * lam) := Real.exp_pos _
+    have h2 : Real.exp (x (i + (k + 2)) * lam) * Real.exp (-(Θ * U (i + (k + 1)))) ≤ 1 := by
+      rw [← Real.exp_add, Real.exp_le_one_iff]
+      have h3 := mul_le_mul_of_nonneg_right (hxΘ (i + (k + 2))) hlam
+      have h4 := mul_le_mul_of_nonneg_left hU hΘ
+      linarith
+    have h6 : (0 : ℝ) ≤ (1 / 2) ^ (i + (k + 2)) := by positivity
+    have h7 : Real.exp (x (i + (k + 2)) * lam) * w (i + (k + 2)) ≤ (1 / 2) ^ (i + (k + 2)) :=
+      calc Real.exp (x (i + (k + 2)) * lam) * w (i + (k + 2))
+          ≤ Real.exp (x (i + (k + 2)) * lam) *
+              ((1 / 2) ^ (i + (k + 2)) * Real.exp (-(Θ * U (i + (k + 1))))) :=
+            mul_le_mul_of_nonneg_left h1 h5.le
+        _ = (1 / 2) ^ (i + (k + 2)) *
+              (Real.exp (x (i + (k + 2)) * lam) * Real.exp (-(Θ * U (i + (k + 1))))) := by ring
+        _ ≤ (1 / 2) ^ (i + (k + 2)) * 1 := mul_le_mul_of_nonneg_left h2 h6
+        _ = _ := mul_one _
+    have := neg_mul_le_mul_of_abs_le h5.le (ha (i + (k + 2)))
+    linarith
+  have hgs : Summable fun i : ℕ => (1 / 2 : ℝ) ^ (i + (k + 2)) :=
+    (summable_nat_add_iff (k + 2)).mpr (summable_geometric_of_lt_one (by norm_num) (by norm_num))
+  have hsum : ∑' i : ℕ, (1 / 2 : ℝ) ^ (i + (k + 2)) ≤ 1 := by
+    have e : ∑' i : ℕ, (1 / 2 : ℝ) ^ (i + (k + 2)) = (1 / 2) ^ (k + 2) * 2 := by
+      simp_rw [pow_add]
+      rw [tsum_mul_right, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
+      norm_num
+    rw [e]
+    have : (1 / 2 : ℝ) ^ (k + 2) ≤ 1 / 2 :=
+      calc (1 / 2 : ℝ) ^ (k + 2) ≤ (1 / 2) ^ 1 :=
+            pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+        _ = 1 / 2 := by norm_num
+    linarith
+  have := Summable.tsum_le_tsum hle hgs.neg ((summable_nat_add_iff (k + 2)).mpr hmain)
+  rw [tsum_neg] at this
+  linarith
+
+end Dominance
+
 /-- **The dominance lemma.** Let `0 ≤ x_j ≤ Θ` increase, `w_j ≥ 0` with `w_0 ≤ 1` and
 `w_j ≤ 2^{−j} e^{−Θ U_{j−1}}`, `U` increase from `U_0 ≥ 0`, and `|a_j|, |b_j| ≤ w_j`. On the window
 `U_k ≤ λ ≤ U_{k+1}`, if `a_k ≥ w_k/2`, `a_{k+1} ≥ 0` and `w_k e^{(x_k − x_{k−1})U_k} ≥ 8`, then
@@ -240,16 +325,7 @@ theorem neg_five_le_tsum_of_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ �
     (hak : w k / 2 ≤ a k) (hak1 : 0 ≤ a (k + 1))
     (hlo : ∀ n, k = n + 1 → 8 ≤ w (n + 1) * Real.exp ((x (n + 1) - x n) * U (n + 1))) :
     -5 ≤ ∑' j, (Real.exp (x j * lam) * a j + Real.exp (-(x j * lam)) * b j) := by
-  -- the weights are dominated by `2 · 2^{−j}`
-  have hwg : ∀ j, w j ≤ 2 * (1 / 2) ^ j := by
-    intro j
-    rcases j with _ | j
-    · simp; linarith
-    · have h1 := hwhi j
-      have h2 : Real.exp (-(Θ * U j)) ≤ 1 := Real.exp_le_one_iff.mpr (by
-        have := hUm (Nat.zero_le j); nlinarith)
-      have h3 : (0 : ℝ) ≤ (1 / 2) ^ (j + 1) := by positivity
-      nlinarith
+  have hwg := weight_le_geom hw0 hwhi hΘ.le hUm hU0
   have hgeo : Summable fun j : ℕ => 2 * (1 / 2 : ℝ) ^ j :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left 2
   have hwsum : Summable w := Summable.of_nonneg_of_le hw hwg hgeo
@@ -258,6 +334,8 @@ theorem neg_five_le_tsum_of_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ �
       _ = 4 := by rw [tsum_mul_left, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]; norm_num
   have hexpx : ∀ j, Real.exp (x j * lam) ≤ Real.exp (Θ * lam) := fun j =>
     Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (hxΘ j) hlam)
+  have hrefl1 : ∀ j, Real.exp (-(x j * lam)) ≤ 1 := fun j =>
+    Real.exp_le_one_iff.mpr (neg_nonpos.mpr (mul_nonneg (hx0 j) hlam))
   have hmain : Summable fun j => Real.exp (x j * lam) * a j := by
     refine Summable.of_norm_bounded (hwsum.mul_left (Real.exp (Θ * lam))) fun j => ?_
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
@@ -265,74 +343,25 @@ theorem neg_five_le_tsum_of_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ �
   have hrefl : Summable fun j => Real.exp (-(x j * lam)) * b j := by
     refine Summable.of_norm_bounded hwsum fun j => ?_
     rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
-    have : Real.exp (-(x j * lam)) ≤ 1 :=
-      Real.exp_le_one_iff.mpr (by have := mul_nonneg (hx0 j) hlam; linarith)
-    nlinarith [abs_nonneg (b j), hb j]
+    calc Real.exp (-(x j * lam)) * |b j| ≤ 1 * |b j| :=
+          mul_le_mul_of_nonneg_right (hrefl1 j) (abs_nonneg _)
+      _ ≤ w j := by rw [one_mul]; exact hb j
   rw [hmain.tsum_add hrefl]
   -- the reflected terms
   have hR : -4 ≤ ∑' j, Real.exp (-(x j * lam)) * b j := by
-    have : ∑' j, -w j ≤ ∑' j, Real.exp (-(x j * lam)) * b j := by
-      refine Summable.tsum_le_tsum (fun j => ?_) hwsum.neg hrefl
-      have h1 : Real.exp (-(x j * lam)) ≤ 1 :=
-        Real.exp_le_one_iff.mpr (by have := mul_nonneg (hx0 j) hlam; linarith)
-      have h2 := neg_abs_le (b j)
-      have h3 := hb j
-      have h4 : 0 < Real.exp (-(x j * lam)) := Real.exp_pos _
-      nlinarith
-    rw [tsum_neg] at this
+    have h := Summable.tsum_le_tsum (fun j => neg_le_mul_of_abs_le (Real.exp_pos _).le
+      (hrefl1 j) (hb j)) hwsum.neg hrefl
+    rw [tsum_neg] at h
     linarith
   -- the main terms: head, the `k`-th, the `(k+1)`-st, tail
-  rw [← hmain.sum_add_tsum_nat_add (k + 2), Finset.sum_range_succ, Finset.sum_range_succ]
-  have htail : -1 ≤ ∑' i, Real.exp (x (i + (k + 2)) * lam) * a (i + (k + 2)) := by
-    have hle : ∀ i, -((1 / 2 : ℝ) ^ (i + (k + 2))) ≤
-        Real.exp (x (i + (k + 2)) * lam) * a (i + (k + 2)) := by
-      intro i
-      have h1 := hwhi (i + (k + 1))
-      rw [show i + (k + 1) + 1 = i + (k + 2) by ring] at h1
-      have hU : lam ≤ U (i + (k + 1)) := hku.trans (hUm (by omega))
-      have h2 : Real.exp (x (i + (k + 2)) * lam) * Real.exp (-(Θ * U (i + (k + 1)))) ≤ 1 := by
-        rw [← Real.exp_add, Real.exp_le_one_iff]
-        have := mul_le_mul_of_nonneg_right (hxΘ (i + (k + 2))) hlam
-        nlinarith
-      have h3 := neg_abs_le (a (i + (k + 2)))
-      have h4 := ha (i + (k + 2))
-      have h5 : 0 < Real.exp (x (i + (k + 2)) * lam) := Real.exp_pos _
-      have h6 : (0 : ℝ) ≤ (1 / 2) ^ (i + (k + 2)) := by positivity
-      have h7 : Real.exp (x (i + (k + 2)) * lam) * w (i + (k + 2)) ≤ (1 / 2) ^ (i + (k + 2)) := by
-        calc Real.exp (x (i + (k + 2)) * lam) * w (i + (k + 2))
-            ≤ Real.exp (x (i + (k + 2)) * lam) *
-                ((1 / 2) ^ (i + (k + 2)) * Real.exp (-(Θ * U (i + (k + 1))))) :=
-              mul_le_mul_of_nonneg_left h1 h5.le
-          _ = (1 / 2) ^ (i + (k + 2)) *
-                (Real.exp (x (i + (k + 2)) * lam) * Real.exp (-(Θ * U (i + (k + 1))))) := by ring
-          _ ≤ (1 / 2) ^ (i + (k + 2)) * 1 := mul_le_mul_of_nonneg_left h2 h6
-          _ = _ := mul_one _
-      nlinarith
-    have hgs : Summable fun i : ℕ => (1 / 2 : ℝ) ^ (i + (k + 2)) :=
-      (summable_nat_add_iff (k + 2)).mpr (summable_geometric_of_lt_one (by norm_num) (by norm_num))
-    have hsum : ∑' i : ℕ, (1 / 2 : ℝ) ^ (i + (k + 2)) ≤ 1 := by
-      have : ∑' i : ℕ, (1 / 2 : ℝ) ^ (i + (k + 2)) = (1 / 2) ^ (k + 2) * 2 := by
-        simp_rw [pow_add]
-        rw [tsum_mul_right, tsum_geometric_of_lt_one (by norm_num) (by norm_num)]
-        norm_num; ring
-      rw [this]
-      have : (1 / 2 : ℝ) ^ (k + 2) ≤ 1 / 2 := by
-        calc (1 / 2 : ℝ) ^ (k + 2) ≤ (1 / 2) ^ 1 :=
-              pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
-          _ = 1 / 2 := by norm_num
-      linarith
-    have := Summable.tsum_le_tsum hle hgs.neg ((summable_nat_add_iff (k + 2)).mpr hmain)
-    rw [tsum_neg] at this
-    linarith
-  -- head plus the `k`-th term is nonnegative
+  have htail := neg_one_le_tail hΘ.le hxΘ hwhi hUm ha hlam hku hmain
   have hhead : 0 ≤ ∑ j ∈ Finset.range k, Real.exp (x j * lam) * a j +
       Real.exp (x k * lam) * a k := by
     rcases k with _ | n
     · simp only [Finset.range_zero, Finset.sum_empty, zero_add]
-      have := hw 0
-      have : 0 ≤ a 0 := le_trans (by linarith) hak
-      positivity
+      exact mul_nonneg (Real.exp_pos _).le (le_trans (by linarith [hw 0]) hak)
     · have hlo' := hlo n rfl
+      have hE : 0 < Real.exp (x n * lam) := Real.exp_pos _
       -- the head is at least `−4 e^{x_n λ}`
       have hh : -(4 * Real.exp (x n * lam)) ≤
           ∑ j ∈ Finset.range (n + 1), Real.exp (x j * lam) * a j := by
@@ -342,42 +371,44 @@ theorem neg_five_le_tsum_of_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ �
           have hjn : j ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
           have hx : Real.exp (x j * lam) ≤ Real.exp (x n * lam) :=
             Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (hxm hjn) hlam)
-          have h2 := neg_abs_le (a j)
-          have h3 := ha j
-          have h4 : 0 < Real.exp (x j * lam) := Real.exp_pos _
-          have h5 := hw j
-          nlinarith
+          have h2 := neg_mul_le_mul_of_abs_le (Real.exp_pos (x j * lam)).le (ha j)
+          have h3 := mul_le_mul_of_nonneg_right hx (hw j)
+          linarith
         have h2 := Finset.sum_le_sum h1
         have h3 : ∑ j ∈ Finset.range (n + 1), w j ≤ 4 :=
-          (sum_le_tsum _ (fun j _ => hw j) hwsum).trans hwtot
+          (hwsum.sum_le_tsum _ (fun j _ => hw j)).trans hwtot
         rw [Finset.sum_neg_distrib, ← Finset.mul_sum] at h2
-        have h4 : 0 < Real.exp (x n * lam) := Real.exp_pos _
-        nlinarith
+        have h4 := mul_le_mul_of_nonneg_left h3 hE.le
+        linarith
       -- the `(n+1)`-st term is at least `4 e^{x_n λ}`
       have hk : 4 * Real.exp (x n * lam) ≤ Real.exp (x (n + 1) * lam) * a (n + 1) := by
+        have h5 : 0 < Real.exp ((x (n + 1) - x n) * lam) := Real.exp_pos _
         have h1 : 8 ≤ w (n + 1) * Real.exp ((x (n + 1) - x n) * lam) := by
           refine hlo'.trans (mul_le_mul_of_nonneg_left ?_ (hw _))
           exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hkl
-            (by linarith [hxm (Nat.le_succ n)]))
+            (sub_nonneg.mpr (hxm (Nat.le_succ n))))
         have h2 : Real.exp (x (n + 1) * lam) =
             Real.exp (x n * lam) * Real.exp ((x (n + 1) - x n) * lam) := by
           rw [← Real.exp_add]; ring_nf
+        have h6 : 4 ≤ Real.exp ((x (n + 1) - x n) * lam) * a (n + 1) := by
+          have := mul_le_mul_of_nonneg_left hak h5.le
+          linarith
+        have h7 := mul_le_mul_of_nonneg_left h6 hE.le
         rw [h2]
-        have h4 : 0 < Real.exp (x n * lam) := Real.exp_pos _
-        have h5 : 0 < Real.exp ((x (n + 1) - x n) * lam) := Real.exp_pos _
-        nlinarith
+        linarith
       linarith
   have hk1 : 0 ≤ Real.exp (x (k + 1) * lam) * a (k + 1) := mul_nonneg (Real.exp_pos _).le hak1
+  rw [← hmain.sum_add_tsum_nat_add (k + 2), Finset.sum_range_succ, Finset.sum_range_succ]
   linarith
 
 /-- **Every point lies in a window** of an increasing sequence from `U_0 ≤ λ` that exceeds `λ`. -/
-theorem exists_window {U : ℕ → ℝ} {lam : ℝ} (hU0 : U 0 ≤ lam) (hUt : ∃ n, lam ≤ U n) :
-    ∃ k, U k ≤ lam ∧ lam ≤ U (k + 1) := by
+theorem exists_window {U : ℕ → ℝ} (hUm : Monotone U) {lam : ℝ} (hU0 : U 0 ≤ lam)
+    (hUt : ∃ n, lam ≤ U n) : ∃ k, U k ≤ lam ∧ lam ≤ U (k + 1) := by
   classical
   have hex : ∃ n, lam ≤ U (n + 1) := by
     obtain ⟨n, hn⟩ := hUt
     rcases n with _ | n
-    · exact ⟨0, by linarith [hU0, hn, le_antisymm hn hU0 ▸ le_refl lam] |>.trans (le_refl _)⟩
+    · exact ⟨0, hn.trans (hUm (Nat.zero_le 1))⟩
     · exact ⟨n, hn⟩
   refine ⟨Nat.find hex, ?_, Nat.find_spec hex⟩
   rcases h : Nat.find hex with _ | m

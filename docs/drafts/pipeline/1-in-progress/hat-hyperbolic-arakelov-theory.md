@@ -36,7 +36,7 @@ windows), develop the tools of §2.13, formalize every answer.
 | H10 | Poincaré convergence at `½` + `D_Γ(M) = Σ_{γ≠1}e^{−d(z_M,γz_M)/2} ≤ C` for infinitely many `M` ⇒ no carrier; conical ⇒ `D_Γ ≤ e^R S` | proved | `CarriersAlongAnEndOfBoundedSelfEnergy`, `CarriersAtAConicalLimitPoint` |
 | H11 | Convergence at `½` excludes parabolics (`γ^k = ±(1 + kN)`, harmonic series); `∞ ∈ Ω(Γ)` ⇒ endpoint Eisenstein; B118′(2) for finitely generated groups (with Beardon–Maskit, Canary + tameness) | proved | `TheBoundaryOfAGroupConvergentAtOneHalf` |
 | H12 | Orientation cover over ℤ (RIAC discriminant cover): centred count `M(N) = Ω_±(√N)`; weight `½` ⇔ RH | proved | `TheMiddleCohomologyOfTheOrientationCover` |
-| H13 | B118′(2) for infinitely generated torsion-free groups: self-energy bounded on the thick part (Sullivan `λ₀ = 1`, elliptic estimate), thin forever ⇒ loxodromic end ⇒ conical | classical sketch | open (thick-part bound not in Lean) |
+| H13 | Beyond B118′ as posed (which is for geometrically finite groups): infinitely generated torsion-free groups: self-energy bounded on the thick part (Sullivan `λ₀ = 1`, elliptic estimate), thin forever ⇒ loxodromic end ⇒ conical | classical sketch | open (thick-part bound not in Lean) |
 
 ## Log
 - 2026-11-09 — programme created; README; H1–H12 formalized.

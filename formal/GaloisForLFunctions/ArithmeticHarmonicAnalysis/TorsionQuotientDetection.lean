@@ -97,4 +97,6 @@ theorem eq_zero_of_torsionMultiplicity_of_quotientOrder_lt
   rw [htop] at hz
   exact (MvPolynomial.mem_support_iff.mp ha) hz
 
+#print axioms eq_zero_of_torsionMultiplicity_of_quotientOrder_lt
+
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

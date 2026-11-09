@@ -650,6 +650,14 @@ counterterms from the observable. Scalar and polar corrections cost
 `O((1+log t)/t)` and vanish too. Five terminal axiom audits are standard.
 New-height replication, `LinAt C`, and AAL remain open.
 
+**Fixed damping on escaping windows [L].** The stronger passage
+`sup_{σ≤Re s≤1, T≤Im s≤2T}|ΣΛ(n)n^(−s)e^(−n²/T)+ζ′/ζ(s)|→0`
+uses one damping scale throughout the window. The full complementary field,
+finite exceptional modes, continuum and scalar corrections all vanish
+uniformly. `ThePrimeCurrentPassesAcrossDyadicWindows.lean` supplies the
+scale required by the arithmetic mean; its five terminal axiom audits are
+standard. The inverse-height law is its lower-endpoint specialization.
+
 **Infinite head-conditioned rough variance [L].** For a fixed smooth head
 `R(t)=Σ_S w_s s^(it)` and the complete Gaussian rough current
 `D_T(t)=Σ a_n exp(−n²/T)n^(it)`, both normalized means on `[0,T]` and `[T,2T]`

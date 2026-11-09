@@ -402,7 +402,7 @@ theorem not_asymptoticAbscissaLaw_has_rawEuler_dyadicGaussianPassage
       have hC0 : 0 ≤ logDerivZetaConstant := by
         unfold logDerivZetaConstant
         positivity
-      exact add_le_add_right
+      exact add_le_add_left
         (mul_le_mul_of_nonneg_left
           (div_le_div_of_nonneg_right
             (Real.log_le_log (by linarith only [hd.1]) hsL) hL0.le)

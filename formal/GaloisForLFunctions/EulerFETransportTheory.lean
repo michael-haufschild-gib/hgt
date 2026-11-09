@@ -35,6 +35,7 @@ import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentReadsTopMultipl
 import GaloisForLFunctions.EulerFETransportTheory.TheArchimedeanDampingErrorIsUniform
 import GaloisForLFunctions.EulerFETransportTheory.TheFullGaussianCurrentAtEscapingHeights
 import GaloisForLFunctions.EulerFETransportTheory.OnlyExceptionalGaussianModesRemain
+import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAcrossDyadicWindows
 import GaloisForLFunctions.EulerFETransportTheory.ThePrimeCurrentPassesAtInverseHeight
 import GaloisForLFunctions.EulerFETransportTheory.TheHeadDoesNotChangeTheInfiniteRoughMean
 import GaloisForLFunctions.EulerFETransportTheory.TheGaussianRoughMeanSurvivesVanishingDamping
@@ -108,6 +109,8 @@ The literal infinite von Mangoldt sum recovers the normalized continued
 finite part uniformly on an interior high strip supplied by failure of AAL.
 The scalar and polar corrections vanish too, leaving the continued Euler
 current `-ζ'/ζ` as the limit.
+The same passage holds at damping `1/T` uniformly throughout each escaping
+window `T ≤ im s ≤ 2T`, matching the arithmetic observation scale.
 Under every fixed smooth prime-head probe, the complete Gaussian rough current
 retains its exact diagonal mean square as damping vanishes at reciprocal
 observation height, on both initial and escaping dyadic windows.

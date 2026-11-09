@@ -476,6 +476,17 @@ prime-discrepancy passage and full prime-sum passage. The identity
 This admits arithmetic data at escaping heights; same-depth replication still
 requires control of prime phases at those heights.
 
+The passage also holds with one fixed damping scale across an entire escaping
+window:
+
+    sup_{σ≤Re s≤1, T≤Im s≤2T} |ΣₙΛ(n)n^(−s)e^(−n²/T)+ζ′/ζ(s)| → 0.
+
+`ThePrimeCurrentPassesAcrossDyadicWindows.lean` proves this stronger law.
+The errors are bounded by the same vanishing powers of `T`, with logarithmic
+factor `1+log(2T)`. This uniform two-variable statement supplies the damping
+regime needed for the arithmetic mean below. Its lower endpoint gives the
+inverse-height law.
+
 ### Infinite rough variance under prime-head conditioning
 
 Let `R(t)=Σ_{s∈S}w_s s^(it)` have finite support on integers smooth below `Y`.
@@ -508,9 +519,10 @@ do not assert pointwise control at every prime return.
 `TheHeadDoesNotChangeTheInfiniteRoughMean.lean` admits the infinite series
 through finite mean-value brackets.
 `TheGaussianRoughMeanSurvivesVanishingDamping.lean` proves both limits and
-the arithmetic specialization. Passing this conditioned mean to the continued
-Euler current requires matching its damping scale uniformly on the dyadic
-window; same-depth zero transport remains a further obligation.
+the arithmetic specialization. The dyadic passage above matches its damping
+scale. Transferring this conditioned mean to the continued Euler current
+through the small-prime split remains open; same-depth zero transport is a
+further obligation.
 
 ### Conductor-normalized height reflection
 
