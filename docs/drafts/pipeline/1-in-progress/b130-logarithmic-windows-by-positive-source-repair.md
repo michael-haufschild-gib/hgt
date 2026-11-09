@@ -75,8 +75,11 @@ The first coefficient is positive since `g(-R)≥u`.
 - `PositiveLaplaceRepair.exists_positive_average_of_laplace_positive` proves
   complete positive-source repair at arbitrarily small mesh. Its transitive
   axiom audit contains only the standard three axioms.
-- Missing: actual quartet source specialization, preservation of its selected
-  mode, theta moment bound `O(|s| log(2+|s|))`, logarithmic leakage, and
+- `PolynomialTransforms.integral_polynomialAverage_cexp` proves the exact
+  complex Laplace multiplier. Its negative-root multiplier is nonzero for
+  `|Im(hw)|<π/2`; axiom audits contain only the standard three axioms.
+- Missing: actual quartet source specialization, assembled preservation of its
+  selected mode, theta moment bound `O(|s| log(2+|s|))`, logarithmic leakage, and
   continuous and prime-window conclusions.
 
 Chernoff parameter `q=T` would turn that moment bound into exponentially
@@ -84,3 +87,13 @@ small leakage at radius `C log(T+2)`. Exponential tilting then supplies the
 shifted-depth tests for prime-gap iteration. This changes observation scale;
 it supplies no arithmetic lower bound. B130 remains open. No external novelty
 claim; no web search used.
+
+## Explicit moment estimate under formalization
+
+First-atom domination gives `k(x)≤C exp(9|x|/2−π exp(2|x|))`.
+For `a≥1`, `t≥0`, the inequality `at−exp(2t)≤a log a` follows by
+splitting at `t=log a`: below it use `at≤a log a`; above it use
+`exp(t)≥a` and `exp(t)≥t`. With `a=s+6`, integration against
+`exp(-|x|)` gives `∫exp(s|x|)k(x)dx≤C' exp((s+6)log(s+6))` for `s≥0`.
+A positive polynomial translation average adds at most its maximal shift
+times `s` to the exponent and a fixed multiplicative constant.

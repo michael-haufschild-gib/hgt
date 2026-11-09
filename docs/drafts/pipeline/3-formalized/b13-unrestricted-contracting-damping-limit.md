@@ -68,6 +68,6 @@ Its five audited declarations are:
 - `divisorDampingFilter_limit_constant_ne_zero`
 - `not_asymptoticAbscissaLaw_has_arbitrarily_contracting_prime_filters`
 
-The contour module compiles without warnings; all six transitive audits contain
-only `propext`, `Classical.choice`, and `Quot.sound`, as do all five limit-module
-audits. The final direct contour source audit is pending.
+Both modules pass final direct source audits without warnings. All eleven
+transitive audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Both modules are imported by the exceptional-layer umbrella.
