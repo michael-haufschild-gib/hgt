@@ -166,7 +166,8 @@ theorem tendsto_norm_boundary_contracted_mode_atTop (d : ℕ) {κ : ℝ}
       (C := D) (N := M) (sub_pos.mpr hr)
     filter_upwards [eventually_ge_atTop (|ρ.im| + 2), eventually_ge_atTop (1 : ℝ)]
       with t ht ht1
-    rw [g, mul_inv, norm_mul, norm_inv, norm_pow, Complex.norm_real, Real.norm_eq_abs,
+    dsimp only [g]
+    rw [mul_inv, norm_mul, norm_inv, norm_pow, Complex.norm_real, Real.norm_eq_abs,
       abs_of_pos (Real.exp_pos _), ← Real.exp_nat_mul, ← Real.exp_neg]
     rw [show -((d : ℝ) * (-κ * t)) = (d : ℝ) * κ * t by ring]
     calc
@@ -206,7 +207,7 @@ theorem tendsto_norm_boundary_prime_filter_atTop
         σ β a (Real.exp (-κ * t)) (boundaryDampingAngle t) t‖) atTop atTop := by
   have hlim : Tendsto (fun t : ℝ => Real.exp (-κ * t)) atTop (𝓝 0) := by
     simpa only [pow_zero, one_mul, neg_mul] using HTGeometry.tendsto_pow_mul_exp_neg_scaled 0 hκ
-  have hread := boundary_contracting_prime_filter_reads_selected_zero F hσ hgap hrest
+  have hread := boundary_contracting_prime_filter_reads_selected_zero F (β := β) hσ hgap hrest
     ha ρ hρσ hρ1 hρ hlim (Eventually.of_forall fun t => Real.exp_pos _)
   exact norm_tendsto_atTop_of_ratio
     (divisorDampingFilter_limit_constant_ne_zero F ρ

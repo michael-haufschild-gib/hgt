@@ -76,8 +76,10 @@ theorem geometricDiagonal_eq {u : ℂ} (hre : 1 / 2 < u.re) (him : u.im ≠ 0) :
     have hi2 : (2 * u).im ≠ 0 := by simp [him]
     have hi1 : (1 + 2 * u).im ≠ 0 := by simp [him]
     rw [geometricDiagonal_conj,
-      show (2 : ℂ) * starRingEnd ℂ u = starRingEnd ℂ (2 * u) by simp,
-      show (1 : ℂ) + 2 * starRingEnd ℂ u = starRingEnd ℂ (1 + 2 * u) by simp,
+      show (1 : ℂ) + 2 * starRingEnd ℂ u = starRingEnd ℂ (1 + 2 * u) by
+        simp only [map_add, map_one, map_mul, map_ofNat],
+      show (2 : ℂ) * starRingEnd ℂ u = starRingEnd ℂ (2 * u) by
+        simp only [map_mul, map_ofNat],
       completedLogDeriv_conj hi2, completedLogDeriv_conj hi1, ← map_sub] at hc
     exact (starRingEnd ℂ).injective hc
   · exact geometricDiagonal_eq_of_im_pos hre hi
@@ -195,7 +197,8 @@ private theorem norm_log_sub_log_re {s : ℂ} (hs : 0 < s.re) :
     (fun z hz => Complex.differentiableAt_log (hslit z hz))
     (fun z hz => by
       rw [Complex.deriv_log (hslit z hz), norm_inv, one_div]
-      exact inv_le_inv₀ hs (hz.trans ((le_abs_self z.re).trans (Complex.abs_re_le_norm z))))
+      have hle := hz.trans ((le_abs_self z.re).trans (Complex.abs_re_le_norm z))
+      exact (inv_le_inv₀ (hs.trans_le hle) hs).mpr hle)
     (convex_halfSpace_re_ge s.re)
     (x := (s.re : ℂ)) (y := s) (by simp) le_rfl
   have hdist : ‖s - (s.re : ℂ)‖ = |s.im| := by
@@ -211,7 +214,7 @@ theorem norm_gamma_sub_archimedeanSymbol {s : ℂ} (hs : 4 ≤ s.re) :
   have hn : s.re ≤ ‖s‖ := (le_abs_self _).trans (Complex.abs_re_le_norm s)
   have hh : 2 ≤ ‖s / 2‖ := by rw [norm_div, Complex.norm_ofNat]; linarith
   have h := norm_digamma_sub_log_le_of_re_pos
-    (s := s / 2) (by simp; linarith) hh
+    (z := s / 2) (by simp; linarith) hh
   rw [GaloisForLFunctions.logDeriv_Gammaℝ hre, gammaRealLogConnection, archimedeanSymbol]
   rw [show -((Real.log Real.pi : ℝ) : ℂ) / 2 + Complex.digamma (s / 2) / 2 -
       (-((Real.log Real.pi : ℝ) : ℂ) / 2 + Complex.log (s / 2) / 2) =
