@@ -134,7 +134,10 @@ theorem continuous_slotKernel {β : ℝ → ℂ} (hβ : ContDiff ℝ 2 β)
     have hc : Continuous (fun b : Slot => C * b.2 ^ 4) := by fun_prop
     simpa only [ha, zero_pow (by norm_num : 4 ≠ 0), mul_zero] using hc.tendsto a
   · have hc : ContinuousAt slotPoint a := by
-      unfold slotPoint
+      have he : slotPoint = fun b : Slot => ((b.1 : ℝ) : ℂ) + (b.2⁻¹ : ℂ) * I := by
+        funext b
+        apply Complex.ext <;> simp [slotPoint]
+      rw [he]
       fun_prop
     have hr : Continuous (reflect : ℂ → ℂ) := by unfold reflect; fun_prop
     have hk := continuous_pointKernel hβ.continuous hbc v
