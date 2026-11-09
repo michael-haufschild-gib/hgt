@@ -1,0 +1,65 @@
+# Collective rank and depth of prime-logarithm forms
+
+- **ID:** CDG-RANK
+- **Stage:** 2-fully-proven
+- **Type:** COLLECTIVE APPROXIMATION TOOL
+
+## Statement
+
+Let `p₁,…,p_k≤y` be distinct primes and `1≤r≤k`. Put `d=k−r` and
+let `B_{d+1}(y)=bakerExponent d ceil((d+1)log y)` be the explicit corpus
+exponent for `d+1` logarithms. For `H≥1`, define
+
+`Δ(r,d,y,H)=exp(−B_{d+1}(y)(log((d+1)r!H^r)+2))/(r!H^(r−1))`.
+
+Every family of `r` rationally independent integer coefficient vectors
+`ν₁,…,ν_r`, with `|ν_ij|≤H`, satisfies
+
+`max_i |Σ_j ν_ij log p_j| ≥ Δ(r,k−r,y,H)>0`.
+
+Thus the approximation body `|ν_j|≤H`, `|ν·log p|<Δ` contains no `r`
+independent integer points. This is a bound on the rank of the whole family,
+not repeated use of a scalar `k`-logarithm estimate.
+
+## Paper proof
+
+Choose a nonzero maximal minor of the coefficient matrix; it exists by row
+independence. Permuting columns gives `[A|B]`, where `A` is an invertible
+`r×r` integer matrix and `B` has `d` columns. Write the corresponding prime
+logarithms as vectors `x,z`, so the vector of forms is `v=Ax+Bz`.
+
+Fix a pivot column `i`. The adjugate identity gives
+
+`det(A)x_i + Σ_j det(A[i←B_j])z_j = Σ_h adj(A)_ih v_h`.
+
+The coefficients on the left are integers, and the first is nonzero.
+The logarithms involved are those of `d+1` distinct primes at most `y`.
+The determinant expansion bounds every coefficient by `F=r!H^r`, so their
+sum of absolute values is at most `(d+1)F`. The proved scalar Baker theorem
+therefore bounds the absolute value of the left side below by
+
+`exp(−B_{d+1}(y)(log((d+1)F)+2))`.
+
+Each adjugate entry is a signed `(r−1)×(r−1)` determinant, of absolute
+value at most `(r−1)!H^(r−1)`. Hence the right side has absolute value
+at most `r!H^(r−1) max_h |v_h|`. Division proves the stated bound.
+The denominator and exponential are positive. Selecting a maximal minor
+and its complementary columns changes neither coefficient bounds nor the
+values of the forms.
+
+## Mathematical consequence
+
+For the penultimate rank `r=k−1`, the transcendence exponent is the
+**two-logarithm** exponent, regardless of `k`. Dimension enters through
+`r!H^r` and the adjugate factor. More generally, the relevant number of
+logarithms is codimension plus one. The result is uniform in growing rank,
+coefficient height, and prime cutoff.
+
+The mechanism is elementary Cramer transference of the existing Baker bound;
+no new transcendence estimate is claimed. It supplies a collective
+approximation tool. It does not bound the first minimum beyond the existing
+scalar estimate or prove the missing return-count or breadth law.
+
+## Lean status
+
+Paper proof dependency-closed. Formalization in progress.

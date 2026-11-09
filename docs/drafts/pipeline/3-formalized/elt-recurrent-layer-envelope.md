@@ -1,21 +1,21 @@
 # The sharp recurrent envelope of the exceptional layer
 
 - **ID:** ELT-ENVELOPE
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** ELT-PHASE; observation-scale and tower-current comparison
 - **Statement:** The normalized pole-subtracted current has sharp recurrent envelope `S=Σ_{Re ρ=β} exp(π Im ρ/4)>0` at every supercritical exponential speed.
 
 ## Exact target
 
-Use the current and reference mode from `../3-formalized/elt-moving-layer-phase.md`.
+Use the current and reference mode from `elt-moving-layer-phase.md`.
 For every `ε>0`, its normalized norm is eventually at most `S+ε`.
 In every sufficiently late interval of some fixed length, the complex
 normalized reading comes within ε of −S. Its norm is therefore at least `S−ε`.
 Consequently the unnormalized, corrected pole-subtracted current has
 arbitrarily large excursions at arbitrarily large heights.
 
-## Paper mechanism
+## Proof [PROVED HERE]
 
 The profile error tends to zero. Each ordinate wave has constant norm
 `exp(π Im ρ/4)`, so the triangle inequality supplies the upper bound.
@@ -35,12 +35,19 @@ The invariant S counts actual top-zero copies with an explicit Gamma tilt.
 These are recurrent current excursions, not new zeros. No zero-density
 or repulsion conclusion follows without another arithmetic input.
 
-## Dependencies and status
+## Formalization
 
-`HTGeometry/BohrFiniteRecurrence.lean` proves arbitrary late simultaneous
-recurrence and weighted atomic revival. `intermediate_value_Ici` supplies
-phase preimages once continuity and growth are proved. ELT-PHASE is Lean
-verified. The envelope proof is written; its Lean validation remains pending.
-Corpus novelty check: bounded-gap recurrence is already available for finite
-character vectors. The new target transfers it through the nonlinear
-observation phase to the complete infinite prime current.
+`formal/GaloisForLFunctions/ExceptionalLayerTheory/TheSharpRecurrentLayerEnvelope.lean`
+passed `lake --old env lean` without output artifacts. Both main declarations
+use only `propext`, `Classical.choice`, and `Quot.sound`:
+
+- `not_asymptoticAbscissaLaw_has_sharp_recurrent_envelope`
+- `not_asymptoticAbscissaLaw_has_unbounded_corrected_current`
+
+Namespace: `GaloisForLFunctions.ExceptionalLayerTheory`.
+The programme umbrella imports the module.
+
+`HTGeometry/BohrFiniteRecurrence.lean` supplies bounded-gap recurrence for
+finite character vectors. The new theorem transfers it through the nonlinear
+observation phase to the complete infinite prime current. The witnesses
+identify G with all top-zero copies, preserving actual multiplicities.

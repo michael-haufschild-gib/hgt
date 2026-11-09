@@ -91,6 +91,16 @@ The phase has a logarithmic correction; its coefficients retain multiplicity
 and a Gamma weight. This is a high-height reading of low zeros through the
 infinite prime current. It does not locate new zeros at those heights.
 
+The profile has a sharp recurrent envelope
+`S=Σ_{Re ρ=β} exp(π Im ρ/4)>0`. Its normalized current is eventually
+bounded by `S+ε` and returns within ε of the complex value −S in every
+sufficiently late interval of a fixed length. The length may depend on the
+layer, speed and tolerance. The corrected unnormalized current consequently
+has arbitrarily large excursions above every height.
+`TheSharpRecurrentLayerEnvelope.lean` proves these assertions. The bridge
+from Bohr recurrence to physical height uses
+`φ_a(t)−φ_a(R)≥a(t−R)/2` for `t≥R≥2`.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

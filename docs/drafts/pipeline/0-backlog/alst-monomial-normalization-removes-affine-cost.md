@@ -18,12 +18,15 @@ or depends on its polynomial normalization.
 ## Proposed mechanism
 Each affine generator is `X_p` times its torus generator. Multiplication
 by `∏ X_p^r` converts every product of `r` torus generators into an affine
-ideal-power element. Conversely, each `X_p` is invertible modulo `J^r`:
-`X_p^(q−1)=1+H_p`, and the finite geometric series in `−H_p` inverts
-`1+H_p` modulo `J^r`. Thus `J^r` is saturated under monomials.
+ideal-power element. Conversely, each `X_p` is invertible modulo `J`. A unit modulo `J`
+cancels in every `J^r`: if `xy−1∈J`, use
+`F=y(xF)−(xy−1)F` and induction on `r`. Thus `J^r` is saturated under
+monomials. Writing `M₁=∏ X_p`, the inclusion `M₁J⊆I` raises to
+`M₁^r J^r⊆I^r`.
 
 For necessity, specialize all other coordinates to `1`. The image ideal
 becomes `(X_p^q−X_p)^r`. Testing the torus generator `H_p^r`, whose constant
-term is a unit, should force the exponent of `X_p` in `M` to be at least
-`r`. This must be proved over the integers, including `r=0` and empty prime
+term is a unit, forces the exponent of `X_p` in `M` to be at least
+`r`: the coefficient at that exponent is `(-1)^r`, while membership in
+`(X_p)^r` kills every lower coefficient. This must be proved over the integers, including `r=0` and empty prime
 support. Corpus searches found general saturation constructions but no such normalization theorem. All proof obligations remain open.

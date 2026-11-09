@@ -41,7 +41,7 @@ neither attainment nor `ZerosApproachLine` is needed:
 -/
 
 open Complex Filter Topology Set
-open scoped Chebyshev
+open scoped Chebyshev Classical
 
 noncomputable section
 
@@ -193,14 +193,13 @@ theorem tendsto_theta_short_window_div_seven_twelfths {θ : ℝ} (hθ : 7 / 12 <
 mass at most `c x^θ` for some `c < 1` and all large `x`. -/
 def ShortPrimeSparse (θ : ℝ) (E : Set ℕ) : Prop :=
   ∃ c < (1 : ℝ), ∀ᶠ x : ℝ in atTop,
-    (∑ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E), Real.log p) ≤
-      c * x ^ θ
+    (∑ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
+      Real.log (p : ℝ)) ≤ c * x ^ θ
 
 /-- **Primes outside a `ShortPrimeSparse` set retain `O(x^θ)` gaps (`7/12 < θ < 1`).** -/
 theorem powGaps_primes_diff_of_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 < θ) (hθ1 : θ < 1)
     {E : Set ℕ} (hE : ShortPrimeSparse θ E) :
     PowGaps θ {p : ℕ | p.Prime ∧ p ∉ E} := by
-  classical
   refine ⟨fun p hp => hp.1.pos, ?_⟩
   obtain ⟨c, hc1, hc_ev⟩ := hE
   have hmid : (c + 1) / 2 < 1 := by linarith
@@ -213,23 +212,24 @@ theorem powGaps_primes_diff_of_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 < θ) (
     have hyθ : 0 < y ^ θ := Real.rpow_pos_of_pos hy0 θ
     rw [Set.mem_Ioi, lt_div_iff₀ hyθ] at hth
     have htot : (c + 1) / 2 * y ^ θ <
-        ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log p := by
+        ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log (p : ℝ) := by
       rwa [← RHTower.Sieve.theta_sub_eq_sum_Ioc (by linarith)]
     by_contra hnone
     push Not at hnone
     have hsub : (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime ⊆
-        (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E) := by
+        (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E) := by
       intro p hp
       rw [Finset.mem_filter] at hp ⊢
       refine ⟨hp.1, hp.2, ?_⟩
       by_contra hpE
       rw [Finset.mem_Ioc] at hp
-      have hyp : y < p := Nat.lt_of_floor_lt hp.1.1
+      have hyp : y < p := (Nat.floor_lt hy0.le).mp hp.1.1
       have hpy : (p : ℝ) ≤ y + y ^ θ :=
         (Nat.cast_le.mpr hp.1.2).trans (Nat.floor_le (by positivity))
       exact absurd hpy (not_le.mpr (hnone p ⟨hp.2, hpE⟩ hyp))
-    have hsum_le : (∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log p) ≤
-        ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E), Real.log p :=
+    have hsum_le : (∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter Nat.Prime, Real.log (p : ℝ)) ≤
+        ∑ p ∈ (Finset.Ioc ⌊y⌋₊ ⌊y + y ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
+          Real.log (p : ℝ) :=
       Finset.sum_le_sum_of_subset_of_nonneg hsub fun p hp =>
         Real.log_nonneg (by exact_mod_cast (Finset.mem_filter.mp hp).2.1.one_lt.le)
     have : (c + 1) / 2 * y ^ θ < c * y ^ θ := htot.trans_le (hsum_le.trans hc)
@@ -259,16 +259,15 @@ theorem powGaps_primes_diff_of_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 < θ) (
 `ShortPrimeSparse (max ((α + 1) / 2) (2 / 3)) E`.** -/
 theorem shortPrimeSparse_of_card_le_rpow {α C : ℝ} (hα1 : α < 1) {E : Set ℕ}
     (hE : ∀ᶠ X : ℝ in atTop,
-      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) :
+      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) :
     ShortPrimeSparse (max ((α + 1) / 2) (2 / 3)) E := by
-  classical
   set θ : ℝ := max ((α + 1) / 2) (2 / 3)
   have hθ_gt_α : α < θ := lt_of_lt_of_le (by linarith) (le_max_left _ _)
   have hθ_lt_1 : θ < 1 := max_lt (by linarith) (by norm_num)
   have hθ_pos : 0 < θ := lt_of_lt_of_le (by norm_num) (le_max_right _ _)
   refine ⟨1 / 2, by norm_num, ?_⟩
   have h2x_ev : ∀ᶠ x : ℝ in atTop,
-      (((Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤
+      (((Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤
         C * (2 * x) ^ α :=
     (tendsto_id.const_mul_atTop (by norm_num : (0 : ℝ) < 2)).eventually hE
   have hlo := isLittleO_log_rpow_rpow_atTop (1 : ℝ) (show 0 < θ - α by linarith)
@@ -282,27 +281,28 @@ theorem shortPrimeSparse_of_card_le_rpow {α C : ℝ} (hα1 : α < 1) {E : Set �
   have hxθ_le_x : x ^ θ ≤ x := by
     calc x ^ θ ≤ x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx1 hθ_lt_1.le
       _ = x := Real.rpow_one x
-  have hsub : (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E) ⊆
-      (Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p => p.Prime ∧ p ∈ E) := by
+  have hsub : (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E) ⊆
+      (Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E) := by
     intro p hp
     rw [Finset.mem_filter, Finset.mem_Ioc] at hp
     rw [Finset.mem_filter, Finset.mem_Icc]
     refine ⟨⟨hp.2.1.pos, ?_⟩, hp.2⟩
     exact hp.1.2.trans (Nat.floor_le_floor (by linarith))
-  have hlog_bound : ∀ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E),
-      Real.log p ≤ 2 * Real.log x := by
+  have hlog_bound : ∀ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
+      Real.log (p : ℝ) ≤ 2 * Real.log x := by
     intro p hp
     have hp2 := hsub hp
     rw [Finset.mem_filter, Finset.mem_Icc] at hp2
     have hp_pos : (0 : ℝ) < p := by exact_mod_cast hp2.2.1.pos
     have hp_le_2x : (p : ℝ) ≤ 2 * x :=
       (Nat.cast_le.mpr hp2.1.2).trans (Nat.floor_le (by linarith))
-    calc Real.log p ≤ Real.log (x * x) := Real.log_le_log hp_pos (by nlinarith)
+    calc Real.log (p : ℝ) ≤ Real.log (x * x) := Real.log_le_log hp_pos (by nlinarith)
       _ = 2 * Real.log x := by rw [Real.log_mul hx0.ne' hx0.ne']; ring
-  have hcard_le : (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤
-      max C 0 * (2 : ℝ) ^ α * x ^ α := by
-    calc (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ)
-        ≤ (((Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) :=
+  have hcard_le :
+      (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤
+        max C 0 * (2 : ℝ) ^ α * x ^ α := by
+    calc (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ)
+        ≤ (((Finset.Icc 1 ⌊2 * x⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) :=
           by exact_mod_cast Finset.card_le_card hsub
       _ ≤ C * (2 * x) ^ α := hcard
       _ ≤ max C 0 * (2 * x) ^ α :=
@@ -312,10 +312,11 @@ theorem shortPrimeSparse_of_card_le_rpow {α C : ℝ} (hα1 : α < 1) {E : Set �
   have hxθ_pos : 0 < x ^ θ := Real.rpow_pos_of_pos hx0 θ
   have hsplit : x ^ α * x ^ (θ - α) = x ^ θ := by
     rw [← Real.rpow_add hx0]; ring_nf
-  calc (∑ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E), Real.log p)
-      ≤ ∑ _p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E),
+  calc (∑ p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
+          Real.log (p : ℝ))
+      ≤ ∑ _p ∈ (Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E),
           (2 * Real.log x) := Finset.sum_le_sum hlog_bound
-    _ = (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) *
+    _ = (((Finset.Ioc ⌊x⌋₊ ⌊x + x ^ θ⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) *
           (2 * Real.log x) := by rw [Finset.sum_const, nsmul_eq_mul]
     _ ≤ (max C 0 * (2 : ℝ) ^ α * x ^ α) * (2 * Real.log x) :=
         mul_le_mul_of_nonneg_right hcard_le (mul_nonneg (by norm_num) (Real.log_nonneg hx1))
@@ -340,7 +341,7 @@ theorem onLine_of_bddBelow_primes_off_shortPrimeSparse {θ : ℝ} (hθ : 7 / 12 
 /-- **Unattained configuration rigidity off any power-saving prime exception set (`α < 1`).** -/
 theorem onLine_of_bddBelow_primes_off_card_rpow {α C : ℝ} (hα1 : α < 1) {E : Set ℕ}
     (hE : ∀ᶠ X : ℝ in atTop,
-      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α)
+      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α)
     (Z : ZeroConfig) (hZ : TemperedConfig Z) (hnoreal : ∀ ρ ∈ Z.carrier, ρ.im ≠ 0) {K : ℝ}
     (hK : ∀ p : ℕ, p.Prime → p ∉ E → -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re) :
     ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2 :=
@@ -365,7 +366,7 @@ theorem riemannHypothesis_iff_primeWindow_le_primes_off_shortPrimeSparse {θ : �
 theorem riemannHypothesis_iff_primeWindow_le_primes_off_card_rpow {α C : ℝ} (hα1 : α < 1)
     {E : Set ℕ}
     (hE : ∀ᶠ X : ℝ in atTop,
-      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) :
+      (((Finset.Icc 1 ⌊X⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) :
     RiemannHypothesis ↔
       ∃ K : ℝ, ∀ p : ℕ, p.Prime → p ∉ E → primeWindow p ≤ archPoleWindow p + K :=
   riemannHypothesis_iff_primeWindow_le_primes_off_shortPrimeSparse
@@ -392,7 +393,7 @@ theorem prime_stepanov_phase_transition :
       (∀ p : ℕ, p.Prime → p ∉ E → -5 ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re)) ∧
     (∀ {α C : ℝ}, α < 1 → ∀ {E : Set ℕ},
       (∀ᶠ X : ℝ in atTop,
-        (((Finset.Icc 1 ⌊X⌋₊).filter (fun p => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) →
+        (((Finset.Icc 1 ⌊X⌋₊).filter (fun p : ℕ => p.Prime ∧ p ∈ E)).card : ℝ) ≤ C * X ^ α) →
       (∀ (Z : ZeroConfig), TemperedConfig Z → (∀ ρ ∈ Z.carrier, ρ.im ≠ 0) →
         ∀ {K : ℝ}, (∀ p : ℕ, p.Prime → p ∉ E →
           -K ≤ 2 * (lagStructure Z (boxSpline 1 3) (Real.log p)).re) →

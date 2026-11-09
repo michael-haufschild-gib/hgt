@@ -71,5 +71,5 @@ passed `lake --old env lean` without output artifacts. Audited declarations:
 
 All are in namespace `GaloisForLFunctions.ExceptionalLayerTheory` and use
 only `propext`, `Classical.choice`, and `Quot.sound`. The programme umbrella
-imports the module. Sharp recurrent envelopes are a separate open refinement
-in `../1-in-progress/elt-recurrent-layer-envelope.md`.
+imports the module. The sharp recurrent envelope is formalized in
+`elt-recurrent-layer-envelope.md`.

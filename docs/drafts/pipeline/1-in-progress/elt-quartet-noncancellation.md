@@ -35,4 +35,5 @@ missing. The full infinite remainder must remain in the proof.
 
 ELT-PHASE is Lean proved. Conjugation acts involutively on exact zero copies
 in `DeningerDivisorSchwarzMonodromy`. Corpus search found no matching
-high-height, pointwise-current theorem. Formalization has not started.
+high-height, pointwise-current theorem. The Lean proof is drafted; validation
+and transitive axiom audits remain pending.

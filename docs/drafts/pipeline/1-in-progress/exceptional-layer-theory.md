@@ -39,7 +39,10 @@ The normalized top-layer profile is now Lean proved in
 `TheExceptionalLayerAtEscapingHeights`: its phase is `(at+log(t/2))/2`,
 with ordinate weights `exp(π Im ρ/4)`. See
 `../3-formalized/elt-moving-layer-phase.md`. The sharp recurrent envelope
-is the next refinement (`elt-recurrent-layer-envelope.md`).
+is also Lean proved (`../3-formalized/elt-recurrent-layer-envelope.md`):
+readings recur near the negative tilted multiplicity with bounded gaps.
+The single-positive-ordinate case is under formalization
+(`elt-quartet-noncancellation.md`).
 
 ## Foundations and gaps
 

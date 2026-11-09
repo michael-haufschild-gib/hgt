@@ -26,7 +26,8 @@ theorem arithmeticMonicAt_adamsFixed (q : ℕ) (hq : 2 ≤ q) (p : P) :
     have he := congrArg (fun a : P →₀ ℕ => a p) h
     simp only [Finsupp.single_eq_same] at he
     omega
-  change ArithmeticMonicAt ((X p : MvPolynomial P ℤ) ^ q - X p ^ 1) (Finsupp.single p q)
+  suffices h : ArithmeticMonicAt ((X p : MvPolynomial P ℤ) ^ q - X p ^ 1)
+      (Finsupp.single p q) by simpa only [pow_one] using h
   constructor
   · simp only [MvPolynomial.coeff_sub, MvPolynomial.coeff_X_pow, if_true,
       if_neg hsingle.symm, sub_zero]
@@ -110,7 +111,9 @@ theorem minimal_stepanov_image_iff (q : ℕ) (hq : 2 ≤ q) (r : ℕ)
     constructor
     · apply (mem_adamsFixedIdeal_pow_iff_stepanov_syzygies q r _).mp
       apply Ideal.mul_mem_left
-      exact Ideal.pow_mem_pow (Ideal.subset_span ⟨p, rfl⟩) r
+      have hg : ((X p : MvPolynomial P ℤ) ^ q - X p) ∈ adamsFixedIdeal q :=
+        Ideal.subset_span ⟨p, rfl⟩
+      exact Ideal.pow_mem_pow hg r
     · apply Finset.sup_le
       intro a ha
       have ha' : a ∈ (((X p : MvPolynomial P ℤ) ^ q - X p) ^ r).support := by
@@ -128,8 +131,10 @@ theorem exists_stepanov_syzygies_at_sharp_length (q : ℕ) (hq : 2 ≤ q) (r : �
         length (stepanovAux q f g) = ((p : Nat.Primes) : ℕ) ^ (q * r) := by
   letI : NeZero q := ⟨by omega⟩
   have hm := arithmeticMonicAt_adamsFixed_pow q hq r p
+  have hg : ((X p : MvPolynomial P ℤ) ^ q - X p) ∈ adamsFixedIdeal q :=
+    Ideal.subset_span ⟨p, rfl⟩
   have hi : ((X p : MvPolynomial P ℤ) ^ q - X p) ^ r ∈ adamsFixedIdeal q ^ r :=
-    Ideal.pow_mem_pow (Ideal.subset_span ⟨p, rfl⟩) r
+    Ideal.pow_mem_pow hg r
   obtain ⟨m, f, g, hsy, he⟩ :=
     (mem_adamsFixedIdeal_pow_iff_stepanov_syzygies q r _).mp hi
   refine ⟨m, f, g, hsy, he, ?_, ?_⟩
