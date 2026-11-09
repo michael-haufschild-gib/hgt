@@ -575,12 +575,4 @@ theorem no_sub_ceiling_graded_deuring_heilbronn_on_integer_norm_euler_products
   · rw [hΘ_inf]
     exact hf
 
-#print axioms abscissaLaw_orthogonal_factorization_tfae
-#print axioms zetaExtremeDeuringHeilbronn_tfae
-#print axioms asymptoticAbscissaLaw_orthogonal_factorization_tfae
-#print axioms riemannHypothesis_tfae_of_extremeDeuringHeilbronn_and_b13
-#print axioms oneOff_euler_product_extremeDeuringHeilbronn_not_linear
-#print axioms twoScale_euler_product_linear_not_asymptoticDeuringHeilbronn
-#print axioms no_sub_ceiling_graded_deuring_heilbronn_on_integer_norm_euler_products
-
 end GaloisForLFunctions.ExceptionalLayerTheory

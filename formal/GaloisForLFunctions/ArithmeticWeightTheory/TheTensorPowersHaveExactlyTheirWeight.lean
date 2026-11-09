@@ -75,7 +75,7 @@ theorem summable_tensorTerm {Z : ZeroConfig} (hZ : TemperedConfig Z) {b : ℝ} (
     push_cast; ring
   have hΛ : 0 ≤ Λ (j + 1) := vonMangoldt_nonneg
   calc tensorTerm Z k σ j = Λ (j + 1) * (c ^ (2 * k) * ((j : ℝ) + 1) ^ (-σ)) := by
-        unfold tensorTerm; push_cast; ring
+        unfold tensorTerm; ring
     _ ≤ Λ (j + 1) * ((E * ((j : ℝ) + 1) ^ b) ^ (2 * k) * ((j : ℝ) + 1) ^ (-σ)) :=
         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpow (by positivity)) hΛ
     _ = E ^ (2 * k) * (Λ (j + 1) * ((j : ℝ) + 1) ^ (-(σ - 2 * k * b))) := by rw [hsplit]; ring
@@ -98,7 +98,7 @@ theorem sq_mul_rpow_le_tensor (c : ℝ) {x : ℝ} (hx : 1 ≤ x) {k : ℕ} (hk :
   have h1 : (c ^ (2 * k) * x ^ (-σ)) ^ (1 / (k : ℝ)) = c ^ 2 * x ^ (-σ / k) := by
     rw [Real.mul_rpow (by rw [pow_mul]; exact pow_nonneg (sq_nonneg _) _) (by positivity),
       pow_mul, one_div, Real.pow_rpow_inv_natCast (sq_nonneg c) hk', ← Real.rpow_mul hx0.le]
-    congr 2; ring
+    congr 2
   have h2 : (x ^ (-(1 + δ))) ^ (1 - 1 / (k : ℝ)) = x ^ (-(1 + δ) * (1 - 1 / k)) := by
     rw [← Real.rpow_mul hx0.le]
   rw [h1, h2, mul_assoc, ← Real.rpow_add hx0] at hgm
@@ -132,9 +132,11 @@ theorem not_summable_tensorTerm_of_max {Z : ZeroConfig} (hZ : TemperedConfig Z) 
     nlinarith
   have hR := not_summable_rankinSquare_of_max Z hZ hρ₀ hoff hmax
   apply hR
-  refine Summable.of_nonneg_of_le (fun j => ?_) (fun j => ?_)
-    ((hsum.mul_left (1 / k)).add ((summable_vonMangoldt_rpow
-      (show 1 < 1 + δ by linarith)).mul_left (1 - 1 / k)))
+  have hS : Summable fun j : ℕ => 1 / (k : ℝ) * tensorTerm Z k σ j +
+      (1 - 1 / (k : ℝ)) * (Λ (j + 1) * ((j : ℝ) + 1) ^ (-(1 + δ))) :=
+    (hsum.mul_left (1 / (k : ℝ))).add ((summable_vonMangoldt_rpow
+      (show 1 < 1 + δ by linarith)).mul_left (1 - 1 / (k : ℝ)))
+  refine Summable.of_nonneg_of_le (fun j => ?_) (fun j => ?_) hS
   · exact mul_nonneg (mul_nonneg vonMangoldt_nonneg (sq_nonneg _)) (by positivity)
   · have hj1 : (1 : ℝ) ≤ (j : ℝ) + 1 := by linarith [Nat.cast_nonneg (α := ℝ) j]
     have hΛ : 0 ≤ Λ (j + 1) := vonMangoldt_nonneg
@@ -256,8 +258,7 @@ theorem riemannHypothesis_iff_tensorExponent_sublinear :
     have hεη : ε ≤ η := min_le_left _ _
     have hε2 : ε ≤ 1 / 2 := min_le_right _ _
     obtain ⟨k₀, hk₀⟩ := exists_nat_ge (1 / η + 3)
-    obtain ⟨k, hk, C, hC⟩ := ((h ε hε).and (eventually_ge_atTop k₀)).exists.imp
-      fun k hk => ⟨hk.2, hk.1⟩
+    obtain ⟨k, ⟨C, hC⟩, hk⟩ := ((h ε hε).and (eventually_ge_atTop k₀)).exists
     have hkR : 1 / η + 3 ≤ (k : ℝ) := hk₀.trans (by exact_mod_cast hk)
     have hk0 : (0 : ℝ) < k := by have : 0 < 1 / η := by positivity
                                  linarith

@@ -30,6 +30,14 @@ import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PrimeOrbitClockRigi
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.FinitePrimeClockMultipliers
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialOrbitPreserversAreAdams
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.IntegralOrbitPreserversAreAdams
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PrimeOrbitLogarithmicDerivative
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PrimeOrbitEqualDivisors
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.EntirePrimeOrbitValue
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.EntireQuotientCharacters
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.SignedPrimeClockMultipliers
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.PolynomialQuotientFrequencies
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.RationalOrbitPreserversAreLaurentAdams
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.RealRationalOrbitPreservers
 
 /-!
 # Arithmetic Lefschetz–Stepanov theory
@@ -44,9 +52,10 @@ graphs of degree `≤ N` are the degree of the minimal auxiliary vanishing at th
 RH is an upper bound on that degree; the bound fails for the integer-norm one-off. Siegel
 auxiliaries and a zero estimate uniform in the number of logarithms are the tools. Polynomial
 syzygies have image exactly the powers of the full affine Adams fixed-point ideal; integral
-Newton coordinates give their sharp arithmetic length and all minimal auxiliaries. Every
-polynomial self-map preserving a finite prime orbit with two distinct primes is a translated
-Adams operation, without an assumed regularity of its clock. Over the integers the translation
-vanishes. A nonidentity polynomial orbit preserver cannot fix two orbit points.
+Newton coordinates give their sharp arithmetic length and all minimal auxiliaries. Every rational
+self-map defined on and preserving a finite prime orbit with two distinct primes is a translated
+Laurent Adams map, without an assumed regularity of its clock. Polynomial maps have nonnegative
+exponents; rational maps allow every integer exponent. Real or integer coefficients remove the
+translation. A nonidentity rational orbit preserver cannot fix two orbit points.
 See `ArithmeticLefschetzStepanovTheory/README.md`.
 -/

@@ -393,9 +393,4 @@ theorem tendsto_coMoving_div_top_zero_above_masking_threshold {ρ_top : ℂ} {σ
       rw [← hex, Real.exp_add]
       ring
 
-#print axioms two_zero_five_point_repulsion_inequality
-#print axioms zeta_no_siegel_regime
-#print axioms tendsto_top_div_coMoving_zero_in_supercritical_window
-#print axioms tendsto_coMoving_div_top_zero_above_masking_threshold
-
 end GaloisForLFunctions.ExceptionalLayerTheory
