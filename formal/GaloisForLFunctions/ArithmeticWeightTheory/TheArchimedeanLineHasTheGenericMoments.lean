@@ -60,7 +60,8 @@ theorem vertical_moment_eq_generic {η : ℝ → ℂ} (hη : ContDiff ℝ 2 η) 
   rw [integral_pairTransform_mul_normSq_pow_eq_diag hη hηs hs _ hthr]
   congr 1
   unfold fibreTrace
-  rw [integral_normSq_twistSum_pow (fun n hn => (Nat.mem_primesLE.mp hn).2.ne_zero)]
+  rw [integral_normSq_twistSum_pow (s := windowPrimes R u)
+    (fun n hn => (Nat.mem_primesLE.mp hn).2.ne_zero)]
   push_cast
   rfl
 
@@ -81,14 +82,18 @@ theorem generic_moment_le_vertical_moment {w : ℝ → ℝ} (hw : ContDiff ℝ 2
     mul_nonneg (mul_nonneg (Real.exp_pos _).le (Real.log_natCast_nonneg n)) (hg0 _)
   obtain ⟨hid, hoff⟩ := integral_normSq_pow_eq_diag_add_offDiag_nonneg hw hwc hw0 hs hc k
   have hww : windowWeight g u = fun n => ((windowWeightReal g u n : ℝ) : ℂ) := rfl
-  rw [hww, ← hid]
   have hmom : ∫ x, ‖fibreTrace g R u x‖ ^ (2 * k) ∂gaugeHaar =
-      ∑ N ∈ powSupport (windowPrimes R u) k, powCoeffReal (windowPrimes R u) (windowWeightReal g u) k N ^ 2 := by
+      ∑ N ∈ ArithmeticKunnethTheory.powSupport (windowPrimes R u) k,
+        powCoeffReal (windowPrimes R u) (windowWeightReal g u) k N ^ 2 := by
     unfold fibreTrace
-    rw [hww, integral_normSq_twistSum_pow (fun n hn => (Nat.mem_primesLE.mp hn).2.ne_zero)]
+    rw [hww, integral_normSq_twistSum_pow (s := windowPrimes R u)
+      (fun n hn => (Nat.mem_primesLE.mp hn).2.ne_zero)]
     refine Finset.sum_congr rfl fun N _ => ?_
     rw [powCoeff_ofReal, Complex.norm_real, Real.norm_eq_abs, sq_abs]
   rw [hmom]
-  linarith
+  calc (∫ t, ‖(w t : ℂ)‖ ^ 2) * ∑ N ∈ ArithmeticKunnethTheory.powSupport (windowPrimes R u) k,
+        powCoeffReal (windowPrimes R u) (windowWeightReal g u) k N ^ 2
+      ≤ _ + _ := le_add_of_nonneg_right hoff
+    _ = _ := by rw [hww]; exact hid
 
 end GaloisForLFunctions.ArithmeticWeightTheory

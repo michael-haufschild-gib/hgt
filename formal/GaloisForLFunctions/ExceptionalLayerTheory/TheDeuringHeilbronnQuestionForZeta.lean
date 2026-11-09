@@ -161,12 +161,16 @@ theorem abscissaLaw_orthogonal_factorization_tfae (Z : ZeroConfig) :
     rintro ⟨hL, hADH⟩
     by_cases hA : AbscissaLaw Z
     · exact hA
-    · exact (((linearAbscissaLaw_tfae Z).out 0 5).mp hL) (hADH hA)
+    · have hiff : LinearAbscissaLaw Z ↔ (ApproachesLine Z → AbscissaLaw Z) :=
+        (linearAbscissaLaw_tfae Z).out 0 5
+      exact hiff.mp hL (hADH hA)
   tfae_have 3 → 4 :=
     And.imp_left (abscissaLawAt_zero_of_linearAbscissaLaw Z)
   tfae_have 4 → 1 := by
     rintro ⟨h0, hEDH⟩
-    exact (((extremeDeuringHeilbronn_tfae Z).out 0 2).mp hEDH) h0
+    have hiff : ExtremeDeuringHeilbronn Z ↔ (AbscissaLawAt Z 0 → AbscissaLaw Z) :=
+      (extremeDeuringHeilbronn_tfae Z).out 0 2
+    exact hiff.mp hEDH h0
   tfae_finish
 
 /-- **Strict separation of `ExtremeDeuringHeilbronn` and `AsymptoticDeuringHeilbronn`.** The
@@ -239,7 +243,7 @@ theorem abscissaLawAt_zetaZeroConfig_zero_iff :
   rw [rightOf_zetaZeroConfig_zero_finite_iff]
   refine imp_congr_right fun _ => ?_
   simp only [add_zero]
-  rw [← pure_iff_forall_re_le, Pure, riemannHypothesis_iff_zetaZeroConfig_onLine]
+  rw [← pure_iff_forall_re_le, ConfigAbscissa.Pure, ← riemannHypothesis_iff_zetaZeroConfig_onLine]
 
 theorem zetaAsymptoticDeuringHeilbronn_iff_config :
     ZetaAsymptoticDeuringHeilbronn ↔ AsymptoticDeuringHeilbronn zetaZeroConfig := by
@@ -324,24 +328,28 @@ theorem asymptoticAbscissaLaw_orthogonal_factorization_tfae :
 theorem zetaLinearAbscissaLaw_iff_b13_of_extremeDeuringHeilbronn
     (hEDH : ZetaExtremeDeuringHeilbronn) :
     ZetaLinearAbscissaLaw ↔ (FiniteOffLine → RiemannHypothesis) := by
+  have h1 : (ZetaLinearAbscissaLaw ∧ ZetaExtremeDeuringHeilbronn) ↔ AsymptoticAbscissaLaw :=
+    asymptoticAbscissaLaw_orthogonal_factorization_tfae.out 2 0
+  have h2 : ZetaExtremeDeuringHeilbronn ↔
+      ((FiniteOffLine → RiemannHypothesis) → AsymptoticAbscissaLaw) :=
+    zetaExtremeDeuringHeilbronn_tfae.out 0 2
   constructor
   · intro hL hfin
-    have hAAL : AsymptoticAbscissaLaw :=
-      (asymptoticAbscissaLaw_orthogonal_factorization_tfae.out 2 0).mp ⟨hL, hEDH⟩
+    have hAAL : AsymptoticAbscissaLaw := h1.mp ⟨hL, hEDH⟩
     have hZAL : ZerosApproachLine := zerosApproachLine_of_finiteOffLine hfin
     exact riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw.mpr ⟨hZAL, hAAL⟩
   · intro hB13
-    have hAAL : AsymptoticAbscissaLaw :=
-      (zetaExtremeDeuringHeilbronn_tfae.out 0 2).mp hEDH hB13
-    exact (asymptoticAbscissaLaw_orthogonal_factorization_tfae.out 0 2).mp hAAL |>.1
+    exact (h1.mpr (h2.mp hEDH hB13)).1
 
 /-- Under `ZetaExtremeDeuringHeilbronn`, `RiemannHypothesis` splits into `ZerosApproachLine` and
 `FiniteOffLine → RiemannHypothesis`. -/
 theorem riemannHypothesis_iff_zerosApproachLine_and_b13_of_extremeDeuringHeilbronn
     (hEDH : ZetaExtremeDeuringHeilbronn) :
     RiemannHypothesis ↔ ZerosApproachLine ∧ (FiniteOffLine → RiemannHypothesis) := by
-  rw [riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw]
-  exact and_congr_right' ((zetaExtremeDeuringHeilbronn_tfae.out 0 1).mp hEDH)
+  have hiff : ZetaExtremeDeuringHeilbronn ↔
+      (AsymptoticAbscissaLaw ↔ (FiniteOffLine → RiemannHypothesis)) :=
+    zetaExtremeDeuringHeilbronn_tfae.out 0 1
+  rw [riemannHypothesis_iff_zerosApproachLine_and_asymptoticAbscissaLaw, hiff.mp hEDH]
 
 /-- **Nine-way collapse under `ZetaExtremeDeuringHeilbronn` and `FiniteOffLine → RiemannHypothesis`.** -/
 theorem riemannHypothesis_tfae_of_extremeDeuringHeilbronn_and_b13
@@ -355,8 +363,10 @@ theorem riemannHypothesis_tfae_of_extremeDeuringHeilbronn_and_b13
       EventualHadamardPositivity,
       EventualFilteredCentralGapBudget,
       FiniteDimensional ℝ oddBoundStateSpace].TFAE := by
-  have hAAL : AsymptoticAbscissaLaw :=
-    (zetaExtremeDeuringHeilbronn_tfae.out 0 2).mp hEDH hB13
+  have h2 : ZetaExtremeDeuringHeilbronn ↔
+      ((FiniteOffLine → RiemannHypothesis) → AsymptoticAbscissaLaw) :=
+    zetaExtremeDeuringHeilbronn_tfae.out 0 2
+  have hAAL : AsymptoticAbscissaLaw := h2.mp hEDH hB13
   have hfin_tfae := zetaKernel_finiteIndex_tfae Nat.prime_two Nat.prime_three (by norm_num)
   have hRH_ZAL : RiemannHypothesis ↔ ZerosApproachLine :=
     ⟨zerosApproachLine_of_riemannHypothesis, fun hZ =>
@@ -367,15 +377,16 @@ theorem riemannHypothesis_tfae_of_extremeDeuringHeilbronn_and_b13
     rw [spectral_im_eq, xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q, sub_self]
   tfae_have 1 ↔ 2 := hRH_ZAL
   tfae_have 1 ↔ 3 := hRH_Fin
-  tfae_have 3 ↔ 4 := (hfin_tfae.out 2 0).symm
+  tfae_have 3 ↔ 4 := hfin_tfae.out 2 0
   tfae_have 3 ↔ 5 := hfin_tfae.out 2 3
   tfae_have 1 ↔ 6 := by
+    have h02 : negIndex zetaKernel < ⊤ ↔ FiniteOffLine := hfin_tfae.out 0 2
     constructor
     · intro hRH
       exact ne_top_of_le_ne_top ENNReal.ofReal_ne_top
         (riemannHypothesis_iff_criticalEnergy_le_quantum.mp hRH)
     · intro hE
-      exact hRH_Fin.mpr ((hfin_tfae.out 0 2).mp
+      exact hRH_Fin.mpr (h02.mp
         ((negIndex_zetaKernel_le_of_energy hE).trans_lt (WithTop.coe_lt_top _)))
   tfae_have 2 ↔ 7 := eventualHadamardPositivity_iff_zerosApproachLine.symm
   tfae_have 3 ↔ 8 := eventualFilteredCentralGapBudget_iff_finiteOffLine.symm
@@ -432,8 +443,8 @@ private def singleScalePairConfig (γ : ℝ) : ZeroConfig where
     rintro z ((rfl | rfl) | ⟨w, rfl | rfl, rfl⟩)
     · simp; norm_num
     · simp; norm_num
-    · rw [re_reflect]; simp; norm_num
-    · rw [re_reflect]; simp; norm_num
+    · rw [ArithmeticCastelnuovoSeveri.re_reflect]; simp; norm_num
+    · rw [ArithmeticCastelnuovoSeveri.re_reflect]; simp; norm_num
   reflect_mem := by
     rintro z (hz | ⟨w, hw, rfl⟩)
     · exact Or.inr ⟨z, hz, rfl⟩
@@ -505,7 +516,8 @@ theorem oneOff_euler_product_extremeDeuringHeilbronn_not_linear (γ : ℝ) :
       rcases hs with rfl | rfl <;> simp <;> norm_num
     · rintro ⟨hs | ⟨w, hw, rfl⟩, hre⟩
       · exact hs
-      · rcases hw with rfl | rfl <;> rw [re_reflect] at hre <;> simp at hre <;> norm_num at hre
+      · rcases hw with rfl | rfl <;>
+          rw [ArithmeticCastelnuovoSeveri.re_reflect] at hre <;> simp at hre <;> norm_num at hre
   exact ⟨q, a, hq, F, A, hA, Z, hEuler, hcount, hdiff, hcrit, hright,
     hEDH, hADH, hZAL, hnotL, hnot0, hnotA⟩
 

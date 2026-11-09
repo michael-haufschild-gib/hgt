@@ -37,7 +37,10 @@ carrier exclusion is asserted: the obstruction concerns quotients containing the
 diagonal p-unit. The off-diagonal and torsion-Robin obstructions are formalized in
 `HyperbolicArakelovTheory/TheArithmeticPrimeUnitCollapsesTheLadder.lean`; plain source
 audit passes, with only `propext`, `Classical.choice`, and `Quot.sound`. Twisted
-reconstruction and positivity remain under Lean verification.
+reconstruction and positivity are formalized in
+`HyperbolicArakelovTheory/TheTwistedGreenFibresOfAPrimeLadder.lean`, with the same
+plain source and axiom audit. Both leaves are integrated into `MainTheorems`
+through the `HyperbolicArakelovTheory` umbrella.
 
 The same obstruction extends to every unitary automorphy law: the intersections
 at (1,p) and (1,p³) are positive and unequal, while unitary translation preserves

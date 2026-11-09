@@ -9,7 +9,7 @@
 
 For the zeta spline trace, a uniform lower bound on all primes in windows
 `[exp(T_k-L_k), exp(T_k+L_k)]`, where `T_k→∞` and
-`L_k/√T_k→∞`, implies RH. No attained-top premise.
+`L_k≥c√T_k` for a fixed `c>0`, implies RH. No attained-top premise.
 
 Stronger target: replace `√T_k` by a multiple of `(log T_k)²`, using
 the Riemann–von Mangoldt count. Arbitrarily slowly growing `L_k` remains open.
@@ -25,8 +25,10 @@ This is the Laplace transform of a symmetric probability measure on
 `Q_(a,h)(s) ≤ exp(s²h²/2)`. Products therefore have a Gaussian moment
 bound governed by `Σh²`, independently of the number of deleted zeros.
 High-ordinate factors preserve every fixed low exponent, and differ from
-one by `O(h²)` there. Reciprocal-square summability should give a nonzero
-limiting multiplier on a finite head and exact deletion of the tail.
+one by `O(h²)` there. Square summability gives a nonzero limiting multiplier
+at a specified exponent, exact deletion of the tail, and arbitrarily small
+remaining square cost. This infinite passage is formalized for absolutely
+convergent exponential traces in a strip.
 
 Positive averaging transfers a local lower bound to the filtered trace.
 The contribution of shifts outside radius `L` is bounded by
@@ -48,7 +50,9 @@ the improved derivative envelope makes a second passage bounded.
   Gaussian leakage: `ScaleLocality/PositiveTailFilters.lean`.
 - [x] Nonzero product convergence at a retained exponent when every
   shift satisfies `|h| |w|≤1`; same module, direct Lean/axiom audit passed.
-- [ ] Prove nonzero multiplier convergence and tail deletion.
+- [x] Nonzero multiplier convergence, exact tail deletion, dominated trace
+  passage, and arbitrarily small tail cost: `PositiveTailIsolation.lean`.
+- [x] Gaussian local lower bound survives infinite deletion; same module.
 - [ ] Prove local tail estimates and the continuous scale-local theorem.
 - [ ] Transfer to prime windows; formalize and audit all dependencies.
 

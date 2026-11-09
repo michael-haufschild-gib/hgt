@@ -163,15 +163,17 @@ private theorem norm_exp_le_strip {w : ℂ} {D : ℝ}
 
 /-- A summable coefficient sequence defines an absolutely convergent trace in a strip. -/
 theorem summable_cexp_re {ι : Type*} (c w : ι → ℂ) {D : ℝ}
-    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, |(w i).re| ≤ D) (t : ℝ) :
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D) (t : ℝ) :
     Summable fun i => (c i * Complex.exp (w i * t)).re := by
   apply Summable.of_norm_bounded (hc.mul_right (Real.exp (D * |t|)))
   intro i
+  by_cases hi : c i = 0
+  · simp [hi]
   calc ‖(c i * Complex.exp (w i * t)).re‖ ≤ ‖c i * Complex.exp (w i * t)‖ :=
         Complex.abs_re_le_norm _
     _ ≤ ‖c i‖ * Real.exp (D * |t|) := by
       rw [norm_mul]
-      exact mul_le_mul_of_nonneg_left (norm_exp_le_strip (hw i) t) (norm_nonneg _)
+      exact mul_le_mul_of_nonneg_left (norm_exp_le_strip (hw i hi) t) (norm_nonneg _)
 
 /-- A strip bound controls all filtered modes independently of the prefix length. -/
 theorem norm_filtered_mode_le (a h : ℕ → ℝ)
@@ -195,7 +197,7 @@ theorem norm_filtered_mode_le (a h : ℕ → ℝ)
 /-- Positive prefix averages converge termwise on every absolutely convergent strip trace. -/
 theorem tendsto_tailAverage_series {ι : Type*} (a h : ℕ → ℝ)
     (hsq : Summable fun i => h i ^ 2) (c w : ι → ℂ) {D : ℝ}
-    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, |(w i).re| ≤ D) (t : ℝ) :
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D) (t : ℝ) :
     Tendsto (fun N => tailAverage (filterPrefix a h N)
       (fun u => ∑' i, (c i * Complex.exp (w i * u)).re) t) atTop
       (𝓝 (∑' i, (c i * (∏' n, quartetFactor (a n) (h n) (w i)) *
@@ -211,8 +213,12 @@ theorem tendsto_tailAverage_series {ι : Type*} (a h : ℕ → ℝ)
   · intro i
     exact (Complex.continuous_re.tendsto _).comp
       ((tendsto_const_nhds.mul (tendsto_tailFactor a h hsq (w i))).mul tendsto_const_nhds)
-  · exact Filter.Eventually.of_forall fun N i =>
-      (Complex.abs_re_le_norm _).trans (norm_filtered_mode_le a h hsq (c i) (w i) (hw i) t N)
+  · apply Filter.Eventually.of_forall
+    intro N i
+    by_cases hi : c i = 0
+    · simp [hi]
+    exact (Complex.abs_re_le_norm _).trans
+      (norm_filtered_mode_le a h hsq (c i) (w i) (hw i hi) t N)
 
 /-- Once its own factor occurs, a prescribed exponent vanishes in every longer prefix. -/
 theorem eventually_tailFactor_root (a h : ℕ → ℝ) (n : ℕ) {γ : ℝ}
@@ -228,8 +234,82 @@ theorem tprod_quartetFactor_root (a h : ℕ → ℝ)
     (hsq : Summable fun i => h i ^ 2) (n : ℕ) {γ : ℝ}
     (hphase : h n * γ = Real.pi) :
     (∏' i, quartetFactor (a i) (h i) ((a n : ℂ) + (γ : ℂ) * I)) = 0 := by
+  have he : (fun _ : ℕ => (0 : ℂ)) =ᶠ[atTop]
+      (fun N => tailFactor (filterPrefix a h N) ((a n : ℂ) + (γ : ℂ) * I)) :=
+    (eventually_tailFactor_root a h n hphase).mono fun _ hn => hn.symm
   exact tendsto_nhds_unique (tendsto_tailFactor a h hsq _)
-    (tendsto_const_nhds.congr' (eventually_tailFactor_root a h n hphase).symm)
+    (tendsto_const_nhds.congr' he)
+
+/-- Deleting every exponent outside a finite set leaves exactly its filtered finite sum. -/
+theorem tendsto_tailAverage_finite_head {ι : Type*} (a h : ℕ → ℝ)
+    (hsq : Summable fun i => h i ^ 2) (c w : ι → ℂ) {D : ℝ}
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D)
+    (S : Finset ι)
+    (hdelete : ∀ i ∉ S, c i ≠ 0 → ∃ n, (w i).re = a n ∧ h n * (w i).im = Real.pi)
+    (t : ℝ) :
+    Tendsto (fun N => tailAverage (filterPrefix a h N)
+      (fun u => ∑' i, (c i * Complex.exp (w i * u)).re) t) atTop
+      (𝓝 (∑ i ∈ S, (c i * (∏' n, quartetFactor (a n) (h n) (w i)) *
+        Complex.exp (w i * t)).re)) := by
+  have hzero : ∀ i ∉ S, (c i * (∏' n, quartetFactor (a n) (h n) (w i)) *
+      Complex.exp (w i * t)).re = 0 := by
+    intro i hi
+    by_cases hci : c i = 0
+    · simp [hci]
+    obtain ⟨n, hn, hp⟩ := hdelete i hi hci
+    have he : (a n : ℂ) + ((w i).im : ℂ) * I = w i := by
+      rw [← hn, Complex.re_add_im]
+    have hz := tprod_quartetFactor_root a h hsq n hp
+    rw [he] at hz
+    simp only [hz, mul_zero, zero_mul, Complex.zero_re]
+  simpa only [tsum_eq_sum hzero] using tendsto_tailAverage_series a h hsq c w hc hw t
+
+/-- Arbitrarily late deletion tails have arbitrarily small total square cost. -/
+theorem tendsto_tail_squareCost (h : ℕ → ℝ) (hsq : Summable fun i => h i ^ 2) :
+    Tendsto (fun N => ∑' i, h (i + N) ^ 2) atTop (𝓝 0) := by
+  have he (N : ℕ) : (∑' i, h (i + N) ^ 2) = (∑' i, h i ^ 2) -
+      ∑ i ∈ Finset.range N, h i ^ 2 := by
+    linarith only [hsq.sum_add_tsum_nat_add N]
+  simp_rw [he]
+  have hc : Tendsto (fun _ : ℕ => ∑' i, h i ^ 2) atTop (𝓝 (∑' i, h i ^ 2)) :=
+    tendsto_const_nhds
+  simpa only [sub_self] using hc.sub hsq.hasSum.tendsto_sum_nat
+
+/-- Deletion can preserve a specified exponent while spending any prescribed positive cost. -/
+theorem exists_small_nonzero_tail_multiplier (a h : ℕ → ℝ)
+    (hsq : Summable fun i => h i ^ 2) (w : ℂ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ N : ℕ, (∑' i, h (i + N) ^ 2) < ε ∧
+      (∏' i : ℕ, quartetFactor (a (i + N)) (h (i + N)) w) ≠ 0 := by
+  obtain ⟨N₀, hN₀⟩ := eventually_atTop.mp (eventually_small_shift h hsq w)
+  obtain ⟨N, hN, hcost⟩ := ((eventually_ge_atTop N₀).and
+    ((tendsto_tail_squareCost h hsq).eventually_lt_const hε)).exists
+  refine ⟨N, hcost, ?_⟩
+  exact (multipliable_quartetFactor_ne_zero
+    (fun i => a (i + N)) (fun i => h (i + N)) w
+    ((summable_nat_add_iff N).mpr hsq)
+    (fun i => hN₀ (i + N) (hN.trans (Nat.le_add_left N i)))).2
+
+/-- The local Gaussian leakage bound survives infinitely many exact deletions. -/
+theorem infinite_tail_local_floor {ι : Type*} (a h : ℕ → ℝ)
+    (hsq : Summable fun i => h i ^ 2) (c w : ι → ℂ) {D₀ : ℝ}
+    (hc : Summable fun i => ‖c i‖) (hw : ∀ i, c i ≠ 0 → |(w i).re| ≤ D₀)
+    {K C D q L : ℝ} (hK : 0 ≤ K) (hC : 0 ≤ C) (hq : 0 ≤ q)
+    (hglobal : ∀ u, -C * Real.exp (D * |u|) ≤ ∑' i, (c i * Complex.exp (w i * u)).re)
+    (hlocal : ∀ u, |u| ≤ L → -K ≤ ∑' i, (c i * Complex.exp (w i * u)).re) :
+    -K - 2 * C * Real.exp (-q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) ≤
+      ∑' i, (c i * (∏' n, quartetFactor (a n) (h n) (w i))).re := by
+  have hlim := tendsto_tailAverage_series a h hsq c w hc hw 0
+  simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, mul_one] at hlim
+  apply ge_of_tendsto hlim
+  apply Filter.Eventually.of_forall
+  intro N
+  apply le_trans _ (tailAverage_local_floor (filterPrefix a h N) hK hC hq hglobal hlocal)
+  have he : Real.exp (-q * L + (D + q) ^ 2 * squareCost (filterPrefix a h N) / 2) ≤
+      Real.exp (-q * L + (D + q) ^ 2 * (∑' i, h i ^ 2) / 2) := by
+    apply Real.exp_le_exp.mpr
+    gcongr
+    exact squareCost_filterPrefix_le a h hsq N
+  nlinarith only [mul_le_mul_of_nonneg_left he (show 0 ≤ 2 * C by positivity)]
 
 #print axioms multipliable_quartetFactor
 #print axioms exists_nonzero_tail_multiplier
@@ -238,5 +318,8 @@ theorem tprod_quartetFactor_root (a h : ℕ → ℝ)
 #print axioms tailAverage_cexp_re
 #print axioms tendsto_tailAverage_series
 #print axioms tprod_quartetFactor_root
+#print axioms tendsto_tailAverage_finite_head
+#print axioms exists_small_nonzero_tail_multiplier
+#print axioms infinite_tail_local_floor
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

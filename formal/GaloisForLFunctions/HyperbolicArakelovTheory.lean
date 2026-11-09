@@ -7,6 +7,7 @@ import GaloisForLFunctions.HyperbolicArakelovTheory.TheGreenDampingOnSmoothProbe
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheMassObstructionToSmoothedTorsionLocking
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheGramCouplingOfTheGreenAndTorsionChannels
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheFinitePlacesAreTrees
+import GaloisForLFunctions.HyperbolicArakelovTheory.TheTwistedGreenFibresOfAPrimeLadder
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersWithAClosedDegreeGeodesic
 import GaloisForLFunctions.HyperbolicArakelovTheory.TheArithmeticPrimeUnitCollapsesTheLadder
 import GaloisForLFunctions.HyperbolicArakelovTheory.CarriersAlongAnEndOfBoundedSelfEnergy
@@ -26,6 +27,7 @@ self-energy (conical ends included), the boundary of a group convergent at `½` 
 points of discontinuity), and embeddings into compact and finite-volume quotients; the spherical
 structure of the archimedean compensation and the plastic crossing; the discriminant diagonal of
 locked dampings; the mass obstruction to scalar locking and ordered Gram coupling on smooth packets;
-the finite places as Bruhat–Tits trees with the adelic Green formula; and the weight of the orientation
-cover over ℤ. See `HyperbolicArakelovTheory/README.md`.
+the finite places as Bruhat–Tits trees with the adelic Green formula; the arithmetic-unit obstruction
+to descending a degree ladder and its reconstruction from positive twisted tree fibres; and the
+weight of the orientation cover over ℤ. See `HyperbolicArakelovTheory/README.md`.
 -/

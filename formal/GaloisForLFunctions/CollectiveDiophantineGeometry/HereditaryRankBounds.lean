@@ -48,7 +48,7 @@ theorem collectiveDepthFloor_le_of_majority {r d k W V : ℕ}
     one_le_mul_of_one_le_of_one_le (by exact_mod_cast r.factorial_pos) (one_le_pow₀ hH)
   have hlog : log ((r.factorial : ℝ) * H ^ r) + 2 ≤
       log ((k.factorial : ℝ) * H ^ k) + 2 :=
-    add_le_add_right (Real.log_le_log (by positivity) harg) _
+    add_le_add (Real.log_le_log (by positivity) harg) (le_refl 2)
   have hlog0 : 0 ≤ log ((r.factorial : ℝ) * H ^ r) + 2 := by
     linarith only [Real.log_nonneg harg1]
   have hbase : collectiveBase (d + r) W ≤ collectiveBase k V := by
@@ -127,5 +127,85 @@ private theorem collectiveLogBound_comp_le {m n : ℕ}
       _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
         (fun j _ _ => Real.log_nonneg (by exact_mod_cast (hprime j).one_lt.le))
   exact Nat.add_le_add_right (Nat.ceil_mono hmass) 1
+
+/-- Every coordinate intersection of the small-form span has at most half
+its support dimension. All restrictions share one explicit arithmetic floor. -/
+theorem hereditary_small_forms_finrank_le {k : ℕ}
+    (p : Fin (k + 1) → ℕ) (hp : Function.Injective p) (hprime : ∀ j, (p j).Prime)
+    (S : Finset (Fin (k + 1) → ℤ)) {H : ℝ} (hH : 1 ≤ H)
+    (hheight : ∀ v ∈ S, ∀ j, |(v j : ℝ)| ≤ H)
+    (hvalue : ∀ v ∈ S, |primeLogForm p v| <
+      hereditaryDepthFloor (k + 1) (collectiveLogBound p) H)
+    (J : Finset (Fin (k + 1))) :
+    2 * Module.finrank ℚ ↥(integerRowSpan S ⊓ coordinateSubspace J) ≤ J.card := by
+  classical
+  have hH0 : 0 < H := lt_of_lt_of_le zero_lt_one hH
+  have hε := hereditaryDepthFloor_pos (W := collectiveLogBound p) (by omega : 1 ≤ k + 1) hH0
+  have hH' : 1 ≤ hereditaryHeight (k + 1) H :=
+    one_le_mul_of_one_le_of_one_le (by exact_mod_cast (k + 1).factorial_pos)
+      (one_le_pow₀ hH)
+  obtain ⟨r, M, hr, hind, -, hsupp, hM, hsmall⟩ :=
+    exists_bounded_coordinate_basis S J (fun j => log (p j)) hH hε hheight hvalue
+  by_contra hbad
+  rw [← hr] at hbad
+  have hrpos : 0 < r := by omega
+  obtain ⟨n, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.ne_of_gt hrpos)
+  let e₀ : Fin J.card ≃ J := Fintype.equivOfCardEq (by simp)
+  have hrat : ∀ a j, j ∉ J → (M a j : ℚ) = 0 := by
+    intro a j hj
+    rw [hsupp a j hj, Int.cast_zero]
+  have hind₀ := independent_coordinate_restriction (fun a j => (M a j : ℚ)) J e₀ hind hrat
+  have hrle : n + 1 ≤ J.card := by
+    have h := hind₀.fintype_card_le_finrank
+    simpa using h
+  let d := J.card - (n + 1)
+  have hd : d + n + 1 = J.card := by dsimp [d]; omega
+  have hdr : d < n + 1 := by dsimp [d]; omega
+  have hJle : J.card ≤ k + 1 := by simpa using Finset.card_le_univ J
+  let e : Fin (d + n + 1) ≃ J := Fintype.equivOfCardEq (by simpa using hd)
+  let f : Fin (d + n + 1) → Fin (k + 1) := fun j => e j
+  have hf : Function.Injective f := Subtype.val_injective.comp e.injective
+  have hind' := independent_coordinate_restriction (fun a j => (M a j : ℚ)) J e hind hrat
+  obtain ⟨a, ha⟩ := exists_large_collective_form d n (p ∘ f) (hp.comp hf)
+    (fun j => hprime (f j)) (fun i j => M i (f j)) hind' hH' (fun i j => hM i (f j))
+  have hfloor : collectiveDepthFloor (k + 1) 0 (collectiveLogBound p)
+      (hereditaryHeight (k + 1) H) ≤ collectiveDepthFloor (n + 1) d
+        (collectiveLogBound (p ∘ f)) (hereditaryHeight (k + 1) H) :=
+    collectiveDepthFloor_le_of_majority (by omega) hdr (by omega)
+      (collectiveLogBound_comp_le p hprime f hf) hH'
+  have heval : (∑ j, (M a (f j) : ℝ) * log ((p ∘ f) j)) =
+      ∑ j, (M a j : ℝ) * log (p j) := by
+    apply sum_coordinate_restriction J e
+    intro j hj
+    rw [hsupp a j hj, Int.cast_zero, zero_mul]
+  rw [heval] at ha
+  have hK : hereditaryValueLoss (k + 1) H ≠ 0 := by
+    unfold hereditaryValueLoss
+    positivity
+  have hsmall' : |∑ j, (M a j : ℝ) * log (p j)| <
+      collectiveDepthFloor (k + 1) 0 (collectiveLogBound p) (hereditaryHeight (k + 1) H) := by
+    have h := hsmall a
+    change _ < hereditaryValueLoss (k + 1) H *
+      (collectiveDepthFloor (k + 1) 0 (collectiveLogBound p) (hereditaryHeight (k + 1) H) /
+        hereditaryValueLoss (k + 1) H) at h
+    simpa only [mul_div_assoc, mul_comm (hereditaryValueLoss (k + 1) H),
+      mul_div_cancel₀ _ hK] using h
+  exact (not_lt_of_ge (hfloor.trans ha)) hsmall'
+
+/-- The entire integer approximation body has hereditary coordinate density
+at most one half below the explicit threshold. -/
+theorem nearRelationBox_hereditary_finrank_le {k H : ℕ}
+    (p : Fin (k + 1) → ℕ) (hp : Function.Injective p) (hprime : ∀ j, (p j).Prime)
+    (hH : 1 ≤ H) {ε : ℝ}
+    (hε : ε ≤ hereditaryDepthFloor (k + 1) (collectiveLogBound p) H)
+    (J : Finset (Fin (k + 1))) :
+    2 * Module.finrank ℚ ↥(integerRowSpan (nearRelationBox p H ε) ⊓ coordinateSubspace J) ≤ J.card := by
+  apply hereditary_small_forms_finrank_le p hp hprime (nearRelationBox p H ε)
+    (by exact_mod_cast hH)
+  · intro v hv j
+    have h := ((mem_nearRelationBox p H ε v).mp hv).1 j
+    exact_mod_cast h
+  · intro v hv
+    exact ((mem_nearRelationBox p H ε v).mp hv).2.trans_le hε
 
 end GaloisForLFunctions.CollectiveDiophantineGeometry

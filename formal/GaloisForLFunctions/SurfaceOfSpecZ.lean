@@ -78,6 +78,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.AlmostAllPrimesAndTheStepanovBoundary
 import GaloisForLFunctions.SurfaceOfSpecZ.DecisivePrimeSamplesCanHaveArbitrarilyLargeGaps
 import GaloisForLFunctions.SurfaceOfSpecZ.DecisiveSamplesOfZeroConvergenceExponent
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveTailFilters
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveTailIsolation
 
 /-!
 # The surface of `Spec ℤ`
