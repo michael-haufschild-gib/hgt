@@ -167,7 +167,7 @@ The mass bound holds uniformly for `1<σ≤2`; the moment bound holds for
 every positive k and every `σ>1`. All sums retain the infinite divisor,
 and repeated copies of β₁ remain. These arithmetic estimates supply the
 inputs for the power-sum detector; the final Dirichlet repulsion theorem
-is still being formalized.
+is not yet proved.
 
 ## Questions and milestones
 

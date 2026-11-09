@@ -29,10 +29,8 @@ be retained. No finite truncation may replace the divisor.
 
 ## Status and role
 
-This is the classical calibration required by §2.10, not a claim of new
-repulsion for ζ. Corpus search found Siegel's theorem and the two-torsion
-positivity exception; no declaration named Deuring–Heilbronn was found.
-The final logarithmic repulsion statement remains under formalization.
+This is the classical calibration, not a claim of new repulsion for ζ.
+The final logarithmic repulsion statement is not proved.
 The infinite power-sum lemma, all-order Euler inequality, and completed
 divisor identities are proved in Lean; no Dirichlet repulsion theorem is claimed.
 
@@ -99,4 +97,6 @@ Lean: `ExceptionalLayerTheory/TheCompletedDirichletDivisor.lean` proves
 comparison, logarithmic conductor mass bound, and removal of exactly one
 exceptional copy. Its `pairedExceptionalResolvent_mass_le` and
 `pairedExceptionalResolvent_moment_le` are the two arithmetic inputs to
-the power-sum detector. The final logarithmic repulsion law remains pending.
+the power-sum detector. Its direct source-file check and transitive axiom
+audit pass with only `propext`, `Classical.choice`, and `Quot.sound`.
+The final logarithmic repulsion law remains pending.

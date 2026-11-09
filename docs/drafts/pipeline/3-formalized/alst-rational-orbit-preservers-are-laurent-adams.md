@@ -1,8 +1,8 @@
 # Rational orbit preservers are Laurent Adams operations
 
 - **ID:** alst-rational-orbit-preservers-are-laurent-adams
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM; final Lean audits pending, not counted
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Statement:** For a finite prime set containing two distinct primes, every rational self-map defined on the entire prime orbit and preserving it has coordinates `p^(−ib)X_p^n`, with unique `n∈ℤ`, `b∈ℝ`. Real or integer coefficients force `b=0`.
 
 ## Research consequence
@@ -69,4 +69,8 @@ These components and the corpus inputs
 `EntireQuotient.exists_entire_nonvanishing_quotient`,
 `OrderOneRigidity.exists_expAffine_of_entire_quotient`
 have only `propext`, `Classical.choice`, `Quot.sound` as transitive axioms.
-All statements are formalized. Final plain module audits remain.
+All eight modules passed final plain `lake --old env lean` checks. The
+[complex classification](../../../../formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/RationalOrbitPreserversAreLaurentAdams.lean)
+and [real/integer descent](../../../../formal/GaloisForLFunctions/ArithmeticLefschetzStepanovTheory/RealRationalOrbitPreservers.lean)
+are complete and wired into the programme umbrella. No placeholders or
+raised proof limits occur in the eight modules.

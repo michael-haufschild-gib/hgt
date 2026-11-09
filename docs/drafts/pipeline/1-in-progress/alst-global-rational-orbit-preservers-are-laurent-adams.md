@@ -1,7 +1,7 @@
 # Global rational orbit preservers are Laurent Adams maps
 
 - **ID:** alst-global-rational-orbit-preservers-are-laurent-adams
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Statement:** Let `N_p,D_p : MvPolynomial Nat.Primes ℂ` be a rational coordinate family defined on the whole prime orbit and preserving it. No common finite invariant prime set is assumed. Then there are unique `n∈ℤ`, `b∈ℝ` with `N_p X_p^{(-n).toNat}=C(p^(−ib)) D_p X_p^{n.toNat}` for every prime `p`. Real or integer coefficients force `b=0`.
 
