@@ -243,7 +243,7 @@ Structure [D]: the exceptional coordinate has three atoms on the RH path (ZAL, B
 |---|---|---|
 | A37 | Resonator mean of `\|ζ\|²` with resonators growing below the Kronecker scale (unverified) | — |
 | A47 | Explicit window constants of the tower theorems for one top quartet (unverified) | — |
-| A67 | Dominant-ordinate divergence: the corrected current diverges for every top layer whose largest Gamma weight exceeds the sum of the others (Kronecker) [D] | — |
+| A67 | Dominant-ordinate divergence: the corrected current's norm tends to infinity when one ordinate's grouped Gamma mass exceeds the mass of the remaining ordinates [L*] | `ExceptionalLayerTheory/ADominantOrdinateForcesCurrentDivergence`; reverse triangle inequality |
 | A68 | A landing calibration with ζ's Gamma factor and Riemann–von Mangoldt counting (unverified) | — |
 | B13 | Finite stratum | sub |
 | B83 | AAL | sub |
@@ -369,7 +369,7 @@ Established [L]: one-sided or two-sided bounds at every power-saving gap set dec
 | A58 | Effective gap iteration constants (unverified) | — |
 | A59 | Short-interval primes in a fixed residue class; the residue-class Stepanov bound becomes an RH criterion [C] | — |
 | A64 | RH criterion on `log²T` prime windows for ζ from the log-square leakage and the prime-gap transfer (unverified) | — |
-| A65 | Two-prime local criterion: lower bounds on two-prime difference lags in `√T` windows ⇔ RH [D] | — |
+| A65 | Two-prime local criterion: lower bounds on two-prime difference lags in arbitrarily late `√T` windows ⇔ RH [L*] | `ScaleLocality/TwoPrimeLocalWindows` |
 | B130 | The arithmetic Stepanov bound at the primes (one-sided or two-sided), on any decisive sample | RH |
 | B140 | Bounded windows: is a lower bound on windows `[x_k,Cx_k]` along a sparse sequence of scales decisive for configurations with ζ's zero counting? | method |
 

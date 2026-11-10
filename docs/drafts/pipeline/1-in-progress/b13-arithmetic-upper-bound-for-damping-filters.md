@@ -324,3 +324,14 @@ The spacing-normalization gap is closed. An independent upper bound for
 the centred type-II current is still missing; B13 remains unresolved.
 Proof and nine clean transitive axiom audits:
 `../3-formalized/b13-spacing-preserving-centred-vaughan-reduction.md`.
+
+
+The cutoff extension in `GaussianVaughanCutoffHorizon.lean` removes the
+individual bounds `U,V≤t²`. For `0≤σ<1`, `0<η≤1/2`, `X≥2e UV`,
+
+`|F_h E_UV| ≪ h^d t^(d+2)(UV)²X^(−1−σ+η)`.
+
+Thus `(UV)²t^(d+3)≤X^(1+σ−η)` gives `O(h^d/t)` and permits
+power-sized unbalanced cutoffs. Four audited theorems are recorded in
+`../3-formalized/b13-power-sized-vaughan-cutoffs.md`. The centred
+arithmetic cancellation bound remains open.

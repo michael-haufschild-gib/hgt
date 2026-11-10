@@ -14,12 +14,12 @@ Let `a²=λ+1/4`, with the actual weighted adjacency
 `E(s)=Σ_p p⁻²(p^s+p^(1−s))`.
 
 On a fixed interval `1/2≤s≤3/4`, the summands are bounded by a constant
-multiple of `p^(−5/4)`. Continuity of the sum, and `E(1/2)=λ`, should supply
+multiple of `p^(−5/4)`. Continuity of the sum, and `E(1/2)=λ`, supply
 `s>1/2` with `E(s)<a²`. Put `κ=√(a²−E(s))>0` and `c=a−κ`.
 The local Green identities give `A h_s≤E(s)h_s`.
 
 For each finite Dirichlet section, positivity of the root iteration and
-`E(s)+c²=2ac` imply `R_F h_s≤c h_s`. The finite-section limit would pass this to
+`E(s)+c²=2ac` imply `R_F h_s≤c h_s`. The finite-section limit passes this to
 the full remainder `R=aI−√(a²I−A)`. On distinct finite
 vertices, the identity term of `exp(rR)` vanishes, hence
 
@@ -43,17 +43,27 @@ the same height bound, with constant
 The same finite-exception argument applies to arbitrary restricted vertices.
 It requires no separate classification of the torus stabilizer.
 
+## Formalized bounds
+
+- `TheWeightedAdelicProductAdmitsStrictlyTemperedBarriers.lean`:
+  `barrierExponent_gt_half`, `barrierEnergy_lt`, and `adjacency_barrierProfile_le`
+  prove the exponent, spectral margin, and original all-prime supersolution.
+- `TheHyperbolicGreenKernelHasUniformAdelicDecay.lean`:
+  `rootRemainder_charge_bound` passes the finite barriers to the full operator;
+  `regularizedMixedEntry_bound` proves the displayed uniform bound for all
+  `r≥0`, including the Robin value, whenever the finite vertices differ.
+- Plain Lean checks pass; audited declarations depend only on
+  `propext`, `Classical.choice`, and `Quot.sound`.
+
 ## Remaining proof obligations
 
-- Verify the variable-exponent radial product and its all-prime supersolution identity.
-- Prove the spectral margin `E(s)<λ+1/4` for some `s>1/2` without numerical estimates.
-- Prove the uniform root and Green entry bounds from finite sections.
 - Establish the torus height bound on the full carrier, finiteness of the equal-fibre exception,
-  absolute summability, symmetry, and descent to the quotient.
-- Formalize each claimed limit and bound; the argument above is not yet Lean verified.
+  absolute summability, symmetry, and descent to the rational-torus quotient.
+- Formalize these remaining statements; quotient summability is not yet Lean verified.
 
 ## Boundary
 
 This is the standard branch for the specified weighted operator. It does not
 identify the quotient kernel or its Robin diagonal with Weil's form. The accepted
-invariant-gluing obstruction remains in force.
+invariant-gluing obstruction remains in force. Torus descent does not assert
+descent to the full rational `SL₂` quotient or a Bochner-integral inverse there.

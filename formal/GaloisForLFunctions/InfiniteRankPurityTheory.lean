@@ -25,6 +25,7 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.AModeAccessibleFromInfinityI
 import GaloisForLFunctions.InfiniteRankPurityTheory.OnTheFlowTheWeightFiltrationNeedsNoChainCondition
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoFamilyOfZerosIsIntegralWhateverTheirRealParts
 import GaloisForLFunctions.InfiniteRankPurityTheory.TheZerosContainNoClassOfOneFrobenius
+import GaloisForLFunctions.InfiniteRankPurityTheory.NoSequenceOfZerosApproachesAClassOfOneFrobenius
 
 /-!
 # Infinite-rank purity theory
@@ -57,7 +58,9 @@ statement at a point.
   an equivariant map is diagonal, the module is semisimple without multiplicity, and over one
   Frobenius conjugates share their weight. The zeros contain no class of one Frobenius:
   `Σ_n |ζ(ρ + inT)|/|ρ + inT|` diverges along every vertical progression in the strip, so `ξ`
-  vanishes on the zeros of no local factor `q^{-s} - u` and of no curve over a finite field.
+  vanishes on the zeros of no local factor `q^{-s} - u` and of no curve over a finite field; the
+  same values are square summable, and no two-sided sequence of zeros lies within an `ℓ²`
+  perturbation of a class.
 
 See `InfiniteRankPurityTheory/README.md`.
 -/

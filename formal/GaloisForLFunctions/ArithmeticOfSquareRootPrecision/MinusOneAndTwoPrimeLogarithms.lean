@@ -20,7 +20,9 @@ theorem minusOne_primeLog_im (p q : ℕ) (m a b : ℤ) :
     ((m : ℂ) * Complex.log (-1) +
       (((a : ℝ) * Real.log p + (b : ℝ) * Real.log q : ℝ) : ℂ)).im = (m : ℝ) * Real.pi := by
   rw [Complex.log_neg_one]
-  simp
+  simp only [Complex.add_im, Complex.mul_im, Complex.intCast_im, Complex.intCast_re,
+    Complex.ofReal_im, Complex.ofReal_re, Complex.I_im, Complex.I_re,
+    mul_zero, zero_mul, add_zero, mul_one]
 
 /-- Effective separation for the three principal logarithms `log(-1), log p, log q`. -/
 theorem exists_minusOne_primeLog_separation {p q : ℕ}
@@ -52,7 +54,9 @@ theorem exists_minusOne_primeLog_separation {p q : ℕ}
         (((a : ℝ) * Real.log p + (b : ℝ) * Real.log q : ℝ) : ℂ)‖ := by
       nlinarith only [hnorm, hm1, Real.pi_pos]
     have hpow : (2 + (|(m : ℝ)| + |(a : ℝ)| + |(b : ℝ)|)) ^ (-C) ≤ 1 :=
-      Real.rpow_le_one_of_one_le_of_nonpos (by positivity) (neg_nonpos.mpr hC.le)
+      Real.rpow_le_one_of_one_le_of_nonpos
+        (by linarith [abs_nonneg (m : ℝ), abs_nonneg (a : ℝ), abs_nonneg (b : ℝ)])
+        (neg_nonpos.mpr hC.le)
     calc min c Real.pi * (2 + (|(m : ℝ)| + |(a : ℝ)| + |(b : ℝ)|)) ^ (-C)
         ≤ min c Real.pi * 1 := mul_le_mul_of_nonneg_left hpow (le_min hc.le Real.pi_pos.le)
       _ ≤ Real.pi := by simpa only [mul_one] using min_le_right c Real.pi

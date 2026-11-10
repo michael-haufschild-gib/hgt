@@ -266,120 +266,130 @@ theorem summable_mul_of_sq {ι : Type*} {a b : ι → ℝ} (ha : Summable fun i 
   Summable.of_nonneg_of_le (fun i => mul_nonneg (ha0 i) (hb0 i))
     (fun i => by nlinarith [sq_nonneg (a i - b i), mul_nonneg (ha0 i) (hb0 i)]) (ha.add hb)
 
-/-- **A ladder of zeros near a progression makes the zeta values on it summable.** -/
-theorem summable_norm_riemannZeta_div_of_ladder {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1) {P : ℝ}
-    (hP : 0 < P) {η : ℤ → ℂ} (hη : Summable fun n => ‖η n‖ ^ 2)
-    (hzero : ∀ᶠ n : ℤ in cofinite,
-      riemannZeta (ρ + ((2 * π * n / P : ℝ) : ℂ) * I + η n) = 0) :
-    Summable fun n : ℤ => ‖riemannZeta (ρ + ((2 * π * n / P : ℝ) : ℂ) * I)
-      / (ρ + ((2 * π * n / P : ℝ) : ℂ) * I)‖ := by
-  set σ : ℝ := ρ.re with hσ
-  set s : ℤ → ℂ := fun n => ρ + ((2 * π * n / P : ℝ) : ℂ) * I with hs
-  have hsre : ∀ n, (s n).re = σ := fun n => by simp [hs, hσ]
-  set δ : ℝ := min σ (1 - σ) / 4 with hδ
-  have hδ0 : 0 < δ := by
-    have : 0 < min σ (1 - σ) := lt_min h0 (by linarith)
-    positivity
-  have hδσ : δ ≤ σ / 4 := by
-    rw [hδ]
-    have := min_le_left σ (1 - σ)
-    linarith
-  have hδ1 : δ ≤ (1 - σ) / 4 := by
-    rw [hδ]
-    have := min_le_right σ (1 - σ)
-    linarith
-  -- the three square summable sequences
-  set a : ℤ → ℝ := fun n => ‖∫ x in Ioi (0 : ℝ), ladderKernel (s n) x‖ with ha
-  set b : ℤ → ℝ := fun n => ‖∫ x in Ioi (0 : ℝ), ladderMoment (s n) x‖ with hb
-  set z : ℤ → ℝ := fun n => ‖riemannZeta (s n) / s n‖ with hz
-  have ha2 : Summable fun n => a n ^ 2 := summable_sq_norm_integral_ladderKernel h0 hP
-  have hb2 : Summable fun n => b n ^ 2 := summable_sq_norm_integral_ladderMoment h0 hP
-  have hz2 : Summable fun n => z n ^ 2 := summable_sq_norm_riemannZeta_div h0 h1 hP
-  have he2 : Summable fun n => ‖η n‖ ^ 2 := hη
-  set M : ℝ := taylorConstant σ with hM
-  set C : ℝ := 2 / (1 - σ) with hC
-  have hC0 : 0 ≤ C := by rw [hC]; exact div_nonneg (by norm_num) (by linarith)
-  have hmajor : Summable fun n : ℤ =>
-      M * ‖η n‖ ^ 2 + (‖η n‖ * b n + C * (‖η n‖ * a n + ‖η n‖ * z n)) :=
-    (he2.mul_left M).add
-      ((summable_mul_of_sq he2 hb2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _).add
-        (((summable_mul_of_sq he2 ha2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _).add
-          (summable_mul_of_sq he2 hz2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _)).mul_left C))
-  -- the perturbations are eventually small
-  have hsmall : ∀ᶠ n in cofinite, ‖η n‖ ≤ δ := by
-    have h := hη.tendsto_cofinite_zero
-    filter_upwards [h.eventually (gt_mem_nhds (show (0 : ℝ) < δ ^ 2 by positivity))] with n hn
-    exact (lt_of_pow_lt_pow_left₀ 2 hδ0.le hn).le
-  refine Summable.of_norm_bounded_eventually hmajor ?_
-  filter_upwards [hzero, hsmall] with n hn hηn
-  rw [norm_norm]
-  -- the two Laplace representations
-  have hre' : (s n + η n).re = σ + (η n).re := by rw [Complex.add_re, hsre]
-  have habs := abs_le.mp ((Complex.abs_re_le_norm (η n)).trans hηn)
-  have hs'0 : 0 < (s n + η n).re := by rw [hre']; linarith
-  have hs'1 : (s n + η n).re < 1 := by rw [hre']; linarith
-  have hs'ne : s n + η n ≠ 1 := fun h => by rw [h, Complex.one_re] at hs'1; exact lt_irrefl _ hs'1
-  have hsne : s n ≠ 1 := fun h => by
-    have := hsre n
-    rw [h, Complex.one_re] at this
-    linarith
-  have hI1 : (∫ x in Ioi (0 : ℝ), ladderKernel (s n + η n) x) = 1 / (s n + η n - 1) := by
-    rw [integral_ladderKernel hs'0 hs'ne, hn, zero_div, sub_zero]
-  have hI2 := integral_ladderKernel (s := s n) (by rw [hsre]; exact h0) hsne
-  have hT := norm_integral_ladderKernel_taylor_le (s := s n) (η := η n) (by rw [hsre]; exact h0)
-    (by rw [hsre]; linarith)
-  rw [hsre, hI1] at hT
+/-- **A zero near `s` bounds `ζ(s)/s`.** If `ζ(s + η) = 0` with `η` small, the Laplace
+representations at `s` and `s + η` and the Taylor bound give `ζ(s)/s` as `η` times bounded
+quantities, up to `M ‖η‖²`. -/
+theorem norm_riemannZeta_div_le_of_zero_near {s η : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1)
+    (hη : ‖η‖ ≤ min s.re (1 - s.re) / 4) (hzero : riemannZeta (s + η) = 0) :
+    ‖riemannZeta s / s‖ ≤ taylorConstant s.re * ‖η‖ ^ 2
+      + ‖η‖ * ‖∫ x in Ioi (0 : ℝ), ladderMoment s x‖
+      + 2 / (1 - s.re) * (‖η‖ * (‖∫ x in Ioi (0 : ℝ), ladderKernel s x‖ + ‖riemannZeta s / s‖)) := by
+  have hδσ : ‖η‖ ≤ s.re / 4 := hη.trans (by have := min_le_left s.re (1 - s.re); linarith)
+  have hδ1 : ‖η‖ ≤ (1 - s.re) / 4 :=
+    hη.trans (by have := min_le_right s.re (1 - s.re); linarith)
+  have hC0 : 0 ≤ 2 / (1 - s.re) := div_nonneg (by norm_num) (by linarith)
+  have habs := abs_le.mp (Complex.abs_re_le_norm η)
+  have hre' : (s + η).re = s.re + η.re := Complex.add_re _ _
+  have hs'0 : 0 < (s + η).re := by rw [hre']; linarith [norm_nonneg η]
+  have hs'1 : (s + η).re < 1 := by rw [hre']; linarith
+  have hs'ne : s + η ≠ 1 := fun h => by rw [h, Complex.one_re] at hs'1; exact lt_irrefl _ hs'1
+  have hsne : s ≠ 1 := fun h => by rw [h, Complex.one_re] at h1; exact lt_irrefl _ h1
+  have hI1 : (∫ x in Ioi (0 : ℝ), ladderKernel (s + η) x) = 1 / (s + η - 1) := by
+    rw [integral_ladderKernel hs'0 hs'ne, hzero, zero_div, sub_zero]
+  have hI2 := integral_ladderKernel h0 hsne
+  have hT := norm_integral_ladderKernel_taylor_le (s := s) (η := η) h0 (by linarith)
+  rw [hI1] at hT
   -- the polar terms
-  have hsub : s n - 1 ≠ 0 := sub_ne_zero.mpr hsne
-  have hsub' : s n + η n - 1 ≠ 0 := sub_ne_zero.mpr hs'ne
-  have hpol : 1 / (s n + η n - 1) - 1 / (s n - 1) = -(η n) * (1 / (s n + η n - 1)) * (1 / (s n - 1)) := by
+  have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hsne
+  have hsub' : s + η - 1 ≠ 0 := sub_ne_zero.mpr hs'ne
+  have hpol : 1 / (s + η - 1) - 1 / (s - 1) = -η * (1 / (s + η - 1)) * (1 / (s - 1)) := by
     field_simp
     ring
-  have hinv' : ‖1 / (s n + η n - 1)‖ ≤ C := by
-    rw [norm_div, norm_one, hC]
-    refine div_le_div_of_nonneg_left (by norm_num) (by linarith) ?_
-    have h := Complex.abs_re_le_norm (s n + η n - 1)
-    have hre1 : (s n + η n - 1).re = σ + (η n).re - 1 := by
+  have hlow : (1 - s.re) / 2 ≤ ‖s + η - 1‖ := by
+    have h := Complex.abs_re_le_norm (s + η - 1)
+    have hre1 : (s + η - 1).re = s.re + η.re - 1 := by
       rw [Complex.sub_re, hre', Complex.one_re]
     rw [hre1] at h
-    have := neg_abs_le (σ + (η n).re - 1)
+    have := neg_abs_le (s.re + η.re - 1)
     linarith
-  have hinv : ‖1 / (s n - 1)‖ ≤ a n + z n := by
-    have h : 1 / (s n - 1) = (∫ x in Ioi (0 : ℝ), ladderKernel (s n) x) + riemannZeta (s n) / s n := by
+  have hinv' : ‖1 / (s + η - 1)‖ ≤ 2 / (1 - s.re) := by
+    have hC' : 2 / (1 - s.re) = 1 / ((1 - s.re) / 2) := by rw [one_div_div]
+    rw [norm_div, norm_one, hC']
+    exact one_div_le_one_div_of_le (by linarith) hlow
+  have hinv : ‖1 / (s - 1)‖
+      ≤ ‖∫ x in Ioi (0 : ℝ), ladderKernel s x‖ + ‖riemannZeta s / s‖ := by
+    have h : 1 / (s - 1) = (∫ x in Ioi (0 : ℝ), ladderKernel s x) + riemannZeta s / s := by
       rw [hI2]
       ring
     rw [h]
     exact norm_add_le _ _
-  have hpolnorm : ‖1 / (s n + η n - 1) - 1 / (s n - 1)‖ ≤ C * (‖η n‖ * (a n + z n)) := by
+  have hpolnorm : ‖1 / (s + η - 1) - 1 / (s - 1)‖ ≤ 2 / (1 - s.re)
+      * (‖η‖ * (‖∫ x in Ioi (0 : ℝ), ladderKernel s x‖ + ‖riemannZeta s / s‖)) := by
     rw [hpol, norm_mul, norm_mul, norm_neg]
-    calc ‖η n‖ * ‖1 / (s n + η n - 1)‖ * ‖1 / (s n - 1)‖
-        ≤ ‖η n‖ * C * (a n + z n) :=
+    calc ‖η‖ * ‖1 / (s + η - 1)‖ * ‖1 / (s - 1)‖
+        ≤ ‖η‖ * (2 / (1 - s.re))
+            * (‖∫ x in Ioi (0 : ℝ), ladderKernel s x‖ + ‖riemannZeta s / s‖) :=
           mul_le_mul (mul_le_mul_of_nonneg_left hinv' (norm_nonneg _)) hinv (norm_nonneg _)
             (mul_nonneg (norm_nonneg _) hC0)
-      _ = C * (‖η n‖ * (a n + z n)) := by ring
+      _ = _ := by ring
   -- assemble
-  have hid : riemannZeta (s n) / s n
-      = (1 / (s n + η n - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel (s n) x)
-          + η n * ∫ x in Ioi (0 : ℝ), ladderMoment (s n) x)
-        - η n * (∫ x in Ioi (0 : ℝ), ladderMoment (s n) x)
-        - (1 / (s n + η n - 1) - 1 / (s n - 1)) := by
+  have hid : riemannZeta s / s
+      = (1 / (s + η - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel s x)
+          + η * ∫ x in Ioi (0 : ℝ), ladderMoment s x)
+        - η * (∫ x in Ioi (0 : ℝ), ladderMoment s x)
+        - (1 / (s + η - 1) - 1 / (s - 1)) := by
     rw [hI2]
     ring
-  have hfinal : z n ≤ M * ‖η n‖ ^ 2 + ‖η n‖ * b n + C * (‖η n‖ * (a n + z n)) := by
-    have h1' := norm_sub_le
-      ((1 / (s n + η n - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel (s n) x)
-          + η n * ∫ x in Ioi (0 : ℝ), ladderMoment (s n) x)
-        - η n * (∫ x in Ioi (0 : ℝ), ladderMoment (s n) x))
-      (1 / (s n + η n - 1) - 1 / (s n - 1))
-    have h2' := norm_sub_le
-      (1 / (s n + η n - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel (s n) x)
-          + η n * ∫ x in Ioi (0 : ℝ), ladderMoment (s n) x)
-      (η n * (∫ x in Ioi (0 : ℝ), ladderMoment (s n) x))
-    have h3' : ‖η n * (∫ x in Ioi (0 : ℝ), ladderMoment (s n) x)‖ = ‖η n‖ * b n := norm_mul _ _
-    have hzn : z n = ‖riemannZeta (s n) / s n‖ := rfl
-    rw [hzn, hid]
-    linarith
-  linarith [hfinal]
+  have h1' := norm_sub_le
+    ((1 / (s + η - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel s x)
+        + η * ∫ x in Ioi (0 : ℝ), ladderMoment s x)
+      - η * (∫ x in Ioi (0 : ℝ), ladderMoment s x))
+    (1 / (s + η - 1) - 1 / (s - 1))
+  have h2' := norm_sub_le
+    (1 / (s + η - 1) - (∫ x in Ioi (0 : ℝ), ladderKernel s x)
+        + η * ∫ x in Ioi (0 : ℝ), ladderMoment s x)
+    (η * (∫ x in Ioi (0 : ℝ), ladderMoment s x))
+  have h3' : ‖η * (∫ x in Ioi (0 : ℝ), ladderMoment s x)‖
+      = ‖η‖ * ‖∫ x in Ioi (0 : ℝ), ladderMoment s x‖ := norm_mul _ _
+  have hzn := congrArg norm hid
+  linarith
+
+/-- **A ladder of zeros near a progression makes the zeta values on it summable.** The ladder may
+be indexed by any set of integers: the whole progression, or half of it. -/
+theorem summable_norm_riemannZeta_div_of_ladder {ι : Type*} {k : ι → ℤ}
+    (hk : Function.Injective k) {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1) {P : ℝ} (hP : 0 < P)
+    {η : ι → ℂ} (hη : Summable fun i => ‖η i‖ ^ 2)
+    (hzero : ∀ᶠ i in cofinite,
+      riemannZeta (ρ + ((2 * π * (k i) / P : ℝ) : ℂ) * I + η i) = 0) :
+    Summable fun i => ‖riemannZeta (ρ + ((2 * π * (k i) / P : ℝ) : ℂ) * I)
+      / (ρ + ((2 * π * (k i) / P : ℝ) : ℂ) * I)‖ := by
+  set σ : ℝ := ρ.re with hσ
+  set s : ι → ℂ := fun i => ρ + ((2 * π * (k i) / P : ℝ) : ℂ) * I with hs
+  have hsre : ∀ i, (s i).re = σ := fun i => by simp [hs, hσ]
+  set δ : ℝ := min σ (1 - σ) / 4 with hδ
+  have hδ0 : 0 < δ := by
+    have : 0 < min σ (1 - σ) := lt_min h0 (by linarith)
+    positivity
+  -- the three square summable sequences
+  set a : ι → ℝ := fun i => ‖∫ x in Ioi (0 : ℝ), ladderKernel (s i) x‖ with ha
+  set b : ι → ℝ := fun i => ‖∫ x in Ioi (0 : ℝ), ladderMoment (s i) x‖ with hb
+  set z : ι → ℝ := fun i => ‖riemannZeta (s i) / s i‖ with hz
+  have ha2 : Summable fun i => a i ^ 2 :=
+    (summable_sq_norm_integral_ladderKernel h0 hP).comp_injective hk
+  have hb2 : Summable fun i => b i ^ 2 :=
+    (summable_sq_norm_integral_ladderMoment h0 hP).comp_injective hk
+  have hz2 : Summable fun i => z i ^ 2 :=
+    (summable_sq_norm_riemannZeta_div h0 h1 hP).comp_injective hk
+  set M : ℝ := taylorConstant σ with hM
+  set C : ℝ := 2 / (1 - σ) with hC
+  have hmajor : Summable fun i =>
+      M * ‖η i‖ ^ 2 + ‖η i‖ * b i + C * (‖η i‖ * a i + ‖η i‖ * z i) :=
+    ((hη.mul_left M).add
+      (summable_mul_of_sq hη hb2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _)).add
+        (((summable_mul_of_sq hη ha2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _).add
+          (summable_mul_of_sq hη hz2 (fun _ => norm_nonneg _) fun _ => norm_nonneg _)).mul_left C)
+  -- the perturbations are eventually small
+  have hsmall : ∀ᶠ i in cofinite, ‖η i‖ ≤ δ := by
+    have h := hη.tendsto_cofinite_zero
+    filter_upwards [h.eventually (gt_mem_nhds (show (0 : ℝ) < δ ^ 2 by positivity))] with i hi
+    exact (lt_of_pow_lt_pow_left₀ 2 hδ0.le hi).le
+  refine Summable.of_norm_bounded_eventually hmajor ?_
+  filter_upwards [hzero, hsmall] with i hi hηi
+  rw [norm_norm]
+  have h := norm_riemannZeta_div_le_of_zero_near (s := s i) (η := η i)
+    (by rw [hsre]; exact h0) (by rw [hsre]; exact h1) (by rw [hsre]; exact hηi) hi
+  rw [hsre] at h
+  exact h.trans (le_of_eq (by ring))
 
 /-- **No ladder of zeros near a vertical progression.** For `ρ` in the open strip, a step `T > 0`
 and a square summable perturbation `η`, the points `ρ + inT + η_n` are not zeros of `ζ` for all
@@ -392,8 +402,9 @@ theorem not_cofinite_riemannZeta_eq_zero_of_sq_summable {ρ : ℂ} (h0 : 0 < ρ.
   have hfreq : ∀ n : ℤ, (2 * π * n / (2 * π / T) : ℝ) = n * T := by
     intro n
     field_simp
-  have h := summable_norm_riemannZeta_div_of_ladder h0 h1 hP hη (by simpa only [hfreq] using hzero)
-  simp only [hfreq] at h
+  have h := summable_norm_riemannZeta_div_of_ladder (k := id) Function.injective_id h0 h1 hP hη
+    (by simpa only [hfreq, id] using hzero)
+  simp only [hfreq, id] at h
   exact not_summable_norm_riemannZeta_div h0 h1 hT h
 
 /-- **No sequence of zeros approaches a class of one Frobenius.** For a Frobenius `q > 1` and `ρ`

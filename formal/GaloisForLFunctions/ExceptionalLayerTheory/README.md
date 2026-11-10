@@ -404,6 +404,15 @@ error and a logarithmic damping half-strip of width `1/(16t)` supply the
 Cauchy cancellation. The independent bound for centred type II remains
 open; this reduction does not prove B13.
 
+`GaussianVaughanCutoffHorizon.lean` allows power-sized cutoffs. For
+`0≤σ<1`, `0<η≤1/2`, and `X≥2e UV`, the same literal filter satisfies
+
+    |F_h E_UV| ≪σ,β,η,ws h^d t^(d+2)(UV)²X^(−1−σ+η).
+
+The product budget `(UV)²t^(d+3)≤X^(1+σ−η)` gives `O(h^d/t)`.
+With polynomial-height `V`, the long cutoff approaches
+`X^((1+σ)/2)` in exponent. Centred type-II cancellation remains open.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

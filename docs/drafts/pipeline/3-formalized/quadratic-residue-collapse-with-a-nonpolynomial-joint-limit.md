@@ -126,7 +126,8 @@ Lean modules under `ArithmeticWeightTheory/GaugeDeformations/`:
 
 All listed statements are Lean checked. Their transitive dependency
 audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
-Final direct module audits remain. No external novelty claim.
+All four final direct module audits passed without warnings.
+No external novelty claim.
 B130's arithmetic Stepanov bound remains open.
 
-[Next conjecture: universal analytic smoothing obstruction](../0-backlog/universal-moving-branch-for-analytic-prime-smoothing.md).
+[Next conjecture: universal analytic smoothing obstruction](../2-fully-proven/universal-moving-branch-for-analytic-prime-smoothing.md).

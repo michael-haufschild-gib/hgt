@@ -10,11 +10,11 @@ the square-root window criterion detects every positive zero depth.
 -/
 
 open Complex Filter Topology
-open GaloisForLFunctions.SquareRootThreshold Zeta23
-open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri
 
 noncomputable section
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
+
+open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThreshold Zeta23
 
 /-- Lower bounds on two-prime difference lags in arbitrarily late square-root
 windows are equivalent to RH, with no attainment assumption. -/

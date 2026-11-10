@@ -1,6 +1,6 @@
 # A dominant ordinate forces current divergence
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.6, A67.
 
 ## Statement
@@ -32,3 +32,10 @@ sufficient special case, but does not cover a repeated dominant zero.
 The corpus already proves unbounded recurrent excursions for every
 nonempty finite top layer, without dominance. This target strengthens
 excursions to a full limit for the dominant case.
+
+## Lean
+
+`ExceptionalLayerTheory/ADominantOrdinateForcesCurrentDivergence.lean`:
+`ordinateDominanceMargin_le_norm_wave` and
+`not_asymptoticAbscissaLaw_has_dominant_ordinate_divergence`.
+Direct audit passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.

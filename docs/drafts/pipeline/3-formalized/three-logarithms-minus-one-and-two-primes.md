@@ -1,6 +1,6 @@
 # Three logarithms: minus one and two primes
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.4 and §11.6.
 
 ## Exact statement
@@ -19,3 +19,7 @@ This proves the particular three-logarithm bound named in the report.
 It does not estimate `m+a log p+b log q`: the constant frequency is real,
 whereas `log(-1)=iπ`. The cubic upper-side construction still needs its
 own inhomogeneous estimate.
+
+Lean: `ArithmeticOfSquareRootPrecision/MinusOneAndTwoPrimeLogarithms.lean`,
+`exists_minusOne_primeLog_separation`. Direct audit passed without warnings;
+transitive axioms: `propext`, `Classical.choice`, `Quot.sound` only.

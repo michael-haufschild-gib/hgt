@@ -1,6 +1,6 @@
 # Two-prime difference lags in local windows
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.6, A65.
 
 ## Statement
@@ -19,3 +19,9 @@ window criterion excludes every positive zero depth. Conversely RH
 bounds the correlation at every real lag by its value at zero.
 
 No maximal zero depth or attainment hypothesis is needed.
+
+## Lean
+
+`SurfaceOfSpecZ/ScaleLocality/TwoPrimeLocalWindows.lean`:
+`riemannHypothesis_iff_twoPrime_squareRoot_windows`.
+Direct audit passed; transitive axioms: `propext`, `Classical.choice`, `Quot.sound`.

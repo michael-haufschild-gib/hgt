@@ -43,7 +43,9 @@ theorem ordinateDominanceMargin_le_norm_wave (G : Finset XiZeroCopy) (γ a t : �
     refine (norm_sum_le _ _).trans_eq ?_
     exact Finset.sum_congr rfl fun q _ => norm_exceptionalOrdinateWave _ _ _
   have htriangle := norm_sub_le (∑ q ∈ G, f q) (∑ q ∈ B, f q)
-  rw [← hsplit, add_sub_cancel_right, hA] at htriangle
+  have hdiff : (∑ q ∈ G, f q) - (∑ q ∈ B, f q) = ∑ q ∈ A, f q := by
+    rw [← hsplit, add_sub_cancel_right]
+  rw [hdiff, hA] at htriangle
   change exceptionalLayerMass A - exceptionalLayerMass B ≤ _
   linarith only [htriangle, hB]
 

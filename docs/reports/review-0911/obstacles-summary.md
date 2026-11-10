@@ -170,7 +170,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A58 | Effective gap iteration: explicit constants from a one-sided or two-sided bound to an explicit width after each step (unverified) | ACS, SOSZ, CDGeo | first strip `5/8`, Landau step, two-sided width step |
 | A59 | Short-interval primes in a fixed residue class from the zero-density estimates of `L(s,χ)` [C]; then the residue-class Stepanov bound is an RH criterion | ACS, SRT, WL | `powGaps_primes` |
 | A64 | RH criterion on prime windows of radius `C·log²T` for ζ: combine `infinite_zeta_logSquare_floor` with the prime-gap transfer (unverified) | ACS, SRT, WL, HF | log-square leakage; `prime_squareRoot_windows_transfer` |
-| A65 | Two-prime local criterion: lower bounds for `c_B` on the two-prime difference lags in arbitrarily late `√T` windows ⇔ RH (lags dense, `c_B` continuous) [D] | SRT, ACS | two-prime lags; `SquareRootWindowsDetectEveryDepth` |
+| A65 | Two-prime local criterion: lower bounds for `c_B` on the two-prime difference lags in arbitrarily late `√T` windows ⇔ RH [L*] | SRT, ACS | `ScaleLocality/TwoPrimeLocalWindows` |
 | A66 | Sign-free local decision: the `√T`-window criterion from two-sided bounds with signed or complex deletion filters of summable `ℓ¹` cost, without positive averaging (unverified) | ACS, CDGeo | `TwoSidedGapIteration`; positive deletion |
 | A71 | Local tensor moments: uniform-in-`k` moments of `c_B` over the primes of `√T` windows ⇔ RH (pointwise bound by `k→∞`) [D] | ACS, AWT | `riemannHypothesis_iff_prime_squareRoot_windows` |
 
@@ -179,7 +179,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 |---|---|---|---|
 | A47 | Explicit constants of the one-quartet world: supercritical speed, envelope window, tower windows at base `π/γ` (unverified) | ZCG, WL, IWT, ELT | envelope and dichotomy theorems |
 | A50 | Finite-stratum laws on the cosine family and the shifted Jensen family imply RH (unverified) | ZCG, PTR, LA | heat-family theorem |
-| A67 | Dominant-ordinate divergence: the corrected current diverges for every top layer whose largest Gamma weight `e^{πγ/4}` exceeds the sum of the others (Kronecker) [D] | ZCG, ELT | single-quartet divergence |
+| A67 | Dominant-ordinate divergence: the corrected current's norm tends to infinity when one ordinate's grouped Gamma mass exceeds the mass of the remaining ordinates [L*] | ZCG, ELT | `ADominantOrdinateForcesCurrentDivergence`; multiplicities included |
 | A68 | A landing calibration with ζ's Gamma factor and Riemann–von Mangoldt counting (unverified) | ZCG, ELT, IWT | `exists_approachingModel_not_landingLaw` |
 | A37 | Resonator mean of `\|ζ\|²` with resonators growing below the Kronecker scale (unverified) | BAG, ZCG, PTT | fixed-resonator limit |
 

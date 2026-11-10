@@ -571,7 +571,7 @@ Open: the nonvanishing, at points with real part in `(3/8,½)`. For a fixed `ρ`
 
 ### 11.2 The family step through twists and covers
 
-A theorem: §5.2 `[P/S]`. Positive survivors: amplification strictly beats the trivial bound at nontrivial torsion fibres; positivity couples base to product in one direction; with the trace of ζ retained, sublinear tensor growth of a cover family is equivalent to RH. Work on a "family with jump equal to the pole alone" inside the class of Euler products with an FE has no object.
+The precise results of §5.2 `[P/S]` give positive survivors: amplification strictly beats the trivial bound at nontrivial torsion fibres; positivity couples base to product in one direction; with the trace of ζ retained, sublinear tensor growth of a cover family is equivalent to RH. The Lean statement does not quantify over every arithmetic family or every inequality derived from one. Its Euler-weight countermodel does not retain an FE. The universal closure inside the FE class remains unproved.
 
 ### 11.3 Calibrations
 
@@ -588,7 +588,7 @@ A theorem: §5.2 `[P/S]`. Positive survivors: amplification strictly beats the t
 | The Carlitz–Goss Riemann hypothesis | `[C]`; its mechanism is in Lean (`SeparationForcesRationality`) `[S]`; the statement for `𝔽_q[T]` is not |
 | Twisted second moments past length `T^{1/2}` | `[C]`; needed in §4.4 |
 | Stepanov's method for Heilbronn sums and Fermat quotients | `[C]`; a power saving, not square-root, at one prime in mixed characteristic; the fibres of the first carry polynomial of §9 |
-| Effective lower bounds for linear forms in three logarithms | `[C]`; the corpus has the homogeneous prime-log bound and the qualitative inhomogeneous theorem `[L]` |
+| Effective lower bounds for linear forms in three logarithms | `[L*]` for the principal logs of `−1,p,q`: `ArithmeticOfSquareRootPrecision.exists_minusOne_primeLog_separation`. The affine real form `m+a log p+b log q` remains `[C]` |
 
 ### 11.5 Routes without a mechanism
 
@@ -599,7 +599,7 @@ A theorem: §5.2 `[P/S]`. Positive survivors: amplification strictly beats the t
 | TH rank by rank | each rank is a finite rung from verified height; all ranks reduce to the adaptive head | stop at rank 14; work only on the head near critical zeros |
 | The fourteen window routes | one form; positivity at aperture `a` gives a near-line zero-free statement to height `e^{a/K}` and follows from verification to `windowHeight(a)` `[L]` | treat as one route with one open step (the stage step) |
 | Family and tensor branch | §5.2 | support |
-| Frobenius lifts and carries | §9.4 A, B: kill conditions met | Lean for the card; no producer search |
+| Frobenius lifts and carries | B: the carry error has the size of the count; A: ideal-power restriction gives the exact contacts, but evaluated δ-jets need not descend to integer valuation | audit the notion of order before asserting A's whole-class closure; retain both positive survivors |
 | Exceptional-current upper bounds | §2, second observation | close unless an inequality using the FE is named |
 
 ### 11.6 Small assemblies
@@ -608,16 +608,18 @@ A theorem: §5.2 `[P/S]`. Positive survivors: amplification strictly beats the t
 |---|---|---|
 | Width and absolute forms of the log-square criterion | `zeta_re_le_iff_prime_logSquare_power_windows`, `zeta_re_le_iff_abs_prime_logSquare_power_windows`, `riemannHypothesis_iff_abs_prime_logSquare_windows` | `[L*]` |
 | Quasi-RH on windows; `qRH ∨ AAL`; tail law | `quasiRH_iff_prime_logSquare_power_windows`, `quasiRH_or_asymptoticAbscissaLaw`, `quasiRH_iff_zetaAsymptoticAbscissa_lt_one` | `[L*]` |
-| The ¬AAL world | `asymptoticAbscissaLaw_or_mertens_power_saving`, `asymptoticAbscissaLaw_or_stronger_heavy_return_power_bound` | `[S]` |
+| The ¬AAL world | `asymptoticAbscissaLaw_or_mertens_power_saving`, `asymptoticAbscissaLaw_or_stronger_heavy_return_power_bound` | `[L*]` |
 | Census alternatives at `70%`, `75%`, `80%` | `seventy_percent_…`, `three_quarters_…`, `four_fifths_or_simple_offLine_near_line` | `[L*]` |
-| Signed deletion on log-square windows | the absolute criterion with complex three-point filters, no positive averaging: `riemannHypothesis_iff_abs_prime_logSquare_windows_signed` | `[S]` |
-| Logarithmic windows | radius `32 log(T+2)` | kernel and leakage `[L]`; filter and trace floor for ζ `[S]`; criterion open |
-| **Density row of the coupled orbit** | `4·regularMean=−2γ₀−(log 4π+γ)`, `γ₀=gammaHardyPhaseRate(0)` | `[D]` from `regularMean_eq`, `digamma_quarter` `[L*]` |
-| **Census baseline in covariance form** | ceiling `4π(1−0.67250071)` for the source covariance, from the density calibration and the census constant | `[D]`; Lean has `4π/3` |
-| **Exchange-rate rows** | `H*(4)=7/10` at `λ*=10/9`: `70%` from `F≤4` on `(1,10/9)`; the Frobenius constant for `70%` at `λ=4/3` is `13/10` | `[D]` from `certValue_at_opt` `[L*]` |
-| **Graded recurrence** | Bagchi's criterion needs returns of positive density `[L*]`. With `N(σ,T)≪T^{(30/13)(1−σ)+ε}` `[L*]`, `T^c` one-separated returns of a disc around `ρ`, `c>(30/13)(1−σ)`, already exclude a zero with `Re ρ>σ`, `σ≤5/6`; one return at arbitrarily large height is AAL `[L]` | `[D]` |
-| **Upper side at the degrees `pᵃqᵇ`** | whether it needs attainment for the cubic spline reduces to an effective bound for `\|2c+a log p+b log q\|`, a form in `log(−1), log p, log q` | `[C]` input; assembly open |
-| Two-prime local criterion; dominant-ordinate divergence; finite-stratum laws on the cosine and shifted Jensen families | A65, A67, A50 | `[D]` in the ledgers |
+| Signed deletion on log-square windows | the absolute criterion with complex three-point filters, no positive averaging: `riemannHypothesis_iff_abs_prime_logSquare_windows_signed` | `[L*]` |
+| Logarithmic windows | radius `32 log(T+2)`; width, absolute, quasi-RH and Stepanov forms | `[L*]`, `ScaleLocality/PrimeLogarithmicWindows` |
+| **Density row of the coupled orbit** | `4·regularMean=−2γ₀−(log 4π+γ)`, `γ₀=gammaHardyPhaseRate(0)` | `[L*]`, `ArchimedeanConstantBridge.four_mul_regularMean_eq` |
+| **Census baseline in covariance form** | ceiling `4π(1−0.67250071)` for the source covariance, strictly below `4π/3` | `[L*]`, `Census/SourceCovarianceBaseline` |
+| **Exchange-rate rows** | `H*(4)=7/10` at `λ*=10/9`: `70%` from `F≤4` on `(1,10/9)`; the Frobenius constant for `70%` at `λ=4/3` is `13/10` | `[L*]`, `TransThresholdPairCorrelation/SeventyPercentExchangeRates`; the actual bound `F≤4` remains open |
+| **Graded recurrence** | For `1/2≤σ≤5/6`, `c>(30/13)(1−σ)`, `T^c` one-separated self-returns in `[0,T]` for every sufficiently small disc exclude a zero with `Re ρ>σ`; one return at arbitrarily large height is AAL `[L]` | `[L*]`, `Recurrence/GradedSelfRecurrence`, using the actual Guth–Maynard bound |
+| **Upper side at the degrees `pᵃqᵇ`** | the cubic construction needs an effective bound for the affine real form `2c+a log p+b log q`; replacing its constant term by `log(−1)=iπ` changes the form | `[C]` affine input; assembly open |
+| Two-prime local criterion | A65: lower bounds on two-prime difference lags in arbitrarily late `r√T` windows ⇔ RH, every fixed `r>0` | `[L*]`, `ScaleLocality/TwoPrimeLocalWindows` |
+| Dominant-ordinate divergence | A67: one ordinate's grouped Gamma mass exceeds the other ordinates' mass; the corrected current's norm tends to infinity at every supercritical speed | `[L*]`, `ExceptionalLayerTheory/ADominantOrdinateForcesCurrentDivergence`; multiplicities included |
+| Finite-stratum laws on the cosine and shifted Jensen families | A50 | audits pending; cosine requires a separate finiteness input near zero |
 
 ---
 

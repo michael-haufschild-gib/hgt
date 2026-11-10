@@ -44,9 +44,16 @@ bound uniform on the entire forward half-strip. Shifting every polynomial
 root back compensates the extra twist exactly and retains every spacing
 factor. Choosing `UW≥X^(1+δ)` and large fixed `k` makes the tail negligible.
 
+## Proved cutoff extension
+
+The product-cutoff estimate and its literal filtered application are now
+formalized in `GaussianVaughanCutoffHorizon.lean`; all four axiom audits
+are clean. The explicit filter constant is
+`exp(β+4)(8+2Dσ+Cσ)(1+1/η)16^d dampingFilterCost(ws)`.
+See `../3-formalized/b13-power-sized-vaughan-cutoffs.md`.
+
 ## Obligations
 
-Prove the product-cutoff estimate and its literal filtered application.
 Prove the actual restricted convolution coefficient and support bounds,
 the Gaussian moment tail estimate, holomorphy, and the root-shift identity.
 No zero-location or unproved arithmetic-cancellation premise is allowed.

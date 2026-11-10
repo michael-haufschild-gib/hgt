@@ -307,6 +307,26 @@ Let `0 < Re s < 1`, `P > 0`, `K_s(x) = {e^x} e^{−sx}` on `x ≥ 0`, so `∫_0^
    (`exists_curve_zero_not_zero`). The hypothesis of
    `RHTower.periodicityDichotomy_zeta_iff_riemannHypothesis` is discharged.
 
+### P23. No sequence of zeros approaches a class of one Frobenius
+Notation of P22; `s_n = s + 2πin/P`.
+1. *Bessel.* For measurable `K` on the half-line with `‖K(y + kP)‖ ≤ u_k` on `(0, P]`, `Σu_k < ∞`,
+   the samples `∫_0^∞ K(x) e^{−2πinx/P} dx` are the Fourier coefficients of `Σ_k K(y + kP)` times
+   `P` (P22.1), so they are square summable (`summable_sq_norm_integral_mul_exp`). Hence
+   `a_n = ∫K_{s_n}` and `b_n = ∫xK_{s_n}` are in `ℓ²`, the latter with `‖xK_s(x)‖ ≤ (2/σ)e^{−σx/2}`
+   (`summable_sq_norm_integral_ladderKernel`, `summable_sq_norm_integral_ladderMoment`). Parseval
+   for `G` of P22.2 gives `Σ‖ζ(s_n)/s_n‖² < ∞` (`summable_sq_norm_riemannZeta_div`).
+2. *Taylor.* For `‖η‖ ≤ σ/2`: `‖e^{−ηx} − 1 + ηx‖ ≤ ‖η‖²x²e^{σx/2}` and `x² ≤ (32/σ²)e^{σx/4}`, so
+   `‖∫K_{s+η} − ∫K_s + η∫xK_s‖ ≤ M(σ)‖η‖²` (`norm_integral_ladderKernel_taylor_le`).
+3. *A zero near `s_n`.* If `ζ(s_n + η_n) = 0` and `‖η_n‖ ≤ min(σ, 1−σ)/4`, then
+   `∫K_{s_n+η_n} = 1/(s_n + η_n − 1)`, `∫K_{s_n} = 1/(s_n − 1) − z_n` with `z_n = ζ(s_n)/s_n`, and
+   `z_n = [∫K_{s_n+η_n} − ∫K_{s_n} + η_n b_n] − η_n b_n − [1/(s_n+η_n−1) − 1/(s_n−1)]`. The last
+   bracket is `−η_n/((s_n+η_n−1)(s_n−1))` with `‖1/(s_n+η_n−1)‖ ≤ 2/(1−σ)` and
+   `‖1/(s_n−1)‖ ≤ ‖a_n‖ + ‖z_n‖`. So
+   `‖z_n‖ ≤ M‖η_n‖² + ‖η_n‖‖b_n‖ + (2/(1−σ))‖η_n‖(‖a_n‖ + ‖z_n‖)`.
+4. With `η ∈ ℓ²` the right side is summable (products of `ℓ²` sequences), for all but finitely many
+   `n`; so `Σ‖z_n‖ < ∞` (`summable_norm_riemannZeta_div_of_ladder`), against P22.6
+   (`not_cofinite_riemannZeta_eq_zero_of_sq_summable`, `not_cofinite_xi_eq_zero_near_class`).
+
 ## Modules
 | Module | Content |
 |---|---|
@@ -329,6 +349,7 @@ Let `0 < Re s < 1`, `P > 0`, `K_s(x) = {e^x} e^{−sx}` on `x ≥ 0`, so `∫_0^
 | AModeAccessibleFromInfinityIsEliminated | `towerResolvent`, `levelSeries`; `towerResolvent_eq_levelSeries`, `analyticAt_levelSeries`, `analyticAt_towerResolvent`, `merged_eq_zero_of_continuation`, `merged_eq_zero_of_accessible`, `merged_eq_zero_of_radially_visible`, `wolff_node_not_accessible`, `lag_not_small_of_accessible`, `riemannHypothesis_of_lag_bounded_of_accessible` |
 | OnTheFlowTheWeightFiltrationNeedsNoChainCondition | `flowTrace`, `flowMellin`, `flowPath`; `analyticAt_flowMellin`, `flowMellin_eq_towerResolvent`, `mergedWeight_eq_zero_of_flow_bound`, `flow_bound_iff`, `zeroMotive_flow_bound_iff` |
 | TheZerosContainNoClassOfOneFrobenius | `ladderKernel`, `ladderSum`, `ladderDefect`, `jumpTerm`; `endpoint_limits_eq_of_summable_fourierCoeffOn`, `integral_ladderSum`, `fourierCoeffOn_ladderDefect`, `tsum_jumpTerm_ne_zero`, `ladderDefect_limits_sub`, `not_summable_norm_riemannZeta_div`, `exists_riemannZeta_ne_zero_progression`, `not_forall_xi_progression`, `exists_conjugate_not_zero`, `exists_zero_localFactor_not_zero`, `exists_zero_polynomial_not_zero`, `exists_curve_zero_not_zero`, `aperiodicZeroAt_riemannZeta`, `periodicityDichotomy_zeta_iff_riemannHypothesis` |
+| NoSequenceOfZerosApproachesAClassOfOneFrobenius | `ladderMoment`, `taylorConstant`; `integral_tsum_translates_mul_exp`, `summable_sq_norm_integral_mul_exp`, `summable_sq_norm_riemannZeta_div`, `norm_integral_ladderKernel_taylor_le`, `summable_norm_riemannZeta_div_of_ladder`, `not_cofinite_riemannZeta_eq_zero_of_sq_summable`, `not_cofinite_xi_eq_zero_near_class` |
 | NoFamilyOfZerosIsIntegralWhateverTheirRealParts | `norm_frobTrace_sub_le`, `frobTrace_dilate_sub`, `mergedWeight_eq_zero_of_integral_locallyFinite`, `eq_zero_of_integral_trace_of_distinct_xi_zeros` |
 | AFamilySeesItsMeanAndItsMembersOfPositiveMass | `norm_le_of_amortized_levelSums`, `member_norm_le_of_family_moments`, `integral_norm_sq_fixedPart_add`, `fixedPart_norm_le_one_of_mean_bounded`, `fixedPart_norm_le_one_of_excess_bounded` |
 | ASchurFunctionReducesAtEveryNode | `mobius`; `norm_le_norm_defectFactor`, `exists_quotient_by_defectFactor`, `exists_schur_reduction`, `mobius_injOn` |
@@ -358,3 +379,4 @@ fixed part with mass one.
 - 2026-11-10 — 26 modules: no family of distinct zeros is integral, without a chain condition; families with any polynomial defect
 - 2026-11-10 — index zero: half-shift family, Taylor's theorem
 - 2026-11-10 — 27 modules: the zeros contain no class of one Frobenius (divergence along every vertical progression in the strip)
+- 2026-11-10 — 28 modules: no two-sided sequence of zeros within `ℓ²` of a class of one Frobenius; Parseval for the zeta values along a progression

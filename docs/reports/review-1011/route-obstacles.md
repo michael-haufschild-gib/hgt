@@ -2,14 +2,14 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `219e8fc990` with its working tree (2026-11-10). Working log: `logs/review-1011-statusquo-research.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** commit `68b0e1200f` with its working tree (2026-11-10). Working log: `logs/review-1011-statusquo-research.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. Formulations are not independent mechanisms: HJ is PA; the BSY criterion of FEL belongs to CTF; SEC and CDC/BSH are candidates; PCS is a retired label. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
 **Evidence.**
 - `[L*]` Lean statement read for this report, in source or through the corpus search tool.
-- `[L]` recorded as integrated Lean in the frontier map or the scoped-obstruction ledger at the checkpoint; statement not re-read here.
-- `[S]` Lean source present, untracked or unintegrated. `[K]` Lean with transitive axiom audit, as recorded.
+- `[L]` recorded as integrated Lean in the frontier map, the scoped-obstruction ledger or a programme table of `formal/` returned by the corpus search tool; statement not re-read here.
+- `[S]` Lean source present in the working tree, not committed at the checkpoint; statement read. `[K]` Lean with transitive axiom audit, as recorded.
 - `[D]` deduction made in this report from `[L*]` statements; not a Lean theorem. `[C]` classical literature, not in the corpus. `[A]` assessment.
 
 **Strength.** RH; ≥qRH (a zero-free half-plane, Lindelöf or ZAL); AAL (implies the asymptotic abscissa law); sub (below quasi-RH and below AAL); method; producer; indep.
@@ -111,13 +111,14 @@ Established [L*]:
 - `√T` windows decide every tempered configuration; no fixed length decides every configuration (off-line pair of ordinate `δ/2`); under `δ`-separation of the deep ordinates length `80/δ+1` decides from below and from above.
 - Bohr-dense sets (sets with arbitrarily long intervals) put an attained top on the line, from either side.
 - Exceptions `O(X^α)`, `α<1`, keep the criterion; density-zero exceptions need ZAL.
+- Two primes suffice on `√T` windows: for distinct primes `p,q` and every `r>0`, RH ⇔ the lag correlation is bounded below on the difference lags of the monoid of `p,q` inside `|ℓ−T|≤r√T` for arbitrarily late `T`.
 
 | | Obstacle | Strength |
 |---|---|---|
 | A72 | count door on logarithmic windows with exceptional sets [D] | — |
 | A73, A76 | one-sided upper side on logarithmic windows; exceptional sets in the absolute and signed criteria (unverified) | — |
 | A78 | cluster form of the separated-window theorem (unverified) | — |
-| A58, A59, A65 | effective gap iteration; residue-class primes [C]; two-prime local criterion [D] | — |
+| A58, A59 | effective gap iteration; residue-class primes [C] | — |
 | B130 | the bound itself on any decisive sample | RH (≥qRH at `p^σ`, `σ<½`) |
 | B143 | decisive radius of ζ's class below `32 log T` | method |
 | B144 | separation of the off-line ordinates of ζ | sub |
@@ -127,12 +128,14 @@ Routes: ZCG, LA, PTR, HCF, PA, GTA, XN, WD, TH. Programmes: NGF, FFP, ADO, AES, 
 
 Established:
 - RH ⇔ every zero of every `H_t`, `t>0`, is simple [L*]; each `H_t` has finitely many non-real zeros [L*]; heat finiteness does not pass to `t=0` [L*]; linear AAL along the heat flow is RH [L*].
-- RH ⇔ infinitely many Jensen polynomials of Ξ real-rooted [L*]; `N_d≤300√(d log d)`, `sup_d N_d` = off-line multiplicity [L].
+- RH ⇔ infinitely many Jensen polynomials of Ξ real-rooted [L*]; `N_d≤300√(d log d)`, `sup_d N_d` = off-line multiplicity [L]; `RHVerifiedThrough T` gives real-rooted degrees `d` with `2·10⁷d⁴≤T log T` [L*].
+- Zeros of `H_t`, `0<t≤⅛`, with `|Re z|≥2π·exp(40/t)` are real [L*].
+- Finite-stratum laws: at each degree only finitely many shifted Jensen polynomials fail real-rootedness, and a law that excludes finite nonempty exceptional strata gives RH; the same law on the cosine family gives RH ⇔ ZAL, the finiteness of the cosine defects being the tail condition [L*].
 - Index law: a Hermite–Biehler defect of degree `κ` has at most `κ` exceptional points; the index bound passes to locally uniform limits; RH ⇔ ξ is a limit of index-one objects; zeros of `ξ(s+½)∓ξ(s−½)` lie on the line [L*].
 
 | | Obstacle | Strength |
 |---|---|---|
-| A19, A20, A50 | heat horizon; Jensen rung; finite-stratum laws on the cosine and shifted Jensen families (unverified) | — |
+| A19, A20 | heat horizon at the exponent `(3/2+ε)/t` with an explicit height; Jensen rung past `d⁴≪T log T` (unverified) | — |
 | B24, B25 | collisions at small time, all heights; frequency below one | RH |
 | B22, B23 | outer roots of `R_d(Ξ)`; `N_d` bounded | RH; ≥qRH |
 | B124 | finite initial depth budgets of the heat divisor | ≥qRH to RH |
@@ -144,14 +147,13 @@ Routes: WD, CTF, MC, TG. Programmes: CDG, APR, MZF, AIF, IGP, TransThresholdPair
 
 Established:
 - RH ⇔ cofinal polynomial boundedness of long Möbius-mollified second moments; a strict slope saving gives RH [L*]. BSY: RH ⇔ `∫log|ζ(½+it)|dt/(¼+t²)=0` [L*].
-- Census: critical-line density `≥0.67250071` [L*]; ceiling `4π(1−a)` of the source covariance ⇔ density `≥a` [L*]; for every `θ`, `N₀≥θN` or at least `(1+HD(1)−2θ−1/A−ε)N` simple off-line zeros within `A/log T` [L*]; `7/10≤certOpt(B)` ⇔ `B≤4` [S].
+- Census: critical-line density `≥0.67250071` [L*]; ceiling `4π(1−a)` of the source covariance ⇔ density `≥a` [L*]; for every `θ`, `N₀≥θN` or at least `(1+HD(1)−2θ−1/A−ε)N` simple off-line zeros within `A/log T` [L*]; `7/10≤certOpt(B)` ⇔ `B≤4` [L*].
 - Matomäki–Radziwiłł for μ at every length `h→∞`, `h≤√x`, in fibre form [L*]; Guth–Maynard density exponent `≤(30/13)(1−σ)` [L*].
 - Necessary mollifier length `exp(c log²T)`; long mean values are collision counts of order `X²` [L].
 
 | | Obstacle | Strength |
 |---|---|---|
 | A18, A21 | twisted moments past `21/50` [C]; census items | — |
-| A77 | integration of the untracked census modules | — |
 | B57 | depth density `o(T)` (all but `o(N)` zeros within `o(1/log T)` of the line) | sub |
 | B58–B61 | `D_win`; cluster wall; Green moments at deep zeros; a detector past the last scale | sub |
 | B62, B66 | cofinal long moment; near-unit holomorphic budgets | RH |
@@ -200,13 +202,15 @@ Established [L*]:
 - `Θ<1 ⇔ Θ∞<1`; ¬AAL ⇒ `Θ<1`; failure of quasi-RH forces `Θ=Θ∞=1` and AAL.
 - RH ⇔ ZAL ∧ B13 ∧ Landing; a failure of the abscissa law fails exactly one atom; landing is a tail law, undecided below every height; FE models with approaching quartets and approaching integer-norm Euler products violate it.
 - Classical Deuring–Heilbronn for a real zero of a quadratic `L(s,χ)` with a uniform constant; ζ has no Siegel regime; graded repulsion is refuted on integer-norm Euler products.
-- World I: a single positive top ordinate makes the corrected current diverge; filters read the divisor at every damping speed; VK bound `C h^d t^N exp(a(1−σ)t/2−a t·vk/4)`.
+- World I: a top layer with a dominant ordinate (its Gamma mass exceeds the mass of all other ordinates of the layer) makes the corrected current diverge at every damping `a` with `a(β−σ)>π/2`; filters read the divisor at every damping speed; VK bound `C h^d t^N exp(a(1−σ)t/2−a t·vk/4)`.
 - RH ⇔ attained top ∧ thick bounded lag ⇔ attained top ∧ thick `O(√X)` prime deviation; a thick lag bound at every exponent gives AAL; under AAL the finite-stratum receivers and ZAL are equivalent to RH.
+- Graded recurrence: for `½≤σ≤5/6`, `c>(30/13)(1−σ)` and a zero `ρ` with `Re ρ>σ`, the one-separated returns of ζ to a small disc at `ρ` up to height `T` number fewer than `T^c` for large `T`; `T^c` such returns at arbitrarily large `T` on every small disc exclude the zero.
+- The zeros contain no conjugacy class of one Frobenius: no vertical progression `ρ+ikT` consists of zeros of ξ, at any real part; `Σ_n|ζ(ρ+inT)/(ρ+inT)|` diverges in the strip and the sum of squares converges; no two-sided sequence of zeros lies within an `ℓ²` perturbation of a progression in the open strip. The periodicity dichotomy for ζ is RH.
 
 | | Obstacle | Strength |
 |---|---|---|
-| A47, A67, A68 | constants of the one-quartet world; dominant-ordinate divergence [D]; a landing calibration with ζ's Gamma factor (unverified) | — |
-| A74 | graded recurrence against the density theorem [D] | — |
+| A47, A68 | constants of the one-quartet world; a landing calibration with ζ's Gamma factor (unverified) | — |
+| A77 | power-sized cutoffs for the filtered centred Vaughan error: source present [S] | — |
 | B13, B138 | finite stratum; landing for ζ | sub |
 | B141 | Deuring–Heilbronn for ζ: `¬AAL ⇒ ZAL` | sub |
 | B83, B89, B112, B128 | AAL; a bounded aligned return at each right zero; FE into vertical transport; replication | sub |
@@ -219,7 +223,7 @@ Routes: BAG, TH, SRT, every route at all heights. Candidate: S3. Programmes: PTT
 
 Established:
 - No heavy return while `log t≤(log y)^{3/2−ε}`; every heavy return has `√y≤K(y^{½−w(2t)}log t+log(2+t))`; a strip of depth `h` above some height gives `log t≥c·y^{½−h}` [L*].
-- Two-prime depth law (Baker) [L*]; collective return counts beyond the depth floor; rational orbit preservers are Laurent Adams maps [L*]; return bounds are label statements shared by `ζ(s−h)` [L*].
+- Two-prime depth law (Baker) [L*]; integer combinations of `log(−1)`, `log p`, `log q` are polynomially separated from zero [L*]; collective return counts beyond the depth floor; rational orbit preservers are Laurent Adams maps [L*]; return bounds are label statements shared by `ζ(s−h)` [L*].
 - The transfer of candidate S3 implies B56 [D]: in every world with `½<Θ∞<1` its hypothesis holds for large exponents `A` and its conclusion on all late windows is RH.
 
 | | Obstacle | Strength |
@@ -238,6 +242,7 @@ Established [L*]:
 - Off-diagonal: `archKernel(m,n)=2π√(mn)·G_{1/2}(|log n−log m|)` on `ℍ³`; `weilPrimeKernel(m,mp^k)=log p·((p−1)/√p)·G^{T_p}_{1/2}(k)`.
 - `frobeniusIntersection(ga,gb)=g·a/(1−(a/b)²)+g·log#(ℤ/J(a,b))`: jets plus contacts; a perfect square keeps no contact; a finite fibre forces contacts that are not Weil's; no Witt Verschiebung carries the off-diagonal.
 - Refutation of the invariant glued carrier; weighted adelic Green kernel is a positive covariance, invariant, and does not sign Weil's form.
+- The mixed hyperbolic Green kernel of the weighted adelic adjacency is the limit of its finite Dirichlet sections; between distinct finite vertices it and its Robin finite part lie between `0` and a strictly tempered product barrier of exponent above `½`, uniformly as the archimedean distance tends to `0`.
 - Diagonal: finite part of the jets on invariant combs; the counterterm belongs to the comb; on the carrier Weil's form is a density at every frequency.
 - Archimedean fibre: weight lines of the same Frobenius, transposition `z↦1−z`, trace `1+1/(n²−1)` on the jets, pole plane at weights `0,1`.
 - Count: RH ⇔ every effective prime class carries an `ℕ`-count with Tate limit `δ_p(1,1)`; the same on power-saving gap sets; section count with Riemann–Roch and Bézout ⇔ Hodge index, over ℤ ⇔ RH.
@@ -248,7 +253,7 @@ Established [L*]:
 |---|---|---|
 | A28, A41, A48 | reciprocal-quadric traces; count law for plane quartics [C]; Hasse–Weil tests at verified scales | — |
 | A54, A70 | cusp expansion for Bianchi resolvents; torus-periodized local Green functions | — |
-| A77 | integration of the orbit-ring module [S] | — |
+| A77 | adelic symmetry of the mixed hyperbolic Green kernel: source present [S] | — |
 | B87 | a count on the rays `Γ_1+Γ_p`, defined without `Q` | RH |
 | B88 | the sign of the Gram defect / of the comb finite part | RH |
 | B149 | a section count with Riemann–Roch and Bézout on an infinite-type object carrying contacts and jets | RH (producer) |
@@ -256,7 +261,7 @@ Established [L*]:
 ### S11. Families, rigidity and exactness
 Routes: ACS (tensor branch), ECP, HF, SC, BAG. Programmes: AWT, AK, ALST, SignFreePurityMechanisms, EFT, SEL.
 
-Established [L*]: fixed-part theorem (five parts); RH ⇔ sublinear tensor exponents of a cover family with the trace of ζ retained; local residue classification and isozeric continuation; quadratic gauge rigidity; Liouville continuation `exp(J)/ζ`; residue Hessian positive with kernel the zero phase speeds; Frobenius at one prime; cost `m·Σ_{p∈S}log p`; primorial divisibility; coefficient gaps separate roots and no such polynomial vanishes at three explicit critical ordinates; no finitely generated lattice stable under three prime Frobenii; integral traces in the open strip force zero amplitudes.
+Established [L*]: fixed-part theorem (five parts); RH ⇔ sublinear tensor exponents of a cover family with the trace of ζ retained; local residue classification and isozeric continuation; quadratic gauge rigidity; Liouville continuation `exp(J)/ζ`; along the exponentially damped Liouville phases the residue at `1` vanishes to second order in the damping `t`, the fibre rescaled at `s=1+tw` converges to a non-polynomial profile with a branch point of exponent `iπ` at `w=−1`, and no joint analytic regularization exists at the endpoint `(0,1)`; residue Hessian positive with kernel the zero phase speeds; Frobenius at one prime; cost `m·Σ_{p∈S}log p`; primorial divisibility; coefficient gaps separate roots and no such polynomial vanishes at three explicit critical ordinates; no finitely generated lattice stable under three prime Frobenii; integral traces in the open strip force zero amplitudes.
 
 | | Obstacle | Strength |
 |---|---|---|
@@ -318,13 +323,13 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 ### LA — Jensen line anchor
 - **Path:** Jensen polynomials real-rooted, or sublinear root height → RH.
 - **Established:** RH ⇔ infinitely many Jensen degrees real-rooted; block S4.
-- **(a)** A20, A1, A50.
+- **(a)** A20, A1.
 - **(b)** outer roots (B22); bounded `N_d` gives finite support only (B23, then B13, B138); heat budgets (B124).
 
 ### ZCG — Zero-configuration geometry / heat descent / abscissa laws
 - **Path:** no positive-time collision → RH; or a decisive prime-window floor; or ZAL ∧ B13 ∧ Landing.
 - **Established:** RH ⇔ every positive-time zero simple; blocks S3, S4, S8; ordinate injectivity ⇔ RH; the centred Vaughan first-moment reduction is unconditional for `X≥t⁸`.
-- **(a)** A19, A47, A50, A67, A68.
+- **(a)** A19, A47, A68.
 - **(b)** B24, B25, B47, B27, B124; B130; B83 through transport or a contradiction in world I (B89, B112, B128, B145); B13, B138, B141.
 
 ### TG — Topological sub-unit gate
@@ -385,7 +390,7 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 ### PTR — Cosine source
 - **Path:** strict Laguerre sign of the cosine producers on the open depth band → RH.
 - **Established:** RH ⇔ strict Laguerre at every `0<h<½` ⇔ `(Im ξ′)²+Re ξ·Re ξ″>0` on `½<Re s<1` ⇔ no exceptional point.
-- **(a)** A50. **(b)** the sign below the VK boundary (B29); a prime-faithful lossless stack (B69).
+- **(a)** none. **(b)** the sign below the VK boundary (B29); a prime-faithful lossless stack (B69).
 
 ### JAS — Joint ancestry
 - **Path:** subpower control on finite power windows of square shells → RH.
@@ -409,8 +414,8 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 
 ### BAG — Self-return
 - **Path:** uniform head-target density → RH; transport → AAL.
-- **Established:** RH ⇒ strong recurrence on compacts of the strip; uniform head-target density on every right-strip disc ⇒ RH; block S9; in world I heavy returns are later than `exp(c·y^{1−β′})`.
-- **(a)** A37, A47, A74.
+- **Established:** RH ⇒ strong recurrence on compacts of the strip; uniform head-target density on every right-strip disc ⇒ RH; block S9; in world I heavy returns are later than `exp(c·y^{1−β′})`; one-separated returns to a small disc at a zero right of `σ` number fewer than `T^c`, `c>(30/13)(1−σ)` [L*].
+- **(a)** A37, A47.
 - **(b)** uniform target mass (B72); transport (B83, B89); breadth past VK (B97, B137); B145.
 
 ### EWU — Even sector
@@ -440,8 +445,8 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 
 ### SRT — Lag localization
 - **Path:** the prime two-bump sign on a decisive sample → RH.
-- **Established:** RH ⇔ Weil positivity of every prime two-bump ⇔ these values bounded below; block S3.
-- **(a)** A9, A65, A72, A73.
+- **Established:** RH ⇔ Weil positivity of every prime two-bump ⇔ these values bounded below; RH ⇔ a lower bound on the two-prime difference lags of arbitrarily late `√T` windows [L*]; block S3.
+- **(a)** A9, A72, A73.
 - **(b)** B130; B143; B6, B101.
 
 ### ACT — Single shift
@@ -461,7 +466,7 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 
 ### ACS — Castelnuovo–Severi at the prime degrees
 - **Path:** all-aperture Bézout of the source cone → RH; or `P(p)≤A(p)+K` on logarithmic windows off power-thin exceptions.
-- **Established:** RH ⇔ all-aperture Bézout ⇔ all-aperture ampleness of the exact source cone; blocks S3, S10; the pairing of the degree points (jets + twice the contacts) tends to pole − Weil on packets [S, statement read].
+- **Established:** RH ⇔ all-aperture Bézout ⇔ all-aperture ampleness of the exact source cone; blocks S3, S10; the pairing of the degree points (jets + twice the contacts) tends to pole − Weil on packets [L*].
 - **(a)** A28, A41, A48, A59, A72.
 - **(b)** B40, B130; B87, B88, B149; B28.
 
@@ -494,18 +499,18 @@ Each needs its source-to-receiver step first (B81).
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
 | SOSZ ScaleLocality | `√T`, log-square and logarithmic windows; exceptional sets; signed deletion; separated windows; short windows miss; other side on windows; counts on one sequence of windows [L*] | A72, A73, A76, A78 | B130, B143, B144 |
-| ELT | atoms and landing forms; Deuring–Heilbronn calibration; filters at every speed; boundary rotation; polynomial damping; VK bounds; centred Vaughan current; arithmetic bounds in world I [L*] | A47, A67, A68, A77 | B141, B145, B138 |
-| ZCG AbscissaLaws | split, atoms, sectors, quasi-RH as a tail law, heat-family laws [L*] | A50 | B13, B83, B138 |
-| IRP | index law; semicontinuity; Eisenstein line law and its blindness; exceptional parameter at `4πe^{−γ}`; Kronecker at infinite rank; attained top replaces ZAL on thick sets; Lefschetz numbers are not traces [L*] | none | B146 |
-| AWT | fixed-part theorem; cover-family tensor criterion; gauge deformations; edge divisors; Künneth [L*] | A77 | B86 |
+| ELT | atoms and landing forms; Deuring–Heilbronn calibration; filters at every speed; boundary rotation; polynomial damping; VK bounds; centred Vaughan current; dominant-ordinate divergence; arithmetic bounds in world I [L*]; power-sized Vaughan cutoffs [S] | A47, A68, A77 | B141, B145, B138 |
+| ZCG AbscissaLaws, Recurrence | split, atoms, sectors, quasi-RH as a tail law, heat-, cosine- and Jensen-family laws, graded recurrence [L*] | none | B13, B83, B138 |
+| IRP | index law; semicontinuity; Eisenstein line law and its blindness; exceptional parameter at `4πe^{−γ}`; Kronecker at infinite rank; attained top replaces ZAL on thick sets; Lefschetz numbers are not traces; no class of one Frobenius among the zeros, nor an `ℓ²` perturbation of one [L*] | none | B146 |
+| AWT | fixed-part theorem; cover-family tensor criterion; gauge deformations; moving branch and quadratic residue collapse of damped Liouville phases; edge divisors; Künneth [L*] | none | B86 |
 | SignFreePurityMechanisms | height separation ⇔ bounded prime traces; Frobenius at one prime; `m·θ(S)`; primorial; Newton polygons; coefficient gaps [L*] | none | — |
-| AGZ | ghost ring, cofreeness, contacts, torsion conormal, carries, gluing index, comb finite parts, archimedean fibre, toric surface of a base, tower of lines [L*]/[S] | A77 | B149, B88 |
-| HAT | adelic Green formula; full degree carrier; prime operators; weighted Green covariance; refutation of the glued carrier; scattering tower; arithmetic clock [L*] | A54, A70 | B88 |
+| AGZ | ghost ring, cofreeness, contacts, torsion conormal, carries, gluing index, comb finite parts, archimedean fibre, toric surface of a base, tower of lines [L*] | none | B149, B88 |
+| HAT | adelic Green formula; full degree carrier; prime operators; weighted Green covariance; mixed hyperbolic Green kernel from finite Dirichlet sections with strictly tempered barriers and uniform adelic decay; refutation of the glued carrier; scattering tower; arithmetic clock [L*]; adelic symmetry of the mixed kernel [S] | A54, A70, A77 | B88 |
 | AHMH / BHR / ASH / CTH | cavity receivers, reflection Krein forms, halving descent, ringdown, count door, sharp shells [L*] | A26, A41 | B68, B71, B87, B147 |
 | TTPO / CDGeo / PTT / TAPO | depth law, VK breadth, strip breadth, collective counts, label statements [L*] | A24, A37, A75 | B97, B137, B148 |
 | ALST / AAD / RAC | Stepanov degrees; orbit rigidity; producer rates [L*] | A30 | B48, B55, B67 |
 | AHD / CACT | threshold identities, ground states, classification [L*] | A9, A13 | B104, B123 |
-| Census (IGP, P) | density `0.67250071`, covariance equivalence, alternatives, exchange rate [L*]/[S] | A77 | B150, B57 |
+| Census (IGP, P) | density `0.67250071`, covariance equivalence, alternatives, exchange rate [L*] | none | B150, B57 |
 | HTGeometry | positive translation repair of Laplace-positive functions, keeping a prescribed mode [L*] | none | — |
 | VHR / TCS | verified-height rungs; height 67 [L*] | A1–A5 | — |
 
