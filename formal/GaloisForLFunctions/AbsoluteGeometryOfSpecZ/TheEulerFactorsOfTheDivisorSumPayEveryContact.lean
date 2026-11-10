@@ -122,7 +122,7 @@ theorem isGhost_primeCoordFun (p : ℕ) : IsGhost (primeCoordFun p) := by
   rw [PNat.mul_coe, Nat.factorization_mul q.ne_zero n.ne_zero, Finsupp.add_apply]
   by_cases h : (q : ℕ) = p
   · subst h
-    rw [hq'.factorization_self, add_comm, chainNode_succ, add_sub_cancel_left]
+    rw [hq'.factorization_self, Nat.add_comm 1, chainNode_succ, add_sub_cancel_left]
   · rw [hq'.factorization, Finsupp.single_eq_of_ne (Ne.symm h), zero_add, sub_self]
     exact dvd_zero _
 
@@ -142,12 +142,14 @@ theorem primeCoord_eq_sum_orbit {p : ℕ+} (hp : p.Prime) (n : ℕ+) {J : ℕ}
   have hterm : ∀ j ∈ Icc 1 J, ghostComponent n (orbit (p ^ j)) =
       if j ∈ Icc 1 ((n : ℕ).factorization p) then ((p : ℕ) : ℤ) ^ j else 0 := by
     intro j hj
-    rw [ghostComponent_apply, orbit_apply, PNat.pow_coe,
-      hp'.pow_dvd_iff_le_factorization n.ne_zero]
+    rw [ghostComponent_apply, orbit_apply, PNat.pow_coe]
     have h1 : 1 ≤ j := (Finset.mem_Icc.mp hj).1
     by_cases h : j ≤ (n : ℕ).factorization p
-    · rw [if_pos h, if_pos (Finset.mem_Icc.mpr ⟨h1, h⟩)]; push_cast; rfl
-    · rw [if_neg h, if_neg fun h' => h (Finset.mem_Icc.mp h').2]
+    · rw [if_pos ((hp'.pow_dvd_iff_le_factorization n.ne_zero).mpr h),
+        if_pos (Finset.mem_Icc.mpr ⟨h1, h⟩)]
+      exact Nat.cast_pow _ _
+    · rw [if_neg fun h' => h ((hp'.pow_dvd_iff_le_factorization n.ne_zero).mp h'),
+        if_neg fun h' => h (Finset.mem_Icc.mp h').2]
   rw [Finset.sum_congr rfl hterm, Finset.sum_ite_mem,
     Finset.inter_eq_right.mpr (Finset.Icc_subset_Icc_right hJ)]
 
@@ -175,6 +177,7 @@ theorem ghostComponent_coordHom (n : ℕ+) (f : MvPolynomial Nat.Primes ℤ) :
     refine MvPolynomial.ringHom_ext (fun r => ?_) (fun p => ?_)
     · simp [coordHom]
     · simp [coordHom, latticePoint]
+      rfl
   exact RingHom.congr_fun h f
 
 /-- Every positive integer is a number prime to `p` times a power of `p`. -/
@@ -183,7 +186,8 @@ theorem exists_chain_decomposition (p : Nat.Primes) (n : ℕ+) :
   refine ⟨⟨(n : ℕ) / (p : ℕ) ^ (n : ℕ).factorization p, Nat.ordCompl_pos _ n.ne_zero⟩,
     Nat.not_dvd_ordCompl p.2 n.ne_zero, PNat.eq ?_⟩
   rw [PNat.mul_coe, PNat.pow_coe, primePNat_coe, PNat.mk_coe]
-  exact (Nat.ordCompl_mul_ordProj_eq_self _ _).symm
+  rw [mul_comm]
+  exact (Nat.ordProj_mul_ordCompl_eq_self _ _).symm
 
 theorem factorization_chain (p : Nat.Primes) {m : ℕ+} (hm : ¬ (p : ℕ) ∣ m) (l : ℕ) :
     ((m * primePNat p ^ l : ℕ+) : ℕ).factorization p = l := by
@@ -253,10 +257,10 @@ def IsPlanar (x : ℕ+ → ℤ) : Prop :=
     ¬ ((p : ℕ) : ℤ) ∣ D ∧ ∀ l ≤ K, D * x (m * primePNat p ^ l) = g.eval (chainNode p l)
 
 /-- **Payment on a chain.** A planar sequence vanishing on the graphs `Γ_{m p^l}`, `l ∈ T`, is
-divisible on `Γ_{m p^k}`, `k ∉ T`, by `p^{Σ_{l ∈ T} (min(k,l)+1)}`: the product of its contacts
+divisible on `Γ_{m p^k}` by `p^{Σ_{l ∈ T} (min(k,l)+1)}`: the product of its contacts
 in the square with all these graphs. -/
 theorem pow_sum_dvd_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) (p : Nat.Primes) {m : ℕ+}
-    (hm : ¬ (p : ℕ) ∣ m) (k : ℕ) (T : Finset ℕ) (hk : k ∉ T)
+    (hm : ¬ (p : ℕ) ∣ m) (k : ℕ) (T : Finset ℕ)
     (hvan : ∀ l ∈ T, x (m * primePNat p ^ l) = 0) :
     ((p : ℕ) : ℤ) ^ (∑ l ∈ T, (min k l + 1)) ∣ x (m * primePNat p ^ k) := by
   obtain ⟨D, g, hD, hg⟩ := hx p m hm (max k (T.sup id))
@@ -276,24 +280,20 @@ theorem pow_sum_dvd_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) (p : Nat.Pr
 /-- **A planar sequence is a section of the square.** -/
 theorem isGhost_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) : IsGhost x := by
   intro q hq n
-  set P : Nat.Primes := ⟨q, hq⟩ with hP
-  obtain ⟨m, hm, hn⟩ := exists_chain_decomposition P n
-  set v := (n : ℕ).factorization (q : ℕ) with hv
-  have hqP : primePNat P = q := PNat.eq rfl
-  obtain ⟨D, g, hD, hg⟩ := hx P m hm (v + 1)
+  obtain ⟨m, hm, hn⟩ := exists_chain_decomposition ⟨q, hq⟩ n
+  have hn' : n = m * q ^ ((n : ℕ).factorization (q : ℕ)) := hn
+  generalize (n : ℕ).factorization (q : ℕ) = v at hn' ⊢
+  subst hn'
+  obtain ⟨D, g, hD, hg⟩ := hx ⟨q, hq⟩ m hm (v + 1)
+  have hg' : ∀ l ≤ v + 1, D * x (m * q ^ l) = g.eval (chainNode q l) := hg
   have hpz : Prime ((q : ℕ) : ℤ) := Nat.prime_iff_prime_int.mp hq
-  have h1 : q * n = m * primePNat P ^ (v + 1) := by
-    rw [hn, hqP, pow_succ]
-    exact mul_left_comm _ _ _
-  have h2 : n = m * primePNat P ^ v := hn
+  have h1 : q * (m * q ^ v) = m * q ^ (v + 1) := by
+    rw [pow_succ']; exact mul_left_comm q m (q ^ v)
   refine hpz.pow_dvd_of_dvd_mul_left _ hD ?_
-  rw [mul_sub, h1, hg (v + 1) le_rfl, ← hqP]
-  conv_lhs => rw [show ((primePNat P : ℕ) : ℤ) ^ (v + 1) = chainNode P (v + 1) - chainNode P v by
-    rw [chainNode_succ, add_sub_cancel_left]; rfl]
-  have h3 : D * x n = g.eval (chainNode P v) := by
-    conv_lhs => rw [h2]
-    exact hg v (Nat.le_succ v)
-  rw [hqP, h3]
+  rw [mul_sub, h1, hg' (v + 1) le_rfl, hg' v (Nat.le_succ v)]
+  have hnode : ((q : ℕ) : ℤ) ^ (v + 1) = chainNode q (v + 1) - chainNode q v := by
+    rw [chainNode_succ, add_sub_cancel_left]
+  rw [hnode]
   exact Polynomial.sub_dvd_eval_sub _ _ g
 
 /-- Every element of the ring of the coordinates is planar. -/
@@ -328,21 +328,12 @@ theorem card_chain_le_factorization {x : ℕ+ → ℤ} (hx : IsPlanar x) (m : �
     intro a ha b hb hab
     rw [hchain a (Finset.mem_coe.mp ha), hchain b (Finset.mem_coe.mp hb)]
     exact congrArg (fun l => m₀ * primePNat P ^ l) hab
-  have hkT : k ∉ T := by
-    intro hkT
-    obtain ⟨n, hn, hnk⟩ := Finset.mem_image.mp hkT
-    have hnm : n = m := by
-      have h1 := hchain n hn
-      have hnk' : (n : ℕ).factorization p = k := hnk
-      rw [hnk'] at h1
-      exact h1.trans hm.symm
-    exact hne (hnm ▸ hvan n (Finset.mem_filter.mp hn).1)
   have hvanT : ∀ l ∈ T, x (m₀ * primePNat P ^ l) = 0 := by
     intro l hl
     obtain ⟨n, hn, rfl⟩ := Finset.mem_image.mp hl
     rw [← hchain n hn]
     exact hvan n (Finset.mem_filter.mp hn).1
-  have hdvd := pow_sum_dvd_of_isPlanar hx P hm₀ k T hkT hvanT
+  have hdvd := pow_sum_dvd_of_isPlanar hx P hm₀ k T hvanT
   rw [← hm] at hdvd
   have hcard : F.card ≤ ∑ l ∈ T, (min k l + 1) := by
     rw [← Finset.card_image_of_injOn hinj, Finset.card_eq_sum_ones]
@@ -430,7 +421,7 @@ theorem sum_contact_le_log_abs_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) 
       ∑ n ∈ S, ∑ p ∈ U, if p.Prime ∧ (n : ℕ) * p ^ (m : ℕ).factorization p =
         (m : ℕ) * p ^ (n : ℕ).factorization p then Real.log p else 0 := by
     refine Finset.sum_le_sum fun n hn => contact_le_sum_chain
-      (fun h => hne (h ▸ hvan n hn)) fun p hp hpd => ?_
+      (by rintro rfl; exact hne (hvan n hn)) fun p hp hpd => ?_
     refine Finset.mem_union_right _ (Nat.mem_primeFactors.mpr ⟨hp, ?_, hprod0⟩)
     rcases (Nat.Prime.dvd_mul hp).mp hpd with h | h
     · exact Dvd.dvd.mul_right h _
@@ -479,10 +470,10 @@ theorem prime_pow_dvd_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) (p : Nat.
     (hvan : ∀ j ∈ Icc 1 J, x (primePNat p ^ j) = 0) : ((p : ℕ) : ℤ) ^ J ∣ x 1 := by
   have h1 : ¬ (p : ℕ) ∣ ((1 : ℕ+) : ℕ) := by
     rw [PNat.one_coe, Nat.dvd_one]; exact p.2.ne_one
-  have h := pow_sum_dvd_of_isPlanar hx p h1 0 (Icc 1 J) (by simp)
+  have h := pow_sum_dvd_of_isPlanar hx p h1 0 (Icc 1 J)
     (fun l hl => by rw [one_mul]; exact hvan l hl)
   simp only [Nat.zero_min, zero_add, Finset.sum_const, Nat.card_Icc, add_tsub_cancel_right,
-    smul_eq_mul, mul_one, one_mul, pow_zero, mul_one] at h
+    smul_eq_mul, mul_one, pow_zero] at h
   exact h
 
 /-! ### What is lost -/
@@ -599,16 +590,17 @@ theorem coordHom_injective : Function.Injective coordHom := by
     have hval : MvPolynomial.eval (latticePoint n)
         (MvPolynomial.rename (Subtype.val : {x // x ∈ s} → Nat.Primes) q) = 0 := by
       rw [← ghostComponent_coordHom, hf, map_zero]
-    rw [hQ, hx', MvPolynomial.eval_map, ← Function.comp_def c, ← MvPolynomial.eval₂_comp_left,
-      MvPolynomial.eval₂_rename]
+    have hcl := MvPolynomial.eval₂_comp_left c (RingHom.id ℤ)
+      (fun j => latticePoint n ((e.symm j : {x // x ∈ s}) : Nat.Primes))
+      (MvPolynomial.rename e q)
+    rw [RingHom.comp_id] at hcl
     rw [MvPolynomial.eval_rename] at hval
     have hcomp : ((fun j => latticePoint n ((e.symm j : {x // x ∈ s}) : Nat.Primes)) ∘ e) =
         latticePoint n ∘ (Subtype.val : {x // x ∈ s} → Nat.Primes) := by
       funext a
       simp [Function.comp]
-    rw [hcomp]
-    change c (MvPolynomial.eval₂ (RingHom.id ℤ) (latticePoint n ∘ Subtype.val) q) = 0
-    rw [← MvPolynomial.eval, hval, map_zero]
+    rw [hQ, hx', MvPolynomial.eval_map, ← Function.comp_def c, ← hcl, MvPolynomial.eval₂_rename,
+      hcomp, MvPolynomial.eval₂_id, hval, map_zero]
   have hmap : MvPolynomial.rename e q = 0 :=
     MvPolynomial.map_injective c hcinj (by rw [← hQ, hQ0, map_zero])
   have hq : q = 0 := MvPolynomial.rename_injective e e.injective (by rw [hmap, map_zero])

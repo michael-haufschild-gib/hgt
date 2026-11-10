@@ -10,7 +10,7 @@ The taper is sublinear and the remainder has arbitrary power saving.
 -/
 
 noncomputable section
-open Complex MeasureTheory Finset Set Filter Topology
+open Complex MeasureTheory Set Finset Filter Topology
 open RHTower RHTower.ZetaGateProductAFE GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 

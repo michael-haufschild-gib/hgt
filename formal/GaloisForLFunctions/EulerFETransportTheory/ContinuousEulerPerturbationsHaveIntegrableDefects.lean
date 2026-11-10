@@ -38,7 +38,7 @@ theorem norm_continuousEulerExponent_le (ε : ℝ≥0) {s : ℂ} (hs : 0 ≤ s.r
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ε.property]
   rw [he]
   have hsq : 1 ≤ ‖s + 1‖ ^ 2 := by nlinarith only [hn, sq_nonneg (‖s + 1‖ - 1)]
-  apply (div_le_iff₀ (by positivity : 0 < ‖s + 1‖ ^ 2)).mpr
+  apply (div_le_iff₀ (zero_lt_one.trans_le hsq)).mpr
   simpa only [mul_one] using mul_le_mul_of_nonneg_left hsq ε.property
 
 /-- The reflected inverse squares differ by an exactly inverse-cubic term. -/
