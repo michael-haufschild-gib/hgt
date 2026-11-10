@@ -58,6 +58,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfANumberRingCou
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermOfANumberRingObeysRiemannHurwitz
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnItsOwnCombTheSystemOfTheSquaresFailsBezout
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -79,6 +81,8 @@ square of a quadratic ring with its conductor and its Hodge index; the square of
 ring with its contacts on a progression; the constants of the counterterm as the threshold
 of the inequality; the planar square, a subring of the square with unit masses in which every
 contact is paid; the squares that satisfy Bézout at an aperture as the window cone; the exact
-Hodge index of the square of a number ring; and Riemann–Hurwitz for the counterterm with the
-genus of a degree point. See `AbsoluteGeometryOfSpecZ/README.md`.
+Hodge index of the square of a number ring; Riemann–Hurwitz for the counterterm with the
+genus of a degree point; the exchange law between the contacts and the constant of the
+counterterm; and the tree of a prime glued along the comb, whose edge length the inequality
+forces. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

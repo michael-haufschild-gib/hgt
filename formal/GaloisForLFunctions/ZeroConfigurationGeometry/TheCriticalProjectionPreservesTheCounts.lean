@@ -83,7 +83,10 @@ theorem criticalProjectionConfig_N (Z : ZeroConfig) (T₁ T₂ : ℝ) :
   let S := (Z.finite_window T₁ T₂).toFinset
   have hwin : (criticalProjectionConfig Z).window T₁ T₂ = ↑(S.image criticalProjection) := by
     rw [criticalProjectionConfig_window, Finset.coe_image, Set.Finite.coe_toFinset]
-  rw [ZeroConfig.N, hwin, finsum_mem_finset_eq_sum, ZeroConfig.N,
+    rfl
+  rw [ZeroConfig.N, hwin]
+  simp only [Finset.mem_coe]
+  rw [finsum_mem_finset_eq_sum, ZeroConfig.N, ZeroConfig.window,
     finsum_mem_eq_finite_toFinset_sum _ (Z.finite_window T₁ T₂)]
   change (∑ z ∈ S.image criticalProjection, ∑ ρ ∈ ordinateFiber Z z.im, Z.mult ρ) =
     ∑ ρ ∈ S, Z.mult ρ
@@ -104,7 +107,8 @@ theorem criticalProjectionConfig_N (Z : ZeroConfig) (T₁ T₂ : ℝ) :
       exact ⟨((Z.finite_window T₁ T₂).mem_toFinset.mp hρ).1, congrArg Complex.im he⟩
   rw [Finset.sum_congr rfl (fun z hz => congrArg (fun F : Finset ℂ => ∑ ρ ∈ F, Z.mult ρ)
     (hfiber z hz))]
-  exact Finset.sum_fiberwise_of_maps_to (fun z hz => Finset.mem_image_of_mem criticalProjection hz) _
+  exact Finset.sum_fiberwise_of_maps_to (s := S) (t := S.image criticalProjection)
+    (g := criticalProjection) (fun z hz => Finset.mem_image_of_mem criticalProjection hz) _
 
 /-- A local logarithmic count remains a tempered critical configuration after projection. -/
 theorem temperedConfig_criticalProjection_of_localCount (Z : ZeroConfig) {A : ℝ}

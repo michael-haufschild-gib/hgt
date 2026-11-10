@@ -24,6 +24,15 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 | C1 | (B★ of §5.5) The Möbius weights of the Gram form save a power at the exceptional (sixth-power) frequencies | REFUTED on paper | The weights `μ(d)` invert the coprimality of two columns: a sieve with density `1/ζ_K(2)`. At a sixth-power frequency `k` the complete correlation of two coprime columns is the reciprocity factor, with no dependence on `k`: `F(s₁,s₂;k)=χ_{s₁}(−1)\bar χ_{s₁}(s₂)χ_{s₂}(s₁)`. The exceptional part of `Σ_m w(m)|A_m|²` is `(Q/Y³)·#{k=a⁶, q_k ≲ P}·|Σ_s c_σ(s)W₁(…)|²`: a nonnegative main term for nonnegative columns. It is the dual of an incomplete character sum (row ball `Q` shorter than the conductor `Y²` of a pair). Survivor: the two-column correlation theorem (Lean, below) |
 | C2 | The exponent `1/6` is `1/n` for averaging symbols of order `n`; a cyclotomic field with more roots of unity lowers it | REFUTED on paper (second half) | The count of `n`-th power frequencies is `P^{1/n}`. The conversion of Möbius needs `μ·g(χ)` to be an explicit multiple of a cubic Gauss sum; the duplication formula `g(χ)g(χρ)=\barχ(4)g(χ²)g(ρ)` gives this exactly for `χ` cubic and `ρ` quadratic. Order six is forced by "quadratic (explicit Gauss sum) × cubic (theta coefficients known)" |
 | C3 | Centering the columns (zero plain sum) removes the exceptional term and keeps the signal | REFUTED on paper | The principal row is `(Σ_s c_σ(s)W₁(…))·(Mellin integral of 1/L)`: the factor `R(A,s)` of the probe makes the cross reciprocity trivial and the column sum factors out. Signal and exceptional energy are both carried by the plain column sum |
+| C4 | The Cauchy–Schwarz step of the low estimate can be replaced by an exact evaluation of the row sum after reflection (the reflected row carries the scalar `ζ(m)`, a product of normalized sextic and quadratic Gauss sums of the row) | REFUTED by exponents `[D]` | The exact row sum is a sum of sextic Gauss sums of `m` twisted by a character of modulus `μ s`; with the trivial bound it loses `Z^{0.49}` against Cauchy–Schwarz at the published scales, and the saving of the sextic Kubota series (`Q^{-1/3}` for the principal twist) does not cover it. Mean squares over rows are stronger than pointwise evaluations here |
+| C5 | A column with zero plain sum on a ray class removes the exceptional term for free: the fixed character `χ_s(b*)/ξ(s)` is nonprincipal modulo the primes of `S` | REFUTED on paper | The `S`-part of the frequency restores the principal character: the exceptional frequencies are `a⁶e` with `e` supported on `C` and `S`, and for one class of `S`-exponents the fixed part is principal. A positive proportion of the exceptional frequencies carries the main term |
+
+## Lean
+
+| Module | Result |
+|---|---|
+| `FamilyContinuationTheory/TwistedColumnsCorrelateThroughOneResidue` | `sum_column_mul_conj_column_of_coprime`: the correlation of two additive columns of coprime moduli is one term; `sum_weight_mul_column_mul_conj_column`: the weighted second moment is a multiplicative form in the frequency; `sum_exceptional_correlation`: no cancellation among the frequencies on which both characters are `1` |
+| `FamilyContinuationTheory/ContinuationFromACommonSignal` | `exists_differentiableOn_eq_of_signal_le`: a kernel whose signal is `O(Z^b)` extends to `Re s>b`; `ne_zero_of_signal_le`; `ne_zero_of_common_signal`: a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with the signal give the half-plane `Re s>max a₁ a₂` (the analytic step of leg A, Proposition 2.1 of the external source, without the supremum) |
 
 ## Stage notes
 
@@ -41,4 +50,4 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — created; C1–C3 analysed against the cached text (§6.1, §12, §15.2).
+- 2026-11-10 — created; C1–C5 analysed against the cached text (§5.1, §6.1, §12, §15.2); two modules compiled (single-file check, no output) and wired through `FamilyContinuationTheory` into `MainTheorems`.

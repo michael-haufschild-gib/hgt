@@ -67,7 +67,7 @@ theorem minimalFace_count_le_levels (γ_min C : ℝ) {Θ : ℝ}
       _ = (faceHarmonics γ_min C Θ k).card * 4 := by rw [card_product]; rfl
       _ ≤ _ := faceHarmonics_card_bound γ_min C Θ k
   calc Z.N 0 T = hfin.toFinset.card := by
-        rw [ZeroConfig.N, finsum_mem_eq_finite_toFinset_sum _ hfin]
+        rw [ZeroConfig.N, ZeroConfig.window, finsum_mem_eq_finite_toFinset_sum _ hfin]
         simp only [Z, minimalFaceCounterConfig, sum_const, nsmul_eq_mul, mul_one]
     _ ≤ F.card := card_le_card hsub
     _ ≤ ∑ k ∈ range (K + 1), (S k).card := card_biUnion_le

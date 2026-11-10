@@ -705,6 +705,56 @@ In `Re W_w(k_F) = arch(F) − 2Σ_n (w(n)/√n) h_F(log n)` only the squares `n 
 uniqueness, corpus); a real test with `Re W_w < 0`, translated into a window, is `F` for
 `g(u) = F(2u)`, and translation does not change `W_w`. ∎
 
+**G9 (the exchange law between the contacts and the constant).** Let `δ : ℕ → ℝ` with
+`Σ |δ(n)| n^{-1/2} < ∞`, `P_δ(τ) = Σ_{n≥2} 2δ(n) n^{-1/2} cos(τ log n)`, and `c ∈ ℝ`. On the comb
+of the integers take the contacts `Λ + δ` and the counterterm `log(n/2π) + c`. (i) On a packet
+in a window the pairing tends to `2d₁d₂ − Q(f)`, `Q(f) = Re W_{Λ+δ}(k_f) + c∫f²`. (ii)
+`2π Q(f) = 2π Z(f) + ∫ |f̂(τ)|² (c − P_δ(τ)) dτ`. (iii) Bézout holds for all packets iff RH holds
+and `P_δ ≤ c` everywhere; if `P_δ(τ₁) > c`, some packet with `d₁ = d₂ = 0` has `Q < 0`, without
+hypothesis. (iv) Bézout forces `c ≥ 0`; with `c = 0` it forces `δ = 0`. (v) For `δ = t·1_{n₀}`,
+`n₀ ≥ 2`: Bézout iff RH and `c ≥ 2|t|/√n₀`.
+*Proof.* (i) C21 for the weights `Λ + δ` and the limit `Σ f_n²/n → ∫f²` of the masses (F3). (ii) For a packet
+in a window `Re W_w(k_f) = arch(f) − 2Σ_{k ≤ 3K} (w(k)/√k) h_f(log k)` (C21); subtracting the
+case `w = Λ` gives `Re W_{Λ+δ} = Z(f) − 2Σ (δ(k)/√k) h_f(log k)`. The cosine moments of
+`|f̂|²` are `∫ |f̂|² cos(τ log n) = 2π h_f(log n)` (corpus,
+`integral_normSq_mul_perturbationSymbol`), the terms with `n > 3K` vanish, and
+`∫ |f̂|² = 2π ∫f²`. (iii) ⇐: under RH `Z(f) ≥ 0` (C19) and the integrand is nonnegative. ⇒, the
+symbol: let `P_δ(τ₁) > c`. The function `P = P_δ − c` is continuous and bounded and positive
+near `τ₁`; near `τ₁` there is a point where the limit of the radical tests does not vanish
+(identity theorem). The corpus concentration theorem
+(`vonMangoldt_sub_symbol_violation_of_concentration`) gives a `C²` test `F` supported in
+`[−a, a]` with `F̂(±i/2) = 0` and `∫ |F̂|² (S_Λ − P) < 0`. For such tests
+`∫ |F̂|² S_w = 2π Re W_w(k_F)` at the level `⌊e^{2a}⌋` (corpus), `S_{Λ+δ}` and `S_Λ` differ by
+the cosine moments of `δ` up to that level, which are those of `P_δ` because `k_F` vanishes
+beyond `2a`; so `2π(Re W_{Λ+δ}(k_F) + c∫|F|²) < 0`. The functional is the sum of its values on
+`Re F` and `Im F` (C28), which have both degrees zero; one of them is negative. ⇒, RH: by (ii),
+`Z(f) ≥ −(|c| + sup|P_δ|) ∫f²` on every packet, and a lower bound of the zero sum by a multiple
+of the mass on odd tests is RH (corpus, `riemannHypothesis_of_odd_fullZeroForm_bddBelow`).
+(iv) If `c < 0` then `P_δ ≤ c < 0`, so `δ = 0` on `n ≥ 2` (two-point resonators, corpus
+`eq_zero_of_perturbationSymbol_nonpos`), so `P_δ = 0 > c`. With `c = 0` the same extraction
+gives `δ = 0`. (v) `P_δ(τ) = (2t/√n₀) cos(τ log n₀)`, with the supremum `2|t|/√n₀` at `τ = 0`
+or `τ = π/log n₀`. ∎
+
+**G10 (a tree glued along the comb with an edge length).** Let `p` be a prime and `ℓ ∈ ℝ`. On
+the comb of the integers take the contacts `ℓ` on the pairs `(m, mp^k)`, `k ≥ 1`, the contacts
+`Λ` elsewhere, and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)`. (i) For a bounded Lipschitz
+`G` vanishing outside the window and `q ≥ 1`,
+`Σ_{N<n≤(1+L)N, q∣n} G(log(n/N))/n → (1/q)∫G`. (ii) On a packet,
+`Σ v_p(n) f_n²/n → ∫f²/(p−1)`. (iii) The pairing tends to `2d₁d₂ − Q(f)` for the pair
+`δ = (ℓ − log p)·1_{p^k, k≥1}`, `c = (ℓ − log p)/(p − 1)` of G9. (iv) Bézout holds iff RH holds
+and `ℓ = log p`.
+*Proof.* (i) Put `φ(n) = G(log(n/N))/n`; it vanishes for `n ≤ N` and `n > (1+L)N`. Cut
+`[0, qM)`, `qM > (1+L)N`, into blocks of length `q`: `Σ_n φ(n) − q Σ_m φ(qm)` is the sum over
+the blocks of `Σ_{r<q} (φ(qm+r) − φ(qm))`. For `x ≤ y`, `|φ(y) − φ(x)| ≤ (Lip + sup)(y−x)/x²`,
+from `log(y/x) ≤ (y−x)/x`; a block that meets the window has `x ≥ N/2` when `N ≥ 2q`. So the
+difference is at most `(2+L)N · 4(Lip+sup)q/N² → 0`, and the full sum tends to `∫G` (the Riemann sums of C15). (ii)
+`v_p(n) = Σ_{k≥1} [p^k ∣ n]`; the level `k` tends to `p^{−k}∫f²` by (i) and is at most
+`sup·(1+L)p^{−k}` (at most `(1+L)N/p^k` multiples, each term at most `sup/N`); dominated
+convergence over `k` and `Σ_k p^{−k} = 1/(p−1)`. (iii) C21 for the weights and (ii). (iv) By
+G9(iii) Bézout is RH together with `P_δ ≤ c`, `t = ℓ − log p`. If `t < 0` then `c < 0`, so
+`P_δ < 0`, so `δ(p) = t = 0`. If `t > 0` then all terms of `P_δ(0)` are nonnegative and
+`P_δ(0) ≥ 2t/√p > t/(p−1)` because `√p < p ≤ 2(p−1)`. If `t = 0` then `δ = 0`, `c = 0`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -760,6 +810,12 @@ uniqueness, corpus); a real test with `Re W_w < 0`, translated into a window, is
 - **Construction V (the own comb)**: G8 for the system of the squares: the pairing on the own
   comb is the pairing of the comb of the integers with the contacts of the system, and Bézout
   fails. Question 6 of the specification: zeros on a line are not sufficient.
+- **Construction II (the archimedean fibre as a boundary), gluings along the comb**: G10. The
+  counterterm is the sum of the Busemann functions of the trees and the contacts of `p` have
+  the weight of an edge; the tree glued with any edge length but `log p` fails Bézout. The
+  gluing along the comb is the pairing itself; it has no modulus and gives no inequality. G9:
+  with the archimedean constant free, contacts are traded against the constant at the supremum
+  of their symbol, so the decisive test for a wrong constant is meant with the contacts fixed.
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -835,6 +891,8 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G5 | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
 | G7 | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
 | G8 | `OnItsOwnCombTheSystemOfTheSquaresFailsBezout` |
+| G9 | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
+| G10 | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -854,6 +912,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem`,
 `TheCountertermOfANumberRingObeysRiemannHurwitz`,
 `ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm`,
+`TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -885,6 +944,7 @@ Open parts of the questions of the refined programme (details in the README, §1
   `TheExceptionalSquareRepelsTheOtherSquares`.
 - Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.
 - Constructions of the next stage (review-1011 fable §9.6): I (a Lefschetz operator outside the
-  three tested ones), II (a gluing along the comb that is not invariant), V beyond G8 (the
-  integers prime to `2`; combs without a density; systems with their own jets), VI (a count);
-  question 7 (Hecke characters, one ring that is not abelian).
+  three tested ones), II beyond G9 and G10 (deviations of the contacts that are not summable
+  against `n^{-1/2}`, such as other edge lengths at infinitely many primes), V beyond G8 (combs
+  without a density; systems with their own jets), VI (a count); question 7 (Hecke characters,
+  one ring that is not abelian).

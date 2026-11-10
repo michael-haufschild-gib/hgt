@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-61 modules. Specification: §9 of
+64 modules. Specification: §9 of
 [the review-1011 report](../../../docs/reports/review-1011/fable.md), which continues §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md) and §9 of
 [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
@@ -202,6 +202,9 @@ complementary carry, the payment of the contacts) or a receiver.
 | Superposition | `superposeFamily`, `ringConfig` | the union of the zeros of a finite family of configurations, with the multiplicities added; `ζ` and the `L(s, χ_i)` of a ring |
 | Genus of a degree point | `genus` | `1 + (n/2)(d log(n/2π) + R)` on the square of a ring of degree `d` whose conductors have the product `e^R` |
 | The pairing of a number ring | `ringWeight`, `ringForm`, `ringZeroSum` | `Λ(n)(1 + Σ_i Re χ_i(n))`; the form of the integers plus the twisted forms of the characters; the zero sums of `ζ` and of the `L(s, χ_i)` |
+| A pair of contacts and a constant | `CombBezoutWith`, `pairForm`, `contactAt` | the contacts `Λ + δ` with the counterterm `log(n/2π) + c`; the functional `Re W_{Λ+δ}(f ⋆ f̃) + c ∫f²`; the deviation `t` at one integer `n₀`. The symbol of `δ` is the corpus `RHTower.perturbationSymbol`: `P_δ(τ) = Σ_{n ≥ 2} 2 δ(n) n^{-1/2} cos(τ log n)` |
+| Sums over multiples; the Busemann function of a tree | `degreeTerm`, `busemannMass` | `G(log(n/N))/n`; `Σ_{N < n ≤ (1+L)N} v_p(n) f_n²/n`, the valuation at `p` against the masses of a packet |
+| A tree with another edge length | `treeDeviation`, `TreeBezout` | the weight `t` on the positive powers of `p`; Bézout with the contacts `ℓ` along the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)` |
 
 ## 3. Language
 
@@ -245,6 +248,12 @@ complementary carry, the payment of the contacts) or a receiver.
 - **Superposition** of configurations: the union of their zeros with the multiplicities added.
   **Index** of a square: the largest number of negative squares of the defect `2 d₁ d₂ − D·D`
   on a finite family of tests.
+- **Pair**: a deviation `δ` of the contacts together with a constant `c` added to the
+  counterterm. **Symbol** of a deviation: `P_δ(τ) = Σ 2 δ(n) n^{-1/2} cos(τ log n)`. **Price** of
+  a deviation: the supremum of its symbol, the least constant with which it is not refuted.
+- **Busemann function** of the tree of `p` along the comb: the depth `v_p(n)` times the edge
+  length. **Edge length** of a glued tree: the weight of its contacts along a chain; `log p`
+  on the square.
 
 ## 4. Mechanisms
 
@@ -415,6 +424,17 @@ complementary carry, the payment of the contacts) or a receiver.
     `n` is `(2g − 2)/n` for the genus `g(n)`. For the integers `e < π` and
     `e^{2/3} < 2 < 2π/3` make the genus negative at `2` and `3`; `1 + x ≤ e^x` and `2π < 7`
     make it positive from `5` on.
+47. **Concentration in the radical.** Tests whose transform is divisible by that of Riemann's
+    kernel have a negligible sum over the zeros and can be concentrated at any real frequency
+    where the limit of the radical tests does not vanish (corpus:
+    `RHTower.vonMangoldt_sub_symbol_violation_of_concentration`). On them the functional of a
+    pair is the energy of `c − P_δ` near that frequency, so its positivity is read off the
+    symbol point by point; real and imaginary parts give a packet with both degrees zero.
+48. **Blocks, and the mean of a valuation.** A sum over a window is `q` times the sum over the
+    multiples of `q`, up to the variation inside blocks of length `q`; for the terms of a
+    bounded Lipschitz function this is `O(q/N)`. With `v_p(n) = Σ_k [p^k ∣ n]` and the
+    domination of level `k` by `p^{−k}`, the valuation has the mean `1/(p − 1)` against the
+    masses of a packet.
 
 ## 5. The founding questions
 
@@ -687,16 +707,28 @@ that is an inequality, and each has a kill condition.
 
 - *Deliverable.* The jets as the trace on an axis of a harmonic object in `ℝ³` or `ℍ³`, glued
   to the trees of the primes so that the glued form is the comb form.
-- *Kill condition.* Every invariant gluing has a constant diagonal.
-- *State.* The two summands have models. The jets are the even multipoles of the Newtonian
-  kernel between the points `±n` of an axis, and the two rulings are the origin and infinity
-  (corpus: `HodgeTheoryOfAFixedPart.even_newtonianKernel_eq_jetKernel`,
+- *Kill condition.* Every invariant gluing has a constant diagonal; a gluing along the comb is
+  the pairing itself or fails.
+- *State.* Met for the kernels invariant under the adelic group and for the trees glued along
+  the comb with an edge length. The two summands have models. The jets are the even multipoles
+  of the Newtonian kernel between the points `±n` of an axis, and the two rulings are the
+  origin and infinity (corpus: `HodgeTheoryOfAFixedPart.even_newtonianKernel_eq_jetKernel`,
   `hasSum_even_newtonianMultipoles`); the contacts of a prime are a sum of squares over its
-  chains minus the diagonal (corpus: `prime_contact_form_eq_chain_squares`). The kill condition
-  is met for the kernels invariant under the adelic group: on the adelic carrier the diagonal
-  is the density of the orbit sum and not a finite part (`four_mul_twistedMean_add`), and no
-  counterterm is a function of the degree point (`not_exists_counterterm_of_two_combs`). A
-  gluing along the comb of the integers that is not invariant is open.
+  chains minus the diagonal (corpus: `prime_contact_form_eq_chain_squares`). *Invariant
+  gluings:* on the adelic carrier the diagonal is the density of the orbit sum and not a finite
+  part (`four_mul_twistedMean_add`), and no counterterm is a function of the degree point
+  (`not_exists_counterterm_of_two_combs`). *Along the comb:* the counterterm is the sum over
+  the primes of the Busemann functions of their trees, `log n = Σ_p v_p(n) log p`, and the
+  contacts of `p` have the weight of an edge. A tree glued with another edge length `ℓ` has
+  the contacts `ℓ` along the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)`;
+  its pairing tends to `2 d₁ d₂` minus the functional of the pair
+  `δ = (ℓ − log p)·1_{p^k}`, `c = (ℓ − log p)/(p − 1)` (`tendsto_busemannMass`,
+  `tendsto_treePairing`), and Bézout holds iff the Riemann hypothesis holds and `ℓ = log p`
+  (`treeBezout_iff`). So the gluing along the comb exists, it is the pairing of the degree
+  points, and it has no modulus at any prime; it gives no inequality. With the archimedean
+  constant left free the edge lengths are not determined: contacts are traded against the
+  constant at the supremum of their symbol (`combBezoutWith_iff`, Q24). A point of the comb
+  moved along the axis fails as well (corpus: `RHTower.vonMangoldt_move_atom_not_weilPositive`).
 
 **III. Stepanov on the planar square.**
 
@@ -788,7 +820,7 @@ relation are effective elements (`exists_effective_closedWalks`).
 |---|---|---|---|
 | 1 | Bézout for the comb pairing from a property of the object | It is the Riemann hypothesis. No property is known that turns a count into an inequality between graphs on different lines (§13.1) | `riemannHypothesis_iff_combBezout`, `tendsto_degreePairing_le_degrees_of_enlarged_width` |
 | 2 | What replaces "an ample class and Riemann–Roch imply the Hodge index"? | On the tower both axioms give the product formula, and on the planar square restriction is an equality of ideals. The Kähler package of the divisibility complex exists except at the top coprime stratum, where hard Lefschetz along the overlap flow is the Riemann hypothesis (corpus). Open: construction I | `map_ker_pow_eq_contact_pow`, `planarValues_eq_prod`; corpus: `HodgeTheoryWithoutVarieties.riemannHypothesis_iff_liouville_along_the_overlap_flow` |
-| 3 | Is there a geometric object whose intersection form is the sum of the chain squares at every prime and of the Newtonian multipoles on an axis, with the density as counterterm? | Each summand has a model; no glued invariant object exists. Open: construction II for gluings that are not invariant | corpus: `HodgeTheoryOfAFixedPart.prime_contact_form_eq_chain_squares`, `HodgeTheoryOfAFixedPart.hasSum_even_newtonianMultipoles`; `four_mul_twistedMean_add` |
+| 3 | Is there a geometric object whose intersection form is the sum of the chain squares at every prime and of the Newtonian multipoles on an axis, with the density as counterterm? | Each summand has a model; no glued invariant object exists. Along the comb the glued form with trees of edge length `log p` is the pairing of the degree points, and no other edge length passes; with a free constant the edge lengths are not determined (construction II, Q24, Q25) | `treeBezout_iff`, `combBezoutWith_iff`; corpus: `HodgeTheoryOfAFixedPart.prime_contact_form_eq_chain_squares`, `HodgeTheoryOfAFixedPart.hasSum_even_newtonianMultipoles`; `four_mul_twistedMean_add` |
 | 4 | What replaces the extension of constants, the tensor-power trick and the family? | Nothing among covers and twists: `ζ` is the fixed part. A cover bounds its base at each finite stage; per degree, in a tower, the form of `ζ` has the weight `1/[K:ℚ]` (construction IV) | `exists_le_negIndex_ringDefect_of_zeta`, `riemannHypothesis_of_ringDefect`, `tendsto_ringZeroSum_div_degree_sub` |
 | 5 | The full window at finite scale, and the converse | Block averages decide (continuation). Open: divisors with nonzero block sums, and the inequality at finite scale from the Riemann hypothesis | corpus: `HodgeTheoryOfAFixedPart.exists_blockSize_combForm_nonneg`, `HodgeTheoryOfAFixedPart.riemannHypothesis_of_frequently_combForm_ge` |
 | 6 | Integer-norm systems on their own comb: does Bézout there hold exactly when the zeros are on a line? | No, for the system of the squares: its zeros are those of `ζ(2s)`, on the line `Re s = ¼` iff the Riemann hypothesis holds, and Bézout fails on its own comb without hypothesis. The own comb enters through its density only. Open for combs that have no density (construction V, §13.3) | `tendsto_squareForm_add_squareContact`, `exists_packet_squarePairing_gt`, `not_combBezout_of_ne` |
@@ -1110,6 +1142,48 @@ So the answer is: at a finite aperture the squares that satisfy Bézout form a c
 shrinks to the point `Λ`, or to the empty set, as the aperture grows. A construction of a point
 of the body at every aperture would prove the Riemann hypothesis without producing `Λ`.
 
+**Q24. The price of a contact.** *Bézout fails for wrong contacts with the constant `2π`, and
+for the contacts `Λ` with a constant above `2π`. Which pairs of contact weights and constants
+are not refuted?*
+
+- Take the contacts `Λ + δ` with `Σ |δ(n)| n^{-1/2} < ∞` and the counterterm `log(n/2π) + c`.
+  The pairing tends to `2 d₁ d₂` minus the functional of the pair, `Re W_{Λ+δ}(f ⋆ f̃) + c ∫f²`
+  (`tendsto_pairPairing`), and `2π` times this functional is `2π Z(f)` plus the energy of
+  `c − P_δ` against `|f̂|²`, with `P_δ(τ) = Σ 2 δ(n) n^{-1/2} cos(τ log n)` the symbol of the
+  deviation (`two_pi_mul_pairForm_eq`).
+- Bézout holds for the pair iff the Riemann hypothesis holds and `P_δ(τ) ≤ c` for every `τ`
+  (`combBezoutWith_iff`). Where `P_δ(τ₁) > c`, a packet with both degrees zero violates it,
+  without hypothesis (`exists_packet_pairForm_neg`): mechanism 47.
+- The symbol has mean zero, so the inequality forces `c ≥ 0`, and with `c = 0` it forces
+  `δ = 0` (`nonneg_of_combBezoutWith`, `combBezoutWith_zero_right_iff`).
+- One contact changed by `t` at `n₀` is not refuted exactly from the constant `2|t|/√n₀` on
+  (`combBezoutWith_contactAt_iff`).
+
+So the answer is: the pairs that are not refuted are the epigraph of `δ ↦ sup P_δ`, a convex
+cone whose vertex is the square of the integers with the constant `2π`. A wrong contact has a
+price in the counterterm, and a construction that leaves the constant free does not determine
+the contacts. The decisive test for a wrong constant has to be read with the contacts fixed.
+
+**Q25. Trees glued along the comb.** *Construction II for gluings that are not invariant: can
+the trees of the primes be glued to the archimedean fibre along the comb of the integers in
+another way than in the pairing of the degree points?*
+
+- The counterterm of the comb is a sum of local terms on the trees: `log n = Σ_p v_p(n) log p`,
+  the Busemann function of the tree of `p` at the depth `v_p(n)` with edges of length `log p`;
+  the contacts of `p` are the weight `log p` on each pair of points of a chain.
+- A tree glued with the edge length `ℓ` keeps both rules. Against the masses of a packet the
+  valuation has the mean `1/(p − 1)` (`tendsto_busemannMass`, mechanism 48), so the pairing
+  tends to `2 d₁ d₂` minus the functional of the pair `δ = (ℓ − log p)·1_{p^k}`,
+  `c = (ℓ − log p)/(p − 1)` (`tendsto_treePairing`).
+- Bézout holds iff the Riemann hypothesis holds and `ℓ = log p` (`treeBezout_iff`). For a
+  longer tree the symbol at `τ = 0` is at least `2(ℓ − log p)/√p`, above the constant; for a
+  shorter one the constant is negative.
+
+So the answer is: no. Along the comb the trees are glued with the edge lengths `log p`, the
+glued form is the pairing of the degree points, and the inequality reads each edge length from
+the jets, as it reads the contact orders and the constant `2π`. The gluing is an identity, the
+product formula; it carries no sign.
+
 ## 9. Order of work and the decisive test
 
 | Stage | Content | State |
@@ -1118,7 +1192,7 @@ of the body at every aperture would prove the Riemann hypothesis without produci
 | The pairing | Jets, contacts and counterterm; the limit `2 d₁ d₂ − Z(f)`; the comb and its forced constant; the additive datum; Bézout on bounded apertures | Lean: §6 C; §8.2 Q11, Q12, Q14, Q23 |
 | Number rings, finite scale, payment | The squares of abelian rings with genus, ramification and exact index; the lattice at finite scale and the comb of a curve (continuation); the planar square | Lean: §6 F, G, H; §8.2 Q17, Q20, Q22 |
 | Next, step 1 | Close construction IV as a theorem; construction III | Lean: both kill conditions are met |
-| Next, step 2 | Construction II for gluings along the comb of the integers that are not invariant; construction V for one integer-norm system | V: Lean for the system of the squares (`exists_packet_squarePairing_gt`); II and the combs without a density: open |
+| Next, step 2 | Construction II for gluings along the comb of the integers that are not invariant; construction V for one integer-norm system | Lean: II for trees glued with an edge length (`treeBezout_iff`) and for pairs of contacts and constants (`combBezoutWith_iff`); V for the system of the squares (`exists_packet_squarePairing_gt`). Open: combs without a density |
 | Next, step 3 | Construction I with one operator outside the three tested ones, on the first selective window | open |
 | Next, step 4 | Hecke characters and one ring that is not abelian (question 7) | open: needs explicit formulas that are not in the corpus |
 | The inequality | Bézout for all packets (question 1); the exceptional square (Q21) | open: the Riemann hypothesis; the Landau–Siegel problem |
@@ -1132,7 +1206,9 @@ at most `181/250`, where it holds for `Λ` (`exists_packet_degreePairing_gt_of_f
 `tendsto_degreePairing_le_degrees_of_width`); the Liouville twist with a conductor fails at
 every aperture beyond the trivial one (corpus: `SelectiveArithmetic.exists_not_feasible`); and
 with the counterterm `log(n/2π) − c`, `c > 0`, a packet of degree zero has a positive pairing
-(`exists_packet_shiftedPairing_pos`).
+(`exists_packet_shiftedPairing_pos`). The test for a wrong constant is meant with the contacts
+fixed: wrong contacts with a larger counterterm pass, under the Riemann hypothesis, exactly
+from the supremum of their symbol on (`combBezoutWith_iff`).
 
 ## 10. Pillar theorems
 
@@ -1221,6 +1297,9 @@ with the counterterm `log(n/2π) − c`, `c > 0`, a packet of degree zero has a 
 | Beyond the window a cyclotomic ring has no contact, and its defect on a fixed packet is at least `(p − 1)(½ log p ∫f² − C_f)` | `weightedContact_cyclotomicWeight_eq_zero`, `exists_cyclotomicZeroSum_eq`, `exists_forall_cyclotomicZeroSum_ge` |
 | The twisted part of a quadratic ring is nonpositive up to the trivial aperture, uniformly in the character | `exists_uniform_trivial_conductor_aperture`, `twistedZeroSum_ge_of_aperture_sharpened` |
 | A real zero and its reflection are one square of explicit depth; a real zero near `1` repels the other squares | `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `deuring_heilbronn_on_twisted_comb`, `exists_twistedComb_square_margin` |
+| Bézout with the contacts `Λ + δ` and the counterterm `log(n/2π) + c` holds iff the Riemann hypothesis holds and the symbol of `δ` is at most `c`; where the symbol exceeds `c` it fails on a packet of degree zero | `combBezoutWith_iff`, `exists_packet_pairForm_neg`, `two_pi_mul_pairForm_eq` |
+| The constant is nonnegative and at `2π` the contacts are rigid; one contact changed by `t` at `n₀` costs `2|t|/√n₀` | `nonneg_of_combBezoutWith`, `combBezoutWith_zero_right_iff`, `combBezoutWith_contactAt_iff` |
+| The valuation at `p` has the mean `1/(p − 1)` against a packet; a tree glued along the comb with the edge length `ℓ` satisfies Bézout iff the Riemann hypothesis holds and `ℓ = log p` | `tendsto_degreeSum_multiples`, `tendsto_busemannMass`, `tendsto_treePairing`, `treeBezout_iff` |
 
 All are unconditional.
 
@@ -1277,6 +1356,8 @@ All are unconditional.
 | Families of primitive characters with different conductors; the genus of a degree point; numerical bounds for `e`, `e^{2/3}`, `e^2` against `π` | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
 | The von Mangoldt function of the system of the squares on the comb of the integers; contacts on the comb of squares; the autocorrelation in the halved coordinate | `OnItsOwnCombTheSystemOfTheSquaresFailsBezout` |
 | Rings given by their characters; sequences of rings and their defects per degree; the cyclotomic ring beyond a window | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
+| Pairs of contacts and constants; the functional of a pair as the energy of `c −` symbol; radical tests concentrated where the symbol exceeds the constant; the symbol of one contact | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
+| Sums in blocks of length `q`; sums over the multiples of an integer in a window; the valuation as a sum over the levels `p^k`; the mean of the Busemann function; trees with an edge length | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 | The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
 ## 12. Traps
@@ -1348,6 +1429,8 @@ All are unconditional.
 | The discriminant enters the pairing through the points | it is the ramification term of the genus: `log q_i` per character, with the multiplicity `n` at the degree point `n` |
 | At a finite aperture Bézout singles out the contacts of the square | it holds for a convex body of weight systems, with `Λ` inside wherever `Λ` has a margin; only the limit of the apertures is the point `Λ` |
 | The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with the conductor `q` fail at every aperture `≥ log log q + η` (corpus) |
+| A wrong contact is refuted whatever the constant | with the counterterm `log(n/2π) + c` it passes, under the Riemann hypothesis, exactly when `c` is at least the supremum of its symbol: `2|t|/√n₀` for one contact changed by `t` |
+| The trees can be glued with other edge lengths if the counterterm follows by the product formula | the counterterm then moves by the mean `(ℓ − log p)/(p − 1)` of the Busemann function; this is below the supremum of the symbol of the contacts for `ℓ > log p` and negative for `ℓ < log p`, and Bézout fails in both cases |
 
 ## 13. Open research topics
 
@@ -1511,11 +1594,14 @@ enters, Bézout holds for the square of the integers up to the aperture `181/500
 with the contact reversed, so an operator can be checked against both.
 
 *Construction II.* The jets are the Newtonian interaction of charges at the points `±n` of an
-axis, and the contacts of a prime are chain squares minus the diagonal (corpus). *Open:* one
-object on which the sum of the two is an intersection form whose diagonal at `n` is
-`−log(n/2π)`. A kernel invariant under the adelic group has a constant diagonal; the diagonal
-of the comb is the logarithm of a density, so the gluing has to know the comb: the mesh of the
-degree points in the logarithmic coordinate.
+axis, and the contacts of a prime are chain squares minus the diagonal (corpus). *Proved:* a
+kernel invariant under the adelic group has a constant diagonal (corpus); along the comb the
+counterterm is the sum of the Busemann functions of the trees, a tree glued with an edge length
+other than `log p` fails Bézout, and contacts are traded against the constant at the supremum
+of their symbol (`treeBezout_iff`, `combBezoutWith_iff`). *Open:* deviations of the contacts
+that are not summable against `n^{-1/2}`, such as a change of the edge length at infinitely
+many primes without decay; there the symbol is not a continuous function and the exchange law
+is not stated. A decision would be the law for the deviations bounded by a multiple of `Λ`.
 
 ### 13.8 A count
 
@@ -1575,8 +1661,10 @@ measured on the constructions of the next stage (§6) and on the nine questions 
   restriction is an equality of ideals, and in a tower the form of `ζ` has the weight one over
   the degree.
 - Construction V is decided on the comb of squares: the own comb gives the comb of the
-  integers with the contacts of the system. Constructions I, II and VI are open; each has a
-  kill condition that a contribution may meet instead of the deliverable.
+  integers with the contacts of the system. Construction II is decided for the trees glued
+  along the comb with an edge length: the gluing is the pairing itself and has no modulus.
+  Constructions I and VI are open; each has a kill condition that a contribution may meet
+  instead of the deliverable.
 - Question 1, Bézout for all packets, is the Riemann hypothesis, and the sign of the twisted
   part beyond the trivial aperture is the Landau–Siegel problem. Nothing in this folder proves
   either or claims to.

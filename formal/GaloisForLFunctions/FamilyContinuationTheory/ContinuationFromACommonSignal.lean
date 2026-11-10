@@ -20,6 +20,11 @@ A **kernel** `G` is holomorphic on `Re s > 1` and decays like `C/(1+t²)` unifor
 * **Two estimates** (`ne_zero_of_common_signal`): a sum `J` with `|J(Z)| ≤ K Z^{a₁}` and
   `|J(Z) − f(Z)| ≤ K Z^{a₂}` for large `Z` gives the half-plane `Re s > max a₁ a₂`.
 
+* **The family** (`ne_zero_of_family_common_signal`): if, whenever all members of a family are
+  zero-free in `Re s > β`, each member has such a sum with exponents below `β` that are the same
+  for all members, then no member has a zero in `Re s > σ₀` (`le_of_improving_bounds` is the
+  supremum step).
+
 In the application `L` is an `L`-function of a family, `E` a zero-free factor, the first bound is a
 direct estimate of a completed sum, and the second compares it with the signal up to the scale
 of the rightmost zeros of the family: the half-plane of every member improves at once.
@@ -431,5 +436,91 @@ theorem ne_zero_of_common_signal {G L E : ℂ → ℂ} (hG : IsSignalKernel G) {
           (le_trans (mul_le_mul_of_nonneg_right (le_abs_self K) hpos2)
             (mul_le_mul_of_nonneg_left h2 (abs_nonneg K)))
     _ = 2 * |K| * Z ^ max a₁ a₂ := by ring
+
+/-- **The supremum step.** A set of real numbers bounded by `1`, every upper bound `β > σ₀` of
+which can be lowered by a positive amount, lies below `σ₀`. -/
+theorem le_of_improving_bounds {S : Set ℝ} {σ₀ : ℝ} (hS : ∀ x ∈ S, x ≤ 1)
+    (hstep : ∀ β : ℝ, σ₀ < β → β ≤ 1 → (∀ x ∈ S, x ≤ β) →
+      ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ S, x ≤ max σ₀ (β - ε)) :
+    ∀ x ∈ S, x ≤ σ₀ := by
+  by_contra hcon
+  rw [not_forall] at hcon
+  obtain ⟨x₀, hx₀⟩ := hcon
+  rw [Classical.not_imp, not_le] at hx₀
+  obtain ⟨hx₀S, hx₀σ⟩ := hx₀
+  have hbdd : BddAbove S := ⟨1, fun x hx => hS x hx⟩
+  have hne : S.Nonempty := ⟨x₀, hx₀S⟩
+  have hβ : σ₀ < sSup S := lt_of_lt_of_le hx₀σ (le_csSup hbdd hx₀S)
+  obtain ⟨ε, hε, hlow⟩ := hstep (sSup S) hβ (csSup_le hne fun x hx => hS x hx)
+    fun x hx => le_csSup hbdd hx
+  have hle : sSup S ≤ max σ₀ (sSup S - ε) := csSup_le hne hlow
+  rcases le_max_iff.mp hle with h | h <;> linarith
+
+/-- **Family continuation.** Let `L η` be a family with zero-free factors `E η` and kernels
+`G η = E η / L η`. Suppose that whenever all members are zero-free in `Re s > β`, with
+`σ₀ < β ≤ 1`, every member has a sum `J` with a direct bound `Z^{a₁}` and a comparison `Z^{a₂}`
+with its signal, the exponents `a₁, a₂ < β` being the same for all members. Then no member has a
+zero in `Re s > σ₀`. -/
+theorem ne_zero_of_family_common_signal {ι : Type*} {G L E : ι → ℂ → ℂ} {σ₀ : ℝ}
+    (hσ₀ : σ₀ < 1) (hG : ∀ η, IsSignalKernel (G η))
+    (hL : ∀ η, DifferentiableOn ℂ (L η) {s : ℂ | σ₀ < s.re})
+    (hE : ∀ η, DifferentiableOn ℂ (E η) {s : ℂ | σ₀ < s.re})
+    (hE0 : ∀ η (s : ℂ), σ₀ < s.re → E η s ≠ 0)
+    (hGL : ∀ η (s : ℂ), 1 < s.re → G η s * L η s = E η s)
+    (hstep : ∀ β : ℝ, σ₀ < β → β ≤ 1 → (∀ η (ρ : ℂ), β < ρ.re → L η ρ ≠ 0) →
+      ∃ a₁ a₂ : ℝ, a₁ < β ∧ a₂ < β ∧ ∀ η, ∃ (J : ℝ → ℂ) (K Z₀ : ℝ), 1 ≤ Z₀ ∧
+        (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z‖ ≤ K * Z ^ a₁) ∧
+        (∀ Z : ℝ, Z₀ ≤ Z → ‖J Z - signal (G η) 2 Z‖ ≤ K * Z ^ a₂))
+    (η : ι) (ρ : ℂ) (hρ : σ₀ < ρ.re) : L η ρ ≠ 0 := by
+  -- zeros right of `1` do not exist: there `G L = E ≠ 0`
+  have hone : ∀ η (z : ℂ), 1 < z.re → L η z ≠ 0 := by
+    intro η z hz h0
+    have := hGL η z hz
+    rw [h0, mul_zero] at this
+    exact hE0 η z (by linarith) this.symm
+  set S : Set ℝ := {x : ℝ | ∃ η (z : ℂ), L η z = 0 ∧ σ₀ < z.re ∧ x = z.re} with hSdef
+  have hS1 : ∀ x ∈ S, x ≤ 1 := by
+    rintro x ⟨η, z, hz0, -, rfl⟩
+    by_contra hlt
+    exact hone η z (not_le.mp hlt) hz0
+  have hall : ∀ x ∈ S, x ≤ σ₀ := by
+    refine le_of_improving_bounds hS1 fun β hβ hβ1 hub => ?_
+    have hfree : ∀ η (z : ℂ), β < z.re → L η z ≠ 0 := by
+      intro η z hz h0
+      have := hub z.re ⟨η, z, h0, by linarith, rfl⟩
+      linarith
+    obtain ⟨a₁, a₂, ha₁, ha₂, hJ⟩ := hstep β hβ hβ1 hfree
+    refine ⟨β - max σ₀ (max a₁ a₂), by
+      have : max σ₀ (max a₁ a₂) < β := max_lt hβ (max_lt ha₁ ha₂)
+      linarith, ?_⟩
+    rintro x ⟨η, z, hz0, hzσ, rfl⟩
+    rw [sub_sub_cancel]
+    refine le_trans ?_ (le_max_right _ _)
+    by_contra hlt
+    rw [not_le] at hlt
+    obtain ⟨J, K, Z₀, hZ₀, hJ1, hJ2⟩ := hJ η
+    have hb1 : max a₁ σ₀ < 1 := max_lt (by linarith) hσ₀
+    have hb2 : max a₂ σ₀ < 1 := max_lt (by linarith) hσ₀
+    have hmax : max (max a₁ σ₀) (max a₂ σ₀) = max σ₀ (max a₁ a₂) := by
+      rw [max_comm a₁ σ₀, max_comm a₂ σ₀, ← max_max_distrib_left]
+    have hsub : {s : ℂ | max (max a₁ σ₀) (max a₂ σ₀) < s.re} ⊆ {s : ℂ | σ₀ < s.re} := by
+      intro s hs
+      exact lt_of_le_of_lt (le_trans (le_max_right a₁ σ₀) (le_max_left _ _)) hs
+    have hpow : ∀ {a : ℝ} (Z : ℝ), Z₀ ≤ Z → Z ^ a ≤ Z ^ max a σ₀ := fun Z hZ =>
+      Real.rpow_le_rpow_of_exponent_le (le_trans hZ₀ hZ) (le_max_left _ _)
+    refine ne_zero_of_common_signal (hG η) (a₁ := max a₁ σ₀) (a₂ := max a₂ σ₀) (K := |K|) J hb1 hb2
+      hZ₀ ?_ ?_ ((hL η).mono hsub) ((hE η).mono hsub) (fun s hs => hE0 η s (hsub hs)) (hGL η) z
+      (by rw [hmax]; exact hlt) hz0
+    · intro Z hZ
+      exact le_trans (hJ1 Z hZ) (le_trans
+        (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.rpow_nonneg (by linarith) _))
+        (mul_le_mul_of_nonneg_left (hpow Z hZ) (abs_nonneg K)))
+    · intro Z hZ
+      exact le_trans (hJ2 Z hZ) (le_trans
+        (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.rpow_nonneg (by linarith) _))
+        (mul_le_mul_of_nonneg_left (hpow Z hZ) (abs_nonneg K)))
+  intro h0
+  have := hall ρ.re ⟨η, ρ, h0, hρ, rfl⟩
+  linarith
 
 end GaloisForLFunctions.FamilyContinuationTheory

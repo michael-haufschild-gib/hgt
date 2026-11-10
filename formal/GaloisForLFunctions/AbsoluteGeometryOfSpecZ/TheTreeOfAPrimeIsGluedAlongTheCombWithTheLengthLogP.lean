@@ -255,7 +255,7 @@ theorem tendsto_degreeSum_multiples {G : ℝ → ℝ} (hG : Continuous G) {Lp B 
 
 /-- The multiples of `q` in a window carry at most the fraction `1/q` of the supremum. -/
 theorem abs_sum_filter_dvd_degreeTerm_le {G : ℝ → ℝ} {B : ℝ} (hB : ∀ u, |G u| ≤ B) (L : ℕ)
-    {N q : ℕ} (hN : 0 < N) (hq : 0 < q) :
+    {N : ℕ} (q : ℕ) (hN : 0 < N) :
     |∑ n ∈ (Ioc N (N + L * N)).filter (fun n => q ∣ n), degreeTerm G N n| ≤
       B * (1 + L) * (q : ℝ)⁻¹ := by
   have hB0 : 0 ≤ B := (abs_nonneg _).trans (hB 0)
@@ -413,7 +413,7 @@ theorem tendsto_busemannMass {p : ℕ} (hp : p.Prime) (hf : ContDiff ℝ 2 f)
       Bf ^ 2 * (1 + ((3 * K : ℕ) : ℝ)) * ((p : ℝ)⁻¹) ^ (k + 1) := by
     filter_upwards [eventually_ge_atTop 1] with N hN k
     have h := abs_sum_filter_dvd_degreeTerm_le (G := fun u => f u ^ 2) hBG (3 * K)
-      (N := N) (q := p ^ (k + 1)) (by omega) (pow_pos hp.pos (k + 1))
+      (N := N) (p ^ (k + 1)) (by omega)
     rw [Real.norm_eq_abs]
     refine h.trans (le_of_eq ?_)
     rw [Nat.cast_pow, inv_pow]
@@ -435,6 +435,7 @@ theorem tendsto_busemannMass {p : ℕ} (hp : p.Prime) (hf : ContDiff ℝ 2 f)
 
 /-! ### The tree of a prime with another edge length -/
 
+open Classical in
 /-- The deviation of the contacts of a tree at `p` whose edges are longer by `t`: the weight `t`
 on the positive powers of `p`. -/
 def treeDeviation (p : ℕ) (t : ℝ) : ℕ → ℝ := fun n => if ∃ k : ℕ, n = p ^ (k + 1) then t else 0
