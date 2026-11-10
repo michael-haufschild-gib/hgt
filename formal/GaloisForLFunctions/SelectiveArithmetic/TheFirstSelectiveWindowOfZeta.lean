@@ -112,7 +112,8 @@ theorem eq_zero_of_abs_gt_of_tsupport {f : ℝ → ℝ} {a : ℝ}
     have h := hfs hmem
     have : |u| ≤ a := abs_le.mpr ⟨h.1, h.2⟩
     linarith
-  have h0 : ((f u : ℝ) : ℂ) = 0 := image_eq_zero_of_notMem_tsupport hnot
+  have h0 : ((f u : ℝ) : ℂ) = 0 :=
+    image_eq_zero_of_notMem_tsupport (f := fun u => ((f u : ℝ) : ℂ)) hnot
   exact_mod_cast h0
 
 /-- For `a ≤ 181/500` only the contact `2` is visible. -/

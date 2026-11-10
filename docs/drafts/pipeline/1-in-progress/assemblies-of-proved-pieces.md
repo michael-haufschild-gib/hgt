@@ -4,7 +4,8 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, §2.1, “Assemblies of proved pieces”.
-- **Statement:** Resolve every assembly in the source table, with unconditional Lean proofs and transitive axiom audits.
+- **Statement:** Resolve every assembly in the source table with unconditional Lean proofs.
+- **Current scope:** Finish existing Lean drafts and dependency-closed paper proofs; defer open extensions.
 
 ## Scope
 

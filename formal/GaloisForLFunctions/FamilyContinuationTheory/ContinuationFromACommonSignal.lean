@@ -478,7 +478,7 @@ theorem ne_zero_of_family_common_signal {ι : Type*} {G L E : ι → ℂ → ℂ
     have := hGL η z hz
     rw [h0, mul_zero] at this
     exact hE0 η z (by linarith) this.symm
-  set S : Set ℝ := {x : ℝ | ∃ η (z : ℂ), L η z = 0 ∧ σ₀ < z.re ∧ x = z.re} with hSdef
+  set S : Set ℝ := {x : ℝ | ∃ (η : ι) (z : ℂ), L η z = 0 ∧ σ₀ < z.re ∧ x = z.re} with hSdef
   have hS1 : ∀ x ∈ S, x ≤ 1 := by
     rintro x ⟨η, z, hz0, -, rfl⟩
     by_contra hlt

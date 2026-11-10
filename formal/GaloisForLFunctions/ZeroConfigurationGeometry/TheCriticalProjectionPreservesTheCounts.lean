@@ -101,10 +101,11 @@ theorem criticalProjectionConfig_N (Z : ZeroConfig) (T₁ T₂ : ℝ) :
     · rintro ⟨hρ, him⟩
       have him' : ρ.im = w.im := him
       refine ⟨(Z.finite_window T₁ T₂).mem_toFinset.mpr ⟨hρ, ?_⟩, ?_⟩
-      · simpa only [him'] using hw'.2
+      · simpa only [Set.mem_setOf_eq, him'] using hw'.2
       · exact Complex.ext rfl him'
     · rintro ⟨hρ, he⟩
-      exact ⟨((Z.finite_window T₁ T₂).mem_toFinset.mp hρ).1, congrArg Complex.im he⟩
+      exact ⟨((Z.finite_window T₁ T₂).mem_toFinset.mp hρ).1,
+        by simpa only [criticalProjection] using congrArg Complex.im he⟩
   rw [Finset.sum_congr rfl (fun z hz => congrArg (fun F : Finset ℂ => ∑ ρ ∈ F, Z.mult ρ)
     (hfiber z hz))]
   exact Finset.sum_fiberwise_of_maps_to (s := S) (t := S.image criticalProjection)
