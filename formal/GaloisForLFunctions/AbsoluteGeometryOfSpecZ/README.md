@@ -1258,6 +1258,12 @@ is not the Riemann hypothesis?*
   all short ones (`exists_not_treeBezoutAt_two`), and holds exactly from a threshold `ℓ*(L)` on
   (`exists_treeThreshold_two`). For `L ≤ 181/250`, `ℓ*(L) ≤ log 2 − 1/10000`
   (`treeBezoutAt_two_of_width`).
+- The threshold is the margin of the square in another unit: a tree shorter than `log 2` that
+  satisfies Bézout gives `Z ≥ (log 2 − ℓ)(1 − 1/√2) ∫f²`, a margin `m` gives Bézout for
+  `ℓ ≥ log 2 − m/2`, and the square has a margin at the length `L` iff `ℓ*(L) < log 2`
+  (`zeroSum_ge_of_treeBezoutAt_two`, `treeBezoutAt_two_of_margin`,
+  `exists_margin_iff_exists_treeBezoutAt_two_lt`). On all packets there is no margin and the
+  threshold is `log 2` itself.
 - For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and on
   packets of any length above `log p` every long tree fails (`exists_packet_treeGenerator_neg`,
   `exists_not_treeBezoutAt_of_three_le`).
@@ -1428,6 +1434,7 @@ from the supremum of their symbol on (`combBezoutWith_iff`).
 | The constant is nonnegative and at `2π` the contacts are rigid; one contact changed by `t` at `n₀` costs `2|t|/√n₀` | `nonneg_of_combBezoutWith`, `combBezoutWith_zero_right_iff`, `combBezoutWith_contactAt_iff` |
 | The valuation at `p` has the mean `1/(p − 1)` against a packet; a tree glued along the comb with the edge length `ℓ` satisfies Bézout iff the Riemann hypothesis holds and `ℓ = log p` | `tendsto_degreeSum_multiples`, `tendsto_busemannMass`, `tendsto_treePairing`, `treeBezout_iff` |
 | On packets of length at most `log 4` the generator of the length of the tree of `2` is at least `(1 − 1/√2)` times the mass; Bézout is monotone in the length, holds for long trees without hypothesis and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two`, `treeBezoutAt_two_of_width` |
+| The square has a margin on the packets of a length `L ≤ log 4` iff some tree of `2` shorter than `log 2` satisfies Bézout there | `exists_margin_iff_exists_treeBezoutAt_two_lt`, `zeroSum_ge_of_treeBezoutAt_two`, `treeBezoutAt_two_of_margin` |
 | For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and long trees fail | `exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le` |
 | On packets of a given length the sum over the zeros is at least a negative multiple of the mass | `exists_zeroSum_ge_of_length` |
 | The functions of the square on two graphs are the pairs congruent modulo the contact ideal; a section `x` has `\|x_m x_n\|` residues there, `k²` times as many for `k x`, and the count violates the parallelogram law | `range_ghostComponent_pair`, `card_quotient_graphPair`, `card_quotient_graphPair_intCast_mul`, `exists_not_parallelogram_pairRing` |

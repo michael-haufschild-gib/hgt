@@ -784,7 +784,10 @@ excluded by any element of `S`, or the value stays negative at some `ℓ' ∈ S`
 (v) `Z ≥ ∫f²/5000` on packets of length `≤ 181/250` (C20) and `E₂ ≤ 2∫f²`. (vi) Two bumps of
 half-width `r` at the distance `log p`, `4r ≤ log p`: `∫f² = 2Φ(0)` and `h_f(log p) = Φ(0)`
 with `Φ` the autocorrelation of one bump, so `E_p = 2Φ(0)(1/(p−1) − 1/√p) < 0` because
-`√p < p − 1` for `p ≥ 3`; then `Z + (ℓ − log p)E_p < 0` for `ℓ` large. ∎
+`√p < p − 1` for `p ≥ 3`; then `Z + (ℓ − log p)E_p < 0` for `ℓ` large. (vii) Margin and
+threshold: if Bézout holds at a length `ℓ ≤ log 2` then `Z ≥ (log 2 − ℓ)E₂ ≥ (log 2 − ℓ)(1 −
+1/√2)∫f²`; if `Z ≥ m∫f²`, `m ≥ 0`, then `Z + (ℓ − log 2)E₂ ≥ m∫f² − (m/2)·2∫f² = 0` for
+`ℓ ≥ log 2 − m/2`. So the square has a margin at the length `L` iff `ℓ*(L) < log 2`. ∎
 
 **G12 (the count of a section on two graphs).** For an ideal `J ⊂ ℤ` let
 `R_J = {(a, b) ∈ ℤ × ℤ : a − b ∈ J}`. (i) For `m, n ≥ 1` the image of the square under
