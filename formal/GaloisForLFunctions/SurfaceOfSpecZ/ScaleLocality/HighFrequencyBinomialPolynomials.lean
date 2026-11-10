@@ -28,7 +28,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 
-open SplineTower
+open ArithmeticOrientationGeometry ArithmeticCastelnuovoSeveri SquareRootThreshold Zeta23 SplineTower
 
 /-! ### High-frequency binomial polynomial on a short arc -/
 
@@ -61,7 +61,7 @@ theorem highFreqPoly_add_low (m₀ : ℕ) (z : ℂ) :
   rw [← Finset.sum_union hdisj, ← hsplit]
   have hbin := add_pow z (1 - z) (2 * m₀)
   rw [add_sub_cancel, one_pow] at hbin
-  rw [hbin]
+  refine Eq.trans ?_ hbin.symm
   refine Finset.sum_congr rfl fun m _ => by ring
 
 /-- On the arc `‖z‖ = 1, ‖1 − z‖ ≤ 1/4`, `highFreqPoly m₀ z` is within `1/4` of `1`. -/
@@ -225,8 +225,9 @@ theorem abs_highFreqCoeff_le {m₀ d : ℕ} (hm₀ : 1 ≤ m₀) (hd : d ≤ 2 *
         refine mul_le_mul_of_nonneg_right ?_ (by positivity)
         have hcard : (Finset.Icc m₀ d).card ≤ 2 * m₀ := by
           rw [Nat.card_Icc]; omega
-        have hpow : 2 * m₀ ≤ 4 ^ m₀ := by
-          induction m₀ with
+        have hpow_gen : ∀ k : ℕ, 1 ≤ k → 2 * k ≤ 4 ^ k := by
+          intro k hk
+          induction k with
           | zero => omega
           | succ n ih =>
             rcases eq_or_lt_of_le (Nat.zero_le n) with rfl | hn
@@ -235,7 +236,7 @@ theorem abs_highFreqCoeff_le {m₀ d : ℕ} (hm₀ : 1 ≤ m₀) (hd : d ≤ 2 *
               have h2 : 1 ≤ 4 ^ n := Nat.one_le_pow n 4 (by decide)
               rw [pow_succ]
               omega
-        exact_mod_cast hcard.trans hpow
+        exact_mod_cast hcard.trans (hpow_gen m₀ hm₀)
     _ = (64 : ℝ) ^ m₀ := by
         rw [← mul_pow, ← mul_pow]
         norm_num
@@ -258,7 +259,7 @@ theorem norm_one_sub_exp_I_le (θ : ℝ) :
     have h2 := congrArg Real.sqrt hsq
     rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq_eq_abs] at h2
   rw [h1, abs_mul, abs_two]
-  have hsin := Real.abs_sin_le_abs (θ / 2)
+  have hsin : |Real.sin (θ / 2)| ≤ |θ / 2| := Real.abs_sin_le_abs
   rw [abs_div, abs_two] at hsin
   linarith
 
@@ -486,7 +487,7 @@ theorem norm_sincC_pow_eight_shift_sub_le {γ η x : ℝ} (hγ : 4 ≤ γ) (hη 
     rw [show (η : ℂ) / 2 = ((η / 2 : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_sin]
     rw [norm_mul, norm_mul, norm_two, Complex.norm_real, Real.norm_eq_abs]
     have hsin : |Real.sin (η / 2)| ≤ η / 2 := by
-      refine (Real.abs_sin_le_abs (η / 2)).trans ?_
+      refine Real.abs_sin_le_abs.trans ?_
       rw [abs_of_nonneg (by positivity)]
     have hcos : ‖Complex.cos (generalSplinePoint (γ + η / 2) x)‖ ≤ 2 :=
       (norm_cos_generalSplinePoint_le_cosh _ _).trans (cosh_le_two_of_le_half hx0 hx1)
@@ -640,10 +641,9 @@ theorem phase_split_pair_eq {w : ℂ} (hw : w ≠ 0) {r₀ a A : ℝ}
     have h1 : ((signAngle a - w.arg + α : ℝ) : ℂ) * I =
         (((signAngle a - w.arg : ℝ) : ℂ) * I) + ((α : ℂ) * I) := by push_cast; ring
     have h2 : ((signAngle a - w.arg - α : ℝ) : ℂ) * I =
-        (((signAngle a - w.arg : ℝ) : ℂ) * I) - ((α : ℂ) * I) := by push_cast; ring
-    rw [h1, h2, Complex.exp_add, Complex.exp_sub, Complex.ofReal_mul, Complex.ofReal_ofNat,
+        (((signAngle a - w.arg : ℝ) : ℂ) * I) + (-(α : ℂ) * I) := by push_cast; ring
+    rw [h1, h2, Complex.exp_add, Complex.exp_add, Complex.ofReal_mul, Complex.ofReal_ofNat,
       ← hcos, Complex.ofReal_cos, Complex.cos]
-    field_simp [Complex.exp_ne_zero]
     ring
   rw [hsum_exp]
   have hw_polar := (Complex.norm_mul_exp_arg_mul_I w).symm
@@ -671,7 +671,9 @@ theorem phase_split_pair_eq {w : ℂ} (hw : w ≠ 0) {r₀ a A : ℝ}
         have hreal : ‖w‖ * (2 * b) = (2 * r₀ / A) * |a| := by
           dsimp only [b]
           field_simp [hwn.ne', hA.ne']
-        rw [← mul_assoc, ← Complex.ofReal_mul, ← hreal, Complex.ofReal_mul]
+        rw [hreal]
+        push_cast
+        ring
     _ = (((2 * r₀ / A) * a : ℝ) : ℂ) := by
         rw [abs_mul_cexp_signAngle, Complex.ofReal_mul]
 

@@ -3,7 +3,7 @@
 - **ID:** B130-arithmetic-phase-mixture
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Source:** [Endpoint tangent obstruction](../2-fully-proven/endpoint-tangent-moment-obstructs-polynomial-scaling.md).
+- **Source:** [Endpoint tangent obstruction](../3-formalized/endpoint-tangent-moment-obstructs-polynomial-scaling.md).
 
 ## Candidate
 
@@ -52,7 +52,16 @@ Dirichlet Euler logarithm on `Re s>1`.
 zero-free neighborhood of one for the actual nonprincipal character,
 with no additional analytic premise. These supply the local logarithm
 of `L(s,χ)`; the weighted prime-log decomposition and Taylor-shift
-bounds remain the new work.
+bounds remain the new work. `PrimeTorusTheory.analyticOnNhd_hullRem`
+currently assumes unit modulus at every prime. Since `χ(2)=0`, its use
+requires the finite correction obtained by replacing that prime value
+by one, or a proved norm-at-most-one remainder estimate.
+
+A bounded horizontal neighborhood for the continued χ-prime logarithm
+would suffice for the scaling step: combine its local analytic germ
+at one with absolute convergence on `Re s≥1+ε`. Summable Taylor
+coefficients would then give dominated convergence, with cancellation
+from `S(1)=0`.
 
 ## Consequence
 

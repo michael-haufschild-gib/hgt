@@ -1,8 +1,8 @@
 # Endpoint tangent moment forces a surviving singular shift
 
 - **ID:** B130-endpoint-tangent-moment
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Source:** [Analytic prime smoothing](../3-formalized/universal-moving-branch-for-analytic-prime-smoothing.md).
 
 ## Statement
@@ -58,9 +58,19 @@ positive-real coefficient by the shifted singularity argument. For
 `k≥1`, nonpositive `Re b_k` gives `k Re b_k≤Re b_k`. Summing yields
 `Re Ψ′(1)≤Σ Re b_k=-2`. Thus every endpoint derivative with real part
 strictly greater than `-2` is obstructed, beyond the tangent-zero class.
-Corpus search found no matching bound. The affine profile `1-2z`
-suggests equality is attainable; that explicit profile calculation is
-not part of the present formalized claim.
+Corpus search found no matching bound.
+
+## Lean
+
+- `GaugeDeformations/AnalyticSmoothingMoment.lean`: first Taylor moment,
+  endpoint tangent, affine averaging, and a positive-real coefficient.
+- `GaugeDeformations/AnalyticSmoothingMomentRigidity.lean`:
+  `analyticSmoothing_endpoint_moment_rigidity`,
+  `analyticPhase_affine_average_no_entire_scaling`, and
+  `analyticSmoothing_entire_endpoint_bound`.
+
+The capstones depend only on `propext`, `Classical.choice`, and
+`Quot.sound`.
 
 ## Scope
 
@@ -72,7 +82,7 @@ has not been assessed.
 
 ## Next candidate
 
-`Φ±(z)=1-4z²+2z⁴ ± 2iz(1-z²)√(2-z²)` should give normalized
-unimodular profiles whose mean has `b₂=-4`, `b₄=2`. Its expected
-profile is `ζ(2)(w+2)⁴/(w+4)²`: the first shift is a zero, the later
-shift a pole. The pair and its arithmetic realization are unformalized.
+[Arithmetic phase mixing](../0-backlog/arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md):
+a quadratic-character mixture with a regular first shifted zero and
+a later moving pole. Its actual Euler continuation and scaling remain
+unformalized.

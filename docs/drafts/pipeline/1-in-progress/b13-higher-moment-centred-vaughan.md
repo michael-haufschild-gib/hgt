@@ -59,6 +59,9 @@ weight `H_b(x)=log(x/b)x^(a−it)exp(−εx²)`,
 
 `∫|H_b'|≤M_α(a−1)+|a−it|J_α(a−1)+2|ε|J_α(a+1)`.
 
+Here `M_α(q)=∫₀∞x^q exp(−αx²)dx` and
+`J_α(q)=∫₀∞|log(x/b)|x^q exp(−αx²)dx`.
+
 The inequality `|log(x/b)|≤x/X+X/x+|log(X/b)|` and `αX²=2` give
 `J_α(q)≤X^(q+1)B(q)(1+|log(X/b)|)`.
 Use `|a−it|≤(p+1)t`, `2|ε|X²≤16t`, and
@@ -77,7 +80,10 @@ For `1≤n≤U`, use `Λ(n)≤log U`, `exp(−αn²)≤1`, and
 `(4α)^r U^p U^(1−σ)log U`, hence at most
 `8^r U^p X^(1−σ−p)log U` when `U≤X`.
 
-Vaughan's exact identity and absolute convergence yield
+The prime coefficient is at most `n`, and the two type-I convolutions
+have absolute coefficients at most `n²`. Gaussian decay therefore gives
+absolute convergence. Vaughan's coefficient identity also gives convergence
+of type II by subtraction. The complete identity is
 `M_r=H−I_1+I_log+T_II`. Subtracting the centred current leaves
 `H−(I_1−A_UV P_r)+(I_log−(B_V L_r−D_V P_r))`.
 Apply the head, first type-I and logarithmic bounds. With the previously
@@ -93,7 +99,12 @@ For `η>0`, `1+log X≤(1+1/η)X^η`. Thus the two explicit budgets
 
 give error at most `(8^r+K_r,σ+L_r,σ)(1+1/η)/t`.
 For `0<η<σ` and polynomial-height `V`, the first budget permits product
-cutoffs approaching exponent `1−(1−σ)/(2r)` as the slack decreases.
+cutoffs approaching exponent `1−(1−σ)/(2r)` as the slack decreases,
+apart from the explicit polynomial height factors.
 At `σ=1/2`, this exponent is `3/4` for `r=1` and `7/8` for `r=2`.
 These are unfiltered reduction bounds, not estimates for the remaining
 centred current itself.
+
+The gain is the larger unbalanced cutoff range. The first-variation
+logarithmic remainder is weaker than the existing second-order remainder
+at small cutoffs; no uniform improvement across all cutoff choices is claimed.

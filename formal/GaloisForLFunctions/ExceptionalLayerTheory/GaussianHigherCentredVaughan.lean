@@ -334,8 +334,8 @@ theorem norm_gaussianHigherMoment_sub_centredVaughan_product_le (r : ℕ) (hr : 
       ((U * V : ℕ) : ℝ) ^ (2 * r) * (1 + Real.log X) := by gcongr
   apply (norm_gaussianHigherMoment_sub_centredVaughan_le
     r hr hσ hσ1 ht hε hsector hX hscale hU hV hUX hVX).trans
-  have hs := _root_.add_le_add_right (_root_.add_le_add hH hZ)
-    (gaussianHigherLogMomentConstant r σ * t * X ^ (-σ) * (1 + Real.log X) * V)
+  have hs := _root_.add_le_add (_root_.add_le_add hH hZ)
+    (le_refl (gaussianHigherLogMomentConstant r σ * t * X ^ (-σ) * (1 + Real.log X) * V))
   exact hs.trans_eq (by ring)
 
 /-- Positive power slack absorbs the logarithm. The two explicit cutoff
