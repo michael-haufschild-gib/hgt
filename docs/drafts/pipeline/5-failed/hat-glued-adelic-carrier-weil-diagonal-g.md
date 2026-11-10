@@ -1,0 +1,30 @@
+# Glued adelic carrier normalization for Weil's diagonal without counterterm (Question G)
+
+- **ID:** hat-glued-adelic-carrier-weil-diagonal-g
+- **Stage:** 5-failed
+- **Type:** FALSIFIED
+- **Source:** `docs/reports/review-0911/fable.md` §5.3 (Question **(G)**)
+- **Statement:** There is a normalization of the coupled orbit sum on `X = Γ \ (ℍ³ × Π'_p PGL₂(ℚ_p)/PGL₂(ℤ_p))`, invariant under the rational torus `T(ℚ)` and determined by `Δ_{ℍ³}` and `{A_p}_p` alone, whose finite part is Weil's form as a bilinear pairing of the degree points — matching contacts plus jets off-diagonal and the Robin-normalized scattering tower on packets, with no further counterterm.
+
+## Goal
+Test whether the three separate realizations of pieces of Weil's explicit formula — contacts plus jets in the arithmetic square, the coupled torus-orbit finite part on the adelic carrier `X`, and the Robin-normalized packet functional on the modular scattering tower — arise as the finite part of one `T(ℚ)`-invariant glued object on `X` determined by `Δ_{ℍ³}` and `{A_p}_p` alone.
+
+## Gates
+- [x] 0 → 1  in-progress: exact formulation on `GlobalSpace = ℍ³ × Π'_p PGL₂(ℚ_p)/K_p` and `X = Γ \ GlobalSpace`
+- [x] 1 → 5  falsified: refuted unconditionally on paper and in Lean 4, with all positive structural survivors formalized
+
+## No-go closure (mandatory when falsified)
+- **Exact killing theorem/mechanism:** Four independent obstructions (`GluedCarrierNoGo.refutation_of_glued_carrier_question_G` in `WeilsDiagonalIsNotOneGluedCarrierObject.lean`):
+  1. *Constant-diagonal rigidity and dyadic divergence:* The adelic split-torus element `adelicDegreeShift n = (diagSL2 √n, (diag(n, 1))_p) ∈ AdelicGroup` maps `x_1 ↦ x_n` and commutes with `T(ℚ)` (`adelicDegreeShift_comm_torus`), forcing every `AdelicGroup`-invariant kernel `K₀` and every torus-orbit functional `ℛ : (ℚˣ → ℝ) → ℝ` to have a degree-independent diagonal `B(n, n) = B(1, 1)` (`local_invariant_torus_diagonal_const`). Any pairing matching `weilDeltaKernel` off-diagonal with `B(n, n) ≤ C(1 + log n)` satisfies `dyadicNormalizedPairing B N ≤ 2|C|(1 + log(2N)) + (17/4)N - (1/4)N log N → -∞`, whereas the scattering tower on shifted `C_c²` packets `F₀(u - log N)` is identically `weilQuad F₀` (`torus_invariant_local_glued_form_diverges_from_tower`).
+  2. *Off-diagonal product erasure and Pell divergence:* The global `AdelicGroup`-invariant critical product `adelicCriticalProduct` evaluates at `(x_m, x_n)` to `gcd(m, n) max(m, n) / |n² - m²|` (erasing `Λ` via the product formula), collides in `ℍ³` on square-ratio pairs `(m, m k²)` with finite factor `k⁻² > 0`, and diverges over `NonCollidingTorus m n` for all `(m, n)` via Pell approximations `X² - m n Y² = 1` (`not_summable_adelicCriticalProduct_torus_noncolliding`). Moreover, Weil height balls on `T(ℚ)` strictly shrink under prime multiplication (`weilHeight_ball_mul_prime_ssubset`).
+  3. *Bounded-place-rank Hecke vanishing:* Every word of `< #S` prime operators vanishes between `[x_1]` and `[x_{∏ S}]` (`#S ≥ 2`) where `weilDeltaKernel 1 (∏ S) > 0` (`primeWord_eq_zero_and_weilDeltaKernel_pos`), and `primeOperator p 1_{[x_p]} ([x_1]) = 0` for every prime `p` (`primeOperator_indicator_degree_eq_zero`).
+  4. *Discriminant counterterm jump on smooth packets:* On separated `C_c²` packets, `(lim_{r→1⁻} gramLockedPacket) - (lim_{M→∞} geometricWeilEnergy) = -(∫ g²) ∑ x_n² selfIntersection n` at the archimedean digamma normalization (`gramLocked_sub_scatteringTower_eq_neg_discriminant`), and for *every* scalar `c ∈ ℝ` the discrepancy jumps between `unitAtom p` and `unitAtom (p³)` by `-2(∫ g²) log p < 0` (`gramLocked_sub_scatteringTower_prime_cube_jump`).
+- **Strongest positive survivor:** Three exact positive structural theorems exposed by the obstruction:
+  1. *Foliation duality on `X`* (`CarrierSeparation.same_finite_leaf_iff_isSquare`, `CarrierSeparation.same_arch_orbit_iff_sum_two_squares`): two degree points share an `ℍ³`-leaf iff `m n = □`, and share an archimedean `Γ`-orbit iff `m n = x² + y²`.
+  2. *Global `AdelicGroup`-invariant critical Green product and closed rational torus law* (`CoupledProductObstruction.adelicCriticalProduct_smul`, `CoupledProductObstruction.adelicCriticalProduct_torus_pos_rat`): `adelicCriticalProduct x_m (γ_{a/b} • x_n) = gcd(n b², m a²) max(m b², n a²) / |(n a²)² - (m b²)²|` whenever `m b² ≠ n a²`.
+  3. *Exact archimedean constant bridge and tower shift invariance* (`ArchimedeanConstantBridge.gammaHardyPhaseRate_zero_eq_regularMean_add_robin`, `ArchimedeanConstantBridge.four_mul_regularMean_eq`, `ArchimedeanConstantBridge.tendsto_geometricWeilEnergy_shift_re_weilQuad`): `gammaHardyPhaseRate 0 = -2 * regularMean + (robinCounterterm (1 / 2)).re - γ / 2`, and `(geometricWeilEnergy (fun u => (F (u - c) : ℂ)) N).re → weilQuad F` independently of `c`.
+- **New insight:** The scalar archimedean constants of the coupled torus orbit (`regularMean = log 2 / 4 + π / 8`), the modular cusp Robin term (`-log(4π)/2`), and Euler's constant `γ` match Weil's central digamma constant `gammaHardyPhaseRate 0` at degree `1`, so the failure of **(G)** is purely a *degree-variation* obstruction: `AdelicGroup` homogeneity plus `T(ℚ)` commutation freezes every local-isometry diagonal to a constant across `n`, whereas gluing to the shift-invariant continuum scattering tower requires absorbing the arithmetic discriminant `selfIntersection n` on separated smooth packets and `≍ N log N` on atomic blocks.
+- **Status:** Dependency-closed on paper (`docs/drafts/pipeline/3-formalized/hat-weils-diagonal-is-not-one-glued-carrier-object.md`) and unconditionally formalized in Lean 4 across `TheLeafAndHeckeSeparationOfTheAdelicCarrier.lean`, `TheCoupledLocalProductObstructsOffDiagonalAndTorusInvariance.lean`, `TheCoupledOrbitDensityMatchesTheArchimedeanConstants.lean`, and `WeilsDiagonalIsNotOneGluedCarrierObject.lean` (`[propext, Classical.choice, Quot.sound]`).
+
+## Log
+- 2026-11-10 — Refuted unconditionally and closed with all three positive structural survivors formalized in Lean 4.

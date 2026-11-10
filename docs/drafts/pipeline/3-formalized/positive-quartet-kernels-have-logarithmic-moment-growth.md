@@ -19,9 +19,9 @@ simple zeros nor a zero of maximal depth is assumed.
 
 The existing theorem `RHTower.quartet_seed_transfer` supplies
 `k=θ+εu>0`, where `u=quartetSource a`, `|u|≤C_u θ`, and
-`û(z)=z² XiC(z)/P(z)` for the full quartet divisor `P`.
-Its transform is `XiC(z)(P(z)+εz²)/P(z)`, with exactly the stated
-behavior at Xi zeros. It is even and bounded in absolute value by
+`û(z)P(z)=z² XiC(z)` for the full quartet divisor `P`.
+The perturbed transform satisfies `k̂(z)P(z)=XiC(z)(P(z)+εz²)`, with
+exactly the stated behavior at Xi zeros. It is even and bounded in absolute value by
 `(1+ε|C_u|)θ`.
 
 First-atom domination and theta reflection give

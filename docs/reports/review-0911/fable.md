@@ -13,7 +13,7 @@
 | B85, B86, B142: the family step is open | fixed-part theorem `[P]`, `ArithmeticWeightTheory/TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily` `[S]` |
 | B125: no halving pairs is a condition | void: `riemannHypothesis_iff_sharp_rate_and_no_shimura_obstruction` `[L*]` |
 | Π103: no saving for long Möbius mean values past the height | `averagedMeanSquare_moebius_of_tendsto`: Matomäki–Radziwiłł for `μ` at every length `h→∞`, `h≤√x`, in fibre form `[L*]` |
-| Π144: no `p`-derivation in the corpus | `SignFreePurityMechanisms/TheFermatQuotientIsTheDerivativeAtAPrime` `[S]`; `δ_p` on the ghost ring `[P]` |
+| Π144: no `p`-derivation in the corpus | `SignFreePurityMechanisms/TheFermatQuotientIsTheDerivativeAtAPrime` `[L]`; `δ_p` on the ghost ring `[P]` |
 
 ---
 
@@ -44,7 +44,7 @@ In the original variable the window is `[x·e^{−C(log log x)²}, x·e^{C(log l
 | Conversion | Where it proves a Riemann hypothesis | Over ℤ |
 |---|---|---|
 | sign of a form (Hodge index, Maass–Selberg, Landau) | Weil for curves; the Lagarias–Suzuki line law `[L*]` | the routes of U-Σ; no producer |
-| integrality gap with a cheap source of vanishing | Stepanov–Bombieri; transcendence | the product formula is an identity; vanishing costs its own count `[S]` |
+| integrality gap with a cheap source of vanishing | Stepanov–Bombieri; transcendence | the product formula is an identity; vanishing costs its own count `[L]` |
 | exact recurrence in height | curves (periodic zeros) | the dark range: only primes `≲ log t` are prescribable at height `t` `[L]` |
 | separation by an invariant of the symmetry | Carlitz–Goss `[C]` | a receiver: the ordinate separates ⇔ RH `[L]` |
 
@@ -80,7 +80,7 @@ The curve proof needs neither coordinate: finite rank makes ZAL automatic and pe
 | Subcritical positivity | complete matrix PD for exponent `<1/8` and one critical multiple | CACT `[L/K]` |
 | The window chain | precontact canonical system, `L′=q−sinh 2L`, restoring bound, RH ⇔ `Ψ` locally bounded | CSTW, AIF `[L]` |
 | Identification of ζ | Hamburger: a Dirichlet series with ζ's FE is a multiple of ζ `[L*]`; FE with `L¹` or `L²` defect ⇒ rational primes; degree-one Selberg class; count distance `o(log n)` | HTGeometry, EFT, SEL, SPAL `[L/K]` |
-| Exact Frobenius over ℤ | orbit preservers are (Laurent) Adams maps; integrality acts only on the torsion; exact Stepanov count = Chebyshev; a zero-derivative endomorphism of `ℤ[X]` is an evaluation; simultaneous inseparability at the primes of `S` costs the primorial of `S`; order `m` at every prime of `S` costs exactly `m·θ(S)` | ALST `[L]`; `SignFreePurityMechanisms` `[S]` |
+| Exact Frobenius over ℤ | orbit preservers are (Laurent) Adams maps; integrality acts only on the torsion; exact Stepanov count = Chebyshev; a zero-derivative endomorphism of `ℤ[X]` is an evaluation; simultaneous inseparability at the primes of `S` costs the primorial of `S`; order `m` at every prime of `S` costs exactly `m·θ(S)` | ALST `[L]`; `SignFreePurityMechanisms` `[L]` |
 | The family step of Deligne's argument | the zero motive of ζ is the fixed part of every arithmetic family (§5.2) | AWT `[P/S]` |
 | The square of Spec ℤ over `𝔽₁` in Λ-geometry | `Spec W(ℤ)`: the union of the Frobenius graphs glued along the primes; `#(ℤ/J(1,n))=e^{Λ(n)}`; contact orders give the prime part of Weil's off-diagonal exactly; it is a curve and has no diagonal | `agz-absolute-geometry-of-spec-z` `[P]`; `TheGhostRingOfTheArithmeticSquare`, `TheFrobeniusGraphsMeetInThePrimes` `[S]` |
 | Returns of the prime orbit | depth law (Baker), breadth to the VK height, collective counts beyond the depth floor | TTPO, CDGeo `[L]` |
@@ -128,7 +128,7 @@ Consequences.
 |---|---|---|
 | moments of a family, with amplifier | the trivial bound `(Σa_n)^{2k}` at the fibre of ζ | `[L]`, `[S]` |
 | positivity of product coefficients | one-way: base to product | `[S]` |
-| Frobenius lifts and high-order vanishing | `m·θ(S)`, the count to be bounded | `[S]`, `[P]` |
+| Frobenius lifts and high-order vanishing | `m·θ(S)`, the count to be bounded | `[L]`, `[P]` |
 | carries against `𝔽_q[T]` | a fixed positive proportion of the window count | `[P]` |
 | integrality of auxiliaries | Chebyshev; exact on the torsion only | `[L]` |
 | finite-layer filters | the gap `a(1−Re ρ)/2` | `[L]`, `[S]` |
@@ -338,11 +338,11 @@ A refutation is an obstruction theorem: every torus-invariant finite part of pro
 | Sign-free producer | Reach | Evidence |
 |---|---|---|
 | integrality of auxiliaries | Chebyshev; exact on the torsion | `[L]` |
-| Frobenius lifts | one prime at a time; `m·θ(S)` for a set `S` | `[S]`, `[P]` |
+| Frobenius lifts | one prime at a time; `m·θ(S)` for a set `S` | `[L]`, `[P]` |
 | exponential sums | VK | `[L]` |
 | recurrence | the Kronecker scale `p≲log t` | `[L]` |
 | transcendence | depth of two logarithms; breadth to the VK height for heavy subsets | `[L]` |
-| separation | none: a receiver | `[L]`, `[S]` |
+| separation | none: a receiver | `[L]` |
 
 **The two sign-free proofs of a Riemann hypothesis and their shadows over ℤ.**
 
@@ -350,9 +350,9 @@ A refutation is an obstruction theorem: every torus-invariant finite part of pro
 2. *The Carlitz–Goss zeta function of `𝔽_q[T]`* `[C]`. The Newton polygon has distinct slopes, so the roots have distinct valuations, and the Galois group, which preserves the valuation, fixes each root: purity by separation.
 
 - **(S1) Endomorphism.** *Is there a commutative ring with commuting endomorphisms `F_n`, `F_mF_n=F_{mn}`, whose fixed-point counts are the point counts `N(n)=Λ(n)+1+1/(n²−1)` of Spec ℤ, on which vanishing to order `m` at the fixed points of the degrees of one window costs less than `m` times the window's Chebyshev count?*
-  **Answer: no.** A literal count does not exist: `N(n)∈(1,2)` off the prime powers (`not_exists_card_eq_specPointCount`). The count is logarithmic: `Λ(n)=log Φ_n(1)`, and modulo `p` the primitive `p^k`-torsion collapses onto the fixed point `1` (`cyclotomic_prime_pow_zmod`). The Frobenius exists one prime at a time: `x↦xⁿ` is additive in characteristic `q` exactly when `n` is a power of `q` (`isFrobeniusAt_iff`), and Stepanov's identity holds modulo `n` to all orders (`C_dvd_iterate_derivative_mul_expand_sub`). It is not archimedean: an endomorphism of `ℤ[X]` with zero derivative is an evaluation (`exists_eq_C_eval_of_derivative_eq_zero`). A monic polynomial that is a `p^{k_p}`-th power modulo each `p∈S` has degree divisible by `Πp^{k_p}` (`prod_pow_dvd_natDegree`). On ℤ the `δ_p`-order is the `p`-adic valuation, the constants of `δ_p` are `0, ±1`, and order `m` at every prime of `S` costs `log|a|≥m·θ(S)` with equality for `Πp^m` (`mul_sum_log_le_log_abs`) `[S]`. The same holds on every ring with Frobenius lifts and a ℤ-point `[P]`. On the diagonal Stepanov's inequality "zeros × order ≤ degree" is the product formula, an identity; there is no slack to construct.
+  **Answer: no.** A literal count does not exist: `N(n)∈(1,2)` off the prime powers (`not_exists_card_eq_specPointCount`). The count is logarithmic: `Λ(n)=log Φ_n(1)`, and modulo `p` the primitive `p^k`-torsion collapses onto the fixed point `1` (`cyclotomic_prime_pow_zmod`). The Frobenius exists one prime at a time: `x↦xⁿ` is additive in characteristic `q` exactly when `n` is a power of `q` (`isFrobeniusAt_iff`), so `Λ(n)` is the number of primes at which `x↦xⁿ` is a Frobenius, counted with weight `log q` (`vonMangoldt_eq_finsum_log_isFrobeniusAt`); it fixes the fibre `𝔽_p` pointwise exactly when `p−1∣n−1`, at no more than `d(n−1)` primes (`forall_pow_eq_self_iff`, `ncard_fixed_fibres_le`). Stepanov's identity holds modulo `n` to all orders (`C_dvd_iterate_derivative_mul_expand_sub`). It is not archimedean: an endomorphism of `ℤ[X]` with zero derivative is an evaluation (`exists_eq_C_eval_of_derivative_eq_zero`). A monic polynomial whose derivative vanishes modulo every prime of `S` has degree divisible by the primorial of `S`, and one that is a `p^{k_p}`-th power modulo each `p∈S` has degree divisible by `Πp^{k_p}` (`prod_dvd_natDegree_of_map_derivative_eq_zero`, `prod_pow_dvd_natDegree`); multiplicity `m` modulo every prime of `S` is reached at log-degree `θ(S)+|S|log m` (`log_prod_pow_clog_le`), but it is multiplicity modulo `p`. On ℤ the `δ_p`-order is the `p`-adic valuation, the constants of `δ_p` are `0, ±1`, and order `m` at every prime of `S` costs `log|a|≥m·θ(S)` with equality for `Πp^m` (`forall_dvd_iterate_fermatQuotient_iff`, `mul_sum_log_le_log_abs`, `log_prod_pow_eq`) `[L]`. The same holds on every ring with Frobenius lifts and a ℤ-point `[P]`. On the diagonal Stepanov's inequality "zeros × order ≤ degree" is the product formula, an identity; there is no slack to construct.
 - **(S2) Separation.** *Is there a sign-free prime-side quantity that bounds the fibre multiplicity of the height map on the zeros?*
-  **Answer: yes as a receiver, no as a producer.** A Galois-invariant function injective on the roots forces the roots into the base field; a real polynomial whose roots have distinct absolute values has only real roots (`SeparationForcesRationality`) `[S]`. For ζ the invariant is the ordinate: zeros at one height have real parts within `2σ` ⇔ width `≤σ` ⇔ `|c_p|≤Kp^σ` at every prime (`fibre_spread_le_iff_twoSided_primes`, `injOn_im_iff_riemannHypothesis`) `[S]`. In the ultrametric case injectivity is read from the Newton polygon; over ℤ it is the statement to be proved. Separation by absolute value is not available: the ratios of consecutive ordinates tend to `1` `[D]`.
+  **Answer: yes as a receiver, no as a producer.** A Galois-invariant function injective on the roots forces the roots into the base field; a real polynomial whose roots have distinct absolute values has only real roots (`SeparationForcesRationality`) `[L]`. For ζ the invariant is the ordinate: zeros at one height have real parts within `2σ` ⇔ width `≤σ` ⇔ `|c_p|≤Kp^σ` at every prime (`fibre_spread_le_iff_twoSided_primes`, `injOn_im_iff_riemannHypothesis`) `[L]`. In the ultrametric case the Newton polygon produces the injectivity from the coefficients: for a nonarchimedean absolute value, nonzero coefficients with `|a_j||a_{j+2}|<|a_{j+1}|²` give simple roots of pairwise distinct size, and over a complete ultrametric field the polynomial splits over the base field (`HasSimpleSlopes.injOn_isRoot`, `splits_of_strict_logConcave`; example `padicTheta_splits`) `[L]`. Its archimedean counterpart is a theorem with a quantitative gap: nonzero coefficients with `|a_{j+1}|²≥9|a_j||a_{j+2}|` give exactly `i+1` zeros in `|z|<3|a_i|/|a_{i+1}|` by Rouché, hence zeros of pairwise distinct absolute value, and real zeros for real coefficients; no sign of a coefficient is used (`HasCoeffGaps.injOn_norm_zeros`, `im_eq_zero_of_coeff_gaps`) `[L]`. Its price is lacunarity: of three zeros of increasing absolute value the largest exceeds nine times the smallest (`HasCoeffGaps.nine_mul_norm_lt`) `[L]`. Separation by absolute value is therefore not available for ζ: some dyadic range carries three critical ordinates, and no polynomial with such gaps vanishes at their squares (`exists_critical_ordinates_not_hasCoeffGaps`) `[L]`. Over ℤ the injectivity of the ordinate is the statement to be proved.
 
 **A filter for sign-free producers** `[D]`. The return bounds of the corpus are uniform in the target point of the prime torus `[L]`. A sign-free producer past VK that is uniform in the target applies to the orbit `(χ(p)p^{it})` of a real character and removes its exceptional zero. So a sign-free producer either contains the Landau–Siegel problem or uses what separates ζ from quadratic `L`-functions without a sign: the pole, or conductor one. The pole alone does not decide `[S]` (§5.2, part 2). What conductor one gives is the homogeneous problem: the target is the identity of the torus, where Dirichlet's theorem and the effective Baker bound apply `[L]`.
 

@@ -14,11 +14,12 @@ open Complex Filter Set Topology MeasureTheory RHTower XiAtlasFinitePart
 noncomputable section
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
-/-- Boundary-angle damping retains the actual zero-free saving, uniformly
-in every filter spacing, including the critical contraction scale. -/
-theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
-    (F : Finset XiZeroCopy) (ρ : ℂ) (σ β a : ℝ) (hσ : σ < 1) (ha : 0 < a) :
-    ∃ C : ℝ, ∃ N : ℕ, 0 < C ∧ ∀ᶠ t : ℝ in atTop, ∀ h : ℝ, 0 ≤ h → h ≤ 1 →
+/-- The zero-free saving is uniform in spacing and in every positive speed
+at most one quarter of the observation height. -/
+theorem exists_boundaryPrimeDampingFilter_uniform_vinogradovKorobov_bound
+    (F : Finset XiZeroCopy) (ρ : ℂ) (σ β : ℝ) (hσ : σ < 1) :
+    ∃ C : ℝ, ∃ N : ℕ, 0 < C ∧ ∀ᶠ t : ℝ in atTop,
+      ∀ a : ℝ, 0 < a → 4 * a ≤ t → ∀ h : ℝ, 0 ≤ h → h ≤ 1 →
       ‖rotatedPrimeDampingFilter (divisorDampingFilter F ρ β h)
         σ β a h (boundaryDampingAngle t) t‖ ≤
       C * h ^ (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) * t ^ N *
@@ -52,8 +53,8 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
     hWlim.eventually (gt_mem_nhds (lt_min zero_lt_one (sub_pos.mpr hσ)))
   filter_upwards [hHlim.eventually hrectangle, hsmall,
     hHlim.eventually (eventually_ge_atTop (Real.exp (Real.exp 1))),
-    eventually_ge_atTop (1 : ℝ), eventually_ge_atTop (4 * a)] with t htR hsmall htE ht ht4a
-  intro h hh hh1
+    eventually_ge_atTop (1 : ℝ)] with t htR hsmall htE ht
+  intro a ha ht4a h hh hh1
   have ht0 : 0 < t := zero_lt_one.trans_le ht
   let H := t ^ 3
   let w := vkHadamardWidth (H + 1)
@@ -158,12 +159,21 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
     apply Real.exp_le_exp.mpr
     have hscale : δ * H / 2 = t ^ 2 / 8 := by
       dsimp only [δ, H]
-      field_simp [ht0.ne'] <;> ring
+      field_simp [ht0.ne']
+      ring
     rw [hscale]
     have hgap := mul_le_mul_of_nonneg_left hrc (mul_nonneg ha.le ht0.le)
+    simp only [mul_one] at hgap
     have hlarge := mul_le_mul_of_nonneg_right ht4a ht0.le
-    dsimp only [L]
-    nlinarith only [hgap, hlarge]
+    have hbudget : a * t / 2 ≤ t ^ 2 / 8 := by nlinarith only [hlarge]
+    calc
+      _ = a * t * (c - σ) / 2 + (a * t * (r - c) / 2 - t ^ 2 / 8) := by ring
+      _ ≤ a * t * (c - σ) / 2 + (a * t / 2 - t ^ 2 / 8) :=
+        add_le_add le_rfl (sub_le_sub_right
+          (div_le_div_of_nonneg_right hgap (by norm_num : (0 : ℝ) ≤ 2)) (t ^ 2 / 8))
+      _ ≤ _ := by
+        simpa only [add_zero] using
+          add_le_add (le_refl (a * t * (c - σ) / 2)) (sub_nonpos.mpr hbudget)
   have hleft : ‖∫ v in (-H)..H, G ((c : ℂ) + v * I)‖ ≤
       32 * D * M * t ^ 15 * L := by
     have hpt : ∀ v ∈ uIoc (-H) H, ‖G ((c : ℂ) + v * I)‖ ≤ M * L * (D * (1 + H) ^ 4) := by
@@ -207,8 +217,9 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
         rw [hv]
         refine (mul_le_mul (Real.exp_le_exp.mpr ?_)
           (Real.exp_le_exp.mpr ?_) (Real.exp_pos _).le (Real.exp_pos _).le).trans hedgeexp
-        · have hm := mul_le_mul_of_nonneg_left hx.2 (mul_nonneg ha.le ht0.le)
-          nlinarith only [hm]
+        · exact div_le_div_of_nonneg_right
+            (mul_le_mul_of_nonneg_left (sub_le_sub_right hx.2 σ)
+              (mul_nonneg ha.le ht0.le)) (by norm_num)
         · nlinarith only [mul_nonneg hδ.le hH0.le]
       dsimp only [G]
       rw [norm_mul, norm_neg]
@@ -261,7 +272,12 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
     norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hk]
   calc
     _ ≤ k * ((64 * D + E * J) * M * t ^ 15 * L) := mul_le_mul_of_nonneg_left hfull hk.le
-    _ ≤ k * ((64 * D + E * J + 1) * M * t ^ 15 * L) := by gcongr; linarith
+    _ ≤ k * ((64 * D + E * J + 1) * M * t ^ 15 * L) := by
+      apply mul_le_mul_of_nonneg_left _ hk.le
+      apply mul_le_mul_of_nonneg_right _ hL.le
+      apply mul_le_mul_of_nonneg_right _ (pow_nonneg ht0.le 15)
+      exact mul_le_mul_of_nonneg_right (by linarith only :
+        64 * D + E * J ≤ 64 * D + E * J + 1) hM
     _ = _ := by
       have he : a * t * (c - σ) / 2 =
           a * (1 - σ) * t / 2 - a * t * vkHadamardWidth (t ^ 3 + 1) / 4 := by
@@ -271,6 +287,20 @@ theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
       rw [he, pow_add]
       ring
 
+/-- Every fixed positive speed inherits the uniform boundary-angle saving. -/
+theorem exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
+    (F : Finset XiZeroCopy) (ρ : ℂ) (σ β a : ℝ) (hσ : σ < 1) (ha : 0 < a) :
+    ∃ C : ℝ, ∃ N : ℕ, 0 < C ∧ ∀ᶠ t : ℝ in atTop, ∀ h : ℝ, 0 ≤ h → h ≤ 1 →
+      ‖rotatedPrimeDampingFilter (divisorDampingFilter F ρ β h)
+        σ β a h (boundaryDampingAngle t) t‖ ≤
+      C * h ^ (1 + (F.filter (fun q => xiZero q ≠ ρ)).card) * t ^ N *
+        Real.exp (a * (1 - σ) * t / 2 - a * t * vkHadamardWidth (t ^ 3 + 1) / 4) := by
+  obtain ⟨C, N, hC, hb⟩ := exists_boundaryPrimeDampingFilter_uniform_vinogradovKorobov_bound F ρ σ β hσ
+  refine ⟨C, N, hC, ?_⟩
+  filter_upwards [hb, eventually_ge_atTop (4 * a)] with t ht hta
+  exact ht a ha hta
+
+#print axioms exists_boundaryPrimeDampingFilter_uniform_vinogradovKorobov_bound
 #print axioms exists_boundaryPrimeDampingFilter_vinogradovKorobov_bound
 
 /-- The zero-free saving at cubic contour height dominates every polynomial

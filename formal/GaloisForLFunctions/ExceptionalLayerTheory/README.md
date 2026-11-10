@@ -190,9 +190,206 @@ on every regular line `σ<c<Re ρ` inside the finite-layer gap.
 `BoundaryDampingReadsTheDivisor.lean` consequently recovers the same nonzero
 normalized divisor limit for every `a>0` and every eventually positive
 `h(t)→0`. For `h=exp(−κt)`, literal prime-filter growth holds throughout
-`dκ<a(Re ρ−σ)/2`. Independent decay holds above `dκ>a(1−σ)/2`.
+`dκ<a(Re ρ−σ)/2`.
 The fixed Gamma penalty is removed from the actual prime-filter theorem;
 the positive arithmetic gap `a(1−Re ρ)/2` remains.
+
+`BoundaryZeroFreeContours.lean` and
+`VinogradovKorobovBoundsForBoundaryDamping.lean` give the independent bound
+`|A_h^rot(t)|≤C h^d t^N exp(a(1−σ)t/2−a t w(t³+1)/4)`, where
+`w(T)=(log T)^(−2/3)(log log T)^(−5/3)/10^8`.
+Constants and the eventual height threshold are uniform over `0<a≤t/4`
+and `0≤h≤1`. A full zero-free rectangle includes bounded zeta heights;
+the filter kills the pole and preserves every spacing factor on its boundary.
+For fixed positive speed, raw decay holds at `dκ≥a(1−σ)/2`, including
+equality, and even for spacing
+`exp((−a(1−σ)/2+a w(t³+1)/8)t/d)`.
+This subexponential saving leaves the fixed gap to exceptional-layer growth.
+
+`PolynomialDampingReadsTheDivisor.lean` replaces the fixed speed by
+`A log(t)/t`, giving exact radius `t^(−A)`. Every sufficiently large `A`
+recovers the same nonzero divisor for every positive `h(t)→0`, with
+normalized contour error `O(1/t)` independent of spacing. For every `κ>0`,
+sufficiently large `A` forces raw prime-filter growth at `h=t^(−κ)`.
+Unconditional AAL-or-growth and AAL-or-recovery dichotomies supply actual
+finite packets. Each fixed grid sample has `t^(A+1) Re ε_j(t)→1` and
+Gaussian envelope `exp(−x²/(2t^(A+1)))`, so its damping scale is polynomial.
+The independent upper bound becomes
+`C h^d t^N t^(A(1−σ)/2) exp(−A log(t)w(t³+1)/4)`, with `C,N` independent
+of `A`. Prime cancellation overcoming the fixed power gap remains unproved.
+
+`TheSharpPolynomialObservationBoundary.lean` gives the exact modulus law
+`|h^d Kφ|/t^E→C(x)>0`, where `x=Re ρ−σ`,
+`E=((A+1)x−1)/2−dκ` and
+`C(x)=sqrt(2π)/2·(1/2)^((x−1)/2)·exp(−1/2)`.
+For every eventually positive radius `y(t)`, normalization by
+`y^(−x/2)t^((x−1)/2)` gives the same ordinate-independent constant.
+Above the proved recovery threshold, the literal prime filter has exponent
+`E` and limiting coefficient `|−mρ(ρ−1)Π(ρ−ρq)|C(x)`.
+Growth, decay and the positive critical modulus are therefore classified;
+critical contraction gives the same modulus for every sufficiently large `A`.
+Conversely, for `0<x<1/2`, every radius `y≥1/t` and bounded spacing
+`0≤h≤1` force selected-mode decay. The short-scale raw-growth shortcut is
+closed; relative estimates against a decaying mode and long-sum cancellation
+remain open. This does not improve the independent arithmetic upper bound.
+
+`GaussianVaughanBilinearCancellation.lean` supplies independent arithmetic
+cancellation for the actual type-II Vaughan contribution. At damping
+`ε=α−iξ`, pairing factors `m₁,m₂` cancels the logarithmic height phase;
+the remaining phase has constant curvature `λ=|ξ(m₁²−m₂²)|/π`.
+On an interval `[P,Q)` of length `N`, its norm is bounded by
+`exp(−α(m₁²+m₂²)P²) min(N,8N sqrt(λ)+12/sqrt(λ))` for nonzero curvature.
+The zero-curvature branch is the Gaussian endpoint factor times `N`.
+Abel summation retains the damping, and Cauchy–Schwarz gives an explicit
+pair-energy bound with the original von Mangoldt/Möbius coefficients and
+product cutoff. It holds at every height and every interior rotation.
+For `λ≤1/1024` and `48≤N sqrt(λ)`, the correlation bound is at most half
+the trivial one. Rotation therefore enables arithmetic cancellation as well
+as removing the Gamma penalty.
+
+`GaussianVaughanTypeI.lean` controls the complementary Gaussian type-I
+fibres. The phase has positive curvature `ξ/π+t/(2πx²)`, including at its
+stationary point. With endpoint curvature ratio `H` and minimum `λ`,
+every prefix has bound `min(N,8NH√λ+12/√λ)`; Abel summation retains the
+initial damping and abscissa weight. The logarithmic coefficient costs
+`2 log(Q−1)`. The bound is at most `N/2` when `H√λ≤1/32` and `N√λ≥48`.
+`GaussianVaughanPrimeBlocks.lean` combines both exact type-I coefficient
+sums with the square root of the type-II energy to bound a complete literal
+von Mangoldt block, including lower-half interior Gaussian rotations.
+
+`NonstationaryGaussianCorrelations.lean` improves quadratic correlations
+below the first integer resonance to `2π exp(−vP²)/(|u|P)`. For
+`P√λ≥1` and `N√λ≥12`, this is at most one sixth of the previous bound.
+`NonstationaryGaussianTypeII.lean` aggregates reciprocal integer gaps on
+dyadic rectangles, preserving the product cutoff and Gaussian damping.
+`GaussianVaughanDyadicSaving.lean` bounds both actual coefficient energies
+using Chebyshev and the divisor second moment. Put `θ=ξD²M²` and
+`Wσ=DM D^(−σ) M^(−σ)`. For `σ,α≥0`, `ξ>0`, `D,M≥1`, and
+`16ξDM²≤π`, the literal type-II rectangle satisfies
+
+    |S|² ≪ Wσ² log(2D)(1+H_{2M}³) exp(−2αD²M²)
+             × [1/M+2π(1+log(2M))/θ].
+
+The constant is independent of all parameters and Vaughan cutoffs.
+For `t>0`, `t≤32θ` and `M≥t`, this is at most
+`C Wσ² (1+log(2D))(1+log(2M))⁴ exp(−2αD²M²)/t`.
+Every rectangle containing a quadratic stationary point satisfies the
+scale condition; the first-band and short-factor conditions remain.
+Other rectangles, infinite tails, pole cancellation and contracting filter
+factors still need control before comparison with the selected divisor signal.
+
+`GaussianMomentsReadTheDivisor.lean` preserves the complete divisor reading
+while suppressing small products. Multiplying each sample by `ε_j n²/t`
+is exactly `(ε_0/t)` times the original filter at abscissa `σ−2`.
+Gamma recurrence multiplies each selected mode by `(ρ−σ−it)/(2t)→−i/2`.
+The full polynomial-scale recovery holds on every contracting grid, with
+an unconditional AAL-or-nonzero-moment-readings theorem. Boundary dampings
+eventually satisfy `0<α≤ξ`, uniformly in every positive radius.
+
+`GaussianMomentDyadicSaving.lean` bounds the actual first-moment Vaughan
+rectangle by the previous squared envelope times `C(θ/t)²`. For `θ≤t`,
+cutoffs `32t≤πU` and `2t≤V` make all active rectangles satisfy the first-band
+and short-factor requirements. Every small-product rectangle then obeys
+
+    |S₁|² ≪ Wσ² (1+log(2D))(1+log(2M))⁴ exp(−2αD²M²) θ/t².
+
+This removes the inverse-θ loss without losing the divisor signal.
+
+`GaussianMomentAllScales.lean` extends the saving to every product scale.
+For `σ≥0`, `ξ>0`, `t≥1`, `ξ/(2t)≤α≤ξ`, choose `πU≥128t log t`
+and `V≥2t`. Every masked rectangle then satisfies
+
+    |S₁|² ≪ Wσ² (1+log(2D))(1+log(2M))⁴ exp(−αD²M²)/t.
+
+Nonstationary cancellation covers `ξD²M²≤4t log t`; above it, Gaussian
+decay absorbs the absolute coefficient-energy bound. Half the squared
+Gaussian damping remains. The lower sector condition holds eventually
+at the boundary angle, uniformly in every positive radius. Exact dyadic
+assembly bounds the actual finite type-II convolution by `sqrt(C/t)`
+times the sum of square roots of the retained rectangle envelopes.
+`GaussianMomentInfiniteTypeII.lean` removes the type-II truncation and
+passes the bound to the absolutely convergent infinite convolution. For
+`0≤σ<1` and `X=max(1,sqrt(2/α))`,
+
+    |T₁| ≪σ X^(1−σ) (1+log X)^4 / sqrt(t).
+
+The constant is independent of damping, height, Vaughan cutoffs and prime
+endpoints under the same sector and cutoff conditions. Grouping rectangles
+by `j+k` gives a geometric head and Gaussian tail. The actual coefficient
+bound `|(typeIILong U * typeIIShort V)(n)|≤2n²` proves absolute convergence.
+`GaussianMomentTypeI.lean` controls ordinary and logarithmic first-moment
+fibres uniformly in both endpoints. For `1≤b≤X`, their common shape is
+
+    ≪σ X^(1−σ)(1+log X)^4 [sqrt(αt)+1/(b sqrt(t))].
+
+`GaussianMomentPrimeBound.lean` sums the actual truncated coefficients and
+the finite Vaughan head. If additionally `t≥2`, `αX²=2` and `tUV≤X`,
+the complete absolutely convergent von Mangoldt moment satisfies
+
+    |M₁| ≪σ X^(1−σ)(1+log X)^6 / sqrt(t).
+
+No zero-location premise enters. Arithmetic control retaining pole/filter
+cancellation remains; this pole-scale estimate does not beat the selected
+divisor signal or prove B13.
+
+`GaussianTypeIContinuum.lean` and `GaussianMomentTypeIPole.lean` separate
+an exact continuous pole term from the actual first type-I convolution.
+For `c=Λ_U*μ_V`, `A_UV=Σ_{b≤UV}c(b)/b` and the first Gaussian pole
+moment `P₁`,
+
+    |Σ_n (ζ*c)(n)M₁(n) − A_UV P₁|
+      ≤ Cσ UV log(UV)t α^(σ/2),
+
+where `Cσ=4Γ(1−σ/2)+16Γ(2−σ/2)`. At `αX²=2`, this is
+`≪σ UV log(UV)t X^(−σ)`. Each complete divisor fibre has a
+spacing-independent variation bound; the complex Gamma integral
+identifies its main term. Absolute rearrangement retains the signed
+reciprocal coefficient mass. This closes pole extraction for the first
+type-I term.
+
+`GaussianSecondVariation.lean` and `GaussianSecondMomentTypeIPole.lean`
+improve the first type-I remainder under the same conditions:
+
+    |Σ_n (ζ*c)(n)M₁(n) − A_UV P₁|
+      ≪σ (UV)² log(UV)t² X^(−1−σ).
+
+The complete fibre error is `≪σ bt²X^(−1−σ)`. Two integrations by
+parts use the integrable second derivative and the vanishing lattice
+endpoints. The arithmetic bound gains a factor `UVt/X` over first
+variation, with the signed pole coefficient unchanged.
+
+`GaussianLogarithmicContinuum.lean` and `GaussianLogarithmicTypeIPole.lean`
+extract both signed main terms from the actual logarithmic type-I convolution.
+For `B_V=Σ_{b≤V}μ(b)/b`, `D_V=Σ_{b≤V}μ(b)log b/b` and
+`L₁=∫₀∞log x·M₁(x)dx`, under the same sector conditions, `αX²=2`
+and `V≤X`,
+
+    |Σ_n (log*μ_V)(n)M₁(n) − (B_V L₁ − D_V P₁)|
+      ≪σ Vt X^(−σ)(1+log X).
+
+Scaling the logarithm before taking absolute values retains the Gaussian
+power saving.
+
+`GaussianLogSecondVariation.lean` and `GaussianLogSecondMomentTypeIPole.lean`
+further improve the logarithmic error to
+
+    |Σ_n (log*μ_V)(n)M₁(n) − (B_V L₁ − D_V P₁)|
+      ≪σ V²t²X^(−1−σ)(1+log X).
+
+The fractional margin `δ=(1−σ)/2` controls the logarithm in the
+singular second-derivative moment. All five moments retain their Gaussian
+scale, so the error gains `Vt/X` while both signed main terms remain exact.
+`GaussianCentredVaughanCurrent.lean` combines both signed main terms with
+actual type II. For `1/2≤σ<1`, `t≥2`, `0<α≤ξ≤2αt`, `αX²=2`,
+`1≤U,V≤t²` and `X≥t⁸`, the complete prime moment satisfies
+
+    M₁−P₁ = T_II+B_V L₁−(1+A_UV+D_V)P₁+Oσ(1/t).
+
+The error is at most `(8Dσ+3Cσ+8)/t`, using the two second-order
+lattice constants. Any two allowed cutoff pairs give centred currents
+within twice this error. This removes both type-I remainders and the finite
+head uniformly. The centred type-II bound and the contracting-grid factor
+remain open; the reduction does not prove B13.
 
 ## Mechanisms and tools
 

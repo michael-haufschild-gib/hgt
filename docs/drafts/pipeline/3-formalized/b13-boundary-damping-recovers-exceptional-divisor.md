@@ -65,3 +65,7 @@ and `Quot.sound`. Both modules are imported by the exceptional-layer umbrella.
 
 The independent decay and exceptional growth ranges remain separated by
 `a(1−Re ρ)/2>0`. No B13 contradiction or zero exclusion follows.
+
+The independent decay range now includes equality and a width-sized
+relaxation, proved separately in
+`b13-boundary-vinogradov-korobov-bound.md`; the fixed gap remains.

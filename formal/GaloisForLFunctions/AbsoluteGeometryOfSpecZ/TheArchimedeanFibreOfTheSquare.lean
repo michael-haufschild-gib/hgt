@@ -41,6 +41,8 @@ def shift (k : ℕ+) : (ℕ+ → ℝ) →+* (ℕ+ → ℝ) where
 
 @[simp] theorem shift_apply (k : ℕ+) (y : ℕ+ → ℝ) (n : ℕ+) : shift k y n = y (k * n) := rfl
 
+theorem shift_smul (k : ℕ+) (a : ℝ) (y : ℕ+ → ℝ) : shift k (a • y) = a • shift k y := rfl
+
 /-- On integer sequences the shift is the Frobenius of the arithmetic square. -/
 theorem shift_intCast (k : ℕ+) (x : ℕ+ → ℤ) :
     shift k (fun n => (x n : ℝ)) = fun n => (frobeniusFun k x n : ℝ) := rfl
@@ -70,7 +72,7 @@ theorem eq_rpow_of_shift_smul_weight {k : ℕ+} {z a : ℝ}
 theorem shift_rpow_smul_weight (k : ℕ+) (z : ℝ) :
     shift k ((((k : ℕ) : ℝ) ^ (1 - z)) • weight z) = (((k : ℕ) : ℝ)) • weight z := by
   have hk : (0 : ℝ) < ((k : ℕ) : ℝ) := by exact_mod_cast k.pos
-  rw [map_smul, shift_weight, smul_smul, ← Real.rpow_add hk, sub_add_cancel, Real.rpow_one]
+  rw [shift_smul, shift_weight, smul_smul, ← Real.rpow_add hk, sub_add_cancel, Real.rpow_one]
 
 /-- **The pole plane.** On the weights `0` and `1` the trace of `V_m F_n` is `m + n`. -/
 theorem trace_polePlane (m n : ℕ+) :
@@ -112,12 +114,13 @@ theorem hasSum_trace_shift_jets {n : ℕ+} (hn : 1 < n) :
   have h1 : ((n : ℕ) : ℝ) ^ 2 - 1 ≠ 0 := by linarith
   have h2 : ((n : ℕ) : ℝ) ^ 2 ≠ 0 := by positivity
   field_simp
+  ring
 
 /-- The transpose on the jets: `F_k (k^{1+2j} τ^j) = k τ^j`. -/
 theorem shift_smul_tau_pow (k : ℕ+) (j : ℕ) :
     shift k ((((k : ℕ) : ℝ) * (((k : ℕ) : ℝ) ^ 2) ^ j) • tau ^ j) = (((k : ℕ) : ℝ)) • tau ^ j := by
   have hk : ((k : ℕ) : ℝ) ≠ 0 := by exact_mod_cast k.ne_zero
-  rw [map_smul, shift_tau_pow, smul_smul, inv_pow, mul_assoc,
+  rw [shift_smul, shift_tau_pow, smul_smul, inv_pow, mul_assoc,
     mul_inv_cancel₀ (pow_ne_zero _ (pow_ne_zero _ hk)), mul_one]
 
 /-- **The archimedean intersection number.** For `m < n` the trace of `V_m F_n` on the jets is
@@ -135,8 +138,13 @@ theorem hasSum_trace_verschiebung_shift_jets {m n : ℕ+} (h : m < n) :
     nlinarith
   have hs := (hasSum_geometric_of_lt_one hr0 hr1).mul_left ((m : ℕ) : ℝ)
   rw [← div_eq_mul_inv] at hs
-  convert hs using 2 with j
-  rw [div_pow, div_pow, inv_pow, mul_assoc, ← div_eq_mul_inv]
+  have hterm : (fun j : ℕ => (((m : ℕ) : ℝ) * (((m : ℕ) : ℝ) ^ 2) ^ j) *
+      ((((n : ℕ) : ℝ)) ^ 2)⁻¹ ^ j) =
+      fun j : ℕ => ((m : ℕ) : ℝ) * ((((m : ℕ) : ℝ) / ((n : ℕ) : ℝ)) ^ 2) ^ j := by
+    funext j
+    rw [div_pow, div_pow, inv_pow, mul_assoc, ← div_eq_mul_inv]
+  rw [hterm]
+  exact hs
 
 /-! ### The Witt Verschiebung is supported on multiples -/
 

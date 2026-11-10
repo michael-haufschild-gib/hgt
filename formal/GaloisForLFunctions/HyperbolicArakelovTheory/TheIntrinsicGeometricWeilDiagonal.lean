@@ -18,14 +18,15 @@ open GaloisForLFunctions.RenormalizedIntersectionTheory.MayerScatteringNormaliza
 
 namespace GaloisForLFunctions.HyperbolicArakelovTheory.ScatteringTower.RawGeometry
 
+set_option autoImplicit false
 noncomputable section
 
 /-- The actual, uncompleted primitive-pair Poincare series on the upper half-plane. -/
-def model (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : ℍ) : ℂ :=
+def model (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : UpperHalfPlane) : ℂ :=
   d4BMRawEisensteinHorizontalFunction ⟨z.re, z.im, z.im_pos⟩ P z.re
 
 /-- Cusp truncation using only the raw series and its extracted zero Fourier coefficient. -/
-def truncated (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : ℍ) : ℂ :=
+def truncated (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : UpperHalfPlane) : ℂ :=
   model P z - if 1 < z.im then
     (z.im : ℂ) ^ P.s + actualScattering P * (z.im : ℂ) ^ (1 - P.s) else 0
 
@@ -81,14 +82,16 @@ private theorem scattering_ne_zero (P : D4BMEisensteinAbsoluteConvergenceParamet
   rw [hzero, mul_zero] at h
   exact hB h.symm
 
-theorem completion_mul_model (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : ℍ) :
+theorem completion_mul_model (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (z : UpperHalfPlane) :
     msA (P.s - 1 / 2) * model P z = eisensteinLineModel (P.s - 1 / 2) z := by
   have h := d4BM_actualCompletedPoincare_eq_canonicalCuspLeg
     (⟨z.re, z.im, z.im_pos⟩ : D4BMUpperHalfPlaneCoordinate) P z.re
   rw [d4BM_completedEisensteinHorizontalFunction_eq_lambda_mul_raw, completion_eq] at h
   exact h
 
-theorem completion_mul_truncated (P : D4BMEisensteinAbsoluteConvergenceParameter) (z : ℍ) :
+theorem completion_mul_truncated (P : D4BMEisensteinAbsoluteConvergenceParameter)
+    (z : UpperHalfPlane) :
     msA (P.s - 1 / 2) * truncated P z = truncatedLineModel (P.s - 1 / 2) 1 z := by
   unfold truncated truncatedLineModel
   rw [mul_sub, completion_mul_model, cuspConstantPart_eq_msAB]
@@ -122,7 +125,7 @@ theorem diagonal_eq (P : D4BMEisensteinAbsoluteConvergenceParameter) :
     norm_num at hr
   rw [diagonal, geometricDiagonal, completed_pairing_eq, ← completion_mul_scattering]
   generalize hscalar : msA (P.s - 1 / 2) = a at hA ⊢
-  field_simp [hA, hφ, hu] <;> ring
+  field_simp [hA, hφ, hu]
 
 /-- Absolute-chamber parameters of the primitive-pair tower on `Re s=3/2`. -/
 def packetParameter (t : ℝ) (n : ℕ) : D4BMEisensteinAbsoluteConvergenceParameter where

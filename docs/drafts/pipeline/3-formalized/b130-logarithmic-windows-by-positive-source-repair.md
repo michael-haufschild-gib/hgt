@@ -24,8 +24,8 @@ late such prime window. No deepest zero or simple-zero assumption occurs.
 
 The existing `RHTower.quartet_seed_transfer` supplies, for any selected
 first-quadrant Xi zero `a`, a strictly positive even kernel `k=θ+εu`.
-Its transform is `XiC(z)(P(z)+εz²)/P(z)`, where `P` removes the selected
-quartet with full multiplicities. The multiplier survives throughout that
+Its transform satisfies `k̂(z)P(z)=XiC(z)(P(z)+εz²)`, where `P` is the
+selected quartet divisor with full multiplicities. The multiplier survives throughout that
 quartet and vanishes at every other Xi zero; moreover `|k|≤Cθ`.
 
 First-atom domination gives `θ(x)≤C exp(9|x|/2−π exp(2|x|))`. The inequality
@@ -77,5 +77,5 @@ No external novelty claim.
 This identifies a smaller decisive sample; it does not produce its
 arithmetic upper bound. B130 remains open. The theorem does not settle
 bounded-window detection for arbitrary configurations with zeta's zero count.
-The exception-tolerant refinement is on
-`1-in-progress/power-thin-exceptions-in-logarithmic-prime-windows.md`.
+The exception-tolerant refinement is formalized in
+[Power-thin exceptions in logarithmic prime windows](power-thin-exceptions-in-logarithmic-prime-windows.md).

@@ -6,6 +6,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.SeparationForcesRationality
 import GaloisForLFunctions.SignFreePurityMechanisms.CoefficientGapsSeparateTheRoots
 import GaloisForLFunctions.SignFreePurityMechanisms.TheHeightSeparatesTheZerosIffThePrimeTracesAreBounded
 import GaloisForLFunctions.SignFreePurityMechanisms.TheZerosOfZetaHaveNoCoefficientGaps
+import GaloisForLFunctions.SignFreePurityMechanisms.TheUltrametricNewtonPolygonSeparatesTheRoots
 
 /-!
 # Sign-free purity mechanisms
@@ -31,8 +32,11 @@ carries of each.
 **Separation.**
 * A Galois-invariant function injective on the roots forces them into the base field
   (`SeparationForcesRationality`).
-* Coefficient gaps of factor `9` separate the roots in absolute value, at the price of lacunary
-  roots (`CoefficientGapsSeparateTheRoots`); the critical zeros of `ζ` are too dense for it
+* Over a complete ultrametric field the coefficients produce the separation: strictly
+  log-concave coefficient norms give roots of pairwise distinct norm, and the polynomial splits
+  over the base field (`TheUltrametricNewtonPolygonSeparatesTheRoots`).
+* Over `ℂ` coefficient gaps of factor `9` produce it, at the price of lacunary roots
+  (`CoefficientGapsSeparateTheRoots`); the critical zeros of `ζ` are too dense for these gaps
   (`TheZerosOfZetaHaveNoCoefficientGaps`).
 * For `ζ` the separating invariant is the height: it is injective on the zeros exactly when the
   absolute cubic-spline traces at the primes are bounded, and the spread of its fibres is their
