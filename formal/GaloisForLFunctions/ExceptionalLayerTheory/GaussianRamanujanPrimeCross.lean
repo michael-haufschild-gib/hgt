@@ -45,6 +45,72 @@ private theorem relativeEnergy_le (r : ℕ) (hr : r ≠ 0) {Q n : ℕ}
     nlinarith only [sq_nonneg ((n : ℝ) / Q)]
   exact (mul_le_mul hp he (Real.exp_pos _).le (pow_nonneg hx0 _)).trans_eq (mul_comm _ _)
 
+/-- The squared critical moment has an integer polynomial exponent. -/
+theorem norm_sq_gaussianHigherPrimeMomentWeight {r : ℕ} (hr : r ≠ 0)
+    (t : ℝ) (ε : ℂ) (n : ℕ) :
+    ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε n‖ ^ 2 =
+      ‖(ε / (t : ℂ)) ^ r‖ ^ 2 * (n : ℝ) ^ (4 * r - 1) *
+        Real.exp (-2 * ε.re * (n : ℝ) ^ 2) := by
+  have hk : 1 ≤ 4 * r := by omega
+  have he : ((((2 * r : ℕ) : ℝ) - 1 / 2) * (2 : ℕ)) =
+      ((4 * r - 1 : ℕ) : ℝ) := by
+    rw [Nat.cast_sub hk]
+    push_cast
+    ring
+  by_cases hn : n = 0
+  · subst n
+    have hw : (((2 * r : ℕ) : ℂ) - (((1 / 2 : ℝ) : ℂ) + t * I)) ≠ 0 := by
+      intro hh
+      have hh' := congrArg Complex.re hh
+      simp only [Complex.sub_re, Complex.natCast_re, Complex.add_re, Complex.ofReal_re,
+        Complex.mul_re, Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero,
+        zero_mul, sub_zero, add_zero, Complex.zero_re] at hh'
+      have hr' : (2 : ℝ) ≤ ((2 * r : ℕ) : ℝ) := by
+        exact_mod_cast (show 2 ≤ 2 * r by omega)
+      linarith only [hh', hr']
+    simp only [gaussianHigherPrimeMomentWeight, gaussianMellinWeight, Nat.cast_zero,
+      Complex.ofReal_zero, Complex.zero_cpow hw, zero_mul, mul_zero,
+      norm_zero,
+      zero_pow (by omega : 4 * r - 1 ≠ 0), zero_pow (by omega : (2 : ℕ) ≠ 0)]
+  · have hnR : (0 : ℝ) < n := by exact_mod_cast (Nat.pos_of_ne_zero hn)
+    unfold gaussianHigherPrimeMomentWeight gaussianMellinWeight
+    rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hnR, Complex.norm_exp]
+    have hw : (((2 * r : ℕ) : ℂ) - (((1 / 2 : ℝ) : ℂ) + t * I)).re =
+        ((2 * r : ℕ) : ℝ) - 1 / 2 := by simp
+    have hε : (-(ε * (n : ℂ) ^ 2)).re = -ε.re * (n : ℝ) ^ 2 := by simp [pow_two]
+    simp only [Complex.ofReal_natCast]
+    rw [hw, hε, mul_pow, mul_pow, ← Real.rpow_mul_natCast hnR.le,
+      he, Real.rpow_natCast, ← Real.exp_nat_mul]
+    push_cast
+    rw [show (2 : ℝ) * (-ε.re * (n : ℝ) ^ 2) = -2 * ε.re * (n : ℝ) ^ 2 by ring]
+    ring
+
+/-- At the physical scale, the relative energy is exactly the norm-square ratio. -/
+theorem norm_sq_gaussianHigherPrimeMomentWeight_eq_relative {r Q : ℕ}
+    (hr : r ≠ 0) (hQ : 0 < Q) (t : ℝ) {ε : ℂ}
+    (hscale : ε.re * (Q : ℝ) ^ 2 = 2) (n : ℕ) :
+    ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε n‖ ^ 2 =
+      ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε Q‖ ^ 2 *
+        gaussianRelativeMomentEnergy r Q n := by
+  have hQ0 : (Q : ℝ) ≠ 0 := by exact_mod_cast hQ.ne'
+  have hε : ε.re = 2 / (Q : ℝ) ^ 2 := (eq_div_iff (pow_ne_zero 2 hQ0)).mpr hscale
+  have he : -2 * ε.re * (n : ℝ) ^ 2 = -2 * ε.re * (Q : ℝ) ^ 2 +
+      4 * (1 - ((n : ℝ) / Q) ^ 2) := by
+    rw [hε]
+    field_simp [hQ0]
+    ring
+  have hpow : (Q : ℝ) ^ (4 * r - 1) * ((n : ℝ) / Q) ^ (4 * r - 1) =
+      (n : ℝ) ^ (4 * r - 1) := by
+    rw [← mul_pow]
+    congr 1
+    field_simp [hQ0]
+  rw [norm_sq_gaussianHigherPrimeMomentWeight hr,
+    norm_sq_gaussianHigherPrimeMomentWeight hr, gaussianRelativeMomentEnergy,
+    he, Real.exp_add]
+  linear_combination -(‖(ε / (t : ℂ)) ^ r‖ ^ 2 *
+    Real.exp (-2 * ε.re * (Q : ℝ) ^ 2) *
+    Real.exp (4 * (1 - ((n : ℝ) / Q) ^ 2))) * hpow
+
 private def ramanujanCubicHead (η : ℝ) (Q : ℕ) : ℝ :=
   ∑ n ∈ range (Q + 1), ‖pmPowerDampedRamanujanWeight η n‖ * ((n : ℝ) / Q) ^ 3
 
@@ -66,7 +132,8 @@ private theorem tendsto_ramanujanCubicHead {η : ℝ} (hη : 0 < η) :
     by_cases hn : n ≤ Q
     · have hx0 : 0 ≤ (n : ℝ) / Q := by positivity
       have hx1 : (n : ℝ) / Q ≤ 1 := (div_le_one hQ0).mpr (by exact_mod_cast hn)
-      rw [f, if_pos hn, Real.norm_of_nonneg (by positivity)]
+      dsimp only [f]
+      rw [if_pos hn, Real.norm_of_nonneg (by positivity)]
       exact mul_le_of_le_one_right (norm_nonneg _) (pow_le_one₀ hx0 hx1)
     · simp only [f, if_neg hn, norm_zero, norm_nonneg]
   have hh := tendsto_tsum_of_dominated_convergence
@@ -104,14 +171,15 @@ private theorem primeDifference_even_gaussian {η : ℝ}
     intro h
     rcases (Nat.dvd_prime hp).mp h with h | h <;> omega
   have hQ : 2 * p / p = 2 := Nat.mul_div_cancel 2 hp.pos
-  have hHp : H (p * 1) = 0 := by simp only [H, mul_one, if_neg h2p]
+  have hHp : H p = 0 := by simp only [H, if_neg h2p]
   have hH2p : H (p * 2) = 1 := by
     rw [show p * 2 = 2 * p by omega]
     simp only [H, dvd_mul_right, if_true, relativeEnergy_self r (by omega : 0 < 2 * p)]
   have hpos : (∑ n ∈ range (2 + 1), if p ∣ n then 0 else
       ‖pmPowerDampedRamanujanWeight η n‖ * H (p * n)) =
       ‖pmPowerDampedRamanujanWeight η 2‖ := by
-    simp only [sum_range_succ, sum_range_zero, dvd_zero, if_true,
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_succ]
+    simp only [sum_range_zero, dvd_zero, if_true,
       hp1, hp2, if_false, hHp, hH2p, mul_zero, mul_one, zero_add]
   have hsub : range (2 + 1) ⊆ range (2 * p + 1) := range_mono (by omega)
   have hband := sum_sdiff_eq_sub hsub
@@ -160,16 +228,17 @@ private theorem cross_error_le {η : ℝ} (hη : 0 < η)
   split_ifs
   · positivity
   · nlinarith only [mul_le_mul_of_nonneg_left hb (norm_nonneg (pmPowerDampedRamanujanWeight η n))]
-  · positivity
+  · simp only [mul_zero]
+    positivity
 
 /-- The exact scaled limit is positive, uniformly over every positive moment order. -/
 theorem eventually_gaussianEvenPrimeCross_near_atom {η δ : ℝ}
     (hη : 0 < η) (hδ : 0 < δ) :
     ∀ᶠ p : ℕ in atTop, p.Prime → ∀ r : ℕ, r ≠ 0 →
       |gaussianEvenPrimeCross η r p - ‖pmPowerDampedRamanujanWeight η 2‖| < δ := by
-  have hh := ((tendsto_ramanujanCubicHead hη).const_mul (Real.exp 4)).eventually_lt_const hδ
+  have hh := (tendsto_ramanujanCubicHead hη).const_mul (Real.exp 4)
   simp only [mul_zero] at hh
-  obtain ⟨N, hN⟩ := eventually_atTop.mp hh
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hh.eventually_lt_const hδ)
   filter_upwards [eventually_ge_atTop (max N 3)] with p hp hpprime r hr
   exact (cross_error_le hη hpprime (by omega) r hr).trans_lt (hN (2 * p) (by omega))
 
@@ -193,7 +262,68 @@ theorem eventually_gaussianEvenPrimeCross_pos {η : ℝ} (hη : 0 < η) :
   have hh := (abs_lt.mp (hp hprime r hr)).1
   linarith only [hh, hw]
 
+/-- The literal squared-moment cross form with the even cofactor mask. -/
+def gaussianEvenMomentPrimeCross (η : ℝ) (r : ℕ) (t : ℝ) (ε : ℂ) (p : ℕ) : ℝ :=
+  pmRamanujanCutoffMean η (2 * p) (fun n => pmRamanujanPrimeFeature η p n *
+    (if 2 ∣ n then ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε n‖ ^ 2 else 0))
+
+/-- The normalized cross form is the exact rescaling of the literal moment form. -/
+theorem gaussianEvenMomentPrimeCross_scaled {r p : ℕ} (hr : r ≠ 0)
+    (hp : 0 < p) (η t : ℝ) {ε : ℂ} (hscale : ε.re * ((2 * p : ℕ) : ℝ) ^ 2 = 2) :
+    ((p : ℝ) ^ (1 + η) - 1) * gaussianEvenMomentPrimeCross η r t ε p =
+      ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε (2 * p)‖ ^ 2 *
+        gaussianEvenPrimeCross η r p := by
+  have hQ : 0 < 2 * p := by omega
+  unfold gaussianEvenMomentPrimeCross gaussianEvenPrimeCross pmRamanujanCutoffMean
+  simp only [mul_sum]
+  apply sum_congr rfl
+  intro n hn
+  rw [norm_sq_gaussianHigherPrimeMomentWeight_eq_relative hr hQ t hscale]
+  split_ifs <;> ring
+
+private theorem norm_sq_moment_scale_pos {r Q : ℕ} (hr : r ≠ 0)
+    (hQ : 0 < Q) {t : ℝ} (ht : t ≠ 0) {ε : ℂ}
+    (hscale : ε.re * (Q : ℝ) ^ 2 = 2) :
+    0 < ‖gaussianHigherPrimeMomentWeight r (1 / 2) t ε Q‖ ^ 2 := by
+  have hε : ε ≠ 0 := by
+    intro h
+    simp only [h, Complex.zero_re, zero_mul] at hscale
+    norm_num at hscale
+  have hbase : 0 < ‖(ε / (t : ℂ)) ^ r‖ :=
+    norm_pos_iff.mpr (pow_ne_zero _ (div_ne_zero hε (Complex.ofReal_ne_zero.mpr ht)))
+  have hQR : (0 : ℝ) < Q := by exact_mod_cast hQ
+  rw [norm_sq_gaussianHigherPrimeMomentWeight hr]
+  positivity
+
+/-- Even though its cofactor mask is prime invariant, the actual Gaussian cross
+form is eventually positive, uniformly in every positive moment order. -/
+theorem eventually_gaussianEvenMomentPrimeCross_pos {η : ℝ} (hη : 0 < η) :
+    ∀ᶠ p : ℕ in atTop, p.Prime → ∀ r : ℕ, r ≠ 0 → ∀ t : ℝ, t ≠ 0 →
+      ∀ ε : ℂ, ε.re * ((2 * p : ℕ) : ℝ) ^ 2 = 2 →
+        0 < gaussianEvenMomentPrimeCross η r t ε p := by
+  filter_upwards [eventually_gaussianEvenPrimeCross_pos hη] with p hp hprime r hr t ht ε hscale
+  have hp0 := hprime.pos
+  have hscaled := gaussianEvenMomentPrimeCross_scaled hr hprime.pos η t hscale
+  have hnorm := norm_sq_moment_scale_pos hr (by omega : 0 < 2 * p) ht hscale
+  have hproduct := mul_pos hnorm (hp hprime r hr)
+  rw [← hscaled] at hproduct
+  have hD := lt_trans (by norm_num : (0 : ℝ) < 1)
+    (pmPowerDampedRamanujan_prime_denominator_one_lt hη hprime)
+  exact (mul_pos_iff.mp hproduct).elim (fun h => h.2) (fun h => (not_lt_of_ge hD.le h.1).elim)
+
+/-- Multiplying by an odd prime leaves the cofactor mask unchanged. -/
+theorem evenMask_prime_invariant {p : ℕ} (hp : p.Prime) (hp3 : 3 ≤ p) (n : ℕ) :
+    (if 2 ∣ p * n then (1 : ℝ) else 0) = (if 2 ∣ n then 1 else 0) := by
+  have h2p : ¬2 ∣ p := by
+    intro h
+    rcases (Nat.dvd_prime hp).mp h with h | h <;> omega
+  simp only [Nat.prime_two.dvd_mul, h2p, false_or]
+
 #print axioms gaussianEvenPrimeCross_eq_atom_sub
 #print axioms eventually_gaussianEvenPrimeCross_near_atom
 #print axioms eventually_gaussianEvenPrimeCross_pos
+#print axioms norm_sq_gaussianHigherPrimeMomentWeight_eq_relative
+#print axioms gaussianEvenMomentPrimeCross_scaled
+#print axioms eventually_gaussianEvenMomentPrimeCross_pos
+#print axioms evenMask_prime_invariant
 end GaloisForLFunctions.ExceptionalLayerTheory

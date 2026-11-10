@@ -8,7 +8,8 @@ An exponential polynomial `P(w) = 1 + Σ_k c_k e^{−ℓ_k w}`, `ℓ_k > 0`, wit
 bounded away from zero on every closed half-plane `Re w ≥ σ`, `σ > θ`
 (`exists_le_norm_expPoly_of_zeroFree`). The vertical translates of `P` are its twists by
 unimodular numbers, a compact family; a sequence along which `P` tends to zero gives a twist with a
-zero right of `θ`, and by Hurwitz a zero of `P` there.
+zero right of `θ`, and by Hurwitz a zero of `P` there. Hence the expansion of `κ + P'/P` over the
+monoid of frequencies converges absolutely up to the zeros (`hasSum_logWeight_of_zeroFree`).
 -/
 
 open Complex Filter Topology Set Metric
@@ -146,5 +147,20 @@ theorem exists_le_norm_expPoly_of_zeroFree {c : τ → ℂ} {ℓ : τ → ℝ} (
   simp only [add_re, mul_re, Complex.ofReal_re, Complex.I_re, mul_zero, Complex.ofReal_im,
     Complex.I_im, mul_one, sub_self, add_zero]
   linarith [h.1]
+
+/-- **The logarithmic derivative of a zero-free exponential polynomial expands up to its zeros.**
+If `P` has no zeros in `Re w > θ`, the family of `κ + P'/P` converges absolutely on every line
+`Re w = σ > θ` and sums to `κ + P'/P` there. -/
+theorem hasSum_logWeight_of_zeroFree (κ : ℂ) (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k)
+    {θ : ℝ} (hzero : ∀ w : ℂ, θ < w.re → expPoly c ℓ w ≠ 0) :
+    (∀ σ : ℝ, θ < σ → Summable fun i : LogIndex τ ℓ =>
+      ‖logWeight κ c ℓ i‖ * Real.exp (-(σ * logExp ℓ i))) ∧
+    ∀ w : ℂ, θ < w.re →
+      HasSum (fun i : LogIndex τ ℓ => logWeight κ c ℓ i * cexp (-(logExp ℓ i : ℂ) * w))
+        (κ + expPolyDeriv c ℓ w / expPoly c ℓ w) :=
+  ⟨fun _ hσ => summable_logWeight κ c hℓ
+      (fun _ hσ' => exists_le_norm_expPoly_of_zeroFree hℓ hσ' hzero) hσ,
+    fun _ hw => hasSum_logWeight κ c hℓ
+      (fun _ hσ' => exists_le_norm_expPoly_of_zeroFree hℓ hσ' hzero) hw⟩
 
 end GaloisForLFunctions.InfiniteRankPurityTheory

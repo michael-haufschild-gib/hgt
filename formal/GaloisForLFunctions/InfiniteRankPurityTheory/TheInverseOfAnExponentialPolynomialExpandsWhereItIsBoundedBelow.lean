@@ -626,4 +626,160 @@ theorem hasSum_inv_expPoly (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 
   rw [← hval]
   exact hsw.hasSum
 
+/-! ### The logarithmic derivative as one family -/
+
+/-- The index of the expansion of `κ + P'/P`: one constant and the pairs (letter, point of the
+monoid). -/
+abbrev LogIndex (τ : Type*) [Fintype τ] (ℓ : τ → ℝ) := Unit ⊕ (τ × freqMonoid ℓ)
+
+/-- The weights: `κ` at the constant, `−c_k ℓ_k μ(x)` at the pair `(k, x)`. -/
+def logWeight (κ : ℂ) (c : τ → ℂ) (ℓ : τ → ℝ) : LogIndex τ ℓ → ℂ :=
+  Sum.elim (fun _ => κ) fun p => c p.1 * (-(ℓ p.1 : ℂ)) * wordMass c ℓ p.2
+
+/-- The exponents: `0` at the constant, `ℓ_k + x` at the pair `(k, x)`. -/
+def logExp (ℓ : τ → ℝ) : LogIndex τ ℓ → ℝ := Sum.elim (fun _ => 0) fun p => ℓ p.1 + p.2
+
+theorem logExp_nonneg {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) (i : LogIndex τ ℓ) : 0 ≤ logExp ℓ i := by
+  rcases i with u | p
+  · exact le_rfl
+  · exact add_nonneg (hℓ p.1).le (nonneg_of_mem_freqMonoid hℓ p.2.2)
+
+theorem summable_logWeight (κ : ℂ) (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) {θ : ℝ}
+    (hlow : ∀ σ : ℝ, θ < σ → ∃ δ : ℝ, 0 < δ ∧ ∀ w : ℂ, σ ≤ w.re → δ ≤ ‖expPoly c ℓ w‖)
+    {σ : ℝ} (hσ : θ < σ) :
+    Summable fun i : LogIndex τ ℓ => ‖logWeight κ c ℓ i‖ * Real.exp (-(σ * logExp ℓ i)) := by
+  refine Summable.sum _ (hasSum_fintype _).summable ?_
+  have h1 : Summable fun k : τ => ‖c k * (-(ℓ k : ℂ))‖ * Real.exp (-(σ * ℓ k)) :=
+    (hasSum_fintype _).summable
+  have h2 := (hasSum_inv_expPoly c hℓ hlow).1 σ hσ
+  refine (h1.mul_of_nonneg h2 (fun k => by positivity) (fun x => by positivity)).congr fun p => ?_
+  simp only [Function.comp_apply, logWeight, logExp, Sum.elim_inr]
+  have hn : ‖c p.1 * (-(ℓ p.1 : ℂ)) * wordMass c ℓ p.2‖ =
+      ‖c p.1 * (-(ℓ p.1 : ℂ))‖ * ‖wordMass c ℓ p.2‖ := norm_mul _ _
+  rw [hn, mul_add, neg_add, Real.exp_add]
+  ring
+
+/-- **The logarithmic derivative expands where `P` is bounded below.**
+`κ + P'(w)/P(w) = Σ_i B_i e^{−X_i w}` on `Re w > θ`. -/
+theorem hasSum_logWeight (κ : ℂ) (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) {θ : ℝ}
+    (hlow : ∀ σ : ℝ, θ < σ → ∃ δ : ℝ, 0 < δ ∧ ∀ w : ℂ, σ ≤ w.re → δ ≤ ‖expPoly c ℓ w‖)
+    {w : ℂ} (hw : θ < w.re) :
+    HasSum (fun i : LogIndex τ ℓ => logWeight κ c ℓ i * cexp (-(logExp ℓ i : ℂ) * w))
+      (κ + expPolyDeriv c ℓ w / expPoly c ℓ w) := by
+  refine HasSum.sum ?_ ?_
+  · simp [logWeight, logExp, Function.comp_def]
+  · have hf := hasSum_fintype (fun k : τ => c k * (-(ℓ k : ℂ)) * cexp (-(ℓ k : ℂ) * w))
+    have hg := (hasSum_inv_expPoly c hℓ hlow).2 w hw
+    have hsum : Summable fun p : τ × freqMonoid ℓ =>
+        (c p.1 * (-(ℓ p.1 : ℂ)) * cexp (-(ℓ p.1 : ℂ) * w)) *
+          (wordMass c ℓ p.2 * cexp (-((p.2 : ℝ) : ℂ) * w)) := by
+      refine Summable.of_norm ?_
+      have h1 : Summable fun k : τ => ‖c k * (-(ℓ k : ℂ)) * cexp (-(ℓ k : ℂ) * w)‖ :=
+        (hasSum_fintype _).summable
+      have h2 : Summable fun x : freqMonoid ℓ => ‖wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * w)‖ :=
+        hg.summable.norm
+      exact (h1.mul_of_nonneg h2 (fun _ => norm_nonneg _) (fun _ => norm_nonneg _)).congr
+        fun p => (norm_mul _ _).symm
+    have h := hf.mul hg hsum
+    have hfun : ((fun i : LogIndex τ ℓ => logWeight κ c ℓ i * cexp (-(logExp ℓ i : ℂ) * w)) ∘
+        Sum.inr) = fun p : τ × freqMonoid ℓ =>
+        (c p.1 * (-(ℓ p.1 : ℂ)) * cexp (-(ℓ p.1 : ℂ) * w)) *
+          (wordMass c ℓ p.2 * cexp (-((p.2 : ℝ) : ℂ) * w)) := by
+      funext p
+      simp only [Function.comp_apply, logWeight, logExp, Sum.elim_inr]
+      rw [show -((ℓ p.1 + (p.2 : ℝ) : ℝ) : ℂ) * w = -(ℓ p.1 : ℂ) * w + -((p.2 : ℝ) : ℂ) * w by
+        push_cast; ring, Complex.exp_add]
+      ring
+    rw [hfun, div_eq_mul_inv]
+    exact h
+
+/-- The constant term of the expansion is `κ`. -/
+theorem tsum_logWeight_zero (κ : ℂ) (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) :
+    (∑' i : LogIndex τ ℓ, if logExp ℓ i = 0 then logWeight κ c ℓ i else 0) = κ := by
+  have h : HasSum (fun i : LogIndex τ ℓ => if logExp ℓ i = 0 then logWeight κ c ℓ i else 0)
+      (κ + 0) := by
+    refine HasSum.sum ?_ ?_
+    · simp [logWeight, logExp, Function.comp_def]
+    · have hfun : ((fun i : LogIndex τ ℓ => if logExp ℓ i = 0 then logWeight κ c ℓ i else 0) ∘
+          Sum.inr) = fun _ : τ × freqMonoid ℓ => (0 : ℂ) := by
+        funext p
+        simp only [Function.comp_apply, logExp, Sum.elim_inr]
+        exact if_neg (ne_of_gt (add_pos_of_pos_of_nonneg (hℓ p.1)
+          (nonneg_of_mem_freqMonoid hℓ p.2.2)))
+      rw [hfun]
+      exact hasSum_zero
+  rw [h.tsum_eq, add_zero]
+
+theorem exp_cpow_eq_cexp (r : ℝ) (s : ℂ) : ((Real.exp r : ℝ) : ℂ) ^ s = cexp ((r : ℂ) * s) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos r).ne'),
+    ← Complex.ofReal_log (Real.exp_pos r).le, Real.log_exp]
+
+/-! ### Dirichlet sums as exponential polynomials -/
+
+theorem natCast_cpow_neg_eq_cexp {n : ℕ} (hn : 0 < n) (s : ℂ) :
+    (n : ℂ) ^ (-s) = cexp (-(Real.log n : ℂ) * s) := by
+  rw [Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hn.ne'), ← Complex.natCast_log]
+  congr 1
+  ring
+
+/-- A finite exponential sum, normalized at the term `m`: the remaining frequencies are
+`L_n − L_m`. -/
+theorem sum_exp_eq_expPoly (S : Finset ℕ) (a : ℕ → ℂ) (L : ℕ → ℝ) {m : ℕ} (hm : m ∈ S)
+    (ham : a m ≠ 0) (s : ℂ) :
+    ∑ n ∈ S, a n * cexp (-(L n : ℂ) * s) = a m * cexp (-(L m : ℂ) * s) *
+      expPoly (fun k : S.erase m => a k / a m) (fun k : S.erase m => L k - L m) s := by
+  have hsplit := Finset.add_sum_erase S (fun n => a n * cexp (-(L n : ℂ) * s)) hm
+  have hsub := Finset.sum_coe_sort (S.erase m) (fun n => a n * cexp (-(L n : ℂ) * s))
+  rw [← hsplit, ← hsub, expPoly, mul_add, mul_one, Finset.mul_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [show -((L k - L m : ℝ) : ℂ) * s = -(L k : ℂ) * s - -(L m : ℂ) * s by push_cast; ring,
+    Complex.exp_sub]
+  field_simp
+
+/-- The same sum, normalized at `m` in the variable `−s`: the frequencies are `L_m − L_n`. -/
+theorem sum_exp_eq_expPoly_neg (S : Finset ℕ) (a : ℕ → ℂ) (L : ℕ → ℝ) {m : ℕ} (hm : m ∈ S)
+    (ham : a m ≠ 0) (s : ℂ) :
+    ∑ n ∈ S, a n * cexp (-(L n : ℂ) * s) = a m * cexp (-(L m : ℂ) * s) *
+      expPoly (fun k : S.erase m => a k / a m) (fun k : S.erase m => L m - L k) (-s) := by
+  have hsplit := Finset.add_sum_erase S (fun n => a n * cexp (-(L n : ℂ) * s)) hm
+  have hsub := Finset.sum_coe_sort (S.erase m) (fun n => a n * cexp (-(L n : ℂ) * s))
+  rw [← hsplit, ← hsub, expPoly, mul_add, mul_one, Finset.mul_sum]
+  congr 1
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [show -((L m - L k : ℝ) : ℂ) * -s = -(L k : ℂ) * s - -(L m : ℂ) * s by push_cast; ring,
+    Complex.exp_sub]
+  field_simp
+
+/-- The logarithmic derivative of `A e^{−λz} P(z)` is `−λ + P'/P`. -/
+theorem logDeriv_exp_mul {P : ℂ → ℂ} {A lam P' s : ℂ} (hA : A ≠ 0) (hP : HasDerivAt P P' s)
+    (hPs : P s ≠ 0) :
+    deriv (fun z => A * cexp (-lam * z) * P z) s / (A * cexp (-lam * s) * P s) =
+      -lam + P' / P s := by
+  have h1 : HasDerivAt (fun z : ℂ => cexp (-lam * z)) (cexp (-lam * s) * -lam) s := by
+    simpa using ((hasDerivAt_id s).const_mul (-lam)).cexp
+  have h2 : HasDerivAt (fun z => A * cexp (-lam * z) * P z)
+      (A * (cexp (-lam * s) * -lam) * P s + A * cexp (-lam * s) * P') s :=
+    (h1.const_mul A).mul hP
+  rw [h2.deriv]
+  have he := Complex.exp_ne_zero (-lam * s)
+  field_simp
+
+/-- The logarithmic derivative of `A e^{−λz} P(−z)` is `−λ − P'(−z)/P(−z)`. -/
+theorem logDeriv_exp_mul_neg {P : ℂ → ℂ} {A lam P' s : ℂ} (hA : A ≠ 0)
+    (hP : HasDerivAt P P' (-s)) (hPs : P (-s) ≠ 0) :
+    deriv (fun z => A * cexp (-lam * z) * P (-z)) s / (A * cexp (-lam * s) * P (-s)) =
+      -lam - P' / P (-s) := by
+  have h1 : HasDerivAt (fun z : ℂ => cexp (-lam * z)) (cexp (-lam * s) * -lam) s := by
+    simpa using ((hasDerivAt_id s).const_mul (-lam)).cexp
+  have h3 : HasDerivAt (fun z : ℂ => P (-z)) (P' * -1) s :=
+    HasDerivAt.comp s hP (hasDerivAt_neg s)
+  have h2 : HasDerivAt (fun z => A * cexp (-lam * z) * P (-z))
+      (A * (cexp (-lam * s) * -lam) * P (-s) + A * cexp (-lam * s) * (P' * -1)) s :=
+    (h1.const_mul A).mul h3
+  rw [h2.deriv]
+  have he := Complex.exp_ne_zero (-lam * s)
+  field_simp
+  ring
+
 end GaloisForLFunctions.InfiniteRankPurityTheory

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.FractionalPartZeta
 import GaloisForLFunctions.RHTower.Sieve.DivisorBound
 import Mathlib.Analysis.MellinInversion
+import Mathlib.Analysis.Meromorphic.NormalForm
+import Mathlib.Analysis.Complex.AbsMax
 import Mathlib.Analysis.Complex.Liouville
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Topology.Algebra.Module.Cardinality
@@ -24,6 +26,11 @@ strip, `F` is the Mellin transform of `g₊(u) = Σ b_i {a_i u}` right of the li
 `g₊ = g₋` at every point of continuity. Both functions are regulated; at `u = 1/k` the jump of
 `g₊` is `−[k = 1] Σ_{a_i = 1} b_i` and the jump of `g₋` is `−Σ_{k ∣ q_j} c_j`
 (`tendsto_fractSeries_left`). Möbius inversion over `k` gives the statement.
+
+Two tools for the hypotheses: `g f'/f` is holomorphic wherever `g` vanishes at the zeros of `f`
+(`exists_differentiableOn_deriv_mul_div`), and a holomorphic function on a strip is bounded by its
+bounds on the boundary lines and on horizontal segments at heights met in every interval of a
+fixed length (`norm_le_of_good_heights`).
 -/
 
 open Filter Topology Set MeasureTheory
@@ -1044,5 +1051,100 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
   refine tendsto_nhds_unique hlim ((tendsto_const_nhds (x := β)).congr' ?_)
   filter_upwards [eventually_ge_atTop 1] with N hN
   exact (hAN N hN).symm
+
+/-! ### Tools for the hypotheses: analytic quotients and good heights -/
+
+/-- **A logarithmic derivative times a function vanishing at the zero has no pole.** -/
+theorem meromorphicOrderAt_deriv_mul_div_nonneg {f g : ℂ → ℂ} {ρ : ℂ} (hf : AnalyticAt ℂ f ρ)
+    (hg : AnalyticAt ℂ g ρ) (hfin : analyticOrderAt f ρ ≠ ⊤) (hf0 : f ρ = 0) (hg0 : g ρ = 0) :
+    0 ≤ meromorphicOrderAt (deriv f * g * f⁻¹) ρ := by
+  obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp hfin
+  have hm0 : m ≠ 0 := by
+    rintro rfl
+    have h := (hf.analyticOrderAt_ne_zero).mpr hf0
+    exact h (by rw [← hm]; rfl)
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hm0
+  have hford : analyticOrderAt f ρ = ((k + 1 : ℕ) : ℕ∞) := hm.symm
+  have hf'ord : analyticOrderAt (deriv f) ρ = (k : ℕ∞) :=
+    analyticOrderAt_deriv_of_pos hf (by rw [hford]; push_cast; rfl)
+  have hgne : analyticOrderAt g ρ ≠ 0 := (hg.analyticOrderAt_ne_zero).mpr hg0
+  rw [meromorphicOrderAt_mul (hf.deriv.meromorphicAt.mul hg.meromorphicAt) hf.meromorphicAt.inv,
+    meromorphicOrderAt_mul hf.deriv.meromorphicAt hg.meromorphicAt, meromorphicOrderAt_inv,
+    hf.deriv.meromorphicOrderAt_eq, hg.meromorphicOrderAt_eq, hf.meromorphicOrderAt_eq, hford,
+    hf'ord]
+  induction h : analyticOrderAt g ρ using ENat.recTopCoe with
+  | top => simp
+  | coe j =>
+    have hj : j ≠ 0 := by
+      rintro rfl
+      exact hgne (by rw [h]; rfl)
+    have hj1 : (1 : ℤ) ≤ j := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hj
+    simp only [ENat.map_coe]
+    rw [← WithTop.coe_add, ← WithTop.LinearOrderedAddCommGroup.coe_neg, ← WithTop.coe_add,
+      ← WithTop.coe_zero, WithTop.coe_le_coe]
+    push_cast
+    linarith
+
+/-- **The analytic quotient.** On an open set, if `g` vanishes at the zeros of `f` and `f` is not
+locally zero, `g f'/f` extends to a holomorphic function. -/
+theorem exists_differentiableOn_deriv_mul_div {U : Set ℂ} (hU : IsOpen U) {f g : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f U) (hg : DifferentiableOn ℂ g U)
+    (hfin : ∀ z ∈ U, analyticOrderAt f z ≠ ⊤) (hzero : ∀ z ∈ U, f z = 0 → g z = 0) :
+    ∃ F : ℂ → ℂ, DifferentiableOn ℂ F U ∧ ∀ z ∈ U, f z ≠ 0 → F z = deriv f z * g z / f z := by
+  have hfa : ∀ z ∈ U, AnalyticAt ℂ f z := fun z hz => hf.analyticAt (hU.mem_nhds hz)
+  have hga : ∀ z ∈ U, AnalyticAt ℂ g z := fun z hz => hg.analyticAt (hU.mem_nhds hz)
+  set Q : ℂ → ℂ := deriv f * g * f⁻¹ with hQ
+  have hmer : MeromorphicOn Q U := fun z hz =>
+    ((hfa z hz).deriv.meromorphicAt.mul (hga z hz).meromorphicAt).mul (hfa z hz).meromorphicAt.inv
+  have hord : ∀ z ∈ U, 0 ≤ meromorphicOrderAt Q z := by
+    intro z hz
+    by_cases h0 : f z = 0
+    · exact meromorphicOrderAt_deriv_mul_div_nonneg (hfa z hz) (hga z hz) (hfin z hz) h0
+        (hzero z hz h0)
+    · exact (((hfa z hz).deriv.mul (hga z hz)).mul ((hfa z hz).inv h0)).meromorphicOrderAt_nonneg
+  have hNF := meromorphicNFOn_toMeromorphicNFOn Q U
+  refine ⟨toMeromorphicNFOn Q U, fun z hz => ?_, fun z hz h0 => ?_⟩
+  · have h1 : 0 ≤ meromorphicOrderAt (toMeromorphicNFOn Q U) z := by
+      rw [meromorphicOrderAt_toMeromorphicNFOn hmer hz]
+      exact hord z hz
+    exact ((hNF hz).meromorphicOrderAt_nonneg_iff_analyticAt.mp h1).differentiableAt.differentiableWithinAt
+  · have han : AnalyticAt ℂ Q z := ((hfa z hz).deriv.mul (hga z hz)).mul ((hfa z hz).inv h0)
+    rw [toMeromorphicNFOn_eq_toMeromorphicNFAt hmer hz,
+      toMeromorphicNFAt_eq_self.mpr han.meromorphicNFAt]
+    simp only [hQ, Pi.mul_apply, Pi.inv_apply, div_eq_mul_inv]
+
+/-- **The maximum principle between good heights.** A function holomorphic near a vertical strip,
+bounded by `K` on its two boundary lines and on horizontal segments at heights met in every
+interval of length `L`, is bounded by `K` on the strip. -/
+theorem norm_le_of_good_heights {F : ℂ → ℂ} {x₁ x₂ : ℝ} (hx : x₁ < x₂) {U : Set ℂ}
+    (hsub : ∀ z : ℂ, x₁ ≤ z.re → z.re ≤ x₂ → z ∈ U) (hF : DifferentiableOn ℂ F U) {K L : ℝ}
+    (hline : ∀ z : ℂ, z.re = x₁ ∨ z.re = x₂ → ‖F z‖ ≤ K)
+    (hgood : ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, x₁ ≤ z.re → z.re ≤ x₂ → z.im = T →
+      ‖F z‖ ≤ K)
+    {w : ℂ} (hw1 : x₁ ≤ w.re) (hw2 : w.re ≤ x₂) : ‖F w‖ ≤ K := by
+  obtain ⟨T₁, hT₁mem, hT₁⟩ := hgood (w.im - L - 1)
+  obtain ⟨T₂, hT₂mem, hT₂⟩ := hgood (w.im + 1)
+  have hT₁w : T₁ < w.im := by linarith [hT₁mem.2]
+  have hT₂w : w.im < T₂ := by linarith [hT₂mem.1]
+  have hT : T₁ < T₂ := hT₁w.trans hT₂w
+  have hcl : closure (Ioo x₁ x₂ ×ℂ Ioo T₁ T₂) = Icc x₁ x₂ ×ℂ Icc T₁ T₂ := by
+    rw [Complex.closure_reProdIm, closure_Ioo hx.ne, closure_Ioo hT.ne]
+  have hclU : closure (Ioo x₁ x₂ ×ℂ Ioo T₁ T₂) ⊆ U := by
+    rw [hcl]
+    intro z hz
+    exact hsub z hz.1.1 hz.1.2
+  have hd : DiffContOnCl ℂ F (Ioo x₁ x₂ ×ℂ Ioo T₁ T₂) :=
+    ⟨hF.mono (subset_closure.trans hclU), hF.continuousOn.mono hclU⟩
+  refine Complex.norm_le_of_forall_mem_frontier_norm_le (U := Ioo x₁ x₂ ×ℂ Ioo T₁ T₂)
+    ((Metric.isBounded_Ioo _ _).reProdIm (Metric.isBounded_Ioo _ _)) hd (fun z hz => ?_) ?_
+  · rw [Complex.frontier_reProdIm, closure_Ioo hx.ne, closure_Ioo hT.ne, frontier_Ioo hx,
+      frontier_Ioo hT] at hz
+    rcases hz with ⟨hre, him⟩ | ⟨hre, him⟩
+    · rcases him with h | h
+      · exact hT₁ z hre.1 hre.2 h
+      · exact hT₂ z hre.1 hre.2 h
+    · exact hline z hre
+  · rw [hcl]
+    exact ⟨⟨hw1, hw2⟩, ⟨hT₁w.le, hT₂w.le⟩⟩
 
 end GaloisForLFunctions.InfiniteRankPurityTheory

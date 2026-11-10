@@ -55,6 +55,9 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `TopBlockFeasibility` | Every nonempty content layer bounded by `p−1` fits in the last part of a divisible composition; some last part has value `>N/2` |
 | `GreedyWeightBounds` | For divisible total `N`, every greedy or optimal `m`-part composition satisfies `(m−1)N<weight≤mN` |
 | `PrefixBoundary` | The initial prefix has minimum inverse coordinate exactly `m−1`; last-part deletion remains feasible iff that part stays nonempty |
+| `CommonCoordinate` | All proper parts of an optimal or greedy composition share an inverse-content coordinate equal to one |
+| `SingleResidueOptimality` | For `q=p`, greediness is equivalent to weight optimality and maximizing numerical part values are unique |
+| `BoundaryFeasibility` | A non-strict inverse threshold gives either a positive last remainder or one fewer part with divisible total; one integral inverse coordinate forces integrality everywhere |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
@@ -101,6 +104,12 @@ last part improves weight or reverse lexicographic order. Its minimum
 inverse-content coordinate is exactly `m−1`, so all first `m−1` parts
 share a coordinate equal to one. These are the boundary facts needed
 before the minimal-counterexample argument.
+
+For `s=1`, that coordinate is the entire inverse vector. Each proper part
+therefore has exactly `p−1` digits. Every optimal or greedy composition has
+the same content matrix, including its final column by subtraction from
+the total. Uniqueness of increasing allocation proves greedy optimality
+and uniqueness of numerical part values for `q=p`.
 
 For a fixed content matrix, increasing allocation of the digit powers
 within each residue class uniquely maximizes the weight. The difficult

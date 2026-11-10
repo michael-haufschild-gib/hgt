@@ -471,11 +471,16 @@ theorem rawEnergy_smooth_eq_scatteringWeilEnergy {a : SuzukiPositiveAperture}
 /-- Every finite-height prime operator retains the Hermitian arithmetic pairing. -/
 theorem scatteringPrimeOperator_isSelfAdjoint (a : SuzukiPositiveAperture) (N : ℕ) :
     IsSelfAdjoint (scatteringPrimeOperator a N) := by
+  rw [ContinuousLinearMap.isSelfAdjoint_iff']
   unfold scatteringPrimeOperator
-  apply isSelfAdjoint_sum
-  intro n _
-  exact IsSelfAdjoint.smul (by simp [IsSelfAdjoint])
-    (ccmPrimeTransportOperator_isSelfAdjoint a n)
+  generalize Finset.Icc 2 (Nat.floor (Real.exp (2 * a.1))) = s
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert n s hn ih =>
+      rw [Finset.sum_insert hn, ContinuousLinearMap.adjoint.map_add, ih]
+      have hnself := ccmPrimeTransportOperator_isSelfAdjoint a n
+      rw [ContinuousLinearMap.isSelfAdjoint_iff'] at hnself
+      rw [ContinuousLinearMap.adjoint.map_smulₛₗ, hnself, Complex.conj_ofReal]
 
 private theorem correlation_conj {a : SuzukiPositiveAperture}
     (u : CCMComplexSmoothInteriorSource a) (t : ℝ) :
@@ -507,8 +512,7 @@ theorem rawEnergy_smooth_im {a : SuzukiPositiveAperture}
   have hreal (T : suzukiApertureHilbert a →L[ℂ] suzukiApertureHilbert a)
       (hT : IsSelfAdjoint T) : (inner ℂ (T f) f).im = 0 := by
     apply Complex.conj_eq_iff_im.mp
-    rw [inner_conj_symm]
-    exact (hT.isSymmetric f f).symm
+    exact (inner_conj_symm (𝕜 := ℂ) f (T f)).trans (hT.isSymmetric f f).symm
   rw [rawEnergy_eq_cutoff (u.smooth.of_le (WithTop.coe_le_coe.mpr le_top)) u.hasCompactSupport,
     ← correlation_eq_weilTest u u, scatteringPhysicalPacket]
   rw [show 2 * robinCounterterm ((3 / 2 : ℝ) + N) * ccmComplexSmoothCrossCorrelation u u 0 +
@@ -520,7 +524,7 @@ theorem rawEnergy_smooth_im {a : SuzukiPositiveAperture}
     hreal _ (ccmPolarOperator_isSelfAdjoint a),
     hreal _ (scatteringPrimeOperator_isSelfAdjoint a N),
     robinCounterterm_eq (by positivity)]
-  norm_num [Complex.mul_im]
+  norm_num [RCLike.ofReal_eq_complex_ofReal, ← Complex.ofReal_pow, Complex.mul_im]
 
 /-- The full complex raw energy equals the continuous real L² form on its smooth core. -/
 theorem rawEnergy_smooth_eq_ofReal_scatteringWeilEnergy {a : SuzukiPositiveAperture}

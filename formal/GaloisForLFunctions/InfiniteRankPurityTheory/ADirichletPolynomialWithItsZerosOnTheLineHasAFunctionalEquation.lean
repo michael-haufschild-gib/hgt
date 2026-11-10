@@ -273,15 +273,14 @@ theorem exists_entire_quotient {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a �
 
 /-! ### The quotient is bounded on vertical strips -/
 
-/-- **Good heights and the maximum principle.** If `g = D^♯/D` off the zeros of `D`, and `g` is
-bounded on the two boundary lines of a vertical strip, it is bounded on the strip. -/
-theorem exists_bound_on_strip {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠ 0)
-    (hline : ∀ z : ℂ, finiteDirichletPolynomial a z = 0 → z.re = 1 / 2) {g : ℂ → ℂ}
-    (hgd : Differentiable ℂ g)
-    (hg : ∀ w, finiteDirichletPolynomial a w ≠ 0 →
-      g w = reflPoly a w / finiteDirichletPolynomial a w)
-    {x₁ x₂ K₁ : ℝ} (hx : x₁ < x₂) (hK : ∀ w : ℂ, w.re = x₁ ∨ w.re = x₂ → ‖g w‖ ≤ K₁) :
-    ∃ K : ℝ, ∀ w : ℂ, x₁ ≤ w.re → w.re ≤ x₂ → ‖g w‖ ≤ K := by
+/-- **Good heights.** If the zeros of `D` lie on the critical line, then across any vertical strip
+`‖D‖` is bounded below on horizontal segments at heights met in every interval of a fixed length:
+`D` does not vanish on one horizontal line, and it is almost periodic. -/
+theorem exists_good_heights {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠ 0)
+    (hline : ∀ z : ℂ, finiteDirichletPolynomial a z = 0 → z.re = 1 / 2) {x₁ x₂ : ℝ}
+    (hx : x₁ < x₂) :
+    ∃ μ : ℝ, 0 < μ ∧ ∃ L : ℝ, ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, x₁ ≤ z.re → z.re ≤ x₂ →
+      z.im = T → μ ≤ ‖finiteDirichletPolynomial a z‖ := by
   obtain ⟨T₀, hT₀⟩ := exists_ne_zero_on_line ha0 hane
   have hDd := differentiable_finiteDirichletPolynomial a ha0
   -- `D` does not vanish on the horizontal line at height `T₀`
@@ -326,9 +325,21 @@ theorem exists_bound_on_strip {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠
     rw [norm_sub_rev] at h3
     rw [hzform]
     linarith
+  exact ⟨_, half_pos hm₀pos, L, hgood⟩
+
+/-- **Good heights and the maximum principle.** If `g = D^♯/D` off the zeros of `D`, and `g` is
+bounded on the two boundary lines of a vertical strip, it is bounded on the strip. -/
+theorem exists_bound_on_strip {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠ 0)
+    (hline : ∀ z : ℂ, finiteDirichletPolynomial a z = 0 → z.re = 1 / 2) {g : ℂ → ℂ}
+    (hgd : Differentiable ℂ g)
+    (hg : ∀ w, finiteDirichletPolynomial a w ≠ 0 →
+      g w = reflPoly a w / finiteDirichletPolynomial a w)
+    {x₁ x₂ K₁ : ℝ} (hx : x₁ < x₂) (hK : ∀ w : ℂ, w.re = x₁ ∨ w.re = x₂ → ‖g w‖ ≤ K₁) :
+    ∃ K : ℝ, ∀ w : ℂ, x₁ ≤ w.re → w.re ≤ x₂ → ‖g w‖ ≤ K := by
+  obtain ⟨μ, hμ, L, hgood⟩ := exists_good_heights ha0 hane hline hx
   set B : ℝ := ∑ n ∈ a.support, ‖a n‖ * (n : ℝ) ^ (x₂ - 1) with hB
   have hB0 : 0 ≤ B := Finset.sum_nonneg fun n _ => by positivity
-  refine ⟨max K₁ (B / (‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖ / 2)), fun w hw1 hw2 => ?_⟩
+  refine ⟨max K₁ (B / (μ)), fun w hw1 hw2 => ?_⟩
   obtain ⟨T₁, hT₁mem, hT₁⟩ := hgood (w.im - L - 1)
   obtain ⟨T₂, hT₂mem, hT₂⟩ := hgood (w.im + 1)
   have hT₁w : T₁ < w.im := by linarith [hT₁mem.2]
@@ -341,15 +352,15 @@ theorem exists_bound_on_strip {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠
   · rw [Complex.frontier_reProdIm, closure_Ioo hx.ne, closure_Ioo hT.ne, frontier_Ioo hx,
       frontier_Ioo hT] at hz
     rcases hz with ⟨hre, him⟩ | ⟨hre, him⟩
-    · have hD : ‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖ / 2
+    · have hD : μ
           ≤ ‖finiteDirichletPolynomial a z‖ := by
         rcases him with h | h
         · exact hT₁ z hre.1 hre.2 h
         · exact hT₂ z hre.1 hre.2 h
       have hD0 : finiteDirichletPolynomial a z ≠ 0 :=
-        norm_pos_iff.mp (lt_of_lt_of_le (by positivity) hD)
+        norm_pos_iff.mp (lt_of_lt_of_le hμ hD)
       rw [hg z hD0, norm_div]
-      exact le_max_of_le_right (div_le_div₀ hB0 (norm_reflPoly_le ha0 hre.2) (by positivity) hD)
+      exact le_max_of_le_right (div_le_div₀ hB0 (norm_reflPoly_le ha0 hre.2) hμ hD)
     · exact le_max_of_le_left (hK z hre)
   · rw [Complex.closure_reProdIm, closure_Ioo hx.ne, closure_Ioo hT.ne]
     exact ⟨⟨hw1, hw2⟩, ⟨hT₁w.le, hT₂w.le⟩⟩
