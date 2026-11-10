@@ -391,9 +391,10 @@ private theorem integrable_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     (((k : ℝ)+1)*seventySpikeCenter) ξ
   have hB := integrable_cexp_mul_triangleFn_sub seventySpikeWidth_pos
     (-(((k : ℝ)+1)*seventySpikeCenter)) ξ
-  dsimp only [seventyFourierTerm]
-  simpa only [Pi.add_apply, Complex.ofReal_add, mul_add] using
-    (hA.add hB).const_mul ((seventySpikeCoeff k/seventySpikeWidth : ℝ) : ℂ)
+  refine ((hA.add hB).const_mul
+    ((seventySpikeCoeff k/seventySpikeWidth : ℝ) : ℂ)).congr
+      (Filter.Eventually.of_forall fun α => ?_)
+  simp only [seventyFourierTerm, Pi.add_apply, Complex.ofReal_add, mul_add]
 
 private theorem integral_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     ∫ α : ℝ, seventyFourierTerm ξ k α =
@@ -404,7 +405,6 @@ private theorem integral_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     ← Complex.ofReal_mul]
   congr 1
   field_simp [ne_of_gt seventySpikeWidth_pos]
-  ring
 
 /-- Exact Fourier duality between the form factor and its nonnegative pair density. -/
 theorem fourier_seventyFormFactor_sub_one (ξ : ℝ) :

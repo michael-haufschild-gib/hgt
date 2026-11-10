@@ -30,7 +30,8 @@ Finally `Y=exp(η)log²q<exp(2η)log²q`.
 
 ## Status
 
-Riesz producer, prime-number-theorem floor, and proper-prime-power bound exist in Lean.
-Finite character comparison, conductor-divisor bound, and final asymptotic assembly remain.
+Full argument written in
+`SelectiveArithmetic/TheFirstConductorRungForcesBothPrimeSigns.lean`, ending in
+`first_conductor_rung_forces_both_prime_signs`; Lean check pending.
 The argument retains the odd archimedean correction `π`; ramified primes do not count as
 either requested sign.

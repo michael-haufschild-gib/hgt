@@ -14,7 +14,7 @@
 | A110 | B13 iff comb-defect negative index is zero or infinite | Complete: `3-formalized/finite-stratum-packet-index-dichotomy.md` |
 | A106 | AAL from length-dependent floors at `(k+1)π/67`, including prime logs | Both implications written; Lean check pending |
 | A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Exact domains assembled in `TheCancellationAndDepthLadder.lean`; check pending |
-| A108 | Conductor first rung forces primes of both character signs | Open |
+| A108 | Conductor first rung forces primes of both character signs | Full proof written; Lean check pending |
 | A109 | Normalized prime-error trichotomy | Open |
 | A113 | Half-plane map: bounded shapes, positivity, return-free windows | Open |
 | A114 | Step-packet limit matrices with both pole moments and RH equivalence | Independent active proof: `agz-step-packet-limit-matrices.md`; preserve its work |

@@ -141,4 +141,161 @@ theorem sum_nonprime_mass_le_exp {a : ℝ} (ha : 0 ≤ a) :
   apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
   linarith only [hlog]
 
+/-- At every aperture above `log log q` by a fixed amount, positivity on the two
+polar packets rules out a single sign on all unramified primes in the window. -/
+theorem exists_first_rung_excludes_one_prime_sign {η : ℝ} (hη : 0 < η) :
+    ∃ M : ℝ, ∀ {q : ℕ} [NeZero q] (hq : 1 < q), M ≤ Real.log q →
+      ∀ {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive),
+      let a := Real.log (Real.log q) + η
+      0 ≤ twistedZeroSum hq hprim (evenPolar a (Real.exp (-a))) →
+      0 ≤ twistedZeroSum hq hprim (oddPolar a (Real.exp (-a))) →
+      ∀ s : ℝ, |s| = 1 → ¬ (∀ p : ℕ, p.Prime → p ≤ ⌊Real.exp (2 * a)⌋₊ →
+        χ (p : ZMod q) = 0 ∨ χ (p : ZMod q) = (s : ℂ)) := by
+  obtain ⟨C, hC⟩ := exists_riesz_twist_le_of_nonneg
+  let c := Real.exp (-η)
+  have hc0 : 0 < c := Real.exp_pos _
+  have hc1 : c < 1 := by
+    simpa only [Real.exp_zero] using Real.exp_lt_exp.mpr (show -η < 0 by linarith only [hη])
+  let ε := (1 - c) / 2
+  have hε : 0 < ε := by dsimp [ε]; linarith only [hc1]
+  have hε1 : ε ≤ 1 := by dsimp [ε]; linarith only [hc0]
+  obtain ⟨Y₀, hY₀, hY⟩ := exists_riesz_ge hε hε1
+  let D := 4 * Real.log 4 + 16
+  have hD : 0 ≤ D := by dsimp [D]; positivity
+  let K := |C| + 20 + 4 * D + 3 * Real.pi
+  obtain ⟨A, hA⟩ := eventually_atTop.mp (eventually_cubic_lt_exp K hε)
+  let A₀ := max (max A 1) (Real.log Y₀ / 2)
+  refine ⟨Real.exp A₀, fun {q} _ hq hqM χ hprim => ?_⟩
+  dsimp only
+  let a := Real.log (Real.log q) + η
+  intro hE hO s hs hprime
+  have hx : 0 < Real.log q := (Real.exp_pos _).trans_le hqM
+  have hlog : A₀ ≤ Real.log (Real.log q) := by
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos _) hqM
+  have haA : A₀ ≤ a := by dsimp [a]; linarith only [hlog, hη]
+  have ha : 1 ≤ a := ((le_max_right A 1).trans (le_max_left _ _)).trans haA
+  have ha0 : 0 ≤ a := zero_le_one.trans ha
+  have hsmall := hA a (((le_max_left A 1).trans (le_max_left _ _)).trans haA)
+  have hYa : Y₀ ≤ Real.exp (2 * a) := by
+    rw [← Real.exp_log (zero_lt_one.trans_le hY₀)]
+    apply Real.exp_le_exp.mpr
+    have hh := (le_max_right (max A 1) (Real.log Y₀ / 2)).trans haA
+    linarith only [hh]
+  have hmain := hY (Real.exp (2 * a)) hYa
+  rw [riesz_window_eq a] at hmain
+  have hupper := hC hq hprim ha hE hO
+  have herr := riesz_twist_error_le (NeZero.ne q) χ ha0 hs hprime
+  have hpower := mul_le_mul_of_nonneg_left (sum_nonprime_mass_le_exp ha0)
+    (by positivity : 0 ≤ 4 * a)
+  have htriangle :
+      s * (∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) * (2 * a - Real.log n)) =
+      (∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n * (2 * a - Real.log n)) -
+        ((∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n * (2 * a - Real.log n)) -
+          s * (∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) * (2 * a - Real.log n))) := by ring
+  have htri := abs_sub
+    (∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n * (2 * a - Real.log n))
+    ((∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n * (2 * a - Real.log n)) -
+      s * (∑ n ∈ Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) * (2 * a - Real.log n)))
+  rw [← htriangle, abs_mul, hs, one_mul] at htri
+  have hmain' := hmain.trans (le_abs_self _)
+  have hxE : Real.log q = c * Real.exp a := by
+    dsimp [c, a]
+    rw [← Real.exp_add]
+    rw [show -η + (Real.log (Real.log q) + η) = Real.log (Real.log q) by ring,
+      Real.exp_log hx]
+  have hE1 : 1 ≤ Real.exp a := Real.one_le_exp ha0
+  have hpow1 : 1 ≤ (1 + a) ^ 3 := one_le_pow₀ (by linarith only [ha])
+  have hpowA : a ≤ (1 + a) ^ 3 := by
+    nlinarith only [sq_nonneg a, pow_nonneg ha0 3, ha]
+  have hpowA2 : a ^ 2 ≤ (1 + a) ^ 3 := by
+    nlinarith only [sq_nonneg a, pow_nonneg ha0 3, ha]
+  have hCE : C * (1 + a) ^ 3 ≤ |C| * (1 + a) ^ 3 :=
+    mul_le_mul_of_nonneg_right (le_abs_self C) (by positivity)
+  have hpoly : 4 * c * a + 16 * a ^ 2 + 4 * D * a + Real.pi + 2 * Real.pi * a +
+      C * (1 + a) ^ 3 ≤ K * (1 + a) ^ 3 := by
+    have hca : c * a ≤ a := mul_le_of_le_one_left ha0 hc1.le
+    have hDa := mul_le_mul_of_nonneg_left hpowA hD
+    have hπa := mul_le_mul_of_nonneg_left hpowA Real.pi_pos.le
+    have hπ1 := mul_le_mul_of_nonneg_left hpow1 Real.pi_pos.le
+    dsimp [K]
+    nlinarith only [hca, hpowA, hpowA2, hDa, hπa, hπ1, hCE]
+  have hrem : (Real.log q + Real.pi) * (Real.exp a + 2 * a) +
+      C * (1 + a) ^ 3 * Real.exp a + 2 * a * Real.log q +
+        4 * a * (Real.exp a * (4 * a + D)) < (1 - ε) * Real.exp (2 * a) := by
+    rw [hxE]
+    have hπE := mul_le_mul_of_nonneg_left hE1 (mul_nonneg Real.pi_pos.le ha0)
+    have hpolyE := mul_le_mul_of_nonneg_right hpoly (Real.exp_pos a).le
+    have hsmallE := mul_lt_mul_of_pos_right hsmall (Real.exp_pos a)
+    have he : Real.exp (2 * a) = Real.exp a * Real.exp a := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    rw [he]
+    dsimp only [ε] at *
+    nlinarith only [hπE, hpolyE, hsmallE]
+  dsimp only [D] at hrem
+  linarith only [hmain', htri, hupper, herr, hpower, hrem]
+
+/-- Positivity at aperture `log log q + η` forces genuine primes of both signs
+strictly below `exp(2η) log²q`, uniformly over real primitive characters. -/
+theorem first_conductor_rung_forces_both_prime_signs {η : ℝ} (hη : 0 < η) :
+    ∃ M : ℝ, ∀ {q : ℕ} [NeZero q] (hq : 1 < q), M ≤ Real.log q →
+      ∀ {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive), MulChar.IsQuadratic χ →
+      (∀ f : ℝ → ℝ, ContDiff ℝ 2 f →
+        tsupport (fun u => (f u : ℂ)) ⊆
+          Set.Icc (-(Real.log (Real.log q) + η)) (Real.log (Real.log q) + η) →
+        0 ≤ twistedZeroSum hq hprim f) →
+      (∃ p : ℕ, p.Prime ∧ (p : ℝ) < Real.exp (2 * η) * Real.log q ^ 2 ∧
+        χ (p : ZMod q) = 1) ∧
+      (∃ p : ℕ, p.Prime ∧ (p : ℝ) < Real.exp (2 * η) * Real.log q ^ 2 ∧
+        χ (p : ZMod q) = -1) := by
+  obtain ⟨M, hM⟩ := exists_first_rung_excludes_one_prime_sign (half_pos hη)
+  refine ⟨max M 1, fun {q} _ hq hqM χ hprim hquad hpos => ?_⟩
+  let a := Real.log (Real.log q) + η / 2
+  have hx : 0 < Real.log q := zero_lt_one.trans_le ((le_max_right _ _).trans hqM)
+  have haa : a ≤ Real.log (Real.log q) + η := by dsimp [a]; linarith only [hη]
+  have hsupp : Set.Icc (-a) a ⊆
+      Set.Icc (-(Real.log (Real.log q) + η)) (Real.log (Real.log q) + η) := by
+    intro u hu
+    exact ⟨(neg_le_neg haa).trans hu.1, hu.2.trans haa⟩
+  have hE : 0 ≤ twistedZeroSum hq hprim (evenPolar a (Real.exp (-a))) :=
+    hpos _ ((contDiff_evenPolar a _).of_le (by norm_num))
+      ((tsupport_ofReal_subset_of_eq_zero fun u hu =>
+        evenPolar_eq_zero (Real.exp_pos _) hu).trans hsupp)
+  have hO : 0 ≤ twistedZeroSum hq hprim (oddPolar a (Real.exp (-a))) :=
+    hpos _ ((contDiff_oddPolar a _).of_le (by norm_num))
+      ((tsupport_ofReal_subset_of_eq_zero fun u hu =>
+        oddPolar_eq_zero (Real.exp_pos _) hu).trans hsupp)
+  have hno := hM hq ((le_max_left _ _).trans hqM) hprim hE hO
+  have hbound : ∀ p : ℕ, p ≤ ⌊Real.exp (2 * a)⌋₊ →
+      (p : ℝ) < Real.exp (2 * η) * Real.log q ^ 2 := by
+    intro p hp
+    have he : Real.exp (2 * a) = Real.exp η * Real.log q ^ 2 := by
+      rw [show 2 * a = η + (Real.log (Real.log q) + Real.log (Real.log q)) by dsimp [a]; ring,
+        Real.exp_add, Real.exp_add, Real.exp_log hx]
+      ring
+    have hle : (p : ℝ) ≤ Real.exp (2 * a) :=
+      (by exact_mod_cast hp : (p : ℝ) ≤ ⌊Real.exp (2 * a)⌋₊).trans
+        (Nat.floor_le (Real.exp_pos _).le)
+    rw [he] at hle
+    exact hle.trans_lt (mul_lt_mul_of_pos_right
+      (Real.exp_lt_exp.mpr (by linarith only [hη])) (sq_pos_of_pos hx))
+  constructor
+  · by_contra hn
+    push Not at hn
+    apply hno (-1) (by norm_num)
+    intro p hp hpN
+    rcases hquad (p : ZMod q) with hz | hz | hz
+    · exact Or.inl hz
+    · exact False.elim (hn p hp (hbound p hpN) hz)
+    · exact Or.inr (by simpa only [Complex.ofReal_neg, Complex.ofReal_one] using hz)
+  · by_contra hn
+    push Not at hn
+    apply hno 1 (by norm_num)
+    intro p hp hpN
+    rcases hquad (p : ZMod q) with hz | hz | hz
+    · exact Or.inl hz
+    · exact Or.inr (by simpa only [Complex.ofReal_one] using hz)
+    · exact False.elim (hn p hp (hbound p hpN) hz)
+
 end GaloisForLFunctions.SelectiveArithmetic

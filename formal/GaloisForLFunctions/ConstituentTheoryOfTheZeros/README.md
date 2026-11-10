@@ -123,6 +123,7 @@ fractional part jumps at every integer.
 | — for Dirichlet series, on a half-plane and in a strip | `LSeries_ne_zero_of_zeros_subset_xi`, `LSeries_ne_zero_of_strip_zeros_subset_xi` |
 | — for exponential polynomials with real frequencies | `expSum_ne_zero_of_strip_zeros_subset_xi` |
 | **If such a function has a zero in the strip, infinitely many of its zeros there are not zeros of `ξ`** | `infinite_zeros_not_xi_zeros_of_expansion`, `…_of_LSeries`, `…_of_expSum` |
+| A zero forces an off-line zero or divergent total multiplicity-weighted zeta residue mass; summable exceptional residues cannot rescue a pure Wiener expansion | `expansion_zero_forces_offLine_or_nonsummable_residues` |
 | Approximants that converge in the norm of absolute convergence and are constituents in growing boxes have, eventually, no zero near the line | `eventually_LSeries_ne_zero_of_box_zeros_subset_xi` |
 | A height `H₀(N)` beyond which no Dirichlet polynomial of length `≤ N` with a zero near the line is a box constituent | `exists_height_forall_dirichletPolynomial` |
 | Every band `\|Im s\| ≤ H` has a Dirichlet polynomial with exactly the zeros of `ξ`; its length is unbounded in `H` | `exists_dirichletPolynomial_zeros_eq_xi`, `exists_height_forall_not_zeros_eq_xi` |
@@ -203,11 +204,7 @@ fractional part jumps at every integer.
 4. **Natural splittings.** The defect in a window of the splittings of `ξ` that arise from the
    approximate functional equation.
 5. **Other `L`-functions.** The jump law for fractional parts twisted by a character.
-6. **Summable exceptional zeros.** The jump law holds with countably many poles of summable
-   residues. For a pure expansion `F` with a zero the residues of `−ζ F'/(sF)` are
-   `m_ρ ζ(ρ)/ρ` at the zeros `ρ` of `F`; whether `Σ_ρ m_ρ ‖ζ(ρ)/ρ‖` must diverge is the statement
-   this suggests. The analytic quotient with infinitely many principal parts is not in Lean.
-7. **A sign-free mechanism that acts on `ξ` itself.** None is known. Every mechanism of this
+6. **A sign-free mechanism that acts on `ξ` itself.** None is known. Every mechanism of this
    programme acts on a function that shares zeros with `ξ`.
 
 ## 11. Context

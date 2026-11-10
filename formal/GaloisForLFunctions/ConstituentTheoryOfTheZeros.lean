@@ -8,6 +8,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentDirichletSeriesIsAConstituent
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.InfinitelyManyZerosOfAnExpansionAreNotZerosOfXi
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SummableResidueErrorsDoNotPermitZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.EveryBoxHasADirichletPolynomialWithExactlyTheZerosOfXi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentLivesInTheBohrStrip
@@ -40,6 +41,8 @@ and uses no sign of a form and no operator.
   frequencies among them (`NoAbsolutelyConvergentExpansionIsAConstituentInAStrip`).
 * If such a function has a zero in the strip, infinitely many of its zeros there are not zeros of
   `ξ` (`InfinitelyManyZerosOfAnExpansionAreNotZerosOfXi`).
+  If all strip zeros lie on the critical line, their multiplicity-weighted zeta residues have
+  divergent total norm (`SummableResidueErrorsDoNotPermitZeros`).
 * Approximants that converge in the norm of absolute convergence and share zeros with `ξ` in
   growing boxes have, from some index on, no zero near the line at any height; for Dirichlet
   polynomials of bounded length the height of the first zero that is not a zero of `ξ` is bounded
