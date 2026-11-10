@@ -38,6 +38,8 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MinimalCounterex
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeficientCoordinates
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeficientOrder
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.SingletonLast
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.NormalizedLast
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MinimalStructure
 
 /-!
 # Sign-free purity mechanisms

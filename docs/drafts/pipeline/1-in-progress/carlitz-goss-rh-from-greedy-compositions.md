@@ -71,13 +71,17 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `DeficientCoordinates` | A deficient two-digit deletion pins both divisible prefixes to the integral boundary; last-part cyclic weights agree and lie below the combined deleted weights |
 | `DeficientOrder` | At a deficient coordinate, a larger available digit precedes the deleted last-part digit in cyclic order; the opposite order would admit an improving congruent block exchange |
 | `SingletonLast` | A minimal nongreedy optimum has a singleton last part: two distinct last-part digits would force opposite cyclic orders around a larger greedy digit |
+| `NormalizedLast` | When proper parts have zeroth inverse coordinate one, a singleton last part and any competing last part containing another digit have equal zeroth cyclic weight |
+| `MinimalStructure` | Any nongreedy optimum yields a normalized counterexample with singleton last part `p^k`; the greedy last part contains a larger power, has equal zeroth cyclic weight, and uses only residues below `k mod s` |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
-The actual Goss-zeta theorem and its general optimal-composition input remain
-unformalized. The target includes every prime power, not only prime `q` or
-integer `y`.
+The general optimal-composition theorem remains open after the normalized
+singleton-counterexample reduction: the improving composition and weight
+comparison of §§6–7 remain unformalized. The actual Goss coefficients and
+entire-series argument also remain. The target includes every prime power
+and every `p`-adic parameter.
 
 ## Combinatorial mechanism
 
@@ -124,13 +128,22 @@ the same content matrix, including its final column by subtraction from
 the total. Uniqueness of increasing allocation proves greedy optimality
 and uniqueness of numerical part values for `q=p`.
 
-For a fixed content matrix, increasing allocation of the digit powers
-within each residue class uniquely maximizes the weight. The difficult
-step compares different content matrices. A minimal nongreedy optimum
-has last part `p^k`; after a cyclic rotation, the first `m−1` parts have
-zeroth inverse-content coordinate one. If `β=k mod s`, a greedy last
-part has a larger digit and content supported below `β`, but the same
-weighted residue sum as `p^k` (Proposition 5.1).
+For a fixed content matrix, increasing allocation uniquely maximizes weight.
+Choose a nongreedy optimum minimizing first the number of parts, then digits.
+A common last-part residue permits common deletion, contradicting minimality.
+Thus the two last supports are disjoint, and the greedy last part has a larger
+digit `y`. Deleting `y` and any optimal last-part digit `x` must make some
+inverse coordinate deficient. Integrality pins both proper prefixes to the
+same boundary there. Their last-part cyclic weights agree and are below the
+combined weights of `x,y`; an improving block exchange forces `y` to precede
+`x` in cyclic order. Two distinct optimal last-part digits would force opposite
+cyclic orders, so that part is a singleton `p^k`.
+
+Shift the common proper-part inverse coordinate to zero. Deleting the
+singleton and a greedy last-part digit is then deficient at zero itself,
+giving equal zeroth cyclic weights. Positivity and disjoint residue supports
+put every greedy last-part residue below `β=k mod s`. These are the formalized
+structural conclusions of Proposition 5.1.
 
 For prefix contents `θ_j` and `w_j=E⁻¹θ_j`, choose `α<β` with
 `w_{α,m−1}=m−1` and `w_{h,m−1}>m−1` for `α<h≤β`.

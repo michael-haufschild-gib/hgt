@@ -161,7 +161,8 @@ private theorem adelicBoxCharge_local_energy (S : Finset Prime)
     ring
   simp_rw [hterm]
   trans ∏ q : S, ∑ y ∈ (f q).support, g q y
-  · exact (Finset.prod_univ_sum (fun q : S => (f q).support) g).symm
+  · letI : DecidableEq S := fun a b => Classical.propDecidable (a = b)
+    exact (Finset.prod_univ_sum (fun q : S => (f q).support) g).symm
   rw [← Finset.mul_prod_erase Finset.univ
     (fun q => ∑ y ∈ (f q).support, g q y) (Finset.mem_univ p)]
   simp only [g, if_pos rfl]
@@ -273,7 +274,10 @@ theorem exists_finite_charge_above (c : ℝ) (hc : c < edge) :
     have h := Finset.sum_lt_sum_of_nonempty
       (show (Finset.univ : Finset S).Nonempty from ⟨⟨hSn.choose, hSn.choose_spec⟩, Finset.mem_univ _⟩)
       (fun p _ => hprime p)
-    simpa only [← Finset.mul_sum, ← Finset.sum_mul, Finset.sum_coe_sort, L] using h
+    rw [Finset.sum_coe_sort S (fun p : Prime => weight p *
+      ∑ y ∈ (adelicBoxCharge S f).support,
+        adelicBoxCharge S f y * localAdj p (adelicBoxCharge S f) y)] at h
+    simpa only [← Finset.sum_mul, ← Finset.mul_sum, Finset.sum_coe_sort S edgeTerm, L] using h
   have hab : a * L = b := div_mul_cancel₀ b hL.ne'
   rw [hab] at hsum
   exact (mul_lt_mul_of_pos_right hcb hM).trans

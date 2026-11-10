@@ -12,6 +12,7 @@ import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheJetsAreASumOfHardySquares
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheIndexOfThePairingIsAtMostTheDefectOfASplitting
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.ShortWindowsDoNotSeeTheContacts
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheCombOfACurve
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheInequalityAtFiniteScaleIsDecidedOnBlockAverages
 
 /-!
 # Hodge theory of a fixed part
@@ -22,6 +23,9 @@ Positivity and index theorems for the pairing of the degree points of the arithm
   counterterm of the comb; Zariski's lemma on a comb; the limit on packets.
 * The inequality of Castelnuovo and Severi at every finite scale on short windows; the finiteness
   of the index of a window, uniformly in the scale; the passage from finite scale to the limit.
+* The reduction to block averages: at every scale Weil's form of a real divisor is at least the
+  form of its averages over a number of blocks that does not depend on the scale, up to
+  `ε Σ c_n²`.
 * Weil's form in the gauge of the flat tail, with the remainder of the prime number theorem as
   potential; Chebyshev's identity as a contact energy; the carry cocycle.
 * The jets as a sum of positive semidefinite kernels, one for each archimedean weight, and the

@@ -15,16 +15,19 @@ one above a ramified prime. The zeta function of `K` is `ζ(s) L(s, χ)`, and th
 into the pairing of `ℤ` and a part twisted by `χ`.
 
 * **The explicit formula as a functional** (`re_weilFullFunctional_eq_pole_add_symbol`,
-  `re_weilFullFunctional_twist`): on a test, the functional of the weight `Λχ` is the pole term
-  plus the sum over the zeros of `L(s, χ)`, minus `log q` times the mass, minus the energy of the
-  kernel `π/cosh(πτ)` when `χ` is odd.
+  `re_weilFullFunctional_twist`, `re_weilFullFunctional_twist_packet`): on a test, the functional
+  of the weight `Λχ` is the pole term plus the sum over the zeros of `L(s, χ)`, minus `log q`
+  times the mass, minus the energy of the kernel `π/cosh(πτ)` when `χ` is odd. On a real packet
+  the same holds for every primitive character, real or not, with the weight `Λ Re χ`: the
+  autocorrelation of a packet is real and even.
 * **The conjugate jets** (`integral_normSq_paperFT_mul_sech`, `placeEnergy_eq_conjugateForm`,
   `tendsto_conjugateJet`, `integral_window_conjugate`): that energy is the pairing of the
   autocorrelation with `1/(2 cosh(x/2))`,
   the difference of the Lévy densities of `Γ_ℝ(s)` and `Γ_ℝ(s + 1)`, and on the degree points it
   is the limit of the jets `1/(m + n)`.
-* **The twisted part** (`tendsto_twistedForm_add_twistedContact`): jets, the counterterm
-  `log(qn/2π)` and twice the contacts `Λχ` tend to minus the sum over the zeros of `L(s, χ)`.
+* **The twisted part** (`tendsto_twistedForm_add_twistedContact`): for every primitive
+  character, jets, the counterterm `log(qn/2π)` and twice the contacts `Λ Re χ` tend to minus
+  the sum over the zeros of `L(s, χ)`.
   There is no pole plane, and the conductor enters as a density: the counterterm is that of a
   comb `q` times as dense as the integers.
 * **The ring** (`tendsto_quadraticForm_add_idealContact`): jets of both archimedean factors, the
@@ -209,19 +212,175 @@ theorem integral_norm_ofReal_sq (f : ℝ → ℝ) : ∫ x, ‖((f x : ℝ) : ℂ
     show ‖((f x : ℝ) : ℂ)‖ ^ 2 = f x ^ 2
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs])
 
-/-- The explicit formula of `L(s, χ)` on a packet. -/
+/-- **The symbol energy of the twisted contacts on a packet**, for every primitive character:
+`∫|F̂|² S_{Λ Re χ} = 2π Z_χ(f) − log q ∫|F̂|² − 2π E_χ(f)`. The autocorrelation of a real packet
+is real and even, so the two prime terms of the explicit formula add up to the real part of the
+character. -/
+theorem integral_weilAtomSymbol_twist_packet [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
+    (hprim : χ.IsPrimitive) (hf : ContDiff ℝ 2 f) {a : ℝ}
+    (hFs : tsupport (fun u => (f u : ℂ)) ⊆ Set.Icc (-a) a) :
+    ∫ τ : ℝ, ‖paperFT (fun u => (f u : ℂ)) τ‖ ^ 2 *
+        _root_.RHTower.weilAtomSymbol (twistWeight χ) ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) =
+      2 * π * twistedZeroSum hq hprim f -
+        Real.log q * (∫ τ : ℝ, ‖paperFT (fun u => (f u : ℂ)) τ‖ ^ 2) -
+        2 * π * placeEnergy χ (fun u => (f u : ℂ)) := by
+  have hF := contDiff_ofReal_packet hf
+  obtain ⟨hFc, hkd, hks, -, -⟩ := _root_.RHTower.weilTest_self_data hF hFs
+  have hπ : (π : ℝ) ≠ 0 := Real.pi_ne_zero
+  have hq0 : 0 < q := by omega
+  have hk : ∀ y : ℝ, EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) y =
+      ((packetAutocorr f y : ℝ) : ℂ) := fun y => weilTest_packet f y
+  have hk0 : ∀ y : ℝ, 2 * a < |y| →
+      EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) y = 0 := fun y hy =>
+    image_eq_zero_of_notMem_tsupport fun hmem => by
+      have h := hks hmem
+      have : |y| ≤ 2 * a := abs_le.mpr ⟨h.1, h.2⟩
+      linarith
+  -- the explicit formula of `L(s, χ)` on the autocorrelation
+  have hEF : ∑' ρ : (_root_.RHTower.dirichletZeros hq hprim).carrier,
+        ((_root_.RHTower.dirichletZeros hq hprim).mult ρ : ℂ) *
+          paperFT (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) (gammaOf ρ) =
+      Zeta23.ThmE.literatureRHSchi (Zeta23.ThmE.parity χ) q (Zeta23.ThmE.coeff χ)
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) :=
+    (Zeta23.ThmE.EF_lit_chi_L (q := q) (χ := χ) hq hprim _ hkd
+      (EF.hasCompactSupport_of_tsupport_subset hks)).2
+  have hW : (_root_.RHTower.dirichletZeros hq hprim).W (fun u => (f u : ℂ))
+        (fun u => (f u : ℂ)) =
+      ∑' ρ : (_root_.RHTower.dirichletZeros hq hprim).carrier,
+        ((_root_.RHTower.dirichletZeros hq hprim).mult ρ : ℂ) *
+          paperFT (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) (gammaOf ρ) := by
+    unfold ZeroConfig.W
+    congr 1
+    funext ρ
+    simp only [ZeroConfig.Wsummand, EF.paperFT_weilTest hF.continuous hF.continuous hFc hFc,
+      mul_assoc]
+  -- the two prime terms add up to the real part of the character
+  have hprime : ∑' n : ℕ, ((Λ n / Real.sqrt n : ℝ) : ℂ) *
+        (Zeta23.ThmE.coeff χ n *
+            EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (Real.log n) +
+          (starRingEnd ℂ) (Zeta23.ThmE.coeff χ n) *
+            EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (-Real.log n)) =
+      ((∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊,
+        twistWeight χ n / Real.sqrt n * (2 * packetAutocorr f (Real.log n)) : ℝ) : ℂ) := by
+    rw [tsum_eq_sum (s := Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊), Complex.ofReal_sum]
+    · refine Finset.sum_congr rfl fun n _ => ?_
+      have hc : Zeta23.ThmE.coeff χ n + (starRingEnd ℂ) (Zeta23.ThmE.coeff χ n) =
+          ((2 * (χ (n : ZMod q)).re : ℝ) : ℂ) := Complex.add_conj _
+      rw [hk, hk, packetAutocorr_neg, ← add_mul, hc, twistWeight]
+      push_cast
+      ring
+    · intro n hn
+      rw [Finset.mem_Icc, not_and_or] at hn
+      rcases hn with hn | hn
+      · have : n = 0 ∨ n = 1 := by omega
+        rcases this with rfl | rfl <;> simp
+      · push Not at hn
+        have hexp : Real.exp (2 * a) < n := (Nat.floor_lt (Real.exp_pos _).le).mp hn
+        have hlog : 2 * a < Real.log n := by
+          rw [← Real.log_exp (2 * a)]
+          exact Real.log_lt_log (Real.exp_pos _) hexp
+        have hl0 : 0 ≤ Real.log n := Real.log_natCast_nonneg n
+        rw [hk0 _ (by rwa [abs_of_nonneg hl0]), hk0 _ (by rwa [abs_neg, abs_of_nonneg hl0])]
+        simp
+  -- the archimedean term: the symbol of `ζ`, the conductor, and the second factor
+  have hh : Integrable fun r : ℝ => ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 :=
+    _root_.RHTower.integrable_normSq_paperFT hF hFs
+  have hA : Integrable fun r : ℝ => ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 *
+      _root_.RHTower.archimedeanWeilSymbol (r / (2 * π)) :=
+    _root_.RHTower.integrable_normSq_paperFT_mul_arch hF hFs
+  have hB : Integrable fun r : ℝ => Real.log q * ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 :=
+    hh.const_mul _
+  have hAB : Integrable fun r : ℝ => ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 *
+      _root_.RHTower.archimedeanWeilSymbol (r / (2 * π)) +
+        Real.log q * ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 := hA.add hB
+  have harch : ∫ r : ℝ, paperFT (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) r *
+        ((((Complex.digamma (1 / 4 + ((Zeta23.ThmE.parity χ : ℕ) : ℂ) / 2 +
+          Complex.I * r / 2)).re + Real.log ((q : ℝ) / π) : ℝ)) : ℂ) =
+      (((∫ r : ℝ, ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 *
+          _root_.RHTower.archimedeanWeilSymbol (r / (2 * π))) +
+        Real.log q * (∫ r : ℝ, ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2) +
+        2 * π * placeEnergy χ (fun u => (f u : ℂ)) : ℝ) : ℂ) := by
+    rcases χ.even_or_odd with heven | hodd
+    · rw [_root_.RHTower.parity_of_even heven, placeEnergy_of_even heven, mul_zero, add_zero,
+        ← integral_const_mul, ← integral_add hA hB, ← integral_complex_ofReal]
+      congr 1
+      funext r
+      rw [_root_.RHTower.paperFT_weilTest_self_ofReal hF.continuous hFc,
+        _root_.RHTower.archimedeanWeilSymbol_div_conductor q hq0]
+      push_cast
+      ring
+    · have hC : Integrable fun r : ℝ => ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 *
+          (π / Real.cosh (π * r)) := by
+        have hhc : Continuous fun r : ℝ => ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 :=
+          _root_.RHTower.BlindPrimePowerSlack.continuous_normSq_paperFT ⟨_, hF, hFc⟩
+        refine (hh.const_mul π).mono' (hhc.mul (continuous_const.div
+          (Real.continuous_cosh.comp (continuous_const.mul continuous_id))
+          fun r => (Real.cosh_pos _).ne')).aestronglyMeasurable (Eventually.of_forall fun r => ?_)
+        show ‖‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 * (π / Real.cosh (π * r))‖ ≤
+          π * ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2
+        have hc : 1 ≤ Real.cosh (π * r) := Real.one_le_cosh _
+        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _)
+          (div_nonneg Real.pi_pos.le (by linarith))), mul_comm]
+        exact mul_le_mul_of_nonneg_right (div_le_self Real.pi_pos.le hc) (sq_nonneg _)
+      have hd := fun r : ℝ => _root_.RHTower.re_digamma_threeQuarter_sub_quarter r
+      rw [_root_.RHTower.parity_of_odd hodd, placeEnergy_of_odd hodd,
+        show 2 * π * (1 / (2 * π) * ∫ τ : ℝ, ‖paperFT (fun u => (f u : ℂ)) τ‖ ^ 2 *
+            (π / Real.cosh (π * τ))) =
+          ∫ τ : ℝ, ‖paperFT (fun u => (f u : ℂ)) τ‖ ^ 2 * (π / Real.cosh (π * τ)) by
+            field_simp,
+        ← integral_const_mul, ← integral_add hA hB, ← integral_add hAB hC,
+        ← integral_complex_ofReal]
+      congr 1
+      funext r
+      rw [_root_.RHTower.paperFT_weilTest_self_ofReal hF.continuous hFc,
+        _root_.RHTower.archimedeanWeilSymbol_div_conductor q hq0, Nat.cast_one,
+        show (Complex.digamma (1 / 4 + (1 : ℂ) / 2 + Complex.I * r / 2)).re =
+          (Complex.digamma (1 / 4 + ((0 : ℕ) : ℂ) / 2 + Complex.I * r / 2)).re +
+            π / Real.cosh (π * r) by linarith [hd r]]
+      push_cast
+      ring
+  -- real parts
+  have hZ : twistedZeroSum hq hprim f =
+      -(∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊,
+          twistWeight χ n / Real.sqrt n * (2 * packetAutocorr f (Real.log n))) +
+        1 / (2 * π) * ((∫ r : ℝ, ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2 *
+            _root_.RHTower.archimedeanWeilSymbol (r / (2 * π))) +
+          Real.log q * (∫ r : ℝ, ‖paperFT (fun u => (f u : ℂ)) r‖ ^ 2) +
+          2 * π * placeEnergy χ (fun u => (f u : ℂ))) := by
+    rw [twistedZeroSum, hW, hEF, Zeta23.ThmE.literatureRHSchi, hprime, harch,
+      show (1 / (2 * π) : ℂ) = ((1 / (2 * π) : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_mul,
+      ← Complex.ofReal_neg, ← Complex.ofReal_add, Complex.ofReal_re]
+  have hsum : ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n / Real.sqrt n *
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (Real.log n) +
+          EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (-Real.log n)).re =
+      ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊,
+        twistWeight χ n / Real.sqrt n * (2 * packetAutocorr f (Real.log n)) :=
+    Finset.sum_congr rfl fun n _ => by
+      rw [hk, hk, packetAutocorr_neg, ← Complex.ofReal_add, Complex.ofReal_re]
+      ring
+  rw [_root_.RHTower.integral_weilAtomSymbol_eq_arch_sub hF hFs (twistWeight χ), hsum, hZ]
+  field_simp
+  ring
+
+/-- **The explicit formula of `L(s, χ)` on a packet**, for every primitive character: the
+functional of the weight `Λ Re χ` is twice the product of the degrees plus the sum over the
+zeros of `L(s, χ)`, minus `log q` times the mass, minus the energy of the second archimedean
+factor. -/
 theorem re_weilFullFunctional_twist_packet [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
-    (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0) (hf : ContDiff ℝ 2 f)
-    (hfc : HasCompactSupport f) :
+    (hprim : χ.IsPrimitive) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
     (_root_.RHTower.weilFullFunctional (twistWeight χ)
         (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re =
       2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) +
         twistedZeroSum hq hprim f - Real.log q * (∫ u, f u ^ 2) -
         placeEnergy χ (fun u => (f u : ℂ)) := by
-  obtain ⟨a, ha, hfs⟩ := exists_tsupport_ofReal_subset hfc
-  rw [re_weilFullFunctional_twist hq hprim hreal ha (contDiff_ofReal_packet hf) hfs,
-    weilPoleTerm_packet hf.continuous hfc, integral_norm_ofReal_sq]
-  rfl
+  obtain ⟨a, -, hfs⟩ := exists_tsupport_ofReal_subset hfc
+  have hF := contDiff_ofReal_packet hf
+  rw [re_weilFullFunctional_eq_pole_add_symbol (twistWeight χ) hF hfs,
+    weilPoleTerm_packet hf.continuous hfc, integral_weilAtomSymbol_twist_packet hq hprim hf hfs,
+    _root_.RHTower.integral_norm_paperFT_sq hF hfs, integral_norm_ofReal_sq]
+  have hπ : (π : ℝ) ≠ 0 := Real.pi_ne_zero
+  field_simp
+  ring
 
 /-! ### The jets of the conjugate factor -/
 
@@ -330,31 +489,30 @@ theorem placeEnergy_translate (χ : DirichletCharacter ℂ q) (hf : ContDiff ℝ
 
 /-- The sum over the zeros of `L(s, χ)` does not change under a translation of the packet. -/
 theorem twistedZeroSum_translate [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
-    (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0) (hf : ContDiff ℝ 2 f)
-    (hfc : HasCompactSupport f) (s : ℝ) :
+    (hprim : χ.IsPrimitive) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (s : ℝ) :
     twistedZeroSum hq hprim (fun u => f (u - s)) = twistedZeroSum hq hprim f := by
   have hg : ContDiff ℝ 2 fun u => f (u - s) := hf.comp (contDiff_id.sub contDiff_const)
   have hgc : HasCompactSupport fun u => f (u - s) :=
     hfc.comp_homeomorph (Homeomorph.subRight s)
-  obtain ⟨a, ha, hfs⟩ := exists_tsupport_ofReal_subset hfc
-  obtain ⟨b, hb, hgs⟩ := exists_tsupport_ofReal_subset hgc
-  have h1 := re_weilFullFunctional_twist hq hprim hreal ha (contDiff_ofReal_packet hf) hfs
+  have h1 := re_weilFullFunctional_twist_packet hq hprim hf hfc
   have h2 : (_root_.RHTower.weilFullFunctional (twistWeight χ)
         (EF.weilTest (fun u => ((f (u - s) : ℝ) : ℂ)) (fun u => ((f (u - s) : ℝ) : ℂ)))).re =
-      (_root_.RHTower.weilPoleTerm
-        (EF.weilTest (fun u => ((f (u - s) : ℝ) : ℂ)) (fun u => ((f (u - s) : ℝ) : ℂ)))).re +
-        twistedZeroSum hq hprim (fun u => f (u - s)) -
-        Real.log q * (∫ x, ‖((f (x - s) : ℝ) : ℂ)‖ ^ 2) -
+      2 * ((∫ u, f (u - s) * Real.exp (-u / 2)) * ∫ u, f (u - s) * Real.exp (u / 2)) +
+        twistedZeroSum hq hprim (fun u => f (u - s)) - Real.log q * (∫ u, f (u - s) ^ 2) -
         placeEnergy χ (fun u => ((f (u - s) : ℝ) : ℂ)) :=
-    re_weilFullFunctional_twist hq hprim hreal hb (contDiff_ofReal_packet hg) hgs
-  have hm : ∫ x, ‖((f (x - s) : ℝ) : ℂ)‖ ^ 2 = ∫ x, ‖((f x : ℝ) : ℂ)‖ ^ 2 :=
-    integral_sub_right_eq_self (fun x => ‖((f x : ℝ) : ℂ)‖ ^ 2) s
-  rw [weilTest_packet_translate f s, placeEnergy_translate χ hf hfc s, hm] at h2
-  have h3 : twistedZeroSum hq hprim (fun u => f (u - s)) =
-      ((_root_.RHTower.dirichletZeros hq hprim).W (fun u => (f u : ℂ))
-        (fun u => (f u : ℂ))).re := by
-    linarith
-  exact h3
+    re_weilFullFunctional_twist_packet hq hprim hg hgc
+  -- the pole term depends on the autocorrelation alone
+  have hpole : 2 * ((∫ u, f (u - s) * Real.exp (-u / 2)) * ∫ u, f (u - s) * Real.exp (u / 2)) =
+      2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) := by
+    have e1 : (_root_.RHTower.weilPoleTerm (EF.weilTest (fun u => ((f (u - s) : ℝ) : ℂ))
+          (fun u => ((f (u - s) : ℝ) : ℂ)))).re =
+        2 * ((∫ u, f (u - s) * Real.exp (-u / 2)) * ∫ u, f (u - s) * Real.exp (u / 2)) :=
+      weilPoleTerm_packet hg.continuous hgc
+    rw [← e1, weilTest_packet_translate f s, weilPoleTerm_packet hf.continuous hfc]
+  have hm : ∫ u, f (u - s) ^ 2 = ∫ u, f u ^ 2 :=
+    integral_sub_right_eq_self (fun u => f u ^ 2) s
+  rw [weilTest_packet_translate f s, placeEnergy_translate χ hf hfc s, hm, hpole] at h2
+  linarith
 
 /-- The jets of the conjugate factor on the degree points of a window: `1/(m + n)` in the unitary
 normalization, with the diagonal. -/
@@ -524,18 +682,17 @@ def twistedForm (χ : DirichletCharacter ℂ q) (f : ℝ → ℝ) (L N : ℕ) : 
     Real.log q * ∑ n ∈ Ioc N (N + L * N), degreeSample f N n ^ 2 / n
 
 /-- **The twisted part of the pairing weighs the zeros of `L(s, χ)` and has no pole plane.** For a
-real primitive character of conductor `q > 1` and a packet in a window: jets, the counterterm
+primitive character of conductor `q > 1` and a packet in a window: jets, the counterterm
 `log(qn/2π)` and twice the contacts of weight `Λχ` tend to minus the sum over the zeros of
 `L(s, χ)`. -/
 theorem tendsto_twistedForm_add_twistedContact [NeZero q] (hq : 1 < q)
-    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
     (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) :
     Tendsto (fun N : ℕ => twistedForm χ f (3 * K) N +
         2 * weightedContact (twistWeight χ) f (3 * K) N) atTop
       (𝓝 (-twistedZeroSum hq hprim f)) := by
   have h1 := tendsto_degreeForm_add_weightedContact (twistWeight χ) hf hfc hK hsupp
-  rw [re_weilFullFunctional_twist_packet hq hprim hreal hf hfc] at h1
+  rw [re_weilFullFunctional_twist_packet hq hprim hf hfc] at h1
   have h2 := (tendsto_degreeMass hf.continuous hK hsupp).const_mul (Real.log q)
   have h := (h1.sub (tendsto_placeJet χ hf hfc hK hsupp)).sub h2
   have elim : 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -
@@ -559,15 +716,14 @@ def quadraticForm (χ : DirichletCharacter ℂ q) (f : ℝ → ℝ) (L N : ℕ) 
 sum over the zeros of its zeta function.** Jets of both archimedean factors, the counterterm
 `log(q n²/(2π)²)` and twice the contacts of the ideals tend to `2 d₁ d₂ − Z_ζ(f) − Z_χ(f)`. -/
 theorem tendsto_quadraticForm_add_idealContact [NeZero q] (hq : 1 < q)
-    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
     (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) :
     Tendsto (fun N : ℕ => quadraticForm χ f (3 * K) N +
         2 * weightedContact (idealWeight χ) f (3 * K) N) atTop
       (𝓝 (2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -
         (zeroSum f + twistedZeroSum hq hprim f))) := by
   have h := (tendsto_degreePairing_degrees_sub_zeroSum hf hfc hK hsupp).add
-    (tendsto_twistedForm_add_twistedContact hq hprim hreal hf hfc hK hsupp)
+    (tendsto_twistedForm_add_twistedContact hq hprim hf hfc hK hsupp)
   rw [show 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) - zeroSum f +
         -twistedZeroSum hq hprim f =
       2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -

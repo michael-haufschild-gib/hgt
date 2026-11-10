@@ -26,15 +26,19 @@ absolute convergence after multiplication by the pole factor. -/
 private theorem analyticOnNhd_regularizedGaugeFibre (x : GaugeTorus) :
     AnalyticOnNhd ℂ (fun s : ℂ => (s - 1) * gaugeFibre x s) {s : ℂ | 1 < s.re} := by
   intro s hs
+  change 1 < s.re at hs
   let b : ℝ := (1 + s.re) / 2
   have hb : 1 < b := by dsimp only [b]; linarith only [hs]
   have hbs : b < s.re := by dsimp only [b]; linarith only [hs]
-  have hsum : Summable (fun p : Nat.Primes => ‖twist x p - 1‖ * (p : ℝ) ^ (-b)) := by
-    apply Summable.of_nonneg_of_le (fun p => by positivity) _
-      ((Nat.Primes.summable_rpow.mpr (by linarith only [hb])).mul_left 2)
-    intro p
-    apply mul_le_mul_of_nonneg_right _ (by positivity)
-    simpa only [norm_twist, norm_one, one_add_one_eq_two] using norm_sub_le (twist x p) 1
+  have hbase : Summable (fun p : Nat.Primes => (p : ℝ) ^ (-b)) :=
+    Nat.Primes.summable_rpow.mpr (by linarith only [hb])
+  have hbound (p : Nat.Primes) : ‖twist x p - 1‖ ≤ 2 := by
+    calc
+      _ ≤ ‖twist x p‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+      _ = 2 := by rw [norm_twist, norm_one]; norm_num
+  have hsum : Summable (fun p : Nat.Primes => ‖twist x p - 1‖ * (p : ℝ) ^ (-b)) :=
+    (hbase.mul_left 2).of_nonneg_of_le (fun p => by positivity)
+      (fun p => mul_le_mul_of_nonneg_right (hbound p) (by positivity))
   have hF := (exists_isozeric (by linarith only [hb]) hsum).1 s hbs
   have ha := (differentiable_zetaResidueFactor.analyticAt s).mul hF.cexp
   apply ha.congr
@@ -43,6 +47,7 @@ private theorem analyticOnNhd_regularizedGaugeFibre (x : GaugeTorus) :
     intro he
     rw [he, Complex.one_re] at hz
     exact lt_irrefl 1 hz
+  change zetaResidueFactor z * Complex.exp (deformationExponent x z) = (z - 1) * gaugeFibre x z
   rw [zetaResidueFactor_of_ne hne, gaugeFibre_eq_zeta_mul_exp _ hz, mul_assoc]
 
 /-- Real agreement just above one propagates across a right half-disc.
@@ -108,6 +113,7 @@ private theorem joint_germ_inherits_residue_limit {q : ℕ} [NeZero q]
         (ball 1 r ∩ {s : ℂ | 1 < s.re}) := by
     filter_upwards [hagree, self_mem_nhdsWithin,
       nhdsWithin_le_nhds (gt_mem_nhds hr)] with t ht ht0 htr
+    change 0 < t at ht0
     apply eqOn_rightHalfDisc_of_real_agreement hr _
       ((analyticOnNhd_regularizedGaugeFibre _).mono inter_subset_right) ht
     intro s hs
@@ -126,12 +132,13 @@ private theorem joint_germ_inherits_residue_limit {q : ℕ} [NeZero q]
   have hlim := (tendstoLocallyUniformlyOn_residueEuler hR hΦ hρ h1 hρ1 hu hρu).tendsto_at hw
   apply hlim.congr'
   filter_upwards [heq, hball, self_mem_nhdsWithin] with t ht hb ht0
+  change 0 < t at ht0
   have hs : 1 < (1 + (t : ℂ) * w).re := by
     have hm := mul_pos ht0 hw
     simp only [Complex.add_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, zero_mul, sub_zero]
     linarith only [hm]
-  rw [ht ⟨hb, hs⟩]
+  exact congrArg (fun z : ℂ => z / (t : ℂ) ^ 2) (ht ⟨hb, hs⟩).symm
 
 /-- A finite arithmetic mean retains a positive real Taylor coefficient and
 the corresponding nonremovable singular shift of its scaling profile. -/

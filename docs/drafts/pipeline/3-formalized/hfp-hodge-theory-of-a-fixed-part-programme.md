@@ -11,7 +11,7 @@
 ## Goal
 
 Develop the field of §2.9: answer Q1–Q5, build tools T1–T6, read criteria K1–K7, prove M2 and M4.
-Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/` (14 modules, README), umbrella
+Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/` (15 modules, README), umbrella
 `HodgeTheoryOfAFixedPart.lean`, imported by `MainTheorems`. M5 is the Riemann hypothesis: open.
 
 ## Normal form
@@ -100,6 +100,32 @@ window of ratio `≤ 2`. `𝔚(c γ_2) = c²(1 − log π)`.
 `d_k = e_k/q^{k/2}`: `q^{min} s^{dist} = s^k s^l`, so the pairing is ACS `spanDefect`; ACS
 `spanDefect_eq_toeplitz`, `hodgeIndexOnSpan_iff_unitary`, `goldenDatum_not_unitary`.
 
+**H17 Block averages** (`two_mul_abs_formBilin_le`, `combForm_ge_blockMean`,
+`exists_blockSize_combForm_ge_blockMean`,
+`riemannHypothesis_of_frequently_blockFunction_combForm_ge`). Window `S = (N, N + JB]` of `J`
+complete blocks, ratio `≤ Q`, `B ≤ N`; `s` constant on blocks, `z` of zero block sums,
+`μ = log(N/2π) − (H_{2B} + 2 + M/(4N) + 2ψ(Q))`.
+(a) Margin (H4 with its constant): `𝔚(z) ≥ μ Σz²`.
+(b) Cross term: `2|𝔚(s, z)| ≤ C_Q (pΣs² + qΣz²)` for `pq = 1`, `C_Q = 12 + 2Q + 2ψ(Q)`. Pole:
+`d₂(z) = 0` and `d₁(z) = Σ z_n(1/n − 1/a_n)`, `a_n` the foot of the block, `|1/n − 1/a_n| ≤ B/N²`:
+constant `BM/N² ≤ Q`. Counterterm: `Σ s_n z_n (κ(n) − κ(a_n))`, `0 ≤ κ(n) − κ(a_n) ≤ B/N ≤ 1`.
+Kernel `= far + block kernel + near`, `near = 1/(2|m − n|)` for `|m − n| ≤ B`. The block kernel
+pairs `z` to zero with every divisor. Far: singular part at distance `> B` minus the block
+kernel `≤ 1/(2d)` for `B < d < 2B` plus `B/d²`, sum over the distances `≤ 3/2`; with the regular
+part and the contacts the row is `≤ 3 + M/(4N) + 2ψ(Q)`; Schur with `2|ab| ≤ pa² + qb²`. Near: at
+the position `a` of the block `j` (`b = B − 1 − a`), with `s^± = s_{j±1}` or `0` outside the
+window, `Σ_{0<|m−n|≤B} s_m/(2|m − n|) = s_j H_B + ½(s⁻ − s_j)(H_B − H_a) + ½(s⁺ − s_j)(H_B − H_b)`;
+the first term pairs to zero with `z`; `Σ_{a<B}(H_B − H_a)² = 2B − H_B`
+(`HTGeometry.sum_sq_harmonic_tails`), so the remainder `r` has `Σr² ≤ 8Σs²`: constant `8`.
+(c) With `p = ε/C_Q`, `q = C_Q/ε`: `𝔚(s + z) ≥ 𝔚(s) − εΣs² − (C_Q²/ε)Σz² + μΣz² ≥ 𝔚(s) − εΣs²`
+when `C_Q²/ε ≤ μ`. For `c` arbitrary, `s` = block averages, `Σs² ≤ Σc²` (orthogonality).
+(d) Blocks of `⌊N/R⌋` points: `μ ≥ log R − (3 + Q/4 + 2ψ(Q) + log 4π)` (`log_sub_row_ge`), so
+`R = ⌈exp(3 + Q/4 + 2ψ(Q) + log 4π + C_Q²/ε)⌉` works at every scale.
+(e) RH: at `N = RB` the window `(N, (3K + 1)N]` has `3KR` complete blocks; (d) with `ε = η/2` and
+the hypothesis on block-constant divisors with `η/2` give H5's hypothesis.
+A coarse space of smooth divisors does not work: on divisors at the scale `B` the form is
+`μ·Id` plus a bounded form, so a splitting that is not orthogonal has a cross term of size `μ`.
+
 ## Lean status
 
 Each module checked with `lake --old env lean`, empty output.
@@ -111,7 +137,7 @@ Each module checked with `lake --old env lean`, empty output.
 | `WeilsFormInTheGaugeOfTheFlatTail` | `combBilin`, `formBilin`, `tailPotential`, `combForm_eq_gauge`, `chebyshev`, `tailRow`, `tailPotential_Icc`, `sum_chebyshev_div`, `combForm_flatTail`, `tendsto_combForm_flatTail_div`, `tendsto_tailRow_mul`, `carryCocycle`, `sum_counterterm_Ioc`, `sum_chebyshev_octave`, `sum_chebyshev_octave_lines` |
 | `RiemannRochOnTheTowerHasTheGluingIndex` | `natCast_dvd_ghostComponent_of_vanish`, `exists_first_graph`, `exists_fiber_of_triangular`, `exists_orbitLatticeMap_vanishing`, `exists_orbitLatticeMap_first_graph` |
 | `TheCombOfUnitMassesFixesTheContacts` | `sum_divisors_eq_log_iff`, `multiplicity_eq_one_iff`, `contactW`, `combFormW`, `combFormW_flatTail`, `tendsto_combFormW_flatTail_div`, `eventually_combFormW_flatTail_neg`, `eventually_combFormW_doubleTwo_neg` |
-| `TheIndexOfAWindowIsFiniteAtEveryScale` | `blockIndex`, `blockKernel`, `sum_mul_mul_blockKernel_eq_zero`, `abs_inv_sub_blockKernel_le`, `sum_abs_pairKernel_sub_blockKernel_le`, `sum_mul_mul_le_abs_row`, `combForm_nonneg_of_blockSum_eq_zero`, `blockIndex_lt`, `exists_blockSize_combForm_nonneg` |
+| `TheIndexOfAWindowIsFiniteAtEveryScale` | `blockIndex`, `blockKernel`, `sum_mul_mul_blockKernel_eq_zero`, `abs_inv_sub_blockKernel_le`, `sum_abs_pairKernel_sub_le`, `sum_abs_pairKernel_sub_blockKernel_le`, `sum_mul_mul_le_abs_row`, `combPairing_le_of_blockSum_eq_zero`, `combForm_nonneg_of_blockSum_eq_zero`, `blockIndex_lt`, `log_sub_row_ge`, `exists_blockSize_combForm_nonneg` |
 | `ASeparatedCombIsOneOrbitOfTheFrobeniusMonoid` | `FrobeniusStable`, `Separated`, `frobeniusOrbit`, `exists_near_collision`, `den_le_of_separated`, `exists_orbit_of_separated`, `eq_orbit_of_generator_mem` |
 | `WhatTheSectionsOfTheSquareCertify` | `sum_contact_properDivisors_le_log_abs`, `sum_contact_primes_le_log_abs`, `primePointSection`, `log_abs_primePointSection_lt` |
 | `TheInequalityAtFiniteScaleDecidesTheLimit` | `tendsto_sum_sq_sampleCoord`, `riemannHypothesis_of_frequently_combForm_ge`, `exists_window_combForm_neg_of_not_riemannHypothesis` |
@@ -119,49 +145,24 @@ Each module checked with `lake --old env lean`, empty output.
 | `TheJetsAreASumOfHardySquares` | `jetLevel`, `hasSum_jetLevel`, `jetKernel_sub_sum_jetLevel`, `le_sum_mul_mul_antitone_max`, `sum_mul_mul_jetLevel_nonneg`, `neg_le_sum_sum_jetLevel`, `combFormJets`, `combForm_sub_combFormJets`, `combForm_sub_combFormJets_le`, `tendsto_combFormJets` |
 | `TheIndexOfThePairingIsAtMostTheDefectOfASplitting` | `hermNegIndex_zeroGram_le_of_rightZeros_subset`, `hermNegIndex_zeroGram_le_of_hermiteBiehler`, `hermNegIndex_zeroGram_zeta_le_of_hermiteBiehler`, `hermNegIndex_zeroGram_le_one_of_constantTerm`, `hermNegIndex_zeroGram_eq_zero_of_constantTerm` |
 | `ShortWindowsDoNotSeeTheContacts` | `combFormW_eq_combForm_of_window`, `combFormW_ge_of_short`, `combForm_singleton_two_neg` |
+| `TheInequalityAtFiniteScaleIsDecidedOnBlockAverages` | `two_mul_abs_sum_erase_le`, `sum_blockFunction_mul_eq_zero`, `sum_mul_blockKernel_eq_zero`, `blockPos`, `sum_Ioc_blocks`, `two_mul_abs_degTwo_mul_degOne_le`, `two_mul_abs_sum_counterterm_le`, `nearKernel`, `farKernel`, `sum_abs_farKernel_le`, `nearRemainder`, `sum_blockFunction_mul_nearKernel`, `sum_nearRemainder_sq_le`, `two_mul_abs_sum_nearKernel_le`, `crossConstant`, `combForm_add`, `two_mul_abs_formBilin_le`, `combForm_blockFunction_add_ge`, `blockMean`, `combForm_ge_blockMean`, `exists_blockSize_combForm_ge_blockMean`, `riemannHypothesis_of_frequently_blockFunction_combForm_ge` |
 | `TheCombOfACurve` | `curveContact`, `curvePairing`, `curveCombForm`, `curvePairing_eq_sum`, `curveCombForm_eq_spanDefect`, `curveCombForm_eq_toeplitz`, `curveCombForm_nonneg_iff_unitary`, `curveCombForm_singleton`, `exists_curveCombForm_goldenDatum_neg` |
 
 ## Open
 
-The topics of README §11: the inequality at finite scale under RH (all real divisors); the exact
+The topics of README §11: the inequality at finite scale under RH (all real divisors; by H17 it
+is enough to treat the divisors constant on `< 2QR` blocks: the limit of Weil's form on
+block-constant divisors, which sample step packets, through AGZ
+`tendsto_jetCross_sub_counterterm_div` for the jets and Riemann sums of `ψ(d/t)` for the contacts,
+and the explicit formula for step packets, by mollification with `|F̂(γ)| ≤ C/|γ|`); the exact
 index at finite scale; the first contact at finite scale; a count of small sections; the prime
 powers above a graph; the flat-tail cone; a splitting with a bounded defect. M5.
-
-## Next theorem (plan, not yet in Lean): rough divisors are no worse than their block averages
-
-Window `S = Ioc N (N + J·B)` of `J` complete blocks, ratio `≤ Q`, `B ≤ N`. For `s` constant on
-blocks and `z` with zero block sums:
-`𝔚(s + z) ≥ 𝔚(s) − (C_Q²/μ) Σ s²`, where `𝔚(z) ≥ μ Σ z²`
-(`μ = log(N/2π) − H_{2B} − 2 − M/(4N) − 2ψ(Q)`, the margin version of H4) and
-`2t·|𝔚(s, z)| ≤ C_Q (t² Σ s² + Σ z²)` for all `t > 0`, `C_Q ≈ 7 + 2Q + 2ψ(Q)`; take `t = C_Q/μ`.
-
-Cross term pieces:
-- pole: `d₂(z) = 0`, `d₁(z) = Σ z_n (1/n − 1/a_n)`, `a_n` the first point of the block,
-  `|1/n − 1/a_n| ≤ B/N²`; diagonal: `Σ s_n z_n (κ(n) − κ(a_n))`, `|…| ≤ B/N`.
-- kernel `= near + E₂ + blockKernel`; `blockKernel` pairs to `0` (function of blocks);
-  `E₂` (pairs at distance `> B`, regular part, contacts) has rows `≤ 3 + M/(4N) + 2ψ(Q)`
-  (`distMajorant` for `d > B`: `Σ_{B<d<2B} 1/(2d) ≤ ½`, `Σ_{d>B} B/d² ≤ 1`): bilinear Schur
-  `2t|ΣΣ a_m b_n K| ≤ ρ (t² Σa² + Σb²)` from `2t|ab| ≤ t²a² + b²`.
-- near part (`|m − n| ≤ B`): for `n` at position `a` in its block, `b = B − 1 − a`:
-  `Σ_{0<|m−n|≤B} s_m/(2|m−n|) = s_n H_B + ½(s⁺ − s_n)(H_B − H_b) + ½(s⁻ − s_n)(H_B − H_a)`,
-  `s^±` the value on the adjacent block or `0`. The first term pairs to `0` with `z`. Exact
-  identity `Σ_{a<K} (H_K − H_a)² = 2K − H_K` (induction, `Σ_{a<K}(H_K − H_a) = K`), so the rest
-  has `ℓ²` norm `≤ 2√2 ‖s‖`.
-
-Then: `𝔚(c) ≥ 𝔚(block averages of c) − (C_Q²/μ) Σ c²`; the inequality at finite scale for all
-real divisors follows from the inequality for block-constant divisors on `< 2QR` blocks with a
-loss that tends to `0` as `R → ∞`. To close the equivalence with RH one then needs the limit of
-`𝔚_N` on block-constant divisors (flat-step packets: AGZ `tendsto_jetCross_sub_counterterm_div`
-for the jets, Riemann sums of `ψ(d/t)` for the contacts) and the explicit formula on flat-step
-packets (mollify; zero side by dominated convergence, `|F̂(γ)| ≤ C/|γ|`).
-
-Smooth bumps instead of steps do not work: on functions at the scale `B` the form is
-`≈ μ·Id`, so the cross term with `𝒵_B` has a part `μ⟨g, z⟩ ≠ 0`.
 
 ## Compile practice and traps
 
 - A check of a module importing the AGZ chain takes 3–6 min (11 under load); foreground only.
-- Oleans built: modules 1–5 of the folder, and the dependencies
+- Oleans built: modules 1–6 and `TheInequalityAtFiniteScaleDecidesTheLimit` of the folder, and
+  the dependencies
   `SurfaceOfSpecZ/ScaleLocality/ExceptionalLogarithmicWindows`,
   `InfiniteRankPurityTheory/ADefectOfDegreeKappaHasAtMostKappaExceptionalPoints`,
   `InfiniteRankPurityTheory/TheExceptionalParameterIsBornAtFourPiExpMinusGamma`.
@@ -171,6 +172,9 @@ Smooth bumps instead of steps do not work: on functions at the scale `B` the for
 - `positivity` does not prove `0 < (n : ℝ)` for an unknown natural.
 - `Nat.exists_mul_mod_eq_one_of_coprime` (not `emod`); `Set.encard_le_encard`.
 - `rw [← Nat.cast_natAbs]` needs `← Int.cast_abs` first.
+- `ring` does not prove `y/(2(B + 1)) = y/2 · 1/(B + 1)`: `rw [div_mul_eq_div_div]` first.
+- A new module body can be checked in about two minutes against a prelude of `sorry` stubs with
+  `import Mathlib` in the scratchpad before the check against the corpus.
 
 ## Log
-- 2026-11-10 — created; README; fourteen modules checked; umbrella wired into `MainTheorems`.
+- 2026-11-10 — created; README; fifteen modules checked; umbrella wired into `MainTheorems`.
