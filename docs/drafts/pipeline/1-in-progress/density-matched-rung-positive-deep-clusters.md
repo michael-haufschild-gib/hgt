@@ -15,9 +15,10 @@ of zeta's divisor: it contributes a nonnegative form and exactly zeta's ordinate
 The lattice adds at most `(L/π+2)(T+1)` zeros through height `T`, hence `o(T log T)`.
 It supplies zeros of depth exactly `δ` above every height.
 
-## Remaining mathematical obligations
+## Lean
 
-Assemble positivity, temperateness, the linear lattice count, and zeta-density transfer.
+`SelectiveArithmetic/TheRungSignSurvivesDeepZerosAtZetaDensity.lean` contains
+`exists_zetaDensity_positive_window_deep_zeros`. Direct check pending.
 
 The aperture is fixed before choosing the configuration. Positivity for one fixed
 configuration on an unbounded sequence of full windows would imply positivity on

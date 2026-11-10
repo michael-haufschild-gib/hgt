@@ -50,7 +50,9 @@ theorem offLineLattice_count_le_linear {L δ : ℝ} (hL : 0 < L)
       _ = _ := by simp
   have hbound : (Z.N 0 T : ℝ) ≤ (m : ℝ) * (L / Real.pi + 2) := by
     rw [hN]
-    exact (by exact_mod_cast hmono.trans hwin).trans hsum
+    have hc : (Z.Nd 0 T : ℝ) ≤ ∑ j ∈ Finset.range m, (Z.N j (j + 1) : ℝ) := by
+      exact_mod_cast hmono.trans hwin
+    exact hc.trans hsum
   exact hbound.trans (by
     have hm := mul_le_mul_of_nonneg_right hmT (by positivity : 0 ≤ L / Real.pi + 2)
     nlinarith only [hm])

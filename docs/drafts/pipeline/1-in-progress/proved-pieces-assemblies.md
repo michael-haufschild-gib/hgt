@@ -16,10 +16,10 @@
 | A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Exact domains assembled in `TheCancellationAndDepthLadder.lean`; check pending |
 | A108 | Conductor first rung forces primes of both character signs | Full proof written; Lean check pending |
 | A109 | Normalized prime-error trichotomy | Open |
-| A113 | Half-plane map: bounded shapes, positivity, return-free windows | Open |
+| A113 | Half-plane map: bounded shapes, positivity, return-free windows | Three implications written in `TheHalfPlaneGivesTheThreeRungs.lean`; check pending |
 | A114 | Step-packet limit matrices with both pole moments and RH equivalence | Independent active proof: `agz-step-packet-limit-matrices.md`; preserve its work |
 | A104 | Exceptional-height measure, second and growing moments | Contact-polynomial second-moment bound written; growing moments and sign transfer open |
-| A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Open |
+| A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Fixed-aperture model written, excess count `O(T)`; check pending |
 | A102 | Sharp additive constant in height aperture | Open |
 | A80, A94 | Finite-scale converse and index equality | Open |
 | A82 | Li ladder as comb forms of tails | Open |
@@ -59,6 +59,10 @@ positive-survivor audit.
   `measure{|D_a(t)| ≥ c log T} ≤ 33 T a³/(c log T)²` on `[T,2T]`, for `a ≥ 1` and
   `4 exp(4a)(2+2a)^4 ≤ T`. Markov's inequality uses the existing contact mean square.
   This controls one polynomial, not the supremum over every packet frequency.
+- **A113:** The bounded-shape rung uses the centred contacts `Λ(n)−1`, whose partial sum
+  is `ψ(n)−n+1`. A half-plane `Θ≤b` gives every exponent above `b`, hence every rung
+  `(2b−1)κ<1`. The same half-plane gives large-prime dressed positivity above `b+1/2`
+  and the heavy-return lower bound `log t≥c y^(1−b)`.
 - **A108:** The actual twisted zero form includes `placeEnergy`, bounded by `π` times the
   packet mass. A genuine split prime also requires controlling ramified primes; a departure
   from `χ(p)=-1` alone permits `χ(p)=0`. Proposed repair: use

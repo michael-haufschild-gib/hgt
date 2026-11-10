@@ -10,50 +10,46 @@
 
 | Item | Required scope | Status |
 |---|---|---|
-| Calibrations of B13, Landing, DH | Exact scope of the three model theorems and joint rigidity | Audit pending |
+| Calibrations of B13, Landing, DH | Exact scope of the three model theorems and joint rigidity | Euler-product Landing countermodel and Hamburger coefficient rigidity already formalized |
 | Arithmetic constituents | Wiener obstruction and the remaining bounded class | Bounded case `0 ≤ x < 1/2` remains open |
-| First rung by sizes | Exact barrier and positive boundary theorem | Audit pending |
-| Section rings of the square | Tower product formula and planar ideal equality | Audit pending |
-| Covers and averaged families | Fixed-part and character-index laws, with rightmost-zero exception | Audit pending |
+| First rung by sizes | Exact barrier and positive boundary theorem | Existing barrier; no new producer established |
+| Section rings of the square | Tower product formula and planar ideal equality | Planar equality already formalized; tower scope unresolved |
+| Covers and averaged families | Fixed-part and character-index laws, with rightmost-zero exception | Exact scope unresolved |
 | S3 transfer | Exact implication and status of the transfer itself | Source proves transfer ⇒ (`Θ < 1` ⇒ RH); transfer remains unproved |
-| Window and theta stages | Verification law and obstruction to unconditional induction | Audit pending |
-| Scheduled sums and source completions | Exact criteria for all named routes | Audit pending |
-| Positivity census | Decide 70% at every bandwidth | Open; existing spike only excludes 75% at `4/3` |
-| Short mean values as detectors | Relocation invariance and positive density/census scope | Audit pending |
+| Window and theta stages | Verification law and obstruction to unconditional induction | Exact scope unresolved |
+| Scheduled sums and source completions | Exact criteria for all named routes | No advancing-history estimate established |
+| Positivity census | Decide 70% at every bandwidth | 70% excluded at `4/3`; all-bandwidth question open |
+| Short mean values as detectors | Relocation invariance and positive density/census scope | Fixed mean spectra invariant; growing test lengths not covered by the located theorem |
+
+## Existing scope statements
+
+- `ArithmeticPositiveDuality/AnApproachingIntegerNormEulerProduct.lean`,
+  `exists_integer_norm_euler_product_not_landingLaw`: natural norms and coefficients,
+  linear counting, continuation across the critical line, and failure of Landing.
+- `HTGeometry/HamburgerFunctionalEquation.lean`,
+  `coeff_eq_of_completed_functional_equation`: absolute Dirichlet convergence,
+  the two completed boundary identities and strip decay force constant coefficients.
+  The decay and polar-part conditions belong to its scope; the functional equation alone
+  is not its full hypothesis.
+- `AbsoluteGeometryOfSpecZ/BezoutIsAnEqualityOnThePlanarSquare.lean`,
+  `planarValues_eq_prod`: values of sections vanishing on finitely many graphs equal
+  the product of their contact ideals.
+- `ArithmeticPositiveDuality/FiniteZeroRelocationPreservesTheMeanSpectrum.lean`,
+  `relocatedZeta_meanSquare`, `relocatedZeta_fourierMean_log`,
+  `relocatedZeta_fourierMean_off_spectrum`: finite rational relocation preserves the
+  Carlson square mean and every fixed Fourier mean in `1/2 < σ < 1`.
 
 ## Positivity question
 
-The known model has excess mass `1/5` near frequency one. Its lower bound
-`1/18 + 47/750` does not exceed the 70% target `7/45`.
-A stronger candidate adds several nonnegative Fourier spikes. Set
+**Proved:** positivity alone does not certify 70% at bandwidth `4/3`.
+A periodic sinc majorant plus a Fejér kernel produces one hundred nonnegative
+spike coefficients, the first exceeding `61/200`. Triangular smoothing preserves
+pair-density positivity and exact sub-threshold data. The weighted integral exceeds
+`7/45`, hence the Frobenius value exceeds `13/10`.
 
-`P(x) = 1 − sin²(x)/3 − sin⁴(x)/18 − sin⁶(x)/36 − 5sin⁸(x)/288`.
-
-Then `sinc²(x) ≤ b²P(bx)` for `b ≥ 1`. The Fourier coefficients of `P` are
-`3273/4096`, `991/4608`, `−49/3072`, `1/512`, `−5/36864` at cosine
-frequencies `0, 2, 4, 6, 8`. Source: `TransThresholdPairCorrelation/PeriodicSincMajorant.lean`.
-`sinc_sq_le_scaled_periodicMajorant` and `periodicSincMajorant_fourier` pass
-direct `lake --old env lean` checking; their transitive axioms are exactly
-`propext`, `Classical.choice`, `Quot.sound`. Umbrella import added.
-
-**Paper argument.** For `g(x)=x(2+cos x)−3sin x`, successive derivatives reduce
-to `x sin x ≥ 0` on `[0,π]`, giving Cusa–Huygens. For `0≤c≤1`, the difference
-between `1−(1−c²)/2−(1−c²)²/8−(1−c²)³/16−5(1−c²)⁴/128` and `c` is
-`(1−c)⁵(5c³+25c²+47c+35)/128`. Hence `(2+|cos x|)²/9≤P(x)`.
-For `|bx|≤π/2`, sine monotonicity and Cusa–Huygens give the scaled sinc bound;
-outside, `|sin x|≤1` and `π>3` suffice. Double-angle identities give the coefficients.
-
-**Remaining construction.** Add `(1−b²·3273/4096)K_N(2bx)` to `b²P(bx)`,
-where `K_N=1+2Σ_{k=1}^N(1−k/(N+1))cos(kt)`. With `b=10001/10000`,
-large `N` gives positive nonconstant coefficients and first coefficient above
-`3/10`. Replace each Fourier atom by a narrow triangle. Prove pair-density
-positivity, exact Fourier duality, and weighted mass above `7/45` at `4/3`.
-The corpus already supplies the required difference-count identity
-`RHTower.Sieve.sum_dist_double` and triangle Fourier transform.
-The candidate realization is `TransThresholdPairCorrelation/FejerSpikePairDensity.lean`;
-its coefficient, pair-density positivity, and weighted-integral proofs pass Lean
-with only the foundational axioms. The Fourier-duality theorem and combined
-existence statement remain under audit; the module is not yet complete.
+Complete paper proof and Lean result:
+[positivity-seventy-percent-four-thirds](../3-formalized/positivity-seventy-percent-four-thirds.md).
+Both modules pass direct Lean checking and are wired into their umbrella.
 
 The all-bandwidth obstruction remains open. A single counterexample at `4/3`
 does not settle it; any fixed integrable perturbation of the constant form factor

@@ -102,7 +102,7 @@ theorem zeta_finite_top_breaks_exponential_floor {b α : ℝ} (hb : 0 < b) (hαb
           -(M * Real.exp (α * u)) := by
   obtain ⟨ε, V, hε, hwin⟩ := zeta_finite_top_negative_windows hb htop S hS hne hk
   have hlim : Tendsto (fun u : ℝ => |M| * Real.exp ((α - b) * u)) atTop (𝓝 0) := by
-    simpa only [mul_zero, Function.comp_def] using
+    simpa only [mul_zero, Function.comp_def, id_eq] using
       (Real.tendsto_exp_atBot.comp
         (tendsto_id.const_mul_atTop_of_neg (sub_neg.mpr hαb))).const_mul |M|
   obtain ⟨W, hW⟩ := eventually_atTop.mp (hlim.eventually (gt_mem_nhds hε))
