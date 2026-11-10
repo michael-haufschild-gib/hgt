@@ -238,3 +238,16 @@ exactly the admissible `d`-part compositions, since divisibility of `N`
 forces their final part divisible too. Thus the positive-part optimality
 theorem covers both cases. This coefficient reduction and the subsequent
 valuation-stabilization and strict-slope arguments remain to be formalized.
+
+## Greedy prefix-cost growth
+
+Write `v(C)=mN−wt(C)` for an `m`-part composition of `N`, and `P(C)`
+for the value of its proper prefix. The greedy weight bound on that
+divisible prefix gives `v(C)<2P(C)`. For consecutive greedy compositions
+`C,D` on the same digits, merge the last two parts of `D`. Greediness of
+`C` and the half-total bound on `D`'s initial composition give
+`2P(C)<P(D)`. Optimality of `C` against that merge gives
+`v(D)−v(C)≥P(D)`. Hence `v(D)>2v(C)`, which implies strict successive
+slopes since all prefix costs are nonnegative. This argument concerns
+positive-part compositions; identifying the actual coefficient valuations
+and handling the zero-final-remainder endpoint remain necessary.

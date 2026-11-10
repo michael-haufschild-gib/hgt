@@ -94,7 +94,9 @@ theorem abs_resonator_diagonal_sub_trunc_le_power {ε σ : ℝ} (hε : 0 < ε)
       δ * (2 / (2 * σ - ε - 1)) := by
     rw [hδsq]
     calc
-      _ = δ * ((δ + 1) / (2 * σ - ε - 1)) := by field_simp; ring
+      _ = δ * ((δ + 1) / (2 * σ - ε - 1)) := by
+        field_simp [hδ.ne', hden.ne']
+        <;> ring
       _ ≤ _ := mul_le_mul_of_nonneg_left
         (div_le_div_of_nonneg_right (by linarith only [hδ1]) hden.le) hδ.le
   have hP : 0 ≤ ∑' n : ℕ, (n : ℝ) ^ (ε - 2 * σ) :=

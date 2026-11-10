@@ -176,7 +176,7 @@ theorem exists_growing_resonator_truncation {σ κ : ℝ}
   refine ⟨a, ε, m, ha, hε, hεσ,
     tendsto_weighted_zetaTruncationErrorScale (by linarith only [hσ])
       hσ1 ha hpole hend m hrem, ?_,
-    tendsto_real_weighted_superlinearCutoff ha0 htail⟩
+    tendsto_real_weighted_superlinearCutoff ha0 (by simpa only [mul_div_assoc] using htail)⟩
   have h := tendsto_real_weighted_superlinearCutoff (a := a)
     (b := 2 + ε - 2 * σ) (q := κ * (1 + ε) - 1) ha0
       (by linarith only [hmean])

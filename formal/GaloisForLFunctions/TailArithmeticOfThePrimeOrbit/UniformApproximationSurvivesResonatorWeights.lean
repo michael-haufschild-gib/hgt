@@ -71,7 +71,7 @@ theorem abs_weighted_dyadicSquareMean_sub_le {R f g : ℝ → ℂ}
   rw [← sub_div, abs_div, abs_of_pos hT]
   apply hd.trans_eq
   simp only [smul_eq_mul]
-  field_simp
+  field_simp [hT.ne']
   ring
 
 /-- Uniform approximation transfers through every resonator of bounded support. -/

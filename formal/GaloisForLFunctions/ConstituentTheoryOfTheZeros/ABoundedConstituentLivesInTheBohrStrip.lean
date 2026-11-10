@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.DirichletBohrSpectrum
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Analysis.PSeries
+import Mathlib.NumberTheory.EulerProduct.Basic
 
 /-!
 # A bounded constituent lives in the Bohr strip
@@ -22,7 +23,9 @@ With the theorem on absolutely convergent series: **if `x < 0`, a bounded Dirich
 So a constituent of the bounded class with a zero can be bounded only on half-planes `Re s > x`
 with `0 ≤ x < ½`, and its series cannot converge absolutely at any point left of the critical
 line: it lives in the strip between its abscissa of boundedness and its abscissa of absolute
-convergence.
+convergence. Over finitely many primes the two abscissas coincide
+(`lSeriesSummable_of_bounded_of_smooth`), so **a constituent with a zero needs infinitely many
+primes** (`ne_zero_of_bounded_of_smooth_of_zeros_subset_xi`).
 -/
 
 open Complex Filter Topology Set MeasureTheory
@@ -373,15 +376,11 @@ theorem lSeriesSummable_of_bounded (hsum : LSeriesSummable a u₀)
   rw [hδ]
   ring
 
-/-- Right of `x + ½` the bounded function is its Dirichlet series. -/
-theorem eq_LSeries_of_bounded (hsum : LSeriesSummable a u₀)
-    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
-    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {s : ℂ} (hs : x + 1 / 2 < s.re) :
-    F s = LSeries a s := by
-  set y : ℝ := (x + 1 / 2 + s.re) / 2 with hy
-  have hy1 : x + 1 / 2 < y := by rw [hy]; linarith
-  have hy2 : y < s.re := by rw [hy]; linarith
-  have hsumy := lSeriesSummable_of_bounded hsum hF hM hFL hy1
+/-- Right of a point of absolute convergence inside its half-plane, the function is its Dirichlet
+series. -/
+theorem eq_LSeries_of_summable_right (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re})
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {y : ℝ} (hxy : x ≤ y)
+    (hsumy : LSeriesSummable a y) {s : ℂ} (hs : y < s.re) : F s = LSeries a s := by
   have hUo : IsOpen {z : ℂ | y < z.re} := isOpen_lt continuous_const continuous_re
   have hUc : IsPreconnected {z : ℂ | y < z.re} := (convex_halfSpace_re_gt y).isPreconnected
   have hFd : DifferentiableOn ℂ F {z : ℂ | y < z.re} := hF.mono fun z hz => by
@@ -404,7 +403,15 @@ theorem eq_LSeries_of_bounded (hsum : LSeriesSummable a u₀)
     filter_upwards [hopen] with z hz
     exact hFL z hz
   exact (hFd.analyticOnNhd hUo).eqOn_of_preconnected_of_eventuallyEq (hLd.analyticOnNhd hUo) hUc
-    hz₀U hev hy2
+    hz₀U hev hs
+
+/-- Right of `x + ½` the bounded function is its Dirichlet series. -/
+theorem eq_LSeries_of_bounded (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {s : ℂ} (hs : x + 1 / 2 < s.re) :
+    F s = LSeries a s :=
+  eq_LSeries_of_summable_right hF hFL (y := (x + 1 / 2 + s.re) / 2) (by linarith)
+    (lSeriesSummable_of_bounded hsum hF hM hFL (by linarith)) (by linarith)
 
 /-! ### Constituents of the bounded class -/
 
@@ -434,5 +441,96 @@ theorem ne_zero_of_bounded_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
       rw [eq_LSeries_of_bounded hsum hF hM hFL (by linarith)]
       exact hz0)) (s := s) (by rw [hre]; exact hy2)
   exact hne (by rw [← eq_LSeries_of_bounded hsum hF hM hFL (by rw [hre]; linarith)]; exact h0)
+
+/-! ### Finitely many primes -/
+
+/-- **Cauchy's inequality for the coefficients**: `‖a(n)‖ n^{−σ} ≤ sup ‖F‖` for `σ > x`. -/
+theorem norm_coeff_le_of_bounded (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {σ : ℝ} (hσ : x < σ) (n : ℕ) :
+    ‖a (n + 1)‖ * ((n : ℝ) + 1) ^ (-σ) ≤ M := by
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM (σ : ℂ) (by rwa [ofReal_re]))
+  have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+  have hexp : Real.exp (-Real.log ((n : ℝ) + 1) * σ) = ((n : ℝ) + 1) ^ (-σ) := by
+    rw [Real.rpow_def_of_pos hn]
+    congr 1
+    ring
+  have h := sum_norm_sq_le_of_bounded hsum hF hM hFL hσ (n + 1)
+  have hsingle := Finset.single_le_sum (f := fun k : ℕ =>
+    (‖a (k + 1)‖ * Real.exp (-Real.log ((k : ℝ) + 1) * σ)) ^ 2) (fun k _ => sq_nonneg _)
+    (Finset.mem_range.mpr (Nat.lt_succ_self n))
+  have hsq := hsingle.trans h
+  rw [hexp] at hsq
+  exact (pow_le_pow_iff_left₀ (mul_nonneg (norm_nonneg _) (Real.rpow_nonneg hn.le _)) hM0
+    two_ne_zero).mp hsq
+
+/-- `m ↦ m^{−ε}` as a monoid homomorphism. -/
+def rpowNegHom (ε : ℝ) : ℕ →* ℝ where
+  toFun m := (m : ℝ) ^ (-ε)
+  map_one' := by simp
+  map_mul' m n := by
+    push_cast
+    exact Real.mul_rpow (Nat.cast_nonneg m) (Nat.cast_nonneg n)
+
+/-- **Over finitely many primes boundedness is absolute convergence.** A Dirichlet series bounded
+on `Re s > x` whose coefficients are supported on the integers all of whose prime factors are
+below `N` converges absolutely on `Re s > x`. -/
+theorem lSeriesSummable_of_bounded_of_smooth (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {N : ℕ}
+    (hsupp : ∀ m : ℕ, a m ≠ 0 → m ∈ Nat.smoothNumbers N) {y : ℝ} (hy : x < y) :
+    LSeriesSummable a y := by
+  set σ : ℝ := (x + y) / 2 with hσ
+  have hσx : x < σ := by rw [hσ]; linarith
+  have hε : 0 < y - σ := by rw [hσ]; linarith
+  have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM (σ : ℂ) (by rwa [ofReal_re]))
+  have hsm := (EulerProduct.summable_and_hasSum_smoothNumbers_prod_primesBelow_geometric
+    (f := rpowNegHom (y - σ)) (fun {p} hp => by
+      show ‖((p : ℝ)) ^ (-(y - σ))‖ < 1
+      rw [Real.norm_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg p) _)]
+      exact Real.rpow_lt_one_of_one_lt_of_neg (by exact_mod_cast hp.one_lt) (by linarith)) N).1
+  have hind := (summable_subtype_iff_indicator (s := (Nat.smoothNumbers N : Set ℕ))
+    (f := fun m : ℕ => ‖rpowNegHom (y - σ) m‖)).mp hsm
+  refine Summable.of_norm_bounded (hind.mul_left M) fun m => ?_
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · rw [LSeries.term_zero, norm_zero]
+    exact mul_nonneg hM0 (Set.indicator_nonneg (fun _ _ => norm_nonneg _) _)
+  · obtain ⟨k, rfl⟩ : ∃ k, m = k + 1 := ⟨m - 1, by omega⟩
+    have hk : (0 : ℝ) < (k : ℝ) + 1 := by positivity
+    have hcast : (((k + 1 : ℕ) : ℝ)) = (k : ℝ) + 1 := by push_cast; rfl
+    by_cases ha : a (k + 1) = 0
+    · rw [LSeries.norm_term_eq, if_neg k.succ_ne_zero, ha, norm_zero, zero_div]
+      exact mul_nonneg hM0 (Set.indicator_nonneg (fun _ _ => norm_nonneg _) _)
+    · rw [Set.indicator_of_mem (hsupp _ ha), LSeries.norm_term_eq, if_neg k.succ_ne_zero,
+        ofReal_re]
+      show ‖a (k + 1)‖ / (((k + 1 : ℕ) : ℝ)) ^ y ≤ M * ‖(((k + 1 : ℕ) : ℝ)) ^ (-(y - σ))‖
+      rw [hcast, Real.norm_of_nonneg (Real.rpow_nonneg hk.le _), div_eq_mul_inv,
+        ← Real.rpow_neg hk.le]
+      have hsplit : ((k : ℝ) + 1) ^ (-y) = ((k : ℝ) + 1) ^ (-σ) * ((k : ℝ) + 1) ^ (-(y - σ)) := by
+        rw [← Real.rpow_add hk]
+        congr 1
+        ring
+      rw [hsplit, ← mul_assoc]
+      exact mul_le_mul_of_nonneg_right (norm_coeff_le_of_bounded hsum hF hM hFL hσx k)
+        (Real.rpow_nonneg hk.le _)
+
+/-- **A constituent needs infinitely many primes.** A bounded Dirichlet series on `Re s > x`
+supported on the integers composed of finitely many primes, not identically zero, whose zeros in
+`Re s > x` are zeros of `ξ`, has no zero there; no condition on `x`. -/
+theorem ne_zero_of_bounded_of_smooth_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {N : ℕ}
+    (hsupp : ∀ m : ℕ, a m ≠ 0 → m ∈ Nat.smoothNumbers N) {n : ℕ} (hn : a (n + 1) ≠ 0)
+    (hzero : ∀ s : ℂ, x < s.re → F s = 0 → xi s = 0) {s : ℂ} (hs : x < s.re) : F s ≠ 0 := by
+  intro h0
+  set y : ℝ := (x + s.re) / 2 with hy
+  have hy1 : x < y := by rw [hy]; linarith
+  have hy2 : y < s.re := by rw [hy]; linarith
+  have hsumy := lSeriesSummable_of_bounded_of_smooth hsum hF hM hFL hsupp hy1
+  have hne := LSeries_ne_zero_of_zeros_subset_xi hsumy hn
+    (fun z hz hz0 => hzero z (by linarith) (by
+      rw [eq_LSeries_of_summable_right hF hFL hy1.le hsumy hz]
+      exact hz0)) (s := s) hy2
+  exact hne (by rw [← eq_LSeries_of_summable_right hF hFL hy1.le hsumy hy2]; exact h0)
 
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros

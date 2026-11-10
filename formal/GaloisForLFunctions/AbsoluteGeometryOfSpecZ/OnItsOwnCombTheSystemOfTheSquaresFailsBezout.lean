@@ -51,7 +51,12 @@ theorem squareSystemWeight_sq (k : ℕ) : squareSystemWeight (k ^ 2) = 2 * Λ k 
   rw [squareSystemWeight, if_pos ⟨k, sq k⟩, Nat.sqrt_eq']
 
 theorem squareSystemWeight_two : squareSystemWeight 2 = 0 := by
-  rw [squareSystemWeight, if_neg (by decide)]
+  have h2 : ¬ IsSquare 2 := by
+    rintro ⟨r, hr⟩
+    rcases Nat.lt_or_ge r 2 with h | h
+    · interval_cases r <;> omega
+    · nlinarith
+  rw [squareSystemWeight, if_neg h2]
 
 /-- The contacts of the system on its own comb: the points `m²` and `(mk)²` meet with the
 weight `2Λ(k)/k`, and a contact carries the mass `2/m` of its lower point. -/
