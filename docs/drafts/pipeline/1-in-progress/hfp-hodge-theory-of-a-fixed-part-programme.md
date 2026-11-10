@@ -73,7 +73,16 @@ Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/`. Each module checke
 | `RiemannRochOnTheTowerHasTheGluingIndex` | `natCast_dvd_ghostComponent_of_vanish`, `exists_first_graph`, `exists_fiber_of_triangular`, `exists_orbitLatticeMap_vanishing`, `exists_orbitLatticeMap_first_graph` | checked |
 | `TheCombOfUnitMassesFixesTheContacts` | `sum_divisors_eq_log_iff`, `multiplicity_eq_one_iff`, `contactW`, `combPairingW`, `combFormW`, `combFormW_flatTail`, `tendsto_combFormW_flatTail_div`, `eventually_combFormW_flatTail_neg`, `eventually_combFormW_doubleTwo_neg` | checked |
 
-Umbrella `HodgeTheoryOfAFixedPart.lean`: not yet written. README: first draft (needs the results).
+| `TheIndexOfAWindowIsFiniteAtEveryScale` | `blockIndex`, `blockKernel`, `sum_mul_mul_blockKernel_eq_zero`, `abs_inv_sub_blockKernel_le`, `sum_dist_le`, `distMajorant`, `sum_contact_erase_le`, `sum_abs_pairKernel_sub_blockKernel_le`, `sum_mul_mul_le_abs_row` (Schur), `combForm_nonneg_of_blockSum_eq_zero`, `blockIndex_lt`, `exists_blockSize_combForm_nonneg` | checked |
+| `ASeparatedCombIsOneOrbitOfTheFrobeniusMonoid` | `FrobeniusStable`, `Separated`, `frobeniusOrbit`, `exists_near_collision`, `exists_ratio_of_separated`, `den_le_of_separated`, `exists_orbit_of_separated`, `eq_orbit_of_generator_mem` (imports Mathlib only) | checked |
+| `WhatTheSectionsOfTheSquareCertify` | `sum_contact_properDivisors_le_log_abs`, `prime_dvd_ghostComponent_of_vanish`, `sum_contact_primes_le_log_abs`, `primePointSection` (`p − e_p`), `primePointSection_spec`, `log_abs_primePointSection_lt` | checked |
+| `TheInequalityAtFiniteScaleDecidesTheLimit` | `tendsto_sum_sq_sampleCoord`, `zeroSum_nonneg_of_frequently`, `riemannHypothesis_of_frequently_combForm_ge`, `exists_window_combForm_neg_of_not_riemannHypothesis` | checked |
+| `OneInequalityPerPrimeOnTheComb` | `spline`, `twoBumpPacket`, `twoBumpWindow`, `zeroSum_twoBumpPacket`, `tendsto_combForm_twoBumpPacket`, `riemannHypothesis_iff_twoBump_windows_off_finset` | checked |
+
+Umbrella `HodgeTheoryOfAFixedPart.lean` written with ten modules and imported by `MainTheorems`.
+Oleans built for modules 1–4 and for the dependency
+`SurfaceOfSpecZ/ScaleLocality/ExceptionalLogarithmicWindows`. README: first draft (needs the
+results).
 
 ## Plan (remaining)
 

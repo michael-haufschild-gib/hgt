@@ -9,7 +9,7 @@
 
 Bound the actual centred higher-moment Vaughan sum below a selected
 exceptional-mode rate, retaining both signed continuum corrections.
-The growing-order reduction seeks an exponentially small error with
+The growing-order reduction gives an exponentially small error with
 `X=exp(at)`, `r≈κt/log t`, `U≈X/t^(J+1)`, `V≈t`, `W≈t^(J+3)`.
 The remaining object has coefficient
 
@@ -61,3 +61,13 @@ On the large-prime part this converts the periodic cofactor convolution
 to the same periodic factor times the actual large-prime-divisor weight
 `Σ_(p|n,p>U)log p`. This is not the constant harmonic mean. Prime-power
 terms and the finite-head boundary must also remain explicit.
+
+
+`ArithmeticDefectRigidity.TheSignedCofactorGramHasNoExtraCoordinates`
+identifies the fixed receiver/residual/forcing Gram blocks as
+`[[K,−K,0],[−K,K,0],[0,0,0]]` on escape. The forcing covariances
+vanish after normalization. This is a result for the damped Möbius
+receiver, not a bound for the Gaussian current above. Its uniform forcing-covariance bounds control the paid remainder,
+but leave the receiver block `K` unbounded in the required arithmetic
+sense. No transfer from this signed table to a bound for the Gaussian
+prime current has been proved.

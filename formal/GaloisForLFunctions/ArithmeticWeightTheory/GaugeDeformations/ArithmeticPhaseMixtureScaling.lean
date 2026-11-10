@@ -28,7 +28,8 @@ private theorem continuousAt_mixtureFiniteCorrection {q : ℝ × ℂ} (ht : 0 �
   have hmap : ContinuousAt (fun v : ℝ × ℂ => (v.1 : ℂ)) q := by fun_prop
   have hS : ContinuousAt (fun v : ℝ × ℂ =>
       mixtureSkew (Complex.exp (-(v.1 : ℂ) * (Real.log 2 : ℂ)))) q := by
-    simpa only [analyticSmoothingPrimePhase, p, Subtype.coe_mk, Nat.cast_ofNat] using
+    simpa only [Function.comp_def, analyticSmoothingPrimePhase, p, Subtype.coe_mk,
+      Nat.cast_ofNat] using
       ha.continuousAt.comp (g := analyticSmoothingPrimePhase mixtureSkew p)
         (f := fun v : ℝ × ℂ => (v.1 : ℂ)) hmap
   have hp : ContinuousAt (fun v : ℝ × ℂ => (2 : ℂ) ^ (-v.2)) q := by
@@ -177,6 +178,7 @@ theorem tendstoLocallyUniformlyOn_mixtureContinuation :
   apply (tendstoLocallyUniformlyOn_iff_forall_isCompact
     (isOpen_compl_singleton : IsOpen ({(-4 : ℂ)}ᶜ))).mpr
   intro K havoid hK
+  change K ⊆ {w : ℂ | w ≠ -4} at havoid
   have hu := tendstoUniformlyOn_normalizedMixtureProfile hK havoid
   intro V hV
   filter_upwards [hu V hV, self_mem_nhdsWithin] with t htlim ht

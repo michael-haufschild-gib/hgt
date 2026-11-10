@@ -49,8 +49,10 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `DigitExchanges` | Same-residue swaps preserve content; exact weight change; greedy and optimal allocations are increasing within each residue class; every realized content matrix admits an increasing allocation |
 | `IncreasingAllocations` | Increasing allocations of a fixed content matrix have unique numerical part values, by equality of all prefix values |
 | `InitialCompositions` | Deleting the last part preserves greediness and optimality; admissible replacements of the initial composition retain divisible parts |
+| `ContentBounds` | A proper sublayer of constant content `p−1` has every inverse coordinate `<1`; divisible content has integral inverse coordinates |
+| `TopDigits` | Digits below exponent `k` have value `<p^k`; the whole highest digit block has value `>N/2` and content at most `p−1` in each class |
 
-All nine modules passed direct and transitive axiom audits using only the
+All eleven modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
 The actual Goss-zeta theorem and its general optimal-composition input remain

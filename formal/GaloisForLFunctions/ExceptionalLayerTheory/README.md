@@ -387,6 +387,25 @@ term uses first variation, so the gain concerns large unbalanced cutoffs.
 The higher-moment damping filter and independent centred-current bound
 remain open.
 
+`GaussianHigherMomentConstants.lean`, `GaussianGrowingMomentReduction.lean`,
+`GaussianHigherCofactorTail.lean` and `GaussianGrowingCofactorLocalization.lean`
+make the order grow with height. For `a,κ>0`, `κ≤a/32`, `J≥4`,
+`(2J−7)κ≥2a`, set
+
+    X=exp(at), r=⌊κt/log t⌋, U=⌊X/t^(J+1)⌋, V=⌊t⌋,
+    W=⌈2t^(J+3)⌉.
+
+At `σ=1/2`, under the same physical sector and scale conditions,
+
+    |(M_r−P_r)−C_(r,U,V,W)| ≤ (C+784)exp(−at/4)
+
+for all sufficiently large `t`, with fixed explicit `C`. The actual
+cofactor current retains both signed continuum corrections, and
+`W≤3t^(J+3)`. Uniform Gamma/Bernoulli estimates control the moment
+constants; the complementary arithmetic tail is at most `784exp(−t²)`.
+The remaining prime variable is long. Its centred cancellation and the
+uniform growing-order filter transfer remain open.
+
 `GaussianLogarithmicContinuum.lean` and `GaussianLogarithmicTypeIPole.lean`
 extract both signed main terms from the actual logarithmic type-I convolution.
 For `B_V=Σ_{b≤V}μ(b)/b`, `D_V=Σ_{b≤V}μ(b)log b/b` and

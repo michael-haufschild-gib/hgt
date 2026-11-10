@@ -1,8 +1,8 @@
 # Arithmetic phase mixing with a delayed moving pole
 
 - **ID:** B130-arithmetic-phase-mixture
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** [Endpoint tangent obstruction](../3-formalized/endpoint-tangent-moment-obstructs-polynomial-scaling.md).
 
 ## Candidate
@@ -104,12 +104,33 @@ product.
 The actual Euler interpretation requires `t>0` and `Re w>0`; the
 continuation limit assigns no value to a totalized Euler series at the
 joint endpoint. Corpus search found no matching arithmetic mixture theorem.
-External novelty has not been assessed. Lean formalization is underway.
+External novelty has not been assessed.
+
+## Lean
+
+All modules are in `ArithmeticWeightTheory/GaugeDeformations/`.
+
+| Module | Main declarations |
+|---|---|
+| `CharacterPrimeLogContinuation.lean` | `exists_bounded_characterPrimeLog_tube`, `analyticOnNhd_characterShiftSeries`, `continuousOn_characterShiftSeries` |
+| `ArithmeticPhaseMixture.lean` | `norm_mixturePrimeValue`, `mixturePrimeValue_eq_twist`, `continuousOn_mixtureHigherPrimeLog` |
+| `ArithmeticPhaseMixtureEuler.lean` | `deformationPrimeSum_mixture`, `mixtureEuler_factorization`, `mixtureDivisorUnit_endpoint` |
+| `ArithmeticPhaseMixtureDivisor.lean` | `mixture_exact_moving_divisor`, `mixture_no_joint_endpoint_regularization` |
+| `ArithmeticPhaseMixtureScaling.lean` | `tendstoLocallyUniformlyOn_mixtureContinuation`, `tendstoLocallyUniformlyOn_mixtureEuler` |
+
+All capstone transitive axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Umbrella imports are present.
+All five files passed final direct `lake --old env lean` audits without
+warnings; the umbrella was not compiled.
 
 ## Consequence
 
 This realizes the endpoint-moment obstruction in an
 actual arithmetic mixture where the earlier first-imaginary-jet test
 fails. The mean-profile obstruction alone does not prove this arithmetic
-statement. B130 remains open; the stated paper theorem still requires
-its complete Lean formalization.
+statement. The exact divisor and rational scaling law are the positive
+survivor of the failed joint-endpoint route. B130 remains open.
+
+[Next conjecture](../0-backlog/principal-average-controls-arithmetic-mixture-scaling.md):
+the principal average determines scaling for every finite residue-class
+mixture of normalized analytic phase profiles.

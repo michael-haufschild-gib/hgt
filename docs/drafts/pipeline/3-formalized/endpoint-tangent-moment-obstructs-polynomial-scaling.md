@@ -80,9 +80,10 @@ shifted-prime expansion and regular-part control. B130 remains open.
 No matching obstruction was found in the corpus. External novelty
 has not been assessed.
 
-## Next candidate
+## Arithmetic realization
 
-[Arithmetic phase mixing](../2-fully-proven/arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md):
-a quadratic-character mixture with a regular first shifted zero and
-a later moving pole. Its actual Euler continuation and scaling remain
-unformalized.
+[Arithmetic phase mixing](arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md)
+now realizes this obstruction in an actual quadratic-character mixture:
+a fourth-order shifted zero, a later second-order pole, and the rational
+scaling limit `ζ(2)(w+2)⁴/(w+4)²`. Its Euler identification, exact orders,
+joint-endpoint obstruction, and locally uniform limits are formalized.

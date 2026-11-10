@@ -35,6 +35,9 @@ theorem eventually_gaussianGrowingCofactorCutoff_bounds {a : ℝ} (ha : 0 < a) (
       _ = (Real.exp (a * t) / (2 * t ^ (J + 1))) * (2 * t ^ (J + 3)) := by
         rw [show J + 3 = (J + 1) + 2 by omega, pow_add]
         field_simp
+        rw [← pow_add]
+        congr 1
+        omega
       _ ≤ _ := mul_le_mul hU hW (by positivity) (Nat.cast_nonneg _)
   have hceil := Nat.ceil_lt_add_one (by positivity : (0 : ℝ) ≤ 2 * t ^ (J + 3))
   have hpow : (1 : ℝ) ≤ t ^ (J + 3) := one_le_pow₀ ht
@@ -83,7 +86,8 @@ theorem eventually_gaussianGrowingMomentCofactorReduction {a κ : ℝ} (ha : 0 <
           (gaussianGrowingLongCutoff a J t) ⌊t⌋₊ (gaussianGrowingCofactorCutoff J t) ε := by
     rw [← he]
     unfold gaussianHigherCentredVaughanError
-    norm_num only [Complex.ofReal_div, Complex.ofReal_one]
+    have hhalf : ((1 / 2 : ℝ) : ℂ) = (1 / 2 : ℂ) := by norm_num
+    rw [hhalf]
     ring
   rw [hsum]
   have htExp : Real.exp (-t ^ 2) ≤ Real.exp (-(a / 4) * t) := by

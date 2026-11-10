@@ -155,10 +155,15 @@ theorem zeroSum_twoBumpPacket (v : ℝ) :
   have hre : (lagStructure zetaZeroConfig (boxSpline 1 3) (-v)).re =
       (lagStructure zetaZeroConfig (boxSpline 1 3) v).re := by
     rw [← hconj, Complex.conj_re]
+  have hW' : zetaZeroConfig.W (twoBump (boxSpline 1 3) v 1) (twoBump (boxSpline 1 3) v 1) =
+      ((2 : ℝ) : ℂ) * lagStructure zetaZeroConfig (boxSpline 1 3) 0 +
+        (lagStructure zetaZeroConfig (boxSpline 1 3) v +
+          lagStructure zetaZeroConfig (boxSpline 1 3) (-v)) := by
+    rw [hW, norm_one, Complex.ofReal_one, one_pow, map_one, one_mul, one_mul]
+    push_cast
+    ring
   rw [twoBumpPacket_eq_translate, zeroSum_translate_packet hc hcc, zeroSum,
-    ofReal_centredTwoBump, hW]
-  simp only [norm_one, Complex.ofReal_one, one_pow, map_one, one_mul, Complex.add_re,
-    Complex.mul_re, Complex.one_re, Complex.one_im, zero_mul, sub_zero, hre]
+    ofReal_centredTwoBump, hW', Complex.add_re, Complex.add_re, Complex.re_ofReal_mul, hre]
   ring
 
 /-! ### Weil's form of the two-bump divisor -/
