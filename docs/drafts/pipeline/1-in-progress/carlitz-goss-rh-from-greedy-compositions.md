@@ -93,9 +93,11 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `PrefixCostGrowth` | Consecutive greedy prefix costs more than double and have strict successive slopes; the greedy cost of a divisible total is below that total |
 | `MonicPowerSums` | Exact binomial recurrence for the actual polynomial power sums over all monic polynomials of a fixed degree; all finite-field coefficient moments evaluated |
 | `CarryFreeBinomial` | In every ring of prime characteristic, a binomial coefficient is nonzero exactly when the lower argument's base-`p` digits fit coordinatewise inside the upper argument's digits |
+| `DigitSelection` | Those nonzero binomial coefficients correspond exactly to values of actual subsets of the given digit collection |
 
-Listed modules passed direct and transitive axiom audits using only the
-three standard axioms and are wired into the umbrella.
+Listed modules passed direct Lean checks and are wired into the umbrella.
+Transitive axiom audits through `CarryFreeBinomial` use only the three
+standard axioms. No further axiom audit was run for `DigitSelection`.
 
 General greedy optimality is formalized and audited; see
 `../3-formalized/greedy-carry-free-compositions-are-uniquely-optimal.md`.
@@ -240,8 +242,8 @@ theorem covers both cases.
 in `monicPowerSum_succ`. The finite-field moment is zero at exponent zero
 and otherwise equals `−1` exactly on multiples of `q−1`. Its direct check
 and transitive axiom audit pass. `CarryFreeBinomial` formalizes the Lucas
-nonvanishing criterion. Its realization by actual digit subsets,
-leading-coefficient identification and valuation stabilization remain.
+nonvanishing criterion, and `DigitSelection` realizes it by actual digit
+subsets. Leading-coefficient identification and valuation stabilization remain.
 
 ## Greedy prefix-cost growth
 
@@ -268,5 +270,6 @@ Its digit in position `e` is exactly the number of occurrences of exponent
 by `p^(e+1)`. Lucas's theorem therefore makes `binom(N,k)` nonzero in
 characteristic `p` exactly when every digit of `k` is at most the available
 occurrence count. Independent selection in each exponent fibre then gives
-`T⊆S` of value `k`. This is the concrete bridge from the monic-power-sum
-recurrence to digit compositions; its subset realization remains to be formalized.
+`T⊆S` of value `k`. In `DigitSelection.lean`, `cast_choose_ne_zero_iff_subset`
+proves this bridge for every ring of prime characteristic. Its source passed the
+direct Lean check without an additional axiom audit.

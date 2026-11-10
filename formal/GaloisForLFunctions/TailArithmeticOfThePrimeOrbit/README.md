@@ -109,6 +109,7 @@ All are unconditional; the answer theorems depend only on `propext`, `Classical.
 | Proportional saving is a heavy first return | `exists_heavy_return_of_defect_lt`, `defect_le_of_heavy_return`, `saving_of_no_heavy_return`, `no_heavy_return_of_saving`, `lt_firstReturn_of_saving` | `ProportionalSavingIsAHeavyFirstReturn` |
 | The fade is forced | `eventually_abs_harmonicDefect_sub_le`, `tendsto_harmonicDefect`, `logLog_le_of_isWeakReturn` | `TheFadeOfAReturn` |
 | Head–tail decoupling | `smooth_mul_rough_injective`, `indexed_meanValue`, `integral_head_mul_tail`, `abs_conditional_second_moment_sub_le`, `norm_integral_head_sq_mul_tail_le` | `TheTailDecouplesFromTheHead` |
+| Polynomially growing actual-zeta resonators | `eventually_resonatorMean_zeta_uniform` | `GrowingResonatorsKeepTheZetaMean` |
 | Gaussian conditional moments | `headPoly_pow`, `powNorm_le`, `integral_head_mul_tail_pow_le`, `setIntegral_head_on_large_tail_le` | `TheConditionalMomentsOfTheTail` |
 | Arithmetic smooth–prime second moment | `integral_balancedHead_primeTail_sq_le`, `setIntegral_balancedHead_on_large_primeTail_le` | `TheSmoothPrimeMeanSquareHasAnArithmeticCost` |
 | Rectangular arithmetic moments | `integral_rectangular_head_tail_le`, `integral_rectangular_head_prime_tail_pow_le`, `setIntegral_rectangular_head_on_large_prime_tail_le`, `integral_rectangular_full_prime_tail_pow_le` | `TheRectangularMomentsHaveAnArithmeticCost` |
@@ -156,6 +157,13 @@ actual head mass gives normalized `2k`th moment at most
 `C(A,r,Z)≤2Z(Z+H(A))R₁²`. Normalized large-tail mass pays `V^(−2k)`.
 For the unit full smooth head below `M≥1`, the error inside parentheses
 is at most `2Y^k(Y^k+M)#A(k!)²/T` when `T≥52M`.
+
+For fixed `1/2<σ<1` and `0≤κ<2σ−1`, the dyadic mean of `|R_T ζ(σ+it)|²`
+equals its full convolution diagonal up to `o(Σ|r_T(m)|²)`, uniformly over
+all complex coefficient arrays supported on positive integers at most `T^κ`.
+Divisor-wise Cauchy–Schwarz retains a subpower support cost; the sharp finite
+mean, coefficient tail, and arbitrary-order zeta truncation all decay with
+one choice of parameters. No individual coefficient bound is required.
 
 ## 7. Tools
 

@@ -61,5 +61,3 @@ theorem cast_choose_ne_zero_iff_digits_le (K : Type*) [Semiring K] [CharP K p] (
 
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
 
-#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.choose_ne_zero_iff_digits_le
-#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.cast_choose_ne_zero_iff_digits_le

@@ -69,6 +69,32 @@ theorem boundedVariationOn_flatPacket {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
 
 end FlatRegularity
 
+/-- Large scales fit inside a fixed family of complete blocks of length `N / R`. -/
+theorem scaledWindow_subset_completeBlocks {R Q N : ℕ} (hR : 0 < R)
+    (hQ : Q ≤ N / R) :
+    Ioc N (Q * N) ⊆ Ioc (R * (N / R)) ((Q + 1) * R * (N / R)) := by
+  have he := Nat.div_add_mod N R
+  have hr := Nat.mod_lt N hR
+  have hlo : R * (N / R) ≤ N := by nlinarith only [he]
+  have hrem : Q * (N % R) ≤ R * (N / R) := by
+    calc Q * (N % R) ≤ Q * R := Nat.mul_le_mul_left Q hr.le
+      _ ≤ (N / R) * R := Nat.mul_le_mul_right R hQ
+      _ = _ := Nat.mul_comm _ _
+  have hhi : Q * N ≤ (Q + 1) * R * (N / R) := by
+    calc Q * N = Q * (N / R * R + N % R) := congrArg (Q * ·) he.symm
+      _ = Q * R * (N / R) + Q * (N % R) := by ring
+      _ ≤ Q * R * (N / R) + R * (N / R) := Nat.add_le_add_left hrem _
+      _ = _ := by ring
+  intro n hn
+  exact mem_Ioc.mpr ⟨hlo.trans_lt (mem_Ioc.mp hn).1, (mem_Ioc.mp hn).2.trans hhi⟩
+
+/-- The padded left endpoint differs by at most one complete block once `N / R ≥ R`. -/
+theorem completeBlock_left_endpoints {R N : ℕ} (hR : 0 < R) (hB : R ≤ N / R) :
+    R * (N / R) ≤ N ∧ N ≤ (R + 1) * (N / R) := by
+  have he := Nat.div_add_mod N R
+  have hr := (Nat.mod_lt N hR).le.trans hB
+  constructor <;> nlinarith only [he, hr]
+
 /-- Points in the first window whose ratio-`k` partners lie in the second. -/
 def flatContactPoints (a b c d k N : ℕ) : Finset ℕ :=
   (Ioc (a * N) (b * N)).filter (fun m => c * N < k * m ∧ k * m ≤ d * N)

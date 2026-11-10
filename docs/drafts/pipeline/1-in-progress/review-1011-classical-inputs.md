@@ -67,6 +67,6 @@ geometric gain. General optimality passed the direct Lean check and both
 endpoint transitive axiom audits using only the three standard axioms.
 `PrefixCostGrowth` proves doubling and strict convexity of the greedy
 prefix costs. `MonicPowerSums` gives the exact recurrence on actual monic
-polynomials, and `CarryFreeBinomial` gives its digitwise nonvanishing
-criterion. Identifying actual leading coefficients and valuations, then
+polynomials, and `DigitSelection` identifies its nonzero binomial terms
+with actual digit subsets. Identifying actual leading coefficients and valuations, then
 passing to arbitrary `p`-adic parameters and the entire series, remains.

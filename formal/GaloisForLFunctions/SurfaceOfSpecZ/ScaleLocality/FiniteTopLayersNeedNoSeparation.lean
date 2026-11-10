@@ -65,7 +65,7 @@ theorem topTrace_eq_positive_sum {Z : ZeroConfig} {b : ℝ} (S : Finset ℂ)
         · exact hz (Finset.mem_union_left _ ((hS z).mpr ⟨hb, hp, he⟩))
     · simp only [topTerm, if_neg hb]
   rw [topTrace_eq_re, hsum, Finset.sum_union hd,
-    Finset.sum_image (fun _ _ _ _ h => star_injective h)]
+    Finset.sum_image (f := conj) (fun _ _ _ _ h => (starRingEnd ℂ).injective h)]
   have he : (∑ z ∈ S, topTerm Z b (conj z) u) = conj (∑ z ∈ S, topTerm Z b z u) := by
     rw [map_sum]
     exact Finset.sum_congr rfl fun z _ => hc z
@@ -111,7 +111,8 @@ theorem finite_top_negative_in_every_window {Z : ZeroConfig} (hZ : TemperedConfi
     rw [topTrace_eq_positive_sum S hS hreal u]
     congr 1
     exact (e.sum_comp (fun z : S => (2 * evenCoeff Z (boxSpline 1 3) z) *
-      Complex.exp ((((z : ℂ).im * u : ℝ) : ℂ) * I))).trans (Finset.sum_coe_sort S _)
+      Complex.exp ((((z : ℂ).im * u : ℝ) : ℂ) * I))).trans (Finset.sum_coe_sort S (fun z : ℂ => (2 * evenCoeff Z (boxSpline 1 3) z) *
+      Complex.exp (((z.im * u : ℝ) : ℂ) * I)))
   apply finite_spectrum_negative_windows_of_remainder a γ hΓ
     (fun j => hγ _ (e j).property) hi ha hL
   simpa only [he] using tendsto_normTrace_sub_topTrace hZ htop
@@ -123,8 +124,9 @@ theorem sixtySeven_lt_im_of_positive_zeta_mode {z : ℂ}
   have hρ : (1 / 2 : ℂ) + z ∈ zetaZeroConfig.carrier := by
     rcases mem_of_evenCoeff_ne_zero hz with h | h
     · exact h
-    · have hhalf : conj (1 / 2 : ℂ) = 1 / 2 := by norm_num
-      simpa only [map_add, hhalf, Complex.conj_conj] using conj_mem_zetaZeroConfig h
+    · have hhalf : conj (1 / 2 : ℂ) = 1 / 2 := by
+        rw [map_div₀, map_one, map_ofNat]
+      simpa only [map_add, hhalf, Complex.conj_conj] using GaloisForLFunctions.RHTower.conj_mem_zetaZeroConfig h
   by_contra hn
   have him' : ((1 / 2 : ℂ) + z).im = z.im := by norm_num
   have he := re_eq_half_of_mem_carrier HadamardBudget.rhVerifiedThrough_sixtySeven hρ
