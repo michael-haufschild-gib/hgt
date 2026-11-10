@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-60 modules. Specification: §9 of
+61 modules. Specification: §9 of
 [the review-1011 report](../../../docs/reports/review-1011/fable.md), which continues §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md) and §9 of
 [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
@@ -732,10 +732,19 @@ that is an inequality, and each has a kill condition.
 - *Deliverable.* The pairing of an integer-norm system on its own comb.
 - *Kill condition.* The jets of a comb that is not a lattice are not an archimedean factor; the
   pairing is not a sum over zeros.
-- *State.* Open. On the comb of the integers every system of contact weights but `Λ` fails
-  (`not_combBezout_of_ne`), and a separated comb stable under the Frobenius monoid is one
-  orbit, so the comb of `ℤ` has no moduli (corpus: `HodgeTheoryOfAFixedPart`). The first case
-  is one integer-norm one-off (§13.3).
+- *State.* Decided for the system of the squares; open for combs without a density. On the
+  comb of the integers every system of contact weights but `Λ` fails (`not_combBezout_of_ne`),
+  and a separated comb stable under the Frobenius monoid is one orbit, so the comb of `ℤ` has
+  no moduli (corpus: `HodgeTheoryOfAFixedPart`). The system with one generalized prime of norm
+  `p²` for each `p` has the zeta function `ζ(2s)` and the comb of squares as its own comb.
+  There jets, the counterterm `log(n/4π)` and the contacts `2Λ(k)/k` of the system tend to
+  `2 d₁ d₂ − Re W_w(F ⋆ F̃)`, the limit on the comb of the integers with the weights `w` of the
+  system (`tendsto_squareForm_add_squareContact`), and Bézout fails on a packet, without
+  hypothesis (`exists_packet_squarePairing_gt`). The comb enters through its density, which
+  the counterterm removes; the jets are those of the archimedean factor of `ζ` in the
+  coordinate of the norms and do not follow the system. So the pairing on the own comb is not
+  the sum over the zeros of the system, although these lie on one line with those of `ζ`
+  (§13.3).
 
 **VI. A count.**
 
@@ -782,7 +791,7 @@ relation are effective elements (`exists_effective_closedWalks`).
 | 3 | Is there a geometric object whose intersection form is the sum of the chain squares at every prime and of the Newtonian multipoles on an axis, with the density as counterterm? | Each summand has a model; no glued invariant object exists. Open: construction II for gluings that are not invariant | corpus: `HodgeTheoryOfAFixedPart.prime_contact_form_eq_chain_squares`, `HodgeTheoryOfAFixedPart.hasSum_even_newtonianMultipoles`; `four_mul_twistedMean_add` |
 | 4 | What replaces the extension of constants, the tensor-power trick and the family? | Nothing among covers and twists: `ζ` is the fixed part. A cover bounds its base at each finite stage; per degree, in a tower, the form of `ζ` has the weight `1/[K:ℚ]` (construction IV) | `exists_le_negIndex_ringDefect_of_zeta`, `riemannHypothesis_of_ringDefect`, `tendsto_ringZeroSum_div_degree_sub` |
 | 5 | The full window at finite scale, and the converse | Block averages decide (continuation). Open: divisors with nonzero block sums, and the inequality at finite scale from the Riemann hypothesis | corpus: `HodgeTheoryOfAFixedPart.exists_blockSize_combForm_nonneg`, `HodgeTheoryOfAFixedPart.riemannHypothesis_of_frequently_combForm_ge` |
-| 6 | Integer-norm systems on their own comb: does Bézout there hold exactly when the zeros are on a line? | Open (construction V, §13.3). A separated comb stable under the Frobenius monoid is one orbit, so the comb of `ℤ` has no moduli (continuation) | `not_combBezout_of_ne` |
+| 6 | Integer-norm systems on their own comb: does Bézout there hold exactly when the zeros are on a line? | No, for the system of the squares: its zeros are those of `ζ(2s)`, on the line `Re s = ¼` iff the Riemann hypothesis holds, and Bézout fails on its own comb without hypothesis. The own comb enters through its density only. Open for combs that have no density (construction V, §13.3) | `tendsto_squareForm_add_squareContact`, `exists_packet_squarePairing_gt`, `not_combBezout_of_ne` |
 | 7 | Ideals as degree points; the characters of the class group; rings that are not abelian | Open: the explicit formulas of Hecke and Artin `L`-functions are not in the corpus (§13.4) | `idealContact_prime_pow`, `exists_idealOrbit_generator_iff` |
 | 8 | A count with Tate limit the integer probes | The Riemann hypothesis holds iff such a count with values in `ℕ` exists (corpus). No construction (construction VI) | corpus: `CountingHolography.riemannHypothesis_iff_tateLimit_of_count` |
 | 9 | The Li ladder as comb forms of tails | Open beyond the first rung: the flat tail has the form `2 + γ − log 4π` per degree point (continuation), the value of twice the first Li coefficient [C]; the paired Li coefficients `2λ_n` are in the corpus as sums over the zeros (`RHTower.xiLiPaired`) | corpus: `HodgeTheoryOfAFixedPart.tendsto_combForm_flatTail_div` |
@@ -1109,7 +1118,7 @@ of the body at every aperture would prove the Riemann hypothesis without produci
 | The pairing | Jets, contacts and counterterm; the limit `2 d₁ d₂ − Z(f)`; the comb and its forced constant; the additive datum; Bézout on bounded apertures | Lean: §6 C; §8.2 Q11, Q12, Q14, Q23 |
 | Number rings, finite scale, payment | The squares of abelian rings with genus, ramification and exact index; the lattice at finite scale and the comb of a curve (continuation); the planar square | Lean: §6 F, G, H; §8.2 Q17, Q20, Q22 |
 | Next, step 1 | Close construction IV as a theorem; construction III | Lean: both kill conditions are met |
-| Next, step 2 | Construction II for gluings along the comb of the integers that are not invariant; construction V for one integer-norm one-off | open |
+| Next, step 2 | Construction II for gluings along the comb of the integers that are not invariant; construction V for one integer-norm system | V: Lean for the system of the squares (`exists_packet_squarePairing_gt`); II and the combs without a density: open |
 | Next, step 3 | Construction I with one operator outside the three tested ones, on the first selective window | open |
 | Next, step 4 | Hecke characters and one ring that is not abelian (question 7) | open: needs explicit formulas that are not in the corpus |
 | The inequality | Bézout for all packets (question 1); the exceptional square (Q21) | open: the Riemann hypothesis; the Landau–Siegel problem |
@@ -1207,6 +1216,7 @@ with the counterterm `log(n/2π) − c`, `c > 0`, a packet of degree zero has a 
 | The pairing of a ring with any finite family of primitive characters is twice the product of the degrees minus the sum over the zeros of its zeta function | `tendsto_ringForm_add_contact` |
 | Riemann–Hurwitz for the counterterm, with the conductors as ramification | `ringForm_eq_genus`, `riemannHurwitz` |
 | The genus of a degree point is `1 + (n/2) log(n/2π)`, negative exactly at `2` and `3` | `combForm_singleton`, `genus_two_neg`, `genus_three_neg`, `genus_one_pos`, `genus_pos_of_four_le` |
+| On its own comb the system of the squares pairs like the comb of the integers with its contacts, and fails Bézout | `tendsto_squareForm_add_squareContact`, `exists_packet_squarePairing_gt` |
 | In a tower the form of `ζ` has weight one over the degree: the defect per degree differs from the mean of the twisted parts by `Z_ζ(f)/d` | `tendsto_ringZeroSum_div_degree_sub`, `eventually_neg_le_ringZeroSum_div_degree` |
 | Beyond the window a cyclotomic ring has no contact, and its defect on a fixed packet is at least `(p − 1)(½ log p ∫f² − C_f)` | `weightedContact_cyclotomicWeight_eq_zero`, `exists_cyclotomicZeroSum_eq`, `exists_forall_cyclotomicZeroSum_ge` |
 | The twisted part of a quadratic ring is nonpositive up to the trivial aperture, uniformly in the character | `exists_uniform_trivial_conductor_aperture`, `twistedZeroSum_ge_of_aperture_sharpened` |
@@ -1265,6 +1275,7 @@ All are unconditional.
 | Bézout at an aperture; the dictionary with the window cone and its margins | `TheSquaresWithBezoutAtAnApertureAreTheWindowCone` |
 | Superposition of a finite family of configurations; sums over a superposition by indicators; the exact index of a sum of Weil forms | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
 | Families of primitive characters with different conductors; the genus of a degree point; numerical bounds for `e`, `e^{2/3}`, `e^2` against `π` | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
+| The von Mangoldt function of the system of the squares on the comb of the integers; contacts on the comb of squares; the autocorrelation in the halved coordinate | `OnItsOwnCombTheSystemOfTheSquaresFailsBezout` |
 | Rings given by their characters; sequences of rings and their defects per degree; the cyclotomic ring beyond a window | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
 | The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
@@ -1329,6 +1340,7 @@ All are unconditional.
 | Paid contacts give the sign | the payment is the product formula for the differences of the nodes; the archimedean pairing of the planar square is logarithmic, not the jets |
 | Sections that pay every contact can be small | a planar section vanishing on `Γ_{p}, …, Γ_{p^J}` is divisible by `p^J` on the diagonal; the section `Π_j (Y_p − (p + ⋯ + p^j))` has there the size `Π_j (p + ⋯ + p^j)` |
 | The index of a ring is the sum of the indices of its characters | it is the number of distinct zeros of the zeta function to the right of the line; a zero shared by two factors is one negative square |
+| An integer-norm system passes on its own comb when its zeros lie on a line | the system of the squares has the zeros of `ζ(2s)` and fails on the comb of squares: the comb gives its density and nothing else, and the jets are those of the norms |
 | A tower of covers replaces the extension of constants | per degree the form of `ζ` has the weight `1/[K:ℚ]`: the limit inequality of a tower follows from its twisted parts and says nothing on `ζ`; in the cyclotomic tower the defect per degree tends to infinity with the root discriminant |
 | A ring can satisfy the inequality while `ℤ` does not | negative squares of the square of `ℤ` are negative squares of the square of every ring over it |
 | A superposition of configurations needs disjoint zeros | the multiplicities add at a common zero, and the indicator series regroup the sum |
@@ -1393,14 +1405,25 @@ corpus separates `ℤ` from the other systems by the distance of the count from 
 (`SumProductArithmeticOfTheLogarithm.count_distance_trichotomy`); the comb pairing has not been
 computed for a count at positive distance.
 
-This is construction V and question 6. The first case is one integer-norm one-off. For the
-integers prime to `2` the own comb is the lattice of the odd numbers, of density `½`: its jets
-are those of the integers, its counterterm is `log(n/4π)`, its contacts are `Λ` on the odd
-numbers, and the limit of its pairing is `2 d₁ d₂ − Z_ζ(f)` minus the local term
-`2 Σ_{j ≥ 1} (log 2) 2^{−j/2} h(j log 2) − (log 2) h(0)` of the removed Euler factor, which is
-not a sum over the zeros of `1 − 2^{−s}` with the reflection `ρ ↦ 1 − ρ̄`: these zeros lie on
-`Re s = 0` (computation, not formalized). A system with a repeated norm has a comb that is not
-separated, on which the jets are not defined.
+This is construction V and question 6. *Proved:* for the system of the squares, whose own comb
+is the comb of squares, the pairing with the jets between the norms, the density counterterm
+`log(n/4π)` and the contacts `2Λ(k)/k` of the system has the limit `2 d₁ d₂ − Re W_w(F ⋆ F̃)` of
+the comb of the integers with the weights of the system, and Bézout fails. The mechanism is
+general: wherever the jets of a comb have Weil's form as finite part after the counterterm
+`log(density/2π)`, as on the integers, the multiples of `g`, the combs `e^{ℤ/N}` and the
+squares, the own comb gives the comb of the integers with the contacts of the system, and
+that fails for every system but `ℤ`. *Open:*
+
+- an integer-norm one-off whose comb is a lattice with a point removed from the monoid, such
+  as the integers prime to `2`: the comb of the odd numbers has the density `½`, and the
+  comparison of its jets with those of the even numbers is a translation by one step;
+- combs without a density: a periodic comb that is not a lattice, such as the integers prime
+  to `3`, where the finite part of the jets has a constant that depends on the gaps; and a
+  system with a repeated norm, whose comb is not separated and on which the jets between two
+  points of one norm are not defined;
+- a system whose jets are its own: an archimedean factor attached to the system and not to
+  the norms. For the squares that factor would be `Γ_ℝ(2s)`, and the pairing with it is the
+  pairing of `ℤ` in the halved coordinate.
 
 ### 13.4 Number rings
 
@@ -1551,8 +1574,9 @@ measured on the constructions of the next stage (§6) and on the nine questions 
 - Constructions III and IV are closed by their kill conditions: on the planar square
   restriction is an equality of ideals, and in a tower the form of `ζ` has the weight one over
   the degree.
-- Constructions I, II, V and VI are open; each has a kill condition that a contribution may
-  meet instead of the deliverable.
+- Construction V is decided on the comb of squares: the own comb gives the comb of the
+  integers with the contacts of the system. Constructions I, II and VI are open; each has a
+  kill condition that a contribution may meet instead of the deliverable.
 - Question 1, Bézout for all packets, is the Riemann hypothesis, and the sign of the twisted
   part beyond the trivial aperture is the Landau–Siegel problem. Nothing in this folder proves
   either or claims to.

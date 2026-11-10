@@ -170,15 +170,9 @@ Keep the coordinates outside `(α,β]`. Within it, descending recursion
 `Z`. Successive nonzero prefix contents in each affected class differ
 by at least `p−1` digits (Lemma 6.2).
 
-If `τ_{h,r}` is the `r`th digit power in class `h`, set
-`S=Σ_{α≤h<β}τ_{h,δ_{h,m−1}}`. The prefix cost is at most `p^k+S`,
-whereas `deg_p Z_m>k` and, when `S>0`, `deg_p Z_m>deg_p S+1`.
-These imply `Z_m>2p^k+S` for `p≥3`. For `p=2`, the only possible equal
-degree case forces `β=s−1`, `α=0`, and at least two retained digits in
-class zero; its second digit makes the inequality strict as well
-(Lemmas 7.1–7.3 and Proposition 7.4). Hence `wt Z>wt O`, contradicting
-optimality. This is the missing composition theorem, not a hypothesis
-to attach to the Goss-zeta statement.
+The exact prefix-weight identity cancels unchanged residues. The geometric
+estimate below bounds the remaining losses and gives `wt Z>wt O`
+uniformly for `p≥2`, contradicting optimality.
 
 For the optimality proof, a carry-free digit collection can be represented
 by a finite subset of `ℕ×Fin(p−1)`: `(e,r)` has value `p^e` and colour

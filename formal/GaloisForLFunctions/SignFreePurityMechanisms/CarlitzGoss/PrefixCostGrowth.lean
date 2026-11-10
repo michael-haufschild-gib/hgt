@@ -64,12 +64,16 @@ theorem IsGreedy.prefixCost_lt_total {C : DigitComposition p s (m + 1) S}
     C.prefixCost < digitValue p S := by
   cases m with
   | zero =>
-    have hval : C.value 0 = digitValue p S := by simpa only [Fin.sum_univ_one] using C.sum_values
+    have hval : C.value 0 = digitValue p S := (Fin.sum_univ_one C.value).symm.trans C.sum_values
     have hweight : C.weight = digitValue p S := by
-      simp only [weight, Fin.sum_univ_one, Fin.val_zero, Nat.zero_add, Nat.cast_one, one_mul, hval]
+      change (∑ i : Fin 1, ((i.val + 1 : ℕ) : ℤ) * C.value i) = digitValue p S
+      rw [Fin.sum_univ_one (fun i : Fin 1 => ((i.val + 1 : ℕ) : ℤ) * C.value i)]
+      simpa only [Fin.val_zero, Nat.zero_add, Nat.cast_one, one_mul] using hval
     have hpos := C.value_pos (by omega : 0 < p) 0
     rw [hval] at hpos
-    simpa only [prefixCost, Nat.cast_one, one_mul, hweight, sub_self] using hpos
+    change (1 : ℤ) * digitValue p S - C.weight < digitValue p S
+    rw [one_mul, hweight, sub_self]
+    exact hpos
   | succ m =>
     have hcost := hC.prefixCost_lt_twice_prefix hp
     have hhalf := hC.last_gt_half hp hN

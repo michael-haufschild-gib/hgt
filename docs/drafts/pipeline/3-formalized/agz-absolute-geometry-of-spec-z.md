@@ -691,6 +691,20 @@ so the weight of F5(ii) vanishes; then F5(iii) reads `A`-form `→ 2d₁d₂ −
 `(p−1)A_N −` conjugate jets `− (p−2) log p ·` mass, whose three limits are `A`, the energies
 `E_χ` and `∫f²`. (iii) `E_χ ≥ 0`, `p − 2 ≥ (p−1)/2`, `p − 1 ≥ 1`. ∎
 
+**G8 (the system of the squares on its own comb).** Let `w(k²) = 2Λ(k)` and `w(n) = 0` for `n`
+not a square: the von Mangoldt function of the system with one generalized prime of norm `p²`
+for each `p`, of zeta function `ζ(2s)`. For a packet `g` in the window, `F(s) = g(s/2)`, the
+comb of squares with the masses `2/n`, jets between the norms, the counterterm `log(n/4π)` and
+the contacts `2Λ(k)/k` on the pairs `(m², (mk)²)`: (i) the pairing tends to
+`2d₁(F)d₂(F) − Re W_w(k_F)`; (ii) some packet has a limit above `2d₁(F)d₂(F)`.
+*Proof.* (i) The jets with the counterterm tend to minus the archimedean form of `F` without
+the pole (C27). The contacts are a Riemann sum: `Σ_m g_m g_{mk}·(2/m) → 2h_g(log k) = h_F(2 log k)`.
+In `Re W_w(k_F) = arch(F) − 2Σ_n (w(n)/√n) h_F(log n)` only the squares `n = k²` carry a weight,
+`w(k²)/√(k²) = 2Λ(k)/k`, and `h_F(2 log k) = 0` for `k > 3K`. The pole term of `k_F` is
+`2d₁(F)d₂(F)`. (ii) `w(2) = 0 ≠ log 2`, so `W_w` is not positive on real tests (cone
+uniqueness, corpus); a real test with `Re W_w < 0`, translated into a window, is `F` for
+`g(u) = F(2u)`, and translation does not change `W_w`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -743,6 +757,9 @@ so the weight of F5(ii) vanishes; then F5(iii) reads `A`-form `→ 2d₁d₂ −
 - **Construction IV of the next stage (squares of towers)**: kill condition met, G7 (weight
   `1/[K:ℚ]`; the limit inequality per degree follows from the twisted parts; in the cyclotomic
   tower the defect per degree tends to infinity). **Construction III**: met, G6.
+- **Construction V (the own comb)**: G8 for the system of the squares: the pairing on the own
+  comb is the pairing of the comb of the integers with the contacts of the system, and Bézout
+  fails. Question 6 of the specification: zeros on a line are not sufficient.
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -817,6 +834,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G4 | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
 | G5 | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
 | G7 | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
+| G8 | `OnItsOwnCombTheSystemOfTheSquaresFailsBezout` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -835,6 +853,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `TheEulerFactorsOfTheDivisorSumPayEveryContact`,
 `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem`,
 `TheCountertermOfANumberRingObeysRiemannHurwitz`,
+`ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -866,6 +885,6 @@ Open parts of the questions of the refined programme (details in the README, §1
   `TheExceptionalSquareRepelsTheOtherSquares`.
 - Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.
 - Constructions of the next stage (review-1011 fable §9.6): I (a Lefschetz operator outside the
-  three tested ones), II (a gluing along the comb that is not invariant), V (the own comb of one
-  integer-norm one-off), VI (a count); question 7 (Hecke characters, one ring that is not
-  abelian).
+  three tested ones), II (a gluing along the comb that is not invariant), V beyond G8 (the
+  integers prime to `2`; combs without a density; systems with their own jets), VI (a count);
+  question 7 (Hecke characters, one ring that is not abelian).
