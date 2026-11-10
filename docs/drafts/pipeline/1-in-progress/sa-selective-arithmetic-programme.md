@@ -81,18 +81,37 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
   integral; contact form of `w` on `e^{−itu}f` = contact form of `w cos(t log ·)` on `f`.
   Receiver at height `t` = module 9 applied to the twisted system at conductor `q(2+|t|)e^{A₂}`.
 
+## Separation theorem: bounded shapes do not decide feasibility (paper proof)
+**Statement.** For every `η > 0` and every conductor with `x = log q` large, with
+`a = log x + log 2 + η`: there is a dominated system `w` with
+`𝔚_{w,q}(f) ≥ (x/2)(∫f² − ∫f'²)` for every `C³` packet `f` vanishing off `(−a, a)`, and
+`¬ Feasible q a w`.
+
+**Proof.** `E = e^{a} = 2e^{η}x`, `s = 2 + 2a`, `N = ⌊e^{2a}⌋`, `T = E⁸`, `ε = (1 − e^{−η/4})/4`,
+`D = contactPoly N`, `P, Q, L` its mass, energy, slope: `P ≤ Es²`, `Q ≤ 2as²`, `L ≤ 2aEs²`.
+1. *Height.* `4NP² ≤ 4E⁴s⁴ ≤ E⁸ = T` since `2s ≤ E`. Riesz weights `r(n) = Λ(n)(2a − log n) ≥ 0`,
+   `R = Σ r(n) ≥ e^{−η/4}E²` (prime number theorem). Grid: `L̄ = 2aEs² + 1`, `h = x/(16L̄)`,
+   `τ₁ = 4e^{η/2}s`, `M = ⌈16τ₁L̄/x⌉`, so `Mh ≥ τ₁` and `Lh ≤ x/16`. Module 14 gives
+   `t₀ ∈ [T, 2T]` with `Σ r(n)cos²(t₀ log n) ≥ (½ − 1/T − ε)R ≥ ½e^{−η/4}R` and
+   `D(t₀ + (k−M)h)² ≤ 2(2M+1)(Q+1)/ε` on the grid.
+2. *Budget.* `L̄ ≤ s³E`, `16τ₁L̄/x ≤ 128e^{3η/2}s⁴`, `Q + 1 ≤ s³`; hence
+   `2(2M+1)(Q+1)/ε ≤ 518 e^{3η/2} s⁷/ε ≤ (x/16)²` once `4345298944·e^{5η/2}a¹² ≤ Eε`
+   (`s ≤ 4a`, `x² ≥ x`). So `|D| ≤ x/16` on the grid and `|D(t₀+σ)| ≤ x/8` for `|σ| ≤ τ₁`.
+3. *Symbol.* `w = Λ(n)cos(t₀ log n)`. Product formula:
+   `2Σ w(n)cos(τ log n)/√n = D(t₀−τ) + D(t₀+τ)`. For `|τ| ≤ τ₁` it is `≤ x/4`; for `|τ| > τ₁` it
+   is `≤ 2P ≤ 2Es² = (x/4)τ₁² ≤ (x/4)τ²`. So the symbol plus `x` is
+   `≥ (x − A₀ − x/4) − (x/4)τ²`, and with `A₀ ≤ x/4` the form is `≥ (x/2)(∫f² − ∫f'²)`.
+4. *Infeasible.* If `w` were feasible, the receiver at the height `t₀` (module 13) gives
+   `Σ r(n)cos²(t₀ log n) ≤ (x + log(2+t₀))(E+2a) + C(1+a)³E`, `log(2+t₀) ≤ log 4 + 8a`. The left
+   side is `≥ ½e^{−η/2}E²`; the right side is `½e^{−η}E² + O((1+a)³E)` because `xE = ½e^{−η}E²`.
+   Contradiction once `(31+8C)a¹² < ½(e^{−η/2} − e^{−η})E`.
+5. *Sizes.* All conditions follow from `K a¹² < e^{a}` for one constant `K(η)`, hence hold for
+   `log q ≥ M₀(η)`.
+
+Lean: `SelectiveArithmetic/BoundedShapesDoNotDecideFeasibility.lean`.
+
 ## Open mathematics of the field (README §8)
 - Sign of a true object at `log log q + C` (Landau–Siegel on the comb); a rung `κ > 1`.
-- Whether the sign on bounded shapes forces feasibility in the dominated class. Not written as a
-  paper proof and not started in Lean. Plan, on the tools of module 14: `x = log q`,
-  `a = log x + log 2 + η`, `E = e^{a} = 2e^{η}x`, heights `T = E⁸`, `w = alignedWeight t₀`.
-  Symbol of `w` at `τ`: `S_∞ − (D_N(t₀−τ) + D_N(t₀+τ))` (product formula). Need
-  `D_N(t₀−τ) + D_N(t₀+τ) ≤ (x/4)(1+τ²)`: for `|τ| ≥ τ₁ = 4e^{η/2}(2+2a)` from
-  `contactMass_le`; for `|τ| ≤ τ₁` from `exists_height_contactPoly_small` with grid step
-  `h = x/(16 L̄)`, `L̄ = 2aE(2+2a)² + 1`, `M = ⌈16τ₁L̄/x⌉`, and `abs_contactPoly_le_of_grid`.
-  Then `integral_normSq_paperFT_mul_ge` gives `𝔚 ≥ (x/2)(∫f² − ∫f'²)`; infeasibility from
-  `exists_twisted_riesz_le_of_feasible` at `t₀` with `G(t₀) ≥ ½e^{−η/2}E²`. All size conditions
-  reduce to `K a¹² < e^{a}` (`eventually_pow_twelve_lt_exp`).
 - Rung law for an exceptional zero with Deuring–Heilbronn isolation: peer AGZ module has the raw
   inequality.
 
