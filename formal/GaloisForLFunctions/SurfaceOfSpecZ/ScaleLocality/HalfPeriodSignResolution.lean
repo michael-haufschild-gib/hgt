@@ -102,4 +102,57 @@ theorem length_le_sum_of_halfShiftSum_zero {l : List ℝ}
   obtain ⟨t, ht⟩ := hne
   exact ht (hall (mem_univ t))
 
+/-- The sum of half-periods bounds a sign interval of any nonzero real trigonometric sum. -/
+theorem sign_interval_le_sum_halfPeriods {n : ℕ} (a b γ : Fin n → ℝ)
+    (hγ : ∀ j, 0 < γ j)
+    (hne : ∃ t, (∑ j, (a j * Real.cos (γ j * t) + b j * Real.sin (γ j * t))) ≠ 0)
+    {x L : ℝ}
+    (hpos : ∀ t ∈ Icc x (x + L),
+      0 ≤ ∑ j, (a j * Real.cos (γ j * t) + b j * Real.sin (γ j * t))) :
+    L ≤ ∑ j, Real.pi / γ j := by
+  classical
+  let l := (Finset.univ : Finset (Fin n)).toList.map (fun j => Real.pi / γ j)
+  have hl : ∀ h ∈ l, 0 ≤ h := by
+    intro h hh
+    obtain ⟨j, _, rfl⟩ := List.mem_map.mp hh
+    exact div_nonneg Real.pi_pos.le (hγ j).le
+  have hkill : ∀ t, halfShiftSum l
+      (fun u => ∑ j, (a j * Real.cos (γ j * u) + b j * Real.sin (γ j * u))) t = 0 := by
+    intro t
+    rw [halfShiftSum_sum]
+    apply Finset.sum_eq_zero
+    intro j _
+    apply halfShiftSum_eq_zero_of_antiperiod (h := Real.pi / γ j)
+    · exact List.mem_map.mpr ⟨j, by simp, rfl⟩
+    · intro u
+      have hangle : γ j * (u + Real.pi / γ j) = γ j * u + Real.pi := by
+        field_simp [(hγ j).ne']
+      rw [hangle, Real.cos_add_pi, Real.sin_add_pi]
+      ring
+  have hbound := length_le_sum_of_halfShiftSum_zero hl
+    (GaloisForLFunctions.HTGeometry.analyticOnNhd_trigSum a b γ) hne hkill hpos
+  simpa only [l, Finset.sum_map_toList] using hbound
+
+/-- Frequencies above `Γ` force a sign change within `nπ/Γ`, without a separation hypothesis. -/
+theorem sign_interval_resolution {n : ℕ} (a b γ : Fin n → ℝ) {Γ : ℝ}
+    (hΓ : 0 < Γ) (hγ : ∀ j, Γ ≤ γ j)
+    (hne : ∃ t, (∑ j, (a j * Real.cos (γ j * t) + b j * Real.sin (γ j * t))) ≠ 0)
+    {x L : ℝ}
+    (hpos : ∀ t ∈ Icc x (x + L),
+      0 ≤ ∑ j, (a j * Real.cos (γ j * t) + b j * Real.sin (γ j * t))) :
+    Γ * L ≤ n * Real.pi := by
+  have hbound := sign_interval_le_sum_halfPeriods a b γ
+    (fun j => hΓ.trans_le (hγ j)) hne hpos
+  have hsum : (∑ j, Real.pi / γ j) ≤ n * (Real.pi / Γ) := by
+    calc (∑ j, Real.pi / γ j) ≤ ∑ _j : Fin n, Real.pi / Γ :=
+        Finset.sum_le_sum (fun j _ => div_le_div_of_nonneg_left Real.pi_pos.le hΓ (hγ j))
+      _ = n * (Real.pi / Γ) := by simp
+  have hh := mul_le_mul_of_nonneg_left (hbound.trans hsum) hΓ.le
+  calc Γ * L ≤ Γ * (n * (Real.pi / Γ)) := hh
+    _ = n * Real.pi := by field_simp
+
+#print axioms length_le_sum_of_halfShiftSum_zero
+#print axioms sign_interval_le_sum_halfPeriods
+#print axioms sign_interval_resolution
+
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

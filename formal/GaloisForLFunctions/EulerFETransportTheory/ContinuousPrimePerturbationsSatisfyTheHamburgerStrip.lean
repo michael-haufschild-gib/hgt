@@ -35,13 +35,14 @@ private theorem differentiableOn_continuousEulerMultiplier (ε : ℝ≥0) :
     DifferentiableOn ℂ (fun s : ℂ => Complex.exp ((ε : ℂ) / (s + 1) ^ 2))
       {s : ℂ | 0 < s.re} := by
   intro s hs
+  change 0 < s.re at hs
   have hn : s + 1 ≠ 0 := by
     intro h
     have h' := congrArg Complex.re h
     simp only [Complex.add_re, Complex.one_re, Complex.zero_re] at h'
     linarith only [hs, h']
   exact (Complex.differentiable_exp.differentiableAt.comp s
-    (differentiableAt_const.div ((differentiableAt_id.add_const 1).pow 2)
+    ((differentiableAt_const (ε : ℂ)).div ((differentiableAt_id.add_const 1).pow 2)
       (pow_ne_zero 2 hn))).differentiableWithinAt
 
 /-- No pole remains anywhere in the right half-plane. -/
@@ -53,13 +54,15 @@ theorem differentiableOn_continuousEulerRemainder (ε : ℝ≥0) :
   have hds := (differentiableOn_dslope hU).mpr hM
   have hG : DifferentiableOn ℂ (fun s : ℂ => gammaℝReg (s - 1)) {s : ℂ | 0 < s.re} := by
     intro s hs
+    change 0 < s.re at hs
     have hm : -2 < (s - 1).re := by simp only [Complex.sub_re, Complex.one_re]; linarith only [hs]
     have hgd := differentiableOn_gammaℝReg.differentiableAt
       ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hm)
     exact (hgd.comp s (differentiableAt_id.sub_const 1)).differentiableWithinAt
   have hinv : DifferentiableOn ℂ (fun s : ℂ => (1 : ℂ) / s) {s : ℂ | 0 < s.re} := by
     intro s hs
-    exact (differentiableAt_const.div differentiableAt_id (by
+    change 0 < s.re at hs
+    exact ((differentiableAt_const (1 : ℂ)).div differentiableAt_id (by
       intro h
       simpa only [h, Complex.zero_re, lt_self_iff_false] using hs)).differentiableWithinAt
   exact ((hM.mul (differentiable_completedZeta₀.differentiableOn.sub hinv)).add hds).sub
@@ -105,7 +108,7 @@ theorem continuousEulerRemainder_center (ε : ℝ≥0) {s : ℂ} (hs : s.re = 1 
     have h' := congrArg Complex.re h
     norm_num [hs] at h'
   have hpt : (1 / 2 : ℂ) + (2 * (s.im / 2) : ℝ) * I = s := by
-    apply Complex.ext <;> simp [hs]
+    apply Complex.ext <;> simp [hs] <;> ring
   rw [continuousEulerRemainder_eq ε h1, continuousEulerRemainder_eq ε h1',
     completedRiemannZeta_one_sub, completedZeta_eq_gamma_mul (by rw [hs]; norm_num),
     continuousEulerDefect, hpt]
@@ -132,7 +135,7 @@ private theorem exists_decay_completedZeta_hamburger :
 
 /-- The pole-subtracted continuation has the full uniform Hamburger decay. -/
 theorem exists_decay_continuousEulerRemainder (ε : ℝ≥0) :
-    ∃ C : ℝ, ∀ s ∈ verticalStrip (1 / 2) (3 / 2),
+    ∃ C : ℝ, ∀ s ∈ GaloisForLFunctions.HTGeometry.verticalStrip (1 / 2) (3 / 2),
       ‖continuousEulerRemainder ε s‖ ≤ C / (1 + s.im ^ 2) := by
   obtain ⟨D, hD, hΛ⟩ := exists_decay_completedZeta_hamburger
   obtain ⟨G, hG, hΓ⟩ := RHTower.exists_decay_Gammaℝ_sub_one
@@ -140,13 +143,14 @@ theorem exists_decay_continuousEulerRemainder (ε : ℝ≥0) :
   have hK : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
   have hsub : K ⊆ {s : ℂ | 0 < s.re} := by
     intro s hs
+    change 0 < s.re
     have h := (Complex.mem_reProdIm.mp hs).1.1
     linarith only [h]
   obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn
     ((differentiableOn_continuousEulerRemainder ε).continuousOn.mono hsub)
   refine ⟨max (17 * max M 0) (Real.exp ε * D + ‖continuousEulerResidue ε‖ * G),
     fun s hs => ?_⟩
-  rw [mem_verticalStrip] at hs
+  rw [GaloisForLFunctions.HTGeometry.mem_verticalStrip] at hs
   have hden : 0 < 1 + s.im ^ 2 := by positivity
   by_cases ht : 4 ≤ |s.im|
   · have h1 : s ≠ 1 := by intro h; rw [h] at ht; norm_num at ht
@@ -183,10 +187,12 @@ theorem exists_decay_continuousEulerRemainder (ε : ℝ≥0) :
 
 /-- Continuity includes both vertical edges of the Hamburger strip. -/
 theorem continuousOn_continuousEulerRemainder_strip (ε : ℝ≥0) :
-    ContinuousOn (continuousEulerRemainder ε) (verticalStrip (1 / 2) (3 / 2)) := by
+    ContinuousOn (continuousEulerRemainder ε)
+      (GaloisForLFunctions.HTGeometry.verticalStrip (1 / 2) (3 / 2)) := by
   apply (differentiableOn_continuousEulerRemainder ε).continuousOn.mono
   intro s hs
-  rw [mem_verticalStrip] at hs
+  rw [GaloisForLFunctions.HTGeometry.mem_verticalStrip] at hs
+  change 0 < s.re
   linarith only [hs.1]
 
 #print axioms differentiableOn_continuousEulerRemainder

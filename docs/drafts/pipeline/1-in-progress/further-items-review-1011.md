@@ -55,13 +55,12 @@ Candidate: add to the Riemann prime-power measure the positive pushforward of
 `ζ(s) exp(ε/(s+1)²)`. On the critical line, reflection cancels the leading
 inverse-square term: the multiplier difference is `O(ε|t|⁻³)`.
 The elementary bound `|ζ(1/2+it)|=O(1+|t|)` then gives an `L¹∩L²` defect.
-This would refute continuous-measure rigidity, even for
-arbitrarily small defects. Required: prove the measure identity, the full
-Hamburger strip conditions, both defect norms, and nontriviality. No part
-of this counterexample is counted as complete. The complex Mellin identity for
-positive convolution exponentials and the positive density's transform have
-passed Lean checks with only the standard axioms; the full counterexample
-and its positive survivor remain unformalized.
+This would refute continuous-measure rigidity, even for arbitrarily small
+defects. Lean verifies the positive measure identity, nontriviality, zero
+preservation, `L¹`, `L²`, and arbitrarily small inverse-square majorants.
+Their transitive audits contain only standard axioms. The full Hamburger
+strip certificate and final counterexample remain unchecked; A55 is not
+counted as complete.
 
 Write `Mε(s)=exp(ε/(s+1)²)`, `βε=Mε(1)/2`, and
 `gε(t)=ζ(1/2+2it)[Mε(1/2+2it)−Mε(1/2−2it)]`.
@@ -72,3 +71,10 @@ the Hamburger strip bound. The positive survivor sought is a nontrivial
 positive continuous Euler family preserving all zero locations, with
 `|gε(t)|≤C ε exp(ε)/(1+t²)` and arbitrarily small such majorants.
 The added measure is Lean-verified atomless, of mass one, supported above `1`.
+The continuation is holomorphic on `Re s>0`; no global meromorphy of the
+perturbed zeta is asserted.
+
+A68's paired-ordinate construction is in
+`landing-calibration-with-the-riemann-gamma-factor.md`; A37's proposed
+uniform polynomial range is in
+`growing-resonator-means-below-the-kronecker-scale.md`. Both remain open.

@@ -29,9 +29,10 @@ theorem continuous_prime_measure_finite_defect_counterexample :
     P ≠ riemannPrimeMeasure ∧ P (Iic 1) = 0 ∧
       Integrable (fun u : ℝ => u ^ (-(3 / 2 : ℝ))) P ∧
       beurlingIntegerMeasure P {1} = 1 ∧
-      ContinuousOn E (verticalStrip (1 / 2) (3 / 2)) ∧
+      ContinuousOn E (GaloisForLFunctions.HTGeometry.verticalStrip (1 / 2) (3 / 2)) ∧
       DifferentiableOn ℂ E {s : ℂ | 1 / 2 < s.re ∧ s.re < 3 / 2} ∧
-      (∃ C : ℝ, ∀ s ∈ verticalStrip (1 / 2) (3 / 2), ‖E s‖ ≤ C / (1 + s.im ^ 2)) ∧
+      (∃ C : ℝ, ∀ s ∈ GaloisForLFunctions.HTGeometry.verticalStrip (1 / 2) (3 / 2),
+        ‖E s‖ ≤ C / (1 + s.im ^ 2)) ∧
       (∀ s : ℂ, s.re = 3 / 2 →
         Complex.Gammaℝ s * measureDirichlet (beurlingIntegerMeasure P) s =
           E s + β * Complex.Gammaℝ (s - 1)) ∧
@@ -53,6 +54,7 @@ theorem continuous_prime_measure_finite_defect_counterexample :
   · exact fun h => one_ne_zero ((perturbedRiemannPrimeMeasure_eq_iff 1).mp h)
   · apply (differentiableOn_continuousEulerRemainder 1).mono
     intro s hs
+    change 0 < s.re
     linarith only [hs.1]
   · obtain ⟨C, hC, hbound⟩ := exists_uniform_continuousEulerDefect_bound
     refine ⟨C * Real.exp 1, fun t => ?_⟩

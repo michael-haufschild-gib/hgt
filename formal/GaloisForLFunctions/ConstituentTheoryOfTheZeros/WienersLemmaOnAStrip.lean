@@ -132,7 +132,7 @@ theorem exists_eq_mul_log {σ₁ σ₂ : ℝ}
   set L := (q ^ (b : ℤ) * two ^ (-a)).log with hL
   -- `f(r) = b·Δ + σ log r`
   have hkey : f (q ^ (b : ℤ) * two ^ (-a)) = b * (f q - σ * q.log) + σ * L := by
-    rw [hfr, hL, hLr, hf2]
+    rw [hfr, hLr, hf2]
     ring
   have hub : (b : ℝ) * (f q - σ * q.log) ≤ (σ₂ - σ₁) * two.log := by
     have e1 : (b : ℝ) * (f q - σ * q.log) ≤ (σ₂ - σ) * L := by linarith
@@ -150,8 +150,9 @@ theorem exists_eq_mul_log {σ₁ σ₂ : ℝ}
       mul_le_mul_of_nonneg_left hr1 (sub_nonneg.mpr h12)
     linarith
   have habs : (b : ℝ) * |f q - σ * q.log| ≤ (σ₂ - σ₁) * two.log := by
-    rw [← abs_of_nonneg (Nat.cast_nonneg b), ← abs_mul]
-    exact abs_le.mpr ⟨hlb, hub⟩
+    have hb0 : (0 : ℝ) ≤ b := Nat.cast_nonneg b
+    have h : |(b : ℝ) * (f q - σ * q.log)| ≤ (σ₂ - σ₁) * two.log := abs_le.mpr ⟨hlb, hub⟩
+    rwa [abs_mul, abs_of_nonneg hb0] at h
   linarith
 
 end Additive
@@ -399,11 +400,14 @@ theorem exists_exponent :
       rw [PosRat.toReal_inv]
       exact max_le le_rfl (Real.rpow_le_rpow_of_exponent_ge hinv0 hinv1 hσ.out)
     have h := Real.log_le_log (hpos q⁻¹) ((norm_charVal_le φ q⁻¹).trans hw)
-    rw [PosRat.additive_inv hadd, Real.log_rpow hinv0, Real.log_inv] at h
+    have hinv : Real.log ‖charVal φ q⁻¹‖ = -Real.log ‖charVal φ q‖ :=
+      PosRat.additive_inv (f := fun q => Real.log ‖charVal φ q‖) hadd q
+    rw [hinv, Real.log_rpow hinv0, Real.log_inv] at h
     have hq' : q.log = Real.log q.toReal := rfl
     rw [hq']
     linarith
-  obtain ⟨σ, h1, h2, h⟩ := PosRat.exists_eq_mul_log hadd fun q hq => ⟨hlower q hq, hupper q hq⟩
+  obtain ⟨σ, h1, h2, h⟩ := PosRat.exists_eq_mul_log (f := fun q => Real.log ‖charVal φ q‖) hadd
+    fun q hq => ⟨hlower q hq, hupper q hq⟩
   refine ⟨σ, h1, h2, fun q => ?_⟩
   rw [← Real.exp_log (hpos q), h q, Real.rpow_def_of_pos q.toReal_pos]
   congr 1
@@ -413,7 +417,7 @@ theorem exists_exponent :
 theorem hasSum_charVal (f : StripWiener σ₁ σ₂) :
     HasSum (fun q => f.coeff q * charVal φ q) (φ f) := by
   have h := (hasSum_pointMass f).map φ (map_continuous φ)
-  refine (hasSum_congr fun q => ?_).mp h
+  refine h.congr_fun fun q => ?_
   simp only [Function.comp_apply, map_smul, smul_eq_mul]
   rfl
 
@@ -446,9 +450,10 @@ theorem isUnit_of_le_norm_eval (f : StripWiener σ₁ σ₂) {δ : ℝ} (hδ : 0
     mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le
   set S : ℝ := ∑' q, a q with hS
   have hS0 : 0 ≤ S := tsum_nonneg ha0
+  have htend : Tendsto (fun T : Finset PosRat => ∑ q ∈ T, a q) atTop (𝓝 S) := hasum.hasSum
   obtain ⟨T, hT⟩ : ∃ T : Finset PosRat, S - δ / 8 < ∑ q ∈ T, a q :=
-    ((hasum.hasSum.eventually (lt_mem_nhds (show S - δ / 8 < S by linarith))).exists)
-  have hTle : ∑ q ∈ T, a q ≤ S := hasum.sum_le_tsum T fun q _ => ha0 q
+    (htend.eventually (lt_mem_nhds (show S - δ / 8 < S by linarith))).exists
+  have hTle : ∑ q ∈ T, a q ≤ S := Summable.sum_le_tsum T (fun q _ => ha0 q) hasum
   -- a height at which `q^{it}` follows the phases on `T`
   set ε : ℝ := δ / (4 * (S + 1)) with hε
   have hεpos : 0 < ε := by positivity
@@ -493,8 +498,9 @@ theorem isUnit_of_le_norm_eval (f : StripWiener σ₁ σ₂) {δ : ℝ} (hδ : 0
         norm_num
       exact mul_le_mul hw h2' (norm_nonneg _) (ha0 q)
   have hind : HasSum (fun q => if q ∈ T then a q else 0) (∑ q ∈ T, a q) := by
-    have h := hasSum_sum_of_ne_finset_zero (f := fun q => if q ∈ T then a q else 0) (s := T)
-      fun q hq => if_neg hq
+    have h : HasSum (fun q => if q ∈ T then a q else 0)
+        (∑ q ∈ T, if q ∈ T then a q else 0) :=
+      hasSum_sum_of_ne_finset_zero fun q hq => if_neg hq
     rwa [Finset.sum_congr rfl fun q hq => if_pos hq] at h
   have hmaj : HasSum (fun q => ε * (if q ∈ T then a q else 0) +
       2 * (a q - if q ∈ T then a q else 0))

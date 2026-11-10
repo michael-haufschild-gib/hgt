@@ -777,7 +777,6 @@ theorem re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq (Z : ZeroConfig) {ρ : ℂ}
     simp [neg_mul]
   constructor
   · rw [ZeroConfig.Wsummand, hγc, hγ, hFpos, hFneg, Complex.conj_ofReal]
-    push_cast
     simp
     ring
   · have hcosh : Integrable fun u => f u * Real.cosh (δ * u) :=
@@ -866,9 +865,10 @@ theorem re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy (Z : ZeroConfig) {ρ : 
             paperFT (fun u => (f u : ℂ)) ((0 : ℂ) + Complex.I * δ) *
               conj (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) - Complex.I * δ))).re := by
       rw [ZeroConfig.Wsummand, ZeroConfig.Wsummand,
-        hrefl, Complex.conj_conj,
-        Z.mult_reflect ρ hρ, hγc, hγ, ← mul_add, ← Complex.ofReal_natCast,
-        Complex.re_ofReal_mul]
+        hrefl, Complex.conj_conj, Z.mult_reflect ρ hρ, hγc, hγ, ← Complex.re_ofReal_mul]
+      push_cast
+      congr 1
+      ring
     rw [hsum]
     have hm0 : (0 : ℝ) ≤ Z.mult ρ := Nat.cast_nonneg _
     have hcomb : -(2 * SquareRootThreshold.pairEnergy δ a * ∫ u, f u ^ 2) ≤
@@ -928,7 +928,7 @@ theorem exists_dirichletZeros_local_count :
     _ ≤ max 1 A * (Real.log q + Real.log (|t| + 3)) :=
         mul_le_mul_of_nonneg_right hA' h3
     _ ≤ max 1 A * ((Real.log q + 1) * Real.log (|t| + 3)) :=
-        mul_le_mul_of_nonneg_left h2 (by linarith)
+        mul_le_mul_of_nonneg_left h2 (zero_le_one.trans (le_max_left 1 A))
     _ = max 1 A * (Real.log q + 1) * Real.log (|t| + 3) := by ring
 
 /-- **Simplicity and uniqueness of the exceptional zero on the twisted comb (`A101` Part 1)**:
@@ -943,8 +943,8 @@ there exists an absolute constant `C > 0` such that for every real primitive cha
 theorem exceptional_zero_unique_and_simple :
     ∃ C : ℝ, 0 < C ∧
       ∀ (q : ℕ) [NeZero q] (hq : 1 < q) (χ : DirichletCharacter ℂ q)
-        (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-        (β : ℝ) (hβ_mem : (β : ℂ) ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier),
+        (hprim : χ.IsPrimitive), (∀ a : ZMod q, (χ a).im = 0) →
+        ∀ β : ℝ, (β : ℂ) ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier →
         (∀ (i₁ j : ExceptionalLayerTheory.ExceptionalZeroCopy χ) (β' : ℝ),
           ExceptionalLayerTheory.exceptionalZero χ i₁ = (β : ℂ) →
           ExceptionalLayerTheory.exceptionalZero χ j = (β' : ℂ) →
@@ -1071,10 +1071,10 @@ there exist absolute constants `C > 0` and `A₀ ≥ 1` such that for every real
 theorem deuring_heilbronn_on_twisted_comb :
     ∃ (C A₀ : ℝ), 0 < C ∧ 1 ≤ A₀ ∧
       ∀ (q : ℕ) [NeZero q] (hq : 1 < q) (χ : DirichletCharacter ℂ q)
-        (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-        (β δ : ℝ) (hδ : 0 < δ) (hre : β = 1 / 2 + δ)
-        (hβ_mem : (β : ℂ) ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier)
-        (R : ℝ) (hR : 0 ≤ R),
+        (hprim : χ.IsPrimitive), (∀ a : ZMod q, (χ a).im = 0) →
+        ∀ β δ : ℝ, 0 < δ → β = 1 / 2 + δ →
+        (β : ℂ) ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier →
+        ∀ R : ℝ, 0 ≤ R →
         (C * (1 - β) * Real.log ((q : ℝ) * (R + 3)) < ((q : ℝ) * (R + 3)) ^ (-C / 2) →
           (∀ ρ ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier,
             ρ ≠ (β : ℂ) → ρ ≠ reflect (β : ℂ) → |ρ.im| ≤ R → ρ.re = 1 / 2) ∧
