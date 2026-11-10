@@ -71,5 +71,8 @@ This resolves the named obstacle of `fable.md` §5.2: coupling `L_{\mathrm{base}
 3. `TheZeroMotiveIsTheFixedPartOfEveryArithmeticFamily.lean`:
    `gaugeHaar_singleton_zero`, `gaugeTorus_fixedPart_decoupling`, `measureReal_dirichletGaugeMeasure_zero`, `tendsto_dirichletGaugeMeasure_zero`, `tendsto_cumulative_principal_fraction`, `measureReal_verticalHeightMeasure_Icc_le`, `tendsto_verticalHeightMeasure_Icc`, `tendsto_weyl_finiteMode_mass`, `rankinSelberg_family_commonFactor`, `numberField_counting_fixedPart`, `commonFactor_moment_realizable_for_all_c`, `tendsto_mixture_moment_decomp`, `even_pow_tangent_le`, `pow_two_mul_le_integral_add_of_integral_eq_zero`, `riemannHypothesis_iff_coverFamily_tensorExponent_sublinear`, `zeroMotive_is_fixedPart_of_every_arithmeticFamily`.
 
-## Log
-- 2026-11-09 — proved on paper (`2-fully-proven`) and formalized unconditionally in Lean 4 (`3-formalized`, 3 modules in `ArithmeticWeightTheory`, wired into `ArithmeticWeightTheory.lean`).
+## Audit
+
+Wired into `ArithmeticWeightTheory.lean`. Direct source audit passed for the fixed-part module;
+the capstone and translated-law realizability theorem depend only on `propext`,
+`Classical.choice`, and `Quot.sound`. The universal FE-class closure remains open.

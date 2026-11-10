@@ -382,15 +382,16 @@ goal is met when 250 discharges could be made.
 
 
 ## update obstacles
-earlier we created these documents:
+before we did create these documents:
 - docs/reports/review-0911/walls-ledger.md
 - docs/reports/review-0911/route-obstacles.md
 - docs/reports/review-0911/route-unification-ledger.md
 - docs/reports/review-0911/obstacles-summary.md
   
-read:
+read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
+- docs/reports/review-0911/fable.md
 
 write new reports from scratch to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
@@ -420,9 +421,10 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-0911/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-1011/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
+make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
 
 ## update programme README.mds
 do not use the hgtl7 skill. 
@@ -474,7 +476,8 @@ The questions for you to answer:
 7. You can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 8. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then you can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 9. Design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-10. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end? 
+10. Design a research programme to develop general Galois theory that treats the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+11. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end? 
 
 Write a report in docs docs/reports/review-0911/fable.md
 
@@ -484,9 +487,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0911/obstacles-summary.md
+read and understand docs/reports/review-1011/obstacles-summary.md
 
-under "## 2.9 New field for RH: arithmetic weight theory of Spec ℤ" it suggest a new fields/research programme called "arithmetic weight theory of Spec ℤ"
+under "## 2.9 New field for RH: Hodge theory of a fixed part" it suggest a new fields/research programme called "Hodge theory of a fixed part"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -605,15 +608,15 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0711/obstacles-summary.md (more details in docs/reports/review-0711/route-obstacles.md)
+read and understand ## 11. Missed opportunities
 
-under "## 2.1 Tasks that are just work" -> "### Theta, reflection, weights, production, descent" it lists tasks which are likely to be doable.
+under "## 11. Missed opportunities" it lists tasks which are likely to be doable.
 
 your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
 where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
 
-we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. you turn walls not solved yet into solved walls or you are wasting time and token.
+we are not interested in busywork, redressing of existing knowledge, building unnecessary lean infrastructure. solve the tasks.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -641,13 +644,12 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-0911/obstacles-summary.md
+read and understand docs/reports/review-1011/obstacles-summary.md
 
-under "## 3. The one big question: does a remainder that approaches the line land on it?" it asks a question:
-"*Is there a landing law for ζ?* Suppose ZAL: for every `σ>½` only finitely many zeros lie right of `σ`. Must all but finitely many zeros then lie on the line, `ZAL ⇒ FiniteOffLine`? Equivalent forms [D from L]:
-- **Hadamard threshold.** Eventual Hadamard positivity (`Re ξ′/ξ≥0` on `Re s≥σ` above a height `T_σ`, every `σ>½`) is ZAL, and its uniform version on `Re s>½` is FiniteOffLine; B138 says that `T_σ` stays bounded as `σ↓½`.
-- **Krein index.** Finite Krein–Langer index of the Weil kernel `K_ζ` is FiniteOffLine (`zetaKernel_finiteIndex_tfae`); B138 says that eventual Hadamard positivity forces a finite index.
-- **Tail law.** Under ZAL the critical line holds above some height."
+under "## 3. The one big question: what is the resolution of the minimal face?" it asks a question with a follow up question:
+"Let `𝒵` be the class of tempered reflection-symmetric zero configurations without real zeros, with lowest ordinate at least `γ_min>0` and local counts `N(t+1)−N(t)≤C log(|t|+3)`.
+1. *Bounded windows.* Is there `L=L(γ_min,C)` such that a floor `2 Re S(u)≥−K` on windows `[u_k,u_k+L]`, `u_k→∞`, forces every zero of a configuration in `𝒵` onto the line?
+2. *Unbounded windows.* If not, does every radius `R(T)→∞` decide `𝒵`, or is there a configuration in `𝒵` with an unattained or accumulating top that is bounded below on windows of radius `R(T)=o(log T)` beyond every bound?"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
@@ -663,7 +665,10 @@ We are not interested in estimates, criterias what the answer could be like, wha
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
+Make good use of the search tool for our lean corpus.
+
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
+
 
 Keep your own working log in logs/ to document findings. Do not edit the aal.md file.
 

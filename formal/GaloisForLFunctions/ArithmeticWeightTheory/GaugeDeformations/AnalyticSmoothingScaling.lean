@@ -84,7 +84,7 @@ private theorem smoothingLogTail_normal_bound {Φ : ℂ → ℂ} {R : NNReal}
   simp only [Complex.sub_re] at hRe
   have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
   have hl : r ≤ (z + ((n + j : ℕ) : ℂ)).re := by
-    simp only [Complex.add_re, Complex.natCast_re, Nat.cast_add, Nat.cast_one]
+    simp only [Complex.add_re, Complex.natCast_re, Nat.cast_add]
     dsimp [r] at hzn ⊢
     linarith only [hRe, hzn, hn]
   have hzbound : ‖z‖ ≤ ‖w‖ + r := by
@@ -132,7 +132,7 @@ private theorem analyticAt_smoothingLogTail {Φ : ℂ → ℂ} {R : NNReal}
 theorem analyticOnNhd_analyticSmoothingScalingLog {Φ : ℂ → ℂ} {R : NNReal}
     (hR : 1 < (R : ℝ)) (hΦ : AnalyticOnNhd ℂ Φ (closedBall 0 R)) (m : ℕ) :
     AnalyticOnNhd ℂ (analyticSmoothingScalingLog Φ m) {w | -(m : ℝ) < w.re} :=
-  fun w hw => analyticAt_smoothingLogTail hR hΦ m hw
+  fun _ hw => analyticAt_smoothingLogTail hR hΦ m hw
 
 theorem analyticOnNhd_analyticSmoothingScalingProfile {Φ : ℂ → ℂ} {R : NNReal}
     (hR : 1 < (R : ℝ)) (hΦ : AnalyticOnNhd ℂ Φ (closedBall 0 R)) (m : ℕ) :
@@ -189,6 +189,8 @@ theorem analyticSmoothingScalingProfile_not_polynomial {Φ : ℂ → ℂ} {R : N
     linarith only [hx]
   rw [← hP _ hw, analyticSmoothingScalingProfile_factorization hR hΦ m hw, hc,
     show -(m : ℂ) + (x : ℂ) + (m : ℂ) = (x : ℂ) by ring, neg_mul]
+  congr 2
+  ring
 
 
 private def smoothingShiftTerm (Φ : ℂ → ℂ) (m : ℕ) (t : ℝ) (s : ℂ)
@@ -304,12 +306,13 @@ private theorem smoothing_regularizedPrimeLog_bound (m : ℕ) {η M : ℝ}
   have hn : ‖w + (((m : ℝ) - 1 : ℝ) : ℂ)‖ ≤ M' := by
     apply (norm_add_le _ _).trans
     rw [norm_real, Real.norm_eq_abs]
-    exact add_le_add_right hMw _
+    exact add_le_add hMw le_rfl
   have hh := hb t ht ht1 (w + (((m : ℝ) - 1 : ℝ) : ℂ)) hre hn n
   have he : w + (((m : ℝ) - 1 : ℝ) : ℂ) + ((n + 1 : ℕ) : ℂ) = w + ((n + m : ℕ) : ℂ) := by
     push_cast
     ring
-  rwa [he] at hh
+  rw [he] at hh
+  simpa only [add_assoc] using hh
 
 /-- Compact spectral sets admit a jointly continuous renormalized prime sum through `t=0`. -/
 theorem continuousOn_analyticSmoothingScaledRemainder {Φ : ℂ → ℂ} {R : NNReal}
@@ -354,7 +357,7 @@ theorem continuousOn_analyticSmoothingScaledRemainder {Φ : ℂ → ℂ} {R : NN
         have hp : 0 < q.1 * (q.2.re + ((n : ℝ) + m)) :=
           mul_pos ht (by linarith only [hw, hn])
         simp only [Complex.add_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
-          Complex.ofReal_im, zero_mul, sub_zero, Complex.natCast_re, Nat.cast_add, Nat.cast_one]
+          Complex.ofReal_im, zero_mul, sub_zero, Complex.natCast_re, Nat.cast_add]
         linarith only [hp]
     exact ((hE.comp (g := regularizedPrimeLog)
       (f := fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * (v.2 + ((n + m : ℕ) : ℂ))) hmap).const_mul
@@ -387,7 +390,8 @@ private theorem continuousAt_analyticSmoothing_twist {Φ : ℂ → ℂ} {R : NNR
   have hne : analyticSmoothingPrimePhase Φ p (t : ℂ) ≠ 0 := norm_ne_zero_iff.mp hn
   have hquot := hf.div (Complex.continuous_ofReal.continuousAt.comp hf.norm)
     (Complex.ofReal_ne_zero.mpr hn)
-  change Tendsto _ (𝓝 t) (𝓝 _)
+  change Tendsto (fun v : ℝ => twist (analyticSmoothingGauge Φ v) (p : ℕ))
+    (𝓝 t) (𝓝 (twist (analyticSmoothingGauge Φ t) (p : ℕ)))
   rw [he t hne]
   apply hquot.tendsto.congr'
   filter_upwards [hf.eventually_ne hne] with v hv
@@ -403,6 +407,7 @@ private theorem continuousAt_analyticSmoothing_eulerVar {Φ : ℂ → ℂ} {R : 
     have hd : Differentiable ℂ (fun s : ℂ => (p : ℂ) ^ (-s)) := fun s =>
       (differentiableAt_id.neg).const_cpow (Or.inl hp)
     exact hd.continuous
+  change ContinuousAt (fun v : ℝ × ℂ => (p : ℂ) ^ (-v.2) * twist (analyticSmoothingGauge Φ v.1) p) q
   exact (hpow.continuousAt.comp continuous_snd.continuousAt).mul
     ((continuousAt_analyticSmoothing_twist hR hΦ hunit p ht).comp continuous_fst.continuousAt)
 
@@ -601,7 +606,7 @@ theorem deformationPrimeSum_analyticSmoothing_scaled {Φ : ℂ → ℂ} {R : NNR
       apply tsum_congr
       intro n
       have hRe : 0 < (w + ((n + m : ℕ) : ℂ)).re := by
-        simp only [Complex.add_re, Complex.natCast_re, Nat.cast_add, Nat.cast_one, Complex.one_re]
+        simp only [Complex.add_re, Complex.natCast_re, Nat.cast_add]
         have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
         linarith only [hw, hn]
       have hne : w + ((n + m : ℕ) : ℂ) ≠ 0 := by
@@ -610,7 +615,7 @@ theorem deformationPrimeSum_analyticSmoothing_scaled {Φ : ℂ → ℂ} {R : NNR
         exact lt_irrefl 0 hRe
       have hz : 1 < (1 + (t : ℂ) * (w + ((n + m : ℕ) : ℂ))).re := by
         simp only [Complex.add_re, Complex.one_re, Complex.mul_re, Complex.ofReal_re,
-          Complex.ofReal_im, zero_mul, sub_zero, Complex.natCast_re, Nat.cast_add, Nat.cast_one] at hRe ⊢
+          Complex.ofReal_im, zero_mul, sub_zero, Complex.natCast_re, Nat.cast_add] at hRe ⊢
         nlinarith only [mul_pos ht hRe]
       have he := regularizedPrimeLog_of_re_gt_one hz
       rw [add_sub_cancel_left, Complex.log_ofReal_mul ht hne] at he

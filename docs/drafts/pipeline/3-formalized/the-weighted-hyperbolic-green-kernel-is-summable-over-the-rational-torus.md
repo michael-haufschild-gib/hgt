@@ -67,7 +67,8 @@ depend only on `propext`, `Classical.choice`, and `Quot.sound`.
 
 This is the standard branch of the specified weighted operator. The theorem
 proves torus descent and absolute convergence with a termwise Robin prescription;
-it does not yet identify that prescription as the global diagonal finite part.
+its global diagonal finite-part interpretation is proved in
+[the Robin diagonal theorem](the-robin-diagonal-of-the-rational-torus-green-sum.md).
 It asserts neither an integral inverse on the full rational `SL₂` quotient
 nor identification with Weil's diagonal. The accepted invariant-gluing
 obstruction remains in force.

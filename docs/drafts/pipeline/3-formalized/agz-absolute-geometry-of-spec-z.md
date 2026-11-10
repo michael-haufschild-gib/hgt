@@ -91,8 +91,10 @@ are divisibility conditions on independent coordinates.
 **B1 (carry).** `log binom(a+b, a) = Σ_{k≥1} Λ(k)(⌊(a+b)/k⌋ − ⌊a/k⌋ − ⌊b/k⌋)`;
 `v_p binom(a+b,a)` = number of carries (Kummer, Mathlib).
 
-**B2 (window).** `Σ_{k≤N} Λ(k)⌊q{N/k}⌋ + Σ_{N<k≤qN} Λ(k)⌊qN/k⌋ = log((qN)!/(N!)^q)`. By the prime
-number theorem the first sum is `c_q N + o(N)` with `c_q > 0`: a fixed positive proportion.
+**B2 (window).** For `q≥1`,
+`Σ_{k≤N} Λ(k)⌊q{N/k}⌋ + Σ_{N<k≤qN} Λ(k)⌊qN/k⌋ = log((qN)!/(N!)^q)`.
+For `q=2`, the first sum divided by `N` tends to `2 log 2−1>0`, while the second tends to `1`.
+The exact identity and this limit are audited in `TheCarryIsTheDefectOfTheWindowCount.lean`.
 
 **D1 (jets).** `τ = (n^{−2})_n ∈ ℚ^{ℕ₊}`, `𝒜 = ℚ[τ]`. `F_kτ^j = k^{−2j}τ^j`;
 `Σ_{j≥0} n^{−2j} = 1 + 1/(n²−1)` for `n ≥ 2`. On a weight line (`F_n = n^z`), `F_nV_n = n` forces

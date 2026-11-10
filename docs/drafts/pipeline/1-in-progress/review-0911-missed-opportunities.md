@@ -14,7 +14,7 @@
 | 11.6 | Exact simple near-line census alternatives at 70%, 75%, 80% | Complete: `near-line-census-at-seventy-seventy-five-eighty-percent.md`; existing 70% and 75%, new 80%, all audited |
 | 11.1 | Halving descent connected to one-eigenform detection; precise remaining Shimura nonvanishing; static 2/3 boundary | Complete assembly: `halving-descent-and-shimura-obstruction.md`. Sharp decay alone still requires the stated Shimura nonvanishing |
 | 11.1 | Shimura nonvanishing for one eigenform at every relevant nonhalving zero | Open; one eigenform for each zero does not give one eigenform for all zeros |
-| 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Revised report marks paper/source theorem; scope and Lean audit still require verification |
+| 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Exact canonical-family moment laws, strict torsion amplification, Euler-weight countermodel and cover-moment RH equivalence passed direct and axiom audits. Universal closure over all FE-preserving arithmetic families remains open |
 | 11.3 | Compact-surface Selberg calibration with finitely many exceptional real zeros | Open; distinguish nontrivial zeros from other Selberg zeros |
 | 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Complete: `lagarias-suzuki-sign-calibration.md` in `3-formalized`; exact non-real line law and index-one real exception in both ledgers; direct and axiom audits passed |
 | 11.3 | Exceptional-character filter for sign-free producers | Open assembly from upper/lower Dirichlet trace laws |
@@ -50,7 +50,8 @@ packages null-fibre moments, vanishing masses, a product-positivity
 counterexample, and an RH-equivalent gauge-cover moment condition. Its
 statement does not quantify over every arithmetic family or every derived
 inequality. These precise results do not yet justify the universal route
-closure in §11.2; its module-level description is stronger than its theorem.
+closure in §11.2. Its description now states this restricted scope; the capstone
+and translated-law realizability theorem passed direct and transitive axiom audits.
 
 No item is complete until its exact statement has a dependency-closed Lean proof,
 direct `lake --old env lean` audit, and transitive axiom audit.

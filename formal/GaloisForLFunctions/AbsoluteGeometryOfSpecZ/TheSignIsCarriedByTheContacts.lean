@@ -1,5 +1,7 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePairingOfTheDegreePointsWeighsTheZeros
 import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.LiouvilleOddWindowRefutationAndSelectiveFullPositivity
+import GaloisForLFunctions.RHTower.WeilConeUniquenessUnconditional
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheOrbitRingWithABaseIsATowerOfLines
 
 /-!
 # The sign is carried by the contacts
@@ -20,10 +22,22 @@ one contact.
   `−log 2` at `k = 2` and the contact orders `Λ(k)` elsewhere there is a packet whose limit
   exceeds `2 d₁ d₂`.
 
+* **The comb selects the contacts** (`combBezout_iff`, `not_combBezout_of_ne`): Bézout on the
+  comb of the integers, the inequality for every packet with the jets and the counterterm of the
+  comb and the contacts of weight `w`, holds iff the Riemann hypothesis holds and `w = Λ`. A
+  weight that differs from `Λ` at one integer fails on some packet, without hypothesis. The
+  contact weights of an integer-norm system other than `ℤ` differ from `Λ`: the square does not
+  see such a system, the comb does.
+* **The weights are contact numbers of the object** (`contactWeight_eq_log_card_orbitBaseRing`):
+  `Λ(k)/√k` is the logarithm of the order of the contact of the diagonal and `Γ_k` on the orbit
+  ring with a base, over `√k`.
+
 So the inequality of Castelnuovo and Severi on the degree points is not a property of the jets,
 of the counterterm or of the shape of the pairing: it holds with the contact of the square at the
 prime `2` and fails with its negative. A contact order is the logarithm of the order of a scheme
-and is positive; a proof of the sign has to use it.
+and is positive; a proof of the sign has to use it. The additive datum that separates `ℤ` from
+every other system of contact weights is the comb of the degree points: unit masses on all
+integers, with its jets and its counterterm.
 -/
 
 open Finset Filter Topology MeasureTheory
@@ -66,7 +80,9 @@ theorem zeroSum_ge_of_width (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) 
         linarith
       · rw [abs_of_pos (by linarith)]
         exact h
-    exact hx (by simp [hg0 x hx'])
+    exact hx (by
+      show ((f (x - -c) : ℝ) : ℂ) = 0
+      rw [hg0 x hx', Complex.ofReal_zero])
   have h : 1 / 5000 * ∫ x, ‖((f (x - -c) : ℝ) : ℂ)‖ ^ 2 ≤
       (zetaZeroConfig.W (fun x => ((f (x - -c) : ℝ) : ℂ))
         (fun x => ((f (x - -c) : ℝ) : ℂ))).re :=
@@ -197,5 +213,81 @@ theorem exists_packet_degreePairing_gt_of_flippedContact :
         (EF.weilTest (fun u => ((F (u - s) : ℝ) : ℂ)) (fun u => ((F (u - s) : ℝ) : ℂ)))).re
   rw [hW]
   linarith
+
+/-! ### The comb selects the contacts -/
+
+/-- Bézout on the comb of the integers for contacts of weight `w`: for every packet in a window
+the limit of jets, weighted contacts and counterterm is at most twice the product of the
+degrees. -/
+def CombBezout (w : ℕ → ℝ) : Prop :=
+  ∀ f : ℝ → ℝ, ContDiff ℝ 2 f → HasCompactSupport f → ∀ K : ℕ, 1 ≤ K →
+    (∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) →
+    ∀ l : ℝ, Tendsto (fun N : ℕ => degreeForm f (3 * K) N + 2 * weightedContact w f (3 * K) N)
+        atTop (𝓝 l) →
+      l ≤ 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2))
+
+/-- Bézout on the comb for the weight `w` is the positivity of the functional of `w` on all
+tests. -/
+theorem combBezout_iff_weilPositiveFull (w : ℕ → ℝ) :
+    CombBezout w ↔ _root_.RHTower.WeilPositiveFull w := by
+  constructor
+  · intro h
+    refine _root_.RHTower.WeilSpectral.weilPositiveFull_of_real fun g hg hgc => ?_
+    obtain ⟨s, K, hK, hsupp⟩ := exists_translate_window hgc
+    have hg' : ContDiff ℝ 2 fun u => g (u - s) := hg.comp (contDiff_id.sub contDiff_const)
+    have hgc' : HasCompactSupport fun u => g (u - s) :=
+      hgc.comp_homeomorph (Homeomorph.subRight s)
+    have hle : 2 * ((∫ u, g (u - s) * Real.exp (-u / 2)) * ∫ u, g (u - s) * Real.exp (u / 2)) -
+          (_root_.RHTower.weilFullFunctional w
+            (EF.weilTest (fun u => ((g (u - s) : ℝ) : ℂ)) (fun u => ((g (u - s) : ℝ) : ℂ)))).re ≤
+        2 * ((∫ u, g (u - s) * Real.exp (-u / 2)) * ∫ u, g (u - s) * Real.exp (u / 2)) :=
+      h _ hg' hgc' K hK hsupp _ (tendsto_degreeForm_add_weightedContact w hg' hgc' hK hsupp)
+    have hW : (_root_.RHTower.weilFullFunctional w
+          (EF.weilTest (fun u => ((g (u - s) : ℝ) : ℂ)) (fun u => ((g (u - s) : ℝ) : ℂ)))).re =
+        (_root_.RHTower.weilFullFunctional w
+          (EF.weilTest (fun u => (g u : ℂ)) (fun u => (g u : ℂ)))).re :=
+      congrArg (fun k => (_root_.RHTower.weilFullFunctional w k).re)
+        (weilTest_packet_translate g s)
+    rw [hW] at hle
+    linarith
+  · intro h f hf hfc K hK hsupp l hl
+    have hlim := tendsto_degreeForm_add_weightedContact w hf hfc hK hsupp
+    have hpos := h (fun u => (f u : ℂ)) (contDiff_ofReal_packet hf)
+      (hasCompactSupport_ofReal_packet hfc)
+    rw [tendsto_nhds_unique hl hlim]
+    linarith
+
+/-- **The comb selects the contacts.** Bézout on the comb of the integers holds for the weight
+`w` iff the Riemann hypothesis holds and `w` is the von Mangoldt function. -/
+theorem combBezout_iff (w : ℕ → ℝ) :
+    CombBezout w ↔ RiemannHypothesis ∧ ∀ n, 2 ≤ n → w n = Λ n := by
+  rw [combBezout_iff_weilPositiveFull]
+  exact _root_.RHTower.WeilSpectral.weilPositiveFull_iff_riemannHypothesis_and_eq_vonMangoldt
+
+/-- **Every other weight fails.** A weight that differs from the von Mangoldt function at one
+integer `n ≥ 2` does not satisfy Bézout on the comb of the integers. -/
+theorem not_combBezout_of_ne {w : ℕ → ℝ} {n : ℕ} (hn : 2 ≤ n) (h : w n ≠ Λ n) :
+    ¬ CombBezout w :=
+  fun hB => h (((combBezout_iff w).mp hB).2 n hn)
+
+/-- The Riemann hypothesis is Bézout on the comb of the integers for the contacts of the
+square. -/
+theorem riemannHypothesis_iff_combBezout :
+    RiemannHypothesis ↔ CombBezout fun n => (Λ n : ℝ) := by
+  rw [combBezout_iff]
+  exact ⟨fun h => ⟨h, fun _ _ => rfl⟩, fun h => h.1⟩
+
+/-! ### The weights are contact numbers of the object -/
+
+/-- **The contact weights are the contact numbers of the orbit ring with a base.** For `k ≥ 2`,
+`Λ(k)/√k` is the logarithm of the order of the contact of the diagonal and `Γ_k` on `𝒪_q`,
+divided by `√k`. -/
+theorem contactWeight_eq_log_card_orbitBaseRing (q : ℤ) {k : ℕ} (hk : 1 < k) :
+    contactWeight k =
+      Real.log (Nat.card (ℤ ⧸ Ideal.span {z : ℤ | ∃ x ∈ orbitBaseRing q,
+        z = ghostComponent 1 x - ghostComponent ⟨k, by omega⟩ x})) / Real.sqrt k := by
+  have h1 : (1 : ℕ+) < ⟨k, by omega⟩ := hk
+  rw [span_orbitBaseRing_sub_eq_graphIdeal, log_card_quotient_graphIdeal_one h1, contactWeight]
+  rfl
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

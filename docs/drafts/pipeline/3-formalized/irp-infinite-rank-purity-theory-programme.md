@@ -372,6 +372,25 @@ series on `Re s > u₀`, not identically zero, `F(ρ₀) = 0`, `Re ρ₀ > x`.
    zero there; so a Dirichlet polynomial whose zeros are zeros of `ξ` has them on the critical line
    (`re_eq_half_of_dirichletPolynomial_zeros_subset_xi`).
 
+### P26. A Dirichlet polynomial with a functional equation is not a factor
+`D(s) = Σ a_n n^{−s}` with real coefficients, `a_1 ≠ 0`, and `‖D(1 − s)‖ = N^{Re s − ½}‖D(s)‖`, `N > 1`.
+Suppose every zero of `D` is a zero of `ξ`.
+1. By P25 all zeros lie on `Re s = ½`; `D` is zero-free right of the line.
+2. *Bounded below.* On `Re s ≥ C₀` the constant term dominates. If `inf_{Re s ≥ σ}‖D‖ = 0` for some
+   `σ > ½`, take `s_k` with `D(s_k) → 0`; the twists `(n^{−i Im s_k})_n` and `Re s_k` have a
+   convergent subsequence; the twisted polynomials `D(· + i Im s_k)` converge locally uniformly to
+   a Dirichlet polynomial `D_∞ ≢ 0` with a zero of real part `≥ σ`; by Hurwitz `D` has zeros right
+   of the line.
+3. *Monotone modulus.* `W(s) = N^{s/2}D(s)` has `‖W(1 − s̄)‖ = ‖W(s)‖`. For `δ > 0`,
+   `W(s − δ)/W(s)` is bounded on `Re s ≥ ½ + δ/2` (step 2) and of modulus one on its boundary;
+   Phragmén–Lindelöf gives `‖W(s − δ)‖ ≤ ‖W(s)‖`, hence `Re(W'/W) ≥ 0` on `Re s > ½`.
+4. *Boundary.* `σ ↦ ‖W(σ + it)‖²` is even about `½`, so `Re(W'/W)(½ + it) = 0` where `D ≠ 0`.
+5. *Dirichlet series.* By step 2 and the half-plane Wiener lemma
+   (`ArithmeticOrientationTheory.WienerAlgebraAt.isUnit_of_le_norm_lSeries`) `1/D` has an
+   absolutely convergent Dirichlet series at `3/2`; so `Φ = W'/W = ½ log N + D'/D` has one, with
+   real coefficients and constant term `½ log N`.
+6. `RHTower.AtomDomination.eq_zero_of_herglotz_dirichlet_criticalCarrier` gives `½ log N = 0`.
+
 ## Modules
 | Module | Content |
 |---|---|

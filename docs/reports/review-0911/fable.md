@@ -571,7 +571,7 @@ Open: the nonvanishing, at points with real part in `(3/8,½)`. For a fixed `ρ`
 
 ### 11.2 The family step through twists and covers
 
-The precise results of §5.2 `[P/S]` give positive survivors: amplification strictly beats the trivial bound at nontrivial torsion fibres; positivity couples base to product in one direction; with the trace of ζ retained, sublinear tensor growth of a cover family is equivalent to RH. The Lean statement does not quantify over every arithmetic family or every inequality derived from one. Its Euler-weight countermodel does not retain an FE. The universal closure inside the FE class remains unproved.
+The precise results of §5.2 `[L*]` give positive survivors: amplification strictly beats the trivial bound at nontrivial torsion fibres; positivity couples base to product in one direction; with the trace of ζ retained, sublinear tensor growth of a cover family is equivalent to RH. The Lean statement does not quantify over every arithmetic family or every inequality derived from one. Its Euler-weight countermodel does not retain an FE. The universal closure inside the FE class remains unproved.
 
 ### 11.3 Calibrations
 

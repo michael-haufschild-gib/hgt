@@ -32,10 +32,12 @@ further derivatives. The resulting confluent Vandermonde determinant is
 nonzero for `0≤a<A`, `0≤b<B`, `AB≤p`: its factorials and node differences
 are units modulo `p`.
 
-Existing anchor: `det_confluentPolynomialJetMatrix` works over every
-commutative ring. The finite-characteristic logarithm jets, auxiliary
-vanishing constraints, parameter bounds and fourth-moment transfer remain
-to be formalized. No analytic estimate is assumed as a premise.
+`Heilbronn/TruncatedLogarithmJets.lean` proves the logarithmic jet identity,
+independence modulo `X^p`, and nonvanishing of the full auxiliary by its
+Horner expansion in `X^p`. Direct audit passed; all three capstones use
+only `propext`, `Classical.choice`, and `Quot.sound`.
+Auxiliary vanishing constraints, multiplicity, parameter bounds and
+fourth-moment transfer remain. No analytic estimate is assumed as a premise.
 
 ## A sufficient first power saving
 

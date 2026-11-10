@@ -285,13 +285,12 @@ theorem analyticSmoothing_branch_no_extension_of_jet {Φ : ℂ → ℂ} {m : ℕ
   · simp only [Complex.add_re, Complex.sub_re, Complex.one_re, Complex.ofReal_re]
     linarith only [hx0, hmt2]
 
-private theorem analyticAt_analyticSmoothing_spectral_regularization {Φ : ℂ → ℂ} {m : ℕ} {C : ℝ}
+private theorem analyticAt_analyticSmoothing_deformationExponent {Φ : ℂ → ℂ} {m : ℕ} {C : ℝ}
     (hunit : ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ (x : ℂ)‖ = 1)
     (hdecay : ∀ p : Nat.Primes, ∀ z : ℂ, 0 ≤ z.re →
       ‖analyticSmoothingPrimePhase Φ p z - 1‖ ≤ C * (p : ℝ) ^ (-((m : ℝ) * z.re)))
     {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hh : 1 / 2 < s.re) (hs : 1 < s.re + (m : ℝ) * t) :
-    AnalyticAt ℂ (fun z => zetaResidueFactor z *
-      Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) s := by
+    AnalyticAt ℂ (deformationExponent (analyticSmoothingGauge Φ t)) s := by
   have hmax : max (1 / 2) (1 - (m : ℝ) * t) < s.re :=
     max_lt hh (by linarith only [hs])
   obtain ⟨σ, hσ, hσs⟩ := exists_between hmax
@@ -301,7 +300,17 @@ private theorem analyticAt_analyticSmoothing_spectral_regularization {Φ : ℂ �
     linarith only [h]
   have hH := (exists_isozeric hσhalf.le
     (analyticSmoothing_prime_summability_of_decay hunit hdecay ht hσt)).1 s hσs
-  exact (differentiable_zetaResidueFactor.analyticAt s).mul hH.cexp
+  exact hH
+
+private theorem analyticAt_analyticSmoothing_spectral_regularization {Φ : ℂ → ℂ} {m : ℕ} {C : ℝ}
+    (hunit : ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ (x : ℂ)‖ = 1)
+    (hdecay : ∀ p : Nat.Primes, ∀ z : ℂ, 0 ≤ z.re →
+      ‖analyticSmoothingPrimePhase Φ p z - 1‖ ≤ C * (p : ℝ) ^ (-((m : ℝ) * z.re)))
+    {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hh : 1 / 2 < s.re) (hs : 1 < s.re + (m : ℝ) * t) :
+    AnalyticAt ℂ (fun z => zetaResidueFactor z *
+      Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) s := by
+  exact (differentiable_zetaResidueFactor.analyticAt s).mul
+    (analyticAt_analyticSmoothing_deformationExponent hunit hdecay ht hh hs).cexp
 
 /-- Every nonconstant analytic profile has a first moving oscillatory branch, with its exact unit. -/
 theorem analyticSmoothing_branch_rigidity {Φ : ℂ → ℂ} {R : NNReal}
@@ -433,5 +442,46 @@ theorem analyticSmoothing_no_joint_endpoint_regularization {Φ : ℂ → ℂ} {R
 
 #print axioms analyticSmoothing_branch_rigidity
 #print axioms analyticSmoothing_no_joint_endpoint_regularization
+
+
+/-- The analytic continuation retains every zeta zero with its full multiplicity. -/
+theorem analyticSmoothing_isozeric_halfplane {Φ : ℂ → ℂ} {R : NNReal}
+    (hR : 1 < (R : ℝ)) (hΦ : AnalyticOnNhd ℂ Φ (closedBall 0 R))
+    (h0 : Φ 0 = 1) (h1 : Φ 1 = -1)
+    (hunit : ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ (x : ℂ)‖ = 1) :
+    ∃ m : ℕ, 0 < m ∧ ∀ t : ℝ, 0 < t →
+      AnalyticOnNhd ℂ (deformationExponent (analyticSmoothingGauge Φ t))
+        {s | max (1 / 2) (1 - (m : ℝ) * t) < s.re} ∧
+      (∀ s : ℂ, 1 < s.re → gaugeFibre (analyticSmoothingGauge Φ t) s =
+        riemannZeta s * Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) s)) ∧
+      ∀ s : ℂ, max (1 / 2) (1 - (m : ℝ) * t) < s.re → s ≠ 1 →
+        analyticOrderAt (fun z => riemannZeta z *
+          Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) s =
+            analyticOrderAt riemannZeta s := by
+  obtain ⟨m, hm, b, hb, G, hG, hG0, hfac, hcoeff, hbelow, C, hC, hrem⟩ :=
+    analyticPhase_first_jet hR hΦ h0 h1 hunit
+  obtain ⟨D, hD, hdecay⟩ := analyticSmoothingPrimePhase_decay_of_factor hR hG hfac
+  refine ⟨m, hm, fun t ht => ?_⟩
+  have hH : AnalyticOnNhd ℂ (deformationExponent (analyticSmoothingGauge Φ t))
+      {s | max (1 / 2) (1 - (m : ℝ) * t) < s.re} := by
+    intro s hs
+    change max (1 / 2) (1 - (m : ℝ) * t) < s.re at hs
+    have hh : 1 / 2 < s.re := (le_max_left _ _).trans_lt hs
+    have hp : 1 < s.re + (m : ℝ) * t := by
+      have hr := (le_max_right _ _).trans_lt hs
+      linarith only [hr]
+    exact analyticAt_analyticSmoothing_deformationExponent hunit hdecay ht.le hh hp
+  refine ⟨hH, fun s hs => gaugeFibre_eq_zeta_mul_exp _ hs, ?_⟩
+  intro s hs hs1
+  have hf : AnalyticAt ℂ riemannZeta s := analyticOn_riemannZeta s hs1
+  have hg : AnalyticAt ℂ (fun z => Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) s :=
+    (hH s hs).cexp
+  have ho := analyticOrderAt_mul hf hg
+  have hz := hg.analyticOrderAt_eq_zero.mpr (Complex.exp_ne_zero _)
+  rw [show (fun z => riemannZeta z * Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) =
+    riemannZeta * (fun z => Complex.exp (deformationExponent (analyticSmoothingGauge Φ t) z)) from rfl,
+    ho, hz, add_zero]
+
+#print axioms analyticSmoothing_isozeric_halfplane
 
 end GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations
