@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawHoldsOnEveryStripAboutTheLine
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawOnAStripSurvivesSummablePoles
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawOnAStripSurvivesFinitelyManyPoles
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheWienerAlgebraOfAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.WienersLemmaOnAStrip
@@ -24,8 +25,8 @@ and uses no sign of a form and no operator.
 * The jump law of the fractional part holds on every strip about the critical line with arbitrary
   positive scales on both sides; two expansions of one function on the two sides of the line carry
   the same weight at every scale, and the zeros of `ζ` cancel no pole between them
-  (`TheJumpLawHoldsOnEveryStripAboutTheLine`), not even up to finitely many
-  (`TheJumpLawOnAStripSurvivesFinitelyManyPoles`).
+  (`TheJumpLawHoldsOnEveryStripAboutTheLine`), not even up to poles with summable residues
+  (`TheJumpLawOnAStripSurvivesSummablePoles`, `TheJumpLawOnAStripSurvivesFinitelyManyPoles`).
 * The absolutely convergent expansions over the positive reals on a closed strip form a Banach
   algebra (`TheWienerAlgebraOfAStrip`) with Wiener's lemma: bounded below on the strip implies
   invertible (`WienersLemmaOnAStrip`); a zero-free expansion is invertible on closed substrips and

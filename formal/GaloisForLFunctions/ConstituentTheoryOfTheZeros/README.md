@@ -1,7 +1,7 @@
 # Constituent Theory of the Zeros (CTZ)
 
 Namespace `GaloisForLFunctions.ConstituentTheoryOfTheZeros`; umbrella
-`ConstituentTheoryOfTheZeros.lean`; 15 modules. Specification: §2.11 of
+`ConstituentTheoryOfTheZeros.lean`; 16 modules. Specification: §2.11 of
 [the review-1011 report](../../../docs/reports/review-1011/obstacles-summary.md).
 
 *What the zero set of `ξ` does not contain.*
@@ -37,7 +37,7 @@ fractional part jumps at every integer.
 | Constituent on a set `U` | hypothesis `∀ s ∈ U, F s = 0 → xi s = 0` | `F ≢ 0` whose zeros in `U` are zeros of `ξ`; `U` a half-plane, a strip about the line, a box, a band |
 | Series of fractional parts | `InfiniteRankPurityTheory.fractSeries` | `Σ_i b_i {a_i u}`; its Mellin transform at `−s` is `−(ζ(s)/s) Σ b_i a_i^s` |
 | Merged weight at a scale | `∑' i, if a i = t then b i else 0` | the weight an expansion carries at the scale `t` |
-| Polar part | `InfiniteRankPurityTheory.polarPart` | `Σ_p r_p u^p` for finitely many simple poles on the line |
+| Polar part | `InfiniteRankPurityTheory.polarPart`, `polarSeries` | `Σ_p r_p u^p` for simple poles on the line, finitely many or with `Σ ‖r_p‖ < ∞` |
 | Carry | `carry`, `carrySeries` | `{x} + {y} − {x + y} ∈ {0, 1}` and `Σ_i b_i κ(a_i u, a_i v)` |
 | Zero shifts | `RHTower.zetaZeroShiftSet` | the heights that carry a zero of `ζ` into a disc about a point |
 | Splitting, defect in a disc | `encard_xi_zeros_le_of_splitting` | `ξ = E + E^♯` on a disc; the defect is the zeros of `E` in it |
@@ -72,8 +72,8 @@ fractional part jumps at every integer.
    `g(u) ↦ (2η)⁻¹ v^{−(½−η)/2η} g(v^{1/2η})`. Two functions with one transform agree.
 4. **The jump law and Möbius inversion at every scale.** Equal series of fractional parts have
    equal jumps; the jumps at the points `1/(kt)` and Möbius inversion over `k` give equal merged
-   weights at the scale `t`, for arbitrary positive scales on both sides. Finitely many simple
-   poles on the line add a continuous polar part and change no jump.
+   weights at the scale `t`, for arbitrary positive scales on both sides. Simple poles on the
+   line with summable residues add a continuous polar part and change no jump.
 5. **Wiener inversion on a strip.** A character of the Wiener algebra of a strip has one real
    exponent in `[σ₁, σ₂]` (an additive function between two multiples of the logarithm is one
    multiple) and a unimodular phase, which Kronecker's theorem approximates by `q ↦ q^{it}` on
@@ -115,7 +115,7 @@ fractional part jumps at every integer.
 |---|---|
 | The jump law on a strip of any width with arbitrary scales; equal merged weights at every scale | `tsum_jump_eq_of_strip`, `mergedWeight_eq_of_strip` |
 | `ζ` cancels no pole of a two-sided expansion: the expansions on the two sides of the line are one expansion, convergent on the closed strip | `eq_riemannZeta_div_mul_tsum_of_strip` |
-| The same up to finitely many uncancelled poles | `fractSeries_sub_eq_polarPart_of_strip`, `eq_of_strip_of_poles` |
+| The same up to uncancelled poles on the line with summable residues | `fractSeries_sub_eq_polarSeries_of_strip`, `eq_of_strip_of_summable_poles`; finitely many: `eq_of_strip_of_poles` |
 | The Wiener algebra of a strip is a commutative Banach algebra; coefficients are unique | `StripWiener`, `isometryLp`, `eq_zero_of_expansion_eq_zero` |
 | Wiener's lemma on a strip | `StripWiener.isUnit_of_le_norm_eval`, `exists_inverse_expansion` |
 | A zero-free expansion is invertible on closed substrips; its logarithmic derivative expands | `exists_inverse_expansion_of_zeroFree`, `exists_logDeriv_expansion` |
@@ -147,14 +147,14 @@ fractional part jumps at every integer.
 | M1 polynomials | `InfiniteRankPurityTheory.infinite_zeros_not_xi_zeros`; here in every strip about the line and with detection on progressions |
 | M2 series on a half-plane | the Wiener class, in the strong form; the bounded class outside the Bohr strip |
 | M3 approximate constituents in boxes | both sides: existence in every band, and loss of the zeros under norm convergence or bounded length |
-| M4 a sign-free statement about `ξ` itself | the zero set of `ξ` in a strip about the line contains the zeros of no absolutely convergent expansion that vanishes there, not even up to finitely many points. No mechanism here locates a zero of `ξ` (§10.6) |
+| M4 a sign-free statement about `ξ` itself | the zero set of `ξ` in a strip about the line contains the zeros of no absolutely convergent expansion that vanishes there, not even up to finitely many points. No mechanism here locates a zero of `ξ` (§10.7) |
 
 ## 7. Tools
 
 | Tool (§2.11) | Lean |
 |---|---|
 | Recurrence against density | `exists_thick_zero_shifts_on_strip`, `isStripAlmostPeriodicOn_expansion`, `re_eq_half_of_expansion_strip_zeros_subset_xi`, `re_eq_half_of_strip_zeros_subset_xi_off_finite` |
-| Two-sided constant terms | `eq_of_mellin_eq_on_strip`, `fractSeries_eq_of_strip`, `tsum_jump_eq_of_strip`, `tsum_one_eq_of_tsum_dvd_eq`, `mergedWeight_eq_of_jump`, `eq_of_strip`, `eq_of_strip_of_poles` |
+| Two-sided constant terms | `eq_of_mellin_eq_on_strip`, `fractSeries_eq_of_strip`, `tsum_jump_eq_of_strip`, `tsum_one_eq_of_tsum_dvd_eq`, `mergedWeight_eq_of_jump`, `eq_of_strip`, `hasSum_mellin_topPart_polarSeries`, `tsum_jump_eq_of_strip_of_summable_poles`, `eq_of_strip_of_summable_poles`, `eq_of_strip_of_poles` |
 | Inverse expansions | `Scale.exists_eq_mul_log`, `Scale.exists_height_approx`, `exists_height_expansion_approx`, `StripWiener.exists_exponent_phase`, `exists_inverse_expansion_of_zeroFree`, `exists_logDeriv_expansion`, `deriv_expansion` |
 | The analytic quotient | `exists_good_heights`, `exists_quotient_sub_principalParts`, `div_le_norm_sub_of_zero`, `ne_zero_of_deriv_eq_mul`, `logDeriv_expansion_eq_off_finset` |
 | The index law | `encard_agreements_unitDisc_le`, `encard_zeros_le_of_norm_le_on_sphere`, `ne_zero_of_norm_le_on_sphere` |
@@ -203,7 +203,11 @@ fractional part jumps at every integer.
 4. **Natural splittings.** The defect in a window of the splittings of `ξ` that arise from the
    approximate functional equation.
 5. **Other `L`-functions.** The jump law for fractional parts twisted by a character.
-6. **A sign-free mechanism that acts on `ξ` itself.** None is known. Every mechanism of this
+6. **Summable exceptional zeros.** The jump law holds with countably many poles of summable
+   residues. For a pure expansion `F` with a zero the residues of `−ζ F'/(sF)` are
+   `m_ρ ζ(ρ)/ρ` at the zeros `ρ` of `F`; whether `Σ_ρ m_ρ ‖ζ(ρ)/ρ‖` must diverge is the statement
+   this suggests. The analytic quotient with infinitely many principal parts is not in Lean.
+7. **A sign-free mechanism that acts on `ξ` itself.** None is known. Every mechanism of this
    programme acts on a function that shares zeros with `ξ`.
 
 ## 11. Context

@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 13 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 14 modules.
 
 ## 1. Motivation
 
@@ -44,6 +44,7 @@ zero-free regions sit at $\kappa=1+o(1)$.
 | Height | `RHTower.modulatedTest t f` | the packet $e^{-itu}f(u)$; its mass is $\log(2+|t|)$ |
 | Contacts seen from a height | `twistedWeight w t`, `alignedWeight t` | $w(n)\cos(t\log n)$; the system aligned with $t$ is $\Lambda(n)\cos(t\log n)$, half the contacts of $\zeta(s+it)\zeta(s-it)$ |
 | Two-bump packet | `twoBump s h r` | two bumps of width $r$ at $\pm h$: lags $0$ and $2h$ only |
+| Contact polynomial | `contactPoly N u`, `contactMass`, `contactEnergy`, `contactSlope` | $D_N(u)=\sum_{2\le n\le N}\Lambda(n)n^{-1/2}\cos(u\log n)$: the primes in the symbol at the height $u$; its sup bound, mean-square bound and Lipschitz constant |
 | Cancellation | `partialSum`, `HasCancellation w C γ` | $|\sum_{2\le k\le n}w(k)|\le C\,n^{1/2+\gamma}$ |
 | Mass at a zero | `A₀ * Real.log (|ρ₀.im| + 3)` | the local zero density of a configuration at a zero |
 
@@ -149,6 +150,17 @@ aperture $\log\log T+\log2+\eta\le a\le\log T$ Weil's form of the aligned system
 plane, is below $-C\int f'^2$. The trivial aperture of the height is $\log\log|t|+O(1)$, between
 $-\eta$ and $\log2+\eta$.
 
+**5‴. Mean values buy every rung in the mean.** The primes enter the symbol at the height $t$
+through $D_N(t)=\sum_{n\le N}\Lambda(n)n^{-1/2}\cos(t\log n)$, $N=e^{2a}$, of size up to $2e^a$.
+Distinct logarithms below $N$ differ by at least $1/(2N)$, so an off-diagonal pair integrates to at
+most $4N$ over any interval:
+$\int_A^BD_N^2\le(B-A)\sum\Lambda(n)^2/n+4N(\sum\Lambda(n)/\sqrt n)^2$. If
+$4e^{4a}(2+2a)^4\le T$ the mean square over $[T,2T]$ is at most $2a(2+2a)^2+1$: polylogarithmic in
+the window against the mass $\log T$, up to apertures of about $\tfrac14\log T$. The sizes are
+attained at aligned heights only. Maximising $G-\lambda B$ over a window gives one height at which
+a positive sum keeps half of itself while $D_N$ is small on a grid, and the Lipschitz constant
+$\sum\Lambda(n)n^{-1/2}\log n$ extends the grid to an interval of heights.
+
 **6. Cancellation buys the ladder (prime side of the exchange rate).** If
 $|\sum_{k\le n}w(k)|\le Cn^{1/2+\gamma}$, summation by parts gives
 $|2\sum_{n\le N}w(n)n^{-1/2}\cos(\tau\log n)|\le2CN^\gamma(2+\log N)(1+|\tau|)$: the prime part of the
@@ -211,6 +223,7 @@ product) both fail at the rung $1$.
 | The height transfer: a height is a conductor of the twisted contacts | `archimedeanWeilSymbol_add_le`, `contactForm_modulatedTest_eq`, `systemForm_modulatedTest_le`, `systemForm_modulatedTest_ge` | unconditional |
 | Feasibility is square-root cancellation of the twisted Riesz means at every height | `exists_twisted_riesz_le_of_feasible` | unconditional |
 | Twisted cancellation buys the ladder of the analytic conductor; the symbol criterion on all packets | `systemForm_modulated_ge_of_twisted_cancellation`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | unconditional |
+| Mean values over the heights: mean square of the contact polynomial; a quiet height with half of a positive sum | `integral_sq_sum_cos_le`, `integral_contactPoly_sq_le`, `integral_contactPoly_window_sq_le`, `exists_height_of_means`, `exists_height_contactPoly_small`, `abs_contactPoly_le_of_grid` | unconditional |
 | Exchange rate, prime side: cancellation buys rungs | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
 | Exchange rate, prime side, converse: the sign is square-root cancellation of the Riesz mean | `packetAutocorr_evenPolar_sub_oddPolar`, `systemForm_le_of_packet_scaled`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge` | unconditional |
 | The sign of the twisted part at an aperture bounds the Riesz mean of the character | `exists_riesz_twist_le_of_nonneg` | unconditional |
@@ -248,6 +261,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz means of $w(n)n^{-it}$ at $e^{2a}$ are $\le e^a(\log q+\log(2+|t|)+O(a^3))$ at every height | every rung | systems without cancellation at one height | — (a receiver) |
 | Sign at $\log\log q+C$ | $1+C/\log\log q$ | Liouville twist | none known |
 | A zero-free strip of width $\varepsilon$ in an aspect | $1/(1-2\varepsilon)$ | fakes of depth $>\tfrac12-\varepsilon$ | none known |
+| Mean square of the contact polynomial over $[T,2T]$ is $\le2a(2+2a)^2+1$ | apertures up to $\approx\tfrac14\log T$, in the mean | — | mean values |
 | Positivity at typical heights (corpus, in law) | apertures $c\log T$ | — | density theorems |
 | GRH, RH | every rung | every fake | — |
 
@@ -272,6 +286,9 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
   height zero and at every height; the symbol criterion for all packets; the receiver on the prime
   side: sum and difference of the two polar packets read the Riesz mean, at every height.
 - Feasible sets with the pole plane: the first selective window of $\zeta$.
+- Mean values over the heights: the mean square of a cosine polynomial on separated frequencies,
+  the contact polynomial with its three sizes on a window, a common height for two means, the
+  passage from a grid of heights to an interval.
 
 **Aimed at.**
 - A calibration bench: the criteria P1–P8 of §11 as predicates on a candidate mechanism, with the
@@ -289,7 +306,8 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
    $\exp((\log t)^{2/3})$.
 4. **One height against the others.** Feasibility is cancellation of the twisted contacts at every
    height. Whether, in the dominated class, the sign on packets of bounded shape forces it at the
-   other heights.
+   other heights. The mean-value tools give a candidate separation: the system aligned with a
+   height of polylogarithmic size at which the contact polynomial is quiet on an interval.
 5. **The margin side.** The rate at which the feasible sets with pole plane shrink to $\Lambda$.
 6. **The constant of the height.** The trivial aperture of the height lies between
    $\log\log|t|-\eta$ and $\log\log|t|+\log2+\eta$; the aligned system with signs

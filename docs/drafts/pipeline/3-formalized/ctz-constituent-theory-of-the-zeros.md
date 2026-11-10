@@ -19,7 +19,8 @@ Folder `formal/GaloisForLFunctions/ConstituentTheoryOfTheZeros/`, umbrella
 | Module | Proof | Declarations |
 |---|---|---|
 | TheJumpLawHoldsOnEveryStripAboutTheLine | P1, P2 | `rescale`, `mellin_rescale`, `eq_of_mellin_eq_on_strip`, `fractSeries_eq_of_strip`, `tsum_jump_eq_of_strip`, `tsum_one_eq_of_tsum_dvd_eq`, `mergedWeight_eq_of_jump`, `mergedWeight_eq_of_strip`, `eq_of_strip`, `eq_riemannZeta_div_mul_tsum_of_strip` |
-| TheJumpLawOnAStripSurvivesFinitelyManyPoles | P2′ | `fractSeries_sub_eq_polarPart_of_strip`, `tsum_jump_eq_of_strip_of_poles`, `mergedWeight_eq_of_strip_of_poles`, `eq_of_strip_of_poles` |
+| TheJumpLawOnAStripSurvivesSummablePoles | P2′ | `polarSeries`, `norm_polarSeries_sub_le`, `hasSum_mellin_topPart_polarSeries`, `hasSum_mellin_botPart_polarSeries`, `fractSeries_sub_eq_polarSeries_of_strip`, `tsum_jump_eq_of_strip_of_summable_poles`, `mergedWeight_eq_of_strip_of_summable_poles`, `eq_of_strip_of_summable_poles` |
+| TheJumpLawOnAStripSurvivesFinitelyManyPoles | P2′, finite case | `polarSeries_coe_finset`, `fractSeries_sub_eq_polarPart_of_strip`, `eq_of_strip_of_poles` |
 | TheWienerAlgebraOfAStrip | P3 (a), (b) | `Scale`, `stripWeight`, `WSummable`, `expansion`, `eq_zero_of_expansion_eq_zero`, `convolve`, `expansion_convolve`, `wsummable_convolve`, `StripWiener`, `isometryLp`, `pointMass`, `hasSum_pointMass` |
 | WienersLemmaOnAStrip | P3 (c)–(e) | `Scale.exists_eq_mul_log`, `Scale.norm_sub_zpow_le`, `Scale.norm_sub_prod_le`, `Scale.exists_height_approx`, `exists_height_expansion_approx`, `StripWiener.exists_exponent_phase`, `exists_apply_eq_expansion_twist`, `isUnit_of_le_norm_eval`, `exists_inverse_expansion` |
 | TheLogarithmicDerivativeExpandsInAZeroFreeStrip | P3′ | `deriv_expansion`, `WSummable.log_mul`, `StripWiener.isUnit_ofCoeff_of_zeroFree`, `exists_inverse_expansion_of_zeroFree`, `exists_logDeriv_expansion` |
@@ -69,15 +70,18 @@ merged weight is the coefficient. Summability on the closed strip follows from
 strip. An absolutely summable family has countable support; the general case is the case of the
 union of the two supports. ∎
 
-### P2′. Finitely many poles on the line
-Let `Φ` be as in P1 except that `Φ = K Σ b_i a_i^s − Σ_{p ∈ P} r_p/(s − p)` on both sides, `P` a
-finite set on the line. Then `g_{b,a} − g_{c,q} = Σ_p r_p u^p`, the jumps agree, the merged
-weights agree, and `b = c` for injective common scales.
+### P2′. Poles on the line with summable residues
+Let `Φ` be as in P1 except that `Φ = K Σ b_i a_i^s − Σ_{p ∈ E} r_p/(s − p)` on both sides, `E` a
+countable set on the line with `Σ ‖r_p‖ < ∞` (in particular a finite set). Then
+`g_{b,a} − g_{c,q} = Σ_p r_p u^p`, the jumps agree, the merged weights agree, and `b = c` for
+injective common scales.
 
-*Proof.* `u^p` cut off above `1` has the transform `1/(s − p)` right of the line and, cut off
-below `1`, the transform `−1/(s − p)` left of it. The corrected functions
-`g_{b,a} − (u^p)_{>1}`-sum and `g_{c,q} + (u^p)_{≤1}`-sum have one transform, with bounds
-`O(u^σ)` on the two sides because `|u^p| = u^{½}`; P1's gluing applies. The polar part is
+*Proof.* `π(u) = Σ_p r_p u^p` converges absolutely, is `O(u^{½})` and continuous on `u > 0`. For
+a finite section `u^p` cut off above `1` has the transform `1/(s − p)` right of the line and, cut
+off below `1`, the transform `−1/(s − p)` left of it; the transform of the tail of `π` is bounded
+by the tail of `Σ ‖r_p‖` divided by `|Re s − ½|`, so the cut-off parts of `π` have the transforms
+`±Σ_p r_p/(s − p)`. The corrected functions `g_{b,a} − π_{>1}` and `g_{c,q} + π_{≤1}` have one
+transform, with bounds `O(u^σ)` on the two sides; P1's gluing applies. The polar part is
 continuous, so jumps and left limits are unchanged. ∎
 
 ### P3. Wiener's lemma on a strip

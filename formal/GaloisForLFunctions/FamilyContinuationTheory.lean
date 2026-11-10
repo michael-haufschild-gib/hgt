@@ -5,6 +5,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheSignalOfTheZetaKernelIsAM
 import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
 import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
 import GaloisForLFunctions.FamilyContinuationTheory.TheLargeSieveOverTheEisensteinIntegers
+import GaloisForLFunctions.FamilyContinuationTheory.TheNormCountOfTheEisensteinIntegers
+import GaloisForLFunctions.FamilyContinuationTheory.TheEisensteinLatticeSumIsZetaTimesAnLFunction
 
 /-!
 # Family continuation theory
@@ -31,4 +33,7 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   with the self-dual character `exp(2πi Tr(w/√−3))`; fractions `d/s` with `|s|² ≤ Y`, distinct
   modulo `ℤ[ω]`, are `1/Y`-separated, and the mean square over a row box of side `N` is at most
   `(2N + 2Y ∑_{k≤M} 1/k)² ∑ |c|²`.
+* **The transfer to `ζ`.** The number of Eisenstein integers of norm `n` is `6 Σ_{d ∣ n} χ₃(d)`, and
+  `Σ_{(m,n) ≠ 0} (m² − mn + n²)^{−s} = 6 ζ(s) L(s, χ₋₃)` for `Re s > 1`: the zeta function of
+  `ℚ(√−3)` carries the zeros of `ζ`.
 -/

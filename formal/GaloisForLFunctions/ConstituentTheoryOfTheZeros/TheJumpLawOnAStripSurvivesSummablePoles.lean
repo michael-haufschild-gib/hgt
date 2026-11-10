@@ -15,7 +15,7 @@ the points of a countable set `E` on the line, with residues `r_p` such that `Σ
   have them, and the transform of the tail is bounded by the tail of `Σ ‖r_p‖`.
 * `fractSeries_sub_eq_polarSeries_of_strip`: the two series of fractional parts differ by the
   polar part, on a strip of any width with arbitrary positive scales on both sides.
-* `tsum_jump_eq_of_strip_of_poles`, `mergedWeight_eq_of_strip_of_poles`, `eq_of_strip_of_poles`:
+* `tsum_jump_eq_of_strip_of_summable_poles`, `mergedWeight_eq_of_strip_of_summable_poles`, `eq_of_strip_of_summable_poles`:
   the polar part is continuous, so the jumps agree at every `u₀ > 0`, the merged weights agree at
   every scale, and two families over the same injective scales are equal.
 
@@ -365,7 +365,7 @@ open scoped Classical in
 /-- **The jump law on a strip, with poles.** Under the hypotheses of
 `fractSeries_sub_eq_polarSeries_of_strip` the two series have the same jump at every `u₀ > 0`:
 their difference is continuous. -/
-theorem tsum_jump_eq_of_strip_of_poles [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ}
+theorem tsum_jump_eq_of_strip_of_summable_poles [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ}
     {c : κ → ℂ} {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j) {η : ℝ} (hη0 : 0 < η)
     (hη : η ≤ 1 / 2)
     (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
@@ -404,7 +404,7 @@ theorem tsum_jump_eq_of_strip_of_poles [Countable ι] [Countable κ] {b : ι →
 open scoped Classical in
 /-- **The merged weights agree, with poles.** Simple poles on the line with summable residues do
 not change the equality of the weights that the two expansions carry at a scale. -/
-theorem mergedWeight_eq_of_strip_of_poles [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ}
+theorem mergedWeight_eq_of_strip_of_summable_poles [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ}
     {c : κ → ℂ} {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j) {η : ℝ} (hη0 : 0 < η)
     (hη : η ≤ 1 / 2)
     (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
@@ -422,11 +422,11 @@ theorem mergedWeight_eq_of_strip_of_poles [Countable ι] [Countable κ] {b : ι 
   mergedWeight_eq_of_jump ha hq (σ₁ := 1 / 2 + η) (σ₂ := 1 / 2 - η / 2) (by linarith)
     (by linarith) (hR _ (by linarith) le_rfl) (hL _ (by linarith) (by linarith))
     (fun _ hu₀ =>
-      tsum_jump_eq_of_strip_of_poles ha hq hη0 hη hR hL hE hr hFd hFb hFR hFL hu₀) ht
+      tsum_jump_eq_of_strip_of_summable_poles ha hq hη0 hη hR hL hE hr hFd hFb hFR hFL hu₀) ht
 
 /-- Two families over the same injective scales, indexed by a countable set, that represent one
 function with simple poles of summable residues on the line are equal. -/
-theorem eq_of_strip_of_poles_of_countable [Countable ι] {b c : ι → ℂ} {a : ι → ℝ}
+theorem eq_of_strip_of_summable_poles_of_countable [Countable ι] {b c : ι → ℂ} {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hinj : Function.Injective a) {η : ℝ} (hη0 : 0 < η) (hη : η ≤ 1 / 2)
     (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
     (hL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 → Summable fun i => ‖c i‖ * a i ^ σ)
@@ -441,7 +441,7 @@ theorem eq_of_strip_of_poles_of_countable [Countable ι] {b c : ι → ℂ} {a :
     b = c := by
   classical
   funext i
-  have h := mergedWeight_eq_of_strip_of_poles ha ha hη0 hη hR hL hE hr hFd hFb hFR hFL (ha i)
+  have h := mergedWeight_eq_of_strip_of_summable_poles ha ha hη0 hη hR hL hE hr hFd hFb hFR hFL (ha i)
   rw [tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'),
     tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'), if_pos rfl, if_pos rfl] at h
   exact h
@@ -450,7 +450,7 @@ theorem eq_of_strip_of_poles_of_countable [Countable ι] {b c : ι → ℂ} {a :
 families over the same injective positive scales that represent, on the two sides of the line, a
 function `−(ζ/s) G − Σ_p r_p/(s − p)` holomorphic on the strip and bounded near the line, with
 `Σ ‖r_p‖ < ∞`, are equal. The index set of the families may be uncountable. -/
-theorem eq_of_strip_of_poles {b c : ι → ℂ} {a : ι → ℝ}
+theorem eq_of_strip_of_summable_poles {b c : ι → ℂ} {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hinj : Function.Injective a) {η : ℝ} (hη0 : 0 < η) (hη : η ≤ 1 / 2)
     (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
     (hL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 → Summable fun i => ‖c i‖ * a i ^ σ)
@@ -485,7 +485,7 @@ theorem eq_of_strip_of_poles {b c : ι → ℂ} {a : ι → ℝ}
         by_contra h
         exact hi (hf h)
       rw [h0, zero_mul]
-  have h := eq_of_strip_of_poles_of_countable (b := fun i : S => b i) (c := fun i : S => c i)
+  have h := eq_of_strip_of_summable_poles_of_countable (b := fun i : S => b i) (c := fun i : S => c i)
     (a := fun i : S => a i) (fun i => ha i) (hinj.comp Subtype.val_injective) hη0 hη
     (fun σ h1 h2 => (hR σ h1 h2).subtype S) (fun σ h1 h2 => (hL σ h1 h2).subtype S) hE hr hFd hFb
     (fun s h1 h2 => by rw [hFR s h1 h2, key b Set.subset_union_left s])

@@ -65,9 +65,10 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `EveryVisibleWeightIsBoundedByTheMass` | `twoBump`, `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible` (free width `r`), `abs_contactForm_le_sum_abs`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | clean, olean built |
 | `TheFirstSelectiveWindowOfZeta` | `PoleFeasible`, `poleFeasible_iff_of_lt_half_log_two`, `poleFeasible_of_abs_sub_le`, `poleFeasible_vonMangoldt`, `abs_re_weilPoleTerm_twoBump_le`, `exists_abs_weight_le_of_poleFeasible` | clean |
 | `APoleAtTheHeightFailsBeyondTheTrivialAperture` | `weilTest_modulatedTest`, `contactForm_modulatedTest`, `alignedWeight`, `integral_cos_mul_sq_ge`, `exists_height_sum_cos_sq_ge`, `integral_arch_modulated_le`, `re_weilFullFunctional_modulated_le`, `exists_aligned_height_neg`, `exists_dominated_height_neg` | clean, olean built |
-| `AHeightIsAConductorOfTheTwistedContacts` | `twistedWeight`, `archimedeanWeilSymbol_add_le`, `systemForm_modulatedTest_le/ge` (height transfer), `exists_twisted_riesz_le_of_feasible`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | clean |
+| `AHeightIsAConductorOfTheTwistedContacts` | `twistedWeight`, `archimedeanWeilSymbol_add_le`, `systemForm_modulatedTest_le/ge` (height transfer), `exists_twisted_riesz_le_of_feasible`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | clean, olean built |
+| `InTheMeanOverTheHeightsTheContactsCancel` | `integral_sq_sum_cos_le`, `contactPoly`/`contactMass`/`contactEnergy`/`contactSlope`, `integral_contactPoly_sq_le`, `integral_contactPoly_window_sq_le`, sizes on a window, `exists_height_of_means`, `exists_height_contactPoly_small`, `abs_contactPoly_le_of_grid` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports all thirteen; `MainTheorems.lean` imports the umbrella.
+Umbrella `SelectiveArithmetic.lean` imports all fourteen; `MainTheorems.lean` imports the umbrella.
 README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`, height transfer).
 
 ## Paper mathematics of modules 11–13
@@ -82,9 +83,16 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 
 ## Open mathematics of the field (README §8)
 - Sign of a true object at `log log q + C` (Landau–Siegel on the comb); a rung `κ > 1`.
-- Whether the sign on bounded shapes forces feasibility in the dominated class (candidate
-  separation: aligned system at polylog heights, mean square of the contact polynomial over the
-  heights, grid + Lipschitz; shaped positivity from the symbol bound `α − βτ²`).
+- Whether the sign on bounded shapes forces feasibility in the dominated class. Not written as a
+  paper proof and not started in Lean. Plan, on the tools of module 14: `x = log q`,
+  `a = log x + log 2 + η`, `E = e^{a} = 2e^{η}x`, heights `T = E⁸`, `w = alignedWeight t₀`.
+  Symbol of `w` at `τ`: `S_∞ − (D_N(t₀−τ) + D_N(t₀+τ))` (product formula). Need
+  `D_N(t₀−τ) + D_N(t₀+τ) ≤ (x/4)(1+τ²)`: for `|τ| ≥ τ₁ = 4e^{η/2}(2+2a)` from
+  `contactMass_le`; for `|τ| ≤ τ₁` from `exists_height_contactPoly_small` with grid step
+  `h = x/(16 L̄)`, `L̄ = 2aE(2+2a)² + 1`, `M = ⌈16τ₁L̄/x⌉`, and `abs_contactPoly_le_of_grid`.
+  Then `integral_normSq_paperFT_mul_ge` gives `𝔚 ≥ (x/2)(∫f² − ∫f'²)`; infeasibility from
+  `exists_twisted_riesz_le_of_feasible` at `t₀` with `G(t₀) ≥ ½e^{−η/2}E²`. All size conditions
+  reduce to `K a¹² < e^{a}` (`eventually_pow_twelve_lt_exp`).
 - Rung law for an exceptional zero with Deuring–Heilbronn isolation: peer AGZ module has the raw
   inequality.
 
@@ -115,4 +123,4 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — card created; README first draft; thirteen modules compiled clean and wired; README rewritten around the proved pillars.
+- 2026-11-10 — card created; README first draft; fourteen modules compiled clean and wired; README rewritten around the proved pillars.

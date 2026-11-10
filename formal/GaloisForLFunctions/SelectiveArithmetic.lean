@@ -11,6 +11,7 @@ import GaloisForLFunctions.SelectiveArithmetic.EveryVisibleWeightIsBoundedByTheM
 import GaloisForLFunctions.SelectiveArithmetic.TheFirstSelectiveWindowOfZeta
 import GaloisForLFunctions.SelectiveArithmetic.APoleAtTheHeightFailsBeyondTheTrivialAperture
 import GaloisForLFunctions.SelectiveArithmetic.AHeightIsAConductorOfTheTwistedContacts
+import GaloisForLFunctions.SelectiveArithmetic.InTheMeanOverTheHeightsTheContactsCancel
 
 /-!
 # Selective Arithmetic
@@ -59,6 +60,10 @@ sign, and where the first statement beyond that scale lies.
   the contacts twisted by `t` at the conductor `q (2 + |t|)`; feasibility is square-root
   cancellation of the twisted Riesz means at every height, and cancellation of the twisted contacts
   at every height gives feasibility with no condition on the shape.
+* Mean values over the heights: the mean square of the contact polynomial of the primes on a
+  window is polylogarithmic in the window, far below the mass, at apertures up to about a quarter
+  of `log T`; a height where the primes are quiet on an interval and half of a positive sum
+  survives.
 
 See `SelectiveArithmetic/README.md`.
 -/

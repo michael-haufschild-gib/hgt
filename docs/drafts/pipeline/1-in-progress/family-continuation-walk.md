@@ -45,6 +45,8 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 | `FamilyContinuationTheory/TheOddPowerOfAGaussSumCarriesTheMoebiusSign` | `exists_gaussSum_pow_orderOf_eq_of_odd`: for odd order `n>2`, `g(χ)^n ≡ −card F` modulo `(μ−1)²` in `ℤ[μ]`; `exists_gaussSum_pow_orderOf_eq_of_even`: for even order the sign is `χ(−1)` |
 | `FamilyContinuationTheory/ThePlanarLargeSieve` | `planarLargeSieve_bessel`, `sum_norm_sq_sum_mul_le`: for points of `ℝ²/ℤ²` that are `δ`-separated in the maximum of the two circle distances, `∑_{m,n<N}\|∑_r c_r e(mx_r+ny_r)\|² ≤ (2N+δ⁻¹∑_{k≤M}1/k)² ∑\|c_r\|²` |
 | `FamilyContinuationTheory/TheLargeSieveOverTheEisensteinIntegers` | `eisenstein_largeSieve`, `eisenstein_largeSieve_symmetric`: the same over `ℤ[ω]` with the self-dual character `exp(2πi Tr(w/√−3))` for points `δ`-separated modulo the lattice; `eisenstein_farey_largeSieve`: fractions `d/s`, `\|s\|²≤Y`, distinct modulo `ℤ[ω]`: `(2N+2Y∑_{k≤M}1/k)² ∑\|c\|²` (external Lemma 6.1 and the inequality of Lemma 6.2 up to `log²`); `exists_eq_mul_of_fraction_sub_mem`: reduced fractions that agree modulo the lattice have associate denominators |
+| `FamilyContinuationTheory/TheNormCountOfTheEisensteinIntegers` | `card_normSet`: `#{z∈ℤ[ω] : N(z)=n} = 6 Σ_{d\|n} χ₃(d)`; on the way: a rational prime `≡2 (mod 3)` stays prime, a prime `≡1 (mod 3)` is a norm `ππ̄` with `π`, `π̄` not associate |
+| `FamilyContinuationTheory/TheEisensteinLatticeSumIsZetaTimesAnLFunction` | `latticeSum_eq`: `Σ_{(m,n)≠0}(m²−mn+n²)^{−s} = 6 ζ(s) L(s,χ₋₃)` for `Re s>1` (the factor of the external §11.2 for the trivial character) |
 
 **The two open inputs as Lean propositions.** (A) `∃ c b K Z₀, ½ ≤ b ∧ b < 1 ∧ 0 < Z₀ ∧ ∀ Z ≥ Z₀, ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b`; (B) `JasDressedPSD 1`. The external theorem supplies (A) with every `b > 7/8`.
 
@@ -60,7 +62,8 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 
 - **W0, native bricks.** In Lean: the continuation step (external Proposition 2.1), the planar additive large sieve
   over `ℤ[ω]` (external Lemma 6.1; Lemma 6.2 up to `log²`), the correlation of two columns (the algebra of external
-  Lemma 13.3 for coprime moduli), the cube identity (peers, `MetaplecticMobiusDescent`). Not in Lean: the reflection
+  Lemma 13.3 for coprime moduli), the cube identity (peers, `MetaplecticMobiusDescent`), the factorization
+  `ζ_{ℚ(√−3)}=ζ·L(χ₋₃)` as a lattice sum (external §11.2, trivial character). Not in Lean: the reflection
   of the completed theta row (external §5.1), the quadratic and sextic large sieves over `ℤ[ω]`, the Poisson
   representation with its Euler factors (external §7), the zero detector (external §8).
 
@@ -72,3 +75,4 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 ## Log
 - 2026-11-10 — created; C1–C5 analysed against the cached text (§5.1, §6.1, §12, §15.2); four modules compiled (single-file check, no output) and wired through `FamilyContinuationTheory` into `MainTheorems`.
 - 2026-11-10 — C10, C11 analysed; three modules compiled (single-file check, no output): the sign law for Gauss sums of every order, the planar large sieve, the large sieve over the Eisenstein integers.
+- 2026-11-10 — C12 recorded; two modules compiled (single-file check, no output): the norm count of the Eisenstein integers and the factorization of the lattice sum.

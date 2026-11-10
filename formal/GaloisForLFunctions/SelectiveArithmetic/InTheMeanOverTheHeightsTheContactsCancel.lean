@@ -446,9 +446,10 @@ theorem exists_height_contactPoly_small {N : ℕ} (hN : 1 ≤ N) {T : ℝ} (hT :
   obtain ⟨Gt, hGt⟩ : ∃ Gt : ℝ, Gt =
       ∑ n ∈ Finset.Icc 2 N, r n * Real.cos (t * Real.log n) ^ 2 := ⟨_, rfl⟩
   have hlamK : ε * R / K * K = ε * R := div_mul_cancel₀ _ hK0.ne'
-  have hsel' : (1 / 2 - 1 / T) * R - ε * R ≤ Gt - ε * R / K * Bd := by
-    rw [hGt, hBd, ← hlamK]
+  have hsel' : (1 / 2 - 1 / T) * R - ε * R / K * K ≤ Gt - ε * R / K * Bd := by
+    rw [hGt, hBd]
     exact hsel
+  rw [hlamK] at hsel'
   have hBd0 : 0 ≤ Bd := by
     rw [hBd]
     exact Finset.sum_nonneg fun _ _ => sq_nonneg _
