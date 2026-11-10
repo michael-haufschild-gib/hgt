@@ -470,13 +470,16 @@ Module in a strip `a ≤ Re ρ_i ≤ A`, `Σ‖b_i‖ < ∞`, locally finite; `�
    zero is visible (positive real parts do not cancel), so purity is RH; under RH
    `ρ(1 − ρ) = ‖ρ‖²` and the weights are positive (`zeroMotive_castelnuovoSeveri_iff`).
 
-### P31. No Dirichlet polynomial is a factor of `ξ`
-Every Dirichlet polynomial with at least two terms has a zero that is not a zero of `ξ`
-(`exists_zero_not_xi_zero`). Proof on its own card:
-`irp-no-dirichlet-polynomial-is-a-factor-of-xi.md` (K: the constant terms on the two sides of the
-line agree, by the jumps of the fractional part and Möbius inversion; A: a zero-free exponential
+### P31. No exponential polynomial is a factor of `ξ`
+Every exponential polynomial `Σ_k a_k e^{λ_k s}` with distinct real frequencies and at least two
+terms, in particular every Dirichlet polynomial with at least two terms, has infinitely many zeros
+that are not zeros of `ξ` (`infinite_zeros_not_xi_zeros`, `exists_zero_not_xi_zero`). Proof on its
+own card: `irp-no-dirichlet-polynomial-is-a-factor-of-xi.md` (K: the constant terms on the two sides
+of the line agree, by the jumps of the fractional part and Möbius inversion; K′: finitely many
+simple poles on the line add a continuous function and change no jump; A: a zero-free exponential
 polynomial is bounded below; B: its logarithmic derivative expands absolutely up to the zeros;
-C: the constant terms of `D'/D` are `−log` of the lowest and of the highest frequency).
+R: a zero off the line recurs against the density of the zeros of `ζ`; C: the constant terms of
+`D'/D` are the highest and the lowest frequency).
 
 ## Modules
 | Module | Content |
@@ -502,7 +505,7 @@ C: the constant terms of `D'/D` are `−log` of the lowest and of the highest fr
 | TheZerosContainNoClassOfOneFrobenius | `ladderKernel`, `ladderSum`, `ladderDefect`, `jumpTerm`; `endpoint_limits_eq_of_summable_fourierCoeffOn`, `integral_ladderSum`, `fourierCoeffOn_ladderDefect`, `tsum_jumpTerm_ne_zero`, `ladderDefect_limits_sub`, `not_summable_norm_riemannZeta_div`, `exists_riemannZeta_ne_zero_progression`, `not_forall_xi_progression`, `exists_conjugate_not_zero`, `exists_zero_localFactor_not_zero`, `exists_zero_polynomial_not_zero`, `exists_curve_zero_not_zero`, `aperiodicZeroAt_riemannZeta`, `periodicityDichotomy_zeta_iff_riemannHypothesis` |
 | NoSequenceOfZerosApproachesAClassOfOneFrobenius | `ladderMoment`, `taylorConstant`; `integral_tsum_translates_mul_exp`, `summable_sq_norm_integral_mul_exp`, `summable_sq_norm_riemannZeta_div`, `norm_integral_ladderKernel_taylor_le`, `summable_norm_riemannZeta_div_of_ladder`, `not_cofinite_riemannZeta_eq_zero_of_sq_summable`, `not_cofinite_xi_eq_zero_near_class` |
 | HalfOfAClassOfOneFrobeniusIsNotInTheZeroSet | `halfCoeff`; `norm_integral_mul_conjCauchy_le`, `norm_integral_mul_kernelIm_le`, `integral_mul_kernelIm_fold`, `half_norm_mul_integral_kernel_le`, `jump_mul_log_le`, `endpoint_limits_eq_of_summable_halfCoeff`, `halfCoeff_ladderDefect`, `not_summable_nat_norm_riemannZeta_div`, `exists_nat_riemannZeta_ne_zero_progression`, `exists_nat_riemannZeta_ne_zero_progression_down`, `not_eventually_riemannZeta_eq_zero_near_halfClass`, `exists_nat_conjugate_not_zero` |
-| AFactorWithADirichletSeriesIsPure | `exists_thick_zero_shifts`, `riemannZeta_one_sub_conj_eq_zero`, `zetaZeroShiftSet_subset_reflect`, `exists_zetaZeroShiftSet_density_zero`, `exists_zero_not_xi_zero_of_re_ne_half`, `re_eq_half_of_zeros_subset_xi`, `norm_finiteDirichletPolynomial_le`, `exists_zero_dirichletPolynomial_not_xi_zero`, `re_eq_half_of_dirichletPolynomial_zeros_subset_xi` |
+| AFactorWithADirichletSeriesIsPure | `exists_thick_zero_shifts_of_almostPeriodic`, `exists_good_heights_of_almostPeriodic`, `exists_thick_zero_shifts`, `riemannZeta_one_sub_conj_eq_zero`, `zetaZeroShiftSet_subset_reflect`, `exists_zetaZeroShiftSet_density_zero`, `exists_zero_not_xi_zero_of_re_ne_half`, `re_eq_half_of_zeros_subset_xi`, `norm_finiteDirichletPolynomial_le`, `exists_zero_dirichletPolynomial_not_xi_zero`, `re_eq_half_of_dirichletPolynomial_zeros_subset_xi` |
 | AZeroFreeDirichletPolynomialIsBoundedBelow | `twistPoly`, `vtwist`; `finiteDirichletPolynomial_add_mul_I`, `exists_far_bound`, `tendstoLocallyUniformly_twistPoly`, `exists_le_norm_of_zeroFree` |
 | ADirichletPolynomialWithAFunctionalEquationIsNotAFactor | `dirDeriv`, `dirW`, `dirPhi`; `norm_dirW_one_sub_conj`, `norm_dirW_sub_le`, `re_dirPhi_nonneg`, `re_dirPhi_eq_zero`, `exists_real_coeff_dirPhi`, `exists_zero_not_xi_zero_of_functionalEquation`, `exists_zero_not_xi_zero_of_functionalEquation_complex` |
 | NoFamilyOfZerosIsIntegralWhateverTheirRealParts | `norm_frobTrace_sub_le`, `frobTrace_dilate_sub`, `mergedWeight_eq_zero_of_integral_locallyFinite`, `eq_zero_of_integral_trace_of_distinct_xi_zeros` |
@@ -515,10 +518,11 @@ C: the constant terms of `D'/D` are `−log` of the lowest and of the highest fr
 | TheArchimedeanFibreIsATraceAndTheFiniteContactsAreNot | `mergedWeight`, `evenJet`; `mergedWeight_eq_zero_of_frobTrace_bound_at`, `mergedWeight_eq_of_frobTrace_eventually_eq`, `archimedeanFibre_forced`, `not_isTrace_gluedLefschetz`, `not_isTrace_pointCount` |
 | ADirichletPolynomialWithItsZerosOnTheLineHasAFunctionalEquation | `reflPoly`; `tendsto_reflPoly_div`, `exists_entire_quotient`, `exists_bound_on_strip`, `exists_functionalEquation_of_zeros_on_line`, `exists_zero_not_xi_zero_of_constantTerm`, `exists_zero_not_xi_zero_of_dvd`, `exists_ne_zero_root`, `exists_zero_not_xi_zero_of_oneBase`, `exists_zero_not_xi_zero_of_two_terms` |
 | OnTheFlowCastelnuovoSeveriIsPurityAndEffectivity | `centralTrace`, `graphPairing`; `hasSum_mergedWeight_mul`, `mergedWeight_eq_of_frobTrace_eq_on_flow`, `centralTrace_neg_iff`, `conj_centralTrace_iff`, `hasSum_quadraticForm`, `re_eq_half_of_positiveDefinite`, `effective_of_positiveDefinite`, `positiveDefinite_centralTrace_iff`, `graphPairing_comm_iff`, `castelnuovoSeveri_defect`, `castelnuovoSeveri_iff`, `zeroMotive_castelnuovoSeveri_iff` |
-| TheConstantTermsOnTheTwoSidesOfTheLineAgree | `fractSeries`; `mellin_fractSeries`, `fractSeries_eq`, `tsum_jump_eq`, `tsum_eq_of_tsum_dvd`, `constantTerms_agree`, `tsum_scale_eq_zero`, `tsum_left_eq_const`, `eq_const_mul_riemannZeta_div`, `exists_differentiableOn_deriv_mul_div`, `norm_le_of_good_heights` |
+| TheConstantTermsOnTheTwoSidesOfTheLineAgree | `fractSeries`; `mellin_fractSeries`, `fractSeries_eq`, `tsum_jump_eq`, `tsum_eq_of_tsum_dvd`, `constantTerms_agree`, `tsum_scale_eq_zero`, `tsum_left_eq_const`, `eq_const_mul_riemannZeta_div`, `eq_of_mellin_eq_two_sided`, `constantTerms_agree_of_jump`, `exists_differentiableOn_deriv_mul_div`, `norm_le_of_good_heights` |
 | TheInverseOfAnExponentialPolynomialExpandsWhereItIsBoundedBelow | `expPoly`, `Word`, `wordMass`, `freqMonoid`, `LogIndex`; `hasSum_inv_expPoly_words`, `norm_wordMass_le`, `summable_exp_neg_freqMonoid`, `hasSum_inv_expPoly`, `hasSum_logWeight`, `sum_exp_eq_expPoly` |
 | AZeroFreeExponentialPolynomialIsBoundedBelow | `exists_le_norm_expPoly_of_zeroFree`, `hasSum_logWeight_of_zeroFree` |
-| NoDirichletPolynomialIsAFactorOfXi | `exists_zero_not_xi_zero` |
+| TheJumpLawSurvivesFinitelyManyPolesOnTheLine | `polarPart`; `fractSeries_sub_eq_polarPart`, `tsum_jump_eq_of_poles`, `constantTerms_agree_of_poles`, `exists_principalParts` |
+| NoExponentialPolynomialIsAFactorOfXi | `infinite_zeros_not_xi_zeros`, `infinite_zeros_not_xi_zeros_of_re_ne_half`, `infinite_zeros_not_xi_zeros_dirichletPolynomial`, `exists_zero_not_xi_zero` |
 
 ## Reductions (README §12)
 Purity over `ℤ` is reduced to one of: an index bound of one for `ξ`; a crude count on a thick set of
@@ -547,3 +551,4 @@ fixed part with mass one.
 - 2026-11-10 — 34 modules: zeros on the line force the functional equation of a Dirichlet polynomial, so no Dirichlet polynomial with a constant term and a further term is a factor; lowest frequency dividing the others; one base and two terms; on the flow the trace determines the module, the functional equation is self-duality, Castelnuovo–Severi is purity and effectivity. Open: Dirichlet polynomials in several bases without constant term whose lowest frequency does not divide the others
 - 2026-11-10 — 38 modules: no Dirichlet polynomial with two terms is a factor of `ξ`, whatever its support (jump law of the fractional part, Möbius inversion, exponential polynomials with real frequencies); the open case of the previous entry is closed
 - 2026-11-10 — rigidity of two-sided expansions: the left expansion is constant and `F = −β ζ(s)/s` on the strip
+- 2026-11-10 — 39 modules: infinitely many zeros of an exponential polynomial with real frequencies are not zeros of `ξ`; the jump law with finitely many poles on the line; recurrence lemmas from strip almost periodicity

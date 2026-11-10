@@ -1,17 +1,18 @@
 # Principal average controls arithmetic mixture scaling
 
 - **ID:** B130-principal-average-scaling
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper; Lean in progress)
-- **Source:** [Explicit arithmetic mixture](../3-formalized/arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md), [endpoint moment obstruction](../3-formalized/endpoint-tangent-moment-obstructs-polynomial-scaling.md).
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean formalized)
+- **Source:** [Explicit arithmetic mixture](arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md), [endpoint moment obstruction](endpoint-tangent-moment-obstructs-polynomial-scaling.md).
 
 ## Statement
 
 Fix an integer `q≥1`. For each reduced residue class `a mod q`, let
-`Φ_a` be analytic on a common disc of radius greater than one,
+`Φ_a` be analytic on a neighbourhood of a common closed disc of radius greater than one,
 unimodular on `[0,1]`, with `Φ_a(0)=1` and `Φ_a(1)=-1`.
 At primes not dividing `q`, use the actual phase `Φ_[p](p^-t)`;
-at each prime dividing `q`, choose a profile with the same properties.
+at each prime dividing `q`, choose `ρ_p` analytic on the same neighbourhood
+and unimodular on `[0,1]`, with `ρ_p(1)=-1`. Its value at zero is unrestricted.
 Let `L_t` be the resulting Euler product and
 `Ψ=(1/φ(q))Σ_a Φ_a`, `Ψ(z)-1=Σ b_k z^k`.
 
@@ -111,21 +112,26 @@ larger disc. For `χ≠1`, orthogonality gives `Dχ(0)=Dχ(1)=0`.
 All analytic inputs are derived for the actual family; no continuation,
 boundedness, or specialization hypothesis is added.
 
-## Formalization inputs
+## Formalization
 
-Finite Dirichlet Fourier inversion is already proved by
-`RHTower.dirichletCharacterFourier_expansion` in
-`RHTower/SelbergClass/DirichletFourier.lean`. Bounded nonprincipal
-prime-log continuation and summable shifts are proved in
-`GaugeDeformations/CharacterPrimeLogContinuation.lean`.
-`analyticPhase_affine_average_no_entire_scaling` excludes an entire
-extension of the proposed mean profile.
+All modules are under
+`formal/GaloisForLFunctions/ArithmeticWeightTheory/GaugeDeformations/`.
 
-The existing `continuousOn_analyticSmoothingScaledRemainder` applies
-to every analytic mean profile, without a unimodularity condition.
-It supplies the principal tail estimate. Finite Fourier inversion
-reduces the remaining infinite sums to nonprincipal character profiles
-with zero endpoint mass; the ramified correction is `ρ_p-Ψ`.
+| Module | Main declarations |
+|---|---|
+| `CharacterProfilePrimeSums.lean` | `weightedProfilePrimeSum_shifted`, `exists_characterProfile_continuation` |
+| `ResidueProfileFourier.lean` | `residueFourier_inversion`, `residueAverage_properties` |
+| `ArithmeticResidueProfiles.lean` | `residuePrimeValue_eq_twist`, `continuousOn_residueHigherPrimeLog`, `residueHigherPrimeLog_zero` |
+| `PrincipalProfileScaling.lean` | `principalProfilePrimeSum_scaled` |
+| `ArithmeticResiduePrimeDecomposition.lean` | `residuePrimeSum_decomposition`, `exists_residuePrime_correction` |
+| `ArithmeticResidueScaling.lean` | `tendstoLocallyUniformlyOn_residueEuler`, `residueScalingProfile_eq_full` |
+| `JointQuadraticScalingRigidity.lean` | `joint_quadratic_limit_polynomial`, `joint_quadratic_limit_entire` |
+| `ArithmeticResidueRigidity.lean` | `residueAverage_singular_shift`, `residueEuler_no_joint_endpoint_regularization` |
+
+All eight files passed final direct `lake --old env lean` checks without
+warnings. All 18 capstone transitive axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`. Umbrella imports are present;
+the umbrella was not compiled.
 
 The scaling proof itself needs only the common endpoint `Φ_a(1)=ρ_p(1)=-1`.
 Normalization `Φ_a(0)=1` removes the zeroth mean coefficient and supplies
@@ -141,7 +147,5 @@ the exact principal-average scaling law. B130's arithmetic Stepanov
 estimate remains open.
 
 Corpus searches found the explicit example, the mean-profile
-obstruction, and finite Fourier inversion, but no general actual-mixture
-scaling theorem. External novelty is unassessed. The paper proof is
-dependency-closed; its general arithmetic expansion, scaling, and
-endpoint obstruction still require Lean formalization.
+obstruction, and finite Fourier inversion, but no previous general
+actual-mixture scaling theorem. External novelty is unassessed.

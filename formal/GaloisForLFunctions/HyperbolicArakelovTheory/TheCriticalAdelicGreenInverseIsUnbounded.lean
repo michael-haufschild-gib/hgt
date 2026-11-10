@@ -13,7 +13,7 @@ but cannot be a Bochner integral of bounded charge operators.
 set_option autoImplicit false
 noncomputable section
 open Filter Set MeasureTheory
-open scoped Topology BigOperators InnerProductSpace
+open scoped Classical Topology BigOperators InnerProductSpace
 namespace GaloisForLFunctions.HyperbolicArakelovTheory.WeightedAdelicGreen
 open FullAdelic
 
@@ -49,8 +49,8 @@ private theorem criticalPrecision_norm_sq_le (f : ChargeSpace) :
   have hsq := hs.mpr hn
   rw [criticalPrecision_quadratic, criticalPrecision_apply, norm_sub_sq_real, norm_smul,
     Real.norm_of_nonneg edge_pos.le, real_inner_smul_left]
-  have hi := real_inner_comm f (adjacencyOperator f)
-  nlinarith only [hsq, hi]
+  rw [real_inner_comm f (adjacencyOperator f)]
+  nlinarith only [hsq]
 
 private theorem exists_unit_charge_above (c : ℝ) (hc : c < edge) :
     ∃ f : ChargeSpace, ‖f‖ = 1 ∧ c < ⟪adjacencyOperator f, f⟫_ℝ := by
@@ -122,16 +122,17 @@ private theorem sphericalPrecision_decomposition (ν : ℝ) :
 private theorem sphericalPrecision_symmetric (ν : ℝ) (f g : ChargeSpace) :
     ⟪sphericalPrecision ν f, g⟫_ℝ = ⟪f, sphericalPrecision ν g⟫_ℝ := by
   rw [sphericalPrecision_decomposition]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.one_apply, inner_add_left, inner_add_right,
-    real_inner_smul_left, real_inner_smul_right, criticalPrecision_symmetric]
+  change ⟪criticalPrecision f + (1 / 4 - ν ^ 2) • f, g⟫_ℝ =
+    ⟪f, criticalPrecision g + (1 / 4 - ν ^ 2) • g⟫_ℝ
+  rw [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right,
+    criticalPrecision_symmetric]
 
 private theorem sphericalPrecision_coercive (ν : ℝ) (f : ChargeSpace) :
     (1 / 4 - ν ^ 2) * ‖f‖ ^ 2 ≤ ⟪sphericalPrecision ν f, f⟫_ℝ := by
   rw [sphericalPrecision_decomposition]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.one_apply, inner_add_left, real_inner_smul_left,
-    real_inner_self_eq_norm_sq]
+  change (1 / 4 - ν ^ 2) * ‖f‖ ^ 2 ≤
+    ⟪criticalPrecision f + (1 / 4 - ν ^ 2) • f, f⟫_ℝ
+  rw [inner_add_left, real_inner_smul_left, real_inner_self_eq_norm_sq]
   have h := adjacency_quadratic_le f
   rw [criticalPrecision_quadratic]
   linarith only [h]
@@ -152,15 +153,18 @@ theorem sphericalGreenTransform_norm_eq {ν : ℝ} (hν0 : 0 < ν) (hν1 : ν < 
     intro f
     have hc := sphericalPrecision_coercive ν (B f)
     rw [hright] at hc
+    change m * ‖B f‖ ^ 2 ≤ ⟪f, B f⟫_ℝ at hc
     have hi := real_inner_le_norm f (B f)
     by_cases hz : B f = 0
     · rw [hz, norm_zero]
       exact mul_nonneg (inv_nonneg.mpr hm.le) (norm_nonneg f)
     have hn : 0 < ‖B f‖ := norm_pos_iff.mpr hz
     have hb : m * ‖B f‖ ≤ ‖f‖ := by
-      apply (mul_le_mul_right hn).mp
-      nlinarith only [hc, hi]
-    have h := (le_div_iff₀ hm).mpr (by simpa only [mul_comm] using hb)
+      by_contra h
+      have hbad := mul_lt_mul_of_pos_right (lt_of_not_ge h) hn
+      nlinarith only [hc, hi, hbad]
+    have h : ‖B f‖ ≤ ‖f‖ / m :=
+      (le_div_iff₀ hm).mpr (by simpa only [mul_comm] using hb)
     simpa only [div_eq_mul_inv, mul_comm] using h
   · by_contra h
     have hlt : ‖B‖ < m⁻¹ := lt_of_not_ge h
@@ -175,7 +179,7 @@ theorem sphericalGreenTransform_norm_eq {ν : ℝ} (hν0 : 0 < ν) (hν1 : ν < 
         _ ≤ ‖criticalPrecision f‖ + ‖m • f‖ := norm_add_le _ _
         _ ≤ ε + m := by
           rw [norm_smul, Real.norm_of_nonneg hm.le, hf, mul_one]
-          exact add_le_add_right hsmall.le m
+          linarith only [hsmall]
     have hone : (1 : ℝ) = ⟪B f, sphericalPrecision ν f⟫_ℝ := by
       rw [← sphericalPrecision_symmetric, hright, real_inner_self_eq_norm_sq, hf, one_pow]
     have hbnd : (1 : ℝ) ≤ ‖B‖ * (ε + m) := by
@@ -201,10 +205,9 @@ private theorem green_matrix_right_inverse (C : ChargeOperator)
     have he : (C (lp.single 2 x (1 : ℝ)) : FiniteVertices → ℝ) = green x :=
       funext (hC x)
     change edge * C (lp.single 2 x (1 : ℝ)) y -
-      adjacencyOperator (C (lp.single 2 x (1 : ℝ))) y = (lp.single 2 x (1 : ℝ)) y
+      adjacencyOperator (C (lp.single 2 x (1 : ℝ))) y = (lp.single 2 x (1 : ℝ) : ChargeSpace) y
     rw [hC, adjacencyOperator_apply, he, green_source]
-    simp only [pointMass, lp.coeFn_single, Pi.single_apply]
-    split_ifs <;> simp_all only [eq_comm, one_ne_zero]
+    simp only [pointMass, lp.coeFn_single, Pi.single_apply, eq_comm]
   apply ContinuousLinearMap.ext
   intro v
   change criticalPrecision (C v) = v
@@ -216,7 +219,8 @@ private theorem green_matrix_right_inverse (C : ChargeOperator)
   simp only [map_sum]
   apply Finset.sum_congr rfl
   intro y _
-  have he : lp.single 2 y (f y) = f y • lp.single 2 y (1 : ℝ) := by
+  have he : (lp.single 2 y (f y) : ChargeSpace) =
+      f y • (lp.single 2 y (1 : ℝ) : ChargeSpace) := by
     rw [← lp.single_smul, smul_eq_mul, mul_one]
   rw [he, map_smul, map_smul, hdelta]
 

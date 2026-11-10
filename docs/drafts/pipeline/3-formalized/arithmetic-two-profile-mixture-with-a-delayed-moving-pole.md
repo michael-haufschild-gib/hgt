@@ -131,6 +131,7 @@ fails. The mean-profile obstruction alone does not prove this arithmetic
 statement. The exact divisor and rational scaling law are the positive
 survivor of the failed joint-endpoint route. B130 remains open.
 
-[Next conjecture](../2-fully-proven/principal-average-controls-arithmetic-mixture-scaling.md):
+[General theorem](principal-average-controls-arithmetic-mixture-scaling.md):
 the principal average determines scaling for every finite residue-class
-mixture of normalized analytic phase profiles.
+mixture of normalized analytic phase profiles. Its actual Euler scaling
+and joint-endpoint obstruction are formalized.
