@@ -217,14 +217,14 @@ theorem mixtureHigherPrimeLog_eq_gauge {t : ℝ} (ht : 0 ≤ t) (s : ℂ) :
   simp [mixtureFiniteCorrection]
 
 theorem mixtureDivisorUnit_endpoint : mixtureDivisorUnit 0 1 = riemannZeta 2 := by
-  rw [mixtureDivisorUnit, mixtureRegularExponent, zetaResidueFactor_one, one_mul, Complex.ofReal_zero,
-    mul_zero, add_zero, mul_zero, add_zero, primeLogRegularPart_one,
+  simp only [mixtureDivisorUnit, mixtureRegularExponent, zetaResidueFactor_one, one_mul,
+    Complex.ofReal_zero, mul_zero, add_zero, primeLogRegularPart_one,
     characterShiftSeries_zero mixtureCharacterLog mixtureSkewCoefficient_tsum,
-    mul_zero, add_zero, mixtureFiniteCorrection_zero, add_zero, mixtureHigherPrimeLog_zero]
-  rw [show -4 * -hullRem 1 (twist 0) + 2 * -hullRem 1 (twist 0) +
-      hullRem 1 (twist (exponentialPhaseGauge 0)) - hullRem 1 (twist 0) =
-      hullRem 1 (twist 0) + hullRem 1 (twist (exponentialPhaseGauge 0)) by ring]
-  exact exp_liouville_hullRem_pair
+    mixtureFiniteCorrection_zero, mixtureHigherPrimeLog_zero]
+  convert exp_liouville_hullRem_pair using 1
+  congr 1
+  ring
+
 
 theorem mixture_ball_in_tube {e r : ℝ} (hre : r ≤ e) {s : ℂ}
     (hs : s ∈ ball (1 : ℂ) r) : 1 - e < s.re ∧ |s.im| < e := by

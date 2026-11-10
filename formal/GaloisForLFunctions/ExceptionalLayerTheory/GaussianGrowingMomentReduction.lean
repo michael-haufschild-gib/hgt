@@ -205,7 +205,8 @@ def gaussianGrowingMomentOrder (κ t : ℝ) : ℕ := ⌊κ * t / Real.log t⌋�
 def gaussianGrowingLongCutoff (a : ℝ) (J : ℕ) (t : ℝ) : ℕ :=
   ⌊Real.exp (a * t) / t ^ (J + 1)⌋₊
 
-private theorem eventually_growing_order {κ : ℝ} (hκ : 0 < κ) :
+/-- The concrete floor order satisfies both logarithmic budgets eventually. -/
+theorem eventually_gaussianGrowingMomentOrder_bounds {κ : ℝ} (hκ : 0 < κ) :
     ∀ᶠ t : ℝ in atTop,
       gaussianGrowingMomentOrder κ t ≠ 0 ∧
       (gaussianGrowingMomentOrder κ t : ℝ) ≤ t ∧
@@ -242,7 +243,9 @@ private theorem eventually_growing_order {κ : ℝ} (hκ : 0 < κ) :
     linarith only [hnear, hr1R]
   exact ⟨by omega, hrle, hrlo, (le_div_iff₀ hl0).mp hfloor⟩
 
-private theorem eventually_growing_cutoffs {a : ℝ} (ha : 0 < a) (J : ℕ) :
+/-- The concrete long and short cutoffs satisfy the product budget and retain
+at least half the unrounded long cutoff eventually. -/
+theorem eventually_gaussianGrowingLongCutoff_bounds {a : ℝ} (ha : 0 < a) (J : ℕ) :
     ∀ᶠ t : ℝ in atTop,
       1 ≤ gaussianGrowingLongCutoff a J t ∧
       1 ≤ ⌊t⌋₊ ∧ (⌊t⌋₊ : ℝ) ≤ t ∧
@@ -309,7 +312,7 @@ theorem eventually_gaussianGrowingMomentReduction {a κ : ℝ} (ha : 0 < a)
       ‖gaussianHigherCentredVaughanError (gaussianGrowingMomentOrder κ t) (1 / 2) t
         (gaussianGrowingLongCutoff a J t) ⌊t⌋₊ ε‖ ≤
           gaussianGrowingMomentConstant * Real.exp (-(a / 4) * t) := by
-  filter_upwards [eventually_growing_order hκ, eventually_growing_cutoffs ha J,
+  filter_upwards [eventually_gaussianGrowingMomentOrder_bounds hκ, eventually_gaussianGrowingLongCutoff_bounds ha J,
     eventually_growing_polynomial_absorbed ha, eventually_ge_atTop (8192 : ℝ)]
       with t hr hcut hpoly ht
   intro ε hε hsector hscale

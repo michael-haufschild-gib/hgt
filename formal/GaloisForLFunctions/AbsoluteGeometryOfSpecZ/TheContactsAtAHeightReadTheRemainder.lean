@@ -37,9 +37,9 @@ namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 theorem windowPrime_eq_contacts (ℓ T : ℝ) :
     SquareRootThreshold.windowPrime ℓ T =
       (∑ n ∈ Icc 2 ⌊Real.exp (2 * ℓ)⌋₊, ((contactWeight n : ℝ) : ℂ) *
-        (EF.weilTest (SquareRootThreshold.cb ℓ 0) (SquareRootThreshold.cb ℓ 0) (Real.log n) *
+        (EF.weilTest (_root_.RHTower.Littlewood.cb ℓ 0) (_root_.RHTower.Littlewood.cb ℓ 0) (Real.log n) *
             cexp (-(I * T * Real.log n)) +
-          EF.weilTest (SquareRootThreshold.cb ℓ 0) (SquareRootThreshold.cb ℓ 0) (-Real.log n) *
+          EF.weilTest (_root_.RHTower.Littlewood.cb ℓ 0) (_root_.RHTower.Littlewood.cb ℓ 0) (-Real.log n) *
             cexp (I * T * Real.log n))).re := by
   have h2π : (2 * (Real.pi : ℂ)) ≠ 0 := by
     exact_mod_cast (by positivity : (2 * Real.pi : ℝ) ≠ 0)
@@ -59,7 +59,7 @@ theorem windowPrime_eq_contacts (ℓ T : ℝ) :
     Bool.false_eq_true, if_false, contactWeight]
   rw [e1 (Real.log n), e1 (-Real.log n)]
   push_cast
-  ring_nf
+  ring
 
 /-- **The contacts at a height read the remainder of the zero count.** As `T → ∞` the contacts of
 the window of aperture `ℓ` at the height `T`, plus the correction of the zeros off the line, minus
@@ -67,13 +67,13 @@ the remainder `S` integrated against the derivative of the spectral window, tend
 theorem tendsto_contacts_add_offLineCorrection_sub {ℓ : ℝ} (hℓ : 0 < ℓ) :
     Tendsto (fun T : ℝ =>
       (∑ n ∈ Icc 2 ⌊Real.exp (2 * ℓ)⌋₊, ((contactWeight n : ℝ) : ℂ) *
-        (EF.weilTest (SquareRootThreshold.cb ℓ 0) (SquareRootThreshold.cb ℓ 0) (Real.log n) *
+        (EF.weilTest (_root_.RHTower.Littlewood.cb ℓ 0) (_root_.RHTower.Littlewood.cb ℓ 0) (Real.log n) *
             cexp (-(I * T * Real.log n)) +
-          EF.weilTest (SquareRootThreshold.cb ℓ 0) (SquareRootThreshold.cb ℓ 0) (-Real.log n) *
+          EF.weilTest (_root_.RHTower.Littlewood.cb ℓ 0) (_root_.RHTower.Littlewood.cb ℓ 0) (-Real.log n) *
             cexp (I * T * Real.log n))).re +
         SquareRootThreshold.offLineCorrection ℓ T -
         ∫ t in (1 : ℝ)..(2 * T),
-          _root_.RHTower.rvmRemainder t * SquareRootThreshold.psiDeriv ℓ (t - T)) atTop
+          _root_.RHTower.rvmRemainder t * _root_.RHTower.Littlewood.psiDeriv ℓ (t - T)) atTop
       (𝓝 0) := by
   refine (SquareRootThreshold.tendsto_windowPrime_add_offLineCorrection_sub hℓ).congr fun T => ?_
   rw [windowPrime_eq_contacts]

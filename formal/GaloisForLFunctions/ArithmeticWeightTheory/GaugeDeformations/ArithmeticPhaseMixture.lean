@@ -251,7 +251,7 @@ theorem continuousOn_mixtureHigherPrimeLog {b : ℝ} (hb : 1 / 2 < b) :
         (continuousAt_mixturePrimeValue p hq.1).comp continuousAt_fst
       dsimp only [eulerVar, powCoeff]
       have hpow : ContinuousAt (fun q : ℝ × ℂ => ((p : ℕ) : ℂ) ^ (-q.2)) q := by
-        simpa only [Complex.cpow_def_of_ne_zero hp0] using
+        simpa only [Complex.cpow_def_of_ne_zero hp0, Pi.neg_apply] using
           ((continuousAt_snd.neg).const_mul (Complex.log ((p : ℕ) : ℂ))).cexp
       exact hpow.mul hp
     have hsl : 1 - eulerVar q.2 (mixturePrimeValue q.1) p ∈ Complex.slitPlane := by

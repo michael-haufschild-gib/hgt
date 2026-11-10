@@ -757,7 +757,8 @@ theorem two_re_lagStructure_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
   simp only [Complex.reCLM_apply] at hre
   rw [← hre.tsum_eq]
   refine tsum_congr fun k => ?_
-  dsimp only [hg, levelMain, levelRefl, faceHarmonics, facePtFreq]
+  dsimp only [hg, levelMain, levelRefl, faceHarmonics]
+  dsimp only [facePtFreq]
   rw [Complex.re_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun d _ => ?_
   have hre_pull : ∀ (c : ℂ) (r θ : ℝ),
@@ -971,10 +972,12 @@ theorem localCount_minimalFaceCounterConfig (γ_min : ℝ) {C : ℝ} (hC : 0 < C
       unfold levelBaseFreq levelStep levelRadius at hbase_gt
       have hpos_k : 0 < 4 * ((k₀ : ℝ) + 1) := by positivity
       have hmul : 4 * ((k₀ : ℝ) + 1) * (t - 1) < (d : ℝ) := by
-        have h1 := (lt_div_iff₀ hpos_k).mp (by linarith : t - 1 < (d : ℝ) / (4 * ((k₀ : ℝ) + 1)))
+        have h1 := mul_lt_mul_of_pos_left hbase_gt hpos_k
+        have h2 : 4 * ((k₀ : ℝ) + 1) * ((d : ℝ) * (1 / (4 * ((k₀ : ℝ) + 1)))) = (d : ℝ) := by
+          field_simp [hpos_k.ne']
         linarith
       have hfl : (d_min : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t - 1) :=
-        Nat.floor_le (by positivity)
+        Nat.floor_le (mul_nonneg (by positivity) (by linarith))
       exact_mod_cast (hfl.trans_lt hmul).le
     · -- Upper bound `d ≤ d_max`
       have hord := levelFreq_strict_order (faceBaseFreq γ_min C Θ k) k
@@ -988,14 +991,15 @@ theorem localCount_minimalFaceCounterConfig (γ_min : ℝ) {C : ℝ} (hC : 0 < C
       unfold levelBaseFreq levelStep levelRadius at hbase_lt
       have hpos_k : 0 < 4 * ((k₀ : ℝ) + 1) := by positivity
       have hmul : (d : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t + 1) := by
-        have h1 := (div_lt_iff₀ hpos_k).mp
-          (by linarith : (d : ℝ) / (4 * ((k₀ : ℝ) + 1)) < t + 1)
+        have h1 := mul_lt_mul_of_pos_left hbase_lt hpos_k
+        have h2 : 4 * ((k₀ : ℝ) + 1) * ((d : ℝ) * (1 / (4 * ((k₀ : ℝ) + 1)))) = (d : ℝ) := by
+          field_simp [hpos_k.ne']
         linarith
       exact Nat.le_floor hmul
   have hcard_Icc : (Finset.Icc d_min d_max).card ≤ 8 * k₀ + 10 := by
     rw [Nat.card_Icc]
     have hfl_hi : (d_max : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t + 1) :=
-      Nat.floor_le (by positivity)
+      Nat.floor_le (mul_nonneg (by positivity) (by linarith))
     have hfl_lo : 4 * ((k₀ : ℝ) + 1) * (t - 1) - 1 < (d_min : ℝ) :=
       Nat.sub_one_lt_floor _
     have hdiff_R : (d_max : ℝ) < (d_min : ℝ) + (8 * (k₀ : ℝ) + 9) := by linarith

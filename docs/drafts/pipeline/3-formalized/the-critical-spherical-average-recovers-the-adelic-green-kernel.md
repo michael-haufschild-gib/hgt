@@ -1,15 +1,15 @@
 # The critical spherical average recovers the adelic Green kernel
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper proof; Lean verification in progress)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Obstacle:** B133: connect the mixed hyperbolic kernel to the actual all-prime Green inverse.
 
-## Target
+## Statement
 
 Let `A` be the established `p⁻²`-weighted adelic adjacency, `e` its tempered
 edge, `S=√((e+¼)I−A)`, and `K(r)=exp(−rS)/(4π sinh r)`.
-For every pair of finite adelic vertices `x,y`, prove that the critical
-spherical average is integrable and equals the actual minimal Green kernel:
+For every pair of finite adelic vertices `x,y`, the critical spherical
+average is integrable and equals the actual minimal Green kernel:
 
 `∫₀∞ 4π sinh²(r) φ_{1/2}(r) K(r;x,y) dr = green(x,y)`.
 
@@ -47,6 +47,20 @@ The finite product barrier for `green` makes this integral finite, proving
 ordinary integrability, including `x=y`. Finally,
 `4πsinh²(r)φ_{1/2}(r)K(r;x,y)=w_{1/2}(r)E(r;x,y)` for `r>0`.
 No operator-norm integrability is asserted at the critical edge.
+
+## Lean declarations
+
+Module: `GaloisForLFunctions.HyperbolicArakelovTheory.TheCriticalSphericalAverageRecoversTheAdelicGreenKernel`.
+Namespace: `GaloisForLFunctions.HyperbolicArakelovTheory.WeightedAdelicGreen`.
+
+- `sphericalPrecision_mul_transform`: the subcritical operator spherical integral is an actual inverse of the shifted all-prime precision.
+- `hasSum_occupationTerm`: the positive occupation series sums to the existing minimal Green kernel.
+- `integrable_critical_spherical_average`: the geometric critical average is integrable for every vertex pair, diagonal included.
+- `critical_spherical_average_eq_green`: exact equality of that average with `green`.
+
+Plain `lake --old env lean` audit passes without warnings. These four declarations
+have exactly the standard axioms `[propext, Classical.choice, Quot.sound]`.
+The module is imported by the HAT umbrella.
 
 ## Boundary
 

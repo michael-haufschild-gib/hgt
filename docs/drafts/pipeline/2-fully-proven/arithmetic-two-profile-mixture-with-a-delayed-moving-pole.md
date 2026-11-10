@@ -28,7 +28,7 @@ and continuation near one of the form
 `U(t,s)=A_t(s)(s-(1-2t))⁴/(s-(1-4t))²`,
 
 where `A_t` is analytic and nonzero near both shifted points. Thus the
-first singular shift becomes a regular zero of order four, but a later
+first principal shift is a regular zero of order four, but a later
 pole of order two survives. The full scaling limit is
 
 `U(t,1+tw)/t² → ζ(2)(w+2)⁴/(w+4)²`.
