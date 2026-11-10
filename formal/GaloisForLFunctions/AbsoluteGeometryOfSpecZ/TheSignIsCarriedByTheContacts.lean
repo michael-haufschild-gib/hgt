@@ -1,6 +1,7 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePairingOfTheDegreePointsWeighsTheZeros
 import GaloisForLFunctions.SelectivePositivityAndThresholdLaws.LiouvilleOddWindowRefutationAndSelectiveFullPositivity
 import GaloisForLFunctions.RHTower.WeilConeUniquenessUnconditional
+import GaloisForLFunctions.ArithmeticIncidencePositivity.AnExplicitLargerApertureRetainsAWeilFloor
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheOrbitRingWithABaseIsATowerOfLines
 
 /-!
@@ -15,6 +16,9 @@ one contact.
   (`tendsto_degreePairing_le_degrees_of_width`): for every packet of width at most `181/250`, of
   any sign, the limit of jets plus contacts minus the counterterm is at most
   `2 d₁ d₂ − ∫ f²/5000`. The input is the positivity of Weil's functional on these windows.
+  In general a certificate of positivity at an aperture `a` with the floor `c₀` is the inequality
+  with the margin `c₀·∫f²` on the packets of length `2a`, wherever they sit
+  (`tendsto_degreePairing_le_degrees_of_certificate`).
 * **Any weight in place of the contact orders** (`tendsto_degreeForm_add_weightedContact`): with
   weights `w(k)/√k` on the pairs `(m, mk)` the limit is `2 d₁ d₂` minus the functional of the
   weight `w` on the packet. The jets and the counterterm do not depend on the weight.
@@ -64,32 +68,33 @@ theorem zeroSum_translate (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) (s
   exact congrArg (fun k => (_root_.RHTower.weilFullFunctional (fun n => (Λ n : ℝ)) k).re)
     (weilTest_packet_translate f s)
 
-/-- For a packet of width at most `181/250` the sum over the zeros is at least `∫ f²/5000`. -/
-theorem zeroSum_ge_of_width (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {c : ℝ}
-    (hshort : ∀ u, 181 / 500 < |u - c| → f u = 0) :
-    1 / 5000 * ∫ u, f u ^ 2 ≤ zeroSum f := by
+/-- **A certificate of positivity on a window bounds the zero sum of every packet of that
+aperture.** If the zero sum of every test supported in `[−a, a]` is at least `c₀·∫|g|²`, then
+`Z(f) ≥ c₀·∫f²` for every packet supported within `a` of a centre. -/
+theorem zeroSum_ge_of_certificate {a c₀ : ℝ}
+    (hcert : ∀ g : ℝ → ℂ, ContDiff ℝ 2 g → tsupport g ⊆ Set.Icc (-a) a →
+      c₀ * ∫ x, ‖g x‖ ^ 2 ≤ (zetaZeroConfig.W g g).re)
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {c : ℝ}
+    (hshort : ∀ u, a < |u - c| → f u = 0) :
+    c₀ * ∫ u, f u ^ 2 ≤ zeroSum f := by
   have hg : ContDiff ℝ 2 fun u => f (u - -c) := hf.comp (contDiff_id.sub contDiff_const)
-  have hg0 : ∀ x : ℝ, 181 / 500 < |x| → f (x - -c) = 0 := fun x hx =>
+  have hg0 : ∀ x : ℝ, a < |x| → f (x - -c) = 0 := fun x hx =>
     hshort _ (by rwa [sub_neg_eq_add, add_sub_cancel_right])
-  have hts : tsupport (fun x => ((f (x - -c) : ℝ) : ℂ)) ⊆
-      Set.Icc (-(181 / 500)) (181 / 500) := by
+  have hts : tsupport (fun x => ((f (x - -c) : ℝ) : ℂ)) ⊆ Set.Icc (-a) a := by
     refine closure_minimal (fun x hx => ?_) isClosed_Icc
     by_contra hxI
-    have hx' : 181 / 500 < |x| := by
+    have hx' : a < |x| := by
       rw [Set.mem_Icc, not_and_or, not_le, not_le] at hxI
       rcases hxI with h | h
-      · rw [abs_of_neg (by linarith)]
-        linarith
-      · rw [abs_of_pos (by linarith)]
-        exact h
+      · exact lt_abs.mpr (Or.inr (by linarith))
+      · exact lt_abs.mpr (Or.inl h)
     exact hx (by
       show ((f (x - -c) : ℝ) : ℂ) = 0
       rw [hg0 x hx', Complex.ofReal_zero])
-  have h : 1 / 5000 * ∫ x, ‖((f (x - -c) : ℝ) : ℂ)‖ ^ 2 ≤
+  have h : c₀ * ∫ x, ‖((f (x - -c) : ℝ) : ℂ)‖ ^ 2 ≤
       (zetaZeroConfig.W (fun x => ((f (x - -c) : ℝ) : ℂ))
         (fun x => ((f (x - -c) : ℝ) : ℂ))).re :=
-    SelectivePositivityAndThresholdLaws.zetaZeroConfig_re_W_ge_of_aperture_le_threeHundredSixtyTwoThousandths
-      (contDiff_ofReal_packet hg) hts
+    hcert _ (contDiff_ofReal_packet hg) hts
   have hnorm : ∫ x, ‖((f (x - -c) : ℝ) : ℂ)‖ ^ 2 = ∫ u, f u ^ 2 := by
     have h1 : ∫ x, ‖((f (x - -c) : ℝ) : ℂ)‖ ^ 2 = ∫ x, f (x - -c) ^ 2 :=
       integral_congr_ae (Eventually.of_forall fun x => by
@@ -100,6 +105,29 @@ theorem zeroSum_ge_of_width (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) 
   rw [hnorm] at h
   rw [← zeroSum_translate hf hfc (-c)]
   exact h
+
+/-- **A certificate of positivity on a window is the inequality of Castelnuovo and Severi, with
+its margin, on the packets of that aperture.** -/
+theorem tendsto_degreePairing_le_degrees_of_certificate {a c₀ : ℝ}
+    (hcert : ∀ g : ℝ → ℂ, ContDiff ℝ 2 g → tsupport g ⊆ Set.Icc (-a) a →
+      c₀ * ∫ x, ‖g x‖ ^ 2 ≤ (zetaZeroConfig.W g g).re)
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) {c : ℝ}
+    (hshort : ∀ u, a < |u - c| → f u = 0) :
+    ∃ l : ℝ, Tendsto (fun N : ℕ => degreeForm f (3 * K) N + 2 * degreeContact f (3 * K) N)
+        atTop (𝓝 l) ∧
+      l ≤ 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -
+        c₀ * ∫ u, f u ^ 2 :=
+  ⟨_, tendsto_degreePairing_degrees_sub_zeroSum hf hfc hK hsupp, by
+    linarith [zeroSum_ge_of_certificate hcert hf hfc hshort]⟩
+
+/-- For a packet of width at most `181/250` the sum over the zeros is at least `∫ f²/5000`. -/
+theorem zeroSum_ge_of_width (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) {c : ℝ}
+    (hshort : ∀ u, 181 / 500 < |u - c| → f u = 0) :
+    1 / 5000 * ∫ u, f u ^ 2 ≤ zeroSum f :=
+  zeroSum_ge_of_certificate (fun _ hg hgs =>
+    SelectivePositivityAndThresholdLaws.zetaZeroConfig_re_W_ge_of_aperture_le_threeHundredSixtyTwoThousandths
+      hg hgs) hf hfc hshort
 
 /-- **The inequality of Castelnuovo and Severi where the first contact enters.** For every packet
 of width at most `181/250`, of any sign, the pairing of the degree points has a limit, at most
@@ -114,6 +142,21 @@ theorem tendsto_degreePairing_le_degrees_of_width (hf : ContDiff ℝ 2 f)
         1 / 5000 * ∫ u, f u ^ 2 :=
   ⟨_, tendsto_degreePairing_degrees_sub_zeroSum hf hfc hK hsupp, by
     linarith [zeroSum_ge_of_width hf hfc hshort]⟩
+
+/-- The inequality at the larger aperture `(181/500)(1 + step)` of the corpus, strictly between
+`181/500` and `1/2`, with the margin `∫ f²/8000`. -/
+theorem tendsto_degreePairing_le_degrees_of_enlarged_width (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) {c : ℝ}
+    (hshort : ∀ u, ArithmeticIncidencePositivity.enlargedWeilFloorAperture < |u - c| →
+      f u = 0) :
+    ∃ l : ℝ, Tendsto (fun N : ℕ => degreeForm f (3 * K) N + 2 * degreeContact f (3 * K) N)
+        atTop (𝓝 l) ∧
+      l ≤ 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -
+        1 / 8000 * ∫ u, f u ^ 2 :=
+  tendsto_degreePairing_le_degrees_of_certificate (fun _ hg hgs =>
+    ArithmeticIncidencePositivity.zetaZeroConfig_re_W_ge_of_aperture_le_enlargedWeilFloorAperture
+      hg hgs) hf hfc hK hsupp hshort
 
 /-! ### Any weight in place of the contact orders -/
 

@@ -1,7 +1,7 @@
 # Green damping resolves the Weil operator
 
-- **Stage:** 2-fully-proven; Lean formalization in progress
-- **Type:** THEOREM (paper proof)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Obstacle:** B133: passage from the saturated geometric Green form to its actual inverse.
 
 ## Statement
@@ -55,6 +55,21 @@ Riesz coercivity forces `u=v`, proving the asserted strong limit.
 Passing `s↑1` in the two-state estimate proves the error bound.
 Finally `G_r(x_r)=e_r−D(x_r)` and the exact Riesz equation identify
 its limit as `G_crit(Cg)`.
+
+## Lean declarations
+
+Module: `GaloisForLFunctions.HyperbolicArakelovTheory.TheGreenDampingResolvesTheWeilOperator`.
+Namespace: `GaloisForLFunctions.HyperbolicArakelovTheory`.
+
+- `greenJumpOperator_pair`: literal integrated translation-loss pairing.
+- `greenWeilPrecision_quadratic`: exact saturated Green energy and coercive shift.
+- `precision_resolvent`, `resolvent_precision`: two-sided bounded inverse identities.
+- `tendsto_greenWeilResolvent`: strong convergence to `ccmRestrictedWeilCovariance`.
+- `greenWeilResolvent_error_sq_le`: squared physical error bounded by the inverse-energy gap.
+- `tendsto_greenWeilResolvent_jumpEnergy`: convergence of the moving damped jump energy.
+
+Plain `lake --old env lean` audit passes without warnings. All seven declarations above
+have exactly the standard axioms `[propext, Classical.choice, Quot.sound]`.
 
 ## Boundary
 

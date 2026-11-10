@@ -485,7 +485,7 @@ theorem norm_sincC_pow_eight_shift_sub_le {γ η x : ℝ} (hγ : 4 ≤ γ) (hη 
   have hsin_diff : ‖Complex.sin z₁ - Complex.sin z₂‖ ≤ 2 * η := by
     rw [Complex.sin_sub_sin, hsub_z, hadd_z]
     rw [show (η : ℂ) / 2 = ((η / 2 : ℝ) : ℂ) by push_cast; ring, ← Complex.ofReal_sin]
-    rw [norm_mul, norm_mul, norm_two, Complex.norm_real, Real.norm_eq_abs]
+    rw [norm_mul, norm_mul, Complex.norm_ofNat, Complex.norm_real, Real.norm_eq_abs]
     have hsin : |Real.sin (η / 2)| ≤ η / 2 := by
       refine Real.abs_sin_le_abs.trans ?_
       rw [abs_of_nonneg (by positivity)]
@@ -525,8 +525,9 @@ theorem phaseShift_gt (γ ψ : ℝ) (s : ℕ) {T : ℝ} (hT : 0 < T) :
   rw [div_lt_div_iff_of_pos_right hT]
   have hfl := Int.sub_one_lt_floor ((γ * T - ψ) / (2 * Real.pi))
   have hpi : 0 < 2 * Real.pi := by positivity
-  have hmul := ( lt_div_iff₀ hpi ).mp (by linarith :
-    (γ * T - ψ) / (2 * Real.pi) - 1 < (⌊(γ * T - ψ) / (2 * Real.pi)⌋ : ℝ))
+  have hfl' : (γ * T - ψ) / (2 * Real.pi) < (⌊(γ * T - ψ) / (2 * Real.pi)⌋ : ℝ) + 1 := by
+    linarith
+  have hmul := (div_lt_iff₀ hpi).mp hfl'
   nlinarith
 
 theorem phaseShift_le (γ ψ : ℝ) (s : ℕ) {T : ℝ} (hT : 0 < T) :
@@ -535,7 +536,7 @@ theorem phaseShift_le (γ ψ : ℝ) (s : ℕ) {T : ℝ} (hT : 0 < T) :
   rw [div_le_div_iff_of_pos_right hT]
   have hfl := Int.floor_le ((γ * T - ψ) / (2 * Real.pi))
   have hpi : 0 < 2 * Real.pi := by positivity
-  have hmul := (div_le_iff₀ hpi).mp hfl
+  have hmul := (le_div_iff₀ hpi).mp hfl
   nlinarith
 
 theorem cexp_add_phaseShift_mul_T (γ ψ : ℝ) (s : ℕ) {T : ℝ} (hT : 0 < T) :
@@ -555,7 +556,7 @@ theorem cexp_add_phaseShift_mul_T (γ ψ : ℝ) (s : ℕ) {T : ℝ} (hT : 0 < T)
 
 /-- Combined perturbation bound for `sinc(γ − ix)^8 e^{iγ(T + v)}` on `|v| ≤ R`. -/
 theorem norm_shifted_mode_sub_ideal_le {γ ψ : ℝ} {s : ℕ} {T R x v : ℝ}
-    (hγ : 4 ≤ γ) (hT : 0 < T) (hR : 0 ≤ R) (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2)
+    (hγ : 4 ≤ γ) (hT : 0 < T) (_hR : 0 ≤ R) (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2)
     (hv : |v| ≤ R) :
     ‖sincC (generalSplinePoint (γ + phaseShift γ ψ s T) x) ^ 8 *
         cexp ((((γ + phaseShift γ ψ s T) * (T + v) : ℝ) : ℂ) * I) -
@@ -593,14 +594,15 @@ theorem norm_shifted_mode_sub_ideal_le {γ ψ : ℝ} {s : ℕ} {T R x v : ℝ}
   have hw_diff : ‖w₁ - w₀‖ ≤ 8 * η :=
     norm_sincC_pow_eight_shift_sub_le hγ hη0 hx0 hx1
   have hsplit : w₁ * (E₀ * Eη) - w₀ * E₀ = w₁ * E₀ * (Eη - 1) + (w₁ - w₀) * E₀ := by ring
+  rw [show w₀ * cexp ((ψ : ℂ) * I) * cexp (((γ * v : ℝ) : ℂ) * I) = w₀ * E₀ from
+    mul_assoc w₀ _ _]
   calc ‖w₁ * (E₀ * Eη) - w₀ * E₀‖
       ≤ ‖w₁ * E₀ * (Eη - 1)‖ + ‖(w₁ - w₀) * E₀‖ := by rw [hsplit]; exact norm_add_le _ _
     _ = ‖w₁‖ * ‖E₀‖ * ‖Eη - 1‖ + ‖w₁ - w₀‖ * ‖E₀‖ := by
-        rw [norm_mul, norm_mul, norm_mul]
-    _ ≤ 1 * 1 * (R * η) + (8 * η) * 1 := by
-        rw [hE₀]
-        refine add_le_add (mul_le_mul (mul_le_one₀ hw₁ (norm_nonneg _) le_rfl) hEη
-          (norm_nonneg _) zero_le_one) (mul_le_mul_of_nonneg_right hw_diff zero_le_one)
+        rw [norm_mul (w₁ * E₀), norm_mul w₁, norm_mul (w₁ - w₀)]
+    _ = ‖w₁‖ * ‖Eη - 1‖ + ‖w₁ - w₀‖ := by rw [hE₀]; ring
+    _ ≤ 1 * (R * η) + 8 * η :=
+        add_le_add (mul_le_mul hw₁ hEη (norm_nonneg _) zero_le_one) hw_diff
     _ = (R + 8) * η := by ring
 
 /-- Sign angle `0` for `a ≥ 0` and `π` for `a < 0`, satisfying `|a| e^{i θ_a} = a`. -/
@@ -676,5 +678,434 @@ theorem phase_split_pair_eq {w : ℂ} (hw : w ≠ 0) {r₀ a A : ℝ}
         ring
     _ = (((2 * r₀ / A) * a : ℝ) : ℂ) := by
         rw [abs_mul_cexp_signAngle, Complex.ofReal_mul]
+
+/-! ### Single-level phase-split harmonic synthesis -/
+
+/-- Window radius `R_k = k + 1` at tower level `k`. -/
+def levelRadius (k : ℕ) : ℝ := (k : ℝ) + 1
+
+/-- Harmonic frequency step `δ_k = 1 / (4 (k + 1))` at tower level `k`. -/
+def levelStep (k : ℕ) : ℝ := 1 / (4 * levelRadius k)
+
+/-- Starting harmonic index `m₀(Γ, k) = 4 (k + 1) Γ` placing `m₀ δ_k = Γ`. -/
+def levelStart (Γ k : ℕ) : ℕ := 4 * (k + 1) * Γ
+
+/-- Base frequency `γ_{k, d} = d δ_k`. -/
+def levelBaseFreq (k d : ℕ) : ℝ := (d : ℝ) * levelStep k
+
+/-- Uniform lower bound `r₀(Γ, x) = (x / (4 Γ))^8` on `‖sinc(γ − ix)^8‖` for `γ ∈ [Γ, 3Γ]`. -/
+def levelMinWeight (Γ : ℕ) (x : ℝ) : ℝ := (x / (4 * (Γ : ℝ))) ^ 8
+
+/-- Uniform upper bound `64^{m₀(Γ, k)}` on `|highFreqCoeff m₀ d|`. -/
+def levelCoeffBound (Γ k : ℕ) : ℝ := (64 : ℝ) ^ levelStart Γ k
+
+/-- Target phase `ψ_{k, d}^±` for the two simple zeros associated with harmonic `d`. -/
+def levelTargetPhase (Γ k : ℕ) (x : ℝ) (b : Bool) (d : ℕ) : ℝ :=
+  let m₀ := levelStart Γ k
+  let γ := levelBaseFreq k d
+  let w := sincC (generalSplinePoint γ x) ^ 8
+  let a := highFreqCoeff m₀ d
+  let A := levelCoeffBound Γ k
+  let r₀ := levelMinWeight Γ x
+  let α := Real.arccos ((|a| / A) * (r₀ / ‖w‖))
+  if b then signAngle a - w.arg - α else signAngle a - w.arg + α
+
+/-- Perturbed frequency `γ_{k, d}^±` at window center `T`, using slot `s = 1` (`b = false`)
+or `s = 3` (`b = true`). -/
+def levelFreq (Γ k : ℕ) (x T : ℝ) (b : Bool) (d : ℕ) : ℝ :=
+  let γ := levelBaseFreq k d
+  let ψ := levelTargetPhase Γ k x b d
+  γ + phaseShift γ ψ (if b then 3 else 1) T
+
+theorem levelRadius_pos (k : ℕ) : 0 < levelRadius k := by
+  unfold levelRadius; positivity
+
+theorem levelStep_pos (k : ℕ) : 0 < levelStep k := by
+  unfold levelStep
+  have := levelRadius_pos k
+  positivity
+
+theorem levelBaseFreq_bounds {Γ k d : ℕ}
+    (hd : d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k)) :
+    (Γ : ℝ) ≤ levelBaseFreq k d ∧ levelBaseFreq k d ≤ 2 * (Γ : ℝ) := by
+  rcases Finset.mem_Icc.mp hd with ⟨hd1, hd2⟩
+  have hstep : 0 < levelStep k := levelStep_pos k
+  have hlo : (levelStart Γ k : ℝ) * levelStep k = (Γ : ℝ) := by
+    unfold levelStart levelStep levelRadius
+    have hk : (4 * ((k : ℝ) + 1)) ≠ 0 := by positivity
+    push_cast
+    field_simp [hk]
+  have hhi : ((2 * levelStart Γ k : ℕ) : ℝ) * levelStep k = 2 * (Γ : ℝ) := by
+    rw [Nat.cast_mul, Nat.cast_ofNat, mul_assoc, hlo]
+  constructor
+  · rw [← hlo]
+    exact mul_le_mul_of_nonneg_right (by exact_mod_cast hd1) hstep.le
+  · rw [← hhi]
+    exact mul_le_mul_of_nonneg_right (by exact_mod_cast hd2) hstep.le
+
+theorem phaseShift_slot_bounds (γ ψ₁ ψ₂ : ℝ) {T : ℝ} (hT : 0 < T) :
+    6 / T < phaseShift γ ψ₁ 1 T ∧
+      phaseShift γ ψ₁ 1 T ≤ 13 / T ∧
+      phaseShift γ ψ₁ 1 T < phaseShift γ ψ₂ 3 T ∧
+      phaseShift γ ψ₂ 3 T ≤ 26 / T := by
+  have h1_gt := phaseShift_gt γ ψ₁ 1 hT
+  have h1_le := phaseShift_le γ ψ₁ 1 hT
+  have h3_gt := phaseShift_gt γ ψ₂ 3 hT
+  have h3_le := phaseShift_le γ ψ₂ 3 hT
+  have hpi_gt : (3 : ℝ) < Real.pi := Real.pi_gt_three
+  have hpi_lt : Real.pi < 3.15 := Real.pi_lt_d2
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · refine lt_of_le_of_lt ?_ h1_gt
+    rw [div_le_div_iff_of_pos_right hT]
+    push_cast
+    linarith
+  · refine h1_le.trans ?_
+    rw [div_le_div_iff_of_pos_right hT]
+    push_cast
+    linarith
+  · refine lt_of_le_of_lt h1_le (lt_of_le_of_lt ?_ h3_gt)
+    rw [div_le_div_iff_of_pos_right hT]
+    push_cast
+    linarith
+  · refine h3_le.trans ?_
+    rw [div_le_div_iff_of_pos_right hT]
+    push_cast
+    linarith
+
+theorem levelFreq_strict_order (Γ k : ℕ) (x : ℝ) {T : ℝ} (hT : 0 < T) (d : ℕ) :
+    levelBaseFreq k d < levelFreq Γ k x T false d ∧
+      levelFreq Γ k x T false d < levelFreq Γ k x T true d ∧
+      levelFreq Γ k x T true d ≤ levelBaseFreq k d + 26 / T := by
+  unfold levelFreq
+  simp only [Bool.false_eq_true, ↓reduceIte]
+  have h := phaseShift_slot_bounds (levelBaseFreq k d)
+    (levelTargetPhase Γ k x false d) (levelTargetPhase Γ k x true d) hT
+  have hpos : 0 < 6 / T := by positivity
+  refine ⟨by linarith, by linarith, by linarith⟩
+
+theorem levelFreq_bounds {Γ k d : ℕ} (x : ℝ) {T : ℝ} (hT : 0 < T) (hT26 : 26 / T ≤ 1)
+    (b : Bool) (hd : d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k)) :
+    (Γ : ℝ) < levelFreq Γ k x T b d ∧ levelFreq Γ k x T b d ≤ 2 * (Γ : ℝ) + 1 := by
+  have hb := levelBaseFreq_bounds hd
+  have hord := levelFreq_strict_order Γ k x hT d
+  cases b <;> constructor <;> linarith
+
+theorem levelFreq_lt_of_lt (Γ k : ℕ) (x : ℝ) {T : ℝ} (hT : 0 < T)
+    (hstep : 26 / T < levelStep k) {d₁ d₂ : ℕ} (hd : d₁ < d₂) (b₁ b₂ : Bool) :
+    levelFreq Γ k x T b₁ d₁ < levelFreq Γ k x T b₂ d₂ := by
+  have hord1 := levelFreq_strict_order Γ k x hT d₁
+  have hord2 := levelFreq_strict_order Γ k x hT d₂
+  have hhi1 : levelFreq Γ k x T b₁ d₁ ≤ levelBaseFreq k d₁ + 26 / T := by
+    cases b₁ <;> linarith
+  have hlo2 : levelBaseFreq k d₂ < levelFreq Γ k x T b₂ d₂ := by
+    cases b₂ <;> linarith
+  have hbase : levelBaseFreq k d₁ + levelStep k ≤ levelBaseFreq k d₂ := by
+    unfold levelBaseFreq
+    have hd' : (d₁ : ℝ) + 1 ≤ (d₂ : ℝ) := by exact_mod_cast hd
+    have hs : 0 < levelStep k := levelStep_pos k
+    nlinarith
+  linarith
+
+theorem levelFreq_injective (Γ k : ℕ) (x : ℝ) {T : ℝ} (hT : 0 < T)
+    (hstep : 26 / T < levelStep k) {b₁ b₂ : Bool} {d₁ d₂ : ℕ}
+    (heq : levelFreq Γ k x T b₁ d₁ = levelFreq Γ k x T b₂ d₂) :
+    b₁ = b₂ ∧ d₁ = d₂ := by
+  have hd : d₁ = d₂ := by
+    rcases lt_trichotomy d₁ d₂ with hlt | rfl | hgt
+    · exact absurd heq (levelFreq_lt_of_lt Γ k x hT hstep hlt b₁ b₂).ne
+    · rfl
+    · exact absurd heq.symm (levelFreq_lt_of_lt Γ k x hT hstep hgt b₂ b₁).ne
+  subst hd
+  refine ⟨?_, rfl⟩
+  have hord := (levelFreq_strict_order Γ k x hT d₁).2.1
+  cases b₁ <;> cases b₂
+  · rfl
+  · exact absurd heq hord.ne
+  · exact absurd heq.symm hord.ne
+  · rfl
+
+/-- Single-harmonic pair approximation on `[T − R_k, T + R_k]`. -/
+theorem levelPair_re_ge {Γ k d : ℕ} {x T v : ℝ}
+    (hΓ : 4 ≤ Γ) (hx0 : 0 < x) (hx1 : x ≤ 1 / 2) (hT : 0 < T)
+    (hd : d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k))
+    (hv : |v| ≤ levelRadius k) :
+    let γ₁ := levelFreq Γ k x T false d
+    let γ₂ := levelFreq Γ k x T true d
+    let m₀ := levelStart Γ k
+    let r₀ := levelMinWeight Γ x
+    let A := levelCoeffBound Γ k
+    (2 * r₀ / A) * highFreqCoeff m₀ d * Real.cos (levelBaseFreq k d * v) -
+        40 * (levelRadius k + 8) / T ≤
+      (sincC (generalSplinePoint γ₁ x) ^ 8 * cexp (((γ₁ * (T + v) : ℝ) : ℂ) * I)).re +
+        (sincC (generalSplinePoint γ₂ x) ^ 8 * cexp (((γ₂ * (T + v) : ℝ) : ℂ) * I)).re := by
+  intro γ₁ γ₂ m₀ r₀ A
+  set γ := levelBaseFreq k d
+  set w := sincC (generalSplinePoint γ x) ^ 8
+  set a := highFreqCoeff m₀ d
+  set ψ₁ := levelTargetPhase Γ k x false d
+  set ψ₂ := levelTargetPhase Γ k x true d
+  have hbase := levelBaseFreq_bounds hd
+  have hΓR : (4 : ℝ) ≤ (Γ : ℝ) := by exact_mod_cast hΓ
+  have hγ4 : 4 ≤ γ := hΓR.trans hbase.1
+  have hr₀_pos : 0 < r₀ := by
+    unfold r₀ levelMinWeight
+    have : 0 < (Γ : ℝ) := by linarith
+    positivity
+  have hr₀_le : r₀ ≤ ‖w‖ := by
+    exact norm_sincC_generalSplinePoint_pow_eight_ge (by linarith) hbase.1
+      (by linarith [hbase.2]) hx0.le hx1
+  have hw_ne : w ≠ 0 := norm_pos_iff.mp (hr₀_pos.trans_le hr₀_le)
+  have hm₀1 : 1 ≤ m₀ := by
+    unfold m₀ levelStart
+    nlinarith
+  have ha_le : |a| ≤ A := abs_highFreqCoeff_le hm₀1 (Finset.mem_Icc.mp hd).2
+  have hA_pos : 0 < A := by unfold A levelCoeffBound; positivity
+  have hpair := phase_split_pair_eq hw_ne hr₀_pos.le hr₀_le hA_pos ha_le
+  -- Notice `ψ₁` and `ψ₂` match the definitions in `phase_split_pair_eq`
+  have hpair' : w * (cexp ((ψ₁ : ℂ) * I) + cexp ((ψ₂ : ℂ) * I)) =
+      (((2 * r₀ / A) * a : ℝ) : ℂ) := hpair
+  set M₁ := sincC (generalSplinePoint γ₁ x) ^ 8 * cexp (((γ₁ * (T + v) : ℝ) : ℂ) * I)
+  set M₂ := sincC (generalSplinePoint γ₂ x) ^ 8 * cexp (((γ₂ * (T + v) : ℝ) : ℂ) * I)
+  set I₁ := w * cexp ((ψ₁ : ℂ) * I) * cexp (((γ * v : ℝ) : ℂ) * I)
+  set I₂ := w * cexp ((ψ₂ : ℂ) * I) * cexp (((γ * v : ℝ) : ℂ) * I)
+  have hR0 : 0 ≤ levelRadius k := (levelRadius_pos k).le
+  have herr1 : ‖M₁ - I₁‖ ≤ (levelRadius k + 8) * phaseShift γ ψ₁ 1 T :=
+    norm_shifted_mode_sub_ideal_le hγ4 hT hR0 hx0.le hx1 hv
+  have herr2 : ‖M₂ - I₂‖ ≤ (levelRadius k + 8) * phaseShift γ ψ₂ 3 T :=
+    norm_shifted_mode_sub_ideal_le hγ4 hT hR0 hx0.le hx1 hv
+  have hslot := phaseShift_slot_bounds γ ψ₁ ψ₂ hT
+  have herr_sum : ‖(M₁ + M₂) - (I₁ + I₂)‖ ≤ 40 * (levelRadius k + 8) / T := by
+    rw [ show (M₁ + M₂) - (I₁ + I₂) = (M₁ - I₁) + (M₂ - I₂) by ring ]
+    calc ‖(M₁ - I₁) + (M₂ - I₂)‖
+        ≤ ‖M₁ - I₁‖ + ‖M₂ - I₂‖ := norm_add_le _ _
+      _ ≤ (levelRadius k + 8) * (13 / T) + (levelRadius k + 8) * (26 / T) := by
+          refine add_le_add ?_ ?_
+          · exact herr1.trans (mul_le_mul_of_nonneg_left hslot.2.1 (by positivity))
+          · exact herr2.trans (mul_le_mul_of_nonneg_left hslot.2.2.2 (by positivity))
+      _ = 39 * (levelRadius k + 8) / T := by ring
+      _ ≤ 40 * (levelRadius k + 8) / T := by
+          rw [div_le_div_iff_of_pos_right hT]
+          nlinarith
+  have hI_sum : I₁ + I₂ = (((2 * r₀ / A) * a : ℝ) : ℂ) * cexp (((γ * v : ℝ) : ℂ) * I) := by
+    calc I₁ + I₂
+        = (w * (cexp ((ψ₁ : ℂ) * I) + cexp ((ψ₂ : ℂ) * I))) *
+            cexp (((γ * v : ℝ) : ℂ) * I) := by dsimp only [I₁, I₂]; ring
+      _ = (((2 * r₀ / A) * a : ℝ) : ℂ) * cexp (((γ * v : ℝ) : ℂ) * I) := by rw [hpair']
+  have hI_re : (I₁ + I₂).re = (2 * r₀ / A) * a * Real.cos (γ * v) := by
+    rw [hI_sum, Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re]
+  have hre_diff : (I₁ + I₂).re - (M₁ + M₂).re ≤ ‖(M₁ + M₂) - (I₁ + I₂)‖ := by
+    rw [← Complex.sub_re, norm_sub_rev]
+    exact Complex.re_le_norm _
+  rw [← Complex.add_re]
+  linarith
+
+/-- **Single-level harmonic sum positivity.** When `T` satisfies the perturbation threshold,
+the sum of all `2 (m₀ + 1)` phase-split simple modes at level `k` has real part at least
+`levelMinWeight Γ x / levelCoeffBound Γ k` across `[T − R_k, T + R_k]`. -/
+theorem levelHarmonicSum_re_ge {Γ k : ℕ} {x T v : ℝ}
+    (hΓ : 4 ≤ Γ) (hx0 : 0 < x) (hx1 : x ≤ 1 / 2) (hT : 0 < T)
+    (hTerr : ((levelStart Γ k + 1 : ℕ) : ℝ) * (80 * (levelRadius k + 8)) *
+        levelCoeffBound Γ k / levelMinWeight Γ x ≤ T)
+    (hv : |v| ≤ levelRadius k) :
+    levelMinWeight Γ x / levelCoeffBound Γ k ≤
+      ∑ d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k),
+        ((sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T false d * (T + v) : ℝ) : ℂ) * I)).re +
+          (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T true d * (T + v) : ℝ) : ℂ) * I)).re) := by
+  set m₀ := levelStart Γ k
+  set r₀ := levelMinWeight Γ x
+  set A := levelCoeffBound Γ k
+  set R := levelRadius k
+  have hR_pos : 0 < R := levelRadius_pos k
+  have hr₀_pos : 0 < r₀ := by
+    unfold r₀ levelMinWeight
+    have : (4 : ℝ) ≤ (Γ : ℝ) := by exact_mod_cast hΓ
+    positivity
+  have hA_pos : 0 < A := by unfold A levelCoeffBound; positivity
+  have hsum_pair :
+      ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+        ((2 * r₀ / A) * highFreqCoeff m₀ d * Real.cos (levelBaseFreq k d * v) -
+          40 * (R + 8) / T) ≤
+      ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+        ((sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T false d * (T + v) : ℝ) : ℂ) * I)).re +
+          (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T true d * (T + v) : ℝ) : ℂ) * I)).re) :=
+    Finset.sum_le_sum fun d hd => levelPair_re_ge hΓ hx0 hx1 hT hd hv
+  refine le_trans ?_ hsum_pair
+  rw [Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul]
+  have hcard : (Finset.Icc m₀ (2 * m₀)).card = m₀ + 1 := by
+    rw [Nat.card_Icc]; omega
+  rw [hcard]
+  have hfactor :
+      (∑ d ∈ Finset.Icc m₀ (2 * m₀),
+        (2 * r₀ / A) * highFreqCoeff m₀ d * Real.cos (levelBaseFreq k d * v)) =
+      (2 * r₀ / A) * ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+        highFreqCoeff m₀ d * Real.cos ((d : ℝ) * (1 / (4 * R)) * v) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun d _ => ?_
+    unfold levelBaseFreq levelStep
+    ring
+  rw [hfactor]
+  have hcos := three_quarters_le_sum_highFreqCoeff_cos m₀ hR_pos hv
+  have hmain : (3 / 2) * (r₀ / A) ≤
+      (2 * r₀ / A) * ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+        highFreqCoeff m₀ d * Real.cos ((d : ℝ) * (1 / (4 * R)) * v) := by
+    calc (3 / 2) * (r₀ / A) = (2 * r₀ / A) * (3 / 4) := by ring
+      _ ≤ (2 * r₀ / A) * ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+            highFreqCoeff m₀ d * Real.cos ((d : ℝ) * (1 / (4 * R)) * v) :=
+          mul_le_mul_of_nonneg_left hcos (by positivity)
+  have herr_le : ((m₀ + 1 : ℕ) : ℝ) * (40 * (R + 8) / T) ≤ (1 / 2) * (r₀ / A) := by
+    rw [mul_div_assoc', div_le_iff₀ hT]
+    have h1 := (div_le_iff₀ hr₀_pos).mp hTerr
+    have h2 : (((m₀ + 1 : ℕ) : ℝ) * (40 * (R + 8)) * 2) * A ≤ T * r₀ := by linarith
+    have h3 := (le_div_iff₀ hA_pos).mpr h2
+    have h4 : T * r₀ / A = (r₀ / A) * T := by ring
+    linarith
+  linarith
+
+/-- Main spline contribution of the `2 (m₀ + 1)` conjugate pairs at level `k`. -/
+def levelMain (Γ k : ℕ) (x T u : ℝ) : ℝ :=
+  ∑ d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k),
+    (2 * (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+        cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+      2 * (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+        cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)
+
+/-- Reflected (`1 − ρ`) spline contribution of the `2 (m₀ + 1)` conjugate pairs at level `k`. -/
+def levelRefl (Γ k : ℕ) (x T u : ℝ) : ℝ :=
+  ∑ d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k),
+    (2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8) *
+        cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+      2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8) *
+        cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)
+
+/-- Total spline weight bound `4 (m₀ + 1) (2 / Γ)^8` for a single level `k`. -/
+def levelWeightBound (Γ k : ℕ) : ℝ :=
+  4 * ((levelStart Γ k + 1 : ℕ) : ℝ) * (2 / (Γ : ℝ)) ^ 8
+
+theorem levelWeightBound_pos {Γ : ℕ} (hΓ : 1 ≤ Γ) (k : ℕ) :
+    0 < levelWeightBound Γ k := by
+  unfold levelWeightBound
+  have : (1 : ℝ) ≤ (Γ : ℝ) := by exact_mod_cast hΓ
+  positivity
+
+theorem norm_sincC_levelFreq_pow_eight_le {Γ k d : ℕ} {x T : ℝ}
+    (hΓ : 2 ≤ Γ) (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) (hT : 0 < T) (b : Bool)
+    (hd : d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k)) :
+    ‖sincC (generalSplinePoint (levelFreq Γ k x T b d) x) ^ 8‖ ≤ (2 / (Γ : ℝ)) ^ 8 := by
+  have hbase := (levelBaseFreq_bounds hd).1
+  have hord := levelFreq_strict_order Γ k x hT d
+  have hγ_ge : (Γ : ℝ) ≤ levelFreq Γ k x T b d := by
+    cases b <;> linarith
+  have hΓ2 : (2 : ℝ) ≤ (Γ : ℝ) := by exact_mod_cast hΓ
+  have hγ_pos : 0 < levelFreq Γ k x T b d := by linarith
+  refine (norm_sincC_generalSplinePoint_pow_eight_le (hΓ2.trans hγ_ge) hx0 hx1).trans ?_
+  refine pow_le_pow_left₀ (by positivity) ?_ 8
+  exact div_le_div_of_nonneg_left (by norm_num) (by linarith) hγ_ge
+
+theorem abs_levelMain_le {Γ k : ℕ} {x T : ℝ}
+    (hΓ : 2 ≤ Γ) (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) (hT : 0 < T) (u : ℝ) :
+    |levelMain Γ k x T u| ≤ levelWeightBound Γ k := by
+  unfold levelMain levelWeightBound
+  set m₀ := levelStart Γ k
+  calc |∑ d ∈ Finset.Icc m₀ (2 * m₀),
+          (2 * (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+              cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+            2 * (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+              cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)|
+      ≤ ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+          |2 * (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+              cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+            2 * (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+              cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _d ∈ Finset.Icc m₀ (2 * m₀), 4 * (2 / (Γ : ℝ)) ^ 8 := by
+        refine Finset.sum_le_sum fun d hd => ?_
+        have hmode : ∀ b : Bool,
+            |2 * (sincC (generalSplinePoint (levelFreq Γ k x T b d) x) ^ 8 *
+                cexp (((levelFreq Γ k x T b d * u : ℝ) : ℂ) * I)).re| ≤
+              2 * (2 / (Γ : ℝ)) ^ 8 := by
+          intro b
+          rw [abs_mul, abs_two]
+          refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+          refine (Complex.abs_re_le_norm _).trans ?_
+          rw [norm_mul, Complex.norm_exp_ofReal_mul_I, mul_one]
+          exact norm_sincC_levelFreq_pow_eight_le hΓ hx0 hx1 hT b hd
+        have h1 := hmode false
+        have h2 := hmode true
+        have htri := abs_add_le
+          (2 * (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re)
+          (2 * (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)
+        linarith
+    _ = 4 * ((m₀ + 1 : ℕ) : ℝ) * (2 / (Γ : ℝ)) ^ 8 := by
+        rw [Finset.sum_const, nsmul_eq_mul, Nat.card_Icc,
+          show 2 * m₀ + 1 - m₀ = m₀ + 1 by omega]
+        ring
+
+theorem abs_levelRefl_le {Γ k : ℕ} {x T : ℝ}
+    (hΓ : 2 ≤ Γ) (hx0 : 0 ≤ x) (hx1 : x ≤ 1 / 2) (hT : 0 < T) (u : ℝ) :
+    |levelRefl Γ k x T u| ≤ levelWeightBound Γ k := by
+  unfold levelRefl levelWeightBound
+  set m₀ := levelStart Γ k
+  calc |∑ d ∈ Finset.Icc m₀ (2 * m₀),
+          (2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8) *
+              cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+            2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8) *
+              cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)|
+      ≤ ∑ d ∈ Finset.Icc m₀ (2 * m₀),
+          |2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8) *
+              cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re +
+            2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8) *
+              cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ _d ∈ Finset.Icc m₀ (2 * m₀), 4 * (2 / (Γ : ℝ)) ^ 8 := by
+        refine Finset.sum_le_sum fun d hd => ?_
+        have hmode : ∀ b : Bool,
+            |2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T b d) x) ^ 8) *
+                cexp (((levelFreq Γ k x T b d * u : ℝ) : ℂ) * I)).re| ≤
+              2 * (2 / (Γ : ℝ)) ^ 8 := by
+          intro b
+          rw [abs_mul, abs_two]
+          refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
+          refine (Complex.abs_re_le_norm _).trans ?_
+          rw [norm_mul, Complex.norm_conj, Complex.norm_exp_ofReal_mul_I, mul_one]
+          exact norm_sincC_levelFreq_pow_eight_le hΓ hx0 hx1 hT b hd
+        have h1 := hmode false
+        have h2 := hmode true
+        have htri := abs_add_le
+          (2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8) *
+            cexp (((levelFreq Γ k x T false d * u : ℝ) : ℂ) * I)).re)
+          (2 * (conj (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8) *
+            cexp (((levelFreq Γ k x T true d * u : ℝ) : ℂ) * I)).re)
+        linarith
+    _ = 4 * ((m₀ + 1 : ℕ) : ℝ) * (2 / (Γ : ℝ)) ^ 8 := by
+        rw [Finset.sum_const, nsmul_eq_mul, Nat.card_Icc,
+          show 2 * m₀ + 1 - m₀ = m₀ + 1 by omega]
+        ring
+
+theorem levelMain_ge_on_window {Γ k : ℕ} {x T u : ℝ}
+    (hΓ : 4 ≤ Γ) (hx0 : 0 < x) (hx1 : x ≤ 1 / 2) (hT : 0 < T)
+    (hTerr : ((levelStart Γ k + 1 : ℕ) : ℝ) * (80 * (levelRadius k + 8)) *
+        levelCoeffBound Γ k / levelMinWeight Γ x ≤ T)
+    (hu : |u - T| ≤ levelRadius k) :
+    2 * (levelMinWeight Γ x / levelCoeffBound Γ k) ≤ levelMain Γ k x T u := by
+  have hsum := levelHarmonicSum_re_ge hΓ hx0 hx1 hT hTerr (v := u - T) hu
+  have hfactor : levelMain Γ k x T u =
+      2 * ∑ d ∈ Finset.Icc (levelStart Γ k) (2 * levelStart Γ k),
+        ((sincC (generalSplinePoint (levelFreq Γ k x T false d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T false d * (T + (u - T)) : ℝ) : ℂ) * I)).re +
+          (sincC (generalSplinePoint (levelFreq Γ k x T true d) x) ^ 8 *
+            cexp (((levelFreq Γ k x T true d * (T + (u - T)) : ℝ) : ℂ) * I)).re) := by
+    unfold levelMain
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun d _ => ?_
+    rw [add_sub_cancel]
+    ring
+  rw [hfactor]
+  linarith
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

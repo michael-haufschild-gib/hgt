@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheFrobeniusOfTheTorsionIsGalois
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.Heilbronn.TruncatedLogarithmJets
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.Heilbronn.TruncatedLogarithmFibres
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.Heilbronn.TeichmullerCarries
+import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.Heilbronn.HeilbronnSums
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheOrderAtTheCommonFixedPointCostsTheDegree
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.IntegralityActsOnlyOnTheTorsion
 import GaloisForLFunctions.ArithmeticLefschetzStepanovTheory.TheStepanovCountOfTheClosedPoints
@@ -66,5 +68,7 @@ translation. A nonidentity rational orbit preserver cannot fix two orbit points.
 The same rational classification holds on the full prime algebra, even when successive
 coordinates introduce new primes. Six exponentials and Baker independence remove the
 finite invariant prime-set restriction.
+For the truncated logarithm over `F_p`, Stepanov auxiliaries give `#fibre³ ≤ 100³p²`.
+The first Witt carry transfers this to the mixed-characteristic Heilbronn bound `5p^(11/12)`.
 See `ArithmeticLefschetzStepanovTheory/README.md`.
 -/

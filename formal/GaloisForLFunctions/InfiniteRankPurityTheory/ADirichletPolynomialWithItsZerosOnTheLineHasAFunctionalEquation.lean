@@ -1,4 +1,5 @@
 import GaloisForLFunctions.InfiniteRankPurityTheory.ADirichletPolynomialWithAFunctionalEquationIsNotAFactor
+import GaloisForLFunctions.InfiniteRankPurityTheory.TheZerosContainNoClassOfOneFrobenius
 import GaloisForLFunctions.RHTower.ThetaHalfLinePortGauge
 import Mathlib.Analysis.Meromorphic.NormalForm
 import Mathlib.Analysis.Complex.AbsMax
@@ -23,6 +24,10 @@ among the zeros of `ξ`, with no functional equation assumed.
   the left gives `α > 0`.
 * `exists_zero_not_xi_zero_of_constantTerm`: a Dirichlet polynomial with a constant term and one
   further term has a zero that is not a zero of `ξ`.
+* `exists_zero_not_xi_zero_of_dvd`: the same when the lowest frequency divides the others.
+* `exists_zero_not_xi_zero_of_oneBase`, `exists_zero_not_xi_zero_of_two_terms`: the same when all
+  frequencies are `m β^k` for one base `β`, in particular for two terms: the zeros then contain a
+  full class of the Frobenius `β`.
 -/
 
 open Complex Filter Topology Set Metric
@@ -575,5 +580,109 @@ theorem exists_zero_not_xi_zero_of_dvd (a : ℕ →₀ ℂ) (ha0 : a 0 = 0) {m :
   have h₁k : a₁ k₀ ≠ 0 := by rw [happ, ← hk₀]; exact hn₀a
   obtain ⟨z, hz, hxi⟩ := exists_zero_not_xi_zero_of_constantTerm a₁ h₁0 h₁1 hk₀2 h₁k
   exact ⟨z, by rw [hfac, hz, mul_zero], hxi⟩
+
+/-! ### Polynomials in one base -/
+
+theorem ofReal_cpow_eq_exp {x : ℝ} (hx : 0 < x) (z : ℂ) :
+    (x : ℂ) ^ z = Complex.exp ((Real.log x : ℂ) * z) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hx.ne'), ← Complex.ofReal_log hx.le]
+
+/-- A polynomial with two nonzero coefficients has a nonzero root. -/
+theorem exists_ne_zero_root {Q : Polynomial ℂ} {i j : ℕ} (hij : i ≠ j) (hi : Q.coeff i ≠ 0)
+    (hj : Q.coeff j ≠ 0) : ∃ u : ℂ, u ≠ 0 ∧ Q.eval u = 0 := by
+  have hQ : Q ≠ 0 := fun h => hi (by rw [h, Polynomial.coeff_zero])
+  obtain ⟨R, hR, hdvd⟩ := Polynomial.exists_eq_pow_rootMultiplicity_mul_and_not_dvd Q hQ 0
+  rw [map_zero, sub_zero] at hR hdvd
+  set d := Polynomial.rootMultiplicity 0 Q with hd
+  have hR0 : R.eval 0 ≠ 0 := by
+    intro h
+    exact hdvd (by
+      have := Polynomial.dvd_iff_isRoot.mpr (show R.IsRoot 0 from h)
+      rwa [map_zero, sub_zero] at this)
+  have hdeg : R.degree ≠ 0 := by
+    intro h0
+    have hC := Polynomial.eq_C_of_degree_eq_zero h0
+    have hcoeff : ∀ n, Q.coeff n = if n = d then R.coeff 0 else 0 := by
+      intro n
+      rw [hR, hC, Polynomial.coeff_X_pow_mul', Polynomial.coeff_C]
+      by_cases hn : n = d
+      · rw [if_pos hn, if_pos (le_of_eq hn.symm), hn, Nat.sub_self, if_pos rfl]
+        simp
+      · rw [if_neg hn]
+        split_ifs with h1 h2
+        · exact absurd (Nat.le_antisymm (Nat.sub_eq_zero_iff_le.mp h2) h1) hn
+        · rfl
+        · rfl
+    have h1 : i = d := by
+      by_contra h
+      exact hi (by rw [hcoeff, if_neg h])
+    have h2 : j = d := by
+      by_contra h
+      exact hj (by rw [hcoeff, if_neg h])
+    exact hij (h1.trans h2.symm)
+  obtain ⟨u, hu⟩ := IsAlgClosed.exists_root R hdeg
+  refine ⟨u, fun h => hR0 (by rw [← h]; exact hu), ?_⟩
+  rw [hR, Polynomial.eval_mul, show R.eval u = 0 from hu, mul_zero]
+
+/-- **A Dirichlet polynomial in one base has a zero that is not a zero of `ξ`.** If every frequency
+is `m β^k` for one `β > 1`, then `D(s) = m^{-s} Q(β^{-s})` for a polynomial `Q` with a nonzero
+root, and the zeros of `D` contain a full class of the Frobenius `β`. -/
+theorem exists_zero_not_xi_zero_of_oneBase (a : ℕ →₀ ℂ) {m : ℝ} (hm : 0 < m) {β : ℝ}
+    (hβ : 1 < β) (k : ℕ → ℕ) (hk : ∀ n ∈ a.support, (n : ℝ) = m * β ^ k n) {n₁ n₂ : ℕ}
+    (h₁ : a n₁ ≠ 0) (h₂ : a n₂ ≠ 0) (hne : n₁ ≠ n₂) :
+    ∃ z : ℂ, finiteDirichletPolynomial a z = 0 ∧ xi z ≠ 0 := by
+  have hβ0 : 0 < β := zero_lt_one.trans hβ
+  have hs₁ : n₁ ∈ a.support := Finsupp.mem_support_iff.mpr h₁
+  have hs₂ : n₂ ∈ a.support := Finsupp.mem_support_iff.mpr h₂
+  -- distinct frequencies have distinct exponents
+  have hinj : ∀ n ∈ a.support, ∀ n' ∈ a.support, k n = k n' → n = n' := by
+    intro n hn n' hn' h
+    have := (hk n hn).trans ((congrArg (fun j => m * β ^ j) h).trans (hk n' hn').symm)
+    exact_mod_cast this
+  set Q : Polynomial ℂ := ∑ n ∈ a.support, Polynomial.monomial (k n) (a n) with hQ
+  have hcoeff : ∀ n ∈ a.support, Q.coeff (k n) = a n := by
+    intro n hn
+    rw [hQ, Polynomial.finsetSum_coeff, Finset.sum_eq_single n]
+    · rw [Polynomial.coeff_monomial, if_pos rfl]
+    · intro n' hn' hne'
+      rw [Polynomial.coeff_monomial, if_neg fun h => hne' (hinj n' hn' n hn h)]
+    · intro h
+      exact absurd hn h
+  obtain ⟨u, hu, hroot⟩ := exists_ne_zero_root (Q := Q)
+    (fun h => hne (hinj n₁ hs₁ n₂ hs₂ h)) (by rw [hcoeff n₁ hs₁]; exact h₁)
+    (by rw [hcoeff n₂ hs₂]; exact h₂)
+  obtain ⟨s, hs, hxi⟩ := exists_zero_polynomial_not_zero hβ hu hroot
+  refine ⟨s, ?_, hxi⟩
+  -- `D(s) = m^{-s} Q(β^{-s})`
+  have hfac : finiteDirichletPolynomial a s =
+      Complex.exp ((Real.log m : ℂ) * (-s)) * Q.eval ((β : ℂ) ^ (-s)) := by
+    rw [finiteDirichletPolynomial, hQ, Polynomial.eval_finsetSum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun n hn => ?_
+    have hpos : (0 : ℝ) < m * β ^ k n := mul_pos hm (pow_pos hβ0 _)
+    rw [Polynomial.eval_monomial, ofReal_cpow_eq_exp hβ0, ← Complex.exp_nat_mul,
+      ← Complex.ofReal_natCast n, hk n hn, ofReal_cpow_eq_exp hpos,
+      Real.log_mul hm.ne' (pow_ne_zero _ hβ0.ne'), Real.log_pow, mul_left_comm,
+      ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
+  rw [hfac, hs, mul_zero]
+
+/-- **A Dirichlet polynomial with two terms has a zero that is not a zero of `ξ`.** Its zeros are
+one vertical progression. -/
+theorem exists_zero_not_xi_zero_of_two_terms (a : ℕ →₀ ℂ) (ha0 : a 0 = 0) {n₁ n₂ : ℕ}
+    (hlt : n₁ < n₂) (h₁ : a n₁ ≠ 0) (h₂ : a n₂ ≠ 0)
+    (hsupp : ∀ n, a n ≠ 0 → n = n₁ ∨ n = n₂) :
+    ∃ z : ℂ, finiteDirichletPolynomial a z = 0 ∧ xi z ≠ 0 := by
+  have hn₁ : 0 < n₁ := Nat.pos_of_ne_zero fun h => h₁ (h ▸ ha0)
+  have hn₁r : (0 : ℝ) < n₁ := by exact_mod_cast hn₁
+  have hβ : (1 : ℝ) < (n₂ : ℝ) / n₁ := by
+    rw [one_lt_div hn₁r]
+    exact_mod_cast hlt
+  refine exists_zero_not_xi_zero_of_oneBase a hn₁r hβ (fun n => if n = n₂ then 1 else 0)
+    (fun n hn => ?_) h₁ h₂ hlt.ne
+  rcases hsupp n (Finsupp.mem_support_iff.mp hn) with rfl | rfl
+  · rw [if_neg hlt.ne, pow_zero, mul_one]
+  · rw [if_pos rfl, pow_one, mul_div_cancel₀ _ hn₁r.ne']
 
 end GaloisForLFunctions.InfiniteRankPurityTheory

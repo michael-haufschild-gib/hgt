@@ -1,6 +1,6 @@
 # Stepanov bounds for Heilbronn sums and Fermat quotients
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.4.
 
 ## Targets
@@ -39,9 +39,18 @@ only `propext`, `Classical.choice`, and `Quot.sound`.
 `Heilbronn/TruncatedLogarithmFibres.lean` proves the auxiliary constraints,
 weighted-jet multiplicity count, parameter choice, and the unconditional bound
 `#{x∈𝔽_p : L_p(x)=z}³≤100³p²`. Direct and four transitive axiom audits passed,
-using only the same three standard axioms. Both modules are wired into the umbrella.
-The carry identity and fourth-moment transfer remain. No analytic estimate is
-assumed as a premise.
+using only the same three standard axioms.
+
+`Heilbronn/TeichmullerCarries.lean` proves the first-carry identity and
+`teichLift_scaled_pair_eq_iff`: pair collisions at a nonzero residue sum
+are exactly equal truncated-logarithm values after normalization.
+`Heilbronn/HeilbronnSums.lean` proves character orthogonality, the energy
+bound, multiplicative invariance and the classical exponential-sum estimate
+`norm_classicalHeilbronnSum_le_power`: `|H_p(a)|≤5p^(11/12)` for `p∤a`.
+Both passed direct and transitive axiom audits, with only `propext`,
+`Classical.choice`, and `Quot.sound`. All four modules are wired into
+the umbrella. No unresolved analytic premise occurs in either final bound.
+The stronger published exponent `7/8` is not asserted by these theorems.
 
 ## A sufficient first power saving
 
@@ -50,7 +59,7 @@ The single-fibre estimate `M≪p^(2/3)` already yields
 For odd `p`, include zero in the Teichmüller image `T⊂ℤ/p²ℤ`.
 Normalize a nonzero residue of a pair sum by its Teichmüller lift.
 Equality of normalized sums is equality of `L_p` values on `𝔽_p`.
-Thus `E(T)≤p²+(p−1)pM`: zero-residue pair sums contribute at most `p²`.
+Thus `E(T)≤p²+p²M`: zero-residue pair sums contribute at most `p²`.
 Character orthogonality gives the fourth Fourier moment `p²E(T)`;
 multiplicative invariance repeats each unit-frequency value `p−1`
 times. Hence `|H_p(a)|⁴≤p²E(T)/(p−1)≪p^(11/3)`.

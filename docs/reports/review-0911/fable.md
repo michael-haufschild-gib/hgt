@@ -587,7 +587,7 @@ The precise results of §5.2 `[L*]` give positive survivors: amplification stric
 | Large values and zero density | in the corpus: Guth–Maynard `[L*]` |
 | The Carlitz–Goss Riemann hypothesis | `[C]`; its mechanism is in Lean (`SeparationForcesRationality`) `[S]`; the statement for `𝔽_q[T]` is not |
 | Twisted second moments past length `T^{1/2}` | `[C]`; needed in §4.4 |
-| Stepanov's method for Heilbronn sums and Fermat quotients | `[L*]` for truncated-logarithm fibres: `#fibre³≤100³p²`, `Heilbronn/TruncatedLogarithmFibres`. The first-carry identity and the mixed-characteristic Heilbronn power saving remain `[C]` |
+| Stepanov's method for Heilbronn sums and Fermat quotients | `[L*]`: truncated-logarithm fibres satisfy `#fibre³≤100³p²`; the first Witt carry and fourth Fourier moment give `|H_p(a)|≤5p^(11/12)` for `p∤a`, `Heilbronn/HeilbronnSums`. The published stronger exponent `7/8` is not claimed |
 | Effective lower bounds for linear forms in three logarithms | `[L*]` for the principal logs of `−1,p,q`: `ArithmeticOfSquareRootPrecision.exists_minusOne_primeLog_separation`. The affine real form `m+a log p+b log q` remains `[C]` |
 
 ### 11.5 Routes without a mechanism

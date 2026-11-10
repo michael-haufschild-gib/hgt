@@ -36,7 +36,14 @@ coefficients and passage to the entire series remain necessary.
 
 ## Lean status
 
-The actual Goss-zeta theorem and its composition input remain unformalized.
+`CarlitzGoss/DigitContents.lean` proves
+`exists_positive_cyclicDifference_content_iff`: a positive integer is
+divisible by `p^s−1` exactly when its digit content is `Ea` for a positive
+integral vector `a`. The inverse, integrality propagation, and digit
+congruence are proved; the transitive axiom audit uses only the three
+standard axioms. The direct final audit remains pending.
+
+The actual Goss-zeta theorem and its optimal-composition input remain unformalized.
 The target includes every prime power, not only prime `q` or integer `y`.
 
 ## Combinatorial mechanism
@@ -49,6 +56,15 @@ Thus `Γ(N)` is the content of a positive `(q−1)`-multiple precisely when
 `E⁻¹Γ(N)` has positive integral coordinates. A carry-free composition
 into `m` positive parts, the first `m−1` divisible by `q−1`, exists
 precisely when `min(E⁻¹Γ(N))>m−1` (Sheats, Proposition 4.3).
+
+The rounding step has a closed form. For `u=Ec≥0` integral and
+`c_h>m≥1`, put `b_h=⌈c_h⌉−1` and
+`d_h=min_{0≤k<s} p^k b_{h+k}`. Then `m≤d_h<c_h` and
+`d_h=min(b_h,p d_{h+1})`. If `d_h=p d_{h+1}`, then `(Ed)_h=0`;
+otherwise `d_h=b_h` and `(Ed)_h<u_h+1`, hence `(Ed)_h≤u_h` by
+integrality. Thus `0≤Ed≤u`, with both `Ed` and `u−Ed` nonzero by
+invertibility of `E`. This supplies the recursive decomposition into
+positive divisible parts without choosing a coordinate of minimum `c`.
 
 For a fixed content matrix, increasing allocation of the digit powers
 within each residue class uniquely maximizes the weight. The difficult

@@ -9,6 +9,8 @@ convergence, whose continuous functionals are the finite combinations of the coo
 
 * **No finite relation survives** (`eq_zero_of_forall_sum_mul_pointCount_eq_zero`): if
   `Σ_{n ≤ m} c_n N(kn) = 0` for every `k ≥ 1`, then every `c_n` is zero.
+* **The shifts span every finite set of degrees** (`span_shift_pointCount_eq_top`): restricted to
+  the degrees `1, …, m`, the shifts of `N` span `ℝ^m`.
 
 So no nonzero continuous functional vanishes on the cyclic module: it is dense in the space of
 all sequences, and every weight line `(n^z)_n` is a pointwise limit of combinations of shifts of
@@ -54,9 +56,22 @@ theorem pointCount_six_mul {n j : ℕ} (hn : 1 ≤ n) (hj : 1 ≤ j) :
   have e : (n : ℝ) ^ 2 - 1 / (6 * (j : ℝ)) ^ 2 =
       ((6 * (j : ℝ) * n) ^ 2 - 1) / (6 * (j : ℝ)) ^ 2 := by
     field_simp
+  have hX : (1 : ℝ) / ((6 * (j : ℝ) * n) ^ 2 - 1) * ((6 * (j : ℝ) * n) ^ 2 - 1) = 1 :=
+    one_div_mul_cancel h1
   rw [pointCount_eq h2, hΛ, e]
   push_cast
-  field_simp
+  rw [div_div_eq_mul_div, eq_div_iff h1, add_mul, hX]
+  ring
+
+/-- A term of the relation, cleared of denominators, at a point `t` off the squares. -/
+theorem eval_cleared_term (s : Finset ℕ) (c : ℕ → ℝ) (t : ℝ) {n : ℕ} (hn : n ∈ s)
+    (hD : (n : ℝ) ^ 2 - t ≠ 0) :
+    (C (c n * (n : ℝ) ^ 2) * ∏ i ∈ s.erase n, (C ((i : ℝ) ^ 2) - X) : ℝ[X]).eval t =
+      (∏ i ∈ s, ((i : ℝ) ^ 2 - t)) * (c n * ((n : ℝ) ^ 2 / ((n : ℝ) ^ 2 - t))) := by
+  rw [Polynomial.eval_mul, Polynomial.eval_C, Polynomial.eval_prod,
+    ← Finset.mul_prod_erase s (fun i : ℕ => (i : ℝ) ^ 2 - t) hn]
+  simp only [Polynomial.eval_sub, Polynomial.eval_C, Polynomial.eval_X]
+  rw [mul_div_assoc', mul_div_assoc', eq_div_iff hD]
   ring
 
 /-- **No finite relation among the coordinates survives on the shifts of the point count.** If
@@ -77,17 +92,14 @@ theorem eq_zero_of_forall_sum_mul_pointCount_eq_zero {m : ℕ} {c : ℕ → ℝ}
     have hfac : ∀ n ∈ Icc 1 m, (n : ℝ) ^ 2 - 1 / (6 * (j : ℝ)) ^ 2 ≠ 0 := fun n hn => by
       have hn' : (1 : ℝ) ≤ n := by exact_mod_cast (Finset.mem_Icc.mp hn).1
       have : (1 : ℝ) ≤ (n : ℝ) ^ 2 := by nlinarith
-      linarith
+      exact (sub_pos.mpr (ht1.trans_le this)).ne'
     have hterm : ∀ n ∈ Icc 1 m,
         (C (c n * (n : ℝ) ^ 2) * ∏ i ∈ (Icc 1 m).erase n, (C ((i : ℝ) ^ 2) - X) : ℝ[X]).eval
             (1 / (6 * (j : ℝ)) ^ 2) =
           (∏ i ∈ Icc 1 m, ((i : ℝ) ^ 2 - 1 / (6 * (j : ℝ)) ^ 2)) *
             (c n * pointCount (6 * j * n)) := fun n hn => by
-      rw [pointCount_six_mul (Finset.mem_Icc.mp hn).1 hj, Polynomial.eval_mul, Polynomial.eval_C,
-        Polynomial.eval_prod,
-        ← Finset.mul_prod_erase (Icc 1 m) (fun i : ℕ => (i : ℝ) ^ 2 - 1 / (6 * (j : ℝ)) ^ 2) hn]
-      simp only [Polynomial.eval_sub, Polynomial.eval_C, Polynomial.eval_X]
-      field_simp [hfac n hn]
+      rw [pointCount_six_mul (Finset.mem_Icc.mp hn).1 hj]
+      exact eval_cleared_term (Icc 1 m) c _ hn (hfac n hn)
     rw [Polynomial.IsRoot.def, Polynomial.eval_finsetSum, Finset.sum_congr rfl hterm,
       ← Finset.mul_sum, h (6 * j) (by omega), mul_zero]
   have hinj : Function.Injective fun j : ℕ => 1 / (6 * ((j + 1 : ℕ) : ℝ)) ^ 2 := by
@@ -99,9 +111,7 @@ theorem eq_zero_of_forall_sum_mul_pointCount_eq_zero {m : ℕ} {c : ℕ → ℝ}
       rw [div_eq_div_iff (by positivity) (by positivity)] at h2
       linarith
     have h3 : 6 * ((a + 1 : ℕ) : ℝ) = 6 * ((b + 1 : ℕ) : ℝ) :=
-      (pow_left_injective₀ (M₀ := ℝ) two_ne_zero) |>.eq_iff.mp (by
-        show (⟨6 * ((a + 1 : ℕ) : ℝ), ha.le⟩ : {x : ℝ // 0 ≤ x}).1 ^ 2 = _
-        exact h1) |> fun _ => by nlinarith [sq_nonneg (6 * ((a + 1 : ℕ) : ℝ) - 6 * ((b + 1 : ℕ) : ℝ))]
+      (pow_left_inj₀ ha.le hb.le two_ne_zero).mp h1
     have h4 : ((a + 1 : ℕ) : ℝ) = ((b + 1 : ℕ) : ℝ) := by linarith
     have h5 : a + 1 = b + 1 := by exact_mod_cast h4
     omega
@@ -134,5 +144,49 @@ theorem eq_zero_of_forall_sum_mul_pointCount_eq_zero {m : ℕ} {c : ℕ → ℝ}
   rcases mul_eq_zero.mp heval with h1 | h1
   · exact (mul_eq_zero.mp h1).resolve_right hn2
   · exact absurd h1 hprod
+
+/-- **Restricted to the degrees `1, …, m`, the shifts of the point count span `ℝ^m`.** -/
+theorem span_shift_pointCount_eq_top (m : ℕ) :
+    Submodule.span ℝ (Set.range fun k : ℕ+ => fun n : Fin m =>
+      pointCount ((k : ℕ) * ((n : ℕ) + 1))) = ⊤ := by
+  rw [← Subspace.dualAnnihilator_inj, Submodule.dualAnnihilator_top, eq_bot_iff]
+  intro φ hφ
+  rw [Submodule.mem_dualAnnihilator] at hφ
+  -- the functional is `x ↦ Σ_i x_i·φ(e_i)`; its coefficients satisfy the relation at every shift
+  have hc : ∀ k : ℕ, 1 ≤ k → ∑ n ∈ Icc 1 m,
+      (if h : n - 1 < m then φ (fun j : Fin m => if (⟨n - 1, h⟩ : Fin m) = j then 1 else 0)
+        else 0) * pointCount (k * n) = 0 := by
+    intro k hk
+    have hk0 : 0 < k := hk
+    have h0 := hφ _ (Submodule.subset_span ⟨⟨k, hk0⟩, rfl⟩)
+    rw [LinearMap.pi_apply_eq_sum_univ] at h0
+    rw [show Icc 1 m = Ico 1 (m + 1) from rfl, Finset.sum_Ico_eq_sum_range, Nat.add_sub_cancel,
+      ← Fin.sum_univ_eq_sum_range (fun i => (if h : 1 + i - 1 < m then
+        φ (fun j : Fin m => if (⟨1 + i - 1, h⟩ : Fin m) = j then 1 else 0) else 0) *
+          pointCount (k * (1 + i))) m]
+    refine Eq.trans (Finset.sum_congr rfl fun i _ => ?_) h0
+    have hi : 1 + (i : ℕ) - 1 < m := by
+      have := i.2
+      omega
+    have hfin : (⟨1 + (i : ℕ) - 1, hi⟩ : Fin m) = i := Fin.ext (by simp)
+    rw [dif_pos hi, hfin, smul_eq_mul]
+    simp only [PNat.mk_coe]
+    rw [add_comm 1 (i : ℕ)]
+    ring
+  have hzero := eq_zero_of_forall_sum_mul_pointCount_eq_zero hc
+  rw [Submodule.mem_bot]
+  refine LinearMap.ext fun x => ?_
+  rw [LinearMap.pi_apply_eq_sum_univ, LinearMap.zero_apply]
+  refine Finset.sum_eq_zero fun i _ => ?_
+  have hi : (i : ℕ) + 1 - 1 < m := by
+    have := i.2
+    omega
+  have h1 := hzero ((i : ℕ) + 1) (Finset.mem_Icc.mpr ⟨by omega, by
+    have := i.2
+    omega⟩)
+  rw [dif_pos hi] at h1
+  have hfin : (⟨(i : ℕ) + 1 - 1, hi⟩ : Fin m) = i := Fin.ext (by simp)
+  rw [hfin] at h1
+  rw [h1, smul_zero]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

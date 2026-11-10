@@ -396,10 +396,13 @@ private theorem tendsto_precision_form (a : SuzukiPositiveAperture)
       (ccmArchimedeanFormToAperture a u)).re) atTop (𝓝 (completeEnergy a u)) := by
   have henergy := (criticalGreenEnergy_ne_top_iff a (ccmArchimedeanFormToAperture a u)).mp
     ((criticalGreenEnergy_ne_top_iff_form_range a (ccmArchimedeanFormToAperture a u)).mpr ⟨u, rfl⟩)
-  simpa only [precision_energy, completeEnergy_eq] using
-    (((tendsto_greenJumpEnergy_finite a (ccmArchimedeanFormToAperture a u)
-      henergy).comp damping_tendsto).add_const
-        (boundedEnergy a (ccmArchimedeanFormToAperture a u)))
+  have h := ((tendsto_greenJumpEnergy_finite a (ccmArchimedeanFormToAperture a u)
+    henergy).comp damping_tendsto).add_const
+      (boundedEnergy a (ccmArchimedeanFormToAperture a u))
+  rw [completeEnergy_eq]
+  apply h.congr
+  intro r
+  exact (precision_energy a r (ccmArchimedeanFormToAperture a u)).symm
 
 /-- Fixed dampings are continuous; their monotone supremum bounds every moving-state limit. -/
 private theorem green_energy_limit_bound (a : SuzukiPositiveAperture)
