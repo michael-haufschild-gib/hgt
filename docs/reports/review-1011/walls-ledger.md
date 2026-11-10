@@ -1,6 +1,6 @@
 # Walls ledger — status quo
 
-**Corpus checkpoint:** commit `804e55e894` with its working tree (2026-11-10). Working log: `logs/review-1011-frontier-facts.md`. Companions: [route-obstacles.md](route-obstacles.md), [route-unification-ledger.md](route-unification-ledger.md), [obstacles-summary.md](obstacles-summary.md).
+**Corpus checkpoint:** commit `d0cfbbc75f` with its working tree (2026-11-10). Working log: `logs/review-1011-frontier-facts.md`. Companions: [route-obstacles.md](route-obstacles.md), [route-unification-ledger.md](route-unification-ledger.md), [obstacles-summary.md](obstacles-summary.md).
 
 Three wall families carry the frontier. **Σ** is the critical sign of the window form, **Π** the precision and production of the prime count, **Γ** the selection of ζ, the reflection of its zeros and their position in height. All three meet in one minimal face, local in scale and tolerant of power-thin exceptions, and in one lattice: the comb pairing of the degree points.
 

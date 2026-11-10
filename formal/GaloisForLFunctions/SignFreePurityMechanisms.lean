@@ -35,6 +35,9 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ResidueBlockObst
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeletionReduction
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.TwoDigitFeasibility
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MinimalCounterexamples
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeficientCoordinates
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeficientOrder
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.SingletonLast
 
 /-!
 # Sign-free purity mechanisms

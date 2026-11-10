@@ -714,7 +714,7 @@ theorem exp_cpow_eq_cexp (r : ℝ) (s : ℂ) : ((Real.exp r : ℝ) : ℂ) ^ s = 
   rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos r).ne'),
     ← Complex.ofReal_log (Real.exp_pos r).le, Real.log_exp]
 
-/-! ### Dirichlet sums as exponential polynomials -/
+/-! ### Finite exponential sums as exponential polynomials -/
 
 theorem natCast_cpow_neg_eq_cexp {n : ℕ} (hn : 0 < n) (s : ℂ) :
     (n : ℂ) ^ (-s) = cexp (-(Real.log n : ℂ) * s) := by
@@ -724,8 +724,8 @@ theorem natCast_cpow_neg_eq_cexp {n : ℕ} (hn : 0 < n) (s : ℂ) :
 
 /-- A finite exponential sum, normalized at the term `m`: the remaining frequencies are
 `L_n − L_m`. -/
-theorem sum_exp_eq_expPoly (S : Finset ℕ) (a : ℕ → ℂ) (L : ℕ → ℝ) {m : ℕ} (hm : m ∈ S)
-    (ham : a m ≠ 0) (s : ℂ) :
+theorem sum_exp_eq_expPoly {ι : Type*} [DecidableEq ι] (S : Finset ι) (a : ι → ℂ) (L : ι → ℝ)
+    {m : ι} (hm : m ∈ S) (ham : a m ≠ 0) (s : ℂ) :
     ∑ n ∈ S, a n * cexp (-(L n : ℂ) * s) = a m * cexp (-(L m : ℂ) * s) *
       expPoly (fun k : S.erase m => a k / a m) (fun k : S.erase m => L k - L m) s := by
   have hsplit := Finset.add_sum_erase S (fun n => a n * cexp (-(L n : ℂ) * s)) hm
@@ -738,8 +738,8 @@ theorem sum_exp_eq_expPoly (S : Finset ℕ) (a : ℕ → ℂ) (L : ℕ → ℝ) 
   field_simp
 
 /-- The same sum, normalized at `m` in the variable `−s`: the frequencies are `L_m − L_n`. -/
-theorem sum_exp_eq_expPoly_neg (S : Finset ℕ) (a : ℕ → ℂ) (L : ℕ → ℝ) {m : ℕ} (hm : m ∈ S)
-    (ham : a m ≠ 0) (s : ℂ) :
+theorem sum_exp_eq_expPoly_neg {ι : Type*} [DecidableEq ι] (S : Finset ι) (a : ι → ℂ) (L : ι → ℝ)
+    {m : ι} (hm : m ∈ S) (ham : a m ≠ 0) (s : ℂ) :
     ∑ n ∈ S, a n * cexp (-(L n : ℂ) * s) = a m * cexp (-(L m : ℂ) * s) *
       expPoly (fun k : S.erase m => a k / a m) (fun k : S.erase m => L m - L k) (-s) := by
   have hsplit := Finset.add_sum_erase S (fun n => a n * cexp (-(L n : ℂ) * s)) hm

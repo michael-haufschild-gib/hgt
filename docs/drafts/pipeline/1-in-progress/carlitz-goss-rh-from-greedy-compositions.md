@@ -68,6 +68,9 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `DeletionReduction` | A shared last-part residue produces a smaller nongreedy optimum by digit or part deletion; disjoint last residues force a larger greedy last-part digit |
 | `TwoDigitFeasibility` | A non-strict threshold after two-digit deletion reserves either digit for the last part; reserving a larger power yields a smaller nongreedy optimum |
 | `MinimalCounterexamples` | Any nongreedy optimum yields a normalized least counterexample with at least three parts and two residues, disjoint last residues, and a deficient coordinate after each relevant two-digit deletion |
+| `DeficientCoordinates` | A deficient two-digit deletion pins both divisible prefixes to the integral boundary; last-part cyclic weights agree and lie below the combined deleted weights |
+| `DeficientOrder` | At a deficient coordinate, a larger available digit precedes the deleted last-part digit in cyclic order; the opposite order would admit an improving congruent block exchange |
+| `SingletonLast` | A minimal nongreedy optimum has a singleton last part: two distinct last-part digits would force opposite cyclic orders around a larger greedy digit |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.

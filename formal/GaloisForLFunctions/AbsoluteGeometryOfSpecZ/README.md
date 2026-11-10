@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-48 modules. Specification: §2.14 of
+49 modules. Specification: §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md), which refines
 §9 of [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
 `docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`. The statements on real
@@ -324,6 +324,15 @@ inequality beyond the bounded lengths above.
     imaginary part of such a test are packets with both degrees zero, and the zero sums, the
     masses and the energies of the test are the sums of theirs. So on packets of degree zero
     the pairing has no gap, and a counterterm with a larger density is refuted.
+38. **The conductor against the archimedean constant.** `L(s, χ)` has no pole term, and its
+    archimedean symbol is that of `ζ` plus `log q`, plus `π/cosh(πτ)` for an odd `χ`. The symbol
+    of `ζ` is at least `ψ(¼) − log π`, so the symbol of `χ` is nonnegative for `q ≥ 128π`, and
+    for an odd `χ` for `q ≥ 4π` (corpus). A packet shorter than `log 2` meets no contact: its
+    zero sum is the energy of that symbol.
+39. **Two configurations, one kernel.** Weil's form of a tempered configuration is nonnegative on
+    the tests whose transforms vanish at its zeros to the right of the line. For the sum of two
+    forms the common kernel of both sets of evaluations has codimension at most the sum of the
+    two counts, so the negative squares add at most.
 
 ## 5. The founding questions
 
@@ -537,6 +546,8 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
 | The pairing of the ring | `2 d₁ d₂ − Z_ζ(f) − Z_χ(f)`, with the counterterm `log(q n²/(2π)²)` | `tendsto_quadraticForm_add_idealContact`, `quadraticForm_eq` |
 | The jets of a complex place | `1/(m + n)` is the difference of the jets of `Γ_ℝ(s)` and `Γ_ℝ(s + 1)`; both factors together give `1/|m − n|` | `placeEnergy_eq_conjugateForm`, `tendsto_conjugateJet`, `two_mul_levyKernel_sub_conjugate` |
 | The conductor is forced | with a smaller conductor in the counterterm the inequality fails on a packet of degree zero | `exists_primitive_packet_zeroSums_lt`, `exists_packet_quadraticForm_pos` |
+| The Hodge index of the ring on packets | the defect has at most as many negative squares as `ζ` and `L(s, χ)` have zeros to the right of the line; the twisted part at most as many positive squares as `L(s, χ)` has | `tendsto_quadraticPairing_packetCombination`, `negIndex_quadraticDefect_packets_le`, `negIndex_twistedGram_packets_le` |
+| The inequality where no contact enters | for an odd conductor `q ≥ 4π` or an even one `q ≥ 128π`, on packets shorter than `log 2`, with the margin `∫f²/5000` | `twistedZeroSum_nonneg_of_short`, `tendsto_quadraticForm_le_degrees_of_short` |
 
 ## 7. Criteria
 
@@ -695,6 +706,17 @@ this folder.
   the zeta function of the ring (`tendsto_quadraticForm_add_idealContact`).
 - The conductor is forced from below. With `q e^{−c}` in the counterterm, `c > 0`, some packet
   with both degrees zero has a positive pairing (`exists_packet_quadraticForm_pos`).
+- The Hodge index. On every finite family of packets the limit is `2 d₁ d₂` minus the
+  quadratic form of the two Gram matrices of the zeros
+  (`tendsto_quadraticPairing_packetCombination`); the defect has at most as many negative
+  squares as `ζ` and `L(s, χ)` together have zeros to the right of the line
+  (`negIndex_quadraticDefect_packets_le`), and the twisted part at most as many positive squares
+  as `L(s, χ)` has (`negIndex_twistedGram_packets_le`).
+- Bounded apertures. For an odd character of conductor `q ≥ 4π` or an even one of conductor
+  `q ≥ 128π` the inequality holds on the packets shorter than `log 2`, with the margin
+  `∫f²/5000` (`tendsto_quadraticForm_le_degrees_of_short`): the twisted part is nonpositive
+  there because the conductor exceeds the archimedean constant
+  (`twistedZeroSum_nonneg_of_short`).
 - The class group does not enter this pairing: contacts, jets and counterterm depend on `χ`
   alone. It obstructs the orbits and nothing else that the norms see.
 
@@ -787,6 +809,8 @@ the integers Bézout fails for every system of contact weights other than `Λ`
 | On packets of degree zero the pairing has no gap, for `ℤ` and for a quadratic ring | `exists_primitive_packet_zeroSum_lt`, `exists_primitive_packet_zeroSums_lt` |
 | Bézout with the counterterm `log(n/2π) − c` holds iff `c ≤ 0` and the Riemann hypothesis holds | `combBezoutShift_iff` |
 | With a conductor below `q` in the counterterm the inequality fails for a quadratic ring | `exists_packet_quadraticForm_pos` |
+| The index law on the square of a quadratic ring: the defect has at most as many negative squares as `ζ` and `L(s, χ)` have zeros to the right of the line | `negIndex_quadraticDefect_packets_le`, `negIndex_twistedGram_packets_le` |
+| The inequality on the square of a quadratic ring of large conductor, on packets shorter than `log 2` | `tendsto_quadraticForm_le_degrees_of_short` |
 
 All are unconditional.
 
@@ -831,6 +855,7 @@ All are unconditional.
 | The gluing count at a real height; increments of `x log x − x` | `TheSquareMissesTheZerosByAnUnboundedRemainder` |
 | The square of a Dedekind domain: congruences over ideals, contacts, necklace coordinates | `TheArithmeticSquareOfADedekindDomain` |
 | The functional of a weight as pole term plus symbol energy; the explicit formula of a real character on tests and on packets; the kernel `1/(2 cosh)` and its jets; pairings with the contacts of a quadratic ring | `TheSquareOfAQuadraticRingPairsWithItsConductor` |
+| The zeros of `L(s, χ)` as a tempered configuration; Gram matrices of two configurations on a family of packets; the kernel of the evaluations at the zeros to the right of the line; tests with one atom-free level | `TheHodgeIndexOfTheSquareOfAQuadraticRing` |
 | Real and imaginary parts of a test; packets of degree zero from truncated radical tests; translation of a packet of degree zero into a window; pairings with a shifted counterterm | `BezoutDeterminesTheConstantOfTheCounterterm` |
 | Descent of the `p`-derivation to an integer point | `DeltaOrderDoesNotDescendAtEveryIntegerPoint` |
 
@@ -887,6 +912,7 @@ All are unconditional.
 | The discriminant of a number ring is an invariant of a point of its square | it is the density of the comb of the twisted part: the counterterm is `log(qn/2π)` |
 | A number ring needs its own comb | counted by their norms the ideals of a quadratic ring sit on the comb of the integers, with the contacts `Λ(1 + χ)` and the jets of both archimedean factors |
 | The twisted part of a pairing has rulings | it has no pole plane: its limit is minus the sum over the zeros of `L(s, χ)` |
+| Short packets say nothing about a number ring | for a large conductor the twisted part is nonpositive on every packet shorter than `log 2`: the density of its comb exceeds the archimedean constant |
 
 ## 13. Open research topics
 
@@ -952,8 +978,11 @@ prime ideals with the count `log N𝔭`, the diagonal and `Γ_𝔭` are glued al
 the necklace coordinate at `𝔡` is the ideal `𝔡`, and the orbit of `𝔡` exists iff `𝔡` is
 principal. For a quadratic ring the pairing of the ideals counted by their norms is computed on
 the comb of the integers, with the conductor in the counterterm, and the conductor is forced
-from below. *Open:*
+from below; its defect obeys the index law, and for a large conductor the inequality holds on
+the packets shorter than `log 2`. *Open:*
 
+- the conductors below `4π` (odd) and `128π` (even) on short packets, and every conductor on a
+  packet that meets a contact;
 - the ideals themselves as degree points. Two ideals of the same norm are one point of the comb
   of norms; a jet between two ideals is a function of a generator of their quotient and exists
   inside one class only, and the pairings twisted by the characters of the class group are those

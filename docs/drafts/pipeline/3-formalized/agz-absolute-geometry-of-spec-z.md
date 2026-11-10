@@ -527,6 +527,22 @@ window give a packet with limit `> 0 = 2d₁d₂`. If the inequality holds then 
 all packets, hence RH by the floor theorem for odd tests (corpus). Conversely RH gives `Z ≥ 0`.
 (iii) (i) for the ring, `Z_χ` and the degrees under translation, F3(iii). ∎
 
+**F4 (the Hodge index of the square of a quadratic ring).** `χ` as in F2, packets `f₁,…,f_r` in
+one window, `f_x = Σ x_i f_i`. (i) The limit of F3(iii) on `f_x` is
+`2d₁(f_x)d₂(f_x) − x^*(G_ζ + G_χ)x`, `G_Z = (W_Z(f_i, f_j))` the Gram matrices of the zeros.
+(ii) `G_ζ + G_χ` has at most `κ_ζ + κ_χ` negative squares, `κ_Z` the number of zeros of `Z` with
+`Re ρ > ½`; `G_χ` has at most `κ_χ`. (iii) If `χ` is odd and `q ≥ 4π`, or even and `q ≥ 128π`,
+then `Z_χ(f) ≥ 0` for every packet supported in an interval shorter than `log 2`, and the limit
+of F3(iii) is at most `2d₁d₂ − ∫f²/5000`.
+*Proof.* (i) F3 and `Z(f_x) = x^*G_Z x` for a tempered configuration (corpus); the zeros of
+`L(s, χ)` are tempered. (ii) On the common kernel of the evaluations `x ↦ Σ x_i conj f̂_i(γ_ρ)`
+at the zeros to the right of the line of both configurations each form is a sum of nonnegative
+terms; a form nonnegative on a subspace of codimension `P` has at most `P` negative squares.
+(iii) After a translation the packet is supported in `[−a, a]`, `2a < log 2`, so
+`⌊e^{2a}⌋ = 1` and the symbol of F2 has no atom: `2πZ_χ = ∫|F̂|²(S_∞ + log q [+ π/cosh])`, and
+the integrand is nonnegative (corpus: `Re ψ(x + iy) ≥ ψ(x)`, `ψ(¼)`, `ψ(¾)`). With C20 at the
+aperture `½ log 2 < 181/500`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -561,7 +577,8 @@ all packets, hence RH by the floor theorem for odd tests (corpus). Conversely RH
   decisive test: C21.
 - **Q17 (number rings)**: F1 (the square; orbits iff principal), F2, F3 (comb, counterterm with
   the conductor, jets of a complex place, the pairing as `2d₁d₂` minus the zero sum of the zeta
-  function of a quadratic ring), C28(iii) (the conductor is forced). **Q12**, the constant: C28(ii).
+  function of a quadratic ring), C28(iii) (the conductor is forced), F4 (the index law; the
+  inequality on short packets for a large conductor). **Q12**, the constant: C28(ii).
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -627,6 +644,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | F1 | `TheArithmeticSquareOfADedekindDomain` |
 | F2, F3 | `TheSquareOfAQuadraticRingPairsWithItsConductor` |
 | C28 | `BezoutDeterminesTheConstantOfTheCounterterm` |
+| F4 | `TheHodgeIndexOfTheSquareOfAQuadraticRing` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -640,6 +658,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `ThePairingOfTheDegreePointsWeighsTheZeros`, `TheOrbitRingWithABaseIsATowerOfLines`,
 `TheCarryIsTheDefectOfTheWindowCount`, `AFiniteFibreForcesContacts`,
 `TheSignIsCarriedByTheContacts`, `TheSquareOfAQuadraticRingPairsWithItsConductor`,
+`TheHodgeIndexOfThePairingOfTheDegreePoints`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -657,7 +676,7 @@ Open parts of the questions of the refined programme (details in the README, §1
 - The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
   varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
-- Number rings beyond F2, F3, C28: the ideals themselves as degree points with the characters
+- Number rings beyond F2–F4, C28: small conductors and packets with a contact; the ideals themselves as degree points with the characters
   of the class group (Hecke `L`-functions), rings of degree above two, the units of a real
   quadratic ring, the gluing index against the zero count of the Dedekind zeta function.
 - Q15, Q16, Q18, Q19 of the specification (real divisors at finite scale): continuation

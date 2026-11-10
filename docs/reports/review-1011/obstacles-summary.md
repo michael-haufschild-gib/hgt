@@ -1,6 +1,6 @@
 # Obstacles summary — status quo
 
-Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `9a43b8670d` with its working tree (2026-11-10). Working log: `logs/review-1011-frontier-facts.md`.
+Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `d0cfbbc75f` with its working tree (2026-11-10). Working log: `logs/review-1011-frontier-facts.md`.
 
 **Evidence.** `[L*]` Lean statement read for this report (source, or the statement returned by the corpus search tool); `[L]` recorded as integrated Lean in the frontier map, the scoped-obstruction ledger, a programme table of `formal/` or a formalized pipeline card returned by the search tool, not re-read; `[S]` Lean source present, graded unfinished or unintegrated by the frontier map or untracked in the working tree, statement read; `[K]` Lean with transitive axiom audit as recorded; `[D]` deduction made here from `[L*]`/`[S]` statements; `[C]` classical, not in the corpus; `[A]` assessment. Sections 2.3–2.14 and 3 are interpretation and ideation: every untagged statement there is a proposal, not a result.
 
@@ -64,26 +64,27 @@ Open [L]: the near-diagonal cofactor pairs, the prime-weighted sum with both con
 - A bounded holomorphic function on `Re s>x` given by an absolutely convergent Dirichlet series, whose zeros there are zeros of ξ, has all of them on the line: Bohr recurrence of a zero against the density-zero law of the deep zeros [L*].
 - Every Dirichlet polynomial with at least two terms has a zero that is not a zero of ξ; no hypothesis on the support [L*]. Mechanism: if `−Gζ/s` is holomorphic in the strip and bounded near the line, with absolutely convergent expansions in scales `≤1` right of the line and `≥1` left of it, the constant terms agree, by the jump of the fractional part; for `G=D′/D` this forces the lowest and the highest frequency to coincide [L*].
 - A zero-free exponential polynomial is bounded below on closed half-planes; its inverse expands over the monoid of frequencies up to the zero-free abscissa [L*].
+- Finitely many simple poles of `−Gζ/s` on the line do not change the agreement of the constant terms: the two series of fractional parts differ by a continuous polar part [L*].
 - Not covered [L]: bounded Dirichlet series with zeros on the line, partial common zeros, limits of approximants.
 
 ### 1.6 Exactness over ℤ has an exact price
 `x↦xⁿ` is additive in characteristic `q` exactly when `n` is a power of `q`; `Λ(n)` is the `log q`-weighted number of primes at which `F_n` is a Frobenius [L*]. Order `m` of the Fermat-quotient derivations at every prime of `S` costs `log|a|≥m·Σ_{p∈S}log p`; `ℤ` has no ring endomorphism but the identity [L*]. The minimal fixed-point auxiliary has log length `ψ(N)`, and RH ⇔ `ψ(N)≤N+C√N log²N` [L*]. On the tower of lines Riemann–Roch has the gluing index `K!` and Bézout gives `n≤|x_n|`: the product formula [L*]. A section of the square that vanishes on the graphs of the proper divisors of `m` and not on `Γ_m` pays all those contacts; upward it pays one contact per distinct prime: `p−e_p` vanishes on every `Γ_{p^j}` and has the value `p` on `Γ_1` [L*]. The carry is a cocycle that is not a coboundary; the carry defect and the window-count defect are complementary up to `½log(πN)+o(1)` [L*]. At one prime Stepanov's method runs on the first Witt carry: `|Σ_{n≤p}e(an^p/p²)|≤5p^{11/12}` [L*].
 
-### 1.7 The comb: one matrix on the integers, a Hodge index equivalent to RH, no slack
+### 1.7 The comb: one matrix on the integers, a Hodge index equivalent to RH, no positive margin
 - **Pairing and zeros.** On packets the pairing of the degree points tends to `2d₁d₂−Z(f)`; RH ⇔ exactly one positive square on the two rulings and every finite family of packets; the defect has at most `#{ρ: Re ρ>½}` negative squares [L*].
 - **The sign is carried by the contacts.** Comb Bézout with weights `w` ⇔ RH ∧ `w=Λ`; unit masses on the integers force `w=Λ`; with a doubled weight at `2` the flat tail violates the inequality at every large scale [L*].
-- **No slack in the counterterm.** With the counterterm `log(n/2π)−c` the inequality holds for all packets ⇔ `c≤0` ∧ RH; for every `c>0` a packet with both degrees zero has `Z(g)<c∫g²` [S].
+- **The constant of the counterterm.** With the counterterm `log(n/2π)−c` the inequality holds for all packets ⇔ `c≤0` ∧ RH; for every `c>0` a packet with both degrees zero has `Z(g)<c∫g²` [S]. So no positive margin exists, and a uniform floor `Z(f)≥−C∫f²` over all packets, with any fixed `C`, is RH.
 - **Finite scale.** On `S⊆(N,N+M]`, `18M≤N`, every real divisor has comb form `≥(1/50)Σc_n²`. For every ratio `Q` there is `R` such that for `N≥R` the comb form is nonnegative on the real divisors of `(N,QN]` whose sums over blocks of `⌊N/R⌋` points vanish; the blocks are fewer than `2QR` [L*]. If for every ratio and every `η>0` the comb form is `≥−ηΣc_n²` on every real divisor of the window at arbitrarily large scales, RH holds; if RH fails, some ratio has, at every large scale, a real divisor with `Σc_n²≤C` and comb form `≤−ε` [L*].
 - **Selectivity.** A window of ratio `≤2` contains no pair in divisibility: the form is the same for every system of contact weights, and the short-window floor holds for all of them. On the single point `{2}` the form is `c²(1−log π)<0`: nonnegativity on every finite set is false [L*].
 - **Jets by weights.** `½(1/|m−n|+1/(m+n))=Σ_{j≥0}min^{2j}/max^{2j+1}`; each weight, with the diagonal `1/n`, is positive semidefinite (a Hardy square); the truncations to the first `J` weights increase to the comb form, with remainder `≤(1−1/N)^{2J}` times half the Dirichlet form of the jets [L*]. The weights are the even multipoles `r_<^ℓ/r_>^{ℓ+1}`, `ℓ=2j`, of the Newtonian kernel `1/|x−y|` in `ℝ³` between a point at distance `m` on an axis and the pair `±n`; the weight-zero kernel `1/max` at the points `0` and `∞` gives the pairings `1/n` and `1` with the two rulings [D]. The contact form of one prime is `log p` times the sum over the chains `{mp^k}` of the square of the chain sum minus its diagonal [D].
 - **Potential.** In the gauge of the flat tail the potential at `n` is `N/n−ψ(N/n)` plus an explicit smooth term; the form of the flat tail per degree point tends to `2+γ−log 4π`, twice the first Li coefficient [L*]/[D].
 - **Curves.** On the comb `q^ℤ` of a curve the comb form is the Toeplitz form of the normalized Frobenius eigenvalues; nonnegativity on every finite set ⇔ purity; on one graph it is `2g·e_k²`; no jets, no counterterm; the golden datum violates it [S]. Purity of a curve datum is decided on the window of `#spectrum` degree points [L*].
-- **Quadratic rings.** For a real primitive character of conductor `q>1` the ideals counted by their norms sit on the comb of the integers with contacts `Λ(n)(1+χ(n))`; the pairing tends to `2d₁d₂−Z_ζ−Z_χ`; the twisted part has no pole plane and the counterterm `log(qn/2π)`; the class group does not enter; with the conductor `qe^{−c}`, `c>0`, some packet of degree zero has a positive pairing [S].
+- **Quadratic rings.** For a real primitive character of conductor `q>1` the ideals counted by their norms sit on the comb of the integers with contacts `Λ(n)(1+χ(n))`; the pairing tends to `2d₁d₂−Z_ζ−Z_χ`; the twisted part has no pole plane and the counterterm `log(qn/2π)`; the class group does not enter; with the conductor `qe^{−c}`, `c>0`, some packet of degree zero has a positive pairing [S]. The defect of the pairing has at most as many negative squares as ζ and `L(s,χ)` together have zeros right of the line; on packets shorter than `log 2`, for an odd character of conductor `q≥4π` or an even one of conductor `q≥128π`, the twisted part is nonpositive and the inequality holds on the square of the ring with the margin `∫f²/5000` [S].
 - **Index and splittings.** If the right zeros are zeros of `P_WE−cP_{W♯}E′` with `|E′|≤|E|` right of the line and `W` of `κ` points, Weil's form has at most `κ` negative squares; the cleared Eisenstein constant term gives at most one for `Y≥1` and none for `1≤Y≤4πe^{−γ}` [L*].
 - **Counting.** The gluing index of the first `N` graphs is `N!`; `G(T)−N(T)+S(T)→½log 2π−7/8`; the contacts at a height are the smoothed increments of `S`, up to the off-line correction [L*].
 
 ### 1.8 The adelic carrier and three regulators
-Every adelic-invariant kernel with a torus-orbit functional has a constant degree diagonal; no scalar counterterm removes the jump `−2‖g‖²log p` between `p` and `p³` [L*]. The weighted mixed hyperbolic Green kernel converges over the rational torus, has a leafwise Robin finite part, and its spherical average at parameter `½` is the minimal Green kernel of the all-prime weighted adjacency [L*]; none of these identifies Weil's degree diagonal [L].
+Every adelic-invariant kernel with a torus-orbit functional has a constant degree diagonal; no scalar counterterm removes the jump `−2‖g‖²log p` between `p` and `p³` [L*]. The weighted mixed hyperbolic Green kernel converges over the rational torus, has a leafwise Robin finite part, and its spherical average at parameter `½` is the minimal Green kernel of the all-prime weighted adjacency [L*]; the weighted adelic adjacency has norm equal to its Schur edge, approached by finite nonnegative charges, and below the tempered edge no nonnegative point-source supersolution exists [S]; none of these identifies Weil's degree diagonal [L].
 
 | Regulator | Finite cutoff | Limit | Evidence |
 |---|---|---|---|
@@ -124,7 +125,7 @@ For each mechanism by which a Riemann hypothesis or a statement of its type is p
 | A Frobenius with zero derivative (Stepanov) | cost `m·θ(S)`; reaches Chebyshev; one prime: `p^{11/12}` | [L*] |
 | Ferromagnetic stability (Lee–Yang) | zeros of stable prime polynomials lie on the line and are not zeros of ζ; linear zero counts | [L*]/[L] |
 | A dominant half (Hermite–Biehler; Lagarias–Suzuki) | index law and semicontinuity; index one pencils converge to `(s−1)ξ(2s)`; the natural theta half has infinitely many right zeros; index of the pairing ≤ defect of a splitting | [L*]/[L] |
-| Newton polygons (Sheats) | digit combinatorics in Lean without the optimality of the greedy composition; separation by absolute value is excluded for ζ; the carry is a nonzero class | [S]/[L] |
+| Newton polygons (Sheats) | digit combinatorics in Lean; optimal ⇔ greedy for two parts and for one residue class; constraints on a minimal nongreedy optimum; the general optimality open; separation by absolute value is excluded for ζ; the carry is a nonzero class | [S]/[L] |
 | Heat flow | nonreal count antitone; infinitely many non-real zeros at every negative time | [L] |
 | Jensen polynomials | the finite-stratum law gives RH; `N_d≤300√(d log d)` | [L] |
 | Recurrence (Bagchi) | RH ⇔ strong recurrence; power-many separated returns exclude a zero | [L*] |
@@ -139,13 +140,13 @@ Consequences [D]: every route of the corpus is a receiver; no statement of the c
 ### 1.16 Where a statement has slack
 | Form of RH | Slack | Evidence |
 |---|---|---|
-| the sign over all test functions of a window | none: best margin `≤K exp(11c/2−πe^{2(c−2)})`; no change of one contact weight; no change of the constant `2π` | [L*]/[S] |
+| the sign over all test functions | no positive margin: best margin of a window `≤K exp(11c/2−πe^{2(c−2)})`; no change of one contact weight; no constant above `2π`. Downward: a uniform floor `−C∫f²` over all packets, any fixed `C`, is RH | [L*]/[S] |
 | a floor at the primes for one fixed bump | any floor `−Kp^α` with `α` arbitrarily small on logarithmic windows gives width `α`: `P(p)≤A(p)+p^{o(1)}` suffices | [L*] |
 | the index | one unit: at most one complex zero per approximant suffices | [L*] |
 | returns | a power: `T^c` returns, `c>(30/13)(1−σ)` | [L*] |
 | the heat flow | none at time zero | [L] |
 
-An estimate can meet a statement only where it has slack: on the prime side, for one fixed test [D].
+An estimate can meet a statement where it has slack: on the prime side `p^{o(1)}` for one fixed test; on the sign side any uniform constant over all packets [D].
 
 ### 1.17 What is ruled out
 | Mechanism | Verdict | Evidence |
@@ -190,6 +191,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A76 | Exceptional sets in the absolute and signed window criteria (unverified) | SRT, ACS, CDGeo | `prime_power_windows_transfer_off_finset` |
 | A71 | Local tensor moments: uniform-in-`k` moments of `c_B` over the primes of late windows ⇔ RH [D] | ACS, AWT | window criteria with exceptional sets |
 | A56 | Explicit rung: `RHVerifiedThrough T` ⇒ the two-bump sign for all `p≤P(T)` (unverified) | SRT, ACS | supports of the two-bump tests |
+| A78 | Cluster form of the separated-window theorem (unverified) | SRT, ACS | `re_le_of_bddBelow_exp_windows_of_deepSeparated` |
 | A80 | Converse at finite scale: RH ⇒ for every ratio the comb form is nonnegative on every real divisor of `(N,QN]`, `N≥N₀(Q)`; with a verified height in place of RH for one ratio (unverified) | ACS, HF | the block decomposition; `tendsto_combForm_sample`; unbounded density of the zeros (`eq_zero_of_blind_of_unbounded_density`) |
 | A79, A81 | Matching constants in the aperture–height exchange; `R(Q)` and the index bound `2QR(Q)` against the resolution law (unverified) | RW, ACS | `windowPositiveAt_of_rhVerifiedThrough`; `zeta_resolution_law_of_hodgeIndex`; `exists_blockSize_combForm_nonneg` |
 | A82 | The Li ladder as comb forms of tails: the flat tail gives `2λ₁`; identify `λ_n` with the comb form of the `n`-th tail (unverified) | LI, ACS | `tendsto_combFormW_flatTail_div` |
@@ -225,7 +227,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A33 | Fourier coefficients of the cubic residue [C] | MC, MMD | nonzero residue |
 | A41 | Count law for every curve over `𝔽_q`, first case plane quartics [C] | ACS, PM | crude-bound self-improvement |
 | A59 | Short-interval primes in a residue class [C] | ACS, SRT | gap sets |
-| A84 | Optimality of the greedy carry-free composition and the Newton polygon of the Carlitz–Goss zeta function [C] | sign-free calibration | `tokenPrefix_iff_inverseContent`; `IsOptimal.removeLast`; `exists_dominant_digitBlock` |
+| A84 | Optimality of the greedy carry-free composition and the Newton polygon of the Carlitz–Goss zeta function [C] | sign-free calibration | `tokenPrefix_iff_inverseContent`; `isOptimal_two_iff_isGreedy`; `isOptimal_iff_isGreedy_single_residue`; `exists_deficient_coordinate_of_minimal` |
 | A101 | Classical Deuring–Heilbronn in the form of the twisted comb: an exceptional square forces a margin on the other squares of the twisted part [C] | BAG, ACS | the uniform real-zero repulsion theorem; `tendsto_twistedForm_add_twistedContact` |
 
 ### Further items
@@ -329,7 +331,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A85, exact factors | Dirichlet polynomials as factors of ξ, any support | none | [L*] |
 | A87, two-block face | The comb form on two-bump packets at a prime | one inequality per prime on the comb, on logarithmic windows with exceptions | [L*] |
 | A88 | Deep neighbours forced by positivity | the aperture-side resolution law with the neighbour count | [L*] |
-| Field of fixed-part Hodge theory, its questions | Which comb; the carries; integer-norm monoids; the second axiom on the tower; the statement over a curve; over a quadratic ring; the two-block case; what the sections certify; the constant of the counterterm | one orbit of the Frobenius monoid; a nonzero class complementary to the window count; unit masses fix `Λ`; the product formula; a Toeplitz form with purity as its sign; contacts `Λ(1+χ)` with the conductor as a density and no class group; one inequality per prime; one contact per prime above; `2π` forced, no slack | [L*]/[S] |
+| Field of fixed-part Hodge theory, its questions | Which comb; the carries; integer-norm monoids; the second axiom on the tower; the statement over a curve; over a quadratic ring; the two-block case; what the sections certify; the constant of the counterterm | one orbit of the Frobenius monoid; a nonzero class complementary to the window count; unit masses fix `Λ`; the product formula; a Toeplitz form with purity as its sign; contacts `Λ(1+χ)` with the conductor as a density and no class group; one inequality per prime; one contact per prime above; `2π` forced; no positive margin | [L*]/[S] |
 | A70 | Torus periodization of the mixed Green kernel | absolutely convergent, symmetric, descends; leafwise Robin diagonal | [L*] |
 | B125 | No halving pairs as a condition for the one-eigenform receiver | void; the condition is the Shimura zero (B147) | [L*] |
 | A50 | Finite-stratum laws on the cosine and shifted Jensen families | Jensen: the law gives RH; cosine: the law gives RH ⇔ ZAL | [L*]/[L] |
@@ -366,7 +368,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | F19 | **Remainder.** Gluing index, zero count, contacts at a height | zero count at a height = gluing conditions − contacts + off-line correction, smoothed [L*] | — | the index formula of the square is the argument principle |
 | F20 | **Existence half.** Prime-blind duality, dependence of the aperture on finitely many weights, rigidity of `Λ` | RH ⇔ at every aperture some real weight system is Weil-positive: the feasible sets are compact, convex and nested, and a common point is `Λ` [D] | a construction of feasible weights (B18) | a producer need not know `Λ`; if RH fails, some aperture admits no weights at all, for a reason that involves no prime |
 | F21 | **Resolution atlas.** Aperture law with neighbour count, cut crystal, logarithmic prime windows, heat count, curve determinacy, verified height | every graded receiver is a chart on the plane of depth and height; the charts differ in exchange rate [L*]/[D] | A93 | where a verified height buys most; which finite-parameter theorems carry information on zeros |
-| F22 | **Conductor ladder.** Quadratic-ring comb, twisted part without pole plane, classical Deuring–Heilbronn, the trivial aperture | the twisted part is negative semidefinite to aperture `log log q−log 4`; an exceptional zero is one positive square at aperture about `log log q` [S]/[D]/[A] | B154 | the smallest unsolved instance of the missing sign, inside the corpus's objects; every sign mechanism can be run on it without RH |
+| F22 | **Conductor ladder.** Quadratic-ring comb, twisted part without pole plane, classical Deuring–Heilbronn, the trivial aperture | the twisted part is negative semidefinite to aperture `log log q−log 4`, and with a margin on packets shorter than `log 2` for conductors `≥128π`; an exceptional zero is one positive square at aperture about `log log q` [S]/[D]/[A] | B154 | the smallest unsolved instance of the missing sign, inside the corpus's objects; every sign mechanism can be run on it without RH |
 
 **Closest to the open core: F2, F17, F8, F11, F22.**
 
@@ -451,7 +453,7 @@ No contradiction comes from exact identities alone, from positivity, Euler produ
 - **Recurrence against density.** A bounded Dirichlet series whose zeros are zeros of ξ is pure.
 - **Two-sided constant terms.** If `−Gζ/s` is bounded and holomorphic in the strip with one-sided absolutely convergent scale expansions on the two sides, the constant terms agree; no Dirichlet polynomial is a factor of ξ. The mechanism is the jump of the fractional part: the additive structure of the integers.
 - **Priced producers.** Frobenius at one prime; integrality reaches Chebyshev; exponential sums reach VK; Turán's power sums give two-sided detection without separation.
-- **A calibration in characteristic `p`.** The digit combinatorics of the Carlitz–Goss zeta function is in Lean up to the optimality of the greedy composition (A84).
+- **A calibration in characteristic `p`.** The digit combinatorics of the Carlitz–Goss zeta function is in Lean; an optimal composition is greedy for two parts and for one residue class [L*]; the general optimality of the greedy composition is open (A84).
 
 Both pointwise theorems of this list are about constituents of ξ. Under the constraint the corpus has no theorem that locates a zero of ξ, and the corpus search returns no sign-free mechanism from outside that does (§2.9).
 
@@ -490,7 +492,7 @@ Both pointwise theorems of this list are about constituents of ξ. Under the con
 
 ## 2.8 If RH is a problem of topology or geometry
 
-**What is proved [L*]/[S].** The arithmetic square is a curve; its graphs meet in the primes; no object of finite type carries the contacts; sections pay one contact per prime above. The pairing of the degree points has a Hodge index theorem equivalent to RH, with no slack in the weights and in the constant of the counterterm. In the normal form it is one matrix on the integers: windows of ratio `≤19/18` are negative definite at every scale for every system of weights; windows of ratio `≤2` do not see the contacts; the index of a window is finite uniformly in the scale; the jets are a sum of positive semidefinite weights. The same matrix without jets and without counterterm is the Toeplitz form of a curve, decided on a window of `2g+1` points [L*]/[D]; with the conductor as a density it is the square of a quadratic ring, in which the class group does not enter.
+**What is proved [L*]/[S].** The arithmetic square is a curve; its graphs meet in the primes; no object of finite type carries the contacts; sections pay one contact per prime above. The pairing of the degree points has a Hodge index theorem equivalent to RH, with no positive margin, no other weight and no larger constant in the counterterm. In the normal form it is one matrix on the integers: windows of ratio `≤19/18` are negative definite at every scale for every system of weights; windows of ratio `≤2` do not see the contacts; the index of a window is finite uniformly in the scale; the jets are a sum of positive semidefinite weights. The same matrix without jets and without counterterm is the Toeplitz form of a curve, decided on a window of `2g+1` points [L*]/[D]; with the conductor as a density it is the square of a quadratic ring, in which the class group does not enter.
 
 **Readings [D].**
 - *Genus function.* In the normalization of a curve, where the form on one graph is `2g·e²`, the form on the degree point `n` is `e²(2+n log(n/2π))`: the genus at `n` is `1+(n/2)log(n/2π)`, negative at `n=2,3`, and of the order of the number of zeros below the height `πn`.
@@ -507,7 +509,7 @@ Both pointwise theorems of this list are about constituents of ξ. Under the con
 
 ## 2.9 New field for RH: selective arithmetic
 
-**Does RH need a new field?** Yes, and not a further language for the inequality. The fields named for this place in the reports of this series exist as programmes: the arithmetic Castelnuovo–Severi theory, the surface and the absolute geometry of Spec ℤ, the infinite-rank purity theory, the arithmetic weight theory and the Hodge theory of a fixed part. Their theorems are in §1.4–§1.7. Each ends at the same statement, a sign with no slack, and each is a receiver. The census of §1.15 shows that every mechanism that proves a statement of this type elsewhere has a Lean-fixed price over ℤ. What no programme of the corpus contains is a producer.
+**Does RH need a new field?** Yes, and not a further language for the inequality. The fields named for this place in the reports of this series exist as programmes: the arithmetic Castelnuovo–Severi theory, the surface and the absolute geometry of Spec ℤ, the infinite-rank purity theory, the arithmetic weight theory and the Hodge theory of a fixed part. Their theorems are in §1.4–§1.7. Each ends at the same statement, a sign with no positive margin, and each is a receiver. The census of §1.15 shows that every mechanism that proves a statement of this type elsewhere has a Lean-fixed price over ℤ. What no programme of the corpus contains is a producer.
 
 **Mathematics for which the corpus search returns no statement, with a verdict [A].**
 | Mechanism | What it would give | Verdict |
@@ -527,7 +529,7 @@ None of these is a producer. The field that RH needs has no existing name.
 |---|---|
 | What it is about | Selective statements at unbounded scale: inequalities that hold for ζ and fail for a system sharing all its structures but one, and that are not transports of the classical zero-free region, of a density theorem, of rigidity or of a verified height. Their sources, their slack, their smallest instances |
 | What it is like | A theory of producers: for every candidate mechanism a price, a calibration on a fake and a calibration on a true `L`-function with a possible exceptional zero. It does not add an equivalent of RH |
-| Established | The prices of §1.15; non-selectivity of short windows; no slack in the weights and in the constant; slack `p^{o(1)}` on the prime side; the feasible sets `𝒜(a)` and RH ⇔ all nonempty [D]; resolution laws on the aperture side; the comb of a curve and of a quadratic ring [L*]/[S] |
+| Established | The prices of §1.15; non-selectivity of short windows; no positive margin, no other weight, no larger constant; a uniform floor on the sign side and `p^{o(1)}` on the prime side as the available slack; the feasible sets `𝒜(a)` and RH ⇔ all nonempty [D]; resolution laws on the aperture side; the comb of a curve and of a quadratic ring [L*]/[S] |
 | Criteria for a producer | P1 it proves the two-block inequality at one prime ratio at fixed width. P2 it fails with a doubled weight at `2` and with a constant other than `2π`. P3 it proves no margin: at every negative time the heat flow has non-real zeros. P4 it uses the FE and the Euler product jointly: it fails on the integer-norm one-off, the `cosh` models and the heat family. P5 it is not a family, not a section count, not a stable approximant, not a positive ground state. P6 run on the twisted part of a quadratic ring it closes the gap `log 4` of the conductor ladder, or it uses the pole plane in a way that the twisted part does not have. P7 over a curve it reproduces the Toeplitz statement. P8 its output is pointwise |
 | Questions it must answer | Which unconditional theorems of the corpus are selective at unbounded scale, and from which sources (A93)? Is there a source beyond exponential sums, mean values, rigidity and the additive identity of the fractional part? Can a feasible weight system be constructed at every aperture (F20)? Is the exceptional square removable (B154)? What is the first selective window (A96)? |
 | Tools it develops | The slack map; the exchange atlas; feasible sets and their duality; the conductor ladder; calibration on fakes and on true `L`-functions; the resolution laws |
@@ -580,7 +582,7 @@ None of these is a producer. The field that RH needs has no existing name.
 | Aspect | Content |
 |---|---|
 | What it is about | Stability of systems whose energy is a jump form with the archimedean Lévy density and the prime contacts, coupled to a pole of rank two: when the pole does not bind a mode. Sectors labelled by a conductor, in which the conductor is a mass |
-| What it is like | A positive-energy theorem at a bound with no slack: the unstable mode, if any, appears at an aperture, is one mode in a real sector and two in a complex one |
+| What it is like | A positive-energy theorem at a bound with no positive margin: the unstable mode, if any, appears at an aperture, is one mode in a real sector and two in a complex one |
 | Established | Ringdown, cavity and Krein receivers; the three regulators with their defects; the tower as the explicit formula of `Λ(s)/Λ(s+N)` [D]; the conductor as a density in the twisted sector [S]; the trivial aperture [D] |
 | Criteria | Built from the places and the horizon, never from the zeros. Unitary at every cutoff with ξ as limit, or a stability argument on the limit itself. Impure for graph black holes with `t²>4q`. Uniform in the sector only if it stabilizes the exceptional mode. No margin |
 | Questions it must answer | Which regulator is unitary at every cutoff with ξ as its limit (B117)? Is there a regulator whose defect is not a jump tail? What is the mode born at `4πe^{−γ}`? Does a mass term stabilize a sector beyond its trivial aperture (B154)? What selects the Shimura nonvanishing for one eigenform (B147)? |
@@ -624,7 +626,7 @@ None of these is a producer. The field that RH needs has no existing name.
 | Q6 Integer-norm monoids other than ℤ | invisible to the square; on the comb unit masses force `Λ` | [L*] |
 | Q7 Normal direction of the diagonal | none in characteristic zero in the square | [L] |
 | Q8 A duality exchanging contacts and jets | none | [L] |
-| Q9 Weil's diagonal as a finite part | on combs of degree points, with the comb's counterterm; the constant `2π` is forced, with no slack in either direction | [L*]/[S] |
+| Q9 Weil's diagonal as a finite part | on combs of degree points, with the comb's counterterm; the constant `2π` is forced: no larger constant, and every smaller one is the same statement | [L*]/[S] |
 | Q10 One object | the real algebra `𝒮_q`: stable under every shift, containing the tower, the pole plane and the jets, with exact counts | [L*] |
 | Q12 The comb | the density of the comb at the point; a separated comb stable under the Frobenius monoid is one orbit | [L*] |
 | Q13 Carries | a cocycle that is not a coboundary; complementary to the window count | [L*] |
@@ -643,7 +645,7 @@ None of these is a producer. The field that RH needs has no existing name.
 | C. The surface (the Weil side) | the invariant glued carrier is refuted; survivors: comb finite parts, the weighted covariance, the scattering tower, the clock [L*] |
 | D. The archimedean fibre | weight lines; each weight a Hardy square; the Newtonian reading on an axis [L*]/[D] |
 | E. A second dimension | the tower of lines; Riemann–Roch with the gluing index; Bézout on it is the product formula; sections pay one contact per prime [L*] |
-| F. The lattice | one matrix at finite scale; short windows negative definite and blind to the contacts; finite index; Hodge index ⇔ RH; no slack [L*]/[S] |
+| F. The lattice | one matrix at finite scale; short windows negative definite and blind to the contacts; finite index; Hodge index ⇔ RH; no positive margin; any uniform floor is RH [L*]/[S] |
 | G. Number rings | squares indexed by ideals; the quadratic comb with its twisted part [L*]/[S] |
 | H. Curves | the Toeplitz comb; finite determinacy [S]/[L*] |
 
@@ -679,6 +681,7 @@ None of these is a producer. The field that RH needs has no existing name.
 
 **What is proved.**
 - The twisted part tends to minus the sum over the zeros of `L(s,χ)`, has no pole plane, and its counterterm is that of a comb `q` times as dense as the integers; the class group does not enter [S]. GRH for `χ` is a prime-window statement of the same shape as for ζ [L*].
+- The defect of the pairing of the ring has at most as many negative squares as ζ and `L(s,χ)` together have zeros right of the line; on packets shorter than `log 2`, for an odd character of conductor `q≥4π` or an even one of conductor `q≥128π`, the twisted part is nonpositive and Castelnuovo–Severi holds on the square of the ring with the margin `∫f²/5000` [S].
 - For a real zero of a primitive quadratic `L(s,χ)` repulsion holds with a uniform constant [L*].
 - *Trivial aperture* [D]. The contact term of a packet of aperture `a` is at most `2Σ_{n≤e^{2a}}Λ(n)n^{−½}≤(4+o(1))e^a` times its mass, and the archimedean term is bounded below; hence `Z_χ≥0` whenever `4e^a+C₀≤log q`, that is to aperture `log log q−log 4`.
 - *One square* [D]. A real zero `β` and its reflection contribute `2f̃(β)f̃(1−β)` with `f̃(s)=∫f(u)e^{(s−½)u}du`; over packets of unit mass on `[−a,a]` the minimum is `−(sinh(2da)/d−2a)`, `d=β−½`, of the order of `−e^a` for `β` near `1`. It is one negative square of `Z_χ`.

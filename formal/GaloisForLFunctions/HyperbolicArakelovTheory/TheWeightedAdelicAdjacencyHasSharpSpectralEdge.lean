@@ -160,7 +160,8 @@ private theorem adelicBoxCharge_local_energy (S : Finset Prime)
     rw [he]
     ring
   simp_rw [hterm]
-  rw [← Finset.prod_univ_sum]
+  trans ∏ q : S, ∑ y ∈ (f q).support, g q y
+  · exact (Finset.prod_univ_sum (fun q : S => (f q).support) g).symm
   rw [← Finset.mul_prod_erase Finset.univ
     (fun q => ∑ y ∈ (f q).support, g q y) (Finset.mem_univ p)]
   simp only [g, if_pos rfl]
@@ -179,6 +180,7 @@ private theorem finiteCharge_quadratic (f : FiniteVertices →₀ ℝ) :
   apply Finset.sum_congr rfl
   intro y _
   rw [lp.inner_single_right, adjacencyOperator_apply, he]
+  rfl
 
 private theorem finiteCharge_quadratic_ge (S : Finset Prime) (f : FiniteVertices →₀ ℝ)
     (hf : ∀ y, 0 ≤ f y) :
@@ -219,7 +221,7 @@ theorem exists_finite_charge_above (c : ℝ) (hc : c < edge) :
   have hb0 : 0 < b := (le_max_right c 0).trans_lt hb
   have hcb : c < b := (le_max_left c 0).trans_lt hb
   have hevent : ∀ᶠ S : Finset Prime in atTop, b < ∑ p ∈ S, edgeTerm p :=
-    summable_edgeTerm.hasSum.eventually (gt_mem_nhds hbe)
+    summable_edgeTerm.hasSum.eventually (lt_mem_nhds hbe)
   obtain ⟨S, hS⟩ := hevent.exists
   let L := ∑ p ∈ S, edgeTerm p
   have hL : 0 < L := hb0.trans hS
@@ -258,7 +260,13 @@ theorem exists_finite_charge_above (c : ℝ) (hc : c < edge) :
     have hm : M = (∑ y ∈ (f p).support, f p y ^ 2) *
         ∏ q ∈ Finset.univ.erase p, ∑ y ∈ (f q).support, f q y ^ 2 :=
       (Finset.mul_prod_erase Finset.univ _ (Finset.mem_univ p)).symm
-    simpa only [hm, edgeTerm, mul_assoc, mul_left_comm, mul_comm] using h
+    calc
+      _ = weight p.1 * (((a * (2 * Real.sqrt p.1.1)) *
+          (∑ y ∈ (f p).support, f p y ^ 2)) *
+          ∏ q ∈ Finset.univ.erase p, ∑ y ∈ (f q).support, f q y ^ 2) := by
+        rw [hm, edgeTerm]
+        ring
+      _ < _ := h
   have hsum : a * L * M <
       ∑ p ∈ S, weight p * ∑ y ∈ (adelicBoxCharge S f).support,
         adelicBoxCharge S f y * localAdj p (adelicBoxCharge S f) y := by
