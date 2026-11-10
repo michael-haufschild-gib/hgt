@@ -83,17 +83,29 @@ theorem weilPoleTerm_split {F : ℝ → ℂ} (hF : Continuous F) (hFc : HasCompa
     simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
   have him : ∀ (z : ℂ) (r : ℝ), (z * (r : ℂ)).im = z.im * r := fun z r => by
     simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add]
+  have hr1 : ∫ u, (F u * (Real.exp (-u / 2) : ℂ)).re =
+      (∫ u, F u * (Real.exp (-u / 2) : ℂ)).re :=
+    Complex.reCLM.integral_comp_comm hi1
+  have hi1' : ∫ u, (F u * (Real.exp (-u / 2) : ℂ)).im =
+      (∫ u, F u * (Real.exp (-u / 2) : ℂ)).im :=
+    Complex.imCLM.integral_comp_comm hi1
+  have hr2 : ∫ u, (F u * (Real.exp (u / 2) : ℂ)).re =
+      (∫ u, F u * (Real.exp (u / 2) : ℂ)).re :=
+    Complex.reCLM.integral_comp_comm hi2
+  have hi2' : ∫ u, (F u * (Real.exp (u / 2) : ℂ)).im =
+      (∫ u, F u * (Real.exp (u / 2) : ℂ)).im :=
+    Complex.imCLM.integral_comp_comm hi2
   have r1 : (paperFT F (Complex.I / 2)).re = ∫ u, (F u).re * Real.exp (-u / 2) := by
-    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← Complex.reCLM.integral_comp_comm hi1]
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← hr1]
     exact integral_congr_ae (Eventually.of_forall fun u => hre _ _)
   have i1 : (paperFT F (Complex.I / 2)).im = ∫ u, (F u).im * Real.exp (-u / 2) := by
-    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← Complex.imCLM.integral_comp_comm hi1]
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← hi1']
     exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
   have r2 : (paperFT F (-Complex.I / 2)).re = ∫ u, (F u).re * Real.exp (u / 2) := by
-    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← Complex.reCLM.integral_comp_comm hi2]
+    rw [← neg_div, _root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hr2]
     exact integral_congr_ae (Eventually.of_forall fun u => hre _ _)
   have i2 : (paperFT F (-Complex.I / 2)).im = ∫ u, (F u).im * Real.exp (u / 2) := by
-    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← Complex.imCLM.integral_comp_comm hi2]
+    rw [← neg_div, _root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hi2']
     exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
   simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im, mul_neg, sub_neg_eq_add,
     r1, i1, r2, i2]
@@ -121,9 +133,9 @@ theorem re_dirichletZeros_W_split [NeZero q] (hq : 1 < q) {χ : DirichletCharact
   have hvc : HasCompactSupport fun x => (F x).im :=
     hFc.comp_left (g := fun z : ℂ => z.im) (by simp)
   have hχ := re_weilFullFunctional_twist hq hprim hreal ha hF hFs
+  rw [integral_norm_sq_split hF.continuous hFc, mul_add] at hχ
   have hχs := re_weilFullFunctional_split (twistWeight χ) hF hFc
   have hp := weilPoleTerm_split hF.continuous hFc
-  have hm := integral_norm_sq_split hF.continuous hFc
   have hpe := placeEnergy_split χ hF hFs
   have hχu := re_weilFullFunctional_twist_packet hq hprim hu huc
   have hχv := re_weilFullFunctional_twist_packet hq hprim hv hvc

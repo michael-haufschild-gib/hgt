@@ -62,3 +62,13 @@ of this counterexample is counted as complete. The complex Mellin identity for
 positive convolution exponentials and the positive density's transform have
 passed Lean checks with only the standard axioms; the full counterexample
 and its positive survivor remain unformalized.
+
+Write `Mε(s)=exp(ε/(s+1)²)`, `βε=Mε(1)/2`, and
+`gε(t)=ζ(1/2+2it)[Mε(1/2+2it)−Mε(1/2−2it)]`.
+The pole subtraction `Eε=MεΛζ−βεΓℝ(s−1)` extends holomorphically
+across `1`: use the divided difference of `Mε` and the regularized Gamma
+factor. Existing uniform vertical decay of `Λζ` and `Γℝ(s−1)` supplies
+the Hamburger strip bound. The positive survivor sought is a nontrivial
+positive continuous Euler family preserving all zero locations, with
+`|gε(t)|≤C ε exp(ε)/(1+t²)` and arbitrarily small such majorants.
+The added measure is Lean-verified atomless, of mass one, supported above `1`.

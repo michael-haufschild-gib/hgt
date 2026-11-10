@@ -60,6 +60,26 @@ theorem continuous_prime_measure_finite_defect_counterexample :
     norm_num only [NNReal.coe_one, mul_one] at h
     exact h.trans (div_le_self (by positivity) (by nlinarith only [sq_nonneg t]))
 
+/-- The surviving positive law: arbitrarily small positive continuous Euler deformations
+preserve all zero locations and retain integrable, square-integrable FE defects. -/
+theorem zero_preserving_continuous_prime_perturbations {δ : ℝ} (hδ : 0 < δ) :
+    ∃ ε : ℝ≥0, 0 < ε ∧ ε ≤ 1 ∧
+      perturbedRiemannPrimeMeasure ε ≠ riemannPrimeMeasure ∧
+      (∀ s : ℂ, 1 < s.re →
+        measureDirichlet (beurlingIntegerMeasure (perturbedRiemannPrimeMeasure ε)) s =
+          riemannZeta s * Complex.exp ((ε : ℂ) / (s + 1) ^ 2)) ∧
+      (∀ s : ℂ, continuousEulerZeta ε s = 0 ↔ riemannZeta s = 0) ∧
+      Integrable (continuousEulerDefect ε) ∧
+      MemLp (continuousEulerDefect ε) 2 (volume : Measure ℝ) ∧
+      (∀ t : ℝ, ‖continuousEulerDefect ε t‖ ≤ δ / (1 + t ^ 2)) := by
+  obtain ⟨ε, hε, hε₁, hbound⟩ := exists_small_weighted_continuousEulerDefect hδ
+  exact ⟨ε, hε, hε₁,
+    fun h => hε.ne' ((perturbedRiemannPrimeMeasure_eq_iff ε).mp h),
+    fun s hs => measureDirichlet_perturbedRiemannIntegerMeasure ε hs,
+    continuousEulerZeta_eq_zero_iff ε,
+    integrable_continuousEulerDefect ε, memLp_continuousEulerDefect ε, hbound⟩
+
 #print axioms continuous_prime_measure_finite_defect_counterexample
+#print axioms zero_preserving_continuous_prime_perturbations
 
 end GaloisForLFunctions.EulerFETransportTheory

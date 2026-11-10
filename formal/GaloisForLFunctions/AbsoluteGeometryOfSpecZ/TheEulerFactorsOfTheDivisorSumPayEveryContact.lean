@@ -32,8 +32,8 @@ This file gives a subring of the square, with unit masses, in which every contac
   primes: a planar sequence vanishing on a finite set `S` of graphs and not on `Γ_m` has
   `Σ_{n ∈ S} (Λ(n/m)[m ∣ n] + Λ(m/n)[n ∣ m]) ≤ log|x_m|`, prime powers included. Every element
   of `P` is planar, and planar sequences lie in the square (`isGhost_of_isPlanar`).
-* **What is lost** (`prime_sub_orbit_notMem_payingRing`, `chainNode_sub_dvd_coordHom`,
-  `three_dvd_sub_of_mem_payingRing`). The section `p − e_p` of the square is not in `P`. The
+* **What is lost** (`not_isPlanar_prime_sub_orbit`, `chainNode_sub_dvd_coordHom`,
+  `three_dvd_sub_of_mem_payingRing`). The section `p − e_p` of the square is not planar. The
   difference of an element of `P` on two graphs of a chain is divisible by the difference of
   the nodes, which has prime factors other than `p`: on `Γ_1` and `Γ_4` every element of `P`
   agrees modulo `3`, where the square has no contact. The payment is the product formula for
@@ -479,12 +479,10 @@ theorem prime_pow_dvd_of_isPlanar {x : ℕ+ → ℤ} (hx : IsPlanar x) (p : Nat.
 /-! ### What is lost -/
 
 /-- The section `p − e_p` of the square, which vanishes on every `Γ_{p^j}`, `j ≥ 1`, and is `p`
-on the diagonal, is not in the ring of the coordinates. -/
-theorem prime_sub_orbit_notMem_payingRing (p : Nat.Primes) :
-    (((p : ℕ) : ℤ) : ghostRing) - orbit (primePNat p) ∉ payingRing := by
-  rintro ⟨f, hf⟩
-  have hplanar := isPlanar_coordHom f
-  rw [hf] at hplanar
+on the diagonal, is not planar. -/
+theorem not_isPlanar_prime_sub_orbit (p : Nat.Primes) :
+    ¬ IsPlanar ((((p : ℕ) : ℤ) : ghostRing) - orbit (primePNat p)).1 := by
+  intro hplanar
   have hcomp : ∀ n : ℕ+, ((((p : ℕ) : ℤ) : ghostRing) - orbit (primePNat p)).1 n =
       ((p : ℕ) : ℤ) - if (p : ℕ) ∣ n then ((p : ℕ) : ℤ) else 0 := by
     intro n
@@ -503,6 +501,12 @@ theorem prime_sub_orbit_notMem_payingRing (p : Nat.Primes) :
     have h' : ((p : ℕ) : ℤ) * (p : ℕ) ∣ ((p : ℕ) : ℤ) * 1 := by rwa [mul_one]
     exact (mul_dvd_mul_iff_left hpz.ne_zero).mp h'
   exact hpz.not_dvd_one h1
+
+/-- The section `p − e_p` is not in the ring of the coordinates. -/
+theorem prime_sub_orbit_notMem_payingRing (p : Nat.Primes) :
+    (((p : ℕ) : ℤ) : ghostRing) - orbit (primePNat p) ∉ payingRing := by
+  rintro ⟨f, hf⟩
+  exact not_isPlanar_prime_sub_orbit p (hf ▸ isPlanar_coordHom f)
 
 /-- **The contacts of the ring.** On two graphs of a chain an element of the ring differs by a
 multiple of the difference of the nodes. -/

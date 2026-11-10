@@ -66,8 +66,7 @@ theorem norm_continuousEulerExponent_sub_reflection (ε : ℝ≥0) {s : ℂ}
     ring
   have hden₂ : ‖2 - s‖ ^ 2 = 9 / 4 + s.im ^ 2 := by
     rw [Complex.sq_norm, Complex.normSq_apply]
-    simp only [Complex.sub_re, Complex.sub_im, Complex.ofNat_re, Complex.ofNat_im, zero_sub, hs]
-    ring
+    norm_num [Complex.sub_re, Complex.sub_im, hs] <;> ring
   have he : ‖(ε : ℂ)‖ = (ε : ℝ) := by
     change ‖((ε : ℝ) : ℂ)‖ = (ε : ℝ)
     rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ε.property]
@@ -200,7 +199,26 @@ theorem memLp_continuousEulerDefect (ε : ℝ≥0) :
   rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
   simpa only [div_eq_mul_inv] using hbound ε t
 
+/-- Nonzero positive perturbations can have arbitrarily small inverse-square majorants. -/
+theorem exists_small_weighted_continuousEulerDefect {δ : ℝ} (hδ : 0 < δ) :
+    ∃ ε : ℝ≥0, 0 < ε ∧ ε ≤ 1 ∧ ∀ t : ℝ,
+      ‖continuousEulerDefect ε t‖ ≤ δ / (1 + t ^ 2) := by
+  obtain ⟨C, hC, hbound⟩ := exists_uniform_continuousEulerDefect_bound
+  have hCe : 0 < C * Real.exp 1 := mul_pos hC (Real.exp_pos 1)
+  have hmin : 0 < min 1 (δ / (C * Real.exp 1)) := lt_min zero_lt_one (div_pos hδ hCe)
+  let ε : ℝ≥0 := ⟨min 1 (δ / (C * Real.exp 1)), hmin.le⟩
+  have hε : (ε : ℝ) ≤ 1 := min_le_left _ _
+  have hscale : C * ε * Real.exp ε ≤ δ := by
+    calc
+      C * ε * Real.exp ε ≤ C * ε * Real.exp 1 :=
+        mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hε) (by positivity)
+      _ = (ε : ℝ) * (C * Real.exp 1) := by ring
+      _ ≤ δ := (le_div_iff₀ hCe).mp (min_le_right _ _)
+  refine ⟨ε, hmin, hε, fun t => (hbound ε t).trans ?_⟩
+  exact div_le_div_of_nonneg_right hscale (by positivity)
+
 #print axioms integrable_continuousEulerDefect
 #print axioms memLp_continuousEulerDefect
+#print axioms exists_small_weighted_continuousEulerDefect
 
 end GaloisForLFunctions.EulerFETransportTheory

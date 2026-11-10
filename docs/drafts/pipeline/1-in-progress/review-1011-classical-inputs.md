@@ -39,8 +39,10 @@ dual off-diagonal when `0<b<1`, `a<1`, `a+b≤1`, and `a>1/2+θ+b/2`.
 Both components use only `propext`, `Classical.choice`, and `Quot.sound`.
 
 `AdjustableContourRemainders.lean` proves arbitrary power saving for both
-actual contour remainders, with the same standard axioms. Pair assembly and
-coefficient summation remain to be checked.
+actual contour remainders. `TwistedPairsBelowSquareRoot.lean` combines all
+five error terms and proves `exists_pairError_power_saving` for every
+`0≤θ<1/2`. Both pass direct Lean checks and use only the same standard
+axioms. The final coefficient summation remains to be checked.
 
 ## A18: parameter argument
 
@@ -60,10 +62,12 @@ moment formula, with these remainders discharged.
 For a real exceptional zero `β`, let
 `m(γ)=log(1/(C(1−β)log(q(|γ|+3))))/(C log(q(|γ|+3)))`.
 The current uniform repulsion theorem gives `Re ρ−1/2≤1/2−m(Im ρ)`
-for every other zero in the right half-strip. A reflected zero pair at
-depth `δ>0` contributes at least `−2 mult(ρ) S(δ,a)‖f‖₂²`, where
-`S(δ,a)=∫[-a,a] sinh²(δu)du`. Monotonicity in `δ` therefore transfers
-the repulsion margin to the actual twisted square. This retains the
+for every other zero in the right half-strip. Reflection gives
+`|Re ρ−1/2|≤D(Im ρ)`, where `D(γ)=max(0,1/2−m(γ))`.
+Each actual square contributes at least `−mult(ρ) S(D(Im ρ),a)‖f‖₂²`,
+where `S(δ,a)=∫[-a,a] sinh²(δu)du`, including `S(0,a)=0`.
+This follows from the conjugate-transform difference bound and
+monotonicity of `S` in absolute depth. It retains the
 quantitative gain before the stronger strip-clearing threshold is reached.
 The existing comb theorem treats that threshold; its source also uses an
 older signature of `exists_deuring_heilbronn_repulsion`. The new transfer

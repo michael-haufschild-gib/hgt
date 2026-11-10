@@ -57,7 +57,8 @@ theorem twistedMoment_sub_main_eq {d x p q η : ℝ}
     ring
   rw [sum_congr rfl fun h hh => sum_congr rfl fun k hk => hpairs h hh k hk]
   simp only [sum_add_distrib]
-  rw [sum_mainTerm₁_eq (fun _ _ => rfl), sum_mainTerm₂_eq (fun _ _ => rfl)]
+  rw [sum_mainTerm₁_eq (a := w) (fun _ _ => rfl),
+    sum_mainTerm₂_eq (a := w) (fun _ _ => rfl)]
   unfold twistedMomentMain
   ring
 

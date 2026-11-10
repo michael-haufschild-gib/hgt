@@ -52,7 +52,7 @@ theorem norm_pairError_le_components {d x p q η Ms Md Mr : ℝ}
     (hL : 4 ≤ p - η) (hpq : p ≤ q)
     {g h' k' h k : ℕ} (hg : 0 < g) (hh' : 0 < h') (hk' : 0 < k')
     (hhg : h = g * h') (hkg : k = g * k')
-    (hMs : 0 ≤ Ms) (hMd : 0 ≤ Md)
+    (hMs : 0 ≤ Ms)
     (hs : ‖smoothLeft (1 / 2 - d) ((h' * k' : ℕ) : ℝ) x‖ ≤ Ms)
     (hi : ‖∫ t, blockWindowC p q η t * dualLeft d ((h' * k' : ℕ) : ℝ) x t‖ ≤
       (q - p + 2 * η) * Md)
@@ -172,7 +172,7 @@ theorem exists_pairError_power_saving {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ < 1
         exact mul_le_mul hpref (mul_le_mul_of_nonneg_left he (by positivity)) (by positivity) zero_le_one
       _ = _ := by rw [one_mul, mul_assoc (18 * Real.exp 1), halg]
   have herr := norm_pairError_le_components hd hd8 hT0 hη0 hL hq hg hh' hk' hhg hkg
-    (mul_nonneg hCs hpow0) (mul_nonneg hCv hpow0) hsmooth hint hres
+    (mul_nonneg hCs hpow0) hsmooth hint hres
   have hdirect := hdir T d T q h k hT1 hd hd8 hq hh hk hhT hkT
   have hdu := hdualT d q h k hq hq2 hd hd8 hh hk hhT hkT
   refine herr.trans ?_

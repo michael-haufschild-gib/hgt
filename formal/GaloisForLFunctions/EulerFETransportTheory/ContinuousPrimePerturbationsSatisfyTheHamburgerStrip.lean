@@ -72,7 +72,7 @@ theorem continuousEulerRemainder_eq (ε : ℝ≥0) {s : ℂ} (hs : s ≠ 1) :
         continuousEulerResidue ε * Complex.Gammaℝ (s - 1) := by
   rw [continuousEulerRemainder, dslope_of_ne _ hs, slope_def_field,
     gammaℝReg_eq (sub_ne_zero.mpr hs), completedRiemannZeta_eq]
-  norm_num only [one_add_one_eq_two, one_pow, show (2 : ℂ) ^ 2 = 4 by norm_num]
+  simp only [show (1 : ℂ) + 1 = 2 by norm_num, show (2 : ℂ) ^ 2 = 4 by norm_num]
   rw [show (1 : ℂ) - s = -(s - 1) by ring, div_neg]
   unfold continuousEulerResidue
   ring

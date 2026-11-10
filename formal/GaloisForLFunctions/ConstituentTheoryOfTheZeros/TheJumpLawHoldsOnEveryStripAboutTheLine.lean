@@ -45,7 +45,7 @@ def rescale (η : ℝ) (g : ℝ → ℂ) (v : ℝ) : ℂ :=
 theorem mellin_rescale {η : ℝ} (hη : 0 < η) (g : ℝ → ℂ) (s : ℂ) :
     mellin (rescale η g) (-s) = mellin g (-(((2 * η : ℝ) : ℂ) * s + ((1 / 2 - η : ℝ) : ℂ))) := by
   have hκ : (0 : ℝ) < 2 * η := by positivity
-  have hκc : (((2 * η : ℝ)) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hκ.ne'
+  have hηc : (η : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hη.ne'
   unfold rescale
   rw [mellin_cpow_smul, mellin_const_smul, mellin_comp_rpow, abs_of_pos (inv_pos.mpr hκ), inv_inv,
     Complex.real_smul, smul_eq_mul, ← mul_assoc, ← Complex.ofReal_mul, inv_mul_cancel₀ hκ.ne',
@@ -55,9 +55,10 @@ theorem mellin_rescale {η : ℝ} (hη : 0 < η) (g : ℝ → ℂ) (s : ℂ) :
   field_simp
   ring
 
-theorem measurable_rescale (η : ℝ) {g : ℝ → ℂ} (hg : Measurable g) : Measurable (rescale η g) :=
-  (Complex.measurable_ofReal.pow_const _).smul
-    ((hg.comp (measurable_id.pow_const _)).const_smul _)
+theorem measurable_rescale (η : ℝ) {g : ℝ → ℂ} (hg : Measurable g) : Measurable (rescale η g) := by
+  have h := (Complex.measurable_ofReal.pow_const (-(((1 / 2 - η) / (2 * η) : ℝ) : ℂ))).smul
+    ((hg.comp (measurable_id.pow_const ((2 * η)⁻¹))).const_smul ((((2 * η)⁻¹ : ℝ)) : ℂ))
+  exact h
 
 /-- A bound `O(u^σ)` becomes `O(v^{(σ − (½ − η))/(2η)})`. -/
 theorem norm_rescale_le {η : ℝ} (hη : 0 < η) {g : ℝ → ℂ} {C σ : ℝ}
@@ -142,9 +143,9 @@ theorem eq_of_mellin_eq_on_strip {gR gL : ℝ → ℂ} (mR : Measurable gR) (mL 
       have hc3 : ContinuousAt
           (fun v : ℝ => (v : ℂ) ^ (-(((1 / 2 - η) / (2 * η) : ℝ) : ℂ))) v₀ :=
         Complex.continuousAt_ofReal_cpow_const _ _ (Or.inr hv₀pos.ne')
-      have hc4 := hc3.smul (hc2.const_smul (((2 * η)⁻¹ : ℝ) : ℂ))
-      refine hc4.congr (Eventually.of_forall fun v => ?_)
-      simp only [rescale, smul_sub]
+      refine (hc3.smul (hc2.const_smul ((((2 * η)⁻¹ : ℝ)) : ℂ))).congr
+        (Eventually.of_forall fun v => ?_)
+      simp only [rescale, Pi.smul_apply', Pi.smul_apply, smul_sub]
   -- cancel the nonzero factors
   simp only [rescale, hback, smul_eq_mul] at key
   have h1 : (v₀ : ℂ) ^ (-(((1 / 2 - η) / (2 * η) : ℝ) : ℂ)) ≠ 0 := by
@@ -236,46 +237,157 @@ theorem tsum_jump_eq_of_strip [Countable ι] [Countable κ] {b : ι → ℂ} {a 
 
 /-! ### Möbius inversion at every scale -/
 
+open scoped Classical in
+/-- The part of a family on the scales that are `t` times a natural number. -/
+def natScalePart (b : ι → ℂ) (a : ι → ℝ) (t : ℝ) (i : ι) : ℂ :=
+  if ∃ n : ℕ, a i / t = n then b i else 0
+
+theorem natScalePart_of_nat {b : ι → ℂ} {a : ι → ℝ} {t : ℝ} {i : ι} (h : ∃ n : ℕ, a i / t = n) :
+    natScalePart b a t i = b i := by
+  classical
+  exact if_pos h
+
+theorem norm_natScalePart_le (b : ι → ℂ) (a : ι → ℝ) (t : ℝ) (i : ι) :
+    ‖natScalePart b a t i‖ ≤ ‖b i‖ := by
+  classical
+  unfold natScalePart
+  split_ifs
+  · exact le_rfl
+  · rw [norm_zero]
+    exact norm_nonneg _
+
+/-- On its support the scale ratio of `natScalePart` is at least one. -/
+theorem one_le_of_natScalePart_ne_zero {b : ι → ℂ} {a : ι → ℝ} (ha : ∀ i, 0 < a i) {t : ℝ}
+    (ht : 0 < t) {i : ι} (h : natScalePart b a t i ≠ 0) : 1 ≤ a i / t := by
+  classical
+  have hex : ∃ n : ℕ, a i / t = n := by
+    by_contra hne
+    exact h (if_neg hne)
+  obtain ⟨n, hn⟩ := hex
+  have hpos : 0 < a i / t := div_pos (ha i) ht
+  rw [hn] at hpos ⊢
+  have : 0 < n := by exact_mod_cast hpos
+  exact_mod_cast this
+
 /-- The part of a family on the scales that are `t` times a natural number is absolutely summable,
 also against the fourth root of the scale ratio. -/
-theorem summable_natScale {b : ι → ℂ} {a : ι → ℝ} (ha : ∀ i, 0 < a i) {σ : ℝ}
-    (hσ : 1 / 4 ≤ σ) (hsum : Summable fun i => ‖b i‖ * a i ^ σ) {t : ℝ} (ht : 0 < t) (z : ℂ) :
-    (Summable fun i => ‖(if ∃ n : ℕ, a i / t = n then z * b i else 0 : ℂ)‖) ∧
-      Summable fun i => ‖(if ∃ n : ℕ, a i / t = n then z * b i else 0 : ℂ)‖ *
-        (a i / t) ^ (1 / 4 : ℝ) := by
-  classical
-  have hdom : Summable fun i => ‖z‖ * (‖b i‖ * a i ^ σ / t ^ σ) :=
-    (hsum.div_const (t ^ σ)).mul_left ‖z‖
-  have hone : ∀ i, (∃ n : ℕ, a i / t = n) → 1 ≤ a i / t := by
-    rintro i ⟨n, hn⟩
-    have hpos : 0 < a i / t := div_pos (ha i) ht
-    rw [hn] at hpos ⊢
-    have : 0 < n := by exact_mod_cast hpos
-    exact_mod_cast this
-  have hterm : ∀ i, ‖b i‖ * a i ^ σ / t ^ σ = ‖b i‖ * (a i / t) ^ σ := fun i => by
-    rw [Real.div_rpow (ha i).le ht.le, mul_div_assoc]
+theorem summable_natScalePart {b : ι → ℂ} {a : ι → ℝ} (ha : ∀ i, 0 < a i) {σ : ℝ}
+    (hσ : 1 / 4 ≤ σ) (hsum : Summable fun i => ‖b i‖ * a i ^ σ) {t : ℝ} (ht : 0 < t) :
+    (Summable fun i => ‖natScalePart b a t i‖) ∧
+      Summable fun i => ‖natScalePart b a t i‖ * (a i / t) ^ (1 / 4 : ℝ) := by
+  have hdom : Summable fun i => ‖b i‖ * (a i / t) ^ σ :=
+    (hsum.div_const (t ^ σ)).congr fun i => by
+      rw [Real.div_rpow (ha i).le ht.le, mul_div_assoc]
+  have hnn : ∀ i, 0 ≤ ‖b i‖ * (a i / t) ^ σ := fun i =>
+    mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (div_pos (ha i) ht).le _)
   refine ⟨Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun i => ?_) hdom,
     Summable.of_nonneg_of_le (fun i => mul_nonneg (norm_nonneg _)
       (Real.rpow_nonneg (div_pos (ha i) ht).le _)) (fun i => ?_) hdom⟩
-  · by_cases h : ∃ n : ℕ, a i / t = n
-    · rw [if_pos h, norm_mul, hterm]
-      exact mul_le_mul_of_nonneg_left (le_mul_of_one_le_right (norm_nonneg _)
-        (Real.one_le_rpow (hone i h) (by linarith))) (norm_nonneg _)
-    · rw [if_neg h, norm_zero, hterm]
-      exact mul_nonneg (norm_nonneg _) (mul_nonneg (norm_nonneg _)
-        (Real.rpow_nonneg (div_pos (ha i) ht).le _))
-  · by_cases h : ∃ n : ℕ, a i / t = n
-    · rw [if_pos h, norm_mul, hterm, mul_assoc]
-      exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
-        (Real.rpow_le_rpow_of_exponent_le (hone i h) hσ) (norm_nonneg _)) (norm_nonneg _)
-    · rw [if_neg h, norm_zero, zero_mul, hterm]
-      exact mul_nonneg (norm_nonneg _) (mul_nonneg (norm_nonneg _)
-        (Real.rpow_nonneg (div_pos (ha i) ht).le _))
+  · by_cases h : natScalePart b a t i = 0
+    · rw [h, norm_zero]
+      exact hnn i
+    · exact (norm_natScalePart_le b a t i).trans (le_mul_of_one_le_right (norm_nonneg _)
+        (Real.one_le_rpow (one_le_of_natScalePart_ne_zero ha ht h) (by linarith)))
+  · by_cases h : natScalePart b a t i = 0
+    · rw [h, norm_zero, zero_mul]
+      exact hnn i
+    · exact mul_le_mul (norm_natScalePart_le b a t i)
+        (Real.rpow_le_rpow_of_exponent_le (one_le_of_natScalePart_ne_zero ha ht h) hσ)
+        (Real.rpow_nonneg (div_pos (ha i) ht).le _) (norm_nonneg _)
+
+open scoped Classical in
+/-- **Möbius inversion for two families.** If two summable families with positive scales carry the
+same weight on the natural scales divisible by `k`, for every `k ≥ 1`, they carry the same weight
+at the scale one: `tsum_eq_of_tsum_dvd` for their difference on the disjoint union. -/
+theorem tsum_one_eq_of_tsum_dvd_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ}
+    {c : κ → ℂ} {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j)
+    (hb1 : Summable fun i => ‖b i‖) (hb4 : Summable fun i => ‖b i‖ * a i ^ (1 / 4 : ℝ))
+    (hc1 : Summable fun j => ‖c j‖) (hc4 : Summable fun j => ‖c j‖ * q j ^ (1 / 4 : ℝ))
+    (hS : ∀ k : ℕ, 1 ≤ k → (∑' i, if (∃ n : ℕ, a i = n ∧ k ∣ n) then b i else 0) =
+      ∑' j, if (∃ n : ℕ, q j = n ∧ k ∣ n) then c j else 0) :
+    (∑' i, if a i = 1 then b i else 0) = ∑' j, if q j = 1 then c j else 0 := by
+  have he0 : ∀ x : ι ⊕ κ, 0 < Sum.elim a q x := by
+    rintro (i | j)
+    · exact ha i
+    · exact hq j
+  have h1 : Summable ((fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖) ∘ Sum.inl) := hb1
+  have h2 : Summable ((fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖) ∘ Sum.inr) := by
+    simpa only [Function.comp_def, Sum.elim_inr, norm_neg] using hc1
+  have hdsum : Summable fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖ :=
+    (h1.hasSum.sum h2.hasSum).summable
+  have h3 : Summable ((fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖ *
+      Sum.elim a q x ^ (1 / 4 : ℝ)) ∘ Sum.inl) := hb4
+  have h4 : Summable ((fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖ *
+      Sum.elim a q x ^ (1 / 4 : ℝ)) ∘ Sum.inr) := by
+    simpa only [Function.comp_def, Sum.elim_inr, norm_neg] using hc4
+  have hd4 : Summable fun x : ι ⊕ κ => ‖Sum.elim b (fun j => -c j) x‖ *
+      Sum.elim a q x ^ (1 / 4 : ℝ) := (h3.hasSum.sum h4.hasSum).summable
+  -- a conditional sum over the union is the difference of the two conditional sums
+  have hsplit : ∀ P : ι ⊕ κ → Prop,
+      (∑' x : ι ⊕ κ, if P x then Sum.elim b (fun j => -c j) x else 0) =
+        (∑' i, if P (Sum.inl i) then b i else 0) - ∑' j, if P (Sum.inr j) then c j else 0 := by
+    intro P
+    have hsa : Summable ((fun x : ι ⊕ κ => if P x then Sum.elim b (fun j => -c j) x else 0) ∘
+        Sum.inl) :=
+      Summable.of_norm_bounded hb1 fun i => by
+        simp only [Function.comp_def, Sum.elim_inl]
+        split_ifs
+        · exact le_rfl
+        · rw [norm_zero]
+          exact norm_nonneg _
+    have hsq : Summable ((fun x : ι ⊕ κ => if P x then Sum.elim b (fun j => -c j) x else 0) ∘
+        Sum.inr) :=
+      Summable.of_norm_bounded hc1 fun j => by
+        simp only [Function.comp_def, Sum.elim_inr]
+        split_ifs
+        · rw [norm_neg]
+        · rw [norm_zero]
+          exact norm_nonneg _
+    have hneg : ∀ j, (if P (Sum.inr j) then -c j else 0) = -(if P (Sum.inr j) then c j else 0) :=
+      fun j => by
+        split_ifs
+        · rfl
+        · rw [neg_zero]
+    rw [Summable.tsum_sum hsa hsq]
+    simp only [Sum.elim_inl, Sum.elim_inr]
+    rw [tsum_congr hneg, tsum_neg, sub_eq_add_neg]
+  have hS' : ∀ k : ℕ, 1 ≤ k →
+      (∑' x : ι ⊕ κ, if (∃ n : ℕ, Sum.elim a q x = n ∧ k ∣ n) then
+        Sum.elim b (fun j => -c j) x else 0) = if k = 1 then (0 : ℂ) else 0 := by
+    intro k hk
+    rw [ite_self, hsplit fun x => ∃ n : ℕ, Sum.elim a q x = n ∧ k ∣ n]
+    exact sub_eq_zero.mpr (hS k hk)
+  have hmain := tsum_eq_of_tsum_dvd he0 hdsum hd4 hS'
+  rw [hsplit fun x => Sum.elim a q x = 1] at hmain
+  exact sub_eq_zero.mp hmain
+
+open scoped Classical in
+/-- A family restricted to the scales `t·n` with `k ∣ n` is its jump at `1/(kt)`. -/
+theorem natScalePart_dvd_eq_jump {b : ι → ℂ} {a : ι → ℝ} (ha : ∀ i, 0 < a i) {t : ℝ}
+    (ht : 0 < t) {k : ℕ} (hk : 1 ≤ k) (i : ι) :
+    (if (∃ n : ℕ, a i / t = n ∧ k ∣ n) then natScalePart b a t i else 0) =
+      if ∃ n : ℤ, a i * (1 / t * (1 / (k : ℝ))) = n then b i else 0 := by
+  have hiff : (∃ n : ℤ, a i * (1 / t * (1 / (k : ℝ))) = n) ↔ ∃ n : ℕ, a i / t = n ∧ k ∣ n := by
+    rw [← exists_int_mul_inv_iff (div_pos (ha i) ht) hk,
+      show a i * (1 / t * (1 / (k : ℝ))) = a i / t * (1 / (k : ℝ)) by ring]
+  by_cases h : ∃ n : ℕ, a i / t = n ∧ k ∣ n
+  · obtain ⟨n, hn, hkn⟩ := h
+    rw [if_pos ⟨n, hn, hkn⟩, if_pos (hiff.mpr ⟨n, hn, hkn⟩), natScalePart_of_nat ⟨n, hn⟩]
+  · rw [if_neg h, if_neg fun h' => h (hiff.mp h')]
+
+open scoped Classical in
+/-- At the scale ratio one the restricted family is the family at the scale `t`. -/
+theorem natScalePart_one_eq (b : ι → ℂ) (a : ι → ℝ) {t : ℝ} (ht : 0 < t) (i : ι) :
+    (if a i / t = 1 then natScalePart b a t i else 0) = if a i = t then b i else 0 := by
+  by_cases h : a i = t
+  · have h1 : a i / t = 1 := by rw [h, div_self ht.ne']
+    rw [if_pos h1, if_pos h, natScalePart_of_nat ⟨1, by rw [h1, Nat.cast_one]⟩]
+  · rw [if_neg h, if_neg fun h' => h ((div_eq_one_iff_eq ht.ne').mp h')]
 
 open scoped Classical in
 /-- **From the jump law to the merged weights.** If two families with positive scales have the same
 jump at every `u₀ > 0`, they carry the same weight at every scale `t > 0`: the points `1/(kt)`
-and Möbius inversion over `k`, applied to the difference of the two families. -/
+and Möbius inversion over `k`. -/
 theorem mergedWeight_eq_of_jump [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
     {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j) {σ₁ σ₂ : ℝ} (hσ₁ : 1 / 4 ≤ σ₁)
     (hσ₂ : 1 / 4 ≤ σ₂) (hb : Summable fun i => ‖b i‖ * a i ^ σ₁)
@@ -286,89 +398,18 @@ theorem mergedWeight_eq_of_jump [Countable ι] [Countable κ] {b : ι → ℂ} {
     (∑' i, if a i = t then b i else 0) = ∑' j, if q j = t then c j else 0 := by
   have ha' : ∀ i, 0 < a i / t := fun i => div_pos (ha i) ht
   have hq' : ∀ j, 0 < q j / t := fun j => div_pos (hq j) ht
-  -- the difference family on the disjoint union, restricted to natural scale ratios
-  set e : ι ⊕ κ → ℝ := Sum.elim (fun i => a i / t) (fun j => q j / t) with he
-  set d : ι ⊕ κ → ℂ := Sum.elim (fun i => if ∃ n : ℕ, a i / t = n then 1 * b i else 0)
-    (fun j => if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) with hd
-  have he0 : ∀ x, 0 < e x := by
-    rintro (i | j)
-    · exact ha' i
-    · exact hq' j
-  obtain ⟨hb1, hb4⟩ := summable_natScale ha hσ₁ hb ht 1
-  obtain ⟨hc1, hc4⟩ := summable_natScale hq hσ₂ hc ht (-1)
-  have hdsum : Summable fun x => ‖d x‖ := (hb1.hasSum.sum hc1.hasSum).summable
-  have hd4 : Summable fun x => ‖d x‖ * e x ^ (1 / 4 : ℝ) := (hb4.hasSum.sum hc4.hasSum).summable
+  obtain ⟨hb1, hb4⟩ := summable_natScalePart ha hσ₁ hb ht
+  obtain ⟨hc1, hc4⟩ := summable_natScalePart hq hσ₂ hc ht
   have hS : ∀ k : ℕ, 1 ≤ k →
-      (∑' x, if (∃ n : ℕ, e x = n ∧ k ∣ n) then d x else 0) = if k = 1 then (0 : ℂ) else 0 := by
+      (∑' i, if (∃ n : ℕ, a i / t = n ∧ k ∣ n) then natScalePart b a t i else 0) =
+        ∑' j, if (∃ n : ℕ, q j / t = n ∧ k ∣ n) then natScalePart c q t j else 0 := by
     intro k hk
     have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
-    have hu : (0 : ℝ) < 1 / t * (1 / (k : ℝ)) := by positivity
-    have hiffa : ∀ i, (∃ n : ℤ, a i * (1 / t * (1 / (k : ℝ))) = n) ↔
-        ∃ n : ℕ, a i / t = n ∧ k ∣ n := fun i => by
-      rw [← exists_int_mul_inv_iff (ha' i) hk,
-        show a i * (1 / t * (1 / (k : ℝ))) = a i / t * (1 / (k : ℝ)) by ring]
-    have hiffq : ∀ j, (∃ n : ℤ, q j * (1 / t * (1 / (k : ℝ))) = n) ↔
-        ∃ n : ℕ, q j / t = n ∧ k ∣ n := fun j => by
-      rw [← exists_int_mul_inv_iff (hq' j) hk,
-        show q j * (1 / t * (1 / (k : ℝ))) = q j / t * (1 / (k : ℝ)) by ring]
-    have hterma : ∀ i, (if (∃ n : ℕ, a i / t = n ∧ k ∣ n) then
-        (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0) =
-        if ∃ n : ℤ, a i * (1 / t * (1 / (k : ℝ))) = n then b i else 0 := fun i => by
-      by_cases h : ∃ n : ℕ, a i / t = n ∧ k ∣ n
-      · obtain ⟨n, hn, _⟩ := h
-        rw [if_pos ⟨n, hn, ‹_›⟩, if_pos ⟨n, hn⟩, if_pos ((hiffa i).mpr ⟨n, hn, ‹_›⟩), one_mul]
-      · rw [if_neg h, if_neg fun h' => h ((hiffa i).mp h')]
-    have htermq : ∀ j, (if (∃ n : ℕ, q j / t = n ∧ k ∣ n) then
-        (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0) =
-        -(if ∃ n : ℤ, q j * (1 / t * (1 / (k : ℝ))) = n then c j else 0) := fun j => by
-      by_cases h : ∃ n : ℕ, q j / t = n ∧ k ∣ n
-      · obtain ⟨n, hn, _⟩ := h
-        rw [if_pos ⟨n, hn, ‹_›⟩, if_pos ⟨n, hn⟩, if_pos ((hiffq j).mpr ⟨n, hn, ‹_›⟩), neg_one_mul]
-      · rw [if_neg h, if_neg fun h' => h ((hiffq j).mp h'), neg_zero]
-    have hsa : Summable ((fun x => if (∃ n : ℕ, e x = n ∧ k ∣ n) then d x else 0) ∘ Sum.inl) :=
-      Summable.of_norm_bounded hb1 fun i => by
-        show ‖(if (∃ n : ℕ, a i / t = n ∧ k ∣ n) then
-          (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0 : ℂ)‖ ≤ _
-        split_ifs <;> simp
-    have hsq : Summable ((fun x => if (∃ n : ℕ, e x = n ∧ k ∣ n) then d x else 0) ∘ Sum.inr) :=
-      Summable.of_norm_bounded hc1 fun j => by
-        show ‖(if (∃ n : ℕ, q j / t = n ∧ k ∣ n) then
-          (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0 : ℂ)‖ ≤ _
-        split_ifs <;> simp
-    rw [ite_self, Summable.tsum_sum hsa hsq]
-    show (∑' i, if (∃ n : ℕ, a i / t = n ∧ k ∣ n) then
-        (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0) +
-      (∑' j, if (∃ n : ℕ, q j / t = n ∧ k ∣ n) then
-        (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0) = 0
-    rw [tsum_congr hterma, tsum_congr htermq, tsum_neg, hjump _ hu, add_neg_cancel]
-  have hmain := tsum_eq_of_tsum_dvd he0 hdsum hd4 hS
-  -- read the weight at the scale one
-  have hta : ∀ i, (if a i / t = 1 then (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0) =
-      if a i = t then b i else 0 := fun i => by
-    by_cases h : a i = t
-    · have h1 : a i / t = 1 := by rw [h, div_self ht.ne']
-      rw [if_pos h1, if_pos ⟨1, by rw [h1, Nat.cast_one]⟩, if_pos h, one_mul]
-    · rw [if_neg h, if_neg fun h' => h ((div_eq_one_iff_eq ht.ne').mp h')]
-  have htq : ∀ j, (if q j / t = 1 then (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0) =
-      -(if q j = t then c j else 0) := fun j => by
-    by_cases h : q j = t
-    · have h1 : q j / t = 1 := by rw [h, div_self ht.ne']
-      rw [if_pos h1, if_pos ⟨1, by rw [h1, Nat.cast_one]⟩, if_pos h, neg_one_mul]
-    · rw [if_neg h, if_neg fun h' => h ((div_eq_one_iff_eq ht.ne').mp h'), neg_zero]
-  have hsa : Summable ((fun x => if e x = 1 then d x else 0) ∘ Sum.inl) :=
-    Summable.of_norm_bounded hb1 fun i => by
-      show ‖(if a i / t = 1 then (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0 : ℂ)‖ ≤ _
-      split_ifs <;> simp
-  have hsq : Summable ((fun x => if e x = 1 then d x else 0) ∘ Sum.inr) :=
-    Summable.of_norm_bounded hc1 fun j => by
-      show ‖(if q j / t = 1 then (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0 : ℂ)‖ ≤ _
-      split_ifs <;> simp
-  rw [Summable.tsum_sum hsa hsq] at hmain
-  have hmain' : (∑' i, if a i / t = 1 then (if ∃ n : ℕ, a i / t = n then 1 * b i else 0) else 0) +
-      (∑' j, if q j / t = 1 then (if ∃ n : ℕ, q j / t = n then (-1) * c j else 0) else 0) = 0 :=
-    hmain
-  rw [tsum_congr hta, tsum_congr htq, tsum_neg] at hmain'
-  exact add_neg_eq_zero.mp hmain'
+    rw [tsum_congr (natScalePart_dvd_eq_jump (b := b) ha ht hk),
+      tsum_congr (natScalePart_dvd_eq_jump (b := c) hq ht hk)]
+    exact hjump _ (by positivity)
+  have hmain := tsum_one_eq_of_tsum_dvd_eq ha' hq' hb1 hb4 hc1 hc4 hS
+  rwa [tsum_congr (natScalePart_one_eq b a ht), tsum_congr (natScalePart_one_eq c q ht)] at hmain
 
 open scoped Classical in
 /-- **The two expansions carry the same weight at every scale.** Under the hypotheses of
@@ -447,7 +488,7 @@ theorem eq_riemannZeta_div_mul_tsum_of_strip [Countable ι] {b c : ι → ℂ} {
   have hUc : IsPreconnected U :=
     ((convex_halfSpace_re_gt _).inter (convex_halfSpace_re_lt _)).isPreconnected
   have hHd : DifferentiableOn ℂ (fun s => ∑' i, b i * (a i : ℂ) ^ s) U := by
-    refine differentiableOn_tsum_of_summable_norm hdom (fun i s _ => ?_) hUo fun i s hs => ?_
+    refine Complex.differentiableOn_tsum_of_summable_norm hdom (fun i s _ => ?_) hUo fun i s hs => ?_
     · exact ((differentiableAt_id.const_cpow
         (Or.inl (Complex.ofReal_ne_zero.mpr (ha i).ne'))).const_mul (b i)).differentiableWithinAt
     · rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (ha i), ← mul_add]
