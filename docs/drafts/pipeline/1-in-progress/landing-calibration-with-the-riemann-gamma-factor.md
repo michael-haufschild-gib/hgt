@@ -40,4 +40,5 @@ calibration.
 Five Lean drafts in `InfiniteRankWeilTheory/`, from
 `ThePairedXiDivisorApproachesTheLine.lean` through
 `TheRiemannGammaFactorDoesNotForceLanding.lean`, state the complete
-construction and its analytic multiplicity audit. None has been compiled.
+construction and its analytic multiplicity audit. No draft has yet passed
+its Lean check.

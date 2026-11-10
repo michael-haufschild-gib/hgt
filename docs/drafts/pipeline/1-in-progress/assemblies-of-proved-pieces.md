@@ -63,7 +63,11 @@ For A95, apply this to the finite top layer. On the compact phase torus, absence
 
 For distinct positive frequencies, nonvanishing survives every phase rotation: the positive-frequency Bohr coefficient of twice the real trace is its original nonzero coefficient; conjugate frequencies are negative and cannot cancel it. The open sets where some time in the fixed interval has trace below `−ε` form a directed cover of the compact phase torus. A single `ε>0` therefore works for every phase. `tendsto_normTrace_sub_topTrace` supplies the lower-layer remainder without a gap below the top real part.
 
+`FiniteModeWindowLength.lean` now proves and audits that argument, including vanishing remainders. For the zeta specialization, enumerate the positive-ordinate exponents on the top line. Conjugate symmetry makes `topTrace` twice their real sum; `rhVerifiedThrough_sixtySeven` bounds each off-line ordinate below by `67`. At most `k` positive exponents therefore admit length `(k+1)π/67`. This specialization, including the finite-sum identity, remains unformalized.
+
 The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. This bound is formalized and axiom-audited in `WeightedTraceFloors.lean`. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and sharpness before retiring the stated coefficient.
+
+`WeightedFloorCoefficientOneFails.lean` contains the Lebesgue-weight proof awaiting audit. It uses normalized interval densities at the three cubic sample sites; the fundamental theorem of calculus makes their weighted integrals converge to point evaluations. The Fourier samples need only converge to zero: the strict gap `4>27/8` persists for sufficiently short intervals. For sharpness of coefficient two, use `Fejer_N−1` at the `(N+1)`-st roots: values `N,−1,…,−1`, floor `−1`, vanishing nonzero Fourier samples, and absolute-mass ratio `2N/(N+1)→2`.
 
 ## Further assembly inputs
 

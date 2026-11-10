@@ -145,6 +145,39 @@ theorem norm_truncResonatorCoeff_sq_le_divisor_weight {ε : ℝ} (hε : 0 < ε)
   intro m hm
   exact Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hm).2.1, hk⟩
 
+/-- Any selection of zeta indices has the same separated divisor majorant.
+Taking all indices, a finite head, or its complement gives the three energy estimates. -/
+theorem resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
+    (A : Finset ℕ) (r : ℕ → ℂ) (P : ℕ → Prop) [DecidablePred P] (k : ℕ) :
+    ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)),
+        r m * lineWeight σ (k / m)‖ ^ 2 ≤
+      Sieve.divisorBoundConst ε * ∑ m ∈ A,
+        (‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
+          (if m ∣ k then (if P (k / m) then ((k / m : ℕ) : ℝ) ^ (ε - 2 * σ) else 0)
+            else 0) := by
+  rcases eq_or_ne k 0 with rfl | hk
+  · have hσ : σ ≠ 0 := by linarith only [hε, hεσ]
+    have hzero : (∑ m ∈ A.filter (fun m => m ∣ 0 ∧ P (0 / m)),
+        r m * lineWeight σ (0 / m)) = 0 := by
+      apply Finset.sum_eq_zero
+      intro m _
+      simp only [Nat.zero_div, lineWeight, Nat.cast_zero,
+        Real.zero_rpow (neg_ne_zero.mpr hσ), Complex.ofReal_zero, mul_zero]
+    rw [hzero, norm_zero, zero_pow two_ne_zero]
+    apply mul_nonneg (Sieve.divisorBoundConst_pos hε).le
+    apply Finset.sum_nonneg
+    intro m _
+    exact mul_nonneg (by positivity) (by split_ifs <;> positivity)
+  · have hB : A.filter (fun m => m ∣ k ∧ P (k / m)) ⊆ k.divisors := by
+      intro m hm
+      exact Nat.mem_divisors.mpr ⟨(Finset.mem_filter.mp hm).2.1, hk⟩
+    apply (norm_resonator_divisor_sum_sq_le_split hε hεσ hk hB r).trans_eq
+    congr 1
+    rw [Finset.sum_filter]
+    apply Finset.sum_congr rfl
+    intro m _
+    by_cases hd : m ∣ k <;> by_cases hp : P (k / m) <;> simp [hd, hp]
+
 #print axioms norm_resonatorCoeff_sq_le_divisor_weight
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

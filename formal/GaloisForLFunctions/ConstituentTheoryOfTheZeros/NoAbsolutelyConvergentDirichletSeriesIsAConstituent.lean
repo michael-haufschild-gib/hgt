@@ -7,7 +7,8 @@ import GaloisForLFunctions.HTGeometry.BoundedStripAlmostPeriodicThreeLines
 /-!
 # No absolutely convergent Dirichlet series is a constituent with a zero
 
-Let `F(s) = Σ a(n) n^{−s}` converge absolutely at a real point `x < ½`, `F ≢ 0`.
+Let `F(s) = Σ a(n) n^{−s}` converge absolutely at a real point `x`, `F ≢ 0`. The statements have
+content for `x < ½`, where the half-plane of absolute convergence contains the critical line.
 
 * **Half-plane** (`LSeries_ne_zero_of_zeros_subset_xi`): if every zero of `F` in `Re s > x` is a
   zero of `ξ`, then `F` has no zero in `Re s > x`.
@@ -454,9 +455,10 @@ theorem LSeries_ne_zero_of_strip_zeros_subset_xi (hsum : LSeriesSummable a x) {�
       exact lt_irrefl _ this).mp hxiz
 
 /-- **No absolutely convergent Dirichlet series is a constituent with a zero.** Let
-`Σ a(n) n^{−s}` converge absolutely at a real point `x < ½` and not vanish identically. If every
-zero of the series in `Re s > x` is a zero of `ξ`, the series has no zero in `Re s > x`. -/
-theorem LSeries_ne_zero_of_zeros_subset_xi (hsum : LSeriesSummable a x) (hx : x < 1 / 2) {n : ℕ}
+`Σ a(n) n^{−s}` converge absolutely at a real point `x` and not vanish identically. If every zero
+of the series in `Re s > x` is a zero of `ξ`, the series has no zero in `Re s > x`. For `x ≥ ½`
+this is purity; the content is `x < ½`, where the half-plane contains the critical line. -/
+theorem LSeries_ne_zero_of_zeros_subset_xi (hsum : LSeriesSummable a x) {n : ℕ}
     (hn : a (n + 1) ≠ 0) (hzero : ∀ s : ℂ, x < s.re → LSeries a s = 0 → xi s = 0) {s : ℂ}
     (hs : x < s.re) : LSeries a s ≠ 0 := by
   intro h0
@@ -465,12 +467,18 @@ theorem LSeries_ne_zero_of_zeros_subset_xi (hsum : LSeriesSummable a x) (hx : x 
     (differentiableOn_LSeries_of_summable hsum)
     (fun z hz => norm_LSeries_le_of_summable hsum hz.le) (fun z _ => rfl)
     ⟨z₁, by rw [hz₁re]; linarith, hz₁⟩ hzero hs h0
-  have hω0 : 0 < min (1 / 2 : ℝ) ((1 / 2 - x) / 2) := lt_min (by norm_num) (by linarith [hx])
+  have hx : x < 1 / 2 := by
+    rw [← hre]
+    exact hs
+  have hω0 : 0 < min (1 / 2 : ℝ) ((1 / 2 - x) / 2) := lt_min (by norm_num) (by linarith)
   have hω2 : min (1 / 2 : ℝ) ((1 / 2 - x) / 2) ≤ (1 / 2 - x) / 2 := min_le_right _ _
-  exact LSeries_ne_zero_of_strip_zeros_subset_xi hsum hω0 (min_le_left _ _) (by linarith [hx]) hn
+  exact LSeries_ne_zero_of_strip_zeros_subset_xi hsum hω0 (min_le_left _ _) (by linarith) hn
     (fun z hz hz0 => hzero z (by linarith [(abs_lt.mp hz).1]) hz0)
     (by rw [hre, sub_self, abs_zero]; exact hω0) h0
 
 end Dirichlet
+
+#print axioms LSeries_ne_zero_of_zeros_subset_xi
+#print axioms LSeries_ne_zero_of_strip_zeros_subset_xi
 
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros

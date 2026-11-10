@@ -58,7 +58,7 @@ theorem quartetSign_ne_zero (b : Bool) : quartetSign b ≠ 0 := by
 
 theorem quartetSign_injective : Function.Injective quartetSign := by
   intro b c h
-  cases b <;> cases c <;> simp_all [quartetSign]
+  cases b <;> cases c <;> simp_all [quartetSign] <;> norm_num at h
 
 /-- Centered quartet points; adding `1/2` gives the zeros in the critical strip. -/
 def pairedXiPoint (q : ℕ × Bool × Bool) : ℂ :=

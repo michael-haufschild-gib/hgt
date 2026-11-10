@@ -46,6 +46,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GeometricPrefixC
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ResiduePrefixGaps
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.SingletonBoundary
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ResiduePrefixCost
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GeometricCarryGain
 
 /-!
 # Sign-free purity mechanisms

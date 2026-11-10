@@ -151,6 +151,42 @@ theorem tendsto_weighted_zetaTruncationErrorScale {σ a κ : ℝ}
   simpa only [zetaTruncationErrorScale, mul_add, Finset.mul_sum,
     Finset.sum_const_zero, add_zero] using ((hp.add hh).add hs).add hr
 
+/-- A single explicit exponent choice admits the growing weight, the sharp
+polynomial mean error, and the diagonal coefficient tail simultaneously. -/
+theorem exists_growing_resonator_truncation {σ κ : ℝ}
+    (hσ : 1 / 2 < σ) (hσ1 : σ < 1) (hκ0 : 0 ≤ κ) (hκ : κ < 2 * σ - 1) :
+    ∃ a ε : ℝ, ∃ m : ℕ, 1 < a ∧ 0 < ε ∧ ε < 2 * σ - 1 ∧
+      Tendsto (fun T : ℝ => T ^ κ *
+        zetaTruncationErrorScale σ m (superlinearCutoff a T) T) atTop (𝓝 0) ∧
+      Tendsto (fun T : ℝ => T ^ (κ * (1 + ε)) *
+        (superlinearCutoff a T : ℝ) ^ (2 + ε - 2 * σ) / T) atTop (𝓝 0) ∧
+      Tendsto (fun T : ℝ => T ^ (κ * ε) *
+        (superlinearCutoff a T : ℝ) ^ ((1 + ε - 2 * σ) / 2)) atTop (𝓝 0) := by
+  obtain ⟨a, ε, ha, hε, hεσ, hmean, htail, hpole, hend⟩ :=
+    exists_growing_resonator_exponents hσ hσ1 hκ0 hκ
+  obtain ⟨m, hm⟩ := exists_nat_gt ((κ + a * (1 - σ)) / (a - 1))
+  have hm' : κ + a * (1 - σ) < (m : ℝ) * (a - 1) :=
+    (div_lt_iff₀ (sub_pos.mpr ha)).mp hm
+  have hrem : κ + (2 * m + 2 : ℕ) + a * (1 - σ - (2 * m + 2 : ℕ)) < 0 := by
+    have hp : 0 < ((m : ℝ) + 2) * (a - 1) :=
+      mul_pos (by positivity) (sub_pos.mpr ha)
+    push_cast
+    nlinarith only [hm', hp]
+  have ha0 : 0 ≤ a := (zero_lt_one.trans ha).le
+  refine ⟨a, ε, m, ha, hε, hεσ,
+    tendsto_weighted_zetaTruncationErrorScale (by linarith only [hσ])
+      hσ1 ha hpole hend m hrem, ?_,
+    tendsto_real_weighted_superlinearCutoff ha0 htail⟩
+  have h := tendsto_real_weighted_superlinearCutoff (a := a)
+    (b := 2 + ε - 2 * σ) (q := κ * (1 + ε) - 1) ha0
+      (by linarith only [hmean])
+  apply h.congr'
+  filter_upwards [eventually_ge_atTop (1 : ℝ)] with T hT
+  rw [Real.rpow_sub (zero_lt_one.trans_le hT), Real.rpow_one]
+  ring
+
+#print axioms exists_growing_resonator_exponents
 #print axioms tendsto_weighted_zetaTruncationErrorScale
+#print axioms exists_growing_resonator_truncation
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

@@ -1,13 +1,13 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-50 modules. Specification: §2.14 of
+58 modules. Specification: §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md), which refines
 §9 of [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
-`docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`. The statements on real
-divisors at finite scale (construction F and the questions Q15, Q16, Q18, Q19 of the
-specification) are developed in the continuation
-[`HodgeTheoryOfAFixedPart`](../HodgeTheoryOfAFixedPart/README.md).
+`docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`. The programme is carried
+by this folder and by [`HodgeTheoryOfAFixedPart`](../HodgeTheoryOfAFixedPart/README.md), which
+holds the statements on real divisors at finite scale (constructions F and H and the questions
+Q15, Q16, Q18, Q19 of the specification).
 
 Status: **Lean** = proved in this folder; **corpus** = proved elsewhere in the corpus;
 **[C]** = published mathematics not in the corpus; **open** = not proved.
@@ -165,6 +165,13 @@ inequality beyond the bounded lengths above.
 | The pairing of a quadratic ring | `twistedForm`, `quadraticForm` | jets minus the conjugate jets with the counterterm `log(qn/2π)`; the sum with the form of the integers, with the counterterm `log(q n²/(2π)²)` |
 | The pairing of a cyclotomic ring | `cyclotomicWeight`, `cyclotomicForm`, `cyclotomicZeroSum` | `(p − 1)Λ(n)` for `n ≡ 1 (mod p)`, `Λ(n)` for `p ∣ n`, else `0`; the form of the integers plus the twisted forms of the characters `χ ≠ 1` modulo `p`; the zero sums of `ζ` and of these `L(s, χ)` |
 | Bézout with a shifted counterterm | `CombBezoutShift` | the inequality for the pairing with the counterterm `log(n/2π) − c` |
+| Nodes of a chain | `chainNode` | `p + p² + ⋯ + p^l`, the value of the coordinate of `p` on `Γ_{m p^l}`, `p ∤ m` |
+| Coordinates of the primes | `primeCoord`, `latticePoint`, `coordHom`, `payingRing` | `y_p = Σ_{j ≥ 1} e_{p^j}`; the graph `Γ_n` as the point `((y_p)_n)_p` of the affine space on the primes; `ℤ[Y_p] → 𝒢`; its image `P` |
+| Planar sequences | `IsPlanar`, `planarRing`, `planarSquare`, `planarContact` | on every chain a polynomial in the node, up to a factor prime to `p`; their ring; the planar sections of the square; the ideal of their differences on two graphs |
+| Bézout at an aperture | `CombBezoutAt` | the inequality on the packets supported within `a` of a centre |
+| Superposition | `superposeFamily`, `ringConfig` | the union of the zeros of a finite family of configurations, with the multiplicities added; `ζ` and the `L(s, χ_i)` of a ring |
+| Genus of a degree point | `genus` | `1 + (n/2)(d log(n/2π) + R)` on the square of a ring of degree `d` whose conductors have the product `e^R` |
+| The pairing of a number ring | `ringWeight`, `ringForm`, `ringZeroSum` | `Λ(n)(1 + Σ_i Re χ_i(n))`; the form of the integers plus the twisted forms of the characters; the zero sums of `ζ` and of the `L(s, χ_i)` |
 
 ## 3. Language
 
@@ -195,6 +202,19 @@ inequality beyond the bounded lengths above.
   pairing: the part with the contacts `Λχ`. **Packet of degree zero**: `d₁ = d₂ = 0`.
 - **Level** of a section of the tower: an integer `M` whose divisors index its lines. **Section
   with weights**: `Σ_e χ_e·s_e`, `s_e` a section of the tower.
+- **Chain** at `p`: the graphs `Γ_{m p^l}`, `l ≥ 0`, for `p ∤ m`; they pass through one point of
+  the fibre over `p`. **Node**: the value of the coordinate `y_p` on a graph of a chain.
+  **Planar**: on every chain a polynomial in the node, up to a factor prime to `p`.
+- **Paid contact**: a section that vanishes on a set of graphs and not on `Γ_m` is at least as
+  large on `Γ_m` as the sum of the contacts of `Γ_m` with the set.
+- **Bézout at the aperture `a`**: the inequality on the packets of aperture `a`. **Margin** of a
+  system of contact weights at an aperture: `c₀` with `D·D ≤ 2 d₁ d₂ − c₀ ∫f²` there.
+- **Genus** of a degree point `n`: one plus `n/2` times the coefficient with which the mass at
+  `n` enters the pairing. **Ramification term** of a ring: the sum of the logarithms of the
+  conductors of its characters.
+- **Superposition** of configurations: the union of their zeros with the multiplicities added.
+  **Index** of a square: the largest number of negative squares of the defect `2 d₁ d₂ − D·D`
+  on a finite family of tests.
 
 ## 4. Mechanisms
 
@@ -339,6 +359,32 @@ inequality beyond the bounded lengths above.
     packet the twisted contacts are `Λ Re χ` for every primitive character, so the contacts of
     `ζ` and of the `p − 2` twisted parts add up to `(p − 1)Λ(n)` on `n ≡ 1 (mod p)` and to
     `Λ(n)` on the powers of `p`: the splitting law of the cyclotomic ring.
+41. **A chain lies on a line.** In the coordinates `y_p = Σ_j e_{p^j}` the graphs of a chain at
+    `p` differ in `Y_p` alone, where they sit at the nodes `p + ⋯ + p^l`, and two nodes `k ≠ l`
+    differ by `p^{min(k,l)+1}` times a number prime to `p`. A polynomial that vanishes at some
+    nodes is divisible by the product of the linear factors, so its value at another node is
+    divisible by the product of the differences: every contact of the chain, counted each.
+42. **Fermat quotients separate at a second prime.** `F(z) = (z^ℓ − z)/ℓ` maps `ℤ` to `ℤ`,
+    lowers the exponent of `ℓ` in `z` by one, and is a polynomial with only powers of `ℓ` in
+    its denominators. Iterated on the difference of two nodes of a chain at `p ≠ ℓ` it gives a
+    planar sequence that vanishes on one graph and is prime to `ℓ` on the other.
+43. **An ideal of `ℤ` is read prime by prime.** An ideal with an element prime to `ℓ` for every
+    prime `ℓ` is the unit ideal; an ideal inside `(r^k)` that contains `r^k s` with `r ∤ s` and
+    an element prime to `ℓ` for every prime `ℓ ≠ r` is `(r^k)`.
+44. **Indicators regroup a superposition.** A sum over the zeros of a union with added
+    multiplicities is the sum over `ℂ` of the indicator series of the members; no disjointness
+    is needed. With the exact index law of one tempered configuration (corpus), the sum of
+    several Weil forms has as index the number of distinct zeros of the union to the right of
+    the line.
+45. **Translation and the splitting into real and imaginary parts identify the cone.** A packet
+    and its translate have the same functional for every system of weights, and the functional
+    of a complex test supported in `[−a, a]` is the sum of those of two real packets of that
+    aperture.
+46. **Riemann–Hurwitz bookkeeping.** Each twisted part brings one copy of the jets and of the
+    counterterm of the integers, and `log q_i` times the mass. The coefficient of the mass at
+    `n` is `(2g − 2)/n` for the genus `g(n)`. For the integers `e < π` and
+    `e^{2/3} < 2 < 2π/3` make the genus negative at `2` and `3`; `1 + x ≤ e^x` and `2π < 7`
+    make it positive from `5` on.
 
 ## 5. The founding questions
 
@@ -512,6 +558,8 @@ The nine founding questions are answered. The questions the programme works on a
 | The tower is stable under the Frobenius | `F_k e_d = g·e_{d/g}`, `g = gcd(d, k)`; `F_k P([q]) = P([q]^k)` | `frobenius_orbitNat`, `frobenius_surfaceMap`, `frobenius_mem_orbitBaseRing` |
 | The tower with its weight lines | sections `Σ_{e ≤ E} χ_e·s_e` of the level `M`: lines and weights are independent for `q ≥ 2`; with `b` digits in `[−A, A]` on each line of each weight they are `(((2A+1)^b)^{τ(M)})^{E+1}`, also for the weights `−J, …, E − J` | `eq_zero_of_weighted_eval_eq_zero`, `eq_zero_of_weightedSection_eq_zero`, `card_image_weightedLatticeMap`, `card_image_shiftedWeightedLatticeMap` |
 | The pairing computed on the object | the unitary intersection number of `Γ_m` and `Γ_{mk}` is the contact number of the diagonal and `Γ_k` on `𝒪_q`, over `√k`, plus the Lévy density of the jets at `log k` | `contactWeight_eq_log_card_orbitBaseRing`, `frobeniusIntersection_div_sqrt_eq_object` |
+| An object with unit masses that pays every contact | the planar square, the sections of `𝒢` that on every chain are polynomials in the node: its contact ideals are `J(m, n)` for every pair of graphs, and a section that vanishes on a finite set of graphs and not on `Γ_m` has `Σ contacts ≤ log|x_m|`, the prime powers above and below counted each; it contains the polynomial ring on the primes `ℤ[y_p]`, which pays the contacts but has a contact of `Γ_1` and `Γ_4` at `3`; it does not contain `p − e_p` | `planarSquare`, `planarContact_eq_graphIdeal`, `sum_contact_le_log_abs_planarSquare`, `coordHom_injective`, `three_dvd_sub_of_mem_payingRing`, `not_isPlanar_prime_sub_orbit` |
+| Payment is the product formula | the section `Π_{l ∈ T}(Y_p − (p + ⋯ + p^l))` vanishes on the graphs `Γ_{m p^l}`, `l ∈ T`, and on `Γ_{m p^k}` it is the product of the differences of the nodes, divisible by `p^{Σ_{l ∈ T}(min(k,l)+1)}` | `ghostComponent_coordHom_nodeProduct`, `pow_sum_dvd_of_isPlanar` |
 | No object of finite type carries the contacts | none of finite type: the fibre of the square over `p` is infinite; a ring with Frobenius lifts, a `ℤ`-point and a finite fibre over `p` has a contact at `p` between two graphs of degrees prime to `p`; affine space of dimension `k` has at most `p^k` points over `𝔽_p`, and a quotient has no more | `infinite_ringHom_ghostRing_zmod`, `FrobeniusLifts.exists_contact_not_in_square`, `card_ringHom_mvPolynomial_zmod_le`, `finite_ringHom_zmod_of_surjective` |
 
 **F. The lattice at finite scale.**
@@ -532,8 +580,9 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
 
 - *Kill condition.* The pairing of the square of a number ring needs a datum that is not a
   contact, a jet of an archimedean factor or the density of a comb.
-- *Verdict.* Not met for the quadratic rings and for the cyclotomic rings of prime conductor,
-  counted by their norms.
+- *Verdict.* Not met for the rings whose zeta function is `ζ(s) Π_i L(s, χ_i)` over primitive
+  characters, counted by their norms: the quadratic rings, the cyclotomic rings of prime
+  conductor, and every finite family of primitive characters.
 - *Evidence.* The square of a Dedekind domain is defined by congruences over ideals and its
   graphs meet in the prime ideals with `log N𝔭` (`idealContact_prime_pow`,
   `card_quotient_idealContact_prime_pow`). For a real primitive character `χ` of conductor `q`
@@ -546,8 +595,14 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
   of `ℤ` on the progression `1 mod p` with the multiplicity `p − 1`, and the pairing tends to
   `2 d₁ d₂` minus the sum over the zeros of its zeta function
   (`vonMangoldt_add_sum_twistWeight`, `tendsto_cyclotomicForm_add_contact`).
-- *Survivors.* The pairing of a quadratic or cyclotomic ring on the comb of the integers; the
-  twisted parts without pole plane; the conductor as the threshold of the inequality.
+  For a family of primitive characters `χ_i` of conductors `q_i` the pairing tends to
+  `2 d₁ d₂` minus the zero sums of `ζ` and of the `L(s, χ_i)`, the mass at `n` enters with
+  `d log(n/2π) + Σ_i log q_i`, `d = 1 + #{χ_i}`, and the index of the square is the number of
+  distinct zeros of these functions to the right of the line
+  (`tendsto_ringForm_add_contact`, `ringForm_eq`, `exists_le_negIndex_ringDefect_iff`).
+- *Survivors.* The pairing of an abelian ring on the comb of the integers; the twisted parts
+  without pole plane; the conductor as the threshold of the inequality and as the ramification
+  term of the genus; the exact index; the exceptional square of a quadratic ring.
 
 | Deliverable | Result | Lean |
 |---|---|---|
@@ -561,27 +616,46 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
 | The inequality where no contact enters | for an odd conductor `q ≥ 4π` or an even one `q ≥ 128π`, on packets shorter than `log 2`, with the margin `∫f²/5000` | `twistedZeroSum_nonneg_of_short`, `tendsto_quadraticForm_le_degrees_of_short` |
 | Every primitive character on packets | the functional of `Λ Re χ` is `2 d₁ d₂ + Z_χ − log q·∫f² − E_χ` for complex characters too; the twisted part tends to `−Z_χ` | `integral_weilAtomSymbol_twist_packet`, `re_weilFullFunctional_twist_packet`, `tendsto_twistedForm_add_twistedContact` |
 | A ring of degree `p − 1` | the cyclotomic ring of prime conductor `p`: contacts `(p − 1)Λ` on `n ≡ 1 (mod p)` and `Λ` on the powers of `p`; pairing `2 d₁ d₂ − Z_K(f)`; counterterm with `(p − 2) log p`; index law over `ζ` and the `p − 2` characters; the inequality on short packets for `p ≥ 128π` | `vonMangoldt_add_sum_twistWeight`, `tendsto_cyclotomicForm_add_contact`, `cyclotomicForm_eq`, `negIndex_cyclotomicDefect_packets_le`, `tendsto_cyclotomicForm_le_degrees_of_short` |
+| A ring with any finite family of primitive characters | contacts `Λ(n)(1 + Σ_i Re χ_i(n))`; the pairing tends to `2 d₁ d₂` minus the sum over the zeros of `ζ(s) Π_i L(s, χ_i)`; on combinations of packets the limit is `2 d₁ d₂` minus the quadratic form of the sum of the Gram matrices; the inequality on short packets when every conductor is large | `ringWeight_eq`, `tendsto_ringForm_add_contact`, `tendsto_ringPairing_packetCombination`, `negIndex_ringDefect_packets_le`, `tendsto_ringForm_le_degrees_of_short` |
+| Riemann–Hurwitz for the counterterm | the jets of the integers enter `d = 1 + #{χ_i}` times and the mass at `n` with `d log(n/2π) + Σ_i log q_i`; with the genus `g_K(n) = 1 + (n/2)(d log(n/2π) + Σ_i log q_i)`: `2 g_K(n) − 2 = d(2 g(n) − 2) + n Σ_i log q_i` | `ringForm_eq`, `ringForm_eq_genus`, `riemannHurwitz` |
+| The genus of a degree point | in the normal form `2 d₁ d₂ − D·D` on `c·γ_n` is `(2c²/n)·g(n)`, `g(n) = 1 + (n/2) log(n/2π)`; `g(2) < 0`, `g(3) < 0`, `g(n) > 0` for `n = 1` and `n ≥ 4` | `combForm_singleton`, `genus_two_neg`, `genus_three_neg`, `genus_one_pos`, `genus_pos_of_four_le` |
+| The exact index of the square of a ring | the defect has `n` negative squares on some family of `n` tests iff `ζ` and the `L(s, χ_i)` have together at least `n` distinct zeros to the right of the line; for any finite family of tempered configurations the same with the union of their zeros | `exists_le_negIndex_ringDefect_iff`, `exists_le_negIndex_sum_zeroGram_iff`, `W_superposeFamily` |
+| A cover bounds its base | negative squares of the square of `ℤ` are negative squares of the square of every ring over it; the inequality holds on the square of the ring iff neither `ζ` nor any `L(s, χ_i)` has a zero to the right of the line, and then the Riemann hypothesis holds | `exists_le_negIndex_ringDefect_of_zeta`, `forall_negIndex_ringDefect_eq_zero_iff`, `riemannHypothesis_of_ringDefect` |
+| The trivial aperture of a conductor | the twisted part is nonpositive on packets of aperture `a` when `4e^a + C ≤ log q`, with a constant uniform in the character; with the split of the prime sum at `e^a` the coefficient `4` becomes any `κ > 2` | `exists_uniform_trivial_conductor_aperture`, `exists_uniform_twistedZeroSum_aperture_margin`, `twistedZeroSum_ge_of_aperture_sharpened` |
+| The exceptional square | a real zero `½ + δ` of `L(s, χ)` and its reflection contribute at least `−(sinh(2δa)/δ − 2a)·m·∫f²` on packets of aperture `a`, and nothing negative on even or nonnegative packets; for a real primitive `χ` the sign at every aperture `log log q + C` is the generalized Riemann hypothesis of `L(s, χ)`; a real zero near `1` repels the other squares | `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `re_Wsummand_real_zero_nonneg`, `grh_dirichlet_iff_forall_twistedZeroSum_nonneg`, `deuring_heilbronn_on_twisted_comb`, `exists_twistedComb_square_margin` |
+
+**H. Curves.**
+
+The comb `q^ℤ` of a curve over `𝔽_q`: the same pairing without jets and without counterterm is
+a Toeplitz form, on one graph it is `2g·e²`, and it is nonnegative on every real divisor iff
+the Frobenius eigenvalues are unitary; the golden datum has a negative divisor. It is developed
+in the continuation (`HodgeTheoryOfAFixedPart.curveCombForm_eq_toeplitz`,
+`curveCombForm_singleton`, `curveCombForm_nonneg_iff_unitary`,
+`exists_curveCombForm_goldenDatum_neg`). AGZ supplies the invariant comb with its constant
+diagonal (`tendsto_baseCombRate_add_log`) and the reading of `2g` on the integers: the genus of
+a degree point (`combForm_singleton`).
 
 ## 7. Criteria
 
-The ten criteria of the specification, read on the square `𝒢`, on the tower with its weight
-lines `𝒮_q`, and on the pairing of the degree points on the comb of the integers.
+The eight criteria of the specification, read on the square `𝒢`, on the tower with its weight
+lines `𝒮_q`, on the planar square, and on the pairing of the degree points on the comb of the
+integers.
 
 | # | Criterion | Reading | Evidence |
 |---|---|---|---|
-| 1 | Reproduce Weil's and Stepanov's proofs for curves; over `𝔽_q[T]` there are no carries | Point counts of a curve are effective elements of `𝒢` and Stepanov's three facts are located there; the degree points `qⁿ` of a curve form a comb invariant under `q^ℤ`, whose diagonal is a constant; the carry-free side is the exact count of the shift on `q` letters. On the Frobenius graphs of a curve the defect of the inequality has as many negative squares as there are distinct eigenvalues off the circle, so the inequality on the window `2g` is the Riemann hypothesis of the curve (corpus) | `isEffective_teichmuller_natCast`, `tendsto_baseCombRate_add_log`, `map_ghostComponent_ker_pow`; corpus: `ArithmeticCastelnuovoSeveri.CurveDatum.pontryagin_law_curve` |
-| 2 | Counts alone are not enough | The golden datum is an effective element with the functional equation and is not pure; on the tower Stepanov's inequality is the product formula | `exists_effective_golden_not_pure`, `map_ker_pow_eq_contact_pow` |
-| 3 | Use the functional equation: the integer-norm one-off and the approaching Euler product must fail | The square does not see them: an integer-norm system lifts through its norms. The comb does: Bézout on the comb of the integers fails for every system of contact weights other than `Λ` | `ghostLift_adams_X_eq_of_eq`, `not_combBezout_of_ne` |
-| 4 | Use the Euler product: `cosh` models and the heat family must fail | The contacts of the pairing are the contact orders of the graphs; with the contact at `2` reversed the inequality fails | `tendsto_degreeContact`, `exists_packet_degreePairing_gt_of_flippedContact` |
-| 5 | See the coefficient size: the non-tempered pair must fail | The weights are `Λ(k)/√k` exactly; no other weight passes | `frobeniusIntersection_div_sqrt`, `combBezout_iff` |
-| 6 | Infinite type: no finite fibre, no finitely generated Frobenius-stable lattice | The fibre of `𝒢` and of `𝒪_q` over every prime is infinite; a finite fibre forces a contact that is not Weil's; `𝒪_q` is not a quotient of a polynomial ring in finitely many variables | `infinite_ringHom_ghostRing_zmod`, `FrobeniusLifts.exists_contact_not_in_square`, `not_surjective_mvPolynomial_orbitBaseRing` |
-| 7 | The diagonal is a comb finite part with Weil's constant, not the discriminant and not a number attached to a point | Weil's form of every packet after the counterterm `log(density/2π)`; every other counterterm leaves a term of the size of the mass; the constant `2π` is the threshold of the inequality; for a quadratic ring the conductor is itself the density of a comb | `tendsto_degreeForm`, `not_exists_counterterm_of_two_combs`, `tendsto_multiplePairing_sub_point_counterterm`, `combBezoutShift_iff`, `tendsto_twistedForm_add_twistedContact` |
-| 8 | Positivity, if used, is derived: Riemann–Roch and Bézout are two axioms | None is used. The count is a theorem on `𝒮_q`; Bézout is a theorem on bounded lengths and is RH in general | `card_image_weightedLatticeMap`, `tendsto_degreePairing_le_degrees_of_width`, `riemannHypothesis_iff_combBezout`; corpus: `ArithmeticCorrespondencePositivity.hodgeIndex_iff_exists_sectionCount` |
-| 9 | The archimedean place is a fibre of the same Frobenius | The weight lines of the shift, in one ring with the tower | `shift_weight`, `shift_mem_towerWeightRing` |
-| 10 | The statement lives at finite scale on real divisors, and its index is finite uniformly in the scale | In the limit on packets the index is at most one plus the number of zeros to the right of the line. At finite scale the pairing is one matrix on real divisors, and on a window it is nonpositive on a subspace whose codimension depends on the ratio alone (continuation) | `negIndex_defect_packets_le`; corpus: `HodgeTheoryOfAFixedPart.combPairing_sample`, `HodgeTheoryOfAFixedPart.exists_blockSize_combForm_nonneg` |
+| 1 | Reproduce Weil's and Stepanov's proofs for curves; over `𝔽_q[T]` there are no carries, no jets and no counterterm | Point counts of a curve are effective elements of `𝒢` and Stepanov's three facts are located there; the degree points `qⁿ` of a curve form a comb invariant under `q^ℤ`, whose diagonal is a constant; on that comb the pairing is a Toeplitz form whose sign is purity (continuation); the carry-free side is the exact count of the shift on `q` letters | `isEffective_teichmuller_natCast`, `tendsto_baseCombRate_add_log`, `map_ghostComponent_ker_pow`; corpus: `HodgeTheoryOfAFixedPart.curveCombForm_nonneg_iff_unitary`, `ArithmeticCastelnuovoSeveri.CurveDatum.pontryagin_law_curve` |
+| 2 | Counts alone are not enough: the golden datum has integral counts and a negative divisor | The golden datum is an effective element with the functional equation and is not pure; on the tower Stepanov's inequality is the product formula | `exists_effective_golden_not_pure`, `map_ker_pow_eq_contact_pow`; corpus: `HodgeTheoryOfAFixedPart.exists_curveCombForm_goldenDatum_neg` |
+| 3 | Use the functional equation and the Euler product: the integer-norm one-off, the `cosh` models and the heat family must fail | The square does not see an integer-norm system: it lifts through its norms. The comb does: Bézout on the comb of the integers fails for every system of contact weights other than `Λ`, and with the contact at `2` reversed it fails inside the proved range. The weights are `Λ(k)/√k` exactly | `ghostLift_adams_X_eq_of_eq`, `not_combBezout_of_ne`, `exists_packet_degreePairing_gt_of_flippedContact`, `frobeniusIntersection_div_sqrt`, `combBezout_iff` |
+| 4 | Infinite type: no finite fibre | The fibre of `𝒢` and of `𝒪_q` over every prime is infinite; a finite fibre forces a contact that is not Weil's; `𝒪_q` is not a quotient of a polynomial ring in finitely many variables; the ring that pays the contacts is the polynomial ring on all the primes | `infinite_ringHom_ghostRing_zmod`, `FrobeniusLifts.exists_contact_not_in_square`, `not_surjective_mvPolynomial_orbitBaseRing`, `coordHom_injective` |
+| 5 | The diagonal is the density of a comb with the constant `2π` | Weil's form of every packet after the counterterm `log(density/2π)`; every other counterterm leaves a term of the size of the mass; the constant `2π` is the threshold of the inequality; for a number ring the conductors are densities of combs and add up to the ramification term of the genus | `tendsto_degreeForm`, `not_exists_counterterm_of_two_combs`, `tendsto_multiplePairing_sub_point_counterterm`, `combBezoutShift_iff`, `tendsto_twistedForm_add_twistedContact`, `ringForm_eq_genus` |
+| 6 | Positivity is derived, and sections do not derive it | None is assumed. The count is a theorem on `𝒮_q`; Bézout is a theorem on bounded lengths and is RH in general. The sections of the square certify the contacts below a graph and one contact per prime above it; the sections of the planar square certify every contact, and the certificate is the product formula for the nodes: no jet is certified by a section | `card_image_weightedLatticeMap`, `tendsto_degreePairing_le_degrees_of_width`, `riemannHypothesis_iff_combBezout`, `sum_contact_le_log_abs_planarSquare`, `ghostComponent_coordHom_nodeProduct`; corpus: `ArithmeticCorrespondencePositivity.hodgeIndex_iff_exists_sectionCount`, `HodgeTheoryOfAFixedPart.log_abs_primePointSection_lt` |
+| 7 | The statement lives at finite scale on real divisors, is selective only on windows with a contact, and has no margin | At finite scale the pairing is one matrix on real divisors, nonpositive on a subspace whose codimension depends on the ratio of the window alone (continuation). Below the first contact every system of weights satisfies Bézout; at the aperture `181/500` the contact at `2` may still vary in an interval around `log 2`; in the limit of the apertures only `Λ` remains. On packets of degree zero the pairing has no gap | `combBezoutAt_of_short`, `exists_combBezoutAt_weight_two`, `combBezout_iff`, `exists_primitive_packet_zeroSum_lt`, `negIndex_defect_packets_le`; corpus: `HodgeTheoryOfAFixedPart.combPairing_sample`, `HodgeTheoryOfAFixedPart.exists_blockSize_combForm_nonneg` |
+| 8 | Applied to the square of a quadratic ring it gives the index of the twisted part, or it uses the pole plane | The twisted part has no pole plane; its index is the number of zeros of `L(s, χ)` to the right of the line, and the index of the ring the number of distinct zeros of its zeta function. A proof of Bézout for `ℤ` that does not use the pole plane runs on every twisted part, where the sign at the aperture `log log q + C` is open (Q21) | `tendsto_twistedForm_add_twistedContact`, `exists_le_negIndex_ringDefect_iff`, `grh_dirichlet_iff_forall_twistedZeroSum_nonneg`; corpus: `ArithmeticCastelnuovoSeveri.pontryagin_law` |
 
-Not among the ten: the square does not distinguish `ℤ` from geodesic flows, since closed-walk
-counts of every finite relation are effective elements (`exists_effective_closedWalks`).
+Not among the eight: the archimedean place is a fibre of the same Frobenius, the weight lines of
+the shift in one ring with the tower (`shift_weight`, `shift_mem_towerWeightRing`); and the
+square does not distinguish `ℤ` from geodesic flows, since closed-walk counts of every finite
+relation are effective elements (`exists_effective_closedWalks`).
 
 ## 8. The questions of the programme
 

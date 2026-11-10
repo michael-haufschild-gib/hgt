@@ -73,6 +73,13 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `SingletonLast` | A minimal nongreedy optimum has a singleton last part: two distinct last-part digits would force opposite cyclic orders around a larger greedy digit |
 | `NormalizedLast` | When proper parts have zeroth inverse coordinate one, a singleton last part and any competing last part containing another digit have equal zeroth cyclic weight |
 | `MinimalStructure` | Any nongreedy optimum yields a normalized counterexample with singleton last part `p^k`; the greedy last part contains a larger power, has equal zeroth cyclic weight, and uses only residues below `k mod s` |
+| `PrefixCarryRecursion` | Descending inverse-prefix rows preserve the floor, nested nonnegative content, and `p−1` digit gaps; the boundary loses at least `p` terminal digits |
+| `ContentMatrixRealization` | Every admissible content matrix has an increasing allocation of the actual digit collection |
+| `GeometricPrefixCost` | Exponent gaps bound total prefix weight by the finite double-geometric sum |
+| `ResiduePrefixGaps` | Removing `n(p−1)` largest occurrences of one residue lowers retained exponents by at least `ns` |
+| `SingletonBoundary` | Every singleton boundary fixes competing last-part cyclic weight and excludes smaller residue representatives |
+| `ResiduePrefixCost` | Residue-count gaps give the double-geometric bound for actual base-`p` prefix values, including empty prefixes |
+| `GeometricCarryGain` | The terminal geometric bound and prefix estimate imply a strictly positive gain for all `p≥2`, `q≥p²` |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
@@ -199,19 +206,5 @@ residues cancel in the weight difference. Thus
 `(p−1)(p²+1)−p²=(p−2)p²+p−1>0`.
 This bound handles `p=2` without a separate equal-degree case.
 
-`PrefixCarryRecursion.lean` proves the descending row floor and nonnegative,
-nested content with the `p−1` gap; its finite-range API passes direct checking.
-`ContentMatrixRealization.lean` passes direct checking and its standard-axiom
-audit: every admissible content matrix has an actual increasing allocation.
-`GeometricPrefixCost.lean` also passes: an exponent gap bounds total prefix
-weight by the finite double-geometric sum. These modules are umbrella imports.
-`ResiduePrefixGaps.lean` passes direct checking and its standard-axiom audit:
-removing `n(p−1)` largest digits of a fixed residue lowers retained exponents
-by at least `ns`. The complete modified composition and weight contradiction
-remain before this argument counts as a proof.
-
-`SingletonBoundary.lean` proves equality of last-part cyclic weights at every
-singleton boundary and excludes smaller residue representatives.
-`ResiduePrefixCost.lean` transfers the count gaps to actual base-`p` prefix
-values, including empty prefixes. Both pass direct checks and standard-axiom
-audits and are umbrella imports.
+The complete modified composition and its weight comparison remain
+unformalized. The checked estimates above do not yet prove optimality.
