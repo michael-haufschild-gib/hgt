@@ -15,6 +15,6 @@ The real-pair form equals twice the cosh-moment square minus twice the sinh-mome
 
 - `AbsoluteGeometryOfSpecZ/AUniformConstantForTheTrivialConductorAperture.lean`: `exists_uniform_conductor_aperture_cost`, `exists_uniform_twistedZeroSum_aperture_margin`, `exists_uniform_trivial_conductor_aperture`.
 - `AbsoluteGeometryOfSpecZ/TheExceptionalSquareHasASharpSmoothFloor.lean`: `realPairForm_mass_floor_iff`, `exists_unit_realPairForm_near_lower_edge`, `real_zero_pair_eq_mult_realPairForm`, `exists_unit_real_zero_pair_near_lower_edge`.
-- Uniform aperture module passed Lean; sharp-floor module check pending. Both modules are wired into the programme umbrella. Axiom audits omitted as requested.
+- Both modules passed Lean checks and are wired into the programme umbrella. Axiom audits omitted as requested.
 
 The smooth-packet lower edge is an infimum, not an asserted smooth minimizer. The pair statement concerns its two zero summands, not the contributions of other zeros.

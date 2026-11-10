@@ -1,4 +1,4 @@
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheFrobeniusGraphsMeetInThePrimes
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGraphsAreGluedAlongTheirContacts
 import GaloisForLFunctions.HTGeometry.SingularIntegralCokernel
 
 /-!
@@ -10,7 +10,8 @@ has a count on the rays of a pair of graphs: the number of residues of a section
 `K(x) = #𝒪(Γ_m ∪ Γ_n)/(x)`.
 
 * **The functions on two graphs** (`range_ghostComponent_pair`, `graphPair`): the values
-  `(x_m, x_n)` of the sections of the square are exactly the pairs with `x_m − x_n ∈ J(m, n)`.
+  `(x_m, x_n)` of the sections of the square are exactly the pairs with `x_m − x_n ∈ J(m, n)`,
+  a ring; the fibre product is `exists_ghostComponent_eq_iff`.
 * **The count** (`card_pairRing_quotient`, `card_quotient_graphPair`): for `m ≠ n`,
   `K(x) = |x_m · x_n|`, the absolute value of the norm of the split algebra `ℤ × ℤ`. It does not
   depend on the contact.
@@ -67,24 +68,6 @@ def pairRing (J : Ideal ℤ) : Subring (ℤ × ℤ) where
 
 theorem mem_pairRing {J : Ideal ℤ} {z : ℤ × ℤ} : z ∈ pairRing J ↔ z.1 - z.2 ∈ J := Iff.rfl
 
-/-- Every element of the contact ideal is the difference of the values of one section. -/
-theorem exists_ghostComponent_sub_eq {m n : ℕ+} {d : ℤ} (hd : d ∈ graphIdeal m n) :
-    ∃ y : ghostRing, ghostComponent m y - ghostComponent n y = d := by
-  refine Submodule.span_induction
-    (p := fun d _ => ∃ y : ghostRing, ghostComponent m y - ghostComponent n y = d)
-    ?_ ?_ ?_ ?_ hd
-  · rintro _ ⟨y, rfl⟩
-    exact ⟨y, rfl⟩
-  · exact ⟨0, by simp⟩
-  · rintro u v _ _ ⟨y, rfl⟩ ⟨z, rfl⟩
-    exact ⟨y + z, by
-      rw [map_add, map_add]
-      ring⟩
-  · rintro k u _ ⟨y, rfl⟩
-    exact ⟨(k : ghostRing) * y, by
-      rw [map_mul, map_mul, map_intCast, map_intCast, Int.cast_id, smul_eq_mul]
-      ring⟩
-
 /-- **The functions of the square on two graphs** are the pairs of integers congruent modulo
 the contact ideal. -/
 theorem range_ghostComponent_pair (m n : ℕ+) :
@@ -95,15 +78,12 @@ theorem range_ghostComponent_pair (m n : ℕ+) :
   · rintro ⟨x, hx⟩
     rw [Prod.mk.injEq] at hx
     show a - b ∈ graphIdeal m n
-    rw [← hx.1, ← hx.2]
-    exact Ideal.subset_span ⟨x, rfl⟩
+    exact (exists_ghostComponent_eq_iff m n a b).mp ⟨x, hx.1, hx.2⟩
   · intro h
-    obtain ⟨y, hy⟩ := exists_ghostComponent_sub_eq (show a - b ∈ graphIdeal m n from h)
-    refine ⟨y + ((b - ghostComponent n y : ℤ) : ghostRing), ?_⟩
-    show (ghostComponent m (y + ((b - ghostComponent n y : ℤ) : ghostRing)),
-      ghostComponent n (y + ((b - ghostComponent n y : ℤ) : ghostRing))) = (a, b)
-    rw [map_add, map_add, map_intCast, map_intCast, Int.cast_id, Prod.mk.injEq]
-    constructor <;> linarith
+    obtain ⟨x, h1, h2⟩ := (exists_ghostComponent_eq_iff m n a b).mpr h
+    exact ⟨x, by
+      show (ghostComponent m x, ghostComponent n x) = (a, b)
+      rw [h1, h2]⟩
 
 /-- The restriction of the sections of the square to the two graphs `Γ_m`, `Γ_n`. -/
 def graphPair (m n : ℕ+) : ghostRing →+* pairRing (graphIdeal m n) where

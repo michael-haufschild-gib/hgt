@@ -20,6 +20,8 @@ the symbol of `δ`. For `ε ≠ 0` no constant helps.
 * **Every other scale fails** (`exists_packet_scaled_neg`, `not_combBezoutScaled`): for `ε ≠ 0`,
   summable `δ` and every `c`, a pair of bumps with `s` the sign of `ε` has a negative
   functional, without hypothesis.
+* **The contacts that are not refuted** (`combBezoutScaled_iff`): Bézout holds iff `ε = 0`, the
+  Riemann hypothesis holds and the symbol of `δ` is at most `c`.
 
 So the pole plane fixes the total size of the contacts, as the symbol fixes their distribution up
 to the constant: the trees of all primes cannot be rescaled by a common factor. The mechanism is
@@ -632,5 +634,30 @@ theorem not_combBezoutScaled (hsum : Summable fun n => |δ n| / Real.sqrt n) {ε
   have hle := h _ hg' hgc' K hK hsupp _ (hlim.congr fun N => by ring)
   rw [weilTest_packet_translate g t, integral_sub_right_eq_self (fun u => g u ^ 2) t] at hle
   linarith
+
+/-- **The contacts that are not refuted.** With the contacts `(1 + ε)Λ + δ`, `δ` summable against
+`n^{-1/2}`, and the counterterm `log(n/2π) + c`, Bézout holds iff `ε = 0`, the Riemann hypothesis
+holds and the symbol of `δ` is at most `c`. -/
+theorem combBezoutScaled_iff (hsum : Summable fun n => |δ n| / Real.sqrt n) (ε c : ℝ) :
+    CombBezoutScaled ε δ c ↔
+      ε = 0 ∧ RiemannHypothesis ∧ ∀ τ, _root_.RHTower.perturbationSymbol δ τ ≤ c := by
+  have hw : (fun n : ℕ => (1 + (0 : ℝ)) * (Λ n : ℝ) + δ n) = fun n => (Λ n : ℝ) + δ n := by
+    funext n
+    rw [add_zero, one_mul]
+  constructor
+  · intro h
+    have hε : ε = 0 := by
+      by_contra hε
+      exact not_combBezoutScaled hsum hε c h
+    subst hε
+    refine ⟨rfl, (combBezoutWith_iff hsum c).mp fun f hf hfc K hK hsupp l hl => ?_⟩
+    refine h f hf hfc K hK hsupp l ?_
+    rw [hw]
+    exact hl
+  · rintro ⟨rfl, hRH, hP⟩
+    have h' := (combBezoutWith_iff hsum c).mpr ⟨hRH, hP⟩
+    intro f hf hfc K hK hsupp l hl
+    rw [hw] at hl
+    exact h' f hf hfc K hK hsupp l hl
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

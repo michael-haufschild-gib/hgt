@@ -170,6 +170,7 @@ theorem sum_norm_inner_planeRow_le {ι : Type*} [DecidableEq ι] (N : ℕ) (s : 
   have hside : ∑ q ∈ B, levelBound N δ q.1 = 2 * ∑ k ∈ range (M + 1), levelBound N δ k := by
     rw [hB, Finset.sum_product, Finset.mul_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
+    change ∑ _y : Bool, levelBound N δ k = 2 * levelBound N δ k
     rw [Finset.sum_const, Finset.card_univ, Fintype.card_bool, nsmul_eq_mul]
     norm_num
   have hrect : ∑ p ∈ B ×ˢ B, g p = (∑ q ∈ B, levelBound N δ q.1) ^ 2 := by

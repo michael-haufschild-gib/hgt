@@ -5,7 +5,7 @@
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, §2.1, “Assemblies of proved pieces”.
 - **Statement:** Resolve every assembly in the source table with unconditional Lean proofs.
-- **Current scope:** Finish existing Lean drafts and dependency-closed paper proofs; defer open extensions.
+- **Current scope:** Paused after completing existing Lean drafts and dependency-closed paper proofs. All ten modules in the finishing batch passed Lean; open extensions remain deferred.
 
 ## Scope
 
@@ -31,7 +31,7 @@
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Formalized; finite top layers and every-floor failure checked in Lean; `3-formalized/finite-mode-window-length-needs-no-separation.md` |
 | A96 | Exact first selective interval for the weight at 2 | Open |
-| A100 | Trivial conductor aperture and exceptional square | Uniform aperture constant checked in Lean; sharp exceptional-pair floor awaiting check |
+| A100 | Trivial conductor aperture and exceptional square | Formalized and checked in Lean; `3-formalized/uniform-conductor-aperture-and-sharp-exceptional-pair-floor.md` |
 
 ## Proof requirements
 
@@ -84,7 +84,7 @@ Sharpness of **2** is formalized and axiom-audited in `FejerFloorsMakeCoefficien
   The matrix estimate is already proved: `RHTower.abs_dotProduct_mulVec_le` bounds an entry error `ε` by `ε·card·Σcᵢ²`. Thus entrywise convergence suffices to preserve half of a fixed positive mass floor. No new abstract matrix stability theory is needed.
 - **A78:** `OnlyDeepOrdinatesNeedSeparation` bounds leakage from every other deep exponent by a separated inverse-square sum. A cluster extension must control cancellation inside the selected cluster, not merely multiply the far-leakage count by its cardinality.
 - **A100:** `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` identifies real-packet positivity with complex window positivity and gives the exceptional real-pair decomposition. Its improved sufficient condition is `primeMass a + primeMass(a/2) + archConstant χ ≤ log q`; the prime mass divided by `e^a` tends to `2`. `AUniformConstantForTheTrivialConductorAperture.lean` proves that every `κ>2` admits an additive constant uniform in conductor and character, and gives coefficient-four aperture positivity. Both modules passed Lean.
-  `TheExceptionalSquareHasASharpSmoothFloor.lean` proves that a floor `−c∫f²` holds on all supported C² packets precisely when `2 pairEnergy(δ,a)≤c`. The negative coordinate is `sinh(δu)`; even smooth cutoffs approach its sharp floor. The proof uses `∫φ sinh²≥pairEnergy(δ,a′)` and `∫(φ sinh)²≤pairEnergy(δ,a)` with `a′↑a`. Rescaling supplies unit-mass approximants, including the multiplicity factor for the actual zero-pair summands. Lean check pending.
+  `TheExceptionalSquareHasASharpSmoothFloor.lean` proves that a floor `−c∫f²` holds on all supported C² packets precisely when `2 pairEnergy(δ,a)≤c`. The negative coordinate is `sinh(δu)`; even smooth cutoffs approach its sharp floor. The proof uses `∫φ sinh²≥pairEnergy(δ,a′)` and `∫(φ sinh)²≤pairEnergy(δ,a)` with `a′↑a`. Rescaling supplies unit-mass approximants, including the multiplicity factor for the actual zero-pair summands. Lean check passed; axiom audit omitted as requested. Card: `3-formalized/uniform-conductor-aperture-and-sharp-exceptional-pair-floor.md`.
 - **A83:** Project every zeta zero horizontally to `Re s=1/2`, adding multiplicities at equal ordinates. `TheCriticalProjectionPreservesTheCounts.lean` proves preservation of every window count and temperedness from the unchanged local count. Direct Lean check passed for projection, exact count preservation and temperedness; axiom audit omitted as requested. Add its bounded spline trace to the sparse off-line construction without changing the leading density.
   `TheZetaDensityBackgroundHasBoundedTrace.lean` proves the exact superposition identity and the bound `‖S_background(v)‖≤Re S_background(0)`; Lean check passed, axiom audit omitted as requested. Its count identity is `N_superposed=N_original+N_zeta` on every ordinate window.
   Doubling gives `Σ_{j≤k}Γ_j≤2Γ_k`; each level has at most `32(j+1)Γ_j` points. Thus the prefix through the last active level `k` has at most `64(k+1)T` points. The recursion gives `log Γ_k≥(Θ/7)k²` for `k≥2`, proving `N(0,T)=o(T log T)`. This count proof is checked in `TheMinimalFaceCounterexampleHasZeroRelativeDensity.lean`; axiom audit omitted as requested. Adding the tower preserves the leading zeta density; it does not preserve every finite-window count.

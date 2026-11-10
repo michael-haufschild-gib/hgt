@@ -146,6 +146,27 @@ theorem integral_cos_mul_sq_ge {x : ℝ} (hx : 1 / 2 ≤ x) (T : ℝ) :
   rw [e, hxx]
   linarith
 
+/-- **The mean of a nonnegative sum over a dyadic window of heights.** For nonnegative
+coefficients on integers `n ≥ 2`:
+`∫_T^{2T} Σ c(n) cos²(t log n) dt ≥ (T/2 − 1) Σ c(n)`. -/
+theorem integral_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀ n ∈ s, 0 ≤ c n)
+    (hs : ∀ n ∈ s, 2 ≤ n) (T : ℝ) :
+    (T / 2 - 1) * ∑ n ∈ s, c n ≤
+      ∫ t in T..2 * T, ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 := by
+  have hterm : ∀ n : ℕ, Continuous fun t : ℝ => c n * Real.cos (t * Real.log n) ^ 2 :=
+    fun n => by fun_prop
+  rw [intervalIntegral.integral_finsetSum fun n _ => (hterm n).intervalIntegrable _ _,
+    Finset.mul_sum]
+  refine Finset.sum_le_sum fun n hn => ?_
+  rw [intervalIntegral.integral_const_mul]
+  have hlog : 1 / 2 ≤ Real.log n := by
+    have h2 : (1 : ℝ) / 2 ≤ Real.log 2 := by
+      have := Real.log_two_gt_d9
+      linarith
+    exact h2.trans (Real.log_le_log (by norm_num) (by exact_mod_cast hs n hn))
+  have h := mul_le_mul_of_nonneg_left (integral_cos_mul_sq_ge hlog T) (hc n hn)
+  linarith
+
 /-- **Half of a nonnegative sum survives at some height.** For nonnegative coefficients on
 integers `n ≥ 2` there is a height `t ∈ [T, 2T]` with
 `Σ c(n) cos²(t log n) ≥ (½ − 1/T) Σ c(n)`: the maximum over the window is at least the mean. -/
@@ -153,10 +174,8 @@ theorem exists_height_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀
     (hs : ∀ n ∈ s, 2 ≤ n) {T : ℝ} (hT : 0 < T) :
     ∃ t ∈ Set.Icc T (2 * T),
       (1 / 2 - 1 / T) * ∑ n ∈ s, c n ≤ ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 := by
-  have hterm : ∀ n : ℕ, Continuous fun t : ℝ => c n * Real.cos (t * Real.log n) ^ 2 :=
-    fun n => by fun_prop
   have hGc : Continuous fun t : ℝ => ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 :=
-    continuous_finsetSum _ fun n _ => hterm n
+    continuous_finsetSum _ fun n _ => by fun_prop
   have hTle : T ≤ 2 * T := by linarith
   obtain ⟨t₀, ht₀, hmax⟩ := (isCompact_Icc (a := T) (b := 2 * T)).exists_isMaxOn
     ⟨T, Set.left_mem_Icc.mpr hTle⟩ hGc.continuousOn
@@ -170,21 +189,7 @@ theorem exists_height_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀
       fun t ht => isMaxOn_iff.mp hmax t ht
     rw [intervalIntegral.integral_const, smul_eq_mul] at h
     exact h.trans (le_of_eq (by ring))
-  -- the mean of every term is at least `(T/2 − 1) c(n)`
-  have hlow : (T / 2 - 1) * ∑ n ∈ s, c n ≤
-      ∫ t in T..2 * T, ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 := by
-    rw [intervalIntegral.integral_finsetSum fun n _ => (hterm n).intervalIntegrable _ _,
-      Finset.mul_sum]
-    refine Finset.sum_le_sum fun n hn => ?_
-    rw [intervalIntegral.integral_const_mul]
-    have hlog : 1 / 2 ≤ Real.log n := by
-      have h2 : (1 : ℝ) / 2 ≤ Real.log 2 := by
-        have := Real.log_two_gt_d9
-        linarith
-      exact h2.trans (Real.log_le_log (by norm_num) (by exact_mod_cast hs n hn))
-    have h := mul_le_mul_of_nonneg_left (integral_cos_mul_sq_ge hlog T) (hc n hn)
-    linarith
-  have hfin := hlow.trans hup
+  have hfin := (integral_sum_cos_sq_ge s c hc hs T).trans hup
   have e : T * ((1 / 2 - 1 / T) * ∑ n ∈ s, c n) = (T / 2 - 1) * ∑ n ∈ s, c n := by
     have hTT : T * (1 / T) = 1 := mul_one_div_cancel hT.ne'
     linear_combination (-(∑ n ∈ s, c n)) * hTT
