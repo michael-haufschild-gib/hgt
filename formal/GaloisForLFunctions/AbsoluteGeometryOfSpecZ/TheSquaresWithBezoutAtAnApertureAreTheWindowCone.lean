@@ -1,5 +1,6 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BezoutDeterminesTheConstantOfTheCounterterm
 import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheMarginLawOfTheWindowCone
+import GaloisForLFunctions.CriticalHardyTheoryOfTheWindowCone.TheWindowConeCollapses
 
 /-!
 # The squares with Bézout at an aperture are the window cone

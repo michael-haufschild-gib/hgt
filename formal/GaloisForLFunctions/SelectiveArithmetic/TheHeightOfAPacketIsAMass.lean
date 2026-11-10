@@ -221,12 +221,10 @@ theorem sq_integral_abs_le {g : ℝ → ℝ} (hg : Continuous g) {a : ℝ} (ha :
     · rw [hind, Set.indicator_of_mem hu, one_pow]
     · rw [hind, Set.indicator_of_notMem hu]
       norm_num
-  have hindI : Integrable ind :=
-    (integrable_const (1 : ℝ)).integrableOn.integrable_indicator measurableSet_Icc |>.mono_set
-      (subset_univ _) |> fun h => by
-        simpa [hind] using
-          (continuous_const (y := (1 : ℝ))).integrableOn_Icc.integrable_indicator
-            (measurableSet_Icc (a := -a) (b := a))
+  have hindI : Integrable ind := by
+    rw [hind]
+    exact (continuous_const (y := (1 : ℝ))).integrableOn_Icc.integrable_indicator
+      measurableSet_Icc
   have hmul : ∀ u, |g u| * ind u = |g u| := fun u => by
     by_cases hu : u ∈ Icc (-a) a
     · rw [hind, Set.indicator_of_mem hu, mul_one]
@@ -314,7 +312,10 @@ theorem re_weilPoleTerm_modulated_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℝ} 
       _ = ‖paperFT (_root_.RHTower.modulatedTest t (deriv f)) z‖ := by rw [hnorm, mul_comm]
       _ ≤ Real.exp (a / 2) * J := h2.trans h3
   have hA := hkey (Complex.I / 2) (by simp) (by simp)
-  have hB := hkey (-Complex.I / 2) (by simp) (by simp)
+  have hB := hkey (-Complex.I / 2) (by simp) (by
+    simp
+    rw [abs_le]
+    constructor <;> norm_num)
   set A := paperFT (_root_.RHTower.modulatedTest t f) (Complex.I / 2) with hAdef
   set Bc := paperFT (_root_.RHTower.modulatedTest t f) (-Complex.I / 2) with hBdef
   -- Cauchy–Schwarz on the support

@@ -139,7 +139,8 @@ theorem summable_pairedXiHeight_inv_rpow {p : ℝ} (hp : 1 < p) :
 theorem summable_pairedXiPoint_rpow_neg {p : ℝ} (hp : 1 < p) :
     Summable (fun q : ℕ × Bool × Bool => ‖pairedXiPoint q‖ ^ (-p)) := by
   have hh : Summable (fun n : ℕ => pairedXiHeight n ^ (-p)) := by
-    simpa only [Real.inv_rpow, Real.rpow_neg (pairedXiHeight_pos _).le] using
+    simpa only [Real.inv_rpow (pairedXiHeight_pos _).le,
+      Real.rpow_neg (pairedXiHeight_pos _).le] using
       summable_pairedXiHeight_inv_rpow hp
   have hmajor : Summable (fun q : ℕ × (Bool × Bool) => pairedXiHeight q.1 ^ (-p)) := by
     exact (summable_prod_of_nonneg (fun _ => by positivity)).mpr

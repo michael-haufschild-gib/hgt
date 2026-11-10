@@ -171,3 +171,35 @@ composition partitions this set into nonempty parts, all but the last
 having value divisible by `p^s−1`. Its weight is the sum of part values
 times their one-based positions. Deletion and exponent shifts preserve
 this model, so minimality can use `(number of parts, number of digits)`.
+
+## Sharper prefix-cost argument awaiting Lean verification
+
+Put `q=p^s`, so `q≥p²`, and `c=(p−1)q/(q−1)²`. In one residue class,
+suppose nested prefixes have positive counts increasing by at least `p−1`.
+If the terminal prefix's largest digit is `p^e`, the sum of all preceding
+prefix values is at most `c p^e`. Indeed, a digit at exponent `e−sℓ`
+can occur in at most `ℓ` preceding prefixes; there are at most `p−1`
+occurrences per exponent. The finite weighted geometric identity bounds
+their total by `(p−1)q p^e/(q−1)²`.
+
+For the carry modification above, let `P` be the largest digit in the new
+last part and `S` the sum of the retained terminal digits in residues
+`α,…,β−1`. The greedy last part is supported in this interval: the boundary
+coordinate `w_{α,m−1}=m−1` fixes its cyclic weight to `p^(β−α)`, excluding
+every residue below `α`. Every occupied residue in this interval loses digits
+under the modification, so the new last part contains its largest available
+digit. Hence `P≥p p^k`. Losing at least `p−1` digits also gives a full
+residue-degree gap, so `S≤pP/(q(p−1))`.
+
+The affected residue `β` has retained terminal digit `p^k`; unchanged
+residues cancel in the weight difference. Thus
+`wt(Z)−wt(O)≥P−(1+c)p^k−cS`, which is positive because
+`(1+c)/p + cp/(q(p−1)) < 1`. After clearing positive denominators, this is
+`(p−1)(q²−3q+1)>p²`; it follows from `q≥p²≥4` and
+`(p−1)(p²+1)−p²=(p−2)p²+p−1>0`.
+This bound handles `p=2` without a separate equal-degree case.
+
+`PrefixCarryRecursion.lean` currently contains an unchecked draft of the
+descending row recursion and the `p−1` content-gap lemma. The complete
+modified composition, geometric prefix estimate, and weight contradiction
+remain to be formalized before this argument counts as a proof.

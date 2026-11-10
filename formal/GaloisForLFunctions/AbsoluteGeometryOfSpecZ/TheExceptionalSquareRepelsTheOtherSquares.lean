@@ -58,9 +58,10 @@ theorem norm_square_conjugate_difference_le {a : ℝ} (ha : 0 ≤ a)
   · rw [hgc, hg, squareDepthEnergy_eq_pairEnergy hδ ha]
     exact SquareRootThreshold.norm_sub_sq_le_pairEnergy hδ ha ρ.im hf hfs
   · have hz : ρ.re - 1 / 2 = 0 := hδ.symm
-    simp only [hgc, hg, ← hδ, Complex.ofReal_zero, mul_zero, sub_zero, add_zero,
-      sub_self, norm_zero, zero_pow (by norm_num : 2 ≠ 0), hz, squareDepthEnergy_zero, mul_zero, zero_mul,
-      le_refl]
+    rw [hgc, hg]
+    simp only [← hδ, Complex.ofReal_zero, mul_zero, sub_zero, add_zero,
+      sub_self, norm_zero, zero_pow (by norm_num : 2 ≠ 0), hz, squareDepthEnergy_zero,
+      zero_mul, le_refl]
   · have hδ' : 0 < -δ := neg_pos.mpr hδ
     have hE : squareDepthEnergy (ρ.re - 1 / 2) a = squareDepthEnergy (-δ) a := by
       unfold squareDepthEnergy
@@ -70,8 +71,8 @@ theorem norm_square_conjugate_difference_le {a : ℝ} (ha : 0 ≤ a)
     have hneg := SquareRootThreshold.norm_sub_sq_le_pairEnergy hδ' ha ρ.im hf hfs
     rw [← squareDepthEnergy_eq_pairEnergy hδ' ha] at hneg
     rw [hgc, hg, hE]
-    simpa only [Complex.ofReal_neg, mul_neg, sub_neg_eq_add, add_neg_eq_sub,
-      norm_sub_rev] using hneg
+    simp only [Complex.ofReal_neg, mul_neg, sub_neg_eq_add, ← sub_eq_add_neg] at hneg
+    simpa only [norm_sub_rev] using hneg
 
 /-- Each actual spectral square has a negative part controlled by its
 transverse depth and the packet's squared norm. -/
@@ -99,7 +100,7 @@ actual twisted zero sum. The exceptional zero and its reflection are the
 only excluded points; no spectral repulsion estimate is assumed. -/
 theorem exists_twisted_square_repulsion :
     ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (hq : 1 < q)
-      (χ : DirichletCharacter ℂ q) (hprim : χ.IsPrimitive) (hquad : χ.IsQuadratic)
+      (χ : DirichletCharacter ℂ q) (hprim : χ.IsPrimitive) (_hquad : χ.IsQuadratic)
       (β : ℝ), 0 < β → χ.LFunction (β : ℂ) = 0 →
       ∀ ρ ∈ (_root_.RHTower.dirichletZeros hq hprim).carrier,
         ρ ≠ (β : ℂ) → ρ ≠ reflect (β : ℂ) →
@@ -163,7 +164,7 @@ theorem exists_twisted_square_repulsion :
   have hmult := mul_le_mul_of_nonneg_left henergy
     (Nat.cast_nonneg ((_root_.RHTower.dirichletZeros hq hprim).mult ρ) : (0 : ℝ) ≤ _)
   have hmass := mul_le_mul_of_nonneg_right hmult
-    (integral_nonneg fun u => sq_nonneg ‖f u‖)
+    (show 0 ≤ ∫ u : ℝ, ‖f u‖ ^ 2 from integral_nonneg fun u => sq_nonneg ‖f u‖)
   have hbase := re_square_ge_depth_energy (_root_.RHTower.dirichletZeros hq hprim) ha hf hfs ρ
   linarith only [hmass, hbase]
 
@@ -178,7 +179,7 @@ Deuring–Heilbronn margin hold with one absolute constant. Every remaining
 spectral square carries the stated hyperbolic energy bound. -/
 theorem exists_twistedComb_square_margin :
     ∃ C : ℝ, 0 < C ∧ ∀ (q : ℕ) [NeZero q] (hq : 1 < q)
-      (χ : DirichletCharacter ℂ q) (hprim : χ.IsPrimitive) (hquad : χ.IsQuadratic)
+      (χ : DirichletCharacter ℂ q) (hprim : χ.IsPrimitive) (_hquad : χ.IsQuadratic)
       (β : ℝ), 0 < β → χ.LFunction (β : ℂ) = 0 →
       ∀ (f : ℝ → ℝ), ContDiff ℝ 2 f → HasCompactSupport f →
       ∀ K : ℕ, 1 ≤ K → (∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) →

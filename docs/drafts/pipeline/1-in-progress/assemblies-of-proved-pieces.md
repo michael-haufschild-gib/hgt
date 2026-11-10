@@ -12,25 +12,25 @@
 |---|---|---|
 | A90 | RH iff positive definiteness of the prime-side lag function | Formalized and axiom-audited; `3-formalized/the-prime-lag-is-positive-definite-exactly-under-rh.md` |
 | A72 | Count door on logarithmic windows with power-thin exceptions | Formalized and axiom-audited; `3-formalized/counts-on-exceptional-logarithmic-prime-windows.md` |
-| A76 | Absolute and signed window criteria with exceptions | Absolute logarithmic criterion audited; signed transfer and log-square audits pending |
+| A76 | Absolute and signed window criteria with exceptions | Formalized and axiom-audited; `3-formalized/absolute-and-signed-exceptional-prime-windows.md` |
 | A73 | Upper one-sided logarithmic-window criterion | Negative-trace filter and prime-transfer proofs written; Lean audits pending |
 | A71 | Uniform local tensor moments iff RH | Proof written; Lean audit pending |
 | A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
 | A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Open |
-| A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Open |
+| A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Proofs written in `TheJetsAreEvenNewtonianMultipoles` and `TheContactsOfAPrimeAreChainSquares`; audits pending |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
 | A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Open |
 | A78 | Cluster extension of separated windows | Open |
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
 | A82 | Li coefficients as comb forms of tails | Open |
-| A92 | Prime-side resolution law, including both finite-mode statements | Open |
+| A92 | Prime-side resolution law, including both finite-mode statements | Half-period sign bound written; weighted coefficient correction and audits pending |
 | A93 | Receiver exchange atlas | Open |
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Open |
 | A96 | Exact first selective interval for the weight at 2 | Open |
-| A100 | Trivial conductor aperture and exceptional square | Open |
+| A100 | Trivial conductor aperture and exceptional square | Existing `TheTrivialApertureAndTheExceptionalSquare` supplies the assembly and stronger aperture bound; audit pending |
 
 ## Proof requirements
 
@@ -57,7 +57,7 @@ For A71 preserve the corpus’s uniformity: constants may depend on the tensor o
 
 ## Finite-mode sign resolution
 
-For A92, a sharper candidate is available. For a real trace `F=Re Σ a_j exp(iγ_j t)` with nonzero frequencies and `F` not identically zero, compose the positive shift operators `1+τ_{π/|γ_j|}`. Their product annihilates every mode and has support diameter `D=Σ π/|γ_j|`. If `F≥0` on an interval longer than `D`, every summand in each shifted identity is nonnegative; its unshifted summand vanishes on an open interval. Analytic uniqueness then forces `F≡0`, contradiction. Thus `L≤D≤nπ/Γ`. Repeated frequencies can be discarded. The nonzero-real-trace condition is essential when opposite frequencies are allowed. Lean proof pending.
+For A92, a sharper candidate is available. For a real trace `F=Re Σ a_j exp(iγ_j t)` with nonzero frequencies and `F` not identically zero, compose the positive shift operators `1+τ_{π/|γ_j|}`. Their product annihilates every mode and has support diameter `D=Σ π/|γ_j|`. If `F≥0` on an interval longer than `D`, every summand in each shifted identity is nonnegative; its unshifted summand vanishes on an open interval. Analytic uniqueness then forces `F≡0`, contradiction. Thus `L≤D≤nπ/Γ`. Repeated frequencies can be discarded. The nonzero-real-trace condition is essential when opposite frequencies are allowed. `HalfPeriodSignResolution.lean` contains the positive-frequency trigonometric statement; audit pending.
 
 For A95, apply this to the finite top layer. On the compact phase torus, absence of a nonnegative trace on a fixed interval of length `>D` gives a uniform negative excursion; lower layers are negligible after normalization. The excursion amplitude may depend on the layer, but the length is bounded using only its size and the lowest ordinate.
 
@@ -69,3 +69,4 @@ The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly give
 - **A82:** `SuzukiCorFourSix.suzukiLiWeilForm_eq_xiLiPaired` already identifies the Bombieri–Lagarias test with `2λ_n`. The missing bridge is the comb limit for its Laguerre tail. These tests jump at zero and have unbounded support; the compact C² sampling theorem alone does not supply that bridge.
 - **A80/A94:** `TheInequalityAtFiniteScaleIsDecidedOnBlockAverages` controls arbitrary divisors by block means with an arbitrarily small mass error. Exact positivity additionally needs a positive window gap and convergence on the finite block space. At a zero eigenvalue, convergence alone cannot identify the eventual negative index; the critical correction must be determined.
 - **A78:** `OnlyDeepOrdinatesNeedSeparation` bounds leakage from every other deep exponent by a separated inverse-square sum. A cluster extension must control cancellation inside the selected cluster, not merely multiply the far-leakage count by its cardinality.
+- **A100:** `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` identifies real-packet positivity with complex window positivity and gives the exceptional real-pair decomposition. Its improved sufficient condition is `primeMass a + primeMass(a/2) + archConstant χ ≤ log q`; the mass ratio tends to `2e^a`. This existing work is being audited separately in the shared workspace; no duplicate proof is needed.

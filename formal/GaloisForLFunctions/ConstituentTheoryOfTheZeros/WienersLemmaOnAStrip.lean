@@ -338,7 +338,91 @@ theorem exists_height_approx {ω : PosRat → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1
     field_simp
   linarith
 
+theorem cpow_add (q : PosRat) (s₁ s₂ : ℂ) : q.cpow (s₁ + s₂) = q.cpow s₁ * q.cpow s₂ := by
+  unfold cpow
+  exact Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr q.toReal_pos.ne')
+
+theorem cpow_ofReal (q : PosRat) (σ : ℝ) : q.cpow (σ : ℂ) = ((q.toReal ^ σ : ℝ) : ℂ) := by
+  unfold cpow
+  rw [Complex.ofReal_cpow q.toReal_pos.le]
+
 end PosRat
+
+/-! ### Twists are uniform limits of vertical translates -/
+
+/-- The twist of an expansion by a unimodular function converges absolutely where the expansion
+does. -/
+theorem WSummable.twist {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) {ω : PosRat → ℂ}
+    (hω1 : ∀ q, ‖ω q‖ = 1) : WSummable σ₁ σ₂ fun q => c q * ω q := by
+  refine hc.congr fun q => ?_
+  rw [norm_mul, hω1, mul_one]
+
+/-- **A twist is a uniform limit of vertical translates.** For a unimodular homomorphism `ω` of the
+positive rationals, the twisted expansion `Σ c(q) ω(q) q^s` is approximated uniformly on the closed
+strip by a translate `s ↦ Σ c(q) q^{s + it}`: Kronecker on a finite set carrying all but a small
+part of the weighted coefficients. -/
+theorem exists_height_expansion_approx {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
+    {ω : PosRat → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1) (hωm : ∀ q r, ω (q * r) = ω q * ω r) {ε : ℝ}
+    (hε : 0 < ε) :
+    ∃ t : ℝ, ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ →
+      ‖expansion c (s + (t : ℂ) * Complex.I) - expansion (fun q => c q * ω q) s‖ ≤ ε := by
+  -- the weighted coefficients and a finite set carrying all but `ε/4` of their sum
+  set a : PosRat → ℝ := fun q => ‖c q‖ * stripWeight σ₁ σ₂ q with ha
+  have hasum : Summable a := hc
+  have ha0 : ∀ q, 0 ≤ a q := fun q =>
+    mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le
+  set S : ℝ := ∑' q, a q with hS
+  have hS0 : 0 ≤ S := tsum_nonneg ha0
+  have htend : Tendsto (fun T : Finset PosRat => ∑ q ∈ T, a q) atTop (𝓝 S) := hasum.hasSum
+  obtain ⟨T, hT⟩ : ∃ T : Finset PosRat, S - ε / 4 < ∑ q ∈ T, a q :=
+    (htend.eventually (lt_mem_nhds (show S - ε / 4 < S by linarith))).exists
+  have hTle : ∑ q ∈ T, a q ≤ S := Summable.sum_le_tsum T (fun q _ => ha0 q) hasum
+  -- a height at which `q^{it}` follows the phases on `T`
+  set ε' : ℝ := ε / (2 * (S + 1)) with hε'
+  have hε'pos : 0 < ε' := by positivity
+  obtain ⟨t, ht⟩ := PosRat.exists_height_approx hω1 hωm T hε'pos
+  refine ⟨t, fun s h₁ h₂ => ?_⟩
+  have hre : (s + (t : ℂ) * Complex.I).re = s.re := by simp
+  have he1 : HasSum (fun q => c q * q.cpow (s + (t : ℂ) * Complex.I))
+      (expansion c (s + (t : ℂ) * Complex.I)) :=
+    (hc.summable_term (by rw [hre]; exact h₁) (by rw [hre]; exact h₂)).hasSum
+  have he2 : HasSum (fun q => c q * ω q * q.cpow s) (expansion (fun q => c q * ω q) s) :=
+    ((hc.twist hω1).summable_term h₁ h₂).hasSum
+  have hterm : ∀ q, ‖c q * q.cpow (s + (t : ℂ) * Complex.I) - c q * ω q * q.cpow s‖ ≤
+      ε' * (if q ∈ T then a q else 0) + 2 * (a q - if q ∈ T then a q else 0) := by
+    intro q
+    have hnorm : ‖c q * q.cpow (s + (t : ℂ) * Complex.I) - c q * ω q * q.cpow s‖ =
+        ‖c q‖ * q.toReal ^ s.re * ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ := by
+      rw [PosRat.cpow_add, show c q * (q.cpow s * q.cpow ((t : ℂ) * Complex.I)) -
+        c q * ω q * q.cpow s = c q * q.cpow s * (q.cpow ((t : ℂ) * Complex.I) - ω q) by ring,
+        norm_mul, norm_mul, PosRat.norm_cpow]
+    have hw : ‖c q‖ * q.toReal ^ s.re ≤ a q :=
+      mul_le_mul_of_nonneg_left (rpow_le_stripWeight h₁ h₂ q) (norm_nonneg _)
+    rw [hnorm]
+    by_cases hq : q ∈ T
+    · rw [if_pos hq, sub_self, mul_zero, add_zero, mul_comm ε']
+      exact mul_le_mul hw (ht q hq) (norm_nonneg _) (ha0 q)
+    · rw [if_neg hq, mul_zero, zero_add, sub_zero, mul_comm 2]
+      have h2' : ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ ≤ 2 := by
+        refine (norm_sub_le _ _).trans ?_
+        rw [PosRat.norm_cpow_mul_I, hω1]
+        norm_num
+      exact mul_le_mul hw h2' (norm_nonneg _) (ha0 q)
+  have hind : HasSum (fun q => if q ∈ T then a q else 0) (∑ q ∈ T, a q) := by
+    have h : HasSum (fun q => if q ∈ T then a q else 0)
+        (∑ q ∈ T, if q ∈ T then a q else 0) :=
+      hasSum_sum_of_ne_finset_zero fun q hq => if_neg hq
+    rwa [Finset.sum_congr rfl fun q hq => if_pos hq] at h
+  have hmaj : HasSum (fun q => ε' * (if q ∈ T then a q else 0) +
+      2 * (a q - if q ∈ T then a q else 0))
+      (ε' * ∑ q ∈ T, a q + 2 * (S - ∑ q ∈ T, a q)) :=
+    (hind.mul_left ε').add ((hasum.hasSum.sub hind).mul_left 2)
+  have hbound := (he1.sub he2).norm_le_of_bounded hmaj hterm
+  have hεS : ε' * S < ε / 2 := by
+    rw [hε', div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
+    nlinarith
+  have hεT : ε' * ∑ q ∈ T, a q ≤ ε' * S := mul_le_mul_of_nonneg_left hTle hε'pos.le
+  linarith
 
 /-! ### Characters of the Wiener algebra of a strip -/
 
@@ -421,100 +505,56 @@ theorem hasSum_charVal (f : StripWiener σ₁ σ₂) :
   simp only [Function.comp_apply, map_smul, smul_eq_mul]
   rfl
 
+/-- **The form of a character**: `χ(q) = q^σ ω(q)` with `σ₁ ≤ σ ≤ σ₂` and `ω` a unimodular
+homomorphism of the positive rationals. -/
+theorem exists_exponent_phase :
+    ∃ (σ : ℝ) (ω : PosRat → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
+      (∀ q r, ω (q * r) = ω q * ω r) ∧
+      ∀ q, charVal φ q = ((q.toReal ^ σ : ℝ) : ℂ) * ω q := by
+  obtain ⟨σ, h1, h2, hmod⟩ := exists_exponent φ
+  have hrne : ∀ q : PosRat, ((q.toReal ^ σ : ℝ) : ℂ) ≠ 0 := fun q =>
+    Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos q.toReal_pos _).ne'
+  refine ⟨σ, fun q => charVal φ q / ((q.toReal ^ σ : ℝ) : ℂ), h1, h2, fun q => ?_, fun q r => ?_,
+    fun q => ?_⟩
+  · rw [norm_div, hmod, Complex.norm_real,
+      Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _),
+      div_self (Real.rpow_pos_of_pos q.toReal_pos _).ne']
+  · rw [charVal_mul, PosRat.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
+      Complex.ofReal_mul]
+    field_simp [hrne q, hrne r]
+  · rw [mul_div_cancel₀ _ (hrne q)]
+
+/-- **A character is the value of a twist at a real point of the strip.** -/
+theorem exists_apply_eq_expansion_twist :
+    ∃ (σ : ℝ) (ω : PosRat → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
+      (∀ q r, ω (q * r) = ω q * ω r) ∧
+      ∀ f : StripWiener σ₁ σ₂, φ f = expansion (fun q => f.coeff q * ω q) (σ : ℂ) := by
+  obtain ⟨σ, ω, h1, h2, hω1, hωm, hχ⟩ := exists_exponent_phase φ
+  refine ⟨σ, ω, h1, h2, hω1, hωm, fun f => ?_⟩
+  rw [← (hasSum_charVal φ f).tsum_eq]
+  unfold expansion
+  refine tsum_congr fun q => ?_
+  rw [hχ, PosRat.cpow_ofReal]
+  ring
+
 /-- **Wiener's lemma on a strip.** An element of `𝒲[σ₁, σ₂]` that is bounded below on the strip is
-invertible. -/
+invertible: a character is the value of a twist, a twist is a uniform limit of translates, and the
+translates are bounded below. -/
 theorem isUnit_of_le_norm_eval (f : StripWiener σ₁ σ₂) {δ : ℝ} (hδ : 0 < δ)
     (hf : ∀ s, δ ≤ ‖f.eval s‖) : IsUnit f := by
   by_contra hunit
   obtain ⟨φ, hφ⟩ := WeakDual.CharacterSpace.exists_apply_eq_zero hunit
-  obtain ⟨σ, h1, h2, hmod⟩ := exists_exponent φ
-  -- the unimodular part of the character
-  set ω : PosRat → ℂ := fun q => charVal φ q / ((q.toReal ^ σ : ℝ) : ℂ) with hω
-  have hrne : ∀ q : PosRat, ((q.toReal ^ σ : ℝ) : ℂ) ≠ 0 := fun q =>
-    Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos q.toReal_pos _).ne'
-  have hω1 : ∀ q, ‖ω q‖ = 1 := fun q => by
-    rw [hω, norm_div, hmod, Complex.norm_real,
-      Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _),
-      div_self (Real.rpow_pos_of_pos q.toReal_pos _).ne']
-  have hωm : ∀ q r, ω (q * r) = ω q * ω r := fun q r => by
-    simp only [hω]
-    rw [charVal_mul, PosRat.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
-      Complex.ofReal_mul]
-    field_simp [hrne q, hrne r]
-  have hχ : ∀ q, charVal φ q = ((q.toReal ^ σ : ℝ) : ℂ) * ω q := fun q => by
-    rw [hω, mul_div_cancel₀ _ (hrne q)]
-  -- the weighted coefficients and a finite set carrying all but `δ/8` of their sum
-  set a : PosRat → ℝ := fun q => ‖f.coeff q‖ * stripWeight σ₁ σ₂ q with ha
-  have hasum : Summable a := f.wsummable_coeff
-  have ha0 : ∀ q, 0 ≤ a q := fun q =>
-    mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le
-  set S : ℝ := ∑' q, a q with hS
-  have hS0 : 0 ≤ S := tsum_nonneg ha0
-  have htend : Tendsto (fun T : Finset PosRat => ∑ q ∈ T, a q) atTop (𝓝 S) := hasum.hasSum
-  obtain ⟨T, hT⟩ : ∃ T : Finset PosRat, S - δ / 8 < ∑ q ∈ T, a q :=
-    (htend.eventually (lt_mem_nhds (show S - δ / 8 < S by linarith))).exists
-  have hTle : ∑ q ∈ T, a q ≤ S := Summable.sum_le_tsum T (fun q _ => ha0 q) hasum
-  -- a height at which `q^{it}` follows the phases on `T`
-  set ε : ℝ := δ / (4 * (S + 1)) with hε
-  have hεpos : 0 < ε := by positivity
-  obtain ⟨t, ht⟩ := PosRat.exists_height_approx hω1 hωm T hεpos
-  set s : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I with hs
-  have hsre : s.re = σ := by simp [hs]
-  have hmem : σ₁ ≤ s.re ∧ s.re ≤ σ₂ := by
-    rw [hsre]
+  obtain ⟨σ, ω, h1, h2, hω1, hωm, hval⟩ := exists_apply_eq_expansion_twist φ
+  obtain ⟨t, ht⟩ := exists_height_expansion_approx f.wsummable_coeff hω1 hωm (half_pos hδ)
+  have hre : ((σ : ℂ)).re = σ := Complex.ofReal_re σ
+  have hmem : σ₁ ≤ ((σ : ℂ) + (t : ℂ) * Complex.I).re ∧
+      ((σ : ℂ) + (t : ℂ) * Complex.I).re ≤ σ₂ := by
+    have : ((σ : ℂ) + (t : ℂ) * Complex.I).re = σ := by simp
+    rw [this]
     exact ⟨h1, h2⟩
-  -- the value of `f` at `s` against the value of the character
-  have heval : HasSum (fun q => f.coeff q * q.cpow s) (f.eval ⟨s, hmem⟩) := by
-    rw [f.eval_eq]
-    exact (f.wsummable_coeff.summable_term hmem.1 hmem.2).hasSum
-  have hdiff : HasSum (fun q => f.coeff q * q.cpow s - f.coeff q * charVal φ q)
-      (f.eval ⟨s, hmem⟩ - φ f) := heval.sub (hasSum_charVal φ f)
-  have hcpow : ∀ q : PosRat, q.cpow s =
-      ((q.toReal ^ σ : ℝ) : ℂ) * q.cpow ((t : ℂ) * Complex.I) := fun q => by
-    have hne : (q.toReal : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr q.toReal_pos.ne'
-    rw [hs]
-    unfold PosRat.cpow
-    rw [Complex.cpow_add _ _ hne, Complex.ofReal_cpow q.toReal_pos.le]
-  -- the majorant: `ε` on `T`, `2` outside
-  have hterm : ∀ q, ‖f.coeff q * q.cpow s - f.coeff q * charVal φ q‖ ≤
-      ε * (if q ∈ T then a q else 0) + 2 * (a q - if q ∈ T then a q else 0) := by
-    intro q
-    have hnorm : ‖f.coeff q * q.cpow s - f.coeff q * charVal φ q‖ =
-        ‖f.coeff q‖ * q.toReal ^ σ * ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ := by
-      rw [hcpow, hχ, ← mul_sub, ← mul_sub, norm_mul, norm_mul, Complex.norm_real,
-        Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _), mul_assoc]
-    have hw : ‖f.coeff q‖ * q.toReal ^ σ ≤ a q :=
-      mul_le_mul_of_nonneg_left (rpow_le_stripWeight h1 h2 q) (norm_nonneg _)
-    have hnn : 0 ≤ ‖f.coeff q‖ * q.toReal ^ σ :=
-      mul_nonneg (norm_nonneg _) (Real.rpow_nonneg q.toReal_pos.le _)
-    rw [hnorm]
-    by_cases hq : q ∈ T
-    · rw [if_pos hq, sub_self, mul_zero, add_zero, mul_comm ε]
-      exact mul_le_mul hw (ht q hq) (norm_nonneg _) (ha0 q)
-    · rw [if_neg hq, mul_zero, zero_add, sub_zero, mul_comm 2]
-      have h2' : ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ ≤ 2 := by
-        refine (norm_sub_le _ _).trans ?_
-        rw [PosRat.norm_cpow_mul_I, hω1]
-        norm_num
-      exact mul_le_mul hw h2' (norm_nonneg _) (ha0 q)
-  have hind : HasSum (fun q => if q ∈ T then a q else 0) (∑ q ∈ T, a q) := by
-    have h : HasSum (fun q => if q ∈ T then a q else 0)
-        (∑ q ∈ T, if q ∈ T then a q else 0) :=
-      hasSum_sum_of_ne_finset_zero fun q hq => if_neg hq
-    rwa [Finset.sum_congr rfl fun q hq => if_pos hq] at h
-  have hmaj : HasSum (fun q => ε * (if q ∈ T then a q else 0) +
-      2 * (a q - if q ∈ T then a q else 0))
-      (ε * ∑ q ∈ T, a q + 2 * (S - ∑ q ∈ T, a q)) :=
-    (hind.mul_left ε).add ((hasum.hasSum.sub hind).mul_left 2)
-  have hbound := hdiff.norm_le_of_bounded hmaj hterm
-  rw [hφ, sub_zero] at hbound
-  have hlow := hf ⟨s, hmem⟩
-  -- `ε S < δ/4` and the tail is `< δ/8`
-  have hεS : ε * S < δ / 4 := by
-    rw [hε, div_mul_eq_mul_div, div_lt_iff₀ (by positivity)]
-    nlinarith
-  have hεT : ε * ∑ q ∈ T, a q ≤ ε * S := mul_le_mul_of_nonneg_left hTle hεpos.le
-  linarith
+  have h := ht (σ : ℂ) (by rw [hre]; exact h1) (by rw [hre]; exact h2)
+  rw [← hval f, hφ, sub_zero, ← f.eval_eq ⟨_, hmem⟩] at h
+  linarith [hf ⟨_, hmem⟩]
 
 end StripWiener
 
