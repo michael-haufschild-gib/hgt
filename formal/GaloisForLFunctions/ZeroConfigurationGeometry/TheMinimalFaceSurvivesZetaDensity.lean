@@ -25,7 +25,7 @@ theorem minimalFace_offLine (γ_min C : ℝ) {Θ : ℝ}
     (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
     ∀ ρ ∈ (minimalFaceCounterConfig γ_min C hΘ hΘ2).carrier, ρ.re ≠ 1 / 2 := by
   rintro _ ⟨⟨k, ⟨d, b, s⟩⟩, rfl⟩ he
-  have hd := SplineTower.depth_pos hΘ k
+  have hd := SurfaceOfSpecZ.SplineTower.depth_pos hΘ k
   cases s
   · rw [facePt_false_re] at he
     linarith only [hd, he]
@@ -131,7 +131,6 @@ theorem densityMatchedMinimalFace_windows (γ_min C : ℝ) {Θ : ℝ}
         lagStructure (minimalFaceCounterConfig γ_min C hΘ hΘ2) (boxSpline 1 3) u)).trans hnorm
     rw [Complex.sub_re] at habs
     have hlower := (abs_le.mp habs).1
-    push_cast at hfloor
     nlinarith only [hfloor, hK, hk, hlower]
 
 /-- Zeta-density configurations retain the complete sub-logarithmic obstruction. -/

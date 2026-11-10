@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-65 modules. Specification: §9 of
+66 modules. Specification: §9 of
 [the review-1011 report](../../../docs/reports/review-1011/fable.md), which continues §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md) and §9 of
 [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
@@ -208,6 +208,7 @@ than `log 4` (construction I, Q26).
 | Sums over multiples; the Busemann function of a tree | `degreeTerm`, `busemannMass` | `G(log(n/N))/n`; `Σ_{N < n ≤ (1+L)N} v_p(n) f_n²/n`, the valuation at `p` against the masses of a packet |
 | A tree with another edge length | `treeDeviation`, `TreeBezout` | the weight `t` on the positive powers of `p`; Bézout with the contacts `ℓ` along the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)` |
 | The generator of the length of a tree; Bézout at a length | `treeGenerator`, `TreeBezoutAt` | `E_p(f) = ∫f²/(p − 1) − (2/√p)·h_f(log p)`, the derivative of the functional of the glued tree in its length on packets of length at most `2 log p`; the inequality for the tree of `p` of length `ℓ` on the packets of length at most `L` |
+| The functions of the square on two graphs | `pairRing`, `graphPair` | the pairs of integers congruent modulo an ideal `J`, an order of rank two in `ℤ × ℤ`; the restriction `x ↦ (x_m, x_n)` of the sections of the square, onto the order of `J(m, n)` |
 
 ## 3. Language
 
@@ -452,6 +453,11 @@ than `log 4` (construction I, Q26).
     the only parameter where the form degenerates. The lower bound of `Z` on packets of a
     given length needs no hypothesis: the archimedean symbol is bounded below, the contacts
     and the pole term are bounded by the mass (Cauchy–Schwarz against a cutoff).
+51. **Two graphs are an order of rank two.** The functions on `Γ_m ∪ Γ_n` are the lattice of
+    the pairs `(u + c v, u)`, `c` the contact number; multiplication by a section `(a, b)` is
+    triangular in these coordinates, with the determinant `a b`. The index of a principal ideal
+    is the absolute value of this determinant (corpus:
+    `LinearMap.card_quotient_range_eq_natAbs_det_all`), so it does not see `c`.
 
 ## 5. The founding questions
 
@@ -812,9 +818,19 @@ that is an inequality, and each has a kill condition.
 
 - *Deliverable.* Natural numbers `K_p(m)` on the rays `Γ_1 + Γ_p` with a quadratic Tate limit.
 - *Kill condition.* No definition without the form.
-- *State.* Open. The Riemann hypothesis holds iff a count with values in `ℕ` has the integer
-  probes as its Tate limit (corpus: `CountingHolography.riemannHypothesis_iff_tateLimit_of_count`);
-  no construction of such a count is known.
+- *State.* Met for the count that the object has. The Riemann hypothesis holds iff a count
+  with values in `ℕ` has the integer probes as its Tate limit (corpus:
+  `CountingHolography.riemannHypothesis_iff_tateLimit_of_count`). The square has a count on
+  every pair of graphs: the functions on `Γ_m ∪ Γ_n` are an order of rank two
+  (`range_ghostComponent_pair`), and a section `x` has `K(x) = |x_m x_n|` residues there
+  (`card_quotient_graphPair`). The count is exactly quadratic on rays, `K(k x) = k² K(x)`
+  (`card_quotient_graphPair_intCast_mul`), so its Tate limit exists and is the count itself:
+  the absolute value of the hyperbolic norm of `ℤ × ℤ`. It does not see the contact of the
+  two graphs, it is blind to the sign, and it violates the parallelogram law
+  (`exists_not_parallelogram_pairRing`). The pairing of the degree points is not its Tate
+  limit: there `Γ_1` and `Γ_p` enter through the logarithm `log p` of their contact. A count
+  defined on the object without the form is therefore of this kind; a count with the pairing
+  as its Tate limit is not known.
 
 ## 7. Criteria
 
@@ -855,7 +871,7 @@ relation are effective elements (`exists_effective_closedWalks`).
 | 5 | The full window at finite scale, and the converse | Block averages decide (continuation). Open: divisors with nonzero block sums, and the inequality at finite scale from the Riemann hypothesis | corpus: `HodgeTheoryOfAFixedPart.exists_blockSize_combForm_nonneg`, `HodgeTheoryOfAFixedPart.riemannHypothesis_of_frequently_combForm_ge` |
 | 6 | Integer-norm systems on their own comb: does Bézout there hold exactly when the zeros are on a line? | No, for the system of the squares: its zeros are those of `ζ(2s)`, on the line `Re s = ¼` iff the Riemann hypothesis holds, and Bézout fails on its own comb without hypothesis. The own comb enters through its density only. Open for combs that have no density (construction V, §13.3) | `tendsto_squareForm_add_squareContact`, `exists_packet_squarePairing_gt`, `not_combBezout_of_ne` |
 | 7 | Ideals as degree points; the characters of the class group; rings that are not abelian | Open: the explicit formulas of Hecke and Artin `L`-functions are not in the corpus (§13.4) | `idealContact_prime_pow`, `exists_idealOrbit_generator_iff` |
-| 8 | A count with Tate limit the integer probes | The Riemann hypothesis holds iff such a count with values in `ℕ` exists (corpus). No construction (construction VI) | corpus: `CountingHolography.riemannHypothesis_iff_tateLimit_of_count` |
+| 8 | A count with Tate limit the integer probes | The Riemann hypothesis holds iff such a count with values in `ℕ` exists (corpus). The count that the square has on two graphs is `\|x_m x_n\|`: exactly quadratic on rays, blind to the contact, not a form (construction VI, Q27). No construction of a count with the pairing as Tate limit | `card_quotient_graphPair`, `card_quotient_graphPair_intCast_mul`, `exists_not_parallelogram_pairRing`; corpus: `CountingHolography.riemannHypothesis_iff_tateLimit_of_count` |
 | 9 | The Li ladder as comb forms of tails | Open beyond the first rung: the flat tail has the form `2 + γ − log 4π` per degree point (continuation), the value of twice the first Li coefficient [C]; the paired Li coefficients `2λ_n` are in the corpus as sums over the zeros (`RHTower.xiLiPaired`) | corpus: `HodgeTheoryOfAFixedPart.tendsto_combForm_flatTail_div` |
 
 ### 8.2 Settled questions
@@ -1245,6 +1261,28 @@ generator is a property of the object: the mean of the Busemann function of the 
 exceeds its first contact. It ends where the second point `4` of a chain is seen, and it has no
 analogue at an odd prime.
 
+**Q27. The count of the object.** *Construction VI: does the square have natural numbers on
+the rays of `Γ_1 + Γ_p` with a quadratic growth, defined without the form, and is their Tate
+limit the pairing?*
+
+- The functions of the square on two graphs `Γ_m`, `Γ_n` are the pairs of integers congruent
+  modulo the contact ideal `J(m, n)`: every element of `J(m, n)` is the difference of the
+  values of one section (`exists_ghostComponent_sub_eq`, `range_ghostComponent_pair`,
+  `graphPair_surjective`). For `m ≠ n` this is an order of rank two in `ℤ × ℤ`
+  (`graphIdeal_ne_bot`).
+- The number of residues modulo a section `x` is `K(x) = |x_m · x_n|`, and `0` when the
+  quotient is infinite (`card_pairRing_quotient`, `card_quotient_graphPair`): mechanism 51.
+- `K(k·x) = k² K(x)` for every integer `k` (`card_quotient_graphPair_intCast_mul`): the count
+  is exactly quadratic on rays and is its own Tate limit.
+- On the order of conductor `c ≥ 2`, `K(α + β) + K(α − β) ≠ 2K(α) + 2K(β)` for `α = (1, 1)`,
+  `β = (1, 1 − c)` (`exists_not_parallelogram_pairRing`).
+
+So the answer is: the square has such numbers, and their Tate limit is not the pairing. It is
+the absolute value of the norm of the split algebra `ℤ × ℤ`, a hyperbolic form under an absolute
+value: the same for every contact, and not a quadratic form. In the corpus this is the count of
+a fake (`CountingHolography`). The contact of `Γ_1` and `Γ_p` enters the pairing as `log p`; it
+does not enter the count at all.
+
 ## 9. Order of work and the decisive test
 
 | Stage | Content | State |
@@ -1364,6 +1402,7 @@ from the supremum of their symbol on (`combBezoutWith_iff`).
 | On packets of length at most `log 4` the generator of the length of the tree of `2` is at least `(1 − 1/√2)` times the mass; Bézout is monotone in the length, holds for long trees without hypothesis and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two`, `treeBezoutAt_two_of_width` |
 | For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and long trees fail | `exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le` |
 | On packets of a given length the sum over the zeros is at least a negative multiple of the mass | `exists_zeroSum_ge_of_length` |
+| The functions of the square on two graphs are the pairs congruent modulo the contact ideal; a section `x` has `\|x_m x_n\|` residues there, `k²` times as many for `k x`, and the count violates the parallelogram law | `range_ghostComponent_pair`, `card_quotient_graphPair`, `card_quotient_graphPair_intCast_mul`, `exists_not_parallelogram_pairRing` |
 
 All are unconditional.
 
@@ -1423,6 +1462,7 @@ All are unconditional.
 | Pairs of contacts and constants; the functional of a pair as the energy of `c −` symbol; radical tests concentrated where the symbol exceeds the constant; the symbol of one contact | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
 | Sums in blocks of length `q`; sums over the multiples of an integer in a window; the valuation as a sum over the levels `p^k`; the mean of the Busemann function; trees with an edge length | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 | The autocorrelation at half the length of a packet; the generator of the length of a tree; Cauchy–Schwarz against a cutoff; the lower bound of the zero sum on packets of a given length; affine families with a positive generator and their threshold | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
+| The ring of two graphs; one section for every element of a contact ideal; the lattice coordinates of an order in `ℤ × ℤ`; the index of a principal ideal as a determinant | `TheCountOfASectionOnTwoGraphsIsTheSplitNorm` |
 | The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
 ## 12. Traps
@@ -1498,6 +1538,7 @@ All are unconditional.
 | The trees can be glued with other edge lengths if the counterterm follows by the product formula | the counterterm then moves by the mean `(ℓ − log p)/(p − 1)` of the Busemann function; this is below the supremum of the symbol of the contacts for `ℓ > log p` and negative for `ℓ < log p`, and Bézout fails in both cases |
 | A deformation with a positive generator and a base point proves the inequality | it gives a threshold: for the length of the tree of `2` on packets shorter than `log 4` the inequality is `ℓ*(L) ≤ log 2`, a statement at one length, proved for `L ≤ 181/250` from the corpus certificate |
 | The length of a tree is a monotone parameter | only for `p = 2` and only while the square `4` is not seen: for an odd prime the first contact `∫f²/√p` exceeds the mean `∫f²/(p − 1)` of the Busemann function, and on all packets only `log p` passes |
+| A count on the square with quadratic growth gives the pairing | the count on two graphs is `\|x_m x_n\|`: exactly quadratic on rays, the same for every contact, and not a quadratic form; the contact enters the pairing as a logarithm and the count not at all |
 
 ## 13. Open research topics
 
@@ -1677,9 +1718,14 @@ is not stated. A decision would be the law for the deviations bounded by a multi
 ### 13.8 A count
 
 *Construction VI and question 8.* The Riemann hypothesis holds iff some count with values in
-`ℕ` has the integer probes as its quadratic Tate limit (corpus). *Open:* a definition of
-natural numbers `K_p(m)` on the rays `Γ_1 + Γ_p` that does not use the form. On the tower and
-on the planar square the counts that exist are exact and give identities.
+`ℕ` has the integer probes as its quadratic Tate limit (corpus). *Proved:* the count that the
+square has on two graphs is `|x_m x_n|`, exactly quadratic on rays, blind to the contact and to
+the sign, and not a form (Q27); on the tower and on the planar square the counts are exact and
+give identities. *Open:* natural numbers on the rays of `Γ_1 + Γ_p` whose Tate limit is the
+pairing; a count on three or more graphs, where the rank and the degree of homogeneity are the
+number of graphs; a count of sections in an archimedean box on the pair ring, where the
+contact enters as the index `c` of the order in `ℤ × ℤ`. A decision would be a count whose
+second-order term in the box is the logarithm of that index with the sign of the pairing.
 
 ## 14. Context
 
@@ -1736,8 +1782,9 @@ measured on the constructions of the next stage (§6) and on the nine questions 
   along the comb with an edge length: the gluing is the pairing itself and has no modulus.
   Construction I has one candidate that is not killed on short windows: the length of the tree
   of `2`, with a positive generator and a threshold on packets shorter than `log 4`; it does
-  not continue beyond. Construction VI is open; each has a kill condition that a contribution
-  may meet instead of the deliverable.
+  not continue beyond. Construction VI: the count that the square has on two graphs is the
+  split norm, not the pairing; a count with the pairing as its Tate limit is open. Each
+  construction has a kill condition that a contribution may meet instead of the deliverable.
 - Question 1, Bézout for all packets, is the Riemann hypothesis, and the sign of the twisted
   part beyond the trivial aperture is the Landau–Siegel problem. Nothing in this folder proves
   either or claims to.

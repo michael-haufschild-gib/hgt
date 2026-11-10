@@ -61,6 +61,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnItsOwnCombTheSystemOfTheSqu
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountOfASectionOnTwoGraphsIsTheSplitNorm
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -85,6 +86,7 @@ contact is paid; the squares that satisfy Bézout at an aperture as the window c
 Hodge index of the square of a number ring; Riemann–Hurwitz for the counterterm with the
 genus of a degree point; the exchange law between the contacts and the constant of the
 counterterm; the tree of a prime glued along the comb, whose edge length the inequality
-forces; and the length of the tree of `2` as a monotone deformation of the pairing on packets
-shorter than `log 4`. See `AbsoluteGeometryOfSpecZ/README.md`.
+forces; the length of the tree of `2` as a monotone deformation of the pairing on packets
+shorter than `log 4`; and the count of a section on two graphs, the split norm. See
+`AbsoluteGeometryOfSpecZ/README.md`.
 -/

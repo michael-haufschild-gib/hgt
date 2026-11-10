@@ -36,6 +36,7 @@ theorem exists_uniform_conductor_aperture_cost {κ : ℝ} (hκ : 2 < κ) :
     linarith only [hm, harch, abs_nonneg M]
   · have ha' : a ≤ A := (lt_of_not_ge ha).le
     have h1 := monotone_primeMass_half (show 2 * a ≤ 2 * A by linarith only [ha'])
+    dsimp only at h1
     rw [show 2 * a / 2 = a by ring, show 2 * A / 2 = A by ring] at h1
     have h2 := monotone_primeMass_half ha'
     have hm : primeMass a + primeMass (a / 2) ≤ M := add_le_add h1 h2

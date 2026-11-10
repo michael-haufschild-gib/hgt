@@ -15,16 +15,19 @@ series `Σ a(n) n^{−s}` far to the right.
   value of `F(σ + it) n^{it}` is `a(n) n^{−σ}`; the mean is carried from a line of absolute
   convergence by Cauchy's theorem on rectangles, whose horizontal sides are bounded.
 * **Bessel** (`sum_norm_sq_le_of_bounded`): `Σ_{n ≤ N} ‖a(n)‖² n^{−2σ} ≤ sup ‖F‖²`.
-* **Bohr's inequality** (`lSeriesSummable_of_bounded`, `eq_LSeries_of_bounded`): the series
-  converges absolutely, to `F`, on `Re s > x + ½`.
+* **Bohr's inequality over a thin support** (`lSeriesSummable_of_bounded_of_support`): if
+  `Σ n^{−2δ}` converges over the support of the coefficients, the series converges absolutely on
+  `Re s > x + δ`. For the full support `δ > ½` (`lSeriesSummable_of_bounded`,
+  `eq_LSeries_of_bounded`); for coefficients on finitely many primes every `δ > 0`
+  (`lSeriesSummable_of_bounded_of_smooth`).
 
-With the theorem on absolutely convergent series: **if `x < 0`, a bounded Dirichlet series on
-`Re s > x` whose zeros there are zeros of `ξ` has no zero** (`ne_zero_of_bounded_of_zeros_subset_xi`).
-So a constituent of the bounded class with a zero can be bounded only on half-planes `Re s > x`
-with `0 ≤ x < ½`, and its series cannot converge absolutely at any point left of the critical
-line: it lives in the strip between its abscissa of boundedness and its abscissa of absolute
-convergence. Over finitely many primes the two abscissas coincide
-(`lSeriesSummable_of_bounded_of_smooth`), so **a constituent with a zero needs infinitely many
+With the theorem on absolutely convergent series
+(`ne_zero_of_bounded_of_support_of_zeros_subset_xi`): **a bounded Dirichlet series on `Re s > x`
+whose zeros there are zeros of `ξ` has no zero if `x + δ < ½`.** So a constituent of the bounded
+class with a zero satisfies `x + δ ≥ ½` for every admissible `δ`: it is bounded only on
+half-planes `Re s > x` with `0 ≤ x < ½` (`ne_zero_of_bounded_of_zeros_subset_xi`), its series
+converges absolutely at no point left of the critical line, and its support has exponent of
+convergence at least `1 − 2x`. In particular **a constituent with a zero needs infinitely many
 primes** (`ne_zero_of_bounded_of_smooth_of_zeros_subset_xi`).
 -/
 
@@ -330,34 +333,40 @@ theorem sum_norm_sq_le_of_bounded (hsum : LSeriesSummable a u₀)
           field_simp
   exact (re_le_norm _).trans (le_of_tendsto hlim.norm hbound)
 
-/-- **Bohr's inequality.** A Dirichlet series bounded on `Re s > x` converges absolutely on
-`Re s > x + ½`. -/
-theorem lSeriesSummable_of_bounded (hsum : LSeriesSummable a u₀)
+/-- **Bohr's inequality over a thin support.** If `Σ n^{−2δ}` converges over the support of the
+coefficients, a Dirichlet series bounded on `Re s > x` converges absolutely on `Re s > x + δ`:
+Bessel's inequality on a line just right of `x` and Cauchy–Schwarz over the support. -/
+theorem lSeriesSummable_of_bounded_of_support (hsum : LSeriesSummable a u₀)
     (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
-    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {y : ℝ} (hy : x + 1 / 2 < y) :
-    LSeriesSummable a y := by
-  -- a line `σ₀` with `x < σ₀` and `σ₀ + ½ < y`
-  set σ₀ : ℝ := (x + y - 1 / 2) / 2 with hσ₀
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {δ : ℝ}
+    (hS : Summable fun n : ℕ => if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-(2 * δ)))
+    {y : ℝ} (hy : x + δ < y) : LSeriesSummable a y := by
+  -- a line `σ₀` with `x < σ₀` and `σ₀ + δ ≤ y`
+  set σ₀ : ℝ := (x + y - δ) / 2 with hσ₀
   have hσx : x < σ₀ := by rw [hσ₀]; linarith
-  set δ : ℝ := y - σ₀ with hδ
-  have hδ2 : 1 / 2 < δ := by rw [hδ, hσ₀]; linarith
+  set δ' : ℝ := y - σ₀ with hδ'
+  have hδδ : δ ≤ δ' := by rw [hδ', hσ₀]; linarith
   set f : ℕ → ℝ := fun n => ‖a (n + 1)‖ * Real.exp (-Real.log ((n : ℝ) + 1) * σ₀) with hf
-  set g : ℕ → ℝ := fun n => ((n : ℝ) + 1) ^ (-δ) with hg
+  set g : ℕ → ℝ := fun n => if a (n + 1) = 0 then 0 else ((n : ℝ) + 1) ^ (-δ') with hg
   have hf0 : ∀ n, 0 ≤ f n := fun n => mul_nonneg (norm_nonneg _) (Real.exp_pos _).le
-  have hg0 : ∀ n, 0 ≤ g n := fun n => Real.rpow_nonneg (by positivity) _
+  have hg0 : ∀ n, 0 ≤ g n := fun n => by
+    show 0 ≤ if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-δ')
+    split_ifs
+    · exact le_rfl
+    · exact Real.rpow_nonneg (by positivity) _
   have hfs : Summable fun n => f n ^ (2 : ℝ) := by
     refine summable_of_sum_range_le (fun n => Real.rpow_nonneg (hf0 n) _) (c := M ^ 2) fun N => ?_
     have h := sum_norm_sq_le_of_bounded hsum hF hM hFL hσx N
     simpa only [Real.rpow_two] using h
   have hgs : Summable fun n => g n ^ (2 : ℝ) := by
-    have h : Summable fun n : ℕ => ((n : ℝ)) ^ (-(2 * δ)) :=
-      Real.summable_nat_rpow.mpr (by linarith)
-    have h' := (summable_nat_add_iff 1).mpr h
-    refine h'.congr fun n => ?_
-    rw [hg, ← Real.rpow_mul (by positivity)]
-    push_cast
-    congr 1
-    ring
+    refine Summable.of_nonneg_of_le (fun n => Real.rpow_nonneg (hg0 n) _) (fun n => ?_) hS
+    show (if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-δ')) ^ (2 : ℝ) ≤
+      if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-(2 * δ))
+    split_ifs
+    · rw [Real.zero_rpow two_ne_zero]
+    · have h1 : (1 : ℝ) ≤ (n : ℝ) + 1 := by linarith [show (0 : ℝ) ≤ n from Nat.cast_nonneg n]
+      rw [← Real.rpow_mul (by positivity)]
+      exact Real.rpow_le_rpow_of_exponent_le h1 (by linarith)
   have hfg := Real.summable_mul_of_Lp_Lq_of_nonneg Real.HolderConjugate.two_two hf0 hg0 hfs hgs
   -- the terms of the series at `y`
   rw [LSeriesSummable, ← summable_nat_add_iff 1]
@@ -368,13 +377,37 @@ theorem lSeriesSummable_of_bounded (hsum : LSeriesSummable a u₀)
     rw [Real.rpow_def_of_pos hn]
     congr 1
     ring
-  show ‖a (n + 1)‖ * Real.exp (-Real.log ((n : ℝ) + 1) * σ₀) * ((n : ℝ) + 1) ^ (-δ) =
+  show ‖a (n + 1)‖ * Real.exp (-Real.log ((n : ℝ) + 1) * σ₀) *
+      (if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-δ')) =
     ‖LSeries.term a (y : ℂ) (n + 1)‖
-  rw [LSeries.norm_term_eq, if_neg n.succ_ne_zero, ofReal_re, hcast, hexp, div_eq_mul_inv,
-    ← Real.rpow_neg hn.le, mul_assoc, ← Real.rpow_add hn]
-  congr 2
-  rw [hδ]
-  ring
+  rw [LSeries.norm_term_eq, if_neg n.succ_ne_zero, ofReal_re, hcast]
+  by_cases h : a (n + 1) = 0
+  · rw [if_pos h, mul_zero, h, norm_zero, zero_div]
+  · rw [if_neg h, hexp, div_eq_mul_inv, ← Real.rpow_neg hn.le, mul_assoc, ← Real.rpow_add hn]
+    congr 2
+    rw [hδ']
+    ring
+
+/-- **Bohr's inequality**: a Dirichlet series bounded on `Re s > x` converges absolutely on
+`Re s > x + ½`. -/
+theorem lSeriesSummable_of_bounded (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {y : ℝ} (hy : x + 1 / 2 < y) :
+    LSeriesSummable a y := by
+  have hδ : 1 / 2 < (y - x + 1 / 2) / 2 := by linarith
+  refine lSeriesSummable_of_bounded_of_support hsum hF hM hFL (δ := (y - x + 1 / 2) / 2) ?_
+    (by linarith)
+  have h : Summable fun n : ℕ => ((n : ℝ)) ^ (-(2 * ((y - x + 1 / 2) / 2))) :=
+    Real.summable_nat_rpow.mpr (by linarith)
+  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) ((summable_nat_add_iff 1).mpr h)
+  · split_ifs
+    · exact le_rfl
+    · exact Real.rpow_nonneg (by positivity) _
+  · have hcast : (((n + 1 : ℕ) : ℝ)) = (n : ℝ) + 1 := by push_cast; rfl
+    rw [hcast]
+    split_ifs
+    · exact Real.rpow_nonneg (by positivity) _
+    · exact le_rfl
 
 /-- Right of a point of absolute convergence inside its half-plane, the function is its Dirichlet
 series. -/
@@ -415,13 +448,16 @@ theorem eq_LSeries_of_bounded (hsum : LSeriesSummable a u₀)
 
 /-! ### Constituents of the bounded class -/
 
-/-- **A bounded Dirichlet series on a half-plane `Re s > x`, `x < 0`, is no constituent with a
-zero.** If `F` is bounded and holomorphic on `Re s > x` with `x < 0`, is given by an absolutely
-convergent Dirichlet series far to the right, does not vanish identically, and every zero of `F`
-in `Re s > x` is a zero of `ξ`, then `F` has no zero in `Re s > x`. -/
-theorem ne_zero_of_bounded_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
+/-- **The Bohr strip of a constituent.** Let `F` be bounded and holomorphic on `Re s > x`, given
+by an absolutely convergent Dirichlet series far to the right, not identically zero, with every
+zero in `Re s > x` a zero of `ξ`. If `Σ n^{−2δ}` converges over the support of the coefficients
+and `x + δ < ½`, then `F` has no zero in `Re s > x`: its series converges absolutely at a point
+left of the critical line. -/
+theorem ne_zero_of_bounded_of_support_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
     (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
-    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) (hx : x < 0) {n : ℕ} (hn : a (n + 1) ≠ 0)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) {δ : ℝ} (hδ : 0 ≤ δ)
+    (hS : Summable fun n : ℕ => if a (n + 1) = 0 then (0 : ℝ) else ((n : ℝ) + 1) ^ (-(2 * δ)))
+    (hx : x + δ < 1 / 2) {n : ℕ} (hn : a (n + 1) ≠ 0)
     (hzero : ∀ s : ℂ, x < s.re → F s = 0 → xi s = 0) {s : ℂ} (hs : x < s.re) : F s ≠ 0 := by
   intro h0
   -- the zeros lie on the critical line
@@ -432,15 +468,40 @@ theorem ne_zero_of_bounded_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
   have hre : s.re = 1 / 2 := re_eq_half_of_zeros_subset_xi hsum hF hM hFL
     ⟨z₁, hz₁x, by rw [hFL z₁ hz₁u]; exact hz₁⟩ hzero hs h0
   -- absolute convergence at a point left of the line
-  set y : ℝ := x / 2 + 1 / 2 with hy
-  have hy1 : x + 1 / 2 < y := by rw [hy]; linarith
+  set y : ℝ := (x + δ + 1 / 2) / 2 with hy
+  have hy1 : x + δ < y := by rw [hy]; linarith
   have hy2 : y < 1 / 2 := by rw [hy]; linarith
-  have hsumy := lSeriesSummable_of_bounded hsum hF hM hFL hy1
+  have hxy : x ≤ y := by linarith
+  have hsumy := lSeriesSummable_of_bounded_of_support hsum hF hM hFL hS hy1
   have hne := LSeries_ne_zero_of_zeros_subset_xi hsumy hn
     (fun z hz hz0 => hzero z (by linarith) (by
-      rw [eq_LSeries_of_bounded hsum hF hM hFL (by linarith)]
+      rw [eq_LSeries_of_summable_right hF hFL hxy hsumy hz]
       exact hz0)) (s := s) (by rw [hre]; exact hy2)
-  exact hne (by rw [← eq_LSeries_of_bounded hsum hF hM hFL (by rw [hre]; linarith)]; exact h0)
+  exact hne (by
+    rw [← eq_LSeries_of_summable_right hF hFL hxy hsumy (by rw [hre]; exact hy2)]
+    exact h0)
+
+/-- **A bounded Dirichlet series on a half-plane `Re s > x`, `x < 0`, is no constituent with a
+zero.** If `F` is bounded and holomorphic on `Re s > x` with `x < 0`, is given by an absolutely
+convergent Dirichlet series far to the right, does not vanish identically, and every zero of `F`
+in `Re s > x` is a zero of `ξ`, then `F` has no zero in `Re s > x`. -/
+theorem ne_zero_of_bounded_of_zeros_subset_xi (hsum : LSeriesSummable a u₀)
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M)
+    (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries a z) (hx : x < 0) {n : ℕ} (hn : a (n + 1) ≠ 0)
+    (hzero : ∀ s : ℂ, x < s.re → F s = 0 → xi s = 0) {s : ℂ} (hs : x < s.re) : F s ≠ 0 := by
+  refine ne_zero_of_bounded_of_support_of_zeros_subset_xi hsum hF hM hFL
+    (δ := 1 / 2 - x / 2) (by linarith) ?_ (by linarith) hn hzero hs
+  have h : Summable fun n : ℕ => ((n : ℝ)) ^ (-(2 * (1 / 2 - x / 2))) :=
+    Real.summable_nat_rpow.mpr (by linarith)
+  refine Summable.of_nonneg_of_le (fun n => ?_) (fun n => ?_) ((summable_nat_add_iff 1).mpr h)
+  · split_ifs
+    · exact le_rfl
+    · exact Real.rpow_nonneg (by positivity) _
+  · have hcast : (((n + 1 : ℕ) : ℝ)) = (n : ℝ) + 1 := by push_cast; rfl
+    rw [hcast]
+    split_ifs
+    · exact Real.rpow_nonneg (by positivity) _
+    · exact le_rfl
 
 /-! ### Finitely many primes -/
 

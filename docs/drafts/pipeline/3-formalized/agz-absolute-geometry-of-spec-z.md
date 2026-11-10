@@ -786,6 +786,22 @@ half-width `r` at the distance `log p`, `4r ≤ log p`: `∫f² = 2Φ(0)` and `h
 with `Φ` the autocorrelation of one bump, so `E_p = 2Φ(0)(1/(p−1) − 1/√p) < 0` because
 `√p < p − 1` for `p ≥ 3`; then `Z + (ℓ − log p)E_p < 0` for `ℓ` large. ∎
 
+**G12 (the count of a section on two graphs).** For an ideal `J ⊂ ℤ` let
+`R_J = {(a, b) ∈ ℤ × ℤ : a − b ∈ J}`. (i) For `m, n ≥ 1` the image of the square under
+`x ↦ (x_m, x_n)` is `R_{J(m,n)}`. (ii) For `J ≠ 0` and `α = (a, b) ∈ R_J`,
+`#R_J/(α) = |ab|` (`0` for an infinite quotient). (iii) For `m ≠ n` and a section `x`,
+`K(x) = #R_{J(m,n)}/(x_m, x_n) = |x_m x_n|` and `K(kx) = k² K(x)`. (iv) For `J = (c)`, `c ≥ 2`,
+`α = (1, 1)`, `β = (1, 1 − c)`: `K(α+β) + K(α−β) ≠ 2K(α) + 2K(β)`.
+*Proof.* (i) `⊂` by the definition of `J(m, n)`. The set of the differences `y_m − y_n` of one
+section is an additive group closed under multiplication by integers (multiply the section by
+the constant), so it is all of `J(m, n)`; for `a − b = y_m − y_n` the section
+`y + (b − y_n)·1` has the values `(a, b)`. (ii) `J = (c)`, `c ≠ 0`. The map
+`(u, v) ↦ (u + cv, u)` is an isomorphism `ℤ² → R_J`. With `a − b = kc`, multiplication by `α`
+is `(u, v) ↦ (bu, ku + av)`, of determinant `ab`, and the index of the image of an endomorphism
+of a lattice is the absolute value of its determinant (corpus). (iii) `J(m, n) ≠ 0` for
+`m ≠ n`: `m` or `n` divides exactly one of the two. (iv) The values are
+`|2(2 − c)| + 0 = 2c − 4` and `2 + 2(c − 1) = 2c`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -848,6 +864,10 @@ with `Φ` the autocorrelation of one bump, so `E_p = 2Φ(0)(1/(p−1) − 1/√p
   at one length), and it does not continue beyond `log 4` or to an odd prime: there the
   generator is indefinite. Kill condition not met and deliverable not reached beyond the
   certified lengths.
+- **Construction VI (a count)**: G12. The square has a count on every pair of graphs, the
+  number of residues modulo a section: `|x_m x_n|`, exactly quadratic on rays, independent of
+  the contact, not a form. Its Tate limit is not the pairing. Kill condition met for the count
+  of the object; a count with the pairing as Tate limit is open.
 - **Construction II (the archimedean fibre as a boundary), gluings along the comb**: G10. The
   counterterm is the sum of the Busemann functions of the trees and the contacts of `p` have
   the weight of an edge; the tree glued with any edge length but `log p` fails Bézout. The
@@ -932,6 +952,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G9 | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
 | G10 | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 | G11 | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
+| G12 | `TheCountOfASectionOnTwoGraphsIsTheSplitNorm` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -988,5 +1009,6 @@ Open parts of the questions of the refined programme (details in the README, §1
   second point of a chain is seen; an operator that moves the archimedean fibre), II beyond G9
   and G10 (deviations of the contacts that are not summable
   against `n^{-1/2}`, such as other edge lengths at infinitely many primes), V beyond G8 (combs
-  without a density; systems with their own jets), VI (a count); question 7 (Hecke characters,
-  one ring that is not abelian).
+  without a density; systems with their own jets), VI beyond G12 (a count whose Tate limit is
+  the pairing; counts in archimedean boxes on the pair ring; three or more graphs); question 7
+  (Hecke characters, one ring that is not abelian).
