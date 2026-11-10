@@ -10,14 +10,14 @@
 
 | Tasks | Required result | Status |
 |---|---|---|
-| A107 | Level-one positivity gives AAL, B56, and RH or Θ=1 | Inspecting large-prime dichotomy and abscissa laws |
-| A110 | B13 iff comb-defect negative index is zero or infinite | Open |
-| A106 | AAL from length-dependent floors at `(k+1)π/67`, including prime logs | Open |
-| A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Open |
+| A107 | Level-one positivity gives AAL, B56, and RH or Θ=1 | Existing stronger RH equivalence checked; assembled corollary awaits check |
+| A110 | B13 iff comb-defect negative index is zero or infinite | Complete: `3-formalized/finite-stratum-packet-index-dichotomy.md` |
+| A106 | AAL from length-dependent floors at `(k+1)π/67`, including prime logs | Both implications written; Lean check pending |
+| A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Exact domains assembled in `TheCancellationAndDepthLadder.lean`; check pending |
 | A108 | Conductor first rung forces primes of both character signs | Open |
 | A109 | Normalized prime-error trichotomy | Open |
 | A113 | Half-plane map: bounded shapes, positivity, return-free windows | Open |
-| A114 | Step-packet limit matrices with both pole moments and RH equivalence | Open |
+| A114 | Step-packet limit matrices with both pole moments and RH equivalence | Independent active proof: `agz-step-packet-limit-matrices.md`; preserve its work |
 | A104 | Exceptional-height measure, second and growing moments | Open |
 | A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Open |
 | A102 | Sharp additive constant in height aperture | Open |
@@ -28,10 +28,41 @@
 | A86, A47 | Near-diagonal cofactors, growing filters, one-quartet constants | Open |
 | A111 | Critical-zero proportion from twisted moments and Levinson gate | Open |
 | A116 | Ideal degree points, Hecke characters, non-abelian character index | Open; preserve existing independent ideal-square work |
-| A119 | Linear depth-sum bound with explicit moment constant | Open |
+| A119 | Linear depth-sum bound with explicit moment constant | Existing unconditional theorem and constant law located; audit pending |
 
 ## Integrity
 
 Each completion requires exact stated scope, a direct `lake --old env lean` check, transitive
 `#print axioms`, and umbrella wiring. Existing implications count only after statement and
 dependency inspection. Mathematical counterexamples require a positive-survivor audit.
+
+## Exact arguments under verification
+
+- **A107:** `RHTower.riemannHypothesis_iff_exists_jasDressedPSDAbove_one` already removes
+  the edge exception. Its source checks directly; transitive axioms are only
+  `propext`, `Classical.choice`, `Quot.sound`. Requested corollaries are in
+  `SelectiveArithmetic/LevelOnePositivityAndTheAbscissaLaws.lean`.
+- **A110:** Split each complex test into real and imaginary parts. Its Gram matrix is a
+  compression of the real family, so the real packet supremum equals the full Pontryagin
+  index, hence the number of distinct right zeros. This number is finite iff the off-line
+  divisor is finite, and zero iff RH. Source:
+  `ArithmeticCastelnuovoSeveri/TheFiniteStratumIsThePacketIndexDichotomy.lean`.
+- **A106:** A finite exceptional set has a maximum and a finite nonempty active top layer.
+  The finite-mode theorem contradicts a floor at its prescribed window length. For prime
+  samples choose a larger fixed window and use prime-gap transfer: its error has exponent
+  `max(0,b−1/3)<b`, contradicted by the normalized top-layer excursions. Source:
+  `SurfaceOfSpecZ/ScaleLocality/LengthDependentFloorsGiveTheAbscissaLaw.lean`.
+- **A103:** `exists_shape_positive_not_feasible` separates the bounded-shape conclusion of
+  cancellation from the full positivity premise of `zeta_companion_of_rung`. The assembled
+  statement must retain both domains; it cannot infer the latter sign from the former.
+- **A108:** The actual twisted zero form includes `placeEnergy`, bounded by `π` times the
+  packet mass. A genuine split prime also requires controlling ramified primes; a departure
+  from `χ(p)=-1` alone permits `χ(p)=0`. Proposed repair: use
+  `exists_riesz_twist_le_of_nonneg`; the ramified Riesz contribution is
+  `O(a² log q)`, and higher prime powers cost `O(a³ exp a)`. At
+  `a=log log q+η`, both are smaller than the gap between the prime main term `exp(2a)`
+  and the conductor term `log q * exp a`. The ramified estimate remains to formalize.
+- **A119:** `RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul` is already
+  unconditional. Its constant comes from the proved mollified gate and
+  `eventually_offLineMoment_le_of_zetaGate_twoThirds`: for any positive slack `ε`,
+  `(log c - 5R/3 + ε)/(4π)`, where the same `c ≥ 1` satisfies the gate at `R > 0`.

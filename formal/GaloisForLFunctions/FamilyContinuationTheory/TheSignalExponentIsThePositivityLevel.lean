@@ -2,24 +2,30 @@ import GaloisForLFunctions.FamilyContinuationTheory.ContinuationFromACommonSigna
 import GaloisForLFunctions.RHTower.BoundedExponentPoissonNonlanding
 import GaloisForLFunctions.RHTower.Deninger.DeningerZetaLowerBound
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiLagariasMeromorphicInner
-import GaloisForLFunctions.RHTower.JointAncestryQuasiRHChainExclusion
+import GaloisForLFunctions.RHTower.JointAncestryLevelOneCapstones
+import GaloisForLFunctions.RHTower.JointAncestryLargePrimeAbscissa
 
 /-!
-# The two legs give the Riemann hypothesis
+# The signal exponent is the positivity level
 
-The route "a half-plane, then the line" for `ζ`, as one chain of theorems.
+The zero abscissa of `ζ` read on two scales.
 
 * **The zeta kernel** (`isSignalKernel_zetaKernel`). For a real centre `c`,
   `G(s) = exp((s − c)²) / ((s − 1) ζ(s))` is holomorphic on `Re s > 1` and decays like
   `C/(1+t²)` on the strips `2 ≤ Re s ≤ B`: the Gaussian decays, `|ζ| ≥ ¼` and `|s − 1| ≥ 1` there.
-* **Leg A, receiver** (`riemannZeta_ne_zero_of_signal_le`, `xiZeroHalfPlaneBound_of_signal_le`).
+* **The signal exponent** (`riemannZeta_ne_zero_of_signal_le`, `xiZeroHalfPlaneBound_of_signal_le`).
   If the signal of the zeta kernel is `O(Z^b)`, `b < 1`, then `ζ` has no zero in `Re s > b`.
   With two estimates for one sum (`xiZeroHalfPlaneBound_of_common_signal`) this is the
-  continuation step for `ζ`.
-* **Both legs** (`riemannHypothesis_of_signal_le_of_jasDressedPSD_one`). A signal bound with
-  exponent below `1` and positivity of the dressed lag aggregate at level one give the Riemann
-  hypothesis: the first supplies the half-plane, and under a half-plane positivity at level one
-  excludes every off-line zero.
+  continuation step for `ζ`. Bounds with every exponent above `½` give the Riemann hypothesis
+  (`riemannHypothesis_of_forall_signal_le`).
+* **The positivity level** (`exists_jasDressedPSDAbove_of_signal_le`). A signal bound with exponent
+  `b ∈ [½, 1)` places the dressed lag aggregate at every level above `b + ½` on the characters of
+  large primes. Conversely positivity at a level `σ ≥ 1` on large primes puts the zeros in
+  `Re ρ ≤ σ − ½` (`xiZeroHalfPlaneBound_of_jasDressedPSDAbove`), and level one is the Riemann
+  hypothesis (`riemannHypothesis_iff_jasDressedPSD_one`).
+
+The exponent `b` of the signal and the level `b + ½` of the dressed aggregate measure the same
+abscissa; a half-plane is not a premise of the positivity criterion.
 -/
 
 noncomputable section
@@ -134,13 +140,40 @@ theorem xiZeroHalfPlaneBound_of_common_signal {c a₁ a₂ K Z₀ : ℝ} (J : �
       exact div_mul_cancel₀ _ (zetaEntire_ne_zero_of_one_lt_re hs)) s (by linarith) ?_
   rw [zetaEntire_eq hs1, h0, mul_zero]
 
-/-- **Both legs.** A signal bound for the zeta kernel with exponent `b ∈ [½, 1)` and positivity
-of the dressed lag aggregate at level one give the Riemann hypothesis. -/
-theorem riemannHypothesis_of_signal_le_of_jasDressedPSD_one {c b K Z₀ : ℝ} (hb₀ : 1 / 2 ≤ b)
-    (hb : b < 1) (hZ₀ : 0 < Z₀)
-    (hK : ∀ Z : ℝ, Z₀ ≤ Z → ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b)
-    (hPSD : JasDressedPSD 1) : RiemannHypothesis :=
-  riemannHypothesis_iff_jasDressedPSD_one_and_quasi.mpr
-    ⟨hPSD, b - 1 / 2, by linarith, by linarith, xiZeroHalfPlaneBound_of_signal_le hb₀ hb hZ₀ hK⟩
+/-- **Every exponent above `½`.** Signal bounds for the zeta kernel with every exponent
+`b > ½` give the Riemann hypothesis. -/
+theorem riemannHypothesis_of_forall_signal_le
+    (h : ∀ b : ℝ, 1 / 2 < b → ∃ c K Z₀ : ℝ, 0 < Z₀ ∧
+      ∀ Z : ℝ, Z₀ ≤ Z → ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b) : RiemannHypothesis := by
+  refine riemannHypothesis_iff_xiZeroHalfPlaneBound_zero.mpr fun ρ hρ => ?_
+  refine le_of_forall_pos_le_add fun ε hε => ?_
+  -- the exponent `½ + min ε ¼` gives the width `min ε ¼ ≤ ε`
+  obtain ⟨c, K, Z₀, hZ₀, hK⟩ := h (1 / 2 + min ε (1 / 4)) (by
+    have : 0 < min ε (1 / 4) := lt_min hε (by norm_num)
+    linarith)
+  have hmin : min ε (1 / 4) ≤ 1 / 4 := min_le_right _ _
+  have hmin0 : 0 < min ε (1 / 4) := lt_min hε (by norm_num)
+  have hXi := xiZeroHalfPlaneBound_of_signal_le (c := c) (b := 1 / 2 + min ε (1 / 4))
+    (by linarith) (by linarith) hZ₀ hK
+  have := hXi ρ hρ
+  have hle : min ε (1 / 4) ≤ ε := min_le_left _ _
+  linarith
+
+/-- **From the exponent to the level.** A signal bound for the zeta kernel with exponent
+`b ∈ [½, 1)` gives positivity of the dressed lag aggregate on the characters of large primes at
+every level `b + ½ + ε`. -/
+theorem exists_jasDressedPSDAbove_of_signal_le {c b K Z₀ ε : ℝ} (hb₀ : 1 / 2 ≤ b) (hb : b < 1)
+    (hZ₀ : 0 < Z₀) (hK : ∀ Z : ℝ, Z₀ ≤ Z → ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b)
+    (hε : 0 < ε) (hε1 : ε ≤ 1) : ∃ X : ℕ, JasDressedPSDAbove X (b + 1 / 2 + ε) := by
+  have hXi := xiZeroHalfPlaneBound_of_signal_le hb₀ hb hZ₀ hK
+  refine ⟨⌈Real.exp (1 / ε + 1)⌉₊ + 2, ?_⟩
+  have hX : (2 : ℕ) ≤ ⌈Real.exp (1 / ε + 1)⌉₊ + 2 := by omega
+  have hlog : 1 / ε + 1 ≤ Real.log ((⌈Real.exp (1 / ε + 1)⌉₊ + 2 : ℕ) : ℝ) := by
+    rw [Real.le_log_iff_exp_le (by positivity)]
+    push_cast
+    linarith [Nat.le_ceil (Real.exp (1 / ε + 1))]
+  have h := jasDressedPSDAbove_of_xiZeroHalfPlaneBound (alpha := b - 1 / 2) (by linarith) hXi
+    hε hε1 hX hlog
+  rwa [show 1 + (b - 1 / 2) + ε = b + 1 / 2 + ε by ring] at h
 
 end GaloisForLFunctions.FamilyContinuationTheory

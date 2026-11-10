@@ -63,7 +63,8 @@ theorem exists_real_packets_negIndex_ge {n : ℕ} (f : Fin n → ℝ → ℂ)
     if j.1 = i then if j.2 = 0 then 1 else I else 0
   have hcomb : (fun i => ((∑ j, C i j • t j : testSpace) : ℝ → ℂ)) = f := by
     funext i u
-    simp [C, t, g, Fintype.sum_prod_type, Fin.sum_univ_two, Complex.re_add_im]
+    simp [C, t, g, Fintype.sum_prod_type, Fin.sum_univ_two]
+    rw [mul_comm I, Complex.re_add_im]
   have hmat := zeroGram_comb zetaZeroConfig temperedConfig_zetaZeroConfig t C
   rw [hcomb] at hmat
   have hle : hermNegIndex (zeroGram zetaZeroConfig f) ≤

@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FiniteTopLayersNeedNoSeparation
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeWindowTransfer
 import GaloisForLFunctions.ZeroConfigurationGeometry.AbscissaLaws.TheAbscissaLawsOfAZeroConfiguration
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TuransInequalityWithoutBoundedOnLineDensity
 
 /-!
 # Length-dependent floors give the asymptotic abscissa law
@@ -16,21 +17,11 @@ open scoped ComplexConjugate
 open Zeta23 GaloisForLFunctions.SquareRootThreshold
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 noncomputable section
 
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
-
-/-- An active zeta exponent is the translate by one half of an actual zero. -/
-theorem mem_zeta_of_active_exponent {z : ℂ}
-    (hz : evenCoeff zetaZeroConfig (boxSpline 1 3) z ≠ 0) :
-    (1 / 2 : ℂ) + z ∈ zetaZeroConfig.carrier := by
-  rcases mem_of_evenCoeff_ne_zero hz with h | h
-  · exact h
-  · have hhalf : conj (1 / 2 : ℂ) = 1 / 2 := by
-      rw [map_div₀, map_one, map_ofNat]
-    simpa only [map_add, hhalf, Complex.conj_conj] using
-      _root_.RHTower.conj_mem_zetaZeroConfig h
 
 /-- Failure of AAL supplies a finite nonempty active top spectrum with positive depth. -/
 theorem exists_finite_top_of_not_abscissaLaw
@@ -56,7 +47,7 @@ theorem exists_finite_top_of_not_abscissaLaw
   have hb : 0 < b := by dsimp [b]; linarith only [hre, hh]
   have htop : TopDepth zetaZeroConfig b := by
     intro z hz
-    have hbound := hall _ (mem_zeta_of_active_exponent hz)
+    have hbound := hall _ (add_half_mem_zetaZeroConfig_of_evenCoeff_ne_zero hz)
     have he : ((1 / 2 : ℂ) + z).re = 1 / 2 + z.re := by norm_num
     rw [he] at hbound
     dsimp [b]
@@ -65,7 +56,7 @@ theorem exists_finite_top_of_not_abscissaLaw
     apply (hfin.preimage (f := fun z : ℂ => (1 / 2 : ℂ) + z)
       (add_right_injective (1 / 2 : ℂ)).injOn).subset
     intro z hz
-    refine ⟨mem_zeta_of_active_exponent hz.2.2, ?_⟩
+    refine ⟨add_half_mem_zetaZeroConfig_of_evenCoeff_ne_zero hz.2.2, ?_⟩
     have he : ((1 / 2 : ℂ) + z).re = 1 / 2 + z.re := by norm_num
     rw [he, hz.1]
     dsimp [b]

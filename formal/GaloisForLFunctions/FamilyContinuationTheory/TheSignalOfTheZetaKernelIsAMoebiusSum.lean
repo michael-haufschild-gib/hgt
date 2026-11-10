@@ -1,4 +1,4 @@
-import GaloisForLFunctions.FamilyContinuationTheory.TheTwoLegsGiveTheRiemannHypothesis
+import GaloisForLFunctions.FamilyContinuationTheory.TheSignalExponentIsThePositivityLevel
 
 /-!
 # The signal of the zeta kernel is a Möbius sum
@@ -9,9 +9,9 @@ On `Re s > 1` the zeta kernel `exp((s − c)²)/((s − 1)ζ(s))` is the pole ke
 
 `signal (zetaKernel c) 2 Z = Σ_n μ(n) · signal (poleKernel c) 2 (Z / n)` (`signal_zetaKernel_eq_tsum`).
 
-The signal of the pole kernel is a smooth cutoff. So the first input of the route, a bound
-`O(Z^b)` with `b < 1` for the signal of the zeta kernel, is a power saving for one smoothed
-Möbius sum (`riemannHypothesis_of_moebiusSum_le_of_jasDressedPSD_one`).
+The signal of the pole kernel is a smooth cutoff. So a bound `O(Z^b)` with `b < 1` for the signal
+of the zeta kernel is a power saving for one smoothed Möbius sum, and savings with every exponent
+above `½` give the Riemann hypothesis (`riemannHypothesis_of_forall_moebiusSum_le`).
 -/
 
 noncomputable section
@@ -208,18 +208,15 @@ theorem signal_zetaKernel_eq_tsum (c : ℝ) {Z : ℝ} (hZ : 0 < Z) :
   unfold moebiusTerm
   rw [integral_const_mul, mul_smul_comm]
 
-/-- **The route with an arithmetic first input.** A power saving `O(Z^b)`, `½ ≤ b < 1`, for the
-smoothed Möbius sum `Σ_n μ(n) · signal (poleKernel c) 2 (Z/n)`, together with positivity of the
-dressed lag aggregate at level one, gives the Riemann hypothesis. -/
-theorem riemannHypothesis_of_moebiusSum_le_of_jasDressedPSD_one {c b K Z₀ : ℝ} (hb₀ : 1 / 2 ≤ b)
-    (hb : b < 1) (hZ₀ : 0 < Z₀)
-    (hK : ∀ Z : ℝ, Z₀ ≤ Z →
+/-- **The smoothed Möbius sum.** Bounds `O(Z^b)` with every exponent `b > ½` for the sums
+`Σ_n μ(n) · signal (poleKernel c) 2 (Z/n)` give the Riemann hypothesis. -/
+theorem riemannHypothesis_of_forall_moebiusSum_le
+    (h : ∀ b : ℝ, 1 / 2 < b → ∃ c K Z₀ : ℝ, 0 < Z₀ ∧ ∀ Z : ℝ, Z₀ ≤ Z →
       ‖∑' n : ℕ, (ArithmeticFunction.moebius n : ℂ) * signal (poleKernel c) 2 (Z / n)‖ ≤
-        K * Z ^ b)
-    (hPSD : JasDressedPSD 1) : RiemannHypothesis := by
-  refine riemannHypothesis_of_signal_le_of_jasDressedPSD_one (c := c) (K := K) hb₀ hb hZ₀
-    (fun Z hZ => ?_)
-    hPSD
+        K * Z ^ b) : RiemannHypothesis := by
+  refine riemannHypothesis_of_forall_signal_le fun b hb => ?_
+  obtain ⟨c, K, Z₀, hZ₀, hK⟩ := h b hb
+  refine ⟨c, K, Z₀, hZ₀, fun Z hZ => ?_⟩
   rw [signal_zetaKernel_eq_tsum c (lt_of_lt_of_le hZ₀ hZ)]
   exact hK Z hZ
 

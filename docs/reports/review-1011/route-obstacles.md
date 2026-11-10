@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `034f3c70c6` with its working tree (2026-11-10). Working log: `logs/review-1011-status-quo-facts.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** commit `1cec78e529` with its working tree (2026-11-10). Working log: `logs/review-1011-status-quo-facts.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question, the programme for the case that every route is a receiver), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. Formulations are not independent mechanisms: HJ is PA; the BSY criterion of FEL belongs to CTF; PCS is a retired label. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -24,25 +24,25 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 |---|---|---|
 | RH ⇔ `∃K`: `2c_p≥−K` at the primes of arbitrarily late logarithmic windows outside at most `Ce^{δT}` primes per window (`δ<1`) | [L*] | Σ (Weil's sign), Π (a prime count) and the count door are one inequality per prime, local in scale, tolerant of power-thin exceptions |
 | The same criterion holds with the upper bound alone on undeleted windows, with `ℕ`-counts on the surviving rays `Γ_1+Γ_p`, with even moments of the traces under one exponent for all orders, and with the absolute value | [L*]/[K] | the minimal face has a one-sided, a two-sided, a counting and a moment form |
-| A density-matched tempered configuration with logarithmic local counts, `|Im ρ|≥4`, `N(T)−N_ζ(T)=o(T log T)` and unattained top `½+Θ` passes every floor on windows of a radius `R→∞`, `R=o(log T)` | [L*] | below the logarithmic radius no receiver at the level of configurations decides RH |
-| ζ with an attained positive top of at most `k` positive ordinates fails every fixed floor on every sufficiently late continuous window of length `(k+1)π/67`; `n` modes of frequency `≥Γ` keep one sign on a length `≤nπ/Γ` | [L*] | world I is seen on windows of bounded length; a floor on windows of every bounded length gives AAL [D] |
+| A density-matched tempered configuration with logarithmic local counts, `\|Im ρ\|≥4`, `N(T)−N_ζ(T)=o(T log T)` and unattained top `½+Θ` passes every floor on windows of a radius `R→∞`, `R=o(log T)` | [L*] | below the logarithmic radius no receiver at the level of configurations decides RH |
+| ζ with an attained positive top of at most `k` positive ordinates fails every fixed floor on every sufficiently late continuous window of length `(k+1)π/67`; `n` modes of frequency `≥Γ` keep one sign on a length `≤nπ/Γ` | [L*] | world I is seen on windows of bounded length; floors on such windows, with constants depending on `k`, give AAL |
 | `Θ<1 ⇔ Θ∞<1`; RH ⇔ ZAL ∧ B13 ∧ Landing; AAL ⇔ B13 ∧ Landing ∧ DH | [L*] | a failure of RH is world I or world II; three atoms on the RH path |
 | An entire function with the Riemann functional equation, the Riemann Gamma factor, residue one at `1`, order `≤1` and the zero count of ξ within one has all its zeros simple, off the line, approaching it; positive integer-norm Euler products with linear counting realize `(Θ,Θ₂,Θ∞)=(β,θ₂,θ)` for `½<θ≤θ₂<β<2/3` | [L*] | Landing and DH follow from neither structure alone; a Dirichlet series with ζ's functional equation is a multiple of ζ [L] |
 | For every `η>0` and large `q`: every dominated system has the floor `½(1−e^{−η/2})log q∫f²` at apertures `a≤log log q−η`; at `a≥log log q+η` the Liouville twist and `−Λ` are negative on the odd polar packet and `Λ` without pole plane on the even one; the trivial aperture is `log log q+o(1)` | [L*] | sizes prove the sign up to rung `1−o(1)` in the conductor aspect and nothing beyond: no gap |
-| At height `t`: every dominated system with pole plane has the floor `½(1−e^{−η/2})log|t|∫f²−5∫f′²` at `a≤log log|t|−η`; at `a=log log t+log 2+η` some dominated system built with the height fails | [L*] | the same in the height aspect, on packets of bounded shape, up to an additive `log 2` |
+| At height `t`: every dominated system with pole plane has the floor `½(1−e^{−η/2})log\|t\|∫f²−5∫f′²` at `a≤log log\|t\|−η`; at `a=log log t+log 2+η` some dominated system built with the height fails | [L*] | the same in the height aspect, on packets of bounded shape, up to an additive `log 2` |
 | Partial sums of the contacts `≤Cn^{½+γ}` give the sign up to `a≤κ log log q`, `2γκ<1`, with floor `½log q(∫f²−∫f′²)`; cancellation of the twisted contacts at every frequency inside the archimedean budget gives all packets; the sign on the two polar packets bounds the Riesz mean of the contacts at `e^{2a}` by `log q(e^a+2a)+C(1+a)³e^a` | [L*] | prime side of the exchange rate, both directions: saving `γ` ⇔ rung `1/(2γ)` |
 | A lattice of density `x/2` with one pair of depth `δ` is nonnegative at `a≤κ log x` if `2δκ<1` and has a negative direction at `κ log x≤a≤x/4` if `2δκ>1`; for ζ and for primitive Dirichlet characters, the sign on the tests of aperture `κ log m` forces a second off-line zero within `m^κ` of every zero of depth `δ>1/(2κ)` | [L*] | zero side of the exchange rate: depth `δ` shows at rung `1/(2δ)`; a rung excludes isolated zeros, not clusters |
-| RH ⇔ `JasDressedPSD 1` ∧ a half-plane bound `Re ρ≤½+α`, `α<½`; positivity on the characters of large primes at a level `σ≥1` gives `|Re ρ−½|≤σ−1` for every zero or `sup|Re ρ−½|=½`; a bound `O(Z^b)`, `b<1`, of the signal gives `Re ρ≤b`; the signal is `Σ_nμ(n)W_c(Z/n)` | [L*] | RH has two legs: a half-plane and a level; level one leaves only the edge world [D] |
-| A family with kernels `G_η=E_η/L_η`: if zero-freeness in `Re s>β` gives each member a sum `J` with `|J|≤KZ^{a₁}` and `|J−signal|≤KZ^{a₂}`, `a₁,a₂<β` common to the family, no member has a zero right of `σ₀` | [L*] | the continuation step is a theorem with both estimates as hypotheses |
+| RH ⇔ `JasDressedPSD 1` ∧ a half-plane bound `Re ρ≤½+α`, `α<½`; positivity on the characters of large primes at a level `σ≥1` gives `\|Re ρ−½\|≤σ−1` for every zero or `sup\|Re ρ−½\|=½`, and at level one `Θ=½` with no exception; a bound `O(Z^b)`, `b<1`, of the signal gives `Re ρ≤b`; the signal is `Σ_nμ(n)W_c(Z/n)` | [L*] | level one on large primes is RH; a higher level and the exponent of the signal are half-planes |
+| A family with kernels `G_η=E_η/L_η`: if zero-freeness in `Re s>β` gives each member a sum `J` with `\|J\|≤KZ^{a₁}` and `\|J−signal\|≤KZ^{a₂}`, `a₁,a₂<β` common to the family, no member has a zero right of `σ₀` | [L*] | the continuation step is a theorem with both estimates as hypotheses |
 | `[X]`: `Θ≤7/8`. Natively: over `ℤ[ω]` the cube of the normalized composite cubic Gauss sum is the ideal Möbius value times a phase; on a finite field `g(χ)^n≡−card F mod (μ−1)²` for every odd order `n>2` and `≡χ(−1)card F` for even order; the exponent budget of the detector has the boundary `7/8` at every redistribution of its two scales and `29/36` with the unit term alone | [X]; [L*] | one producer, external; its arithmetic source and its budget are in the native graph; between `7/8` and `½` no producer |
-| `CombBezout w ⇔ RH ∧ w=Λ`; with the counterterm `log(n/2π)−c`: `⇔ c≤0 ∧ RH`; with contacts `(1+ε)Λ+δ`, `Σ|δ(n)|/√n<∞`: `⇔ ε=0 ∧ RH ∧ c≥sup P_δ`; with the tree of `p` glued at edge length `ℓ`: `⇔ RH ∧ ℓ=log p` | [L*]/[L] | weights, constant, scale and tree lengths are forced; the sign has no margin |
+| `CombBezout w ⇔ RH ∧ w=Λ`; with the counterterm `log(n/2π)−c`: `⇔ c≤0 ∧ RH`; with contacts `(1+ε)Λ+δ`, `Σ\|δ(n)\|/√n<∞`: `⇔ ε=0 ∧ RH ∧ c≥sup P_δ`; with the tree of `p` glued at edge length `ℓ`: `⇔ RH ∧ ℓ=log p` | [L*]/[L] | weights, constant, scale and tree lengths are forced; the sign has no margin |
 | RH ⇔ at every aperture some real weight system is Weil-positive; if RH fails, one aperture admits none | [L*] | the existence half of the sign needs no compatibility between apertures |
 | RH ⇔ the intersection form on the two rulings and every finite family of packets has exactly one positive square; for ζ and finitely many primitive Dirichlet `L`-functions the defect has `n` negative squares on some family iff they have together at least `n` distinct zeros right of the line; the counterterm of an abelian ring obeys `2g_K(n)−2=d(2g(n)−2)+nR` with `g(n)=1+(n/2)log(n/2π)` | [L*] | the Hodge index is the exact count of the right zeros; a cover bounds its base; conductors are ramification |
 | If for all `K,R,η` there are arbitrarily large block sizes `B` with comb form `≥−ηΣσ²` on the divisors constant on the `3KR` blocks of `(RB,(3K+1)RB]`, RH holds; replacing a divisor by its block means costs `εΣc_n²` | [L*] | the inequality at finite scale lives on a space whose dimension does not depend on the scale |
-| On the planar square the values on `Γ_m` of the sections vanishing on a finite set `S` are exactly the ideal `Π_{n∈S}J(m,n)`; the count of a section on two graphs is `|x_mx_n|`; the system of the squares fails Bézout on its own comb; in a tower `Z_ζ` has weight `1/d` | [L*] | every structure of the square found so far returns an identity or loses ζ |
+| On the planar square the values on `Γ_m` of the sections vanishing on a finite set `S` are exactly the ideal `Π_{n∈S}J(m,n)`; the count of a section on two graphs is `\|x_mx_n\|`; the system of the squares fails Bézout on its own comb; in a tower `Z_ζ` has weight `1/d` | [L*] | every structure of the square found so far returns an identity or loses ζ |
 | A nonzero Dirichlet series absolutely convergent at `x`, or an expansion over positive real scales absolutely convergent on a closed strip about the line, whose zeros there are zeros of ξ, has no zero there; one zero forces infinitely many that are not zeros of ξ; a bounded Dirichlet series on `Re s>x` with support exponent `δ`, `x+δ<½`, likewise | [L*] | ξ has no constituent with a zero in the Wiener class; the open case is the bounded class with `0≤x<½` |
 | `ξ=E+E^♯` on a disc with `E=Π_{w∈W}(z−w)E₁`, `E₁` zero-free, `‖E^♯‖≤‖E‖` on the circle: ξ has at most `card W` zeros in the disc | [L*] | the defect of a splitting is certified by sizes on one circle |
-| Twisted second moments of `ζ·`(a real polynomial of length `T^θ`), `θ<½`, with both gcd main terms; the dyadic mean of `|Rζ|²` at `σ∈(½,1)` equals the convolution diagonal for every resonator of length `T^κ`, `κ<2σ−1`; RH ⇔ `∫_1^T|M_{T^θ}(½+it)|²dt≤C_θT^{K₀}` for cofinal `θ` with one `K₀` | [L*] | the mean-value ladder is proved below the square root; its conversion to every zero needs length past the height |
+| Twisted second moments of `ζ·`(a real polynomial of length `T^θ`), `θ<½`, with both gcd main terms; the dyadic mean of `\|Rζ\|²` at `σ∈(½,1)` equals the convolution diagonal for every resonator of length `T^κ`, `κ<2σ−1`; RH ⇔ `∫_1^T\|M_{T^θ}(½+it)\|²dt≤C_θT^{K₀}` for cofinal `θ` with one `K₀` | [L*] | the mean-value ladder is proved below the square root; its conversion to every zero needs length past the height |
 | Simple critical zeros `≥(0.67250071−ε)N(T)`; for every `θ` either `N₀≥θN` or the simple off-line zeros number `≥(1+HD(1)−2θ−ε)N` | [L*] | the census is in law; `70%` is open |
 | `R_polar=R_halfline≤W`; RH, or ¬RH with `R_polar<W`, or ¬RH with `R_polar=W` finite and every critical half-line ground state orthogonal to the polar source | [L*] | the critical curve has one undecided case (B104) |
 | RH is verified through height 67; verification through `windowHeight(a)` gives the sign on `[−a,a]`; through `T` it gives the two-bump sign at every prime `p≤primePacketRung(T)` | [L*] | each window, and each prime of the minimal face, is a finite-height statement |
@@ -77,7 +77,7 @@ Scope: the 38 live route formulations, the 12 route candidates and the supportin
 | M24 Arithmetic constituents | recurrence against density, the jump law, the carry | none in the Wiener class; bounded class open |
 | M25 The ladder | mass, aperture, rung; dominated box; fakes | sizes to rung `1−o(1)`; both one-structure fakes fail at `1+o(1)`; one exchange rate on the prime and the zero side |
 | M26 Family continuation | signal of a reciprocal kernel; two estimates for one sum; reciprocity identity | principle and receiver in Lean; `[X]` at `7/8`; local sign law at every odd order |
-| M27 Dressed positivity | lag aggregate at a level `σ` | level `σ` on large primes ⇔ `Θ≤σ−½` up to the edge world; level 2 holds, `3/2` on large primes |
+| M27 Dressed positivity | lag aggregate at a level `σ` | level one on large primes ⇒ `Θ=½`; a level `σ>1` gives `Θ≤σ−½` or the edge world; level 2 holds, `3/2` on large primes |
 | Amplifiers | Diophantine repulsion, integrality, isolation, Turán, positive annihilators | amplify or reshape a certificate, produce none |
 
 ## 2. Shared obstacle blocks
@@ -129,14 +129,13 @@ Established:
 - RH ⇔ `∃A ∀k≥1`: the `2k`-th local moment of the prime traces on arbitrarily late windows is `≤C_ke^{AT}` [L*].
 - RH ⇔ a floor on the scale limits of the comb form on two-bump packets at `log p`, same windows and exceptions [L].
 - `r√T` windows decide every tempered configuration without real zeros; two fixed primes suffice on such windows [L].
-- Half-period law: `n` modes with frequencies `≥Γ` and nonnegative real part on a length `L` have `ΓL≤nπ` or vanish identically [L*]. A finite top layer of ζ with at most `k` positive ordinates breaks every floor on every late window of length `(k+1)π/67` [L*]. A floor on integer runs `[x,e^Lx]` for every `L` gives AAL [L*].
+- Half-period law: `n` modes with frequencies `≥Γ` and nonnegative real part on a length `L` have `ΓL≤nπ` or vanish identically [L*]. A finite top layer of ζ with at most `k` positive ordinates breaks every floor on every late window of length `(k+1)π/67` [L*]. A floor on integer runs `[x,e^Lx]` for every `L` gives AAL [L*]. Floors on arbitrarily late windows of length `(k+1)π/67`, with a constant depending on `k`, also at the prime logarithms, give AAL; a floor of any exponent below the top depth fails on such windows [L*].
 - The sub-logarithmic counter-configuration has `N(T)=o(T log T)` [L*]; the density-matched model keeps the unattained top and the floors [L*]. The projection of ζ's divisor to the line keeps every ordinate count and is tempered [L*].
 - A global floor `−K` bounds the weighted absolute mass by `2K∫w` plus Fourier leakage; the coefficient two is sharp [K].
 - A verified height `T` gives both signs of the two-bump at every prime `p≤primePacketRung(T)`, a rung tending to infinity [L*].
 
 | | Obstacle | Strength |
 |---|---|---|
-| A106 | AAL from floors on windows of length `(k+1)π/67` for each `k`, with constants depending on the length, and at the prime logarithms [D] | — |
 | A78, A89 | cluster form of the separated-window theorem; a prescribed radius in the sub-logarithmic model (unverified) | — |
 | A58, A59 | effective gap iteration; residue-class primes [C] | — |
 | B130 | the bound itself on any decisive sample | RH (≥qRH at `p^σ`, `σ<½`) |
@@ -230,13 +229,13 @@ Established:
 - `AbscissaLaw ⇔ B13 ∧ Landing ∧ DH`; pure ⇔ ZAL ∧ B13 ∧ Landing; the atoms are pairwise exclusive in failure; Landing is a tail law that no finite height decides [L*].
 - Landing calibration: the Riemann Gamma factor, residue one, the functional equation, reality, order `≤1` and the zero count within one do not force landing [L*]. DH calibration: integer-norm two-scale Euler products realize every `(β,θ₂,θ)` with `½<θ≤θ₂<β<2/3`, and every graded repulsion bound is refuted there [L*]. Classical Deuring–Heilbronn on the twisted comb: for a real zero `β` of a real primitive `L(s,χ)` with `C(1−β)log(q(R+3))<(q(R+3))^{−C/2}`, every other zero below height `R` is on the line, the odd packets isolate the exceptional square, and the sign at an aperture gives an unconditional lower bound for `1−β` [L*].
 - World I: prime filters recover the top residues; the prime error is a finite oscillation at the top plus a smaller remainder [L]; the centred Vaughan reduction at growing moment order and the rapid decay of separated unweighted cofactor pairs [K]; every late window of length `(k+1)π/67` contains a point below every floor [L*].
-- Level-one dressed positivity excludes world I and world II with `Θ<1` [D] from [L*]; level-one constant-vector positivity on infinitely many dyadic prime shells gives AAL [L].
+- Level-one dressed positivity on large primes gives AAL, B56 and `Θ=½` [L*]; B13 ⇔ the supremal negative index of the comb defect on real packets is `0` or infinite, and that index is the number of right zeros [L*]; level-one constant-vector positivity on infinitely many dyadic prime shells gives AAL [L].
 - Continuous prime measures: for every `δ>0` a positive continuous perturbation of the Riemann prime measure has zeta function `ζ(s)exp(ε/(s+1)²)`, the zeros of ζ, and a functional-equation defect `≤δ/(1+t²)` in `L¹∩L²` [L*].
 
 | | Obstacle | Strength |
 |---|---|---|
 | A47, A86 | constants of the one-quartet world; the near-diagonal cofactor pairs and the transfer through the growing-order filter (unverified) | — |
-| A107, A109, A110 | level one ⇒ AAL and ⇒ B56; the trichotomy of the normalized prime error; B13 as "the negative index is `0` or infinite" [D] | — |
+| A109 | the trichotomy of the normalized prime error [D] | — |
 | A120 | a finite nonempty stratum in an Euler product with a functional equation over a discrete system of real norms [C] | — |
 | B13, B138 | finite stratum; landing for ζ | sub |
 | B141 | Deuring–Heilbronn for ζ: `¬AAL ⇒ ZAL` | sub |
@@ -306,18 +305,18 @@ Established:
 | B86 | positivity of the endpoint character at unbounded rank, mixed Young shapes | RH |
 | B80 | FE twins with off-line zeros in the full class | sub |
 
-### S12. The ladder and the two legs
+### S12. The ladder, the level and the signal
 Routes: RW, HF, ACS, SRT (rungs); JAS, MC, WL, S3 (legs). Programmes: SA, FCT, MMD, RHTower `QuasiRH*`, CDG.
 
 Established:
 - Sizes [L*]: floors below the trivial aperture in the conductor and the height aspect; the feasible set of a conductor lies between an `ℓ¹` ball `A₀+2Σ_{n≤e^{2a}}|w(n)|/√n≤log q` and the box `|w(n)|≤√n(log q+log(1+1/r)+C)`; a floor `−K∫|F|²` at `q` is feasibility at `qe^K`; feasible sets are convex, decreasing in the aperture, determined by `w(n)`, `n≤e^{2a}`.
-- Fakes [L*]: the Liouville twist, `−Λ`, and `Λ` without pole plane fail at `log log q+η`, on the polar packets; the Liouville twist violates every floor there; in the height aspect `Λ(n)cos(t log n)` fails at `log log t+log 2+η`; a lattice with one pair of depth `δ` changes sign at the rung `1/(2δ)`.
+- Fakes [L*]: the Liouville twist, `−Λ`, and `Λ` without pole plane fail at `log log q+η`, on the polar packets; the Liouville twist violates every floor there; in the height aspect `Λ(n)cos(t log n)` fails at `log log t+log 2+η`; a lattice with one pair of depth `δ` changes sign at the rung `1/(2δ)`; at `log log q+log 2+η` a dominated system has the bounded-shape floor on every packet and is not feasible.
 - Mean over the heights [L*] (graded [S]): for the contact polynomial `D_a(t)=Σ_{2≤n≤e^{2a}}Λ(n)n^{−1/2}cos(t log n)`, the mean square over `[T,2T]` is `≤2a(2+2a)²+1` when `4e^{4a}(2+2a)⁴≤T`, against the mass `log T`; a height exists at which it is small on a grid, with Lipschitz interpolation. So the sizes are attained at aligned heights only, and at apertures up to about `¼log T` the sign on bounded shapes fails at most on a set of heights of measure `O(Ta³/log²T)` [D].
 - Exchange [L*]: cancellation `(C,γ)` buys `a≤κ log log q`, `2γκ<1`; the sign on the polar packets is square-root cancellation of the Riesz mean; the height transfer `𝔚_{w,q}(e^{−itu}f)=𝔚_{w_t,q}(f)+(log(2+|t|)+O(1))∫f²` up to the shape.
 - The first rung past the trivial aperture in the conductor aspect: the sign at `a=log log q+η` for a real character forces a prime `p≤e^{2η}log²q` with `χ(p)≠1` and one with `χ(p)≠−1` [D].
-- Legs [L*]: RH ⇔ `JasDressedPSD 1` ∧ a half-plane; `JasDressedPSD 2`; positivity on large primes at every `σ≥3/2`; the dichotomy at a level; signal `O(Z^b)` ⇒ `Re ρ≤b`; signal = smoothed Möbius sum; family continuation from two estimates.
+- Level and signal [L*]: positivity at level one on the characters of all large primes gives `Θ=½`; RH ⇔ `JasDressedPSD 1` ∧ a half-plane; `JasDressedPSD 2`; positivity on large primes at every `σ≥3/2`; the dichotomy at a level; signal `O(Z^b)` ⇒ `Re ρ≤b`; signal = smoothed Möbius sum; family continuation from two estimates.
 - Source [L*]: cube of the composite cubic Gauss sum = Möbius × phase; odd-order sign law; planar large sieve. Exceptional frequencies of one coprime column pair add without cancellation.
-- Budget [L*]: `lowGramExponent x (5/6−x)−principalShift x (1/6)=7/8` for every `x`; the retuned boundary is `≥7/8` with equality only at slot `1/6`; unit Gram term alone `≥29/36`; a Gram profile reaches `5/6` iff `ν≤1/15 ∧ κ+4ν≤4/3`.
+- Budget [L*]: `lowGramExponent x (5/6−x)−principalShift x (1/6)=7/8` for every `x`; the retuned boundary is `≥7/8` with equality only at slot `1/6`; unit Gram term alone `≥29/36`; a Gram profile reaches `5/6` iff `ν≤1/15 ∧ κ+4ν≤4/3`; with its row-count law the detector has no boundary below `7/8−1/4000` [L].
 - Quasi-RH is seven equivalent power savings across five programmes [L*].
 
 | | Obstacle | Strength |
@@ -330,10 +329,9 @@ Established:
 | A118 | `[X]` in the native graph: theta coefficients of the cubic residue, removal of cube indices, the mean square with uniform transfer, the detector | — (given `[X]`) |
 | B159 | a rung `κ>1`: a power saving of the contacts on the integers between `m` and `m^{2κ}`, uniform in the height, that fails for the Liouville twist and for the lattice with a pair | ≥qRH |
 | B156 | whether the sign on one rung `κ>1` at all large heights gives a zero-free strip for ζ (clusters) | method |
-| B160 | `JasDressedPSD 1` | RH given a half-plane; ≥B56 natively [D] |
+| B160 | `JasDressedPSD 1` on the characters of all large primes | RH |
 | B161 | the signal bound `O(Z^b)`, `b<1`, in the native graph | ≥qRH |
 | B158 | a second completed sum: a global object whose coefficients are Gauss sums of an odd order `n≥5`, or another identity that gives Möbius a functional equation | producer |
-| B155 | whether the edge alternative of the level dichotomy occurs | method |
 
 ## 3. Live routes
 
@@ -396,7 +394,7 @@ Receiver statements are `[L]` unless marked.
 ### ZCG — Zero-configuration geometry / heat descent / abscissa laws
 - **Path:** no positive-time collision → RH; or a decisive prime-window floor; or ZAL ∧ B13 ∧ Landing.
 - **Established:** collision exclusion ⇔ RH; blocks S3, S4, S8; ordinate injectivity ⇔ RH; a finite attained top breaks every continuous floor on bounded windows [L*].
-- **(a)** A19, A47, A86, A106, A109.
+- **(a)** A19, A47, A86, A109.
 - **(b)** B24, B25, B47, B27, B124; B130; B83 through transport or a contradiction in world I (B89, B112, B128, B145); B13, B138, B141.
 
 ### TG — Topological sub-unit gate
@@ -460,9 +458,9 @@ Receiver statements are `[L]` unless marked.
 - **(a)** none. **(b)** the sign below the VK boundary (B29); a prime-faithful lossless stack (B69). Exact arithmetic pieces sharing zeros with ξ are excluded in the Wiener class [L*].
 
 ### JAS — Joint ancestry
-- **Path:** level-one dressed positivity with a half-plane; or subpower control on finite power windows of square shells → RH.
-- **Established:** RH ⇔ `JasDressedPSD 1` ∧ a half-plane bound [L*]; signal `O(Z^b)` ⇒ that half-plane [L*]; level two holds, `3/2` on large primes [L*]; positivity on large primes at a level `σ` gives `|Re ρ−½|≤σ−1` or the edge world [L*]; constant-vector positivity on dyadic prime shells gives AAL.
-- **(a)** A107, A113.
+- **Path:** level-one dressed positivity on large primes; or subpower control on finite power windows of square shells → RH.
+- **Established:** positivity at level one on the characters of all large primes ⇒ RH, with no half-plane [L*]; RH ⇔ `JasDressedPSD 1` ∧ a half-plane bound [L*]; signal `O(Z^b)` ⇒ that half-plane [L*]; level two holds, `3/2` on large primes [L*]; positivity on large primes at a level `σ` gives `|Re ρ−½|≤σ−1` or the edge world [L*]; constant-vector positivity on dyadic prime shells gives AAL.
+- **(a)** A113.
 - **(b)** `JasDressedPSD 1` (B160); the signal bound (B161; `[X]` supplies `b=7/8` outside the native graph); the moving `k`-window control (B51).
 
 ### CTF — Chronological tail / Báez–Duarte
@@ -514,7 +512,7 @@ Receiver statements are `[L]` unless marked.
 ### SRT — Lag localization
 - **Path:** the prime two-bump sign on a decisive sample → RH.
 - **Established:** block S3; the upper side alone on undeleted windows [L*]; counts and moments [L*]; a verified height covers every prime below its rung [L*].
-- **(a)** A9, A106.
+- **(a)** A9.
 - **(b)** B130; B6, B101.
 
 ### ACT — Single shift
@@ -566,13 +564,13 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
-| SOSZ ScaleLocality | logarithmic, `log²` and `√T` windows; exceptions; upper side; counts; local moments; half-period law; finite top layers; weighted floors with sharp coefficient two; the density of the counter-configuration [L*]/[K] | A78, A89, A106 | B130, B144 |
-| SA (selective arithmetic) | trivial aperture in the conductor and the height aspect; feasible sets; box and `ℓ¹` laws; fakes; exchange rate on the prime and the zero side; first selective window; Dirichlet `L`-functions on the ladder [L*]; the contacts cancel in the mean over the heights [S] | A102, A103, A105, A108, A117 | B159, B156 |
-| FCT (family continuation) | continuation from a common signal; the two legs; the signal as a Möbius sum; columns correlate through one residue; odd-order sign law; planar large sieve [L*]; the sieve over the Eisenstein integers [L] | A113, A118 | B158, B161 |
+| SOSZ ScaleLocality | logarithmic, `log²` and `√T` windows; exceptions; upper side; counts; local moments; half-period law; finite top layers; floors depending on the length give AAL; weighted floors with sharp coefficient two; the density of the counter-configuration [L*]/[K] | A78, A89 | B130, B144 |
+| SA (selective arithmetic) | trivial aperture in the conductor and the height aspect; feasible sets; box and `ℓ¹` laws; fakes; exchange rate on the prime and the zero side; first selective window; Dirichlet `L`-functions on the ladder [L*]; the contacts cancel in the mean over the heights; level one and the abscissa laws; bounded shapes do not decide feasibility [L*] | A102, A103, A105, A108, A117 | B159, B156 |
+| FCT (family continuation) | continuation from a common signal; a signal bound with level one gives RH; the signal as a Möbius sum; columns correlate through one residue; odd-order sign law; planar large sieve [L*]; the sieve over the Eisenstein integers; the lattice sum `6ζ(s)L(s,χ₋₃)`; the geometry of the detector as a vertex [L] | A113, A118 | B158, B161 |
 | MMD | cubic Gauss arithmetic, reciprocity, the cubic Eisenstein residue and its transport [L] | A33, A118 | B94; the identification of the arithmetic coefficients with the reciprocal signal and both bounds below `β` uniformly in the family |
 | CTZ (constituents) | the jump law on strips, with poles; Wiener's lemma on a strip; no constituent with a zero in the Wiener class; boxes; the Bohr strip; sizes on a circle; progressions [L*] | none | B153 (bounded class) |
 | HFP (Hodge theory of a fixed part) | normal form; short windows; finite index; block averages; flat packets; multipoles; chain squares; one inequality per prime on the comb [L*]/[L] | A80, A82, A94, A114 | B152, B149 |
-| AGZ | square, contacts, carries, tower, one ring; forced weights, constant, scale, tree lengths; exact index of rings; Riemann–Hurwitz; cyclotomic combs; towers; paying ring and planar square; split norm; own comb; the trivial aperture and Deuring–Heilbronn on the twisted comb [L*]/[L] | A108, A116 | B149, B88, B87 |
+| AGZ | square, contacts, carries, tower, one ring; forced weights, constant, scale, tree lengths; exact index of rings; Riemann–Hurwitz; cyclotomic combs; towers; paying ring and planar square; split norm; own comb; the trivial aperture and Deuring–Heilbronn on the twisted comb; the zero side of an explicit formula from two vertical lines, without functional equation [L*]/[L] | A108, A116 | B149, B88, B87 |
 | ELT | atoms and landing forms; filters at every speed; centred Vaughan currents at growing order; separated cofactor pairs [L]/[K] | A47, A86 | B141, B145, B138, B13 |
 | ZCG AbscissaLaws, Recurrence | split, atoms, sectors, quasi-RH as a tail law, graded recurrence [L*]/[L]; projection to the line; density-matched model [L*] | A109 | B13, B83, B138 |
 | IRW / EFT | the paired ξ model: an entire function with ζ's Gamma factor and count that does not land [L*]; continuous prime measures [L*] | none | B112 |
@@ -596,7 +594,7 @@ Each needs its source-to-receiver step first (B81). Dormant pending a source mec
 | Σ: the sign on every window, equivalently every rung of the ladder, verification at every height, one positive square of the comb pairing, feasible weights at every aperture | RW, EWU, OWU, ACT, CHMD, SZ, RN, AIP, SC, LI, TT (odd), HF, HAT-C, ACS |
 | Σ: continuation at small time and the theta head at the critical zeros | ZCG (heat), PTR, LA, GTA, XN, HCF, PA, TH |
 | Π: square-root precision and long moments past the height | WL, MC, SQF, PBM, RB, CTF, FU, CFC, RP, TT (endpoint), WD, TG |
-| The two legs: a half-plane (signal bound; `[X]` outside the native graph) and level-one dressed positivity | JAS, MC (signal), S3 |
+| Level-one dressed positivity on large primes (RH); the signal bound (a half-plane; `[X]` outside the native graph) | JAS; MC (signal), S3 |
 | Γ: reflection and count | PM, ECP |
 | The exceptional coordinate: world I (B13, Landing, DH) and world II (ZAL) | BAG, ZCG, JAS shell, SC undamped, WL thick runs, LA finite support |
 | The dark range: prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height | every route at all heights; BAG; TH certificates; WD; the centred type-II current of ELT; the rungs above one in the height aspect |

@@ -31,6 +31,11 @@ low boundary is at most `7/8 − 1/4000`, the high exponent of that bin is posit
 published row count the boundary of the probe lies in `(7/8 − 1/4000, 7/8]`; the three estimates
 that meet at the published point are the low bound, the row count in the bin `δ = 79/204`, and
 the dual length of the reflected rows.
+
+**The floor** (`endpointExponent_floor_bin_pos_of_lowBoundary_lt`, `endpointExponent_balanced`).
+In the bin `δ = 0` with the trivial count `R = 1`, every geometry with `lx ≤ ly` and low boundary
+below `13/15` has a positive high exponent; with the count `U^{1−δ}` in every bin the balanced
+geometry `lx = ly = 2/5`, `ℓ = 1/5` reaches `13/15`. The room inside the probe is `[13/15, 7/8]`.
 -/
 
 namespace GaloisForLFunctions.FamilyContinuationTheory.Budget
@@ -229,6 +234,32 @@ theorem endpointExponent_pos_on_edge {lx ℓ : ℝ} (hlx : lx ≤ 1) (hℓ : 1 /
     ring
   rw [← hb]
   exact endpointExponent_pos_of_lowBoundary_le hlx (by rw [hb]; linarith)
+
+/-! ### The floor of the probe -/
+
+/-- **The floor bin.** Rows whose characters have no zero to the right of the critical line
+(`δ = 0`), summed trivially (`R = 1`): for every geometry with `lx ≤ ly` whose low boundary is
+below `13/15`, their exponent is positive. Bounds of Riemann-hypothesis quality for every
+nonprincipal row do not bring the probe below `13/15` without cancellation across the rows. -/
+theorem endpointExponent_floor_bin_pos_of_lowBoundary_lt {lx ly ℓ : ℝ} (hb : lx ≤ ly)
+    (hσ : lowBoundary lx ly ℓ < 13 / 15) :
+    0 < endpointExponent lx ly ℓ (lowBoundary lx ly ℓ) 0 0 1 := by
+  unfold lowBoundary at hσ ⊢
+  have hμ0 : (0 : ℝ) ≤ max 0 (lx + ly + ℓ - 1) := le_max_left _ _
+  have hμ1 : lx + ly + ℓ - 1 ≤ max 0 (lx + ly + ℓ - 1) := le_max_right _ _
+  generalize max 0 (lx + ly + ℓ - 1) = μ at hσ hμ0 hμ1 ⊢
+  unfold endpointExponent
+  nlinarith
+
+theorem lowBoundary_balanced : lowBoundary (2 / 5) (2 / 5) (1 / 5) = 13 / 15 := by
+  norm_num [lowBoundary]
+
+/-- With the count `U^{1−δ}` in every bin, the balanced geometry `lx = ly = 2/5`, `ℓ = 1/5`
+has high exponent `(q − δ/2)/5 ≤ 0` at the boundary `13/15`. -/
+theorem endpointExponent_balanced (δ q : ℝ) :
+    endpointExponent (2 / 5) (2 / 5) (1 / 5) (13 / 15) δ q (1 - δ) = (q - δ / 2) / 5 := by
+  unfold endpointExponent
+  ring
 
 end
 

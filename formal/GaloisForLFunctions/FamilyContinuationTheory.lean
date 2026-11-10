@@ -41,5 +41,7 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   row length `M` and slot length `ℓ`; the face of zero retained length is paid by the tuple
   factor; the high exponent of the top rows is at most `−49/440640` at the published geometry and
   `−7/30672` in the bin `δ = 79/204`; every geometry with low boundary at most `7/8 − 1/4000` has
-  a positive high exponent in that bin.
+  a positive high exponent in that bin. In the bin of rows without zeros right of the line, summed
+  trivially, every geometry with low boundary below `13/15` has a positive high exponent: the
+  room inside the probe is `[13/15, 7/8]`.
 -/

@@ -1,8 +1,8 @@
 # Obstacles summary — status quo
 
-Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10). Working log: `logs/review-1011-status-quo-facts.md`.
+Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ) and [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem). Corpus checkpoint: commit `1cec78e529` with its working tree (2026-11-10). Working log: `logs/review-1011-status-quo-facts.md`.
 
-**Evidence.** `[L*]` Lean statement read for this report (working log §5); `[L]`, `[K]`, `[S]` as graded by the frontier map and the scoped-obstruction ledger at the checkpoint, not re-read; `[D]` deduction made here from `[L*]` statements (working log §7); `[C]` classical mathematics quoted from memory, not in the corpus, to be checked before use; `[A]` assessment; `[X]` one external source cached in the repository, outside the native import graph and not checked here: a zero-free half-plane `Re s>7/8` for ζ, Dirichlet `L`-functions and Hecke `L`-functions over `ℚ(√−3)` (see [fable.md](fable.md)). Sections 2.3–2.14 and 3 are interpretation and ideation: every untagged statement there is a proposal, not a result.
+**Evidence.** `[L*]` Lean statement read for this report (working log §5); `[L]`, `[K]`, `[S]` as graded by the frontier map and the scoped-obstruction ledger at the checkpoint, not re-read; `[D]` deduction made here from `[L*]` statements (working log §7); `[C]` classical mathematics quoted from memory, not in the corpus, to be checked before use; `[A]` assessment; `[X]` one external source cached in the repository, outside the native import graph and not checked here: a zero-free half-plane `Re s>7/8` for ζ, Dirichlet `L`-functions and Hecke `L`-functions over `ℚ(√−3)` (see [fable.md](fable.md)). Sections 2.3–2.14, 3 and 4 are interpretation and ideation: every untagged statement there is a proposal, not a result.
 
 **38 live formulations; 12 candidates** (SEC, CDC/BSH, S3, APF, EGC, EWJ, FEL, IRK, MSC, RFHM, W1C, WBF). HJ is PA; PCS is a retired label.
 
@@ -31,14 +31,14 @@ Companion to [route-obstacles.md](route-obstacles.md) (per route), [walls-ledger
 So the atoms have no model with both structures among Dirichlet series over the integers; outside that class B13 fails in a classical family (§2.5).
 
 ### 1.4 The finite layer is seen on bounded windows
-An attained positive top of ζ with at most `k` positive ordinates breaks every fixed floor on every sufficiently late continuous window of length `(k+1)π/67` [L*]; `n` modes of frequency `≥Γ` keep one sign on a length `≤nπ/Γ`, with no separation [L*]. A floor on integer runs `[x,e^Lx]` for every `L` gives AAL [L*]. A density-matched configuration with unattained top passes every floor on windows of a radius `o(log T)` [L*].
+An attained positive top of ζ with at most `k` positive ordinates breaks every fixed floor on every sufficiently late continuous window of length `(k+1)π/67` [L*]; `n` modes of frequency `≥Γ` keep one sign on a length `≤nπ/Γ`, with no separation [L*]. A floor on integer runs `[x,e^Lx]` for every `L` gives AAL; so do floors on arbitrarily late windows of length `(k+1)π/67` with a constant depending on `k`, also at the prime logarithms, and a floor of any exponent below the top depth fails on such windows [L*]. A density-matched configuration with unattained top passes every floor on windows of a radius `o(log T)` [L*].
 
-Three statements lie between RH and AAL [D]:
+Statements that exclude world I, and the world each leaves open [L*]/[D]:
 
 | Statement | Implied by RH | Gives | World left open |
 |---|---|---|---|
-| floors on windows of every bounded length at arbitrarily late scales | yes | AAL | unattained tops (world II, edge) |
-| level-one dressed positivity (on large primes) | yes | AAL and B56: `RH ∨ Θ=1` [L*] | the edge world |
+| floors on windows of every bounded length at arbitrarily late scales, constants depending on the length | yes | AAL [L*] | unattained tops (world II, edge) |
+| level-one dressed positivity on large primes | yes | RH: `Θ=½`, with no half-plane [L*] | none |
 | attained top ∧ thick `O(√X)` prime deviation | yes | RH [L] | none |
 
 ### 1.5 The ladder: what is proved is sizes
@@ -46,10 +46,11 @@ A system has a mass `m` (log conductor; log height) and a packet an aperture `a`
 
 | Fact | Evidence |
 |---|---|
-| Below rung one every dominated system is positive with margin: `½(1−e^{−η/2})log q∫f²` at `a≤log log q−η`; at height `t`, `½(1−e^{−η/2})log|t|∫f²−5∫f′²` at `a≤log log|t|−η` | [L*] |
+| Below rung one every dominated system is positive with margin: `½(1−e^{−η/2})log q∫f²` at `a≤log log q−η`; at height `t`, `½(1−e^{−η/2})log\|t\|∫f²−5∫f′²` at `a≤log log\|t\|−η` | [L*] |
 | At `log log q+η` the Liouville twist and `−Λ` fail on the odd polar packet, `Λ` without pole plane on the even one; the Liouville twist violates every floor; the trivial aperture is `log log q+o(1)` | [L*] |
 | At `log log t+log 2+η` a dominated system built with the height fails | [L*] |
 | Prime side: partial sums `≤Cn^{½+γ}` buy the rung `κ<1/(2γ)` on bounded shapes; twisted cancellation at every frequency inside the archimedean budget buys all packets; the sign on the polar packets is square-root cancellation of the Riesz mean | [L*] |
+| At `log log q+log 2+η` a dominated system has the floor `½log q(∫f²−∫f′²)` on every packet and is not feasible: bounded shapes do not decide the sign on all tests | [L*] |
 | Zero side: a pair of depth `δ` shows at rung `1/(2δ)`; for ζ and Dirichlet characters the sign on a rung `κ` forces a second off-line zero within `m^κ` of every zero of depth `>1/(2κ)` | [L*] |
 | A real character with the sign at `log log q+η` has a prime `p≤e^{2η}log²q` with `χ(p)≠1` and one with `χ(p)≠−1` | [D] |
 | In the height aspect the sign at rung `κ>1` for the fixed system `Λ` excludes an alignment of a proportion `(log t)^{1−κ}` of the `p^{−1/2}`-mass of the primes `≤(log t)^{2κ}`: the dark range below the Vinogradov length | [D] |
@@ -58,8 +59,8 @@ A system has a mass `m` (log conductor; log height) and a packet an aperture `a`
 
 Natively no rung above one is proved in any aspect, and the first step by sizes is a classical problem in each (least non-residue at the scale `log²q`; the region `1−c/log log t`). `[X]` gives the rung `4/3` in the height and the conductor aspect.
 
-### 1.6 Two legs
-RH ⇔ `JasDressedPSD 1` ∧ a half-plane bound [L*]. Leg A: a bound `O(Z^b)`, `b<1`, of the signal of the zeta kernel, a smoothed Möbius sum, gives `Re ρ≤b` [L*]; the family form continues the reciprocals of a whole family from two estimates for one sum [L*]. Leg B: level `σ` of the dressed aggregate on large primes gives `|Re ρ−½|≤σ−1` or the edge world; level two holds, `3/2` on large primes [L*]. `[X]` is leg A at `7/8`; with it RH ⇔ `JasDressedPSD 1` [D]. The source of `[X]` is one identity, in the native graph: the cube of the composite cubic Gauss sum is the ideal Möbius value times a phase [L*]. On a finite field `g(χ)^n≡−card F mod (μ−1)²` for every odd order `n>2` and `≡χ(−1)card F` for even order [L*]: order three is the least order with the Möbius sign. The budget of the detector has the boundary `7/8` at every redistribution of its two scales, and `29/36` with the unit term alone [L*]; the exceptional frequencies of one coprime column pair add without cancellation [L*].
+### 1.6 A level and a half-plane
+Positivity of the dressed lag aggregate at level one on the characters of all large primes gives `Θ=½`: RH, with no half-plane and no edge exception [L*]. A level `σ>1` on large primes gives `|Re ρ−½|≤σ−1` or the edge world; level two holds, `3/2` on large primes [L*]. A half-plane has a second receiver: a bound `O(Z^b)`, `b<1`, of the signal of the zeta kernel, a smoothed Möbius sum, gives `Re ρ≤b` [L*]; the family form continues the reciprocals of a whole family from two estimates for one sum [L*]. `[X]` is this receiver at `7/8`. Its source is one identity, in the native graph: the cube of the composite cubic Gauss sum is the ideal Möbius value times a phase [L*]. On a finite field `g(χ)^n≡−card F mod (μ−1)²` for every odd order `n>2` and `≡χ(−1)card F` for even order [L*]: order three is the least order with the Möbius sign. The budget of the detector has the boundary `7/8` at every redistribution of its two scales, `29/36` with the unit term alone [L*], and with its row-count law no boundary below `7/8−1/4000` [L]; the exceptional frequencies of one coprime column pair add without cancellation [L*].
 
 ### 1.7 Constituents
 No absolutely convergent Dirichlet series, and no absolutely convergent expansion over positive real scales on a strip about the line, has a zero there with its zeros there among those of ξ; one zero forces infinitely many unmatched ones [L*]. Mechanism: recurrence of a zero against the density zero of the deep zeros, then the jump law: two absolutely convergent expansions of `−sΦ/ζ` on the two sides of the line are equal, also with countably many poles of summable residues on the line [L*]. A bounded constituent with a zero lives on `Re s>x`, `0≤x<½`, has support exponent `≥1−2x` and infinitely many primes [L*]. Every box has a Dirichlet polynomial with exactly the zeros of ξ, of unbounded length; for bounded length a fixed height refutes [L*]. Sizes on one circle bound the zeros of ξ in the disc by the zeros of the dominant half of a splitting [L*].
@@ -69,7 +70,7 @@ No absolutely convergent Dirichlet series, and no absolutely convergent expansio
 |---|---|---|
 | Sections with Riemann–Roch and Bézout on the tower of lines | the product formula | [L] |
 | Restriction on the planar square (unit masses, every contact paid) | an equality of ideals: the values on `Γ_m` are exactly `Π_{n∈S}J(m,n)` | [L*] |
-| The count of a section on two graphs | the split norm `|x_mx_n|`, quadratic on rays, not a form | [L*] |
+| The count of a section on two graphs | the split norm `\|x_mx_n\|`, quadratic on rays, not a form | [L*] |
 | The own comb of an integer-norm system (squares) | Bézout fails without hypothesis | [L*] |
 | A tower of rings | the base has weight `1/d`; the per-degree limit does not see ζ | [L*] |
 | The tree of a prime with a free edge length | `ℓ=log p` forced; at `p=2` on packets `≤log 4` a monotone path with threshold `ℓ*(L)` | [L*] |
@@ -147,11 +148,8 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | # | Task | Routes | Basis |
 |---|---|---|---|
 | A103 | The ladder as one statement: saving `γ` ⇒ sign to `κ<1/(2γ)`; the sign on a rung ⇒ no isolated zero of depth `>1/(2κ)`; a bounded dyadic moment at `θ>1` ⇒ depth `<1/(2θ)+ε` eventually; the seven power savings of quasi-RH [D] | RW, WD, SRT | `exists_cancellation_margin`, `zeta_companion_of_rung`, `finite_offLineZeros_beyond_of_dyadic_long_mollifier`, `quasiRH_crossRoute_seven_way_tfae` |
-| A106 | AAL from floors on windows of length `(k+1)π/67` for each `k`, constants depending on the length; the form at the prime logarithms [D] | ZCG, SRT | `zeta_finite_top_breaks_every_floor`, `asymptoticAbscissaLaw_of_bddBelow_integer_runs` |
-| A107 | Level-one dressed positivity ⇒ AAL and ⇒ B56; the statement `RH ∨ Θ=1` [D] | JAS | `jasDressedPSDAbove_zeroFree_or_edge`, the abscissa laws |
 | A108 | The first rung in the conductor aspect: the sign at `log log q+η` forces a non-residue and a split prime below `e^{2η}log²q` [D] | ACS, HF | `feasible_congr`, `exists_systemForm_polar_neg` |
 | A109 | The trichotomy of the normalized prime error: RH, a nonzero finite trigonometric limit (world I), or limit zero [D] | ZCG | `exists_primeErrorFiniteOscillation_of_lt_gap`, the half-period law |
-| A110 | B13 ⇔ the negative index of the defect of the comb pairing on packets is `0` or infinite [D] | HF, ACS | `exists_le_negIndex_ringDefect_iff`, `negIndex_weilArchState_eq_rightZeros` |
 | A113 | The map under a half-plane premise `Θ≤b`: the rung `1/(2b−1)` on bounded shapes, large-prime positivity above the level `½+b`, return-free windows of the prime orbit [D] | JAS, SA, S3 | `exists_cancellation_margin`, the level dichotomy, the strip theorem for returns |
 | A114 | The limit matrices of the block-constant form with both pole moments: RH ⇔ Weil's form is nonnegative on step packets of `3KR` blocks, for all `K,R` (unverified) | ACS, HF | `riemannHypothesis_of_frequently_blockFunction_combForm_ge`, `tendsto_flatContactPoints_self_autocorr` |
 | A104 | Exceptional heights on the ladder: the sizes fail at aperture `a` at most on a set of heights in `[T,2T]` of measure `O(Ta³/log²T)`, from the mean square of the contact polynomial [D]; `T^{1−1/(2κ)+o(1)}` on rung `κ` from moments of order `log T/log Y` [D] (unverified) | RW, BAG | `integral_contactPoly_window_sq_le`, `exists_height_margin`, `measureReal_large_primePoly_le` |
@@ -163,7 +161,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | A78, A89 | Cluster form of the separated-window theorem; a prescribed radius in the sub-logarithmic model (unverified) | SRT | the finite-mode theorem; the block tower |
 | A86, A47 | The near-diagonal cofactor pairs and the transfer through the growing-order filter; constants of the one-quartet world (unverified) | ZCG, BAG | the growing-order reduction [K] |
 | A111 | A proportion of critical zeros by Levinson's gate from the twisted moment below the square root (unverified) | WD | `exists_interval_twistedMoment_le`; the Levinson detector coefficients |
-| A116 | Ideals as degree points; Hecke characters; the index law per Artin character for a non-abelian ring (unverified) | ACS | the abelian index theorem; Riemann–Hurwitz |
+| A116 | Ideals as degree points; Hecke characters; the index law per Artin character for a non-abelian ring (unverified) | ACS | the abelian index theorem; Riemann–Hurwitz; `hasSum_zeros_two_lines` (the zero side of an explicit formula without functional equation) |
 | A119 | The depth sum `Σ_{β>½}(β−½)≤cT` with a constant from the mollified moment (unverified) | WD, AIF | the moments below the square root |
 
 ### Finite verification and explicit constants
@@ -207,7 +205,7 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 |---|---|---|---|
 | B1 | Weil's sign on every window; equivalently the fixed-height energy floors | RH | all sign routes, HAT-C |
 | B152 | The comb form on block-constant divisors: `≥−ηΣσ²` at arbitrarily large block sizes, every `K,R,η` | RH | ACS, HF |
-| B160 | `JasDressedPSD 1`: RH given a half-plane; natively it gives `RH ∨ Θ=1`, hence AAL and B56 [D] | RH / ≥B56 | JAS |
+| B160 | `JasDressedPSD 1` on the characters of all large primes: it gives `Θ=½` with no half-plane [L*] | RH | JAS |
 | B18 | A construction of feasible weights at every aperture | RH | RW |
 | B2, B4, B5 | Bounded oscillation of `Ψ` to contact; outer predictors and Schur bands; kick admission | RH | RW, GWZ, WTZ |
 | B6, B8, B101 | Full-space sign at every critical multiple; head thresholds; polar payment at every ratio | RH | HF, SRT, AIP |
@@ -232,7 +230,7 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 | B158 | **A second source**: a completed sum with two exact representations whose dual side contains the reciprocal of the target, from Gauss sums of an odd order `n≥5` or another identity; the boundary `b(n)` of its budget (§3) | producer | JAS, MC |
 | B48–B54 | Deciding input at square-root precision; endpoint energy; trivial-gauge half power; moving power windows; rows and BSY; regularized partial sums; extremal inequality | RH | WL, MC, SQF, JAS, CTF, PBM, RB |
 | B55, B67 | Polynomial stencil rate; parity at power saving | ≥qRH to RH | WL, MC |
-| B56 | `Θ<1⇒Θ=½`; implied by the transfer of S3 [L*] and by level-one dressed positivity [D] | ≥B56 | whole programme |
+| B56 | `Θ<1⇒Θ=½`; implied by the transfer of S3 [L*] | ≥B56 | whole programme |
 | B57 | Depth density `o(T)` | sub | WD, CTF, MC, RW, PM |
 | B58–B61 | `D_win`; cluster wall; Green moments at deep zeros; a detector past the last scale | sub | WD, MC |
 | B62, B63, B66 | Cofinal long moment; collision charge; near-unit holomorphic budgets | RH | WD, CTF, AIF |
@@ -255,7 +253,6 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 | B157 | **What excludes a finite stratum when both structures are present** (§2.5) | method | BAG, ZCG, ELT |
 | B89, B112, B128 | A bounded aligned return at each right zero; the functional equation into vertical transport; replication | sub | BAG, ZCG, EFT |
 | B153 (bounded class) | A bounded Dirichlet series on `Re s>x`, `0≤x<½`, with a zero and all its zeros among those of ξ (§2.6) | method | IRP, W1C, PTR, PM |
-| B155 | Whether the edge alternative of the level dichotomy occurs: positivity of the dressed aggregate on large primes at a level `σ<3/2` with zeros accumulating at `Re s=1` | method | JAS |
 | B68, B71 | Reflection Krein positivity, flux, dispersion; universal decay and the horizon rates | RH | PM |
 | B72–B76 | Cutoff-uniform target mass; the candidate zero-parameter conditions; FE-pair reality | RH | BAG, candidates, ZCG |
 | B80, B81 | FE twins in the full class; candidate landings | sub; producer | SEL; candidates |
@@ -275,6 +272,9 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 | B153 (Wiener class) | Almost periodic constituents | none with a zero, in a half-plane or a strip; open in the bounded class | [L*] |
 | B143, B151, A92, A95 | The resolution of the minimal face | logarithmic radius; a density-matched model below it; `ΓL≤nπ`; a finite top layer needs no separation | [L*] |
 | B148 (as a method question) | The strength of the transfer of S3 | it gives `Θ<1⇒Θ=½` | [L*] |
+| B155 | The edge alternative of the level dichotomy at level one | does not occur: level-one positivity on large primes gives `Θ=½` | [L*] |
+| A106, A107, A110 | Floors depending on the length, also at the prime logarithms; level one and the abscissa laws; B13 as an index dichotomy | AAL; AAL, B56 and RH; B13 ⇔ the supremal negative index of the comb defect on real packets is `0` or infinite, that index being the number of right zeros | [L*] |
+| — | Whether the bounded-shape floor decides the sign on all tests | no: an aligned dominated system at `log log q+log 2+η` | [L*] |
 | A68 | Landing with ζ's Gamma factor and count | not forced | [L*] |
 | A55 | Functional-equation rigidity for prime measures | holds for countable systems; fails for positive continuous measures, which keep every zero | [L]/[L*] |
 | A72, A73, A76, A71 | Counts, the upper side, absolute and signed forms with exceptions, local tensor moments on logarithmic windows | equivalences with RH | [L*]/[K] |
@@ -297,23 +297,23 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 
 | # | Parts | What the assembly gives | Missing input | Gain |
 |---|---|---|---|---|
-| F23 | **Two legs.** JAS dressed positivity; the signal of the zeta kernel; family continuation; `[X]` | RH ⇐ signal `O(Z^b)`, `b<1`, ∧ `JasDressedPSD 1` [L*]; with `[X]`: RH ⇔ `JasDressedPSD 1` [D] | natively both; with `[X]`: B160 | the two producers are decoupled; each has receivers with power slack on the first leg |
-| F24 | **Escape worlds.** Bounded-window floors; level one; logarithmic windows; a half-plane | level one leaves the edge world; bounded-window floors leave unattained tops; a half-plane removes the edge world; a floor on logarithmic windows removes all [L*]/[D] | one of them | a map of which input kills which world; AAL follows from level one alone |
+| F23 | **Level and signal.** JAS dressed positivity; the signal of the zeta kernel; family continuation; `[X]` | RH ⇔ level one on large primes [L*]; a half-plane ⇐ signal `O(Z^b)`, `b<1` [L*]; `[X]`: `b=7/8` | B160 for RH; B161 natively for a half-plane | one positivity statement at one level is RH with no premise; the signal receiver has power slack |
+| F24 | **Escape worlds.** Bounded-window floors; levels; logarithmic windows; a half-plane | a level `σ>1` leaves the edge world; bounded-window floors leave unattained tops; a half-plane removes the edge world; level one and a floor on logarithmic windows remove all [L*]/[D] | one of them | a map of which input kills which world |
 | F25 | **The ladder.** Sizes, fakes, exchange rates on both sides, the mean over the heights | the sign on a rung from a saving; isolated deep zeros excluded by the sign; the sizes fail only at aligned heights, a set of small measure [L*]/[D] | B159; clusters (B156) | one scale for every sign statement; the dark range and the rungs are one problem |
 | F2 | **One inequality per prime**, with the upper side, counts and moments | Σ, Π and count readings are one number per prime on sparse windows [L*] | B130 on one sequence of windows | one target with slack `p^{o(1)}` |
-| F8 | **Finite-layer world.** Free strip, Mertens saving, filters, centred currents, half-period deletion, bounded windows | a complete receiver; any leg-B producer excludes world I [D] | B145, or B160, or B148 | world I is excluded by leg B alone |
+| F8 | **Finite-layer world.** Free strip, Mertens saving, filters, centred currents, half-period deletion, bounded windows | a complete receiver; level one or the S3 transfer excludes world I [L*] | B145, or B160, or B148 | world I is excluded by any input that turns a strip into the line |
 | F17 | **The comb at finite scale.** Normal form, block averages, flat packets, forced data, exact index | RH ⇔ nonnegativity of an explicit family of finite matrices on step packets (A114) [L*]/[D] | B152 | the statement lives in finite rank, uniformly in the scale |
 | F26 | **Covers.** Exact index of a ring; a cover bounds its base; towers | the index of one abelian ring gives RH; per degree ζ is lost [L*] | the index of a ring | support, not a route |
 | F11 | **Construct, then identify.** Index semicontinuity, rigidity, sizes on a circle | a splitting with `‖E^♯‖≤‖E‖` on circles and a zero-free dominant half gives purity in the window [L*] | B146 | constituents with a zero are excluded as pieces in the Wiener class |
 | F27 | **Sign-free skeleton.** Signed deletion, ordinate injectivity, recurrence against density, the jump law, half-period deletion, Turán, the digit calculus | pointwise theorems on constituents and finite layers [L*] | a sign-free source that acts on ξ | under the constraint of §2.6 the receiver is complete |
 | F6 | **Regulators.** Cusp cutoff, clock, scattering tower | RH ⇔ the energy floor at one fixed height [L*] | B88, B117 | one fixed finite height suffices |
-| F28 | **Source and budget.** The local sign law at odd order, the cubic identity, the planar large sieve, the budget of the detector, the continuation principle | every native brick of leg A except the global object and the two estimates [L*] | A118; B158 | the boundary of a probe is a theorem about exponents before any estimate |
+| F28 | **Source and budget.** The local sign law at odd order, the cubic identity, the planar large sieve, the budget of the detector, the continuation principle | every native brick of the half-plane receiver except the global object and the two estimates [L*] | A118; B158 | the boundary of a probe is a theorem about exponents before any estimate |
 | F1, F3–F5, F7, F9, F10, F12–F16, F18–F22 | as recorded: two-world skeleton, Deligne skeleton, critical curve, horizon, rigidity, exactness, count skeleton, graded recurrence, sign-free receivers, dark range, theta wall, census, flow, remainder, existence half, resolution atlas, conductor ladder | F20 and F22 are theorems (feasible weights; the trivial aperture); the others keep their missing inputs | B104, B71, B97, B102, B150, … | — |
 
 **Closest to the open core: F23, F25, F2, F17, F8.**
 
 ### What a contradiction search may assume in world I
-`Θ<1`; isolated top `β`, attained; `M(x)=O(x^{β′})`; the prime error is a finite oscillation at the top plus a smaller remainder; every late window of length `(k+1)π/67` holds a point below every floor [L*]; filters read each top residue; centred type-II currents on polynomially many cofactors [K]; fewer than `T^c` separated returns to a small disc at a zero right of `σ`; in world I-a the negative index of the pairing is finite, even and equal to the number of right zeros [L*]/[D]; level-one dressed positivity fails [D]. No contradiction comes from exact identities alone, from positivity, Euler products, integrality or counting alone, from the functional equation with ζ's Gamma factor and count, or from any statement in law [L*]/[L].
+`Θ<1`; isolated top `β`, attained; `M(x)=O(x^{β′})`; the prime error is a finite oscillation at the top plus a smaller remainder; every late window of length `(k+1)π/67` holds a point below every floor [L*]; filters read each top residue; centred type-II currents on polynomially many cofactors [K]; fewer than `T^c` separated returns to a small disc at a zero right of `σ`; in world I-a the negative index of the pairing is finite, even and equal to the number of right zeros [L*]; level-one dressed positivity fails [L*]. No contradiction comes from exact identities alone, from positivity, Euler products, integrality or counting alone, from the functional equation with ζ's Gamma factor and count, or from any statement in law [L*]/[L].
 
 ## Validation tests for 2.4–2.8 and 3
 
@@ -383,11 +383,11 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 
 `[X]` under the constraint [A]: its estimates are large sieves used as bounds and its identity is algebraic, but its global object, the cubic theta function, is a residue of an Eisenstein family on a cover. The strict reading removes it.
 
-**Verdict.** Under the constraint no statement about ξ below quasi-RH passes the tests. Two questions remain, one with a first step and one that would restore leg A.
+**Verdict.** Under the constraint no statement about ξ below quasi-RH passes the tests. Two questions remain, one with a first step and one that would restore a source of half-planes.
 
 **Question with a first step (B153, bounded class).** *Can a bounded Dirichlet series on `Re s>x`, `0≤x<½`, have a zero and all its zeros there among those of ξ?* Proved: none in the Wiener class; a bounded constituent has support exponent `≥1−2x`, infinitely many primes, and no absolute convergence left of the line [L*]. First step: the jump law for a left expansion that is square summable and not absolutely summable; poles with summable residues are covered [L*]. Named obstacle: Bohr's inequality gives absolute convergence only on `Re s>x+½`. Either answer: No — the zero set of ξ contains the zero set of no bounded almost periodic function, and every exact arithmetic piece is excluded; Yes — an infinite set of zeros of ξ is on the line by recurrence against density, with no sign in the proof.
 
-**Question that restores a source (B158, non-spectral form).** *Is there a summation formula, proved by Poisson summation and reciprocity alone, whose two sides carry Gauss sums of an odd order?* Order two is elementary and carries the parity of the character; order three is the least order with the Möbius sign [L*], and its theta function is not elementary [D]/[C]. A formula of this kind is a completed sum with two representations and would give leg A a source inside the constraint.
+**Question that restores a source (B158, non-spectral form).** *Is there a summation formula, proved by Poisson summation and reciprocity alone, whose two sides carry Gauss sums of an odd order?* Order two is elementary and carries the parity of the character; order three is the least order with the Möbius sign [L*], and its theta function is not elementary [D]/[C]. A formula of this kind is a completed sum with two representations and would give the half-plane receiver a source inside the constraint.
 
 **Tests.** B153: T1 method; T2–T4 pass; T5 calibrated on curve zeta functions, which are their own constituents; T7 moves Γ215; T8 passes. B158: T1 producer; T2 passes; T8: the summation formulas for cubic Gauss sums are classical through automorphy [C]; a proof without it is not known to exist.
 
@@ -476,7 +476,7 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 |---|---|
 | What it is about | Conversions: an amplification of one exception and a law that the amplified exception violates. Their exponents, their domains, their prices; and sources that need no spectral construction |
 | The conversions | recurrence against density (a zero of an almost periodic object recurs; deep zeros have density zero); budget overflow (one off-line zero costs `Y^{2δ}` against a budget `T`); winding and sign changes (index; half-period deletion; sizes on a circle); the rightmost zero of a family against a mean square over its twists (`[X]`, by the narrow reading) |
-| Established | No constituent with a zero in the Wiener class; the jump law with summable poles; the law of the carry; the long-mollifier trap; the half-period law; finite layers on bounded windows; RH ⇔ `|c_p|≤K` on windows; ordinate injectivity; the greedy optimum of the digit calculus; the local sign law at odd order [L*]/[L] |
+| Established | No constituent with a zero in the Wiener class; the jump law with summable poles; the law of the carry; the long-mollifier trap; the half-period law; finite layers on bounded windows; RH ⇔ `\|c_p\|≤K` on windows; ordinate injectivity; the greedy optimum of the digit calculus; the local sign law at odd order [L*]/[L] |
 | Criteria | No sign of a form and no operator. Reprove the conversions as one scheme with exponents. Over `𝔽_q` reduce to periodicity of the zeros in height. Fail on integer-norm one-offs (finite exceptions do not recur) and on `ζ(s−h)`. State the exchange with length: which conversions stay below the height |
 | Questions it must answer | Is there an amplification of one zero that is unconditional below the height? Does recurrence against density extend to the bounded class (B153)? Which splittings of ξ have sizes on circles and an arithmetic count of the zeros of the dominant half (B146)? Is there a summation formula for Gauss sums of odd order without automorphic input (B158, non-spectral form)? What replaces the carry-free calculus when the carry is a nonzero class? |
 | Tools it develops | Recurrence against density on strips; the jump law; half-period deletion; Turán's power sums; budgets for long polynomials; reciprocity in cyclotomic rings |
@@ -582,19 +582,19 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 3. *Is `inf_n b(n)=½`, or is it bounded away from `½`?*
 
 **What is known.**
-- `n=3`: the object is the cubic theta function, the residue at `4/3` of the cubic Eisenstein family; the residue is nonzero and its transport is in Lean [L]; its coefficients as Gauss sums are an open item of the native graph (A118). `b(3)=7/8` by `[X]`, a floor of the probe [L*]; `29/36` if the exceptional term is absent; `5/6` needs a Gram profile with `ν≤1/15` [L*].
+- `n=3`: the object is the cubic theta function, the residue at `4/3` of the cubic Eisenstein family; the residue is nonzero and its transport is in Lean [L]; its coefficients as Gauss sums are an open item of the native graph (A118). `b(3)=7/8` by `[X]`, a floor of the probe [L*], with no boundary below `7/8−1/4000` under its row-count law [L]; `29/36` if the exceptional term is absent; `5/6` needs a Gram profile with `ν≤1/15` [L*].
 - `n≥5` [C], to be checked: on the `n`-fold cover of `GL₂` the coefficients of the theta function are not determined by Gauss sums for `n≥4`; uniqueness of Whittaker models, which gives Gauss-sum coefficients, holds for theta functions on the `n`-fold cover of `GL_{n−1}` and `GL_n`. A probe of order `n` then lives in rank `n−1`, with summation formulas and large sieves of that rank.
 - The pole of the order-`n` Eisenstein family is at `1+1/n` in the normalization in which the cubic one is at `4/3` [C]; the exponents `4/3`, `5/6`, `11/12`, `7/8` of the cubic budget are functions of this number [A].
-- The continuation principle, the receiver for ζ, the planar large sieve and the two-leg theorem do not depend on the order [L*].
+- The continuation principle, the receiver for ζ, the planar large sieve and the lattice sum of the base ring do not depend on the mechanism of one order [L*]/[L].
 
 **What either answer gives.**
 | Answer | Effect |
 |---|---|
-| `b(n)→½` | RH by leg A in the limit of the orders, each order with its own estimates; leg B is not needed; the programme of sources has a definite ladder, and the first target is the order with the first boundary below `3/4` |
-| `inf b(n)>½` | leg A through Gauss-sum probes stops above the line by a theorem about exponents; RH needs leg B (`JasDressedPSD 1`) or a source of another kind; the routes that wait for a half-plane premise (S3, JAS, WL, MC) receive at best that infimum |
+| `b(n)→½` | RH by half-planes in the limit of the orders, each order with its own estimates; level one is not needed; the programme of sources has a definite ladder, and the first target is the order with the first boundary below `3/4` |
+| `inf b(n)>½` | half-planes through Gauss-sum probes stop above the line by a theorem about exponents; RH needs level one (`JasDressedPSD 1` on large primes) or a source of another kind; the routes that wait for a half-plane premise (S3, JAS, WL, MC) receive at best that infimum |
 | no global object for `n≥5` | the cubic identity is isolated; `7/8` is the end of this mechanism unless the mean square of the cubic probe is replaced |
 
-**Why this question.** It is the only place in the repository where a producer exists, and the question asks for its extent before any estimate: a classification and a budget. It is below RH, AAL and quasi-RH in kind: items 1 and 2 are statements about objects and exponents, proved or refuted without any information on zeros. Its answer decides whether the half-plane route can reach the line, which is the premise of four routes and of the two-leg theorem.
+**Why this question.** It is the only place in the repository where a producer exists, and the question asks for its extent before any estimate: a classification and a budget. It is below RH, AAL and quasi-RH in kind: items 1 and 2 are statements about objects and exponents, proved or refuted without any information on zeros. Its answer decides whether the half-plane route can reach the line, which is the premise of four routes.
 
 **First step and obstacle.** Write the budget of the cubic detector with the order as a parameter: slot length, Gram exponent, principal shift, the count of exceptional frequencies (`n`-th and `2n`-th powers in place of cubes and sixth powers), keeping the shape of `fixed_slot_boundary` and `retunedBoundary_sharp_minimum` [L*]; this gives `b(n)` conditional on the existence of the object and on large sieves of the same strength. Named obstacle: the global object for `n≥5` lives in higher rank [C], where the summation formula and the planar sieve are not the ones in the corpus.
 
@@ -608,9 +608,141 @@ A16 numerical `r,m,q`; A19 an explicit height for the heat horizon; A20 a Jensen
 | Polar orthogonality (B104, §2.4) | the critical curve becomes one inequality | native; passes; produces no sign |
 | What excludes a finite stratum (B157, §2.5) | a calibration with both structures for the atoms | native; a method question; proves no atom |
 | Constituents in the bounded class (B153, §2.6) | every exact arithmetic piece excluded, or an infinite pure subset | native; passes; decides constituents, not zeros |
-| The edge alternative (B155) | whether level-one positivity is RH without a half-plane | native; expected removable [A]; changes the statement of leg B, not its work |
 | Clusters on a rung (B156) | whether the sign on a rung is a strip | No at the level of configurations is expected (A105); for ζ it needs both structures |
 | `JasDressedPSD 1` (B160); the comb form on block-constant divisors (B152); a regulator unitary at every cutoff (B117); a height or a path (B169) | RH | producers of RH strength |
 | Deuring–Heilbronn for ζ (B141); B13; Landing | atoms | no first step |
 | `Θ<1⇒Θ=½` (B56); the transfer of S3 (B148); the signed centred current (B145) | AAL and more | fail T1 |
 | Depth density `o(T)` (B57); a bounded form factor (B150) | first near-line inputs past the diagonal | census problems |
+
+## 4. If every route is a receiver: a research programme
+
+**Assumption.** Every one of the 38 formulations is an equivalence with an open input, and no producer exists. `[X]` does not change this section: its mechanism has a floor (§4.1), so even as a theorem it reaches neither AAL nor the line.
+
+**Guidance adopted for the programme.** A mechanism for the asymptotic abscissa law has to work for every `Θ=½+δ` with `δ>0` arbitrarily small. This excludes every method whose conclusion stops at a boundary, large-sieve methods among them. What is needed is an inequality without a floor, by a mechanism of another kind than `[X]`.
+
+### 4.1 The floor of a mechanism
+
+The **floor** of a mechanism is the least depth `δ=Re ρ−½` at which it can exclude a zero. A mechanism with a positive floor cannot prove AAL, B13 or RH, whatever its constants.
+
+| Mechanism | Floor in the depth | Evidence |
+|---|---|---|
+| Sizes of the contacts (the dominated box) | `½`: rung one; both one-structure fakes fail at `1+o(1)` | [L*] |
+| Positivity of Dirichlet coefficients (the pole against a zero; `3+4cos+cos2`) | `½`: every nonnegative combination of logarithms of shifts of ζ contains the unshifted one with a positive coefficient and has the pole at its abscissa | [D] |
+| Exponential sums (Vinogradov–Korobov) | `½−o(1)` | [L] |
+| Density theorems as exclusion (graded recurrence with exponent `(30/13)(1−σ)`) | `1/15`: the exponent is `≥1` for `σ≤17/30` | [L] |
+| Mean square over a family followed by Cauchy–Schwarz (the detector of `[X]`) | `3/8`; `11/36` with the unit term alone; exact in its budget, and with its row-count law not below `3/8−1/4000` | [L*]/[L] |
+| A dominant half made of a shifted ξ (pencils `ξ(s+h)±ξ(s−h)`, cosine producers) | `h=½`: it transports the trivial zero-free region | [L] |
+| Bilinear statements (Type I, Type II norms) | none reached: invariant under the Liouville twist | [L*] |
+| Mean values of length below the height | none reached: stable under relocation of finitely many zeros | [L] (ledger) |
+| Verification | no floor in the depth; a floor in the height | [L*] |
+| The sign of Weil's form; the level-one sign of the dressed aggregate on large primes; an exact count; the parity of an index | no floor | [L*]/[L] |
+
+Consequence [D]: every estimate that is a size, a mean value, a coefficient positivity or a large-sieve budget is out, for a structural reason and not for lack of strength. What remains has no floor because it is exact.
+
+### 4.2 Inequalities without a floor
+
+RH is in every formulation the missing direction of a one-sided inequality whose other direction is a theorem: `Θ≥½`; the inner mass `I≥0`; the ringdown rate `≤¼` [D]; the negative index `≥0`; the de Bruijn–Newman constant `≥0` [C]. An estimate with a floor proves the missing direction above its floor only. Four kinds of inequality have no floor [D]/[C].
+
+| Kind | Why it has no floor | Where it proves a theorem [C] | Receivers of the corpus that accept it |
+|---|---|---|---|
+| (a) **Homogeneous**: some constant suffices | scaling turns any bound into the sharp one | Tate's limit for heights | a uniform floor `W(f)≥−C∫f²` over all packets, any `C` [L*]; floors on windows of every bounded length, any `K(L)` ⇒ AAL [L*]; the cofinal Möbius moment with one power [L*]; a floor `−Kp^{ε}` for every `ε` on logarithmic windows [L] |
+| (b) **Unit gap**: an integer below one is zero | discreteness | Stepanov; verification; the argument principle | `ℕ`-counts on prime rays [L*]; index at most one for approximants [L]; at most one zero right of a line gives none, the zeros of the strip being non-real [D]; the sub-unit gate of TG [L] |
+| (c) **Equality case**: a certificate for an extremal problem | a feasible point proves the optimum exactly | linear programming bounds with a magic function | some feasible weight system at each aperture, not `Λ` [L*]; a mollifier with budget below `1+ε` (Szegő infimum `exp(2I)`) [L]; Jensen's equality (BSY) [L] |
+| (d) **Amplification**: the depth is multiplied, the loss is not | a parameter `k→∞` with a loss independent of `k` | the tensor-power argument of Rankin and Deligne | one growth exponent for all even moments of the prime traces [L*]; sublinear tensor growth with the trace of ζ retained [L]; tensor series of a configuration converge right of `1+m·depth` [L] |
+
+The programme works only on these receivers. Every other route waits.
+
+### 4.3 Requirements for a producer
+
+| # | Requirement | Source |
+|---|---|---|
+| R1 | No floor: it acts at every depth `δ>0` | §4.1 |
+| R2 | Its inequality is of kind (a), (b), (c) or (d) | §4.2 |
+| R3 | It uses the functional equation and the Euler product jointly: it fails for the Liouville twist, for the lattice with a pair, for the paired ξ model and for integer-norm one-offs | [L*] |
+| R4 | It is pointwise in the zeros; a statement in law never excludes | [L] |
+| R5 | It is not a mean square over a family of twists and uses no large sieve | guidance; §4.1 |
+| R6 | It proves no margin and no wrong constant, weight or scale | [L*] |
+| R7 | It does not follow from the explicit formula alone: every filtered current is the filtered zero sum | [L] |
+| R8 | For AAL it acts on a finite datum, the top layer, and on quantities normalized by the top exponent | §4.4 |
+
+### 4.4 AAL as non-attainment
+
+In world I the smoothed prime error is `e^{(Θ−½)u}(P(u)+o(1))` with `P` a nonzero real trigonometric polynomial with finitely many frequencies [L]. The world is uniformly bad [D]: for every `L>0` there is `c(L)>0` with `sup_{[T,T+L]}|c_B|≥(c(L)−o(1))e^{(Θ−½)T}` for all large `T`, because the translates of `P` form a compact family of nonzero analytic functions. So each of the following gives AAL, at every depth, with no exponent claimed.
+
+| # | Statement | Evidence |
+|---|---|---|
+| N1 | For one `L>0`: `liminf_T e^{−(Θ−½)T}·sup_{[T,T+L]}\|c_B\|=0`: on some late windows of one fixed length the error is of smaller order than its own maximal rate | [D] |
+| N2 | For each `k`: a floor `−K_k`, or a floor of any exponent below the top depth, on arbitrarily late windows of length `(k+1)π/67`, also at the prime logarithms | [L*] |
+| N3 | One growth exponent for all even moments of the prime traces on arbitrarily late windows of one fixed length | [D] |
+| N4 | At most one zero right of some line `Re s=σ`, `Θ₂<σ<Θ` | [D] |
+| N5 | `JasDressedPSD 1` on large primes; it gives `Θ=½` | [L*] |
+
+N1 is the form the guidance asks for: it compares the error with its own rate, so it is the same statement at `δ=10^{−9}` and at `δ=¼`. In prime terms: the prime number theorem with exponent `Θ` is never attained uniformly; there are scales at which the error falls below every multiple of `x^Θ` on a whole window of bounded ratio.
+
+What a proof of N1 cannot be [D]. Normalization by `e^{(Θ−½)u}` removes every main term, so positivity of `Λ` is lost: it bites only at `δ=½`, which is the classical zero-free region. Every linear identity of the explicit formula passes to the limit as a homogeneous convolution equation whose solutions are exactly the trigonometric polynomials with frequencies at zeros on `Re s=Θ`: a tautology. What can survive the normalization is nonlinear or discrete: multiplicativity, integrality of multiplicities, the parity of the top layer, replication of a zero.
+
+### 4.5 Tracks
+
+Ranked by fit to R1–R8 and by the existence of a first step. Each track ends at a stated theorem or at a stated kill.
+
+**Track 1 — Non-attainment (AAL).**
+- *Aim.* N1–N4 for ζ.
+- *First theorems.* A121: N1 and N3 in Lean, with the compactness of the hull of the top trace. A125: N4, with the parity of the top layer. A127: the **tangent datum** of world I — top exponent, ordinates, multiplicities, and the residues that govern the top traces of `Λ`, `μ`, `λ` and of twisted multiplicative functions — with the theorem that every linear identity of the corpus is a tautology on it.
+- *Then, three mechanisms to test on the tangent datum.* (i) Replication: a zero at the top forces another at the same real part. It follows from recurrence of ζ to itself on a small disc at the top zero, and in world I the only obstruction to Hurwitz's argument is that the translates are not a normal family on `Re s>Θ₂`; decide which normalization of the translates is normal there (B128, B89). (ii) Multiplicativity: the tangent data of `f`, `g` and `f·g` for bounded multiplicative `f,g` are linked by nonlinear relations; decide whether a bounded multiplicative function exists whose top trace would exceed the trivial bound. (iii) Integrality: the prime filters recover the multiplicities as limits; decide whether any filter has an a priori bound below one.
+- *Kill.* If the tangent datum of every bounded multiplicative function is consistent (Selberg–Delange asymptotics at a pole of order the multiplicity) and no normalization of the translates is normal, the track has shown that non-attainment needs an input that the top layer does not see; record the consistent tangent datum as a theorem.
+
+**Track 2 — Certificates for the equality cases.**
+- *Aim.* RH ⇔ at every aperture some real weight system is feasible, and one aperture admits none if RH fails [L*]. A producer may use a different, non-arithmetic system at each aperture. A feasible system at aperture `a` is a positive measure on the line whose Fourier transform on `(−2a,2a)` is the archimedean-plus-pole background minus atoms at `±log n` [D]: a pure object that imitates the place at infinity of ζ up to the resolution `a`, with any real weights at the integers.
+- *First theorems.* A128: the description of the feasible set as a set of positive measures (the extension theorem for positive definite functions on an interval), and its extreme points. A117: the feasible interval of `w(2)` on the first selective window. A129: for the objects of the corpus with all zeros on the line and ζ's Gamma factor (the cleared Eisenstein constant term for `1≤Y≤4πe^{−γ}`, the pencils at `h≥½`, symmetric completions of zero-free Dirichlet polynomials), the distance of their prime side from an atomic measure on `log ℕ` on a window.
+- *Kill.* If no pure object with the Gamma factor of ζ has an atomic prime side on any window beyond first contact except through its own zeros, the existence half carries no more freedom than the sign for `Λ`; record the rigidity as a theorem.
+
+**Track 3 — Unit gaps.**
+- *Aim.* Bound an integer by one: the number of zeros right of a line (N4), the index of an approximant, the trace norm at a formation rectangle (TG).
+- *First theorems.* A126: for each regulator of the horizon, the function whose zeros are its resonances at finite cutoff and the number of its right-half zeros: one for the cusp cutoff [L*]; unknown for the clock and the tower. Both convergent regulators approach Weil's form from below, so a sign at finite cutoff is at least as hard as the limit [D]; a regulator from above, or a secular function with at most one right-half zero and limit ξ, is what the index law can use (B117). B171: a source of "at most one" built from the single pole: a form of signature `(1,∞)` given by the prime side with one positive square by construction, in which the zeros are the spectrum of a symmetric operator.
+- *Kill.* Every regulator with limit ξ has an unbounded number of right-half zeros before the limit, or no secular function.
+
+**Track 4 — Symmetrization.**
+- *Aim.* A functional `Φ` on zero configurations with `Φ(Z^{sym})<Φ(Z)` whenever `Z` has an off-line pair, at every depth, where `Z^{sym}` is the projection to the line, which keeps every ordinate count and is tempered [L*]; and a reason why ζ is `Φ`-minimal in a class closed under projection of finitely many pairs. For AAL finitely many pairs suffice.
+- *What is known.* Weil's form is not such a functional: the difference of the on-line and the off-line pair term has no sign [D]. The inner mass is one, decreases strictly, and is the logarithm of a Szegő infimum over mollifiers [L]; projection by a Blaschke factor leaves `|ζ|` on the line unchanged, so its minimality is Jensen's equality, the receiver of Track 2.
+- *First theorem.* A130: the prime side of the projected divisor: primes plus an explicit smooth signed density `−2Σm cos(γu)(cosh(δu)−1)` [D]; which functionals of the prime side are monotone under adding it.
+- *Kill.* Every functional that decreases under projection is a function of the inner mass.
+
+**Track 5 — Amplification.**
+- *Aim.* A bound for the `m`-th tensor object with a loss independent of `m`.
+- *What is known.* Tensor series of a configuration converge right of `1+m·depth`; sublinear tensor growth with the trace of ζ retained is RH; ζ is the fixed part of the canonical families, so no family supplies the bound [L]. On the prime side the `2k`-th moment of the prime traces on a window is a `2k`-fold correlation of primes.
+- *First theorem.* A131: the a priori statement in prime terms: which correlation bound, uniform in `k`, is N3, and whether it is implied by a bound at `k=1` together with a structure of the integers.
+- *Kill.* The uniform bound is equivalent to the prime-tuple asymptotics with power saving at every order; then the track waits for a geometric source of the bound.
+
+**Track 6 — The floor census as theorems (runs beside the others).**
+- A123: the infimum over all slot and scale parameters of the boundary of a probe whose direct bound is a mean square followed by Cauchy–Schwarz is above `½`, as a theorem about exponents; the detector budget is the model. A124: the positivity floor of §4.1 in Lean. A floor is computed for every proposed estimate before work starts.
+
+### 4.6 Tests for a proposed mechanism
+
+1. Its floor (§4.1). A positive floor ends the proposal for AAL and RH.
+2. Its kind (§4.2) and the receiver that takes it.
+3. The fakes: the Liouville twist and the lattice with a pair at rung one; the paired ξ model; integer-norm two-scale products; the density-matched model with unattained top; a Selberg zeta function with a small eigenvalue (§2.5). It has to fail on each for a stated reason.
+4. The limit `δ→0`: the statement and its constants at depth `δ` must not degenerate.
+5. Independence of `[X]`: no mean square over twists, no large sieve, no family average.
+6. Its tangent form (§4.4): what remains of it after normalization by the top exponent.
+
+### 4.7 What stops, and the order of work
+
+Stops [A]: further receivers and equivalences; further one-structure calibrations of the atoms; rungs by verification; any estimate with a positive floor; averages over families.
+
+Order [A]: Track 6 at once, as the filter. Track 1 first theorems (A121, A125, A127), because they are decidable and fix what a proof of AAL may use. Track 2 (A128, A129), the only place where the existence quantifier gives freedom. Tracks 3–5 at their first theorems, each to its kill or its survivor.
+
+| # | Item | Kind |
+|---|---|---|
+| A121 | N1 and N3 in Lean (two-sided windows of any fixed length; moments on fixed windows) | assembly [D] |
+| A123, A124 | the floor of mean-square probes; the positivity floor | assembly [D] |
+| A125 | N4 with the parity of the top layer | assembly [D] |
+| A126 | resonance functions of the regulators at finite cutoff and their right-half zero counts | (unverified) |
+| A127 | the tangent datum of world I and the tautology theorem for linear identities | (unverified) |
+| A128, A129 | the feasible set as positive measures; the prime side of the pure objects with ζ's Gamma factor | (unverified) |
+| A130, A131 | the prime side of the projected divisor; the prime form of a tensor-uniform bound | (unverified) |
+| B170 | Non-attainment: N1 for ζ | AAL |
+| B171 | A form of signature `(1,∞)` from the prime side in which the zeros are a symmetric spectrum | RH (producer) |
+| B172 | A functional that decreases under projection to the line and is not a function of the inner mass | producer |
+| B173 | A bound for all tensor orders with a loss independent of the order | RH |
+
+**Limit of this section.** It is a programme for a search, not a route. It contains no producer; under its assumption none is known. Its deliverables are theorems that decide which kinds of producer can exist, and five decidable first steps.

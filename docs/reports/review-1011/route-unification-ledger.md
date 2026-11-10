@@ -8,13 +8,13 @@ The 38 live formulations and 12 candidates are faces of three core problems: **U
 
 Transversal to the three cores:
 - **Two worlds.** A failure of RH is world I (¬AAL: a finite isolated top layer with a free strip) or world II (AAL ∧ ¬ZAL: a tail). RH has three atoms, ZAL ∧ B13 ∧ Landing [L*].
-- **Two legs.** RH ⇔ level-one dressed positivity ∧ a zero-free half-plane [L*]. A half-plane is a power saving of one smoothed Möbius sum [L*]; `[X]` states one at `7/8`, outside the native graph. Level one alone leaves only the edge world `Θ=Θ∞=1` [D].
+- **A level and a half-plane.** RH ⇔ positivity of the dressed lag aggregate at level one on the characters of all large primes [L*]; a level `σ>1` gives the half-plane `Re ρ≤σ−½` or the edge world `Θ=Θ∞=1` [L*]. A half-plane is also a power saving of one smoothed Möbius sum [L*]; `[X]` states one at `7/8`, outside the native graph.
 
 Three structural gaps lie under all three cores: the **dark range** (prime sums shorter than the Vinogradov length, Dirichlet polynomials longer than the height); **Bézout from a property of the object** (every structure of the square found so far returns an identity) [L*]; and the **joint input** (an inequality that uses the functional equation and the Euler product together and is pointwise in the zeros). Natively no such inequality exists; `[X]` is one for the half-plane `Re s>7/8`.
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ and the position of its zeros in height. The ladder is the one-parameter family between the two extremes: aperture against mass.
 
-Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); working log `logs/review-1011-status-quo-facts.md`. Evidence: `[L*]` Lean statement read for this ledger (working log §5); `[L]`, `[K]`, `[S]` as graded by the frontier map and the scoped-obstruction ledger at the checkpoint, not re-read; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external half-plane theorem, cached, unchecked, outside the native import graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: commit `1cec78e529` with its working tree (2026-11-10); working log `logs/review-1011-status-quo-facts.md`. Evidence: `[L*]` Lean statement read for this ledger (working log §5); `[L]`, `[K]`, `[S]` as graded by the frontier map and the scoped-obstruction ledger at the checkpoint, not re-read; `[D]` deduction; `[C]` classical; `[A]` assessment; `[X]` the external half-plane theorem, cached, unchecked, outside the native import graph. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. Section 3 separates the two.
 
@@ -25,9 +25,9 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 - **One matrix [L*]/[L].** Coercive on short windows; blind below first contact; finite index on every window; decided on block-constant divisors; the same matrix with other counterterms for curves and for abelian number rings, with Riemann–Hurwitz.
 - **One selection [L*]/[L].** Bézout holds for contacts `w` ⇔ RH ∧ `w=Λ`; the constant, the scale and the tree lengths are forced; RH ⇔ at every aperture some weight system is feasible.
 - **One ladder [L*].** Sizes pay every dominated system below rung one; the Liouville twist and the lattice with a pair fail at `1+o(1)`; one rate on the prime and the zero side; a height is a conductor of the twisted contacts.
-- **Two legs [L*].** A half-plane and a level; each has receivers with slack.
+- **A level and a half-plane [L*].** Level one of the dressed aggregate on large primes is RH; a higher level and the exponent of the signal are half-planes; each has slack.
 - **Two worlds, three atoms [L*].** `Θ<1⇔Θ∞<1`; RH ⇔ ZAL ∧ B13 ∧ Landing; AAL ⇔ B13 ∧ Landing ∧ DH.
-- **One escape world per receiver [D].** Bounded-window floors leave unattained tops; level one leaves the edge world; a half-plane removes the edge world; the logarithmic-window floor leaves none.
+- **One escape world per receiver [L*]/[D].** Floors on bounded windows leave unattained tops; a level `σ>1` leaves the edge world; a half-plane removes the edge world; level one and the logarithmic-window floor leave none.
 - **One rigidity [L]/[L*].** Hamburger; countable systems with a finite defect are the rational primes; continuous prime measures keep every zero; the fixed part of the canonical families; no constituent with a zero in the Wiener class.
 - **One price for exactness [L]/[L*].** A power map is a Frobenius at one prime; vanishing costs `m·θ(S)`; Riemann–Roch on the tower is the product formula; restriction on the planar square is an equality of ideals; the carry is a nonzero class and its law is the jump law.
 - **One index law [L]/[L*].** A defect of degree `κ` has at most `κ` exceptional points; the index of the pairing is the exact number of right zeros; sizes on a circle certify a defect.
@@ -53,7 +53,7 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 | Every rung | the sign at aperture `κ log m` for every `κ`, on all packets | SA [L*]/[D] |
 | Fixed-height energy | raw scattering energy at height `N+1` ≥ minus its full arithmetic defect | HAT [L*] |
 | Flow | the prime lag function is positive definite on `ℝ` | IRP [L*] |
-| Two legs | `JasDressedPSD 1` ∧ a half-plane bound | RHTower, FCT [L*] |
+| Level one | the dressed lag aggregate is positive at level one on the characters of all large primes | RHTower, SA [L*] |
 | Long Möbius moment | cofinal polynomial boundedness with one exponent | CDG [L*] |
 | Three atoms | ZAL ∧ B13 ∧ Landing | ZCG, ELT [L*] |
 | Attained top + thick count | attained abscissa ∧ thick `O(√X)` prime deviation | IRP [L] |
@@ -112,10 +112,10 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 | quasi-RH | `Θ<1` ⇔ `Θ∞<1` ⇔ seven power savings ⇔ signal `O(Z^b)`, `b<1` | tail law [L*]; `[X]` |
 | ZAL | `Θ∞=½` | ≥qRH, open |
 | Landing | ZAL ⇒ finitely many off-line zeros | sub; open for ζ; not forced by the functional equation, Gamma factor and count [L*] |
-| B13 | finitely many off-line zeros ⇒ none ⇔ the index is `0` or infinite [D] | sub, open |
+| B13 | finitely many off-line zeros ⇒ none ⇔ the supremal negative index on real packets is `0` or infinite [L*] | sub, open |
 | DH | ¬AAL ⇒ ZAL | sub, open; refuted for Euler products alone [L*] |
-| AAL | no isolated top | sub, open; from bounded-window floors, from level one, from thick lag bounds [L*]/[D] |
-| B56 | `Θ<1⇒Θ=½` | open; from the transfer of S3 [L*], from level one [D] |
+| AAL | no isolated top | sub, open; from floors on windows of length `(k+1)π/67` with constants depending on `k`, also at the prime logarithms; from thick lag bounds [L*] |
+| B56 | `Θ<1⇒Θ=½` | open; from the transfer of S3 [L*] |
 | World I | finite top, free strip, Mertens saving, finite oscillation, bounded-window visibility, finite even index | instrumented [L*]/[L] |
 | World II | a tail; deep zeros of density zero | receivers only |
 | The edge world | `Θ=Θ∞=1` | excluded by any half-plane; `[X]` |
@@ -134,7 +134,7 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 |---|---|---|---|
 | ACS, SRT, WL | growth exponent at the primes of logarithmic windows | width | VK saving |
 | RW, HF, ACS (rungs) | the rung `κ` | depth `1/(2κ)` on isolated zeros | `κ<1` |
-| JAS | the level `σ` of the dressed aggregate; the exponent `b` of the signal | `Θ≤σ−½` up to the edge world; `Θ≤b` | `σ=3/2` on large primes; `[X]`: `b=7/8` |
+| JAS | the level `σ` of the dressed aggregate; the exponent `b` of the signal | `Θ≤σ−½` up to the edge world, with no exception at `σ=1`; `Θ≤b` | `σ=3/2` on large primes; `[X]`: `b=7/8` |
 | MC, AAD, RAC | Mertens level; stencil rate; Liouville exponent | strip | VK |
 | WD | mollifier exponent `θ`; slope of the long moment | depth `1/(2θ)`; slope `2·width` | `θ<½` |
 | PM | ringdown, horocycle, cavity exponents | strip | stretched-exponential saving |
@@ -191,7 +191,7 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 | **Prime-degree inequality** | ACS (two-block form), SRT, WL (prime-window form), HF and RW through the two-bumps, ZCG (sampling), HAT-C, PM (count branch), candidate S3 (as receiver) | `c_B(log p)=A(p)−P(p)`, `Re W(B+τ_{log p}B)=2c_B(0)+2c_p`: one number per prime, on logarithmic windows with exceptions; floor, upper side, counts and moments are equivalent | SOSZ [L*] |
 | **Comb lattice** | ACS, HF, HAT-C, LI (flat tail), RW (feasible weights) | Weil's form on packets = limit of the comb form; Bézout at an aperture = window cone; index = right zeros; forced data | AGZ, HFP, ASRP [L*] |
 | **Rungs** | RW, EWU, OWU, ACT, HF, ACS, SRT (sign side); MC, WL, BAG (cancellation side); WD (mollifier side) | one exchange rate `γ=δ=1/(2κ)=1/(2θ)`; a height is a conductor of the twisted contacts | SA, CDG [L*]/[L] |
-| **Two legs** | JAS, MC (signal), candidate S3, WL and SC under a half-plane premise | RH ⇔ level one ∧ a half-plane; signal = smoothed Möbius sum; the S3 transfer and level one both give B56 | RHTower, FCT, SFPM [L*]/[D] |
+| **Level and signal** | JAS, MC (signal), candidate S3 | level one on large primes ⇔ RH; a level above one and the exponent of the signal are half-planes; signal = smoothed Möbius sum; the S3 transfer gives B56 | RHTower, SA, FCT, SFPM [L*] |
 | **Regulators** | HAT-C, PM | the clock and the tower converge to Weil's form; at a fixed height the floor is RH; the tower is `Λ(s)/Λ(s+N)` | HAT [L*] |
 | **Window scalar** | RW, EWU, OWU, ACT, CHMD (odd), TT (odd), SZ, RN, LI, AIP, HAT-C | one form on one window; sectors exact | SWC, HAT, AIF [L] |
 | **Critical curve** | HF, SRT, AIP, ACS (atomic), SC | `R_polar=R_halfline≤W`; pole channel | AHD [L*] |
@@ -230,7 +230,7 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 | C8 Verified-height rungs | fixed window, rank, degree, prime rung | RW, TH, LA, LI, PA, HCF, SRT | each rung from verified height [L*] |
 | C28 Comb lattice at finite scale | signature of the comb pairing on windows | ACS, HF, LI | block-constant reduction; exact index; forced data [L*] |
 | C31 The ladder | the sign at a rung | RW, HF, ACS, SRT, EWU, OWU | sizes below rung one; fakes at `1+o(1)`; exchange rate [L*] |
-| C32 Dressed positivity | the level `σ` | JAS | level ⇔ half-plane up to the edge world [L*] |
+| C32 Dressed positivity | the level `σ` | JAS | level one ⇔ RH; a higher level ⇔ a half-plane up to the edge world [L*] |
 
 **Π-classes.**
 | Class | Observable | Routes | Identity or scoped receiver |
@@ -261,7 +261,7 @@ Corpus checkpoint: commit `034f3c70c6` with its working tree (2026-11-10); worki
 | C30 Constituents | objects sharing zeros with ξ | W1C, PTR, PM | none with a zero in the Wiener class; bounded class open [L*] |
 | C27 Source completion | zero-parameter conditions | candidates | landings missing [L] |
 
-C1, C2, C7, C9, C28 and C31 are exact dictionaries of one form: C9 is the minimal one on packets, C28 the one on real vectors, C31 the same form graded by mass. C4, C6 and C8 require all-degree or all-height control. C12 is in law. C10, C11 and C16 are one axis, the Mertens level, and C33 is its only producer class. C13 and C14 are one programme on the dark range and on exactness; the rungs above one of C31 in the height aspect lie in C13 [D]. C17–C19 are one programme on the exceptional coordinate. C21–C23 and C28 are one programme on the count and the diagonal. C32 and C33 are the two legs. C15 is support.
+C1, C2, C7, C9, C28 and C31 are exact dictionaries of one form: C9 is the minimal one on packets, C28 the one on real vectors, C31 the same form graded by mass. C4, C6 and C8 require all-degree or all-height control. C12 is in law. C10, C11 and C16 are one axis, the Mertens level, and C33 is its only producer class. C13 and C14 are one programme on the dark range and on exactness; the rungs above one of C31 in the height aspect lie in C13 [D]. C17–C19 are one programme on the exceptional coordinate. C21–C23 and C28 are one programme on the count and the diagonal. C32 at level one is a face of the sign; C33 is the producer class of half-planes. C15 is support.
 
 ### 3.4 Constructive transfers and their limits
 | Sources / routes | Established transfer | Input not transported |
@@ -271,7 +271,7 @@ C1, C2, C7, C9, C28 and C31 are exact dictionaries of one form: C9 is the minima
 | VHR → window routes, SRT | verified height ⇒ window sign; prime two-bumps below a rung [L*] | verification at every height |
 | SA → RW, HF, ACS | sizes below rung one; exchange rate; first selective window [L*] | a saving past rung one |
 | AGZ, HFP → ACS, HF, LI | forced data; exact index; block-constant reduction; rings [L*] | the sign on block-constant divisors |
-| FCT, RHTower → JAS, MC, S3 | two legs; signal as a Möbius sum; continuation principle [L*] | the signal bound natively; level one |
+| FCT, RHTower, SA → JAS, MC, S3 | level one ⇒ RH; signal as a Möbius sum; continuation principle [L*] | level one; the signal bound natively |
 | MMD, FCT → MC | Möbius as a cube of Gauss sums; sign law at odd order; planar large sieve [L*] | the global coefficients; uniform estimates in the family |
 | CTZ, IRP → W1C, PTR, PM | no constituent with a zero in the Wiener class; sizes on a circle [L*] | the bounded class; a splitting with certified defect |
 | AHD / CACT → HF, SRT, AIP | threshold identities, classification [L*] | the orthogonal case; pole-channel positivity |
@@ -285,7 +285,7 @@ C1, C2, C7, C9, C28 and C31 are exact dictionaries of one form: C9 is the minima
 
 ## 4. U-Σ — the sign
 
-Core problem: `W≥0` on every window. In flow form, `Ψ` locally bounded; in minimal form, one Weil test per prime on logarithmic windows; in lattice form, one positive square of the comb pairing, decided on block-constant divisors; in ladder form, the sign at every rung; in existence form, feasible weights at every aperture; in regulated form, the energy floor at one fixed height; in level form, `JasDressedPSD 1` under a half-plane. Each window is a finite-height statement.
+Core problem: `W≥0` on every window. In flow form, `Ψ` locally bounded; in minimal form, one Weil test per prime on logarithmic windows; in lattice form, one positive square of the comb pairing, decided on block-constant divisors; in ladder form, the sign at every rung; in existence form, feasible weights at every aperture; in regulated form, the energy floor at one fixed height; in level form, `JasDressedPSD 1` on large primes. Each window is a finite-height statement.
 
 | Face | Routes / programmes | Reduction |
 |---|---|---|
@@ -336,8 +336,8 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | Σ ∩ Π ∩ Γ: one rate | `γ=δ=1/(2κ)=1/(2θ)` | SA, CDG [L*]/[L] |
 | Σ ∩ Π: heights | a height is a conductor of the twisted contacts; the rung above one is a partial return; in the mean over the heights the contacts cancel | SA, TAPO [L*]/[D] |
 | Σ ∩ Π: verification | window sign at `a` ⇐ verified height; prime two-bumps below a rung | VHR [L*] |
-| Σ ∩ Π: two legs | level one ∧ a half-plane; the signal is a Möbius sum | RHTower, FCT [L*] |
-| Σ ∩ Γ: escape worlds | level one leaves the edge world; bounded-window floors leave unattained tops | RHTower, SOSZ [L*]/[D] |
+| Σ ∩ Π: level and signal | level one is RH; the signal of the zeta kernel is a Möbius sum whose exponent is a half-plane | RHTower, SA, FCT [L*] |
+| Σ ∩ Γ: escape worlds | a level above one leaves the edge world; floors on bounded windows leave unattained tops; B13 ⇔ the packet index is `0` or infinite | RHTower, SOSZ, ACS [L*] |
 | Σ ∩ Γ: clock and tower | `E_r↑W`; fixed-height floor | HAT [L*] |
 | Σ ∩ Γ: index | finite index ⇔ finitely many off-line zeros; exact count | AGZ, AKG [L*] |
 | Π ∩ Γ: worlds on the prime side | world I ⇒ Mertens saving, finite oscillation, bounded-window visibility | ELT, ZCG, SOSZ [L]/[L*] |
@@ -370,7 +370,7 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | RN | Σ | both | C1 | energy comparison |
 | WD | Π (Σ, Γ) | world II side | C12 | long moments; census |
 | PM | Γ (Σ) | both | C20, C21 | rate; reflection sign; count; regulator |
-| JAS | Σ, Π | level one kills world I and world II below the edge; a half-plane kills the edge | C10, C17, C32, C33 | the two legs |
+| JAS | Σ, Π | level one kills every world; a level above one leaves the edge | C10, C17, C32, C33 | level one; the signal |
 | CTF | Π | both | C10, C12 | rows; BSY |
 | PBM, RB | Π | both | C10 | abscissa; extremal inequality |
 | BAG | Γ | AAL; DH | C13, C17, C18, C26 | target mass; transport; returns |
@@ -391,7 +391,7 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | A crude count | one inequality per prime on logarithmic windows, in floor, upper, counting, moment and sign-free form; VK saving [L*] | the bound itself (B130) |
 | The resolution of the count | logarithmic radius; bounded windows for finite layers [L*] | none |
 | A half-plane | the receiver, the continuation principle, the local source [L*]; `[X]` at `7/8` | natively the signal bound (B161); a boundary below `7/8` (B158) |
-| A step from a half-plane to the line | RH ⇔ level one ∧ a half-plane; the S3 transfer gives B56 [L*] | level one (B160) or the transfer (B148) |
+| A step to the line | level one on large primes ⇒ RH, with no half-plane; the S3 transfer gives B56 [L*] | level one (B160) or the transfer (B148) |
 | The two worlds | sector theorem; world I instrumented and seen on bounded windows; one-structure calibrations [L*] | an inequality beyond the explicit formula in world I; a calibration with both structures (B157); ZAL for world II |
 | A uniformity source | tensor criterion [L] | none by averaging over the canonical families |
 | A Frobenius substitute | Frobenius at one prime; Stepanov at one prime [L] | none at a lower price than the count |
