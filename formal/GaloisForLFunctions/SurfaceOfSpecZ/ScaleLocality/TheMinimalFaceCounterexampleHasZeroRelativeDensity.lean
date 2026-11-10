@@ -166,8 +166,5 @@ theorem minimalFace_count_small_relative_to_T_log_T (γ_min C : ℝ) {Θ : ℝ}
     _ ≤ (ε * Real.log T) * T := mul_le_mul_of_nonneg_right hcoef (zero_le_one.trans hT1)
     _ = _ := by ring
 
-#print axioms minimalFace_count_le_levels
-#print axioms quadratic_le_log_faceBaseFreq
-#print axioms minimalFace_count_small_relative_to_T_log_T
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

@@ -98,8 +98,5 @@ theorem trace_sub_le_add_zetaDensityBackground {Z : ZeroConfig} (hZ : TemperedCo
     zetaDensityBackground_tempered hb hbs v, add_sub_cancel_left]
   exact zetaDensityBackground_trace_bound hb hbs v
 
-#print axioms zetaDensityBackground_trace_bound
-#print axioms N_add_zetaDensityBackground
-#print axioms trace_sub_le_add_zetaDensityBackground
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

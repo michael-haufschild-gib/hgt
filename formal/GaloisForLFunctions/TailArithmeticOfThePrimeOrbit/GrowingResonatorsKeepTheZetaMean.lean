@@ -86,7 +86,7 @@ theorem eventually_resonatorMean_zeta_uniform {σ κ : ℝ}
   have hMε := support_rpow_le hε.le hT0 hMT
   have hcut : (N T : ℝ) ^ α / α + 1 ≤ (1 / α + 1) * (N T : ℝ) ^ α := by
     calc
-      _ ≤ (N T : ℝ) ^ α / α + (N T : ℝ) ^ α := add_le_add_left hNE _
+      _ ≤ (N T : ℝ) ^ α / α + (N T : ℝ) ^ α := add_le_add le_rfl hNE
       _ = _ := by ring
   have hhead : |dyadicSquareMean (fun t => headPoly A r t * zetaDirichletHead (N T) σ t) T -
       (∑' k : ℕ, ‖truncResonatorCoeff A r σ (N T) k‖ ^ 2)| ≤

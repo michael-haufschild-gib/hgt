@@ -133,6 +133,3 @@ theorem IsGreedy.prefixCost_strictConvex
 
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition
 
-#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition.IsGreedy.twice_prefixCost_lt
-#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition.IsGreedy.prefixCost_strictConvex
-#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition.IsGreedy.prefixCost_lt_total

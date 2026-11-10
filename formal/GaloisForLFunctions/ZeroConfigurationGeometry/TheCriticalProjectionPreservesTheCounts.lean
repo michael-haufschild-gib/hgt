@@ -121,8 +121,5 @@ theorem temperedConfig_criticalProjection_zeta :
   obtain ⟨A, hA, hcount⟩ := Zeta23.RvM.zetaZeroConfig_local_count
   exact temperedConfig_criticalProjection_of_localCount zetaZeroConfig hA hcount
 
-#print axioms criticalProjectionConfig_N
-#print axioms temperedConfig_criticalProjection_of_localCount
-#print axioms temperedConfig_criticalProjection_zeta
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

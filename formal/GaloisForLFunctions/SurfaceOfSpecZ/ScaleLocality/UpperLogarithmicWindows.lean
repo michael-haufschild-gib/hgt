@@ -234,7 +234,5 @@ theorem zeta_re_le_of_upper_logarithmic_windows {α K : ℝ} (hα : 0 ≤ α)
   nlinarith only [hscaled, hneg, hmul]
 
 
-#print axioms zeta_negative_kernel_logarithmic_floor
-#print axioms zeta_re_le_of_upper_logarithmic_windows
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 

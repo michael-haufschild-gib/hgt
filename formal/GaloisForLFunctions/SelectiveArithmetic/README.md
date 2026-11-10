@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 8 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 9 modules.
 
 ## 1. Motivation
 
@@ -114,6 +114,16 @@ $|2\sum_{n\le N}w(n)n^{-1/2}\cos(\tau\log n)|\le2CN^\gamma(2+\log N)(1+|\tau|)$:
 symbol has size $N^\gamma$. Hence $\mathfrak W_{w,q}(f)\ge\tfrac12\log q(\int f^2-\int f'^2)$ at
 every aperture $a\le\kappa\log\log q$ with $2\gamma\kappa<1$.
 
+**6′. The sign is cancellation (the converse).** With $E=\cosh(u/2)\chi$, $O=\sinh(u/2)\chi$:
+$E(u)E(u+y)-O(u)O(u+y)=\cosh(y/2)\chi(u)\chi(u+y)$, so the difference of the contact forms of the
+two polar packets is $\sum w(n)(1+\tfrac1n)\Phi(\log n)$, $\Phi=\chi\star\tilde\chi$,
+$2a-2\delta-y\le\Phi(y)\le2a-y$; their sum is $O(ae^a\sum\Lambda(n)/n)$. A packet with a cutoff of
+margin $\delta$ has archimedean energy $\le(\log(1+1/\delta)+5)\int f^2+\delta^2\int f'^2$. With
+$\delta=e^{-a}$: if the form of a dominated system is nonnegative on the two polar packets, then
+$|\sum_{n\le e^{2a}}w(n)(2a-\log n)|\le(3\log q+C(1+a)^3)e^a$. The Riesz mean of the contacts at
+$Y=e^{2a}$ is $O(\sqrt Y(\log q+\log^3Y))$; a dominated system whose Riesz mean is $\ge cY$ is
+infeasible once $ce^a>3\log q+C(1+a)^3$. The three fakes are the systems without cancellation.
+
 **7. A zero shows at the rung of its depth (zero side of the exchange rate).** A reflected pair
 of depth $\delta$ is a form of rank two and signature $(1,1)$ with smallest eigenvalue
 $-(\sinh(2\delta a)/\delta-2a)$ on $L^2[-a,a]$ (corpus). In a lattice of zeros on the line with the
@@ -142,7 +152,9 @@ product) both fail at the rung $1$.
 | A floor is a conductor; the Liouville twist violates every floor beyond the trivial aperture | `feasible_mul_exp_iff`, `exists_not_floor` | unconditional |
 | The height is a mass; the pole plane does not reach a height | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge` | unconditional |
 | Weil's form of $\zeta$ at a height, aperture $\le\log\log|t|-\eta$ | `re_weilFullFunctional_modulated_ge`, `exists_height_margin` | unconditional |
-| Exchange rate, prime side | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
+| Exchange rate, prime side: cancellation buys rungs | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
+| Exchange rate, prime side, converse: the sign is square-root cancellation of the Riesz mean | `packetAutocorr_evenPolar_sub_oddPolar`, `systemForm_le_of_packet_scaled`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge` | unconditional |
+| The sign of the twisted part at an aperture bounds the Riesz mean of the character | `exists_riesz_twist_le_of_nonneg` | unconditional |
 | Exchange rate, zero side, lattice with a pair | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung` | unconditional |
 | Positivity on a rung forces companions; $\zeta$ in the height aspect | `exists_companion_of_rung`, `zeta_companion_of_rung` | unconditional |
 | The zeros of $L(s,\chi)$ on the ladder of the conductor | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | unconditional |
@@ -161,7 +173,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | # | Question | Answer |
 |---|---|---|
 | Q1 | Which unconditional theorems are selective at unbounded scale, and from which sources? | See the atlas below. In the aspects of conductor and height every unconditional pointwise sign lies below the rung $1$ and holds for the whole dominated box; the classical regions lie at $1+o(1)$ |
-| Q2 | Is there a source beyond exponential sums, mean values, rigidity and the fractional part? | Open. A source passes the rung $1$ only by a power saving of the contacts on the integers up to $m^{2\kappa}$ (prime side) or by excluding isolated zeros of depth $>1/(2\kappa)$ (zero side); sizes, multiplicativity and the functional equation alone do not |
+| Q2 | Is there a source beyond exponential sums, mean values, rigidity and the fractional part? | Open. The sign at aperture $a$ *is* a saving: it forces the Riesz mean of the contacts at $Y=e^{2a}$ to be $O(\sqrt Y(\log q+\log^3Y))$, and a power saving of the partial sums gives the sign back on bounded shapes. A source passes the rung $1$ only by a power saving of the contacts on the integers up to $m^{2\kappa}$ or by excluding isolated zeros of depth $>1/(2\kappa)$; sizes, multiplicativity and the functional equation alone do not |
 | Q3 | Can a feasible weight system be constructed at every aperture? | With a conductor: the dominated box up to the trivial aperture and not beyond; systems with cancellation $\gamma$ up to $\kappa<1/(2\gamma)$ on bounded shapes. With the pole plane: this is RH |
 | Q4 | Is the exceptional square removable? | The ladder of the conductor has no gap: the sign at $\log\log q-\eta$ is a theorem for every dominated system, and at $\log\log q+\eta$ it fails for the Liouville twist. Removal at $\log\log q+C$ is a statement on $\chi$ at the integers between $\log q$ and $e^{2C}\log^2q$ that uses conductor and Euler product jointly: Landau–Siegel on the comb |
 | Q5 | What is the first selective window? | For $\zeta$: every window of ratio $>2$ (corpus: ratio $\le2$ is blind, and visible weights are bounded). In an aspect: the rung $1$ |
@@ -173,6 +185,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | Sign of the twisted part, $a\le\log\log q-\eta$ | $\kappa<1$ | systems with larger contacts | sizes: prime number theorem and the mass |
 | Weil's form of $\zeta$ at height $t$, bounded shape, $a\le\log\log|t|-\eta$ | $\kappa<1$ | systems with larger contacts | sizes and the Gamma factor |
 | Classical zero-free regions, Landau–Page, Siegel: depth $\le\tfrac12-\varepsilon(m)$, $\varepsilon\to0$ | $1+o(1)$ | the Liouville twist; the lattice with a pair at depth $\tfrac12$ | nonnegativity of counts; exponential sums |
+| Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz mean of the contacts at $e^{2a}$ is $O(e^a(\log q+a^3))$ | every rung | systems without cancellation | — (a receiver) |
 | Sign at $\log\log q+C$ | $1+C/\log\log q$ | Liouville twist | none known |
 | A zero-free strip of width $\varepsilon$ in an aspect | $1/(1-2\varepsilon)$ | fakes of depth $>\tfrac12-\varepsilon$ | none known |
 | Positivity at typical heights (corpus, in law) | apertures $c\log T$ | — | density theorems |
@@ -192,7 +205,8 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
   on a rung).
 - The slack map of a system form: a floor is a conductor; a saving is a rung.
 - The height aspect: modulated packets, the archimedean energy at a height, decay of the pole term.
-- Summation by parts on the symbol: the exchange rate between cancellation and rungs.
+- Summation by parts on the symbol: the exchange rate between cancellation and rungs; the
+  receiver on the prime side: sum and difference of the two polar packets read the Riesz mean.
 
 **To build.**
 - A fake for the height aspect in the dominated class (block-aligned phases), to show that the

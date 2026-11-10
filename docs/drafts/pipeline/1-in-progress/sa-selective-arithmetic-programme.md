@@ -61,8 +61,9 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `AnIsolatedPairShowsAtTheRungOfItsDepth` | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung`, `exists_companion_of_rung`, `zeta_companion_of_rung` | clean |
 | `TheFeasibleSetsOfAConductor` | `feasible_congr`, `Feasible.anti`, `Feasible.mono_conductor`, `convex_feasible`, `feasible_mul_exp_iff`, `exists_not_floor`, `bddAbove_feasibleApertures`, `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt` | clean |
 | `TheZerosOfADirichletLFunctionOnTheLadder` | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | clean |
+| `TheSignIsSquareRootCancellationOfTheRieszMean` | `systemForm_le_of_packet_scaled`, `packetAutocorr_cutoff_ge/le`, `packetAutocorr_evenPolar_sub_oddPolar`, `contactForm_le_of_systemForm_nonneg`, `riesz_bound_algebra`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge`, `exists_riesz_twist_le_of_nonneg` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports all eight; `MainTheorems.lean` imports the umbrella.
+Umbrella `SelectiveArithmetic.lean` imports all nine; `MainTheorems.lean` imports the umbrella.
 README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`).
 
 ## Not done (candidates)
@@ -87,6 +88,10 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 - Each check takes 3–10 min (machine shared). Write complete modules, then compile.
 - `set` variables: rewrite later hypotheses with `← hdef` before `linarith` (compound bodies are
   not identified).
+- Long proofs with many hypotheses: `nlinarith` times out; split into small lemmas (a budget
+  lemma and a pure-algebra lemma) and close with `linarith` on prepared products.
+- `rw [e] at h` rewrites every occurrence, also under floors and `psi`; state the rewritten fact
+  separately.
 - With `Finset` and `Set` both open use `Set.Icc` / `Finset.Icc` explicitly.
 
 ## Gates

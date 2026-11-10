@@ -158,7 +158,5 @@ theorem finite_spectrum_negative_windows_of_remainder {n : ℕ}
   obtain ⟨u, hu, hneg⟩ := hwin T
   exact ⟨u, hu, by linarith only [hU u (hT.trans hu.1), hneg]⟩
 
-#print axioms finite_spectrum_negative_in_every_window
-#print axioms finite_spectrum_negative_windows_of_remainder
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

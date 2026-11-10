@@ -272,10 +272,5 @@ theorem exists_unit_real_zero_pair_near_lower_edge (Z : ZeroConfig) {ρ : ℂ}
     ring
   rwa [he] at hh
 
-#print axioms realPairForm_ge_neg_two_pairEnergy
-#print axioms exists_smooth_realPairForm_below
-#print axioms realPairForm_mass_floor_iff
-#print axioms exists_unit_realPairForm_near_lower_edge
-#print axioms exists_unit_real_zero_pair_near_lower_edge
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

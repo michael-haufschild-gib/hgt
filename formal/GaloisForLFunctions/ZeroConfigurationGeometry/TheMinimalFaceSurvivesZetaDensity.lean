@@ -158,7 +158,5 @@ theorem exists_zetaDensity_subLog_counterexample {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2
     tendsto_minimalFaceSubLogRadius_div_log 1 1 Θ,
     densityMatchedMinimalFace_windows 1 1 hΘ hΘ2⟩
 
-#print axioms exists_zetaDensity_subLog_counterexample
-#print axioms densityMatchedMinimalFace_trace
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

@@ -151,8 +151,5 @@ theorem riemannHypothesis_iff_upper_prime_logarithmic_windows :
     apply riemannHypothesis_of_forall_re_le
     simpa only [add_zero] using hw
 
-#print axioms upper_prime_power_windows_transfer
-#print axioms zeta_re_le_iff_upper_prime_logarithmic_power_windows
-#print axioms riemannHypothesis_iff_upper_prime_logarithmic_windows
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 

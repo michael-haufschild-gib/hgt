@@ -67,7 +67,5 @@ theorem exists_uniform_trivial_conductor_aperture :
   exact (mul_nonneg (by linarith only [hcost]) (integral_nonneg fun u => sq_nonneg (f u))).trans
     (hmargin q hq χ hprim a c f hf hfc hsupp)
 
-#print axioms exists_uniform_twistedZeroSum_aperture_margin
-#print axioms exists_uniform_trivial_conductor_aperture
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

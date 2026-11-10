@@ -180,7 +180,5 @@ theorem zeta_finite_top_breaks_every_floor {b : ℝ} (hb : 0 < b)
   have hK := le_abs_self K
   nlinarith only [hraw, hcost, hK]
 
-#print axioms zeta_finite_top_negative_windows
-#print axioms zeta_finite_top_breaks_every_floor
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.BoundedVariationNormAlgebra
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheCombOfUnitMassesFixesTheContacts
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheEnergyOfAWindowIsTheJumpFormOfItsFlatPacket
 
@@ -14,6 +15,59 @@ open Finset Filter Topology
 noncomputable section
 namespace GaloisForLFunctions.HodgeTheoryOfAFixedPart
 open AbsoluteGeometryOfSpecZ
+
+section FlatRegularity
+open Set
+
+private def cappedExpStep (l r u : ℝ) : ℝ :=
+  if l < u then min (Real.exp (u / 2)) (Real.exp (r / 2)) else 0
+
+private theorem cappedExpStep_bv (l r : ℝ) :
+    BoundedVariationOn (cappedExpStep l r) univ := by
+  have hm : Monotone (cappedExpStep l r) := by
+    intro x y hxy
+    by_cases hx : l < x
+    · simp only [cappedExpStep, if_pos hx, if_pos (hx.trans_le hxy)]
+      exact min_le_min_right _ (Real.exp_le_exp.mpr (div_le_div_of_nonneg_right hxy (by norm_num)))
+    · simp only [cappedExpStep, if_neg hx]
+      split_ifs
+      · exact le_min (Real.exp_pos _).le (Real.exp_pos _).le
+      · exact le_rfl
+  apply (hm.monotoneOn univ).boundedVariationOn (C := Real.exp (r / 2))
+  intro u _
+  simp only [cappedExpStep]
+  split_ifs
+  · rw [abs_of_nonneg (le_min (Real.exp_pos _).le (Real.exp_pos _).le)]
+    exact min_le_right _ _
+  · rw [abs_zero]
+    exact (Real.exp_pos _).le
+
+private theorem boundedVariationOn_exp_indicator {l r : ℝ} (hlr : l ≤ r) :
+    BoundedVariationOn ((Ioc l r).indicator (fun u => Real.exp (u / 2))) univ := by
+  have he : (Ioc l r).indicator (fun u => Real.exp (u / 2)) =
+      fun u => cappedExpStep l r u - cappedExpStep r r u := by
+    funext u
+    by_cases hu : l < u
+    · by_cases hur : u ≤ r
+      · rw [indicator_of_mem (show u ∈ Ioc l r from ⟨hu, hur⟩)]
+        simp only [cappedExpStep, if_pos hu, if_neg (not_lt.mpr hur), sub_zero]
+        exact (min_eq_left (Real.exp_le_exp.mpr (by linarith only [hur]))).symm
+      · rw [indicator_of_notMem (fun h => hur h.2)]
+        simp only [cappedExpStep, if_pos hu, if_pos (lt_of_not_ge hur)]
+        rw [min_eq_right (Real.exp_le_exp.mpr (by linarith only [lt_of_not_ge hur])),
+          sub_self]
+    · rw [indicator_of_notMem (fun h => hu h.1)]
+      simp only [cappedExpStep, if_neg hu, if_neg (fun h => hu (hlr.trans_lt h)), sub_self]
+  rw [he]
+  exact GaloisForLFunctions.HTGeometry.boundedVariationOn_sub
+    (cappedExpStep_bv l r) (cappedExpStep_bv r r)
+
+/-- A flat packet is globally of bounded variation. -/
+theorem boundedVariationOn_flatPacket {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) :
+    BoundedVariationOn (flatPacket a b) Set.univ := by
+  exact boundedVariationOn_exp_indicator (Real.log_le_log ha hab)
+
+end FlatRegularity
 
 /-- Points in the first window whose ratio-`k` partners lie in the second. -/
 def flatContactPoints (a b c d k N : ℕ) : Finset ℕ :=
@@ -144,8 +198,5 @@ theorem tendsto_flatContactPoints_self_autocorr {a b k : ℕ}
   rw [packetAutocorr_flatPacket_log_div_exp ha hab hk]
   exact tendsto_flatContactPoints_self_card_div a b hk
 
-#print axioms tendsto_flatContactPoints_card_div
-#print axioms tendsto_weighted_flatContactPoints
-#print axioms tendsto_flatContactPoints_self_autocorr
 
 end GaloisForLFunctions.HodgeTheoryOfAFixedPart
