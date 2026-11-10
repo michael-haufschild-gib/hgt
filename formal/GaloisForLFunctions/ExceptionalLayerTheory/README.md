@@ -370,9 +370,22 @@ extend the first type-I estimate to every fixed normalized moment
 The explicit constant comes from a recursive Gaussian derivative bound
 and the even Bernoulli remainder. All lower boundary derivatives vanish;
 the final derivative is integrable at zero. Each increment of moment
-order gains two powers of `UVt/X`. Higher-moment logarithmic estimates
-and a full filtered reduction remain open; this first type-I improvement
-does not establish a bound for centred type II.
+order gains two powers of `UVt/X`.
+
+`GaussianHigherLogLattice.lean`, `GaussianHigherLogTypeIPole.lean` and
+`GaussianHigherCentredVaughan.lean` prove the complete unfiltered reduction
+for `U,V≥1`, `UV≤X`, preserving both signed logarithmic pole masses:
+
+    |M_r−P_r−C_(r,U,V)|
+      ≪r,σ [t^(2r)(UV)^(2r)X^(1−σ−2r)+VtX^(−σ)](1+log X).
+
+For `η>0`, the budgets `(UV)^(2r)t^(2r+1)≤X^(2r+σ−1−η)` and
+`Vt²≤X^(σ−η)` give an explicit `O(1/t)` error. With `σ>0` and
+polynomial-height `V`, the product-cutoff exponent approaches
+`1−(1−σ)/(2r)`, apart from explicit height factors. The logarithmic
+term uses first variation, so the gain concerns large unbalanced cutoffs.
+The higher-moment damping filter and independent centred-current bound
+remain open.
 
 `GaussianLogarithmicContinuum.lean` and `GaussianLogarithmicTypeIPole.lean`
 extract both signed main terms from the actual logarithmic type-I convolution.

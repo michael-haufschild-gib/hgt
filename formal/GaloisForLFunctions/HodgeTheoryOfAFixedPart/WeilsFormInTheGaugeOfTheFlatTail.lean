@@ -131,9 +131,12 @@ theorem two_mul_degOne_mul_degTwo (S : Finset ℕ) (c : ℕ → ℝ) :
   have hrow : ∀ n ∈ S, ∑ m ∈ S, (1 / (m : ℝ) + 1 / (n : ℝ)) =
       (1 / (n : ℝ) + 1 / (n : ℝ)) + ∑ m ∈ S.erase n, (1 / (m : ℝ) + 1 / (n : ℝ)) :=
     fun n hn => (Finset.add_sum_erase S _ hn).symm
-  rw [hdouble, Finset.sum_congr rfl hdiag, Finset.sum_add_distrib, hLK,
-    Finset.sum_congr rfl fun n hn => by rw [hrow n hn]]
-  simp only [mul_add, Finset.sum_add_distrib]
+  have hR : ∑ n ∈ S, c n ^ 2 * ∑ m ∈ S, (1 / (m : ℝ) + 1 / (n : ℝ)) =
+      ∑ n ∈ S, c n ^ 2 * (1 / (n : ℝ) + 1 / (n : ℝ)) +
+        ∑ n ∈ S, c n ^ 2 * ∑ m ∈ S.erase n, (1 / (m : ℝ) + 1 / (n : ℝ)) := by
+    rw [← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun n hn => by rw [hrow n hn, mul_add]
+  rw [hdouble, Finset.sum_congr rfl hdiag, Finset.sum_add_distrib, hLK, hR]
   ring
 
 /-- **Weil's form in the gauge of the flat divisor.** -/
@@ -454,7 +457,9 @@ theorem sum_log_Ioc (M N : ℕ) :
     ring
   have hfac : (((M + N).choose M : ℕ) : ℝ) * (M.factorial : ℝ) * (N.factorial : ℝ) =
       ((M + N).factorial : ℝ) := by
-    exact_mod_cast Nat.add_choose_mul_factorial_mul_factorial M N
+    have h := Nat.add_choose_mul_factorial_mul_factorial M N
+    rw [← Nat.choose_symm_add] at h
+    exact_mod_cast h
   have hc : (0 : ℝ) < ((M + N).choose M : ℕ) := by
     exact_mod_cast Nat.choose_pos (Nat.le_add_right M N)
   have hM : (0 : ℝ) < (M.factorial : ℝ) := by exact_mod_cast M.factorial_pos

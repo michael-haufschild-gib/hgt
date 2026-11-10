@@ -1,7 +1,7 @@
 # Arithmetic phase mixing with a delayed moving pole
 
 - **ID:** B130-arithmetic-phase-mixture
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Source:** [Endpoint tangent obstruction](../3-formalized/endpoint-tangent-moment-obstructs-polynomial-scaling.md).
 

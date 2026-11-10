@@ -82,7 +82,7 @@ has not been assessed.
 
 ## Next candidate
 
-[Arithmetic phase mixing](../0-backlog/arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md):
+[Arithmetic phase mixing](../1-in-progress/arithmetic-two-profile-mixture-with-a-delayed-moving-pole.md):
 a quadratic-character mixture with a regular first shifted zero and
 a later moving pole. Its actual Euler continuation and scaling remain
 unformalized.

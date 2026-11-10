@@ -1,15 +1,15 @@
 # Higher-moment centred Vaughan reduction
 
 - **ID:** b13-higher-moment-centred-vaughan
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); unconditional
 - **Obstacle:** B13; higher-moment unbalanced cutoff horizon.
 
-## Target
+## Statement
 
 For `r≥1`, `0≤σ<1`, `t≥1`, `Re ε=α>0`, `|ε|≤4αt`, `αX²=2`,
 and `1≤U,V` with `UV≤X`, put `F_r(x)=(ε/t)^r x^(2r−σ−it)e^(−εx²)`.
-The actual centred Vaughan current should satisfy
+The actual centred Vaughan current satisfies
 
 `|M_r−P_r−C_(r,U,V)|`
 ` ≪r,σ [t^(2r)(UV)^(2r)X^(1−σ−2r)+VtX^(−σ)](1+log X)`.
@@ -41,11 +41,6 @@ For polynomial-height `V` and `σ>0`, the weaker logarithmic error is
 negligible at large scales. The high-order first type-I bound then controls
 how far `U` can grow. Filter preservation, cofactor localization and the
 independent centred-core bound remain separate requirements.
-
-## Status
-
-Derivation and Lean formalization in progress. The displayed full
-reduction is not yet a theorem.
 
 ## Exact constants and proof
 
@@ -108,3 +103,33 @@ centred current itself.
 The gain is the larger unbalanced cutoff range. The first-variation
 logarithmic remainder is weaker than the existing second-order remainder
 at small cutoffs; no uniform improvement across all cutoff choices is claimed.
+
+
+## Lean declarations and verification
+
+All declarations are in `GaloisForLFunctions.ExceptionalLayerTheory`.
+
+- `GaussianHigherLogLattice.lean`:
+  `summable_gaussianLogMellinWeight_lattice_all`,
+  `norm_tsum_gaussianLogMellinWeight_sub_integral_all_le`,
+  `norm_tsum_gaussianHigherLogMoment_sub_poles_le`.
+- `GaussianHigherLogTypeIPole.lean`:
+  `summable_log_gaussianHigherMoment_dilate`,
+  `norm_tsum_log_gaussianHigherMoment_dilate_sub_poles_le`,
+  `norm_tsum_gaussianHigherMoment_log_trunc_moebius_sub_poles_le`.
+- `GaussianHigherCentredVaughan.lean`:
+  `summable_gaussianHigherMoment_vonMangoldt`,
+  `tsum_gaussianHigherMoment_vaughan`,
+  `norm_sum_gaussianHigherMoment_head_physical_le`,
+  `norm_gaussianHigherMoment_sub_centredVaughan_product_le`,
+  `norm_gaussianHigherMoment_sub_centredVaughan_cutoff_le`.
+
+All three modules compile without warnings. The eleven printed transitive
+axiom lists contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The first type-I constant and its proof are in
+[the all-order type-I theorem](b13-all-order-gaussian-typeI-error.md).
+The arithmetic reduction assumes no unproved cancellation input.
+
+The higher-moment damping filter, selected-mode transfer, cofactor
+localization and independent centred-current bound remain unproved.
+B13 is unresolved.
