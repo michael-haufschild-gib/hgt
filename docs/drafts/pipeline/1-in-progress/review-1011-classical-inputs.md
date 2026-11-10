@@ -75,3 +75,14 @@ quantitative gain before the stronger strip-clearing threshold is reached.
 The existing comb theorem treats that threshold; its source also uses an
 older signature of `exists_deuring_heilbronn_repulsion`. The new transfer
 must use the current theorem directly and audit its dependencies.
+
+## A84: reduced combinatorial obstruction
+
+`MinimalStructure.exists_singleton_normalized_counterexample` reduces any
+failure to an optimum with singleton last part `{x}`. Every proper part has
+zeroth inverse content `1`. The competing greedy last part contains a
+larger exponent, has zeroth cyclic weight `p^(x.exp mod s)`, and uses only
+residue representatives below `x.exp mod s`. The remaining step is a
+weight-increasing carry exchange across the proper parts; the singleton
+normal form alone is not a contradiction. The subsequent Newton-polygon
+identification must use the actual Carlitz–Goss coefficients.
