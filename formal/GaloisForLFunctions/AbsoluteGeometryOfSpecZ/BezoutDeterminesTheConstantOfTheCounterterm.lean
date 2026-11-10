@@ -241,13 +241,13 @@ theorem zeroSums_split [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
       2 * ((∫ u, (F u).re * Real.exp (-u / 2)) * ∫ u, (F u).re * Real.exp (u / 2)) +
         twistedZeroSum hq hprim (fun x => (F x).re) - Real.log q * (∫ u, (F u).re ^ 2) -
         placeEnergy χ (fun u => ((F u).re : ℂ)) :=
-    re_weilFullFunctional_twist_packet hq hprim hreal hu huc
+    re_weilFullFunctional_twist_packet hq hprim hu huc
   have hχv : (_root_.RHTower.weilFullFunctional (twistWeight χ)
         (EF.weilTest (fun u => ((F u).im : ℂ)) (fun u => ((F u).im : ℂ)))).re =
       2 * ((∫ u, (F u).im * Real.exp (-u / 2)) * ∫ u, (F u).im * Real.exp (u / 2)) +
         twistedZeroSum hq hprim (fun x => (F x).im) - Real.log q * (∫ u, (F u).im ^ 2) -
         placeEnergy χ (fun u => ((F u).im : ℂ)) :=
-    re_weilFullFunctional_twist_packet hq hprim hreal hv hvc
+    re_weilFullFunctional_twist_packet hq hprim hv hvc
   rw [hd1, hd2] at hχu
   rw [hd3, hd4] at hχv
   have hζ := re_zeta_W_split hF hFc
@@ -568,7 +568,7 @@ theorem exists_packet_quadraticForm_pos [NeZero q] (hq : 1 < q) {χ : DirichletC
   obtain ⟨g, hg, hgc, hg1, hg2, hlt⟩ := exists_primitive_packet_zeroSums_lt hq hprim hreal hc
   obtain ⟨s, K, hK, hsupp, hf, hfc, hd1, hd2, hmass⟩ :=
     exists_translate_window_primitive hg hgc hg1 hg2
-  have hlim := (tendsto_quadraticForm_add_idealContact hq hprim hreal hf hfc hK hsupp).add
+  have hlim := (tendsto_quadraticForm_add_idealContact hq hprim hf hfc hK hsupp).add
     ((tendsto_degreeMass hf.continuous hK hsupp).const_mul c)
   refine ⟨fun u => g (u - s), K, hf, hfc, hK, hsupp, hd1, hd2, _,
     hlim.congr fun N => by ring, ?_⟩
@@ -576,7 +576,7 @@ theorem exists_packet_quadraticForm_pos [NeZero q] (hq : 1 < q) {χ : DirichletC
         ∫ u, g (u - s) * Real.exp (u / 2)) -
       (zeroSum (fun u => g (u - s)) + twistedZeroSum hq hprim (fun u => g (u - s))) +
       c * ∫ u, g (u - s) ^ 2 := by
-    rw [hd1, zeroSum_translate hg hgc s, twistedZeroSum_translate hq hprim hreal hg hgc s, hmass]
+    rw [hd1, zeroSum_translate hg hgc s, twistedZeroSum_translate hq hprim hg hgc s, hmass]
     linarith
   exact hpos
 

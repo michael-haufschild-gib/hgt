@@ -5,8 +5,9 @@ import GaloisForLFunctions.RHTower.DirichletArchimedeanSymbolPositivity
 /-!
 # The Hodge index of the square of a quadratic ring
 
-For a real primitive character `χ` of conductor `q > 1` the pairing of the square of its quadratic
-ring, counted by norms, has on a packet the limit `2 d₁ d₂ − Z_ζ(f) − Z_χ(f)`. On a finite family
+For a primitive character `χ` of conductor `q > 1` the pairing with the contacts `Λ(1 + Re χ)`,
+for a real `χ` the pairing of the square of its quadratic ring counted by norms, has on a packet
+the limit `2 d₁ d₂ − Z_ζ(f) − Z_χ(f)`. On a finite family
 of packets both zero sums are quadratic forms, and the index law of a tempered configuration
 (corpus) reads on the ring.
 
@@ -17,7 +18,7 @@ of packets both zero sums are quadratic forms, and the index law of a tempered c
   most as many negative squares as `ζ` and `L(s, χ)` together have zeros to the right of the
   critical line. The twisted part, which has no pole plane, has at most as many positive squares
   as `L(s, χ)` has such zeros (`negIndex_twistedGram_packets_le`).
-* **Short packets** (`re_dirichlet_W_nonneg_of_short`, `twistedZeroSum_nonneg_of_short`,
+* **Short packets** (`twistedZeroSum_nonneg_of_level`, `twistedZeroSum_nonneg_of_short`,
   `tendsto_quadraticForm_le_degrees_of_short`): a packet shorter than `log 2` meets no contact.
   For an odd character of conductor `q ≥ 4π` and an even one of conductor `q ≥ 128π` the
   twisted part is then nonpositive, and the inequality of Castelnuovo and Severi holds on the
@@ -64,8 +65,7 @@ theorem twistedZeroSum_packetCombination [NeZero q] (hq : 1 < q) {χ : Dirichlet
 /-- **The pairing of the square of a quadratic ring on a combination of packets**: twice the
 product of the degrees minus the quadratic form of the two Gram matrices of the zeros. -/
 theorem tendsto_quadraticPairing_packetCombination [NeZero q] (hq : 1 < q)
-    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    {f : ι → ℝ → ℝ} (hf : ∀ i, ContDiff ℝ 2 (f i)) (hfc : ∀ i, HasCompactSupport (f i))
+    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) {f : ι → ℝ → ℝ} (hf : ∀ i, ContDiff ℝ 2 (f i)) (hfc : ∀ i, HasCompactSupport (f i))
     {K : ℕ} (hK : 1 ≤ K)
     (hsupp : ∀ i u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f i u = 0) (x : ι → ℝ) :
     Tendsto (fun N : ℕ => quadraticForm χ (packetCombination f x) (3 * K) N +
@@ -78,7 +78,7 @@ theorem tendsto_quadraticPairing_packetCombination [NeZero q] (hq : 1 < q)
               fun i u => ((f i u : ℝ) : ℂ)) (fun i => ((x i : ℝ) : ℂ)))) := by
   have hs : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → packetCombination f x u = 0 := fun u hu =>
     Finset.sum_eq_zero fun i _ => by rw [hsupp i u hu, mul_zero]
-  have h := tendsto_quadraticForm_add_idealContact hq hprim hreal
+  have h := tendsto_quadraticForm_add_idealContact hq hprim
     (contDiff_packetCombination hf x) (hasCompactSupport_packetCombination hfc x) hK hs
   rwa [zeroSum_packetCombination hf hfc x, twistedZeroSum_packetCombination hq hprim hf hfc x,
     ← hermQuad_add] at h
@@ -167,15 +167,15 @@ theorem negIndex_quadraticDefect_packets_le [NeZero q] (hq : 1 < q)
 
 /-! ### Short packets -/
 
-/-- **A test too short for a contact and a large conductor.** For an odd real primitive character
+/-- **A packet too short for a contact and a large conductor.** For an odd primitive character
 of conductor `q ≥ 4π`, or an even one of conductor `q ≥ 128π`, the sum over the zeros of
-`L(s, χ)` is nonnegative on every test supported in an interval shorter than `log 2`. -/
-theorem re_dirichlet_W_nonneg_of_short [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
-    (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) {a : ℝ} (ha0 : 0 ≤ a)
-    (ha : 2 * a < Real.log 2) {G : ℝ → ℂ} (hG : ContDiff ℝ 2 G)
-    (hGs : tsupport G ⊆ Set.Icc (-a) a) :
-    0 ≤ ((_root_.RHTower.dirichletZeros hq hprim).W G G).re := by
+`L(s, χ)` is nonnegative on every packet supported in `[−a, a]` with `2a < log 2`. -/
+theorem twistedZeroSum_nonneg_of_level [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
+    (hprim : χ.IsPrimitive) (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) {a : ℝ}
+    (ha0 : 0 ≤ a) (ha : 2 * a < Real.log 2) {g : ℝ → ℝ} (hg : ContDiff ℝ 2 g)
+    (hGs : tsupport (fun u => (g u : ℂ)) ⊆ Set.Icc (-a) a) :
+    0 ≤ twistedZeroSum hq hprim g := by
+  have hG := contDiff_ofReal_packet hg
   have hN : ⌊Real.exp (2 * a)⌋₊ = 1 := by
     rw [Nat.floor_eq_iff (Real.exp_pos _).le]
     have h2 : Real.exp (2 * a) < Real.exp (Real.log 2) := Real.exp_lt_exp.mpr ha
@@ -187,77 +187,79 @@ theorem re_dirichlet_W_nonneg_of_short [NeZero q] (hq : 1 < q) {χ : DirichletCh
       _root_.RHTower.weilAtomSymbol (fun _ => 0) 0 ξ := fun w ξ => by
     simp [_root_.RHTower.weilAtomSymbol]
   have hπ : 0 < π := Real.pi_pos
-  have hh : Integrable fun τ : ℝ => ‖paperFT G τ‖ ^ 2 :=
+  have hh : Integrable fun τ : ℝ => ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 :=
     _root_.RHTower.integrable_normSq_paperFT hG hGs
-  have hS : Integrable fun τ : ℝ => ‖paperFT G τ‖ ^ 2 *
+  have hS : Integrable fun τ : ℝ => ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
       _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) := by
     have := _root_.RHTower.integrable_normSq_paperFT_mul_weilAtomSymbol_of hG hGs (twistWeight χ)
     rwa [hN] at this
-  have hB : Integrable fun τ : ℝ => Real.log q * ‖paperFT G τ‖ ^ 2 := hh.const_mul _
-  have hAB : Integrable fun τ : ℝ => ‖paperFT G τ‖ ^ 2 *
+  have hB : Integrable fun τ : ℝ => Real.log q * ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 :=
+    hh.const_mul _
+  have hAB : Integrable fun τ : ℝ => ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
       _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) +
-        Real.log q * ‖paperFT G τ‖ ^ 2 := hS.add hB
+        Real.log q * ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 := hS.add hB
+  have hform := integral_weilAtomSymbol_twist_packet hq hprim hg hGs
+  rw [hN] at hform
   rcases hlarge with ⟨hodd, hq4⟩ | ⟨heven, hq128⟩
-  · have hpos := _root_.RHTower.integral_oddDirichletArchSymbol_nonneg hq4 G
-    have hform : ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 * _root_.RHTower.weilAtomSymbol (twistWeight χ)
-          ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) =
-        2 * π * ((_root_.RHTower.dirichletZeros hq hprim).W G G).re -
-          Real.log q * (∫ τ : ℝ, ‖paperFT G τ‖ ^ 2) -
-          ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 * (π / Real.cosh (π * τ)) :=
-      _root_.RHTower.integral_weilAtomSymbol_dirichlet_odd hq hprim hodd hreal ha0 hG hGs
-    rw [hN] at hform
-    have hC : Integrable fun τ : ℝ => ‖paperFT G τ‖ ^ 2 * (π / Real.cosh (π * τ)) := by
-      have hGc : HasCompactSupport G :=
-        IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport G) hGs
-      have hhc : Continuous fun τ : ℝ => ‖paperFT G τ‖ ^ 2 :=
-        _root_.RHTower.BlindPrimePowerSlack.continuous_normSq_paperFT ⟨G, hG, hGc⟩
+  · have hpos := _root_.RHTower.integral_oddDirichletArchSymbol_nonneg hq4
+      (fun u => (g u : ℂ))
+    have hC : Integrable fun τ : ℝ => ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
+        (π / Real.cosh (π * τ)) := by
+      have hGc : HasCompactSupport fun u => (g u : ℂ) :=
+        IsCompact.of_isClosed_subset isCompact_Icc (isClosed_tsupport _) hGs
+      have hhc : Continuous fun τ : ℝ => ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 :=
+        _root_.RHTower.BlindPrimePowerSlack.continuous_normSq_paperFT ⟨_, hG, hGc⟩
       refine (hh.const_mul π).mono' (hhc.mul (continuous_const.div
         (Real.continuous_cosh.comp (continuous_const.mul continuous_id))
         fun τ => (Real.cosh_pos _).ne')).aestronglyMeasurable (Eventually.of_forall fun τ => ?_)
-      show ‖‖paperFT G τ‖ ^ 2 * (π / Real.cosh (π * τ))‖ ≤ π * ‖paperFT G τ‖ ^ 2
+      show ‖‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 * (π / Real.cosh (π * τ))‖ ≤
+        π * ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2
       have hc : 1 ≤ Real.cosh (π * τ) := Real.one_le_cosh _
       rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (sq_nonneg _)
         (div_nonneg hπ.le (by linarith))), mul_comm]
       exact mul_le_mul_of_nonneg_right (div_le_self hπ.le hc) (sq_nonneg _)
-    have hsplit : ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 *
+    have hsplit : ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           (_root_.RHTower.weilAtomSymbol (fun _ => 0) 0 (τ / (2 * π)) + Real.log q +
             π / Real.cosh (π * τ)) =
-        (∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 *
+        (∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π))) +
-          Real.log q * (∫ τ : ℝ, ‖paperFT G τ‖ ^ 2) +
-          ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 * (π / Real.cosh (π * τ)) := by
+          Real.log q * (∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2) +
+          ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 * (π / Real.cosh (π * τ)) := by
       rw [← integral_const_mul, ← integral_add hS hB, ← integral_add hAB hC]
       refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-      show ‖paperFT G τ‖ ^ 2 *
+      show ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           (_root_.RHTower.weilAtomSymbol (fun _ => 0) 0 (τ / (2 * π)) + Real.log q +
             π / Real.cosh (π * τ)) =
-        ‖paperFT G τ‖ ^ 2 * _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) +
-          Real.log q * ‖paperFT G τ‖ ^ 2 + ‖paperFT G τ‖ ^ 2 * (π / Real.cosh (π * τ))
+        ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
+            _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) +
+          Real.log q * ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 +
+          ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 * (π / Real.cosh (π * τ))
       rw [hsymb]
       ring
-    rw [hsplit, hform] at hpos
+    rw [hsplit, hform, placeEnergy_of_odd hodd] at hpos
+    have hcancel : 2 * π * (1 / (2 * π) * ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
+          (π / Real.cosh (π * τ))) =
+        ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 * (π / Real.cosh (π * τ)) := by
+      field_simp
+    rw [hcancel] at hpos
     nlinarith
-  · have hpos := _root_.RHTower.integral_evenDirichletArchSymbol_nonneg hq128 G
-    have hform : ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 * _root_.RHTower.weilAtomSymbol (twistWeight χ)
-          ⌊Real.exp (2 * a)⌋₊ (τ / (2 * π)) =
-        2 * π * ((_root_.RHTower.dirichletZeros hq hprim).W G G).re -
-          Real.log q * ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 :=
-      _root_.RHTower.integral_weilAtomSymbol_dirichlet hq hprim heven hreal ha0 hG hGs
-    rw [hN] at hform
-    have hsplit : ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 *
+  · have hpos := _root_.RHTower.integral_evenDirichletArchSymbol_nonneg hq128
+      (fun u => (g u : ℂ))
+    have hsplit : ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           (_root_.RHTower.weilAtomSymbol (fun _ => 0) 0 (τ / (2 * π)) + Real.log q) =
-        (∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 *
+        (∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π))) +
-          Real.log q * ∫ τ : ℝ, ‖paperFT G τ‖ ^ 2 := by
+          Real.log q * ∫ τ : ℝ, ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 := by
       rw [← integral_const_mul, ← integral_add hS hB]
       refine integral_congr_ae (Eventually.of_forall fun τ => ?_)
-      show ‖paperFT G τ‖ ^ 2 *
+      show ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
           (_root_.RHTower.weilAtomSymbol (fun _ => 0) 0 (τ / (2 * π)) + Real.log q) =
-        ‖paperFT G τ‖ ^ 2 * _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) +
-          Real.log q * ‖paperFT G τ‖ ^ 2
+        ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
+            _root_.RHTower.weilAtomSymbol (twistWeight χ) 1 (τ / (2 * π)) +
+          Real.log q * ‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2
       rw [hsymb]
       ring
-    rw [hsplit, hform] at hpos
+    rw [hsplit, hform, placeEnergy_of_even heven] at hpos
     nlinarith
 
 variable {f : ℝ → ℝ}
@@ -265,8 +267,7 @@ variable {f : ℝ → ℝ}
 /-- On a packet shorter than `log 2` the zero sum of `L(s, χ)` is nonnegative, for a large
 conductor. -/
 theorem twistedZeroSum_nonneg_of_short [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
-    (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) (hf : ContDiff ℝ 2 f)
+    (hprim : χ.IsPrimitive) (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) (hf : ContDiff ℝ 2 f)
     (hfc : HasCompactSupport f) {c a : ℝ} (ha0 : 0 ≤ a) (ha : 2 * a < Real.log 2)
     (hshort : ∀ u, a < |u - c| → f u = 0) :
     0 ≤ twistedZeroSum hq hprim f := by
@@ -284,19 +285,15 @@ theorem twistedZeroSum_nonneg_of_short [NeZero q] (hq : 1 < q) {χ : DirichletCh
     exact hx (by
       show ((f (x - -c) : ℝ) : ℂ) = 0
       rw [hg0 x hx', Complex.ofReal_zero])
-  have h : 0 ≤ ((_root_.RHTower.dirichletZeros hq hprim).W
-      (fun x => ((f (x - -c) : ℝ) : ℂ)) (fun x => ((f (x - -c) : ℝ) : ℂ))).re :=
-    re_dirichlet_W_nonneg_of_short hq hprim hreal hlarge ha0 ha (contDiff_ofReal_packet hg) hts
-  rw [← twistedZeroSum_translate hq hprim hreal hf hfc (-c)]
-  exact h
+  rw [← twistedZeroSum_translate hq hprim hf hfc (-c)]
+  exact twistedZeroSum_nonneg_of_level hq hprim hlarge ha0 ha hg hts
 
 /-- **The inequality of Castelnuovo and Severi on the square of a quadratic ring, where no contact
 enters.** For an odd character of conductor `q ≥ 4π` or an even one of conductor `q ≥ 128π`, and
 a packet shorter than `log 2`: the pairing of the ring has a limit, at most twice the product of
 the degrees minus `∫ f²/5000`. -/
 theorem tendsto_quadraticForm_le_degrees_of_short [NeZero q] (hq : 1 < q)
-    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) (hf : ContDiff ℝ 2 f)
+    {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hlarge : (χ.Odd ∧ 4 * π ≤ q) ∨ (χ.Even ∧ 128 * π ≤ q)) (hf : ContDiff ℝ 2 f)
     (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
     (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) {c a : ℝ} (ha0 : 0 ≤ a)
     (ha : 2 * a < Real.log 2) (hshort : ∀ u, a < |u - c| → f u = 0) :
@@ -304,11 +301,11 @@ theorem tendsto_quadraticForm_le_degrees_of_short [NeZero q] (hq : 1 < q)
           2 * weightedContact (idealWeight χ) f (3 * K) N) atTop (𝓝 l) ∧
       l ≤ 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) -
         1 / 5000 * ∫ u, f u ^ 2 := by
-  refine ⟨_, tendsto_quadraticForm_add_idealContact hq hprim hreal hf hfc hK hsupp, ?_⟩
+  refine ⟨_, tendsto_quadraticForm_add_idealContact hq hprim hf hfc hK hsupp, ?_⟩
   have h1 := zeroSum_ge_of_width hf hfc (c := c) fun u hu => hshort u (by
     have := Real.log_two_lt_d9
     linarith)
-  have h2 := twistedZeroSum_nonneg_of_short hq hprim hreal hlarge hf hfc ha0 ha hshort
+  have h2 := twistedZeroSum_nonneg_of_short hq hprim hlarge hf hfc ha0 ha hshort
   linarith
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

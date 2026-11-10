@@ -47,9 +47,8 @@ private theorem criticalPrecision_norm_sq_le (f : ChargeSpace) :
   have hs := sq_le_sq₀ (norm_nonneg (adjacencyOperator f))
     (mul_nonneg edge_pos.le (norm_nonneg f))
   have hsq := hs.mpr hn
-  rw [criticalPrecision_apply, norm_sub_sq_real, norm_smul,
-    Real.norm_of_nonneg edge_pos.le, real_inner_smul_left,
-    criticalPrecision_quadratic]
+  rw [criticalPrecision_quadratic, criticalPrecision_apply, norm_sub_sq_real, norm_smul,
+    Real.norm_of_nonneg edge_pos.le, real_inner_smul_left]
   have hi := real_inner_comm f (adjacencyOperator f)
   nlinarith only [hsq, hi]
 
@@ -165,7 +164,8 @@ theorem sphericalGreenTransform_norm_eq {ν : ℝ} (hν0 : 0 < ν) (hν1 : ν < 
     simpa only [div_eq_mul_inv, mul_comm] using h
   · by_contra h
     have hlt : ‖B‖ < m⁻¹ := lt_of_not_ge h
-    have hBm : ‖B‖ * m < 1 := (lt_inv_iff₀ hm).mp hlt
+    have hBm : ‖B‖ * m < 1 := by
+      simpa only [inv_mul_cancel₀ hm.ne'] using mul_lt_mul_of_pos_right hlt hm
     let ε := (1 - ‖B‖ * m) / (‖B‖ + 1)
     have hε : 0 < ε := div_pos (sub_pos.mpr hBm) (by positivity)
     obtain ⟨f, hf, hsmall⟩ := exists_unit_critical_residual_lt ε hε

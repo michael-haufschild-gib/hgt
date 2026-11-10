@@ -239,8 +239,8 @@ theorem infinite_zeros_not_xi_zeros {n : ℕ} (a : Fin n → ℂ) (lam : Fin n �
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [Complex.ofReal_neg, neg_neg]
   -- right of the line: normalization at the highest frequency
-  set cR : (Finset.univ.erase m : Finset (Fin n)) → ℂ := fun k => a k / a m with hcR
-  set ℓR : (Finset.univ.erase m : Finset (Fin n)) → ℝ := fun k => -lam k - LM with hℓRdef
+  set cR : ↥((Finset.univ : Finset (Fin n)).erase m) → ℂ := fun k => a k / a m with hcR
+  set ℓR : ↥((Finset.univ : Finset (Fin n)).erase m) → ℝ := fun k => -lam k - LM with hℓRdef
   have hℓR : ∀ k, 0 < ℓR k := by
     intro k
     have hk := Finset.mem_erase.mp k.2
@@ -251,8 +251,8 @@ theorem infinite_zeros_not_xi_zeros {n : ℕ} (a : Fin n → ℂ) (lam : Fin n �
   have hDR : ∀ s : ℂ, D s = a m * cexp (-(LM : ℂ) * s) * expPoly cR ℓR s := fun s => by
     rw [hDexp, sum_exp_eq_expPoly Finset.univ a (fun k => -lam k) (Finset.mem_univ m) (ha m)]
   -- left of the line: normalization at the lowest frequency
-  set cL : (Finset.univ.erase N : Finset (Fin n)) → ℂ := fun k => a k / a N with hcL
-  set ℓL : (Finset.univ.erase N : Finset (Fin n)) → ℝ := fun k => LN - -lam k with hℓLdef
+  set cL : ↥((Finset.univ : Finset (Fin n)).erase N) → ℂ := fun k => a k / a N with hcL
+  set ℓL : ↥((Finset.univ : Finset (Fin n)).erase N) → ℝ := fun k => LN - -lam k with hℓLdef
   have hℓL : ∀ k, 0 < ℓL k := by
     intro k
     have hk := Finset.mem_erase.mp k.2
@@ -463,8 +463,8 @@ theorem infinite_zeros_not_xi_zeros {n : ℕ} (a : Fin n → ℂ) (lam : Fin n �
       have := Complex.abs_im_le_norm (z - p)
       rwa [Complex.sub_im, hzT] at this
     have h1 : ν ≤ (CD + 1) * |T - p.im| := by
-      have := (min_le_left μ _).trans hT
-      nlinarith [abs_nonneg (T - p.im)]
+      have hνμ : ν ≤ μ := min_le_left _ _
+      nlinarith [abs_nonneg (T - p.im), hνμ.trans (hT.trans hmv)]
     have h2 : ν / (CD + 1) ≤ |T - p.im| := by
       rw [div_le_iff₀ (by linarith)]
       linarith
@@ -519,7 +519,7 @@ theorem infinite_zeros_not_xi_zeros {n : ℕ} (a : Fin n → ℂ) (lam : Fin n �
     rw [hFval s hsU hD0, hΛR s h0, ← (hRhas s h0).tsum_eq]
     congr 2
     refine tsum_congr fun i => ?_
-    rw [exp_cpow_eq_cexp, Complex.ofReal_neg]
+    rw [exp_cpow_eq_cexp, Complex.ofReal_neg (logExp ℓR i)]
   have hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 → F s = -(riemannZeta s / s) *
       (∑' j : LogIndex _ ℓL, -logWeight (LN : ℂ) cL ℓL j *
         ((Real.exp (logExp ℓL j) : ℝ) : ℂ) ^ s) - ∑ p ∈ P, r p / (s - p) := by
@@ -578,7 +578,8 @@ theorem infinite_zeros_not_xi_zeros_dirichletPolynomial (a : ℕ →₀ ℂ) (ha
   set e := a.support.equivFin with he
   set a' : Fin a.support.card → ℂ := fun k => a (e.symm k) with ha'
   set lam' : Fin a.support.card → ℝ := fun k => -Real.log ((e.symm k : ℕ)) with hlam'
-  have hpos : ∀ n ∈ a.support, 0 < n := fun n hn => pos_of_mem_support ha0 hn
+  have hpos : ∀ n ∈ a.support, 0 < n := fun n hn =>
+    Nat.pos_of_ne_zero fun h => Finsupp.mem_support_iff.mp hn (by rw [h]; exact ha0)
   have hfun : ∀ s : ℂ, finiteDirichletPolynomial a s = expSum a' lam' s := by
     intro s
     show (∑ n ∈ a.support, a n * (n : ℂ) ^ (-s)) = ∑ k, a' k * cexp ((lam' k : ℂ) * s)
