@@ -10,18 +10,14 @@ import GaloisForLFunctions.ArithmeticHolographyOfTheModularHorizon.OneHeckeEigen
 import GaloisForLFunctions.ArtinMertens.TheFrobeniusDensityTheoremInMertensForm
 
 /-!
-# The zero motive of `ζ` is the fixed part of every arithmetic family
+# Fixed-part moment laws for canonical arithmetic families
 
-This module proves **(FP)** unconditionally across all canonical arithmetic families `(𝔉, ν)` of
-Euler products and their mixtures:
-
-> For every arithmetic family `(𝔉, ν)` whose even window-trace moments are computed by
-> orthogonality — the gauge torus, Dirichlet characters modulo `q` and modulo `q ≤ Q`, the vertical
-> line, Hecke eigenforms under the Weyl law and Rankin–Selberg square, number fields under a
-> counting measure, isozeric Euler deformations, and their mixtures — and every `k`, the `2k`-th
-> moment identity of the family controls the variable traces only: the centred trace of `ζ` enters
-> with `ν`-mass tending to zero or as an exact common factor, and no inequality derived from the
-> family bounds `|c_B(log p)|` below the trivial bound.
+The gauge torus, Dirichlet characters, vertical averages, Hecke sequences and number-field
+permutation characters have the fixed-part decompositions below. Variable moments and positivity
+of translated probability laws alone allow every value of a common summand. A separate Euler-weight
+counterexample obstructs reverse transfer from product positivity; it does not impose a functional
+equation. With the actual zeta trace retained, sublinear cover-family moment growth is equivalent
+to RH. These statements do not classify every arithmetic family or every inequality using one.
 
 ## Main results
 
@@ -51,8 +47,8 @@ Euler products and their mixtures:
    - *Common-factor binomial decoupling* (`commonFactor_moment_realizable_for_all_c`):
      when `ζ` enters as an exact common summand `c + V`, the variable moments `∫ V^j dρ` (`1 ≤ j ≤ 2k`)
      determine `∫ (c + V)^{2k} dρ` as a universal polynomial in `c`, and `Measure.map (c + V ·) ρ`
-     is a genuine probability measure on `ℝ` for *every* `c ∈ ℝ`; hence no moment or Hankel
-     positivity inequality constrains `c`.
+     is a probability measure on `ℝ` for every `c ∈ ℝ`. Positivity of that law alone therefore
+     puts no constraint on `c`; a bound for its translated moments is additional information.
    - *Mixture closure* (`tendsto_mixture_moment_decomp`):
      convex mixtures `(1 − λ_n) μ_n + λ_n ρ_n` of vanishing-mass and common-factor families
      decouple asymptotically into `(1 − λ_n) ∫ V_n^{2k} dμ_n + λ_n ∫ (c + V_n)^{2k} dρ_n`.
@@ -433,7 +429,8 @@ theorem integral_const_add_even_pow {Ω : Type*} [MeasurableSpace Ω] (ρ : Meas
 `V : Ω → ℝ` a measurable variable trace with `∫ V^j dρ = μ_j` (`0 ≤ j ≤ 2k`). Then for *every* real
 value `c ∈ ℝ` (independently of `c_B(log p)`), the pushforward law `Measure.map (c + V ·) ρ` is a
 probability measure on `ℝ` whose `2k`-th moment equals `Σ_{j=0}^{2k} C(2k, j) c^{2k − j} μ_j`.
-Consequently, no moment identity or Hankel positivity inequality of `c + V` constrains `c`. -/
+Thus positivity of the translated law is compatible with every `c` when only the variable
+moments are prescribed. A bound for the translated moment is an additional input. -/
 theorem commonFactor_moment_realizable_for_all_c {Ω : Type*} [MeasurableSpace Ω] (ρ : Measure Ω)
     [IsProbabilityMeasure ρ] {V : Ω → ℝ} (hVm : Measurable V) {k : ℕ}
     (hVi : ∀ j ≤ 2 * k, Integrable (fun ω => V ω ^ j) ρ) {μ : ℕ → ℝ}
@@ -880,8 +877,7 @@ theorem riemannHypothesis_iff_coverFamily_tensorExponent_sublinear {g : ℝ → 
         _ = η / 2 * (2 * (k : ℝ)) := by ring
     linarith
 
-/-- **Master theorem: The zero motive of `ζ` is the fixed part of every arithmetic family `(FP)`.**
-Unconditionally packages the complete answer to Question 5.2 and its corollaries:
+/-- Combined fixed-part moment laws, the Euler-weight obstruction and the cover-family criterion.
 1. *Amplified monodromy symmetry-breaking:* at `0` (`ζ`), every amplified `2k`-th moment satisfies
    `ν{0} |A(0)|² (Σ a_n)^{2k} ≤ ∫ |A|² |S|^{2k} dν`, while off `0` amplification strictly beats
    `(Σ a_n)^{2k}` under exact orthonormality (`exists_amplified_orthonormal_strict_saving`).
@@ -936,3 +932,6 @@ theorem zeroMotive_is_fixedPart_of_every_arithmeticFamily :
   exact ⟨ν, hprob, x₀, A, hx₀, hA, horth, hlt⟩
 
 end GaloisForLFunctions.ArithmeticWeightTheory
+
+#print axioms GaloisForLFunctions.ArithmeticWeightTheory.zeroMotive_is_fixedPart_of_every_arithmeticFamily
+#print axioms GaloisForLFunctions.ArithmeticWeightTheory.commonFactor_moment_realizable_for_all_c

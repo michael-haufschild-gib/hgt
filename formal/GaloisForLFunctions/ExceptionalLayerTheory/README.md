@@ -413,6 +413,17 @@ The product budget `(UV)²t^(d+3)≤X^(1+σ−η)` gives `O(h^d/t)`.
 With polynomial-height `V`, the long cutoff approaches
 `X^((1+σ)/2)` in exponent. Centred type-II cancellation remains open.
 
+`GaussianVaughanCofactorTail.lean` and
+`GaussianFilteredCofactorLocalization.lean` restrict the actual current to
+cofactors at most `W`, keeping both continuum terms. The discarded tail has
+
+    |filtered tail| ≪σ,β,k,ws h^d t^d X^(3+2k)/(UW)^(2k).
+
+Together with the product budget, `UW≥X^(1+δ)`, `2kδ≥4`, and
+`t^(d+1)≤X` give total reduction error `O(h^d/t)`. The remaining
+cofactor exponent approaches `(1−σ)/2` when `V` is polynomial in height.
+No sufficient arithmetic cancellation estimate for this core is proved.
+
 ## Mechanisms and tools
 
 1. Subtract the actual finite divisor in an explicit formula, retaining all Gamma modes,

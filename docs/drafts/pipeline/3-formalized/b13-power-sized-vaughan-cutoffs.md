@@ -59,4 +59,6 @@ audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 This enlarges the cutoffs in an actual infinite arithmetic reduction.
 It supplies no cancellation estimate for the surviving centred type-II
-current. Cofactor localization and B13 remain open.
+current. The subsequent [cofactor localization](b13-unbalanced-cofactor-localization.md)
+restricts the remaining arithmetic core. Its cancellation bound and B13
+remain open.

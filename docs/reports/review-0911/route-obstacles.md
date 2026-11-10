@@ -129,7 +129,7 @@ Established [L]: collision criterion; horizon `(6600/9991+ε)/log X`; density-on
 | | Obstacle | Strength |
 |---|---|---|
 | A19, A20 | Heat horizon toward its method floor; Jensen rung (unverified) | — |
-| A50 | Finite-stratum laws on the cosine family and the shifted Jensen family imply RH (unverified) | — |
+| A50 | Shifted Jensen finite-stratum law ⇒ RH; cosine law gives RH ⇔ ZAL [L*]. Cosine law alone ⇒ RH remains open | `AbscissaLaws/TheShiftedJensenFiniteStratumLawImpliesRH`, `TheCosineFiniteStratumLawClosesZAL` |
 | B24 | Collisions at arbitrarily small time, all heights | RH |
 | B25 | Frequency `<1` at every collision | RH |
 | B124 | Useful finite initial depth budgets and extinction near `t=0` | sub to RH |
@@ -209,7 +209,7 @@ Structure [D]: wave dynamics, unitarity, Hecke, KMS, `C*`, internal modular conj
 
 Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA; ZCG heat count. Established [L/K]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or decay; window index counts critical lengths; `sup_dN_d` = off-line multiplicity; `K_ζ^n` PD ⇔ RH; TFAE: `κ(K_ζ)<∞` ⇔ finite index on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded non-real heat count ⇔ RH above some height ⇔ eventual slice positivity ⇔ central-gap budget ⇔ finite-dimensional odd bound states; in the stratum RH ⇔ one non-blind prime tower PD ⇔ one Weil tower Toeplitz positive ⇔ one tower bounded on a thick set. ZAL forcing any of these is the landing law (S9).
 
-**Positive sign calibration [L].** For `Y≥1`, the completed Eisenstein constant term
+**Positive sign calibration [L*].** For `Y≥1`, the completed Eisenstein constant term
 `Λ(2s)Y^s+Λ(2s−1)Y^{1−s}` has no non-real zero off `Re s=½`.
 `InfiniteRankPurityTheory.lineLaw` proves this without truncation: the pole-cleared
 function has a Schur quotient and an index-one defect; conjugation forces every

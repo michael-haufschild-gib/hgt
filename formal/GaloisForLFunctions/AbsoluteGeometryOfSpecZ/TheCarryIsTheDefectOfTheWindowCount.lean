@@ -200,3 +200,6 @@ theorem carry_proportion_pos : 0 < 2 * Real.log 2 - 1 := by
   linarith
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
+
+#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.log_factorial_mul_sub_eq_sum_carry
+#print axioms GaloisForLFunctions.AbsoluteGeometryOfSpecZ.tendsto_carryTerm_div

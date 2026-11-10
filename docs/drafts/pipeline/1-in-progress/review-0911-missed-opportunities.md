@@ -16,14 +16,14 @@
 | 11.1 | Shimura nonvanishing for one eigenform at every relevant nonhalving zero | Open; one eigenform for each zero does not give one eigenform for all zeros |
 | 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Revised report marks paper/source theorem; scope and Lean audit still require verification |
 | 11.3 | Compact-surface Selberg calibration with finitely many exceptional real zeros | Open; distinguish nontrivial zeros from other Selberg zeros |
-| 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Exact non-real line law and index-one real exception added to both ledgers; existing parity proof avoids truncated Eisenstein series. Direct audit pending |
+| 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Complete: `lagarias-suzuki-sign-calibration.md` in `3-formalized`; exact non-real line law and index-one real exception in both ledgers; direct and axiom audits passed |
 | 11.3 | Exceptional-character filter for sign-free producers | Open assembly from upper/lower Dirichlet trace laws |
 | 11.4 | Short-interval multiplicative cancellation and averaged correlations | Open; published statements and proof dependencies require audit |
 | 11.4 | Carlitz–Goss RH | Open; `carlitz-goss-rh-from-greedy-compositions.md` states the target over `𝔽_p((T⁻¹))` for every prime power and every `p`-adic parameter, with exact combinatorial and analytic dependencies |
 | 11.4 | Bilinear mollified-moment bounds past length T^(1/2) | Open; precise theorem and range require audit |
 | 11.4 | Stepanov bounds for Heilbronn sums and Fermat quotients | Open published input |
 | 11.4 | Effective lower bounds for linear forms in three logarithms | Complete for `log(-1), log p, log q`: `three-logarithms-minus-one-and-two-primes.md` in `3-formalized`, direct and axiom audits passed. The affine real form needed by the upper-side construction remains open |
-| 11.5 | Audit recommended route closures, retain exact positive survivors | Open; `frobenius-order-at-an-integer-point.md` separates ideal-power restriction from evaluated δ-jets. Teichmüller elements refute unrestricted descent of the latter to integer valuation |
+| 11.5 | Audit recommended route closures, retain exact positive survivors | In progress; audited `frobenius-order-at-an-integer-point.md` in `3-formalized` refutes unrestricted descent of evaluated δ-jets and proves the exact compatibility law. Ideal-power restriction remains valid. The exact multinomial carry identity and `carryTerm(N)/N → 2 log 2−1>0` passed direct and transitive axiom audits; broader family closure remains open |
 | 11.6 | Logarithmic prime-window criterion at radius `32 log(T+2)` | Complete existing criterion: `PrimeLogarithmicWindows.lean`, formalized card `b130-logarithmic-windows-by-positive-source-repair.md`; independent direct audit passed, all twelve axiom checks standard only |
 | 11.6 | Coupled-orbit density row `4 regularMean = −2 gammaHardyPhaseRate(0)−(log(4π)+γ)` | Complete existing theorem `ArchimedeanConstantBridge.four_mul_regularMean_eq`; owning module directly checked, standard axioms only |
 | 11.6 | Census covariance ceiling `4π(1−0.67250071)` | Complete: `Census/SourceCovarianceBaseline.lean`; direct and axiom audits passed |
@@ -32,7 +32,7 @@
 | 11.6 | Upper side at degrees `p^a q^b` without attainment | Open; `two-prime-upper-bound-and-inhomogeneous-frequency.md` identifies the actual frequencies `(1, log p, log q)`. The reported replacement by `log(-1)` needs justification |
 | 11.6 | A65 two-prime local criterion | Complete: `two-prime-local-window-criterion.md` in `3-formalized`; direct and transitive axiom audits passed |
 | 11.6 | A67 dominant-ordinate divergence | Complete: `dominant-ordinate-forces-current-divergence.md` in `3-formalized`; grouped Gamma mass handles multiplicities, full divergence limit; direct and axiom audits passed |
-| 11.6 | A50 finite-stratum laws | Audit in progress: shifted Jensen has eventual real-rootedness at every fixed degree; cosine finiteness near zero is not supplied unconditionally by the heat theorem |
+| 11.6 | A50 finite-stratum laws | Shifted Jensen implication and cosine RH ⇔ ZAL under its finite-stratum law are audited; `finite-stratum-laws-for-cosine-and-shifted-jensen.md` in `3-formalized`. The stronger cosine implication still lacks finiteness near zero |
 
 ## Existing anchors
 

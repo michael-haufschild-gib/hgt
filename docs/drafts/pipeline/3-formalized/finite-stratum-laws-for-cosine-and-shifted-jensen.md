@@ -1,6 +1,6 @@
-# Finite-stratum laws for cosine and shifted Jensen families
+# Shifted Jensen finite-stratum criterion and cosine tail criterion
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.6, A50.
 
 ## Shifted Jensen target
@@ -20,7 +20,8 @@ zero `α`, the zero `α²` of `Q` has imaginary part `2 Re α Im α`.
 Since `Re α≠0`, reality forces `Im α=0`, which is RH.
 
 Lean: `AbscissaLaws/TheShiftedJensenFiniteStratumLawImpliesRH.lean`;
-direct and axiom audits pending.
+direct audit passed without warnings. All four transitive axiom lists
+contain only `propext`, `Classical.choice`, `Quot.sound`.
 
 ## Cosine audit
 
@@ -43,4 +44,6 @@ claim about the actual zeta function.
 Exact positive assembly:
 `riemannHypothesis_iff_zerosApproachLine_of_cosine_finite_stratum_law` in
 `AbscissaLaws/TheCosineFiniteStratumLawClosesZAL.lean`;
-direct and axiom audits pending.
+direct audit passed without warnings. Its transitive axioms are
+`propext`, `Classical.choice`, `Quot.sound` only. The stronger deduction
+from the cosine finite-stratum law alone remains open.

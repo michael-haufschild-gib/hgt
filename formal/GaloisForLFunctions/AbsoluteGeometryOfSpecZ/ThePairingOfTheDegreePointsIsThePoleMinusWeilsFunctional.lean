@@ -96,36 +96,36 @@ theorem weilTest_packet_translate (f : ℝ → ℝ) (s : ℝ) :
   funext x
   rw [weilTest_packet (fun u => f (u - s)) x, weilTest_packet f x, packetAutocorr_translate]
 
-/-- **The prime part of Weil's functional of a real packet**: twice the contact weights against
-the autocorrelation at the logarithms. -/
-theorem re_weilFullFunctional_packet (f : ℝ → ℝ) {Q : ℕ}
+/-- **The prime part of the functional of a real packet, for any weight on the integers**: twice
+the weights `λ(k)/√k` against the autocorrelation at the logarithms. -/
+theorem re_weilFullFunctional_packet_of_weight (lam : ℕ → ℝ) (f : ℝ → ℝ) {Q : ℕ}
     (hQ : ∀ n : ℕ, Q < n → packetAutocorr f (Real.log n) = 0) :
-    (_root_.RHTower.weilFullFunctional (fun n => (Λ n : ℝ))
+    (_root_.RHTower.weilFullFunctional lam
         (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re =
       _root_.RHTower.WeilOneSided.weilArchRe
           (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) -
-        2 * ∑ k ∈ Icc 2 Q, contactWeight k * packetAutocorr f (Real.log k) := by
+        2 * ∑ k ∈ Icc 2 Q, lam k / Real.sqrt k * packetAutocorr f (Real.log k) := by
   have hterm : ∀ n : ℕ,
-      (((if 2 ≤ n then (Λ n : ℝ) / Real.sqrt n else 0 : ℝ)) : ℂ) *
+      (((if 2 ≤ n then lam n / Real.sqrt n else 0 : ℝ)) : ℂ) *
           (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (Real.log n) +
             EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (-Real.log n)) =
-        (((if n ∈ Icc 2 Q then 2 * (contactWeight n * packetAutocorr f (Real.log n)) else 0 :
+        (((if n ∈ Icc 2 Q then 2 * (lam n / Real.sqrt n * packetAutocorr f (Real.log n)) else 0 :
           ℝ)) : ℂ) := by
     intro n
     rw [weilTest_packet, weilTest_packet, packetAutocorr_neg]
     by_cases h2 : 2 ≤ n
     · by_cases hQn : n ≤ Q
-      · rw [if_pos h2, if_pos (Finset.mem_Icc.mpr ⟨h2, hQn⟩), contactWeight]
+      · rw [if_pos h2, if_pos (Finset.mem_Icc.mpr ⟨h2, hQn⟩)]
         push_cast
         ring
       · rw [if_pos h2, if_neg (fun h => hQn (Finset.mem_Icc.mp h).2), hQ n (not_le.mp hQn)]
         simp
     · rw [if_neg h2, if_neg (fun h => h2 (Finset.mem_Icc.mp h).1)]
       simp
-  have hT : ∑' n : ℕ, (((if 2 ≤ n then (Λ n : ℝ) / Real.sqrt n else 0 : ℝ)) : ℂ) *
+  have hT : ∑' n : ℕ, (((if 2 ≤ n then lam n / Real.sqrt n else 0 : ℝ)) : ℂ) *
         (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (Real.log n) +
           EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (-Real.log n)) =
-      ((2 * ∑ k ∈ Icc 2 Q, contactWeight k * packetAutocorr f (Real.log k) : ℝ) : ℂ) := by
+      ((2 * ∑ k ∈ Icc 2 Q, lam k / Real.sqrt k * packetAutocorr f (Real.log k) : ℝ) : ℂ) := by
     rw [tsum_congr hterm, tsum_eq_sum (s := Icc 2 Q) (fun n hn => by rw [if_neg hn]; simp),
       Finset.sum_congr rfl (fun n hn => by rw [if_pos hn]), Finset.mul_sum]
     push_cast
@@ -134,6 +134,17 @@ theorem re_weilFullFunctional_packet (f : ℝ → ℝ) {Q : ℕ}
   rw [hT]
   simp only [Complex.add_re, Complex.sub_re, Complex.ofReal_re]
   ring
+
+/-- **The prime part of Weil's functional of a real packet**: twice the contact weights against
+the autocorrelation at the logarithms. -/
+theorem re_weilFullFunctional_packet (f : ℝ → ℝ) {Q : ℕ}
+    (hQ : ∀ n : ℕ, Q < n → packetAutocorr f (Real.log n) = 0) :
+    (_root_.RHTower.weilFullFunctional (fun n => (Λ n : ℝ))
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re =
+      _root_.RHTower.WeilOneSided.weilArchRe
+          (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) -
+        2 * ∑ k ∈ Icc 2 Q, contactWeight k * packetAutocorr f (Real.log k) :=
+  re_weilFullFunctional_packet_of_weight (fun n => (Λ n : ℝ)) f hQ
 
 /-! ### The contacts on a packet -/
 

@@ -42,6 +42,34 @@ theorem delta_descends_iff (x : ghostRing) :
     rw [h, sub_self] at hd
     exact sub_eq_zero.mp ((mul_eq_zero.mp hd).resolve_left hp0)
 
+/-- Compatibility on successive derivatives makes their evaluated jets the integer jets. -/
+theorem iterate_delta_descends {x : ghostRing} {m : ℕ}
+    (hcompat : ∀ j < m,
+      ghostComponent p ((delta p hp)^[j] x) = ghostComponent 1 ((delta p hp)^[j] x)) :
+    ∀ j ≤ m, ghostComponent 1 ((delta p hp)^[j] x) =
+      (fermatQuotient (p : ℕ))^[j] (ghostComponent 1 x) := by
+  intro j hj
+  induction j with
+  | zero => rfl
+  | succ j ih =>
+    rw [Function.iterate_succ_apply',
+      (delta_descends_iff hp _).mpr (hcompat j (by omega)),
+      Function.iterate_succ_apply', ih (by omega)]
+
+/-- On a Frobenius-compatible jet, delta order is exactly integer divisibility. -/
+theorem delta_order_iff_of_compatible {x : ghostRing} {m : ℕ}
+    (hcompat : ∀ j < m,
+      ghostComponent p ((delta p hp)^[j] x) = ghostComponent 1 ((delta p hp)^[j] x)) :
+    (∀ j < m, ((p : ℕ) : ℤ) ∣ ghostComponent 1 ((delta p hp)^[j] x)) ↔
+      ((p : ℕ) : ℤ) ^ m ∣ ghostComponent 1 x := by
+  letI : Fact (p : ℕ).Prime := ⟨hp⟩
+  rw [← forall_dvd_iterate_fermatQuotient_iff (p : ℕ) m (ghostComponent 1 x)]
+  constructor <;> intro h j hj
+  · rw [← iterate_delta_descends hp hcompat j hj.le]
+    exact h j hj
+  · rw [iterate_delta_descends hp hcompat j hj.le]
+    exact h j hj
+
 theorem delta_zero : delta p hp 0 = 0 := by
   apply natCast_mul_left_cancel_ghost (show (p : ℕ).Prime from hp).ne_zero
   have h := frobenius_eq_pow_add_delta p hp 0
@@ -75,6 +103,7 @@ theorem exists_delta_jets_without_integer_order :
     nlinarith only [hle, (show (p : ℕ).Prime from hp).two_le]
 
 #print axioms delta_descends_iff
+#print axioms delta_order_iff_of_compatible
 #print axioms exists_delta_jets_without_integer_order
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

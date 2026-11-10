@@ -205,7 +205,8 @@ theorem norm_gaussianVaughanCofactorTail_le {σ α ξ t X : ℝ}
           have H := mul_le_mul_of_nonneg_left hp
             (show 0 ≤ 8 * α * (n : ℝ) ^ 4 * Real.exp (-α * (n : ℝ) ^ 2) by positivity)
           rw [show 2 * (k + 2) = 4 + 2 * k by omega, pow_add]
-          convert H using 1 <;> ring
+          convert H using 1
+          ring
         _ = _ := by ring
   have hm := tsum_pow_mul_exp_gaussian_le hα hX hscale (k + 2)
   have hsum : ‖∑' n : ℕ, f n‖ ≤
@@ -345,7 +346,8 @@ theorem gaussianCentredVaughan_sub_cofactorCurrent_eq {σ α ξ t : ℝ}
   have hsplit : typeIILong U * typeIIShort V - gaussianVaughanCofactorTailCoeff U V W =
       typeIILong U * truncAF (typeIIShort V) W := by
     unfold gaussianVaughanCofactorTailCoeff
-    noncomm_ring
+    rw [mul_sub]
+    abel
   have hs : (∑' n : ℕ, (((typeIILong U * truncAF (typeIIShort V) W) n : ℝ) : ℂ) *
       gaussianPrimeMomentWeight σ α ξ t n) = (∑' n : ℕ, f n) - ∑' n : ℕ, g n := by
     rw [← hf.tsum_sub hg]

@@ -50,16 +50,15 @@ theorem hasSum_xiJensenCoeff_squaredXi (w : ℂ) :
     rw [show xiJensenCoeff n / (n.factorial : ℝ) =
         thetaCuspRawEvenMoment n / ((2 * n).factorial : ℝ) by
       unfold xiJensenCoeff
-      field_simp [hn]
-      <;> ring]
-    push_cast
+      field_simp [hn]]
+    simp only [Complex.ofReal_div, Complex.ofReal_natCast]
   change HasSum _ (p.sum (-w))
   convert hsum using 1
   funext n
   symm
   rw [show p n (fun _ => -w) = (evenEntireBaseSeries XiC).coeff (2 * n) * (-w) ^ n by
     exact FormalMultilinearSeries.ofScalars_apply_eq _ _ _]
-  rw [hc, evenEntireBaseSeries_XiC_coeff, neg_pow]
+  rw [hc, evenEntireBaseSeries_XiC_coeff, neg_pow w n]
   have hsign : (-1 : ℂ) ^ n * (-1 : ℂ) ^ n = 1 := by
     rw [← mul_pow]
     simp
@@ -79,7 +78,7 @@ theorem riemannHypothesis_of_splits_xiJensenPoly
       simpa only [SignAlternation.jensenPoly, zero_add] using hsplit d)
   have hzero : squaredXi (-(0 : ℂ)) ≠ 0 := by
     have hQ0 : squaredXi 0 = XiC 0 := by
-      simpa only [zero_pow (by decide)] using squaredXi_sq (0 : ℂ)
+      simpa only [zero_pow (by decide : (2 : ℕ) ≠ 0)] using squaredXi_sq (0 : ℂ)
     simpa only [neg_zero, hQ0] using XiC_zero_ne
   apply riemannHypothesis_iff_forall_xiSpectralPoint_im_eq_zero.mpr
   intro q

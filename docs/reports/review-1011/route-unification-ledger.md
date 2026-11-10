@@ -8,7 +8,7 @@ Three structural gaps lie under all three cores: the **dark range** (Dirichlet p
 
 **Why there are three cores [D].** No test is compact on both sides of the explicit formula. A compact prime side (U-Σ) leaves infinitely many zero modes and only an exact sign decides. A localized zero side (U-Π) lets a crude bound decide and leaves the prime side at square-root precision. U-Γ is the involution `ρ↦1−ρ̄`, the selection of ζ and the position of its zeros in height. The curve proof uses two freebies that ζ lacks: finite rank, and zeros periodic in height.
 
-Corpus checkpoint: commit `68b0e1200f` with its working tree (2026-11-10); working log `logs/review-1011-statusquo-research.md`. Evidence: `[L*]` Lean statement read for this ledger; `[L]` recorded as integrated Lean in the frontier map, the scoped-obstruction ledger or a programme table of `formal/` returned by the corpus search tool; `[S]` source present in the working tree, not committed at the checkpoint, statement read; `[K]` with transitive axiom audit as recorded; `[D]` deduction; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
+Corpus checkpoint: commit `e5518fe065` with its working tree (2026-11-10); working log `logs/review-1011-statusquo-research.md`. Evidence: `[L*]` Lean statement read for this ledger; `[L]` recorded as integrated Lean in the frontier map, the scoped-obstruction ledger or a programme table of `formal/` returned by the corpus search tool; `[K]` with transitive axiom audit as recorded; `[D]` deduction; `[C]` classical. Locators: [frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [walls](walls-ledger.md), [routes](route-obstacles.md), [summary](obstacles-summary.md).
 
 **Equivalence through RH transfers truth, not mechanism.** Only an explicit source identity or a proved transport moves an estimate between routes. Section 3 separates the two.
 
@@ -350,7 +350,7 @@ Core problem: source-defined control of `ρ↦1−ρ̄` and of the position of t
 | The two worlds | sector theorem; world I instrumented with a free strip; unbounded windows exclude world I [L*] | an inequality beyond the explicit formula in world I (B13, Landing, DH); ZAL for world II |
 | A uniformity source | tensor criterion [L*] | none exists inside families (fixed part) |
 | A Frobenius substitute | Frobenius at one prime; Adams maps; contacts [L*] | none at a lower price than the count |
-| A surface | the arithmetic square, a curve; the tower of lines with exact counts; comb finite parts [L*] | Bézout for effective classes (B149); the sign of the comb finite part (B88) |
+| A surface | the arithmetic square, a curve; the tower of lines with exact counts; comb finite parts; the degree-point pairing `2d₁d₂−Z(f)`, with Bézout at aperture `≤1/130` [L*] | Bézout for effective classes (B149); the sign of the comb finite part (B88) |
 | Sign of the minimal object | one Weil test per prime [L*] | the bound at every prime of the sample |
 | Uniformity in length | each window from verified height; threshold classification [L*] | every height; B104 |
 | The critical line | theta head = `ζ(½+ib)` [L*] | the signed head at the critical zeros |

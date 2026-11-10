@@ -1,6 +1,6 @@
 # Frobenius order at an integer point
 
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Source:** review-0911 §11.5, construction A.
 
 For a ring with Frobenius lift `ψ_p`, a `p`-derivation `δ_p`, and an
@@ -24,4 +24,8 @@ The ideal-power restriction theorem remains valid:
 prime-power graph. It concerns order along the diagonal ideal, not
 evaluated `δ_p` jets. Construction A must distinguish these notions.
 
-Lean formalization and direct/axiom audits pending.
+Lean: `AbsoluteGeometryOfSpecZ/DeltaOrderDoesNotDescendAtEveryIntegerPoint.lean`:
+`delta_descends_iff`, `delta_order_iff_of_compatible`, and
+`exists_delta_jets_without_integer_order`. Direct audit passed without
+warnings; all three transitive axiom lists contain only `propext`,
+`Classical.choice`, `Quot.sound`.

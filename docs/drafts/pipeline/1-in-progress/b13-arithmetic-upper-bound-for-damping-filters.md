@@ -335,3 +335,12 @@ Thus `(UV)²t^(d+3)≤X^(1+σ−η)` gives `O(h^d/t)` and permits
 power-sized unbalanced cutoffs. Four audited theorems are recorded in
 `../3-formalized/b13-power-sized-vaughan-cutoffs.md`. The centred
 arithmetic cancellation bound remains open.
+
+
+Cofactor localization now retains only `m≤W` in the actual type-II
+convolution, with both continuum terms intact. Its discarded filtered tail
+is `≪ h^d t^d X^(3+2k)/(UW)^(2k)`. Hence `UW≥X^(1+δ)`, `2kδ≥4`,
+and `t^(d+1)≤X`, together with the product budget, give total error
+`O(h^d/t)`. The remaining cofactor exponent approaches `(1−σ)/2` for
+polynomial-height `V`. The independent bound for that core is open.
+See `../3-formalized/b13-unbalanced-cofactor-localization.md`.

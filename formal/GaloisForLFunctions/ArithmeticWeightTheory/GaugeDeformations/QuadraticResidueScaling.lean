@@ -79,7 +79,7 @@ theorem summable_exponentialPhaseCoefficient_weight (C : ℝ) :
   rw [← norm_exponentialPhaseCoefficient_mul_index]
   ring
 
-private theorem norm_log_le_linear {z : ℂ} {η M : ℝ} (hη : 0 < η)
+theorem norm_log_le_linear {z : ℂ} {η M : ℝ} (hη : 0 < η)
     (hl : η ≤ z.re) (hu : ‖z‖ ≤ M) (hM : 0 ≤ M) :
     ‖Complex.log z‖ ≤ |Real.log η| + M + Real.pi := by
   have hηz : η ≤ ‖z‖ := hl.trans (Complex.re_le_norm z)
@@ -249,7 +249,7 @@ theorem analyticAt_regularizedPrimeLog_one : AnalyticAt ℂ regularizedPrimeLog 
   · exact (he s hs h).symm
   · rfl
 
-private theorem analyticAt_regularizedPrimeLog_right {s : ℂ} (hs : 1 < s.re) :
+theorem analyticAt_regularizedPrimeLog_right {s : ℂ} (hs : 1 < s.re) :
     AnalyticAt ℂ regularizedPrimeLog s := by
   have ho : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const Complex.continuous_re
   have hd : DifferentiableOn ℂ coronaPrimeZeta {z | 1 < z.re} :=
@@ -512,7 +512,7 @@ theorem continuousOn_scaledPrimeLogRemainder {K : Set ℂ} (hK : IsCompact K)
     exact mul_le_mul_of_nonneg_left
       (hbound q.1 hq.1.1 hq.1.2 q.2 (hηw q.2 hq.2) (hMw q.2 hq.2) n) (norm_nonneg _)
 
-private theorem nhdsGT_zero_le_Icc {a : ℝ} (ha : 0 < a) :
+theorem nhdsGT_zero_le_Icc {a : ℝ} (ha : 0 < a) :
     (𝓝[>] (0 : ℝ)) ≤ 𝓝[Icc (0 : ℝ) a] 0 := by
   change (𝓝[>] (0 : ℝ)) ≤ 𝓝 0 ⊓ 𝓟 (Icc (0 : ℝ) a)
   refine le_inf nhdsWithin_le_nhds (Filter.le_principal_iff.mpr ?_)

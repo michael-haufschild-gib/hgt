@@ -327,6 +327,51 @@ Notation of P22; `s_n = s + 2πin/P`.
    `n`; so `Σ‖z_n‖ < ∞` (`summable_norm_riemannZeta_div_of_ladder`), against P22.6
    (`not_cofinite_riemannZeta_eq_zero_of_sq_summable`, `not_cofinite_xi_eq_zero_near_class`).
 
+### P24. Half of a class of one Frobenius
+Let `D` be bounded and measurable on the period `P = 2π/d`, with coefficients
+`c_m = ∫_0^P D(y) e^{−idmy} dy`, `m ≥ 0`, `A = Σ‖c_m‖ < ∞`, right limit `L_a` at `0` and left limit
+`L_b` at `P`.
+1. *Conjugate Cauchy pairing.* For `0 ≤ r < 1`, `(1 − re^{−idy})^{−1} = Σ_m r^m e^{−idmy}` uniformly,
+   so `∫ D (1 − re^{−idy})^{−1} = Σ_m r^m c_m` and its norm is `≤ A`
+   (`norm_integral_mul_conjCauchy_le`).
+2. *Poisson bound.* With `k = (1 − re^{idy})^{−1}`: `k + k̄ = 1 + p`, `p ≥ 0` the Poisson kernel of
+   mass `P`, and `k − k̄ = 2i Im k`. So `2i∫D·Im k = ∫D p + ∫D − 2∫D k̄`, of norm `≤ MP + 3A`
+   (`norm_integral_mul_kernelIm_le`).
+3. *Folding.* `Im k(P − y) = −Im k(y)`, so `∫_0^P D·Im k = ∫_0^{P/2} (D(y) − D(P − y)) Im k(y) dy`
+   (`integral_mul_kernelIm_fold`).
+4. *Jump.* `Im k ≥ 0` on `(0, P/2]` with `∫_0^{P/2} Im k = d^{−1} log((1+r)/(1−r))`, and
+   `Im k ≤ 1/(1 − cos²(dδ))` on `(δ, P/2]`. If `‖D(y) − D(P − y) − J‖ ≤ ‖J‖/2` on `(0, δ]`, then
+   `(‖J‖/2)·d^{−1} log((1+r)/(1−r)) ≤ (MP + 3A)/2 + (2M + ‖J‖)(P/2)/(1 − cos²(dδ))`
+   (`half_norm_mul_integral_kernel_le`, `jump_mul_log_le`). The right side does not depend on `r`,
+   so `J = L_a − L_b = 0` (`endpoint_limits_eq_of_summable_halfCoeff`).
+5. With `D = G` of P22 and `d = T`: `c_m = −ζ(s_m)/s_m` (`halfCoeff_ladderDefect`), so
+   `Σ_{n≥0} ‖ζ(ρ + inT)/(ρ + inT)‖ = ∞` (`not_summable_nat_norm_riemannZeta_div`); the lower half by
+   `ζ(s̄) = \overline{ζ(s)}`; the `ℓ²` ladder by P23.3 on the index set `ℕ`
+   (`not_eventually_riemannZeta_eq_zero_near_halfClass`).
+
+### P25. A factor with a Dirichlet series is pure
+Let `F` be holomorphic and bounded on `Re s > x`, equal to an absolutely convergent Dirichlet
+series on `Re s > u₀`, not identically zero, `F(ρ₀) = 0`, `Re ρ₀ > x`.
+1. *Recurrence.* `ρ₀` is isolated; on a circle of radius `ρ` about it `‖F‖ ≥ m > 0`. `F` is almost
+   periodic on a closed strip containing the disc
+   (`GaloisForLFunctions.isStripAlmostPeriodicOn_of_bounded_LSeries`): every interval of length `L`
+   contains `τ` with `‖F(z + iτ) − F(z)‖ ≤ m/3` on the disc. Then `‖F(ρ₀ + iτ)‖ ≤ m/3 < 2m/3 ≤
+   ‖F(z + iτ)‖` on the circle, so `F(· + iτ)` has a zero in the disc
+   (`RHTower.DeBruijn.exists_zero_of_norm_lt_sphere_on`), and every `t` with `|t − τ| < ρ` carries
+   a zero into the disc of radius `2ρ` about `ρ₀ + it` (`exists_thick_zero_shifts`).
+2. *Density.* For `½ < Re ρ₀ < 1` and small `r` the shifts carrying a zero of `ζ` into the disc of
+   radius `r` about `ρ₀ + iτ` have density zero (`RHTower.zetaZeroShiftSet_density_zero`). For
+   `0 < Re ρ₀ < ½` the map `s ↦ 1 − s̄` sends zeros in the strip to zeros and the disc about `ρ₀`
+   to the disc about `1 − ρ̄₀`, with the same shifts (`zetaZeroShiftSet_subset_reflect`,
+   `exists_zetaZeroShiftSet_density_zero`).
+3. If every zero of `F` in `Re s > x` were a zero of `ξ` and `Re ρ₀ ≠ ½`, then `0 < Re ρ₀ < 1`, the
+   thick relatively dense set of 1 would lie in the zero shifts of `ζ`, of positive lower density
+   (`RHTower.eventually_le_volume_of_relativelyDense`), against 2
+   (`exists_zero_not_xi_zero_of_re_ne_half`, `re_eq_half_of_zeros_subset_xi`).
+4. A Dirichlet polynomial is entire, bounded on every half-plane `Re s > x`, and not identically
+   zero there; so a Dirichlet polynomial whose zeros are zeros of `ξ` has them on the critical line
+   (`re_eq_half_of_dirichletPolynomial_zeros_subset_xi`).
+
 ## Modules
 | Module | Content |
 |---|---|
@@ -350,6 +395,8 @@ Notation of P22; `s_n = s + 2πin/P`.
 | OnTheFlowTheWeightFiltrationNeedsNoChainCondition | `flowTrace`, `flowMellin`, `flowPath`; `analyticAt_flowMellin`, `flowMellin_eq_towerResolvent`, `mergedWeight_eq_zero_of_flow_bound`, `flow_bound_iff`, `zeroMotive_flow_bound_iff` |
 | TheZerosContainNoClassOfOneFrobenius | `ladderKernel`, `ladderSum`, `ladderDefect`, `jumpTerm`; `endpoint_limits_eq_of_summable_fourierCoeffOn`, `integral_ladderSum`, `fourierCoeffOn_ladderDefect`, `tsum_jumpTerm_ne_zero`, `ladderDefect_limits_sub`, `not_summable_norm_riemannZeta_div`, `exists_riemannZeta_ne_zero_progression`, `not_forall_xi_progression`, `exists_conjugate_not_zero`, `exists_zero_localFactor_not_zero`, `exists_zero_polynomial_not_zero`, `exists_curve_zero_not_zero`, `aperiodicZeroAt_riemannZeta`, `periodicityDichotomy_zeta_iff_riemannHypothesis` |
 | NoSequenceOfZerosApproachesAClassOfOneFrobenius | `ladderMoment`, `taylorConstant`; `integral_tsum_translates_mul_exp`, `summable_sq_norm_integral_mul_exp`, `summable_sq_norm_riemannZeta_div`, `norm_integral_ladderKernel_taylor_le`, `summable_norm_riemannZeta_div_of_ladder`, `not_cofinite_riemannZeta_eq_zero_of_sq_summable`, `not_cofinite_xi_eq_zero_near_class` |
+| HalfOfAClassOfOneFrobeniusIsNotInTheZeroSet | `halfCoeff`; `norm_integral_mul_conjCauchy_le`, `norm_integral_mul_kernelIm_le`, `integral_mul_kernelIm_fold`, `half_norm_mul_integral_kernel_le`, `jump_mul_log_le`, `endpoint_limits_eq_of_summable_halfCoeff`, `halfCoeff_ladderDefect`, `not_summable_nat_norm_riemannZeta_div`, `exists_nat_riemannZeta_ne_zero_progression`, `exists_nat_riemannZeta_ne_zero_progression_down`, `not_eventually_riemannZeta_eq_zero_near_halfClass`, `exists_nat_conjugate_not_zero` |
+| AFactorWithADirichletSeriesIsPure | `exists_thick_zero_shifts`, `riemannZeta_one_sub_conj_eq_zero`, `zetaZeroShiftSet_subset_reflect`, `exists_zetaZeroShiftSet_density_zero`, `exists_zero_not_xi_zero_of_re_ne_half`, `re_eq_half_of_zeros_subset_xi`, `norm_finiteDirichletPolynomial_le`, `exists_zero_dirichletPolynomial_not_xi_zero`, `re_eq_half_of_dirichletPolynomial_zeros_subset_xi` |
 | NoFamilyOfZerosIsIntegralWhateverTheirRealParts | `norm_frobTrace_sub_le`, `frobTrace_dilate_sub`, `mergedWeight_eq_zero_of_integral_locallyFinite`, `eq_zero_of_integral_trace_of_distinct_xi_zeros` |
 | AFamilySeesItsMeanAndItsMembersOfPositiveMass | `norm_le_of_amortized_levelSums`, `member_norm_le_of_family_moments`, `integral_norm_sq_fixedPart_add`, `fixedPart_norm_le_one_of_mean_bounded`, `fixedPart_norm_le_one_of_excess_bounded` |
 | ASchurFunctionReducesAtEveryNode | `mobius`; `norm_le_norm_defectFactor`, `exists_quotient_by_defectFactor`, `exists_schur_reduction`, `mobius_injOn` |
@@ -380,3 +427,4 @@ fixed part with mass one.
 - 2026-11-10 — index zero: half-shift family, Taylor's theorem
 - 2026-11-10 — 27 modules: the zeros contain no class of one Frobenius (divergence along every vertical progression in the strip)
 - 2026-11-10 — 28 modules: no two-sided sequence of zeros within `ℓ²` of a class of one Frobenius; Parseval for the zeta values along a progression
+- 2026-11-10 — 30 modules: half classes (one-sided divergence and `ℓ²` ladders at every real part); a factor with a Dirichlet series is pure

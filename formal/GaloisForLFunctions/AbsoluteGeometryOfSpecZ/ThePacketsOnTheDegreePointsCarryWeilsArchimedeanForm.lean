@@ -27,6 +27,9 @@ For a packet supported in `[log 3, log K]`, on the window `N < n ≤ (1 + 3K)N`:
   `integral_sq_mul_translate`): with `log(N/2π)` at every point of the window, a counterterm that
   does not depend on the degree point, the limit is Weil's form plus `∫ f(u)² u du`, the first
   moment of the mass, which moves by `s·∫f²` when the packet is translated by `s`.
+* **No counterterm** (`tendsto_degreePairing_div_log`): the pairing of the jets divided by
+  `log N` tends to `∫ f²`. Leaving the diagonal out is not a finite part: it differs from Weil's
+  form by the mass times `log N`.
 
 No other counterterm enters, and nothing is assumed on the packet beyond `C²` and the position of
 its support above the scale. Weil's functional is invariant under translation of the packet, so
@@ -886,6 +889,35 @@ theorem tendsto_degreePairing_sub_scale_counterterm {f : ℝ → ℝ} (hf : Cont
       Real.log_div hN'.ne' h2π]
     ring
   rw [degreeForm, Finset.sum_congr rfl hterm, Finset.sum_add_distrib, ← Finset.sum_mul]
+  ring
+
+/-- **Without a counterterm the pairing of the jets grows like the mass times `log N`.** The
+pairing divided by `log N` tends to `∫ f²`. -/
+theorem tendsto_degreePairing_div_log {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) :
+    Tendsto (fun N : ℕ => degreePairing f (3 * K) N / Real.log N) atTop
+      (𝓝 (∫ u in (0 : ℝ)..Real.log (1 + ((3 * K : ℕ) : ℝ)), f u ^ 2)) := by
+  have h1 := tendsto_degreePairing_sub_scale_counterterm hf hfc hK hsupp
+  have hS : Tendsto (fun N : ℕ => ∑ n ∈ Ioc N (N + 3 * K * N), degreeSample f N n ^ 2 / n) atTop
+      (𝓝 (∫ u in (0 : ℝ)..Real.log (1 + ((3 * K : ℕ) : ℝ)), f u ^ 2)) :=
+    tendsto_degreeSum (G := fun u => f u ^ 2) (hf.continuous.pow 2) (by omega : 1 ≤ 3 * K)
+  have hlog : Tendsto (fun N : ℕ => Real.log (N : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have h0 := h1.div_atTop hlog
+  have hr : Tendsto (fun N : ℕ => Real.log ((N : ℝ) / (2 * Real.pi)) / Real.log N) atTop
+      (𝓝 1) := by
+    have h := (tendsto_const_nhds (x := (1 : ℝ))).sub
+      ((tendsto_const_nhds (x := Real.log (2 * Real.pi))).div_atTop hlog)
+    rw [sub_zero] at h
+    refine h.congr' ?_
+    filter_upwards [eventually_ge_atTop 2] with N hN
+    have hN1 : (1 : ℝ) < N := by exact_mod_cast hN
+    have hl : Real.log (N : ℝ) ≠ 0 := (Real.log_pos hN1).ne'
+    rw [Real.log_div (zero_lt_one.trans hN1).ne' (by positivity), sub_div, div_self hl]
+  have h := h0.add (hS.mul hr)
+  rw [zero_add, mul_one] at h
+  refine h.congr fun N => ?_
   ring
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

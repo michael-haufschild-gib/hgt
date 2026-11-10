@@ -2,7 +2,7 @@
 
 Scope: the 38 live route formulations, the 12 route candidates and the supporting programmes. For each route: the path, what is established, the obstacles that are **(a) just work**, and the obstacles that are **(b) open mathematics nobody has a solution to**.
 
-**Corpus checkpoint:** commit `68b0e1200f` with its working tree (2026-11-10). Working log: `logs/review-1011-statusquo-research.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
+**Corpus checkpoint:** commit `e5518fe065` with its working tree (2026-11-10). Working log: `logs/review-1011-statusquo-research.md`. Companions: [obstacles-summary.md](obstacles-summary.md) (A/B lists, ideation, the one question), [walls-ledger.md](walls-ledger.md) (Σ/Π/Γ), [route-unification-ledger.md](route-unification-ledger.md) (faces of one problem).
 
 **Live** means source observable, proved RH-sufficient receiver and explicit open estimate. **Candidate** means the source-to-receiver step is missing. Formulations are not independent mechanisms: HJ is PA; the BSY criterion of FEL belongs to CTF; SEC and CDC/BSH are candidates; PCS is a retired label. A criterion, a source construction, a quotient equality or a scalar grade does not discharge an arithmetic sign or vanishing.
 
@@ -204,13 +204,13 @@ Established [L*]:
 - Classical Deuring–Heilbronn for a real zero of a quadratic `L(s,χ)` with a uniform constant; ζ has no Siegel regime; graded repulsion is refuted on integer-norm Euler products.
 - World I: a top layer with a dominant ordinate (its Gamma mass exceeds the mass of all other ordinates of the layer) makes the corrected current diverge at every damping `a` with `a(β−σ)>π/2`; filters read the divisor at every damping speed; VK bound `C h^d t^N exp(a(1−σ)t/2−a t·vk/4)`.
 - RH ⇔ attained top ∧ thick bounded lag ⇔ attained top ∧ thick `O(√X)` prime deviation; a thick lag bound at every exponent gives AAL; under AAL the finite-stratum receivers and ZAL are equivalent to RH.
+- Centred Vaughan current: with cutoffs `U,V` the filtered centred error is `O(h^k/t)` once `(UV)²t^{k+3}≤X^{1+σ−η}`, `k` the filter degree; the current minus its part with cofactors up to `W` is at most `784(k+2)!·X^{3+2k}/(UW)^{2k}` for every `k`.
 - Graded recurrence: for `½≤σ≤5/6`, `c>(30/13)(1−σ)` and a zero `ρ` with `Re ρ>σ`, the one-separated returns of ζ to a small disc at `ρ` up to height `T` number fewer than `T^c` for large `T`; `T^c` such returns at arbitrarily large `T` on every small disc exclude the zero.
-- The zeros contain no conjugacy class of one Frobenius: no vertical progression `ρ+ikT` consists of zeros of ξ, at any real part; `Σ_n|ζ(ρ+inT)/(ρ+inT)|` diverges in the strip and the sum of squares converges; no two-sided sequence of zeros lies within an `ℓ²` perturbation of a progression in the open strip. The periodicity dichotomy for ζ is RH.
+- The zeros contain no conjugacy class of one Frobenius: no vertical progression `ρ+ikT` consists of zeros of ξ, at any real part; `Σ_n|ζ(ρ+inT)/(ρ+inT)|` diverges in the strip and the sum of squares converges; no two-sided sequence of zeros lies within an `ℓ²` perturbation of a progression in the open strip. The periodicity dichotomy for ζ is RH. Each half progression behaves the same way: `Σ_{n≥0}|ζ(ρ+inT)/(ρ+inT)|` diverges, both half progressions contain non-zeros at arbitrarily large `n`, and no sequence of zeros is eventually within an `ℓ²` perturbation of a half progression [S].
 
 | | Obstacle | Strength |
 |---|---|---|
 | A47, A68 | constants of the one-quartet world; a landing calibration with ζ's Gamma factor (unverified) | — |
-| A77 | power-sized cutoffs for the filtered centred Vaughan error: source present [S] | — |
 | B13, B138 | finite stratum; landing for ζ | sub |
 | B141 | Deuring–Heilbronn for ζ: `¬AAL ⇒ ZAL` | sub |
 | B83, B89, B112, B128 | AAL; a bounded aligned return at each right zero; FE into vertical transport; replication | sub |
@@ -242,18 +242,19 @@ Established [L*]:
 - Off-diagonal: `archKernel(m,n)=2π√(mn)·G_{1/2}(|log n−log m|)` on `ℍ³`; `weilPrimeKernel(m,mp^k)=log p·((p−1)/√p)·G^{T_p}_{1/2}(k)`.
 - `frobeniusIntersection(ga,gb)=g·a/(1−(a/b)²)+g·log#(ℤ/J(a,b))`: jets plus contacts; a perfect square keeps no contact; a finite fibre forces contacts that are not Weil's; no Witt Verschiebung carries the off-diagonal.
 - Refutation of the invariant glued carrier; weighted adelic Green kernel is a positive covariance, invariant, and does not sign Weil's form.
-- The mixed hyperbolic Green kernel of the weighted adelic adjacency is the limit of its finite Dirichlet sections; between distinct finite vertices it and its Robin finite part lie between `0` and a strictly tempered product barrier of exponent above `½`, uniformly as the archimedean distance tends to `0`.
+- The mixed hyperbolic Green kernel of the weighted adelic adjacency is the limit of its finite Dirichlet sections; between distinct finite vertices it and its Robin finite part lie between `0` and a strictly tempered product barrier of exponent above `½`, uniformly as the archimedean distance tends to `0`; the kernel is symmetric and invariant under adelic isometries; the barrier profile is summable over the rational torus `ℚ^×`, with base value `1/(|num q|·den q)` and finitely many equal-fibre exceptions.
+- Pairing of the degree points (jets plus twice the contacts minus the comb counterterm): its limit on packets is `2d₁d₂−Z(f)`, `Z(f)` the sum over the zeros, equal to Weil's functional; `Z(f)≥−D(f)` with `D(f)≥0` a sum over the off-line zeros, and RH ⇔ `D(f)=0` for every packet; `D·D≤2d₁d₂` holds on packets of length `≤1/130`; twice the contacts tend to the pole and archimedean part minus `Z(f)`, and on packets shorter than `log 2` the zero sum is the archimedean part.
+- The `p`-derivation of the square descends to the diagonal point exactly where the first and `p`-th ghost components agree; the Teichmüller element `[p]` has vanishing positive jets and value `p`: evaluated jets do not measure integer order.
 - Diagonal: finite part of the jets on invariant combs; the counterterm belongs to the comb; on the carrier Weil's form is a density at every frequency.
 - Archimedean fibre: weight lines of the same Frobenius, transposition `z↦1−z`, trace `1+1/(n²−1)` on the jets, pole plane at weights `0,1`.
 - Count: RH ⇔ every effective prime class carries an `ℕ`-count with Tate limit `δ_p(1,1)`; the same on power-saving gap sets; section count with Riemann–Roch and Bézout ⇔ Hodge index, over ℤ ⇔ RH.
-- Carries: `log C(2N,N)` = carry term + prime count of `(N,2N]`, carry term `∼(2log 2−1)N`. Gluing index of the first `N` graphs is `N!`, within `O(log N)` of the zero count at height `2πN`.
+- Carries: `log C(2N,N)` = carry term + prime count of `(N,2N]`, carry term `∼(2log 2−1)N`. Gluing index of the first `N` graphs is `N!`, within `O(log N)` of the zero count at height `2πN`; at every height the gluing count `G(T)`, the conditions of each graph spread evenly over its window, satisfies `G(T)−N(T)+S(T)→½log 2π−7/8`, and `G(T)−N(T)` leaves every bounded neighbourhood of that constant at arbitrarily large heights [S].
 - Clock: `E_r↑W` with Sobolev error; capacity `∼4√N`; clock horizon sharp at `κ=4`.
 
 | | Obstacle | Strength |
 |---|---|---|
 | A28, A41, A48 | reciprocal-quadric traces; count law for plane quartics [C]; Hasse–Weil tests at verified scales | — |
-| A54, A70 | cusp expansion for Bianchi resolvents; torus-periodized local Green functions | — |
-| A77 | adelic symmetry of the mixed hyperbolic Green kernel: source present [S] | — |
+| A54, A70 | cusp expansion for Bianchi resolvents; the torus periodization of the mixed Green kernel from its barrier bound and the torus-summable barrier profile | — |
 | B87 | a count on the rays `Γ_1+Γ_p`, defined without `Q` | RH |
 | B88 | the sign of the Gram defect / of the comb finite part | RH |
 | B149 | a section count with Riemann–Roch and Bézout on an infinite-type object carrying contacts and jets | RH (producer) |
@@ -466,7 +467,7 @@ Receiver statements are `[L*]` unless marked; further established facts are `[L]
 
 ### ACS — Castelnuovo–Severi at the prime degrees
 - **Path:** all-aperture Bézout of the source cone → RH; or `P(p)≤A(p)+K` on logarithmic windows off power-thin exceptions.
-- **Established:** RH ⇔ all-aperture Bézout ⇔ all-aperture ampleness of the exact source cone; blocks S3, S10; the pairing of the degree points (jets + twice the contacts) tends to pole − Weil on packets [L*].
+- **Established:** RH ⇔ all-aperture Bézout ⇔ all-aperture ampleness of the exact source cone; blocks S3, S10; the pairing of the degree points (jets + twice the contacts) tends to pole − Weil on packets; its limit on packets is `2d₁d₂−Z(f)`, `Z(f)` the sum over the zeros, equal to Weil's functional; `Z(f)≥−D(f)` with `D(f)≥0` a sum over the off-line zeros, and RH ⇔ `D(f)=0` for every packet; `D·D≤2d₁d₂` holds on packets of length `≤1/130` [L*].
 - **(a)** A28, A41, A48, A59, A72.
 - **(b)** B40, B130; B87, B88, B149; B28.
 
@@ -499,13 +500,13 @@ Each needs its source-to-receiver step first (B81).
 | Programme | Established | (a) | (b) |
 |---|---|---|---|
 | SOSZ ScaleLocality | `√T`, log-square and logarithmic windows; exceptional sets; signed deletion; separated windows; short windows miss; other side on windows; counts on one sequence of windows [L*] | A72, A73, A76, A78 | B130, B143, B144 |
-| ELT | atoms and landing forms; Deuring–Heilbronn calibration; filters at every speed; boundary rotation; polynomial damping; VK bounds; centred Vaughan current; dominant-ordinate divergence; arithmetic bounds in world I [L*]; power-sized Vaughan cutoffs [S] | A47, A68, A77 | B141, B145, B138 |
+| ELT | atoms and landing forms; Deuring–Heilbronn calibration; filters at every speed; boundary rotation; polynomial damping; VK bounds; centred Vaughan current; dominant-ordinate divergence; arithmetic bounds in world I; power-sized Vaughan cutoffs and cofactor localization [L*] | A47, A68 | B141, B145, B138 |
 | ZCG AbscissaLaws, Recurrence | split, atoms, sectors, quasi-RH as a tail law, heat-, cosine- and Jensen-family laws, graded recurrence [L*] | none | B13, B83, B138 |
 | IRP | index law; semicontinuity; Eisenstein line law and its blindness; exceptional parameter at `4πe^{−γ}`; Kronecker at infinite rank; attained top replaces ZAL on thick sets; Lefschetz numbers are not traces; no class of one Frobenius among the zeros, nor an `ℓ²` perturbation of one [L*] | none | B146 |
 | AWT | fixed-part theorem; cover-family tensor criterion; gauge deformations; moving branch and quadratic residue collapse of damped Liouville phases; edge divisors; Künneth [L*] | none | B86 |
 | SignFreePurityMechanisms | height separation ⇔ bounded prime traces; Frobenius at one prime; `m·θ(S)`; primorial; Newton polygons; coefficient gaps [L*] | none | — |
-| AGZ | ghost ring, cofreeness, contacts, torsion conormal, carries, gluing index, comb finite parts, archimedean fibre, toric surface of a base, tower of lines [L*] | none | B149, B88 |
-| HAT | adelic Green formula; full degree carrier; prime operators; weighted Green covariance; mixed hyperbolic Green kernel from finite Dirichlet sections with strictly tempered barriers and uniform adelic decay; refutation of the glued carrier; scattering tower; arithmetic clock [L*]; adelic symmetry of the mixed kernel [S] | A54, A70, A77 | B88 |
+| AGZ | ghost ring, cofreeness, contacts, torsion conormal, carries, gluing index, comb finite parts, archimedean fibre, toric surface of a base, tower of lines, the pairing of the degree points as a weighing of the zeros, descent of the `p`-derivation [L*] | none | B149, B88 |
+| HAT | adelic Green formula; full degree carrier; prime operators; weighted Green covariance; mixed hyperbolic Green kernel from finite Dirichlet sections with strictly tempered barriers, uniform adelic decay, adelic symmetry and torus-summable barrier profiles; refutation of the glued carrier; scattering tower; arithmetic clock [L*] | A54, A70 | B88 |
 | AHMH / BHR / ASH / CTH | cavity receivers, reflection Krein forms, halving descent, ringdown, count door, sharp shells [L*] | A26, A41 | B68, B71, B87, B147 |
 | TTPO / CDGeo / PTT / TAPO | depth law, VK breadth, strip breadth, collective counts, label statements [L*] | A24, A37, A75 | B97, B137, B148 |
 | ALST / AAD / RAC | Stepanov degrees; orbit rigidity; producer rates [L*] | A30 | B48, B55, B67 |

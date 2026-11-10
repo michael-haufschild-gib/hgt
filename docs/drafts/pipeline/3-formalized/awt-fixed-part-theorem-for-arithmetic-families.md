@@ -4,10 +4,10 @@
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-0911/fable.md` §5.2 (`(FP)`, B142, B85, B86)
-- **Statement:** **(FP) holds unconditionally.** In every arithmetic family `(𝔉, ν)` of Euler products whose even window-trace moments are computed by orthogonality — the gauge torus, Dirichlet characters modulo `q ≤ Q`, the vertical line, Hecke eigenforms under the Weyl law and Rankin–Selberg square, number fields under a counting measure, summable Euler deformations, and their mixtures — the `2k`-th moment identity controls the variable traces only: the centred trace of `ζ` enters with `ν`-mass tending to zero or as an exact common factor, and no inequality derived from the family (including amplified moments and nonnegative product-coefficient couplings) bounds `|c_B(log p)|` below the trivial bound.
+- **Statement:** Fixed-part decompositions for the named canonical families; vanishing-mass and translated-law moment identities; an Euler-weight counterexample to reverse product-positivity transfer; and an RH-equivalent sublinear cover-family tensor-moment criterion. The counterexample does not retain an FE. The universal statement that no inequality derived from any arithmetic family can improve the base trace remains unproved.
 
 ## Goal
-Resolve Question 5.2 of `docs/reports/review-0911/fable.md` (`(FP)`) unconditionally, together with its named obstacle (reverse weight transfer through nonnegative coefficients of growing-conductor product families) and its corollaries for amplification and Deligne's tensor-moment programme over `ℤ` (B142).
+Record the exact fixed-part laws and their obstruction to reverse transfer from product positivity. The universal closure asserted in `(FP)` is a separate open claim.
 
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
@@ -46,7 +46,7 @@ This resolves the named obstacle of `fable.md` §5.2: coupling `L_{\mathrm{base}
    - *Product positivity preserved:* `0 ≤ (flipSmoothAF θ * (ζ * g))(n)` and `0 ≤ doubledVM θ n + λ_{\mathrm{var}}(n)` (`flipSmooth_mul_nonneg`).
    - *Window shift beats every `a < 1/2`:* By positivity and continuity of `splineAutoCorr` at `0` (`0 < splineAutoCorr 0`) and pigeonhole clustering of `flipBlock θ k` into `M` logarithmic bins, for all large `k` some prime `p ∈ flipBlock θ k` satisfies `primeWindowOf (doubledVM θ) p - primeWindow p ≥ c_0 p^{\theta - 1/2}`. Hence for every `a < 1/2`, `ζ` and `doubledVM θ` (`θ = 1/2 + (\max(a, 0) + 1/2)/2`) cannot both satisfy `|archPoleWindow p - primeWindowOf w p| ≤ K p^a` on all primes (`not_both_primeWindowOf_power_bound`, `no_reverse_weight_bound_from_product_positivity`). ∎
 
-### 3. Universal fixed-part theorem across all arithmetic families and mixtures (`[PROVED HERE]`)
+### 3. Fixed-part laws for the named families and mixtures (`[PROVED HERE]`)
 
 1. **Five canonical family classes:**
    - *Gauge torus `(G, gaugeHaar)`:* `gaugeHaar {0} = 0`, `gaugeHaar (isozericClass σ_0) = 0` (`1/2 ≤ σ_0 < 1`), `gaugeHaar jumpLocus = 0`, and `0`-supported trace jumps cancel identically (`gaugeTorus_fixedPart_decoupling`).

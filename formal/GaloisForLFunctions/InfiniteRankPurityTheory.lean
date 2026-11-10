@@ -26,6 +26,8 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.OnTheFlowTheWeightFiltration
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoFamilyOfZerosIsIntegralWhateverTheirRealParts
 import GaloisForLFunctions.InfiniteRankPurityTheory.TheZerosContainNoClassOfOneFrobenius
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoSequenceOfZerosApproachesAClassOfOneFrobenius
+import GaloisForLFunctions.InfiniteRankPurityTheory.HalfOfAClassOfOneFrobeniusIsNotInTheZeroSet
+import GaloisForLFunctions.InfiniteRankPurityTheory.AFactorWithADirichletSeriesIsPure
 
 /-!
 # Infinite-rank purity theory
@@ -59,8 +61,11 @@ statement at a point.
   Frobenius conjugates share their weight. The zeros contain no class of one Frobenius:
   `Σ_n |ζ(ρ + inT)|/|ρ + inT|` diverges along every vertical progression in the strip, so `ξ`
   vanishes on the zeros of no local factor `q^{-s} - u` and of no curve over a finite field; the
-  same values are square summable, and no two-sided sequence of zeros lies within an `ℓ²`
-  perturbation of a class.
+  same values are square summable, and no sequence of zeros lies within an `ℓ²` perturbation of a
+  class or of half of one.
+* Factors: a bounded Dirichlet series whose zeros are zeros of `ξ` has all of them on the critical
+  line; a zero of such a series off the line recurs with positive density, which the zeros of `ζ`
+  off the line do not have.
 
 See `InfiniteRankPurityTheory/README.md`.
 -/

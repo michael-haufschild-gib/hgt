@@ -52,7 +52,7 @@ The atoms have distinct characters:
 Equivalently on the prime side [D from L]: under ZAL, `ψ(x)−x` is, for each `ε>0`, a finite exponential sum `S_ε` plus `O(x^{½+ε})`; landing says the sums `S_ε` stabilize as `ε→0`, and B13 says the stable sum is empty.
 
 ### 1.4 What decides the atoms, and what cannot
-- **Positive sign calibration.** The Lagarias–Suzuki constant term `Λ(2s)Y^s+Λ(2s−1)Y^{1−s}`, `Y≥1`, has no non-real zero off the line. The corpus proves this without truncated Eisenstein series: a Schur quotient, the pole's index-one defect and conjugation give `InfiniteRankPurityTheory.lineLaw`; at most one real exceptional zero lies right of the line (`constantTerm_zero_subsingleton`) [L]. A sign route must recover this theorem, including its allowance for real exceptional zeros.
+- **Positive sign calibration.** The Lagarias–Suzuki constant term `Λ(2s)Y^s+Λ(2s−1)Y^{1−s}`, `Y≥1`, has no non-real zero off the line. The corpus proves this without truncated Eisenstein series: a Schur quotient, the pole's index-one defect and conjugation give `InfiniteRankPurityTheory.lineLaw`; at most one real exceptional zero lies right of the line (`constantTerm_zero_subsingleton`) [L*]. A sign route must recover this theorem, including its allowance for real exceptional zeros.
 - **Two scales.** No property of the zeros above a height, or below a fixed height, decides B13, any linear law or AAL; landing is a tail law, and no property below a fixed height decides it [L].
 - **Analytic shape.** FE, order one and reality admit every finite top layer and remainders approaching the line: an entire `G(1−s)=G(s)` of exponential type with off-line quartets `½±δ_n±i(n+1)²`, `δ_n↓0`, satisfies ZAL and violates landing [L].
 - **Euler products without FE.** Positive integer-norm Euler products with linear counting, continued across `Re s=½`, carry a finite off-line layer (one-off: violates B13), an isolated top over a remainder at positive abscissa (two-scale: violates DH), and a top over remainders approaching the line (violates landing while satisfying ZAL, B13, DH) [L]. Each atom needs the FE and the Euler product together.
@@ -178,7 +178,7 @@ Difficulty is established only where a known argument exists; `(unverified)` mar
 | # | Task | Routes | Basis |
 |---|---|---|---|
 | A47 | Explicit constants of the one-quartet world: supercritical speed, envelope window, tower windows at base `π/γ` (unverified) | ZCG, WL, IWT, ELT | envelope and dichotomy theorems |
-| A50 | Finite-stratum laws on the cosine family and the shifted Jensen family imply RH (unverified) | ZCG, PTR, LA | heat-family theorem |
+| A50 | Shifted Jensen finite-stratum law ⇒ RH; cosine law gives RH ⇔ ZAL [L*]. Cosine law alone ⇒ RH remains open | ZCG, PTR, LA | exact Pólya coefficients; cosine still needs finiteness near zero |
 | A67 | Dominant-ordinate divergence: the corrected current's norm tends to infinity when one ordinate's grouped Gamma mass exceeds the mass of the remaining ordinates [L*] | ZCG, ELT | `ADominantOrdinateForcesCurrentDivergence`; multiplicities included |
 | A68 | A landing calibration with ζ's Gamma factor and Riemann–von Mangoldt counting (unverified) | ZCG, ELT, IWT | `exists_approachingModel_not_landingLaw` |
 | A37 | Resonator mean of `\|ζ\|²` with resonators growing below the Kronecker scale (unverified) | BAG, ZCG, PTT | fixed-resonator limit |

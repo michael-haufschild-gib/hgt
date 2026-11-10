@@ -36,3 +36,25 @@ Existing anchor: `det_confluentPolynomialJetMatrix` works over every
 commutative ring. The finite-characteristic logarithm jets, auxiliary
 vanishing constraints, parameter bounds and fourth-moment transfer remain
 to be formalized. No analytic estimate is assumed as a premise.
+
+## A sufficient first power saving
+
+The single-fibre estimate `M≪p^(2/3)` already yields
+`|H_p(a)|≪p^(11/12)`, which meets the requested power saving.
+For the Teichmüller subgroup `Γ⊂(ℤ/p²ℤ)ˣ`, normalize a nonzero residue
+of a pair sum by its Teichmüller lift. Equality of normalized sums is
+equality of `L_p` values on `𝔽_p\{0,1}`. Hence its additive energy is
+at most `(p−1)²+(p−1)(p−2)M`.
+Character orthogonality gives the fourth Fourier moment `p²E(Γ)`;
+multiplicative invariance repeats each unit-frequency value `p−1`
+times. Thus `|Σ_{x∈Γ}e(ax/p²)|⁴≤p²E(Γ)/(p−1)≪p^(11/3)`.
+The missing zero term changes the sum by one.
+
+For the fibre estimate, take integer `n` with `n³≤p<(n+1)³`,
+`A=n²`, `B=C=n`, and `D=⌊n²/8⌋`. The auxiliary operator
+`X(1−X)∂_X+(X−Z)∂_Y` respects substitution `(X,L_p(X),X^p)`.
+Requiring its first `D` iterates to vanish identically at `(X,c,X)`
+imposes at most `D(A+2D+C)` linear conditions on `ABC` coefficients.
+For sufficiently large `n` this is underdetermined. Nonvanishing uses
+`AB≤p`; at each fibre point other than `0,1`, multiplicity is at least
+`D<p`. Degree at most `A+p(B+C)` gives the stated fibre bound.
