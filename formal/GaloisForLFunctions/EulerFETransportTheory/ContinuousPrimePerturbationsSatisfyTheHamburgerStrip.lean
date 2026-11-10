@@ -113,4 +113,85 @@ theorem continuousEulerRemainder_center (ε : ℝ≥0) {s : ℂ} (hs : s.re = 1 
     show (1 : ℂ) - s + 1 = 2 - s by ring]
   ring
 
+private theorem exists_decay_completedZeta_hamburger :
+    ∃ D : ℝ, 0 ≤ D ∧ ∀ s : ℂ, 1 / 2 ≤ s.re → s.re ≤ 3 / 2 → 4 ≤ |s.im| →
+      ‖completedRiemannZeta s‖ ≤ D / (1 + s.im ^ 2) := by
+  obtain ⟨C, N, hC, hΛ⟩ := RHTower.exists_bound_completedRiemannZeta_strip
+  obtain ⟨K, hK, hbound⟩ := RHTower.exists_bound_pow_mul_exp_neg (N + 2)
+  refine ⟨C * K, mul_nonneg hC hK, fun s hs₀ hs₁ ht => ?_⟩
+  have hdec := RHTower.pow_mul_exp_neg_le_div hbound (abs_nonneg s.im)
+  rw [sq_abs] at hdec
+  calc
+    ‖completedRiemannZeta s‖ ≤
+        C * |s.im| ^ N * Real.exp (-(Real.pi * |s.im| / 4)) :=
+      hΛ s (by linarith only [hs₀]) (by linarith only [hs₁]) (by linarith only [ht])
+    _ ≤ C * (|s.im| + 4) ^ N * Real.exp (-(Real.pi * |s.im| / 4)) := by gcongr; linarith
+    _ = C * ((|s.im| + 4) ^ N * Real.exp (-(Real.pi * |s.im| / 4))) := by ring
+    _ ≤ C * (K / (1 + s.im ^ 2)) := mul_le_mul_of_nonneg_left hdec hC
+    _ = _ := by ring
+
+/-- The pole-subtracted continuation has the full uniform Hamburger decay. -/
+theorem exists_decay_continuousEulerRemainder (ε : ℝ≥0) :
+    ∃ C : ℝ, ∀ s ∈ verticalStrip (1 / 2) (3 / 2),
+      ‖continuousEulerRemainder ε s‖ ≤ C / (1 + s.im ^ 2) := by
+  obtain ⟨D, hD, hΛ⟩ := exists_decay_completedZeta_hamburger
+  obtain ⟨G, hG, hΓ⟩ := RHTower.exists_decay_Gammaℝ_sub_one
+  let K : Set ℂ := Icc (1 / 2 : ℝ) (3 / 2) ×ℂ Icc (-4 : ℝ) 4
+  have hK : IsCompact K := isCompact_Icc.reProdIm isCompact_Icc
+  have hsub : K ⊆ {s : ℂ | 0 < s.re} := by
+    intro s hs
+    have h := (Complex.mem_reProdIm.mp hs).1.1
+    linarith only [h]
+  obtain ⟨M, hM⟩ := hK.exists_bound_of_continuousOn
+    ((differentiableOn_continuousEulerRemainder ε).continuousOn.mono hsub)
+  refine ⟨max (17 * max M 0) (Real.exp ε * D + ‖continuousEulerResidue ε‖ * G),
+    fun s hs => ?_⟩
+  rw [mem_verticalStrip] at hs
+  have hden : 0 < 1 + s.im ^ 2 := by positivity
+  by_cases ht : 4 ≤ |s.im|
+  · have h1 : s ≠ 1 := by intro h; rw [h] at ht; norm_num at ht
+    have hmult : ‖Complex.exp ((ε : ℂ) / (s + 1) ^ 2)‖ ≤ Real.exp ε := by
+      rw [Complex.norm_exp]
+      exact Real.exp_le_exp.mpr ((Complex.re_le_norm _).trans
+        (norm_continuousEulerExponent_le ε (by linarith only [hs.1])))
+    rw [continuousEulerRemainder_eq ε h1]
+    calc
+      _ ≤ ‖Complex.exp ((ε : ℂ) / (s + 1) ^ 2)‖ * ‖completedRiemannZeta s‖ +
+          ‖continuousEulerResidue ε‖ * ‖Complex.Gammaℝ (s - 1)‖ := by
+        simpa only [norm_mul] using norm_sub_le
+          (Complex.exp ((ε : ℂ) / (s + 1) ^ 2) * completedRiemannZeta s)
+          (continuousEulerResidue ε * Complex.Gammaℝ (s - 1))
+      _ ≤ Real.exp ε * (D / (1 + s.im ^ 2)) +
+          ‖continuousEulerResidue ε‖ * (G / (1 + s.im ^ 2)) := by
+        exact add_le_add
+          (mul_le_mul hmult (hΛ s hs.1 hs.2 ht) (norm_nonneg _) (Real.exp_pos _).le)
+          (mul_le_mul_of_nonneg_left (hΓ s hs.1 hs.2 ht) (norm_nonneg _))
+      _ = (Real.exp ε * D + ‖continuousEulerResidue ε‖ * G) / (1 + s.im ^ 2) := by ring
+      _ ≤ _ := div_le_div_of_nonneg_right (le_max_right _ _) hden.le
+  · have hsmall : |s.im| < 4 := lt_of_not_ge ht
+    have hsK : s ∈ K := by
+      rw [Complex.mem_reProdIm]
+      exact ⟨hs, abs_le.mp hsmall.le⟩
+    have hsq : s.im ^ 2 ≤ 16 := by
+      nlinarith only [sq_abs s.im, abs_nonneg s.im, hsmall.le]
+    calc
+      _ ≤ max M 0 := (hM s hsK).trans (le_max_left _ _)
+      _ ≤ 17 * max M 0 / (1 + s.im ^ 2) := by
+        apply (le_div_iff₀ hden).mpr
+        nlinarith only [mul_le_mul_of_nonneg_left hsq (le_max_right M 0)]
+      _ ≤ _ := div_le_div_of_nonneg_right (le_max_left _ _) hden.le
+
+/-- Continuity includes both vertical edges of the Hamburger strip. -/
+theorem continuousOn_continuousEulerRemainder_strip (ε : ℝ≥0) :
+    ContinuousOn (continuousEulerRemainder ε) (verticalStrip (1 / 2) (3 / 2)) := by
+  apply (differentiableOn_continuousEulerRemainder ε).continuousOn.mono
+  intro s hs
+  rw [mem_verticalStrip] at hs
+  linarith only [hs.1]
+
+#print axioms differentiableOn_continuousEulerRemainder
+#print axioms continuousEulerRemainder_right_boundary
+#print axioms continuousEulerRemainder_center
+#print axioms exists_decay_continuousEulerRemainder
+
 end GaloisForLFunctions.EulerFETransportTheory
