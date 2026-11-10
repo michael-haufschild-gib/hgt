@@ -591,12 +591,12 @@ theorem gammaOf_facePt_false (γ_min C Θ : ℝ) (k : ℕ) (d : ↥(faceHarmonic
 theorem I_mul_generalSplinePoint (γ x u : ℝ) :
     I * generalSplinePoint γ x * (u : ℂ) =
       ((x * u : ℝ) : ℂ) + ((γ * u : ℝ) : ℂ) * I := by
-  apply Complex.ext <;> simp [generalSplinePoint] <;> ring
+  apply Complex.ext <;> simp [generalSplinePoint]
 
 theorem I_mul_conj_generalSplinePoint (γ x u : ℝ) :
     I * conj (generalSplinePoint γ x) * (u : ℂ) =
       ((-(x * u) : ℝ) : ℂ) + ((γ * u : ℝ) : ℂ) * I := by
-  apply Complex.ext <;> simp [generalSplinePoint] <;> ring
+  apply Complex.ext <;> simp [generalSplinePoint]
 
 theorem normSq_gammaOf_facePt_ge (γ_min C Θ : ℝ) (idx : FaceIdx γ_min C Θ) :
     (faceBaseFreq γ_min C Θ idx.1 : ℝ) ^ 2 ≤ Complex.normSq (gammaOf (facePt γ_min C Θ idx)) := by
@@ -649,7 +649,7 @@ theorem temperedConfig_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
     rw [Nat.card_Icc, show 2 * (4 * (k + 1) * Γ) + 1 - 4 * (k + 1) * Γ =
       4 * (k + 1) * Γ + 1 by omega]
     have hm₀ : 1 ≤ 4 * (k + 1) * Γ := by nlinarith
-    have hnat : (4 * (k + 1) * Γ + 1) * (2 * 2) ≤ 32 * (k + 1) * Γ := by omega
+    have hnat : (4 * (k + 1) * Γ + 1) * (2 * 2) ≤ 32 * (k + 1) * Γ := by nlinarith
     exact_mod_cast hnat
   calc (∑ dbs : ↥(faceHarmonics γ_min C Θ k) × Bool × Bool, F ⟨k, dbs⟩)
       ≤ ∑ _dbs : ↥(faceHarmonics γ_min C Θ k) × Bool × Bool, (1 / (Γ : ℝ) ^ 2) :=
@@ -659,12 +659,14 @@ theorem temperedConfig_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
     _ ≤ (32 * ((k + 1 : ℕ) : ℝ) * (Γ : ℝ)) * (1 / (Γ : ℝ) ^ 2) :=
         mul_le_mul_of_nonneg_right hcard (by positivity)
     _ = 32 * ((k + 1 : ℕ) : ℝ) / (Γ : ℝ) := by
-        rw [sq]; field_simp [(by positivity : (0 : ℝ) < (Γ : ℝ)).ne']; ring
+        rw [sq]; field_simp [(by positivity : (0 : ℝ) < (Γ : ℝ)).ne']
     _ ≤ (1 / 2 : ℝ) ^ k := by
         have hC_ge : 32 * (k + 1) * 2 ^ k ≤ Γ := by
           refine (?_ : 32 * (k + 1) * 2 ^ k ≤ faceBaseConst γ_min C k).trans
             (faceBaseConst_le_faceBaseFreq γ_min C Θ k)
-          unfold faceBaseConst; omega
+          unfold faceBaseConst
+          have : 1 ≤ 2 ^ k := Nat.one_le_pow k 2 (by decide)
+          nlinarith
         have hCR : 32 * ((k + 1 : ℕ) : ℝ) * (2 : ℝ) ^ k ≤ (Γ : ℝ) := by exact_mod_cast hC_ge
         rw [div_le_iff₀ (by positivity)]
         have hpow2 : (1 / 2 : ℝ) ^ k * (2 : ℝ) ^ k = 1 := by rw [← mul_pow]; norm_num
@@ -749,7 +751,7 @@ theorem two_re_lagStructure_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
         I_mul_conj_generalSplinePoint, Complex.exp_add, ← Complex.ofReal_exp]
       ring
     simp_rw [hbool]
-    rw [Finset.sum_coe_sort (faceHarmonics γ_min C Θ k)]
+    exact (Finset.sum_coe_sort (faceHarmonics γ_min C Θ k) _).symm
   have hG : HasSum g (lagStructure Z (boxSpline 1 3) u) := hS.sigma hfib
   have hre := (Complex.reCLM.hasSum hG).mul_left 2
   simp only [Complex.reCLM_apply] at hre
@@ -764,7 +766,7 @@ theorem two_re_lagStructure_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
     intro c r θ
     rw [show c * (Real.exp r : ℂ) * cexp ((θ : ℂ) * I) =
       (Real.exp r : ℂ) * (c * cexp ((θ : ℂ) * I)) by ring, Complex.re_ofReal_mul]
-  simp only [Complex.add_re, hre_pull]
+  rw [Complex.add_re, Complex.add_re, Complex.add_re, hre_pull, hre_pull, hre_pull, hre_pull]
   ring
 
 /-- **Diverging lower bound on windows `[T_{k+1} − R_{k+1}, T_{k+1} + R_{k+1}]`.** At every level
@@ -795,10 +797,12 @@ theorem k_add_one_le_two_re_lagStructure_on_window (γ_min C : ℝ) {Θ : ℝ}
     (faceLevelWeight_succ_le γ_min C Θ)
     (monotone_winRight_cast γ_min C Θ)
     (Nat.cast_nonneg _)
-    (fun j => abs_levelMain_le (four_le_faceBaseFreq γ_min C Θ j).le.trans' (by omega)
+    (fun j => abs_levelMain_le
+      (Nat.le_trans (by decide : 2 ≤ 4) (four_le_faceBaseFreq γ_min C Θ j))
       (SplineTower.depth_nonneg hΘ j) ((SplineTower.depth_lt hΘ j).le.trans hΘ2)
       (winCenter_pos γ_min C Θ j) u)
-    (fun j => abs_levelRefl_le (four_le_faceBaseFreq γ_min C Θ j).le.trans' (by omega)
+    (fun j => abs_levelRefl_le
+      (Nat.le_trans (by decide : 2 ≤ 4) (four_le_faceBaseFreq γ_min C Θ j))
       (SplineTower.depth_nonneg hΘ j) ((SplineTower.depth_lt hΘ j).le.trans hΘ2)
       (winCenter_pos γ_min C Θ j) u)
     hu0 (by positivity) hu_hi ?_
@@ -874,8 +878,9 @@ theorem exists_re_gt_half_add_sub_minimalFaceCounterConfig (γ_min C : ℝ) {Θ 
         (tendsto_add_atTop_nat 1)
     have h2 : Tendsto (fun k : ℕ => Θ * (1 - (1 / 2 : ℝ) ^ (k + 1))) atTop (𝓝 (Θ * (1 - 0))) :=
       tendsto_const_nhds.mul (tendsto_const_nhds.sub h1)
-    simpa [SplineTower.depth] using h2
-  obtain ⟨k, hk⟩ := (eventually_atTop.mp (hlim.eventually (gt_mem_nhds (by linarith : Θ - ε < Θ))))
+    rw [sub_zero, mul_one] at h2
+    exact h2
+  obtain ⟨k, hk⟩ := (eventually_atTop.mp (hlim.eventually (Ioi_mem_nhds (by linarith : Θ - ε < Θ))))
   have hk0 := hk k le_rfl
   set m₀ := levelStart (faceBaseFreq γ_min C Θ k) k
   have hm₀_mem : m₀ ∈ faceHarmonics γ_min C Θ k := by
@@ -945,42 +950,46 @@ theorem localCount_minimalFaceCounterConfig (γ_min : ℝ) {C : ℝ} (hC : 0 < C
   have hsub : hfin.toFinset ⊆ S := by
     intro ρ hρ
     rw [Set.Finite.mem_toFinset] at hρ
-    rcases hρ with ⟨⟨idx, rfl⟩, hlo, hhi⟩
-    have hk_eq : idx.1 = k₀ := hlevel_eq idx hlo hhi
-    rw [facePt_eq_facePtAtLevel, hk_eq]
-    refine Finset.mem_image.mpr ⟨(idx.2.1.1, idx.2.2.1, idx.2.2.2), ?_, rfl⟩
+    rcases hρ with ⟨⟨⟨k, ⟨⟨d, hd⟩, b, s⟩⟩, rfl⟩, hlo, hhi⟩
+    have hk_eq : k = k₀ := hlevel_eq ⟨k, ⟨⟨d, hd⟩, b, s⟩⟩ hlo hhi
+    rw [facePt_eq_facePtAtLevel]
+    dsimp only
+    rw [hk_eq]
+    refine Finset.mem_image.mpr ⟨(d, b, s), ?_, rfl⟩
     rw [Finset.mem_product]
     refine ⟨Finset.mem_Icc.mpr ⟨?_, ?_⟩, Finset.mem_univ _⟩
-    · -- Lower bound `d_min ≤ idx.2.1.1`
-      have hord := levelFreq_strict_order (faceBaseFreq γ_min C Θ idx.1) idx.1
-        (SplineTower.depth Θ idx.1) (winCenter_pos γ_min C Θ idx.1) idx.2.1.1
-      have h26 := two_six_div_winCenter_le_one γ_min C Θ idx.1
+    · -- Lower bound `d_min ≤ d`
+      have hord := levelFreq_strict_order (faceBaseFreq γ_min C Θ k) k
+        (SplineTower.depth Θ k) (winCenter_pos γ_min C Θ k) d
+      have h26 := two_six_div_winCenter_le_one γ_min C Θ k
       rw [facePt_im] at hlo
+      dsimp only at hlo
       unfold facePtFreq at hlo
-      have hbase_gt : t - 1 < levelBaseFreq k₀ idx.2.1.1 := by
+      have hbase_gt : t - 1 < levelBaseFreq k₀ d := by
         rw [← hk_eq]
-        cases idx.2.2.1 <;> linarith
+        cases b <;> linarith
       unfold levelBaseFreq levelStep levelRadius at hbase_gt
       have hpos_k : 0 < 4 * ((k₀ : ℝ) + 1) := by positivity
-      have hmul : 4 * ((k₀ : ℝ) + 1) * (t - 1) < (idx.2.1.1 : ℝ) := by
-        have h1 := (lt_div_iff₀ hpos_k).mp (by linarith : t - 1 < (idx.2.1.1 : ℝ) / (4 * ((k₀ : ℝ) + 1)))
+      have hmul : 4 * ((k₀ : ℝ) + 1) * (t - 1) < (d : ℝ) := by
+        have h1 := (lt_div_iff₀ hpos_k).mp (by linarith : t - 1 < (d : ℝ) / (4 * ((k₀ : ℝ) + 1)))
         linarith
       have hfl : (d_min : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t - 1) :=
         Nat.floor_le (by positivity)
       exact_mod_cast (hfl.trans_lt hmul).le
-    · -- Upper bound `idx.2.1.1 ≤ d_max`
-      have hord := levelFreq_strict_order (faceBaseFreq γ_min C Θ idx.1) idx.1
-        (SplineTower.depth Θ idx.1) (winCenter_pos γ_min C Θ idx.1) idx.2.1.1
+    · -- Upper bound `d ≤ d_max`
+      have hord := levelFreq_strict_order (faceBaseFreq γ_min C Θ k) k
+        (SplineTower.depth Θ k) (winCenter_pos γ_min C Θ k) d
       rw [facePt_im] at hhi
+      dsimp only at hhi
       unfold facePtFreq at hhi
-      have hbase_lt : levelBaseFreq k₀ idx.2.1.1 < t + 1 := by
+      have hbase_lt : levelBaseFreq k₀ d < t + 1 := by
         rw [← hk_eq]
-        cases idx.2.2.1 <;> linarith
+        cases b <;> linarith
       unfold levelBaseFreq levelStep levelRadius at hbase_lt
       have hpos_k : 0 < 4 * ((k₀ : ℝ) + 1) := by positivity
-      have hmul : (idx.2.1.1 : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t + 1) := by
+      have hmul : (d : ℝ) ≤ 4 * ((k₀ : ℝ) + 1) * (t + 1) := by
         have h1 := (div_lt_iff₀ hpos_k).mp
-          (by linarith : (idx.2.1.1 : ℝ) / (4 * ((k₀ : ℝ) + 1)) < t + 1)
+          (by linarith : (d : ℝ) / (4 * ((k₀ : ℝ) + 1)) < t + 1)
         linarith
       exact Nat.le_floor hmul
   have hcard_Icc : (Finset.Icc d_min d_max).card ≤ 8 * k₀ + 10 := by
@@ -1067,6 +1076,8 @@ theorem winIndex_winCenter (γ_min C Θ : ℝ) (k : ℕ) :
   · by_contra hlt
     push Not at hlt
     have hspec := Nat.find_spec (exists_lt_winCenter_succ γ_min C Θ (winCenter γ_min C Θ k : ℝ))
+    change (winCenter γ_min C Θ k : ℝ) <
+      (winCenter γ_min C Θ (winIndex γ_min C Θ (winCenter γ_min C Θ k : ℝ) + 1) : ℝ) at hspec
     have hle : winIndex γ_min C Θ (winCenter γ_min C Θ k : ℝ) + 1 ≤ k := hlt
     have hmono := (strictMono_winCenter γ_min C Θ).monotone hle
     have hmonoR : (winCenter γ_min C Θ
@@ -1114,6 +1125,7 @@ theorem minimalFaceSubLogRadius_sq_le_log (γ_min C Θ : ℝ) {T : ℝ}
     rw [hm]
     exact (exp_levelRadius_sq_le_winCenter γ_min C Θ m).trans (by rw [← hm]; exact hmin)
   have hT_pos : 0 < T := (Real.exp_pos _).trans_le hexp
+  change levelRadius k ^ 2 ≤ Real.log T
   rw [← Real.log_exp (levelRadius k ^ 2)]
   exact Real.log_le_log (Real.exp_pos _) hexp
 
@@ -1239,6 +1251,7 @@ theorem exists_classZ_bounded_windows_bddBelow_beyond_every_bound
   set T := (winCenter γ_min C Θ (k + 1) : ℝ)
   have hL_le_rad : L ≤ levelRadius (k + 1) := by
     unfold levelRadius
+    push_cast
     have h1 : L ≤ (⌈L⌉₊ : ℝ) := Nat.le_ceil L
     have h2 : ⌈L⌉₊ ≤ k := (le_max_left _ _).trans (le_max_left _ _)
     have h2R : (⌈L⌉₊ : ℝ) ≤ (k : ℝ) := by exact_mod_cast h2
@@ -1248,6 +1261,7 @@ theorem exists_classZ_bounded_windows_bddBelow_beyond_every_bound
     have h2 : ⌈max (U + L) 0⌉₊ ≤ k := le_max_right _ _
     have h3 : k + 1 ≤ winCenter γ_min C Θ (k + 1) := k_le_winCenter γ_min C Θ (k + 1)
     have h2R : (⌈max (U + L) 0⌉₊ : ℝ) ≤ T := by
+      dsimp only [T]
       exact_mod_cast h2.trans (by omega : k ≤ winCenter γ_min C Θ (k + 1))
     linarith
   · rcases Set.mem_Icc.mp hu with ⟨hu1, hu2⟩

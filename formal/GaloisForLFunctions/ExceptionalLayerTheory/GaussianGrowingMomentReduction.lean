@@ -142,6 +142,62 @@ theorem norm_gaussianHigherCentredVaughanError_le_order_budget (r J : ℕ) (hr :
   exact mul_le_mul_of_nonneg_right
     (mul_le_mul_of_nonneg_left (_root_.add_le_add hA hB) hC.le) (by linarith only [hlog])
 
+/-- Small order speed and a sufficiently long first cutoff make the complete
+centred reduction exponentially accurate at an exponential Gaussian scale. -/
+theorem norm_gaussianHigherCentredVaughanError_le_exponential
+    (r J : ℕ) (hr : r ≠ 0) (hJ : 4 ≤ J) {a κ t : ℝ}
+    (ha : 0 < a) (hκ : 0 < κ) (hκa : κ ≤ a / 32)
+    (hJκ : 2 * a ≤ ((2 * J - 7 : ℕ) : ℝ) * κ)
+    (ht : 8192 ≤ t) (hrt : (r : ℝ) ≤ t)
+    (hrlo : κ * t ≤ 2 * r * Real.log t)
+    (hrhi : (r : ℝ) * Real.log t ≤ κ * t)
+    {ε : ℂ} (hε : 0 < ε.re) (hsector : ‖ε‖ ≤ 4 * ε.re * t)
+    (hscale : ε.re * (Real.exp (a * t)) ^ 2 = 2) {U V : ℕ}
+    (hU : 1 ≤ U) (hV : 1 ≤ V) (hVt : (V : ℝ) ≤ t)
+    (hK : ((U * V : ℕ) : ℝ) * t ^ J ≤ Real.exp (a * t)) :
+    ‖gaussianHigherCentredVaughanError r (1 / 2) t U V ε‖ ≤
+      gaussianGrowingMomentConstant * (1 + t ^ 2) * (1 + a * t) *
+        Real.exp (-(3 * a / 8) * t) := by
+  have ht0 : 0 < t := by linarith only [ht]
+  have hp (n : ℕ) : t ^ n = Real.exp ((n : ℝ) * Real.log t) := by
+    rw [Real.exp_nat_mul, Real.exp_log ht0]
+  have hD : 0 ≤ ((2 * J - 7 : ℕ) : ℝ) := Nat.cast_nonneg _
+  have hlow : a * t ≤ ((2 * J - 7 : ℕ) : ℝ) * r * Real.log t := by
+    have hh := mul_le_mul_of_nonneg_left hrlo hD
+    have hj := mul_le_mul_of_nonneg_right hJκ ht0.le
+    nlinarith only [hh, hj]
+  have hA : Real.exp (a * t) ^ (1 / 2 : ℝ) / t ^ ((2 * J - 7) * r) ≤
+      Real.exp (-(3 * a / 8) * t) := by
+    rw [Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp, hp, ← Real.exp_sub]
+    apply Real.exp_le_exp.mpr
+    push_cast
+    nlinarith only [hlow, mul_pos ha ht0]
+  have hB : t ^ (4 * r + 2) * Real.exp (a * t) ^ (-(1 / 2 : ℝ)) ≤
+      t ^ 2 * Real.exp (-(3 * a / 8) * t) := by
+    rw [pow_add, Real.rpow_def_of_pos (Real.exp_pos _), Real.log_exp, hp (4 * r)]
+    calc
+      _ = t ^ 2 * Real.exp (((4 * r : ℕ) : ℝ) * Real.log t + a * t * (-(1 / 2))) := by
+        rw [Real.exp_add]
+        ring
+      _ ≤ _ := by
+        gcongr
+        push_cast
+        nlinarith only [hrhi, mul_le_mul_of_nonneg_right hκa ht0.le]
+  have hC := gaussianGrowingMomentConstant_pos
+  have hfac : 0 ≤ 1 + a * t := by positivity
+  have hh := norm_gaussianHigherCentredVaughanError_le_order_budget r J hr hJ ht hrt
+    hε hsector (Real.exp_pos _) hscale hU hV hVt hK
+  rw [Real.log_exp] at hh
+  apply hh.trans
+  calc
+    _ ≤ gaussianGrowingMomentConstant *
+        (Real.exp (-(3 * a / 8) * t) + t ^ 2 * Real.exp (-(3 * a / 8) * t)) *
+          (1 + a * t) :=
+      mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (_root_.add_le_add hA hB) hC.le) hfac
+    _ = _ := by ring
+
+#print axioms norm_gaussianHigherCentredVaughanError_le_exponential
 #print axioms norm_gaussianHigherCentredVaughanError_le_height
 #print axioms norm_gaussianHigherCentredVaughanError_le_order_budget
 

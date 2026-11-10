@@ -120,7 +120,7 @@ theorem poleRow_mulVec_packets {f : ι → ℝ → ℝ} (hf : ∀ i, Continuous 
         fun u => ∑ i, x i * f i u * Real.exp (s * u) := by
       funext u
       rw [packetCombination, Finset.sum_mul]
-    rw [e, integral_finset_sum _ fun i _ => hint s i]
+    rw [e, integral_finsetSum _ fun i _ => hint s i]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
@@ -217,7 +217,7 @@ theorem riemannHypothesis_iff_one_positive_square_packets :
     rw [ArithmeticCastelnuovoSeveri.posIndex_intersectionGram] at h1
     have h0 : hermNegIndex (ArithmeticCastelnuovoSeveri.weilGram (fun n => (Λ n : ℝ))
         fun (_ : Fin 1) u => ((g u : ℝ) : ℂ)) = 0 := by omega
-    have hq := hermQuad_nonneg_of_negIndex_eq_zero h0 (fun _ => 1)
+    have hq := ArithmeticCastelnuovoSeveri.hermQuad_nonneg_of_negIndex_eq_zero h0 (fun _ => 1)
     rw [ArithmeticCastelnuovoSeveri.hermQuad_weilGram _ _
       (fun _ => contDiff_ofReal_packet hg) (fun _ => hasCompactSupport_ofReal_packet hgc)] at hq
     simpa using hq
