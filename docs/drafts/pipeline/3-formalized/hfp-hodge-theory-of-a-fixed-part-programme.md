@@ -11,7 +11,7 @@
 ## Goal
 
 Develop the field of §2.9: answer Q1–Q5, build tools T1–T6, read criteria K1–K7, prove M2 and M4.
-Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/` (13 modules, README), umbrella
+Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/` (14 modules, README), umbrella
 `HodgeTheoryOfAFixedPart.lean`, imported by `MainTheorems`. M5 is the Riemann hypothesis: open.
 
 ## Normal form
@@ -93,7 +93,12 @@ with `J` weights; error `½Σ(min/max)^{2J} jet (c_m−c_n)²`, `min/max ≤ 1 �
 `hermNegIndex_zeroGram_le_one_of_constantTerm`). ACS `negIndex_zeroGram_le_of_tempered` and IRP
 `hermiteBiehler_index`, `constantTerm_zero_subsingleton`, `exists_exceptionalParameter_iff`.
 
-**H15 Calibration** (`combFormW_ge_of_short`). No contact in a window of ratio `≤ 2`.
+**H15 Calibration** (`combFormW_ge_of_short`, `combForm_singleton_two_neg`). No contact in a
+window of ratio `≤ 2`. `𝔚(c γ_2) = c²(1 − log π)`.
+
+**H16 Curve** (`curveCombForm_eq_toeplitz`, `curveCombForm_nonneg_iff_unitary`). With
+`d_k = e_k/q^{k/2}`: `q^{min} s^{dist} = s^k s^l`, so the pairing is ACS `spanDefect`; ACS
+`spanDefect_eq_toeplitz`, `hodgeIndexOnSpan_iff_unitary`, `goldenDatum_not_unitary`.
 
 ## Lean status
 
@@ -113,13 +118,45 @@ Each module checked with `lake --old env lean`, empty output.
 | `OneInequalityPerPrimeOnTheComb` | `spline`, `twoBumpPacket`, `zeroSum_twoBumpPacket`, `tendsto_combForm_twoBumpPacket`, `riemannHypothesis_iff_twoBump_windows_off_finset` |
 | `TheJetsAreASumOfHardySquares` | `jetLevel`, `hasSum_jetLevel`, `jetKernel_sub_sum_jetLevel`, `le_sum_mul_mul_antitone_max`, `sum_mul_mul_jetLevel_nonneg`, `neg_le_sum_sum_jetLevel`, `combFormJets`, `combForm_sub_combFormJets`, `combForm_sub_combFormJets_le`, `tendsto_combFormJets` |
 | `TheIndexOfThePairingIsAtMostTheDefectOfASplitting` | `hermNegIndex_zeroGram_le_of_rightZeros_subset`, `hermNegIndex_zeroGram_le_of_hermiteBiehler`, `hermNegIndex_zeroGram_zeta_le_of_hermiteBiehler`, `hermNegIndex_zeroGram_le_one_of_constantTerm`, `hermNegIndex_zeroGram_eq_zero_of_constantTerm` |
-| `ShortWindowsDoNotSeeTheContacts` | `combFormW_eq_combForm_of_window`, `combFormW_ge_of_short` |
+| `ShortWindowsDoNotSeeTheContacts` | `combFormW_eq_combForm_of_window`, `combFormW_ge_of_short`, `combForm_singleton_two_neg` |
+| `TheCombOfACurve` | `curveContact`, `curvePairing`, `curveCombForm`, `curvePairing_eq_sum`, `curveCombForm_eq_spanDefect`, `curveCombForm_eq_toeplitz`, `curveCombForm_nonneg_iff_unitary`, `curveCombForm_singleton`, `exists_curveCombForm_goldenDatum_neg` |
 
 ## Open
 
 The topics of README §11: the inequality at finite scale under RH (all real divisors); the exact
 index at finite scale; the first contact at finite scale; a count of small sections; the prime
 powers above a graph; the flat-tail cone; a splitting with a bounded defect. M5.
+
+## Next theorem (plan, not yet in Lean): rough divisors are no worse than their block averages
+
+Window `S = Ioc N (N + J·B)` of `J` complete blocks, ratio `≤ Q`, `B ≤ N`. For `s` constant on
+blocks and `z` with zero block sums:
+`𝔚(s + z) ≥ 𝔚(s) − (C_Q²/μ) Σ s²`, where `𝔚(z) ≥ μ Σ z²`
+(`μ = log(N/2π) − H_{2B} − 2 − M/(4N) − 2ψ(Q)`, the margin version of H4) and
+`2t·|𝔚(s, z)| ≤ C_Q (t² Σ s² + Σ z²)` for all `t > 0`, `C_Q ≈ 7 + 2Q + 2ψ(Q)`; take `t = C_Q/μ`.
+
+Cross term pieces:
+- pole: `d₂(z) = 0`, `d₁(z) = Σ z_n (1/n − 1/a_n)`, `a_n` the first point of the block,
+  `|1/n − 1/a_n| ≤ B/N²`; diagonal: `Σ s_n z_n (κ(n) − κ(a_n))`, `|…| ≤ B/N`.
+- kernel `= near + E₂ + blockKernel`; `blockKernel` pairs to `0` (function of blocks);
+  `E₂` (pairs at distance `> B`, regular part, contacts) has rows `≤ 3 + M/(4N) + 2ψ(Q)`
+  (`distMajorant` for `d > B`: `Σ_{B<d<2B} 1/(2d) ≤ ½`, `Σ_{d>B} B/d² ≤ 1`): bilinear Schur
+  `2t|ΣΣ a_m b_n K| ≤ ρ (t² Σa² + Σb²)` from `2t|ab| ≤ t²a² + b²`.
+- near part (`|m − n| ≤ B`): for `n` at position `a` in its block, `b = B − 1 − a`:
+  `Σ_{0<|m−n|≤B} s_m/(2|m−n|) = s_n H_B + ½(s⁺ − s_n)(H_B − H_b) + ½(s⁻ − s_n)(H_B − H_a)`,
+  `s^±` the value on the adjacent block or `0`. The first term pairs to `0` with `z`. Exact
+  identity `Σ_{a<K} (H_K − H_a)² = 2K − H_K` (induction, `Σ_{a<K}(H_K − H_a) = K`), so the rest
+  has `ℓ²` norm `≤ 2√2 ‖s‖`.
+
+Then: `𝔚(c) ≥ 𝔚(block averages of c) − (C_Q²/μ) Σ c²`; the inequality at finite scale for all
+real divisors follows from the inequality for block-constant divisors on `< 2QR` blocks with a
+loss that tends to `0` as `R → ∞`. To close the equivalence with RH one then needs the limit of
+`𝔚_N` on block-constant divisors (flat-step packets: AGZ `tendsto_jetCross_sub_counterterm_div`
+for the jets, Riemann sums of `ψ(d/t)` for the contacts) and the explicit formula on flat-step
+packets (mollify; zero side by dominated convergence, `|F̂(γ)| ≤ C/|γ|`).
+
+Smooth bumps instead of steps do not work: on functions at the scale `B` the form is
+`≈ μ·Id`, so the cross term with `𝒵_B` has a part `μ⟨g, z⟩ ≠ 0`.
 
 ## Compile practice and traps
 
@@ -136,4 +173,4 @@ powers above a graph; the flat-tail cone; a splitting with a bounded defect. M5.
 - `rw [← Nat.cast_natAbs]` needs `← Int.cast_abs` first.
 
 ## Log
-- 2026-11-10 — created; README; thirteen modules checked; umbrella wired into `MainTheorems`.
+- 2026-11-10 — created; README; fourteen modules checked; umbrella wired into `MainTheorems`.

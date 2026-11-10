@@ -61,6 +61,10 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `DigitShifts` | Exponent shifts preserve cardinality and divisibility, scale values by a power of `p`, and translate content and inverse-content coordinates |
 | `ShiftCompositions` | Exponent shifts preserve optimality and greediness; a suitable shift moves the common inverse-content coordinate to zero |
 | `PowerSelection` | Powers dividing a target contain an exact target-sum subcollection once their total reaches it; the same selection applies to cyclic weighted digit contents |
+| `LastResidueMaximum` | An occupied last-part residue contains a largest available power; equal-power labels can be aligned without changing values, and common deletion preserves equality of value vectors |
+| `BlockExchanges` | Congruent nonempty blocks can be exchanged; exact weight change forbids a larger congruent block in an earlier part of an optimum |
+| `CyclicOrder` | Changing the origin cannot reverse the cyclic order of three residue classes |
+| `ResidueBlockObstruction` | Equal cyclic weighted contents imply congruent values; a later part of smaller powers cannot attain an earlier digit's residue weight using only smaller residue weights |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.

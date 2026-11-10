@@ -24,7 +24,7 @@ Folder `formal/GaloisForLFunctions/InfiniteRankPurityTheory/`.
 
 | Module | Content |
 |---|---|
-| TheConstantTermsOnTheTwoSidesOfTheLineAgree | `fractSeries`; `mellin_fractSeries`, `tendsto_fractSeries_left`, `fractSeries_sub_leftLimit`, `fractSeries_eq`, `tsum_jump_eq`, `constantTerms_agree`; tools `exists_differentiableOn_deriv_mul_div`, `norm_le_of_good_heights` |
+| TheConstantTermsOnTheTwoSidesOfTheLineAgree | `fractSeries`; `mellin_fractSeries`, `tendsto_fractSeries_left`, `fractSeries_sub_leftLimit`, `fractSeries_eq`, `tsum_jump_eq`, `tsum_eq_of_tsum_dvd`, `constantTerms_agree`, `tsum_scale_eq_zero`, `tsum_left_eq_const`, `eq_const_mul_riemannZeta_div`; tools `exists_differentiableOn_deriv_mul_div`, `norm_le_of_good_heights` |
 | TheInverseOfAnExponentialPolynomialExpandsWhereItIsBoundedBelow | `expPoly`, `Word`, `wordMass`, `freqMonoid`, `LogIndex`, `logWeight`, `logExp`; `hasSum_inv_expPoly_words`, `norm_wordMass_le`, `summable_exp_neg_freqMonoid`, `hasSum_inv_expPoly`, `hasSum_logWeight`, `tsum_logWeight_zero`, `sum_exp_eq_expPoly`, `sum_exp_eq_expPoly_neg`, `logDeriv_exp_mul`, `logDeriv_exp_mul_neg` |
 | AZeroFreeExponentialPolynomialIsBoundedBelow | `exists_far_bound_expPoly`, `tendstoLocallyUniformly_expPoly`, `exists_le_norm_expPoly_of_zeroFree`, `hasSum_logWeight_of_zeroFree` |
 | NoDirichletPolynomialIsAFactorOfXi | `norm_riemannZeta_div_le`, `exists_zero_not_xi_zero` |
@@ -64,7 +64,13 @@ bounded on `¼ ≤ Re s ≤ ¾`, with `F(s) = −(ζ(s)/s) Σ b_i a_i^s` on `½ 
    So `S_k := Σ_{k ∣ q_j} c_j = [k = 1] β`, `β = Σ_{a_i = 1} b_i`. Then
    `Σ_{k ≤ N} μ(k) S_k = β` for every `N ≥ 1`, and the left side is `Σ_j c_j e_N(j)` with
    `e_N(j) = Σ_{k ≤ N, k ∣ q_j} μ(k)`, which equals `[q_j = 1]` for `N ≥ q_j` and is bounded by
-   `d(q_j) ≤ C q_j^{1/4}`. Dominated convergence: `Σ_{q_j = 1} c_j = β`.
+   `d(q_j) ≤ C q_j^{1/4}`. Dominated convergence: `Σ_{q_j = 1} c_j = β`
+   (`tsum_eq_of_tsum_dvd`).
+6. *Rigidity.* At `u₀ = 1/(kt)`, `t > 1`, no `a_i u₀` is an integer, so `Σ_{q_j ∈ kt ℕ} c_j = 0`
+   for every `k`; step 5 for the scales `q_j/t` gives `Σ_{q_j = t} c_j = 0` (`tsum_scale_eq_zero`).
+   Regrouping by scales, `Σ c_j q_j^s = β` for `Re s < ½` (`tsum_left_eq_const`), so
+   `F = −β ζ/s` left of the line and, by the identity theorem, on the strip
+   (`eq_const_mul_riemannZeta_div`).
 
 ### A. Lower bounds (`exists_le_norm_expPoly_of_zeroFree`)
 `P(w) = 1 + Σ_k c_k e^{−ℓ_k w}`, `ℓ_k > 0`, without zeros in `Re w > θ`. Then for `σ > θ` there is
@@ -108,3 +114,4 @@ and `ζ` vanishes at them.
 ## Log
 - 2026-11-10 — created in 1-in-progress
 - 2026-11-10 — K, A, B, C formalized; card to 3-formalized
+- 2026-11-10 — rigidity added to K: the left expansion is constant and `F = −β ζ/s` on the strip

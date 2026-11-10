@@ -30,6 +30,7 @@ theorem mem_residueRamifiedPrimes (p : Nat.Primes) :
   exact Finset.mem_subtype.mpr (Finset.mem_range.mpr
     (Nat.lt_succ_of_le (Nat.le_of_dvd (Nat.pos_of_ne_zero (NeZero.ne q)) h)))
 
+omit [NeZero q] in
 theorem residuePrime_not_isUnit (p : Nat.Primes) :
     ¬ IsUnit ((p : ℕ) : ZMod q) ↔ (p : ℕ) ∣ q := by
   rw [ZMod.isUnit_iff_coprime, p.2.coprime_iff_not_dvd, not_not]
@@ -47,7 +48,7 @@ theorem residuePrimeProfile_of_ramified (Φ : (ZMod q)ˣ → ℂ → ℂ)
 theorem analyticOnNhd_residuePrimeProfile {Φ : (ZMod q)ˣ → ℂ → ℂ}
     {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal}
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R))
-    (hρ : ∀ p, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R)) (p : Nat.Primes) :
+    (hρ : ∀ p : Nat.Primes, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R)) (p : Nat.Primes) :
     AnalyticOnNhd ℂ (residuePrimeProfile Φ ρ p) (closedBall 0 R) := by
   unfold residuePrimeProfile
   split_ifs with h
@@ -55,7 +56,7 @@ theorem analyticOnNhd_residuePrimeProfile {Φ : (ZMod q)ˣ → ℂ → ℂ}
   · exact hρ p ((residuePrime_not_isUnit p).mp h)
 
 theorem residuePrimeProfile_zero {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
-    (h0 : ∀ a, Φ a 0 = 1) (hρ0 : ∀ p, (p : ℕ) ∣ q → ρ p 0 = 1) (p : Nat.Primes) :
+    (h0 : ∀ a, Φ a 0 = 1) (hρ0 : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ρ p 0 = 1) (p : Nat.Primes) :
     residuePrimeProfile Φ ρ p 0 = 1 := by
   unfold residuePrimeProfile
   split_ifs with h
@@ -63,7 +64,7 @@ theorem residuePrimeProfile_zero {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Pri
   · exact hρ0 p ((residuePrime_not_isUnit p).mp h)
 
 theorem residuePrimeProfile_one {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
-    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p, (p : ℕ) ∣ q → ρ p 1 = -1) (p : Nat.Primes) :
+    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ρ p 1 = -1) (p : Nat.Primes) :
     residuePrimeProfile Φ ρ p 1 = -1 := by
   unfold residuePrimeProfile
   split_ifs with h
@@ -72,7 +73,7 @@ theorem residuePrimeProfile_one {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Prim
 
 theorem norm_residuePrimeProfile {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
     (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
-    (hρu : ∀ p, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
     (p : Nat.Primes) {x : ℝ} (hx : x ∈ Icc 0 1) : ‖residuePrimeProfile Φ ρ p (x : ℂ)‖ = 1 := by
   unfold residuePrimeProfile
   split_ifs with h
@@ -89,7 +90,8 @@ def residuePrimeValue (Φ : (ZMod q)ˣ → ℂ → ℂ) (ρ : Nat.Primes → ℂ
 theorem residuePrimeValue_prime (Φ : (ZMod q)ˣ → ℂ → ℂ) (ρ : Nat.Primes → ℂ → ℂ)
     (t : ℝ) (p : Nat.Primes) : residuePrimeValue Φ ρ t p =
       analyticSmoothingPrimePhase (residuePrimeProfile Φ ρ p) p (t : ℂ) := by
-  simp only [residuePrimeValue, dif_pos p.2]
+  rcases p with ⟨p, hp⟩
+  simp only [residuePrimeValue, dif_pos hp]
 
 /-- The multiplicative gauge determined by the selected unit prime phases. -/
 def residueProfileGauge (Φ : (ZMod q)ˣ → ℂ → ℂ) (ρ : Nat.Primes → ℂ → ℂ) (t : ℝ) : GaugeTorus :=
@@ -97,14 +99,14 @@ def residueProfileGauge (Φ : (ZMod q)ˣ → ℂ → ℂ) (ρ : Nat.Primes → �
 
 theorem norm_residuePrimeValue {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
     (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
-    (hρu : ∀ p, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
     {t : ℝ} (ht : 0 ≤ t) (p : Nat.Primes) : ‖residuePrimeValue Φ ρ t p‖ = 1 := by
   rw [residuePrimeValue_prime]
   exact norm_analyticSmoothingPrimePhase_real (fun x hx => norm_residuePrimeProfile hu hρu p hx) ht p
 
 theorem residuePrimeValue_eq_twist {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
     (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
-    (hρu : ∀ p, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
     {t : ℝ} (ht : 0 ≤ t) (p : Nat.Primes) :
     residuePrimeValue Φ ρ t p = twist (residueProfileGauge Φ ρ t) p := by
   rw [residueProfileGauge, twist_linearPhaseGauge_prime]
@@ -114,7 +116,7 @@ theorem residuePrimeValue_eq_twist {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.P
   exact hh.symm
 
 theorem residuePrimeValue_zero {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
-    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p, (p : ℕ) ∣ q → ρ p 1 = -1) (p : Nat.Primes) :
+    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ρ p 1 = -1) (p : Nat.Primes) :
     residuePrimeValue Φ ρ 0 p = -1 := by
   rw [residuePrimeValue_prime, Complex.ofReal_zero, analyticSmoothingPrimePhase_zero,
     residuePrimeProfile_one h1 hρ1 p]
@@ -122,7 +124,7 @@ theorem residuePrimeValue_zero {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Prime
 theorem continuousAt_residuePrimeValue {Φ : (ZMod q)ˣ → ℂ → ℂ}
     {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal} (hR : 1 < (R : ℝ))
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R))
-    (hρ : ∀ p, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R))
+    (hρ : ∀ p : Nat.Primes, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R))
     (p : Nat.Primes) {t : ℝ} (ht : 0 ≤ t) :
     ContinuousAt (fun v : ℝ => residuePrimeValue Φ ρ v p) t := by
   have ha := analyticAt_analyticSmoothingPrimePhase hR
@@ -138,7 +140,7 @@ def residueHigherPrimeLog (Φ : (ZMod q)ˣ → ℂ → ℂ) (ρ : Nat.Primes →
 theorem residueHigherPrimeLog_eq_gauge {Φ : (ZMod q)ˣ → ℂ → ℂ}
     {ρ : Nat.Primes → ℂ → ℂ}
     (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
-    (hρu : ∀ p, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
     {t : ℝ} (ht : 0 ≤ t) (s : ℂ) :
     residueHigherPrimeLog Φ ρ t s = hullRem s (twist (residueProfileGauge Φ ρ t)) := by
   unfold residueHigherPrimeLog hullRem
@@ -150,9 +152,9 @@ theorem residueHigherPrimeLog_eq_gauge {Φ : (ZMod q)ˣ → ℂ → ℂ}
 theorem continuousOn_residueHigherPrimeLog {Φ : (ZMod q)ˣ → ℂ → ℂ}
     {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal} (hR : 1 < (R : ℝ))
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R))
-    (hρ : ∀ p, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R))
+    (hρ : ∀ p : Nat.Primes, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R))
     (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
-    (hρu : ∀ p, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
     {b : ℝ} (hb : 1 / 2 < b) :
     ContinuousOn (fun v : ℝ × ℂ => residueHigherPrimeLog Φ ρ v.1 v.2)
       (Ici 0 ×ˢ {s : ℂ | b < s.re}) := by
@@ -187,7 +189,7 @@ theorem continuousOn_residueHigherPrimeLog {Φ : (ZMod q)ˣ → ℂ → ℂ}
       (by linarith only [hvre])
 
 theorem residueHigherPrimeLog_zero {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ}
-    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p, (p : ℕ) ∣ q → ρ p 1 = -1) (s : ℂ) :
+    (h1 : ∀ a, Φ a 1 = -1) (hρ1 : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ρ p 1 = -1) (s : ℂ) :
     residueHigherPrimeLog Φ ρ 0 s = hullRem s (twist (exponentialPhaseGauge 0)) := by
   unfold residueHigherPrimeLog hullRem
   apply tsum_congr

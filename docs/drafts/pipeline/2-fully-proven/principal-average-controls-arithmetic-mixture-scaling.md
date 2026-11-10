@@ -127,6 +127,10 @@ It supplies the principal tail estimate. Finite Fourier inversion
 reduces the remaining infinite sums to nonprincipal character profiles
 with zero endpoint mass; the ramified correction is `ρ_p-Ψ`.
 
+The scaling proof itself needs only the common endpoint `Φ_a(1)=ρ_p(1)=-1`.
+Normalization `Φ_a(0)=1` removes the zeroth mean coefficient and supplies
+the singularity obstruction. Values `ρ_p(0)` at ramified primes are irrelevant.
+
 ## Significance and boundary
 
 The explicit modulo-four example has a fourth-order shifted zero and

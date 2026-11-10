@@ -1,7 +1,7 @@
 # Hodge Theory of a Fixed Part (HFP)
 
 Namespace `GaloisForLFunctions.HodgeTheoryOfAFixedPart`; umbrella `HodgeTheoryOfAFixedPart.lean`;
-13 modules. Specification: §2.9 of
+14 modules. Specification: §2.9 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md); card
 `docs/drafts/pipeline/3-formalized/hfp-hodge-theory-of-a-fixed-part-programme.md`.
 
@@ -62,6 +62,7 @@ violate it.
 | Stable, separated comb | `FrobeniusStable`, `Separated`, `frobeniusOrbit` | `kS ⊆ S` for `k ≥ 1`; distinct points at distance `≥ σ`; `δℕ` |
 | Two-bump divisor | `twoBumpPacket v`, `spline` | the cubic spline and its translate by `v`: `Γ_1 + Γ_p` smeared, for `v = log p` |
 | Approximation by weights | `combFormJets J` | Weil's form with the Dirichlet form of the jets cut at `J` weights |
+| Comb of a curve | `curveContact`, `curvePairing`, `curveCombForm` | degree points `q^k`; contacts `N_j/q^{j/2}`; diagonal `2 − 2g`; Weil's form of a curve datum |
 
 ## 3. Language
 
@@ -135,6 +136,7 @@ Developed here (Lean):
 | T2 Section counts on towers of lines | the triangular pigeonhole; sections vanishing on the first `K` graphs; the first graph of a section; divisibility on a graph | `RiemannRochOnTheTowerHasTheGluingIndex`, `WhatTheSectionsOfTheSquareCertify` |
 | T3 The index law at infinite rank | negative definiteness on short windows; the block kernel and the Schur test for a signed kernel; codimension bounds uniform in the scale; finite scale against the limit; index against the defect of a splitting | `TheHodgeIndexHoldsAtEveryScaleOnShortWindows`, `TheIndexOfAWindowIsFiniteAtEveryScale`, `TheInequalityAtFiniteScaleDecidesTheLimit`, `TheIndexOfThePairingIsAtMostTheDefectOfASplitting` |
 | T4 Window locality with exceptional sets | the two-bump divisor of a prime and its form; logarithmic windows off `Ce^{δT}` primes; all finite-scale statements hold on arbitrary subsets of a window | `OneInequalityPerPrimeOnTheComb` |
+| Calibration | contact weights in place of `Λ`; the comb of a curve datum | `TheCombOfUnitMassesFixesTheContacts`, `ShortWindowsDoNotSeeTheContacts`, `TheCombOfACurve` |
 | T5 The carry cocycle | counterterm and gluing conditions of a block; Chebyshev's identity; the octave | `WeilsFormInTheGaugeOfTheFlatTail` |
 | T6 Ordered approximations | Weil's form with the first `J` weights of the jets: increasing in `J`, below the form, with the exact error `½Σ(min/max)^{2J}·jet·(c_m − c_n)²`, at most `(1 − 1/N)^{2J}` of the Dirichlet form of the jets on `[1, N]` | `TheJetsAreASumOfHardySquares` |
 
@@ -145,9 +147,9 @@ folder proves the inequality on all windows; the readings say what each does on 
 
 | # | Criterion | Reading |
 |---|---|---|
-| K1 | Reproduce Weil's proof for curves, where the comb is `q^ℤ` | Over a curve the normal form is the Frobenius span: contacts `N_k`, diagonal `2 − 2g`, the Lefschetz number at lag `0`, no jets and no counterterm, and the inequality is purity (corpus `ArithmeticCastelnuovoSeveri.CurveDatum.spanDefect_eq_toeplitz`, `hodgeIndexOnSpan_iff_unitary`). There restriction certifies every contact, prime powers included, because the surface is regular [C]; on the square it does not (`log_abs_primePointSection_lt`). Not reproduced: the folder has no count for classes with a packet component. |
+| K1 | Reproduce Weil's proof for curves, where the comb is `q^ℤ` | The statement is reproduced, the proof is not. Over a curve the normal form has the contacts `N_j/q^{j/2}`, no jets, and the diagonal `2 − 2g`, the same formula at the lag `0`: no counterterm (`curvePairing_eq_sum`). Weil's form on the comb is the Toeplitz form of the Frobenius eigenvalues and the inequality on all real divisors is purity (`curveCombForm_eq_toeplitz`, `curveCombForm_nonneg_iff_unitary`). On a regular surface restriction certifies every contact, prime powers included [C]; on the square it does not (`log_abs_primePointSection_lt`). The folder has no count for classes with a packet component, over a curve or over `ℤ`. |
 | K2 | Reproduce the Lagarias–Suzuki line law as an index-one statement | Done: a tempered configuration carried by the zeros of the cleared constant term has at most one negative square for `Y ≥ 1` and none for `Y ≤ 4πe^{−γ}` (`hermNegIndex_zeroGram_le_one_of_constantTerm`, `hermNegIndex_zeroGram_eq_zero_of_constantTerm`). |
-| K3 | Fail on the fakes | Short windows pass for every system of contact weights (`combFormW_ge_of_short`), and so does the finite index: these statements are not selective. The flat tail fails on an excess of contacts (`eventually_combFormW_flatTail_neg`). In the limit every weight other than `Λ` fails (corpus `combBezout_iff`). |
+| K3 | Fail on the fakes | Short windows pass for every system of contact weights (`combFormW_ge_of_short`), and so does the finite index: these statements are not selective. The flat tail fails on an excess of contacts (`eventually_combFormW_flatTail_neg`). The golden datum fails on its comb (`exists_curveCombForm_goldenDatum_neg`). In the limit every weight other than `Λ` fails (corpus `combBezout_iff`). |
 | K4 | Use the coefficient size exactly | The normal form is the critical normalization: contacts `Λ(k)` against the counterterm `log(n/2π)`. The tolerance of the flat tail is the first Li coefficient, `0.023…` of contact mass. |
 | K5 | Not be uniform in real characters | No statement of the folder is about a family. |
 | K6 | Be pointwise | The finite-scale statements hold at one scale `N` and on every subset of the window; the window criterion is one prime at a time (`riemannHypothesis_iff_twoBump_windows_off_finset`). |
@@ -159,7 +161,7 @@ folder proves the inequality on all windows; the readings say what each does on 
 |---|---|---|
 | M1 | Contacts, jets, comb finite parts, the section-count theorem, windows, the pairing with limit `2 d₁ d₂ − Z(f)` | corpus |
 | M2 | The pairing on classes of the tower | Lean: classes `D − Σ_{n ≤ K} Γ_n` with a section (`exists_orbitLatticeMap_vanishing`); their restriction to a graph (`exists_orbitLatticeMap_first_graph`); the contacts of the normal form that restriction certifies and those it does not (`WhatTheSectionsOfTheSquareCertify`) |
-| M3 | The statement over a curve in comb language | corpus (`CurveDatum.spanDefect_eq_toeplitz`); reading K1 |
+| M3 | The statement over a curve in comb language | Lean: `curvePairing_eq_sum`, `curveCombForm_eq_toeplitz`, `curveCombForm_nonneg_iff_unitary`, `curveCombForm_singleton` |
 | M4 | Bézout at larger bounded apertures | Lean: at every finite scale, ratio `19/18`, all real divisors (`combForm_ge_of_short`); at every ratio up to finitely many block sums (`exists_blockSize_combForm_nonneg`). Corpus: in the limit, width `181/250`; from zeros verified to a height (`VerifiedHeightRungs.windowPositiveAt_of_rhVerifiedThrough`) |
 | M5 | Castelnuovo–Severi for combs | open: the Riemann hypothesis |
 
@@ -182,6 +184,7 @@ folder proves the inequality on all windows; the readings say what each does on 
 | A separated comb stable under the Frobenius monoid is one orbit | `exists_orbit_of_separated` |
 | One inequality per prime on logarithmic windows with exceptions, for the two-bump divisor | `tendsto_combForm_twoBumpPacket`, `riemannHypothesis_iff_twoBump_windows_off_finset` |
 | The index of the pairing is at most the defect of a splitting; the line law is an index-one statement | `hermNegIndex_zeroGram_le_of_hermiteBiehler`, `hermNegIndex_zeroGram_le_one_of_constantTerm` |
+| Over a curve the inequality on the comb is purity; the golden datum fails | `curveCombForm_nonneg_iff_unitary`, `exists_curveCombForm_goldenDatum_neg` |
 
 All are unconditional.
 
@@ -190,7 +193,7 @@ All are unconditional.
 | Trap | Truth |
 |---|---|
 | The pairing is a limit object | in the normal form it is one matrix, defined at every scale and on every real divisor |
-| The normal form is nonnegative on every finite set | `2 d₁ d₂ − D·D < 0` for the single divisors `γ_2`, `γ_3`: the counterterm is negative below `2π`; the statements are for windows at a scale |
+| The normal form is nonnegative on every finite set | `2 d₁ d₂ − D·D = c²(1 − log π) < 0` for the single divisor `c·γ_2` (`combForm_singleton_two_neg`): the counterterm is negative below `2π`; the statements are for windows at a scale. Over a curve a single graph has `2g·e²` |
 | The inequality at finite scale is the limit statement | it implies it; the converse for all real divisors is open |
 | Short-window positivity is evidence | it holds for every system of contact weights |
 | A positive potential helps | the potential is positive and the Dirichlet form enters with the minus sign; in the gauge of the flat tail the potential is `N/n − ψ(N/n)`, which changes sign |
@@ -236,8 +239,8 @@ and of the carries inside the matrix, and the list of what a section of the squa
 ## 13. Success criteria and contributions
 
 Each of Q1–Q5 has an answer with theorems of the folder; each tool T1–T6 is a module with
-theorems; each criterion K1–K7 has a reading; M2 and M4 are theorems of the folder and M3 is in
-the corpus. M5 is the Riemann hypothesis and is open, as are the topics of §11.
+theorems; each criterion K1–K7 has a reading; M2, M3 and M4 are theorems of the folder. M5 is the
+Riemann hypothesis and is open, as are the topics of §11.
 
 A **contribution** must be unconditional; act on the normal form of the pairing or on the
 sections of the square and of the tower; say which question, tool, criterion or milestone it

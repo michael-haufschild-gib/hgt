@@ -27,6 +27,11 @@ strip, `F` is the Mellin transform of `g₊(u) = Σ b_i {a_i u}` right of the li
 `g₊` is `−[k = 1] Σ_{a_i = 1} b_i` and the jump of `g₋` is `−Σ_{k ∣ q_j} c_j`
 (`tendsto_fractSeries_left`). Möbius inversion over `k` gives the statement.
 
+More is true (`tsum_scale_eq_zero`, `tsum_left_eq_const`, `eq_const_mul_riemannZeta_div`): at the
+points `1/(kt)`, `t > 1`, the right series has no jump at all, so the left expansion carries no
+weight at any scale `t > 1`; it is a constant `β`, and `F = −β ζ(s)/s` on the whole strip. The
+critical zeros of `ζ` cancel the poles of no two-sided expansion other than a constant.
+
 Two tools for the hypotheses: `g f'/f` is holomorphic wherever `g` vanishes at the zeros of `f`
 (`exists_differentiableOn_deriv_mul_div`), and a holomorphic function on a strip is bounded by its
 bounds on the boundary lines and on horizontal segments at heights met in every interval of a
@@ -842,9 +847,9 @@ theorem sum_divisors_moebius (n : ℕ) :
     ArithmeticFunction.one_apply] at h
   exact h
 
-/-- For `q ≥ 1` and an integer `k ≥ 1`, `q/k` is an integer exactly when `q` is a natural number
+/-- For `q > 0` and an integer `k ≥ 1`, `q/k` is an integer exactly when `q` is a natural number
 divisible by `k`. -/
-theorem exists_int_mul_inv_iff {q : ℝ} (hq : 1 ≤ q) {k : ℕ} (hk : 1 ≤ k) :
+theorem exists_int_mul_inv_iff {q : ℝ} (hq : 0 < q) {k : ℕ} (hk : 1 ≤ k) :
     (∃ m : ℤ, q * (1 / (k : ℝ)) = m) ↔ ∃ n : ℕ, q = n ∧ k ∣ n := by
   have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
   constructor
@@ -892,57 +897,18 @@ theorem exists_int_mul_inv_iff_of_le_one {a : ℝ} (ha0 : 0 < a) (ha1 : a ≤ 1)
   · rintro ⟨rfl, rfl⟩
     exact ⟨1, by norm_num⟩
 
-/-- **The constant terms on the two sides of the line agree.** Let `Σ b_i a_i^s`, `0 < a_i ≤ 1`,
-converge absolutely right of the critical line and `Σ c_j q_j^s`, `q_j ≥ 1`, left of it, and let
-`F` be holomorphic on the strip, bounded near the line, equal to `−ζ(s)/s` times the first sum
-right of the line and times the second left of it. Then the weight at `q = 1` equals the weight
-at `a = 1`. -/
-theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
-    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
-    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
-    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
-    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
-    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
-    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
-      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
-    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
-      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s) :
-    (∑' j, if q j = 1 then c j else 0) = ∑' i, if a i = 1 then b i else 0 := by
-  classical
-  have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
-  set β : ℂ := ∑' i, if a i = 1 then b i else 0 with hβ
-  -- the jump law at `1/k`
-  have hS : ∀ k : ℕ, 1 ≤ k →
-      (∑' j, if (∃ n : ℕ, q j = n ∧ k ∣ n) then c j else 0) = if k = 1 then β else 0 := by
-    intro k hk
-    have hk0 : (0 : ℝ) < 1 / (k : ℝ) := by
-      have : (0 : ℝ) < k := by exact_mod_cast hk
-      positivity
-    have h := tsum_jump_eq ha0 hq0 hR hL hFd hFb hFR hFL hk0
-    have hl : (∑' i, if ∃ n : ℤ, a i * (1 / (k : ℝ)) = n then b i else 0) =
-        if k = 1 then β else 0 := by
-      by_cases hk1 : k = 1
-      · rw [if_pos hk1, hβ]
-        refine tsum_congr fun i => ?_
-        by_cases hai : a i = 1
-        · rw [if_pos ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mpr ⟨hk1, hai⟩),
-            if_pos hai]
-        · rw [if_neg fun h' => hai ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mp h').2,
-            if_neg hai]
-      · rw [if_neg hk1]
-        refine (tsum_congr fun i => ?_).trans tsum_zero
-        exact if_neg fun h' => hk1 ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mp h').1
-    rw [← hl, h]
-    refine tsum_congr fun j => ?_
-    by_cases hj : ∃ n : ℕ, q j = n ∧ k ∣ n
-    · rw [if_pos hj, if_pos ((exists_int_mul_inv_iff (hq j) hk).mpr hj)]
-    · rw [if_neg hj, if_neg fun h' => hj ((exists_int_mul_inv_iff (hq j) hk).mp h')]
+open scoped Classical in
+/-- **Möbius inversion of a divisibility law.** For a summable family with positive scales `q_j`,
+if the weight of the scales that are natural numbers divisible by `k` is `β` for `k = 1` and `0`
+for `k ≥ 2`, then the weight at the scale `1` is `β`. -/
+theorem tsum_eq_of_tsum_dvd [Countable κ] {c : κ → ℂ} {q : κ → ℝ} (hq0 : ∀ j, 0 < q j)
+    (hcsum : Summable fun j => ‖c j‖) (hc4 : Summable fun j => ‖c j‖ * q j ^ (1 / 4 : ℝ)) {β : ℂ}
+    (hS : ∀ k : ℕ, 1 ≤ k →
+      (∑' j, if (∃ n : ℕ, q j = n ∧ k ∣ n) then c j else 0) = if k = 1 then β else 0) :
+    (∑' j, if q j = 1 then c j else 0) = β := by
   -- truncated Möbius sums
   set e : ℕ → κ → ℂ := fun N j => ∑ k ∈ Finset.Icc 1 N,
     if (∃ n : ℕ, q j = n ∧ k ∣ n) then ((ArithmeticFunction.moebius k : ℤ) : ℂ) else 0 with he
-  have hcsum : Summable fun j => ‖c j‖ := by
-    have h := hL 0 (by norm_num)
-    simpa only [Real.rpow_zero, mul_one] using h
   have hsumk : ∀ k : ℕ, Summable fun j => (if (∃ n : ℕ, q j = n ∧ k ∣ n) then c j else 0 : ℂ) :=
     fun k => Summable.of_norm_bounded hcsum fun j => by
       split_ifs
@@ -989,9 +955,9 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
     exact Finset.sum_eq_zero fun k _ => if_neg fun ⟨n, hn, _⟩ => hnat ⟨n, hn⟩
   have hpos_of : ∀ (j : κ) (n : ℕ), q j = n → n ≠ 0 := by
     rintro j n hn rfl
-    have := hq j
-    rw [hn] at this
-    norm_num at this
+    have := hq0 j
+    rw [hn, Nat.cast_zero] at this
+    exact lt_irrefl _ this
   set C : ℝ := _root_.RHTower.Sieve.divisorBoundConst (1 / 4) with hC
   have hCpos : 0 < C := _root_.RHTower.Sieve.divisorBoundConst_pos (by norm_num)
   have hebound : ∀ N j, ‖e N j‖ ≤ C * q j ^ (1 / 4 : ℝ) := by
@@ -1018,7 +984,7 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
       (𝓝 (∑' j, if q j = 1 then c j else 0)) := by
     refine tendsto_tsum_of_dominated_convergence
       (bound := fun j => C * (‖c j‖ * q j ^ (1 / 4 : ℝ)))
-      ((hL (1 / 4) (by norm_num)).mul_left C) (fun j => ?_) (Eventually.of_forall fun N j => ?_)
+      (hc4.mul_left C) (fun j => ?_) (Eventually.of_forall fun N j => ?_)
     · by_cases hnat : ∃ n : ℕ, q j = n
       · obtain ⟨n, hn⟩ := hnat
         have hn0 := hpos_of j n hn
@@ -1051,6 +1017,227 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
   refine tendsto_nhds_unique hlim ((tendsto_const_nhds (x := β)).congr' ?_)
   filter_upwards [eventually_ge_atTop 1] with N hN
   exact (hAN N hN).symm
+
+
+/-- **The constant terms on the two sides of the line agree.** Let `Σ b_i a_i^s`, `0 < a_i ≤ 1`,
+converge absolutely right of the critical line and `Σ c_j q_j^s`, `q_j ≥ 1`, left of it, and let
+`F` be holomorphic on the strip, bounded near the line, equal to `−ζ(s)/s` times the first sum
+right of the line and times the second left of it. Then the weight at `q = 1` equals the weight
+at `a = 1`. -/
+theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s) :
+    (∑' j, if q j = 1 then c j else 0) = ∑' i, if a i = 1 then b i else 0 := by
+  classical
+  have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
+  set β : ℂ := ∑' i, if a i = 1 then b i else 0 with hβ
+  -- the jump law at `1/k`
+  have hS : ∀ k : ℕ, 1 ≤ k →
+      (∑' j, if (∃ n : ℕ, q j = n ∧ k ∣ n) then c j else 0) = if k = 1 then β else 0 := by
+    intro k hk
+    have hk0 : (0 : ℝ) < 1 / (k : ℝ) := by
+      have : (0 : ℝ) < k := by exact_mod_cast hk
+      positivity
+    have h := tsum_jump_eq ha0 hq0 hR hL hFd hFb hFR hFL hk0
+    have hl : (∑' i, if ∃ n : ℤ, a i * (1 / (k : ℝ)) = n then b i else 0) =
+        if k = 1 then β else 0 := by
+      by_cases hk1 : k = 1
+      · rw [if_pos hk1, hβ]
+        refine tsum_congr fun i => ?_
+        by_cases hai : a i = 1
+        · rw [if_pos ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mpr ⟨hk1, hai⟩),
+            if_pos hai]
+        · rw [if_neg fun h' => hai ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mp h').2,
+            if_neg hai]
+      · rw [if_neg hk1]
+        refine (tsum_congr fun i => ?_).trans tsum_zero
+        exact if_neg fun h' => hk1 ((exists_int_mul_inv_iff_of_le_one (ha0 i) (ha1 i) hk).mp h').1
+    rw [← hl, h]
+    refine tsum_congr fun j => ?_
+    by_cases hj : ∃ n : ℕ, q j = n ∧ k ∣ n
+    · rw [if_pos hj, if_pos ((exists_int_mul_inv_iff (hq0 j) hk).mpr hj)]
+    · rw [if_neg hj, if_neg fun h' => hj ((exists_int_mul_inv_iff (hq0 j) hk).mp h')]
+  have hcsum : Summable fun j => ‖c j‖ := by
+    have h := hL 0 (by norm_num)
+    simpa only [Real.rpow_zero, mul_one] using h
+  exact tsum_eq_of_tsum_dvd hq0 hcsum (hL (1 / 4) (by norm_num)) hS
+
+/-! ### Rigidity: the two expansions are constant -/
+
+/-- **The left expansion carries no weight off the scale one.** The jump law at the points
+`1/(kt)`, `t > 1`, where the right series has no jump, and Möbius inversion over `k`. -/
+theorem tsum_scale_eq_zero [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s)
+    {t : ℝ} (ht : 1 < t) : (∑' j, if q j = t then c j else 0) = 0 := by
+  classical
+  have ht0 : 0 < t := lt_trans one_pos ht
+  have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
+  have hq' : ∀ j, 0 < q j / t := fun j => div_pos (hq0 j) ht0
+  have hcsum : Summable fun j => ‖c j‖ := by
+    have h := hL 0 (by norm_num)
+    simpa only [Real.rpow_zero, mul_one] using h
+  have hc4 : Summable fun j => ‖c j‖ * (q j / t) ^ (1 / 4 : ℝ) := by
+    refine ((hL (1 / 4) (by norm_num)).div_const (t ^ (1 / 4 : ℝ))).congr fun j => ?_
+    rw [Real.div_rpow (hq0 j).le ht0.le, mul_div_assoc]
+  have hS : ∀ k : ℕ, 1 ≤ k →
+      (∑' j, if (∃ n : ℕ, q j / t = n ∧ k ∣ n) then c j else 0) = if k = 1 then (0 : ℂ) else 0 := by
+    intro k hk
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
+    have hu : (0 : ℝ) < 1 / t * (1 / (k : ℝ)) := by positivity
+    have h := tsum_jump_eq ha0 hq0 hR hL hFd hFb hFR hFL hu
+    have hl : (∑' i, if ∃ n : ℤ, a i * (1 / t * (1 / (k : ℝ))) = n then b i else 0) = 0 := by
+      refine (tsum_congr fun i => if_neg ?_).trans tsum_zero
+      rintro ⟨n, hn⟩
+      have hpos : 0 < a i * (1 / t * (1 / (k : ℝ))) := mul_pos (ha0 i) hu
+      have hlt : a i * (1 / t * (1 / (k : ℝ))) < 1 := by
+        have h1t : 1 / t < 1 := by
+          rw [div_lt_one ht0]
+          exact ht
+        have h1k : 1 / (k : ℝ) ≤ 1 := by
+          rw [div_le_one hk0]
+          exact_mod_cast hk
+        have h1 : 1 / t * (1 / (k : ℝ)) < 1 := by
+          nlinarith [one_div_pos.mpr ht0, one_div_pos.mpr hk0]
+        calc a i * (1 / t * (1 / (k : ℝ))) ≤ 1 * (1 / t * (1 / (k : ℝ))) :=
+              mul_le_mul_of_nonneg_right (ha1 i) hu.le
+          _ < 1 := by
+              rw [one_mul]
+              exact h1
+      rw [hn] at hpos hlt
+      have hn0 : (0 : ℤ) < n := by exact_mod_cast hpos
+      have hn1 : n < (1 : ℤ) := by exact_mod_cast hlt
+      omega
+    have key : (∑' j, if ∃ n : ℤ, q j * (1 / t * (1 / (k : ℝ))) = n then c j else 0) = 0 :=
+      h.symm.trans hl
+    rw [ite_self]
+    refine (tsum_congr fun j => ?_).trans key
+    have hiff : (∃ n : ℤ, q j * (1 / t * (1 / (k : ℝ))) = n) ↔ ∃ n : ℕ, q j / t = n ∧ k ∣ n := by
+      rw [← exists_int_mul_inv_iff (hq' j) hk,
+        show q j * (1 / t * (1 / (k : ℝ))) = q j / t * (1 / (k : ℝ)) by ring]
+    by_cases hj : ∃ n : ℕ, q j / t = n ∧ k ∣ n
+    · rw [if_pos hj, if_pos (hiff.mpr hj)]
+    · rw [if_neg hj, if_neg fun h' => hj (hiff.mp h')]
+  have hmain := tsum_eq_of_tsum_dvd hq' hcsum hc4 hS
+  refine (tsum_congr fun j => ?_).trans hmain
+  by_cases hj : q j = t
+  · rw [if_pos hj, if_pos (by rw [hj, div_self ht0.ne'])]
+  · rw [if_neg hj, if_neg fun h' => hj ((div_eq_one_iff_eq ht0.ne').mp h')]
+
+/-- A sum over a family is the sum over the scales of the weight at the scale. -/
+theorem hasSum_scale_mul (q : κ → ℝ) (c : κ → ℂ) (g : ℝ → ℂ)
+    (h : Summable fun j => c j * g (q j)) :
+    HasSum (fun t : ℝ => (∑' j, if q j = t then c j else 0) * g t) (∑' j, c j * g (q j)) := by
+  classical
+  have hfib := h.hasSum.tsum_fiberwise q
+  have hinner : ∀ t : ℝ, (∑' j : q ⁻¹' {t}, c j * g (q j)) =
+      (∑' j, if q j = t then c j else 0) * g t := by
+    intro t
+    have h1 : (∑' j, if q j = t then c j else 0) = ∑' j : q ⁻¹' {t}, c j := by
+      rw [tsum_subtype (q ⁻¹' {t}) c]
+      refine tsum_congr fun j => ?_
+      rw [Set.indicator_apply]
+      by_cases hj : q j = t
+      · rw [if_pos hj, if_pos (show j ∈ q ⁻¹' {t} from hj)]
+      · rw [if_neg hj, if_neg (show j ∉ q ⁻¹' {t} from hj)]
+    rw [h1, ← tsum_mul_right]
+    exact tsum_congr fun j => by rw [show q j = t from j.2]
+  simpa only [hinner] using hfib
+
+/-- **The left expansion is constant**: `Σ c_j q_j^s` is the weight at the scale one. -/
+theorem tsum_left_eq_const [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s)
+    {s : ℂ} (h1 : s.re < 1 / 2) :
+    (∑' j, c j * (q j : ℂ) ^ s) = ∑' j, if q j = 1 then c j else 0 := by
+  have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
+  have hsum : Summable fun j => c j * (q j : ℂ) ^ s := by
+    refine Summable.of_norm ((hL s.re h1).congr fun j => ?_)
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (hq0 j)]
+  have h := hasSum_scale_mul q c (fun t : ℝ => (t : ℂ) ^ s) hsum
+  rw [← h.tsum_eq, tsum_eq_single (1 : ℝ)]
+  · rw [Complex.ofReal_one, Complex.one_cpow, mul_one]
+  · intro t ht
+    rcases lt_or_gt_of_ne ht with hlt | hgt
+    · have hz : (∑' j, if q j = t then c j else 0) = 0 :=
+        (tsum_congr fun j => if_neg fun hj => by
+          have := hq j
+          rw [hj] at this
+          linarith).trans tsum_zero
+      rw [hz, zero_mul]
+    · rw [tsum_scale_eq_zero ha0 ha1 hq hR hL hFd hFb hFR hFL hgt, zero_mul]
+
+/-- **Rigidity.** A function on the strip that is `−ζ(s)/s` times a Dirichlet expansion with
+scales `≤ 1` right of the line and times one with scales `≥ 1` left of it, holomorphic and bounded
+near the line, is `−β ζ(s)/s` with a constant `β`: the critical zeros of `ζ` cancel the poles of
+no two-sided expansion other than a constant. -/
+theorem eq_const_mul_riemannZeta_div [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s)
+    {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) :
+    F s = -(riemannZeta s / s) * ∑' j, if q j = 1 then c j else 0 := by
+  set β : ℂ := ∑' j, if q j = 1 then c j else 0 with hβ
+  have hUo : IsOpen {s : ℂ | 0 < s.re ∧ s.re < 1} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt Complex.continuous_re continuous_const)
+  have hUc : IsPreconnected {s : ℂ | 0 < s.re ∧ s.re < 1} :=
+    ((convex_halfSpace_re_gt 0).inter (convex_halfSpace_re_lt 1)).isPreconnected
+  have hHd : DifferentiableOn ℂ (fun s => -(riemannZeta s / s) * β)
+      {s : ℂ | 0 < s.re ∧ s.re < 1} := by
+    intro z hz
+    have hz1 : z ≠ 1 := fun h => by
+      have := hz.2
+      rw [h, Complex.one_re] at this
+      exact lt_irrefl 1 this
+    have hz0 : z ≠ 0 := fun h => by
+      have := hz.1
+      rw [h, Complex.zero_re] at this
+      exact lt_irrefl 0 this
+    exact ((((differentiableAt_riemannZeta hz1).div differentiableAt_id hz0).neg).mul_const
+      β).differentiableWithinAt
+  have hz₀ : ((1 / 4 : ℝ) : ℂ) ∈ {s : ℂ | 0 < s.re ∧ s.re < 1} := by
+    show (0 : ℝ) < ((1 / 4 : ℝ) : ℂ).re ∧ ((1 / 4 : ℝ) : ℂ).re < 1
+    rw [Complex.ofReal_re]
+    norm_num
+  have hev : F =ᶠ[𝓝 ((1 / 4 : ℝ) : ℂ)] fun s => -(riemannZeta s / s) * β := by
+    have hopen : {z : ℂ | 0 < z.re ∧ z.re < 1 / 2} ∈ 𝓝 ((1 / 4 : ℝ) : ℂ) :=
+      ((isOpen_lt continuous_const Complex.continuous_re).inter
+        (isOpen_lt Complex.continuous_re continuous_const)).mem_nhds (by
+          show (0 : ℝ) < ((1 / 4 : ℝ) : ℂ).re ∧ ((1 / 4 : ℝ) : ℂ).re < 1 / 2
+          rw [Complex.ofReal_re]
+          norm_num)
+    filter_upwards [hopen] with z hz
+    rw [hFL z hz.1 hz.2, tsum_left_eq_const ha0 ha1 hq hR hL hFd hFb hFR hFL hz.2]
+  exact (hFd.analyticOnNhd hUo).eqOn_of_preconnected_of_eventuallyEq (hHd.analyticOnNhd hUo) hUc
+    hz₀ hev ⟨h0, h1⟩
 
 /-! ### Tools for the hypotheses: analytic quotients and good heights -/
 

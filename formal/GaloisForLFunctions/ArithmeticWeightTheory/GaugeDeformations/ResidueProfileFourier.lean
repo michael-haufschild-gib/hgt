@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations.AnalyticSmoothingMoment
+import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.NumberTheory.DirichletCharacter.Orthogonality
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
@@ -43,6 +44,7 @@ def residueFourierProfile (Φ : (ZMod q)ˣ → ℂ → ℂ)
     (χ : DirichletCharacter ℂ q) (z : ℂ) : ℂ :=
   1 + residueFourierDeviation Φ χ z
 
+omit [NeZero q] in
 private theorem inverse_character_unit (χ : DirichletCharacter ℂ q) (a : (ZMod q)ˣ) :
     (χ⁻¹) (a : ZMod q) = χ ((a : ZMod q)⁻¹) := by
   rw [MulChar.inv_apply, Ring.inverse_of_isUnit a.isUnit]
@@ -93,7 +95,7 @@ theorem residueFourier_inversion (Φ : (ZMod q)ˣ → ℂ → ℂ) (b : (ZMod q)
       simp_rw [residue_character_kernel]
     _ = (residueClassWeight q : ℂ) * (Φ b z - 1) * (Fintype.card (ZMod q)ˣ : ℂ) := by
       rw [Finset.sum_eq_single b]
-      · simp only [if_pos rfl]
+      · simp only [ite_true]
       · intro a _ hab
         rw [if_neg hab, mul_zero]
       · simp only [Finset.mem_univ, not_true_eq_false, false_implies]
@@ -120,12 +122,15 @@ theorem analyticOnNhd_residueFourierProfile {Φ : (ZMod q)ˣ → ℂ → ℂ} {R
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R)) (χ : DirichletCharacter ℂ q) :
     AnalyticOnNhd ℂ (residueFourierProfile Φ χ) (closedBall 0 R) := by
   intro z hz
-  apply analyticAt_const.add
-  apply analyticAt_const.mul
   have ha : AnalyticAt ℂ (∑ a : (ZMod q)ˣ, fun w : ℂ => (χ⁻¹) a * (Φ a w - 1)) z :=
     Finset.univ.analyticAt_sum (fun a _ =>
       analyticAt_const.mul ((hΦ a z hz).sub analyticAt_const))
-  simpa only [Finset.sum_apply] using ha
+  have he : (∑ a : (ZMod q)ˣ, fun w : ℂ => (χ⁻¹) a * (Φ a w - 1)) =
+      (fun w : ℂ => ∑ a : (ZMod q)ˣ, (χ⁻¹) a * (Φ a w - 1)) := by
+    funext w
+    simp only [Finset.sum_apply]
+  rw [he] at ha
+  exact analyticAt_const.add (analyticAt_const.mul ha)
 
 theorem analyticOnNhd_residueAverage {Φ : (ZMod q)ˣ → ℂ → ℂ} {R : NNReal}
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R)) :
@@ -148,6 +153,17 @@ theorem residueFourierProfile_endpoint {Φ : (ZMod q)ˣ → ℂ → ℂ}
     simpa only [inv_inv, inv_one] using congrArg (fun ψ : DirichletCharacter ℂ q => ψ⁻¹) he
   simp only [residueFourierProfile, residueFourierDeviation, h1,
     ← Finset.sum_mul, sum_residue_character_zero (χ⁻¹) hi, zero_mul, mul_zero, add_zero]
+
+theorem residueAverage_zero {Φ : (ZMod q)ˣ → ℂ → ℂ}
+    (h0 : ∀ a, Φ a 0 = 1) : residueAverage Φ 0 = 1 := by
+  have h := residueFourierProfile_zero h0 (1 : DirichletCharacter ℂ q)
+  rwa [residueFourierProfile_one] at h
+
+theorem residueAverage_one {Φ : (ZMod q)ˣ → ℂ → ℂ}
+    (h1 : ∀ a, Φ a 1 = -1) : residueAverage Φ 1 = -1 := by
+  have hm : (∑ _a : (ZMod q)ˣ, (residueClassWeight q : ℂ)) = 1 := by
+    exact_mod_cast (sum_residueClassWeight (q := q))
+  simp only [residueAverage, h1, mul_neg, mul_one, Finset.sum_neg_distrib, hm]
 
 /-- The principal mean retains the normalized endpoints and imaginary tangent. -/
 theorem residueAverage_properties {Φ : (ZMod q)ˣ → ℂ → ℂ} {R : NNReal}

@@ -11,6 +11,7 @@ import GaloisForLFunctions.HodgeTheoryOfAFixedPart.OneInequalityPerPrimeOnTheCom
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheJetsAreASumOfHardySquares
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheIndexOfThePairingIsAtMostTheDefectOfASplitting
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart.ShortWindowsDoNotSeeTheContacts
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheCombOfACurve
 
 /-!
 # Hodge theory of a fixed part
@@ -31,6 +32,8 @@ Positivity and index theorems for the pairing of the degree points of the arithm
 * One inequality per prime on logarithmic windows with exceptional sets, for a two-bump divisor.
 * The index of the pairing against the defect of a splitting; the line law of Lagarias and
   Suzuki as an index-one statement.
+* The comb of a curve: the pairing of a curve datum in the same coordinates, with the point counts
+  as contacts and no counterterm; the inequality there is purity.
 
 See `HodgeTheoryOfAFixedPart/README.md`.
 -/
