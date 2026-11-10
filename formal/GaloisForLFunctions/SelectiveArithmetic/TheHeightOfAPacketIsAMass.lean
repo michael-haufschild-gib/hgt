@@ -18,9 +18,9 @@ symbol there is `log(2 + |t|) + O(1)`.
 * **The form of a dominated system at a height** (`systemForm_modulated_ge`):
   `𝔚_{w,q}(F) ≥ (log q + log(2 + |t|) − A₁ − K e^{a} − B − (1 + 2a)²) ∫ f² − ∫ f'²`: conductor
   and height add up to one mass, the logarithm of the analytic conductor.
-* **The pole plane does not reach a height** (`re_weilPoleTerm_modulated_ge`): for
-  `e^{a} ≤ |t|` the pole term of the modulated packet is at least `−4 ∫ f'²`; one integration by
-  parts at the points `±i/2 − t`.
+* **The pole plane does not reach a height** (`abs_re_weilPoleTerm_modulated_le`): for
+  `e^{a} ≤ |t|` the pole term of the modulated packet is at most `4 ∫ f'²` in absolute value; one
+  integration by parts at the points `±i/2 − t`.
 * **Weil's form at a height** (`re_weilFullFunctional_modulated_ge`, `exists_height_margin`): for
   every dominated system with pole plane, in particular for `ζ`, and every `η > 0`: at every
   height with `|t|` large and every aperture `a ≤ log log |t| − η`,
@@ -252,12 +252,11 @@ theorem sq_integral_abs_le {g : ℝ → ℝ} (hg : Continuous g) {a : ℝ} (ha :
   linarith
 
 /-- **The pole term of a packet at a height.** For `e^{a} ≤ |t|` the pole term of the packet
-modulated to the height `t` is at least `−4 ∫ f'²`. -/
-theorem re_weilPoleTerm_modulated_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℝ} (hf : ContDiff ℝ 3 f)
+modulated to the height `t` is at most `4 ∫ f'²` in absolute value. -/
+theorem abs_re_weilPoleTerm_modulated_le {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℝ} (hf : ContDiff ℝ 3 f)
     (h0 : ∀ u, a ≤ |u| → f u = 0) {t : ℝ} (ht : Real.exp a ≤ |t|) :
-    -(4 * ∫ u, deriv f u ^ 2) ≤
-      (_root_.RHTower.weilPoleTerm (EF.weilTest (_root_.RHTower.modulatedTest t f)
-        (_root_.RHTower.modulatedTest t f))).re := by
+    |(_root_.RHTower.weilPoleTerm (EF.weilTest (_root_.RHTower.modulatedTest t f)
+        (_root_.RHTower.modulatedTest t f))).re| ≤ 4 * ∫ u, deriv f u ^ 2 := by
   have hf2 : ContDiff ℝ 2 f := hf.of_le (by norm_num)
   have hF := _root_.RHTower.modulatedTest_contDiff t hf2
   have hFs := _root_.RHTower.tsupport_modulatedTest_subset t (abs_le_of_ne_zero h0)
@@ -340,12 +339,20 @@ theorem re_weilPoleTerm_modulated_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℝ} 
       nlinarith [mul_le_mul_of_nonneg_right hat hD0]
     have h3 : ‖A‖ * ‖Bc‖ * (|t| * |t|) ≤ 2 * D * (|t| * |t|) := hprod.trans (h1.trans h2)
     exact le_of_mul_le_mul_right h3 (mul_pos ht0 ht0)
-  have hre : -(‖A‖ * ‖Bc‖) ≤ (A * conj Bc).re := by
+  have hre : |(A * conj Bc).re| ≤ ‖A‖ * ‖Bc‖ := by
     have h := Complex.abs_re_le_norm (A * conj Bc)
-    rw [norm_mul, Complex.norm_conj] at h
-    exact neg_le_of_abs_le h
-  rw [_root_.RHTower.WeilOneSided.weilPoleTerm_re_eq_two_re hF.continuous hFc]
+    rwa [norm_mul, Complex.norm_conj] at h
+  rw [_root_.RHTower.WeilOneSided.weilPoleTerm_re_eq_two_re hF.continuous hFc, abs_mul,
+    abs_of_pos (by norm_num : (0 : ℝ) < 2)]
   linarith
+
+/-- The pole term of a packet at a height is at least `−4 ∫ f'²`. -/
+theorem re_weilPoleTerm_modulated_ge {a : ℝ} (ha : 0 ≤ a) {f : ℝ → ℝ} (hf : ContDiff ℝ 3 f)
+    (h0 : ∀ u, a ≤ |u| → f u = 0) {t : ℝ} (ht : Real.exp a ≤ |t|) :
+    -(4 * ∫ u, deriv f u ^ 2) ≤
+      (_root_.RHTower.weilPoleTerm (EF.weilTest (_root_.RHTower.modulatedTest t f)
+        (_root_.RHTower.modulatedTest t f))).re :=
+  neg_le_of_abs_le (abs_re_weilPoleTerm_modulated_le ha hf h0 ht)
 
 /-! ### Weil's form at a height -/
 

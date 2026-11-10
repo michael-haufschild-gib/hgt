@@ -502,7 +502,13 @@ theorem ne_zero_of_family_common_signal {ι : Type*} {G L E : ι → ℂ → ℂ
     have hb1 : max a₁ σ₀ < 1 := max_lt (by linarith) hσ₀
     have hb2 : max a₂ σ₀ < 1 := max_lt (by linarith) hσ₀
     have hmax : max (max a₁ σ₀) (max a₂ σ₀) = max σ₀ (max a₁ a₂) := by
-      rw [max_comm a₁ σ₀, max_comm a₂ σ₀, ← max_max_distrib_left]
+      apply le_antisymm
+      · exact max_le
+          (max_le (le_trans (le_max_left a₁ a₂) (le_max_right _ _)) (le_max_left _ _))
+          (max_le (le_trans (le_max_right a₁ a₂) (le_max_right _ _)) (le_max_left _ _))
+      · exact max_le (le_trans (le_max_right a₁ σ₀) (le_max_left _ _))
+          (max_le (le_trans (le_max_left a₁ σ₀) (le_max_left _ _))
+            (le_trans (le_max_left a₂ σ₀) (le_max_right _ _)))
     have hsub : {s : ℂ | max (max a₁ σ₀) (max a₂ σ₀) < s.re} ⊆ {s : ℂ | σ₀ < s.re} := by
       intro s hs
       exact lt_of_le_of_lt (le_trans (le_max_right a₁ σ₀) (le_max_left _ _)) hs

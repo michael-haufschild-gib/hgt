@@ -8,6 +8,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheFeasibleSetsOfAConductor
 import GaloisForLFunctions.SelectiveArithmetic.TheZerosOfADirichletLFunctionOnTheLadder
 import GaloisForLFunctions.SelectiveArithmetic.TheSignIsSquareRootCancellationOfTheRieszMean
 import GaloisForLFunctions.SelectiveArithmetic.EveryVisibleWeightIsBoundedByTheMass
+import GaloisForLFunctions.SelectiveArithmetic.TheFirstSelectiveWindowOfZeta
 
 /-!
 # Selective Arithmetic
@@ -45,6 +46,9 @@ sign, and where the first statement beyond that scale lies.
 * The box law of a conductor: every visible weight of a feasible system is at most
   `√n (log q + log(1 + 4n) + C)`; an `ℓ¹` ball of the size of the mass is feasible; below the first
   contact the weights do not enter.
+* The first selective window of `ζ`: with the pole plane, a window of ratio less than `2` is not
+  selective; beyond it the weight at `2` is confined to an interval of half-length
+  `√2 (log(1/r) + C)` that contains a neighbourhood of `log 2` up to the aperture `181/500`.
 
 See `SelectiveArithmetic/README.md`.
 -/

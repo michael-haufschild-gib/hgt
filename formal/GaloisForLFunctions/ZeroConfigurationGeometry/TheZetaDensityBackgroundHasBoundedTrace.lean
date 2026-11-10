@@ -24,9 +24,13 @@ theorem norm_lagStructure_le_zero_of_onLine {Z : ZeroConfig} (hZ : TemperedConfi
     (hon : ∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) {b : ℝ → ℂ}
     (hb : ContDiff ℝ 2 b) {w : ℝ} (hbs : ∀ u, b u ≠ 0 → |u| ≤ w) (v : ℝ) :
     ‖lagStructure Z b v‖ ≤ (lagStructure Z b 0).re := by
-  have hp (u : ℝ) (hu : 0 ≤ u) : ‖lagStructure Z b u‖ ≤ (lagStructure Z b 0).re :=
-    norm_lagStructure_le_re_zero_of_weil_nonneg Z hZ hb hbs hu le_rfl
+  have hp (u : ℝ) (hu : 0 ≤ u) : ‖lagStructure Z b u‖ ≤ (lagStructure Z b 0).re := by
+    have hh := norm_lagStructure_le_of_weil_nonneg Z hZ hb hbs hu le_rfl
       (fun f _ _ => weil_nonneg_of_onLine Z hon f)
+    rw [conj_lagStructure_neg Z hZ hb hbs u, ← two_mul, norm_mul] at hh
+    have htwo : ‖(2 : ℂ)‖ = (2 : ℝ) := by norm_num
+    rw [htwo] at hh
+    linarith only [hh]
   rcases le_or_gt 0 v with hv | hv
   · exact hp v hv
   · have he := congrArg (fun z : ℂ => ‖z‖) (conj_lagStructure_neg Z hZ hb hbs v)

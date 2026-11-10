@@ -3,7 +3,7 @@
 - **ID:** A80-contact-bridge
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Statement:** Directed ratio-`k` contacts between `(aN,bN]` and `(cN,dN]`, divided by `N`, converge to `max(min(b,d/k)−max(a,c/k),0)`. For one window this equals its flat-packet autocorrelation at `log k`, divided by `exp(log k/2)`.
+- **Statement:** For natural endpoints `a,b,c,d` and `k≥1`, directed ratio-`k` contacts between `(aN,bN]` and `(cN,dN]`, divided by `N`, converge to `max(min(b,d/k)−max(a,c/k),0)`. For `1≤a≤b`, the self-contact limit equals its flat-packet autocorrelation at `log k`, divided by `exp(log k/2)`.
 
 ## Proof
 

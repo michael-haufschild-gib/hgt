@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawHoldsOnEveryStripAboutTheLine
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawOnAStripSurvivesFinitelyManyPoles
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheLogarithmicDerivativeExpandsInAZeroFreeStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansionsOnTheScalesOneOverN
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoExponentialPolynomialIsAFactorOfXi
@@ -94,15 +94,17 @@ theorem norm_riemannZeta_div_le_eight {z : ℂ} (h0 : 3 / 8 ≤ z.re) (h1 : z.re
 
 /-! ### The core: zeros on the line cannot all be cancelled by `ζ` -/
 
-/-- **The zeros of `ζ` cancel no zero of an absolutely convergent expansion.** Let
-`F(s) = Σ c(q) q^s` converge absolutely on the closed strip `|Re s − ½| ≤ 2η`, be almost periodic
-near the line and have its zeros in the open strip on the critical line. If `ζ` vanishes at every
-zero of `F` on the line, then `F` has no zero in the strip. -/
-theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη0 : 0 < η)
+/-- **The zeros of `ζ` cancel no zero of an absolutely convergent expansion, up to finitely
+many.** Let `F(s) = Σ c(q) q^s` converge absolutely on the closed strip `|Re s − ½| ≤ 2η`, be
+almost periodic near the line and have its zeros in the open strip on the critical line. If `ζ`
+vanishes at every zero of `F` on the line outside a finite set `P` of zeros of `F`, then `F` has
+no zero in the strip: not even those of `P`. -/
+theorem expansion_ne_zero_of_zeros_cancelled_off_finset {c : Scale → ℂ} {η : ℝ} (hη0 : 0 < η)
     (hη : η ≤ 1 / 4) (hc : WSummable (1 / 2 - 2 * η) (1 / 2 + 2 * η) c)
     (hAP : IsStripAlmostPeriodicOn (expansion c) (1 / 2) (η / 2))
     (hoff : ∀ s : ℂ, |s.re - 1 / 2| < 2 * η → s.re ≠ 1 / 2 → expansion c s ≠ 0)
-    (hline : ∀ s : ℂ, s.re = 1 / 2 → expansion c s = 0 → riemannZeta s = 0)
+    (P : Finset ℂ) (hPre : ∀ p ∈ P, p.re = 1 / 2) (hPzero : ∀ p ∈ P, expansion c p = 0)
+    (hline : ∀ s : ℂ, s.re = 1 / 2 → expansion c s = 0 → s ∉ P → riemannZeta s = 0)
     (hne : c ≠ 0) {s : ℂ} (hs : |s.re - 1 / 2| < 2 * η) : expansion c s ≠ 0 := by
   by_cases hsre : s.re = 1 / 2
   swap
@@ -158,15 +160,43 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη
     have hall := hFan.eqOn_zero_of_preconnected_of_eventuallyEq_zero
       (isPreconnected_openStrip _ _) (hUV z hz) (analyticOrderAt_eq_top.mp htop)
     exact hp (hall (hUV s₀ hs₀U))
-  have hzero : ∀ z ∈ U, expansion c z = 0 → -(riemannZeta z / z) = 0 := by
+  -- the exceptional zeros are divided out and put back as principal parts
+  have hPU : ∀ p ∈ P, p ∈ U := fun p hp =>
+    ⟨by rw [hPre p hp]; linarith, by rw [hPre p hp]; linarith⟩
+  have hprodd : DifferentiableOn ℂ (fun z : ℂ => ∏ p ∈ P, (z - p)) U := by
+    have h : Differentiable ℂ (∏ p ∈ P, fun z : ℂ => z - p) :=
+      Differentiable.finsetProd fun p _ => differentiable_id.sub_const p
+    have e : (fun z : ℂ => ∏ p ∈ P, (z - p)) = ∏ p ∈ P, fun z : ℂ => z - p := by
+      funext z
+      rw [Finset.prod_apply]
+    rw [e]
+    exact h.differentiableOn
+  have hprod0 : ∀ z : ℂ, z ∉ P → ∏ p ∈ P, (z - p) ≠ 0 := fun z hz =>
+    Finset.prod_ne_zero_iff.mpr fun p hp => sub_ne_zero.mpr fun h => hz (h ▸ hp)
+  have hzero : ∀ z ∈ U, expansion c z = 0 →
+      -(riemannZeta z / z) * ∏ p ∈ P, (z - p) = 0 := by
     intro z hz hz0
     have hre : z.re = 1 / 2 := by
       by_contra hne'
       exact hoff z (hV z (hUV z hz).1 (hUV z hz).2) hne' hz0
-    rw [hline z hre hz0, zero_div, neg_zero]
-  obtain ⟨Φ, hΦd, hΦ⟩ := exists_differentiableOn_deriv_mul_div hUo hfd hgd hfin hzero
+    by_cases hzP : z ∈ P
+    · rw [Finset.prod_eq_zero hzP (sub_self z), mul_zero]
+    · rw [hline z hre hz0 hzP, zero_div, neg_zero, zero_mul]
+  obtain ⟨Φt, hΦtd, hΦt⟩ :=
+    exists_differentiableOn_deriv_mul_div hUo hfd (hgd.mul hprodd) hfin hzero
+  obtain ⟨r, Φ, hΦd, hΦeq⟩ := exists_principalParts hUo P hPU Φt hΦtd
+  have hΦ : ∀ z ∈ U, expansion c z ≠ 0 → Φ z =
+      deriv (expansion c) z * -(riemannZeta z / z) / expansion c z -
+        ∑ p ∈ P, r p / (z - p) := by
+    intro z hz hz0
+    have hzP : z ∉ P := fun h => hz0 (hPzero z h)
+    have h1 := hprod0 z hzP
+    rw [hΦeq z hz hzP, hΦt z hz hz0]
+    congr 1
+    field_simp
   have hΦR : ∀ z : ℂ, 1 / 2 < z.re → z.re < 1 / 2 + η →
-      Φ z = -(riemannZeta z / z) * ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z := by
+      Φ z = -(riemannZeta z / z) * (∑' q : Scale, gR q * (q.toReal : ℂ) ^ z) -
+        ∑ p ∈ P, r p / (z - p) := by
     intro z h1 h2
     have hz0 : expansion c z ≠ 0 := hoff z (hV z (by linarith) (by linarith)) (ne_of_gt h1)
     have hG : deriv (expansion c) z / expansion c z = ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z :=
@@ -174,7 +204,8 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη
     rw [hΦ z ⟨by linarith, h2⟩ hz0, ← hG]
     ring
   have hΦL : ∀ z : ℂ, 1 / 2 - η < z.re → z.re < 1 / 2 →
-      Φ z = -(riemannZeta z / z) * ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z := by
+      Φ z = -(riemannZeta z / z) * (∑' q : Scale, gL q * (q.toReal : ℂ) ^ z) -
+        ∑ p ∈ P, r p / (z - p) := by
     intro z h1 h2
     have hz0 : expansion c z ≠ 0 := hoff z (hV z (by linarith) (by linarith)) (ne_of_lt h2)
     have hG : deriv (expansion c) z / expansion c z = ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z :=
@@ -223,23 +254,68 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη
   have hNL0 : 0 ≤ NL := tsum_nonneg fun q => mul_nonneg (norm_nonneg _) (stripWeight_pos _ _ q).le
   have hMD0 : 0 ≤ MD := tsum_nonneg fun q => mul_nonneg (norm_nonneg _) (stripWeight_pos _ _ q).le
   have hquot0 : 0 ≤ MD * 8 / μ := by positivity
-  have hlineB : ∀ z : ℂ, z.re = 1 / 2 - η / 2 ∨ z.re = 1 / 2 + η / 2 →
-      ‖Φ z‖ ≤ 8 * NR + 8 * NL + MD * 8 / μ := by
+  -- the polar part is bounded away from the exceptional zeros
+  set ρ : ℝ := ∑ p ∈ P, ‖r p‖ with hρ
+  have hρ0 : 0 ≤ ρ := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  have hpolar : ∀ (z : ℂ) (δ : ℝ), 0 < δ → (∀ p ∈ P, δ ≤ ‖z - p‖) →
+      ‖∑ p ∈ P, r p / (z - p)‖ ≤ ρ / δ := by
+    intro z δ hδ hdist
+    rw [hρ, Finset.sum_div]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun p hp => ?_)
+    rw [norm_div]
+    exact div_le_div_of_nonneg_left (norm_nonneg _) hδ (hdist p hp)
+  -- the mean value inequality on the closed strip of half-width `η/2`
+  have hmean : ∀ p : ℂ, 1 / 2 - η / 2 ≤ p.re → p.re ≤ 1 / 2 + η / 2 → ∀ z : ℂ,
+      1 / 2 - η / 2 ≤ z.re → z.re ≤ 1 / 2 + η / 2 →
+      ‖expansion c z - expansion c p‖ ≤ MD * ‖z - p‖ := by
+    intro p hp1 hp2 z hz1 hz2
+    refine Convex.norm_image_sub_le_of_norm_deriv_le
+      (s := {w : ℂ | 1 / 2 - η / 2 ≤ w.re ∧ w.re ≤ 1 / 2 + η / 2}) (fun w hw => ?_)
+      (fun w hw => ?_) ((convex_halfSpace_re_ge _).inter (convex_halfSpace_re_le _))
+      ⟨hp1, hp2⟩ ⟨hz1, hz2⟩
+    · have hwU : w ∈ U := ⟨by linarith [hw.1], by linarith [hw.2]⟩
+      exact (hfd w hwU).differentiableAt (hUo.mem_nhds hwU)
+    · rw [deriv_expansion hc (by linarith [hw.1]) (by linarith [hw.2])]
+      exact hWD.norm_expansion_le hw.1 hw.2
+  set C : ℝ := 8 * NR + 8 * NL + MD * 8 / μ + ρ / (η / 2) + ρ / (μ / (MD + 1)) with hC
+  have hC1 : 0 ≤ ρ / (η / 2) := by positivity
+  have hC2 : 0 ≤ ρ / (μ / (MD + 1)) := by positivity
+  have hlineB : ∀ z : ℂ, z.re = 1 / 2 - η / 2 ∨ z.re = 1 / 2 + η / 2 → ‖Φ z‖ ≤ C := by
     rintro z (hz | hz)
-    · rw [hΦL z (by rw [hz]; linarith) (by rw [hz]; linarith), norm_mul]
+    · have hdist : ∀ p ∈ P, η / 2 ≤ ‖z - p‖ := fun p hp => by
+        have h := Complex.abs_re_le_norm (z - p)
+        rw [Complex.sub_re, hz, hPre p hp, show (1 / 2 - η / 2 - 1 / 2 : ℝ) = -(η / 2) by ring,
+          abs_neg, abs_of_pos (by positivity)] at h
+        exact h
+      rw [hΦL z (by rw [hz]; linarith) (by rw [hz]; linarith)]
       have h1 := hζ z (by rw [hz]) (by rw [hz]; linarith)
       have h2 : ‖∑' q : Scale, gL q * (q.toReal : ℂ) ^ z‖ ≤ NL :=
         hWL.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
+      have h4 := hpolar z (η / 2) (by positivity) hdist
+      have h5 := norm_sub_le (-(riemannZeta z / z) * ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z)
+        (∑ p ∈ P, r p / (z - p))
+      rw [norm_mul] at h5
+      rw [hC]
       linarith
-    · rw [hΦR z (by rw [hz]; linarith) (by rw [hz]; linarith), norm_mul]
+    · have hdist : ∀ p ∈ P, η / 2 ≤ ‖z - p‖ := fun p hp => by
+        have h := Complex.abs_re_le_norm (z - p)
+        rw [Complex.sub_re, hz, hPre p hp, show (1 / 2 + η / 2 - 1 / 2 : ℝ) = η / 2 by ring,
+          abs_of_pos (by positivity)] at h
+        exact h
+      rw [hΦR z (by rw [hz]; linarith) (by rw [hz]; linarith)]
       have h1 := hζ z (by rw [hz]; linarith) (by rw [hz])
       have h2 : ‖∑' q : Scale, gR q * (q.toReal : ℂ) ^ z‖ ≤ NR :=
         hWR.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
+      have h4 := hpolar z (η / 2) (by positivity) hdist
+      have h5 := norm_sub_le (-(riemannZeta z / z) * ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z)
+        (∑ p ∈ P, r p / (z - p))
+      rw [norm_mul] at h5
+      rw [hC]
       linarith
   have hgoodB : ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, 1 / 2 - η / 2 ≤ z.re →
-      z.re ≤ 1 / 2 + η / 2 → z.im = T → ‖Φ z‖ ≤ 8 * NR + 8 * NL + MD * 8 / μ := by
+      z.re ≤ 1 / 2 + η / 2 → z.im = T → ‖Φ z‖ ≤ C := by
     intro y
     obtain ⟨T, hT, hTF⟩ := hgoodF y
     refine ⟨T, hT, fun z h1 h2 hzT => ?_⟩
@@ -248,55 +324,51 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη
     have hder : ‖deriv (expansion c) z‖ ≤ MD := by
       rw [deriv_expansion hc (by linarith) (by linarith)]
       exact hWD.norm_expansion_le h1 h2
-    rw [hΦ z ⟨by linarith, by linarith⟩ hz0, norm_div, norm_mul]
+    -- where `F` is bounded below, the exceptional zeros are at distance at least `μ/(MD + 1)`
+    have hdist : ∀ p ∈ P, μ / (MD + 1) ≤ ‖z - p‖ := fun p hp => by
+      have hmv := hmean p (by rw [hPre p hp]; linarith) (by rw [hPre p hp]; linarith) z h1 h2
+      rw [hPzero p hp, sub_zero] at hmv
+      rw [div_le_iff₀ (by linarith)]
+      nlinarith [norm_nonneg (z - p)]
+    rw [hΦ z ⟨by linarith, by linarith⟩ hz0]
     have h8 := hζ z h1 h2
-    have e1 : ‖deriv (expansion c) z‖ * ‖-(riemannZeta z / z)‖ / ‖expansion c z‖ ≤
-        MD * 8 / ‖expansion c z‖ :=
-      div_le_div_of_nonneg_right (mul_le_mul hder h8 (norm_nonneg _) hMD0) (norm_nonneg _)
-    have e2 : MD * 8 / ‖expansion c z‖ ≤ MD * 8 / μ :=
-      div_le_div_of_nonneg_left (by positivity) hμ hμz
+    have e1 : ‖deriv (expansion c) z * -(riemannZeta z / z) / expansion c z‖ ≤ MD * 8 / μ := by
+      rw [norm_div, norm_mul]
+      exact (div_le_div_of_nonneg_right (mul_le_mul hder h8 (norm_nonneg _) hMD0)
+        (norm_nonneg _)).trans (div_le_div_of_nonneg_left (by positivity) hμ hμz)
+    have e2 := hpolar z (μ / (MD + 1)) (by positivity) hdist
+    have e3 := norm_sub_le (deriv (expansion c) z * -(riemannZeta z / z) / expansion c z)
+      (∑ p ∈ P, r p / (z - p))
+    rw [hC]
     linarith
-  have hΦb : ∀ w : ℂ, 1 / 2 - η / 2 ≤ w.re → w.re ≤ 1 / 2 + η / 2 →
-      ‖Φ w‖ ≤ 8 * NR + 8 * NL + MD * 8 / μ := fun w h1 h2 =>
-    norm_le_of_good_heights hx (fun z h1 h2 => (⟨by linarith, by linarith⟩ : z ∈ U)) hΦd hlineB
-      hgoodB h1 h2
-  -- the jump law: the two expansions coincide and continue across the line
-  obtain ⟨-, hsumAll, hΦall⟩ := eq_riemannZeta_div_mul_tsum_of_strip (b := gR) (c := gL)
-    (a := Scale.toReal) Scale.toReal_pos Scale.toReal_injective hη0 (by linarith) hsumR hsumL
-    hΦd hΦb hΦR hΦL
+  have hΦb : ∀ w : ℂ, 1 / 2 - η / 2 ≤ w.re → w.re ≤ 1 / 2 + η / 2 → ‖Φ w‖ ≤ C :=
+    fun w h1 h2 =>
+      norm_le_of_good_heights hx (fun z h1 h2 => (⟨by linarith, by linarith⟩ : z ∈ U)) hΦd
+        hlineB hgoodB h1 h2
+  -- the jump law with poles: the two expansions coincide and continue across the line
+  have hbc : gL = gR := (eq_of_strip_of_poles (a := Scale.toReal) Scale.toReal_pos
+    Scale.toReal_injective hη0 (by linarith) hsumR hsumL hPre hΦd hΦb hΦR hΦL).symm
+  rw [hbc] at hsumL
   have hWg : WSummable (1 / 2 - η) (1 / 2 + η) gR := by
     refine Summable.of_nonneg_of_le
       (fun q => mul_nonneg (norm_nonneg _) (stripWeight_pos _ _ q).le) (fun q => ?_)
-      ((hsumAll (1 / 2 - η) le_rfl (by linarith)).add (hsumAll (1 / 2 + η) (by linarith) le_rfl))
+      ((hsumL (1 / 2 - η) le_rfl (by linarith)).add (hsumR (1 / 2 + η) (by linarith) le_rfl))
     rw [← mul_add]
     exact mul_le_mul_of_nonneg_left (max_le_add_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _)
       (Real.rpow_nonneg q.toReal_pos.le _)) (norm_nonneg _)
   have hHd : DifferentiableOn ℂ (expansion gR) U := differentiableOn_expansion hWg
-  -- `F' = H F` on the strip
-  have hs₀1 : s₀ ≠ 1 := fun h => by
-    have := hs₀re
-    rw [h, one_re] at this
-    linarith
-  have hζ0 : riemannZeta s₀ ≠ 0 :=
-    riemannZeta_ne_zero_of_ofReal_mem_Ioo (by linarith) (by linarith)
+  -- `F' = H F` right of the line, hence on the strip
   have hev : (fun z => deriv (expansion c) z - expansion gR z * expansion c z) =ᶠ[𝓝 s₀] 0 := by
-    have h1 : ∀ᶠ z in 𝓝 s₀, riemannZeta z ≠ 0 :=
-      (differentiableAt_riemannZeta hs₀1).continuousAt.eventually_ne hζ0
     have h2 : ∀ᶠ z in 𝓝 s₀, expansion c z ≠ 0 :=
       (hfd.continuousOn.continuousAt (hUo.mem_nhds hs₀U)).eventually_ne hp
-    filter_upwards [h1, h2, hUo.mem_nhds hs₀U] with z hz1 hz2 hz3
-    have hzne : z ≠ 0 := fun h => by
-      have := hz3.1
-      rw [h, zero_re] at this
-      linarith
-    have hg0 : -(riemannZeta z / z) ≠ 0 := neg_ne_zero.mpr (div_ne_zero hz1 hzne)
-    have e2 : Φ z = -(riemannZeta z / z) * expansion gR z := hΦall z hz3.1 hz3.2
-    rw [hΦ z hz3 hz2] at e2
-    have e3 := (div_eq_iff hz2).mp e2
-    have e4 : -(riemannZeta z / z) *
-        (deriv (expansion c) z - expansion gR z * expansion c z) = 0 := by
-      linear_combination e3
-    exact (mul_eq_zero.mp e4).resolve_left hg0
+    have h3 : ∀ᶠ z : ℂ in 𝓝 s₀, 1 / 2 < z.re :=
+      (isOpen_lt continuous_const continuous_re).mem_nhds (by
+        show 1 / 2 < s₀.re
+        rw [hs₀re]
+        linarith)
+    filter_upwards [h2, h3, hUo.mem_nhds hs₀U] with z hz2 hz3 hz4
+    show deriv (expansion c) z - expansion gR z * expansion c z = 0
+    rw [← hGR z hz3 (by linarith [hz4.2]), div_mul_cancel₀ _ hz2, sub_self]
   have hPd : DifferentiableOn ℂ
       (fun z => deriv (expansion c) z - expansion gR z * expansion c z) U :=
     (hfd.deriv hUo).sub (hHd.mul hfd)
@@ -327,6 +399,18 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη
     rw [h] at hdord
     have h' : j + (k + 1) = k := by exact_mod_cast hdord
     omega
+
+/-- **The zeros of `ζ` cancel no zero of an absolutely convergent expansion.** If `ζ` vanishes at
+every zero of `F` on the line, `F` has no zero in the strip. -/
+theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη0 : 0 < η)
+    (hη : η ≤ 1 / 4) (hc : WSummable (1 / 2 - 2 * η) (1 / 2 + 2 * η) c)
+    (hAP : IsStripAlmostPeriodicOn (expansion c) (1 / 2) (η / 2))
+    (hoff : ∀ s : ℂ, |s.re - 1 / 2| < 2 * η → s.re ≠ 1 / 2 → expansion c s ≠ 0)
+    (hline : ∀ s : ℂ, s.re = 1 / 2 → expansion c s = 0 → riemannZeta s = 0)
+    (hne : c ≠ 0) {s : ℂ} (hs : |s.re - 1 / 2| < 2 * η) : expansion c s ≠ 0 :=
+  expansion_ne_zero_of_zeros_cancelled_off_finset hη0 hη hc hAP hoff ∅
+    (fun p hp => absurd hp (Finset.notMem_empty p)) (fun p hp => absurd hp (Finset.notMem_empty p))
+    (fun z h1 h2 _ => hline z h1 h2) hne hs
 
 /-! ### Dirichlet series -/
 
