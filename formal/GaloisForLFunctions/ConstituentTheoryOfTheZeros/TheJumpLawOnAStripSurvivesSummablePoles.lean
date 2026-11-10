@@ -80,9 +80,8 @@ theorem norm_polarSeries_sub_le (hE : ∀ p ∈ E, p.re = 1 / 2)
       tsum_subtype (↑T : Set E)ᶜ fun p : E => r p * (u : ℂ) ^ (p : ℂ)]
     refine tsum_congr fun p => ?_
     by_cases hp : p ∈ T
-    · rw [if_pos hp, Set.indicator_of_notMem fun h => h (Finset.mem_coe.mpr hp)]
-    · rw [if_neg hp, Set.indicator_of_mem (show p ∈ (↑T : Set E)ᶜ from fun h =>
-        hp (Finset.mem_coe.mp h))]
+    · rw [if_pos hp, Set.indicator_of_notMem (Set.notMem_compl_iff.mpr (Finset.mem_coe.mpr hp))]
+    · rw [if_neg hp, Set.indicator_of_mem (Set.mem_compl fun h => hp (Finset.mem_coe.mp h))]
   have h2 : HasSum (fun p : E => if p ∈ T then 0 else ‖r p‖ * u ^ (1 / 2 : ℝ))
       (((∑' p : E, ‖r p‖) - ∑ p ∈ T, ‖r p‖) * u ^ (1 / 2 : ℝ)) := by
     have hfin : HasSum (fun p : E => if p ∈ T then ‖r p‖ else 0) (∑ p ∈ T, ‖r p‖) := by
@@ -102,12 +101,13 @@ theorem norm_polarSeries_sub_le (hE : ∀ p ∈ E, p.re = 1 / 2)
 
 theorem norm_polarSeries_le (hE : ∀ p ∈ E, p.re = 1 / 2) (hr : Summable fun p : E => ‖r p‖)
     {u : ℝ} (hu : 0 < u) : ‖polarSeries E r u‖ ≤ (∑' p : E, ‖r p‖) * u ^ (1 / 2 : ℝ) :=
-  tsum_of_norm_bounded ((hr.mul_right (u ^ (1 / 2 : ℝ))).hasSum) fun p =>
+  tsum_of_norm_bounded (hr.hasSum.mul_right (u ^ (1 / 2 : ℝ))) fun p =>
     (norm_polarSeries_term hE hu p).le
 
 theorem measurable_polarSeries (E : Set ℂ) (r : ℂ → ℂ) [Countable E] :
-    Measurable (polarSeries E r) :=
-  Measurable.tsum fun p => (Complex.measurable_ofReal.pow_const (p : ℂ)).const_mul (r p)
+    Measurable (polarSeries E r) := by
+  show Measurable fun u : ℝ => ∑' p : E, r p * (u : ℂ) ^ (p : ℂ)
+  exact Measurable.tsum fun p => (Complex.measurable_ofReal.pow_const (p : ℂ)).const_mul (r p)
 
 theorem continuousAt_polarSeries (hE : ∀ p ∈ E, p.re = 1 / 2)
     (hr : Summable fun p : E => ‖r p‖) {u : ℝ} (hu : 0 < u) :
@@ -144,8 +144,15 @@ theorem hasSum_mellin_topPart_polarSeries [Countable E] (hE : ∀ p ∈ E, p.re 
         have h := (tendsto_tail_residues hr).div_const (s.re - 1 / 2)
         rwa [zero_div] at h))
     -- the finite section and the tail
-    set P := T.map ⟨Subtype.val, Subtype.val_injective⟩ with hPdef
-    have hPre := re_of_mem_map hE T
+    obtain ⟨P, hPdef⟩ : ∃ P : Finset ℂ, P = T.map ⟨Subtype.val, Subtype.val_injective⟩ :=
+      ⟨_, rfl⟩
+    have hPre : ∀ p ∈ P, p.re = 1 / 2 := by
+      rw [hPdef]
+      exact re_of_mem_map hE T
+    have htail : ∀ u : ℝ, 0 < u → ‖polarSeries E r u - polarPart P r u‖ ≤
+        ((∑' p : E, ‖r p‖) - ∑ p ∈ T, ‖r p‖) * u ^ (1 / 2 : ℝ) := by
+      rw [hPdef]
+      exact fun u hu => norm_polarSeries_sub_le hE hr T hu
     have mfin := measurable_polarPart P r
     have c1 := (mellin_topPart mser (by norm_num : (0 : ℝ) ≤ 1 / 2)
       (fun u hu => norm_polarSeries_le hE hr hu) hz).1
@@ -154,16 +161,16 @@ theorem hasSum_mellin_topPart_polarSeries [Countable E] (hE : ∀ p ∈ E, p.re 
     have hfin : ∑ p ∈ T, r p / (s - p) = mellin (topPart (polarPart P r)) (-s) := by
       rw [mellin_topPart_polarPart r hPre hs, hPdef, Finset.sum_map]
       rfl
+    have hfun : (topPart fun u => polarSeries E r u - polarPart P r u) =
+        fun u => topPart (polarSeries E r) u - topPart (polarPart P r) u := by
+      funext u
+      rcases lt_or_ge 1 u with h | h
+      · rw [topPart_of_lt h, topPart_of_lt h, topPart_of_lt h]
+      · rw [topPart_of_le h, topPart_of_le h, topPart_of_le h, sub_zero]
     have hsub : mellin (topPart fun u => polarSeries E r u - polarPart P r u) (-s) =
         mellin (topPart (polarSeries E r)) (-s) - mellin (topPart (polarPart P r)) (-s) := by
-      rw [← (hasMellin_sub c1 c2).2]
-      congr 1
-      funext u
-      unfold topPart
-      rw [← Set.indicator_sub]
-      rfl
-    have hbound := (mellin_topPart (mser.sub mfin) (by norm_num : (0 : ℝ) ≤ 1 / 2)
-      (fun u hu => norm_polarSeries_sub_le hE hr T hu) hz).2.2
+      rw [hfun, (hasMellin_sub c1 c2).2]
+    have hbound := (mellin_topPart (mser.sub mfin) (by norm_num : (0 : ℝ) ≤ 1 / 2) htail hz).2.2
     rw [hfin, norm_sub_rev, ← hsub]
     refine hbound.trans (le_of_eq ?_)
     rw [Complex.neg_re]
@@ -184,8 +191,15 @@ theorem hasSum_mellin_botPart_polarSeries [Countable E] (hE : ∀ p ∈ E, p.re 
       (fun T => ?_) (by
         have h := (tendsto_tail_residues hr).div_const (1 / 2 - s.re)
         rwa [zero_div] at h))
-    set P := T.map ⟨Subtype.val, Subtype.val_injective⟩ with hPdef
-    have hPre := re_of_mem_map hE T
+    obtain ⟨P, hPdef⟩ : ∃ P : Finset ℂ, P = T.map ⟨Subtype.val, Subtype.val_injective⟩ :=
+      ⟨_, rfl⟩
+    have hPre : ∀ p ∈ P, p.re = 1 / 2 := by
+      rw [hPdef]
+      exact re_of_mem_map hE T
+    have htail : ∀ u : ℝ, 0 < u → ‖polarSeries E r u - polarPart P r u‖ ≤
+        ((∑' p : E, ‖r p‖) - ∑ p ∈ T, ‖r p‖) * u ^ (1 / 2 : ℝ) := by
+      rw [hPdef]
+      exact fun u hu => norm_polarSeries_sub_le hE hr T hu
     have mfin := measurable_polarPart P r
     have c1 := (mellin_botPart mser (by norm_num : (0 : ℝ) ≤ 1 / 2)
       (fun u hu => norm_polarSeries_le hE hr hu) hz).1
@@ -194,16 +208,16 @@ theorem hasSum_mellin_botPart_polarSeries [Countable E] (hE : ∀ p ∈ E, p.re 
     have hfin : ∑ p ∈ T, -(r p / (s - p)) = mellin (botPart (polarPart P r)) (-s) := by
       rw [mellin_botPart_polarPart r hPre hs, hPdef, Finset.sum_map, Finset.sum_neg_distrib]
       rfl
+    have hfun : (botPart fun u => polarSeries E r u - polarPart P r u) =
+        fun u => botPart (polarSeries E r) u - botPart (polarPart P r) u := by
+      funext u
+      rcases lt_or_ge 1 u with h | h
+      · rw [botPart_of_lt h, botPart_of_lt h, botPart_of_lt h, sub_zero]
+      · rw [botPart_of_le h, botPart_of_le h, botPart_of_le h]
     have hsub : mellin (botPart fun u => polarSeries E r u - polarPart P r u) (-s) =
         mellin (botPart (polarSeries E r)) (-s) - mellin (botPart (polarPart P r)) (-s) := by
-      rw [← (hasMellin_sub c1 c2).2]
-      congr 1
-      funext u
-      unfold botPart
-      rw [← Set.indicator_sub]
-      rfl
-    have hbound := (mellin_botPart (mser.sub mfin) (by norm_num : (0 : ℝ) ≤ 1 / 2)
-      (fun u hu => norm_polarSeries_sub_le hE hr T hu) hz).2.2
+      rw [hfun, (hasMellin_sub c1 c2).2]
+    have hbound := (mellin_botPart (mser.sub mfin) (by norm_num : (0 : ℝ) ≤ 1 / 2) htail hz).2.2
     rw [hfin, norm_sub_rev, ← hsub]
     refine hbound.trans (le_of_eq ?_)
     rw [Complex.neg_re]

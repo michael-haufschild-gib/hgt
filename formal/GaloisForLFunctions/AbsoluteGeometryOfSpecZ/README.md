@@ -1314,7 +1314,7 @@ all primes be rescaled together, at the price of a constant?*
 
 So the answer is: no. Among the contacts `(1 + ε)Λ + δ` with a summable `δ` and any constant,
 Bézout holds iff `ε = 0`, the Riemann hypothesis holds and the symbol of `δ` is at most the
-constant (Q24). The pole plane fixes the total size of the contacts; the symbol fixes their
+constant (`combBezoutScaled_iff`, with Q24). The pole plane fixes the total size of the contacts; the symbol fixes their
 distribution up to the constant.
 
 ## 9. Order of work and the decisive test
@@ -1438,7 +1438,7 @@ from the supremum of their symbol on (`combBezoutWith_iff`).
 | For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and long trees fail | `exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le` |
 | On packets of a given length the sum over the zeros is at least a negative multiple of the mass | `exists_zeroSum_ge_of_length` |
 | The functions of the square on two graphs are the pairs congruent modulo the contact ideal; a section `x` has `\|x_m x_n\|` residues there, `k²` times as many for `k x`, and the count violates the parallelogram law | `range_ghostComponent_pair`, `card_quotient_graphPair`, `card_quotient_graphPair_intCast_mul`, `exists_not_parallelogram_pairRing` |
-| With the contacts `(1 + ε)Λ + δ`, `ε ≠ 0`, Bézout fails for every constant; the zero sum of a pair of bumps at the distance `T` is `o(e^{T/2})` | `not_combBezoutScaled`, `exists_packet_scaled_neg`, `tendsto_abs_zeroSum_bumpPair`, `pole_bumpPair` |
+| With the contacts `(1 + ε)Λ + δ` and the counterterm `log(n/2π) + c`, Bézout holds iff `ε = 0`, the Riemann hypothesis holds and the symbol of `δ` is at most `c`; the zero sum of a pair of bumps at the distance `T` is `o(e^{T/2})` | `combBezoutScaled_iff`, `not_combBezoutScaled`, `exists_packet_scaled_neg`, `tendsto_abs_zeroSum_bumpPair`, `pole_bumpPair` |
 
 All are unconditional.
 

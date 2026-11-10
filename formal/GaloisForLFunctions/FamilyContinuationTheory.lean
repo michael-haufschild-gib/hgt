@@ -3,6 +3,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.ContinuationFromACommonSigna
 import GaloisForLFunctions.FamilyContinuationTheory.TheTwoLegsGiveTheRiemannHypothesis
 import GaloisForLFunctions.FamilyContinuationTheory.TheSignalOfTheZetaKernelIsAMoebiusSum
 import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
+import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
+import GaloisForLFunctions.FamilyContinuationTheory.TheLargeSieveOverTheEisensteinIntegers
 
 /-!
 # Family continuation theory
@@ -24,4 +26,9 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
 * **The sign of the source.** The `n`-th power of a Gauss sum of order `n > 2` is `−card F` for
   odd `n` and `χ(−1) · card F` for even `n`, modulo `(μ − 1)²` in `ℤ[μ]`: odd orders carry the
   Möbius sign, and three is the least of them.
+* **The mean square of the additive polynomial.** The large sieve for points of the torus `ℝ²/ℤ²`
+  separated in the maximum of the two circle distances; its form over the Eisenstein integers
+  with the self-dual character `exp(2πi Tr(w/√−3))`; fractions `d/s` with `|s|² ≤ Y`, distinct
+  modulo `ℤ[ω]`, are `1/Y`-separated, and the mean square over a row box of side `N` is at most
+  `(2N + 2Y ∑_{k≤M} 1/k)² ∑ |c|²`.
 -/
