@@ -35,7 +35,8 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.OnTheFlowCastelnuovoSeveriIs
 import GaloisForLFunctions.InfiniteRankPurityTheory.TheConstantTermsOnTheTwoSidesOfTheLineAgree
 import GaloisForLFunctions.InfiniteRankPurityTheory.TheInverseOfAnExponentialPolynomialExpandsWhereItIsBoundedBelow
 import GaloisForLFunctions.InfiniteRankPurityTheory.AZeroFreeExponentialPolynomialIsBoundedBelow
-import GaloisForLFunctions.InfiniteRankPurityTheory.NoDirichletPolynomialIsAFactorOfXi
+import GaloisForLFunctions.InfiniteRankPurityTheory.TheJumpLawSurvivesFinitelyManyPolesOnTheLine
+import GaloisForLFunctions.InfiniteRankPurityTheory.NoExponentialPolynomialIsAFactorOfXi
 
 /-!
 # Infinite-rank purity theory
@@ -73,12 +74,14 @@ statement at a point.
   class or of half of one.
 * Factors: a bounded Dirichlet series whose zeros are zeros of `ξ` has all of them on the critical
   line; a zero of such a series off the line recurs with positive density, which the zeros of `ζ`
-  off the line do not have. No Dirichlet polynomial with two terms is a factor: if `ζ` vanished at
-  all its zeros, the expansions of `D'/D` right and left of the line would have the same constant
-  term, `−log` of the lowest and of the highest frequency. The mechanism is the jump of the
-  fractional part: `−(ζ/s) D'/D` is the Mellin transform of two series of fractional parts, which
-  must agree, and Möbius inversion of their jumps at `1/k` compares the constant terms. For a
-  polynomial with a constant term, zeros on the critical line also force a functional equation.
+  off the line do not have. No exponential polynomial `Σ a_k e^{λ_k s}` with two terms and real
+  frequencies is a factor, Dirichlet polynomials included: infinitely many of its zeros are not
+  zeros of `ξ`. If `ζ` vanished at all its zeros but finitely many, the expansions of `D'/D` right
+  and left of the line would have the same constant term, the highest and the lowest frequency.
+  The mechanism is the jump of the fractional part: `−(ζ/s) D'/D` is the Mellin transform of two
+  series of fractional parts, which then differ by a continuous function, and Möbius inversion of
+  their jumps at `1/k` compares the constant terms. For a Dirichlet polynomial with a constant
+  term, zeros on the critical line also force a functional equation.
 * Duality: on the flow the trace determines a locally finite module; the functional equation of
   the trace is self-duality of the module, and reality of the trace is invariance under the
   archimedean involution. The Castelnuovo–Severi inequality for all divisors of Frobenius graphs
