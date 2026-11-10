@@ -20,9 +20,10 @@ the weight lines `χ_0 = 1`, `χ_1 = (n)` and `τ^j = χ_{−2j}` of real sequen
   `d·Σ_e n^e P_{e,d}(qⁿ)`; the top power of `qⁿ` carries an integer polynomial in `n`, which is at
   least `1` in absolute value beyond its roots, and the rest is smaller by the factor
   `n^E/qⁿ` (`eq_zero_of_weighted_eval_eq_zero`).
-* **The count** (`card_image_weightedLatticeMap`): the sections of the level `M` with `E + 1`
-  consecutive integer weights and `b` digits in `[−A, A]` on each line are
-  `(((2A + 1)^b)^{τ(M)})^{E+1}` in number: the count of the tower on each weight line.
+* **The count** (`card_image_weightedLatticeMap`, `card_image_shiftedWeightedLatticeMap`): the
+  sections of the level `M` with the weights `0, …, E` and `b` digits in `[−A, A]` on each line
+  are `(((2A + 1)^b)^{τ(M)})^{E+1}` in number: the count of the tower on each weight line. The same
+  holds for the weights `−J, …, E − J`, which include the jets.
 -/
 
 open Finset Polynomial Filter Topology
@@ -416,6 +417,43 @@ theorem card_image_weightedLatticeMap {q : ℕ} (hq : 2 ≤ q) {M : ℕ} (hM : 0
     omega
   rw [Finset.card_image_of_injective _ (weightedLatticeMap_injective hq hM E b),
     Fintype.card_piFinset]
+  simp [Fintype.card_piFinset, hcard]
+
+/-! ### Negative weights -/
+
+theorem weight_neg_one_pow_mul_injective (J : ℕ) :
+    Function.Injective fun y : ℕ+ → ℝ => weight (-1) ^ J * y := by
+  intro y y' h
+  funext n
+  have hn0 : (0 : ℝ) < ((n : ℕ) : ℝ) := by exact_mod_cast n.pos
+  have hn : (weight (-1) ^ J) n ≠ 0 := by
+    simp only [Pi.pow_apply, weight]
+    exact pow_ne_zero _ (Real.rpow_pos_of_pos hn0 _).ne'
+  have h1 : (weight (-1) ^ J) n * y n = (weight (-1) ^ J) n * y' n := congrFun h n
+  exact mul_left_cancel₀ hn h1
+
+/-- The sections with the weights `−J, …, E − J` lie in the ring. -/
+theorem weight_neg_one_pow_mul_weightedSection_mem (q : ℤ) {M : ℕ} (hM : 0 < M) (E J : ℕ)
+    (P : ℕ → ℕ → ℤ[X]) : weight (-1) ^ J * weightedSection q M E P ∈ towerWeightRing q :=
+  Subalgebra.mul_mem _ (Subalgebra.pow_mem _ (weight_neg_one_mem_towerWeightRing q) J)
+    (weightedSection_mem_towerWeightRing q hM E P)
+
+open Classical in
+/-- **The count with the jets**: the sections of the level `M` with the weights `−J, …, E − J`
+and `b` digits in `[−A, A]` on each line of each weight. -/
+theorem card_image_shiftedWeightedLatticeMap {q : ℕ} (hq : 2 ≤ q) {M : ℕ} (hM : 0 < M)
+    (A E J b : ℕ) :
+    ((Fintype.piFinset fun _ : Fin (E + 1) => Fintype.piFinset fun _ : ↥M.divisors =>
+        Fintype.piFinset fun _ : Fin b => Finset.Icc (-(A : ℤ)) A).image
+      (fun c => weight (-1) ^ J * weightedLatticeMap (q : ℤ) M E b c)).card =
+      (((2 * A + 1) ^ b) ^ M.divisors.card) ^ (E + 1) := by
+  have hcard : (Finset.Icc (-(A : ℤ)) A).card = 2 * A + 1 := by
+    rw [Int.card_Icc]
+    omega
+  have hinj : Function.Injective fun c : Fin (E + 1) → ↥M.divisors → Fin b → ℤ =>
+      weight (-1) ^ J * weightedLatticeMap (q : ℤ) M E b c :=
+    (weight_neg_one_pow_mul_injective J).comp (weightedLatticeMap_injective hq hM E b)
+  rw [Finset.card_image_of_injective _ hinj, Fintype.card_piFinset]
   simp [Fintype.card_piFinset, hcard]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

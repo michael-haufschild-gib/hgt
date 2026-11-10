@@ -147,7 +147,6 @@ theorem tsum_gaussianHigherMoment_vaughan (r : ℕ) {σ : ℝ} {ε : ℂ}
     have hs := (((summable_gaussianHigherMoment_vonMangoldt r hσ hε t).sub hh).add hz).sub hl
     apply hs.congr
     intro n
-    dsimp only
     linear_combination he n
   have hhead : (∑' n : ℕ, ((truncAF vonMangoldt U n : ℝ) : ℂ) * W n) =
       ∑ n ∈ Ico 1 (U + 1), ((vonMangoldt n : ℝ) : ℂ) * W n := by
@@ -249,7 +248,6 @@ theorem norm_sum_gaussianHigherMoment_head_physical_le (r : ℕ) (hr : r ≠ 0)
     _ ≤ (4 * ε.re) ^ r * (U : ℝ) ^ (2 * r) * X ^ (1 - σ) * Real.log U := by
       have hlog := Real.log_nonneg (by exact_mod_cast hU : (1 : ℝ) ≤ U)
       gcongr
-      exact Real.rpow_le_rpow (Nat.cast_nonneg U) hUX (by linarith only [hσ1])
     _ = _ := by
       calc
         _ = ((4 * ε.re) ^ r * X ^ (1 - σ)) * (U : ℝ) ^ (2 * r) * Real.log U := by ring
@@ -336,7 +334,9 @@ theorem norm_gaussianHigherMoment_sub_centredVaughan_product_le (r : ℕ) (hr : 
       ((U * V : ℕ) : ℝ) ^ (2 * r) * (1 + Real.log X) := by gcongr
   apply (norm_gaussianHigherMoment_sub_centredVaughan_le
     r hr hσ hσ1 ht hε hsector hX hscale hU hV hUX hVX).trans
-  exact (_root_.add_le_add_right (_root_.add_le_add hH hZ) _).trans_eq (by ring)
+  have hs := _root_.add_le_add_right (_root_.add_le_add hH hZ)
+    (gaussianHigherLogMomentConstant r σ * t * X ^ (-σ) * (1 + Real.log X) * V)
+  exact hs.trans_eq (by ring)
 
 /-- Positive power slack absorbs the logarithm. The two explicit cutoff
 budgets give an inverse-height error for the actual centred reduction. -/
@@ -403,7 +403,7 @@ theorem norm_gaussianHigherMoment_sub_centredVaughan_cutoff_le (r : ℕ) (hr : r
       have hp : X ^ (-η) * X ^ η = 1 := by rw [← Real.rpow_add hX]; simp
       calc
         _ = (A + B) * (1 + 1 / η) / t * (X ^ (-η) * X ^ η) := by ring
-        _ = _ := by rw [hp, mul_one]; rfl
+        _ = _ := by rw [hp, mul_one]
 
 #print axioms summable_gaussianHigherMoment_vonMangoldt
 #print axioms tsum_gaussianHigherMoment_vaughan

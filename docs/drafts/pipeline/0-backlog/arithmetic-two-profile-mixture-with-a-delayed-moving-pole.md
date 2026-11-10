@@ -44,6 +44,16 @@ The common endpoint `S(1)=0` should cancel its constant scaling limit.
 Neither this arithmetic continuation nor the displayed scaling limit
 has been formalized.
 
+## Existing arithmetic inputs
+
+`SelbergClass.DegreeOne.exp_lSeries_dirichletLogCoeff` gives the exact
+Dirichlet Euler logarithm on `Re s>1`.
+`RHTower.exists_nonprincipal_character_logDeriv_log_strip` gives a
+zero-free neighborhood of one for the actual nonprincipal character,
+with no additional analytic premise. These supply the local logarithm
+of `L(s,χ)`; the weighted prime-log decomposition and Taylor-shift
+bounds remain the new work.
+
 ## Consequence
 
 An affirmative result realizes the endpoint-moment obstruction in an

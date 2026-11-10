@@ -28,6 +28,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 
+open SplineTower
+
 /-! ### High-frequency binomial polynomial on a short arc -/
 
 /-- Upper half of the binomial expansion of `(z + (1 − z))^{2m₀}`:
@@ -59,7 +61,7 @@ theorem highFreqPoly_add_low (m₀ : ℕ) (z : ℂ) :
   rw [← Finset.sum_union hdisj, ← hsplit]
   have hbin := add_pow z (1 - z) (2 * m₀)
   rw [add_sub_cancel, one_pow] at hbin
-  rw [← hbin]
+  rw [hbin]
   refine Finset.sum_congr rfl fun m _ => by ring
 
 /-- On the arc `‖z‖ = 1, ‖1 − z‖ ≤ 1/4`, `highFreqPoly m₀ z` is within `1/4` of `1`. -/
@@ -69,8 +71,8 @@ theorem norm_one_sub_highFreqPoly_le (m₀ : ℕ) {z : ℂ} (hz : ‖z‖ = 1)
   have heq : 1 - highFreqPoly m₀ z =
       ∑ m ∈ Finset.range m₀,
         (Nat.choose (2 * m₀) m : ℂ) * z ^ m * (1 - z) ^ (2 * m₀ - m) := by
-    rw [← highFreqPoly_add_low m₀ z]
-    ring
+    have hsum := highFreqPoly_add_low m₀ z
+    linear_combination -hsum
   rw [heq]
   calc ‖∑ m ∈ Finset.range m₀,
           (Nat.choose (2 * m₀) m : ℂ) * z ^ m * (1 - z) ^ (2 * m₀ - m)‖
@@ -182,7 +184,6 @@ theorem highFreqPoly_eq_sum_monomial (m₀ : ℕ) (z : ℂ) :
   refine Finset.sum_congr rfl fun d _ => ?_
   push_cast
   rw [Finset.sum_mul]
-  rfl
 
 /-- Elementary upper bound `|highFreqCoeff m₀ d| ≤ 64^{m₀}` for `m₀ ≥ 1` and `d ≤ 2m₀`. -/
 theorem abs_highFreqCoeff_le {m₀ d : ℕ} (hm₀ : 1 ≤ m₀) (hd : d ≤ 2 * m₀) :
@@ -230,7 +231,8 @@ theorem abs_highFreqCoeff_le {m₀ d : ℕ} (hm₀ : 1 ≤ m₀) (hd : d ≤ 2 *
           | succ n ih =>
             rcases eq_or_lt_of_le (Nat.zero_le n) with rfl | hn
             · norm_num
-            · have := ih hn
+            · have h1 := ih hn
+              have h2 : 1 ≤ 4 ^ n := Nat.one_le_pow n 4 (by decide)
               rw [pow_succ]
               omega
         exact_mod_cast hcard.trans hpow
@@ -253,10 +255,11 @@ theorem norm_one_sub_exp_I_le (θ : ℝ) :
       linarith [Real.sin_sq_add_cos_sq (θ / 2)]
     nlinarith [Real.sin_sq_add_cos_sq θ]
   have h1 : ‖(1 : ℂ) - cexp ((θ : ℂ) * I)‖ = |2 * Real.sin (θ / 2)| := by
-    have := sq_eq_sq_iff_abs_eq_abs.mp hsq
-    rwa [abs_of_nonneg (norm_nonneg _)] at this
-  rw [h1, abs_mul, abs_two, ← abs_div, abs_two]
+    have h2 := congrArg Real.sqrt hsq
+    rwa [Real.sqrt_sq (norm_nonneg _), Real.sqrt_sq_eq_abs] at h2
+  rw [h1, abs_mul, abs_two]
   have hsin := Real.abs_sin_le_abs (θ / 2)
+  rw [abs_div, abs_two] at hsin
   linarith
 
 /-- For `|v| ≤ R` (`R > 0`) and step `δ = 1 / (4 R)`, the cosine sum with coefficients
@@ -316,8 +319,7 @@ theorem generalSplinePoint_ne_zero {γ : ℝ} (hγ : 0 < γ) (x : ℝ) :
 theorem norm_sin_generalSplinePoint_sq (γ x : ℝ) :
     ‖Complex.sin (generalSplinePoint γ x)‖ ^ 2 =
       Real.sin γ ^ 2 * Real.cosh x ^ 2 + Real.cos γ ^ 2 * Real.sinh x ^ 2 := by
-  rw [← Complex.normSq_eq_norm_sq, generalSplinePoint, Complex.sin_sub,
-    Complex.sin_ofReal_re, Complex.cos_ofReal_re]
+  rw [← Complex.normSq_eq_norm_sq, generalSplinePoint, Complex.sin_sub]
   have h1 : Complex.sin ((x : ℂ) * I) = (Real.sinh x : ℂ) * I := by
     rw [Complex.sin_mul_I, Complex.ofReal_sinh]
   have h2 : Complex.cos ((x : ℂ) * I) = (Real.cosh x : ℂ) := by
@@ -604,10 +606,11 @@ theorem norm_shifted_mode_sub_ideal_le {γ ψ : ℝ} {s : ℕ} {T R x v : ℝ}
 def signAngle (a : ℝ) : ℝ := if 0 ≤ a then 0 else Real.pi
 
 theorem abs_mul_cexp_signAngle (a : ℝ) :
-    (|a| : ℂ) * cexp ((signAngle a : ℂ) * I) = (a : ℂ) := by
+    ((|a| : ℝ) : ℂ) * cexp ((signAngle a : ℂ) * I) = (a : ℂ) := by
   unfold signAngle
   split_ifs with h
-  · simp [abs_of_nonneg h]
+  · rw [abs_of_nonneg h]
+    simp
   · push Not at h
     rw [abs_of_neg h, Complex.exp_pi_mul_I]
     push_cast
@@ -638,7 +641,8 @@ theorem phase_split_pair_eq {w : ℂ} (hw : w ≠ 0) {r₀ a A : ℝ}
         (((signAngle a - w.arg : ℝ) : ℂ) * I) + ((α : ℂ) * I) := by push_cast; ring
     have h2 : ((signAngle a - w.arg - α : ℝ) : ℂ) * I =
         (((signAngle a - w.arg : ℝ) : ℂ) * I) - ((α : ℂ) * I) := by push_cast; ring
-    rw [h1, h2, Complex.exp_add, Complex.exp_sub, ← hcos, Complex.ofReal_cos]
+    rw [h1, h2, Complex.exp_add, Complex.exp_sub, Complex.ofReal_mul, Complex.ofReal_ofNat,
+      ← hcos, Complex.ofReal_cos, Complex.cos]
     field_simp [Complex.exp_ne_zero]
     ring
   rw [hsum_exp]
@@ -649,16 +653,21 @@ theorem phase_split_pair_eq {w : ℂ} (hw : w ≠ 0) {r₀ a A : ℝ}
     congr 1
     push_cast
     ring
+  have hw_cancel : w * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I) =
+      (‖w‖ : ℂ) * cexp ((signAngle a : ℂ) * I) := by
+    calc w * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I)
+        = ((‖w‖ : ℂ) * cexp ((w.arg : ℂ) * I)) * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I) :=
+          congrArg (· * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I)) hw_polar
+      _ = (‖w‖ : ℂ) * (cexp ((w.arg : ℂ) * I) * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I)) :=
+          mul_assoc _ _ _
+      _ = (‖w‖ : ℂ) * cexp ((signAngle a : ℂ) * I) := by rw [harg_cancel]
   calc w * (cexp (((signAngle a - w.arg : ℝ) : ℂ) * I) * ((2 * b : ℝ) : ℂ))
-      = (‖w‖ : ℂ) * (cexp ((w.arg : ℂ) * I) * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I)) *
-          ((2 * b : ℝ) : ℂ) := by
-        conv_lhs => rw [hw_polar]
-        ring
+      = (w * cexp (((signAngle a - w.arg : ℝ) : ℂ) * I)) * ((2 * b : ℝ) : ℂ) := by ring
     _ = ((‖w‖ * (2 * b) : ℝ) : ℂ) * cexp ((signAngle a : ℂ) * I) := by
-        rw [harg_cancel]
+        rw [hw_cancel]
         push_cast
         ring
-    _ = ((2 * r₀ / A : ℝ) : ℂ) * ((|a| : ℂ) * cexp ((signAngle a : ℂ) * I)) := by
+    _ = ((2 * r₀ / A : ℝ) : ℂ) * (((|a| : ℝ) : ℂ) * cexp ((signAngle a : ℂ) * I)) := by
         have hreal : ‖w‖ * (2 * b) = (2 * r₀ / A) * |a| := by
           dsimp only [b]
           field_simp [hwn.ne', hA.ne']

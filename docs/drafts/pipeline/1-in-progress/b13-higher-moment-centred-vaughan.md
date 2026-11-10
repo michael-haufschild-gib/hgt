@@ -17,6 +17,16 @@ The actual centred Vaughan current should satisfy
 Here `C=T_II+B_V L_r−(1+A_UV+D_V)P_r`, with the original signed
 reciprocal coefficient masses. No analytic cancellation input is assumed.
 
+Precisely, `M_r=Σ_nΛ(n)F_r(n)`, `P_r=∫₀∞F_r(x)dx`,
+`L_r=∫₀∞log(x)F_r(x)dx`, and
+
+`A_UV=Σ_{b≤UV}(Λ_≤U*μ_≤V)(b)/b`,
+`B_V=Σ_{b≤V}μ(b)/b`, `D_V=Σ_{b≤V}μ(b)log(b)/b`.
+
+The type-II coefficient is `(Λ−Λ_≤U)*(δ−ζ*μ_≤V)`, where `δ` is
+the Dirichlet-convolution unit and `ζ(n)=1` for positive integers.
+Every displayed arithmetic sum and continuum integral converges absolutely.
+
 ## Mechanism
 
 The first type-I error is already formalized at order `2r`.

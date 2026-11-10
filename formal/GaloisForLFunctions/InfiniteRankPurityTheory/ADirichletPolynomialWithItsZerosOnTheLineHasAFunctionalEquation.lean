@@ -542,4 +542,38 @@ theorem exists_zero_not_xi_zero_of_constantTerm (a : ℕ →₀ ℂ) (ha0 : a 0 
   obtain ⟨N, hN, hFE⟩ := exists_functionalEquation_of_zeros_on_line ha0 ha1 hn₀ hn₀a hline
   exact hcon (exists_zero_not_xi_zero_of_functionalEquation_complex a ha0 ha1 hN hFE)
 
+/-- **The same without a constant term, when the lowest frequency divides the others.** Then
+`D(s) = m^{-s} D₁(s)` with `D₁` a Dirichlet polynomial with a constant term and the same zeros. -/
+theorem exists_zero_not_xi_zero_of_dvd (a : ℕ →₀ ℂ) (ha0 : a 0 = 0) {m : ℕ} (hm : a m ≠ 0)
+    (hdvd : ∀ n ∈ a.support, m ∣ n) {n₀ : ℕ} (hn₀ : n₀ ≠ m) (hn₀a : a n₀ ≠ 0) :
+    ∃ z : ℂ, finiteDirichletPolynomial a z = 0 ∧ xi z ≠ 0 := by
+  have hm0 : m ≠ 0 := fun h => hm (h ▸ ha0)
+  have hinj : Set.InjOn (fun k : ℕ => m * k) ((fun k : ℕ => m * k) ⁻¹' ↑a.support) :=
+    (mul_right_injective₀ hm0).injOn
+  set a₁ : ℕ →₀ ℂ := a.comapDomain (fun k : ℕ => m * k) hinj with ha₁
+  have happ : ∀ k, a₁ k = a (m * k) := fun k => Finsupp.comapDomain_apply _ _ _ _
+  have hfac : ∀ s : ℂ, finiteDirichletPolynomial a s
+      = (m : ℂ) ^ (-s) * finiteDirichletPolynomial a₁ s := by
+    intro s
+    have h := Finset.sum_preimage (fun k : ℕ => m * k) a.support hinj
+      (fun n => a n * (n : ℂ) ^ (-s)) (fun n hn hnr => by
+        obtain ⟨k, hk⟩ := hdvd n hn
+        exact absurd ⟨k, hk.symm⟩ hnr)
+    rw [finiteDirichletPolynomial, ← h, finiteDirichletPolynomial, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [happ, Nat.cast_mul, Complex.natCast_mul_natCast_cpow]
+    ring
+  have h₁0 : a₁ 0 = 0 := by rw [happ, mul_zero, ha0]
+  have h₁1 : a₁ 1 ≠ 0 := by rw [happ, mul_one]; exact hm
+  obtain ⟨k₀, hk₀⟩ := hdvd n₀ (Finsupp.mem_support_iff.mpr hn₀a)
+  have hk₀2 : 2 ≤ k₀ := by
+    rcases Nat.lt_or_ge k₀ 2 with h | h
+    · interval_cases k₀
+      · exact absurd (by rw [hk₀, mul_zero, ha0]) hn₀a
+      · exact absurd (by rw [hk₀, mul_one]) hn₀
+    · exact h
+  have h₁k : a₁ k₀ ≠ 0 := by rw [happ, ← hk₀]; exact hn₀a
+  obtain ⟨z, hz, hxi⟩ := exists_zero_not_xi_zero_of_constantTerm a₁ h₁0 h₁1 hk₀2 h₁k
+  exact ⟨z, by rw [hfac, hz, mul_zero], hxi⟩
+
 end GaloisForLFunctions.InfiniteRankPurityTheory
