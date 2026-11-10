@@ -92,6 +92,7 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `GreedyOptimality` | For every `p≥2`, positive residue degree and composition length, greedy compositions are exactly the weight maxima; maximizing numerical part values are unique |
 | `PrefixCostGrowth` | Consecutive greedy prefix costs more than double and have strict successive slopes; the greedy cost of a divisible total is below that total |
 | `MonicPowerSums` | Exact binomial recurrence for the actual polynomial power sums over all monic polynomials of a fixed degree; all finite-field coefficient moments evaluated |
+| `CarryFreeBinomial` | In every ring of prime characteristic, a binomial coefficient is nonzero exactly when the lower argument's base-`p` digits fit coordinatewise inside the upper argument's digits |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
@@ -238,8 +239,9 @@ theorem covers both cases.
 `MonicPowerSums.lean` formalizes the recurrence on actual monic polynomials
 in `monicPowerSum_succ`. The finite-field moment is zero at exponent zero
 and otherwise equals `−1` exactly on multiples of `q−1`. Its direct check
-and transitive axiom audit pass. The Lucas selection, leading-coefficient
-identification and valuation stabilization remain to be formalized.
+and transitive axiom audit pass. `CarryFreeBinomial` formalizes the Lucas
+nonvanishing criterion. Its realization by actual digit subsets,
+leading-coefficient identification and valuation stabilization remain.
 
 ## Greedy prefix-cost growth
 
@@ -257,3 +259,14 @@ increment `N` is therefore strictly larger than the preceding slope.
 `PrefixCostGrowth` formalizes the doubling, strict-convexity, and
 divisible-total inequalities. Its direct check and three endpoint axiom
 audits pass. Identifying them with the actual coefficient valuations remains.
+
+## Digit-selection bridge
+
+For a finite set `S⊆ℕ×Fin(p−1)`, let `N=Σ_{x∈S}p^x.exp`.
+Its digit in position `e` is exactly the number of occurrences of exponent
+`e`: lower powers sum to less than `p^e`, and higher powers are divisible
+by `p^(e+1)`. Lucas's theorem therefore makes `binom(N,k)` nonzero in
+characteristic `p` exactly when every digit of `k` is at most the available
+occurrence count. Independent selection in each exponent fibre then gives
+`T⊆S` of value `k`. This is the concrete bridge from the monic-power-sum
+recurrence to digit compositions; its subset realization remains to be formalized.

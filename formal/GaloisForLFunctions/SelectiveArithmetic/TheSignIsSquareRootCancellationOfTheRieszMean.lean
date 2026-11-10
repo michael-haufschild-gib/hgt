@@ -526,7 +526,10 @@ theorem exists_not_feasible_of_riesz_ge :
     rw [← Real.exp_add]
     congr 1
     ring
-  rw [e] at hR
+  have hR' : c * (Real.exp a * Real.exp a) ≤
+      |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| := by
+    rw [← e]
+    exact hR
   have h2 := mul_lt_mul_of_pos_right hbig (Real.exp_pos a)
   linarith
 

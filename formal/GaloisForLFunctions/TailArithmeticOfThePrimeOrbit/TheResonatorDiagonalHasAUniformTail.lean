@@ -19,8 +19,9 @@ private theorem abs_tsum_norm_sq_sub_le_split {f g : ℕ → ℂ}
     (hfg : Summable (fun k => ‖f k - g k‖ ^ 2)) {δ : ℝ} (hδ : 0 < δ) :
     |(∑' k : ℕ, ‖f k‖ ^ 2) - ∑' k : ℕ, ‖g k‖ ^ 2| ≤
       δ * (∑' k : ℕ, ‖g k‖ ^ 2) + (1 + δ⁻¹) * ∑' k : ℕ, ‖f k - g k‖ ^ 2 := by
-  have hb := (hg.mul_left δ).add (hfg.mul_left (1 + δ⁻¹))
-  have heq : (∑' k : ℕ, δ * ‖g k‖ ^ 2 + (1 + δ⁻¹) * ‖f k - g k‖ ^ 2) =
+  have hb : Summable (fun k : ℕ => δ * ‖g k‖ ^ 2 + (1 + δ⁻¹) * ‖f k - g k‖ ^ 2) :=
+    (hg.mul_left δ).add (hfg.mul_left (1 + δ⁻¹))
+  have heq : (∑' k : ℕ, (δ * ‖g k‖ ^ 2 + (1 + δ⁻¹) * ‖f k - g k‖ ^ 2)) =
       δ * (∑' k : ℕ, ‖g k‖ ^ 2) + (1 + δ⁻¹) * ∑' k : ℕ, ‖f k - g k‖ ^ 2 := by
     rw [(hg.mul_left δ).tsum_add (hfg.mul_left (1 + δ⁻¹)), tsum_mul_left, tsum_mul_left]
   have hu := Summable.tsum_le_tsum
@@ -77,7 +78,7 @@ theorem abs_resonator_diagonal_sub_trunc_le_power {ε σ : ℝ} (hε : 0 < ε)
             ((M : ℝ) ^ ε * (N : ℝ) ^ ((1 + ε - 2 * σ) / 2))) *
               ∑ m ∈ A, ‖r m‖ ^ 2 := by
   let δ := (N : ℝ) ^ ((1 + ε - 2 * σ) / 2)
-  have hNR : (1 : ℝ) ≤ N := Nat.cast_le.mpr hN
+  have hNR : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hN0 : (0 : ℝ) < N := zero_lt_one.trans_le hNR
   have hδ : 0 < δ := Real.rpow_pos_of_pos hN0 _
   have hδ1 : δ ≤ 1 := by

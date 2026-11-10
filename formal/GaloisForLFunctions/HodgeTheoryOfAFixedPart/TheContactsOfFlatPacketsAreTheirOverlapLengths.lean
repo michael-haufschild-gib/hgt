@@ -47,7 +47,7 @@ private theorem tendsto_mul_natCast_div (a : ℕ) :
   filter_upwards [eventually_ge_atTop 1] with N hN
   have hn : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
   rw [Nat.cast_mul]
-  field_simp
+  field_simp [hn]
 
 private theorem tendsto_scaled_natDiv_div (a : ℕ) {k : ℕ} (hk : 1 ≤ k) :
     Tendsto (fun N : ℕ => ((a * N / k : ℕ) : ℝ) / N) atTop (𝓝 ((a : ℝ) / k)) := by
@@ -64,7 +64,7 @@ private theorem tendsto_scaled_natDiv_div (a : ℕ) {k : ℕ} (hk : 1 ≤ k) :
     have han : (a : ℝ) ≠ 0 := by exact_mod_cast ha.ne'
     have hn : (N : ℝ) ≠ 0 := by exact_mod_cast (by omega : N ≠ 0)
     simp only [Function.comp_apply, Nat.cast_mul]
-    field_simp
+    field_simp [han, hn]
 
 /-- Every directed contact entry converges to the corresponding overlap length. -/
 theorem tendsto_flatContactPoints_card_div (a b c d : ℕ) {k : ℕ} (hk : 1 ≤ k) :
@@ -100,7 +100,52 @@ theorem tendsto_weighted_flatContactPoints (a b c d : ℕ) (S : Finset ℕ)
   tendsto_finsetSum S fun k hk =>
     (tendsto_flatContactPoints_card_div a b c d (hS k hk)).const_mul (w k)
 
+/-- The same overlap is the literal autocorrelation at the prime logarithm. -/
+theorem packetAutocorr_flatPacket_log_div_exp {a b k : ℕ}
+    (ha : 1 ≤ a) (hab : a ≤ b) (hk : 1 ≤ k) :
+    packetAutocorr (flatPacket a b) (Real.log k) / Real.exp (Real.log k / 2) =
+      max ((b : ℝ) / k - a) 0 := by
+  have ha0 : (0 : ℝ) < a := by exact_mod_cast ha
+  have hb0 : (0 : ℝ) < b := by exact_mod_cast ha.trans hab
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
+  have hklog : 0 ≤ Real.log k := Real.log_nonneg (by exact_mod_cast hk)
+  let E : ℝ := Real.exp (Real.log k / 2)
+  have hE : 0 < E := Real.exp_pos _
+  have hEsq : E ^ 2 = (k : ℝ) := by
+    dsimp [E]
+    rw [pow_two, ← Real.exp_add, show Real.log k / 2 + Real.log k / 2 = Real.log k by ring,
+      Real.exp_log hk0]
+  by_cases hwidth : Real.log k ≤ Real.log b - Real.log a
+  · have hprod : (a : ℝ) * k ≤ b := by
+      have h := Real.exp_le_exp.mpr
+        (show Real.log a + Real.log k ≤ Real.log b by linarith only [hwidth])
+      rwa [Real.exp_add, Real.exp_log ha0, Real.exp_log hk0, Real.exp_log hb0] at h
+    have hover : 0 ≤ (b : ℝ) / k - a := sub_nonneg.mpr ((le_div_iff₀ hk0).mpr hprod)
+    rw [max_eq_left hover, packetAutocorr_flatPacket_of_le ha0 hb0 hklog hwidth]
+    have hneg : Real.exp (-Real.log k / 2) = E⁻¹ := by
+      rw [neg_div, Real.exp_neg]
+    change ((b : ℝ) * Real.exp (-Real.log k / 2) - a * E) / E = (b : ℝ) / k - a
+    rw [hneg, ← hEsq]
+    field_simp [hE.ne'] <;> ring
+  · have hwidth' : Real.log b - Real.log a ≤ Real.log k := (lt_of_not_ge hwidth).le
+    have hprod : (b : ℝ) ≤ a * k := by
+      have h := Real.exp_le_exp.mpr
+        (show Real.log b ≤ Real.log a + Real.log k by linarith only [hwidth'])
+      rwa [Real.exp_add, Real.exp_log ha0, Real.exp_log hk0, Real.exp_log hb0] at h
+    have hover : (b : ℝ) / k - a ≤ 0 := sub_nonpos.mpr ((div_le_iff₀ hk0).mpr hprod)
+    rw [packetAutocorr_flatPacket_of_ge hklog hwidth', zero_div, max_eq_right hover]
+
+/-- Discrete self-contacts converge to the full flat-packet prime correlation. -/
+theorem tendsto_flatContactPoints_self_autocorr {a b k : ℕ}
+    (ha : 1 ≤ a) (hab : a ≤ b) (hk : 1 ≤ k) :
+    Tendsto (fun N : ℕ => ((flatContactPoints a b a b k N).card : ℝ) / N) atTop
+      (𝓝 (packetAutocorr (flatPacket a b) (Real.log k) /
+        Real.exp (Real.log k / 2))) := by
+  rw [packetAutocorr_flatPacket_log_div_exp ha hab hk]
+  exact tendsto_flatContactPoints_self_card_div a b hk
+
 #print axioms tendsto_flatContactPoints_card_div
 #print axioms tendsto_weighted_flatContactPoints
+#print axioms tendsto_flatContactPoints_self_autocorr
 
 end GaloisForLFunctions.HodgeTheoryOfAFixedPart

@@ -67,8 +67,10 @@ theorem eventually_resonatorMean_zeta_uniform {σ κ : ℝ}
       (continuous_zetaDirichletTail 0 (ne_of_lt hσ1))
     exact h.congr fun t => by dsimp [Z, zetaDirichletTail]; ring
   have hZlim : Tendsto (dyadicSquareMean Z) atTop (𝓝 (zetaCoefficientTailMass 0 σ)) := by
-    simpa [Z, zetaDirichletTail, zetaDirichletHead, edPoly] using
-      carlson_zeta_tail_dyadicMeanSquare 0 hσ hσ1
+    have hzero : zetaDirichletTail 0 σ = Z := by
+      funext t
+      simp [Z, zetaDirichletTail, zetaDirichletHead, edPoly]
+    simpa only [hzero] using carlson_zeta_tail_dyadicMeanSquare 0 hσ hσ1
   have hFlim : Tendsto F atTop (𝓝 0) := by
     have h := ((hhm.const_mul CH).add (hdt.const_mul CD)).add
       (hew.mul ((hZlim.add_const 1).add helim))
@@ -77,13 +79,15 @@ theorem eventually_resonatorMean_zeta_uniform {σ κ : ℝ}
     with T hT hFT A r M hA hM hMT
   have hT0 : 0 < T := zero_lt_one.trans_le hT
   have hN : 1 ≤ N T := (superlinearCutoff_bounds ha0 hT).1
-  have hNR : (1 : ℝ) ≤ N T := Nat.cast_le.mpr hN
+  have hNR : (1 : ℝ) ≤ N T := by exact_mod_cast hN
   have hNE : 1 ≤ (N T : ℝ) ^ α := Real.one_le_rpow hNR hα.le
   have hE : 0 ≤ ∑ n ∈ A, ‖r n‖ ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hMp := support_rpow_le (by linarith only [hε] : 0 ≤ 1 + ε) hT0 hMT
   have hMε := support_rpow_le hε.le hT0 hMT
   have hcut : (N T : ℝ) ^ α / α + 1 ≤ (1 / α + 1) * (N T : ℝ) ^ α := by
-    nlinarith only [hNE]
+    calc
+      _ ≤ (N T : ℝ) ^ α / α + (N T : ℝ) ^ α := add_le_add_left hNE _
+      _ = _ := by ring
   have hhead : |dyadicSquareMean (fun t => headPoly A r t * zetaDirichletHead (N T) σ t) T -
       (∑' k : ℕ, ‖truncResonatorCoeff A r σ (N T) k‖ ^ 2)| ≤
         (CH * H T) * ∑ n ∈ A, ‖r n‖ ^ 2 := by
