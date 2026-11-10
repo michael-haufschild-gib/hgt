@@ -100,7 +100,7 @@ theorem zeta_re_le_of_localPrimeTraceMoment_bound {A C : ℝ} {k : ℕ} (hk : 1 
     (hbound : ∀ U : ℝ, ∃ T : ℝ, U ≤ T ∧
       localPrimeTraceMoment k T ≤ C * Real.exp (A * T)) :
     ∀ ρ ∈ zetaZeroConfig.carrier, ρ.re ≤ 1 / 2 + |A| / k := by
-  have hk0 : (0 : ℝ) < k := by exact_mod_cast hk
+  have hk0 : (0 : ℝ) < k := by exact_mod_cast (Nat.succ_le_iff.mp hk)
   have hlate : ∀ᶠ T : ℝ in atTop, 2 ≤ T ∧ primeLogarithmicRadius T ≤ T / 2 := by
     filter_upwards [eventually_ge_atTop (2 : ℝ),
       primeLogarithmicRadius_div_tendsto_zero.eventually_le_const
@@ -142,7 +142,8 @@ theorem zeta_re_le_of_localPrimeTraceMoment_bound {A C : ℝ} {k : ℕ} (hk : 1 
   have hroot := Real.rpow_le_rpow (by positivity) hc2k
     (by positivity : (0 : ℝ) ≤ 1 / (2 * k))
   rw [← Real.rpow_natCast, ← Real.rpow_mul (abs_nonneg c),
-    show ((2 * k : ℕ) : ℝ) * (1 / (2 * k)) = 1 by push_cast; field_simp,
+    show ((2 * k : ℕ) : ℝ) * (1 / (2 * k)) = 1 by
+      push_cast; field_simp [hk0.ne'],
     Real.rpow_one, Real.mul_rpow (abs_nonneg C) (by positivity),
     ← Real.rpow_mul hp0.le] at hroot
   convert hroot using 3
@@ -173,7 +174,7 @@ theorem riemannHypothesis_iff_localPrimeTraceMoments :
     have hk1 : 1 ≤ k := by
       have hh : (1 : ℝ) < k := (le_max_left _ _).trans_lt hk
       exact_mod_cast hh.le
-    have hk0 : (0 : ℝ) < k := by exact_mod_cast hk1
+    have hk0 : (0 : ℝ) < k := by exact_mod_cast (Nat.succ_le_iff.mp hk1)
     obtain ⟨C, hC⟩ := hA k hk1
     have hw := zeta_re_le_of_localPrimeTraceMoment_bound hk1 hC ρ hρ
     have hlarge : |A| / (ρ.re - 1 / 2) < k := (le_max_right _ _).trans_lt hk

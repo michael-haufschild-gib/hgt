@@ -102,10 +102,10 @@ theorem weilPoleTerm_split {F : ℝ → ℂ} (hF : Continuous F) (hFc : HasCompa
     rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← hi1']
     exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
   have r2 : (paperFT F (-Complex.I / 2)).re = ∫ u, (F u).re * Real.exp (u / 2) := by
-    rw [← neg_div, _root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hr2]
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hr2]
     exact integral_congr_ae (Eventually.of_forall fun u => hre _ _)
   have i2 : (paperFT F (-Complex.I / 2)).im = ∫ u, (F u).im * Real.exp (u / 2) := by
-    rw [← neg_div, _root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hi2']
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← hi2']
     exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
   simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im, mul_neg, sub_neg_eq_add,
     r1, i1, r2, i2]
@@ -430,16 +430,20 @@ theorem abs_packetAutocorr_le_integral_sq {g : ℝ → ℝ} (hg : Continuous g)
     (hgc : HasCompactSupport g) (y : ℝ) :
     |packetAutocorr g y| ≤ ∫ u, g u ^ 2 := by
   have hgsq : Integrable fun u => g u ^ 2 := by
-    simpa only [sq] using (hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right
+    refine ((hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right).congr
+      (Eventually.of_forall fun u => ?_)
+    show g u * g u = g u ^ 2
+    ring
   have hgy : Integrable fun u => g (u + y) ^ 2 := hgsq.comp_add_right y
   have hprod : Integrable fun u => |g u * g (u + y)| :=
     ((hg.mul (hg.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
       hgc.mul_right).abs
   have hpt : ∀ u : ℝ, 2 * |g u * g (u + y)| ≤ g u ^ 2 + g (u + y) ^ 2 := fun u => by
-    rw [abs_mul]
+    rw [abs_mul, ← mul_assoc]
     have := two_mul_le_add_sq |g u| |g (u + y)|
     rwa [sq_abs, sq_abs] at this
-  have hint := integral_mono (hprod.const_mul 2) (hgsq.add hgy) hpt
+  have hint : ∫ u, 2 * |g u * g (u + y)| ≤ ∫ u, (g u ^ 2 + g (u + y) ^ 2) :=
+    integral_mono (hprod.const_mul 2) (hgsq.add hgy) hpt
   rw [integral_const_mul, integral_add hgsq hgy, integral_add_right_eq_self (fun u => g u ^ 2) y] at hint
   have habs : |packetAutocorr g y| ≤ ∫ u, |g u * g (u + y)| :=
     abs_integral_le_integral_abs
@@ -455,7 +459,10 @@ theorem two_mul_abs_packetAutocorr_le_of_aperture {g : ℝ → ℝ} (hg : Contin
     (hshort : ∀ u, a < |u - c| → g u = 0) :
     2 * |packetAutocorr g y| ≤ ∫ u, g u ^ 2 := by
   have hgsq : Integrable fun u => g u ^ 2 := by
-    simpa only [sq] using (hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right
+    refine ((hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right).congr
+      (Eventually.of_forall fun u => ?_)
+    show g u * g u = g u ^ 2
+    ring
   have hIic : Integrable (Set.indicator (Set.Iic c) (fun u => g u ^ 2)) :=
     hgsq.indicator measurableSet_Iic
   have hIoi : Integrable (Set.indicator (Set.Ioi c) (fun u => g u ^ 2)) :=
@@ -475,7 +482,7 @@ theorem two_mul_abs_packetAutocorr_le_of_aperture {g : ℝ → ℝ} (hg : Contin
     by_cases huc : u ≤ c
     · by_cases huy : c < u + y
       · rw [Set.indicator_of_mem (Set.mem_Iic.mpr huc),
-          Set.indicator_of_mem (Set.mem_Ioi.mpr huy), abs_mul]
+          Set.indicator_of_mem (Set.mem_Ioi.mpr huy), abs_mul, ← mul_assoc]
         have := two_mul_le_add_sq |g u| |g (u + y)|
         rwa [sq_abs, sq_abs] at this
       · push Not at huy
@@ -489,14 +496,16 @@ theorem two_mul_abs_packetAutocorr_le_of_aperture {g : ℝ → ℝ} (hg : Contin
       rw [hguy, mul_zero, abs_zero, mul_zero]
       exact add_nonneg (Set.indicator_nonneg (fun _ _ => sq_nonneg _) _)
         (Set.indicator_nonneg (fun _ _ => sq_nonneg _) _)
-  have hint := integral_mono_ae hprod (hIic.add hIoi_shift) hae
+  have hint : ∫ u, 2 * |g u * g (u + y)| ≤ ∫ u, (Set.indicator (Set.Iic c) (fun x => g x ^ 2) u +
+      Set.indicator (Set.Ioi c) (fun x => g x ^ 2) (u + y)) :=
+    integral_mono_ae hprod (hIic.add hIoi_shift) hae
   have hpart : ∀ x : ℝ, Set.indicator (Set.Iic c) (fun t => g t ^ 2) x +
       Set.indicator (Set.Ioi c) (fun t => g t ^ 2) x = g x ^ 2 := fun x => by
     by_cases hx : x ≤ c
     · rw [Set.indicator_of_mem (Set.mem_Iic.mpr hx),
-        Set.indicator_of_notMem (not_lt.mpr hx), add_zero]
+        Set.indicator_of_notMem (show x ∉ Set.Ioi c from not_lt.mpr hx), add_zero]
     · push Not at hx
-      rw [Set.indicator_of_notMem (not_le.mpr hx),
+      rw [Set.indicator_of_notMem (show x ∉ Set.Iic c from not_le.mpr hx),
         Set.indicator_of_mem (Set.mem_Ioi.mpr hx), zero_add]
   have hsum_int : (∫ u, Set.indicator (Set.Iic c) (fun x => g x ^ 2) u) +
       (∫ u, Set.indicator (Set.Ioi c) (fun x => g x ^ 2) u) = ∫ u, g u ^ 2 := by

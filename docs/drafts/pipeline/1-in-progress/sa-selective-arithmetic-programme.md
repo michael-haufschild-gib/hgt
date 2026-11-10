@@ -53,10 +53,31 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 ## Modules (folder `SelectiveArithmetic/`)
 | Module | Content | State |
 |---|---|---|
-| `TheMassOfAConductorPaysEveryDominatedContact` | contact form, dominated box, Schur price, trivial aperture of `Z_χ` | in progress |
-| `TheLiouvilleTwistFailsBeyondTheTrivialAperture` | odd polar packet, fakes, no gap | planned |
-| `TheExceptionalSquareOfARealZero` | one-square eigenvalue law | planned |
-| height aspect, first selective window, atlas | | planned |
+| `TheMassOfAConductorPaysEveryDominatedContact` | `Dominated`, `contactForm`, `systemForm`, `Feasible`, Schur price `abs_contactForm_le_of_psi`, `systemForm_ge_of_dominated`, `exists_systemForm_margin`, `twistedZeroSum_eq_systemForm`, `exists_trivialAperture_margin` | compiled clean, olean built |
+| `ThePolarPacketsOfAWindow` | `cutoff`, `evenPolar`, `oddPolar`, masses, derivative energies, `packetAutocorr_evenPolar_ge`, `packetAutocorr_oddPolar_le`, `abs_packetAutocorr_le` | compiled clean, olean built |
+| `TheLiouvilleTwistFailsBeyondTheTrivialAperture` | `systemForm_le_of_packet`, `liouvilleWeight`, `exists_systemForm_polar_neg`, `exists_not_feasible`, `trivialAperture`, `tendsto_trivialAperture_sub_log` | compiled clean, olean built |
+| `TheHeightOfAPacketIsAMass` | height aspect: modulated packets, `log(1+|t|)` as mass, pole term decays | next |
+| FE-only fake in ladder form (corpus `isolatedPairConfig_weil_nonneg_iff`, `2L = log q`) | planned |
+| ladder chart for true characters (`κ > 1/(2δ)`) | planned; build on peer module below |
+
+Umbrella `SelectiveArithmetic.lean` imports the three modules; `MainTheorems.lean` imports the umbrella.
+
+## Peers (do not duplicate)
+- `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` (peer, card
+  `assemblies-of-proved-pieces.md`, A100/A101): pointwise trivial aperture `log log q − log 4`,
+  half-window improvement `− log 2`, one-square law, Deuring–Heilbronn isolation inequality on the
+  twisted comb with the raw size condition, `exists_dirichletZeros_local_count`,
+  `grh_dirichlet_iff_forall_twistedZeroSum_nonneg`. SA supersedes its constant (Schur: `− o(1)`)
+  and adds the fakes; SA does not redo the one-square law or DH.
+- Corpus one-square law: `SquareRootThreshold.IsolatedOffLinePairVisibilityLaw` (`pairEnergy`,
+  `isolatedPairConfig_weil_nonneg_iff`: nonneg iff `sinh(2δa)/δ ≤ 2L + 2a`).
+- Peer owns A93, A96 as assembly rows (open there).
+
+## Compile practice
+- Each check takes 3–10 min (machine shared). Write complete modules, then compile.
+- `set` variables: rewrite later hypotheses with `← hdef` before `linarith` (compound bodies are
+  not identified).
+- With `Finset` and `Set` both open use `Set.Icc` / `Finset.Icc` explicitly.
 
 ## Gates
 - [x] 0 → 1  in-progress
@@ -64,4 +85,4 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — card created; README first draft written.
+- 2026-11-10 — card created; README first draft; three modules compiled.

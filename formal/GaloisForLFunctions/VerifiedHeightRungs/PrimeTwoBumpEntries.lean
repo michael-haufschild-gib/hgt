@@ -67,7 +67,8 @@ theorem prime_twoBump_nonneg_of_rhVerifiedThrough {T : ℝ} (hRH : RHVerifiedThr
     (Nat.findGreatest_eq_iff.mp (show
       Nat.findGreatest (fun n => primePacketHeight n ≤ T) ⌊T⌋₊ = P from rfl)).2.1
       (Nat.ne_of_gt hPpos)
-  have hlogP : 0 ≤ Real.log P := Real.log_nonneg (by exact_mod_cast hPpos)
+  have hlogP : 0 ≤ Real.log P :=
+    Real.log_nonneg (by exact_mod_cast (Nat.succ_le_iff.mpr hPpos))
   have hlogp : 0 ≤ Real.log p := Real.log_nonneg (by exact_mod_cast hp.one_lt.le)
   have hlogs : Real.log p ≤ Real.log P :=
     Real.log_le_log (by exact_mod_cast hp.pos) (by exact_mod_cast hpT)

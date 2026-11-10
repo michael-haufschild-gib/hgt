@@ -383,15 +383,14 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 before we did create these documents:
-- docs/reports/review-0911/walls-ledger.md
-- docs/reports/review-0911/route-obstacles.md
-- docs/reports/review-0911/route-unification-ledger.md
-- docs/reports/review-0911/obstacles-summary.md
+- docs/reports/review-1011/walls-ledger.md
+- docs/reports/review-1011/route-obstacles.md
+- docs/reports/review-1011/route-unification-ledger.md
+- docs/reports/review-1011/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
-- docs/reports/review-0911/fable.md
 
 write new reports from scratch to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
@@ -421,7 +420,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-1011/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1011/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -458,9 +457,9 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-0911/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-0911/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-0911/walls-ledger.md
+3. Unification of the routes: docs/reports/review-1011/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-1011/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-1011/walls-ledger.md
    
 Do not rely only on these markdown files which are partly outdated. Use the search tool for our lean corpus to research what our research currently shows. Do not assume, our research is far ahead of your training data - our lean corpus is the Sota research. Take the time to search and understand. We are expected an accurate, in-depth research and report, not superficial ai-slop that is useless to our frontier research.
 
@@ -477,9 +476,10 @@ The questions for you to answer:
 8. Assume that neither positivity, weil positivity, "spectral" in any form can be part of any rh proof. Then you can interpret the walls as questions we need to answer and for which we and mathematics as a whole do not have the tools to create these answer - if we would create a new field of mathematics that can supply these tools, what would this field be? What would the questions be, what would be its approach/point of view, what its objects, language, foundational principals, criteria it must fulfill, its research topics?
 9. Design a research programme aiming at constructing (\(\mathbb{F}_{1}\)) (the field with one element),  what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 10. Design a research programme to develop general Galois theory that treats the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-11. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end? 
+11. Lets assume that RH is false. Design a research programme to a) prove that RH is wrong, b) find a concrete counterexample (without computation). s the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+12. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end?  
 
-Write a report in docs docs/reports/review-0911/fable.md
+Write a report in docs docs/reports/review-1011/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
 
@@ -489,7 +489,7 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-1011/obstacles-summary.md
 
-under "## 2.9 New field for RH: Hodge theory of a fixed part" it suggest a new fields/research programme called "Hodge theory of a fixed part"
+under "## 2.11 New field for RH without positivity: constituent theory of the zeros" it suggest a new fields/research programme called "constituent theory of the zeros"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -608,9 +608,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read and understand ## 11. Missed opportunities
+read docs/reports/review-1011/obstacles-summary.md
 
-under "## 11. Missed opportunities" it lists tasks which are likely to be doable.
+under "## 11. Missed opportunities" -> "### Further items" it lists tasks which are likely to be doable.
 
 your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -646,10 +646,8 @@ Do not use the hgtl7 skill.
 
 read and understand docs/reports/review-1011/obstacles-summary.md
 
-under "## 3. The one big question: what is the resolution of the minimal face?" it asks a question with a follow up question:
-"Let `𝒵` be the class of tempered reflection-symmetric zero configurations without real zeros, with lowest ordinate at least `γ_min>0` and local counts `N(t+1)−N(t)≤C log(|t|+3)`.
-1. *Bounded windows.* Is there `L=L(γ_min,C)` such that a floor `2 Re S(u)≥−K` on windows `[u_k,u_k+L]`, `u_k→∞`, forces every zero of a configuration in `𝒵` onto the line?
-2. *Unbounded windows.* If not, does every radius `R(T)→∞` decide `𝒵`, or is there a configuration in `𝒵` with an unattained or accumulating top that is bounded below on windows of radius `R(T)=o(log T)` beyond every bound?"
+under "## 3. The one big question: can the exceptional square be removed?" it asks a question:
+"Let `χ` be a real primitive character of conductor `q`, and `Z_χ` the form of the twisted part: jets, the counterterm `log(qn/2π)` and twice the contacts `Λχ`, on packets in a window of aperture `a` [S]. *Is `Z_χ≥0` on windows of aperture `log log q+C`, for every `C` and all large `q`?*"
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
 
