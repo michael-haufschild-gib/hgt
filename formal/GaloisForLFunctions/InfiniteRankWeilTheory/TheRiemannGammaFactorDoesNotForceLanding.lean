@@ -109,7 +109,7 @@ theorem pairedRiemannModel_zeros_in_strip {s : ℂ} (hs : 0 < s.re ∧ s.re < 1)
   simp only [div_eq_zero_iff, mul_eq_zero, inv_eq_zero, hΓ, h0,
     pairedXiModel_one_ne_zero, sub_ne_zero.mpr h1, two_ne_zero, or_false, false_or]
 
-/-- An unconditional Gamma-normalized, order-one landing countermodel with the actual
+/-- An unconditional Gamma-normalized landing countermodel of order at most one, with the actual
 Riemann count up to an error of one and exact analytic multiplicities. -/
 theorem exists_riemann_gamma_counting_model_without_landing :
     ∃ L G : ℂ → ℂ,

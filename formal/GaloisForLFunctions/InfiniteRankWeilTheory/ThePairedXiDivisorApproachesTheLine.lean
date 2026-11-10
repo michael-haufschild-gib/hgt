@@ -139,9 +139,10 @@ theorem summable_pairedXiHeight_inv_rpow {p : ℝ} (hp : 1 < p) :
 theorem summable_pairedXiPoint_rpow_neg {p : ℝ} (hp : 1 < p) :
     Summable (fun q : ℕ × Bool × Bool => ‖pairedXiPoint q‖ ^ (-p)) := by
   have hh : Summable (fun n : ℕ => pairedXiHeight n ^ (-p)) := by
-    simpa only [Real.inv_rpow (pairedXiHeight_pos _).le,
-      Real.rpow_neg (pairedXiHeight_pos _).le] using
-      summable_pairedXiHeight_inv_rpow hp
+    apply (summable_pairedXiHeight_inv_rpow hp).congr
+    intro n
+    rw [Real.inv_rpow (pairedXiHeight_pos n).le,
+      Real.rpow_neg (pairedXiHeight_pos n).le]
   have hmajor : Summable (fun q : ℕ × (Bool × Bool) => pairedXiHeight q.1 ^ (-p)) := by
     exact (summable_prod_of_nonneg (fun _ => by positivity)).mpr
       ⟨fun _ => Summable.of_finite, by simpa [tsum_fintype] using hh.mul_left 4⟩
@@ -151,8 +152,9 @@ theorem summable_pairedXiPoint_rpow_neg {p : ℝ} (hp : 1 < p) :
 
 theorem summable_pairedXiPoint_inv_sq :
     Summable (fun q : ℕ × Bool × Bool => 1 / ‖pairedXiPoint q‖ ^ (2 : ℕ)) := by
-  simpa only [Real.rpow_neg (norm_nonneg _), Real.rpow_two, one_div] using
-    summable_pairedXiPoint_rpow_neg (p := 2) (by norm_num)
+  apply (summable_pairedXiPoint_rpow_neg (p := 2) (by norm_num)).congr
+  intro q
+  rw [Real.rpow_neg (norm_nonneg _), Real.rpow_two, one_div]
 
 #print axioms pairedXiPoint_injective
 #print axioms pairedXiHeight_le_iff

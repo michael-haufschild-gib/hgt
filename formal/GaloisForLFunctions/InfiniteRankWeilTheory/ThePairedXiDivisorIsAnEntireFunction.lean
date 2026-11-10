@@ -71,7 +71,8 @@ theorem pairedXiProduct_neg (w : ℂ) : pairedXiProduct (-w) = pairedXiProduct w
       rw [pairedXiPoint_neg]
       congr 1
       ring
-    _ = _ := pairedXiNegEquiv.tprod_eq _
+    _ = _ := pairedXiNegEquiv.tprod_eq
+      (fun q : ℕ × Bool × Bool => weierstrassE1 (w / pairedXiPoint q))
 
 theorem pairedXiProduct_conj (w : ℂ) : pairedXiProduct (conj w) = conj (pairedXiProduct w) := by
   have h := (multipliable_canonicalProductE1Indexed pairedXiPoint_ne_zero
@@ -82,7 +83,8 @@ theorem pairedXiProduct_conj (w : ℂ) : pairedXiProduct (conj w) = conj (paired
   unfold pairedXiProduct canonicalProductE1Indexed
   calc
     _ = ∏' q, weierstrassE1 (conj w / pairedXiPoint (pairedXiConjEquiv q)) :=
-      (pairedXiConjEquiv.tprod_eq _).symm
+      (pairedXiConjEquiv.tprod_eq
+        (fun q : ℕ × Bool × Bool => weierstrassE1 (conj w / pairedXiPoint q))).symm
     _ = _ := by
       apply tprod_congr
       intro q
