@@ -10,49 +10,32 @@ import GaloisForLFunctions.ExceptionalLayerTheory.TheDeuringHeilbronnRepulsionLa
 /-!
 # The trivial aperture and the exceptional square on the twisted comb
 
-For a primitive Dirichlet character `χ` of conductor `q > 1`, the pairing of the twisted part of
-the comb on a packet `f` — jets, the counterterm `log(qn/2π)` and twice the contacts `Λ Re χ` —
-has the limit `−Z_χ(f)`, where `Z_χ(f) = twistedZeroSum hq hprim f` is the sum over the zeros of
-`L(s, χ)` in the critical strip. This module establishes the unconditional laws governing `Z_χ`
-across apertures:
+For a primitive character `χ` of conductor `q > 1`, `Z_χ(f) = twistedZeroSum hq hprim f` is the sum
+over the zeros of `L(s, χ)` of a real packet `f`: minus the limit of jets, the counterterm
+`log(qn/2π)` and twice the contacts `Λ Re χ`.
 
-* **Real-to-complex splitting and the onset-aperture dictionary**
-  (`re_dirichletZeros_W_split`, `windowPositiveAt_dirichletZeros_iff_twistedZeroSum_nonneg`,
+* **Dictionary** (`re_dirichletZeros_W_split`,
+  `windowPositiveAt_dirichletZeros_iff_twistedZeroSum_nonneg`,
   `twistedZeroSum_nonneg_iff_le_onsetAperture`, `grh_dirichlet_iff_forall_twistedZeroSum_nonneg`):
-  for a real primitive character `χ`, `Re W_{L(·,χ)}(F, F) = Z_χ(Re F) + Z_χ(Im F)` for every
-  complex `C²` test `F`. Consequently, `Z_χ(f) ≥ 0` on real packets of aperture `a` is equivalent
-  to `WindowPositiveAt (dirichletZeros hq hprim) a`, to `(a : EReal) ≤ onsetAperture`, and to the
-  vanishing of the Hodge defect at `a`. Holding for all `C` at aperture `log log q + C` for a
-  fixed `χ` is equivalent to the Generalized Riemann Hypothesis for `L(s, χ)`.
-* **The trivial aperture and the disjoint-half-window `log 2` improvement**
-  (`twistedZeroSum_ge_of_aperture`, `two_mul_abs_packetAutocorr_le_of_aperture`,
-  `twistedZeroSum_ge_of_aperture_sharpened`, `tendsto_sharpened_primeMass_div_exp`):
-  bounding every contact by `|packetAutocorr f (log k)| ≤ ∫ f²` gives the unconditional floor
-  `Z_χ(f) ≥ (log q − C_χ − 2 primeMass a) ∫ f²`, which is nonnegative up to aperture
-  `log log q − log 4 − o(1)`. Moreover, for every lag `log k ≥ a` (`k > e^a`) on a packet of
-  aperture `a`, the factors `f(u)` and `f(u + log k)` are supported in disjoint half-lines
-  `u ≤ c` and `u + log k ≥ c`, so `2 |packetAutocorr f (log k)| ≤ ∫ f²`. This halves the prime
-  sum on `(e^a, e^{2a}]` without using any sign of `χ`, yielding the sharper unconditional floor
-  `Z_χ(f) ≥ (log q − C_χ − primeMass a − primeMass (a / 2)) ∫ f²` with
-  `(primeMass a + primeMass (a / 2)) / e^a → 2`, and extending unconditional positivity of `Z_χ`
-  to aperture `log log q − log 2 − o(1)`.
-* **The one-square law and removal of the exceptional square on even and nonnegative packets**
-  (`re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq`, `re_Wsummand_real_zero_nonneg_of_even`,
-  `re_Wsummand_real_zero_nonneg_of_nonneg`, `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`):
-  a real zero `β = ½ + δ ∈ (½, 1)` of `L(s, χ)` and its reflection `1 − β = ½ − δ` contribute
-  `2 m_β ((∫ f cosh(δu))² − (∫ f sinh(δu))²)` to `Z_χ(f)`. On every even packet, every
-  nonnegative packet, and every packet orthogonal to `sinh(δu)`, every real zero pair contributes
-  nonnegatively; on packets supported in `[−a, a]` its contribution is bounded below by the sharp
-  rank-one square `−(sinh(2δa)/δ − 2a) ∫ f² = −2 pairEnergy(δ, a) ∫ f²`.
-* **Deuring–Heilbronn on the twisted comb and repulsion at logarithmic aperture**
-  (`exceptional_zero_unique_and_simple`, `twistedZeroSum_odd_le_of_deuring_heilbronn`,
-  `exceptional_zero_repelled_of_twistedZeroSum_nonneg`):
-  in the exceptional region `1 − β < 1 / (e C (1 + log q + log 3))`, `L(s, χ)` has at most one
-  real zero `β`, and it is simple (`mult β = 1`). When `C (1 − β) log(q(R + 3)) < (q(R + 3))^{-C/2}`,
-  every other zero `ρ ≠ β, 1 − β` with `|Im ρ| ≤ R` lies on the critical line `Re ρ = ½`,
-  isolating the negative odd hyperbolic square of `{β, 1 − β}` on `sinhTest a (β − ½)` and
-  forcing `Z_χ < 0` once the pair energy exceeds the critical-line sea; contrapositively,
-  `Z_χ ≥ 0` on odd packets at aperture `a` forces the explicit repulsion bound on `1 − β`.
+  for real `χ`, `Re W(F, F) = Z_χ(Re F) + Z_χ(Im F)`, so `Z_χ ≥ 0` on packets of aperture `a` is
+  window positivity of the zeros of `L(s, χ)` at `a`, i.e. `a ≤ onsetAperture`. For fixed `χ`,
+  `Z_χ ≥ 0` at aperture `log log q + C` for every `C` is equivalent to GRH for `L(s, χ)`.
+* **Trivial aperture** (`twistedZeroSum_ge_of_aperture`, `twistedZeroSum_ge_of_aperture_sharpened`,
+  `tendsto_sharpened_primeMass_div_exp`): `Z_χ(f) ≥ (log q − C_χ − M(a) − M(a/2)) ∫ f²`, where
+  `M` is the prime mass; for lags `≥ a` the two factors of the autocorrelation live on disjoint
+  half-lines, which halves the contacts on `(e^a, e^{2a}]`. Since `(M(a) + M(a/2))/e^a → 2`,
+  `Z_χ ≥ 0` holds unconditionally up to aperture `log log q − log 2 − o(1)`.
+* **One square** (`re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq`, `re_Wsummand_real_zero_nonneg`,
+  `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`): a real zero `½ + δ` contributes
+  `m((∫ f cosh δu)² − (∫ f sinh δu)²)`; it is nonnegative on even, nonnegative, or
+  `sinh(δu)`-orthogonal packets, and the pair with its reflection is at least
+  `−(sinh(2δa)/δ − 2a) m ∫ f²` on `[−a, a]`.
+* **Deuring–Heilbronn on the comb** (`exceptional_zero_unique_and_simple`,
+  `deuring_heilbronn_on_twisted_comb`): near `1` there is at most one real zero and one
+  multiplicity copy of it; if `C(1 − β) log(q(R + 3)) < (q(R + 3))^{−C/2}`, every other zero of
+  height `≤ R` is on the line, `Z_χ` on odd packets is bounded by minus the exceptional square
+  plus the critical-line sea, and `Z_χ ≥ 0` on odd packets of a large aperture forces
+  `1 − β ≥ (q(R + 3))^{−C/2} / (C log(q(R + 3)))`.
 -/
 
 open Finset Filter Topology MeasureTheory Complex Set
@@ -850,7 +833,9 @@ theorem re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy (Z : ZeroConfig) {ρ : 
     have hγc : conj (gammaOf ρ) = (0 : ℂ) + Complex.I * δ := by
       rw [hγ]; apply Complex.ext <;> simp
     have hrefl : gammaOf (reflect ρ) = conj (gammaOf ρ) := by
-      apply Complex.ext <;> simp [gammaOf, reflect] <;> ring
+      apply Complex.ext
+      · simp [gammaOf, reflect]
+      · simp [gammaOf, reflect]; ring
     have hpair_re := SquareRootThreshold.neg_half_normSq_sub_le_re_pair
       (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) - Complex.I * δ))
       (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) + Complex.I * δ))

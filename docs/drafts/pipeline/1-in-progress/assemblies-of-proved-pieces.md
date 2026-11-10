@@ -17,7 +17,7 @@
 | A71 | Uniform local tensor moments iff RH | Proof written; Lean audit pending |
 | A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
 | A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
-| A83 | Density-matched counter-configuration with bounded trace change | Open |
+| A83 | Density-matched counter-configuration with bounded trace change | Exact critical-projection count proof written; trace superposition, sparse count comparison, and audits pending |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Proofs written in `TheJetsAreEvenNewtonianMultipoles` and `TheContactsOfAPrimeAreChainSquares`; audits pending |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
 | A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Open |
@@ -70,3 +70,4 @@ The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly give
 - **A80/A94:** `TheInequalityAtFiniteScaleIsDecidedOnBlockAverages` controls arbitrary divisors by block means with an arbitrarily small mass error. Exact positivity additionally needs a positive window gap and convergence on the finite block space. At a zero eigenvalue, convergence alone cannot identify the eventual negative index; the critical correction must be determined.
 - **A78:** `OnlyDeepOrdinatesNeedSeparation` bounds leakage from every other deep exponent by a separated inverse-square sum. A cluster extension must control cancellation inside the selected cluster, not merely multiply the far-leakage count by its cardinality.
 - **A100:** `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` identifies real-packet positivity with complex window positivity and gives the exceptional real-pair decomposition. Its improved sufficient condition is `primeMass a + primeMass(a/2) + archConstant χ ≤ log q`; the mass ratio tends to `2e^a`. This existing work is being audited separately in the shared workspace; no duplicate proof is needed.
+- **A83:** Project every zeta zero horizontally to `Re s=1/2`, adding multiplicities at equal ordinates. `TheCriticalProjectionPreservesTheCounts.lean` proves preservation of every window count and temperedness from the unchanged local count. This supplies the exact-density background without assuming RH. The remaining assembly adds its bounded spline trace to the sparse off-line construction and checks that the latter does not change the density asymptotic.

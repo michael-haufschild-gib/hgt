@@ -516,13 +516,16 @@ theorem exists_exponent_phase :
     Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos q.toReal_pos _).ne'
   refine ⟨σ, fun q => charVal φ q / ((q.toReal ^ σ : ℝ) : ℂ), h1, h2, fun q => ?_, fun q r => ?_,
     fun q => ?_⟩
-  · rw [norm_div, hmod, Complex.norm_real,
+  · beta_reduce
+    rw [norm_div, hmod, Complex.norm_real,
       Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _),
       div_self (Real.rpow_pos_of_pos q.toReal_pos _).ne']
-  · rw [charVal_mul, PosRat.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
+  · beta_reduce
+    rw [charVal_mul, PosRat.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
       Complex.ofReal_mul]
     field_simp [hrne q, hrne r]
-  · rw [mul_div_cancel₀ _ (hrne q)]
+  · beta_reduce
+    rw [mul_div_cancel₀ _ (hrne q)]
 
 /-- **A character is the value of a twist at a real point of the strip.** -/
 theorem exists_apply_eq_expansion_twist :

@@ -62,9 +62,11 @@ theorem differentiableOn_continuousEulerRemainder (ε : ℝ≥0) :
   have hinv : DifferentiableOn ℂ (fun s : ℂ => (1 : ℂ) / s) {s : ℂ | 0 < s.re} := by
     intro s hs
     change 0 < s.re at hs
-    exact ((differentiableAt_const (1 : ℂ)).div differentiableAt_id (by
+    have h0 : s ≠ 0 := by
       intro h
-      simpa only [h, Complex.zero_re, lt_self_iff_false] using hs)).differentiableWithinAt
+      rw [h] at hs
+      exact (lt_irrefl 0) hs
+    exact ((differentiableAt_const (1 : ℂ)).div differentiableAt_id h0).differentiableWithinAt
   exact ((hM.mul (differentiable_completedZeta₀.differentiableOn.sub hinv)).add hds).sub
     (hG.const_mul (continuousEulerResidue ε))
 

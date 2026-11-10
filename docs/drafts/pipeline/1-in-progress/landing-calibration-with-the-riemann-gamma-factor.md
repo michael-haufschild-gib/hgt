@@ -15,10 +15,13 @@ the original ordinates repeat. The proposed positive-height count is
 exactly `2⌊Nζ(T)/2⌋`: its difference from the actual Xi count is at most
 one. Every new zero is off the line, but the depths tend to zero.
 
-Use the indexed genus-one product of these quartets. Divide the resulting
-symmetric entire function by `s(s−1)Γℝ(s)` to obtain the uncompleted
-function. This pairing construction would give a stronger calibration
-than projecting onto the line and adding sparse quartets.
+Let `G` be the indexed genus-one product of these quartets, centered at
+`1/2` and normalized by `G(1/2)=1`. Set
+`L(s)=G(s)D∞(s)/(2G(1)(s−1))`, using the corpus entire decompletion
+`D∞(s)=2/(sΓℝ(s))` away from zero. Thus `L` is holomorphic off `1`,
+has residue one there, and has completion
+`Γℝ(s)L(s)=G(s)/(G(1)s(s−1))`. This pairing construction would give a
+stronger calibration than projecting onto the line and adding sparse quartets.
 
 The corpus proves indexed-product convergence and exact fiber multiplicities
 in `HTGeometry/CanonicalProductE1Divisor.lean`, and inverse-square summability
@@ -33,3 +36,8 @@ Product symmetry, the exact paired count, order-one growth, Gamma
 normalization, and the complete landing counterexample require Lean proofs.
 No Euler product or Dirichlet-series representation is claimed for this
 calibration.
+
+Five Lean drafts in `InfiniteRankWeilTheory/`, from
+`ThePairedXiDivisorApproachesTheLine.lean` through
+`TheRiemannGammaFactorDoesNotForceLanding.lean`, state the complete
+construction and its analytic multiplicity audit. None has been compiled.
