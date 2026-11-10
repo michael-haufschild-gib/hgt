@@ -442,12 +442,81 @@ theorem rpow_le_add_rpow {x : ℝ} (hx : 0 < x) {σ₁ σ σ₂ : ℝ} (h₁ : �
   · exact (Real.rpow_le_rpow_of_exponent_le h h₂).trans
       (le_add_of_nonneg_left (Real.rpow_nonneg hx.le _))
 
+/-- Two families over the same injective positive scales, indexed by a countable set, that
+represent one function on the two sides of the line are equal. -/
+theorem eq_of_strip_of_countable [Countable ι] {b c : ι → ℂ} {a : ι → ℝ}
+    (ha : ∀ i, 0 < a i) (hinj : Function.Injective a) {η : ℝ} (hη0 : 0 < η) (hη : η ≤ 1 / 2)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 → Summable fun i => ‖c i‖ * a i ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 1 / 2 - η < s.re ∧ s.re < 1 / 2 + η})
+    {K : ℝ} (hFb : ∀ s : ℂ, 1 / 2 - η / 2 ≤ s.re → s.re ≤ 1 / 2 + η / 2 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 / 2 + η →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 1 / 2 - η < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' i, c i * (a i : ℂ) ^ s) : b = c := by
+  classical
+  funext i
+  have h := mergedWeight_eq_of_strip ha ha hη0 hη hR hL hFd hFb hFR hFL (ha i)
+  rw [tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'),
+    tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'), if_pos rfl, if_pos rfl] at h
+  exact h
+
+/-- The same for index sets of any size: an absolutely summable family has countable support, and
+the two families are compared on the union of the supports. -/
+theorem eq_of_strip {b c : ι → ℂ} {a : ι → ℝ}
+    (ha : ∀ i, 0 < a i) (hinj : Function.Injective a) {η : ℝ} (hη0 : 0 < η) (hη : η ≤ 1 / 2)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 → Summable fun i => ‖c i‖ * a i ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 1 / 2 - η < s.re ∧ s.re < 1 / 2 + η})
+    {K : ℝ} (hFb : ∀ s : ℂ, 1 / 2 - η / 2 ≤ s.re → s.re ≤ 1 / 2 + η / 2 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 / 2 + η →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 1 / 2 - η < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' i, c i * (a i : ℂ) ^ s) : b = c := by
+  classical
+  have hbsupp : (Function.support b).Countable :=
+    ((hR (1 / 2 + η) (by linarith) le_rfl).countable_support).mono fun i hi =>
+      mul_ne_zero (norm_ne_zero_iff.mpr hi) (Real.rpow_pos_of_pos (ha i) _).ne'
+  have hcsupp : (Function.support c).Countable :=
+    ((hL (1 / 2 - η) le_rfl (by linarith)).countable_support).mono fun i hi =>
+      mul_ne_zero (norm_ne_zero_iff.mpr hi) (Real.rpow_pos_of_pos (ha i) _).ne'
+  set S : Set ι := Function.support b ∪ Function.support c with hS
+  haveI : Countable S := (hbsupp.union hcsupp).to_subtype
+  -- sums over the whole index set are sums over `S`
+  have key : ∀ f : ι → ℂ, Function.support f ⊆ S → ∀ s : ℂ,
+      ∑' i : S, f i * ((a i : ℝ) : ℂ) ^ s = ∑' i, f i * ((a i : ℝ) : ℂ) ^ s := by
+    intro f hf s
+    rw [tsum_subtype S fun i => f i * ((a i : ℝ) : ℂ) ^ s]
+    refine tsum_congr fun i => ?_
+    by_cases hi : i ∈ S
+    · rw [Set.indicator_of_mem hi]
+    · rw [Set.indicator_of_notMem hi]
+      have h0 : f i = 0 := by
+        by_contra h
+        exact hi (hf h)
+      rw [h0, zero_mul]
+  have h := eq_of_strip_of_countable (b := fun i : S => b i) (c := fun i : S => c i)
+    (a := fun i : S => a i) (fun i => ha i) (hinj.comp Subtype.val_injective) hη0 hη
+    (fun σ h1 h2 => (hR σ h1 h2).subtype S) (fun σ h1 h2 => (hL σ h1 h2).subtype S) hFd hFb
+    (fun s h1 h2 => by rw [hFR s h1 h2, key b Set.subset_union_left s])
+    (fun s h1 h2 => by rw [hFL s h1 h2, key c Set.subset_union_right s])
+  funext i
+  by_cases hi : i ∈ S
+  · exact congrFun h ⟨i, hi⟩
+  · have hb : b i = 0 := by
+      by_contra hb
+      exact hi (Or.inl hb)
+    have hc : c i = 0 := by
+      by_contra hc
+      exact hi (Or.inr hc)
+    rw [hb, hc]
+
 /-- **The zeros of `ζ` cancel no pole of a two-sided expansion.** Let two families over the same
 injective positive scales represent `−sΦ/ζ` on the two sides of the line, absolutely, in a strip
 about the line in which `Φ` is holomorphic and bounded near the line. Then the families are equal,
 the expansion converges absolutely on the closed strip, and it represents `−sΦ/ζ` on the whole
-strip: nothing was cancelled on the line. -/
-theorem eq_riemannZeta_div_mul_tsum_of_strip [Countable ι] {b c : ι → ℂ} {a : ι → ℝ}
+strip: nothing was cancelled on the line. The index set may be uncountable. -/
+theorem eq_riemannZeta_div_mul_tsum_of_strip {b c : ι → ℂ} {a : ι → ℝ}
     (ha : ∀ i, 0 < a i) (hinj : Function.Injective a) {η : ℝ} (hη0 : 0 < η) (hη : η ≤ 1 / 2)
     (hR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η → Summable fun i => ‖b i‖ * a i ^ σ)
     (hL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 → Summable fun i => ‖c i‖ * a i ^ σ)
@@ -461,13 +530,7 @@ theorem eq_riemannZeta_div_mul_tsum_of_strip [Countable ι] {b c : ι → ℂ} {
       ∀ s : ℂ, 1 / 2 - η < s.re → s.re < 1 / 2 + η →
         F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s := by
   classical
-  -- the families agree
-  have hbc : b = c := by
-    funext i
-    have h := mergedWeight_eq_of_strip ha ha hη0 hη hR hL hFd hFb hFR hFL (ha i)
-    rw [tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'),
-      tsum_eq_single i fun i' hi' => if_neg fun h' => hi' (hinj h'), if_pos rfl, if_pos rfl] at h
-    exact h
+  have hbc : b = c := eq_of_strip ha hinj hη0 hη hR hL hFd hFb hFR hFL
   subst hbc
   have hbot := hL (1 / 2 - η) le_rfl (by linarith)
   have htop := hR (1 / 2 + η) (by linarith) le_rfl

@@ -7,6 +7,7 @@ import GaloisForLFunctions.SelectiveArithmetic.AnIsolatedPairShowsAtTheRungOfIts
 import GaloisForLFunctions.SelectiveArithmetic.TheFeasibleSetsOfAConductor
 import GaloisForLFunctions.SelectiveArithmetic.TheZerosOfADirichletLFunctionOnTheLadder
 import GaloisForLFunctions.SelectiveArithmetic.TheSignIsSquareRootCancellationOfTheRieszMean
+import GaloisForLFunctions.SelectiveArithmetic.EveryVisibleWeightIsBoundedByTheMass
 
 /-!
 # Selective Arithmetic
@@ -41,6 +42,9 @@ sign, and where the first statement beyond that scale lies.
 * The converse of the exchange rate on the prime side: the sign of a dominated system on the two
   polar packets of an aperture is square-root cancellation of the Riesz mean of its contacts at
   that scale; for a character it bounds `Σ Λ(n) Re χ(n) log(Y/n)`.
+* The box law of a conductor: every visible weight of a feasible system is at most
+  `√n (log q + log(1 + 4n) + C)`; an `ℓ¹` ball of the size of the mass is feasible; below the first
+  contact the weights do not enter.
 
 See `SelectiveArithmetic/README.md`.
 -/

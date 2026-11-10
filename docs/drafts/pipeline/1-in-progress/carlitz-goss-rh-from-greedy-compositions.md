@@ -94,10 +94,12 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `MonicPowerSums` | Exact binomial recurrence for the actual polynomial power sums over all monic polynomials of a fixed degree; all finite-field coefficient moments evaluated |
 | `CarryFreeBinomial` | In every ring of prime characteristic, a binomial coefficient is nonzero exactly when the lower argument's base-`p` digits fit coordinatewise inside the upper argument's digits |
 | `DigitSelection` | Those nonzero binomial coefficients correspond exactly to values of actual subsets of the given digit collection |
+| `ZeroRemainderBoundary` | Appending an empty remainder preserves weight and adds the total value to cost; positive-remainder greedy weights dominate admissible zero remainders, and the boundary cost more than doubles |
 
 Listed modules passed direct Lean checks and are wired into the umbrella.
 Transitive axiom audits through `CarryFreeBinomial` use only the three
-standard axioms. No further axiom audit was run for `DigitSelection`.
+standard axioms. No further axiom audit was run for `DigitSelection` or
+`ZeroRemainderBoundary`.
 
 General greedy optimality is formalized and audited; see
 `../3-formalized/greedy-carry-free-compositions-are-uniquely-optimal.md`.
@@ -238,6 +240,11 @@ exactly the admissible `d`-part compositions, since divisibility of `N`
 forces their final part divisible too. Thus the positive-part optimality
 theorem covers both cases.
 
+`ZeroRemainderBoundary` formalizes the empty-remainder weight identity,
+the equivalence between proper-part divisibility and total divisibility,
+and strict domination by a positive-remainder greedy composition. Its
+source passed the direct Lean check without an additional axiom audit.
+
 `MonicPowerSums.lean` formalizes the recurrence on actual monic polynomials
 in `monicPowerSum_succ`. The finite-field moment is zero at exponent zero
 and otherwise equals `−1` exactly on multiples of `q−1`. Its direct check
@@ -261,6 +268,9 @@ increment `N` is therefore strictly larger than the preceding slope.
 `PrefixCostGrowth` formalizes the doubling, strict-convexity, and
 divisible-total inequalities. Its direct check and three endpoint axiom
 audits pass. Identifying them with the actual coefficient valuations remains.
+In `ZeroRemainderBoundary.lean`, `DigitComposition.zeroRemainderCost_sub`
+gives the exact endpoint increment, and `IsGreedy.twice_prefixCost_lt_zeroRemainderCost` proves its
+strict separation from the preceding cost.
 
 ## Digit-selection bridge
 

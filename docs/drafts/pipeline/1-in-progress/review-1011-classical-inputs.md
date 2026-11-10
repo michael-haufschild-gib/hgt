@@ -70,3 +70,6 @@ prefix costs. `MonicPowerSums` gives the exact recurrence on actual monic
 polynomials, and `DigitSelection` identifies its nonzero binomial terms
 with actual digit subsets. Identifying actual leading coefficients and valuations, then
 passing to arbitrary `p`-adic parameters and the entire series, remains.
+`ZeroRemainderBoundary` closes the written empty-remainder weight and
+cost comparisons. The final digit-selection and zero-remainder modules
+passed direct Lean checks without further axiom audits.

@@ -4,17 +4,16 @@ import Mathlib.Analysis.Normed.Lp.lpSpace
 import Mathlib.Analysis.Normed.Ring.InfiniteSum
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
-import Mathlib.Data.Rat.Cast.Order
 
 /-!
 # The Wiener algebra of a strip
 
 For `σ₁ ≤ σ₂` the functions on the closed strip `σ₁ ≤ Re s ≤ σ₂` of the form
-`f(s) = Σ_q c(q) q^s`, `q` over the positive rationals, with
+`f(s) = Σ_q c(q) q^s`, `q` over the positive reals, with
 `Σ ‖c(q)‖ max(q^σ₁, q^σ₂) < ∞`, form a commutative Banach algebra `𝒲[σ₁, σ₂]`
 (`StripWiener σ₁ σ₂`) under pointwise multiplication.
 
-* **Scales** (`PosRat`, `PosRat.cpow`): the group of positive rationals and `q^s`.
+* **Scales** (`Scale`, `Scale.cpow`): the group of positive reals and `q^s`.
 * **Weight** (`stripWeight`): `max(q^σ₁, q^σ₂)` is the supremum of `|q^s|` on the strip
   (`rpow_le_stripWeight`) and is submultiplicative (`stripWeight_mul_le`).
 * **Uniqueness** (`eq_zero_of_expansion_eq_zero`): the coefficients are determined by the function
@@ -23,13 +22,13 @@ For `σ₁ ≤ σ₂` the functions on the closed strip `σ₁ ≤ Re s ≤ σ�
   expansion of the convolution of the coefficients over the group, and the weighted norm is
   submultiplicative.
 * **Banach algebra** (`StripWiener`, `isometryLp`): the weighted coefficients identify the algebra
-  isometrically with `ℓ¹` of the positive rationals; `‖1‖ = 1`.
+  isometrically with `ℓ¹` of the group of scales; `‖1‖ = 1`.
 * **Point masses** (`pointMass`, `hasSum_pointMass`): `δ_q(s) = q^s`, `δ_q δ_r = δ_{qr}`,
   `‖δ_q‖ = max(q^σ₁, q^σ₂)`, and `f = Σ c(q) δ_q` in norm.
 
-Dirichlet series are the expansions supported on the scales `1/n`; the inverse of one that has
-zeros on both sides of the strip needs scales of both sizes, which is why the group and not the
-monoid of the integers is the index set.
+Dirichlet series are the expansions supported on the scales `1/n`, exponential polynomials those
+of finite support. The inverse of an expansion that has zeros on both sides of the strip needs
+scales of both sizes, which is why a group and not the monoid of the integers is the index set.
 -/
 
 open Filter Topology
@@ -38,44 +37,39 @@ noncomputable section
 
 namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 
-/-- The group of positive rationals: the scales of an arithmetic expansion. -/
-abbrev PosRat : Type := {q : ℚ // 0 < q}
+/-- The group of positive reals: the scales of an expansion. -/
+abbrev Scale : Type := {a : ℝ // 0 < a}
 
-namespace PosRat
+namespace Scale
 
-/-- A positive rational as a real scale. -/
-def toReal (q : PosRat) : ℝ := ((q : ℚ) : ℝ)
+/-- A scale as a real number. -/
+def toReal (q : Scale) : ℝ := q.1
 
-theorem toReal_pos (q : PosRat) : 0 < q.toReal := by
-  have h : (0 : ℚ) < (q : ℚ) := q.2
-  unfold toReal
-  exact_mod_cast h
+theorem toReal_pos (q : Scale) : 0 < q.toReal := q.2
 
-theorem toReal_mul (q r : PosRat) : (q * r).toReal = q.toReal * r.toReal :=
-  Rat.cast_mul _ _
+theorem toReal_mul (q r : Scale) : (q * r).toReal = q.toReal * r.toReal := rfl
 
-theorem toReal_one : (1 : PosRat).toReal = 1 := Rat.cast_one
+theorem toReal_one : (1 : Scale).toReal = 1 := rfl
 
-theorem toReal_injective : Function.Injective toReal := fun _ _ h =>
-  Subtype.ext (Rat.cast_injective h)
+theorem toReal_injective : Function.Injective toReal := fun _ _ h => Subtype.ext h
 
-/-- `q^s` for a positive rational scale `q`. -/
-def cpow (q : PosRat) (s : ℂ) : ℂ := (q.toReal : ℂ) ^ s
+/-- `q^s` for a scale `q`. -/
+def cpow (q : Scale) (s : ℂ) : ℂ := (q.toReal : ℂ) ^ s
 
-theorem cpow_mul (q r : PosRat) (s : ℂ) : (q * r).cpow s = q.cpow s * r.cpow s := by
+theorem cpow_mul (q r : Scale) (s : ℂ) : (q * r).cpow s = q.cpow s * r.cpow s := by
   unfold cpow
   rw [toReal_mul, Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg q.toReal_pos.le
     r.toReal_pos.le]
 
-theorem one_cpow (s : ℂ) : (1 : PosRat).cpow s = 1 := by
+theorem one_cpow (s : ℂ) : (1 : Scale).cpow s = 1 := by
   unfold cpow
   rw [toReal_one, Complex.ofReal_one, Complex.one_cpow]
 
-theorem norm_cpow (q : PosRat) (s : ℂ) : ‖q.cpow s‖ = q.toReal ^ s.re :=
+theorem norm_cpow (q : Scale) (s : ℂ) : ‖q.cpow s‖ = q.toReal ^ s.re :=
   Complex.norm_cpow_eq_rpow_re_of_pos q.toReal_pos s
 
 /-- On a vertical line `q^{σ + it} = q^σ e^{i t log q}`. -/
-theorem cpow_line (q : PosRat) (σ t : ℝ) :
+theorem cpow_line (q : Scale) (σ t : ℝ) :
     q.cpow ((σ : ℂ) + (t : ℂ) * Complex.I) =
       ((q.toReal ^ σ : ℝ) : ℂ) *
         Complex.exp (Complex.I * ((Real.log q.toReal : ℝ) : ℂ) * (t : ℂ)) := by
@@ -87,29 +81,29 @@ theorem cpow_line (q : PosRat) (σ t : ℝ) :
   push_cast
   ring
 
-end PosRat
+end Scale
 
 variable {σ₁ σ₂ : ℝ}
 
 /-! ### The weight of a strip -/
 
 /-- The weight of the closed strip `σ₁ ≤ Re s ≤ σ₂` at the scale `q`: `max(q^σ₁, q^σ₂)`. -/
-def stripWeight (σ₁ σ₂ : ℝ) (q : PosRat) : ℝ := max (q.toReal ^ σ₁) (q.toReal ^ σ₂)
+def stripWeight (σ₁ σ₂ : ℝ) (q : Scale) : ℝ := max (q.toReal ^ σ₁) (q.toReal ^ σ₂)
 
-theorem stripWeight_pos (σ₁ σ₂ : ℝ) (q : PosRat) : 0 < stripWeight σ₁ σ₂ q :=
+theorem stripWeight_pos (σ₁ σ₂ : ℝ) (q : Scale) : 0 < stripWeight σ₁ σ₂ q :=
   lt_max_of_lt_left (Real.rpow_pos_of_pos q.toReal_pos _)
 
 theorem stripWeight_one (σ₁ σ₂ : ℝ) : stripWeight σ₁ σ₂ 1 = 1 := by
   unfold stripWeight
-  rw [PosRat.toReal_one, Real.one_rpow, Real.one_rpow, max_self]
+  rw [Scale.toReal_one, Real.one_rpow, Real.one_rpow, max_self]
 
 /-- The weight is submultiplicative. -/
-theorem stripWeight_mul_le (σ₁ σ₂ : ℝ) (q r : PosRat) :
+theorem stripWeight_mul_le (σ₁ σ₂ : ℝ) (q r : Scale) :
     stripWeight σ₁ σ₂ (q * r) ≤ stripWeight σ₁ σ₂ q * stripWeight σ₁ σ₂ r := by
   have hq := q.toReal_pos
   have hr := r.toReal_pos
   unfold stripWeight
-  rw [PosRat.toReal_mul, Real.mul_rpow hq.le hr.le, Real.mul_rpow hq.le hr.le]
+  rw [Scale.toReal_mul, Real.mul_rpow hq.le hr.le, Real.mul_rpow hq.le hr.le]
   exact max_le
     (mul_le_mul (le_max_left _ _) (le_max_left _ _) (Real.rpow_nonneg hr.le _)
       ((Real.rpow_nonneg hq.le _).trans (le_max_left _ _)))
@@ -117,7 +111,7 @@ theorem stripWeight_mul_le (σ₁ σ₂ : ℝ) (q r : PosRat) :
       ((Real.rpow_nonneg hq.le _).trans (le_max_right _ _)))
 
 /-- The weight dominates `q^σ` for every `σ` of the strip. -/
-theorem rpow_le_stripWeight {σ : ℝ} (h₁ : σ₁ ≤ σ) (h₂ : σ ≤ σ₂) (q : PosRat) :
+theorem rpow_le_stripWeight {σ : ℝ} (h₁ : σ₁ ≤ σ) (h₂ : σ ≤ σ₂) (q : Scale) :
     q.toReal ^ σ ≤ stripWeight σ₁ σ₂ q := by
   rcases le_total q.toReal 1 with h | h
   · exact (Real.rpow_le_rpow_of_exponent_ge q.toReal_pos h h₁).trans (le_max_left _ _)
@@ -126,32 +120,32 @@ theorem rpow_le_stripWeight {σ : ℝ} (h₁ : σ₁ ≤ σ) (h₂ : σ ≤ σ�
 /-! ### Expansions -/
 
 /-- Absolute convergence on the strip: `Σ ‖c(q)‖ max(q^σ₁, q^σ₂) < ∞`. -/
-def WSummable (σ₁ σ₂ : ℝ) (c : PosRat → ℂ) : Prop :=
+def WSummable (σ₁ σ₂ : ℝ) (c : Scale → ℂ) : Prop :=
   Summable fun q => ‖c q‖ * stripWeight σ₁ σ₂ q
 
 /-- The expansion `Σ_q c(q) q^s`. -/
-def expansion (c : PosRat → ℂ) (s : ℂ) : ℂ := ∑' q, c q * q.cpow s
+def expansion (c : Scale → ℂ) (s : ℂ) : ℂ := ∑' q, c q * q.cpow s
 
-theorem norm_term_le (c : PosRat → ℂ) {s : ℂ} (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) (q : PosRat) :
+theorem norm_term_le (c : Scale → ℂ) {s : ℂ} (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) (q : Scale) :
     ‖c q * q.cpow s‖ ≤ ‖c q‖ * stripWeight σ₁ σ₂ q := by
-  rw [norm_mul, PosRat.norm_cpow]
+  rw [norm_mul, Scale.norm_cpow]
   exact mul_le_mul_of_nonneg_left (rpow_le_stripWeight h₁ h₂ q) (norm_nonneg _)
 
-theorem WSummable.summable_norm_term {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
+theorem WSummable.summable_norm_term {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
     (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) : Summable fun q => ‖c q * q.cpow s‖ :=
   Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (norm_term_le c h₁ h₂) hc
 
-theorem WSummable.summable_term {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
+theorem WSummable.summable_term {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
     (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) : Summable fun q => c q * q.cpow s :=
   (hc.summable_norm_term h₁ h₂).of_norm
 
 /-- The expansion is bounded by the weighted norm on the strip. -/
-theorem WSummable.norm_expansion_le {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
+theorem WSummable.norm_expansion_le {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) {s : ℂ}
     (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) :
     ‖expansion c s‖ ≤ ∑' q, ‖c q‖ * stripWeight σ₁ σ₂ q :=
   tsum_of_norm_bounded hc.hasSum (norm_term_le c h₁ h₂)
 
-theorem WSummable.add {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d) :
+theorem WSummable.add {c d : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d) :
     WSummable σ₁ σ₂ (c + d) :=
   Summable.of_nonneg_of_le (fun q => mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le)
     (fun q => by
@@ -159,12 +153,12 @@ theorem WSummable.add {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) (hd 
       exact mul_le_mul_of_nonneg_right (norm_add_le _ _) (stripWeight_pos σ₁ σ₂ q).le)
     (Summable.add hc hd)
 
-theorem WSummable.smul {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) (z : ℂ) :
+theorem WSummable.smul {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) (z : ℂ) :
     WSummable σ₁ σ₂ (z • c) := by
   refine (Summable.mul_left ‖z‖ hc).congr fun q => ?_
   rw [Pi.smul_apply, smul_eq_mul, norm_mul, mul_assoc]
 
-theorem WSummable.neg {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) : WSummable σ₁ σ₂ (-c) := by
+theorem WSummable.neg {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) : WSummable σ₁ σ₂ (-c) := by
   refine hc.congr fun q => ?_
   rw [Pi.neg_apply, norm_neg]
 
@@ -172,19 +166,19 @@ theorem wsummable_zero : WSummable σ₁ σ₂ 0 := by
   refine summable_zero.congr fun q => ?_
   rw [Pi.zero_apply, norm_zero, zero_mul]
 
-theorem wsummable_single (q : PosRat) (z : ℂ) : WSummable σ₁ σ₂ (Pi.single q z) := by
+theorem wsummable_single (q : Scale) (z : ℂ) : WSummable σ₁ σ₂ (Pi.single q z) := by
   refine summable_of_ne_finset_zero (s := {q}) fun r hr => ?_
   rw [Finset.mem_singleton] at hr
   rw [Pi.single_eq_of_ne hr, norm_zero, zero_mul]
 
-theorem expansion_add {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d)
+theorem expansion_add {c d : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d)
     {s : ℂ} (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) :
     expansion (c + d) s = expansion c s + expansion d s := by
   unfold expansion
   rw [← (hc.summable_term h₁ h₂).tsum_add (hd.summable_term h₁ h₂)]
   exact tsum_congr fun q => by rw [Pi.add_apply, add_mul]
 
-theorem expansion_smul (z : ℂ) (c : PosRat → ℂ) (s : ℂ) :
+theorem expansion_smul (z : ℂ) (c : Scale → ℂ) (s : ℂ) :
     expansion (z • c) s = z * expansion c s := by
   unfold expansion
   rw [← tsum_mul_left]
@@ -194,7 +188,7 @@ theorem expansion_zero (s : ℂ) : expansion 0 s = 0 := by
   unfold expansion
   simp
 
-theorem expansion_single (q : PosRat) (z : ℂ) (s : ℂ) :
+theorem expansion_single (q : Scale) (z : ℂ) (s : ℂ) :
     expansion (Pi.single q z) s = z * q.cpow s := by
   unfold expansion
   rw [tsum_eq_single q fun r hr => by rw [Pi.single_eq_of_ne hr, zero_mul], Pi.single_eq_same]
@@ -204,32 +198,49 @@ theorem expansion_single (q : PosRat) (z : ℂ) (s : ℂ) :
 /-- **The coefficients are determined on one line.** An absolutely convergent expansion that
 vanishes on the strip has zero coefficients: on the line `Re s = σ₁` it is an absolutely
 convergent series of exponentials with the distinct frequencies `log q`. -/
-theorem eq_zero_of_expansion_eq_zero (h12 : σ₁ ≤ σ₂) {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
+theorem eq_zero_of_expansion_eq_zero (h12 : σ₁ ≤ σ₂) {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c)
     (h : ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ → expansion c s = 0) : c = 0 := by
-  have hinj : Function.Injective fun q : PosRat => Real.log q.toReal := fun q r hqr =>
-    PosRat.toReal_injective (Real.log_injOn_pos q.toReal_pos r.toReal_pos hqr)
+  -- the support is countable: the mean value is taken over it
+  have hcount : (Function.support c).Countable :=
+    hc.countable_support.mono fun q hq =>
+      mul_ne_zero (norm_ne_zero_iff.mpr hq) (stripWeight_pos σ₁ σ₂ q).ne'
+  haveI : Countable (Function.support c) := hcount.to_subtype
+  have hinj : Function.Injective fun q : Function.support c =>
+      Real.log (q : Scale).toReal := fun q r hqr =>
+    Subtype.ext (Scale.toReal_injective
+      (Real.log_injOn_pos (q : Scale).toReal_pos (r : Scale).toReal_pos hqr))
   have hre : ∀ t : ℝ, ((σ₁ : ℂ) + (t : ℂ) * Complex.I).re = σ₁ := fun t => by simp
-  have hsum : Summable fun q : PosRat => ‖c q * ((q.toReal ^ σ₁ : ℝ) : ℂ)‖ := by
+  have hsum : Summable fun q : Scale => ‖c q * ((q.toReal ^ σ₁ : ℝ) : ℂ)‖ := by
     refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun q => ?_) hc
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _)]
     exact mul_le_mul_of_nonneg_left (rpow_le_stripWeight le_rfl h12 q) (norm_nonneg _)
-  have hzero : ∀ t : ℝ, ∑' q : PosRat, c q * ((q.toReal ^ σ₁ : ℝ) : ℂ) *
-      Complex.exp (Complex.I * ((Real.log q.toReal : ℝ) : ℂ) * (t : ℂ)) = 0 := by
+  have hzero : ∀ t : ℝ, ∑' q : Function.support c,
+      c q * ((((q : Scale).toReal ^ σ₁ : ℝ)) : ℂ) *
+        Complex.exp (Complex.I * ((Real.log (q : Scale).toReal : ℝ) : ℂ) * (t : ℂ)) = 0 := by
     intro t
     have h0 := h ((σ₁ : ℂ) + (t : ℂ) * Complex.I) (by rw [hre]) (by rw [hre]; exact h12)
+    have e := tsum_subtype (Function.support c) fun q : Scale =>
+      c q * ((q.toReal ^ σ₁ : ℝ) : ℂ) *
+        Complex.exp (Complex.I * ((Real.log q.toReal : ℝ) : ℂ) * (t : ℂ))
+    refine e.trans ?_
     rw [← h0]
     unfold expansion
-    exact tsum_congr fun q => by rw [PosRat.cpow_line, mul_assoc]
+    refine tsum_congr fun q => ?_
+    by_cases hq : q ∈ Function.support c
+    · rw [Set.indicator_of_mem hq, Scale.cpow_line, mul_assoc]
+    · rw [Set.indicator_of_notMem hq, Function.notMem_support.mp hq, zero_mul]
   funext q
-  have hq := HTGeometry.coeff_eq_zero_of_tsum_cis_eq_zero hinj hsum hzero q
-  rcases mul_eq_zero.mp hq with h0 | h0
-  · exact h0
+  show c q = 0
+  by_contra hq
+  have hq' := HTGeometry.coeff_eq_zero_of_tsum_cis_eq_zero hinj (hsum.subtype _) hzero ⟨q, hq⟩
+  rcases mul_eq_zero.mp hq' with h0 | h0
+  · exact hq h0
   · exact absurd (Complex.ofReal_eq_zero.mp h0) (Real.rpow_pos_of_pos q.toReal_pos _).ne'
 
 /-! ### Products -/
 
 /-- The shear `(m, q) ↦ (q, q⁻¹ m)` of the square of the group. -/
-def shear : PosRat × PosRat ≃ PosRat × PosRat where
+def shear : Scale × Scale ≃ Scale × Scale where
   toFun z := (z.2, z.2⁻¹ * z.1)
   invFun z := (z.1 * z.2, z.1)
   left_inv z := by simp
@@ -238,7 +249,7 @@ def shear : PosRat × PosRat ≃ PosRat × PosRat where
 /-- **Summation along the fibres of the product.** A summable family on the square of the group
 sums to the sum over `m` of its sums over the pairs with product `m`. -/
 theorem hasSum_fibres {E : Type*} [NormedAddCommGroup E] [CompleteSpace E]
-    {G : PosRat × PosRat → E} (hG : Summable G) :
+    {G : Scale × Scale → E} (hG : Summable G) :
     HasSum (fun m => ∑' q, G (q, q⁻¹ * m)) (∑' z, G z) ∧
       ∀ m, Summable fun q => G (q, q⁻¹ * m) := by
   have hG' : Summable (G ∘ shear) := (shear.summable_iff).mpr hG
@@ -248,15 +259,15 @@ theorem hasSum_fibres {E : Type*} [NormedAddCommGroup E] [CompleteSpace E]
   rwa [hsum] at h
 
 /-- The convolution of two coefficient families over the group: `Σ_q c(q) d(q⁻¹ m)`. -/
-def convolve (c d : PosRat → ℂ) (m : PosRat) : ℂ := ∑' q, c q * d (q⁻¹ * m)
+def convolve (c d : Scale → ℂ) (m : Scale) : ℂ := ∑' q, c q * d (q⁻¹ * m)
 
 /-- **The weighted norm is submultiplicative.** -/
-theorem wsummable_convolve {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
+theorem wsummable_convolve {c d : Scale → ℂ} (hc : WSummable σ₁ σ₂ c)
     (hd : WSummable σ₁ σ₂ d) :
     WSummable σ₁ σ₂ (convolve c d) ∧
       (∑' m, ‖convolve c d m‖ * stripWeight σ₁ σ₂ m) ≤
         (∑' q, ‖c q‖ * stripWeight σ₁ σ₂ q) * ∑' q, ‖d q‖ * stripWeight σ₁ σ₂ q := by
-  set G : PosRat × PosRat → ℝ := fun z =>
+  set G : Scale × Scale → ℝ := fun z =>
     (‖c z.1‖ * stripWeight σ₁ σ₂ z.1) * (‖d z.2‖ * stripWeight σ₁ σ₂ z.2) with hGdef
   have hnn : ∀ q, 0 ≤ ‖c q‖ * stripWeight σ₁ σ₂ q := fun q =>
     mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le
@@ -302,25 +313,25 @@ theorem wsummable_convolve {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
   exact hws.tsum_le_tsum hle hfib.summable
 
 /-- **The product of two expansions is the expansion of the convolution.** -/
-theorem expansion_convolve {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d)
+theorem expansion_convolve {c d : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) (hd : WSummable σ₁ σ₂ d)
     {s : ℂ} (h₁ : σ₁ ≤ s.re) (h₂ : s.re ≤ σ₂) :
     expansion (convolve c d) s = expansion c s * expansion d s := by
-  have hG : Summable fun z : PosRat × PosRat => (c z.1 * z.1.cpow s) * (d z.2 * z.2.cpow s) :=
+  have hG : Summable fun z : Scale × Scale => (c z.1 * z.1.cpow s) * (d z.2 * z.2.cpow s) :=
     summable_mul_of_summable_norm (f := fun q => c q * q.cpow s) (g := fun q => d q * q.cpow s)
       (hc.summable_norm_term h₁ h₂) (hd.summable_norm_term h₁ h₂)
   obtain ⟨hfib, -⟩ := hasSum_fibres hG
   have hprod : expansion c s * expansion d s =
-      ∑' z : PosRat × PosRat, (c z.1 * z.1.cpow s) * (d z.2 * z.2.cpow s) :=
+      ∑' z : Scale × Scale, (c z.1 * z.1.cpow s) * (d z.2 * z.2.cpow s) :=
     tsum_mul_tsum_of_summable_norm (f := fun q => c q * q.cpow s) (g := fun q => d q * q.cpow s)
       (hc.summable_norm_term h₁ h₂) (hd.summable_norm_term h₁ h₂)
-  have hinner : ∀ m : PosRat, (∑' q, (c q * q.cpow s) * (d (q⁻¹ * m) * (q⁻¹ * m).cpow s)) =
+  have hinner : ∀ m : Scale, (∑' q, (c q * q.cpow s) * (d (q⁻¹ * m) * (q⁻¹ * m).cpow s)) =
       convolve c d m * m.cpow s := by
     intro m
     unfold convolve
     rw [← tsum_mul_right]
     refine tsum_congr fun q => ?_
     have hm : q.cpow s * (q⁻¹ * m).cpow s = m.cpow s := by
-      rw [← PosRat.cpow_mul, mul_inv_cancel_left]
+      rw [← Scale.cpow_mul, mul_inv_cancel_left]
     rw [← hm]
     ring
   rw [hprod, ← hfib.tsum_eq]
@@ -332,7 +343,7 @@ theorem expansion_convolve {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
 variable (σ₁ σ₂) in
 /-- The Wiener class of the closed strip `σ₁ ≤ Re s ≤ σ₂`, as an algebra of functions on it. -/
 def stripWiener : Subalgebra ℂ ({s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂} → ℂ) where
-  carrier := {f | ∃ c : PosRat → ℂ, WSummable σ₁ σ₂ c ∧ ∀ s, f s = expansion c s}
+  carrier := {f | ∃ c : Scale → ℂ, WSummable σ₁ σ₂ c ∧ ∀ s, f s = expansion c s}
   mul_mem' := by
     rintro f g ⟨c, hc, hf⟩ ⟨d, hd, hg⟩
     refine ⟨convolve c d, (wsummable_convolve hc hd).1, fun s => ?_⟩
@@ -346,7 +357,7 @@ def stripWiener : Subalgebra ℂ ({s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂}
   algebraMap_mem' z := by
     refine ⟨Pi.single 1 z, wsummable_single 1 z, fun s => ?_⟩
     show z = expansion (Pi.single 1 z) s
-    rw [expansion_single, PosRat.one_cpow, mul_one]
+    rw [expansion_single, Scale.one_cpow, mul_one]
 
 variable (σ₁ σ₂) in
 /-- The Wiener algebra `𝒲[σ₁, σ₂]` of the closed strip. -/
@@ -387,14 +398,14 @@ theorem eval_smul (z : ℂ) (f : StripWiener σ₁ σ₂) (s : {s : ℂ // σ₁
     (z • f).eval s = z * f.eval s := rfl
 
 /-- The element with given coefficients. -/
-def ofCoeff (c : PosRat → ℂ) (hc : WSummable σ₁ σ₂ c) : StripWiener σ₁ σ₂ :=
+def ofCoeff (c : Scale → ℂ) (hc : WSummable σ₁ σ₂ c) : StripWiener σ₁ σ₂ :=
   ⟨fun s => expansion c s, c, hc, fun _ => rfl⟩
 
-theorem eval_ofCoeff (c : PosRat → ℂ) (hc : WSummable σ₁ σ₂ c)
+theorem eval_ofCoeff (c : Scale → ℂ) (hc : WSummable σ₁ σ₂ c)
     (s : {s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂}) : (ofCoeff c hc).eval s = expansion c s := rfl
 
 /-- The coefficients of an element. -/
-def coeff (f : StripWiener σ₁ σ₂) : PosRat → ℂ := Classical.choose f.2
+def coeff (f : StripWiener σ₁ σ₂) : Scale → ℂ := Classical.choose f.2
 
 theorem wsummable_coeff (f : StripWiener σ₁ σ₂) : WSummable σ₁ σ₂ f.coeff :=
   (Classical.choose_spec f.2).1
@@ -406,7 +417,7 @@ theorem eval_eq (f : StripWiener σ₁ σ₂) (s : {s : ℂ // σ₁ ≤ s.re �
 variable [hσ : Fact (σ₁ ≤ σ₂)]
 
 /-- The coefficients are unique. -/
-theorem coeff_eq_of {f : StripWiener σ₁ σ₂} {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
+theorem coeff_eq_of {f : StripWiener σ₁ σ₂} {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c)
     (h : ∀ s, f.eval s = expansion c s) : f.coeff = c := by
   have hd : WSummable σ₁ σ₂ (f.coeff + (-1 : ℂ) • c) := f.wsummable_coeff.add (hc.smul _)
   have hz : f.coeff + (-1 : ℂ) • c = 0 := by
@@ -419,7 +430,7 @@ theorem coeff_eq_of {f : StripWiener σ₁ σ₂} {c : PosRat → ℂ} (hc : WSu
   rw [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply] at hq
   linear_combination hq
 
-theorem coeff_ofCoeff (c : PosRat → ℂ) (hc : WSummable σ₁ σ₂ c) : (ofCoeff c hc).coeff = c :=
+theorem coeff_ofCoeff (c : Scale → ℂ) (hc : WSummable σ₁ σ₂ c) : (ofCoeff c hc).coeff = c :=
   coeff_eq_of hc fun _ => rfl
 
 theorem coeff_zero : (0 : StripWiener σ₁ σ₂).coeff = 0 :=
@@ -427,7 +438,7 @@ theorem coeff_zero : (0 : StripWiener σ₁ σ₂).coeff = 0 :=
 
 theorem coeff_one : (1 : StripWiener σ₁ σ₂).coeff = Pi.single 1 1 :=
   coeff_eq_of (wsummable_single 1 1) fun s => by
-    rw [eval_one, expansion_single, PosRat.one_cpow, mul_one]
+    rw [eval_one, expansion_single, Scale.one_cpow, mul_one]
 
 theorem coeff_add (f g : StripWiener σ₁ σ₂) : (f + g).coeff = f.coeff + g.coeff :=
   coeff_eq_of (f.wsummable_coeff.add g.wsummable_coeff) fun s => by
@@ -521,7 +532,7 @@ theorem norm_eval_le (f : StripWiener σ₁ σ₂) (s : {s : ℂ // σ₁ ≤ s.
 /-! ### Completeness -/
 
 /-- The weighted coefficients as an element of `ℓ¹`. -/
-def toLp (f : StripWiener σ₁ σ₂) : lp (fun _ : PosRat => ℂ) 1 :=
+def toLp (f : StripWiener σ₁ σ₂) : lp (fun _ : Scale => ℂ) 1 :=
   ⟨fun q => f.coeff q * ((stripWeight σ₁ σ₂ q : ℝ) : ℂ), by
     refine memℓp_gen ?_
     simp only [ENNReal.toReal_one, Real.rpow_one]
@@ -529,10 +540,10 @@ def toLp (f : StripWiener σ₁ σ₂) : lp (fun _ : PosRat => ℂ) 1 :=
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (stripWeight_pos σ₁ σ₂ q).le]⟩
 
 omit hσ in
-theorem toLp_apply (f : StripWiener σ₁ σ₂) (q : PosRat) :
-    (toLp f : PosRat → ℂ) q = f.coeff q * ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) := rfl
+theorem toLp_apply (f : StripWiener σ₁ σ₂) (q : Scale) :
+    (toLp f : Scale → ℂ) q = f.coeff q * ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) := rfl
 
-theorem norm_lp_one (x : lp (fun _ : PosRat => ℂ) 1) : ‖x‖ = ∑' q, ‖(x : PosRat → ℂ) q‖ := by
+theorem norm_lp_one (x : lp (fun _ : Scale => ℂ) 1) : ‖x‖ = ∑' q, ‖(x : Scale → ℂ) q‖ := by
   rw [lp.norm_eq_tsum_rpow (by norm_num)]
   simp
 
@@ -547,8 +558,8 @@ theorem toLp_sub (f g : StripWiener σ₁ σ₂) : toLp (f - g) = toLp f - toLp 
     sub_mul]
 
 omit hσ in
-theorem wsummable_ofLp (x : lp (fun _ : PosRat => ℂ) 1) :
-    WSummable σ₁ σ₂ fun q => (x : PosRat → ℂ) q / ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) := by
+theorem wsummable_ofLp (x : lp (fun _ : Scale => ℂ) 1) :
+    WSummable σ₁ σ₂ fun q => (x : Scale → ℂ) q / ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) := by
   have hmem := (memℓp_gen_iff (p := (1 : ENNReal)) (by norm_num)).1 (lp.memℓp x)
   simp only [ENNReal.toReal_one, Real.rpow_one] at hmem
   refine hmem.congr fun q => ?_
@@ -556,10 +567,10 @@ theorem wsummable_ofLp (x : lp (fun _ : PosRat => ℂ) 1) :
     div_mul_cancel₀ _ (stripWeight_pos σ₁ σ₂ q).ne']
 
 /-- The inverse of the weight isometry. -/
-def ofLp (x : lp (fun _ : PosRat => ℂ) 1) : StripWiener σ₁ σ₂ :=
+def ofLp (x : lp (fun _ : Scale => ℂ) 1) : StripWiener σ₁ σ₂ :=
   ofCoeff _ (wsummable_ofLp x)
 
-theorem toLp_ofLp (x : lp (fun _ : PosRat => ℂ) 1) : toLp (ofLp (σ₁ := σ₁) (σ₂ := σ₂) x) = x := by
+theorem toLp_ofLp (x : lp (fun _ : Scale => ℂ) 1) : toLp (ofLp (σ₁ := σ₁) (σ₂ := σ₂) x) = x := by
   refine lp.ext (funext fun q => ?_)
   rw [toLp_apply, ofLp, coeff_ofCoeff, div_mul_cancel₀]
   exact Complex.ofReal_ne_zero.mpr (stripWeight_pos σ₁ σ₂ q).ne'
@@ -570,13 +581,13 @@ theorem ofLp_toLp (f : StripWiener σ₁ σ₂) : ofLp (toLp f) = f := by
   rw [ofLp, eval_ofCoeff, f.eval_eq]
   unfold expansion
   refine tsum_congr fun q => ?_
-  show (toLp f : PosRat → ℂ) q / ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) * q.cpow s = f.coeff q * q.cpow s
+  show (toLp f : Scale → ℂ) q / ((stripWeight σ₁ σ₂ q : ℝ) : ℂ) * q.cpow s = f.coeff q * q.cpow s
   rw [toLp_apply, mul_div_cancel_right₀ _
     (Complex.ofReal_ne_zero.mpr (stripWeight_pos σ₁ σ₂ q).ne')]
 
 variable (σ₁ σ₂) in
 /-- **The weight isometry**: `𝒲[σ₁, σ₂]` and `ℓ¹` of the positive rationals are isometric. -/
-def isometryLp : StripWiener σ₁ σ₂ ≃ᵢ lp (fun _ : PosRat => ℂ) 1 where
+def isometryLp : StripWiener σ₁ σ₂ ≃ᵢ lp (fun _ : Scale => ℂ) 1 where
   toFun := toLp
   invFun := ofLp
   left_inv := ofLp_toLp
@@ -605,18 +616,18 @@ theorem evalCLM_apply (s : {s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂}) (f : 
     evalCLM s f = f.eval s := rfl
 
 /-- The point mass `δ_q`: the function `s ↦ q^s`. -/
-def pointMass (q : PosRat) : StripWiener σ₁ σ₂ := ofCoeff (Pi.single q 1) (wsummable_single q 1)
+def pointMass (q : Scale) : StripWiener σ₁ σ₂ := ofCoeff (Pi.single q 1) (wsummable_single q 1)
 
 omit hσ in
-theorem eval_pointMass (q : PosRat) (s : {s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂}) :
+theorem eval_pointMass (q : Scale) (s : {s : ℂ // σ₁ ≤ s.re ∧ s.re ≤ σ₂}) :
     (pointMass q : StripWiener σ₁ σ₂).eval s = q.cpow s := by
   rw [pointMass, eval_ofCoeff, expansion_single, one_mul]
 
-theorem coeff_pointMass (q : PosRat) : (pointMass q : StripWiener σ₁ σ₂).coeff = Pi.single q 1 :=
+theorem coeff_pointMass (q : Scale) : (pointMass q : StripWiener σ₁ σ₂).coeff = Pi.single q 1 :=
   coeff_ofCoeff _ _
 
 /-- `‖δ_q‖ = max(q^σ₁, q^σ₂)`. -/
-theorem norm_pointMass (q : PosRat) :
+theorem norm_pointMass (q : Scale) :
     ‖(pointMass q : StripWiener σ₁ σ₂)‖ = stripWeight σ₁ σ₂ q := by
   rw [norm_def, coeff_pointMass, tsum_eq_single q fun r hr => by
     rw [Pi.single_eq_of_ne hr, norm_zero, zero_mul], Pi.single_eq_same, norm_one, one_mul]
@@ -624,14 +635,14 @@ theorem norm_pointMass (q : PosRat) :
 omit hσ in
 theorem pointMass_one : (pointMass 1 : StripWiener σ₁ σ₂) = 1 := by
   ext s
-  rw [eval_pointMass, PosRat.one_cpow, eval_one]
+  rw [eval_pointMass, Scale.one_cpow, eval_one]
 
 omit hσ in
 /-- **Point masses multiply**: `δ_q δ_r = δ_{qr}`. -/
-theorem pointMass_mul (q r : PosRat) :
+theorem pointMass_mul (q r : Scale) :
     (pointMass q * pointMass r : StripWiener σ₁ σ₂) = pointMass (q * r) := by
   ext s
-  rw [eval_mul, eval_pointMass, eval_pointMass, eval_pointMass, PosRat.cpow_mul]
+  rw [eval_mul, eval_pointMass, eval_pointMass, eval_pointMass, Scale.cpow_mul]
 
 /-- **Every element is the norm-convergent series of its point masses**: `f = Σ c(q) δ_q`. -/
 theorem hasSum_pointMass (f : StripWiener σ₁ σ₂) :

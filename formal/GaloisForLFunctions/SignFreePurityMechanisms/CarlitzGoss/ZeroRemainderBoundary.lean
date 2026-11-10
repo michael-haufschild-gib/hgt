@@ -42,6 +42,7 @@ the original total is divisible. -/
 theorem zeroRemainder_proper_divisible_iff (C : DigitComposition p s (m + 1) S) :
     (∀ i : Fin (m + 1), ((p : ℤ) ^ s - 1) ∣ digitValue p (C.zeroRemainderParts i.castSucc)) ↔
       ((p : ℤ) ^ s - 1) ∣ digitValue p S := by
+  simp only [zeroRemainderParts, Fin.snoc_castSucc]
   change (∀ i, ((p : ℤ) ^ s - 1) ∣ C.value i) ↔ _
   constructor
   · intro h

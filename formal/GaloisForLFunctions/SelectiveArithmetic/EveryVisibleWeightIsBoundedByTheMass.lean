@@ -140,9 +140,12 @@ theorem packetAutocorr_twoBump (s h : ℝ) {r : ℝ} (hr : 0 < r) (y : ℝ) :
     _ = (∫ u, b (u + h) * b (u + h + y)) + s * (∫ u, b (u + h) * b (u + h + (y - 2 * h))) +
           s * (∫ u, b (u - h) * b (u - h + (y + 2 * h))) +
           s * s * ∫ u, b (u - h) * b (u - h + y) := by
-        rw [integral_add ((hi1.add (hi2.const_mul s)).add (hi3.const_mul s))
-            (hi4.const_mul (s * s)),
-          integral_add (hi1.add (hi2.const_mul s)) (hi3.const_mul s),
+        have hA : Integrable fun u => b (u + h) * b (u + h + y) +
+            s * (b (u + h) * b (u + h + (y - 2 * h))) := hi1.add (hi2.const_mul s)
+        have hB : Integrable fun u => b (u + h) * b (u + h + y) +
+            s * (b (u + h) * b (u + h + (y - 2 * h))) +
+            s * (b (u - h) * b (u - h + (y + 2 * h))) := hA.add (hi3.const_mul s)
+        rw [integral_add hB (hi4.const_mul (s * s)), integral_add hA (hi3.const_mul s),
           integral_add hi1 (hi2.const_mul s), integral_const_mul, integral_const_mul,
           integral_const_mul]
     _ = _ := by
@@ -179,11 +182,11 @@ theorem integral_deriv_twoBump_sq_le {S : ℝ} (hS : ∀ x : ℝ, |deriv Real.sm
       (hbd (u + h)).comp_add_const u h
     have h2 : HasDerivAt (fun v => b (v - h)) (deriv b (u - h)) u :=
       (hbd (u - h)).comp_sub_const u h
-    have h3 : HasDerivAt (twoBump s h r) (deriv b (u + h) + s * deriv b (u - h)) u := by
-      have := h1.add (h2.const_mul s)
-      rw [hb] at this
-      exact this
-    exact h3.deriv
+    have e : twoBump s h r = (fun v => b (v + h)) + fun v => s * b (v - h) := by
+      funext v
+      simp only [Pi.add_apply, twoBump, hb]
+    rw [e]
+    exact (h1.add (h2.const_mul s)).deriv
   have hsqI : Integrable fun u => deriv b u ^ 2 := by
     refine (hdc.pow 2).integrable_of_hasCompactSupport
       (HasCompactSupport.intro (isCompact_Icc (a := -r) (b := r)) fun u hu => ?_)
@@ -192,6 +195,7 @@ theorem integral_deriv_twoBump_sq_le {S : ℝ} (hS : ∀ x : ℝ, |deriv Real.sm
       rcases hu with h' | h'
       · exact lt_abs.mpr (Or.inr (by linarith))
       · exact lt_abs.mpr (Or.inl h')
+    show deriv b u ^ 2 = 0
     rw [hd0 u this]
     norm_num
   have hi1 : Integrable fun u => deriv b (u + h) ^ 2 := hsqI.comp_add_right h
@@ -250,9 +254,10 @@ theorem abs_log_sub_log_ge {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (hmn : m �
       rw [div_le_iff₀ hm0]
       have e : (1 - 1 / (2 * (n : ℝ))) * m = m - m / (2 * n) := by ring
       rw [e]
+      have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
       have h4 : (m : ℝ) / (2 * n) ≤ m - n := by
         rw [div_le_iff₀ (by positivity)]
-        nlinarith
+        nlinarith [mul_le_mul_of_nonneg_left hmn' (by linarith : (0 : ℝ) ≤ 2 * n - 1)]
       linarith
     exact le_trans (by linarith) (le_abs_self _)
 

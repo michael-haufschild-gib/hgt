@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 9 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 10 modules.
 
 ## 1. Motivation
 
@@ -102,6 +102,16 @@ increase with $q$, decrease with $a$. A uniform floor $-K\int|F|^2$ is feasibili
 conductor $qe^K$, which has the same trivial aperture up to $o(1)$: floors do not move the ladder,
 and beyond the trivial aperture the Liouville twist violates every floor.
 
+**4′. Between a ball and a box.** A pair of narrow bumps at distance $\log n$ has the lags $0$
+and $\log n$ only, so it isolates the contact $n$; a bump of width $r$ costs $\log(1/r)+O(1)$ times
+its mass. Hence every system feasible at an aperture $a\ge\tfrac12\log n+\tfrac1{4n}$ has
+$|w(n)|\le\sqrt n(\log q+\log(1+4n)+C)$. Conversely
+$A_0+2\sum_{n\le e^{2a}}|w(n)|n^{-1/2}\le\log q$ is sufficient. Below the first contact,
+$2a<\log2$, the weights do not enter. So selectivity starts at the aperture $\tfrac12\log2$, where
+the weight at $2$ is confined to an interval of half-length of the order of the mass; a single
+weight may reach $\sqrt n$ times the mass, and what the ladder constrains beyond the trivial
+aperture is the Riesz mean of all contacts together (6′).
+
 **5. The height is a mass.** For $F=e^{-itu}f(u)$ the transform moves to $t$, where
 $S_\infty\ge\log(2+|t|)-c_0$; moving back costs $1+(\tau-t)^2$, which is the energy of $f'$. The
 pole term at the points $\pm i/2-t$ is $\ge-4\int f'^2$ once $e^a\le|t|$, by one integration by
@@ -150,6 +160,7 @@ product) both fail at the rung $1$.
 | The ladder of the conductor has no gap | `exists_abs_trivialAperture_sub_le`, `tendsto_trivialAperture_sub_log` | unconditional |
 | The trivial aperture is a threshold; feasible sets convex and monotone | `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt`, `convex_feasible`, `Feasible.anti`, `Feasible.mono_conductor`, `feasible_congr` | unconditional |
 | A floor is a conductor; the Liouville twist violates every floor beyond the trivial aperture | `feasible_mul_exp_iff`, `exists_not_floor` | unconditional |
+| The box law of a conductor; an $\ell^1$ ball is feasible; no weight enters below the first contact | `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | unconditional |
 | The height is a mass; the pole plane does not reach a height | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge` | unconditional |
 | Weil's form of $\zeta$ at a height, aperture $\le\log\log|t|-\eta$ | `re_weilFullFunctional_modulated_ge`, `exists_height_margin` | unconditional |
 | Exchange rate, prime side: cancellation buys rungs | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
@@ -176,7 +187,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | Q2 | Is there a source beyond exponential sums, mean values, rigidity and the fractional part? | Open. The sign at aperture $a$ *is* a saving: it forces the Riesz mean of the contacts at $Y=e^{2a}$ to be $O(\sqrt Y(\log q+\log^3Y))$, and a power saving of the partial sums gives the sign back on bounded shapes. A source passes the rung $1$ only by a power saving of the contacts on the integers up to $m^{2\kappa}$ or by excluding isolated zeros of depth $>1/(2\kappa)$; sizes, multiplicativity and the functional equation alone do not |
 | Q3 | Can a feasible weight system be constructed at every aperture? | With a conductor: the dominated box up to the trivial aperture and not beyond; systems with cancellation $\gamma$ up to $\kappa<1/(2\gamma)$ on bounded shapes. With the pole plane: this is RH |
 | Q4 | Is the exceptional square removable? | The ladder of the conductor has no gap: the sign at $\log\log q-\eta$ is a theorem for every dominated system, and at $\log\log q+\eta$ it fails for the Liouville twist. Removal at $\log\log q+C$ is a statement on $\chi$ at the integers between $\log q$ and $e^{2C}\log^2q$ that uses conductor and Euler product jointly: Landau–Siegel on the comb |
-| Q5 | What is the first selective window? | For $\zeta$: every window of ratio $>2$ (corpus: ratio $\le2$ is blind, and visible weights are bounded). In an aspect: the rung $1$ |
+| Q5 | What is the first selective window? | The first contact. Below the aperture $\tfrac12\log2$ no weight enters; at $\tfrac12\log n+\tfrac1{4n}$ the weight at $n$ of a feasible system is at most $\sqrt n(\log q+\log(1+4n)+C)$, and an $\ell^1$ ball of the size of the mass is feasible. For $\zeta$ with its pole plane the corresponding statements are in the corpus (ratio $\le2$ is blind; weights seen with a margin are bounded). On the ladder the first aperture that is selective inside the dominated box is the rung $1$ |
 
 **Atlas (where a statement sits on the ladder).**
 
@@ -198,8 +209,9 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
   and complex tests.
 - Polar packets with an explicit smooth cutoff: masses, derivative energies, correlation
   inequalities; the upper bound $(5+\log q)\int f^2+\int f'^2-$ contacts for a form on a packet.
-- The conductor ladder: system forms with a free conductor, feasible sets and their structure,
-  the trivial aperture as a threshold.
+- The conductor ladder: system forms with a free conductor, feasible sets and their structure
+  (between an $\ell^1$ ball and a box of the size of the mass), the trivial aperture as a threshold.
+- Two-bump packets: isolation of a single contact.
 - Calibration on fakes (Liouville twist, $\pm\Lambda$, lattice with a pair) and on true
   $L$-functions (twisted part with margin; companions of the zeros of $L(s,\chi)$ and of $\zeta$
   on a rung).
@@ -209,13 +221,10 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
   receiver on the prime side: sum and difference of the two polar packets read the Riesz mean.
 
 **To build.**
-- A fake for the height aspect in the dominated class (block-aligned phases), to show that the
-  rung $1$ is sharp there for sizes.
+- A fake for the height aspect in the dominated class (phases aligned on blocks of primes at
+  chosen heights), to show that the rung $1$ is sharp there for sizes.
 - The exchange rate on packets without shape condition: bounds for $\sum w(n)n^{-i\tau}$ uniform
   in $\tau$.
-- The exact feasible interval of the first contact as a function of the aperture.
-- The rung law for an exceptional zero with Deuring–Heilbronn isolation in place of the
-  companion alternative.
 
 ## 8. Open research topics
 

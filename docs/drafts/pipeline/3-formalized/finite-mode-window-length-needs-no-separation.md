@@ -18,4 +18,10 @@ On the compact phase torus, the open sets admitting a value below `−ε` form a
 - Direct `lake --old env lean` audit passed; transitive axioms are `propext`, `Classical.choice`, `Quot.sound` only.
 - Imported by `SurfaceOfSpecZ.lean`.
 
-The specialization to finite top layers of zero configurations remains on the assembly card.
+## Finite top layers
+
+`SurfaceOfSpecZ/ScaleLocality/FiniteTopLayersNeedNoSeparation.lean` pairs conjugate top exponents and applies the uniform finite-mode theorem. For zeta, every positive-depth active ordinate exceeds the verified height 67. At most `k` top quartets therefore give negative normalized excursions in every late interval of length `(k+1)π/67`, without a separation assumption. Exponential rescaling makes every fixed raw-trace floor fail on every sufficiently late interval of the same length.
+
+- `topTrace_eq_positive_sum`, `finite_top_negative_in_every_window`.
+- `zeta_finite_top_negative_windows`, `zeta_finite_top_breaks_every_floor`.
+- Direct Lean check passed; axiom audit omitted as requested. Imported by `SurfaceOfSpecZ.lean`.

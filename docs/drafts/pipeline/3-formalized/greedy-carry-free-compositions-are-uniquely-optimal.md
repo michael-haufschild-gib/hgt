@@ -69,3 +69,18 @@ the half-total bound additionally gives `v(C)<N`.
 `IsGreedy.prefixCost_strictConvex`, and `IsGreedy.prefixCost_lt_total` in
 the `DigitComposition` namespace. The direct check and all three transitive
 axiom audits pass with the same three standard axioms. The umbrella imports it.
+
+## Empty-remainder boundary
+
+Appending an empty final part leaves weight unchanged and increases cost
+by `N`. Its proper parts are all divisible exactly when `N` is divisible.
+For that total, an admissible composition with a positive remainder has
+greedy weight `>(m−1)N`, whereas every zero-remainder extension has weight
+`≤(m−1)N`, with `m` counting the extended parts. If no positive remainder
+is feasible, optimization reduces to the original nonempty parts.
+
+For a greedy divisible composition, `v(C)<N`; hence appending the empty
+remainder gives cost `v(C)+N>2v(C)`. `ZeroRemainderBoundary.lean` proves
+the actual empty-part weight identity, divisibility equivalence, weight
+comparison, exact cost increment, and this strict boundary inequality.
+Its direct Lean check passed; no further axiom audit was run. The umbrella imports it.

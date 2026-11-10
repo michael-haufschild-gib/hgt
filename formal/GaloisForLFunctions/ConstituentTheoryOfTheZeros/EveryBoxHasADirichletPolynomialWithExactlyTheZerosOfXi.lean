@@ -140,30 +140,38 @@ theorem LSeries_twoTermCoeff_eq_zero_iff {m : ℕ} (hm : 0 < m) (ρ s : ℂ) :
   rw [harg]
 
 /-- In a band of height below `πm` the factor has the single zero `ρ`. -/
-theorem eq_of_exp_stepLog_eq_one {m : ℕ} (hm : 0 < m) {H : ℝ} (hH : H < π * m) {ρ s : ℂ}
+theorem eq_of_exp_stepLog_eq_one {m : ℕ} (hm : 0 < m) {H : ℝ} (hH : H < Real.pi * m) {ρ s : ℂ}
     (hρ : |ρ.im| ≤ H) (hs : |s.im| ≤ H) (h : exp ((s - ρ) * stepLog m) = 1) : s = ρ := by
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hLpos := stepLog_pos hm
   obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp h
-  have him : (s.im - ρ.im) * stepLog m = n * (2 * π) := by
+  have him : (s.im - ρ.im) * stepLog m = n * (2 * Real.pi) := by
     have h1 := congrArg Complex.im hn
-    rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, add_zero, Complex.sub_im,
-      Complex.mul_im] at h1
-    simpa using h1
+    have h2 : ((s - ρ) * (stepLog m : ℂ)).im = (s.im - ρ.im) * stepLog m := by
+      rw [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add, Complex.sub_im]
+    have h3 : ((n : ℂ) * (2 * (Real.pi : ℂ) * I)).im = n * (2 * Real.pi) := by
+      have e : (n : ℂ) * (2 * (Real.pi : ℂ) * I) = (((n : ℝ) * (2 * Real.pi) : ℝ) : ℂ) * I := by
+        push_cast
+        ring
+      rw [e, Complex.mul_I_im, Complex.ofReal_re]
+    rw [h2, h3] at h1
+    exact h1
   have hn0 : n = 0 := by
     by_contra hne
     have h1 : (1 : ℝ) ≤ |(n : ℝ)| := by exact_mod_cast Int.one_le_abs hne
-    have habs : |s.im - ρ.im| * stepLog m = |(n : ℝ)| * (2 * π) := by
+    have habs : |s.im - ρ.im| * stepLog m = |(n : ℝ)| * (2 * Real.pi) := by
       have h2 := congrArg abs him
-      rwa [abs_mul, abs_mul, abs_of_pos hLpos, abs_of_pos (by positivity : (0 : ℝ) < 2 * π)] at h2
+      rwa [abs_mul, abs_mul, abs_of_pos hLpos, abs_of_pos (by positivity : (0 : ℝ) < 2 * Real.pi)] at h2
     have h2 : |s.im - ρ.im| ≤ 2 * H :=
       (abs_sub _ _).trans (by linarith)
     have h3 : |s.im - ρ.im| * stepLog m ≤ 2 * H * (1 / m) :=
       mul_le_mul h2 (stepLog_le hm) hLpos.le (by linarith [abs_nonneg (s.im - ρ.im)])
-    have h4 : 2 * H * (1 / m) < 2 * π := by
+    have h4 : 2 * H * (1 / m) < 2 * Real.pi := by
       rw [mul_one_div, div_lt_iff₀ hm']
       linarith
-    nlinarith [Real.pi_pos]
+    have h5 : 1 * (2 * Real.pi) ≤ |(n : ℝ)| * (2 * Real.pi) :=
+      mul_le_mul_of_nonneg_right h1 (by positivity)
+    linarith
   rw [hn0, Int.cast_zero, zero_mul, mul_eq_zero] at hn
   rcases hn with hn | hn
   · exact sub_eq_zero.mp hn
@@ -176,10 +184,10 @@ polynomial.** -/
 theorem exists_dirichletPolynomial_zeros_eq (H : ℝ) (Z : Finset ℂ) (hZ : ∀ z ∈ Z, |z.im| ≤ H) :
     ∃ (a : ℕ → ℂ) (N : ℕ), (∀ n, N < n → a n = 0) ∧
       ∀ s : ℂ, |s.im| ≤ H → (LSeries a s = 0 ↔ s ∈ Z) := by
-  obtain ⟨m, hm⟩ := exists_nat_gt (max H 0 / π)
+  obtain ⟨m, hm⟩ := exists_nat_gt (max H 0 / Real.pi)
   have hmpos : (0 : ℝ) < m := lt_of_le_of_lt (div_nonneg (le_max_right _ _) Real.pi_pos.le) hm
   have hm0 : 0 < m := by exact_mod_cast hmpos
-  have hH : H < π * m := by
+  have hH : H < Real.pi * m := by
     rw [div_lt_iff₀ Real.pi_pos] at hm
     linarith [le_max_left H 0]
   induction Z using Finset.induction_on with

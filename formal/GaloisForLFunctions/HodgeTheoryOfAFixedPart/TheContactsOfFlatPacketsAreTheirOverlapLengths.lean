@@ -8,7 +8,9 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheEnergyOfAWindowIsTheJumpFo
 A contact of ratio `k` between two scaled integer windows is an
 intersection of two integer intervals. Its normalized cardinality
 converges to their overlap length. This gives every prime entry of
-the limiting form on a fixed finite family of flat packets.
+the limiting form on a fixed finite family of flat packets. Flat packets
+are differences of bounded monotone steps, hence have bounded variation.
+Complete-block padding places arbitrary large windows in this fixed geometry.
 -/
 
 open Finset Filter Topology
@@ -94,6 +96,17 @@ theorem completeBlock_left_endpoints {R N : ℕ} (hR : 0 < R) (hB : R ≤ N / R)
   have he := Nat.div_add_mod N R
   have hr := (Nat.mod_lt N hR).le.trans hB
   constructor <;> nlinarith only [he, hr]
+
+/-- The complete-block padding applies at every sufficiently large scale. -/
+theorem eventually_completeBlock_padding (R Q : ℕ) (hR : 0 < R) :
+    ∀ᶠ N : ℕ in atTop,
+      (R * (N / R) ≤ N ∧ N ≤ (R + 1) * (N / R)) ∧
+      Ioc N (Q * N) ⊆ Ioc (R * (N / R)) ((Q + 1) * R * (N / R)) := by
+  filter_upwards [eventually_ge_atTop (R * max R Q)] with N hN
+  have hB : max R Q ≤ N / R := (Nat.le_div_iff_mul_le hR).mpr
+    (by simpa only [Nat.mul_comm] using hN)
+  exact ⟨completeBlock_left_endpoints hR ((le_max_left R Q).trans hB),
+    scaledWindow_subset_completeBlocks hR ((le_max_right R Q).trans hB)⟩
 
 /-- Points in the first window whose ratio-`k` partners lie in the second. -/
 def flatContactPoints (a b c d k N : ℕ) : Finset ℕ :=

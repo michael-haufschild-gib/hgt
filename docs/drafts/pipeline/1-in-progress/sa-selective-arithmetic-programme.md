@@ -63,7 +63,9 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `TheZerosOfADirichletLFunctionOnTheLadder` | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | clean |
 | `TheSignIsSquareRootCancellationOfTheRieszMean` | `systemForm_le_of_packet_scaled`, `packetAutocorr_cutoff_ge/le`, `packetAutocorr_evenPolar_sub_oddPolar`, `contactForm_le_of_systemForm_nonneg`, `riesz_bound_algebra`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge`, `exists_riesz_twist_le_of_nonneg` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports all nine; `MainTheorems.lean` imports the umbrella.
+| `EveryVisibleWeightIsBoundedByTheMass` | `twoBump`, `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | clean |
+
+Umbrella `SelectiveArithmetic.lean` imports all ten; `MainTheorems.lean` imports the umbrella.
 README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`).
 
 ## Not done (candidates)

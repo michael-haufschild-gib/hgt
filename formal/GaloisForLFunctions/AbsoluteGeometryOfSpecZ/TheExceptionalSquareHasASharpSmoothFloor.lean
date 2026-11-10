@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSquare
+import GaloisForLFunctions.HTGeometry.HalfLineSteinRobertson
 
 /-!
 # The sharp floor of an exceptional real pair
@@ -13,6 +14,14 @@ open MeasureTheory Set Filter Topology
 noncomputable section
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 open SquareRootThreshold Zeta23
+
+private theorem realPacket_compact {f : ℝ → ℝ} {a : ℝ}
+    (hfs : tsupport f ⊆ Icc (-a) a) : HasCompactSupport f :=
+  isCompact_Icc.of_isClosed_subset (isClosed_tsupport f) hfs
+
+private theorem realPacket_zero_of_outside {f : ℝ → ℝ} {a u : ℝ}
+    (hfs : tsupport f ⊆ Icc (-a) a) (hu : u ∉ Icc (-a) a) : f u = 0 :=
+  image_eq_zero_of_notMem_tsupport (fun h => hu (hfs h))
 
 /-- The contribution of a simple real zero and its reflection. -/
 def realPairForm (δ : ℝ) (f : ℝ → ℝ) : ℝ :=
@@ -52,7 +61,7 @@ theorem pairEnergy_pos_of_pos {δ a : ℝ} (hδ : 0 < δ) (ha : 0 < a) :
 theorem realPairForm_ge_neg_two_pairEnergy {δ a : ℝ} (hδ : 0 < δ) (ha : 0 ≤ a)
     {f : ℝ → ℝ} (hf : Continuous f) (hfs : tsupport f ⊆ Icc (-a) a) :
     -2 * pairEnergy δ a * (∫ u, f u ^ 2) ≤ realPairForm δ f := by
-  have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
+  have hfc := realPacket_compact hfs
   let g : ℝ → ℝ := (Icc (-a) a).indicator (fun u => Real.sinh (δ * u))
   have hgsq (u : ℝ) : g u ^ 2 =
       (Icc (-a) a).indicator (fun u => Real.sinh (δ * u) ^ 2) u := by
@@ -67,14 +76,14 @@ theorem realPairForm_ge_neg_two_pairEnergy {δ a : ℝ} (hδ : 0 < δ) (ha : 0 �
   have hgm : AEStronglyMeasurable g :=
     (by fun_prop : Continuous fun u => Real.sinh (δ * u)).aestronglyMeasurable.indicator
       measurableSet_Icc
-  have hcs := HTGeometry.sq_integral_mul_le_integral_sq_mul_integral_sq
+  have hcs := _root_.HTGeometry.sq_integral_mul_le_integral_sq_mul_integral_sq
     hf.aestronglyMeasurable hgm hfi hgi
   have hfg : (∫ u, f u * g u) = ∫ u, f u * Real.sinh (δ * u) := by
     apply integral_congr_ae
     filter_upwards with u
     by_cases hu : u ∈ Icc (-a) a
     · rw [g, indicator_of_mem hu]
-    · rw [g, indicator_of_notMem hu, eq_zero_of_not_mem_Icc hfs hu, zero_mul, zero_mul]
+    · rw [g, indicator_of_notMem hu, realPacket_zero_of_outside hfs hu, zero_mul, zero_mul]
   have hgv : (∫ u, g u ^ 2) = pairEnergy δ a := by
     simp_rw [hgsq]
     rw [integral_indicator measurableSet_Icc, integral_sinh_sq_Icc hδ ha]
@@ -110,7 +119,7 @@ theorem exists_smooth_realPairForm_below {δ a L : ℝ} (hδ : 0 < δ) (ha : 0 <
     simp only [f, hφ, mul_zero]
   have hfs : tsupport f ⊆ Icc (-a) a :=
     closure_minimal (fun u hu => by by_contra hn; exact hu (hz u hn)) isClosed_Icc
-  have hfc := hasCompactSupport_of_tsupport_subset_Icc hfs
+  have hfc := realPacket_compact hfs
   let J : ℝ := ∫ u, φ u * Real.sinh (δ * u) ^ 2
   have hodd : (∫ u, f u * Real.cosh (δ * u)) = 0 :=
     _root_.RHTower.integral_odd_mul_cosh (fun u => by
@@ -215,7 +224,7 @@ theorem exists_unit_realPairForm_near_lower_edge {δ a ε : ℝ}
     apply closure_minimal _ isClosed_Icc
     intro u hu
     by_contra hn
-    exact hu (by simp only [g, eq_zero_of_not_mem_Icc hfs hn, mul_zero])
+    exact hu (by simp only [g, realPacket_zero_of_outside hfs hn, mul_zero])
   have hmass : (∫ u, g u ^ 2) = 1 := by
     simp only [g, mul_pow, integral_const_mul]
     exact hrM
@@ -264,7 +273,7 @@ theorem exists_unit_real_zero_pair_near_lower_edge (Z : ZeroConfig) {ρ : ℂ}
     exists_unit_realPairForm_near_lower_edge hδ ha (div_pos hε hm)
   refine ⟨f, hf, hfs, hmass, ?_⟩
   rw [real_zero_pair_eq_mult_realPairForm Z hρ him hre hf.continuous
-    (hasCompactSupport_of_tsupport_subset_Icc hfs)]
+    (realPacket_compact hfs)]
   have hh := mul_lt_mul_of_pos_left hpair hm
   have he : (Z.mult ρ : ℝ) * (-2 * pairEnergy δ a + ε / Z.mult ρ) =
       -2 * (Z.mult ρ : ℝ) * pairEnergy δ a + ε := by

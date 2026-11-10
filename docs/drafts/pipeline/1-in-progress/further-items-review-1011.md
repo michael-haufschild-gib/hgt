@@ -3,6 +3,7 @@
 - **ID:** further-items-review-1011
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
+- **Status:** Paused at user request. A37, A46, A55, A68 complete; ten items open.
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, §2.1, “Further items”.
 - **Statement:** Resolve all fourteen tasks with dependency-closed proofs and unconditional Lean formalizations.
 - **Constraints:** No web search, numerical experiments, or computation-based certificates. Local corpus search and deductive Lean proofs only.
@@ -15,7 +16,7 @@
 | A24 | Certified theta-column scans and brackets for `S*(a,b)` | Numerical request; analytic certification unresolved |
 | A28 | Reciprocal-quadric traces as vanishing-cycle Frobenius traces | Open |
 | A30 | Sharp stencil exponent under RH in `[1/4,1/2]` | Open |
-| A37 | Resonator mean of `|ζ|²` for growing resonators below the Kronecker scale | Candidate uniform range `M(T)≤T^κ`, `κ<2σ−1`; unformalized |
+| A37 | Resonator mean of `|ζ|²` for growing resonators below the Kronecker scale | Complete: `eventually_resonatorMean_zeta_uniform`, `0≤κ<2σ−1`; seven direct checks passed; umbrella wired |
 | A42 | Uniform Gamma-weighted transport of the fixed-head theta asymptotic to the adaptive head | Open |
 | A46 | Local singular indices beyond the cubic cutoff | Complete: `primeVertexRelativeIndex_eq_signedCount`, direct check and standard-axiom audit passed; already imported by umbrella |
 | A54 | Bianchi resolvent cusp expansion with nonzero Wronskian for `Δ−3/4` | Open |
@@ -26,6 +27,7 @@
 
 Each completion requires its exact statement, paper proof, correctly placed Lean declarations,
 umbrella import, direct `lake --old env lean` check, and transitive `#print axioms` audit.
+Further axiom checks were waived at user request; A37 has no complete transitive audit.
 Conditional infrastructure does not discharge missing analytic hypotheses. Refutations require
 the strongest positive survivor and its formalization.
 
@@ -87,8 +89,14 @@ and standard-axiom audits. See
 `3-formalized/landing-calibration-with-the-riemann-gamma-factor.md`.
 No Euler product or Dirichlet series is asserted.
 
-A37's uniform polynomial range remains in
-`growing-resonator-means-below-the-kronecker-scale.md`, pending Lean checks.
+## A37: uniformly growing resonators
+
+For `1/2<σ<1` and `0≤κ<2σ−1`, the actual-zeta dyadic resonator mean
+equals its full convolution diagonal up to `o(Σ|r_T(m)|²)`, uniformly
+over arbitrary complex coefficients supported on positive integers at
+most `T^κ`. All seven modules passed direct checks; the umbrella imports
+`GrowingResonatorsKeepTheZetaMean.lean`. See
+`3-formalized/growing-resonator-means-below-the-kronecker-scale.md`.
 
 ## A91: scope of the existing index law
 

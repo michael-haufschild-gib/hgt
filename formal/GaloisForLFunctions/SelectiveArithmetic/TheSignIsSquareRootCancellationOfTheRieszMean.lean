@@ -12,16 +12,18 @@ packets reads the Riesz mean of its contacts.
 absolute constant `C` such that for every dominated system `w`, every conductor with
 `log q ≥ 0` and every aperture `a ≥ 1`: if the form of `(w, q)` is nonnegative on the even and
 on the odd polar packet of the window `[−a, a]` with margin `e^{−a}`, then
-`|Σ_{2 ≤ n ≤ e^{2a}} w(n) (2a − log n)| ≤ (3 log q + C (1 + a)³) e^{a}`.
-With `Y = e^{2a}` the Riesz mean `Σ_{n ≤ Y} w(n) log(Y/n)` is at most `√Y (3 log q + C log³ Y)`.
+`|Σ_{2 ≤ n ≤ e^{2a}} w(n) (2a − log n)| ≤ log q (e^{a} + 2a) + C (1 + a)³ e^{a}`.
+With `Y = e^{2a}` the Riesz mean `Σ_{n ≤ Y} w(n) log(Y/n)` is at most
+`√Y (log q (1 + o(1)) + C log³ Y)`: the constant in front of the mass is one.
 
 **Corollary** (`exists_not_feasible_of_riesz_ge`). A dominated system whose Riesz mean at
 `Y = e^{2a}` is at least `cY` in absolute value is infeasible as soon as
-`3 log q + C (1 + a)³ < c e^{a}`.
+`log q (e^{a} + 2a) + C (1 + a)³ e^{a} < c e^{2a}`: beyond the aperture
+`log log q + log(1/c) + o(1)`. For `c = 1` this is the trivial aperture.
 
 **Corollary** (`exists_riesz_twist_le_of_nonneg`). For a primitive character `χ` of conductor
 `q`: if the sum over the zeros of `L(s, χ)` is nonnegative on these two packets, then
-`|Σ_{n ≤ e^{2a}} Λ(n) Re χ(n) (2a − log n)| ≤ (3 (log q + π) + C (1 + a)³) e^{a}`.
+`|Σ_{n ≤ e^{2a}} Λ(n) Re χ(n) (2a − log n)| ≤ (log q + π)(e^{a} + 2a) + C (1 + a)³ e^{a}`.
 
 So on the ladder the exchange rate holds in both directions on the prime side: a sign up to the
 rung `κ` gives the saving `Y^{1/2 + 1/(2κ)}` of the Riesz mean at `Y = (log q)^{2κ}`, and a saving
@@ -337,14 +339,14 @@ theorem abs_contactForm_evenPolar_add_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (h
 
 /-- **The budget of a polar packet.** A packet of mass `≤ a + sinh a` and derivative energy
 `≤ (½ + 2S/δ)² (a + sinh a)`, `δ = e^{−a}`, on which the form of `(w, q)` is nonnegative, has
-contact form at most `(log q + a + 6 + (½ + 2S)²) · (3/2) e^{a}`. -/
+contact form at most `(log q + a + 6 + (½ + 2S)²) (a + e^{a}/2)`. -/
 theorem contactForm_le_of_systemForm_nonneg {S q a : ℝ} (hS0 : 0 ≤ S)
     (hx : 0 ≤ Real.log q) (ha : 1 ≤ a) {f : ℝ → ℝ} (hf : ContDiff ℝ 3 f)
     (h0 : ∀ u, a ≤ |u| → f u = 0) (hM : ∫ u, f u ^ 2 ≤ a + Real.sinh a)
     (hD : ∫ u, deriv f u ^ 2 ≤ (1 / 2 + 2 * S / Real.exp (-a)) ^ 2 * (a + Real.sinh a))
     (w : ℕ → ℝ) (hpos : 0 ≤ systemForm w q a (fun u => (f u : ℂ))) :
     contactForm w (fun u => (f u : ℂ)) ⌊Real.exp (2 * a)⌋₊ ≤
-      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * Real.exp a) := by
+      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (a + Real.exp a / 2) := by
   have ha0 : 0 ≤ a := by linarith
   obtain ⟨δ, hδdef⟩ : ∃ δ : ℝ, δ = Real.exp (-a) := ⟨_, rfl⟩
   rw [← hδdef] at hD
@@ -363,7 +365,7 @@ theorem contactForm_le_of_systemForm_nonneg {S q a : ℝ} (hS0 : 0 ≤ S)
   obtain ⟨Mb, hMb⟩ : ∃ Mb : ℝ, Mb = a + Real.sinh a := ⟨_, rfl⟩
   rw [← hMb] at hM hD
   have hMb0 : 0 ≤ Mb := by rw [hMb]; linarith
-  have hMbE : Mb ≤ 3 / 2 * E := by rw [hMb]; linarith
+  have hMbE : Mb ≤ a + E / 2 := by rw [hMb]; linarith
   have hM0 : 0 ≤ ∫ u, f u ^ 2 := integral_nonneg fun _ => sq_nonneg _
   -- the derivative energy at the scale of the margin
   have hKδ : δ ^ 2 * ((1 / 2 + 2 * S / δ) ^ 2 * Mb) ≤ (1 / 2 + 2 * S) ^ 2 * Mb := by
@@ -397,16 +399,16 @@ theorem contactForm_le_of_systemForm_nonneg {S q a : ℝ} (hS0 : 0 ≤ S)
   have h2 : δ ^ 2 * (∫ u, deriv f u ^ 2) ≤ (1 / 2 + 2 * S) ^ 2 * Mb :=
     (mul_le_mul_of_nonneg_left hD (sq_nonneg δ)).trans hKδ
   have h3 : (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * Mb ≤
-      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * E) :=
+      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (a + E / 2) :=
     mul_le_mul_of_nonneg_left hMbE (by positivity)
   linarith
 
 /-- The arithmetic of the last step. -/
-theorem riesz_bound_algebra {x a E cS L TE TO R B : ℝ} (ha : 1 ≤ a) (hE : 1 ≤ E)
-    (hcS : 0 ≤ cS) (hL : 0 ≤ L) (hB : B = (x + a + 6 + cS) * (3 / 2 * E)) (hTE : TE ≤ B)
+theorem riesz_bound_algebra {x a E cS L TE TO R B : ℝ} (ha : 1 ≤ a) (hE : 1 ≤ E) (haE : a ≤ E)
+    (hcS : 0 ≤ cS) (hL : 0 ≤ L) (hB : B = (x + a + 6 + cS) * (a + E / 2)) (hTE : TE ≤ B)
     (hTO : TO ≤ B) (hS1 : |TE + TO| ≤ 4 * a * E * (2 + 2 * a) ^ 2)
     (hD1 : |TE - TO - R| ≤ 4 * L * E + 2 * a * (2 + 2 * a) ^ 2) :
-    |R| ≤ (3 * x + (3 * (7 + cS) + 24 + 4 * L) * (1 + a) ^ 3) * E := by
+    |R| ≤ x * (E + 2 * a) + (3 * (7 + cS) + 24 + 4 * L) * (1 + a) ^ 3 * E := by
   have hE0 : 0 ≤ E := by linarith
   have h1 := abs_le.mp hS1
   have h2 := abs_le.mp hD1
@@ -422,32 +424,39 @@ theorem riesz_bound_algebra {x a E cS L TE TO R B : ℝ} (ha : 1 ≤ a) (hE : 1 
   have hs3 : a ≤ (1 + a) ^ 3 :=
     (by linarith : a ≤ 1 + a).trans (le_self_pow₀ (by linarith) (by norm_num))
   have hP0 : 0 ≤ (1 + a) ^ 3 := by linarith
-  have t1 : 3 * (a + 6 + cS) ≤ 3 * (7 + cS) * (1 + a) ^ 3 := by
+  have hc0 : 0 ≤ a + 6 + cS := by linarith
+  -- `(a + 6 + c)(2a + E) ≤ 3 (7 + c)(1 + a)³ E`
+  have t0 : (a + 6 + cS) * (2 * a + E) ≤ (a + 6 + cS) * (3 * E) :=
+    mul_le_mul_of_nonneg_left (by linarith) hc0
+  have t1 : a + 6 + cS ≤ (7 + cS) * (1 + a) ^ 3 := by
     linarith [mul_nonneg hcS (sub_nonneg.mpr hs1)]
   have t2 : 8 * (a * (1 + a) ^ 2) ≤ 8 * ((1 + a) ^ 3 * E) := by
     linarith [mul_le_mul_of_nonneg_left hE hP0]
   have t3 : 4 * L ≤ 4 * L * (1 + a) ^ 3 := by
     linarith [mul_nonneg hL (sub_nonneg.mpr hs1)]
-  have p1 := mul_le_mul_of_nonneg_right t1 hE0
+  have p1 := mul_le_mul_of_nonneg_right t1 (by linarith : (0 : ℝ) ≤ 3 * E)
   have p2 := mul_le_mul_of_nonneg_right hs2 hE0
   have p3 := mul_le_mul_of_nonneg_right t3 hE0
   refine hRle.trans ?_
   rw [hB]
   have e1 : (2 + 2 * a) ^ 2 = 4 * (1 + a) ^ 2 := by ring
   rw [e1]
+  have e2 : 2 * ((x + a + 6 + cS) * (a + E / 2)) =
+      x * (E + 2 * a) + (a + 6 + cS) * (2 * a + E) := by ring
+  rw [e2]
   linarith
 
 /-- **The sign on the two polar packets is square-root cancellation of the Riesz mean.** There
 is an absolute constant `C` such that for every dominated system `w`, every conductor with
 `log q ≥ 0` and every aperture `a ≥ 1`: if the form of `(w, q)` is nonnegative on the even and
 on the odd polar packet of margin `e^{−a}`, then
-`|Σ_{2 ≤ n ≤ e^{2a}} w(n)(2a − log n)| ≤ (3 log q + C (1 + a)³) e^{a}`. -/
+`|Σ_{2 ≤ n ≤ e^{2a}} w(n)(2a − log n)| ≤ log q (e^{a} + 2a) + C (1 + a)³ e^{a}`. -/
 theorem exists_riesz_le_of_polar_nonneg :
     ∃ C : ℝ, ∀ {q a : ℝ}, 0 ≤ Real.log q → 1 ≤ a → ∀ {w : ℕ → ℝ}, Dominated w →
       0 ≤ systemForm w q a (fun u => (evenPolar a (Real.exp (-a)) u : ℂ)) →
       0 ≤ systemForm w q a (fun u => (oddPolar a (Real.exp (-a)) u : ℂ)) →
       |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| ≤
-        (3 * Real.log q + C * (1 + a) ^ 3) * Real.exp a := by
+        Real.log q * (Real.exp a + 2 * a) + C * (1 + a) ^ 3 * Real.exp a := by
   obtain ⟨S, hS0, hS⟩ := exists_abs_deriv_smoothTransition_le
   refine ⟨3 * (7 + (1 / 2 + 2 * S) ^ 2) + 24 + 4 * (Real.log 4 + 4),
     fun {q a} hx ha w hw hE hO => ?_⟩
@@ -493,7 +502,7 @@ theorem exists_riesz_le_of_polar_nonneg :
     refine (abs_contactForm_evenPolar_sub_oddPolar_sub_riesz_le hδ hw).trans
       (add_le_add ?_ (mul_le_mul_of_nonneg_left hmer2 (by linarith)))
     linarith
-  exact riesz_bound_algebra ha hE1 (sq_nonneg _)
+  exact riesz_bound_algebra ha hE1 (by linarith [Real.add_one_le_exp a]) (sq_nonneg _)
     (by linarith [Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4)]) rfl hTE hTO hS1 hD1
 
 /-- **Feasibility at an aperture is square-root cancellation of the Riesz mean at its scale.** -/
@@ -501,7 +510,7 @@ theorem exists_riesz_le_of_feasible :
     ∃ C : ℝ, ∀ {q a : ℝ}, 0 ≤ Real.log q → 1 ≤ a → ∀ {w : ℕ → ℝ}, Dominated w →
       Feasible q a w →
       |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| ≤
-        (3 * Real.log q + C * (1 + a) ^ 3) * Real.exp a := by
+        Real.log q * (Real.exp a + 2 * a) + C * (1 + a) ^ 3 * Real.exp a := by
   obtain ⟨C, hC⟩ := exists_riesz_le_of_polar_nonneg
   refine ⟨C, fun {q a} hx ha w hw hfe => ?_⟩
   have hδ : 0 < Real.exp (-a) := Real.exp_pos _
@@ -513,24 +522,16 @@ theorem exists_riesz_le_of_feasible :
 
 /-- **A dominated system without cancellation fails beyond the trivial aperture.** If the
 Riesz mean of the contacts at `Y = e^{2a}` is at least `c Y` in absolute value and
-`3 log q + C (1 + a)³ < c e^{a}`, the system is infeasible at aperture `a`. -/
+`log q (e^{a} + 2a) + C (1 + a)³ e^{a} < c e^{2a}`, the system is infeasible at aperture `a`. -/
 theorem exists_not_feasible_of_riesz_ge :
     ∃ C : ℝ, ∀ {q a c : ℝ}, 0 ≤ Real.log q → 1 ≤ a → ∀ {w : ℕ → ℝ}, Dominated w →
       c * Real.exp (2 * a) ≤
         |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| →
-      3 * Real.log q + C * (1 + a) ^ 3 < c * Real.exp a → ¬ Feasible q a w := by
+      Real.log q * (Real.exp a + 2 * a) + C * (1 + a) ^ 3 * Real.exp a <
+        c * Real.exp (2 * a) → ¬ Feasible q a w := by
   obtain ⟨C, hC⟩ := exists_riesz_le_of_feasible
   refine ⟨C, fun {q a c} hx ha w hw hR hbig hfe => ?_⟩
   have h := hC hx ha hw hfe
-  have e : Real.exp (2 * a) = Real.exp a * Real.exp a := by
-    rw [← Real.exp_add]
-    congr 1
-    ring
-  have hR' : c * (Real.exp a * Real.exp a) ≤
-      |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| := by
-    rw [← e]
-    exact hR
-  have h2 := mul_lt_mul_of_pos_right hbig (Real.exp_pos a)
   linarith
 
 /-! ### The twisted part of a quadratic ring -/
@@ -563,14 +564,14 @@ theorem placeEnergy_le {q : ℕ} (χ : DirichletCharacter ℂ q) {a : ℝ} {F : 
 There is an absolute constant `C` such that for every primitive character `χ` of conductor
 `q > 1` and every aperture `a ≥ 1`: if the sum over the zeros of `L(s, χ)` is nonnegative on the
 even and on the odd polar packet of margin `e^{−a}`, then
-`|Σ_{2 ≤ n ≤ e^{2a}} Λ(n) Re χ(n) (2a − log n)| ≤ (3 (log q + π) + C (1 + a)³) e^{a}`. -/
+`|Σ_{2 ≤ n ≤ e^{2a}} Λ(n) Re χ(n) (2a − log n)| ≤ (log q + π)(e^{a} + 2a) + C (1 + a)³ e^{a}`. -/
 theorem exists_riesz_twist_le_of_nonneg :
     ∃ C : ℝ, ∀ {q : ℕ} [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
       (hprim : χ.IsPrimitive) {a : ℝ}, 1 ≤ a →
       0 ≤ twistedZeroSum hq hprim (evenPolar a (Real.exp (-a))) →
       0 ≤ twistedZeroSum hq hprim (oddPolar a (Real.exp (-a))) →
       |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, twistWeight χ n * (2 * a - Real.log n)| ≤
-        (3 * (Real.log q + π) + C * (1 + a) ^ 3) * Real.exp a := by
+        (Real.log q + π) * (Real.exp a + 2 * a) + C * (1 + a) ^ 3 * Real.exp a := by
   obtain ⟨C, hC⟩ := exists_riesz_le_of_polar_nonneg
   refine ⟨C, fun {q} _ hq χ hprim a ha hE hO => ?_⟩
   have hδ : 0 < Real.exp (-a) := Real.exp_pos _

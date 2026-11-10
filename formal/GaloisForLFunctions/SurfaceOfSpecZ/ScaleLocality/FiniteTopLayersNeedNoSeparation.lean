@@ -65,7 +65,8 @@ theorem topTrace_eq_positive_sum {Z : ZeroConfig} {b : ℝ} (S : Finset ℂ)
         · exact hz (Finset.mem_union_left _ ((hS z).mpr ⟨hb, hp, he⟩))
     · simp only [topTerm, if_neg hb]
   rw [topTrace_eq_re, hsum, Finset.sum_union hd,
-    Finset.sum_image (f := conj) (fun _ _ _ _ h => (starRingEnd ℂ).injective h)]
+    Finset.sum_image (f := fun z => topTerm Z b z u) (g := conj)
+      (fun x _ y _ h => by simpa only [Complex.conj_conj] using congrArg conj h)]
   have he : (∑ z ∈ S, topTerm Z b (conj z) u) = conj (∑ z ∈ S, topTerm Z b z u) := by
     rw [map_sum]
     exact Finset.sum_congr rfl fun z _ => hc z
@@ -126,7 +127,7 @@ theorem sixtySeven_lt_im_of_positive_zeta_mode {z : ℂ}
     · exact h
     · have hhalf : conj (1 / 2 : ℂ) = 1 / 2 := by
         rw [map_div₀, map_one, map_ofNat]
-      simpa only [map_add, hhalf, Complex.conj_conj] using GaloisForLFunctions.RHTower.conj_mem_zetaZeroConfig h
+      simpa only [map_add, hhalf, Complex.conj_conj] using _root_.RHTower.conj_mem_zetaZeroConfig h
   by_contra hn
   have him' : ((1 / 2 : ℂ) + z).im = z.im := by norm_num
   have he := re_eq_half_of_mem_carrier HadamardBudget.rhVerifiedThrough_sixtySeven hρ

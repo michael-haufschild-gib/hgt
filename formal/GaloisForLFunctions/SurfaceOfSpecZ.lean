@@ -1,3 +1,4 @@
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FiniteTopLayersNeedNoSeparation
 import GaloisForLFunctions.SurfaceOfSpecZ.TheFrobeniusZonotopeSurface
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTwoHalfProducts
 import GaloisForLFunctions.SurfaceOfSpecZ.TheArchimedeanPlaceIsNotToric

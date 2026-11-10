@@ -1,20 +1,22 @@
 # Growing resonator means below the Kronecker scale
 
 - **ID:** growing-resonator-means-below-the-kronecker-scale
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** PROVED
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, A37.
 - **Statement:** Extend the actual-zeta resonator mean uniformly to polynomially growing finite resonators on `1/2<σ<1`.
 
-## Candidate range
+## Uniform range
 
 For `R_T(t)=Σ_{m≤M(T)} r_T(m)m^{it}` and
-`c_T(k)=Σ_{m|k}r_T(m)(k/m)^(−σ)`, seek
+`c_T(k)=Σ_{m|k}r_T(m)(k/m)^(−σ)`, we have
 
 `T⁻¹∫_T^{2T}|R_T(t)ζ(σ+it)|²dt − Σ_k|c_T(k)|²
  = o(Σ_m|r_T(m)|²)`
 
-uniformly for `M(T)≤T^κ`, with `0≤κ<2σ−1`.
+uniformly for `M(T)≤T^κ`, with `0≤κ<2σ−1`. Coefficients may be
+arbitrary complex numbers; the threshold is independent of their values
+and finite positive support.
 
 Put `E=Σ_m|r_T(m)|²`, and truncate the zeta factor at `N=ceil(T^a)`,
 where `a>1` is close to one. Divisor-wise Cauchy–Schwarz and
@@ -48,18 +50,30 @@ The fixed-resonator theorem is
 `TailArithmeticOfThePrimeOrbit/TheResonatorMeanOfZeta.lean`.
 Actual-zeta truncation and finite polynomial estimates are in
 `RHTower/ZetaSuperlinearCutoff.lean` and
-`RHTower/ZetaDirichletBandMeanSquare.lean`.
+`RHTower/ZetaFiniteMeanSquare.lean`.
 The divisor estimate is `RHTower.Sieve.card_divisors_le_rpow` in
 `RHTower/Sieve/DivisorBound.lean`.
-The uniform growing theorem remains unformalized.
-Seven unchecked drafts in `TailArithmeticOfThePrimeOrbit/` cover the
-weighted Euler–Maclaurin limit, full energy and tail, weighted finite
-energy, sharp finite mean, diagonal discrepancy, and weighted transfer.
-The capstone in `GrowingResonatorsKeepTheZetaMean.lean` states the uniform
-mean theorem. No growing-resonator theorem is yet verified.
 
 For the transfer, the pointwise inequality
 `||f|²−|g|²|≤e(|g|²+1+e)` when `|f−g|≤e`, multiplied by
 `|R|²≤ME`, gives
 `|M(Rf)−M(Rg)|≤ME e(M(g)+1+e)`.
 Taking `g=ζ` uses the bounded unweighted Carlson mean directly.
+
+## Lean formalization
+
+`GaloisForLFunctions.TailArithmeticOfThePrimeOrbit.eventually_resonatorMean_zeta_uniform`
+in `formal/GaloisForLFunctions/TailArithmeticOfThePrimeOrbit/GrowingResonatorsKeepTheZetaMean.lean`
+proves the uniform theorem. All seven modules passed final direct
+`lake --old env lean` checks:
+
+- `GrowingResonatorsRetainZetaTruncation.lean`
+- `TheDivisorBoundControlsResonatorEnergy.lean`
+- `TheWeightedEnergyOfATruncatedResonator.lean`
+- `TheFiniteMeanOfAGrowingResonator.lean`
+- `UniformApproximationSurvivesResonatorWeights.lean`
+- `TheResonatorDiagonalHasAUniformTail.lean`
+- `GrowingResonatorsKeepTheZetaMean.lean`
+
+The umbrella imports the capstone. Further axiom checks were skipped at
+the user's request; no complete transitive axiom audit is claimed here.

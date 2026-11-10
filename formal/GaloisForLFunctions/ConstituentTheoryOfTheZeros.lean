@@ -9,6 +9,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExp
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawIsTheLawOfTheCarry
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentLivesInTheBohrStrip
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.EveryBoxHasADirichletPolynomialWithExactlyTheZerosOfXi
 
 /-!
 # Constituent theory of the zeros
@@ -35,6 +36,9 @@ operator.
   growing boxes have, from some index on, no zero near the line at any height; for Dirichlet
   polynomials of bounded length the height of the first zero that is not a zero of `ξ` is bounded
   in terms of the length (`ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros`).
+* A box alone constrains nothing: for every height there is a Dirichlet polynomial whose zeros
+  below that height are exactly the zeros of `ξ`, and its length is unbounded in the height
+  (`EveryBoxHasADirichletPolynomialWithExactlyTheZerosOfXi`).
 * The index law in a window: if `‖E'‖ ≤ ‖E‖` on a circle, `E − E'` has at most as many zeros
   inside as `E`, with no winding number (`SizesOnACircleCertifyTheDefectInside`).
 * The jump law is the law of the carry `{x} + {y} − {x + y}`: the expansions on the two sides of
