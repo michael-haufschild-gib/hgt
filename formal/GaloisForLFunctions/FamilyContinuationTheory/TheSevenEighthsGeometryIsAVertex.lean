@@ -117,7 +117,7 @@ theorem endpointExponent_published (δ q R : ℝ) :
   unfold endpointExponent
   ring
 
-theorem rowJ_pos {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6) (hx0 : 0 ≤ x) (hx : x ≤ 1 / 2) :
+theorem rowJ_pos {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6) (hx : x ≤ 1 / 2) :
     35 / 54 ≤ rowJ δ x := by
   unfold rowJ rowD rowP
   have hD : 7 / 9 ≤ 3 - 17 * x / 9 := by linarith
@@ -126,9 +126,10 @@ theorem rowJ_pos {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6) (hx0 : 0 �
 
 theorem rowJ_le {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6) (hx0 : 0 ≤ x) (hx : x ≤ 1 / 2) :
     rowJ δ x ≤ 5 / 2 := by
+  have hx1 : 0 ≤ 1 - x := by linarith
   unfold rowJ rowD rowP
   have hD : 3 - 17 * x / 9 ≤ 3 := by linarith
-  have hP : (2 - 8 * x / 9) * (1 - x) ≤ 2 := by nlinarith
+  have hP : (2 - 8 * x / 9) * (1 - x) ≤ 2 := by nlinarith [mul_nonneg hx0 hx1]
   nlinarith [mul_nonneg (sub_nonneg.2 hδ) (sub_nonneg.2 hD), mul_nonneg hδ0 (sub_nonneg.2 hP)]
 
 /-- Numerator of the negative endpoint exponent at the published geometry. -/
@@ -136,7 +137,7 @@ def endpointNumerator (δ x : ℝ) : ℝ :=
   rowJ δ x * (1 + (7 - 8 * x) * δ) / 48 - 13 / 32 * (5 / 6 - δ) * δ * rowP x
 
 /-- The numerator is a sum of squares plus `49/176256`. -/
-theorem endpointNumerator_ge {δ x : ℝ} (hδ0 : 0 ≤ δ) (hx : x ≤ 1 / 2) :
+theorem endpointNumerator_ge {δ x : ℝ} (hδ0 : 0 ≤ δ) (hx0 : 0 ≤ x) (hx : x ≤ 1 / 2) :
     49 / 176256 ≤ endpointNumerator δ x := by
   -- `y = 1/2 − x`, `v = 51 + 41y`
   have hy0 : 0 ≤ 1 / 2 - x := by linarith
@@ -176,10 +177,10 @@ theorem endpoint_certificate {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6)
     (hx : x ≤ 1 / 2) :
     endpointExponent (17 / 48) (23 / 48) (1 / 6) (7 / 8) δ (x * δ) (rowCount δ x)
       ≤ -(49 / 440640) := by
-  have hJ := rowJ_pos hδ0 hδ hx0 hx
+  have hJ := rowJ_pos hδ0 hδ hx
   have hJ0 : 0 < rowJ δ x := by linarith
   have hJle := rowJ_le hδ0 hδ hx0 hx
-  have hN := endpointNumerator_ge hδ0 hx
+  have hN := endpointNumerator_ge hδ0 hx0 hx
   have hE : endpointExponent (17 / 48) (23 / 48) (1 / 6) (7 / 8) δ (x * δ) (rowCount δ x)
       = -(endpointNumerator δ x / rowJ δ x) := by
     rw [endpointExponent_published]

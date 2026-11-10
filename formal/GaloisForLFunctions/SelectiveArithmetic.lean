@@ -12,6 +12,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheFirstSelectiveWindowOfZeta
 import GaloisForLFunctions.SelectiveArithmetic.APoleAtTheHeightFailsBeyondTheTrivialAperture
 import GaloisForLFunctions.SelectiveArithmetic.AHeightIsAConductorOfTheTwistedContacts
 import GaloisForLFunctions.SelectiveArithmetic.InTheMeanOverTheHeightsTheContactsCancel
+import GaloisForLFunctions.SelectiveArithmetic.BoundedShapesDoNotDecideFeasibility
 
 /-!
 # Selective Arithmetic
@@ -64,6 +65,9 @@ sign, and where the first statement beyond that scale lies.
   window is polylogarithmic in the window, far below the mass, at apertures up to about a quarter
   of `log T`; a height where the primes are quiet on an interval and half of a positive sum
   survives.
+* The separation of the two forms of the sign: a dominated system, aligned with a quiet height,
+  that has the sign on every packet of bounded shape at the aperture `log log q + log 2 + η` and
+  is not feasible there.
 
 See `SelectiveArithmetic/README.md`.
 -/

@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 14 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 15 modules.
 
 ## 1. Motivation
 
@@ -189,6 +189,19 @@ for all $t$. Feasibility is square-root cancellation of the Riesz means of $w(n)
 height, against the analytic conductor $q(2+|t|)$; the sign on packets of bounded shape reads the
 height zero only.
 
+**6″. Bounded shapes do not decide feasibility.** The symbol of the system aligned with $t_0$
+at the frequency $\tau$ is $S_\infty(\tau)-D_N(t_0-\tau)-D_N(t_0+\tau)$. Take
+$a=\log\log q+\log2+\eta$ and heights of size $e^{8a}$. The mean values of 5‴ give a $t_0$ at
+which $D_N$ is at most $\tfrac18\log q$ on the interval of radius $\tau_1=4e^{\eta/2}(2+2a)$
+around $t_0$ and at which the Riesz mean of $\Lambda(n)\cos^2(t_0\log n)$ keeps half of that of
+the primes; beyond $\tau_1$ the size $2\sum\Lambda(n)/\sqrt n\le\tfrac14\log q\,\tau_1^2$ is
+paid by $\tau^2$. So the symbol plus $\log q$ is at least
+$(\tfrac34\log q-A_0)-\tfrac14\log q\,\tau^2$: the aligned system satisfies
+$\mathfrak W\ge\tfrac12\log q(\int f^2-\int f'^2)$ on every packet at the aperture $a$. At the
+height $t_0$ its twisted Riesz mean has no cancellation, so by 6′ it is not feasible at the same
+aperture. The sign on bounded shapes and feasibility are different statements already at the
+rung $1+o(1)$.
+
 **7. A zero shows at the rung of its depth (zero side of the exchange rate).** A reflected pair
 of depth $\delta$ is a form of rank two and signature $(1,1)$ with smallest eigenvalue
 $-(\sinh(2\delta a)/\delta-2a)$ on $L^2[-a,a]$ (corpus). In a lattice of zeros on the line with the
@@ -224,6 +237,7 @@ product) both fail at the rung $1$.
 | Feasibility is square-root cancellation of the twisted Riesz means at every height | `exists_twisted_riesz_le_of_feasible` | unconditional |
 | Twisted cancellation buys the ladder of the analytic conductor; the symbol criterion on all packets | `systemForm_modulated_ge_of_twisted_cancellation`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | unconditional |
 | Mean values over the heights: mean square of the contact polynomial; a quiet height with half of a positive sum | `integral_sq_sum_cos_le`, `integral_contactPoly_sq_le`, `integral_contactPoly_window_sq_le`, `exists_height_of_means`, `exists_height_contactPoly_small`, `abs_contactPoly_le_of_grid` | unconditional |
+| Bounded shapes do not decide feasibility: a dominated system with the sign on every packet of bounded shape, infeasible at the same aperture | `two_mul_sum_twisted_aligned`, `systemForm_aligned_ge`, `grid_budget`, `receiver_budget`, `exists_shape_positive_not_feasible` | unconditional |
 | Exchange rate, prime side: cancellation buys rungs | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
 | Exchange rate, prime side, converse: the sign is square-root cancellation of the Riesz mean | `packetAutocorr_evenPolar_sub_oddPolar`, `systemForm_le_of_packet_scaled`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge` | unconditional |
 | The sign of the twisted part at an aperture bounds the Riesz mean of the character | `exists_riesz_twist_le_of_nonneg` | unconditional |
@@ -289,6 +303,8 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 - Mean values over the heights: the mean square of a cosine polynomial on separated frequencies,
   the contact polynomial with its three sizes on a window, a common height for two means, the
   passage from a grid of heights to an interval.
+- The product formula for the symbol of an aligned system, and the two budgets that reduce all
+  sizes of a construction on the ladder to one inequality $Ka^{12}<e^a$.
 
 **Aimed at.**
 - A calibration bench: the criteria P1–P8 of §11 as predicates on a candidate mechanism, with the
@@ -304,10 +320,11 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 3. **A producer step.** An unconditional power saving of the contacts of a true object on the
    integers up to a power of its mass; known savings start at $q^{1/4}$ and at
    $\exp((\log t)^{2/3})$.
-4. **One height against the others.** Feasibility is cancellation of the twisted contacts at every
-   height. Whether, in the dominated class, the sign on packets of bounded shape forces it at the
-   other heights. The mean-value tools give a candidate separation: the system aligned with a
-   height of polylogarithmic size at which the contact polynomial is quiet on an interval.
+4. **The separation on a rung.** The sign on bounded shapes and feasibility are separated at the
+   aperture $\log\log q+\log2+\eta$. A dominated system with the sign on bounded shapes on a
+   whole rung $\kappa>1$ and infeasible at the rung $1+o(1)$: second moments over the heights
+   reach $\kappa<7/3$ by the same proof; every rung needs higher moments of the contact
+   polynomial.
 5. **The margin side.** The rate at which the feasible sets with pole plane shrink to $\Lambda$.
 6. **The constant of the height.** The trivial aperture of the height lies between
    $\log\log|t|-\eta$ and $\log\log|t|+\log2+\eta$; the aligned system with signs
@@ -327,6 +344,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | The pole plane protects every height | It decays like $1/|t|$; a dominated system with its pole at the height $t$ fails there at $\log\log t+\log2+o(1)$ |
 | A saving in the partial sums of the contacts is a saving at every height | The twist $w(n)\cos(t\log n)$ is another system; feasibility needs all of them, each against the analytic conductor $q(2+|t|)$ |
 | Cancellation of the partial sums bounds the contact operator | It bounds the symbol with a factor $1+|\tau|$: the bound is for bounded shapes |
+| The sign on every packet of bounded shape at an aperture is feasibility there | The system aligned with a quiet height of size $e^{8a}$ has the first at $\log\log q+\log2+\eta$ and is infeasible there |
 | A uniform floor is easier than the sign on the ladder | A floor $-K$ is the sign at the conductor $qe^K$; the fakes violate every floor at the same rung |
 | A new equivalent of RH is a contribution | The programme prices mechanisms; it adds no equivalent |
 

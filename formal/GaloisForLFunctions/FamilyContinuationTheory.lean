@@ -7,6 +7,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.ThePlanarLargeSieve
 import GaloisForLFunctions.FamilyContinuationTheory.TheLargeSieveOverTheEisensteinIntegers
 import GaloisForLFunctions.FamilyContinuationTheory.TheNormCountOfTheEisensteinIntegers
 import GaloisForLFunctions.FamilyContinuationTheory.TheEisensteinLatticeSumIsZetaTimesAnLFunction
+import GaloisForLFunctions.FamilyContinuationTheory.TheSevenEighthsGeometryIsAVertex
 
 /-!
 # Family continuation theory
@@ -36,4 +37,9 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
 * **The transfer to `ζ`.** The number of Eisenstein integers of norm `n` is `6 Σ_{d ∣ n} χ₃(d)`, and
   `Σ_{(m,n) ≠ 0} (m² − mn + n²)^{−s} = 6 ζ(s) L(s, χ₋₃)` for `Re s > 1`: the zeta function of
   `ℚ(√−3)` carries the zeros of `ζ`.
+* **The budget of the compensated probe.** Low boundary `5/6 + M/12 − ℓ/6 + (M + ℓ − 1)₊/2` in the
+  row length `M` and slot length `ℓ`; the face of zero retained length is paid by the tuple
+  factor; the high exponent of the top rows is at most `−49/440640` at the published geometry and
+  `−7/30672` in the bin `δ = 79/204`; every geometry with low boundary at most `7/8 − 1/4000` has
+  a positive high exponent in that bin.
 -/

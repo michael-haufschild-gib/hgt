@@ -65,6 +65,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTh
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountOfASectionOnTwoGraphsIsTheSplitNorm
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePoleTermFixesTheScaleOfTheContacts
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoVerticalLinesWeighTheZerosOfAFunctionOfOrderOne
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -90,6 +91,7 @@ Hodge index of the square of a number ring; Riemann–Hurwitz for the counterter
 genus of a degree point; the exchange law between the contacts and the constant of the
 counterterm; the tree of a prime glued along the comb, whose edge length the inequality
 forces; the length of the tree of `2` as a monotone deformation of the pairing on packets
-shorter than `log 4`; the count of a section on two graphs, the split norm; and the pole term
-as the scale of the contacts. See `AbsoluteGeometryOfSpecZ/README.md`.
+shorter than `log 4`; the count of a section on two graphs, the split norm; the pole term
+as the scale of the contacts; and the zeros of a function of order one weighed by two vertical
+lines. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

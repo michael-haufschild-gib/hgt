@@ -66,9 +66,10 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `TheFirstSelectiveWindowOfZeta` | `PoleFeasible`, `poleFeasible_iff_of_lt_half_log_two`, `poleFeasible_of_abs_sub_le`, `poleFeasible_vonMangoldt`, `abs_re_weilPoleTerm_twoBump_le`, `exists_abs_weight_le_of_poleFeasible` | clean |
 | `APoleAtTheHeightFailsBeyondTheTrivialAperture` | `weilTest_modulatedTest`, `contactForm_modulatedTest`, `alignedWeight`, `integral_cos_mul_sq_ge`, `exists_height_sum_cos_sq_ge`, `integral_arch_modulated_le`, `re_weilFullFunctional_modulated_le`, `exists_aligned_height_neg`, `exists_dominated_height_neg` | clean, olean built |
 | `AHeightIsAConductorOfTheTwistedContacts` | `twistedWeight`, `archimedeanWeilSymbol_add_le`, `systemForm_modulatedTest_le/ge` (height transfer), `exists_twisted_riesz_le_of_feasible`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | clean, olean built |
-| `InTheMeanOverTheHeightsTheContactsCancel` | `integral_sq_sum_cos_le`, `contactPoly`/`contactMass`/`contactEnergy`/`contactSlope`, `integral_contactPoly_sq_le`, `integral_contactPoly_window_sq_le`, sizes on a window, `exists_height_of_means`, `exists_height_contactPoly_small`, `abs_contactPoly_le_of_grid` | clean |
+| `InTheMeanOverTheHeightsTheContactsCancel` | `integral_sq_sum_cos_le`, `contactPoly`/`contactMass`/`contactEnergy`/`contactSlope`, `integral_contactPoly_sq_le`, `integral_contactPoly_window_sq_le`, sizes on a window, `exists_height_of_means`, `exists_height_contactPoly_small`, `abs_contactPoly_le_of_grid` | clean, olean built |
+| `BoundedShapesDoNotDecideFeasibility` | `two_mul_sum_twisted_aligned`, `systemForm_aligned_ge`, `riesz_window_eq`, `grid_budget`, `receiver_budget`, `aligned_shape_positive_not_feasible_of`, `exists_shape_positive_not_feasible` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports all fourteen; `MainTheorems.lean` imports the umbrella.
+Umbrella `SelectiveArithmetic.lean` imports all fifteen; `MainTheorems.lean` imports the umbrella.
 README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`, height transfer).
 
 ## Paper mathematics of modules 11–13
@@ -108,10 +109,14 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 5. *Sizes.* All conditions follow from `K a¹² < e^{a}` for one constant `K(η)`, hence hold for
    `log q ≥ M₀(η)`.
 
-Lean: `SelectiveArithmetic/BoundedShapesDoNotDecideFeasibility.lean`.
+Lean: `SelectiveArithmetic/BoundedShapesDoNotDecideFeasibility.lean`, `exists_shape_positive_not_feasible`
+(formalized, compiled clean).
 
 ## Open mathematics of the field (README §8)
 - Sign of a true object at `log log q + C` (Landau–Siegel on the comb); a rung `κ > 1`.
+- The separation on a whole rung: sign on bounded shapes at `κ log log q`, infeasible at
+  `log log q + log 2 + η`. Same proof with a common height for the two windows; second moments
+  reach `κ < 7/3` (budget `(log q)^{3(κ−1)/2} ≲ (log q)²`), higher rungs need higher moments.
 - Rung law for an exceptional zero with Deuring–Heilbronn isolation: peer AGZ module has the raw
   inequality.
 
@@ -142,4 +147,4 @@ Lean: `SelectiveArithmetic/BoundedShapesDoNotDecideFeasibility.lean`.
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — card created; README first draft; fourteen modules compiled clean and wired; README rewritten around the proved pillars.
+- 2026-11-10 — card created; README first draft; fifteen modules compiled clean and wired; README rewritten around the proved pillars.
