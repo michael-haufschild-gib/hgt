@@ -48,7 +48,7 @@ theorem finite_pairedXiModel_zeros_abs_im_le (T : ℝ) :
   rintro s ⟨hs, hT⟩
   obtain ⟨q, rfl⟩ := (pairedXiModel_eq_zero_iff s).mp hs
   refine ⟨q, ⟨?_, Set.mem_univ _⟩, rfl⟩
-  simpa only [Complex.add_im, (show (1 / 2 : ℂ).im = 0 by norm_num),
+  simpa only [Set.mem_setOf_eq, Complex.add_im, (show (1 / 2 : ℂ).im = 0 by norm_num),
     zero_add, abs_pairedXiPoint_im] using hT
 
 /-- The actual simple-zero divisor, with its analytic multiplicities. -/

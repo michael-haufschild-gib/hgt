@@ -83,6 +83,9 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `GeometricCarryGain` | The terminal geometric bound and prefix estimate imply a strictly positive gain for all `p≥2`, `q≥p²` |
 | `IntegralPrefixContents` | Actual proper prefixes have integral inverse coordinates with positive increments; a last minimal coordinate selects the carry interval |
 | `CarryInterval` | The complete interval recursion preserves inverse floors and content gaps; terminal content gains one at the top and loses digits below |
+| `SingletonCarryBoundary` | Actual normalized singleton and competing compositions determine the carry interval and contain the competing last support within it |
+| `PrefixMatrixRealization` | Integral inverse prefixes with positive increments, nested contents, and a positive last remainder yield an actual increasing composition with those exact prefixes |
+| `PrefixWeightIdentity` | Weight differences are the reversed differences of the sums of actual proper-prefix values |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.

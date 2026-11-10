@@ -20,7 +20,7 @@
 | A83 | Density-matched counter-configuration with bounded trace change | Exact critical-projection counts and bounded trace superposition written; sparse count comparison and audits pending |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Formalized and axiom-audited; `3-formalized/the-jets-are-even-newtonian-multipoles.md` and `3-formalized/prime-contacts-are-chain-squares-minus-the-diagonal.md` |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
-| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Corrected jump-tail and full raw-defect criteria written; quotient identity and audits pending |
+| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Quotient identity, corrected jump-tail criterion, and full raw-defect criterion written; audits pending |
 | A78 | Cluster extension of separated windows | Open |
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
@@ -54,6 +54,7 @@ For A71 preserve the corpus’s uniformity: constants may depend on the tensor o
 - **A56:** `boxSpline 1 3` has support radius **4**, so a two-bump packet at separation `log p` has aperture `4 + (log p)/2`. `VerifiedHeightRungs.WindowEntries.windowHeight` is explicit. The verified-height rung must use this radius.
   An explicit inverse rung is the largest `n≤⌊T⌋` with `windowHeightOfOne(4+log(n)/2)≤T`, or zero if none exists. It tends to infinity: for each fixed `n`, every `T≥max(n,windowHeightOfOne(4+log(n)/2))` admits `n`. Every prime up to the rung fits in its aperture, without any monotonicity assumption on the height formula.
 - **A99:** The raw `scatteringWeilEnergy` changes the jump kernel, the mass coefficient, and the prime operator. Its difference from the Weil form is therefore the jump tail **plus** `(2 gammaHardyPhaseRate(0) − scatteringMassCoefficient N)‖f‖²` **minus** the omitted prime form. The positive jump tail alone is not the full raw defect. `scatteringSecondHeightDefect_eq` already retains the prime correction after removing the Robin mass drift; the requested regulator criterion must retain these terms or explicitly correct the regulator.
+  `TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean` restores these terms explicitly. Its corrected energy plus the positive jump tail equals the literal closed Weil form, so the floor is equivalent to RH at any fixed positive scattering height. `TheFiniteTowerIsACompletedZetaQuotient.lean` identifies the geometric telescope with `logDeriv (Λ(s)/Λ(s+N))` and retains the Robin scalar and two boundary poles. Both modules await audit.
 
 ## Finite-mode sign resolution
 
@@ -67,7 +68,7 @@ For distinct positive frequencies, nonvanishing survives every phase rotation: t
 
 The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. This bound is formalized and axiom-audited in `WeightedTraceFloors.lean`. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and sharpness before retiring the stated coefficient.
 
-`WeightedFloorCoefficientOneFails.lean` contains the Lebesgue-weight proof awaiting audit. It uses normalized interval densities at the three cubic sample sites; the fundamental theorem of calculus makes their weighted integrals converge to point evaluations. The Fourier samples need only converge to zero: the strict gap `4>27/8` persists for sufficiently short intervals. For sharpness of coefficient two, use `Fejer_N−1` at the `(N+1)`-st roots: values `N,−1,…,−1`, floor `−1`, vanishing nonzero Fourier samples, and absolute-mass ratio `2N/(N+1)→2`.
+`WeightedFloorCoefficientOneFails.lean` contains the Lebesgue-weight proof awaiting audit. It uses normalized interval densities at the three cubic sample sites; the fundamental theorem of calculus makes their weighted integrals converge to point evaluations. The Fourier samples need only converge to zero: the strict gap `4>27/8` persists for sufficiently short intervals. `FejerFloorsMakeCoefficientTwoSharp.lean` contains the sharpness proof awaiting audit: `Fejer_N−1` at the `(N+1)`-st roots has values `N,−1,…,−1`, floor `−1`, vanishing nonzero Fourier samples, and absolute-mass ratio `2N/(N+1)→2`. Replacing each signed difference frequency by its absolute value preserves the real trace and gives only positive active frequencies.
 
 ## Further assembly inputs
 

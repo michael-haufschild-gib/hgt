@@ -46,16 +46,6 @@ private theorem carry_content_bounds {p : ℤ} {α β m h n : ℕ} {w : ℕ → 
         intervalCarryRow_content_outside p α β w hh n]
       exact hnested h
 
-/-- Positive cyclic weight rules out an empty nonnegative content remainder. -/
-private theorem positiveContent_of_cyclicWeighted_pos {s : ℕ} (p : ℤ) (u : ZMod s → ℤ)
-    (hu : ∀ h, 0 ≤ u h) (hw : 0 < cyclicWeighted p u 0) : PositiveContent u := by
-  refine ⟨hu, ?_⟩
-  by_contra hn
-  push_neg at hn
-  have he (h : ZMod s) : u h = 0 := le_antisymm (hn h) (hu h)
-  simp only [cyclicWeighted, he, mul_zero, sum_const, nsmul_eq_mul, mul_zero] at hw
-  exact lt_irrefl 0 hw
-
 /-- Adjacent natural rows with matching endpoints represent the cyclic difference. -/
 private theorem cyclicDifference_nat_rows {s : ℕ} [NeZero s] (p : ℤ) (f : ℕ → ℤ)
     (hperiod : f s = f 0) (h : ZMod s) :
@@ -121,6 +111,56 @@ private theorem exists_backward_inverse_rows (C : DigitComposition p s (m + 1) S
     simpa only [cyclicDifference, w, Nat.cast_add, Nat.cast_one] using he
   · intro h n _hn
     exact (congrFun (hInv (m - n) (Nat.sub_le m n)) (h : ZMod s)).symm
+
+/-- Preserving one proper-prefix inverse coordinate preserves a positive
+last remainder whenever the new proper content stays below the available content. -/
+private theorem positive_remainder_of_preserved_inverse_coordinate {k : ℕ}
+    (C : DigitComposition p s (k + 2) S) (hp : 2 ≤ p) (d : ZMod s → ℤ)
+    (hbound : ∀ h, cyclicDifference (p : ℤ) d h ≤
+      tokenContent (fun t : Digit p => (t.1 : ZMod s)) S h)
+    (hcoord : (d 0 : ℚ) = inverseContent (p : ℚ)
+      (fun j => (tokenContent (fun t : Digit p => (t.1 : ZMod s))
+        (C.prefixDigits (k + 1)) j : ℚ)) 0) :
+    PositiveContent (tokenContent (fun t : Digit p => (t.1 : ZMod s)) S -
+      cyclicDifference (p : ℤ) d) := by
+  let colour : Digit p → ZMod s := fun t => t.1
+  let u := tokenContent colour S - cyclicDifference (p : ℤ) d
+  have hu (h : ZMod s) : 0 ≤ u h := sub_nonneg.mpr (hbound h)
+  have hpQ : (1 : ℚ) < p := by exact_mod_cast (show 1 < p by omega)
+  have hpow : (p : ℚ) ^ s ≠ 1 := ne_of_gt (one_lt_pow₀ hpQ (NeZero.ne s))
+  have hE : cyclicDifference (p : ℚ) (fun h => (d h : ℚ)) =
+      fun h => (cyclicDifference (p : ℤ) d h : ℚ) := by
+    funext h
+    simp only [cyclicDifference, Int.cast_sub, Int.cast_mul, Int.cast_natCast]
+  have hInv : inverseContent (p : ℚ)
+      (fun h => (cyclicDifference (p : ℤ) d h : ℚ)) = fun h => (d h : ℚ) := by
+    rw [← hE, inverseContent_cyclicDifference _ hpow]
+  have hI : inverseContent (p : ℚ) (fun j => (u j : ℚ)) 0 =
+      inverseContent (p : ℚ) (fun j => (tokenContent colour S j : ℚ)) 0 - (d 0 : ℚ) := by
+    simp only [u, Pi.sub_apply, Int.cast_sub]
+    change inverseContent (p : ℚ)
+      ((fun j => (tokenContent colour S j : ℚ)) -
+        (fun j => (cyclicDifference (p : ℤ) d j : ℚ))) 0 = _
+    rw [inverseContent_sub, hInv]
+  have hlast := (positive_tokenContent_iff colour (C.parts (Fin.last (k + 1)))).mpr
+    (C.nonempty (Fin.last (k + 1)))
+  have hlastpos : 0 < inverseContent (p : ℚ)
+      (fun j => (C.content (Fin.last (k + 1)) j : ℚ)) 0 := by
+    apply inverseContent_pos hpQ
+    · intro h
+      exact_mod_cast hlast.1 h
+    · obtain ⟨h, hh⟩ := hlast.2
+      exact ⟨h, by exact_mod_cast hh⟩
+  have hCP := C.prefix_inverse_eq_total_sub_last 0
+  have hpos : 0 < inverseContent (p : ℚ) (fun j => (u j : ℚ)) 0 := by
+    linarith only [hI, hcoord, hCP, hlastpos]
+  refine ⟨hu, ?_⟩
+  by_contra hn
+  push_neg at hn
+  have he (h : ZMod s) : u h = 0 := le_antisymm (hn h) (hu h)
+  simp only [inverseContent, cyclicWeighted, he, Int.cast_zero, mul_zero,
+    sum_const, nsmul_eq_mul, mul_zero, zero_div] at hpos
+  exact lt_irrefl 0 hpos
 
 end DigitComposition
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss

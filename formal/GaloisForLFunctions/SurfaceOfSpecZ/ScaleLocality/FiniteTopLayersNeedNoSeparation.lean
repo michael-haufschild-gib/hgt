@@ -79,8 +79,7 @@ theorem topTrace_eq_positive_sum {Z : ZeroConfig} {b : ℝ} (S : Finset ℂ)
     rw [topTerm, if_pos (((hS z).mp hz).1), bohrExp_apply]
     ring
   rw [hterm]
-  simp only [Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]
-  ring
+  norm_num [Complex.mul_re] <;> ring
 
 /-- Finite active top spectra have negative normalized traces in every sufficiently late window. -/
 theorem finite_top_negative_in_every_window {Z : ZeroConfig} (hZ : TemperedConfig Z)

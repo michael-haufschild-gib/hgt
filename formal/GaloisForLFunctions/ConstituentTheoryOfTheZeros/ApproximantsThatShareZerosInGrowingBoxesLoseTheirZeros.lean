@@ -104,15 +104,16 @@ theorem xi_eq_zero_of_limit_of_box_zeros (hsum : LSeriesSummable a x)
   have hgap : 0 < ω - |z.re - 1 / 2| := by linarith
   set r : ℝ := min (min (r₀ / 2) (r₁ / 2)) ((ω - |z.re - 1 / 2|) / 2) with hr
   have hrpos : 0 < r := lt_min (lt_min (by positivity) (by positivity)) (by positivity)
+  have hrle : r ≤ min (r₀ / 2) (r₁ / 2) := min_le_left _ _
   have hr0 : r < r₀ := by
-    have := (min_le_left _ _).trans (min_le_left (r₀ / 2) (r₁ / 2))
-    linarith [this, hr.le]
+    have h : min (r₀ / 2) (r₁ / 2) ≤ r₀ / 2 := min_le_left _ _
+    linarith
   have hr1 : r < r₁ := by
-    have := (min_le_left _ _).trans (min_le_right (r₀ / 2) (r₁ / 2))
-    linarith [this, hr.le]
+    have h : min (r₀ / 2) (r₁ / 2) ≤ r₁ / 2 := min_le_right _ _
+    linarith
   have hr2 : r < ω - |z.re - 1 / 2| := by
-    have := min_le_right (min (r₀ / 2) (r₁ / 2)) ((ω - |z.re - 1 / 2|) / 2)
-    linarith [this, hr.le]
+    have h : r ≤ (ω - |z.re - 1 / 2|) / 2 := min_le_right _ _
+    linarith
   -- points of the closed ball stay in the strip
   have hstrip : ∀ w ∈ closedBall z r, |w.re - 1 / 2| < ω ∧ |w.im| ≤ |z.im| + r := by
     intro w hw
@@ -291,7 +292,7 @@ theorem exists_height_forall_dirichletPolynomial (N : ℕ) {ω ω' : ℝ} (hω' 
       inv_mul_cancel₀ (hnorm k)]
   have hLu : ∀ k (s : ℂ), LSeries (polyCoeff (u k)) s =
       (((‖v k‖)⁻¹ : ℝ) : ℂ) * LSeries (polyCoeff (v k)) s := fun k s => by
-    rw [hu, polyCoeff_smul, LSeries_smul, smul_eq_mul]
+    rw [hu, polyCoeff_smul, LSeries_smul]
   obtain ⟨u₀, hu₀, φ, hφ, hlim⟩ := (isCompact_sphere (0 : Fin N → ℂ) 1).tendsto_subseq hu1
   have hu₀ne : u₀ ≠ 0 := fun h => by
     rw [h, mem_sphere_zero_iff_norm, norm_zero] at hu₀
