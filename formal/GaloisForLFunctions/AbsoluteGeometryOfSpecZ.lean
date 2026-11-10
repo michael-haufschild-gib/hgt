@@ -43,6 +43,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PointwiseTheShiftsOfThePointC
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCarryIsACocycleThatIsNotACoboundary
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfThePairingOfTheDegreePoints
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsAtAHeightReadTheRemainder
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm
 
 /-!
 # Absolute geometry of `Spec ℤ`

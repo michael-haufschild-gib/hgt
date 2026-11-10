@@ -422,6 +422,19 @@ autocorrelation `k_ℓ` and spectral window `ψ_ℓ`:
 *Proof.* `C_ℓ(T)` is the corpus's prime polynomial of the window at the frequency `−T/2π`; the
 limit is the corpus's Stieltjes identity (`tendsto_windowPrime_add_offLineCorrection_sub`). ∎
 
+**C27 (the packets on the comb of squares).** For a packet `g` supported in `[log 3, log K]`,
+sampled at `log(n/N)` on the squares `n²` with the masses `2/n`: the pairing of the jets minus
+`Σ g_n²(2/n) log(n/4π)` tends to `−(A − P)(f)`, `f(s) = g(s/2)`, `A − P` the archimedean part of
+Weil's functional without the pole.
+*Proof.* `D(x) = 2ω(2x) − ω(x)` is a rational function of `e^{−x/2}` without a pole at `0`, and
+`(2/n)(2/m)ω(2|log(m/n)|) = 2K(m,n) + 2D(log(m/n))/(mn)`. So the form on the squares is twice the
+form on the integers (C15) plus twice a Riemann sum of `g(u)g(v)D(u−v)` plus `2 log 2·Σ g_n²/n`.
+On the other side, by the window form of the jump integral (C14) on `[0,c]` for `g` and on
+`[0,2c]` for `f`: `(A−P)(f) − 2(A−P)(g) = ∫∫ D(u−v)(g(u)−g(v))² + 2∫ g²[(Ω(2a)−Ω(a)) + (Ω(2b)−Ω(b))]`,
+`a = c−u`, `b = u`. With `∫_0^y D = Ω(y) − Ω(2y) − ½ log 2` and
+`∫_0^c D(u−v)dv = ∫_0^u D + ∫_0^{c−u} D`, the rows cancel against the tails and
+`(A−P)(f) = 2(A−P)(g) − 2∫∫ g(u)g(v)D(u−v) − 2 log 2∫g²`. ∎
+
 **B5 (the carry is a cocycle and not a coboundary).** `⌊(x+y)/p⌋ = ⌊x/p⌋ + ⌊y/p⌋ + κ(x,y)`,
 `κ(x,y) = ⌊(x mod p + y mod p)/p⌋`. On residues `κ(a,b) + κ(a+b,d) = κ(b,d) + κ(a,b+d)`, and there
 is no `f` with `κ(a,b) = f(a) + f(b) − f(a+b)` (`p ≥ 2`); the same for the Witt carry (`p` prime).
@@ -559,6 +572,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | C24 | `PointwiseTheShiftsOfThePointCountAreDense` |
 | C25 | `TheHodgeIndexOfThePairingOfTheDegreePoints` |
 | C26 | `TheContactsAtAHeightReadTheRemainder` |
+| C27 | `ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm` |
 | E11 | `TheTowerThePolePlaneAndTheJetsFormOneRing` |
 | E12 | `TheSquareMissesTheZerosByAnUnboundedRemainder` |
 | F1 | `TheArithmeticSquareOfADedekindDomain` |
@@ -588,7 +602,8 @@ Open parts of the questions of the refined programme (details in the README, §1
 
 - Q11: the inequality `D·D ≤ 2d₁d₂` for packets of aperture beyond the widest certificate (below
   `1/2`); for all packets it is RH (C21).
-- The packet theorem on combs that are not images of the integers under a multiplication.
+- The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
+  varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
 - Over a Dedekind domain: the jets, the comb of the ideals, the gluing index against the zero
   count, the tower when the class group is not trivial.

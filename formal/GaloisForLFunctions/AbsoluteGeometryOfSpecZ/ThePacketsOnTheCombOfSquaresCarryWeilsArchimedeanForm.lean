@@ -16,8 +16,21 @@ density at twice the displacement of `m` and `n`.
 * **The pairing on the comb of squares** (`squareForm_eq`, `tendsto_squareForm_defect`): the
   pairing of a packet minus the masses times `log(n/4π)` is twice the form on the integers, plus
   twice a Riemann sum of the continuous kernel, plus `2 log 2` times the mass.
+* **The primitive of the kernel** (`integral_combDefect`):
+  `∫_0^y (2ω(2x) − ω(x)) dx = Ω(y) − Ω(2y) − ½ log 2`; the constant `½ log 2` is the value at `0`
+  of the difference of the two primitives, and it is what the change of the counterterm from
+  `log(n/2π)` to `log(n/4π)` pays.
+* **Weil's form of the halved packet** (`weilArchRe_sub_pole_comp_div_two`): for `f(s) = g(s/2)`
+  the archimedean form is twice that of `g`, minus twice the kernel on `g`, minus `2 log 2` times
+  the mass. The window form of the jump integral is used on `[0, c]` for `g` and on `[0, 2c]` for
+  `f`; the rows of the kernel on the window cancel against the primitives of the tails.
+* **The packet theorem** (`tendsto_squareForm`): the form on the comb of squares tends to minus
+  the archimedean part of Weil's functional, without the pole, of the packet in the logarithmic
+  coordinate of the squares.
 
-The counterterm `log(n/4π)` is the logarithm of the density `n/2` of the comb over `2π`.
+The counterterm `log(n/4π)` is the logarithm of the density `n/2` of the comb over `2π`. The
+argument compares two combs whose Lévy densities differ by a continuous kernel; it uses nothing
+else of the squares.
 -/
 
 open Finset Filter Topology MeasureTheory
@@ -529,7 +542,7 @@ theorem weilArchRe_sub_pole_comp_div_two {g : ℝ → ℝ} {R : ℕ} {B L δ c :
   have hmass_f := packetAutocorr_zero_eq_integral_window (f := fun s => g (s / 2)) (c := 2 * c)
     (by positivity : 0 < 2 * δ) hsuppf
   -- the mass, the box and the tails of the halved packet, on the window of `g`
-  have hM : ∫ s in (0 : ℝ)..(2 * c), (fun s => g (s / 2)) s ^ 2 =
+  have hM : ∫ s in (0 : ℝ)..(2 * c), g (s / 2) ^ 2 =
       2 * ∫ u in (0 : ℝ)..c, g u ^ 2 := integral_comp_div_two (fun u => g u ^ 2) c
   have hin : ∀ u : ℝ, ∫ t in (0 : ℝ)..(2 * c), ω |2 * u - t| * (g u - g (t / 2)) ^ 2 =
       2 * ∫ v in (0 : ℝ)..c, ω |2 * u - 2 * v| * (g u - g v) ^ 2 := fun u => by
@@ -564,7 +577,7 @@ theorem weilArchRe_sub_pole_comp_div_two {g : ℝ → ℝ} {R : ℕ} {B L δ c :
       intervalIntegral.integral_congr fun u _ => hin u
     rw [e1, e2, e3, intervalIntegral.integral_const_mul]
     ring
-  have hTail : ∫ s in (0 : ℝ)..(2 * c), (fun s => g (s / 2)) s ^ 2 *
+  have hTail : ∫ s in (0 : ℝ)..(2 * c), g (s / 2) ^ 2 *
         (Ω (max (2 * c - s) (2 * δ)) + Ω (max s (2 * δ))) =
       2 * ∫ u in (0 : ℝ)..c, g u ^ 2 *
         (Ω (max (2 * c - 2 * u) (2 * δ)) + Ω (max (2 * u) (2 * δ))) := by
@@ -576,8 +589,8 @@ theorem weilArchRe_sub_pole_comp_div_two {g : ℝ → ℝ} {R : ℕ} {B L δ c :
     rw [show 2 * (s / 2) = s by ring]
   -- the two box kernels differ by the kernel between the combs
   have hΦ2 : Continuous (Function.uncurry fun u v : ℝ => ω |2 * u - 2 * v| * (g u - g v) ^ 2) := by
-    have h := (continuous_boxKernel hf.continuous hLf).comp
-      ((continuous_const.mul continuous_fst).prodMk (continuous_const.mul continuous_snd))
+    have hmap : Continuous fun p : ℝ × ℝ => (2 * p.1, 2 * p.2) := by fun_prop
+    have h := (continuous_boxKernel hf.continuous hLf).comp hmap
     refine h.congr fun p => ?_
     show ω |2 * p.1 - 2 * p.2| * (g (2 * p.1 / 2) - g (2 * p.2 / 2)) ^ 2 =
       ω |2 * p.1 - 2 * p.2| * (g p.1 - g p.2) ^ 2
@@ -640,10 +653,27 @@ theorem weilArchRe_sub_pole_comp_div_two {g : ℝ → ℝ} {R : ℕ} {B L δ c :
         (∫ u in (0 : ℝ)..c, g u ^ 2 * (Ω (max (c - u) δ) + Ω (max u δ))) +
         ∫ u in (0 : ℝ)..c, g u ^ 2 * ∫ v in (0 : ℝ)..c, combDefect (u - v) =
       -Real.log 2 * ∫ u in (0 : ℝ)..c, g u ^ 2 := by
-    rw [← intervalIntegral.integral_sub (cT2.intervalIntegrable _ _) (cT.intervalIntegrable _ _),
-      ← intervalIntegral.integral_add ((cT2.sub cT).intervalIntegrable _ _)
-        (cA.intervalIntegrable _ _), ← intervalIntegral.integral_const_mul]
-    exact intervalIntegral.integral_congr hRow
+    have i1 : IntervalIntegrable (fun u => g u ^ 2 *
+        (Ω (max (2 * c - 2 * u) (2 * δ)) + Ω (max (2 * u) (2 * δ)))) volume 0 c :=
+      cT2.intervalIntegrable _ _
+    have i2 : IntervalIntegrable (fun u => g u ^ 2 * (Ω (max (c - u) δ) + Ω (max u δ)))
+        volume 0 c := cT.intervalIntegrable _ _
+    have i12 : IntervalIntegrable (fun u => g u ^ 2 *
+          (Ω (max (2 * c - 2 * u) (2 * δ)) + Ω (max (2 * u) (2 * δ))) -
+        g u ^ 2 * (Ω (max (c - u) δ) + Ω (max u δ))) volume 0 c :=
+      (cT2.sub cT).intervalIntegrable _ _
+    have i3 : IntervalIntegrable (fun u => g u ^ 2 * ∫ v in (0 : ℝ)..c, combDefect (u - v))
+        volume 0 c := cA.intervalIntegrable _ _
+    have hsum : ∫ u in (0 : ℝ)..c, (g u ^ 2 *
+            (Ω (max (2 * c - 2 * u) (2 * δ)) + Ω (max (2 * u) (2 * δ))) -
+          g u ^ 2 * (Ω (max (c - u) δ) + Ω (max u δ)) +
+          g u ^ 2 * ∫ v in (0 : ℝ)..c, combDefect (u - v)) =
+        (∫ u in (0 : ℝ)..c, g u ^ 2 *
+            (Ω (max (2 * c - 2 * u) (2 * δ)) + Ω (max (2 * u) (2 * δ)))) -
+          (∫ u in (0 : ℝ)..c, g u ^ 2 * (Ω (max (c - u) δ) + Ω (max u δ))) +
+          ∫ u in (0 : ℝ)..c, g u ^ 2 * ∫ v in (0 : ℝ)..c, combDefect (u - v) := by
+      rw [intervalIntegral.integral_add i12 i3, intervalIntegral.integral_sub i1 i2]
+    rw [← hsum, intervalIntegral.integral_congr hRow, intervalIntegral.integral_const_mul]
   rw [hweil_f, hbox_f, hmass_f, hM, hBox, hTail, hweil_g, hbox_g, hmass_g]
   linarith [hF3, hF4, hF5]
 

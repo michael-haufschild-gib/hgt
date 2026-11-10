@@ -73,7 +73,8 @@ theorem jetKernel_of_lt {m n : ℕ} (hmn : m < n) :
       rw [div_pow, div_lt_one (by positivity)]
       nlinarith
     linarith
-  rw [jetKernel, abs_sub_comm, abs_of_pos (by linarith), add_comm (m : ℝ) n]
+  rw [eq_mul_inv_iff_mul_eq₀ h3, jetKernel, abs_sub_comm, abs_of_pos (by linarith),
+    add_comm (m : ℝ) n]
   field_simp
   ring
 
@@ -113,16 +114,20 @@ theorem jetKernel_sub_sum_jetLevel {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (hmn : 
   have hne : ((m : ℝ) / n) ^ 2 ≠ 1 := hr1.ne
   have hne' : (1 : ℝ) - ((m : ℝ) / n) ^ 2 ≠ 0 := by linarith
   have hne'' : ((m : ℝ) / n) ^ 2 - 1 ≠ 0 := by linarith
+  have key : ∀ (A r : ℝ) (J : ℕ), 1 - r ≠ 0 → r - 1 ≠ 0 →
+      A * (1 - r)⁻¹ - A * ((r ^ J - 1) / (r - 1)) = r ^ J * (A * (1 - r)⁻¹) := by
+    intro A r J h1 h2
+    field_simp
+    ring
   rw [Finset.sum_congr rfl fun j _ => jetLevel_of_lt j hn h, ← Finset.mul_sum, geom_sum_eq hne,
     jetKernel_of_lt h, min_eq_left h.le, max_eq_right h.le, pow_mul]
-  field_simp
-  ring
+  exact key _ _ _ hne' hne''
 
 /-! ### Each weight is a Hardy square -/
 
-/-- **Abel summation for a kernel of the maximum.** For `g ≥ 0` nonincreasing on the positive
+/-- **Abel summation for a kernel of the maximum.** For `g` nonincreasing on the positive
 integers, the form `Σ x_m x_n g(max(m, n))` on `[1, N]` is at least `g(N)(Σ x_n)²`. -/
-theorem le_sum_mul_mul_antitone_max (g : ℕ → ℝ) (hg0 : ∀ t, 0 ≤ g t)
+theorem le_sum_mul_mul_antitone_max (g : ℕ → ℝ)
     (hg : ∀ t, 1 ≤ t → g (t + 1) ≤ g t) (x : ℕ → ℝ) :
     ∀ N : ℕ, g N * (∑ n ∈ Icc 1 N, x n) ^ 2 ≤
       ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, x m * x n * g (max m n) := by
@@ -151,7 +156,7 @@ theorem le_sum_mul_mul_antitone_max (g : ℕ → ℝ) (hg0 : ∀ t, 0 ≤ g t)
       rcases Nat.eq_zero_or_pos N with rfl | hN
       · simp
       · exact mul_le_mul_of_nonneg_right (hg N hN) (sq_nonneg _)
-    nlinarith [hg0 (N + 1)]
+    linarith
 
 /-- The jet of a weight as a kernel of the maximum. -/
 theorem jetLevel_eq_max (j : ℕ) {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
@@ -160,19 +165,18 @@ theorem jetLevel_eq_max (j : ℕ) {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
   have hm' : (0 : ℝ) < m := by exact_mod_cast hm
   have hn' : (0 : ℝ) < n := by exact_mod_cast hn
   rcases le_total m n with h | h
-  · rw [jetLevel, min_eq_left h, max_eq_right h,
-      show 4 * j + 1 = 2 * j + (2 * j + 1) by ring, pow_add]
+  · rw [jetLevel, min_eq_left h, max_eq_right h]
     field_simp
-  · rw [jetLevel, min_eq_right h, max_eq_left h,
-      show 4 * j + 1 = 2 * j + (2 * j + 1) by ring, pow_add]
+    ring
+  · rw [jetLevel, min_eq_right h, max_eq_left h]
     field_simp
+    ring
 
 /-- **Each weight is a Hardy square.** With the diagonal value `1/n` the jet of the weight `−2j`
 is a positive semidefinite kernel on the degree points. -/
 theorem sum_mul_mul_jetLevel_nonneg (j N : ℕ) (c : ℕ → ℝ) :
     0 ≤ ∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, c m * c n * jetLevel j m n := by
   have h := le_sum_mul_mul_antitone_max (fun t => 1 / (t : ℝ) ^ (4 * j + 1))
-    (fun t => by positivity)
     (fun t ht => by
       have ht' : (0 : ℝ) < t := by exact_mod_cast ht
       exact one_div_le_one_div_of_le (by positivity)
@@ -266,9 +270,9 @@ theorem combFormJets_mono {J J' : ℕ} (hJ : J ≤ J') (S : Finset ℕ) (c : ℕ
       ∑ n ∈ S, ∑ m ∈ S.erase n,
         (c m - c n) ^ 2 * (∑ j ∈ range J', jetLevel j m n + contact m n) :=
     Finset.sum_le_sum fun n _ => Finset.sum_le_sum fun m _ =>
-      mul_le_mul_of_nonneg_left (add_le_add_right
+      mul_le_mul_of_nonneg_left (add_le_add
         (Finset.sum_le_sum_of_subset_of_nonneg (Finset.range_mono hJ)
-          fun j _ _ => jetLevel_nonneg j m n) _) (sq_nonneg _)
+          fun j _ _ => jetLevel_nonneg j m n) le_rfl) (sq_nonneg _)
   linarith
 
 /-- **At the scale `N` the remainder is at most `(1 − 1/N)^{2J}`.** For degree points up to `N`

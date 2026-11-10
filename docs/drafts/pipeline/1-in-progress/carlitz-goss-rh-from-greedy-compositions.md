@@ -51,8 +51,12 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `InitialCompositions` | Deleting the last part preserves greediness and optimality; admissible replacements of the initial composition retain divisible parts |
 | `ContentBounds` | A proper sublayer of constant content `p−1` has every inverse coordinate `<1`; divisible content has integral inverse coordinates |
 | `TopDigits` | Digits below exponent `k` have value `<p^k`; the whole highest digit block has value `>N/2` and content at most `p−1` in each class |
+| `LastBlockOperations` | Adding a common last block preserves reverse lexicographic comparisons; deleting digits from a still nonempty last part preserves optimality and greediness |
+| `TopBlockFeasibility` | Every nonempty content layer bounded by `p−1` fits in the last part of a divisible composition; some last part has value `>N/2` |
+| `GreedyWeightBounds` | For divisible total `N`, every greedy or optimal `m`-part composition satisfies `(m−1)N<weight≤mN` |
+| `PrefixBoundary` | The initial prefix has minimum inverse coordinate exactly `m−1`; last-part deletion remains feasible iff that part stays nonempty |
 
-All eleven modules passed direct and transitive axiom audits using only the
+Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
 The actual Goss-zeta theorem and its general optimal-composition input remain

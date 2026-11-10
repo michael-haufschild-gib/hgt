@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.Complex.Convex
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.Analysis.Normed.Group.Tannery
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
@@ -463,5 +464,166 @@ theorem norm_wordMass_le (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < 
         (Real.exp (x₀ * σ) / δ)
   have hfin := le_of_tendsto_of_tendsto' hlim.norm hRlim hbound
   rwa [mul_comm x₀ σ] at hfin
+
+/-! ### The monoid of frequencies is sparse -/
+
+theorem summable_prod_pow_fin : ∀ (n : ℕ) (r : Fin n → ℝ), (∀ a, 0 ≤ r a) → (∀ a, r a < 1) →
+    Summable fun e : Fin n → ℕ => ∏ a, r a ^ e a
+  | 0, r, _, _ => summable_of_ne_finset_zero (s := {fun _ => 0}) fun e he =>
+      absurd (Subsingleton.elim e _) (by simpa using he)
+  | n + 1, r, h0, h1 => by
+    have ih := summable_prod_pow_fin n (fun a => r a.succ) (fun a => h0 _) (fun a => h1 _)
+    have hg : Summable fun k : ℕ => r 0 ^ k := summable_geometric_of_lt_one (h0 0) (h1 0)
+    have hprod := hg.mul_of_nonneg ih (fun k => pow_nonneg (h0 0) k)
+      (fun e => Finset.prod_nonneg fun a _ => pow_nonneg (h0 _) _)
+    refine ((Fin.consEquiv fun _ : Fin (n + 1) => ℕ).summable_iff).mp (hprod.congr fun x => ?_)
+    show r 0 ^ x.1 * ∏ a, r a.succ ^ x.2 a =
+      ∏ a, r a ^ (Fin.cons x.1 x.2 : Fin (n + 1) → ℕ) a
+    rw [Fin.prod_univ_succ]
+    simp only [Fin.cons_zero, Fin.cons_succ]
+
+/-- Products of geometric sequences over a finite index are summable. -/
+theorem summable_pi_prod_pow (r : τ → ℝ) (h0 : ∀ a, 0 ≤ r a) (h1 : ∀ a, r a < 1) :
+    Summable fun e : τ → ℕ => ∏ a, r a ^ e a := by
+  have h := summable_prod_pow_fin (Fintype.card τ) (fun j => r ((Fintype.equivFin τ).symm j))
+    (fun j => h0 _) (fun j => h1 _)
+  refine ((Equiv.arrowCongr (Fintype.equivFin τ).symm (Equiv.refl ℕ)).summable_iff).mp
+    (h.congr fun g => ?_)
+  simp only [Function.comp_apply, Equiv.arrowCongr_apply, Equiv.refl_apply, Equiv.symm_symm]
+  rw [← Equiv.prod_comp (Fintype.equivFin τ)
+    (fun j => r ((Fintype.equivFin τ).symm j) ^ g j)]
+  simp only [Equiv.symm_apply_apply]
+
+/-- **The monoid of frequencies is sparse**: `Σ_x e^{−εx} < ∞` over its elements. -/
+theorem summable_exp_neg_freqMonoid {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) {ε : ℝ} (hε : 0 < ε) :
+    Summable fun x : freqMonoid ℓ => Real.exp (-(ε * (x : ℝ))) := by
+  have hpi : Summable fun e : τ → ℕ => Real.exp (-(ε * ∑ k, (e k : ℝ) * ℓ k)) := by
+    have h := summable_pi_prod_pow (fun k => Real.exp (-(ε * ℓ k))) (fun k => (Real.exp_pos _).le)
+      (fun k => Real.exp_lt_one_iff.mpr (neg_neg_of_pos (mul_pos hε (hℓ k))))
+    refine h.congr fun e => ?_
+    rw [Finset.mul_sum, ← Finset.sum_neg_distrib, Real.exp_sum]
+    refine Finset.prod_congr rfl fun k _ => ?_
+    rw [← Real.exp_nat_mul]
+    congr 1
+    ring
+  have hinj := Set.rangeSplitting_injective (fun e : τ → ℕ => ∑ k, (e k : ℝ) * ℓ k)
+  refine (hpi.comp_injective hinj).congr fun x => ?_
+  show Real.exp (-(ε * ∑ k, ((Set.rangeSplitting (fun e : τ → ℕ => ∑ k, (e k : ℝ) * ℓ k) x) k : ℝ)
+    * ℓ k)) = Real.exp (-(ε * (x : ℝ)))
+  rw [Set.apply_rangeSplitting (fun e : τ → ℕ => ∑ k, (e k : ℝ) * ℓ k) x]
+
+/-! ### The expansion up to the line -/
+
+/-- The word of a point of the monoid. -/
+def wordPoint (ℓ : τ → ℝ) (J : Word τ) : freqMonoid ℓ := ⟨wordExp ℓ J, wordExp_mem_freqMonoid ℓ J⟩
+
+/-- Where the word series converges, `1/P` is the series of the merged coefficients. -/
+theorem hasSum_wordMass_of_far (c : τ → ℂ) (ℓ : τ → ℝ) {w : ℂ}
+    (hq : ∑ k, ‖c k‖ * Real.exp (-(ℓ k * w.re)) < 1) :
+    HasSum (fun x : freqMonoid ℓ => wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * w))
+      (expPoly c ℓ w)⁻¹ := by
+  classical
+  have hfib := (hasSum_inv_expPoly_words c ℓ hq).tsum_fiberwise (wordPoint ℓ)
+  have hinner : ∀ x : freqMonoid ℓ, (∑' J : wordPoint ℓ ⁻¹' {x},
+      wordCoeff c J * cexp (-(wordExp ℓ J : ℂ) * w)) =
+      wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * w) := by
+    intro x
+    have hx : ∀ J : wordPoint ℓ ⁻¹' {x}, wordExp ℓ (J : Word τ) = (x : ℝ) := fun J =>
+      congrArg Subtype.val (show wordPoint ℓ (J : Word τ) = x from J.2)
+    rw [tsum_congr fun J : wordPoint ℓ ⁻¹' {x} => by rw [hx J], tsum_mul_right]
+    congr 1
+    rw [wordMass, tsum_subtype (wordPoint ℓ ⁻¹' {x}) (wordCoeff c)]
+    refine tsum_congr fun J => ?_
+    rw [Set.indicator_apply]
+    by_cases h : wordExp ℓ J = (x : ℝ)
+    · rw [if_pos h, if_pos (show J ∈ wordPoint ℓ ⁻¹' {x} from Subtype.ext h)]
+    · rw [if_neg h, if_neg (show J ∉ wordPoint ℓ ⁻¹' {x} from fun h' =>
+        h (congrArg Subtype.val (show wordPoint ℓ J = x from h')))]
+  simpa only [hinner] using hfib
+
+/-- **The inverse of an exponential polynomial expands where it is bounded below.** If `P` is
+bounded below on the closed half-planes right of `θ`, then `Σ_x ‖μ(x)‖ e^{−σx} < ∞` over the monoid
+of frequencies for every `σ > θ`, and `1/P(w) = Σ_x μ(x) e^{−xw}` on `Re w > θ`. -/
+theorem hasSum_inv_expPoly (c : τ → ℂ) {ℓ : τ → ℝ} (hℓ : ∀ k, 0 < ℓ k) {θ : ℝ}
+    (hlow : ∀ σ : ℝ, θ < σ → ∃ δ : ℝ, 0 < δ ∧ ∀ w : ℂ, σ ≤ w.re → δ ≤ ‖expPoly c ℓ w‖) :
+    (∀ σ : ℝ, θ < σ →
+      Summable fun x : freqMonoid ℓ => ‖wordMass c ℓ x‖ * Real.exp (-(σ * (x : ℝ)))) ∧
+    ∀ w : ℂ, θ < w.re →
+      HasSum (fun x : freqMonoid ℓ => wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * w))
+        (expPoly c ℓ w)⁻¹ := by
+  have hsum : ∀ σ : ℝ, θ < σ →
+      Summable fun x : freqMonoid ℓ => ‖wordMass c ℓ x‖ * Real.exp (-(σ * (x : ℝ))) := by
+    intro σ hσ
+    obtain ⟨δ, hδ, hδlow⟩ := hlow ((θ + σ) / 2) (by linarith)
+    have hε : 0 < σ - (θ + σ) / 2 := by linarith
+    refine Summable.of_nonneg_of_le (fun x => by positivity) (fun x => ?_)
+      ((summable_exp_neg_freqMonoid hℓ hε).mul_left (1 / δ))
+    have hb := norm_wordMass_le c hℓ hδ hδlow (x : ℝ)
+    calc ‖wordMass c ℓ x‖ * Real.exp (-(σ * (x : ℝ)))
+        ≤ Real.exp ((θ + σ) / 2 * (x : ℝ)) / δ * Real.exp (-(σ * (x : ℝ))) :=
+          mul_le_mul_of_nonneg_right hb (Real.exp_pos _).le
+      _ = 1 / δ * Real.exp (-((σ - (θ + σ) / 2) * (x : ℝ))) := by
+          rw [div_mul_eq_mul_div, ← Real.exp_add, one_div, inv_mul_eq_div]
+          congr 2
+          ring
+  refine ⟨hsum, fun w hw => ?_⟩
+  -- the half-plane right of a line between `θ` and `Re w`
+  set σ : ℝ := (θ + w.re) / 2 with hσ
+  have hθσ : θ < σ := by rw [hσ]; linarith
+  have hσw : σ < w.re := by rw [hσ]; linarith
+  set U : Set ℂ := {z : ℂ | σ < z.re} with hU
+  have hUo : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  have hterm : ∀ (x : freqMonoid ℓ) (z : ℂ), z ∈ U →
+      ‖wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * z)‖ ≤
+        ‖wordMass c ℓ x‖ * Real.exp (-(σ * (x : ℝ))) := by
+    intro x z hz
+    rw [norm_mul, norm_cexp_neg_ofReal_mul]
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+    have hx0 := nonneg_of_mem_freqMonoid hℓ x.2
+    have hz' : σ < z.re := hz
+    nlinarith
+  have hGd : DifferentiableOn ℂ
+      (fun z => ∑' x : freqMonoid ℓ, wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * z)) U :=
+    differentiableOn_tsum_of_summable_norm (hsum σ hθσ)
+      (fun x => ((differentiable_id.const_mul (-((x : ℝ) : ℂ))).cexp.const_mul _).differentiableOn)
+      hUo hterm
+  obtain ⟨δ, hδ, hδlow⟩ := hlow σ hθσ
+  have hPne : ∀ z ∈ U, expPoly c ℓ z ≠ 0 := fun z hz =>
+    norm_pos_iff.mp (lt_of_lt_of_le hδ (hδlow z (le_of_lt hz)))
+  have hPd : DifferentiableOn ℂ (fun z => (expPoly c ℓ z)⁻¹) U := fun z hz =>
+    ((differentiable_expPoly c ℓ z).inv (hPne z hz)).differentiableWithinAt
+  -- the two functions agree far to the right
+  obtain ⟨c₀, hc₀q, hc₀σ⟩ := (((tendsto_sum_norm_mul_exp c hℓ).eventually
+    (gt_mem_nhds (zero_lt_one' ℝ))).and (eventually_ge_atTop σ)).exists
+  have hfar : ∀ z : ℂ, c₀ < z.re → (∑' x : freqMonoid ℓ,
+      wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * z)) = (expPoly c ℓ z)⁻¹ := by
+    intro z hz
+    refine (hasSum_wordMass_of_far c ℓ (lt_of_le_of_lt (Finset.sum_le_sum fun k _ => ?_)
+      hc₀q)).tsum_eq
+    refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+    have := hℓ k
+    nlinarith
+  have hz₀ : ((c₀ + 1 : ℝ) : ℂ) ∈ U := by
+    show σ < ((c₀ + 1 : ℝ) : ℂ).re
+    rw [Complex.ofReal_re]
+    linarith
+  have hev : (fun z => ∑' x : freqMonoid ℓ, wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * z))
+      =ᶠ[𝓝 ((c₀ + 1 : ℝ) : ℂ)] fun z => (expPoly c ℓ z)⁻¹ := by
+    have hopen : {z : ℂ | c₀ < z.re} ∈ 𝓝 ((c₀ + 1 : ℝ) : ℂ) :=
+      (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by
+        show c₀ < ((c₀ + 1 : ℝ) : ℂ).re
+        rw [Complex.ofReal_re]
+        linarith)
+    filter_upwards [hopen] with z hz
+    exact hfar z hz
+  have heq := (hGd.analyticOnNhd hUo).eqOn_of_preconnected_of_eventuallyEq
+    (hPd.analyticOnNhd hUo) (convex_halfSpace_re_gt σ).isPreconnected hz₀ hev
+  have hwU : w ∈ U := hσw
+  have hsw : Summable fun x : freqMonoid ℓ => wordMass c ℓ x * cexp (-((x : ℝ) : ℂ) * w) :=
+    Summable.of_norm_bounded (hsum σ hθσ) fun x => hterm x w hwU
+  have hval := heq hwU
+  simp only at hval
+  rw [← hval]
+  exact hsw.hasSum
 
 end GaloisForLFunctions.InfiniteRankPurityTheory
