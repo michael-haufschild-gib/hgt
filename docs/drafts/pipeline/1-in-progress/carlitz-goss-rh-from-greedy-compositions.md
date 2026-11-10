@@ -36,34 +36,26 @@ coefficients and passage to the entire series remain necessary.
 
 ## Lean status
 
-`CarlitzGoss/DigitContents.lean` proves
-`exists_positive_cyclicDifference_content_iff`: a positive integer is
-divisible by `p^s−1` exactly when its digit content is `Ea` for a positive
-integral vector `a`. The inverse, integrality propagation, and digit
-congruence are proved; direct and transitive axiom audits passed, using
-only the three standard axioms.
+Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 
-`CarlitzGoss/ContentRounding.lean` proves `exists_integral_content_layer`:
-if every inverse-content coordinate exceeds `m≥1`, a proper positive
-integral layer with inverse coordinates at least `m` can be extracted.
-Direct and transitive axiom audits passed, using only the standard axioms.
-`CarlitzGoss/ContentPartitions.lean` proves `hasContentPrefix_iff`:
-a nonnegative content vector admits `k` positive divisible parts and
-one unrestricted positive last part iff every inverse-content coordinate
-exceeds `k`. Direct and transitive axiom audits passed, using only the
-standard axioms.
+| Module | Proved statement |
+|---|---|
+| `DigitContents` | Positive integer divisibility by `p^s−1` iff its content is `Ea` with positive integral `a`; explicit inverse and integrality propagation |
+| `ContentRounding` | `exists_integral_content_layer`: inverse coordinates `>m≥1` admit a proper positive integral layer with inverse coordinates `≥m` |
+| `ContentPartitions` | `hasContentPrefix_iff`: `k` divisible positive parts and an unrestricted positive last part exist iff every inverse-content coordinate exceeds `k` |
+| `DigitAllocations` | `tokenPrefix_iff_inverseContent`: the vector criterion partitions actual finite digit occurrences |
+| `DigitValues` | Divisible content iff divisible integer value; `digitTokenPrefix_iff` for the canonical base-`p` digits of every `N` |
+| `DigitCompositions` | Indexed carry-free compositions satisfy the same criterion; both maxima exist; greedy and optimal coincide for two parts |
+| `DigitExchanges` | Same-residue swaps preserve content; exact weight change; greedy and optimal allocations are increasing within each residue class; every realized content matrix admits an increasing allocation |
+| `IncreasingAllocations` | Increasing allocations of a fixed content matrix have unique numerical part values, by equality of all prefix values |
+| `InitialCompositions` | Deleting the last part preserves greediness and optimality; admissible replacements of the initial composition retain divisible parts |
 
-`CarlitzGoss/DigitAllocations.lean` proves `tokenPrefix_iff_inverseContent`:
-the same criterion partitions the individual finite digit occurrences,
-not only their count vectors. Direct and transitive axiom audits passed,
-using only the standard axioms.
-`CarlitzGoss/DigitValues.lean` identifies divisible content with divisibility
-of a block's actual integer value and proves `digitTokenPrefix_iff` for the
-canonical base-`p` digits of every `N`. Direct and transitive axiom audits
-passed, using only the standard axioms. All five modules are wired into the umbrella.
+All nine modules passed direct and transitive axiom audits using only the
+three standard axioms and are wired into the umbrella.
 
-The actual Goss-zeta theorem and its optimal-composition input remain unformalized.
-The target includes every prime power, not only prime `q` or integer `y`.
+The actual Goss-zeta theorem and its general optimal-composition input remain
+unformalized. The target includes every prime power, not only prime `q` or
+integer `y`.
 
 ## Combinatorial mechanism
 
@@ -84,6 +76,25 @@ otherwise `d_h=b_h` and `(Ed)_h<u_h+1`, hence `(Ed)_h≤u_h` by
 integrality. Thus `0≤Ed≤u`, with both `Ed` and `u−Ed` nonzero by
 invertibility of `E`. This supplies the recursive decomposition into
 positive divisible parts without choosing a coordinate of minimum `c`.
+
+The constant content layer `ρ_h=p−1` has `E⁻¹ρ=1`. If `v≤ρ` and
+`v≠ρ`, positivity of every entry of `E⁻¹` gives `E⁻¹v<1` in every
+coordinate. Removing such a layer from content with inverse coordinates
+at least `m` leaves the strict feasibility threshold `>m−1`. In the
+boundary case `v=ρ`, the remainder is still divisible and has inverse
+coordinates at least `m−1`.
+
+For divisible `N`, take the whole highest base-`p` digit block. It exceeds
+`N/2` and its content is bounded by `ρ`. The preceding dichotomy constructs
+an admissible composition whose last part contains this block. Thus the
+greedy last part exceeds `N/2`; induction on the initial composition gives
+`(m−1)N<wt(G)≤mN`. The same lower bound holds for every optimum.
+Consequently, an optimal or greedy composition's initial prefix cannot
+admit another part: otherwise repartitioning that prefix and enlarging the
+last part improves weight or reverse lexicographic order. Its minimum
+inverse-content coordinate is exactly `m−1`, so all first `m−1` parts
+share a coordinate equal to one. These are the boundary facts needed
+before the minimal-counterexample argument.
 
 For a fixed content matrix, increasing allocation of the digit powers
 within each residue class uniquely maximizes the weight. The difficult

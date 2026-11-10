@@ -287,7 +287,8 @@ theorem eventually_gaussianGrowingLongCutoff_bounds {a : ℝ} (ha : 0 < a) (J : 
       change _ ≤ (⌊Real.exp (a * t) / t ^ (J + 1)⌋₊ : ℝ)
       change (1 : ℝ) ≤ (⌊Real.exp (a * t) / t ^ (J + 1)⌋₊ : ℝ) at hU1R
       linarith only [hnear, hU1R]
-    convert hxhalf using 1 <;> ring
+    convert hxhalf using 1
+    ring
   exact ⟨hU1, hV1, hVt, hprod, hhalf⟩
 
 private theorem eventually_growing_polynomial_absorbed {a : ℝ} (ha : 0 < a) :

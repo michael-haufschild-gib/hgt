@@ -24,14 +24,14 @@ namespace GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations
 
 /-- Width of a bounded horizontal continuation of the nonprincipal prime logarithm. -/
 def mixtureCharacterWidth : ℝ :=
-  Classical.choose (exists_bounded_characterPrimeLog_tube chiFour_ne_one)
+  Classical.choose (exists_bounded_characterPrimeLog_tube ArithmeticGaugeTheory.chiFour_ne_one)
 
 theorem mixtureCharacterWidth_pos : 0 < mixtureCharacterWidth :=
-  (Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).1
+  (Classical.choose_spec (exists_bounded_characterPrimeLog_tube ArithmeticGaugeTheory.chiFour_ne_one)).1
 
 /-- The character prime logarithm, with its actual right-half-plane values. -/
 def mixtureCharacterLog : ℂ → ℂ :=
-  Classical.choose ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2)
+  Classical.choose ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube ArithmeticGaugeTheory.chiFour_ne_one)).2)
 
 theorem mixtureCharacterLog_properties :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -39,8 +39,8 @@ theorem mixtureCharacterLog_properties :
         {s : ℂ | 1 - mixtureCharacterWidth < s.re ∧ |s.im| < mixtureCharacterWidth} ∧
       (∀ s : ℂ, 1 - mixtureCharacterWidth < s.re → |s.im| < mixtureCharacterWidth →
         ‖mixtureCharacterLog s‖ ≤ C) ∧
-      (∀ s : ℂ, 1 < s.re → mixtureCharacterLog s = characterPrimeLog chiFour s) :=
-  Classical.choose_spec ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2)
+      (∀ s : ℂ, 1 < s.re → mixtureCharacterLog s = characterPrimeLog ArithmeticGaugeTheory.chiFour s) :=
+  Classical.choose_spec ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube ArithmeticGaugeTheory.chiFour_ne_one)).2)
 
 /-- Exact finite correction for the ramified prime. -/
 def mixtureFiniteCorrection (t : ℝ) (s : ℂ) : ℂ :=
@@ -76,7 +76,7 @@ private theorem mixture_prime_shift (p : Nat.Primes) (s : ℂ) (t : ℝ) (n : �
   ring
 
 private def mixtureCharacterTerm (t : ℝ) (s : ℂ) (p : Nat.Primes) (n : ℕ) : ℂ :=
-  mixtureSkewCoefficient n * (chiFour p * ((p : ℕ) : ℂ) ^ (-(s + (n : ℂ) * (t : ℂ))))
+  mixtureSkewCoefficient n * (ArithmeticGaugeTheory.chiFour p * ((p : ℕ) : ℂ) ^ (-(s + (n : ℂ) * (t : ℂ))))
 
 private theorem summable_mixtureCharacterTerm {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 < s.re) :
     Summable (fun pn : Nat.Primes × ℕ => mixtureCharacterTerm t s pn.1 pn.2) := by
@@ -89,19 +89,19 @@ private theorem summable_mixtureCharacterTerm {t : ℝ} (ht : 0 ≤ t) {s : ℂ}
   rw [mixtureCharacterTerm, norm_mul]
   have hn : s.re ≤ (s + (n : ℂ) * (t : ℂ)).re := by
     simp only [Complex.add_re, Complex.mul_re, Complex.natCast_re, Complex.ofReal_re,
-      Complex.natCast_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero]
+      Complex.natCast_im, Complex.ofReal_im, mul_zero, sub_zero]
     exact le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg n) ht)
-  have hm := (norm_char_prime_cpow_le chiFour (w := s + (n : ℂ) * (t : ℂ)) p).trans
+  have hm := (norm_char_prime_cpow_le ArithmeticGaugeTheory.chiFour (w := s + (n : ℂ) * (t : ℂ)) p).trans
     (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast p.2.one_le) (neg_le_neg hn))
-  exact (mul_le_mul_of_nonneg_left hm (norm_nonneg _)).trans_eq (mul_comm _ _)
+  exact (mul_le_mul_of_nonneg_left hm (norm_nonneg (mixtureSkewCoefficient n))).trans_eq (mul_comm _ _)
 
 private theorem mixtureCharacterTerm_tsum {t : ℝ} (ht : 0 ≤ t) (s : ℂ) (p : Nat.Primes) :
-    (∑' n, mixtureCharacterTerm t s p n) = chiFour p *
+    (∑' n, mixtureCharacterTerm t s p n) = ArithmeticGaugeTheory.chiFour p *
       mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) * ((p : ℕ) : ℂ) ^ (-s) := by
   have hz : ‖Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))‖ ≤ 1 := by
     rw [norm_exponentialPrime_damping, Complex.ofReal_re]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast p.2.one_le) (neg_nonpos.mpr ht)
-  have hh := ((mixtureSkewCoefficient_hasSum hz).mul_left (chiFour p)).mul_right
+  have hh := ((mixtureSkewCoefficient_hasSum hz).mul_left (ArithmeticGaugeTheory.chiFour p)).mul_right
     (((p : ℕ) : ℂ) ^ (-s))
   rw [← hh.tsum_eq]
   apply tsum_congr
@@ -111,9 +111,9 @@ private theorem mixtureCharacterTerm_tsum {t : ℝ} (ht : 0 ≤ t) (s : ℂ) (p 
 
 /-- Absolute Fubini identifies the actual character-weighted Euler contribution. -/
 theorem mixture_character_prime_sum {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 < s.re) :
-    (∑' p : Nat.Primes, chiFour p *
+    (∑' p : Nat.Primes, ArithmeticGaugeTheory.chiFour p *
       mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) * ((p : ℕ) : ℂ) ^ (-s)) =
-      ∑' n, mixtureSkewCoefficient n * characterPrimeLog chiFour (s + (n : ℂ) * (t : ℂ)) := by
+      ∑' n, mixtureSkewCoefficient n * characterPrimeLog ArithmeticGaugeTheory.chiFour (s + (n : ℂ) * (t : ℂ)) := by
   calc
     _ = ∑' p : Nat.Primes, ∑' n, mixtureCharacterTerm t s p n :=
       tsum_congr (fun p => (mixtureCharacterTerm_tsum ht s p).symm)
@@ -126,7 +126,7 @@ theorem mixture_character_prime_sum {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 <
       simp only [mixtureCharacterTerm, characterPrimeLog, tsum_mul_left]
 
 private theorem summable_mixture_character_skew {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 < s.re) :
-    Summable (fun p : Nat.Primes => chiFour p *
+    Summable (fun p : Nat.Primes => ArithmeticGaugeTheory.chiFour p *
       mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) * ((p : ℕ) : ℂ) ^ (-s)) := by
   have hp : Summable (fun p : Nat.Primes => (p : ℝ) ^ (-s.re)) :=
     Nat.Primes.summable_rpow.mpr (by linarith only [hs])
@@ -135,17 +135,17 @@ private theorem summable_mixture_character_skew {t : ℝ} (ht : 0 ≤ t) {s : �
   have hz : ‖Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))‖ ≤ 1 := by
     rw [norm_exponentialPrime_damping, Complex.ofReal_re]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast p.2.one_le) (neg_nonpos.mpr ht)
-  rw [show chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
-      ((p : ℕ) : ℂ) ^ (-s) = (chiFour p * ((p : ℕ) : ℂ) ^ (-s)) *
+  rw [show ArithmeticGaugeTheory.chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
+      ((p : ℕ) : ℂ) ^ (-s) = (ArithmeticGaugeTheory.chiFour p * ((p : ℕ) : ℂ) ^ (-s)) *
       mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) by ring, norm_mul]
-  exact (mul_le_mul (norm_char_prime_cpow_le chiFour p) (norm_mixtureSkew_le_tsum hz)
+  exact (mul_le_mul (norm_char_prime_cpow_le ArithmeticGaugeTheory.chiFour p) (norm_mixtureSkew_le_tsum hz)
     (norm_nonneg _) (by positivity)).trans_eq (mul_comm _ _)
 
 private theorem mixture_prime_deviation (t : ℝ) (s : ℂ) (p : Nat.Primes) :
     (mixturePrimeValue t p - 1) * ((p : ℕ) : ℂ) ^ (-s) =
       (-4 * ((p : ℕ) : ℂ) ^ (-(s + 2 * (t : ℂ))) +
         2 * ((p : ℕ) : ℂ) ^ (-(s + 4 * (t : ℂ)))) +
-      Complex.I * (chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
+      Complex.I * (ArithmeticGaugeTheory.chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
         ((p : ℕ) : ℂ) ^ (-s)) +
       (if p = (⟨2, Nat.prime_two⟩ : Nat.Primes) then mixtureFiniteCorrection t s else 0) := by
   have h2 := mixture_prime_shift p s t 2
@@ -155,7 +155,7 @@ private theorem mixture_prime_deviation (t : ℝ) (s : ℂ) (p : Nat.Primes) :
     mixturePrimeValue, mixtureProfile, mixturePrimeSign_correction, mixtureMean]
   by_cases hp : p = (⟨2, Nat.prime_two⟩ : Nat.Primes)
   · subst p
-    simp only [Subtype.coe_mk, Nat.cast_ofNat, if_true, mixtureFiniteCorrection]
+    simp only [Nat.cast_ofNat, if_true, mixtureFiniteCorrection]
     ring
   · have hp2 : (p : ℕ) ≠ 2 := fun he => hp (Subtype.ext he)
     simp only [if_neg hp, if_neg hp2, add_zero]
@@ -170,7 +170,7 @@ theorem deformationPrimeSum_mixture {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 <
         mixtureFiniteCorrection t s := by
   have hshift (n : ℕ) : 1 < (s + (n : ℂ) * (t : ℂ)).re := by
     simp only [Complex.add_re, Complex.mul_re, Complex.natCast_re, Complex.ofReal_re,
-      Complex.natCast_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero]
+      Complex.natCast_im, Complex.ofReal_im, mul_zero, sub_zero]
     exact hs.trans_le (le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg n) ht))
   have hs2 := hshift 2
   have hs4 := hshift 4
@@ -181,7 +181,7 @@ theorem deformationPrimeSum_mixture {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 <
   have hfinite : HasSum (fun p : Nat.Primes =>
       if p = (⟨2, Nat.prime_two⟩ : Nat.Primes) then mixtureFiniteCorrection t s else 0)
       (mixtureFiniteCorrection t s) := hasSum_ite_eq _ _
-  have hF : (∑' n, mixtureSkewCoefficient n * characterPrimeLog chiFour (s + (n : ℂ) * (t : ℂ))) =
+  have hF : (∑' n, mixtureSkewCoefficient n * characterPrimeLog ArithmeticGaugeTheory.chiFour (s + (n : ℂ) * (t : ℂ))) =
       characterShiftSeries mixtureSkewCoefficient mixtureCharacterLog t s := by
     obtain ⟨C, hC, ha, hb, he⟩ := mixtureCharacterLog_properties
     unfold characterShiftSeries
@@ -190,11 +190,11 @@ theorem deformationPrimeSum_mixture {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 <
     rw [he _ (hshift n)]
   calc
     _ = ∑' p : Nat.Primes,
-        ((-4 : ℂ) * coronaPrimeEigenvalue (s + 2 * (t : ℂ)) p +
+        (((-4 : ℂ) * coronaPrimeEigenvalue (s + 2 * (t : ℂ)) p +
           2 * coronaPrimeEigenvalue (s + 4 * (t : ℂ)) p) +
-        Complex.I * (chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
+        Complex.I * (ArithmeticGaugeTheory.chiFour p * mixtureSkew (Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ))) *
           ((p : ℕ) : ℂ) ^ (-s)) +
-        (if p = (⟨2, Nat.prime_two⟩ : Nat.Primes) then mixtureFiniteCorrection t s else 0) := by
+        (if p = (⟨2, Nat.prime_two⟩ : Nat.Primes) then mixtureFiniteCorrection t s else 0)) := by
       unfold deformationPrimeSum
       apply tsum_congr
       intro p
@@ -203,7 +203,7 @@ theorem deformationPrimeSum_mixture {t : ℝ} (ht : 0 ≤ t) {s : ℂ} (hs : 1 <
     _ = _ := by
       rw [((h2.add h4).add hχ).tsum_add hfinite.summable,
         (h2.add h4).tsum_add hχ, h2.tsum_add h4, hfinite.tsum_eq]
-      simp only [tsum_mul_left, ← coronaPrimeZeta]
+      simp only [tsum_mul_left, coronaPrimeZeta]
       rw [mixture_character_prime_sum ht hs, hF]
 
 /-- Primewise equality identifies the direct higher-power sum with the gauge sum. -/
@@ -259,7 +259,7 @@ theorem mixtureEuler_factorization :
   intro t ht s hs2 hs4 hs
   have hshift (n : ℕ) : 1 < (s + (n : ℂ) * (t : ℂ)).re := by
     simp only [Complex.add_re, Complex.mul_re, Complex.natCast_re, Complex.ofReal_re,
-      Complex.natCast_im, Complex.ofReal_im, mul_zero, zero_mul, sub_zero]
+      Complex.natCast_im, Complex.ofReal_im, mul_zero, sub_zero]
     exact hs.trans_le (le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg n) ht))
   have hre2 := hshift 2
   have hre4 := hshift 4

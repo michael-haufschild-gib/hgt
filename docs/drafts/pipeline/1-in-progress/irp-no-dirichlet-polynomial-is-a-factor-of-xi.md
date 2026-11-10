@@ -76,3 +76,4 @@ two lines by A; in between by the maximum principle on rectangles between height
 
 ## Log
 - 2026-11-10 — created in 1-in-progress
+- 2026-11-10 — K formalized: `TheConstantTermsOnTheTwoSidesOfTheLineAgree.lean` (`fractSeries_eq`, `tsum_jump_eq`, `constantTerms_agree`), stated for countable families `Σ b_i a_i^s` (`0 < a_i ≤ 1`) and `Σ c_j q_j^s` (`q_j ≥ 1`); divisor bound from `RHTower.Sieve.card_divisors_le_rpow`. Next: B for exponential polynomials `1 + Σ c_k e^{−ℓ_k w}` (lower bound by compactness of twists + Hurwitz; words expansion; coefficient bound by Cauchy on a rectangle; sparsity by the product of geometric series), then C

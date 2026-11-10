@@ -41,6 +41,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTowerThePolePlaneAndTheJet
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheArithmeticSquareOfADedekindDomain
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PointwiseTheShiftsOfThePointCountAreDense
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCarryIsACocycleThatIsNotACoboundary
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfThePairingOfTheDegreePoints
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsAtAHeightReadTheRemainder
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -56,6 +58,7 @@ pole minus Weil's functional, and the tower of lines that carries the contacts w
 pairing as twice the product of the degrees minus the sum over the zeros, its sign on bounded
 apertures and its dependence on the contacts and on the comb; the ring of the tower, the pole
 plane and the jets with its section count; the carry against the window count; the remainder of
-the zero count on the square; and the square of a Dedekind domain. See
+the zero count on the square and its reading by the contacts at a height; the Hodge index of
+the pairing; the carry as a cocycle class; and the square of a Dedekind domain. See
 `AbsoluteGeometryOfSpecZ/README.md`.
 -/

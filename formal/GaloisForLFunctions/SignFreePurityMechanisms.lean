@@ -12,6 +12,10 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ContentRounding
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ContentPartitions
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitAllocations
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitValues
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitCompositions
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitExchanges
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.IncreasingAllocations
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.InitialCompositions
 
 /-!
 # Sign-free purity mechanisms

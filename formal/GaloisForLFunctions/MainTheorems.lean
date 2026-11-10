@@ -106,3 +106,4 @@ import GaloisForLFunctions.ArithmeticWeightTheory
 import GaloisForLFunctions.SignFreePurityMechanisms
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 import GaloisForLFunctions.InfiniteRankPurityTheory
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart

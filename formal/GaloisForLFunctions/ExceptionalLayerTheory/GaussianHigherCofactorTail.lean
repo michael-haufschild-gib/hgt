@@ -19,7 +19,7 @@ def gaussianHigherVaughanCofactorTail (r : ℕ) (σ t : ℝ) (U V W : ℕ) (ε :
     gaussianHigherPrimeMomentWeight r σ t ε n
 
 private theorem higher_tail_term_le (r : ℕ) {σ t : ℝ} (hσ : 0 ≤ σ)
-    (ht : 0 < t) {ε : ℂ} (hε : 0 < ε.re) (hsector : ‖ε‖ ≤ 4 * ε.re * t)
+    (ht : 0 < t) {ε : ℂ} (hsector : ‖ε‖ ≤ 4 * ε.re * t)
     (U V W n : ℕ) :
     ‖(gaussianVaughanCofactorTailCoeff U V W n : ℂ) *
         gaussianHigherPrimeMomentWeight r σ t ε n‖ ≤
@@ -56,7 +56,7 @@ theorem norm_gaussianHigherVaughanCofactorTail_le_gaussian (r : ℕ)
   have hs : Summable (fun n : ℕ => ‖f n‖) :=
     ((RHTower.summable_pow_mul_exp_neg_nat_sq (2 * (r + 1)) hε).mul_left
       (2 * (4 * ε.re) ^ r)).of_nonneg_of_le (fun n => norm_nonneg _) (fun n => by
-        simpa only [f, mul_assoc] using higher_tail_term_le r hσ ht hε hsector U V W n)
+        simpa only [f, mul_assoc] using higher_tail_term_le r hσ ht hsector U V W n)
   have hpt (n : ℕ) : ‖f n‖ ≤
       (2 * (4 * ε.re) ^ r * Real.exp (-(ε.re / 2) * B ^ 2)) *
         ((n : ℝ) ^ (2 * (r + 1)) * Real.exp (-(ε.re / 4) * (n : ℝ) ^ 2)) := by
@@ -64,7 +64,9 @@ theorem norm_gaussianHigherVaughanCofactorTail_le_gaussian (r : ℕ)
     · dsimp only [f]
       rw [gaussianVaughanCofactorTailCoeff_eq_zero hn, Complex.ofReal_zero, zero_mul, norm_zero]
       positivity
-    have hBn : B ≤ (n : ℝ) := by exact_mod_cast (show U * W ≤ n by omega)
+    have hBn : B ≤ (n : ℝ) := by
+      dsimp only [B]
+      exact_mod_cast (show U * W ≤ n by omega)
     have hsq := pow_le_pow_left₀ hB hBn 2
     have he : Real.exp (-ε.re * (n : ℝ) ^ 2) ≤
         Real.exp (-(ε.re / 2) * B ^ 2) * Real.exp (-(ε.re / 4) * (n : ℝ) ^ 2) := by
@@ -72,7 +74,7 @@ theorem norm_gaussianHigherVaughanCofactorTail_le_gaussian (r : ℕ)
       apply Real.exp_le_exp.mpr
       nlinarith only [mul_le_mul_of_nonneg_left hsq hε.le,
         mul_nonneg hε.le (sq_nonneg (n : ℝ))]
-    apply (higher_tail_term_le r hσ ht hε hsector U V W n).trans
+    apply (higher_tail_term_le r hσ ht hsector U V W n).trans
     calc
       _ ≤ 2 * (4 * ε.re) ^ r * (n : ℝ) ^ (2 * (r + 1)) *
           (Real.exp (-(ε.re / 2) * B ^ 2) * Real.exp (-(ε.re / 4) * (n : ℝ) ^ 2)) := by gcongr
@@ -99,7 +101,7 @@ theorem norm_gaussianHigherVaughanCofactorTail_le_gaussian (r : ℕ)
   have he : -(ε.re / 2) * B ^ 2 = -(B / X) ^ 2 := by
     have hα : ε.re = 2 / X ^ 2 := (eq_div_iff (pow_ne_zero 2 hX0.ne')).mpr hscale
     rw [hα]
-    field_simp <;> ring
+    field_simp
   have hp : (4 * ε.re) ^ r * (2 * X) ^ (2 * r) = (32 : ℝ) ^ r := by
     rw [pow_mul, ← mul_pow]
     congr 1
@@ -186,7 +188,7 @@ theorem summable_gaussianHigherVaughanCofactorTail (r : ℕ) {σ t : ℝ}
   apply ((RHTower.summable_pow_mul_exp_neg_nat_sq (2 * (r + 1)) hε).mul_left
     (2 * (4 * ε.re) ^ r)).of_norm_bounded
   intro n
-  simpa only [mul_assoc] using higher_tail_term_le r hσ ht hε hsector U V W n
+  simpa only [mul_assoc] using higher_tail_term_le r hσ ht hsector U V W n
 
 private theorem cofactorTail_zero_eq_typeII (U V : ℕ) :
     gaussianVaughanCofactorTailCoeff U V 0 = typeIILong U * typeIIShort V := by

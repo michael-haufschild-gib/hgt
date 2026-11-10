@@ -404,6 +404,24 @@ counterterm `log(gn/2π)` the limit of C15 is smaller by `log g·∫f²`. With n
 `Q(t) = Σ_n c_n n² Π_{i≠n}(i² − t)` vanishes at infinitely many `t`, so `Q = 0`, and
 `Q(n₀²) = c_{n₀} n₀² Π_{i≠n₀}(i² − n₀²)`. The span is all of `ℝ^m` because its annihilator is `0`. ∎
 
+**C25 (the index law on the degree points).** For packets `f₁,…,f_r` in one window and real `x`,
+`f_x = Σ x_i f_i`: the limit of C18 on `f_x` is `2d₁(f_x)d₂(f_x) − xᵀGx`, `G` Weil's Gram matrix of
+the family, and it is the quadratic form at `x` of the local block `BᴴJB − G` of the arithmetic
+intersection form (`J` the hyperbolic plane on `H, V`, `B` the degrees). `G` has at most
+`#{Re ρ > ½}` negative squares; the form on `H, V, f₁,…,f_r` has at most `1 + #{Re ρ > ½}` positive
+squares, and exactly one on every family iff RH.
+*Proof.* `Z(f_x) = xᵀGx` by bilinearity of Weil's functional (corpus `hermQuad_weilGram`);
+`(Bx)₀ = d₁(f_x)`, `(Bx)₁ = d₂(f_x)` for real packets, and `xᴴJx = 2 Re(x̄₀x₁)`. The signature law
+and the bound by the zeros are the corpus's (`posIndex_intersectionGram`,
+`negIndex_weilGram_le_offLineCount`); real tests suffice for RH. ∎
+
+**C26 (the contacts at a height read the remainder).** For the bump window of aperture `ℓ`, with
+autocorrelation `k_ℓ` and spectral window `ψ_ℓ`:
+`C_ℓ(T) = Re Σ_{2≤n≤e^{2ℓ}} (Λ(n)/√n)(k_ℓ(log n)n^{−iT} + k_ℓ(−log n)n^{iT})` satisfies
+`C_ℓ(T) + Corr_ℓ(T) − ∫_1^{2T} S(t)ψ_ℓ'(t−T)dt → 0`, `Corr_ℓ` the displacement of the off-line zeros.
+*Proof.* `C_ℓ(T)` is the corpus's prime polynomial of the window at the frequency `−T/2π`; the
+limit is the corpus's Stieltjes identity (`tendsto_windowPrime_add_offLineCorrection_sub`). ∎
+
 **B5 (the carry is a cocycle and not a coboundary).** `⌊(x+y)/p⌋ = ⌊x/p⌋ + ⌊y/p⌋ + κ(x,y)`,
 `κ(x,y) = ⌊(x mod p + y mod p)/p⌋`. On residues `κ(a,b) + κ(a+b,d) = κ(b,d) + κ(a,b+d)`, and there
 is no `f` with `κ(a,b) = f(a) + f(b) − f(a+b)` (`p ≥ 2`); the same for the Witt carry (`p` prime).
@@ -539,6 +557,8 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | B4 | `TheCarryAndTheWindowCountAreComplementary` |
 | B5 | `TheCarryIsACocycleThatIsNotACoboundary` |
 | C24 | `PointwiseTheShiftsOfThePointCountAreDense` |
+| C25 | `TheHodgeIndexOfThePairingOfTheDegreePoints` |
+| C26 | `TheContactsAtAHeightReadTheRemainder` |
 | E11 | `TheTowerThePolePlaneAndTheJetsFormOneRing` |
 | E12 | `TheSquareMissesTheZerosByAnUnboundedRemainder` |
 | F1 | `TheArithmeticSquareOfADedekindDomain` |
@@ -570,6 +590,5 @@ Open parts of the questions of the refined programme (details in the README, §1
   `1/2`); for all packets it is RH (C21).
 - The packet theorem on combs that are not images of the integers under a multiplication.
 - Bézout for an integer-norm system on its own comb.
-- An index whose value per height window is `log(n+1)` plus the increment of `S`.
 - Over a Dedekind domain: the jets, the comb of the ideals, the gluing index against the zero
   count, the tower when the class group is not trivial.
