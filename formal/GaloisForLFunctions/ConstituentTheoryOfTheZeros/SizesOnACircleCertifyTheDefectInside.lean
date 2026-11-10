@@ -97,7 +97,7 @@ theorem mobius_defectFactor_one {w : ℂ} (hw : ‖w‖ < 1) {s : ℂ} (hs : s �
 theorem differentiable_multiset_prod (W : Multiset ℂ) (f : ℂ → ℂ → ℂ)
     (hf : ∀ w, Differentiable ℂ (f w)) : Differentiable ℂ fun z => (W.map fun w => f w z).prod := by
   induction W using Multiset.induction_on with
-  | empty => simpa using differentiable_const (1 : ℂ)
+  | empty => simp
   | cons a s ih =>
     simp only [Multiset.map_cons, Multiset.prod_cons]
     exact (hf a).mul ih
@@ -311,10 +311,13 @@ theorem encard_zeros_le_of_norm_le_on_sphere {c : ℂ} {R : ℝ} (hR : 0 < R) {E
     rw [norm_div, Complex.norm_real, Real.norm_of_nonneg hR.le, div_lt_one hR]
     exact mem_ball_iff_norm.mp (hW w hw)
   have hpow : ((R : ℂ)) ^ Multiset.card W ≠ 0 := pow_ne_zero _ hRc
+  have hE₁c : DiffContOnCl ℂ (fun ζ => E₁ (c + (R : ℂ) * ζ)) (ball 0 1) := hE₁.comp haff hmaps
+  have hE₁' : DiffContOnCl ℂ (fun ζ => (R : ℂ) ^ Multiset.card W * E₁ (c + (R : ℂ) * ζ))
+      (ball 0 1) :=
+    ⟨hE₁c.differentiableOn.const_mul _, continuousOn_const.mul hE₁c.continuousOn⟩
   have h := encard_agreements_unitDisc_le (W := W.map fun w => (w - c) / (R : ℂ))
     (E₁ := fun ζ => (R : ℂ) ^ Multiset.card W * E₁ (c + (R : ℂ) * ζ))
-    (E' := fun ζ => E' (c + (R : ℂ) * ζ)) hW₀
-    ((Differentiable.diffContOnCl (differentiable_const _)).smul (hE₁.comp haff hmaps))
+    (E' := fun ζ => E' (c + (R : ℂ) * ζ)) hW₀ hE₁'
     (fun ζ hζ => mul_ne_zero hpow (hE₁0 _ (hmapsc ζ hζ))) (hE'.comp haff hmaps)
     (fun ζ hζ => by
       have hs := hsize _ (hmapss ζ hζ)
