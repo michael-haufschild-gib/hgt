@@ -14,7 +14,7 @@
 | A72 | Count door on logarithmic windows with power-thin exceptions | Formalized and axiom-audited; `3-formalized/counts-on-exceptional-logarithmic-prime-windows.md` |
 | A76 | Absolute and signed window criteria with exceptions | Formalized and axiom-audited; `3-formalized/absolute-and-signed-exceptional-prime-windows.md` |
 | A73 | Upper one-sided logarithmic-window criterion | Negative-trace filter and prime-transfer proofs written; Lean audits pending |
-| A71 | Uniform local tensor moments iff RH | Proof written; Lean audit pending |
+| A71 | Uniform local tensor moments iff RH | Formalized and axiom-audited; `3-formalized/local-tensor-moments-on-prime-windows-are-rh.md` |
 | A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
 | A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Exact critical-projection count proof written; trace superposition, sparse count comparison, and audits pending |

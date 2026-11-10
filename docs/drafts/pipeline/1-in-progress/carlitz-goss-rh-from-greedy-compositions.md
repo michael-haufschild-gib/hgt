@@ -200,10 +200,12 @@ residues cancel in the weight difference. Thus
 This bound handles `p=2` without a separate equal-degree case.
 
 `PrefixCarryRecursion.lean` proves the descending row floor and nonnegative,
-nested content with the `p−1` gap; its finite-range API awaits rechecking.
+nested content with the `p−1` gap; its finite-range API passes direct checking.
 `ContentMatrixRealization.lean` passes direct checking and its standard-axiom
 audit: every admissible content matrix has an actual increasing allocation.
 `GeometricPrefixCost.lean` also passes: an exponent gap bounds total prefix
 weight by the finite double-geometric sum. These modules are umbrella imports.
-The residue-count-to-exponent-gap transfer, complete modified composition,
-and weight contradiction remain before this argument counts as a proof.
+`ResiduePrefixGaps.lean` passes direct checking and its standard-axiom audit:
+removing `n(p−1)` largest digits of a fixed residue lowers retained exponents
+by at least `ns`. The complete modified composition and weight contradiction
+remain before this argument counts as a proof.

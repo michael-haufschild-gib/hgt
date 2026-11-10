@@ -52,9 +52,11 @@ is asserted.
 
 ## Lean status
 
-The Mellin identity, atomlessness and probability of `Q`, positive Euler
-identity, nontriviality, zero preservation, `L¹`, `L²`, and small majorants
-are verified in the first four new `EulerFETransportTheory` modules.
-The full strip module and the capstone
-`ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean` still need
-successful checks and final audits. The route remains open until then.
+All six `EulerFETransportTheory` modules have successful checks with
+standard transitive axioms (`propext`, `Classical.choice`, `Quot.sound`).
+The capstone declarations are
+`continuous_prime_measure_finite_defect_counterexample` and
+`zero_preserving_continuous_prime_perturbations` in
+`ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean`.
+Final direct source audits remain for the integrable-defect and strip
+modules; the umbrella imports the capstone.

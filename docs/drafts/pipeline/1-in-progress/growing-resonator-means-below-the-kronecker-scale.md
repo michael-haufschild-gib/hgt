@@ -49,3 +49,8 @@ Actual-zeta truncation and finite polynomial estimates are in
 The divisor estimate is `RHTower.Sieve.card_divisors_le_rpow` in
 `RHTower/Sieve/DivisorBound.lean`.
 The uniform growing theorem remains unformalized.
+Two unchecked drafts in `TailArithmeticOfThePrimeOrbit/` address the
+weighted truncation limit (`GrowingResonatorsRetainZetaTruncation.lean`)
+and the divisor-wise coefficient bound
+(`TheDivisorBoundControlsResonatorEnergy.lean`). The summed energy,
+tail estimate, and final uniform mean theorem remain to be formalized.

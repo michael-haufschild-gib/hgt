@@ -92,4 +92,4 @@ The detailed card `carlitz-goss-rh-from-greedy-compositions.md` now records
 a sharper geometric prefix-cost argument for the carry modification,
 including `p=2`. `ContentMatrixRealization.lean` and `GeometricPrefixCost.lean`
 pass direct checking and standard-axiom audits. The carry recursion's finite-range
-API awaits rechecking. General optimality remains open.
+API and residue-count-to-exponent-gap transfer also pass. General optimality remains open.

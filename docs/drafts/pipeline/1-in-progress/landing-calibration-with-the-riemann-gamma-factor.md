@@ -20,12 +20,12 @@ Let `G` be the indexed genus-one product of these quartets, centered at
 `L(s)=G(s)D∞(s)/(2G(1)(s−1))`, using the corpus entire decompletion
 `D∞(s)=2/(sΓℝ(s))` away from zero. Thus `L` is holomorphic off `1`,
 has residue one there, and has completion
-`Γℝ(s)L(s)=G(s)/(G(1)s(s−1))`. This pairing construction would give a
-stronger calibration than projecting onto the line and adding sparse quartets.
+`Γℝ(s)L(s)=G(s)/(G(1)s(s−1))` on the right half-plane away from `1`.
 
 The corpus proves indexed-product convergence and exact fiber multiplicities
-in `HTGeometry/CanonicalProductE1Divisor.lean`, and inverse-square summability
-of Xi ordinates in `RHTower/Sieve/InghamUniformDetectorMellinBufferedTail.lean`.
+in `HTGeometry/CanonicalProductE1Divisor.lean`, and summability of every
+reciprocal power above one in
+`RHTower/LiEvenCrossInfiniteCriticalAmplitudeSchattenBoundaryNoGo.lean`.
 `XiOrderedZeroCopyEnumeration.lean` identifies the positive-copy count with
 the actual Xi zero count. Existing approaching models use quadratic heights
 and a cosh base; their linear-density count does not settle this target.
