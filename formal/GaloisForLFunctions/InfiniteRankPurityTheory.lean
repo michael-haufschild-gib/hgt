@@ -28,6 +28,8 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.TheZerosContainNoClassOfOneF
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoSequenceOfZerosApproachesAClassOfOneFrobenius
 import GaloisForLFunctions.InfiniteRankPurityTheory.HalfOfAClassOfOneFrobeniusIsNotInTheZeroSet
 import GaloisForLFunctions.InfiniteRankPurityTheory.AFactorWithADirichletSeriesIsPure
+import GaloisForLFunctions.InfiniteRankPurityTheory.AZeroFreeDirichletPolynomialIsBoundedBelow
+import GaloisForLFunctions.InfiniteRankPurityTheory.ADirichletPolynomialWithAFunctionalEquationIsNotAFactor
 
 /-!
 # Infinite-rank purity theory
@@ -65,7 +67,9 @@ statement at a point.
   class or of half of one.
 * Factors: a bounded Dirichlet series whose zeros are zeros of `ξ` has all of them on the critical
   line; a zero of such a series off the line recurs with positive density, which the zeros of `ζ`
-  off the line do not have.
+  off the line do not have. A Dirichlet polynomial with a constant term and a functional equation
+  is not a factor: its logarithmic derivative would be a Herglotz Dirichlet series carried by the
+  critical zeros.
 
 See `InfiniteRankPurityTheory/README.md`.
 -/

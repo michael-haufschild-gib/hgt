@@ -344,3 +344,18 @@ and `t^(d+1)≤X`, together with the product budget, give total error
 `O(h^d/t)`. The remaining cofactor exponent approaches `(1−σ)/2` for
 polynomial-height `V`. The independent bound for that core is open.
 See `../3-formalized/b13-unbalanced-cofactor-localization.md`.
+
+
+For every fixed moment order `r≥1`, the actual first type-I convolution
+now has error `≪r,σ (UV)^(2r)t^(2r)X^(1−σ−2r)log(UV)`, with its
+signed pole coefficient intact. Each increment of moment order gains two
+powers of `UVt/X`. The complete-lattice proof uses vanishing lower
+boundary derivatives and an integrable final derivative; its explicit
+constant and eleven clean Lean audits are recorded in
+`../3-formalized/b13-all-order-gaussian-typeI-error.md`.
+
+The full higher-moment Vaughan reduction remains open. For unbalanced
+cutoffs, a weaker logarithmic estimate with polynomial-height `V` can
+suffice. The proposed cofactor exponent `(1−σ)/(2r)` is not yet proved;
+see `b13-higher-moment-vaughan-horizon.md`. Independent centred-core
+cancellation and B13 remain unresolved.

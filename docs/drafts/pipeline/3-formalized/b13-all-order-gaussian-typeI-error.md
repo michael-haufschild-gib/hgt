@@ -1,8 +1,8 @@
 # All-order Gaussian type-I error
 
 - **ID:** b13-all-order-gaussian-typeI-error
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean); unconditional
 - **Obstacle:** B13
 - **Scope:** actual first Vaughan type-I term; higher-moment logarithmic type I and centred type II remain open.
 
@@ -94,11 +94,31 @@ This does not yet extend the full Vaughan cutoff horizon: the logarithmic
 term, selected-mode transfer and damping filter require sufficient
 higher-moment bounds at the chosen unbalanced cutoffs. No independent centred-current cancellation is claimed.
 
-## Lean targets
+## Lean theorem inventory
 
-- `GaussianHigherDerivatives`: actual derivative tower, boundary values,
-  integrability, absolute convergence and explicit height/damping bound.
-- `GaussianHigherLatticeError`: complete even-order Bernoulli remainder.
-- `GaussianHigherMomentLattice`: normalized moment and physical-scale bound.
-- `GaussianHigherMomentTypeIPole`: actual arithmetic fibre and truncated
-  Mangoldt–Möbius convolution with its signed pole coefficient.
+All declarations are in `GaloisForLFunctions.ExceptionalLayerTheory`.
+
+- `GaussianHigherDerivatives.lean`: `hasDerivAt_gaussianMellinJet`,
+  `gaussianMellinJet_zero`, `integrableOn_gaussianMellinJet`,
+  `integral_norm_gaussianMellinJet_le`, `summable_gaussianMellinJet_lattice`,
+  `gaussianMellinJetVariation_le`.
+- `GaussianHigherLatticeError.lean`:
+  `norm_tsum_gaussianMellinWeight_sub_main_higher_le`.
+- `GaussianHigherMomentLattice.lean`:
+  `norm_tsum_gaussianHigherMoment_sub_pole_le`,
+  `norm_tsum_gaussianHigherMoment_sub_pole_physical_le`.
+- `GaussianHigherMomentTypeIPole.lean`:
+  `norm_tsum_gaussianHigherPrimeMomentWeight_dilate_sub_pole_le`,
+  `norm_tsum_gaussianHigherMoment_zeta_trunc_conv_sub_pole_le`.
+
+This is an explicit arithmetic remainder improvement using classical
+Euler–Maclaurin cancellation; no standalone novelty claim is made for the
+summation formula or Gaussian derivative recurrence.
+
+## Verification
+
+All four modules pass direct `lake --old env lean` source checks without
+warnings. Eleven transitive `#print axioms` audits report only
+`propext`, `Classical.choice`, and `Quot.sound`. No placeholders,
+trusted computation or limit increases occur. All modules are imported
+by `ExceptionalLayerTheory.lean`; the umbrella was not compiled.

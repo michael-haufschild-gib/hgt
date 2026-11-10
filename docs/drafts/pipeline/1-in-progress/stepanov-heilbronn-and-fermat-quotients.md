@@ -36,8 +36,12 @@ are units modulo `p`.
 independence modulo `X^p`, and nonvanishing of the full auxiliary by its
 Horner expansion in `X^p`. Direct audit passed; all three capstones use
 only `propext`, `Classical.choice`, and `Quot.sound`.
-Auxiliary vanishing constraints, multiplicity, parameter bounds and
-fourth-moment transfer remain. No analytic estimate is assumed as a premise.
+`Heilbronn/TruncatedLogarithmFibres.lean` proves the auxiliary constraints,
+weighted-jet multiplicity count, parameter choice, and the unconditional bound
+`#{x∈𝔽_p : L_p(x)=z}³≤100³p²`. Direct and four transitive axiom audits passed,
+using only the same three standard axioms. Both modules are wired into the umbrella.
+The carry identity and fourth-moment transfer remain. No analytic estimate is
+assumed as a premise.
 
 ## A sufficient first power saving
 
@@ -51,6 +55,11 @@ Character orthogonality gives the fourth Fourier moment `p²E(T)`;
 multiplicative invariance repeats each unit-frequency value `p−1`
 times. Hence `|H_p(a)|⁴≤p²E(T)/(p−1)≪p^(11/3)`.
 The prime `2` is covered by the trivial bound.
+
+The required carry identity is `C_p(a,1−a) ≡ −L_p(a) (mod p)` for odd `p`.
+Pascal's identity and `p ∣ binom(p,j)` give `binom(p−1,j) ≡ (−1)^j`.
+Then `j·(binom(p,j)/p)=binom(p−1,j−1)` identifies every interior
+coefficient of the divided binomial expansion with `−1/j`.
 
 For the fibre estimate, take integer `n` with `n³≤p<(n+1)³`,
 `A=n²`, `B=C=n`, and `D=⌊n²/8⌋`. The auxiliary operator

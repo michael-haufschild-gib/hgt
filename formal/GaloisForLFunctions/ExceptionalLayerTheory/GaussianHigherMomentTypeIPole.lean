@@ -59,7 +59,8 @@ private theorem tsum_higherMomentWeight_dilate_eq {r : ℕ} (hr : r ≠ 0) {σ :
   push_cast
   ring
 
-private theorem norm_higherMomentWeight_le (r : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
+/-- Polynomial Gaussian majorant for every positive arithmetic sample. -/
+theorem norm_gaussianHigherPrimeMomentWeight_le (r : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
     (t : ℝ) (ε : ℂ) {n : ℕ} (hn : 1 ≤ n) :
     ‖gaussianHigherPrimeMomentWeight r σ t ε n‖ ≤
       ‖(ε / (t : ℂ)) ^ r‖ * (n : ℝ) ^ (2 * r) * Real.exp (-ε.re * (n : ℝ) ^ 2) := by
@@ -113,7 +114,7 @@ private theorem tsum_zeta_conv_higherMoment_eq {r : ℕ} (hr : r ≠ 0) {σ : �
       rw [Real.exp_le_exp]
       have hs := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ haR hab 2) hε.le
       linarith only [hs]
-    have hW := norm_higherMomentWeight_le r hσ t ε hn
+    have hW := norm_gaussianHigherPrimeMomentWeight_le r hσ t ε hn
     have hz : (((zeta : ArithmeticFunction ℝ) a : ℝ) : ℂ) = 1 := by simp [ha]
     rw [hz, mul_one, norm_mul, Complex.norm_real, Real.norm_eq_abs]
     calc

@@ -30,7 +30,7 @@ Its signed reciprocal Mangoldt–Möbius mass is preserved. The complete
 Gaussian divisor lattice has error `K_r,σ b^(2r−1)t^(2r)X^(1−σ−2r)`;
 all lower endpoint derivatives vanish, while the last derivative is
 integrable at zero. Explicit constants and Lean declarations are in
-`b13-all-order-gaussian-typeI-error.md`.
+`../3-formalized/b13-all-order-gaussian-typeI-error.md`.
 
 ## Remaining dependencies
 

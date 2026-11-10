@@ -481,4 +481,91 @@ theorem exists_zero_not_xi_zero_of_functionalEquation (a : ℕ →₀ ℂ) (ha0 
   rw [hc1] at h
   linarith [Real.log_pos hN]
 
+/-! ### Complex coefficients -/
+
+/-- **The same with complex coefficients.** The functional equation is taken in its reflected form
+`|D(1 - s̄)| = N^{Re s - 1/2} |D(s)|`. The product `D(s) \overline{D(s̄)}` has real coefficients,
+the constant term `|a_1|²` and the functional equation with `N²`; its zeros are the zeros of `D`
+and their conjugates. -/
+theorem exists_zero_not_xi_zero_of_functionalEquation_complex (a : ℕ →₀ ℂ) (ha0 : a 0 = 0)
+    (ha1 : a 1 ≠ 0) {N : ℝ} (hN : 1 < N)
+    (hFE : ∀ s : ℂ, ‖finiteDirichletPolynomial a (1 - conj s)‖
+      = N ^ (s.re - 1 / 2) * ‖finiteDirichletPolynomial a s‖) :
+    ∃ z : ℂ, finiteDirichletPolynomial a z = 0 ∧ xi z ≠ 0 := by
+  classical
+  set fA : ArithmeticFunction ℂ := ⟨fun n => a n, ha0⟩ with hfA
+  set fB : ArithmeticFunction ℂ := ⟨fun n => conj (a n), by simp [ha0]⟩ with hfB
+  have hfAsum : ∀ s : ℂ, LSeriesSummable (⇑fA) s := fun s =>
+    lSeriesSummable_of_finite_support (f := ⇑fA) fA.map_zero a.support
+      (fun n hn => Finsupp.notMem_support_iff.mp hn) s
+  have hfBsum : ∀ s : ℂ, LSeriesSummable (⇑fB) s := fun s =>
+    lSeriesSummable_of_finite_support (f := ⇑fB) fB.map_zero a.support
+      (fun n hn => by simp [hfB, Finsupp.notMem_support_iff.mp hn]) s
+  have hfAL : ∀ s : ℂ, LSeries (⇑fA) s = finiteDirichletPolynomial a s := fun s =>
+    (finiteDirichletPolynomial_eq_LSeries a ha0 s).symm
+  have hfBL : ∀ s : ℂ, LSeries (⇑fB) s = conj (finiteDirichletPolynomial a (conj s)) := by
+    intro s
+    rw [LSeries, tsum_eq_sum (s := a.support)]
+    · unfold finiteDirichletPolynomial
+      rw [map_sum]
+      refine Finset.sum_congr rfl fun n hn => ?_
+      rw [LSeries.term_def₀ (f := ⇑fB) fB.map_zero, map_mul,
+        conj_natCast_cpow_neg (pos_of_mem_support ha0 hn), Complex.conj_conj]
+      rfl
+    · intro n hn
+      rw [LSeries.term_def₀ (f := ⇑fB) fB.map_zero]
+      simp [hfB, Finsupp.notMem_support_iff.mp hn]
+  -- the convolution of the coefficients with their conjugates, as a finitely supported function
+  set p : ArithmeticFunction ℂ := fA * fB with hp
+  have hpsupp : ∀ n : ℕ, p n ≠ 0 → n ∈ Finset.image₂ (· * ·) a.support a.support := by
+    intro n hn
+    rw [hp, ArithmeticFunction.mul_apply] at hn
+    obtain ⟨⟨d, e⟩, hde, hne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hn
+    have hd : a d ≠ 0 := fun h => hne (by simp [hfA, h])
+    have he : a e ≠ 0 := fun h => hne (by simp [hfB, h])
+    exact Finset.mem_image₂.mpr ⟨d, Finsupp.mem_support_iff.mpr hd, e,
+      Finsupp.mem_support_iff.mpr he, (Nat.mem_divisorsAntidiagonal.mp hde).1⟩
+  set b : ℕ →₀ ℂ := Finsupp.onFinset _ (fun n => p n) hpsupp with hb
+  have hbapp : ∀ n, b n = p n := fun _ => rfl
+  have hb0 : b 0 = 0 := p.map_zero
+  have hb1 : b 1 ≠ 0 := by
+    rw [hbapp, hp, ArithmeticFunction.mul_apply_one]
+    exact mul_ne_zero ha1 ((map_ne_zero (starRingEnd ℂ)).mpr ha1)
+  have hbreal : ∀ n, (b n).im = 0 := by
+    intro n
+    rw [hbapp, ← Complex.conj_eq_iff_im]
+    have h : conj (p n) = (fB * fA) n := by
+      rw [hp, ArithmeticFunction.mul_apply, ArithmeticFunction.mul_apply, map_sum]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [map_mul]
+      show conj (a x.1) * conj (conj (a x.2)) = conj (a x.1) * a x.2
+      rw [Complex.conj_conj]
+    rw [h, mul_comm]
+  have hbL : ∀ s : ℂ, finiteDirichletPolynomial b s
+      = finiteDirichletPolynomial a s * conj (finiteDirichletPolynomial a (conj s)) := by
+    intro s
+    rw [finiteDirichletPolynomial_eq_LSeries b hb0, ← hfAL, ← hfBL,
+      ← LSeries_convolution' (hfAsum s) (hfBsum s), ArithmeticFunction.coe_mul]
+    rfl
+  -- the functional equation of the product
+  have hN0 : (0 : ℝ) ≤ N := by linarith
+  have hFEb : ∀ s : ℂ, ‖finiteDirichletPolynomial b (1 - s)‖
+      = (N ^ 2) ^ (s.re - 1 / 2) * ‖finiteDirichletPolynomial b s‖ := by
+    intro s
+    have h1 := hFE (conj s)
+    have h2 := hFE s
+    rw [Complex.conj_conj, Complex.conj_re] at h1
+    have hc : conj (1 - s) = 1 - conj s := by simp
+    rw [hbL, hbL, norm_mul, norm_mul, RCLike.norm_conj, RCLike.norm_conj, hc, h1, h2, sq,
+      Real.mul_rpow hN0 hN0]
+    ring
+  obtain ⟨z, hz0, hxi⟩ := exists_zero_not_xi_zero_of_functionalEquation b hb0 hb1 hbreal
+    (by nlinarith : (1 : ℝ) < N ^ 2) hFEb
+  rw [hbL] at hz0
+  rcases mul_eq_zero.mp hz0 with h | h
+  · exact ⟨z, h, hxi⟩
+  · refine ⟨conj z, (map_eq_zero (starRingEnd ℂ)).mp h, ?_⟩
+    rw [xi_conj]
+    exact (map_ne_zero (starRingEnd ℂ)).mpr hxi
+
 end GaloisForLFunctions.InfiniteRankPurityTheory

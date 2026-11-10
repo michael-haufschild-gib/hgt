@@ -1,7 +1,7 @@
 # Green damping detects the complete Weil form domain
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM / construction; Lean verification pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Obstacle:** B133: identify the closed form behind the arithmetic Green construction.
 
 ## Statement
@@ -61,6 +61,27 @@ For `f=J_a u`, the limit is `‖u‖_form²+Re⟨B_a J_a u,J_a u⟩`, exactly
 `(ccmRestrictedWeilForm a u u).re`. The fixed bounded remainder cannot cancel
 infinite critical energy. Uniqueness of limits in `[0,∞]` gives the converse:
 existence of any finite Green limit forces admission to the complete form domain.
+
+## Lean declarations and verification
+
+Module: `HyperbolicArakelovTheory/TheGreenDampingDetectsTheCompleteWeilFormDomain.lean`.
+Namespace: `GaloisForLFunctions.HyperbolicArakelovTheory`.
+
+- `integrable_greenJumpEnergy`, `continuous_greenJumpEnergy`, `greenJumpEnergy_le`:
+  finite continuous strict-damping forms with a physical L² bound.
+- `greenJumpEnergy_mono`, `tendsto_greenJumpEnergy_extended`:
+  ordered convergence retaining infinite critical energies.
+- `weighted_energy_eq_mass_add_green`, `criticalGreenEnergy_form_norm`:
+  exact extended Fourier and complete form-norm identities.
+- `finite_green_limit_iff_form_range`, `finite_greenWeil_limit_iff_form_range`:
+  finite convergence characterizes the entire source-defined Weil form domain.
+- `tendsto_greenWeilEnergy_form`, `tendsto_greenWeilEnergy_atTop`:
+  literal closed-form limit inside the domain; divergence outside it.
+
+Final plain `lake --old env lean
+GaloisForLFunctions/HyperbolicArakelovTheory/TheGreenDampingDetectsTheCompleteWeilFormDomain.lean`:
+PASS. Seven main dependency audits contain only
+`[propext, Classical.choice, Quot.sound]`. Umbrella import added.
 
 ## Boundary
 

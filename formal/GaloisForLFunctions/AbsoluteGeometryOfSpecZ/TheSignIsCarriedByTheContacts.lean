@@ -28,9 +28,11 @@ one contact.
   weight that differs from `Λ` at one integer fails on some packet, without hypothesis. The
   contact weights of an integer-norm system other than `ℤ` differ from `Λ`: the square does not
   see such a system, the comb does.
-* **The weights are contact numbers of the object** (`contactWeight_eq_log_card_orbitBaseRing`):
-  `Λ(k)/√k` is the logarithm of the order of the contact of the diagonal and `Γ_k` on the orbit
-  ring with a base, over `√k`.
+* **The weights are contact numbers of the object** (`contactWeight_eq_log_card_orbitBaseRing`,
+  `frobeniusIntersection_div_sqrt_eq_object`): `Λ(k)/√k` is the logarithm of the order of the
+  contact of the diagonal and `Γ_k` on the orbit ring with a base, over `√k`; the unitary
+  intersection number of `Γ_m` and `Γ_{mk}` is this contact number plus the Lévy density of the
+  jets at `log k`.
 
 So the inequality of Castelnuovo and Severi on the degree points is not a property of the jets,
 of the counterterm or of the shape of the pairing: it holds with the contact of the square at the
@@ -289,5 +291,16 @@ theorem contactWeight_eq_log_card_orbitBaseRing (q : ℤ) {k : ℕ} (hk : 1 < k)
   have h1 : (1 : ℕ+) < ⟨k, by omega⟩ := hk
   rw [span_orbitBaseRing_sub_eq_graphIdeal, log_card_quotient_graphIdeal_one h1, contactWeight]
   rfl
+
+/-- **The pairing of two graphs computed on the object.** The unitary intersection number of
+`Γ_m` and `Γ_{mk}` is the contact number of the diagonal and `Γ_k` on the orbit ring with a base,
+over `√k`, plus the Lévy density of the jets at the displacement `log k`. -/
+theorem frobeniusIntersection_div_sqrt_eq_object (q : ℤ) {m k : ℕ} (hm : 0 < m) (hk : 2 ≤ k) :
+    SurfaceOfSpecZ.frobeniusIntersection m (m * k) / Real.sqrt ((m : ℝ) * ((m * k : ℕ) : ℝ)) =
+      Real.log (Nat.card (ℤ ⧸ Ideal.span {z : ℤ | ∃ x ∈ orbitBaseRing q,
+        z = ghostComponent 1 x - ghostComponent ⟨k, by omega⟩ x})) / Real.sqrt k +
+      _root_.RHTower.archLevyDensity (Real.log k) := by
+  rw [frobeniusIntersection_div_sqrt hm hk,
+    contactWeight_eq_log_card_orbitBaseRing q (by omega : 1 < k)]
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
