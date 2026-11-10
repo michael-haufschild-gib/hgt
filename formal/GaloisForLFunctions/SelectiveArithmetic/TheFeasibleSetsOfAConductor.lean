@@ -238,8 +238,8 @@ theorem exists_not_floor {η K : ℝ} (hη : 0 < η) (hK : 0 ≤ K) :
   have hx1 : M₁ ≤ Real.log q := (le_max_left _ _).trans hqM
   have hx0 : 0 < Real.log q := by linarith
   have hKx : K ≤ (Real.exp (η / 2) - 1) * Real.log q := by
-    have h := (le_max_right _ _).trans hqM
-    rwa [div_le_iff₀ hε] at h
+    have h := (div_le_iff₀ hε).mp ((le_max_right _ _).trans hqM)
+    linarith
   have hlogq' : Real.log (q * Real.exp K) = Real.log q + K := by
     rw [Real.log_mul hq.ne' (Real.exp_pos K).ne', Real.log_exp]
   -- the enlarged conductor has the same trivial aperture up to `η/2`

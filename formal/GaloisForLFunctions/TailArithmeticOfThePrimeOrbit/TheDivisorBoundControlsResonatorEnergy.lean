@@ -42,8 +42,9 @@ theorem summable_multiple_kernel {m : ℕ} (hm : m ≠ 0) {f : ℕ → ℝ}
   · rw [if_neg]
     rintro ⟨n, rfl⟩
     exact hk ⟨n, rfl⟩
-  · simpa only [Function.comp_apply, dvd_mul_right, if_true,
-      Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)] using hf
+  · refine hf.congr fun n => ?_
+    simp only [Function.comp_apply, dvd_mul_right, if_true,
+      Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)]
 
 /-- Summing over product fibres separates the finite support and the kernel. -/
 theorem tsum_finite_multiple_kernels {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
@@ -63,7 +64,7 @@ theorem tsum_rpow_above_le {b : ℝ} (hb : 1 < b) {N : ℕ} (hN : 1 ≤ N) :
       (N : ℝ) ^ (1 - b) / (b - 1) := by
   have hinj : Function.Injective (fun n : ℕ => n + (N + 1)) := by
     intro i j h
-    omega
+    exact Nat.add_right_cancel h
   have hsupp : Function.support (fun n : ℕ => if N < n then (n : ℝ) ^ (-b) else 0) ⊆
       Set.range (fun n : ℕ => n + (N + 1)) := by
     intro n hn
@@ -141,7 +142,8 @@ theorem norm_resonator_divisor_sum_sq_le_split {ε σ : ℝ} (hε : 0 < ε)
   have hm0 : m ≠ 0 := by
     intro h
     subst m
-    exact hk (Nat.zero_dvd_iff.mp hdiv)
+    obtain ⟨n, hn⟩ := hdiv
+    exact hk (by simpa only [zero_mul] using hn)
   calc
     _ = ‖r m‖ ^ 2 * ((k : ℝ) ^ ε * ((k / m : ℕ) : ℝ) ^ (-2 * σ)) := by ring
     _ = _ := by rw [weighted_divisor_rpow hε hεσ hm0 hdiv]; ring
@@ -243,7 +245,8 @@ theorem summable_resonator_slice_sq_and_bound {ε σ : ℝ} (hε : 0 < ε)
       (‖r m‖ ^ 2 * (m : ℝ) ^ ε) * (if m ∣ k then f (k / m) else 0)) :=
     (summable_sum fun m hm =>
       (summable_multiple_kernel (hA m hm) hf).mul_left (‖r m‖ ^ 2 * (m : ℝ) ^ ε)).mul_left _
-  have hpoint (k : ℕ) := resonator_slice_sq_le hε (by linarith only [hεσ]) A r P k
+  have hpoint (k : ℕ) := resonator_slice_sq_le (σ := σ) hε
+    (by linarith only [hεσ]) A r P k
   have hsmall : Summable (fun k : ℕ =>
       ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)), r m * lineWeight σ (k / m)‖ ^ 2) :=
     hmajor.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint

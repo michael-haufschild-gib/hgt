@@ -45,12 +45,11 @@ zero set remains infinite, so the actual analytic divisor fails landing.
 
 Five modules in `InfiniteRankWeilTheory/`, from
 `ThePairedXiDivisorApproachesTheLine.lean` through
-`TheRiemannGammaFactorDoesNotForceLanding.lean`, passed compilation and
-transitive audits with only `propext`, `Classical.choice`, `Quot.sound`.
+`TheRiemannGammaFactorDoesNotForceLanding.lean`, passed final direct
+`lake --old env lean` checks and transitive audits with only
+`propext`, `Classical.choice`, `Quot.sound`.
 The capstone is `exists_riemann_gamma_counting_model_without_landing`.
-All five final direct `lake --old env lean` checks passed, with only
-`propext`, `Classical.choice`, `Quot.sound`. No placeholders or limit
-overrides occur. The umbrella import and README are wired.
+No placeholders or limit overrides occur. The umbrella and README are wired.
 
 The positive survivor is the exact paired-count construction with simple
 analytic multiplicities, order at most one, and residue normalization.

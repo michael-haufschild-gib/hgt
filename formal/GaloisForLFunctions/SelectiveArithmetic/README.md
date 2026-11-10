@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 7 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 8 modules.
 
 ## 1. Motivation
 
@@ -98,7 +98,9 @@ without functional equation.
 
 **4. No gap.** `trivialAperture q` $=\log\log q+o(1)$; the dominated box is feasible below it and
 some dominated system is infeasible above it, for every conductor. The feasible sets are convex,
-increase with $q$, decrease with $a$.
+increase with $q$, decrease with $a$. A uniform floor $-K\int|F|^2$ is feasibility at the
+conductor $qe^K$, which has the same trivial aperture up to $o(1)$: floors do not move the ladder,
+and beyond the trivial aperture the Liouville twist violates every floor.
 
 **5. The height is a mass.** For $F=e^{-itu}f(u)$ the transform moves to $t$, where
 $S_\infty\ge\log(2+|t|)-c_0$; moving back costs $1+(\tau-t)^2$, which is the energy of $f'$. The
@@ -118,7 +120,8 @@ $-(\sinh(2\delta a)/\delta-2a)$ on $L^2[-a,a]$ (corpus). In a lattice of zeros o
 density of a conductor it is invisible at $a\le\kappa\log\log q$ for $2\delta\kappa<1$ and visible
 for $2\delta\kappa>1$. In an arbitrary configuration with a logarithmic local count, positivity at
 the aperture $\kappa\log m$, $m$ the mass at the zero, forces another off-line zero within the
-ordinate distance $m^\kappa$ whenever $2\delta\kappa>1$.
+ordinate distance $m^\kappa$ whenever $2\delta\kappa>1$. For $L(s,\chi)$ the mass is
+$A(\log q+1)\log(|\gamma_0|+3)$; for $\zeta$ it is $A_0\log(|\gamma_0|+3)$.
 
 **8. Both structures are needed beyond $\kappa=1$.** The Liouville twist (Euler product, no
 functional equation) and the lattice with a pair at $0$ and $1$ (functional equation, no Euler
@@ -136,11 +139,13 @@ product) both fail at the rung $1$.
 | The Liouville twist, $-\Lambda$, $\Lambda$ without pole plane fail at $\log\log q+\eta$ | `exists_systemForm_polar_neg`, `exists_not_feasible`, `liouvilleWeight_prime_pow` | unconditional |
 | The ladder of the conductor has no gap | `exists_abs_trivialAperture_sub_le`, `tendsto_trivialAperture_sub_log` | unconditional |
 | The trivial aperture is a threshold; feasible sets convex and monotone | `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt`, `convex_feasible`, `Feasible.anti`, `Feasible.mono_conductor`, `feasible_congr` | unconditional |
+| A floor is a conductor; the Liouville twist violates every floor beyond the trivial aperture | `feasible_mul_exp_iff`, `exists_not_floor` | unconditional |
 | The height is a mass; the pole plane does not reach a height | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge` | unconditional |
 | Weil's form of $\zeta$ at a height, aperture $\le\log\log|t|-\eta$ | `re_weilFullFunctional_modulated_ge`, `exists_height_margin` | unconditional |
 | Exchange rate, prime side | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
 | Exchange rate, zero side, lattice with a pair | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung` | unconditional |
 | Positivity on a rung forces companions; $\zeta$ in the height aspect | `exists_companion_of_rung`, `zeta_companion_of_rung` | unconditional |
+| The zeros of $L(s,\chi)$ on the ladder of the conductor | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | unconditional |
 
 Corpus pillars the field stands on: the ceiling $e^a(1+o(1))$ of the prime side on a window
 (`BiScaleUncertainty.tendsto_windowCeiling_div_exp`); RH iff every feasible set with pole plane is
@@ -183,7 +188,9 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 - The conductor ladder: system forms with a free conductor, feasible sets and their structure,
   the trivial aperture as a threshold.
 - Calibration on fakes (Liouville twist, $\pm\Lambda$, lattice with a pair) and on true
-  $L$-functions (twisted part with margin; companions on a rung).
+  $L$-functions (twisted part with margin; companions of the zeros of $L(s,\chi)$ and of $\zeta$
+  on a rung).
+- The slack map of a system form: a floor is a conductor; a saving is a rung.
 - The height aspect: modulated packets, the archimedean energy at a height, decay of the pole term.
 - Summation by parts on the symbol: the exchange rate between cancellation and rungs.
 
@@ -193,8 +200,8 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 - The exchange rate on packets without shape condition: bounds for $\sum w(n)n^{-i\tau}$ uniform
   in $\tau$.
 - The exact feasible interval of the first contact as a function of the aperture.
-- The rung law for the zeros of $L(s,\chi)$ from the conductor-uniform local count, in one
-  statement with Deuring–Heilbronn isolation.
+- The rung law for an exceptional zero with Deuring–Heilbronn isolation in place of the
+  companion alternative.
 
 ## 8. Open research topics
 
@@ -220,6 +227,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | The classical zero-free region is the sign at some rung $\kappa>1$ | It sits at $\kappa=1+o(1)$; every fixed $\kappa>1$ is a strip |
 | Positivity at a height is positivity on all packets modulated to it | Only on bounded shapes; all modulated packets are all tests |
 | Cancellation of the partial sums bounds the contact operator | It bounds the symbol with a factor $1+|\tau|$: the bound is for bounded shapes |
+| A uniform floor is easier than the sign on the ladder | A floor $-K$ is the sign at the conductor $qe^K$; the fakes violate every floor at the same rung |
 | A new equivalent of RH is a contribution | The programme prices mechanisms; it adds no equivalent |
 
 ## 10. Context

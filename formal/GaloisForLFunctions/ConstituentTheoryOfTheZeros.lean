@@ -7,6 +7,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentDir
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawIsTheLawOfTheCarry
 
 /-!
 # Constituent theory of the zeros
@@ -35,4 +36,7 @@ operator.
   in terms of the length (`ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros`).
 * The index law in a window: if `‖E'‖ ≤ ‖E‖` on a circle, `E − E'` has at most as many zeros
   inside as `E`, with no winding number (`SizesOnACircleCertifyTheDefectInside`).
+* The jump law is the law of the carry `{x} + {y} − {x + y}`: the expansions on the two sides of
+  the line have the same carries, and the carries determine the series
+  (`TheJumpLawIsTheLawOfTheCarry`).
 -/

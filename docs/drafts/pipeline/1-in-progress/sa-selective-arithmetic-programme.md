@@ -59,16 +59,17 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `TheHeightOfAPacketIsAMass` | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge`, `re_weilFullFunctional_modulated_ge`, `exists_height_margin`, `contDiff_two_deriv` | clean, olean built |
 | `CancellationInTheContactsBuysTheLadder` | `HasCancellation`, Abel summation, `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | clean |
 | `AnIsolatedPairShowsAtTheRungOfItsDepth` | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung`, `exists_companion_of_rung`, `zeta_companion_of_rung` | clean |
-| `TheFeasibleSetsOfAConductor` | `feasible_congr`, `Feasible.anti`, `Feasible.mono_conductor`, `convex_feasible`, `bddAbove_feasibleApertures`, `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt` | clean |
+| `TheFeasibleSetsOfAConductor` | `feasible_congr`, `Feasible.anti`, `Feasible.mono_conductor`, `convex_feasible`, `feasible_mul_exp_iff`, `exists_not_floor`, `bddAbove_feasibleApertures`, `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt` | clean |
+| `TheZerosOfADirichletLFunctionOnTheLadder` | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports all seven; `MainTheorems.lean` imports the umbrella.
+Umbrella `SelectiveArithmetic.lean` imports all eight; `MainTheorems.lean` imports the umbrella.
 README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`).
 
 ## Not done (candidates)
 - Fake for the height aspect in the dominated class (block-aligned phases).
-- Rung law for `L(s, χ)` zeros: corollary of `exists_companion_of_rung` once the conductor-uniform
-  local count in `ZeroConfig.N` form is importable (peer lemma
-  `AbsoluteGeometryOfSpecZ.exists_dirichletZeros_local_count`, module had no olean).
+- Rung law for an exceptional zero with Deuring–Heilbronn isolation (peer AGZ module has the raw
+  inequality; `dirichletZeros_local_count` here duplicates the peer's local count because that
+  module had no olean).
 - Exchange rate without shape condition (uniform in `τ`); first-contact interval (peer A96).
 
 ## Peers (do not duplicate)

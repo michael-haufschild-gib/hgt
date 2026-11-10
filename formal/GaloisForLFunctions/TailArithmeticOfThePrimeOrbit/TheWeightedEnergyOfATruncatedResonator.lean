@@ -52,7 +52,8 @@ theorem weighted_truncResonatorCoeff_sq_le {ε σ : ℝ} (hε : 0 < ε)
       have hm0 : m ≠ 0 := by
         intro h
         subst m
-        exact hk (Nat.zero_dvd_iff.mp hd)
+        obtain ⟨n, hn⟩ := hd
+        exact hk (by simpa only [zero_mul] using hn)
       calc
         _ = ‖r m‖ ^ 2 * ((k : ℝ) ^ (1 + ε) *
             ((k / m : ℕ) : ℝ) ^ (-2 * σ)) := by ring

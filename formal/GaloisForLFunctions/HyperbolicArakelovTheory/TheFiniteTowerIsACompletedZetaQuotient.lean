@@ -37,11 +37,15 @@ theorem geometricTower_eq_logDeriv_completedZetaQuotient {s : ℂ}
   have hshift : HasDerivAt (fun z : ℂ => z + N) 1 s := (hasDerivAt_id s).add_const (N : ℂ)
   have hc : logDeriv (fun z => reflectedCompletedLambda (z + N)) s =
       logDeriv reflectedCompletedLambda (s + N) := by
-    have he := logDeriv_comp hdN hshift.differentiableAt
+    have he := logDeriv_comp (g := fun z : ℂ => z + N) (x := s) hdN hshift.differentiableAt
     rw [hshift.deriv, mul_one] at he
     exact he
-  rw [geometricTower_eq hs him N, completedZetaQuotient,
-    logDeriv_div s (completedLambda_ne_zero_of_one_lt_re hs)
+  change geometricTower s N = logDeriv
+    (fun z => reflectedCompletedLambda z / reflectedCompletedLambda (z + N)) s
+  rw [geometricTower_eq hs him N,
+    logDeriv_div (f := reflectedCompletedLambda)
+      (g := fun z : ℂ => reflectedCompletedLambda (z + N)) s
+      (completedLambda_ne_zero_of_one_lt_re hs)
       (completedLambda_ne_zero_of_one_lt_re hsN) hd
       (hdN.comp s hshift.differentiableAt), hc]
 

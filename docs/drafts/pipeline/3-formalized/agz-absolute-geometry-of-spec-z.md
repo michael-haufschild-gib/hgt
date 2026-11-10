@@ -3,7 +3,7 @@
 - **ID:** agz-absolute-geometry-of-spec-z
 - **Stage:** 3-formalized (every theorem below is in Lean; open topics listed at the end)
 - **Type:** THEOREM (Lean)
-- **Source:** `docs/reports/review-0911/fable.md` §9; `docs/reports/review-1011/obstacles-summary.md` §2.14
+- **Source:** `docs/reports/review-0911/fable.md` §9; `docs/reports/review-1011/obstacles-summary.md` §2.14; `docs/reports/review-1011/fable.md` §9
 - **Lean:** `formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/` (umbrella `AbsoluteGeometryOfSpecZ.lean`)
 - **Statement:** In Λ-geometry `Spec ℤ ×_{𝔽₁} Spec ℤ = Spec W(ℤ)` exists, is the union of the
   Frobenius graphs, and carries the prime part of Weil's off-diagonal exactly; neither Weil's nor
@@ -676,6 +676,21 @@ the `χ_i` and add C18; the twisted form of `χ_i` is the form of the integers m
 conjugate jets minus `log q_i` times the mass. (v), (vi) As F5(iv), F5(v), character by
 character. ∎
 
+**G7 (in a tower the form of `ζ` has weight one over the degree).** (i) Let `K_k` be rings
+given by primitive characters `χ_{k,i}` of conductors `> 1`, of degrees `d_k → ∞`,
+`Z_{K_k} = Z_ζ + Σ_i Z_{χ_{k,i}}`. For every packet `f`:
+`Z_{K_k}(f)/d_k − (Σ_i Z_{χ_{k,i}}(f))/d_k → 0`; if `Σ_i Z_{χ_{k,i}}(f) ≥ 0` for all `k`, then
+for every `ε > 0` eventually `Z_{K_k}(f)/d_k ≥ −ε`, and the limit `l_k` of the pairing of `K_k`
+on `f` has `l_k/d_k ≤ 2d₁d₂/d_k + ε`. (ii) `p` prime, `f` a packet in the window
+`(N, (1+3K)N]`, `p > 3K`. The contacts of the cyclotomic ring of conductor `p` on the window
+vanish, and with `A = lim_N A_N(f)` (jets of the integers minus the counterterm):
+`Z_{ℚ(ζ_p)}(f) = 2d₁d₂ − (p−1)A + Σ_{χ≠1} E_χ(f) + (p−2) log p ∫f²`. (iii) With
+`C = |A| + |2d₁d₂|`: `Z_{ℚ(ζ_p)}(f) ≥ (p−1)(½ log p ∫f² − C)` for every prime `p > 3K`.
+*Proof.* (i) The difference is `Z_ζ(f)/d_k`. (ii) For `2 ≤ k ≤ 3K < p`, `k ≢ 0, 1 (mod p)`,
+so the weight of F5(ii) vanishes; then F5(iii) reads `A`-form `→ 2d₁d₂ − Z`, and the form is
+`(p−1)A_N −` conjugate jets `− (p−2) log p ·` mass, whose three limits are `A`, the energies
+`E_χ` and `∫f²`. (iii) `E_χ ≥ 0`, `p − 2 ≥ (p−1)/2`, `p − 1 ≥ 1`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -725,6 +740,9 @@ character. ∎
 - **Q23 (a square for some weights)**: G3 (the squares with Bézout at an aperture are the window
   cone; existence at every aperture is RH; an interval of contacts at `2` at the aperture
   `181/500`).
+- **Construction IV of the next stage (squares of towers)**: kill condition met, G7 (weight
+  `1/[K:ℚ]`; the limit inequality per degree follows from the twisted parts; in the cyclotomic
+  tower the defect per degree tends to infinity). **Construction III**: met, G6.
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -798,6 +816,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G3 | `TheSquaresWithBezoutAtAnApertureAreTheWindowCone` |
 | G4 | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
 | G5 | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
+| G7 | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -815,6 +834,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `TheSquareOfACyclotomicRingHasItsContactsOnAProgression`,
 `TheEulerFactorsOfTheDivisorSumPayEveryContact`,
 `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem`,
+`TheCountertermOfANumberRingObeysRiemannHurwitz`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -845,3 +865,7 @@ Open parts of the questions of the refined programme (details in the README, §1
   `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`,
   `TheExceptionalSquareRepelsTheOtherSquares`.
 - Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.
+- Constructions of the next stage (review-1011 fable §9.6): I (a Lefschetz operator outside the
+  three tested ones), II (a gluing along the comb that is not invariant), V (the own comb of one
+  integer-norm one-off), VI (a count); question 7 (Hecke characters, one ring that is not
+  abelian).
