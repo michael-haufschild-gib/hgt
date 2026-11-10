@@ -15,7 +15,7 @@
 | A76 | Absolute and signed window criteria with exceptions | Formalized and axiom-audited; `3-formalized/absolute-and-signed-exceptional-prime-windows.md` |
 | A73 | Upper one-sided logarithmic-window criterion | Negative-trace filter and prime-transfer proofs written; Lean audits pending |
 | A71 | Uniform local tensor moments iff RH | Formalized and axiom-audited; `3-formalized/local-tensor-moments-on-prime-windows-are-rh.md` |
-| A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
+| A56 | Explicit two-bump prime rung from a verified height | Formalized and axiom-audited; `3-formalized/verified-heights-give-explicit-prime-two-bump-rungs.md` |
 | A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Exact critical-projection count proof written; trace superposition, sparse count comparison, and audits pending |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Proofs written in `TheJetsAreEvenNewtonianMultipoles` and `TheContactsOfAPrimeAreChainSquares`; audits pending |
@@ -61,6 +61,8 @@ For A92, compose the positive shift operators `1+τ_{π/γ_j}` for `γ_j ≥ Γ 
 
 For A95, apply this to the finite top layer. On the compact phase torus, absence of a nonnegative trace on a fixed interval of length `>D` gives a uniform negative excursion; lower layers are negligible after normalization. The excursion amplitude may depend on the layer, but the length is bounded using only its size and the lowest ordinate.
 
+For distinct positive frequencies, nonvanishing survives every phase rotation: the positive-frequency Bohr coefficient of twice the real trace is its original nonzero coefficient; conjugate frequencies are negative and cannot cancel it. The open sets where some time in the fixed interval has trace below `−ε` form a directed cover of the compact phase torus. A single `ε>0` therefore works for every phase. `tendsto_normTrace_sub_topTrace` supplies the lower-layer remainder without a gap below the top real part.
+
 The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. This bound is formalized and axiom-audited in `WeightedTraceFloors.lean`. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and sharpness before retiring the stated coefficient.
 
 ## Further assembly inputs
@@ -71,3 +73,4 @@ The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly give
 - **A78:** `OnlyDeepOrdinatesNeedSeparation` bounds leakage from every other deep exponent by a separated inverse-square sum. A cluster extension must control cancellation inside the selected cluster, not merely multiply the far-leakage count by its cardinality.
 - **A100:** `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` identifies real-packet positivity with complex window positivity and gives the exceptional real-pair decomposition. Its improved sufficient condition is `primeMass a + primeMass(a/2) + archConstant χ ≤ log q`; the mass ratio tends to `2e^a`. This existing work is being audited separately in the shared workspace; no duplicate proof is needed.
 - **A83:** Project every zeta zero horizontally to `Re s=1/2`, adding multiplicities at equal ordinates. `TheCriticalProjectionPreservesTheCounts.lean` proves preservation of every window count and temperedness from the unchanged local count. This supplies the exact-density background without assuming RH. The remaining assembly adds its bounded spline trace to the sparse off-line construction and checks that the latter does not change the density asymptotic.
+  The sparse tower's local count is at most `32k+40` on the unit intervals meeting level `k`. Its recursion gives `log Γ_(k+1)≥(Θ/7)T_k`, while `T_k≥exp((k+1)²)` for `k≥1`. Thus its local count is `o(log t)` and its cumulative count is `o(T log T)`. Adding this tower preserves the leading zeta density; it does not preserve every finite-window count.

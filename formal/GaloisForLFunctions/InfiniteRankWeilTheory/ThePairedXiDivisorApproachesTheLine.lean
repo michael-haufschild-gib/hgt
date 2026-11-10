@@ -58,7 +58,7 @@ theorem quartetSign_ne_zero (b : Bool) : quartetSign b ≠ 0 := by
 
 theorem quartetSign_injective : Function.Injective quartetSign := by
   intro b c h
-  cases b <;> cases c <;> norm_num [quartetSign] at h ⊢
+  cases b <;> cases c <;> simp_all [quartetSign]
 
 /-- Centered quartet points; adding `1/2` gives the zeros in the critical strip. -/
 def pairedXiPoint (q : ℕ × Bool × Bool) : ℂ :=
@@ -133,7 +133,10 @@ theorem locallyFinite_pairedXiPoint : LocallyFiniteDivisor pairedXiPoint := by
 theorem summable_pairedXiHeight_inv_rpow {p : ℝ} (hp : 1 < p) :
     Summable (fun n : ℕ => (pairedXiHeight n)⁻¹ ^ p) := by
   exact (summable_xiOrderedPositiveOrdinate_inv_rpow hp).comp_injective
-    (i := fun n : ℕ => 2 * n + 1) (by intro n m h; omega)
+    (i := fun n : ℕ => 2 * n + 1) (by
+      intro n m h
+      change 2 * n + 1 = 2 * m + 1 at h
+      omega)
 
 /-- The full quartet divisor has convergence exponent at most one. -/
 theorem summable_pairedXiPoint_rpow_neg {p : ℝ} (hp : 1 < p) :
@@ -144,7 +147,9 @@ theorem summable_pairedXiPoint_rpow_neg {p : ℝ} (hp : 1 < p) :
     rw [Real.inv_rpow (pairedXiHeight_pos n).le,
       Real.rpow_neg (pairedXiHeight_pos n).le]
   have hmajor : Summable (fun q : ℕ × (Bool × Bool) => pairedXiHeight q.1 ^ (-p)) := by
-    exact (summable_prod_of_nonneg (fun _ => by positivity)).mpr
+    exact (summable_prod_of_nonneg
+      (f := fun q : ℕ × (Bool × Bool) => pairedXiHeight q.1 ^ (-p))
+      (fun q => Real.rpow_nonneg (pairedXiHeight_pos q.1).le _)).mpr
       ⟨fun _ => Summable.of_finite, by simpa [tsum_fintype] using hh.mul_left 4⟩
   exact Summable.of_nonneg_of_le (fun _ => by positivity)
     (fun q => Real.rpow_le_rpow_of_nonpos (pairedXiHeight_pos q.1)

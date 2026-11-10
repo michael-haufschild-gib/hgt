@@ -68,7 +68,7 @@ theorem norm_resonator_divisor_sum_sq_le {ε : ℝ} (hε : 0 < ε)
       gcongr
       exact norm_sum_le _ _
     _ ≤ (B.card : ℝ) * ∑ m ∈ B, ‖r m * lineWeight σ (k / m)‖ ^ 2 :=
-      sq_sum_le_card_mul_sum_sq
+      _root_.sq_sum_le_card_mul_sum_sq
     _ ≤ (Sieve.divisorBoundConst ε * (k : ℝ) ^ ε) *
         ∑ m ∈ B, ‖r m * lineWeight σ (k / m)‖ ^ 2 :=
       mul_le_mul_of_nonneg_right hcard (sum_nonneg fun _ _ => sq_nonneg _)

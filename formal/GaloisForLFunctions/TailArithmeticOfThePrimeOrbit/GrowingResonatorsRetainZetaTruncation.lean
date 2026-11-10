@@ -14,6 +14,49 @@ open _root_.RHTower
 
 namespace GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
 
+/-- Explicit parameters make the mean, coefficient tail, and pole errors decay
+for every resonator support exponent strictly below `2σ-1`. -/
+theorem exists_growing_resonator_exponents {σ κ : ℝ}
+    (hσ : 1 / 2 < σ) (hσ1 : σ < 1) (hκ0 : 0 ≤ κ) (hκ : κ < 2 * σ - 1) :
+    ∃ a ε : ℝ, 1 < a ∧ 0 < ε ∧ ε < 2 * σ - 1 ∧
+      κ * (1 + ε) + a * (2 + ε - 2 * σ) - 1 < 0 ∧
+      κ * ε + a * (1 + ε - 2 * σ) / 2 < 0 ∧
+      κ + a * (1 - σ) - 1 < 0 ∧ κ < a * σ := by
+  let d := 2 * σ - 1 - κ
+  let a := 1 + d / 8
+  let ε := (d / 8) / (κ + a + 1)
+  have hd : 0 < d := sub_pos.mpr hκ
+  have hβ : 0 < 2 * σ - 1 := by linarith only [hσ]
+  have hdb : d ≤ 2 * σ - 1 := by dsimp [d]; linarith only [hκ0]
+  have ha : 1 < a := by dsimp [a]; linarith only [hd]
+  have hden : 0 < κ + a + 1 := by linarith only [hκ0, ha]
+  have hε : 0 < ε := div_pos (by positivity) hden
+  have heq : ε * (κ + a + 1) = d / 8 := div_mul_cancel₀ _ hden.ne'
+  have hp : 0 < ε * (κ + a) := mul_pos hε (by linarith only [hκ0, ha])
+  have hεlt : ε < d / 8 := by nlinarith only [heq, hp]
+  have hεβ : ε < 2 * σ - 1 := by linarith only [hεlt, hdb, hβ]
+  have hsmall : ε * (κ + a) < d / 8 := by nlinarith only [heq, hε]
+  have hds : d * (2 - 2 * σ) < d := by
+    simpa only [mul_one] using mul_lt_mul_of_pos_left
+      (by linarith only [hσ] : 2 - 2 * σ < 1) hd
+  have hbase : κ + a * (2 - 2 * σ) - 1 < -7 * d / 8 := by
+    calc
+      _ = -d + d * (2 - 2 * σ) / 8 := by dsimp [a, d]; ring
+      _ < _ := by linarith only [hds]
+  refine ⟨a, ε, ha, hε, hεβ, ?_, ?_, ?_, ?_⟩
+  · nlinarith only [hbase, hsmall, hd]
+  · have hεa : 0 < ε * a := mul_pos hε (zero_lt_one.trans ha)
+    have hsmall' : ε * (κ + a / 2) < d / 8 := by nlinarith only [hsmall, hεa]
+    have hlarge : 0 ≤ (a - 1) * (2 * σ - 1) := mul_nonneg (sub_nonneg.mpr ha.le) hβ.le
+    nlinarith only [hsmall', hlarge, hdb, hβ]
+  · have hds' : d * (1 - σ) < d / 2 := by nlinarith only [hds]
+    calc
+      _ = σ - 1 - d + d * (1 - σ) / 8 := by dsimp [a, d]; ring
+      _ < 0 := by linarith only [hds', hσ1, hd]
+  · have hσ0 : 0 < σ := by linarith only [hσ]
+    have hp' : 0 < (a - 1) * σ := mul_pos (sub_pos.mpr ha) hσ0
+    nlinarith only [hκ, hσ1, hp']
+
 /-- A ceiling changes a power envelope only by a fixed factor. -/
 theorem tendsto_real_weighted_superlinearCutoff {a b q : ℝ} (ha : 0 ≤ a)
     (hrate : q + a * b < 0) :
