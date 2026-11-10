@@ -47,10 +47,13 @@ The long-variable height phases cancel in the product, leaving
 `C_r`. The identity
 `|z|²=(2αmk)²+(α²+ξ²)(m²−k²)²` gives the normalized profile.
 
-The derivative recursion at order `2r` and exponent `4r−1` stays on
-the positive integer Gamma grid. Gamma recurrence yields
-`C_(2r)(4r−1)≤Γ(2r)(1024r³)^r/2`. The Bernoulli quotient is at
-most one. Dividing the lattice remainder by `S_r` and using
+The derivative recursion is `D_0(u)=Γ((u+1)/2)/2` and
+`D_(j+1)(u)=(|u|+1)D_j(u−1)+8D_j(u+1)`. Its positive integer
+Gamma grid gives `D_k(k+2j−1)≤Γ(p)(2p+8)^k/2` when
+`j≥1` and `k+j≤p`. Take `k=2r`, `j=r`, `p=3r`.
+Since `Γ(3r)≤Γ(2r)(3r)^r` and `6r+8≤14r`, this yields
+`D_(2r)(4r−1)≤Γ(2r)(588r³)^r/2≤Γ(2r)(1024r³)^r/2`.
+The Bernoulli quotient is at most one. Dividing the lattice remainder by `S_r` and using
 `4m²k²/(m²+k²)≤2W²` gives the relative error above.
 
 For separated cofactors, `|z|≥|ξ|mk`, `|ε|≤2|ξ|`, and
@@ -79,7 +82,8 @@ All modules belong to `GaloisForLFunctions.ExceptionalLayerTheory`.
   check passed, with two clean transitive axiom audits.
 
 The fifteen axiom audits contain only `propext`, `Classical.choice`,
-and `Quot.sound`.
+and `Quot.sound`. All three modules pass final direct source checks
+without warnings and are imported by the umbrella.
 
 ## Remaining obstacle
 

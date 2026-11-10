@@ -49,6 +49,79 @@ private theorem residue_scaled_re {t : ℝ} (ht : 0 ≤ t) {w : ℂ} (hw : 0 < w
     Complex.ofReal_im, zero_mul, sub_zero]
   linarith only [hm]
 
+private theorem exists_residue_scaling_rectangle {e : ℝ} (he : 0 < e)
+    {S : Set ℂ} (hS : IsCompact S) (hhalf : S ⊆ {w : ℂ | 0 < w.re}) :
+    ∃ a : ℝ, 0 < a ∧ a ≤ 1 ∧
+      MapsTo (fun v : ℝ × ℂ => (v.1, 1 + (v.1 : ℂ) * v.2)) (Icc 0 a ×ˢ S)
+        (Ici 0 ×ˢ {s : ℂ | 1 - e < s.re ∧ |s.im| < e}) := by
+  obtain ⟨B, hB⟩ := hS.exists_bound_of_continuousOn
+    (continuous_id.continuousOn : ContinuousOn (fun w : ℂ => w) S)
+  let M := max B 1
+  have hM : 1 ≤ M := le_max_right _ _
+  have hMw (w : ℂ) (hw : w ∈ S) : ‖w‖ ≤ M := (hB w hw).trans (le_max_left _ _)
+  have hMp : 0 < M + 1 := by linarith only [hM]
+  let a := min 1 (e / (M + 1))
+  have ha : 0 < a := lt_min zero_lt_one (div_pos he hMp)
+  have ha1 : a ≤ 1 := min_le_left _ _
+  have ham : a * (M + 1) ≤ e := (le_div_iff₀ hMp).mp (min_le_right _ _)
+  let D : Set (ℝ × ℂ) := Icc 0 a ×ˢ S
+  have hmaps : MapsTo (fun v : ℝ × ℂ => (v.1, 1 + (v.1 : ℂ) * v.2)) D
+      (Ici 0 ×ˢ {s : ℂ | 1 - e < s.re ∧ |s.im| < e}) := by
+    intro v hv
+    refine ⟨hv.1.1, ?_, ?_⟩
+    · exact lt_of_lt_of_le (by linarith only [he]) (residue_scaled_re hv.1.1 (hhalf hv.2))
+    · have him : |(1 + (v.1 : ℂ) * v.2).im| ≤ v.1 * ‖v.2‖ := by
+        simp only [Complex.add_im, Complex.one_im, zero_add]
+        apply (Complex.abs_im_le_norm _).trans_eq
+        rw [norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg hv.1.1]
+      have hm := mul_le_mul hv.1.2 (hMw v.2 hv.2) (norm_nonneg v.2) ha.le
+      exact him.trans_lt (by nlinarith only [hm, ham, ha])
+  exact ⟨a, ha, ha1, hmaps⟩
+
+private theorem continuousOn_principalScaledExponent {Ψ : ℂ → ℂ} {R : NNReal}
+    (hR : 1 < (R : ℝ)) (hΨ : AnalyticOnNhd ℂ Ψ (closedBall 0 R))
+    {a : ℝ} (ha1 : a ≤ 1) {S : Set ℂ} (hS : IsCompact S)
+    (hhalf : S ⊆ {w : ℂ | 0 < w.re}) :
+    ContinuousOn (fun v : ℝ × ℂ => -analyticSmoothingScalingLog Ψ 0 v.2 +
+      analyticSmoothingScaledRemainder Ψ 0 v.1 v.2 -
+        hullRem (1 + (v.1 : ℂ) * v.2) (twist 0)) (Icc 0 a ×ˢ S) := by
+  have hscaled : ContinuousOn (fun v : ℝ × ℂ => analyticSmoothingScaledRemainder Ψ 0 v.1 v.2)
+      (Icc 0 a ×ˢ S) :=
+    (continuousOn_analyticSmoothingScaledRemainder hR hΨ 0 hS
+      (by simpa only [Nat.cast_zero, neg_zero] using hhalf)).mono
+        (fun v hv => ⟨⟨hv.1.1, hv.1.2.trans ha1⟩, hv.2⟩)
+  have hL : ContinuousOn (fun v : ℝ × ℂ => analyticSmoothingScalingLog Ψ 0 v.2)
+      (Icc 0 a ×ˢ S) :=
+    (analyticOnNhd_analyticSmoothingScalingLog hR hΨ 0).continuousOn.comp
+      continuous_snd.continuousOn (fun v hv => by
+        simpa only [Nat.cast_zero, neg_zero] using hhalf hv.2)
+  have hzero : ContinuousOn (fun v : ℝ × ℂ => hullRem (1 + (v.1 : ℂ) * v.2) (twist 0))
+      (Icc 0 a ×ˢ S) := by
+    intro v hv
+    have hs : 1 / 2 < (1 + (v.1 : ℂ) * v.2).re :=
+      lt_of_lt_of_le (by norm_num) (residue_scaled_re hv.1.1 (hhalf hv.2))
+    have hm : ContinuousAt (fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) v := by fun_prop
+    have hz : ContinuousAt (fun s : ℂ => hullRem s (twist 0)) (1 + (v.1 : ℂ) * v.2) :=
+      (analyticOnNhd_hullRem (norm_twist_prime 0) _ hs).continuousAt
+    exact (hz.comp (g := fun s : ℂ => hullRem s (twist 0))
+      (f := fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) hm).continuousWithinAt
+  exact (hL.neg.add hscaled).sub hzero
+
+private theorem continuousOn_scaledResidueHigherPrimeLog
+    {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal} (hR : 1 < (R : ℝ))
+    (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R))
+    (hρ : ∀ p : Nat.Primes, (p : ℕ) ∣ q → AnalyticOnNhd ℂ (ρ p) (closedBall 0 R))
+    (hu : ∀ a, ∀ x : ℝ, x ∈ Icc 0 1 → ‖Φ a (x : ℂ)‖ = 1)
+    (hρu : ∀ p : Nat.Primes, (p : ℕ) ∣ q → ∀ x : ℝ, x ∈ Icc 0 1 → ‖ρ p (x : ℂ)‖ = 1)
+    (a : ℝ) {S : Set ℂ} (hhalf : S ⊆ {w : ℂ | 0 < w.re}) :
+    ContinuousOn (fun v : ℝ × ℂ => residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2))
+      (Icc 0 a ×ˢ S) := by
+  have hmap : Continuous (fun v : ℝ × ℂ => (v.1, 1 + (v.1 : ℂ) * v.2)) := by fun_prop
+  apply (continuousOn_residueHigherPrimeLog hR hΦ hρ hu hρu (b := 3 / 4) (by norm_num)).comp
+    hmap.continuousOn
+  intro v hv
+  exact ⟨hv.1.1, lt_of_lt_of_le (by norm_num) (residue_scaled_re hv.1.1 (hhalf hv.2))⟩
+
 private theorem exists_continuousOn_normalizedResidueProfile
     {Φ : (ZMod q)ˣ → ℂ → ℂ} {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal} (hR : 1 < (R : ℝ))
     (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R))
@@ -61,56 +134,28 @@ private theorem exists_continuousOn_normalizedResidueProfile
     {S : Set ℂ} (hS : IsCompact S) (hhalf : S ⊆ {w : ℂ | 0 < w.re}) :
     ∃ a : ℝ, 0 < a ∧ ContinuousOn (fun v : ℝ × ℂ => normalizedResidueProfile Φ ρ K v.1 v.2)
       (Icc 0 a ×ˢ S) := by
-  obtain ⟨B, hB⟩ := hS.exists_bound_of_continuousOn
-    (continuous_id.continuousOn : ContinuousOn (fun w : ℂ => w) S)
-  let M := max B 1
-  have hM : 1 ≤ M := le_max_right _ _
-  have hMw (w : ℂ) (hw : w ∈ S) : ‖w‖ ≤ M := (hB w hw).trans (le_max_left _ _)
-  have hMp : 0 < M + 1 := by linarith only [hM]
-  let a := min 1 (e / (M + 1))
-  have ha : 0 < a := lt_min zero_lt_one (div_pos he hMp)
-  have ha1 : a ≤ 1 := min_le_left _ _
-  have ham : a * (M + 1) ≤ e := (le_div_iff₀ hMp).mp (min_le_right _ _)
-  let D : Set (ℝ × ℂ) := Icc 0 a ×ˢ S
+  obtain ⟨a, ha, ha1, hmaps⟩ := exists_residue_scaling_rectangle he hS hhalf
   have hmap : Continuous (fun v : ℝ × ℂ => (v.1, 1 + (v.1 : ℂ) * v.2)) := by fun_prop
-  have hspectral {v : ℝ × ℂ} (hv : v ∈ D) : 3 / 4 < (1 + (v.1 : ℂ) * v.2).re :=
-    lt_of_lt_of_le (by norm_num) (residue_scaled_re hv.1.1 (hhalf hv.2))
-  have hmaps : MapsTo (fun v : ℝ × ℂ => (v.1, 1 + (v.1 : ℂ) * v.2)) D
-      (Ici 0 ×ˢ {s : ℂ | 1 - e < s.re ∧ |s.im| < e}) := by
-    intro v hv
-    refine ⟨hv.1.1, ?_, ?_⟩
-    · exact lt_of_lt_of_le (by linarith only [he]) (residue_scaled_re hv.1.1 (hhalf hv.2))
-    · have him : |(1 + (v.1 : ℂ) * v.2).im| ≤ v.1 * ‖v.2‖ := by
-        simp only [Complex.add_im, Complex.one_im, zero_add]
-        apply (Complex.abs_im_le_norm _).trans_eq
-        rw [norm_mul, norm_real, Real.norm_eq_abs, abs_of_nonneg hv.1.1]
-      have hm := mul_le_mul hv.1.2 (hMw v.2 hv.2) (norm_nonneg v.2) ha.le
-      exact him.trans_lt (by nlinarith only [hm, ham, ha])
-  have hK := hKc.comp hmap.continuousOn hmaps
-  have hH : ContinuousOn (fun v : ℝ × ℂ =>
-      residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2)) D :=
-    (continuousOn_residueHigherPrimeLog hR hΦ hρ hu hρu
-    (b := 3 / 4) (by norm_num)).comp hmap.continuousOn
-      (fun v hv => ⟨hv.1.1, hspectral hv⟩)
-  have hscaled : ContinuousOn (fun v : ℝ × ℂ =>
-      analyticSmoothingScaledRemainder (residueAverage Φ) 0 v.1 v.2) D :=
-    (continuousOn_analyticSmoothingScaledRemainder hR (analyticOnNhd_residueAverage hΦ) 0 hS
-      (by simpa only [Nat.cast_zero, neg_zero] using hhalf)).mono
-        (fun v hv => ⟨⟨hv.1.1, hv.1.2.trans ha1⟩, hv.2⟩)
-  refine ⟨a, ha, ?_⟩
-  intro v hv
-  have hm : ContinuousAt (fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) v := by fun_prop
-  have hZ := differentiable_zetaResidueFactor.continuous.continuousAt.comp
-    (g := zetaResidueFactor) (f := fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) hm
-  have hL := (analyticOnNhd_analyticSmoothingScalingLog hR (analyticOnNhd_residueAverage hΦ) 0 v.2
-    (by simpa only [Nat.cast_zero, neg_zero] using hhalf hv.2)).continuousAt.comp
-      (g := analyticSmoothingScalingLog (residueAverage Φ) 0) (f := Prod.snd) continuousAt_snd
-  have h0 := (analyticOnNhd_hullRem (norm_twist_prime 0) _
-    (lt_trans (by norm_num) (hspectral hv))).continuousAt.comp
-      (g := fun s : ℂ => hullRem s (twist 0)) (f := fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) hm
-  exact hZ.continuousWithinAt.mul
-    ((((hL.continuousWithinAt.neg.add (hscaled v hv)).add (hK v hv)).add (hH v hv)).sub
-      h0.continuousWithinAt).cexp
+  have hK : ContinuousOn (fun v : ℝ × ℂ => K v.1 (1 + (v.1 : ℂ) * v.2))
+      (Icc 0 a ×ˢ S) := hKc.comp hmap.continuousOn hmaps
+  have hH := continuousOn_scaledResidueHigherPrimeLog hR hΦ hρ hu hρu a hhalf
+  have hP := continuousOn_principalScaledExponent hR (analyticOnNhd_residueAverage hΦ) ha1 hS hhalf
+  have hE := (hP.add hK).add hH
+  have heq : (fun v : ℝ × ℂ => -analyticSmoothingScalingLog (residueAverage Φ) 0 v.2 +
+      analyticSmoothingScaledRemainder (residueAverage Φ) 0 v.1 v.2 -
+        hullRem (1 + (v.1 : ℂ) * v.2) (twist 0) + K v.1 (1 + (v.1 : ℂ) * v.2) +
+          residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2)) =
+      (fun v : ℝ × ℂ => -analyticSmoothingScalingLog (residueAverage Φ) 0 v.2 +
+        analyticSmoothingScaledRemainder (residueAverage Φ) 0 v.1 v.2 +
+          K v.1 (1 + (v.1 : ℂ) * v.2) + residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2) -
+            hullRem (1 + (v.1 : ℂ) * v.2) (twist 0)) := by
+    funext v
+    ring
+  rw [heq] at hE
+  have hm : Continuous (fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) := by fun_prop
+  have hZ : ContinuousOn (fun v : ℝ × ℂ => zetaResidueFactor (1 + (v.1 : ℂ) * v.2))
+      (Icc 0 a ×ˢ S) := (differentiable_zetaResidueFactor.continuous.comp hm).continuousOn
+  exact ⟨a, ha, hZ.mul hE.cexp⟩
 
 private theorem residueEuler_scaled {Φ : (ZMod q)ˣ → ℂ → ℂ}
     {ρ : Nat.Primes → ℂ → ℂ} {R : NNReal} (hR : 1 < (R : ℝ))

@@ -66,6 +66,8 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `CyclicOrder` | Changing the origin cannot reverse the cyclic order of three residue classes |
 | `ResidueBlockObstruction` | Equal cyclic weighted contents imply congruent values; a later part of smaller powers cannot attain an earlier digit's residue weight using only smaller residue weights |
 | `DeletionReduction` | A shared last-part residue produces a smaller nongreedy optimum by digit or part deletion; disjoint last residues force a larger greedy last-part digit |
+| `TwoDigitFeasibility` | A non-strict threshold after two-digit deletion reserves either digit for the last part; reserving a larger power yields a smaller nongreedy optimum |
+| `MinimalCounterexamples` | Any nongreedy optimum yields a normalized least counterexample with at least three parts and two residues, disjoint last residues, and a deficient coordinate after each relevant two-digit deletion |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.

@@ -481,6 +481,52 @@ are exactly the elements of `𝔡`. (iv) Such an `x` with `(x_𝔡) = 𝔡` exis
 `a + b = 1` with `a ∈ 𝔭`, `b ∈ 𝔮`. (iii) `x_𝔡 ∈ 𝔭^k` for every `𝔭^k ∣ 𝔡` by the congruence at
 `𝔡/𝔭`, and a nonzero ideal is the intersection of the prime powers dividing it. ∎
 
+**F2 (the explicit formula of a real character as a functional of contacts).** `χ` real
+primitive of conductor `q > 1`, `F ∈ C²_c(ℝ, ℂ)` supported in `[−a, a]`, `k = F ⋆ F̃`,
+`W_w(k) = k̂(i/2) + k̂(−i/2) + (1/2π)∫ k̂(r)G(r) dr − Σ_{n≥2} w(n)n^{−1/2}(k(log n) + k(−log n))`.
+(i) `Re W_w(k) = Re(k̂(i/2) + k̂(−i/2)) + (1/2π)∫|F̂(τ)|² S_w(τ/2π) dτ`, with `S_w` the symbol
+with the atoms `w(n)` at `±log n`, `n ≤ e^{2a}`. (ii)
+`Re W_{Λχ}(k) = Re(k̂(i/2) + k̂(−i/2)) + Re Σ_{L(ρ,χ)=0} F̂(γ_ρ) conj F̂(conj γ_ρ) − log q·∫|F|² − E_χ(F)`,
+`E_χ = 0` for `χ` even and `E_χ(F) = (1/2π)∫|F̂(τ)|² π/cosh(πτ) dτ` for `χ` odd.
+(iii) `(1/2π)∫|F̂(τ)|² π/cosh(πτ) dτ = ¼∫ Re(k(r) + k(−r))/cosh(r/2) dr`; for a real packet
+`f` it is `∫ h(x)/(2cosh(x/2)) dx`, `h` the autocorrelation.
+*Proof.* (i) The archimedean part without the pole is `(1/2π)∫|F̂|²G`, and `G(r)` is the
+archimedean symbol at `r/2π`; the atoms beyond `e^{2a}` do not meet the support of `k`. (ii) The
+explicit formula of `L(s, χ)` in symbol form (corpus) and Plancherel `∫|F̂|² = 2π∫|F|²`.
+(iii) `∫ cos(rτ)/cosh(r/2) dr = 2π/cosh(πτ)` (corpus), Fubini, and
+`∫|F̂(τ)|² cos(τr) dτ = π Re(k(r) + k(−r))`. ∎
+
+**F3 (the pairing of a quadratic ring).** `f` a packet in `[log 3, log K]`, samples
+`f_n = f(log(n/N))` on `N < n ≤ (1+3K)N`. With the jets `K(m,n)` and the form
+`A_N = Σ_{m≠n} f_m f_n K(m,n) − Σ (f_n²/n) log(n/2π)` of C15:
+(i) `Σ_{m,n} f_m f_n/(√m√n(m+n)) → ∫∫ f(u)f(v)/(2cosh((u−v)/2)) du dv = ∫ h(x)/(2cosh(x/2)) dx`.
+(ii) `A_N − [χ odd]·Σ f_m f_n/(√m√n(m+n)) − log q·Σ f_n²/n + 2Σ_k (Λ(k)χ(k)/√k)Σ_m f_m f_{mk}/m
+→ −Z_χ(f)`, the sum over the zeros of `L(s, χ)`.
+(iii) With the contacts `Λ(1+χ)` of the ideals counted by their norms, the sum of (ii) and of
+C18 tends to `2d₁d₂ − Z_ζ(f) − Z_χ(f)`. The mass at `n` enters with `log(q n²/(2π)²)`, and
+`2K(m,n) − 1/(√m√n(m+n)) = 1/(√m√n|m−n|)`.
+*Proof.* (i) `2cosh(½log(m/n)) = (m+n)/√(mn)`, so the sum is the Riemann sum of C15's pair-sum
+lemma for the continuous kernel `f(u)f(v)/(2cosh((u−v)/2))`; substitution `v = u + x` and Fubini.
+(ii) C21 with `w = Λχ` gives `2d₁d₂ − Re W_{Λχ}`; F2(ii) on the packet, F2(iii), and
+`Σ f_n²/n → ∫f²`. (iii) Add C18. ∎
+
+**C28 (no gap; the constant of the counterterm).** (i) For every `c > 0` there is a packet `g`
+with `d₁(g) = d₂(g) = 0` and `Z_ζ(g) < c∫g²`; for `χ` as in F2 there is one with
+`Z_ζ(g) + Z_χ(g) < c∫g²`. (ii) The limit of C18 with the counterterm `log(n/2π) − c` is at most
+`2d₁d₂` for every packet iff `c ≤ 0` and RH. (iii) With `log(q e^{−c} n²/(2π)²)` in F3(iii),
+`c > 0`, some packet in a window with `d₁ = d₂ = 0` has a positive limit.
+*Proof.* (i) For a complex test `F` with `F̂(±i/2) = 0`: the functional `Re W_w`, the mass and
+the energy `E_χ` are the sums of their values on `Re F` and `Im F` (the autocorrelations add:
+`k_{Re F} + k_{Im F} = Re k_F`), the pole term vanishes, and `∫ F e^{∓u/2} = 0` gives both
+degrees of both parts zero; so by F2 the zero sums of `F` are the sums of those of `Re F` and
+`Im F`. The truncated radical tests (corpus: Riemann's kernel; its convolution with the
+truncated theta kernel of `χ`) have `F̂(±i/2) = 0`, zero sums `O(Re^{−R/2})` resp.
+`≤ Ce^{12L − πe^{2L−1/2}}∫|F|²`, and mass bounded below. One of the two parts satisfies the
+inequality. (ii) The limit is `2d₁d₂ − Z(f) + c∫f²`. If `c > 0`, (i) and a translation into a
+window give a packet with limit `> 0 = 2d₁d₂`. If the inequality holds then `Z(F) ≥ c∫F²` for
+all packets, hence RH by the floor theorem for odd tests (corpus). Conversely RH gives `Z ≥ 0`.
+(iii) (i) for the ring, `Z_χ` and the degrees under translation, F3(iii). ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -513,6 +559,9 @@ are exactly the elements of `𝔡`. (iv) Such an `x` with `(x_𝔡) = 𝔡` exis
   the weights on packets), C24 (pointwise every weight is a limit); Q11: C18–C20, RH in general
   (C21); Q12: C15, C13, C22; Q13: B3, B5 (the class, not zero), B4 (no bound); Q14: C21. The
   decisive test: C21.
+- **Q17 (number rings)**: F1 (the square; orbits iff principal), F2, F3 (comb, counterterm with
+  the conductor, jets of a complex place, the pairing as `2d₁d₂` minus the zero sum of the zeta
+  function of a quadratic ring), C28(iii) (the conductor is forced). **Q12**, the constant: C28(ii).
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -576,6 +625,8 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | E11 | `TheTowerThePolePlaneAndTheJetsFormOneRing` |
 | E12 | `TheSquareMissesTheZerosByAnUnboundedRemainder` |
 | F1 | `TheArithmeticSquareOfADedekindDomain` |
+| F2, F3 | `TheSquareOfAQuadraticRingPairsWithItsConductor` |
+| C28 | `BezoutDeterminesTheConstantOfTheCounterterm` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -588,6 +639,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `ThePairingOfTheDegreePointsIsThePoleMinusWeilsFunctional`,
 `ThePairingOfTheDegreePointsWeighsTheZeros`, `TheOrbitRingWithABaseIsATowerOfLines`,
 `TheCarryIsTheDefectOfTheWindowCount`, `AFiniteFibreForcesContacts`,
+`TheSignIsCarriedByTheContacts`, `TheSquareOfAQuadraticRingPairsWithItsConductor`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -605,5 +657,8 @@ Open parts of the questions of the refined programme (details in the README, §1
 - The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
   varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
-- Over a Dedekind domain: the jets, the comb of the ideals, the gluing index against the zero
-  count, the tower when the class group is not trivial.
+- Number rings beyond F2, F3, C28: the ideals themselves as degree points with the characters
+  of the class group (Hecke `L`-functions), rings of degree above two, the units of a real
+  quadratic ring, the gluing index against the zero count of the Dedekind zeta function.
+- Q15, Q16, Q18, Q19 of the specification (real divisors at finite scale): continuation
+  `HodgeTheoryOfAFixedPart`.

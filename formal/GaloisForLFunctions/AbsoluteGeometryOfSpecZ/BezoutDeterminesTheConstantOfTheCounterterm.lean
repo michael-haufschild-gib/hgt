@@ -89,8 +89,9 @@ theorem integral_norm_sq_split {F : ℝ → ℂ} (hF : Continuous F) (hFc : HasC
     hFc.comp_left (g := fun z : ℂ => z.re ^ 2) (by simp)
   have hic : HasCompactSupport fun x => (F x).im ^ 2 :=
     hFc.comp_left (g := fun z : ℂ => z.im ^ 2) (by simp)
-  rw [← integral_add ((hre.pow 2).integrable_of_hasCompactSupport hrc)
-    ((him.pow 2).integrable_of_hasCompactSupport hic)]
+  have i1 : Integrable fun x => (F x).re ^ 2 := (hre.pow 2).integrable_of_hasCompactSupport hrc
+  have i2 : Integrable fun x => (F x).im ^ 2 := (him.pow 2).integrable_of_hasCompactSupport hic
+  rw [← integral_add i1 i2]
   refine integral_congr_ae (Eventually.of_forall fun x => ?_)
   show ‖F x‖ ^ 2 = (F x).re ^ 2 + (F x).im ^ 2
   rw [Complex.sq_norm, Complex.normSq_apply]
@@ -168,7 +169,7 @@ theorem placeEnergy_split (χ : DirichletCharacter ℂ q) {a : ℝ} {F : ℝ →
           Complex.zero_re
       exact (hκc.mul (Complex.continuous_re.comp
         (hkcont.add (hkcont.comp continuous_neg)))).integrable_of_hasCompactSupport
-          (hsum.mul_left (f' := fun r : ℝ => (Real.cosh (r / 2))⁻¹))
+          (hsum.mul_left (f := fun r : ℝ => (Real.cosh (r / 2))⁻¹))
     have hs : ∀ y : ℝ,
         (EF.weilTest (fun u => ((F u).re : ℂ)) (fun u => ((F u).re : ℂ)) y).re +
           (EF.weilTest (fun u => ((F u).im : ℂ)) (fun u => ((F u).im : ℂ)) y).re =
@@ -350,12 +351,16 @@ theorem exists_primitive_packet_zeroSums_lt [NeZero q] (hq : 1 < q)
   obtain ⟨hd1, hd2, hd3, hd4⟩ := degrees_eq_zero_of_polar hF.continuous hFc hp hm
   rw [zeroSums_split hq hprim hreal ha hF hFs hp hm, integral_norm_sq_split hF.continuous hFc,
     mul_add] at hlt
+  have hu : ContDiff ℝ 2 fun x => (F x).re := Complex.reCLM.contDiff.comp hF
+  have hv : ContDiff ℝ 2 fun x => (F x).im := Complex.imCLM.contDiff.comp hF
+  have huc : HasCompactSupport fun x => (F x).re :=
+    hFc.comp_left (g := fun z : ℂ => z.re) (by simp)
+  have hvc : HasCompactSupport fun x => (F x).im :=
+    hFc.comp_left (g := fun z : ℂ => z.im) (by simp)
   by_cases h : zeroSum (fun x => (F x).re) + twistedZeroSum hq hprim (fun x => (F x).re) <
       c * ∫ x, (F x).re ^ 2
-  · exact ⟨_, Complex.reCLM.contDiff.comp hF, hFc.comp_left (g := fun z : ℂ => z.re) (by simp),
-      hd1, hd2, h⟩
-  · exact ⟨_, Complex.imCLM.contDiff.comp hF, hFc.comp_left (g := fun z : ℂ => z.im) (by simp),
-      hd3, hd4, by linarith [not_lt.mp h]⟩
+  · exact ⟨fun x => (F x).re, hu, huc, hd1, hd2, h⟩
+  · exact ⟨fun x => (F x).im, hv, hvc, hd3, hd4, by linarith [not_lt.mp h]⟩
 
 /-- **A truncation of Riemann's kernel.** For every `c > 0` there is a test whose transform
 vanishes at `±i/2` and whose zero sum is less than `c` times its mass. -/
@@ -405,11 +410,15 @@ theorem exists_primitive_packet_zeroSum_lt {c : ℝ} (hc : 0 < c) :
   obtain ⟨hFc, -, -, -, -⟩ := _root_.RHTower.weilTest_self_data hF hFs
   obtain ⟨hd1, hd2, hd3, hd4⟩ := degrees_eq_zero_of_polar hF.continuous hFc hp hm
   rw [re_zeta_W_split hF hFc, integral_norm_sq_split hF.continuous hFc, mul_add] at hlt
+  have hu : ContDiff ℝ 2 fun x => (F x).re := Complex.reCLM.contDiff.comp hF
+  have hv : ContDiff ℝ 2 fun x => (F x).im := Complex.imCLM.contDiff.comp hF
+  have huc : HasCompactSupport fun x => (F x).re :=
+    hFc.comp_left (g := fun z : ℂ => z.re) (by simp)
+  have hvc : HasCompactSupport fun x => (F x).im :=
+    hFc.comp_left (g := fun z : ℂ => z.im) (by simp)
   by_cases h : zeroSum (fun x => (F x).re) < c * ∫ x, (F x).re ^ 2
-  · exact ⟨_, Complex.reCLM.contDiff.comp hF, hFc.comp_left (g := fun z : ℂ => z.re) (by simp),
-      hd1, hd2, h⟩
-  · exact ⟨_, Complex.imCLM.contDiff.comp hF, hFc.comp_left (g := fun z : ℂ => z.im) (by simp),
-      hd3, hd4, by linarith [not_lt.mp h]⟩
+  · exact ⟨fun x => (F x).re, hu, huc, hd1, hd2, h⟩
+  · exact ⟨fun x => (F x).im, hv, hvc, hd3, hd4, by linarith [not_lt.mp h]⟩
 
 /-! ### Packets in a window -/
 

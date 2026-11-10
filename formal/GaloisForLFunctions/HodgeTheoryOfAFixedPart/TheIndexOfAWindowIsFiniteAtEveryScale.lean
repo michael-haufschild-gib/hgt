@@ -19,6 +19,10 @@ The blocks then have `B ≈ N/R` points with `R` depending on `Q` only
 a subspace of real divisors of codimension below `2QR`. The index of the pairing on a window is
 finite at finite scale, with a bound that does not depend on the scale.
 
+With the margin: `D·D ≤ −(log(N/2π) − ρ) Σ c_n²` on these divisors, `ρ` the row bound above
+(`combPairing_le_of_blockSum_eq_zero`), and `log(N/2π) − ρ ≥ log R − (3 + Q/4 + 2ψ(Q) + log 4π)`
+for blocks of `⌊N/R⌋` points (`log_sub_row_ge`).
+
 The proof is a Schur test after one subtraction.
 
 * **The block kernel** (`blockKernel`): `1/(2B|i − j|)` between two blocks at distance
@@ -173,6 +177,25 @@ theorem abs_inv_sub_blockKernel_le {N B m n : ℕ} (hB : 0 < B) (hm : N < m) (hn
   refine ⟨abs_inv_sub_inv_le hx hB' hk2 b1 b2, ?_⟩
   nlinarith
 
+/-- Two degree points of the window whose blocks are equal or adjacent are less than `2B`
+apart. -/
+theorem dist_lt_two_mul_of_near {N B m n : ℕ} (hB : 0 < B) (hm : N < m) (hn : N < n)
+    (hnear : ¬(blockIndex N B m + 2 ≤ blockIndex N B n ∨
+      blockIndex N B n + 2 ≤ blockIndex N B m)) : Nat.dist m n < 2 * B := by
+  rcases le_total (blockIndex N B m) (blockIndex N B n) with hle | hle
+  · obtain ⟨-, d2, d3⟩ := dist_bounds_of_blockIndex hB hm hn hle
+    have hk : blockIndex N B n - blockIndex N B m + 1 ≤ 2 := by omega
+    have hk' : (blockIndex N B n - blockIndex N B m + 1) * B ≤ 2 * B :=
+      Nat.mul_le_mul_right B hk
+    rw [Nat.dist]
+    omega
+  · obtain ⟨-, d2, d3⟩ := dist_bounds_of_blockIndex hB hn hm hle
+    have hk : blockIndex N B m - blockIndex N B n + 1 ≤ 2 := by omega
+    have hk' : (blockIndex N B m - blockIndex N B n + 1) * B ≤ 2 * B :=
+      Nat.mul_le_mul_right B hk
+    rw [Nat.dist]
+    omega
+
 /-! ### Sums over distances -/
 
 /-- A sum of a nonnegative function of the distance to `n` over distinct degree points is at
@@ -225,6 +248,31 @@ theorem sum_inv_sq_Ioc_le {B : ℕ} (hB : 0 < B) (D : ℕ) :
       nlinarith
     linarith
 
+/-- `Σ_{B < d ≤ D} B/d² ≤ 1`. -/
+theorem sum_ite_lt_div_sq_le {B : ℕ} (hB : 0 < B) (D : ℕ) :
+    ∑ d ∈ Icc 1 D, (if B < d then (B : ℝ) / (d : ℝ) ^ 2 else 0) ≤ 1 := by
+  have hB' : (0 : ℝ) < B := by exact_mod_cast hB
+  rw [← Finset.sum_filter]
+  have hsub : (Icc 1 D).filter (fun d => B < d) ⊆ Ioc B (B + D) := fun d hd => by
+    obtain ⟨hd1, hd2⟩ := Finset.mem_filter.mp hd
+    exact Finset.mem_Ioc.mpr ⟨hd2, by have := (Finset.mem_Icc.mp hd1).2; omega⟩
+  have hle : ∑ d ∈ (Icc 1 D).filter (fun d => B < d), (B : ℝ) / (d : ℝ) ^ 2 ≤
+      ∑ d ∈ Ioc B (B + D), (B : ℝ) / (d : ℝ) ^ 2 :=
+    Finset.sum_le_sum_of_subset_of_nonneg hsub fun d _ _ => by positivity
+  have hsum : ∑ d ∈ Ioc B (B + D), (B : ℝ) / (d : ℝ) ^ 2 =
+      B * ∑ d ∈ Ioc B (B + D), 1 / (d : ℝ) ^ 2 := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun d _ => by ring
+  have hbound := sum_inv_sq_Ioc_le hB D
+  have hfin : (B : ℝ) * (1 / (B : ℝ) - 1 / ((B : ℝ) + D)) ≤ 1 := by
+    have h0 : 0 ≤ (B : ℝ) * (1 / ((B : ℝ) + D)) := by positivity
+    have h1 : (B : ℝ) * (1 / (B : ℝ)) = 1 := by field_simp
+    nlinarith
+  calc ∑ d ∈ (Icc 1 D).filter (fun d => B < d), (B : ℝ) / (d : ℝ) ^ 2
+      ≤ B * ∑ d ∈ Ioc B (B + D), 1 / (d : ℝ) ^ 2 := hle.trans (le_of_eq hsum)
+    _ ≤ B * (1 / (B : ℝ) - 1 / ((B : ℝ) + D)) := mul_le_mul_of_nonneg_left hbound hB'.le
+    _ ≤ 1 := hfin
+
 /-- The majorant of the singular part of the jet minus the block kernel at the distance `d`. -/
 def distMajorant (B d : ℕ) : ℝ :=
   (if d < 2 * B then 1 / (2 * (d : ℝ)) else 0) + (if B < d then (B : ℝ) / (d : ℝ) ^ 2 else 0)
@@ -236,7 +284,6 @@ theorem distMajorant_nonneg (B d : ℕ) : 0 ≤ distMajorant B d := by
 /-- The majorant summed over the distances `1 ≤ d ≤ D`: at most `H_{2B}/2 + 1`. -/
 theorem sum_distMajorant_le {B : ℕ} (hB : 0 < B) (D : ℕ) :
     ∑ d ∈ Icc 1 D, distMajorant B d ≤ harm (2 * B) / 2 + 1 := by
-  have hB' : (0 : ℝ) < B := by exact_mod_cast hB
   unfold distMajorant
   rw [Finset.sum_add_distrib]
   have h1 : ∑ d ∈ Icc 1 D, (if d < 2 * B then 1 / (2 * (d : ℝ)) else 0) ≤ harm (2 * B) / 2 := by
@@ -245,28 +292,7 @@ theorem sum_distMajorant_le {B : ℕ} (hB : 0 < B) (D : ℕ) :
       (le_of_eq (Finset.sum_congr rfl fun d _ => by ring))
     obtain ⟨hd1, hd2⟩ := Finset.mem_filter.mp hd
     exact Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp hd1).1, hd2.le⟩
-  have h2 : ∑ d ∈ Icc 1 D, (if B < d then (B : ℝ) / (d : ℝ) ^ 2 else 0) ≤ 1 := by
-    rw [← Finset.sum_filter]
-    have hsub : (Icc 1 D).filter (fun d => B < d) ⊆ Ioc B (B + D) := fun d hd => by
-      obtain ⟨hd1, hd2⟩ := Finset.mem_filter.mp hd
-      exact Finset.mem_Ioc.mpr ⟨hd2, by have := (Finset.mem_Icc.mp hd1).2; omega⟩
-    have hle : ∑ d ∈ (Icc 1 D).filter (fun d => B < d), (B : ℝ) / (d : ℝ) ^ 2 ≤
-        ∑ d ∈ Ioc B (B + D), (B : ℝ) / (d : ℝ) ^ 2 :=
-      Finset.sum_le_sum_of_subset_of_nonneg hsub fun d _ _ => by positivity
-    have hsum : ∑ d ∈ Ioc B (B + D), (B : ℝ) / (d : ℝ) ^ 2 =
-        B * ∑ d ∈ Ioc B (B + D), 1 / (d : ℝ) ^ 2 := by
-      rw [Finset.mul_sum]
-      exact Finset.sum_congr rfl fun d _ => by ring
-    have hbound := sum_inv_sq_Ioc_le hB D
-    have hfin : (B : ℝ) * (1 / (B : ℝ) - 1 / ((B : ℝ) + D)) ≤ 1 := by
-      have h0 : 0 ≤ (B : ℝ) * (1 / ((B : ℝ) + D)) := by positivity
-      have h1 : (B : ℝ) * (1 / (B : ℝ)) = 1 := by field_simp
-      nlinarith
-    calc ∑ d ∈ (Icc 1 D).filter (fun d => B < d), (B : ℝ) / (d : ℝ) ^ 2
-        ≤ B * ∑ d ∈ Ioc B (B + D), 1 / (d : ℝ) ^ 2 := hle.trans (le_of_eq hsum)
-      _ ≤ B * (1 / (B : ℝ) - 1 / ((B : ℝ) + D)) := mul_le_mul_of_nonneg_left hbound hB'.le
-      _ ≤ 1 := hfin
-  linarith
+  linarith [sum_ite_lt_div_sq_le hB D]
 
 /-! ### The row of the pairing minus the block kernel -/
 
@@ -294,20 +320,7 @@ theorem abs_inv_sub_blockKernel_le_distMajorant {N B m n : ℕ} (hB : 0 < B) (hm
     linarith
   · -- near pairs: the block kernel vanishes and the distance is below `2B`
     have hw : blockKernel N B m n = 0 := by rw [blockKernel, blockWeight, if_neg hfar]
-    have hnear : Nat.dist m n < 2 * B := by
-      rcases le_total (blockIndex N B m) (blockIndex N B n) with hle | hle
-      · obtain ⟨-, d2, d3⟩ := dist_bounds_of_blockIndex hB hm hn hle
-        have hk : blockIndex N B n - blockIndex N B m + 1 ≤ 2 := by omega
-        have hk' : (blockIndex N B n - blockIndex N B m + 1) * B ≤ 2 * B :=
-          Nat.mul_le_mul_right B hk
-        rw [Nat.dist]
-        omega
-      · obtain ⟨-, d2, d3⟩ := dist_bounds_of_blockIndex hB hn hm hle
-        have hk : blockIndex N B m - blockIndex N B n + 1 ≤ 2 := by omega
-        have hk' : (blockIndex N B m - blockIndex N B n + 1) * B ≤ 2 * B :=
-          Nat.mul_le_mul_right B hk
-        rw [Nat.dist]
-        omega
+    have hnear := dist_lt_two_mul_of_near hB hm hn hfar
     unfold distMajorant
     rw [hw, sub_zero, if_pos hnear, abs_of_pos (by positivity), cast_dist]
     have : (0 : ℝ) ≤ if B < Nat.dist m n then (B : ℝ) / |(m : ℝ) - n| ^ 2 else 0 := by
@@ -363,26 +376,30 @@ theorem sum_contact_erase_le {N M Q : ℕ} (hN : 0 < N) (hQ : N + M ≤ Q * N) {
       rw [ha, hb, hxy]
   linarith
 
-/-- **The row of the pairing minus the block kernel.** -/
-theorem sum_abs_pairKernel_sub_blockKernel_le {N M B Q : ℕ} (hN : 0 < N) (hB : 0 < B)
-    (hQ : N + M ≤ Q * N) {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) {n : ℕ} (hn : n ∈ S) :
-    ∑ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n| ≤
-      harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q := by
+/-- **The row of the pairing minus a kernel.** If a kernel `X` differs from the singular part
+`1/(2|m − n|)` of the jets by at most a majorant `h` of the distance, with `Σ_d h(d) ≤ c`, the row
+of `Γ_m·Γ_n − X` on a window of ratio at most `Q` is at most `2c + M/(4N) + 2ψ(Q)`: the two
+sides, the regular part of the jets, and the contacts. -/
+theorem sum_abs_pairKernel_sub_le {N M Q : ℕ} (hN : 0 < N) (hQ : N + M ≤ Q * N)
+    {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) {n : ℕ} (hn : n ∈ S) (X : ℕ → ℕ → ℝ) (h : ℕ → ℝ)
+    (hh : ∀ d, 0 ≤ h d) {c : ℝ} (hc : ∑ d ∈ Icc 1 M, h d ≤ c)
+    (hX : ∀ m, N < m → m ≠ n → |1 / (2 * |(m : ℝ) - n|) - X m n| ≤ h (Nat.dist m n)) :
+    ∑ m ∈ S.erase n, |pairKernel m n - X m n| ≤
+      2 * c + (M : ℝ) / (4 * N) + 2 * chebyshev Q := by
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN
   obtain ⟨hn1, hn2⟩ := Finset.mem_Ioc.mp (hS hn)
   have hmem : ∀ m ∈ S.erase n, N < m ∧ m ≤ N + M := fun m hm =>
     Finset.mem_Ioc.mp (hS (Finset.mem_of_mem_erase hm))
-  -- termwise: the singular part against the block kernel, the regular part, the contact
-  have hterm : ∀ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n| ≤
-      distMajorant B (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n := by
+  -- termwise: the singular part against the kernel, the regular part, the contact
+  have hterm : ∀ m ∈ S.erase n, |pairKernel m n - X m n| ≤
+      h (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n := by
     intro m hm
     obtain ⟨hmN, -⟩ := hmem m hm
     have hmN' : (N : ℝ) < m := by exact_mod_cast hmN
     have hnN' : (N : ℝ) < n := by exact_mod_cast hn1
-    have h1 := abs_inv_sub_blockKernel_le_distMajorant hB hmN hn1 (Finset.ne_of_mem_erase hm)
-    have hsplit : pairKernel m n - blockKernel N B m n =
-        (1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / ((m : ℝ) + n) / 2 +
-          contact m n := by
+    have h1 := hX m hmN (Finset.ne_of_mem_erase hm)
+    have hsplit : pairKernel m n - X m n =
+        (1 / (2 * |(m : ℝ) - n|) - X m n) + 1 / ((m : ℝ) + n) / 2 + contact m n := by
       rw [pairKernel, jetKernel]
       ring
     have hreg : 1 / ((m : ℝ) + n) / 2 ≤ 1 / (4 * (N : ℝ)) := by
@@ -390,11 +407,10 @@ theorem sum_abs_pairKernel_sub_blockKernel_le {N M B Q : ℕ} (hN : 0 < N) (hB :
       exact one_div_le_one_div_of_le (by positivity) (by linarith)
     have hreg0 : (0 : ℝ) ≤ 1 / ((m : ℝ) + n) / 2 := by positivity
     rw [hsplit]
-    calc |(1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / ((m : ℝ) + n) / 2 +
-          contact m n|
-        ≤ |1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n| + |1 / ((m : ℝ) + n) / 2| +
-            |contact m n| := abs_add_three _ _ _
-      _ ≤ distMajorant B (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n := by
+    calc |(1 / (2 * |(m : ℝ) - n|) - X m n) + 1 / ((m : ℝ) + n) / 2 + contact m n|
+        ≤ |1 / (2 * |(m : ℝ) - n|) - X m n| + |1 / ((m : ℝ) + n) / 2| + |contact m n| :=
+          abs_add_three _ _ _
+      _ ≤ h (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n := by
           rw [abs_of_nonneg hreg0, abs_of_nonneg (contact_nonneg m n)]
           linarith
   have hcard : ((S.erase n).card : ℝ) ≤ M := by
@@ -402,30 +418,39 @@ theorem sum_abs_pairKernel_sub_blockKernel_le {N M B Q : ℕ} (hN : 0 < N) (hB :
     have h2 : S.card ≤ (Ioc N (N + M)).card := Finset.card_le_card hS
     rw [Nat.card_Ioc] at h2
     exact_mod_cast (by omega : (S.erase n).card ≤ M)
-  have hdist : ∑ m ∈ S.erase n, distMajorant B (Nat.dist m n) ≤ harm (2 * B) + 2 := by
-    have h := sum_dist_le (S.erase n) n (distMajorant B) (distMajorant_nonneg B) (Icc 1 M)
-      fun m hm => by
-        obtain ⟨hmN, hmtop⟩ := hmem m hm
-        have hne : m ≠ n := Finset.ne_of_mem_erase hm
-        have hpos := Nat.dist_pos_of_ne hne
-        refine Finset.mem_Icc.mpr ⟨hpos, ?_⟩
-        rw [Nat.dist]
-        omega
-    have h2 := sum_distMajorant_le hB M
+  have hdist : ∑ m ∈ S.erase n, h (Nat.dist m n) ≤ 2 * c := by
+    have h' := sum_dist_le (S.erase n) n h hh (Icc 1 M) fun m hm => by
+      obtain ⟨hmN, hmtop⟩ := hmem m hm
+      have hne : m ≠ n := Finset.ne_of_mem_erase hm
+      have hpos := Nat.dist_pos_of_ne hne
+      refine Finset.mem_Icc.mpr ⟨hpos, ?_⟩
+      rw [Nat.dist]
+      omega
     linarith
   have hregsum : ∑ _m ∈ S.erase n, 1 / (4 * (N : ℝ)) ≤ (M : ℝ) / (4 * N) := by
     rw [Finset.sum_const, nsmul_eq_mul]
     calc ((S.erase n).card : ℝ) * (1 / (4 * (N : ℝ))) ≤ M * (1 / (4 * (N : ℝ))) :=
           mul_le_mul_of_nonneg_right hcard (by positivity)
       _ = (M : ℝ) / (4 * N) := by ring
-  calc ∑ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n|
-      ≤ ∑ m ∈ S.erase n, (distMajorant B (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n) :=
+  calc ∑ m ∈ S.erase n, |pairKernel m n - X m n|
+      ≤ ∑ m ∈ S.erase n, (h (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n) :=
         Finset.sum_le_sum hterm
-    _ = ∑ m ∈ S.erase n, distMajorant B (Nat.dist m n) + ∑ _m ∈ S.erase n, 1 / (4 * (N : ℝ)) +
+    _ = ∑ m ∈ S.erase n, h (Nat.dist m n) + ∑ _m ∈ S.erase n, 1 / (4 * (N : ℝ)) +
           ∑ m ∈ S.erase n, contact m n := by
         rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
-    _ ≤ harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q := by
+    _ ≤ 2 * c + (M : ℝ) / (4 * N) + 2 * chebyshev Q := by
         linarith [sum_contact_erase_le hN hQ hS hn]
+
+/-- **The row of the pairing minus the block kernel.** -/
+theorem sum_abs_pairKernel_sub_blockKernel_le {N M B Q : ℕ} (hN : 0 < N) (hB : 0 < B)
+    (hQ : N + M ≤ Q * N) {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) {n : ℕ} (hn : n ∈ S) :
+    ∑ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n| ≤
+      harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q := by
+  have hn1 := (Finset.mem_Ioc.mp (hS hn)).1
+  have h := sum_abs_pairKernel_sub_le hN hQ hS hn (blockKernel N B) (distMajorant B)
+    (distMajorant_nonneg B) (sum_distMajorant_le hB M) fun m hm hmn =>
+      abs_inv_sub_blockKernel_le_distMajorant hB hm hn1 hmn
+  linarith
 
 /-! ### The Schur test -/
 
@@ -452,23 +477,24 @@ theorem sum_mul_mul_le_abs_row (S : Finset ℕ) (K : ℕ → ℕ → ℝ) (hK : 
 
 /-! ### The index of a window -/
 
-/-- **On the divisors with vanishing block sums the pairing is nonpositive and Weil's form is
-nonnegative.** Let `S` be a set of degree points of `(N, N + M]`, of ratio at most `Q`, cut into
-blocks of `B` points with `H_{2B} + 2 + M/(4N) + 2ψ(Q) ≤ log(N/2π)`. For every real divisor on `S`
-whose sum over each block vanishes: `D·D ≤ 0`, `d₂ = 0` and `2 d₁ d₂ − D·D ≥ 0`. -/
-theorem combForm_nonneg_of_blockSum_eq_zero {N M B Q : ℕ} (hN : 0 < N) (hB : 0 < B)
-    (hQ : N + M ≤ Q * N)
-    (hsize : harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q ≤
-      Real.log ((N : ℝ) / (2 * Real.pi)))
-    {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) (c : ℕ → ℝ)
+/-- The second degree of a divisor with vanishing block sums is zero. -/
+theorem degTwo_eq_zero_of_blockSum_eq_zero (N B : ℕ) (S : Finset ℕ) (c : ℕ → ℝ)
     (hzero : ∀ j : ℕ, ∑ n ∈ S.filter (fun n => blockIndex N B n = j), c n = 0) :
-    combPairing S c ≤ 0 ∧ 0 ≤ combForm S c := by
+    degTwo S c = 0 := by
+  rw [degTwo, ← Finset.sum_fiberwise_of_maps_to
+    (fun n hn => Finset.mem_image_of_mem (blockIndex N B) hn) c]
+  exact Finset.sum_eq_zero fun j _ => hzero j
+
+/-- **The margin.** Let `S` be a set of degree points of `(N, N + M]`, of ratio at most `Q`, cut
+into blocks of `B` points. For every real divisor on `S` whose sum over each block vanishes,
+`D·D ≤ −(log(N/2π) − ρ) Σ c_n²` with `ρ = H_{2B} + 2 + M/(4N) + 2ψ(Q)` the row of the pairing
+minus the block kernel. -/
+theorem combPairing_le_of_blockSum_eq_zero {N M B Q : ℕ} (hN : 0 < N) (hB : 0 < B)
+    (hQ : N + M ≤ Q * N) {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) (c : ℕ → ℝ)
+    (hzero : ∀ j : ℕ, ∑ n ∈ S.filter (fun n => blockIndex N B n = j), c n = 0) :
+    combPairing S c ≤ (harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q -
+      Real.log ((N : ℝ) / (2 * Real.pi))) * ∑ n ∈ S, c n ^ 2 := by
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN
-  -- the second degree vanishes
-  have hdeg : degTwo S c = 0 := by
-    rw [degTwo, ← Finset.sum_fiberwise_of_maps_to
-      (fun n hn => Finset.mem_image_of_mem (blockIndex N B) hn) c]
-    exact Finset.sum_eq_zero fun j _ => hzero j
   -- subtract the block kernel
   have hsub : ∑ n ∈ S, ∑ m ∈ S.erase n, c m * c n * pairKernel m n =
       ∑ n ∈ S, ∑ m ∈ S.erase n, c m * c n * (pairKernel m n - blockKernel N B m n) := by
@@ -484,18 +510,44 @@ theorem combForm_nonneg_of_blockSum_eq_zero {N M B Q : ℕ} (hN : 0 < N) (hB : 0
   have hschur := sum_mul_mul_le_abs_row S (fun m n => pairKernel m n - blockKernel N B m n)
     (fun m n => by rw [pairKernel_comm, blockKernel_comm]) c
   have hrow : ∑ n ∈ S, c n ^ 2 * ∑ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n| ≤
+      (harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q) * ∑ n ∈ S, c n ^ 2 := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun n hn => ?_
+    calc c n ^ 2 * ∑ m ∈ S.erase n, |pairKernel m n - blockKernel N B m n|
+        ≤ c n ^ 2 * (harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q) :=
+          mul_le_mul_of_nonneg_left (sum_abs_pairKernel_sub_blockKernel_le hN hB hQ hS hn)
+            (sq_nonneg _)
+      _ = (harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q) * c n ^ 2 := mul_comm _ _
+  have hct : Real.log ((N : ℝ) / (2 * Real.pi)) * ∑ n ∈ S, c n ^ 2 ≤
       ∑ n ∈ S, c n ^ 2 * counterterm n := by
-    refine Finset.sum_le_sum fun n hn => mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum fun n hn => ?_
     have hnN : (N : ℝ) < n := by exact_mod_cast (Finset.mem_Ioc.mp (hS hn)).1
-    have hct : Real.log ((N : ℝ) / (2 * Real.pi)) ≤ counterterm n :=
-      Real.log_le_log (by positivity)
-        (div_le_div_of_nonneg_right hnN.le (by positivity))
-    exact (sum_abs_pairKernel_sub_blockKernel_le hN hB hQ hS hn).trans (hsize.trans hct)
+    have h : Real.log ((N : ℝ) / (2 * Real.pi)) ≤ counterterm n :=
+      Real.log_le_log (by positivity) (div_le_div_of_nonneg_right hnN.le (by positivity))
+    calc Real.log ((N : ℝ) / (2 * Real.pi)) * c n ^ 2
+        = c n ^ 2 * Real.log ((N : ℝ) / (2 * Real.pi)) := mul_comm _ _
+      _ ≤ c n ^ 2 * counterterm n := mul_le_mul_of_nonneg_left h (sq_nonneg _)
+  rw [combPairing, hsub, sub_mul]
+  linarith
+
+/-- **On the divisors with vanishing block sums the pairing is nonpositive and Weil's form is
+nonnegative.** Let `S` be a set of degree points of `(N, N + M]`, of ratio at most `Q`, cut into
+blocks of `B` points with `H_{2B} + 2 + M/(4N) + 2ψ(Q) ≤ log(N/2π)`. For every real divisor on `S`
+whose sum over each block vanishes: `D·D ≤ 0`, `d₂ = 0` and `2 d₁ d₂ − D·D ≥ 0`. -/
+theorem combForm_nonneg_of_blockSum_eq_zero {N M B Q : ℕ} (hN : 0 < N) (hB : 0 < B)
+    (hQ : N + M ≤ Q * N)
+    (hsize : harm (2 * B) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q ≤
+      Real.log ((N : ℝ) / (2 * Real.pi)))
+    {S : Finset ℕ} (hS : S ⊆ Ioc N (N + M)) (c : ℕ → ℝ)
+    (hzero : ∀ j : ℕ, ∑ n ∈ S.filter (fun n => blockIndex N B n = j), c n = 0) :
+    combPairing S c ≤ 0 ∧ 0 ≤ combForm S c := by
+  have hsum : 0 ≤ ∑ n ∈ S, c n ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hpair : combPairing S c ≤ 0 := by
-    rw [combPairing, hsub]
-    linarith
+    nlinarith [mul_nonneg (sub_nonneg.mpr hsize) hsum,
+      combPairing_le_of_blockSum_eq_zero hN hB hQ hS c hzero]
   refine ⟨hpair, ?_⟩
-  rw [combForm, hdeg, mul_zero, mul_zero]
+  rw [combForm, degTwo_eq_zero_of_blockSum_eq_zero N B S c hzero, mul_zero, mul_zero]
   linarith
 
 /-- The number of blocks of a window of ratio at most `Q` is below `2QR` for blocks of `⌊N/R⌋`
@@ -513,37 +565,24 @@ theorem blockIndex_lt {N M Q R n : ℕ} (hR : 0 < R) (hRN : R ≤ N) (hQ : N + M
     _ ≤ Q * (2 * R * (N / R)) := Nat.mul_le_mul_left Q h1.le
     _ = 2 * Q * R * (N / R) := by ring
 
-/-- **The index of a window is finite at every scale.** For every bound `Q` on the ratio there is
-`R` such that at every scale `N ≥ R`, on every set of degree points of a window `(N, N + M]` of
-ratio at most `Q`, cut into blocks of `⌊N/R⌋` points, every real divisor whose sum over each
-block vanishes has `D·D ≤ 0` and `2 d₁ d₂ − D·D ≥ 0`. The blocks are fewer than `2QR`
-(`blockIndex_lt`). -/
-theorem exists_blockSize_combForm_nonneg (Q : ℕ) :
-    ∃ R : ℕ, 0 < R ∧ ∀ N M : ℕ, R ≤ N → N + M ≤ Q * N → ∀ S : Finset ℕ, S ⊆ Ioc N (N + M) →
-      ∀ c : ℕ → ℝ, (∀ j : ℕ, ∑ n ∈ S.filter (fun n => blockIndex N (N / R) n = j), c n = 0) →
-        combPairing S c ≤ 0 ∧ 0 ≤ combForm S c := by
-  set E : ℝ := 3 + (Q : ℝ) / 4 + 2 * chebyshev Q + Real.log (4 * Real.pi) with hE
-  refine ⟨⌈Real.exp E⌉₊, Nat.ceil_pos.mpr (Real.exp_pos E), ?_⟩
-  intro N M hRN hQ S hS c hzero
-  set R := ⌈Real.exp E⌉₊ with hRdef
-  have hR : 0 < R := Nat.ceil_pos.mpr (Real.exp_pos E)
+/-- The margin of the counterterm over the row for blocks of `⌊N/R⌋` points: at least
+`log R − (3 + Q/4 + 2ψ(Q) + log 4π)`. -/
+theorem log_sub_row_ge {N M Q R : ℕ} (hR : 0 < R) (hRN : R ≤ N) (hQ : N + M ≤ Q * N) :
+    Real.log R - (3 + (Q : ℝ) / 4 + 2 * chebyshev Q + Real.log (4 * Real.pi)) ≤
+      Real.log ((N : ℝ) / (2 * Real.pi)) -
+        (harm (2 * (N / R)) + 2 + (M : ℝ) / (4 * N) + 2 * chebyshev Q) := by
   have hN : 0 < N := lt_of_lt_of_le hR hRN
   have hB : 0 < N / R := Nat.div_pos hRN hR
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN
   have hR' : (0 : ℝ) < R := by exact_mod_cast hR
   have hB' : (0 : ℝ) < ((N / R : ℕ) : ℝ) := by exact_mod_cast hB
-  refine combForm_nonneg_of_blockSum_eq_zero hN hB hQ ?_ hS c hzero
-  -- the size of the blocks
   have hharm : harm (2 * (N / R)) ≤ 1 + Real.log ((2 * (N / R) : ℕ) : ℝ) := by
     rw [harm_eq_harmonic]
     exact harmonic_le_one_add_log _
   have hBle : ((N / R : ℕ) : ℝ) ≤ (N : ℝ) / R := by
     rw [le_div_iff₀ hR']
     exact_mod_cast Nat.div_mul_le_self N R
-  have hlogB : Real.log ((2 * (N / R) : ℕ) : ℝ) ≤ Real.log 2 + Real.log N - E := by
-    have hRE : E ≤ Real.log R := by
-      rw [Real.le_log_iff_exp_le hR']
-      exact Nat.le_ceil _
+  have hlogB : Real.log ((2 * (N / R) : ℕ) : ℝ) ≤ Real.log 2 + Real.log N - Real.log R := by
     have h1 : Real.log ((2 * (N / R) : ℕ) : ℝ) ≤ Real.log (2 * ((N : ℝ) / R)) := by
       refine Real.log_le_log (by positivity) ?_
       push_cast
@@ -561,7 +600,28 @@ theorem exists_blockSize_combForm_nonneg (Q : ℕ) :
     rw [show (4 : ℝ) * Real.pi = 2 * (2 * Real.pi) by ring,
       Real.log_mul (by norm_num) (by positivity)]
   rw [hlogN]
-  rw [hE] at hlogB
+  linarith
+
+/-- **The index of a window is finite at every scale.** For every bound `Q` on the ratio there is
+`R` such that at every scale `N ≥ R`, on every set of degree points of a window `(N, N + M]` of
+ratio at most `Q`, cut into blocks of `⌊N/R⌋` points, every real divisor whose sum over each
+block vanishes has `D·D ≤ 0` and `2 d₁ d₂ − D·D ≥ 0`. The blocks are fewer than `2QR`
+(`blockIndex_lt`). -/
+theorem exists_blockSize_combForm_nonneg (Q : ℕ) :
+    ∃ R : ℕ, 0 < R ∧ ∀ N M : ℕ, R ≤ N → N + M ≤ Q * N → ∀ S : Finset ℕ, S ⊆ Ioc N (N + M) →
+      ∀ c : ℕ → ℝ, (∀ j : ℕ, ∑ n ∈ S.filter (fun n => blockIndex N (N / R) n = j), c n = 0) →
+        combPairing S c ≤ 0 ∧ 0 ≤ combForm S c := by
+  obtain ⟨E, hE⟩ : ∃ E : ℝ, E = 3 + (Q : ℝ) / 4 + 2 * chebyshev Q + Real.log (4 * Real.pi) :=
+    ⟨_, rfl⟩
+  have hR : 0 < ⌈Real.exp E⌉₊ := Nat.ceil_pos.mpr (Real.exp_pos E)
+  refine ⟨⌈Real.exp E⌉₊, hR, ?_⟩
+  intro N M hRN hQ S hS c hzero
+  refine combForm_nonneg_of_blockSum_eq_zero (lt_of_lt_of_le hR hRN) (Nat.div_pos hRN hR) hQ ?_
+    hS c hzero
+  have hRE : E ≤ Real.log (⌈Real.exp E⌉₊ : ℝ) := by
+    rw [Real.le_log_iff_exp_le (by exact_mod_cast hR)]
+    exact Nat.le_ceil _
+  have h := log_sub_row_ge (M := M) hR hRN hQ
   linarith
 
 end GaloisForLFunctions.HodgeTheoryOfAFixedPart

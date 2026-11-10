@@ -44,6 +44,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCarryIsACocycleThatIsNotAC
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfThePairingOfTheDegreePoints
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheContactsAtAHeightReadTheRemainder
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquareOfAQuadraticRingPairsWithItsConductor
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BezoutDeterminesTheConstantOfTheCounterterm
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -60,6 +62,7 @@ pairing as twice the product of the degrees minus the sum over the zeros, its si
 apertures and its dependence on the contacts and on the comb; the ring of the tower, the pole
 plane and the jets with its section count; the carry against the window count; the remainder of
 the zero count on the square and its reading by the contacts at a height; the Hodge index of
-the pairing; the carry as a cocycle class; and the square of a Dedekind domain. See
-`AbsoluteGeometryOfSpecZ/README.md`.
+the pairing; the carry as a cocycle class; the square of a Dedekind domain; the pairing of the
+square of a quadratic ring with its conductor; and the constants of the counterterm as the
+threshold of the inequality. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

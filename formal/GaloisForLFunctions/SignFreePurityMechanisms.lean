@@ -33,6 +33,8 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.BlockExchanges
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CyclicOrder
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ResidueBlockObstruction
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeletionReduction
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.TwoDigitFeasibility
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MinimalCounterexamples
 
 /-!
 # Sign-free purity mechanisms

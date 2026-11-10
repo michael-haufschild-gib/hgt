@@ -12,9 +12,11 @@ are zeros of `ξ`. This module shows that such a factor has all its zeros on the
 zeros of `ζ` off the line are the zeros of no bounded Dirichlet series: the exceptional set has no
 arithmetic constituent of this kind.
 
-* `exists_thick_zero_shifts`: a zero `ρ₀` of `F` recurs. `F` is almost periodic on closed substrips
-  (Bohr), so along a relatively dense set of shifts `τ` the minimum modulus principle gives a zero
-  in the disc about `ρ₀ + iτ`, and a whole interval of shifts carries a zero into the larger disc.
+* `exists_thick_zero_shifts_of_almostPeriodic`, `exists_thick_zero_shifts`: a zero `ρ₀` of `F`
+  recurs. `F` is almost periodic on closed substrips (Bohr), so along a relatively dense set of
+  shifts `τ` the minimum modulus principle gives a zero in the disc about `ρ₀ + iτ`, and a whole
+  interval of shifts carries a zero into the larger disc. In the same way a lower bound on one
+  horizontal segment recurs (`exists_good_heights_of_almostPeriodic`).
 * `exists_zetaZeroShiftSet_density_zero`: for `ρ₀` in the open strip off the line, the shifts that
   carry a zero of `ζ` into a small disc about `ρ₀ + iτ` have density zero; right of the line this is
   the zero density estimate `N(σ, T) = o(T)`, left of it the reflection `s ↦ 1 - s̄`.
@@ -37,14 +39,15 @@ open _root_.RHTower GaloisForLFunctions.BlackHoleRingdown
 
 /-! ### Recurrence of a zero -/
 
-/-- **A zero of a bounded Dirichlet series recurs.** Every interval of some length `L` contains a
-shift `τ` such that each `t` within `d` of `τ` carries a zero of `F` into the disc of radius `r`
-about `ρ₀ + it`. -/
-theorem exists_thick_zero_shifts {f : ℕ → ℂ} {F : ℂ → ℂ} {x u₀ M : ℝ}
-    (hsum : LSeriesSummable f (u₀ : ℂ)) (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re})
-    (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M) (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries f z)
-    (hFne : ∃ z₁ : ℂ, x < z₁.re ∧ F z₁ ≠ 0) {ρ₀ : ℂ} (hρx : x < ρ₀.re) (hFρ : F ρ₀ = 0)
-    {r : ℝ} (hr : 0 < r) :
+/-- **A zero of an almost periodic function recurs.** Let `F` be holomorphic on `Re z > x`, not
+identically zero, and almost periodic on a strip about the line through a zero `ρ₀`. Every interval
+of some length `L` contains a shift `τ` such that each `t` within `d` of `τ` carries a zero of `F`
+into the disc of radius `r` about `ρ₀ + it`: an almost period carries a zero into a small disc by
+the minimum modulus principle, and a whole interval of shifts carries it into the larger disc. -/
+theorem exists_thick_zero_shifts_of_almostPeriodic {F : ℂ → ℂ} {x : ℝ}
+    (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re}) (hFne : ∃ z₁ : ℂ, x < z₁.re ∧ F z₁ ≠ 0)
+    {ρ₀ : ℂ} (hρx : x < ρ₀.re) (hFρ : F ρ₀ = 0) {R : ℝ} (hR : 0 < R)
+    (hAP : IsStripAlmostPeriodicOn F ρ₀.re R) {r : ℝ} (hr : 0 < r) :
     ∃ L : ℝ, 0 < L ∧ ∃ d : ℝ, 0 < d ∧ ∀ a : ℝ, ∃ τ ∈ Icc a (a + L),
       Ioo (τ - d) (τ + d) ⊆
         {t : ℝ | ∃ z ∈ ball ρ₀ r, x < (z + t * I).re ∧ F (z + t * I) = 0} := by
@@ -57,13 +60,13 @@ theorem exists_thick_zero_shifts {f : ℕ → ℂ} {F : ℂ → ℂ} {x u₀ M :
     obtain ⟨z₁, hz₁, hz₁0⟩ := hFne
     exact hz₁0 (han.eqOn_zero_of_preconnected_of_eventuallyEq_zero hUconn hρx h hz₁)
   obtain ⟨r₁, hr₁, hball⟩ := Metric.eventually_nhds_iff.mp (eventually_nhdsWithin_iff.mp hne)
-  set r' : ℝ := min (r₁ / 2) (min r (min ((ρ₀.re - x) / 2) 1)) with hrdef
-  have hr' : 0 < r' := lt_min (by linarith) (lt_min hr (lt_min (by linarith) one_pos))
+  set r' : ℝ := min (r₁ / 2) (min r (min ((ρ₀.re - x) / 2) R)) with hrdef
+  have hr' : 0 < r' := lt_min (by linarith) (lt_min hr (lt_min (by linarith) hR))
   have hrr₁ : r' < r₁ := (min_le_left _ _).trans_lt (by linarith)
   have hr'r : r' ≤ r := (min_le_right _ _).trans (min_le_left _ _)
   have hr4 : r' ≤ (ρ₀.re - x) / 2 :=
     (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _))
-  have hr5 : r' ≤ 1 := (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hr5 : r' ≤ R := (min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _))
   set ρ : ℝ := r' / 2 with hρdef
   have hρ : 0 < ρ := by positivity
   -- the zero-free circle and its floor
@@ -85,20 +88,13 @@ theorem exists_thick_zero_shifts {f : ℕ → ℂ} {F : ℂ → ℂ} {x u₀ M :
     (hF.continuousOn.mono fun z hz => hsphU z (sphere_subset_closedBall hz)).norm
   have hm0 : 0 < ‖F z₁‖ := norm_pos_iff.mpr (hsph z₁ hz₁)
   have hm : ∀ z ∈ sphere ρ₀ ρ, ‖F z₁‖ ≤ ‖F z‖ := fun z hz => isMinOn_iff.mp hmin z hz
-  -- almost periodicity on a strip around the disc
-  have hxl' : x < ρ₀.re - ρ := by linarith
-  have hl'u : ρ₀.re - ρ ≤ max (u₀ + 1) (ρ₀.re + 1) := by
-    linarith [le_max_right (u₀ + 1) (ρ₀.re + 1)]
-  obtain ⟨L, hL, hτ⟩ := GaloisForLFunctions.isStripAlmostPeriodicOn_of_bounded_LSeries hxl' hl'u
-    (by linarith [le_max_left (u₀ + 1) (ρ₀.re + 1)]) hsum hF hM hFL (‖F z₁‖ / 3) (by positivity)
-  have hstrip : ∀ z ∈ closedBall ρ₀ ρ,
-      |z.re - (ρ₀.re - ρ + max (u₀ + 1) (ρ₀.re + 1)) / 2|
-        ≤ (max (u₀ + 1) (ρ₀.re + 1) - (ρ₀.re - ρ)) / 2 := by
+  -- almost periods to the precision of the floor
+  obtain ⟨L, hL, hτ⟩ := hAP (‖F z₁‖ / 3) (by positivity)
+  have hstrip : ∀ z ∈ closedBall ρ₀ ρ, |z.re - ρ₀.re| ≤ R := by
     intro z hz
-    have h := abs_le.mp ((abs_re_le_norm (z - ρ₀)).trans (mem_closedBall_iff_norm.mp hz))
+    have h := (abs_re_le_norm (z - ρ₀)).trans (mem_closedBall_iff_norm.mp hz)
     rw [sub_re] at h
-    have hu1 : ρ₀.re + 1 ≤ max (u₀ + 1) (ρ₀.re + 1) := le_max_right _ _
-    exact abs_le.mpr ⟨by linarith [h.1], by linarith [h.2]⟩
+    linarith
   refine ⟨L, hL, ρ, hρ, fun a => ?_⟩
   obtain ⟨τ, hτmem, hτF⟩ := hτ a
   refine ⟨τ, hτmem, fun t ht => ?_⟩
@@ -136,6 +132,68 @@ theorem exists_thick_zero_shifts {f : ℕ → ℂ} {F : ℂ → ℂ} {x u₀ M :
     exact hzx
   · rw [hpt]
     exact hz0
+
+/-- **A zero of a bounded Dirichlet series recurs.** Every interval of some length `L` contains a
+shift `τ` such that each `t` within `d` of `τ` carries a zero of `F` into the disc of radius `r`
+about `ρ₀ + it`. -/
+theorem exists_thick_zero_shifts {f : ℕ → ℂ} {F : ℂ → ℂ} {x u₀ M : ℝ}
+    (hsum : LSeriesSummable f (u₀ : ℂ)) (hF : DifferentiableOn ℂ F {z : ℂ | x < z.re})
+    (hM : ∀ z : ℂ, x < z.re → ‖F z‖ ≤ M) (hFL : ∀ z : ℂ, u₀ < z.re → F z = LSeries f z)
+    (hFne : ∃ z₁ : ℂ, x < z₁.re ∧ F z₁ ≠ 0) {ρ₀ : ℂ} (hρx : x < ρ₀.re) (hFρ : F ρ₀ = 0)
+    {r : ℝ} (hr : 0 < r) :
+    ∃ L : ℝ, 0 < L ∧ ∃ d : ℝ, 0 < d ∧ ∀ a : ℝ, ∃ τ ∈ Icc a (a + L),
+      Ioo (τ - d) (τ + d) ⊆
+        {t : ℝ | ∃ z ∈ ball ρ₀ r, x < (z + t * I).re ∧ F (z + t * I) = 0} := by
+  set R : ℝ := min ((ρ₀.re - x) / 2) 1 with hRdef
+  have hR0 : 0 < R := lt_min (by linarith) one_pos
+  have hR1 : R ≤ 1 := min_le_right _ _
+  have hR2 : R ≤ (ρ₀.re - x) / 2 := min_le_left _ _
+  have hu1 : ρ₀.re + 1 ≤ max (u₀ + 1) (ρ₀.re + 1) := le_max_right _ _
+  -- Bohr: almost periodicity on the strip `Re ρ₀ − R ≤ Re z ≤ max (u₀ + 1) (Re ρ₀ + 1)`
+  have hAP : IsStripAlmostPeriodicOn F ρ₀.re R := by
+    intro ε hε
+    obtain ⟨L, hL, hτ⟩ := GaloisForLFunctions.isStripAlmostPeriodicOn_of_bounded_LSeries
+      (x := x) (l' := ρ₀.re - R) (u := max (u₀ + 1) (ρ₀.re + 1)) (by linarith) (by linarith)
+      (by linarith [le_max_left (u₀ + 1) (ρ₀.re + 1)]) hsum hF hM hFL ε hε
+    refine ⟨L, hL, fun a => ?_⟩
+    obtain ⟨τ, hτmem, hτF⟩ := hτ a
+    refine ⟨τ, hτmem, fun z hz => hτF z ?_⟩
+    have h := abs_le.mp hz
+    exact abs_le.mpr ⟨by linarith [h.1], by linarith [h.2]⟩
+  exact exists_thick_zero_shifts_of_almostPeriodic hF hFne hρx hFρ hR0 hAP hr
+
+/-- **A lower bound on a horizontal segment recurs.** If `F` is almost periodic on the strip
+`|Re z − σ| ≤ R` and does not vanish on the segment of the strip at one height `T₀`, then
+`‖F‖ ≥ μ > 0` on the segments at heights met in every interval of a fixed length. -/
+theorem exists_good_heights_of_almostPeriodic {F : ℂ → ℂ} (hF : Continuous F) {σ R T₀ : ℝ}
+    (hAP : IsStripAlmostPeriodicOn F σ R)
+    (hseg : ∀ x : ℝ, |x - σ| ≤ R → F ((x : ℂ) + T₀ * I) ≠ 0) :
+    ∃ μ : ℝ, 0 < μ ∧ ∃ L : ℝ, ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, |z.re - σ| ≤ R →
+      z.im = T → μ ≤ ‖F z‖ := by
+  rcases lt_or_ge R 0 with hR | hR
+  · exact ⟨1, one_pos, 0, fun y => ⟨y, ⟨le_rfl, by linarith⟩, fun z hz _ =>
+      absurd ((abs_nonneg _).trans hz) (not_le.mpr hR)⟩⟩
+  have hmem : ∀ x : ℝ, |x - σ| ≤ R ↔ x ∈ Icc (σ - R) (σ + R) := fun x => by
+    rw [abs_le, mem_Icc]
+    constructor <;> rintro ⟨h1, h2⟩ <;> constructor <;> linarith
+  have hcont : Continuous fun x : ℝ => ‖F ((x : ℂ) + T₀ * I)‖ :=
+    (hF.comp (by fun_prop : Continuous fun x : ℝ => (x : ℂ) + T₀ * I)).norm
+  obtain ⟨x₀, hx₀, hmin⟩ := isCompact_Icc.exists_isMinOn
+    (nonempty_Icc.mpr (by linarith : σ - R ≤ σ + R)) (hcont.continuousOn (s := Icc (σ - R) (σ + R)))
+  have hm₀pos : 0 < ‖F ((x₀ : ℂ) + T₀ * I)‖ := norm_pos_iff.mpr (hseg x₀ ((hmem x₀).mpr hx₀))
+  obtain ⟨L, -, hτ⟩ := hAP (‖F ((x₀ : ℂ) + T₀ * I)‖ / 2) (by positivity)
+  refine ⟨_, half_pos hm₀pos, L, fun y => ?_⟩
+  obtain ⟨τ, hτmem, hτD⟩ := hτ (y - T₀)
+  refine ⟨T₀ + τ, ⟨by linarith [hτmem.1], by linarith [hτmem.2]⟩, fun z hz hzT => ?_⟩
+  have hzform : z = ((z.re : ℝ) : ℂ) + T₀ * I + τ * I := by
+    apply Complex.ext <;> simp [hzT]
+  have h1 := hτD (((z.re : ℝ) : ℂ) + T₀ * I) (by simpa using hz)
+  have h2 := isMinOn_iff.mp hmin z.re ((hmem z.re).mpr hz)
+  have h3 := norm_sub_norm_le (F (((z.re : ℝ) : ℂ) + T₀ * I))
+    (F (((z.re : ℝ) : ℂ) + T₀ * I + τ * I))
+  rw [norm_sub_rev] at h3
+  rw [hzform]
+  linarith
 
 /-! ### Zeros of `ζ` off the line have density zero, on both sides -/
 
