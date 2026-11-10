@@ -28,7 +28,7 @@
 | A92 | Prime-side resolution law, including both finite-mode statements | Sign and weighted coefficient-two bounds formalized and axiom-audited; counterexample and prime-side assembly pending |
 | A93 | Receiver exchange atlas | Open |
 | A94 | Equality of finite-scale and aperture negative indices | Open |
-| A95 | Separation-free finite-layer window length | Phase-torus finite-mode proof written in `FiniteModeWindowLength`; audit and top-layer specialization pending |
+| A95 | Separation-free finite-layer window length | Finite-mode window theorem formalized and axiom-audited; top-layer specialization pending |
 | A96 | Exact first selective interval for the weight at 2 | Open |
 | A100 | Trivial conductor aperture and exceptional square | Existing `TheTrivialApertureAndTheExceptionalSquare` supplies the assembly and stronger aperture bound; audit pending |
 

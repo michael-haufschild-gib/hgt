@@ -1,8 +1,8 @@
 # Continuous prime measures admit arbitrarily small finite defects
 
 - **ID:** continuous-prime-finite-defect-rigidity
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 5-failed
+- **Type:** FALSIFIED; positive survivor formalized
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, A55.
 - **Statement:** Finite uncompleted `L¹` or `L²` functional-equation defect does not force a positive Beurling prime-power measure to be the Riemann measure.
 
@@ -52,11 +52,19 @@ is asserted.
 
 ## Lean status
 
-All six `EulerFETransportTheory` modules have successful checks with
-standard transitive axioms (`propext`, `Classical.choice`, `Quot.sound`).
+All six `EulerFETransportTheory` modules passed direct
+`lake --old env lean` checks and transitive audits with only
+`propext`, `Classical.choice`, and `Quot.sound`.
 The capstone declarations are
 `continuous_prime_measure_finite_defect_counterexample` and
 `zero_preserving_continuous_prime_perturbations` in
 `ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean`.
-Final direct source audits remain for the integrable-defect and strip
-modules; the umbrella imports the capstone.
+The umbrella imports the capstone. The exact positive survivor above has
+both its dependency-closed paper proof and Lean formalization; no missing
+analytic input remains.
+
+Supporting modules are `TheMellinTransformOfAContinuousEulerProduct`,
+`AContinuousPrimeDensityHasARationalMellinTransform`,
+`PositiveContinuousPerturbationsOfTheRiemannPrimes`,
+`ContinuousEulerPerturbationsHaveIntegrableDefects`, and
+`ContinuousPrimePerturbationsSatisfyTheHamburgerStrip`.

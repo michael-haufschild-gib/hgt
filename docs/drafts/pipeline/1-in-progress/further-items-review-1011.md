@@ -19,7 +19,7 @@
 | A42 | Uniform Gamma-weighted transport of the fixed-head theta asymptotic to the adaptive head | Open |
 | A46 | Local singular indices beyond the cubic cutoff | Complete: `primeVertexRelativeIndex_eq_signedCount`, direct check and standard-axiom audit passed; already imported by umbrella |
 | A54 | Bianchi resolvent cusp expansion with nonzero Wronskian for `Δ−3/4` | Open |
-| A55 | Functional-equation rigidity for continuous Beurling prime measures with `L¹` or `L²` defect | Counterexample and arbitrarily small zero-preserving family checked; final direct audits of two supporting modules remain |
+| A55 | Functional-equation rigidity for continuous Beurling prime measures with `L¹` or `L²` defect | Complete: rigidity refuted; arbitrarily small positive zero-preserving family formalized; six direct checks and standard-axiom audits passed; umbrella wired |
 | A68 | Landing countermodel with ζ's Gamma factor and Riemann–von Mangoldt counting | Open |
 | A86 | Growing-order top-mode filter transfer and near-diagonal cofactor pairs | Open |
 | A91 | General Dedekind-zeta comb and Hodge index for higher-degree number rings | Open |
@@ -47,9 +47,9 @@ passed direct `lake --old env lean` verification, including eleven transitive
 audits with only `propext`, `Classical.choice`, `Quot.sound`. See
 `3-formalized/riac-prime-vertex-signed-localization.md`.
 
-## Continuous-measure test for A55
+## A55: continuous-measure counterexample
 
-Candidate: add to the Riemann prime-power measure the positive pushforward of
+Add to the Riemann prime-power measure the positive pushforward of
 `ε x exp(-x) dx`, `x>0`, under `x↦exp x`. Its Mellin transform is
 `ε/(s+1)²`; the convolution-exponential zeta is therefore
 `ζ(s) exp(ε/(s+1)²)`. On the critical line, reflection cancels the leading
@@ -59,8 +59,10 @@ This refutes continuous-measure rigidity, even for arbitrarily small
 defects. Lean verifies the positive measure identity, nontriviality, zero
 preservation, the full Hamburger strip certificate, `L¹`, `L²`, and
 arbitrarily small inverse-square majorants. All six modules have successful
-checks and standard transitive axioms. Final direct source audits remain
-for the integrable-defect and strip modules before A55 is closed.
+direct checks and standard transitive axioms. The umbrella imports
+`ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean`. The failed
+rigidity route and its formalized positive survivor are recorded in
+`5-failed/continuous-prime-finite-defect-rigidity.md`.
 
 Write `Mε(s)=exp(ε/(s+1)²)`, `βε=Mε(1)/2`, and
 `gε(t)=ζ(1/2+2it)[Mε(1/2+2it)−Mε(1/2−2it)]`.
@@ -78,3 +80,12 @@ A68's paired-ordinate construction is in
 `landing-calibration-with-the-riemann-gamma-factor.md`; A37's proposed
 uniform polynomial range is in
 `growing-resonator-means-below-the-kronecker-scale.md`. Both remain open.
+
+## A91: scope of the existing index law
+
+`AbsoluteGeometryOfSpecZ/TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction.lean`
+proves the index law for a finite family of primitive Dirichlet characters:
+the negative index counts distinct right zeros in their union with zeta's.
+Its statement does not identify a general number field's Dedekind zeta or
+its ideal-contact comb with that family. The general-field arithmetic
+identification and comb limit remain required.

@@ -2,6 +2,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheMassOfAConductorPaysEveryDomin
 import GaloisForLFunctions.SelectiveArithmetic.ThePolarPacketsOfAWindow
 import GaloisForLFunctions.SelectiveArithmetic.TheLiouvilleTwistFailsBeyondTheTrivialAperture
 import GaloisForLFunctions.SelectiveArithmetic.TheHeightOfAPacketIsAMass
+import GaloisForLFunctions.SelectiveArithmetic.CancellationInTheContactsBuysTheLadder
 
 /-!
 # Selective Arithmetic
@@ -22,6 +23,8 @@ sign, and where the first statement beyond that scale lies.
 * The aspect of the height: a packet modulated to the height `t` carries the mass `log |t|`, the
   pole plane does not reach it, and Weil's form of `ζ` is positive there on packets of bounded
   shape up to the aperture `log log |t| − o(1)`.
+* The exchange rate of the ladder on the prime side: a saving `n^{1/2 + γ}` in the partial sums of
+  the contacts buys the sign up to the rung `κ < 1/(2γ)`.
 
 See `SelectiveArithmetic/README.md`.
 -/
