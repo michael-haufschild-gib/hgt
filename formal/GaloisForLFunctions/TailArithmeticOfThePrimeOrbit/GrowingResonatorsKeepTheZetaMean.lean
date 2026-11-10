@@ -72,7 +72,7 @@ theorem eventually_resonatorMean_zeta_uniform {σ κ : ℝ}
   have hFlim : Tendsto F atTop (𝓝 0) := by
     have h := ((hhm.const_mul CH).add (hdt.const_mul CD)).add
       (hew.mul ((hZlim.add_const 1).add helim))
-    simpa only [mul_zero, add_zero] using h
+    simpa only [mul_zero, zero_mul, add_zero, zero_add] using h
   filter_upwards [eventually_ge_atTop (1 : ℝ), hFlim.eventually_lt_const hη]
     with T hT hFT A r M hA hM hMT
   have hT0 : 0 < T := zero_lt_one.trans_le hT

@@ -73,6 +73,7 @@ theorem isBohrAlmostPeriodic_line_of_bounded (hsum : LSeriesSummable a u₀)
   have e : (σ : ℂ) + ((t + τ : ℝ) : ℂ) * I = (σ : ℂ) + (t : ℂ) * I + (τ : ℂ) * I := by
     push_cast
     ring
+  show ‖F ((σ : ℂ) + ((t + τ : ℝ) : ℂ) * I) - F ((σ : ℂ) + (t : ℂ) * I)‖ ≤ ε
   rw [e]
   exact hz
 
@@ -189,7 +190,7 @@ theorem tendsto_windowAverage_line_sub (hF : DifferentiableOn ℂ F {z : ℂ | x
       have h := hrect
       simp only [smul_eq_mul] at h
       have hI : I * I = -1 := I_mul_I
-      linear_combination (-I) * h + ((∫ t in (0 : ℝ)..T, G ((σ : ℂ) + (t : ℂ) * I)) -
+      linear_combination I * h + ((∫ t in (0 : ℝ)..T, G ((σ : ℂ) + (t : ℂ) * I)) -
         ∫ t in (0 : ℝ)..T, G ((u₁ : ℂ) + (t : ℂ) * I)) * hI
     rw [hsolve, norm_mul, norm_neg, norm_I, one_mul]
     exact (norm_sub_le _ _).trans (by linarith)
@@ -216,17 +217,25 @@ theorem windowAverage_line_eq (σ L T : ℝ) :
       Complex.exp ((L : ℂ) * ((σ : ℂ) + (t : ℂ) * I))) T =
     ((Real.exp (L * σ) : ℝ) : ℂ) *
       windowAverage (fun t : ℝ => F ((σ : ℂ) + (t : ℂ) * I) * bohrChar (-L) t) T := by
+  have hint : (∫ t in (0 : ℝ)..T, F ((σ : ℂ) + (t : ℂ) * I) *
+      Complex.exp ((L : ℂ) * ((σ : ℂ) + (t : ℂ) * I))) =
+      ((Real.exp (L * σ) : ℝ) : ℂ) *
+        ∫ t in (0 : ℝ)..T, F ((σ : ℂ) + (t : ℂ) * I) * bohrChar (-L) t := by
+    rw [← intervalIntegral.integral_const_mul]
+    refine intervalIntegral.integral_congr fun t _ => ?_
+    show F ((σ : ℂ) + (t : ℂ) * I) * Complex.exp ((L : ℂ) * ((σ : ℂ) + (t : ℂ) * I)) =
+      ((Real.exp (L * σ) : ℝ) : ℂ) * (F ((σ : ℂ) + (t : ℂ) * I) * bohrChar (-L) t)
+    unfold bohrChar
+    rw [Complex.ofReal_exp, mul_left_comm, ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
   unfold windowAverage
-  rw [← intervalIntegral.integral_const_mul, Complex.real_smul, Complex.real_smul, ← mul_assoc,
-    mul_comm ((Real.exp (L * σ) : ℝ) : ℂ), mul_assoc, ← intervalIntegral.integral_const_mul]
-  congr 1
-  refine intervalIntegral.integral_congr fun t _ => ?_
-  show F ((σ : ℂ) + (t : ℂ) * I) * Complex.exp ((L : ℂ) * ((σ : ℂ) + (t : ℂ) * I)) =
-    ((Real.exp (L * σ) : ℝ) : ℂ) * (F ((σ : ℂ) + (t : ℂ) * I) * bohrChar (-L) t)
-  unfold bohrChar
-  rw [Complex.ofReal_exp, mul_left_comm, ← Complex.exp_add]
-  congr 2
-  push_cast
+  show T⁻¹ • (∫ t in (0 : ℝ)..T, F ((σ : ℂ) + (t : ℂ) * I) *
+      Complex.exp ((L : ℂ) * ((σ : ℂ) + (t : ℂ) * I))) =
+    ((Real.exp (L * σ) : ℝ) : ℂ) *
+      (T⁻¹ • ∫ t in (0 : ℝ)..T, F ((σ : ℂ) + (t : ℂ) * I) * bohrChar (-L) t)
+  rw [hint, Complex.real_smul, Complex.real_smul]
   ring
 
 /-- **The Bohr coefficients on every line of the half-plane of boundedness.** For `σ > x` the
@@ -351,13 +360,15 @@ theorem lSeriesSummable_of_bounded (hsum : LSeriesSummable a u₀)
   rw [LSeriesSummable, ← summable_nat_add_iff 1]
   refine Summable.of_norm (hfg.congr fun n => ?_)
   have hn : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  rw [LSeries.norm_term_eq, if_neg n.succ_ne_zero, ofReal_re, hf, hg]
   have hcast : (((n + 1 : ℕ) : ℝ)) = (n : ℝ) + 1 := by push_cast; rfl
   have hexp : Real.exp (-Real.log ((n : ℝ) + 1) * σ₀) = ((n : ℝ) + 1) ^ (-σ₀) := by
     rw [Real.rpow_def_of_pos hn]
     congr 1
     ring
-  rw [hcast, hexp, div_eq_mul_inv, ← Real.rpow_neg hn.le, mul_assoc, ← Real.rpow_add hn]
+  show ‖a (n + 1)‖ * Real.exp (-Real.log ((n : ℝ) + 1) * σ₀) * ((n : ℝ) + 1) ^ (-δ) =
+    ‖LSeries.term a (y : ℂ) (n + 1)‖
+  rw [LSeries.norm_term_eq, if_neg n.succ_ne_zero, ofReal_re, hcast, hexp, div_eq_mul_inv,
+    ← Real.rpow_neg hn.le, mul_assoc, ← Real.rpow_add hn]
   congr 2
   rw [hδ]
   ring

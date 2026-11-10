@@ -20,7 +20,8 @@ theorem sum_fin_truncResonatorCoeff_eq_tsum {A : Finset ℕ} (r : ℕ → ℂ)
     (∑ n : Fin K, w (n.val + 1) *
       ‖truncResonatorCoeff A r σ N (n.val + 1)‖ ^ 2) =
       ∑' k : ℕ, w k * ‖truncResonatorCoeff A r σ N k‖ ^ 2 := by
-  rw [Sieve.sum_fin_eq_sum_Icc]
+  rw [Sieve.sum_fin_eq_sum_Icc K
+    (fun k => w k * ‖truncResonatorCoeff A r σ N k‖ ^ 2)]
   symm
   apply tsum_eq_sum
   intro k hk

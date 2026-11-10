@@ -56,6 +56,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixMatrixReal
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixWeightIdentity
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryModifiedComposition
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.IncreasingPrefixCosts
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryWeightComparison
 
 /-!
 # Sign-free purity mechanisms

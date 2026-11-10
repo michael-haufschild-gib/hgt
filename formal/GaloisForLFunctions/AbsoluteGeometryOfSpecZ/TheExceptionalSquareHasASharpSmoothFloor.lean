@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SquareRootThreshold.IsolatedOffLinePairVisibilityLaw
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSquare
 
 /-!
 # The sharp floor of an exceptional real pair
@@ -12,7 +12,7 @@ the lower edge, so restricting to smooth packets does not improve it.
 open MeasureTheory Set Filter Topology
 noncomputable section
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
-open SquareRootThreshold
+open SquareRootThreshold Zeta23
 
 /-- The contribution of a simple real zero and its reflection. -/
 def realPairForm (δ : ℝ) (f : ℝ → ℝ) : ℝ :=
@@ -231,9 +231,51 @@ theorem exists_unit_realPairForm_near_lower_edge {δ a ε : ℝ}
   rw [he] at hh
   exact ⟨g, hg, hgs, hmass, hform.trans_lt hh⟩
 
+/-- The two literal zero summands are the real-pair form times their multiplicity. -/
+theorem real_zero_pair_eq_mult_realPairForm (Z : ZeroConfig) {ρ : ℂ}
+    (hρ : ρ ∈ Z.carrier) (him : ρ.im = 0) {δ : ℝ} (hre : ρ.re = 1 / 2 + δ)
+    {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f) :
+    (Z.Wsummand (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) ρ +
+      Z.Wsummand (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (reflect ρ)).re =
+        (Z.mult ρ : ℝ) * realPairForm δ f := by
+  have hi : (reflect ρ).im = 0 := by simp [reflect, him]
+  have hr : (reflect ρ).re = 1 / 2 + (-δ) := by
+    simp only [reflect, Complex.sub_re, Complex.one_re, Complex.conj_re, hre]
+    ring
+  have h1 := re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq Z hρ him hre hf hfc
+  have h2 := re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq Z (Z.reflect_mem ρ hρ) hi hr hf hfc
+  rw [Complex.add_re, h1.1, h2.1, Z.mult_reflect ρ hρ]
+  simp only [neg_mul, neg_neg]
+  unfold realPairForm
+  ring
+
+/-- The exceptional-pair bound is sharp for the actual zero summands on unit smooth packets. -/
+theorem exists_unit_real_zero_pair_near_lower_edge (Z : ZeroConfig) {ρ : ℂ}
+    (hρ : ρ ∈ Z.carrier) (him : ρ.im = 0) {δ a ε : ℝ}
+    (hδ : 0 < δ) (hre : ρ.re = 1 / 2 + δ) (ha : 0 < a) (hε : 0 < ε) :
+    ∃ f : ℝ → ℝ, ContDiff ℝ 2 f ∧ tsupport f ⊆ Icc (-a) a ∧
+      (∫ u, f u ^ 2) = 1 ∧
+      (Z.Wsummand (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) ρ +
+        Z.Wsummand (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (reflect ρ)).re <
+          -2 * (Z.mult ρ : ℝ) * pairEnergy δ a + ε := by
+  have hm : (0 : ℝ) < Z.mult ρ := by
+    exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one (Z.one_le_mult ρ hρ))
+  obtain ⟨f, hf, hfs, hmass, hpair⟩ :=
+    exists_unit_realPairForm_near_lower_edge hδ ha (div_pos hε hm)
+  refine ⟨f, hf, hfs, hmass, ?_⟩
+  rw [real_zero_pair_eq_mult_realPairForm Z hρ him hre hf.continuous
+    (hasCompactSupport_of_tsupport_subset_Icc hfs)]
+  have hh := mul_lt_mul_of_pos_left hpair hm
+  have he : (Z.mult ρ : ℝ) * (-2 * pairEnergy δ a + ε / Z.mult ρ) =
+      -2 * (Z.mult ρ : ℝ) * pairEnergy δ a + ε := by
+    field_simp [hm.ne']
+    ring
+  rwa [he] at hh
+
 #print axioms realPairForm_ge_neg_two_pairEnergy
 #print axioms exists_smooth_realPairForm_below
 #print axioms realPairForm_mass_floor_iff
 #print axioms exists_unit_realPairForm_near_lower_edge
+#print axioms exists_unit_real_zero_pair_near_lower_edge
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

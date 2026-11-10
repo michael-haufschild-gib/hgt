@@ -62,5 +62,6 @@ The detailed card `carlitz-goss-rh-from-greedy-compositions.md` contains the
 geometric prefix-cost argument, including `p=2`, and its checked components:
 actual integral prefix coordinates, singleton boundary identities, interval
 carry recursion, content-matrix realization, residue exponent gaps, and strict
-geometric gain. The actual modified composition is now formalized; proving
-its strict weight gain remains before general optimality is established.
+geometric gain. The actual modified composition and its strict weight gain
+are now formalized. Their combination with the minimal-counterexample
+reduction awaits the final direct Lean check of general greedy optimality.

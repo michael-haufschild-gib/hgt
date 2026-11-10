@@ -88,13 +88,15 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `PrefixWeightIdentity` | Weight differences are the reversed differences of the sums of actual proper-prefix values |
 | `CarryModifiedComposition` | Actual normalized compositions admit an increasing carry modification with unchanged outside prefixes, singleton absorption at the top, terminal digit loss below, and all positive prefix gaps |
 | `IncreasingPrefixCosts` | Actual increasing compositions satisfy the geometric residue-prefix cost and the retained-to-last exponent gap; equal outside prefix counts give equal values |
+| `CarryWeightComparison` | The actual singleton carry modification strictly increases weight, by cancellation of unchanged prefixes and the two geometric bounds |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
-The general optimal-composition theorem remains open after construction of
-the actual carry modification: its strict weight comparison remains
-unformalized. The actual Goss coefficients and
+The actual carry modification and its strict weight comparison are formalized.
+Combining this with the minimal-counterexample reduction gives general
+greedy optimality; that final combination awaits its direct Lean check.
+The actual Goss coefficients and
 entire-series argument also remain. The target includes every prime power
 and every `p`-adic parameter.
 
@@ -187,7 +189,7 @@ having value divisible by `p^s−1`. Its weight is the sum of part values
 times their one-based positions. Deletion and exponent shifts preserve
 this model, so minimality can use `(number of parts, number of digits)`.
 
-## Sharper prefix-cost argument awaiting Lean verification
+## Geometric prefix-cost argument
 
 Put `q=p^s`, so `q≥p²`, and `c=(p−1)q/(q−1)²`. In one residue class,
 suppose nested prefixes have positive counts increasing by at least `p−1`.
@@ -214,5 +216,26 @@ residues cancel in the weight difference. Thus
 `(p−1)(p²+1)−p²=(p−2)p²+p−1>0`.
 This bound handles `p=2` without a separate equal-degree case.
 
-The modified composition is formalized. Its strict weight comparison remains;
-the checked component estimates do not yet prove optimality.
+`CarryWeightComparison.exists_strict_weight_improvement` formalizes this
+comparison for the actual compositions. Its direct check and transitive
+axiom audit use only the three standard axioms.
+
+## Actual coefficient reduction
+
+For `S_d(N)=Σ_{a monic, deg a=d} a(T)^N`, separating the constant
+coefficient and summing its powers over `𝔽_q` gives
+`S_0(N)=1` and
+`S_{d+1}(N)=−Σ_{1≤j≤N, (q−1)|j} binom(N,j) T^(N−j) S_d(N−j)`.
+Iterating yields the multinomial expansion indexed by `d` positive
+`(q−1)`-multiples and a nonnegative final remainder. Lucas's theorem
+selects the carry-free terms. Their polynomial degree is composition
+weight minus `N`.
+
+The final remainder may be zero, whereas `DigitComposition` requires
+positive parts. A zero remainder forces `(q−1)|N`. If a positive-remainder
+composition exists, its greedy weight is `>dN`; every zero-remainder
+composition has weight `≤dN`. Otherwise the zero-remainder terms are
+exactly the admissible `d`-part compositions, since divisibility of `N`
+forces their final part divisible too. Thus the positive-part optimality
+theorem covers both cases. This coefficient reduction and the subsequent
+valuation-stabilization and strict-slope arguments remain to be formalized.

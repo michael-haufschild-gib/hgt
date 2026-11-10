@@ -35,6 +35,9 @@ theorem geometricTower_eq_logDeriv_completedZetaQuotient {s : ℂ}
   have hd := differentiableAt_reflectedCompletedLambda him
   have hdN := differentiableAt_reflectedCompletedLambda himN
   have hshift : HasDerivAt (fun z : ℂ => z + N) 1 s := (hasDerivAt_id s).add_const (N : ℂ)
+  have hcomp : DifferentiableAt ℂ (fun z : ℂ => reflectedCompletedLambda (z + N)) s :=
+    DifferentiableAt.comp s (f := fun z : ℂ => z + N) (g := reflectedCompletedLambda)
+      hdN hshift.differentiableAt
   have hc : logDeriv (fun z => reflectedCompletedLambda (z + N)) s =
       logDeriv reflectedCompletedLambda (s + N) := by
     have he := logDeriv_comp (g := fun z : ℂ => z + N) (x := s) hdN hshift.differentiableAt
@@ -47,7 +50,7 @@ theorem geometricTower_eq_logDeriv_completedZetaQuotient {s : ℂ}
       (g := fun z : ℂ => reflectedCompletedLambda (z + N)) s
       (completedLambda_ne_zero_of_one_lt_re hs)
       (completedLambda_ne_zero_of_one_lt_re hsN) hd
-      (hdN.comp s hshift.differentiableAt), hc]
+      hcomp, hc]
 
 /-- The Robin scalar and both polar residues remain in the normalized quotient formula. -/
 theorem renormalizedTower_eq_completedZetaQuotient {s : ℂ}
