@@ -108,3 +108,18 @@ For `J≥4`, the uniform arithmetic bound should have the form
 
 whenever `UV t^J≤X`, `V≤t`, and `r≤t`. Conditions
 `κ≤a/32` and `(2J−7)κ≥2a` leave exponential room in both terms.
+
+## Direct Gaussian cofactor tail
+
+A stronger tail estimate avoids a growing integration-by-parts order.
+For `σ≥0`, `r≥1`, `t≥1`, the coefficient bound `|c_tail(n)|≤2n²`
+and support `n>UW` allow half the Gaussian to be extracted at `UW`.
+Bound the remaining Gaussian by the moment at scale `2X`. This gives
+
+`|tail_r|≤784·32^r(r+1)! X³ exp(−(UW/X)²)`.
+
+If `32≤t`, `r≤t`, then `32^r(r+1)!≤t^(3r+2)`.
+For `X=exp(at)`, `3a≤t`, and `UW≥Xt²`, the bound is at most
+`784 exp(−t²)`: use `log t≤t−1` and absorb the resulting quadratic
+height cost in `t⁴`. With `U≈X/t^(J+1)`, polynomial cofactors
+`W≈t^(J+3)` suffice. This estimate is a paper derivation awaiting Lean.

@@ -402,11 +402,13 @@ Suppose every zero of `D` is a zero of `ξ`.
    so `D^♯` vanishes at each zero `ρ` of `D` to the same order: `D^♯/D` has a finite nonzero limit
    at `ρ` (`tendsto_reflPoly_div`). Through the meromorphic normal form the quotient is an entire
    function `g` without zeros, `g D = D^♯` (`exists_entire_quotient`).
-2. *Strips.* `D` is almost periodic: for a strip `|Re s − ½| ≤ c` there are `L, δ > 0` such that
-   every interval of length `L` contains a height `t` with `‖D(σ + it)‖ ≥ δ` across the strip
-   (else translates converge to a polynomial vanishing on a segment). On the rectangle between two
-   such heights the maximum principle bounds `g` by its values on the boundary, where either `D` is
-   bounded below or `Re s − ½ = ±c` and the far bounds hold (`exists_bound_on_strip`).
+2. *Strips.* Take a height `T₀` with `D(½ + iT₀) ≠ 0`; `D` has no zero on the horizontal line at
+   height `T₀`, so `‖D‖ ≥ μ > 0` on its segment across a strip `x₁ ≤ Re s ≤ x₂`. `D` is almost
+   periodic: the almost periods `τ` with `‖D(s + iτ) − D(s)‖ ≤ μ/2` on the strip are relatively
+   dense, so every interval of a fixed length contains a height at which `‖D‖ ≥ μ/2` across the
+   strip. On the rectangle between two such heights the maximum principle bounds `g` by its values
+   on the boundary: the two horizontal sides, where `D` is bounded below and `D^♯` above, and the
+   two vertical sides, where `g` is bounded by hypothesis (`exists_bound_on_strip`).
 3. *Far left and right.* For `Re s ≥ C₀`, `‖D(s)‖ ≥ ‖a_1‖/2`; for `Re s ≤ −C₁` the top term
    dominates, `‖D(s)‖ ≥ ½‖a_{N_t}‖ N_t^{−Re s}` (`exists_left_bound`). So `‖g(s)‖ ≤ A e^{B‖s‖}`.
 4. A zero-free entire function of exponential type is `e^{αs+β}`

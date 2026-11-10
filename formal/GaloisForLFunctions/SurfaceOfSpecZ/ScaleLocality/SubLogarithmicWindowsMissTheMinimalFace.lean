@@ -45,7 +45,7 @@ theorem tsum_ge_of_top_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ → ℝ
     {u M : ℝ} (hu0 : 0 ≤ u) (hM : 0 ≤ M) {k : ℕ} (hku : u ≤ U (k + 1))
     (hdom : M + 9 ≤ Real.exp ((x (k + 1) - x k) * u) * a (k + 1)) :
     M ≤ ∑' j, (Real.exp (x j * u) * a j + Real.exp (-(x j * u)) * b j) := by
-  have hwg := Dominance.weight_le_geom hw0 hwhi hΘ.le hUm hU0
+  have hwg := weight_le_geom hw0 hwhi hΘ.le hUm hU0
   have hgeo : Summable fun j : ℕ => 2 * (1 / 2 : ℝ) ^ j :=
     (summable_geometric_of_lt_one (by norm_num) (by norm_num)).mul_left 2
   have hwsum : Summable w := Summable.of_nonneg_of_le hw hwg hgeo
@@ -70,11 +70,11 @@ theorem tsum_ge_of_top_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ → ℝ
       _ ≤ w j := by rw [one_mul]; exact hb j
   rw [hmain.tsum_add hrefl]
   have hR : -4 ≤ ∑' j, Real.exp (-(x j * u)) * b j := by
-    have h := Summable.tsum_le_tsum (fun j => Dominance.neg_le_mul_of_abs_le (Real.exp_pos _).le
+    have h := Summable.tsum_le_tsum (fun j => neg_le_mul_of_abs_le (Real.exp_pos _).le
       (hrefl1 j) (hb j)) hwsum.neg hrefl
     rw [tsum_neg] at h
     linarith
-  have htail := Dominance.neg_one_le_tail hΘ.le hxΘ hwhi hUm ha hu0 hku hmain
+  have htail := neg_one_le_tail hΘ.le hxΘ hwhi hUm ha hu0 hku hmain
   have hE_ge_one : 1 ≤ Real.exp (x k * u) :=
     Real.one_le_exp (mul_nonneg (hx0 k) hu0)
   have hE_pos : 0 < Real.exp (x k * u) := Real.exp_pos _
@@ -86,7 +86,7 @@ theorem tsum_ge_of_top_window {Θ : ℝ} (hΘ : 0 < Θ) {x w U a b : ℕ → ℝ
       have hjk : j ≤ k := Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)
       have hx : Real.exp (x j * u) ≤ Real.exp (x k * u) :=
         Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (hxm hjk) hu0)
-      have h2 := Dominance.neg_mul_le_mul_of_abs_le (Real.exp_pos (x j * u)).le (ha j)
+      have h2 := neg_mul_le_mul_of_abs_le (Real.exp_pos (x j * u)).le (ha j)
       have h3 := mul_le_mul_of_nonneg_right hx (hw j)
       linarith
     have h2 := Finset.sum_le_sum h1
@@ -206,7 +206,7 @@ theorem strictMono_winRight (γ_min C Θ : ℝ) : StrictMono (winRight γ_min C 
 
 theorem monotone_winRight_cast (γ_min C Θ : ℝ) :
     Monotone (fun k => (winRight γ_min C Θ k : ℝ)) :=
-  fun _ _ hab => by exact_mod_cast (strictMono_winRight γ_min C Θ).monotone hab
+  fun _ _ hab => Nat.cast_le.mpr ((strictMono_winRight γ_min C Θ).monotone hab)
 
 theorem k_le_winCenter (γ_min C Θ : ℝ) (k : ℕ) : k ≤ winCenter γ_min C Θ k :=
   (strictMono_winCenter γ_min C Θ).id_le k
@@ -320,7 +320,7 @@ theorem levelWeightBound_le_div_pow_seven {Γ : ℕ} (hΓ : 1 ≤ Γ) (k : ℕ) 
   have hΓR : (1 : ℝ) ≤ (Γ : ℝ) := by exact_mod_cast hΓ
   have hΓpos : 0 < (Γ : ℝ) := by positivity
   have hm₀ : 1 ≤ 4 * (k + 1) * Γ := by nlinarith
-  have hnum_nat : 4 * (4 * (k + 1) * Γ + 1) ≤ 32 * (k + 1) * Γ := by omega
+  have hnum_nat : 4 * (4 * (k + 1) * Γ + 1) ≤ 32 * (k + 1) * Γ := by nlinarith
   have hnum : 4 * ((4 * (k + 1) * Γ + 1 : ℕ) : ℝ) ≤ 32 * ((k + 1 : ℕ) : ℝ) * (Γ : ℝ) := by
     exact_mod_cast hnum_nat
   calc 4 * ((4 * (k + 1) * Γ + 1 : ℕ) : ℝ) * (2 / (Γ : ℝ)) ^ 8
@@ -329,7 +329,6 @@ theorem levelWeightBound_le_div_pow_seven {Γ : ℕ} (hΓ : 1 ≤ Γ) (k : ℕ) 
     _ = (256 * 32 * ((k + 1 : ℕ) : ℝ)) / (Γ : ℝ) ^ 7 := by
         rw [div_pow, show (2 : ℝ) ^ 8 = 256 by norm_num, show (8 : ℕ) = 7 + 1 by rfl, pow_succ]
         field_simp [hΓpos.ne']
-        ring
 
 theorem faceLevelWeight_nonneg (γ_min C Θ : ℝ) (k : ℕ) :
     0 ≤ faceLevelWeight γ_min C Θ k :=
@@ -363,7 +362,7 @@ theorem faceLevelWeight_succ_le (γ_min C Θ : ℝ) (j : ℕ) :
       faceBaseFreq γ_min C Θ (j + 1) := by
     rw [faceBaseFreq_succ]
     exact le_max_right _ _
-  have hC_ge : 256 * 32 * (j + 2) * 2 ^ (j + 1) ≤ faceBaseConst γ_min C (j + 1) := by
+  have hC_ge : 256 * 32 * (j + 1 + 1) * 2 ^ (j + 1) ≤ faceBaseConst γ_min C (j + 1) := by
     unfold faceBaseConst; omega
   have hC1 : (1 : ℝ) ≤ (faceBaseConst γ_min C (j + 1) : ℝ) := by
     exact_mod_cast (by have := ten_le_faceBaseConst γ_min C (j + 1); omega :

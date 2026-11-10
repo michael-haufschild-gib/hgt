@@ -10,6 +10,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.TheUltrametricNewtonPolygonS
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitContents
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ContentRounding
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ContentPartitions
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitAllocations
 
 /-!
 # Sign-free purity mechanisms

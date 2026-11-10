@@ -51,7 +51,12 @@ Direct and transitive axiom audits passed, using only the standard axioms.
 a nonnegative content vector admits `k` positive divisible parts and
 one unrestricted positive last part iff every inverse-content coordinate
 exceeds `k`. Direct and transitive axiom audits passed, using only the
-standard axioms. All three modules are wired into the umbrella.
+standard axioms.
+
+`CarlitzGoss/DigitAllocations.lean` proves `tokenPrefix_iff_inverseContent`:
+the same criterion partitions the individual finite digit occurrences,
+not only their count vectors. Direct and transitive axiom audits passed,
+using only the standard axioms. All four modules are wired into the umbrella.
 
 The actual Goss-zeta theorem and its optimal-composition input remain unformalized.
 The target includes every prime power, not only prime `q` or integer `y`.
