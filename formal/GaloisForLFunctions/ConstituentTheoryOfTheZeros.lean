@@ -6,6 +6,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentDirichletSeriesIsAConstituent
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
 
 /-!
 # Constituent theory of the zeros
@@ -32,4 +33,6 @@ operator.
   growing boxes have, from some index on, no zero near the line at any height; for Dirichlet
   polynomials of bounded length the height of the first zero that is not a zero of `ξ` is bounded
   in terms of the length (`ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros`).
+* The index law in a window: if `‖E'‖ ≤ ‖E‖` on a circle, `E − E'` has at most as many zeros
+  inside as `E`, with no winding number (`SizesOnACircleCertifyTheDefectInside`).
 -/

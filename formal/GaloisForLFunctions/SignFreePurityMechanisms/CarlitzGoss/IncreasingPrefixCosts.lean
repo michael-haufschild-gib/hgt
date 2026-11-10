@@ -13,6 +13,9 @@ largest last-part digit by one full residue degree.
 open Finset
 namespace GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
 
+theorem digitValue_nonneg (p : ℕ) (A : Finset (Digit p)) : 0 ≤ digitValue p A :=
+  sum_nonneg fun x _ => pow_nonneg (Nat.cast_nonneg p) x.1
+
 private theorem sum_reflect_proper_prefixes (f : ℕ → ℤ) (k : ℕ) :
     (∑ n ∈ Icc 1 k, f (k + 1 - n)) = ∑ n ∈ Icc 1 k, f n := by
   apply sum_bij (fun n _ => k + 1 - n)
@@ -53,6 +56,29 @@ theorem residuePrefixDigits_mod (C : DigitComposition p s m S) (j : ℕ) (h : ZM
   have he := congrArg ZMod.val (mem_filter.mp hx).2
   simpa only [ZMod.val_natCast] using he
 
+/-- A strict terminal-prefix deficit leaves an actual last-part digit in that residue. -/
+theorem last_residue_nonempty_of_prefix_card_lt {k : ℕ}
+    (C : DigitComposition p s (k + 2) S) (h : ZMod s)
+    (hcard : (C.residuePrefixDigits (k + 1) h).card <
+      (S.filter fun x => (x.1 : ZMod s) = h).card) :
+    ((C.parts (Fin.last (k + 1))).filter fun x => (x.1 : ZMod s) = h).Nonempty := by
+  let A := C.residuePrefixDigits (k + 1) h
+  let B := S.filter fun z => (z.1 : ZMod s) = h
+  have hAB : A ⊆ B := C.residuePrefixDigits_subset (k + 1) h
+  have hrem : (B \ A).Nonempty := by
+    apply card_pos.mp
+    rw [card_sdiff_of_subset hAB]
+    change A.card < B.card at hcard
+    omega
+  obtain ⟨y, hy⟩ := hrem
+  obtain ⟨hyS, hycol⟩ := mem_filter.mp (mem_sdiff.mp hy).1
+  have hyUnion : y ∈ C.prefixDigits (k + 1) ∪ C.parts (Fin.last (k + 1)) := by
+    rw [C.prefix_union_last]
+    exact hyS
+  have hyLast : y ∈ C.parts (Fin.last (k + 1)) := (mem_union.mp hyUnion).resolve_left
+    (fun hyp => (mem_sdiff.mp hy).2 (mem_filter.mpr ⟨hyp, hycol⟩))
+  exact ⟨y, mem_filter.mpr ⟨hyLast, hycol⟩⟩
+
 /-- Two increasing allocations with equal residue-prefix counts have equal
 residue-prefix values. -/
 theorem TauMonotone.residue_prefix_value_eq {C D : DigitComposition p s m S} (hp : 2 ≤ p)
@@ -77,6 +103,13 @@ theorem TauMonotone.residue_prefix_value_eq {C D : DigitComposition p s m S} (hp
     exact pow_le_pow_right₀ hp1 (hD.prefix_smallest j h ha hb)
 
 variable [NeZero s]
+
+/-- Every prefix value is the sum of its residue-prefix values. -/
+theorem value_prefix_eq_sum_residue (C : DigitComposition p s m S) (j : ℕ) :
+    digitValue p (C.prefixDigits j) = ∑ h : ZMod s, digitValue p (C.residuePrefixDigits j h) := by
+  change (∑ x ∈ C.prefixDigits j, (p : ℤ) ^ x.1) =
+    ∑ h : ZMod s, ∑ x ∈ (C.prefixDigits j).filter (fun t => (t.1 : ZMod s) = h), (p : ℤ) ^ x.1
+  rw [sum_fiberwise]
 
 /-- Positive residue-prefix count gaps give the geometric bound for the sum
 of all earlier proper-prefix values in that residue. -/
@@ -118,6 +151,7 @@ theorem TauMonotone.residue_prefix_cost_le {k : ℕ} {C : DigitComposition p s (
   rw [sum_reflect_proper_prefixes (fun j => digitValue p (A j)) k] at hcost
   exact hcost
 
+omit [NeZero s] in
 /-- Losing `p−1` digits in a residue puts every retained terminal digit a
 full residue degree below the largest digit of the last part. -/
 theorem TauMonotone.retained_exponent_gap {k E : ℕ} {C : DigitComposition p s (k + 2) S}
@@ -129,22 +163,11 @@ theorem TauMonotone.retained_exponent_gap {k E : ℕ} {C : DigitComposition p s 
   let A := C.residuePrefixDigits (k + 1) h
   let B := S.filter fun z => (z.1 : ZMod s) = h
   have hAB : A ⊆ B := C.residuePrefixDigits_subset (k + 1) h
-  have hrem : (B \ A).Nonempty := by
-    apply card_pos.mp
-    rw [card_sdiff_of_subset hAB]
-    have hb : 0 < p - 1 := by omega
+  have hlt : A.card < B.card := by
     change A.card + (p - 1) ≤ B.card at hcard
     omega
-  obtain ⟨y, hy⟩ := hrem
-  obtain ⟨hyS, hycol⟩ := mem_filter.mp (mem_sdiff.mp hy).1
-  have hyUnion : y ∈ C.prefixDigits (k + 1) ∪ C.parts (Fin.last (k + 1)) := by
-    rw [C.prefix_union_last]
-    exact hyS
-  have hyLast : y ∈ C.parts (Fin.last (k + 1)) := (mem_union.mp hyUnion).resolve_left
-    (fun hyp => (mem_sdiff.mp hy).2 (mem_filter.mpr ⟨hyp, hycol⟩))
   obtain ⟨z, hz, hzcol, hzmax⟩ := hC.exists_last_max
-    (show ((C.parts (Fin.last (k + 1))).filter fun t => (t.1 : ZMod s) = h).Nonempty from
-      ⟨y, mem_filter.mpr ⟨hyLast, hycol⟩⟩)
+    (C.last_residue_nonempty_of_prefix_card_lt h hlt)
   have hres (t : Digit p) (ht : t ∈ B) : t.1 % s = h.val := by
     have he := congrArg ZMod.val (mem_filter.mp ht).2
     simpa only [ZMod.val_natCast] using he

@@ -87,6 +87,7 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `PrefixMatrixRealization` | Integral inverse prefixes with positive increments, nested contents, and a positive last remainder yield an actual increasing composition with those exact prefixes |
 | `PrefixWeightIdentity` | Weight differences are the reversed differences of the sums of actual proper-prefix values |
 | `CarryModifiedComposition` | Actual normalized compositions admit an increasing carry modification with unchanged outside prefixes, singleton absorption at the top, terminal digit loss below, and all positive prefix gaps |
+| `IncreasingPrefixCosts` | Actual increasing compositions satisfy the geometric residue-prefix cost and the retained-to-last exponent gap; equal outside prefix counts give equal values |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
