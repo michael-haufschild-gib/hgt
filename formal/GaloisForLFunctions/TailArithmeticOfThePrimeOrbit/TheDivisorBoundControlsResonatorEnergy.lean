@@ -45,6 +45,24 @@ theorem summable_multiple_kernel {m : ℕ} (hm : m ≠ 0) {f : ℕ → ℝ}
   · simpa only [Function.comp_apply, dvd_mul_right, if_true,
       Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)] using hf
 
+/-- The divisor weight splits into the support weight and the zeta-series weight. -/
+theorem weighted_divisor_rpow {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
+    {m k : ℕ} (hm : m ≠ 0) (hdiv : m ∣ k) :
+    (k : ℝ) ^ ε * ((k / m : ℕ) : ℝ) ^ (-2 * σ) =
+      (m : ℝ) ^ ε * ((k / m : ℕ) : ℝ) ^ (ε - 2 * σ) := by
+  rcases eq_or_ne k 0 with rfl | hk
+  · simp only [Nat.zero_div, Nat.cast_zero, Real.zero_rpow hε.ne', zero_mul,
+      Real.zero_rpow (sub_ne_zero.mpr hεσ.ne), mul_zero]
+  · have hn : 0 < k / m := Nat.div_pos
+      (Nat.le_of_dvd (Nat.pos_of_ne_zero hk) hdiv) (Nat.pos_of_ne_zero hm)
+    have hnR : (0 : ℝ) < (k / m : ℕ) := Nat.cast_pos.mpr hn
+    have hkr : (k : ℝ) = (m : ℝ) * (k / m : ℕ) := by
+      exact_mod_cast (Nat.mul_div_cancel' hdiv).symm
+    rw [hkr, Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _),
+      mul_assoc, ← Real.rpow_add hnR]
+    congr 2
+    ring
+
 /-- The fibre cost is the number of divisors of the product, independently
 of the size of the full resonator support. -/
 theorem norm_resonator_divisor_sum_sq_le {ε : ℝ} (hε : 0 < ε)

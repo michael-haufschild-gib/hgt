@@ -115,7 +115,14 @@ theorem temperedConfig_criticalProjection_of_localCount (Z : ZeroConfig) {A : �
   rw [criticalProjectionConfig_N]
   exact hcount t
 
+/-- The critical projection of the actual zeta divisor is tempered unconditionally. -/
+theorem temperedConfig_criticalProjection_zeta :
+    TemperedConfig (criticalProjectionConfig zetaZeroConfig) := by
+  obtain ⟨A, hA, hcount⟩ := Zeta23.RvM.zetaZeroConfig_local_count
+  exact temperedConfig_criticalProjection_of_localCount zetaZeroConfig hA hcount
+
 #print axioms criticalProjectionConfig_N
 #print axioms temperedConfig_criticalProjection_of_localCount
+#print axioms temperedConfig_criticalProjection_zeta
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

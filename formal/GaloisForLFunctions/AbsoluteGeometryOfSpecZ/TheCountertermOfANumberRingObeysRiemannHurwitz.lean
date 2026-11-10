@@ -293,6 +293,7 @@ theorem ringZeroSum_packetCombination (hq : ∀ i, 1 < q i)
         ∑ k, ArithmeticCastelnuovoSeveri.zeroGram
           (_root_.RHTower.dirichletZeros (hq k) (hprim k)) fun i u => ((g i u : ℝ) : ℂ))
         (fun i => ((x i : ℝ) : ℂ)) := by
+  classical
   rw [ringZeroSum, hermQuad_add, hermQuad_sum, zeroSum_packetCombination hg hgc x,
     ArithmeticCastelnuovoSeveri.weilGram_eq_zeroGram _
       (fun i => contDiff_ofReal_packet (hg i)) fun i => hasCompactSupport_ofReal_packet (hgc i)]
