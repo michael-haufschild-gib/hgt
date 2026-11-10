@@ -107,3 +107,11 @@ class zero; its second digit makes the inequality strict as well
 (Lemmas 7.1–7.3 and Proposition 7.4). Hence `wt Z>wt O`, contradicting
 optimality. This is the missing composition theorem, not a hypothesis
 to attach to the Goss-zeta statement.
+
+For the optimality proof, a carry-free digit collection can be represented
+by a finite subset of `ℕ×Fin(p−1)`: `(e,r)` has value `p^e` and colour
+`e mod s`. Each exponent occurs at most `p−1` times. An admissible
+composition partitions this set into nonempty parts, all but the last
+having value divisible by `p^s−1`. Its weight is the sum of part values
+times their one-based positions. Deletion and exponent shifts preserve
+this model, so minimality can use `(number of parts, number of digits)`.

@@ -336,20 +336,15 @@ theorem sum_contact_erase_le {N M Q : ℕ} (hN : 0 < N) (hQ : N + M ≤ Q * N) {
       refine Finset.mem_Icc.mpr ⟨Nat.div_pos (Nat.le_of_dvd (by omega) hd) (by omega), ?_⟩
       exact Nat.div_le_of_le_mul (by nlinarith)
     · intro x hx y hy hxy
-      obtain ⟨hx1, ⟨a, ha⟩⟩ := Finset.mem_filter.mp hx
-      obtain ⟨hy1, ⟨b, hb⟩⟩ := Finset.mem_filter.mp hy
-      have hx0 : 0 < x := by have := (hmem x hx1).1; omega
+      obtain ⟨hx1, hxd⟩ := Finset.mem_filter.mp hx
+      obtain ⟨hy1, hyd⟩ := Finset.mem_filter.mp hy
       have hy0 : 0 < y := by have := (hmem y hy1).1; omega
-      simp only at hxy
-      rw [ha, Nat.mul_div_cancel_left a hx0] at hxy
-      nth_rewrite 2 [hb] at hxy
-      rw [Nat.mul_div_cancel_left b hy0] at hxy
-      subst hxy
-      have h0 : 0 < a := by
-        rcases Nat.eq_zero_or_pos a with rfl | h
-        · omega
-        · exact h
-      exact Nat.eq_of_mul_eq_mul_right h0 (ha.symm.trans hb)
+      have e1 := Nat.mul_div_cancel' hxd
+      have e2 := Nat.mul_div_cancel' hyd
+      have hxy' : n / x = n / y := hxy
+      rw [hxy'] at e1
+      have ht : 0 < n / y := Nat.div_pos (Nat.le_of_dvd (by omega) hyd) hy0
+      exact Nat.eq_of_mul_eq_mul_right ht (e1.trans e2.symm)
   have hhigh : ∑ m ∈ (S.erase n).filter (n ∣ ·), (ArithmeticFunction.vonMangoldt (m / n) : ℝ) ≤
       chebyshev Q := by
     rw [chebyshev, ← Finset.sum_image (f := fun k : ℕ => (ArithmeticFunction.vonMangoldt k : ℝ))
@@ -386,17 +381,18 @@ theorem sum_abs_pairKernel_sub_blockKernel_le {N M B Q : ℕ} (hN : 0 < N) (hB :
     have hnN' : (N : ℝ) < n := by exact_mod_cast hn1
     have h1 := abs_inv_sub_blockKernel_le_distMajorant hB hmN hn1 (Finset.ne_of_mem_erase hm)
     have hsplit : pairKernel m n - blockKernel N B m n =
-        (1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / (2 * ((m : ℝ) + n)) +
+        (1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / ((m : ℝ) + n) / 2 +
           contact m n := by
       rw [pairKernel, jetKernel]
       ring
-    have hreg : 1 / (2 * ((m : ℝ) + n)) ≤ 1 / (4 * (N : ℝ)) :=
-      one_div_le_one_div_of_le (by positivity) (by linarith)
-    have hreg0 : (0 : ℝ) ≤ 1 / (2 * ((m : ℝ) + n)) := by positivity
+    have hreg : 1 / ((m : ℝ) + n) / 2 ≤ 1 / (4 * (N : ℝ)) := by
+      rw [div_div]
+      exact one_div_le_one_div_of_le (by positivity) (by linarith)
+    have hreg0 : (0 : ℝ) ≤ 1 / ((m : ℝ) + n) / 2 := by positivity
     rw [hsplit]
-    calc |(1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / (2 * ((m : ℝ) + n)) +
+    calc |(1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n) + 1 / ((m : ℝ) + n) / 2 +
           contact m n|
-        ≤ |1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n| + |1 / (2 * ((m : ℝ) + n))| +
+        ≤ |1 / (2 * |(m : ℝ) - n|) - blockKernel N B m n| + |1 / ((m : ℝ) + n) / 2| +
             |contact m n| := abs_add_three _ _ _
       _ ≤ distMajorant B (Nat.dist m n) + 1 / (4 * (N : ℝ)) + contact m n := by
           rw [abs_of_nonneg hreg0, abs_of_nonneg (contact_nonneg m n)]

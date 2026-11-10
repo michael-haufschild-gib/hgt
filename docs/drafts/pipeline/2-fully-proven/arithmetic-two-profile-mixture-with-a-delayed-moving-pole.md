@@ -31,7 +31,11 @@ where `A_t` is analytic and nonzero near both shifted points. Thus the
 first singular shift becomes a regular zero of order four, but a later
 pole of order two survives. The full scaling limit is
 
-`U(t,1+tw)/t² → ζ(2)(w+2)⁴/(w+4)²`, locally uniformly on `Re w>0`.
+`U(t,1+tw)/t² → ζ(2)(w+2)⁴/(w+4)²`.
+
+For the meromorphic continuation this convergence is locally uniform
+on `ℂ \ {-4}`. On `Re w>0` it is convergence of the actual Euler
+product.
 
 ## Proof
 
@@ -92,11 +96,14 @@ pole of order two survives. The full scaling limit is
    Since `E(1)=-H_triv(1)`, `Z(1)=1`, and
    `exp(H_triv(1)+H_Liouville(1))=ζ(2)`, one gets
    `A_t(1+tw)→ζ(2)`. The two explicit shifted powers supply the stated
-   factor `t²(w+2)⁴/(w+4)²`.
+   factor `t²(w+2)⁴/(w+4)²`. On every compact subset of `ℂ \ {-4}`,
+   this rational factor is continuous and bounded, proving the stronger
+   continuation limit there. Its right-half-plane restriction gives the
+   actual Euler-product limit.
 
-The limiting formula concerns the actual Euler product for `t>0` and
-`Re w>0`; it assigns no value to a totalized Euler series at the joint
-endpoint. Corpus search found no matching arithmetic mixture theorem.
+The actual Euler interpretation requires `t>0` and `Re w>0`; the
+continuation limit assigns no value to a totalized Euler series at the
+joint endpoint. Corpus search found no matching arithmetic mixture theorem.
 External novelty has not been assessed. Lean formalization is underway.
 
 ## Consequence

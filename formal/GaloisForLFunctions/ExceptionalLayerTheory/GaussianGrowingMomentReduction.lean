@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.GaussianHigherMomentConstants
 import GaloisForLFunctions.ExceptionalLayerTheory.GaussianHigherCentredVaughan
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!
 # Vaughan reduction with a growing Gaussian moment order
@@ -72,7 +73,7 @@ theorem norm_gaussianHigherCentredVaughanError_le_height (r : ℕ) (hr : r ≠ 0
   apply hh.trans
   calc
     _ ≤ ((gaussianGrowingMomentConstant * t ^ (5 * r)) *
-        t ^ (2 * r) * ((U * V : ℕ) : ℝ) ^ (2 * r) * X ^ (1 - 1 / 2 - (2 * r : ℕ)) +
+        t ^ (2 * r) * ((U * V : ℕ) : ℝ) ^ (2 * r) * X ^ ((1 : ℝ) - 1 / 2 - (2 * r : ℕ)) +
         (gaussianGrowingMomentConstant * t ^ (4 * r)) * V * t * X ^ (-(1 / 2 : ℝ))) *
           (1 + Real.log X) := by gcongr
     _ = _ := by
@@ -146,7 +147,7 @@ theorem norm_gaussianHigherCentredVaughanError_le_order_budget (r J : ℕ) (hr :
 centred reduction exponentially accurate at an exponential Gaussian scale. -/
 theorem norm_gaussianHigherCentredVaughanError_le_exponential
     (r J : ℕ) (hr : r ≠ 0) (hJ : 4 ≤ J) {a κ t : ℝ}
-    (ha : 0 < a) (hκ : 0 < κ) (hκa : κ ≤ a / 32)
+    (ha : 0 < a) (hκa : κ ≤ a / 32)
     (hJκ : 2 * a ≤ ((2 * J - 7 : ℕ) : ℝ) * κ)
     (ht : 8192 ≤ t) (hrt : (r : ℝ) ≤ t)
     (hrlo : κ * t ≤ 2 * r * Real.log t)
@@ -197,6 +198,140 @@ theorem norm_gaussianHigherCentredVaughanError_le_exponential
         (mul_le_mul_of_nonneg_left (_root_.add_le_add hA hB) hC.le) hfac
     _ = _ := by ring
 
+/-- Moment order tending to infinity below every fixed multiple of height. -/
+def gaussianGrowingMomentOrder (κ t : ℝ) : ℕ := ⌊κ * t / Real.log t⌋₊
+
+/-- The long arithmetic cutoff, within a polynomial factor of the Gaussian scale. -/
+def gaussianGrowingLongCutoff (a : ℝ) (J : ℕ) (t : ℝ) : ℕ :=
+  ⌊Real.exp (a * t) / t ^ (J + 1)⌋₊
+
+private theorem eventually_growing_order {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ t : ℝ in atTop,
+      gaussianGrowingMomentOrder κ t ≠ 0 ∧
+      (gaussianGrowingMomentOrder κ t : ℝ) ≤ t ∧
+      κ * t ≤ 2 * gaussianGrowingMomentOrder κ t * Real.log t ∧
+      (gaussianGrowingMomentOrder κ t : ℝ) * Real.log t ≤ κ * t := by
+  have hlog : Tendsto (fun t : ℝ => Real.log t / t) atTop (𝓝 0) := by
+    simpa only [pow_one, one_mul, add_zero] using
+      Real.tendsto_pow_log_div_mul_add_atTop 1 0 1 one_ne_zero
+  have hsmall := hlog.eventually_lt_const (by positivity : (0 : ℝ) < κ / 2)
+  have hlarge := Real.tendsto_log_atTop.eventually (eventually_ge_atTop (max 1 κ))
+  filter_upwards [hsmall, hlarge, eventually_ge_atTop (1 : ℝ)] with t hs hl ht
+  have ht0 : 0 < t := zero_lt_one.trans_le ht
+  have hl1 : 1 ≤ Real.log t := (le_max_left _ _).trans hl
+  have hl0 : 0 < Real.log t := zero_lt_one.trans_le hl1
+  have hκl : κ ≤ Real.log t := (le_max_right _ _).trans hl
+  have hx : 0 ≤ κ * t / Real.log t := by positivity
+  have hx2 : 2 ≤ κ * t / Real.log t := by
+    apply (le_div_iff₀ hl0).mpr
+    have hh := (div_lt_iff₀ ht0).mp hs
+    linarith only [hh]
+  have hfloor := Nat.floor_le hx
+  have hnear := Nat.lt_floor_add_one (κ * t / Real.log t)
+  have hr1 : 1 ≤ gaussianGrowingMomentOrder κ t :=
+    (Nat.one_le_floor_iff _).mpr (by linarith only [hx2])
+  have hr1R : (1 : ℝ) ≤ gaussianGrowingMomentOrder κ t := by exact_mod_cast hr1
+  have hrle : (gaussianGrowingMomentOrder κ t : ℝ) ≤ t := by
+    apply hfloor.trans
+    apply (div_le_iff₀ hl0).mpr
+    nlinarith only [mul_le_mul_of_nonneg_right hκl ht0.le]
+  have hrlo : κ * t ≤ 2 * gaussianGrowingMomentOrder κ t * Real.log t := by
+    apply (div_le_iff₀ hl0).mp
+    change κ * t / Real.log t ≤ 2 * (⌊κ * t / Real.log t⌋₊ : ℝ)
+    change (1 : ℝ) ≤ (⌊κ * t / Real.log t⌋₊ : ℝ) at hr1R
+    linarith only [hnear, hr1R]
+  exact ⟨by omega, hrle, hrlo, (le_div_iff₀ hl0).mp hfloor⟩
+
+private theorem eventually_growing_cutoffs {a : ℝ} (ha : 0 < a) (J : ℕ) :
+    ∀ᶠ t : ℝ in atTop,
+      1 ≤ gaussianGrowingLongCutoff a J t ∧
+      1 ≤ ⌊t⌋₊ ∧ (⌊t⌋₊ : ℝ) ≤ t ∧
+      ((gaussianGrowingLongCutoff a J t * ⌊t⌋₊ : ℕ) : ℝ) * t ^ J ≤ Real.exp (a * t) ∧
+      Real.exp (a * t) / (2 * t ^ (J + 1)) ≤ gaussianGrowingLongCutoff a J t := by
+  have hh : Tendsto (fun t : ℝ => t ^ (J + 1) * Real.exp (-a * t)) atTop (𝓝 0) := by
+    simpa only [Real.rpow_natCast] using
+      tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero ((J + 1 : ℕ) : ℝ) a ha
+  filter_upwards [hh.eventually_lt_const (by norm_num : (0 : ℝ) < 1 / 2),
+    eventually_ge_atTop (1 : ℝ)] with t hsmall ht
+  have ht0 : 0 < t := zero_lt_one.trans_le ht
+  have hp := pow_pos ht0 (J + 1)
+  have hx : 0 ≤ Real.exp (a * t) / t ^ (J + 1) := by positivity
+  have hpow : 2 * t ^ (J + 1) ≤ Real.exp (a * t) := by
+    have hmul := mul_le_mul_of_nonneg_right hsmall.le (Real.exp_pos (a * t)).le
+    have he : Real.exp (-a * t) * Real.exp (a * t) = 1 := by
+      rw [← Real.exp_add, show -a * t + a * t = 0 by ring, Real.exp_zero]
+    rw [mul_assoc, he, mul_one] at hmul
+    linarith only [hmul]
+  have hx2 : 2 ≤ Real.exp (a * t) / t ^ (J + 1) := (le_div_iff₀ hp).mpr hpow
+  have hU1 : 1 ≤ gaussianGrowingLongCutoff a J t :=
+    (Nat.one_le_floor_iff _).mpr (by linarith only [hx2])
+  have hV1 : 1 ≤ ⌊t⌋₊ := (Nat.one_le_floor_iff t).mpr ht
+  have hVt := Nat.floor_le ht0.le
+  have hUt := Nat.floor_le hx
+  have hprod : ((gaussianGrowingLongCutoff a J t * ⌊t⌋₊ : ℕ) : ℝ) * t ^ J ≤
+      Real.exp (a * t) := by
+    rw [Nat.cast_mul]
+    calc
+      _ ≤ (Real.exp (a * t) / t ^ (J + 1)) * t * t ^ J := by gcongr
+      _ = _ := by rw [pow_succ]; field_simp
+  have hnear := Nat.lt_floor_add_one (Real.exp (a * t) / t ^ (J + 1))
+  have hU1R : (1 : ℝ) ≤ gaussianGrowingLongCutoff a J t := by exact_mod_cast hU1
+  have hhalf : Real.exp (a * t) / (2 * t ^ (J + 1)) ≤ gaussianGrowingLongCutoff a J t := by
+    have hxhalf : Real.exp (a * t) / t ^ (J + 1) / 2 ≤
+        gaussianGrowingLongCutoff a J t := by
+      change _ ≤ (⌊Real.exp (a * t) / t ^ (J + 1)⌋₊ : ℝ)
+      change (1 : ℝ) ≤ (⌊Real.exp (a * t) / t ^ (J + 1)⌋₊ : ℝ) at hU1R
+      linarith only [hnear, hU1R]
+    convert hxhalf using 1 <;> ring
+  exact ⟨hU1, hV1, hVt, hprod, hhalf⟩
+
+private theorem eventually_growing_polynomial_absorbed {a : ℝ} (ha : 0 < a) :
+    ∀ᶠ t : ℝ in atTop, (1 + t ^ 2) * (1 + a * t) * Real.exp (-(a / 8) * t) ≤ 1 := by
+  have hp (n : ℕ) : Tendsto (fun t : ℝ => t ^ n * Real.exp (-(a / 8) * t)) atTop (𝓝 0) := by
+    simpa only [Real.rpow_natCast] using
+      tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero (n : ℝ) (a / 8) (by positivity)
+  have hlim : Tendsto (fun t : ℝ => (1 + t ^ 2) * (1 + a * t) *
+      Real.exp (-(a / 8) * t)) atTop (𝓝 0) := by
+    convert (((hp 0).add ((hp 1).const_mul a)).add (hp 2)).add ((hp 3).const_mul a) using 1
+    · ext t
+      simp only [pow_zero, pow_one]
+      ring
+    · ring
+  exact (hlim.eventually_lt_const zero_lt_one).mono fun _ ht => ht.le
+
+/-- Concrete growing order and integer cutoffs give an exponentially small
+complete arithmetic reduction error, uniformly over the damping sector. -/
+theorem eventually_gaussianGrowingMomentReduction {a κ : ℝ} (ha : 0 < a)
+    (hκ : 0 < κ) (hκa : κ ≤ a / 32) (J : ℕ) (hJ : 4 ≤ J)
+    (hJκ : 2 * a ≤ ((2 * J - 7 : ℕ) : ℝ) * κ) :
+    ∀ᶠ t : ℝ in atTop, ∀ ε : ℂ, 0 < ε.re → ‖ε‖ ≤ 4 * ε.re * t →
+      ε.re * (Real.exp (a * t)) ^ 2 = 2 →
+      ‖gaussianHigherCentredVaughanError (gaussianGrowingMomentOrder κ t) (1 / 2) t
+        (gaussianGrowingLongCutoff a J t) ⌊t⌋₊ ε‖ ≤
+          gaussianGrowingMomentConstant * Real.exp (-(a / 4) * t) := by
+  filter_upwards [eventually_growing_order hκ, eventually_growing_cutoffs ha J,
+    eventually_growing_polynomial_absorbed ha, eventually_ge_atTop (8192 : ℝ)]
+      with t hr hcut hpoly ht
+  intro ε hε hsector hscale
+  have hh := norm_gaussianHigherCentredVaughanError_le_exponential
+    (gaussianGrowingMomentOrder κ t) J hr.1 hJ ha hκa hJκ ht hr.2.1
+    hr.2.2.1 hr.2.2.2 hε hsector hscale hcut.1 hcut.2.1 hcut.2.2.1 hcut.2.2.2.1
+  have hC := gaussianGrowingMomentConstant_pos
+  apply hh.trans
+  have he : Real.exp (-(3 * a / 8) * t) =
+      Real.exp (-(a / 8) * t) * Real.exp (-(a / 4) * t) := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [he]
+  calc
+    _ = (gaussianGrowingMomentConstant *
+        ((1 + t ^ 2) * (1 + a * t) * Real.exp (-(a / 8) * t))) *
+          Real.exp (-(a / 4) * t) := by ring
+    _ ≤ _ := by nlinarith only [mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hpoly hC.le) (Real.exp_pos (-(a / 4) * t)).le]
+
+#print axioms eventually_gaussianGrowingMomentReduction
 #print axioms norm_gaussianHigherCentredVaughanError_le_exponential
 #print axioms norm_gaussianHigherCentredVaughanError_le_height
 #print axioms norm_gaussianHigherCentredVaughanError_le_order_budget
