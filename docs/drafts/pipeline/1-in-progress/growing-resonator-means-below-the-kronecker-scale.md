@@ -14,25 +14,38 @@ For `R_T(t)=Σ_{m≤M(T)} r_T(m)m^{it}` and
 `T⁻¹∫_T^{2T}|R_T(t)ζ(σ+it)|²dt − Σ_k|c_T(k)|²
  = o(Σ_m|r_T(m)|²)`
 
-uniformly for `M(T)≤T^κ`, with `0≤κ<σ(2σ−1)/2`.
+uniformly for `M(T)≤T^κ`, with `0≤κ<2σ−1`.
 
-Use the existing superlinear zeta truncation `N=ceil(T^(σ+1/2))`.
-The sharp polynomial mean error is bounded by
-`C M² N^(2−2σ)/T` times coefficient energy. The exponent is
-`2κ−σ(2σ−1)<0`. Minkowski bounds the coefficient tail by
-`M N^(1/2−σ)` times coefficient energy; this also tends to zero in
-the stated range. At the limiting exponent
-`κ₀=σ(2σ−1)/2`, multiplication by `T^κ₀` leaves exponent `−1/2`
-in the pole term, `−σ` in the half-endpoint term, and
-`−σ−(σ−1/2)j` in the `j`-th derivative term. For remainder order
-`k=2m+2`, its exponent is `1/2−(σ−1/2)k`; choose
-`k>1/(2σ−1)`. Thus the Euler–Maclaurin error also survives the
-growing weight. Cauchy–Schwarz and the unweighted Carlson mean control
-the passage from uniform truncation error to squared means.
+Put `E=Σ_m|r_T(m)|²`, and truncate the zeta factor at `N=ceil(T^a)`,
+where `a>1` is close to one. Divisor-wise Cauchy–Schwarz and
+`d(k)≤Cε k^ε` give
+
+- `Σ_k|c_T(k)|² ≪ M^ε E`;
+- `Σ_k|c_T(k)−c_T^N(k)|² ≪ M^ε E N^(1+ε−2σ)`;
+- `Σ_k k|c_T^N(k)|² ≪ M^(1+ε) E (N^(2+ε−2σ)+1)`.
+
+The diagonal discrepancy is therefore
+`O(M^ε E N^((1+ε−2σ)/2))`. The sharp Hilbert mean-value estimate
+has error at most `208/T` times the third sum. Choose `a>1`, `ε>0`
+so that
+
+`κ(1+ε)+a(2−2σ+ε)−1<0`,
+`κε+a(1−2σ+ε)/2<0`,
+`κ+a(1−σ)−1<0`.
+
+These inequalities hold for sufficiently small positive `a−1,ε` because
+`κ<2σ−1`. The last inequality controls the Euler–Maclaurin pole term
+after multiplication by `M`. Every derivative correction has exponent
+`κ−aσ−(a−1)j<0`; choose remainder order `k=2m+2` with
+`κ+a(1−σ)−(a−1)k<0`. Hence the uniform truncation error `e(T)`
+satisfies `M e(T)→0`. Since `|R_T|²≤M E`, Cauchy–Schwarz and the
+unweighted Carlson mean transfer this estimate to the squared means.
 
 The fixed-resonator theorem is
 `TailArithmeticOfThePrimeOrbit/TheResonatorMeanOfZeta.lean`.
 Actual-zeta truncation and finite polynomial estimates are in
 `RHTower/ZetaSuperlinearCutoff.lean` and
 `RHTower/ZetaDirichletBandMeanSquare.lean`.
+The divisor estimate is `RHTower.Sieve.card_divisors_le_rpow` in
+`RHTower/Sieve/DivisorBound.lean`.
 The uniform growing theorem remains unformalized.

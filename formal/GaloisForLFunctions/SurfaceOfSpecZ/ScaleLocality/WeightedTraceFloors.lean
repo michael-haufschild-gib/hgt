@@ -37,12 +37,15 @@ theorem integrable_weight_finiteExpSum {n : ℕ} {w : ℝ → ℝ} (hw : Integra
     Integrable (fun t => (w t : ℂ) * finiteExpSum a γ t) := by
   have h := integrable_finsetSum Finset.univ
     (fun j _ => (integrable_weight_character hw (γ j)).const_mul (a j))
-  convert h using 1
-  funext t
-  simp only [finiteExpSum, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro j _
-  ring
+  have he : (fun t => (w t : ℂ) * finiteExpSum a γ t) =
+      fun t => ∑ j, a j * ((w t : ℂ) * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)) := by
+    funext t
+    simp only [finiteExpSum, Finset.mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    ring
+  rw [he]
+  exact h
 
 /-- The weighted mean is the finite coefficient pairing with Fourier samples. -/
 theorem integral_weight_finiteExpSum {n : ℕ} {w : ℝ → ℝ} (hw : Integrable w)
@@ -66,7 +69,9 @@ theorem integral_weight_abs_le_of_floor {w f : ℝ → ℝ} {K : ℝ}
     (∫ t, w t * |f t|) ≤ (∫ t, w t * f t) + 2 * K * ∫ t, w t := by
   have habs : Integrable (fun t => w t * |f t|) := by
     apply hwf.abs.congr
-    exact Eventually.of_forall fun t => by rw [abs_mul, abs_of_nonneg (hw0 t)]
+    exact Eventually.of_forall fun t => by
+      change |w t * f t| = w t * |f t|
+      rw [abs_mul, abs_of_nonneg (hw0 t)]
   have hpoint (t : ℝ) : |f t| ≤ f t + 2 * K := by
     rcases le_or_gt 0 (f t) with h | h
     · rw [abs_of_nonneg h]
@@ -77,6 +82,7 @@ theorem integral_weight_abs_le_of_floor {w f : ℝ → ℝ} {K : ℝ}
     (∫ t, w t * |f t|) ≤ ∫ t, (w t * f t + (2 * K) * w t) := by
       apply integral_mono habs (hwf.add (hw.const_mul (2 * K)))
       intro t
+      change w t * |f t| ≤ w t * f t + 2 * K * w t
       have h := mul_le_mul_of_nonneg_left (hpoint t) (hw0 t)
       nlinarith only [h]
     _ = _ := by rw [integral_add hwf (hw.const_mul (2 * K)), integral_const_mul]
@@ -89,7 +95,8 @@ theorem weighted_finiteExpSum_abs_le {n : ℕ} (a : Fin n → ℂ) (γ : Fin n �
       2 * K * (∫ t, w t) + ∑ j, ‖a j‖ * ‖weightFourier w (γ j)‖ := by
   have hi := integrable_weight_finiteExpSum hw a γ
   have hir : Integrable (fun t => w t * (finiteExpSum a γ t).re) := by
-    simpa only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] using hi.re
+    have hr : Integrable (fun t => ((w t : ℂ) * finiteExpSum a γ t).re) := hi.re
+    simpa only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero] using hr
   have hre : (∫ t, w t * (finiteExpSum a γ t).re) =
       (∫ t, (w t : ℂ) * finiteExpSum a γ t).re := by
     rw [← Complex.reCLM_apply, ← ContinuousLinearMap.integral_comp_comm Complex.reCLM hi]

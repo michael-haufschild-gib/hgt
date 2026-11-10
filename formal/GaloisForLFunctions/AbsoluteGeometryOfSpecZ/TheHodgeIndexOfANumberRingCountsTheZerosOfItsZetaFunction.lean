@@ -131,8 +131,7 @@ theorem W_superposeFamily (Z : κ → ZeroConfig)
       (paperFT f (gammaOf ρ) * (starRingEnd ℂ) (paperFT g ((starRingEnd ℂ) (gammaOf ρ)))))
       ((Z i).W f g) := fun i => by
     have hs := (ArithmeticCastelnuovoSeveri.summable_Wsummand (Z i) (hZ i) hf hfc hg hgc).hasSum
-    simp only [Wsummand_eq_nsmul] at hs
-    exact hs
+    exact hs.congr_fun fun ρ => (Wsummand_eq_nsmul _ f g ρ).symm
   have ht := (hasSum_superposeFamily Z (fun ρ => paperFT f (gammaOf ρ) *
     (starRingEnd ℂ) (paperFT g ((starRingEnd ℂ) (gammaOf ρ)))) h).tsum_eq
   rw [← ht, ZeroConfig.W]
@@ -204,7 +203,8 @@ theorem exists_le_negIndex_sum_of_member (Z : κ → ZeroConfig)
       n ≤ hermNegIndex (∑ k, ArithmeticCastelnuovoSeveri.zeroGram (Z k) f) := by
   rw [exists_le_negIndex_sum_zeroGram_iff Z hZ n]
   exact ((ArithmeticCastelnuovoSeveri.pontryagin_law (Z k) (hZ k) n).mp h).trans
-    (Set.encard_le_encard (Set.subset_iUnion _ k))
+    (Set.encard_le_encard
+      (Set.subset_iUnion (fun k => ArithmeticCastelnuovoSeveri.rightZeros (Z k)) k))
 
 end Superposition
 
@@ -220,6 +220,7 @@ def ringConfig (hq : ∀ i, 1 < q i) {χ : ∀ i, DirichletCharacter ℂ (q i)}
     (hprim : ∀ i, (χ i).IsPrimitive) : Option ι → ZeroConfig :=
   fun o => o.elim zetaZeroConfig fun i => _root_.RHTower.dirichletZeros (hq i) (hprim i)
 
+omit [Fintype ι] in
 theorem temperedConfig_ringConfig (hq : ∀ i, 1 < q i) {χ : ∀ i, DirichletCharacter ℂ (q i)}
     (hprim : ∀ i, (χ i).IsPrimitive) (o : Option ι) :
     SquareRootThreshold.TemperedConfig (ringConfig hq hprim o) := by

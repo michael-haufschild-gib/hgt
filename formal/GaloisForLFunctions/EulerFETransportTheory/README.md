@@ -107,7 +107,7 @@ The terminal classification and infinite-cost theorems are in
 Their direct Lean checks and transitive axiom audits use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
-### The exact analytic operator
+### Continuous prime measures
 
 Positive continuous prime measures admit a different law. Let `Q` be the atomless
 probability measure obtained by pushing `x exp(-x) dx`, `x>0`, forward under `exp`.
@@ -121,6 +121,8 @@ The exact counterexample and positive family are
 `continuous_prime_measure_finite_defect_counterexample` and
 `zero_preserving_continuous_prime_perturbations` in
 `ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean`.
+
+### The exact analytic operator
 
 Euler reflection writes the defect kernel as
 `z^(-½+2it)/sin(π/4+πit)`. On the two imaginary rays its squared Mellin weights are

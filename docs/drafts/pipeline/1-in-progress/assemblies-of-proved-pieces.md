@@ -25,7 +25,7 @@
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
 | A82 | Li coefficients as comb forms of tails | Open |
-| A92 | Prime-side resolution law, including both finite-mode statements | Sign bound formalized and axiom-audited; weighted coefficient-two bound written; counterexample and prime-side assembly pending |
+| A92 | Prime-side resolution law, including both finite-mode statements | Sign and weighted coefficient-two bounds formalized and axiom-audited; counterexample and prime-side assembly pending |
 | A93 | Receiver exchange atlas | Open |
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Open |
@@ -61,7 +61,7 @@ For A92, compose the positive shift operators `1+τ_{π/γ_j}` for `γ_j ≥ Γ 
 
 For A95, apply this to the finite top layer. On the compact phase torus, absence of a nonnegative trace on a fixed interval of length `>D` gives a uniform negative excursion; lower layers are negligible after normalization. The excursion amplitude may depend on the layer, but the length is bounded using only its size and the lowest ordinate.
 
-The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and the sharp surviving bound before retiring the stated coefficient.
+The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. This bound is formalized and axiom-audited in `WeightedTraceFloors.lean`. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and sharpness before retiring the stated coefficient.
 
 ## Further assembly inputs
 
