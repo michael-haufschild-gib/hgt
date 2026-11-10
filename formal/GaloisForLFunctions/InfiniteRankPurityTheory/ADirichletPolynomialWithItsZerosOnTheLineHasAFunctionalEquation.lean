@@ -290,42 +290,22 @@ theorem exists_good_heights {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (hane : a ≠ 0
     have hx' : x = 1 / 2 := by simpa using hre
     rw [hx'] at h0
     exact hT₀ (by simpa using h0)
-  have hcont : Continuous fun x : ℝ => ‖finiteDirichletPolynomial a ((x : ℂ) + T₀ * I)‖ :=
-    (hDd.continuous.comp (by fun_prop : Continuous fun x : ℝ => (x : ℂ) + T₀ * I)).norm
-  obtain ⟨x₀, -, hmin⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr hx.le)
-    (hcont.continuousOn (s := Icc x₁ x₂))
-  have hm₀pos : 0 < ‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖ := norm_pos_iff.mpr (hseg x₀)
-  have hm : ∀ x ∈ Icc x₁ x₂, ‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖
-      ≤ ‖finiteDirichletPolynomial a ((x : ℂ) + T₀ * I)‖ := fun x hx => isMinOn_iff.mp hmin x hx
   -- almost periods of `D` on the strip
   have hsum : LSeriesSummable (fun n => a n) ((x₂ - 1 : ℝ) : ℂ) :=
     lSeriesSummable_of_finite_support (f := fun n => a n) ha0 a.support
       (fun n hn => Finsupp.notMem_support_iff.mp hn) _
-  obtain ⟨L, hL, hτ⟩ := GaloisForLFunctions.isStripAlmostPeriodicOn_of_bounded_LSeries
-    (x := x₁ - 1) (l' := x₁) (u := x₂) (u₀ := x₂ - 1) (by linarith) hx.le (by linarith) hsum
-    hDd.differentiableOn (fun z hz => norm_finiteDirichletPolynomial_le a ha0 hz)
-    (fun z _ => finiteDirichletPolynomial_eq_LSeries a ha0 z)
-    (‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖ / 2) (by positivity)
-  -- every interval of length `L` contains a height at which `D` is bounded below across the strip
-  have hgood : ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, x₁ ≤ z.re → z.re ≤ x₂ → z.im = T →
-      ‖finiteDirichletPolynomial a ((x₀ : ℂ) + T₀ * I)‖ / 2 ≤ ‖finiteDirichletPolynomial a z‖ := by
-    intro y
-    obtain ⟨τ, hτmem, hτD⟩ := hτ (y - T₀)
-    refine ⟨T₀ + τ, ⟨by linarith [hτmem.1], by linarith [hτmem.2]⟩, fun z hz1 hz2 hzT => ?_⟩
-    have hzform : z = ((z.re : ℝ) : ℂ) + T₀ * I + τ * I := by
-      apply Complex.ext <;> simp [hzT]
-    have h1 := hτD (((z.re : ℝ) : ℂ) + T₀ * I)
-      (by simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero,
-            Complex.ofReal_im, Complex.I_im, mul_one, sub_self, add_zero]
-          rw [abs_le]
-          constructor <;> linarith)
-    have h2 := hm z.re ⟨hz1, hz2⟩
-    have h3 := norm_sub_norm_le (finiteDirichletPolynomial a (((z.re : ℝ) : ℂ) + T₀ * I))
-      (finiteDirichletPolynomial a (((z.re : ℝ) : ℂ) + T₀ * I + τ * I))
-    rw [norm_sub_rev] at h3
-    rw [hzform]
-    linarith
-  exact ⟨_, half_pos hm₀pos, L, hgood⟩
+  have hAP : IsStripAlmostPeriodicOn (finiteDirichletPolynomial a) ((x₁ + x₂) / 2)
+      ((x₂ - x₁) / 2) :=
+    GaloisForLFunctions.isStripAlmostPeriodicOn_of_bounded_LSeries
+      (x := x₁ - 1) (l' := x₁) (u := x₂) (u₀ := x₂ - 1) (by linarith) hx.le (by linarith) hsum
+      hDd.differentiableOn (fun z hz => norm_finiteDirichletPolynomial_le a ha0 hz)
+      (fun z _ => finiteDirichletPolynomial_eq_LSeries a ha0 z)
+  -- the lower bound at the height `T₀` recurs
+  obtain ⟨μ, hμ, L, hgood⟩ :=
+    exists_good_heights_of_almostPeriodic hDd.continuous hAP fun x _ => hseg x
+  refine ⟨μ, hμ, L, fun y => ?_⟩
+  obtain ⟨T, hT, hTD⟩ := hgood y
+  exact ⟨T, hT, fun z hz1 hz2 hzT => hTD z (abs_le.mpr ⟨by linarith, by linarith⟩) hzT⟩
 
 /-- **Good heights and the maximum principle.** If `g = D^♯/D` off the zeros of `D`, and `g` is
 bounded on the two boundary lines of a vertical strip, it is bounded on the strip. -/

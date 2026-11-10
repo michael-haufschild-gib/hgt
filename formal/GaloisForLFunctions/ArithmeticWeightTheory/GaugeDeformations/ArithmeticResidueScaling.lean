@@ -151,6 +151,10 @@ private theorem exists_continuousOn_normalizedResidueProfile
             hullRem (1 + (v.1 : ℂ) * v.2) (twist 0)) := by
     funext v
     ring
+  change ContinuousOn (fun v : ℝ × ℂ => -analyticSmoothingScalingLog (residueAverage Φ) 0 v.2 +
+      analyticSmoothingScaledRemainder (residueAverage Φ) 0 v.1 v.2 -
+        hullRem (1 + (v.1 : ℂ) * v.2) (twist 0) + K v.1 (1 + (v.1 : ℂ) * v.2) +
+          residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2)) (Icc 0 a ×ˢ S) at hE
   rw [heq] at hE
   have hm : Continuous (fun v : ℝ × ℂ => 1 + (v.1 : ℂ) * v.2) := by fun_prop
   have hZ : ContinuousOn (fun v : ℝ × ℂ => zetaResidueFactor (1 + (v.1 : ℂ) * v.2))
