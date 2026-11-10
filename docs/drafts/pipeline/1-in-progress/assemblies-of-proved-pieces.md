@@ -16,7 +16,7 @@
 | A73 | Upper one-sided logarithmic-window criterion | Negative-trace filter and prime-transfer proofs written; Lean audits pending |
 | A71 | Uniform local tensor moments iff RH | Proof written; Lean audit pending |
 | A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
-| A75 | S3 transfer implies the quasi-RH collapse | Proof written; exact prime-cutoff rounding and Lean audit pending |
+| A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Open |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Open |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
@@ -43,7 +43,7 @@ Each row needs its stated mathematical content, a dependency-closed proof, corre
 - **A76.** An absolute bound gives the existing lower bound with the same exceptional set; the width theorem supplies the converse implication. Under the width bound the global absolute estimate permits empty exceptional sets. Source: `SurfaceOfSpecZ/ScaleLocality/ExceptionalAbsoluteWindows.lean`. Separately, `ExceptionalAbsolutePrimeWindowTransfer.lean` proves absolute prime avoidance; `ExceptionalSignedWindows.lean` combines it with the signed log-square receiver. At the abscissa `a=Θ−1/2`, the reduction `a≤max(σ,a+β−1)`, `β<1`, forces `a≤σ`.
 - **A98.** A finite family of compactly supported tests has a common aperture. Choose a feasible weight at that aperture. Every nonnegative prime-blind mixture then has nonnegative Weil form, and its prime terms cancel. Thus its archimedean form is nonnegative. The unconditional prime-blind RH criterion supplies RH. Conversely RH supplies the von Mangoldt weight at every aperture. No compatibility of the chosen weights is needed.
 - **A73.** Negate the trace coefficients before applying the positive quartet filter. Nonvanishing, conjugate symmetry, and logarithmic leakage bounds survive. The resulting finite spectrum has dense negative excursions, contradicting a floor for the negative trace. Prime-gap transfer gives width reduction `a≤max(σ,a−1/3)` at the abscissa, hence `a≤σ`. This yields the upper power criterion and its RH specialization on logarithmic prime windows.
-- **A75.** Formalize the transfer as a uniform bound on a log-square prime window whenever heavy identity returns are absent for primes up to `⌈T^A⌉` and heights `[T₁, exp(ηT)]`. A strip of depth `h<1/2` gives `log t≥c y^d`, `d=1/2−h>0`. Choose `A=2/d`: then `y≥T^A` gives `c y^d≥cT²>ηT` eventually. Thus the return-free hypothesis holds on every late window; the proposed transfer and the signed window criterion give RH. The theorem proves the implication from the transfer, not the transfer itself.
+- **A75.** Formalize the transfer as a uniform bound on a log-square prime window whenever heavy identity returns are absent for primes up to `⌊T^A⌋` and heights `[T₁, exp(ηT)]`. A strip of depth `h<1/2` gives `log t≥c y^d`, `d=1/2−h>0`. Choose `A=2/d`: then `y≥T^A/2` gives `c y^d≥c2^{-d}T²>ηT` eventually. Thus the return-free hypothesis holds on every late window; the proposed transfer and the signed window criterion give RH. The theorem proves the implication from the transfer, not the transfer itself.
 
 ## Local tensor target
 

@@ -108,3 +108,4 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 import GaloisForLFunctions.InfiniteRankPurityTheory
 import GaloisForLFunctions.HodgeTheoryOfAFixedPart
 import GaloisForLFunctions.SelectiveArithmetic
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros

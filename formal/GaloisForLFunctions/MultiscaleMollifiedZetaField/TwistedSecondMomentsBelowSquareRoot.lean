@@ -1,5 +1,6 @@
 import GaloisForLFunctions.MultiscaleMollifiedZetaField.TwistedPairsBelowSquareRoot
 import GaloisForLFunctions.RHTower.ZetaGateProductAFEBlockInequality
+import GaloisForLFunctions.RHTower.ZetaGateProductAFEHighBlock
 
 /-!
 # Twisted second moments up to every length below square root
@@ -10,7 +11,7 @@ The taper is sublinear and the remainder has arbitrary power saving.
 -/
 
 noncomputable section
-open Complex MeasureTheory Set Finset Filter Topology
+open Complex MeasureTheory Finset Filter Topology
 open RHTower RHTower.ZetaGateProductAFE GaloisForLFunctions.HTGeometry
 namespace GaloisForLFunctions.MultiscaleMollifiedZetaField
 
@@ -40,7 +41,7 @@ theorem twistedMoment_sub_main_eq {d x p q η : ℝ}
       ∫ t, blockWindowC p q η t * ((‖riemannZeta (displacedLinePt d t) *
         edPoly (fun n => (w n : ℂ)) (Icc 1 N) (displacedLinePt d t)‖ ^ 2 : ℝ) : ℂ) := by
     unfold twistedMoment
-    rw [← integral_ofReal]
+    rw [← integral_complex_ofReal]
     congr 1
     funext t
     simp only [blockWindowC, Complex.ofReal_mul]
@@ -122,6 +123,36 @@ theorem exists_twistedMoment_power_saving {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ
         _ = ((q - T + 2 * T ^ a) * C) * (T ^ (2 * θ) * T ^ (-(B + 2 * θ))) := by ring
         _ = _ := by rw [he]
 
+/-- The same length range controls the actual interval moment. Its upper
+bound retains the two explicit main terms and assumes no main-term estimate. -/
+theorem exists_interval_twistedMoment_le {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ < 1 / 2) (B : ℝ) :
+    ∃ a C : ℝ, 0 < a ∧ a < 1 ∧ 0 ≤ C ∧ ∀ᶠ T : ℝ in atTop,
+      ∀ (d q : ℝ) (N : ℕ) (w : ℕ → ℝ),
+        T ≤ q → q ≤ 2 * T → 0 < d → d ≤ 1 / 20 → (N : ℝ) ≤ T ^ θ →
+        (∀ n ∈ Icc 1 N, |w n| ≤ 1) →
+        (∫ t in T..q, ‖riemannZeta (displacedLinePt d t) *
+            edPoly (fun n => (w n : ℂ)) (Icc 1 N) (displacedLinePt d t)‖ ^ 2) ≤
+          (twistedMomentMain d T q (T ^ a) N w).re +
+            (q - T + 2 * T ^ a) * C * T ^ (-B) := by
+  obtain ⟨a, C, ha, ha1, hC, hmoment⟩ := exists_twistedMoment_power_saving hθ0 hθ B
+  refine ⟨a, C, ha, ha1, hC, ?_⟩
+  filter_upwards [eventually_ge_atTop (8 : ℝ), eventually_rpow_le_quarter ha1, hmoment]
+    with T hT hη hm
+  intro d q N w hq hq2 hd hd20 hN hw
+  have hT0 : 0 < T := by linarith only [hT]
+  have hη0 : 0 < T ^ a := Real.rpow_pos_of_pos hT0 _
+  have hL : 4 ≤ T - T ^ a := by linarith only [hT, hη]
+  have hdom := intervalIntegral_le_window_integral hη0 hq
+    (continuousOn_normSq_zeta_mul_edPoly (d := d) (q := q) hL (fun n => (w n : ℂ)) N)
+    (fun t => sq_nonneg _)
+  have herr := (Complex.re_le_norm
+    ((twistedMoment d T q (T ^ a) N w : ℂ) - twistedMomentMain d T q (T ^ a) N w)).trans
+    (hm d q N w hq hq2 hd hd20 hN hw)
+  simp only [Complex.sub_re, Complex.ofReal_re] at herr
+  change _ ≤ twistedMoment d T q (T ^ a) N w at hdom
+  exact hdom.trans (by linarith only [herr])
+
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
 
 #print axioms GaloisForLFunctions.MultiscaleMollifiedZetaField.exists_twistedMoment_power_saving
+#print axioms GaloisForLFunctions.MultiscaleMollifiedZetaField.exists_interval_twistedMoment_le

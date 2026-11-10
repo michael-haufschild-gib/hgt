@@ -291,8 +291,8 @@ theorem contactForm_evenPolar_ge {a δ : ℝ} (hδ : 0 < δ) :
         (Λ n : ℝ) * Real.log (Real.exp (2 * a - 2 * δ) / n) ≤
       contactForm (fun n => Λ n) (fun u => (evenPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ := by
   classical
-  set Y := Real.exp (2 * a - 2 * δ) with hY
-  set N := ⌊Real.exp (2 * a)⌋₊ with hN
+  set Y := Real.exp (2 * a - 2 * δ)
+  set N := ⌊Real.exp (2 * a)⌋₊
   have hYN : ⌊Y⌋₊ ≤ N :=
     Nat.floor_le_floor (Real.exp_le_exp.mpr (by linarith))
   rw [contactForm_packet]
@@ -332,7 +332,7 @@ theorem contactForm_evenPolar_ge {a δ : ℝ} (hδ : 0 < δ) :
           rwa [zero_add, Real.exp_zero, one_mul] at h
         rw [hexp] at hge
         have hlogdiv : Real.log (Y / n) = 2 * a - 2 * δ - Real.log n := by
-          rw [Real.log_div (Real.exp_pos _).ne' hnr.ne', hY, Real.log_exp]
+          rw [Real.log_div (Real.exp_pos _).ne' hnr.ne', Real.log_exp]
         rw [hlogdiv]
         have hΛ : 0 ≤ (Λ n : ℝ) / Real.sqrt n :=
           div_nonneg ArithmeticFunction.vonMangoldt_nonneg hs.le
@@ -374,9 +374,11 @@ theorem contactForm_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) :
         packetAutocorr (evenPolar a δ) (Real.log n))) =
       4 * a * Real.exp a * ((Λ n : ℝ) / n) -
         (Λ n : ℝ) / Real.sqrt n * (2 * packetAutocorr (evenPolar a δ) (Real.log n)) := by
-    rw [← hss]
-    field_simp
-    ring
+    have h1 : (Λ n : ℝ) / Real.sqrt n * (Real.exp a / Real.sqrt n) =
+        Real.exp a * ((Λ n : ℝ) / n) := by
+      rw [div_mul_div_comm, hss]
+      ring
+    linear_combination (4 * a) * h1
   rwa [e] at hmul
 
 /-! ### The balance of a polar packet -/
@@ -385,7 +387,7 @@ theorem contactForm_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) :
 `x ≤ κ₂ E` and a polynomial budget below `(κ₁ − κ₂) E / 2`, the upper bound of the form of a
 polar packet is negative. -/
 theorem polar_balance {a E x K κ₁ κ₂ M : ℝ} (ha : 1 ≤ a) (hE : 0 < E) (haE : a ≤ E)
-    (hx0 : 0 ≤ x) (hx : x ≤ κ₂ * E) (hκ₂0 : 0 ≤ κ₂) (hκ₂ : κ₂ ≤ 1) (hM0 : 0 ≤ M)
+    (hx : x ≤ κ₂ * E) (hκ₂0 : 0 ≤ κ₂) (hκ₂ : κ₂ ≤ 1) (hM0 : 0 ≤ M)
     (hM : M ≤ a + E / 2) (hK : 0 ≤ K)
     (hbig : (3 / 2 * (5 + K) + 41) * (1 + a) ^ 3 < (κ₁ - κ₂) / 2 * E) :
     (5 + x + K) * M + 4 * a * E * (2 + 2 * a) ^ 2 + 4 * (2 + 2 * a) ^ 2 * M -
@@ -504,11 +506,13 @@ theorem exists_systemForm_polar_neg {η : ℝ} (hη : 0 < η) :
     have h1 : Real.log Y₀ ≤ 2 * a - 2 * δ := by linarith
     calc Y₀ = Real.exp (Real.log Y₀) := (Real.exp_log (by linarith)).symm
       _ ≤ Real.exp (2 * a - 2 * δ) := Real.exp_le_exp.mpr h1
-  have hriesz := (hY₀ _ hY).trans_eq' (by
-    show Real.exp (-η / 2) * E ^ 2 = (1 - (1 - Real.exp (-η / 4))) * Real.exp (2 * a - 2 * δ)
-    rw [hEdef, hδdef, sub_sub_cancel, ← Real.exp_add, sq, ← Real.exp_add, ← Real.exp_add]
+  have hκ₁ : (1 - (1 - Real.exp (-η / 4))) * Real.exp (2 * a - 2 * δ) =
+      Real.exp (-η / 2) * (Real.exp a * Real.exp a) := by
+    rw [hδdef, sub_sub_cancel, ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
     congr 1
-    ring)
+    ring
+  have hriesz := hY₀ _ hY
+  rw [hκ₁, ← sq] at hriesz
   have hCE := (mul_le_mul_of_nonneg_left hriesz (by norm_num : (0 : ℝ) ≤ 1 / 2)).trans
     (contactForm_evenPolar_ge (a := a) hδ)
   -- Mertens
@@ -526,7 +530,7 @@ theorem exists_systemForm_polar_neg {η : ℝ} (hη : 0 < η) :
     linarith
   -- the balance
   have hbal := polar_balance (K := K) (κ₁ := Real.exp (-η / 2)) (κ₂ := Real.exp (-η))
-    (M := Mb) ha1 hE haE hx0.le hxE (Real.exp_pos _).le
+    (M := Mb) ha1 hE haE hxE (Real.exp_pos _).le
     (Real.exp_le_one_iff.mpr (by linarith)) hMb0 hMbE hK
     (by
       have h := ha₁ a (((le_max_left a₁ 1).trans (le_max_left _ _)).trans haa₀)
@@ -545,12 +549,12 @@ theorem exists_systemForm_polar_neg {η : ℝ} (hη : 0 < η) :
   · -- `Λ` without pole plane, on the even polar packet
     have h := systemForm_le_of_packet (contDiff_evenPolar a δ) hE0 (fun n => Λ n) q
     have hm := mul_le_mul_of_nonneg_left hME h5x
-    nlinarith
+    linarith
   · -- `−Λ`, on the odd polar packet
     have h := systemForm_le_of_packet (contDiff_oddPolar a δ) hO0 (fun n => -Λ n) q
     rw [contactForm_neg] at h
     have hm := mul_le_mul_of_nonneg_left hMO h5x
-    nlinarith
+    linarith
   · -- the Liouville twist, on the odd polar packet
     have h := systemForm_le_of_packet (contDiff_oddPolar a δ) hO0 liouvilleWeight q
     rw [contactForm_liouvilleWeight] at h
@@ -561,7 +565,7 @@ theorem exists_systemForm_polar_neg {η : ℝ} (hη : 0 < η) :
       mul_le_mul (mul_le_mul_of_nonneg_left hmer (by norm_num)) hMO
         (integral_nonneg fun _ => sq_nonneg _) (by positivity)
     have hm := mul_le_mul_of_nonneg_left hMO h5x
-    nlinarith
+    linarith
 
 /-- **Three dominated systems are infeasible beyond the trivial aperture.** -/
 theorem exists_not_feasible {η : ℝ} (hη : 0 < η) :
@@ -597,7 +601,7 @@ theorem exists_abs_trivialAperture_sub_le {η : ℝ} (hη : 0 < η) :
     ∃ M₀ : ℝ, ∀ q : ℝ, M₀ ≤ Real.log q →
       |trivialAperture q - Real.log (Real.log q)| ≤ η := by
   obtain ⟨M₁, hM₁⟩ := exists_systemForm_margin hη
-  obtain ⟨M₂, hM₂1, hM₂⟩ := exists_not_feasible hη
+  obtain ⟨M₂, -, hM₂⟩ := exists_not_feasible hη
   refine ⟨max (max M₁ M₂) (Real.exp η), fun q hq => ?_⟩
   have hq1 : M₁ ≤ Real.log q := ((le_max_left _ _).trans (le_max_left _ _)).trans hq
   have hq2 : M₂ ≤ Real.log q := ((le_max_right _ _).trans (le_max_left _ _)).trans hq
