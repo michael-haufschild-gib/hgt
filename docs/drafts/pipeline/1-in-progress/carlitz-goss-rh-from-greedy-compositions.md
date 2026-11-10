@@ -40,8 +40,18 @@ coefficients and passage to the entire series remain necessary.
 `exists_positive_cyclicDifference_content_iff`: a positive integer is
 divisible by `p^s−1` exactly when its digit content is `Ea` for a positive
 integral vector `a`. The inverse, integrality propagation, and digit
-congruence are proved; the transitive axiom audit uses only the three
-standard axioms. The direct final audit remains pending.
+congruence are proved; direct and transitive axiom audits passed, using
+only the three standard axioms.
+
+`CarlitzGoss/ContentRounding.lean` proves `exists_integral_content_layer`:
+if every inverse-content coordinate exceeds `m≥1`, a proper positive
+integral layer with inverse coordinates at least `m` can be extracted.
+Direct and transitive axiom audits passed, using only the standard axioms.
+`CarlitzGoss/ContentPartitions.lean` proves `hasContentPrefix_iff`:
+a nonnegative content vector admits `k` positive divisible parts and
+one unrestricted positive last part iff every inverse-content coordinate
+exceeds `k`. Direct and transitive axiom audits passed, using only the
+standard axioms. All three modules are wired into the umbrella.
 
 The actual Goss-zeta theorem and its optimal-composition input remain unformalized.
 The target includes every prime power, not only prime `q` or integer `y`.

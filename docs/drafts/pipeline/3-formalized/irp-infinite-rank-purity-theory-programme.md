@@ -396,6 +396,78 @@ Suppose every zero of `D` is a zero of `ξ`.
    `N²`; a zero of `E` that is not a zero of `ξ` is a zero of `D` or the conjugate of one
    (`exists_zero_not_xi_zero_of_functionalEquation_complex`).
 
+### P27. Zeros on the line force the functional equation; no factor with a constant term
+`D(s) = Σ a_n n^{−s}`, `a_1 ≠ 0`, `a_{n₀} ≠ 0` for some `n₀ ≥ 2`, all zeros on `Re s = ½`.
+1. *Reflection.* `D^♯(s) = conj D(1 − s̄) = Σ ā_n n^{−(1−s)}` is entire, and `ρ = 1 − ρ̄` on the line,
+   so `D^♯` vanishes at each zero `ρ` of `D` to the same order: `D^♯/D` has a finite nonzero limit
+   at `ρ` (`tendsto_reflPoly_div`). Through the meromorphic normal form the quotient is an entire
+   function `g` without zeros, `g D = D^♯` (`exists_entire_quotient`).
+2. *Strips.* `D` is almost periodic: for a strip `|Re s − ½| ≤ c` there are `L, δ > 0` such that
+   every interval of length `L` contains a height `t` with `‖D(σ + it)‖ ≥ δ` across the strip
+   (else translates converge to a polynomial vanishing on a segment). On the rectangle between two
+   such heights the maximum principle bounds `g` by its values on the boundary, where either `D` is
+   bounded below or `Re s − ½ = ±c` and the far bounds hold (`exists_bound_on_strip`).
+3. *Far left and right.* For `Re s ≥ C₀`, `‖D(s)‖ ≥ ‖a_1‖/2`; for `Re s ≤ −C₁` the top term
+   dominates, `‖D(s)‖ ≥ ½‖a_{N_t}‖ N_t^{−Re s}` (`exists_left_bound`). So `‖g(s)‖ ≤ A e^{B‖s‖}`.
+4. A zero-free entire function of exponential type is `e^{αs+β}`
+   (`RHTower.exists_eq_exp_affine_of_ne_zero`). `‖g‖ = 1` on the line gives `Im α = 0` and
+   `‖g(s)‖ = e^{α(Re s − ½)}`; the growth of `D` to the left gives `α > 0`. With `N = e^α`:
+   `‖D(1 − s̄)‖ = N^{Re s − ½}‖D(s)‖` (`exists_functionalEquation_of_zeros_on_line`).
+5. If every zero of `D` were a zero of `ξ`, P25 puts the zeros on the line, step 4 gives the
+   functional equation and P26 a contradiction (`exists_zero_not_xi_zero_of_constantTerm`).
+6. *Lowest frequency dividing the others.* If `m ∣ n` on the support, `D(s) = m^{−s} D₁(s)` with
+   `D₁(s) = Σ a_{mk} k^{−s}`, which has a constant term and the zeros of `D`
+   (`exists_zero_not_xi_zero_of_dvd`).
+
+### P28. Polynomials in one base
+If `n = m β^{k_n}` on the support, `β > 1`, then `n^{−s} = m^{−s}(β^{−s})^{k_n}` and
+`D(s) = m^{−s} Q(β^{−s})`, `Q = Σ a_n X^{k_n}`. The `k_n` are distinct, so `Q` has two nonzero
+coefficients; writing `Q = X^d R`, `R(0) ≠ 0`, `R` is not constant and has a root `u ≠ 0`
+(`exists_ne_zero_root`). The zeros of `D` contain the class `β^{−s} = u`, which by P22 is not
+contained in the zeros of `ξ` (`exists_zero_not_xi_zero_of_oneBase`). Two terms `n₁ < n₂` are the
+case `m = n₁`, `β = n₂/n₁` (`exists_zero_not_xi_zero_of_two_terms`).
+
+### P29. On the flow the trace determines the module; the two involutions
+Modules with `Σ‖b_i‖ < ∞`, finitely many modes in every disc.
+1. *Merged weights.* For `g : ℂ → ℂ` with `Σ b_i g(ρ_i)` summable, summation along the fibres of
+   `i ↦ ρ_i` gives `Σ_i b_i g(ρ_i) = Σ_{w ∈ ℂ} m(w) g(w)`, `m(w) = Σ_{ρ_i = w} b_i`
+   (`hasSum_mergedWeight_mul`).
+2. *Uniqueness.* If two modules with weights bounded above have the same trace on `x ≥ 1`, the
+   module on `ι ⊕ κ` with weights `(b, −c)` has trace `0` there; it is locally finite, and by P19
+   with the bound `0 · x^s`, `s < Re w`, its merged weight at every one of its modes vanishes. That
+   weight is `m_b(w) − m_c(w)` (`mergedWeight_eq_of_frobTrace_eq_on_flow`).
+3. *Central normalization.* For modes in a strip, `φ(u) = Σ b_i e^{u(ρ_i − ½)}` converges for all
+   real `u`, `t(e^u) = e^{u/2} φ(u)` (`frobTrace_exp`), the module `(b, 1 − ρ)` has trace `φ(−u)`
+   and merged weights `m(1 − w)`, the module `(b̄, ρ̄)` has trace `conj φ(u)` and merged weights
+   `conj m(w̄)`.
+4. By 1 and 2: `φ(−u) = φ(u)` for all `u` iff `m(1 − w) = m(w)` for all `w`
+   (`centralTrace_neg_iff`); `conj φ = φ` iff `conj m(w̄) = m(w)` (`conj_centralTrace_iff`).
+
+### P30. Castelnuovo–Severi on the flow is purity and effectivity
+Module in a strip `a ≤ Re ρ_i ≤ A`, `Σ‖b_i‖ < ∞`, locally finite; `φ` as in P29.
+1. *Defect.* With `Γ_u · Γ_v = e^v(1 + e^{u−v} − t(e^{u−v})) = e^u + e^v − e^{(u+v)/2}φ(u − v)` and
+   `D = Σ c_k Γ_{t_k}`, `d₁ = Σ c_k`, `d₂ = Σ c_k e^{t_k}`:
+   `d̄₁d₂ + d̄₂d₁ − Σ c̄_i c_j Γ_{t_j}·Γ_{t_i} = Σ conj(c_i e^{t_i/2}) φ(t_j − t_i) c_j e^{t_j/2}`
+   (`castelnuovoSeveri_defect`). So the inequality for all divisors is positive definiteness of
+   `φ` (`castelnuovoSeveri_iff_positiveDefinite`). The pairing is symmetric iff `φ` is even iff
+   the module is self-dual (`graphPairing_comm_iff`).
+2. *Form on a pure module.* If `m(w) ≠ 0 ⇒ Re w = ½`, then `conj(w − ½) = −(w − ½)` on the visible
+   modes and by P29.1 `Σ c̄_i φ(t_j − t_i) c_j = Σ_w m(w) ‖Σ_j c_j e^{t_j(w − ½)}‖²`
+   (`hasSum_quadraticForm`). With `m ≥ 0` the form is `≥ 0`.
+3. *Positivity gives purity.* `‖φ(u)‖ ≤ φ(0)`, so `‖t(x)‖ ≤ φ(0) x^{1/2}` on `x ≥ 1`; by P19 no
+   visible mode has `Re w > ½`. The dual module has trace `φ(−u)`, with the same bound: no visible
+   mode has `Re w < ½` (`re_eq_half_of_positiveDefinite`).
+4. *Positivity gives effectivity.* Fix `w₀` on the line, `h > 0`. With `t_k = kh`,
+   `c_k = e^{−kh(w₀−½)}/(N+1)`, `0 ≤ k ≤ N`, step 2 gives the nonnegative real
+   `Σ_w m(w) ‖(N+1)^{−1} Σ_{k ≤ N} z_w^k‖²`, `z_w = e^{h(w − w₀)}`, `‖z_w‖ = 1` on the visible modes.
+   As `N → ∞` (dominated by `‖m(w)‖`, summable) it tends to `A(h) = Σ_{z_w = 1} m(w)`. For
+   `h = 1/(n+1) → 0`, `z_w = 1` with `w ≠ w₀` forces `‖w − w₀‖ ≥ 2π/h`, so `A(h) → m(w₀)` by
+   dominated convergence. A limit of nonnegative reals is one (`effective_of_positiveDefinite`).
+5. `positiveDefinite_centralTrace_iff`, `castelnuovoSeveri_iff`.
+6. *Zero motive.* Lag weights `1/(ρ(1−ρ))`: summable, modes in `0 < Re < 1`, locally finite. Every
+   zero is visible (positive real parts do not cancel), so purity is RH; under RH
+   `ρ(1 − ρ) = ‖ρ‖²` and the weights are positive (`zeroMotive_castelnuovoSeveri_iff`).
+
 ## Modules
 | Module | Content |
 |---|---|
@@ -431,11 +503,14 @@ Suppose every zero of `D` is a zero of `ξ`.
 | TheLineLawSeesTheStripAndNotTheLine | `pencil`, `divisorPoly`, `symmetrize`; `pencil_indexOne`, `pencil_lineLaw`, `exists_fixedPart_with_lineLaw`, `pencil_lineLaw_of_tendsto`, `xi_mem_pencil_class`, `exists_nonreal_zero_pencil_of_zero_right`, `divisorPencil_lineLaw_iff` |
 | TheLefschetzNumbersOfTheIntegersAreNotTraces | `TraceClassAt`, `IsTrace`; `tendsto_fwdDiff_iter_frobTrace_of_traceClassAt`, `tate_of_integral_trace_at`, `not_isTrace_of_primePower_support`, `not_isTrace_vonMangoldt`, `not_isTrace_of_two_jumps`, `not_isTrace_mertens`, `not_isTrace_primeCounting`, `lagModule_not_traceClassAt_one` |
 | TheArchimedeanFibreIsATraceAndTheFiniteContactsAreNot | `mergedWeight`, `evenJet`; `mergedWeight_eq_zero_of_frobTrace_bound_at`, `mergedWeight_eq_of_frobTrace_eventually_eq`, `archimedeanFibre_forced`, `not_isTrace_gluedLefschetz`, `not_isTrace_pointCount` |
+| ADirichletPolynomialWithItsZerosOnTheLineHasAFunctionalEquation | `reflPoly`; `tendsto_reflPoly_div`, `exists_entire_quotient`, `exists_bound_on_strip`, `exists_functionalEquation_of_zeros_on_line`, `exists_zero_not_xi_zero_of_constantTerm`, `exists_zero_not_xi_zero_of_dvd`, `exists_ne_zero_root`, `exists_zero_not_xi_zero_of_oneBase`, `exists_zero_not_xi_zero_of_two_terms` |
+| OnTheFlowCastelnuovoSeveriIsPurityAndEffectivity | `centralTrace`, `graphPairing`; `hasSum_mergedWeight_mul`, `mergedWeight_eq_of_frobTrace_eq_on_flow`, `centralTrace_neg_iff`, `conj_centralTrace_iff`, `hasSum_quadraticForm`, `re_eq_half_of_positiveDefinite`, `effective_of_positiveDefinite`, `positiveDefinite_centralTrace_iff`, `graphPairing_comm_iff`, `castelnuovoSeveri_defect`, `castelnuovoSeveri_iff`, `zeroMotive_castelnuovoSeveri_iff` |
 
 ## Reductions (README §12)
 Purity over `ℤ` is reduced to one of: an index bound of one for `ξ`; a crude count on a thick set of
 levels of one tower together with an attained abscissa; a crude count on all levels of one tower
-together with one off-line zero whose mode is accessible from infinity. Integrality forces Tate twists in trace
+together with one off-line zero whose mode is accessible from infinity; the sign of the pairing of
+the Frobenius graphs on the flow (Castelnuovo–Severi, which for the zero motive is RH). Integrality forces Tate twists in trace
 class at any Frobenius, and the zero motive has order exactly zero, so it cannot act on the zero
 motive; no rigid transport exists and every equivariant map of the module over `ℤ` is diagonal; a
 family reads only the closed strip of its fixed part, and under a measure its moments contain the
@@ -455,3 +530,4 @@ fixed part with mass one.
 - 2026-11-10 — 28 modules: no two-sided sequence of zeros within `ℓ²` of a class of one Frobenius; Parseval for the zeta values along a progression
 - 2026-11-10 — 30 modules: half classes (one-sided divergence and `ℓ²` ladders at every real part); a factor with a Dirichlet series is pure
 - 2026-11-10 — 32 modules: a Dirichlet polynomial with a constant term and a functional equation is not a factor of `ξ` (real and complex coefficients)
+- 2026-11-10 — 34 modules: zeros on the line force the functional equation of a Dirichlet polynomial, so no Dirichlet polynomial with a constant term and a further term is a factor; lowest frequency dividing the others; one base and two terms; on the flow the trace determines the module, the functional equation is self-duality, Castelnuovo–Severi is purity and effectivity. Open: Dirichlet polynomials in several bases without constant term whose lowest frequency does not divide the others

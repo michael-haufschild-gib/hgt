@@ -30,6 +30,8 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.HalfOfAClassOfOneFrobeniusIs
 import GaloisForLFunctions.InfiniteRankPurityTheory.AFactorWithADirichletSeriesIsPure
 import GaloisForLFunctions.InfiniteRankPurityTheory.AZeroFreeDirichletPolynomialIsBoundedBelow
 import GaloisForLFunctions.InfiniteRankPurityTheory.ADirichletPolynomialWithAFunctionalEquationIsNotAFactor
+import GaloisForLFunctions.InfiniteRankPurityTheory.ADirichletPolynomialWithItsZerosOnTheLineHasAFunctionalEquation
+import GaloisForLFunctions.InfiniteRankPurityTheory.OnTheFlowCastelnuovoSeveriIsPurityAndEffectivity
 
 /-!
 # Infinite-rank purity theory
@@ -67,9 +69,15 @@ statement at a point.
   class or of half of one.
 * Factors: a bounded Dirichlet series whose zeros are zeros of `ξ` has all of them on the critical
   line; a zero of such a series off the line recurs with positive density, which the zeros of `ζ`
-  off the line do not have. A Dirichlet polynomial with a constant term and a functional equation
-  is not a factor: its logarithmic derivative would be a Herglotz Dirichlet series carried by the
-  critical zeros.
+  off the line do not have. A Dirichlet polynomial with a constant term and one further term is not
+  a factor: zeros on the critical line force a functional equation, and then its logarithmic
+  derivative would be a Herglotz Dirichlet series carried by the critical zeros. The same when the
+  lowest frequency divides the others, and for polynomials in one base.
+* Duality: on the flow the trace determines a locally finite module; the functional equation of
+  the trace is self-duality of the module, and reality of the trace is invariance under the
+  archimedean involution. The Castelnuovo–Severi inequality for all divisors of Frobenius graphs
+  holds exactly when the module is pure and effective; for the zero motive it is the Riemann
+  hypothesis.
 
 See `InfiniteRankPurityTheory/README.md`.
 -/

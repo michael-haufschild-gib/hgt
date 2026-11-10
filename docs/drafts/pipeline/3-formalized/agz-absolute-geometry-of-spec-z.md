@@ -373,6 +373,9 @@ and for `f` of any sign of length `≤ 1/130`; it is at most `2d₁d₂ − ∫f
 of length `≤ 181/250`.
 *Proof.* `Z` is invariant under translation. The corpus has `A(f) ≥ 0` on the first two classes
 (no contact enters) and `Z(f) ≥ ∫f²/5000` on tests supported in `[−181/500, 181/500]`. ∎
+In general a bound `Z(g) ≥ c₀∫|g|²` for the tests supported in `[−a, a]` gives the limit
+`≤ 2d₁d₂ − c₀∫f²` for the packets of aperture `a`; the corpus has it at an aperture strictly
+between `181/500` and `1/2` with `c₀ = 1/8000`.
 
 **C21 (the contacts decide).** For `w : ℕ → ℝ`, with `w(k)/√k` in place of `Λ(k)/√k` the limit is
 `2d₁d₂ − W_w(f)`, `W_w` the functional with the prime weight `w`. For `w(2) = −log 2`, `w = Λ`
@@ -394,6 +397,19 @@ counterterm `log(gn/2π)` the limit of C15 is smaller by `log g·∫f²`. With n
 `Σ_n (Λ(n)/√n)(g(log n − a) + g(−log n − a)) = e^{−a/2}ĝ(i/2) + e^{a/2}ĝ(−i/2) +
 (1/2π)∫ e^{ira} ĝ(r) G(r) dr − Σ_ρ m_ρ ĝ(γ_ρ) e^{(ρ−½)a}`.
 *Proof.* The explicit formula for `g(· − a)`, whose transform is `e^{iza}ĝ(z)`; `iγ_ρ = ρ − ½`. ∎
+
+**C24 (pointwise the shifts of the point count are dense).** If `Σ_{n≤m} c_n N(kn) = 0` for all
+`k ≥ 1`, then `c = 0`; restricted to `1,…,m` the shifts of `N` span `ℝ^m`.
+*Proof.* `6jn` is not a prime power, so `N(6jn) = n²/(n² − t)`, `t = (6j)^{−2}`. Then
+`Q(t) = Σ_n c_n n² Π_{i≠n}(i² − t)` vanishes at infinitely many `t`, so `Q = 0`, and
+`Q(n₀²) = c_{n₀} n₀² Π_{i≠n₀}(i² − n₀²)`. The span is all of `ℝ^m` because its annihilator is `0`. ∎
+
+**B5 (the carry is a cocycle and not a coboundary).** `⌊(x+y)/p⌋ = ⌊x/p⌋ + ⌊y/p⌋ + κ(x,y)`,
+`κ(x,y) = ⌊(x mod p + y mod p)/p⌋`. On residues `κ(a,b) + κ(a+b,d) = κ(b,d) + κ(a,b+d)`, and there
+is no `f` with `κ(a,b) = f(a) + f(b) − f(a+b)` (`p ≥ 2`); the same for the Witt carry (`p` prime).
+*Proof.* Both sides of the cocycle identity are `⌊(a+b+d)/p⌋` on representatives. Summing over
+`a = 0,…,p−1`, `b = 1`: the carries add up to `1`, a coboundary to `p·f(1) + f(0) − f(p) = 0`. The
+Witt carry is `κ` plus the coboundary of the Fermat quotient (B3). ∎
 
 **B4 (the carry and the window count are complementary).**
 `(carryTerm N − (2 log 2 − 1)N) + (windowCount N − N) + ½ log N → −½ log π`.
@@ -462,8 +478,10 @@ are exactly the elements of `𝔡`. (iv) Such an `x` with `(x_𝔡) = 𝔡` exis
   `m/(1−(m/n)²)`, unitary a function of `m/n` (D2), and is not a Verschiebung of `𝒢`. The fibre and
   the tower are one ring of sequences (E11).
 - **E on every lattice**: E10.
-- **Q10–Q14 of the refined programme**: Q10: E11 and C23; Q11: C18–C20, RH in general (C21);
-  Q12: C15, C13, C22; Q13: B3, B4; Q14: C21. The decisive test: C21.
+- **Q10–Q14 of the refined programme**: Q10: E11 (the ring and its count), C23 (the zeros are
+  the weights on packets), C24 (pointwise every weight is a limit); Q11: C18–C20, RH in general
+  (C21); Q12: C15, C13, C22; Q13: B3, B5 (the class, not zero), B4 (no bound); Q14: C21. The
+  decisive test: C21.
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -519,6 +537,8 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | C22 | `ThePairingChangesBetweenCombsByTheLogarithmOfTheDensity`, `ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm` |
 | C23 | `TheZerosAreTheWeightsOfTheContactsUnderScaling` |
 | B4 | `TheCarryAndTheWindowCountAreComplementary` |
+| B5 | `TheCarryIsACocycleThatIsNotACoboundary` |
+| C24 | `PointwiseTheShiftsOfThePointCountAreDense` |
 | E11 | `TheTowerThePolePlaneAndTheJetsFormOneRing` |
 | E12 | `TheSquareMissesTheZerosByAnUnboundedRemainder` |
 | F1 | `TheArithmeticSquareOfADedekindDomain` |
@@ -546,13 +566,10 @@ carry identities retain their stated Lean status.
 
 Open parts of the questions of the refined programme (details in the README, §13):
 
-- Q11: the inequality `D·D ≤ 2d₁d₂` for packets of length above `181/250`; for all packets it is
-  RH (C21).
-- Q10: a completion of `𝒮_q` in which the cyclic module of the point count has the zeros as
-  weights; C23 gives them on packets.
-- Q12: the packet theorem on combs that are not images of the integers under a multiplication.
-- Q13: an object of which the carry cocycle is the obstruction class.
-- Q14: Bézout for an integer-norm system on its own comb.
+- Q11: the inequality `D·D ≤ 2d₁d₂` for packets of aperture beyond the widest certificate (below
+  `1/2`); for all packets it is RH (C21).
+- The packet theorem on combs that are not images of the integers under a multiplication.
+- Bézout for an integer-norm system on its own comb.
 - An index whose value per height window is `log(n+1)` plus the increment of `S`.
 - Over a Dedekind domain: the jets, the comb of the ideals, the gluing index against the zero
   count, the tower when the class group is not trivial.

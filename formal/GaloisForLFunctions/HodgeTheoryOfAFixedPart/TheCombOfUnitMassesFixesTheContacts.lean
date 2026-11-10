@@ -237,32 +237,27 @@ theorem tendsto_combFormW_flatTail_div {w : ℕ → ℝ} {K : ℕ} (hw : ∀ k, 
       (𝓝 (2 + Real.eulerMascheroniConstant - Real.log (4 * Real.pi) -
         2 * ∑ k ∈ Icc 2 K, (w k - Λ k) / k)) := by
   have hsum : Tendsto (fun N : ℕ => ∑ k ∈ Icc 2 K, (w k - Λ k) * (((N / k : ℕ) : ℝ) / N)) atTop
-      (𝓝 (∑ k ∈ Icc 2 K, (w k - Λ k) / k)) := by
-    have h := tendsto_finset_sum (Icc 2 K) fun k hk =>
+      (𝓝 (∑ k ∈ Icc 2 K, (w k - Λ k) * (1 / (k : ℝ)))) :=
+    tendsto_finsetSum (Icc 2 K) fun k hk =>
       (tendsto_natDiv_div (by have := (Finset.mem_Icc.mp hk).1; omega : 1 ≤ k)).const_mul
         (w k - Λ k)
-    exact h.congr' (Eventually.of_forall fun N => rfl) |>.mono_right
-      (le_of_eq (congrArg 𝓝 (Finset.sum_congr rfl fun k _ => by ring)))
-  have h := tendsto_combFormW_flatTail_aux hsum
-  exact h
-  where
-  tendsto_combFormW_flatTail_aux {w : ℕ → ℝ} {K : ℕ} {l : ℝ}
-      (hsum : Tendsto (fun N : ℕ => ∑ k ∈ Icc 2 K, (w k - Λ k) * (((N / k : ℕ) : ℝ) / N)) atTop
-        (𝓝 l)) (hw : ∀ k, K < k → w k = Λ k := by assumption) :
-      Tendsto (fun N : ℕ => combFormW w (Icc 1 N) (fun _ => 1) / N) atTop
-        (𝓝 (2 + Real.eulerMascheroniConstant - Real.log (4 * Real.pi) - 2 * l)) := by
-    refine (tendsto_combForm_flatTail_div.sub (hsum.const_mul 2)).congr' ?_
-    filter_upwards [eventually_ge_atTop K, eventually_ge_atTop 1] with N hN hN1
-    have hcut : ∑ k ∈ Icc 2 N, (w k - Λ k) * ((N / k : ℕ) : ℝ) =
-        ∑ k ∈ Icc 2 K, (w k - Λ k) * ((N / k : ℕ) : ℝ) := by
-      refine (Finset.sum_subset (Finset.Icc_subset_Icc_right hN) fun k hk hk' => ?_).symm
-      have hlt : K < k := by
-        by_contra hle
-        exact hk' (Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp hk).1, not_lt.mp hle⟩)
-      rw [hw k hlt, sub_self, zero_mul]
-    rw [combFormW_flatTail, hcut, sub_div, Finset.mul_sum, Finset.mul_sum, Finset.sum_div]
-    congr 1
-    exact Finset.sum_congr rfl fun k _ => by ring
+  have hval : ∑ k ∈ Icc 2 K, (w k - Λ k) * (1 / (k : ℝ)) = ∑ k ∈ Icc 2 K, (w k - Λ k) / k :=
+    Finset.sum_congr rfl fun k _ => by ring
+  rw [hval] at hsum
+  refine (tendsto_combForm_flatTail_div.sub (hsum.const_mul 2)).congr' ?_
+  filter_upwards [eventually_ge_atTop K] with N hN
+  have hcut : ∑ k ∈ Icc 2 N, (w k - Λ k) * ((N / k : ℕ) : ℝ) =
+      ∑ k ∈ Icc 2 K, (w k - Λ k) * ((N / k : ℕ) : ℝ) := by
+    refine (Finset.sum_subset (Finset.Icc_subset_Icc_right hN) fun k hk hk' => ?_).symm
+    have hlt : K < k := by
+      by_contra hle
+      exact hk' (Finset.mem_Icc.mpr ⟨(Finset.mem_Icc.mp hk).1, not_lt.mp hle⟩)
+    rw [hw k hlt, sub_self, zero_mul]
+  rw [combFormW_flatTail, hcut, sub_div]
+  congr 1
+  rw [mul_div_assoc, Finset.sum_div]
+  congr 1
+  exact Finset.sum_congr rfl fun k _ => by ring
 
 /-- **The tolerance of the flat tail is the first Li coefficient.** If the weights differ from
 `Λ` at finitely many integers and their excess `Σ_k (w(k) − Λ(k))/k` exceeds
@@ -276,10 +271,7 @@ theorem eventually_combFormW_flatTail_neg {w : ℕ → ℝ} {K : ℕ} (hw : ∀ 
       2 * ∑ k ∈ Icc 2 K, (w k - Λ k) / k < 0 := by linarith
   filter_upwards [hlim.eventually (gt_mem_nhds hneg), eventually_ge_atTop 1] with N hN hN1
   have hN' : (0 : ℝ) < N := by exact_mod_cast hN1
-  exact (div_neg_iff_of_pos_right hN').mp hN
-  where
-  div_neg_iff_of_pos_right {a b : ℝ} (hb : 0 < b) : a / b < 0 ↔ a < 0 := by
-    rw [div_lt_iff₀ hb, zero_mul]
+  rwa [div_lt_iff₀ hN', zero_mul] at hN
 
 /-- The contact orders of the square with a second contact at the prime `2`. -/
 def doubleTwo (k : ℕ) : ℝ := Λ k + if k = 2 then Real.log 2 else 0
@@ -295,7 +287,7 @@ theorem eventually_combFormW_doubleTwo_neg :
       ring
     rw [hsum]
     have hγ := Real.eulerMascheroniConstant_lt_two_thirds
-    have h2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
+    have h2 : (0.6931471803 : ℝ) < Real.log 2 := Real.log_two_gt_d9
     have hπ : (3 : ℝ) < Real.pi := Real.pi_gt_three
     -- `log 4π > 2` since `4π > 12 > e²`
     have he : Real.exp 2 < 4 * Real.pi := by

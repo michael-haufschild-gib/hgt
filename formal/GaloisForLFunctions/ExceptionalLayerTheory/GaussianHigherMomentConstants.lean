@@ -60,7 +60,7 @@ theorem gaussianMellinJetConstant_quarter_le (p k j : ℕ) (hp : 1 ≤ p)
     have ha : 0 < a := by
       dsimp [a]
       push_cast
-      nlinarith only [Nat.cast_nonneg k, Nat.cast_nonneg j]
+      nlinarith only [(Nat.cast_nonneg k : (0 : ℝ) ≤ k), (Nat.cast_nonneg j : (0 : ℝ) ≤ j)]
     have hmarg : a - 1 = (k : ℝ) + 2 * j - 1 / 2 := by dsimp [a]; push_cast; ring
     have huarg : a + 1 = (k : ℝ) + 2 * (j + 1 : ℕ) - 1 / 2 := by
       dsimp [a]; push_cast; ring
@@ -69,7 +69,7 @@ theorem gaussianMellinJetConstant_quarter_le (p k j : ℕ) (hp : 1 ≤ p)
       have hh : (k : ℝ) + 1 + j ≤ p := by exact_mod_cast hkj
       dsimp [a]
       push_cast
-      linarith only [hh, Nat.cast_nonneg k]
+      linarith only [hh, (Nat.cast_nonneg k : (0 : ℝ) ≤ k)]
     have hE : 0 ≤ Real.Gamma (1 / 4) / 2 * (p : ℝ) ^ p * (2 * p + 9) ^ k := by positivity
     change (|a| + 1) * gaussianMellinJetConstant k (a - 1) +
       8 * gaussianMellinJetConstant k (a + 1) ≤ _
@@ -89,7 +89,9 @@ private theorem bernoulli_quotient_le {r : ℕ} (hr : r ≠ 0) :
     |((bernoulli (2 * r) : ℚ) : ℝ)| / ((2 * r).factorial : ℝ) ≤ 1 := by
   have hF : (0 : ℝ) < ((2 * r).factorial : ℝ) := by exact_mod_cast Nat.factorial_pos _
   have hpow : (4 : ℝ) ≤ 2 ^ (2 * r) := by
-    simpa using pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) (show 2 ≤ 2 * r by omega)
+    have hh := pow_le_pow_right₀ (by norm_num : (1 : ℝ) ≤ 2) (show 2 ≤ 2 * r by omega)
+    norm_num at hh
+    exact hh
   have hpi : (2 : ℝ) ≤ 2 * Real.pi := by linarith only [Real.pi_gt_three]
   have hden : (4 : ℝ) ≤ (2 * Real.pi) ^ (2 * r) :=
     hpow.trans (pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 2) hpi _)
@@ -176,8 +178,126 @@ theorem gaussianHigherMomentLatticeConstant_half_le_height (r : ℕ) (hr : r ≠
   exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hbase r)
     (Real.Gamma_pos_of_pos (by norm_num : (0 : ℝ) < 1 / 4)).le
 
+/-- The two fixed Gamma values needed for all critical logarithmic moments. -/
+def gaussianQuarterGammaConstant : ℝ := Real.Gamma (1 / 4) + Real.Gamma (3 / 4)
+
+theorem gaussianQuarterGammaConstant_pos : 0 < gaussianQuarterGammaConstant := by
+  have h₁ := Real.Gamma_pos_of_pos (by norm_num : (0 : ℝ) < 1 / 4)
+  have h₃ := Real.Gamma_pos_of_pos (by norm_num : (0 : ℝ) < 3 / 4)
+  exact add_pos h₁ h₃
+
+private theorem realMoment_grid_le {q : ℝ} (hq : 0 < q) (hq1 : q ≤ 1)
+    (hGq : Real.Gamma q ≤ gaussianQuarterGammaConstant)
+    (j p : ℕ) (hp : 1 ≤ p) (hjp : j ≤ p) :
+    gaussianRealMoment (2 * ((j : ℝ) + q) - 1) 2 ≤
+      gaussianQuarterGammaConstant / 2 * (p : ℝ) ^ p := by
+  unfold gaussianRealMoment
+  rw [show (2 * ((j : ℝ) + q) - 1 + 1) / 2 = (j : ℝ) + q by ring]
+  have hpow : (1 / 2 : ℝ) ^ ((j : ℝ) + q) ≤ 1 :=
+    Real.rpow_le_one (by norm_num) (by norm_num) (by positivity)
+  have hG := (gamma_nat_add_le_cap hq hq1 j p hp hjp).trans
+    (mul_le_mul_of_nonneg_right hGq (by positivity))
+  calc
+    _ ≤ 1 / 2 * 1 * (gaussianQuarterGammaConstant * (p : ℝ) ^ p) := by
+      apply mul_le_mul (mul_le_mul_of_nonneg_left hpow (by norm_num)) hG
+        (Real.Gamma_pos_of_pos (by positivity : 0 < (j : ℝ) + q)).le (by norm_num)
+    _ = _ := by ring
+
+/-- The logarithmic constant has a uniform cubic-power envelope in its order. -/
+theorem gaussianHigherLogMomentConstant_half_le (r : ℕ) (hr : r ≠ 0) :
+    gaussianHigherLogMomentConstant r (1 / 2) ≤
+      58 * gaussianQuarterGammaConstant * (16 * (r : ℝ) ^ 3) ^ r := by
+  have hrN : 1 ≤ r := by omega
+  have hr1 : (1 : ℝ) ≤ r := by exact_mod_cast hrN
+  have hG₁ := Real.Gamma_pos_of_pos (by norm_num : (0 : ℝ) < 1 / 4)
+  have hG₃ := Real.Gamma_pos_of_pos (by norm_num : (0 : ℝ) < 3 / 4)
+  have hG := gaussianQuarterGammaConstant_pos
+  have hGq₁ : Real.Gamma (1 / 4) ≤ gaussianQuarterGammaConstant := by
+    unfold gaussianQuarterGammaConstant
+    linarith only [hG₃]
+  have hGq₃ : Real.Gamma (3 / 4) ≤ gaussianQuarterGammaConstant := by
+    unfold gaussianQuarterGammaConstant
+    linarith only [hG₁]
+  let B : ℝ := gaussianQuarterGammaConstant / 2 * ((r + 1 : ℕ) : ℝ) ^ (r + 1)
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have h₁ (j : ℕ) (hj : j ≤ r + 1) : gaussianRealMoment (2 * ((j : ℝ) + 1 / 4) - 1) 2 ≤ B :=
+    realMoment_grid_le (by norm_num) (by norm_num) hGq₁ j (r + 1) (by omega) hj
+  have h₃ (j : ℕ) (hj : j ≤ r + 1) : gaussianRealMoment (2 * ((j : ℝ) + 3 / 4) - 1) 2 ≤ B :=
+    realMoment_grid_le (by norm_num) (by norm_num) hGq₃ j (r + 1) (by omega) hj
+  have hrm : ((r - 1 : ℕ) : ℝ) = (r : ℝ) - 1 := by rw [Nat.cast_sub hrN, Nat.cast_one]
+  have hm2 : gaussianRealMoment ((2 * r : ℕ) - (5 / 2 : ℝ)) 2 ≤ B := by
+    have he : ((2 * r : ℕ) : ℝ) - 5 / 2 = 2 * (((r - 1 : ℕ) : ℝ) + 1 / 4) - 1 := by
+      rw [hrm]; push_cast; ring
+    rw [he]
+    exact h₁ (r - 1) (by omega)
+  have hm1 : gaussianRealMoment ((2 * r : ℕ) - (3 / 2 : ℝ)) 2 ≤ B := by
+    have he : ((2 * r : ℕ) : ℝ) - 3 / 2 = 2 * (((r - 1 : ℕ) : ℝ) + 3 / 4) - 1 := by
+      rw [hrm]; push_cast; ring
+    rw [he]
+    exact h₃ (r - 1) (by omega)
+  have h0 : gaussianRealMoment ((2 * r : ℕ) - (1 / 2 : ℝ)) 2 ≤ B := by
+    have he : ((2 * r : ℕ) : ℝ) - 1 / 2 = 2 * ((r : ℝ) + 1 / 4) - 1 := by push_cast; ring
+    rw [he]
+    exact h₁ r (by omega)
+  have hp1 : gaussianRealMoment ((2 * r : ℕ) + (1 / 2 : ℝ)) 2 ≤ B := by
+    have he : ((2 * r : ℕ) : ℝ) + 1 / 2 = 2 * ((r : ℝ) + 3 / 4) - 1 := by push_cast; ring
+    rw [he]
+    exact h₃ r (by omega)
+  have hp2 : gaussianRealMoment ((2 * r : ℕ) + (3 / 2 : ℝ)) 2 ≤ B := by
+    have he : ((2 * r : ℕ) : ℝ) + 3 / 2 = 2 * (((r + 1 : ℕ) : ℝ) + 1 / 4) - 1 := by push_cast; ring
+    rw [he]
+    exact h₁ (r + 1) le_rfl
+  have hlog : gaussianHigherLogMomentConstant r (1 / 2) ≤
+      8 ^ r * (B + ((2 * r : ℕ) + 1) * (B + B + B) + 16 * (B + B + B)) := by
+    unfold gaussianHigherLogMomentConstant gaussianLogScaleMoment
+    simp only [show ((2 * r : ℕ) : ℝ) - 1 / 2 - 1 = (2 * r : ℕ) - (3 / 2 : ℝ) by ring,
+      show ((2 * r : ℕ) : ℝ) - 3 / 2 + 1 = (2 * r : ℕ) - (1 / 2 : ℝ) by ring,
+      show ((2 * r : ℕ) : ℝ) - 3 / 2 - 1 = (2 * r : ℕ) - (5 / 2 : ℝ) by ring,
+      show ((2 * r : ℕ) : ℝ) - 1 / 2 + 1 = (2 * r : ℕ) + (1 / 2 : ℝ) by ring,
+      show ((2 * r : ℕ) : ℝ) + 1 / 2 + 1 = (2 * r : ℕ) + (3 / 2 : ℝ) by ring,
+      show ((2 * r : ℕ) : ℝ) + 1 / 2 - 1 = (2 * r : ℕ) - (1 / 2 : ℝ) by ring]
+    gcongr
+  have hpow : (r : ℝ) ^ 2 ≤ ((r : ℝ) ^ 2) ^ r := by
+    rw [← pow_mul]
+    exact pow_le_pow_right₀ hr1 (by omega)
+  calc
+    _ ≤ 8 ^ r * (B + ((2 * r : ℕ) + 1) * (B + B + B) + 16 * (B + B + B)) := hlog
+    _ = 8 ^ r * gaussianQuarterGammaConstant * (3 * (r : ℝ) + 26) *
+        ((r : ℝ) + 1) ^ (r + 1) := by dsimp [B]; push_cast; ring
+    _ ≤ 8 ^ r * gaussianQuarterGammaConstant * (29 * (r : ℝ)) *
+        (2 * (r : ℝ)) ^ (r + 1) := by gcongr <;> linarith only [hr1]
+    _ = 58 * gaussianQuarterGammaConstant * (r : ℝ) ^ 2 * (16 * (r : ℝ)) ^ r := by
+      rw [pow_succ, mul_pow]
+      have he : (8 : ℝ) ^ r * 2 ^ r = 16 ^ r := by rw [← mul_pow]; norm_num
+      rw [show 8 ^ r * gaussianQuarterGammaConstant * (29 * (r : ℝ)) *
+          ((2 : ℝ) ^ r * (r : ℝ) ^ r * (2 * r)) =
+          58 * gaussianQuarterGammaConstant * (r : ℝ) ^ 2 * (8 ^ r * 2 ^ r) * (r : ℝ) ^ r by ring,
+        he, mul_pow]
+      ring
+    _ ≤ 58 * gaussianQuarterGammaConstant * ((r : ℝ) ^ 2) ^ r * (16 * (r : ℝ)) ^ r := by gcongr
+    _ = 58 * gaussianQuarterGammaConstant * (((r : ℝ) ^ 2) ^ r * (16 * (r : ℝ)) ^ r) := by ring
+    _ = _ := by rw [← mul_pow]; congr 2; ring
+
+/-- The logarithmic constants cost four height powers per moment order. -/
+theorem gaussianHigherLogMomentConstant_half_le_height (r : ℕ) (hr : r ≠ 0)
+    {t : ℝ} (ht : 16 ≤ t) (hrt : (r : ℝ) ≤ t) :
+    gaussianHigherLogMomentConstant r (1 / 2) ≤
+      58 * gaussianQuarterGammaConstant * t ^ (4 * r) := by
+  have ht0 : 0 ≤ t := by linarith only [ht]
+  have hbase : 16 * (r : ℝ) ^ 3 ≤ t ^ 4 := by
+    calc
+      _ ≤ t * t ^ 3 := mul_le_mul ht (pow_le_pow_left₀ (Nat.cast_nonneg r) hrt 3)
+        (by positivity) ht0
+      _ = _ := by ring
+  apply (gaussianHigherLogMomentConstant_half_le r hr).trans
+  rw [pow_mul]
+  exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) hbase r)
+    (by have := gaussianQuarterGammaConstant_pos; positivity)
+
 #print axioms gaussianMellinJetConstant_quarter_le
 #print axioms gaussianHigherMomentLatticeConstant_half_physical_le
 #print axioms gaussianHigherMomentLatticeConstant_half_le_height
+#print axioms gaussianHigherLogMomentConstant_half_le
+#print axioms gaussianHigherLogMomentConstant_half_le_height
 
 end GaloisForLFunctions.ExceptionalLayerTheory

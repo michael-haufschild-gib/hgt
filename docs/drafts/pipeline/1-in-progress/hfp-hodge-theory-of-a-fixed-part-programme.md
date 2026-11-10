@@ -62,12 +62,46 @@ hyperbolic planes: index `τ(M)`. Zero divisors `e_p(e_p − p) = 0`.
 
 ## Lean status
 
+Folder `formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/`. Each module checked with
+`lake --old env lean`, empty output.
+
 | Module | Content | Status |
 |---|---|---|
+| `TheNormalFormOfThePairingOfTheDegreePoints` | `contact`, `pairKernel`, `counterterm`, `combPairing`, `degOne`, `degTwo`, `combForm`, `combPotential`, `combDirichlet`, `sampleCoord`; Zariski `combPairing_eq_potential_sub_dirichlet`; `combPotential_eq_of_properDivisors_subset`; bridge `combPairing_sample`; limits `tendsto_combPairing_sample`, `tendsto_degOne_mul_degTwo_sample`, `tendsto_combForm_sample` | checked, olean built |
+| `TheHodgeIndexHoldsAtEveryScaleOnShortWindows` | `contact_eq_zero_of_window`, `sum_jetKernel_erase_le`, `log_nine_div_pi_ge`, `combPotential_le_of_short`, `combPairing_le_of_short` (≤ −1/40 Σc²), `neg_le_two_mul_degOne_mul_degTwo`, `combForm_ge_of_short` (≥ 1/50 Σc², `18 M ≤ N`), `combPairing_le_degrees_of_short` | checked, olean built |
+| `WeilsFormInTheGaugeOfTheFlatTail` | `combBilin`, `formBilin`, `tailPotential`, `formBilin_one`, `combForm_eq_gauge`, `chebyshev`, `sum_contact_erase_Icc`, `combPotential_Icc`, `tailRow`, `tailPotential_Icc`, `formBilin_flatTail`, `sum_sum_contact_Icc`, `sum_chebyshev_div`, `combForm_flatTail`, `tendsto_combForm_flatTail_div` (→ 2+γ−log 4π), `tendsto_tailRow_mul`, `carryCocycle`, `sum_log_Ioc`, `sum_counterterm_Ioc`, `sum_contact_Icc_of_octave`, `sum_chebyshev_octave`, `sum_chebyshev_octave_lines` | checked, olean built |
+| `RiemannRochOnTheTowerHasTheGluingIndex` | `natCast_dvd_ghostComponent_of_vanish`, `exists_first_graph`, `exists_fiber_of_triangular`, `exists_orbitLatticeMap_vanishing`, `exists_orbitLatticeMap_first_graph` | checked |
+| `TheCombOfUnitMassesFixesTheContacts` | `sum_divisors_eq_log_iff`, `multiplicity_eq_one_iff`, `contactW`, `combPairingW`, `combFormW`, `combFormW_flatTail`, `tendsto_combFormW_flatTail_div`, `eventually_combFormW_flatTail_neg`, `eventually_combFormW_doubleTwo_neg` | checked |
+
+Umbrella `HodgeTheoryOfAFixedPart.lean`: not yet written. README: first draft (needs the results).
+
+## Plan (remaining)
+
+- Q1 canonical comb: a uniformly separated set stable under multiplication by `ℕ` lies in one
+  orbit `δℕ` (Dirichlet approximation + Bézout coefficients; denominators `≤ α/σ`).
+- Q3/T3: comb surface as `ArithmeticCastelnuovoSeveri.PolarSurface` (needs symmetric bilinear
+  `combBilin`), Hodge index on short windows, Cauchy–Schwarz for the defect; Zariski index bound
+  `ind₊ ≤ #{n : (P h)_n > 0}` for a positive gauge `h`.
+- Q2: second axiom = smallness (Arakelov effectivity): Bézout for a section vanishing on `S` and
+  `Γ_m` in the comb pairing is the bound `log|x_m| ≤ h(m) − Σ jets`; tower pairing between graphs
+  on a line is `log|q^m − q^n|`; count form has one pole plane per line.
+- K1–K7 readings; M3 = ACS `CurveDatum.spanDefect_eq_toeplitz`; M4: finite scale ratio 19/18
+  (Lean), limit width 181/250 (AGZ).
+- T4 (windows with exceptions), T6 (ordered approximations): corpus + normal-form statements.
+
+## Traps met
+
+- Each check of a module importing the AGZ chain takes 4–6 min (imports); the tower module 1.5.
+- `Nat.add_choose_mul_factorial_mul_factorial i j` has `(i + j).choose j` (use
+  `Nat.choose_symm_add`).
+- `positivity` cannot prove `0 < (n : ℝ)` for a cast of an unknown natural: pass `mul_pos`.
+- `set S := … with hS` blocks `rw` with lemmas stated on the explicit set: state helper lemmas
+  on the explicit `Ioc N (N + L * N)`.
+- `first | (field_simp; done) | …` triggers unreachable-tactic warnings: plain `field_simp`.
 
 ## Open
 
 Q1 (canonical comb), Q3 at finite scale beyond short windows, K1–K7 readings, M2–M4.
 
 ## Log
-- 2026-11-10 — created; README first draft.
+- 2026-11-10 — created; README first draft; five modules checked.

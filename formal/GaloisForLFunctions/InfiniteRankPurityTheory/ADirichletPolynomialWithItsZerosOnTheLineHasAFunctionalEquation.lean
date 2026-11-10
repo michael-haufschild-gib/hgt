@@ -621,8 +621,9 @@ theorem exists_ne_zero_root {Q : Polynomial ℂ} {i j : ℕ} (hij : i ≠ j) (hi
       exact hj (by rw [hcoeff, if_neg h])
     exact hij (h1.trans h2.symm)
   obtain ⟨u, hu⟩ := IsAlgClosed.exists_root R hdeg
-  refine ⟨u, fun h => hR0 (by rw [← h]; exact hu), ?_⟩
-  rw [hR, Polynomial.eval_mul, show R.eval u = 0 from hu, mul_zero]
+  have hu' : R.eval u = 0 := hu
+  refine ⟨u, fun h => hR0 (by rwa [h] at hu'), ?_⟩
+  rw [hR, Polynomial.eval_mul, hu', mul_zero]
 
 /-- **A Dirichlet polynomial in one base has a zero that is not a zero of `ξ`.** If every frequency
 is `m β^k` for one `β > 1`, then `D(s) = m^{-s} Q(β^{-s})` for a polynomial `Q` with a nonzero
