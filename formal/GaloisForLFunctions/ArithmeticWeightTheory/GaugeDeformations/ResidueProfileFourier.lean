@@ -127,6 +127,12 @@ theorem analyticOnNhd_residueFourierProfile {Φ : (ZMod q)ˣ → ℂ → ℂ} {R
       analyticAt_const.mul ((hΦ a z hz).sub analyticAt_const))
   simpa only [Finset.sum_apply] using ha
 
+theorem analyticOnNhd_residueAverage {Φ : (ZMod q)ˣ → ℂ → ℂ} {R : NNReal}
+    (hΦ : ∀ a, AnalyticOnNhd ℂ (Φ a) (closedBall 0 R)) :
+    AnalyticOnNhd ℂ (residueAverage Φ) (closedBall 0 R) := by
+  have ha := analyticOnNhd_residueFourierProfile hΦ 1
+  rwa [show residueFourierProfile Φ 1 = residueAverage Φ from funext (residueFourierProfile_one Φ)] at ha
+
 theorem residueFourierProfile_zero {Φ : (ZMod q)ˣ → ℂ → ℂ}
     (h0 : ∀ a, Φ a 0 = 1) (χ : DirichletCharacter ℂ q) : residueFourierProfile Φ χ 0 = 1 := by
   simp only [residueFourierProfile, residueFourierDeviation, h0, sub_self,

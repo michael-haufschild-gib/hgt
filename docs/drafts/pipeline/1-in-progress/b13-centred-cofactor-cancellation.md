@@ -56,6 +56,14 @@ invariant under primes larger than its cutoff, but the physical Gaussian
 weight is not. The exact cutoff formula retains both the source change
 and the terminal band. Their contribution cannot be discarded.
 
+The [Gaussian cross-sign test](../5-failed/b13-gaussian-prime-cross-sign.md)
+now proves the failure of this general sign transfer for the literal
+Gaussian moment. The even cofactor mask is invariant under odd primes,
+yet its scaled cross form tends to `w_η(2)>0`, uniformly in every positive
+moment order. The surviving atom is at `n=2p`; the complementary mass
+vanishes. This fixes positive damping and a fixed mask, so it does not
+decide the sign or size of the actual growing-cutoff centred current.
+
 For a prime `p>W`, `P_W(pb)−P_V(pb)=P_W(b)−P_V(b)` when `V≤W`.
 On the large-prime part this converts the periodic cofactor convolution
 to the same periodic factor times the actual large-prime-divisor weight

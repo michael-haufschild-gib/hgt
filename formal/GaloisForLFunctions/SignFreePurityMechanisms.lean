@@ -25,6 +25,9 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixBoundary
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CommonCoordinate
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.SingleResidueOptimality
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.BoundaryFeasibility
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitShifts
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ShiftCompositions
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PowerSelection
 
 /-!
 # Sign-free purity mechanisms

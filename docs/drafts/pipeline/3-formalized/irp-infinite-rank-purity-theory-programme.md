@@ -470,6 +470,14 @@ Module in a strip `a ≤ Re ρ_i ≤ A`, `Σ‖b_i‖ < ∞`, locally finite; `�
    zero is visible (positive real parts do not cancel), so purity is RH; under RH
    `ρ(1 − ρ) = ‖ρ‖²` and the weights are positive (`zeroMotive_castelnuovoSeveri_iff`).
 
+### P31. No Dirichlet polynomial is a factor of `ξ`
+Every Dirichlet polynomial with at least two terms has a zero that is not a zero of `ξ`
+(`exists_zero_not_xi_zero`). Proof on its own card:
+`irp-no-dirichlet-polynomial-is-a-factor-of-xi.md` (K: the constant terms on the two sides of the
+line agree, by the jumps of the fractional part and Möbius inversion; A: a zero-free exponential
+polynomial is bounded below; B: its logarithmic derivative expands absolutely up to the zeros;
+C: the constant terms of `D'/D` are `−log` of the lowest and of the highest frequency).
+
 ## Modules
 | Module | Content |
 |---|---|
@@ -507,6 +515,10 @@ Module in a strip `a ≤ Re ρ_i ≤ A`, `Σ‖b_i‖ < ∞`, locally finite; `�
 | TheArchimedeanFibreIsATraceAndTheFiniteContactsAreNot | `mergedWeight`, `evenJet`; `mergedWeight_eq_zero_of_frobTrace_bound_at`, `mergedWeight_eq_of_frobTrace_eventually_eq`, `archimedeanFibre_forced`, `not_isTrace_gluedLefschetz`, `not_isTrace_pointCount` |
 | ADirichletPolynomialWithItsZerosOnTheLineHasAFunctionalEquation | `reflPoly`; `tendsto_reflPoly_div`, `exists_entire_quotient`, `exists_bound_on_strip`, `exists_functionalEquation_of_zeros_on_line`, `exists_zero_not_xi_zero_of_constantTerm`, `exists_zero_not_xi_zero_of_dvd`, `exists_ne_zero_root`, `exists_zero_not_xi_zero_of_oneBase`, `exists_zero_not_xi_zero_of_two_terms` |
 | OnTheFlowCastelnuovoSeveriIsPurityAndEffectivity | `centralTrace`, `graphPairing`; `hasSum_mergedWeight_mul`, `mergedWeight_eq_of_frobTrace_eq_on_flow`, `centralTrace_neg_iff`, `conj_centralTrace_iff`, `hasSum_quadraticForm`, `re_eq_half_of_positiveDefinite`, `effective_of_positiveDefinite`, `positiveDefinite_centralTrace_iff`, `graphPairing_comm_iff`, `castelnuovoSeveri_defect`, `castelnuovoSeveri_iff`, `zeroMotive_castelnuovoSeveri_iff` |
+| TheConstantTermsOnTheTwoSidesOfTheLineAgree | `fractSeries`; `mellin_fractSeries`, `fractSeries_eq`, `tsum_jump_eq`, `constantTerms_agree`, `exists_differentiableOn_deriv_mul_div`, `norm_le_of_good_heights` |
+| TheInverseOfAnExponentialPolynomialExpandsWhereItIsBoundedBelow | `expPoly`, `Word`, `wordMass`, `freqMonoid`, `LogIndex`; `hasSum_inv_expPoly_words`, `norm_wordMass_le`, `summable_exp_neg_freqMonoid`, `hasSum_inv_expPoly`, `hasSum_logWeight`, `sum_exp_eq_expPoly` |
+| AZeroFreeExponentialPolynomialIsBoundedBelow | `exists_le_norm_expPoly_of_zeroFree`, `hasSum_logWeight_of_zeroFree` |
+| NoDirichletPolynomialIsAFactorOfXi | `exists_zero_not_xi_zero` |
 
 ## Reductions (README §12)
 Purity over `ℤ` is reduced to one of: an index bound of one for `ξ`; a crude count on a thick set of
@@ -533,3 +545,4 @@ fixed part with mass one.
 - 2026-11-10 — 30 modules: half classes (one-sided divergence and `ℓ²` ladders at every real part); a factor with a Dirichlet series is pure
 - 2026-11-10 — 32 modules: a Dirichlet polynomial with a constant term and a functional equation is not a factor of `ξ` (real and complex coefficients)
 - 2026-11-10 — 34 modules: zeros on the line force the functional equation of a Dirichlet polynomial, so no Dirichlet polynomial with a constant term and a further term is a factor; lowest frequency dividing the others; one base and two terms; on the flow the trace determines the module, the functional equation is self-duality, Castelnuovo–Severi is purity and effectivity. Open: Dirichlet polynomials in several bases without constant term whose lowest frequency does not divide the others
+- 2026-11-10 — 38 modules: no Dirichlet polynomial with two terms is a factor of `ξ`, whatever its support (jump law of the fractional part, Möbius inversion, exponential polynomials with real frequencies); the open case of the previous entry is closed

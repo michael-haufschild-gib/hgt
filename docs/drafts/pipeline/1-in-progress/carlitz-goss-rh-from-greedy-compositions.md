@@ -58,6 +58,9 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `CommonCoordinate` | All proper parts of an optimal or greedy composition share an inverse-content coordinate equal to one |
 | `SingleResidueOptimality` | For `q=p`, greediness is equivalent to weight optimality and maximizing numerical part values are unique |
 | `BoundaryFeasibility` | A non-strict inverse threshold gives either a positive last remainder or one fewer part with divisible total; one integral inverse coordinate forces integrality everywhere |
+| `DigitShifts` | Exponent shifts preserve cardinality and divisibility, scale values by a power of `p`, and translate content and inverse-content coordinates |
+| `ShiftCompositions` | Exponent shifts preserve optimality and greediness; a suitable shift moves the common inverse-content coordinate to zero |
+| `PowerSelection` | Powers dividing a target contain an exact target-sum subcollection once their total reaches it; the same selection applies to cyclic weighted digit contents |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.

@@ -406,6 +406,21 @@ constants; the complementary arithmetic tail is at most `784exp(−t²)`.
 The remaining prime variable is long. Its centred cancellation and the
 uniform growing-order filter transfer remain open.
 
+`GaussianRamanujanPrimeCross.lean` rules out transferring the negative
+prime-invariant cross sign through Gaussian weighting. Write
+`w_η(n)=|pmPowerDampedRamanujanWeight η n|`, `D_p=p^(1+η)−1`,
+`χ_p=1_(p|n)−D_p⁻¹1_(p∤n)`, and
+`G_r,Q(n)=(n/Q)^(4r−1)exp(4[1−(n/Q)²])`. For fixed `η>0`,
+
+    D_p Σ_(n≤2p) w_η(n)χ_p(n)1_(2|n)G_r,2p(n) → w_η(2)>0
+
+along primes, uniformly over all `r≥1`. The even mask is invariant under
+odd primes. The exact squared norm of the critical Gaussian moment is
+its squared norm at `Q` times `G_r,Q`, when `Re ε Q²=2`. Thus the
+literal weighted cross form is eventually positive for every `t≠0`.
+This obstruction uses a fixed cofactor mask and fixed positive damping;
+it neither bounds nor refutes cancellation in the growing-cutoff current.
+
 `GaussianLogarithmicContinuum.lean` and `GaussianLogarithmicTypeIPole.lean`
 extract both signed main terms from the actual logarithmic type-I convolution.
 For `B_V=Σ_{b≤V}μ(b)/b`, `D_V=Σ_{b≤V}μ(b)log b/b` and
