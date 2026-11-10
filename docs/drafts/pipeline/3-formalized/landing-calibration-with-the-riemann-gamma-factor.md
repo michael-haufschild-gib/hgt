@@ -1,8 +1,8 @@
 # Landing calibration with the Riemann Gamma factor
 
 - **ID:** landing-calibration-with-the-riemann-gamma-factor
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** PROVED
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, A68.
 - **Statement:** Construct a real, FE-symmetric meromorphic completion with the Riemann Gamma factor, Riemann–von Mangoldt zero counting, and infinitely many off-line zeros approaching the critical line.
 
@@ -48,8 +48,9 @@ Five modules in `InfiniteRankWeilTheory/`, from
 `TheRiemannGammaFactorDoesNotForceLanding.lean`, passed compilation and
 transitive audits with only `propext`, `Classical.choice`, `Quot.sound`.
 The capstone is `exists_riemann_gamma_counting_model_without_landing`.
-Its direct check passed; final direct checks of the four supporting
-modules remain. The umbrella import and README are wired.
+All five final direct `lake --old env lean` checks passed, with only
+`propext`, `Classical.choice`, `Quot.sound`. No placeholders or limit
+overrides occur. The umbrella import and README are wired.
 
 The positive survivor is the exact paired-count construction with simple
 analytic multiplicities, order at most one, and residue normalization.

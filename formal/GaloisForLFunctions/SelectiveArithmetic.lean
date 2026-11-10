@@ -5,6 +5,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheHeightOfAPacketIsAMass
 import GaloisForLFunctions.SelectiveArithmetic.CancellationInTheContactsBuysTheLadder
 import GaloisForLFunctions.SelectiveArithmetic.AnIsolatedPairShowsAtTheRungOfItsDepth
 import GaloisForLFunctions.SelectiveArithmetic.TheFeasibleSetsOfAConductor
+import GaloisForLFunctions.SelectiveArithmetic.TheZerosOfADirichletLFunctionOnTheLadder
 
 /-!
 # Selective Arithmetic
@@ -32,7 +33,10 @@ sign, and where the first statement beyond that scale lies.
   logarithmic local count, positivity on a rung forces an off-line companion of every zero deeper
   than the rung.
 * The feasible sets of a conductor: finite determinacy, monotonicity in aperture and conductor,
-  convexity; the trivial aperture as a threshold of the dominated box.
+  convexity; the trivial aperture as a threshold of the dominated box; a uniform floor is
+  feasibility at a larger conductor.
+* The zeros of a Dirichlet `L`-function on the ladder of its conductor: positivity below the rung
+  one, companions of every zero deeper than a rung above it.
 
 See `SelectiveArithmetic/README.md`.
 -/

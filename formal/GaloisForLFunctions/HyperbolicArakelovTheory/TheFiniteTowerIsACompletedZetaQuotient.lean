@@ -34,7 +34,7 @@ theorem geometricTower_eq_logDeriv_completedZetaQuotient {s : ℂ}
   have himN : (s + N).im ≠ 0 := by simpa only [Complex.add_im, Complex.natCast_im, add_zero] using him
   have hd := differentiableAt_reflectedCompletedLambda him
   have hdN := differentiableAt_reflectedCompletedLambda himN
-  have hshift : HasDerivAt (fun z : ℂ => z + N) 1 s := (hasDerivAt_id s).add_const N
+  have hshift : HasDerivAt (fun z : ℂ => z + N) 1 s := (hasDerivAt_id s).add_const (N : ℂ)
   have hc : logDeriv (fun z => reflectedCompletedLambda (z + N)) s =
       logDeriv reflectedCompletedLambda (s + N) := by
     have he := logDeriv_comp hdN hshift.differentiableAt

@@ -268,7 +268,7 @@ theorem sum_resonator_weighted_energy_le {ε : ℝ} (hε : 0 ≤ ε)
       exact mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast hM m hm) hε)
         (sq_nonneg _)
-    _ = _ := by rw [Finset.sum_mul]; ring
+    _ = _ := by rw [← Finset.sum_mul]; ring
 
 /-- The full coefficient energy has only a subpower support cost. -/
 theorem tsum_norm_resonatorCoeff_sq_le {ε σ : ℝ} (hε : 0 < ε)

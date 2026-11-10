@@ -83,9 +83,12 @@ theorem carry_natCast_div {p : ℕ} (hp : 0 < p) (x y : ℕ) :
     split_ifs with h
     · exact (Nat.div_eq_of_lt_le (by omega) (by omega)).symm
     · exact (Nat.div_eq_of_lt (by omega)).symm
-  rw [carry_eq_floor, hadd, hfloor, hfloor, hfloor, hdiv]
-  push_cast
-  ring
+  have hz : ⌊((x + y : ℕ) : ℝ) / (p : ℝ)⌋ - ⌊(x : ℝ) / (p : ℝ)⌋ - ⌊(y : ℝ) / (p : ℝ)⌋ =
+      (((x % p + y % p) / p : ℕ) : ℤ) := by
+    rw [hfloor, hfloor, hfloor, hdiv]
+    push_cast
+    ring
+  rw [carry_eq_floor, hadd, hz, Int.cast_natCast]
 
 /-! ### The carry series -/
 
@@ -193,8 +196,11 @@ theorem eq_zero_of_additive_of_bound {d : ℝ → ℂ}
     Real.rpow_le_rpow (Nat.cast_nonneg n) (by linarith) (by linarith)
   have hsplit : (n : ℝ) + 1 = ((n : ℝ) + 1) ^ σ * ((n : ℝ) + 1) ^ (1 - σ) := by
     rw [← Real.rpow_add hn0, add_sub_cancel, Real.rpow_one]
-  have h := hle n
-  rw [hsplit, mul_assoc, mul_comm C] at h
+  have h : ((n : ℝ) + 1) ^ σ * (((n : ℝ) + 1) ^ (1 - σ) * ‖d u‖) ≤ ((n : ℝ) + 1) ^ σ * C := by
+    calc ((n : ℝ) + 1) ^ σ * (((n : ℝ) + 1) ^ (1 - σ) * ‖d u‖)
+        = ((n : ℝ) + 1) * ‖d u‖ := by rw [← mul_assoc, ← hsplit]
+      _ ≤ C * ((n : ℝ) + 1) ^ σ := hle n
+      _ = ((n : ℝ) + 1) ^ σ * C := mul_comm _ _
   have h' : ((n : ℝ) + 1) ^ (1 - σ) * ‖d u‖ ≤ C :=
     le_of_mul_le_mul_left h (Real.rpow_pos_of_pos hn0 _)
   have hn' : C / ‖d u‖ < ((n : ℝ) + 1) ^ (1 - σ) := lt_of_lt_of_le hn hmono

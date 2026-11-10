@@ -20,7 +20,7 @@
 | A46 | Local singular indices beyond the cubic cutoff | Complete: `primeVertexRelativeIndex_eq_signedCount`, direct check and standard-axiom audit passed; already imported by umbrella |
 | A54 | Bianchi resolvent cusp expansion with nonzero Wronskian for `Δ−3/4` | Open |
 | A55 | Functional-equation rigidity for continuous Beurling prime measures with `L¹` or `L²` defect | Complete: rigidity refuted; arbitrarily small positive zero-preserving family formalized; six direct checks and standard-axiom audits passed; umbrella wired |
-| A68 | Landing countermodel with ζ's Gamma factor and Riemann–von Mangoldt counting | Open |
+| A68 | Landing countermodel with ζ's Gamma factor and Riemann–von Mangoldt counting | Complete: `exists_riemann_gamma_counting_model_without_landing`; five direct checks and standard-axiom audits passed; umbrella wired |
 | A86 | Growing-order top-mode filter transfer and near-diagonal cofactor pairs | Open |
 | A91 | General Dedekind-zeta comb and Hodge index for higher-degree number rings | Open |
 
@@ -76,10 +76,19 @@ The base continuous measure is Lean-verified atomless, of mass one, supported ab
 The pole-subtracted remainder is holomorphic on `Re s>0`; the perturbed
 zeta is meromorphic there. No continuation across `−1` is asserted.
 
-A68's paired-ordinate construction is in
-`landing-calibration-with-the-riemann-gamma-factor.md`; A37's proposed
-uniform polynomial range is in
-`growing-resonator-means-below-the-kronecker-scale.md`. Both remain open.
+## A68: Gamma-normalized landing calibration
+
+The paired Xi ordinates give a real, FE-symmetric entire function of order
+at most one, with simple off-line zeros approaching the line. Its positive
+zero count differs from Xi's count by at most one. Entire decompletion
+with `2/(sΓℝ(s))` gives a meromorphic function with residue one at `1`
+and the Riemann Gamma completion. All five modules passed direct checks
+and standard-axiom audits. See
+`3-formalized/landing-calibration-with-the-riemann-gamma-factor.md`.
+No Euler product or Dirichlet series is asserted.
+
+A37's uniform polynomial range remains in
+`growing-resonator-means-below-the-kronecker-scale.md`, pending Lean checks.
 
 ## A91: scope of the existing index law
 

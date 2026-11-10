@@ -13,6 +13,11 @@ supported in `[−a, a]`.
 * **Monotonicity** (`Feasible.anti`, `Feasible.mono_conductor`): the feasible sets decrease
   with the aperture and increase with the conductor.
 * **Convexity** (`systemForm_add_smul`, `convex_feasible`): the form is affine in the weights.
+* **A floor is a conductor** (`systemForm_conductor_mul_exp`, `feasible_mul_exp_iff`,
+  `exists_not_floor`): the form with the conductor `q e^{K}` is the form with the conductor `q`
+  plus `K ∫ |F|²`, so a uniform floor `−K ∫ |F|²` is feasibility at the conductor `q e^{K}`.
+  Floors do not move the ladder: beyond the trivial aperture the Liouville twist violates every
+  floor.
 * **The trivial aperture is a threshold** (`bddAbove_feasibleApertures`,
   `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt`): for every
   conductor the apertures at which the whole dominated box is feasible are bounded; the box is
@@ -107,6 +112,30 @@ theorem Feasible.mono_conductor {q q' a : ℝ} {w : ℕ → ℝ} (h : Feasible q
   rw [systemForm_eq hF hFs] at h1 ⊢
   nlinarith [mul_le_mul_of_nonneg_right hq hmass]
 
+/-! ### A floor is a conductor -/
+
+/-- Enlarging the conductor by the factor `e^{K}` adds `K ∫ |F|²` to the form. -/
+theorem systemForm_conductor_mul_exp {q : ℝ} (hq : 0 < q) (K : ℝ) {a : ℝ} {F : ℝ → ℂ}
+    (hF : ContDiff ℝ 2 F) (hFs : tsupport F ⊆ Set.Icc (-a) a) (w : ℕ → ℝ) :
+    systemForm w (q * Real.exp K) a F = systemForm w q a F + K * ∫ x, ‖F x‖ ^ 2 := by
+  rw [systemForm_eq hF hFs, systemForm_eq hF hFs,
+    Real.log_mul hq.ne' (Real.exp_pos K).ne', Real.log_exp]
+  ring
+
+/-- **A uniform floor is feasibility at a larger conductor.** -/
+theorem feasible_mul_exp_iff {q : ℝ} (hq : 0 < q) (K a : ℝ) (w : ℕ → ℝ) :
+    Feasible (q * Real.exp K) a w ↔
+      ∀ F : ℝ → ℂ, ContDiff ℝ 2 F → tsupport F ⊆ Set.Icc (-a) a →
+        -(K * ∫ x, ‖F x‖ ^ 2) ≤ systemForm w q a F := by
+  constructor
+  · intro h F hF hFs
+    have h1 := h F hF hFs
+    rw [systemForm_conductor_mul_exp hq K hF hFs] at h1
+    linarith
+  · intro h F hF hFs
+    rw [systemForm_conductor_mul_exp hq K hF hFs]
+    linarith [h F hF hFs]
+
 /-! ### Convexity -/
 
 theorem contactForm_add_smul (s t : ℝ) (w₁ w₂ : ℕ → ℝ) (F : ℝ → ℂ) (N : ℕ) :
@@ -191,5 +220,41 @@ theorem exists_not_feasible_of_trivialAperture_lt {q a : ℝ} (ha : trivialApert
   have ha0 : 0 ≤ a := (trivialAperture_nonneg q).trans ha.le
   have hmem : a ∈ {b : ℝ | 0 ≤ b ∧ ∀ v : ℕ → ℝ, Dominated v → Feasible q b v} := ⟨ha0, h⟩
   exact absurd (le_csSup (bddAbove_feasibleApertures q) hmem) (not_le.mpr ha)
+
+/-- **Beyond the trivial aperture the Liouville twist violates every floor.** For every
+`η > 0` and `K ≥ 0` and every conductor with `log q` large, at every aperture
+`a ≥ log log q + η` some test supported in `[−a, a]` has
+`𝔚_{λΛ,q}(F) < −K ∫ |F|²`. -/
+theorem exists_not_floor {η K : ℝ} (hη : 0 < η) (hK : 0 ≤ K) :
+    ∃ M₀ : ℝ, ∀ q : ℝ, 0 < q → M₀ ≤ Real.log q → ∀ a : ℝ, Real.log (Real.log q) + η ≤ a →
+      ∃ F : ℝ → ℂ, ContDiff ℝ 2 F ∧ tsupport F ⊆ Set.Icc (-a) a ∧
+        systemForm liouvilleWeight q a F < -(K * ∫ x, ‖F x‖ ^ 2) := by
+  obtain ⟨M₁, hM₁1, hM₁⟩ := exists_not_feasible (half_pos hη)
+  have hε : 0 < Real.exp (η / 2) - 1 := by
+    have : Real.exp 0 < Real.exp (η / 2) := Real.exp_lt_exp.mpr (by linarith)
+    rw [Real.exp_zero] at this
+    linarith
+  refine ⟨max M₁ (K / (Real.exp (η / 2) - 1)), fun q hq hqM a ha => ?_⟩
+  have hx1 : M₁ ≤ Real.log q := (le_max_left _ _).trans hqM
+  have hx0 : 0 < Real.log q := by linarith
+  have hKx : K ≤ (Real.exp (η / 2) - 1) * Real.log q := by
+    have h := (le_max_right _ _).trans hqM
+    rwa [div_le_iff₀ hε] at h
+  have hlogq' : Real.log (q * Real.exp K) = Real.log q + K := by
+    rw [Real.log_mul hq.ne' (Real.exp_pos K).ne', Real.log_exp]
+  -- the enlarged conductor has the same trivial aperture up to `η/2`
+  have hll : Real.log (Real.log q + K) ≤ Real.log (Real.log q) + η / 2 := by
+    have h1 : Real.log q + K ≤ Real.exp (η / 2) * Real.log q := by linarith
+    calc Real.log (Real.log q + K) ≤ Real.log (Real.exp (η / 2) * Real.log q) :=
+          Real.log_le_log (by linarith) h1
+      _ = Real.log (Real.log q) + η / 2 := by
+          rw [Real.log_mul (Real.exp_pos _).ne' hx0.ne', Real.log_exp]
+          ring
+  have hnot := (hM₁ (q * Real.exp K) (by rw [hlogq']; linarith) a (by
+    rw [hlogq']
+    linarith)).1
+  rw [feasible_mul_exp_iff hq] at hnot
+  push Not at hnot
+  exact hnot
 
 end GaloisForLFunctions.SelectiveArithmetic
