@@ -42,6 +42,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.NormalizedLast
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MinimalStructure
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixCarryRecursion
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ContentMatrixRealization
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GeometricPrefixCost
 
 /-!
 # Sign-free purity mechanisms

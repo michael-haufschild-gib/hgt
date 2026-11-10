@@ -133,30 +133,44 @@ def backwardCarryRows (p : ℤ) (w : ℕ → ℤ) (v : ℕ → ℤ) : ℕ → �
   | 0 => v
   | r + 1 => backwardPrefixRow p (w r) (backwardCarryRows p w v r)
 
-theorem backwardCarryRows_floor {p : ℤ} {w v : ℕ → ℤ} {m : ℕ}
-    (hp : 1 ≤ p) (hw : ∀ r, (m : ℤ) + 1 ≤ w r)
+theorem backwardCarryRows_floor {p : ℤ} {w v : ℕ → ℤ} {m R : ℕ}
+    (hp : 1 ≤ p) (hw : ∀ r < R, (m : ℤ) + 1 ≤ w r)
     (hv : ∀ n ≤ m, (m : ℤ) - n ≤ v n) :
-    ∀ r n, n ≤ m → (m : ℤ) - n ≤ backwardCarryRows p w v r n := by
+    ∀ r ≤ R, ∀ n ≤ m, (m : ℤ) - n ≤ backwardCarryRows p w v r n := by
   intro r
   induction r with
-  | zero => exact hv
-  | succ r ih => exact backwardPrefixRow_floor hp (hw r) ih
+  | zero => exact fun _ => hv
+  | succ r ih =>
+    intro hr
+    exact backwardPrefixRow_floor hp (hw r (by omega)) (ih (by omega))
 
-theorem backwardCarryRows_step {p : ℤ} {w v : ℕ → ℤ}
-    (hv : ∀ n, v (n + 1) + 1 ≤ v n) (r n : ℕ) :
+theorem backwardCarryRows_step {p : ℤ} {w v : ℕ → ℤ} {n : ℕ}
+    (hv : v (n + 1) + 1 ≤ v n) (r : ℕ) :
     backwardCarryRows p w v r (n + 1) + 1 ≤ backwardCarryRows p w v r n := by
   cases r with
-  | zero => exact hv n
+  | zero => exact hv
   | succ r => exact backwardPrefixRow_step p (w r) (backwardCarryRows p w v r) n
+
+theorem backwardCarryRows_empty {p : ℤ} {w v : ℕ → ℤ} {m R : ℕ}
+    (hp : 1 ≤ p) (hw : ∀ r < R, (m : ℤ) + 1 ≤ w r)
+    (hv : ∀ n ≤ m, (m : ℤ) - n ≤ v n) (hzero : v m = 0) :
+    ∀ r ≤ R, backwardCarryRows p w v r m = 0 := by
+  intro r
+  induction r with
+  | zero => exact fun _ => hzero
+  | succ r ih =>
+    intro hr
+    exact backwardPrefixRow_empty hp (hw r (by omega))
+      (backwardCarryRows_floor hp hw hv r (by omega)) (ih (by omega))
 
 /-- The residue-prefix counts of every modified row are nonnegative, nested,
 and have a gap of at least `p−1` whenever the shorter prefix is nonempty. -/
-theorem backwardCarryRows_content {p : ℤ} {w v : ℕ → ℤ}
-    (hp : 1 ≤ p) (hv : ∀ n, v (n + 1) + 1 ≤ v n) (r n : ℕ) :
+theorem backwardCarryRows_content {p : ℤ} {w v : ℕ → ℤ} {n : ℕ}
+    (hp : 1 ≤ p) (hv : v (n + 1) + 1 ≤ v n) (r : ℕ) :
     let c := backwardPrefixContent p (w r) (backwardCarryRows p w v r)
     0 ≤ c n ∧ c (n + 1) ≤ c n ∧ (0 < c (n + 1) → c (n + 1) + (p - 1) ≤ c n) := by
   dsimp only
-  have hs := backwardCarryRows_step (p := p) (w := w) hv r n
+  have hs := backwardCarryRows_step (p := p) (w := w) hv r
   exact ⟨backwardPrefixContent_nonneg _ _ _ _, backwardPrefixContent_step hp hs,
     backwardPrefixContent_gap hp hs⟩
 

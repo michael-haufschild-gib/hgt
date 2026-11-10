@@ -56,15 +56,16 @@ of the transport operator.
 
 | Milestone | Required mathematical outcome |
 |---|---|
-| M1 | Proved in the explicit Hamburger strip class for `g∈L¹` or `g∈L²`: exactly the rational primes (B122). |
-| M2 | Proved in that class: every nonclassical system has `D₁=D₂=∞`, hence infinite layer cost (B84). |
+| M1 | Proved for countable generalized-prime systems in the explicit Hamburger strip class with `g∈L¹` or `g∈L²`: exactly the rational primes (B122). |
+| M2 | Proved in that countable class: every nonclassical system has `D₁=D₂=∞`, hence infinite layer cost (B84). |
 | M3 | Prove replication for one exceptional quartet of ζ at the same depth. |
 | M4 | Prove `LinAt C` for an actual finite `C`, coupling the global and asymptotic depths. |
 | M5 | Prove AAL, with the corpus's ZAL implication then giving RH. |
 
-M1 and M2 classify other Euler systems. Complete rigidity does not exclude a finite
-layer of ζ. Perturbations with integrable or square-integrable defects provide no nonclassical
-models; transport must use exact identities of ζ. M3 is an endpoint target:
+M1 and M2 classify countable Euler systems. This rigidity does not exclude a finite
+layer of ζ. Continuous prime measures admit nonclassical models with arbitrarily small
+integrable and square-integrable defects, so the atomic mass floor is essential.
+M3 is an endpoint target:
 AAL permits arbitrarily small positive loss and does not by itself give same-depth copies.
 
 ## Tools to develop and open questions
@@ -74,7 +75,7 @@ AAL permits arbitrarily small positive loss and does not by itself give same-dep
 | FE-to-transport operator, B112 | Which exact combination of reflection and Euler factorization changes height? |
 | Quantitative recurrence of the rigid oscillation | Which returns survive coupling to the complete prime and zero tails? |
 | Resonant-tower identities | How do the modes at `γ` and `(2k+1)γ` constrain each other without a growing frozen head? |
-| Conditional prime-discrepancy defect calculus | Nonclassical systems have infinite defect in the stated class, regardless of conditional convergence; what exact identity supplies transport instead? |
+| Conditional prime-discrepancy defect calculus | Nonclassical countable systems have infinite defect in the stated class, regardless of conditional convergence; what exact identity supplies transport instead? |
 | Same-depth replication theorem | Why must one exceptional top force infinitely many tops at its exact real part? |
 
 The critical-zero coupling must be derived from the actual continued Euler product.
@@ -107,6 +108,19 @@ Their direct Lean checks and transitive axiom audits use only `propext`,
 `Classical.choice`, and `Quot.sound`.
 
 ### The exact analytic operator
+
+Positive continuous prime measures admit a different law. Let `Q` be the atomless
+probability measure obtained by pushing `x exp(-x) dx`, `x>0`, forward under `exp`.
+The prime-power measure `Pζ+εQ` has convolution-exponential Mellin transform
+`ζ(s) exp(ε/(s+1)²)`. For every `ε>0` it is nonclassical, preserves the unit atom,
+and satisfies all Hamburger strip conditions with `β=exp(ε/4)/2`.
+Its uncompleted defect satisfies `|gε(t)|≤C ε exp(ε)/(1+t²)`.
+Thus it belongs to `L¹∩L²`, with arbitrarily small inverse-square majorants,
+while preserving every zero on `Re s>0`. No continuation across `s=-1` is asserted.
+The exact counterexample and positive family are
+`continuous_prime_measure_finite_defect_counterexample` and
+`zero_preserving_continuous_prime_perturbations` in
+`ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects.lean`.
 
 Euler reflection writes the defect kernel as
 `z^(-½+2it)/sin(π/4+πit)`. On the two imaginary rays its squared Mellin weights are

@@ -199,11 +199,11 @@ residues cancel in the weight difference. Thus
 `(p−1)(p²+1)−p²=(p−2)p²+p−1>0`.
 This bound handles `p=2` without a separate equal-degree case.
 
-`PrefixCarryRecursion.lean` passes direct Lean checking. Its descending row
-recursion preserves the inverse-coordinate floor and proves nonnegative,
-nested content with the `p−1` gap. Both endpoint axiom audits use only the
-three standard axioms. `ContentMatrixRealization.lean` also passes its direct
-check and standard-axiom audit: every admissible content matrix has an actual
-increasing digit allocation. Both modules are imported by the umbrella.
-The complete modified composition, geometric prefix estimate, and weight
-contradiction remain to be formalized before this argument counts as a proof.
+`PrefixCarryRecursion.lean` proves the descending row floor and nonnegative,
+nested content with the `p−1` gap; its finite-range API awaits rechecking.
+`ContentMatrixRealization.lean` passes direct checking and its standard-axiom
+audit: every admissible content matrix has an actual increasing allocation.
+`GeometricPrefixCost.lean` also passes: an exponent gap bounds total prefix
+weight by the finite double-geometric sum. These modules are umbrella imports.
+The residue-count-to-exponent-gap transfer, complete modified composition,
+and weight contradiction remain before this argument counts as a proof.

@@ -5,6 +5,7 @@ import GaloisForLFunctions.ExactEventTheory.TentRecurrenceOfIntegrableDefects
 import GaloisForLFunctions.ExactEventTheory.IntegrableDefectsVanishInTheUnitGap
 import GaloisForLFunctions.EulerFETransportTheory.IntegrableDefectsForceIntegerSupport
 import GaloisForLFunctions.EulerFETransportTheory.IntegrableFunctionalEquationsDetermineThePrimes
+import GaloisForLFunctions.EulerFETransportTheory.ContinuousPrimeMeasuresAreNotRigidUnderFiniteDefects
 import GaloisForLFunctions.EulerFETransportTheory.TheBoundaryPreservesDefectEnergy
 import GaloisForLFunctions.EulerFETransportTheory.FiniteEnergyDefectsHaveCanonicalBoundaries
 import GaloisForLFunctions.EulerFETransportTheory.TheDefectHasAUnitaryMellinSource
@@ -45,8 +46,9 @@ import GaloisForLFunctions.EulerFETransportTheory.TheContinuedCurrentReturnsWith
 /-!
 # Euler–functional-equation transport
 
-In the Hamburger strip class, integrable or square-integrable uncompleted functional-equation
-defects force exactly the rational-prime system. Boundary recurrence supplies this classification;
+For countable generalized-prime systems in the Hamburger strip class, integrable or
+square-integrable uncompleted functional-equation defects force exactly the rational-prime
+system. Boundary recurrence supplies this classification;
 the two imaginary rays preserve the exact square-integrable defect energy.
 Their boundary operator extends uniquely to all square-integrable sources.
 An explicit Gamma–Mellin source identifies every finite-energy defect with a half-line
@@ -67,6 +69,11 @@ Integer periodicity fixes the pole coefficient and every atomic mass, and exclud
 all missing positive integers.
 The generalized integers and prime generators are therefore exactly the ordinary ones.
 Every nonclassical system in this class has infinite uncompleted defect energy.
+Positive continuous prime measures behave differently: adding the exponential pushforward
+of `ε x exp(-x) dx` to the Riemann prime-power measure multiplies zeta by
+`exp(ε/(s+1)^2)`. This nontrivial positive Euler family satisfies the same Hamburger
+strip conditions, preserves every zero on the right half-plane, and admits arbitrarily
+small inverse-square majorants for its integrable, square-integrable defect.
 The finite-energy defect itself vanishes almost everywhere in the theta formulation
 and pointwise in the original Hamburger strip identity.
 Local theta data determine every polynomially bounded defect, without a finite-cost
