@@ -564,6 +564,104 @@ divides `p` and is `1` only for `χ = 1`. `Σ_χ χ(n) = (p−1)[n ≡ 1]`, and 
 kernel every form is nonnegative (F4(ii)). (v) F4(iii) for each character: an odd one needs
 `p ≥ 4π`, an even one `p ≥ 128π`. ∎
 
+**G1 (the coordinates of the primes pay every contact).** For a prime `p` let
+`y_p = Σ_{j≥1} e_{p^j}`, so `(y_p)_n = a_p(v_p(n))` with the node `a_p(l) = p + ⋯ + p^l`.
+(i) `y_p ∈ 𝒢`; `Π_{p∣n}(1 + (y_p)_n) = σ(n)`. (ii) `Y_p ↦ y_p` is an injective ring map
+`ℤ[Y_p : p prime] → 𝒢`; write `P` for its image. (iii) Call `x ∈ ℤ^{ℕ₊}` planar if for every
+prime `p`, every `m` prime to `p` and every `K` there are an integer `D` prime to `p` and
+`g ∈ ℤ[X]` with `D·x_{mp^l} = g(a_p(l))` for `l ≤ K`. Planar sequences lie in `𝒢`, and the
+elements of `P` are planar. (iv) If `x` is planar and `x_{mp^l} = 0` for `l ∈ T`, then
+`p^{Σ_{l∈T}(min(k,l)+1)} ∣ x_{mp^k}`. (v) If `x` is planar, `x_n = 0` for `n` in a finite set
+`S` and `x_m ≠ 0`, then `Σ_{n∈S}(Λ(n/m)[m∣n] + Λ(m/n)[n∣m]) ≤ log|x_m|`. (vi) `p − e_p` is not
+planar; every element of `P` has `3 ∣ x_1 − x_4`, and `e_2 ∈ 𝒢` has not.
+*Proof.* (i) `(y_p)_{qn} − (y_p)_n` is `0` for a prime `q ≠ p` and `p^{v_p(n)+1}` for `q = p`.
+`1 + a_p(l) = σ(p^l)` and `σ` is multiplicative. (ii) On `Γ_n` a polynomial `f` takes the value
+`f((a_p(v_p n))_p)`; the exponents `(v_p(n))_p` are arbitrary on finitely many primes and the
+nodes of each prime are infinitely many, so a polynomial vanishing on every graph vanishes on a
+product of infinite sets and is zero. (iii) `a_p(v+1) − a_p(v) = p^{v+1}` divides
+`g(a_p(v+1)) − g(a_p(v)) = D(x_{pn} − x_n)` and `p ∤ D`. For `f ∈ ℤ[Y]` the graphs `Γ_{mp^l}`
+have the coordinates of `Γ_m` except `Y_p = a_p(l)`: `g` is the restriction of `f` to that line,
+`D = 1`. (iv) `g` vanishes at the distinct integers `a_p(l)`, `l ∈ T`, so
+`Π_{l∈T}(X − a_p(l)) ∣ g` in `ℤ[X]` and `Π_{l∈T}(a_p(k) − a_p(l)) ∣ D x_{mp^k}`; for `k ≠ l`,
+`a_p(l) − a_p(k) = p^{k+1}(1 + ⋯ + p^{l−k−1})` (`k < l`), and `p ∤ D`. (v) For a prime `p` let
+`S_p` be the `n ∈ S` with the same part prime to `p` as `m`. By (iv), `#S_p ≤ v_p(x_m)`. A
+contact `Λ(n/m)` or `Λ(m/n)` is `log p` for the one `p` with `n ∈ S_p`, or `0`. So the sum is at
+most `Σ_p v_p(x_m) log p = log|x_m|`. (vi) `p − e_p` vanishes on `Γ_p, Γ_{p²}` and is `p` on
+`Γ_1`; (iv) would give `p² ∣ p`. On the line of `Γ_1` at `2` the nodes of `Γ_1`, `Γ_4` are `0`,
+`6`, and `6 ∣ g(0) − g(6)`; `(e_2)_1 − (e_2)_4 = −2`. ∎
+
+**G2 (the planar square).** Let `𝒫` be the planar sections of `𝒢`. (i) `𝒫` is a subring,
+`P ⊊ 𝒫 ⊊ 𝒢`. (ii) For all `m, n`: `{x_m − x_n : x ∈ 𝒫}` generates `J(m, n)`. (iii) G1(v) holds
+for the elements of `𝒫`.
+*Proof.* (i) On a chain the pairs `(D, g)`, `(D', g')` add to `(DD', D'g + Dg')` and multiply to
+`(DD', gg')`. Strictness: (ii) at `(1, 4)` with G1(vi), and G1(vi) for `p − e_p`. (ii) `⊆` since
+`𝒫 ⊆ 𝒢`. For `⊇` let `I` be the ideal on the left. *Separation:* for primes `p ≠ ℓ` and
+`v_p(m) ≠ v_p(n)` put `a = a_p(v_p m)`, `c = a_p(v_p n) − a ≠ 0`, `ℓ^t ∥ c`, and
+`x_k = F^t(a_p(v_p k) − a)` with the Fermat quotient `F(z) = (z^ℓ − z)/ℓ`. `F` maps `ℤ` to `ℤ`,
+`F(0) = 0`, and `ℓ^{t+1} ∥ z` implies `ℓ^t ∥ F(z)` (write `z = ℓ^{t+1}u`; `z^ℓ` is divisible by
+`ℓ^{t+2}`), so `x_m = 0` and `ℓ ∤ x_n`. `ℓ^e F^t(z)` is an integer polynomial in `z` for some
+`e`, so `x` is a polynomial in the node on the chains at `p` up to `ℓ^e`, and constant on the
+chains at other primes: `x` is planar. Hence `I` has an element prime to `ℓ` for every `ℓ` for
+which some `p ≠ ℓ` has `v_p(m) ≠ v_p(n)`. If two primes have different exponents, this is every
+`ℓ`, and `I = ℤ = J(m,n)`. If exactly one prime `r` has, then `n = m r^j` (or conversely),
+`J(m,n) = (r^{v+1})`, `v = v_r(m)`, `I ⊆ (r^{v+1})`, `I ∋ (y_r)_m − (y_r)_n = −r^{v+1}s` with
+`s = 1 + ⋯ + r^{j−1}` prime to `r`, and `I` has elements prime to every `ℓ ≠ r`: the generator
+`r^{v+1}d'` of `I` has `d' ∣ s`, and a prime factor of `d'` is neither `r` nor any other prime;
+`d' = ±1`. (iii) G1(v). ∎
+
+**G3 (the squares with Bézout at an aperture).** For weights `w` and `a ∈ ℝ` let `B(w, a)` say:
+for every packet `f` in a window that vanishes outside `[c − a, c + a]` for some `c`, the limit
+of jets, counterterm and twice the contacts of weight `w` is at most `2d₁d₂`. (i) `B(w, a)` iff
+`Re W_w(F ⋆ F̃) ≥ 0` for every `C²` test `F` supported in `[−a, a]`. (ii) RH iff for every `a`
+some `w` has `B(w, a)`; if RH fails there is `a₀` with no `w` for `a ≥ a₀`. (iii) For
+`2a < log 2` every `w` has `B(w, a)`. (iv) For `|t − log 2| ≤ √2/10000` some `w` with
+`w(2) = t` has `B(w, 181/500)`.
+*Proof.* (i) The limit is `2d₁d₂ − Re W_w(k_f)` (C21). `⇐`: `k_f` is the autocorrelation of
+the translate of `f` to the origin, supported in `[−a, a]`. `⇒`: `Re W_w(F) =
+Re W_w(Re F) + Re W_w(Im F)` (C28), and a real `g` supported in `[−a, a]` has a translate in a
+window, which is a packet of aperture `a` with the same functional. (ii) (i) and the corpus
+(existence at every level decides RH). (iii) No atom `log n`, `n ≥ 2`, lies in `[−2a, 2a]`, so
+`W_w = W_Λ` on these tests, and `W_Λ ≥ 0` at the aperture `181/500 > a` (corpus certificate).
+(iv) `W_Λ ≥ (1/5000)∫|F|²` at `181/500`; a change `v` of the weight at `n` costs at most
+`2|v|/√n` of margin (corpus). ∎
+
+**G4 (the Hodge index of the square of a number ring).** (i) For zero configurations
+`Z_1, …, Z_r` let `Z` have the union of their zeros with the multiplicities added. If the `Z_i`
+are tempered, so is `Z`, and `W_Z = Σ_i W_{Z_i}` on `C²_c` tests. (ii) `Σ_i G_{Z_i}` has `n`
+negative squares on some family of `n` tests iff `#⋃_i {ρ ∈ Z_i : Re ρ > ½} ≥ n`. (iii) For
+primitive characters `χ_1, …, χ_r` of conductors `q_i > 1`: `G_ζ + Σ_i G_{χ_i}` has `n` negative
+squares on some family of `n` tests iff `ζ` and the `L(s, χ_i)` have at least `n` distinct zeros
+with `Re ρ > ½`. (iv) If `G_ζ` has `n` negative squares on a family of `n` tests, so has
+`G_ζ + Σ_i G_{χ_i}` on some family of `n` tests. (v) `G_ζ + Σ_i G_{χ_i}` is positive
+semidefinite on every finite family iff `ζ` and every `L(s, χ_i)` have no zero with
+`Re ρ > ½`; in particular this implies RH.
+*Proof.* (i) For `F` on `ℂ` with each `Σ_{ρ∈Z_i} m_i(ρ)F(ρ)` summable, extend by zero:
+`Σ_{ρ∈ℂ} 1_{Z_i}(ρ) m_i(ρ) F(ρ)`; the sum over `i` of the indicators is the indicator series of
+`Z`. Apply to the summand of `W` and to `1/(1 + |γ|²)`. (ii) (i) and the exact index law of the
+tempered configuration `Z` (corpus). (iii) (ii) for `ζ` and the `L(s, χ_i)`. (iv) (iii) and the
+law for `ζ`: `n ≤ #R_ζ ≤ #(R_ζ ∪ ⋃R_{χ_i})`. (v) `⇒`: a zero to the right gives one negative
+square by (iii). `⇐`: F5(iv). RH is `R_ζ = ∅` (corpus). ∎
+
+**G5 (Riemann–Hurwitz for the counterterm; the genus of a degree point).** Put
+`g(d, R; n) = 1 + (n/2)(d log(n/2π) + R)` and `g(n) = g(1, 0; n)`. (i) In the normal form of
+the pairing (HFP), `2d₁d₂ − D·D` on the divisor `c γ_n` is `(2c²/n) g(n)`. (ii) `g(2) < 0`,
+`g(3) < 0`, `g(1) > 0`, `g(n) > 0` for `n ≥ 4`. (iii) `2g(d, R; n) − 2 = d(2g(n) − 2) + nR`.
+(iv) For primitive characters `χ_1, …, χ_r` of conductors `q_i > 1`, the contacts
+`Λ(n)(1 + Σ_i Re χ_i(n))`, the form `A_N` of the integers plus the twisted forms of the `χ_i`:
+the limit on a packet is `2d₁d₂ − Z_ζ(f) − Σ_i Z_{χ_i}(f)`; the form is
+`(r+1)·(jets) − Σ_i (conjugate jets of odd χ_i) − Σ_n (f_n²/n)(2g(r+1, Σ log q_i; n) − 2)/n`.
+(v) On combinations of packets the limit is `2d₁d₂ − x^*(G_ζ + Σ_i G_{χ_i})x`, with at most
+`κ_ζ + Σκ_{χ_i}` negative squares of the defect. (vi) If every `χ_i` is odd with `q_i ≥ 4π` or
+even with `q_i ≥ 128π`, the limit on a packet shorter than `log 2` is at most
+`2d₁d₂ − ∫f²/5000`.
+*Proof.* (i) `d₁ = c/n`, `d₂ = c`, `D·D = −c² log(n/2π)`. (ii) `g(2) = 1 − log π` and `e < π`.
+`g(3) < 0` iff `log(2π/3) > 2/3`; `e² < 8` gives `e^{2/3} < 2 < 2π/3`. `g(1) > 0` iff
+`2π < e²`, and `e² > 7`. For `n ≥ 5`: `e^{2/n} ≥ 1 + 2/n > 2π/n` since `2π < 7 ≤ n + 2`, so
+`log(n/2π) > −2/n`. For `n = 4`: `e^{1/2} ≥ 13/8 > π/2`. (iii) Algebra. (iv) Sum F3(ii) over
+the `χ_i` and add C18; the twisted form of `χ_i` is the form of the integers minus its
+conjugate jets minus `log q_i` times the mass. (v), (vi) As F5(iv), F5(v), character by
+character. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -601,6 +699,17 @@ kernel every form is nonnegative (F4(ii)). (v) F4(iii) for each character: an od
   function of a quadratic ring), C28(iii) (the conductor is forced), F4 (the index law; the
   inequality on short packets for a large conductor), F5 (every primitive character; the
   cyclotomic ring of prime conductor, of degree `p − 1`, with its contacts on a progression). **Q12**, the constant: C28(ii).
+- **Q20 (an object with unit masses and paid contacts)**: G1 (the coordinates of the primes; payment
+  on chains and in the normal form; the extra contact of the polynomial ring), G2 (the planar
+  square: the contact ideals of the square, payment, its position). The payment is the product
+  formula for the nodes (G1(iv)).
+- **Q22 (genus, Riemann–Hurwitz, higher degree)**: G5 (the genus `1 + (n/2) log(n/2π)`, negative
+  exactly at `2, 3`; the conductors as ramification; any finite family of primitive characters),
+  G4 (separate indices; the index of a ring is the number of distinct zeros of its zeta function
+  right of the line; a cover bounds its base).
+- **Q23 (a square for some weights)**: G3 (the squares with Bézout at an aperture are the window
+  cone; existence at every aperture is RH; an interval of contacts at `2` at the aperture
+  `181/500`).
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -668,6 +777,11 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | C28 | `BezoutDeterminesTheConstantOfTheCounterterm` |
 | F4 | `TheHodgeIndexOfTheSquareOfAQuadraticRing` |
 | F5 | `TheSquareOfAQuadraticRingPairsWithItsConductor` (i), `TheSquareOfACyclotomicRingHasItsContactsOnAProgression` |
+| G1 | `TheEulerFactorsOfTheDivisorSumPayEveryContact` |
+| G2 | `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem` |
+| G3 | `TheSquaresWithBezoutAtAnApertureAreTheWindowCone` |
+| G4 | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
+| G5 | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -682,6 +796,8 @@ Oleans built by this programme: the first seven AGZ modules,
 `TheCarryIsTheDefectOfTheWindowCount`, `AFiniteFibreForcesContacts`,
 `TheSignIsCarriedByTheContacts`, `TheSquareOfAQuadraticRingPairsWithItsConductor`,
 `TheHodgeIndexOfThePairingOfTheDegreePoints`, `TheHodgeIndexOfTheSquareOfAQuadraticRing`,
+`TheSquareOfACyclotomicRingHasItsContactsOnAProgression`,
+`TheEulerFactorsOfTheDivisorSumPayEveryContact`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -699,10 +815,16 @@ Open parts of the questions of the refined programme (details in the README, §1
 - The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
   varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
-- Number rings beyond F2–F5, C28: composite conductors (imprimitive characters), rings that are
-  not abelian over `ℚ`, the count of odd characters modulo `p`; small conductors and packets
-  with a contact; the ideals themselves as degree points with the characters
-  of the class group (Hecke `L`-functions), rings of degree above two, the units of a real
-  quadratic ring, the gluing index against the zero count of the Dedekind zeta function.
-- Q15, Q16, Q18, Q19 of the specification (real divisors at finite scale): continuation
-  `HodgeTheoryOfAFixedPart`.
+- Number rings beyond F2–F5, G4, G5, C28: rings that are not abelian over `ℚ`; the contacts at
+  the ramified primes of an abelian ring of composite conductor as norms of ideals; the count
+  of odd characters modulo `p`; small conductors and packets with a contact; the ideals
+  themselves as degree points with the characters of the class group (Hecke `L`-functions), the
+  units of a real quadratic ring, the gluing index against the zero count of the Dedekind zeta
+  function; the exact index on real packets.
+- The planar square (G2): its gluing index on the first `N` graphs, its dependence on the
+  nodes, a count of sections, an archimedean pairing that is the jets.
+- Q21: the sign of the twisted part at the aperture `log log q + C` (Landau–Siegel). The
+  trivial aperture, the one-square law and repulsion are in
+  `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`,
+  `TheExceptionalSquareRepelsTheOtherSquares`.
+- Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.

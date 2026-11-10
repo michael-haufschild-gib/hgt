@@ -17,36 +17,6 @@
 | A84 | Greedy carry-free optimality and Carlitz–Goss Newton polygon | General residue degree and arbitrary composition length, then actual zeta coefficients and slopes. |
 | A101 | Deuring–Heilbronn margin on remaining twisted-comb squares | **Formalized:** full logarithmic margin and hyperbolic square-energy bound on the actual twisted comb. See `../3-formalized/exceptional-square-repulsion-margin.md`. |
 
-## First analytic target
-
-`ZetaGateFarPairError.norm_pairError_le_gen` separates smooth and dual contour
-remainders from direct and dual off-diagonal terms. Its existing specialization
-fixes contour depth `7`, taper `u^95`, scale `u^100`, and length `u^43`.
-The constraints must be proved with adjustable parameters before claiming
-the full range below `1/2`; a renamed existing specialization is not completion.
-
-## Proved components
-
-`MultiscaleMollifiedZetaField/AdjustableOffDiagonalBounds.lean` passes direct
-Lean checking. `windowCarrierJetConst_le_rpow` retains the `T^(-aK)` derivative
-saving when `a+b≤1`. `exists_directOffDiag_power_saving` proves arbitrary power
-saving for the actual direct off-diagonal when `a>1/2+θ`, uniformly in both
-coefficient indices `h,k≤T^θ` and displacement `0<d≤1/8`.
-
-`AdjustableDualOffDiagonalBounds.lean` also passes direct checking.
-`exists_dualOffDiag_power_saving` proves arbitrary power saving for the complete
-dual off-diagonal when `0<b<1`, `a<1`, `a+b≤1`, and `a>1/2+θ+b/2`.
-Both components use only `propext`, `Classical.choice`, and `Quot.sound`.
-
-`AdjustableContourRemainders.lean` proves arbitrary power saving for both
-actual contour remainders. `TwistedPairsBelowSquareRoot.lean` combines all
-five error terms and proves `exists_pairError_power_saving` for every
-`0≤θ<1/2`. Both pass direct Lean checks and use only the same standard
-axioms. `TwistedSecondMomentsBelowSquareRoot.lean` passes its final direct
-check: `exists_twistedMoment_power_saving` and
-`exists_interval_twistedMoment_le` use only these axioms. All five modules
-are imported by their umbrella.
-
 ## A18: parameter argument
 
 For `0≤θ<1/2`, put `δ=1/2−θ`, `b=δ/2`, `a=1−b`.
@@ -88,8 +58,9 @@ weight-increasing carry exchange across the proper parts; the singleton
 normal form alone is not a contradiction. The subsequent Newton-polygon
 identification must use the actual Carlitz–Goss coefficients.
 
-The detailed card `carlitz-goss-rh-from-greedy-compositions.md` now records
-a sharper geometric prefix-cost argument for the carry modification,
-including `p=2`. `ContentMatrixRealization.lean` and `GeometricPrefixCost.lean`
-pass direct checking and standard-axiom audits. The carry recursion's finite-range
-API and residue-count-to-exponent-gap transfer also pass. General optimality remains open.
+The detailed card `carlitz-goss-rh-from-greedy-compositions.md` contains the
+geometric prefix-cost argument, including `p=2`, and its checked components:
+actual integral prefix coordinates, singleton boundary identities, interval
+carry recursion, content-matrix realization, residue exponent gaps, and strict
+geometric gain. Constructing the modified composition and proving its actual
+weight gain remain before general optimality is established.

@@ -43,4 +43,6 @@ Five Lean drafts in `InfiniteRankWeilTheory/`, from
 construction and its analytic multiplicity audit. The divisor module
 passed with standard transitive axioms: distinct points, exact paired
 height count, local finiteness, and summability of every reciprocal power
-above one. The remaining four modules and the final direct audits are pending.
+above one. The entire-product module also passed: exact zero set, simple
+analytic multiplicities, functional equation, reality, and growth of order
+at most one. The remaining three modules and final direct audits are pending.

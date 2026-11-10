@@ -4,6 +4,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheLiouvilleTwistFailsBeyondTheTr
 import GaloisForLFunctions.SelectiveArithmetic.TheHeightOfAPacketIsAMass
 import GaloisForLFunctions.SelectiveArithmetic.CancellationInTheContactsBuysTheLadder
 import GaloisForLFunctions.SelectiveArithmetic.AnIsolatedPairShowsAtTheRungOfItsDepth
+import GaloisForLFunctions.SelectiveArithmetic.TheFeasibleSetsOfAConductor
 
 /-!
 # Selective Arithmetic
@@ -30,6 +31,8 @@ sign, and where the first statement beyond that scale lies.
   `δ` is positive below the rung `κ = 1/(2δ)` and fails above it; in every configuration with a
   logarithmic local count, positivity on a rung forces an off-line companion of every zero deeper
   than the rung.
+* The feasible sets of a conductor: finite determinacy, monotonicity in aperture and conductor,
+  convexity; the trivial aperture as a threshold of the dominated box.
 
 See `SelectiveArithmetic/README.md`.
 -/

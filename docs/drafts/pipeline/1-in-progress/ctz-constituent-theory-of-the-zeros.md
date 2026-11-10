@@ -17,10 +17,12 @@ Folder `formal/GaloisForLFunctions/ConstituentTheoryOfTheZeros/`, umbrella
 
 | Module | Content | State |
 |---|---|---|
-| TheJumpLawHoldsOnEveryStripAboutTheLine | P1, P2 | to do |
-| TheWienerAlgebraOfAStrip | P3 (algebra) | to do |
-| WienersLemmaOnAStrip | P3 (characters, inversion) | to do |
-| NoAbsolutelyConvergentDirichletSeriesIsAConstituent | P4 | to do |
+| TheJumpLawHoldsOnEveryStripAboutTheLine | P1, P2: `rescale`, `mellin_rescale`, `eq_of_mellin_eq_on_strip`, `fractSeries_eq_of_strip`, `tsum_jump_eq_of_strip`, `tsum_one_eq_of_tsum_dvd_eq`, `mergedWeight_eq_of_jump`, `mergedWeight_eq_of_strip`, `eq_riemannZeta_div_mul_tsum_of_strip` | Lean, clean |
+| TheWienerAlgebraOfAStrip | P3 (a), (b): `PosRat`, `stripWeight`, `WSummable`, `expansion`, `eq_zero_of_expansion_eq_zero`, `convolve`, `expansion_convolve`, `wsummable_convolve`, `StripWiener`, `isometryLp`, `pointMass`, `hasSum_pointMass` | Lean, clean |
+| WienersLemmaOnAStrip | P3 (c)–(e): `PosRat.exists_eq_mul_log`, `PosRat.exists_height_approx`, `exists_height_expansion_approx`, `StripWiener.exists_exponent_phase`, `exists_apply_eq_expansion_twist`, `isUnit_of_le_norm_eval`, `exists_inverse_expansion` | Lean, clean |
+| TheLogarithmicDerivativeExpandsInAZeroFreeStrip | P3′: `deriv_expansion`, `WSummable.log_mul`, `StripWiener.isUnit_ofCoeff_of_zeroFree`, `exists_inverse_expansion_of_zeroFree`, `exists_logDeriv_expansion` | Lean, clean |
+| DirichletSeriesAreExpansionsOverThePositiveRationals | `dirichletCoeff`, `wsummable_dirichletCoeff`, `expansion_dirichletCoeff` | Lean, clean |
+| NoAbsolutelyConvergentDirichletSeriesIsAConstituent | P4: `exists_good_heights`, `expansion_ne_zero_of_zeros_cancelled`, `re_eq_half_of_strip_zeros_subset_xi`, `LSeries_ne_zero_of_strip_zeros_subset_xi`, `LSeries_ne_zero_of_zeros_subset_xi` | Lean, clean; axioms `propext`, `Classical.choice`, `Quot.sound` |
 
 ## Paper proofs
 
@@ -95,6 +97,17 @@ many terms, and then for every `f` by `‖φ‖ ≤ 1`: `φ(f)` is a limit of va
 
 (e) *Wiener's lemma.* If `‖f(s)‖ ≥ δ > 0` on `S`, every character has `‖φ(f)‖ ≥ δ`, so `f` is a
 unit (Gelfand): `1/f ∈ 𝒲[σ₁, σ₂]`. ∎
+
+### P3′. Zero-free on a neighbourhood is enough (as formalized)
+If `Σ c(q) q^s` converges absolutely on `τ₁ ≤ Re s ≤ τ₂` and has no zero in the open strip, it is a
+unit of `𝒲[σ₁, σ₂]` for `τ₁ < σ₁ ≤ σ₂ < τ₂`. A character is the value at a real `σ` of the twist
+`g(s) = Σ c(q) ω(q) q^s`; by Kronecker on a finite set carrying all but `ε` of the weighted
+coefficients, `g` is a uniform limit on the closed strip of translates `F(s + it)`. If `g(σ) = 0`:
+`g ≢ 0` (uniqueness of coefficients), so the zero is isolated; on a small sphere `‖g‖ ≥ μ`, a
+translate within `μ/3` has a zero in the ball (sphere domination,
+`HTGeometry.exists_zero_of_sphere_domination`), against zero-freeness. One family `d` then
+represents `1/F` on every closed substrip (inverses agree on the middle line by uniqueness), and
+`F'/F = Σ g(q) q^s` with `g = (c log) ⋆ d`.
 
 ### P4. No absolutely convergent Dirichlet series is a constituent with a zero
 Let `Σ ‖a_n‖ n^{−x} < ∞` with `x < ½`, `F(s) = Σ a_n n^{−s} ≢ 0`. If every zero of `F` in

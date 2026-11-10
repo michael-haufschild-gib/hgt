@@ -14,8 +14,9 @@ noncomputable section
 namespace GaloisForLFunctions.HodgeTheoryOfAFixedPart
 
 /-- The contact weight supported on the positive powers of one prime. -/
-def primeContactWeight (p n : ℕ) : ℝ :=
-  if ∃ r : ℕ, 0 < r ∧ n = p ^ r then Real.log p else 0
+def primeContactWeight (p n : ℕ) : ℝ := by
+  classical
+  exact if ∃ r : ℕ, 0 < r ∧ n = p ^ r then Real.log p else 0
 
 theorem contactW_comm (w : ℕ → ℝ) (m n : ℕ) : contactW w m n = contactW w n m := by
   unfold contactW

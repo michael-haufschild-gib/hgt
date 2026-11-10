@@ -217,9 +217,11 @@ theorem resonatorCoeff_sub_trunc (A : Finset ℕ) (r : ℕ → ℂ) (σ : ℝ) (
 
 /-- Summing the fibre estimate costs only the weighted support energy.
 The selected zeta kernel remains separate, so its head and tail bounds are uniform. -/
-theorem tsum_resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε)
+theorem summable_resonator_slice_sq_and_bound {ε σ : ℝ} (hε : 0 < ε)
     (hεσ : ε < 2 * σ - 1) {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
     (r : ℕ → ℂ) (P : ℕ → Prop) [DecidablePred P] :
+    Summable (fun k : ℕ => ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)),
+        r m * lineWeight σ (k / m)‖ ^ 2) ∧
     (∑' k : ℕ, ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)),
         r m * lineWeight σ (k / m)‖ ^ 2) ≤
       Sieve.divisorBoundConst ε * (∑ m ∈ A, ‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
@@ -234,7 +236,9 @@ theorem tsum_resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε)
       split_ifs <;> positivity
     · intro n
       dsimp [f]
-      split_ifs <;> positivity
+      split_ifs
+      · exact le_rfl
+      · positivity
   have hmajor : Summable (fun k : ℕ => Sieve.divisorBoundConst ε * ∑ m ∈ A,
       (‖r m‖ ^ 2 * (m : ℝ) ^ ε) * (if m ∣ k then f (k / m) else 0)) :=
     (summable_sum fun m hm =>
@@ -243,6 +247,7 @@ theorem tsum_resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε)
   have hsmall : Summable (fun k : ℕ =>
       ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)), r m * lineWeight σ (k / m)‖ ^ 2) :=
     hmajor.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint
+  refine ⟨hsmall, ?_⟩
   calc
     _ ≤ ∑' k : ℕ, Sieve.divisorBoundConst ε * ∑ m ∈ A,
         (‖r m‖ ^ 2 * (m : ℝ) ^ ε) * (if m ∣ k then f (k / m) else 0) :=
@@ -251,7 +256,47 @@ theorem tsum_resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε)
       rw [tsum_mul_left, tsum_finite_multiple_kernels hA _ hf]
       exact (mul_assoc _ _ _).symm
 
+/-- A support cutoff bounds its weighted energy independently of the coefficients. -/
+theorem sum_resonator_weighted_energy_le {ε : ℝ} (hε : 0 ≤ ε)
+    {A : Finset ℕ} {M : ℕ} (hM : ∀ m ∈ A, m ≤ M) (r : ℕ → ℂ) :
+    (∑ m ∈ A, ‖r m‖ ^ 2 * (m : ℝ) ^ ε) ≤
+      (M : ℝ) ^ ε * ∑ m ∈ A, ‖r m‖ ^ 2 := by
+  calc
+    _ ≤ ∑ m ∈ A, ‖r m‖ ^ 2 * (M : ℝ) ^ ε := by
+      apply Finset.sum_le_sum
+      intro m hm
+      exact mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast hM m hm) hε)
+        (sq_nonneg _)
+    _ = _ := by rw [Finset.sum_mul]; ring
+
+/-- The full coefficient energy has only a subpower support cost. -/
+theorem tsum_norm_resonatorCoeff_sq_le {ε σ : ℝ} (hε : 0 < ε)
+    (hεσ : ε < 2 * σ - 1) {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
+    (r : ℕ → ℂ) :
+    (∑' k : ℕ, ‖resonatorCoeff A r σ k‖ ^ 2) ≤
+      Sieve.divisorBoundConst ε * (∑ m ∈ A, ‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
+        ∑' n : ℕ, (n : ℝ) ^ (ε - 2 * σ) := by
+  simpa only [resonatorCoeff, and_true, if_true] using
+    (summable_resonator_slice_sq_and_bound hε hεσ hA r (fun _ => True)).2
+
+/-- The coefficient tail has a uniform power rate in the zeta cutoff. -/
+theorem tsum_norm_resonatorCoeff_sub_trunc_sq_le {ε σ : ℝ} (hε : 0 < ε)
+    (hεσ : ε < 2 * σ - 1) {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
+    (r : ℕ → ℂ) {N : ℕ} (hN : 1 ≤ N) :
+    (∑' k : ℕ, ‖resonatorCoeff A r σ k - truncResonatorCoeff A r σ N k‖ ^ 2) ≤
+      Sieve.divisorBoundConst ε * (∑ m ∈ A, ‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
+        ((N : ℝ) ^ (1 + ε - 2 * σ) / (2 * σ - ε - 1)) := by
+  simp_rw [resonatorCoeff_sub_trunc]
+  apply (summable_resonator_slice_sq_and_bound hε hεσ hA r (fun n => N < n)).2.trans
+  apply mul_le_mul_of_nonneg_left _
+    (mul_nonneg (Sieve.divisorBoundConst_pos hε).le (by positivity))
+  have h := tsum_rpow_above_le (b := 2 * σ - ε) (by linarith only [hεσ]) hN
+  rwa [show -(2 * σ - ε) = ε - 2 * σ by ring,
+    show 1 - (2 * σ - ε) = 1 + ε - 2 * σ by ring] at h
+
 #print axioms norm_resonatorCoeff_sq_le_divisor_weight
-#print axioms tsum_resonator_slice_sq_le
+#print axioms summable_resonator_slice_sq_and_bound
+#print axioms tsum_norm_resonatorCoeff_sub_trunc_sq_le
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

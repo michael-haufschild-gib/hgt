@@ -53,14 +53,23 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 ## Modules (folder `SelectiveArithmetic/`)
 | Module | Content | State |
 |---|---|---|
-| `TheMassOfAConductorPaysEveryDominatedContact` | `Dominated`, `contactForm`, `systemForm`, `Feasible`, Schur price `abs_contactForm_le_of_psi`, `systemForm_ge_of_dominated`, `exists_systemForm_margin`, `twistedZeroSum_eq_systemForm`, `exists_trivialAperture_margin` | compiled clean, olean built |
-| `ThePolarPacketsOfAWindow` | `cutoff`, `evenPolar`, `oddPolar`, masses, derivative energies, `packetAutocorr_evenPolar_ge`, `packetAutocorr_oddPolar_le`, `abs_packetAutocorr_le` | compiled clean, olean built |
-| `TheLiouvilleTwistFailsBeyondTheTrivialAperture` | `systemForm_le_of_packet`, `liouvilleWeight`, `exists_systemForm_polar_neg`, `exists_not_feasible`, `trivialAperture`, `tendsto_trivialAperture_sub_log` | compiled clean, olean built |
-| `TheHeightOfAPacketIsAMass` | height aspect: modulated packets, `log(1+|t|)` as mass, pole term decays | next |
-| FE-only fake in ladder form (corpus `isolatedPairConfig_weil_nonneg_iff`, `2L = log q`) | planned |
-| ladder chart for true characters (`κ > 1/(2δ)`) | planned; build on peer module below |
+| `TheMassOfAConductorPaysEveryDominatedContact` | `Dominated`, `contactForm`, `systemForm`, `Feasible`, Schur price `abs_contactForm_le_of_psi`, `systemForm_ge_of_dominated`, `exists_systemForm_margin`, `twistedZeroSum_eq_systemForm`, `exists_trivialAperture_margin` | clean, olean built |
+| `ThePolarPacketsOfAWindow` | `cutoff`, `evenPolar`, `oddPolar`, masses, derivative energies, `packetAutocorr_evenPolar_ge`, `packetAutocorr_oddPolar_le`, `abs_packetAutocorr_le` | clean, olean built |
+| `TheLiouvilleTwistFailsBeyondTheTrivialAperture` | `systemForm_le_of_packet`, `liouvilleWeight`, `exists_systemForm_polar_neg`, `exists_not_feasible`, `trivialAperture`, `tendsto_trivialAperture_sub_log`, `eventually_cubic_lt_exp` | clean, olean built |
+| `TheHeightOfAPacketIsAMass` | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge`, `re_weilFullFunctional_modulated_ge`, `exists_height_margin`, `contDiff_two_deriv` | clean, olean built |
+| `CancellationInTheContactsBuysTheLadder` | `HasCancellation`, Abel summation, `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | clean |
+| `AnIsolatedPairShowsAtTheRungOfItsDepth` | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung`, `exists_companion_of_rung`, `zeta_companion_of_rung` | clean |
+| `TheFeasibleSetsOfAConductor` | `feasible_congr`, `Feasible.anti`, `Feasible.mono_conductor`, `convex_feasible`, `bddAbove_feasibleApertures`, `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt` | clean |
 
-Umbrella `SelectiveArithmetic.lean` imports the three modules; `MainTheorems.lean` imports the umbrella.
+Umbrella `SelectiveArithmetic.lean` imports all seven; `MainTheorems.lean` imports the umbrella.
+README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`).
+
+## Not done (candidates)
+- Fake for the height aspect in the dominated class (block-aligned phases).
+- Rung law for `L(s, χ)` zeros: corollary of `exists_companion_of_rung` once the conductor-uniform
+  local count in `ZeroConfig.N` form is importable (peer lemma
+  `AbsoluteGeometryOfSpecZ.exists_dirichletZeros_local_count`, module had no olean).
+- Exchange rate without shape condition (uniform in `τ`); first-contact interval (peer A96).
 
 ## Peers (do not duplicate)
 - `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` (peer, card
