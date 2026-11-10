@@ -31,7 +31,7 @@
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Formalized; finite top layers and every-floor failure checked in Lean; `3-formalized/finite-mode-window-length-needs-no-separation.md` |
 | A96 | Exact first selective interval for the weight at 2 | Open |
-| A100 | Trivial conductor aperture and exceptional square | Uniform aperture constant and sharp exceptional-pair smooth floor written; audits pending |
+| A100 | Trivial conductor aperture and exceptional square | Uniform aperture constant checked in Lean; sharp exceptional-pair floor awaiting check |
 
 ## Proof requirements
 

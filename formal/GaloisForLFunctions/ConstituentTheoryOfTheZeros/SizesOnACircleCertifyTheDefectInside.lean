@@ -1,4 +1,5 @@
 import GaloisForLFunctions.InfiniteRankPurityTheory.ADefectOfDegreeKappaHasAtMostKappaExceptionalPoints
+import GaloisForLFunctions.RHTower.WindingXiCircle
 
 /-!
 # Sizes on a circle certify the defect inside
@@ -13,7 +14,8 @@ vanishes identically there.
 
 So every splitting has its defect certified by sizes in a height window: one circle in the window
 suffices, with no hypothesis on a half-plane. At `κ = 0` the disc is free of zeros
-(`ne_zero_of_norm_le_on_sphere`).
+(`ne_zero_of_norm_le_on_sphere`). For a splitting `ξ = E + E^♯` on a disc with `‖E^♯‖ ≤ ‖E‖` on
+its circle, `ξ` has at most as many zeros in the disc as `E` (`encard_xi_zeros_le_of_splitting`).
 
 There is no winding number in the proof. The disc is carried onto the half-plane `Re s > ½` by
 `s ↦ (s − 1)/s`; the quotient `E'/E` times the Blaschke product of the disc at `W` is a Schur
@@ -375,5 +377,32 @@ theorem ne_zero_of_norm_le_on_sphere {c : ℂ} {R : ℝ} (hR : 0 < R) {E E' : �
   rw [Multiset.card_zero, Nat.cast_zero, nonpos_iff_eq_zero, Set.encard_eq_zero] at h
   rw [h] at hmem
   exact hmem
+
+/-! ### Splittings of `ξ` -/
+
+/-- **The defect of a splitting of `ξ` in a window.** Let `ξ = E + E^♯` on a disc, with
+`E = Π_{w ∈ W} (z − w) · E₁`, `E₁` without zeros on the closed disc, and `‖E^♯‖ ≤ ‖E‖` on the
+boundary circle. Then `ξ` has at most `card W` zeros in the open disc. -/
+theorem encard_xi_zeros_le_of_splitting {c : ℂ} {R : ℝ} (hR : 0 < R) {E₁ Es : ℂ → ℂ}
+    {W : Multiset ℂ} (hW : ∀ w ∈ W, w ∈ ball c R) (hE₁ : DiffContOnCl ℂ E₁ (ball c R))
+    (hE₁0 : ∀ z ∈ closedBall c R, E₁ z ≠ 0) (hEs : DiffContOnCl ℂ Es (ball c R))
+    (hsplit : ∀ z ∈ ball c R, _root_.RHTower.xi z = (W.map fun w => z - w).prod * E₁ z + Es z)
+    (hsize : ∀ z ∈ sphere c R, ‖Es z‖ ≤ ‖(W.map fun w => z - w).prod * E₁ z‖) :
+    {z | z ∈ ball c R ∧ _root_.RHTower.xi z = 0}.encard ≤ Multiset.card W := by
+  -- `ξ` does not vanish identically on the disc: its zeros there are finitely many
+  have hne : ∃ z ∈ ball c R, _root_.RHTower.xi z ≠ 0 := by
+    by_contra hcon
+    push Not at hcon
+    have hfin : (ball c R).Finite := (_root_.RHTower.xi_zeros_closedBall_finite c R).subset
+      fun z hz => ⟨ball_subset_closedBall hz, hcon z hz⟩
+    exact infinite_of_mem_nhds c (ball_mem_nhds c hR) hfin
+  have hEs' : DiffContOnCl ℂ (fun z => -Es z) (ball c R) := hEs.neg
+  have h := encard_zeros_le_of_norm_le_on_sphere hR (E' := fun z => -Es z) hW hE₁ hE₁0 hEs'
+    (fun z hz => by rw [norm_neg]; exact hsize z hz)
+    (by
+      obtain ⟨z, hz, hz0⟩ := hne
+      exact ⟨z, hz, by rw [sub_neg_eq_add, ← hsplit z hz]; exact hz0⟩)
+  refine (Set.encard_mono fun z hz => ?_).trans h
+  exact ⟨hz.1, by rw [sub_neg_eq_add, ← hsplit z hz.1]; exact hz.2⟩
 
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros
