@@ -91,4 +91,5 @@ identification must use the actual Carlitz–Goss coefficients.
 The detailed card `carlitz-goss-rh-from-greedy-compositions.md` now records
 a sharper geometric prefix-cost argument for the carry modification,
 including `p=2`. `PrefixCarryRecursion.lean` and `ContentMatrixRealization.lean`
-are drafts awaiting direct checks; general optimality remains open.
+pass direct checking and standard-axiom audits; both are umbrella imports.
+General optimality remains open.

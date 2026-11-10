@@ -25,7 +25,7 @@
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
 | A82 | Li coefficients as comb forms of tails | Open |
-| A92 | Prime-side resolution law, including both finite-mode statements | Half-period sign bound written; weighted coefficient correction and audits pending |
+| A92 | Prime-side resolution law, including both finite-mode statements | Sign bound formalized and axiom-audited; weighted coefficient-two bound written; counterexample and prime-side assembly pending |
 | A93 | Receiver exchange atlas | Open |
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Open |
@@ -57,7 +57,7 @@ For A71 preserve the corpus’s uniformity: constants may depend on the tensor o
 
 ## Finite-mode sign resolution
 
-For A92, a sharper candidate is available. For a real trace `F=Re Σ a_j exp(iγ_j t)` with nonzero frequencies and `F` not identically zero, compose the positive shift operators `1+τ_{π/|γ_j|}`. Their product annihilates every mode and has support diameter `D=Σ π/|γ_j|`. If `F≥0` on an interval longer than `D`, every summand in each shifted identity is nonnegative; its unshifted summand vanishes on an open interval. Analytic uniqueness then forces `F≡0`, contradiction. Thus `L≤D≤nπ/Γ`. Repeated frequencies can be discarded. The nonzero-real-trace condition is essential when opposite frequencies are allowed. `HalfPeriodSignResolution.lean` contains the positive-frequency trigonometric statement; audit pending.
+For A92, compose the positive shift operators `1+τ_{π/γ_j}` for `γ_j ≥ Γ > 0`. Their product annihilates every mode and has support diameter `D=Σ π/γ_j`. If `F≥0` on an interval longer than `D`, every summand in each shifted identity is nonnegative; its unshifted summand vanishes on an open interval. Analytic uniqueness gives `F≡0`. Thus a nonzero trace satisfies `L≤D≤nπ/Γ`; without a nonvanishing premise, this is the short-interval-or-zero classification. Formalized in `HalfPeriodSignResolution.lean`; direct audit passed with standard axioms only. Card: `3-formalized/half-period-deletion-bounds-sign-intervals.md`.
 
 For A95, apply this to the finite top layer. On the compact phase torus, absence of a nonnegative trace on a fixed interval of length `>D` gives a uniform negative excursion; lower layers are negligible after normalization. The excursion amplitude may depend on the layer, but the length is bounded using only its size and the lowest ordinate.
 

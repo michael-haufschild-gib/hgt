@@ -74,14 +74,14 @@ theorem differentiableOn_expansion (hc : WSummable τ₁ τ₂ c) :
     DifferentiableOn ℂ (expansion c) {s : ℂ | τ₁ < s.re ∧ s.re < τ₂} :=
   Complex.differentiableOn_tsum_of_summable_norm hc
     (fun q s _ => (differentiableAt_term c q s).differentiableWithinAt) (isOpen_openStrip τ₁ τ₂)
-    fun q s hs => norm_term_le c hs.1.le hs.2.le q
+    fun q _ hs => norm_term_le c hs.1.le hs.2.le q
 
 /-- **The derivative of an expansion** has the coefficients `c(q) log q`. -/
 theorem deriv_expansion (hc : WSummable τ₁ τ₂ c) {s : ℂ} (h₁ : τ₁ < s.re) (h₂ : s.re < τ₂) :
     deriv (expansion c) s = expansion (fun q => c q * ((q.log : ℝ) : ℂ)) s := by
   have h := Complex.hasSum_deriv_of_summable_norm hc
     (fun q s _ => (differentiableAt_term c q s).differentiableWithinAt) (isOpen_openStrip τ₁ τ₂)
-    (fun q s hs => norm_term_le c hs.1.le hs.2.le q) (show s ∈ {s : ℂ | τ₁ < s.re ∧ s.re < τ₂}
+    (fun q _ hs => norm_term_le c hs.1.le hs.2.le q) (show s ∈ {s : ℂ | τ₁ < s.re ∧ s.re < τ₂}
       from ⟨h₁, h₂⟩)
   have hterm : ∀ q : PosRat, deriv (fun w => c q * q.cpow w) s =
       c q * ((q.log : ℝ) : ℂ) * q.cpow s := by

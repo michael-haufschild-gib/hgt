@@ -23,7 +23,7 @@ theorem exists_content_matrix (hp : 2 ≤ p) (m : ℕ) (S : Finset (Digit p))
   | zero =>
     have he : tokenContent (fun x : Digit p => (x.1 : ZMod s)) S = u 0 := by
       funext h
-      simpa only [Fin.sum_univ_one] using (hsum h).symm
+      exact (hsum h).symm.trans (Fin.sum_univ_one (fun i : Fin 1 => u i h))
     have hS : S.Nonempty := (positive_tokenContent_iff _ _).mp (he.symm ▸ hu 0)
     refine ⟨single hS, ?_⟩
     funext i h
