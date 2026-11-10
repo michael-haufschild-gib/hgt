@@ -90,4 +90,69 @@ theorem exists_integral_inverse_prefixes (C : DigitComposition p s (m + 1) S) (h
 
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition
 
+namespace GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
+
+/-- Positive integral prefix increments give the number-of-parts lower bound. -/
+theorem inverse_prefix_floor {m : ℕ} {v : ℕ → ℤ} (hzero : v 0 = 0)
+    (hstep : ∀ j < m, v j + 1 ≤ v (j + 1)) : ∀ j ≤ m, (j : ℤ) ≤ v j := by
+  intro j
+  induction j with
+  | zero => exact fun _ => by rw [hzero, Nat.cast_zero]
+  | succ j ih =>
+    intro hj
+    have h1 := ih (by omega)
+    have h2 := hstep j (by omega)
+    push_cast
+    omega
+
+/-- A terminal inverse row at its minimum fixes every earlier prefix at its minimum. -/
+theorem inverse_row_eq_floor_of_terminal_eq {m : ℕ} {v : ℕ → ℤ}
+    (hterminal : v 0 = m) (hstep : ∀ n < m, v (n + 1) + 1 ≤ v n)
+    (hfloor : ∀ n ≤ m, (m : ℤ) - n ≤ v n) :
+    ∀ n ≤ m, v n = (m : ℤ) - n := by
+  have hupper : ∀ n ≤ m, v n + n ≤ (m : ℤ) := by
+    intro n
+    induction n with
+    | zero => exact fun _ => by rw [hterminal, Nat.cast_zero, add_zero]
+    | succ n ih =>
+      intro hn
+      have h1 := ih (by omega)
+      have h2 := hstep n (by omega)
+      push_cast
+      omega
+  intro n hn
+  have hlo := hfloor n hn
+  have hhi := hupper n hn
+  omega
+
+/-- The last minimal inverse coordinate before a strict endpoint determines
+an interval whose remaining coordinates all exceed the minimum by one. -/
+theorem exists_last_inverse_boundary {m β : ℕ} (v : ℕ → ℤ)
+    (hzero : v 0 = m) (hlower : ∀ h ≤ β, (m : ℤ) ≤ v h)
+    (hβ : (m : ℤ) + 1 ≤ v β) :
+    ∃ α < β, v α = m ∧ ∀ h, α < h → h ≤ β → (m : ℤ) + 1 ≤ v h := by
+  have hβpos : 0 < β := by
+    by_contra hn
+    have he : β = 0 := by omega
+    rw [he, hzero] at hβ
+    omega
+  let B := (range β).filter fun h => v h = m
+  have hB : B.Nonempty := ⟨0, mem_filter.mpr ⟨mem_range.mpr hβpos, hzero⟩⟩
+  obtain ⟨α, hα, hmax⟩ := B.exists_max_image id hB
+  obtain ⟨hαβ, hαeq⟩ := mem_filter.mp hα
+  refine ⟨α, mem_range.mp hαβ, hαeq, ?_⟩
+  intro h hαh hhβ
+  by_cases he : h = β
+  · exact he.symm ▸ hβ
+  · have hlow := hlower h hhβ
+    have hne : v h ≠ m := by
+      intro hvm
+      have hm := hmax h (mem_filter.mpr ⟨mem_range.mpr (by omega), hvm⟩)
+      change h ≤ α at hm
+      omega
+    omega
+
+end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
+
 #print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DigitComposition.exists_integral_inverse_prefixes
+#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.exists_last_inverse_boundary

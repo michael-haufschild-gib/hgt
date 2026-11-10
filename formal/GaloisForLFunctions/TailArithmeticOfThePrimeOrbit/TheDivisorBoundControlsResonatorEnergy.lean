@@ -178,6 +178,21 @@ theorem resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
     intro m _
     by_cases hd : m ∣ k <;> by_cases hp : P (k / m) <;> simp [hd, hp]
 
+/-- Removing the finite zeta head leaves precisely the complementary product fibres. -/
+theorem resonatorCoeff_sub_trunc (A : Finset ℕ) (r : ℕ → ℂ) (σ : ℝ) (N k : ℕ) :
+    resonatorCoeff A r σ k - truncResonatorCoeff A r σ N k =
+      ∑ m ∈ A.filter (fun m => m ∣ k ∧ N < k / m), r m * lineWeight σ (k / m) := by
+  classical
+  unfold resonatorCoeff truncResonatorCoeff
+  rw [Finset.sum_filter, Finset.sum_filter, ← Finset.sum_sub_distrib, Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro m _
+  by_cases hd : m ∣ k
+  · by_cases hN : k / m ≤ N
+    · simp [hd, hN, not_lt.mpr hN]
+    · simp [hd, hN, Nat.lt_of_not_ge hN]
+  · simp [hd]
+
 #print axioms norm_resonatorCoeff_sq_le_divisor_weight
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

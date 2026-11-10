@@ -40,5 +40,7 @@ calibration.
 Five Lean drafts in `InfiniteRankWeilTheory/`, from
 `ThePairedXiDivisorApproachesTheLine.lean` through
 `TheRiemannGammaFactorDoesNotForceLanding.lean`, state the complete
-construction and its analytic multiplicity audit. No draft has yet passed
-its Lean check.
+construction and its analytic multiplicity audit. The divisor module
+passed with standard transitive axioms: distinct points, exact paired
+height count, local finiteness, and summability of every reciprocal power
+above one. The remaining four modules and the final direct audits are pending.

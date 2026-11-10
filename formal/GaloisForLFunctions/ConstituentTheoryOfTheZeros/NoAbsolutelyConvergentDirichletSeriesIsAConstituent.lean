@@ -478,7 +478,4 @@ theorem LSeries_ne_zero_of_zeros_subset_xi (hsum : LSeriesSummable a x) {n : ℕ
 
 end Dirichlet
 
-#print axioms LSeries_ne_zero_of_zeros_subset_xi
-#print axioms LSeries_ne_zero_of_strip_zeros_subset_xi
-
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros

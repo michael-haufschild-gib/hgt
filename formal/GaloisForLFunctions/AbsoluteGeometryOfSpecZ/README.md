@@ -765,10 +765,11 @@ integer-norm monoid with an off-line pair?*
 So the answer is: the comb. What an integer-norm system does on its own comb is a topic of
 §13.3.
 
-**Q15, Q16, Q18, Q19.** *The full window with nonzero block sums; the fibre of a window; the
-two-block face; the Li ladder on a sequence of tails.* These are statements on real divisors at
-finite scale and belong to the continuation `HodgeTheoryOfAFixedPart`. They are not treated in
-this folder.
+**Q15, Q16, Q18, Q19.** *The full window at finite scale and its converse; the fibre of a
+window as a gauge with a nonnegative potential; the two-block face; the Li ladder on a sequence
+of tails.* These are statements on real divisors at finite scale and are treated in
+`HodgeTheoryOfAFixedPart`. Q18 is answered there: one inequality per prime on the comb, on
+logarithmic windows with exceptions. Q15, Q16 and Q19 are open there.
 
 **Q17. Number rings.** *What are the comb, the counterterm and the Hodge index on the square of
 `𝒪_K`, and what does the class group, which obstructs the orbits, do to the lattice?*
@@ -817,22 +818,160 @@ this folder.
 - The class group does not enter this pairing: contacts, jets and counterterm depend on the
   characters alone. It obstructs the orbits and nothing else that the norms see.
 
-So the answer, for the quadratic rings and the cyclotomic rings of prime conductor, counted by
-their norms: the comb of the integers, with the contacts that the splitting law gives; the
-conductors as the densities of the combs of the twisted parts; the inequality for all packets
-is the Riemann hypothesis of the zeta function of the ring by the same reading as for `ℤ`, and
-for a quadratic ring the conductor is its threshold. Not answered: the ideals themselves as
-degree points, with the characters of the class group, and the other number rings (§13.4).
+So the answer, for the rings with a zeta function `ζ(s) Π_i L(s, χ_i)`, counted by their norms:
+the comb of the integers, with the contacts that the splitting law gives; the conductors as the
+densities of the combs of the twisted parts; the inequality for all packets is the Riemann
+hypothesis of the zeta function of the ring by the same reading as for `ℤ`, and for a quadratic
+ring the conductor is its threshold. Not answered: the ideals themselves as degree points, with
+the characters of the class group, and the rings that are not abelian (§13.4).
+
+**Q20. An object whose functions pay every contact.** *On the cyclotomic divisors of `𝔾_m`
+every contact is paid and the divisor of order `n` has the mass `φ(n)`; on the square the masses
+are units and a section pays one contact for each prime above a graph. Which datum carries unit
+masses and paid contacts?*
+
+- The two ends. On `𝔾_m` over `ℤ` the divisors `Φ_n = 0` meet with
+  `φ(m)Λ(n/m)` for `m ∣ n`, and `Λ(n) = log Φ_n(1)` (corpus:
+  `ArithmeticEffectivityTheory.orbitIntersection_formula`,
+  `SignFreePurityMechanisms.vonMangoldt_eq_log_eval_one_cyclotomic`); the ring is factorial,
+  so a function vanishing on some of these divisors is divisible by their equations. The square
+  is the ring of the functions on the torsion points with integer values at every point, the
+  invariants of the Galois action [C]: a ring between the two with unit masses is the square.
+  In the square `p − e_p` vanishes on every `Γ_{p^j}` and is `p` on the diagonal (corpus:
+  `HodgeTheoryOfAFixedPart.log_abs_primePointSection_lt`).
+- The datum is a subring of the square. The elements `y_p = Σ_{j ≥ 1} e_{p^j}`, with
+  `(y_p)_n = p + ⋯ + p^{v_p(n)}`, are coordinates: `1 + y_p` are the Euler factors of the sum of
+  all orbits, whose components are `σ(n)` (`primeCoord_eq_sum_orbit`,
+  `prod_one_add_chainNode`). They generate the polynomial ring on the primes
+  (`coordHom_injective`), in which `Γ_n` is a lattice point and the graphs of a chain lie on a
+  line (`latticePoint_chain`).
+- Payment. A sequence that on every chain is a polynomial in the node, up to a factor prime to
+  `p`, is a section of the square (`isGhost_of_isPlanar`); if it vanishes on `Γ_{m p^l}`,
+  `l ∈ T`, it is divisible on `Γ_{m p^k}` by `p^{Σ_{l ∈ T}(min(k,l)+1)}`
+  (`pow_sum_dvd_of_isPlanar`), and if it vanishes on a finite set `S` of graphs and not on
+  `Γ_m` then `Σ_{n ∈ S}(Λ(n/m)[m ∣ n] + Λ(m/n)[n ∣ m]) ≤ log|x_m|`
+  (`sum_contact_le_log_abs_of_isPlanar`): the contacts of the normal form above and below,
+  prime powers counted each.
+- The contacts. The polynomial ring on the primes has more contacts than the square: all its
+  elements agree modulo `3` on `Γ_1` and `Γ_4` (`three_dvd_sub_of_mem_payingRing`). The planar
+  sequences form a larger ring, the planar square (`planarSquare`), whose contact ideal is
+  `J(m, n)` for every pair of graphs (`planarContact_eq_graphIdeal`): iterated Fermat quotients
+  of the differences of the nodes separate two graphs at every prime that is not their common
+  one (`exists_planar_separating`). It is strictly between the polynomial ring and the square
+  (`payingRing_lt_planarSquare`, `planarSquare_ne_top`).
+- The price. The payment is the product formula: the section `Π_{l ∈ T}(Y_p − node_l)` attains
+  the forced zeros, and its size on `Γ_{m p^k}` is the product of the differences of the nodes
+  (`ghostComponent_coordHom_nodeProduct`). The archimedean pairing of this object is the
+  logarithm of a difference of nodes, not the jets.
+
+So the answer is: the planar square, a subring of the arithmetic square with unit masses, the
+contact ideals of the square and every contact paid; no ring between the square and the
+functions on the torsion of `𝔾_m` has unit masses. What it does not carry, and what a section
+count on it gives, are topics of §13.5.
+
+**Q21. The exceptional square.** *For a real primitive character `χ` of conductor `q`, is the
+twisted part of the square of its quadratic ring nonpositive on windows of aperture
+`log log q + C`, for every `C` and all large `q`?*
+
+- The twisted part tends to minus the sum `Z_χ` over the zeros of `L(s, χ)`
+  (`tendsto_twistedForm_add_twistedContact`); for a real primitive `χ`, `Z_χ ≥ 0` on the real
+  packets of an aperture is the positivity of Weil's form of `L(s, χ)` on that window, and at
+  every aperture `log log q + C` it is the generalized Riemann hypothesis of `L(s, χ)`
+  (`windowPositiveAt_dirichletZeros_iff_twistedZeroSum_nonneg`,
+  `grh_dirichlet_iff_forall_twistedZeroSum_nonneg`).
+- The trivial aperture. `Z_χ(f) ≥ (log q − C_χ − 2M(a))∫f²` on packets of aperture `a`, `M(a)`
+  the prime mass up to `e^{2a}`; splitting the prime sum at `e^a`, where the two factors of the
+  autocorrelation have disjoint supports, gives `M(a) + M(a/2)` in place of `2M(a)`
+  (`twistedZeroSum_ge_of_aperture`, `twistedZeroSum_ge_of_aperture_sharpened`); uniformly in
+  the character, `Z_χ ≥ 0` when `4e^a + C ≤ log q`, and with any `κ > 2` in place of `4`
+  (`exists_uniform_trivial_conductor_aperture`, `exists_uniform_twistedZeroSum_aperture_margin`).
+  With the prime number theorem the trivial aperture is `log log q + o(1)`: every system with
+  contacts bounded by `Λ` is positive below `log log q − η`, and the systems `Λ`, `−Λ` and the
+  Liouville twist, with the conductor `q` and no pole plane, fail at every aperture
+  `≥ log log q + η` (corpus: `SelectiveArithmetic.exists_trivialAperture_margin`,
+  `SelectiveArithmetic.exists_not_feasible`, `SelectiveArithmetic.tendsto_trivialAperture_sub_log`).
+- One square. A real zero `½ + δ` and its reflection contribute at least
+  `−(sinh(2δa)/δ − 2a)·m·∫f²` on packets of aperture `a`, and nothing negative on even packets,
+  on nonnegative packets and on packets orthogonal to `sinh(δu)`
+  (`re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `re_Wsummand_real_zero_nonneg`).
+- Repulsion. A real zero close to `1` is unique and simple, forces the zeros of bounded height
+  onto the line when it is close enough, and gives a lower bound for every other square in
+  terms of its depth (`exceptional_zero_unique_and_simple`,
+  `deuring_heilbronn_on_twisted_comb`, `exists_twistedComb_square_margin`).
+- Not proved: the sign at the aperture `log log q + C`. It is the Landau–Siegel problem (§13.6).
+
+**Q22. Genus and ramification.** *What is the genus function of a degree point, is the
+counterterm of a ring that of its base plus a ramification term, and do the isotypic parts of a
+ring of higher degree carry separate indices?*
+
+- The genus. In the normal form of the pairing `2 d₁ d₂ − D·D` on the divisor `c·γ_n` is
+  `(2c²/n)·g(n)` with `g(n) = 1 + (n/2) log(n/2π)` (`combForm_singleton`), as the form on one
+  graph of a curve is `2g·e²` (corpus: `HodgeTheoryOfAFixedPart.curveCombForm_singleton`). The
+  genus is negative at `n = 2` and `n = 3` and positive at every other degree point
+  (`genus_two_neg`, `genus_three_neg`, `genus_one_pos`, `genus_pos_of_four_le`).
+- Riemann–Hurwitz. For a ring with the primitive characters `χ_i` of conductors `q_i`, of
+  degree `d = 1 + #{χ_i}`, the mass at `n` enters the pairing with `d log(n/2π) + Σ_i log q_i`
+  (`ringForm_eq`), that is with `(2 g_K(n) − 2)/n` for
+  `g_K(n) = 1 + (n/2)(d log(n/2π) + Σ_i log q_i)` (`ringForm_eq_genus`), and
+  `2 g_K(n) − 2 = d(2 g(n) − 2) + n Σ_i log q_i` (`riemannHurwitz`): the conductors are the
+  ramification, pulled back to the degree point `n` with the multiplicity `n`.
+- Higher degree. For every finite family of primitive characters the pairing with the contacts
+  `Λ(1 + Σ_i Re χ_i)` tends to `2 d₁ d₂` minus the sum over the zeros of `ζ(s) Π_i L(s, χ_i)`
+  (`tendsto_ringForm_add_contact`).
+- Separate indices. Each twisted part is a form of its own on the packets, with the exact index
+  `#{ρ : L(ρ, χ_i) = 0, Re ρ > ½}` (corpus: `ArithmeticCastelnuovoSeveri.pontryagin_law`). The
+  index of the ring is the number of distinct zeros of `ζ` and of the `L(s, χ_i)` to the right
+  of the line (`exists_le_negIndex_ringDefect_iff`): at most the sum of the indices of the
+  parts, with equality iff no such zero is shared.
+- A cover and its base. Negative squares of the square of `ℤ` are negative squares of the
+  square of the ring (`exists_le_negIndex_ringDefect_of_zeta`); the inequality on the square of
+  the ring holds iff `ζ` and every `L(s, χ_i)` have no zero to the right of the line
+  (`forall_negIndex_ringDefect_eq_zero_iff`), and then the Riemann hypothesis holds
+  (`riemannHypothesis_of_ringDefect`).
+
+So the answer is: the genus `1 + (n/2) log(n/2π)`, negative exactly at `2` and `3`;
+Riemann–Hurwitz with the conductors as ramification; separate exact indices for the isotypic
+parts, and for the ring the count of the distinct zeros of its zeta function. Rings that are
+not abelian are a topic of §13.4.
+
+**Q23. A square for some weights.** *Which systems of contact weights, with the jets and the
+counterterm of `ℤ`, satisfy Bézout at an aperture, and are there any besides `Λ`?*
+
+- The set of these squares at the aperture `a` is the window cone `𝒜(a)` of the corpus, the
+  weights whose functional is nonnegative on the tests supported in `[−a, a]`
+  (`combBezoutAt_iff_mem_windowCone`). It is convex, decreases with `a`, sees only the weights
+  at `n ≤ e^{2a}` and is bounded in those coordinates (corpus:
+  `CriticalHardyTheoryOfTheWindowCone.convex_windowCone`, `windowCone_anti`,
+  `mem_windowCone_congr`, `abs_le_boxWidth_of_mem_windowCone`).
+- Existence decides. The Riemann hypothesis holds iff at every aperture some square satisfies
+  Bézout; if it fails, beyond some aperture none does
+  (`riemannHypothesis_iff_forall_exists_combBezoutAt`,
+  `exists_aperture_forall_not_combBezoutAt`).
+- Other squares at a finite aperture. Below the first contact, `2a < log 2`, every system of
+  weights satisfies Bézout (`combBezoutAt_of_short`). At the aperture `181/500` the square of
+  the integers has the margin `1/5000` (`hasMargin_vonMangoldt`), a margin is an inradius of
+  the cone (corpus: `hasMargin_add`, `Icc_subset_bandSet`), and for every `t` within
+  `√2/10000` of `log 2` a system of weights with `w(2) = t` satisfies Bézout there
+  (`exists_combBezoutAt_weight_two`, `exists_combBezoutAt_ne_vonMangoldt`).
+- The limit. Every coordinate of the cone shrinks to `Λ(n)`, and a point of the cone at a large
+  aperture obeys the prime number theorem on its range (corpus:
+  `exists_forall_abs_sub_vonMangoldt_lt`, `exists_abs_chebyshev_sub_le_of_mem_windowCone`).
+
+So the answer is: at a finite aperture the squares that satisfy Bézout form a convex body with
+`Λ` inside it wherever `Λ` has a margin; the body is everything below the first contact and
+shrinks to the point `Λ`, or to the empty set, as the aperture grows. A construction of a point
+of the body at every aperture would prove the Riemann hypothesis without producing `Λ`.
 
 ## 9. Milestones and the decisive test
 
 | Milestone | Content | State |
 |---|---|---|
-| M1 | Q1–Q9; the pairing of the degree points equal to `2 d₁ d₂` minus the zero sum on packets; Bézout on short packets | Lean: §5, `tendsto_degreePairing_degrees_sub_zeroSum`, `tendsto_degreePairing_le_degrees_of_signed_short` |
-| M2 | The object of Q10 with its section count | Lean: `towerWeightRing`, `shift_mem_towerWeightRing`, `card_image_weightedLatticeMap` |
-| M3 | The comb pairing on that object | Lean: `frobeniusIntersection_div_sqrt_eq_object`, `contactWeight_eq_log_card_orbitBaseRing`, `tendsto_degreeForm_add_contacts` |
-| M4 | Bézout at larger bounded apertures, against the verified windows | Lean: every certificate transports (`tendsto_degreePairing_le_degrees_of_certificate`); at the aperture `181/500` with the margin `1/5000` and at the widest aperture of the corpus, below `1/2`, with the margin `1/8000` (`tendsto_degreePairing_le_degrees_of_width`, `tendsto_degreePairing_le_degrees_of_enlarged_width`) |
-| M5 | Bézout | open; it is the Riemann hypothesis (`riemannHypothesis_iff_combBezout`) |
+| M1 | Q1–Q10: the founding questions and the one object | Lean: §5; `towerWeightRing`, `shift_mem_towerWeightRing`, `card_image_weightedLatticeMap`, `contactScale_eq` |
+| M2 | The comb pairing, the comb, the carries, the additive datum | Lean: `tendsto_degreePairing_degrees_sub_zeroSum`, `frobeniusIntersection_div_sqrt_eq_object`, `tendsto_degreePairing_le_degrees_of_width`, `combBezoutShift_iff`, `tendsto_carryDefect_add_windowDefect`, `digitCarry_not_coboundary`, `combBezout_iff` |
+| M3 | The finite-scale theorems, curves, quadratic rings, the forced constant | Lean: the continuation for the finite scale and the comb of a curve; `tendsto_quadraticForm_add_idealContact`, `exists_packet_quadraticForm_pos`, `exists_le_negIndex_ringDefect_iff`, `ringForm_eq_genus` |
+| M4 | An object with paid contacts and unit masses (Q20) | Lean: `planarSquare`, `planarContact_eq_graphIdeal`, `sum_contact_le_log_abs_planarSquare` |
+| M5 | The exceptional square (Q21) | open: the sign at the aperture `log log q + C` is the Landau–Siegel problem. Lean: the trivial aperture, the one-square law, repulsion (§8, Q21) |
+| M6 | Bézout | open; it is the Riemann hypothesis (`riemannHypothesis_iff_combBezout`) |
 
 **The decisive early test.** An integer-norm system with an off-line pair is invisible to the
 square. A construction whose Bézout holds for it cannot prove the Riemann hypothesis. The pairing
@@ -912,6 +1051,19 @@ the integers Bézout fails for every system of contact weights other than `Λ`
 | The contacts of a cyclotomic ring of prime conductor are those of `ℤ` on the progression `1 mod p`, with the multiplicity `p − 1` | `vonMangoldt_add_sum_twistWeight` |
 | The pairing of the square of a cyclotomic ring of prime conductor is twice the product of the degrees minus the sum over the zeros of its zeta function | `tendsto_cyclotomicForm_add_contact`, `cyclotomicForm_eq` |
 | The index law of a finite family of tempered configurations | `negIndex_sum_zeroGram_le`, `negIndex_cyclotomicDefect_packets_le` |
+| The coordinates of the primes generate a polynomial ring in the square, and the graphs of a chain lie on a line | `coordHom_injective`, `latticePoint_chain` |
+| A planar sequence pays every contact of the normal form, prime powers above and below | `pow_sum_dvd_of_isPlanar`, `sum_contact_le_log_abs_of_isPlanar` |
+| The planar square has the contact ideals of the square for every pair of graphs | `planarContact_eq_graphIdeal` |
+| The squares with Bézout at an aperture are the window cone; some of them are not the square of the integers | `combBezoutAt_iff_mem_windowCone`, `exists_combBezoutAt_ne_vonMangoldt` |
+| Existence of a square with Bézout at every aperture is the Riemann hypothesis | `riemannHypothesis_iff_forall_exists_combBezoutAt` |
+| Weil's form of a superposition of configurations is the sum of the forms, without disjointness | `W_superposeFamily` |
+| The Hodge index of the square of a number ring is the number of distinct zeros of its zeta function to the right of the line | `exists_le_negIndex_ringDefect_iff`, `exists_le_negIndex_sum_zeroGram_iff` |
+| The inequality on the square of a ring implies the Riemann hypothesis | `riemannHypothesis_of_ringDefect`, `forall_negIndex_ringDefect_eq_zero_iff` |
+| The pairing of a ring with any finite family of primitive characters is twice the product of the degrees minus the sum over the zeros of its zeta function | `tendsto_ringForm_add_contact` |
+| Riemann–Hurwitz for the counterterm, with the conductors as ramification | `ringForm_eq_genus`, `riemannHurwitz` |
+| The genus of a degree point is `1 + (n/2) log(n/2π)`, negative exactly at `2` and `3` | `combForm_singleton`, `genus_two_neg`, `genus_three_neg`, `genus_one_pos`, `genus_pos_of_four_le` |
+| The twisted part of a quadratic ring is nonpositive up to the trivial aperture, uniformly in the character | `exists_uniform_trivial_conductor_aperture`, `twistedZeroSum_ge_of_aperture_sharpened` |
+| A real zero and its reflection are one square of explicit depth; a real zero near `1` repels the other squares | `re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy`, `deuring_heilbronn_on_twisted_comb`, `exists_twistedComb_square_margin` |
 
 All are unconditional.
 
@@ -960,6 +1112,12 @@ All are unconditional.
 | Characters modulo a prime; orthogonality on contacts; sums of twisted forms; the index law of a family of configurations | `TheSquareOfACyclotomicRingHasItsContactsOnAProgression` |
 | Real and imaginary parts of a test; packets of degree zero from truncated radical tests; translation of a packet of degree zero into a window; pairings with a shifted counterterm | `BezoutDeterminesTheConstantOfTheCounterterm` |
 | Descent of the `p`-derivation to an integer point | `DeltaOrderDoesNotDescendAtEveryIntegerPoint` |
+| Nodes of a chain; the coordinates of the primes; restriction of a polynomial on the primes to a line; divisibility of a value by the product of the differences to the roots; planar sequences; contacts counted chain by chain against the factorization | `TheEulerFactorsOfTheDivisorSumPayEveryContact` |
+| The ring of planar sequences; iterated Fermat quotients as polynomials with one prime in the denominator; ideals of `ℤ` prime by prime | `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem` |
+| Bézout at an aperture; the dictionary with the window cone and its margins | `TheSquaresWithBezoutAtAnApertureAreTheWindowCone` |
+| Superposition of a finite family of configurations; sums over a superposition by indicators; the exact index of a sum of Weil forms | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
+| Families of primitive characters with different conductors; the genus of a degree point; numerical bounds for `e`, `e^{2/3}`, `e^2` against `π` | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
+| The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
 ## 12. Traps
 
@@ -1016,13 +1174,24 @@ All are unconditional.
 | The twisted part of a pairing has rulings | it has no pole plane: its limit is minus the sum over the zeros of `L(s, χ)` |
 | A ring of higher degree needs its own analysis | on a real packet every primitive character contributes through `Λ Re χ`; for the cyclotomic ring of conductor `p` orthogonality puts the contacts on the progression `1 mod p` |
 | Short packets say nothing about a number ring | for a large conductor the twisted part is nonpositive on every packet shorter than `log 2`: the density of its comb exceeds the archimedean constant |
+| A ring with unit masses that pays every contact must leave the square | the planar square is a subring of the square; no ring between the square and the functions on the torsion of `𝔾_m` has unit masses |
+| The polynomial ring on the coordinates of the primes is the square with paid contacts | it has contacts the square does not have: `Γ_1` and `Γ_4` meet at `3`; the planar square has exactly the contacts of the square |
+| Paid contacts give the sign | the payment is the product formula for the differences of the nodes; the archimedean pairing of the planar square is logarithmic, not the jets |
+| Sections that pay every contact can be small | a planar section vanishing on `Γ_{p}, …, Γ_{p^J}` is divisible by `p^J` on the diagonal; the section `Π_j (Y_p − (p + ⋯ + p^j))` has there the size `Π_j (p + ⋯ + p^j)` |
+| The index of a ring is the sum of the indices of its characters | it is the number of distinct zeros of the zeta function to the right of the line; a zero shared by two factors is one negative square |
+| A ring can satisfy the inequality while `ℤ` does not | negative squares of the square of `ℤ` are negative squares of the square of every ring over it |
+| A superposition of configurations needs disjoint zeros | the multiplicities add at a common zero, and the indicator series regroup the sum |
+| The genus of a degree point is positive | it is negative at `n = 2` and `n = 3`: on one of these degree points alone the form `2 d₁ d₂ − D·D` is negative |
+| The discriminant enters the pairing through the points | it is the ramification term of the genus: `log q_i` per character, with the multiplicity `n` at the degree point `n` |
+| At a finite aperture Bézout singles out the contacts of the square | it holds for a convex body of weight systems, with `Λ` inside wherever `Λ` has a margin; only the limit of the apertures is the point `Λ` |
+| The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with the conductor `q` fail at every aperture `≥ log log q + η` (corpus) |
 
 ## 13. Open research topics
 
-The questions Q10, Q12, Q13 and Q14 are answered in §8, and Q17 for quadratic rings. Q11 is the
-first topic below; with Q15, Q16, Q18 and Q19 of the continuation it is what the specification
-leaves open. The others are directions that the answers open; each
-states what is proved, what is not, and what a decision would be.
+The questions Q10, Q12, Q13, Q14, Q17, Q20, Q22 and Q23 are answered in §8. Q11 is the first
+topic below and Q21 the last; with Q15, Q16 and Q19 of the continuation they are what the
+specification leaves open. The others are directions that the answers open; each states what
+is proved, what is not, and what a decision would be.
 
 ### 13.1 Bézout beyond the proved apertures
 
@@ -1079,10 +1248,11 @@ computed for a count at positive distance.
 Over a Dedekind domain the square is defined by congruences over ideals; its graphs meet in the
 prime ideals with the count `log N𝔭`, the diagonal and `Γ_𝔭` are glued along the residue field,
 the necklace coordinate at `𝔡` is the ideal `𝔡`, and the orbit of `𝔡` exists iff `𝔡` is
-principal. For a quadratic ring the pairing of the ideals counted by their norms is computed on
-the comb of the integers, with the conductor in the counterterm, and the conductor is forced
-from below; its defect obeys the index law, and for a large conductor the inequality holds on
-the packets shorter than `log 2`.
+principal. For a ring with a zeta function `ζ(s) Π_i L(s, χ_i)` the pairing of the ideals
+counted by their norms is computed on the comb of the integers, with the conductors as the
+ramification term of the genus; the index of its square is the number of distinct zeros of the
+zeta function to the right of the line; for a quadratic ring the conductor is forced from below;
+and for large conductors the inequality holds on the packets shorter than `log 2`.
 
 `TheExceptionalSquareRepelsTheOtherSquares.lean` transfers classical
 Deuring–Heilbronn repulsion to the actual twisted-comb squares. A positive
@@ -1101,9 +1271,11 @@ these bounds with the proved twisted-comb limit.
   of norms; a jet between two ideals is a function of a generator of their quotient and exists
   inside one class only, and the pairings twisted by the characters of the class group are those
   of the Hecke `L`-functions, whose explicit formulas are not in the corpus;
-- the number rings that are neither quadratic nor cyclotomic of prime conductor: a composite
-  conductor brings imprimitive characters, a ring that is not abelian over `ℚ` brings Artin
-  `L`-functions;
+- the rings that are not abelian over `ℚ`, which bring Artin `L`-functions; and, for an abelian
+  ring of composite conductor, the identification of the contacts `Λ(1 + Σ_i Re χ_i)` with the
+  norms of its prime ideals at the ramified primes [C];
+- the exact index on real packets: the families that attain it in the corpus are complex tests,
+  each the sum of two real packets;
 - the count of the odd characters modulo `p`, which turns the conjugate jets of the cyclotomic
   ring into `(p − 1)/2` complex places;
 - the units of a real quadratic ring, which the norms do not see;
@@ -1111,6 +1283,38 @@ these bounds with the proved twisted-comb limit.
   function, whose second term contains the discriminant;
 - the converse for the conductor: the inequality with the conductor `q` for all packets, which
   is the Riemann hypothesis of the zeta function of the ring.
+
+### 13.5 The planar square
+
+The planar square has unit masses, the contact ideals of the square and paid contacts.
+*Proved:* the ring, its contacts, the payment on chains and in the normal form, its position
+between the polynomial ring on the primes and the square. *Open:*
+
+- the gluing index of its first `N` graphs. Payment forces the graph `Γ_n` to carry
+  `Σ_p (v_p(n)(v_p(n)+1)/2) log p` conditions against `log n` in the square, on average a
+  constant more per graph; whether the image of the planar square on `Γ_1, …, Γ_N` has exactly
+  the index `Π_{m < n ≤ N} #(ℤ/J(m, n))` is not proved;
+- the dependence on the nodes. Planarity is defined with the nodes `p + ⋯ + p^l` of the
+  coordinates `y_p = Σ_j V_p^j 1`; another sequence of integers with the same differences up to
+  units at `p` gives another ring with the same two properties, and no invariant that selects
+  one is known;
+- a count of sections and its inequality. On the polynomial ring on the primes a section of
+  degree `d` in each variable has the size `n^{O(d)}` on `Γ_n`, where a section of the tower has
+  `q^{O(bn)}`; whether a count on it gives a bound that is not the product formula is open, and
+  by criterion 6 it cannot give the sign;
+- the archimedean pairing. The size of a section on a graph is a product of differences of
+  nodes; a metric on the planar square whose pairing is the jets is not known, and on the
+  projective line none exists (corpus: `SurfaceOfSpecZ.NoMetricOnTheProjectiveLineCarriesTheJets`).
+
+### 13.6 The exceptional square
+
+*Statement.* For a real primitive character of conductor `q` the twisted part of the square of
+its quadratic ring is nonpositive on the windows of aperture `log log q + C`, for every `C` and
+all large `q`. *Proved:* the sign up to the trivial aperture `log log q − o(1)`, by the sizes
+of the contacts alone; the failure beyond it of the systems with those sizes and other signs;
+the depth of the one square of a real zero; repulsion of the other squares. *Not proved:* any
+aperture `log log q + C`. A proof has to use the signs of `χ` at the primes below `(log q)²`;
+it would exclude real zeros near `1`.
 
 ## 14. Context
 
@@ -1127,11 +1331,16 @@ these bounds with the proved twisted-comb limit.
 | RenormalizedArithmeticPotentialTheory, HTGeometry | Riemann sums on the unit interval and on uniform partitions |
 | FrustratedArithmeticDirichletForms | the regional and edge parts of the jump energy of a function on an interval, in the order of the jump length |
 | ArithmeticCorrespondencePositivity | a section count with Riemann–Roch and Bézout is the Hodge index |
-| HodgeTheoryOfAFixedPart | the continuation: the normal form of the pairing on real divisors at finite scale, Zariski's lemma on a comb, short windows, the index of a window, the gauge of the flat tail, the comb of a curve |
+| HodgeTheoryOfAFixedPart | the second half of the programme: the normal form of the pairing on real divisors at finite scale, Zariski's lemma on a comb, short windows, the index of a window, the gauge of the flat tail, the comb of a curve, what the sections of the square certify |
+| CriticalHardyTheoryOfTheWindowCone | the window cone `𝒜(a)` of the weight systems positive at an aperture: convexity, locality, the box, the collapse onto `Λ`, the margin as an inradius, the prime number theorem on the cone |
+| SelectiveArithmetic | the trivial aperture of a conductor with the constant of the prime number theorem, and its sharpness on the Liouville twist |
+| ArithmeticEffectivityTheory, ArithmeticIntersectionTheory | the cyclotomic divisors of `𝔾_m` as torsion orbits: their intersection numbers `φ(m)Λ(n/m)`, as orders of quotients of cyclotomic rings |
+| ExceptionalLayerTheory, WindowVisibilityLaw | repulsion from a real zero; the onset aperture of a configuration |
 | ArithmeticOrientationGeometry | the theta `h⁰` of `Spec ℤ` and its Riemann–Roch with the functional equation as duality |
 | SelectivePositivityAndThresholdLaws | the certificate of positivity of Weil's functional at the aperture `181/500`; the refutation for the weight with the atom at `2` reversed |
 | InfiniteRankPurityTheory | `Λ` and the Mertens function are not traces of any order; the archimedean part of the point count is one |
 | SquareRootThreshold | the zeros of `ζ` as a tempered configuration; the remainder of the zero count is unbounded; RH as the zeros of the configuration on the line; a floor of Weil's form by a multiple of the mass on odd tests is RH |
+| ArithmeticCastelnuovoSeveri (index) | the exact index law of a tempered configuration: `n` negative squares on some family of `n` tests iff `n` zeros to the right of the line |
 | SumProductArithmeticOfTheLogarithm | count-distance rigidity of integer-norm systems |
 
 Within the corpus AGZ is the programme of the two-dimensional object. It supplies to the others
@@ -1148,23 +1357,26 @@ by the comb.
 
 **Success** is measured by the milestones of §9.
 
-- M1–M3 are reached: the founding questions have theorem-level answers, the object exists as one
-  ring of sequences with its section count, and the comb pairing is computed on it.
-- M4 is reached at the widest certificate of positivity in the corpus, of aperture below `1/2`.
-  It is extended by a certificate at a larger aperture, which the transport theorem turns into
-  Bézout on the packets of that aperture.
-- M5, Bézout for all packets, is the Riemann hypothesis and is not reached. Nothing in this
+- M1–M3 are reached: the founding questions and the one object have theorem-level answers, the
+  comb pairing is computed with its comb, carries and additive datum, and the finite-scale
+  theorems, the comb of a curve, the squares of number rings and the forced constant are
+  proved here and in the continuation.
+- M4 is reached: the planar square is a subring of the arithmetic square with unit masses, the
+  contact ideals of the square and every contact paid.
+- M5, the sign of the twisted part at the aperture `log log q + C`, is the Landau–Siegel
+  problem and is not reached; the range below it and the structure of the one square are
+  theorems.
+- M6, Bézout for all packets, is the Riemann hypothesis and is not reached. Nothing in this
   folder proves it or claims to.
 
-Q10, Q12, Q13 and Q14 have theorem-level answers in §8. Q11 has one on bounded apertures and
-is the Riemann hypothesis beyond them. Q17 has one for the quadratic rings and the cyclotomic
-rings of prime conductor, counted by their norms. Q15, Q16, Q18 and Q19 belong to the continuation.
+Q10, Q12, Q13, Q14, Q17, Q20, Q22 and Q23 have theorem-level answers in §8. Q11 has one on
+bounded apertures and is the Riemann hypothesis beyond them. Q21 has one up to the trivial
+aperture. Q15, Q16, Q18 and Q19 are treated in the continuation.
 
 **A contribution** to AGZ
 
 - is unconditional: no hypothesis, no axiom, no statement assumed for `ζ`;
-- names what it addresses: a question Q10–Q14 or Q17, a milestone, a criterion, or an open topic
-  of §13;
+- names what it addresses: a question of §8, a milestone, a criterion, or an open topic of §13;
 - states its objects in the language of §2–§3: on which ring or comb the Frobenius acts, which
   contacts, which jets, which counterterm, which Verschiebung;
 - either supplies a step of Weil's or of Stepanov's argument on the object, or proves with its

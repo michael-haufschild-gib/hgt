@@ -3,6 +3,7 @@ import GaloisForLFunctions.SelectiveArithmetic.ThePolarPacketsOfAWindow
 import GaloisForLFunctions.SelectiveArithmetic.TheLiouvilleTwistFailsBeyondTheTrivialAperture
 import GaloisForLFunctions.SelectiveArithmetic.TheHeightOfAPacketIsAMass
 import GaloisForLFunctions.SelectiveArithmetic.CancellationInTheContactsBuysTheLadder
+import GaloisForLFunctions.SelectiveArithmetic.AnIsolatedPairShowsAtTheRungOfItsDepth
 
 /-!
 # Selective Arithmetic
@@ -25,6 +26,10 @@ sign, and where the first statement beyond that scale lies.
   shape up to the aperture `log log |t| − o(1)`.
 * The exchange rate of the ladder on the prime side: a saving `n^{1/2 + γ}` in the partial sums of
   the contacts buys the sign up to the rung `κ < 1/(2γ)`.
+* The exchange rate on the zero side: a lattice with the functional equation and one pair of depth
+  `δ` is positive below the rung `κ = 1/(2δ)` and fails above it; in every configuration with a
+  logarithmic local count, positivity on a rung forces an off-line companion of every zero deeper
+  than the rung.
 
 See `SelectiveArithmetic/README.md`.
 -/
