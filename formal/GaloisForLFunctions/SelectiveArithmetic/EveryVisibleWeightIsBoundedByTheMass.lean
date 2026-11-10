@@ -9,7 +9,8 @@ size of the mass.
 
 * **The box law of a conductor** (`exists_abs_weight_le_of_feasible`). There is an absolute
   constant `C` such that every system feasible for the conductor `q` at aperture `a` satisfies
-  `|w(n)| ≤ √n (log q + log(1 + 4n) + C)` at every `n ≥ 2` with `½ log n + 1/(4n) ≤ a`.
+  `|w(n)| ≤ √n (log q + log(1 + 1/r) + C)` at every `n ≥ 2` and `0 < r ≤ 1/(4n)` with
+  `½ log n + r ≤ a`.
   The test is a pair of narrow bumps at distance `log n`: its only lags are `0` and `log n`, so
   the single contact `n` is isolated; the archimedean energy of a bump of width `r` is
   `log(1/r) + O(1)` times its mass.
@@ -261,124 +262,145 @@ theorem abs_log_sub_log_ge {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) (hmn : m �
       linarith
     exact le_trans (by linarith) (le_abs_self _)
 
+/-- The mass of a pair of disjoint bumps is twice the mass of one. -/
+theorem integral_twoBump_sq {s h r : ℝ} (hs : s * s = 1) (hr : 0 < r) (hrh : r ≤ h) :
+    ∫ u, twoBump s h r u ^ 2 = 2 * packetAutocorr (cutoff r (r / 2)) 0 := by
+  have hδ : 0 < r / 2 := by positivity
+  have hA := packetAutocorr_twoBump s h hr 0
+  rw [packetAutocorr_cutoff_eq_zero hδ (z := 0 - 2 * h)
+      (by rw [zero_sub, abs_neg, abs_of_nonneg (by linarith)]; linarith),
+    packetAutocorr_cutoff_eq_zero hδ (z := 0 + 2 * h)
+      (by rw [zero_add, abs_of_nonneg (by linarith)]; linarith), hs] at hA
+  have e : packetAutocorr (twoBump s h r) 0 = ∫ u, twoBump s h r u ^ 2 := by
+    rw [packetAutocorr]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    show twoBump s h r u * twoBump s h r (u + 0) = twoBump s h r u ^ 2
+    rw [add_zero, sq]
+  rw [← e, hA]
+  ring
+
+/-- **A pair of narrow bumps at distance `log n` sees the contact `n` only.** For `r ≤ 1/(4n)`
+the contact form of the pair is `w(n) n^{−1/2} · 2 s Φ(0)`. -/
+theorem contactForm_twoBump {s r : ℝ} (hs : s * s = 1) (hr : 0 < r) {n : ℕ} (hn : 2 ≤ n)
+    (hrn : r ≤ 1 / (4 * (n : ℝ))) (w : ℕ → ℝ) {N : ℕ} (hnN : n ≤ N) :
+    contactForm w (fun u => (twoBump s (Real.log n / 2) r u : ℂ)) N =
+      w n / Real.sqrt n * (2 * (s * packetAutocorr (cutoff r (r / 2)) 0)) := by
+  have hδ : 0 < r / 2 := by positivity
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hlogn : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) hn2
+  have hlog2 : (1 : ℝ) / 2 ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
+  have hr8 : r ≤ 1 / 8 := by
+    refine hrn.trans ?_
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
+    linarith
+  have h2r : 2 * r ≤ 1 / (2 * (n : ℝ)) := by
+    have e : 1 / (2 * (n : ℝ)) = 2 * (1 / (4 * (n : ℝ))) := by
+      field_simp
+      ring
+    rw [e]
+    linarith
+  obtain ⟨h, hh⟩ : ∃ h : ℝ, h = Real.log n / 2 := ⟨_, rfl⟩
+  rw [← hh]
+  have hmem : n ∈ Finset.Icc 2 N := Finset.mem_Icc.mpr ⟨hn, hnN⟩
+  rw [contactForm_packet, Finset.sum_eq_single n]
+  · -- the lag `log n`
+    have hA := packetAutocorr_twoBump s h hr (Real.log n)
+    have e1 : Real.log n - 2 * h = 0 := by rw [hh]; ring
+    have e2 : Real.log n + 2 * h = 2 * Real.log n := by rw [hh]; ring
+    rw [e1, e2,
+      packetAutocorr_cutoff_eq_zero hδ (z := Real.log n)
+        (by rw [abs_of_nonneg (by linarith)]; linarith),
+      packetAutocorr_cutoff_eq_zero hδ (z := 2 * Real.log n)
+        (by rw [abs_of_nonneg (by linarith)]; linarith), hs] at hA
+    rw [hA]
+    ring
+  · -- every other contact is invisible
+    intro m hm hmn
+    have hm2 := (Finset.mem_Icc.mp hm).1
+    have hlogm : Real.log 2 ≤ Real.log m :=
+      Real.log_le_log (by norm_num) (by exact_mod_cast hm2)
+    have hsep := abs_log_sub_log_ge (by omega : 1 ≤ m) (by omega : 1 ≤ n) hmn
+    have hA := packetAutocorr_twoBump s h hr (Real.log m)
+    have e1 : Real.log m - 2 * h = Real.log m - Real.log n := by rw [hh]; ring
+    have e2 : Real.log m + 2 * h = Real.log m + Real.log n := by rw [hh]; ring
+    rw [e1, e2,
+      packetAutocorr_cutoff_eq_zero hδ (z := Real.log m)
+        (by rw [abs_of_nonneg (by linarith)]; linarith),
+      packetAutocorr_cutoff_eq_zero hδ (z := Real.log m - Real.log n) (h2r.trans hsep),
+      packetAutocorr_cutoff_eq_zero hδ (z := Real.log m + Real.log n)
+        (by rw [abs_of_nonneg (by linarith)]; linarith)] at hA
+    rw [hA]
+    ring
+  · intro hnot
+    exact absurd hmem hnot
+
+/-- One bump has mass at least `r`. -/
+theorem le_packetAutocorr_cutoff_zero {r : ℝ} (hr : 0 < r) :
+    r ≤ packetAutocorr (cutoff r (r / 2)) 0 := by
+  have := packetAutocorr_cutoff_ge (a := r) (δ := r / 2) (by positivity) (le_refl (0 : ℝ))
+  linarith
+
+/-- The derivative energy of a pair of bumps at the scale of the bumps:
+`r² ∫ f'² ≤ 128 S² Φ(0)`. -/
+theorem sq_mul_integral_deriv_twoBump_sq_le {S : ℝ}
+    (hS : ∀ x : ℝ, |deriv Real.smoothTransition x| ≤ S) {s : ℝ} (hs : s * s = 1) (h : ℝ)
+    {r : ℝ} (hr : 0 < r) :
+    r ^ 2 * (∫ u, deriv (twoBump s h r) u ^ 2) ≤
+      128 * S ^ 2 * packetAutocorr (cutoff r (r / 2)) 0 := by
+  have h1 := mul_le_mul_of_nonneg_left (integral_deriv_twoBump_sq_le hS hs h hr) (sq_nonneg r)
+  have e : r ^ 2 * (128 * S ^ 2 / r) = 128 * S ^ 2 * r := by
+    field_simp
+  rw [e] at h1
+  exact h1.trans (mul_le_mul_of_nonneg_left (le_packetAutocorr_cutoff_zero hr) (by positivity))
+
 /-- **The box law of a conductor.** There is an absolute constant `C` such that every system
 feasible for the conductor `q` at aperture `a` satisfies
-`|w(n)| ≤ √n (log q + log(1 + 4n) + C)` at every `n ≥ 2` with `½ log n + 1/(4n) ≤ a`. -/
+`|w(n)| ≤ √n (log q + log(1 + 1/r) + C)` at every `n ≥ 2` and every `0 < r ≤ 1/(4n)` with
+`½ log n + r ≤ a`. As the window shrinks to the contact the bound grows like `log(1/r)`. -/
 theorem exists_abs_weight_le_of_feasible :
-    ∃ C : ℝ, ∀ {q a : ℝ} {w : ℕ → ℝ} {n : ℕ}, 2 ≤ n →
-      Real.log n / 2 + 1 / (4 * (n : ℝ)) ≤ a → Feasible q a w →
-      |w n| ≤ Real.sqrt n * (Real.log q + Real.log (1 + 4 * (n : ℝ)) + C) := by
+    ∃ C : ℝ, ∀ {q a r : ℝ} {w : ℕ → ℝ} {n : ℕ}, 2 ≤ n → 0 < r → r ≤ 1 / (4 * (n : ℝ)) →
+      Real.log n / 2 + r ≤ a → Feasible q a w →
+      |w n| ≤ Real.sqrt n * (Real.log q + Real.log (1 + 1 / r) + C) := by
   obtain ⟨S, -, hS⟩ := exists_abs_deriv_smoothTransition_le
-  refine ⟨5 + 64 * S ^ 2, fun {q a w n} hn ha hfe => ?_⟩
+  refine ⟨5 + 64 * S ^ 2, fun {q a r w n} hn hr0 hrn ha hfe => ?_⟩
   have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
   have hn2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
   have hsn : 0 < Real.sqrt n := Real.sqrt_pos.mpr hn0
-  obtain ⟨r, hr⟩ : ∃ r : ℝ, r = 1 / (4 * (n : ℝ)) := ⟨_, rfl⟩
-  obtain ⟨h, hh⟩ : ∃ h : ℝ, h = Real.log n / 2 := ⟨_, rfl⟩
-  rw [← hr, ← hh] at ha
-  have hr0 : 0 < r := by rw [hr]; positivity
-  have hδ : 0 < r / 2 := by positivity
-  have hr8 : r ≤ 1 / 8 := by
-    rw [hr, div_le_div_iff₀ (by positivity) (by norm_num)]
-    linarith
   have hlogn : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) hn2
   have hlog2 : (1 : ℝ) / 2 ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
-  have hh0 : 0 ≤ h := by rw [hh]; linarith
-  have hrh : 2 * r ≤ 2 * h := by rw [hh]; linarith
-  have h1r : 1 / r = 4 * (n : ℝ) := by rw [hr]; field_simp
-  obtain ⟨Φ₀, hΦ₀⟩ : ∃ Φ₀ : ℝ, Φ₀ = packetAutocorr (cutoff r (r / 2)) 0 := ⟨_, rfl⟩
-  have hΦr : r ≤ Φ₀ := by
-    have := packetAutocorr_cutoff_ge (a := r) hδ (le_refl (0 : ℝ))
-    rw [hΦ₀]
+  have hr8 : r ≤ 1 / 8 := by
+    refine hrn.trans ?_
+    rw [div_le_div_iff₀ (by positivity) (by norm_num)]
     linarith
-  have hΦpos : 0 < Φ₀ := lt_of_lt_of_le hr0 hΦr
+  have hh0 : 0 ≤ Real.log n / 2 := by linarith
+  have hrh : r ≤ Real.log n / 2 := by linarith
+  obtain ⟨Φ₀, hΦ₀⟩ : ∃ Φ₀ : ℝ, Φ₀ = packetAutocorr (cutoff r (r / 2)) 0 := ⟨_, rfl⟩
+  have hΦpos : 0 < Φ₀ := by
+    rw [hΦ₀]
+    exact lt_of_lt_of_le hr0 (le_packetAutocorr_cutoff_zero hr0)
+  have hnN : n ≤ ⌊Real.exp (2 * a)⌋₊ := by
+    refine Nat.le_floor ?_
+    calc (n : ℝ) = Real.exp (Real.log n) := (Real.exp_log hn0).symm
+      _ ≤ Real.exp (2 * a) := Real.exp_le_exp.mpr (by linarith)
   -- the bound for each relative sign
   have key : ∀ s : ℝ, s * s = 1 →
-      s * w n ≤ Real.sqrt n * (Real.log q + Real.log (1 + 4 * (n : ℝ)) + (5 + 64 * S ^ 2)) := by
+      s * w n ≤ Real.sqrt n * (Real.log q + Real.log (1 + 1 / r) + (5 + 64 * S ^ 2)) := by
     intro s hs
-    have hf := contDiff_twoBump s h r
-    have h0 : ∀ u, a ≤ |u| → twoBump s h r u = 0 := fun u hu =>
+    have hf := contDiff_twoBump s (Real.log n / 2) r
+    have h0 : ∀ u, a ≤ |u| → twoBump s (Real.log n / 2) r u = 0 := fun u hu =>
       twoBump_eq_zero hr0 hh0 ha hu
     have hpos := hfe _ (contDiff_ofReal_packet (hf.of_le (by norm_num)))
       (tsupport_ofReal_subset_of_eq_zero h0)
     have hup := systemForm_le_of_packet_scaled hr0 hf h0 w q
-    -- the mass
-    have hmass : ∫ u, twoBump s h r u ^ 2 = 2 * Φ₀ := by
-      have hA := packetAutocorr_twoBump s h hr0 0
-      rw [packetAutocorr_cutoff_eq_zero hδ (z := 0 - 2 * h)
-          (by rw [zero_sub, abs_neg, abs_of_nonneg (by linarith)]; exact hrh),
-        packetAutocorr_cutoff_eq_zero hδ (z := 0 + 2 * h)
-          (by rw [zero_add, abs_of_nonneg (by linarith)]; exact hrh), hs, ← hΦ₀] at hA
-      have e : packetAutocorr (twoBump s h r) 0 = ∫ u, twoBump s h r u ^ 2 := by
-        rw [packetAutocorr]
-        refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-        show twoBump s h r u * twoBump s h r (u + 0) = twoBump s h r u ^ 2
-        rw [add_zero, sq]
-      rw [← e, hA]
-      ring
-    -- the derivative energy at the scale of the bumps
-    have hD := integral_deriv_twoBump_sq_le hS hs h hr0
-    have hD' : r ^ 2 * (∫ u, deriv (twoBump s h r) u ^ 2) ≤ 128 * S ^ 2 * Φ₀ := by
-      have h1 := mul_le_mul_of_nonneg_left hD (sq_nonneg r)
-      have e : r ^ 2 * (128 * S ^ 2 / r) = 128 * S ^ 2 * r := by
-        field_simp
-      rw [e] at h1
-      have h2 : 128 * S ^ 2 * r ≤ 128 * S ^ 2 * Φ₀ :=
-        mul_le_mul_of_nonneg_left hΦr (by positivity)
-      linarith
-    -- the contact form: the single contact `n`
-    have hcontact : contactForm w (fun u => (twoBump s h r u : ℂ)) ⌊Real.exp (2 * a)⌋₊ =
-        w n / Real.sqrt n * (2 * (s * Φ₀)) := by
-      have hnN : n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊ := by
-        rw [Finset.mem_Icc]
-        refine ⟨hn, Nat.le_floor ?_⟩
-        have h1 : Real.log n ≤ 2 * a := by rw [hh] at ha; linarith
-        calc (n : ℝ) = Real.exp (Real.log n) := (Real.exp_log hn0).symm
-          _ ≤ Real.exp (2 * a) := Real.exp_le_exp.mpr h1
-      rw [contactForm_packet, Finset.sum_eq_single n]
-      · -- the lag `log n`
-        have hA := packetAutocorr_twoBump s h hr0 (Real.log n)
-        have e1 : Real.log n - 2 * h = 0 := by rw [hh]; ring
-        have e2 : Real.log n + 2 * h = 2 * Real.log n := by rw [hh]; ring
-        rw [e1, e2, ← hΦ₀,
-          packetAutocorr_cutoff_eq_zero hδ (z := Real.log n)
-            (by rw [abs_of_nonneg (by linarith)]; linarith),
-          packetAutocorr_cutoff_eq_zero hδ (z := 2 * Real.log n)
-            (by rw [abs_of_nonneg (by linarith)]; linarith)] at hA
-        rw [hA]
-        ring
-      · -- every other contact is invisible
-        intro m hm hmn
-        have hm2 := (Finset.mem_Icc.mp hm).1
-        have hm0 : (0 : ℝ) < m := by exact_mod_cast (by omega : 0 < m)
-        have hlogm : Real.log 2 ≤ Real.log m :=
-          Real.log_le_log (by norm_num) (by exact_mod_cast hm2)
-        have hsep := abs_log_sub_log_ge (by omega : 1 ≤ m) (by omega : 1 ≤ n) hmn
-        have h2r : 2 * r = 1 / (2 * (n : ℝ)) := by
-          rw [hr]
-          field_simp
-          ring
-        have hA := packetAutocorr_twoBump s h hr0 (Real.log m)
-        have e1 : Real.log m - 2 * h = Real.log m - Real.log n := by rw [hh]; ring
-        have e2 : Real.log m + 2 * h = Real.log m + Real.log n := by rw [hh]; ring
-        rw [e1, e2,
-          packetAutocorr_cutoff_eq_zero hδ (z := Real.log m)
-            (by rw [abs_of_nonneg (by linarith)]; linarith),
-          packetAutocorr_cutoff_eq_zero hδ (z := Real.log m - Real.log n)
-            (by rw [h2r]; exact hsep),
-          packetAutocorr_cutoff_eq_zero hδ (z := Real.log m + Real.log n)
-            (by rw [abs_of_nonneg (by linarith)]; linarith)] at hA
-        rw [hA]
-        ring
-      · intro hnot
-        exact absurd hnN hnot
-    rw [hcontact, hmass, h1r] at hup
-    -- `0 ≤ (log(1 + 4n) + 5 + log q) · 2Φ₀ + 128 S² Φ₀ − (w n/√n) · 2 s Φ₀`
+    have hD := sq_mul_integral_deriv_twoBump_sq_le hS hs (Real.log n / 2) hr0
+    rw [contactForm_twoBump hs hr0 hn hrn w hnN, integral_twoBump_sq hs hr0 hrh, ← hΦ₀] at hup
+    rw [← hΦ₀] at hD
     have hfin : w n / Real.sqrt n * (2 * (s * Φ₀)) ≤
-        (2 * (Real.log (1 + 4 * (n : ℝ)) + 5 + Real.log q) + 128 * S ^ 2) * Φ₀ := by
+        (2 * (Real.log (1 + 1 / r) + 5 + Real.log q) + 128 * S ^ 2) * Φ₀ := by
       linarith
     have hdiv : s * w n / Real.sqrt n ≤
-        Real.log (1 + 4 * (n : ℝ)) + 5 + Real.log q + 64 * S ^ 2 := by
+        Real.log (1 + 1 / r) + 5 + Real.log q + 64 * S ^ 2 := by
       have e : w n / Real.sqrt n * (2 * (s * Φ₀)) = (2 * (s * w n / Real.sqrt n)) * Φ₀ := by
         ring
       rw [e] at hfin
