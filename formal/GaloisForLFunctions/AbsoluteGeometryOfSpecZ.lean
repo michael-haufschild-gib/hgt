@@ -50,6 +50,11 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfTheSquareOfAQu
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquareOfACyclotomicRingHasItsContactsOnAProgression
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSquare
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheExceptionalSquareRepelsTheOtherSquares
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheEulerFactorsOfTheDivisorSumPayEveryContact
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquaresWithBezoutAtAnApertureAreTheWindowCone
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermOfANumberRingObeysRiemannHurwitz
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -68,6 +73,9 @@ plane and the jets with its section count; the carry against the window count; t
 the zero count on the square and its reading by the contacts at a height; the Hodge index of
 the pairing; the carry as a cocycle class; the square of a Dedekind domain; the pairing of the
 square of a quadratic ring with its conductor and its Hodge index; the square of a cyclotomic
-ring with its contacts on a progression; and the constants of the counterterm as the threshold
-of the inequality. See `AbsoluteGeometryOfSpecZ/README.md`.
+ring with its contacts on a progression; the constants of the counterterm as the threshold
+of the inequality; the planar square, a subring of the square with unit masses in which every
+contact is paid; the squares that satisfy Bézout at an aperture as the window cone; the exact
+Hodge index of the square of a number ring; and Riemann–Hurwitz for the counterterm with the
+genus of a degree point. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

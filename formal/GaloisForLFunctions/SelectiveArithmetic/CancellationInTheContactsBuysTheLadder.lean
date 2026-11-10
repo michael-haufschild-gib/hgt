@@ -1,3 +1,4 @@
+import GaloisForLFunctions.SelectiveArithmetic.TheLiouvilleTwistFailsBeyondTheTrivialAperture
 import GaloisForLFunctions.SelectiveArithmetic.TheHeightOfAPacketIsAMass
 import GaloisForLFunctions.RHTower.VonKochChebyshevBound
 
@@ -56,17 +57,14 @@ theorem sum_Icc_mul_eq_abel (w g : ℕ → ℝ) (N : ℕ) :
       partialSum w N * g (N + 1) -
         ∑ n ∈ Finset.Icc 2 N, partialSum w n * (g (n + 1) - g n) := by
   induction N with
-  | zero =>
-    have e : Finset.Icc 2 0 = (∅ : Finset ℕ) := Finset.Icc_eq_empty (by norm_num)
-    simp [partialSum, e]
+  | zero => simp [partialSum]
   | succ N ih =>
     by_cases h : 2 ≤ N + 1
     · rw [Finset.sum_Icc_succ_top h, Finset.sum_Icc_succ_top h, ih, partialSum_succ w h]
       ring
     · have hN : N = 0 := by omega
       subst hN
-      have e : Finset.Icc 2 (0 + 1) = (∅ : Finset ℕ) := Finset.Icc_eq_empty (by norm_num)
-      simp [partialSum, e]
+      simp [partialSum]
 
 /-- The step of `n^{−1/2} cos(τ log n)` is at most `(1 + |τ|) n^{−3/2}`. -/
 theorem abs_cos_div_sqrt_succ_sub_le (τ : ℝ) {n : ℕ} (hn : 1 ≤ n) :

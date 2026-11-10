@@ -45,6 +45,18 @@ theorem summable_multiple_kernel {m : ℕ} (hm : m ≠ 0) {f : ℕ → ℝ}
   · simpa only [Function.comp_apply, dvd_mul_right, if_true,
       Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)] using hf
 
+/-- Summing over product fibres separates the finite support and the kernel. -/
+theorem tsum_finite_multiple_kernels {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
+    (w : ℕ → ℝ) {f : ℕ → ℝ} (hf : Summable f) :
+    (∑' k : ℕ, ∑ m ∈ A, w m * (if m ∣ k then f (k / m) else 0)) =
+      (∑ m ∈ A, w m) * ∑' n : ℕ, f n := by
+  have hlocal (m : ℕ) (hm : m ∈ A) :
+      HasSum (fun k : ℕ => w m * (if m ∣ k then f (k / m) else 0))
+        (w m * ∑' n : ℕ, f n) := by
+    have h := ((summable_multiple_kernel (hA m hm) hf).mul_left (w m)).hasSum
+    simpa only [tsum_mul_left, tsum_multiple_kernel (hA m hm)] using h
+  exact (hasSum_sum hlocal).tsum_eq.trans (Finset.sum_mul A w (∑' n : ℕ, f n)).symm
+
 /-- The divisor weight splits into the support weight and the zeta-series weight. -/
 theorem weighted_divisor_rpow {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
     {m k : ℕ} (hm : m ≠ 0) (hdiv : m ∣ k) :
@@ -60,8 +72,7 @@ theorem weighted_divisor_rpow {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
       exact_mod_cast (Nat.mul_div_cancel' hdiv).symm
     rw [hkr, Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _),
       mul_assoc, ← Real.rpow_add hnR]
-    congr 2
-    ring
+    congr 2 <;> ring
 
 /-- The fibre cost is the number of divisors of the product, independently
 of the size of the full resonator support. -/
@@ -79,8 +90,7 @@ theorem norm_resonator_divisor_sum_sq_le {ε : ℝ} (hε : 0 < ε)
     congr 1
     rw [← Real.rpow_natCast, ← Real.rpow_mul (Nat.cast_nonneg _)]
     congr 1
-    norm_num
-    ring
+    norm_num <;> ring
   calc
     _ ≤ (∑ m ∈ B, ‖r m * lineWeight σ (k / m)‖) ^ 2 := by
       gcongr
@@ -91,6 +101,28 @@ theorem norm_resonator_divisor_sum_sq_le {ε : ℝ} (hε : 0 < ε)
         ∑ m ∈ B, ‖r m * lineWeight σ (k / m)‖ ^ 2 :=
       mul_le_mul_of_nonneg_right hcard (sum_nonneg fun _ _ => sq_nonneg _)
     _ = _ := by simp_rw [hterm]
+
+/-- Splitting the divisor power isolates the small support factor `m^ε`. -/
+theorem norm_resonator_divisor_sum_sq_le_split {ε σ : ℝ} (hε : 0 < ε)
+    (hεσ : ε < 2 * σ) {k : ℕ} (hk : k ≠ 0) {B : Finset ℕ}
+    (hB : B ⊆ k.divisors) (r : ℕ → ℂ) :
+    ‖∑ m ∈ B, r m * lineWeight σ (k / m)‖ ^ 2 ≤
+      Sieve.divisorBoundConst ε *
+        ∑ m ∈ B, (‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
+          ((k / m : ℕ) : ℝ) ^ (ε - 2 * σ) := by
+  apply (norm_resonator_divisor_sum_sq_le hε hk hB r σ).trans_eq
+  rw [mul_assoc, Finset.mul_sum]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro m hm
+  have hdiv := (Nat.mem_divisors.mp (hB hm)).1
+  have hm0 : m ≠ 0 := by
+    intro h
+    subst m
+    exact hk (Nat.zero_dvd_iff.mp hdiv)
+  calc
+    _ = ‖r m‖ ^ 2 * ((k : ℝ) ^ ε * ((k / m : ℕ) : ℝ) ^ (-2 * σ)) := by ring
+    _ = _ := by rw [weighted_divisor_rpow hε hεσ hm0 hdiv]; ring
 
 /-- Full convolution coefficients obey the divisor-weighted energy bound. -/
 theorem norm_resonatorCoeff_sq_le_divisor_weight {ε : ℝ} (hε : 0 < ε)
