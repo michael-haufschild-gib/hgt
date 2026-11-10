@@ -28,13 +28,13 @@
 | A86, A47 | Near-diagonal cofactors, growing filters, one-quartet constants | Open |
 | A111 | Critical-zero proportion from twisted moments and Levinson gate | Open |
 | A116 | Ideal degree points, Hecke characters, non-abelian character index | Open; preserve existing independent ideal-square work |
-| A119 | Linear depth-sum bound with explicit moment constant | Existing unconditional bound `66T/1000` located; audit pending |
+| A119 | Linear depth-sum bound with explicit moment constant | Already proved: `RHTower.eventually_offLineMoment_le_montgomeryTaylor`, constant `66/1000` |
 
 ## Integrity
 
-Each completion requires exact stated scope, a direct `lake --old env lean` check, transitive
-`#print axioms`, and umbrella wiring. Existing implications count only after statement and
-dependency inspection. Mathematical counterexamples require a positive-survivor audit.
+New proofs require exact stated scope, a direct `lake --old env lean` check, and umbrella
+wiring. Existing proved results are reused. Mathematical counterexamples require a
+positive-survivor audit.
 
 ## Exact arguments under verification
 

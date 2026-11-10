@@ -337,7 +337,7 @@ private theorem seventyFormFactor_sub_one (α : ℝ) :
     · rw [min_eq_left h, div_one, max_eq_left (by linarith only [h])]; ring
     · rw [min_eq_right h, div_one, max_eq_right (by linarith only [h])]; ring
   unfold seventyFormFactor
-  simp only [sub_zero, neg_mul, sub_neg_eq_add]
+  simp only [sub_zero, sub_neg_eq_add]
   linarith only [hm]
 
 private theorem integral_cexp_mul_triangle_pair {w : ℝ} (hw : 0 < w) (b ξ : ℝ) :
@@ -374,7 +374,7 @@ theorem integrable_seventyFormFactor_sub_one : Integrable (fun α => seventyForm
           triangleFn seventySpikeWidth (α-(-(((k : ℝ)+1)*seventySpikeCenter)))) from
     funext seventyFormFactor_sub_one]
   apply (integrable_triangleFn_sub one_pos 0).neg.add
-  apply integrable_finset_sum
+  apply integrable_finsetSum
   intro k _
   exact ((integrable_triangleFn_sub seventySpikeWidth_pos _).add
     (integrable_triangleFn_sub seventySpikeWidth_pos _)).const_mul _
@@ -383,7 +383,7 @@ private def seventyFourierTerm (ξ : ℝ) (k : ℕ) (α : ℝ) : ℂ :=
   ((seventySpikeCoeff k/seventySpikeWidth : ℝ) : ℂ) *
     (Complex.exp (↑(-2*π*α*ξ)*Complex.I) *
       ((triangleFn seventySpikeWidth (α-((k : ℝ)+1)*seventySpikeCenter) +
-        triangleFn seventySpikeWidth (α-(-(((k : ℝ)+1)*seventySpikeCenter)) : ℝ) : ℂ))
+        triangleFn seventySpikeWidth (α-(-(((k : ℝ)+1)*seventySpikeCenter))) : ℝ) : ℂ))
 
 private theorem integrable_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     Integrable (seventyFourierTerm ξ k) := by
@@ -391,14 +391,16 @@ private theorem integrable_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     (((k : ℝ)+1)*seventySpikeCenter) ξ
   have hB := integrable_cexp_mul_triangleFn_sub seventySpikeWidth_pos
     (-(((k : ℝ)+1)*seventySpikeCenter)) ξ
-  simpa only [seventyFourierTerm, Complex.ofReal_add, mul_add] using
+  dsimp only [seventyFourierTerm]
+  simpa only [Pi.add_apply, Complex.ofReal_add, mul_add] using
     (hA.add hB).const_mul ((seventySpikeCoeff k/seventySpikeWidth : ℝ) : ℂ)
 
 private theorem integral_seventyFourierTerm (ξ : ℝ) (k : ℕ) :
     ∫ α : ℝ, seventyFourierTerm ξ k α =
       ((2*seventySpikeCoeff k*cos (2*π*(((k : ℝ)+1)*seventySpikeCenter)*ξ) *
         sinc (π*seventySpikeWidth*ξ)^2 : ℝ) : ℂ) := by
-  rw [seventyFourierTerm, integral_const_mul, integral_cexp_mul_triangle_pair seventySpikeWidth_pos,
+  dsimp only [seventyFourierTerm]
+  rw [integral_const_mul, integral_cexp_mul_triangle_pair seventySpikeWidth_pos,
     ← Complex.ofReal_mul]
   congr 1
   field_simp [ne_of_gt seventySpikeWidth_pos]
@@ -409,6 +411,10 @@ theorem fourier_seventyFormFactor_sub_one (ξ : ℝ) :
     𝓕 (fun α => ((seventyFormFactor α-1 : ℝ) : ℂ)) ξ = ((seventyPairDensity ξ-1 : ℝ) : ℂ) := by
   have hA := integrable_cexp_mul_triangleFn_sub one_pos 0 ξ
   have hterms (k : ℕ) (_ : k ∈ Finset.range 100) := integrable_seventyFourierTerm ξ k
+  have hneg : Integrable (fun α : ℝ =>
+      -(Complex.exp (↑(-2*π*α*ξ)*Complex.I) * (triangleFn 1 (α-0) : ℂ))) := hA.neg
+  have hsum : Integrable (fun α : ℝ =>
+      ∑ k ∈ Finset.range 100, seventyFourierTerm ξ k α) := integrable_finsetSum _ hterms
   rw [fourier_real_eq_integral_exp_smul]
   refine (integral_congr_ae (g := fun α : ℝ =>
       -(Complex.exp (↑(-2*π*α*ξ)*Complex.I) * (triangleFn 1 (α-0) : ℂ)) +
@@ -423,9 +429,9 @@ theorem fourier_seventyFormFactor_sub_one (ξ : ℝ) :
     unfold seventyFourierTerm
     push_cast
     ring
-  rw [integral_add hA.neg (integrable_finset_sum _ hterms), integral_neg,
+  rw [integral_add hneg hsum, integral_neg,
     integral_finsetSum _ hterms, integral_cexp_mul_triangleFn_sub one_pos]
-  simp only [mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_mul]
+  simp only [mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero, one_mul, mul_one]
   rw [Finset.sum_congr rfl fun k _ => integral_seventyFourierTerm ξ k]
   have hs : (∑ k ∈ Finset.range 100,
       ((2*seventySpikeCoeff k*cos (2*π*(((k : ℝ)+1)*seventySpikeCenter)*ξ) *
@@ -455,10 +461,5 @@ theorem positivity_does_not_reach_seventy_percent_at_four_thirds :
     fun _ hα => seventyFormFactor_ge_one hα, integrable_seventyFormFactor_sub_one,
     fun ξ => ⟨seventyPairDensity ξ, seventyPairDensity_nonneg ξ, fourier_seventyFormFactor_sub_one ξ⟩,
     transThresholdIntegral_seventyFormFactor_gt, frobeniusFormFactor_seventyFormFactor_gt⟩
-
-#print axioms seventyPairDensity_nonneg
-#print axioms fourier_seventyFormFactor_sub_one
-#print axioms transThresholdIntegral_seventyFormFactor_gt
-#print axioms positivity_does_not_reach_seventy_percent_at_four_thirds
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

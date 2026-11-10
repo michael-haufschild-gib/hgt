@@ -236,6 +236,4 @@ theorem exists_holomorphic_sub_residueCauchySum {U E : Set ℂ} {F K : ℂ → �
     rw [toMeromorphicNFOn_eq_toMeromorphicNFAt hmero hz,
       toMeromorphicNFAt_eq_self.mpr (hregular z hz hz0).meromorphicNFAt]
 
-#print axioms exists_holomorphic_sub_residueCauchySum
-
 end GaloisForLFunctions.HTGeometry

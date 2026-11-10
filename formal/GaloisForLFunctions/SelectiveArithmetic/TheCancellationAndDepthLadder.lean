@@ -122,7 +122,4 @@ theorem cancellation_and_depth_ladder {C γ κ δ θ : ℝ}
       (by linarith only [hθ]) hC' hε,
     quasiRH_crossRoute_seven_way_tfae⟩
 
-#print axioms cancellation_and_depth_ladder
-#print axioms eventual_depth_bound_of_dyadic_long_mollifier
-
 end GaloisForLFunctions.SelectiveArithmetic

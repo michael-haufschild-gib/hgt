@@ -80,9 +80,13 @@ theorem logDeriv_expansion_eq_of_summable_residues {c gL gR : Scale → ℂ} {η
   have hPzero : ∀ p ∈ E, expansion c p = 0 := fun p hp => hp.2
   have hPU : ∀ p ∈ E, p ∈ U := fun p hp =>
     ⟨by rw [hPre p hp]; linarith, by rw [hPre p hp]; linarith⟩
-  have hcount : E.Countable :=
-    (Bottcher.analyticOnNhd_zeros_countable (hfd.analyticOnNhd hUo)
-      (isPreconnected_openStrip _ _) hs₀U hp).mono fun p hp => ⟨hPU p hp, hPzero p hp⟩
+  have hcount : E.Countable := by
+    have hzeros : {z ∈ U | expansion c z = 0}.Countable :=
+      Bottcher.analyticOnNhd_zeros_countable (hfd.analyticOnNhd hUo)
+        (isPreconnected_openStrip _ _) hs₀U hp
+    apply hzeros.mono
+    intro p hp
+    exact ⟨hPU p hp, hPzero p hp⟩
   letI : Countable E := hcount.to_subtype
   obtain ⟨Φ, hΦd, hΦ⟩ := HTGeometry.exists_holomorphic_sub_residueCauchySum hUo hfd hgd
     hfin hPzero (fun z hz hz0 => ⟨by
@@ -319,7 +323,5 @@ theorem expansion_zero_forces_offLine_or_nonsummable_residues {c : Scale → ℂ
         (by linarith only [hω0]) (by linarith only [hω0])))
       (fun z hz hzre hz0 => hoff ⟨z, by rwa [hω2] at hz, hz0, hzre⟩)
       hr hne (by rwa [hω2]) hs0
-
-#print axioms expansion_zero_forces_offLine_or_nonsummable_residues
 
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros

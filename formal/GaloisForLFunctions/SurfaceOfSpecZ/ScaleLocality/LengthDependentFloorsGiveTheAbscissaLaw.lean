@@ -177,7 +177,4 @@ theorem asymptoticAbscissaLaw_of_lengthDependent_prime_floors
     constructor <;> linarith only [hu.1, hu.2, hLR]
   exact (not_lt.mpr (hf u hu')) hneg
 
-#print axioms asymptoticAbscissaLaw_of_lengthDependent_floors
-#print axioms asymptoticAbscissaLaw_of_lengthDependent_prime_floors
-
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

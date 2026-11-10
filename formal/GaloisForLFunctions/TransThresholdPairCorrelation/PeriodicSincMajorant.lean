@@ -154,7 +154,5 @@ theorem periodicSincMajorant_fourier (x : ℝ) :
   unfold periodicSincMajorant
   ring
 
-#print axioms sinc_sq_le_scaled_periodicMajorant
-#print axioms periodicSincMajorant_fourier
 
 end GaloisForLFunctions.TransThresholdPairCorrelation

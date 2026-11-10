@@ -66,6 +66,4 @@ theorem measureReal_contactPoly_log_heights_le {a T c : ℝ}
   have hm := mul_le_mul_of_nonneg_left hpoly (zero_lt_one.trans hT1).le
   nlinarith only [hm]
 
-#print axioms measureReal_contactPoly_log_heights_le
-
 end GaloisForLFunctions.SelectiveArithmetic

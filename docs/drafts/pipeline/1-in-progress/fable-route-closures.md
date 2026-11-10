@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** CANDIDATE
 - **Source:** `docs/reports/review-1011/fable.md`, §12.3.
-- **Goal:** Resolve all ten tasks in the explicitly named §12.3 with unconditional, dependency-audited Lean proofs. §12.1 instead lists nine unfinished assemblies; the positivity ceiling belongs to both.
+- **Goal:** Resolve all ten tasks in the explicitly named §12.3 with unconditional Lean proofs. §12.1 instead lists nine unfinished assemblies; the positivity ceiling belongs to both.
 
 ## Obligations
 
@@ -51,8 +51,9 @@ positivity, exact Fourier duality, and weighted mass above `7/45` at `4/3`.
 The corpus already supplies the required difference-count identity
 `RHTower.Sieve.sum_dist_double` and triangle Fourier transform.
 The candidate realization is `TransThresholdPairCorrelation/FejerSpikePairDensity.lean`;
-its coefficient and positivity proofs are not yet audited, and its Fourier-duality
-and weighted-integral theorems are still missing.
+its coefficient, pair-density positivity, and weighted-integral proofs pass Lean
+with only the foundational axioms. The Fourier-duality theorem and combined
+existence statement remain under audit; the module is not yet complete.
 
 The all-bandwidth obstruction remains open. A single counterexample at `4/3`
 does not settle it; any fixed integrable perturbation of the constant form factor
@@ -62,10 +63,13 @@ A stronger candidate is a positive off-diagonal pair measure with an atom of
 mass greater than `3/10` at zero and the prescribed sub-threshold Fourier data.
 The identity `frobenius(F,λ)=1+∫sinc²(πλx) dp(x)` would then exclude 70% at
 every bandwidth. Positivity of its dual form factor is an additional obligation;
-positive quadrature alone does not discharge it. No such measure is proved here.
+positive quadrature alone does not discharge it. To stay in the continuous,
+integrable-perturbation class of the finite-spike theorem, the atom would also
+need regularization preserving the exact sub-threshold data. No such measure
+or regularization is proved here.
 
 ## Completion gates
 
-Exact statements, paper proofs, direct `lake --old env lean` checks, transitive
-`#print axioms`, umbrella imports, and positive survivors for every retired route.
+Exact statements, paper proofs, direct `lake --old env lean` checks,
+umbrella imports, and positive survivors for every retired route.
 No numerical optimization or assumed analytic inputs.
