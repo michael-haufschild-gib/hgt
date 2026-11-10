@@ -156,7 +156,7 @@ theorem exists_height_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀
   have hterm : ∀ n : ℕ, Continuous fun t : ℝ => c n * Real.cos (t * Real.log n) ^ 2 :=
     fun n => by fun_prop
   have hGc : Continuous fun t : ℝ => ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 :=
-    continuous_finset_sum _ fun n _ => hterm n
+    continuous_finsetSum _ fun n _ => hterm n
   have hTle : T ≤ 2 * T := by linarith
   obtain ⟨t₀, ht₀, hmax⟩ := (isCompact_Icc (a := T) (b := 2 * T)).exists_isMaxOn
     ⟨T, Set.left_mem_Icc.mpr hTle⟩ hGc.continuousOn
@@ -164,7 +164,8 @@ theorem exists_height_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀
   -- the mean over the window is at most the maximum
   have hup : ∫ t in T..2 * T, ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 ≤
       T * ∑ n ∈ s, c n * Real.cos (t₀ * Real.log n) ^ 2 := by
-    have h := intervalIntegral.integral_mono_on hTle (hGc.intervalIntegrable _ _)
+    have h := intervalIntegral.integral_mono_on (μ := volume) hTle
+      (hGc.intervalIntegrable T (2 * T))
       (intervalIntegrable_const (c := ∑ n ∈ s, c n * Real.cos (t₀ * Real.log n) ^ 2))
       fun t ht => isMaxOn_iff.mp hmax t ht
     rw [intervalIntegral.integral_const, smul_eq_mul] at h
@@ -172,7 +173,7 @@ theorem exists_height_sum_cos_sq_ge (s : Finset ℕ) (c : ℕ → ℝ) (hc : ∀
   -- the mean of every term is at least `(T/2 − 1) c(n)`
   have hlow : (T / 2 - 1) * ∑ n ∈ s, c n ≤
       ∫ t in T..2 * T, ∑ n ∈ s, c n * Real.cos (t * Real.log n) ^ 2 := by
-    rw [intervalIntegral.integral_finset_sum fun n _ => (hterm n).intervalIntegrable _ _,
+    rw [intervalIntegral.integral_finsetSum fun n _ => (hterm n).intervalIntegrable _ _,
       Finset.mul_sum]
     refine Finset.sum_le_sum fun n hn => ?_
     rw [intervalIntegral.integral_const_mul]

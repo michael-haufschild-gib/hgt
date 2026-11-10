@@ -53,8 +53,8 @@ theorem zetaKernel_eq_poleKernel_mul {c : ℝ} {s : ℂ} (hs : 1 < s.re) :
   have hz : riemannZeta s ≠ 0 := riemannZeta_ne_zero_of_one_lt_re hs
   have hsub : s - 1 ≠ 0 := sub_ne_zero.mpr hs1
   have hL : moebiusSeries s = (riemannZeta s)⁻¹ := by
-    have h := LSeries_zeta_mul_Lseries_moebius hs
-    rw [LSeries_zeta_eq_riemannZeta hs] at h
+    have h := ArithmeticFunction.LSeries_zeta_mul_Lseries_moebius hs
+    rw [ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs] at h
     exact eq_inv_of_mul_eq_one_right h
   unfold zetaKernel poleKernel
   rw [zetaEntire_eq hs1, hL]
@@ -114,8 +114,8 @@ theorem norm_moebiusTerm_le {c Z : ℝ} (hZ : 0 < Z) (n : ℕ) (y : ℝ) :
   · simp [moebiusTerm]
   have hnpos : (0 : ℝ) < n := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
   have hμ : ‖(ArithmeticFunction.moebius n : ℂ)‖ ≤ 1 := by
-    rw [← Int.cast_abs, Complex.norm_intCast] <;>
-    exact_mod_cast ArithmeticFunction.abs_moebius_le_one
+    rw [Complex.norm_intCast]
+    exact_mod_cast (ArithmeticFunction.abs_moebius_le_one : |ArithmeticFunction.moebius n| ≤ 1)
   have hpow : ‖((Z / n : ℝ) : ℂ) ^ linePoint y‖ = Z ^ 2 * (1 / (n : ℝ) ^ 2) := by
     rw [norm_cpow_eq_rpow_re_of_pos (div_pos hZ hnpos), linePoint_re]
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast, div_pow]
@@ -141,7 +141,8 @@ theorem continuous_moebiusTerm {c Z : ℝ} (hZ : 0 < Z) (n : ℕ) :
   have hnpos : (0 : ℝ) < n := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hn)
   have hbase : ((Z / n : ℝ) : ℂ) ≠ 0 := ofReal_ne_zero.mpr (div_pos hZ hnpos).ne'
   unfold moebiusTerm
-  refine continuous_const.mul (Continuous.smul ?_ (continuous_poleKernel_linePoint c))
+  refine continuous_const.mul (Continuous.smul (f := fun y : ℝ => ((Z / n : ℝ) : ℂ) ^ linePoint y)
+    (g := fun y : ℝ => poleKernel c (linePoint y)) ?_ (continuous_poleKernel_linePoint c))
   exact continuous_linePoint.const_cpow (Or.inl hbase)
 
 theorem integrable_moebiusTerm {c Z : ℝ} (hZ : 0 < Z) (n : ℕ) :
@@ -160,8 +161,6 @@ theorem hasSum_moebiusTerm {c Z : ℝ} (hZ : 0 < Z) (y : ℝ) :
   have hsum : LSeriesSummable (fun n : ℕ => (ArithmeticFunction.moebius n : ℂ)) (linePoint y) :=
     ArithmeticFunction.LSeriesSummable_moebius_iff.mpr hre
   have hL := hsum.LSeriesHasSum
-  rw [zetaKernel_eq_poleKernel_mul hre, smul_eq_mul]
-  have h := (hL.mul_left ((Z : ℂ) ^ linePoint y * poleKernel c (linePoint y)))
   have hfun : (fun n : ℕ => (Z : ℂ) ^ linePoint y * poleKernel c (linePoint y) *
       LSeries.term (fun n : ℕ => (ArithmeticFunction.moebius n : ℂ)) (linePoint y) n) =
       fun n : ℕ => moebiusTerm c Z n y := by
@@ -174,10 +173,8 @@ theorem hasSum_moebiusTerm {c Z : ℝ} (hZ : 0 < Z) (y : ℝ) :
         rw [Ne, cpow_eq_zero_iff]
         exact fun h => (Nat.cast_ne_zero.mpr hn) h.1
       field_simp
-  rw [hfun] at h
-  unfold moebiusSeries
-  convert h using 1
-  ring
+  rw [zetaKernel_eq_poleKernel_mul hre, smul_eq_mul, ← mul_assoc, ← hfun]
+  exact hL.mul_left _
 
 /-- **The signal of the zeta kernel is a Möbius sum.** -/
 theorem signal_zetaKernel_eq_tsum (c : ℝ) {Z : ℝ} (hZ : 0 < Z) :
@@ -209,7 +206,7 @@ theorem signal_zetaKernel_eq_tsum (c : ℝ) {Z : ℝ} (hZ : 0 < Z) :
   refine tsum_congr fun n => ?_
   rw [signal_two_eq_integral]
   unfold moebiusTerm
-  rw [integral_const_mul, smul_mul_assoc, mul_smul_comm]
+  rw [integral_const_mul, mul_smul_comm]
 
 /-- **The route with an arithmetic first input.** A power saving `O(Z^b)`, `½ ≤ b < 1`, for the
 smoothed Möbius sum `Σ_n μ(n) · signal (poleKernel c) 2 (Z/n)`, together with positivity of the
@@ -220,7 +217,8 @@ theorem riemannHypothesis_of_moebiusSum_le_of_jasDressedPSD_one {c b K Z₀ : �
       ‖∑' n : ℕ, (ArithmeticFunction.moebius n : ℂ) * signal (poleKernel c) 2 (Z / n)‖ ≤
         K * Z ^ b)
     (hPSD : JasDressedPSD 1) : RiemannHypothesis := by
-  refine riemannHypothesis_of_signal_le_of_jasDressedPSD_one (c := c) hb₀ hb hZ₀ (fun Z hZ => ?_)
+  refine riemannHypothesis_of_signal_le_of_jasDressedPSD_one (c := c) (K := K) hb₀ hb hZ₀
+    (fun Z hZ => ?_)
     hPSD
   rw [signal_zetaKernel_eq_tsum c (lt_of_lt_of_le hZ₀ hZ)]
   exact hK Z hZ

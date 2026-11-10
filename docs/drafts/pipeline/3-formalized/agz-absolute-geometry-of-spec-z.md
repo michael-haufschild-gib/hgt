@@ -755,6 +755,37 @@ G9(iii) Bézout is RH together with `P_δ ≤ c`, `t = ℓ − log p`. If `t < 0
 `P_δ < 0`, so `δ(p) = t = 0`. If `t > 0` then all terms of `P_δ(0)` are nonnegative and
 `P_δ(0) ≥ 2t/√p > t/(p−1)` because `√p < p ≤ 2(p−1)`. If `t = 0` then `δ = 0`, `c = 0`. ∎
 
+**G11 (the length of the tree of `2` below the square of `2`).** For a prime `p` put
+`E_p(f) = ∫f²/(p−1) − (2/√p) h_f(log p)`. Let `f` be a packet of length `L`: `f = 0` outside an
+open interval of length `L`. (i) If `L ≤ 2y` then `2|h_f(y)| ≤ ∫f²`. (ii) If `L ≤ 2 log p`, the
+functional `Q` of G10(iii) for the edge length `ℓ` is `Z(f) + (ℓ − log p) E_p(f)`, and
+`(1/(p−1) − 1/√p)∫f² ≤ E_p(f) ≤ (1/(p−1) + 1/√p)∫f²`; for `p = 2`:
+`(1 − 1/√2)∫f² ≤ E₂(f) ≤ 2∫f²`. (iii) For every `L` there is `C(L)` with `Z(f) ≥ −C(L)∫f²` on
+packets of length `L`. (iv) For `p = 2` and `0 < L ≤ log 4` there is `ℓ*(L) ∈ ℝ` such that
+Bézout holds on the packets of length `L` for the tree of length `ℓ` iff `ℓ ≥ ℓ*(L)`. (v)
+`ℓ*(L) ≤ log 2 − 1/10000` for `L ≤ 181/250`. (vi) For a prime `p ≥ 3` and `L > log p` some
+packet of length at most `min(L, 2 log p)` has `E_p < 0`, and Bézout on the packets of length
+`L` fails for every large `ℓ`.
+*Proof.* (i) If `f(u) f(u+y) ≠ 0` then `x₀ < u` and `u + y < x₀ + L ≤ x₀ + 2y`, so `u < x₀ + y <
+u + y`: `2|f(u) f(u+y)| ≤ f(u)² 1_{u<c} + f(u+y)² 1_{u+y>c}` with `c = x₀ + y`; integrate and
+use `1_{<c} + 1_{>c} ≤ 1`. (ii) `h_f(x) = 0` for `x ≥ L`, so of the deviation
+`(ℓ − log p)·1_{p^k}` only `k = 1` is seen: `Re W_{Λ+δ} = Z − (2(ℓ − log p)/√p) h_f(log p)`
+(C21), and `c∫f² = (ℓ − log p)∫f²/(p−1)`. The bounds are (i) with `y = log p`. (iii) Centre
+the packet in `[−a, a]`. `Re W_Λ = ` pole `+ (1/2π)∫|f̂|² S_Λ`; the archimedean symbol is at
+least `−A₀` and the contact form is at most `2Σ_{n ≤ e^{2a}} Λ(n) n^{-1/2}` times the mass
+(corpus, `feasible_of_sum_abs_le`); the pole term is `2d₁d₂`,
+`|d_i| ≤ e^{a/2}∫|f|`, and `(∫|f|)² ≤ ∫w² ∫f²` for a cutoff `w = 1` on the support
+(discriminant of `t ↦ ∫(t w − |f|)²`). (iv) By (ii) the set `S` of the lengths with Bézout is
+`{ℓ : ∀f, Z(f) + (ℓ − log 2)E₂(f) ≥ 0}` with `E₂ ≥ 0`: an up-set. It contains
+`log 2 + |C(L)|/(1 − 1/√2)` and all larger `ℓ` by (iii). For one bump `f₀` of length `L`,
+`E₂(f₀) > 0`, so `ℓ ∉ S` for `ℓ ≤ log 2 − (|Z(f₀)| + 1)/E₂(f₀)`. `S` is closed: if
+`Z(f) + (ℓ* − log 2)E₂(f) < 0` with `ℓ* = inf S`, then either `E₂(f) = 0` and `Z(f) < 0`,
+excluded by any element of `S`, or the value stays negative at some `ℓ' ∈ S` close to `ℓ*`.
+(v) `Z ≥ ∫f²/5000` on packets of length `≤ 181/250` (C20) and `E₂ ≤ 2∫f²`. (vi) Two bumps of
+half-width `r` at the distance `log p`, `4r ≤ log p`: `∫f² = 2Φ(0)` and `h_f(log p) = Φ(0)`
+with `Φ` the autocorrelation of one bump, so `E_p = 2Φ(0)(1/(p−1) − 1/√p) < 0` because
+`√p < p − 1` for `p ≥ 3`; then `Z + (ℓ − log p)E_p < 0` for `ℓ` large. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -810,6 +841,13 @@ G9(iii) Bézout is RH together with `P_δ ≤ c`, `t = ℓ − log p`. If `t < 0
 - **Construction V (the own comb)**: G8 for the system of the squares: the pairing on the own
   comb is the pairing of the comb of the integers with the contacts of the system, and Bézout
   fails. Question 6 of the specification: zeros on a line are not sufficient.
+- **Construction I (a Lefschetz operator)**: G11. The edge length of the tree of `2` is a
+  deformation with a positive generator on packets shorter than `log 4`: an unconditional base
+  point, monotone transport, one threshold `ℓ*(L)`; Bézout for the square at the length `L` is
+  `ℓ*(L) ≤ log 2`, proved for `L ≤ 181/250`. Its hard Lefschetz property is not RH (a statement
+  at one length), and it does not continue beyond `log 4` or to an odd prime: there the
+  generator is indefinite. Kill condition not met and deliverable not reached beyond the
+  certified lengths.
 - **Construction II (the archimedean fibre as a boundary), gluings along the comb**: G10. The
   counterterm is the sum of the Busemann functions of the trees and the contacts of `p` have
   the weight of an edge; the tree glued with any edge length but `log p` fails Bézout. The
@@ -893,6 +931,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G8 | `OnItsOwnCombTheSystemOfTheSquaresFailsBezout` |
 | G9 | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
 | G10 | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
+| G11 | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -913,6 +952,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `TheCountertermOfANumberRingObeysRiemannHurwitz`,
 `ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm`,
 `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol`,
+`TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -943,8 +983,10 @@ Open parts of the questions of the refined programme (details in the README, §1
   `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`,
   `TheExceptionalSquareRepelsTheOtherSquares`.
 - Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.
-- Constructions of the next stage (review-1011 fable §9.6): I (a Lefschetz operator outside the
-  three tested ones), II beyond G9 and G10 (deviations of the contacts that are not summable
+- Constructions of the next stage (review-1011 fable §9.6): I beyond G11 (the threshold
+  `ℓ*(L)` for `181/250 < L ≤ log 4`; a deformation whose generator stays positive when the
+  second point of a chain is seen; an operator that moves the archimedean fibre), II beyond G9
+  and G10 (deviations of the contacts that are not summable
   against `n^{-1/2}`, such as other edge lengths at infinitely many primes), V beyond G8 (combs
   without a density; systems with their own jets), VI (a count); question 7 (Hecke characters,
   one ring that is not abelian).

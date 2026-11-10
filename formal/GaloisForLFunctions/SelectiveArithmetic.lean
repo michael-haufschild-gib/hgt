@@ -9,6 +9,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheZerosOfADirichletLFunctionOnTh
 import GaloisForLFunctions.SelectiveArithmetic.TheSignIsSquareRootCancellationOfTheRieszMean
 import GaloisForLFunctions.SelectiveArithmetic.EveryVisibleWeightIsBoundedByTheMass
 import GaloisForLFunctions.SelectiveArithmetic.TheFirstSelectiveWindowOfZeta
+import GaloisForLFunctions.SelectiveArithmetic.APoleAtTheHeightFailsBeyondTheTrivialAperture
 
 /-!
 # Selective Arithmetic
@@ -43,12 +44,16 @@ sign, and where the first statement beyond that scale lies.
 * The converse of the exchange rate on the prime side: the sign of a dominated system on the two
   polar packets of an aperture is square-root cancellation of the Riesz mean of its contacts at
   that scale; for a character it bounds `Σ Λ(n) Re χ(n) log(Y/n)`.
-* The box law of a conductor: every visible weight of a feasible system is at most
-  `√n (log q + log(1 + 4n) + C)`; an `ℓ¹` ball of the size of the mass is feasible; below the first
-  contact the weights do not enter.
+* The box law of a conductor: a weight of a feasible system, resolved at the width `r`, is at most
+  `√n (log q + log(1 + 1/r) + C)`; an `ℓ¹` ball of the size of the mass is feasible; below the
+  first contact the weights do not enter.
 * The first selective window of `ζ`: with the pole plane, a window of ratio less than `2` is not
   selective; beyond it the weight at `2` is confined to an interval of half-length
   `√2 (log(1/r) + C)` that contains a neighbourhood of `log 2` up to the aperture `181/500`.
+* The fake of the height: the system aligned with a height `t`, half the contacts of
+  `ζ(s + it) ζ(s − it)`, fails at some height of every dyadic window at the aperture
+  `log log t + log 2 + o(1)`; in the aspect of the height the trivial aperture is
+  `log log |t| + O(1)`.
 
 See `SelectiveArithmetic/README.md`.
 -/
