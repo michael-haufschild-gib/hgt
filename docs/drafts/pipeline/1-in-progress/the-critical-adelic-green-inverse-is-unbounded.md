@@ -20,20 +20,39 @@ finite-charge witnesses approaching the edge. The target includes the
 actual all-prime carrier; a generic conditional operator lemma or a
 single-prime statement alone does not complete it.
 
-## Available inputs and missing step
+## Proof mechanism
 
-The corpus proves `‖A‖≤λ`, the subcritical inverse identity, and the
-critical entrywise Green identity. Local upper-branch occupation sums
-have the exact Green diagonal `1/(p^s−p^(−s))`, with spectral parameter
-`p^s+p^(1−s)`. The latter has zero derivative at `s=1/2`, while the
-Green diagonal has nonzero derivative. This branch-point mechanism
-should force the local spectral edge; finite products of local charges
-should recover the sum of edges, with the remaining prime tail tending
-to zero.
+1. The exact local return sum is `G_s(x,x)=1/(p^s−p^(−s))` at
+   `λ_s=p^s+p^(1−s)`. At `s=1/2`, `λ′_s=0` but `G′_s(x,x)<0`.
+   A finite first moment of critical return occupation would make the
+   diagonal Lipschitz in `λ`, contradicting these derivatives.
+2. Convergence at any `0<ell<2√p` would imply a finite critical first
+   moment by exponential comparison. Thus return occupation converges
+   exactly for `ell≥2√p`.
+3. Suppose every finite nonnegative charge has Rayleigh quotient at most
+   `c<2√p`. Choose `max(c,0)<ell<2√p` and let `v_N` be the truncated
+   occupation column. Its nonnegative remainder gives
+   `(ell−c)Σv_N²≤v_N(x)`; since `v_N(x)²≤Σv_N²`, its diagonal is bounded
+   by `(ell−c)⁻¹`. This contradicts step 2 and yields finite charges
+   approaching the local edge.
+4. Tensor finite charges at a finite set of primes. Squared norms multiply;
+   each local quadratic form multiplies by the other squared norms.
+   Contributions from remaining primes are nonnegative. Exhausting the
+   summable edge weights yields the actual all-prime edge `λ`.
+5. For unit charges approaching this edge,
+   `‖(λI−A)f‖²≤2λ⟨(λI−A)f,f⟩→0`. Hence no bounded inverse exists.
+   The existing subcritical inverse identity then gives exact norm
+   `(1/4−ν²)⁻¹`. A Bochner-integrable critical spherical average would
+   produce a bounded right inverse through its already proved matrix
+   entries, a contradiction.
 
-The missing work is an unconditional construction of those finite-charge
-witnesses and their all-prime passage. No norm convergence at the
-critical endpoint is assumed.
+## Formalization boundary
+
+The corpus supplies the upper operator bound, subcritical inverse
+identity, and critical entrywise Green identity. The local branch-point,
+return-threshold, and finite-charge proofs are under Lean verification.
+The tensor passage and operator conclusions remain to be formalized.
+A single-prime theorem does not complete this card.
 
 ## Boundary
 

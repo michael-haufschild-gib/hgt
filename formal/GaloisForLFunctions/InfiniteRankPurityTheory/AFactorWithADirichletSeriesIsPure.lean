@@ -188,7 +188,7 @@ theorem exists_good_heights_of_almostPeriodic {F : ℂ → ℂ} (hF : Continuous
   have hzform : z = ((z.re : ℝ) : ℂ) + T₀ * I + τ * I := by
     apply Complex.ext <;> simp [hzT]
   have h1 := hτD (((z.re : ℝ) : ℂ) + T₀ * I) (by simpa using hz)
-  have h2 := isMinOn_iff.mp hmin z.re ((hmem z.re).mpr hz)
+  have h2 := isMinOn_iff.mp hmin z.re ((hmem z.re).mp hz)
   have h3 := norm_sub_norm_le (F (((z.re : ℝ) : ℂ) + T₀ * I))
     (F (((z.re : ℝ) : ℂ) + T₀ * I + τ * I))
   rw [norm_sub_rev] at h3

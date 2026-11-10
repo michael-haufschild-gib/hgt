@@ -11,7 +11,8 @@ import Mathlib.Tactic
 A finite limit after division by the square of a real parameter forces
 the constant and linear Taylor terms to vanish along that direction.
 The limit is therefore the quadratic homogeneous Taylor term. In two
-complex variables its restriction to directions `(1,w)` is entire.
+complex variables its restriction to directions `(1,w)` is a polynomial
+of degree at most two.
 -/
 
 open Complex Filter Topology Set
