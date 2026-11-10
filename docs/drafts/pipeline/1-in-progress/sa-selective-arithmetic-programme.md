@@ -102,4 +102,4 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — card created; README first draft; three modules compiled.
+- 2026-11-10 — card created; README first draft; ten modules compiled clean and wired; README rewritten around the proved pillars.

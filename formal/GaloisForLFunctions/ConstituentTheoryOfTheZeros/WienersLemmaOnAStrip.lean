@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheWienerAlgebraOfAStrip
-import GaloisForLFunctions.HTGeometry.PrimeTorusKroneckerDensity
+import GaloisForLFunctions.HTGeometry.KroneckerWeylDensity
 import Mathlib.Analysis.CStarAlgebra.GelfandDuality
 
 /-!
@@ -8,18 +8,19 @@ import Mathlib.Analysis.CStarAlgebra.GelfandDuality
 An element of the Wiener algebra `𝒲[σ₁, σ₂]` of a closed strip that is bounded below on the strip
 is invertible in the algebra (`StripWiener.isUnit_of_le_norm_eval`): if `Σ c(q) q^s` converges
 absolutely on the strip and is bounded below there, its inverse is again an absolutely convergent
-expansion over the positive rationals (`exists_inverse_expansion`).
+expansion over the positive reals (`exists_inverse_expansion`).
 
-The proof is Gelfand's. A character `φ` gives the homomorphism `χ(q) = φ(δ_q)` of the positive
-rationals into `ℂ^×` with `|χ(q)| ≤ max(q^σ₁, q^σ₂)`.
+The proof is Gelfand's. A character `φ` gives the homomorphism `χ(q) = φ(δ_q)` of the group of
+scales into `ℂ^×` with `|χ(q)| ≤ max(q^σ₁, q^σ₂)`.
 
-* **One real part for all scales** (`PosRat.exists_eq_mul_log`, `exists_exponent`): an additive
-  function on the positive rationals that lies between `σ₁ log q` and `σ₂ log q` for `q ≥ 1` is
-  `σ log q` with one `σ ∈ [σ₁, σ₂]`; so `|χ(q)| = q^σ`. The elements `q^b 2^{−a}` with logarithm in
+* **One real part for all scales** (`Scale.exists_eq_mul_log`, `exists_exponent`): an additive
+  function on the scales that lies between `σ₁ log q` and `σ₂ log q` for `q ≥ 1` is `σ log q`
+  with one `σ ∈ [σ₁, σ₂]`; so `|χ(q)| = q^σ`. The elements `q^b 2^{−a}` with logarithm in
   `[0, log 2)` carry `b` times the deviation.
-* **Kronecker for the phases** (`PosRat.exists_height_approx`): a unimodular homomorphism of the
-  positive rationals is approximated on every finite set by `q ↦ q^{it}`, from the density of the
-  prime phases.
+* **Kronecker for the phases** (`Scale.exists_height_approx`): a unimodular homomorphism of the
+  scales is approximated on every finite set by `q ↦ q^{it}`. The logarithms of the finite set
+  have integer coordinates in a rationally independent family of logarithms of scales, and
+  Kronecker's theorem steers the phases of that family.
 * So `φ(f)` is a limit of values `f(σ + it)` of `f` on the strip, and a character cannot vanish on
   an element that is bounded below.
 
@@ -32,34 +33,41 @@ noncomputable section
 
 namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 
-namespace PosRat
+namespace Scale
 
-/-! ### Additive functions on the positive rationals -/
+/-! ### Additive functions on the scales -/
 
 /-- The logarithm of a scale. -/
-def log (q : PosRat) : ℝ := Real.log q.toReal
+def log (q : Scale) : ℝ := Real.log q.toReal
 
-theorem log_mul (q r : PosRat) : (q * r).log = q.log + r.log := by
+theorem log_mul (q r : Scale) : (q * r).log = q.log + r.log := by
   unfold log
   rw [toReal_mul, Real.log_mul q.toReal_pos.ne' r.toReal_pos.ne']
 
-/-- The scale two. -/
-def two : PosRat := ⟨2, by norm_num⟩
+/-- The logarithm separates the scales. -/
+theorem log_injective : Function.Injective log := fun q r h =>
+  toReal_injective (Real.log_injOn_pos q.toReal_pos r.toReal_pos h)
 
-theorem toReal_two : two.toReal = 2 := by
-  unfold toReal two
-  norm_num
+/-- The scale `e^x`. -/
+def ofLog (x : ℝ) : Scale := ⟨Real.exp x, Real.exp_pos x⟩
+
+theorem log_ofLog (x : ℝ) : (ofLog x).log = x := Real.log_exp x
+
+/-- The scale two. -/
+def two : Scale := ⟨2, by norm_num⟩
+
+theorem toReal_two : two.toReal = 2 := rfl
 
 theorem log_two_pos : 0 < two.log := by
   unfold log
   rw [toReal_two]
   exact Real.log_pos (by norm_num)
 
-theorem toReal_inv (q : PosRat) : (q⁻¹).toReal = (q.toReal)⁻¹ := Rat.cast_inv _
+theorem toReal_inv (q : Scale) : (q⁻¹).toReal = (q.toReal)⁻¹ := rfl
 
 section Additive
 
-variable {f : PosRat → ℝ} (hf : ∀ q r, f (q * r) = f q + f r)
+variable {f : Scale → ℝ} (hf : ∀ q r, f (q * r) = f q + f r)
 include hf
 
 theorem additive_one : f 1 = 0 := by
@@ -67,12 +75,12 @@ theorem additive_one : f 1 = 0 := by
   rw [mul_one] at h
   linarith
 
-theorem additive_inv (q : PosRat) : f q⁻¹ = -f q := by
+theorem additive_inv (q : Scale) : f q⁻¹ = -f q := by
   have h := hf q q⁻¹
   rw [mul_inv_cancel, additive_one hf] at h
   linarith
 
-theorem additive_pow (q : PosRat) (n : ℕ) : f (q ^ n) = n * f q := by
+theorem additive_pow (q : Scale) (n : ℕ) : f (q ^ n) = n * f q := by
   induction n with
   | zero => rw [pow_zero, additive_one hf, Nat.cast_zero, zero_mul]
   | succ n ih =>
@@ -80,18 +88,25 @@ theorem additive_pow (q : PosRat) (n : ℕ) : f (q ^ n) = n * f q := by
     push_cast
     ring
 
-theorem additive_zpow (q : PosRat) (n : ℤ) : f (q ^ n) = n * f q := by
+theorem additive_zpow (q : Scale) (n : ℤ) : f (q ^ n) = n * f q := by
   cases n with
   | ofNat k => rw [Int.ofNat_eq_natCast, zpow_natCast, additive_pow hf, Int.cast_natCast]
   | negSucc k =>
     rw [zpow_negSucc, additive_inv hf, additive_pow hf, Int.cast_negSucc]
     ring
 
+theorem additive_prod {α : Type*} (I : Finset α) (g : α → Scale) :
+    f (∏ i ∈ I, g i) = ∑ i ∈ I, f (g i) := by
+  classical
+  induction I using Finset.induction_on with
+  | empty => rw [Finset.prod_empty, Finset.sum_empty, additive_one hf]
+  | insert i I hi ih => rw [Finset.prod_insert hi, Finset.sum_insert hi, hf, ih]
+
 /-- **An additive function between two multiples of the logarithm is one multiple.** If
 `σ₁ log q ≤ f(q) ≤ σ₂ log q` for every `q ≥ 1`, then `f = σ log` with `σ₁ ≤ σ ≤ σ₂`. -/
 theorem exists_eq_mul_log {σ₁ σ₂ : ℝ}
-    (hb : ∀ q : PosRat, 0 ≤ q.log → σ₁ * q.log ≤ f q ∧ f q ≤ σ₂ * q.log) :
-    ∃ σ : ℝ, σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ ∀ q : PosRat, f q = σ * q.log := by
+    (hb : ∀ q : Scale, 0 ≤ q.log → σ₁ * q.log ≤ f q ∧ f q ≤ σ₂ * q.log) :
+    ∃ σ : ℝ, σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ ∀ q : Scale, f q = σ * q.log := by
   have hL2 := log_two_pos
   obtain ⟨h1, h2⟩ := hb two hL2.le
   have hσ1 : σ₁ ≤ f two / two.log := by
@@ -161,7 +176,7 @@ end Additive
 
 section Unimodular
 
-variable {u v : PosRat → ℂ}
+variable {u v : Scale → ℂ}
 
 theorem unimodular_one (hu1 : ∀ q, ‖u q‖ = 1) (hum : ∀ q r, u (q * r) = u q * u r) : u 1 = 1 := by
   have h := hum 1 1
@@ -172,7 +187,7 @@ theorem unimodular_one (hu1 : ∀ q, ‖u q‖ = 1) (hum : ∀ q r, u (q * r) = 
     exact zero_ne_one this
   exact (mul_right_cancel₀ hne (by rw [one_mul]; exact h)).symm
 
-theorem unimodular_inv (hu1 : ∀ q, ‖u q‖ = 1) (hum : ∀ q r, u (q * r) = u q * u r) (q : PosRat) :
+theorem unimodular_inv (hu1 : ∀ q, ‖u q‖ = 1) (hum : ∀ q r, u (q * r) = u q * u r) (q : Scale) :
     u q⁻¹ = (u q)⁻¹ := by
   have h := hum q q⁻¹
   rw [mul_inv_cancel, unimodular_one hu1 hum] at h
@@ -180,7 +195,7 @@ theorem unimodular_inv (hu1 : ∀ q, ‖u q‖ = 1) (hum : ∀ q r, u (q * r) = 
 
 /-- The distance of two unimodular homomorphisms is subadditive. -/
 theorem norm_sub_mul_le (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
-    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) (q r : PosRat) :
+    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) (q r : Scale) :
     ‖u (q * r) - v (q * r)‖ ≤ ‖u q - v q‖ + ‖u r - v r‖ := by
   have h : u (q * r) - v (q * r) = u q * (u r - v r) + (u q - v q) * v r := by
     rw [hum, hvm]
@@ -191,7 +206,7 @@ theorem norm_sub_mul_le (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1
 
 /-- The distance of two unimodular homomorphisms is invariant under inversion. -/
 theorem norm_sub_inv (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
-    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) (q : PosRat) :
+    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) (q : Scale) :
     ‖u q⁻¹ - v q⁻¹‖ = ‖u q - v q‖ := by
   have hu0 : u q ≠ 0 := fun h0 => by
     have := hu1 q
@@ -207,180 +222,212 @@ theorem norm_sub_inv (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
   rw [h, norm_mul, norm_mul, norm_inv, norm_inv, hu1, hv1, inv_one, mul_one, mul_one,
     norm_sub_rev]
 
+/-- The distance of two unimodular homomorphisms at a power. -/
+theorem norm_sub_zpow_le (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
+    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) (q : Scale)
+    (n : ℤ) : ‖u (q ^ n) - v (q ^ n)‖ ≤ |(n : ℝ)| * ‖u q - v q‖ := by
+  have hnat : ∀ k : ℕ, ‖u (q ^ k) - v (q ^ k)‖ ≤ k * ‖u q - v q‖ := by
+    intro k
+    induction k with
+    | zero =>
+      rw [pow_zero, unimodular_one hu1 hum, unimodular_one hv1 hvm, sub_self, norm_zero,
+        Nat.cast_zero, zero_mul]
+    | succ k ih =>
+      rw [pow_succ]
+      refine (norm_sub_mul_le hu1 hv1 hum hvm _ _).trans ?_
+      push_cast
+      linarith
+  cases n with
+  | ofNat k =>
+    rw [Int.ofNat_eq_natCast, zpow_natCast, Int.cast_natCast, abs_of_nonneg (Nat.cast_nonneg k)]
+    exact hnat k
+  | negSucc k =>
+    rw [zpow_negSucc, norm_sub_inv hu1 hv1 hum hvm, Int.cast_negSucc, abs_neg,
+      abs_of_nonneg (Nat.cast_nonneg (k + 1))]
+    exact hnat (k + 1)
+
+/-- The distance of two unimodular homomorphisms at a product. -/
+theorem norm_sub_prod_le (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
+    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) {α : Type*}
+    (I : Finset α) (g : α → Scale) :
+    ‖u (∏ i ∈ I, g i) - v (∏ i ∈ I, g i)‖ ≤ ∑ i ∈ I, ‖u (g i) - v (g i)‖ := by
+  classical
+  induction I using Finset.induction_on with
+  | empty =>
+    rw [Finset.prod_empty, unimodular_one hu1 hum, unimodular_one hv1 hvm, sub_self, norm_zero,
+      Finset.sum_empty]
+  | insert i I hi ih =>
+    rw [Finset.prod_insert hi, Finset.sum_insert hi]
+    exact (norm_sub_mul_le hu1 hv1 hum hvm _ _).trans (add_le_add le_rfl ih)
+
 end Unimodular
 
 /-- A positive natural number as a scale (the scale one for `0`). -/
-def ofNat (n : ℕ) : PosRat := if h : 0 < n then ⟨(n : ℚ), by exact_mod_cast h⟩ else 1
-
-theorem ofNat_val {n : ℕ} (h : 0 < n) : ((ofNat n : PosRat) : ℚ) = n := by
-  unfold ofNat
-  rw [dif_pos h]
-
-theorem ofNat_mul {m n : ℕ} (hm : 0 < m) (hn : 0 < n) : ofNat (m * n) = ofNat m * ofNat n := by
-  refine Subtype.ext ?_
-  show ((ofNat (m * n) : PosRat) : ℚ) = ((ofNat m : PosRat) : ℚ) * ((ofNat n : PosRat) : ℚ)
-  rw [ofNat_val (Nat.mul_pos hm hn), ofNat_val hm, ofNat_val hn, Nat.cast_mul]
+def ofNat (n : ℕ) : Scale := if h : 0 < n then ⟨(n : ℝ), by exact_mod_cast h⟩ else 1
 
 theorem toReal_ofNat {n : ℕ} (h : 0 < n) : (ofNat n).toReal = n := by
-  unfold toReal
-  rw [ofNat_val h, Rat.cast_natCast]
-
-/-- Every positive rational is a quotient of two positive naturals. -/
-theorem eq_ofNat_div (q : PosRat) :
-    q = ofNat (q : ℚ).num.toNat * (ofNat (q : ℚ).den)⁻¹ := by
-  have hnum : 0 < (q : ℚ).num := Rat.num_pos.mpr q.2
-  have hnat : 0 < (q : ℚ).num.toNat := by omega
-  have hden : 0 < (q : ℚ).den := (q : ℚ).den_pos
-  refine Subtype.ext ?_
-  show (q : ℚ) = ((ofNat (q : ℚ).num.toNat : PosRat) : ℚ) * ((ofNat (q : ℚ).den : PosRat) : ℚ)⁻¹
-  rw [ofNat_val hnat, ofNat_val hden, ← div_eq_mul_inv]
-  have hcast : (((q : ℚ).num.toNat : ℕ) : ℚ) = ((q : ℚ).num : ℚ) := by
-    have h := Int.toNat_of_nonneg hnum.le
-    exact_mod_cast h
-  rw [hcast, Rat.num_div_den]
+  unfold ofNat
+  rw [dif_pos h]
+  rfl
 
 /-- The homomorphism `q ↦ q^{it}` is unimodular. -/
-theorem norm_cpow_mul_I (q : PosRat) (t : ℝ) : ‖q.cpow ((t : ℂ) * Complex.I)‖ = 1 := by
+theorem norm_cpow_mul_I (q : Scale) (t : ℝ) : ‖q.cpow ((t : ℂ) * Complex.I)‖ = 1 := by
   rw [norm_cpow]
   simp
 
-/-- Two unimodular homomorphisms within `δ` at the primes `≤ N` are within `nδ` at `n ≤ N`. -/
-theorem norm_sub_ofNat_le {u v : PosRat → ℂ} (hu1 : ∀ q, ‖u q‖ = 1) (hv1 : ∀ q, ‖v q‖ = 1)
-    (hum : ∀ q r, u (q * r) = u q * u r) (hvm : ∀ q r, v (q * r) = v q * v r) {N : ℕ} {δ : ℝ}
-    (hδ : 0 ≤ δ) (hp : ∀ p : ℕ, p.Prime → p ≤ N → ‖u (ofNat p) - v (ofNat p)‖ ≤ δ) (n : ℕ) :
-    0 < n → n ≤ N → ‖u (ofNat n) - v (ofNat n)‖ ≤ n * δ := by
-  induction n using induction_on_primes with
-  | zero => intro h; exact absurd h (lt_irrefl 0)
-  | one =>
-    intro _ _
-    have h1 : (ofNat 1 : PosRat) = 1 := Subtype.ext (by rw [ofNat_val one_pos]; rfl)
-    rw [h1, unimodular_one hu1 hum, unimodular_one hv1 hvm, sub_self, norm_zero]
-    positivity
-  | prime_mul p a hpp ih =>
-    intro hpos hle
-    have ha : 0 < a := Nat.pos_of_mul_pos_left hpos |> fun _ => by
-      rcases Nat.eq_zero_or_pos a with h | h
-      · rw [h, mul_zero] at hpos
-        exact absurd hpos (lt_irrefl 0)
-      · exact h
-    have hpN : p ≤ N := (Nat.le_mul_of_pos_right p ha).trans hle
-    have haN : a ≤ N := (Nat.le_mul_of_pos_left a hpp.pos).trans hle
-    rw [ofNat_mul hpp.pos ha]
-    refine (norm_sub_mul_le hu1 hv1 hum hvm _ _).trans ?_
-    have h1 := hp p hpp hpN
-    have h2 := ih ha haN
-    have h3 : (1 : ℝ) + a ≤ p * a := by
-      have hp2 : (2 : ℝ) ≤ p := by exact_mod_cast hpp.two_le
-      have ha1 : (1 : ℝ) ≤ a := by exact_mod_cast ha
-      nlinarith
-    push_cast
-    nlinarith
+/-- At the scale `e^x` the homomorphism `q ↦ q^{it}` is the character `e^{ixt}`. -/
+theorem cpow_ofLog (x t : ℝ) :
+    (ofLog x).cpow ((t : ℂ) * Complex.I) = GaloisForLFunctions.expChar x t := by
+  show ((Real.exp x : ℝ) : ℂ) ^ ((t : ℂ) * Complex.I) =
+    Complex.exp (((x * t : ℝ) : ℂ) * Complex.I)
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos x).ne'),
+    ← Complex.ofReal_log (Real.exp_pos x).le, Real.log_exp]
+  congr 1
+  push_cast
+  ring
 
-/-- **Kronecker's theorem on a finite set of scales.** A unimodular homomorphism of the positive
-rationals is approximated on every finite set by `q ↦ q^{it}` for some real `t`. -/
-theorem exists_height_approx {ω : PosRat → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1)
-    (hωm : ∀ q r, ω (q * r) = ω q * ω r) (T : Finset PosRat) {ε : ℝ} (hε : 0 < ε) :
+/-- **Kronecker's theorem on a finite set of scales.** A unimodular homomorphism of the group of
+scales is approximated on every finite set by `q ↦ q^{it}` for some real `t`. -/
+theorem exists_height_approx {ω : Scale → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1)
+    (hωm : ∀ q r, ω (q * r) = ω q * ω r) (T : Finset Scale) {ε : ℝ} (hε : 0 < ε) :
     ∃ t : ℝ, ∀ q ∈ T, ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ ≤ ε := by
-  -- all numerators and denominators of `T` are at most `N`
-  set N : ℕ := T.sup (fun q => max (q : ℚ).num.toNat (q : ℚ).den) + 1 with hN
-  have hNpos : (0 : ℝ) < N := by
-    rw [hN]
-    push_cast
-    positivity
-  set δ : ℝ := ε / (2 * N) with hδ
+  classical
+  -- a rationally independent family spanning the logarithms of `T`
+  obtain ⟨b, hbT, hspan, hind⟩ := exists_linearIndependent ℚ ((T.image log : Finset ℝ) : Set ℝ)
+  have hbfin : b.Finite := (T.image log).finite_toSet.subset hbT
+  haveI : Fintype b := hbfin.fintype
+  -- rational coordinates of the logarithms
+  have hcoord : ∀ q : Scale, ∃ c : b → ℚ, q ∈ T → ∑ x, c x • (x : ℝ) = q.log := by
+    intro q
+    by_cases hq : q ∈ T
+    · have hmem : q.log ∈ Submodule.span ℚ (Set.range ((↑) : b → ℝ)) := by
+        rw [Subtype.range_coe, hspan]
+        exact Submodule.subset_span (Finset.mem_coe.mpr (Finset.mem_image_of_mem log hq))
+      obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun ℚ).mp hmem
+      exact ⟨c, fun _ => hc⟩
+    · exact ⟨0, fun h => absurd h hq⟩
+  choose c hc using hcoord
+  -- a common denominator `D`; integer coordinates in the family divided by `D`
+  set D : ℕ := ∏ q ∈ T, ∏ x : b, (c q x).den with hD
+  have hDpos : 0 < D := Finset.prod_pos fun q _ => Finset.prod_pos fun x _ => (c q x).den_pos
+  have hD0 : (D : ℝ) ≠ 0 := by exact_mod_cast hDpos.ne'
+  have hdvd : ∀ q ∈ T, ∀ x : b, (c q x).den ∣ D := fun q hq x =>
+    (Finset.dvd_prod_of_mem (fun x : b => (c q x).den) (Finset.mem_univ x)).trans
+      (Finset.dvd_prod_of_mem (fun q => ∏ x : b, (c q x).den) hq)
+  set n : Scale → b → ℤ := fun q x => (c q x).num * ((D / (c q x).den : ℕ) : ℤ) with hn
+  have hnc : ∀ q ∈ T, ∀ x : b, ((n q x : ℤ) : ℝ) = ((c q x : ℚ) : ℝ) * D := by
+    intro q hq x
+    have hden : ((c q x).den : ℝ) ≠ 0 := by exact_mod_cast (c q x).den_pos.ne'
+    have h1 : (((D / (c q x).den : ℕ)) : ℝ) = (D : ℝ) / (c q x).den :=
+      Nat.cast_div (hdvd q hq x) hden
+    show (((c q x).num * ((D / (c q x).den : ℕ) : ℤ) : ℤ) : ℝ) = ((c q x : ℚ) : ℝ) * D
+    rw [Int.cast_mul, Int.cast_natCast, h1, Rat.cast_def]
+    ring
+  set lam : b → ℝ := fun x => (x : ℝ) / D with hlam
+  have hlamind : LinearIndependent ℚ lam := by
+    have hDq : ((D : ℚ))⁻¹ ≠ 0 := inv_ne_zero (by exact_mod_cast hDpos.ne')
+    have h := hind.units_smul fun _ => Units.mk0 ((D : ℚ))⁻¹ hDq
+    have e : lam = (fun _ : b => Units.mk0 ((D : ℚ))⁻¹ hDq) • ((↑) : b → ℝ) := by
+      funext x
+      show (x : ℝ) / D = (Units.mk0 ((D : ℚ))⁻¹ hDq) • (x : ℝ)
+      rw [Units.smul_def, Units.val_mk0, Rat.smul_def, Rat.cast_inv, Rat.cast_natCast,
+        div_eq_inv_mul]
+    rw [e]
+    exact h
+  set β : b → Scale := fun x => ofLog (lam x) with hβ
+  -- every scale of `T` is a product of powers of the scales `β`
+  have hprod : ∀ q ∈ T, q = ∏ x, β x ^ n q x := by
+    intro q hq
+    apply log_injective
+    rw [additive_prod log_mul]
+    have hterm : ∀ x : b, (β x ^ n q x).log = (c q x : ℚ) • (x : ℝ) := by
+      intro x
+      rw [additive_zpow log_mul]
+      show ((n q x : ℤ) : ℝ) * (ofLog (lam x)).log = (c q x : ℚ) • (x : ℝ)
+      rw [log_ofLog, hnc q hq x, Rat.smul_def]
+      show ((c q x : ℚ) : ℝ) * D * ((x : ℝ) / D) = ((c q x : ℚ) : ℝ) * (x : ℝ)
+      field_simp
+    rw [Finset.sum_congr rfl fun x _ => hterm x, hc q hq]
+  -- the phases of the scales `β` are steered within `δ`
+  set M : ℝ := ∑ q ∈ T, ∑ x : b, |((n q x : ℤ) : ℝ)| with hM
+  have hM0 : 0 ≤ M := Finset.sum_nonneg fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _
+  set δ : ℝ := ε / (M + 1) with hδ
   have hδpos : 0 < δ := by positivity
-  obtain ⟨t, ht⟩ := GaloisForLFunctions.primeTorus_cpow_dense N
-    (fun p => Complex.arg (ω (ofNat ((p : Nat.Primes) : ℕ)))) hδpos
+  obtain ⟨t, ht⟩ := GaloisForLFunctions.kronecker_approx hlamind
+    (fun x => Complex.arg (ω (β x))) hδpos
   refine ⟨t, fun q hq => ?_⟩
-  have hum : ∀ q r : PosRat, (q * r).cpow ((t : ℂ) * Complex.I) =
+  have hum : ∀ q r : Scale, (q * r).cpow ((t : ℂ) * Complex.I) =
       q.cpow ((t : ℂ) * Complex.I) * r.cpow ((t : ℂ) * Complex.I) := fun q r => cpow_mul q r _
-  have hu1 : ∀ q : PosRat, ‖q.cpow ((t : ℂ) * Complex.I)‖ = 1 := fun q => norm_cpow_mul_I q t
-  -- the primes `≤ N`
-  have hp : ∀ p : ℕ, p.Prime → p ≤ N →
-      ‖(ofNat p).cpow ((t : ℂ) * Complex.I) - ω (ofNat p)‖ ≤ δ := by
-    intro p hpp hpN
-    have h := ht ⟨⟨p, hpp⟩, (GaloisForLFunctions.mem_primesLE N ⟨p, hpp⟩).mpr hpN⟩
-    have harg : Complex.exp ((Complex.arg (ω (ofNat p)) : ℝ) * Complex.I) = ω (ofNat p) := by
-      have h' := Complex.norm_mul_exp_arg_mul_I (ω (ofNat p))
+  have hu1 : ∀ q : Scale, ‖q.cpow ((t : ℂ) * Complex.I)‖ = 1 := fun q => norm_cpow_mul_I q t
+  have hbase : ∀ x : b, ‖(β x).cpow ((t : ℂ) * Complex.I) - ω (β x)‖ ≤ δ := by
+    intro x
+    have h := ht x
+    have harg : Complex.exp ((Complex.arg (ω (β x)) : ℝ) * Complex.I) = ω (β x) := by
+      have h' := Complex.norm_mul_exp_arg_mul_I (ω (β x))
       rwa [hω1, Complex.ofReal_one, one_mul] at h'
-    have hbase : (ofNat p).cpow ((t : ℂ) * Complex.I) = ((p : ℕ) : ℂ) ^ ((t : ℂ) * Complex.I) := by
-      unfold cpow
-      rw [toReal_ofNat hpp.pos, Complex.ofReal_natCast]
-    rw [hbase]
-    simp only at h
     rw [harg] at h
+    show ‖(ofLog (lam x)).cpow ((t : ℂ) * Complex.I) - ω (β x)‖ ≤ δ
+    rw [cpow_ofLog]
     exact h.le
-  have hnat : ∀ n : ℕ, 0 < n → n ≤ N →
-      ‖(ofNat n).cpow ((t : ℂ) * Complex.I) - ω (ofNat n)‖ ≤ N * δ := by
-    intro n hn hnN
-    refine (norm_sub_ofNat_le hu1 hω1 hum hωm hδpos.le hp n hn hnN).trans ?_
-    exact mul_le_mul_of_nonneg_right (by exact_mod_cast hnN) hδpos.le
-  have hsup : max (q : ℚ).num.toNat (q : ℚ).den ≤
-      T.sup (fun q => max (q : ℚ).num.toNat (q : ℚ).den) :=
-    Finset.le_sup (f := fun q : PosRat => max (q : ℚ).num.toNat (q : ℚ).den) hq
-  have hnumN : (q : ℚ).num.toNat ≤ N := by
-    have := le_max_left (q : ℚ).num.toNat (q : ℚ).den
-    omega
-  have hdenN : (q : ℚ).den ≤ N := by
-    have := le_max_right (q : ℚ).num.toNat (q : ℚ).den
-    omega
-  have hnumpos : 0 < (q : ℚ).num.toNat := by
-    have : 0 < (q : ℚ).num := Rat.num_pos.mpr q.2
-    omega
-  have hdenpos : 0 < (q : ℚ).den := (q : ℚ).den_pos
-  rw [eq_ofNat_div q]
-  refine (norm_sub_mul_le hu1 hω1 hum hωm _ _).trans ?_
-  rw [norm_sub_inv hu1 hω1 hum hωm]
-  have h1 := hnat _ hnumpos hnumN
-  have h2 := hnat _ hdenpos hdenN
-  have hNδ : (N : ℝ) * δ = ε / 2 := by
-    rw [hδ]
-    field_simp
-  linarith
+  have hsum : ∑ x : b, |((n q x : ℤ) : ℝ)| ≤ M :=
+    Finset.single_le_sum (f := fun q => ∑ x : b, |((n q x : ℤ) : ℝ)|)
+      (fun _ _ => Finset.sum_nonneg fun _ _ => abs_nonneg _) hq
+  have hMδ : M * δ ≤ ε := by
+    rw [hδ, show M * (ε / (M + 1)) = ε * (M / (M + 1)) by ring]
+    exact mul_le_of_le_one_right hε.le ((div_le_one (by positivity)).mpr (by linarith))
+  rw [hprod q hq]
+  refine (norm_sub_prod_le hu1 hω1 hum hωm Finset.univ fun x => β x ^ n q x).trans ?_
+  calc ∑ x : b, ‖(β x ^ n q x).cpow ((t : ℂ) * Complex.I) - ω (β x ^ n q x)‖
+      ≤ ∑ x : b, |((n q x : ℤ) : ℝ)| * δ :=
+        Finset.sum_le_sum fun x _ => (norm_sub_zpow_le hu1 hω1 hum hωm (β x) (n q x)).trans
+          (mul_le_mul_of_nonneg_left (hbase x) (abs_nonneg _))
+    _ = (∑ x : b, |((n q x : ℤ) : ℝ)|) * δ := by rw [Finset.sum_mul]
+    _ ≤ M * δ := mul_le_mul_of_nonneg_right hsum hδpos.le
+    _ ≤ ε := hMδ
 
-theorem cpow_add (q : PosRat) (s₁ s₂ : ℂ) : q.cpow (s₁ + s₂) = q.cpow s₁ * q.cpow s₂ := by
+theorem cpow_add (q : Scale) (s₁ s₂ : ℂ) : q.cpow (s₁ + s₂) = q.cpow s₁ * q.cpow s₂ := by
   unfold cpow
   exact Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr q.toReal_pos.ne')
 
-theorem cpow_ofReal (q : PosRat) (σ : ℝ) : q.cpow (σ : ℂ) = ((q.toReal ^ σ : ℝ) : ℂ) := by
+theorem cpow_ofReal (q : Scale) (σ : ℝ) : q.cpow (σ : ℂ) = ((q.toReal ^ σ : ℝ) : ℂ) := by
   unfold cpow
   rw [Complex.ofReal_cpow q.toReal_pos.le]
 
-end PosRat
+end Scale
 
 /-! ### Twists are uniform limits of vertical translates -/
 
 /-- The twist of an expansion by a unimodular function converges absolutely where the expansion
 does. -/
-theorem WSummable.twist {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c) {ω : PosRat → ℂ}
+theorem WSummable.twist {σ₁ σ₂ : ℝ} {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c) {ω : Scale → ℂ}
     (hω1 : ∀ q, ‖ω q‖ = 1) : WSummable σ₁ σ₂ fun q => c q * ω q := by
   refine hc.congr fun q => ?_
   rw [norm_mul, hω1, mul_one]
 
 /-- **A twist is a uniform limit of vertical translates.** For a unimodular homomorphism `ω` of the
-positive rationals, the twisted expansion `Σ c(q) ω(q) q^s` is approximated uniformly on the closed
+scales, the twisted expansion `Σ c(q) ω(q) q^s` is approximated uniformly on the closed
 strip by a translate `s ↦ Σ c(q) q^{s + it}`: Kronecker on a finite set carrying all but a small
 part of the weighted coefficients. -/
-theorem exists_height_expansion_approx {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
-    {ω : PosRat → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1) (hωm : ∀ q r, ω (q * r) = ω q * ω r) {ε : ℝ}
+theorem exists_height_expansion_approx {σ₁ σ₂ : ℝ} {c : Scale → ℂ} (hc : WSummable σ₁ σ₂ c)
+    {ω : Scale → ℂ} (hω1 : ∀ q, ‖ω q‖ = 1) (hωm : ∀ q r, ω (q * r) = ω q * ω r) {ε : ℝ}
     (hε : 0 < ε) :
     ∃ t : ℝ, ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ →
       ‖expansion c (s + (t : ℂ) * Complex.I) - expansion (fun q => c q * ω q) s‖ ≤ ε := by
   -- the weighted coefficients and a finite set carrying all but `ε/4` of their sum
-  set a : PosRat → ℝ := fun q => ‖c q‖ * stripWeight σ₁ σ₂ q with ha
+  set a : Scale → ℝ := fun q => ‖c q‖ * stripWeight σ₁ σ₂ q with ha
   have hasum : Summable a := hc
   have ha0 : ∀ q, 0 ≤ a q := fun q =>
     mul_nonneg (norm_nonneg _) (stripWeight_pos σ₁ σ₂ q).le
   set S : ℝ := ∑' q, a q with hS
   have hS0 : 0 ≤ S := tsum_nonneg ha0
-  have htend : Tendsto (fun T : Finset PosRat => ∑ q ∈ T, a q) atTop (𝓝 S) := hasum.hasSum
-  obtain ⟨T, hT⟩ : ∃ T : Finset PosRat, S - ε / 4 < ∑ q ∈ T, a q :=
+  have htend : Tendsto (fun T : Finset Scale => ∑ q ∈ T, a q) atTop (𝓝 S) := hasum.hasSum
+  obtain ⟨T, hT⟩ : ∃ T : Finset Scale, S - ε / 4 < ∑ q ∈ T, a q :=
     (htend.eventually (lt_mem_nhds (show S - ε / 4 < S by linarith))).exists
   have hTle : ∑ q ∈ T, a q ≤ S := Summable.sum_le_tsum T (fun q _ => ha0 q) hasum
   -- a height at which `q^{it}` follows the phases on `T`
   set ε' : ℝ := ε / (2 * (S + 1)) with hε'
   have hε'pos : 0 < ε' := by positivity
-  obtain ⟨t, ht⟩ := PosRat.exists_height_approx hω1 hωm T hε'pos
+  obtain ⟨t, ht⟩ := Scale.exists_height_approx hω1 hωm T hε'pos
   refine ⟨t, fun s h₁ h₂ => ?_⟩
   have hre : (s + (t : ℂ) * Complex.I).re = s.re := by simp
   have he1 : HasSum (fun q => c q * q.cpow (s + (t : ℂ) * Complex.I))
@@ -393,9 +440,9 @@ theorem exists_height_expansion_approx {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} 
     intro q
     have hnorm : ‖c q * q.cpow (s + (t : ℂ) * Complex.I) - c q * ω q * q.cpow s‖ =
         ‖c q‖ * q.toReal ^ s.re * ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ := by
-      rw [PosRat.cpow_add, show c q * (q.cpow s * q.cpow ((t : ℂ) * Complex.I)) -
+      rw [Scale.cpow_add, show c q * (q.cpow s * q.cpow ((t : ℂ) * Complex.I)) -
         c q * ω q * q.cpow s = c q * q.cpow s * (q.cpow ((t : ℂ) * Complex.I) - ω q) by ring,
-        norm_mul, norm_mul, PosRat.norm_cpow]
+        norm_mul, norm_mul, Scale.norm_cpow]
     have hw : ‖c q‖ * q.toReal ^ s.re ≤ a q :=
       mul_le_mul_of_nonneg_left (rpow_le_stripWeight h₁ h₂ q) (norm_nonneg _)
     rw [hnorm]
@@ -405,7 +452,7 @@ theorem exists_height_expansion_approx {σ₁ σ₂ : ℝ} {c : PosRat → ℂ} 
     · rw [if_neg hq, mul_zero, zero_add, sub_zero, mul_comm 2]
       have h2' : ‖q.cpow ((t : ℂ) * Complex.I) - ω q‖ ≤ 2 := by
         refine (norm_sub_le _ _).trans ?_
-        rw [PosRat.norm_cpow_mul_I, hω1]
+        rw [Scale.norm_cpow_mul_I, hω1]
         norm_num
       exact mul_le_mul hw h2' (norm_nonneg _) (ha0 q)
   have hind : HasSum (fun q => if q ∈ T then a q else 0) (∑ q ∈ T, a q) := by
@@ -431,7 +478,7 @@ namespace StripWiener
 variable {σ₁ σ₂ : ℝ} [hσ : Fact (σ₁ ≤ σ₂)]
 
 /-- The value of a character on the point mass at `q`. -/
-def charVal (φ : WeakDual.characterSpace ℂ (StripWiener σ₁ σ₂)) (q : PosRat) : ℂ :=
+def charVal (φ : WeakDual.characterSpace ℂ (StripWiener σ₁ σ₂)) (q : Scale) : ℂ :=
   φ (pointMass q)
 
 variable (φ : WeakDual.characterSpace ℂ (StripWiener σ₁ σ₂))
@@ -440,28 +487,28 @@ theorem charVal_one : charVal φ 1 = 1 := by
   unfold charVal
   rw [pointMass_one, map_one]
 
-theorem charVal_mul (q r : PosRat) : charVal φ (q * r) = charVal φ q * charVal φ r := by
+theorem charVal_mul (q r : Scale) : charVal φ (q * r) = charVal φ q * charVal φ r := by
   unfold charVal
   rw [← pointMass_mul, map_mul]
 
-theorem charVal_ne_zero (q : PosRat) : charVal φ q ≠ 0 := fun h => by
+theorem charVal_ne_zero (q : Scale) : charVal φ q ≠ 0 := fun h => by
   have h1 := charVal_mul φ q q⁻¹
   rw [mul_inv_cancel, charVal_one, h, zero_mul] at h1
   exact one_ne_zero h1
 
 /-- The spectral bound: `|χ(q)| ≤ ‖δ_q‖`. -/
-theorem norm_charVal_le (q : PosRat) : ‖charVal φ q‖ ≤ stripWeight σ₁ σ₂ q := by
+theorem norm_charVal_le (q : Scale) : ‖charVal φ q‖ ≤ stripWeight σ₁ σ₂ q := by
   rw [← norm_pointMass (σ₁ := σ₁) (σ₂ := σ₂) q]
   exact spectrum.norm_le_norm_of_mem (AlgHom.apply_mem_spectrum φ _)
 
 /-- **A character has one real part**: `|χ(q)| = q^σ` for all scales, with `σ₁ ≤ σ ≤ σ₂`. -/
 theorem exists_exponent :
-    ∃ σ : ℝ, σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ ∀ q : PosRat, ‖charVal φ q‖ = q.toReal ^ σ := by
-  have hpos : ∀ q : PosRat, 0 < ‖charVal φ q‖ := fun q => norm_pos_iff.mpr (charVal_ne_zero φ q)
-  have hadd : ∀ q r : PosRat, Real.log ‖charVal φ (q * r)‖ =
+    ∃ σ : ℝ, σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ ∀ q : Scale, ‖charVal φ q‖ = q.toReal ^ σ := by
+  have hpos : ∀ q : Scale, 0 < ‖charVal φ q‖ := fun q => norm_pos_iff.mpr (charVal_ne_zero φ q)
+  have hadd : ∀ q r : Scale, Real.log ‖charVal φ (q * r)‖ =
       Real.log ‖charVal φ q‖ + Real.log ‖charVal φ r‖ := fun q r => by
     rw [charVal_mul, norm_mul, Real.log_mul (hpos q).ne' (hpos r).ne']
-  have hupper : ∀ q : PosRat, 0 ≤ q.log → Real.log ‖charVal φ q‖ ≤ σ₂ * q.log := by
+  have hupper : ∀ q : Scale, 0 ≤ q.log → Real.log ‖charVal φ q‖ ≤ σ₂ * q.log := by
     intro q hq
     have hq1 : 1 ≤ q.toReal := by
       by_contra hlt
@@ -471,7 +518,7 @@ theorem exists_exponent :
       max_le (Real.rpow_le_rpow_of_exponent_le hq1 hσ.out) le_rfl
     have h := Real.log_le_log (hpos q) ((norm_charVal_le φ q).trans hw)
     rwa [Real.log_rpow q.toReal_pos] at h
-  have hlower : ∀ q : PosRat, 0 ≤ q.log → σ₁ * q.log ≤ Real.log ‖charVal φ q‖ := by
+  have hlower : ∀ q : Scale, 0 ≤ q.log → σ₁ * q.log ≤ Real.log ‖charVal φ q‖ := by
     intro q hq
     have hq1 : 1 ≤ q.toReal := by
       by_contra hlt
@@ -481,16 +528,16 @@ theorem exists_exponent :
     have hinv1 : (q.toReal)⁻¹ ≤ 1 := inv_le_one_of_one_le₀ hq1
     have hw : stripWeight σ₁ σ₂ q⁻¹ ≤ (q.toReal)⁻¹ ^ σ₁ := by
       unfold stripWeight
-      rw [PosRat.toReal_inv]
+      rw [Scale.toReal_inv]
       exact max_le le_rfl (Real.rpow_le_rpow_of_exponent_ge hinv0 hinv1 hσ.out)
     have h := Real.log_le_log (hpos q⁻¹) ((norm_charVal_le φ q⁻¹).trans hw)
     have hinv : Real.log ‖charVal φ q⁻¹‖ = -Real.log ‖charVal φ q‖ :=
-      PosRat.additive_inv (f := fun q => Real.log ‖charVal φ q‖) hadd q
+      Scale.additive_inv (f := fun q => Real.log ‖charVal φ q‖) hadd q
     rw [hinv, Real.log_rpow hinv0, Real.log_inv] at h
     have hq' : q.log = Real.log q.toReal := rfl
     rw [hq']
     linarith
-  obtain ⟨σ, h1, h2, h⟩ := PosRat.exists_eq_mul_log (f := fun q => Real.log ‖charVal φ q‖) hadd
+  obtain ⟨σ, h1, h2, h⟩ := Scale.exists_eq_mul_log (f := fun q => Real.log ‖charVal φ q‖) hadd
     fun q hq => ⟨hlower q hq, hupper q hq⟩
   refine ⟨σ, h1, h2, fun q => ?_⟩
   rw [← Real.exp_log (hpos q), h q, Real.rpow_def_of_pos q.toReal_pos]
@@ -506,13 +553,13 @@ theorem hasSum_charVal (f : StripWiener σ₁ σ₂) :
   rfl
 
 /-- **The form of a character**: `χ(q) = q^σ ω(q)` with `σ₁ ≤ σ ≤ σ₂` and `ω` a unimodular
-homomorphism of the positive rationals. -/
+homomorphism of the scales. -/
 theorem exists_exponent_phase :
-    ∃ (σ : ℝ) (ω : PosRat → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
+    ∃ (σ : ℝ) (ω : Scale → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
       (∀ q r, ω (q * r) = ω q * ω r) ∧
       ∀ q, charVal φ q = ((q.toReal ^ σ : ℝ) : ℂ) * ω q := by
   obtain ⟨σ, h1, h2, hmod⟩ := exists_exponent φ
-  have hrne : ∀ q : PosRat, ((q.toReal ^ σ : ℝ) : ℂ) ≠ 0 := fun q =>
+  have hrne : ∀ q : Scale, ((q.toReal ^ σ : ℝ) : ℂ) ≠ 0 := fun q =>
     Complex.ofReal_ne_zero.mpr (Real.rpow_pos_of_pos q.toReal_pos _).ne'
   refine ⟨σ, fun q => charVal φ q / ((q.toReal ^ σ : ℝ) : ℂ), h1, h2, fun q => ?_, fun q r => ?_,
     fun q => ?_⟩
@@ -521,7 +568,7 @@ theorem exists_exponent_phase :
       Real.norm_of_nonneg (Real.rpow_nonneg q.toReal_pos.le _),
       div_self (Real.rpow_pos_of_pos q.toReal_pos _).ne']
   · beta_reduce
-    rw [charVal_mul, PosRat.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
+    rw [charVal_mul, Scale.toReal_mul, Real.mul_rpow q.toReal_pos.le r.toReal_pos.le,
       Complex.ofReal_mul]
     field_simp [hrne q, hrne r]
   · beta_reduce
@@ -529,7 +576,7 @@ theorem exists_exponent_phase :
 
 /-- **A character is the value of a twist at a real point of the strip.** -/
 theorem exists_apply_eq_expansion_twist :
-    ∃ (σ : ℝ) (ω : PosRat → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
+    ∃ (σ : ℝ) (ω : Scale → ℂ), σ₁ ≤ σ ∧ σ ≤ σ₂ ∧ (∀ q, ‖ω q‖ = 1) ∧
       (∀ q r, ω (q * r) = ω q * ω r) ∧
       ∀ f : StripWiener σ₁ σ₂, φ f = expansion (fun q => f.coeff q * ω q) (σ : ℂ) := by
   obtain ⟨σ, ω, h1, h2, hω1, hωm, hχ⟩ := exists_exponent_phase φ
@@ -537,7 +584,7 @@ theorem exists_apply_eq_expansion_twist :
   rw [← (hasSum_charVal φ f).tsum_eq]
   unfold expansion
   refine tsum_congr fun q => ?_
-  rw [hχ, PosRat.cpow_ofReal]
+  rw [hχ, Scale.cpow_ofReal]
   ring
 
 /-- **Wiener's lemma on a strip.** An element of `𝒲[σ₁, σ₂]` that is bounded below on the strip is
@@ -567,10 +614,10 @@ end StripWiener
 `Σ c(q) q^s` converges absolutely on the closed strip `σ₁ ≤ Re s ≤ σ₂` and is bounded below
 there, there is `d` with `Σ ‖d(q)‖ max(q^σ₁, q^σ₂) < ∞` and `(Σ c(q) q^s)(Σ d(q) q^s) = 1` on the
 strip. -/
-theorem exists_inverse_expansion {σ₁ σ₂ : ℝ} (h12 : σ₁ ≤ σ₂) {c : PosRat → ℂ}
+theorem exists_inverse_expansion {σ₁ σ₂ : ℝ} (h12 : σ₁ ≤ σ₂) {c : Scale → ℂ}
     (hc : WSummable σ₁ σ₂ c) {δ : ℝ} (hδ : 0 < δ)
     (h : ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ → δ ≤ ‖expansion c s‖) :
-    ∃ d : PosRat → ℂ, WSummable σ₁ σ₂ d ∧
+    ∃ d : Scale → ℂ, WSummable σ₁ σ₂ d ∧
       ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ → expansion c s * expansion d s = 1 := by
   haveI : Fact (σ₁ ≤ σ₂) := ⟨h12⟩
   have hunit : IsUnit (StripWiener.ofCoeff c hc) :=

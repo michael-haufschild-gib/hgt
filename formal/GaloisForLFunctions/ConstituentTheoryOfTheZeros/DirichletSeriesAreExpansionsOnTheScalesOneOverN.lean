@@ -2,7 +2,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.WienersLemmaOnAStrip
 import Mathlib.NumberTheory.LSeries.Basic
 
 /-!
-# Dirichlet series are expansions over the positive rationals
+# Dirichlet series are expansions on the scales `1/n`
 
 A Dirichlet series `Σ a(n) n^{−s}` is the expansion `Σ_q c(q) q^s` whose coefficients sit on the
 scales `q = 1/n` (`dirichletCoeff`). If the series converges absolutely at a real point `x`, the
@@ -19,21 +19,21 @@ namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 variable {σ₁ σ₂ : ℝ}
 
 /-- The scale `1/(n + 1)`. -/
-def invNat (n : ℕ) : PosRat := (PosRat.ofNat (n + 1))⁻¹
+def invNat (n : ℕ) : Scale := (Scale.ofNat (n + 1))⁻¹
 
 theorem toReal_invNat (n : ℕ) : (invNat n).toReal = (((n + 1 : ℕ) : ℝ))⁻¹ := by
   unfold invNat
-  rw [PosRat.toReal_inv, PosRat.toReal_ofNat n.succ_pos]
+  rw [Scale.toReal_inv, Scale.toReal_ofNat n.succ_pos]
 
 theorem invNat_injective : Function.Injective invNat := fun m n h => by
-  have h' := congrArg PosRat.toReal h
+  have h' := congrArg Scale.toReal h
   rw [toReal_invNat, toReal_invNat, inv_inj] at h'
   have h'' : m + 1 = n + 1 := by exact_mod_cast h'
   omega
 
 /-- `(1/(n+1))^s = 1/(n+1)^s`. -/
 theorem invNat_cpow (n : ℕ) (s : ℂ) : (invNat n).cpow s = (((n + 1 : ℕ) : ℂ) ^ s)⁻¹ := by
-  unfold PosRat.cpow
+  unfold Scale.cpow
   rw [toReal_invNat, Complex.ofReal_inv, Complex.ofReal_natCast, Complex.inv_cpow]
   rw [Complex.natCast_arg]
   exact Real.pi_pos.ne
@@ -48,12 +48,12 @@ theorem stripWeight_invNat (h12 : σ₁ ≤ σ₂) (n : ℕ) :
   exact max_eq_left (Real.rpow_le_rpow_of_exponent_le h1 (neg_le_neg h12))
 
 /-- The coefficients of the Dirichlet series `Σ a(n) n^{−s}`, on the scales `1/n`. -/
-def dirichletCoeff (a : ℕ → ℂ) : PosRat → ℂ := Function.extend invNat (fun n => a (n + 1)) 0
+def dirichletCoeff (a : ℕ → ℂ) : Scale → ℂ := Function.extend invNat (fun n => a (n + 1)) 0
 
 theorem dirichletCoeff_invNat (a : ℕ → ℂ) (n : ℕ) : dirichletCoeff a (invNat n) = a (n + 1) :=
   invNat_injective.extend_apply _ _ n
 
-theorem dirichletCoeff_of_notMem_range (a : ℕ → ℂ) {q : PosRat} (hq : q ∉ Set.range invNat) :
+theorem dirichletCoeff_of_notMem_range (a : ℕ → ℂ) {q : Scale} (hq : q ∉ Set.range invNat) :
     dirichletCoeff a q = 0 :=
   Function.extend_apply' _ _ _ fun ⟨n, hn⟩ => hq ⟨n, hn⟩
 
@@ -81,7 +81,7 @@ theorem wsummable_dirichletCoeff {a : ℕ → ℂ} {x : ℝ} (hsum : LSeriesSumm
 theorem expansion_dirichletCoeff {a : ℕ → ℂ} {x : ℝ} (hsum : LSeriesSummable a x) {s : ℂ}
     (hs : x ≤ s.re) : expansion (dirichletCoeff a) s = LSeries a s := by
   have hs' : LSeriesSummable a s := hsum.of_re_le_re (by rwa [Complex.ofReal_re])
-  have hsupp : Function.support (fun q : PosRat => dirichletCoeff a q * q.cpow s) ⊆
+  have hsupp : Function.support (fun q : Scale => dirichletCoeff a q * q.cpow s) ⊆
       Set.range invNat := fun q hq => by
     by_contra h
     exact hq (by

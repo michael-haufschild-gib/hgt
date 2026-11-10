@@ -130,9 +130,11 @@ two polar packets is $\sum w(n)(1+\tfrac1n)\Phi(\log n)$, $\Phi=\chi\star\tilde\
 $2a-2\delta-y\le\Phi(y)\le2a-y$; their sum is $O(ae^a\sum\Lambda(n)/n)$. A packet with a cutoff of
 margin $\delta$ has archimedean energy $\le(\log(1+1/\delta)+5)\int f^2+\delta^2\int f'^2$. With
 $\delta=e^{-a}$: if the form of a dominated system is nonnegative on the two polar packets, then
-$|\sum_{n\le e^{2a}}w(n)(2a-\log n)|\le(3\log q+C(1+a)^3)e^a$. The Riesz mean of the contacts at
-$Y=e^{2a}$ is $O(\sqrt Y(\log q+\log^3Y))$; a dominated system whose Riesz mean is $\ge cY$ is
-infeasible once $ce^a>3\log q+C(1+a)^3$. The three fakes are the systems without cancellation.
+$|\sum_{n\le e^{2a}}w(n)(2a-\log n)|\le\log q\,(e^a+2a)+C(1+a)^3e^a$. The Riesz mean of the
+contacts at $Y=e^{2a}$ is at most $\sqrt Y(\log q\,(1+o(1))+C\log^3Y)$, with the constant one in
+front of the mass; a dominated system whose Riesz mean is $\ge cY$ is infeasible beyond the
+aperture $\log\log q+\log(1/c)+o(1)$. The three fakes are the systems without cancellation
+($c=1$): for them this is the trivial aperture.
 
 **7. A zero shows at the rung of its depth (zero side of the exchange rate).** A reflected pair
 of depth $\delta$ is a form of rank two and signature $(1,1)$ with smallest eigenvalue
@@ -196,7 +198,7 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | Sign of the twisted part, $a\le\log\log q-\eta$ | $\kappa<1$ | systems with larger contacts | sizes: prime number theorem and the mass |
 | Weil's form of $\zeta$ at height $t$, bounded shape, $a\le\log\log|t|-\eta$ | $\kappa<1$ | systems with larger contacts | sizes and the Gamma factor |
 | Classical zero-free regions, Landau–Page, Siegel: depth $\le\tfrac12-\varepsilon(m)$, $\varepsilon\to0$ | $1+o(1)$ | the Liouville twist; the lattice with a pair at depth $\tfrac12$ | nonnegativity of counts; exponential sums |
-| Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz mean of the contacts at $e^{2a}$ is $O(e^a(\log q+a^3))$ | every rung | systems without cancellation | — (a receiver) |
+| Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz mean of the contacts at $e^{2a}$ is $\le e^a(\log q+O(a^3))$ | every rung | systems without cancellation | — (a receiver) |
 | Sign at $\log\log q+C$ | $1+C/\log\log q$ | Liouville twist | none known |
 | A zero-free strip of width $\varepsilon$ in an aspect | $1/(1-2\varepsilon)$ | fakes of depth $>\tfrac12-\varepsilon$ | none known |
 | Positivity at typical heights (corpus, in law) | apertures $c\log T$ | — | density theorems |

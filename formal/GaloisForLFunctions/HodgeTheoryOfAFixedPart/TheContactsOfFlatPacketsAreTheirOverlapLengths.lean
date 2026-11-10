@@ -77,13 +77,13 @@ theorem scaledWindow_subset_completeBlocks {R Q N : ℕ} (hR : 0 < R)
     Ioc N (Q * N) ⊆ Ioc (R * (N / R)) ((Q + 1) * R * (N / R)) := by
   have he := Nat.div_add_mod N R
   have hr := Nat.mod_lt N hR
-  have hlo : R * (N / R) ≤ N := by nlinarith only [he]
+  have hlo : R * (N / R) ≤ N := by omega
   have hrem : Q * (N % R) ≤ R * (N / R) := by
     calc Q * (N % R) ≤ Q * R := Nat.mul_le_mul_left Q hr.le
       _ ≤ (N / R) * R := Nat.mul_le_mul_right R hQ
       _ = _ := Nat.mul_comm _ _
   have hhi : Q * N ≤ (Q + 1) * R * (N / R) := by
-    calc Q * N = Q * (N / R * R + N % R) := congrArg (Q * ·) he.symm
+    calc Q * N = Q * (R * (N / R) + N % R) := congrArg (Q * ·) he.symm
       _ = Q * R * (N / R) + Q * (N % R) := by ring
       _ ≤ Q * R * (N / R) + R * (N / R) := Nat.add_le_add_left hrem _
       _ = _ := by ring
@@ -95,7 +95,11 @@ theorem completeBlock_left_endpoints {R N : ℕ} (hR : 0 < R) (hB : R ≤ N / R)
     R * (N / R) ≤ N ∧ N ≤ (R + 1) * (N / R) := by
   have he := Nat.div_add_mod N R
   have hr := (Nat.mod_lt N hR).le.trans hB
-  constructor <;> nlinarith only [he, hr]
+  constructor
+  · omega
+  · calc N = R * (N / R) + N % R := he.symm
+         _ ≤ R * (N / R) + N / R := Nat.add_le_add_left hr _
+         _ = (R + 1) * (N / R) := by ring
 
 /-- The complete-block padding applies at every sufficiently large scale. -/
 theorem eventually_completeBlock_padding (R Q : ℕ) (hR : 0 < R) :
@@ -164,7 +168,7 @@ theorem tendsto_flatContactPoints_card_div (a b c d : ℕ) {k : ℕ} (hk : 1 ≤
     Tendsto (fun N : ℕ => ((flatContactPoints a b c d k N).card : ℝ) / N) atTop
       (𝓝 (max (min (b : ℝ) ((d : ℝ) / k) - max (a : ℝ) ((c : ℝ) / k)) 0)) := by
   have h := (((tendsto_mul_natCast_div b).min (tendsto_scaled_natDiv_div d hk)).sub
-    ((tendsto_mul_natCast_div a).max (tendsto_scaled_natDiv_div c hk))).max tendsto_const_nhds
+    ((tendsto_mul_natCast_div a).max (tendsto_scaled_natDiv_div c hk))).max (tendsto_const_nhds (x := (0 : ℝ)))
   apply h.congr'
   exact Eventually.of_forall fun N => by
     rw [flatContactPoints_eq a b c d N (by omega), Nat.card_Ioc, natCast_sub_div,
@@ -219,7 +223,7 @@ theorem packetAutocorr_flatPacket_log_div_exp {a b k : ℕ}
       rw [neg_div, Real.exp_neg]
     change ((b : ℝ) * Real.exp (-Real.log k / 2) - a * E) / E = (b : ℝ) / k - a
     rw [hneg, ← hEsq]
-    field_simp [hE.ne'] <;> ring
+    field_simp [hE.ne']
   · have hwidth' : Real.log b - Real.log a ≤ Real.log k := (lt_of_not_ge hwidth).le
     have hprod : (b : ℝ) ≤ a * k := by
       have h := Real.exp_le_exp.mpr

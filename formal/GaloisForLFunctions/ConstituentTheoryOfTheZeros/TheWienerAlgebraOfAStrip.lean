@@ -586,7 +586,7 @@ theorem ofLp_toLp (f : StripWiener σ₁ σ₂) : ofLp (toLp f) = f := by
     (Complex.ofReal_ne_zero.mpr (stripWeight_pos σ₁ σ₂ q).ne')]
 
 variable (σ₁ σ₂) in
-/-- **The weight isometry**: `𝒲[σ₁, σ₂]` and `ℓ¹` of the positive rationals are isometric. -/
+/-- **The weight isometry**: `𝒲[σ₁, σ₂]` and `ℓ¹` of the group of scales are isometric. -/
 def isometryLp : StripWiener σ₁ σ₂ ≃ᵢ lp (fun _ : Scale => ℂ) 1 where
   toFun := toLp
   invFun := ofLp

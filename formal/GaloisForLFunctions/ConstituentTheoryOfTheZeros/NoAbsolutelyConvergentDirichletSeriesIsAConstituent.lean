@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawHoldsOnEveryStripAboutTheLine
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheLogarithmicDerivativeExpandsInAZeroFreeStrip
-import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansionsOverThePositiveRationals
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansionsOnTheScalesOneOverN
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoExponentialPolynomialIsAFactorOfXi
 import GaloisForLFunctions.HTGeometry.BoundedStripAlmostPeriodicThreeLines
 
@@ -20,10 +20,10 @@ content for `x < ½`, where the half-plane of absolute convergence contains the 
 So the zero set of `ξ` contains the zero set, in a strip about the line, of no absolutely
 convergent Dirichlet series that has a zero there.
 
-The core (`expansion_ne_zero_of_zeros_cancelled`) is stated for expansions over the positive
-rationals. A zero in the strip off the line recurs with positive density and is excluded by the
+The core (`expansion_ne_zero_of_zeros_cancelled`) is stated for expansions over positive real
+scales. A zero in the strip off the line recurs with positive density and is excluded by the
 density of the zeros of `ζ` (`re_eq_half_of_strip_zeros_subset_xi`). With the zeros on the line,
-`F'/F` has absolutely convergent expansions over the positive rationals on the two sides of the
+`F'/F` has absolutely convergent expansions over the scales on the two sides of the
 line (Wiener's lemma on a strip); `−ζ F'/(sF)` is holomorphic on the strip and bounded near the
 line (maximum principle between heights at which `F` is bounded below); by the jump law the two
 expansions coincide and continue across the line. So `F'/F` has no pole on the line.
@@ -38,7 +38,7 @@ namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 open _root_.RHTower GaloisForLFunctions.BlackHoleRingdown
 open GaloisForLFunctions.InfiniteRankPurityTheory
 
-theorem stripWeight_self (σ : ℝ) (q : PosRat) : stripWeight σ σ q = q.toReal ^ σ := max_self _
+theorem stripWeight_self (σ : ℝ) (q : Scale) : stripWeight σ σ q = q.toReal ^ σ := max_self _
 
 /-! ### Heights at which an almost periodic function is bounded below -/
 
@@ -98,7 +98,7 @@ theorem norm_riemannZeta_div_le_eight {z : ℂ} (h0 : 3 / 8 ≤ z.re) (h1 : z.re
 `F(s) = Σ c(q) q^s` converge absolutely on the closed strip `|Re s − ½| ≤ 2η`, be almost periodic
 near the line and have its zeros in the open strip on the critical line. If `ζ` vanishes at every
 zero of `F` on the line, then `F` has no zero in the strip. -/
-theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (hη0 : 0 < η)
+theorem expansion_ne_zero_of_zeros_cancelled {c : Scale → ℂ} {η : ℝ} (hη0 : 0 < η)
     (hη : η ≤ 1 / 4) (hc : WSummable (1 / 2 - 2 * η) (1 / 2 + 2 * η) c)
     (hAP : IsStripAlmostPeriodicOn (expansion c) (1 / 2) (η / 2))
     (hoff : ∀ s : ℂ, |s.re - 1 / 2| < 2 * η → s.re ≠ 1 / 2 → expansion c s ≠ 0)
@@ -120,11 +120,11 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (h�
     (by linarith) (hc.mono (by linarith) (by linarith) le_rfl)
     (fun z h1 h2 => hoff z (hV z (by linarith) h2) (ne_of_gt h1))
   have hsumR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 / 2 + η →
-      Summable fun q : PosRat => ‖gR q‖ * q.toReal ^ σ := fun σ h1 h2 => by
+      Summable fun q : Scale => ‖gR q‖ * q.toReal ^ σ := fun σ h1 h2 => by
     refine (hgR σ σ h1 le_rfl (by linarith)).congr fun q => ?_
     rw [stripWeight_self]
   have hsumL : ∀ σ : ℝ, 1 / 2 - η ≤ σ → σ < 1 / 2 →
-      Summable fun q : PosRat => ‖gL q‖ * q.toReal ^ σ := fun σ h1 h2 => by
+      Summable fun q : Scale => ‖gL q‖ * q.toReal ^ σ := fun σ h1 h2 => by
     refine (hgL σ σ (by linarith) le_rfl h2).congr fun q => ?_
     rw [stripWeight_self]
   -- the quotient `−ζ F'/(sF)` on the strip of half-width `η`
@@ -166,18 +166,18 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (h�
     rw [hline z hre hz0, zero_div, neg_zero]
   obtain ⟨Φ, hΦd, hΦ⟩ := exists_differentiableOn_deriv_mul_div hUo hfd hgd hfin hzero
   have hΦR : ∀ z : ℂ, 1 / 2 < z.re → z.re < 1 / 2 + η →
-      Φ z = -(riemannZeta z / z) * ∑' q : PosRat, gR q * (q.toReal : ℂ) ^ z := by
+      Φ z = -(riemannZeta z / z) * ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z := by
     intro z h1 h2
     have hz0 : expansion c z ≠ 0 := hoff z (hV z (by linarith) (by linarith)) (ne_of_gt h1)
-    have hG : deriv (expansion c) z / expansion c z = ∑' q : PosRat, gR q * (q.toReal : ℂ) ^ z :=
+    have hG : deriv (expansion c) z / expansion c z = ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z :=
       hGR z h1 (by linarith)
     rw [hΦ z ⟨by linarith, h2⟩ hz0, ← hG]
     ring
   have hΦL : ∀ z : ℂ, 1 / 2 - η < z.re → z.re < 1 / 2 →
-      Φ z = -(riemannZeta z / z) * ∑' q : PosRat, gL q * (q.toReal : ℂ) ^ z := by
+      Φ z = -(riemannZeta z / z) * ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z := by
     intro z h1 h2
     have hz0 : expansion c z ≠ 0 := hoff z (hV z (by linarith) (by linarith)) (ne_of_lt h2)
-    have hG : deriv (expansion c) z / expansion c z = ∑' q : PosRat, gL q * (q.toReal : ℂ) ^ z :=
+    have hG : deriv (expansion c) z / expansion c z = ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z :=
       hGL z (by linarith) h2
     rw [hΦ z ⟨h1, by linarith⟩ hz0, ← hG]
     ring
@@ -228,13 +228,13 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (h�
     rintro z (hz | hz)
     · rw [hΦL z (by rw [hz]; linarith) (by rw [hz]; linarith), norm_mul]
       have h1 := hζ z (by rw [hz]) (by rw [hz]; linarith)
-      have h2 : ‖∑' q : PosRat, gL q * (q.toReal : ℂ) ^ z‖ ≤ NL :=
+      have h2 : ‖∑' q : Scale, gL q * (q.toReal : ℂ) ^ z‖ ≤ NL :=
         hWL.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
       linarith
     · rw [hΦR z (by rw [hz]; linarith) (by rw [hz]; linarith), norm_mul]
       have h1 := hζ z (by rw [hz]; linarith) (by rw [hz])
-      have h2 : ‖∑' q : PosRat, gR q * (q.toReal : ℂ) ^ z‖ ≤ NR :=
+      have h2 : ‖∑' q : Scale, gR q * (q.toReal : ℂ) ^ z‖ ≤ NR :=
         hWR.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
       linarith
@@ -262,7 +262,7 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (h�
       hgoodB h1 h2
   -- the jump law: the two expansions coincide and continue across the line
   obtain ⟨-, hsumAll, hΦall⟩ := eq_riemannZeta_div_mul_tsum_of_strip (b := gR) (c := gL)
-    (a := PosRat.toReal) PosRat.toReal_pos PosRat.toReal_injective hη0 (by linarith) hsumR hsumL
+    (a := Scale.toReal) Scale.toReal_pos Scale.toReal_injective hη0 (by linarith) hsumR hsumL
     hΦd hΦb hΦR hΦL
   have hWg : WSummable (1 / 2 - η) (1 / 2 + η) gR := by
     refine Summable.of_nonneg_of_le

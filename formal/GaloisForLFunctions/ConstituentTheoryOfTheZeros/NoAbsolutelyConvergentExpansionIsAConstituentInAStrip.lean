@@ -5,13 +5,17 @@ import GaloisForLFunctions.HTGeometry.StripAlmostPeriodicExpSum
 /-!
 # No absolutely convergent expansion is a constituent in a strip
 
-Let `F(s) = Σ_q c(q) q^s`, `q` over the positive rationals, converge absolutely on the closed strip
-`|Re s − ½| ≤ ω`, `F ≢ 0`. The scales may be of both sizes, so `F` need not be defined outside the
-strip: Dirichlet series, their reflections, and sums such as `Σ c_j cosh((s − ½) log q_j)`, whose
-values on the critical line are real, are all of this form.
+Let `F(s) = Σ_q c(q) q^s`, `q` over the positive reals, converge absolutely on the closed strip
+`|Re s − ½| ≤ ω`, `F ≢ 0`: an almost periodic function with an absolutely convergent Bohr–Fourier
+series on the strip. The scales may be of both sizes, so `F` need not be defined outside the
+strip: Dirichlet series, their reflections, exponential polynomials with real frequencies, and
+sums such as `Σ c_j cosh((s − ½) log q_j)`, whose values on the critical line are real, are all
+of this form.
 
 **Theorem** (`expansion_ne_zero_of_strip_zeros_subset_xi`). If every zero of `F` in the open strip
-is a zero of `ξ`, then `F` has no zero in the open strip.
+is a zero of `ξ`, then `F` has no zero in the open strip. In particular
+(`expSum_ne_zero_of_strip_zeros_subset_xi`) an exponential polynomial with real frequencies whose
+zeros in a strip about the line are zeros of `ξ` has no zero in the strip.
 
 Beyond the core `expansion_ne_zero_of_zeros_cancelled` this needs, for functions that live on a
 strip only:
@@ -32,25 +36,25 @@ namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 open _root_.RHTower GaloisForLFunctions.BlackHoleRingdown
 open GaloisForLFunctions.InfiniteRankPurityTheory
 
-variable {c : PosRat → ℂ}
+variable {c : Scale → ℂ}
 
 /-! ### Almost periodicity -/
 
-theorem PosRat.cpow_eq_exp (q : PosRat) (z : ℂ) : q.cpow z = Complex.exp (((q.log : ℝ) : ℂ) * z) := by
-  unfold PosRat.cpow PosRat.log
+theorem Scale.cpow_eq_exp (q : Scale) (z : ℂ) : q.cpow z = Complex.exp (((q.log : ℝ) : ℂ) * z) := by
+  unfold Scale.cpow Scale.log
   rw [Complex.cpow_def_of_ne_zero (ofReal_ne_zero.mpr q.toReal_pos.ne'),
     Complex.ofReal_log q.toReal_pos.le]
 
 /-- A finite part of an expansion is an exponential sum with real frequencies. -/
-theorem exists_expSum_eq_finsetSum (c : PosRat → ℂ) (T : Finset PosRat) :
+theorem exists_expSum_eq_finsetSum (c : Scale → ℂ) (T : Finset Scale) :
     ∃ (n : ℕ) (a : Fin n → ℂ) (lam : Fin n → ℝ),
       ∀ z : ℂ, expSum a lam z = ∑ q ∈ T, c q * q.cpow z := by
-  refine ⟨T.card, fun k => c (T.equivFin.symm k), fun k => (T.equivFin.symm k : PosRat).log,
+  refine ⟨T.card, fun k => c (T.equivFin.symm k), fun k => (T.equivFin.symm k : Scale).log,
     fun z => ?_⟩
   unfold expSum
   rw [← Finset.sum_coe_sort T fun q => c q * q.cpow z,
-    ← Equiv.sum_comp T.equivFin.symm fun x : ↥T => c x * (x : PosRat).cpow z]
-  exact Finset.sum_congr rfl fun k _ => by rw [PosRat.cpow_eq_exp]
+    ← Equiv.sum_comp T.equivFin.symm fun x : ↥T => c x * (x : Scale).cpow z]
+  exact Finset.sum_congr rfl fun k _ => by rw [Scale.cpow_eq_exp]
 
 /-- **An absolutely convergent expansion is almost periodic on its closed strip.** -/
 theorem isStripAlmostPeriodicOn_expansion {σ R : ℝ} (hc : WSummable (σ - R) (σ + R) c) :
@@ -59,7 +63,7 @@ theorem isStripAlmostPeriodicOn_expansion {σ R : ℝ} (hc : WSummable (σ - R) 
   -- a finite set carrying all but `ε` of the weighted coefficients
   have ha0 : ∀ q, 0 ≤ ‖c q‖ * stripWeight (σ - R) (σ + R) q := fun q =>
     mul_nonneg (norm_nonneg _) (stripWeight_pos _ _ q).le
-  have htend : Tendsto (fun T : Finset PosRat => ∑ q ∈ T, ‖c q‖ * stripWeight (σ - R) (σ + R) q)
+  have htend : Tendsto (fun T : Finset Scale => ∑ q ∈ T, ‖c q‖ * stripWeight (σ - R) (σ + R) q)
       atTop (𝓝 (∑' q, ‖c q‖ * stripWeight (σ - R) (σ + R) q)) := hc.hasSum
   obtain ⟨T, hT⟩ := (htend.eventually (lt_mem_nhds (show
     (∑' q, ‖c q‖ * stripWeight (σ - R) (σ + R) q) - ε <
@@ -260,7 +264,7 @@ theorem re_eq_half_of_expansion_strip_zeros_subset_xi {ω : ℝ}
   nlinarith [mul_pos hκ0 hT0]
 
 /-- **No absolutely convergent expansion is a constituent with a zero, in a strip.** Let
-`F(s) = Σ_q c(q) q^s`, over the positive rationals, converge absolutely on the closed strip
+`F(s) = Σ_q c(q) q^s`, over the positive reals, converge absolutely on the closed strip
 `|Re s − ½| ≤ ω`, `0 < ω ≤ ½`, and not vanish identically. If every zero of `F` in the open strip
 is a zero of `ξ`, then `F` has no zero in the open strip. -/
 theorem expansion_ne_zero_of_strip_zeros_subset_xi {ω : ℝ} (hω0 : 0 < ω) (hω : ω ≤ 1 / 2)
@@ -280,5 +284,71 @@ theorem expansion_ne_zero_of_strip_zeros_subset_xi {ω : ℝ} (hω0 : 0 < ω) (h
       have := re_lt_one_of_xi_eq_zero hxiz
       rw [h, one_re] at this
       exact lt_irrefl _ this).mp hxiz
+
+/-! ### Exponential polynomials with real frequencies -/
+
+section ExpSum
+
+variable {n : ℕ}
+
+theorem Scale.ofLog_injective : Function.Injective Scale.ofLog := fun x y h => by
+  have h' := congrArg Scale.log h
+  rwa [Scale.log_ofLog, Scale.log_ofLog] at h'
+
+/-- The coefficients of the exponential polynomial `Σ_k a_k e^{λ_k s}`, on the scales
+`e^{λ_k}`. -/
+def expCoeff (a : Fin n → ℂ) (lam : Fin n → ℝ) : Scale → ℂ :=
+  Function.extend (fun k => Scale.ofLog (lam k)) a 0
+
+theorem expCoeff_ofLog (a : Fin n → ℂ) {lam : Fin n → ℝ} (hinj : Function.Injective lam)
+    (k : Fin n) : expCoeff a lam (Scale.ofLog (lam k)) = a k :=
+  (Scale.ofLog_injective.comp hinj).extend_apply a 0 k
+
+theorem expCoeff_of_notMem_range (a : Fin n → ℂ) (lam : Fin n → ℝ) {q : Scale}
+    (hq : q ∉ Set.range fun k => Scale.ofLog (lam k)) : expCoeff a lam q = 0 :=
+  Function.extend_apply' _ _ _ fun ⟨k, hk⟩ => hq ⟨k, hk⟩
+
+/-- A finite family of coefficients converges absolutely on every strip. -/
+theorem wsummable_expCoeff (a : Fin n → ℂ) (lam : Fin n → ℝ) (σ₁ σ₂ : ℝ) :
+    WSummable σ₁ σ₂ (expCoeff a lam) := by
+  classical
+  unfold WSummable
+  refine summable_of_ne_finset_zero (s := Finset.univ.image fun k => Scale.ofLog (lam k))
+    fun q hq => ?_
+  rw [expCoeff_of_notMem_range a lam fun ⟨k, hk⟩ =>
+    hq (Finset.mem_image.mpr ⟨k, Finset.mem_univ k, hk⟩), norm_zero, zero_mul]
+
+/-- The expansion on the scales `e^{λ_k}` is the exponential polynomial. -/
+theorem expansion_expCoeff (a : Fin n → ℂ) {lam : Fin n → ℝ} (hinj : Function.Injective lam)
+    (s : ℂ) : expansion (expCoeff a lam) s = expSum a lam s := by
+  have hinj' : Function.Injective fun k => Scale.ofLog (lam k) := Scale.ofLog_injective.comp hinj
+  have hsupp : Function.support (fun q : Scale => expCoeff a lam q * q.cpow s) ⊆
+      Set.range fun k => Scale.ofLog (lam k) := fun q hq => by
+    by_contra h
+    exact hq (by
+      show expCoeff a lam q * q.cpow s = 0
+      rw [expCoeff_of_notMem_range a lam h, zero_mul])
+  unfold expansion expSum
+  rw [← hinj'.tsum_eq hsupp, tsum_fintype]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  show expCoeff a lam (Scale.ofLog (lam k)) * (Scale.ofLog (lam k)).cpow s =
+    a k * Complex.exp ((lam k : ℂ) * s)
+  rw [expCoeff_ofLog a hinj k, Scale.cpow_eq_exp, Scale.log_ofLog]
+
+/-- **No exponential polynomial is a constituent with a zero, in a strip.** An exponential
+polynomial `Σ_k a_k e^{λ_k s}` with distinct real frequencies, not identically zero, whose zeros
+in a strip `|Re s − ½| < ω` are zeros of `ξ`, has no zero in the strip, whatever its zeros
+outside. -/
+theorem expSum_ne_zero_of_strip_zeros_subset_xi (a : Fin n → ℂ) {lam : Fin n → ℝ}
+    (hinj : Function.Injective lam) {k : Fin n} (hk : a k ≠ 0) {ω : ℝ} (hω0 : 0 < ω)
+    (hω : ω ≤ 1 / 2)
+    (hzero : ∀ s : ℂ, |s.re - 1 / 2| < ω → expSum a lam s = 0 → xi s = 0) {s : ℂ}
+    (hs : |s.re - 1 / 2| < ω) : expSum a lam s ≠ 0 := by
+  rw [← expansion_expCoeff a hinj]
+  exact expansion_ne_zero_of_strip_zeros_subset_xi hω0 hω (wsummable_expCoeff a lam _ _)
+    (fun h => hk (by rw [← expCoeff_ofLog a hinj k, h, Pi.zero_apply]))
+    (fun z hz hz0 => hzero z hz (by rwa [expansion_expCoeff a hinj] at hz0)) hs
+
+end ExpSum
 
 end GaloisForLFunctions.ConstituentTheoryOfTheZeros

@@ -19,7 +19,7 @@ zero in the open strip. `F` may have zeros on both sides of the strip. Then:
   (`deriv_expansion`, `WSummable.log_mul`).
 
 For a Dirichlet polynomial this is the expansion of `D'/D` between two vertical lines that
-separate its zeros; its scales are rationals of both sizes.
+separate its zeros; its scales are of both sizes.
 -/
 
 open Filter Topology Set
@@ -28,11 +28,11 @@ noncomputable section
 
 namespace GaloisForLFunctions.ConstituentTheoryOfTheZeros
 
-variable {τ₁ τ₂ σ₁ σ₂ : ℝ} {c : PosRat → ℂ}
+variable {τ₁ τ₂ σ₁ σ₂ : ℝ} {c : Scale → ℂ}
 
 /-! ### Substrips -/
 
-theorem stripWeight_mono (h1 : τ₁ ≤ σ₁) (h12 : σ₁ ≤ σ₂) (h2 : σ₂ ≤ τ₂) (q : PosRat) :
+theorem stripWeight_mono (h1 : τ₁ ≤ σ₁) (h12 : σ₁ ≤ σ₂) (h2 : σ₂ ≤ τ₂) (q : Scale) :
     stripWeight σ₁ σ₂ q ≤ stripWeight τ₁ τ₂ q :=
   max_le (rpow_le_stripWeight h1 (h12.trans h2) q) (rpow_le_stripWeight (h1.trans h12) h2 q)
 
@@ -43,7 +43,7 @@ theorem WSummable.mono (hc : WSummable τ₁ τ₂ c) (h1 : τ₁ ≤ σ₁) (h1
     (fun q => mul_le_mul_of_nonneg_left (stripWeight_mono h1 h12 h2 q) (norm_nonneg _)) hc
 
 /-- Two absolutely convergent expansions that agree on a strip have the same coefficients. -/
-theorem eq_of_expansion_eq (h12 : σ₁ ≤ σ₂) {c d : PosRat → ℂ} (hc : WSummable σ₁ σ₂ c)
+theorem eq_of_expansion_eq (h12 : σ₁ ≤ σ₂) {c d : Scale → ℂ} (hc : WSummable σ₁ σ₂ c)
     (hd : WSummable σ₁ σ₂ d)
     (h : ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ → expansion c s = expansion d s) : c = d := by
   have hz : c + (-1 : ℂ) • d = 0 := by
@@ -64,7 +64,7 @@ theorem isOpen_openStrip (τ₁ τ₂ : ℝ) : IsOpen {s : ℂ | τ₁ < s.re �
 theorem isPreconnected_openStrip (τ₁ τ₂ : ℝ) : IsPreconnected {s : ℂ | τ₁ < s.re ∧ s.re < τ₂} :=
   ((convex_halfSpace_re_gt τ₁).inter (convex_halfSpace_re_lt τ₂)).isPreconnected
 
-theorem differentiableAt_term (c : PosRat → ℂ) (q : PosRat) (s : ℂ) :
+theorem differentiableAt_term (c : Scale → ℂ) (q : Scale) (s : ℂ) :
     DifferentiableAt ℂ (fun w => c q * q.cpow w) s :=
   (differentiableAt_id.const_cpow
     (Or.inl (Complex.ofReal_ne_zero.mpr q.toReal_pos.ne'))).const_mul (c q)
@@ -83,7 +83,7 @@ theorem deriv_expansion (hc : WSummable τ₁ τ₂ c) {s : ℂ} (h₁ : τ₁ <
     (fun q s _ => (differentiableAt_term c q s).differentiableWithinAt) (isOpen_openStrip τ₁ τ₂)
     (fun q _ hs => norm_term_le c hs.1.le hs.2.le q) (show s ∈ {s : ℂ | τ₁ < s.re ∧ s.re < τ₂}
       from ⟨h₁, h₂⟩)
-  have hterm : ∀ q : PosRat, deriv (fun w => c q * q.cpow w) s =
+  have hterm : ∀ q : Scale, deriv (fun w => c q * q.cpow w) s =
       c q * ((q.log : ℝ) : ℂ) * q.cpow s := by
     intro q
     have hne : (q.toReal : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr q.toReal_pos.ne'
@@ -93,7 +93,7 @@ theorem deriv_expansion (hc : WSummable τ₁ τ₂ c) {s : ℂ} (h₁ : τ₁ <
     simp only [id] at hd
     rw [show (fun w => c q * q.cpow w) = fun w => c q * (q.toReal : ℂ) ^ w from rfl, hd, hlog,
       mul_one]
-    unfold PosRat.cpow
+    unfold Scale.cpow
     ring
   have h' : deriv (expansion c) s = ∑' q, deriv (fun w => c q * q.cpow w) s := h.tsum_eq.symm
   rw [h']
@@ -108,7 +108,7 @@ theorem WSummable.log_mul (hc : WSummable τ₁ τ₂ c) (h1 : τ₁ < σ₁) (h
   have hεpos : 0 < ε := lt_min (by linarith) (by linarith)
   have hε1 : τ₁ ≤ σ₁ - ε := by linarith [min_le_left (σ₁ - τ₁) (τ₂ - σ₂)]
   have hε2 : σ₂ + ε ≤ τ₂ := by linarith [min_le_right (σ₁ - τ₁) (τ₂ - σ₂)]
-  have hkey : ∀ q : PosRat, |q.log| * stripWeight σ₁ σ₂ q ≤ ε⁻¹ * stripWeight τ₁ τ₂ q := by
+  have hkey : ∀ q : Scale, |q.log| * stripWeight σ₁ σ₂ q ≤ ε⁻¹ * stripWeight τ₁ τ₂ q := by
     intro q
     have hx := q.toReal_pos
     rcases le_total 1 q.toReal with hq | hq
@@ -274,7 +274,7 @@ theorem StripWiener.isUnit_ofCoeff_of_zeroFree [hσ : Fact (σ₁ ≤ σ₂)] (h
 /-- The inverse of a zero-free expansion on one closed substrip. -/
 theorem exists_inverse_expansion_on_substrip (h1 : τ₁ < σ₁) (h12 : σ₁ ≤ σ₂) (h2 : σ₂ < τ₂)
     (hc : WSummable τ₁ τ₂ c) (hzf : ∀ s : ℂ, τ₁ < s.re → s.re < τ₂ → expansion c s ≠ 0) :
-    ∃ d : PosRat → ℂ, WSummable σ₁ σ₂ d ∧
+    ∃ d : Scale → ℂ, WSummable σ₁ σ₂ d ∧
       ∀ s : ℂ, σ₁ ≤ s.re → s.re ≤ σ₂ → expansion c s * expansion d s = 1 := by
   haveI : Fact (σ₁ ≤ σ₂) := ⟨h12⟩
   obtain ⟨g, hg⟩ := (StripWiener.isUnit_ofCoeff_of_zeroFree h1 h2 hc hzf).exists_right_inv
@@ -288,7 +288,7 @@ theorem exists_inverse_expansion_on_substrip (h1 : τ₁ < σ₁) (h12 : σ₁ �
 whole open strip, absolutely on every closed substrip. -/
 theorem exists_inverse_expansion_of_zeroFree (hτ : τ₁ < τ₂) (hc : WSummable τ₁ τ₂ c)
     (hzf : ∀ s : ℂ, τ₁ < s.re → s.re < τ₂ → expansion c s ≠ 0) :
-    ∃ d : PosRat → ℂ, (∀ σ₁ σ₂ : ℝ, τ₁ < σ₁ → σ₁ ≤ σ₂ → σ₂ < τ₂ → WSummable σ₁ σ₂ d) ∧
+    ∃ d : Scale → ℂ, (∀ σ₁ σ₂ : ℝ, τ₁ < σ₁ → σ₁ ≤ σ₂ → σ₂ < τ₂ → WSummable σ₁ σ₂ d) ∧
       ∀ s : ℂ, τ₁ < s.re → s.re < τ₂ → expansion c s * expansion d s = 1 := by
   -- the inverse on the middle line
   set σ₀ : ℝ := (τ₁ + τ₂) / 2 with hσ₀
@@ -320,7 +320,7 @@ absolutely on `τ₁ ≤ Re s ≤ τ₂` and has no zero in the open strip, ther
 `F'/F = Σ g(q) q^s` on the open strip, absolutely convergent on every closed substrip. -/
 theorem exists_logDeriv_expansion (hτ : τ₁ < τ₂) (hc : WSummable τ₁ τ₂ c)
     (hzf : ∀ s : ℂ, τ₁ < s.re → s.re < τ₂ → expansion c s ≠ 0) :
-    ∃ g : PosRat → ℂ, (∀ σ₁ σ₂ : ℝ, τ₁ < σ₁ → σ₁ ≤ σ₂ → σ₂ < τ₂ → WSummable σ₁ σ₂ g) ∧
+    ∃ g : Scale → ℂ, (∀ σ₁ σ₂ : ℝ, τ₁ < σ₁ → σ₁ ≤ σ₂ → σ₂ < τ₂ → WSummable σ₁ σ₂ g) ∧
       ∀ s : ℂ, τ₁ < s.re → s.re < τ₂ →
         deriv (expansion c) s / expansion c s = expansion g s := by
   obtain ⟨d, hd, hd1⟩ := exists_inverse_expansion_of_zeroFree hτ hc hzf
