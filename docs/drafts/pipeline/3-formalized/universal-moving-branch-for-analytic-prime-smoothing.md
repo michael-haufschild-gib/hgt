@@ -1,8 +1,8 @@
 # Universal moving branch for analytic prime smoothing
 
 - **ID:** B130-analytic-prime-smoothing-rigidity
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM — paper proof; Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM — Lean
 - **Source:** [Quadratic residue scaling](../3-formalized/quadratic-residue-collapse-with-a-nonpolynomial-joint-limit.md).
 
 ## Target
@@ -24,7 +24,8 @@ profile is
 
 ## Paper proof
 
-Put `F=Φ-1`. Analyticity on a disc larger than one and `F(1)=-2`
+Choose an intermediate closed disc of radius greater than one inside
+the analytic domain. Put `F=Φ-1`. Analyticity there and `F(1)=-2`
 exclude the zero germ at zero. Its first nonzero Taylor order is
 `m≥1`, with the exact factorization `F(z)=z^m G(z)`, where `G` is
 analytic on the same disc and `G(0)≠0`. For real `0<x≤1`,
@@ -113,7 +114,27 @@ universal in this class, but its full profile retains an oscillatory
 branch. No nonconstant profile in the stated class supplies an actual
 joint endpoint specialization.
 
+The positive survivor is the exact universal quadratic profile, together
+with actual interior pole germs and preservation of every zeta-zero
+multiplicity on the stated half-plane.
+
+Lean namespace: `GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations`.
+
+- `AnalyticSmoothingJet.lean`: `analyticPhase_first_jet`,
+  `summable_smoothingTaylorCoefficient_weight`.
+- `AnalyticPrimeSmoothing.lean`: `analyticSmoothing_interior_poles`;
+  prime decay and the analytic next-order remainder are derived.
+- `AnalyticSmoothingBranch.lean`: `analyticSmoothing_branch_rigidity`,
+  `analyticSmoothing_no_joint_endpoint_regularization`,
+  `analyticSmoothing_isozeric_halfplane`.
+- `AnalyticSmoothingScaling.lean`: `analyticSmoothing_universal_quadratic_profile`,
+  `tendsto_analyticSmoothing_residue_zero`.
+
+All four new modules and the reused `QuadraticResidueScaling.lean`
+passed final direct Lean checks without warnings. Capstone transitive
+axiom audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+The new modules are imported by the arithmetic-weight umbrella.
+
 Corpus search found the individual Taylor, analytic-order, and
 prime-logarithm ingredients, but no theorem for this smoothing class.
-Paper proof complete; Lean formalization in progress. No external
-novelty claim. B130 remains open.
+No external novelty claim. B130 remains open.

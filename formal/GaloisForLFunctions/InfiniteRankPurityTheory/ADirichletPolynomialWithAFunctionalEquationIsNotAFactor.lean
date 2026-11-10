@@ -53,6 +53,7 @@ theorem hasDerivAt_finiteDirichletPolynomial {a : ℕ →₀ ℂ} (ha0 : a 0 = 0
   have h := ((hasDerivAt_id s).neg.const_cpow (c := (n : ℂ)) (Or.inl hn0)).const_mul (a n)
   refine h.congr_deriv ?_
   rw [Complex.natCast_log]
+  simp only [Pi.neg_apply, id_eq]
   ring
 
 theorem differentiable_dirDeriv {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) : Differentiable ℂ (dirDeriv a) := by
@@ -188,14 +189,15 @@ theorem norm_dirW_sub_le {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1 ≠ 0)
             (mul_nonneg hM0 (Real.exp_pos ((z + ((1 / 2 + δ / 2 : ℝ) : ℂ)).re
               * (Real.log N / 2))).le)
           linarith
-  have hexp : ∃ c < (2 : ℝ), ∃ B, f =O[cobounded ℂ ⊓ 𝓟 {z : ℂ | 0 < z.re}]
+  have hexp : ∃ c < (2 : ℝ), ∃ B, f =O[Bornology.cobounded ℂ ⊓ 𝓟 {z : ℂ | 0 < z.re}]
       fun z => Real.exp (B * ‖z‖ ^ c) := by
     refine ⟨0, by norm_num, 0, Asymptotics.IsBigO.of_bound (M / m)
       (eventually_inf_principal.2 (Eventually.of_forall fun z hz => ?_))⟩
     simp only [zero_mul, Real.exp_zero, norm_one, mul_one]
     exact hbound z (le_of_lt hz)
   have hre : IsBoundedUnder (· ≤ ·) atTop fun x : ℝ => ‖f x‖ :=
-    isBoundedUnder_of ⟨M / m, fun x => hbound x (by simp)⟩
+    isBoundedUnder_of_eventually_le (a := M / m)
+      ((eventually_ge_atTop (0 : ℝ)).mono fun x hx => hbound x (by simpa using hx))
   -- modulus one on the boundary
   have him : ∀ x : ℝ, ‖f (x * I)‖ ≤ 1 := by
     intro x
@@ -230,14 +232,19 @@ theorem hasDerivAt_normSq_dirW_sub {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (N : ℝ
     HasDerivAt (fun δ : ℝ => ‖dirW a N (s - δ)‖ ^ 2)
       (-(2 * (‖dirW a N s‖ ^ 2 * (dirPhi a N s).re))) 0 := by
   have hin : HasDerivAt (fun δ : ℝ => s - (δ : ℂ)) (-1) 0 := by
-    simpa using (hasDerivAt_const (0 : ℝ) s).sub (Complex.ofRealCLM.hasDerivAt (x := (0 : ℝ)))
+    have h := ((hasDerivAt_id (0 : ℝ)).ofReal_comp).const_sub s
+    exact h.congr_deriv (by simp)
   have hW : HasDerivAt (dirW a N) (dirW a N s * dirPhi a N s) (s - ((0 : ℝ) : ℂ)) := by
     simpa using hasDerivAt_dirW ha0 N hD
   have hγ := (hW.scomp (0 : ℝ) hin).norm_sq
   refine hγ.congr_deriv ?_
   simp only [Function.comp_apply, Complex.ofReal_zero, sub_zero, neg_smul, one_smul, inner_neg_right]
-  rw [Complex.inner, ← mul_assoc, Complex.conj_mul', Complex.mul_re]
-  simp [← Complex.ofReal_pow]
+  rw [Complex.inner]
+  have hmul : dirW a N s * dirPhi a N s * conj (dirW a N s)
+      = ((‖dirW a N s‖ ^ 2 : ℝ) : ℂ) * dirPhi a N s := by
+    rw [mul_right_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+  rw [hmul, Complex.re_ofReal_mul]
+  ring
 
 /-- **`Φ` is a Herglotz function.** -/
 theorem re_dirPhi_nonneg {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1 ≠ 0)
@@ -306,9 +313,11 @@ theorem lSeries_dirDeriv {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (s : ℂ) :
     LSeries (fun n => -(a n * (Real.log n : ℂ))) s = dirDeriv a s := by
   have hf0 : (fun n : ℕ => -(a n * (Real.log n : ℂ))) 0 = 0 := by simp [ha0]
   rw [LSeries, tsum_eq_sum (s := a.support)]
-  · simp only [dirDeriv, LSeries.term_def₀ hf0]
+  · exact Finset.sum_congr rfl fun n _ =>
+      LSeries.term_def₀ (f := fun n : ℕ => -(a n * (Real.log n : ℂ))) hf0 s n
   · intro n hn
-    rw [LSeries.term_def₀ hf0, Finsupp.notMem_support_iff.mp hn]
+    rw [LSeries.term_def₀ (f := fun n : ℕ => -(a n * (Real.log n : ℂ))) hf0,
+      Finsupp.notMem_support_iff.mp hn]
     simp
 
 /-- The Dirichlet series with conjugated coefficients, at a real point. -/
@@ -352,21 +361,23 @@ theorem exists_real_coeff_dirPhi {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1
       finiteDirichletPolynomial a s * LSeries (⇑G.toFn) s = 1 := by
     intro s hs
     have h1 := LSeries_convolution' (hfAsum s) (hGsum s hs)
-    rw [← ArithmeticFunction.coe_mul, hfAL] at h1
+    rw [ArithmeticFunction.coe_mul, hfAL] at h1
     rw [← h1]
     have h2 : fA * G.toFn = 1 := by
       have := congrArg WienerAlgebraAt.toFn hG
       rwa [WienerAlgebraAt.toFn_mul, WienerAlgebraAt.toFn_one] at this
-    rw [h2, ArithmeticFunction.one_eq_delta, LSeries_delta]
+    rw [h2]
+    show LSeries (fun n => (1 : ArithmeticFunction ℂ) n) s = 1
+    rw [ArithmeticFunction.one_eq_delta, LSeries_delta]
     rfl
   -- the coefficients of `Φ`
   set fD : ArithmeticFunction ℂ := ⟨fun n => -(a n * (Real.log n : ℂ)), by simp [ha0]⟩ with hfD
   have hfDsum : ∀ s : ℂ, LSeriesSummable (⇑fD) s := fun s =>
-    lSeriesSummable_of_finite_support (by simp [ha0]) a.support
-      (fun n hn => by simp [Finsupp.notMem_support_iff.mp hn]) s
+    lSeriesSummable_of_finite_support (f := ⇑fD) fD.map_zero a.support
+      (fun n hn => by simp [hfD, Finsupp.notMem_support_iff.mp hn]) s
   set d : ℕ → ℂ := fun n => if n = 1 then ((Real.log N / 2 : ℝ) : ℂ) else 0 with hd
   have hdsum : ∀ s : ℂ, LSeriesSummable d s := fun s =>
-    lSeriesSummable_of_finite_support (by simp [hd]) {1}
+    lSeriesSummable_of_finite_support (f := d) (by simp [hd]) {1}
       (fun n hn => by simp [hd, Finset.mem_singleton.not.mp hn]) s
   have hdval : ∀ s : ℂ, LSeries d s = ((Real.log N / 2 : ℝ) : ℂ) := by
     intro s
@@ -376,7 +387,7 @@ theorem exists_real_coeff_dirPhi {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1
       simp [LSeries.term, hd, hn]
   set e : ℕ → ℂ := d + ⇑(fD * G.toFn) with he
   have hconvsum : ∀ s : ℂ, 3 / 2 ≤ s.re → LSeriesSummable (⇑(fD * G.toFn)) s := fun s hs => by
-    rw [ArithmeticFunction.coe_mul]
+    rw [← ArithmeticFunction.coe_mul]
     exact (hfDsum s).convolution (hGsum s hs)
   have hesum : LSeriesSummable e (3 / 2) :=
     (hdsum _).add (hconvsum _ (by norm_num))
@@ -385,7 +396,7 @@ theorem exists_real_coeff_dirPhi {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1
     have hDs : finiteDirichletPolynomial a s ≠ 0 := hzf s (by linarith)
     have hGval : LSeries (⇑G.toFn) s = (finiteDirichletPolynomial a s)⁻¹ :=
       eq_inv_of_mul_eq_one_right (hprod s hs)
-    rw [he, LSeries_add (hdsum s) (hconvsum s hs), hdval, ArithmeticFunction.coe_mul,
+    rw [he, LSeries_add (hdsum s) (hconvsum s hs), hdval, ← ArithmeticFunction.coe_mul,
       LSeries_convolution' (hfDsum s) (hGsum s hs), hGval, dirPhi]
     congr 1
     rw [div_eq_mul_inv]
@@ -422,7 +433,7 @@ theorem exists_real_coeff_dirPhi {a : ℕ →₀ ℂ} (ha0 : a 0 = 0) (ha1 : a 1
     exact hesum
   · rw [hcoe, heL s hs]
   · show (e 1).re = Real.log N / 2
-    simp [he, hd, ArithmeticFunction.mul_apply_one, hfD]
+    simp [he, hd, hfD]
 
 /-! ### The theorem -/
 
@@ -459,7 +470,6 @@ theorem exists_zero_not_xi_zero_of_functionalEquation (a : ℕ →₀ ℂ) (ha0 
       refine ht ((xi_eq_zero_iff (by simp) fun h1 => ?_).mp hxi)
       have := congrArg Complex.re h1
       simp at this
-      norm_num at this
     have hcont : ContinuousAt (dirPhi a N) ((1 / 2 : ℂ) + t * I) :=
       continuousAt_const.add ((differentiable_dirDeriv ha0).continuous.continuousAt.div
         (differentiable_finiteDirichletPolynomial a ha0).continuous.continuousAt hD)

@@ -3,7 +3,7 @@
 - **ID:** B130-endpoint-tangent-moment
 - **Stage:** 0-backlog
 - **Type:** CONJECTURE
-- **Source:** [Analytic prime smoothing](../2-fully-proven/universal-moving-branch-for-analytic-prime-smoothing.md).
+- **Source:** [Analytic prime smoothing](../3-formalized/universal-moving-branch-for-analytic-prime-smoothing.md).
 
 ## Statement
 

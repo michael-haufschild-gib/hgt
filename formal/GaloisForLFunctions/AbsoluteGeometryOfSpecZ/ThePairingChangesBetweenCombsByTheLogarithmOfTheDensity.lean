@@ -24,6 +24,7 @@ by its mass times the logarithm of the ratio of the densities.
 -/
 
 open Finset Filter Topology MeasureTheory
+open Zeta23
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 

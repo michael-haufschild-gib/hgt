@@ -4,7 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** THEOREM (paper); Lean verification pending
 - **Obstacle:** B13
-- **Scope:** actual first Vaughan type-I term; logarithmic type I and centred type II remain open.
+- **Scope:** actual first Vaughan type-I term; higher-moment logarithmic type I and centred type II remain open.
 
 ## Statement
 
@@ -91,8 +91,8 @@ Each increment of moment order gains two powers of `UV t/X` in this
 actual arithmetic remainder. The first type-I term therefore permits
 cutoffs approaching `X^(1−(1−σ)/(2r))`, subject to polynomial height costs.
 This does not yet extend the full Vaughan cutoff horizon: the logarithmic
-term, selected-mode transfer and damping filter must receive matching
-higher-moment bounds. No independent centred-current cancellation is claimed.
+term, selected-mode transfer and damping filter require sufficient
+higher-moment bounds at the chosen unbalanced cutoffs. No independent centred-current cancellation is claimed.
 
 ## Lean targets
 

@@ -130,4 +130,4 @@ All four final direct module audits passed without warnings.
 No external novelty claim.
 B130's arithmetic Stepanov bound remains open.
 
-[Next conjecture: universal analytic smoothing obstruction](../2-fully-proven/universal-moving-branch-for-analytic-prime-smoothing.md).
+[General analytic smoothing theorem](../3-formalized/universal-moving-branch-for-analytic-prime-smoothing.md).

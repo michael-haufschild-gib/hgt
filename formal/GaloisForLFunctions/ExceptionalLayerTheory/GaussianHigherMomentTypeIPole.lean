@@ -69,6 +69,7 @@ private theorem norm_higherMomentWeight_le (r : ℕ) {σ : ℝ} (hσ : 0 ≤ σ)
   rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hn0, Complex.norm_exp]
   have hw : (((2 * r : ℕ) : ℂ) - ((σ : ℂ) + t * I)).re = ((2 * r : ℕ) : ℝ) - σ := by simp
   have he : (-(ε * (n : ℂ) ^ 2)).re = -ε.re * (n : ℝ) ^ 2 := by simp [pow_two]
+  simp only [Complex.ofReal_natCast]
   rw [hw, he]
   have hp : (n : ℝ) ^ (((2 * r : ℕ) : ℝ) - σ) ≤ (n : ℝ) ^ (2 * r) := by
     simpa only [Real.rpow_natCast] using Real.rpow_le_rpow_of_exponent_le hn1
@@ -101,7 +102,7 @@ private theorem tsum_zeta_conv_higherMoment_eq {r : ℕ} (hr : r ≠ 0) {σ : �
     by_cases hb : b = 0
     · simp [hb]
     by_cases ha : a = 0
-    · simp [ha]
+    · simp [ha, hr]
     have hb1 : 1 ≤ b := by omega
     have hn : 1 ≤ b * a := Nat.one_le_iff_ne_zero.mpr (Nat.mul_ne_zero hb ha)
     have haR : (0 : ℝ) ≤ a := Nat.cast_nonneg a
@@ -218,7 +219,10 @@ theorem norm_tsum_gaussianHigherMoment_zeta_trunc_conv_sub_pole_le (r : ℕ) (hr
       simp only [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul]
       have hpow : ((U * V : ℕ) : ℝ) ^ (2 * r) =
           ((U * V : ℕ) : ℝ) ^ (2 * r - 1) * ((U * V : ℕ) : ℝ) := by
-        rw [← show 2 * r - 1 + 1 = 2 * r by omega, pow_succ]
+        calc
+          _ = ((U * V : ℕ) : ℝ) ^ (2 * r - 1 + 1) := by
+            rw [show 2 * r - 1 + 1 = 2 * r by omega]
+          _ = _ := pow_succ _ _
       rw [hpow]
       ring
 

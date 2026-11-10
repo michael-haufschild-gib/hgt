@@ -358,6 +358,22 @@ parts use the integrable second derivative and the vanishing lattice
 endpoints. The arithmetic bound gains a factor `UVt/X` over first
 variation, with the signed pole coefficient unchanged.
 
+`GaussianHigherDerivatives.lean`, `GaussianHigherLatticeError.lean`,
+`GaussianHigherMomentLattice.lean` and `GaussianHigherMomentTypeIPole.lean`
+extend the first type-I estimate to every fixed normalized moment
+`M_r(x)=(ε/t)^r x^(2r−σ−it)exp(−εx²)`, `r≥1`. For `0≤σ<1`,
+`t≥1`, `Re ε=α>0`, `|ε|≤4αt` and `αX²=2`,
+
+    |Σ_n (ζ*c)(n)M_r(n) − A_UV P_r|
+      ≪r,σ (UV)^(2r) log(UV)t^(2r) X^(1−σ−2r).
+
+The explicit constant comes from a recursive Gaussian derivative bound
+and the even Bernoulli remainder. All lower boundary derivatives vanish;
+the final derivative is integrable at zero. Each increment of moment
+order gains two powers of `UVt/X`. Higher-moment logarithmic estimates
+and a full filtered reduction remain open; this first type-I improvement
+does not establish a bound for centred type II.
+
 `GaussianLogarithmicContinuum.lean` and `GaussianLogarithmicTypeIPole.lean`
 extract both signed main terms from the actual logarithmic type-I convolution.
 For `B_V=Σ_{b≤V}μ(b)/b`, `D_V=Σ_{b≤V}μ(b)log b/b` and
