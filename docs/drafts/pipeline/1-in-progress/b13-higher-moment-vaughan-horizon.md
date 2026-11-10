@@ -47,3 +47,11 @@ radius `δ<1−σ` would transfer the non-logarithmic remainder with an
 `X^δ` loss. The cutoff budget already allows a positive power margin.
 This still requires actual parameter holomorphy and termwise differentiation;
 no logarithmic bound has been assumed.
+
+For unbalanced localization, `V` may remain polynomial in height. It is
+therefore enough to prove a weaker logarithmic bound for the higher
+moment, for example `O_r,σ(V²t²X^(−1−σ)(1+log X))`. Its second derivative
+has exactly that Gaussian scaling after multiplication by `(ε/t)^r`.
+Only the first type-I term needs order `2r` to permit a large `U`.
+The case `V=1` reduces the logarithmic coefficient to the single full
+logarithmic lattice. These higher-moment logarithmic bounds remain unproved.
