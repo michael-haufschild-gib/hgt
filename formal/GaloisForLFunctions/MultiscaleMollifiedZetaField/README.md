@@ -163,6 +163,8 @@ the energy of `Σ C_k e^{λ_k y}` on `[y₀, Y]` is at least `|C_i|² e^{2 Re λ
 | `exists_abs_walkMass_succ_sub_le` | the dyadic decomposition: each block has mass `1 + O(e^{−j})` | same |
 | `gcdForm_blockConv`, `gcdForm_eulerCoeff` | the gcd form factors over coprime blocks; its Euler value is `Π_p(1 − 2/p + p^{s−2})` | `TheTwistedMomentFactorsOverBlocks` |
 | `exists_twisted_second_moment_le` | bounded real mollifiers of length `≤ U^{21/50}`: second moment `≤ F(U)((1+ε)(v−a)+εa)` on the upper blocks | same |
+| `exists_twistedMoment_power_saving` | every `0≤θ<1/2`: the actual smoothed moment for bounded real coefficients of length `N≤T^θ` equals its two gcd main terms up to `O((q−T+2T^a)T^{-B})`, for any `B`, uniformly in `T≤q≤2T` and `0<d≤1/20` | `TwistedSecondMomentsBelowSquareRoot` |
+| `exists_interval_twistedMoment_le` | the interval moment on `[T,q]` is at most the real part of those explicit main terms plus the same error; no main-term estimate is assumed | same |
 | `exists_euler_piece_second_moment_le` | Euler pieces: `F(U) ≈ (e^{2R}/2R) log U Π_{p∈B}(1 − 2/p + p^{2R/log U}/p)` | same |
 | `exists_eventually_shiftedDefect_ge` | every normalized mollifier of length `≤ V^θ`, `θ<½`, has shifted defect `≥ (e^{−2}/12)(e^{−2θa}/a) V` | `TheLastScaleSetsTheDefect` |
 | `eventually_shiftedDefect_gt_below_threshold` | below `a = (1−ε) log log V/(2θ)` the defect exceeds `C V/log V` for every `C` | same |

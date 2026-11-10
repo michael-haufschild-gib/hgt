@@ -384,7 +384,9 @@ theorem payingRing_lt_planarSquare : payingRing < planarSquare := by
     simp
   obtain ⟨x, hx, hx1, hx4⟩ := exists_planar_separating (m := 1) (n := 4)
     (p := ⟨2, Nat.prime_two⟩) (ℓ := ⟨3, Nat.prime_three⟩) (by decide) hv
-  have hmem : (planarOf x hx).1 ∈ payingRing := heq ▸ (planarOf x hx).2
+  have hmem : (planarOf x hx).1 ∈ payingRing := by
+    rw [heq]
+    exact (planarOf x hx).2
   have h3 := three_dvd_sub_of_mem_payingRing hmem
   change (3 : ℤ) ∣ x 1 - x 4 at h3
   rw [hx1, zero_sub, dvd_neg] at h3
@@ -393,8 +395,9 @@ theorem payingRing_lt_planarSquare : payingRing < planarSquare := by
 /-- **The planar square is smaller than the square**: it does not contain `p − e_p`. -/
 theorem planarSquare_ne_top : planarSquare ≠ ⊤ := by
   intro htop
-  have h : (((2 : ℕ) : ℤ) : ghostRing) - orbit (primePNat ⟨2, Nat.prime_two⟩) ∈ planarSquare :=
-    htop ▸ Subring.mem_top _
+  have h : (((2 : ℕ) : ℤ) : ghostRing) - orbit (primePNat ⟨2, Nat.prime_two⟩) ∈ planarSquare := by
+    rw [htop]
+    exact Subring.mem_top _
   exact not_isPlanar_prime_sub_orbit ⟨2, Nat.prime_two⟩ h
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

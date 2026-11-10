@@ -35,11 +35,14 @@ theorem norm_continuousEulerExponent_le (ε : ℝ≥0) {s : ℂ} (hs : 0 ≤ s.r
   rw [norm_div, norm_pow]
   have he : ‖(ε : ℂ)‖ = (ε : ℝ) := by
     change ‖((ε : ℝ) : ℂ)‖ = (ε : ℝ)
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ε.property]
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact abs_of_nonneg ε.property
   rw [he]
   have hsq : 1 ≤ ‖s + 1‖ ^ 2 := by nlinarith only [hn, sq_nonneg (‖s + 1‖ - 1)]
   apply (div_le_iff₀ (zero_lt_one.trans_le hsq)).mpr
-  simpa only [mul_one] using mul_le_mul_of_nonneg_left hsq ε.property
+  calc
+    (ε : ℝ) = (ε : ℝ) * 1 := by ring
+    _ ≤ (ε : ℝ) * ‖s + 1‖ ^ 2 := by gcongr
 
 /-- The reflected inverse squares differ by an exactly inverse-cubic term. -/
 theorem norm_continuousEulerExponent_sub_reflection (ε : ℝ≥0) {s : ℂ}
@@ -69,7 +72,8 @@ theorem norm_continuousEulerExponent_sub_reflection (ε : ℝ≥0) {s : ℂ}
     norm_num [Complex.sub_re, Complex.sub_im, hs] <;> ring
   have he : ‖(ε : ℂ)‖ = (ε : ℝ) := by
     change ‖((ε : ℝ) : ℂ)‖ = (ε : ℝ)
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg ε.property]
+    rw [Complex.norm_real, Real.norm_eq_abs]
+    exact abs_of_nonneg ε.property
   rw [hid, norm_div, norm_mul, norm_mul, norm_pow, norm_pow, hden₁, hden₂,
     he, hnum, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
     abs_mul]
@@ -98,7 +102,8 @@ private theorem continuous_zeta_critical :
     intro h
     have h' := congrArg Complex.re h
     norm_num at h'
-  exact (differentiableAt_riemannZeta hs).continuousAt.comp (by fun_prop)
+  exact ContinuousAt.comp (g := riemannZeta) (f := fun t : ℝ => (1 / 2 : ℂ) + t * I)
+    (differentiableAt_riemannZeta hs).continuousAt (by fun_prop)
 
 /-- An unconditional global linear majorant on the critical line. -/
 theorem exists_linear_bound_zeta_critical :

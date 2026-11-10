@@ -543,6 +543,8 @@ theorem exists_systemForm_polar_neg {η : ℝ} (hη : 0 < η) :
   have hMO := integral_oddPolar_sq_le ha0 hδ
   have hDE := integral_deriv_evenPolar_sq_le hS ha0 hδ
   have hDO := integral_deriv_oddPolar_sq_le hS ha0 hδ
+  rw [← hMb] at hME hMO hDE hDO
+  rw [← hKdef] at hDE hDO
   have hE0 : ∀ u, a ≤ |u| → evenPolar a δ u = 0 := fun u hu => evenPolar_eq_zero hδ hu
   have hO0 : ∀ u, a ≤ |u| → oddPolar a δ u = 0 := fun u hu => oddPolar_eq_zero hδ hu
   refine ⟨?_, ?_, ?_⟩

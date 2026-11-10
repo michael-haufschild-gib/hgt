@@ -8,7 +8,7 @@
 
 | Task | Required conclusion | Remaining mathematical input |
 |---|---|---|
-| A18 | Twisted second moments beyond mollifier length `T^(21/50)` | Retain free contour depth, taper and integration orders in the product approximate functional equation; seek every exponent below `1/2`. |
+| A18 | Twisted second moments beyond mollifier length `T^(21/50)` | **Formalized:** every `0≤θ<1/2`, actual two-main-term formula and interval upper bound. See `../3-formalized/twisted-second-moments-below-square-root.md`. |
 | A21 | Logarithmic two-point Chowla | Actual Liouville/Möbius correlation cancellation, including entropy decrement and short-interval Fourier uniformity. |
 | A26 | Modular Weyl asymptotic `N(Λ) ∼ Λ/12` | Exact leading coefficient; existing two-sided order bounds do not suffice. |
 | A33 | Fourier coefficients of the cubic residue | Arithmetic evaluation of the continued nonzero scattering residues; their existence alone does not suffice. |
@@ -42,7 +42,10 @@ Both components use only `propext`, `Classical.choice`, and `Quot.sound`.
 actual contour remainders. `TwistedPairsBelowSquareRoot.lean` combines all
 five error terms and proves `exists_pairError_power_saving` for every
 `0≤θ<1/2`. Both pass direct Lean checks and use only the same standard
-axioms. The final coefficient summation remains to be checked.
+axioms. `TwistedSecondMomentsBelowSquareRoot.lean` passes its final direct
+check: `exists_twistedMoment_power_saving` and
+`exists_interval_twistedMoment_le` use only these axioms. All five modules
+are imported by their umbrella.
 
 ## A18: parameter argument
 
@@ -54,8 +57,8 @@ All three can be made less than any prescribed negative exponent by choosing
 `K,J`. The Gaussian split tail is smaller than every power. Contour depth
 `A=2j+1` saves `(1−2θ)A` powers on the smooth diagonal and at least
 `(1−2θ)A−1` on the dual diagonal. This also absorbs the at most `T^(2θ)`
-coefficient pairs. The intended endpoint is the actual two-main-term twisted
-moment formula, with these remainders discharged.
+coefficient pairs. This proves the actual two-main-term twisted moment
+formula with every remainder discharged.
 
 ## A101: quantitative square margin
 

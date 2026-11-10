@@ -173,7 +173,7 @@ is equivalent to `Z_χ(f) ≥ 0` on all packets supported in any window `[c − 
 `a`. -/
 theorem windowPositiveAt_dirichletZeros_iff_forall_window [NeZero q] (hq : 1 < q)
     {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (hreal : ∀ a : ZMod q, (χ a).im = 0)
-    {a : ℝ} (ha : 0 ≤ a) :
+    {a : ℝ} (_ha : 0 ≤ a) :
     WindowVisibilityLaw.WindowPositiveAt (_root_.RHTower.dirichletZeros hq hprim) a ↔
       ∀ (f : ℝ → ℝ) (c : ℝ), ContDiff ℝ 2 f → HasCompactSupport f →
         (∀ u, a < |u - c| → f u = 0) → 0 ≤ twistedZeroSum hq hprim f := by
@@ -429,8 +429,8 @@ packet `g : ℝ → ℝ` and every lag `y : ℝ`, `|packetAutocorr g y| ≤ ∫ 
 theorem abs_packetAutocorr_le_integral_sq {g : ℝ → ℝ} (hg : Continuous g)
     (hgc : HasCompactSupport g) (y : ℝ) :
     |packetAutocorr g y| ≤ ∫ u, g u ^ 2 := by
-  have hgsq : Integrable fun u => g u ^ 2 :=
-    (hg.pow 2).integrable_of_hasCompactSupport (hgc.comp_left (g := fun x : ℝ => x ^ 2) (by simp))
+  have hgsq : Integrable fun u => g u ^ 2 := by
+    simpa only [sq] using (hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right
   have hgy : Integrable fun u => g (u + y) ^ 2 := hgsq.comp_add_right y
   have hprod : Integrable fun u => |g u * g (u + y)| :=
     ((hg.mul (hg.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
@@ -454,8 +454,8 @@ theorem two_mul_abs_packetAutocorr_le_of_aperture {g : ℝ → ℝ} (hg : Contin
     (hgc : HasCompactSupport g) {c a y : ℝ} (hay : a ≤ y)
     (hshort : ∀ u, a < |u - c| → g u = 0) :
     2 * |packetAutocorr g y| ≤ ∫ u, g u ^ 2 := by
-  have hgsq : Integrable fun u => g u ^ 2 :=
-    (hg.pow 2).integrable_of_hasCompactSupport (hgc.comp_left (g := fun x : ℝ => x ^ 2) (by simp))
+  have hgsq : Integrable fun u => g u ^ 2 := by
+    simpa only [sq] using (hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right
   have hIic : Integrable (Set.indicator (Set.Iic c) (fun u => g u ^ 2)) :=
     hgsq.indicator measurableSet_Iic
   have hIoi : Integrable (Set.indicator (Set.Ioi c) (fun u => g u ^ 2)) :=
@@ -553,7 +553,8 @@ theorem twistedZeroSum_ge_of_aperture [NeZero q] (hq : 1 < q) {χ : DirichletCha
         (abs_nonneg _)
         (div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg k))
     exact h1.trans h2
-  rw [hmass, hZ] at harch hsum_le
+  rw [hmass, hZ] at harch
+  rw [hmass] at hsum_le
   linarith
 
 /-- **The sharpened sign-blind trivial aperture bound (`log 2` improvement)**: splitting the prime
@@ -598,7 +599,7 @@ theorem twistedZeroSum_ge_of_aperture_sharpened [NeZero q] (hq : 1 < q)
           _root_.RHTower.FreeLagTrace.primeMass (a / 2) =
         ∑ k ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊,
           (if k ≤ ⌊Real.exp (2 * (a / 2))⌋₊ then 2 else 1) * ((Λ k : ℝ) / Real.sqrt k) := by
-      unfold _root_.RHTower.FreeLagTrace.primeMass
+      unfold _root_.RHTower.FreeLagTrace.primeMass _root_.RHTower.FreeLagTrace.primeCutoff
       have h1 : (∑ k ∈ Finset.Icc 2 ⌊Real.exp (2 * (a / 2))⌋₊, (Λ k : ℝ) / Real.sqrt k) =
           ∑ k ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊,
             if k ∈ Finset.Icc 2 ⌊Real.exp (2 * (a / 2))⌋₊ then (Λ k : ℝ) / Real.sqrt k else 0 := by
@@ -643,7 +644,8 @@ theorem twistedZeroSum_ge_of_aperture_sharpened [NeZero q] (hq : 1 < q)
           exact (Real.log_lt_log (Real.exp_pos _) hexp).le
         have hauto := two_mul_abs_packetAutocorr_le_of_aperture hg.continuous hgc hlog hg0
         exact h1.trans (mul_le_mul htw hauto (by positivity) hΛ0)
-    rw [hmass, hZ] at harch hsum_le
+    rw [hmass, hZ] at harch
+    rw [hmass] at hsum_le
     linarith
   · push Not at ha0
     have hf0 : ∀ u, f u = 0 := fun u => hshort u (lt_of_lt_of_le ha0 (abs_nonneg _))
@@ -676,7 +678,6 @@ theorem tendsto_sharpened_primeMass_div_exp :
     have hmul := h2.mul h3
     rw [mul_zero] at hmul
     refine hmul.congr fun a => ?_
-    dsimp
     rw [Real.exp_neg]
     have hexp : Real.exp (a / 2) * Real.exp (a / 2) = Real.exp a := by
       rw [← Real.exp_add, add_halves]
@@ -751,16 +752,16 @@ theorem re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq (Z : ZeroConfig) {ρ : ℂ}
       (Z.mult ρ : ℝ) * ((∫ u, f u * Real.exp (δ * u)) * ∫ u, f u * Real.exp (-(δ * u))) =
         (Z.mult ρ : ℝ) *
           ((∫ u, f u * Real.cosh (δ * u)) ^ 2 - (∫ u, f u * Real.sinh (δ * u)) ^ 2) := by
-  have hγ : gammaOf ρ = (0 : ℂ) - Complex.I * δ := by
+  have hγ : gammaOf ρ = ((0 : ℝ) : ℂ) - Complex.I * δ := by
     apply Complex.ext <;> simp [WeilEF.gammaOf_re, WeilEF.gammaOf_im, hδ, him]
-  have hγc : conj (gammaOf ρ) = (0 : ℂ) + Complex.I * δ := by
+  have hγc : conj (gammaOf ρ) = ((0 : ℝ) : ℂ) + Complex.I * δ := by
     rw [hγ]; apply Complex.ext <;> simp
-  have hFpos : paperFT (fun u => (f u : ℂ)) ((0 : ℂ) - Complex.I * δ) =
+  have hFpos : paperFT (fun u => (f u : ℂ)) (((0 : ℝ) : ℂ) - Complex.I * δ) =
       ((∫ u, f u * Real.exp (δ * u) : ℝ) : ℂ) := by
     rw [_root_.RHTower.paperFT_sub_I_mul, paperFT_def, ← integral_complex_ofReal]
     congr 1 with u
     simp
-  have hFneg : paperFT (fun u => (f u : ℂ)) ((0 : ℂ) + Complex.I * δ) =
+  have hFneg : paperFT (fun u => (f u : ℂ)) (((0 : ℝ) : ℂ) + Complex.I * δ) =
       ((∫ u, f u * Real.exp (-(δ * u)) : ℝ) : ℂ) := by
     rw [_root_.RHTower.paperFT_add_I_mul, paperFT_def, ← integral_complex_ofReal]
     congr 1 with u
@@ -769,6 +770,7 @@ theorem re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq (Z : ZeroConfig) {ρ : ℂ}
   · rw [ZeroConfig.Wsummand, hγc, hγ, hFpos, hFneg, Complex.conj_ofReal]
     push_cast
     simp
+    ring
   · have hcosh : Integrable fun u => f u * Real.cosh (δ * u) :=
       (hf.mul (Real.continuous_cosh.comp (continuous_const.mul continuous_id))).integrable_of_hasCompactSupport
         hfc.mul_right
@@ -807,14 +809,14 @@ theorem re_Wsummand_real_zero_nonneg (Z : ZeroConfig) {ρ : ℂ} (hρ : ρ ∈ Z
   obtain ⟨h1, h2⟩ := re_Wsummand_real_zero_eq_cosh_sq_sub_sinh_sq Z hρ him
     (show ρ.re = 1 / 2 + (ρ.re - 1 / 2) by ring) hf hfc
   refine ⟨fun horth => ?_, fun heven => ?_, fun hnn => ?_⟩
-  · rw [h1, h2, horth]
+  · rw [h1, h2, horth, zero_pow two_ne_zero, sub_zero]
     positivity
   · have horth : (∫ u, f u * Real.sinh ((ρ.re - 1 / 2) * u)) = 0 := by
       have h := integral_neg_eq_self (fun u => f u * Real.sinh ((ρ.re - 1 / 2) * u)) volume
       simp only [heven, mul_neg, Real.sinh_neg] at h
       rw [integral_neg] at h
       linarith
-    rw [h1, h2, horth]
+    rw [h1, h2, horth, zero_pow two_ne_zero, sub_zero]
     positivity
   · rw [h1]
     exact mul_nonneg (Nat.cast_nonneg _) (mul_nonneg
@@ -839,6 +841,8 @@ theorem re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy (Z : ZeroConfig) {ρ : 
       apply Complex.ext <;> simp [WeilEF.gammaOf_re, WeilEF.gammaOf_im, hre, him]
     have hγc : conj (gammaOf ρ) = (0 : ℂ) + Complex.I * δ := by
       rw [hγ]; apply Complex.ext <;> simp
+    have hrefl : gammaOf (reflect ρ) = conj (gammaOf ρ) := by
+      apply Complex.ext <;> simp [gammaOf, reflect] <;> ring
     have hpair_re := SquareRootThreshold.neg_half_normSq_sub_le_re_pair
       (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) - Complex.I * δ))
       (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) + Complex.I * δ))
@@ -853,7 +857,7 @@ theorem re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy (Z : ZeroConfig) {ρ : 
             paperFT (fun u => (f u : ℂ)) ((0 : ℂ) + Complex.I * δ) *
               conj (paperFT (fun u => (f u : ℂ)) ((0 : ℂ) - Complex.I * δ))).re := by
       rw [ZeroConfig.Wsummand, ZeroConfig.Wsummand,
-        WindowVisibilityLaw.gammaOf_reflect_eq_conj, Complex.conj_conj,
+        hrefl, Complex.conj_conj,
         Z.mult_reflect ρ hρ, hγc, hγ, ← mul_add, ← Complex.ofReal_natCast,
         Complex.re_ofReal_mul]
     rw [hsum]
@@ -869,7 +873,6 @@ theorem re_Wsummand_real_zero_pair_ge_neg_two_pairEnergy (Z : ZeroConfig) {ρ : 
   · unfold SquareRootThreshold.pairEnergy
     have hδ0 : δ ≠ 0 := hδ.ne'
     field_simp
-    ring
 
 /-! ### 4. Deuring–Heilbronn on the twisted comb (`A101`) and resolution at logarithmic aperture (`B154`) -/
 
@@ -893,12 +896,18 @@ theorem exists_dirichletZeros_local_count :
       (hprim : χ.IsPrimitive) (t : ℝ),
       ((_root_.RHTower.dirichletZeros hq hprim).N t (t + 1) : ℝ) ≤
         A₀ * (Real.log q + 1) * Real.log (|t| + 3) := by
-  obtain ⟨A, hA, hloc⟩ := _root_.RHTower.localCountChi_uniform'
-  refine ⟨max 1 A, le_max_left 1 A, fun q inst hq χ hprim t => ?_⟩
-  haveI := inst
+  obtain ⟨A, hloc⟩ : ∃ A : ℝ, ∀ (q : ℕ) [NeZero q] (hq : 1 < q)
+      {χ : DirichletCharacter ℂ q} (hprim : χ.IsPrimitive) (t : ℝ),
+      ((_root_.RHTower.dirichletZeros hq hprim).N t (t + 1) : ℝ) ≤
+        A * (Real.log q + Real.log (|t| + 3)) := by
+    refine ⟨2 * (Real.log 24 + 2) / Real.log (0.95 / 0.84), fun q _ hq χ hprim t => ?_⟩
+    have hN := Zeta23.ThmE.LZeros_N (Zeta23.ThmE.LSeam_of hq hprim) t (t + 1)
+    have h := _root_.RHTower.localCountChi_uniform' hq hprim t
+    rw [← hN] at h
+    exact h
+  refine ⟨max 1 A, le_max_left 1 A, fun q _ hq χ hprim t => ?_⟩
   have h1 : ((_root_.RHTower.dirichletZeros hq hprim).N t (t + 1) : ℝ) ≤
-      A * (Real.log q + Real.log (|t| + 3)) := by
-    simpa [_root_.RHTower.dirichletZeros] using hloc q hq χ hprim t
+      A * (Real.log q + Real.log (|t| + 3)) := hloc q hq hprim t
   have hA' : A ≤ max 1 A := le_max_right 1 A
   have hlog3 : 1 ≤ Real.log (|t| + 3) := _root_.RHTower.one_le_log_abs_add_three t
   have hlogq : 0 ≤ Real.log q := Real.log_natCast_nonneg q
@@ -1194,16 +1203,11 @@ theorem deuring_heilbronn_on_twisted_comb :
       exact hiso ρ hρ hne1 hne2 him
     have ha : 0 < a := by linarith
     have hre' : (β : ℂ).re = 1 / 2 + δ := by simp [hre]
-    have hbig' : 384 * (A₀ * (Real.log q + 1)) * Real.log (|(β : ℂ).im| + 3) *
-        (2 * a * Real.cosh (δ * a) * (a ^ 5 + δ ^ 2 * a ^ 5 + 10 * δ * a ^ 4 + 20 * a ^ 3)) ^ 2 *
-        (1 + Real.exp a / (1 + R)) <
-      2 * (w * (w * a) ^ (5 / 2 : ℝ) * Real.sinh (δ * (a - 2 * w)) ^ 2) ^ 2 := by
-      simpa [Complex.ofReal_im] using hbig
     have hmaster := _root_.RHTower.re_W_modulatedTest_le_of_isolated
       (_root_.RHTower.dirichletZeros hq hprim) hA_ge (hloc q hq hprim) hβ_mem hδ hre' ha.le hR
       hiso' (_root_.RHTower.sinhTest_contDiff a δ) (_root_.RHTower.sinhTest_odd a δ)
       (_root_.RHTower.sinhTest_supp ha.le)
-    rw [Complex.ofReal_im, modulatedTest_zero_eq_ofReal] at hmaster
+    rw [Complex.ofReal_im, modulatedTest_zero_eq_ofReal, abs_zero, zero_add] at hmaster
     have hP := _root_.RHTower.sinhTest_energy_ge (a := a) hδ hw hwa
     have hN := _root_.RHTower.testNorm_sinhTest_le ha.le hδ.le
     have hN0 := _root_.RHTower.testNorm_nonneg (_root_.RHTower.sinhTest a δ)
@@ -1220,16 +1224,14 @@ theorem deuring_heilbronn_on_twisted_comb :
         _ ≤ ((_root_.RHTower.dirichletZeros hq hprim).mult (β : ℂ) : ℝ) *
               (∫ u, _root_.RHTower.sinhTest a δ u * Real.sinh (δ * u)) ^ 2 :=
             mul_le_mul_of_nonneg_right hm (sq_nonneg _)
-    have h2 : 384 * (A₀ * (Real.log q + 1)) * Real.log (|(β : ℂ).im| + 3) *
+    have h2 : 384 * (A₀ * (Real.log q + 1)) * Real.log 3 *
           _root_.RHTower.testNorm (_root_.RHTower.sinhTest a δ) ^ 2 *
           (1 + Real.exp a / (1 + R)) ≤
-        384 * (A₀ * (Real.log q + 1)) * Real.log (|(β : ℂ).im| + 3) *
+        384 * (A₀ * (Real.log q + 1)) * Real.log 3 *
           (2 * a * Real.cosh (δ * a) *
             (a ^ 5 + δ ^ 2 * a ^ 5 + 10 * δ * a ^ 4 + 20 * a ^ 3)) ^ 2 *
           (1 + Real.exp a / (1 + R)) := by
-      have : 0 < Real.log (|(β : ℂ).im| + 3) := by
-        simp only [Complex.ofReal_im, abs_zero, zero_add]
-        exact Real.log_pos (by norm_num)
+      have : 0 < Real.log (3 : ℝ) := Real.log_pos (by norm_num)
       gcongr
     have hneg : twistedZeroSum hq hprim (_root_.RHTower.sinhTest a δ) < 0 := by
       unfold twistedZeroSum
