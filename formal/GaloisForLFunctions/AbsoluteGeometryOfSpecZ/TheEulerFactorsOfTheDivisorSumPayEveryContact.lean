@@ -306,12 +306,15 @@ theorem isPlanar_coordHom (f : MvPolynomial Nat.Primes ℤ) : IsPlanar (coordHom
 
 /-! ### Every contact of the normal form is paid -/
 
-/-- The graphs of a finite set on the chain of `m` at `p`, other than `Γ_m`, are at most as many
-as the exponent of `p` in the value of a planar sequence on `Γ_m` that vanishes on the set. -/
-theorem card_chain_le_factorization {x : ℕ+ → ℤ} (hx : IsPlanar x) (m : ℕ+) (S : Finset ℕ+)
+/-- **Payment along a chain, with the exponents.** A planar sequence that vanishes on a finite
+set of graphs and not on `Γ_m` has, in its value on `Γ_m`, an exponent of `p` at least the sum of
+`min(v_p(m), v_p(n)) + 1` over the graphs `Γ_n` of the set on the chain of `m` at `p`. -/
+theorem sum_chain_le_factorization {x : ℕ+ → ℤ} (hx : IsPlanar x) (m : ℕ+) (S : Finset ℕ+)
     (hvan : ∀ n ∈ S, x n = 0) (hne : x m ≠ 0) {p : ℕ} (hp : p.Prime) :
-    (S.filter fun n : ℕ+ => (n : ℕ) * p ^ (m : ℕ).factorization p =
-        (m : ℕ) * p ^ (n : ℕ).factorization p).card ≤ (x m).natAbs.factorization p := by
+    ∑ n ∈ S.filter (fun n : ℕ+ => (n : ℕ) * p ^ (m : ℕ).factorization p =
+        (m : ℕ) * p ^ (n : ℕ).factorization p),
+      (min ((m : ℕ).factorization p) ((n : ℕ).factorization p) + 1) ≤
+        (x m).natAbs.factorization p := by
   set P : Nat.Primes := ⟨p, hp⟩
   obtain ⟨m₀, hm₀, hm⟩ := exists_chain_decomposition P m
   set k := (m : ℕ).factorization p with hk
@@ -334,14 +337,21 @@ theorem card_chain_le_factorization {x : ℕ+ → ℤ} (hx : IsPlanar x) (m : �
     rw [← hchain n hn]
     exact hvan n (Finset.mem_filter.mp hn).1
   have hdvd := pow_sum_dvd_of_isPlanar hx P hm₀ k T hvanT
-  rw [← hm] at hdvd
-  have hcard : F.card ≤ ∑ l ∈ T, (min k l + 1) := by
-    rw [← Finset.card_image_of_injOn hinj, Finset.card_eq_sum_ones]
-    exact Finset.sum_le_sum fun l _ => Nat.le_add_left 1 _
-  have hdvd' : p ^ F.card ∣ (x m).natAbs := by
+  rw [← hm, hT, Finset.sum_image hinj] at hdvd
+  have hdvd' : p ^ (∑ n ∈ F, (min k ((n : ℕ).factorization p) + 1)) ∣ (x m).natAbs := by
     rw [← Int.natCast_dvd, Nat.cast_pow]
-    exact (pow_dvd_pow _ hcard).trans hdvd
+    exact hdvd
   exact (hp.pow_dvd_iff_le_factorization (Int.natAbs_ne_zero.mpr hne)).mp hdvd'
+
+/-- The graphs of a finite set on the chain of `m` at `p`, other than `Γ_m`, are at most as many
+as the exponent of `p` in the value of a planar sequence on `Γ_m` that vanishes on the set. -/
+theorem card_chain_le_factorization {x : ℕ+ → ℤ} (hx : IsPlanar x) (m : ℕ+) (S : Finset ℕ+)
+    (hvan : ∀ n ∈ S, x n = 0) (hne : x m ≠ 0) {p : ℕ} (hp : p.Prime) :
+    (S.filter fun n : ℕ+ => (n : ℕ) * p ^ (m : ℕ).factorization p =
+        (m : ℕ) * p ^ (n : ℕ).factorization p).card ≤ (x m).natAbs.factorization p := by
+  refine le_trans ?_ (sum_chain_le_factorization hx m S hvan hne hp)
+  rw [Finset.card_eq_sum_ones]
+  exact Finset.sum_le_sum fun n _ => Nat.le_add_left 1 _
 
 /-- A contact of the normal form between two distinct degree points is at most `log p` summed
 over the primes `p` of a set containing the primes of both points, on whose chain the two points

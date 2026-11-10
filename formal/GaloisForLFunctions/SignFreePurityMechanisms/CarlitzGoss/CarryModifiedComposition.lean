@@ -14,6 +14,48 @@ differences allows the modified contents to be realized by actual digits.
 open Finset
 namespace GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
 
+/-- The local carry bounds join across the lower boundary and the unchanged rows. -/
+private theorem carry_content_bounds {p : ℤ} {α β m h n : ℕ} {w : ℕ → ℕ → ℤ}
+    (hp : 1 ≤ p) (hn : n < m)
+    (hhigh : ∀ r, α < r → r ≤ β → (m : ℤ) + 1 ≤ w r 0)
+    (hfloor : ∀ r j, j ≤ m → (m : ℤ) - j ≤ w r j)
+    (hboundary : ∀ j ≤ m, w α j = (m : ℤ) - j)
+    (hstep : ∀ r, w r (n + 1) + 1 ≤ w r n)
+    (hnonneg : ∀ r, 0 ≤ p * w (r + 1) n - w r n)
+    (hnested : ∀ r, p * w (r + 1) (n + 1) - w r (n + 1) ≤
+      p * w (r + 1) n - w r n) :
+    let d := intervalCarryRow p α β w
+    let c := fun r j => p * d (r + 1) j - d r j
+    0 ≤ c h n ∧ c h (n + 1) ≤ c h n ∧
+      (α ≤ h ∧ h ≤ β → 0 < c h (n + 1) → c h (n + 1) + (p - 1) ≤ c h n) := by
+  dsimp only
+  by_cases hh : α ≤ h ∧ h ≤ β
+  · by_cases he : h = α
+    · subst h
+      have hb := intervalCarryRow_content_boundary hp hn hhigh hfloor hboundary (hstep (α + 1))
+      refine ⟨hb.1, ?_, fun _ _ => hb.2⟩
+      have hg := hb.2
+      dsimp only at hg ⊢
+      omega
+    · have hc := intervalCarryRow_content hp (show α < h by omega) hh.2 (hstep (h + 1))
+      exact ⟨hc.1, hc.2.1, fun _ => hc.2.2⟩
+  · refine ⟨?_, ?_, fun hc => (hh hc).elim⟩
+    · rw [intervalCarryRow_content_outside p α β w hh n]
+      exact hnonneg h
+    · rw [intervalCarryRow_content_outside p α β w hh (n + 1),
+        intervalCarryRow_content_outside p α β w hh n]
+      exact hnested h
+
+/-- Positive cyclic weight rules out an empty nonnegative content remainder. -/
+private theorem positiveContent_of_cyclicWeighted_pos {s : ℕ} (p : ℤ) (u : ZMod s → ℤ)
+    (hu : ∀ h, 0 ≤ u h) (hw : 0 < cyclicWeighted p u 0) : PositiveContent u := by
+  refine ⟨hu, ?_⟩
+  by_contra hn
+  push_neg at hn
+  have he (h : ZMod s) : u h = 0 := le_antisymm (hn h) (hu h)
+  simp only [cyclicWeighted, he, mul_zero, sum_const, nsmul_eq_mul, mul_zero] at hw
+  exact lt_irrefl 0 hw
+
 /-- Adjacent natural rows with matching endpoints represent the cyclic difference. -/
 private theorem cyclicDifference_nat_rows {s : ℕ} [NeZero s] (p : ℤ) (f : ℕ → ℤ)
     (hperiod : f s = f 0) (h : ZMod s) :

@@ -18,9 +18,9 @@
 | A56 | Explicit two-bump prime rung from a verified height | Formalized and axiom-audited; `3-formalized/verified-heights-give-explicit-prime-two-bump-rungs.md` |
 | A75 | S3 transfer implies the quasi-RH collapse | Proof written with the exact floor cutoff; Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Exact critical-projection counts and bounded trace superposition written; sparse count comparison and audits pending |
-| A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Newtonian expansion and rulings formalized and axiom-audited; prime contact identity awaiting audit |
+| A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Formalized and axiom-audited; `3-formalized/the-jets-are-even-newtonian-multipoles.md` and `3-formalized/prime-contacts-are-chain-squares-minus-the-diagonal.md` |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
-| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Open |
+| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Corrected jump-tail and full raw-defect criteria written; quotient identity and audits pending |
 | A78 | Cluster extension of separated windows | Open |
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
