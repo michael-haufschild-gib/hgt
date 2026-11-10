@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.AUniformConstantForTheTrivialConductorAperture
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheExceptionalSquareHasASharpSmoothFloor
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheGhostRingOfTheArithmeticSquare
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheFrobeniusGraphsMeetInThePrimes
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTeichmullerPointsAndTheLatticeOfSections
@@ -63,6 +64,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermPaysForTheConta
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountOfASectionOnTwoGraphsIsTheSplitNorm
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePoleTermFixesTheScaleOfTheContacts
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -88,6 +90,6 @@ Hodge index of the square of a number ring; Riemann–Hurwitz for the counterter
 genus of a degree point; the exchange law between the contacts and the constant of the
 counterterm; the tree of a prime glued along the comb, whose edge length the inequality
 forces; the length of the tree of `2` as a monotone deformation of the pairing on packets
-shorter than `log 4`; and the count of a section on two graphs, the split norm. See
-`AbsoluteGeometryOfSpecZ/README.md`.
+shorter than `log 4`; the count of a section on two graphs, the split norm; and the pole term
+as the scale of the contacts. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

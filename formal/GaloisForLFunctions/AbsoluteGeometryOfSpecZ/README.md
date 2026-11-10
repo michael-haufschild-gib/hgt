@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-66 modules. Specification: §9 of
+67 modules. Specification: §9 of
 [the review-1011 report](../../../docs/reports/review-1011/fable.md), which continues §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md) and §9 of
 [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
@@ -209,6 +209,7 @@ than `log 4` (construction I, Q26).
 | A tree with another edge length | `treeDeviation`, `TreeBezout` | the weight `t` on the positive powers of `p`; Bézout with the contacts `ℓ` along the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)` |
 | The generator of the length of a tree; Bézout at a length | `treeGenerator`, `TreeBezoutAt` | `E_p(f) = ∫f²/(p − 1) − (2/√p)·h_f(log p)`, the derivative of the functional of the glued tree in its length on packets of length at most `2 log p`; the inequality for the tree of `p` of length `ℓ` on the packets of length at most `L` |
 | The functions of the square on two graphs | `pairRing`, `graphPair` | the pairs of integers congruent modulo an ideal `J`, an order of rank two in `ℤ × ℤ`; the restriction `x ↦ (x_m, x_n)` of the sections of the square, onto the order of `J(m, n)` |
+| A pair of bumps; scaled contacts | `bumpPair`, `CombBezoutScaled` | `g + s·g(· − T)`, `s = ±1`; Bézout with the contacts `(1 + ε)Λ + δ` and the counterterm `log(n/2π) + c` |
 
 ## 3. Language
 
@@ -458,6 +459,12 @@ than `log 4` (construction I, Q26).
     triangular in these coordinates, with the determinant `a b`. The index of a principal ideal
     is the absolute value of this determinant (corpus:
     `LinearMap.card_quotient_range_eq_natAbs_det_all`), so it does not see `c`.
+52. **The pole against a pair of distant bumps.** For `f_T = g + s·g(· − T)` the product of the
+    degrees is `d₁(g) d₂(g)(2 + s(e^{T/2} + e^{−T/2}))`, while each zero contributes its summand
+    for `g` times `2 + s(e^{iγT} + e^{−iγT})`, of size at most `2 + 2e^{|Im γ| T}`. Every zero has
+    `|Im γ| < ½`, so by dominated convergence over the zeros the zero sum is `o(e^{T/2})`: the
+    prime number theorem. The archimedean energy and a summable deviation stay bounded by the
+    mass. So the pole term decides the sign of every functional in which it is not cancelled.
 
 ## 5. The founding questions
 
@@ -763,8 +770,10 @@ that is an inequality, and each has a kill condition.
   (`treeBezout_iff`). So the gluing along the comb exists, it is the pairing of the degree
   points, and it has no modulus at any prime; it gives no inequality. With the archimedean
   constant left free the edge lengths are not determined: contacts are traded against the
-  constant at the supremum of their symbol (`combBezoutWith_iff`, Q24). A point of the comb
-  moved along the axis fails as well (corpus: `RHTower.vonMangoldt_move_atom_not_weilPositive`).
+  constant at the supremum of their symbol (`combBezoutWith_iff`, Q24). A common factor on
+  all trees is not traded: with the contacts `(1 + ε)Λ + δ`, `ε ≠ 0`, Bézout fails for every
+  constant (`not_combBezoutScaled`, Q28). A point of the comb moved along the axis fails as
+  well (corpus: `RHTower.vonMangoldt_move_atom_not_weilPositive`).
 
 **III. Stepanov on the planar square.**
 
@@ -1283,6 +1292,25 @@ value: the same for every contact, and not a quadratic form. In the corpus this 
 a fake (`CountingHolography`). The contact of `Γ_1` and `Γ_p` enters the pairing as `log p`; it
 does not enter the count at all.
 
+**Q28. The scale of the contacts.** *Can all contacts be multiplied by one factor, the trees of
+all primes be rescaled together, at the price of a constant?*
+
+- For the contacts `(1 + ε)Λ + δ` with `Σ |δ(n)| n^{-1/2} < ∞` the functional on a packet is
+  `(1 + ε) Z(f) − ε·(pole + archimedean energy) −` deviation
+  (`re_weilFullFunctional_scaled_eq`): the pole term `2 d₁ d₂` is no longer cancelled.
+- On a pair of bumps `f_T = g + s·g(· − T)` the pole term is `2 d₁(g) d₂(g)(2 + s(e^{T/2} +
+  e^{−T/2}))` (`pole_bumpPair`), the zero sum is `o(e^{T/2})` (`tendsto_abs_zeroSum_bumpPair`),
+  the archimedean energy is bounded by that of `g` (`abs_weilArchRe_bumpPair_sub_le`) and the
+  deviation by the mass (`abs_sum_deviation_le`): mechanism 52.
+- With `s` the sign of `ε` the functional plus `c ∫f²` is negative for large `T`, for every
+  `c` (`exists_packet_scaled_neg`), so Bézout fails (`not_combBezoutScaled`), without
+  hypothesis.
+
+So the answer is: no. Among the contacts `(1 + ε)Λ + δ` with a summable `δ` and any constant,
+Bézout holds iff `ε = 0`, the Riemann hypothesis holds and the symbol of `δ` is at most the
+constant (Q24). The pole plane fixes the total size of the contacts; the symbol fixes their
+distribution up to the constant.
+
 ## 9. Order of work and the decisive test
 
 | Stage | Content | State |
@@ -1403,6 +1431,7 @@ from the supremum of their symbol on (`combBezoutWith_iff`).
 | For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and long trees fail | `exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le` |
 | On packets of a given length the sum over the zeros is at least a negative multiple of the mass | `exists_zeroSum_ge_of_length` |
 | The functions of the square on two graphs are the pairs congruent modulo the contact ideal; a section `x` has `\|x_m x_n\|` residues there, `k²` times as many for `k x`, and the count violates the parallelogram law | `range_ghostComponent_pair`, `card_quotient_graphPair`, `card_quotient_graphPair_intCast_mul`, `exists_not_parallelogram_pairRing` |
+| With the contacts `(1 + ε)Λ + δ`, `ε ≠ 0`, Bézout fails for every constant; the zero sum of a pair of bumps at the distance `T` is `o(e^{T/2})` | `not_combBezoutScaled`, `exists_packet_scaled_neg`, `tendsto_abs_zeroSum_bumpPair`, `pole_bumpPair` |
 
 All are unconditional.
 
@@ -1463,6 +1492,7 @@ All are unconditional.
 | Sums in blocks of length `q`; sums over the multiples of an integer in a window; the valuation as a sum over the levels `p^k`; the mean of the Busemann function; trees with an edge length | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 | The autocorrelation at half the length of a packet; the generator of the length of a tree; Cauchy–Schwarz against a cutoff; the lower bound of the zero sum on packets of a given length; affine families with a positive generator and their threshold | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
 | The ring of two graphs; one section for every element of a contact ideal; the lattice coordinates of an order in `ℤ × ℤ`; the index of a principal ideal as a determinant | `TheCountOfASectionOnTwoGraphsIsTheSplitNorm` |
+| Pairs of bumps: transform, summands of the zeros, degrees, mass, archimedean energy; dominated convergence over the zeros; the functional of scaled contacts | `ThePoleTermFixesTheScaleOfTheContacts` |
 | The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
 ## 12. Traps
@@ -1539,6 +1569,7 @@ All are unconditional.
 | A deformation with a positive generator and a base point proves the inequality | it gives a threshold: for the length of the tree of `2` on packets shorter than `log 4` the inequality is `ℓ*(L) ≤ log 2`, a statement at one length, proved for `L ≤ 181/250` from the corpus certificate |
 | The length of a tree is a monotone parameter | only for `p = 2` and only while the square `4` is not seen: for an odd prime the first contact `∫f²/√p` exceeds the mean `∫f²/(p − 1)` of the Busemann function, and on all packets only `log p` passes |
 | A count on the square with quadratic growth gives the pairing | the count on two graphs is `\|x_m x_n\|`: exactly quadratic on rays, the same for every contact, and not a quadratic form; the contact enters the pairing as a logarithm and the count not at all |
+| A larger counterterm pays for any change of the contacts | it pays for a summable deviation; a common factor `1 + ε` on all contacts leaves the pole term uncancelled, and a pair of bumps at a large distance has a negative functional for every constant |
 
 ## 13. Open research topics
 
@@ -1709,11 +1740,12 @@ certificate.
 axis, and the contacts of a prime are chain squares minus the diagonal (corpus). *Proved:* a
 kernel invariant under the adelic group has a constant diagonal (corpus); along the comb the
 counterterm is the sum of the Busemann functions of the trees, a tree glued with an edge length
-other than `log p` fails Bézout, and contacts are traded against the constant at the supremum
-of their symbol (`treeBezout_iff`, `combBezoutWith_iff`). *Open:* deviations of the contacts
-that are not summable against `n^{-1/2}`, such as a change of the edge length at infinitely
-many primes without decay; there the symbol is not a continuous function and the exchange law
-is not stated. A decision would be the law for the deviations bounded by a multiple of `Λ`.
+other than `log p` fails Bézout, contacts are traded against the constant at the supremum of
+their symbol, and a common factor on all contacts is refuted for every constant
+(`treeBezout_iff`, `combBezoutWith_iff`, `not_combBezoutScaled`). *Open:* deviations that are
+neither summable against `n^{-1/2}` nor a multiple of `Λ` plus a summable one, such as other
+edge lengths at infinitely many primes without decay. A decision would be the exchange law for
+the deviations bounded by a multiple of `Λ`.
 
 ### 13.8 A count
 

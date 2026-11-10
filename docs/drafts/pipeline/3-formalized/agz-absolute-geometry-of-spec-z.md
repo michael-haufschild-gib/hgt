@@ -802,6 +802,23 @@ of a lattice is the absolute value of its determinant (corpus). (iii) `J(m, n) �
 `m ≠ n`: `m` or `n` divides exactly one of the two. (iv) The values are
 `|2(2 − c)| + 0 = 2c − 4` and `2 + 2(c − 1) = 2c`. ∎
 
+**G13 (the pole term fixes the scale of the contacts).** Let `ε ≠ 0`, `Σ |δ(n)| n^{-1/2} < ∞`,
+`c ∈ ℝ`. Some packet `f` has `Re W_{(1+ε)Λ+δ}(k_f) + c∫f² < 0`; so Bézout with the contacts
+`(1+ε)Λ + δ` and the counterterm `log(n/2π) + c` fails.
+*Proof.* For a packet, `Re W_w(k_f) = arch(f) − 2Σ (w(k)/√k) h_f(log k)` with `arch` the
+archimedean part including the pole (C21). With `w = (1+ε)Λ + δ` and `Z = arch − 2Σ(Λ/√k)h_f`:
+`Re W_w = (1+ε)Z − ε·arch − 2Σ(δ(k)/√k)h_f(log k)`. Take a bump `g ≥ 0` with
+`d₁(g), d₂(g) ≥ e^{−1/2}`, `s = sign ε`, `f_T = g + s·g(· − T)`. (a) `f̂_T(z) = ĝ(z)(1 + s e^{izT})`,
+so the summand of a zero is that of `g` times `(1 + s e^{iγT})(1 + s e^{−iγT}) = 2 + s(e^{iγT} +
+e^{−iγT})`, of modulus `≤ 2 + 2e^{|Im γ|T}`. Since `|Im γ| < ½` for every zero and the summands of
+`g` are absolutely summable, dominated convergence gives `|Z(f_T)| e^{−T/2} → 0`. (b)
+`d₁(f_T) d₂(f_T) = d₁(g)d₂(g)(1 + s e^{−T/2})(1 + s e^{T/2}) = d₁(g)d₂(g)(2 + s(e^{T/2} +
+e^{−T/2}))`. (c) `arch − 2d₁d₂ = (1/2π)∫|f̂_T|² A` with the archimedean symbol `A`, and
+`|f̂_T|² ≤ 4|ĝ|²` on the real line, so this is bounded by `(4/2π)∫|ĝ|²|A|`. (d)
+`|h_{f_T}| ≤ ∫f_T² ≤ 4∫g²`, so the deviation is at most `4(Σ|δ|/√n)∫g²`. Hence
+`Re W_w + c∫f_T² ≤ |1+ε||Z(f_T)| − 2|ε| d₁(g)d₂(g) e^{T/2} + K` with `K` independent of `T`;
+divide by `e^{T/2}`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -874,6 +891,8 @@ of a lattice is the absolute value of its determinant (corpus). (iii) `J(m, n) �
   gluing along the comb is the pairing itself; it has no modulus and gives no inequality. G9:
   with the archimedean constant free, contacts are traded against the constant at the supremum
   of their symbol, so the decisive test for a wrong constant is meant with the contacts fixed.
+  G13: a common factor on all contacts is not traded; with `ε ≠ 0` Bézout fails for every
+  constant, by the pole term on a pair of distant bumps.
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -953,6 +972,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G10 | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
 | G11 | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
 | G12 | `TheCountOfASectionOnTwoGraphsIsTheSplitNorm` |
+| G13 | `ThePoleTermFixesTheScaleOfTheContacts` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -974,6 +994,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `ThePacketsOnTheCombOfSquaresCarryWeilsArchimedeanForm`,
 `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol`,
 `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP`,
+`LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -1006,9 +1027,9 @@ Open parts of the questions of the refined programme (details in the README, §1
 - Q15, Q16, Q19 of the specification (real divisors at finite scale): `HodgeTheoryOfAFixedPart`.
 - Constructions of the next stage (review-1011 fable §9.6): I beyond G11 (the threshold
   `ℓ*(L)` for `181/250 < L ≤ log 4`; a deformation whose generator stays positive when the
-  second point of a chain is seen; an operator that moves the archimedean fibre), II beyond G9
-  and G10 (deviations of the contacts that are not summable
-  against `n^{-1/2}`, such as other edge lengths at infinitely many primes), V beyond G8 (combs
+  second point of a chain is seen; an operator that moves the archimedean fibre), II beyond G9,
+  G10 and G13 (deviations that are neither summable against `n^{-1/2}` nor a multiple of `Λ`
+  plus a summable one, such as other edge lengths at infinitely many primes without decay), V beyond G8 (combs
   without a density; systems with their own jets), VI beyond G12 (a count whose Tate limit is
   the pairing; counts in archimedean boxes on the pair ring; three or more graphs); question 7
   (Hecke characters, one ring that is not abelian).

@@ -1,6 +1,6 @@
 # Selective Arithmetic (SA)
 
-Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 10 modules.
+Namespace `GaloisForLFunctions.SelectiveArithmetic`; umbrella `SelectiveArithmetic.lean`; 13 modules.
 
 ## 1. Motivation
 
@@ -37,10 +37,13 @@ zero-free regions sit at $\kappa=1+o(1)$.
 | System form | `systemForm w q a F` | $\frac1{2\pi}\int|\hat F|^2(S_\infty+\log q)-$ contact form: jets, counterterm of a comb of density $q$, contacts $w$, no pole plane |
 | Twisted part | `AbsoluteGeometryOfSpecZ.twistedZeroSum` | the system form of $w=\Lambda\,\mathrm{Re}\,\chi$ with the conductor of $\chi$, plus a nonnegative energy for odd $\chi$; the sum over the zeros of $L(s,\chi)$ |
 | Feasible set | `Feasible q a w`; with pole plane `RHTower.WeilPositiveFullUpTo` | systems whose form is nonnegative on tests supported in $[-a,a]$ |
+| Feasible with pole plane | `PoleFeasible a w` | real weight systems whose Weil functional, with the pole plane and the archimedean place of $\zeta$ and no conductor, is nonnegative on real packets supported in $[-a,a]$ |
 | Trivial aperture | `trivialAperture q` | supremum of the apertures at which the whole dominated box is feasible |
 | Polar packets | `cutoff`, `evenPolar`, `oddPolar` | $\cosh(u/2)\chi(u)$ and $\sinh(u/2)\chi(u)$: the positive and the negative square of the polar kernel $e^{|u-v|/2}$ |
 | Fakes | `liouvilleWeight`, `fun n => -Λ n`, `fun n => Λ n`; `SquareRootThreshold.isolatedPairConfig` | completely multiplicative signs without conductor; the contacts of $1/\zeta$; the contacts of $\zeta$ without pole plane; a lattice with functional equation and one off-line pair |
 | Height | `RHTower.modulatedTest t f` | the packet $e^{-itu}f(u)$; its mass is $\log(2+|t|)$ |
+| Contacts seen from a height | `twistedWeight w t`, `alignedWeight t` | $w(n)\cos(t\log n)$; the system aligned with $t$ is $\Lambda(n)\cos(t\log n)$, half the contacts of $\zeta(s+it)\zeta(s-it)$ |
+| Two-bump packet | `twoBump s h r` | two bumps of width $r$ at $\pm h$: lags $0$ and $2h$ only |
 | Cancellation | `partialSum`, `HasCancellation w C γ` | $|\sum_{2\le k\le n}w(k)|\le C\,n^{1/2+\gamma}$ |
 | Mass at a zero | `A₀ * Real.log (|ρ₀.im| + 3)` | the local zero density of a configuration at a zero |
 
@@ -104,13 +107,23 @@ and beyond the trivial aperture the Liouville twist violates every floor.
 
 **4′. Between a ball and a box.** A pair of narrow bumps at distance $\log n$ has the lags $0$
 and $\log n$ only, so it isolates the contact $n$; a bump of width $r$ costs $\log(1/r)+O(1)$ times
-its mass. Hence every system feasible at an aperture $a\ge\tfrac12\log n+\tfrac1{4n}$ has
-$|w(n)|\le\sqrt n(\log q+\log(1+4n)+C)$. Conversely
+its mass. Hence every system feasible at an aperture $a\ge\tfrac12\log n+r$, $0<r\le\tfrac1{4n}$,
+has $|w(n)|\le\sqrt n(\log q+\log(1+1/r)+C)$. Conversely
 $A_0+2\sum_{n\le e^{2a}}|w(n)|n^{-1/2}\le\log q$ is sufficient. Below the first contact,
 $2a<\log2$, the weights do not enter. So selectivity starts at the aperture $\tfrac12\log2$, where
 the weight at $2$ is confined to an interval of half-length of the order of the mass; a single
 weight may reach $\sqrt n$ times the mass, and what the ladder constrains beyond the trivial
 aperture is the Riesz mean of all contacts together (6′).
+
+**4″. The first selective window of $\zeta$.** With the pole plane and no conductor
+(`PoleFeasible`), below the aperture $\tfrac12\log2$ every real weight system is feasible: Weil's
+functional on such tests has no contact. At the aperture $\tfrac12\log2+r$ the two-bump packet
+confines the weight at $2$: its pole term is at most $12$ times the mass of one bump, so
+$|w(2)|\le\sqrt2(\log(1+1/r)+C)$, and in general $|w(n)|\le\sqrt n(\log(1+1/r)+C)$. The weight
+of $\zeta$ is interior: up to the aperture $181/500$ every system with
+$\sqrt2\,|w(2)-\log2|\le1/5000$ is feasible, by the margin of Weil's form on short windows
+(corpus). So the first selective window of $\zeta$ has ratio $2$, and there the feasible weights at
+$2$ form an interval around $\log2$ whose length is at most of the order $\log(1/r)$.
 
 **5. The height is a mass.** For $F=e^{-itu}f(u)$ the transform moves to $t$, where
 $S_\infty\ge\log(2+|t|)-c_0$; moving back costs $1+(\tau-t)^2$, which is the energy of $f'$. The
@@ -118,11 +131,34 @@ pole term at the points $\pm i/2-t$ is $\ge-4\int f'^2$ once $e^a\le|t|$, by one
 parts. So Weil's form of every dominated system with pole plane, $\zeta$ included, is at least
 $\tfrac12(1-e^{-\eta/2})\log|t|\int f^2-5\int f'^2$ at every aperture $a\le\log\log|t|-\eta$.
 
+**5′. A height is a conductor of the twisted contacts.** On a packet modulated to the height $t$
+a contact $w(n)$ is seen with the phase $\cos(t\log n)$: the contact form of $w$ on
+$e^{-itu}f$ is the contact form of $w_t(n)=w(n)\cos(t\log n)$ on $f$. The archimedean symbol is
+subadditive, $S_\infty(\tau+t)\le S_\infty(\tau)+\log(2+|t|)+A_2$. Hence the height transfer
+$$\mathfrak W_{w_t,q}(f)+(\log(2+|t|)-A_3)\!\int\! f^2-2\!\int\! f'^2\ \le\ \mathfrak W_{w,q}(e^{-itu}f)
+\ \le\ \mathfrak W_{w_t,q}(f)+(\log(2+|t|)+A_2)\!\int\! f^2:$$
+the form at the height $t$ is the form of the twisted contacts at the conductor $q(2+|t|)$, exactly
+from above and up to the shape from below.
+
+**5″. The fake of the height.** The system aligned with $t$, $w(n)=\Lambda(n)\cos(t\log n)$, is
+dominated and its poles sit at the heights $\pm t$, where the pole plane does not reach. On its own
+height it is seen with $\cos^2(t\log n)$, whose mean over $t\in[T,2T]$ is at least
+$\tfrac12-\tfrac1T$ at every $n\ge2$. So at some height of every dyadic window the even polar
+packet sees half the Riesz mean of the primes, against the mass $\log t\cdot e^a/2$: at every
+aperture $\log\log T+\log2+\eta\le a\le\log T$ Weil's form of the aligned system, with pole
+plane, is below $-C\int f'^2$. The trivial aperture of the height is $\log\log|t|+O(1)$, between
+$-\eta$ and $\log2+\eta$.
+
 **6. Cancellation buys the ladder (prime side of the exchange rate).** If
 $|\sum_{k\le n}w(k)|\le Cn^{1/2+\gamma}$, summation by parts gives
 $|2\sum_{n\le N}w(n)n^{-1/2}\cos(\tau\log n)|\le2CN^\gamma(2+\log N)(1+|\tau|)$: the prime part of the
 symbol has size $N^\gamma$. Hence $\mathfrak W_{w,q}(f)\ge\tfrac12\log q(\int f^2-\int f'^2)$ at
-every aperture $a\le\kappa\log\log q$ with $2\gamma\kappa<1$.
+every aperture $a\le\kappa\log\log q$ with $2\gamma\kappa<1$. At a height $t$ the same holds
+for the twisted contacts $w_t$ and the mass $\log q+\log(2+|t|)$, by the height transfer. On all
+packets the form is a Fourier multiplier: it is nonnegative as soon as the symbol plus $\log q$ is,
+and this follows from a saving in the partial sums of $w_\tau$ at every height $\tau$, with a
+constant that may grow like $S_\infty(\tau)$. No uniform constant exists: the logarithms of the
+primes are independent, so some height aligns any finite set of contacts.
 
 **6′. The sign is cancellation (the converse).** With $E=\cosh(u/2)\chi$, $O=\sinh(u/2)\chi$:
 $E(u)E(u+y)-O(u)O(u+y)=\cosh(y/2)\chi(u)\chi(u+y)$, so the difference of the contact forms of the
@@ -134,7 +170,12 @@ $|\sum_{n\le e^{2a}}w(n)(2a-\log n)|\le\log q\,(e^a+2a)+C(1+a)^3e^a$. The Riesz 
 contacts at $Y=e^{2a}$ is at most $\sqrt Y(\log q\,(1+o(1))+C\log^3Y)$, with the constant one in
 front of the mass; a dominated system whose Riesz mean is $\ge cY$ is infeasible beyond the
 aperture $\log\log q+\log(1/c)+o(1)$. The three fakes are the systems without cancellation
-($c=1$): for them this is the trivial aperture.
+($c=1$): for them this is the trivial aperture. By the height transfer the same holds at every
+height: a feasible dominated system has
+$|\sum_{n\le e^{2a}}w(n)\cos(t\log n)(2a-\log n)|\le(\log q+\log(2+|t|))(e^a+2a)+C(1+a)^3e^a$
+for all $t$. Feasibility is square-root cancellation of the Riesz means of $w(n)n^{-it}$ at every
+height, against the analytic conductor $q(2+|t|)$; the sign on packets of bounded shape reads the
+height zero only.
 
 **7. A zero shows at the rung of its depth (zero side of the exchange rate).** A reflected pair
 of depth $\delta$ is a form of rank two and signature $(1,1)$ with smallest eigenvalue
@@ -163,8 +204,13 @@ product) both fail at the rung $1$.
 | The trivial aperture is a threshold; feasible sets convex and monotone | `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt`, `convex_feasible`, `Feasible.anti`, `Feasible.mono_conductor`, `feasible_congr` | unconditional |
 | A floor is a conductor; the Liouville twist violates every floor beyond the trivial aperture | `feasible_mul_exp_iff`, `exists_not_floor` | unconditional |
 | The box law of a conductor; an $\ell^1$ ball is feasible; no weight enters below the first contact | `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | unconditional |
-| The height is a mass; the pole plane does not reach a height | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge` | unconditional |
+| The first selective window of $\zeta$: blind below ratio $2$; the weight at $2$ confined beyond it; $\Lambda$ interior up to $181/500$ | `poleFeasible_iff_of_lt_half_log_two`, `exists_abs_weight_le_of_poleFeasible`, `poleFeasible_of_abs_sub_le`, `poleFeasible_vonMangoldt` | unconditional |
+| The height is a mass; the pole plane does not reach a height | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `abs_re_weilPoleTerm_modulated_le` | unconditional |
 | Weil's form of $\zeta$ at a height, aperture $\le\log\log|t|-\eta$ | `re_weilFullFunctional_modulated_ge`, `exists_height_margin` | unconditional |
+| The fake of the height: the aligned system fails at $\log\log T+\log2+\eta$ at some height of $[T,2T]$ | `weilTest_modulatedTest`, `exists_height_contactForm_aligned_ge`, `re_weilFullFunctional_modulated_le`, `exists_aligned_height_neg`, `exists_dominated_height_neg` | unconditional |
+| The height transfer: a height is a conductor of the twisted contacts | `archimedeanWeilSymbol_add_le`, `contactForm_modulatedTest_eq`, `systemForm_modulatedTest_le`, `systemForm_modulatedTest_ge` | unconditional |
+| Feasibility is square-root cancellation of the twisted Riesz means at every height | `exists_twisted_riesz_le_of_feasible` | unconditional |
+| Twisted cancellation buys the ladder of the analytic conductor; the symbol criterion on all packets | `systemForm_modulated_ge_of_twisted_cancellation`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | unconditional |
 | Exchange rate, prime side: cancellation buys rungs | `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | unconditional |
 | Exchange rate, prime side, converse: the sign is square-root cancellation of the Riesz mean | `packetAutocorr_evenPolar_sub_oddPolar`, `systemForm_le_of_packet_scaled`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge` | unconditional |
 | The sign of the twisted part at an aperture bounds the Riesz mean of the character | `exists_riesz_twist_le_of_nonneg` | unconditional |
@@ -186,10 +232,10 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | # | Question | Answer |
 |---|---|---|
 | Q1 | Which unconditional theorems are selective at unbounded scale, and from which sources? | See the atlas below. In the aspects of conductor and height every unconditional pointwise sign lies below the rung $1$ and holds for the whole dominated box; the classical regions lie at $1+o(1)$ |
-| Q2 | Is there a source beyond exponential sums, mean values, rigidity and the fractional part? | Open. The sign at aperture $a$ *is* a saving: it forces the Riesz mean of the contacts at $Y=e^{2a}$ to be $O(\sqrt Y(\log q+\log^3Y))$, and a power saving of the partial sums gives the sign back on bounded shapes. A source passes the rung $1$ only by a power saving of the contacts on the integers up to $m^{2\kappa}$ or by excluding isolated zeros of depth $>1/(2\kappa)$; sizes, multiplicativity and the functional equation alone do not |
-| Q3 | Can a feasible weight system be constructed at every aperture? | With a conductor: the dominated box up to the trivial aperture and not beyond; systems with cancellation $\gamma$ up to $\kappa<1/(2\gamma)$ on bounded shapes. With the pole plane: this is RH |
+| Q2 | Is there a source beyond exponential sums, mean values, rigidity and the fractional part? | None is known, and the field fixes what one must deliver. The sign at aperture $a$ *is* a saving: feasibility forces the Riesz means of $w(n)n^{-it}$ at $Y=e^{2a}$ to be $O(\sqrt Y(\log q+\log(2+|t|)+\log^3Y))$ at every height, and a power saving of the twisted partial sums gives the sign back. A source passes the rung $1$ only by a power saving of the contacts on the integers up to $m^{2\kappa}$, uniform in the height against the analytic conductor, or by excluding isolated zeros of depth $>1/(2\kappa)$; sizes, multiplicativity and the functional equation alone do not |
+| Q3 | Can a feasible weight system be constructed at every aperture? | With a conductor: the dominated box up to the trivial aperture and not beyond; an $\ell^1$ ball of the size of the mass at every aperture; systems whose twisted contacts have cancellation $\gamma$ up to $\kappa<1/(2\gamma)$. With the pole plane: every system below the aperture $\tfrac12\log2$, a neighbourhood of $\Lambda$ up to $181/500$, and at every aperture exactly when RH holds (corpus) |
 | Q4 | Is the exceptional square removable? | The ladder of the conductor has no gap: the sign at $\log\log q-\eta$ is a theorem for every dominated system, and at $\log\log q+\eta$ it fails for the Liouville twist. Removal at $\log\log q+C$ is a statement on $\chi$ at the integers between $\log q$ and $e^{2C}\log^2q$ that uses conductor and Euler product jointly: Landau–Siegel on the comb |
-| Q5 | What is the first selective window? | The first contact. Below the aperture $\tfrac12\log2$ no weight enters; at $\tfrac12\log n+\tfrac1{4n}$ the weight at $n$ of a feasible system is at most $\sqrt n(\log q+\log(1+4n)+C)$, and an $\ell^1$ ball of the size of the mass is feasible. For $\zeta$ with its pole plane the corresponding statements are in the corpus (ratio $\le2$ is blind; weights seen with a margin are bounded). On the ladder the first aperture that is selective inside the dominated box is the rung $1$ |
+| Q5 | What is the first selective window? | The first contact, ratio $2$. Below the aperture $\tfrac12\log2$ no weight enters, with a conductor and with the pole plane. At $\tfrac12\log n+r$ the weight at $n$ of a feasible system is at most $\sqrt n(\log q+\log(1+1/r)+C)$, and for $\zeta$ with its pole plane at most $\sqrt n(\log(1+1/r)+C)$; the weight $\log2$ of $\zeta$ is interior up to the aperture $181/500$. On the ladder the first aperture that is selective inside the dominated box is the rung $1$, in the aspect of the conductor and of the height |
 
 **Atlas (where a statement sits on the ladder).**
 
@@ -197,8 +243,9 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 |---|---|---|---|
 | Sign of the twisted part, $a\le\log\log q-\eta$ | $\kappa<1$ | systems with larger contacts | sizes: prime number theorem and the mass |
 | Weil's form of $\zeta$ at height $t$, bounded shape, $a\le\log\log|t|-\eta$ | $\kappa<1$ | systems with larger contacts | sizes and the Gamma factor |
+| Weil's form at height $t$, $a\ge\log\log t+\log2+\eta$ | $1+O(1/\log\log t)$ | the system aligned with $t$ | none known |
 | Classical zero-free regions, Landau–Page, Siegel: depth $\le\tfrac12-\varepsilon(m)$, $\varepsilon\to0$ | $1+o(1)$ | the Liouville twist; the lattice with a pair at depth $\tfrac12$ | nonnegativity of counts; exponential sums |
-| Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz mean of the contacts at $e^{2a}$ is $\le e^a(\log q+O(a^3))$ | every rung | systems without cancellation | — (a receiver) |
+| Sign of a dominated system at aperture $a$ $\Rightarrow$ Riesz means of $w(n)n^{-it}$ at $e^{2a}$ are $\le e^a(\log q+\log(2+|t|)+O(a^3))$ at every height | every rung | systems without cancellation at one height | — (a receiver) |
 | Sign at $\log\log q+C$ | $1+C/\log\log q$ | Liouville twist | none known |
 | A zero-free strip of width $\varepsilon$ in an aspect | $1/(1-2\varepsilon)$ | fakes of depth $>\tfrac12-\varepsilon$ | none known |
 | Positivity at typical heights (corpus, in law) | apertures $c\log T$ | — | density theorems |
@@ -218,15 +265,19 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
   $L$-functions (twisted part with margin; companions of the zeros of $L(s,\chi)$ and of $\zeta$
   on a rung).
 - The slack map of a system form: a floor is a conductor; a saving is a rung.
-- The height aspect: modulated packets, the archimedean energy at a height, decay of the pole term.
-- Summation by parts on the symbol: the exchange rate between cancellation and rungs; the
-  receiver on the prime side: sum and difference of the two polar packets read the Riesz mean.
+- The height aspect: modulated packets, the archimedean energy at a height from both sides, decay
+  of the pole term, the mean of the phases over a window of heights, the aligned system.
+- The height transfer: a system at a height is its twisted contacts at the analytic conductor.
+- Summation by parts on the symbol: the exchange rate between cancellation and rungs, at the
+  height zero and at every height; the symbol criterion for all packets; the receiver on the prime
+  side: sum and difference of the two polar packets read the Riesz mean, at every height.
+- Feasible sets with the pole plane: the first selective window of $\zeta$.
 
-**To build.**
-- A fake for the height aspect in the dominated class (phases aligned on blocks of primes at
-  chosen heights), to show that the rung $1$ is sharp there for sizes.
-- The exchange rate on packets without shape condition: bounds for $\sum w(n)n^{-i\tau}$ uniform
-  in $\tau$.
+**Aimed at.**
+- A calibration bench: the criteria P1–P8 of §11 as predicates on a candidate mechanism, with the
+  fakes of this folder as test objects.
+- The feasible sets with pole plane beyond the aperture $181/500$: their shrinking rate to
+  $\Lambda$ in terms of the margin of Weil's form.
 
 ## 8. Open research topics
 
@@ -236,9 +287,13 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 3. **A producer step.** An unconditional power saving of the contacts of a true object on the
    integers up to a power of its mass; known savings start at $q^{1/4}$ and at
    $\exp((\log t)^{2/3})$.
-4. **Rough packets.** Whether cancellation of the partial sums alone pays the sign on all packets
-   of an aperture, or only on bounded shapes.
+4. **One height against the others.** Feasibility is cancellation of the twisted contacts at every
+   height. Whether, in the dominated class, the sign on packets of bounded shape forces it at the
+   other heights.
 5. **The margin side.** The rate at which the feasible sets with pole plane shrink to $\Lambda$.
+6. **The constant of the height.** The trivial aperture of the height lies between
+   $\log\log|t|-\eta$ and $\log\log|t|+\log2+\eta$; the aligned system with signs
+   $\mathrm{sgn}\cos(t\log n)$ would give $\log(\pi/2)$.
 
 ## 9. Traps
 
@@ -251,6 +306,8 @@ one-square law (`AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSqua
 | Nonemptiness of feasible sets with a conductor is of RH type | $w=0$ is feasible at every aperture for a large conductor; only the pole plane makes nonemptiness RH |
 | The classical zero-free region is the sign at some rung $\kappa>1$ | It sits at $\kappa=1+o(1)$; every fixed $\kappa>1$ is a strip |
 | Positivity at a height is positivity on all packets modulated to it | Only on bounded shapes; all modulated packets are all tests |
+| The pole plane protects every height | It decays like $1/|t|$; a dominated system with its pole at the height $t$ fails there at $\log\log t+\log2+o(1)$ |
+| A saving in the partial sums of the contacts is a saving at every height | The twist $w(n)\cos(t\log n)$ is another system; feasibility needs all of them, each against the analytic conductor $q(2+|t|)$ |
 | Cancellation of the partial sums bounds the contact operator | It bounds the symbol with a factor $1+|\tau|$: the bound is for bounded shapes |
 | A uniform floor is easier than the sign on the ladder | A floor $-K$ is the sign at the conductor $qe^K$; the fakes violate every floor at the same rung |
 | A new equivalent of RH is a contribution | The programme prices mechanisms; it adds no equivalent |

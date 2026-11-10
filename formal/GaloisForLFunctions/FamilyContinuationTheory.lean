@@ -2,6 +2,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TwistedColumnsCorrelateThrou
 import GaloisForLFunctions.FamilyContinuationTheory.ContinuationFromACommonSignal
 import GaloisForLFunctions.FamilyContinuationTheory.TheTwoLegsGiveTheRiemannHypothesis
 import GaloisForLFunctions.FamilyContinuationTheory.TheSignalOfTheZetaKernelIsAMoebiusSum
+import GaloisForLFunctions.FamilyContinuationTheory.TheOddPowerOfAGaussSumCarriesTheMoebiusSign
 
 /-!
 # Family continuation theory
@@ -20,4 +21,7 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
 * **Additive columns of residue characters.** The correlation of two columns of coprime moduli is
   one term; a weighted second moment over the rows is a multiplicative form in the frequency; at
   the frequencies on which the characters are trivial the terms add without cancellation.
+* **The sign of the source.** The `n`-th power of a Gauss sum of order `n > 2` is `−card F` for
+  odd `n` and `χ(−1) · card F` for even `n`, modulo `(μ − 1)²` in `ℤ[μ]`: odd orders carry the
+  Möbius sign, and three is the least of them.
 -/

@@ -65,14 +65,18 @@ theorem realPairForm_ge_neg_two_pairEnergy {δ a : ℝ} (hδ : 0 < δ) (ha : 0 �
   let g : ℝ → ℝ := (Icc (-a) a).indicator (fun u => Real.sinh (δ * u))
   have hgsq (u : ℝ) : g u ^ 2 =
       (Icc (-a) a).indicator (fun u => Real.sinh (δ * u) ^ 2) u := by
-    by_cases hu : u ∈ Icc (-a) a <;> simp only [g, indicator_of_mem, indicator_of_notMem, hu, zero_pow two_ne_zero]
+    by_cases hu : u ∈ Icc (-a) a
+    · simp only [g, Set.indicator_of_mem hu]
+    · simp only [g, Set.indicator_of_notMem hu, zero_pow two_ne_zero]
   have hgi : Integrable (fun u => g u ^ 2) := by
     simp_rw [hgsq]
     exact ((by fun_prop : Continuous fun u => Real.sinh (δ * u) ^ 2).integrableOn_Icc
       ).integrable_indicator measurableSet_Icc
   have hfi : Integrable (fun u => f u ^ 2) := by
-    simpa only [pow_two] using
-      (hf.mul hf).integrable_of_hasCompactSupport hfc.mul_right
+    have hmul : Integrable (fun u => f u * f u) :=
+      (show Continuous (fun u => f u * f u) from hf.mul hf).integrable_of_hasCompactSupport
+        (show HasCompactSupport (fun u => f u * f u) from hfc.mul_right)
+    simpa only [pow_two] using hmul
   have hgm : AEStronglyMeasurable g :=
     (by fun_prop : Continuous fun u => Real.sinh (δ * u)).aestronglyMeasurable.indicator
       measurableSet_Icc
@@ -81,9 +85,10 @@ theorem realPairForm_ge_neg_two_pairEnergy {δ a : ℝ} (hδ : 0 < δ) (ha : 0 �
   have hfg : (∫ u, f u * g u) = ∫ u, f u * Real.sinh (δ * u) := by
     apply integral_congr_ae
     filter_upwards with u
+    dsimp only [g]
     by_cases hu : u ∈ Icc (-a) a
-    · rw [g, indicator_of_mem hu]
-    · rw [g, indicator_of_notMem hu, realPacket_zero_of_outside hfs hu, zero_mul, zero_mul]
+    · rw [Set.indicator_of_mem hu]
+    · simp only [Set.indicator_of_notMem hu, realPacket_zero_of_outside hfs hu, zero_mul]
   have hgv : (∫ u, g u ^ 2) = pairEnergy δ a := by
     simp_rw [hgsq]
     rw [integral_indicator measurableSet_Icc, integral_sinh_sq_Icc hδ ha]
@@ -155,6 +160,7 @@ theorem exists_smooth_realPairForm_below {δ a L : ℝ} (hδ : 0 < δ) (ha : 0 <
       (Eventually.of_forall fun u => Set.indicator_nonneg (fun _ _ => sq_nonneg _) u)
       ((φ.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport φ.hasCompactSupport.mul_right)
     filter_upwards with u
+    change _ ≤ φ u * Real.sinh (δ * u) ^ 2
     by_cases hu : u ∈ Icc (-a') a'
     · rw [indicator_of_mem hu, φ.one_of_mem_closedBall]
       · rw [one_mul]
@@ -188,7 +194,8 @@ theorem realPairForm_mass_floor_iff {δ a : ℝ} (hδ : 0 < δ) (ha : 0 < a) (c 
     nlinarith only [hbad, hbound, hm]
   · intro hc f hf hfs
     apply le_trans _ (realPairForm_ge_neg_two_pairEnergy hδ ha.le hf.continuous hfs)
-    have hm := mul_le_mul_of_nonneg_right hc (integral_nonneg fun u => sq_nonneg (f u))
+    have hmass : 0 ≤ ∫ u, f u ^ 2 := integral_nonneg fun u => sq_nonneg (f u)
+    have hm := mul_le_mul_of_nonneg_right hc hmass
     linarith only [hm]
 
 /-- Unit-mass smooth packets approach the exact lower edge arbitrarily closely. -/
@@ -201,7 +208,7 @@ theorem exists_unit_realPairForm_near_lower_edge {δ a ε : ℝ}
       -(2 * pairEnergy δ a - ε) * (∫ u, f u ^ 2) ≤ realPairForm δ f := by
     rw [realPairForm_mass_floor_iff hδ ha]
     linarith only [hε]
-  push_neg at hn
+  push Not at hn
   obtain ⟨f, hf, hfs, hbad⟩ := hn
   let M : ℝ := ∫ u, f u ^ 2
   have hM0 : 0 ≤ M := integral_nonneg fun u => sq_nonneg _
@@ -278,7 +285,6 @@ theorem exists_unit_real_zero_pair_near_lower_edge (Z : ZeroConfig) {ρ : ℂ}
   have he : (Z.mult ρ : ℝ) * (-2 * pairEnergy δ a + ε / Z.mult ρ) =
       -2 * (Z.mult ρ : ℝ) * pairEnergy δ a + ε := by
     field_simp [hm.ne']
-    ring
   rwa [he] at hh
 
 

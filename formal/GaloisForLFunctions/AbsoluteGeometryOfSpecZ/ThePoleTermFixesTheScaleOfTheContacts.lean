@@ -327,7 +327,8 @@ theorem abs_weilArchRe_bumpPair_sub_le (hg : ContDiff ℝ 2 g) (hgc : HasCompact
       hgs).norm.const_mul 4
   have hsn : ‖(s : ℂ)‖ = 1 := by
     rw [Complex.norm_real, Real.norm_eq_abs, abs_eq_one_of_mul_self hs]
-  refine (norm_integral_le_of_norm_le hbound (Eventually.of_forall fun τ => ?_))
+  rw [← Real.norm_eq_abs]
+  refine norm_integral_le_of_norm_le hbound (Eventually.of_forall fun τ => ?_)
   have hfac : ‖(1 : ℂ) + s * Complex.exp (Complex.I * τ * T)‖ ≤ 2 := by
     have h1 : ‖Complex.exp (Complex.I * (τ : ℂ) * (T : ℂ))‖ = 1 := by
       rw [Complex.norm_exp]
@@ -350,172 +351,13 @@ theorem abs_weilArchRe_bumpPair_sub_le (hg : ContDiff ℝ 2 g) (hgc : HasCompact
 
 /-! ### Every other scale of the contacts fails -/
 
-/-- **With the contacts `(1 + ε)Λ + δ`, `ε ≠ 0`, no constant helps.** For every `c` some packet
-has `Re W_{(1+ε)Λ+δ}(f ⋆ f̃) + c ∫f² < 0`. -/
-theorem exists_packet_scaled_neg (hsum : Summable fun n => |δ n| / Real.sqrt n) {ε : ℝ}
-    (hε : ε ≠ 0) (c : ℝ) :
-    ∃ f : ℝ → ℝ, ContDiff ℝ 2 f ∧ HasCompactSupport f ∧
-      (_root_.RHTower.weilFullFunctional (fun n => (1 + ε) * (Λ n : ℝ) + δ n)
-        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re + c * ∫ u, f u ^ 2 < 0 := by
-  -- one bump with positive degrees
-  have hδ : (0 : ℝ) < 1 / 2 := by norm_num
-  obtain ⟨g, hgdef⟩ : ∃ g : ℝ → ℝ, g = SelectiveArithmetic.cutoff 1 (1 / 2) := ⟨_, rfl⟩
-  have hg : ContDiff ℝ 2 g := by
-    rw [hgdef]
-    exact (SelectiveArithmetic.contDiff_cutoff _ _).of_le (by norm_num)
-  have hgc : HasCompactSupport g := by
-    rw [hgdef]
-    exact SelectiveArithmetic.hasCompactSupport_cutoff hδ
-  have hg0 : ∀ u, 0 ≤ g u := fun u => by
-    rw [hgdef]
-    exact SelectiveArithmetic.cutoff_nonneg _ _ _
-  have hg1 : ∀ u, g u ≤ 1 := fun u => by
-    rw [hgdef]
-    exact SelectiveArithmetic.cutoff_le_one _ _ _
-  have hgz : ∀ u, 1 ≤ |u| → g u = 0 := fun u hu => by
-    rw [hgdef]
-    exact SelectiveArithmetic.cutoff_eq_zero hδ hu
-  have hgsq : Integrable fun u => g u ^ 2 := by
-    refine ((hg.continuous.mul hg.continuous).integrable_of_hasCompactSupport
-      hgc.mul_right).congr (Eventually.of_forall fun u => ?_)
-    show g u * g u = g u ^ 2
-    ring
-  have hM1 : 1 ≤ ∫ u, g u ^ 2 := by
-    have h := SelectiveArithmetic.le_packetAutocorr_cutoff_zero (show (0 : ℝ) < 1 by norm_num)
-    have e : packetAutocorr g 0 = ∫ u, g u ^ 2 := by
-      rw [packetAutocorr]
-      refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-      show g u * g (u + 0) = g u ^ 2
-      rw [add_zero, sq]
-    rw [← e, hgdef]
-    exact h
-  -- the degrees of the bump are at least `e^{−1/2}`
-  have hdeg : ∀ σ : ℝ, |σ| ≤ 1 / 2 → Real.exp (-(1 / 2)) ≤ ∫ u, g u * Real.exp (σ * u) := by
-    intro σ hσ
-    have hint : Integrable fun u : ℝ => g u * Real.exp (σ * u) :=
-      (hg.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hgc.mul_right
-    have hmono : ∫ u, Real.exp (-(1 / 2)) * g u ^ 2 ≤ ∫ u, g u * Real.exp (σ * u) := by
-      refine integral_mono (hgsq.const_mul _) hint fun u => ?_
-      show Real.exp (-(1 / 2)) * g u ^ 2 ≤ g u * Real.exp (σ * u)
-      by_cases h0 : g u = 0
-      · rw [h0]
-        simp
-      · have hu : |u| < 1 := lt_of_not_ge fun h => h0 (hgz u h)
-        have hσu : -(1 / 2) ≤ σ * u := by
-          have h1 : |σ * u| ≤ 1 / 2 := by
-            rw [abs_mul]
-            calc |σ| * |u| ≤ 1 / 2 * 1 :=
-                  mul_le_mul hσ hu.le (abs_nonneg _) (by norm_num)
-              _ = 1 / 2 := by norm_num
-          linarith [(abs_le.mp h1).1]
-        have he : Real.exp (-(1 / 2)) ≤ Real.exp (σ * u) := Real.exp_le_exp.mpr hσu
-        have hsq : g u ^ 2 ≤ g u := by nlinarith [hg0 u, hg1 u]
-        calc Real.exp (-(1 / 2)) * g u ^ 2 ≤ Real.exp (-(1 / 2)) * g u :=
-              mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
-          _ ≤ Real.exp (σ * u) * g u := mul_le_mul_of_nonneg_right he (hg0 u)
-          _ = g u * Real.exp (σ * u) := mul_comm _ _
-    rw [integral_const_mul] at hmono
-    nlinarith [Real.exp_pos (-(1 / 2))]
-  obtain ⟨D₁, hD₁⟩ : ∃ D₁ : ℝ, D₁ = ∫ u, g u * Real.exp (-(1 / 2) * u) := ⟨_, rfl⟩
-  obtain ⟨D₂, hD₂⟩ : ∃ D₂ : ℝ, D₂ = ∫ u, g u * Real.exp (1 / 2 * u) := ⟨_, rfl⟩
-  have hD₁0 : 0 < D₁ := by
-    rw [hD₁]
-    exact lt_of_lt_of_le (Real.exp_pos _) (hdeg _ (by rw [abs_neg]; norm_num))
-  have hD₂0 : 0 < D₂ := by
-    rw [hD₂]
-    exact lt_of_lt_of_le (Real.exp_pos _) (hdeg _ (by norm_num))
-  have hD : 0 < D₁ * D₂ := mul_pos hD₁0 hD₂0
-  -- the sign of the pair
-  obtain ⟨s, hs, hεs⟩ : ∃ s : ℝ, s * s = 1 ∧ ε * s = |ε| := by
-    rcases lt_or_gt_of_ne hε with h | h
-    · exact ⟨-1, by norm_num, by rw [abs_of_neg h]; ring⟩
-    · exact ⟨1, by norm_num, by rw [abs_of_pos h]; ring⟩
-  have hεpos : 0 < |ε| := abs_pos.mpr hε
-  -- constants that do not depend on `T`
-  obtain ⟨Carch, hCarch⟩ : ∃ C : ℝ, C = 1 / (2 * π) * ∫ τ : ℝ,
-      4 * ‖‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
-        _root_.RHTower.archimedeanWeilSymbol (τ / (2 * π))‖ := ⟨_, rfl⟩
-  obtain ⟨Mδ, hMδ⟩ : ∃ M : ℝ, M = ∑' n : ℕ, |δ n| / Real.sqrt n := ⟨_, rfl⟩
-  have hMδ0 : 0 ≤ Mδ := by
-    rw [hMδ]
-    exact tsum_nonneg fun n => by positivity
-  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = 4 * |ε| * (D₁ * D₂) + |ε| * Carch +
-      (2 * Mδ + |c|) * (4 * ∫ u, g u ^ 2) := ⟨_, rfl⟩
-  -- a separation at which the pole term dominates
-  have hη : 0 < |ε| * (D₁ * D₂) / 2 := by positivity
-  have hZ := (tendsto_abs_zeroSum_bumpPair hg hgc hs).const_mul |1 + ε|
-  rw [mul_zero] at hZ
-  have hKt : Tendsto (fun T : ℝ => K * Real.exp (-(1 / 2 * T))) atTop (𝓝 0) := by
-    have h := (tendsto_exp_neg_mul (show (0 : ℝ) < 1 / 2 by norm_num)).const_mul K
-    rwa [mul_zero] at h
-  obtain ⟨T, ⟨hZT, hKT⟩, hT0⟩ := ((hZ.eventually (gt_mem_nhds hη)).and
-    (hKt.eventually (gt_mem_nhds hη))).and (eventually_ge_atTop (0 : ℝ)) |>.exists
-  obtain ⟨E, hE⟩ : ∃ E : ℝ, E = Real.exp (1 / 2 * T) := ⟨_, rfl⟩
-  have hE0 : 0 < E := by
-    rw [hE]
-    exact Real.exp_pos _
-  have hEinv : Real.exp (-(1 / 2 * T)) * E = 1 := by
-    rw [hE, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
-  have hEinv' : Real.exp (-(T / 2)) * E = 1 := by
-    rw [show -(T / 2) = -(1 / 2 * T) by ring]
-    exact hEinv
-  have hEm : Real.exp (-(1 / 2) * T) = Real.exp (-(1 / 2 * T)) := by
-    congr 1
-    ring
-  have hEm0 : 0 < Real.exp (-(1 / 2 * T)) := Real.exp_pos _
-  -- the packet
-  have hf := contDiff_bumpPair hg s T
-  have hfc := hasCompactSupport_bumpPair hgc s T
-  refine ⟨bumpPair g s T, hf, hfc, ?_⟩
-  obtain ⟨Q, hQ⟩ := exists_packetAutocorr_log_eq_zero hfc
-  have hW := re_weilFullFunctional_packet_of_weight
-    (fun n => (1 + ε) * (Λ n : ℝ) + δ n) (bumpPair g s T) hQ
-  have hΛ := re_weilFullFunctional_packet_of_weight (fun n => (Λ n : ℝ)) (bumpPair g s T) hQ
-  have hz := zeroSum_eq_weilFullFunctional hf hfc
-  have hsplit : ∑ k ∈ Icc 2 Q, ((1 + ε) * (Λ k : ℝ) + δ k) / Real.sqrt k *
-        packetAutocorr (bumpPair g s T) (Real.log k) =
-      (1 + ε) * ∑ k ∈ Icc 2 Q, (Λ k : ℝ) / Real.sqrt k *
-          packetAutocorr (bumpPair g s T) (Real.log k) +
-        ∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr (bumpPair g s T) (Real.log k) := by
-    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
-    exact Finset.sum_congr rfl fun k _ => by ring
-  -- the mass of the pair
-  have hmass0 : 0 ≤ ∫ u, bumpPair g s T u ^ 2 := integral_nonneg fun u => sq_nonneg _
-  have hmass : ∫ u, bumpPair g s T u ^ 2 ≤ 4 * ∫ u, g u ^ 2 := by
-    have hshift : Integrable fun u => g (u - T) ^ 2 := hgsq.comp_sub_right T
-    have hfsq : Integrable fun u => bumpPair g s T u ^ 2 := by
-      refine ((hf.continuous.mul hf.continuous).integrable_of_hasCompactSupport
-        hfc.mul_right).congr (Eventually.of_forall fun u => ?_)
-      show bumpPair g s T u * bumpPair g s T u = bumpPair g s T u ^ 2
-      ring
-    have hle : ∫ u, bumpPair g s T u ^ 2 ≤ ∫ u, (2 * g u ^ 2 + 2 * g (u - T) ^ 2) := by
-      refine integral_mono hfsq ((hgsq.const_mul 2).add (hshift.const_mul 2)) fun u => ?_
-      show bumpPair g s T u ^ 2 ≤ 2 * g u ^ 2 + 2 * g (u - T) ^ 2
-      simp only [bumpPair]
-      nlinarith [sq_nonneg (g u - s * g (u - T)), hs, sq_nonneg (g (u - T))]
-    rw [integral_add (hgsq.const_mul 2) (hshift.const_mul 2), integral_const_mul,
-      integral_const_mul, integral_sub_right_eq_self (fun u => g u ^ 2) T] at hle
-    linarith
-  -- the deviation is bounded by the mass
-  have hdev : |∑ k ∈ Icc 2 Q, δ k / Real.sqrt k *
-      packetAutocorr (bumpPair g s T) (Real.log k)| ≤ Mδ * ∫ u, bumpPair g s T u ^ 2 := by
-    calc |∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr (bumpPair g s T) (Real.log k)|
-        ≤ ∑ k ∈ Icc 2 Q, |δ k / Real.sqrt k * packetAutocorr (bumpPair g s T) (Real.log k)| :=
-          Finset.abs_sum_le_sum_abs _ _
-      _ ≤ ∑ k ∈ Icc 2 Q, |δ k| / Real.sqrt k * ∫ u, bumpPair g s T u ^ 2 :=
-          Finset.sum_le_sum fun k _ => by
-            rw [abs_mul, abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
-            exact mul_le_mul_of_nonneg_left
-              (SelectiveArithmetic.abs_packetAutocorr_le hf.continuous hfc _) (by positivity)
-      _ = (∑ k ∈ Icc 2 Q, |δ k| / Real.sqrt k) * ∫ u, bumpPair g s T u ^ 2 := by
-          rw [Finset.sum_mul]
-      _ ≤ Mδ * ∫ u, bumpPair g s T u ^ 2 := by
-          refine mul_le_mul_of_nonneg_right ?_ hmass0
-          rw [hMδ]
-          exact hsum.sum_le_tsum _ fun k _ => by positivity
-  -- the pole term and the archimedean energy
-  have harch := abs_weilArchRe_bumpPair_sub_le hg hgc hs T
-  rw [← hCarch] at harch
+/-- The pole term of a pair of bumps: of the order `e^{T/2}`, with the sign `s`. -/
+theorem pole_bumpPair (hg : Continuous g) (hgc : HasCompactSupport g) {s : ℝ} (hs : s * s = 1)
+    (T : ℝ) :
+    2 * ((∫ u, bumpPair g s T u * Real.exp (-u / 2)) *
+        ∫ u, bumpPair g s T u * Real.exp (u / 2)) =
+      2 * ((∫ u, g u * Real.exp (-(1 / 2) * u)) * ∫ u, g u * Real.exp (1 / 2 * u)) *
+        (2 + s * (Real.exp (1 / 2 * T) + Real.exp (-(1 / 2 * T)))) := by
   have e1 : (fun u : ℝ => bumpPair g s T u * Real.exp (-u / 2)) =
       fun u => bumpPair g s T u * Real.exp (-(1 / 2) * u) := by
     funext u
@@ -526,69 +368,243 @@ theorem exists_packet_scaled_neg (hsum : Summable fun n => |δ n| / Real.sqrt n)
     funext u
     congr 2
     ring
-  rw [e1, e2, integral_bumpPair_mul_exp hg.continuous hgc, integral_bumpPair_mul_exp
-    hg.continuous hgc, ← hD₁, ← hD₂, hEm, ← hE] at harch
-  have ha := abs_le.mp harch
-  have hZT' : |1 + ε| * |zeroSum (bumpPair g s T)| ≤ |ε| * (D₁ * D₂) / 2 * E := by
-    have h1 : |1 + ε| * (|zeroSum (bumpPair g s T)| * Real.exp (-(T / 2))) * E ≤
-        |ε| * (D₁ * D₂) / 2 * E := mul_le_mul_of_nonneg_right hZT.le hE0.le
-    calc |1 + ε| * |zeroSum (bumpPair g s T)|
-        = |1 + ε| * (|zeroSum (bumpPair g s T)| * Real.exp (-(T / 2))) * E := by
-          rw [mul_assoc, mul_assoc, hEinv', mul_one]
-      _ ≤ _ := h1
-  have hKT' : K ≤ |ε| * (D₁ * D₂) / 2 * E := by
-    have h1 : K * Real.exp (-(1 / 2 * T)) * E ≤ |ε| * (D₁ * D₂) / 2 * E :=
-      mul_le_mul_of_nonneg_right hKT.le hE0.le
-    rwa [mul_assoc, hEinv, mul_one] at h1
-  have hZabs : (1 + ε) * zeroSum (bumpPair g s T) ≤ |1 + ε| * |zeroSum (bumpPair g s T)| := by
-    rw [← abs_mul]
-    exact le_abs_self _
-  have hdev' := (abs_le.mp hdev).1
-  have hcm : c * (∫ u, bumpPair g s T u ^ 2) ≤ |c| * ∫ u, bumpPair g s T u ^ 2 :=
-    mul_le_mul_of_nonneg_right (le_abs_self c) hmass0
-  -- the pole term in terms of `E`
-  have hpoleE : ε * (2 * (D₁ * (1 + s * Real.exp (-(1 / 2 * T))) * (D₂ * (1 + s * E)))) =
-      4 * ε * (D₁ * D₂) + 2 * |ε| * (D₁ * D₂) * (E + Real.exp (-(1 / 2 * T))) := by
-    have h1 : s * Real.exp (-(1 / 2 * T)) * (s * E) = 1 := by
-      calc s * Real.exp (-(1 / 2 * T)) * (s * E) = s * s * (Real.exp (-(1 / 2 * T)) * E) := by
-            ring
-        _ = 1 := by rw [hs, hEinv, mul_one]
-    calc ε * (2 * (D₁ * (1 + s * Real.exp (-(1 / 2 * T))) * (D₂ * (1 + s * E))))
-        = 2 * ε * (D₁ * D₂) * (1 + s * Real.exp (-(1 / 2 * T)) * (s * E)) +
-            2 * (ε * s) * (D₁ * D₂) * (E + Real.exp (-(1 / 2 * T))) := by ring
-      _ = _ := by
-          rw [h1, hεs]
-          ring
-  rw [hW, hsplit]
-  have hΛ' : 2 * ∑ k ∈ Icc 2 Q, (Λ k : ℝ) / Real.sqrt k *
-      packetAutocorr (bumpPair g s T) (Real.log k) =
-      _root_.RHTower.WeilOneSided.weilArchRe
-        (EF.weilTest (fun u => (bumpPair g s T u : ℂ)) (fun u => (bumpPair g s T u : ℂ))) -
-        zeroSum (bumpPair g s T) := by
-    rw [hz, hΛ]
+  have hEm : Real.exp (-(1 / 2) * T) = Real.exp (-(1 / 2 * T)) := by
+    congr 1
     ring
-  have hεle : ε ≤ |ε| := le_abs_self ε
-  have hεge : -|ε| ≤ ε := neg_abs_le ε
-  have hCarch0 : 0 ≤ Carch := by
-    rw [hCarch]
-    exact mul_nonneg (by positivity) (integral_nonneg fun τ => by positivity)
-  have hεC : -(ε * (_root_.RHTower.WeilOneSided.weilArchRe
-        (EF.weilTest (fun u => (bumpPair g s T u : ℂ)) (fun u => (bumpPair g s T u : ℂ))) -
-      2 * (D₁ * (1 + s * Real.exp (-(1 / 2 * T))) * (D₂ * (1 + s * E))))) ≤ |ε| * Carch := by
-    have h := abs_le.mp (show |ε * (_root_.RHTower.WeilOneSided.weilArchRe
-        (EF.weilTest (fun u => (bumpPair g s T u : ℂ)) (fun u => (bumpPair g s T u : ℂ))) -
-      2 * (D₁ * (1 + s * Real.exp (-(1 / 2 * T))) * (D₂ * (1 + s * E))))| ≤ |ε| * Carch by
+  have hEE : Real.exp (-(1 / 2 * T)) * Real.exp (1 / 2 * T) = 1 := by
+    rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  rw [e1, e2, integral_bumpPair_mul_exp hg hgc, integral_bumpPair_mul_exp hg hgc, hEm]
+  linear_combination
+    (2 * (∫ u, g u * Real.exp (-(1 / 2) * u)) * (∫ u, g u * Real.exp (1 / 2 * u)) *
+      Real.exp (-(1 / 2 * T)) * Real.exp (1 / 2 * T)) * hs +
+    (2 * (∫ u, g u * Real.exp (-(1 / 2) * u)) * (∫ u, g u * Real.exp (1 / 2 * u))) * hEE
+
+/-- The mass of a pair of bumps is at most four times the mass of one. -/
+theorem integral_bumpPair_sq_le (hg : Continuous g) (hgc : HasCompactSupport g) {s : ℝ}
+    (hs : s * s = 1) (T : ℝ) : ∫ u, bumpPair g s T u ^ 2 ≤ 4 * ∫ u, g u ^ 2 := by
+  have hgsq : Integrable fun u => g u ^ 2 := by
+    refine ((hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right).congr
+      (Eventually.of_forall fun u => ?_)
+    show g u * g u = g u ^ 2
+    ring
+  have hshift : Integrable fun u => g (u - T) ^ 2 := hgsq.comp_sub_right T
+  have hfc := hasCompactSupport_bumpPair hgc s T
+  have hfcont : Continuous (bumpPair g s T) :=
+    hg.add (continuous_const.mul (hg.comp (continuous_id.sub continuous_const)))
+  have hfsq : Integrable fun u => bumpPair g s T u ^ 2 := by
+    refine ((hfcont.mul hfcont).integrable_of_hasCompactSupport hfc.mul_right).congr
+      (Eventually.of_forall fun u => ?_)
+    show bumpPair g s T u * bumpPair g s T u = bumpPair g s T u ^ 2
+    ring
+  have hle : ∫ u, bumpPair g s T u ^ 2 ≤ ∫ u, (2 * g u ^ 2 + 2 * g (u - T) ^ 2) := by
+    refine integral_mono hfsq ((hgsq.const_mul 2).add (hshift.const_mul 2)) fun u => ?_
+    show bumpPair g s T u ^ 2 ≤ 2 * g u ^ 2 + 2 * g (u - T) ^ 2
+    have e : bumpPair g s T u ^ 2 = 2 * g u ^ 2 + 2 * g (u - T) ^ 2 -
+        (g u - s * g (u - T)) ^ 2 + 2 * (s * s - 1) * g (u - T) ^ 2 := by
+      simp only [bumpPair]
+      ring
+    rw [e, hs]
+    linarith [sq_nonneg (g u - s * g (u - T))]
+  rw [integral_add (hgsq.const_mul 2) (hshift.const_mul 2), integral_const_mul,
+    integral_const_mul, integral_sub_right_eq_self (fun u => g u ^ 2) T] at hle
+  linarith
+
+/-- A summable deviation of the contacts is bounded by the mass. -/
+theorem abs_sum_deviation_le (hsum : Summable fun n => |δ n| / Real.sqrt n) {f : ℝ → ℝ}
+    (hf : Continuous f) (hfc : HasCompactSupport f) (Q : ℕ) :
+    |∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr f (Real.log k)| ≤
+      (∑' n : ℕ, |δ n| / Real.sqrt n) * ∫ u, f u ^ 2 := by
+  have hmass0 : 0 ≤ ∫ u, f u ^ 2 := integral_nonneg fun u => sq_nonneg _
+  calc |∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr f (Real.log k)|
+      ≤ ∑ k ∈ Icc 2 Q, |δ k / Real.sqrt k * packetAutocorr f (Real.log k)| :=
+        Finset.abs_sum_le_sum_abs _ _
+    _ ≤ ∑ k ∈ Icc 2 Q, |δ k| / Real.sqrt k * ∫ u, f u ^ 2 :=
+        Finset.sum_le_sum fun k _ => by
+          rw [abs_mul, abs_div, abs_of_nonneg (Real.sqrt_nonneg _)]
+          exact mul_le_mul_of_nonneg_left
+            (SelectiveArithmetic.abs_packetAutocorr_le hf hfc _) (by positivity)
+    _ = (∑ k ∈ Icc 2 Q, |δ k| / Real.sqrt k) * ∫ u, f u ^ 2 := by rw [Finset.sum_mul]
+    _ ≤ (∑' n : ℕ, |δ n| / Real.sqrt n) * ∫ u, f u ^ 2 :=
+        mul_le_mul_of_nonneg_right (hsum.sum_le_tsum _ fun k _ => by positivity) hmass0
+
+/-- **The functional of scaled contacts on a packet**: the zero sum, the archimedean part with
+the pole, and the deviation. -/
+theorem re_weilFullFunctional_scaled_eq (ε : ℝ) (δ : ℕ → ℝ) {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {Q : ℕ}
+    (hQ : ∀ n : ℕ, Q < n → packetAutocorr f (Real.log n) = 0) :
+    (_root_.RHTower.weilFullFunctional (fun n => (1 + ε) * (Λ n : ℝ) + δ n)
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re =
+      (1 + ε) * zeroSum f -
+        ε * _root_.RHTower.WeilOneSided.weilArchRe
+          (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ))) -
+        2 * ∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr f (Real.log k) := by
+  have hW := re_weilFullFunctional_packet_of_weight (fun n => (1 + ε) * (Λ n : ℝ) + δ n) f hQ
+  have hΛ := re_weilFullFunctional_packet_of_weight (fun n => (Λ n : ℝ)) f hQ
+  have hz := zeroSum_eq_weilFullFunctional hf hfc
+  have hsplit : ∑ k ∈ Icc 2 Q, ((1 + ε) * (Λ k : ℝ) + δ k) / Real.sqrt k *
+        packetAutocorr f (Real.log k) =
+      (1 + ε) * ∑ k ∈ Icc 2 Q, (Λ k : ℝ) / Real.sqrt k * packetAutocorr f (Real.log k) +
+        ∑ k ∈ Icc 2 Q, δ k / Real.sqrt k * packetAutocorr f (Real.log k) := by
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun k _ => by ring
+  rw [hW, hsplit, hz, hΛ]
+  ring
+
+/-- A bump with positive degrees. -/
+theorem exists_bump_pos_degrees : ∃ g : ℝ → ℝ, ContDiff ℝ 2 g ∧ HasCompactSupport g ∧
+    0 < (∫ u, g u * Real.exp (-(1 / 2) * u)) ∧ 0 < ∫ u, g u * Real.exp (1 / 2 * u) := by
+  have hδ : (0 : ℝ) < 1 / 2 := by norm_num
+  have hg : ContDiff ℝ 2 (SelectiveArithmetic.cutoff 1 (1 / 2)) :=
+    (SelectiveArithmetic.contDiff_cutoff _ _).of_le (by norm_num)
+  have hgc : HasCompactSupport (SelectiveArithmetic.cutoff 1 (1 / 2)) :=
+    SelectiveArithmetic.hasCompactSupport_cutoff hδ
+  have hgsq : Integrable fun u => SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 := by
+    refine ((hg.continuous.mul hg.continuous).integrable_of_hasCompactSupport
+      hgc.mul_right).congr (Eventually.of_forall fun u => ?_)
+    show SelectiveArithmetic.cutoff 1 (1 / 2) u * SelectiveArithmetic.cutoff 1 (1 / 2) u =
+      SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2
+    ring
+  have hM1 : 1 ≤ ∫ u, SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 := by
+    have h := SelectiveArithmetic.le_packetAutocorr_cutoff_zero (show (0 : ℝ) < 1 by norm_num)
+    have e : packetAutocorr (SelectiveArithmetic.cutoff 1 (1 / 2)) 0 =
+        ∫ u, SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 := by
+      rw [packetAutocorr]
+      refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+      show SelectiveArithmetic.cutoff 1 (1 / 2) u *
+          SelectiveArithmetic.cutoff 1 (1 / 2) (u + 0) =
+        SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2
+      rw [add_zero, sq]
+    rwa [e] at h
+  -- both degrees are at least `e^{−1/2}`
+  have hdeg : ∀ σ : ℝ, |σ| ≤ 1 / 2 →
+      Real.exp (-(1 / 2)) ≤ ∫ u, SelectiveArithmetic.cutoff 1 (1 / 2) u * Real.exp (σ * u) := by
+    intro σ hσ
+    have hint : Integrable fun u : ℝ =>
+        SelectiveArithmetic.cutoff 1 (1 / 2) u * Real.exp (σ * u) :=
+      (hg.continuous.mul (by fun_prop)).integrable_of_hasCompactSupport hgc.mul_right
+    have hmono : ∫ u, Real.exp (-(1 / 2)) * SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 ≤
+        ∫ u, SelectiveArithmetic.cutoff 1 (1 / 2) u * Real.exp (σ * u) := by
+      refine integral_mono (hgsq.const_mul _) hint fun u => ?_
+      show Real.exp (-(1 / 2)) * SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 ≤
+        SelectiveArithmetic.cutoff 1 (1 / 2) u * Real.exp (σ * u)
+      have h0 := SelectiveArithmetic.cutoff_nonneg 1 (1 / 2) u
+      have h1 := SelectiveArithmetic.cutoff_le_one 1 (1 / 2) u
+      by_cases hz : SelectiveArithmetic.cutoff 1 (1 / 2) u = 0
+      · rw [hz]
+        simp
+      · have hu : |u| < 1 := lt_of_not_ge fun h => hz (SelectiveArithmetic.cutoff_eq_zero hδ h)
+        have hσu : -(1 / 2) ≤ σ * u := by
+          have h2 : |σ * u| ≤ 1 / 2 := by
+            rw [abs_mul]
+            calc |σ| * |u| ≤ 1 / 2 * 1 := mul_le_mul hσ hu.le (abs_nonneg _) (by norm_num)
+              _ = 1 / 2 := by norm_num
+          linarith [(abs_le.mp h2).1]
+        have he : Real.exp (-(1 / 2)) ≤ Real.exp (σ * u) := Real.exp_le_exp.mpr hσu
+        have hsq : SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 ≤
+            SelectiveArithmetic.cutoff 1 (1 / 2) u := by
+          rw [sq]
+          exact mul_le_of_le_one_left h0 h1
+        calc Real.exp (-(1 / 2)) * SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2
+            ≤ Real.exp (-(1 / 2)) * SelectiveArithmetic.cutoff 1 (1 / 2) u :=
+              mul_le_mul_of_nonneg_left hsq (Real.exp_pos _).le
+          _ ≤ Real.exp (σ * u) * SelectiveArithmetic.cutoff 1 (1 / 2) u :=
+              mul_le_mul_of_nonneg_right he h0
+          _ = SelectiveArithmetic.cutoff 1 (1 / 2) u * Real.exp (σ * u) := mul_comm _ _
+    rw [integral_const_mul] at hmono
+    have hpos := Real.exp_pos (-(1 / 2))
+    calc Real.exp (-(1 / 2)) = Real.exp (-(1 / 2)) * 1 := (mul_one _).symm
+      _ ≤ Real.exp (-(1 / 2)) * ∫ u, SelectiveArithmetic.cutoff 1 (1 / 2) u ^ 2 :=
+          mul_le_mul_of_nonneg_left hM1 hpos.le
+      _ ≤ _ := hmono
+  exact ⟨_, hg, hgc,
+    lt_of_lt_of_le (Real.exp_pos _) (hdeg _ (by rw [abs_neg]; norm_num)),
+    lt_of_lt_of_le (Real.exp_pos _) (hdeg _ (by norm_num))⟩
+
+/-- The pole term against the zero sum, the archimedean energy and the deviation. -/
+theorem scaled_neg_of_bounds {ε s D E Em Z A P Carch Sδ Mδ Mf M c : ℝ} (hss : ε * s = |ε|)
+    (hD : 0 < D) (hE : 0 < E) (hEm : 0 ≤ Em) (hP : P = 2 * D * (2 + s * (E + Em)))
+    (hA : |A - P| ≤ Carch) (hZ : |1 + ε| * |Z| ≤ |ε| * D / 2 * E)
+    (hK : 4 * |ε| * D + |ε| * Carch + (2 * Mδ + |c|) * (4 * M) ≤ |ε| * D / 2 * E)
+    (hS : |Sδ| ≤ Mδ * Mf) (hMf0 : 0 ≤ Mf) (hMf : Mf ≤ 4 * M) (hMδ : 0 ≤ Mδ) (hε : ε ≠ 0) :
+    (1 + ε) * Z - ε * A - 2 * Sδ + c * Mf < 0 := by
+  have hεpos : 0 < |ε| := abs_pos.mpr hε
+  have h1 : (1 + ε) * Z ≤ |ε| * D / 2 * E := by
+    refine (le_abs_self _).trans ?_
+    rw [abs_mul]
+    exact hZ
+  have hεA : -(ε * A) ≤ -(ε * P) + |ε| * Carch := by
+    have h := abs_le.mp (show |ε * (A - P)| ≤ |ε| * Carch by
       rw [abs_mul]
-      exact mul_le_mul_of_nonneg_left harch (abs_nonneg _))
+      exact mul_le_mul_of_nonneg_left hA (abs_nonneg _))
+    have e : ε * (A - P) = ε * A - ε * P := by ring
     linarith [h.1]
-  have hDE : 0 < |ε| * (D₁ * D₂) * E := by positivity
-  have hmassM : (2 * Mδ + |c|) * (∫ u, bumpPair g s T u ^ 2) ≤
-      (2 * Mδ + |c|) * (4 * ∫ u, g u ^ 2) :=
-    mul_le_mul_of_nonneg_left hmass (by positivity)
-  have hDpos : 0 ≤ 2 * |ε| * (D₁ * D₂) * Real.exp (-(1 / 2 * T)) := by positivity
-  have hfour : -(4 * ε * (D₁ * D₂)) ≤ 4 * |ε| * (D₁ * D₂) := by nlinarith [hD]
-  nlinarith [hΛ', hεC, hpoleE, hZabs, hZT', hKT', hdev', hcm, hmassM, hDpos, hfour, hK, hDE,
-    mul_nonneg hMδ0 hmass0]
+  have hεP : ε * P = 4 * ε * D + 2 * |ε| * D * (E + Em) := by
+    rw [hP]
+    linear_combination (2 * D * (E + Em)) * hss
+  have hfour : -(4 * ε * D) ≤ 4 * |ε| * D := by
+    have := mul_nonneg (show 0 ≤ |ε| + ε by linarith [neg_abs_le ε]) hD.le
+    linarith
+  have hEmD : 0 ≤ 2 * |ε| * D * Em := by positivity
+  have hS' : -(2 * Sδ) ≤ 2 * (Mδ * Mf) := by linarith [(abs_le.mp hS).1]
+  have hc : c * Mf ≤ |c| * Mf := mul_le_mul_of_nonneg_right (le_abs_self c) hMf0
+  have hM : (2 * Mδ + |c|) * Mf ≤ (2 * Mδ + |c|) * (4 * M) :=
+    mul_le_mul_of_nonneg_left hMf (by positivity)
+  have hDE : 0 < |ε| * D * E := by positivity
+  linarith
+
+/-- **With the contacts `(1 + ε)Λ + δ`, `ε ≠ 0`, no constant helps.** For every `c` some packet
+has `Re W_{(1+ε)Λ+δ}(f ⋆ f̃) + c ∫f² < 0`. -/
+theorem exists_packet_scaled_neg (hsum : Summable fun n => |δ n| / Real.sqrt n) {ε : ℝ}
+    (hε : ε ≠ 0) (c : ℝ) :
+    ∃ f : ℝ → ℝ, ContDiff ℝ 2 f ∧ HasCompactSupport f ∧
+      (_root_.RHTower.weilFullFunctional (fun n => (1 + ε) * (Λ n : ℝ) + δ n)
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re + c * ∫ u, f u ^ 2 < 0 := by
+  obtain ⟨g, hg, hgc, hD₁0, hD₂0⟩ := exists_bump_pos_degrees
+  have hD := mul_pos hD₁0 hD₂0
+  -- the sign of the pair
+  obtain ⟨s, hs, hεs⟩ : ∃ s : ℝ, s * s = 1 ∧ ε * s = |ε| := by
+    rcases lt_or_gt_of_ne hε with h | h
+    · exact ⟨-1, by norm_num, by rw [abs_of_neg h]; ring⟩
+    · exact ⟨1, by norm_num, by rw [abs_of_pos h]; ring⟩
+  have hεpos : 0 < |ε| := abs_pos.mpr hε
+  -- the constant that the pole term has to beat
+  obtain ⟨K, hK⟩ : ∃ K : ℝ, K = 4 * |ε| *
+      ((∫ u, g u * Real.exp (-(1 / 2) * u)) * ∫ u, g u * Real.exp (1 / 2 * u)) +
+      |ε| * (1 / (2 * π) * ∫ τ : ℝ, 4 * ‖‖paperFT (fun u => (g u : ℂ)) τ‖ ^ 2 *
+        _root_.RHTower.archimedeanWeilSymbol (τ / (2 * π))‖) +
+      (2 * (∑' n : ℕ, |δ n| / Real.sqrt n) + |c|) * (4 * ∫ u, g u ^ 2) := ⟨_, rfl⟩
+  have hη : 0 < |ε| *
+      ((∫ u, g u * Real.exp (-(1 / 2) * u)) * ∫ u, g u * Real.exp (1 / 2 * u)) / 2 := by
+    positivity
+  have hZ := (tendsto_abs_zeroSum_bumpPair hg hgc hs).const_mul |1 + ε|
+  rw [mul_zero] at hZ
+  have hKt : Tendsto (fun T : ℝ => K * Real.exp (-(1 / 2 * T))) atTop (𝓝 0) := by
+    have h := (tendsto_exp_neg_mul (show (0 : ℝ) < 1 / 2 by norm_num)).const_mul K
+    rwa [mul_zero] at h
+  obtain ⟨T, ⟨hZT, hKT⟩, -⟩ := ((hZ.eventually (gt_mem_nhds hη)).and
+    (hKt.eventually (gt_mem_nhds hη))).and (eventually_ge_atTop (0 : ℝ)) |>.exists
+  have hE0 : 0 < Real.exp (1 / 2 * T) := Real.exp_pos _
+  have hEinv : Real.exp (-(1 / 2 * T)) * Real.exp (1 / 2 * T) = 1 := by
+    rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  have hEinv' : Real.exp (-(T / 2)) * Real.exp (1 / 2 * T) = 1 := by
+    rw [show -(T / 2) = -(1 / 2 * T) by ring]
+    exact hEinv
+  -- the packet
+  have hf := contDiff_bumpPair hg s T
+  have hfc := hasCompactSupport_bumpPair hgc s T
+  refine ⟨bumpPair g s T, hf, hfc, ?_⟩
+  obtain ⟨Q, hQ⟩ := exists_packetAutocorr_log_eq_zero hfc
+  rw [re_weilFullFunctional_scaled_eq ε δ hf hfc hQ]
+  refine scaled_neg_of_bounds hεs hD hE0 (Real.exp_pos _).le
+    (pole_bumpPair hg.continuous hgc hs T) (abs_weilArchRe_bumpPair_sub_le hg hgc hs T) ?_ ?_
+    (abs_sum_deviation_le hsum hf.continuous hfc Q) (integral_nonneg fun u => sq_nonneg _)
+    (integral_bumpPair_sq_le hg.continuous hgc hs T) (tsum_nonneg fun n => by positivity) hε
+  · have h1 := mul_le_mul_of_nonneg_right hZT.le hE0.le
+    rwa [mul_assoc, mul_assoc, hEinv', mul_one] at h1
+  · have h1 := mul_le_mul_of_nonneg_right hKT.le hE0.le
+    rw [mul_assoc, hEinv, mul_one] at h1
+    rw [hK] at h1
+    exact h1
 
 /-- Bézout on the comb of the integers with the contacts `(1 + ε)Λ + δ` and the counterterm
 `log(n/2π) + c`. -/

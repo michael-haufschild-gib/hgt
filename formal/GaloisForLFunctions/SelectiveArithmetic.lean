@@ -10,6 +10,7 @@ import GaloisForLFunctions.SelectiveArithmetic.TheSignIsSquareRootCancellationOf
 import GaloisForLFunctions.SelectiveArithmetic.EveryVisibleWeightIsBoundedByTheMass
 import GaloisForLFunctions.SelectiveArithmetic.TheFirstSelectiveWindowOfZeta
 import GaloisForLFunctions.SelectiveArithmetic.APoleAtTheHeightFailsBeyondTheTrivialAperture
+import GaloisForLFunctions.SelectiveArithmetic.AHeightIsAConductorOfTheTwistedContacts
 
 /-!
 # Selective Arithmetic
@@ -54,6 +55,10 @@ sign, and where the first statement beyond that scale lies.
   `ζ(s + it) ζ(s − it)`, fails at some height of every dyadic window at the aperture
   `log log t + log 2 + o(1)`; in the aspect of the height the trivial aperture is
   `log log |t| + O(1)`.
+* The height transfer: the form of a system on a packet modulated to the height `t` is the form of
+  the contacts twisted by `t` at the conductor `q (2 + |t|)`; feasibility is square-root
+  cancellation of the twisted Riesz means at every height, and cancellation of the twisted contacts
+  at every height gives feasibility with no condition on the shape.
 
 See `SelectiveArithmetic/README.md`.
 -/

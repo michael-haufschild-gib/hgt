@@ -11,6 +11,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZero
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.EveryBoxHasADirichletPolynomialWithExactlyTheZerosOfXi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentLivesInTheBohrStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ConsecutivePointsOfAProgressionDetectAPolynomial
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawIsTheLawOfTheCarry
 
 /-!
@@ -49,8 +50,15 @@ and uses no sign of a form and no operator.
   `Re s > x + ½`, and on `Re s > x` when its coefficients live on finitely many primes. So a
   bounded constituent with a zero needs infinitely many primes and `0 ≤ x < ½`
   (`ABoundedConstituentLivesInTheBohrStrip`).
+* Bohr's inequality over a thin support: the two abscissas differ by at most half the exponent of
+  convergence of the support (same module).
 * The index law in a window: if `‖E'‖ ≤ ‖E‖` on a circle, `E − E'` has at most as many zeros
-  inside as `E`, with no winding number (`SizesOnACircleCertifyTheDefectInside`).
+  inside as `E`, with no winding number; for a splitting `ξ = E + E^♯` the zeros of `ξ` in the
+  disc are bounded by the defect (`SizesOnACircleCertifyTheDefectInside`).
+* Turán's power sums: an exponential polynomial of `N` terms is detected on any `N` consecutive
+  points of a vertical progression, with a constant free of the frequencies; `N` consecutive
+  zeros on a progression force a zero on it that is not a zero of `ξ`
+  (`ConsecutivePointsOfAProgressionDetectAPolynomial`).
 * The jump law is the law of the carry `{x} + {y} − {x + y}`: the expansions on the two sides of
   the line have the same carries, and the carries determine the series
   (`TheJumpLawIsTheLawOfTheCarry`).

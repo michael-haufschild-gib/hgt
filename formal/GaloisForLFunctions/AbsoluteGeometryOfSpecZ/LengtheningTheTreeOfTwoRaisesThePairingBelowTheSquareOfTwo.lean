@@ -18,9 +18,10 @@ of `p` on the autocorrelation `h_f`.
   `exists_not_treeBezoutAt_two`, `exists_treeThreshold_two`): on packets of length `L ≤ log 4`
   a longer tree has a larger functional; all long trees satisfy Bézout, without hypothesis; all
   short ones fail; so Bézout holds exactly from a threshold length `ℓ*(L)` on.
-* **The square** (`treeBezoutAt_two_of_width`): for `L ≤ 181/250` the threshold is at most
-  `log 2 − 1/10000`. Bézout for the square of the integers on packets of length `L ≤ log 4` is
-  the statement `ℓ*(L) ≤ log 2`.
+* **The square** (`treeBezoutAt_two_of_width`, `exists_margin_iff_exists_treeBezoutAt_two_lt`):
+  for `L ≤ 181/250` the threshold is at most `log 2 − 1/10000`. Bézout for the square of the
+  integers on packets of length `L ≤ log 4` is the statement `ℓ*(L) ≤ log 2`, and the square
+  has a margin there iff `ℓ*(L) < log 2`.
 * **Odd primes** (`exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le`): for
   `p ≥ 3` the generator is negative on a pair of bumps at the distance `log p`, and on packets
   of any length above `log p` every long tree of `p` fails.
@@ -590,6 +591,61 @@ theorem exists_treeThreshold_two {L : ℝ} (hL0 : 0 < L) (hL : L ≤ 2 * Real.lo
       have h0 := (treeBezoutAt_two_iff hL ℓ').mp hℓ' g hg hgc ⟨x₀, hx₀⟩
       rw [← hEz, mul_zero] at h0 hneg
       linarith
+
+/-! ### The threshold and the margin of the square -/
+
+/-- **A tree of `2` shorter than `log 2` that satisfies Bézout is a margin for the square**: on
+the packets of length `L ≤ log 4` the zero sum is at least `(log 2 − ℓ)(1 − 1/√2)` times the
+mass. -/
+theorem zeroSum_ge_of_treeBezoutAt_two {L : ℝ} (hL : L ≤ 2 * Real.log 2) {ℓ : ℝ}
+    (hℓ : ℓ ≤ Real.log 2) (h : TreeBezoutAt 2 ℓ L) (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {x₀ : ℝ} (hlen : ∀ u, u ≤ x₀ ∨ x₀ + L ≤ u → f u = 0) :
+    (Real.log 2 - ℓ) * ((1 - 1 / Real.sqrt 2) * ∫ u, f u ^ 2) ≤ zeroSum f := by
+  have h0 := (treeBezoutAt_two_iff hL ℓ).mp h f hf hfc ⟨x₀, hlen⟩
+  have hE := (treeGenerator_two_ge hf.continuous hfc hlen hL).1
+  have h1 := mul_le_mul_of_nonneg_left hE (sub_nonneg.mpr hℓ)
+  have e : (ℓ - Real.log 2) * treeGenerator 2 f = -((Real.log 2 - ℓ) * treeGenerator 2 f) := by
+    ring
+  linarith
+
+/-- **A margin for the square shortens the tree of `2`**: if the zero sum is at least `m` times
+the mass on the packets of length `L ≤ log 4`, every tree of length at least `log 2 − m/2`
+satisfies Bézout there. -/
+theorem treeBezoutAt_two_of_margin {L : ℝ} (hL : L ≤ 2 * Real.log 2) {m : ℝ} (hm : 0 ≤ m)
+    (hmargin : ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
+      (∃ x₀ : ℝ, ∀ u, u ≤ x₀ ∨ x₀ + L ≤ u → g u = 0) → m * ∫ u, g u ^ 2 ≤ zeroSum g)
+    {ℓ : ℝ} (hℓ : Real.log 2 - m / 2 ≤ ℓ) : TreeBezoutAt 2 ℓ L := by
+  rw [treeBezoutAt_two_iff hL]
+  intro g hg hgc hlen
+  have hZ := hmargin g hg hgc hlen
+  obtain ⟨x₀, hx₀⟩ := hlen
+  have hE := treeGenerator_two_ge hg.continuous hgc hx₀ hL
+  have hE0 := treeGenerator_two_nonneg hg.continuous hgc hx₀ hL
+  have ht : -(m / 2) ≤ ℓ - Real.log 2 := by linarith
+  have h1 : -(m / 2) * treeGenerator 2 g ≤ (ℓ - Real.log 2) * treeGenerator 2 g :=
+    mul_le_mul_of_nonneg_right ht hE0
+  have h2 : m / 2 * treeGenerator 2 g ≤ m / 2 * (2 * ∫ u, g u ^ 2) :=
+    mul_le_mul_of_nonneg_left hE.2 (by positivity)
+  linarith
+
+/-- **The square has a margin at a length iff the threshold of the tree of `2` is below
+`log 2`.** -/
+theorem exists_margin_iff_exists_treeBezoutAt_two_lt {L : ℝ} (hL : L ≤ 2 * Real.log 2) :
+    (∃ m : ℝ, 0 < m ∧ ∀ g : ℝ → ℝ, ContDiff ℝ 2 g → HasCompactSupport g →
+      (∃ x₀ : ℝ, ∀ u, u ≤ x₀ ∨ x₀ + L ≤ u → g u = 0) → m * ∫ u, g u ^ 2 ≤ zeroSum g) ↔
+      ∃ ℓ : ℝ, ℓ < Real.log 2 ∧ TreeBezoutAt 2 ℓ L := by
+  have hκ : 0 < 1 - 1 / Real.sqrt 2 := by linarith [one_div_sqrt_two_lt_one]
+  constructor
+  · rintro ⟨m, hm, hmargin⟩
+    exact ⟨Real.log 2 - m / 2, by linarith,
+      treeBezoutAt_two_of_margin hL hm.le hmargin le_rfl⟩
+  · rintro ⟨ℓ, hℓ, h⟩
+    refine ⟨(Real.log 2 - ℓ) * (1 - 1 / Real.sqrt 2), mul_pos (sub_pos.mpr hℓ) hκ,
+      fun g hg hgc hlen => ?_⟩
+    obtain ⟨x₀, hx₀⟩ := hlen
+    have := zeroSum_ge_of_treeBezoutAt_two hL hℓ.le h hg hgc hx₀
+    rw [mul_assoc]
+    exact this
 
 /-! ### Odd primes: the generator is indefinite -/
 

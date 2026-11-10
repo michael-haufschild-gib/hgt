@@ -56,24 +56,37 @@ For `w = Λ Re χ`, `q` = conductor: `= Z_χ(f)` (+ `placeEnergy ≥ 0` for odd 
 | `TheMassOfAConductorPaysEveryDominatedContact` | `Dominated`, `contactForm`, `systemForm`, `Feasible`, Schur price `abs_contactForm_le_of_psi`, `systemForm_ge_of_dominated`, `exists_systemForm_margin`, `twistedZeroSum_eq_systemForm`, `exists_trivialAperture_margin` | clean, olean built |
 | `ThePolarPacketsOfAWindow` | `cutoff`, `evenPolar`, `oddPolar`, masses, derivative energies, `packetAutocorr_evenPolar_ge`, `packetAutocorr_oddPolar_le`, `abs_packetAutocorr_le` | clean, olean built |
 | `TheLiouvilleTwistFailsBeyondTheTrivialAperture` | `systemForm_le_of_packet`, `liouvilleWeight`, `exists_systemForm_polar_neg`, `exists_not_feasible`, `trivialAperture`, `tendsto_trivialAperture_sub_log`, `eventually_cubic_lt_exp` | clean, olean built |
-| `TheHeightOfAPacketIsAMass` | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `re_weilPoleTerm_modulated_ge`, `re_weilFullFunctional_modulated_ge`, `exists_height_margin`, `contDiff_two_deriv` | clean, olean built |
+| `TheHeightOfAPacketIsAMass` | `integral_arch_modulated_ge`, `systemForm_modulated_ge`, `abs_re_weilPoleTerm_modulated_le`, `re_weilFullFunctional_modulated_ge`, `exists_height_margin`, `contDiff_two_deriv` | clean, olean built |
 | `CancellationInTheContactsBuysTheLadder` | `HasCancellation`, Abel summation, `abs_sum_contact_cos_le`, `systemForm_ge_of_cancellation`, `exists_cancellation_margin` | clean |
 | `AnIsolatedPairShowsAtTheRungOfItsDepth` | `isolatedPair_nonneg_of_rung`, `isolatedPair_neg_of_rung`, `exists_companion_of_rung`, `zeta_companion_of_rung` | clean |
 | `TheFeasibleSetsOfAConductor` | `feasible_congr`, `Feasible.anti`, `Feasible.mono_conductor`, `convex_feasible`, `feasible_mul_exp_iff`, `exists_not_floor`, `bddAbove_feasibleApertures`, `feasible_of_lt_trivialAperture`, `exists_not_feasible_of_trivialAperture_lt` | clean |
 | `TheZerosOfADirichletLFunctionOnTheLadder` | `dirichletZeros_local_count`, `dirichlet_companion_of_rung` | clean |
 | `TheSignIsSquareRootCancellationOfTheRieszMean` | `systemForm_le_of_packet_scaled`, `packetAutocorr_cutoff_ge/le`, `packetAutocorr_evenPolar_sub_oddPolar`, `contactForm_le_of_systemForm_nonneg`, `riesz_bound_algebra`, `exists_riesz_le_of_polar_nonneg`, `exists_riesz_le_of_feasible`, `exists_not_feasible_of_riesz_ge`, `exists_riesz_twist_le_of_nonneg` | clean |
+| `EveryVisibleWeightIsBoundedByTheMass` | `twoBump`, `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible` (free width `r`), `abs_contactForm_le_sum_abs`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | clean, olean built |
+| `TheFirstSelectiveWindowOfZeta` | `PoleFeasible`, `poleFeasible_iff_of_lt_half_log_two`, `poleFeasible_of_abs_sub_le`, `poleFeasible_vonMangoldt`, `abs_re_weilPoleTerm_twoBump_le`, `exists_abs_weight_le_of_poleFeasible` | clean |
+| `APoleAtTheHeightFailsBeyondTheTrivialAperture` | `weilTest_modulatedTest`, `contactForm_modulatedTest`, `alignedWeight`, `integral_cos_mul_sq_ge`, `exists_height_sum_cos_sq_ge`, `integral_arch_modulated_le`, `re_weilFullFunctional_modulated_le`, `exists_aligned_height_neg`, `exists_dominated_height_neg` | clean, olean built |
+| `AHeightIsAConductorOfTheTwistedContacts` | `twistedWeight`, `archimedeanWeilSymbol_add_le`, `systemForm_modulatedTest_le/ge` (height transfer), `exists_twisted_riesz_le_of_feasible`, `exists_height_cancellation_margin`, `feasible_of_symbol_nonneg`, `feasible_of_twisted_cancellation` | clean |
 
-| `EveryVisibleWeightIsBoundedByTheMass` | `twoBump`, `packetAutocorr_twoBump`, `exists_abs_weight_le_of_feasible`, `feasible_of_sum_abs_le`, `feasible_iff_of_lt_half_log_two` | clean |
+Umbrella `SelectiveArithmetic.lean` imports all thirteen; `MainTheorems.lean` imports the umbrella.
+README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`, height transfer).
 
-Umbrella `SelectiveArithmetic.lean` imports all ten; `MainTheorems.lean` imports the umbrella.
-README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ = 1`).
+## Paper mathematics of modules 11–13
+- **First window of ζ.** `Re W_w = Re W_Λ − contactForm(w − Λ)`; for `2a < log 2` no contact;
+  two-bump pole term `≤ 12 Φ₀`; margin of Weil's form at width `181/250` gives the interior of `Λ`.
+- **Height fake.** `(F_t ⋆ F̃_t)(x) = e^{−itx}(f ⋆ f̃)(x)`; aligned weight `Λ cos(t log n)` is seen
+  with `cos²`; `∫_T^{2T} cos²(tx) dt ≥ T/2 − 1` (`x ≥ ½`); maximum ≥ mean; balance with
+  `2 log T ≤ e^{−η} e^{a}`.
+- **Height transfer.** `S_∞(τ+t) ≤ S_∞(τ) + log(2+|t|) + A₂`; translation of the frequency
+  integral; contact form of `w` on `e^{−itu}f` = contact form of `w cos(t log ·)` on `f`.
+  Receiver at height `t` = module 9 applied to the twisted system at conductor `q(2+|t|)e^{A₂}`.
 
-## Not done (candidates)
-- Fake for the height aspect in the dominated class (block-aligned phases).
-- Rung law for an exceptional zero with Deuring–Heilbronn isolation (peer AGZ module has the raw
-  inequality; `dirichletZeros_local_count` here duplicates the peer's local count because that
-  module had no olean).
-- Exchange rate without shape condition (uniform in `τ`); first-contact interval (peer A96).
+## Open mathematics of the field (README §8)
+- Sign of a true object at `log log q + C` (Landau–Siegel on the comb); a rung `κ > 1`.
+- Whether the sign on bounded shapes forces feasibility in the dominated class (candidate
+  separation: aligned system at polylog heights, mean square of the contact polynomial over the
+  heights, grid + Lipschitz; shaped positivity from the symbol bound `α − βτ²`).
+- Rung law for an exceptional zero with Deuring–Heilbronn isolation: peer AGZ module has the raw
+  inequality.
 
 ## Peers (do not duplicate)
 - `AbsoluteGeometryOfSpecZ/TheTrivialApertureAndTheExceptionalSquare.lean` (peer, card
@@ -102,4 +115,4 @@ README rewritten around the proved pillars (ladder, rungs, exchange rate `2δκ 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — card created; README first draft; ten modules compiled clean and wired; README rewritten around the proved pillars.
+- 2026-11-10 — card created; README first draft; thirteen modules compiled clean and wired; README rewritten around the proved pillars.
