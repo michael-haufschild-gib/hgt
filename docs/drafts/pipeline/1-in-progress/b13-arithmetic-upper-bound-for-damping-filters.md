@@ -296,11 +296,31 @@ below the exact signal size is still missing.
 For `1/2≤σ<1`, `t≥2`, `0<α≤ξ≤2αt`, `αX²=2`,
 `1≤U,V≤t²`, and `X≥t⁸`,
 
-`M₁−P₁=T_II+B_V L₁−(1+A_UV+D_V)P₁+Oσ(1/t)`.
+`M₁−P₁=T_II+B_V L₁−(1+A_UV+D_V)P₁+Oσ(t⁷/X)`.
 
-The explicit error is `(8Dσ+3Cσ+8)/t`; two allowed cutoff pairs differ
-by at most twice this. Both lattice errors and the finite head are now
+The explicit error is `(8Dσ+3Cσ+8)t⁷/X≤(8Dσ+3Cσ+8)/t`; two allowed
+cutoff pairs differ by at most twice the inverse-height bound. Both lattice errors and the finite head are now
 uniformly negligible. The remaining object is the centred actual type-II
-sum, including its logarithmic continuum term. No bound for that object
-or contracting-grid factor is supplied. Proof and Lean audit:
+sum, including its logarithmic continuum term. Its independent upper bound
+remains open. Proof and Lean audit:
 `../3-formalized/b13-centred-vaughan-current.md`.
+
+
+## Contracting filters preserve the reduction
+
+For fixed roots `exp(hω_k)`, degree `d`, `β≥σ`, `t≥4`,
+`2α≤ξ≤αt`, `1≤U,V≤t²`, `0≤h≤1`, and `X≥2e t⁸`,
+
+`|filtered (M₁−P₁−C_UV)| ≪σ,β,ω h^d t^(d+7)/X`.
+
+At `X≥2e t^(d+8)`, division by `h^d` leaves error `O(1/t)` for
+every positive contracting spacing. No restriction on `ht` or root
+separation occurs. The actual error is holomorphic in logarithmic damping
+on a right half-strip of width `1/(16t)`; Cauchy cancellation supplies one
+factor `h` per root. The exact sample identity and bound apply to the
+existing `rotatedPrimeMomentFilter`, with both signed continuum terms.
+
+The spacing-normalization gap is closed. An independent upper bound for
+the centred type-II current is still missing; B13 remains unresolved.
+Proof and nine clean transitive axiom audits:
+`../3-formalized/b13-spacing-preserving-centred-vaughan-reduction.md`.

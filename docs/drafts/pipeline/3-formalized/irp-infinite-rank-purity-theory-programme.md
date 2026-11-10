@@ -275,6 +275,38 @@ it vanishes identically there (`hermiteBiehler_indexZero`, `halfShift_ne_zero`).
 identically zero; `F(1 − s) = −cF(s)` for `c = ±1` reflects the left half-plane
 (`re_eq_half_of_xi_halfShift_eq_zero`, Taylor's theorem).
 
+### P22. The zeros contain no class of one Frobenius
+Let `0 < Re s < 1`, `P > 0`, `K_s(x) = {e^x} e^{−sx}` on `x ≥ 0`, so `∫_0^∞ K_s = 1/(s−1) − ζ(s)/s`
+(`RHTower.integral_Ioi_zero_fract_exp`).
+1. *Periodization.* `H(y) = Σ_{k≥0} K_s(y + kP)` converges with `‖K_s(y + kP)‖ ≤ e^{−kP·Re s}` for
+   `y ≥ 0`. Unfolding: `∫_0^P H = Σ_k ∫_{kP}^{(k+1)P} K_s = ∫_0^∞ K_s` (`integral_ladderSum`). With
+   `ω_n = 2πn/P` the character `e^{−iω_n y}` is constant along the translates, so
+   `H(y) e^{−iω_n y}` is the periodization of `K_{s_n}`, `s_n = s + iω_n` (`ladderSum_add_mul_I`).
+2. *Polar part.* `E = e^{(1−s)P} ≠ 1` and `∫_0^P e^{(1−s)y} e^{−iω_n y}/(E − 1) dy = 1/(1 − s_n)`
+   (`integral_polar_mul_exp`). Hence `G = H + e^{(1−s)y}/(E − 1)` has
+   `∫_0^P G e^{−iω_n y} = −ζ(s_n)/s_n` for every `n ∈ ℤ` (`integral_ladderDefect_mul_exp`,
+   `fourierCoeffOn_ladderDefect`).
+3. *Limits.* `K_s` is right-continuous with left limit `K_s^-(x) = (e^x − ⌈e^x⌉ + 1)e^{−sx}`. By
+   dominated convergence `G(0^+) = Σ_k K_s(kP) + 1/(E−1)` and
+   `G(P^-) = Σ_k K_s^-((k+1)P) + E/(E−1)`. Since `K_s(0) = 0` and
+   `K_s(kP) − K_s^-(kP) = −J_k e^{−skP}` with `J_k = 1` if `e^{kP} ∈ ℤ` and `0` otherwise,
+   `G(0^+) − G(P^-) = −Σ_{k≥0} J_k e^{−skP}` (`ladderDefect_limits_sub`).
+4. *The jump is not zero.* `{k : e^{kP} ∈ ℕ} = k₀ℕ` or `{0}` (`RHTower.dvd_of_mem_expNatSet`), so the
+   series is `1/(1 − e^{−sk₀P})` or `1` (`tsum_jumpTerm_ne_zero`).
+5. *No jump with summable coefficients.* If `f ∈ L²(a, b]` has `Σ_n ‖c_n(f)‖ < ∞`, the series
+   `Σ c_n e_n` converges uniformly to a continuous periodic `g`; in `L²` both `f` and `g` are the
+   sum of the Fourier series, so `f = g` almost everywhere, and one-sided limits of `f` at `a` and
+   `b` are `g(a) = g(b)` (`endpoint_limits_eq_of_summable_fourierCoeffOn`).
+6. With `P = 2π/T`: `Σ_n ‖ζ(ρ + inT)/(ρ + inT)‖ < ∞` contradicts 3–5
+   (`not_summable_norm_riemannZeta_div`). So every vertical progression in the strip has infinitely
+   many points that are not zeros (`exists_riemannZeta_ne_zero_progression`); none consists of
+   zeros of `ξ` (`not_forall_xi_progression`); for `q > 1` the class `{ρ' : q^{ρ'} = q^ρ}` is not
+   contained in the zero set (`exists_conjugate_not_zero`); `ξ` vanishes on the zero set of no
+   `q^{−s} − u`, `u ≠ 0` (`exists_zero_localFactor_not_zero`), of no polynomial in `q^{−s}` with a
+   nonzero root, and on the zeros of no eigenvalue of a curve datum
+   (`exists_curve_zero_not_zero`). The hypothesis of
+   `RHTower.periodicityDichotomy_zeta_iff_riemannHypothesis` is discharged.
+
 ## Modules
 | Module | Content |
 |---|---|
@@ -296,6 +328,7 @@ identically zero; `F(1 − s) = −cF(s)` for `c = ±1` reflects the left half-p
 | WithoutTheChainConditionKroneckerOverTheIntegersFails | `frobTrace_eq_tsum_of_powerSums_zero`, `frobTrace_wolff`, `exists_integral_traceClass_module_not_tate`, `wolff_not_weightsWellFounded` |
 | AModeAccessibleFromInfinityIsEliminated | `towerResolvent`, `levelSeries`; `towerResolvent_eq_levelSeries`, `analyticAt_levelSeries`, `analyticAt_towerResolvent`, `merged_eq_zero_of_continuation`, `merged_eq_zero_of_accessible`, `merged_eq_zero_of_radially_visible`, `wolff_node_not_accessible`, `lag_not_small_of_accessible`, `riemannHypothesis_of_lag_bounded_of_accessible` |
 | OnTheFlowTheWeightFiltrationNeedsNoChainCondition | `flowTrace`, `flowMellin`, `flowPath`; `analyticAt_flowMellin`, `flowMellin_eq_towerResolvent`, `mergedWeight_eq_zero_of_flow_bound`, `flow_bound_iff`, `zeroMotive_flow_bound_iff` |
+| TheZerosContainNoClassOfOneFrobenius | `ladderKernel`, `ladderSum`, `ladderDefect`, `jumpTerm`; `endpoint_limits_eq_of_summable_fourierCoeffOn`, `integral_ladderSum`, `fourierCoeffOn_ladderDefect`, `tsum_jumpTerm_ne_zero`, `ladderDefect_limits_sub`, `not_summable_norm_riemannZeta_div`, `exists_riemannZeta_ne_zero_progression`, `not_forall_xi_progression`, `exists_conjugate_not_zero`, `exists_zero_localFactor_not_zero`, `exists_zero_polynomial_not_zero`, `exists_curve_zero_not_zero`, `aperiodicZeroAt_riemannZeta`, `periodicityDichotomy_zeta_iff_riemannHypothesis` |
 | NoFamilyOfZerosIsIntegralWhateverTheirRealParts | `norm_frobTrace_sub_le`, `frobTrace_dilate_sub`, `mergedWeight_eq_zero_of_integral_locallyFinite`, `eq_zero_of_integral_trace_of_distinct_xi_zeros` |
 | AFamilySeesItsMeanAndItsMembersOfPositiveMass | `norm_le_of_amortized_levelSums`, `member_norm_le_of_family_moments`, `integral_norm_sq_fixedPart_add`, `fixedPart_norm_le_one_of_mean_bounded`, `fixedPart_norm_le_one_of_excess_bounded` |
 | ASchurFunctionReducesAtEveryNode | `mobius`; `norm_le_norm_defectFactor`, `exists_quotient_by_defectFactor`, `exists_schur_reduction`, `mobius_injOn` |
@@ -324,3 +357,4 @@ fixed part with mass one.
 - 2026-11-10 — 25 modules: on the flow the weight filtration of a locally finite module is its growth filtration
 - 2026-11-10 — 26 modules: no family of distinct zeros is integral, without a chain condition; families with any polynomial defect
 - 2026-11-10 — index zero: half-shift family, Taylor's theorem
+- 2026-11-10 — 27 modules: the zeros contain no class of one Frobenius (divergence along every vertical progression in the strip)

@@ -383,13 +383,26 @@ scale, so the error gains `Vt/X` while both signed main terms remain exact.
 actual type II. For `1/2≤σ<1`, `t≥2`, `0<α≤ξ≤2αt`, `αX²=2`,
 `1≤U,V≤t²` and `X≥t⁸`, the complete prime moment satisfies
 
-    M₁−P₁ = T_II+B_V L₁−(1+A_UV+D_V)P₁+Oσ(1/t).
+    M₁−P₁ = T_II+B_V L₁−(1+A_UV+D_V)P₁+Oσ(t⁷/X).
 
-The error is at most `(8Dσ+3Cσ+8)/t`, using the two second-order
-lattice constants. Any two allowed cutoff pairs give centred currents
+The error is at most `(8Dσ+3Cσ+8)t⁷/X≤(8Dσ+3Cσ+8)/t`, using
+the two second-order lattice constants. Any two allowed cutoff pairs give centred currents
 within twice this error. This removes both type-I remainders and the finite
-head uniformly. The centred type-II bound and the contracting-grid factor
-remain open; the reduction does not prove B13.
+head uniformly.
+
+`GaussianDampingErrorAnalytic.lean`, `HolomorphicDampingFilters.lean` and
+`GaussianFilteredCentredVaughanError.lean` retain every contracting-grid
+factor in this reduction. For `β≥σ`, `t≥4`, `2α≤ξ≤αt`,
+`X≥2e t⁸`, fixed roots `exp(hω_k)` and `0≤h≤1`,
+
+    |filtered (M₁−P₁−C_UV)| ≪σ,β,ω h^d t^(d+7)/X.
+
+Thus `X≥2e t^(d+8)` gives error `O(h^d/t)`, uniformly in spacing and
+quadratic cutoffs. The exact polynomial sample sum is identified with the
+existing `rotatedPrimeMomentFilter`. Holomorphy of the actual arithmetic
+error and a logarithmic damping half-strip of width `1/(16t)` supply the
+Cauchy cancellation. The independent bound for centred type II remains
+open; this reduction does not prove B13.
 
 ## Mechanisms and tools
 

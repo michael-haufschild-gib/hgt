@@ -1,15 +1,15 @@
 # Quadratic residue collapse with a nonpolynomial joint limit
 
 - **ID:** B130-quadratic-boundary-scaling
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM — paper proof; Lean pending
+- **Stage:** 3-formalized
+- **Type:** THEOREM — formalized
 - **Source:** [Logarithmic residue collapse](../3-formalized/liouville-boundary-residue-logarithmic-collapse.md).
 
-## Target
+## Theorem
 
 For `v_p(z)=exp(-iπ exp(-z log p))`, the endpoint phases are Liouville.
 For real `t>0`, prime deviations from one decay like `p^(-t)`.
-Let `U` be the canonical interior pole regularization. Conjecture:
+Let `U` be the canonical interior pole regularization. Then, as `t→0⁺`,
 
 `t^(-2) U(t,1+tw) → Q(w)` locally uniformly on `Re w>-1`, where
 
@@ -45,7 +45,7 @@ with `Re(w+1)≥η` and `|w|≤M` on `K`. For `0<t≤1`, `k≥1`,
 Otherwise `|P(1+δ)|≤P(1+ε)`, `ε≤|δ|≤k+M`, and `|arg δ|≤π/2`.
 Thus, uniformly in `t,w,k`,
 
-`|E(1+t(w+k))|≤C_K+log(k+M)`.
+`|E(1+t(w+k))|≤C_K+k`.
 
 The factorial weights make this majorant summable. For each fixed `k`,
 `E(1+t(w+k))→-D_+(1)` uniformly on `K`.
@@ -109,8 +109,24 @@ contradiction.
 ## Significance and formal status
 
 Quadratic residue collapse matches the endpoint's zero order but does
-not imply joint specialization: the full scaling profile is
-nonpolynomial, and its first singularity is a moving branch with
-nonintegral exponent. These exact positive statements are the survivor
-of the specialization obstruction. Paper proof complete; Lean
-formalization pending. No external novelty claim; B130 remains open.
+not imply joint specialization. The exact scaling profile is
+nonpolynomial; its first singularity is a moving branch with exponent
+`iπ`. This explicit profile and branch factorization are the positive
+survivors of the specialization obstruction. They identify spectral
+information invisible to the residue order alone.
+
+Lean modules under `ArithmeticWeightTheory/GaugeDeformations/`:
+
+| Module | Main declarations |
+|---|---|
+| `ExponentialPrimePhase.lean` | `exponentialPhase_interior_poles`, `analyticOnNhd_exponentialPhasePrimeRemainder` |
+| `PrimeLogarithmRenormalization.lean` | `exists_primeLogRegularPart_germ` |
+| `MovingPhaseBranch.lean` | `exponentialPhase_moving_branch_factorization`, `exponentialPhase_moving_branch_unit`, `exponentialPhase_moving_branch_no_continuous_extension`, `exponentialPhase_no_joint_endpoint_regularization` |
+| `QuadraticResidueScaling.lean` | `tendstoLocallyUniformlyOn_exponentialPhase_quadratic`, `tendsto_exponentialPhase_residue_quadratic`, `quadraticResidueScalingProfile_not_polynomial`, `exponentialPhase_quadratic_residue_coefficient_ne_zero` |
+
+All listed statements are Lean checked. Their transitive dependency
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
+Final direct module audits remain. No external novelty claim.
+B130's arithmetic Stepanov bound remains open.
+
+[Next conjecture: universal analytic smoothing obstruction](../0-backlog/universal-moving-branch-for-analytic-prime-smoothing.md).

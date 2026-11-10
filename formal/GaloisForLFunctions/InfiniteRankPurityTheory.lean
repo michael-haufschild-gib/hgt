@@ -24,6 +24,7 @@ import GaloisForLFunctions.InfiniteRankPurityTheory.WithoutTheChainConditionKron
 import GaloisForLFunctions.InfiniteRankPurityTheory.AModeAccessibleFromInfinityIsEliminated
 import GaloisForLFunctions.InfiniteRankPurityTheory.OnTheFlowTheWeightFiltrationNeedsNoChainCondition
 import GaloisForLFunctions.InfiniteRankPurityTheory.NoFamilyOfZerosIsIntegralWhateverTheirRealParts
+import GaloisForLFunctions.InfiniteRankPurityTheory.TheZerosContainNoClassOfOneFrobenius
 
 /-!
 # Infinite-rank purity theory
@@ -54,7 +55,9 @@ statement at a point.
   isolated mode accessible from infinity is eliminated by continuing the resolvent.
 * Conjugacy: the affine and anti-affine symmetries of the zero divisor are `1, ι, c, ιc`; over `ℤ`
   an equivariant map is diagonal, the module is semisimple without multiplicity, and over one
-  Frobenius conjugates share their weight.
+  Frobenius conjugates share their weight. The zeros contain no class of one Frobenius:
+  `Σ_n |ζ(ρ + inT)|/|ρ + inT|` diverges along every vertical progression in the strip, so `ξ`
+  vanishes on the zeros of no local factor `q^{-s} - u` and of no curve over a finite field.
 
 See `InfiniteRankPurityTheory/README.md`.
 -/

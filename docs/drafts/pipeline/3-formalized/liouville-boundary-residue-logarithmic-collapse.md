@@ -95,4 +95,4 @@ joint analytic boundary specialization without a boundedness premise.
 It does not supply the arithmetic Stepanov estimate or a purity family.
 No external novelty claim.
 
-[Next conjecture: quadratic collapse and a nonpolynomial joint limit](../2-fully-proven/quadratic-residue-collapse-with-a-nonpolynomial-joint-limit.md).
+[Quadratic collapse and a nonpolynomial joint limit — formalized](../3-formalized/quadratic-residue-collapse-with-a-nonpolynomial-joint-limit.md).

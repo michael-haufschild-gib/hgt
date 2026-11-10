@@ -102,7 +102,7 @@ theorem hasDerivAt_integral_gaussianLogMellinWeight {w ε : ℂ}
     apply hd.congr_deriv
     rw [gaussianLogMellinWeight_add_two w z b hx]
     dsimp only [gaussianLogMellinWeight, gaussianMellinWeight]
-    simp only [Pi.neg_apply, one_mul, id_eq, neg_mul]
+    simp only [Pi.neg_apply, one_mul, id_eq]
     ring
 
 /-- Multiplication by the normalized damping preserves holomorphy of the
@@ -115,5 +115,135 @@ theorem differentiableAt_gaussianFirstMomentLogPole {s ε : ℂ}
     linarith only [hs]
   exact (differentiableAt_id.div_const (t : ℂ)).mul
     (hasDerivAt_integral_gaussianLogMellinWeight hw hε (by norm_num : (0 : ℝ) < 1)).differentiableAt
+
+private theorem damping_reconstruction (z : ℂ) :
+    (z.re : ℂ) - (-z.im : ℝ) * I = z := by
+  rw [Complex.ofReal_neg, neg_mul, sub_neg_eq_add]
+  exact Complex.re_add_im z
+
+private theorem differentiableAt_gaussianArithmeticMoment
+    (c : ArithmeticFunction ℝ) {C σ : ℝ} (hC : 0 ≤ C) (hσ : 0 ≤ σ)
+    (hc : ∀ n : ℕ, ‖(c n : ℂ)‖ ≤ C * (n : ℝ) ^ 2)
+    {ε : ℂ} (hε : 0 < ε.re) (t : ℝ) :
+    DifferentiableAt ℂ (fun z : ℂ => ∑' n : ℕ, (c n : ℂ) *
+      gaussianPrimeMomentWeight σ z.re (-z.im) t n) ε := by
+  let a (n : ℕ) := (c n : ℂ) * (n : ℂ) ^ (2 - ((σ : ℂ) + t * I))
+  have ha (n : ℕ) : ‖a n‖ ≤ C * (n : ℝ) ^ 4 := by
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [a]
+    have hnR : (0 : ℝ) < n := by exact_mod_cast hn
+    have hp : (n : ℝ) ^ (2 - σ) ≤ (n : ℝ) ^ 2 := by
+      simpa only [Real.rpow_two] using Real.rpow_le_rpow_of_exponent_le
+        (by exact_mod_cast hn : (1 : ℝ) ≤ n) (by linarith only [hσ] : 2 - σ ≤ 2)
+    have hre : (2 - ((σ : ℂ) + t * I)).re = 2 - σ := by simp
+    dsimp only [a]
+    rw [norm_mul]
+    have he : ‖(n : ℂ) ^ (2 - ((σ : ℂ) + t * I))‖ = (n : ℝ) ^ (2 - σ) := by
+      simpa only [Complex.ofReal_natCast, hre] using
+        (Complex.norm_cpow_eq_rpow_re_of_pos hnR (2 - ((σ : ℂ) + t * I)))
+    rw [he]
+    calc
+      _ ≤ (C * (n : ℝ) ^ 2) * (n : ℝ) ^ 2 :=
+        mul_le_mul (hc n) hp (Real.rpow_nonneg hnR.le _) (by positivity)
+      _ = _ := by ring
+  have he (z : ℂ) : (∑' n : ℕ, (c n : ℂ) *
+      gaussianPrimeMomentWeight σ z.re (-z.im) t n) =
+      (z / (t : ℂ)) * ∑' n : ℕ, a n * Complex.exp (-(z * (n : ℂ) ^ 2)) := by
+    rw [← tsum_mul_left]
+    apply tsum_congr
+    intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [a]
+    rw [gaussianPrimeMomentWeight_eq_mellin σ z.re (-z.im) t hn,
+      damping_reconstruction, gaussianMellinWeight]
+    simp only [Complex.ofReal_natCast]
+    dsimp only [a]
+    ring
+  simp_rw [he]
+  exact (differentiableAt_id.div_const (t : ℂ)).mul
+    (differentiableAt_gaussianDampingSeries a hC 4 ha hε)
+
+/-- The constant continuum moment is holomorphic on the right half-plane. -/
+theorem differentiableAt_gaussianFirstMomentPole (s : ℂ) {ε : ℂ}
+    (hε : 0 < ε.re) (t : ℝ) :
+    DifferentiableAt ℂ (fun z => gaussianFirstMomentPole s z t) ε := by
+  have hc := differentiableAt_id.cpow (differentiableAt_const (-(3 - s) / 2))
+    (show ε ∈ Complex.slitPlane from Or.inl hε)
+  exact (differentiableAt_id.div_const (t : ℂ)).mul
+    (hc.const_mul ((1 / 2 : ℂ) * Complex.Gamma ((3 - s) / 2)))
+
+private theorem norm_typeII_convolution_le (U V n : ℕ) :
+    ‖(((typeIILong U * typeIIShort V) n : ℝ) : ℂ)‖ ≤ 2 * (n : ℝ) ^ 2 := by
+  rw [coe_mul_apply]
+  calc
+    _ ≤ ∑ p ∈ n.divisorsAntidiagonal,
+        ‖((typeIILong U p.1 : ℝ) : ℂ) * ((typeIIShort V p.2 : ℝ) : ℂ)‖ := norm_sum_le _ _
+    _ ≤ ∑ p ∈ n.divisorsAntidiagonal, 2 * (n : ℝ) := by
+      apply sum_le_sum
+      intro p hp
+      have hp' := Nat.mem_divisorsAntidiagonal.mp hp
+      have hp1 : 1 ≤ p.1 := by
+        by_contra h
+        have hz : p.1 = 0 := by omega
+        rw [hz, zero_mul] at hp'
+        exact hp'.2 hp'.1.symm
+      have hp2 : 1 ≤ p.2 := by
+        by_contra h
+        have hz : p.2 = 0 := by omega
+        rw [hz, mul_zero] at hp'
+        exact hp'.2 hp'.1.symm
+      have hlong : |typeIILong U p.1| ≤ (p.1 : ℝ) := by
+        have hlog := Real.log_le_sub_one_of_pos (by exact_mod_cast hp1 : (0 : ℝ) < p.1)
+        exact ((abs_vonMangoldt_sub_truncAF_le U p.1).trans ArithmeticFunction.vonMangoldt_le_log).trans
+          (by linarith only [hlog])
+      have hshort : |typeIIShort V p.2| ≤ 2 * (p.2 : ℝ) := by
+        have hh := abs_one_sub_zeta_mul_moebius_le V p.2
+        change |typeIIShort V p.2| ≤ 1 + (p.2.divisors.card : ℝ) at hh
+        have hcard : (p.2.divisors.card : ℝ) ≤ (p.2 : ℝ) := by exact_mod_cast Nat.card_divisors_le_self p.2
+        have hp2' : (1 : ℝ) ≤ p.2 := by exact_mod_cast hp2
+        linarith only [hh, hcard, hp2']
+      rw [norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
+      refine (mul_le_mul hlong hshort (abs_nonneg _) (by positivity)).trans_eq ?_
+      have hprod : (p.1 : ℝ) * p.2 = n := by exact_mod_cast hp'.1
+      nlinarith only [hprod]
+    _ = (n.divisors.card : ℝ) * (2 * n) := by simp [card_divisorsAntidiagonal]
+    _ ≤ (n : ℝ) * (2 * n) := by
+      apply mul_le_mul_of_nonneg_right _ (by positivity)
+      exact_mod_cast Nat.card_divisors_le_self n
+    _ = _ := by ring
+
+
+/-- The actual error in the centred Vaughan reduction, as a function of damping. -/
+def gaussianCentredVaughanError (σ t : ℝ) (U V : ℕ) (ε : ℂ) : ℂ :=
+  ((∑' n : ℕ, ((vonMangoldt n : ℝ) : ℂ) *
+    gaussianPrimeMomentWeight σ ε.re (-ε.im) t n) -
+    gaussianFirstMomentPole ((σ : ℂ) + t * I) ε t) -
+    gaussianCentredVaughanCurrent σ ε.re (-ε.im) t U V
+
+/-- Both infinite arithmetic currents and both continuum corrections are
+holomorphic in positive real damping; no zero information is used. -/
+theorem differentiableAt_gaussianCentredVaughanError {σ : ℝ}
+    (hσ : 0 ≤ σ) (hσ2 : σ < 2) (t : ℝ) (U V : ℕ) {ε : ℂ} (hε : 0 < ε.re) :
+    DifferentiableAt ℂ (gaussianCentredVaughanError σ t U V) ε := by
+  have hc (n : ℕ) : ‖((vonMangoldt n : ℝ) : ℂ)‖ ≤ 1 * (n : ℝ) ^ 2 := by
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg vonMangoldt_nonneg, one_mul]
+    have hl := Real.log_le_sub_one_of_pos (by exact_mod_cast hn : (0 : ℝ) < n)
+    have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    exact vonMangoldt_le_log.trans (by nlinarith only [hl, hnR])
+  have hp := differentiableAt_gaussianArithmeticMoment vonMangoldt (by norm_num : (0 : ℝ) ≤ 1) hσ hc hε t
+  have hII := differentiableAt_gaussianArithmeticMoment (typeIILong U * typeIIShort V)
+    (by norm_num : (0 : ℝ) ≤ 2) hσ (norm_typeII_convolution_le U V) hε t
+  have hP := differentiableAt_gaussianFirstMomentPole ((σ : ℂ) + t * I) hε t
+  have hL := differentiableAt_gaussianFirstMomentLogPole
+    (s := (σ : ℂ) + t * I) (by simpa using hσ2) hε t
+  unfold gaussianCentredVaughanError gaussianCentredVaughanCurrent
+  simp_rw [damping_reconstruction]
+  exact (hp.sub hP).sub ((hII.add (hL.const_mul _)).sub (hP.const_mul _))
+
+#print axioms hasDerivAt_integral_gaussianLogMellinWeight
+#print axioms differentiableAt_gaussianFirstMomentPole
+#print axioms differentiableAt_gaussianCentredVaughanError
 
 end GaloisForLFunctions.ExceptionalLayerTheory

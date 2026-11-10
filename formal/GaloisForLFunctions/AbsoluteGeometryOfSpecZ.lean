@@ -28,6 +28,8 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheJumpFormSplitsIntoAWindowA
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.SumsOverTheDegreePointsAreRiemannSums
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheEnergyOfAWindowIsTheJumpFormOfItsFlatPacket
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePairingOfTheDegreePointsIsThePoleMinusWeilsFunctional
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheOrbitRingWithABaseIsATowerOfLines
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -37,6 +39,8 @@ arguments for curves: the arithmetic square `Spec W(ℤ)` in ghost coordinates, 
 contacts and gluing, its universal property and `p`-derivations, its Teichmüller points and lattices
 of sections, its archimedean fibre, the toric surfaces of a base, the carries, the comparison with
 Weil's off-diagonal and with the adelic carrier, and Weil's archimedean form as the finite part of
-the jets: the diagonal on combs of degree points, the symbol on the carrier, and the form of every
-packet on the degree points and on invariant combs. See `AbsoluteGeometryOfSpecZ/README.md`.
+the jets: the diagonal on combs of degree points, the symbol on the carrier, the form of every
+packet on the degree points and on invariant combs, the whole pairing of the degree points as the
+pole minus Weil's functional, and the tower of lines that carries the contacts with a count. See
+`AbsoluteGeometryOfSpecZ/README.md`.
 -/

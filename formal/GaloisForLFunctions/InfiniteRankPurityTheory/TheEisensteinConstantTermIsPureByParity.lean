@@ -226,3 +226,6 @@ theorem lineLaw_gammaZeta {Y : ℝ} (hY : 1 ≤ Y) {s : ℂ} (hre : s.re ≠ 1 /
 end
 
 end GaloisForLFunctions.InfiniteRankPurityTheory
+
+#print axioms GaloisForLFunctions.InfiniteRankPurityTheory.lineLaw
+#print axioms GaloisForLFunctions.InfiniteRankPurityTheory.constantTerm_zero_subsingleton

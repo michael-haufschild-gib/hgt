@@ -1,5 +1,7 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm
 import GaloisForLFunctions.RHTower.WeilDecayClassRHCriterion
+import GaloisForLFunctions.RHTower.WeilPoleWeightBelowOneEmpty
+import GaloisForLFunctions.RHTower.WeilLevyQuarterWindowHarmonicDoubling
 
 /-!
 # The pairing of the degree points is the pole minus Weil's functional
@@ -20,14 +22,22 @@ carries one mass, that of the lower degree point.
 * **The whole pairing** (`tendsto_degreeForm_add_contacts`): the jets with both masses, plus the
   contacts with one mass, minus the masses times `log(n/2π)`, tend to the pole term minus Weil's
   functional of the packet.
-* **The sign** (`riemannHypothesis_iff_degreePairing_le_pole`): the Riemann hypothesis holds iff
-  for every packet the limit of the pairing of the degree points is at most the pole term
-  `f̂(i/2)f̂(−i/2)·2`, twice the product of the two degrees of the packet. This is the inequality
-  of Castelnuovo and Severi for the divisor `Σ f_n μ_n Γ_n` on the degree points.
+* **The sign** (`riemannHypothesis_iff_degreePairing_le_pole`,
+  `riemannHypothesis_iff_degreePairing_le_degrees`): the Riemann hypothesis holds iff for every
+  packet the limit of the pairing of the degree points is at most the pole term, which is
+  `2 (∫ f e^{−u/2})(∫ f e^{u/2})`, twice the product of the two degrees of the packet. This is the
+  inequality of Castelnuovo and Severi for the divisor `Σ f_n μ_n Γ_n` on the degree points.
+
+* **The sign on short packets** (`weilFullFunctional_packet_nonneg_of_short`,
+  `tendsto_degreePairing_le_pole_of_short`): a packet of width below `log 2` meets no contact,
+  because its autocorrelation vanishes at the logarithms of the integers `k ≥ 2`. For a
+  nonnegative packet of width at most `12/25` the inequality holds without hypothesis, by the
+  positivity of the archimedean form on such windows.
 
 So Weil's form is the finite part of the pairing of the degree points, with prime part the
 contact orders of the arithmetic square, archimedean part the jets and the one counterterm
-`log(n/2π)`; its sign is not decided by the constructions of this programme.
+`log(n/2π)`. Its sign is known where no contact enters; where the contacts enter it is the
+Riemann hypothesis.
 -/
 
 open Finset Filter Topology MeasureTheory
@@ -296,5 +306,95 @@ theorem riemannHypothesis_iff_degreePairing_le_pole :
         (weilTest_packet_translate g s)
     rw [← hfull]
     linarith
+
+/-- The pole term of a real packet is twice the product of its two degrees. -/
+theorem weilPoleTerm_packet {f : ℝ → ℝ} (hcont : Continuous f) (hfc : HasCompactSupport f) :
+    (_root_.RHTower.weilPoleTerm
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re =
+      2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) :=
+  _root_.RHTower.WeilPoleWeight.re_pole_weilTest_ofReal hcont hfc
+
+/-- **The Riemann hypothesis as the inequality `D·D ≤ 2 d₁ d₂` on the degree points.** RH holds
+iff for every packet `f ∈ C²_c` supported in a window `[log 3, log K]` the limit of the pairing of
+the degree points is at most twice the product of the degrees `∫ f e^{−u/2}` and `∫ f e^{u/2}`. -/
+theorem riemannHypothesis_iff_degreePairing_le_degrees :
+    RiemannHypothesis ↔
+      ∀ f : ℝ → ℝ, ContDiff ℝ 2 f → HasCompactSupport f → ∀ K : ℕ, 1 ≤ K →
+        (∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) →
+        ∀ l : ℝ, Tendsto (fun N : ℕ => degreeForm f (3 * K) N + 2 * degreeContact f (3 * K) N)
+            atTop (𝓝 l) →
+          l ≤ 2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) := by
+  rw [riemannHypothesis_iff_degreePairing_le_pole]
+  refine forall_congr' fun f => ⟨fun h hf hfc K hK hs l hl => ?_, fun h hf hfc K hK hs l hl => ?_⟩
+  · have e : (_root_.RHTower.weilPoleTerm
+          (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re =
+        2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) :=
+      weilPoleTerm_packet hf.continuous hfc
+    rw [← e]
+    exact h hf hfc K hK hs l hl
+  · have e : (_root_.RHTower.weilPoleTerm
+          (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re =
+        2 * ((∫ u, f u * Real.exp (-u / 2)) * ∫ u, f u * Real.exp (u / 2)) :=
+      weilPoleTerm_packet hf.continuous hfc
+    rw [e]
+    exact h hf hfc K hK hs l hl
+
+/-! ### The sign on short packets -/
+
+/-- The autocorrelation of a packet supported in an interval of length `L` vanishes beyond `L`. -/
+theorem packetAutocorr_eq_zero_of_width {f : ℝ → ℝ} {a L x : ℝ}
+    (hshort : ∀ u ∉ Set.Ioo a (a + L), f u = 0) (hx : L ≤ x) : packetAutocorr f x = 0 := by
+  have h0 : ∀ u : ℝ, f u * f (u + x) = 0 := by
+    intro u
+    by_cases hu : u ∈ Set.Ioo a (a + L)
+    · have hux : u + x ∉ Set.Ioo a (a + L) := fun h => by linarith [hu.1, h.2]
+      rw [hshort _ hux, mul_zero]
+    · rw [hshort u hu, zero_mul]
+  simp [packetAutocorr, h0]
+
+/-- **No contact enters a short packet, and Weil's functional is nonnegative on it.** For a
+nonnegative packet supported in an interval of length at most `12/25 < log 2`, Weil's functional
+is its pole and archimedean part, and it is nonnegative. -/
+theorem weilFullFunctional_packet_nonneg_of_short {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) (hf0 : ∀ u, 0 ≤ f u) {a L : ℝ} (hL : L ≤ 12 / 25)
+    (hshort : ∀ u ∉ Set.Ioo a (a + L), f u = 0) :
+    0 ≤ (_root_.RHTower.weilFullFunctional (fun n => (Λ n : ℝ))
+      (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re := by
+  have hlog2 : (12 : ℝ) / 25 < Real.log 2 := by
+    have := Real.log_two_gt_d9
+    norm_num at this ⊢
+    linarith
+  have hQ : ∀ n : ℕ, 1 < n → packetAutocorr f (Real.log n) = 0 := fun n hn =>
+    packetAutocorr_eq_zero_of_width hshort (by
+      have h2 : Real.log 2 ≤ Real.log n :=
+        Real.log_le_log (by norm_num) (by exact_mod_cast hn)
+      linarith)
+  have hg : ContDiff ℝ 2 fun u => f (u - -a) := hf.comp (contDiff_id.sub contDiff_const)
+  have hgc : HasCompactSupport fun u => f (u - -a) :=
+    hfc.comp_homeomorph (Homeomorph.subRight (-a))
+  have hpos :=
+    _root_.RHTower.WeilLevyQuarterHarmonicDoubling.weilArchRe_nonneg_of_support_Ioo_le_twelve_twenty_fifths
+      hg hgc (fun u => hf0 _) hL (fun u hu => hshort _ fun h =>
+        hu ⟨by linarith [h.1], by linarith [h.2]⟩)
+  rw [weilTest_packet_translate f (-a)] at hpos
+  rw [re_weilFullFunctional_packet f hQ, Finset.Icc_eq_empty (by norm_num), Finset.sum_empty,
+    mul_zero, sub_zero]
+  exact hpos
+
+/-- **The inequality of Castelnuovo and Severi on short packets.** For a nonnegative packet of
+width at most `12/25` the pairing of the degree points has a limit, and it is at most the pole
+term. -/
+theorem tendsto_degreePairing_le_pole_of_short {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) (hf0 : ∀ u, 0 ≤ f u) {K : ℕ} (hK : 1 ≤ K)
+    (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) {a L : ℝ} (hL : L ≤ 12 / 25)
+    (hshort : ∀ u ∉ Set.Ioo a (a + L), f u = 0) :
+    ∃ l : ℝ, Tendsto (fun N : ℕ => degreeForm f (3 * K) N + 2 * degreeContact f (3 * K) N)
+        atTop (𝓝 l) ∧
+      l ≤ (_root_.RHTower.weilPoleTerm
+        (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re := by
+  have h : 0 ≤ (_root_.RHTower.weilFullFunctional (fun n => (Λ n : ℝ))
+      (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re :=
+    weilFullFunctional_packet_nonneg_of_short hf hfc hf0 hL hshort
+  exact ⟨_, tendsto_degreeForm_add_contacts hf hfc hK hsupp, by linarith⟩
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

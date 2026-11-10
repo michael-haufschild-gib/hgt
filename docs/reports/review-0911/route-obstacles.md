@@ -209,6 +209,14 @@ Structure [D]: wave dynamics, unitarity, Hecke, KMS, `C*`, internal modular conj
 
 Routes: HKT, AKLT, SC, RIT, CWS through HF, ACS; LA; ZCG heat count. Established [L/K]: `κ(φ_c)=κ+1`; finite index ⇒ Lindelöf; `κ∈{0,∞}` under escape, mixing or decay; window index counts critical lengths; `sup_dN_d` = off-line multiplicity; `K_ζ^n` PD ⇔ RH; TFAE: `κ(K_ζ)<∞` ⇔ finite index on one two-prime lattice ⇔ finitely many off-line zeros ⇔ bounded non-real heat count ⇔ RH above some height ⇔ eventual slice positivity ⇔ central-gap budget ⇔ finite-dimensional odd bound states; in the stratum RH ⇔ one non-blind prime tower PD ⇔ one Weil tower Toeplitz positive ⇔ one tower bounded on a thick set. ZAL forcing any of these is the landing law (S9).
 
+**Positive sign calibration [L].** For `Y≥1`, the completed Eisenstein constant term
+`Λ(2s)Y^s+Λ(2s−1)Y^{1−s}` has no non-real zero off `Re s=½`.
+`InfiniteRankPurityTheory.lineLaw` proves this without truncation: the pole-cleared
+function has a Schur quotient and an index-one defect; conjugation forces every
+exceptional zero to be real. `constantTerm_zero_subsingleton` permits at most one
+zero right of the line. A proposed sign mechanism must recover this line law;
+the calibration does not assert absence of real exceptional zeros.
+
 | | Obstacle | Strength |
 |---|---|---|
 | B12 | Index ceiling uniform in resolution | ≥qRH |

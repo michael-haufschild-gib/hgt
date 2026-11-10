@@ -24,8 +24,9 @@ def sectionProjection (F : Finset FiniteVertices) : ChargeOperator :=
 
 theorem sectionProjection_apply (F : Finset FiniteVertices) (f : ChargeSpace) :
     sectionProjection F f = ∑ y ∈ F, lp.single 2 y (f y) := by
-  simp only [sectionProjection, ContinuousLinearMap.sum_apply, ContinuousLinearMap.comp_apply,
+  simp only [sectionProjection, sum_apply, ContinuousLinearMap.comp_apply,
     lp.singleContinuousLinearMap_apply]
+  rfl
 
 theorem sectionProjection_coord (F : Finset FiniteVertices) (f : ChargeSpace)
     (y : FiniteVertices) : sectionProjection F f y = if y ∈ F then f y else 0 := by
@@ -55,7 +56,8 @@ theorem sectionProjection_idempotent (F : Finset FiniteVertices) :
 
 theorem tendsto_sectionProjection (f : ChargeSpace) :
     Tendsto (fun F : Finset FiniteVertices => sectionProjection F f) atTop (𝓝 f) := by
-  simpa only [sectionProjection_apply] using (lp.hasSum_single (by norm_num) f)
+  simpa only [sectionProjection_apply, HasSum, SummationFilter.unconditional] using
+    (lp.hasSum_single (by norm_num) f)
 
 private theorem strong_apply {ι : Type*} {l : Filter ι}
     (T : ι → ChargeOperator) (U : ChargeOperator) (C : ℝ)
@@ -69,7 +71,7 @@ private theorem strong_apply {ι : Type*} {l : Filter ι}
       (fun i => ((T i).le_opNorm _).trans
         (mul_le_mul_of_nonneg_right (hb i) (norm_nonneg _)))
     simpa only [sub_self, norm_zero, mul_zero] using
-      tendsto_const_nhds.mul (hv.sub tendsto_const_nhds).norm
+      (tendsto_const_nhds (x := C)).mul (hv.sub (tendsto_const_nhds (x := w))).norm
   simpa only [map_sub, sub_add_cancel, zero_add] using hzero.add (ht w)
 
 /-- The true Dirichlet compression of the all-prime adjacency. -/
@@ -81,8 +83,10 @@ theorem sectionAdjacency_norm_le (F : Finset FiniteVertices) :
   calc
     _ ≤ (‖sectionProjection F‖ * ‖adjacencyOperator‖) * ‖sectionProjection F‖ :=
       (norm_mul_le _ _).trans (mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg _))
-    _ ≤ (1 * edge) * 1 := by gcongr; exacts [sectionProjection_norm_le F,
-      adjacencyOperator_norm_le, sectionProjection_norm_le F]
+    _ ≤ (1 * edge) * 1 :=
+      mul_le_mul (mul_le_mul (sectionProjection_norm_le F) adjacencyOperator_norm_le
+        (norm_nonneg _) (by norm_num)) (sectionProjection_norm_le F) (norm_nonneg _)
+          (by simpa only [one_mul] using edge_pos.le)
     _ = edge := by ring
 
 theorem tendsto_sectionAdjacency (f : ChargeSpace) :
@@ -242,13 +246,13 @@ theorem tendsto_sectionRemainder (f : ChargeSpace) :
     (ε / 3) (by linarith)] with F hF
   have hleft : dist (sectionRemainder F f) (((sectionRootStep F)^[n] 0) f) ≤
       (rootRadius / rootScale)^n * rootRadius * ‖f‖ := by
-    rw [dist_comm, dist_eq_norm, ← ContinuousLinearMap.sub_apply]
+    rw [dist_comm, dist_eq_norm, ← sub_apply]
     exact (((sectionRootStep F)^[n] 0 - sectionRemainder F).le_opNorm f).trans
       (mul_le_mul_of_nonneg_right (by simpa only [dist_eq_norm] using
-        section_iterate_error F n) (norm_nonneg _))
+        (section_iterate_error F n)) (norm_nonneg _))
   have hright : dist ((rootStep^[n] 0) f) (rootRemainder f) ≤
       (rootRadius / rootScale)^n * rootRadius * ‖f‖ := by
-    rw [dist_eq_norm, ← ContinuousLinearMap.sub_apply]
+    rw [dist_eq_norm, ← sub_apply]
     exact ((rootStep^[n] 0 - rootRemainder).le_opNorm f).trans
       (mul_le_mul_of_nonneg_right (by simpa only [dist_eq_norm] using root_iterate_error n)
         (norm_nonneg _))
@@ -433,8 +437,8 @@ private theorem sectionHyperbolicRoot_norm_le (F : Finset FiniteVertices) :
     _ ≤ ‖rootScale • f‖ + ‖sectionRemainder F f‖ := norm_sub_le _ _
     _ ≤ rootScale * ‖f‖ + rootRadius * ‖f‖ := by
       rw [norm_smul, Real.norm_eq_abs, abs_of_pos rootScale_pos]
-      exact add_le_add_left (((sectionRemainder F).le_opNorm f).trans
-        (mul_le_mul_of_nonneg_right (sectionRemainder_norm_le F) (norm_nonneg _))) _
+      exact add_le_add le_rfl (((sectionRemainder F).le_opNorm f).trans
+        (mul_le_mul_of_nonneg_right (sectionRemainder_norm_le F) (norm_nonneg _)))
     _ = _ := by ring
 
 def sectionEvolution (F : Finset FiniteVertices) (r : ℝ) : ChargeOperator :=
@@ -471,9 +475,98 @@ theorem tendsto_dirichletEvolution (r : ℝ) (f : ChargeSpace) :
     (tendsto_sectionEvolution r) (tendsto_sectionProjection f)
   exact strong_apply sectionProjection 1 1 sectionProjection_norm_le tendsto_sectionProjection h
 
+/-- Finite Dirichlet Green kernel, extended by zero outside the finite carrier. -/
+def dirichletMixedGreen (F : Finset FiniteVertices) (r : ℝ) : ChargeOperator :=
+  hyperbolicGreen 1 r • dirichletEvolution F r
+
+def dirichletMixedRobin (F : Finset FiniteVertices) : ChargeOperator :=
+  (-(1 / (4 * Real.pi))) •
+    (sectionProjection F * sectionHyperbolicRoot F * sectionProjection F)
+
+theorem tendsto_dirichletMixedGreen (r : ℝ) (f : ChargeSpace) :
+    Tendsto (fun F : Finset FiniteVertices => dirichletMixedGreen F r f) atTop
+      (𝓝 (mixedGreen r f)) :=
+  (tendsto_dirichletEvolution r f).const_smul (hyperbolicGreen 1 r)
+
+theorem tendsto_dirichletMixedRobin (f : ChargeSpace) :
+    Tendsto (fun F : Finset FiniteVertices => dirichletMixedRobin F f) atTop
+      (𝓝 ((-(1 / (4 * Real.pi))) • hyperbolicRoot f)) := by
+  have h := strong_apply sectionHyperbolicRoot hyperbolicRoot (rootScale + rootRadius)
+    sectionHyperbolicRoot_norm_le tendsto_sectionHyperbolicRoot (tendsto_sectionProjection f)
+  exact (strong_apply sectionProjection 1 1 sectionProjection_norm_le
+    tendsto_sectionProjection h).const_smul (-(1 / (4 * Real.pi)))
+
+def dirichletRegularizedEntry (F : Finset FiniteVertices) (r : ℝ)
+    (x y : FiniteVertices) : ℝ :=
+  if r = 0 then dirichletMixedRobin F (lp.single 2 x (1 : ℝ)) y
+    else dirichletMixedGreen F r (lp.single 2 x (1 : ℝ)) y
+
+/-- Both separated points and archimedean collisions are recovered by finite Dirichlet sections. -/
+theorem tendsto_dirichletRegularizedEntry (r : ℝ) (x y : FiniteVertices) :
+    Tendsto (fun F : Finset FiniteVertices => dirichletRegularizedEntry F r x y) atTop
+      (𝓝 (regularizedMixedEntry r x y)) := by
+  let ev := lp.evalCLM ℝ (fun _ : FiniteVertices => ℝ) 2 y
+  by_cases hr : r = 0
+  · simp only [dirichletRegularizedEntry, regularizedMixedEntry, if_pos hr]
+    exact (ev.continuous.tendsto _).comp
+      (tendsto_dirichletMixedRobin (lp.single 2 x (1 : ℝ)))
+  · simp only [dirichletRegularizedEntry, regularizedMixedEntry, if_neg hr]
+    exact (ev.continuous.tendsto _).comp
+      (tendsto_dirichletMixedGreen r (lp.single 2 x (1 : ℝ)))
+
+private theorem tendsto_radial_exp_robin (T : ChargeOperator) :
+    Tendsto (fun r : ℝ => hyperbolicGreen 1 r • exp (r • (-T)) -
+      (1 / (4 * Real.pi * r)) • (1 : ChargeOperator)) (𝓝[≠] 0)
+      (𝓝 ((-(1 / (4 * Real.pi))) • T)) := by
+  have hg : Tendsto (fun r : ℝ => hyperbolicGreen 1 r - 1 / (4 * Real.pi * r))
+      (𝓝[≠] 0) (𝓝 0) := by
+    have h := (tendsto_freeSpace_robin (1 : ℝ)).div_const (2 * Real.pi)
+    simp only [sub_self, zero_div] at h
+    refine h.congr' ?_
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    have hr0 : r ≠ 0 := by simpa only [Set.mem_compl_singleton_iff] using hr
+    field_simp [Real.pi_ne_zero, hr0]
+    ring
+  have hrg : Tendsto (fun r : ℝ => r * hyperbolicGreen 1 r)
+      (𝓝[≠] 0) (𝓝 (1 / (4 * Real.pi))) := by
+    have h := (tendsto_mul_hyperbolicGreen 1).div_const (4 * Real.pi)
+    refine h.congr fun r => ?_
+    field_simp [Real.pi_ne_zero]
+  have hd := hasDerivAt_exp_smul_const' (-T) (0 : ℝ)
+  simp only [zero_smul, exp_zero, mul_one] at hd
+  have he : Tendsto (fun r : ℝ => r⁻¹ • (exp (r • (-T)) - 1))
+      (𝓝[≠] 0) (𝓝 (-T)) := by
+    have hs := hasDerivAt_iff_tendsto_slope.mp hd
+    change Tendsto (fun r => slope (fun t : ℝ => exp (t • (-T))) 0 r)
+      (𝓝[≠] 0) (𝓝 (-T)) at hs
+    simpa only [slope_def_module, sub_zero, zero_smul, exp_zero] using hs
+  have h := (hg.smul (tendsto_const_nhds (x := (1 : ChargeOperator)))).add (hrg.smul he)
+  simp only [zero_smul, zero_add, smul_neg, ← neg_smul] at h
+  refine h.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with r hr
+  have hr0 : r ≠ 0 := by simpa only [Set.mem_compl_singleton_iff] using hr
+  rw [smul_smul, show r * hyperbolicGreen 1 r * r⁻¹ = hyperbolicGreen 1 r by
+    field_simp [hr0]]
+  simp only [smul_neg, neg_smul]
+  module
+
+/-- The finite-part normalization is the Robin limit of the finite kernel itself. -/
+theorem tendsto_dirichletMixedGreen_robin (F : Finset FiniteVertices) :
+    Tendsto (fun r : ℝ => dirichletMixedGreen F r -
+      (1 / (4 * Real.pi * r)) • sectionProjection F) (𝓝[≠] 0)
+      (𝓝 (dirichletMixedRobin F)) := by
+  have h := ((tendsto_const_nhds (x := sectionProjection F)).mul
+    (tendsto_radial_exp_robin (sectionHyperbolicRoot F))).mul
+      (tendsto_const_nhds (x := sectionProjection F))
+  simpa only [mul_sub, sub_mul, mul_smul_comm, smul_mul_assoc, mul_one,
+    sectionProjection_idempotent, dirichletMixedGreen, dirichletMixedRobin,
+    dirichletEvolution, sectionEvolution] using h
+
 #print axioms tendsto_sectionRemainder
 #print axioms sectionRemainder_supported
 #print axioms sectionHyperbolicRoot_squared
 #print axioms sectionHyperbolicRoot_coercive
 #print axioms tendsto_dirichletEvolution
+#print axioms tendsto_dirichletMixedGreen_robin
+#print axioms tendsto_dirichletRegularizedEntry
 end GaloisForLFunctions.HyperbolicArakelovTheory.WeightedAdelicGreen

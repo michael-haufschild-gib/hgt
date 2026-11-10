@@ -1,17 +1,17 @@
 # The hyperbolic Green kernel of the full weighted adelic carrier
 
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / construction
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** B133; actual weighted finite-place Green theory and the hyperbolic radial Green equation.
-- **Target:** Construct the standard-branch Green kernel for
+- **Statement:** The standard-branch operator-valued radial Green kernel for
   `(Δ_ℍ³−3/4)+(λ−Σ_p p⁻²A_p)` on `ℍ³×V`, with its unit Newtonian source
-  and canonical nonlocal Robin operator. Here `V` is the actual restricted
+  and canonical nonlocal Robin operator is constructed unconditionally. Here `V` is the actual restricted
   adelic vertex carrier and `λ=Σ_p 2p⁻²√p`.
 
-## Candidate
+## Kernel
 
 Let `A=Σ_p p⁻²A_p` on counting `ℓ²(V)`, and put
-`B=(λ+1/4)I−A`. The proposed operator-valued radial kernel is
+`B=(λ+1/4)I−A`. The operator-valued radial kernel is
 
 `K(r)=exp(−r√B)/(4π sinh r)`.
 
@@ -21,13 +21,13 @@ and its finite part at `r=0` is `−√B/(4π)`.
 Thus coupling finite places to the hyperbolic fibre produces a
 square-root Robin operator, rather than an independently chosen diagonal.
 
-## Required analytic producer
+## Analytic construction
 
-Construct the actual bounded self-adjoint adjacency on `ℓ²(V)` and
-prove `‖A‖≤λ`, despite divergent constant-function rows. For a positive
+The actual bounded self-adjoint adjacency on `ℓ²(V)` satisfies
+`‖A‖≤λ`, despite divergent constant-function rows. For a positive
 restricted product `h`, the corpus proves `Ah≤λh`; symmetry supplies
 the matching column control. Weighted Schur estimates on finite
-sections should give the operator without a countability premise.
+sections give the operator without a countability premise.
 Then `B≥(1/4)I`. A contraction constructs its positive square root while
 preserving the entrywise positivity needed for the Green kernel.
 
@@ -109,17 +109,25 @@ pass this convergence to the fixed points. Polynomial convergence and
 the summable exponential majorant pass it to `exp(−rS_F)` for each `r`.
 Thus the finite Dirichlet Green entries and their Robin finite parts
 converge to the stated full-carrier entries, independently of exhaustion.
-This passage remains to be verified in Lean.
+This passage is Lean verified in
+`TheFiniteDirichletSectionsRecoverTheHyperbolicGreenKernel.lean`:
+`tendsto_sectionRemainder`, `sectionRemainder_supported`,
+`sectionHyperbolicRoot_squared`, `sectionHyperbolicRoot_coercive`,
+`tendsto_dirichletEvolution`, `tendsto_dirichletMixedGreen_robin`,
+`tendsto_dirichletRegularizedEntry`. The plain check passes without warnings;
+all seven printed axiom audits contain only standard Lean axioms.
 
-The operator kernel must retain the actual prime sum on its domain.
-Prove the radial differential equation, unit source coefficient, Robin
-limit, symmetry, and the required spatial decay. Entrywise positivity
-and the passage from finite sections must be established, not inferred
-from positive definiteness alone.
+The kernel retains the actual prime sum, the radial differential equation,
+unit source coefficient and flux, Robin limit, symmetry, and spatial decay.
+Entrywise positivity is proved through the exponential series. Finite-section
+convergence includes the Robin values at zero archimedean distance.
 
 ## Boundary
 
 This is the specified weighted operator on the full mixed carrier.
+The verified Green statement is the radial operator equation with its
+Newtonian normalization and flux; no Bochner-integral inverse on the full
+hyperbolic function space is asserted.
 It does not identify Weil's form: the accepted invariant-gluing
 obstruction remains in force. The archimedean standard branch and
 Weil's alternative branch must remain distinguished.

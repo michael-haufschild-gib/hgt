@@ -16,7 +16,7 @@
 | 11.1 | Shimura nonvanishing for one eigenform at every relevant nonhalving zero | Open; one eigenform for each zero does not give one eigenform for all zeros |
 | 11.2 | Precise fixed-part/isolation obstruction for twists and covers, with positive survivor | Revised report marks paper/source theorem; scope and Lean audit still require verification |
 | 11.3 | Compact-surface Selberg calibration with finitely many exceptional real zeros | Open; distinguish nontrivial zeros from other Selberg zeros |
-| 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Existing theorem; calibration audit open |
+| 11.3 | Lagarias–Suzuki line law as a calibration for sign routes | Exact non-real line law and index-one real exception added to both ledgers; existing parity proof avoids truncated Eisenstein series. Direct audit pending |
 | 11.3 | Exceptional-character filter for sign-free producers | Open assembly from upper/lower Dirichlet trace laws |
 | 11.4 | Short-interval multiplicative cancellation and averaged correlations | Open; published statements and proof dependencies require audit |
 | 11.4 | Carlitz–Goss RH | Open; exact field and zeta statement require audit |
@@ -24,13 +24,15 @@
 | 11.4 | Stepanov bounds for Heilbronn sums and Fermat quotients | Open published input |
 | 11.4 | Effective lower bounds for linear forms in three logarithms | Open published input; distinguish homogeneous and inhomogeneous bounds |
 | 11.5 | Audit recommended route closures, retain exact positive survivors | Open; recommendations are not mathematical proofs |
-| 11.6 | Logarithmic prime-window criterion at radius `32 log(T+2)` | Other active work supplies kernel/filter infrastructure; criterion requires audit |
-| 11.6 | Coupled-orbit density row `4 regularMean = −2 gammaHardyPhaseRate(0)−(log(4π)+γ)` | Open assembly |
-| 11.6 | Census covariance ceiling `4π(1−0.67250071)` | Open assembly; existing ceiling `4π/3` |
-| 11.6 | Exchange rates `H*(4)=7/10`, `λ*=10/9`, Frobenius constant `13/10` at `4/3` | Open assembly |
-| 11.6 | Graded recurrence from Guth–Maynard zero density | Open assembly; returns must be one-separated and numerous enough |
-| 11.6 | Upper side at degrees `p^a q^b` without attainment | Open; effective inhomogeneous three-logarithm input |
-| 11.6 | A65 two-prime local criterion, A67 dominant-ordinate divergence, A50 finite-stratum laws | Open assemblies |
+| 11.6 | Logarithmic prime-window criterion at radius `32 log(T+2)` | Complete existing criterion: `PrimeLogarithmicWindows.lean`, formalized card `b130-logarithmic-windows-by-positive-source-repair.md`; independent direct audit passed, all twelve axiom checks standard only |
+| 11.6 | Coupled-orbit density row `4 regularMean = −2 gammaHardyPhaseRate(0)−(log(4π)+γ)` | Complete existing theorem `ArchimedeanConstantBridge.four_mul_regularMean_eq`; owning module directly checked, standard axioms only |
+| 11.6 | Census covariance ceiling `4π(1−0.67250071)` | Complete: `Census/SourceCovarianceBaseline.lean`; direct and axiom audits passed |
+| 11.6 | Exchange rates `H*(4)=7/10`, `λ*=10/9`, Frobenius constant `13/10` at `4/3` | Complete: `TransThresholdPairCorrelation/SeventyPercentExchangeRates.lean`; direct and axiom audits passed. See formalized card `census-covariance-and-seventy-percent-exchange.md` |
+| 11.6 | Graded recurrence from Guth–Maynard zero density | Complete: `graded-self-recurrence-from-zero-density.md` in `3-formalized`; separated-return bound on `[0,T]`, direct and transitive axiom audits passed |
+| 11.6 | Upper side at degrees `p^a q^b` without attainment | Open; `two-prime-upper-bound-and-inhomogeneous-frequency.md` identifies the actual frequencies `(1, log p, log q)`. The reported replacement by `log(-1)` needs justification |
+| 11.6 | A65 two-prime local criterion | Proof written in `ScaleLocality/TwoPrimeLocalWindows.lean`; direct audit pending |
+| 11.6 | A67 dominant-ordinate divergence | Grouped Gamma mass handles multiplicities; proof written in `ExceptionalLayerTheory/ADominantOrdinateForcesCurrentDivergence.lean`, direct audit pending |
+| 11.6 | A50 finite-stratum laws | Audit in progress: shifted Jensen has eventual real-rootedness at every fixed degree; cosine finiteness near zero is not supplied unconditionally by the heat theorem |
 
 ## Existing anchors
 

@@ -279,6 +279,38 @@ has Frobenius lifts, a `ℤ`-point `f` and finitely many `𝔽_p`-points, there 
 `𝔽_p`, a quotient no more.
 *Proof.* Pigeonhole on `k ↦ f∘ψ_{pk+1} mod p`. ∎
 
+**C17 (the whole pairing; the sign).** For `k ≥ 2`,
+`Γ_m·Γ_{mk}/√(m·mk) = Λ(k)/√k + ω(log k)` (A5, D2 with `ω(log k) = k^{−1/2}/(1−k^{−2})`). For
+`f` as in C15 and every `k ≥ 1`, `Σ_m f_m f_{mk}/m → h(log k)`; hence
+`C_N = Σ_{k≥2} (Λ(k)/√k) Σ_m f_m f_{mk}/m → Σ_{k≥2} (Λ(k)/√k) h(log k)`. For a real packet,
+`Re W(f) = weilArchRe − 2Σ_{k≥2}(Λ(k)/√k)h(log k)` (`W` the full Weil functional with weights
+`Λ`). So `degreeForm + 2C_N → pole − Re W(f)`, and
+RH ⇔ for every packet this limit is `≤ pole = 2(∫f e^{−u/2})(∫f e^{u/2})`.
+*Proof.* `log(mk/N) = log(m/N) + log k`, so the row is the Riemann sum of `f(u)f(u+log k)` (C15).
+The autocorrelation of a real packet is real and even, so the prime sum of `W` is
+`Σ (Λ(n)/√n)·2h(log n)`, finite. C15 gives `degreeForm → −(weilArchRe − pole)`. The equivalence is
+the corpus's Weil criterion on real tests (`riemannHypothesis_iff_real_weilPositive`), with a
+translation of the packet into a window; `W` depends on the packet through `h` only. ∎
+
+**E8 (the tower of lines).** `q ≥ 2`, `M ≥ 1`. A section of the level `M` is
+`σ(P) = Σ_{d∣M} e_d·P_d([q])`, `P_d ∈ ℤ[Y]`; on `Γ_n` it is `Σ_{d∣gcd(M,n)} d·P_d(qⁿ)`. If `σ(P)`
+vanishes on every graph then all `P_d = 0`; the sections with `b` digits in `[−A,A]` on each line
+number `((2A+1)^b)^{τ(M)}`. For `m, n ∣ M` the ideal of the `σ(P)_m − σ(P)_n` is `J(m,n)`. If
+`gcd(M,m) = gcd(M,n)` then `qᵐ − qⁿ ∣ σ(P)_m − σ(P)_n`. Every `x ∈ 𝒢` agrees on `Γ_1,…,Γ_N` with
+`σ(P)` of the level `N!`, `P_d = b_d(x)`.
+*Proof.* `(e_d)_n = d[d∣n]`. Induction on `d ∣ M`: on `n = d(1+Ms)` the gcd with `M` is `d`, so
+`d·P_d(q^{d(1+Ms)}) = 0` for all `s`, infinitely many zeros. Contacts: A4's generators `d`
+dividing exactly one of `m, n` are `(e_d)_m − (e_d)_n`. ∎
+The sections of all levels are a subring `𝒪_q` of `𝒢` (`e_d e_{d'} = gcd·e_{lcm}`; a section of
+the level `M` is one of every multiple). Its contacts are `J(m,n)` for all `m, n` (level `mn`).
+Its fibre over `p` is infinite (A4 for degrees prime to `p`), so it is not a quotient of
+`ℤ[u_1,…,u_k]` (E7). A section with `b` digits in `[−A,A]` on each line has
+`|x_n| ≤ σ(M)·b·A·(q^b)ⁿ`. `e_p^ℓ ∈ 𝒪_q ∩ I^ℓ` has the value `p^ℓ` on `Γ_p`: the forced zeros of
+E2 are attained on `𝒪_q`.
+
+**E9 (zeros window by window).** With `T_n = 2π(n+½)`:
+`N(T_{n+1}) − N(T_n) − log(n+1) − (S(T_{n+1}) − S(T_n)) → 0` (difference of E6 at `n+1` and `n`).
+
 **E3 (toric surface of a base).** `S_q = Spec ℤ[Y]`, sections `Y = qⁿ`, restriction `Y ↦ [q]`.
 `Q ∈ (Y−q)²` iff `Q(q) = Q'(q) = 0`. For `Q(q) = 0`: `Q(q^p) ≡ Q'(q)(q^p − q) (mod p²)`, hence
 `b_p(Q([q])) ≡ Q'(q)(q^p − q)/p (mod p)`. The digit lattice `{Σ_{j<b} c_j[q]^j : |c_j| ≤ A}` has
@@ -336,7 +368,13 @@ corpus's Riemann–von Mangoldt asymptotic, `|log N! − N(2πN)| ≤ εN log N`
 - **(G) of §5.3**: no torus-invariant counterterm that is a function of the degree point (C7);
   with the density of the comb the finite part is Weil's form on packets (C15); on the carrier the
   diagonal on packets is the twisted density (C12), not a finite part.
-- **Q4**: no object of finite type carries the contacts of the square (E7).
+- **(G) in full** on the degree points: the pairing of the degree points, with prime part the
+  contacts (one mass) and archimedean part the jets (two masses) and the counterterm `log(n/2π)`,
+  has finite part `pole − W` (C17).
+- **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
+  the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
+  three deliverables of construction E hold and Stepanov's inequality is the product formula; no
+  object of finite type carries the contacts (E7).
 
 ## Gates
 - [x] 0 → 1
@@ -378,8 +416,10 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | C14 | `TheJumpFormSplitsIntoAWindowAndItsTails` |
 | C15 | `SumsOverTheDegreePointsAreRiemannSums`, `ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm` |
 | C16 | `TheEnergyOfAWindowIsTheJumpFormOfItsFlatPacket` |
-| E6 | `TheGluingIndexCountsTheZeros` |
+| C17 | `ThePairingOfTheDegreePointsIsThePoleMinusWeilsFunctional` |
+| E6, E9 | `TheGluingIndexCountsTheZeros` |
 | E7 | `AFiniteFibreForcesContacts` |
+| E8 | `TheOrbitRingWithABaseIsATowerOfLines` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -388,15 +428,11 @@ Oleans built by this programme: the first seven AGZ modules,
 `TheCombOfThePowersOfABase`, `TheTwistedDensityOfTheCarrierIsWeilsSymbol`,
 `WeilsArchimedeanFormIsTheLimitOnInvariantCombs`, `TheJumpFormSplitsIntoAWindowAndItsTails`,
 `SumsOverTheDegreePointsAreRiemannSums`, `TheJetsPairFlatPacketsByTheirEndpoints`,
+`ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm`, `TheNormalDirectionOfTheDiagonal`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
 ## Open
 
-- A count on an object that is not of finite type (E7 excludes finite type): bilinear in two
-  degrees on `𝒢`, with the gluing index as arithmetic term.
-- The value of the carrier's `orbitFinitePart`. Lead, not in Lean: by Möbius inversion of its rows
-  it should equal `(1/ζ(2))·Σ_d rowError(d)/d² − (3/8 − c₀)`; a closed form needs the constant of
-  `Σ_{a≤d} 1/(a²+d²)` (Kronecker limit formula for `ℤ[i]`), not in the corpus.
-- A map matching gluing conditions and zeros; it would have to produce `S` (E6).
-- Stepanov's method on the fibres of the first carry polynomial.
+None. Q1–Q9 of §9.5 are answered and the deliverables or the kill condition of each construction
+of §9.4 are proved in Lean (status table above).

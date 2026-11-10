@@ -312,4 +312,26 @@ theorem tendsto_log_factorial_sub_xiZeroCount_add_rvmRemainder :
   unfold RHTower.rvmRemainder RHTower.zeroCountReal
   ring
 
+/-- **The zeros of one window against the gluing conditions of one graph.** With
+`T_n = 2π(n + ½)`: the number of zeros with height in `(T_n, T_{n+1}]`, minus the `log(n + 1)`
+gluing conditions of `Γ_{n+1}`, minus the increment of the remainder `S` over the window, tends
+to `0`. Graph by graph the square counts the zeros up to the increments of `S`. -/
+theorem tendsto_xiZeroCount_window_sub_log :
+    Tendsto (fun N : ℕ =>
+        ((RHTower.xiZeroCount (2 * π * (((N + 1 : ℕ) : ℝ) + 1 / 2)) : ℝ) -
+            RHTower.xiZeroCount (2 * π * ((N : ℝ) + 1 / 2))) -
+          Real.log ((N + 1 : ℕ) : ℝ) -
+          (RHTower.rvmRemainder (2 * π * (((N + 1 : ℕ) : ℝ) + 1 / 2)) -
+            RHTower.rvmRemainder (2 * π * ((N : ℝ) + 1 / 2)))) atTop (𝓝 0) := by
+  have h := tendsto_log_factorial_sub_xiZeroCount_add_rvmRemainder
+  have hd := h.sub (h.comp (tendsto_add_atTop_nat 1))
+  rw [sub_self] at hd
+  refine hd.congr fun N => ?_
+  have hfac : Real.log (((N + 1).factorial : ℕ) : ℝ) =
+      Real.log ((N + 1 : ℕ) : ℝ) + Real.log (N.factorial : ℝ) := by
+    rw [Nat.factorial_succ, Nat.cast_mul, Real.log_mul (by positivity) (by positivity)]
+  simp only [Function.comp_apply]
+  rw [hfac]
+  ring
+
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ

@@ -15,7 +15,7 @@ With `A=Σ(Λ_U*μ_V)(b)/b`, `B=Σμ_V(b)/b`,
 Quantitative reduction: for `1/2≤σ<1`, `t≥2`,
 `0<α≤ξ≤2αt`, `1≤U,V≤t²`, `X≥t⁸`,
 
-`|(M−P)−C_UV| ≤ (8Dσ+3Cσ+8)/t`,
+`|(M−P)−C_UV| ≤ (8Dσ+3Cσ+8)t⁷/X ≤ (8Dσ+3Cσ+8)/t`,
 
 where `Dσ` and `Cσ` are the proved second-order lattice constants.
 Consequently all such cutoff choices give the same centred current up to
@@ -36,18 +36,18 @@ The two proved second-order lattice estimates imply
 ` + Cσ t²X^(−1−σ)(1+log X)V²`.
 
 Put `q=X^(−1−σ)`. Since `σ≥1/2` and `X≥1`, `qX√X≤1`.
-From `U,V≤t²` and `X≥t⁸`,
-`UV≤t⁴`, `√X≥t⁴`, `X√X≥t¹²`, and `t⁷≤X`.
+From `U,V≤t²` and `X≥t⁸`, `UV≤t⁴`, `√X≥t⁴`, and `t≤X`.
 Furthermore `log(UV)≤4log t≤4t`, and
 `1+log X=1+2log√X≤3√X`.
-Multiplying the first type-I error by `t` bounds it by
-`8Dσ q t¹²≤8Dσ`. Multiplying the logarithmic error by `t` bounds it by
-`3Cσ q√X t⁷≤3Cσ`.
+Multiplying the first type-I error by `X` bounds it by
+`8Dσ t⁷(qXt⁴)≤8Dσ t⁷`. Multiplying the logarithmic error by `X`
+bounds it by `3Cσ t⁶(qX√X)≤3Cσ t⁷`.
 
-For the head, `U^(1−σ)≤U`, `log U≤U`, `U⁴≤t⁸≤X`, and `t≤X`.
-Its bound times `t` is at most `4αU⁴t≤4αX²=8`.
-Summation proves the stated bound. The triangle inequality proves cutoff
-independence with twice the constant.
+For the head, `U^(1−σ)≤U`, `log U≤U`, and `U⁴≤t⁸≤t⁷X`.
+Its bound times `X` is at most `4αU⁴X≤4αt⁷X²=8t⁷`.
+Summation proves the scale bound; `X≥t⁸` gives the inverse-height
+corollary. The triangle inequality proves cutoff independence with twice
+the inverse-height constant.
 
 Dependencies: `GaussianSecondMomentTypeIPole.lean`,
 `GaussianLogSecondMomentTypeIPole.lean`, and `GaussianMomentPrimeBound.lean`.
@@ -58,12 +58,13 @@ Module: `ExceptionalLayerTheory/GaussianCentredVaughanCurrent.lean`.
 
 - `tsum_gaussianMoment_vaughan`: exact complete infinite decomposition.
 - `norm_gaussianPrimeMoment_sub_centredVaughan_le`: full explicit error bound.
+- `norm_gaussianPrimeMoment_sub_centredVaughan_le_scale`: scale-decaying bound.
 - `norm_gaussianPrimeMoment_sub_centredVaughan_le_inv`: uniform inverse-height bound.
 - `norm_gaussianCentredVaughan_cutoff_sub_le`: cutoff comparison.
 
 Direct source check passed without warnings:
 `lake --old env lean GaloisForLFunctions/ExceptionalLayerTheory/GaussianCentredVaughanCurrent.lean`.
-All four transitive axiom audits contain only `propext`, `Classical.choice`,
+All five transitive axiom audits contain only `propext`, `Classical.choice`,
 and `Quot.sound`.
 
 ## Arithmetic significance
@@ -72,6 +73,5 @@ The full pole subtraction leaves a logarithmic continuum term inside type II.
 A bound on raw type II discards this cancellation. The proved estimate
 removes both type-I errors and the head uniformly at sufficiently long
 polynomial observation scales. It does not bound the centred type-II term
-or establish B13. It also does not supply the contracting-grid factor `h^d`;
-a normalized filter estimate needs that factor or an explicit comparison
-of its signal with the absolute error.
+or establish B13. The spacing-preserving extension retains `h^d` in the
+filtered error; see `b13-spacing-preserving-centred-vaughan-reduction.md`.

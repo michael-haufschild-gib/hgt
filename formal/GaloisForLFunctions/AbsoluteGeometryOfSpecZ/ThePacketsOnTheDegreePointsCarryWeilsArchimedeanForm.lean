@@ -23,6 +23,11 @@ For a packet supported in `[log 3, log K]`, on the window `N < n ≤ (1 + 3K)N`:
   counterterm of the degree points tends to minus the archimedean part of Weil's functional of
   `f` without the pole.
 
+* **A counterterm of the scale alone** (`tendsto_degreePairing_sub_scale_counterterm`,
+  `integral_sq_mul_translate`): with `log(N/2π)` at every point of the window, a counterterm that
+  does not depend on the degree point, the limit is Weil's form plus `∫ f(u)² u du`, the first
+  moment of the mass, which moves by `s·∫f²` when the packet is translated by `s`.
+
 No other counterterm enters, and nothing is assumed on the packet beyond `C²` and the position of
 its support above the scale. Weil's functional is invariant under translation of the packet, so
 the support condition fixes the scale and not the packet.
@@ -822,5 +827,65 @@ theorem tendsto_degreeForm_translate {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
     packetAutocorr_translate] at hmain
   rw [weilArchRe_sub_pole_packet hf hfc hsuppR hB' hL]
   exact hmain
+
+/-! ### A counterterm of the scale alone -/
+
+/-- The first moment of the mass of a translated packet. -/
+theorem integral_sq_mul_translate {f : ℝ → ℝ} (hcont : Continuous f) (hfc : HasCompactSupport f)
+    (s : ℝ) : ∫ u, f (u - s) ^ 2 * u = (∫ u, f u ^ 2 * u) + s * ∫ u, f u ^ 2 := by
+  have hsq : HasCompactSupport fun v => f v ^ 2 := hfc.comp_left (zero_pow two_ne_zero)
+  have i1 : Integrable fun v => f v ^ 2 * v :=
+    ((hcont.pow 2).mul continuous_id).integrable_of_hasCompactSupport hsq.mul_right
+  have i2 : Integrable fun v => s * f v ^ 2 :=
+    ((hcont.pow 2).integrable_of_hasCompactSupport hsq).const_mul s
+  have h := integral_sub_right_eq_self (μ := volume) (fun v => f v ^ 2 * (v + s)) s
+  have hl : ∫ u, f (u - s) ^ 2 * u = ∫ u, f (u - s) ^ 2 * (u - s + s) :=
+    integral_congr_ae (Eventually.of_forall fun u => by
+      show f (u - s) ^ 2 * u = f (u - s) ^ 2 * (u - s + s)
+      rw [sub_add_cancel])
+  have hr : ∫ v, f v ^ 2 * (v + s) = ∫ v, (f v ^ 2 * v + s * f v ^ 2) :=
+    integral_congr_ae (Eventually.of_forall fun v => by
+      show f v ^ 2 * (v + s) = f v ^ 2 * v + s * f v ^ 2
+      ring)
+  rw [hl, h, hr, integral_add i1 i2, integral_const_mul]
+
+/-- **A counterterm of the scale alone leaves the first moment of the mass.** With the
+counterterm `log(N/2π)` at every degree point of the window, a function of the scale and not of
+the point, the pairing of the jets tends to minus the archimedean part of Weil's functional
+without the pole plus `∫ f(u)² u du`. -/
+theorem tendsto_degreePairing_sub_scale_counterterm {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f)
+    (hfc : HasCompactSupport f) {K : ℕ} (hK : 1 ≤ K)
+    (hsupp : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) :
+    Tendsto (fun N : ℕ => degreePairing f (3 * K) N -
+        (∑ n ∈ Ioc N (N + 3 * K * N), degreeSample f N n ^ 2 / n) *
+          Real.log ((N : ℝ) / (2 * Real.pi))) atTop
+      (𝓝 (-(_root_.RHTower.WeilOneSided.weilArchRe
+            (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1) -
+          (_root_.RHTower.weilPoleTerm
+            (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re) +
+        ∫ u in (0 : ℝ)..Real.log (1 + ((3 * K : ℕ) : ℝ)), f u ^ 2 * u)) := by
+  have hG : Continuous fun u => f u ^ 2 * u := (hf.continuous.pow 2).mul continuous_id
+  have h1 := tendsto_degreeForm hf hfc hK hsupp
+  have h2 := tendsto_degreeSum hG (by omega : 1 ≤ 3 * K)
+  refine (h1.add h2).congr' ?_
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+  have h2π : (2 * Real.pi) ≠ 0 := by positivity
+  have hterm : ∀ n ∈ Ioc N (N + 3 * K * N),
+      degreeSample f N n ^ 2 / n * Real.log ((n : ℝ) / (2 * Real.pi)) =
+        (fun u => f u ^ 2 * u) (Real.log ((n : ℝ) / N)) / n +
+          degreeSample f N n ^ 2 / n * Real.log ((N : ℝ) / (2 * Real.pi)) := by
+    intro n hn
+    have hn' : (0 : ℝ) < n := by
+      have := (Finset.mem_Ioc.mp hn).1
+      exact_mod_cast (by omega : 0 < n)
+    show degreeSample f N n ^ 2 / n * Real.log ((n : ℝ) / (2 * Real.pi)) =
+      f (Real.log ((n : ℝ) / N)) ^ 2 * Real.log ((n : ℝ) / N) / n +
+        degreeSample f N n ^ 2 / n * Real.log ((N : ℝ) / (2 * Real.pi))
+    rw [degreeSample, Real.log_div hn'.ne' h2π, Real.log_div hn'.ne' hN'.ne',
+      Real.log_div hN'.ne' h2π]
+    ring
+  rw [degreeForm, Finset.sum_congr rfl hterm, Finset.sum_add_distrib, ← Finset.sum_mul]
+  ring
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
