@@ -25,7 +25,7 @@
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
 | A82 | Li coefficients as comb forms of tails | Open |
-| A92 | Prime-side resolution law, including both finite-mode statements | Sign and weighted coefficient-two bounds formalized and axiom-audited; counterexample and prime-side assembly pending |
+| A92 | Prime-side resolution law, including both finite-mode statements | Sign bound, coefficient-two bound, and coefficient-one counterexample formalized and axiom-audited; sharpness and prime-side assembly pending |
 | A93 | Receiver exchange atlas | Open |
 | A94 | Equality of finite-scale and aperture negative indices | Open |
 | A95 | Separation-free finite-layer window length | Finite-mode theorem audited; zeta top-layer specialization and every-floor failure written, awaiting audit |
@@ -68,7 +68,7 @@ For distinct positive frequencies, nonvanishing survives every phase rotation: t
 
 The weighted L1 clause of A92 needs an exactness audit: `F≥−K` directly gives `∫w|F|≤2K∫w+|∫wF|`, hence the Fourier bound with coefficient **2** on the floor. This bound is formalized and axiom-audited in `WeightedTraceFloors.lean`. The proposed coefficient 1 is suspect. A candidate obstruction uses `F=cos t+cos(2t)≥−9/8` and three equal narrow translated bumps centered at `0,2π/3,4π/3`: their first two Fourier modes vanish, while their weighted absolute trace approaches 4 against floor cost `27/8`. Formalize the obstruction and sharpness before retiring the stated coefficient.
 
-`WeightedFloorCoefficientOneFails.lean` contains the Lebesgue-weight proof awaiting audit. It uses normalized interval densities at the three cubic sample sites; the fundamental theorem of calculus makes their weighted integrals converge to point evaluations. The Fourier samples need only converge to zero: the strict gap `4>27/8` persists for sufficiently short intervals. `FejerFloorsMakeCoefficientTwoSharp.lean` contains the sharpness proof awaiting audit: `Fejer_N−1` at the `(N+1)`-st roots has values `N,−1,…,−1`, floor `−1`, vanishing nonzero Fourier samples, and absolute-mass ratio `2N/(N+1)→2`. Replacing each signed difference frequency by its absolute value preserves the real trace and gives only positive active frequencies.
+`WeightedFloorCoefficientOneFails.lean` proves the Lebesgue-weight counterexample; direct Lean and standard-axiom audits passed. It uses normalized interval densities at the three cubic sample sites; the fundamental theorem of calculus makes their weighted integrals converge to point evaluations. The Fourier samples need only converge to zero: the strict gap `4>27/8` persists for sufficiently short intervals. `FejerFloorsMakeCoefficientTwoSharp.lean` contains the sharpness proof awaiting audit: `Fejer_N−1` at the `(N+1)`-st roots has values `N,−1,…,−1`, floor `−1`, vanishing nonzero Fourier samples, and absolute-mass ratio `2N/(N+1)→2`. Replacing each signed difference frequency by its absolute value preserves the real trace and gives only positive active frequencies.
 
 ## Further assembly inputs
 

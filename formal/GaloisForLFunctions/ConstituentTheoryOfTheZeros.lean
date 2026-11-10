@@ -4,6 +4,8 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.WienersLemmaOnAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheLogarithmicDerivativeExpandsInAZeroFreeStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.DirichletSeriesAreExpansionsOverThePositiveRationals
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentDirichletSeriesIsAConstituent
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
 
 /-!
 # Constituent theory of the zeros
@@ -23,5 +25,11 @@ operator.
   (`TheLogarithmicDerivativeExpandsInAZeroFreeStrip`).
 * No absolutely convergent Dirichlet series is a constituent with a zero: if its zeros in a
   half-plane containing the line, or only in a strip about the line, are zeros of `ξ`, it has none
-  there (`NoAbsolutelyConvergentDirichletSeriesIsAConstituent`).
+  there (`NoAbsolutelyConvergentDirichletSeriesIsAConstituent`); the same for every absolutely
+  convergent expansion over the positive rationals on a strip, with scales of both sizes
+  (`NoAbsolutelyConvergentExpansionIsAConstituentInAStrip`).
+* Approximants that converge in the norm of absolute convergence and share zeros with `ξ` in
+  growing boxes have, from some index on, no zero near the line at any height; for Dirichlet
+  polynomials of bounded length the height of the first zero that is not a zero of `ξ` is bounded
+  in terms of the length (`ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros`).
 -/

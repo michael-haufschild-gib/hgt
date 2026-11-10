@@ -21,14 +21,15 @@ theorem rootSampleSites_character (N : ℕ) {r : ℕ} (hr : 0 < r) (hrN : r < N 
     (∑ j, Complex.exp ((((r : ℝ) * rootSampleSites N j : ℝ) : ℂ) * I)) = 0 := by
   have he : (fun j : ℕ => Complex.exp ((((r : ℝ) *
       (2 * Real.pi * j / (N + 1)) : ℝ) : ℂ) * I)) =
-      fun j => Complex.exp (2 * Real.pi * I * r * j / (N + 1)) := by
+      fun j : ℕ => Complex.exp (2 * Real.pi * I * r * j / (N + 1)) := by
     funext j
     congr 1
     push_cast
     ring
   change (∑ j : Fin (N + 1), Complex.exp ((((r : ℝ) *
     (2 * Real.pi * (j : ℕ) / (N + 1)) : ℝ) : ℂ) * I)) = 0
-  rw [Fin.sum_univ_eq_sum_range, he]
+  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ => Complex.exp ((((r : ℝ) *
+    (2 * Real.pi * j / (N + 1)) : ℝ) : ℂ) * I)) (N + 1), he]
   exact _root_.HTGeometry.exp_unit_sum_zero (N + 1) r hr hrN
 
 /-- Every nonzero difference frequency has zero mean over the roots. -/
@@ -59,10 +60,12 @@ theorem fejerPositiveSum_re (N : ℕ) (t : ℝ) :
       Complex.exp (((n : ℂ) - (m : ℂ)) * t * I)) =
       ∑ i : Fin (N + 1), ∑ j : Fin (N + 1),
         Complex.exp ((((i : ℝ) - (j : ℝ)) * t : ℝ) * I) := by
-    rw [← Fin.sum_univ_eq_sum_range]
+    rw [← Fin.sum_univ_eq_sum_range (fun n : ℕ =>
+      ∑ m ∈ Finset.range (N + 1), Complex.exp (((n : ℂ) - (m : ℂ)) * t * I)) (N + 1)]
     apply Finset.sum_congr rfl
     intro i _
-    rw [← Fin.sum_univ_eq_sum_range]
+    rw [← Fin.sum_univ_eq_sum_range (fun m : ℕ =>
+      Complex.exp (((i.val : ℂ) - (m : ℂ)) * t * I)) (N + 1)]
     apply Finset.sum_congr rfl
     intro j _
     congr 1
@@ -172,13 +175,15 @@ theorem tendsto_fejerFourierLeakage (N : ℕ) :
 
 /-- No constant less than two can replace the floor coefficient, even with positive frequencies. -/
 theorem exists_weight_violating_any_floor_coefficient_lt_two {c : ℝ} (hc : c < 2) :
-    ∃ (N : ℕ) (w : ℝ → ℝ), Integrable w ∧ (∀ t, 0 ≤ w t) ∧
+    ∃ (N : ℕ) (w : ℝ → ℝ), 1 ≤ N ∧ Integrable w ∧ (∀ t, 0 ≤ w t) ∧
       (∀ t, -1 ≤ (fejerPositiveSum N t).re) ∧
       c * (∫ t, w t) + fejerFourierLeakage N w <
         ∫ t, w t * |(fejerPositiveSum N t).re| := by
-  obtain ⟨N, hN⟩ := exists_nat_gt (c / (2 - c))
+  obtain ⟨N, hN⟩ := exists_nat_gt (max 1 (c / (2 - c)))
+  have hN1 : 1 ≤ N := by
+    exact_mod_cast ((le_max_left 1 (c / (2 - c))).trans hN.le)
   have hgap : c * ((N : ℝ) + 1) < 2 * N := by
-    have h := (div_lt_iff₀ (sub_pos.mpr hc)).mp hN
+    have h := (div_lt_iff₀ (sub_pos.mpr hc)).mp ((le_max_right 1 _).trans_lt hN)
     nlinarith only [h]
   have hmass : Tendsto (fun ε => ∫ t, finiteSamplingWeight (rootSampleSites N) ε t)
       (𝓝[>] (0 : ℝ)) (𝓝 ((N : ℝ) + 1)) := by
@@ -202,8 +207,8 @@ theorem exists_weight_violating_any_floor_coefficient_lt_two {c : ℝ} (hc : c <
   have hhi : M < 2 * N := by dsimp [M]; linarith only [hgap]
   have hpos : ∀ᶠ ε : ℝ in 𝓝[>] (0 : ℝ), 0 < ε := self_mem_nhdsWithin
   obtain ⟨ε, hε, hlow, hhigh⟩ := (hpos.and
-    ((hcost.eventually_lt_const hlo).and (habs.eventually_gt_const hhi))).exists
-  exact ⟨N, finiteSamplingWeight (rootSampleSites N) ε,
+    ((hcost.eventually_lt_const hlo).and (habs.eventually (Ioi_mem_nhds hhi)))).exists
+  exact ⟨N, finiteSamplingWeight (rootSampleSites N) ε, hN1,
     integrable_finiteSamplingWeight (rootSampleSites N) ε,
     finiteSamplingWeight_nonneg (rootSampleSites N) hε,
     fejerPositiveSum_floor N, hlow.trans hhigh⟩

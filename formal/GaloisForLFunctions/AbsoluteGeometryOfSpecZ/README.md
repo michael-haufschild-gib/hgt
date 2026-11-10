@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-58 modules. Specification: §2.14 of
+59 modules. Specification: §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md), which refines
 §9 of [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
 `docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`. The programme is carried
@@ -168,6 +168,7 @@ inequality beyond the bounded lengths above.
 | Nodes of a chain | `chainNode` | `p + p² + ⋯ + p^l`, the value of the coordinate of `p` on `Γ_{m p^l}`, `p ∤ m` |
 | Coordinates of the primes | `primeCoord`, `latticePoint`, `coordHom`, `payingRing` | `y_p = Σ_{j ≥ 1} e_{p^j}`; the graph `Γ_n` as the point `((y_p)_n)_p` of the affine space on the primes; `ℤ[Y_p] → 𝒢`; its image `P` |
 | Planar sequences | `IsPlanar`, `planarRing`, `planarSquare`, `planarContact` | on every chain a polynomial in the node, up to a factor prime to `p`; their ring; the planar sections of the square; the ideal of their differences on two graphs |
+| Contact numbers and forced values | `contactNat`, `planarValues` | the nonnegative generator of `J(m, n)`; the ideal of the values on `Γ_m` of the planar sections that vanish on a finite set of graphs |
 | Bézout at an aperture | `CombBezoutAt` | the inequality on the packets supported within `a` of a centre |
 | Superposition | `superposeFamily`, `ringConfig` | the union of the zeros of a finite family of configurations, with the multiplicities added; `ζ` and the `L(s, χ_i)` of a ring |
 | Genus of a degree point | `genus` | `1 + (n/2)(d log(n/2π) + R)` on the square of a ring of degree `d` whose conductors have the product `e^R` |
@@ -559,6 +560,7 @@ The nine founding questions are answered. The questions the programme works on a
 | The tower with its weight lines | sections `Σ_{e ≤ E} χ_e·s_e` of the level `M`: lines and weights are independent for `q ≥ 2`; with `b` digits in `[−A, A]` on each line of each weight they are `(((2A+1)^b)^{τ(M)})^{E+1}`, also for the weights `−J, …, E − J` | `eq_zero_of_weighted_eval_eq_zero`, `eq_zero_of_weightedSection_eq_zero`, `card_image_weightedLatticeMap`, `card_image_shiftedWeightedLatticeMap` |
 | The pairing computed on the object | the unitary intersection number of `Γ_m` and `Γ_{mk}` is the contact number of the diagonal and `Γ_k` on `𝒪_q`, over `√k`, plus the Lévy density of the jets at `log k` | `contactWeight_eq_log_card_orbitBaseRing`, `frobeniusIntersection_div_sqrt_eq_object` |
 | An object with unit masses that pays every contact | the planar square, the sections of `𝒢` that on every chain are polynomials in the node: its contact ideals are `J(m, n)` for every pair of graphs, and a section that vanishes on a finite set of graphs and not on `Γ_m` has `Σ contacts ≤ log|x_m|`, the prime powers above and below counted each; it contains the polynomial ring on the primes `ℤ[y_p]`, which pays the contacts but has a contact of `Γ_1` and `Γ_4` at `3`; it does not contain `p − e_p` | `planarSquare`, `planarContact_eq_graphIdeal`, `sum_contact_le_log_abs_planarSquare`, `coordHom_injective`, `three_dvd_sub_of_mem_payingRing`, `not_isPlanar_prime_sub_orbit` |
+| Bézout is an equality on the planar square | for `m ∉ S` the values on `Γ_m` of the planar sections vanishing on the graphs of `S` are the ideal `Π_{n ∈ S} J(m, n)`; in the square `p − e_p` vanishes on `Γ_p` and `Γ_{p²}` and its value `p` on the diagonal is not in `J(1, p)·J(1, p²)` | `planarValues_eq_prod`, `exists_planar_vanishing`, `prod_contactNat_dvd_of_isPlanar`, `exists_ghost_vanishing_not_mem_prod` |
 | Payment is the product formula | the section `Π_{l ∈ T}(Y_p − (p + ⋯ + p^l))` vanishes on the graphs `Γ_{m p^l}`, `l ∈ T`, and on `Γ_{m p^k}` it is the product of the differences of the nodes, divisible by `p^{Σ_{l ∈ T}(min(k,l)+1)}` | `ghostComponent_coordHom_nodeProduct`, `pow_sum_dvd_of_isPlanar` |
 | No object of finite type carries the contacts | none of finite type: the fibre of the square over `p` is infinite; a ring with Frobenius lifts, a `ℤ`-point and a finite fibre over `p` has a contact at `p` between two graphs of degrees prime to `p`; affine space of dimension `k` has at most `p^k` points over `𝔽_p`, and a quotient has no more | `infinite_ringHom_ghostRing_zmod`, `FrobeniusLifts.exists_contact_not_in_square`, `card_ringHom_mvPolynomial_zmod_le`, `finite_ringHom_zmod_of_surjective` |
 
@@ -859,13 +861,19 @@ masses and paid contacts?*
   of the differences of the nodes separate two graphs at every prime that is not their common
   one (`exists_planar_separating`). It is strictly between the polynomial ring and the square
   (`payingRing_lt_planarSquare`, `planarSquare_ne_top`).
+- Equality. For `m ∉ S` the values on `Γ_m` of the planar sections that vanish on the graphs
+  of `S` are exactly the product `Π_{n ∈ S} J(m, n)` of the contact ideals
+  (`planarValues_eq_prod`): the product of sections `y − y_n` with `(y − y_n)_m` a generator of
+  `J(m, n)` attains it (`exists_planar_vanishing`), and the payment along the chains forces it
+  (`prod_contactNat_dvd_of_isPlanar`). The planar square is glued as the trace of a regular
+  surface on its graphs; the square is not (`exists_ghost_vanishing_not_mem_prod`).
 - The price. The payment is the product formula: the section `Π_{l ∈ T}(Y_p − node_l)` attains
   the forced zeros, and its size on `Γ_{m p^k}` is the product of the differences of the nodes
   (`ghostComponent_coordHom_nodeProduct`). The archimedean pairing of this object is the
   logarithm of a difference of nodes, not the jets.
 
 So the answer is: the planar square, a subring of the arithmetic square with unit masses, the
-contact ideals of the square and every contact paid; no ring between the square and the
+contact ideals of the square and every contact paid, with equality in Bézout by restriction; no ring between the square and the
 functions on the torsion of `𝔾_m` has unit masses. What it does not carry, and what a section
 count on it gives, are topics of §13.5.
 
@@ -1054,6 +1062,7 @@ the integers Bézout fails for every system of contact weights other than `Λ`
 | The coordinates of the primes generate a polynomial ring in the square, and the graphs of a chain lie on a line | `coordHom_injective`, `latticePoint_chain` |
 | A planar sequence pays every contact of the normal form, prime powers above and below | `pow_sum_dvd_of_isPlanar`, `sum_contact_le_log_abs_of_isPlanar` |
 | The planar square has the contact ideals of the square for every pair of graphs | `planarContact_eq_graphIdeal` |
+| On the planar square the values of the sections vanishing on a finite set of graphs are the product of the contact ideals | `planarValues_eq_prod` |
 | The squares with Bézout at an aperture are the window cone; some of them are not the square of the integers | `combBezoutAt_iff_mem_windowCone`, `exists_combBezoutAt_ne_vonMangoldt` |
 | Existence of a square with Bézout at every aperture is the Riemann hypothesis | `riemannHypothesis_iff_forall_exists_combBezoutAt` |
 | Weil's form of a superposition of configurations is the sum of the forms, without disjointness | `W_superposeFamily` |
@@ -1114,6 +1123,7 @@ All are unconditional.
 | Descent of the `p`-derivation to an integer point | `DeltaOrderDoesNotDescendAtEveryIntegerPoint` |
 | Nodes of a chain; the coordinates of the primes; restriction of a polynomial on the primes to a line; divisibility of a value by the product of the differences to the roots; planar sequences; contacts counted chain by chain against the factorization | `TheEulerFactorsOfTheDivisorSumPayEveryContact` |
 | The ring of planar sequences; iterated Fermat quotients as polynomials with one prime in the denominator; ideals of `ℤ` prime by prime | `ThePlanarSquareHasTheContactsOfTheSquareAndPaysThem` |
+| Contact numbers of the square from the divisors of exactly one degree; elements of a contact ideal as differences of one section; products of sections `y − y_n`; divisibility prime by prime | `BezoutIsAnEqualityOnThePlanarSquare` |
 | Bézout at an aperture; the dictionary with the window cone and its margins | `TheSquaresWithBezoutAtAnApertureAreTheWindowCone` |
 | Superposition of a finite family of configurations; sums over a superposition by indicators; the exact index of a sum of Weil forms | `TheHodgeIndexOfANumberRingCountsTheZerosOfItsZetaFunction` |
 | Families of primitive characters with different conductors; the genus of a degree point; numerical bounds for `e`, `e^{2/3}`, `e^2` against `π` | `TheCountertermOfANumberRingObeysRiemannHurwitz` |
@@ -1176,6 +1186,7 @@ All are unconditional.
 | Short packets say nothing about a number ring | for a large conductor the twisted part is nonpositive on every packet shorter than `log 2`: the density of its comb exceeds the archimedean constant |
 | A ring with unit masses that pays every contact must leave the square | the planar square is a subring of the square; no ring between the square and the functions on the torsion of `𝔾_m` has unit masses |
 | The polynomial ring on the coordinates of the primes is the square with paid contacts | it has contacts the square does not have: `Γ_1` and `Γ_4` meet at `3`; the planar square has exactly the contacts of the square |
+| The square is the trace of a regular surface on its graphs | Bézout by restriction is an equality on the planar square and not on the square: the forced values there are the product of the contact ideals, in the square they are larger |
 | Paid contacts give the sign | the payment is the product formula for the differences of the nodes; the archimedean pairing of the planar square is logarithmic, not the jets |
 | Sections that pay every contact can be small | a planar section vanishing on `Γ_{p}, …, Γ_{p^J}` is divisible by `p^J` on the diagonal; the section `Π_j (Y_p − (p + ⋯ + p^j))` has there the size `Π_j (p + ⋯ + p^j)` |
 | The index of a ring is the sum of the indices of its characters | it is the number of distinct zeros of the zeta function to the right of the line; a zero shared by two factors is one negative square |
@@ -1287,13 +1298,15 @@ these bounds with the proved twisted-comb limit.
 ### 13.5 The planar square
 
 The planar square has unit masses, the contact ideals of the square and paid contacts.
-*Proved:* the ring, its contacts, the payment on chains and in the normal form, its position
-between the polynomial ring on the primes and the square. *Open:*
+*Proved:* the ring, its contacts, the payment on chains and in the normal form, Bézout by
+restriction as an equality, its position between the polynomial ring on the primes and the
+square. *Open:*
 
-- the gluing index of its first `N` graphs. Payment forces the graph `Γ_n` to carry
-  `Σ_p (v_p(n)(v_p(n)+1)/2) log p` conditions against `log n` in the square, on average a
-  constant more per graph; whether the image of the planar square on `Γ_1, …, Γ_N` has exactly
-  the index `Π_{m < n ≤ N} #(ℤ/J(m, n))` is not proved;
+- the count of its conditions against the zeros. On `Γ_1, …, Γ_n` the last graph carries the
+  conditions `Π_{k < n} J(k, n)`; the order of this product is `Π_p p^{v_p(n)(v_p(n)+1)/2}`
+  (elementary, not formalized), against `n` in the square. The gluing index `N!` of the square is
+  the number of zeros below the height `2πN`; what the larger index of the planar square
+  counts is not known;
 - the dependence on the nodes. Planarity is defined with the nodes `p + ⋯ + p^l` of the
   coordinates `y_p = Σ_j V_p^j 1`; another sequence of integers with the same differences up to
   units at `p` gives another ring with the same two properties, and no invariant that selects

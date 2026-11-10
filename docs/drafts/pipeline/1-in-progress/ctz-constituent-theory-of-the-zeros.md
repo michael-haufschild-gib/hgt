@@ -23,6 +23,8 @@ Folder `formal/GaloisForLFunctions/ConstituentTheoryOfTheZeros/`, umbrella
 | TheLogarithmicDerivativeExpandsInAZeroFreeStrip | P3′: `deriv_expansion`, `WSummable.log_mul`, `StripWiener.isUnit_ofCoeff_of_zeroFree`, `exists_inverse_expansion_of_zeroFree`, `exists_logDeriv_expansion` | Lean, clean |
 | DirichletSeriesAreExpansionsOverThePositiveRationals | `dirichletCoeff`, `wsummable_dirichletCoeff`, `expansion_dirichletCoeff` | Lean, clean |
 | NoAbsolutelyConvergentDirichletSeriesIsAConstituent | P4: `exists_good_heights`, `expansion_ne_zero_of_zeros_cancelled`, `re_eq_half_of_strip_zeros_subset_xi`, `LSeries_ne_zero_of_strip_zeros_subset_xi`, `LSeries_ne_zero_of_zeros_subset_xi` | Lean, clean; axioms `propext`, `Classical.choice`, `Quot.sound` |
+| ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros | P6: `exists_le_norm_LSeries_of_strip_zeroFree`, `xi_eq_zero_of_limit_of_box_zeros`, `eventually_LSeries_ne_zero_of_box_zeros_subset_xi`, `polyCoeff`, `exists_height_forall_dirichletPolynomial` | Lean, clean |
+| NoAbsolutelyConvergentExpansionIsAConstituentInAStrip | P4 for all expansions over the positive rationals: `isStripAlmostPeriodicOn_expansion`, `exists_thick_zero_shifts_on_strip`, `re_eq_half_of_expansion_strip_zeros_subset_xi`, `expansion_ne_zero_of_strip_zeros_subset_xi` | Lean, clean |
 
 ## Paper proofs
 
@@ -144,15 +146,23 @@ absolute convergence termwise, and the two vertical means differ by the horizont
 rectangle, `O(1/T)`, by Cauchy's theorem and boundedness. Bessel's inequality for the finite
 sections gives the square sum; Cauchy–Schwarz with `Σ n^{−1−2ε}` gives the absolute sum. ∎
 
-### P6. Uniform heights in bounded length
-For `N ≥ 2` and `0 < c ≤ 1` there is `H₀` such that every Dirichlet polynomial
-`D = Σ_{n ≤ N} a_n n^{−s}` with `‖a_n‖ ≤ 1` and two coefficients of modulus `≥ c` has a zero with
-`|Im ρ| ≤ H₀` that is not a zero of `ξ`.
+### P6. Approximants in growing boxes; uniform heights in bounded length (as formalized)
+(a) Let `F_k → F ≢ 0` in the norm of absolute convergence at `x`, the strip `|Re s − ½| < ω` right
+of `x`, `H_k → ∞`, and every zero of `F_k` in the box `|Re s − ½| < ω`, `|Im s| ≤ H_k` a zero of
+`ξ`. Then for `ω' < ω`, eventually `F_k` has no zero with `|Re s − ½| ≤ ω'`, at any height.
 
-*Proof.* Otherwise there are `D_k` with every zero of height `≤ k` a zero of `ξ`. The coefficient
-vectors lie in a compact set; a subsequence converges to a polynomial `D` with two nonzero
-coefficients. Every zero of `D` is a limit of zeros of `D_k` (Hurwitz), whose heights are
-eventually `≤ k`, so every zero of `D` is a zero of `ξ`, against `exists_zero_not_xi_zero`. ∎
+*Proof.* A zero `z` of `F` in the strip is isolated; on a small sphere `‖F‖ ≥ μ`; an approximant
+within `μ/3` has a zero in the ball (sphere domination), which lies in its box, so `ξ` vanishes
+arbitrarily close to `z`, hence at `z`. So `F` is a constituent in the strip and has no zero there
+(P4). By P3′ it is bounded below by `m` on the closed substrip, and `‖F_k − F‖ < m` there. ∎
+
+(b) For `N` and `ω' < ω ≤ ½` there is `H₀` such that every nonzero Dirichlet polynomial of length
+`≤ N` whose zeros in the box `|Re s − ½| < ω`, `|Im s| ≤ H₀` are zeros of `ξ` has no zero with
+`|Re s − ½| ≤ ω'`.
+
+*Proof.* Otherwise normalize counterexamples for `H₀ = k` to sup norm one; a subsequence of the
+coefficient vectors converges on the unit sphere of `ℂ^N`, in particular in the norm of absolute
+convergence at `−1`, to a nonzero vector, and (a) applies. ∎
 
 ## Open
 - Q1 for the bounded class on `Re s > x`, `0 ≤ x < ½`, without absolute convergence left of the

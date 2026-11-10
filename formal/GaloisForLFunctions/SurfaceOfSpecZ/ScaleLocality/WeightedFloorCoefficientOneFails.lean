@@ -99,7 +99,7 @@ theorem twoModeTrace_floor (t : ℝ) : -(9 / 8 : ℝ) ≤ twoModeTrace t := by
 theorem twoModeTrace_eq_finiteExpSum (t : ℝ) :
     twoModeTrace t = (finiteExpSum ![1, 1] ![1, 2] t).re := by
   simp only [finiteExpSum, Fin.sum_univ_two, Matrix.cons_val_zero, Matrix.cons_val_one,
-    Matrix.head_cons, one_mul, Complex.add_re, Complex.exp_ofReal_mul_I_re, twoModeTrace]
+    one_mul, Complex.add_re, Complex.exp_ofReal_mul_I_re, twoModeTrace]
 
 def cubicSampleSites (j : Fin 3) : ℝ := 2 * Real.pi * j / 3
 
@@ -127,13 +127,14 @@ theorem cubicSampleSites_abs_trace : (∑ j, |twoModeTrace (cubicSampleSites j)|
 theorem cubicSampleSites_character {r : ℕ} (hr : 0 < r) (hr3 : r < 3) :
     (∑ j, Complex.exp ((((r : ℝ) * cubicSampleSites j : ℝ) : ℂ) * Complex.I)) = 0 := by
   have he : (fun j : ℕ => Complex.exp ((((r : ℝ) * (2 * Real.pi * j / 3) : ℝ) : ℂ) * Complex.I)) =
-      fun j => Complex.exp (2 * Real.pi * Complex.I * r * j / 3) := by
+      fun j : ℕ => Complex.exp (2 * Real.pi * Complex.I * r * j / 3) := by
     funext j
     congr 1
     push_cast
     ring
   change (∑ j : Fin 3, Complex.exp ((((r : ℝ) * (2 * Real.pi * (j : ℕ) / 3) : ℝ) : ℂ) * Complex.I)) = 0
-  rw [Fin.sum_univ_eq_sum_range, he]
+  rw [Fin.sum_univ_eq_sum_range
+    (fun j : ℕ => Complex.exp ((((r : ℝ) * (2 * Real.pi * j / 3) : ℝ) : ℂ) * Complex.I)) 3, he]
   exact _root_.HTGeometry.exp_unit_sum_zero 3 r hr hr3
 
 theorem tendsto_finiteSamplingWeight_fourier {n : ℕ} (x : Fin n → ℝ) (γ : ℝ) :
@@ -178,7 +179,7 @@ theorem exists_weight_violating_floor_coefficient_one :
     exact h
   have hpos : ∀ᶠ ε : ℝ in 𝓝[>] (0 : ℝ), 0 < ε := self_mem_nhdsWithin
   obtain ⟨ε, hε, habsε, hcostε⟩ := (hpos.and
-    ((habs.eventually_gt_const (by norm_num : (15 / 4 : ℝ) < 4)).and
+    ((habs.eventually (Ioi_mem_nhds (by norm_num : (15 / 4 : ℝ) < 4))).and
       (hcost.eventually_lt_const (by norm_num : (27 / 8 : ℝ) < 15 / 4)))).exists
   exact ⟨finiteSamplingWeight cubicSampleSites ε,
     integrable_finiteSamplingWeight cubicSampleSites ε,

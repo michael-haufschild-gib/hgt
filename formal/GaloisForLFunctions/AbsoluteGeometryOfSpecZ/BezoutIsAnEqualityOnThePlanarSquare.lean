@@ -138,7 +138,8 @@ theorem exists_of_mem_planarContact {m n : ℕ+} {z : ℤ} (hz : z ∈ planarCon
   | smul c a _ ha =>
     obtain ⟨x, rfl⟩ := ha
     refine ⟨(c : planarSquare) * x, ?_⟩
-    simp only [Subring.coe_mul, Subring.coe_intCast, map_mul, map_intCast, smul_eq_mul]
+    simp only [Subring.coe_mul, Subring.coe_intCast, map_mul, map_intCast, smul_eq_mul,
+      Int.cast_id]
     ring
 
 /-- **The forced zeros are attained.** For a finite set `S` of graphs a planar section vanishes
@@ -156,17 +157,17 @@ theorem exists_planar_vanishing (S : Finset ℕ+) (m : ℕ+) :
   · have hcoe : ((∏ n ∈ S, (y n - ((ghostComponent n (y n).1 : ℤ) : planarSquare)) :
         planarSquare) : ghostRing) =
         ∏ n ∈ S, ((y n).1 - ((ghostComponent n (y n).1 : ℤ) : ghostRing)) := by
-      simp [Subring.coe_prod]
+      simp
     rw [hcoe, map_prod]
     refine Finset.prod_eq_zero hk ?_
-    rw [map_sub, map_intCast, sub_self]
+    rw [map_sub, map_intCast, Int.cast_id, sub_self]
   · have hcoe : ((∏ n ∈ S, (y n - ((ghostComponent n (y n).1 : ℤ) : planarSquare)) :
         planarSquare) : ghostRing) =
         ∏ n ∈ S, ((y n).1 - ((ghostComponent n (y n).1 : ℤ) : ghostRing)) := by
-      simp [Subring.coe_prod]
+      simp
     rw [hcoe, map_prod]
     refine Finset.prod_congr rfl fun n _ => ?_
-    rw [map_sub, map_intCast, hy n]
+    rw [map_sub, map_intCast, Int.cast_id, hy n]
 
 /-! ### The forced values are forced -/
 
