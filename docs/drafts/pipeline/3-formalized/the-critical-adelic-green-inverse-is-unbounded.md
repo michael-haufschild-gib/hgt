@@ -1,24 +1,24 @@
 # The critical adelic Green inverse is unbounded
 
 - **ID:** the-critical-adelic-green-inverse-is-unbounded
-- **Stage:** 1-in-progress
-- **Type:** CONJECTURE / construction
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Obstacle:** B133: distinguish pointwise critical Green finiteness from a bounded global inverse.
 
-## Target
+## Result
 
 For the actual weighted adjacency `A=Σ_p p⁻²A_p` on counting `ℓ²(V)`,
-prove that `λ=Σ_p 2p⁻²√p` is its sharp upper spectral edge, approached by
-finite charges. Deduce that the critical precision `λI−A` has no bounded
-inverse and that the critical spherical operator integral is not
+`λ=Σ_p 2p⁻²√p` is its sharp upper spectral edge, approached by
+finite nonnegative charges. The critical precision `λI−A` has no bounded
+right inverse, no bounded operator has the critical Green matrix, and the
+critical spherical operator integral is not
 Bochner integrable, although every matrix entry is integrable and equals
 the established minimal Green kernel.
 
 The positive statement is the exact subcritical resolvent norm
 `‖sphericalGreenTransform ν‖=(1/4−ν²)⁻¹` for `0<ν<1/2`, together with
-finite-charge witnesses approaching the edge. The target includes the
-actual all-prime carrier; a generic conditional operator lemma or a
-single-prime statement alone does not complete it.
+finite-charge witnesses approaching the edge. These statements hold on
+the actual all-prime carrier.
 
 ## Proof mechanism
 
@@ -46,16 +46,28 @@ single-prime statement alone does not complete it.
    produce a bounded right inverse through its already proved matrix
    entries, a contradiction.
 
-## Formalization boundary
+## Formalization
 
-The corpus supplies the upper operator bound, subcritical inverse
-identity, and critical entrywise Green identity. The local branch-point,
-return-threshold, and finite-charge proofs are under Lean verification.
-The tensor passage and operator conclusions remain to be formalized.
-A single-prime theorem does not complete this card.
+All five steps are formalized:
+
+- [ThePrimeWalkHasTheSharpTemperedSpectralEdge.lean](../../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/ThePrimeWalkHasTheSharpTemperedSpectralEdge.lean):
+  `PrimeSpectralEdge.not_summable_critical_return_moment`,
+  `summable_return_iff`, `supersolutions_empty_below_edge`,
+  `exists_finite_charge_above`.
+- [TheWeightedAdelicAdjacencyHasSharpSpectralEdge.lean](../../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/TheWeightedAdelicAdjacencyHasSharpSpectralEdge.lean):
+  `WeightedAdelicGreen.exists_finite_charge_above`,
+  `adjacencyOperator_norm_eq_edge`.
+- [TheCriticalAdelicGreenInverseIsUnbounded.lean](../../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/TheCriticalAdelicGreenInverseIsUnbounded.lean):
+  `WeightedAdelicGreen.exists_unit_critical_residual_lt`,
+  `criticalPrecision_no_bounded_right_inverse`,
+  `sphericalGreenTransform_norm_eq`, `no_bounded_critical_green_matrix`,
+  `not_integrable_critical_spherical_operator`.
+
+Each module passes its direct Lean check. All eleven theorem dependency
+audits contain only `propext`, `Classical.choice`, and `Quot.sound`.
 
 ## Boundary
 
 This concerns the already constructed weighted Green kernel. The
 accepted obstruction to one invariant glued realization of Weil's
-diagonal remains in force.
+diagonal remains in force. Identifying Weil's diagonal remains open.

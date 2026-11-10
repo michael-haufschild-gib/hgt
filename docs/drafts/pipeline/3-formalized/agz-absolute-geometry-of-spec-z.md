@@ -543,6 +543,27 @@ terms; a form nonnegative on a subspace of codimension `P` has at most `P` negat
 the integrand is nonnegative (corpus: `Re ψ(x + iy) ≥ ψ(x)`, `ψ(¼)`, `ψ(¾)`). With C20 at the
 aperture `½ log 2 < 181/500`. ∎
 
+**F5 (every primitive character on packets; a cyclotomic ring).** (i) For a primitive `χ` of
+conductor `q > 1`, real or not, and a real packet `f`:
+`Re W_{Λ Re χ}(k_f) = 2d₁d₂ + Z_χ(f) − log q·∫f² − E_χ(f)`, and F3(ii) holds with the contacts
+`Λ Re χ`. (ii) `p` prime. Every `χ ≠ 1` modulo `p` is primitive, and
+`Λ(n) + Σ_{χ≠1} Λ(n) Re χ(n)` is `(p−1)Λ(n)` for `n ≡ 1 (p)`, `Λ(n)` for `p ∣ n`, `0` otherwise.
+(iii) With these contacts, the form `A_N` of the integers and the twisted forms of the `χ ≠ 1`,
+the limit on a packet is `2d₁d₂ − Z_ζ(f) − Σ_{χ≠1} Z_χ(f)`; the mass enters with `(p−2) log p`
+besides `p − 1` times the counterterm of the integers. (iv) For tempered configurations
+`Z_1,…,Z_r`, `Σ_i G_{Z_i}` has at most `Σ_i κ_{Z_i}` negative squares on every finite family of
+tests; so the defect of (iii) has at most `κ_ζ + Σ_{χ≠1} κ_χ`. (v) For `p ≥ 128π` and a packet
+shorter than `log 2` the limit of (iii) is at most `2d₁d₂ − ∫f²/5000`.
+*Proof.* (i) The explicit formula of `L(s, χ)` has the prime terms
+`χ(n)k(log n) + conj χ(n) k(−log n)`; the autocorrelation of a real packet is real and even, so
+they are `2 Re χ(n) k(log n)`. The archimedean term is the symbol of `ζ` plus `log q`, plus
+`π/cosh(πr)` for an odd `χ` (`Re ψ(¾ + ir/2) − Re ψ(¼ + ir/2)`). Then F2(i). (ii) The conductor
+divides `p` and is `1` only for `χ = 1`. `Σ_χ χ(n) = (p−1)[n ≡ 1]`, and the trivial character is
+`[p ∤ n]`. (iii) Sum F3(ii) over `χ ≠ 1` and add C18; there are `p − 2` such characters.
+(iv) The evaluations at the right zeros of all `Z_i` are `Σκ_{Z_i}` functionals; on their common
+kernel every form is nonnegative (F4(ii)). (v) F4(iii) for each character: an odd one needs
+`p ≥ 4π`, an even one `p ≥ 128π`. ∎
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -578,7 +599,8 @@ aperture `½ log 2 < 181/500`. ∎
 - **Q17 (number rings)**: F1 (the square; orbits iff principal), F2, F3 (comb, counterterm with
   the conductor, jets of a complex place, the pairing as `2d₁d₂` minus the zero sum of the zeta
   function of a quadratic ring), C28(iii) (the conductor is forced), F4 (the index law; the
-  inequality on short packets for a large conductor). **Q12**, the constant: C28(ii).
+  inequality on short packets for a large conductor), F5 (every primitive character; the
+  cyclotomic ring of prime conductor, of degree `p − 1`, with its contacts on a progression). **Q12**, the constant: C28(ii).
 - **Q4**: ampleness is the inequality `D·D ≤ 2d₁d₂` on the degree points and it is RH (C17);
   the object with the contacts and a count is the orbit ring with a base `𝒪_q` (E8), on which the
   three deliverables of construction E hold and Stepanov's inequality is the product formula; no
@@ -645,6 +667,7 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | F2, F3 | `TheSquareOfAQuadraticRingPairsWithItsConductor` |
 | C28 | `BezoutDeterminesTheConstantOfTheCounterterm` |
 | F4 | `TheHodgeIndexOfTheSquareOfAQuadraticRing` |
+| F5 | `TheSquareOfAQuadraticRingPairsWithItsConductor` (i), `TheSquareOfACyclotomicRingHasItsContactsOnAProgression` |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -658,7 +681,7 @@ Oleans built by this programme: the first seven AGZ modules,
 `ThePairingOfTheDegreePointsWeighsTheZeros`, `TheOrbitRingWithABaseIsATowerOfLines`,
 `TheCarryIsTheDefectOfTheWindowCount`, `AFiniteFibreForcesContacts`,
 `TheSignIsCarriedByTheContacts`, `TheSquareOfAQuadraticRingPairsWithItsConductor`,
-`TheHodgeIndexOfThePairingOfTheDegreePoints`,
+`TheHodgeIndexOfThePairingOfTheDegreePoints`, `TheHodgeIndexOfTheSquareOfAQuadraticRing`,
 `HyperbolicArakelovTheory/TheFinitePartOfTheCoupledAdelicOrbit`,
 `SignFreePurityMechanisms/ThePowerMapIsAFrobeniusAtOnePrime`.
 
@@ -676,7 +699,9 @@ Open parts of the questions of the refined programme (details in the README, §1
 - The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
   varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
-- Number rings beyond F2–F4, C28: small conductors and packets with a contact; the ideals themselves as degree points with the characters
+- Number rings beyond F2–F5, C28: composite conductors (imprimitive characters), rings that are
+  not abelian over `ℚ`, the count of odd characters modulo `p`; small conductors and packets
+  with a contact; the ideals themselves as degree points with the characters
   of the class group (Hecke `L`-functions), rings of degree above two, the units of a real
   quadratic ring, the gluing index against the zero count of the Dedekind zeta function.
 - Q15, Q16, Q18, Q19 of the specification (real divisors at finite scale): continuation

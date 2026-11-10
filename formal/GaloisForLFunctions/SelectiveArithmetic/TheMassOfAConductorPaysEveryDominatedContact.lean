@@ -387,15 +387,17 @@ theorem exists_trivialAperture_margin {η : ℝ} (hη : 0 < η) :
       (∀ u, a < |u - c| → f u = 0) →
         (1 - Real.exp (-η / 2)) / 2 * Real.log q * ∫ u, f u ^ 2 ≤ twistedZeroSum hq hprim f := by
   have hδ : 0 < 1 - Real.exp (-η / 2) := by
-    have : Real.exp (-η / 2) < 1 := Real.exp_lt_one.mpr (by linarith)
+    have : Real.exp (-η / 2) < Real.exp 0 := Real.exp_lt_exp.mpr (by linarith)
+    rw [Real.exp_zero] at this
     linarith
   have hε : 0 < Real.exp (η / 2) - 1 := by
-    have : 1 < Real.exp (η / 2) := Real.one_lt_exp.mpr (by linarith)
+    have : Real.exp 0 < Real.exp (η / 2) := Real.exp_lt_exp.mpr (by linarith)
+    rw [Real.exp_zero] at this
     linarith
   obtain ⟨B, hB⟩ := exists_twistedZeroSum_ge hε
   obtain ⟨M₁, hM₁⟩ := eventually_atTop.mp
     (eventually_const_add_log_sq_le (half_pos hδ) B)
-  refine ⟨max M₁ 1, fun {q} _ hq _ hprim hM _ hf hfc _ a ha0 ha hshort => ?_⟩
+  refine ⟨max M₁ 1, fun {q} _ hq _ hprim hM f hf hfc _ a ha0 ha hshort => ?_⟩
   set x := Real.log q with hx
   have hx1 : 1 ≤ x := le_trans (le_max_right _ _) hM
   have hx0 : 0 < x := by linarith

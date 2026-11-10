@@ -272,16 +272,18 @@ theorem negIndex_cyclotomicDefect_packets_le {f : ι → ℝ → ℝ} (hf : ∀ 
     contDiff_ofReal_packet (hf i)
   have hFc : ∀ i, HasCompactSupport fun u => ((f i u : ℝ) : ℂ) := fun i =>
     hasCompactSupport_ofReal_packet (hfc i)
+  have hZ : ∀ o : Option {χ : DirichletCharacter ℂ p // χ ≠ 1},
+      SquareRootThreshold.TemperedConfig (o.elim zetaZeroConfig fun χ =>
+        _root_.RHTower.dirichletZeros (one_lt_of_fact_prime p) (isPrimitive_of_ne_one χ.2)) := by
+    intro o
+    cases o with
+    | none => exact SquareRootThreshold.temperedConfig_zetaZeroConfig
+    | some χ =>
+      exact temperedConfig_dirichletZeros (one_lt_of_fact_prime p) (isPrimitive_of_ne_one χ.2)
   have h := negIndex_sum_zeroGram_le
-    (fun o : Option {χ : DirichletCharacter ℂ p // χ ≠ 1} =>
-      o.elim zetaZeroConfig fun χ =>
-        _root_.RHTower.dirichletZeros (one_lt_of_fact_prime p) (isPrimitive_of_ne_one χ.2))
-    (fun o => by
-      cases o with
-      | none => exact SquareRootThreshold.temperedConfig_zetaZeroConfig
-      | some χ => exact temperedConfig_dirichletZeros (one_lt_of_fact_prime p)
-          (isPrimitive_of_ne_one χ.2))
-    (fun i u => ((f i u : ℝ) : ℂ)) hF hFc
+    (fun o : Option {χ : DirichletCharacter ℂ p // χ ≠ 1} => o.elim zetaZeroConfig fun χ =>
+      _root_.RHTower.dirichletZeros (one_lt_of_fact_prime p) (isPrimitive_of_ne_one χ.2))
+    hZ (fun i u => ((f i u : ℝ) : ℂ)) hF hFc
   rw [Fintype.sum_option, Fintype.sum_option] at h
   rw [ArithmeticCastelnuovoSeveri.weilGram_eq_zeroGram _ hF hFc]
   exact h

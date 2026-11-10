@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-49 modules. Specification: §2.14 of
+50 modules. Specification: §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md), which refines
 §9 of [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
 `docs/drafts/pipeline/3-formalized/agz-absolute-geometry-of-spec-z.md`. The statements on real
@@ -163,6 +163,7 @@ inequality beyond the bounded lengths above.
 | Contacts of a quadratic ring | `twistWeight`, `idealWeight` | `Λ(n)χ(n)`; `Λ(n)(1 + χ(n))`, the contacts of the ideals counted by their norms, for a real primitive character `χ` |
 | Zero sum of a character; second archimedean factor | `twistedZeroSum`, `placeEnergy`, `conjugateForm`, `conjugateJet`, `placeJet` | the sum over the zeros of `L(s, χ)` of a packet; the energy of `π/cosh(πτ)` for an odd `χ`, zero for an even one; `∫ h(x)/(2 cosh(x/2)) dx`; `Σ_{m,n} f_m f_n/(√m √n (m + n))`; the latter for an odd `χ`, zero for an even one |
 | The pairing of a quadratic ring | `twistedForm`, `quadraticForm` | jets minus the conjugate jets with the counterterm `log(qn/2π)`; the sum with the form of the integers, with the counterterm `log(q n²/(2π)²)` |
+| The pairing of a cyclotomic ring | `cyclotomicWeight`, `cyclotomicForm`, `cyclotomicZeroSum` | `(p − 1)Λ(n)` for `n ≡ 1 (mod p)`, `Λ(n)` for `p ∣ n`, else `0`; the form of the integers plus the twisted forms of the characters `χ ≠ 1` modulo `p`; the zero sums of `ζ` and of these `L(s, χ)` |
 | Bézout with a shifted counterterm | `CombBezoutShift` | the inequality for the pairing with the counterterm `log(n/2π) − c` |
 
 ## 3. Language
@@ -333,6 +334,11 @@ inequality beyond the bounded lengths above.
     the tests whose transforms vanish at its zeros to the right of the line. For the sum of two
     forms the common kernel of both sets of evaluations has codimension at most the sum of the
     two counts, so the negative squares add at most.
+40. **Orthogonality places the contacts on a progression.** Modulo a prime `p` every character
+    `χ ≠ 1` is primitive, and `Σ_χ χ(n)` is `p − 1` for `n ≡ 1` and `0` otherwise. On a real
+    packet the twisted contacts are `Λ Re χ` for every primitive character, so the contacts of
+    `ζ` and of the `p − 2` twisted parts add up to `(p − 1)Λ(n)` on `n ≡ 1 (mod p)` and to
+    `Λ(n)` on the powers of `p`: the splitting law of the cyclotomic ring.
 
 ## 5. The founding questions
 
@@ -526,7 +532,8 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
 
 - *Kill condition.* The pairing of the square of a number ring needs a datum that is not a
   contact, a jet of an archimedean factor or the density of a comb.
-- *Verdict.* Not met for the quadratic rings, counted by their norms.
+- *Verdict.* Not met for the quadratic rings and for the cyclotomic rings of prime conductor,
+  counted by their norms.
 - *Evidence.* The square of a Dedekind domain is defined by congruences over ideals and its
   graphs meet in the prime ideals with `log N𝔭` (`idealContact_prime_pow`,
   `card_quotient_idealContact_prime_pow`). For a real primitive character `χ` of conductor `q`
@@ -535,8 +542,12 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
   (`tendsto_quadraticForm_add_idealContact`). The conductor enters as a density and is forced:
   with `q e^{−c}` in its place, `c > 0`, a packet of degree zero has a positive pairing
   (`exists_packet_quadraticForm_pos`).
-- *Survivors.* The pairing of a quadratic ring on the comb of the integers; the twisted part
-  without pole plane; the conductor as the threshold of the inequality.
+  For the cyclotomic ring of a prime conductor `p`, of degree `p − 1`, the contacts are those
+  of `ℤ` on the progression `1 mod p` with the multiplicity `p − 1`, and the pairing tends to
+  `2 d₁ d₂` minus the sum over the zeros of its zeta function
+  (`vonMangoldt_add_sum_twistWeight`, `tendsto_cyclotomicForm_add_contact`).
+- *Survivors.* The pairing of a quadratic or cyclotomic ring on the comb of the integers; the
+  twisted parts without pole plane; the conductor as the threshold of the inequality.
 
 | Deliverable | Result | Lean |
 |---|---|---|
@@ -548,6 +559,8 @@ zero no multiple of the mass can be gained (`exists_primitive_packet_zeroSum_lt`
 | The conductor is forced | with a smaller conductor in the counterterm the inequality fails on a packet of degree zero | `exists_primitive_packet_zeroSums_lt`, `exists_packet_quadraticForm_pos` |
 | The Hodge index of the ring on packets | the defect has at most as many negative squares as `ζ` and `L(s, χ)` have zeros to the right of the line; the twisted part at most as many positive squares as `L(s, χ)` has | `tendsto_quadraticPairing_packetCombination`, `negIndex_quadraticDefect_packets_le`, `negIndex_twistedGram_packets_le` |
 | The inequality where no contact enters | for an odd conductor `q ≥ 4π` or an even one `q ≥ 128π`, on packets shorter than `log 2`, with the margin `∫f²/5000` | `twistedZeroSum_nonneg_of_short`, `tendsto_quadraticForm_le_degrees_of_short` |
+| Every primitive character on packets | the functional of `Λ Re χ` is `2 d₁ d₂ + Z_χ − log q·∫f² − E_χ` for complex characters too; the twisted part tends to `−Z_χ` | `integral_weilAtomSymbol_twist_packet`, `re_weilFullFunctional_twist_packet`, `tendsto_twistedForm_add_twistedContact` |
+| A ring of degree `p − 1` | the cyclotomic ring of prime conductor `p`: contacts `(p − 1)Λ` on `n ≡ 1 (mod p)` and `Λ` on the powers of `p`; pairing `2 d₁ d₂ − Z_K(f)`; counterterm with `(p − 2) log p`; index law over `ζ` and the `p − 2` characters; the inequality on short packets for `p ≥ 128π` | `vonMangoldt_add_sum_twistWeight`, `tendsto_cyclotomicForm_add_contact`, `cyclotomicForm_eq`, `negIndex_cyclotomicDefect_packets_le`, `tendsto_cyclotomicForm_le_degrees_of_short` |
 
 ## 7. Criteria
 
@@ -717,14 +730,25 @@ this folder.
   `∫f²/5000` (`tendsto_quadraticForm_le_degrees_of_short`): the twisted part is nonpositive
   there because the conductor exceeds the archimedean constant
   (`twistedZeroSum_nonneg_of_short`).
-- The class group does not enter this pairing: contacts, jets and counterterm depend on `χ`
-  alone. It obstructs the orbits and nothing else that the norms see.
+- Higher degree. On a real packet the explicit formula is a functional of the contacts
+  `Λ Re χ` for every primitive character (`re_weilFullFunctional_twist_packet`). For a prime
+  `p` the cyclotomic ring of conductor `p` has degree `p − 1`; its contacts, counted by norms,
+  are `(p − 1)Λ(n)` on the progression `n ≡ 1 (mod p)` and `Λ(n)` on the powers of `p`
+  (`vonMangoldt_add_sum_twistWeight`), its pairing tends to `2 d₁ d₂` minus the sum over the
+  zeros of its zeta function (`tendsto_cyclotomicForm_add_contact`), the mass enters with
+  `(p − 2) log p` besides `p − 1` times the counterterm of the integers (`cyclotomicForm_eq`),
+  the defect obeys the index law over `ζ` and the `p − 2` characters
+  (`negIndex_cyclotomicDefect_packets_le`), and for `p ≥ 128π` the inequality holds on the
+  packets shorter than `log 2` (`tendsto_cyclotomicForm_le_degrees_of_short`).
+- The class group does not enter this pairing: contacts, jets and counterterm depend on the
+  characters alone. It obstructs the orbits and nothing else that the norms see.
 
-So the answer, for quadratic rings counted by their norms: the comb of the integers; the
-conductor as the density of the comb of the twisted part; the inequality for all packets is the
-Riemann hypothesis of the zeta function of the ring by the same reading as for `ℤ`, and the
-conductor is its threshold. Not answered: the ideals themselves as degree points, with the
-characters of the class group, and rings of higher degree (§13.4).
+So the answer, for the quadratic rings and the cyclotomic rings of prime conductor, counted by
+their norms: the comb of the integers, with the contacts that the splitting law gives; the
+conductors as the densities of the combs of the twisted parts; the inequality for all packets
+is the Riemann hypothesis of the zeta function of the ring by the same reading as for `ℤ`, and
+for a quadratic ring the conductor is its threshold. Not answered: the ideals themselves as
+degree points, with the characters of the class group, and the other number rings (§13.4).
 
 ## 9. Milestones and the decisive test
 
@@ -811,6 +835,9 @@ the integers Bézout fails for every system of contact weights other than `Λ`
 | With a conductor below `q` in the counterterm the inequality fails for a quadratic ring | `exists_packet_quadraticForm_pos` |
 | The index law on the square of a quadratic ring: the defect has at most as many negative squares as `ζ` and `L(s, χ)` have zeros to the right of the line | `negIndex_quadraticDefect_packets_le`, `negIndex_twistedGram_packets_le` |
 | The inequality on the square of a quadratic ring of large conductor, on packets shorter than `log 2` | `tendsto_quadraticForm_le_degrees_of_short` |
+| The contacts of a cyclotomic ring of prime conductor are those of `ℤ` on the progression `1 mod p`, with the multiplicity `p − 1` | `vonMangoldt_add_sum_twistWeight` |
+| The pairing of the square of a cyclotomic ring of prime conductor is twice the product of the degrees minus the sum over the zeros of its zeta function | `tendsto_cyclotomicForm_add_contact`, `cyclotomicForm_eq` |
+| The index law of a finite family of tempered configurations | `negIndex_sum_zeroGram_le`, `negIndex_cyclotomicDefect_packets_le` |
 
 All are unconditional.
 
@@ -856,6 +883,7 @@ All are unconditional.
 | The square of a Dedekind domain: congruences over ideals, contacts, necklace coordinates | `TheArithmeticSquareOfADedekindDomain` |
 | The functional of a weight as pole term plus symbol energy; the explicit formula of a real character on tests and on packets; the kernel `1/(2 cosh)` and its jets; pairings with the contacts of a quadratic ring | `TheSquareOfAQuadraticRingPairsWithItsConductor` |
 | The zeros of `L(s, χ)` as a tempered configuration; Gram matrices of two configurations on a family of packets; the kernel of the evaluations at the zeros to the right of the line; tests with one atom-free level | `TheHodgeIndexOfTheSquareOfAQuadraticRing` |
+| Characters modulo a prime; orthogonality on contacts; sums of twisted forms; the index law of a family of configurations | `TheSquareOfACyclotomicRingHasItsContactsOnAProgression` |
 | Real and imaginary parts of a test; packets of degree zero from truncated radical tests; translation of a packet of degree zero into a window; pairings with a shifted counterterm | `BezoutDeterminesTheConstantOfTheCounterterm` |
 | Descent of the `p`-derivation to an integer point | `DeltaOrderDoesNotDescendAtEveryIntegerPoint` |
 
@@ -912,6 +940,7 @@ All are unconditional.
 | The discriminant of a number ring is an invariant of a point of its square | it is the density of the comb of the twisted part: the counterterm is `log(qn/2π)` |
 | A number ring needs its own comb | counted by their norms the ideals of a quadratic ring sit on the comb of the integers, with the contacts `Λ(1 + χ)` and the jets of both archimedean factors |
 | The twisted part of a pairing has rulings | it has no pole plane: its limit is minus the sum over the zeros of `L(s, χ)` |
+| A ring of higher degree needs its own analysis | on a real packet every primitive character contributes through `Λ Re χ`; for the cyclotomic ring of conductor `p` orthogonality puts the contacts on the progression `1 mod p` |
 | Short packets say nothing about a number ring | for a large conductor the twisted part is nonpositive on every packet shorter than `log 2`: the density of its comb exceeds the archimedean constant |
 
 ## 13. Open research topics
@@ -987,7 +1016,11 @@ the packets shorter than `log 2`. *Open:*
   of norms; a jet between two ideals is a function of a generator of their quotient and exists
   inside one class only, and the pairings twisted by the characters of the class group are those
   of the Hecke `L`-functions, whose explicit formulas are not in the corpus;
-- rings of degree above two, where the twisted part is not one character;
+- the number rings that are neither quadratic nor cyclotomic of prime conductor: a composite
+  conductor brings imprimitive characters, a ring that is not abelian over `ℚ` brings Artin
+  `L`-functions;
+- the count of the odd characters modulo `p`, which turns the conjugate jets of the cyclotomic
+  ring into `(p − 1)/2` complex places;
 - the units of a real quadratic ring, which the norms do not see;
 - the gluing index of the ideals of norm at most `X` against the zero count of the Dedekind zeta
   function, whose second term contains the discriminant;
@@ -1039,8 +1072,8 @@ by the comb.
   folder proves it or claims to.
 
 Q10, Q12, Q13 and Q14 have theorem-level answers in §8. Q11 has one on bounded apertures and
-is the Riemann hypothesis beyond them. Q17 has one for the quadratic rings counted by their
-norms. Q15, Q16, Q18 and Q19 belong to the continuation.
+is the Riemann hypothesis beyond them. Q17 has one for the quadratic rings and the cyclotomic
+rings of prime conductor, counted by their norms. Q15, Q16, Q18 and Q19 belong to the continuation.
 
 **A contribution** to AGZ
 
