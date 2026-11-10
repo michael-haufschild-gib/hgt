@@ -20,7 +20,7 @@
 | A83 | Density-matched counter-configuration with bounded trace change | Critical projection, bounded trace, sparse density and full counterexample assembled; Lean audits pending |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Formalized and axiom-audited; `3-formalized/the-jets-are-even-newtonian-multipoles.md` and `3-formalized/prime-contacts-are-chain-squares-minus-the-diagonal.md` |
 | A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
-| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Quotient identity, corrected jump-tail criterion, and full raw-defect criterion written; audits pending |
+| A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Quotient identity formalized and axiom-audited; corrected jump-tail and full raw-defect criteria awaiting audit |
 | A78 | Cluster extension of separated windows | Open |
 | A79, A81 | Matching aperture–height and block-index constants | Open |
 | A80 | Eventual finite-scale positivity from RH or a verified height | Open |
@@ -54,7 +54,7 @@ For A71 preserve the corpus’s uniformity: constants may depend on the tensor o
 - **A56:** `boxSpline 1 3` has support radius **4**, so a two-bump packet at separation `log p` has aperture `4 + (log p)/2`. `VerifiedHeightRungs.WindowEntries.windowHeight` is explicit. The verified-height rung must use this radius.
   An explicit inverse rung is the largest `n≤⌊T⌋` with `windowHeightOfOne(4+log(n)/2)≤T`, or zero if none exists. It tends to infinity: for each fixed `n`, every `T≥max(n,windowHeightOfOne(4+log(n)/2))` admits `n`. Every prime up to the rung fits in its aperture, without any monotonicity assumption on the height formula.
 - **A99:** The raw `scatteringWeilEnergy` changes the jump kernel, the mass coefficient, and the prime operator. Its difference from the Weil form is therefore the jump tail **plus** `(2 gammaHardyPhaseRate(0) − scatteringMassCoefficient N)‖f‖²` **minus** the omitted prime form. The positive jump tail alone is not the full raw defect. `scatteringSecondHeightDefect_eq` already retains the prime correction after removing the Robin mass drift; the requested regulator criterion must retain these terms or explicitly correct the regulator.
-  `TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean` restores these terms explicitly. Its corrected energy plus the positive jump tail equals the literal closed Weil form, so the floor is equivalent to RH at any fixed positive scattering height. `TheFiniteTowerIsACompletedZetaQuotient.lean` identifies the geometric telescope with `logDeriv (Λ(s)/Λ(s+N))` and retains the Robin scalar and two boundary poles. Both modules await audit.
+  `TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean` restores these terms explicitly. Its corrected energy plus the positive jump tail equals the literal closed Weil form, so the floor is equivalent to RH at any fixed positive scattering height; audit pending. `TheFiniteTowerIsACompletedZetaQuotient.lean` identifies the geometric telescope with `logDeriv (Λ(s)/Λ(s+N))` and retains the Robin scalar and two boundary poles; direct audit passed with standard axioms only.
 
 ## Finite-mode sign resolution
 

@@ -89,16 +89,15 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `CarryModifiedComposition` | Actual normalized compositions admit an increasing carry modification with unchanged outside prefixes, singleton absorption at the top, terminal digit loss below, and all positive prefix gaps |
 | `IncreasingPrefixCosts` | Actual increasing compositions satisfy the geometric residue-prefix cost and the retained-to-last exponent gap; equal outside prefix counts give equal values |
 | `CarryWeightComparison` | The actual singleton carry modification strictly increases weight, by cancellation of unchanged prefixes and the two geometric bounds |
+| `GreedyOptimality` | For every `p≥2`, positive residue degree and composition length, greedy compositions are exactly the weight maxima; maximizing numerical part values are unique |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
-The actual carry modification and its strict weight comparison are formalized.
-Combining this with the minimal-counterexample reduction gives general
-greedy optimality; that final combination awaits its direct Lean check.
-The actual Goss coefficients and
-entire-series argument also remain. The target includes every prime power
-and every `p`-adic parameter.
+General greedy optimality is formalized and audited; see
+`../3-formalized/greedy-carry-free-compositions-are-uniquely-optimal.md`.
+The actual Goss coefficients, strict Newton slopes, and entire-series
+argument remain. The target includes every prime power and every `p`-adic parameter.
 
 ## Combinatorial mechanism
 

@@ -57,6 +57,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixWeightIden
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryModifiedComposition
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.IncreasingPrefixCosts
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryWeightComparison
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GreedyOptimality
 
 /-!
 # Sign-free purity mechanisms
@@ -80,6 +81,8 @@ carries of each.
   of `S` (`SimultaneousInseparabilityCostsThePrimorial`).
 
 **Separation.**
+* For every base `p≥2` and positive residue degree, the greedy carry-free composition
+  uniquely maximizes the weighted sum of its numerical part values (`CarlitzGoss.GreedyOptimality`).
 * A Galois-invariant function injective on the roots forces them into the base field
   (`SeparationForcesRationality`).
 * Over a complete ultrametric field the coefficients produce the separation: strictly

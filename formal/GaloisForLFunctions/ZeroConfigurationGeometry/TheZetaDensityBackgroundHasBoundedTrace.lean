@@ -2,6 +2,7 @@ import GaloisForLFunctions.ZeroConfigurationGeometry.TheCriticalProjectionPreser
 import GaloisForLFunctions.ZeroConfigurationGeometry.MixedDepthsHideBeyondTheInghamScale
 import GaloisForLFunctions.SquareRootThreshold.HodgeClassificationOfFiniteOffLineSets
 import GaloisForLFunctions.SquareRootThreshold.EvenAndOddTwoBumpTestsDecideTheCriticalLine
+import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionUnrestricted
 
 /-!
 # Adding the exact zeta-density background
@@ -56,6 +57,15 @@ theorem zetaDensityBackground_N (T₁ T₂ : ℝ) :
 
 theorem zetaDensityBackground_tempered : TemperedConfig zetaDensityBackground :=
   temperedConfig_criticalProjection_zeta
+
+/-- Horizontal projection retains the unconditional gap around the real axis. -/
+theorem zetaDensityBackground_ordinate_gap :
+    ∀ ρ ∈ zetaDensityBackground.carrier, 4 ≤ |ρ.im| := by
+  rintro _ ⟨ρ, hρ, rfl⟩
+  change 4 ≤ |ρ.im|
+  by_contra hn
+  exact _root_.RHTower.riemannZeta_ne_zero_of_abs_im_lt_four hρ.2.1 hρ.2.2
+    (lt_of_not_ge hn) hρ.1
 
 /-- The exact-density background contributes a uniformly bounded complex trace. -/
 theorem zetaDensityBackground_trace_bound {b : ℝ → ℂ} (hb : ContDiff ℝ 2 b)

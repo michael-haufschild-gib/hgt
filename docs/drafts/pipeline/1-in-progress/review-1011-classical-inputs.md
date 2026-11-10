@@ -14,7 +14,7 @@
 | A33 | Fourier coefficients of the cubic residue | Arithmetic evaluation of the continued nonzero scattering residues; their existence alone does not suffice. |
 | A41 | Count law for every smooth projective geometrically connected curve over a finite field | Actual curve point counts and the sharp genus-dependent bound; first case plane quartics. |
 | A59 | Primes in short intervals in every reduced residue class | Power-saving interval lengths; fixed-modulus power-log PNT alone does not suffice. |
-| A84 | Greedy carry-free optimality and Carlitz–Goss Newton polygon | General residue degree and arbitrary composition length, then actual zeta coefficients and slopes. |
+| A84 | Greedy carry-free optimality and Carlitz–Goss Newton polygon | **Greedy optimality formalized** for every residue degree and composition length. Actual zeta coefficients, strict slopes and entire-series passage remain. |
 | A101 | Deuring–Heilbronn margin on remaining twisted-comb squares | **Formalized:** full logarithmic margin and hyperbolic square-energy bound on the actual twisted comb. See `../3-formalized/exceptional-square-repulsion-margin.md`. |
 
 ## A18: parameter argument
@@ -53,15 +53,15 @@ axiom audits pass with only the three standard axioms. The umbrella imports it.
 failure to an optimum with singleton last part `{x}`. Every proper part has
 zeroth inverse content `1`. The competing greedy last part contains a
 larger exponent, has zeroth cyclic weight `p^(x.exp mod s)`, and uses only
-residue representatives below `x.exp mod s`. The remaining step is a
-weight-increasing carry exchange across the proper parts; the singleton
-normal form alone is not a contradiction. The subsequent Newton-polygon
+residue representatives below `x.exp mod s`. The actual carry exchange
+strictly increases weight, contradicting optimality. `GreedyOptimality`
+therefore proves equivalence of greediness and optimality and uniqueness of
+maximizing numerical part values. The subsequent Newton-polygon
 identification must use the actual Carlitz–Goss coefficients.
 
 The detailed card `carlitz-goss-rh-from-greedy-compositions.md` contains the
 geometric prefix-cost argument, including `p=2`, and its checked components:
 actual integral prefix coordinates, singleton boundary identities, interval
 carry recursion, content-matrix realization, residue exponent gaps, and strict
-geometric gain. The actual modified composition and its strict weight gain
-are now formalized. Their combination with the minimal-counterexample
-reduction awaits the final direct Lean check of general greedy optimality.
+geometric gain. General optimality passed the direct Lean check and both
+endpoint transitive axiom audits using only the three standard axioms.

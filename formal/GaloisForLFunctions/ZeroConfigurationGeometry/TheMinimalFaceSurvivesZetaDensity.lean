@@ -40,6 +40,30 @@ theorem densityMatchedMinimalFace_tempered (γ_min C : ℝ) {Θ : ℝ}
     (disjoint_zetaDensityBackground_of_offLine (minimalFace_offLine γ_min C hΘ hΘ2))
     (temperedConfig_minimalFaceCounterConfig γ_min C hΘ hΘ2) zetaDensityBackground_tempered
 
+/-- Both components retain a fixed gap around the real axis. -/
+theorem densityMatchedMinimalFace_ordinate_gap (γ_min C : ℝ) {Θ : ℝ}
+    (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+    ∀ ρ ∈ (densityMatchedMinimalFace γ_min C hΘ hΘ2).carrier, 4 ≤ |ρ.im| := by
+  intro ρ hρ
+  rcases hρ with hρ | hρ
+  · obtain ⟨idx, rfl⟩ := hρ
+    have h := (facePt_im_bounds γ_min C Θ idx).1
+    have hΓ : (4 : ℝ) ≤ faceBaseFreq γ_min C Θ idx.1 := by
+      exact_mod_cast four_le_faceBaseFreq γ_min C Θ idx.1
+    exact (hΓ.trans h.le).trans (le_abs_self _)
+  · exact zetaDensityBackground_ordinate_gap ρ hρ
+
+/-- Adding the background preserves a logarithmic local count bound. -/
+theorem densityMatchedMinimalFace_localCount (γ_min : ℝ) {C Θ : ℝ}
+    (hC : 0 < C) (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
+    ∃ A : ℝ, 1 ≤ A ∧ ∀ t : ℝ,
+      ((densityMatchedMinimalFace γ_min C hΘ hΘ2).N t (t + 1) : ℝ) ≤
+        A * Real.log (|t| + 3) := by
+  obtain ⟨A, hA, hcount⟩ := Zeta23.RvM.zetaZeroConfig_local_count
+  refine ⟨C + A, by linarith only [hC, hA], fun t => ?_⟩
+  rw [densityMatchedMinimalFace, N_add_zetaDensityBackground, Nat.cast_add, add_mul]
+  exact add_le_add (localCount_minimalFaceCounterConfig γ_min hC hΘ hΘ2 t) (hcount t)
+
 /-- Exact counts differ from zeta's by `o(T log T)`. -/
 theorem densityMatchedMinimalFace_counts (γ_min C : ℝ) {Θ : ℝ}
     (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) {ε : ℝ} (hε : 0 < ε) :
@@ -113,6 +137,8 @@ theorem densityMatchedMinimalFace_windows (γ_min C : ℝ) {Θ : ℝ}
 /-- Zeta-density configurations retain the complete sub-logarithmic obstruction. -/
 theorem exists_zetaDensity_subLog_counterexample {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2 : Θ ≤ 1 / 2) :
     ∃ (Z : ZeroConfig) (R : ℝ → ℝ), TemperedConfig Z ∧
+      (∀ ρ ∈ Z.carrier, 4 ≤ |ρ.im|) ∧
+      (∃ A : ℝ, 1 ≤ A ∧ ∀ t : ℝ, (Z.N t (t + 1) : ℝ) ≤ A * Real.log (|t| + 3)) ∧
       (∀ ε : ℝ, 0 < ε → ∃ U : ℝ, ∀ T : ℝ, U ≤ T →
         |(Z.N 0 T : ℝ) - (zetaZeroConfig.N 0 T : ℝ)| ≤ ε * T * Real.log T) ∧
       (∀ ρ ∈ Z.carrier, ρ.re < 1 / 2 + Θ) ∧
@@ -123,6 +149,8 @@ theorem exists_zetaDensity_subLog_counterexample {Θ : ℝ} (hΘ : 0 < Θ) (hΘ2
         K ≤ 2 * (lagStructure Z (boxSpline 1 3) u).re := by
   exact ⟨densityMatchedMinimalFace 1 1 hΘ hΘ2, minimalFaceSubLogRadius 1 1 Θ,
     densityMatchedMinimalFace_tempered 1 1 hΘ hΘ2,
+    densityMatchedMinimalFace_ordinate_gap 1 1 hΘ hΘ2,
+    densityMatchedMinimalFace_localCount 1 zero_lt_one hΘ hΘ2,
     fun _ hε => densityMatchedMinimalFace_counts 1 1 hΘ hΘ2 hε,
     (densityMatchedMinimalFace_top 1 1 hΘ hΘ2).1,
     (densityMatchedMinimalFace_top 1 1 hΘ hΘ2).2,
