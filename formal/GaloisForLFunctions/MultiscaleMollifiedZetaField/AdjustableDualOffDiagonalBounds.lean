@@ -174,7 +174,7 @@ theorem exists_dualOffDiag_rpow_bound (K J : ℕ) (hJ : 1 ≤ J) :
   have hs := dualOffDiagShiftConst_le_rpow J hC₂ hT
     (show d ≤ 1 / 2 by linarith only [hd8]) (hη.trans (by linarith only [hT0])) hq hq2
   have hpair : ((h : ℝ) * k) ^ ((K : ℝ) / 2 - 1 / 2 + d) ≤ T ^ (θ * K) := by
-    convert pair_rpow_le_length hT (show 0 ≤ 1 / 2 - d by linarith only [hd8]) hh hk hhT hkT (K := K) using 1 <;> ring
+    convert pair_rpow_le_length hT (show 0 ≤ 1 / 2 - d by linarith only [hd8]) hh hk hhT hkT (K := K) using 1; ring
   have hpair' : ((h : ℝ) * k) ^ (-(1 / 2 - d)) ≤ 1 := by
     have hh1 : (1 : ℝ) ≤ h := by exact_mod_cast hh
     have hk1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
@@ -231,13 +231,14 @@ theorem exists_dualOffDiag_rpow_bound (K J : ℕ) (hJ : 1 ≤ J) :
           _ = _ := by rw [he]
   exact hbound.trans ((add_le_add ho' hs').trans_eq (by ring))
 
-private theorem eventually_rpow_le_quarter {a : ℝ} (ha : a < 1) :
+/-- A sublinear power eventually occupies at most a quarter of the height. -/
+theorem eventually_rpow_le_quarter {a : ℝ} (ha : a < 1) :
     ∀ᶠ T : ℝ in atTop, T ^ a ≤ T / 4 := by
   have hg := tendsto_rpow_atTop (show 0 < 1 - a by linarith only [ha])
   filter_upwards [eventually_gt_atTop (0 : ℝ), hg.eventually_ge_atTop 4] with T hT hgT
   have he : T ^ a * T ^ (1 - a) = T := by
     rw [← Real.rpow_add hT]
-    convert Real.rpow_one T using 2 <;> ring
+    convert Real.rpow_one T using 2; ring
   have hm := mul_le_mul_of_nonneg_left hgT (Real.rpow_nonneg hT.le a)
   rw [he] at hm
   linarith only [hm]

@@ -33,6 +33,38 @@ saving when `a+b≤1`. `exists_directOffDiag_power_saving` proves arbitrary powe
 saving for the actual direct off-diagonal when `a>1/2+θ`, uniformly in both
 coefficient indices `h,k≤T^θ` and displacement `0<d≤1/8`.
 
-The full moment theorem still requires the dual off-diagonal, both contour
-remainders, and summation over the mollifier coefficients. None is assumed in
-these proved components. The two endpoints use only `propext`, `Classical.choice`, and `Quot.sound`.
+`AdjustableDualOffDiagonalBounds.lean` also passes direct checking.
+`exists_dualOffDiag_power_saving` proves arbitrary power saving for the complete
+dual off-diagonal when `0<b<1`, `a<1`, `a+b≤1`, and `a>1/2+θ+b/2`.
+Both components use only `propext`, `Classical.choice`, and `Quot.sound`.
+
+`AdjustableContourRemainders.lean` proves arbitrary power saving for both
+actual contour remainders, with the same standard axioms. Pair assembly and
+coefficient summation remain to be checked.
+
+## A18: parameter argument
+
+For `0≤θ<1/2`, put `δ=1/2−θ`, `b=δ/2`, `a=1−b`.
+Use scale `T`, taper `T^a`, frequency split `T^b`, and dual-product split
+`T^(1+b)`. The direct exponent is `1−Kδ/2`; the dual oscillation exponent
+is `4+b−Kδ/4`; the dual shifted tail exponent is `2+b−bJ`.
+All three can be made less than any prescribed negative exponent by choosing
+`K,J`. The Gaussian split tail is smaller than every power. Contour depth
+`A=2j+1` saves `(1−2θ)A` powers on the smooth diagonal and at least
+`(1−2θ)A−1` on the dual diagonal. This also absorbs the at most `T^(2θ)`
+coefficient pairs. The intended endpoint is the actual two-main-term twisted
+moment formula, with these remainders discharged.
+
+## A101: quantitative square margin
+
+For a real exceptional zero `β`, let
+`m(γ)=log(1/(C(1−β)log(q(|γ|+3))))/(C log(q(|γ|+3)))`.
+The current uniform repulsion theorem gives `Re ρ−1/2≤1/2−m(Im ρ)`
+for every other zero in the right half-strip. A reflected zero pair at
+depth `δ>0` contributes at least `−2 mult(ρ) S(δ,a)‖f‖₂²`, where
+`S(δ,a)=∫[-a,a] sinh²(δu)du`. Monotonicity in `δ` therefore transfers
+the repulsion margin to the actual twisted square. This retains the
+quantitative gain before the stronger strip-clearing threshold is reached.
+The existing comb theorem treats that threshold; its source also uses an
+older signature of `exists_deuring_heilbronn_repulsion`. The new transfer
+must use the current theorem directly and audit its dependencies.

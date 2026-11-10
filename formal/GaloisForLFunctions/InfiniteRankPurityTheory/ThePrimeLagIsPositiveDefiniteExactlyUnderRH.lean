@@ -24,7 +24,7 @@ def primeLag (u : ℝ) : ℂ :=
 theorem primeLag_eq_weilLagFunction (u : ℝ) : primeLag u = weilLagFunction u := by
   by_cases hu : u = 0
   · subst u
-    simp only [primeLag, if_pos rfl, weilLagFunction_zero]
+    rw [primeLag, if_pos rfl, weilLagFunction_zero]
   · rw [primeLag, if_neg hu, ← weilLagFunction_eq_primeDeviation (abs_pos.mpr hu)]
     rcases le_total 0 u with h | h
     · rw [abs_of_nonneg h]

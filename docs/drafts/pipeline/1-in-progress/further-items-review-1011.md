@@ -52,9 +52,13 @@ audits with only `propext`, `Classical.choice`, `Quot.sound`. See
 Candidate: add to the Riemann prime-power measure the positive pushforward of
 `ε x exp(-x) dx`, `x>0`, under `x↦exp x`. Its Mellin transform is
 `ε/(s+1)²`; the convolution-exponential zeta is therefore
-`ζ(s) exp(ε/(s+1)²)`. On the critical line its uncompleted FE defect should
-be integrable and square integrable because the multiplier differs from one
-by `O(|t|⁻²)`. This would refute continuous-measure rigidity, even for
+`ζ(s) exp(ε/(s+1)²)`. On the critical line, reflection cancels the leading
+inverse-square term: the multiplier difference is `O(ε|t|⁻³)`.
+The elementary bound `|ζ(1/2+it)|=O(1+|t|)` then gives an `L¹∩L²` defect.
+This would refute continuous-measure rigidity, even for
 arbitrarily small defects. Required: prove the measure identity, the full
 Hamburger strip conditions, both defect norms, and nontriviality. No part
-of this candidate is counted as proved.
+of this counterexample is counted as complete. The complex Mellin identity for
+positive convolution exponentials and the positive density's transform have
+passed Lean checks with only the standard axioms; the full counterexample
+and its positive survivor remain unformalized.

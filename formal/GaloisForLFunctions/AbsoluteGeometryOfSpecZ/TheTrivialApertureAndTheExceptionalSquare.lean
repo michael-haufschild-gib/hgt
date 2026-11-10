@@ -67,6 +67,38 @@ variable {q : ℕ}
 
 /-! ### 1. Real-to-complex splitting and the onset-aperture dictionary for `Z_χ` -/
 
+/-- **Real-to-complex splitting of the pole term**: for any continuous compactly supported test
+`F : ℝ → ℂ`, the real part of the pole term of `F ⋆ F̃` is the sum of the pole terms of its real
+and imaginary parts. -/
+theorem weilPoleTerm_split {F : ℝ → ℂ} (hF : Continuous F) (hFc : HasCompactSupport F) :
+    (_root_.RHTower.weilPoleTerm (EF.weilTest F F)).re =
+      2 * ((∫ u, (F u).re * Real.exp (-u / 2)) * ∫ u, (F u).re * Real.exp (u / 2)) +
+        2 * ((∫ u, (F u).im * Real.exp (-u / 2)) * ∫ u, (F u).im * Real.exp (u / 2)) := by
+  rw [_root_.RHTower.WeilOneSided.weilPoleTerm_re_eq_two_re hF hFc]
+  have hi1 : Integrable fun u : ℝ => F u * (Real.exp (-u / 2) : ℂ) :=
+    (hF.mul (by fun_prop)).integrable_of_hasCompactSupport hFc.mul_right
+  have hi2 : Integrable fun u : ℝ => F u * (Real.exp (u / 2) : ℂ) :=
+    (hF.mul (by fun_prop)).integrable_of_hasCompactSupport hFc.mul_right
+  have hre : ∀ (z : ℂ) (r : ℝ), (z * (r : ℂ)).re = z.re * r := fun z r => by
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
+  have him : ∀ (z : ℂ) (r : ℝ), (z * (r : ℂ)).im = z.im * r := fun z r => by
+    simp only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, mul_zero, zero_add]
+  have r1 : (paperFT F (Complex.I / 2)).re = ∫ u, (F u).re * Real.exp (-u / 2) := by
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← Complex.reCLM.integral_comp_comm hi1]
+    exact integral_congr_ae (Eventually.of_forall fun u => hre _ _)
+  have i1 : (paperFT F (Complex.I / 2)).im = ∫ u, (F u).im * Real.exp (-u / 2) := by
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_I_div_two, ← Complex.imCLM.integral_comp_comm hi1]
+    exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
+  have r2 : (paperFT F (-Complex.I / 2)).re = ∫ u, (F u).re * Real.exp (u / 2) := by
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← Complex.reCLM.integral_comp_comm hi2]
+    exact integral_congr_ae (Eventually.of_forall fun u => hre _ _)
+  have i2 : (paperFT F (-Complex.I / 2)).im = ∫ u, (F u).im * Real.exp (u / 2) := by
+    rw [_root_.RHTower.LebesgueAtomWeil.paperFT_neg_I_div_two, ← Complex.imCLM.integral_comp_comm hi2]
+    exact integral_congr_ae (Eventually.of_forall fun u => him _ _)
+  simp only [Complex.mul_re, Complex.conj_re, Complex.conj_im, mul_neg, sub_neg_eq_add,
+    r1, i1, r2, i2]
+  ring
+
 /-- **Real-to-complex splitting of the zero sum of `L(s, χ)`**: for a real primitive character
 `χ` of conductor `q > 1` and any complex `C²` test `F` of compact support, the real part of Weil's
 zero form `W_{L(·,χ)}(F, F)` is the sum of `Z_χ` on the real and imaginary parts of `F`. -/
@@ -76,7 +108,12 @@ theorem re_dirichletZeros_W_split [NeZero q] (hq : 1 < q) {χ : DirichletCharact
     ((_root_.RHTower.dirichletZeros hq hprim).W F F).re =
       twistedZeroSum hq hprim (fun x => (F x).re) +
         twistedZeroSum hq hprim (fun x => (F x).im) := by
-  obtain ⟨a, ha, hFs⟩ := exists_tsupport_subset_of_hasCompactSupport hFc
+  obtain ⟨A, hA⟩ := hFc.isCompact.isBounded.subset_closedBall 0
+  have ha : 0 ≤ |A| := abs_nonneg A
+  have hFs : tsupport F ⊆ Set.Icc (-|A|) |A| := fun x hx => by
+    have := hA hx
+    rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at this
+    exact abs_le.mp (this.trans (le_abs_self A))
   have hu : ContDiff ℝ 2 fun x => (F x).re := Complex.reCLM.contDiff.comp hF
   have hv : ContDiff ℝ 2 fun x => (F x).im := Complex.imCLM.contDiff.comp hF
   have huc : HasCompactSupport fun x => (F x).re :=
@@ -86,10 +123,8 @@ theorem re_dirichletZeros_W_split [NeZero q] (hq : 1 < q) {χ : DirichletCharact
   have hχ := re_weilFullFunctional_twist hq hprim hreal ha hF hFs
   have hχs := re_weilFullFunctional_split (twistWeight χ) hF hFc
   have hp := weilPoleTerm_split hF.continuous hFc
-  have hpu := weilPoleTerm_packet hu.continuous huc
-  have hpv := weilPoleTerm_packet hv.continuous hvc
   have hm := integral_norm_sq_split hF.continuous hFc
-  have hpe := placeEnergy_split χ hF hFc
+  have hpe := placeEnergy_split χ hF hFs
   have hχu := re_weilFullFunctional_twist_packet hq hprim hu huc
   have hχv := re_weilFullFunctional_twist_packet hq hprim hv hvc
   linarith
@@ -98,16 +133,9 @@ theorem re_dirichletZeros_W_split [NeZero q] (hq : 1 < q) {χ : DirichletCharact
 imaginary parts also have `tsupport ⊆ [−a, a]`. -/
 theorem tsupport_ofReal_re_im_subset {F : ℝ → ℂ} {a : ℝ} (hFs : tsupport F ⊆ Set.Icc (-a) a) :
     tsupport (fun u => (((F u).re : ℝ) : ℂ)) ⊆ Set.Icc (-a) a ∧
-      tsupport (fun u => (((F u).im : ℝ) : ℂ)) ⊆ Set.Icc (-a) a := by
-  constructor
-  · refine (tsupport_mono fun u hu => ?_).trans hFs
-    intro hFu
-    apply hu
-    simp [hFu]
-  · refine (tsupport_mono fun u hu => ?_).trans hFs
-    intro hFu
-    apply hu
-    simp [hFu]
+      tsupport (fun u => (((F u).im : ℝ) : ℂ)) ⊆ Set.Icc (-a) a :=
+  ⟨(tsupport_comp_subset (g := fun z : ℂ => (z.re : ℂ)) (by simp) F).trans hFs,
+    (tsupport_comp_subset (g := fun z : ℂ => (z.im : ℂ)) (by simp) F).trans hFs⟩
 
 /-- **Complex window positivity of `L(s, χ)` is equivalent to `Z_χ ≥ 0` on real packets.** -/
 theorem windowPositiveAt_dirichletZeros_iff_twistedZeroSum_nonneg [NeZero q] (hq : 1 < q)

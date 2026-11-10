@@ -19,9 +19,11 @@ For a primitive character `χ` of conductor `q` and `w = Λ Re χ` it is the sum
   shifts of the primes, whose kernel is `e^{|u−v|/2}` on average, and the Schur test with the
   polar weight `cosh(u/2)` gives its top `e^{a}`. The pointwise bound of the symbol,
   `2 Σ_{n ≤ e^{2a}} Λ(n) n^{−1/2} ≈ 4e^{a}`, is four times larger.
-* **The dominated box is feasible** (`systemForm_ge_of_dominated`, `feasible_of_dominated`):
-  `𝔚_{w,q}(F) ≥ (log q − A₀ − K e^{a} − B − (1 + 2a)²) ∫ |F|²`, with
-  `A₀ = γ + 3 log 2 + π/2 + log π` the depth of the archimedean symbol.
+* **The dominated box is feasible** (`systemForm_ge_of_dominated`, `feasible_of_dominated`,
+  `exists_systemForm_margin`): `𝔚_{w,q}(F) ≥ (log q − A₀ − K e^{a} − B − (1 + 2a)²) ∫ |F|²`, with
+  `A₀ = γ + 3 log 2 + π/2 + log π` the depth of the archimedean symbol; for large conductors the
+  form of every dominated system is at least `½ (1 − e^{−η/2}) log q ∫ |F|²` at every aperture
+  `a ≤ log log q − η`.
 * **The trivial aperture of a conductor** (`twistedZeroSum_ge_of_psi`, `exists_twistedZeroSum_ge`,
   `exists_trivialAperture_margin`). For every primitive character of conductor `q`, real or not,
   the sum over the zeros of `L(s, χ)` is at least `(log q − (1 + ε) e^{a} − (1 + 2a)² − B_ε) ∫ f²`
@@ -376,16 +378,14 @@ theorem eventually_const_add_log_sq_le {c : ℝ} (hc : 0 < c) (B : ℝ) :
   have := (le_abs_self _).trans hx
   nlinarith
 
-/-- **The trivial aperture of a conductor is at least `log log q − o(1)`.** For every `η > 0`
-there is `M₀` such that for every primitive character of conductor `q` with `log q ≥ M₀` and
-every packet of aperture `a ≤ log log q − η`:
-`Z_χ(f) ≥ ½ (1 − e^{−η/2}) log q ∫ f²`. -/
-theorem exists_trivialAperture_margin {η : ℝ} (hη : 0 < η) :
-    ∃ M₀ : ℝ, ∀ {q : ℕ} [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
-      (hprim : χ.IsPrimitive), M₀ ≤ Real.log q → ∀ {f : ℝ → ℝ}, ContDiff ℝ 2 f →
-      HasCompactSupport f → ∀ {c a : ℝ}, 0 ≤ a → a ≤ Real.log (Real.log q) - η →
-      (∀ u, a < |u - c| → f u = 0) →
-        (1 - Real.exp (-η / 2)) / 2 * Real.log q * ∫ u, f u ^ 2 ≤ twistedZeroSum hq hprim f := by
+/-- **The dominated box is feasible up to the aperture `log log q − o(1)`, with a margin.** For
+every `η > 0` there is `M₀` such that for every conductor with `log q ≥ M₀`, every aperture
+`a ≤ log log q − η`, every dominated system and every test supported in `[−a, a]`:
+`𝔚_{w,q}(F) ≥ ½ (1 − e^{−η/2}) log q ∫ |F|²`. -/
+theorem exists_systemForm_margin {η : ℝ} (hη : 0 < η) :
+    ∃ M₀ : ℝ, ∀ q : ℝ, M₀ ≤ Real.log q → ∀ a : ℝ, 0 ≤ a → a ≤ Real.log (Real.log q) - η →
+      ∀ {w : ℕ → ℝ}, Dominated w → ∀ {F : ℝ → ℂ}, ContDiff ℝ 2 F → tsupport F ⊆ Icc (-a) a →
+        (1 - Real.exp (-η / 2)) / 2 * Real.log q * ∫ x, ‖F x‖ ^ 2 ≤ systemForm w q a F := by
   have hδ : 0 < 1 - Real.exp (-η / 2) := by
     have : Real.exp (-η / 2) < Real.exp 0 := Real.exp_lt_exp.mpr (by linarith)
     rw [Real.exp_zero] at this
@@ -394,14 +394,13 @@ theorem exists_trivialAperture_margin {η : ℝ} (hη : 0 < η) :
     have : Real.exp 0 < Real.exp (η / 2) := Real.exp_lt_exp.mpr (by linarith)
     rw [Real.exp_zero] at this
     linarith
-  obtain ⟨B, hB⟩ := exists_twistedZeroSum_ge hε
+  obtain ⟨B, hB⟩ := exists_psi_le_linear hε
   obtain ⟨M₁, hM₁⟩ := eventually_atTop.mp
-    (eventually_const_add_log_sq_le (half_pos hδ) B)
-  refine ⟨max M₁ 1, fun {q} _ hq _ hprim hM f hf hfc _ a ha0 ha hshort => ?_⟩
+    (eventually_const_add_log_sq_le (half_pos hδ) (archConstant + B))
+  refine ⟨max M₁ 1, fun q hM a ha0 ha w hw F hF hFs => ?_⟩
   set x := Real.log q with hx
   have hx1 : 1 ≤ x := le_trans (le_max_right _ _) hM
   have hx0 : 0 < x := by linarith
-  have hlog0 : 0 ≤ Real.log x := Real.log_nonneg hx1
   have ha' : a ≤ Real.log x := by linarith
   -- the prime side: `(1 + ε) e^{a} ≤ e^{−η/2} log q`
   have hexp : (1 + (Real.exp (η / 2) - 1)) * Real.exp a ≤ Real.exp (-η / 2) * x := by
@@ -415,11 +414,46 @@ theorem exists_trivialAperture_margin {η : ℝ} (hη : 0 < η) :
           mul_le_mul_of_nonneg_left h1 (Real.exp_pos _).le
       _ = Real.exp (-η / 2) * x := h2
   -- the lower-order terms
-  have hlow : B + (1 + 2 * a) ^ 2 ≤ (1 - Real.exp (-η / 2)) / 2 * x := by
+  have hlow : archConstant + B + (1 + 2 * a) ^ 2 ≤ (1 - Real.exp (-η / 2)) / 2 * x := by
     have h := hM₁ x (le_trans (le_max_left _ _) hM)
     nlinarith
-  have hmass : 0 ≤ ∫ u, f u ^ 2 := integral_nonneg fun _ => sq_nonneg _
-  refine le_trans (mul_le_mul_of_nonneg_right ?_ hmass) (hB hq hprim hf hfc ha0 hshort)
+  have hmass : 0 ≤ ∫ x, ‖F x‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  refine le_trans (mul_le_mul_of_nonneg_right ?_ hmass)
+    (systemForm_ge_of_dominated hB ha0 hF hFs hw q)
   linarith
+
+/-- **The trivial aperture of a conductor is at least `log log q − o(1)`.** For every `η > 0`
+there is `M₀` such that for every primitive character of conductor `q` with `log q ≥ M₀` and
+every packet of aperture `a ≤ log log q − η`:
+`Z_χ(f) ≥ ½ (1 − e^{−η/2}) log q ∫ f²`. -/
+theorem exists_trivialAperture_margin {η : ℝ} (hη : 0 < η) :
+    ∃ M₀ : ℝ, ∀ {q : ℕ} [NeZero q] (hq : 1 < q) {χ : DirichletCharacter ℂ q}
+      (hprim : χ.IsPrimitive), M₀ ≤ Real.log q → ∀ {f : ℝ → ℝ}, ContDiff ℝ 2 f →
+      HasCompactSupport f → ∀ {c a : ℝ}, 0 ≤ a → a ≤ Real.log (Real.log q) - η →
+      (∀ u, a < |u - c| → f u = 0) →
+        (1 - Real.exp (-η / 2)) / 2 * Real.log q * ∫ u, f u ^ 2 ≤ twistedZeroSum hq hprim f := by
+  obtain ⟨M₀, hM₀⟩ := exists_systemForm_margin hη
+  refine ⟨M₀, fun {q} _ hq χ hprim hM f hf hfc c a ha0 ha hshort => ?_⟩
+  have hg : ContDiff ℝ 2 fun u => f (u - -c) := hf.comp (contDiff_id.sub contDiff_const)
+  have hg0 : ∀ x : ℝ, a < |x| → f (x - -c) = 0 := fun x hx =>
+    hshort _ (by rwa [sub_neg_eq_add, add_sub_cancel_right])
+  have hts : tsupport (fun x => ((f (x - -c) : ℝ) : ℂ)) ⊆ Icc (-a) a := by
+    refine closure_minimal (fun x hx => ?_) isClosed_Icc
+    by_contra hxI
+    have hx' : a < |x| := by
+      rw [Set.mem_Icc, not_and_or, not_le, not_le] at hxI
+      rcases hxI with h | h
+      · exact lt_abs.mpr (Or.inr (by linarith))
+      · exact lt_abs.mpr (Or.inl h)
+    exact hx (by
+      show ((f (x - -c) : ℝ) : ℂ) = 0
+      rw [hg0 x hx', Complex.ofReal_zero])
+  have h := hM₀ q hM a ha0 ha (dominated_twistWeight χ) (contDiff_ofReal_packet hg) hts
+  have hmass : ∫ u, f (u - -c) ^ 2 = ∫ u, f u ^ 2 :=
+    integral_sub_right_eq_self (fun u => f u ^ 2) (-c)
+  rw [integral_norm_ofReal_sq, hmass] at h
+  rw [← twistedZeroSum_translate hq hprim hf hfc (-c),
+    twistedZeroSum_eq_systemForm hq hprim hg hts]
+  linarith [placeEnergy_nonneg χ fun u => ((f (u - -c) : ℝ) : ℂ)]
 
 end GaloisForLFunctions.SelectiveArithmetic

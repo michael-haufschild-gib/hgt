@@ -363,26 +363,25 @@ theorem integral_deriv_oddPolar_sq_le {S : ℝ}
 /-- The autocorrelation of a packet is at most its mass. -/
 theorem abs_packetAutocorr_le {f : ℝ → ℝ} (hf : Continuous f) (hfc : HasCompactSupport f)
     (x : ℝ) : |packetAutocorr f x| ≤ ∫ u, f u ^ 2 := by
-  obtain ⟨g, hg⟩ : ∃ g : ℝ → ℝ, g = fun u => f u ^ 2 := ⟨_, rfl⟩
-  have hgu : ∀ u, g u = f u ^ 2 := fun u => by rw [hg]
-  have hsq : Integrable g := by
-    rw [hg]
-    exact (hf.pow 2).integrable_of_hasCompactSupport
-      (hfc.comp_left (g := fun z : ℝ => z ^ 2) (by norm_num))
-  have hsq' : Integrable fun u => g (u + x) := hsq.comp_add_right x
+  have hsq : Integrable fun u => f u * f u :=
+    (hf.mul hf).integrable_of_hasCompactSupport hfc.mul_right
+  have hsq' : Integrable fun u => f (u + x) * f (u + x) := hsq.comp_add_right x
   have hprod : Integrable fun u => f u * f (u + x) :=
     (hf.mul (hf.comp (continuous_id.add continuous_const))).integrable_of_hasCompactSupport
       hfc.mul_right
-  have hshift : ∫ u, g (u + x) = ∫ u, g u := integral_add_right_eq_self g x
+  have hshift : ∫ u, f (u + x) * f (u + x) = ∫ u, f u * f u :=
+    integral_add_right_eq_self (fun u => f u * f u) x
+  have hmass : ∫ u, f u ^ 2 = ∫ u, f u * f u :=
+    integral_congr_ae (Eventually.of_forall fun u => sq (f u))
+  rw [hmass]
   calc |packetAutocorr f x| ≤ ∫ u, |f u * f (u + x)| := abs_integral_le_integral_abs
-    _ ≤ ∫ u, (g u + g (u + x)) / 2 := by
+    _ ≤ ∫ u, (f u * f u + f (u + x) * f (u + x)) / 2 := by
         refine integral_mono hprod.abs ((hsq.add hsq').div_const 2) fun u => ?_
-        show |f u * f (u + x)| ≤ (g u + g (u + x)) / 2
-        rw [hgu, hgu, abs_le]
+        show |f u * f (u + x)| ≤ (f u * f u + f (u + x) * f (u + x)) / 2
+        rw [abs_le]
         constructor <;> nlinarith [sq_nonneg (f u - f (u + x)), sq_nonneg (f u + f (u + x))]
-    _ = ∫ u, f u ^ 2 := by
+    _ = ∫ u, f u * f u := by
         rw [integral_div, integral_add hsq hsq', hshift]
-        simp_rw [hgu]
         ring
 
 theorem integrable_evenPolar_mul {a δ : ℝ} (hδ : 0 < δ) (y : ℝ) :
@@ -431,9 +430,9 @@ theorem packetAutocorr_evenPolar_ge {a δ : ℝ} (hδ : 0 < δ) {y : ℝ} (hy : 
   · rw [Set.indicator_of_notMem hu]
     exact mul_nonneg (evenPolar_nonneg a δ _) (evenPolar_nonneg a δ _)
 
-/-- **The correlations of the two polar packets add up to the polar kernel.** For `y ≥ 0`:
+/-- **The correlations of the two polar packets add up to the polar kernel.** At every lag `y`:
 `(O ⋆ Õ)(y) ≤ 2a e^{a − y/2} − (E ⋆ Ẽ)(y)`. -/
-theorem packetAutocorr_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) {y : ℝ} (hy : 0 ≤ y) :
+theorem packetAutocorr_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) (y : ℝ) :
     packetAutocorr (oddPolar a δ) y ≤
       2 * a * Real.exp (a - y / 2) - packetAutocorr (evenPolar a δ) y := by
   have hg : ∫ u, (Icc (-a) a).indicator (fun _ => Real.exp (a - y / 2)) u =
@@ -461,7 +460,8 @@ theorem packetAutocorr_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (hδ : 0 < δ) {y
       exact Set.indicator_nonneg (fun _ _ => (Real.exp_pos _).le) u
     · have h1 := abs_lt.mp (abs_lt_of_cutoff_ne_zero hδ (left_ne_zero_of_mul hz))
       have h2 := abs_lt.mp (abs_lt_of_cutoff_ne_zero hδ (right_ne_zero_of_mul hz))
-      rw [Set.indicator_of_mem (⟨h1.1.le, h1.2.le⟩ : u ∈ Icc (-a) a)]
+      have hmem : u ∈ Set.Icc (-a) a := ⟨h1.1.le, h1.2.le⟩
+      rw [Set.indicator_of_mem hmem]
       have hcosh : Real.cosh (u + y / 2) ≤ Real.exp (a - y / 2) :=
         cosh_le_exp_of_abs_le (abs_le.mpr ⟨by linarith [h1.1], by linarith [h2.2]⟩)
       have hχ : cutoff a δ u * cutoff a δ (u + y) ≤ 1 :=

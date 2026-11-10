@@ -24,6 +24,18 @@ def continuousPrimeLogMeasure : Measure ℝ :=
 /-- A continuous prime-power measure on `(1,∞)`. -/
 def continuousPrimeMeasure : Measure ℝ := continuousPrimeLogMeasure.map Real.exp
 
+instance : NullSingletonClass continuousPrimeLogMeasure := by
+  refine ⟨fun x => ?_⟩
+  exact withDensity_absolutelyContinuous _ _ (measure_singleton x)
+
+instance : NullSingletonClass continuousPrimeMeasure := by
+  refine ⟨fun x => ?_⟩
+  rw [continuousPrimeMeasure, Measure.map_apply Real.measurable_exp (measurableSet_singleton x)]
+  have hs : (Real.exp ⁻¹' {x}).Subsingleton := by
+    intro a ha b hb
+    exact Real.exp_injective (ha.trans hb.symm)
+  exact hs.measure_zero continuousPrimeLogMeasure
+
 /-- No added mass lies at or below the unit. -/
 theorem continuousPrimeMeasure_Iic_one : continuousPrimeMeasure (Iic 1) = 0 := by
   rw [continuousPrimeMeasure, Measure.map_apply Real.measurable_exp measurableSet_Iic]
@@ -94,6 +106,17 @@ theorem integrable_rpow_continuousPrimeMeasure {σ : ℝ} (hσ : -1 < σ) :
     (measure_mono_null Iio_subset_Iic_self continuousPrimeMeasure_Iic_one)] with u hu
   rw [Complex.norm_cpow_eq_rpow_re_of_pos (zero_lt_one.trans_le hu),
     Complex.neg_re, Complex.ofReal_re]
+
+instance : IsFiniteMeasure continuousPrimeMeasure := by
+  have hi := integrable_mellin_continuousPrimeMeasure (s := 0) (by norm_num)
+  simp only [neg_zero, Complex.cpow_zero] at hi
+  exact (integrable_const_iff.mp hi).resolve_left one_ne_zero
+
+instance : IsProbabilityMeasure continuousPrimeMeasure := by
+  refine ⟨(ENNReal.toReal_eq_one_iff _).mp ?_⟩
+  change continuousPrimeMeasure.real univ = 1
+  have h := measureDirichlet_continuousPrimeMeasure (s := 0) (by norm_num)
+  simpa [measureDirichlet, integral_const, Complex.real_smul] using congrArg Complex.re h
 
 #print axioms measureDirichlet_continuousPrimeMeasure
 

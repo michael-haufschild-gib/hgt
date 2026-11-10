@@ -10,16 +10,16 @@
 
 | Tasks | Exact target | Status |
 |---|---|---|
-| A90 | RH iff positive definiteness of the prime-side lag function | Proof written; Lean audit pending |
+| A90 | RH iff positive definiteness of the prime-side lag function | Formalized and axiom-audited; `3-formalized/the-prime-lag-is-positive-definite-exactly-under-rh.md` |
 | A72 | Count door on logarithmic windows with power-thin exceptions | Formalized and axiom-audited; `3-formalized/counts-on-exceptional-logarithmic-prime-windows.md` |
-| A76 | Absolute and signed window criteria with exceptions | Both proofs written; Lean audits pending |
+| A76 | Absolute and signed window criteria with exceptions | Absolute logarithmic criterion audited; signed transfer and log-square audits pending |
 | A73 | Upper one-sided logarithmic-window criterion | Open |
-| A71 | Uniform local tensor moments iff RH | Open |
-| A56 | Explicit two-bump prime rung from a verified height | Open |
-| A75 | S3 transfer implies the quasi-RH collapse | Open |
+| A71 | Uniform local tensor moments iff RH | Proof written; Lean audit pending |
+| A56 | Explicit two-bump prime rung from a verified height | Explicit unbounded rung proof written; Lean audit pending |
+| A75 | S3 transfer implies the quasi-RH collapse | Proof written; exact prime-cutoff rounding and Lean audit pending |
 | A83 | Density-matched counter-configuration with bounded trace change | Open |
 | A97 | Newtonian even multipoles, rulings, and prime-chain contact squares | Open |
-| A98 | RH iff feasible weights exist at every aperture | Open |
+| A98 | RH iff feasible weights exist at every aperture | Formalized and axiom-audited; `3-formalized/feasible-weights-at-every-aperture-are-rh.md` |
 | A99 | Completed-zeta quotient formula and exact regulator-defect criterion | Open |
 | A78 | Cluster extension of separated windows | Open |
 | A79, A81 | Matching aperture–height and block-index constants | Open |
@@ -41,6 +41,8 @@ Each row needs its stated mathematical content, a dependency-closed proof, corre
 - **A72.** Every quadratic limit of natural-number counts is nonnegative. The identity `planeDefect p (1,1) = 2c_B(0)+2c_B(log p)` gives the floor required by `riemannHypothesis_iff_prime_logarithmic_windows_off_finset`. Conversely, under RH use the natural floor of the quadratic defect and empty exceptional sets. Source: `SurfaceOfSpecZ/ScaleLocality/CountsOnExceptionalLogarithmicWindows.lean`.
 - **A90.** The central zero trace equals `weilLagFunction`. Combine the flow Castelnuovo–Severi equivalence with the zero-motive RH equivalence. For nonzero lags the prime formula is `exp(-|u|/2) primeDeviation(exp |u|)`; at zero it is `poleSharpConstant`. Evenness identifies both half-lines. Source: `InfiniteRankPurityTheory/ThePrimeLagIsPositiveDefiniteExactlyUnderRH.lean`.
 - **A76.** An absolute bound gives the existing lower bound with the same exceptional set; the width theorem supplies the converse implication. Under the width bound the global absolute estimate permits empty exceptional sets. Source: `SurfaceOfSpecZ/ScaleLocality/ExceptionalAbsoluteWindows.lean`. Separately, `ExceptionalAbsolutePrimeWindowTransfer.lean` proves absolute prime avoidance; `ExceptionalSignedWindows.lean` combines it with the signed log-square receiver. At the abscissa `a=Θ−1/2`, the reduction `a≤max(σ,a+β−1)`, `β<1`, forces `a≤σ`.
+- **A98.** A finite family of compactly supported tests has a common aperture. Choose a feasible weight at that aperture. Every nonnegative prime-blind mixture then has nonnegative Weil form, and its prime terms cancel. Thus its archimedean form is nonnegative. The unconditional prime-blind RH criterion supplies RH. Conversely RH supplies the von Mangoldt weight at every aperture. No compatibility of the chosen weights is needed.
+- **A75.** Formalize the transfer as a uniform bound on a log-square prime window whenever heavy identity returns are absent for primes up to `⌈T^A⌉` and heights `[T₁, exp(ηT)]`. A strip of depth `h<1/2` gives `log t≥c y^d`, `d=1/2−h>0`. Choose `A=2/d`: then `y≥T^A` gives `c y^d≥cT²>ηT` eventually. Thus the return-free hypothesis holds on every late window; the proposed transfer and the signed window criterion give RH. The theorem proves the implication from the transfer, not the transfer itself.
 
 ## Local tensor target
 
@@ -49,4 +51,5 @@ For A71 preserve the corpus’s uniformity: constants may depend on the tensor o
 ## Further exactness checks
 
 - **A56:** `boxSpline 1 3` has support radius **4**, so a two-bump packet at separation `log p` has aperture `4 + (log p)/2`. `VerifiedHeightRungs.WindowEntries.windowHeight` is explicit. The verified-height rung must use this radius.
+  An explicit inverse rung is the largest `n≤⌊T⌋` with `windowHeightOfOne(4+log(n)/2)≤T`, or zero if none exists. It tends to infinity: for each fixed `n`, every `T≥max(n,windowHeightOfOne(4+log(n)/2))` admits `n`. Every prime up to the rung fits in its aperture, without any monotonicity assumption on the height formula.
 - **A99:** The raw `scatteringWeilEnergy` changes the jump kernel, the mass coefficient, and the prime operator. Its difference from the Weil form is therefore the jump tail **plus** `(2 gammaHardyPhaseRate(0) − scatteringMassCoefficient N)‖f‖²` **minus** the omitted prime form. The positive jump tail alone is not the full raw defect. `scatteringSecondHeightDefect_eq` already retains the prime correction after removing the Robin mass drift; the requested regulator criterion must retain these terms or explicitly correct the regulator.
