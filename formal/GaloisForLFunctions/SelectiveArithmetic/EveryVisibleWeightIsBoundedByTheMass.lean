@@ -415,6 +415,27 @@ theorem exists_abs_weight_le_of_feasible :
 
 /-! ### An `ℓ¹` ball is feasible; below the first contact the weights do not enter -/
 
+/-- The contact form is at most the `ℓ¹` size `2 Σ |w(n)| n^{−1/2}` of the visible weights times
+the mass of the test. -/
+theorem abs_contactForm_le_sum_abs {F : ℝ → ℂ} (hF : ContDiff ℝ 2 F) (hFc : HasCompactSupport F)
+    (w : ℕ → ℝ) (N : ℕ) :
+    |contactForm w F N| ≤
+      (∑ n ∈ Finset.Icc 2 N, 2 * |w n| / Real.sqrt n) * ∫ x, ‖F x‖ ^ 2 := by
+  unfold contactForm
+  rw [Finset.sum_mul]
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun n _ => ?_)
+  have hb := _root_.RHTower.abs_re_weilTest_add_neg_le_two_mul_integral_norm_sq
+    ⟨F, hF, hFc⟩ (Real.log n)
+  have hs : 0 ≤ Real.sqrt n := Real.sqrt_nonneg _
+  calc |w n / Real.sqrt n *
+        (EF.weilTest F F (Real.log n) + EF.weilTest F F (-Real.log n)).re|
+      = |w n| / Real.sqrt n *
+        |(EF.weilTest F F (Real.log n) + EF.weilTest F F (-Real.log n)).re| := by
+        rw [abs_mul, abs_div, abs_of_nonneg hs]
+    _ ≤ |w n| / Real.sqrt n * (2 * ∫ x, ‖F x‖ ^ 2) :=
+        mul_le_mul_of_nonneg_left hb (div_nonneg (abs_nonneg _) hs)
+    _ = 2 * |w n| / Real.sqrt n * ∫ x, ‖F x‖ ^ 2 := by ring
+
 /-- **An `ℓ¹` ball of the size of the mass is feasible.** -/
 theorem feasible_of_sum_abs_le {q a : ℝ} {w : ℕ → ℝ}
     (h : archConstant + ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, 2 * |w n| / Real.sqrt n ≤
@@ -430,25 +451,7 @@ theorem feasible_of_sum_abs_le {q a : ℝ} {w : ℕ → ℝ}
       -archConstant * ∫ x, ‖F x‖ ^ 2 := by
     field_simp
   rw [e] at h1
-  have hcontact : contactForm w F ⌊Real.exp (2 * a)⌋₊ ≤
-      (∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, 2 * |w n| / Real.sqrt n) *
-        ∫ x, ‖F x‖ ^ 2 := by
-    unfold contactForm
-    rw [Finset.sum_mul]
-    refine Finset.sum_le_sum fun n _ => ?_
-    have hb := _root_.RHTower.abs_re_weilTest_add_neg_le_two_mul_integral_norm_sq
-      ⟨F, hF, hFc⟩ (Real.log n)
-    have hs : 0 ≤ Real.sqrt n := Real.sqrt_nonneg _
-    calc w n / Real.sqrt n *
-          (EF.weilTest F F (Real.log n) + EF.weilTest F F (-Real.log n)).re
-        ≤ |w n / Real.sqrt n *
-          (EF.weilTest F F (Real.log n) + EF.weilTest F F (-Real.log n)).re| := le_abs_self _
-      _ = |w n| / Real.sqrt n *
-          |(EF.weilTest F F (Real.log n) + EF.weilTest F F (-Real.log n)).re| := by
-          rw [abs_mul, abs_div, abs_of_nonneg hs]
-      _ ≤ |w n| / Real.sqrt n * (2 * ∫ x, ‖F x‖ ^ 2) :=
-          mul_le_mul_of_nonneg_left hb (div_nonneg (abs_nonneg _) hs)
-      _ = 2 * |w n| / Real.sqrt n * ∫ x, ‖F x‖ ^ 2 := by ring
+  have hcontact := (abs_le.mp (abs_contactForm_le_sum_abs hF hFc w ⌊Real.exp (2 * a)⌋₊)).2
   rw [systemForm_eq hF hFs]
   nlinarith [mul_le_mul_of_nonneg_right h hmass]
 

@@ -168,7 +168,8 @@ theorem continuousOn_signal_two {G : ℂ → ℂ} (hG : IsSignalKernel G) :
       (Z : ℂ) ^ (-((-2 : ℝ) : ℂ)) • 𝓕⁻ (lineKernel G) (-Real.log Z) := fun Z hZ =>
     mellinInv_eq_fourierInv (-2 : ℝ) (fun w => G (-w)) hZ
   refine ContinuousOn.congr ?_ hrep
-  refine ContinuousOn.smul ?_ ?_
+  refine ContinuousOn.smul (f := fun Z : ℝ => (Z : ℂ) ^ (-((-2 : ℝ) : ℂ)))
+    (g := fun Z : ℝ => 𝓕⁻ (lineKernel G) (-Real.log Z)) ?_ ?_
   · intro Z hZ
     exact (continuousAt_ofReal_cpow_const Z _ (Or.inr (ne_of_gt hZ))).continuousWithinAt
   · exact hF.comp_continuousOn
@@ -197,7 +198,9 @@ theorem integrable_fourierInv_lineKernel {G : ℂ → ℂ} (hG : IsSignalKernel 
     rw [hnorm]
     have h := hC₂ (Real.exp (-u)) (Real.exp_pos _)
     have hexp : Real.exp (2 * u) * Real.exp (-u) ^ (2 : ℝ) = 1 := by
-      rw [← Real.exp_mul, ← Real.exp_add]; norm_num
+      rw [← Real.exp_mul, ← Real.exp_add]
+      convert Real.exp_zero using 2
+      ring
     calc Real.exp (2 * u) * ‖signal G 2 (Real.exp (-u))‖
         ≤ Real.exp (2 * u) * (C₂ / 2 * Real.exp (-u) ^ (2 : ℝ)) :=
           mul_le_mul_of_nonneg_left h (Real.exp_pos _).le
@@ -245,7 +248,7 @@ theorem integrable_fourierInv_lineKernel {G : ℂ → ℂ} (hG : IsSignalKernel 
             gcongr
             exact le_trans (le_abs_self K) (le_max_left _ _)
     · -- the bounded range
-      push_neg at hcase
+      rw [not_le] at hcase
       have hmono : Real.exp ((2 - b) * -v₀) ≤ Real.exp ((2 - b) * u) :=
         Real.exp_le_exp.mpr (by nlinarith)
       calc ‖𝓕⁻ (lineKernel G) u‖ ≤ |C₂| / 2 := hall u

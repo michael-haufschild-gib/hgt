@@ -171,7 +171,8 @@ theorem tendsto_flatContactPoints_card_div (a b c d : ℕ) {k : ℕ} (hk : 1 ≤
     ((tendsto_mul_natCast_div a).max (tendsto_scaled_natDiv_div c hk))).max (tendsto_const_nhds (x := (0 : ℝ)))
   apply h.congr'
   exact Eventually.of_forall fun N => by
-    rw [flatContactPoints_eq a b c d N (by omega), Nat.card_Ioc, natCast_sub_div,
+    dsimp only
+    rw [flatContactPoints_eq a b c d N (k := k) (by omega), Nat.card_Ioc, natCast_sub_div,
       Nat.cast_min, Nat.cast_max, ← min_div_div_right (Nat.cast_nonneg N),
       ← max_div_div_right (Nat.cast_nonneg N)]
 
