@@ -33,8 +33,11 @@ so that
 `κε+a(1−2σ+ε)/2<0`,
 `κ+a(1−σ)−1<0`.
 
-These inequalities hold for sufficiently small positive `a−1,ε` because
-`κ<2σ−1`. The last inequality controls the Euler–Maclaurin pole term
+Explicit choices are `d=2σ−1−κ`, `a=1+d/8`, and
+`ε=d/[8(κ+a+1)]`. The mean exponent is less than `−3d/4`;
+the diagonal-tail exponent is less than `−3(2σ−1)/8`.
+The pole exponent is less than `σ−1−15d/16<0`.
+The last inequality controls the Euler–Maclaurin pole term
 after multiplication by `M`. Every derivative correction has exponent
 `κ−aσ−(a−1)j<0`; choose remainder order `k=2m+2` with
 `κ+a(1−σ)−(a−1)k<0`. Hence the uniform truncation error `e(T)`

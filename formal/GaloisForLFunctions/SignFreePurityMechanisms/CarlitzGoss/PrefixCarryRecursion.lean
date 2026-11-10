@@ -174,7 +174,55 @@ theorem backwardCarryRows_content {p : ℤ} {w v : ℕ → ℤ} {n : ℕ}
   exact ⟨backwardPrefixContent_nonneg _ _ _ _, backwardPrefixContent_step hp hs,
     backwardPrefixContent_gap hp hs⟩
 
+/-- Every changed terminal inverse coordinate drops by at least one. -/
+theorem backwardCarryRows_terminal_le (p : ℤ) (w v : ℕ → ℤ) (r : ℕ) :
+    backwardCarryRows p w v (r + 1) 0 ≤ w r - 1 :=
+  min_le_left _ _
+
+/-- Beyond the first changed residue, terminal content loses at least `p−1`
+digits whenever any digits remain. -/
+theorem backwardCarryRows_terminal_content_le {p : ℤ} (hp : 0 ≤ p)
+    (w v : ℕ → ℤ) (r : ℕ) :
+    backwardPrefixContent p (w (r + 1)) (backwardCarryRows p w v (r + 1)) 0 ≤
+      max 0 (p * w r - w (r + 1) - (p - 1)) :=
+  backwardPrefixContent_terminal_le hp (backwardCarryRows_terminal_le p w v r)
+
+/-- The unchanged boundary inverse row is the number of retained parts. -/
+def boundaryPrefixContent (p : ℤ) (m : ℕ) (v : ℕ → ℤ) (n : ℕ) : ℤ :=
+  p * v n - ((m : ℤ) - n)
+
+theorem boundaryPrefixContent_nonneg {p : ℤ} {m n : ℕ} {v : ℕ → ℤ}
+    (hp : 1 ≤ p) (hn : n ≤ m) (hv : (m : ℤ) - n ≤ v n) :
+    0 ≤ boundaryPrefixContent p m v n := by
+  have hfloor : (0 : ℤ) ≤ (m : ℤ) - n := by omega
+  have hm := mul_le_mul_of_nonneg_left hv (by omega : 0 ≤ p)
+  unfold boundaryPrefixContent
+  nlinarith only [hfloor, hp, hm]
+
+/-- Boundary content gains at least `p−1` digits at every additional prefix. -/
+theorem boundaryPrefixContent_gap {p : ℤ} {m n : ℕ} {v : ℕ → ℤ}
+    (hp : 0 ≤ p) (hv : v (n + 1) + 1 ≤ v n) :
+    boundaryPrefixContent p m v (n + 1) + (p - 1) ≤
+      boundaryPrefixContent p m v n := by
+  have hm := mul_le_mul_of_nonneg_left hv hp
+  unfold boundaryPrefixContent
+  push_cast
+  nlinarith only [hm]
+
+theorem boundaryPrefixContent_empty {p : ℤ} {m : ℕ} {v : ℕ → ℤ}
+    (hv : v m = 0) : boundaryPrefixContent p m v m = 0 := by
+  simp only [boundaryPrefixContent, hv, mul_zero, sub_self]
+
+/-- The boundary residue loses at least `p` terminal digits. -/
+theorem boundaryPrefixContent_terminal_le {p t : ℤ} {m : ℕ} {v : ℕ → ℤ}
+    (hp : 0 ≤ p) (hv : v 0 ≤ t - 1) :
+    boundaryPrefixContent p m v 0 ≤ p * t - m - p := by
+  have hm := mul_le_mul_of_nonneg_left hv hp
+  simp only [boundaryPrefixContent, Nat.cast_zero, sub_zero]
+  nlinarith only [hm]
+
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
 
 #print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.backwardPrefixContent_gap
 #print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.backwardCarryRows_content
+#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.boundaryPrefixContent_gap

@@ -17,6 +17,34 @@ open _root_.RHTower
 
 namespace GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
 
+/-- Dilation by a nonzero natural number preserves the sum on its multiples. -/
+theorem tsum_multiple_kernel {m : ℕ} (hm : m ≠ 0) (f : ℕ → ℝ) :
+    (∑' k : ℕ, if m ∣ k then f (k / m) else 0) = ∑' n : ℕ, f n := by
+  classical
+  have hinj : Function.Injective (fun n : ℕ => m * n) := fun a b h =>
+    Nat.eq_of_mul_eq_mul_left (Nat.pos_of_ne_zero hm) h
+  have hsupp : Function.support (fun k : ℕ => if m ∣ k then f (k / m) else 0) ⊆
+      Set.range (fun n : ℕ => m * n) := by
+    intro k hk
+    have hdiv : m ∣ k := by
+      by_contra h
+      exact hk (if_neg h)
+    exact ⟨k / m, Nat.mul_div_cancel' hdiv⟩
+  simpa only [dvd_mul_right, if_true, Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)]
+    using (hinj.tsum_eq hsupp).symm
+
+/-- Summability is also preserved when a kernel is placed on the multiples. -/
+theorem summable_multiple_kernel {m : ℕ} (hm : m ≠ 0) {f : ℕ → ℝ}
+    (hf : Summable f) : Summable (fun k : ℕ => if m ∣ k then f (k / m) else 0) := by
+  have hinj : Function.Injective (fun n : ℕ => m * n) := fun a b h =>
+    Nat.eq_of_mul_eq_mul_left (Nat.pos_of_ne_zero hm) h
+  refine (hinj.summable_iff fun k hk => ?_).mp ?_
+  · rw [if_neg]
+    rintro ⟨n, rfl⟩
+    exact hk ⟨n, rfl⟩
+  · simpa only [Function.comp_apply, dvd_mul_right, if_true,
+      Nat.mul_div_cancel_left _ (Nat.pos_of_ne_zero hm)] using hf
+
 /-- The fibre cost is the number of divisors of the product, independently
 of the size of the full resonator support. -/
 theorem norm_resonator_divisor_sum_sq_le {ε : ℝ} (hε : 0 < ε)
