@@ -156,10 +156,11 @@ theorem backwardCarryRows_content {p : ℤ} {w v : ℕ → ℤ}
     let c := backwardPrefixContent p (w r) (backwardCarryRows p w v r)
     0 ≤ c n ∧ c (n + 1) ≤ c n ∧ (0 < c (n + 1) → c (n + 1) + (p - 1) ≤ c n) := by
   dsimp only
-  have hs := backwardCarryRows_step hv r n
+  have hs := backwardCarryRows_step (p := p) (w := w) hv r n
   exact ⟨backwardPrefixContent_nonneg _ _ _ _, backwardPrefixContent_step hp hs,
     backwardPrefixContent_gap hp hs⟩
 
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
 
 #print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.backwardPrefixContent_gap
+#print axioms GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.backwardCarryRows_content

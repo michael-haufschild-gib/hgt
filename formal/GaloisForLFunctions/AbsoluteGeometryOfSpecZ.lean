@@ -49,6 +49,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BezoutDeterminesTheConstantOf
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheHodgeIndexOfTheSquareOfAQuadraticRing
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquareOfACyclotomicRingHasItsContactsOnAProgression
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTrivialApertureAndTheExceptionalSquare
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheExceptionalSquareRepelsTheOtherSquares
 
 /-!
 # Absolute geometry of `Spec ℤ`

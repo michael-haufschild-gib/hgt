@@ -62,7 +62,7 @@ theorem le_halfShiftSum_of_nonneg {l : List ℝ} (hl : ∀ h ∈ l, 0 ≤ h)
     {f : ℝ → ℝ} {t : ℝ} (hf : ∀ u ∈ Icc t (t + l.sum), 0 ≤ f u) :
     0 ≤ halfShiftSum l f t ∧ f t ≤ halfShiftSum l f t := by
   induction l generalizing t with
-  | nil => exact ⟨hf t ⟨le_rfl, le_rfl⟩, le_rfl⟩
+  | nil => exact ⟨hf t ⟨le_rfl, by simpa only [List.sum_nil, add_zero] using (le_rfl : t ≤ t)⟩, le_rfl⟩
   | cons h l ih =>
       have hh : 0 ≤ h := hl h (List.mem_cons_self ..)
       have htail : ∀ k ∈ l, 0 ≤ k := fun k hk => hl k (List.mem_cons_of_mem _ hk)
@@ -154,5 +154,46 @@ theorem sign_interval_resolution {n : ℕ} (a b γ : Fin n → ℝ) {Γ : ℝ}
 #print axioms length_le_sum_of_halfShiftSum_zero
 #print axioms sign_interval_le_sum_halfPeriods
 #print axioms sign_interval_resolution
+
+/-- Real part of a finite exponential sum, in sine and cosine coordinates. -/
+theorem re_exponentialSum_eq_trigSum {n : ℕ} (a : Fin n → ℂ) (γ : Fin n → ℝ) (t : ℝ) :
+    (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re =
+      ∑ j, ((a j).re * Real.cos (γ j * t) + (-(a j).im) * Real.sin (γ j * t)) := by
+  rw [Complex.re_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [Complex.mul_re, Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im]
+  ring
+
+/-- A nonzero real trace of `n` positive-frequency modes cannot remain nonnegative
+on an interval longer than `nπ/Γ`. -/
+theorem exponentialSum_sign_interval_resolution {n : ℕ} (a : Fin n → ℂ) (γ : Fin n → ℝ)
+    {Γ : ℝ} (hΓ : 0 < Γ) (hγ : ∀ j, Γ ≤ γ j)
+    (hne : ∃ t, (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re ≠ 0)
+    {x L : ℝ}
+    (hpos : ∀ t ∈ Icc x (x + L),
+      0 ≤ (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re) :
+    Γ * L ≤ n * Real.pi := by
+  apply sign_interval_resolution (fun j => (a j).re) (fun j => -(a j).im) γ hΓ hγ
+  · simpa only [re_exponentialSum_eq_trigSum] using hne
+  · simpa only [re_exponentialSum_eq_trigSum] using hpos
+
+#print axioms exponentialSum_sign_interval_resolution
+
+/-- Without a nonvanishing premise, the exact alternative is a short sign interval
+or an identically zero real trace. -/
+theorem exponentialSum_sign_interval_short_or_zero {n : ℕ}
+    (a : Fin n → ℂ) (γ : Fin n → ℝ) {Γ : ℝ} (hΓ : 0 < Γ) (hγ : ∀ j, Γ ≤ γ j)
+    {x L : ℝ}
+    (hpos : ∀ t ∈ Icc x (x + L),
+      0 ≤ (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re) :
+    Γ * L ≤ n * Real.pi ∨
+      ∀ t, (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re = 0 := by
+  classical
+  by_cases hne : ∃ t, (∑ j, a j * Complex.exp (((γ j * t : ℝ) : ℂ) * Complex.I)).re ≠ 0
+  · exact Or.inl (exponentialSum_sign_interval_resolution a γ hΓ hγ hne hpos)
+  · exact Or.inr (fun t => by_contra fun ht => hne ⟨t, ht⟩)
+
+#print axioms exponentialSum_sign_interval_short_or_zero
 
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

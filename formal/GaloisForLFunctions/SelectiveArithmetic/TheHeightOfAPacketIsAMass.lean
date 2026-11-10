@@ -235,11 +235,11 @@ theorem sq_integral_abs_le {g : ℝ → ℝ} (hg : Continuous g) {a : ℝ} (ha :
         · exact lt_abs.mpr (Or.inl h)
       rw [h0 u this, abs_zero, zero_mul]
   have hsqI : Integrable fun u => |g u| ^ 2 := by
-    simp_rw [sq_abs]
-    exact (hg.pow 2).integrable_of_hasCompactSupport
-      (HasCompactSupport.intro hgc.isCompact fun u hu => by
-        rw [image_eq_zero_of_notMem_tsupport hu]
-        norm_num)
+    have e : (fun u => |g u| ^ 2) = fun u => g u * g u := by
+      funext u
+      rw [sq_abs, sq]
+    rw [e]
+    exact (hg.mul hg).integrable_of_hasCompactSupport hgc.mul_right
   have hcs := GaloisForLFunctions.HTGeometry.sq_integral_mul_le (μ := volume)
     (f := fun u => |g u|) (g := ind) hg.abs.aestronglyMeasurable hindI.aestronglyMeasurable hsqI
     (by simpa [hindsq] using hindI)

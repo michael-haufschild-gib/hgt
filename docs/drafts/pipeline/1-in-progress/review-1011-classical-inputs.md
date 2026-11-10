@@ -15,7 +15,7 @@
 | A41 | Count law for every smooth projective geometrically connected curve over a finite field | Actual curve point counts and the sharp genus-dependent bound; first case plane quartics. |
 | A59 | Primes in short intervals in every reduced residue class | Power-saving interval lengths; fixed-modulus power-log PNT alone does not suffice. |
 | A84 | Greedy carry-free optimality and Carlitz–Goss Newton polygon | General residue degree and arbitrary composition length, then actual zeta coefficients and slopes. |
-| A101 | Deuring–Heilbronn margin on remaining twisted-comb squares | Quantitative transfer of proved uniform real-zero repulsion to the actual twisted form. |
+| A101 | Deuring–Heilbronn margin on remaining twisted-comb squares | **Formalized:** full logarithmic margin and hyperbolic square-energy bound on the actual twisted comb. See `../3-formalized/exceptional-square-repulsion-margin.md`. |
 
 ## First analytic target
 
@@ -72,9 +72,10 @@ where `S(δ,a)=∫[-a,a] sinh²(δu)du`, including `S(0,a)=0`.
 This follows from the conjugate-transform difference bound and
 monotonicity of `S` in absolute depth. It retains the
 quantitative gain before the stronger strip-clearing threshold is reached.
-The existing comb theorem treats that threshold; its source also uses an
-older signature of `exists_deuring_heilbronn_repulsion`. The new transfer
-must use the current theorem directly and audit its dependencies.
+`TheExceptionalSquareRepelsTheOtherSquares.lean` proves the stronger exact
+margin `m(Im ρ)≤1/2−|Re ρ−1/2|`, the square-energy bound, and their joint
+endpoint with the actual comb limit. Its direct check and both transitive
+axiom audits pass with only the three standard axioms. The umbrella imports it.
 
 ## A84: reduced combinatorial obstruction
 
@@ -86,3 +87,8 @@ residue representatives below `x.exp mod s`. The remaining step is a
 weight-increasing carry exchange across the proper parts; the singleton
 normal form alone is not a contradiction. The subsequent Newton-polygon
 identification must use the actual Carlitz–Goss coefficients.
+
+The detailed card `carlitz-goss-rh-from-greedy-compositions.md` now records
+a sharper geometric prefix-cost argument for the carry modification,
+including `p=2`. `PrefixCarryRecursion.lean` and `ContentMatrixRealization.lean`
+are drafts awaiting direct checks; general optimality remains open.

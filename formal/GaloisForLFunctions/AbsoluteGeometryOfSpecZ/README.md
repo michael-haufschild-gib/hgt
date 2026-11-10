@@ -1008,7 +1008,18 @@ the necklace coordinate at `𝔡` is the ideal `𝔡`, and the orbit of `𝔡` e
 principal. For a quadratic ring the pairing of the ideals counted by their norms is computed on
 the comb of the integers, with the conductor in the counterterm, and the conductor is forced
 from below; its defect obeys the index law, and for a large conductor the inequality holds on
-the packets shorter than `log 2`. *Open:*
+the packets shorter than `log 2`.
+
+`TheExceptionalSquareRepelsTheOtherSquares.lean` transfers classical
+Deuring–Heilbronn repulsion to the actual twisted-comb squares. A positive
+real zero `β` forces the logarithmic margin
+`m(Im ρ)≤1/2−|Re ρ−1/2|` on every zero except `β` and its reflection.
+Each remaining square is bounded below by
+`−mult(ρ) S(max(0,1/2−m(Im ρ)),a)∫|f|²`, where
+`S(δ,a)=∫[-a,a]sinh²(δu)du`. `exists_twistedComb_square_margin` combines
+these bounds with the proved twisted-comb limit.
+
+*Open:*
 
 - the conductors below `4π` (odd) and `128π` (even) on short packets, and every conductor on a
   packet that meets a contact;

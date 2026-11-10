@@ -134,7 +134,8 @@ theorem zeta_re_le_of_localPrimeTraceMoment_bound {A C : ℝ} {k : ℕ} (hk : 1 
     linarith only [h1, h2]
   have hc2k : |c| ^ (2 * k) ≤ |C| * (p : ℝ) ^ (2 * |A|) := by
     rw [show |c| ^ (2 * k) = c ^ (2 * k) by rw [pow_mul, pow_mul, sq_abs]]
-    calc c ^ (2 * k) ≤ Real.log p * c ^ (2 * k) := by
+    calc
+      c ^ (2 * k) ≤ Real.log p * c ^ (2 * k) := by
         simpa only [one_mul] using mul_le_mul_of_nonneg_right hlog hc0
       _ ≤ C * Real.exp (A * T) := hsingle.trans hmoment
       _ ≤ |C| * (p : ℝ) ^ (2 * |A|) :=
