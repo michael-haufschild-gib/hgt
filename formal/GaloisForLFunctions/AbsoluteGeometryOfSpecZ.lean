@@ -60,6 +60,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.InATowerTheSquareOfTheInteger
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnItsOwnCombTheSystemOfTheSquaresFailsBezout
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -83,6 +84,7 @@ of the inequality; the planar square, a subring of the square with unit masses i
 contact is paid; the squares that satisfy Bézout at an aperture as the window cone; the exact
 Hodge index of the square of a number ring; Riemann–Hurwitz for the counterterm with the
 genus of a degree point; the exchange law between the contacts and the constant of the
-counterterm; and the tree of a prime glued along the comb, whose edge length the inequality
-forces. See `AbsoluteGeometryOfSpecZ/README.md`.
+counterterm; the tree of a prime glued along the comb, whose edge length the inequality
+forces; and the length of the tree of `2` as a monotone deformation of the pairing on packets
+shorter than `log 4`. See `AbsoluteGeometryOfSpecZ/README.md`.
 -/

@@ -28,7 +28,7 @@ open Complex
 
 namespace GaloisForLFunctions.FamilyContinuationTheory
 
-open RHTower
+open _root_.RHTower
 
 /-- The zeta kernel with Gaussian centre `c`: `exp((s − c)²) / ((s − 1) ζ(s))`. -/
 def zetaKernel (c : ℝ) (s : ℂ) : ℂ := cexp ((s - c) ^ 2) / zetaEntire s

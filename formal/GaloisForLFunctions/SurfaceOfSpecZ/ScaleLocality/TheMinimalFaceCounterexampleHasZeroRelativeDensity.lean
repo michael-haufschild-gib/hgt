@@ -19,9 +19,10 @@ theorem sum_faceBaseFreq_le (γ_min C Θ : ℝ) (K : ℕ) :
     ∑ k ∈ range (K + 1), faceBaseFreq γ_min C Θ k ≤
       2 * faceBaseFreq γ_min C Θ K := by
   induction K with
-  | zero => simp only [sum_range_one]; omega
+  | zero =>
+    simpa using Nat.le_mul_of_pos_left (faceBaseFreq γ_min C Θ 0) (by omega : 0 < 2)
   | succ K ih =>
-    rw [sum_range_succ]
+    rw [Finset.sum_range_succ]
     have h := two_mul_faceBaseFreq_add_four_le_succ γ_min C Θ K
     omega
 
@@ -36,8 +37,9 @@ theorem faceHarmonics_card_bound (γ_min C Θ : ℝ) (k : ℕ) :
       4 * (k + 1) * faceBaseFreq γ_min C Θ k =
       4 * (k + 1) * faceBaseFreq γ_min C Θ k + 1 := by omega
   rw [he]
-  have hm : 1 ≤ 4 * (k + 1) * faceBaseFreq γ_min C Θ k := by positivity
-  omega
+  have hΓpos : 0 < faceBaseFreq γ_min C Θ k := by omega
+  have hm : 0 < 4 * (k + 1) * faceBaseFreq γ_min C Θ k := by positivity
+  nlinarith only [hm]
 
 /-- Counting every point in the active levels bounds any ordinate prefix. -/
 theorem minimalFace_count_le_levels (γ_min C : ℝ) {Θ : ℝ}
@@ -68,7 +70,7 @@ theorem minimalFace_count_le_levels (γ_min C : ℝ) {Θ : ℝ}
       _ ≤ _ := faceHarmonics_card_bound γ_min C Θ k
   calc Z.N 0 T = hfin.toFinset.card := by
         rw [ZeroConfig.N, ZeroConfig.window, finsum_mem_eq_finite_toFinset_sum _ hfin]
-        simp only [Z, minimalFaceCounterConfig, sum_const, nsmul_eq_mul, mul_one]
+        simp only [Z, minimalFaceCounterConfig, sum_const, nsmul_eq_mul, mul_one, Nat.cast_id]
     _ ≤ F.card := card_le_card hsub
     _ ≤ ∑ k ∈ range (K + 1), (S k).card := card_biUnion_le
     _ ≤ ∑ k ∈ range (K + 1), 32 * (k + 1) * faceBaseFreq γ_min C Θ k :=
@@ -76,7 +78,8 @@ theorem minimalFace_count_le_levels (γ_min C : ℝ) {Θ : ℝ}
     _ ≤ ∑ k ∈ range (K + 1), 32 * (K + 1) * faceBaseFreq γ_min C Θ k := by
       apply sum_le_sum
       intro k hk
-      exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 32 (by omega))
+      exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 32
+        (Nat.succ_le_succ (Nat.le_of_lt_succ (Finset.mem_range.mp hk))))
     _ = 32 * (K + 1) * ∑ k ∈ range (K + 1), faceBaseFreq γ_min C Θ k :=
       (mul_sum _ _ _).symm
     _ ≤ 32 * (K + 1) * (2 * faceBaseFreq γ_min C Θ K) :=

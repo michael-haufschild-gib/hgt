@@ -35,6 +35,9 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 |---|---|
 | `FamilyContinuationTheory/TwistedColumnsCorrelateThroughOneResidue` | `sum_column_mul_conj_column_of_coprime`: the correlation of two additive columns of coprime moduli is one term; `sum_weight_mul_column_mul_conj_column`: the weighted second moment is a multiplicative form in the frequency; `sum_exceptional_correlation`: no cancellation among the frequencies on which both characters are `1` |
 | `FamilyContinuationTheory/ContinuationFromACommonSignal` | `exists_differentiableOn_eq_of_signal_le`: a kernel whose signal is `O(Z^b)` extends to `Re s>b`; `ne_zero_of_signal_le`; `ne_zero_of_common_signal`: a direct bound `Z^{a₁}` and a comparison `Z^{a₂}` with the signal give the half-plane `Re s>max a₁ a₂`; `le_of_improving_bounds` and `ne_zero_of_family_common_signal`: the supremum step and the family form (Proposition 2.1 of the external source as a native theorem) |
+| `FamilyContinuationTheory/TheTwoLegsGiveTheRiemannHypothesis` | `isSignalKernel_zetaKernel`: `exp((s−c)²)/((s−1)ζ(s))` is a signal kernel; `riemannZeta_ne_zero_of_signal_le`, `xiZeroHalfPlaneBound_of_signal_le`, `xiZeroHalfPlaneBound_of_common_signal`: leg A for `ζ` ends in the corpus predicate `XiZeroHalfPlaneBound`; `riemannHypothesis_of_signal_le_of_jasDressedPSD_one`: a signal bound with exponent in `[½,1)` and `JasDressedPSD 1` give RH |
+
+**The two open inputs as Lean propositions.** (A) `∃ c b K Z₀, ½ ≤ b ∧ b < 1 ∧ 0 < Z₀ ∧ ∀ Z ≥ Z₀, ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b`; (B) `JasDressedPSD 1`. The external theorem supplies (A) with every `b > 7/8`.
 
 ## Stage notes
 
@@ -52,4 +55,4 @@ probe `I_η = Σ_m B_m A_m`, `B_m` the completed cubic theta row twisted by `η 
 - [ ] 2 → 3  formalized
 
 ## Log
-- 2026-11-10 — created; C1–C5 analysed against the cached text (§5.1, §6.1, §12, §15.2); two modules compiled (single-file check, no output) and wired through `FamilyContinuationTheory` into `MainTheorems`.
+- 2026-11-10 — created; C1–C5 analysed against the cached text (§5.1, §6.1, §12, §15.2); three modules compiled (single-file check, no output) and wired through `FamilyContinuationTheory` into `MainTheorems`.

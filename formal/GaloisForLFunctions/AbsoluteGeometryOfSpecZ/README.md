@@ -1,7 +1,7 @@
 # Absolute Geometry of Spec ℤ (AGZ)
 
 Namespace `GaloisForLFunctions.AbsoluteGeometryOfSpecZ`; umbrella `AbsoluteGeometryOfSpecZ.lean`;
-64 modules. Specification: §9 of
+65 modules. Specification: §9 of
 [the review-1011 report](../../../docs/reports/review-1011/fable.md), which continues §2.14 of
 [the review-1011 summary](../../../docs/reports/review-1011/obstacles-summary.md) and §9 of
 [the review-0911 report](../../../docs/reports/review-0911/fable.md); card
@@ -119,8 +119,10 @@ inequality beyond the bounded lengths above.
 **The aim.** Not a definition of `𝔽₁`: a geometry in which `Spec ℤ` has a product with itself
 and the inequality of Castelnuovo and Severi on that product is a theorem. What is missing is
 one property of the square that is an inequality: a positive class whose positivity is not the
-statement to be proved. Every structure found so far is an identity (the product formula, the
-complementary carry, the payment of the contacts) or a receiver.
+statement to be proved. The structures of the object are identities (the product formula, the
+complementary carry, the payment of the contacts) or receivers, with one exception of bounded
+range: the generator of the length of the tree of `2` is a positive form on the packets shorter
+than `log 4` (construction I, Q26).
 
 **What `Spec ℤ` over `𝔽₁` is like.** Each clause is a reading of theorems of §5–§8.
 
@@ -205,6 +207,7 @@ complementary carry, the payment of the contacts) or a receiver.
 | A pair of contacts and a constant | `CombBezoutWith`, `pairForm`, `contactAt` | the contacts `Λ + δ` with the counterterm `log(n/2π) + c`; the functional `Re W_{Λ+δ}(f ⋆ f̃) + c ∫f²`; the deviation `t` at one integer `n₀`. The symbol of `δ` is the corpus `RHTower.perturbationSymbol`: `P_δ(τ) = Σ_{n ≥ 2} 2 δ(n) n^{-1/2} cos(τ log n)` |
 | Sums over multiples; the Busemann function of a tree | `degreeTerm`, `busemannMass` | `G(log(n/N))/n`; `Σ_{N < n ≤ (1+L)N} v_p(n) f_n²/n`, the valuation at `p` against the masses of a packet |
 | A tree with another edge length | `treeDeviation`, `TreeBezout` | the weight `t` on the positive powers of `p`; Bézout with the contacts `ℓ` along the chains of `p` and the counterterm `log(n/2π) − (log p − ℓ) v_p(n)` |
+| The generator of the length of a tree; Bézout at a length | `treeGenerator`, `TreeBezoutAt` | `E_p(f) = ∫f²/(p − 1) − (2/√p)·h_f(log p)`, the derivative of the functional of the glued tree in its length on packets of length at most `2 log p`; the inequality for the tree of `p` of length `ℓ` on the packets of length at most `L` |
 
 ## 3. Language
 
@@ -254,6 +257,9 @@ complementary carry, the payment of the contacts) or a receiver.
 - **Busemann function** of the tree of `p` along the comb: the depth `v_p(n)` times the edge
   length. **Edge length** of a glued tree: the weight of its contacts along a chain; `log p`
   on the square.
+- **Generator** of the length of a tree: the derivative of the functional of the glued tree
+  in its edge length. **Threshold length** `ℓ*(L)` of the tree of `2`: the least edge length
+  with Bézout on the packets of length `L ≤ log 4`.
 
 ## 4. Mechanisms
 
@@ -435,6 +441,17 @@ complementary carry, the payment of the contacts) or a receiver.
     bounded Lipschitz function this is `O(q/N)`. With `v_p(n) = Σ_k [p^k ∣ n]` and the
     domination of level `k` by `p^{−k}`, the valuation has the mean `1/(p − 1)` against the
     masses of a packet.
+49. **The two halves of a packet.** At a displacement `y` of at least half the length of a
+    packet the two factors of the autocorrelation live on disjoint halves, so
+    `2|h_f(y)| ≤ ∫f²`. For the first point of a chain of `p` this bounds the contact by
+    `∫f²/√p`, against the mean `∫f²/(p − 1)` of the Busemann function: the difference is
+    positive for `p = 2` only.
+50. **An affine family with a positive generator.** A family `Z + t·E` with `E ≥ κ·mass`,
+    `κ > 0`, and `Z ≥ −C·mass` is nonnegative for large `t`, negative for small `t`, and
+    monotone in between: its locus of positivity is a closed half-line, and its end point is
+    the only parameter where the form degenerates. The lower bound of `Z` on packets of a
+    given length needs no hypothesis: the archimedean symbol is bounded below, the contacts
+    and the pole term are bounded by the mass (Cauchy–Schwarz against a cutoff).
 
 ## 5. The founding questions
 
@@ -699,9 +716,22 @@ that is an inequality, and each has a kill condition.
 - *State.* Met for the three operators tested in the corpus: the dilation, the overlap flow and
   the coupling Laplacian (corpus: `HodgeTheoryWithoutVarieties`,
   `riemannHypothesis_iff_liouville_along_the_overlap_flow`,
-  `frequently_exists_primitive_zero_mode_of_not_rh`). Other operators are untested; the first
-  place to test one is the first selective window, of ratio between `2` and `3`, where one
-  contact enters.
+  `frequently_exists_primitive_zero_mode_of_not_rh`). A fourth operator is tested here on the
+  first selective windows: the edge length of the tree of `2`. On packets of length
+  `L ≤ log 4` the functional of the glued tree is `Z(f) + (ℓ − log 2)·E₂(f)` with the generator
+  `E₂(f) = ∫f² − √2·h_f(log 2) ≥ (1 − 1/√2) ∫f²` (`pairForm_treeDeviation_eq`,
+  `treeGenerator_two_ge`). So a longer tree has a larger functional
+  (`treeBezoutAt_two_mono`); all long trees satisfy Bézout there without hypothesis, the base
+  point (`exists_treeBezoutAt_two`); all short ones fail (`exists_not_treeBezoutAt_two`); and
+  Bézout holds exactly from a threshold length `ℓ*(L)` on, the one point of degeneration
+  (`exists_treeThreshold_two`). Bézout for the square on packets of length `L` is the
+  statement `ℓ*(L) ≤ log 2`; for `L ≤ 181/250` the threshold is at most `log 2 − 1/10000`
+  (`treeBezoutAt_two_of_width`). The transport is not the Riemann hypothesis: it is a
+  statement at one length. It does not continue: beyond the length `log 4` the generator is
+  indefinite, and on all packets the only length that is not refuted is `log 2`
+  (`treeBezout_iff`); for an odd prime the generator is negative on a pair of bumps at the
+  distance `log p`, and every long tree fails (`exists_packet_treeGenerator_neg`,
+  `exists_not_treeBezoutAt_of_three_le`). Other operators are untested.
 
 **II. The archimedean fibre as a boundary.**
 
@@ -1184,6 +1214,37 @@ glued form is the pairing of the degree points, and the inequality reads each ed
 the jets, as it reads the contact orders and the constant `2π`. The gluing is an identity, the
 product formula; it carries no sign.
 
+**Q26. A deformation with a positive generator.** *Construction I on the first selective
+windows: is there an operator, outside the dilation, the overlap flow and the coupling
+Laplacian, with a base point where the inequality holds without hypothesis and a transport that
+is not the Riemann hypothesis?*
+
+- The edge length `ℓ` of the tree of `p` (Q25) is a parameter of the pairing. On packets of
+  length at most `2 log p` only the first point of each chain is seen, and the functional is
+  affine: `Z(f) + (ℓ − log p)·E_p(f)`, `E_p(f) = ∫f²/(p − 1) − (2/√p)·h_f(log p)`
+  (`pairForm_treeDeviation_eq`).
+- At a displacement of at least half its length the autocorrelation of a packet is at most half
+  its mass (`two_mul_abs_packetAutocorr_le_of_length`), so
+  `E_p ≥ (1/(p − 1) − 1/√p) ∫f²` (`treeGenerator_ge`). The constant is positive for `p = 2`:
+  `E₂ ≥ (1 − 1/√2) ∫f²` on packets of length at most `log 4` (`treeGenerator_two_ge`).
+- For the prime `2` and `0 < L ≤ log 4`: the inequality is monotone in the length
+  (`treeBezoutAt_two_mono`); it holds for all long trees without hypothesis
+  (`exists_treeBezoutAt_two`, from the lower bound `exists_zeroSum_ge_of_length`), fails for
+  all short ones (`exists_not_treeBezoutAt_two`), and holds exactly from a threshold `ℓ*(L)` on
+  (`exists_treeThreshold_two`). For `L ≤ 181/250`, `ℓ*(L) ≤ log 2 − 1/10000`
+  (`treeBezoutAt_two_of_width`).
+- For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and on
+  packets of any length above `log p` every long tree fails (`exists_packet_treeGenerator_neg`,
+  `exists_not_treeBezoutAt_of_three_le`).
+
+So the answer is: yes, on packets shorter than `log 4`, and nowhere else in this family. The
+length of the tree of `2` is a deformation of the pairing whose generator is a positive form,
+with a base point that needs no hypothesis and one point of degeneration; Bézout for the square
+at such a length is the statement that this point is at most `log 2`. The positivity of the
+generator is a property of the object: the mean of the Busemann function of the tree of `2`
+exceeds its first contact. It ends where the second point `4` of a chain is seen, and it has no
+analogue at an odd prime.
+
 ## 9. Order of work and the decisive test
 
 | Stage | Content | State |
@@ -1193,7 +1254,7 @@ product formula; it carries no sign.
 | Number rings, finite scale, payment | The squares of abelian rings with genus, ramification and exact index; the lattice at finite scale and the comb of a curve (continuation); the planar square | Lean: §6 F, G, H; §8.2 Q17, Q20, Q22 |
 | Next, step 1 | Close construction IV as a theorem; construction III | Lean: both kill conditions are met |
 | Next, step 2 | Construction II for gluings along the comb of the integers that are not invariant; construction V for one integer-norm system | Lean: II for trees glued with an edge length (`treeBezout_iff`) and for pairs of contacts and constants (`combBezoutWith_iff`); V for the system of the squares (`exists_packet_squarePairing_gt`). Open: combs without a density |
-| Next, step 3 | Construction I with one operator outside the three tested ones, on the first selective window | open |
+| Next, step 3 | Construction I with one operator outside the three tested ones, on the first selective window | Lean: the edge length of the tree of `2` on packets shorter than `log 4` (`treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two`); no continuation beyond `log 4` or to an odd prime. Other operators: open |
 | Next, step 4 | Hecke characters and one ring that is not abelian (question 7) | open: needs explicit formulas that are not in the corpus |
 | The inequality | Bézout for all packets (question 1); the exceptional square (Q21) | open: the Riemann hypothesis; the Landau–Siegel problem |
 
@@ -1300,6 +1361,9 @@ from the supremum of their symbol on (`combBezoutWith_iff`).
 | Bézout with the contacts `Λ + δ` and the counterterm `log(n/2π) + c` holds iff the Riemann hypothesis holds and the symbol of `δ` is at most `c`; where the symbol exceeds `c` it fails on a packet of degree zero | `combBezoutWith_iff`, `exists_packet_pairForm_neg`, `two_pi_mul_pairForm_eq` |
 | The constant is nonnegative and at `2π` the contacts are rigid; one contact changed by `t` at `n₀` costs `2|t|/√n₀` | `nonneg_of_combBezoutWith`, `combBezoutWith_zero_right_iff`, `combBezoutWith_contactAt_iff` |
 | The valuation at `p` has the mean `1/(p − 1)` against a packet; a tree glued along the comb with the edge length `ℓ` satisfies Bézout iff the Riemann hypothesis holds and `ℓ = log p` | `tendsto_degreeSum_multiples`, `tendsto_busemannMass`, `tendsto_treePairing`, `treeBezout_iff` |
+| On packets of length at most `log 4` the generator of the length of the tree of `2` is at least `(1 − 1/√2)` times the mass; Bézout is monotone in the length, holds for long trees without hypothesis and exactly from a threshold on | `treeGenerator_two_ge`, `treeBezoutAt_two_mono`, `exists_treeBezoutAt_two`, `exists_treeThreshold_two`, `treeBezoutAt_two_of_width` |
+| For an odd prime the generator is negative on a pair of bumps at the distance `log p`, and long trees fail | `exists_packet_treeGenerator_neg`, `exists_not_treeBezoutAt_of_three_le` |
+| On packets of a given length the sum over the zeros is at least a negative multiple of the mass | `exists_zeroSum_ge_of_length` |
 
 All are unconditional.
 
@@ -1358,6 +1422,7 @@ All are unconditional.
 | Rings given by their characters; sequences of rings and their defects per degree; the cyclotomic ring beyond a window | `InATowerTheSquareOfTheIntegersHasWeightOneOverTheDegree` |
 | Pairs of contacts and constants; the functional of a pair as the energy of `c −` symbol; radical tests concentrated where the symbol exceeds the constant; the symbol of one contact | `TheCountertermPaysForTheContactsAtTheSupremumOfTheirSymbol` |
 | Sums in blocks of length `q`; sums over the multiples of an integer in a window; the valuation as a sum over the levels `p^k`; the mean of the Busemann function; trees with an edge length | `TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP` |
+| The autocorrelation at half the length of a packet; the generator of the length of a tree; Cauchy–Schwarz against a cutoff; the lower bound of the zero sum on packets of a given length; affine families with a positive generator and their threshold | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
 | The twisted zero sum against windows of `L(s, χ)`; the sign-blind bound of the contacts and its sharpening at `e^a`; real zeros as hyperbolic squares; repulsion on the twisted comb | `TheTrivialApertureAndTheExceptionalSquare`, `AUniformConstantForTheTrivialConductorAperture`, `TheExceptionalSquareRepelsTheOtherSquares` |
 
 ## 12. Traps
@@ -1431,6 +1496,8 @@ All are unconditional.
 | The sizes of the contacts can pass the trivial aperture | the systems `Λ`, `−Λ` and the Liouville twist with the conductor `q` fail at every aperture `≥ log log q + η` (corpus) |
 | A wrong contact is refuted whatever the constant | with the counterterm `log(n/2π) + c` it passes, under the Riemann hypothesis, exactly when `c` is at least the supremum of its symbol: `2|t|/√n₀` for one contact changed by `t` |
 | The trees can be glued with other edge lengths if the counterterm follows by the product formula | the counterterm then moves by the mean `(ℓ − log p)/(p − 1)` of the Busemann function; this is below the supremum of the symbol of the contacts for `ℓ > log p` and negative for `ℓ < log p`, and Bézout fails in both cases |
+| A deformation with a positive generator and a base point proves the inequality | it gives a threshold: for the length of the tree of `2` on packets shorter than `log 4` the inequality is `ℓ*(L) ≤ log 2`, a statement at one length, proved for `L ≤ 181/250` from the corpus certificate |
+| The length of a tree is a monotone parameter | only for `p = 2` and only while the square `4` is not seen: for an odd prime the first contact `∫f²/√p` exceeds the mean `∫f²/(p − 1)` of the Busemann function, and on all packets only `log p` passes |
 
 ## 13. Open research topics
 
@@ -1588,10 +1655,14 @@ it would exclude real zeros near `1`.
 *Construction I.* An operator on the real divisors of a window with the Hodge–Riemann
 relations at a base point, whose hard Lefschetz property is not the Riemann hypothesis.
 *Proved:* for the dilation, the overlap flow and the coupling Laplacian hard Lefschetz at the
-top coprime stratum is the Riemann hypothesis (corpus). *Open:* an operator outside these
-three. The test is the first selective window, of ratio between `2` and `3`: there one contact
-enters, Bézout holds for the square of the integers up to the aperture `181/500` and fails
-with the contact reversed, so an operator can be checked against both.
+top coprime stratum is the Riemann hypothesis (corpus). The edge length of the tree of `2` is
+a deformation with a positive generator on packets shorter than `log 4`: a base point without
+hypothesis, monotone transport and one threshold `ℓ*(L)`, with `ℓ*(L) ≤ log 2 − 1/10000` for
+`L ≤ 181/250` (Q26). *Open:* the value of `ℓ*(L)` for `181/250 < L ≤ log 4`, where
+`ℓ*(L) ≤ log 2` is Bézout at the length `L`; a deformation whose generator stays positive when
+the second point of a chain is seen; an operator that moves the archimedean fibre. A decision
+for the first would be a bound of the Rayleigh quotient `inf Z(f)/E₂(f)` from below without a
+certificate.
 
 *Construction II.* The jets are the Newtonian interaction of charges at the points `±n` of an
 axis, and the contacts of a prime are chain squares minus the diagonal (corpus). *Proved:* a
@@ -1663,8 +1734,10 @@ measured on the constructions of the next stage (§6) and on the nine questions 
 - Construction V is decided on the comb of squares: the own comb gives the comb of the
   integers with the contacts of the system. Construction II is decided for the trees glued
   along the comb with an edge length: the gluing is the pairing itself and has no modulus.
-  Constructions I and VI are open; each has a kill condition that a contribution may meet
-  instead of the deliverable.
+  Construction I has one candidate that is not killed on short windows: the length of the tree
+  of `2`, with a positive generator and a threshold on packets shorter than `log 4`; it does
+  not continue beyond. Construction VI is open; each has a kill condition that a contribution
+  may meet instead of the deliverable.
 - Question 1, Bézout for all packets, is the Riemann hypothesis, and the sign of the twisted
   part beyond the trivial aperture is the Landau–Siegel problem. Nothing in this folder proves
   either or claims to.
