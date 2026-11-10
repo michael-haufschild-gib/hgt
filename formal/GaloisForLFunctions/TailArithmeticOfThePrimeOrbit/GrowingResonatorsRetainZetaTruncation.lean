@@ -185,8 +185,4 @@ theorem exists_growing_resonator_truncation {σ κ : ℝ}
   rw [Real.rpow_sub (zero_lt_one.trans_le hT), Real.rpow_one]
   ring
 
-#print axioms exists_growing_resonator_exponents
-#print axioms tendsto_weighted_zetaTruncationErrorScale
-#print axioms exists_growing_resonator_truncation
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

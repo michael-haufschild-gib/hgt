@@ -90,14 +90,16 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `IncreasingPrefixCosts` | Actual increasing compositions satisfy the geometric residue-prefix cost and the retained-to-last exponent gap; equal outside prefix counts give equal values |
 | `CarryWeightComparison` | The actual singleton carry modification strictly increases weight, by cancellation of unchanged prefixes and the two geometric bounds |
 | `GreedyOptimality` | For every `p≥2`, positive residue degree and composition length, greedy compositions are exactly the weight maxima; maximizing numerical part values are unique |
+| `PrefixCostGrowth` | Consecutive greedy prefix costs more than double and have strict successive slopes; the greedy cost of a divisible total is below that total |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
 General greedy optimality is formalized and audited; see
 `../3-formalized/greedy-carry-free-compositions-are-uniquely-optimal.md`.
-The actual Goss coefficients, strict Newton slopes, and entire-series
-argument remain. The target includes every prime power and every `p`-adic parameter.
+The actual Goss coefficient valuations, their identification with the proved
+strict combinatorial slopes, and the entire-series argument remain. The target
+includes every prime power and every `p`-adic parameter.
 
 ## Combinatorial mechanism
 
@@ -242,6 +244,10 @@ divisible prefix gives `v(C)<2P(C)`. For consecutive greedy compositions
 `C` and the half-total bound on `D`'s initial composition give
 `2P(C)<P(D)`. Optimality of `C` against that merge gives
 `v(D)−v(C)≥P(D)`. Hence `v(D)>2v(C)`, which implies strict successive
-slopes since all prefix costs are nonnegative. This argument concerns
-positive-part compositions; identifying the actual coefficient valuations
-and handling the zero-final-remainder endpoint remain necessary.
+slopes since all prefix costs are nonnegative. For divisible total `N`,
+the half-total bound also gives `v(C)<N`; the zero-remainder endpoint's
+increment `N` is therefore strictly larger than the preceding slope.
+
+`PrefixCostGrowth` formalizes the doubling, strict-convexity, and
+divisible-total inequalities. Its direct check and three endpoint axiom
+audits pass. Identifying them with the actual coefficient valuations remains.

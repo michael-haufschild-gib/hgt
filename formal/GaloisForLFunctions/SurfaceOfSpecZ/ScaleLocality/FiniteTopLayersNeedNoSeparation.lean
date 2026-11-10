@@ -34,8 +34,7 @@ theorem topTrace_eq_positive_sum {Z : ZeroConfig} {b : ℝ} (S : Finset ℂ)
   have hc (z : ℂ) : topTerm Z b (conj z) u = conj (topTerm Z b z u) := by
     simp only [topTerm, Complex.conj_re]
     split_ifs
-    · rw [evenCoeff_conj, Complex.conj_im, map_mul, conj_bohrExp]
-      simp only [bohrExp, neg_neg]
+    · simp only [evenCoeff_conj, Complex.conj_im, map_mul, conj_bohrExp]
     · simp only [map_zero]
   have hd : Disjoint S (S.image conj) := by
     apply Finset.disjoint_left.mpr

@@ -123,7 +123,4 @@ theorem summable_weighted_truncResonatorCoeff_sq_and_bound {ε σ : ℝ} (hε : 
         (by linarith only [hε, hσ1]) (by linarith only [hεσ]) N
       simpa only [show 1 + (1 + ε - 2 * σ) = 2 + ε - 2 * σ by ring] using h
 
-#print axioms weighted_truncResonatorCoeff_sq_le
-#print axioms summable_weighted_truncResonatorCoeff_sq_and_bound
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

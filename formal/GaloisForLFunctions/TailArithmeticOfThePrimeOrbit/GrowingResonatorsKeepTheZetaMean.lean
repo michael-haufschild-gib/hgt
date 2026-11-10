@@ -135,6 +135,4 @@ theorem eventually_resonatorMean_zeta_uniform {σ κ : ℝ}
     nlinarith only [htri, htri', hhead, hdiag, htransfer]
   exact htotal.trans (mul_le_mul_of_nonneg_right hFT.le hE)
 
-#print axioms eventually_resonatorMean_zeta_uniform
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

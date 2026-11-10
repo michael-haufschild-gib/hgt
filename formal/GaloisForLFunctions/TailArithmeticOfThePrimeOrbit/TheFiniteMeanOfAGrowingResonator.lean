@@ -103,7 +103,4 @@ theorem abs_resonatorMean_head_sub_diagonal_le_power {ε σ : ℝ} (hε : 0 < ε
         (mul_le_mul_of_nonneg_left hw (Sieve.divisorBoundConst_pos hε).le) hp)
     _ = _ := by ring
 
-#print axioms abs_resonatorMean_head_sub_diagonal_le
-#print axioms abs_resonatorMean_head_sub_diagonal_le_power
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

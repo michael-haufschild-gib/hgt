@@ -220,8 +220,8 @@ theorem two_cosh_half_log_div_sqrt {n : ℕ} (hn : 0 < n) :
 /-- **The difference of the contact forms of the two polar packets is the Riesz mean of the
 contacts**, up to the margin of the cutoff:
 `|T_E − T_O − Σ w(n)(2a − log n)| ≤ 4δ Σ Λ(n) + 2a Σ Λ(n)/n`. -/
-theorem abs_contactForm_evenPolar_sub_oddPolar_sub_riesz_le {a δ : ℝ} (ha : 0 ≤ a)
-    (hδ : 0 < δ) {w : ℕ → ℝ} (hw : Dominated w) :
+theorem abs_contactForm_evenPolar_sub_oddPolar_sub_riesz_le {a δ : ℝ} (hδ : 0 < δ)
+    {w : ℕ → ℝ} (hw : Dominated w) :
     |contactForm w (fun u => (evenPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ -
         contactForm w (fun u => (oddPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ -
         ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| ≤
@@ -331,6 +331,108 @@ theorem abs_contactForm_evenPolar_add_oddPolar_le {a δ : ℝ} (ha : 0 ≤ a) (h
 
 /-! ### The sign gives the saving -/
 
+/-- **The budget of a polar packet.** A packet of mass `≤ a + sinh a` and derivative energy
+`≤ (½ + 2S/δ)² (a + sinh a)`, `δ = e^{−a}`, on which the form of `(w, q)` is nonnegative, has
+contact form at most `(log q + a + 6 + (½ + 2S)²) · (3/2) e^{a}`. -/
+theorem contactForm_le_of_systemForm_nonneg {S q a : ℝ} (hS0 : 0 ≤ S)
+    (hx : 0 ≤ Real.log q) (ha : 1 ≤ a) {f : ℝ → ℝ} (hf : ContDiff ℝ 3 f)
+    (h0 : ∀ u, a ≤ |u| → f u = 0) (hM : ∫ u, f u ^ 2 ≤ a + Real.sinh a)
+    (hD : ∫ u, deriv f u ^ 2 ≤ (1 / 2 + 2 * S / Real.exp (-a)) ^ 2 * (a + Real.sinh a))
+    (w : ℕ → ℝ) (hpos : 0 ≤ systemForm w q a (fun u => (f u : ℂ))) :
+    contactForm w (fun u => (f u : ℂ)) ⌊Real.exp (2 * a)⌋₊ ≤
+      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * Real.exp a) := by
+  have ha0 : 0 ≤ a := by linarith
+  obtain ⟨δ, hδdef⟩ : ∃ δ : ℝ, δ = Real.exp (-a) := ⟨_, rfl⟩
+  rw [← hδdef] at hD
+  have hδ : 0 < δ := by rw [hδdef]; exact Real.exp_pos _
+  have hδ1 : δ ≤ 1 := by rw [hδdef]; exact Real.exp_le_one_iff.mpr (by linarith)
+  obtain ⟨E, hEdef⟩ : ∃ E : ℝ, E = Real.exp a := ⟨_, rfl⟩
+  rw [← hEdef]
+  have hE0 : 0 < E := by rw [hEdef]; exact Real.exp_pos _
+  have haE : a ≤ E := by rw [hEdef]; linarith [Real.add_one_le_exp a]
+  have hδE : δ * E = 1 := by
+    rw [hδdef, hEdef, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  have hsinh : Real.sinh a ≤ E / 2 := by
+    rw [Real.sinh_eq, ← hEdef]
+    linarith [Real.exp_pos (-a)]
+  have hsinh0 : 0 ≤ Real.sinh a := Real.sinh_nonneg_iff.mpr ha0
+  obtain ⟨Mb, hMb⟩ : ∃ Mb : ℝ, Mb = a + Real.sinh a := ⟨_, rfl⟩
+  rw [← hMb] at hM hD
+  have hMb0 : 0 ≤ Mb := by rw [hMb]; linarith
+  have hMbE : Mb ≤ 3 / 2 * E := by rw [hMb]; linarith
+  have hM0 : 0 ≤ ∫ u, f u ^ 2 := integral_nonneg fun _ => sq_nonneg _
+  -- the derivative energy at the scale of the margin
+  have hKδ : δ ^ 2 * ((1 / 2 + 2 * S / δ) ^ 2 * Mb) ≤ (1 / 2 + 2 * S) ^ 2 * Mb := by
+    have e : δ ^ 2 * ((1 / 2 + 2 * S / δ) ^ 2 * Mb) = (δ / 2 + 2 * S) ^ 2 * Mb := by
+      field_simp
+    rw [e]
+    exact mul_le_mul_of_nonneg_right
+      (pow_le_pow_left₀ (by positivity) (by linarith) 2) hMb0
+  have hlogδ : Real.log (1 + 1 / δ) ≤ a + 1 := by
+    have h1 : 1 / δ = E := by
+      rw [eq_comm, eq_div_iff hδ.ne', mul_comm]
+      exact hδE
+    have he : 2 ≤ Real.exp 1 := by linarith [Real.add_one_le_exp (1 : ℝ)]
+    have h2 := mul_le_mul_of_nonneg_left he hE0.le
+    rw [h1]
+    calc Real.log (1 + E) ≤ Real.log (Real.exp (a + 1)) := by
+          refine Real.log_le_log (by linarith) ?_
+          rw [Real.exp_add, ← hEdef]
+          linarith
+      _ = a + 1 := Real.log_exp _
+  have hlogδ0 : 0 ≤ Real.log (1 + 1 / δ) := Real.log_nonneg (by
+    have : 0 ≤ 1 / δ := by positivity
+    linarith)
+  have h := systemForm_le_of_packet_scaled hδ hf h0 w q
+  have h1 : (Real.log (1 + 1 / δ) + 5 + Real.log q) * (∫ u, f u ^ 2) ≤
+      (Real.log q + a + 6) * Mb :=
+    calc (Real.log (1 + 1 / δ) + 5 + Real.log q) * (∫ u, f u ^ 2)
+        ≤ (Real.log (1 + 1 / δ) + 5 + Real.log q) * Mb :=
+          mul_le_mul_of_nonneg_left hM (by linarith)
+      _ ≤ (Real.log q + a + 6) * Mb := mul_le_mul_of_nonneg_right (by linarith) hMb0
+  have h2 : δ ^ 2 * (∫ u, deriv f u ^ 2) ≤ (1 / 2 + 2 * S) ^ 2 * Mb :=
+    (mul_le_mul_of_nonneg_left hD (sq_nonneg δ)).trans hKδ
+  have h3 : (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * Mb ≤
+      (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * E) :=
+    mul_le_mul_of_nonneg_left hMbE (by positivity)
+  linarith
+
+/-- The arithmetic of the last step. -/
+theorem riesz_bound_algebra {x a E cS L TE TO R B : ℝ} (ha : 1 ≤ a) (hE : 1 ≤ E)
+    (hcS : 0 ≤ cS) (hL : 0 ≤ L) (hB : B = (x + a + 6 + cS) * (3 / 2 * E)) (hTE : TE ≤ B)
+    (hTO : TO ≤ B) (hS1 : |TE + TO| ≤ 4 * a * E * (2 + 2 * a) ^ 2)
+    (hD1 : |TE - TO - R| ≤ 4 * L * E + 2 * a * (2 + 2 * a) ^ 2) :
+    |R| ≤ (3 * x + (3 * (7 + cS) + 24 + 4 * L) * (1 + a) ^ 3) * E := by
+  have hE0 : 0 ≤ E := by linarith
+  have h1 := abs_le.mp hS1
+  have h2 := abs_le.mp hD1
+  have hRle : |R| ≤ 2 * B + 4 * a * E * (2 + 2 * a) ^ 2 +
+      (4 * L * E + 2 * a * (2 + 2 * a) ^ 2) := by
+    rw [abs_le]
+    constructor <;> linarith
+  have hs1 : (1 : ℝ) ≤ (1 + a) ^ 3 := one_le_pow₀ (by linarith)
+  have hs2 : a * (1 + a) ^ 2 ≤ (1 + a) ^ 3 := by
+    have e : (1 + a) ^ 3 = (1 + a) * (1 + a) ^ 2 := by ring
+    rw [e]
+    exact mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg _)
+  have hs3 : a ≤ (1 + a) ^ 3 :=
+    (by linarith : a ≤ 1 + a).trans (le_self_pow₀ (by linarith) (by norm_num))
+  have hP0 : 0 ≤ (1 + a) ^ 3 := by linarith
+  have t1 : 3 * (a + 6 + cS) ≤ 3 * (7 + cS) * (1 + a) ^ 3 := by
+    linarith [mul_nonneg hcS (sub_nonneg.mpr hs1)]
+  have t2 : 8 * (a * (1 + a) ^ 2) ≤ 8 * ((1 + a) ^ 3 * E) := by
+    linarith [mul_le_mul_of_nonneg_left hE hP0]
+  have t3 : 4 * L ≤ 4 * L * (1 + a) ^ 3 := by
+    linarith [mul_nonneg hL (sub_nonneg.mpr hs1)]
+  have p1 := mul_le_mul_of_nonneg_right t1 hE0
+  have p2 := mul_le_mul_of_nonneg_right hs2 hE0
+  have p3 := mul_le_mul_of_nonneg_right t3 hE0
+  refine hRle.trans ?_
+  rw [hB]
+  have e1 : (2 + 2 * a) ^ 2 = 4 * (1 + a) ^ 2 := by ring
+  rw [e1]
+  linarith
+
 /-- **The sign on the two polar packets is square-root cancellation of the Riesz mean.** There
 is an absolute constant `C` such that for every dominated system `w`, every conductor with
 `log q ≥ 0` and every aperture `a ≥ 1`: if the form of `(w, q)` is nonnegative on the even and
@@ -346,156 +448,49 @@ theorem exists_riesz_le_of_polar_nonneg :
   refine ⟨3 * (7 + (1 / 2 + 2 * S) ^ 2) + 24 + 4 * (Real.log 4 + 4),
     fun {q a} hx ha w hw hE hO => ?_⟩
   have ha0 : 0 ≤ a := by linarith
-  obtain ⟨δ, hδdef⟩ : ∃ δ : ℝ, δ = Real.exp (-a) := ⟨_, rfl⟩
-  rw [← hδdef] at hE hO
-  have hδ : 0 < δ := by rw [hδdef]; exact Real.exp_pos _
-  have hδ1 : δ ≤ 1 := by rw [hδdef]; exact Real.exp_le_one_iff.mpr (by linarith)
-  obtain ⟨E, hEdef⟩ : ∃ E : ℝ, E = Real.exp a := ⟨_, rfl⟩
-  have hE0 : 0 < E := by rw [hEdef]; exact Real.exp_pos _
-  have haE : a ≤ E := by rw [hEdef]; linarith [Real.add_one_le_exp a]
-  have hE1 : 1 ≤ E := by linarith
-  have hδE : δ * E = 1 := by
-    rw [hδdef, hEdef, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
-  -- masses, derivative energies, archimedean budget
-  have hsinh : Real.sinh a ≤ E / 2 := by
-    rw [Real.sinh_eq, ← hEdef]
-    linarith [Real.exp_pos (-a)]
-  have hsinh0 : 0 ≤ Real.sinh a := Real.sinh_nonneg_iff.mpr ha0
-  obtain ⟨Mb, hMb⟩ : ∃ Mb : ℝ, Mb = a + Real.sinh a := ⟨_, rfl⟩
-  have hMb0 : 0 ≤ Mb := by rw [hMb]; linarith
-  have hMbE : Mb ≤ 3 / 2 * E := by rw [hMb]; linarith
-  have hME := integral_evenPolar_sq_le (δ := δ) ha0 hδ
-  have hMO := integral_oddPolar_sq_le (δ := δ) ha0 hδ
-  have hDE := integral_deriv_evenPolar_sq_le hS (δ := δ) ha0 hδ
-  have hDO := integral_deriv_oddPolar_sq_le hS (δ := δ) ha0 hδ
-  rw [← hMb] at hME hMO hDE hDO
-  have hKδ : δ ^ 2 * ((1 / 2 + 2 * S / δ) ^ 2 * Mb) ≤ (1 / 2 + 2 * S) ^ 2 * Mb := by
-    have e : δ ^ 2 * ((1 / 2 + 2 * S / δ) ^ 2 * Mb) = (δ / 2 + 2 * S) ^ 2 * Mb := by
-      field_simp
-    rw [e]
-    exact mul_le_mul_of_nonneg_right
-      (pow_le_pow_left₀ (by positivity) (by linarith) 2) hMb0
-  have hlogδ : Real.log (1 + 1 / δ) ≤ a + 1 := by
-    have h1 : 1 / δ = E := by
-      rw [eq_comm, eq_div_iff hδ.ne', mul_comm]
-      exact hδE
-    rw [h1]
-    calc Real.log (1 + E) ≤ Real.log (Real.exp (a + 1)) := by
-          refine Real.log_le_log (by linarith) ?_
-          rw [Real.exp_add, ← hEdef]
-          nlinarith [Real.add_one_le_exp (1 : ℝ)]
-      _ = a + 1 := Real.log_exp _
-  have hlogδ0 : 0 ≤ Real.log (1 + 1 / δ) := Real.log_nonneg (by
-    have : 0 ≤ 1 / δ := by positivity
-    linarith)
-  obtain ⟨B, hBdef⟩ : ∃ B : ℝ,
-      B = (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * E) := ⟨_, rfl⟩
-  have hcoef : 0 ≤ Real.log (1 + 1 / δ) + 5 + Real.log q := by linarith
-  have hbudget : ∀ M D : ℝ, 0 ≤ M → M ≤ Mb → D ≤ (1 / 2 + 2 * S / δ) ^ 2 * Mb →
-      (Real.log (1 + 1 / δ) + 5 + Real.log q) * M + δ ^ 2 * D ≤ B := by
-    intro M D hM0 hM hD
-    have h1 : (Real.log (1 + 1 / δ) + 5 + Real.log q) * M ≤
-        (Real.log q + a + 6) * Mb := by
-      calc (Real.log (1 + 1 / δ) + 5 + Real.log q) * M
-          ≤ (Real.log (1 + 1 / δ) + 5 + Real.log q) * Mb :=
-            mul_le_mul_of_nonneg_left hM hcoef
-        _ ≤ (Real.log q + a + 6) * Mb := mul_le_mul_of_nonneg_right (by linarith) hMb0
-    have h2 : δ ^ 2 * D ≤ (1 / 2 + 2 * S) ^ 2 * Mb :=
-      (mul_le_mul_of_nonneg_left hD (sq_nonneg δ)).trans hKδ
-    have h3 : (Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * Mb ≤ B := by
-      rw [hBdef]
-      exact mul_le_mul_of_nonneg_left hMbE (by positivity)
-    nlinarith
+  have hδ : 0 < Real.exp (-a) := Real.exp_pos _
+  have hE1 : 1 ≤ Real.exp a := Real.one_le_exp ha0
   -- each contact form is below the budget
-  have hE0' : ∀ u, a ≤ |u| → evenPolar a δ u = 0 := fun u hu => evenPolar_eq_zero hδ hu
-  have hO0' : ∀ u, a ≤ |u| → oddPolar a δ u = 0 := fun u hu => oddPolar_eq_zero hδ hu
-  have hTE : contactForm w (fun u => (evenPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ ≤ B := by
-    have h := systemForm_le_of_packet_scaled hδ (contDiff_evenPolar a δ) hE0' w q
-    have hb := hbudget _ _ (integral_nonneg fun _ => sq_nonneg _) hME hDE
-    linarith
-  have hTO : contactForm w (fun u => (oddPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ ≤ B := by
-    have h := systemForm_le_of_packet_scaled hδ (contDiff_oddPolar a δ) hO0' w q
-    have hb := hbudget _ _ (integral_nonneg fun _ => sq_nonneg _) hMO hDO
-    linarith
+  have hTE := contactForm_le_of_systemForm_nonneg hS0 hx ha (contDiff_evenPolar a _)
+    (fun u hu => evenPolar_eq_zero hδ hu) (integral_evenPolar_sq_le ha0 hδ)
+    (integral_deriv_evenPolar_sq_le hS ha0 hδ) w hE
+  have hTO := contactForm_le_of_systemForm_nonneg hS0 hx ha (contDiff_oddPolar a _)
+    (fun u hu => oddPolar_eq_zero hδ hu) (integral_oddPolar_sq_le ha0 hδ)
+    (integral_deriv_oddPolar_sq_le hS ha0 hδ) w hO
   -- Mertens and Chebyshev on the window
-  have hmer := sum_vonMangoldt_div_window_le ha0
   have hmer2 : ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) / n ≤ (2 + 2 * a) ^ 2 :=
     (Finset.sum_le_sum_of_subset_of_nonneg (fun n hn => by
       rw [Finset.mem_Icc] at hn ⊢
       omega) fun n _ _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg
-        (Nat.cast_nonneg n)).trans hmer
-  have hmer0 : 0 ≤ ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) / n :=
-    Finset.sum_nonneg fun n _ => div_nonneg ArithmeticFunction.vonMangoldt_nonneg
-      (Nat.cast_nonneg n)
-  have hpsi : ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) ≤
-      (Real.log 4 + 4) * (E * E) := by
+        (Nat.cast_nonneg n)).trans (sum_vonMangoldt_div_window_le ha0)
+  have hpsi : Real.exp (-a) * ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, (Λ n : ℝ) ≤
+      (Real.log 4 + 4) * Real.exp a := by
     have h1 := sum_vonMangoldt_le_psi (S := Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊)
       (x := Real.exp (2 * a)) fun n hn =>
         (Nat.cast_le.mpr (Finset.mem_Icc.mp hn).2).trans (Nat.floor_le (Real.exp_pos _).le)
-    have h2 := Chebyshev.psi_le_const_mul_self (Real.exp_pos (2 * a)).le
-    have e : Real.exp (2 * a) = E * E := by
-      rw [hEdef, ← Real.exp_add]
-      congr 1
-      ring
-    rw [e] at h2
-    exact h1.trans h2
+    have h2 := h1.trans (Chebyshev.psi_le_const_mul_self (Real.exp_pos (2 * a)).le)
+    have h3 := mul_le_mul_of_nonneg_left h2 hδ.le
+    have e : Real.exp (-a) * ((Real.log 4 + 4) * Real.exp (2 * a)) =
+        (Real.log 4 + 4) * Real.exp a := by
+      have e' : Real.exp (-a) * Real.exp (2 * a) = Real.exp a := by
+        rw [← Real.exp_add]
+        congr 1
+        ring
+      linear_combination (Real.log 4 + 4) * e'
+    rwa [e] at h3
   -- sum and difference of the two contact forms
-  have hsum := abs_contactForm_evenPolar_add_oddPolar_le (δ := δ) ha0 hδ hw
-  have hdiff := abs_contactForm_evenPolar_sub_oddPolar_sub_riesz_le (δ := δ) ha0 hδ hw
-  rw [← hEdef] at hsum
-  obtain ⟨TE, hTEdef⟩ : ∃ TE : ℝ,
-      TE = contactForm w (fun u => (evenPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ := ⟨_, rfl⟩
-  obtain ⟨TO, hTOdef⟩ : ∃ TO : ℝ,
-      TO = contactForm w (fun u => (oddPolar a δ u : ℂ)) ⌊Real.exp (2 * a)⌋₊ := ⟨_, rfl⟩
-  obtain ⟨R, hRdef⟩ : ∃ R : ℝ,
-      R = ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n) := ⟨_, rfl⟩
-  rw [← hTEdef, ← hTOdef] at hsum hdiff
-  rw [← hTEdef] at hTE
-  rw [← hTOdef] at hTO
-  rw [← hRdef] at hdiff ⊢
-  have hS1 : |TE + TO| ≤ 4 * a * E * (2 + 2 * a) ^ 2 :=
-    hsum.trans (mul_le_mul_of_nonneg_left hmer2 (by positivity))
-  have hD1 : |TE - TO - R| ≤ 4 * (Real.log 4 + 4) * E + 2 * a * (2 + 2 * a) ^ 2 := by
-    refine hdiff.trans (add_le_add ?_ (mul_le_mul_of_nonneg_left hmer2 (by positivity)))
-    have h := mul_le_mul_of_nonneg_left hpsi (by positivity : (0 : ℝ) ≤ 4 * δ)
-    have e : 4 * δ * ((Real.log 4 + 4) * (E * E)) = 4 * (Real.log 4 + 4) * E := by
-      linear_combination (4 * (Real.log 4 + 4) * E) * hδE
+  have hS1 := (abs_contactForm_evenPolar_add_oddPolar_le ha0 hδ hw).trans
+    (mul_le_mul_of_nonneg_left hmer2 (by positivity))
+  have hD1 : |contactForm w (fun u => (evenPolar a (Real.exp (-a)) u : ℂ))
+          ⌊Real.exp (2 * a)⌋₊ -
+        contactForm w (fun u => (oddPolar a (Real.exp (-a)) u : ℂ)) ⌊Real.exp (2 * a)⌋₊ -
+        ∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| ≤
+      4 * (Real.log 4 + 4) * Real.exp a + 2 * a * (2 + 2 * a) ^ 2 := by
+    refine (abs_contactForm_evenPolar_sub_oddPolar_sub_riesz_le hδ hw).trans
+      (add_le_add ?_ (mul_le_mul_of_nonneg_left hmer2 (by linarith)))
     linarith
-  -- `|R| ≤ 2B + |TE + TO| + |TE − TO − R|`
-  have hRle : |R| ≤ 2 * B + 4 * a * E * (2 + 2 * a) ^ 2 +
-      (4 * (Real.log 4 + 4) * E + 2 * a * (2 + 2 * a) ^ 2) := by
-    have h1 := abs_le.mp hS1
-    have h2 := abs_le.mp hD1
-    rw [abs_le]
-    constructor <;> linarith
-  -- the polynomial budget
-  have hs1 : (1 : ℝ) ≤ (1 + a) ^ 3 := one_le_pow₀ (by linarith)
-  have hs2 : a * (1 + a) ^ 2 ≤ (1 + a) ^ 3 := by
-    have : (1 + a) ^ 3 = (1 + a) * (1 + a) ^ 2 := by ring
-    rw [this]
-    exact mul_le_mul_of_nonneg_right (by linarith) (sq_nonneg _)
-  have hs3 : a ≤ (1 + a) ^ 3 := by nlinarith
-  have hlog4 : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
-  have hcS : 0 ≤ (1 / 2 + 2 * S) ^ 2 := sq_nonneg _
-  refine hRle.trans ?_
-  rw [hBdef]
-  have e1 : (2 + 2 * a) ^ 2 = 4 * (1 + a) ^ 2 := by ring
-  rw [e1]
-  have hfin : 2 * ((Real.log q + a + 6 + (1 / 2 + 2 * S) ^ 2) * (3 / 2 * E)) +
-        4 * a * E * (4 * (1 + a) ^ 2) +
-        (4 * (Real.log 4 + 4) * E + 2 * a * (4 * (1 + a) ^ 2)) ≤
-      (3 * Real.log q + (3 * (7 + (1 / 2 + 2 * S) ^ 2) + 24 + 4 * (Real.log 4 + 4)) *
-        (1 + a) ^ 3) * E := by
-    have t1 : 3 * (a + 6 + (1 / 2 + 2 * S) ^ 2) ≤
-        3 * (7 + (1 / 2 + 2 * S) ^ 2) * (1 + a) ^ 3 := by
-      nlinarith [mul_nonneg hcS (sub_nonneg.mpr hs1)]
-    have t2 : 8 * a * (1 + a) ^ 2 ≤ 8 * (1 + a) ^ 3 * E := by
-      nlinarith [mul_le_mul_of_nonneg_left hE1 (by positivity : (0 : ℝ) ≤ 8 * (1 + a) ^ 3)]
-    have t3 : 4 * (Real.log 4 + 4) ≤ 4 * (Real.log 4 + 4) * (1 + a) ^ 3 := by
-      nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ Real.log 4 + 4) (sub_nonneg.mpr hs1)]
-    nlinarith [mul_le_mul_of_nonneg_right t1 hE0.le, mul_le_mul_of_nonneg_right hs2 hE0.le,
-      mul_le_mul_of_nonneg_right t3 hE0.le]
-  exact hfin
+  exact riesz_bound_algebra ha hE1 (sq_nonneg _)
+    (by linarith [Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4)]) rfl hTE hTO hS1 hD1
 
 /-- **Feasibility at an aperture is square-root cancellation of the Riesz mean at its scale.** -/
 theorem exists_riesz_le_of_feasible :

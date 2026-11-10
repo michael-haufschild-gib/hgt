@@ -117,6 +117,4 @@ theorem abs_resonator_diagonal_sub_trunc_le_power {ε σ : ℝ} (hε : 0 < ε)
         (mul_le_mul_of_nonneg_left hw (Sieve.divisorBoundConst_pos hε).le) (mul_nonneg hδ.le hC)
     _ = _ := by ring
 
-#print axioms abs_resonator_diagonal_sub_trunc_le_power
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

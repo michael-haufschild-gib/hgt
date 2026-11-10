@@ -298,8 +298,4 @@ theorem tsum_norm_resonatorCoeff_sub_trunc_sq_le {ε σ : ℝ} (hε : 0 < ε)
   rwa [show -(2 * σ - ε) = ε - 2 * σ by ring,
     show 1 - (2 * σ - ε) = 1 + ε - 2 * σ by ring] at h
 
-#print axioms norm_resonatorCoeff_sq_le_divisor_weight
-#print axioms summable_resonator_slice_sq_and_bound
-#print axioms tsum_norm_resonatorCoeff_sub_trunc_sq_le
-
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

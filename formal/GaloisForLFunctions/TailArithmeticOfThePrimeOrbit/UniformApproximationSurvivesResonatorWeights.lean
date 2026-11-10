@@ -61,6 +61,8 @@ theorem abs_weighted_dyadicSquareMean_sub_le {R f g : ℝ → ℂ}
     (((continuous_const.mul hg₀).add continuous_const).intervalIntegrable T (2 * T)) hpoint
   have h := (intervalIntegral.abs_integral_le_integral_abs
     (f := fun t => ‖R t * f t‖ ^ 2 - ‖R t * g t‖ ^ 2) hab).trans hbound
+  change |∫ t in T..2 * T, ‖R t * f t‖ ^ 2 - ‖R t * g t‖ ^ 2| ≤
+    ∫ t in T..2 * T, W * e * ‖g t‖ ^ 2 + W * e * (1 + e) at h
   have hgi : IntervalIntegrable (fun t => W * e * ‖g t‖ ^ 2) volume T (2 * T) :=
     (continuous_const.mul hg₀).intervalIntegrable _ _
   rw [intervalIntegral.integral_sub (hf₂.intervalIntegrable _ _) (hg₂.intervalIntegrable _ _),
@@ -71,8 +73,7 @@ theorem abs_weighted_dyadicSquareMean_sub_le {R f g : ℝ → ℂ}
   rw [← sub_div, abs_div, abs_of_pos hT]
   apply hd.trans_eq
   simp only [smul_eq_mul]
-  field_simp [hT.ne']
-  ring
+  field_simp [hT.ne'] <;> ring
 
 /-- Uniform approximation transfers through every resonator of bounded support. -/
 theorem abs_resonatorMean_sub_le_uniform_error {A : Finset ℕ}
@@ -88,8 +89,5 @@ theorem abs_resonatorMean_sub_le_uniform_error {A : Finset ℕ}
     (show 0 ≤ (M : ℝ) * ∑ m ∈ A, ‖r m‖ ^ 2 by positivity) hT he
     (fun t _ => norm_headPoly_sq_le_support_energy hA r hM t) hclose
   exact h.trans_eq (by ring)
-
-#print axioms abs_weighted_dyadicSquareMean_sub_le
-#print axioms abs_resonatorMean_sub_le_uniform_error
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit
