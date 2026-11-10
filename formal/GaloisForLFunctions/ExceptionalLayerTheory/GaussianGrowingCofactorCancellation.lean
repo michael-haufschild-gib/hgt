@@ -52,7 +52,7 @@ private theorem eventually_order_ratio_le {κ : ℝ} (hκ : 0 < κ) (N : ℕ) :
   have hlog2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hlog : Tendsto (fun t : ℝ => (Real.log t) ^ 2 / t) atTop (𝓝 0) := by
     simpa only [one_mul, add_zero] using
-      Real.tendsto_pow_log_div_mul_add_atTop 2 0 1 one_ne_zero
+      Real.tendsto_pow_log_div_mul_add_atTop 1 0 2 one_ne_zero
   have hsmall := hlog.const_mul (N : ℝ)
   simp only [mul_zero] at hsmall
   have hlarge := Real.tendsto_log_atTop.eventually (eventually_ge_atTop (max 1 (8 * κ)))
@@ -63,7 +63,7 @@ private theorem eventually_order_ratio_le {κ : ℝ} (hκ : 0 < κ) (N : ℕ) :
   have hl0 : 0 < Real.log t := zero_lt_one.trans_le ((le_max_left _ _).trans hl)
   have hlκ : 8 * κ ≤ Real.log t := (le_max_right _ _).trans hl
   have hrsmall : 8 * (gaussianGrowingMomentOrder κ t : ℝ) ≤ t := by
-    apply (mul_le_mul_left hκ).mp
+    apply (mul_le_mul_iff_right₀ hκ).mp
     have hh := mul_le_mul_of_nonneg_left hlκ (Nat.cast_nonneg (gaussianGrowingMomentOrder κ t))
     nlinarith only [hh, hr.2.2.2]
   have hratio : 4 * (gaussianGrowingMomentOrder κ t : ℝ) / t ≤ 1 / 2 :=
@@ -73,7 +73,7 @@ private theorem eventually_order_ratio_le {κ : ℝ} (hκ : 0 < κ) (N : ℕ) :
     simpa only [mul_div_assoc] using hs.le
   have hlogbound : (N : ℝ) * Real.log t ≤
       2 * (gaussianGrowingMomentOrder κ t : ℝ) * Real.log 2 := by
-    apply (mul_le_mul_right hl0).mp
+    apply (mul_le_mul_iff_left₀ hl0).mp
     have hh := mul_le_mul_of_nonneg_right hr.2.2.1 hlog2.le
     nlinarith only [hh, hs']
   calc
@@ -83,13 +83,13 @@ private theorem eventually_order_ratio_le {κ : ℝ} (hκ : 0 < κ) (N : ℕ) :
       rw [show -2 * (gaussianGrowingMomentOrder κ t : ℝ) * Real.log 2 =
         ((2 * gaussianGrowingMomentOrder κ t : ℕ) : ℝ) * (-Real.log 2) by push_cast; ring,
         Real.exp_nat_mul, Real.exp_neg, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
-      rfl
+      simp only [one_div]
     _ ≤ Real.exp (-(N : ℝ) * Real.log t) :=
       Real.exp_le_exp.mpr (by linarith only [hlogbound])
     _ = _ := by
       rw [show -(N : ℝ) * Real.log t = -((N : ℝ) * Real.log t) by ring,
         Real.exp_neg, Real.exp_nat_mul, Real.exp_log ht0]
-      rfl
+      simp only [one_div]
 
 private theorem lattice_cost_le_exp {r J : ℕ} (hr : r ≠ 0) {a t α : ℝ}
     (ha : 0 < a) (ht : 1 ≤ t) (hα : 0 < α) (hrt : (r : ℝ) ≤ t)
@@ -166,8 +166,8 @@ theorem eventually_gaussianGrowingCofactorPair_rapid_decay {a κ : ℝ}
   have hcost := lattice_cost_le_exp hr.1 ha ht hε hr.2.1 hscale hpoly
   have hexp : Real.exp (-a * t) ≤ 1 / t ^ N := by
     apply (le_div_iff₀ (pow_pos ht0 N)).mpr
-    simpa only [one_mul, mul_comm] using hpower
-  nlinarith only [hfar, hratio, hcost, hexp]
+    simpa only [one_mul, mul_one, mul_comm] using hpower
+  exact hfar.trans ((add_le_add hratio (hcost.trans hexp)).trans_eq (by ring))
 
 #print axioms norm_tsum_gaussianHigherPrimeMoment_pair_far_le
 #print axioms eventually_gaussianGrowingCofactorPair_rapid_decay

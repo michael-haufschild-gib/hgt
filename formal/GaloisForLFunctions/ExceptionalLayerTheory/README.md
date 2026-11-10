@@ -406,6 +406,29 @@ constants; the complementary arithmetic tail is at most `784exp(−t²)`.
 The remaining prime variable is long. Its centred cancellation and the
 uniform growing-order filter transfer remain open.
 
+`GaussianMomentCofactorCorrelations.lean`,
+`GaussianCofactorCorrelationBounds.lean`, and
+`GaussianGrowingCofactorCancellation.lean` prove rapid cancellation
+between separated complete cofactor columns. For the literal critical
+moment `F_r`, write `L_r(m,k)=Σ_(d≥1)F_r(md)conj(F_r(kd))`.
+The exact continuum correlation is `C_r`, with diagonal geometric
+scale `S_r` and normalized modulus
+
+    |C_r|/S_r = [1+(1+(Im ε/Re ε)²)((m²−k²)/(2mk))²]^(-r).
+
+For `r≥1`, `t≥1`, `Re ε>0`, `|ε|≤4 Re ε t`, and `1≤m,k≤W`,
+
+    |L_r−C_r| ≤ S_r(2048r³ Re ε t²W²)^r,  S_r≤(4r)^(2r).
+
+If also `m≥2k` and `|Im ε|≥Re ε t`, then
+`|C_r|≤(4r/t)^(2r)`. For any `a,κ>0` and integer `J≥0`, at
+`Re ε exp(2at)=2`, `r=⌊κt/log t⌋`, and `W≤3t^(J+3)`, every fixed integer `N≥0` gives
+`|L_r(m,k)|≤2/t^N` eventually, uniformly in the stated parameters.
+The absolute lattice remainder is exponentially small; the complete
+pair bound claims rapid inverse-power decay. Nearby pairs, long-variable
+cutoffs, and insertion of the actual prime coefficients remain uncontrolled.
+This is not yet an upper bound for the centred current.
+
 `GaussianRamanujanPrimeCross.lean` rules out transferring the negative
 prime-invariant cross sign through Gaussian weighting. Write
 `w_η(n)=|pmPowerDampedRamanujanWeight η n|`, `D_p=p^(1+η)−1`,

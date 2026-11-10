@@ -61,8 +61,10 @@ private theorem exists_finite_characterProfile_continuation
         (hKc.mono (fun v hv => ⟨hv.1, hsube hv.2⟩)).add
           (hLc.mono (fun v hv => ⟨hv.1, hsubd hv.2⟩)), ?_, ?_⟩
       · intro s
+        change K 0 s + L 0 s = 0
         rw [hK0 s, hL0 s, add_zero]
       · intro t ht s hs
+        change K t s + L t s = ∑ ψ ∈ insert χ S, weightedProfilePrimeSum (fun p => ψ p) (P ψ) t s
         rw [hKe t ht s hs, hLe t ht s hs, Finset.sum_insert hχS]
 
 /-- The ramified correction replaces the mean by the actual chosen profile. -/
@@ -114,7 +116,7 @@ theorem continuousOn_residueFiniteCorrection {Φ : (ZMod q)ˣ → ℂ → ℂ}
   unfold residueFiniteCorrection
   apply continuousOn_finsetSum
   intro p hp v hv
-  have ht : 0 ≤ (v.1 : ℂ).re := by simpa only [Complex.ofReal_re] using hv.1
+  have ht : 0 ≤ (v.1 : ℂ).re := hv.1
   have hρa := (analyticAt_analyticSmoothingPrimePhase hR
     (hρ p ((mem_residueRamifiedPrimes p).mp hp)) p ht).continuousAt
   have hma := (analyticAt_analyticSmoothingPrimePhase hR
@@ -125,7 +127,11 @@ theorem continuousOn_residueFiniteCorrection {Φ : (ZMod q)ˣ → ℂ → ℂ}
   have hpow : ContinuousAt (fun v : ℝ × ℂ => ((p : ℕ) : ℂ) ^ (-v.2)) v := by
     simpa only [Complex.cpow_def_of_ne_zero hp0, Pi.neg_apply] using
       ((continuousAt_snd.neg).const_mul (Complex.log ((p : ℕ) : ℂ))).cexp
-  exact (((hρa.comp hcast).sub (hma.comp hcast)).mul hpow).continuousWithinAt
+  have hr := hρa.comp (g := analyticSmoothingPrimePhase (ρ p) p)
+    (f := fun v : ℝ × ℂ => (v.1 : ℂ)) hcast
+  have hm := hma.comp (g := analyticSmoothingPrimePhase (residueAverage Φ) p)
+    (f := fun v : ℝ × ℂ => (v.1 : ℂ)) hcast
+  exact ((hr.sub hm).mul hpow).continuousWithinAt
 
 /-- Character inversion at each prime includes the ramified mean replacement. -/
 theorem residuePrimeProfile_decomposition (Φ : (ZMod q)ˣ → ℂ → ℂ)
@@ -190,7 +196,8 @@ theorem residuePrimeSum_decomposition {Φ : (ZMod q)ˣ → ℂ → ℂ}
       analyticSmoothingPrimePhase (residueAverage Φ) p (t : ℂ)) * ((p : ℕ) : ℂ) ^ (-s)
     else 0
   have hj : HasSum f (residueFiniteCorrection Φ ρ t s) := by
-    have hh := hasSum_sum_of_ne_finset_zero (s := residueRamifiedPrimes q)
+    have hh : HasSum f (∑ p ∈ residueRamifiedPrimes q, f p) :=
+      hasSum_sum_of_ne_finset_zero (s := residueRamifiedPrimes q)
       (f := f) (fun p hp => by
         dsimp only [f]
         rw [if_neg (fun hd => hp ((mem_residueRamifiedPrimes p).mpr hd))])
@@ -217,8 +224,7 @@ theorem residuePrimeSum_decomposition {Φ : (ZMod q)ˣ → ℂ → ℂ}
     simp only [analyticSmoothingPrimePhase, f, ite_mul, zero_mul]
   change (∑' p : Nat.Primes, (twist (residueProfileGauge Φ ρ t) p - 1) *
     ((p : ℕ) : ℂ) ^ (-s)) = _
-  rw [← hsum.tsum_eq]
-  exact tsum_congr (fun p => (heq p).symm)
+  exact (hsum.congr_fun (fun p => (heq p).symm)).tsum_eq
 
 /-- All arithmetic information outside the principal mean extends through one
 and vanishes at the common endpoint. No continuation is assumed. -/
@@ -249,8 +255,11 @@ theorem exists_residuePrime_correction {Φ : (ZMod q)ˣ → ℂ → ℂ}
     hNc.add ((continuousOn_residueFiniteCorrection hR hΦ hρ).mono
       (fun v hv => ⟨hv.1, mem_univ _⟩)), ?_, ?_⟩
   · intro s
+    change N 0 s + residueFiniteCorrection Φ ρ 0 s = 0
     rw [hN0 s, residueFiniteCorrection_zero (residueAverage_one h1) hρ1 s, add_zero]
   · intro t ht s hs
+    change deformationPrimeSum (residueProfileGauge Φ ρ t) s =
+      weightedProfilePrimeSum (fun _ => 1) (residueAverage Φ) t s + (N t s + residueFiniteCorrection Φ ρ t s)
     rw [residuePrimeSum_decomposition hR hΦ hu hρu ht hs, hNe t ht s hs, add_assoc]
 
 #print axioms residuePrimeSum_decomposition

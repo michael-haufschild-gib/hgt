@@ -305,8 +305,11 @@ theorem placeEnergy_eq_conjugateForm (hf : ContDiff ℝ 2 f) (hfc : HasCompactSu
       (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) r +
         EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)) (-r)).re) =
     packetAutocorr f r / (2 * Real.cosh (r / 2))
-  rw [hk, hk, packetAutocorr_neg, ← Complex.ofReal_add, Complex.ofReal_re, div_eq_mul_inv,
-    mul_inv]
+  rw [hk, hk, packetAutocorr_neg, ← Complex.ofReal_add, Complex.ofReal_re,
+    show packetAutocorr f r / (2 * Real.cosh (r / 2)) =
+      1 / 2 * (packetAutocorr f r * (Real.cosh (r / 2))⁻¹) by
+        rw [div_eq_mul_inv, mul_inv]
+        ring]
   ring
 
 /-- The energy of the second archimedean factor does not change under a translation of the

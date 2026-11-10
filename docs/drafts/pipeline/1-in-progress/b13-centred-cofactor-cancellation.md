@@ -46,6 +46,16 @@ must use cancellation involving the actual prime coefficients.
 
 ## Audited transfers
 
+The [complete cofactor correlation theorem](../3-formalized/b13-growing-cofactor-gram-cancellation.md)
+proves `|Σ_(d≥1)F_r(md)conj(F_r(kd))|≤2/t^N` for every fixed `N`,
+uniformly for `m≥2k`, polynomial cofactors, `r=⌊κt/log t⌋`,
+`Re ε exp(2at)=2`, and `Re ε t≤|Im ε|≤|ε|≤4 Re ε t`.
+Its normalized continuum overlap is exactly
+`[1+(1+(Im ε/Re ε)²)((m²−k²)/(2mk))²]^(-r)`;
+the absolute lattice error is exponentially small. These complete
+integer correlations do not yet control nearby pairs, a cutoff in the
+long variable, or insertion of the actual long prime coefficients.
+
 `RHTower.abs_ccmPrimeDeficitCriticalEnergy_add_coprimeCrossWork_le`
 bounds energy **plus** its signed coprime cross work; it supplies no lower
 bound for the cross work separately.

@@ -46,7 +46,8 @@ private theorem quadratic_laurent_limit {a b c L : ℂ}
         (fun t : ℝ => a + (t : ℂ) * b + (t : ℂ) ^ 2 * c) := by
       filter_upwards [self_mem_nhdsWithin] with t ht0
       exact div_mul_cancel₀ _ (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr (ne_of_gt ht0)))
-    have hp := ((tendsto_const_nhds.add (ht.mul_const b)).add ((ht.pow 2).mul_const c))
+    have hp := (((show Tendsto (fun _ : ℝ => a) (𝓝[>] 0) (𝓝 a) from tendsto_const_nhds).add
+      (ht.mul_const b)).add ((ht.pow 2).mul_const c))
     simp only [zero_mul, add_zero, zero_pow (by norm_num : (2 : ℕ) ≠ 0)] at hp
     exact tendsto_nhds_unique hp (hmul.congr' he)
   have hb : b = 0 := by
@@ -59,8 +60,9 @@ private theorem quadratic_laurent_limit {a b c L : ℂ}
       have htC : (t : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ne_of_gt ht0)
       rw [ha]
       field_simp [htC]
-      <;> ring
-    have hp := tendsto_const_nhds.add (ht.mul_const c)
+      ring
+    have hp := (show Tendsto (fun _ : ℝ => b) (𝓝[>] 0) (𝓝 b) from tendsto_const_nhds).add
+      (ht.mul_const c)
     simp only [zero_mul, add_zero] at hp
     exact tendsto_nhds_unique hp (hmul.congr' he)
   refine ⟨ha, hb, ?_⟩
@@ -92,7 +94,6 @@ private theorem cubic_remainder_scaled {U : ℂ × ℂ → ℂ}
     rw [norm_div, norm_pow, norm_real, Real.norm_eq_abs, abs_of_pos ht]
     apply (div_le_div_of_nonneg_right hCt ht2.le).trans_eq
     field_simp [ht.ne']
-    ring
   apply squeeze_zero_norm' hb
   simpa only [mul_zero] using
     (tendsto_const_nhds.mul (tendsto_id.mono_left nhdsWithin_le_nhds) :
@@ -116,22 +117,62 @@ theorem joint_quadratic_limit_eq_coefficient {U : ℂ × ℂ → ℂ}
   rw [he] at hh
   exact (quadratic_laurent_limit hh).2.2
 
-/-- A jointly analytic endpoint germ can have only an entire directional
-quadratic scaling profile. -/
+private theorem quadratic_direction_polynomial (p : ContinuousMultilinearMap ℂ (fun _ : Fin 2 => ℂ × ℂ) ℂ) :
+    ∃ a b c : ℂ, ∀ w : ℂ, p (fun _ => (1, w)) = a + b * w + c * w ^ 2 := by
+  let E := ℂ × ℂ
+  let e0 : E := (1, 0)
+  let e1 : E := (0, 1)
+  let B : E → E → ℂ := fun x y => continuousMultilinearCurryFin1 ℂ E ℂ (p.curryLeft x) y
+  have hd (x : E) : p (fun _ => x) = B x x := by
+    dsimp only [B]
+    rw [continuousMultilinearCurryFin1_apply, ContinuousMultilinearMap.curryLeft_apply]
+    apply congrArg p
+    funext i
+    fin_cases i <;> rfl
+  refine ⟨B e0 e0, B e0 e1 + B e1 e0, B e1 e1, ?_⟩
+  intro w
+  rw [hd, show (1, w) = e0 + w • e1 by
+    apply Prod.ext
+    · change (1 : ℂ) = 1 + w * 0
+      ring
+    · change w = 0 + w * 1
+      ring]
+  dsimp only [B]
+  simp only [map_add, map_smul, add_apply,
+    smul_apply, smul_eq_mul]
+  ring
+
+/-- A finite quadratic rescaling limit of a joint germ is a polynomial of
+degree at most two in the directional variable. -/
+theorem joint_quadratic_limit_polynomial {U : ℂ × ℂ → ℂ} (hU : AnalyticAt ℂ U (0, 1))
+    {Q : ℂ → ℂ}
+    (hlim : ∀ w : ℂ, 0 < w.re →
+      Tendsto (fun t : ℝ => U ((t : ℂ), 1 + (t : ℂ) * w) / (t : ℂ) ^ 2)
+        (𝓝[>] (0 : ℝ)) (𝓝 (Q w))) :
+    ∃ a b c : ℂ, ∀ w : ℂ, 0 < w.re → Q w = a + b * w + c * w ^ 2 := by
+  obtain ⟨p, hp⟩ := hU
+  obtain ⟨a, b, c, he⟩ := quadratic_direction_polynomial (p 2)
+  refine ⟨a, b, c, ?_⟩
+  intro w hw
+  calc
+    Q w = p 2 (fun _ => (1, w)) := by
+      apply joint_quadratic_limit_eq_coefficient hp (1, w)
+      simpa only [Prod.smul_mk, smul_eq_mul, mul_one, Prod.mk_add_mk, zero_add] using hlim w hw
+    _ = a + b * w + c * w ^ 2 := he w
+
+/-- A jointly analytic endpoint germ has an entire directional scaling limit. -/
 theorem joint_quadratic_limit_entire {U : ℂ × ℂ → ℂ} (hU : AnalyticAt ℂ U (0, 1))
     {Q : ℂ → ℂ}
     (hlim : ∀ w : ℂ, 0 < w.re →
       Tendsto (fun t : ℝ => U ((t : ℂ), 1 + (t : ℂ) * w) / (t : ℂ) ^ 2)
         (𝓝[>] (0 : ℝ)) (𝓝 (Q w))) :
     ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F univ ∧ ∀ w : ℂ, 0 < w.re → Q w = F w := by
-  obtain ⟨p, hp⟩ := hU
-  refine ⟨fun w => p 2 (fun _ => (1, w)), ?_, ?_⟩
-  · intro w _
-    exact (p 2).analyticAt.comp (by fun_prop)
-  · intro w hw
-    apply joint_quadratic_limit_eq_coefficient hp (1, w)
-    simpa only [Prod.smul_mk, smul_eq_mul, mul_one, Prod.mk_add_mk, zero_add] using hlim w hw
+  obtain ⟨a, b, c, he⟩ := joint_quadratic_limit_polynomial hU hlim
+  refine ⟨fun w => a + b * w + c * w ^ 2, ?_, he⟩
+  intro w _
+  fun_prop
 
 #print axioms joint_quadratic_limit_eq_coefficient
+#print axioms joint_quadratic_limit_polynomial
 #print axioms joint_quadratic_limit_entire
 end GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations

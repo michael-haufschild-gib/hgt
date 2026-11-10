@@ -87,7 +87,9 @@ private theorem exists_continuousOn_normalizedResidueProfile
       have hm := mul_le_mul hv.1.2 (hMw v.2 hv.2) (norm_nonneg v.2) ha.le
       exact him.trans_lt (by nlinarith only [hm, ham, ha])
   have hK := hKc.comp hmap.continuousOn hmaps
-  have hH := (continuousOn_residueHigherPrimeLog hR hΦ hρ hu hρu
+  have hH : ContinuousOn (fun v : ℝ × ℂ =>
+      residueHigherPrimeLog Φ ρ v.1 (1 + (v.1 : ℂ) * v.2)) D :=
+    (continuousOn_residueHigherPrimeLog hR hΦ hρ hu hρu
     (b := 3 / 4) (by norm_num)).comp hmap.continuousOn
       (fun v hv => ⟨hv.1.1, hspectral hv⟩)
   have hscaled : ContinuousOn (fun v : ℝ × ℂ =>

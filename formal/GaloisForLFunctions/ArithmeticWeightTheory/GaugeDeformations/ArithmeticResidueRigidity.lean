@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations.ArithmeticResidueScaling
 import GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations.JointQuadraticScalingRigidity
 import GaloisForLFunctions.ArithmeticWeightTheory.GaugeDeformations.AnalyticSmoothingMomentRigidity
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.Analytic.IsolatedZeros
 
 /-!
 # Endpoint obstruction for finite arithmetic mixtures

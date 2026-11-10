@@ -32,6 +32,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.LastResidueMaxim
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.BlockExchanges
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CyclicOrder
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.ResidueBlockObstruction
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.DeletionReduction
 
 /-!
 # Sign-free purity mechanisms

@@ -487,66 +487,65 @@ theorem frequently_nhdsGT_notMem {S : Set ℝ} (hS : S.Countable) (u : ℝ) :
   obtain ⟨x, hx, hxu⟩ := (hS.dense_compl ℝ).exists_between hw
   exact hsub hxu hx
 
-/-! ### The two series agree -/
+/-! ### Two functions with one transform -/
 
-/-- **The two series of fractional parts agree.** If the Mellin transforms of `Σ b_i {a_i u}` and
-of `Σ c_j {q_j u}` are the two sides of one function holomorphic on the strip and bounded near the
-line, the two series are equal at every `u > 0`. -/
-theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
-    {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j)
-    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
-    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+/-- **Two functions with one transform agree.** Let `g₊ = O(u^σ)` for every `σ ∈ (½, 1]` and
+`g₋ = O(u^σ)` for every `σ ∈ [0, ½)`, and let one function `F`, holomorphic on the strip and
+bounded near the line, be `s ↦ M[g₊](−s)` right of the line and `s ↦ M[g₋](−s)` left of it. Then
+`g₊ = g₋` at every point of continuity of `g₊ − g₋` other than `1`: the transforms of the parts of
+`g₊ − g₋` over `(1, ∞)` and over `(0, 1]` glue with `F` to a bounded entire function that tends to
+zero, and Mellin inversion applies to each part. -/
+theorem eq_of_mellin_eq_two_sided {gR gL : ℝ → ℂ} (mR : Measurable gR) (mL : Measurable gL)
+    {CR CL : ℝ → ℝ}
+    (bR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 → ∀ u : ℝ, 0 < u → ‖gR u‖ ≤ CR σ * u ^ σ)
+    (bL : ∀ σ : ℝ, 0 ≤ σ → σ < 1 / 2 → ∀ u : ℝ, 0 < u → ‖gL u‖ ≤ CL σ * u ^ σ)
     {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
     (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
-    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
-      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
-    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
-      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s)
-    {u : ℝ} (hu : 0 < u) : fractSeries b a u = fractSeries c q u := by
-  have mR := measurable_fractSeries b a
-  have mL := measurable_fractSeries c q
-  have bR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 → ∀ u : ℝ, 0 < u →
-      ‖fractSeries b a u‖ ≤ (∑' i, ‖b i‖ * a i ^ σ) * u ^ σ :=
-    fun σ h0 h1 u hu => norm_fractSeries_le ha (by linarith) h1 (hR σ h0) hu.le
-  have bL : ∀ σ : ℝ, 0 ≤ σ → σ < 1 / 2 → ∀ u : ℝ, 0 < u →
-      ‖fractSeries c q u‖ ≤ (∑' j, ‖c j‖ * q j ^ σ) * u ^ σ :=
-    fun σ h0 h1 u hu => norm_fractSeries_le hq h0 (by linarith) (hL σ h1) hu.le
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 → F s = mellin gR (-s))
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 → F s = mellin gL (-s))
+    {x₀ : ℝ} (hx₀ : 0 < x₀) (hx₀1 : x₀ ≠ 1) (hcont : ContinuousAt (fun u => gR u - gL u) x₀) :
+    gR x₀ = gL x₀ := by
   -- the four pieces, as functions of `z = −s`
   have TR : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 → ∀ z : ℂ, z.re < -σ →
-      MellinConvergent (topPart (fractSeries b a)) z ∧
-      DifferentiableAt ℂ (mellin (topPart (fractSeries b a))) z ∧
-      ‖mellin (topPart (fractSeries b a)) z‖ ≤ (∑' i, ‖b i‖ * a i ^ σ) / (-σ - z.re) :=
+      MellinConvergent (topPart gR) z ∧
+      DifferentiableAt ℂ (mellin (topPart gR)) z ∧
+      ‖mellin (topPart gR) z‖ ≤ CR σ / (-σ - z.re) :=
     fun σ h0 h1 z hz => mellin_topPart mR (by linarith) (bR σ h0 h1) hz
   have TL : ∀ z : ℂ, z.re < 0 →
-      MellinConvergent (topPart (fractSeries c q)) z ∧
-      DifferentiableAt ℂ (mellin (topPart (fractSeries c q))) z ∧
-      ‖mellin (topPart (fractSeries c q)) z‖ ≤ (∑' j, ‖c j‖ * q j ^ (0 : ℝ)) / (-0 - z.re) :=
+      MellinConvergent (topPart gL) z ∧
+      DifferentiableAt ℂ (mellin (topPart gL)) z ∧
+      ‖mellin (topPart gL) z‖ ≤ CL 0 / (-0 - z.re) :=
     fun z hz => mellin_topPart mL le_rfl (bL 0 le_rfl (by norm_num)) (by simpa using hz)
   have BR : ∀ z : ℂ, -1 < z.re →
-      MellinConvergent (botPart (fractSeries b a)) z ∧
-      DifferentiableAt ℂ (mellin (botPart (fractSeries b a))) z ∧
-      ‖mellin (botPart (fractSeries b a)) z‖ ≤ (∑' i, ‖b i‖ * a i ^ (1 : ℝ)) / (z.re + 1) :=
+      MellinConvergent (botPart gR) z ∧
+      DifferentiableAt ℂ (mellin (botPart gR)) z ∧
+      ‖mellin (botPart gR) z‖ ≤ CR 1 / (z.re + 1) :=
     fun z hz => mellin_botPart mR zero_le_one (bR 1 (by norm_num) le_rfl) hz
   have BL : ∀ σ : ℝ, 0 ≤ σ → σ < 1 / 2 → ∀ z : ℂ, -σ < z.re →
-      MellinConvergent (botPart (fractSeries c q)) z ∧
-      DifferentiableAt ℂ (mellin (botPart (fractSeries c q))) z ∧
-      ‖mellin (botPart (fractSeries c q)) z‖ ≤ (∑' j, ‖c j‖ * q j ^ σ) / (z.re + σ) :=
+      MellinConvergent (botPart gL) z ∧
+      DifferentiableAt ℂ (mellin (botPart gL)) z ∧
+      ‖mellin (botPart gL) z‖ ≤ CL σ / (z.re + σ) :=
     fun σ h0 h1 z hz => mellin_botPart mL h0 (bL σ h0 h1) hz
-  set Tr : ℂ → ℂ := fun s => mellin (topPart (fractSeries b a)) (-s) with hTr
-  set Tl : ℂ → ℂ := fun s => mellin (topPart (fractSeries c q)) (-s) with hTl
-  set Br : ℂ → ℂ := fun s => mellin (botPart (fractSeries b a)) (-s) with hBr
-  set Bl : ℂ → ℂ := fun s => mellin (botPart (fractSeries c q)) (-s) with hBl
-  set A : ℝ := ∑' i, ‖b i‖ * a i ^ (5 / 8 : ℝ) with hA
-  set A₁ : ℝ := ∑' i, ‖b i‖ * a i ^ (1 : ℝ) with hA₁
-  set B₀ : ℝ := ∑' j, ‖c j‖ * q j ^ (0 : ℝ) with hB₀
-  set B' : ℝ := ∑' j, ‖c j‖ * q j ^ (3 / 8 : ℝ) with hB'
-  have hA0 : 0 ≤ A := tsum_nonneg fun i => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (ha i).le _)
-  have hA₁0 : 0 ≤ A₁ :=
-    tsum_nonneg fun i => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (ha i).le _)
-  have hB₀0 : 0 ≤ B₀ :=
-    tsum_nonneg fun j => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (hq j).le _)
-  have hB'0 : 0 ≤ B' :=
-    tsum_nonneg fun j => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (hq j).le _)
+  set Tr : ℂ → ℂ := fun s => mellin (topPart gR) (-s) with hTr
+  set Tl : ℂ → ℂ := fun s => mellin (topPart gL) (-s) with hTl
+  set Br : ℂ → ℂ := fun s => mellin (botPart gR) (-s) with hBr
+  set Bl : ℂ → ℂ := fun s => mellin (botPart gL) (-s) with hBl
+  set A : ℝ := CR (5 / 8) with hA
+  set A₁ : ℝ := CR 1 with hA₁
+  set B₀ : ℝ := CL 0 with hB₀
+  set B' : ℝ := CL (3 / 8) with hB'
+  have hCR0 : ∀ σ : ℝ, 1 / 2 < σ → σ ≤ 1 → 0 ≤ CR σ := fun σ h0 h1 => by
+    have h := bR σ h0 h1 1 one_pos
+    rw [Real.one_rpow, mul_one] at h
+    exact (norm_nonneg _).trans h
+  have hCL0 : ∀ σ : ℝ, 0 ≤ σ → σ < 1 / 2 → 0 ≤ CL σ := fun σ h0 h1 => by
+    have h := bL σ h0 h1 1 one_pos
+    rw [Real.one_rpow, mul_one] at h
+    exact (norm_nonneg _).trans h
+  have hA0 : 0 ≤ A := hCR0 _ (by norm_num) (by norm_num)
+  have hA₁0 : 0 ≤ A₁ := hCR0 1 (by norm_num) le_rfl
+  have hB₀0 : 0 ≤ B₀ := hCL0 0 le_rfl (by norm_num)
+  have hB'0 : 0 ≤ B' := hCL0 _ (by norm_num) (by norm_num)
   -- the two sides of `F`
   have hRid : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 → F s = Tr s + Br s := by
     intro s h0 h1
@@ -556,7 +555,7 @@ theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι �
     have hB := (BR (-s) (by rw [Complex.neg_re]; linarith)).1
     have hadd := (hasMellin_add hT hB).2
     simp only [topPart_add_botPart] at hadd
-    rw [hFR s h0 h1, ← mellin_fractSeries ha (by linarith) h1 (hR s.re h0)]
+    rw [hFR s h0 h1]
     exact hadd
   have hLid : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 → F s = Tl s + Bl s := by
     intro s h0 h1
@@ -566,7 +565,7 @@ theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι �
     have hB := (BL _ hσ0 hσ1 (-s) (by rw [Complex.neg_re]; linarith)).1
     have hadd := (hasMellin_add hT hB).2
     simp only [topPart_add_botPart] at hadd
-    rw [hFL s h0 h1, ← mellin_fractSeries hq h0 (by linarith) (hL s.re h1)]
+    rw [hFL s h0 h1]
     exact hadd
   -- differentiability of the pieces
   have dTr : ∀ s : ℂ, 1 / 2 < s.re → DifferentiableAt ℂ Tr s := by
@@ -719,12 +718,12 @@ theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι �
     sub_eq_zero.mp ((hE_left s hs).symm.trans (hEzero s))
   -- Mellin inversion at the points of continuity
   have hinv : ∀ x : ℝ, 0 < x → x ≠ 1 →
-      ContinuousAt (fun u => fractSeries b a u - fractSeries c q u) x →
-      fractSeries b a x = fractSeries c q x := by
+      ContinuousAt (fun u => gR u - gL u) x →
+      gR x = gL x := by
     intro x hx hx1 hcont
     rcases lt_or_gt_of_ne hx1 with hlt | hgt
     · -- `x < 1`: the lower parts, on the line `Re z = −1/4`
-      set f : ℝ → ℂ := fun u => botPart (fractSeries b a) u - botPart (fractSeries c q) u with hf
+      set f : ℝ → ℂ := fun u => botPart gR u - botPart gL u with hf
       have hc1 := fun z (hz : -1 < z.re) => (BR z hz).1
       have hc2 := fun z (hz : -(3 / 8 : ℝ) < z.re) =>
         (BL (3 / 8) (by norm_num) (by norm_num) z hz).1
@@ -745,18 +744,18 @@ theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι �
       have hfc : ContinuousAt f x := by
         refine hcont.congr ?_
         filter_upwards [Iio_mem_nhds hlt] with w hw
-        show fractSeries b a w - fractSeries c q w =
-          botPart (fractSeries b a) w - botPart (fractSeries c q) w
+        show gR w - gL w =
+          botPart gR w - botPart gL w
         rw [botPart_of_le (le_of_lt hw), botPart_of_le (le_of_lt hw)]
       have h := mellinInv_mellin_eq (-1 / 4) f hx hconv hvert hfc
       have h0 : mellinInv (-1 / 4) (mellin f) x = 0 := by
         simp only [mellinInv, hzero, smul_zero, integral_zero]
       rw [h0] at h
-      have h' : (0 : ℂ) = botPart (fractSeries b a) x - botPart (fractSeries c q) x := h
+      have h' : (0 : ℂ) = botPart gR x - botPart gL x := h
       rw [botPart_of_le hlt.le, botPart_of_le hlt.le] at h'
       exact sub_eq_zero.mp h'.symm
     · -- `x > 1`: the upper parts, on the line `Re z = −3/4`
-      set f : ℝ → ℂ := fun u => topPart (fractSeries b a) u - topPart (fractSeries c q) u with hf
+      set f : ℝ → ℂ := fun u => topPart gR u - topPart gL u with hf
       have hc1 := fun z (hz : z.re < -(5 / 8 : ℝ)) =>
         (TR (5 / 8) (by norm_num) (by norm_num) z hz).1
       have hc2 := fun z (hz : z.re < 0) => (TL z hz).1
@@ -777,16 +776,55 @@ theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι �
       have hfc : ContinuousAt f x := by
         refine hcont.congr ?_
         filter_upwards [Ioi_mem_nhds hgt] with w hw
-        show fractSeries b a w - fractSeries c q w =
-          topPart (fractSeries b a) w - topPart (fractSeries c q) w
+        show gR w - gL w =
+          topPart gR w - topPart gL w
         rw [topPart_of_lt hw, topPart_of_lt hw]
       have h := mellinInv_mellin_eq (-3 / 4) f hx hconv hvert hfc
       have h0 : mellinInv (-3 / 4) (mellin f) x = 0 := by
         simp only [mellinInv, hzero, smul_zero, integral_zero]
       rw [h0] at h
-      have h' : (0 : ℂ) = topPart (fractSeries b a) x - topPart (fractSeries c q) x := h
+      have h' : (0 : ℂ) = topPart gR x - topPart gL x := h
       rw [topPart_of_lt hgt, topPart_of_lt hgt] at h'
       exact sub_eq_zero.mp h'.symm
+  exact hinv x₀ hx₀ hx₀1 hcont
+
+/-- A function `O(u^{σ₁})` and `O(u^{σ₂})` has a Mellin transform on `−σ₂ < Re z < −σ₁`. -/
+theorem mellinConvergent_of_bounds {g : ℝ → ℂ} (hg : Measurable g) {C₁ σ₁ C₂ σ₂ : ℝ}
+    (h₁ : 0 ≤ σ₁) (h₂ : 0 ≤ σ₂) (b₁ : ∀ u : ℝ, 0 < u → ‖g u‖ ≤ C₁ * u ^ σ₁)
+    (b₂ : ∀ u : ℝ, 0 < u → ‖g u‖ ≤ C₂ * u ^ σ₂) {z : ℂ} (hz₁ : z.re < -σ₁) (hz₂ : -σ₂ < z.re) :
+    MellinConvergent g z := by
+  have h := (hasMellin_add (mellin_topPart hg h₁ b₁ hz₁).1 (mellin_botPart hg h₂ b₂ hz₂).1).1
+  simpa only [topPart_add_botPart] using h
+
+/-! ### The two series agree -/
+
+
+/-- **The two series of fractional parts agree.** If the Mellin transforms of `Σ b_i {a_i u}` and
+of `Σ c_j {q_j u}` are the two sides of one function holomorphic on the strip and bounded near the
+line, the two series are equal at every `u > 0`. -/
+theorem fractSeries_eq [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha : ∀ i, 0 < a i) (hq : ∀ j, 0 < q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s)
+    {u : ℝ} (hu : 0 < u) : fractSeries b a u = fractSeries c q u := by
+  have hinv : ∀ x : ℝ, 0 < x → x ≠ 1 →
+      ContinuousAt (fun u => fractSeries b a u - fractSeries c q u) x →
+      fractSeries b a x = fractSeries c q x := fun x hx hx1 hcont =>
+    eq_of_mellin_eq_two_sided (measurable_fractSeries b a) (measurable_fractSeries c q)
+      (CR := fun σ => ∑' i, ‖b i‖ * a i ^ σ) (CL := fun σ => ∑' j, ‖c j‖ * q j ^ σ)
+      (fun σ h0 h1 u hu => norm_fractSeries_le ha (by linarith) h1 (hR σ h0) hu.le)
+      (fun σ h0 h1 u hu => norm_fractSeries_le hq h0 (by linarith) (hL σ h1) hu.le) hFd hFb
+      (fun s h0 h1 => by
+        rw [hFR s h0 h1, mellin_fractSeries ha (by linarith) h1 (hR s.re h0)])
+      (fun s h0 h1 => by
+        rw [hFL s h0 h1, mellin_fractSeries hq h0 (by linarith) (hL s.re h1)])
+      hx hx1 hcont
   -- points of continuity are dense; both series are right continuous
   have hbad : ({u : ℝ | ∃ i, ∃ n : ℤ, a i * u = n} ∪ {u : ℝ | ∃ j, ∃ n : ℤ, q j * u = n} ∪
       {1}).Countable :=
@@ -1019,23 +1057,17 @@ theorem tsum_eq_of_tsum_dvd [Countable κ] {c : κ → ℂ} {q : κ → ℝ} (hq
   exact (hAN N hN).symm
 
 
-/-- **The constant terms on the two sides of the line agree.** Let `Σ b_i a_i^s`, `0 < a_i ≤ 1`,
-converge absolutely right of the critical line and `Σ c_j q_j^s`, `q_j ≥ 1`, left of it, and let
-`F` be holomorphic on the strip, bounded near the line, equal to `−ζ(s)/s` times the first sum
-right of the line and times the second left of it. Then the weight at `q = 1` equals the weight
-at `a = 1`. -/
-theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+open scoped Classical in
+/-- **From the jump law to the constant terms.** If at every `u₀ > 0` the weight of the indices
+with `a_i u₀` an integer equals the weight of the indices with `q_j u₀` an integer, where
+`0 < a_i ≤ 1` and `q_j ≥ 1`, then the weights at the scale one agree: the points `u₀ = 1/k` and
+Möbius inversion over `k`. -/
+theorem constantTerms_agree_of_jump [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
     {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
-    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
-    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
-    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
-    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
-    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
-      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
-    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
-      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s) :
+    (hcsum : Summable fun j => ‖c j‖) (hc4 : Summable fun j => ‖c j‖ * q j ^ (1 / 4 : ℝ))
+    (hjump : ∀ u₀ : ℝ, 0 < u₀ → (∑' i, if ∃ n : ℤ, a i * u₀ = n then b i else 0) =
+      ∑' j, if ∃ n : ℤ, q j * u₀ = n then c j else 0) :
     (∑' j, if q j = 1 then c j else 0) = ∑' i, if a i = 1 then b i else 0 := by
-  classical
   have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
   set β : ℂ := ∑' i, if a i = 1 then b i else 0 with hβ
   -- the jump law at `1/k`
@@ -1045,7 +1077,7 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
     have hk0 : (0 : ℝ) < 1 / (k : ℝ) := by
       have : (0 : ℝ) < k := by exact_mod_cast hk
       positivity
-    have h := tsum_jump_eq ha0 hq0 hR hL hFd hFb hFR hFL hk0
+    have h := hjump _ hk0
     have hl : (∑' i, if ∃ n : ℤ, a i * (1 / (k : ℝ)) = n then b i else 0) =
         if k = 1 then β else 0 := by
       by_cases hk1 : k = 1
@@ -1064,10 +1096,30 @@ theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : 
     by_cases hj : ∃ n : ℕ, q j = n ∧ k ∣ n
     · rw [if_pos hj, if_pos ((exists_int_mul_inv_iff (hq0 j) hk).mpr hj)]
     · rw [if_neg hj, if_neg fun h' => hj ((exists_int_mul_inv_iff (hq0 j) hk).mp h')]
+  exact tsum_eq_of_tsum_dvd hq0 hcsum hc4 hS
+
+/-- **The constant terms on the two sides of the line agree.** Let `Σ b_i a_i^s`, `0 < a_i ≤ 1`,
+converge absolutely right of the critical line and `Σ c_j q_j^s`, `q_j ≥ 1`, left of it, and let
+`F` be holomorphic on the strip, bounded near the line, equal to `−ζ(s)/s` times the first sum
+right of the line and times the second left of it. Then the weight at `q = 1` equals the weight
+at `a = 1`. -/
+theorem constantTerms_agree [Countable ι] [Countable κ] {b : ι → ℂ} {a : ι → ℝ} {c : κ → ℂ}
+    {q : κ → ℝ} (ha0 : ∀ i, 0 < a i) (ha1 : ∀ i, a i ≤ 1) (hq : ∀ j, 1 ≤ q j)
+    (hR : ∀ σ : ℝ, 1 / 2 < σ → Summable fun i => ‖b i‖ * a i ^ σ)
+    (hL : ∀ σ : ℝ, σ < 1 / 2 → Summable fun j => ‖c j‖ * q j ^ σ)
+    {F : ℂ → ℂ} (hFd : DifferentiableOn ℂ F {s : ℂ | 0 < s.re ∧ s.re < 1}) {K : ℝ}
+    (hFb : ∀ s : ℂ, 1 / 4 ≤ s.re → s.re ≤ 3 / 4 → ‖F s‖ ≤ K)
+    (hFR : ∀ s : ℂ, 1 / 2 < s.re → s.re < 1 →
+      F s = -(riemannZeta s / s) * ∑' i, b i * (a i : ℂ) ^ s)
+    (hFL : ∀ s : ℂ, 0 < s.re → s.re < 1 / 2 →
+      F s = -(riemannZeta s / s) * ∑' j, c j * (q j : ℂ) ^ s) :
+    (∑' j, if q j = 1 then c j else 0) = ∑' i, if a i = 1 then b i else 0 := by
+  have hq0 : ∀ j, 0 < q j := fun j => lt_of_lt_of_le one_pos (hq j)
   have hcsum : Summable fun j => ‖c j‖ := by
     have h := hL 0 (by norm_num)
     simpa only [Real.rpow_zero, mul_one] using h
-  exact tsum_eq_of_tsum_dvd hq0 hcsum (hL (1 / 4) (by norm_num)) hS
+  exact constantTerms_agree_of_jump ha0 ha1 hq hcsum (hL (1 / 4) (by norm_num))
+    fun u₀ hu₀ => tsum_jump_eq ha0 hq0 hR hL hFd hFb hFR hFL hu₀
 
 /-! ### Rigidity: the two expansions are constant -/
 

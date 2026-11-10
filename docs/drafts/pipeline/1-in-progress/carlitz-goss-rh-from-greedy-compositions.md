@@ -65,6 +65,7 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `BlockExchanges` | Congruent nonempty blocks can be exchanged; exact weight change forbids a larger congruent block in an earlier part of an optimum |
 | `CyclicOrder` | Changing the origin cannot reverse the cyclic order of three residue classes |
 | `ResidueBlockObstruction` | Equal cyclic weighted contents imply congruent values; a later part of smaller powers cannot attain an earlier digit's residue weight using only smaller residue weights |
+| `DeletionReduction` | A shared last-part residue produces a smaller nongreedy optimum by digit or part deletion; disjoint last residues force a larger greedy last-part digit |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
