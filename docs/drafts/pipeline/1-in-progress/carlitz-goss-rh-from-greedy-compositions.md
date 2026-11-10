@@ -56,7 +56,11 @@ standard axioms.
 `CarlitzGoss/DigitAllocations.lean` proves `tokenPrefix_iff_inverseContent`:
 the same criterion partitions the individual finite digit occurrences,
 not only their count vectors. Direct and transitive axiom audits passed,
-using only the standard axioms. All four modules are wired into the umbrella.
+using only the standard axioms.
+`CarlitzGoss/DigitValues.lean` identifies divisible content with divisibility
+of a block's actual integer value and proves `digitTokenPrefix_iff` for the
+canonical base-`p` digits of every `N`. Direct and transitive axiom audits
+passed, using only the standard axioms. All five modules are wired into the umbrella.
 
 The actual Goss-zeta theorem and its optimal-composition input remain unformalized.
 The target includes every prime power, not only prime `q` or integer `y`.

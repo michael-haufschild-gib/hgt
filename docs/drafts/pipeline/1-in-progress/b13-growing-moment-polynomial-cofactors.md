@@ -14,9 +14,10 @@ pole-subtracted prime moment and the actual centred current restricted
 to cofactors `b≤W`. Unlike the fixed-order reduction, this would leave
 a cofactor count polynomial in height.
 
-No growing-order result is yet proved. The selected-mode response and
-filter constants must also be controlled uniformly; fixed-order big-O
-notation cannot justify this limit.
+Uniform moment constants are formalized. The growing-order reduction and
+direct Gaussian tail have paper derivations and Lean sources under verification.
+The selected-mode response and filter constants must also be controlled
+uniformly; fixed-order big-O notation cannot justify this limit.
 
 ## Quantitative route
 
@@ -37,8 +38,8 @@ The three logarithmic Gamma moments also satisfy
 
 For example, orders comparable to `at/(32 log t)`, `U` comparable to
 `X/t^34`, and `V` comparable to `t` leave exponential room in both
-errors, provided these constant estimates are proved. Higher-moment
-tails require their own uniform factorial estimate before choosing `W`.
+errors. The constant estimates are proved below. The direct Gaussian
+tail estimate supplies a separate uniform factorial cost when choosing `W`.
 These powers are sufficient candidates, not asserted sharp thresholds.
 
 ## Arithmetic scope
@@ -102,7 +103,7 @@ The selected-mode product bound alone does not control the infinite
 contour remainder. Its order growth must be paid from the exceptional
 abscissa gap. The general target therefore allows `r≈κt/log t` with
 arbitrarily small fixed `κ>0`, and cutoff powers depending on `a/κ`.
-For `J≥4`, the uniform arithmetic bound should have the form
+For `J≥4`, the proposed uniform arithmetic bound has the form
 
 `C [X^(1/2)/t^((2J−7)r)+t^(4r+2)X^(−1/2)](1+log X)`
 
@@ -123,3 +124,23 @@ For `X=exp(at)`, `3a≤t`, and `UW≥Xt²`, the bound is at most
 `784 exp(−t²)`: use `log t≤t−1` and absorb the resulting quadratic
 height cost in `t⁴`. With `U≈X/t^(J+1)`, polynomial cofactors
 `W≈t^(J+3)` suffice. This estimate is a paper derivation awaiting Lean.
+
+## Concrete rounded parameters
+
+Set `r=⌊κt/log t⌋`, `U=⌊exp(at)/t^(J+1)⌋`, `V=⌊t⌋`,
+`W=⌈2t^(J+3)⌉`, with `a,κ>0`, `κ≤a/32`, `J≥4`,
+and `(2J−7)κ≥2a`. Eventually `r≤t`,
+`κt≤2r log t≤2κt`, `UVt^J≤exp(at)`,
+`U≥exp(at)/(2t^(J+1))`, and `W≤3t^(J+3)`. Hence `UW≥exp(at)t²`.
+
+The order budget gives complete Vaughan error
+`≤C(1+t²)(1+at)exp(−3at/8)≤C exp(−at/4)` eventually.
+Adding the complementary Gaussian tail gives the intended exact
+cofactor reduction error `≤(C+784)exp(−at/4)`, with
+`C=1+Γ(1/4)+58[Γ(1/4)+Γ(3/4)]`.
+
+The retained cofactor current is defined with
+`(Λ−Λ_≤U)*trunc_(≤W)(δ−1*μ_≤V)` and the same two signed
+continuum corrections as the complete current. Its difference from the
+complete current is exactly the complementary convolution, justified by
+absolute convergence. The long prime variable remains unbounded.

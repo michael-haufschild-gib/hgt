@@ -31,7 +31,7 @@ theorem mixtureCharacterWidth_pos : 0 < mixtureCharacterWidth :=
 
 /-- The character prime logarithm, with its actual right-half-plane values. -/
 def mixtureCharacterLog : ℂ → ℂ :=
-  Classical.choose (Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2
+  Classical.choose ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2)
 
 theorem mixtureCharacterLog_properties :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -40,7 +40,7 @@ theorem mixtureCharacterLog_properties :
       (∀ s : ℂ, 1 - mixtureCharacterWidth < s.re → |s.im| < mixtureCharacterWidth →
         ‖mixtureCharacterLog s‖ ≤ C) ∧
       (∀ s : ℂ, 1 < s.re → mixtureCharacterLog s = characterPrimeLog chiFour s) :=
-  Classical.choose_spec (Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2
+  Classical.choose_spec ((Classical.choose_spec (exists_bounded_characterPrimeLog_tube chiFour_ne_one)).2)
 
 /-- Exact finite correction for the ramified prime. -/
 def mixtureFiniteCorrection (t : ℝ) (s : ℂ) : ℂ :=
@@ -70,7 +70,8 @@ private theorem mixture_prime_decay (p : Nat.Primes) (s : ℂ) :
 private theorem mixture_prime_shift (p : Nat.Primes) (s : ℂ) (t : ℝ) (n : ℕ) :
     ((p : ℕ) : ℂ) ^ (-(s + (n : ℂ) * (t : ℂ))) =
       Complex.exp (-(t : ℂ) * (Real.log (p : ℝ) : ℂ)) ^ n * ((p : ℕ) : ℂ) ^ (-s) := by
-  rw [← mixture_prime_decay p, ← mixture_prime_decay p, ← Complex.exp_nat_mul, ← Complex.exp_add]
+  rw [← mixture_prime_decay p (s + (n : ℂ) * (t : ℂ)), ← mixture_prime_decay p s,
+    ← Complex.exp_nat_mul, ← Complex.exp_add]
   congr 1
   ring
 

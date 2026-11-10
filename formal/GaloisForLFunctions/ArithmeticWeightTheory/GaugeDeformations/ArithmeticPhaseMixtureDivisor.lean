@@ -118,6 +118,7 @@ theorem mixture_exact_moving_divisor :
         hAz.div ((analyticAt_id.sub analyticAt_const).pow 2) hdenz,
         div_ne_zero (hne z hz) hdenz, ?_⟩
     filter_upwards with s
+    simp only [smul_eq_mul]
     dsimp only [mixtureContinuation, z, p]
     ring
   have hNum : AnalyticAt ℂ (fun s : ℂ => mixtureDivisorUnit t s * (s - z) ^ 4) p :=
@@ -129,7 +130,7 @@ theorem mixture_exact_moving_divisor :
   have hDenOrder : analyticOrderAt (fun s : ℂ => (s - p) ^ 2) p = 2 := by
     refine hDen.analyticOrderAt_eq_natCast.mpr ⟨fun _ : ℂ => 1, analyticAt_const, one_ne_zero, ?_⟩
     filter_upwards with s
-    simp only [mul_one]
+    simp only [smul_eq_mul, mul_one]
   refine ⟨hW, horder, hNum.meromorphicAt.div hDen.meromorphicAt, ?_⟩
   change meromorphicOrderAt ((fun s : ℂ => mixtureDivisorUnit t s * (s - z) ^ 4) /
     (fun s : ℂ => (s - p) ^ 2)) p = _

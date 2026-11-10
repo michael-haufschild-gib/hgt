@@ -59,7 +59,7 @@ theorem windowPrime_eq_contacts (ℓ T : ℝ) :
     Bool.false_eq_true, if_false, contactWeight]
   rw [e1 (Real.log n), e1 (-Real.log n)]
   push_cast
-  ring
+  ring_nf
 
 /-- **The contacts at a height read the remainder of the zero count.** As `T → ∞` the contacts of
 the window of aperture `ℓ` at the height `T`, plus the correction of the zeros off the line, minus

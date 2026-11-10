@@ -757,8 +757,8 @@ theorem two_re_lagStructure_minimalFaceCounterConfig (γ_min C : ℝ) {Θ : ℝ}
   simp only [Complex.reCLM_apply] at hre
   rw [← hre.tsum_eq]
   refine tsum_congr fun k => ?_
-  dsimp only [hg, levelMain, levelRefl, faceHarmonics]
-  dsimp only [facePtFreq]
+  rw [hg]
+  dsimp only [levelMain, levelRefl, faceHarmonics, facePtFreq]
   rw [Complex.re_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun d _ => ?_
   have hre_pull : ∀ (c : ℂ) (r θ : ℝ),

@@ -123,7 +123,7 @@ theorem den_le_of_separated (hst : FrobeniusStable S) (hsep : Separated σ S) {�
     (hab : Nat.Coprime a b) (hxab : x * b = α * a) : σ * b ≤ α := by
   rcases Nat.lt_or_ge 1 b with hb1 | hb1
   · -- `a k = b j + 1` with positive `k`, `j`
-    obtain ⟨m, hm⟩ := Nat.exists_mul_emod_eq_one_of_coprime hab hb1
+    obtain ⟨m, -, hm⟩ := Nat.exists_mul_mod_eq_one_of_coprime hab hb1
     have hdm := Nat.div_add_mod (a * m) b
     rw [hm] at hdm
     have hkey : a * (m + b) = b * (a * m / b + a) + 1 := by
@@ -131,7 +131,7 @@ theorem den_le_of_separated (hst : FrobeniusStable S) (hsep : Separated σ S) {�
       have e2 : b * (a * m / b + a) = b * (a * m / b) + a * b := by ring
       omega
     have hkS := hst x hx (m + b) (by omega)
-    have hjS := hst α hα (a * m / b + a) (by omega)
+    have hjS := hst α hα (a * m / b + a) (Nat.add_pos_right _ ha)
     have hb' : (0 : ℝ) < b := by exact_mod_cast hb
     have hkey' : (a : ℝ) * ((m : ℝ) + b) = b * (((a * m / b : ℕ) : ℝ) + a) + 1 := by
       exact_mod_cast hkey

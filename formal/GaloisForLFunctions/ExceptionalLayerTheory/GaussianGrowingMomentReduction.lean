@@ -275,7 +275,9 @@ theorem eventually_gaussianGrowingLongCutoff_bounds {a : ℝ} (ha : 0 < a) (J : 
       Real.exp (a * t) := by
     rw [Nat.cast_mul]
     calc
-      _ ≤ (Real.exp (a * t) / t ^ (J + 1)) * t * t ^ J := by gcongr
+      _ ≤ (Real.exp (a * t) / t ^ (J + 1)) * t * t ^ J := by
+        gcongr
+        exact hUt
       _ = _ := by rw [pow_succ]; field_simp
   have hnear := Nat.lt_floor_add_one (Real.exp (a * t) / t ^ (J + 1))
   have hU1R : (1 : ℝ) ≤ gaussianGrowingLongCutoff a J t := by exact_mod_cast hU1
@@ -331,8 +333,9 @@ theorem eventually_gaussianGrowingMomentReduction {a κ : ℝ} (ha : 0 < a)
     _ = (gaussianGrowingMomentConstant *
         ((1 + t ^ 2) * (1 + a * t) * Real.exp (-(a / 8) * t))) *
           Real.exp (-(a / 4) * t) := by ring
-    _ ≤ _ := by nlinarith only [mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left hpoly hC.le) (Real.exp_pos (-(a / 4) * t)).le]
+    _ ≤ _ := by
+      simpa only [mul_one] using mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left hpoly hC.le) (Real.exp_pos (-(a / 4) * t)).le
 
 #print axioms eventually_gaussianGrowingMomentReduction
 #print axioms norm_gaussianHigherCentredVaughanError_le_exponential
