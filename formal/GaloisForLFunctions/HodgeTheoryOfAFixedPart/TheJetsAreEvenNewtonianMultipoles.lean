@@ -38,8 +38,9 @@ theorem axialMultipole_even_nat (j m n : ℕ) :
 theorem even_newtonianKernel_eq_jetKernel (m n : ℕ) :
     (newtonianKernel (newtonianAxis m) (newtonianAxis n) +
       newtonianKernel (newtonianAxis m) (newtonianAxis (-(n : ℝ)))) / 2 = jetKernel m n := by
-  rw [newtonianKernel_axis, newtonianKernel_axis, sub_neg_eq_add,
-    abs_of_nonneg (add_nonneg (Nat.cast_nonneg m) (Nat.cast_nonneg n))]
+  simp only [newtonianKernel_axis, sub_neg_eq_add]
+  rw [abs_of_nonneg (show 0 ≤ (m : ℝ) + (n : ℝ) from
+    add_nonneg (Nat.cast_nonneg m) (Nat.cast_nonneg n))]
   rfl
 
 /-- The convergent even multipole expansion is the actual Newtonian kernel on the axis. -/

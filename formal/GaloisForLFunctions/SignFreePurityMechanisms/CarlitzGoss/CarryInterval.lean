@@ -123,7 +123,7 @@ theorem intervalCarryRow_terminal_boundary {p : ℤ} {α β m : ℕ} {w : ℕ �
       p * w (α + 1) 0 - m - p := by
   rw [intervalCarryRow_outside p α β w (h := α) (by omega), hw]
   have hm := mul_le_mul_of_nonneg_left
-    (intervalCarryRow_terminal_le p α β w (by omega) (by omega)) hp
+    (intervalCarryRow_terminal_le p α β w (h := α + 1) (by omega) (by omega)) hp
   nlinarith only [hm]
 
 /-- Content outside the closed interval is unchanged, including its boundary successor. -/

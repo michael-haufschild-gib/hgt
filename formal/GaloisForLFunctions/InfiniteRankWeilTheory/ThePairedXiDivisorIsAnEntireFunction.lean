@@ -88,8 +88,8 @@ theorem pairedXiProduct_conj (w : ℂ) : pairedXiProduct (conj w) = conj (paired
     _ = _ := by
       apply tprod_congr
       intro q
-      rw [pairedXiPoint_conj]
-      simp only [weierstrassE1, map_mul, map_sub, map_one, map_div₀, Complex.exp_conj]
+      rw [pairedXiPoint_conj, ← map_div₀]
+      simp only [weierstrassE1, Complex.exp_conj, map_mul, map_sub, map_one]
 
 /-- The construction separates every multiplicity copy into a simple zero. -/
 theorem analyticOrderAt_pairedXiProduct (q : ℕ × Bool × Bool) :
@@ -124,7 +124,14 @@ theorem pairedXiModel_one_sub (s : ℂ) : pairedXiModel (1 - s) = pairedXiModel 
 
 theorem pairedXiModel_conj (s : ℂ) : pairedXiModel (conj s) = conj (pairedXiModel s) := by
   unfold pairedXiModel
-  rw [show conj s - 1 / 2 = conj (s - 1 / 2) by simp, pairedXiProduct_conj]
+  have htwo : conj (2 : ℂ) = 2 := by
+    have h : (2 : ℂ) = 1 + 1 := by norm_num
+    calc
+      conj (2 : ℂ) = conj ((1 : ℂ) + 1) := congrArg conj h
+      _ = (1 : ℂ) + 1 := by rw [map_add, map_one]
+      _ = 2 := h.symm
+  rw [show conj s - 1 / 2 = conj (s - 1 / 2) by
+    rw [map_sub, map_div₀, map_one, htwo], pairedXiProduct_conj]
 
 theorem pairedXiModel_half : pairedXiModel (1 / 2) = 1 := by
   rw [pairedXiModel, sub_self, pairedXiProduct_zero]

@@ -47,7 +47,7 @@ theorem cyclicWeighted_at_residue_gap (hp : 2 ≤ p) (T : Finset (Digit p)) (β 
 namespace DigitComposition
 variable {k : ℕ} {S : Finset (Digit p)}
 
-/-- At the singleton residue, the optimal proper prefix is one full integral
+/-- At the singleton residue, its proper prefix is one full integral
 inverse-content unit above the competing proper prefix. -/
 theorem prefix_inverse_gap_at_singleton
     (C D : DigitComposition p s (k + 2) S) (hp : 2 ≤ p) {x : Digit p}

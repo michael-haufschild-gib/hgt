@@ -57,6 +57,28 @@ theorem tsum_finite_multiple_kernels {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0
     simpa only [tsum_mul_left, tsum_multiple_kernel (hA m hm)] using h
   exact (hasSum_sum hlocal).tsum_eq.trans (Finset.sum_mul A w (∑' n : ℕ, f n)).symm
 
+/-- The complementary zeta coefficient kernel has the exact integral-test decay. -/
+theorem tsum_rpow_above_le {b : ℝ} (hb : 1 < b) {N : ℕ} (hN : 1 ≤ N) :
+    (∑' n : ℕ, if N < n then (n : ℝ) ^ (-b) else 0) ≤
+      (N : ℝ) ^ (1 - b) / (b - 1) := by
+  have hinj : Function.Injective (fun n : ℕ => n + (N + 1)) := by
+    intro i j h
+    omega
+  have hsupp : Function.support (fun n : ℕ => if N < n then (n : ℝ) ^ (-b) else 0) ⊆
+      Set.range (fun n : ℕ => n + (N + 1)) := by
+    intro n hn
+    have hlt : N < n := by
+      by_contra h
+      exact hn (if_neg h)
+    exact ⟨n - (N + 1), Nat.sub_add_cancel (by omega)⟩
+  calc
+    _ = ∑' n : ℕ, ((n + (N + 1) : ℕ) : ℝ) ^ (-b) := by
+      rw [← hinj.tsum_eq hsupp]
+      apply tsum_congr
+      intro n
+      rw [if_pos (by omega)]
+    _ ≤ _ := tsum_add_rpow_neg_le hb hN
+
 /-- The divisor weight splits into the support weight and the zeta-series weight. -/
 theorem weighted_divisor_rpow {ε σ : ℝ} (hε : 0 < ε) (hεσ : ε < 2 * σ)
     {m k : ℕ} (hm : m ≠ 0) (hdiv : m ∣ k) :
@@ -193,6 +215,43 @@ theorem resonatorCoeff_sub_trunc (A : Finset ℕ) (r : ℕ → ℂ) (σ : ℝ) (
     · simp [hd, hN, Nat.lt_of_not_ge hN]
   · simp [hd]
 
+/-- Summing the fibre estimate costs only the weighted support energy.
+The selected zeta kernel remains separate, so its head and tail bounds are uniform. -/
+theorem tsum_resonator_slice_sq_le {ε σ : ℝ} (hε : 0 < ε)
+    (hεσ : ε < 2 * σ - 1) {A : Finset ℕ} (hA : ∀ m ∈ A, m ≠ 0)
+    (r : ℕ → ℂ) (P : ℕ → Prop) [DecidablePred P] :
+    (∑' k : ℕ, ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)),
+        r m * lineWeight σ (k / m)‖ ^ 2) ≤
+      Sieve.divisorBoundConst ε * (∑ m ∈ A, ‖r m‖ ^ 2 * (m : ℝ) ^ ε) *
+        ∑' n : ℕ, if P n then (n : ℝ) ^ (ε - 2 * σ) else 0 := by
+  let f : ℕ → ℝ := fun n => if P n then (n : ℝ) ^ (ε - 2 * σ) else 0
+  have hf : Summable f := by
+    have hs : Summable (fun n : ℕ => (n : ℝ) ^ (ε - 2 * σ)) :=
+      Real.summable_nat_rpow.mpr (by linarith only [hεσ])
+    apply hs.of_nonneg_of_le
+    · intro n
+      dsimp [f]
+      split_ifs <;> positivity
+    · intro n
+      dsimp [f]
+      split_ifs <;> positivity
+  have hmajor : Summable (fun k : ℕ => Sieve.divisorBoundConst ε * ∑ m ∈ A,
+      (‖r m‖ ^ 2 * (m : ℝ) ^ ε) * (if m ∣ k then f (k / m) else 0)) :=
+    (summable_sum fun m hm =>
+      (summable_multiple_kernel (hA m hm) hf).mul_left (‖r m‖ ^ 2 * (m : ℝ) ^ ε)).mul_left _
+  have hpoint (k : ℕ) := resonator_slice_sq_le hε (by linarith only [hεσ]) A r P k
+  have hsmall : Summable (fun k : ℕ =>
+      ‖∑ m ∈ A.filter (fun m => m ∣ k ∧ P (k / m)), r m * lineWeight σ (k / m)‖ ^ 2) :=
+    hmajor.of_nonneg_of_le (fun _ => sq_nonneg _) hpoint
+  calc
+    _ ≤ ∑' k : ℕ, Sieve.divisorBoundConst ε * ∑ m ∈ A,
+        (‖r m‖ ^ 2 * (m : ℝ) ^ ε) * (if m ∣ k then f (k / m) else 0) :=
+      Summable.tsum_le_tsum hpoint hsmall hmajor
+    _ = _ := by
+      rw [tsum_mul_left, tsum_finite_multiple_kernels hA _ hf]
+      exact (mul_assoc _ _ _).symm
+
 #print axioms norm_resonatorCoeff_sq_le_divisor_weight
+#print axioms tsum_resonator_slice_sq_le
 
 end GaloisForLFunctions.TailArithmeticOfThePrimeOrbit

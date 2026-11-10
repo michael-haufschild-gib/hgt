@@ -78,8 +78,11 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `GeometricPrefixCost` | Exponent gaps bound total prefix weight by the finite double-geometric sum |
 | `ResiduePrefixGaps` | Removing `n(p−1)` largest occurrences of one residue lowers retained exponents by at least `ns` |
 | `SingletonBoundary` | Every singleton boundary fixes competing last-part cyclic weight and excludes smaller residue representatives |
+| `SingletonInverseGap` | At the singleton residue, its proper prefix exceeds the competing prefix by exactly one inverse-content unit |
 | `ResiduePrefixCost` | Residue-count gaps give the double-geometric bound for actual base-`p` prefix values, including empty prefixes |
 | `GeometricCarryGain` | The terminal geometric bound and prefix estimate imply a strictly positive gain for all `p≥2`, `q≥p²` |
+| `IntegralPrefixContents` | Actual proper prefixes have integral inverse coordinates with positive increments; a last minimal coordinate selects the carry interval |
+| `CarryInterval` | The complete interval recursion preserves inverse floors and content gaps; terminal content gains one at the top and loses digits below |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
