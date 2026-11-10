@@ -175,12 +175,13 @@ theorem logDeriv_expansion_eq_of_summable_residues {c gL gR : Scale → ℂ} {η
       have h2 : ‖∑' q : Scale, gL q * (q.toReal : ℂ) ^ z‖ ≤ NL :=
         hWL.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
-      have h4 := HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < η / 2) hdist
+      have h4 : ‖∑' p : E, r p / (z - p)‖ ≤ ρ / (η / 2) :=
+        HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < η / 2) hdist
       have h5 := norm_sub_le (-(riemannZeta z / z) * ∑' q : Scale, gL q * (q.toReal : ℂ) ^ z)
         (∑' p : E, r p / (z - p))
       rw [norm_mul] at h5
       rw [hC]
-      linarith
+      linarith only [h3, h4, h5, hNR0, hquot0, hC1, hC2]
     · have hdist : ∀ p ∈ E, η / 2 ≤ ‖z - p‖ := fun p hp => by
         have h := Complex.abs_re_le_norm (z - p)
         rw [Complex.sub_re, hz, hPre p hp, show (1 / 2 + η / 2 - 1 / 2 : ℝ) = η / 2 by ring,
@@ -191,12 +192,13 @@ theorem logDeriv_expansion_eq_of_summable_residues {c gL gR : Scale → ℂ} {η
       have h2 : ‖∑' q : Scale, gR q * (q.toReal : ℂ) ^ z‖ ≤ NR :=
         hWR.norm_expansion_le (le_of_eq hz.symm) (le_of_eq hz)
       have h3 := mul_le_mul h1 h2 (norm_nonneg _) (by norm_num : (0 : ℝ) ≤ 8)
-      have h4 := HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < η / 2) hdist
+      have h4 : ‖∑' p : E, r p / (z - p)‖ ≤ ρ / (η / 2) :=
+        HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < η / 2) hdist
       have h5 := norm_sub_le (-(riemannZeta z / z) * ∑' q : Scale, gR q * (q.toReal : ℂ) ^ z)
         (∑' p : E, r p / (z - p))
       rw [norm_mul] at h5
       rw [hC]
-      linarith
+      linarith only [h3, h4, h5, hNL0, hquot0, hC1, hC2]
   have hgoodB : ∀ y : ℝ, ∃ T ∈ Icc y (y + L), ∀ z : ℂ, 1 / 2 - η / 2 ≤ z.re →
       z.re ≤ 1 / 2 + η / 2 → z.im = T → ‖Φ z‖ ≤ C := by
     intro y
@@ -214,11 +216,12 @@ theorem logDeriv_expansion_eq_of_summable_residues {c gL gR : Scale → ℂ} {η
       rw [norm_div, norm_mul]
       exact (div_le_div_of_nonneg_right (mul_le_mul (hFder z h1 h2) h8 (norm_nonneg _) hMD0)
         (norm_nonneg _)).trans (div_le_div_of_nonneg_left (by positivity) hμ hμz)
-    have e2 := HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < μ / (MD + 1)) hdist
+    have e2 : ‖∑' p : E, r p / (z - p)‖ ≤ ρ / (μ / (MD + 1)) :=
+      HTGeometry.norm_residueCauchySum_le hr (by positivity : (0 : ℝ) < μ / (MD + 1)) hdist
     have e3 := norm_sub_le (deriv (expansion c) z * -(riemannZeta z / z) / expansion c z)
       (∑' p : E, r p / (z - p))
     rw [hC]
-    linarith
+    linarith only [e1, e2, e3, hNR0, hNL0, hC1]
   have hΦb : ∀ w : ℂ, 1 / 2 - η / 2 ≤ w.re → w.re ≤ 1 / 2 + η / 2 → ‖Φ w‖ ≤ C :=
     fun w h1 h2 =>
       norm_le_of_good_heights hx (fun z h1 h2 => (⟨by linarith, by linarith⟩ : z ∈ U)) hΦd

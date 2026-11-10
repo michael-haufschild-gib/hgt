@@ -42,6 +42,27 @@ theorem cancellation_gives_boundedShape_sign {C γ κ : ℝ}
   exact (mul_nonneg (div_nonneg hq0 zero_le_two) (sub_nonneg.mpr hshape)).trans
     (hM q ((le_max_left _ _).trans hq) a ha har hw hf hs)
 
+/-- A long mollifier with an initial cancelled coefficient range gives an eventual depth bound. -/
+theorem eventual_depth_bound_of_dyadic_long_mollifier {θ₁ θ B C ε : ℝ}
+    (hθ₁ : 1 / 2 < θ₁) (hθ : θ₁ ≤ θ) (hB : 1 ≤ B) (hC : 0 ≤ C) (hε : 0 < ε)
+    (hbound : ∀ᶠ T in atTop, ∃ X X₁ : ℕ, 1 ≤ X ∧ (X : ℝ) ≤ T ^ θ ∧
+      T ^ θ₁ ≤ (X₁ : ℝ) ∧ ∃ b : ℕ → ℂ, b 1 = 1 ∧
+        (∀ d ∈ Finset.Icc 1 X, ‖b d‖ ≤ B) ∧
+        (∀ n ∈ Finset.Icc 2 X₁, mollifiedZetaCoeff b X n = 0) ∧
+        (∫ t in T..(2 * T),
+          ‖riemannZeta (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I) *
+            edPoly b (Finset.Icc 1 X) (((1 / 2 : ℝ) : ℂ) + (t : ℂ) * I)‖ ^ 2) ≤ C * T) :
+    ∃ H : ℝ, ∀ ρ : ℂ, riemannZeta ρ = 0 → 0 < ρ.re → ρ.re < 1 →
+      H ≤ |ρ.im| → |ρ.re - 1 / 2| < 1 / (2 * θ₁) + ε := by
+  have hfin := finite_offLineZeros_beyond_of_dyadic_long_mollifier hθ₁ hθ hB hC hε hbound
+  obtain ⟨H, hH⟩ := (hfin.image fun ρ => |ρ.im|).bddAbove
+  refine ⟨H + 1, fun ρ hρ h0 h1 hheight => ?_⟩
+  by_contra hdepth
+  have hmem : ρ ∈ {ρ : ℂ | riemannZeta ρ = 0 ∧ 0 < ρ.re ∧ ρ.re < 1 ∧
+      1 / (2 * θ₁) + ε ≤ |ρ.re - 1 / 2|} := ⟨hρ, h0, h1, le_of_not_gt hdepth⟩
+  have hh := hH (Set.mem_image_of_mem (fun ρ : ℂ => |ρ.im|) hmem)
+  linarith only [hh, hheight]
+
 /-- The finite exceptional set supplied by a long Möbius moment has bounded height. -/
 theorem eventual_depth_bound_of_dyadic_moebius_moment {θ C ε : ℝ}
     (hθ : 1 / 2 < θ) (hC : 0 ≤ C) (hε : 0 < ε)
@@ -102,5 +123,6 @@ theorem cancellation_and_depth_ladder {C γ κ δ θ : ℝ}
     quasiRH_crossRoute_seven_way_tfae⟩
 
 #print axioms cancellation_and_depth_ladder
+#print axioms eventual_depth_bound_of_dyadic_long_mollifier
 
 end GaloisForLFunctions.SelectiveArithmetic

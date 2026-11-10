@@ -13,7 +13,7 @@ stronger first branch: no edge exception is needed.
 
 namespace GaloisForLFunctions.SelectiveArithmetic
 
-open RHTower
+open _root_.RHTower
 
 /-- Level-one large-prime positivity gives AAL, the strict-half-plane implication, and the
 RH-or-edge alternative; in fact its zero abscissa is exactly one half. -/

@@ -1,7 +1,11 @@
-import GaloisForLFunctions.HTGeometry.MeromorphicLogDerivLocalForm
+import Mathlib.Analysis.Calculus.LogDeriv
 import Mathlib.Analysis.Meromorphic.NormalForm
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.Analysis.Complex.RemovableSingularity
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-!
 # Summable principal parts of a logarithmic derivative
@@ -48,10 +52,10 @@ theorem analyticAt_residueCauchySum {E : Set ℂ} {r : ℂ → ℂ}
   have hsep : ∀ (p : E) (w : ℂ), w ∈ ball z (δ / 2) → δ / 2 ≤ ‖w - p‖ :=
     fun p w hw => half_separation_le (hd p p.2) hw
   have hdiff : DifferentiableOn ℂ (residueCauchySum E r) (ball z (δ / 2)) := by
-    apply Complex.differentiableOn_tsum_of_summable_norm (hr.div_const (δ / 2))
-      _ isOpen_ball
+    refine Complex.differentiableOn_tsum_of_summable_norm (hr.div_const (δ / 2))
+      ?_ isOpen_ball ?_
     · intro p w hw
-      exact (differentiableAt_const.div (differentiableAt_id.sub_const _)
+      exact ((differentiableAt_const (r p)).div (differentiableAt_id.sub_const _)
         (norm_pos_iff.mp ((half_pos hδ).trans_le (hsep p w hw)))).differentiableWithinAt
     · intro p w hw
       rw [norm_div]
@@ -69,15 +73,15 @@ theorem analyticAt_residueCauchyTail {E : Set ℂ} {r : ℂ → ℂ}
   have hdiff : DifferentiableOn ℂ
       (fun w => ∑' p : E, if (p : ℂ) = z then 0 else r p / (w - p))
       (ball z (δ / 2)) := by
-    apply Complex.differentiableOn_tsum_of_summable_norm (hr.div_const (δ / 2))
-      _ isOpen_ball
+    refine Complex.differentiableOn_tsum_of_summable_norm (hr.div_const (δ / 2))
+      ?_ isOpen_ball ?_
     · intro p
       by_cases hp : (p : ℂ) = z
-      · simpa only [if_pos hp] using (differentiableOn_const :
+      · simpa only [if_pos hp] using (differentiableOn_const 0 :
           DifferentiableOn ℂ (fun _ : ℂ => (0 : ℂ)) (ball z (δ / 2)))
       · simp only [if_neg hp]
         intro w hw
-        exact (differentiableAt_const.div (differentiableAt_id.sub_const _)
+        exact ((differentiableAt_const (r p)).div (differentiableAt_id.sub_const _)
           (norm_pos_iff.mp ((half_pos hδ).trans_le (hsep p hp w hw)))).differentiableWithinAt
     · intro p w hw
       by_cases hp : (p : ℂ) = z
@@ -94,7 +98,7 @@ theorem residueCauchySum_eq_pole_add_tail {E : Set ℂ} {r : ℂ → ℂ}
     residueCauchySum E r =ᶠ[𝓝[≠] z]
       fun w => r z / (w - z) + ∑' p : E, if (p : ℂ) = z then 0 else r p / (w - p) := by
   classical
-  filter_upwards [(ball_mem_nhds z (half_pos hδ)).filter_mono nhdsWithin_le_nhds,
+  filter_upwards [nhdsWithin_le_nhds (ball_mem_nhds z (half_pos hδ)),
     self_mem_nhdsWithin] with w hw (hwz : w ≠ z)
   let ε := min (δ / 2) ‖w - z‖
   have hε : 0 < ε := lt_min (half_pos hδ) (norm_pos_iff.mpr (sub_ne_zero.mpr hwz))
@@ -131,11 +135,30 @@ theorem exists_weighted_logDeriv_principalPart {F K : ℂ → ℂ} {z : ℂ}
     ∃ H : ℂ → ℂ, AnalyticAt ℂ H z ∧
       (fun w => deriv F w * K w / F w) =ᶠ[𝓝[≠] z]
         fun w => ((analyticOrderNatAt F z : ℂ) * K z) / (w - z) + H w := by
-  have hord : meromorphicOrderAt F z = ((analyticOrderNatAt F z : ℕ) : ℤ) := by
-    rw [hF.meromorphicOrderAt_eq, ← Nat.cast_analyticOrderNatAt hfin]
-    rfl
-  obtain ⟨h, hh, heq⟩ := exists_analyticAt_logDeriv_local_form hF.meromorphicAt hord
-  simp only [Int.cast_natCast] at heq
+  obtain ⟨g, hg, hg0, hfg⟩ := (hF.analyticOrderNatAt_eq_iff hfin).mp rfl
+  simp only [smul_eq_mul] at hfg
+  change F =ᶠ[𝓝 z] (fun w => (w - z) ^ analyticOrderNatAt F z * g w) at hfg
+  let h := logDeriv g
+  have hh : AnalyticAt ℂ h z := hg.deriv.div hg hg0
+  have heq : logDeriv F =ᶠ[𝓝[≠] z]
+      fun w => (analyticOrderNatAt F z : ℂ) / (w - z) + h w := by
+    filter_upwards [nhdsWithin_le_nhds hfg.eventuallyEq_nhds,
+      nhdsWithin_le_nhds (hg.continuousAt.eventually_ne hg0),
+      nhdsWithin_le_nhds hg.eventually_analyticAt, self_mem_nhdsWithin]
+      with w hw hgw hga (hwz : w ≠ z)
+    have hsub : w - z ≠ 0 := sub_ne_zero.mpr hwz
+    have hmodel : logDeriv F w =
+        logDeriv (fun v => (v - z) ^ analyticOrderNatAt F z * g v) w := by
+      rw [logDeriv_apply, logDeriv_apply, hw.deriv_eq, hw.eq_of_nhds]
+    rw [hmodel, logDeriv_mul (f := fun v => (v - z) ^ analyticOrderNatAt F z) (g := g)
+      w (pow_ne_zero _ hsub) hgw
+      ((differentiableAt_id.sub_const z).fun_pow _) hga.differentiableAt]
+    congr 1
+    have hc := logDeriv_comp (f := fun v : ℂ => v ^ analyticOrderNatAt F z)
+      (g := fun v : ℂ => v - z) (x := w) (by fun_prop)
+      (differentiableAt_id.sub_const z)
+    have hd : deriv (fun v : ℂ => v - z) w = 1 := by simp
+    simpa only [Function.comp_def, logDeriv_pow, hd, mul_one] using hc
   obtain ⟨ε, hε, han⟩ := Metric.eventually_nhds_iff.mp hK.eventually_analyticAt
   have hKd : DifferentiableOn ℂ K (ball z ε) :=
     fun w hw => (han hw).differentiableAt.differentiableWithinAt
@@ -212,5 +235,7 @@ theorem exists_holomorphic_sub_residueCauchySum {U E : Set ℂ} {F K : ℂ → �
   · intro z hz hz0
     rw [toMeromorphicNFOn_eq_toMeromorphicNFAt hmero hz,
       toMeromorphicNFAt_eq_self.mpr (hregular z hz hz0).meromorphicNFAt]
+
+#print axioms exists_holomorphic_sub_residueCauchySum
 
 end GaloisForLFunctions.HTGeometry

@@ -50,6 +50,9 @@ large `N` gives positive nonconstant coefficients and first coefficient above
 positivity, exact Fourier duality, and weighted mass above `7/45` at `4/3`.
 The corpus already supplies the required difference-count identity
 `RHTower.Sieve.sum_dist_double` and triangle Fourier transform.
+The candidate realization is `TransThresholdPairCorrelation/FejerSpikePairDensity.lean`;
+its coefficient and positivity proofs are not yet audited, and its Fourier-duality
+and weighted-integral theorems are still missing.
 
 The all-bandwidth obstruction remains open. A single counterexample at `4/3`
 does not settle it; any fixed integrable perturbation of the constant form factor
