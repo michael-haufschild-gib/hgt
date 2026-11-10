@@ -136,4 +136,56 @@ theorem cubicSampleSites_character {r : ℕ} (hr : 0 < r) (hr3 : r < 3) :
   rw [Fin.sum_univ_eq_sum_range, he]
   exact _root_.HTGeometry.exp_unit_sum_zero 3 r hr hr3
 
+theorem tendsto_finiteSamplingWeight_fourier {n : ℕ} (x : Fin n → ℝ) (γ : ℝ) :
+    Tendsto (fun ε => weightFourier (finiteSamplingWeight x ε) γ)
+      (𝓝[>] (0 : ℝ))
+      (𝓝 (∑ j, Complex.exp (((γ * x j : ℝ) : ℂ) * Complex.I))) := by
+  have hsmul (r : ℝ) (z : ℂ) : r • z = (r : ℂ) * z := by
+    apply Complex.ext <;> simp
+  have h := tendsto_finiteSamplingWeight_integral x
+    (f := fun t => Complex.exp (((γ * t : ℝ) : ℂ) * Complex.I)) (by fun_prop)
+  simpa only [hsmul, weightFourier] using h
+
+/-- An actual Lebesgue weight violates the proposed coefficient-one floor bound. -/
+theorem exists_weight_violating_floor_coefficient_one :
+    ∃ w : ℝ → ℝ, Integrable w ∧ (∀ t, 0 ≤ w t) ∧
+      (9 / 8 : ℝ) * (∫ t, w t) + ‖weightFourier w 1‖ + ‖weightFourier w 2‖ <
+        ∫ t, w t * |twoModeTrace t| := by
+  have hmass : Tendsto (fun ε => ∫ t, finiteSamplingWeight cubicSampleSites ε t)
+      (𝓝[>] (0 : ℝ)) (𝓝 3) := by
+    have h := tendsto_finiteSamplingWeight_integral cubicSampleSites
+      (f := fun _ => (1 : ℝ)) continuous_const
+    simpa using h
+  have habs : Tendsto (fun ε => ∫ t, finiteSamplingWeight cubicSampleSites ε t * |twoModeTrace t|)
+      (𝓝[>] (0 : ℝ)) (𝓝 4) := by
+    have hc : Continuous (fun t => |twoModeTrace t|) := by unfold twoModeTrace; fun_prop
+    simpa only [smul_eq_mul, cubicSampleSites_abs_trace] using
+      tendsto_finiteSamplingWeight_integral cubicSampleSites hc
+  have hfour (r : ℕ) (hr : 0 < r) (hr3 : r < 3) :
+      Tendsto (fun ε => weightFourier (finiteSamplingWeight cubicSampleSites ε) r)
+        (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa only [cubicSampleSites_character hr hr3] using
+      tendsto_finiteSamplingWeight_fourier cubicSampleSites r
+  have hcost : Tendsto (fun ε =>
+      (9 / 8 : ℝ) * (∫ t, finiteSamplingWeight cubicSampleSites ε t) +
+        ‖weightFourier (finiteSamplingWeight cubicSampleSites ε) 1‖ +
+        ‖weightFourier (finiteSamplingWeight cubicSampleSites ε) 2‖)
+      (𝓝[>] (0 : ℝ)) (𝓝 (27 / 8)) := by
+    have h := ((hmass.const_mul (9 / 8)).add
+      (hfour 1 (by norm_num) (by norm_num)).norm).add
+      (hfour 2 (by norm_num) (by norm_num)).norm
+    norm_num at h ⊢
+    exact h
+  have hpos : ∀ᶠ ε : ℝ in 𝓝[>] (0 : ℝ), 0 < ε := self_mem_nhdsWithin
+  obtain ⟨ε, hε, habsε, hcostε⟩ := (hpos.and
+    ((habs.eventually_gt_const (by norm_num : (15 / 4 : ℝ) < 4)).and
+      (hcost.eventually_lt_const (by norm_num : (27 / 8 : ℝ) < 15 / 4)))).exists
+  exact ⟨finiteSamplingWeight cubicSampleSites ε,
+    integrable_finiteSamplingWeight cubicSampleSites ε,
+    finiteSamplingWeight_nonneg cubicSampleSites hε, hcostε.trans habsε⟩
+
+#print axioms twoModeTrace_floor
+#print axioms twoModeTrace_eq_finiteExpSum
+#print axioms exists_weight_violating_floor_coefficient_one
+
 end GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality

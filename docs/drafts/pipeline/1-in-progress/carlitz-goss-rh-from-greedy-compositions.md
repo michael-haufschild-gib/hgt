@@ -209,3 +209,9 @@ weight by the finite double-geometric sum. These modules are umbrella imports.
 removing `n(p−1)` largest digits of a fixed residue lowers retained exponents
 by at least `ns`. The complete modified composition and weight contradiction
 remain before this argument counts as a proof.
+
+`SingletonBoundary.lean` proves equality of last-part cyclic weights at every
+singleton boundary and excludes smaller residue representatives.
+`ResiduePrefixCost.lean` transfers the count gaps to actual base-`p` prefix
+values, including empty prefixes. Both pass direct checks and standard-axiom
+audits and are umbrella imports.

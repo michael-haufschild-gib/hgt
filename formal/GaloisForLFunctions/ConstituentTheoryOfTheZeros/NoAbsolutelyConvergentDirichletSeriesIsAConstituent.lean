@@ -194,7 +194,7 @@ theorem expansion_ne_zero_of_zeros_cancelled {c : PosRat → ℂ} {η : ℝ} (h�
     exact norm_riemannZeta_div_le_eight (by linarith) (by linarith)
   have hcontF : ContinuousOn (expansion c) {z : ℂ | |z.re - 1 / 2| ≤ η / 2} :=
     hFd.continuousOn.mono fun z hz => by
-      have h := abs_le.mp hz
+      have h := abs_le.mp (show |z.re - 1 / 2| ≤ η / 2 from hz)
       exact ⟨by linarith [h.1], by linarith [h.2]⟩
   obtain ⟨T₀, hT₀⟩ : ∃ T₀ : ℝ, expansion c (((1 / 2 : ℝ) : ℂ) + (T₀ : ℂ) * I) ≠ 0 := by
     by_contra hcon
@@ -465,9 +465,9 @@ theorem LSeries_ne_zero_of_zeros_subset_xi (hsum : LSeriesSummable a x) (hx : x 
     (differentiableOn_LSeries_of_summable hsum)
     (fun z hz => norm_LSeries_le_of_summable hsum hz.le) (fun z _ => rfl)
     ⟨z₁, by rw [hz₁re]; linarith, hz₁⟩ hzero hs h0
-  have hω0 : 0 < min (1 / 2 : ℝ) ((1 / 2 - x) / 2) := lt_min (by norm_num) (by linarith)
+  have hω0 : 0 < min (1 / 2 : ℝ) ((1 / 2 - x) / 2) := lt_min (by norm_num) (by linarith [hx])
   have hω2 : min (1 / 2 : ℝ) ((1 / 2 - x) / 2) ≤ (1 / 2 - x) / 2 := min_le_right _ _
-  exact LSeries_ne_zero_of_strip_zeros_subset_xi hsum hω0 (min_le_left _ _) (by linarith) hn
+  exact LSeries_ne_zero_of_strip_zeros_subset_xi hsum hω0 (min_le_left _ _) (by linarith [hx]) hn
     (fun z hz hz0 => hzero z (by linarith [(abs_lt.mp hz).1]) hz0)
     (by rw [hre, sub_self, abs_zero]; exact hω0) h0
 

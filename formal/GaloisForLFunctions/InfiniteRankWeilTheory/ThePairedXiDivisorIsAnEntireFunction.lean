@@ -143,7 +143,9 @@ theorem analyticOrderAt_pairedXiModel (q : ℕ × Bool × Bool) :
   have hd : deriv (fun s : ℂ => s - 1 / 2) ((1 / 2 : ℂ) + pairedXiPoint q) ≠ 0 := by
     rw [((hasDerivAt_id' _).sub_const (1 / 2)).deriv]
     exact one_ne_zero
-  rw [pairedXiModel, analyticOrderAt_comp_of_deriv_ne_zero (f := pairedXiProduct)
+  change analyticOrderAt (pairedXiProduct ∘ (fun s : ℂ => s - 1 / 2))
+    ((1 / 2 : ℂ) + pairedXiPoint q) = 1
+  rw [analyticOrderAt_comp_of_deriv_ne_zero (f := pairedXiProduct)
     (by fun_prop) hd, add_sub_cancel_left, analyticOrderAt_pairedXiProduct]
 
 #print axioms pairedXiProduct_conj

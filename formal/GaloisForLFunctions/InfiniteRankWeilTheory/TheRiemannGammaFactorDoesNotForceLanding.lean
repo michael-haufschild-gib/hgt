@@ -67,7 +67,7 @@ theorem pairedRiemannModel_residue_one :
   filter_upwards [self_mem_nhdsWithin] with s hs
   change s ≠ 1 at hs
   rw [pairedRiemannModel]
-  field_simp [pairedXiModel_one_ne_zero, sub_ne_zero.mpr hs]
+  field_simp [pairedXiModel_one_ne_zero, sub_ne_zero.mpr hs] <;> ring
 
 /-- Literal Riemann Gamma completion throughout the Euler and critical half-planes. -/
 theorem pairedRiemannModel_gamma_completion {s : ℂ} (hs : 0 < s.re) (h1 : s ≠ 1) :
@@ -75,8 +75,7 @@ theorem pairedRiemannModel_gamma_completion {s : ℂ} (hs : 0 < s.re) (h1 : s �
   have h0 : s ≠ 0 := by intro h; simpa only [h, Complex.zero_re, lt_self_iff_false] using hs
   have hΓ := Complex.Gammaℝ_ne_zero_of_re_pos hs
   rw [pairedRiemannModel, boundaryDecompletion_eq h0, pairedRiemannCompletion]
-  field_simp [pairedXiModel_one_ne_zero, h0, sub_ne_zero.mpr h1, hΓ]
-  ring
+  field_simp [pairedXiModel_one_ne_zero, h0, sub_ne_zero.mpr h1, hΓ] <;> ring
 
 theorem pairedRiemannCompletion_one_sub (s : ℂ) :
     pairedRiemannCompletion (1 - s) = pairedRiemannCompletion s := by

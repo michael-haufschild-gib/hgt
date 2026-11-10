@@ -72,7 +72,7 @@ factor. Existing uniform vertical decay of `Λζ` and `Γℝ(s−1)` supplies
 the Hamburger strip bound. The positive survivor is a nontrivial
 positive continuous Euler family preserving all zero locations, with
 `|gε(t)|≤C ε exp(ε)/(1+t²)` and arbitrarily small such majorants.
-The added measure is Lean-verified atomless, of mass one, supported above `1`.
+The base continuous measure is Lean-verified atomless, of mass one, supported above `1`.
 The pole-subtracted remainder is holomorphic on `Re s>0`; the perturbed
 zeta is meromorphic there. No continuation across `−1` is asserted.
 
