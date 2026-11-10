@@ -53,6 +53,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryInterval
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.SingletonCarryBoundary
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixMatrixRealization
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixWeightIdentity
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryModifiedComposition
 
 /-!
 # Sign-free purity mechanisms

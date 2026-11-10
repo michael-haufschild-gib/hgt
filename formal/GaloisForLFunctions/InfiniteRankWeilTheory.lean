@@ -7,6 +7,7 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.WellFoundedTowersSelfImprove
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheExceptionalCoordinate
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheFunctionalEquationAdmitsEveryFiniteLayer
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheFunctionalEquationAdmitsApproachingRemainders
+import GaloisForLFunctions.InfiniteRankWeilTheory.TheRiemannGammaFactorDoesNotForceLanding
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheTowersOfZeta
 import GaloisForLFunctions.InfiniteRankWeilTheory.ZetaTopCoefficientDensity
 import GaloisForLFunctions.InfiniteRankWeilTheory.FiniteJetSublevelMeasure
@@ -51,7 +52,8 @@ elimination for well-founded towers, dimension-zero exceptional sampling bases f
 residual cancellation for cosine and the actual Weil lag, arithmetic-cell curvature and
 unconditional dimension-zero rapid cancellation, the exceptional coordinate
 (ZAL, AAL, isolated tops), models of
-the functional equation with any finite layer, the towers of `ζ`, Wolff towers, the count of a tower
+the functional equation with any finite layer, approaching off-line models with the Riemann Gamma
+factor and zero count, the towers of `ζ`, Wolff towers, the count of a tower
 and the strength of the crude step, prime collisions, and the precision cost of forced vanishing. See
 `InfiniteRankWeilTheory/README.md`.
 -/

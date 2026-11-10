@@ -52,11 +52,11 @@ Actual-zeta truncation and finite polynomial estimates are in
 The divisor estimate is `RHTower.Sieve.card_divisors_le_rpow` in
 `RHTower/Sieve/DivisorBound.lean`.
 The uniform growing theorem remains unformalized.
-Unchecked drafts in `TailArithmeticOfThePrimeOrbit/` cover the weighted
-Euler–Maclaurin limit, full coefficient energy and tail, weighted finite
-energy, sharp finite mean, and weighted uniform-approximation transfer.
-The diagonal discrepancy and final uniform mean theorem remain to be
-formalized. No growing-resonator theorem is yet verified.
+Seven unchecked drafts in `TailArithmeticOfThePrimeOrbit/` cover the
+weighted Euler–Maclaurin limit, full energy and tail, weighted finite
+energy, sharp finite mean, diagonal discrepancy, and weighted transfer.
+The capstone in `GrowingResonatorsKeepTheZetaMean.lean` states the uniform
+mean theorem. No growing-resonator theorem is yet verified.
 
 For the transfer, the pointwise inequality
 `||f|²−|g|²|≤e(|g|²+1+e)` when `|f−g|≤e`, multiplied by

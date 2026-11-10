@@ -16,4 +16,4 @@ Pointwise, `|F|≤F+2K`. Multiply by `w` and integrate. The signed mean equals t
 - Direct `lake --old env lean` audit passed; transitive axioms are `propext`, `Classical.choice`, `Quot.sound` only.
 - Imported by `SurfaceOfSpecZ.lean`.
 
-This proves coefficient two. Sharpness and the proposed coefficient-one obstruction remain on the assembly card.
+Coefficient two is optimal: `exists_weight_violating_any_floor_coefficient_lt_two` in `FejerFloorsMakeCoefficientTwoSharp.lean` supplies integrable nonnegative counterweights for every smaller coefficient. Its direct audit also passed with standard axioms only.

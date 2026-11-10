@@ -86,13 +86,14 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `SingletonCarryBoundary` | Actual normalized singleton and competing compositions determine the carry interval and contain the competing last support within it |
 | `PrefixMatrixRealization` | Integral inverse prefixes with positive increments, nested contents, and a positive last remainder yield an actual increasing composition with those exact prefixes |
 | `PrefixWeightIdentity` | Weight differences are the reversed differences of the sums of actual proper-prefix values |
+| `CarryModifiedComposition` | Actual normalized compositions admit an increasing carry modification with unchanged outside prefixes, singleton absorption at the top, terminal digit loss below, and all positive prefix gaps |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
 
-The general optimal-composition theorem remains open after the normalized
-singleton-counterexample reduction: the improving composition and weight
-comparison of §§6–7 remain unformalized. The actual Goss coefficients and
+The general optimal-composition theorem remains open after construction of
+the actual carry modification: its strict weight comparison remains
+unformalized. The actual Goss coefficients and
 entire-series argument also remain. The target includes every prime power
 and every `p`-adic parameter.
 
@@ -212,5 +213,5 @@ residues cancel in the weight difference. Thus
 `(p−1)(p²+1)−p²=(p−2)p²+p−1>0`.
 This bound handles `p=2` without a separate equal-degree case.
 
-The complete modified composition and its weight comparison remain
-unformalized. The checked estimates above do not yet prove optimality.
+The modified composition is formalized. Its strict weight comparison remains;
+the checked component estimates do not yet prove optimality.

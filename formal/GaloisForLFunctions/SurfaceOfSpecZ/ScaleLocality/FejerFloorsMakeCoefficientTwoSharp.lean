@@ -30,7 +30,8 @@ theorem rootSampleSites_character (N : ℕ) {r : ℕ} (hr : 0 < r) (hrN : r < N 
     (2 * Real.pi * (j : ℕ) / (N + 1)) : ℝ) : ℂ) * I)) = 0
   rw [Fin.sum_univ_eq_sum_range (fun j : ℕ => Complex.exp ((((r : ℝ) *
     (2 * Real.pi * j / (N + 1)) : ℝ) : ℂ) * I)) (N + 1), he]
-  exact _root_.HTGeometry.exp_unit_sum_zero (N + 1) r hr hrN
+  simpa only [Nat.cast_add, Nat.cast_one] using
+    _root_.HTGeometry.exp_unit_sum_zero (N + 1) r hr hrN
 
 /-- Every nonzero difference frequency has zero mean over the roots. -/
 theorem rootSampleSites_difference_character (N : ℕ) (i j : Fin (N + 1)) (hij : i ≠ j) :
@@ -50,7 +51,7 @@ theorem rootSampleSites_difference_character (N : ℕ) (i j : Fin (N + 1)) (hij 
 
 /-- A finite sum of positive-frequency characters whose real part is Fejer minus one. -/
 def fejerPositiveSum (N : ℕ) (t : ℝ) : ℂ :=
-  (((N : ℝ) + 1)⁻¹ : ℂ) * ∑ i : Fin (N + 1), ∑ j : Fin (N + 1),
+  ((((N : ℝ) + 1)⁻¹ : ℝ) : ℂ) * ∑ i : Fin (N + 1), ∑ j : Fin (N + 1),
     if i = j then 0 else Complex.exp (((|(i : ℝ) - (j : ℝ)| * t : ℝ) : ℂ) * I)
 
 theorem fejerPositiveSum_re (N : ℕ) (t : ℝ) :
@@ -72,7 +73,9 @@ theorem fejerPositiveSum_re (N : ℕ) (t : ℝ) :
     push_cast
     ring
   have he := congrArg Complex.re (_root_.HTGeometry.fejerKernel_eq_double_sum N t)
-  rw [hdouble] at he
+  have hscalar : (((N : ℝ) + 1)⁻¹ : ℂ) = ((((N : ℝ) + 1)⁻¹ : ℝ) : ℂ) := by
+    rw [Complex.ofReal_inv, Complex.ofReal_add, Complex.ofReal_one]
+  rw [hdouble, hscalar] at he
   simp only [Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im, zero_mul, sub_zero,
     Complex.re_sum, Complex.exp_ofReal_mul_I_re] at he
   have hcos (i j : Fin (N + 1)) :
@@ -88,10 +91,14 @@ theorem fejerPositiveSum_re (N : ℕ) (t : ℝ) :
           (if i = j then 0 else Real.cos (((i : ℝ) - (j : ℝ)) * t)) := by
       by_cases h : i = j
       · subst j; simp only [sub_self, zero_mul, Real.cos_zero, if_true, add_zero]
-      · simp only [h, h.symm, if_false, zero_add]
-    simp_rw [ht]
-    rw [Finset.sum_add_distrib]
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
+      · rw [if_neg (Ne.symm h), if_neg h, zero_add]
+    calc
+      _ = ∑ j : Fin (N + 1), ((if j = i then 1 else 0) +
+          (if i = j then 0 else Real.cos (((i : ℝ) - (j : ℝ)) * t))) :=
+        Finset.sum_congr rfl fun j _ => ht j
+      _ = _ := by
+        rw [Finset.sum_add_distrib]
+        simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
   have hs : (∑ i : Fin (N + 1), ∑ j : Fin (N + 1), Real.cos (((i : ℝ) - (j : ℝ)) * t)) =
       (N : ℝ) + 1 + ∑ i : Fin (N + 1), ∑ j : Fin (N + 1),
         if i = j then 0 else Real.cos (((i : ℝ) - (j : ℝ)) * t) := by
@@ -145,7 +152,7 @@ theorem rootSampleSites_abs_fejerPositiveSum (N : ℕ) :
     (∑ j, |(fejerPositiveSum N (rootSampleSites N j)).re|) = 2 * N := by
   simp_rw [fejerPositiveSum_re, fejerKernel_rootSampleSites]
   rw [Fin.sum_univ_succ]
-  simp only [if_pos rfl, add_sub_cancel_right, abs_of_nonneg (Nat.cast_nonneg N),
+  simp only [ite_true, add_sub_cancel_right, abs_of_nonneg (Nat.cast_nonneg (α := ℝ) N),
     Fin.succ_ne_zero, if_false, zero_sub, abs_neg, abs_one, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one]
   ring

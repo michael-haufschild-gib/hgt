@@ -1,6 +1,6 @@
 # Consolidated review — big picture, obstacles, questions, programmes
 
-**Sources.** [Frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [unification ledger](route-unification-ledger.md), [route obstacles](route-obstacles.md), [walls ledger](walls-ledger.md), [obstacles summary](obstacles-summary.md), the programme READMEs under `formal/GaloisForLFunctions/`, the pipeline cards, and the Lean corpus through `scripts/formal_tools.py research`. Corpus checkpoint `64f7831503` with its working tree. Working log: `logs/review-1011-fable-report.md`.
+**Sources.** [Frontier map](../rh-current-frontier-map.md), [scoped obstructions](../rh-killed-routes.md), [unification ledger](route-unification-ledger.md), [route obstacles](route-obstacles.md), [walls ledger](walls-ledger.md), [obstacles summary](obstacles-summary.md), the programme READMEs under `formal/GaloisForLFunctions/`, the pipeline cards, and the Lean corpus through `scripts/formal_tools.py research`. Corpus checkpoint `def2bcca21` with its working tree. Working log: `logs/review-1011-fable-report.md`.
 
 **Evidence.**
 - `[L*]` Lean statement read for this report. `[M]` module docstring read, statement not re-read.
@@ -60,6 +60,7 @@ The form has no margin. The weights are forced (`CombBezout w ⇔ RH ∧ w=Λ`),
 |---|---|---|---|---|
 | aperture rung `κ` | pointwise, every height | `κ<1` (sizes); classical regions at `1+o(1)` `[L*]` | one `κ>1` | every `κ` |
 | mollifier exponent `θ` | mean value over `[T,2T]` | `θ<½` with both gcd main terms `[K]`; `17/33`, `4/7` `[C]` | one `θ>1` | unbounded `θ` |
+| resonator length `κ` at an abscissa `σ∈(½,1)` | mean value of `|Rζ|²` over `[T,2T]`, arbitrary coefficients | the full convolution diagonal for every `κ<2σ−1`, with error `η·Σ|r_m|²` uniform in the coefficients (`eventually_resonatorMean_zeta_uniform`, working tree) `[L*]`; the admissible length is `0` on the line | — | — |
 | breadth of heavy returns of the primes `≤y` | pointwise, every height | none while `log t≤(log y)^{3/2−ε}` `[L]` | — | — |
 
 Two consequences `[D]`.
@@ -165,7 +166,7 @@ A proof of quasi-RH needs a source, not an assembly. The corpus fixes its form: 
 
 **(iii) The mollified derivative at the zeros.** For the ratio `|Σ_ρζ′M(ρ)|²/(N·Σ_ρ|ζ′M(ρ)|²)` the optimum at mollifier length `T^θ` is `1−(1+θ)^{−3}`: `19/27>7/10` at `θ=½`, below the square-root threshold (`ZetaCGGMollifierOptimum`) `[M]`. Under RH this is a theorem for simple zeros `[C]`. Without RH `[D]`: with `a_ρ=ζ′M(ρ)` and `M` real,
 `S₂^K:=Σ_ρ a_ρ·ζ′M(1−ρ)=Σ_{on}|a_ρ|²+Σ_{pairs}2Re(a_ρ ā_{ρ*})`,
-a form that is positive on the critical zeros and hyperbolic on each off-line pair. With `a_±` the symmetric and antisymmetric parts on the pairs, `S₂^K=‖a₊‖²−‖a₋‖²` and `|S₁|²≤(N₀^{simple}+2p)(S₂^K+‖a₋‖²)`. For a close pair `ζ′(ρ*)≈−ζ′(ρ)`: the pair lies almost in the negative part, the opposite sign to the unweighted Gram matrix, where a close pair looks like a double zero. The corpus has the robust form on the subspace of mollifiers that vanish at all off-line pairs (`norm_firstMoment_sq_le_card_simple_crit`) `[L*]`, of codimension up to twice the number of pairs, which can exceed the dimension `T^θ` `[D]`. Missing: the two discrete moments as theorems for `θ<½`, and an upper bound for the displacement energy `‖a₋‖²=½Σ_{pairs}|a_ρ−a_{ρ*}|²` at census scale. Because `19/27` exceeds `7/10` by `0.0037`, the bound has to be `o(NL²)` in effect `[D]`.
+a form that is positive on the critical zeros and hyperbolic on each off-line pair. With `S₁=Σ_ρa_ρ`, `p` the number of off-line pairs with nonzero weights and `a_±` the symmetric and antisymmetric parts on the pairs, `S₂^K=‖a₊‖²−‖a₋‖²` and `|S₁|²≤(N₀^{simple}+2p)(S₂^K+‖a₋‖²)`. For a close pair `ζ′(ρ*)≈−ζ′(ρ)`: the pair lies almost in the negative part, the opposite sign to the unweighted Gram matrix, where a close pair looks like a double zero. The corpus has the robust form on the subspace of mollifiers that vanish at all off-line pairs (`norm_firstMoment_sq_le_card_simple_crit`) `[L*]`, of codimension up to twice the number of pairs, which can exceed the dimension `T^θ` `[D]`. Missing: the two discrete moments as theorems for `θ<½`, and an upper bound for the displacement energy `‖a₋‖²=½Σ_{pairs}|a_ρ−a_{ρ*}|²` at census scale. Because `19/27` exceeds `7/10` by `0.0037`, the bound has to be `o(N log²T)` in effect `[D]`.
 
 Also exact and unfed: the source covariance ceiling `6π/5`; the local count of off-line zeros `[L]`.
 
@@ -200,7 +201,7 @@ More than `13.6%` of the ordinates carry a horizontal doublet of width `≤2A/lo
 The reason is a set of theorems, not a lack of candidates.
 1. Pointwise statements below rung 1 are sizes and hold for whole classes of fakes; at rung `1+o(1)` both one-structure fakes fail; the first rung above is a classical problem in every aspect (§1.3).
 2. Mean values of length below the height are stable under relocation of finitely many zeros and give densities; above the height the conversion to a point is a theorem and its input is quasi-RH (§1.3, §3).
-3. Structural questions about receivers are answered in Lean as fast as they are posed (§5.1); every such answer has been "a receiver" or "a price".
+3. The structural questions about receivers are answered in Lean (§5.1); every answer is "a receiver" or "a price".
 4. The atoms have no model with both structures (§1.2).
 
 ### 5.3 The question that would change the map: is the top of the zeros attained off the line?
@@ -243,7 +244,7 @@ Each is two-sided and none produces a sign.
 - *Three conversions from a law to a point* `[D]`, each a theorem in one setting:
   1. recurrence against density — a zero of an almost periodic object recurs with positive density, and deep zeros of ζ have density zero: constituents are pure, and in the Wiener class have no zero `[L*]`/`[M]`;
   2. budget overflow — one off-line zero costs more than a mean-value budget: long mollifiers `[M]`;
-  3. winding — the index law and its semicontinuity; half-period deletion for finite layers `[L*]`.
+  3. winding and sign changes — the index law and its semicontinuity `[L]`; for finite layers, half-period deletion, a count of the sign changes of a finite trigonometric sum `[L*]`.
 - *The additive identity.* The jump of the fractional part: the jump law on every strip `[M]`.
 - *Priced producers.* Frobenius at one prime, integrality, exponential sums, linear forms in logarithms `[L]`.
 - *A census by winding.* Levinson's method uses the argument principle and a mean value as a bound. Its gate is a hypothesis in the corpus and the twisted second moment below the square root is a theorem `[M]`/`[K]`. The `0.6725` theorem uses a positive semidefinite Gram matrix and is outside the constraint.
@@ -283,7 +284,7 @@ The walls are not walls of language. Each programme ends at the same statement, 
 
 | Aspect | Content |
 |---|---|
-| What it is about | Pointwise cancellation of multiplicative data on the integers up to a fixed power of the mass, in the range where sieve weights, bilinear norms and exponential sums are blind: between `m` and `m^{2κ}` for a conductor or a height `e^m`. The object that marks the blind range is the Liouville twin: every statement of the field holds for the true object and fails for it |
+| What it is about | Pointwise cancellation of multiplicative data on the integers up to a fixed power of the mass, in the range where sieve weights, bilinear norms and exponential sums are blind: between `m` and `m^{2κ}` for a conductor `e^m` or a height `e^m`. The object that marks the blind range is the Liouville twin: every statement of the field holds for the true object and fails for it |
 | Why the walls are this | The rung law has two sides with one rate: a saving `n^{½+γ}` in the contacts buys the rung `1/(2γ)`, a zero of depth `δ` shows at `1/(2δ)` `[M]`. The fake on the Euler side is the Liouville twist `[L*]`; parity blindness of Type I and Type II information is a theorem `[L]`; the square-root threshold of the census, of mollifiers and of the dark range is the same blindness in the mean `[D]` |
 | Point of view | Parity is not a defect of sieves but an invariant: the class of statements closed under the twin involution `w↦λw`. A source is a statement outside that class. The field classifies the statements outside it by what breaks the involution |
 | What breaks the involution in the corpus | (1) the pole: the sign of the polar boundary term separates the antipode `[S]`. (2) additive identities of the floor: `Λ∗1=log` selects Λ; `Σ_kF(⌊x/k⌋)=⌊√x⌋` forces λ; unit comb masses force Λ `[L]`. (3) the conductor: the Liouville twist has none `[L*]`. (4) mean values at every length: Matomäki–Radziwiłł `[L]`. None is pointwise at power-saving scale |
@@ -323,7 +324,7 @@ The walls are not walls of language. Each programme ends at the same statement, 
 
 **Main conjecture.** Every sign-free conversion of a law about the zeros of ζ into a statement at every zero has an input of the strength of a rung above one. **Milestones.** M1 the three conversions in one scheme with their exponents. M2 the bounded class. M3 a no-go for amplification below the height in the class of quadratic mean values, from relocation invariance. M4 a conversion outside that class.
 
-**Status `[A]`.** No folder owns the conversions as a subject; the theorems are in five programmes. The main conjecture is a statement about methods and can be approached by classification, as the conductor ladder was.
+**Status `[A]`.** No folder owns the conversions as a subject; the theorems are in five programmes. The main conjecture is a statement about methods and can be approached by classification, as for the conductor ladder.
 
 ---
 
@@ -372,7 +373,7 @@ Not a definition of `𝔽₁`. A geometry in which Spec ℤ has a product with i
 | C5 | sees the exact normalization | the non-tempered pair fails; the constant `2π` and the weights `Λ` are forced `[L*]` |
 | C6 | infinite type, no finite fibre, no stable lattice | `[L]` |
 | C7 | the diagonal is the density of a comb | `[L*]` |
-| C8 | positivity is derived, and not from a section count | product formula on the tower; payment on the paying ring `[L]`/`[M]` |
+| C8 | positivity is derived, and not from a section count | product formula on the tower; equality of ideals on the planar square `[L]`/`[M]` |
 | C9 | selective only where a contact enters; no margin | windows of ratio `≤2` are blind `[L]` |
 | C10 | on a number ring it gives the index of each character, or uses the pole plane | index law over characters `[L*]` |
 | C11 | below the trivial aperture it proves nothing that the dominated box does not have | SA `[L*]` |

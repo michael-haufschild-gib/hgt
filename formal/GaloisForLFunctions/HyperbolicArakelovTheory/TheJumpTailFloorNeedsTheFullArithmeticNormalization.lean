@@ -44,7 +44,7 @@ theorem correctedScatteringEnergy_add_jumpTail (a : SuzukiPositiveAperture)
   have hN : ((N : ℝ) + 1) ^ 2 ≠ 0 := ne_of_gt (by positivity)
   unfold correctedScatteringEnergy scatteringJumpTail
   field_simp [hN]
-  linear_combination hid
+  linear_combination -hid
 
 /-- At each height, the jump-tail floor is exactly Weil positivity for the same state. -/
 theorem correctedScatteringEnergy_floor_iff (a : SuzukiPositiveAperture)

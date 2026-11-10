@@ -6,12 +6,12 @@
 - **Source:** `docs/reports/review-1011/obstacles-summary.md`, A68.
 - **Statement:** Construct a real, FE-symmetric meromorphic completion with the Riemann Gamma factor, Riemann–von Mangoldt zero counting, and infinitely many off-line zeros approaching the critical line.
 
-## Construction under examination
+## Construction
 
 Let `γ₀≤γ₁≤…` be the positive Xi ordinates, with multiplicity. Replace
 each adjacent pair by the quartet `1/2±δₙ±iγ₂ₙ₊₁`, where
 `δₙ=1/(4(n+1))`. Distinct depths make every new zero simple, even when
-the original ordinates repeat. The proposed positive-height count is
+the original ordinates repeat. The positive-height count is
 exactly `2⌊Nζ(T)/2⌋`: its difference from the actual Xi count is at most
 one. Every new zero is off the line, but the depths tend to zero.
 
@@ -30,19 +30,27 @@ reciprocal power above one in
 the actual Xi zero count. Existing approaching models use quadratic heights
 and a cosh base; their linear-density count does not settle this target.
 
-## Remaining proof obligations
+## Proof and Lean status
 
-Product symmetry, the exact paired count, order-one growth, Gamma
-normalization, and the complete landing counterexample require Lean proofs.
-No Euler product or Dirichlet-series representation is claimed for this
-calibration.
+The points have summable reciprocal `p`-powers for every `p>1`, inherited
+from the Xi ordinates. Their distinct depths make the divisor injective;
+the indexed genus-one product therefore has analytic order one at each
+listed point and no other zeros. Sign and conjugation permutations give
+the functional equation and reality. The product bound
+`|G(s)|≤exp(Cp|s−1/2|^p)`, `1<p≤2`, gives order at most one.
+Pairing adjacent ordinates gives the exact count `2⌊Nζ(T)/2⌋`, hence the
+Riemann–von Mangoldt remainder. Since `G(1)≠0` and `D∞(1)=2`,
+decompletion gives residue one. Depths tend to zero while the right-hand
+zero set remains infinite, so the actual analytic divisor fails landing.
 
-Five Lean drafts in `InfiniteRankWeilTheory/`, from
+Five modules in `InfiniteRankWeilTheory/`, from
 `ThePairedXiDivisorApproachesTheLine.lean` through
-`TheRiemannGammaFactorDoesNotForceLanding.lean`, state the complete
-construction and its analytic multiplicity audit. The divisor module
-passed with standard transitive axioms: distinct points, exact paired
-height count, local finiteness, and summability of every reciprocal power
-above one. The entire-product module also passed: exact zero set, simple
-analytic multiplicities, functional equation, reality, and growth of order
-at most one. The remaining three modules and final direct audits are pending.
+`TheRiemannGammaFactorDoesNotForceLanding.lean`, passed compilation and
+transitive audits with only `propext`, `Classical.choice`, `Quot.sound`.
+The capstone is `exists_riemann_gamma_counting_model_without_landing`.
+Its direct check passed; final direct checks of the four supporting
+modules remain. The umbrella import and README are wired.
+
+The positive survivor is the exact paired-count construction with simple
+analytic multiplicities, order at most one, and residue normalization.
+No Euler product or Dirichlet-series representation is claimed.

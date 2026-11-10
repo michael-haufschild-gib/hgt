@@ -1,7 +1,7 @@
 # Infinite-Rank Weil Theory over Spec ℤ (IRW)
 
-Namespace `GaloisForLFunctions.InfiniteRankWeilTheory`; umbrella `InfiniteRankWeilTheory.lean`;
-16 modules. Specification: §2.8b of
+Namespace `GaloisForLFunctions.InfiniteRankWeilTheory`; umbrella `InfiniteRankWeilTheory.lean`.
+Specification: §2.8b of
 [the review-0811 obstacles summary](../../../docs/reports/review-0811/obstacles-summary.md).
 
 ## 1. Motivation
@@ -30,9 +30,19 @@ holds, what it costs, and which arithmetic input it needs that the finite-rank f
 | self-improvement | finite elimination; any constant | works for towers whose outer part is **well-founded** (ZAL); the window length is the **exceptional rank** (number of distinct visible top points), and the infinite remainder enters only through its **trace norm** |
 | AAL | automatic (finite rank, periodic heads) | AAL fails exactly at an **isolated top**: a finite-rank datum riding on an infinite-rank remainder |
 | reflection | `β ↦ 1/β` | acts on level sums only by `S(−ν) = conj S(ν)`; consistent with every finite off-line layer |
+| landing | finite zero set | the Riemann Gamma factor, pole residue, and Riemann–von Mangoldt count admit infinitely many simple off-line zeros approaching the line |
 | count | Tate limit of a count | the Toeplitz count of one tower is positive at every weight iff at the critical weight; positivity is a crude bound, implies AAL, and with ZAL is RH; a count positive only by renormalization carries no sign |
 
 ## 2. Objects
+
+`exists_riemann_gamma_counting_model_without_landing` constructs an entire,
+real, FE-symmetric function `G`, of order at most one, with zeros
+`1/2±1/(4(n+1))±iγ₂ₙ₊₁`. Its positive-height count differs from Xi's by
+at most one. Entire decompletion produces a meromorphic `L` with residue
+one at `1` and literal completion `Γℝ(s)L(s)=G(s)/(G(1)s(s−1))`.
+Every zero is simple; the actual analytic zero configuration approaches
+the line and fails the landing law. This calibration asserts no Euler
+product or Dirichlet-series representation.
 
 | Object | Lean | Meaning |
 |---|---|---|

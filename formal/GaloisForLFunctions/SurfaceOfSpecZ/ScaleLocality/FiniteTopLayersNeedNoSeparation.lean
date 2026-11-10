@@ -173,7 +173,7 @@ theorem zeta_finite_top_breaks_every_floor {b : ℝ} (hb : 0 < b)
   have hcost : |K| + 1 ≤ ε * Real.exp (b * u) := by
     have hh := mul_le_mul_of_nonneg_left hexp hε.le
     dsimp [M] at hh
-    rw [mul_div_cancel₀ _ hε.ne'] at hh
+    rw [← mul_div_assoc, mul_div_cancel_left₀ _ hε.ne'] at hh
     exact hh
   have hraw := mul_lt_mul_of_pos_right hneg (Real.exp_pos (b * u))
   rw [normTrace, mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one] at hraw

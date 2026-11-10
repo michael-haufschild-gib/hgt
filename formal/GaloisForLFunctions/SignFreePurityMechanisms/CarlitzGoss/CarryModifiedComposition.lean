@@ -156,7 +156,7 @@ private theorem positive_remainder_of_preserved_inverse_coordinate {k : ℕ}
     linarith only [hI, hcoord, hCP, hlastpos]
   refine ⟨hu, ?_⟩
   by_contra hn
-  push_neg at hn
+  push Not at hn
   have he (h : ZMod s) : u h = 0 := le_antisymm (hn h) (hu h)
   simp only [inverseContent, cyclicWeighted, he, Int.cast_zero, mul_zero,
     sum_const, nsmul_eq_mul, mul_zero, zero_div] at hpos
@@ -221,6 +221,7 @@ private theorem exists_carry_composition_from_rows {k α : ℕ}
     have hs := intervalCarryRow_step (p := (p : ℤ)) (α := α) (β := β) (w := w)
       (hstep h.val (k + 1 - (j + 1)) hn)
     rw [he] at hs
+    change R h.val (k + 1 - j) + 1 ≤ R h.val (k + 1 - (j + 1)) at hs
     change 1 ≤ R h.val (k + 1 - (j + 1)) - R h.val (k + 1 - j)
     omega
   have hdcounts (j : ℕ) (hj : j < k + 1) (h : ZMod s) :
@@ -245,7 +246,15 @@ private theorem exists_carry_composition_from_rows {k α : ℕ}
     have hu := congrFun (tokenContent_union colour C.prefix_disjoint_last) (x.1 : ZMod s)
     rw [C.prefix_union_last, hlast] at hu
     have hsingle : tokenContent colour {x} (x.1 : ZMod s) = 1 := by
-      simp [tokenContent, colour]
+      have hf : ({x} : Finset (Digit p)).filter (fun t => colour t = (x.1 : ZMod s)) = {x} := by
+        ext z
+        simp only [mem_filter, mem_singleton]
+        constructor
+        · exact fun hz => hz.1
+        · intro hez
+          subst z
+          exact ⟨rfl, rfl⟩
+      simp only [tokenContent, hf, card_singleton, Nat.cast_one]
     simp only [Pi.add_apply, hsingle] at hu
     linarith only [he, hu]
   have hRbound (h : ℕ) : (p : ℤ) * R (h + 1) 0 - R h 0 ≤ tokenContent colour S (h : ZMod s) := by
@@ -287,7 +296,147 @@ private theorem exists_carry_composition_from_rows {k α : ℕ}
   obtain ⟨Z, hZ, hprefix⟩ := exists_tauMonotone_inverse_prefixes hp (k + 1) S d hd0 hdstep hdcounts hdLast
   exact ⟨Z, hZ, hprefix⟩
 
-#print axioms exists_carry_composition_from_rows
+/-- A normalized singleton composition has an actual increasing carry
+modification. It keeps outside prefixes, absorbs the singleton at the top
+residue, and creates the digit gaps needed for the geometric weight bound. -/
+theorem exists_singleton_carry_modification {k : ℕ}
+    (C D : DigitComposition p s (k + 2) S) (hp : 2 ≤ p) {x y : Digit p}
+    (hlast : C.parts (Fin.last (k + 1)) = {x})
+    (hnorm : ∀ i : Fin (k + 1),
+      inverseContent (p : ℚ) (fun j => (C.content i.castSucc j : ℚ)) 0 = 1)
+    (hy : y ∈ D.parts (Fin.last (k + 1))) (hyx : y ≠ x)
+    (hweight : cyclicWeighted (p : ℤ) (D.content (Fin.last (k + 1))) 0 =
+      (p : ℤ) ^ (x.1 : ZMod s).val)
+    (hbelow : ∀ z ∈ D.parts (Fin.last (k + 1)), (z.1 : ZMod s).val < (x.1 : ZMod s).val) :
+    ∃ (α : ℕ) (Z : DigitComposition p s (k + 2) S),
+      α < (x.1 : ZMod s).val ∧ Z.TauMonotone ∧
+      (∀ z ∈ D.parts (Fin.last (k + 1)), α ≤ (z.1 : ZMod s).val) ∧
+      (∀ h : ZMod s, ¬ (α ≤ h.val ∧ h.val ≤ (x.1 : ZMod s).val) → ∀ j ≤ k + 1,
+        tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits j) h =
+          tokenContent (fun t : Digit p => (t.1 : ZMod s)) (C.prefixDigits j) h) ∧
+      tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits (k + 1)) (x.1 : ZMod s) =
+        tokenContent (fun t : Digit p => (t.1 : ZMod s)) S (x.1 : ZMod s) ∧
+      (∀ h : ZMod s, α ≤ h.val → h.val < (x.1 : ZMod s).val →
+        tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits (k + 1)) h ≤
+          max 0 (tokenContent (fun t : Digit p => (t.1 : ZMod s)) (C.prefixDigits (k + 1)) h -
+            ((p : ℤ) - 1))) ∧
+      (∀ h : ZMod s, α ≤ h.val → h.val ≤ (x.1 : ZMod s).val → ∀ j < k + 1,
+        0 < tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits j) h →
+        tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits j) h + ((p : ℤ) - 1) ≤
+          tokenContent (fun t : Digit p => (t.1 : ZMod s)) (Z.prefixDigits (j + 1)) h) := by
+  obtain ⟨a, hab, haP, haHigh, hDsupport⟩ :=
+    C.exists_singleton_carry_boundary D hp hlast hnorm hy hyx hweight hbelow
+  obtain ⟨w, hperiod, hempty, hfloor, hstep, hEold, hInv⟩ := C.exists_backward_inverse_rows hp
+  let α : ℕ := a.val
+  let β : ℕ := (x.1 : ZMod s).val
+  let colour : Digit p → ZMod s := fun t => t.1
+  have hp1 : (1 : ℤ) ≤ p := by omega
+  have hp0 : (0 : ℤ) ≤ p := by omega
+  have hβs : β < s := ZMod.val_lt _
+  have hterminal : w α 0 = ((k + 1 : ℕ) : ℤ) := by
+    have hi := hInv a.val 0 (by omega)
+    simp only [Nat.sub_zero, ZMod.natCast_zmod_val] at hi
+    rw [haP] at hi
+    exact_mod_cast hi
+  have hhigh (h : ℕ) (ha : α < h) (hb : h ≤ β) : ((k + 1 : ℕ) : ℤ) + 1 ≤ w h 0 := by
+    have hhs : h < s := hb.trans_lt hβs
+    have hval : (h : ZMod s).val = h := ZMod.val_natCast_of_lt hhs
+    have hq := haHigh (h : ZMod s) (by rw [hval]; exact ha) (by rw [hval]; exact hb)
+    have hi := hInv h 0 (by omega)
+    simp only [Nat.sub_zero] at hi
+    rw [← hi] at hq
+    exact_mod_cast hq
+  have hcoord : (w 0 0 : ℚ) = inverseContent (p : ℚ)
+      (fun j => (tokenContent colour (C.prefixDigits (k + 1)) j : ℚ)) 0 := by
+    simpa only [Nat.sub_zero, Nat.cast_zero] using hInv 0 0 (by omega)
+  obtain ⟨Z, hZ, hprefix⟩ := C.exists_carry_composition_from_rows hp hlast w
+    hperiod hempty hfloor hstep hEold hcoord hab hterminal hhigh
+  let R : ℕ → ℕ → ℤ := intervalCarryRow (p : ℤ) α β w
+  have hRperiod : R s = R 0 := by
+    rw [show R s = w s from intervalCarryRow_outside _ _ _ _ (by omega),
+      show R 0 = w 0 from intervalCarryRow_outside _ _ _ _ (by omega)]
+    exact hperiod
+  have hZeq (j : ℕ) (hj : j ≤ k + 1) (h : ZMod s) :
+      tokenContent colour (Z.prefixDigits j) h =
+        (p : ℤ) * R (h.val + 1) (k + 1 - j) - R h.val (k + 1 - j) := by
+    rw [hprefix j hj]
+    exact cyclicDifference_nat_rows (p : ℤ) (fun r => R r (k + 1 - j))
+      (congrFun hRperiod (k + 1 - j)) h
+  have hOldTerminal (h : ZMod s) : (p : ℤ) * w (h.val + 1) 0 - w h.val 0 =
+      tokenContent colour (C.prefixDigits (k + 1)) h := by
+    simpa only [Nat.sub_zero, ZMod.natCast_zmod_val] using hEold h.val 0 (by omega)
+  have hboundary : ∀ n ≤ k + 1, w α n = ((k + 1 : ℕ) : ℤ) - n :=
+    inverse_row_eq_floor_of_terminal_eq hterminal (hstep α) (hfloor α)
+  have hOldNonneg (h n : ℕ) (hn : n ≤ k + 1) :
+      0 ≤ (p : ℤ) * w (h + 1) n - w h n := by
+    rw [hEold h n hn]
+    exact tokenContent_nonneg colour _ _
+  have hOldNested (h n : ℕ) (hn : n < k + 1) :
+      (p : ℤ) * w (h + 1) (n + 1) - w h (n + 1) ≤ (p : ℤ) * w (h + 1) n - w h n := by
+    rw [hEold h (n + 1) (by omega), hEold h n hn.le]
+    apply tokenContent_subset colour
+    intro z hz
+    obtain ⟨i, hi, hiz⟩ := (C.mem_prefix (k + 1 - (n + 1)) z).mp hz
+    exact (C.mem_prefix (k + 1 - n) z).mpr ⟨i, by omega, hiz⟩
+  have hRlower (h : ℕ) (ha : α ≤ h) (hb : h < β) :
+      (p : ℤ) * R (h + 1) 0 - R h 0 ≤
+        max 0 ((p : ℤ) * w (h + 1) 0 - w h 0 - ((p : ℤ) - 1)) := by
+    by_cases he : h = α
+    · subst h
+      have ht := intervalCarryRow_terminal_boundary hp0 hab hterminal
+      have hm := le_max_right (0 : ℤ) ((p : ℤ) * w (α + 1) 0 - w α 0 - ((p : ℤ) - 1))
+      rw [hterminal] at hm ⊢
+      dsimp only [R]
+      nlinarith only [ht, hm]
+    · exact intervalCarryRow_terminal_interior hp0 (show α < h by omega) hb
+  refine ⟨α, Z, hab, hZ, hDsupport, ?_, ?_, ?_, ?_⟩
+  · intro h hh j hj
+    rw [hZeq j hj h]
+    dsimp only [R]
+    rw [intervalCarryRow_content_outside (p : ℤ) α β w hh (k + 1 - j)]
+    have he := hEold h.val (k + 1 - j) (Nat.sub_le _ _)
+    have hback : k + 1 - (k + 1 - j) = j := by omega
+    simpa only [hback, ZMod.natCast_zmod_val] using he
+  · rw [hZeq (k + 1) le_rfl (x.1 : ZMod s), Nat.sub_self]
+    change (p : ℤ) * intervalCarryRow (p : ℤ) α β w (β + 1) 0 -
+      intervalCarryRow (p : ℤ) α β w β 0 = _
+    have hwt : w β 0 ≤ (p : ℤ) * w (β + 1) 0 := by
+      have hh := hOldNonneg β 0 (by omega)
+      omega
+    rw [intervalCarryRow_terminal_top hab hwt]
+    have he := hOldTerminal (x.1 : ZMod s)
+    have hu := congrFun (tokenContent_union colour C.prefix_disjoint_last) (x.1 : ZMod s)
+    rw [C.prefix_union_last, hlast] at hu
+    have hsingle : tokenContent colour {x} (x.1 : ZMod s) = 1 := by
+      have hf : ({x} : Finset (Digit p)).filter (fun t => colour t = (x.1 : ZMod s)) = {x} := by
+        ext z
+        simp only [mem_filter, mem_singleton]
+        constructor
+        · exact fun hz => hz.1
+        · intro hez
+          subst z
+          exact ⟨rfl, rfl⟩
+      simp only [tokenContent, hf, card_singleton, Nat.cast_one]
+    simp only [Pi.add_apply, hsingle] at hu
+    linarith only [he, hu]
+  · intro h ha hb
+    rw [hZeq (k + 1) le_rfl h, Nat.sub_self, ← hOldTerminal h]
+    exact hRlower h.val ha hb
+  · intro h ha hb j hj hpos
+    rw [hZeq j hj.le h] at hpos
+    rw [hZeq j hj.le h, hZeq (j + 1) (by omega) h]
+    have hn : k + 1 - (j + 1) < k + 1 := by omega
+    have hi : k + 1 - (j + 1) + 1 = k + 1 - j := by omega
+    have hc := carry_content_bounds (h := h.val) hp1 hn hhigh hfloor hboundary
+      (fun r => hstep r (k + 1 - (j + 1)) hn)
+      (fun r => hOldNonneg r (k + 1 - (j + 1)) hn.le)
+      (fun r => hOldNested r (k + 1 - (j + 1)) hn)
+    have hg := hc.2.2 ⟨ha, hb⟩
+    dsimp only at hg
+    rw [hi] at hg
+    exact hg hpos
+
+#print axioms exists_singleton_carry_modification
 
 end DigitComposition
 end GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss
