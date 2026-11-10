@@ -6,6 +6,7 @@ import GaloisForLFunctions.SelectiveArithmetic.CancellationInTheContactsBuysTheL
 import GaloisForLFunctions.SelectiveArithmetic.AnIsolatedPairShowsAtTheRungOfItsDepth
 import GaloisForLFunctions.SelectiveArithmetic.TheFeasibleSetsOfAConductor
 import GaloisForLFunctions.SelectiveArithmetic.TheZerosOfADirichletLFunctionOnTheLadder
+import GaloisForLFunctions.SelectiveArithmetic.TheSignIsSquareRootCancellationOfTheRieszMean
 
 /-!
 # Selective Arithmetic
@@ -37,6 +38,9 @@ sign, and where the first statement beyond that scale lies.
   feasibility at a larger conductor.
 * The zeros of a Dirichlet `L`-function on the ladder of its conductor: positivity below the rung
   one, companions of every zero deeper than a rung above it.
+* The converse of the exchange rate on the prime side: the sign of a dominated system on the two
+  polar packets of an aperture is square-root cancellation of the Riesz mean of its contacts at
+  that scale; for a character it bounds `Σ Λ(n) Re χ(n) log(Y/n)`.
 
 See `SelectiveArithmetic/README.md`.
 -/

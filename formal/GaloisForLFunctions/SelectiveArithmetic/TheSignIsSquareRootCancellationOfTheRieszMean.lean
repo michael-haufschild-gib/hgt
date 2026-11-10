@@ -15,6 +15,10 @@ on the odd polar packet of the window `[−a, a]` with margin `e^{−a}`, then
 `|Σ_{2 ≤ n ≤ e^{2a}} w(n) (2a − log n)| ≤ (3 log q + C (1 + a)³) e^{a}`.
 With `Y = e^{2a}` the Riesz mean `Σ_{n ≤ Y} w(n) log(Y/n)` is at most `√Y (3 log q + C log³ Y)`.
 
+**Corollary** (`exists_not_feasible_of_riesz_ge`). A dominated system whose Riesz mean at
+`Y = e^{2a}` is at least `cY` in absolute value is infeasible as soon as
+`3 log q + C (1 + a)³ < c e^{a}`.
+
 **Corollary** (`exists_riesz_twist_le_of_nonneg`). For a primitive character `χ` of conductor
 `q`: if the sum over the zeros of `L(s, χ)` is nonnegative on these two packets, then
 `|Σ_{n ≤ e^{2a}} Λ(n) Re χ(n) (2a − log n)| ≤ (3 (log q + π) + C (1 + a)³) e^{a}`.
@@ -506,6 +510,25 @@ theorem exists_riesz_le_of_feasible :
       (tsupport_ofReal_subset_of_eq_zero fun u hu => evenPolar_eq_zero hδ hu))
     (hfe _ (contDiff_ofReal_packet ((contDiff_oddPolar a _).of_le (by norm_num)))
       (tsupport_ofReal_subset_of_eq_zero fun u hu => oddPolar_eq_zero hδ hu))
+
+/-- **A dominated system without cancellation fails beyond the trivial aperture.** If the
+Riesz mean of the contacts at `Y = e^{2a}` is at least `c Y` in absolute value and
+`3 log q + C (1 + a)³ < c e^{a}`, the system is infeasible at aperture `a`. -/
+theorem exists_not_feasible_of_riesz_ge :
+    ∃ C : ℝ, ∀ {q a c : ℝ}, 0 ≤ Real.log q → 1 ≤ a → ∀ {w : ℕ → ℝ}, Dominated w →
+      c * Real.exp (2 * a) ≤
+        |∑ n ∈ Finset.Icc 2 ⌊Real.exp (2 * a)⌋₊, w n * (2 * a - Real.log n)| →
+      3 * Real.log q + C * (1 + a) ^ 3 < c * Real.exp a → ¬ Feasible q a w := by
+  obtain ⟨C, hC⟩ := exists_riesz_le_of_feasible
+  refine ⟨C, fun {q a c} hx ha w hw hR hbig hfe => ?_⟩
+  have h := hC hx ha hw hfe
+  have e : Real.exp (2 * a) = Real.exp a * Real.exp a := by
+    rw [← Real.exp_add]
+    congr 1
+    ring
+  rw [e] at hR
+  have h2 := mul_lt_mul_of_pos_right hbig (Real.exp_pos a)
+  linarith
 
 /-! ### The twisted part of a quadratic ring -/
 

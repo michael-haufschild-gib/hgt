@@ -59,6 +59,7 @@ import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.IncreasingPrefix
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.CarryWeightComparison
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.GreedyOptimality
 import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.PrefixCostGrowth
+import GaloisForLFunctions.SignFreePurityMechanisms.CarlitzGoss.MonicPowerSums
 
 /-!
 # Sign-free purity mechanisms

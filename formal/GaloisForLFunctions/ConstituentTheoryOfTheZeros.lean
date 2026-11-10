@@ -8,6 +8,7 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZero
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawIsTheLawOfTheCarry
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentLivesInTheBohrStrip
 
 /-!
 # Constituent theory of the zeros
@@ -39,4 +40,8 @@ operator.
 * The jump law is the law of the carry `{x} + {y} − {x + y}`: the expansions on the two sides of
   the line have the same carries, and the carries determine the series
   (`TheJumpLawIsTheLawOfTheCarry`).
+* Bohr's inequality: a Dirichlet series bounded on `Re s > x` converges absolutely on
+  `Re s > x + ½`, and on `Re s > x` when its coefficients live on finitely many primes. So a
+  bounded constituent with a zero needs infinitely many primes and `0 ≤ x < ½`
+  (`ABoundedConstituentLivesInTheBohrStrip`).
 -/

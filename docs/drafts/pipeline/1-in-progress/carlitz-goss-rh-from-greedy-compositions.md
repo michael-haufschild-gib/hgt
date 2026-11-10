@@ -91,6 +91,7 @@ Modules under `SignFreePurityMechanisms/CarlitzGoss/`:
 | `CarryWeightComparison` | The actual singleton carry modification strictly increases weight, by cancellation of unchanged prefixes and the two geometric bounds |
 | `GreedyOptimality` | For every `p≥2`, positive residue degree and composition length, greedy compositions are exactly the weight maxima; maximizing numerical part values are unique |
 | `PrefixCostGrowth` | Consecutive greedy prefix costs more than double and have strict successive slopes; the greedy cost of a divisible total is below that total |
+| `MonicPowerSums` | Exact binomial recurrence for the actual polynomial power sums over all monic polynomials of a fixed degree; all finite-field coefficient moments evaluated |
 
 Listed modules passed direct and transitive axiom audits using only the
 three standard axioms and are wired into the umbrella.
@@ -232,8 +233,13 @@ composition exists, its greedy weight is `>dN`; every zero-remainder
 composition has weight `≤dN`. Otherwise the zero-remainder terms are
 exactly the admissible `d`-part compositions, since divisibility of `N`
 forces their final part divisible too. Thus the positive-part optimality
-theorem covers both cases. This coefficient reduction and the subsequent
-valuation-stabilization and strict-slope arguments remain to be formalized.
+theorem covers both cases.
+
+`MonicPowerSums.lean` formalizes the recurrence on actual monic polynomials
+in `monicPowerSum_succ`. The finite-field moment is zero at exponent zero
+and otherwise equals `−1` exactly on multiples of `q−1`. Its direct check
+and transitive axiom audit pass. The Lucas selection, leading-coefficient
+identification and valuation stabilization remain to be formalized.
 
 ## Greedy prefix-cost growth
 
