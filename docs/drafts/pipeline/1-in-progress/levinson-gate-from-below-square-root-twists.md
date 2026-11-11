@@ -55,10 +55,12 @@ See `3-formalized/shifted-selberg-euler-correction.md`.
 
 The scaled zeta-pole value and its first two literal derivatives are
 formalized for arbitrary diverging scales. Every normalized chi-conductor
-error jet vanishes. Differentiation under the actual chi taper is also
-formalized. Uniform chi-weight/taper limits, the complete main-term
-product assembly, and the three-profile scalar identification remain
-under formalization.
+error jet vanishes. The actual chi jets converge uniformly across moving
+blocks whose endpoint conductor ratios converge. Differentiation under
+the taper and its integrated jet limits are formalized; only bounded
+relative support length is required. The complete main-term product
+assembly and the three-profile scalar identification remain under
+formalization.
 
 The final obligations are the dyadic law for one fixed mollifier and its
 insertion into `RHTower.levinsonReciprocalLogMeanSquareGate_of_dyadicLaw`

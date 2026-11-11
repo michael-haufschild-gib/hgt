@@ -10,7 +10,7 @@ blocks whose length, divided by the chosen block scale, stays bounded.
 -/
 
 open Complex Filter MeasureTheory Metric Set Topology
-open RHTower GaloisForLFunctions.HTGeometry
+open RHTower RHTower.ZetaGateProductAFE GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
@@ -28,10 +28,13 @@ theorem analyticAt_normalizedChiTaperIntegral {L p q η u : ℝ}
     AnalyticAt ℂ (fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair (z / (L : ℂ)) t)
       (u : ℂ) := by
   have hd := div_pos hu hL
-  have ha := (differentiableOn_chi_integral hη hp hd hu20).analyticOnNhd
+  have ha := (differentiableOn_chi_integral (q := q) hη hp hd hu20).analyticOnNhd
     isOpen_ball ((u / L : ℝ) : ℂ) (mem_ball_self hd)
-  have hh := ha.comp (f := fun z : ℂ => z / (L : ℂ)) (by fun_prop)
-  simpa only [Function.comp_def, Complex.ofReal_div] using hh
+  have ha' : AnalyticAt ℂ (fun z => ∫ t, blockWindowC p q η t * holomorphicChiPair z t)
+      ((u : ℂ) / (L : ℂ)) := by
+    simpa only [Complex.ofReal_div] using ha
+  have hs : AnalyticAt ℂ (fun z : ℂ => z / (L : ℂ)) (u : ℂ) := by fun_prop
+  simpa only [Function.comp_def] using ha'.comp (f := fun z : ℂ => z / (L : ℂ)) hs
 
 /-- Real restrictions of the literal normalized reflected integral jets. -/
 def realNormalizedChiTaperJet (L p q η : ℝ) (j : ℕ) (u : ℝ) : ℝ :=
@@ -97,10 +100,11 @@ private theorem norm_tapered_integral_sub_mass_mul_le {p q η ε : ℝ}
   have hW : Integrable (blockWindow p q η) volume :=
     (contDiff_blockWindow p q η).continuous.integrable_of_hasCompactSupport
       (hasCompactSupport_blockWindow hη)
-  have hWC := integrable_blockWindowC (p := p) (q := q) hη
+  have hWC := GaloisForLFunctions.HTGeometry.integrable_blockWindowC (p := p) (q := q) hη
   have hb (t : ℝ) : ‖blockWindowC p q η t * (F t - c)‖ ≤ blockWindow p q η t * ε := by
     by_cases ht : t ∈ Icc (p - η) (q + η)
-    · rw [norm_mul, norm_blockWindowC_eq]
+    · rw [norm_mul, blockWindowC, Complex.norm_real, Real.norm_eq_abs,
+        abs_of_nonneg (blockWindow_nonneg p q η t)]
       exact mul_le_mul_of_nonneg_left (hclose t ht) (blockWindow_nonneg p q η t)
     · rw [blockWindowC_eq_zero hη ht, zero_mul, norm_zero]
       exact mul_nonneg (blockWindow_nonneg p q η t) hε
@@ -108,9 +112,14 @@ private theorem norm_tapered_integral_sub_mass_mul_le {p q η ε : ℝ}
     (hW.mul_const ε).mono' (hWC.aestronglyMeasurable.mul (hF.sub aestronglyMeasurable_const))
       (Eventually.of_forall hb)
   have hFI : Integrable (fun t => blockWindowC p q η t * F t) volume := by
-    convert hDI.add (hWC.mul_const c) using 1
-    funext t
-    ring
+    have hh := hDI.add (hWC.mul_const c)
+    have he : (fun t => blockWindowC p q η t * (F t - c) + blockWindowC p q η t * c) =
+        (fun t => blockWindowC p q η t * F t) := by
+      funext t
+      ring
+    change Integrable (fun t => blockWindowC p q η t * (F t - c) + blockWindowC p q η t * c) volume at hh
+    rw [he] at hh
+    exact hh
   have he : (∫ t, blockWindowC p q η t * (F t - c)) =
       (∫ t, blockWindowC p q η t * F t) - ((∫ t, blockWindow p q η t : ℝ) : ℂ) * c := by
     simp_rw [mul_sub]
@@ -152,7 +161,7 @@ theorem tendsto_normalizedChiTaperJet_error
       field_simp [show B + 1 ≠ 0 by positivity]
     nlinarith only [he, hδ]
   have hclose := eventually_uniform_scaled_holomorphicChiPair_jet hL hp hab hτa hτb hC j hδ
-  filter_upwards [hgeom, hL.eventually_gt_atTop 0, hu.eventually_gt_const hu₀,
+  filter_upwards [hgeom, hL.eventually_gt_atTop 0, hu.eventually (Ioi_mem_nhds hu₀),
     hp.eventually_ge_atTop 4, hsmall, hclose] with i hi hLi hui hpi hsi hci
   have herr : ‖normalizedChiTaperJet (L i) (p i) (q i) (η i) (u i) j -
       ((∫ t, blockWindow (p i) (q i) (η i) t : ℝ) : ℂ) *

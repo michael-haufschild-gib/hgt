@@ -30,8 +30,8 @@ is required; enlarging the recursive centres alone is insufficient.
 
 ## Lean status
 
-The endogenous-radius theorem is already formalized. The prescribed-radius
-construction remains open; no new theorem is claimed.
+Endogenous radius: `SubLogarithmicWindowsMissTheMinimalFace`. Prescribed radius up to
+`(C/256) log log T`: `DoubleLogarithmicWindowsMissTheMinimalFace`. Beyond: open.
 
 ## Where the construction stops (2026-11-11)
 
@@ -46,7 +46,6 @@ Both costs are intrinsic to one level of this kind. Positivity on `|v| ≤ R` wi
 Frequencies at density `≤ C log t` approximate on a window of length `2R` only where
 `C log t ≳ R` (Landau density), so `Γ ≳ e^{cR}`.
 
-**Survivor (target).** For every prescribed `R(T) ≤ ε(C) log log T` the construction runs with
-level radii `R(T_k)` at minimal centres `T_k`: the centre thresholds are `exp(exp(O(r_k)))`.
-Lean status: not started.
+**Survivor (formalized).** One configuration serves every prescribed `R(T) ≤ (C/256) log log T`:
+`3-formalized/double-logarithmic-windows-miss-the-minimal-face.md`. Open: `log log T ≪ R(T) = o(log T)`.
 

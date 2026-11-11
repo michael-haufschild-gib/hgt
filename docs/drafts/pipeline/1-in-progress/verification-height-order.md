@@ -38,6 +38,21 @@ So `log log H = O(a)` requires one of: maximal zero gaps `≤ (π − ε)/a` at 
 `[e^{Ca}, 2T₁]` (a premise, not a theorem), or a positivity argument that does not sample the
 low band at the zeros. None is in the corpus.
 
+## What the margin bound must be
+
+In `W(f,f) = κ⁻¹W(f,g) + ∫|h_f|²(1 − q²/κ)(μ + P_X)` the zero side must pay `D·∫_{|τ|≤T₁}|h_f|²`
+up to a fixed fraction of `∫|f|²`: `∫_{|τ|≤T₁}|h|² ≤ K Σ_γ q(γ)²|h(γ)|² + c₀‖h‖²` on `PW_a`. Then
+`b ≍ K^{−1/2}` and the tail `b⁻⁶H⁻⁴` give `log log H = O(log log K)`; so `K = exp(e^{O(a)})` is the
+target. The prolate bound (`2e^{2a}` missing degrees of freedom below `T* = 2πe^{2a}`) shows
+`K ≥ exp(c e^{2a}/a)`, so the order is right. Any single interpolation from nodes at height `G`
+costs `exp(caG)`; `K` must come from local sampling. Local sampling needs separated zeros at
+density `> a/π` in windows of bounded length: Riemann–von Mangoldt (`S = O(log t)`) gives only
+`O(1)` clusters per unit; a Selberg-type `S(t) ≪ log t/log log t` from local RH would give gaps
+`< π/a` above `exp(e^{O(a)})`. Between `T*` and that height the proved inputs give no local
+sampling inequality; the needed theorem is a sampling bound for `PW_a` on sets with local count
+deficit `≤ d` in every window, with constant `exp(O(a d))`. Neither it nor the local Selberg bound
+is in the corpus.
+
 ## Possible survivor
 
 A test with Fourier decay of growing order in the gap theorem lowers `gapScale` from `σ^{−4/3}`

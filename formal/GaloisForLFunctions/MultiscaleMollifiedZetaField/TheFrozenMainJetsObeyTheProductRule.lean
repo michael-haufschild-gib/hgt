@@ -58,39 +58,41 @@ theorem realNormalizedChiTaperJet_zero (L p q η u : ℝ) :
   simp only [iteratedDeriv_zero, ← Complex.ofReal_div, holomorphicChiPair_ofReal]
   rw [integral_chiPairWeight_eq_ofReal, Complex.ofReal_re]
 
-private def tripleFirst (a a₁ b b₁ c c₁ : ℝ) : ℝ :=
+/-- First jet of a product of three scalar factors. -/
+def scalarTripleFirstJet (a a₁ b b₁ c c₁ : ℝ) : ℝ :=
   a₁ * b * c + a * b₁ * c + a * b * c₁
 
-private def tripleSecond (a a₁ a₂ b b₁ b₂ c c₁ c₂ : ℝ) : ℝ :=
+/-- Second jet of a product of three scalar factors. -/
+def scalarTripleSecondJet (a a₁ a₂ b b₁ b₂ c c₁ c₂ : ℝ) : ℝ :=
   a₂ * b * c + a * b₂ * c + a * b * c₂ +
     2 * a₁ * b₁ * c + 2 * a₁ * b * c₁ + 2 * a * b₁ * c₁
 
 private theorem hasDerivAt_triple {a b c : ℝ → ℝ} {a₁ b₁ c₁ z : ℝ}
     (ha : HasDerivAt a a₁ z) (hb : HasDerivAt b b₁ z) (hc : HasDerivAt c c₁ z) :
     HasDerivAt (fun x => a x * b x * c x)
-      (tripleFirst (a z) a₁ (b z) b₁ (c z) c₁) z := by
+      (scalarTripleFirstJet (a z) a₁ (b z) b₁ (c z) c₁) z := by
   apply ((ha.mul hb).mul hc).congr_deriv
-  dsimp only [tripleFirst]
+  dsimp only [scalarTripleFirstJet]
   ring
 
-private theorem hasDerivAt_tripleFirst {a a₁ b b₁ c c₁ : ℝ → ℝ} {a₂ b₂ c₂ z : ℝ}
+private theorem hasDerivAt_scalarTripleFirstJet {a a₁ b b₁ c c₁ : ℝ → ℝ} {a₂ b₂ c₂ z : ℝ}
     (ha : HasDerivAt a (a₁ z) z) (ha₁ : HasDerivAt a₁ a₂ z)
     (hb : HasDerivAt b (b₁ z) z) (hb₁ : HasDerivAt b₁ b₂ z)
     (hc : HasDerivAt c (c₁ z) z) (hc₁ : HasDerivAt c₁ c₂ z) :
-    HasDerivAt (fun x => tripleFirst (a x) (a₁ x) (b x) (b₁ x) (c x) (c₁ x))
-      (tripleSecond (a z) (a₁ z) a₂ (b z) (b₁ z) b₂ (c z) (c₁ z) c₂) z := by
+    HasDerivAt (fun x => scalarTripleFirstJet (a x) (a₁ x) (b x) (b₁ x) (c x) (c₁ x))
+      (scalarTripleSecondJet (a z) (a₁ z) a₂ (b z) (b₁ z) b₂ (c z) (c₁ z) c₂) z := by
   apply ((((ha₁.mul hb).mul hc).add ((ha.mul hb₁).mul hc)).add
     ((ha.mul hb).mul hc₁)).congr_deriv
-  dsimp only [tripleSecond]
+  dsimp only [scalarTripleSecondJet]
   ring
 
 /-- The first product-rule expression for the normalized main term. -/
 def frozenMainProductFirst (P : ℝ → ℝ) (N : ℕ) (u p q η z : ℝ) : ℝ :=
-  tripleFirst (frozenDirectGcd P N u z) (frozenDirectGcdFirst P N u z)
+  scalarTripleFirstJet (frozenDirectGcd P N u z) (frozenDirectGcdFirst P N u z)
     (scaledZetaPoleValue (Real.log N) (-2) (u + z))
     (scaledZetaPoleFirstJet (Real.log N) (-2) (u + z))
     (∫ t, blockWindow p q η t) 0 +
-  tripleFirst (frozenReflectedGcd P N u z) (frozenReflectedGcdFirst P N u z)
+  scalarTripleFirstJet (frozenReflectedGcd P N u z) (frozenReflectedGcdFirst P N u z)
     (scaledZetaPoleValue (Real.log N) 2 (u + z))
     (scaledZetaPoleFirstJet (Real.log N) 2 (u + z))
     (realNormalizedChiTaperJet (Real.log N) p q η 0 (u + z))
@@ -98,13 +100,13 @@ def frozenMainProductFirst (P : ℝ → ℝ) (N : ℕ) (u p q η z : ℝ) : ℝ 
 
 /-- The second product-rule expression includes all three cross terms. -/
 def frozenMainProductSecond (P : ℝ → ℝ) (N : ℕ) (u p q η z : ℝ) : ℝ :=
-  tripleSecond (frozenDirectGcd P N u z) (frozenDirectGcdFirst P N u z)
+  scalarTripleSecondJet (frozenDirectGcd P N u z) (frozenDirectGcdFirst P N u z)
     (frozenDirectGcdSecond P N u z)
     (scaledZetaPoleValue (Real.log N) (-2) (u + z))
     (scaledZetaPoleFirstJet (Real.log N) (-2) (u + z))
     (scaledZetaPoleSecondJet (Real.log N) (-2) (u + z))
     (∫ t, blockWindow p q η t) 0 0 +
-  tripleSecond (frozenReflectedGcd P N u z) (frozenReflectedGcdFirst P N u z)
+  scalarTripleSecondJet (frozenReflectedGcd P N u z) (frozenReflectedGcdFirst P N u z)
     (frozenReflectedGcdSecond P N u z)
     (scaledZetaPoleValue (Real.log N) 2 (u + z))
     (scaledZetaPoleFirstJet (Real.log N) 2 (u + z))
@@ -168,10 +170,10 @@ private theorem hasDerivAt_frozenMainProductFirst {N : ℕ} (hN : 1 < N)
   obtain ⟨hr, hr₁⟩ := shifted_pole_derivatives hL.ne' hu.ne' (by norm_num : (2 : ℝ) ≠ 0)
   have hc := shifted_chi_derivative hL hu hη hp hz20 0
   have hc₁ := shifted_chi_derivative hL hu hη hp hz20 1
-  exact (hasDerivAt_tripleFirst (hasDerivAt_frozenDirectGcd hN P u z)
+  exact (hasDerivAt_scalarTripleFirstJet (hasDerivAt_frozenDirectGcd hN P u z)
     (hasDerivAt_frozenDirectGcdFirst P N u z) hd hd₁
     (hasDerivAt_const z (∫ t, blockWindow p q η t)) (hasDerivAt_const z 0)).add
-      (hasDerivAt_tripleFirst (hasDerivAt_frozenReflectedGcd hN P u z)
+      (hasDerivAt_scalarTripleFirstJet (hasDerivAt_frozenReflectedGcd hN P u z)
         (hasDerivAt_frozenReflectedGcdFirst P N u z) hr hr₁ hc hc₁)
 
 /-- The second product formula is the actual normalized second main jet. -/

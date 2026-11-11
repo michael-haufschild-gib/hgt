@@ -115,6 +115,7 @@ import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.AbsolutePrimeWindowTrans
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SignedPrimeLogSquareWindows
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.HighFrequencyBinomialPolynomials
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.SubLogarithmicWindowsMissTheMinimalFace
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.DoubleLogarithmicWindowsMissTheMinimalFace
 
 /-!
 # The surface of `Spec ℤ`
