@@ -141,7 +141,8 @@ theorem normalizedHarmonicArray_abs_le {c N : ℕ} (hN : 1 < N)
         _ ≤ B / (d : ℝ) := div_le_div_of_nonneg_right (hb d hd) (Nat.cast_nonneg _)
         _ ≤ η / (d : ℝ) + B * (1 / (d : ℝ)) := by
           have hh := div_nonneg hη (Nat.cast_nonneg d)
-          linarith only [hh]
+          rw [mul_one_div]
+          exact le_add_of_nonneg_left hh
     · rw [if_neg ht, mul_zero, add_zero]
       exact div_le_div_of_nonneg_right (hi d hd (le_of_not_ge ht)) (Nat.cast_nonneg _)
   rw [normalizedHarmonicArray, abs_div, abs_of_pos hlog]

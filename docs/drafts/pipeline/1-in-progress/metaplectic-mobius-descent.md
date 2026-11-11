@@ -406,6 +406,13 @@ The full frequency indexing is injective, and all three cusp coefficient
 families are summable with weight `|frequency|⁻⁴`
 (`thetaFullFrequency_injective`, `sourceCuspCoefficient_tsum_full_index`,
 `sourceCuspCoefficient_weighted_summable`, checked).
+The actual reflected profiles have radial Bessel expansions with
+`Σ |aₕ| Lₕ^(-3/2) < ∞`. Absolute integral bounds justify the exact termwise
+Mellin transform (`sourceCuspZFamily_eq_radialBesselProfile`,
+`sourceCuspRadialCoefficient_weighted_summable`, `radialBesselProfile_mellin`, checked).
+Reciprocal Gamma reflection bounds and Gaussian regularization justify
+contour shifts under exponential strip growth and integrable boundary values
+(`VerticalContourShift.integral_eq_of_exponential_strip_growth`, checked).
 
 Cubic theta identification is formalized; uniform transfer estimates remain
 open locally. The common-cover argument removes the decaying `N(p)⁻ⁿ`

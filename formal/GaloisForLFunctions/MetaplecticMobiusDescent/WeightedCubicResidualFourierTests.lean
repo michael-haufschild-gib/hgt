@@ -21449,4 +21449,1881 @@ theorem radialBesselProfile_mellin {ι : Type*} [Countable ι]
       rw [hn i, show 4 * Real.pi * (q * Real.sqrt (r i)) = (4 * Real.pi * q) * Real.sqrt (r i) by ring]
       exact radial_bessel_coefficient_identity (r i) (4 * Real.pi * q) (hr i) (by positivity) (a i) _ s
 
+/-- The Mellin factor of the cubic radial Bessel kernel. -/
+def besselMellinFactor (q : ℝ) (s : ℂ) : ℂ :=
+  ((2 : ℂ) ^ (2 * s - 1) * Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3)) /
+    ((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1)
+
+def inverseBesselMellinFactor (q : ℝ) (s : ℂ) : ℂ :=
+  ((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1) * (2 : ℂ) ^ (1 - 2 * s) *
+    (Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3))⁻¹
+
+lemma inverseBesselMellinFactor_mul (q : ℝ) (hq : 0 < q) (s : ℂ)
+    (hs : -(1 / 3) < s.re) :
+    inverseBesselMellinFactor q s * besselMellinFactor q s = 1 := by
+  have hq0 : (((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1)) ≠ 0 :=
+    Complex.cpow_ne_zero_iff.mpr (Or.inl (Complex.ofReal_ne_zero.mpr (by positivity)))
+  have h1 : Complex.Gamma (s + 1 / 3) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by simp; linarith)
+  have h2 : Complex.Gamma (s + 2 / 3) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by simp; linarith)
+  have hp : (2 : ℂ) ^ (1 - 2 * s) * (2 : ℂ) ^ (2 * s - 1) = 1 := by
+    rw [← Complex.cpow_add _ _ (by norm_num : (2 : ℂ) ≠ 0)]
+    simp
+  unfold inverseBesselMellinFactor besselMellinFactor
+  calc
+    _ = ((((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1)) /
+          (((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1))) *
+        ((2 : ℂ) ^ (1 - 2 * s) * (2 : ℂ) ^ (2 * s - 1)) *
+        ((Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3))⁻¹ *
+          (Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3))) := by ring
+    _ = 1 := by rw [div_self hq0, hp, inv_mul_cancel₀ (mul_ne_zero h1 h2)]; ring
+
+/-- Removing the Bessel factor leaves an entire function whenever the cusp Mellin transform is entire. -/
+def continuedBesselDirichlet (F : ℝ → ℂ) (q : ℝ) (s : ℂ) : ℂ :=
+  inverseBesselMellinFactor q s * mellin F (2 * s)
+
+lemma sourceCuspRadialLength_one_le (h : O) : 1 ≤ sourceCuspRadialLength h := by
+  by_cases hh : h = 0
+  · simp only [sourceCuspRadialLength, if_pos hh, le_refl]
+  · rw [sourceCuspRadialLength, if_neg hh]
+    simpa only [Complex.normSq_eq_norm_sq] using one_le_normSq_embedding h hh
+
+theorem sourceCuspRadialCoefficient_summable (j : Fin 3) (z : ℂ) (σ : ℝ) (hσ : 2 ≤ σ) :
+    Summable (fun h : O => ‖sourceCuspRadialCoefficient j z h‖ *
+      sourceCuspRadialLength h ^ (1 / 2 - σ)) := by
+  apply (sourceCuspRadialCoefficient_weighted_summable j z).of_nonneg_of_le
+    (fun h => mul_nonneg (norm_nonneg _) (Real.rpow_nonneg (sourceCuspRadialLength_pos h).le _))
+  intro h
+  exact mul_le_mul_of_nonneg_left
+    (Real.rpow_le_rpow_of_exponent_le (sourceCuspRadialLength_one_le h) (by linarith)) (norm_nonneg _)
+
+def sourceCuspRadialDirichlet (j : Fin 3) (z s : ℂ) : ℂ :=
+  ∑' h : O, sourceCuspRadialCoefficient j z h * (sourceCuspRadialLength h : ℂ) ^ (1 / 2 - s)
+
+/-- The actual cusp expansion, Mellin transformed in its half-plane of absolute convergence. -/
+theorem sourceCuspZFamily_mellin (j : Fin 3) (z s : ℂ) (hs : 2 ≤ s.re) :
+    mellin (sourceCuspZFamily j z) (2 * s) =
+      besselMellinFactor (sourceCuspRadialScale j) s * sourceCuspRadialDirichlet j z s := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have he : mellin (sourceCuspZFamily j z) (2 * s) =
+      mellin (radialBesselProfile sourceCuspRadialLength (sourceCuspRadialCoefficient j z)
+        (sourceCuspRadialScale j)) (2 * s) := by
+    unfold mellin
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro v hv
+    dsimp only
+    rw [sourceCuspZFamily_eq_radialBesselProfile j z v hv]
+  rw [he]
+  exact radialBesselProfile_mellin sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceCuspRadialCoefficient j z) (sourceCuspRadialScale j) (sourceCuspRadialScale_pos j)
+    s (by linarith) (sourceCuspRadialCoefficient_summable j z s.re hs)
+
+theorem sourceCuspZFamily_dirichlet (j : Fin 3) (z s : ℂ) (hs : 2 ≤ s.re) :
+    continuedBesselDirichlet (sourceCuspZFamily j z) (sourceCuspRadialScale j) s =
+      sourceCuspRadialDirichlet j z s := by
+  rw [continuedBesselDirichlet, sourceCuspZFamily_mellin j z s hs, ← mul_assoc,
+    inverseBesselMellinFactor_mul _ (sourceCuspRadialScale_pos j) s (by linarith), one_mul]
+
+/-- The reflected cubic Gamma ratio; its argument is the Mellin variable of the smoothing kernel. -/
+def cubicReflectionGamma (w : ℂ) : ℂ :=
+  (Complex.Gamma (7 / 6 + w) * Complex.Gamma (5 / 6 + w)) /
+    (Complex.Gamma (7 / 6 - w) * Complex.Gamma (5 / 6 - w))
+
+def besselReflectionFactor (q d : ℝ) (s : ℂ) : ℂ :=
+  ((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1) * (2 : ℂ) ^ (2 - 4 * s) /
+    ((4 * Real.pi * d : ℝ) : ℂ) ^ (3 - 2 * s)
+
+lemma besselMellinFactor_reflection (q d : ℝ) (s : ℂ) :
+    inverseBesselMellinFactor q s * besselMellinFactor d (1 - s) =
+      besselReflectionFactor q d s * cubicReflectionGamma (1 / 2 - s) := by
+  have hp : (2 : ℂ) ^ (1 - 2 * s) * (2 : ℂ) ^ (1 - 2 * s) = (2 : ℂ) ^ (2 - 4 * s) := by
+    rw [← Complex.cpow_add _ _ (by norm_num : (2 : ℂ) ≠ 0)]
+    congr 1
+    ring
+  unfold inverseBesselMellinFactor besselMellinFactor besselReflectionFactor cubicReflectionGamma
+  rw [show (2 : ℂ) * (1 - s) - 1 = 1 - 2 * s by ring,
+    show (2 : ℂ) * (1 - s) + 1 = 3 - 2 * s by ring,
+    show (1 : ℂ) - s + 1 / 3 = 4 / 3 - s by ring,
+    show (1 : ℂ) - s + 2 / 3 = 5 / 3 - s by ring,
+    show (7 / 6 : ℂ) + (1 / 2 - s) = 5 / 3 - s by ring,
+    show (5 / 6 : ℂ) + (1 / 2 - s) = 4 / 3 - s by ring,
+    show (7 / 6 : ℂ) - (1 / 2 - s) = s + 2 / 3 by ring,
+    show (5 / 6 : ℂ) - (1 / 2 - s) = s + 1 / 3 by ring]
+  have he := congrArg (fun x : ℂ =>
+    (((4 * Real.pi * q : ℝ) : ℂ) ^ (2 * s + 1) *
+      (Complex.Gamma (s + 1 / 3))⁻¹ * (Complex.Gamma (s + 2 / 3))⁻¹ *
+      Complex.Gamma (4 / 3 - s) * Complex.Gamma (5 / 3 - s) *
+      (((4 * Real.pi * d : ℝ) : ℂ) ^ (3 - 2 * s))⁻¹) * x) hp
+  simp only [div_eq_mul_inv, mul_inv_rev] at he ⊢
+  linear_combination he
+
+/-- Reflection of the actual source cusp, with an absolutely convergent dual Dirichlet series. -/
+theorem SourceCuspDatum.dirichlet_reflection (d : SourceCuspDatum) (q : ℝ)
+    (s : ℂ) (hs : s.re ≤ -1) :
+    continuedBesselDirichlet
+      (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) d.point) q s =
+      (d.multiplier * (d.heightScale : ℂ) ^ (2 - 2 * s) *
+        besselReflectionFactor q (sourceCuspRadialScale d.index) s) *
+        cubicReflectionGamma (1 / 2 - s) * sourceCuspRadialDirichlet d.index d.dualPoint (1 - s) := by
+  have hs' : 2 ≤ (1 - s).re := by simp only [Complex.sub_re, Complex.one_re]; linarith
+  have hm := sourceCuspZFamily_mellin d.index d.dualPoint (1 - s) hs'
+  rw [show (2 : ℂ) * (1 - s) = 2 - 2 * s by ring] at hm
+  rw [continuedBesselDirichlet, d.mellin_reflection, hm]
+  calc
+    _ = d.multiplier * (d.heightScale : ℂ) ^ (2 - 2 * s) *
+        (inverseBesselMellinFactor q s * besselMellinFactor (sourceCuspRadialScale d.index) (1 - s)) *
+        sourceCuspRadialDirichlet d.index d.dualPoint (1 - s) := by ring
+    _ = _ := by rw [besselMellinFactor_reflection]; ring
+
+lemma finiteMellin_linearCombination_eq {ι : Type*} [Fintype ι]
+    (weight : ι → ℂ) (f : ι → ℝ → ℂ) (s : ℂ)
+    (hc : ∀ i, MellinConvergent (f i) s) :
+    mellin (fun v => ∑ i, weight i * f i v) s = ∑ i, weight i * mellin (f i) s := by
+  have hi (i : ι) : Integrable
+      (fun v : ℝ => (v : ℂ) ^ (s - 1) * (weight i * f i v))
+      (volume.restrict (Set.Ioi 0)) := by
+    have hh := (hc i).const_smul (weight i)
+    simp only [MellinConvergent, smul_eq_mul, IntegrableOn] at hh
+    convert! hh using 1
+  unfold mellin
+  simp only [smul_eq_mul, Finset.mul_sum]
+  rw [integral_finsetSum _ (fun i _ => hi i)]
+  apply Finset.sum_congr rfl
+  intro i hmem
+  rw [← integral_const_mul]
+  exact integral_congr_ae (Eventually.of_forall (fun v => by ring))
+
+/-- Finite arithmetic twists inherit the exact reflection into all three cusp series. -/
+theorem traceTwistedBarProfile_dirichlet_reflection (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (q : ℝ) (s : ℂ) (hs : s.re ≤ -1) :
+    continuedBesselDirichlet (traceTwistedBarProfile c hc φ) q s =
+      ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+        (((finiteTwistCusp c hc h).multiplier *
+          ((finiteTwistCusp c hc h).heightScale : ℂ) ^ (2 - 2 * s) *
+          besselReflectionFactor q (sourceCuspRadialScale (finiteTwistCusp c hc h).index) s) *
+          cubicReflectionGamma (1 / 2 - s) *
+          sourceCuspRadialDirichlet (finiteTwistCusp c hc h).index
+            (finiteTwistCusp c hc h).dualPoint (1 - s)) := by
+  unfold continuedBesselDirichlet traceTwistedBarProfile
+  rw [finiteMellin_linearCombination_eq _ _ (2 * s)
+      (fun h => (conjugateSource_finite_twist_cusp_mellin_entire (Quotient.out h) c hc).1 _),
+    Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro h hh
+  rw [← mul_assoc, mul_comm (inverseBesselMellinFactor q s), mul_assoc]
+  congr 1
+  rw [← finiteTwistCusp_point c hc h]
+  exact (finiteTwistCusp c hc h).dirichlet_reflection q s hs
+
+/-! The reciprocal Gamma bound follows from reflection, recurrence, and compactness.
+Together with the Mellin strip bound, it permits Gaussian regularization of the contour. -/
+namespace CubicGammaExponential
+open scoped BigOperators Classical
+open MeasureTheory
+open Finset
+
+
+lemma inverse_Gamma_shift (z : ℂ) (n : ℕ) :
+    (Complex.Gamma z)⁻¹ = (∏ k ∈ Finset.range n, (z + k)) * (Complex.Gamma (z + n))⁻¹ := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [ih, Complex.one_div_Gamma_eq_self_mul_one_div_Gamma_add_one (z + n),
+      Finset.prod_range_succ]
+    push_cast
+    ring
+
+lemma norm_Gamma_le_real (z : ℂ) (hz : 0<z.re) :
+    ‖Complex.Gamma z‖ ≤ Real.Gamma z.re := by
+  rw [Complex.Gamma_eq_integral hz,Real.Gamma_eq_integral hz]
+  unfold Complex.GammaIntegral
+  refine (norm_integral_le_integral_norm _).trans_eq ?_
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro x hx
+  dsimp only
+  rw [norm_mul,Complex.norm_of_nonneg (Real.exp_pos (-x)).le,
+    Complex.norm_cpow_eq_rpow_re_of_pos hx]
+  simp
+
+lemma norm_sin_le_exp_abs_im (z : ℂ) :
+    ‖Complex.sin z‖ ≤ Real.exp |z.im| := by
+  rw [Complex.sin,norm_div,norm_mul,Complex.norm_I,mul_one]
+  norm_num only [Complex.norm_ofNat]
+  apply (div_le_iff₀ (by norm_num : (0:ℝ)<2)).mpr
+  calc
+    _ ≤ ‖Complex.exp (-z*Complex.I)‖+‖Complex.exp (z*Complex.I)‖ := norm_sub_le _ _
+    _ = Real.exp z.im+Real.exp (-z.im) := by simp [Complex.norm_exp]
+    _ ≤ Real.exp |z.im|+Real.exp |z.im| :=
+      add_le_add (Real.exp_le_exp.mpr (le_abs_self _)) (Real.exp_le_exp.mpr (neg_le_abs _))
+    _ = _ := by ring
+
+lemma Gamma_ne_zero_of_im_ne_zero (z : ℂ) (hz : z.im≠0) : Complex.Gamma z≠0 := by
+  apply Complex.Gamma_ne_zero
+  intro n he
+  apply hz
+  have h:=congrArg Complex.im he
+  simpa using h
+
+lemma inverse_Gamma_reflection (z : ℂ) (hz : z.im≠0) :
+    (Complex.Gamma z)⁻¹=Complex.Gamma (1-z)*Complex.sin (Real.pi*z)/Real.pi := by
+  have hg:=Gamma_ne_zero_of_im_ne_zero z hz
+  have hh:=Gamma_ne_zero_of_im_ne_zero (1-z) (by simpa using hz)
+  have hp : (Real.pi:ℂ)≠0:=Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
+  have hs : Complex.sin (Real.pi*z)≠0 := by
+    intro hs
+    have he:=Complex.Gamma_mul_Gamma_one_sub z
+    rw [hs,div_zero] at he
+    exact (mul_ne_zero hg hh) he
+  apply mul_left_cancel₀ hg
+  rw [mul_inv_cancel₀ hg]
+  symm
+  calc
+    _ = (Complex.Gamma z*Complex.Gamma (1-z))*Complex.sin (Real.pi*z)/Real.pi := by ring
+    _ = 1 := by
+      rw [Complex.Gamma_mul_Gamma_one_sub,div_mul_cancel₀ _ hs,div_self hp]
+
+lemma inverse_Gamma_norm_of_left (z : ℂ) (hz : z.re<1) (hi : z.im≠0) :
+    ‖(Complex.Gamma z)⁻¹‖ ≤ (Real.Gamma (1-z.re)/Real.pi)*Real.exp (Real.pi*|z.im|) := by
+  rw [inverse_Gamma_reflection z hi,norm_div,norm_mul,
+    Complex.norm_of_nonneg Real.pi_pos.le]
+  have hgamma:=norm_Gamma_le_real (1-z) (by simp;linarith)
+  have hsin:=norm_sin_le_exp_abs_im (Real.pi*z)
+  simp only [Complex.sub_re,Complex.one_re] at hgamma
+  have him : |((Real.pi:ℂ)*z).im|=Real.pi*|z.im| := by
+    rw [Complex.mul_im]
+    simp only [Complex.ofReal_re, Complex.ofReal_im, zero_mul, add_zero, abs_mul,
+      abs_of_pos Real.pi_pos]
+  rw [him] at hsin
+  calc
+    _ ≤ (Real.Gamma (1-z.re)*Real.exp (Real.pi*|z.im|))/Real.pi :=
+      div_le_div_of_nonneg_right
+        (mul_le_mul hgamma hsin (norm_nonneg _) (Real.Gamma_pos_of_pos (by linarith)).le)
+        Real.pi_pos.le
+    _ = _ := by ring
+
+lemma inverse_Gamma_norm_le_shift_left (z : ℂ) (n : ℕ) (hi : 1 ≤ |z.im|) :
+    ‖(Complex.Gamma z)⁻¹‖ ≤ ‖(Complex.Gamma (z-n))⁻¹‖ := by
+  have he:=congrArg norm (inverse_Gamma_shift (z-n) n)
+  simp only [sub_add_cancel,norm_mul] at he
+  have hprod : 1 ≤ ‖∏k∈Finset.range n,(z-(n:ℂ)+k)‖ := by
+    rw [norm_prod]
+    calc
+      1 = ∏ k ∈ Finset.range n, (1 : ℝ) := by simp
+      _ ≤ ∏ k ∈ Finset.range n, ‖z - (n : ℂ) + k‖ := by
+        apply Finset.prod_le_prod (fun _ _ => zero_le_one)
+        intro k hk
+        calc
+          1 ≤ |z.im| := hi
+          _ = |(z - (n : ℂ) + k).im| := by simp
+          _ ≤ _ := Complex.abs_im_le_norm _
+  rw [he]
+  exact le_mul_of_one_le_left (norm_nonneg _) hprod
+
+lemma real_Gamma_compact_bound (a b : ℝ) (ha : 0<a) :
+    ∃C : ℝ,0<C ∧ ∀x∈Set.Icc a b,Real.Gamma x ≤ C := by
+  have hc : ContinuousOn Real.Gamma (Set.Icc a b) :=
+    Real.differentiableOn_Gamma_Ioi.continuousOn.mono (fun x hx=>ha.trans_le hx.1)
+  obtain ⟨C,hC⟩:=(isCompact_Icc : IsCompact (Set.Icc a b)).bddAbove_image hc
+  refine ⟨|C|+1,by positivity,?_⟩
+  intro x hx
+  exact (hC (Set.mem_image_of_mem _ hx)).trans (by linarith [le_abs_self C])
+
+lemma inverse_Gamma_compact_strip_bound (a b : ℝ) :
+    ∃C : ℝ,0<C ∧ ∀σ∈Set.Icc a b,∀t∈Set.Icc (-1:ℝ) 1,
+      ‖(Complex.Gamma ((σ:ℂ)+t*Complex.I))⁻¹‖ ≤ C := by
+  have hc : Continuous (fun p : ℝ×ℝ=>
+      ‖(Complex.Gamma ((p.1:ℂ)+p.2*Complex.I))⁻¹‖) :=
+    (Complex.differentiable_one_div_Gamma.continuous.comp (by fun_prop)).norm
+  obtain ⟨C,hC⟩:=((isCompact_Icc : IsCompact (Set.Icc a b)).prod
+    (isCompact_Icc : IsCompact (Set.Icc (-1:ℝ) 1))).bddAbove_image hc.continuousOn
+  refine ⟨|C|+1,by positivity,?_⟩
+  intro σ hσ t ht
+  exact (hC ⟨(σ,t),⟨hσ,ht⟩,rfl⟩).trans (by linarith [le_abs_self C])
+
+theorem inverse_Gamma_strip_exp_bound (a b : ℝ) :
+    ∃C : ℝ,0<C ∧ ∀σ∈Set.Icc a b,∀t : ℝ,
+      ‖(Complex.Gamma ((σ:ℂ)+t*Complex.I))⁻¹‖ ≤ C*Real.exp (Real.pi*|t|) := by
+  obtain ⟨n,hn⟩:=exists_nat_gt b
+  obtain ⟨Cg,hCg,hg⟩:=real_Gamma_compact_bound ((n:ℝ)+1-b) ((n:ℝ)+1-a) (by linarith)
+  obtain ⟨Cc,hCc,hc⟩:=inverse_Gamma_compact_strip_bound a b
+  refine ⟨Cc+Cg/Real.pi,by positivity,?_⟩
+  intro σ hσ t
+  have hexp : 1 ≤ Real.exp (Real.pi*|t|) := Real.one_le_exp (by positivity)
+  by_cases ht:|t| ≤ 1
+  · have hsmall:=hc σ hσ t (abs_le.mp ht)
+    calc
+      _ ≤ Cc := hsmall
+      _ ≤ Cc+Cg/Real.pi := le_add_of_nonneg_right (by positivity)
+      _ ≤ (Cc+Cg/Real.pi)*Real.exp (Real.pi*|t|) :=
+        le_mul_of_one_le_right (by positivity) hexp
+  · have ht1 : 1 < |t| :=lt_of_not_ge ht
+    have ht0 : t≠0 := by intro ht0;subst t;norm_num at ht1
+    let z : ℂ := (σ:ℂ)+t*Complex.I
+    let w : ℂ := z-n
+    have hw : w.re<1 := by
+      dsimp [w,z]
+      simp only [Complex.ofReal_re,Complex.mul_re,
+        Complex.ofReal_im,Complex.I_re,Complex.I_im,mul_zero,zero_mul,
+        sub_zero,add_zero]
+      linarith [hσ.2]
+    have hwi : w.im≠0 := by simpa [w,z] using ht0
+    have he : 1-w.re=(n:ℝ)+1-σ := by simp [w,z];ring
+    have hi : w.im=t := by simp [w,z]
+    have hbound:=inverse_Gamma_norm_of_left w hw hwi
+    rw [he,hi] at hbound
+    have hgbound:=hg ((n:ℝ)+1-σ) ⟨by linarith [hσ.2],by linarith [hσ.1]⟩
+    calc
+      _ ≤ ‖(Complex.Gamma w)⁻¹‖ :=
+        inverse_Gamma_norm_le_shift_left z n (by simpa [z] using ht1.le)
+      _ ≤ (Real.Gamma ((n:ℝ)+1-σ)/Real.pi)*Real.exp (Real.pi*|t|) := hbound
+      _ ≤ (Cg/Real.pi)*Real.exp (Real.pi*|t|) := by gcongr
+      _ ≤ (Cc+Cg/Real.pi)*Real.exp (Real.pi*|t|) :=
+        mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hCc.le) (Real.exp_pos _).le
+
+theorem inverse_Gamma_strip_exp_bound_complex (a b : ℝ) :
+    ∃C : ℝ,0<C ∧ ∀z : ℂ,z.re∈Set.Icc a b →
+      ‖(Complex.Gamma z)⁻¹‖ ≤ C*Real.exp (Real.pi*|z.im|) := by
+  obtain ⟨C,hC,hb⟩:=inverse_Gamma_strip_exp_bound a b
+  refine ⟨C,hC,?_⟩
+  intro z hz
+  simpa only [Complex.re_add_im] using hb z.re hz z.im
+
+theorem inverse_cubic_Gamma_pair_strip_bound (a b : ℝ) :
+    ∃C : ℝ,0<C ∧ ∀s : ℂ,s.re∈Set.Icc a b →
+      ‖(Complex.Gamma (s+1/3)*Complex.Gamma (s+2/3))⁻¹‖ ≤ C*Real.exp (2*Real.pi*|s.im|) := by
+  obtain ⟨C1,hC1,h1⟩:=inverse_Gamma_strip_exp_bound_complex (a+1/3) (b+1/3)
+  obtain ⟨C2,hC2,h2⟩:=inverse_Gamma_strip_exp_bound_complex (a+2/3) (b+2/3)
+  refine ⟨C1*C2,mul_pos hC1 hC2,?_⟩
+  intro s hs
+  have hb1:=h1 (s+1/3) (by norm_num;constructor <;> linarith [hs.1,hs.2])
+  have hb2:=h2 (s+2/3) (by norm_num;constructor <;> linarith [hs.1,hs.2])
+  norm_num at hb1 hb2
+  rw [mul_inv_rev,norm_mul,norm_inv,norm_inv]
+  calc
+    _ ≤ (C2*Real.exp (Real.pi*|s.im|))*(C1*Real.exp (Real.pi*|s.im|)) :=
+      mul_le_mul hb2 hb1 (by positivity) (by positivity)
+    _ = C1*C2*Real.exp (2*Real.pi*|s.im|) := by
+      rw [show 2*Real.pi*|s.im|=Real.pi*|s.im|+Real.pi*|s.im| by ring,Real.exp_add]
+      ring
+
+end CubicGammaExponential
+
+lemma rpow_between_endpoints (y a b σ : ℝ) (hy : 0<y) (ha : a ≤ σ) (hb : σ ≤ b) :
+    y^σ ≤ y^a+y^b := by
+  by_cases h1 : 1 ≤ y
+  · exact (Real.rpow_le_rpow_of_exponent_le h1 hb).trans
+      (le_add_of_nonneg_left (Real.rpow_nonneg hy.le a))
+  · exact (Real.rpow_le_rpow_of_exponent_ge hy (le_of_not_ge h1) ha).trans
+      (le_add_of_nonneg_right (Real.rpow_nonneg hy.le b))
+
+theorem mellin_uniform_strip_bound (f : ℝ→ℂ) (a b : ℝ)
+    (ha : MellinConvergent f (a:ℂ)) (hb : MellinConvergent f (b:ℂ)) :
+    ∃C : ℝ,0 ≤ C ∧ ∀s : ℂ,a ≤ s.re→s.re ≤ b→‖mellin f s‖ ≤ C := by
+  let B : ℝ→ℝ := fun y=>‖(y:ℂ)^((a:ℂ)-1)*f y‖+‖(y:ℂ)^((b:ℂ)-1)*f y‖
+  have hB : IntegrableOn B (Set.Ioi 0) := by
+    exact ha.norm.add hb.norm
+  refine ⟨∫y in Set.Ioi 0,B y,integral_nonneg (fun y=>add_nonneg (norm_nonneg _) (norm_nonneg _)),?_⟩
+  intro s hsa hsb
+  unfold mellin
+  apply norm_integral_le_of_norm_le hB
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
+  change 0<y at hy
+  have hp := rpow_between_endpoints y (a-1) (b-1) (s.re-1) hy (by linarith) (by linarith)
+  change ‖(y:ℂ)^(s-1)*f y‖ ≤ B y
+  dsimp only [B]
+  simp only [norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hy,Complex.sub_re,
+    Complex.ofReal_re,Complex.one_re]
+  simpa only [add_mul] using mul_le_mul_of_nonneg_right hp (norm_nonneg (f y))
+
+theorem inverseBesselMellinFactor_differentiable (q : ℝ) (hq : 0<q) :
+    Differentiable ℂ (inverseBesselMellinFactor q) := by
+  have hq0 : ((4*Real.pi*q:ℝ):ℂ)≠0 := Complex.ofReal_ne_zero.mpr (by positivity)
+  have h1 : Differentiable ℂ (fun s : ℂ=>((4*Real.pi*q:ℝ):ℂ)^(2*s+1)) :=
+    (show Differentiable ℂ (fun s : ℂ=>2*s+1) from by fun_prop).const_cpow (Or.inl hq0)
+  have h2 : Differentiable ℂ (fun s : ℂ=>(2:ℂ)^(1-2*s)) :=
+    (show Differentiable ℂ (fun s : ℂ=>1-2*s) from by fun_prop).const_cpow
+      (Or.inl (by norm_num : (2:ℂ)≠0))
+  have h3 : Differentiable ℂ (fun s : ℂ=>(Complex.Gamma (s+1/3))⁻¹) :=
+    Complex.differentiable_one_div_Gamma.comp (by fun_prop)
+  have h4 : Differentiable ℂ (fun s : ℂ=>(Complex.Gamma (s+2/3))⁻¹) :=
+    Complex.differentiable_one_div_Gamma.comp (by fun_prop)
+  convert! (h1.mul h2).mul (h4.mul h3) using 1
+  ext s
+  simp only [inverseBesselMellinFactor,Pi.mul_apply,mul_inv_rev]
+
+theorem inverseBesselMellinFactor_strip_bound (q : ℝ) (hq : 0<q) (a b : ℝ) :
+    ∃C : ℝ,0 ≤ C ∧ ∀s : ℂ,s.re∈Set.Icc a b →
+      ‖inverseBesselMellinFactor q s‖ ≤ C*Real.exp (2*Real.pi*|s.im|) := by
+  obtain ⟨Cg,hCg,hg⟩ := CubicGammaExponential.inverse_cubic_Gamma_pair_strip_bound a b
+  let Ca := (4*Real.pi*q)^(2*a+1)+(4*Real.pi*q)^(2*b+1)
+  let Cb := (2:ℝ)^(1-2*b)+(2:ℝ)^(1-2*a)
+  have hqpos : 0<4*Real.pi*q := by positivity
+  have hCa : 0 ≤ Ca := by dsimp [Ca];positivity
+  have hCb : 0 ≤ Cb := by dsimp [Cb];positivity
+  refine ⟨Ca*Cb*Cg,by positivity,?_⟩
+  intro s hs
+  have hp1 : ‖((4*Real.pi*q:ℝ):ℂ)^(2*s+1)‖ ≤ Ca := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hqpos]
+    have hr : (2*s+1).re=2*s.re+1 := by simp
+    rw [hr]
+    exact rpow_between_endpoints _ _ _ _ hqpos
+      (by linarith [hs.1]) (by linarith [hs.2])
+  have hp2 : ‖(2:ℂ)^(1-2*s)‖ ≤ Cb := by
+    change ‖((2:ℝ):ℂ)^(1-2*s)‖ ≤ Cb
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : 0<(2:ℝ))]
+    have hr : (1-2*s).re=1-2*s.re := by simp
+    rw [hr]
+    exact rpow_between_endpoints _ _ _ _ (by norm_num)
+      (by linarith [hs.2]) (by linarith [hs.1])
+  simp only [inverseBesselMellinFactor,norm_mul]
+  calc
+    _ ≤ (Ca*Cb)*(Cg*Real.exp (2*Real.pi*|s.im|)) :=
+      mul_le_mul (mul_le_mul hp1 hp2 (norm_nonneg _) hCa) (hg s hs)
+        (norm_nonneg _) (mul_nonneg hCa hCb)
+    _=_ := by ring
+
+theorem continuedBesselDirichlet_differentiable (F : ℝ→ℂ) (q : ℝ) (hq : 0<q)
+    (hF : Differentiable ℂ (mellin F)) :
+    Differentiable ℂ (continuedBesselDirichlet F q) :=
+  (inverseBesselMellinFactor_differentiable q hq).mul (hF.comp (by fun_prop))
+
+theorem continuedBesselDirichlet_strip_bound (F : ℝ→ℂ) (q : ℝ) (hq : 0<q)
+    (a b : ℝ) (ha : MellinConvergent F ((2*a:ℝ):ℂ))
+    (hb : MellinConvergent F ((2*b:ℝ):ℂ)) :
+    ∃C : ℝ,0 ≤ C ∧ ∀s : ℂ,s.re∈Set.Icc a b →
+      ‖continuedBesselDirichlet F q s‖ ≤ C*Real.exp (2*Real.pi*|s.im|) := by
+  obtain ⟨Ci,hCi,hi⟩ := inverseBesselMellinFactor_strip_bound q hq a b
+  obtain ⟨Cm,hCm,hm⟩ := mellin_uniform_strip_bound F (2*a) (2*b) ha hb
+  refine ⟨Ci*Cm,mul_nonneg hCi hCm,?_⟩
+  intro s hs
+  have hms : ‖mellin F (2*s)‖ ≤ Cm := hm (2*s)
+    (by simp;linarith [hs.1]) (by simp;linarith [hs.2])
+  rw [continuedBesselDirichlet,norm_mul]
+  calc
+    _ ≤ (Ci*Real.exp (2*Real.pi*|s.im|))*Cm :=
+      mul_le_mul (hi s hs) hms (norm_nonneg _) (mul_nonneg hCi (Real.exp_pos _).le)
+    _=_ := by ring
+
+
+
+/-! Cauchy's theorem shifts the Gaussian-regularized contour. Dominated convergence
+then removes the regulator using integrability on the two boundary lines. -/
+namespace VerticalContourShift
+open MeasureTheory Filter Set
+open scoped Topology
+
+theorem horizontal_integral_tendsto_zero
+    (f : ℂ → ℂ) (a b C : ℝ) (hab : a ≤ b)
+    (hbound : ∀ σ ∈ Icc a b, ∀ t : ℝ,
+      ‖f ((σ : ℂ) + t * Complex.I)‖ ≤ C / (1 + t ^ 2)) :
+    Tendsto (fun t : ℝ => ∫ σ : ℝ in a..b, f ((σ : ℂ) + t * Complex.I))
+      atTop (𝓝 0) := by
+  have ht : Tendsto (fun t : ℝ => 1 + t ^ 2) atTop atTop :=
+    tendsto_atTop_add_const_left atTop 1 (tendsto_pow_atTop (by decide : (2 : ℕ) ≠ 0))
+  have hz : Tendsto (fun t : ℝ => C / (1 + t ^ 2) * |b - a|) atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.div_atTop ht).mul_const |b - a|
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  apply squeeze_zero (fun _ => norm_nonneg _) _ hz
+  intro t
+  apply intervalIntegral.norm_integral_le_of_norm_le_const
+  intro σ hσ
+  exact hbound σ (Ioc_subset_Icc_self (by simpa [uIoc_of_le hab] using hσ)) t
+
+theorem integral_eq_of_strip_decay
+    (f : ℂ → ℂ) (a b C : ℝ) (hab : a ≤ b)
+    (hdiff : ∀ z : ℂ, a ≤ z.re → z.re ≤ b → DifferentiableAt ℂ f z)
+    (ha : Integrable (fun t : ℝ => f ((a : ℂ) + t * Complex.I)))
+    (hb : Integrable (fun t : ℝ => f ((b : ℂ) + t * Complex.I)))
+    (hbound : ∀ σ ∈ Icc a b, ∀ t : ℝ,
+      ‖f ((σ : ℂ) + t * Complex.I)‖ ≤ C / (1 + t ^ 2)) :
+    (∫ t : ℝ, f ((a : ℂ) + t * Complex.I)) =
+      ∫ t : ℝ, f ((b : ℂ) + t * Complex.I) := by
+  let H (t : ℝ) : ℂ := ∫ σ : ℝ in a..b, f ((σ : ℂ) + t * Complex.I)
+  let V (σ t : ℝ) : ℂ := ∫ u : ℝ in -t..t, f ((σ : ℂ) + u * Complex.I)
+  have htop : Tendsto H atTop (𝓝 0) := horizontal_integral_tendsto_zero f a b C hab hbound
+  have hbottom : Tendsto (fun t : ℝ => H (-t)) atTop (𝓝 0) := by
+    let g (z : ℂ) := f (star z)
+    have hg : ∀ σ ∈ Icc a b, ∀ t : ℝ,
+        ‖g ((σ : ℂ) + t * Complex.I)‖ ≤ C / (1 + t ^ 2) := by
+      intro σ hσ t
+      simpa [g] using hbound σ hσ (-t)
+    convert horizontal_integral_tendsto_zero g a b C hab hg using 1 ;
+      simp [g, H]
+  have hVa : Tendsto (V a) atTop
+      (𝓝 (∫ t : ℝ, f ((a : ℂ) + t * Complex.I))) :=
+    intervalIntegral_tendsto_integral ha tendsto_neg_atTop_atBot tendsto_id
+  have hVb : Tendsto (V b) atTop
+      (𝓝 (∫ t : ℝ, f ((b : ℂ) + t * Complex.I))) :=
+    intervalIntegral_tendsto_integral hb tendsto_neg_atTop_atBot tendsto_id
+  have hrect (t : ℝ) : H (-t) - H t + Complex.I * V b t - Complex.I * V a t = 0 := by
+    have hd : DifferentiableOn ℂ f
+        (uIcc (((a : ℂ) - t * Complex.I).re) (((b : ℂ) + t * Complex.I).re) ×ℂ
+         uIcc (((a : ℂ) - t * Complex.I).im) (((b : ℂ) + t * Complex.I).im)) := by
+      intro z hz
+      apply (hdiff z ?_ ?_).differentiableWithinAt
+      · have hz' : z.re ∈ Icc a b := by
+          simpa [uIcc_of_le hab] using hz.1
+        exact hz'.1
+      · have hz' : z.re ∈ Icc a b := by
+          simpa [uIcc_of_le hab] using hz.1
+        exact hz'.2
+    have hr := Complex.integral_boundary_rect_eq_zero_of_differentiableOn f
+      ((a : ℂ) - t * Complex.I) ((b : ℂ) + t * Complex.I) hd
+    simpa [H, V, smul_eq_mul] using hr
+  have hlim : Tendsto
+      (fun t : ℝ => H (-t) - H t + Complex.I * V b t - Complex.I * V a t)
+      atTop (𝓝 (0 - 0 + Complex.I * (∫ t : ℝ, f ((b : ℂ) + t * Complex.I)) -
+        Complex.I * (∫ t : ℝ, f ((a : ℂ) + t * Complex.I)))) :=
+    ((hbottom.sub htop).add (tendsto_const_nhds.mul hVb)).sub
+      (tendsto_const_nhds.mul hVa)
+  have heq : Complex.I * (∫ t : ℝ, f ((b : ℂ) + t * Complex.I)) -
+      Complex.I * (∫ t : ℝ, f ((a : ℂ) + t * Complex.I)) = 0 := by
+    have hzero : Tendsto (fun t : ℝ => H (-t) - H t + Complex.I * V b t - Complex.I * V a t)
+        atTop (𝓝 0) := by
+      simpa only [hrect] using (tendsto_const_nhds : Tendsto (fun _ : ℝ => (0 : ℂ)) atTop (𝓝 0))
+    simpa using tendsto_nhds_unique hlim hzero
+  exact (mul_left_cancel₀ Complex.I_ne_zero (sub_eq_zero.mp heq)).symm
+
+end VerticalContourShift
+namespace VerticalContourShift
+lemma gaussian_regulator_norm (ε σ t : ℝ) :
+    ‖Complex.exp ((ε:ℂ)*((σ:ℂ)+t*Complex.I)^2)‖=Real.exp (ε*(σ^2-t^2)) := by
+  rw [Complex.norm_exp]
+  congr 1
+  simp only [pow_two,Complex.mul_re,Complex.mul_im,Complex.add_re,Complex.add_im,
+    Complex.ofReal_re,Complex.ofReal_im,Complex.I_re,Complex.I_im]
+  ring
+
+lemma gaussian_regulator_norm_le (ε σ t : ℝ) (hε0 : 0 ≤ ε) (hε1 : ε ≤ 1) :
+    ‖Complex.exp ((ε:ℂ)*((σ:ℂ)+t*Complex.I)^2)‖ ≤ Real.exp (σ^2) := by
+  rw [gaussian_regulator_norm]
+  apply Real.exp_le_exp.mpr
+  nlinarith [sq_nonneg σ,sq_nonneg t,mul_nonneg hε0 (sq_nonneg t),
+    mul_nonneg (sub_nonneg.mpr hε1) (sq_nonneg σ)]
+
+def gaussianRegulatorSequence (n : ℕ) : ℝ := 1/((n:ℝ)+1)
+
+lemma gaussianRegulatorSequence_pos (n : ℕ) : 0<gaussianRegulatorSequence n := by
+  unfold gaussianRegulatorSequence
+  positivity
+
+lemma gaussianRegulatorSequence_le_one (n : ℕ) : gaussianRegulatorSequence n ≤ 1 := by
+  unfold gaussianRegulatorSequence
+  apply (div_le_one (by positivity)).mpr
+  linarith [Nat.cast_nonneg (α:=ℝ) n]
+
+lemma gaussianRegulatorSequence_tendsto : Tendsto gaussianRegulatorSequence atTop (𝓝 0) :=
+  tendsto_one_div_add_atTop_nhds_zero_nat
+
+theorem gaussian_regulator_integral_tendsto (g : ℝ→ℂ) (hg : Integrable g) (σ : ℝ) :
+    Tendsto (fun n : ℕ=>∫t : ℝ,
+      Complex.exp ((gaussianRegulatorSequence n:ℂ)*((σ:ℂ)+t*Complex.I)^2)*g t)
+      atTop (𝓝 (∫t : ℝ,g t)) := by
+  apply tendsto_integral_of_dominated_convergence
+    (fun t : ℝ=>Real.exp (σ^2)*‖g t‖)
+  · intro n
+    have hc : Continuous (fun t : ℝ=>
+        Complex.exp ((gaussianRegulatorSequence n:ℂ)*((σ:ℂ)+t*Complex.I)^2)) := by fun_prop
+    exact hc.aestronglyMeasurable.mul hg.aestronglyMeasurable
+  · exact hg.norm.const_mul _
+  · intro n
+    exact Filter.Eventually.of_forall (fun t=>by
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_right
+        (gaussian_regulator_norm_le _ σ t (gaussianRegulatorSequence_pos n).le
+          (gaussianRegulatorSequence_le_one n)) (norm_nonneg _))
+  · filter_upwards with t
+    have hε : Tendsto (fun n : ℕ=>(gaussianRegulatorSequence n:ℂ)) atTop (𝓝 0) :=
+      by simpa only [Function.comp_def,Complex.ofReal_zero] using
+        Complex.continuous_ofReal.continuousAt.tendsto.comp gaussianRegulatorSequence_tendsto
+    have he := (Complex.continuous_exp.tendsto 0).comp
+      (by simpa only [zero_mul] using hε.mul_const (((σ:ℂ)+t*Complex.I)^2))
+    simpa only [Function.comp_def,Complex.exp_zero,one_mul] using he.mul_const (g t)
+
+
+end VerticalContourShift
+namespace GaussianMoment
+theorem x_exp_neg_le (x : ℝ) (_hx : 0 ≤ x) :
+    x * Real.exp (-x) ≤ 2 * Real.exp (-(x / 2)) := by
+  have hlin : x / 2 ≤ Real.exp (x / 2) := by
+    have h := Real.add_one_le_exp (x / 2)
+    linarith
+  have hmul := mul_le_mul_of_nonneg_right hlin (Real.exp_pos (-x)).le
+  calc
+    x * Real.exp (-x) = 2 * ((x / 2) * Real.exp (-x)) := by ring
+    _ ≤ 2 * (Real.exp (x / 2) * Real.exp (-x)) := by
+      gcongr
+    _ = 2 * Real.exp (-(x / 2)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring_nf
+
+theorem gaussian_moment_term_bound (q t : ℝ) (hq : 0 ≤ q) (ht : 0 < t) :
+    q * Real.exp (-t * q) ≤ (2 / t) * Real.exp (-(t * q / 2)) := by
+  have h := x_exp_neg_le (t * q) (mul_nonneg ht.le hq)
+  have hpos : 0 ≤ t := ht.le
+  calc
+    q * Real.exp (-t * q) =
+        ((t * q) * Real.exp (-(t * q))) / t := by
+          field_simp
+    _ ≤ (2 * Real.exp (-(t * q / 2))) / t :=
+      div_le_div_of_nonneg_right h hpos
+    _ = (2 / t) * Real.exp (-(t * q / 2)) := by ring
+
+
+
+lemma gaussian_le_inverse_quadratic (c t:ℝ) (hc:0<c) :
+    Real.exp (-c*t^2) ≤ (1+2/c)/(1+t^2) := by
+  have h0:Real.exp (-c*t^2) ≤ 1:=by
+    apply Real.exp_le_one_iff.mpr
+    nlinarith [sq_nonneg t]
+  have h1:t^2*Real.exp (-c*t^2) ≤ 2/c:=by
+    have hm:=gaussian_moment_term_bound (t^2) c (sq_nonneg t) hc
+    have he:Real.exp (-(c*t^2/2)) ≤ 1:=by
+      apply Real.exp_le_one_iff.mpr
+      nlinarith [sq_nonneg t]
+    exact hm.trans (by simpa only [mul_one] using
+      mul_le_mul_of_nonneg_left he (div_nonneg (by norm_num) hc.le))
+  apply (le_div_iff₀ (by positivity : 0<1+t^2)).mpr
+  nlinarith
+
+lemma linear_height_young (A ε t:ℝ) (hε:0<ε) :
+    A*|t| ≤ ε*t^2/2+A^2/(2*ε) := by
+  have hs:0 ≤ ε^2*t^2-2*ε*A*|t|+A^2:=by
+    calc
+      0 ≤ (ε*|t|-A)^2:=sq_nonneg _
+      _=ε^2*t^2-2*ε*A*|t|+A^2:=by rw [sub_sq,mul_pow,sq_abs];ring
+  apply le_of_mul_le_mul_left (a := 2*ε) ?_
+    (mul_pos (by norm_num : (0:ℝ)<2) hε)
+  calc
+    2*ε*(A*|t|) ≤ ε^2*t^2+A^2:=by nlinarith [hs]
+    _=2*ε*(ε*t^2/2+A^2/(2*ε)):=by field_simp
+
+theorem gaussian_regulator_strip_bound (a b A B ε:ℝ) (hB:0 ≤ B) (hε:0<ε)
+    (f:ℂ→ℂ)
+    (hf:∀σ:ℝ,σ∈Set.Icc a b→∀t:ℝ,
+      ‖f ((σ:ℂ)+(t:ℂ)*Complex.I)‖ ≤ B*Real.exp (A*|t|))
+    (σ t:ℝ) (hσ:σ∈Set.Icc a b) :
+    ‖Complex.exp ((ε:ℂ)*((σ:ℂ)+(t:ℂ)*Complex.I)^2)*
+        f ((σ:ℂ)+(t:ℂ)*Complex.I)‖ ≤ (B*Real.exp (ε*(max |a| |b|)^2+A^2/(2*ε))*(1+4/ε))/(1+t^2) := by
+  let R:ℝ:=max |a| |b|
+  have hR:0 ≤ R:=le_trans (abs_nonneg a) (le_max_left _ _)
+  have hsabs:|σ| ≤ R:=abs_le_max_abs_abs hσ.1 hσ.2
+  have hs:σ^2 ≤ R^2:=by
+    calc
+      _=|σ|^2:=(sq_abs σ).symm
+      _ ≤ R^2:=pow_le_pow_left₀ (abs_nonneg σ) hsabs 2
+  have hre:((ε:ℂ)*((σ:ℂ)+(t:ℂ)*Complex.I)^2).re=ε*(σ^2-t^2):=by
+    simp [pow_two,Complex.mul_re,Complex.mul_im]
+
+  have hE:ε*(σ^2-t^2)+A*|t| ≤ (ε*R^2+A^2/(2*ε))-(ε/2)*t^2:=by
+    have hy:=linear_height_young A ε t hε
+    nlinarith
+  have hg:=gaussian_le_inverse_quadratic (ε/2) t (by positivity)
+  have hg':Real.exp (-(ε/2)*t^2) ≤ (1+4/ε)/(1+t^2):=by
+    convert hg using 1 ;field_simp ;ring
+  rw [norm_mul,Complex.norm_exp,hre]
+  calc
+    _ ≤ Real.exp (ε*(σ^2-t^2))*(B*Real.exp (A*|t|)):=
+      mul_le_mul_of_nonneg_left (hf σ hσ t) (Real.exp_pos _).le
+    _=B*Real.exp (ε*(σ^2-t^2)+A*|t|):=by rw [Real.exp_add];ring
+    _ ≤ B*Real.exp ((ε*R^2+A^2/(2*ε))-(ε/2)*t^2):=
+      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hE) hB
+    _=(B*Real.exp (ε*R^2+A^2/(2*ε)))*Real.exp (-(ε/2)*t^2):=by
+      rw [Real.exp_sub,div_eq_mul_inv,←Real.exp_neg,neg_mul]
+      ring
+    _ ≤ (B*Real.exp (ε*R^2+A^2/(2*ε)))*((1+4/ε)/(1+t^2)):=
+      mul_le_mul_of_nonneg_left hg' (mul_nonneg hB (Real.exp_pos _).le)
+    _=_:=by dsimp only [R];ring
+
+theorem gaussian_regulator_strip_decay (a b A B ε:ℝ) (_hab:a ≤ b) (_hA:0 ≤ A)
+    (hB:0 ≤ B) (hε:0<ε) (f:ℂ→ℂ)
+    (hf:∀σ:ℝ,σ∈Set.Icc a b→∀t:ℝ,
+      ‖f ((σ:ℂ)+(t:ℂ)*Complex.I)‖ ≤ B*Real.exp (A*|t|)) :
+    ∃K:ℝ,0 ≤ K ∧ ∀σ:ℝ,σ∈Set.Icc a b→∀t:ℝ,
+      ‖Complex.exp ((ε:ℂ)*((σ:ℂ)+(t:ℂ)*Complex.I)^2)*
+        f ((σ:ℂ)+(t:ℂ)*Complex.I)‖ ≤ K/(1+t^2) := by
+  refine ⟨B*Real.exp (ε*(max |a| |b|)^2+A^2/(2*ε))*(1+4/ε),by positivity,?_⟩
+  intro σ hσ t
+  exact gaussian_regulator_strip_bound a b A B ε hB hε f hf σ t hσ
+
+end GaussianMoment
+
+namespace VerticalContourShift
+open Filter MeasureTheory
+open scoped Classical Topology
+
+theorem integral_eq_of_exponential_strip_growth
+    (f : ℂ→ℂ) (a b A B : ℝ) (hab : a ≤ b) (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (hdiff : ∀z : ℂ,a ≤ z.re→z.re ≤ b→DifferentiableAt ℂ f z)
+    (ha : Integrable (fun t : ℝ=>f ((a:ℂ)+t*Complex.I)))
+    (hb : Integrable (fun t : ℝ=>f ((b:ℂ)+t*Complex.I)))
+    (hbound : ∀σ∈Set.Icc a b,∀t : ℝ,‖f ((σ:ℂ)+t*Complex.I)‖ ≤ B*Real.exp (A*|t|)) :
+    (∫t : ℝ,f ((a:ℂ)+t*Complex.I))=∫t : ℝ,f ((b:ℂ)+t*Complex.I) := by
+  let F : ℕ→ℂ→ℂ := fun n z=>Complex.exp ((gaussianRegulatorSequence n:ℂ)*z^2)*f z
+  have hreg (n : ℕ) : Continuous (fun z : ℂ=>Complex.exp ((gaussianRegulatorSequence n:ℂ)*z^2)) := by
+    fun_prop
+  have hint (n : ℕ) (σ : ℝ) (hσ : Integrable (fun t : ℝ=>f ((σ:ℂ)+t*Complex.I))) :
+      Integrable (fun t : ℝ=>F n ((σ:ℂ)+t*Complex.I)) := by
+    apply hσ.bdd_mul (c:=Real.exp (σ^2))
+    · exact ((hreg n).comp (by fun_prop)).aestronglyMeasurable
+    · exact Filter.Eventually.of_forall (fun t=>gaussian_regulator_norm_le _ σ t
+        (gaussianRegulatorSequence_pos n).le (gaussianRegulatorSequence_le_one n))
+  have heq (n : ℕ) :
+      (∫t : ℝ,F n ((a:ℂ)+t*Complex.I))=∫t : ℝ,F n ((b:ℂ)+t*Complex.I) := by
+    obtain ⟨K,hK,hdec⟩ := GaussianMoment.gaussian_regulator_strip_decay a b A B
+      (gaussianRegulatorSequence n) hab hA hB (gaussianRegulatorSequence_pos n) f hbound
+    apply integral_eq_of_strip_decay (F n) a b K hab
+    · intro z hza hzb
+      have hg : Differentiable ℂ (fun w : ℂ=>Complex.exp ((gaussianRegulatorSequence n:ℂ)*w^2)) := by
+        fun_prop
+      exact hg.differentiableAt.mul (hdiff z hza hzb)
+    · exact hint n a ha
+    · exact hint n b hb
+    · exact hdec
+  have hleft := gaussian_regulator_integral_tendsto (fun t : ℝ=>f ((a:ℂ)+t*Complex.I)) ha a
+  have hright := gaussian_regulator_integral_tendsto (fun t : ℝ=>f ((b:ℂ)+t*Complex.I)) hb b
+  change Tendsto (fun n=>∫t : ℝ,F n ((a:ℂ)+t*Complex.I)) atTop
+    (𝓝 (∫t : ℝ,f ((a:ℂ)+t*Complex.I))) at hleft
+  change Tendsto (fun n=>∫t : ℝ,F n ((b:ℂ)+t*Complex.I)) atTop
+    (𝓝 (∫t : ℝ,f ((b:ℂ)+t*Complex.I))) at hright
+  simp only [heq] at hleft
+  exact tendsto_nhds_unique hleft hright
+
+end VerticalContourShift
+
+
+
+open scoped ContDiff FourierTransform SchwartzMap
+
+/-! The beta integral bounds the reflected Gamma quotient. Repeated integration by parts
+gives uniform Mellin decay for compact smooth tests. -/
+lemma Gamma_vertical_conj (a t : ℝ) :
+    Complex.Gamma ((a : ℂ) - t * Complex.I) =
+      star (Complex.Gamma ((a : ℂ) + t * Complex.I)) := by
+  have he : (a : ℂ) - t * Complex.I = star ((a : ℂ) + t * Complex.I) := by
+    simp only [star_add, star_mul, Complex.star_def, Complex.conj_ofReal, Complex.conj_I]
+    ring
+  rw [he]
+  exact Complex.Gamma_conj _
+
+
+def realBeta (a b : ℝ) : ℝ :=
+  ∫ x : ℝ in 0..1, x ^ (a - 1) * (1 - x) ^ (b - 1)
+
+theorem realBeta_nonneg (a b : ℝ) : 0 ≤ realBeta a b := by
+  apply intervalIntegral.integral_nonneg (by norm_num)
+  intro x hx
+  exact mul_nonneg (Real.rpow_nonneg hx.1 _) (Real.rpow_nonneg (sub_nonneg.mpr hx.2) _)
+
+theorem betaIntegral_ofReal (a b : ℝ) :
+    Complex.betaIntegral (a : ℂ) (b : ℂ) = (realBeta a b : ℂ) := by
+  rw [Complex.betaIntegral, realBeta, ← intervalIntegral.integral_ofReal]
+  apply intervalIntegral.integral_congr_Ioo_of_le (by norm_num)
+  intro x hx
+  dsimp only
+  rw [Complex.ofReal_mul, Complex.ofReal_cpow hx.1.le,
+    Complex.ofReal_cpow (sub_pos.mpr hx.2).le]
+  push_cast
+  rfl
+
+theorem norm_betaIntegral_le (u v : ℂ) :
+    ‖Complex.betaIntegral u v‖ ≤ realBeta u.re v.re := by
+  apply (intervalIntegral.norm_integral_le_integral_norm (by norm_num : (0 : ℝ) ≤ 1)).trans_eq
+  apply intervalIntegral.integral_congr_Ioo_of_le (by norm_num)
+  intro x hx
+  dsimp only
+  rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx.1]
+  have hcast : (1 - (x : ℂ)) = ((1 - x : ℝ) : ℂ) := by push_cast; rfl
+  rw [hcast, Complex.norm_cpow_eq_rpow_re_of_pos (sub_pos.mpr hx.2)]
+  simp
+
+theorem realBeta_eq_Gamma (a b : ℝ) (ha : 0 < a) (hb : 0 < b) :
+    realBeta a b = Real.Gamma a * Real.Gamma b / Real.Gamma (a + b) := by
+  apply Complex.ofReal_injective
+  rw [← betaIntegral_ofReal]
+  rw [Complex.betaIntegral_eq_Gamma_mul_div _ _ (by simpa using ha) (by simpa using hb)]
+  rw [← Complex.ofReal_add]
+  simp only [Complex.Gamma_ofReal, Complex.ofReal_div, Complex.ofReal_mul]
+
+theorem Gamma_ratio_eq_beta (z : ℂ) (d : ℝ) (hz : 0 < z.re) (hd : 0 < d) :
+    Complex.Gamma z / Complex.Gamma (z + d) =
+      Complex.betaIntegral z d / Complex.Gamma d := by
+  rw [Complex.betaIntegral_eq_Gamma_mul_div _ _ hz (by simpa using hd)]
+  have hdn : Complex.Gamma (d : ℂ) ≠ 0 := Complex.Gamma_ne_zero_of_re_pos (by simpa using hd)
+  field_simp
+
+theorem Gamma_vertical_ratio_bound (a d t : ℝ) (ha : 0 < a) (hd : 0 < d) :
+    ‖Complex.Gamma ((a : ℂ) + t * Complex.I) /
+      Complex.Gamma ((a : ℂ) + t * Complex.I + d)‖ ≤ Real.Gamma a / Real.Gamma (a + d) := by
+  rw [Gamma_ratio_eq_beta _ d (by simpa using ha) hd, norm_div]
+  have hg := Real.Gamma_pos_of_pos hd
+  have hb := norm_betaIntegral_le ((a : ℂ) + t * Complex.I) (d : ℂ)
+  simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+    Complex.I_re, mul_zero, zero_mul, sub_zero, add_zero] at hb
+  rw [Complex.Gamma_ofReal, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hg]
+  calc
+    _ ≤ realBeta a d / Real.Gamma d := div_le_div_of_nonneg_right hb hg.le
+    _ = _ := by rw [realBeta_eq_Gamma a d ha hd]; field_simp
+
+
+theorem Gamma_shifted_pair_bound (a σ t : ℝ) (n : ℕ)
+    (ha : 0 < a + σ) (hd : 0 < (n : ℝ) - 2 * σ) :
+    ‖Complex.Gamma ((a : ℂ) + (σ + t * Complex.I)) /
+      Complex.Gamma ((a : ℂ) - (σ + t * Complex.I) + n)‖ ≤ Real.Gamma (a + σ) / Real.Gamma (a - σ + n) := by
+  have hb := Gamma_vertical_ratio_bound (a + σ) ((n : ℝ) - 2 * σ) t ha hd
+  have hn : ((a + σ : ℝ) : ℂ) + t * Complex.I =
+      (a : ℂ) + (σ + t * Complex.I) := by push_cast; ring
+  have hdp : ((a + σ : ℝ) : ℂ) + t * Complex.I + ((n : ℝ) - 2 * σ : ℝ) =
+      ((a - σ + n : ℝ) : ℂ) + t * Complex.I := by push_cast; ring
+  have hdm : (a : ℂ) - (σ + t * Complex.I) + n =
+      ((a - σ + n : ℝ) : ℂ) - t * Complex.I := by push_cast; ring
+  have hr : a + σ + ((n : ℝ) - 2 * σ) = a - σ + n := by ring
+  rw [hdp, hn, hr] at hb
+  rw [hdm, Gamma_vertical_conj, norm_div, norm_star]
+  simpa only [norm_div] using hb
+
+
+theorem norm_Gamma_shift_factor (z : ℂ) (n : ℕ) :
+    ‖∏ k ∈ Finset.range n, (z + k)‖ ≤ (‖z‖ + n) ^ n := by
+  rw [norm_prod]
+  calc
+    _ ≤ ∏ _k ∈ Finset.range n, (‖z‖ + n) := by
+      apply Finset.prod_le_prod
+      · intro k hk
+        exact norm_nonneg _
+      · intro k hk
+        have hk' : (k : ℝ) ≤ n := by exact_mod_cast (Finset.mem_range.mp hk).le
+        exact (norm_add_le _ _).trans (by simpa using add_le_add_left hk' ‖z‖)
+    _ = _ := by simp
+
+
+theorem Gamma_pair_strip_bound (a : ℝ) (ha : 1 / 4 < a) (A : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ), ∀ t : ℝ,
+      ‖Complex.Gamma ((a : ℂ) + (σ + t * Complex.I)) /
+        Complex.Gamma ((a : ℂ) - (σ + t * Complex.I))‖ ≤ C * (1 + |t|) ^ (2 * A + 2) := by
+  let n : ℕ := 2 * A + 2
+  let I : Set ℝ := Set.Icc (-(1 / 4 : ℝ)) (A : ℝ)
+  have hapos (σ : ℝ) (hσ : σ ∈ I) : 0 < a + σ := by
+    have := hσ.1
+    linarith
+  have hdpos (σ : ℝ) (hσ : σ ∈ I) : 0 < (n : ℝ) - 2 * σ := by
+    have := hσ.2
+    dsimp [n]
+    push_cast
+    linarith
+  have hdenpos (σ : ℝ) (hσ : σ ∈ I) : 0 < a - σ + n := by
+    have h1 := hapos σ hσ
+    have h2 := hdpos σ hσ
+    linarith
+  have hc1 : ContinuousOn (fun σ : ℝ => Real.Gamma (a + σ)) I :=
+    Real.differentiableOn_Gamma_Ioi.continuousOn.comp
+      (continuous_const.add continuous_id).continuousOn hapos
+  have hc2 : ContinuousOn (fun σ : ℝ => Real.Gamma (a - σ + n)) I :=
+    Real.differentiableOn_Gamma_Ioi.continuousOn.comp
+      ((continuous_const.sub continuous_id).add continuous_const).continuousOn hdenpos
+  have hc : ContinuousOn (fun σ : ℝ => Real.Gamma (a + σ) / Real.Gamma (a - σ + n)) I :=
+    hc1.div hc2 (fun σ hσ => (Real.Gamma_pos_of_pos (hdenpos σ hσ)).ne')
+  obtain ⟨C₀, hC₀⟩ := (isCompact_Icc : IsCompact I).bddAbove_image hc
+  let C₁ : ℝ := |C₀| + 1
+  have hC₁ : 0 < C₁ := by dsimp [C₁]; positivity
+  have hreal (σ : ℝ) (hσ : σ ∈ I) :
+      Real.Gamma (a + σ) / Real.Gamma (a - σ + n) ≤ C₁ := by
+    exact (hC₀ (Set.mem_image_of_mem _ hσ)).trans (by dsimp [C₁]; linarith [le_abs_self C₀])
+  let B : ℝ := |a| + A + 1 + n + 1
+  have hB : 0 < B := by dsimp [B]; positivity
+  refine ⟨B ^ n * C₁, mul_pos (pow_pos hB n) hC₁, ?_⟩
+  intro σ hσ t
+  have hσ' : σ ∈ I := hσ
+  have hσabs : |σ| ≤ (A : ℝ) + 1 := by
+    apply abs_le.mpr
+    constructor <;> linarith [hσ.1, hσ.2, (Nat.cast_nonneg A : (0 : ℝ) ≤ A)]
+  have hz : ‖(a : ℂ) - (σ + t * Complex.I)‖ ≤ |a| + A + 1 + |t| := by
+    calc
+      _ ≤ ‖(a : ℂ)‖ + ‖(σ : ℂ) + t * Complex.I‖ := norm_sub_le _ _
+      _ ≤ ‖(a : ℂ)‖ + (‖(σ : ℂ)‖ + ‖(t : ℂ) * Complex.I‖) :=
+        add_le_add le_rfl (norm_add_le _ _)
+      _ = |a| + (|σ| + |t|) := by simp
+      _ ≤ _ := by linarith
+  have hzB : ‖(a : ℂ) - (σ + t * Complex.I)‖ + n ≤ B * (1 + |t|) := by
+    dsimp [B]
+    nlinarith [abs_nonneg a, abs_nonneg t, (Nat.cast_nonneg A : (0 : ℝ) ≤ A), (Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
+  have hprod : ‖∏ k ∈ Finset.range n, ((a : ℂ) - (σ + t * Complex.I) + k)‖ ≤ B ^ n * (1 + |t|) ^ n := by
+    apply (norm_Gamma_shift_factor _ n).trans
+    rw [← mul_pow]
+    exact pow_le_pow_left₀ (by positivity) hzB n
+  have hratio := (Gamma_shifted_pair_bound a σ t n (hapos σ hσ') (hdpos σ hσ')).trans
+    (hreal σ hσ')
+  have heq : Complex.Gamma ((a : ℂ) + (σ + t * Complex.I)) /
+      Complex.Gamma ((a : ℂ) - (σ + t * Complex.I)) =
+      (∏ k ∈ Finset.range n, ((a : ℂ) - (σ + t * Complex.I) + k)) *
+      (Complex.Gamma ((a : ℂ) + (σ + t * Complex.I)) /
+       Complex.Gamma ((a : ℂ) - (σ + t * Complex.I) + n)) := by
+    rw [div_eq_mul_inv, CubicGammaExponential.inverse_Gamma_shift _ n, div_eq_mul_inv]
+    ring
+  rw [heq, norm_mul]
+  calc
+    _ ≤ (B ^ n * (1 + |t|) ^ n) * C₁ :=
+      mul_le_mul hprod hratio (norm_nonneg _) (by positivity)
+    _ = _ := by dsimp [n]; ring
+
+theorem cubicReflectionGamma_strip_bound (A : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ), ∀ t : ℝ,
+      ‖cubicReflectionGamma ((σ : ℂ) + t * Complex.I)‖ ≤ C * (1 + |t|) ^ (4 * A + 4) := by
+  obtain ⟨C₁, hC₁, h1⟩ := Gamma_pair_strip_bound (7 / 6) (by norm_num) A
+  obtain ⟨C₂, hC₂, h2⟩ := Gamma_pair_strip_bound (5 / 6) (by norm_num) A
+  refine ⟨C₁ * C₂, mul_pos hC₁ hC₂, ?_⟩
+  intro σ hσ t
+  have heq : cubicReflectionGamma ((σ : ℂ) + t * Complex.I) =
+      (Complex.Gamma (((7 / 6 : ℝ) : ℂ) + (σ + t * Complex.I)) /
+       Complex.Gamma (((7 / 6 : ℝ) : ℂ) - (σ + t * Complex.I))) *
+      (Complex.Gamma (((5 / 6 : ℝ) : ℂ) + (σ + t * Complex.I)) /
+       Complex.Gamma (((5 / 6 : ℝ) : ℂ) - (σ + t * Complex.I))) := by
+    simp only [cubicReflectionGamma, Complex.ofReal_div, Complex.ofReal_ofNat]
+    exact div_mul_div_comm _ _ _ _ |>.symm
+  rw [heq, norm_mul]
+  calc
+    _ ≤ (C₁ * (1 + |t|) ^ (2 * A + 2)) * (C₂ * (1 + |t|) ^ (2 * A + 2)) :=
+      mul_le_mul (h1 σ hσ t) (h2 σ hσ t) (norm_nonneg _) (by positivity)
+    _ = _ := by
+      rw [mul_mul_mul_comm, ← pow_add]
+      congr 2
+      omega
+
+theorem section_deriv_smooth (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) :
+    ContDiff ℝ ∞ (fun p : ℝ × ℝ => deriv (F p.1) p.2) := by
+  have hFp : ContDiff ℝ ∞
+      (Function.uncurry (fun p : ℝ × ℝ => F p.1)) :=
+    hF.comp (contDiff_fst.fst.prodMk contDiff_snd)
+  have hd := hFp.fderiv contDiff_snd (by simp : (∞ : ℕ∞ω) + 1 ≤ ∞)
+  simpa only [deriv] using hd.clm_apply (contDiff_const (c := (1 : ℝ)))
+
+theorem section_iteratedDeriv_smooth (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (j : ℕ) :
+    ContDiff ℝ ∞ (fun p : ℝ × ℝ => iteratedDeriv j (F p.1) p.2) := by
+  induction j with
+  | zero => simpa only [iteratedDeriv_zero, Function.uncurry_def] using hF
+  | succ j ih =>
+    simpa only [iteratedDeriv_succ] using
+      section_deriv_smooth (fun σ => iteratedDeriv j (F σ)) ih
+
+theorem tsupport_iteratedDeriv_subset (f : ℝ → ℂ) (j : ℕ) :
+    tsupport (iteratedDeriv j f) ⊆ tsupport f := by
+  induction j with
+  | zero => simp
+  | succ j ih =>
+    rw [iteratedDeriv_succ]
+    exact tsupport_deriv_subset.trans ih
+
+theorem compact_family_deriv_integrable (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (σ : ℝ) (j : ℕ) :
+    Integrable (iteratedDeriv j (F σ)) := by
+  have hs : ContDiff ℝ ∞ (F σ) := hF.comp (contDiff_const.prodMk contDiff_id)
+  have hc : HasCompactSupport (iteratedDeriv j (F σ)) := by
+    apply HasCompactSupport.of_support_subset_isCompact hK
+    exact (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset (F σ) j).trans
+      (closure_minimal (hsupp σ) hK.isClosed))
+  exact (hs.continuous_iteratedDeriv j (by exact_mod_cast (le_top : (j : ℕ∞) ≤ ⊤))).integrable_of_hasCompactSupport hc
+
+theorem compact_family_deriv_L1_bound (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set ℝ) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, (∫ u : ℝ, ‖iteratedDeriv j (F σ) u‖) ≤ C := by
+  have hc := (section_iteratedDeriv_smooth F hF j).continuous.norm
+  obtain ⟨M, hM⟩ := (hJ.prod hK).bddAbove_image hc.continuousOn
+  let C : ℝ := (|M| + 1) * (volume.real K + 1)
+  refine ⟨C, by dsimp [C]; positivity, ?_⟩
+  intro σ hσ
+  have hbound : ∀ u ∈ K, ‖iteratedDeriv j (F σ) u‖ ≤ |M| + 1 := by
+    intro u hu
+    exact (hM (Set.mem_image_of_mem _ (show (σ, u) ∈ J ×ˢ K from ⟨hσ, hu⟩))).trans (by linarith [le_abs_self M])
+  have hs : Function.support (iteratedDeriv j (F σ)) ⊆ K :=
+    (subset_tsupport _).trans ((tsupport_iteratedDeriv_subset (F σ) j).trans
+      (closure_minimal (hsupp σ) hK.isClosed))
+  have hzero : ∀ u, u ∉ K → ‖iteratedDeriv j (F σ) u‖ = 0 := by
+    intro u hu
+    have hz : iteratedDeriv j (F σ) u = 0 := by
+      by_contra hn
+      exact hu (hs hn)
+    simp [hz]
+  have hi := norm_setIntegral_le_of_norm_le_const («μ» := volume) (f := fun u => ‖iteratedDeriv j (F σ) u‖)
+    hK.measure_lt_top (C := |M| + 1) (fun u hu => by simpa using hbound u hu)
+  rw [setIntegral_eq_integral_of_forall_compl_eq_zero hzero] at hi
+  rw [Real.norm_of_nonneg (integral_nonneg (fun u => norm_nonneg _))] at hi
+  exact hi.trans (by dsimp [C]; nlinarith [abs_nonneg M])
+
+theorem compact_family_fourier_power_bound (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set ℝ) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, ∀ w : ℝ,
+      |w| ^ j * ‖𝓕 (F σ) w‖ ≤ C := by
+  obtain ⟨C, hC, hb⟩ := compact_family_deriv_L1_bound F hF K hK hsupp J hJ j
+  refine ⟨C / (2 * Real.pi) ^ j, by positivity, ?_⟩
+  intro σ hσ w
+  have hs : ContDiff ℝ ∞ (F σ) := hF.comp (contDiff_const.prodMk contDiff_id)
+  have hfour := Real.fourier_iteratedDeriv (N := (⊤ : ℕ∞)) hs
+    (fun k _ => compact_family_deriv_integrable F hF K hK hsupp σ k)
+    (by simp : (j : ℕ∞) ≤ ⊤)
+  have hid : (2 * Real.pi) ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) =
+      ‖𝓕 (iteratedDeriv j (F σ)) w‖ := by
+    rw [hfour]
+    simp only [norm_smul, norm_pow, norm_mul, Complex.norm_I, mul_one,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos Real.pi_pos]
+    norm_num
+    ring
+  have hn : ‖𝓕 (iteratedDeriv j (F σ)) w‖ ≤ C := by
+    apply (VectorFourier.norm_fourierIntegral_le_integral_norm
+      Real.fourierChar volume (innerₗ ℝ) (iteratedDeriv j (F σ)) w).trans
+    exact hb σ hσ
+  apply (le_div_iff₀ (by positivity : 0 < (2 * Real.pi) ^ j)).mpr
+  rw [← hid] at hn
+  calc
+    _ = (2 * Real.pi) ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) := mul_comm _ _
+    _ ≤ C := hn
+
+theorem compact_family_fourier_weighted_bound (F : ℝ → ℝ → ℂ)
+    (hF : ContDiff ℝ ∞ (Function.uncurry F)) (K : Set ℝ) (hK : IsCompact K)
+    (hsupp : ∀ σ, Function.support (F σ) ⊆ K) (J : Set ℝ) (hJ : IsCompact J)
+    (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ J, ∀ w : ℝ,
+      (1 + |w|) ^ j * ‖𝓕 (F σ) w‖ ≤ C := by
+  obtain ⟨C₀, hC₀, h0⟩ := compact_family_fourier_power_bound F hF K hK hsupp J hJ 0
+  obtain ⟨Cj, hCj, hj⟩ := compact_family_fourier_power_bound F hF K hK hsupp J hJ j
+  refine ⟨2 ^ j * (C₀ + Cj), by positivity, ?_⟩
+  intro σ hσ w
+  have hbase : ‖𝓕 (F σ) w‖ ≤ C₀ := by simpa using h0 σ hσ w
+  by_cases hw : |w| ≤ 1
+  · calc
+      _ ≤ 2 ^ j * ‖𝓕 (F σ) w‖ :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) (by linarith) j) (norm_nonneg _)
+      _ ≤ 2 ^ j * C₀ := mul_le_mul_of_nonneg_left hbase (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+  · have hw' : 1 ≤ |w| := le_of_lt (lt_of_not_ge hw)
+    calc
+      _ ≤ (2 * |w|) ^ j * ‖𝓕 (F σ) w‖ :=
+        mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) (by linarith) j) (norm_nonneg _)
+      _ = 2 ^ j * (|w| ^ j * ‖𝓕 (F σ) w‖) := by rw [mul_pow, mul_assoc]
+      _ ≤ 2 ^ j * Cj := mul_le_mul_of_nonneg_left (hj σ hσ w) (by positivity)
+      _ ≤ _ := mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+
+
+
+/-! Mellin inversion and absolute convergence commute the weighted series and vertical integral. -/
+open scoped ContDiff FourierTransform SchwartzMap
+
+
+def mellinLogFamily (V : ℝ → ℂ) (σ u : ℝ) : ℂ :=
+  Real.exp (-σ * u) • V (Real.exp (-u))
+
+theorem mellinLogFamily_smooth (V : ℝ → ℂ) (hV : ContDiff ℝ ∞ V) :
+    ContDiff ℝ ∞ (Function.uncurry (mellinLogFamily V)) := by
+  change ContDiff ℝ ∞ (fun p : ℝ × ℝ => Real.exp (-p.1 * p.2) • V (Real.exp (-p.2)))
+  exact (Real.contDiff_exp.comp (contDiff_fst.neg.mul contDiff_snd)).smul
+    (hV.comp (Real.contDiff_exp.comp contDiff_snd.neg))
+
+theorem mellinLogFamily_support (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (σ : ℝ) :
+    Function.support (mellinLogFamily V σ) ⊆ Set.Icc (-Real.log b) (-Real.log a) := by
+  intro u hu
+  have hv : V (Real.exp (-u)) ≠ 0 := by
+    intro hv
+    exact hu (by simp [mellinLogFamily, hv])
+  have hm := hsupp hv
+  have hlow := Real.log_le_log ha hm.1
+  have hhigh := Real.log_le_log (Real.exp_pos (-u)) hm.2
+  simp only [Real.log_exp] at hlow hhigh
+  constructor <;> linarith
+
+theorem mellin_eq_logFamily_fourier (V : ℝ → ℂ) (σ t : ℝ) :
+    mellin V ((σ : ℂ) + t * Complex.I) = 𝓕 (mellinLogFamily V σ) (t / (2 * Real.pi)) := by
+  rw [mellin_eq_fourier]
+  simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+    Complex.I_re, mul_zero,  sub_zero, add_zero, Complex.add_im,
+    Complex.mul_im, Complex.I_im, mul_one, zero_add]
+  rfl
+
+
+
+theorem compact_source_mellin_convergent
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (s : ℂ) : MellinConvergent V s := by
+  have hlocal : LocallyIntegrableOn V (Set.Ioi (0 : ℝ)) :=
+    hV.continuous.continuousOn.locallyIntegrableOn measurableSet_Ioi
+  have htopzero : V =ᶠ[atTop] (fun _ => 0) := by
+    filter_upwards [eventually_gt_atTop b] with y hy
+    by_contra hn
+    exact (not_le_of_gt hy) (hsupp hn).2
+  have hbotzero : V =ᶠ[𝓝[>] (0 : ℝ)] (fun _ => 0) := by
+    filter_upwards [Ioo_mem_nhdsGT ha] with y hy
+    by_contra hn
+    exact (not_le_of_gt hy.2) (hsupp hn).1
+  have htop : V =O[atTop] (fun y : ℝ => y ^ (-(s.re + 1))) :=
+    htopzero.isBigO.trans (isBigO_zero _ _)
+  have hbot : V =O[𝓝[>] (0 : ℝ)] (fun y : ℝ => y ^ (-(s.re - 1))) :=
+    hbotzero.isBigO.trans (isBigO_zero _ _)
+  exact mellinConvergent_of_isBigO_rpow hlocal htop (by linarith)
+    hbot (by linarith)
+
+
+
+theorem compact_source_mellin_hasDerivAt
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (s : ℂ) :
+    HasDerivAt (mellin V) (mellin (fun t => Real.log t • V t) s) s := by
+  have hlocal : LocallyIntegrableOn V (Set.Ioi (0 : ℝ)) :=
+    hV.continuous.continuousOn.locallyIntegrableOn measurableSet_Ioi
+  have htopzero : V =ᶠ[atTop] (fun _ => 0) := by
+    filter_upwards [eventually_gt_atTop b] with y hy
+    by_contra hn
+    exact (not_le_of_gt hy) (hsupp hn).2
+  have hbotzero : V =ᶠ[𝓝[>] (0 : ℝ)] (fun _ => 0) := by
+    filter_upwards [Ioo_mem_nhdsGT ha] with y hy
+    by_contra hn
+    exact (not_le_of_gt hy.2) (hsupp hn).1
+  have htop : V =O[atTop] (fun y : ℝ => y ^ (-(s.re + 1))) :=
+    htopzero.isBigO.trans (isBigO_zero _ _)
+  have hbot : V =O[𝓝[>] (0 : ℝ)] (fun y : ℝ => y ^ (-(s.re - 1))) :=
+    hbotzero.isBigO.trans (isBigO_zero _ _)
+  exact (mellin_hasDerivAt_of_isBigO_rpow hlocal htop (by linarith)
+    hbot (by linarith)).2
+
+theorem compact_source_mellin_differentiable
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V) :
+    Differentiable ℂ (mellin V) :=
+  fun s => (compact_source_mellin_hasDerivAt V a b ha hsupp hV s).differentiableAt
+
+
+
+lemma compactMellin_vertical_integrable (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hsupp : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V) (σ : ℝ) :
+    Complex.VerticalIntegrable (mellin V) σ := by
+  have hc : HasCompactSupport (mellinLogFamily V σ) :=
+    HasCompactSupport.of_support_subset_isCompact isCompact_Icc
+      (mellinLogFamily_support V a b ha hsupp σ)
+  have hd : ContDiff ℝ ∞ (mellinLogFamily V σ) :=
+    (mellinLogFamily_smooth V hV).comp (contDiff_const.prodMk contDiff_id)
+  let f : 𝓢(ℝ,ℂ) := hc.toSchwartzMap hd
+  have hf : Integrable (fun t : ℝ=>(𝓕 f) (t/(2*Real.pi))) := by
+    simpa only [div_eq_mul_inv] using
+      (𝓕 f).integrable.comp_mul_right' (inv_ne_zero (mul_ne_zero (by norm_num) Real.pi_ne_zero))
+  change Integrable (fun t : ℝ=>mellin V ((σ:ℂ)+t*Complex.I))
+  have hfcoe : (f:ℝ→ℂ)=mellinLogFamily V σ := rfl
+  simpa only [mellin_eq_logFamily_fourier,
+    SchwartzMap.fourier_coe,hfcoe] using hf
+
+theorem compactMellin_inversion (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hsupp : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (σ x : ℝ) (hx : 0<x) :
+    V x=(1/(2*Real.pi):ℂ)*∫t : ℝ,
+      (x:ℂ)^(-((σ:ℂ)+t*Complex.I))*mellin V ((σ:ℂ)+t*Complex.I) := by
+  have hm := mellinInv_mellin_eq σ V hx
+    (compact_source_mellin_convergent V a b ha hsupp hV σ)
+    (compactMellin_vertical_integrable V a b ha hsupp hV σ) hV.continuous.continuousAt
+  simpa only [mellinInv,smul_eq_mul,Complex.real_smul,Complex.ofReal_div,
+    Complex.ofReal_one,Complex.ofReal_mul,Complex.ofReal_ofNat] using hm.symm
+
+
+lemma positive_cpow_vertical_norm (r σ t : ℝ) (hr : 0<r) :
+    ‖(r:ℂ)^((σ:ℂ)+t*Complex.I)‖=r^σ := by
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos hr]
+  simp
+
+lemma positive_cpow_negative_vertical_norm (r σ t : ℝ) (hr : 0<r) :
+    ‖(r:ℂ)^(-((σ:ℂ)+t*Complex.I))‖=r^(-σ) := by
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos hr]
+  simp
+
+lemma positive_cpow_vertical_continuous (r σ : ℝ) (hr : 0<r) :
+    Continuous (fun t : ℝ=>(r:ℂ)^((σ:ℂ)+t*Complex.I)) := by
+  let : NeZero (r:ℂ) := ⟨Complex.ofReal_ne_zero.mpr hr.ne'⟩
+  exact (_root_.continuous_const_cpow (r:ℂ)).comp (by fun_prop)
+
+lemma positive_cpow_negative_vertical_continuous (r σ : ℝ) (hr : 0<r) :
+    Continuous (fun t : ℝ=>(r:ℂ)^(-((σ:ℂ)+t*Complex.I))) := by
+  let : NeZero (r:ℂ) := ⟨Complex.ofReal_ne_zero.mpr hr.ne'⟩
+  exact (_root_.continuous_const_cpow (r:ℂ)).comp (by fun_prop)
+
+lemma vertical_power_mul_integrable (M : ℝ→ℂ) (hM : Integrable M)
+    (r σ : ℝ) (hr : 0<r) :
+    Integrable (fun t : ℝ=>(r:ℂ)^((σ:ℂ)+t*Complex.I)*M t) := by
+  apply (hM.norm.const_mul (r^σ)).mono'
+    ((positive_cpow_vertical_continuous r σ hr).aestronglyMeasurable.mul hM.aestronglyMeasurable)
+  exact Filter.Eventually.of_forall (fun t=>by simp only [Pi.mul_apply,norm_mul,positive_cpow_vertical_norm r σ t hr,le_refl])
+
+lemma weighted_vertical_power_integrable (M : ℝ→ℂ) (hM : Integrable M)
+    (r σ : ℝ) (hr : 0<r) (c : ℂ) :
+    Integrable (fun t : ℝ=>c*(r:ℂ)^(-((σ:ℂ)+t*Complex.I))*M t) := by
+  apply (hM.norm.const_mul (‖c‖*r^(-σ))).mono'
+    ((continuous_const.mul (positive_cpow_negative_vertical_continuous r σ hr)).aestronglyMeasurable.mul hM.aestronglyMeasurable)
+  exact Filter.Eventually.of_forall (fun t=>by
+    simp only [Pi.mul_apply,norm_mul,positive_cpow_negative_vertical_norm r σ t hr,le_refl])
+
+lemma weighted_vertical_power_integral_norm (M : ℝ→ℂ) (r σ : ℝ) (hr : 0<r) (c : ℂ) :
+    (∫t : ℝ,‖c*(r:ℂ)^(-((σ:ℂ)+t*Complex.I))*M t‖)=
+      (‖c‖*r^(-σ))*(∫t : ℝ,‖M t‖) := by
+  simp only [norm_mul,positive_cpow_negative_vertical_norm r σ _ hr,integral_const_mul]
+
+theorem weighted_vertical_sum_integral {α : Type*} [Countable α]
+    (r : α→ℝ) (hr : ∀i,0<r i) (c : α→ℂ) (σ : ℝ)
+    (hc : Summable (fun i=>‖c i‖*(r i)^(-σ)))
+    (M : ℝ→ℂ) (hM : Integrable M) :
+    (∑' i,∫t : ℝ,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))*M t)=
+      ∫t : ℝ,(∑' i,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I)))*M t := by
+  have hi (i : α) := weighted_vertical_power_integrable M hM (r i) σ (hr i) (c i)
+  have hs : Summable (fun i=>∫t : ℝ,‖c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))*M t‖) := by
+    simp only [weighted_vertical_power_integral_norm M _ σ (hr _) _]
+    exact hc.mul_right _
+  rw [integral_tsum_of_summable_integral_norm hi hs]
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall (fun t=>tsum_mul_right)
+
+lemma positive_div_cpow (x y : ℝ) (hx : 0 ≤ x) (hy : 0 < y) (s : ℂ) :
+    ((x / y : ℝ) : ℂ) ^ s = (x : ℂ) ^ s / (y : ℂ) ^ s := by
+  apply (eq_div_iff (Complex.cpow_ne_zero_iff.mpr
+    (Or.inl (Complex.ofReal_ne_zero.mpr hy.ne')))).mpr
+  have he := Complex.mul_cpow_ofReal_nonneg (div_nonneg hx hy.le) hy.le s
+  simpa only [← Complex.ofReal_mul, div_mul_cancel₀ x hy.ne'] using he.symm
+
+lemma positive_quotient_cpow_neg (r X : ℝ) (hr : 0<r) (hX : 0<X) (s : ℂ) :
+    ((r/X:ℝ):ℂ)^(-s)=(r:ℂ)^(-s)*(X:ℂ)^s := by
+  rw [positive_div_cpow r X hr.le hX,
+    Complex.cpow_neg,Complex.cpow_neg,div_inv_eq_mul]
+
+theorem weightedMellin_inversion {α : Type*} [Countable α]
+    (r : α→ℝ) (hr : ∀i,0<r i) (c : α→ℂ) (σ : ℝ)
+    (hc : Summable (fun i=>‖c i‖*(r i)^(-σ)))
+    (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hsupp : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0<X) :
+    (∑'i,c i*V (r i/X))=(1/(2*Real.pi):ℂ)*∫t : ℝ,
+      mellin V ((σ:ℂ)+t*Complex.I)*(X:ℂ)^((σ:ℂ)+t*Complex.I)*
+        (∑'i,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))) := by
+  let M : ℝ→ℂ := fun t=>(X:ℂ)^((σ:ℂ)+t*Complex.I)*mellin V ((σ:ℂ)+t*Complex.I)
+  have hM : Integrable M := vertical_power_mul_integrable _
+    (compactMellin_vertical_integrable V a b ha hsupp hV σ) X σ hX
+  have hi (i : α) : c i*V (r i/X)=(1/(2*Real.pi):ℂ)*
+      ∫t : ℝ,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))*M t := by
+    rw [compactMellin_inversion V a b ha hsupp hV σ _ (div_pos (hr i) hX)]
+    rw [←mul_assoc,mul_comm (c i),mul_assoc,←integral_const_mul]
+    congr 1
+    apply integral_congr_ae
+    exact Filter.Eventually.of_forall (fun t=>by
+      dsimp only
+      rw [positive_quotient_cpow_neg _ _ (hr i) hX]
+      dsimp only [M]
+      ring)
+  simp_rw [hi]
+  rw [tsum_mul_left,weighted_vertical_sum_integral r hr c σ hc M hM]
+  congr 1
+  apply integral_congr_ae
+  exact Filter.Eventually.of_forall (fun t=>by dsimp only [M];ring)
+
+
+def besselSmoothingIntegrand (F : ℝ→ℂ) (q : ℝ) (V : ℝ→ℂ) (X : ℝ) (s : ℂ) : ℂ :=
+  mellin V (s-1/2)*(X:ℂ)^(s-1/2)*continuedBesselDirichlet F q s
+
+lemma besselSmoothingIntegrand_differentiable (F : ℝ→ℂ) (q : ℝ) (hq : 0<q)
+    (hF : Differentiable ℂ (mellin F)) (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hVs : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0<X) : Differentiable ℂ (besselSmoothingIntegrand F q V X) := by
+  have hm := (compact_source_mellin_differentiable V a b ha hVs hV).comp
+    (show Differentiable ℂ (fun s : ℂ=>s-1/2) from by fun_prop)
+  have hp : Differentiable ℂ (fun s : ℂ=>(X:ℂ)^(s-1/2)) :=
+    (show Differentiable ℂ (fun s : ℂ=>s-1/2) from by fun_prop).const_cpow
+      (Or.inl (Complex.ofReal_ne_zero.mpr hX.ne'))
+  exact (hm.mul hp).mul (continuedBesselDirichlet_differentiable F q hq hF)
+
+lemma besselSmoothingIntegrand_strip_bound (F : ℝ→ℂ) (q : ℝ) (hq : 0<q)
+    (lo hi : ℝ) (hF : ∀s : ℂ,MellinConvergent F s)
+    (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hVs : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0<X) :
+    ∃C : ℝ,0 ≤ C ∧ ∀s : ℂ,s.re∈Set.Icc lo hi →
+      ‖besselSmoothingIntegrand F q V X s‖ ≤ C*Real.exp (2*Real.pi*|s.im|) := by
+  obtain ⟨Cd,hCd,hd⟩ := continuedBesselDirichlet_strip_bound F q hq lo hi (hF _) (hF _)
+  have hVc (s : ℂ) := compact_source_mellin_convergent V a b ha hVs hV s
+  obtain ⟨Cv,hCv,hv⟩ := mellin_uniform_strip_bound V (lo-1/2) (hi-1/2)
+    (hVc _) (hVc _)
+  let Cx : ℝ := X^(lo-1/2)+X^(hi-1/2)
+  have hCx : 0 ≤ Cx := by dsimp [Cx];positivity
+  refine ⟨Cv*Cx*Cd,mul_nonneg (mul_nonneg hCv hCx) hCd,?_⟩
+  intro s hs
+  have hvb : ‖mellin V (s-1/2)‖ ≤ Cv := hv (s-1/2)
+    (by simp;linarith [hs.1]) (by simp;linarith [hs.2])
+  have hxb : ‖(X:ℂ)^(s-1/2)‖ ≤ Cx := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hX]
+    have he : (s-1/2).re=s.re-1/2 := by simp
+    rw [he]
+    exact rpow_between_endpoints X (lo-1/2) (hi-1/2) (s.re-1/2) hX
+      (by linarith [hs.1]) (by linarith [hs.2])
+  rw [besselSmoothingIntegrand,norm_mul,norm_mul]
+  calc
+    _ ≤ (Cv*Cx)*(Cd*Real.exp (2*Real.pi*|s.im|)) :=
+      mul_le_mul (mul_le_mul hvb hxb (norm_nonneg _) hCv) (hd s hs)
+        (norm_nonneg _) (mul_nonneg hCv hCx)
+    _=_ := by ring
+
+theorem besselSmoothingIntegrand_contour_eq (F : ℝ→ℂ) (q : ℝ) (hq : 0<q)
+    (hF : ∀s : ℂ,MellinConvergent F s) (hFe : Differentiable ℂ (mellin F))
+    (V : ℝ→ℂ) (a b : ℝ) (ha : 0<a)
+    (hVs : Function.support V⊆Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (X : ℝ) (hX : 0<X) (lo hi : ℝ) (hlh : lo ≤ hi)
+    (hl : Integrable (fun t : ℝ=>besselSmoothingIntegrand F q V X ((lo:ℂ)+t*Complex.I)))
+    (hh : Integrable (fun t : ℝ=>besselSmoothingIntegrand F q V X ((hi:ℂ)+t*Complex.I))) :
+    (∫t : ℝ,besselSmoothingIntegrand F q V X ((lo:ℂ)+t*Complex.I))=
+      ∫t : ℝ,besselSmoothingIntegrand F q V X ((hi:ℂ)+t*Complex.I) := by
+  obtain ⟨C,hC,hb⟩ := besselSmoothingIntegrand_strip_bound F q hq lo hi hF V a b ha hVs hV X hX
+  apply VerticalContourShift.integral_eq_of_exponential_strip_growth
+    (besselSmoothingIntegrand F q V X) lo hi (2*Real.pi) C hlh (by positivity) hC
+  · intro z hz1 hz2
+    exact (besselSmoothingIntegrand_differentiable F q hq hFe V a b ha hVs hV X hX) z
+  · exact hl
+  · exact hh
+  · intro σ hσ t
+    simpa only [Complex.add_re,Complex.ofReal_re,Complex.mul_re,Complex.ofReal_im,
+      Complex.I_re,Complex.I_im,zero_mul,mul_zero,sub_zero,add_zero,
+      Complex.add_im,Complex.mul_im,mul_one,zero_add] using
+      hb ((σ:ℂ)+t*Complex.I) (by simpa using hσ)
+
+
+
+/-! The reflected Mellin kernel has integrable vertical lines and admits contour shifts. -/
+theorem compact_source_mellin_strip_decay (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (lo hi : ℝ) (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc lo hi, ∀ t : ℝ,
+      (1 + |t|) ^ j * ‖mellin V ((σ : ℂ) + t * Complex.I)‖ ≤ C := by
+  obtain ⟨C, hC, hb⟩ := compact_family_fourier_weighted_bound
+    (mellinLogFamily V) (mellinLogFamily_smooth V hV)
+    (Set.Icc (-Real.log b) (-Real.log a)) isCompact_Icc
+    (mellinLogFamily_support V a b ha hsupp) (Set.Icc lo hi) isCompact_Icc j
+  refine ⟨(1 + 2 * Real.pi) ^ j * C, by positivity, ?_⟩
+  intro σ hσ t
+  rw [mellin_eq_logFamily_fourier]
+  have ht : |t| = (2 * Real.pi) * |t / (2 * Real.pi)| := by
+    rw [abs_div, abs_of_pos (by positivity : 0 < 2 * Real.pi)]
+    field_simp
+  have hbase : 1 + |t| ≤ (1 + 2 * Real.pi) * (1 + |t / (2 * Real.pi)|) := by
+    rw [ht]
+    nlinarith [Real.pi_pos, abs_nonneg (t / (2 * Real.pi))]
+  calc
+    _ ≤ ((1 + 2 * Real.pi) * (1 + |t / (2 * Real.pi)|)) ^ j *
+        ‖𝓕 (mellinLogFamily V σ) (t / (2 * Real.pi))‖ :=
+      mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by positivity) hbase j) (norm_nonneg _)
+    _ = (1 + 2 * Real.pi) ^ j * ((1 + |t / (2 * Real.pi)|) ^ j *
+        ‖𝓕 (mellinLogFamily V σ) (t / (2 * Real.pi))‖) := by rw [mul_pow, mul_assoc]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hb σ hσ _) (by positivity)
+
+
+theorem Gamma_differentiableAt_of_re_pos (z : ℂ) (hz : 0 < z.re) :
+    DifferentiableAt ℂ Complex.Gamma z := by
+  apply Complex.differentiableAt_Gamma
+  intro m hm
+  have hr := congrArg Complex.re hm
+  simp only [Complex.neg_re, Complex.natCast_re] at hr
+  have hn : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+  linarith
+
+theorem cubicReflectionGamma_differentiableAt (s : ℂ) (hs : -(5 / 6 : ℝ) < s.re) :
+    DifferentiableAt ℂ cubicReflectionGamma s := by
+  have h1 := (Gamma_differentiableAt_of_re_pos ((7 / 6 : ℂ) + s) (by
+    norm_num [Complex.add_re, Complex.div_re]
+    linarith)).comp s (differentiableAt_const _ |>.add differentiableAt_id)
+  have h2 := (Gamma_differentiableAt_of_re_pos ((5 / 6 : ℂ) + s) (by
+    norm_num [Complex.add_re, Complex.div_re]
+    linarith)).comp s (differentiableAt_const _ |>.add differentiableAt_id)
+  have h3 := (Complex.differentiable_one_div_Gamma ((7 / 6 : ℂ) - s)).comp s
+    (differentiableAt_const _ |>.sub differentiableAt_id)
+  have h4 := (Complex.differentiable_one_div_Gamma ((5 / 6 : ℂ) - s)).comp s
+    (differentiableAt_const _ |>.sub differentiableAt_id)
+  convert! ((h1.mul h2).mul (h3.mul h4)) using 1
+  ext z
+  simp only [cubicReflectionGamma, Function.comp_def, div_eq_mul_inv, mul_inv_rev, Pi.mul_apply]
+  ring
+
+theorem kernelMellinIntegrand_differentiableAt
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (s : ℂ) (hs : -(5 / 6 : ℝ) < s.re) :
+    DifferentiableAt ℂ (fun t => mellin V (-t) * cubicReflectionGamma t) s := by
+  exact ((compact_source_mellin_differentiable V a b ha hsupp hV (-s)).comp s
+    differentiableAt_id.neg).mul (cubicReflectionGamma_differentiableAt s hs)
+
+
+def mellinData (V : ℝ → ℂ) (s : ℂ) : ℂ := mellin V (-s) * cubicReflectionGamma s
+
+def mellinEulerData (V : ℝ → ℂ) (j : ℕ) (s : ℂ) : ℂ := (-s) ^ j * mellinData V s
+
+theorem mellinData_strip_decay (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ), ∀ t : ℝ,
+      (1 + |t|) ^ j * ‖mellinData V ((σ : ℂ) + t * Complex.I)‖ ≤ C := by
+  let g : ℕ := 4 * A + 4
+  obtain ⟨Cγ, hCγ, hγ⟩ := cubicReflectionGamma_strip_bound A
+  obtain ⟨CV, hCV, hVb⟩ := compact_source_mellin_strip_decay V a b ha hsupp hV
+    (-(A : ℝ)) (1 / 4) (g + j)
+  refine ⟨Cγ * CV, mul_pos hCγ hCV, ?_⟩
+  intro σ hσ t
+  have hσ' : -σ ∈ Set.Icc (-(A : ℝ)) (1 / 4) := by constructor <;> linarith [hσ.1, hσ.2]
+  have hmb := hVb (-σ) hσ' (-t)
+  have heq : (-σ : ℝ) + (-t : ℝ) * Complex.I = -((σ : ℂ) + t * Complex.I) := by
+    push_cast
+    ring
+  rw [heq, abs_neg] at hmb
+  have hgb : ‖cubicReflectionGamma ((σ : ℂ) + t * Complex.I)‖ ≤ Cγ * (1 + |t|) ^ g := hγ σ hσ t
+  rw [mellinData, norm_mul]
+  calc
+    _ = ((1 + |t|) ^ j * ‖mellin V (-((σ : ℂ) + t * Complex.I))‖) *
+        ‖cubicReflectionGamma ((σ : ℂ) + t * Complex.I)‖ := by ring
+    _ ≤ ((1 + |t|) ^ j * ‖mellin V (-((σ : ℂ) + t * Complex.I))‖) *
+        (Cγ * (1 + |t|) ^ g) := mul_le_mul_of_nonneg_left hgb (by positivity)
+    _ = Cγ * ((1 + |t|) ^ (g + j) * ‖mellin V (-((σ : ℂ) + t * Complex.I))‖) := by
+      rw [pow_add]
+      ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hmb hCγ.le
+
+theorem weighted_two_to_cauchy {C B : ℝ} (hB : 0 ≤ B) (t : ℝ)
+    (h : (1 + |t|) ^ 2 * B ≤ C) : B ≤ C / (1 + t ^ 2) := by
+  apply (le_div_iff₀ (by positivity : 0 < 1 + t ^ 2)).mpr
+  have hpow : 1 + t ^ 2 ≤ (1 + |t|) ^ 2 := by nlinarith [abs_nonneg t, sq_abs t]
+  exact (mul_le_mul_of_nonneg_left hpow hB).trans (by simpa only [mul_comm] using h)
+
+theorem mellinEulerData_strip_bound (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ), ∀ t : ℝ,
+      ‖mellinEulerData V j ((σ : ℂ) + t * Complex.I)‖ ≤ C / (1 + t ^ 2) := by
+  obtain ⟨C, hC, hb⟩ := mellinData_strip_decay V a b ha hsupp hV A (j + 2)
+  refine ⟨((A : ℝ) + 2) ^ j * C, by positivity, ?_⟩
+  intro σ hσ t
+  apply weighted_two_to_cauchy (norm_nonneg _) t
+  have hσabs : |σ| ≤ (A : ℝ) + 1 := by
+    apply abs_le.mpr
+    constructor <;> linarith [hσ.1, hσ.2, (Nat.cast_nonneg A : (0 : ℝ) ≤ A)]
+  have hz : ‖(σ : ℂ) + t * Complex.I‖ ≤ ((A : ℝ) + 2) * (1 + |t|) := by
+    have hnorm := norm_add_le (σ : ℂ) ((t : ℂ) * Complex.I)
+    simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, Complex.norm_I, mul_one] at hnorm
+    nlinarith [abs_nonneg t, (Nat.cast_nonneg A : (0 : ℝ) ≤ A)]
+  rw [mellinEulerData, norm_mul, norm_pow, norm_neg]
+  calc
+    _ ≤ (1 + |t|) ^ 2 * ((((A : ℝ) + 2) * (1 + |t|)) ^ j *
+        ‖mellinData V ((σ : ℂ) + t * Complex.I)‖) := by
+      gcongr
+    _ = ((A : ℝ) + 2) ^ j * ((1 + |t|) ^ (j + 2) *
+        ‖mellinData V ((σ : ℂ) + t * Complex.I)‖) := by rw [mul_pow, pow_add]; ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left (hb σ hσ t) (by positivity)
+
+theorem mellinEulerData_differentiableAt (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (j : ℕ) (s : ℂ) (hs : -(5 / 6 : ℝ) < s.re) :
+    DifferentiableAt ℂ (mellinEulerData V j) s :=
+  (differentiableAt_id.neg.pow j).mul
+    (kernelMellinIntegrand_differentiableAt V a b ha hsupp hV s hs)
+
+theorem mellinEulerData_vertical_integrable (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) (σ : ℝ) (hσ : σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ)) :
+    Integrable (fun t : ℝ => mellinEulerData V j ((σ : ℂ) + t * Complex.I)) := by
+  obtain ⟨C, hC, hb⟩ := mellinEulerData_strip_bound V a b ha hsupp hV A j
+  have hc : Continuous (fun t : ℝ => mellinEulerData V j ((σ : ℂ) + t * Complex.I)) := by
+    apply continuous_iff_continuousAt.mpr
+    intro t
+    apply (mellinEulerData_differentiableAt V a b ha hsupp hV j _ ?_).continuousAt.comp
+    · fun_prop
+    · simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.ofReal_im,
+        Complex.I_re, mul_zero, zero_mul, sub_zero, add_zero]
+      linarith [hσ.1]
+  apply (integrable_inv_one_add_sq.const_mul C).mono' hc.aestronglyMeasurable
+  exact Filter.Eventually.of_forall (fun t => by simpa only [div_eq_mul_inv] using hb σ hσ t)
+
+
+def inverseMellinIntegrand (V : ℝ → ℂ) (j : ℕ) (y : ℝ) (s : ℂ) : ℂ :=
+  (y : ℂ) ^ (-s) * mellinEulerData V j s
+
+theorem inverseMellinIntegrand_differentiableAt
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (j : ℕ) (y : ℝ) (hy : 0 < y) (s : ℂ) (hs : -(5 / 6 : ℝ) < s.re) :
+    DifferentiableAt ℂ (inverseMellinIntegrand V j y) s := by
+  exact (differentiableAt_id.neg.const_cpow
+    (Or.inl (Complex.ofReal_ne_zero.mpr hy.ne'))).mul
+    (mellinEulerData_differentiableAt V a b ha hsupp hV j s hs)
+
+theorem inverseMellinIntegrand_vertical_integrable
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) (σ : ℝ) (hσ : σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ))
+    (y : ℝ) (hy : 0 < y) :
+    Integrable (fun t : ℝ => inverseMellinIntegrand V j y ((σ : ℂ) + t * Complex.I)) := by
+  apply (mellinEulerData_vertical_integrable V a b ha hsupp hV A j σ hσ).bdd_mul
+    (c := y ^ (-σ))
+  · exact ((show Continuous (fun t : ℝ => -((σ : ℂ) + t * Complex.I)) by fun_prop).const_cpow
+      (Or.inl (Complex.ofReal_ne_zero.mpr hy.ne'))).aestronglyMeasurable
+  · filter_upwards [] with t
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hy]
+    simp
+
+theorem inverseMellinIntegrand_strip_bound
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) (y : ℝ) (hy : 0 < y) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ), ∀ t : ℝ,
+      ‖inverseMellinIntegrand V j y ((σ : ℂ) + t * Complex.I)‖ ≤ C / (1 + t ^ 2) := by
+  obtain ⟨C, hC, hb⟩ := mellinEulerData_strip_bound V a b ha hsupp hV A j
+  have hc : Continuous (fun σ : ℝ => y ^ (-σ)) :=
+    (Real.continuous_const_rpow hy.ne').comp continuous_neg
+  obtain ⟨B, hB⟩ := (isCompact_Icc : IsCompact (Set.Icc (-(1 / 4 : ℝ)) (A : ℝ))).bddAbove_image hc.continuousOn
+  refine ⟨(|B| + 1) * C, by positivity, ?_⟩
+  intro σ hσ t
+  have hby : y ^ (-σ) ≤ |B| + 1 :=
+    (hB (Set.mem_image_of_mem _ hσ)).trans (by linarith [le_abs_self B])
+  rw [inverseMellinIntegrand, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy]
+  simp only [Complex.neg_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+    Complex.ofReal_im, Complex.I_re, mul_zero, zero_mul, sub_zero, add_zero]
+  calc
+    _ ≤ (|B| + 1) * (C / (1 + t ^ 2)) :=
+      mul_le_mul hby (hb σ hσ t) (norm_nonneg _) (by positivity)
+    _ = _ := by ring
+
+theorem mellinInv_euler_shift
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) (σ : ℝ) (hσ : σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ))
+    (y : ℝ) (hy : 0 < y) :
+    mellinInv 0 (mellinEulerData V j) y = mellinInv σ (mellinEulerData V j) y := by
+  obtain ⟨C, hC, hb⟩ := inverseMellinIntegrand_strip_bound V a b ha hsupp hV A j y hy
+  have h0 : (0 : ℝ) ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ) := by
+    constructor
+    · norm_num
+    · exact Nat.cast_nonneg A
+  have hshift (ρ : ℝ) (hρ : ρ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ)) :
+      (∫ t : ℝ, inverseMellinIntegrand V j y ((-(1 / 4) : ℝ) + t * Complex.I)) =
+      ∫ t : ℝ, inverseMellinIntegrand V j y ((ρ : ℂ) + t * Complex.I) := by
+    apply VerticalContourShift.integral_eq_of_strip_decay
+      (inverseMellinIntegrand V j y) (-(1 / 4)) ρ C hρ.1
+    · intro z hzlo hzhi
+      apply inverseMellinIntegrand_differentiableAt V a b ha hsupp hV j y hy z
+      linarith
+    · apply inverseMellinIntegrand_vertical_integrable V a b ha hsupp hV A j
+        (-(1 / 4)) ⟨le_rfl, hρ.1.trans hρ.2⟩ y hy
+    · exact inverseMellinIntegrand_vertical_integrable V a b ha hsupp hV A j ρ hρ y hy
+    · intro r hr t
+      exact hb r ⟨hr.1, hr.2.trans hρ.2⟩ t
+  have heq := (hshift 0 h0).symm.trans (hshift σ hσ)
+  simpa only [mellinInv, smul_eq_mul, inverseMellinIntegrand] using
+    congrArg (fun z : ℂ => (1 / (2 * Real.pi) : ℝ) • z) heq
+
+theorem mellinInv_euler_line_bound
+    (V : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hsupp : Function.support V ⊆ Set.Icc a b) (hV : ContDiff ℝ ∞ V)
+    (A j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧ ∀ σ ∈ Set.Icc (-(1 / 4 : ℝ)) (A : ℝ),
+      ∀ y : ℝ, 0 < y → ‖mellinInv σ (mellinEulerData V j) y‖ ≤ C * y ^ (-σ) := by
+  obtain ⟨C, hC, hb⟩ := mellinEulerData_strip_bound V a b ha hsupp hV A j
+  refine ⟨C / 2, by positivity, ?_⟩
+  intro σ hσ y hy
+  have hint : ‖∫ t : ℝ, (y : ℂ) ^ (-((σ : ℂ) + t * Complex.I)) *
+        mellinEulerData V j ((σ : ℂ) + t * Complex.I)‖ ≤ (y ^ (-σ) * C) * Real.pi := by
+    calc
+      _ ≤ ∫ t : ℝ, (y ^ (-σ) * C) * (1 + t ^ 2)⁻¹ := by
+        apply norm_integral_le_of_norm_le (integrable_inv_one_add_sq.const_mul _)
+        filter_upwards [] with t
+        rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy]
+        simp only [Complex.neg_re, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+          Complex.ofReal_im, Complex.I_re, mul_zero, zero_mul, sub_zero, add_zero]
+        simpa only [div_eq_mul_inv, mul_assoc] using
+          mul_le_mul_of_nonneg_left (hb σ hσ t) (Real.rpow_nonneg hy.le (-σ))
+      _ = _ := by rw [integral_const_mul, integral_univ_inv_one_add_sq]
+  rw [mellinInv, norm_smul, Real.norm_of_nonneg (by positivity : (0 : ℝ) ≤ 1 / (2 * Real.pi))]
+  simp only [smul_eq_mul]
+  calc
+    _ ≤ (1 / (2 * Real.pi)) * ((y ^ (-σ) * C) * Real.pi) :=
+      mul_le_mul_of_nonneg_left hint (by positivity)
+    _ = _ := by field_simp
+
+
+lemma weighted_vertical_series_continuous {α : Type*}
+    (r : α→ℝ) (hr : ∀i,0<r i) (c : α→ℂ) (σ : ℝ)
+    (hc : Summable (fun i=>‖c i‖*(r i)^(-σ))) :
+    Continuous (fun t : ℝ=>∑'i,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))) := by
+  apply continuous_tsum
+    (fun i=>continuous_const.mul (positive_cpow_negative_vertical_continuous (r i) σ (hr i))) hc
+  intro i t
+  change ‖c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))‖ ≤ ‖c i‖*(r i)^(-σ)
+  rw [norm_mul,positive_cpow_negative_vertical_norm _ _ _ (hr i)]
+
+lemma weighted_vertical_series_norm {α : Type*}
+    (r : α→ℝ) (hr : ∀i,0<r i) (c : α→ℂ) (σ : ℝ)
+    (hc : Summable (fun i=>‖c i‖*(r i)^(-σ))) (t : ℝ) :
+    ‖∑'i,c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))‖ ≤ ∑'i,‖c i‖*(r i)^(-σ) := by
+  have he (i : α) : ‖c i*(r i:ℂ)^(-((σ:ℂ)+t*Complex.I))‖=‖c i‖*(r i)^(-σ) := by
+    rw [norm_mul,positive_cpow_negative_vertical_norm _ _ _ (hr i)]
+  simpa only [he] using norm_tsum_le_tsum_norm (hc.congr (fun i=>(he i).symm))
+
+
+
+/-! The cubic scale identifies the reflected inverse Mellin kernel and its weighted series. -/
+/-- Scale matching the cubic Gamma-ratio Mellin kernel. -/
+def paperScale : ℝ := (2 * Real.pi) ^ 4 / 27
+
+lemma paperScale_pos : 0 < paperScale := by unfold paperScale; positivity
+
+def paperKernel (V : ℝ → ℂ) (x : ℝ) : ℂ :=
+  mellinInv 0 (fun s => mellin V (-s) * cubicReflectionGamma s) (paperScale * x)
+
+lemma positive_nat_pow_cpow (x:ℝ) (hx:0 ≤ x) (n:ℕ) (s:ℂ) :
+    ((x^n:ℝ):ℂ)^s=((x:ℂ)^s)^n := by
+  induction n with
+  | zero => simp
+  | succ n hn =>
+      rw [pow_succ,Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (pow_nonneg hx n) hx,
+        hn,pow_succ]
+
+lemma positive_reflection_powers (Q u d X r:ℝ)
+    (hQ:0<Q) (hu:0<u) (hd:0<d) (hX:0<X) (hr:0<r) (w:ℂ) :
+    (Q:ℂ)^(1+2*w)*(u:ℂ)^(2-2*w)*(2:ℂ)^(4*w)/(d:ℂ)^(2+2*w)*
+      (X:ℂ)^(-w)*(r:ℂ)^(-w)=
+      ((Q*(u/d)^2:ℝ):ℂ)*((u^2*d^2*X*r/(16*Q^2):ℝ):ℂ)^(-w) := by
+  have hQ0:(Q:ℂ)≠0:=Complex.ofReal_ne_zero.mpr hQ.ne'
+  have hu0:(u:ℂ)≠0:=Complex.ofReal_ne_zero.mpr hu.ne'
+  have hd0:(d:ℂ)≠0:=Complex.ofReal_ne_zero.mpr hd.ne'
+  have hX0:(X:ℂ)≠0:=Complex.ofReal_ne_zero.mpr hX.ne'
+  have hr0:(r:ℂ)≠0:=Complex.ofReal_ne_zero.mpr hr.ne'
+  have hQp:(Q:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl hQ0)
+  have hup:(u:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl hu0)
+  have hdp:(d:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl hd0)
+  have hXp:(X:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl hX0)
+  have hrp:(r:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl hr0)
+  have h2p:(2:ℂ)^w≠0:=Complex.cpow_ne_zero_iff.mpr (Or.inl (by norm_num))
+  have h16:((16:ℝ):ℂ)^w=((2:ℂ)^w)^4 := by
+    have hh:=positive_nat_pow_cpow 2 (by norm_num) 4 w
+    norm_num only [show (2:ℝ)^4=16 by norm_num] at hh
+    exact hh
+  have hy:((u^2*d^2*X*r/(16*Q^2):ℝ):ℂ)^w=
+      (((u:ℂ)^w)^2*((d:ℂ)^w)^2*(X:ℂ)^w*(r:ℂ)^w)/
+        (((2:ℂ)^w)^4*((Q:ℂ)^w)^2) := by
+    rw [positive_div_cpow _ _ (by positivity) (by positivity)]
+    rw [Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (by positivity) hr.le,
+      Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (by positivity) hX.le,
+      Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (by positivity) (by positivity),
+      Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (by norm_num) (by positivity)]
+    rw [positive_nat_pow_cpow u hu.le,positive_nat_pow_cpow d hd.le,
+      positive_nat_pow_cpow Q hQ.le,h16]
+  rw [Complex.cpow_add _ _ hQ0,Complex.cpow_one,
+    Complex.cpow_sub _ _ hu0,Complex.cpow_add _ _ hd0]
+  simp only [Complex.cpow_ofNat_mul,Complex.cpow_ofNat]
+  rw [Complex.cpow_neg,Complex.cpow_neg,Complex.cpow_neg,hy]
+  push_cast
+  field_simp
+
+theorem bessel_reflection_scale (q d Q X r:ℝ)
+    (hq:0<q) (hd:0<d) (hQ:0<Q) (hX:0<X) (hr:0<r) (w:ℂ) :
+    (Q:ℂ)^(2-2*(1/2-w))*besselReflectionFactor q d (1/2-w)*
+      (X:ℂ)^(-w)*(r:ℂ)^(-w)=
+      ((Q*(q/d)^2:ℝ):ℂ)*
+        ((paperScale*(27*q^2*d^2*X*r/Q^2):ℝ):ℂ)^(-w) := by
+  have he:=positive_reflection_powers Q (4*Real.pi*q) (4*Real.pi*d) X r
+    hQ (by positivity) (by positivity) hX hr w
+  have hp:Q*((4*Real.pi*q)/(4*Real.pi*d))^2=Q*(q/d)^2 := by
+    field_simp
+  have hy:(4*Real.pi*q)^2*(4*Real.pi*d)^2*X*r/(16*Q^2)=
+      paperScale*(27*q^2*d^2*X*r/Q^2) := by
+    unfold paperScale
+    ring
+  rw [hp,hy] at he
+  unfold besselReflectionFactor
+  convert he using 1 ; congr 2 ; ring_nf
+
+lemma paperKernel_three_halves (V:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hVs:Function.support V⊆Set.Icc v0 v1) (hV:ContDiff ℝ ∞ V)
+    (x:ℝ) (hx:0<x) :
+    paperKernel V x=(1/(2*Real.pi):ℂ)*∫t:ℝ,
+      ((paperScale*x:ℝ):ℂ)^(-((3/2:ℂ)+t*Complex.I))*
+        mellinEulerData V 0 ((3/2:ℂ)+t*Complex.I) := by
+  have he:=mellinInv_euler_shift V v0 v1 hv0 hVs hV 2 0 (3/2) (by norm_num)
+    (paperScale*x) (mul_pos paperScale_pos hx)
+  change paperKernel V x=_
+  have hl:mellinInv 0 (mellinEulerData V 0) (paperScale*x)=paperKernel V x:=by
+    have hf : mellinEulerData V 0=(fun s:ℂ=>mellin V (-s)*cubicReflectionGamma s) := by
+      funext s
+      simp only [mellinEulerData,pow_zero,one_mul,mellinData]
+    rw [hf]
+    rfl
+  rw [hl] at he
+  simpa only [mellinInv,smul_eq_mul,Complex.real_smul,Complex.ofReal_div,
+    Complex.ofReal_one,Complex.ofReal_mul,Complex.ofReal_ofNat] using he
+
+lemma paperKernel_three_halves_bound (V:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hVs:Function.support V⊆Set.Icc v0 v1) (hV:ContDiff ℝ ∞ V) :
+    ∃C:ℝ,0<C ∧ ∀x:ℝ,0<x→‖paperKernel V x‖ ≤ C*(paperScale*x)^(-(3/2:ℝ)) := by
+  obtain ⟨C,hC,hb⟩:=mellinInv_euler_line_bound V v0 v1 hv0 hVs hV 2 0
+  refine ⟨C,hC,?_⟩
+  intro x hx
+  have he:=mellinInv_euler_shift V v0 v1 hv0 hVs hV 2 0 (3/2) (by norm_num)
+    (paperScale*x) (mul_pos paperScale_pos hx)
+  have hl:mellinInv 0 (mellinEulerData V 0) (paperScale*x)=paperKernel V x:=by
+    have hf : mellinEulerData V 0=(fun s:ℂ=>mellin V (-s)*cubicReflectionGamma s) := by
+      funext s
+      simp only [mellinEulerData,pow_zero,one_mul,mellinData]
+    rw [hf]
+    rfl
+  rw [hl] at he
+  rw [he]
+  exact hb (3/2) (by norm_num) (paperScale*x) (mul_pos paperScale_pos hx)
+
+lemma paperKernel_weighted_summable {α:Type*}
+    (r:α→ℝ) (hr:∀i,0<r i) (a:α→ℂ)
+    (has:Summable (fun i=>‖a i‖*(r i)^(-(3/2:ℝ))))
+    (V:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hVs:Function.support V⊆Set.Icc v0 v1) (hV:ContDiff ℝ ∞ V)
+    (c:ℝ) (hc:0<c) : Summable (fun i=>a i*paperKernel V (c*r i)) := by
+  obtain ⟨C,hC,hb⟩:=paperKernel_three_halves_bound V v0 v1 hv0 hVs hV
+  apply Summable.of_norm
+  apply (has.mul_left (C*(paperScale*c)^(-(3/2:ℝ)))).of_nonneg_of_le (fun i=>norm_nonneg _)
+  intro i
+  rw [norm_mul]
+  calc
+    _ ≤ ‖a i‖*(C*(paperScale*(c*r i))^(-(3/2:ℝ))):=
+      mul_le_mul_of_nonneg_left (hb _ (mul_pos hc (hr i))) (norm_nonneg _)
+    _=(C*(paperScale*c)^(-(3/2:ℝ)))*(‖a i‖*(r i)^(-(3/2:ℝ))):=by
+      rw [show paperScale*(c*r i)=(paperScale*c)*r i by ring,
+        Real.mul_rpow (mul_pos paperScale_pos hc).le (hr i).le]
+      ring
+
+theorem paperKernel_weighted_mellin {α:Type*} [Countable α]
+    (r:α→ℝ) (hr:∀i,0<r i) (a:α→ℂ)
+    (has:Summable (fun i=>‖a i‖*(r i)^(-(3/2:ℝ))))
+    (V:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hVs:Function.support V⊆Set.Icc v0 v1) (hV:ContDiff ℝ ∞ V)
+    (c:ℝ) (hc:0<c) :
+    (∑'i,a i*paperKernel V (c*r i))=(1/(2*Real.pi):ℂ)*∫t:ℝ,
+      (∑'i,a i*(r i:ℂ)^(-((3/2:ℂ)+t*Complex.I)))*
+        (((paperScale*c:ℝ):ℂ)^(-((3/2:ℂ)+t*Complex.I))*
+          mellinEulerData V 0 ((3/2:ℂ)+t*Complex.I)) := by
+  let M:ℝ→ℂ:=fun t=>((paperScale*c:ℝ):ℂ)^(-((3/2:ℂ)+t*Complex.I))*
+    mellinEulerData V 0 ((3/2:ℂ)+t*Complex.I)
+  have hM:Integrable M:=by
+    simpa only [M,inverseMellinIntegrand,Complex.ofReal_div,Complex.ofReal_ofNat] using
+      inverseMellinIntegrand_vertical_integrable V v0 v1 hv0 hVs hV 2 0 (3/2)
+        (by norm_num) (paperScale*c) (mul_pos paperScale_pos hc)
+  have hi (i:α) : a i*paperKernel V (c*r i)=(1/(2*Real.pi):ℂ)*∫t:ℝ,
+      a i*(r i:ℂ)^(-((3/2:ℂ)+t*Complex.I))*M t := by
+    rw [paperKernel_three_halves V v0 v1 hv0 hVs hV _ (mul_pos hc (hr i))]
+    rw [←mul_assoc,mul_comm (a i),mul_assoc,←integral_const_mul]
+    congr 1
+    apply integral_congr_ae
+    filter_upwards with t
+    rw [show paperScale*(c*r i)=(paperScale*c)*r i by ring,
+      Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (mul_pos paperScale_pos hc).le (hr i).le]
+    dsimp only [M]
+    ring
+  simp_rw [hi]
+  rw [tsum_mul_left]
+  congr 1
+  simpa only [M,Complex.ofReal_div,Complex.ofReal_ofNat] using
+    weighted_vertical_sum_integral r hr a (3/2) has M hM
+
+theorem paperKernel_weighted_norm_summable {α:Type*}
+    (r:α→ℝ) (hr:∀i,0<r i) (a:α→ℂ)
+    (has:Summable (fun i=>‖a i‖*(r i)^(-(3/2:ℝ))))
+    (V:ℝ→ℂ) (v0 v1:ℝ) (hv0:0<v0)
+    (hVs:Function.support V⊆Set.Icc v0 v1) (hV:ContDiff ℝ ∞ V)
+    (c:ℝ) (hc:0<c) : Summable (fun i=>‖a i*paperKernel V (c*r i)‖) := by
+  obtain ⟨C,hC,hb⟩:=paperKernel_three_halves_bound V v0 v1 hv0 hVs hV
+  apply (has.mul_left (C*(paperScale*c)^(-(3/2:ℝ)))).of_nonneg_of_le (fun i=>norm_nonneg _)
+  intro i
+  rw [norm_mul]
+  calc
+    _ ≤ ‖a i‖*(C*(paperScale*(c*r i))^(-(3/2:ℝ))):=
+      mul_le_mul_of_nonneg_left (hb _ (mul_pos hc (hr i))) (norm_nonneg _)
+    _=(C*(paperScale*c)^(-(3/2:ℝ)))*(‖a i‖*(r i)^(-(3/2:ℝ))):=by
+      rw [show paperScale*(c*r i)=(paperScale*c)*r i by ring,
+        Real.mul_rpow (mul_pos paperScale_pos hc).le (hr i).le]
+      ring
+
+
+/-! The initial source series uses the conjugate horizontal frequency. Its norm is unchanged. -/
+/-- Changing Wirtinger derivative only rotates each nonzero Fourier coefficient. -/
+def sourceBarRadialCoefficient (z : ℂ) (h : O) : ℂ :=
+  (star (cuspFrequency h) / cuspFrequency h) * sourceCuspRadialCoefficient 0 z h
+
+lemma sourceBarRadialCoefficient_norm (z : ℂ) (h : O) :
+    ‖sourceBarRadialCoefficient z h‖ = ‖sourceCuspRadialCoefficient 0 z h‖ := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [sourceBarRadialCoefficient, sourceCuspRadialCoefficient_zero, mul_zero]
+  · rw [sourceBarRadialCoefficient, norm_mul, norm_div, norm_star,
+      div_self (norm_ne_zero_iff.mpr (cuspFrequency_ne_zero h hh)), one_mul]
+
+lemma sourceZBesselTerm_eq_rotated (z : ℂ) (v : ℝ) (h : O) :
+    star (cubicBesselTerm sourceZBesselCoefficient h (v, z)) =
+      (star (cuspFrequency h) / cuspFrequency h) * sourceCuspZTerm 0 z v h := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [sourceCuspZTerm_zero, mul_zero, cubicBesselTerm, cubicBesselAmplitude,
+      if_true, zero_mul, star_zero]
+  · have hc : star (sourceZBesselCoefficient h) =
+        (star (cuspFrequency h) / cuspFrequency h) * star (sourceBarBesselCoefficient h) := by
+      simp only [sourceZBesselCoefficient, sourceBarBesselCoefficient, star_mul, star_star]
+      field_simp [cuspFrequency_ne_zero h hh]
+    simp only [sourceCuspZTerm, sourceCuspBarCoefficient, sourceCuspScale,
+      Matrix.cons_val_zero, div_one, Complex.ofReal_one]
+    simp only [cubicBesselTerm, cubicBesselAmplitude, if_neg hh, star_mul]
+    rw [hc]
+    ring
+
+lemma sourceBarProfile_eq_radial (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z v =
+      radialBesselProfile sourceCuspRadialLength (sourceBarRadialCoefficient z)
+        (sourceCuspRadialScale 0) v := by
+  rw [conjugateSource_barProfile z v hv, cuspZProfile_positive _ _ _ hv,
+    cubicSource_wirtingerZ_bessel v hv z, tsum_star]
+  unfold radialBesselProfile
+  apply tsum_congr
+  intro h
+  rw [sourceZBesselTerm_eq_rotated, sourceCuspZTerm_eq_radial 0 z v hv h]
+  unfold sourceBarRadialCoefficient
+  ring
+
+lemma sourceBarRadialCoefficient_summable (z : ℂ) (σ : ℝ) (hσ : 2 ≤ σ) :
+    Summable (fun h : O => ‖sourceBarRadialCoefficient z h‖ *
+      sourceCuspRadialLength h ^ (1 / 2 - σ)) := by
+  simp only [sourceBarRadialCoefficient_norm]
+  exact sourceCuspRadialCoefficient_summable 0 z σ hσ
+
+def sourceBarRadialDirichlet (z s : ℂ) : ℂ :=
+  ∑' h : O, sourceBarRadialCoefficient z h * (sourceCuspRadialLength h : ℂ) ^ (1 / 2 - s)
+
+theorem sourceBarProfile_mellin (z s : ℂ) (hs : 2 ≤ s.re) :
+    mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z) (2 * s) =
+      besselMellinFactor (sourceCuspRadialScale 0) s * sourceBarRadialDirichlet z s := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have he : mellin (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z) (2 * s) =
+      mellin (radialBesselProfile sourceCuspRadialLength (sourceBarRadialCoefficient z)
+        (sourceCuspRadialScale 0)) (2 * s) := by
+    unfold mellin
+    apply setIntegral_congr_fun measurableSet_Ioi
+    intro v hv
+    dsimp only
+    rw [sourceBarProfile_eq_radial z v hv]
+  rw [he]
+  exact radialBesselProfile_mellin sourceCuspRadialLength sourceCuspRadialLength_pos
+    (sourceBarRadialCoefficient z) (sourceCuspRadialScale 0) (sourceCuspRadialScale_pos 0)
+    s (by linarith) (sourceBarRadialCoefficient_summable z s.re hs)
+
+theorem sourceBarProfile_dirichlet (z s : ℂ) (hs : 2 ≤ s.re) :
+    continuedBesselDirichlet (cuspBarProfile (fun w => star (cubicSourceResidualFunction w)) z)
+      (sourceCuspRadialScale 0) s = sourceBarRadialDirichlet z s := by
+  rw [continuedBesselDirichlet, sourceBarProfile_mellin z s hs, ← mul_assoc,
+    inverseBesselMellinFactor_mul _ (sourceCuspRadialScale_pos 0) s (by linarith), one_mul]
+
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

@@ -67,3 +67,10 @@ sequence. The declarations
 `tendsto_entire_normalized_jet_succ_of_bounded_centres` and
 `tendsto_tsum_cutoffNormalizedCorrectionJet_succ_of_bounded_centres`
 use the same Cauchy and summable-majorant arguments. Lean check passed.
+
+The summable pair majorant is the pushforward of absolute triple-fibre
+mass: `A(m,n)=Σ_{r|gcd(m,n)}|W_0(r,m/r,n/r)|`, with zero values on the axes.
+`TheShiftedCorrectionHasASummablePairMajorant` proves summability and
+`|Corr_{C/log N}(m,n)|≤exp(4|C|)A(m,n)` for `m,n≤N`, `N>1`.
+It also proves coefficient continuity and the zero-shift identity.
+Lean check passed; umbrella import added.

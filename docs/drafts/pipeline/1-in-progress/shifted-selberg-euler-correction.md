@@ -88,3 +88,18 @@ moments, without a new floor-sum asymptotic. For `t≥1−δ`, choose `δ` so
 The normalized harmonic mass of this strip has limsup at most `2/(k+1)`.
 Taking `k` large transfers every bounded profile array that converges
 uniformly away from `t=1` to its limiting harmonic polynomial.
+
+`TheHarmonicEndpointHasVanishingMass` now proves the endpoint bound and
+`tendsto_normalizedHarmonicArray_zero`: uniformly bounded errors converging
+uniformly off the endpoint vanish in normalized harmonic mean. Lean check
+passed; umbrella import added. `TheMobiusProfilesCanBeReplacedInHarmonicMean`
+also passed Lean: the mean absolute profile error tends to zero for fixed
+dilations and every convergent normalized-shift sequence. `TheHarmonicProfileProductsHaveTheirExpectedLimits` also passed Lean:
+products may be replaced under every fixed normalized logarithmic power.
+
+The normalized directional derivative `(c,v)↦(c+κz,v+νz)` has an exact
+finite-row description: differentiating the diagonal inserts `κt`, while
+differentiating a coefficient replaces `P(x)` by `ν(1−x)P(x)`. Repeating
+this identity gives the second derivative. These polynomial profiles still
+vanish at zero, so the proved polynomial-product limits suffice; separate
+Möbius-profile jet convergence is unnecessary.

@@ -58,3 +58,18 @@ for `0≤u≤1`, `|v|≤V`, and uniform convergence to `P′(u)−vP(u)` on
 `δ≤u≤1`, `|v|≤V`. The second derivative of `P(x)exp(−vx)` is bounded on
 the compact `(v,x)` rectangle; the mean-kernel error bound is therefore
 uniform in both variables. Lean check passed; umbrella import added.
+
+## Harmonic replacement
+
+The normalized harmonic logarithm `t=log d/log N`, `d≤N/c`, has moments
+`1/(k+1)`. On `t≥1−δ`, choose `δ` with `(1−δ)^k≥1/2`; the endpoint mass
+is bounded by twice the `k`-th moment. Consequently bounded errors that
+vanish uniformly off the endpoint vanish in harmonic mean.
+
+`TheHarmonicEndpointHasVanishingMass`,
+`TheMobiusProfilesCanBeReplacedInHarmonicMean`, and
+`TheHarmonicProfileProductsHaveTheirExpectedLimits` formalize this transfer.
+For fixed `a,b≤c` and `v_N→v`, each shifted profile at
+`1−log a/log N−t` may be replaced by `P′(1−t)−vP(1−t)` in mean absolute
+error. Products admit the same replacement after multiplication by `t^k`.
+All three Lean checks passed; umbrella imports added.

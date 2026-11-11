@@ -574,7 +574,7 @@ theorem exists_uniform_three_circles_lower_bound {δ : ℝ} (hδ : 0 < δ) (hδ1
   set D_max : ℝ := Real.log (5 / 2) - Real.log (1 / 4)
   set gap_min : ℝ := Real.log (1 + δ / 5)
   have hD_max : 0 < D_max := sub_pos.mpr (Real.log_lt_log (by norm_num) (by norm_num))
-  have hgap_min : 0 < gap_min := Real.log_pos (by positivity)
+  have hgap_min : 0 < gap_min := Real.log_pos (by linarith)
   have hgap_lt : gap_min < D_max := by
     have h1 : 1 + δ / 5 < 10 := by linarith
     have h2 : Real.log 10 = Real.log ((5 / 2 : ℝ) / (1 / 4)) := by norm_num
@@ -598,7 +598,7 @@ theorem exists_uniform_three_circles_lower_bound {δ : ℝ} (hδ : 0 < δ) (hδ1
   have hlogu : 0 ≤ Real.log ((N : ℝ) * (2 + |t|)) := Real.log_nonneg (by linarith)
   have hexpnn : 0 ≤ B * (K * (1 + Real.log ((N : ℝ) * (2 + |t|)))) ^ θ_u :=
     mul_nonneg hB0.le (Real.rpow_nonneg (by positivity) _)
-  rcases gt_or_le s.re (3 - 1 / 4) with hfar | hnear
+  rcases lt_or_ge (3 - 1 / 4) s.re with hfar | hnear
   · have hge := (norm_LFunction_bounds_of_two_le_re χ (s := s) (by linarith)).1
     have hexple : Real.exp (-(B * (K * (1 + Real.log ((N : ℝ) * (2 + |t|)))) ^ θ_u)) ≤ 1 :=
       Real.exp_le_one_iff.mpr (by linarith)
@@ -665,15 +665,16 @@ theorem exists_uniform_three_circles_lower_bound {δ : ℝ} (hδ : 0 < δ) (hδ1
         ring
       have hquot : 1 + δ / 5 ≤ r₃ / (3 - Θ - δ) := by
         rw [le_div_iff₀ hpos_3]
-        have h3Θ : 3 - Θ - δ ≤ 5 / 2 := by linarith
-        simp only [r₃]
-        nlinarith
+        have h3Θ : 3 - Θ - δ ≤ 5 / 2 := by linarith only [hΘhalf, hδ]
+        have hr₃_def : r₃ = 3 - Θ - δ / 2 := by simp only [r₃]; ring
+        rw [hr₃_def]
+        nlinarith only [h3Θ, hδ]
       have hlog_ge : gap_min ≤ Real.log (r₃ / (3 - Θ - δ)) :=
         Real.log_le_log (by positivity) hquot
       have hdiv_ge : gap_min / D_max ≤
           Real.log (r₃ / (3 - Θ - δ)) / (Real.log r₃ - Real.log (1 / 4)) :=
-        div_le_div₀ hgap_min.le hlog_ge hden_pos hden_le
-      linarith [hw_le, hrew]
+        div_le_div₀ (hgap_min.le.trans hlog_ge) hlog_ge hden_pos hden_le
+      linarith only [hw_le, hrew, hdiv_ge, show θ_u = 1 - gap_min / D_max from rfl]
     -- Compare the outer Borel–Carathéodory constant with `K (1 + log(N (2 + |t|)))`.
     set X : ℝ := 2 * (Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) + 1) * r₃ / (R - r₃)
     have hRr : R - r₃ = δ / 4 := by simp only [R, r₃]; ring
@@ -687,46 +688,42 @@ theorem exists_uniform_three_circles_lower_bound {δ : ℝ} (hδ : 0 < δ) (hδ1
         (Real.rpow_le_rpow_of_exponent_le hN1 (by norm_num)) (by positivity)
     have hlog_le : Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) ≤
         Real.log (4 * E₀) + 3 * Real.log ((N : ℝ) * (2 + |t|)) := by
-      rw [hMm, Real.log_mul (by linarith) (by positivity)]
+      rw [hMm, Real.log_mul (by linarith only [hE₀1]) (by positivity)]
       have h1 := Real.log_le_log (by positivity) hpow_le
       rw [Real.log_pow] at h1
       push_cast at h1
-      linarith
+      linarith only [h1]
+    have hge1 : 1 ≤ E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4) := by
+      rw [hMm]
+      exact one_le_mul_of_one_le_of_one_le (by linarith only [hE₀1])
+        (one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hN1 (by norm_num))
+          (one_le_pow₀ (by linarith only [abs_nonneg t])))
+    have hlog0 : 0 ≤ Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) := Real.log_nonneg hge1
     have hX0 : 0 ≤ X := by
-      have hge1 : 1 ≤ E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4) := by
-        rw [hMm]
-        have : (1 : ℝ) ≤ (N : ℝ) ^ ((5 : ℝ) / 2) * (2 + |t|) ^ (3 : ℕ) :=
-          one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hN1 (by norm_num))
-            (one_le_pow₀ (by linarith [abs_nonneg t]))
-        nlinarith
-      have hlog0 : 0 ≤ Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) := Real.log_nonneg hge1
-      simp only [X, hRr]
-      exact div_nonneg (mul_nonneg (by linarith) (by linarith)) (by positivity)
+      have h1 : 0 ≤ 2 * (Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) + 1) := by
+        linarith only [hlog0]
+      exact div_nonneg (mul_nonneg h1 (by linarith only [hr₃_lo]))
+        (by rw [hRr]; positivity)
     have hX_le : X ≤ K * (1 + Real.log ((N : ℝ) * (2 + |t|))) := by
       have h8r : 2 * r₃ / (δ / 4) ≤ 20 / δ := by
         rw [div_le_div_iff₀ (by positivity) hδ]
-        linarith
+        nlinarith only [hr₃_hi, hδ]
       have hkey : Real.log (4 * E₀) + 3 * Real.log ((N : ℝ) * (2 + |t|)) + 1 ≤
           (Real.log (4 * E₀) + 4) * (1 + Real.log ((N : ℝ) * (2 + |t|))) := by
-        nlinarith [mul_nonneg hlog4E hlogu]
+        nlinarith only [hlog4E, hlogu]
       calc X = (2 * r₃ / (R - r₃)) * (Real.log (E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4)) + 1) := by
               simp only [X]; ring
         _ ≤ (20 / δ) * (Real.log (4 * E₀) + 3 * Real.log ((N : ℝ) * (2 + |t|)) + 1) := by
             rw [hRr]
-            refine mul_le_mul h8r (by linarith) ?_ (by positivity)
-            have hge1 : 1 ≤ E_N * (2 + |t|) ^ (3 : ℕ) / (1 / 4) := by
-              rw [hMm]
-              have : (1 : ℝ) ≤ (N : ℝ) ^ ((5 : ℝ) / 2) * (2 + |t|) ^ (3 : ℕ) :=
-                one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hN1 (by norm_num))
-                  (one_le_pow₀ (by linarith [abs_nonneg t]))
-              nlinarith
-            linarith [Real.log_nonneg hge1]
+            exact mul_le_mul h8r (by linarith only [hlog_le])
+              (by linarith only [hlog0]) (by positivity)
         _ ≤ (20 / δ) * ((Real.log (4 * E₀) + 4) * (1 + Real.log ((N : ℝ) * (2 + |t|)))) :=
             mul_le_mul_of_nonneg_left hkey (by positivity)
         _ = K * (1 + Real.log ((N : ℝ) * (2 + |t|))) := by simp only [K]; ring
-    have hY1 : 1 ≤ K * (1 + Real.log ((N : ℝ) * (2 + |t|))) := by nlinarith
+    have hY1 : 1 ≤ K * (1 + Real.log ((N : ℝ) * (2 + |t|))) :=
+      one_le_mul_of_one_le_of_one_le hK1 (by linarith only [hlogu])
     have hpow1 : B ^ (1 - w) ≤ B := by
-      calc B ^ (1 - w) ≤ B ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hB1 (by linarith)
+      calc B ^ (1 - w) ≤ B ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hB1 (by linarith only [hw0])
         _ = B := Real.rpow_one B
     have hpow2 : X ^ w ≤ (K * (1 + Real.log ((N : ℝ) * (2 + |t|)))) ^ θ_u :=
       (Real.rpow_le_rpow hX0 hX_le hw0).trans (Real.rpow_le_rpow_of_exponent_le hY1 hwθ)
@@ -734,7 +731,7 @@ theorem exists_uniform_three_circles_lower_bound {δ : ℝ} (hδ : 0 < δ) (hδ1
       mul_le_mul hpow1 hpow2 (Real.rpow_nonneg hX0 _) hB0.le
     calc (1 : ℝ) / 4 * Real.exp (-(B * (K * (1 + Real.log ((N : ℝ) * (2 + |t|)))) ^ θ_u))
         ≤ (1 / 4) * Real.exp (-(B ^ (1 - w) * X ^ w)) :=
-          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by norm_num)
+          mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hprod])) (by norm_num)
       _ ≤ ‖DirichletCharacter.LFunction χ c‖ * Real.exp (-(B ^ (1 - w) * X ^ w)) :=
           mul_le_mul_of_nonneg_right hmc (Real.exp_pos _).le
       _ ≤ ‖DirichletCharacter.LFunction χ s‖ := hmain
@@ -771,16 +768,21 @@ theorem exists_uniform_lower_bound_subpolynomial {δ ε : ℝ} (hδ : 0 < δ) (h
     have hinner : Tendsto (fun L : ℝ => ε * L - B * (K * (1 + L)) ^ θ) atTop atTop := by
       refine tendsto_atTop_mono' _ ?_
         (Tendsto.const_mul_atTop (by linarith : 0 < ε / 2) tendsto_id)
-      filter_upwards [eventually_const_mul_rpow_le (c := B * (K ^ θ * 2 ^ θ)) hθ1 (by linarith),
+      filter_upwards [eventually_const_mul_rpow_le (c := B * (K ^ θ * 2 ^ θ)) (ε := ε / 2)
+          hθ1 (by linarith only [hε]),
         eventually_ge_atTop (1 : ℝ)] with L hL hL1
+      simp only [id_eq]
       have hsplit : (K * (1 + L)) ^ θ = K ^ θ * (1 + L) ^ θ := Real.mul_rpow hK.le (by linarith)
       have h2L : (1 + L) ^ θ ≤ (2 * L) ^ θ := Real.rpow_le_rpow (by linarith) (by linarith) hθ0
       have h2L' : (2 * L) ^ θ = 2 ^ θ * L ^ θ := Real.mul_rpow (by norm_num) (by linarith)
       have hKθ : 0 ≤ K ^ θ := Real.rpow_nonneg hK.le _
-      have hmid : K ^ θ * (1 + L) ^ θ ≤ K ^ θ * (2 ^ θ * L ^ θ) := by
-        rw [← h2L']
-        exact mul_le_mul_of_nonneg_left h2L hKθ
-      nlinarith [hB.le]
+      have hmid : B * (K * (1 + L)) ^ θ ≤ B * (K ^ θ * 2 ^ θ) * L ^ θ := by
+        rw [hsplit]
+        calc B * (K ^ θ * (1 + L) ^ θ)
+            ≤ B * (K ^ θ * (2 * L) ^ θ) :=
+              mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left h2L hKθ) hB.le
+          _ = B * (K ^ θ * 2 ^ θ) * L ^ θ := by rw [h2L']; ring
+      linarith only [hL, hmid]
     exact hinner.comp Real.tendsto_log_atTop
   obtain ⟨κ₀, hκ₀, hκ⟩ := exists_pos_lower_bound_of_tendsto_atTop hcont
     (fun u _ => Real.exp_pos _) hlim
@@ -917,9 +919,33 @@ theorem riemannZeta_ne_zero_of_signal_zetaGaussianKernel_le {c b K Z₀ : ℝ} (
   rw [hze, mul_zero] at hid
   exact mul_ne_zero (sub_ne_zero.mpr hρ1) (Complex.exp_ne_zero _) hid.symm
 
+theorem exists_signal_zetaKernel_le_of_zeroFree_strip {Θ : ℝ} (hΘ : (1 : ℝ) / 2 ≤ Θ)
+    (hΘ1 : Θ ≤ 1) (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0) (c : ℝ) {b : ℝ}
+    (hb : Θ < b) (hb1 : b < Θ + 1) (hb2 : b ≤ 2) :
+    ∃ K : ℝ, 0 < K ∧ ∀ Z : ℝ, 0 < Z → ‖signal (zetaKernel c) 2 Z‖ ≤ K * Z ^ b := by
+  obtain ⟨C, hC⟩ := exists_norm_zetaKernel_le_of_zeroFree hΘ hΘ1 hzf c
+    (by linarith : 0 < b - Θ) (by linarith : b - Θ < 1)
+  have hC' : ∀ s : ℂ, b ≤ s.re → s.re ≤ 2 → ‖zetaKernel c s‖ ≤ C / (1 + s.im ^ 2) :=
+    fun s h1 h2 => hC s (by linarith) h2
+  have hC0 : 0 ≤ C := by
+    have h2 := hC 2 (by simp; linarith) (by simp)
+    have hnn : 0 ≤ ‖zetaKernel c 2‖ := norm_nonneg _
+    simp at h2
+    linarith
+  refine ⟨(C + 1) / 2, by positivity, fun Z hZ => ?_⟩
+  have hC'' : ∀ s : ℂ, b ≤ s.re → s.re ≤ 2 → ‖zetaKernel c s‖ ≤ (C + 1) / (1 + s.im ^ 2) :=
+    fun s h1 h2 => (hC' s h1 h2).trans (div_le_div_of_nonneg_right (by linarith) (by positivity))
+  rw [signal_eq_of_decay hb2
+    (fun s h1 _ => by
+      unfold zetaKernel
+      exact (by fun_prop : DifferentiableAt ℂ (fun s : ℂ => cexp ((s - c) ^ 2)) s).div
+        (RHTower.differentiable_zetaEntire s) (zetaEntire_ne_zero_of_zeroFree hzf (by linarith)))
+    hC'' hZ]
+  exact norm_signal_le (fun s hs => hC'' s hs.ge (by linarith)) hZ
+
 theorem exists_signal_zetaGaussianKernel_le_of_zeroFree {Θ : ℝ} (hΘ : (1 : ℝ) / 2 ≤ Θ)
     (hΘ1 : Θ ≤ 1) (hzf : ∀ z : ℂ, Θ < z.re → riemannZeta z ≠ 0) (c : ℝ) {b : ℝ}
-    (hb : Θ < b) (hb1 : b ≤ 1) :
+    (hb : Θ < b) (hb1 : b < Θ + 1) (hb2 : b ≤ 2) :
     ∃ K : ℝ, 0 < K ∧ ∀ Z : ℝ, 0 < Z → ‖signal (zetaGaussianKernel c) 2 Z‖ ≤ K * Z ^ b := by
   obtain ⟨κ, hκ, hlow⟩ := exists_le_norm_zetaEntire_of_zeroFree hΘ hΘ1 hzf
     (by linarith : 0 < b - Θ) (by linarith : b - Θ < 1)
@@ -960,7 +986,7 @@ theorem exists_signal_zetaGaussianKernel_le_of_zeroFree {Θ : ℝ} (hΘ : (1 : �
       _ ≤ C / (1 + s.im ^ 2) * ‖RHTower.zetaEntire s‖ :=
           mul_le_mul_of_nonneg_left hz (by positivity)
   refine ⟨C / 2, by positivity, fun Z hZ => ?_⟩
-  rw [signal_eq_of_decay (by linarith : b ≤ 2)
+  rw [signal_eq_of_decay hb2
     (fun s h1 _ => by
       unfold zetaGaussianKernel
       exact (by fun_prop : DifferentiableAt ℂ (fun w : ℂ => (w - 1) * cexp ((w - c) ^ 2)) s).div
@@ -1045,7 +1071,7 @@ theorem exists_uniform_signal_dirichletGaussianKernel_le (c : ℝ) {δ η : ℝ}
       rw [div_eq_mul_inv, mul_assoc]
       refine (mul_le_mul_of_nonneg_left
         (mul_le_mul hNpow htpow (by positivity) (by positivity)) hκ.le).trans ?_
-      rwa [← mul_assoc, ← hsplit]
+      rwa [← hsplit]
     have hLpos : 0 < ‖DirichletCharacter.LFunction χ s‖ :=
       lt_of_lt_of_le (div_pos (mul_pos hκ (Real.rpow_pos_of_pos hNpos _)) h2pos) hLge
     have hsq : (s.re - c) ^ 2 ≤ (2 + |c|) ^ 2 := by

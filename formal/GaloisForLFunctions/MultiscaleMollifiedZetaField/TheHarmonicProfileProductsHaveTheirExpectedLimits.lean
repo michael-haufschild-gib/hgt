@@ -34,7 +34,6 @@ private theorem normalizedHarmonicArray_abs_le_linear {c N : ℕ} (hN : 1 < N)
     _ = _ := by
       simp only [normalizedHarmonicArray, add_div, mul_div_assoc,
         Finset.sum_add_distrib, ← Finset.mul_sum]
-      ring
 
 /-- Products of shifted smooth profiles have the product of their limiting transforms
 in harmonic mean, also after multiplication by any fixed logarithmic power. -/
@@ -65,7 +64,7 @@ theorem tendsto_harmonicMean_profile_product_error
   have hvbound : ∀ᶠ N : ℕ in atTop, v N ∈ Icc (-V) V := by
     have hh := hv.eventually (Metric.ball_mem_nhds v₀ zero_lt_one)
     filter_upwards [hh] with N hN
-    rw [Metric.mem_ball, Real.dist_eq] at hN
+    rw [Real.dist_eq] at hN
     obtain ⟨hl, hu⟩ := abs_lt.mp hN
     constructor <;> dsimp only [V] <;>
       linarith only [hl, hu, neg_abs_le v₀, le_abs_self v₀]
@@ -97,8 +96,8 @@ theorem tendsto_harmonicMean_profile_product_error
     rw [he]
     refine (abs_add_le _ _).trans ?_
     rw [abs_mul, abs_mul]
-    have hh := add_le_add (mul_le_mul_of_nonneg_right hKP (abs_nonneg _))
-      (mul_le_mul_of_nonneg_left hGQ (abs_nonneg _))
+    have hh := add_le_add (mul_le_mul_of_nonneg_right hKP (abs_nonneg (KQ N d - GQ N d)))
+      (mul_le_mul_of_nonneg_left hGQ (abs_nonneg (KP N d - GP N d)))
     simpa only [mul_comm] using hh
   rw [abs_mul, abs_of_nonneg (pow_nonneg ht.1 _)]
   exact (mul_le_mul_of_nonneg_right (pow_le_one₀ ht.1 ht.2) (abs_nonneg _)).trans

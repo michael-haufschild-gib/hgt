@@ -342,7 +342,7 @@ theorem exists_eval_eq_zero (d : ℕ) : ∃ u : L, ‖u‖ = radius a d ∧ eval
     intro u v
     have hu := hsphere.mp u.2
     have hv := hsphere.mp v.2
-    simp only [Set.MapsTo.restrict, Subtype.dist_eq, NNReal.coe_mk, dist_eq_norm]
+    simp only [Set.MapsTo.restrict, Subtype.dist_eq, dist_eq_norm]
     change ‖Φ (u : L) - Φ (v : L)‖ ≤ κ * ‖(u : L) - v‖
     have : Φ u - Φ v = -(rest a d u - rest a d v) / a (d + 1) := by
       simp only [Φ]
@@ -351,7 +351,7 @@ theorem exists_eval_eq_zero (d : ℕ) : ∃ u : L, ‖u‖ = radius a d ∧ eval
     calc ‖rest a d u - rest a d v‖ ≤ δ / radius a d ^ (d + 1) * ‖(u : L) - v‖ :=
           h.norm_rest_sub_le hu hv hδ0 hδ
       _ = κ * ‖(u : L) - v‖ * ‖a (d + 1)‖ := by
-          simp only [κ, hMdef, ← hM]
+          rw [show κ = δ / (‖a (d + 1)‖ * radius a d ^ (d + 1)) by simp only [κ, hM]]
           field_simp
   have hcontr : ContractingWith ⟨κ, hκ0⟩ (hmaps.restrict Φ s s) :=
     ⟨by rw [← NNReal.coe_lt_coe]; exact hκ1, LipschitzWith.of_dist_le_mul hlip⟩
@@ -369,9 +369,11 @@ theorem exists_eval_eq_zero (d : ℕ) : ∃ u : L, ‖u‖ = radius a d ∧ eval
     linear_combination -hfix'
   rw [h.eval_eq d hun, hzero, mul_zero]
 
+omit [IsUltrametricDist L] h [CompleteSpace L] in
 theorem eval_zero : eval a 0 = a 0 := by
   rw [eval, tsum_eq_single 0 fun k hk => by rw [zero_pow hk, mul_zero], pow_zero, mul_one]
 
+omit [IsUltrametricDist L] [CompleteSpace L] in
 theorem radius_eq_of_term_eq {k : ℕ} {r : ℝ} (hr : 0 < r)
     (heq : ‖a k‖ * r ^ k = ‖a (k + 1)‖ * r ^ (k + 1)) : r = radius a k := by
   rw [radius, eq_div_iff (h.norm_pos _).ne']
@@ -384,7 +386,7 @@ theorem radius_eq_of_term_eq {k : ℕ} {r : ℝ} (hr : 0 < r)
 theorem exists_radius_of_eval_eq_zero {u : L} (hu0 : eval a u = 0) :
     ∃ d, ‖u‖ = radius a d := by
   classical
-  have hun : u ≠ 0 := fun h0 => h.ne_zero 0 (by rw [← h.eval_zero, ← h0, hu0])
+  have hun : u ≠ 0 := fun h0 => h.ne_zero 0 (by rw [h0, eval_zero] at hu0; exact hu0)
   set r := ‖u‖
   have hr : 0 < r := norm_pos_iff.mpr hun
   set t : ℕ → ℝ := fun k => ‖a k‖ * r ^ k

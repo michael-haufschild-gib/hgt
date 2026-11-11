@@ -61,7 +61,7 @@ theorem tendsto_harmonicMean_abs_profile_error
   have hvbound : ∀ᶠ N : ℕ in atTop, v N ∈ Icc (-V) V := by
     have hh := hv.eventually (Metric.ball_mem_nhds v₀ zero_lt_one)
     filter_upwards [hh] with N hN
-    rw [Metric.mem_ball, Real.dist_eq] at hN
+    rw [Real.dist_eq] at hN
     obtain ⟨hl, hu⟩ := abs_lt.mp hN
     constructor <;> dsimp only [V] <;>
       linarith only [hl, hu, neg_abs_le v₀, le_abs_self v₀]
@@ -101,7 +101,7 @@ theorem tendsto_harmonicMean_abs_profile_error
       hv.eventually (Metric.ball_mem_nhds v₀ hη)
     have hs : ∀ᶠ N : ℕ in atTop, Real.log (a : ℝ) / Real.log N < min (δ / 2) η :=
       hshift.eventually_lt_const (lt_min (half_pos hδ) hη)
-    have hp := (hi (δ / 2) (ε / 2) (half_pos hδ) (half_pos hε)).comp_tendsto hlog
+    have hp := hlog.eventually (hi (δ / 2) (ε / 2) (half_pos hδ) (half_pos hε))
     filter_upwards [eventually_ge_atTop 2, hvbound, hvnear, hs, hp] with N hN hvN hvclose hsmall hprofile
     intro d hd haway
     have hu := dilatedLogProfileCoordinate_mem_unit ha hac (by omega) hd
