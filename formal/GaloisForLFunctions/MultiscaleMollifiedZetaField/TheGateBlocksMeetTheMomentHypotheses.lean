@@ -85,7 +85,7 @@ theorem eventually_gate_block_moment_hypotheses
   have hsmall' : ∀ᶠ i in l, Real.log (U i) / U i ^ (53 / 100 : ℝ) ≤ 13 / 10 := by
     filter_upwards [hsmall.eventually (Iio_mem_nhds (by norm_num : (0 : ℝ) < 13 / 10)),
       hU.eventually_gt_atTop 0] with i hi hUi
-    simpa only [one_mul, pow_one, Real.rpow_neg hUi.le, div_eq_mul_inv, mul_comm] using hi.le
+    simpa only [Function.comp_def, one_mul, pow_one, Real.rpow_neg hUi.le, div_eq_mul_inv, mul_comm] using hi.le
   have hd := tendsto_gate_displacement_zero hU (by norm_num : (0 : ℝ) ≤ 13 / 10) hgate
   have hL := Real.tendsto_log_atTop.comp hU
   have hratio := (tendsto_log_shortLevinsonCutoff_div_log.comp hU).eventually
@@ -109,6 +109,6 @@ theorem eventually_gate_block_moment_hypotheses
       _ ≤ d i := (div_le_iff₀ hLU).mpr hgi.1
   refine ⟨hlow, hdi.le, by omega, shortLevinsonCutoff_le_block_power hUi0 hai,
     (one_div_pos.mpr hLU).le, (one_div_le_one_div_of_le zero_lt_one hLi).trans_eq (by norm_num), ?_⟩
-  simpa only [one_div, mul_comm, ← div_eq_mul_inv] using hri.le
+  simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using hri.le
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField

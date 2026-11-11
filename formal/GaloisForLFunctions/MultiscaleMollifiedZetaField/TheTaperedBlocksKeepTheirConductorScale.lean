@@ -22,6 +22,7 @@ theorem tendsto_taper_div_height {ι : Type*} {l : Filter ι} {a : ι → ℝ}
     Tendsto (fun i => a i ^ ρ / a i) l (𝓝 0) := by
   apply ((tendsto_rpow_neg_atTop (sub_pos.mpr hρ)).comp ha).congr'
   filter_upwards [ha.eventually_gt_atTop 0] with i hi
+  dsimp only [Function.comp_def]
   rw [neg_sub, Real.rpow_sub hi, Real.rpow_one]
 
 /-- Removing a sublinear taper leaves a height tending to infinity. -/
@@ -65,10 +66,10 @@ theorem tendsto_log_height_div_log_of_logarithmic_band
     simpa only [one_mul, add_zero, pow_one, Function.comp_def] using hh.comp hL
   have hlo : Tendsto (fun i => 1 + Real.log c / Real.log (U i) -
       Real.log (Real.log (U i)) / Real.log (U i)) l (𝓝 1) := by
-    simpa only [add_zero, sub_zero] using
+    simpa only [Function.comp_def, add_zero, sub_zero] using
       ((tendsto_const_nhds.add (tendsto_const_nhds.div_atTop hL)).sub hll)
   have hhi : Tendsto (fun i => 1 + Real.log C / Real.log (U i)) l (𝓝 1) := by
-    simpa only [add_zero] using tendsto_const_nhds.add (tendsto_const_nhds.div_atTop hL)
+    simpa only [Function.comp_def, add_zero] using tendsto_const_nhds.add (tendsto_const_nhds.div_atTop hL)
   apply Metric.tendsto_nhds.2
   intro ε hε
   filter_upwards [hlo.eventually (Metric.ball_mem_nhds 1 hε),
@@ -109,9 +110,14 @@ theorem tendsto_log_conductor_div_short_length
     (by norm_num : (13 / 50 : ℝ) ≠ 0)
   norm_num only [sub_zero] at hh
   apply hh.congr'
-  filter_upwards [ht, hU.eventually_gt_atTop 1] with i hti hUi
+  filter_upwards [ht, hU.eventually_gt_atTop 1,
+    (tendsto_shortLevinsonCutoff.comp hU).eventually_ge_atTop 2] with i hti hUi hNi
+  change 2 ≤ shortLevinsonCutoff (U i) at hNi
+  have hNL : Real.log (shortLevinsonCutoff (U i) : ℝ) ≠ 0 :=
+    (Real.log_pos (by exact_mod_cast (by omega : 1 < shortLevinsonCutoff (U i)))).ne'
+  simp only [Pi.div_apply, Function.comp_def]
   rw [Real.log_div hti.ne' (by positivity : (2 * Real.pi) ≠ 0)]
-  field_simp [(Real.log_pos hUi).ne'] <;> ring
+  field_simp [(Real.log_pos hUi).ne', hNL] <;> ring
 
 /-- Both ends of a high block's taper have the selected normalized conductor. -/
 theorem tendsto_tapered_block_conductor_endpoints

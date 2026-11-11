@@ -66,3 +66,23 @@ Not in the corpus.
 A test with Fourier decay of growing order in the gap theorem lowers `gapScale` from `σ^{−4/3}`
 to `σ^{−1} log(1/σ)`, giving `log log log windowHeight(a) = O(a log a)`; still triple
 exponential. Not formalized.
+
+## Route to a double exponential (in progress)
+
+The triple exponential comes from one global interpolation: `n ≥ max(T₁, gapHeight)/σ`, and
+`gapHeight` is double exponential only because the gap theorem pays the prime polynomial by its
+maximum `68e^{Y}` and the poles by `sinh Y` at every height. Local version:
+
+1. **Rare bad heights.** `W(S_ξ g) ≥ (log(1+π|ξ|/4) − 10)‖g‖² − tails − Re Π_g(ξ)` with pole term
+   `≤ 2e^Y B²/(1+2π|ξ|)⁴` (`zetaZeroConfig_re_W_heightShift_ge_sub_re_primePolynomial_decay`). The
+   windowed variance law (`integral_windowed_sq_deviation_eq`, window width `r = e^{−2Y}/2`) and
+   `V_g ≤ 4‖g‖⁴Y(2Y+C)` give, by Chebyshev, bad measure `≤ 1/16` of every `t`-window of length
+   `2e^{2Y}` once `log t ≥ C₁Y`.
+2. **Good heights carry zeros.** If `Re W(mod_t g) ≥ ‖g‖²L/2` and RH holds within `e^Y` of `t`, a zero
+   lies within `σ` (zero side of `exists_zero_near_of_onLine`).
+3. **Spread nodes.** Every `|τ| ≤ T₁` has `n+1` zeros, pairwise `≥ nodeStep` apart, within
+   `8(n+1)·nodeStep`, for `n ≍ max(e^{C₁Y}, e^{2Y}, log T₁)/nodeStep`; Taylor–Lagrange around `τ` gives
+   `|h(τ)|² ≤ K Σ_{γ∈S}|h(γ)|² + R`, `K = exp(O(n))`.
+4. The rest of `re_W_nonneg_of_rhVerifiedThrough` is unchanged: `log log windowHeight = O(Y) = O(a^{4/3})`.
+
+Lean status: not started.

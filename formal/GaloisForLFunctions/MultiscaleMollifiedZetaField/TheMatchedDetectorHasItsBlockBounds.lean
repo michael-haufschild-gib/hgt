@@ -31,7 +31,7 @@ theorem exists_eventually_matchedDetectorBlockEnergy_le
   obtain ⟨ρ, r, E, hρ0, hρ1, hr, hE, herr⟩ := exists_linearDetector_main_remainder_bound
     (by norm_num : (0 : ℝ) ≤ 26 / 53) (by norm_num : (26 / 53 : ℝ) < 1 / 2)
   have ha := tendsto_gate_block_height hU (hblock.mono (fun _ hi => hi.1))
-  have hn := tendsto_shortLevinsonCutoff.comp hU
+  have hn : Tendsto (fun i => shortLevinsonCutoff (U i)) l atTop := tendsto_shortLevinsonCutoff.comp hU
   have hp := tendsto_height_sub_taper ha hρ1
   have hg := eventually_tapered_block_geometry ha hρ1
     (hblock.mono (fun _ hi => ⟨hi.2.1, hi.2.2.1⟩))
@@ -42,7 +42,7 @@ theorem exists_eventually_matchedDetectorBlockEnergy_le
   have hu := tendsto_gate_normalized_displacement hU (by norm_num : (0 : ℝ) ≤ 13 / 10) hgate
   have hlam : Tendsto (fun i => (1 / Real.log (U i)) *
       Real.log (shortLevinsonCutoff (U i))) l (𝓝 (13 / 50 : ℝ)) := by
-    simpa only [one_div, mul_comm, ← div_eq_mul_inv] using
+    simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using
       tendsto_log_shortLevinsonCutoff_div_log.comp hU
   have hmain := isBigO_detectorThreeMomentMain hn hp hu (by norm_num) hlam
     (by norm_num : (0 : ℝ) ≤ 2) (by norm_num : (0 : ℝ) ≤ 10) hgeom

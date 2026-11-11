@@ -974,20 +974,31 @@ theorem hasSum_base (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π}) {j : 
     simp only [localTerm_B1 π hlam h2 hprim ηp X Y V hu]
     by_cases h2j : 2 ≤ j
     · simp only [h2j, or_true, ↓reduceIte]
-      refine ⟨(hasSum_geometric_of_norm_lt_one hV).mul_left _, ?_⟩
-      simp only [norm_mul, norm_pow]
-      exact (summable_geometric_of_lt_one (norm_nonneg _) hV).mul_left _
+      have hfun : ∀ i : ℕ, -(ηp * (primeQ π - 1) * X * Y * V ^ i) =
+          -(ηp * (primeQ π - 1) * X * Y) * V ^ i := fun i => by ring
+      refine ⟨?_, ?_⟩
+      · rw [show (fun i : ℕ => -(ηp * (primeQ π - 1) * X * Y * V ^ i)) =
+          fun i : ℕ => -(ηp * (primeQ π - 1) * X * Y) * V ^ i from funext hfun]
+        exact (hasSum_geometric_of_norm_lt_one hV).mul_left _
+      · refine ((summable_geometric_of_lt_one (norm_nonneg _) hV).mul_left
+          ‖-(ηp * (primeQ π - 1) * X * Y)‖).congr fun i => ?_
+        rw [hfun i, norm_mul, norm_pow]
     · simp only [h2j, or_false, ↓reduceIte]
-      have hfun : (fun i : ℕ => if 1 ≤ i then -(ηp * (primeQ π - 1) * X * Y * V ^ i)
-          else if j = 1 then ηp * X * Y else 0) = fun i : ℕ => if i = 0 then
-            (if j = 1 then ηp * X * Y else 0) else -(ηp * (primeQ π - 1) * X * Y) * V ^ i := by
-        funext i
+      have hfun : ∀ i : ℕ, (if 1 ≤ i then -(ηp * (primeQ π - 1) * X * Y * V ^ i)
+          else if j = 1 then ηp * X * Y else 0) = (if i = 0 then
+            (if j = 1 then ηp * X * Y else 0) else -(ηp * (primeQ π - 1) * X * Y) * V ^ i) := by
+        intro i
         rcases Nat.eq_zero_or_pos i with rfl | hi
         · simp
-        · rw [if_pos hi, if_neg (by omega)]
+        · rw [if_pos (show 1 ≤ i by omega), if_neg (show i ≠ 0 by omega)]
           ring
-      rw [hfun]
-      exact ⟨hasSum_geom_from _ _ V hV, summable_norm_geom_from _ _ V hV⟩
+      refine ⟨?_, ?_⟩
+      · rw [show (fun i : ℕ => if 1 ≤ i then -(ηp * (primeQ π - 1) * X * Y * V ^ i)
+          else if j = 1 then ηp * X * Y else 0) = fun i : ℕ => if i = 0 then
+            (if j = 1 then ηp * X * Y else 0) else -(ηp * (primeQ π - 1) * X * Y) * V ^ i
+          from funext hfun]
+        exact hasSum_geom_from _ _ V hV
+      · exact (summable_norm_geom_from _ _ V hV).congr fun i => by rw [hfun i]
   · simp only [blockBase, baseSum]
     simp only [Fin.isValue, Fin.mk_one, one_ne_zero, false_and, ↓reduceIte, Fin.val_one,
       Fin.val_zero]

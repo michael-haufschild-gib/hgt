@@ -32,11 +32,11 @@ theorem tendsto_high_detector_main_error
       (d i) (1 / Real.log (U i)) -
       (∫ t, blockWindow (a i) (v i) (a i ^ ρ) t) *
         threeProfileDetectorScalar (13 / 50) (13 / 10)) / a i) l (𝓝 0) := by
-  have hn := tendsto_shortLevinsonCutoff.comp hU
+  have hn : Tendsto (fun i => shortLevinsonCutoff (U i)) l atTop := tendsto_shortLevinsonCutoff.comp hU
   have hu := tendsto_gate_normalized_displacement hU (by norm_num : (0 : ℝ) ≤ 13 / 10) hgate
   have hlam : Tendsto (fun i => (1 / Real.log (U i)) *
       Real.log (shortLevinsonCutoff (U i))) l (𝓝 (13 / 50 : ℝ)) := by
-    simpa only [one_div, mul_comm, ← div_eq_mul_inv] using
+    simpa only [Function.comp_def, one_div, mul_comm, ← div_eq_mul_inv] using
       tendsto_log_shortLevinsonCutoff_div_log.comp hU
   obtain ⟨hca, hcb⟩ := tendsto_tapered_block_conductor_endpoints hU ha hρ hδ hblock
   have hca' : Tendsto (fun i => Real.log ((a i - a i ^ ρ) / (2 * Real.pi)) /
