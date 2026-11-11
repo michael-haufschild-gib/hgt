@@ -3,7 +3,7 @@
 - **ID:** cubic-kernel-local-sobolev-compactness
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** Mass restriction to every compact subset of the actual cubic quotient is compact on its completed energy space.
 
 For an injective positive-height cutoff, the Leibniz and measure estimates

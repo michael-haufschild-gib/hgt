@@ -3,7 +3,7 @@
 - **ID:** cubic-eisenstein-source-series
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** Construct the actual level-three cubic Eisenstein series, prove absolute convergence and holomorphic dependence for `Re s>2`, and prove its character automorphy on hyperbolic three-space.
 
 Quotient level-three matrices by equality of their bottom rows. The cubic

@@ -3,7 +3,7 @@
 - **ID:** cubic-spectral-pencil-fredholm
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual completed-energy pencil `T(λ)=Id−(λ+1)M*M` has finite-dimensional kernel, closed range, and finite-dimensional cokernel for every `0≤λ<1`, including `λ=8/9`.
 
 Write `m=‖Mu‖`, `g=‖Gu‖`, `n=‖u‖`, `t=‖T(λ)u‖`, and

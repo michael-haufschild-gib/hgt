@@ -1,0 +1,45 @@
+import GaloisForLFunctions.FloorFreeArithmetic.TheFloorOfAMechanism
+import GaloisForLFunctions.FloorFreeArithmetic.FloorsOnWindowsOfOneLengthHaveModels
+import GaloisForLFunctions.FloorFreeArithmetic.FiniteTopLayersAreSeenOnEveryWindow
+import GaloisForLFunctions.FloorFreeArithmetic.NonAttainmentGivesTheAbscissaLaw
+import GaloisForLFunctions.FloorFreeArithmetic.NonAttainmentIsALawOfConfigurations
+import GaloisForLFunctions.FloorFreeArithmetic.ThePrimeNumberTheoremIsNotAttainedOnWindows
+import GaloisForLFunctions.FloorFreeArithmetic.LinearStatisticsAreNotMonotoneUnderProjection
+import GaloisForLFunctions.FloorFreeArithmetic.UnitGapsPassToTheLimit
+import GaloisForLFunctions.FloorFreeArithmetic.MomentsOnWindowsAmplifyTheDepth
+import GaloisForLFunctions.FloorFreeArithmetic.ThePrimesAttainTheTopRateOnEveryWindow
+import GaloisForLFunctions.FloorFreeArithmetic.TheTopTraceDeterminesTheTopLayer
+import GaloisForLFunctions.FloorFreeArithmetic.TheMultiplicityIsAMeanOfTheTrace
+import GaloisForLFunctions.FloorFreeArithmetic.FeasibleSystemsArePositiveDefiniteOnIntervals
+import GaloisForLFunctions.FloorFreeArithmetic.CertificatesConvergeToThePrimes
+import GaloisForLFunctions.FloorFreeArithmetic.AnIndexOneRealizationIsAUnitGap
+import GaloisForLFunctions.FloorFreeArithmetic.TranslatesAtAFiniteLayerHaveOnlyTheZeroLimit
+import GaloisForLFunctions.FloorFreeArithmetic.AdditiveFunctionalsOfTheDepthsAreMixturesOfInnerMasses
+import GaloisForLFunctions.FloorFreeArithmetic.TheClockRegulatorLiesBelowWeilsForm
+import GaloisForLFunctions.FloorFreeArithmetic.EveryFiniteDatumIsATopLayer
+import GaloisForLFunctions.FloorFreeArithmetic.PositivityAdmitsEveryFiniteDatum
+import GaloisForLFunctions.FloorFreeArithmetic.QuantileDiscretizationOfAPrimeDensity
+import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInDiscreteEulerProducts
+import GaloisForLFunctions.FloorFreeArithmetic.FiniteLayersInIntegerNormEulerProducts
+import GaloisForLFunctions.FloorFreeArithmetic.MomentBoundsOfAllOrdersAreSupBounds
+import GaloisForLFunctions.FloorFreeArithmetic.TheOrderOfAMomentIsTheDepthItReaches
+import GaloisForLFunctions.FloorFreeArithmetic.ThePencilAtShiftOneIsNotADirichletSeries
+import GaloisForLFunctions.FloorFreeArithmetic.TheTangentOrdersOfMobiusAndLiouville
+
+/-!
+# Floor-Free Arithmetic
+
+Umbrella for the theory of mechanisms without a floor: the floor of a mechanism, its models and
+the census of floors; the asymptotic abscissa law as non-attainment of the top exponent on
+windows (trace, `ψ`, primes, every configuration), as a unit gap and as a bound for all even
+window moments with one exponent; the tangent datum of a top layer and its integrality; unit
+gaps under locally uniform limits and from forms of finite index; the convergence of
+certificates to the von Mangoldt weights; the behaviour of linear statistics under projection of
+zeros to the critical line. It also contains the theorems that exclude a source for each kind:
+every finite datum is a top layer of a symmetric configuration, of a positive prime density and
+of an Euler product with natural norms;
+normalized translates at a finite layer have only the zero limit; the scattering tower keeps
+the count and the clock lies below Weil's form; additive functionals of the depths are mixtures
+of inner masses; moment bounds of all orders are sup bounds; the pencil is not a Dirichlet
+series. See `FloorFreeArithmetic/README.md`.
+-/

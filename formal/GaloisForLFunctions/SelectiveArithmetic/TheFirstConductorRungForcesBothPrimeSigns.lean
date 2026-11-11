@@ -67,7 +67,7 @@ theorem riesz_twist_error_le {q : ℕ} (hq : q ≠ 0) (χ : DirichletCharacter �
       · have hd := prime_dvd_of_character_eq_zero χ hp hz
         simp only [twistWeight, hz, Complex.zero_re, mul_zero, zero_sub,
           abs_mul, abs_neg, hs, one_mul, abs_of_nonneg hΛ, abs_of_nonneg hw,
-          if_pos (And.intro hp hd), if_false, not_true_eq_false, hp, add_zero]
+          hp, hd, and_self, if_true, if_false, not_true_eq_false, add_zero]
         nlinarith only [mul_le_mul_of_nonneg_left hw' hΛ]
       · have he : twistWeight χ n - s * (Λ n : ℝ) = 0 := by
           simp only [twistWeight, hz, Complex.ofReal_re]
@@ -93,8 +93,9 @@ theorem riesz_twist_error_le {q : ℕ} (hq : q ≠ 0) (χ : DirichletCharacter �
   rw [he]
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hpoint).trans ?_)
   rw [sum_add_distrib, ← mul_sum, ← mul_sum, ← sum_filter, ← sum_filter]
-  exact add_le_add_right
-    (mul_le_mul_of_nonneg_left (sum_ramified_prime_mass_le hq) (by positivity)) _
+  exact add_le_add
+    (mul_le_mul_of_nonneg_left (sum_ramified_prime_mass_le hq)
+      (show 0 ≤ 2 * a by positivity)) le_rfl
 
 /-- Proper prime powers up to `exp(2a)` have von Mangoldt mass `O(a exp a)`. -/
 theorem sum_nonprime_mass_le_exp {a : ℝ} (ha : 0 ≤ a) :
@@ -127,7 +128,7 @@ theorem sum_nonprime_mass_le_exp {a : ℝ} (ha : 0 ≤ a) :
         have hn0 : (0 : ℝ) < n := by
           exact_mod_cast (by have := (mem_Icc.mp (mem_filter.mp hn).1).1; omega : 0 < n)
         have hsp := Real.sqrt_pos.mpr hn0
-        rw [mul_div_assoc, le_div_iff₀ hsp]
+        rw [← mul_div_assoc, le_div_iff₀ hsp]
         nlinarith only [mul_le_mul_of_nonneg_left (hsqrt n (mem_filter.mp hn).1)
           (ArithmeticFunction.vonMangoldt_nonneg (n := n))]
       _ ≤ _ := mul_le_mul_of_nonneg_left

@@ -6,16 +6,16 @@ import GaloisForLFunctions.SignFreePurityMechanisms.HomogeneousReturnTransferImp
 The transfer from return-free intervals of the prime orbit to bounded prime traces on log-square
 windows turns every zero-free strip into the critical line
 (`homogeneousReturnWindowTransfer_implies_quasiRH_collapse`). Its premise holds in every late
-window as soon as a strip is known, so it selects nothing there; and its conclusion, a bound for
-the prime traces, holds at every prime under the Riemann hypothesis.
+window as soon as a strip is known, and its conclusion, a bound for the prime traces, holds at
+every prime under the Riemann hypothesis.
 
 * `homogeneousReturnWindowTransfer_of_riemannHypothesis`: the Riemann hypothesis gives the
   transfer, with the constant `∑_z ‖evenCoeff z‖` and no use of the premise.
 * `homogeneousReturnWindowTransfer_iff_riemannHypothesis`: if the zero abscissa is below `1`,
   the transfer is equivalent to the Riemann hypothesis.
 
-Under a zero-free half-plane the transfer is not a step from the half-plane to the line; it is
-the line.
+Under a zero-free strip the transfer is neither weaker nor stronger than the Riemann hypothesis;
+a proof of it has to use its premise, the absence of heavy returns.
 -/
 
 open Filter Topology Complex
@@ -26,7 +26,7 @@ noncomputable section
 namespace GaloisForLFunctions.FamilyContinuationTheory
 
 open GaloisForLFunctions.SignFreePurityMechanisms GaloisForLFunctions.SquareRootThreshold
-open GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
+open GaloisForLFunctions.SurfaceOfSpecZ GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality
 
 /-- The Riemann hypothesis gives the return transfer: the prime traces are bounded at every
 prime. -/

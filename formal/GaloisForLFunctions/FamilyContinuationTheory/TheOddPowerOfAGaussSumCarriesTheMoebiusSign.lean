@@ -17,7 +17,9 @@ additive character and `μ` a primitive `n`-th root of unity. The `n`-th power o
 * **Even order** (`exists_gaussSum_pow_orderOf_eq_of_even`): `g(χ)^n ≡ χ(−1) · card F`. The
   number of Jacobi factors is even and the sign is the parity of the character, not Möbius.
 
-Order three is the least order with the Möbius sign.
+Order three is the least order whose `n`-th power carries the Möbius sign. A lower power can
+carry it: `g(χ)² = J(χ, χ) g(χ²)` with one Jacobi factor, and for order four `g(χ²)` is the
+quadratic Gauss sum.
 -/
 
 open Finset

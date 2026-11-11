@@ -3,7 +3,7 @@
 - **ID:** cubic-kernel-measurable-fundamental-domain
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The level-three Eisenstein group acts freely on hyperbolic three-space; every subgroup has an explicit measurable fundamental selector, including the actual cubic kernel.
 
 For a level-three matrix, `tr(M)−2` is divisible by nine. If it fixes a

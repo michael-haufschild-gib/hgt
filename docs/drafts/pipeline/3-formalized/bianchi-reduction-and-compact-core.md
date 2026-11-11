@@ -3,7 +3,7 @@
 - **ID:** bianchi-reduction-and-compact-core
 - **Stage:** 3-formalized
 - **Type:** THEOREM (Lean)
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** Every point of `SL₂(ℂ)/SU₂` has an Eisenstein integral translate with horizontal squared norm at most `1/3` and height at least `√(2/3)`. Every finite-index integral subgroup has a finite cusp cover with compact truncations.
 
 Iwasawa factorization identifies the quotient with upper half-space. Height

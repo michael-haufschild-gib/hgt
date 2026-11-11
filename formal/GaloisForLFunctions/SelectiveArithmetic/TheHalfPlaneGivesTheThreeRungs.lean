@@ -51,7 +51,7 @@ theorem exists_centred_prime_cancellation {γ : ℝ} (hγ : zetaZeroAbscissa - 1
   have hpow : 1 ≤ (n : ℝ) ^ (1 / 2 + γ) := Real.one_le_rpow hn1 (by linarith only [hg0])
   have hR := hb n hn
   rw [show zetaZeroAbscissa + ε = 1 / 2 + γ by dsimp [ε]; ring] at hR
-  have htri := abs_add (psiRemainder n) 1
+  have htri := abs_add_le (psiRemainder n) 1
   rw [abs_one] at htri
   rw [partialSum_centred_vonMangoldt hn, Real.sqrt_eq_rpow, mul_assoc, ← Real.rpow_add hn0]
   nlinarith only [htri, hR, hpow]

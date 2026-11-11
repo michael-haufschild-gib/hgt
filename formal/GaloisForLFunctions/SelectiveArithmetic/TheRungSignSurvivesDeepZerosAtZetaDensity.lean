@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ZeroConfigurationGeometry.TheZetaDensityBackgroundHasBoundedTrace
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.TemperedConfigurationPontryaginLaw
 import GaloisForLFunctions.RHTower.ClusterRobustHodgeExclusion
+import GaloisForLFunctions.WindowVisibilityLaw.OnsetApertureAndPositivityDictionary
 
 /-!
 # A positive window at zeta density can contain infinitely many deep zeros
@@ -14,12 +15,39 @@ The configuration depends on the chosen aperture.
 open Complex Filter Topology Set MeasureTheory
 open Zeta23
 open _root_.RHTower
+open _root_.RHTower.LocalCountFalsifier
 open GaloisForLFunctions.SquareRootThreshold
 open GaloisForLFunctions.ZeroConfigurationGeometry
 
 noncomputable section
 
 namespace GaloisForLFunctions.SelectiveArithmetic
+
+/-- For one tempered configuration, positivity along any unbounded aperture law
+is equivalent to every zero lying on the critical line. -/
+theorem onLine_iff_positive_along_unbounded_apertures {Z : ZeroConfig}
+    (hZ : TemperedConfig Z) {r : ℝ → ℝ} (hr : Tendsto r atTop atTop) :
+    (∀ ρ ∈ Z.carrier, ρ.re = 1 / 2) ↔
+      ∀ᶠ T : ℝ in atTop, WindowVisibilityLaw.WindowPositiveAt Z (r T) := by
+  constructor
+  · intro hon
+    exact Eventually.of_forall fun _ f _ _ =>
+      SquareRootThreshold.re_W_nonneg_of_onLine Z hon f
+  · intro hpos
+    apply (WindowVisibilityLaw.onsetAperture_eq_top_iff_onLine hZ).mp
+    cases he : WindowVisibilityLaw.onsetAperture Z with
+    | bot =>
+      have h := WindowVisibilityLaw.zero_le_onsetAperture Z
+      rw [he] at h
+      exact False.elim (by simpa using h)
+    | top => rfl
+    | coe b =>
+      obtain ⟨T, hT, hTr⟩ := (hpos.and (hr.eventually_ge_atTop (max b 0 + 1))).exists
+      have hr0 : 0 ≤ r T := by linarith only [hTr, le_max_right b 0]
+      have hle := WindowVisibilityLaw.le_onsetAperture_of_windowPositiveAt hr0 hT
+      rw [he, EReal.coe_le_coe_iff] at hle
+      exfalso
+      linarith only [hle, hTr, le_max_left b 0]
 
 /-- The off-line lattice contributes only a linear number of zeros. -/
 theorem offLineLattice_count_le_linear {L δ : ℝ} (hL : 0 < L)
@@ -47,7 +75,7 @@ theorem offLineLattice_count_le_linear {L δ : ℝ} (hL : 0 < L)
     calc
       _ ≤ ∑ _j ∈ Finset.range m, (L / Real.pi + 2) :=
         Finset.sum_le_sum fun j _ => offLineLatticeConfig_N_le hL hδ hδ' j
-      _ = _ := by simp
+      _ = _ := by simp; ring
   have hbound : (Z.N 0 T : ℝ) ≤ (m : ℝ) * (L / Real.pi + 2) := by
     rw [hN]
     have hc : (Z.Nd 0 T : ℝ) ≤ ∑ j ∈ Finset.range m, (Z.N j (j + 1) : ℝ) := by

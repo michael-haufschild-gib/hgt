@@ -15,7 +15,9 @@ open MeasureTheory Set Metric
 noncomputable section
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
-private theorem differentiableAt_gaussianDampingSeries
+/-- Polynomially bounded coefficients give a holomorphic Gaussian series
+on the half-plane of positive real damping. -/
+theorem differentiableAt_gaussianDampingSeries
     (a : ℕ → ℂ) {C : ℝ} (hC : 0 ≤ C) (k : ℕ)
     (ha : ∀ n : ℕ, ‖a n‖ ≤ C * (n : ℝ) ^ k) {ε : ℂ} (hε : 0 < ε.re) :
     DifferentiableAt ℂ (fun z : ℂ => ∑' n : ℕ, a n * Complex.exp (-(z * (n : ℂ) ^ 2))) ε := by
@@ -172,7 +174,8 @@ theorem differentiableAt_gaussianFirstMomentPole (s : ℂ) {ε : ℂ}
   exact (differentiableAt_id.div_const (t : ℂ)).mul
     (hc.const_mul ((1 / 2 : ℂ) * Complex.Gamma ((3 - s) / 2)))
 
-private theorem norm_typeII_convolution_le (U V n : ℕ) :
+/-- The actual Vaughan type-II convolution has a uniform quadratic bound. -/
+theorem norm_typeII_convolution_le (U V n : ℕ) :
     ‖(((typeIILong U * typeIIShort V) n : ℝ) : ℂ)‖ ≤ 2 * (n : ℝ) ^ 2 := by
   rw [coe_mul_apply]
   calc
@@ -241,9 +244,5 @@ theorem differentiableAt_gaussianCentredVaughanError {σ : ℝ}
   unfold gaussianCentredVaughanError gaussianCentredVaughanCurrent
   simp_rw [damping_reconstruction]
   exact (hp.sub hP).sub ((hII.add (hL.const_mul _)).sub (hP.const_mul _))
-
-#print axioms hasDerivAt_integral_gaussianLogMellinWeight
-#print axioms differentiableAt_gaussianFirstMomentPole
-#print axioms differentiableAt_gaussianCentredVaughanError
 
 end GaloisForLFunctions.ExceptionalLayerTheory

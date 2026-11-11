@@ -291,6 +291,187 @@ theorem norm_dampingFilterPolynomial_sum_le {r M h : ℝ}
   rw [iteratedDampingDifference_eq_polyShiftOp, polyShiftOp_dampingTranslation_apply] at hb'
   simpa only [zero_add] using hb'
 
-#print axioms norm_dampingFilterPolynomial_sum_le
+private theorem closedBall_subset_dampingHalfStrip_add {r δ : ℝ}
+    {z : ℂ} (hz : z ∈ dampingHalfStrip r) :
+    closedBall z δ ⊆ dampingHalfStrip (r + δ) := by
+  intro w hw
+  have hn : ‖w - z‖ ≤ δ := by simpa only [Metric.mem_closedBall, dist_eq_norm] using hw
+  have hre := (Complex.abs_re_le_norm (w - z)).trans hn
+  have him := (Complex.abs_im_le_norm (w - z)).trans hn
+  rw [Complex.sub_re] at hre
+  rw [Complex.sub_im] at him
+  constructor
+  · have hh := (abs_le.mp hre).1
+    linarith only [hz.1, hh]
+  · have hh := abs_sub_abs_le_abs_sub w.im z.im
+    linarith only [hz.2, hh, him]
+
+private theorem norm_deriv_halfStrip_add_le {r δ M : ℝ} (hδ : 0 < δ)
+    {f : ℂ → ℂ} (hf : DifferentiableOn ℂ f (dampingHalfStrip (r + δ)))
+    (hb : ∀ z ∈ dampingHalfStrip (r + δ), ‖f z‖ ≤ M)
+    {z : ℂ} (hz : z ∈ dampingHalfStrip r) : ‖deriv f z‖ ≤ M / δ := by
+  have hsub := closedBall_subset_dampingHalfStrip_add (δ := δ) hz
+  have hd : DiffContOnCl ℂ f (ball z δ) := by
+    refine ⟨hf.mono (ball_subset_closedBall.trans hsub), ?_⟩
+    rw [closure_ball z hδ.ne']
+    exact hf.continuousOn.mono hsub
+  exact Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hδ hd
+    (fun w hw => hb w (hsub (sphere_subset_closedBall hw)))
+
+private theorem norm_exp_step_sub_one_le_scaled {h B : ℝ} (hh : 0 ≤ h)
+    {ω : ℂ} (hω : ‖ω‖ ≤ B) :
+    ‖Complex.exp ((h : ℂ) * ω) - 1‖ ≤ h * (2 * B * (1 + Real.exp (h * B))) := by
+  have hB : 0 ≤ B := (norm_nonneg ω).trans hω
+  have hn : ‖(h : ℂ) * ω‖ ≤ h * B := by
+    rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hh]
+    exact mul_le_mul_of_nonneg_left hω hh
+  by_cases hs : h * B ≤ 1
+  · have he := Complex.norm_exp_sub_one_le (hn.trans hs)
+    have hp := mul_nonneg (mul_nonneg hh hB) (Real.exp_pos (h * B)).le
+    nlinarith only [he, hn, hp]
+  · have hs1 : 1 ≤ h * B := (lt_of_not_ge hs).le
+    have hre : ((h : ℂ) * ω).re ≤ h * B := (Complex.re_le_norm _).trans hn
+    have he := Real.exp_le_exp.mpr hre
+    have hb : ‖Complex.exp ((h : ℂ) * ω) - 1‖ ≤ Real.exp (h * B) + 1 := by
+      refine (norm_sub_le _ _).trans ?_
+      rw [Complex.norm_exp, norm_one]
+      linarith only [he]
+    have hp := mul_le_mul_of_nonneg_right hs1
+      (show 0 ≤ Real.exp (h * B) + 1 by positivity)
+    nlinarith only [hb, hp, Real.exp_pos (h * B)]
+
+private theorem norm_twistedDampingDifference_add_le {r δ M h B : ℝ}
+    (hδ : 0 < δ) (hM : 0 ≤ M) (hh : 0 ≤ h) {ω : ℂ} (hω : ‖ω‖ ≤ B)
+    {f : ℂ → ℂ} (hf : DifferentiableOn ℂ f (dampingHalfStrip (r + δ)))
+    (hb : ∀ z ∈ dampingHalfStrip (r + δ), ‖f z‖ ≤ M)
+    {z : ℂ} (hz : z ∈ dampingHalfStrip r) :
+    ‖twistedDampingDifference h ω f z‖ ≤
+      h * M * (1 / δ + 2 * B * (1 + Real.exp (h * B))) := by
+  have hsub := dampingHalfStrip_mono (show r ≤ r + δ by linarith only [hδ])
+  have hd (w : ℂ) (hw : w ∈ dampingHalfStrip r) :
+      HasDerivWithinAt f (deriv f w) (dampingHalfStrip r) w :=
+    (hf.differentiableAt ((isOpen_dampingHalfStrip (r + δ)).mem_nhds (hsub hw))).hasDerivAt.hasDerivWithinAt
+  have hs := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le hd
+    (fun w hw => norm_deriv_halfStrip_add_le hδ hf hb hw)
+    (convex_dampingHalfStrip r) hz (add_mem_dampingHalfStrip hh hz)
+  simp only [add_sub_cancel_left, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hh] at hs
+  have he : twistedDampingDifference h ω f z =
+      (f (z + h) - f z) + (1 - Complex.exp ((h : ℂ) * ω)) * f z := by
+    unfold twistedDampingDifference
+    ring
+  rw [he]
+  calc
+    _ ≤ ‖f (z + h) - f z‖ + ‖(1 - Complex.exp ((h : ℂ) * ω)) * f z‖ := norm_add_le _ _
+    _ ≤ (M / δ) * h + (h * (2 * B * (1 + Real.exp (h * B)))) * M := by
+      apply add_le_add hs
+      rw [norm_mul, norm_sub_rev]
+      exact mul_le_mul (norm_exp_step_sub_one_le_scaled hh hω) (hb z (hsub hz))
+        (norm_nonneg _) (by have hB := (norm_nonneg ω).trans hω; positivity)
+    _ = _ := by ring
+
+/-- Spending the same radius at each root avoids the quadratic-in-degree loss
+from repeated strip halving. The root bound retains its actual spacing. -/
+theorem norm_iteratedDampingDifference_le_linear_loss {δ M h B r : ℝ}
+    (hδ : 0 < δ) (hM : 0 ≤ M) (hh : 0 ≤ h) (hB : 0 ≤ B)
+    (ws : List ℂ) (hws : ∀ ω ∈ ws, ‖ω‖ ≤ B) {f : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f (dampingHalfStrip (r + ws.length * δ)))
+    (hb : ∀ z ∈ dampingHalfStrip (r + ws.length * δ), ‖f z‖ ≤ M)
+    {z : ℂ} (hz : z ∈ dampingHalfStrip r) :
+    ‖iteratedDampingDifference h ws f z‖ ≤
+      M * (h * (1 / δ + 2 * B * (1 + Real.exp (h * B)))) ^ ws.length := by
+  induction ws generalizing r z with
+  | nil =>
+    simp only [List.length_nil, Nat.cast_zero, zero_mul, add_zero] at hb
+    simpa only [List.length_nil, iteratedDampingDifference, pow_zero, mul_one] using hb z hz
+  | cons ω ws ih =>
+    have hω := hws ω List.mem_cons_self
+    have hrest : ∀ v ∈ ws, ‖v‖ ≤ B := fun v hv => hws v (List.mem_cons_of_mem _ hv)
+    have he : r + ((ω :: ws).length : ℝ) * δ = (r + δ) + (ws.length : ℝ) * δ := by
+      simp only [List.length_cons, Nat.cast_add, Nat.cast_one]
+      ring
+    rw [he] at hf hb
+    let C := h * (1 / δ + 2 * B * (1 + Real.exp (h * B)))
+    have hC : 0 ≤ C := by dsimp [C]; positivity
+    have hg := (differentiableOn_iteratedDampingDifference hh ws hf).mono
+      (dampingHalfStrip_mono (le_add_of_nonneg_right
+        (mul_nonneg (Nat.cast_nonneg ws.length) hδ.le)))
+    have hgB (w : ℂ) (hw : w ∈ dampingHalfStrip (r + δ)) :
+        ‖iteratedDampingDifference h ws f w‖ ≤ M * C ^ ws.length :=
+      ih hrest hf hb hw
+    have hh' := norm_twistedDampingDifference_add_le hδ
+      (mul_nonneg hM (pow_nonneg hC _)) hh hω hg hgB hz
+    refine hh'.trans_eq ?_
+    simp only [iteratedDampingDifference, List.length_cons, pow_succ, C]
+    ring
+
+/-- A degree-`d` filter pays `(d+1)/R` per root on a strip of radius `R`.
+For `hB≤1` and `B=O(t)`, this is `exp(O(d log t))` when `R` is proportional to `1/t`. -/
+theorem norm_dampingFilterPolynomial_sum_le_linear_loss {R M h B : ℝ}
+    (hR : 0 < R) (hM : 0 ≤ M) (hh : 0 ≤ h) (hB : 0 ≤ B)
+    (ws : List ℂ) (hws : ∀ ω ∈ ws, ‖ω‖ ≤ B) {f : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f (dampingHalfStrip R))
+    (hb : ∀ z ∈ dampingHalfStrip R, ‖f z‖ ≤ M) :
+    ‖∑ j ∈ Finset.range ((dampingFilterPolynomial h ws).natDegree + 1),
+      (dampingFilterPolynomial h ws).coeff j * f ((j : ℂ) * h)‖ ≤
+      M * (h * (((ws.length : ℝ) + 1) / R + 2 * B * (1 + Real.exp (h * B)))) ^ ws.length := by
+  let δ := R / ((ws.length : ℝ) + 1)
+  have hδ : 0 < δ := by dsimp [δ]; positivity
+  have he : δ + (ws.length : ℝ) * δ = R := by dsimp [δ]; field_simp; ring
+  have hz : (0 : ℂ) ∈ dampingHalfStrip δ :=
+    ⟨by simpa only [Complex.zero_re] using neg_lt_zero.mpr hδ,
+      by simpa only [Complex.zero_im, abs_zero] using hδ⟩
+  have H := norm_iteratedDampingDifference_le_linear_loss hδ hM hh hB ws hws
+    (he.symm ▸ hf) (he.symm ▸ hb) hz
+  rw [iteratedDampingDifference_eq_polyShiftOp, polyShiftOp_dampingTranslation_apply] at H
+  simpa only [zero_add, δ, one_div_div] using H
+
+/-- On a reciprocal-height strip, logarithmically growing degree costs only
+an exponential in height after every spacing factor is removed. -/
+theorem norm_dampingFilterPolynomial_sum_le_growing_order {M h B t κ : ℝ}
+    (hM : 0 ≤ M) (hh : 0 ≤ h) (hB : 0 ≤ B)
+    (ht : 34 + 2 * Real.exp 1 ≤ t) (hBt : B ≤ t ^ 2) (hhB : h * B ≤ 1)
+    (ws : List ℂ) (hws : ∀ ω ∈ ws, ‖ω‖ ≤ B)
+    (hdt : (ws.length : ℝ) ≤ t) (hdegree : (ws.length : ℝ) * Real.log t ≤ κ * t)
+    {f : ℂ → ℂ}
+    (hf : DifferentiableOn ℂ f (dampingHalfStrip (1 / (16 * t))))
+    (hb : ∀ z ∈ dampingHalfStrip (1 / (16 * t)), ‖f z‖ ≤ M) :
+    ‖∑ j ∈ Finset.range ((dampingFilterPolynomial h ws).natDegree + 1),
+      (dampingFilterPolynomial h ws).coeff j * f ((j : ℂ) * h)‖ ≤
+      M * h ^ ws.length * Real.exp (3 * κ * t) := by
+  have ht1 : 1 ≤ t := by linarith only [ht, Real.exp_pos 1]
+  have ht0 : 0 < t := zero_lt_one.trans_le ht1
+  have hhead : ((ws.length : ℝ) + 1) / (1 / (16 * t)) ≤ 32 * t ^ 2 := by
+    rw [div_eq_mul_inv, one_div, inv_inv]
+    have hm := mul_le_mul_of_nonneg_right
+      (show (ws.length : ℝ) + 1 ≤ 2 * t by linarith only [hdt, ht1])
+      (show 0 ≤ 16 * t by positivity)
+    nlinarith only [hm]
+  have hroot : 2 * B * (1 + Real.exp (h * B)) ≤
+      2 * t ^ 2 * (1 + Real.exp 1) := by
+    apply mul_le_mul
+    · exact mul_le_mul_of_nonneg_left hBt (by norm_num)
+    · exact add_le_add (le_refl 1) (Real.exp_le_exp.mpr hhB)
+    · positivity
+    · positivity
+  have hbase : ((ws.length : ℝ) + 1) / (1 / (16 * t)) +
+      2 * B * (1 + Real.exp (h * B)) ≤ t ^ 3 := by
+    have hm := mul_le_mul_of_nonneg_right ht (sq_nonneg t)
+    nlinarith only [hhead, hroot, hm]
+  have H := norm_dampingFilterPolynomial_sum_le_linear_loss
+    (by positivity : 0 < 1 / (16 * t)) hM hh hB ws hws hf hb
+  calc
+    _ ≤ M * (h * t ^ 3) ^ ws.length := H.trans
+      (mul_le_mul_of_nonneg_left
+        (pow_le_pow_left₀ (by positivity)
+          (mul_le_mul_of_nonneg_left hbase hh) _) hM)
+    _ = M * h ^ ws.length * Real.exp (3 * (ws.length : ℝ) * Real.log t) := by
+      have hp : (t ^ 3) ^ ws.length =
+          Real.exp ((ws.length : ℝ) * ((3 : ℕ) * Real.log t)) := by
+        rw [Real.exp_nat_mul, Real.exp_nat_mul, Real.exp_log ht0]
+      rw [mul_pow, hp, ← mul_assoc,
+        show (ws.length : ℝ) * ((3 : ℕ) * Real.log t) =
+          3 * (ws.length : ℝ) * Real.log t by push_cast; ring]
+    _ ≤ _ := mul_le_mul_of_nonneg_left
+      (Real.exp_le_exp.mpr (by linarith only [hdegree])) (by positivity)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

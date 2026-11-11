@@ -316,11 +316,5 @@ theorem zeroRelocation_meanInvisible_but_not_dirichlet {ρ : ℂ} (hρ : 1 / 2 <
   ⟨relocatedZeta_error_meanSquare ρ γ₁ γ₂ (by linarith only [hσ]) hσ.ne',
     (zeroRelocation_destroys_vertical_bohr_and_LSeries hρ γ₁ γ₂ hσ).2⟩
 
-#print axioms relocatedZeta_error_meanSquare
-#print axioms relocatedZeta_meanSquare
-#print axioms relocatedZeta_error_fourierMean
-#print axioms relocatedZeta_fourierMean_log
-#print axioms relocatedZeta_fourierMean_off_spectrum
-#print axioms zeroRelocation_meanInvisible_but_not_dirichlet
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

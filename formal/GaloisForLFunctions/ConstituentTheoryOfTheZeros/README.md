@@ -123,7 +123,7 @@ fractional part jumps at every integer.
 | — for Dirichlet series, on a half-plane and in a strip | `LSeries_ne_zero_of_zeros_subset_xi`, `LSeries_ne_zero_of_strip_zeros_subset_xi` |
 | — for exponential polynomials with real frequencies | `expSum_ne_zero_of_strip_zeros_subset_xi` |
 | **If such a function has a zero in the strip, infinitely many of its zeros there are not zeros of `ξ`** | `infinite_zeros_not_xi_zeros_of_expansion`, `…_of_LSeries`, `…_of_expSum` |
-| A zero forces an off-line zero or divergent total multiplicity-weighted zeta residue mass; summable exceptional residues cannot rescue a pure Wiener expansion | `expansion_zero_forces_offLine_or_nonsummable_residues` |
+| A zero forces divergent total multiplicity-weighted zeta residue mass throughout the strip, without purity; cofinite transport to zeta zeros cannot have `ℓᵖ` displacements for any finite `p > 0` | `expansion_zero_forces_nonsummable_residues`, `not_cofinite_zeta_zero_of_summable_displacements` |
 | Approximants that converge in the norm of absolute convergence and are constituents in growing boxes have, eventually, no zero near the line | `eventually_LSeries_ne_zero_of_box_zeros_subset_xi` |
 | A height `H₀(N)` beyond which no Dirichlet polynomial of length `≤ N` with a zero near the line is a box constituent | `exists_height_forall_dirichletPolynomial` |
 | Every band `\|Im s\| ≤ H` has a Dirichlet polynomial with exactly the zeros of `ξ`; its length is unbounded in `H` | `exists_dirichletPolynomial_zeros_eq_xi`, `exists_height_forall_not_zeros_eq_xi` |

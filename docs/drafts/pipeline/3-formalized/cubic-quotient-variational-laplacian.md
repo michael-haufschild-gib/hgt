@@ -3,7 +3,7 @@
 - **ID:** cubic-quotient-variational-laplacian
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual quotient Dirichlet energy defines a closed, densely defined, nonnegative self-adjoint Laplacian on quotient `L²`.
 
 Let `M` be the faithful dense mass embedding of the completed energy graph.

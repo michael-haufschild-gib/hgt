@@ -3,7 +3,7 @@
 - **ID:** cubic-meromorphic-resolvent
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual quotient Laplacian has an operator-valued meromorphic resolvent near `z=8/9`; composition with `z=s(2−s)` is meromorphic at `s=4/3`.
 
 Let `T(z)=Id−(z+1)M*M`, and let `P` project onto `ker T(8/9)`.

@@ -154,5 +154,3 @@ theorem exists_interval_twistedMoment_le {θ : ℝ} (hθ0 : 0 ≤ θ) (hθ : θ 
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField
 
-#print axioms GaloisForLFunctions.MultiscaleMollifiedZetaField.exists_twistedMoment_power_saving
-#print axioms GaloisForLFunctions.MultiscaleMollifiedZetaField.exists_interval_twistedMoment_le

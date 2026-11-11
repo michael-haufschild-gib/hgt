@@ -199,7 +199,9 @@ theorem finite_top_seen_on_every_window {Z : ZeroConfig} (hZ : TemperedConfig Z)
   refine ⟨u, hu, ?_⟩
   obtain ⟨hlo, hhi⟩ := hV u (((le_max_left V 0).trans hT).trans hu.1)
   have htopbig : ε ≤ |topTrace Z b u| := by
-    rw [← Complex.norm_real, topTrace_eq_two_sided_sum S hS hreal u]
+    have hn : |topTrace Z b u| = ‖((topTrace Z b u : ℝ) : ℂ)‖ := by
+      rw [Complex.norm_real, Real.norm_eq_abs]
+    rw [hn, topTrace_eq_two_sided_sum S hS hreal u]
     exact hbig
   have htri : |topTrace Z b u| ≤ |normTrace Z b u| + |normTrace Z b u - topTrace Z b u| := by
     have h := abs_sub_abs_le_abs_sub (topTrace Z b u) (normTrace Z b u)

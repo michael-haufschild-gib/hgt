@@ -10,7 +10,8 @@ The zeta function of `ℚ(√−3)`, written as a sum over the nonzero Eisenstei
 `Σ_{(m,n) ≠ 0} (m² − mn + n²)^{−s} = 6 ζ(s) L(s, χ₋₃)`  for `Re s > 1`  (`latticeSum_eq`).
 
 This is the transfer from the family over `ℚ(√−3)` to `ζ`: a zero of `ζ` is a zero of the zeta
-function of the field. The proof regroups the lattice by the norm and uses the norm count
+function of the field. With a Dirichlet character `χ` of the norm the sum is `6 L(s, χ) L(s, χ χ₋₃)`
+(`latticeSum_twisted_eq`). The proof regroups the lattice by the norm and uses the norm count
 `#{z : N(z) = n} = 6 Σ_{d ∣ n} χ₃(d)`, which is `6 (1 ∗ χ₋₃)(n)`.
 -/
 
@@ -139,6 +140,64 @@ theorem latticeSum_eq {s : ℂ} (hs : 1 < s.re) :
   rw [LSeries_congr hconv, LSeries_smul, LSeries_convolution'
     (LSeriesSummable_one_iff.mpr hs) (chi3D.LSeriesSummable_of_one_lt_re hs),
     LSeries_one_eq_riemannZeta hs, DirichletCharacter.LFunction_eq_LSeries chi3D hs]
+
+/-! ### Twists by Dirichlet characters -/
+
+theorem tsum_fiber_twisted {q : ℕ} (χ : DirichletCharacter ℂ q) {s : ℂ} (n : ℕ) :
+    ∑' b : ↑((fun p : {p : ℤ × ℤ // p ≠ (0, 0)} => latNorm p.1) ⁻¹' {n}),
+        χ (latNorm b.1.1) * latTerm s b =
+      LSeries.term (fun n => χ n * ((normSet n).card : ℂ)) s n := by
+  have hconst : ∀ b : ↑((fun p : {p : ℤ × ℤ // p ≠ (0, 0)} => latNorm p.1) ⁻¹' {n}),
+      χ (latNorm b.1.1) * latTerm s b = χ n * latTerm s b := fun b => by
+    have h : latNorm b.1.1 = n := b.2
+    rw [h]
+  simp_rw [hconst]
+  rw [tsum_mul_left, tsum_fiber]
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  · rw [LSeries.term_of_ne_zero hn.ne', LSeries.term_of_ne_zero hn.ne']
+    ring
+
+/-- **The Hecke `L`-function of `χ ∘ N` over `ℚ(√−3)`**:
+`Σ_{(m,n) ≠ 0} χ(m² − mn + n²) (m² − mn + n²)^{−s} = 6 L(s, χ) L(s, χ χ₋₃)` for `Re s > 1`. -/
+theorem latticeSum_twisted_eq {q : ℕ} (χ : DirichletCharacter ℂ q) {s : ℂ} (hs : 1 < s.re) :
+    ∑' p : {p : ℤ × ℤ // p ≠ (0, 0)}, χ (latNorm p.1) * latTerm s p =
+      6 * (LSeries (fun n => χ n) s * LSeries (fun n => χ n * chi3D n) s) := by
+  have hsum : Summable fun p : {p : ℤ × ℤ // p ≠ (0, 0)} => χ (latNorm p.1) * latTerm s p := by
+    refine Summable.of_norm_bounded (summable_latTerm hs).norm fun p => ?_
+    rw [norm_mul]
+    exact mul_le_of_le_one_left (norm_nonneg _) (DirichletCharacter.norm_le_one χ _)
+  have hfib := hsum.hasSum.tsum_fiberwise (fun p : {p : ℤ × ℤ // p ≠ (0, 0)} => latNorm p.1)
+  simp_rw [tsum_fiber_twisted] at hfib
+  have hL : LSeries (fun n => χ n * ((normSet n).card : ℂ)) s =
+      ∑' p : {p : ℤ × ℤ // p ≠ (0, 0)}, χ (latNorm p.1) * latTerm s p := hfib.tsum_eq
+  rw [← hL]
+  have hconv : ∀ {n : ℕ}, n ≠ 0 → χ n * ((normSet n).card : ℂ) =
+      ((6 : ℂ) • convolution (fun n : ℕ => χ n) (fun n : ℕ => χ n * chi3D n)) n := by
+    intro n hn
+    have h := card_normSet (Nat.pos_of_ne_zero hn)
+    have h' : ((normSet n).card : ℂ) = 6 * ((divisorChar n : ℤ) : ℂ) := by exact_mod_cast h
+    rw [h', Pi.smul_apply, smul_eq_mul, LSeries.convolution_def]
+    have hd := Nat.sum_divisorsAntidiagonal'
+      (fun a b => (χ a : ℂ) * (χ b * chi3D b)) (n := n)
+    beta_reduce
+    rw [hd, divisorChar]
+    push_cast
+    simp only [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun d hd' => ?_
+    have hdvd : d ∣ n := (Nat.mem_divisors.mp hd').1
+    have hmul : (χ ((n / d : ℕ) : ZMod q)) * χ (d : ZMod q) = χ (n : ZMod q) := by
+      rw [← map_mul, ← Nat.cast_mul, Nat.div_mul_cancel hdvd]
+    rw [chi3D_apply, ← hmul]
+    ring
+  have hb1 : ∀ n : ℕ, n ≠ 0 → ‖(χ n : ℂ)‖ ≤ 1 := fun n _ => DirichletCharacter.norm_le_one χ _
+  have hb2 : ∀ n : ℕ, n ≠ 0 → ‖(χ n : ℂ) * chi3D n‖ ≤ 1 := fun n _ => by
+    rw [norm_mul]
+    exact mul_le_one₀ (DirichletCharacter.norm_le_one χ _) (norm_nonneg _)
+      (DirichletCharacter.norm_le_one chi3D _)
+  rw [LSeries_congr hconv, LSeries_smul, LSeries_convolution'
+    (LSeriesSummable_of_bounded_of_one_lt_re hb1 hs)
+    (LSeriesSummable_of_bounded_of_one_lt_re hb2 hs)]
 
 end
 

@@ -3,7 +3,7 @@
 - **ID:** cubic-quotient-local-measure-charts
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** Projection to the actual cubic quotient is a covering map and preserves the restricted invariant measure on every measurable set where it is injective.
 
 Frobenius energy satisfies `F(gh)≤F(g)F(h)` and `F(g⁻¹)=F(g)`.

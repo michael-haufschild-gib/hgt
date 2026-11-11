@@ -12,22 +12,25 @@
 |---|---|---|
 | A107 | Level-one positivity gives AAL, B56, and RH or Θ=1 | Complete: `3-formalized/level-one-positivity-abscissa-laws.md` |
 | A110 | B13 iff comb-defect negative index is zero or infinite | Complete: `3-formalized/finite-stratum-packet-index-dichotomy.md` |
-| A106 | AAL from length-dependent floors at `(k+1)π/67`, including prime logs | Both implications written; Lean check pending |
-| A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Exact domains assembled in `TheCancellationAndDepthLadder.lean`; check pending |
-| A108 | Conductor first rung forces primes of both character signs | Full proof written; Lean check pending |
-| A109 | Normalized prime-error trichotomy | Open |
-| A113 | Half-plane map: bounded shapes, positivity, return-free windows | Three implications written in `TheHalfPlaneGivesTheThreeRungs.lean`; check pending |
-| A114 | Step-packet limit matrices with both pole moments and RH equivalence | Independent active proof: `agz-step-packet-limit-matrices.md`; preserve its work |
-| A104 | Exceptional-height measure, second and growing moments | Contact-polynomial second-moment bound written; growing moments and sign transfer open |
-| A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Fixed-aperture model written, excess count `O(T)`; check pending |
-| A102 | Sharp additive constant in height aperture | Open |
-| A80, A94 | Finite-scale converse and index equality | Open |
-| A82 | Li ladder as comb forms of tails | Open |
-| A79, A81, A93 | Aperture–height constants and order of windowHeight | Open |
-| A78, A89 | Cluster window theorem and prescribed sub-logarithmic radius | Open |
-| A86, A47 | Near-diagonal cofactors, growing filters, one-quartet constants | Open |
+| A106 | AAL from length-dependent floors at `(k+1)π/67`, including prime logs | Complete: `3-formalized/length-dependent-floors-abscissa-law.md` |
+| A103 | Cancellation, positivity, companions, long moments, seven-way quasi-RH ladder | Complete: `3-formalized/cancellation-and-depth-ladder.md` |
+| A108 | Conductor first rung forces primes of both character signs | Complete: `3-formalized/first-conductor-rung-prime-signs.md` |
+| A109 | Normalized prime-error trichotomy | Complete corrected classification: `3-formalized/normalized-prime-error-top-trace.md`; empty, finite and infinite boundary spectrum, without an isolation gap |
+| A113 | Half-plane map: bounded shapes, positivity, return-free windows | Complete: `3-formalized/half-plane-three-rungs.md` |
+| A114 | Step-packet limit matrices with both pole moments and RH equivalence | Already formalized: `3-formalized/agz-step-packet-limit-matrices.md` |
+| A104 | Exceptional-height measure, second and growing moments | Complete: `3-formalized/exceptional-contact-heights.md`; sharp exponent `1−1/(2κ)+ε`, including uniform bounded-shape transfer |
+| A105 | Density-matched rung-positive model with arbitrarily high deep zeros | Full-test version impossible: unbounded positive apertures force all zeros onto the line. Exact obstruction and fixed-aperture density-matched survivor formalized in `3-formalized/density-matched-positive-windows.md`; bounded-shape restriction is a separate conjecture |
+| A102 | Sharp additive constant in height aperture | Upper bound improved to `log(π/2)` and formalized in `3-formalized/absolute-cosine-height-aperture.md`; sharpness remains open |
+| A80 | Finite-scale converse | Already formalized: `riemannHypothesis_iff_eventually_combForm_ge`; `3-formalized/agz-step-packet-limit-matrices.md` |
+| A94 | Finite-scale index equality | Robust-margin index proved in `3-formalized/robust-finite-comb-index-counts-right-zeros.md`; raw fixed-window index remains open |
+| A82 | Li ladder as comb forms of tails | Complete: `3-formalized/li-ladder-as-damped-comb-tails.md`; explicit damped, smoothly truncated Laguerre tails with divergent horizons and sampling scales |
+| A79, A81, A93 | Aperture–height constants and order of windowHeight | Complete: `3-formalized/window-height-triple-exponential-order.md`; `log log log(windowHeight(a))−C a^(4/3)→log 138`, explicit `C` |
+| A78 | Cluster window theorem | Already proved: `SurfaceOfSpecZ.ScaleLocality.finite_top_negative_in_every_window`; no frequency separation, length greater than `card(S)π/Γ` |
+| A89 | Prescribed sub-logarithmic radius | Open |
+| A86 | Near-diagonal cofactors and growing filters | Complete: `3-formalized/growing-cofactor-filters-and-near-diagonal-pairs.md`; row bound `1+4W/(t sqrt(r))`, actual filtered transfer to `W≤3t^71`, error `≤2h^d exp(−at/8)` |
+| A47 | One-quartet constants | Complete: `3-formalized/one-quartet-current-constant.md`; explicit normalized-current lower bound |
 | A111 | Critical-zero proportion from twisted moments and Levinson gate | Open |
-| A116 | Ideal degree points, Hecke characters, non-abelian character index | Open; preserve existing independent ideal-square work |
+| A116 | Ideal degree points, Hecke characters, non-abelian character index | Hecke explicit formula, ideal-degree pairing, Dedekind and class-character indices proved in `3-formalized/agz-hecke-explicit-formula-and-ideal-squares.md`; per-Artin-character analytic input remains open |
 | A119 | Linear depth-sum bound with explicit moment constant | Already proved: `RHTower.eventually_offLineMoment_le_montgomeryTaylor`, constant `66/1000` |
 
 ## Integrity
@@ -55,9 +58,9 @@ positive-survivor audit.
 - **A103:** `exists_shape_positive_not_feasible` separates the bounded-shape conclusion of
   cancellation from the full positivity premise of `zeta_companion_of_rung`. The assembled
   statement must retain both domains; it cannot infer the latter sign from the former.
-- **A104:** `TheContactPolynomialHasFewLargeHeights.lean` gives
-  `measure{|D_a(t)| ≥ c log T} ≤ 33 T a³/(c log T)²` on `[T,2T]`, for `a ≥ 1` and
-  `4 exp(4a)(2+2a)^4 ≤ T`. Markov's inequality uses the existing contact mean square.
+- **A104:** `TheContactPolynomialHasFewLargeHeights.lean` proves the stronger bound
+  `measure{|D_a(t)| ≥ c log T} ≤ (13+2 log 4) T a²/(c log T)²` on `[T,2T]`, for `a ≥ 1` and
+  `4 exp(4a)(2+2a)^4 ≤ T`. Mertens bounds the contact variance quadratically in `a`.
   This controls one polynomial, not the supremum over every packet frequency.
 - **A113:** The bounded-shape rung uses the centred contacts `Λ(n)−1`, whose partial sum
   is `ψ(n)−n+1`. A half-plane `Θ≤b` gives every exponent above `b`, hence every rung
@@ -65,12 +68,12 @@ positive-survivor audit.
   and the heavy-return lower bound `log t≥c y^(1−b)`.
 - **A108:** The actual twisted zero form includes `placeEnergy`, bounded by `π` times the
   packet mass. A genuine split prime also requires controlling ramified primes; a departure
-  from `χ(p)=-1` alone permits `χ(p)=0`. Proposed repair: use
+  from `χ(p)=-1` alone permits `χ(p)=0`. The proof uses
   `exists_riesz_twist_le_of_nonneg`; ramified primes contribute at most `2a log q`
   by `vonMangoldt_sum` over conductor divisors. All proper prime powers together cost
   `O(a² exp a)` by `RHTower.sum_nonprime_vonMangoldt_div_sqrt_le`. At
   `a=log log q+η`, both are smaller than the gap between the prime main term `exp(2a)`
-  and the conductor term `log q * exp a`. This comparison remains to formalize.
+  and the conductor term `log q * exp a`. The comparison is formalized in `TheFirstConductorRungForcesBothPrimeSigns.lean`.
 - **A119:** `RHTower.ZetaGateProductAFE.exists_eventually_offLineMoment_le_mul` is already
   unconditional. Its constant comes from the proved mollified gate and
   `eventually_offLineMoment_le_of_zetaGate_twoThirds`: for any positive slack `ε`,

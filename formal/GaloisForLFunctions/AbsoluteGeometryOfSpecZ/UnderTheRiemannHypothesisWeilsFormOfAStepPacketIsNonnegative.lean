@@ -139,7 +139,7 @@ theorem integrable_normed_mul {b : ℝ → ℝ} (hbm : Measurable b) {C : ℝ} (
 
 variable (hgm : Measurable g) (hgb : ∀ u, |g u| ≤ M) (hsupp : ∀ u, g u ≠ 0 → l ≤ u ∧ u ≤ r)
 
-include hgm hgb in
+include hgb in
 theorem abs_mollify_le (u : ℝ) : |mollify φ g u| ≤ M := by
   rw [mollify_apply, ← Real.norm_eq_abs]
   have hb : Integrable fun t => φ.normed volume t * M := (φ.integrable_normed).mul_const M
@@ -195,7 +195,7 @@ theorem packetAutocorr_mollify_sub_le (x : ℝ) :
   have hGm : Measurable (mollify φ g) := hGc.measurable
   have hGs : ∀ u, mollify φ g u ≠ 0 → l - φ.rOut ≤ u ∧ u ≤ r + φ.rOut := fun u hu =>
     ⟨(mollify_ne_zero φ hsupp u hu).1.le, (mollify_ne_zero φ hsupp u hu).2.le⟩
-  have hGb := abs_mollify_le φ hgm hgb
+  have hGb := abs_mollify_le φ hgb
   -- integrability of the squares and of the products
   have hsq : ∀ {f : ℝ → ℝ} {a b : ℝ}, Measurable f → (∀ u, |f u| ≤ M) →
       (∀ u, f u ≠ 0 → a ≤ u ∧ u ≤ b) → Integrable fun u => f u ^ 2 := fun {f a b} hf hfb hfs =>
@@ -306,7 +306,7 @@ theorem ae_tendsto_mollify :
   exact ContDiffBump.ae_convolution_tendsto_right_of_locallyIntegrable hr hK
     (locallyIntegrable_packet hgm hgb hsupp)
 
-include hgm hgb hsupp in
+include hsupp in
 /-- The smoothed packets vanish off a fixed interval. -/
 theorem mollify_eq_zero_of_notMem (i : ℕ) {u : ℝ} (hu : u ∉ Set.Icc (l - 1) (r + 1)) :
     mollify (shrinkingBump i) g u = 0 := by
@@ -329,9 +329,9 @@ theorem tendsto_integral_mollify_mul {e : ℝ → ℝ} (he : Continuous e) :
   · refine Eventually.of_forall fun u => ?_
     by_cases hu : u ∈ Set.Icc (l - 1) (r + 1)
     · rw [Set.indicator_of_mem hu, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
-      exact mul_le_mul_of_nonneg_right (abs_mollify_le (shrinkingBump i) hgm hgb u)
+      exact mul_le_mul_of_nonneg_right (abs_mollify_le (shrinkingBump i) hgb u)
         (abs_nonneg _)
-    · rw [Set.indicator_of_notMem hu, mollify_eq_zero_of_notMem hgm hgb hsupp i hu, zero_mul,
+    · rw [Set.indicator_of_notMem hu, mollify_eq_zero_of_notMem hsupp i hu, zero_mul,
         norm_zero]
   · exact (ae_tendsto_mollify hgm hgb hsupp).mono fun u hu => hu.mul_const (e u)
 
@@ -352,9 +352,9 @@ theorem tendsto_packetAutocorr_mollify (x : ℝ) :
   · refine Eventually.of_forall fun u => ?_
     by_cases hu : u ∈ Set.Icc (l - 1) (r + 1)
     · rw [Set.indicator_of_mem hu, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs]
-      exact mul_le_mul (abs_mollify_le (shrinkingBump i) hgm hgb u)
-        (abs_mollify_le (shrinkingBump i) hgm hgb _) (abs_nonneg _) hM0
-    · rw [Set.indicator_of_notMem hu, mollify_eq_zero_of_notMem hgm hgb hsupp i hu, zero_mul,
+      exact mul_le_mul (abs_mollify_le (shrinkingBump i) hgb u)
+        (abs_mollify_le (shrinkingBump i) hgb _) (abs_nonneg _) hM0
+    · rw [Set.indicator_of_notMem hu, mollify_eq_zero_of_notMem hsupp i hu, zero_mul,
         norm_zero]
   · filter_upwards [hae, hae'] with u h1 h2
     exact h1.mul h2
@@ -522,7 +522,7 @@ theorem packetForm_step_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) (h
   · intro u hu
     obtain ⟨j, hj, hne⟩ : ∃ j ∈ s, τ j * flatPacket x₀ (x j) u ≠ 0 := by
       by_contra hcon
-      push_neg at hcon
+      simp only [not_exists, not_and, not_not] at hcon
       exact hu (Finset.sum_eq_zero hcon)
     have hfp : flatPacket (x₀ : ℝ) ((x j : ℕ) : ℝ) u ≠ 0 := fun h0 => hne (by rw [h0, mul_zero])
     have hmem : u ∈ Set.Ioc (Real.log x₀) (Real.log (x j)) := by

@@ -23,6 +23,11 @@ Eisenstein integers.
   `(2N + 2Y ∑_{k≤M} 1/k)² ∑ |c|²`, which is `≪ (Q + Y² log² Y) ∑ |c|²` on a row ball of norm `Q`.
   Reduced fractions with non-associate denominators are distinct modulo the lattice
   (`exists_eq_mul_of_fraction_sub_mem`).
+* **The balanced additive norm** (`card_fractions_le`, `eisenstein_farey_largeSieve_of_bounded`).
+  The row `μ = 0` of the sieve counts the fractions: at most `(2 + 2Y ∑_{k≤M} 1/k)²`. Hence for
+  coefficients bounded by `B` the mean square is at most
+  `(2N + 2Y ∑ 1/k)² (2 + 2Y ∑ 1/k)² B²`; with `B = Y^{−3/2}` this is `≪ (Q + Y²) Y⁻¹` up to
+  powers of `log Y`, the norm of the additive polynomial in the low estimate.
 -/
 
 noncomputable section
@@ -382,5 +387,63 @@ theorem eisenstein_farey_largeSieve (N : ℕ) (P : Finset (ℂ × ℂ)) {Y : ℝ
     (M := M) (by rw [one_div_one_div]; exact hM) c
   have hconst : (2 : ℝ) / (1 / Y) = 2 * Y := by field_simp
   rwa [hconst] at h
+
+theorem eisChar_zero : eisChar 0 = 1 := by
+  unfold eisChar dualFst circleFreq
+  simp
+
+/-- **Counting fractions.** The number of fractions `d/s` with `|s|² ≤ Y` that are distinct modulo
+the lattice is at most `(2 + 2Y ∑_{k≤M} 1/k)²`: the row `μ = 0` of the large sieve with all
+coefficients equal to one. -/
+theorem card_fractions_le (P : Finset (ℂ × ℂ)) {Y : ℝ} (hY : 1 ≤ Y)
+    (hmem : ∀ p ∈ P, p.1 ∈ eisLattice ∧ p.2 ∈ eisLattice ∧ p.2 ≠ 0 ∧ ‖p.2‖ ^ 2 ≤ Y)
+    (hdist : ∀ p ∈ P, ∀ q ∈ P, p ≠ q → q.1 / q.2 - p.1 / p.2 ∉ eisLattice)
+    {M : ℕ} (hM : Y ≤ (M : ℝ)) :
+    (P.card : ℝ) ≤ (2 + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 := by
+  have h := eisenstein_farey_largeSieve 1 P hY hmem hdist hM (fun _ => 1)
+  have hpt : eisPoint 0 0 = 0 := by
+    apply Complex.ext <;> simp [eisPoint]
+  have hL : ∑ μ : Fin 1 × Fin 1,
+      ‖∑ p ∈ P, (1 : ℂ) * eisChar (eisPoint (μ.1 : ℕ) (μ.2 : ℕ) * (p.1 / p.2))‖ ^ (2 : ℕ)
+        = (P.card : ℝ) ^ 2 := by
+    have hz : (((0 : Fin 1) : ℕ) : ℤ) = 0 := rfl
+    simp only [Fintype.sum_prod_type, Fin.sum_univ_one, hz, hpt, zero_mul, eisChar_zero,
+      mul_one, Finset.sum_const, nsmul_eq_mul, Complex.norm_natCast]
+  have hR : ∑ p ∈ P, ‖(1 : ℂ)‖ ^ (2 : ℕ) = (P.card : ℝ) := by
+    simp
+  have key : (P.card : ℝ) ^ 2
+      ≤ (2 + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 * (P.card : ℝ) := by
+    calc (P.card : ℝ) ^ 2
+        = ∑ μ : Fin 1 × Fin 1, ‖∑ p ∈ P,
+            (1 : ℂ) * eisChar (eisPoint (μ.1 : ℕ) (μ.2 : ℕ) * (p.1 / p.2))‖ ^ (2 : ℕ) := hL.symm
+      _ ≤ (2 * (1 : ℕ) + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2
+            * ∑ p ∈ P, ‖(1 : ℂ)‖ ^ (2 : ℕ) := h
+      _ = (2 + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 * (P.card : ℝ) := by
+          rw [hR, Nat.cast_one, mul_one]
+  rcases Nat.eq_zero_or_pos P.card with h0 | hpos
+  · rw [h0, Nat.cast_zero]
+    positivity
+  · have hc : (0 : ℝ) < P.card := by exact_mod_cast hpos
+    exact le_of_mul_le_mul_right (by rw [← sq]; exact key) hc
+
+/-- **The balanced additive norm.** For coefficients bounded by `B` on fractions `d/s`,
+`|s|² ≤ Y`, distinct modulo the lattice, the mean square over the rows of a box is at most
+`(2N + 2Y ∑ 1/k)² (2 + 2Y ∑ 1/k)² B²`. -/
+theorem eisenstein_farey_largeSieve_of_bounded (N : ℕ) (P : Finset (ℂ × ℂ)) {Y : ℝ}
+    (hY : 1 ≤ Y)
+    (hmem : ∀ p ∈ P, p.1 ∈ eisLattice ∧ p.2 ∈ eisLattice ∧ p.2 ≠ 0 ∧ ‖p.2‖ ^ 2 ≤ Y)
+    (hdist : ∀ p ∈ P, ∀ q ∈ P, p ≠ q → q.1 / q.2 - p.1 / p.2 ∉ eisLattice)
+    {M : ℕ} (hM : Y ≤ (M : ℝ)) (c : ℂ × ℂ → ℂ) {B : ℝ} (hB : ∀ p ∈ P, ‖c p‖ ≤ B) :
+    ∑ μ : Fin N × Fin N,
+        ‖∑ p ∈ P, c p * eisChar (eisPoint (μ.1 : ℕ) (μ.2 : ℕ) * (p.1 / p.2))‖ ^ (2 : ℕ)
+      ≤ (2 * N + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 *
+          ((2 + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 * B ^ 2) := by
+  refine (eisenstein_farey_largeSieve N P hY hmem hdist hM c).trans ?_
+  refine mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+  calc ∑ p ∈ P, ‖c p‖ ^ (2 : ℕ) ≤ ∑ _p ∈ P, B ^ 2 :=
+        Finset.sum_le_sum fun p hp => pow_le_pow_left₀ (norm_nonneg _) (hB p hp) 2
+    _ = P.card * B ^ 2 := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ (2 + 2 * Y * ∑ k ∈ Icc 1 M, 1 / (k : ℝ)) ^ 2 * B ^ 2 :=
+        mul_le_mul_of_nonneg_right (card_fractions_le P hY hmem hdist hM) (sq_nonneg B)
 
 end GaloisForLFunctions.FamilyContinuationTheory

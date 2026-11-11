@@ -102,6 +102,4 @@ theorem eventually_gaussianGrowingMomentCofactorReduction {a κ : ℝ} (ha : 0 <
       _root_.add_le_add (hred ε hε hsector hscale) htail
     _ ≤ _ := by nlinarith only [htExp]
 
-#print axioms eventually_gaussianGrowingCofactorCutoff_bounds
-#print axioms eventually_gaussianGrowingMomentCofactorReduction
 end GaloisForLFunctions.ExceptionalLayerTheory

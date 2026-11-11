@@ -10,10 +10,21 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.CompactCubicQuotientPullback
 # Height-weighted Fourier tests of the residual cubic family
 
 Bounded continuous height weights give bounded `L²` Fourier pairings on
-the cusp strip. Their meromorphic continuation and residue limits retain
-the same actual source. On the initial open half-plane, each nonzero
-Fourier mode factors into the scattering series and its weighted
-Whittaker height average.
+every compact positive height interval. Analytic continuation identifies
+the actual residual Fourier modes with their cubic Bessel profiles.
+The bounds are uniform in the lattice frequency. Moving the interval
+towards height zero gives subexponential growth of the coefficients.
+Exponential Bessel decay then reconstructs a continuous Fourier series.
+Fourier completeness identifies it with the actual residue and upgrades
+the cubic character law to pointwise automorphy. Ramified phase periodicity
+and Chinese remainders give a finite unramified Gauss-series decomposition.
+Finite rational averaging is contractive on the quotient Hilbert space.
+Primitive trace characters determine the local Gauss factors and their
+prime-power lifting laws. Rational pullbacks preserve the completed energy
+graph. Finite-trace unfolding proves residual orthogonality from zero cusp
+means. Exact prime-cube phase sums cancel these means on a common cover,
+forcing the cube eigenrelation. Fourier transport removes primary cube
+factors and determines the unramified prime-power residue table.
 -/
 noncomputable section
 open MeasureTheory Set Filter
@@ -363,7 +374,7 @@ lemma kernelCuspInterval_projection_bound (a b : ℝ) (ha : 0 < a) :
   apply Measure.le_iff.mpr
   intro S hS
   rw [Measure.restrict_apply hS, Measure.restrict_apply hS]
-  exact measure_mono (Set.inter_subset_inter_left S (cuspPeriodStrip_subset_intervalHull a b))
+  exact measure_mono (fun w hw => ⟨hw.1, cuspPeriodStrip_subset_intervalHull a b hw.2⟩)
 
 lemma kernelCuspInterval_projection_quasiMeasurePreserving (a b : ℝ) (ha : 0 < a) :
     Measure.QuasiMeasurePreserving (integralOrbitProjection globalKubotaKernel)
@@ -443,8 +454,10 @@ lemma kernelCuspIntervalFourier_restrict (a b : ℝ) (ha : 0 < a)
     (kernelMassRestriction_coe _ (kernelCuspIntervalCompact_isCompact a b ha).measurableSet F)
   apply integral_congr_ae
   filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable a b)] with w hw hwm
-  rw [hw, Set.indicator_of_mem (Set.mem_image_of_mem _
-    (cuspPeriodStrip_subset_intervalHull a b hwm))]
+  dsimp only [Function.comp_def] at hw
+  have hm : integralOrbitProjection globalKubotaKernel w ∈ kernelCuspIntervalCompact a b :=
+    Set.mem_image_of_mem _ (cuspPeriodStrip_subset_intervalHull a b hwm)
+  rw [hw, Set.indicator_of_mem hm]
 
 def kernelCuspIntervalFourierFamily (a b : ℝ) (ha : 0 < a)
     (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (s : ℂ) : ℂ :=
@@ -533,8 +546,10 @@ lemma kernelCuspIntervalFourierFamily_initial (a b : ℝ) (ha : 0 < a)
     (cubicEisensteinLocalFamily_initial_ae _ (kernelCuspIntervalCompact_isCompact a b ha) s hs hi)
   apply integral_congr_ae
   filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable a b)] with w hw hwm
-  rw [hw, Set.indicator_of_mem (Set.mem_image_of_mem _
-    (cuspPeriodStrip_subset_intervalHull a b hwm)), kernelQuotientEisenstein_mk]
+  dsimp only [Function.comp_def] at hw
+  have hm : integralOrbitProjection globalKubotaKernel w ∈ kernelCuspIntervalCompact a b :=
+    Set.mem_image_of_mem _ (cuspPeriodStrip_subset_intervalHull a b hwm)
+  rw [hw, Set.indicator_of_mem hm, kernelQuotientEisenstein_mk]
 
 def cuspIntervalWhittakerFactor (a b : ℝ) (ρ : BoundedContinuousFunction ℝ ℂ)
     (s : ℂ) (h : O) : ℂ :=
@@ -716,5 +731,14202 @@ theorem kernelCuspIntervalFourier_uniform_bound (a b : ℝ) (ha : 0 < a) :
       mul_le_mul htest ((kernelCuspIntervalPullback a b ha).le_opNorm F) (norm_nonneg _)
         (mul_nonneg hmass (norm_nonneg _))
     _ = _ := by ring
+
+lemma cubicResidualFourierCoefficient_interval_bound (a b : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖cubicResidualFourierCoefficient h‖ *
+        ‖∫ v in Set.Icc a b,
+          schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ ≤ C := by
+  obtain ⟨C, hC, hbound⟩ := kernelCuspIntervalFourier_uniform_bound a b ha
+  let area : ℂ := ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)
+  have harea : 0 < ‖area‖ := norm_pos_iff.mpr cusp_volume_ne_zero
+  refine ⟨C * ‖BoundedContinuousFunction.const ℝ (1 : ℂ)‖ *
+    ‖cubicEisensteinResidue‖ / ‖area‖, by positivity, ?_⟩
+  intro h hh
+  have hb := hbound (BoundedContinuousFunction.const ℝ (1 : ℂ)) h cubicEisensteinResidue
+  rw [kernelCuspIntervalFourier_residue_bessel a b ha _ h hh] at hb
+  simp only [BoundedContinuousFunction.const_apply, one_mul, norm_mul] at hb
+  apply (le_div_iff₀ harea).mpr
+  calc
+    _ = ‖area‖ * ‖cubicResidualFourierCoefficient h‖ *
+        ‖∫ v in Set.Icc a b,
+          schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ := by ring
+    _ ≤ _ := hb
+
+def cubicSchlafliDensity (x t : ℝ) : ℝ :=
+  t ^ (-(2 : ℝ) / 3) * Real.exp (-t - x ^ 2 / (4 * t))
+
+lemma cubicSchlafliDensity_eq (x t : ℝ) (ht : 0 < t) :
+    ((t : ℂ) ^ ((1 / 3 : ℂ) - 1) *
+      Complex.exp (-(t : ℂ) - (x : ℂ) ^ 2 / (4 * t))).re = cubicSchlafliDensity x t := by
+  have he := congrArg Complex.re (schlafliIntegrand_real (1 / 3) x t ht)
+  norm_num only [Complex.ofReal_div, Complex.ofReal_one, Complex.ofReal_ofNat,
+    Complex.ofReal_re] at he
+  convert he using 1 <;> norm_num [cubicSchlafliDensity]
+
+lemma cubicSchlafliDensity_integrable (x : ℝ) :
+    IntegrableOn (cubicSchlafliDensity x) (Set.Ioi 0) := by
+  apply (schlafliIntegral_integrable (1 / 3) x (by norm_num)).re.congr
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+  exact cubicSchlafliDensity_eq x t ht
+
+lemma cubicSchlafliIntegral_re (x : ℝ) :
+    (schlafliIntegral (1 / 3) x).re = ∫ t in Set.Ioi 0, cubicSchlafliDensity x t := by
+  unfold schlafliIntegral
+  have hre := integral_re (schlafliIntegral_integrable (1 / 3) x (by norm_num))
+  change (∫ t : ℝ in Set.Ioi 0, ((t : ℂ) ^ ((1 / 3 : ℂ) - 1) *
+    Complex.exp (-(t : ℂ) - (x : ℂ) ^ 2 / (4 * t))).re) =
+    (∫ t : ℝ in Set.Ioi 0, (t : ℂ) ^ ((1 / 3 : ℂ) - 1) *
+      Complex.exp (-(t : ℂ) - (x : ℂ) ^ 2 / (4 * t))).re at hre
+  rw [← hre]
+  apply integral_congr_ae
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+  exact cubicSchlafliDensity_eq x t ht
+
+lemma schlafliBesselK_one_third_re (x : ℝ) (hx : 0 < x) :
+    (schlafliBesselK (1 / 3) x).re =
+      (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) *
+        ∫ t in Set.Ioi 0, cubicSchlafliDensity x t := by
+  have hp := (Complex.ofReal_cpow (show 0 ≤ x / 2 by positivity) (-(1 : ℝ) / 3)).symm
+  push_cast at hp
+  simp only [neg_div] at hp
+  rw [schlafliBesselK, hp]
+  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero]
+  rw [cubicSchlafliIntegral_re]
+  norm_num
+
+/-- A positive interval of the Schläfli integral gives an exponential lower
+bound with a constant independent of its argument. -/
+theorem schlafliBesselK_one_third_exp_lower :
+    ∃ c : ℝ, 0 < c ∧ ∀ x : ℝ, 0 < x →
+      c * Real.exp (-9 * x / 4) ≤ (schlafliBesselK (1 / 3) x).re := by
+  let c : ℝ := (1 / 2) * (1 / 2 : ℝ) ^ (-(1 : ℝ) / 3) * (2 : ℝ) ^ (-(2 : ℝ) / 3)
+  refine ⟨c, by dsimp [c]; positivity, ?_⟩
+  intro x hx
+  have hsub : Set.Icc x (2 * x) ⊆ Set.Ioi 0 := fun t ht => hx.trans_le ht.1
+  have hi := cubicSchlafliDensity_integrable x
+  have hlower (t : ℝ) (ht : t ∈ Set.Icc x (2 * x)) :
+      (2 * x) ^ (-(2 : ℝ) / 3) * Real.exp (-9 * x / 4) ≤ cubicSchlafliDensity x t := by
+    have ht0 := hx.trans_le ht.1
+    have hp := Real.rpow_le_rpow_of_nonpos ht0 ht.2 (by norm_num : -(2 : ℝ) / 3 ≤ 0)
+    have hfrac : x ^ 2 / (4 * t) ≤ x / 4 :=
+      (div_le_iff₀ (by positivity : 0 < 4 * t)).mpr
+        (by nlinarith only [mul_nonneg hx.le (sub_nonneg.mpr ht.1)])
+    exact mul_le_mul hp (Real.exp_le_exp.mpr (by linarith [ht.2]))
+      (Real.exp_pos _).le (Real.rpow_nonneg ht0.le _)
+  have hmono := setIntegral_mono_on
+    (integrableOn_const (hs := isCompact_Icc.measure_ne_top) :
+      IntegrableOn (fun _ : ℝ => (2 * x) ^ (-(2 : ℝ) / 3) * Real.exp (-9 * x / 4))
+        (Set.Icc x (2 * x)))
+    (hi.mono_set hsub) measurableSet_Icc hlower
+  have hextend : (∫ t in Set.Icc x (2 * x), cubicSchlafliDensity x t) ≤
+      ∫ t in Set.Ioi 0, cubicSchlafliDensity x t := by
+    apply setIntegral_mono_set hi
+    · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+      exact mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+    · exact Eventually.of_forall hsub
+  rw [setIntegral_const, Real.volume_real_Icc_of_le (by linarith), smul_eq_mul,
+    show 2 * x - x = x by ring] at hmono
+  have hscaled := mul_le_mul_of_nonneg_left (hmono.trans hextend)
+    (show 0 ≤ (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) by positivity)
+  rw [← schlafliBesselK_one_third_re x hx] at hscaled
+  have hhalf : (x / 2) ^ (-(1 : ℝ) / 3) = (1 / 2 : ℝ) ^ (-(1 : ℝ) / 3) * x ^ (-(1 : ℝ) / 3) := by
+    rw [show x / 2 = (1 / 2) * x by ring, Real.mul_rpow (by norm_num) hx.le]
+  have htwo : (2 * x) ^ (-(2 : ℝ) / 3) = (2 : ℝ) ^ (-(2 : ℝ) / 3) * x ^ (-(2 : ℝ) / 3) :=
+    Real.mul_rpow (by norm_num) hx.le
+  have hpower : x ^ (-(1 : ℝ) / 3) * x * x ^ (-(2 : ℝ) / 3) = 1 := by
+    calc
+      _ = x ^ (-(1 : ℝ) / 3) * x ^ (1 : ℝ) * x ^ (-(2 : ℝ) / 3) := by rw [Real.rpow_one]
+      _ = x ^ ((-(1 : ℝ) / 3 + 1) + (-(2 : ℝ) / 3)) := by
+        rw [← Real.rpow_add hx, ← Real.rpow_add hx]
+      _ = 1 := by norm_num
+  have hnormalize : (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) *
+      (x * ((2 * x) ^ (-(2 : ℝ) / 3) * Real.exp (-9 * x / 4))) = c * Real.exp (-9 * x / 4) := by
+    rw [hhalf, htwo]
+    calc
+      _ = c * (x ^ (-(1 : ℝ) / 3) * x * x ^ (-(2 : ℝ) / 3)) * Real.exp (-9 * x / 4) := by
+        dsimp [c]
+        ring
+      _ = _ := by rw [hpower, mul_one]
+  rwa [hnormalize] at hscaled
+
+lemma cubicResidualBesselDensity_integrable (a b : ℝ) (ha : 0 < a) (h : O) (hh : h ≠ 0) :
+    IntegrableOn (fun v : ℝ =>
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2)
+      (Set.Icc a b) := by
+  let B : ℂ := (2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) *
+    (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ)
+  have hB : B ≠ 0 := by
+    apply mul_ne_zero
+    · exact div_ne_zero (mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero))
+        (Complex.Gamma_ne_zero_of_re_pos (by norm_num))
+    · apply Complex.cpow_ne_zero_iff.mpr
+      exact Or.inl (mul_ne_zero
+        (mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero))
+        (Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (cuspFrequency_ne_zero h hh))))
+  have hsource : IntegrableOn (fun v : ℝ => (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) *
+      sourceFourierKernel (4 / 3) (cuspFrequency h * v)) (Set.Icc a b) := by
+    apply ContinuousOn.integrableOn_Icc
+    intro v hv
+    have hpos := ha.trans_le hv.1
+    exact ((Complex.continuousAt_ofReal_cpow_const v (-(4 / 3 : ℂ) - 1) (Or.inr hpos.ne')).mul
+      ((sourceFourierKernel_continuous_freq (4 / 3) (by norm_num)).continuousAt.comp
+        ((Complex.continuous_ofReal.const_mul (cuspFrequency h)).continuousAt))).continuousWithinAt
+  apply (hsource.div_const B).congr
+  filter_upwards [ae_restrict_mem measurableSet_Icc] with v hv
+  apply (div_eq_iff hB).mpr
+  simpa only [B, mul_comm] using sourceFourierKernel_residual_height h hh v (ha.trans_le hv.1)
+
+/-- Bounds on every positive height interval force subexponential coefficient growth. -/
+theorem cubicBesselCoefficient_subexponential (coeff : O → ℂ)
+    (hinterval : ∀ a b : ℝ, 0 < a → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖coeff h‖ * ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ ≤ C)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖coeff h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  obtain ⟨c, hc, hK⟩ := schlafliBesselK_one_third_exp_lower
+  let b : ℝ := ε / (9 * Real.pi)
+  let a : ℝ := b / 2
+  have hb : 0 < b := div_pos hε (by positivity)
+  have ha : 0 < a := half_pos hb
+  have hab : a < b := by dsimp [a]; linarith
+  obtain ⟨C, hC, hbound⟩ := hinterval a b ha
+  let D : ℝ := (b - a) * c / b ^ 2
+  have hD : 0 < D := div_pos (mul_pos (sub_pos.mpr hab) hc) (sq_pos_of_pos hb)
+  refine ⟨C / D, div_nonneg hC hD.le, ?_⟩
+  intro h hh
+  have hr : 0 < ‖cuspFrequency h‖ := norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)
+  have hi := cubicResidualBesselDensity_integrable a b ha h hh
+  let L : ℝ := c * Real.exp (-(ε * ‖cuspFrequency h‖)) / b ^ 2
+  have hpoint (v : ℝ) (hv : v ∈ Set.Icc a b) :
+      L ≤ (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2).re := by
+    have hvp := ha.trans_le hv.1
+    have hscale : 9 * Real.pi * b = ε := by dsimp [b]; field_simp
+    have hexponent : -(ε * ‖cuspFrequency h‖) ≤ -9 * (4 * Real.pi * ‖cuspFrequency h‖ * v) / 4 := by
+      have hm := mul_le_mul_of_nonneg_left hv.2 (show 0 ≤ 9 * Real.pi * ‖cuspFrequency h‖ by positivity)
+      nlinarith only [hm, congrArg (fun z : ℝ => z * ‖cuspFrequency h‖) hscale]
+    have hnum := (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hexponent) hc.le).trans
+      (hK (4 * Real.pi * ‖cuspFrequency h‖ * v) (by positivity))
+    rw [← Complex.ofReal_pow, Complex.div_ofReal_re]
+    exact (div_le_div_of_nonneg_left (by positivity) (sq_pos_of_pos hvp)
+      ((sq_le_sq₀ hvp.le hb.le).mpr hv.2)).trans
+        (div_le_div_of_nonneg_right hnum (sq_nonneg v))
+  have hire : IntegrableOn (fun v : ℝ =>
+      (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2).re)
+      (Set.Icc a b) := hi.re
+  have hre := integral_re hi
+  change (∫ v in Set.Icc a b,
+    (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2).re) =
+    (∫ v in Set.Icc a b,
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2).re at hre
+  have hmono := setIntegral_mono_on
+    (integrableOn_const (hs := isCompact_Icc.measure_ne_top) :
+      IntegrableOn (fun _ : ℝ => L) (Set.Icc a b)) hire measurableSet_Icc hpoint
+  rw [setIntegral_const, Real.volume_real_Icc_of_le hab.le, smul_eq_mul, hre] at hmono
+  have hlow : D * Real.exp (-(ε * ‖cuspFrequency h‖)) ≤
+      ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ := by
+    calc
+      D * Real.exp (-(ε * ‖cuspFrequency h‖)) = (b - a) * L := by dsimp only [D, L]; ring
+      _ ≤ (∫ v in Set.Icc a b,
+          schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2).re := hmono
+      _ ≤ _ := Complex.re_le_norm _
+  have hmul := (mul_le_mul_of_nonneg_left hlow (norm_nonneg (coeff h))).trans
+    (hbound h hh)
+  calc
+    _ ≤ C / (D * Real.exp (-(ε * ‖cuspFrequency h‖))) :=
+      (le_div_iff₀ (mul_pos hD (Real.exp_pos _))).mpr hmul
+    _ = (C / D) * Real.exp (ε * ‖cuspFrequency h‖) := by
+      rw [Real.exp_neg]
+      field_simp
+
+/-- Arbitrarily low compact cusp strips force subexponential growth of the actual scattering residues. -/
+theorem cubicResidualFourierCoefficient_subexponential (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖cubicResidualFourierCoefficient h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) :=
+  cubicBesselCoefficient_subexponential cubicResidualFourierCoefficient
+    cubicResidualFourierCoefficient_interval_bound ε hε
+
+
+lemma cubicSchlafliIntegral_ofReal (x : ℝ) :
+    schlafliIntegral (1 / 3) x = ((∫ t in Set.Ioi 0, cubicSchlafliDensity x t : ℝ) : ℂ) := by
+  unfold schlafliIntegral
+  calc
+    _ = ∫ t in Set.Ioi (0 : ℝ), ((cubicSchlafliDensity x t : ℝ) : ℂ) := by
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro t ht
+      have he := schlafliIntegrand_real (1 / 3) x t ht
+      norm_num only [Complex.ofReal_div, Complex.ofReal_one, Complex.ofReal_ofNat] at he
+      convert he using 1 <;> norm_num [cubicSchlafliDensity]
+    _ = _ := integral_ofReal
+
+lemma schlafliBesselK_one_third_norm (x : ℝ) (hx : 0 < x) :
+    ‖schlafliBesselK (1 / 3) x‖ =
+      (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) *
+        ∫ t in Set.Ioi 0, cubicSchlafliDensity x t := by
+  have hp := (Complex.ofReal_cpow (show 0 ≤ x / 2 by positivity) (-(1 : ℝ) / 3)).symm
+  push_cast at hp
+  simp only [neg_div] at hp
+  have hnonneg : 0 ≤ ∫ t in Set.Ioi 0, cubicSchlafliDensity x t := by
+    apply integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+  rw [schlafliBesselK, hp, cubicSchlafliIntegral_ofReal]
+  have he : (1 / 2 : ℂ) * ((x / 2) ^ (-(1 : ℝ) / 3) : ℝ) *
+      ((∫ t in Set.Ioi 0, cubicSchlafliDensity x t : ℝ) : ℂ) =
+      (((1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) *
+        ∫ t in Set.Ioi 0, cubicSchlafliDensity x t : ℝ) : ℂ) := by push_cast; rfl
+  simp only [neg_div] at he ⊢
+  rw [he, Complex.norm_of_nonneg (mul_nonneg (by positivity) hnonneg)]
+
+/-- The Schläfli exponential absorbs half its argument uniformly away
+from zero; the remaining integrand is an integrable Gamma density. -/
+theorem schlafliBesselK_one_third_exp_upper (δ : ℝ) (hδ : 0 < δ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, δ ≤ x →
+      ‖schlafliBesselK (1 / 3) x‖ ≤ C * Real.exp (-x / 2) := by
+  let g : ℝ → ℝ := fun t => t ^ (-(2 : ℝ) / 3) * Real.exp (-t / 2)
+  have hg : IntegrableOn g (Set.Ioi 0) := by
+    have hh := integrableOn_rpow_mul_exp_neg_mul_rpow
+      (s := -(2 : ℝ) / 3) (p := (1 : ℝ)) (b := (1 / 2 : ℝ))
+      (by norm_num) (by norm_num) (by norm_num)
+    simpa only [g, Real.rpow_one, show ∀ t : ℝ, -(1 / 2) * t = -t / 2 by intro t; ring] using hh
+  have hg0 : 0 ≤ ∫ t in Set.Ioi 0, g t := by
+    apply integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+  refine ⟨(1 / 2) * (δ / 2) ^ (-(1 : ℝ) / 3) * ∫ t in Set.Ioi 0, g t,
+    mul_nonneg (by positivity) hg0, ?_⟩
+  intro x hx
+  have hxp := hδ.trans_le hx
+  have hpoint (t : ℝ) (ht : 0 < t) :
+      cubicSchlafliDensity x t ≤ Real.exp (-x / 2) * g t := by
+    have hfrac : x / 2 - t / 2 ≤ x ^ 2 / (4 * t) :=
+      (le_div_iff₀ (by positivity : 0 < 4 * t)).mpr
+        (by nlinarith only [sq_nonneg (x - t), sq_nonneg t])
+    calc
+      _ ≤ t ^ (-(2 : ℝ) / 3) * Real.exp (-x / 2 + -t / 2) :=
+        mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hfrac]))
+          (Real.rpow_nonneg ht.le _)
+      _ = _ := by rw [Real.exp_add]; dsimp [g]; ring
+  have hb := setIntegral_mono_on (cubicSchlafliDensity_integrable x)
+    (hg.const_mul (Real.exp (-x / 2))) measurableSet_Ioi hpoint
+  rw [integral_const_mul] at hb
+  have hp : (x / 2) ^ (-(1 : ℝ) / 3) ≤ (δ / 2) ^ (-(1 : ℝ) / 3) :=
+    Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith only [hx]) (by norm_num)
+  rw [schlafliBesselK_one_third_norm x hxp]
+  calc
+    _ ≤ (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) *
+        (Real.exp (-x / 2) * ∫ t in Set.Ioi 0, g t) :=
+      mul_le_mul_of_nonneg_left hb (by positivity)
+    _ ≤ (1 / 2 : ℝ) * (δ / 2) ^ (-(1 : ℝ) / 3) *
+        (Real.exp (-x / 2) * ∫ t in Set.Ioi 0, g t) :=
+      mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hp (by norm_num))
+        (mul_nonneg (Real.exp_pos _).le hg0)
+    _ = _ := by ring
+
+lemma exp_neg_mul_le_inverse_cube (ε r : ℝ) (hε : 0 < ε) (hr : 0 < r) :
+    Real.exp (-ε * r) ≤ (6 / ε ^ 3) * r ^ (-3 : ℝ) := by
+  have hp := Real.pow_div_factorial_le_exp (ε * r) (mul_pos hε hr).le 3
+  norm_num only [Nat.factorial] at hp
+  have hi := one_div_le_one_div_of_le (by positivity : (0 : ℝ) < (ε * r) ^ 3 / 6) hp
+  rw [one_div, ← Real.exp_neg] at hi
+  rw [Real.rpow_neg hr.le]
+  norm_num only [Real.rpow_ofNat]
+  have he : (6 / ε ^ 3) * (r ^ 3)⁻¹ = ((ε * r) ^ 3 / 6)⁻¹ := by field_simp
+  rw [he]
+  simpa only [neg_mul, one_div] using hi
+
+lemma summable_exp_neg_ringComplex_norm (ε : ℝ) (hε : 0 < ε) :
+    Summable (fun h : O => Real.exp (-ε * ‖ringComplex h‖)) := by
+  have hs := (summable_embedding_rpow (-3) (by norm_num)).mul_left (6 / ε ^ 3)
+  have hz : Summable (fun h : O => if h = 0 then (1 : ℝ) else 0) :=
+    (hasSum_ite_eq 0 (1 : ℝ)).summable
+  apply Summable.of_nonneg_of_le (fun h => (Real.exp_pos _).le) _ (hz.add hs)
+  intro h
+  by_cases hh : h = 0
+  · subst h
+    norm_num [Pi.add_apply]
+  · simpa only [Pi.add_apply, if_neg hh, zero_add] using
+      exp_neg_mul_le_inverse_cube ε ‖ringComplex h‖ hε (norm_pos_iff.mpr (ringComplex_ne_zero hh))
+
+lemma summable_exp_neg_cuspFrequency_norm (ε : ℝ) (hε : 0 < ε) :
+    Summable (fun h : O => Real.exp (-ε * ‖cuspFrequency h‖)) := by
+  have hd : 0 < ‖(3 : ℂ) * ringComplex traceLambda‖ := norm_pos_iff.mpr
+    (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero))
+  apply (summable_exp_neg_ringComplex_norm (ε / ‖(3 : ℂ) * ringComplex traceLambda‖)
+    (div_pos hε hd)).congr
+  intro h
+  congr 1
+  rw [cuspFrequency, norm_div]
+  ring
+
+lemma cuspFrequency_norm_lower (h : O) (hh : h ≠ 0) :
+    ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹ ≤ ‖cuspFrequency h‖ := by
+  have hn := one_le_normSq_embedding h hh
+  rw [Complex.normSq_eq_norm_sq] at hn
+  have hr : 1 ≤ ‖ringComplex h‖ := by nlinarith only [hn, norm_nonneg (ringComplex h)]
+  rw [cuspFrequency, norm_div, inv_eq_one_div]
+  exact div_le_div_of_nonneg_right hr (norm_nonneg _)
+
+/-- The nonconstant residual Fourier mode, expressed using the native
+Fourier kernel so that continuity requires no Bessel regularity theorem. -/
+def cubicResidualNonzeroTerm (h : O) (p : ℝ × ℂ) : ℂ :=
+  if h = 0 then 0 else nonzeroScatteringResidue h * (p.1 : ℂ) ^ (2 / 3 : ℂ) *
+    sourceFourierKernel (4 / 3) (cuspFrequency h * p.1) * tracePhase (cuspFrequency h * p.2)
+
+lemma cubicResidualNonzeroTerm_bessel (h : O) (hh : h ≠ 0) (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    cubicResidualNonzeroTerm h (v, z) = cubicResidualFourierCoefficient h * (v : ℂ) *
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) * tracePhase (cuspFrequency h * z) := by
+  rw [cubicResidualNonzeroTerm, if_neg hh]
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hp : (v : ℂ) ^ 3 * (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_ofNat (v : ℂ) 3, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    ring
+  calc
+    _ = nonzeroScatteringResidue h * (v : ℂ) ^ 3 *
+        ((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) *
+          tracePhase (cuspFrequency h * z) := by rw [← hp]; ring
+    _ = _ := by
+      rw [sourceFourierKernel_residual_height h hh v hv, cubicResidualFourierCoefficient]
+      field_simp
+
+lemma cubicResidualNonzeroTerm_continuousOn (h : O) :
+    ContinuousOn (cubicResidualNonzeroTerm h) {p : ℝ × ℂ | 0 < p.1} := by
+  unfold cubicResidualNonzeroTerm
+  by_cases hh : h = 0
+  · simp only [if_pos hh]
+    exact continuousOn_const
+  simp only [if_neg hh]
+  intro p hp
+  have hpow : ContinuousAt (fun q : ℝ × ℂ => (q.1 : ℂ) ^ (2 / 3 : ℂ)) p :=
+    (Complex.continuousAt_ofReal_cpow_const p.1 (2 / 3 : ℂ) (Or.inr hp.ne')).comp continuousAt_fst
+  have hsource : ContinuousAt (fun q : ℝ × ℂ => sourceFourierKernel (4 / 3) (cuspFrequency h * q.1)) p :=
+    (sourceFourierKernel_continuous_freq (4 / 3) (by norm_num)).continuousAt.comp (by fun_prop)
+  have hphase : Continuous (fun q : ℝ × ℂ => tracePhase (cuspFrequency h * q.2)) := by
+    change Continuous (fun q : ℝ × ℂ => Complex.exp (2 * Real.pi * Complex.I *
+      ((cuspFrequency h * q.2) + starRingEnd ℂ (cuspFrequency h * q.2))))
+    fun_prop
+  exact (((continuousAt_const.mul hpow).mul hsource).mul hphase.continuousAt).continuousWithinAt
+
+/-- Subexponential residues and exponential Bessel decay leave a summable
+majorant uniform in the horizontal coordinate and in compact height strips. -/
+theorem cubicBesselCoefficient_strip_bound (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (h : O), h ≠ 0 → ∀ v : ℝ, v ∈ Set.Icc a b →
+      ‖c h * (v : ℂ) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)‖ ≤ C * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by
+  have hb : 0 < b := ha.trans_le hab
+  let δ : ℝ := 4 * Real.pi * a * ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹
+  have hd : 0 < ‖(3 : ℂ) * ringComplex traceLambda‖ := norm_pos_iff.mpr
+    (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero))
+  have hδ : 0 < δ := by dsimp [δ]; positivity
+  obtain ⟨B, hB, hBessel⟩ := schlafliBesselK_one_third_exp_upper δ hδ
+  obtain ⟨A, hA, hcoeff⟩ := hsub (Real.pi * a) (mul_pos Real.pi_pos ha)
+  refine ⟨A * b * B, by positivity, ?_⟩
+  intro h hh v hp
+  have hv : 0 < v := ha.trans_le hp.1
+  have hx : δ ≤ 4 * Real.pi * ‖cuspFrequency h‖ * v := by
+    have hm := mul_le_mul (cuspFrequency_norm_lower h hh) hp.1 ha.le (norm_nonneg _)
+    have hm' := mul_le_mul_of_nonneg_left hm (show 0 ≤ 4 * Real.pi by positivity)
+    dsimp [δ]
+    nlinarith only [hm']
+  rw [norm_mul, norm_mul, Complex.norm_of_nonneg hv.le]
+  calc
+    _ ≤ (A * Real.exp ((Real.pi * a) * ‖cuspFrequency h‖)) * b *
+        (B * Real.exp (-(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2)) :=
+      mul_le_mul (mul_le_mul (hcoeff h hh) hp.2 hv.le (by positivity))
+        (hBessel _ hx) (norm_nonneg _) (by positivity)
+    _ = (A * b * B) * Real.exp ((Real.pi * a) * ‖cuspFrequency h‖ +
+        -(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) := by rw [Real.exp_add]; ring
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (by positivity)
+      have hm := mul_le_mul_of_nonneg_left hp.1
+        (show 0 ≤ 2 * Real.pi * ‖cuspFrequency h‖ by positivity)
+      nlinarith only [hm]
+
+theorem cubicResidualNonzeroTerm_strip_bound (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (h : O) (p : ℝ × ℂ), p.1 ∈ Set.Icc a b →
+      ‖cubicResidualNonzeroTerm h p‖ ≤ C * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselCoefficient_strip_bound cubicResidualFourierCoefficient
+    cubicResidualFourierCoefficient_subexponential a b ha hab
+  refine ⟨C, hC, ?_⟩
+  intro h p hp
+  by_cases hh : h = 0
+  · simp only [cubicResidualNonzeroTerm, if_pos hh, norm_zero]
+    positivity
+  rw [show p = (p.1, p.2) from rfl, cubicResidualNonzeroTerm_bessel h hh _ (ha.trans_le hp.1),
+    norm_mul, tracePhase_norm, mul_one]
+  exact hb h hh p.1 hp
+
+theorem cubicResidualNonzeroTerm_summable_norm (p : ℝ × ℂ) (hp : 0 < p.1) :
+    Summable (fun h : O => ‖cubicResidualNonzeroTerm h p‖) := by
+  obtain ⟨C, hC, hbound⟩ := cubicResidualNonzeroTerm_strip_bound p.1 p.1 hp le_rfl
+  exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun h => hbound h p ⟨le_rfl, le_rfl⟩)
+    ((summable_exp_neg_cuspFrequency_norm (Real.pi * p.1) (mul_pos Real.pi_pos hp)).mul_left C)
+
+def cubicResidualNonzeroSeries (p : ℝ × ℂ) : ℂ := ∑' h : O, cubicResidualNonzeroTerm h p
+
+lemma cubicResidualNonzeroSeries_continuousOn_strip (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ContinuousOn cubicResidualNonzeroSeries {p : ℝ × ℂ | p.1 ∈ Set.Icc a b} := by
+  obtain ⟨C, hC, hbound⟩ := cubicResidualNonzeroTerm_strip_bound a b ha hab
+  exact continuousOn_tsum
+    (fun h => (cubicResidualNonzeroTerm_continuousOn h).mono (fun p hp => ha.trans_le hp.1))
+    ((summable_exp_neg_cuspFrequency_norm (Real.pi * a) (mul_pos Real.pi_pos ha)).mul_left C)
+    hbound
+
+theorem cubicResidualNonzeroSeries_continuousOn :
+    ContinuousOn cubicResidualNonzeroSeries {p : ℝ × ℂ | 0 < p.1} := by
+  intro p hp
+  change 0 < p.1 at hp
+  have ha : 0 < p.1 / 2 := half_pos hp
+  have hab : p.1 / 2 ≤ 2 * p.1 := by linarith only [hp]
+  have hnhds : {q : ℝ × ℂ | q.1 ∈ Set.Icc (p.1 / 2) (2 * p.1)} ∈ 𝓝 p :=
+    continuousAt_fst.preimage_mem_nhds (Icc_mem_nhds (by linarith only [hp]) (by linarith only [hp]))
+  exact ((cubicResidualNonzeroSeries_continuousOn_strip _ _ ha hab).continuousAt hnhds).continuousWithinAt
+
+
+/-- The Mellin transform of a bounded height weight on a positive compact
+interval is entire; compactness bounds its logarithmic derivative. -/
+def cuspIntervalMellin (a b : ℝ) (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) : ℂ :=
+  ∫ v in Set.Icc a b, ρ v * (v : ℂ) ^ s
+
+lemma cuspIntervalMellin_integrable (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) :
+    IntegrableOn (fun v : ℝ => ρ v * (v : ℂ) ^ s) (Set.Icc a b) := by
+  apply ContinuousOn.integrableOn_Icc
+  apply ρ.continuous.continuousOn.mul
+  intro v hv
+  exact (Complex.continuousAt_ofReal_cpow_const v s (Or.inr (ha.trans_le hv.1).ne')).continuousWithinAt
+
+theorem cuspIntervalMellin_differentiable (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) : Differentiable ℂ (cuspIntervalMellin a b ρ) := by
+  let L : ℝ → ℂ := fun v => (Real.log (max a v) : ℂ)
+  have hL : Continuous L := Complex.continuous_ofReal.comp
+    ((continuous_const.max continuous_id).log (fun v => (ha.trans_le (le_max_left a v)).ne'))
+  let F : ℂ → ℝ → ℂ := fun s v => ρ v * Complex.exp (L v * s)
+  let D : ℂ → ℝ → ℂ := fun s v => ρ v * (Complex.exp (L v * s) * L v)
+  have hF (s : ℂ) : Continuous (F s) := ρ.continuous.mul ((hL.mul_const s).cexp)
+  have hD : Continuous (fun p : ℂ × ℝ => D p.1 p.2) :=
+    (ρ.continuous.comp continuous_snd).mul
+      ((((hL.comp continuous_snd).mul continuous_fst).cexp).mul (hL.comp continuous_snd))
+  have hder (s : ℂ) (v : ℝ) : HasDerivAt (fun w => F w v) (D s v) s := by
+    simpa only [F, D, id_eq, mul_one] using
+      (((hasDerivAt_id s).const_mul (L v)).cexp).const_mul (ρ v)
+  have heq : cuspIntervalMellin a b ρ = fun s => ∫ v in Set.Icc a b, F s v := by
+    funext s
+    apply setIntegral_congr_fun measurableSet_Icc
+    intro v hv
+    dsimp only [cuspIntervalMellin, F, L]
+    rw [max_eq_right hv.1, Complex.ofReal_log (ha.trans_le hv.1).le,
+      Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (ha.trans_le hv.1).ne')]
+  rw [heq]
+  intro s
+  obtain ⟨C, hC⟩ := ((isCompact_closedBall s (1 : ℝ)).prod
+    (isCompact_Icc : IsCompact (Set.Icc a b))).exists_bound_of_continuousOn hD.continuousOn
+  have hd := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    («μ» := volume.restrict (Set.Icc a b)) (F := F) (F' := D) (bound := fun _ => C)
+    (Metric.ball_mem_nhds s (by norm_num : (0 : ℝ) < 1))
+    (Eventually.of_forall (fun w => (hF w).aestronglyMeasurable))
+    ((hF s).continuousOn.integrableOn_Icc)
+    ((hD.comp (continuous_const.prodMk continuous_id)).aestronglyMeasurable)
+    (by
+      filter_upwards [ae_restrict_mem measurableSet_Icc] with v hv w hw
+      exact hC (w, v) ⟨Metric.ball_subset_closedBall hw, hv⟩)
+    (integrable_const C) (Eventually.of_forall (fun v w _ => hder w v))
+  exact hd.2.differentiableAt
+
+lemma cuspIntervalMellin_analyticAt (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) :
+    AnalyticAt ℂ (cuspIntervalMellin a b ρ) s :=
+  (cuspIntervalMellin_differentiable a b ha ρ).analyticAt s
+
+lemma kernelCuspIntervalFourierFamily_zero_initial (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    kernelCuspIntervalFourierFamily a b ha ρ 0 s =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+        (cuspIntervalMellin a b ρ (s - 3) +
+          ((Real.pi : ℂ) / (s - 1)) * scatteringCoefficient s 0 * cuspIntervalMellin a b ρ (-s - 1)) := by
+  let g : HyperbolicSpace → ℂ := fun w => hyperbolicEisenstein s w * cuspWeightedFourierPhase ρ 0 w
+  have hg : Continuous g := (hyperbolicEisenstein_continuous s (by linarith)).mul
+    (cuspWeightedFourierPhase_continuous ρ 0)
+  rw [kernelCuspIntervalFourierFamily_initial a b ha ρ 0 s hs hi,
+    cuspInterval_integral_coordinates a b ha g hg.aestronglyMeasurable
+      (cuspInterval_continuous_integrable a b ha g hg)]
+  have hpoint (v : ℝ) (hv : v ∈ Set.Icc a b) :
+      (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) / (v : ℂ) ^ 3 =
+        ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+          (ρ v * (v : ℂ) ^ (s - 3) + (((Real.pi : ℂ) / (s - 1)) * scatteringCoefficient s 0) *
+            (ρ v * (v : ℂ) ^ (-s - 1))) := by
+    have hpos := ha.trans_le hv.1
+    have hinner : (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) =
+        ρ v * (eisensteinFourierCoefficient v hpos s 0 * ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)) := by
+      simp_rw [g, cuspCoordinateLift_positive v _ hpos, hyperbolicEisenstein_upperPoint,
+        cuspWeightedFourierPhase, hyperbolicHeight_upperPoint, cuspFourierPhase, hyperbolicHorizontal_upperPoint]
+      have he : (∫ z in periodDomain, upperEisenstein z v hpos s * (ρ v * tracePhase (-cuspFrequency 0 * z))) =
+          ρ v * ∫ z in periodDomain, upperEisenstein z v hpos s * tracePhase (-cuspFrequency 0 * z) := by
+        rw [← integral_const_mul]
+        apply integral_congr_ae
+        exact Eventually.of_forall (fun z => by ring)
+      rw [he, eisensteinFourierCoefficient]
+      congr 1
+      exact (div_mul_cancel₀ _ cusp_volume_ne_zero).symm
+    rw [hinner, eisensteinConstantCoefficient_formula v hpos s (by linarith)]
+    have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hpos.ne'
+    have hout : (v : ℂ) ^ (-s - 1) = (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+      rw [show -s - 1 = (2 - s) - 3 by ring, Complex.cpow_sub _ _ hv0]
+      congr 1
+      exact Complex.cpow_natCast _ 3
+    have hin : (v : ℂ) ^ (s - 3) = (v : ℂ) ^ s / (v : ℂ) ^ 3 := by
+      rw [Complex.cpow_sub _ _ hv0]
+      congr 1
+      exact Complex.cpow_natCast _ 3
+    rw [hout, hin]
+    ring
+  rw [setIntegral_congr_fun measurableSet_Icc hpoint, integral_const_mul,
+    integral_add (cuspIntervalMellin_integrable a b ha ρ _)
+      ((cuspIntervalMellin_integrable a b ha ρ _).const_mul _), integral_const_mul]
+  rfl
+
+/-- Subtract the entire incoming mode before comparing constant Fourier
+coefficients at different heights. -/
+def cuspIntervalOutgoingFamily (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) : ℂ :=
+  kernelCuspIntervalFourierFamily a b ha ρ 0 s -
+    ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cuspIntervalMellin a b ρ (s - 3)
+
+lemma cuspIntervalOutgoingFamily_analyticAt (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (s : ℂ) (hs : 1 < s.re) (hi : 0 < s.im) :
+    AnalyticAt ℂ (cuspIntervalOutgoingFamily a b ha ρ) s :=
+  (kernelCuspIntervalFourierFamily_analyticAt a b ha ρ 0 s hs hi).sub
+    (analyticAt_const.mul ((cuspIntervalMellin_analyticAt a b ha ρ _).comp_of_eq
+      (analyticAt_id.sub analyticAt_const) rfl))
+
+theorem cuspIntervalOutgoingFamily_cross_identity (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (c d : ℝ) (hc : 0 < c)
+    (η : BoundedContinuousFunction ℝ ℂ) :
+    Set.EqOn
+      (fun s => cuspIntervalOutgoingFamily a b ha ρ s * cuspIntervalMellin c d η (-s - 1))
+      (fun s => cuspIntervalOutgoingFamily c d hc η s * cuspIntervalMellin a b ρ (-s - 1))
+      {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+  have hconvex : Convex ℝ {s : ℂ | 1 < s.re ∧ 0 < s.im} :=
+    ((convex_Ioi (1 : ℝ)).linear_preimage Complex.reCLM.toLinearMap).inter
+      ((convex_Ioi (0 : ℝ)).linear_preimage Complex.imCLM.toLinearMap)
+  have hl : AnalyticOnNhd ℂ
+      (fun s => cuspIntervalOutgoingFamily a b ha ρ s * cuspIntervalMellin c d η (-s - 1))
+      {s : ℂ | 1 < s.re ∧ 0 < s.im} := fun s hs =>
+    (cuspIntervalOutgoingFamily_analyticAt a b ha ρ s hs.1 hs.2).mul
+      ((cuspIntervalMellin_analyticAt c d hc η _).comp_of_eq (analyticAt_id.neg.sub analyticAt_const) rfl)
+  have hr : AnalyticOnNhd ℂ
+      (fun s => cuspIntervalOutgoingFamily c d hc η s * cuspIntervalMellin a b ρ (-s - 1))
+      {s : ℂ | 1 < s.re ∧ 0 < s.im} := fun s hs =>
+    (cuspIntervalOutgoingFamily_analyticAt c d hc η s hs.1 hs.2).mul
+      ((cuspIntervalMellin_analyticAt a b ha ρ _).comp_of_eq (analyticAt_id.neg.sub analyticAt_const) rfl)
+  apply hl.eqOn_of_preconnected_of_eventuallyEq hr hconvex.isPreconnected
+    (show (5 + Complex.I : ℂ) ∈ {s : ℂ | 1 < s.re ∧ 0 < s.im} by norm_num)
+  have hopen : IsOpen {s : ℂ | 4 < s.re ∧ 0 < s.im} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_im)
+  filter_upwards [hopen.mem_nhds (by norm_num : (5 + Complex.I : ℂ) ∈
+    {s : ℂ | 4 < s.re ∧ 0 < s.im})] with s hs
+  simp only [cuspIntervalOutgoingFamily,
+    kernelCuspIntervalFourierFamily_zero_initial a b ha ρ s hs.1 hs.2,
+    kernelCuspIntervalFourierFamily_zero_initial c d hc η s hs.1 hs.2]
+  ring
+
+lemma cuspIntervalOutgoingFamily_residue_limit (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) :
+    Tendsto (fun s : ℂ => (s - 4 / 3) * cuspIntervalOutgoingFamily a b ha ρ s)
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (kernelCuspIntervalFourier a b ha ρ 0 cubicEisensteinResidue)) := by
+  have hlin : Tendsto (fun s : ℂ => s - 4 / 3) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (0 : ℂ)) := by
+    simpa only [id_eq, sub_self] using (tendsto_id.sub_const (4 / 3 : ℂ)).mono_left
+      (show 𝓝[≠] (4 / 3 : ℂ) ≤ 𝓝 (4 / 3 : ℂ) from nhdsWithin_le_nhds)
+  have hcont : ContinuousAt (fun s : ℂ => ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+      cuspIntervalMellin a b ρ (s - 3)) (4 / 3) := continuousAt_const.mul
+    ((cuspIntervalMellin_differentiable a b ha ρ).continuous.continuousAt.comp (continuousAt_id.sub_const 3))
+  have hz := hlin.mul (hcont.tendsto.mono_left nhdsWithin_le_nhds)
+  simpa only [cuspIntervalOutgoingFamily, mul_sub, zero_mul, sub_zero] using
+    (kernelCuspIntervalFourierFamily_residue_limit a b ha ρ 0).sub hz
+
+/-- The constant residual mode is fixed by the arithmetic constant-term
+residue, for every bounded height weight and every positive height strip. -/
+theorem kernelCuspIntervalFourier_zero_residue (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) :
+    kernelCuspIntervalFourier a b ha ρ 0 cubicEisensteinResidue =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * (3 * (Real.pi : ℂ)) * constantArithmeticResidue *
+        cuspIntervalMellin a b ρ (-(4 / 3 : ℂ) - 1) := by
+  let η := BoundedContinuousFunction.const ℝ (1 : ℂ)
+  have hmellin : cuspIntervalMellin 5 6 η (-(4 / 3 : ℂ) - 1) =
+      cuspScatterHeightFactor (4 / 3) := by
+    simp only [cuspIntervalMellin, η, BoundedContinuousFunction.const_apply, one_mul]
+    exact cuspScatterHeightFactor_integral (4 / 3) (by norm_num)
+  have havg : kernelCuspIntervalFourier 5 6 (by norm_num) η 0 cubicEisensteinResidue =
+      cuspConstantAverageResidue := by
+    rw [← cubicEisensteinResidue_cusp_average, kernelCuspIntervalFourier_integral,
+      kernelCuspStripAverage_hyperbolic]
+    simp only [cuspWeightedFourierPhase, η, BoundedContinuousFunction.const_apply,
+      cuspFourierPhase, cuspFrequency, map_zero, zero_div, neg_zero, zero_mul,
+      AddChar.map_zero_eq_one, mul_one]
+  have hweight (c d : ℝ) (hc : 0 < c) (ξ : BoundedContinuousFunction ℝ ℂ) :
+      Tendsto (fun s : ℂ => cuspIntervalMellin c d ξ (-s - 1)) (𝓝[≠] (4 / 3 : ℂ))
+        (𝓝 (cuspIntervalMellin c d ξ (-(4 / 3 : ℂ) - 1))) :=
+    ((cuspIntervalMellin_differentiable c d hc ξ).continuous.continuousAt.comp
+      (continuousAt_id.neg.sub_const 1)).tendsto.mono_left nhdsWithin_le_nhds
+  have hl := ((cuspIntervalOutgoingFamily_residue_limit a b ha ρ).mul
+    (hweight 5 6 (by norm_num) η)).comp thetaApproach_tendsto_complex_punctured
+  have hr := ((cuspIntervalOutgoingFamily_residue_limit 5 6 (by norm_num) η).mul
+    (hweight a b ha ρ)).comp thetaApproach_tendsto_complex_punctured
+  have hevent :
+      (fun t : ℝ => (((4 / 3 : ℂ) + t + t * Complex.I - 4 / 3) *
+        cuspIntervalOutgoingFamily a b ha ρ ((4 / 3 : ℂ) + t + t * Complex.I)) *
+          cuspIntervalMellin 5 6 η (-((4 / 3 : ℂ) + t + t * Complex.I) - 1))
+        =ᶠ[𝓝[>] (0 : ℝ)]
+      (fun t : ℝ => (((4 / 3 : ℂ) + t + t * Complex.I - 4 / 3) *
+        cuspIntervalOutgoingFamily 5 6 (by norm_num) η ((4 / 3 : ℂ) + t + t * Complex.I)) *
+          cuspIntervalMellin a b ρ (-((4 / 3 : ℂ) + t + t * Complex.I) - 1)) := by
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    change 0 < t at ht
+    have hs : (4 / 3 : ℂ) + t + t * Complex.I ∈ {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+      constructor
+      · norm_num
+        linarith
+      · simpa using ht
+    simpa only [mul_assoc] using congrArg
+      (fun z : ℂ => ((4 / 3 : ℂ) + t + t * Complex.I - 4 / 3) * z)
+      (cuspIntervalOutgoingFamily_cross_identity a b ha ρ 5 6 (by norm_num) η hs)
+  have heq : kernelCuspIntervalFourier a b ha ρ 0 cubicEisensteinResidue *
+      cuspIntervalMellin 5 6 η (-(4 / 3 : ℂ) - 1) =
+      kernelCuspIntervalFourier 5 6 (by norm_num) η 0 cubicEisensteinResidue *
+        cuspIntervalMellin a b ρ (-(4 / 3 : ℂ) - 1) :=
+    tendsto_nhds_unique_of_eventuallyEq hl hr hevent
+  rw [hmellin, havg] at heq
+  have hne : cuspScatterHeightFactor (4 / 3 : ℂ) ≠ 0 := by
+    intro he
+    have hpos := cuspScatterHeightFactor_center_re_pos
+    rw [he, Complex.zero_re] at hpos
+    exact lt_irrefl 0 hpos
+  apply mul_right_cancel₀ hne
+  rw [heq, cuspConstantAverageResidue]
+  ring
+
+def cubicResidualFullModeAmplitude (v : ℝ) (h : O) : ℂ :=
+  if h = 0 then (3 * (Real.pi : ℂ)) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ)
+  else cubicResidualFourierCoefficient h * (v : ℂ) *
+    schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)
+
+lemma cubicResidualFullModeAmplitude_zero_density (v : ℝ) (hv : 0 < v) :
+    cubicResidualFullModeAmplitude v 0 / (v : ℂ) ^ 3 =
+      (3 * (Real.pi : ℂ)) * constantArithmeticResidue * (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) := by
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hp : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) = (v : ℂ) ^ (2 / 3 : ℂ) / (v : ℂ) ^ 3 := by
+    rw [show -(4 / 3 : ℂ) - 1 = (2 / 3 : ℂ) - 3 by ring, Complex.cpow_sub _ _ hv0]
+    congr 1
+    exact Complex.cpow_natCast _ 3
+  rw [cubicResidualFullModeAmplitude, if_pos rfl, hp]
+  ring
+
+lemma cubicResidualFullModeAmplitude_nonzero_density (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    cubicResidualFullModeAmplitude v h / (v : ℂ) ^ 3 = cubicResidualFourierCoefficient h *
+      (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2) := by
+  rw [cubicResidualFullModeAmplitude, if_neg hh]
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  field_simp
+
+theorem kernelCuspIntervalFourier_residue_full (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    kernelCuspIntervalFourier a b ha ρ h cubicEisensteinResidue =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+        ∫ v in Set.Icc a b, ρ v * (cubicResidualFullModeAmplitude v h / (v : ℂ) ^ 3) := by
+  by_cases hh : h = 0
+  · subst h
+    rw [kernelCuspIntervalFourier_zero_residue a b ha ρ, ← mul_assoc,
+      cuspIntervalMellin, ← integral_const_mul, ← integral_const_mul]
+    apply setIntegral_congr_fun measurableSet_Icc
+    intro v hv
+    dsimp only
+    rw [cubicResidualFullModeAmplitude_zero_density v (ha.trans_le hv.1)]
+    ring
+  · rw [kernelCuspIntervalFourier_residue_bessel a b ha ρ h hh,
+      ← integral_const_mul, ← integral_const_mul]
+    apply setIntegral_congr_fun measurableSet_Icc
+    intro v hv
+    dsimp only
+    rw [cubicResidualFullModeAmplitude_nonzero_density v (ha.trans_le hv.1) h hh]
+    ring
+
+
+def cubicResidualNonzeroAmplitude (v : ℝ) (h : O) : ℂ :=
+  if h = 0 then 0 else cubicResidualFullModeAmplitude v h
+
+lemma cubicResidualNonzeroTerm_eq_amplitude (v : ℝ) (hv : 0 < v) (h : O) (z : ℂ) :
+    cubicResidualNonzeroTerm h (v, z) = cubicResidualNonzeroAmplitude v h * tracePhase (cuspFrequency h * z) := by
+  by_cases hh : h = 0
+  · simp only [cubicResidualNonzeroTerm, cubicResidualNonzeroAmplitude, if_pos hh, zero_mul]
+  · rw [cubicResidualNonzeroTerm_bessel h hh v hv z, cubicResidualNonzeroAmplitude,
+      if_neg hh, cubicResidualFullModeAmplitude, if_neg hh]
+
+lemma integral_cusp_character_product (h k : O) :
+    (∫ z in periodDomain, tracePhase (cuspFrequency h * z) * tracePhase (-cuspFrequency k * z)) =
+      if h = k then ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) else 0 := by
+  have hphase (z : ℂ) : tracePhase (cuspFrequency h * z) * tracePhase (-cuspFrequency k * z) =
+      tracePhase (-cuspFrequency (k - h) * z) := by
+    rw [← AddChar.map_add_eq_mul]
+    congr 1
+    unfold cuspFrequency
+    rw [map_sub]
+    ring
+  simp_rw [hphase]
+  simpa only [sub_eq_zero, eq_comm] using integral_cusp_character (k - h)
+
+/-- Normal convergence permits coefficient extraction term by term. -/
+theorem cubicResidualNonzeroSeries_fourier (v : ℝ) (hv : 0 < v) (k : O) :
+    (∫ z in periodDomain, cubicResidualNonzeroSeries (v, z) * tracePhase (-cuspFrequency k * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicResidualNonzeroAmplitude v k := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  letI : IsFiniteMeasure (volume.restrict periodDomain) := isFiniteMeasure_restrict.mpr (by
+    rw [periodDomain_volume]
+    exact ENNReal.ofReal_ne_top)
+  let f : O → ℂ → ℂ := fun h z => cubicResidualNonzeroAmplitude v h *
+    tracePhase (cuspFrequency h * z) * tracePhase (-cuspFrequency k * z)
+  have hc (h : O) : Continuous (f h) := by
+    change Continuous (fun z : ℂ => cubicResidualNonzeroAmplitude v h *
+      Complex.exp (2 * Real.pi * Complex.I * ((cuspFrequency h * z) + starRingEnd ℂ (cuspFrequency h * z))) *
+      Complex.exp (2 * Real.pi * Complex.I * ((-cuspFrequency k * z) + starRingEnd ℂ (-cuspFrequency k * z))))
+    fun_prop
+  obtain ⟨C, hC, hbound⟩ := cubicResidualNonzeroTerm_strip_bound v v hv le_rfl
+  have hb (h : O) (z : ℂ) : ‖f h z‖ ≤ C * Real.exp (-(Real.pi * v) * ‖cuspFrequency h‖) := by
+    dsimp only [f]
+    rw [← cubicResidualNonzeroTerm_eq_amplitude v hv h z, norm_mul, tracePhase_norm, mul_one]
+    exact hbound h (v, z) ⟨le_rfl, le_rfl⟩
+  have hi (h : O) : IntegrableOn (f h) periodDomain :=
+    (integrable_const (C * Real.exp (-(Real.pi * v) * ‖cuspFrequency h‖))).mono'
+      (hc h).aestronglyMeasurable (Eventually.of_forall (hb h))
+  have hnorm (h : O) : (∫ z in periodDomain, ‖f h z‖) ≤
+      volume.real periodDomain * (C * Real.exp (-(Real.pi * v) * ‖cuspFrequency h‖)) := by
+    simpa only [setIntegral_const, smul_eq_mul] using
+      integral_mono_ae (hi h).norm (integrable_const (C * Real.exp (-(Real.pi * v) * ‖cuspFrequency h‖)))
+        (Eventually.of_forall (hb h))
+  have hsum : Summable (fun h : O => ∫ z in periodDomain, ‖f h z‖) :=
+    Summable.of_nonneg_of_le (fun h => integral_nonneg (fun z => norm_nonneg _)) hnorm
+      (((summable_exp_neg_cuspFrequency_norm (Real.pi * v) (mul_pos Real.pi_pos hv)).mul_left C).mul_left
+        (volume.real periodDomain))
+  have hterm (h : O) : (∫ z in periodDomain, f h z) =
+      if h = k then ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicResidualNonzeroAmplitude v h else 0 := by
+    dsimp only [f]
+    simp_rw [mul_assoc]
+    rw [integral_const_mul, integral_cusp_character_product]
+    split_ifs <;> ring
+  calc
+    _ = ∫ z in periodDomain, ∑' h : O, f h z := by
+      apply integral_congr_ae
+      exact Eventually.of_forall (fun z => by
+        change (∑' h : O, cubicResidualNonzeroTerm h (v, z)) * tracePhase (-cuspFrequency k * z) = _
+        rw [← tsum_mul_right]
+        exact tsum_congr (fun h => by rw [cubicResidualNonzeroTerm_eq_amplitude v hv h z]))
+    _ = ∑' h : O, ∫ z in periodDomain, f h z := (integral_tsum_of_summable_integral_norm hi hsum).symm
+    _ = ∑' h : O, if h = k then ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicResidualNonzeroAmplitude v h else 0 :=
+      tsum_congr hterm
+    _ = _ := by simp
+
+/-- The continuous Fourier reconstruction with its arithmetic constant mode. -/
+def cubicResidualFunction (w : HyperbolicSpace) : ℂ :=
+  (3 * (Real.pi : ℂ)) * constantArithmeticResidue * (hyperbolicHeight w : ℂ) ^ (2 / 3 : ℂ) +
+    cubicResidualNonzeroSeries (hyperbolicHeight w, hyperbolicHorizontal w)
+
+theorem cubicResidualFunction_continuous : Continuous cubicResidualFunction := by
+  apply continuous_iff_continuousAt.mpr
+  intro w
+  have hpower := (Complex.continuousAt_ofReal_cpow_const (hyperbolicHeight w) (2 / 3 : ℂ)
+    (Or.inr (hyperbolicHeight_pos w).ne')).comp hyperbolicHeight_continuous.continuousAt
+  have hseries := (cubicResidualNonzeroSeries_continuousOn.continuousAt
+    ((isOpen_lt continuous_const continuous_fst).mem_nhds (hyperbolicHeight_pos w))).comp
+      (hyperbolicHeight_continuous.continuousAt.prodMk hyperbolicHorizontal_continuous.continuousAt)
+  exact (continuousAt_const.mul hpower).add hseries
+
+lemma periodDomain_continuous_integrable (f : ℂ → ℂ) (hf : Continuous f) :
+    IntegrableOn f periodDomain := by
+  apply (hf.continuousOn.integrableOn_compact
+    (isCompact_closedBall (0 : ℂ) (∑ i, ‖periodBasis i‖))).mono_set
+  intro z hz
+  simpa only [Metric.mem_closedBall, dist_zero_right] using norm_mem_periodDomain z hz
+
+lemma cubicResidualNonzeroSeries_height_continuous (v : ℝ) (hv : 0 < v) :
+    Continuous (fun z : ℂ => cubicResidualNonzeroSeries (v, z)) := by
+  apply continuous_iff_continuousAt.mpr
+  intro z
+  exact (cubicResidualNonzeroSeries_continuousOn.continuousAt
+    ((isOpen_lt continuous_const continuous_fst).mem_nhds hv)).comp
+      (f := fun z : ℂ => (v, z)) (by fun_prop)
+
+theorem cubicResidualFunction_fourier (v : ℝ) (hv : 0 < v) (k : O) :
+    (∫ z in periodDomain, cubicResidualFunction (upperPoint z v hv) * tracePhase (-cuspFrequency k * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicResidualFullModeAmplitude v k := by
+  have hphase : Continuous (fun z : ℂ => tracePhase (-cuspFrequency k * z)) := by
+    change Continuous (fun z : ℂ => Complex.exp (2 * Real.pi * Complex.I *
+      ((-cuspFrequency k * z) + starRingEnd ℂ (-cuspFrequency k * z))))
+    fun_prop
+  simp only [cubicResidualFunction, hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint, add_mul]
+  have hconstant : IntegrableOn (fun z : ℂ =>
+      3 * (Real.pi : ℂ) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ) *
+        tracePhase (-cuspFrequency k * z)) periodDomain :=
+    periodDomain_continuous_integrable _ (continuous_const.mul hphase)
+  have hseries : IntegrableOn (fun z : ℂ =>
+      cubicResidualNonzeroSeries (v, z) * tracePhase (-cuspFrequency k * z)) periodDomain := by
+    simpa only [Pi.mul_def] using periodDomain_continuous_integrable _
+      ((cubicResidualNonzeroSeries_height_continuous v hv).mul hphase)
+  rw [integral_add hconstant hseries,
+    integral_const_mul, integral_cusp_character, cubicResidualNonzeroSeries_fourier v hv k]
+  by_cases hk : k = 0
+  · simp only [hk, cubicResidualNonzeroAmplitude, cubicResidualFullModeAmplitude,
+      ite_true, mul_zero, add_zero]
+    ring
+  · simp only [if_neg hk, cubicResidualNonzeroAmplitude, mul_zero, zero_add]
+
+theorem cubicResidualFunction_weightedFourier (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    (∫ w in cuspPeriodStrip a b, cubicResidualFunction w * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+        ∫ v in Set.Icc a b, ρ v * (cubicResidualFullModeAmplitude v h / (v : ℂ) ^ 3) := by
+  let g : HyperbolicSpace → ℂ := fun w => cubicResidualFunction w * cuspWeightedFourierPhase ρ h w
+  have hg : Continuous g := cubicResidualFunction_continuous.mul (cuspWeightedFourierPhase_continuous ρ h)
+  rw [cuspInterval_integral_coordinates a b ha g hg.aestronglyMeasurable
+    (cuspInterval_continuous_integrable a b ha g hg), ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  have hvp := ha.trans_le hv.1
+  dsimp only
+  simp_rw [g, cuspCoordinateLift_positive v _ hvp, cuspWeightedFourierPhase,
+    hyperbolicHeight_upperPoint, cuspFourierPhase, hyperbolicHorizontal_upperPoint]
+  have hinner : (∫ z in periodDomain, cubicResidualFunction (upperPoint z v hvp) *
+      (ρ v * tracePhase (-cuspFrequency h * z))) =
+      ρ v * ∫ z in periodDomain, cubicResidualFunction (upperPoint z v hvp) * tracePhase (-cuspFrequency h * z) := by
+    rw [← integral_const_mul]
+    apply integral_congr_ae
+    exact Eventually.of_forall (fun z => by ring)
+  rw [hinner, cubicResidualFunction_fourier v hvp h]
+  ring
+
+theorem cubicEisensteinResidue_weightedFourier_eq (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    kernelCuspIntervalFourier a b ha ρ h cubicEisensteinResidue =
+      ∫ w in cuspPeriodStrip a b, cubicResidualFunction w * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  rw [kernelCuspIntervalFourier_residue_full, cubicResidualFunction_weightedFourier a b ha]
+
+lemma kernelCuspCoordinates_memLp (a b : ℝ) (ha : 0 < a) (F : KernelQuotientL2) :
+    MemLp (fun q : ℝ × ℂ => F (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift q))) 2
+      ((volume.restrict (Set.Icc a b)).prod (volume.restrict periodDomain)) := by
+  let S := spatialComplexSplit ⁻¹' (Set.Icc a b ×ˢ periodDomain)
+  have hS : MeasurableSet S := spatialComplexSplit.measurable
+    (measurableSet_Icc.prod periodDomain_measurable)
+  have hpos : S ⊆ euclideanUpperHalf := fun p hp => ha.trans_le hp.1.1
+  have hpre : hyperbolicEuclideanCoordinates ⁻¹' S = cuspPeriodStrip a b := by
+    ext w
+    change spatialComplexSplit (hyperbolicEuclideanCoordinates w) ∈ (Set.Icc a b ×ˢ periodDomain) ↔ _
+    rw [spatialComplexSplit_coordinates]
+    exact and_comm
+  have hm := euclideanToHyperbolic_measurePreserving_on S hS
+  rw [hpre] at hm
+  have hF := (MemLp.ae_eq (kernelCuspIntervalPullback_ae a b ha F)
+    (MeasureTheory.Lp.memLp (kernelCuspIntervalPullback a b ha F))).comp_measurePreserving hm
+  have hvol := euclideanVolume_le_heightCube_hyperbolic S hS hpos (max 1 b) (by positivity)
+    (fun p hp => hp.1.2.trans (le_max_right 1 b))
+  have hFE := (hF.smul_measure (c := ENNReal.ofReal ((max 1 b) ^ 3)) ENNReal.ofReal_ne_top).mono_measure hvol
+  have hsplit := spatialComplexSplit_preserves_volume.restrict_preimage
+    (s := Set.Icc a b ×ˢ periodDomain) (measurableSet_Icc.prod periodDomain_measurable)
+  have hpull := hFE.comp_measurePreserving hsplit.symm
+  simpa only [Measure.prod_restrict, Measure.volume_eq_prod, Function.comp_def, S, cuspCoordinateLift] using hpull
+
+lemma kernelCuspSections_memLp (a b : ℝ) (ha : 0 < a) (F : KernelQuotientL2) :
+    ∀ᵐ v ∂volume.restrict (Set.Icc a b),
+      MemLp (fun z : ℂ => F (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z)))) 2
+        (volume.restrict periodDomain) := by
+  have hf := kernelCuspCoordinates_memLp a b ha F
+  filter_upwards [hf.aestronglyMeasurable.prodMk_left, hf.norm.integrable_sq.prod_right_ae] with v hv hi
+  exact (memLp_two_iff_integrable_sq_norm hv).mpr hi
+
+lemma kernelCuspFourierCoordinate_integrable (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (F : KernelQuotientL2) :
+    IntegrableOn (fun q : ℝ × ℂ =>
+      (F (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift q)) *
+        cuspWeightedFourierPhase ρ h (cuspCoordinateLift q)) / (q.1 : ℂ) ^ 3)
+      (Set.Icc a b ×ˢ periodDomain) := by
+  letI : IsFiniteMeasure (volume.restrict periodDomain) := isFiniteMeasure_restrict.mpr (by
+    rw [periodDomain_volume]
+    exact ENNReal.ofReal_ne_top)
+  have hF := (kernelCuspCoordinates_memLp a b ha F).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+  have hcoord : Measurable cuspCoordinateLift :=
+    euclideanToHyperbolic_measurable.comp spatialComplexSplit.symm.measurable
+  have hm : Measurable (fun q : ℝ × ℂ =>
+      cuspWeightedFourierPhase ρ h (cuspCoordinateLift q) / (q.1 : ℂ) ^ 3) :=
+    ((cuspWeightedFourierPhase_continuous ρ h).measurable.comp hcoord).div (by fun_prop)
+  have hb : ∀ᵐ q ∂((volume.restrict (Set.Icc a b)).prod (volume.restrict periodDomain)),
+      ‖cuspWeightedFourierPhase ρ h (cuspCoordinateLift q) / (q.1 : ℂ) ^ 3‖ ≤ ‖ρ‖ / a ^ 3 := by
+    rw [Measure.prod_restrict, ← Measure.volume_eq_prod]
+    filter_upwards [ae_restrict_mem (measurableSet_Icc.prod periodDomain_measurable)] with q hq
+    have hpos : 0 < q.1 := ha.trans_le hq.1.1
+    rw [norm_div, norm_pow, Complex.norm_of_nonneg hpos.le]
+    exact (div_le_div_of_nonneg_right (cuspWeightedFourierPhase_bound ρ h (cuspCoordinateLift q))
+      (by positivity)).trans (div_le_div_of_nonneg_left (norm_nonneg _) (by positivity)
+        (pow_le_pow_left₀ ha.le hq.1.1 3))
+  simpa only [IntegrableOn, Measure.prod_restrict, ← Measure.volume_eq_prod, mul_div_assoc] using
+    hF.mul_bdd hm.aestronglyMeasurable hb
+
+/-- The slice coefficient includes the hyperbolic height density. -/
+def kernelCuspSliceCoefficient (F : KernelQuotientL2) (h : O) (v : ℝ) : ℂ :=
+  (∫ z in periodDomain, F (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z))) *
+    tracePhase (-cuspFrequency h * z)) / (v : ℂ) ^ 3
+
+lemma kernelCuspIntervalFourier_eq_slice_integral (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (F : KernelQuotientL2) :
+    kernelCuspIntervalFourier a b ha ρ h F =
+      ∫ v in Set.Icc a b, ρ v * kernelCuspSliceCoefficient F h v := by
+  rw [kernelCuspIntervalFourier_integral]
+  have hg : StronglyMeasurable (fun w =>
+      F (integralOrbitProjection globalKubotaKernel w) * cuspWeightedFourierPhase ρ h w) :=
+    ((MeasureTheory.Lp.stronglyMeasurable F).comp_measurable (measurable_integralOrbitProjection _)).mul
+      (cuspWeightedFourierPhase_continuous ρ h).stronglyMeasurable
+  rw [cuspInterval_integral_coordinates a b ha _ hg.aestronglyMeasurable
+    (kernelCuspFourierCoordinate_integrable a b ha ρ h F)]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  have hpos := ha.trans_le hv.1
+  simp only [kernelCuspSliceCoefficient]
+  rw [← mul_div_assoc]
+  congr 1
+  rw [← integral_const_mul]
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun z => by
+    dsimp only
+    rw [cuspWeightedFourierPhase, cuspFourierPhase, cuspCoordinateLift_positive v z hpos,
+      hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint]
+    ring)
+
+lemma kernelCuspSliceCoefficient_integrable (a b : ℝ) (ha : 0 < a)
+    (h : O) (F : KernelQuotientL2) :
+    IntegrableOn (kernelCuspSliceCoefficient F h) (Set.Icc a b) := by
+  have hi := kernelCuspFourierCoordinate_integrable a b ha (BoundedContinuousFunction.const ℝ 1) h F
+  rw [IntegrableOn, Measure.volume_eq_prod, ← Measure.prod_restrict] at hi
+  apply hi.integral_prod_left.congr
+  filter_upwards [ae_restrict_mem measurableSet_Icc] with v hv
+  have hpos := ha.trans_le hv.1
+  rw [integral_div, kernelCuspSliceCoefficient]
+  apply congrArg (fun c : ℂ => c / (v : ℂ) ^ 3)
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun z => by
+    dsimp only
+    rw [cuspWeightedFourierPhase, cuspFourierPhase, cuspCoordinateLift_positive v z hpos,
+      hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint]
+    simp only [BoundedContinuousFunction.const_apply, one_mul])
+
+lemma interval_ae_eq_of_boundedContinuous_tests (a b : ℝ) (f g : ℝ → ℂ)
+    (hf : IntegrableOn f (Set.Icc a b)) (hg : IntegrableOn g (Set.Icc a b))
+    (heq : ∀ ρ : BoundedContinuousFunction ℝ ℂ,
+      (∫ v in Set.Icc a b, ρ v * f v) = ∫ v in Set.Icc a b, ρ v * g v) :
+    f =ᵐ[volume.restrict (Set.Icc a b)] g := by
+  apply ae_eq_of_integral_contDiff_smul_eq hf.locallyIntegrable hg.locallyIntegrable
+  intro test htest hsupp
+  obtain ⟨C, hC⟩ := hsupp.exists_bound_of_continuous htest.continuous
+  let ρ : BoundedContinuousFunction ℝ ℂ :=
+    BoundedContinuousFunction.ofNormedAddCommGroup (fun v => (test v : ℂ))
+      (Complex.continuous_ofReal.comp htest.continuous) C (fun v => by
+        simpa only [Complex.norm_real, Real.norm_eq_abs] using hC v)
+  have hh := heq ρ
+  change (∫ v in Set.Icc a b, (test v : ℂ) * f v) = ∫ v in Set.Icc a b, (test v : ℂ) * g v at hh
+  simpa only [Complex.real_smul] using hh
+
+lemma cubicResidualFullMode_density_integrable (a b : ℝ) (ha : 0 < a) (h : O) :
+    IntegrableOn (fun v : ℝ => cubicResidualFullModeAmplitude v h / (v : ℂ) ^ 3) (Set.Icc a b) := by
+  by_cases hh : h = 0
+  · subst h
+    have hi : IntegrableOn (fun v : ℝ => (3 * (Real.pi : ℂ)) * constantArithmeticResidue *
+        (v : ℂ) ^ (-(4 / 3 : ℂ) - 1)) (Set.Icc a b) := by
+      apply ContinuousOn.integrableOn_Icc
+      intro v hv
+      exact (continuousAt_const.mul (Complex.continuousAt_ofReal_cpow_const v _
+        (Or.inr (ha.trans_le hv.1).ne'))).continuousWithinAt
+    apply hi.congr
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with v hv
+    exact (cubicResidualFullModeAmplitude_zero_density v (ha.trans_le hv.1)).symm
+  · apply ((cubicResidualBesselDensity_integrable a b ha h hh).const_mul
+      (cubicResidualFourierCoefficient h)).congr
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with v hv
+    exact (cubicResidualFullModeAmplitude_nonzero_density v (ha.trans_le hv.1) h hh).symm
+
+theorem cubicEisensteinResidue_slice_coefficient_ae (a b : ℝ) (ha : 0 < a) (h : O) :
+    kernelCuspSliceCoefficient cubicEisensteinResidue h =ᵐ[volume.restrict (Set.Icc a b)]
+      (fun v => ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * (cubicResidualFullModeAmplitude v h / (v : ℂ) ^ 3)) := by
+  apply interval_ae_eq_of_boundedContinuous_tests a b _ _
+    (kernelCuspSliceCoefficient_integrable a b ha h cubicEisensteinResidue)
+    ((cubicResidualFullMode_density_integrable a b ha h).const_mul _)
+  intro ρ
+  rw [← kernelCuspIntervalFourier_eq_slice_integral a b ha ρ h cubicEisensteinResidue,
+    kernelCuspIntervalFourier_residue_full, ← integral_const_mul]
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun v => by ring)
+
+theorem cubicEisensteinResidue_all_fourier_integrals_ae (a b : ℝ) (ha : 0 < a) :
+    ∀ᵐ v ∂volume.restrict (Set.Icc a b), ∀ h : O,
+      (∫ z in periodDomain, cubicEisensteinResidue
+        (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z))) * tracePhase (-cuspFrequency h * z)) =
+        ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cubicResidualFullModeAmplitude v h := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  have hall := ae_all_iff.mpr (fun h => cubicEisensteinResidue_slice_coefficient_ae a b ha h)
+  filter_upwards [hall, ae_restrict_mem measurableSet_Icc] with v hv hvmem
+  intro h
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (ha.trans_le hvmem.1).ne'
+  have he := hv h
+  unfold kernelCuspSliceCoefficient at he
+  rw [← mul_div_assoc] at he
+  exact (div_left_inj' (pow_ne_zero 3 hv0)).mp he
+
+open scoped NNReal Pointwise
+
+/-- Real coordinates for the cusp lattice and its dual characters. -/
+def periodVector : (Fin 2 → ℝ) ≃L[ℝ] ℂ := periodBasis.equivFunL.symm
+
+def periodTorus (z : ℂ) : UnitAddTorus (Fin 2) :=
+  fun i => (periodBasis.equivFunL z i : UnitAddCircle)
+
+def periodFrequencyEquiv : (Fin 2 → ℤ) ≃ O :=
+  (finTwoArrowEquiv ℤ).trans
+    (({ toFun := fun z => (z.1 + z.2, z.1)
+        invFun := fun z => (z.2, z.1 - z.2)
+        left_inv := by rintro ⟨k, l⟩; simp
+        right_inv := by rintro ⟨k, l⟩; simp } : (ℤ × ℤ) ≃ (ℤ × ℤ)).trans
+      Coordinates.coordinateEquiv.symm)
+
+lemma periodVector_apply (x : Fin 2 → ℝ) :
+    periodVector x = 3 * ((x 0 : ℂ) + (x 1 : ℂ) * ringComplex omega) := by
+  change periodBasis.equivFun.symm x = _
+  rw [Module.Basis.equivFun_symm_apply, Fin.sum_univ_two, periodBasis_zero, periodBasis_one]
+  simp only [Complex.real_smul]
+  ring
+
+lemma periodTorus_periodVector (x : Fin 2 → ℝ) :
+    periodTorus (periodVector x) = fun i => (x i : UnitAddCircle) := by
+  change (fun i => ((periodBasis.equivFunL (periodBasis.equivFunL.symm x)) i : UnitAddCircle)) = _
+  rw [periodBasis.equivFunL.apply_symm_apply]
+
+lemma periodVector_character (n : Fin 2 → ℤ) (x : Fin 2 → ℝ) :
+    tracePhase (cuspFrequency (periodFrequencyEquiv n) * periodVector x) =
+      Complex.exp (2 * Real.pi * Complex.I *
+        ((n 0 : ℂ) * (x 0 : ℂ) + (n 1 : ℂ) * (x 1 : ℂ))) := by
+  have hd : ringComplex traceLambda ≠ 0 := ringComplex_ne_zero traceLambda_ne_zero
+  have harg : cuspFrequency (periodFrequencyEquiv n) * periodVector x =
+      (((n 0 + n 1 : ℤ) : ℂ) + (n 0 : ℂ) * ringComplex omega) *
+        ((x 0 : ℂ) + (x 1 : ℂ) * ringComplex omega) / ringComplex traceLambda := by
+    change cuspFrequency (Coordinates.eval (n 0 + n 1) (n 0)) * periodVector x = _
+    rw [cuspFrequency, periodVector_apply, ringComplex_eval]
+    field_simp
+  rw [harg]
+  change Complex.exp (2 * Real.pi * Complex.I * (_ + starRingEnd ℂ _)) = _
+  congr 1
+  rw [map_div₀, complex_traceLambda_conjugate]
+  simp only [map_add, map_mul, map_intCast, Complex.conj_ofReal, complex_omega_conjugate]
+  field_simp [hd]
+  simp only [traceLambda, map_add, map_mul, map_one, map_ofNat]
+  push_cast
+  ring
+
+lemma periodTorus_mFourier (n : Fin 2 → ℤ) (z : ℂ) :
+    UnitAddTorus.mFourier n (periodTorus z) =
+      tracePhase (cuspFrequency (periodFrequencyEquiv n) * z) := by
+  obtain ⟨x, rfl⟩ := periodVector.surjective z
+  rw [periodTorus_periodVector, periodVector_character]
+  simp only [UnitAddTorus.mFourier, ContinuousMap.coe_mk, Fin.prod_univ_two,
+    fourier_coe_apply, Complex.ofReal_one, div_one]
+  rw [← Complex.exp_add]
+  congr 1
+  ring
+
+lemma periodFrequencyEquiv_neg (n : Fin 2 → ℤ) :
+    periodFrequencyEquiv (-n) = -periodFrequencyEquiv n := by
+  apply ringComplex_injective
+  change ringComplex (Coordinates.eval (-n 0 + -n 1) (-n 0)) =
+    ringComplex (-Coordinates.eval (n 0 + n 1) (n 0))
+  rw [map_neg, ringComplex_eval, ringComplex_eval]
+  push_cast
+  ring
+
+/-- Haar uniqueness supplies the positive coordinate density; its value is irrelevant to uniqueness. -/
+def periodCovolumeDensity : ℝ≥0 :=
+  Measure.addHaarScalarFactor (Measure.map periodVector volume) (volume : Measure ℂ)
+
+lemma periodCovolumeDensity_pos : 0 < periodCovolumeDensity :=
+  Measure.addHaarScalarFactor_pos_of_isAddHaarMeasure _ _
+
+lemma periodVector_map_volume :
+    Measure.map periodVector volume = (periodCovolumeDensity : ℝ≥0∞) • volume :=
+  Measure.isAddLeftInvariant_eq_smul _ _
+
+def periodCube : Set (Fin 2 → ℝ) := {x | ∀ i, x i ∈ Set.Ico 0 1}
+
+def periodIocCube : Set (Fin 2 → ℝ) := {x | ∀ i, x i ∈ Set.Ioc 0 (0 + 1)}
+
+lemma periodVector_preimage_domain : periodVector ⁻¹' periodDomain = periodCube := by
+  ext x
+  change (∀ i, periodBasis.repr (periodBasis.equivFun.symm x) i ∈ Set.Ico 0 1) ↔ _
+  simp only [← Module.Basis.equivFun_apply, periodBasis.equivFun.apply_symm_apply]
+  rfl
+
+lemma periodDomain_integral_coordinates (f : ℂ → ℂ) :
+    (periodCovolumeDensity : ℝ) • (∫ z in periodDomain, f z) =
+      ∫ x in periodCube, f (periodVector x) := by
+  have h := periodVector.toHomeomorph.toMeasurableEquiv.measurableEmbedding.setIntegral_map
+    f periodDomain (μ := (volume : Measure (Fin 2 → ℝ)))
+  change (∫ z in periodDomain, f z ∂Measure.map periodVector volume) =
+    ∫ x in periodVector ⁻¹' periodDomain, f (periodVector x) at h
+  rw [periodVector_map_volume, Measure.restrict_smul, integral_smul_measure,
+    ENNReal.coe_toReal, periodVector_preimage_domain] at h
+  exact h
+
+lemma periodIocCube_measurable : MeasurableSet periodIocCube :=
+  MeasurableSet.univ_pi' (fun _ => measurableSet_Ioc)
+
+lemma periodCube_ae_Ioc : periodCube =ᵐ[volume] periodIocCube := by
+  rw [volume_pi]
+  have h := Measure.ae_eq_set_pi (μ := fun _ : Fin 2 => (volume : Measure ℝ))
+    (I := Set.univ) (s := fun _ => Set.Ico (0 : ℝ) 1) (t := fun _ => Set.Ioc (0 : ℝ) 1)
+    (fun _ _ => Ico_ae_eq_Ioc)
+  simpa only [Set.pi, Set.mem_univ, forall_true_left, periodCube, periodIocCube, zero_add] using h
+
+section PeriodFourierCompleteness
+
+local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+  inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
+local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+  inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
+
+lemma periodTorus_integral (f : UnitAddTorus (Fin 2) → ℂ) :
+    (∫ t, f t) = (periodCovolumeDensity : ℝ) • (∫ z in periodDomain, f (periodTorus z)) := by
+  rw [periodDomain_integral_coordinates, UnitAddTorus.integral_preimage f (fun _ => 0)]
+  simp only [periodTorus_periodVector]
+  exact setIntegral_congr_set periodCube_ae_Ioc.symm
+
+lemma periodTorus_fourierCoeff (f : UnitAddTorus (Fin 2) → ℂ) (n : Fin 2 → ℤ) :
+    UnitAddTorus.mFourierCoeff f n = (periodCovolumeDensity : ℝ) •
+      (∫ z in periodDomain, f (periodTorus z) *
+        tracePhase (-cuspFrequency (periodFrequencyEquiv n) * z)) := by
+  rw [UnitAddTorus.mFourierCoeff, periodTorus_integral]
+  congr 1
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun z => by
+    dsimp only
+    rw [periodTorus_mFourier, periodFrequencyEquiv_neg]
+    simp only [cuspFrequency, map_neg, neg_div, smul_eq_mul]
+    exact mul_comm _ _)
+
+/-- A measurable choice of representatives transports arbitrary L² functions to the torus. -/
+def periodSection (t : UnitAddTorus (Fin 2)) : ℂ :=
+  periodVector ((UnitAddTorus.measurableEquivPiIoc (fun _ : Fin 2 => (0 : ℝ)) t).val)
+
+lemma periodSection_measurableEmbedding : MeasurableEmbedding periodSection :=
+  periodVector.toHomeomorph.toMeasurableEquiv.measurableEmbedding.comp
+    ((MeasurableEmbedding.subtype_coe periodIocCube_measurable).comp
+      (UnitAddTorus.measurableEquivPiIoc (fun _ : Fin 2 => (0 : ℝ))).measurableEmbedding)
+
+lemma periodTorus_measurable : Measurable periodTorus := by
+  apply measurable_pi_iff.mpr
+  intro i
+  exact AddCircle.measurable_mk'.comp
+    ((measurable_pi_apply i).comp periodBasis.equivFunL.continuous.measurable)
+
+lemma periodTorus_section (t : UnitAddTorus (Fin 2)) : periodTorus (periodSection t) = t := by
+  rw [periodSection, periodTorus_periodVector]
+  exact (UnitAddTorus.measurableEquivPiIoc (fun _ : Fin 2 => (0 : ℝ))).symm_apply_apply t
+
+lemma periodSection_measurePreserving :
+    MeasurePreserving periodSection volume
+      ((periodCovolumeDensity : ℝ≥0∞) • volume.restrict periodDomain) := by
+  have hvector : MeasurePreserving periodVector (volume.restrict periodIocCube)
+      ((periodCovolumeDensity : ℝ≥0∞) • volume.restrict periodDomain) := by
+    refine ⟨periodVector.continuous.measurable, ?_⟩
+    rw [← Measure.restrict_congr_set periodCube_ae_Ioc, ← periodVector_preimage_domain,
+      ← Measure.restrict_map periodVector.continuous.measurable periodDomain_measurable,
+      periodVector_map_volume, Measure.restrict_smul]
+  exact hvector.comp ((measurePreserving_subtype_coe periodIocCube_measurable).comp
+    (UnitAddTorus.measurePreserving_equivPiIoc (fun _ : Fin 2 => (0 : ℝ))))
+
+lemma periodTorus_measurePreserving :
+    MeasurePreserving periodTorus ((periodCovolumeDensity : ℝ≥0∞) • volume.restrict periodDomain) volume := by
+  refine ⟨periodTorus_measurable, ?_⟩
+  rw [← periodSection_measurePreserving.map_eq,
+    Measure.map_map periodTorus_measurable periodSection_measurableEmbedding.measurable]
+  have he : periodTorus ∘ periodSection = id := funext periodTorus_section
+  rw [he, Measure.map_id]
+
+lemma periodSection_torus_ae :
+    (fun z => periodSection (periodTorus z)) =ᵐ[volume.restrict periodDomain] (fun z : ℂ => z) := by
+  have hc : (periodCovolumeDensity : ℝ≥0∞) ≠ 0 := by
+    exact_mod_cast periodCovolumeDensity_pos.ne'
+  apply (Measure.ae_ennreal_smul_measure_iff hc).mp
+  rw [← periodSection_measurePreserving.map_eq]
+  apply periodSection_measurableEmbedding.ae_map_iff.mpr
+  exact Eventually.of_forall (fun t => by dsimp only; rw [periodTorus_section])
+
+lemma periodSection_memLp (f : ℂ → ℂ) (hf : MemLp f 2 (volume.restrict periodDomain)) :
+    MemLp (f ∘ periodSection) 2 (volume : Measure (UnitAddTorus (Fin 2))) :=
+  (hf.smul_measure (c := (periodCovolumeDensity : ℝ≥0∞)) (by simp)).comp_measurePreserving
+    periodSection_measurePreserving
+
+def periodTorusL2Lift (f : ℂ → ℂ) (hf : MemLp f 2 (volume.restrict periodDomain)) :
+    Lp ℂ 2 (volume : Measure (UnitAddTorus (Fin 2))) :=
+  (periodSection_memLp f hf).toLp (f ∘ periodSection)
+
+lemma periodTorusL2Lift_pullback (f : ℂ → ℂ) (hf : MemLp f 2 (volume.restrict periodDomain)) :
+    (fun z => periodTorusL2Lift f hf (periodTorus z)) =ᵐ[volume.restrict periodDomain] f := by
+  have hc : (periodCovolumeDensity : ℝ≥0∞) ≠ 0 := by
+    exact_mod_cast periodCovolumeDensity_pos.ne'
+  have he := periodTorus_measurePreserving.quasiMeasurePreserving.ae_eq_comp
+    (MemLp.coeFn_toLp (periodSection_memLp f hf))
+  have he' := (Measure.ae_ennreal_smul_measure_iff hc).mp he
+  filter_upwards [he', periodSection_torus_ae] with z hz hsec
+  change periodTorusL2Lift f hf (periodTorus z) = f (periodSection (periodTorus z)) at hz
+  rwa [hsec] at hz
+
+/-- All cusp-lattice Fourier coefficients determine an L² function on one period cell. -/
+theorem periodDomain_L2_ext (f g : ℂ → ℂ)
+    (hf : MemLp f 2 (volume.restrict periodDomain))
+    (hg : MemLp g 2 (volume.restrict periodDomain))
+    (heq : ∀ h : O,
+      (∫ z in periodDomain, f z * tracePhase (-cuspFrequency h * z)) =
+        ∫ z in periodDomain, g z * tracePhase (-cuspFrequency h * z)) :
+    f =ᵐ[volume.restrict periodDomain] g := by
+  have hlift : periodTorusL2Lift f hf = periodTorusL2Lift g hg := by
+    apply UnitAddTorus.mFourierBasis.repr.injective
+    ext n
+    rw [UnitAddTorus.mFourierBasis_repr, UnitAddTorus.mFourierBasis_repr,
+      periodTorus_fourierCoeff, periodTorus_fourierCoeff]
+    congr 1
+    calc
+      _ = ∫ z in periodDomain, f z * tracePhase (-cuspFrequency (periodFrequencyEquiv n) * z) :=
+        integral_congr_ae ((periodTorusL2Lift_pullback f hf).mul (Eventually.of_forall (fun _ => rfl)))
+      _ = ∫ z in periodDomain, g z * tracePhase (-cuspFrequency (periodFrequencyEquiv n) * z) := heq _
+      _ = _ := integral_congr_ae
+        ((periodTorusL2Lift_pullback g hg).symm.mul (Eventually.of_forall (fun _ => rfl)))
+  filter_upwards [periodTorusL2Lift_pullback f hf, periodTorusL2Lift_pullback g hg] with z hz hz'
+  rw [← hz, ← hz', hlift]
+
+end PeriodFourierCompleteness
+
+lemma cubicResidualFunction_height_continuous (v : ℝ) (hv : 0 < v) :
+    Continuous (fun z : ℂ => cubicResidualFunction (upperPoint z v hv)) := by
+  simpa only [cubicResidualFunction, hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint,
+    Pi.add_def] using
+    continuous_const.add (cubicResidualNonzeroSeries_height_continuous v hv)
+
+lemma cubicResidualFunction_height_memLp (v : ℝ) (hv : 0 < v) :
+    MemLp (fun z : ℂ => cubicResidualFunction (cuspCoordinateLift (v, z))) 2
+      (volume.restrict periodDomain) := by
+  simp_rw [cuspCoordinateLift_positive v _ hv]
+  have hc := cubicResidualFunction_height_continuous v hv
+  apply (memLp_two_iff_integrable_sq_norm hc.aestronglyMeasurable).mpr
+  apply (((hc.norm.pow 2).continuousOn).integrableOn_compact
+    (isCompact_closedBall (0 : ℂ) (∑ i, ‖periodBasis i‖))).mono_set
+  intro z hz
+  simpa only [Metric.mem_closedBall, dist_zero_right] using norm_mem_periodDomain z hz
+
+/-- Weighted tests determine the residue on almost every positive-height period cell. -/
+theorem cubicEisensteinResidue_cell_slices_ae (a b : ℝ) (ha : 0 < a) :
+    ∀ᵐ v ∂volume.restrict (Set.Icc a b),
+      (fun z : ℂ => cubicEisensteinResidue
+        (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z))))
+      =ᵐ[volume.restrict periodDomain] (fun z => cubicResidualFunction (cuspCoordinateLift (v, z))) := by
+  filter_upwards [cubicEisensteinResidue_all_fourier_integrals_ae a b ha,
+    kernelCuspSections_memLp a b ha cubicEisensteinResidue,
+    ae_restrict_mem measurableSet_Icc] with v hfour hL hv
+  have hpos := ha.trans_le hv.1
+  apply periodDomain_L2_ext _ _ hL (cubicResidualFunction_height_memLp v hpos)
+  intro h
+  rw [hfour h]
+  symm
+  simpa only [cuspCoordinateLift_positive v _ hpos] using cubicResidualFunction_fourier v hpos h
+
+lemma cubicResidualFunction_period (v : ℝ) (hv : 0 < v) (z : ℂ) (n : O) :
+    cubicResidualFunction (upperPoint (z + 3 * ringComplex n) v hv) =
+      cubicResidualFunction (upperPoint z v hv) := by
+  simp only [cubicResidualFunction, hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint]
+  congr 1
+  apply tsum_congr
+  intro h
+  simp only [cubicResidualNonzeroTerm]
+  split_ifs
+  · rfl
+  · rw [mul_add, AddChar.map_add_eq_mul, cuspFrequency_period, mul_one]
+
+lemma integralTranslation_three_mem_kernel (n : O) : integralTranslation (3 * n) ∈ globalKubotaKernel := by
+  have h3 : Ideal.Quotient.mk (Ideal.span {(3 : O)}) (3 : O) = 0 :=
+    (Ideal.Quotient.eq_zero_iff_mem).mpr (Ideal.subset_span (by simp))
+  have hlevel : integralTranslation (3 * n) ∈ levelThree := by
+    change Matrix.SpecialLinearGroup.map (n := Fin 2)
+      (Ideal.Quotient.mk (Ideal.span {(3 : O)})) (integralTranslation (3 * n)) = 1
+    ext i j
+    change (Ideal.Quotient.mk (Ideal.span {(3 : O)})) ((integralTranslation (3 * n)) i j) =
+      (1 : Matrix (Fin 2) (Fin 2) (O ⧸ Ideal.span {(3 : O)})) i j
+    fin_cases i <;> fin_cases j <;> simp [integralTranslation, h3]
+  apply (globalKubotaKernel_mem _).mpr
+  refine ⟨hlevel, ?_⟩
+  change ringComplex (value ⟨integralTranslation (3 * n), hlevel⟩) = 1
+  rw [value_zero_lower_left _ (by rfl), map_one]
+
+lemma kernelProjection_upper_period (v : ℝ) (hv : 0 < v) (z : ℂ) (n : O) :
+    integralOrbitProjection globalKubotaKernel (upperPoint (z + 3 * ringComplex n) v hv) =
+      integralOrbitProjection globalKubotaKernel (upperPoint z v hv) := by
+  let M : globalKubotaKernel := ⟨integralTranslation (3 * n), integralTranslation_three_mem_kernel n⟩
+  have ha : integralComplexMatrix (M : SL(2, O)) • upperPoint z v hv =
+      upperPoint (z + 3 * ringComplex n) v hv := by
+    simpa only [M, map_mul, map_ofNat] using integralTranslation_action (3 * n) z v hv
+  rw [← ha, integralOrbitProjection_eq]
+
+/-- A periodic null set is null on the plane once it is null on one period cell. -/
+lemma ae_eq_of_periodDomain_eq (f g : ℂ → ℂ)
+    (hf : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z)
+    (hg : ∀ (n : O) (z : ℂ), g (z + 3 * ringComplex n) = g z)
+    (he : f =ᵐ[volume.restrict periodDomain] g) : f =ᵐ[volume] g := by
+  have hp (p : periodLattice) (z : ℂ) : f (p +ᵥ z) = f z ∧ g (p +ᵥ z) = g z := by
+    obtain ⟨n, rfl⟩ := periodEquiv.surjective p
+    change f (3 * ringComplex n + z) = f z ∧ g (3 * ringComplex n + z) = g z
+    rw [add_comm]
+    exact ⟨hf n z, hg n z⟩
+  have hi : ∀ p : periodLattice, p +ᵥ {z : ℂ | f z ≠ g z} = {z : ℂ | f z ≠ g z} := by
+    intro p
+    ext z
+    rw [Set.mem_vadd_set_iff_neg_vadd_mem]
+    change (f ((-p) +ᵥ z) ≠ g ((-p) +ᵥ z)) ↔ f z ≠ g z
+    rw [(hp (-p) z).1, (hp (-p) z).2]
+  have hz : volume ({z : ℂ | f z ≠ g z} ∩ periodDomain) = 0 := by
+    change ∀ᵐ z ∂volume.restrict periodDomain, f z = g z at he
+    rw [ae_restrict_iff' periodDomain_measurable, ae_iff] at he
+    have hs : {z : ℂ | f z ≠ g z} ∩ periodDomain =
+        {z : ℂ | ¬(z ∈ periodDomain → f z = g z)} := by
+      ext z
+      simp only [Set.mem_setOf_eq, Set.mem_inter_iff]
+      tauto
+    rw [hs]
+    exact he
+  rw [Filter.EventuallyEq, ae_iff]
+  exact periodDomain_fundamental.measure_zero_of_invariant _ hi hz
+
+lemma positive_height_interval_cover :
+    Set.Ioi (0 : ℝ) = ⋃ n : ℕ, Set.Icc (1 / ((n : ℝ) + 1)) ((n : ℝ) + 1) := by
+  ext v
+  constructor
+  · intro hv
+    obtain ⟨n, hn⟩ := exists_nat_gt (max v (1 / v))
+    have hN : 0 < (n : ℝ) + 1 := by positivity
+    have hvN : v ≤ (n : ℝ) + 1 := by linarith only [hn, le_max_left v (1 / v)]
+    have hinv : 1 / v ≤ (n : ℝ) + 1 := by linarith only [hn, le_max_right v (1 / v)]
+    have hlow : 1 / ((n : ℝ) + 1) ≤ v := by
+      apply (div_le_iff₀ hN).mpr
+      simpa only [mul_comm] using (div_le_iff₀ (show 0 < v from hv)).mp hinv
+    exact Set.mem_iUnion.mpr ⟨n, hlow, hvN⟩
+  · intro hv
+    obtain ⟨n, hn⟩ := Set.mem_iUnion.mp hv
+    exact lt_of_lt_of_le (by positivity : 0 < (1 : ℝ) / ((n : ℝ) + 1)) hn.1
+
+lemma cuspCoordinateLift_measurable : Measurable cuspCoordinateLift :=
+  euclideanToHyperbolic_measurable.comp spatialComplexSplit.symm.measurable
+
+/-- Coordinate null sets remain null after inserting the hyperbolic volume density. -/
+lemma hyperbolic_ae_of_coordinate_ae (f g : HyperbolicSpace → ℂ)
+    (hf : Measurable f) (hg : Measurable g)
+    (he : ∀ᵐ q ∂(volume.restrict (Set.Ioi (0 : ℝ))).prod (volume : Measure ℂ),
+      f (cuspCoordinateLift q) = g (cuspCoordinateLift q)) : f =ᵐ[hyperbolicVolume] g := by
+  have hm := spatialComplexSplit_preserves_volume.restrict_preimage
+    (s := Set.Ioi (0 : ℝ) ×ˢ (Set.univ : Set ℂ)) (measurableSet_Ioi.prod MeasurableSet.univ)
+  have htarget : (volume : Measure (ℝ × ℂ)).restrict (Set.Ioi 0 ×ˢ (Set.univ : Set ℂ)) =
+      (volume.restrict (Set.Ioi (0 : ℝ))).prod (volume : Measure ℂ) := by
+    rw [Measure.volume_eq_prod, ← Measure.prod_restrict, Measure.restrict_univ]
+  have hsource : spatialComplexSplit ⁻¹' (Set.Ioi (0 : ℝ) ×ˢ (Set.univ : Set ℂ)) = euclideanUpperHalf := by
+    ext p
+    simp only [Set.mem_preimage, Set.mem_prod, Set.mem_univ, and_true, Set.mem_Ioi,
+      spatialComplexSplit_fst, euclideanUpperHalf, Set.mem_setOf_eq]
+  rw [htarget, hsource] at hm
+  have heuc := hm.quasiMeasurePreserving.ae he
+  have heuc' : ∀ᵐ p ∂volume.restrict euclideanUpperHalf,
+      f (euclideanToHyperbolic p) = g (euclideanToHyperbolic p) := by
+    simpa only [cuspCoordinateLift, spatialComplexSplit.symm_apply_apply] using heuc
+  have hweighted : ∀ᵐ p ∂hyperbolicEuclideanVolume,
+      f (euclideanToHyperbolic p) = g (euclideanToHyperbolic p) :=
+    heuc'.filter_mono (withDensity_absolutelyContinuous
+      (volume.restrict euclideanUpperHalf) hyperbolicDensity).ae_le
+  change ∀ᵐ w ∂Measure.map euclideanToHyperbolic hyperbolicEuclideanVolume, f w = g w
+  exact (ae_map_iff euclideanToHyperbolic_measurable.aemeasurable (measurableSet_eq_fun hf hg)).mpr hweighted
+
+/-- The convergent Fourier series is the actual residual vector almost everywhere. -/
+theorem cubicEisensteinResidue_continuous_representative :
+    (fun w => cubicEisensteinResidue (integralOrbitProjection globalKubotaKernel w))
+      =ᵐ[hyperbolicVolume] cubicResidualFunction := by
+  have hplanes (a b : ℝ) (ha : 0 < a) : ∀ᵐ v ∂volume.restrict (Set.Icc a b),
+      ∀ᵐ z ∂volume, cubicEisensteinResidue
+        (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z))) =
+          cubicResidualFunction (cuspCoordinateLift (v, z)) := by
+    filter_upwards [cubicEisensteinResidue_cell_slices_ae a b ha,
+      ae_restrict_mem measurableSet_Icc] with v hv hvm
+    have hvp := ha.trans_le hvm.1
+    apply ae_eq_of_periodDomain_eq _ _ _ _ hv
+    · intro n z
+      simp only [cuspCoordinateLift_positive v _ hvp, kernelProjection_upper_period]
+    · intro n z
+      simpa only [cuspCoordinateLift_positive v _ hvp] using cubicResidualFunction_period v hvp z n
+  have hheights : ∀ᵐ v ∂volume.restrict (Set.Ioi (0 : ℝ)),
+      ∀ᵐ z ∂volume, cubicEisensteinResidue
+        (integralOrbitProjection globalKubotaKernel (cuspCoordinateLift (v, z))) =
+          cubicResidualFunction (cuspCoordinateLift (v, z)) := by
+    rw [positive_height_interval_cover, ae_restrict_iUnion_iff]
+    intro n
+    exact hplanes _ _ (by positivity)
+  have hf := (MeasureTheory.Lp.stronglyMeasurable cubicEisensteinResidue).measurable.comp
+    (measurable_integralOrbitProjection globalKubotaKernel)
+  apply hyperbolic_ae_of_coordinate_ae _ _ hf cubicResidualFunction_continuous.measurable
+  exact (Measure.ae_prod_iff_ae_ae (measurableSet_eq_fun
+    (hf.comp cuspCoordinateLift_measurable)
+    (cubicResidualFunction_continuous.measurable.comp cuspCoordinateLift_measurable))).mpr hheights
+
+lemma kernelProjection_quasiMeasurePreserving :
+    Measure.QuasiMeasurePreserving (integralOrbitProjection globalKubotaKernel)
+      hyperbolicVolume (integralQuotientVolume globalKubotaKernel) := by
+  let proj := integralOrbitProjection globalKubotaKernel
+  have hp : Measurable proj := measurable_integralOrbitProjection _
+  refine ⟨hp, Measure.AbsolutelyContinuous.mk fun S hS hzero => ?_⟩
+  rw [Measure.map_apply hp hS]
+  have hd : hyperbolicVolume ((proj ⁻¹' S) ∩ hyperbolicFundamentalSet globalKubotaKernel) = 0 := by
+    simpa only [integralQuotientVolume, proj,
+      Measure.map_apply (measurable_integralOrbitProjection _) hS,
+      Measure.restrict_apply ((measurable_integralOrbitProjection _) hS)] using hzero
+  have hinv : ∀ M : globalKubotaKernel, M • (proj ⁻¹' S) = proj ⁻¹' S := by
+    intro M
+    ext w
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      change proj (M • u) ∈ S
+      change proj u ∈ S at hu
+      rwa [show proj (M • u) = proj u from integralOrbitProjection_eq _ M u]
+    · intro hw
+      refine ⟨M⁻¹ • w, ?_, smul_inv_smul M w⟩
+      change proj (M⁻¹ • w) ∈ S
+      rwa [show proj (M⁻¹ • w) = proj w from integralOrbitProjection_eq _ M⁻¹ w]
+  exact (globalKubotaKernel_isFundamentalDomain hyperbolicVolume).measure_zero_of_invariant _ hinv hd
+
+/-- Continuity upgrades the residual L² transformation law to pointwise automorphy. -/
+theorem cubicResidualFunction_automorphy (M : levelThree) (w : HyperbolicSpace) :
+    cubicResidualFunction (complexMatrix M • w) = complexCharacter M * cubicResidualFunction w := by
+  have he : (fun q => cubicEisensteinResidue (kernelLevelAction M q))
+      =ᵐ[integralQuotientVolume globalKubotaKernel]
+        (fun q => complexCharacter M * cubicEisensteinResidue q) := by
+    filter_upwards [kernelLevelPullback_ae_eq M cubicEisensteinResidue,
+      Lp.coeFn_smul (complexCharacter M) cubicEisensteinResidue] with q hq hs
+    rw [cubicEisensteinResidue_character M] at hq
+    exact hq.symm.trans hs
+  have hl := kernelProjection_quasiMeasurePreserving.ae_eq_comp he
+  have hrep := cubicEisensteinResidue_continuous_representative
+  have hcomp := (measurePreserving_smul (complexMatrix M)
+    hyperbolicVolume).quasiMeasurePreserving.ae_eq_comp hrep
+  have hae : (fun p : HyperbolicSpace => cubicResidualFunction (complexMatrix M • p))
+      =ᵐ[hyperbolicVolume] (fun p => complexCharacter M * cubicResidualFunction p) := by
+    filter_upwards [hcomp, hl, hrep] with p hp hc hr
+    simp only [Function.comp_def, kernelLevelAction_mk] at hc
+    exact hp.symm.trans (hc.trans (congrArg (fun z => complexCharacter M * z) hr))
+  exact congrFun (Measure.eq_of_ae_eq hae
+    (cubicResidualFunction_continuous.comp (continuous_hyperbolic_action (complexMatrix M)))
+    (continuous_const.mul cubicResidualFunction_continuous)) w
+
+/-- The trace pairing in the real Eisenstein basis is independent of embedding orientation. -/
+lemma complexTrace_real_basis_product (a b u v : ℝ) :
+    (((a : ℂ) + (b : ℂ) * ringComplex omega) *
+        ((u : ℂ) + (v : ℂ) * ringComplex omega) / ringComplex traceLambda) +
+      starRingEnd ℂ (((a : ℂ) + (b : ℂ) * ringComplex omega) *
+        ((u : ℂ) + (v : ℂ) * ringComplex omega) / ringComplex traceLambda) =
+      ((a * v + b * u - b * v : ℝ) : ℂ) := by
+  have hd := ringComplex_ne_zero traceLambda_ne_zero
+  rw [map_div₀, complex_traceLambda_conjugate]
+  simp only [map_mul, map_add, Complex.conj_ofReal, complex_omega_conjugate]
+  field_simp [hd]
+  simp only [traceLambda, map_add, map_mul, map_one, map_ofNat]
+  push_cast
+  ring
+
+lemma exp_two_pi_real_eq_one (t : ℝ)
+    (h : Complex.exp (2 * Real.pi * Complex.I * (t : ℂ)) = 1) : ∃ n : ℤ, t = n := by
+  obtain ⟨n, hn⟩ := Complex.exp_eq_one_iff.mp h
+  refine ⟨n, ?_⟩
+  have hc : (2 * Real.pi * Complex.I : ℂ) ≠ 0 := by
+    exact mul_ne_zero (mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)) Complex.I_ne_zero
+  have he : (t : ℂ) = (n : ℂ) := mul_left_cancel₀ hc (hn.trans (mul_comm _ _))
+  exact_mod_cast he
+
+/-- Triviality of every normalized trace character characterizes the integral lattice. -/
+theorem tracePhase_dual_lattice (z : ℂ)
+    (h : ∀ n : O, tracePhase (z * ringComplex n / ringComplex traceLambda) = 1) :
+    ∃ q : O, ringComplex q = z := by
+  obtain ⟨x, hx⟩ := periodVector.surjective (3 * z)
+  rw [periodVector_apply] at hx
+  have hz : z = (x 0 : ℂ) + (x 1 : ℂ) * ringComplex omega :=
+    (mul_left_cancel₀ (by norm_num : (3 : ℂ) ≠ 0) hx).symm
+  have htest (u v : ℤ) :
+      Complex.exp (2 * Real.pi * Complex.I *
+        ((x 0 * v + x 1 * u - x 1 * v : ℝ) : ℂ)) = 1 := by
+    have hh := h (Coordinates.eval u v)
+    rw [hz, ringComplex_eval] at hh
+    change Complex.exp (2 * Real.pi * Complex.I * (_ + starRingEnd ℂ _)) = 1 at hh
+    convert hh using 2
+    congr 1
+    simpa only [Complex.ofReal_intCast] using
+      (complexTrace_real_basis_product (x 0) (x 1) u v).symm
+  have hb : Complex.exp (2 * Real.pi * Complex.I * (x 1 : ℂ)) = 1 := by
+    simpa only [Int.cast_one, Int.cast_zero, mul_one, mul_zero, zero_add, sub_zero] using htest 1 0
+  have ha : Complex.exp (2 * Real.pi * Complex.I * ((x 0 - x 1 : ℝ) : ℂ)) = 1 := by
+    simpa only [Int.cast_one, Int.cast_zero, mul_one, mul_zero, add_zero] using htest 0 1
+  obtain ⟨b, hb'⟩ := exp_two_pi_real_eq_one (x 1) hb
+  obtain ⟨a, ha'⟩ := exp_two_pi_real_eq_one (x 0 - x 1) ha
+  refine ⟨Coordinates.eval (a + b) b, ?_⟩
+  rw [ringComplex_eval, hz, hb', show x 0 = (a : ℝ) + b by linarith only [ha', hb']]
+  push_cast
+  rfl
+
+def residueAdditive (h c d : O) : ℂ :=
+  tracePhase (cuspFrequency h * ringComplex d / ringComplex c)
+
+lemma residueAdditive_add (h c d e : O) :
+    residueAdditive h c (d + e) = residueAdditive h c d * residueAdditive h c e := by
+  unfold residueAdditive
+  rw [map_add, mul_add, add_div, AddChar.map_add_eq_mul]
+
+lemma residueAdditive_congr (h c d e : O) (hc : c ≠ 0) (hde : 3 * c ∣ d - e) :
+    residueAdditive h c d = residueAdditive h c e := by
+  obtain ⟨n, hn⟩ := hde
+  have hd : d = e + 3 * c * n := by linear_combination hn
+  rw [hd, residueAdditive_add]
+  have hphase : residueAdditive h c (3 * c * n) = 1 := by
+    have hcn := ringComplex_ne_zero hc
+    have he : cuspFrequency h * ringComplex (3 * c * n) / ringComplex c =
+        ringComplex (h * n) / ringComplex traceLambda := by
+      simp only [cuspFrequency, map_mul, map_ofNat]
+      field_simp
+    rw [residueAdditive, he, tracePhase_embedding_div_traceLambda]
+  rw [hphase, mul_one]
+
+lemma ramifiedElement_ne_zero (u : Oˣ) (n : ℕ) : (u : O) * lambda ^ n ≠ 0 :=
+by
+  have hl : lambda ≠ 0 := by
+    intro hz
+    have hh := lambda_sq_dvd_three
+    simp only [hz, zero_pow (by decide : (2 : ℕ) ≠ 0), zero_dvd_iff] at hh
+    norm_num at hh
+  exact mul_ne_zero u.ne_zero (pow_ne_zero _ hl)
+
+lemma ramifiedElement_level (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) : (3 : O) ∣ (u : O) * lambda ^ n :=
+  dvd_mul_of_dvd_right (three_dvd_lambda_sq.trans (pow_dvd_pow lambda hn)) _
+
+lemma ramified_denominator_condition (u : Oˣ) (n : ℕ) (d : O)
+    (hd : (3 : O) ∣ d - 1) : denominatorCondition ((u : O) * lambda ^ n) d := by
+  have hu : IsCoprime (u : O) d := ⟨↑u⁻¹, 0, by simp⟩
+  have hl3 : lambda ∣ (3 : O) := (dvd_pow_self lambda (by decide : (2 : ℕ) ≠ 0)).trans lambda_sq_dvd_three
+  have hld : IsCoprime lambda d := coprime_of_dvd_sub_one lambda d (hl3.trans hd)
+  exact ⟨hu.mul_left hld.pow_left, hd⟩
+
+lemma ramified_symbol_congr_mod_nine (u : Oˣ) (n : ℕ) (d e : O)
+    (hd : (3 : O) ∣ d - 1) (he : (3 : O) ∣ e - 1) (hde : (9 : O) ∣ d - e) :
+    symbol ((u : O) * lambda ^ n) d = symbol ((u : O) * lambda ^ n) e := by
+  have hdp := lambda_sq_dvd_three.trans hd
+  have hep := lambda_sq_dvd_three.trans he
+  rw [symbol_mul_numerator _ _ d, symbol_mul_numerator _ _ e,
+    symbol_pow_numerator _ d hdp, symbol_pow_numerator _ e hep,
+    symbol_unit_congr_mod_nine u.val d e u.isUnit hdp hep hde,
+    symbol_lambda_congr_mod_nine d e hdp hep hde]
+
+lemma primary_add_nine (d w : O) (hd : (3 : O) ∣ d - 1) : (3 : O) ∣ d + 9 * w - 1 := by
+  convert dvd_add hd (show (3 : O) ∣ 9 * w from ⟨3 * w, by ring⟩) using 1
+  ring
+
+lemma denominatorRep_mk_congr (c d : O) :
+    3 * c ∣ denominatorRep c (Ideal.Quotient.mk (Ideal.span {3 * c}) d) - d := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  exact denominatorRep_spec c _
+
+def ramifiedResidueAdd (u : Oˣ) (n : ℕ) (w : O)
+    (r : AdmissibleResidue ((u : O) * lambda ^ n)) : AdmissibleResidue ((u : O) * lambda ^ n) :=
+  let c := (u : O) * lambda ^ n
+  let d := denominatorRep c r.1 + 9 * w
+  ⟨Ideal.Quotient.mk (Ideal.span {3 * c}) d,
+    (denominatorCondition_congr c _ d (denominatorRep_mk_congr c d)).mpr
+      (ramified_denominator_condition u n d (primary_add_nine _ _ r.2.2))⟩
+
+lemma ramifiedResidueAdd_injective (u : Oˣ) (n : ℕ) (w : O) :
+    Function.Injective (ramifiedResidueAdd u n w) := by
+  intro r q heq
+  have hh := congrArg Subtype.val heq
+  change Ideal.Quotient.mk (Ideal.span {3 * ((u : O) * lambda ^ n)}) (denominatorRep _ r.1 + 9 * w) =
+    Ideal.Quotient.mk (Ideal.span {3 * ((u : O) * lambda ^ n)}) (denominatorRep _ q.1 + 9 * w) at hh
+  simp only [map_add, denominatorRep_spec] at hh
+  exact Subtype.ext (add_right_cancel hh)
+
+/-- Translation by nine fixes the cubic symbol and diagonalizes the additive phase. -/
+theorem ramified_arithmetic_additive_eigen (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) (w : O) :
+    residueAdditive h ((u : O) * lambda ^ n) (9 * w) * arithmeticResidueSum h ((u : O) * lambda ^ n) =
+      arithmeticResidueSum h ((u : O) * lambda ^ n) := by
+  let c := (u : O) * lambda ^ n
+  have hc : c ≠ 0 := ramifiedElement_ne_zero u n
+  have hlevel : (3 : O) ∣ c := ramifiedElement_level u n hn
+  letI : Finite (AdmissibleResidue c) := finite_admissibleResidue c hc
+  let e : AdmissibleResidue c ≃ AdmissibleResidue c := Equiv.ofBijective (ramifiedResidueAdd u n w)
+    ⟨ramifiedResidueAdd_injective u n w, Finite.surjective_of_injective (ramifiedResidueAdd_injective u n w)⟩
+  change _ = ∑' r : AdmissibleResidue c, ringComplex (symbol c (denominatorRep c r.1)) *
+    residueAdditive h c (denominatorRep c r.1)
+  rw [← e.tsum_eq]
+  rw [arithmeticResidueSum, ← tsum_mul_left]
+  apply tsum_congr
+  intro r
+  let d := denominatorRep c r.1
+  have hrep : 3 * c ∣ denominatorRep c (ramifiedResidueAdd u n w r).1 - (d + 9 * w) :=
+    denominatorRep_mk_congr c (d + 9 * w)
+  have hdp := primary_add_nine d w r.2.2
+  have hchar : symbol c (denominatorRep c (ramifiedResidueAdd u n w r).1) = symbol c d := by
+    rw [row_symbol_congr_modulus c _ (d + 9 * w) hlevel hdp hrep]
+    exact ramified_symbol_congr_mod_nine u n (d + 9 * w) d hdp r.2.2 ⟨w, by ring⟩
+  change _ = ringComplex (symbol c (denominatorRep c (ramifiedResidueAdd u n w r).1)) *
+    residueAdditive h c (denominatorRep c (ramifiedResidueAdd u n w r).1)
+  rw [hchar, residueAdditive_congr h c _ (d + 9 * w) hc hrep, residueAdditive_add]
+  change residueAdditive h c (9 * w) * (ringComplex (symbol c d) * residueAdditive h c d) = _
+  ring
+
+/-- Only finitely many ramified powers can contribute at a fixed nonzero frequency. -/
+theorem ramified_arithmetic_support (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (hA : arithmeticResidueSum h ((u : O) * lambda ^ n) ≠ 0) : (u : O) * lambda ^ n ∣ 3 * h := by
+  let c := (u : O) * lambda ^ n
+  have hc := ringComplex_ne_zero (ramifiedElement_ne_zero u n)
+  change ringComplex c ≠ 0 at hc
+  have hp (w : O) : residueAdditive h c (9 * w) = 1 := by
+    apply mul_right_cancel₀ hA
+    rw [ramified_arithmetic_additive_eigen h u n hn w, one_mul]
+  obtain ⟨q, hq⟩ := tracePhase_dual_lattice (ringComplex (3 * h) / ringComplex c) (by
+    intro w
+    convert hp w using 1
+    unfold residueAdditive cuspFrequency
+    simp only [map_mul, map_ofNat]
+    congr 1
+    field_simp
+    ring)
+  refine ⟨q, ?_⟩
+  apply ringComplex_injective
+  rw [map_mul ringComplex c q, hq]
+  field_simp [hc]
+
+abbrev CubicUnitResidue (b : O) := {r : O ⧸ Ideal.span {b} // IsUnit r}
+
+/-- Coprime CRT separates the primary denominator condition from the unramified unit condition. -/
+def denominatorCRTMap (a b : O) (r : AdmissibleResidue (a * b)) :
+    AdmissibleResidue a × CubicUnitResidue b :=
+  let d := denominatorRep (a * b) r.1
+  (⟨Ideal.Quotient.mk (Ideal.span {3 * a}) d,
+      (denominatorCondition_congr a _ d (denominatorRep_mk_congr a d)).mpr
+        ⟨r.2.1.of_mul_left_left, r.2.2⟩⟩,
+   ⟨Ideal.Quotient.mk (Ideal.span {b}) d,
+      (isUnit_quotient_span_iff b d).mpr r.2.1.of_mul_left_right⟩)
+
+lemma denominatorCRTMap_bijective (a b : O) (hab : IsCoprime (3 * a) b) :
+    Function.Bijective (denominatorCRTMap a b) := by
+  constructor
+  · intro r t he
+    have h1 := congrArg (fun z : AdmissibleResidue a × CubicUnitResidue b => z.1.1) he
+    have h2 := congrArg (fun z : AdmissibleResidue a × CubicUnitResidue b => z.2.1) he
+    change Ideal.Quotient.mk (Ideal.span {3 * a}) (denominatorRep (a * b) r.1) =
+      Ideal.Quotient.mk (Ideal.span {3 * a}) (denominatorRep (a * b) t.1) at h1
+    change Ideal.Quotient.mk (Ideal.span {b}) (denominatorRep (a * b) r.1) =
+      Ideal.Quotient.mk (Ideal.span {b}) (denominatorRep (a * b) t.1) at h2
+    have hdiv : 3 * (a * b) ∣ denominatorRep (a * b) r.1 - denominatorRep (a * b) t.1 := by
+      simpa only [mul_assoc] using hab.mul_dvd
+        (Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp h1))
+        (Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp h2))
+    apply Subtype.ext
+    rw [← denominatorRep_spec (a * b) r.1, ← denominatorRep_spec (a * b) t.1]
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr (Ideal.mem_span_singleton.mpr hdiv)
+  · rintro ⟨r, t⟩
+    obtain ⟨u, v, huv⟩ := hab
+    let delta := denominatorRep a r.1
+    let xi := principalResidueRep b t.1
+    let d := v * b * delta + u * (3 * a) * xi
+    have hda : 3 * a ∣ d - delta := by
+      refine ⟨u * (xi - delta), ?_⟩
+      dsimp [d]
+      linear_combination delta * huv
+    have hdb : b ∣ d - xi := by
+      refine ⟨v * (delta - xi), ?_⟩
+      dsimp [d]
+      linear_combination xi * huv
+    have hxi : IsCoprime b xi := by
+      apply (isUnit_quotient_span_iff b xi).mp
+      simpa only [xi, principalResidueRep_spec] using t.2
+    have had := (denominatorCondition_congr a d delta hda).mpr r.2
+    have hbd : IsCoprime b d := by
+      obtain ⟨k, hk⟩ := hdb
+      have hd : d = xi + b * k := by linear_combination hk
+      rwa [hd, IsCoprime.add_mul_left_right_iff]
+    have hd : denominatorCondition (a * b) d := ⟨had.1.mul_left hbd, had.2⟩
+    let q : AdmissibleResidue (a * b) := ⟨Ideal.Quotient.mk (Ideal.span {3 * (a * b)}) d,
+      (denominatorCondition_congr (a * b) _ d (denominatorRep_mk_congr (a * b) d)).mpr hd⟩
+    refine ⟨q, Prod.ext (Subtype.ext ?_) (Subtype.ext ?_)⟩
+    · change Ideal.Quotient.mk (Ideal.span {3 * a}) (denominatorRep (a * b) q.1) = r.1
+      rw [← denominatorRep_spec a r.1]
+      apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
+      apply Ideal.mem_span_singleton.mpr
+      have hh : 3 * a ∣ denominatorRep (a * b) q.1 - d :=
+        (show 3 * a ∣ 3 * (a * b) from ⟨b, by ring⟩).trans (denominatorRep_mk_congr (a * b) d)
+      simpa only [sub_add_sub_cancel] using dvd_add hh hda
+    · change Ideal.Quotient.mk (Ideal.span {b}) (denominatorRep (a * b) q.1) = t.1
+      rw [← principalResidueRep_spec b t.1]
+      apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
+      apply Ideal.mem_span_singleton.mpr
+      have hh : b ∣ denominatorRep (a * b) q.1 - d :=
+        (show b ∣ 3 * (a * b) from ⟨3 * a, by ring⟩).trans (denominatorRep_mk_congr (a * b) d)
+      simpa only [sub_add_sub_cancel] using dvd_add hh hdb
+
+def denominatorCRTEquiv (a b : O) (hab : IsCoprime (3 * a) b) :
+    AdmissibleResidue (a * b) ≃ AdmissibleResidue a × CubicUnitResidue b :=
+  Equiv.ofBijective (denominatorCRTMap a b) (denominatorCRTMap_bijective a b hab)
+
+/-- The finite cubic Gauss sum at the primitive trace normalization. -/
+def cubicUnitGaussSum (h b : O) : ℂ :=
+  ∑' r : CubicUnitResidue b, ringComplex (symbol (principalResidueRep b r.1) b) *
+    residueAdditive (3 * h) b (principalResidueRep b r.1)
+
+lemma residueAdditive_three_congr (h b d e : O) (hb : b ≠ 0) (hde : b ∣ d - e) :
+    residueAdditive (3 * h) b d = residueAdditive (3 * h) b e := by
+  obtain ⟨n, hn⟩ := hde
+  have hd : d = e + b * n := by linear_combination hn
+  have he := ringComplex_ne_zero hb
+  rw [hd, residueAdditive_add]
+  have hp : residueAdditive (3 * h) b (b * n) = 1 := by
+    have harg : cuspFrequency (3 * h) * ringComplex (b * n) / ringComplex b =
+        cuspFrequency h * (3 * ringComplex n) := by
+      simp only [cuspFrequency, map_mul, map_ofNat]
+      field_simp
+    rw [residueAdditive, harg, cuspFrequency_period]
+  rw [hp, mul_one]
+
+lemma residueAdditive_crt (h a b alpha beta d : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hbez : alpha * b + beta * (3 * a) = 1) :
+    residueAdditive h (a * b) d =
+      residueAdditive (h * alpha) a d * residueAdditive (3 * (h * beta)) b d := by
+  unfold residueAdditive
+  rw [← AddChar.map_add_eq_mul]
+  congr 1
+  have hae := ringComplex_ne_zero ha
+  have hbe := ringComplex_ne_zero hb
+  have hbeq := congrArg ringComplex hbez
+  simp only [map_add, map_mul, map_one, map_ofNat] at hbeq
+  simp only [cuspFrequency, map_mul, map_ofNat]
+  field_simp [hae, hbe, ringComplex_ne_zero traceLambda_ne_zero]
+  linear_combination -(ringComplex h * ringComplex d) * hbeq
+
+lemma arithmetic_crt_summand (h a b alpha beta : O)
+    (ha : a ≠ 0) (hb : b ≠ 0) (halevel : (3 : O) ∣ a)
+    (hbprimary : lambda ^ 2 ∣ b - 1) (hbez : alpha * b + beta * (3 * a) = 1)
+    (r : AdmissibleResidue (a * b)) :
+    ringComplex (symbol (a * b) (denominatorRep (a * b) r.1)) *
+      residueAdditive h (a * b) (denominatorRep (a * b) r.1) =
+      (ringComplex (symbol a (denominatorRep a (denominatorCRTMap a b r).1.1)) *
+        residueAdditive (h * alpha) a (denominatorRep a (denominatorCRTMap a b r).1.1)) *
+      (ringComplex (symbol (principalResidueRep b (denominatorCRTMap a b r).2.1) b) *
+        residueAdditive (3 * (h * beta)) b (principalResidueRep b (denominatorCRTMap a b r).2.1)) := by
+  let d := denominatorRep (a * b) r.1
+  let delta := denominatorRep a (denominatorCRTMap a b r).1.1
+  let xi := principalResidueRep b (denominatorCRTMap a b r).2.1
+  have hdprimary := lambda_sq_dvd_three.trans r.2.2
+  have hdelta : 3 * a ∣ delta - d := denominatorRep_mk_congr a d
+  have hxi : b ∣ xi - d := by
+    apply Ideal.mem_span_singleton.mp
+    apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+    exact principalResidueRep_spec b _
+  have hchar : symbol (a * b) d = symbol a delta * symbol xi b := by
+    rw [symbol_mul_numerator a b d, symbol_reciprocity b d hbprimary hdprimary,
+      ← symbol_congr hxi, ← row_symbol_congr_modulus a delta d halevel r.2.2 hdelta]
+  change ringComplex (symbol (a * b) d) * residueAdditive h (a * b) d =
+    (ringComplex (symbol a delta) * residueAdditive (h * alpha) a delta) *
+      (ringComplex (symbol xi b) * residueAdditive (3 * (h * beta)) b xi)
+  rw [hchar, map_mul, residueAdditive_crt h a b alpha beta d ha hb hbez,
+    residueAdditive_congr (h * alpha) a delta d ha hdelta,
+    residueAdditive_three_congr (h * beta) b xi d hb hxi]
+  ring
+
+/-- CRT and cubic reciprocity factor the actual residue sum into ramified and unramified sums. -/
+theorem arithmeticResidueSum_crt (h a b alpha beta : O)
+    (ha : a ≠ 0) (hb : b ≠ 0) (halevel : (3 : O) ∣ a)
+    (hbprimary : lambda ^ 2 ∣ b - 1) (hbez : alpha * b + beta * (3 * a) = 1) :
+    arithmeticResidueSum h (a * b) =
+      arithmeticResidueSum (h * alpha) a * cubicUnitGaussSum (h * beta) b := by
+  have hab : IsCoprime (3 * a) b := ⟨beta, alpha, by linear_combination hbez⟩
+  let f : AdmissibleResidue a → ℂ := fun r =>
+    ringComplex (symbol a (denominatorRep a r.1)) * residueAdditive (h * alpha) a (denominatorRep a r.1)
+  let g : CubicUnitResidue b → ℂ := fun r =>
+    ringComplex (symbol (principalResidueRep b r.1) b) *
+      residueAdditive (3 * (h * beta)) b (principalResidueRep b r.1)
+  have heq : arithmeticResidueSum h (a * b) =
+      ∑' r : AdmissibleResidue (a * b), f (denominatorCRTEquiv a b hab r).1 * g (denominatorCRTEquiv a b hab r).2 :=
+    tsum_congr (arithmetic_crt_summand h a b alpha beta ha hb halevel hbprimary hbez)
+  rw [heq, (denominatorCRTEquiv a b hab).tsum_eq (fun r => f r.1 * g r.2)]
+  letI : Finite (AdmissibleResidue a) := finite_admissibleResidue a ha
+  letI : Finite (O ⧸ Ideal.span {b}) := (Ideal.span {b}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hb)
+  letI : Fintype (AdmissibleResidue a) := Fintype.ofFinite _
+  letI : Fintype (CubicUnitResidue b) := Fintype.ofFinite _
+  change (∑' r : AdmissibleResidue a × CubicUnitResidue b, f r.1 * g r.2) =
+    (∑' r : AdmissibleResidue a, f r) * (∑' t : CubicUnitResidue b, g t)
+  simp only [tsum_fintype, Fintype.sum_prod_type, Finset.mul_sum, Finset.sum_mul]
+  exact Finset.sum_comm
+
+lemma residueAdditive_mul (h c t d : O) :
+    residueAdditive h c (t * d) = residueAdditive (h * t) c d := by
+  unfold residueAdditive cuspFrequency
+  simp only [map_mul]
+  congr 1
+  ring
+
+lemma residueAdditive_swap (h c d : O) : residueAdditive h c d = residueAdditive d c h := by
+  unfold residueAdditive cuspFrequency
+  congr 1
+  ring
+
+lemma arithmeticResidueSum_frequency_congr (h k c : O) (hc : c ≠ 0)
+    (hh : 3 * c ∣ h - k) : arithmeticResidueSum h c = arithmeticResidueSum k c := by
+  apply tsum_congr
+  intro r
+  congr 1
+  change residueAdditive h c (denominatorRep c r.1) = residueAdditive k c (denominatorRep c r.1)
+  rw [residueAdditive_swap h, residueAdditive_swap k]
+  exact residueAdditive_congr _ c h k hc hh
+
+/-- Multiplication by an admissible denominator twists the frequency by its cubic character. -/
+theorem arithmeticResidueSum_frequency_twist (h c t : O) (hc : c ≠ 0)
+    (hlevel : (3 : O) ∣ c) (ht : denominatorCondition c t) :
+    ringComplex (symbol c t) * arithmeticResidueSum (h * t) c = arithmeticResidueSum h c := by
+  have heq := (residueMultiplicationEquiv c hc t ht).tsum_eq
+    (fun r : AdmissibleResidue c => ringComplex (symbol c (denominatorRep c r.1)) *
+      residueAdditive h c (denominatorRep c r.1))
+  calc
+    _ = ∑' r : AdmissibleResidue c, ringComplex (symbol c t) *
+        (ringComplex (symbol c (denominatorRep c r.1)) * residueAdditive (h * t) c (denominatorRep c r.1)) := by
+      rw [tsum_mul_left]
+      rfl
+    _ = ∑' r : AdmissibleResidue c,
+        ringComplex (symbol c (denominatorRep c (residueMultiplicationEquiv c hc t ht r).1)) *
+          residueAdditive h c (denominatorRep c (residueMultiplicationEquiv c hc t ht r).1) := by
+      apply tsum_congr
+      intro r
+      change _ = ringComplex (symbol c (denominatorRep c (residueMultiplication c t ht r).1)) *
+        residueAdditive h c (denominatorRep c (residueMultiplication c t ht r).1)
+      rw [residueMultiplication_phase c hlevel t ht r, map_mul]
+      dsimp only [residueMultiplication]
+      rw [residueAdditive_congr h c _ (t * denominatorRep c r.1) hc
+        (denominatorRep_product_congr c t r.1), residueAdditive_mul]
+      ring
+    _ = _ := heq
+
+lemma cubicUnitGaussSum_frequency_congr (h k b : O) (hb : b ≠ 0)
+    (hh : b ∣ h - k) : cubicUnitGaussSum h b = cubicUnitGaussSum k b := by
+  apply tsum_congr
+  intro r
+  congr 1
+  have he (u : O) : residueAdditive (3 * u) b (principalResidueRep b r.1) =
+      residueAdditive (3 * principalResidueRep b r.1) b u := by
+    unfold residueAdditive cuspFrequency
+    simp only [map_mul, map_ofNat]
+    congr 1
+    ring
+  rw [he h, he k]
+  exact residueAdditive_three_congr _ b h k hb hh
+
+def cubicUnitResidueMul (b t : O) (ht : IsCoprime b t) (r : CubicUnitResidue b) : CubicUnitResidue b :=
+  ⟨Ideal.Quotient.mk (Ideal.span {b}) t * r.1, ((isUnit_quotient_span_iff b t).mpr ht).mul r.2⟩
+
+lemma cubicUnitResidueMul_injective (b t : O) (ht : IsCoprime b t) :
+    Function.Injective (cubicUnitResidueMul b t ht) := by
+  intro r q heq
+  apply Subtype.ext
+  exact ((isUnit_quotient_span_iff b t).mpr ht).mul_left_cancel (congrArg Subtype.val heq)
+
+def cubicUnitResidueMulEquiv (b t : O) (hb : b ≠ 0) (ht : IsCoprime b t) :
+    CubicUnitResidue b ≃ CubicUnitResidue b := by
+  letI : Finite (O ⧸ Ideal.span {b}) := (Ideal.span {b}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hb)
+  exact Equiv.ofBijective (cubicUnitResidueMul b t ht)
+    ⟨cubicUnitResidueMul_injective b t ht, Finite.surjective_of_injective (cubicUnitResidueMul_injective b t ht)⟩
+
+lemma cubicUnitResidueMul_rep_congr (b t : O) (ht : IsCoprime b t) (r : CubicUnitResidue b) :
+    b ∣ principalResidueRep b (cubicUnitResidueMul b t ht r).1 - t * principalResidueRep b r.1 := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  rw [principalResidueRep_spec, map_mul, principalResidueRep_spec]
+  rfl
+
+theorem cubicUnitGaussSum_frequency_twist (h b t : O) (hb : b ≠ 0)
+    (ht : IsCoprime b t) :
+    ringComplex (symbol t b) * cubicUnitGaussSum (h * t) b = cubicUnitGaussSum h b := by
+  have heq := (cubicUnitResidueMulEquiv b t hb ht).tsum_eq
+    (fun r : CubicUnitResidue b => ringComplex (symbol (principalResidueRep b r.1) b) *
+      residueAdditive (3 * h) b (principalResidueRep b r.1))
+  calc
+    _ = ∑' r : CubicUnitResidue b, ringComplex (symbol t b) *
+        (ringComplex (symbol (principalResidueRep b r.1) b) *
+          residueAdditive (3 * (h * t)) b (principalResidueRep b r.1)) := by
+      rw [tsum_mul_left]
+      rfl
+    _ = ∑' r : CubicUnitResidue b,
+        ringComplex (symbol (principalResidueRep b (cubicUnitResidueMulEquiv b t hb ht r).1) b) *
+          residueAdditive (3 * h) b (principalResidueRep b (cubicUnitResidueMulEquiv b t hb ht r).1) := by
+      apply tsum_congr
+      intro r
+      change _ = ringComplex (symbol (principalResidueRep b (cubicUnitResidueMul b t ht r).1) b) *
+        residueAdditive (3 * h) b (principalResidueRep b (cubicUnitResidueMul b t ht r).1)
+      rw [symbol_congr (cubicUnitResidueMul_rep_congr b t ht r), symbol_mul_numerator, map_mul,
+        residueAdditive_three_congr h b _ (t * principalResidueRep b r.1) hb
+          (cubicUnitResidueMul_rep_congr b t ht r), residueAdditive_mul]
+      rw [show (3 * h) * t = 3 * (h * t) by ring]
+      ring
+    _ = _ := heq
+
+/-- Frequency twists remove the auxiliary Bezout coefficients from CRT factorization. -/
+theorem arithmeticResidueSum_coprime_product (h a b : O)
+    (ha : a ≠ 0) (hb : b ≠ 0) (halevel : (3 : O) ∣ a)
+    (hbprimary : lambda ^ 2 ∣ b - 1) (hab : IsCoprime (3 * a) b) :
+    arithmeticResidueSum h (a * b) = ringComplex (symbol a b) * ringComplex (symbol (3 * a) b) *
+      arithmeticResidueSum h a * cubicUnitGaussSum h b := by
+  obtain ⟨beta, alpha, hbez⟩ := hab
+  have hbez' : alpha * b + beta * (3 * a) = 1 := by linear_combination hbez
+  have hab' : IsCoprime (3 * a) b := ⟨beta, alpha, hbez⟩
+  have hbt : denominatorCondition a b := ⟨hab'.of_mul_left_right, three_dvd_lambda_sq.trans hbprimary⟩
+  have hA := arithmeticResidueSum_frequency_twist (h * alpha) a b ha halevel hbt
+  have hAf : 3 * a ∣ (h * alpha) * b - h := ⟨-h * beta, by linear_combination h * hbez'⟩
+  rw [arithmeticResidueSum_frequency_congr _ h a ha hAf] at hA
+  have hB := cubicUnitGaussSum_frequency_twist (h * beta) b (3 * a) hb hab'.symm
+  have hBf : b ∣ (h * beta) * (3 * a) - h := ⟨-h * alpha, by linear_combination h * hbez'⟩
+  rw [cubicUnitGaussSum_frequency_congr _ h b hb hBf] at hB
+  rw [arithmeticResidueSum_crt h a b alpha beta ha hb halevel hbprimary hbez', ← hA, ← hB]
+  ring
+
+lemma ramified_primary_coprime (u : Oˣ) (n : ℕ) (b : O)
+    (hb : lambda ^ 2 ∣ b - 1) : IsCoprime (3 * ((u : O) * lambda ^ n)) b := by
+  have hl : IsCoprime lambda b := coprime_of_dvd_sub_one lambda b
+    ((dvd_pow_self lambda (by decide : (2 : ℕ) ≠ 0)).trans hb)
+  have hu : IsCoprime (u : O) b := ⟨↑u⁻¹, 0, by simp⟩
+  exact ((primary_coprime_three b hb).symm).mul_left (hu.mul_left hl.pow_left)
+
+theorem arithmeticResidueSum_ramified_split (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (b : O) (hb : lambda ^ 2 ∣ b - 1) :
+    arithmeticResidueSum h (((u : O) * lambda ^ n) * b) =
+      ringComplex (symbol ((u : O) * lambda ^ n) b) *
+        ringComplex (symbol (3 * ((u : O) * lambda ^ n)) b) *
+        arithmeticResidueSum h ((u : O) * lambda ^ n) * cubicUnitGaussSum h b :=
+  arithmeticResidueSum_coprime_product h _ b (ramifiedElement_ne_zero u n)
+    (primary_ne_zero b hb) (ramifiedElement_level u n hn) hb (ramified_primary_coprime u n b hb)
+
+lemma ramifiedElement_absNorm (u : Oˣ) (n : ℕ) :
+    Ideal.absNorm (Ideal.span {(u : O) * lambda ^ n}) = 3 ^ n := by
+  have hu : Ideal.span {(u : O)} = (1 : Ideal O) := by
+    rw [Ideal.one_eq_top]
+    exact Ideal.span_singleton_eq_top.mpr u.isUnit
+  rw [← Ideal.span_singleton_mul_span_singleton, map_mul, hu, map_one, one_mul,
+    ← Ideal.span_singleton_pow, map_pow, absNorm_span_lambda]
+
+lemma cubic_three_absNorm : Ideal.absNorm (Ideal.span {(3 : O)}) = 9 := by
+  have he : (3 : O) = Coordinates.eval 3 0 := by simp [Coordinates.eval]
+  rw [he, Ideal.absNorm_span_singleton, Coordinates.norm_eval]
+  norm_num
+
+/-- The ramified support has an explicit frequency-dependent norm bound. -/
+theorem ramified_arithmetic_norm_bound (h : O) (hh : h ≠ 0) (u : Oˣ)
+    (n : ℕ) (hn : 2 ≤ n) (hA : arithmeticResidueSum h ((u : O) * lambda ^ n) ≠ 0) :
+    3 ^ n ≤ 9 * Ideal.absNorm (Ideal.span {h}) := by
+  have hI : (Ideal.span {h} : Ideal O) ≠ 0 := Ideal.span_singleton_eq_bot.not.mpr hh
+  have hN : 0 < Ideal.absNorm (Ideal.span {h}) :=
+    Nat.pos_of_ne_zero (fun hz => hI (Ideal.absNorm_eq_zero_iff.mp hz))
+  apply Nat.le_of_dvd (by positivity)
+  obtain ⟨v, hv⟩ := ramified_arithmetic_support h u n hn hA
+  refine ⟨Ideal.absNorm (Ideal.span {v}), ?_⟩
+  calc
+    _ = Ideal.absNorm (Ideal.span {(3 : O) * h}) := by
+      rw [← Ideal.span_singleton_mul_span_singleton, map_mul, cubic_three_absNorm]
+    _ = Ideal.absNorm (Ideal.span {((u : O) * lambda ^ n) * v}) := by rw [hv]
+    _ = _ := by rw [← Ideal.span_singleton_mul_span_singleton, map_mul, ramifiedElement_absNorm]
+
+/-- The exponent cutoff forced by the ramified additive character. -/
+def ramifiedFrequencyBound (h : O) : ℕ := Nat.log 3 (9 * Ideal.absNorm (Ideal.span {h}))
+
+theorem arithmeticResidueSum_ramified_index_bound (h : O) (hh : h ≠ 0)
+    (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) (b : O) (hb : lambda ^ 2 ∣ b - 1)
+    (hA : arithmeticResidueSum h (((u : O) * lambda ^ n) * b) ≠ 0) :
+    n ≤ ramifiedFrequencyBound h := by
+  have ha : arithmeticResidueSum h ((u : O) * lambda ^ n) ≠ 0 := by
+    intro hz
+    apply hA
+    rw [arithmeticResidueSum_ramified_split h u n hn b hb, hz, mul_zero, zero_mul]
+  exact Nat.le_log_of_pow_le (by decide) (ramified_arithmetic_norm_bound h hh u n hn ha)
+
+lemma arithmeticDirichletTerm_ramified_vanish (s : ℂ) (h : O) (hh : h ≠ 0)
+    (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) (b : O) (hb : lambda ^ 2 ∣ b - 1)
+    (hout : ramifiedFrequencyBound h < n) :
+    arithmeticDirichletTerm s h
+      ⟨((u : O) * lambda ^ n) * b, dvd_mul_of_dvd_left (ramifiedElement_level u n hn) b⟩ = 0 := by
+  have hA : arithmeticResidueSum h (((u : O) * lambda ^ n) * b) = 0 := by
+    by_contra hA
+    exact (not_le_of_gt hout) (arithmeticResidueSum_ramified_index_bound h hh u n hn b hb hA)
+  simp only [arithmeticDirichletTerm, hA, mul_zero, ite_self]
+
+abbrev NonzeroLevelLower := {c : LevelLower // c.1 ≠ 0}
+
+/-- Unit, ramified power, and canonical unramified ideal generator of a nonzero level-three modulus. -/
+def ramifiedLower (u : Oˣ) (n : ℕ) (I : GoodIdeal) : O :=
+  ((u : O) * lambda ^ (n + 2)) * primaryIdealGenerator I.1
+
+lemma ramifiedLower_ne_zero (u : Oˣ) (n : ℕ) (I : GoodIdeal) : ramifiedLower u n I ≠ 0 :=
+  mul_ne_zero (ramifiedElement_ne_zero u (n + 2)) I.2
+
+lemma ramifiedLower_level (u : Oˣ) (n : ℕ) (I : GoodIdeal) : (3 : O) ∣ ramifiedLower u n I :=
+  dvd_mul_of_dvd_left (ramifiedElement_level u (n + 2) (by omega)) _
+
+lemma ramifiedLower_span (u : Oˣ) (n : ℕ) (I : GoodIdeal) :
+    Ideal.span {ramifiedLower u n I} = ramifiedIdeal ^ (n + 2) * I.1 := by
+  unfold ramifiedLower
+  rw [mul_assoc, Ideal.span_singleton_mul_left_unit u.isUnit, lambdaFactor_generator_span]
+
+def ramifiedLowerMap (p : Oˣ × ℕ × GoodIdeal) : NonzeroLevelLower :=
+  ⟨⟨ramifiedLower p.1 p.2.1 p.2.2, ramifiedLower_level _ _ _⟩, ramifiedLower_ne_zero _ _ _⟩
+
+lemma ramifiedLowerMap_bijective : Function.Bijective ramifiedLowerMap := by
+  constructor
+  · rintro ⟨u, n, I⟩ ⟨v, m, J⟩ h
+    have hc : ramifiedLower u n I = ramifiedLower v m J := congrArg (fun c : NonzeroLevelLower => c.1.1) h
+    have hs := congrArg (fun x : O => Ideal.span {x}) hc
+    rw [ramifiedLower_span, ramifiedLower_span] at hs
+    have he := lambdaFactorMap_bijective.1 (show lambdaFactorMap (n + 2, I) =
+      lambdaFactorMap (m + 2, J) from Subtype.ext hs)
+    have hnm : n = m := Nat.add_right_cancel (congrArg Prod.fst he)
+    have hIJ : I = J := congrArg Prod.snd he
+    subst m
+    subst J
+    have hl : lambda ^ (n + 2) ≠ 0 := by simpa only [Units.val_one, one_mul] using ramifiedElement_ne_zero 1 (n + 2)
+    have huv : u = v := by
+      apply Units.ext
+      apply mul_right_cancel₀ (mul_ne_zero hl I.2)
+      simpa only [ramifiedLower, mul_assoc] using hc
+    subst v
+    rfl
+  · intro c
+    let C : NonzeroIdeal := ⟨Ideal.span {c.1.1}, Ideal.span_singleton_eq_bot.not.mpr c.2⟩
+    obtain ⟨⟨k, I⟩, hCI⟩ := lambdaFactorMap_bijective.2 C
+    have hfact : ramifiedIdeal ^ k * I.1 = Ideal.span {c.1.1} := congrArg Subtype.val hCI
+    have hp2 : ramifiedIdeal ^ 2 ∣ ramifiedIdeal ^ k * I.1 := by
+      rw [hfact]
+      change (Ideal.span {lambda} : Ideal O) ^ 2 ∣ _
+      rw [Ideal.span_singleton_pow, Ideal.dvd_iff_le, Ideal.span_singleton_le_span_singleton]
+      exact lambda_sq_dvd_three.trans c.1.2
+    have hk : 2 ≤ k := by
+      by_contra hh
+      have hnot := (goodIdeal_iff_not_ramified I.1).mp I.2
+      have hcases : k = 0 ∨ k = 1 := by omega
+      rcases hcases with rfl | rfl
+      · simp only [pow_zero, one_mul] at hp2
+        exact hnot ((dvd_pow_self ramifiedIdeal (by decide : (2 : ℕ) ≠ 0)).trans hp2)
+      · rw [pow_one, pow_two] at hp2
+        exact hnot ((mul_dvd_mul_iff_left ramifiedIdeal_prime.ne_zero).mp hp2)
+    obtain ⟨n, hn⟩ := Nat.exists_eq_add_of_le hk
+    have hk' : k = n + 2 := by omega
+    subst k
+    have hspan : Ideal.span {lambda ^ (n + 2) * primaryIdealGenerator I.1} = Ideal.span {c.1.1} :=
+      (lambdaFactor_generator_span (n + 2) I).trans (by simpa only [Nat.add_comm] using hfact)
+    obtain ⟨u, hu⟩ := Ideal.span_singleton_eq_span_singleton.mp hspan
+    refine ⟨(u, n, I), Subtype.ext (Subtype.ext ?_)⟩
+    change ramifiedLower u n I = c.1.1
+    simpa only [ramifiedLower, mul_assoc, mul_comm, mul_left_comm] using hu
+
+def ramifiedLowerEquiv : Oˣ × ℕ × GoodIdeal ≃ NonzeroLevelLower :=
+  Equiv.ofBijective ramifiedLowerMap ramifiedLowerMap_bijective
+
+lemma arithmeticDirichlet_support_nonzero (s : ℂ) (h : O) :
+    Function.support (arithmeticDirichletTerm s h) ⊆ {c : LevelLower | c.1 ≠ 0} := by
+  intro c hc hz
+  exact hc (by simp only [arithmeticDirichletTerm, hz, ite_true])
+
+theorem arithmeticDirichletSeries_ramified_reindex (s : ℂ) (hs : 2 < s.re) (h : O) :
+    arithmeticDirichletSeries s h = ∑' u : Oˣ, ∑' n : ℕ, ∑' I : GoodIdeal,
+      arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1 := by
+  have hsum := (arithmeticDirichletTerm_summable_norm s hs h).of_norm
+  have hsub : Summable (fun c : NonzeroLevelLower => arithmeticDirichletTerm s h c.1) := hsum.subtype _
+  have hp := ramifiedLowerEquiv.summable_iff.mpr hsub
+  change Summable (fun p : Oˣ × ℕ × GoodIdeal => arithmeticDirichletTerm s h (ramifiedLowerMap p).1) at hp
+  calc
+    _ = ∑' c : NonzeroLevelLower, arithmeticDirichletTerm s h c.1 :=
+      (tsum_subtype_eq_of_support_subset (arithmeticDirichlet_support_nonzero s h)).symm
+    _ = ∑' p : Oˣ × ℕ × GoodIdeal, arithmeticDirichletTerm s h (ramifiedLowerMap p).1 :=
+      (ramifiedLowerEquiv.tsum_eq _).symm
+    _ = _ := by
+      rw [hp.tsum_prod]
+      exact tsum_congr (fun u => (hp.prod_factor u).tsum_prod)
+
+/-- At nonzero frequency the ramified index in the scattering series is a finite sum. -/
+theorem arithmeticDirichletSeries_finite_ramified (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    arithmeticDirichletSeries s h =
+      ∑' u : Oˣ, ∑ n ∈ Finset.range (ramifiedFrequencyBound h + 1), ∑' I : GoodIdeal,
+        arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1 := by
+  rw [arithmeticDirichletSeries_ramified_reindex s hs h]
+  apply tsum_congr
+  intro u
+  apply tsum_eq_sum
+  intro n hn
+  have hout : ramifiedFrequencyBound h < n + 2 := by
+    have hnot : ¬ n < ramifiedFrequencyBound h + 1 := by simpa only [Finset.mem_range] using hn
+    omega
+  have hzero (I : GoodIdeal) : arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1 = 0 :=
+    arithmeticDirichletTerm_ramified_vanish s h hh u (n + 2) (by omega)
+      (primaryIdealGenerator I.1) (primaryIdealGenerator_spec I.1 I.2).2 hout
+  simp only [hzero, tsum_zero]
+
+/-- The scattering series is a finite ramified combination of unramified cubic Gauss series. -/
+theorem arithmeticDirichletSeries_gauss_expansion (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    arithmeticDirichletSeries s h =
+      ∑' u : Oˣ, ∑ n ∈ Finset.range (ramifiedFrequencyBound h + 1), ∑' I : GoodIdeal,
+        ((‖ringComplex (ramifiedLower u n I)‖ ^ 2 : ℝ) : ℂ) ^ (-s) *
+          (ringComplex (symbol ((u : O) * lambda ^ (n + 2)) (primaryIdealGenerator I.1)) *
+           ringComplex (symbol (3 * ((u : O) * lambda ^ (n + 2))) (primaryIdealGenerator I.1)) *
+           arithmeticResidueSum h ((u : O) * lambda ^ (n + 2)) * cubicUnitGaussSum h (primaryIdealGenerator I.1)) := by
+  rw [arithmeticDirichletSeries_finite_ramified s hs h hh]
+  apply tsum_congr
+  intro u
+  apply Finset.sum_congr rfl
+  intro n hn
+  apply tsum_congr
+  intro I
+  change arithmeticDirichletTerm s h ⟨ramifiedLower u n I, ramifiedLower_level u n I⟩ = _
+  rw [arithmeticDirichletTerm, if_neg (ramifiedLower_ne_zero u n I)]
+  dsimp only [ramifiedLower]
+  rw [arithmeticResidueSum_ramified_split h u (n + 2) (by omega)
+    (primaryIdealGenerator I.1) (primaryIdealGenerator_spec I.1 I.2).2]
+
+lemma principalAddChar_congr (c : O) (χ : AddChar O ℂ)
+    (hχ : ∀ x ∈ Ideal.span {c}, χ x = 1) (x y : O) (hxy : c ∣ x - y) : χ x = χ y := by
+  calc
+    χ x = χ ((x - y) + y) := by rw [sub_add_cancel]
+    _ = χ (x - y) * χ y := AddChar.map_add_eq_mul χ _ _
+    _ = χ y := by rw [hχ _ (Ideal.mem_span_singleton.mpr hxy), one_mul]
+
+/-- Descent of an additive character trivial on a principal ideal. -/
+def principalQuotientAddChar (c : O) (χ : AddChar O ℂ)
+    (hχ : ∀ x ∈ Ideal.span {c}, χ x = 1) : AddChar (O ⧸ Ideal.span {c}) ℂ where
+  toFun x := χ (principalResidueRep c x)
+  map_zero_eq_one' := hχ _ (Ideal.Quotient.eq_zero_iff_mem.mp (principalResidueRep_spec c 0))
+  map_add_eq_mul' x y := by
+    rw [← AddChar.map_add_eq_mul]
+    apply principalAddChar_congr c χ hχ
+    apply Ideal.mem_span_singleton.mp
+    apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+    simp only [principalResidueRep_spec, map_add]
+
+lemma principalQuotientAddChar_mk (c : O) (χ : AddChar O ℂ)
+    (hχ : ∀ x ∈ Ideal.span {c}, χ x = 1) (x : O) :
+    principalQuotientAddChar c χ hχ (Ideal.Quotient.mk (Ideal.span {c}) x) = χ x := by
+  apply principalAddChar_congr c χ hχ
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  exact principalResidueRep_spec c _
+
+/-- The normalized trace phase as an additive character of the integral lattice. -/
+def residueTraceLinearChar (h c : O) : AddChar O ℂ where
+  toFun x := residueAdditive (3 * h) c x
+  map_zero_eq_one' := by
+    simp only [residueAdditive, map_zero, mul_zero, zero_div, AddChar.map_zero_eq_one]
+  map_add_eq_mul' := residueAdditive_add (3 * h) c
+
+lemma residueTraceLinearChar_period (h c : O) (hc : c ≠ 0) (x : O) (hx : x ∈ Ideal.span {c}) :
+    residueTraceLinearChar h c x = 1 := by
+  have he := residueAdditive_three_congr h c x 0 hc
+    (by simpa only [sub_zero] using Ideal.mem_span_singleton.mp hx)
+  change residueAdditive (3 * h) c x = 1
+  simpa only [residueAdditive, map_zero, mul_zero, zero_div,
+    AddChar.map_zero_eq_one] using he
+
+def residueTraceQuotientChar (h c : O) (hc : c ≠ 0) : AddChar (O ⧸ Ideal.span {c}) ℂ :=
+  principalQuotientAddChar c (residueTraceLinearChar h c) (residueTraceLinearChar_period h c hc)
+
+lemma residueTraceQuotientChar_mk (h c : O) (hc : c ≠ 0) (x : O) :
+    residueTraceQuotientChar h c hc (Ideal.Quotient.mk (Ideal.span {c}) x) = residueAdditive (3 * h) c x :=
+  principalQuotientAddChar_mk c _ _ x
+
+/-- The geometric dual-lattice identity proves primitivity at every nonzero modulus. -/
+theorem residueTraceQuotientChar_primitive (c : O) (hc : c ≠ 0) :
+    (residueTraceQuotientChar 1 c hc).IsPrimitive := by
+  intro r hr he
+  obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective r
+  have hc' := ringComplex_ne_zero hc
+  obtain ⟨q, hq⟩ := tracePhase_dual_lattice (ringComplex a / ringComplex c) (by
+    intro w
+    have hh := congrArg (fun ψ : AddChar (O ⧸ Ideal.span {c}) ℂ => ψ (Ideal.Quotient.mk _ w)) he
+    simp only [AddChar.mulShift_apply, ← map_mul, residueTraceQuotientChar_mk,
+      AddChar.one_apply] at hh
+    convert hh using 1
+    unfold residueAdditive cuspFrequency
+    simp only [map_mul, map_ofNat, mul_one]
+    congr 1
+    field_simp)
+  apply hr
+  apply Ideal.Quotient.eq_zero_iff_mem.mpr
+  apply Ideal.mem_span_singleton.mpr
+  refine ⟨q, ?_⟩
+  apply ringComplex_injective
+  rw [map_mul, hq]
+  field_simp [hc']
+
+/-- The ramified cubic phase is additive on the affine primary coordinates modulo three. -/
+def ramifiedLinearChar (u : Oˣ) (n : ℕ) : AddChar O ℂ where
+  toFun x := ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * x))
+  map_zero_eq_one' := by simp
+  map_add_eq_mul' x y := by
+    have hp (z : O) : (3 : O) ∣ 1 + 3 * z - 1 := ⟨z, by ring⟩
+    have hprod : (3 : O) ∣ (1 + 3 * x) * (1 + 3 * y) - 1 := ⟨x + y + 3 * x * y, by ring⟩
+    rw [ramified_symbol_congr_mod_nine u n (1 + 3 * (x + y))
+      ((1 + 3 * x) * (1 + 3 * y)) (hp _) hprod ⟨-x * y, by ring⟩,
+      symbol_mul_denominator, map_mul]
+
+lemma ramifiedLinearChar_period (u : Oˣ) (n : ℕ) (x : O) (hx : x ∈ Ideal.span {(3 : O)}) :
+    ramifiedLinearChar u n x = 1 := by
+  obtain ⟨w, rfl⟩ := Ideal.mem_span_singleton.mp hx
+  change ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * (3 * w))) = 1
+  rw [ramified_symbol_congr_mod_nine u n _ 1 ⟨3 * w, by ring⟩ (by simp) ⟨w, by ring⟩]
+  simp
+
+def ramifiedQuotientChar (u : Oˣ) (n : ℕ) : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ :=
+  principalQuotientAddChar 3 (ramifiedLinearChar u n) (ramifiedLinearChar_period u n)
+
+def ramifiedFrequencyChar (k : O) (u : Oˣ) (n : ℕ) : AddChar (O ⧸ Ideal.span {(3 : O)}) ℂ :=
+  ramifiedQuotientChar u n * residueTraceQuotientChar k 3 (by norm_num)
+
+lemma ramifiedFrequencyChar_rep (k : O) (u : Oˣ) (n : ℕ) (x : O ⧸ Ideal.span {(3 : O)}) :
+    ramifiedFrequencyChar k u n x =
+      ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * principalResidueRep 3 x)) *
+        residueAdditive k 3 (3 * principalResidueRep 3 x) := by
+  change ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * principalResidueRep 3 x)) *
+    residueAdditive (3 * k) 3 (principalResidueRep 3 x) = _
+  rw [residueAdditive_mul, mul_comm k 3]
+
+def ramifiedNineSum (k : O) (u : Oˣ) (n : ℕ) : ℂ :=
+  ∑' x : O ⧸ Ideal.span {(3 : O)},
+    ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * principalResidueRep 3 x)) *
+      residueAdditive k 3 (1 + 3 * principalResidueRep 3 x)
+
+/-- Orthogonality reduces the nine residue classes to a single character test. -/
+theorem ramifiedNineSum_eq_character_test (k : O) (u : Oˣ) (n : ℕ) :
+    ramifiedNineSum k u n =
+      if ramifiedFrequencyChar k u n = 1 then 9 * residueAdditive k 3 1 else 0 := by
+  letI : Finite (O ⧸ Ideal.span {(3 : O)}) := (Ideal.span {(3 : O)}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (by norm_num))
+  letI : Fintype (O ⧸ Ideal.span {(3 : O)}) := Fintype.ofFinite _
+  have hcard : (Fintype.card (O ⧸ Ideal.span {(3 : O)}) : ℂ) = 9 := by
+    have hh := cubic_three_absNorm
+    change Nat.card (O ⧸ Ideal.span {(3 : O)}) = 9 at hh
+    exact_mod_cast (show Fintype.card (O ⧸ Ideal.span {(3 : O)}) = 9 by
+      simpa only [Nat.card_eq_fintype_card] using hh)
+  have he : ramifiedNineSum k u n =
+      residueAdditive k 3 1 * ∑' x : O ⧸ Ideal.span {(3 : O)}, ramifiedFrequencyChar k u n x := by
+    rw [ramifiedNineSum, ← tsum_mul_left]
+    apply tsum_congr
+    intro x
+    rw [ramifiedFrequencyChar_rep, residueAdditive_add]
+    ring
+  rw [he, tsum_fintype]
+  split_ifs with hchar
+  · rw [AddChar.sum_eq_card_of_eq_one hchar, hcard]
+    ring
+  · rw [AddChar.sum_eq_zero_of_ne_one hchar, mul_zero]
+
+lemma ramified_affine_isUnit (u : Oˣ) (n : ℕ)
+    (x : O ⧸ Ideal.span {(u : O) * lambda ^ n}) : IsUnit (1 + 3 * x) := by
+  obtain ⟨d, rfl⟩ := Ideal.Quotient.mk_surjective x
+  have hd := ramified_denominator_condition u n (1 + 3 * d) ⟨d, by ring⟩
+  simpa only [map_add, map_one, map_mul, map_ofNat] using
+    (isUnit_quotient_span_iff _ _).mpr hd.1
+
+/-- All affine primary classes are units at the ramified prime. -/
+def ramifiedAffineEquiv (u : Oˣ) (n : ℕ) :
+    (O ⧸ Ideal.span {(u : O) * lambda ^ n}) ≃ AdmissibleResidue ((u : O) * lambda ^ n) :=
+  (Equiv.subtypeUnivEquiv (ramified_affine_isUnit u n)).symm.trans (affineResidueEquiv _)
+
+lemma ramified_arithmetic_affine (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    arithmeticResidueSum h ((u : O) * lambda ^ n) =
+      ∑' x : O ⧸ Ideal.span {(u : O) * lambda ^ n},
+        ringComplex (symbol ((u : O) * lambda ^ n) (1 + 3 * principalResidueRep _ x)) *
+          residueAdditive h ((u : O) * lambda ^ n) (1 + 3 * principalResidueRep _ x) := by
+  rw [arithmeticResidueSum, ← (ramifiedAffineEquiv u n).tsum_eq]
+  apply tsum_congr
+  intro x
+  have hrep : 3 * ((u : O) * lambda ^ n) ∣
+      denominatorRep _ ((ramifiedAffineEquiv u n) x).1 -
+        (1 + 3 * principalResidueRep ((u : O) * lambda ^ n) x) :=
+    denominatorRep_mk_congr _ _
+  change ringComplex (symbol ((u : O) * lambda ^ n)
+    (denominatorRep _ ((ramifiedAffineEquiv u n) x).1)) *
+      residueAdditive h _ (denominatorRep _ ((ramifiedAffineEquiv u n) x).1) = _
+  rw [row_symbol_congr_modulus _ _ _ (ramifiedElement_level u n hn) ⟨_, by ring⟩ hrep,
+    residueAdditive_congr h _ _ _ (ramifiedElement_ne_zero u n) hrep]
+
+/-- Reduction from a ramified modulus divisible by three to the nine-element residue ring. -/
+def ramifiedReduction (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    (O ⧸ Ideal.span {(u : O) * lambda ^ n}) →+* (O ⧸ Ideal.span {(3 : O)}) :=
+  Ideal.Quotient.factor (Ideal.span_singleton_le_span_singleton.mpr (ramifiedElement_level u n hn))
+
+lemma ramifiedReduction_surjective (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    Function.Surjective (ramifiedReduction u n hn) := Ideal.Quotient.factor_surjective _
+
+lemma ramifiedReduction_rep (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (x : O ⧸ Ideal.span {(u : O) * lambda ^ n}) :
+    (3 : O) ∣ principalResidueRep ((u : O) * lambda ^ n) x -
+      principalResidueRep 3 (ramifiedReduction u n hn x) := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  rw [principalResidueRep_spec]
+  exact congrArg (ramifiedReduction u n hn) (principalResidueRep_spec _ x)
+
+lemma residueAdditive_ramified_scale (h k a d : O) (ha : a ≠ 0) (hk : 3 * h = a * k) :
+    residueAdditive h a d = residueAdditive k 3 d := by
+  have he := congrArg ringComplex hk
+  simp only [map_mul, map_ofNat] at he
+  have ha' := ringComplex_ne_zero ha
+  have hl := ringComplex_ne_zero traceLambda_ne_zero
+  unfold residueAdditive cuspFrequency
+  simp only [map_ofNat]
+  congr 1
+  field_simp [ha', hl]
+  linear_combination ringComplex d * he
+
+/-- On its divisibility support, a ramified sum is a complete additive-character sum. -/
+theorem ramified_arithmetic_character_test (h k : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (hk : 3 * h = ((u : O) * lambda ^ n) * k) :
+    arithmeticResidueSum h ((u : O) * lambda ^ n) =
+      if ramifiedFrequencyChar k u n = 1 then ((3 ^ n : ℕ) : ℂ) * residueAdditive k 3 1 else 0 := by
+  let a : O := (u : O) * lambda ^ n
+  let f := ramifiedReduction u n hn
+  let ψ : AddChar (O ⧸ Ideal.span {a}) ℂ :=
+    { toFun := fun x => ramifiedFrequencyChar k u n (f x)
+      map_zero_eq_one' := by rw [map_zero, AddChar.map_zero_eq_one]
+      map_add_eq_mul' := fun x y => by rw [map_add, AddChar.map_add_eq_mul] }
+  have htrivial : ψ = 1 ↔ ramifiedFrequencyChar k u n = 1 := by
+    constructor
+    · intro he
+      ext x
+      obtain ⟨y, rfl⟩ := ramifiedReduction_surjective u n hn x
+      exact congrArg (fun χ : AddChar (O ⧸ Ideal.span {a}) ℂ => χ y) he
+    · intro he
+      ext x
+      change ramifiedFrequencyChar k u n (f x) = 1
+      rw [he, AddChar.one_apply]
+  have hpoint (x : O ⧸ Ideal.span {a}) :
+      ringComplex (symbol a (1 + 3 * principalResidueRep a x)) *
+        residueAdditive h a (1 + 3 * principalResidueRep a x) = residueAdditive k 3 1 * ψ x := by
+    let d := 1 + 3 * principalResidueRep a x
+    let e := 1 + 3 * principalResidueRep 3 (f x)
+    have hd : (3 : O) ∣ d - 1 := ⟨_, by dsimp [d]; ring⟩
+    have he : (3 : O) ∣ e - 1 := ⟨_, by dsimp [e]; ring⟩
+    have h9 : (9 : O) ∣ d - e := by
+      obtain ⟨w, hw⟩ := ramifiedReduction_rep u n hn x
+      refine ⟨w, ?_⟩
+      dsimp [d, e, f, a]
+      linear_combination 3 * hw
+    change ringComplex (symbol a d) * residueAdditive h a d = _
+    rw [ramified_symbol_congr_mod_nine u n d e hd he h9,
+      residueAdditive_ramified_scale h k a d (ramifiedElement_ne_zero u n) hk,
+      residueAdditive_congr k 3 d e (by norm_num) (by convert h9 using 1; norm_num)]
+    change ringComplex (symbol a e) * residueAdditive k 3 e =
+      residueAdditive k 3 1 * ramifiedFrequencyChar k u n (f x)
+    rw [ramifiedFrequencyChar_rep]
+    dsimp [e]
+    rw [residueAdditive_add]
+    ring
+  letI : Finite (O ⧸ Ideal.span {a}) := (Ideal.span {a}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (ramifiedElement_ne_zero u n))
+  letI : Fintype (O ⧸ Ideal.span {a}) := Fintype.ofFinite _
+  have hcard : (Fintype.card (O ⧸ Ideal.span {a}) : ℂ) = ((3 ^ n : ℕ) : ℂ) := by
+    have hc := ramifiedElement_absNorm u n
+    change Nat.card (O ⧸ Ideal.span {a}) = 3 ^ n at hc
+    exact_mod_cast (show Fintype.card (O ⧸ Ideal.span {a}) = 3 ^ n by
+      simpa only [Nat.card_eq_fintype_card] using hc)
+  rw [ramified_arithmetic_affine h u n hn]
+  have hsum : (∑' x : O ⧸ Ideal.span {a},
+      ringComplex (symbol a (1 + 3 * principalResidueRep a x)) *
+        residueAdditive h a (1 + 3 * principalResidueRep a x)) =
+      residueAdditive k 3 1 * ∑' x, ψ x := by
+    rw [← tsum_mul_left]
+    exact tsum_congr hpoint
+  rw [hsum, tsum_fintype]
+  by_cases hchar : ramifiedFrequencyChar k u n = 1
+  · rw [AddChar.sum_eq_card_of_eq_one (htrivial.mpr hchar), hcard, if_pos hchar]
+    exact mul_comm _ _
+  · rw [AddChar.sum_eq_zero_of_ne_one (fun hh => hchar (htrivial.mp hh)), mul_zero, if_neg hchar]
+
+
+namespace RationalSource
+open CubicJacobi CubicRamified
+private instance : IsCyclotomicExtension {3} ℚ K := CyclotomicField.isCyclotomicExtension 3 ℚ
+
+/-- The integral special linear group embedded in the Eisenstein group. -/
+def rationalEmbedding : SL(2,ℤ)→*SL(2,O) :=
+  Matrix.SpecialLinearGroup.map (Int.castRingHom O)
+
+def levelThreeConjugate (g : SL(2,O)) (M : levelThree) : levelThree :=
+  ⟨g*(M:SL(2,O))*g⁻¹,by
+    change Matrix.SpecialLinearGroup.map (n:=Fin 2)
+      (Ideal.Quotient.mk (Ideal.span {(3:O)})) _=1
+    rw [map_mul,map_mul,map_inv,M.property,mul_one,mul_inv_cancel]⟩
+
+lemma levelThree_bottom_primary (M : levelThree) : lambda^2∣(M:SL(2,O)) 1 1-1 :=
+  lambda_sq_dvd_three.trans (by simpa using levelThree_entry M 1 1)
+
+lemma value_inverse_formula (M : levelThree) :
+    value M⁻¹=symbol ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 1 1) := by
+  have hd := levelThree_bottom_primary M
+  change symbol (((M:SL(2,O))⁻¹) 1 0) (((M:SL(2,O))⁻¹) 0 0)=_
+  simp only [Matrix.SpecialLinearGroup.coe_inv,Matrix.adjugate_fin_two]
+  exact symbol_neg_numerator _ _ hd
+
+/-- The determinant relation reads the multiplier from the upper-right and lower-right entries. -/
+lemma value_upper_formula (M : levelThree) :
+    value M=symbol ((M:SL(2,O)) 0 1) ((M:SL(2,O)) 1 1) := by
+  have hd := levelThree_bottom_primary M
+  have hdet : (M:SL(2,O)) 0 0*(M:SL(2,O)) 1 1-
+      (M:SL(2,O)) 0 1*(M:SL(2,O)) 1 0=1 := by
+    simpa only [Matrix.det_fin_two] using (M:SL(2,O)).property
+  have hprod : symbol ((M:SL(2,O)) 0 1) ((M:SL(2,O)) 1 1)*
+      symbol ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 1 1)=1 := by
+    rw [←symbol_mul_numerator _ _ _]
+    calc
+      _ = symbol (-1) ((M:SL(2,O)) 1 1) := by
+        apply symbol_congr
+        refine ⟨(M:SL(2,O)) 0 0,?_⟩
+        linear_combination -hdet
+      _ = 1 := symbol_neg_one _ hd
+  have hinv : value M*symbol ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 1 1)=1 := by
+    rw [←value_inverse_formula,←value_mul,mul_inv_cancel,value_one]
+  calc
+    value M = value M*1 := by rw [mul_one]
+    _ = value M*(symbol ((M:SL(2,O)) 0 1) ((M:SL(2,O)) 1 1)*
+      symbol ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 1 1)) := by rw [hprod]
+    _ = symbol ((M:SL(2,O)) 0 1) ((M:SL(2,O)) 1 1)*
+      (value M*symbol ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 1 1)) := by ring
+    _ = _ := by rw [hinv,mul_one]
+
+theorem value_conjugate_S (M : levelThree) :
+    value (levelThreeConjugate (rationalEmbedding ModularGroup.S) M)=value M := by
+  rw [value_upper_formula M]
+  change symbol (((rationalEmbedding ModularGroup.S)*(M:SL(2,O))*(rationalEmbedding ModularGroup.S)⁻¹) 1 0)
+    (((rationalEmbedding ModularGroup.S)*(M:SL(2,O))*(rationalEmbedding ModularGroup.S)⁻¹) 0 0)=_
+  simp only [rationalEmbedding,Matrix.SpecialLinearGroup.coe_mul,Matrix.SpecialLinearGroup.map_apply_coe,
+    Matrix.SpecialLinearGroup.coe_inv,ModularGroup.coe_S,Matrix.adjugate_fin_two,
+    Matrix.mul_apply,Fin.sum_univ_two]
+  simpa using symbol_neg_numerator ((M:SL(2,O)) 0 1) ((M:SL(2,O)) 1 1) (levelThree_bottom_primary M)
+
+theorem complexCharacter_conjugate_S (M : levelThree) :
+    complexCharacter (levelThreeConjugate (rationalEmbedding ModularGroup.S) M)=complexCharacter M :=
+  congrArg ringComplex (value_conjugate_S M)
+
+
+open CubicRamified
+theorem symbol_shift_by_self (c a : O) (ha : lambda^2∣a-1) (hc : (3:O)∣c) :
+    symbol c (a+c)=symbol c a := by
+  have hA : lambda^2∣a+c-1 := by
+    convert dvd_add ha (lambda_sq_dvd_three.trans hc) using 1 ; ring
+  calc
+    symbol c (a+c)=symbol (-a) (a+c) := by
+      apply symbol_congr
+      refine ⟨1,?_⟩
+      ring
+    _ = symbol a (a+c) := symbol_neg_numerator a (a+c) hA
+    _ = symbol (a+c) a := symbol_reciprocity a (a+c) ha hA
+    _ = symbol c a := by
+      apply symbol_congr
+      refine ⟨1,?_⟩
+      ring
+
+open CubicJacobi CubicRamified
+theorem value_conjugate_T (M : levelThree) :
+    value (levelThreeConjugate (rationalEmbedding ModularGroup.T) M)=value M := by
+  change symbol (((rationalEmbedding ModularGroup.T)*(M:SL(2,O))*(rationalEmbedding ModularGroup.T)⁻¹) 1 0)
+    (((rationalEmbedding ModularGroup.T)*(M:SL(2,O))*(rationalEmbedding ModularGroup.T)⁻¹) 0 0)=_
+  simp only [rationalEmbedding,Matrix.SpecialLinearGroup.coe_mul,Matrix.SpecialLinearGroup.map_apply_coe,
+    Matrix.SpecialLinearGroup.coe_inv,ModularGroup.coe_T,Matrix.adjugate_fin_two,
+    Matrix.mul_apply,Fin.sum_univ_two]
+  simpa [value] using symbol_shift_by_self ((M:SL(2,O)) 1 0) ((M:SL(2,O)) 0 0)
+    (levelThree_primary M) (levelThree_lower M)
+
+lemma levelThreeConjugate_one (M : levelThree) : levelThreeConjugate 1 M=M := by
+  apply Subtype.ext
+  simp [levelThreeConjugate]
+
+lemma levelThreeConjugate_mul (g h : SL(2,O)) (M : levelThree) :
+    levelThreeConjugate (g*h) M=levelThreeConjugate g (levelThreeConjugate h M) := by
+  apply Subtype.ext
+  simp [levelThreeConjugate,mul_assoc]
+
+def characterConjugationStabilizer : Subgroup (SL(2,O)) where
+  carrier g := ∀M : levelThree,value (levelThreeConjugate g M)=value M
+  one_mem' M := by rw [levelThreeConjugate_one]
+  mul_mem' hg hh M := by rw [levelThreeConjugate_mul,hg,hh]
+  inv_mem' {g} hg M := by
+    have h := hg (levelThreeConjugate g⁻¹ M)
+    rw [←levelThreeConjugate_mul,mul_inv_cancel,levelThreeConjugate_one] at h
+    exact h.symm
+
+/-- Invariance under the rational generators extends to every rational matrix. -/
+theorem value_conjugate_rational (g : SL(2,ℤ)) (M : levelThree) :
+    value (levelThreeConjugate (rationalEmbedding g) M)=value M := by
+  have htop : characterConjugationStabilizer.comap rationalEmbedding=⊤ := by
+    apply top_unique
+    rw [←SpecialLinearGroup.SL2Z_generators]
+    apply (Subgroup.closure_le _).mpr
+    intro g hg
+    rcases hg with (rfl|rfl)
+    · exact value_conjugate_S
+    · exact value_conjugate_T
+  have hg : g∈characterConjugationStabilizer.comap rationalEmbedding := by rw [htop];trivial
+  exact hg M
+
+theorem complexCharacter_conjugate_rational (g : SL(2,ℤ)) (M : levelThree) :
+    complexCharacter (levelThreeConjugate (rationalEmbedding g) M)=complexCharacter M :=
+  congrArg ringComplex (value_conjugate_rational g M)
+
+
+open CubicRamified
+/-- Choose the primary sign of a rational integer away from three. -/
+def rationalPrimary (n : ℕ) : O := if n%3=1 then (n:O) else -(n:O)
+
+lemma rationalPrimary_coord (n : ℕ) (hn : ¬3∣n) : ∃A : ℤ,rationalPrimary n=primaryCoord A 0 := by
+  have hm : n%3=1 ∨ n%3=2 := by
+    have hl := Nat.mod_lt n (by decide : 0<3)
+    have h0 : n%3≠0 := fun h => hn (Nat.dvd_of_mod_eq_zero h)
+    omega
+  rcases hm with hm|hm
+  · refine ⟨(n/3:ℕ),?_⟩
+    have he : n=1+3*(n/3) := by omega
+    rw [rationalPrimary,if_pos hm,primaryCoord_eq]
+    conv_lhs => rw [he]
+    simp only [Int.cast_natCast,
+      Nat.cast_add,Nat.cast_mul,Nat.cast_ofNat,]
+    ring
+  · refine ⟨-((n/3:ℕ):ℤ)-1,?_⟩
+    have he : n=2+3*(n/3) := by omega
+    rw [rationalPrimary,if_neg (by omega),primaryCoord_eq]
+    conv_lhs => rw [he]
+    simp only [Int.cast_sub,Int.cast_neg,Int.cast_natCast,
+      Nat.cast_add,Nat.cast_mul,Nat.cast_ofNat,]
+    ring
+
+lemma rationalPrimary_primary (n : ℕ) (hn : ¬3∣n) : lambda^2∣rationalPrimary n-1 := by
+  obtain ⟨A,hA⟩ := rationalPrimary_coord n hn
+  rw [hA]
+  exact primaryCoord_primary A 0
+
+lemma rationalPrimary_denominator (x : O) (n : ℕ) : symbol x (rationalPrimary n)=symbol x (n:O) := by
+  unfold rationalPrimary
+  split_ifs
+  · rfl
+  · simp only [symbol,Ideal.span_singleton_neg]
+
+lemma rationalPrimary_numerator (m n : ℕ) (hn : ¬3∣n) :
+    symbol (rationalPrimary m) (rationalPrimary n)=symbol (m:O) (rationalPrimary n) := by
+  change symbol (if m%3=1 then (m:O) else -(m:O)) (rationalPrimary n)=_
+  split_ifs
+  · rfl
+  · exact symbol_neg_numerator _ _ (rationalPrimary_primary n hn)
+
+lemma rational_symbol_mul (a b n : ℕ) :
+    symbol ((a*b : ℕ) : O) (n : O) = symbol (a : O) (n : O) * symbol (b : O) (n : O) := by
+  rw [Nat.cast_mul]
+  exact symbol_mul_numerator _ _ _
+
+lemma rational_symbol_three (n : ℕ) (hn : ¬3∣n) : symbol (3:O) (n:O)=1 := by
+  rw [←rationalPrimary_denominator _ n]
+  obtain ⟨A,hA⟩ := rationalPrimary_coord n hn
+  rw [hA]
+  have hprimary := primaryCoord_primary A 0
+  have hthree : (3:O)=-((1+2*omega)^2) := by
+    have hw : omega^2=-omega-1 := by
+      change (IsCyclotomicExtension.zeta_spec 3 ℚ K).toInteger^2=
+        -(IsCyclotomicExtension.zeta_spec 3 ℚ K).toInteger-1
+      exact IsCyclotomicExtension.Rat.Three.eta_sq (IsCyclotomicExtension.zeta_spec 3 ℚ K)
+    linear_combination 4*hw
+  have htrace := symbol_traceLambda_eq_linearRay (primaryCoord A 0) hprimary
+  change symbol (1+2*omega) (primaryCoord A 0)=_ at htrace
+  rw [hthree,symbol_neg_numerator _ _ hprimary,symbol_pow_numerator _ _ hprimary,
+    htrace,linearRay_primaryCoord]
+  simp
+
+lemma rational_symbol_reciprocity (m n : ℕ) (hm : ¬3∣m) (hn : ¬3∣n) :
+    symbol (m:O) (n:O)=symbol (n:O) (m:O) := by
+  calc
+    _ = symbol (rationalPrimary m) (rationalPrimary n) := by
+      rw [rationalPrimary_numerator m n hn,rationalPrimary_denominator]
+    _ = symbol (rationalPrimary n) (rationalPrimary m) :=
+      symbol_reciprocity _ _ (rationalPrimary_primary m hm) (rationalPrimary_primary n hn)
+    _ = _ := by rw [rationalPrimary_numerator n m hm,rationalPrimary_denominator]
+
+lemma rational_symbol_mod (m n : ℕ) : symbol (m:O) (n:O)=symbol ((m%n:ℕ):O) (n:O) := by
+  apply symbol_congr
+  refine ⟨(m/n:ℕ),?_⟩
+  have he : m=m%n+n*(m/n) := (Nat.mod_add_div m n).symm
+  have hh : (m:O)=(m%n:ℕ)+ (n:O)*(m/n:ℕ) := by exact_mod_cast he
+  linear_combination hh
+
+/-- Euclidean reduction and the supplementary law make coprime rational cubic symbols trivial. -/
+theorem rational_symbol_eq_one (n : ℕ) (hn : ¬3∣n) (m : ℕ) (hmn : Nat.Coprime m n) :
+    symbol (m:O) (n:O)=1 := by
+  induction n using Nat.strong_induction_on generalizing m with
+  | h n ih =>
+    by_cases hn1 : n=1
+    · subst n
+      simpa only [Nat.cast_one] using symbol_one (m:O)
+    have hn0 : 0<n := Nat.pos_of_ne_zero (fun h => hn (by rw [h];exact dvd_zero 3))
+    have hsmall : ∀r : ℕ,r<n → Nat.Coprime r n → symbol (r:O) (n:O)=1 := by
+      intro r
+      induction r using Nat.strong_induction_on with
+      | h r ihr =>
+        intro hrn hcop
+        by_cases hr0 : r=0
+        · subst r
+          have : n=1 := by simpa using hcop
+          exact False.elim (hn1 this)
+        by_cases hr3 : 3∣r
+        · have hquot : r/3<r := Nat.div_lt_self (Nat.pos_of_ne_zero hr0) (by decide)
+          have hfactor : r=3*(r/3) := (Nat.mul_div_cancel' hr3).symm
+          have hqc : Nat.Coprime (r/3) n := hcop.of_dvd_left (Nat.div_dvd_of_dvd hr3)
+          rw [hfactor,rational_symbol_mul _ _ n]
+          norm_num only [Nat.cast_ofNat]
+          rw [rational_symbol_three n hn,one_mul]
+          exact ihr (r/3) hquot (lt_trans hquot hrn) hqc
+        · rw [rational_symbol_reciprocity r n hr3 hn]
+          exact ih r hrn hr3 n hcop.symm
+    rw [rational_symbol_mod]
+    apply hsmall (m%n) (Nat.mod_lt m hn0)
+    change Nat.gcd (m%n) n=1
+    rw [←Nat.gcd_rec n m]
+    exact hmn.symm
+
+
+lemma primary_int_natAbs_not_three (a : ℤ) (ha : lambda^2∣(a:O)-1) : ¬3∣a.natAbs := by
+  intro h
+  have hInt : (3:ℤ)∣a := Int.natCast_dvd.mpr h
+  have hO : (3:O)∣(a:O) := by
+    rcases hInt with ⟨b,hb⟩
+    refine ⟨(b:O),?_⟩
+    simpa only [Int.cast_mul,Int.cast_ofNat] using congrArg (fun z : ℤ => (z:O)) hb
+  have hL2 : lambda∣lambda^2 := dvd_pow_self _ (by decide : (2:ℕ)≠0)
+  have hLa := (hL2.trans lambda_sq_dvd_three).trans hO
+  have hLa1 := hL2.trans ha
+  have h1 : lambda∣(1:O) := by
+    convert dvd_sub hLa hLa1 using 1 ; ring
+  exact lambda_not_dvd_two (h1.trans (one_dvd 2))
+
+/-- Signs do not affect a rational cubic symbol with primary denominator. -/
+theorem integer_symbol_eq_one (c a : ℤ) (ha : lambda^2∣(a:O)-1)
+    (hcop : Nat.Coprime c.natAbs a.natAbs) : symbol (c:O) (a:O)=1 := by
+  have hnum : symbol (c:O) (a:O)=symbol (c.natAbs:O) (a:O) := by
+    rcases Int.natAbs_eq c with h|h
+    · have he : (c:O)=(c.natAbs:O) := by
+        simpa only [Int.cast_natCast] using congrArg (fun z : ℤ => (z:O)) h
+      exact congrArg (fun z : O => symbol z (a:O)) he
+    · have he : (c:O)=-(c.natAbs:O) := by
+        simpa only [Int.cast_neg,Int.cast_natCast] using congrArg (fun z : ℤ => (z:O)) h
+      exact (congrArg (fun z : O => symbol z (a:O)) he).trans
+        (symbol_neg_numerator _ _ ha)
+  rw [hnum]
+  have hden : symbol (c.natAbs:O) (a:O)=symbol (c.natAbs:O) (a.natAbs:O) := by
+    rcases Int.natAbs_eq a with h|h
+    · have he : (a:O)=(a.natAbs:O) := by
+        simpa only [Int.cast_natCast] using congrArg (fun z : ℤ => (z:O)) h
+      exact congrArg (symbol (c.natAbs:O)) he
+    · have he : (a:O)=-(a.natAbs:O) := by
+        simpa only [Int.cast_neg,Int.cast_natCast] using congrArg (fun z : ℤ => (z:O)) h
+      rw [he]
+      simp only [symbol,Ideal.span_singleton_neg]
+  rw [hden]
+  exact rational_symbol_eq_one a.natAbs (primary_int_natAbs_not_three a ha) c.natAbs hcop
+
+open CubicJacobi CubicRamified
+theorem value_rational_intersection (g : SL(2,ℤ)) (hg : rationalEmbedding g∈levelThree) :
+    value ⟨rationalEmbedding g,hg⟩=1 := by
+  have hdet : g 0 0*g 1 1-g 0 1*g 1 0=1 := by
+    simpa only [Matrix.det_fin_two] using g.property
+  have hcop : IsCoprime (g 1 0) (g 0 0) := by
+    refine ⟨-(g 0 1),g 1 1,?_⟩
+    linear_combination hdet
+  have hp := levelThree_primary ⟨rationalEmbedding g,hg⟩
+  change lambda^2∣((g 0 0:ℤ):O)-1 at hp
+  change symbol ((g 1 0:ℤ):O) ((g 0 0:ℤ):O)=1
+  exact integer_symbol_eq_one (g 1 0) (g 0 0) hp (Int.isCoprime_iff_nat_coprime.mp hcop)
+
+theorem complexCharacter_rational_intersection (g : SL(2,ℤ)) (hg : rationalEmbedding g∈levelThree) :
+    complexCharacter ⟨rationalEmbedding g,hg⟩=1 := by
+  change ringComplex (value ⟨rationalEmbedding g,hg⟩)=1
+  rw [value_rational_intersection g hg,map_one]
+
+/-- The product subgroup `Γ(3) · SL₂(ℤ)`. -/
+def rationalExtension : Subgroup (SL(2,O)) where
+  carrier g := ∃n : levelThree,∃r : SL(2,ℤ),(n:SL(2,O))*rationalEmbedding r=g
+  one_mem' := ⟨1,1,by simp⟩
+  mul_mem' := by
+    rintro g h ⟨n,r,rfl⟩ ⟨m,s,rfl⟩
+    refine ⟨n*levelThreeConjugate (rationalEmbedding r) m,r*s,?_⟩
+    simp [levelThreeConjugate,map_mul,mul_assoc]
+  inv_mem' := by
+    rintro g ⟨n,r,rfl⟩
+    refine ⟨levelThreeConjugate (rationalEmbedding r⁻¹) n⁻¹,r⁻¹,?_⟩
+    simp [levelThreeConjugate,map_inv,mul_assoc]
+
+lemma levelThree_le_rationalExtension : levelThree≤rationalExtension := by
+  intro g hg
+  exact ⟨⟨g,hg⟩,1,by simp⟩
+
+lemma rational_mem_rationalExtension (r : SL(2,ℤ)) : rationalEmbedding r∈rationalExtension :=
+  ⟨1,r,by simp⟩
+
+lemma rationalExtension_eq_sup : rationalExtension=levelThree⊔rationalEmbedding.range := by
+  apply le_antisymm
+  · rintro g ⟨n,r,rfl⟩
+    exact Subgroup.mul_mem _
+      ((show levelThree≤levelThree⊔rationalEmbedding.range from le_sup_left) n.property)
+      ((show rationalEmbedding.range≤levelThree⊔rationalEmbedding.range from le_sup_right) ⟨r,rfl⟩)
+  · apply sup_le levelThree_le_rationalExtension
+    rintro g ⟨r,rfl⟩
+    exact rational_mem_rationalExtension r
+
+/-- Triviality on the rational intersection makes the extension independent of decomposition. -/
+lemma complexCharacter_product_well_defined (n m : levelThree) (r s : SL(2,ℤ))
+    (h : (n:SL(2,O))*rationalEmbedding r=(m:SL(2,O))*rationalEmbedding s) :
+    complexCharacter n=complexCharacter m := by
+  have he : ((m⁻¹*n:levelThree):SL(2,O))=rationalEmbedding (s*r⁻¹) := by
+    have hh := congrArg (fun g : SL(2,O)=>(m:SL(2,O))⁻¹*g*(rationalEmbedding r)⁻¹) h
+    simpa [map_mul,map_inv,mul_assoc] using hh
+  have hm : rationalEmbedding (s*r⁻¹)∈levelThree := he ▸ (m⁻¹*n).property
+  have hv : complexCharacter (m⁻¹*n)=1 := by
+    have he' : (m⁻¹*n:levelThree)=⟨rationalEmbedding (s*r⁻¹),hm⟩ := Subtype.ext he
+    rw [he']
+    exact complexCharacter_rational_intersection (s*r⁻¹) hm
+  calc
+    complexCharacter n=complexCharacter (m*(m⁻¹*n)) := by rw [mul_inv_cancel_left]
+    _ = complexCharacter m*complexCharacter (m⁻¹*n) := map_mul _ _ _
+    _ = complexCharacter m := by rw [hv,mul_one]
+
+def rationalExtensionLeft (g : rationalExtension) : levelThree := g.property.choose
+
+def rationalExtensionRight (g : rationalExtension) : SL(2,ℤ) := g.property.choose_spec.choose
+
+lemma rationalExtension_product (g : rationalExtension) :
+    (rationalExtensionLeft g:SL(2,O))*rationalEmbedding (rationalExtensionRight g)=(g:SL(2,O)) :=
+  g.property.choose_spec.choose_spec
+
+def rationalExtensionValue (g : rationalExtension) : ℂ := complexCharacter (rationalExtensionLeft g)
+
+lemma rationalExtensionValue_of_product (g : rationalExtension) (n : levelThree) (r : SL(2,ℤ))
+    (h : (n:SL(2,O))*rationalEmbedding r=(g:SL(2,O))) : rationalExtensionValue g=complexCharacter n :=
+  complexCharacter_product_well_defined (rationalExtensionLeft g) n (rationalExtensionRight g) r
+    ((rationalExtension_product g).trans h.symm)
+
+/-- The extended cubic character, trivial on rational matrices. -/
+def extendedComplexCharacter : rationalExtension→*ℂ where
+  toFun := rationalExtensionValue
+  map_one' := by
+    rw [rationalExtensionValue_of_product 1 1 1 (by simp),map_one]
+  map_mul' g h := by
+    have hp :
+        ((rationalExtensionLeft g*levelThreeConjugate (rationalEmbedding (rationalExtensionRight g)) (rationalExtensionLeft h):levelThree):SL(2,O))*
+          rationalEmbedding (rationalExtensionRight g*rationalExtensionRight h)=((g*h:rationalExtension):SL(2,O)) := by
+      simp only [Subgroup.coe_mul,levelThreeConjugate,map_mul]
+      simp only [mul_assoc,inv_mul_cancel_left]
+      rw [←rationalExtension_product g,←rationalExtension_product h]
+      group
+    rw [rationalExtensionValue_of_product (g*h) _ _ hp,map_mul,complexCharacter_conjugate_rational]
+    rfl
+
+lemma extendedComplexCharacter_restrict (n : levelThree) :
+    extendedComplexCharacter ⟨(n:SL(2,O)),levelThree_le_rationalExtension n.property⟩=complexCharacter n := by
+  exact rationalExtensionValue_of_product _ n 1 (by simp)
+
+lemma extendedComplexCharacter_rational (r : SL(2,ℤ)) :
+    extendedComplexCharacter ⟨rationalEmbedding r,rational_mem_rationalExtension r⟩=1 := by
+  exact (rationalExtensionValue_of_product _ 1 r (by simp)).trans (map_one _)
+
+lemma extendedComplexCharacter_cube (g : rationalExtension) : extendedComplexCharacter g^3=1 :=
+  complexCharacter_cube (rationalExtensionLeft g)
+
+lemma norm_extendedComplexCharacter (g : rationalExtension) : ‖extendedComplexCharacter g‖=1 :=
+  norm_complexCharacter (rationalExtensionLeft g)
+
+/-- The rational extension normalizes the integral metaplectic kernel. -/
+theorem globalKubotaKernel_conjugate (g : rationalExtension) (k : SL(2,O))
+    (hk : k∈globalKubotaKernel) :
+    (g:SL(2,O))*k*(g:SL(2,O))⁻¹∈globalKubotaKernel := by
+  obtain ⟨hk3,hkv⟩ := (globalKubotaKernel_mem k).mp hk
+  let n : levelThree := ⟨k,hk3⟩
+  let n2 : rationalExtension := ⟨k,levelThree_le_rationalExtension hk3⟩
+  let cn := levelThreeConjugate (g:SL(2,O)) n
+  refine (globalKubotaKernel_mem _).mpr ⟨cn.property,?_⟩
+  change complexCharacter cn=1
+  rw [←extendedComplexCharacter_restrict cn]
+  have he : (⟨(cn:SL(2,O)),levelThree_le_rationalExtension cn.property⟩:rationalExtension)=g*n2*g⁻¹ :=
+    Subtype.ext rfl
+  rw [he,map_mul,map_mul]
+  have hn : extendedComplexCharacter n2=1 :=
+    (extendedComplexCharacter_restrict n).trans hkv
+  rw [hn,mul_one,←map_mul,mul_inv_cancel,map_one]
+
+end RationalSource
+
+open RationalSource
+
+/-- The level-three subgroup inside its rational extension. -/
+def levelThreeInRationalExtension : Subgroup rationalExtension :=
+  levelThree.comap rationalExtension.subtype
+
+instance levelThreeInRationalExtension_normal : levelThreeInRationalExtension.Normal where
+  conj_mem n hn g := (levelThreeConjugate (g : SL(2, O)) ⟨(n : SL(2, O)), hn⟩).property
+
+instance levelThreeInRationalExtension_finiteIndex : levelThreeInRationalExtension.FiniteIndex := by
+  letI : levelThree.FiniteIndex := levelThree_finiteIndex
+  change (levelThree.subgroupOf rationalExtension).FiniteIndex
+  infer_instance
+
+def rationalSourceLift : SL(2, ℤ) →* rationalExtension where
+  toFun r := ⟨rationalEmbedding r, rational_mem_rationalExtension r⟩
+  map_one' := Subtype.ext (map_one _)
+  map_mul' _ _ := Subtype.ext (map_mul _ _ _)
+
+def rationalSourceQuotient : SL(2, ℤ) →* (rationalExtension ⧸ levelThreeInRationalExtension) :=
+  (QuotientGroup.mk' levelThreeInRationalExtension).comp rationalSourceLift
+
+lemma rationalSourceQuotient_surjective : Function.Surjective rationalSourceQuotient := by
+  intro q
+  obtain ⟨g, rfl⟩ := QuotientGroup.mk'_surjective levelThreeInRationalExtension q
+  obtain ⟨n, r, hr⟩ := g.property
+  refine ⟨r, ?_⟩
+  let n' : rationalExtension := ⟨(n : SL(2, O)), levelThree_le_rationalExtension n.property⟩
+  have hg : g = n' * rationalSourceLift r := Subtype.ext hr.symm
+  have hn : QuotientGroup.mk' levelThreeInRationalExtension n' = 1 :=
+    (QuotientGroup.eq_one_iff n').mpr n.property
+  change QuotientGroup.mk' levelThreeInRationalExtension (rationalSourceLift r) = _
+  rw [hg, map_mul, hn, one_mul]
+
+instance rationalSourceQuotientFintype : Fintype (rationalExtension ⧸ levelThreeInRationalExtension) :=
+  Fintype.ofFinite _
+
+/-- Every source coset has a rational representative, on which the character is trivial. -/
+def rationalSourceSection (q : rationalExtension ⧸ levelThreeInRationalExtension) : SL(2, ℤ) :=
+  (rationalSourceQuotient_surjective q).choose
+
+lemma rationalSourceSection_spec (q : rationalExtension ⧸ levelThreeInRationalExtension) :
+    rationalSourceQuotient (rationalSourceSection q) = q :=
+  (rationalSourceQuotient_surjective q).choose_spec
+
+lemma extendedComplexCharacter_sourceLift (r : SL(2, ℤ)) :
+    extendedComplexCharacter (rationalSourceLift r) = 1 := extendedComplexCharacter_rational r
+
+/-- Normalized finite averaging transfers the cubic character to the rational extension. -/
+def rationalSourceProjection (f : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ)⁻¹ *
+    ∑ q : rationalExtension ⧸ levelThreeInRationalExtension,
+      f (integralComplexMatrix (rationalEmbedding (rationalSourceSection q)) • w)
+
+lemma rationalSourceSection_translate (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (q : rationalExtension ⧸ levelThreeInRationalExtension) (g : rationalExtension) (w : HyperbolicSpace) :
+    f (integralComplexMatrix (rationalEmbedding (rationalSourceSection q)) •
+      (integralComplexMatrix (g : SL(2, O)) • w)) = extendedComplexCharacter g *
+      f (integralComplexMatrix (rationalEmbedding (rationalSourceSection
+        (q * QuotientGroup.mk' levelThreeInRationalExtension g))) • w) := by
+  let r := rationalSourceSection q
+  let s := rationalSourceSection (q * QuotientGroup.mk' levelThreeInRationalExtension g)
+  let m : rationalExtension := rationalSourceLift r * g * (rationalSourceLift s)⁻¹
+  have hm : m ∈ levelThreeInRationalExtension := by
+    apply (QuotientGroup.eq_one_iff (N := levelThreeInRationalExtension) m).mp
+    change QuotientGroup.mk' levelThreeInRationalExtension
+      (rationalSourceLift r * g * (rationalSourceLift s)⁻¹) = 1
+    rw [map_mul, map_mul, map_inv]
+    change rationalSourceQuotient r * QuotientGroup.mk' levelThreeInRationalExtension g *
+      (rationalSourceQuotient s)⁻¹ = 1
+    rw [rationalSourceSection_spec, rationalSourceSection_spec, mul_inv_cancel]
+  let n : levelThree := ⟨(m : SL(2, O)), hm⟩
+  have hchar : complexCharacter n = extendedComplexCharacter g := by
+    rw [← extendedComplexCharacter_restrict n]
+    change extendedComplexCharacter (rationalSourceLift r * g * (rationalSourceLift s)⁻¹) = _
+    rw [map_mul, map_mul, ← map_inv rationalSourceLift,
+      extendedComplexCharacter_sourceLift, extendedComplexCharacter_sourceLift, one_mul, mul_one]
+  have he : rationalEmbedding r * (g : SL(2, O)) = (n : SL(2, O)) * rationalEmbedding s := by
+    change _ = (rationalEmbedding r * (g : SL(2, O)) * (rationalEmbedding s)⁻¹) * rationalEmbedding s
+    group
+  change f (integralComplexMatrix (rationalEmbedding r) •
+    (integralComplexMatrix (g : SL(2, O)) • w)) =
+      extendedComplexCharacter g * f (integralComplexMatrix (rationalEmbedding s) • w)
+  rw [← mul_smul, ← map_mul, he, map_mul, integralComplexMatrix_levelThree, mul_smul, hf, hchar]
+
+theorem rationalSourceProjection_automorphy (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (g : rationalExtension) (w : HyperbolicSpace) :
+    rationalSourceProjection f (integralComplexMatrix (g : SL(2, O)) • w) =
+      extendedComplexCharacter g * rationalSourceProjection f w := by
+  unfold rationalSourceProjection
+  simp_rw [rationalSourceSection_translate f hf]
+  rw [← Finset.mul_sum]
+  rw [Function.Bijective.sum_comp
+    (Group.mulRight_bijective (QuotientGroup.mk' levelThreeInRationalExtension g))
+    (fun q => f (integralComplexMatrix (rationalEmbedding (rationalSourceSection q)) • w))]
+  ring
+
+lemma rationalSourceProjection_fixed (f : HyperbolicSpace → ℂ)
+    (hf : ∀ g : rationalExtension, ∀ w,
+      f (integralComplexMatrix (g : SL(2, O)) • w) = extendedComplexCharacter g * f w)
+    (w : HyperbolicSpace) : rationalSourceProjection f w = f w := by
+  have he (q : rationalExtension ⧸ levelThreeInRationalExtension) :
+      f (integralComplexMatrix (rationalEmbedding (rationalSourceSection q)) • w) = f w := by
+    have h := hf (rationalSourceLift (rationalSourceSection q)) w
+    rw [extendedComplexCharacter_sourceLift, one_mul] at h
+    exact h
+  have hc : (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ) ≠ 0 :=
+    Nat.cast_ne_zero.mpr Fintype.card_ne_zero
+  simp only [rationalSourceProjection, he, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+  exact inv_mul_cancel_left₀ hc _
+
+lemma rationalSourceProjection_idempotent (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w) :
+    rationalSourceProjection (rationalSourceProjection f) = rationalSourceProjection f := by
+  funext w
+  exact rationalSourceProjection_fixed _ (rationalSourceProjection_automorphy f hf) w
+
+lemma rationalSourceProjection_continuous (f : HyperbolicSpace → ℂ) (hf : Continuous f) :
+    Continuous (rationalSourceProjection f) := by
+  apply continuous_const.mul
+  apply continuous_finsetSum
+  intro q hq
+  exact hf.comp (continuous_hyperbolic_action _)
+
+/-- The residual vector projected to the rational extension of the cubic group. -/
+def cubicSourceResidualFunction : HyperbolicSpace → ℂ := rationalSourceProjection cubicResidualFunction
+
+lemma cubicSourceResidualFunction_continuous : Continuous cubicSourceResidualFunction :=
+  rationalSourceProjection_continuous _ cubicResidualFunction_continuous
+
+theorem cubicSourceResidualFunction_automorphy (g : rationalExtension) (w : HyperbolicSpace) :
+    cubicSourceResidualFunction (integralComplexMatrix (g : SL(2, O)) • w) =
+      extendedComplexCharacter g * cubicSourceResidualFunction w :=
+  rationalSourceProjection_automorphy _ cubicResidualFunction_automorphy g w
+
+theorem cubicSourceResidualFunction_rational (r : SL(2, ℤ)) (w : HyperbolicSpace) :
+    cubicSourceResidualFunction (integralComplexMatrix (rationalEmbedding r) • w) =
+      cubicSourceResidualFunction w := by
+  have h := cubicSourceResidualFunction_automorphy (rationalSourceLift r) w
+  rw [extendedComplexCharacter_sourceLift, one_mul] at h
+  exact h
+
+/-- Conjugation by the rational extension preserves the metaplectic kernel. -/
+def kernelRationalConjugate (g : rationalExtension) : globalKubotaKernel ≃* globalKubotaKernel where
+  toFun n := ⟨(g : SL(2, O)) * (n : SL(2, O)) * (g : SL(2, O))⁻¹,
+    globalKubotaKernel_conjugate g n n.property⟩
+  invFun n := ⟨(g⁻¹ : rationalExtension) * (n : SL(2, O)) * (g⁻¹ : rationalExtension)⁻¹,
+    globalKubotaKernel_conjugate g⁻¹ n n.property⟩
+  left_inv n := by apply Subtype.ext; simp only [Subgroup.coe_inv, inv_inv]; group
+  right_inv n := by apply Subtype.ext; simp only [Subgroup.coe_inv, inv_inv]; group
+  map_mul' n m := by apply Subtype.ext; simp only [Subgroup.coe_mul]; group
+
+lemma rational_action_respects_kernel (g : rationalExtension) (u v : HyperbolicSpace)
+    (h : (integralOrbitRel globalKubotaKernel).r u v) :
+    (integralOrbitRel globalKubotaKernel).r
+      (integralComplexMatrix (g : SL(2, O)) • u) (integralComplexMatrix (g : SL(2, O)) • v) := by
+  obtain ⟨n, hn⟩ := h
+  refine ⟨kernelRationalConjugate g n, ?_⟩
+  change integralComplexMatrix ((g : SL(2, O)) * (n : SL(2, O)) * (g : SL(2, O))⁻¹) •
+    (integralComplexMatrix (g : SL(2, O)) • u) = integralComplexMatrix (g : SL(2, O)) • v
+  rw [map_mul, map_mul, map_inv, mul_smul, mul_smul, inv_smul_smul, hn]
+
+def kernelRationalAction (g : rationalExtension) : KernelQuotient → KernelQuotient :=
+  Quotient.map' (fun w => integralComplexMatrix (g : SL(2, O)) • w) (rational_action_respects_kernel g)
+
+lemma kernelRationalAction_mk (g : rationalExtension) (w : HyperbolicSpace) :
+    kernelRationalAction g (integralOrbitProjection globalKubotaKernel w) =
+      integralOrbitProjection globalKubotaKernel (integralComplexMatrix (g : SL(2, O)) • w) := rfl
+
+lemma kernelRationalAction_continuous (g : rationalExtension) : Continuous (kernelRationalAction g) :=
+  (continuous_hyperbolic_action (integralComplexMatrix (g : SL(2, O)))).quotient_map'
+    (rational_action_respects_kernel g)
+
+lemma kernelRationalAction_fundamentalDomain (g : rationalExtension) :
+    IsFundamentalDomain globalKubotaKernel
+      ((fun w : HyperbolicSpace => integralComplexMatrix (g : SL(2, O)) • w) ''
+        hyperbolicFundamentalSet globalKubotaKernel) hyperbolicVolume := by
+  apply (hyperbolicFundamentalSet_isFundamentalDomain globalKubotaKernel
+    globalKubotaKernel_le_levelThree hyperbolicVolume).image_of_equiv
+    (MulAction.toPerm (integralComplexMatrix (g : SL(2, O))))
+    (show Measure.QuasiMeasurePreserving (MulAction.toPerm (integralComplexMatrix (g : SL(2, O)))).symm
+      hyperbolicVolume hyperbolicVolume from
+      (measurePreserving_smul (integralComplexMatrix (g : SL(2, O)))⁻¹ hyperbolicVolume).quasiMeasurePreserving)
+    (kernelRationalConjugate g⁻¹).toEquiv
+  intro n w
+  change integralComplexMatrix (g : SL(2, O)) •
+    (integralComplexMatrix ((g⁻¹ : rationalExtension) * (n : SL(2, O)) * (g⁻¹ : rationalExtension)⁻¹) • w) =
+      integralComplexMatrix (n : SL(2, O)) • (integralComplexMatrix (g : SL(2, O)) • w)
+  simp only [Subgroup.coe_inv, map_mul, map_inv, inv_inv, mul_smul, smul_inv_smul]
+
+/-- The finite rational action preserves quotient volume, hence its pullback is an isometry. -/
+lemma kernelRationalAction_measurePreserving (g : rationalExtension) :
+    MeasurePreserving (kernelRationalAction g) (integralQuotientVolume globalKubotaKernel)
+      (integralQuotientVolume globalKubotaKernel) := by
+  refine ⟨(kernelRationalAction_continuous g).measurable, ?_⟩
+  let act : HyperbolicSpace → HyperbolicSpace := fun w => integralComplexMatrix (g : SL(2, O)) • w
+  have hmap := (measurePreserving_smul (integralComplexMatrix (g : SL(2, O))) hyperbolicVolume).restrict_image_emb
+    (measurableEmbedding_const_smul _) (hyperbolicFundamentalSet globalKubotaKernel)
+  have heq : kernelRationalAction g ∘ integralOrbitProjection globalKubotaKernel =
+      integralOrbitProjection globalKubotaKernel ∘ act := rfl
+  change Measure.map (kernelRationalAction g)
+    (Measure.map (integralOrbitProjection globalKubotaKernel)
+      (hyperbolicVolume.restrict (hyperbolicFundamentalSet globalKubotaKernel))) = _
+  rw [Measure.map_map (kernelRationalAction_continuous g).measurable
+    (measurable_integralOrbitProjection _), heq,
+    ← Measure.map_map (measurable_integralOrbitProjection _) (continuous_hyperbolic_action _).measurable]
+  change Measure.map (integralOrbitProjection globalKubotaKernel)
+    (Measure.map act (hyperbolicVolume.restrict (hyperbolicFundamentalSet globalKubotaKernel))) = _
+  rw [hmap.map_eq]
+  exact integralQuotientVolume_independent globalKubotaKernel globalKubotaKernel_le_levelThree _
+    (kernelRationalAction_fundamentalDomain g)
+
+def kernelRationalPullback (g : rationalExtension) : KernelQuotientL2 →ₗᵢ[ℂ] KernelQuotientL2 :=
+  Lp.compMeasurePreservingₗᵢ ℂ (kernelRationalAction g) (kernelRationalAction_measurePreserving g)
+
+lemma kernelRationalPullback_ae (g : rationalExtension) (F : KernelQuotientL2) :
+    kernelRationalPullback g F =ᵐ[integralQuotientVolume globalKubotaKernel]
+      fun q => F (kernelRationalAction g q) :=
+  Lp.coeFn_compMeasurePreserving F (kernelRationalAction_measurePreserving g)
+
+/-- The same rational average on the actual quotient Hilbert space. -/
+def kernelRationalSourceProjection : KernelQuotientL2 →L[ℂ] KernelQuotientL2 :=
+  (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ)⁻¹ •
+    ∑ q : rationalExtension ⧸ levelThreeInRationalExtension,
+      (kernelRationalPullback (rationalSourceLift (rationalSourceSection q))).toContinuousLinearMap
+
+lemma kernelRationalSourceProjection_apply (F : KernelQuotientL2) :
+    kernelRationalSourceProjection F =
+      (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ)⁻¹ •
+        ∑ q : rationalExtension ⧸ levelThreeInRationalExtension,
+          kernelRationalPullback (rationalSourceLift (rationalSourceSection q)) F := by
+  simp only [kernelRationalSourceProjection, smul_apply, _root_.sum_apply]
+  rfl
+
+lemma kernelRationalSourceProjection_ae (F : KernelQuotientL2) :
+    kernelRationalSourceProjection F =ᵐ[integralQuotientVolume globalKubotaKernel]
+      fun x => (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ)⁻¹ *
+        ∑ q : rationalExtension ⧸ levelThreeInRationalExtension,
+          F (kernelRationalAction (rationalSourceLift (rationalSourceSection q)) x) := by
+  let c : ℂ := (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℂ)⁻¹
+  let A (q : rationalExtension ⧸ levelThreeInRationalExtension) : KernelQuotientL2 :=
+    kernelRationalPullback (rationalSourceLift (rationalSourceSection q)) F
+  have he : kernelRationalSourceProjection F = c • ∑ q, A q := kernelRationalSourceProjection_apply F
+  rw [he]
+  have hall := ae_all_iff.mpr (fun q => kernelRationalPullback_ae
+    (rationalSourceLift (rationalSourceSection q)) F)
+  filter_upwards [Lp.coeFn_smul c (∑ q, A q), Lp.coeFn_fun_finsetSum Finset.univ A, hall] with x hc hs hx
+  rw [hc, Pi.smul_apply, smul_eq_mul, hs]
+  change c * ∑ q, A q x = _
+  congr 1
+  exact Finset.sum_congr rfl (fun q _ => hx q)
+
+lemma rationalSourceProjection_congr_ae (f g : HyperbolicSpace → ℂ)
+    (h : f =ᵐ[hyperbolicVolume] g) :
+    rationalSourceProjection f =ᵐ[hyperbolicVolume] rationalSourceProjection g := by
+  have hall := ae_all_iff.mpr (fun q : rationalExtension ⧸ levelThreeInRationalExtension =>
+    (measurePreserving_smul (integralComplexMatrix (rationalEmbedding (rationalSourceSection q)))
+      hyperbolicVolume).quasiMeasurePreserving.ae_eq_comp h)
+  filter_upwards [hall] with w hw
+  unfold rationalSourceProjection
+  congr 1
+  exact Finset.sum_congr rfl (fun q _ => hw q)
+
+lemma kernelRationalSourceProjection_representative (F : KernelQuotientL2) (f : HyperbolicSpace → ℂ)
+    (hf : (fun w => F (integralOrbitProjection globalKubotaKernel w)) =ᵐ[hyperbolicVolume] f) :
+    (fun w => kernelRationalSourceProjection F (integralOrbitProjection globalKubotaKernel w))
+      =ᵐ[hyperbolicVolume] rationalSourceProjection f := by
+  have he := kernelProjection_quasiMeasurePreserving.ae_eq_comp (kernelRationalSourceProjection_ae F)
+  change (fun w => kernelRationalSourceProjection F (integralOrbitProjection globalKubotaKernel w))
+    =ᵐ[hyperbolicVolume] rationalSourceProjection (fun w => F (integralOrbitProjection globalKubotaKernel w)) at he
+  exact he.trans (rationalSourceProjection_congr_ae _ _ hf)
+
+theorem cubicSourceResidualFunction_represents_projection :
+    (fun w => kernelRationalSourceProjection cubicEisensteinResidue
+      (integralOrbitProjection globalKubotaKernel w)) =ᵐ[hyperbolicVolume] cubicSourceResidualFunction :=
+  kernelRationalSourceProjection_representative _ _ cubicEisensteinResidue_continuous_representative
+
+/-- Finite averaging of isometries is a contraction on the actual quotient space. -/
+theorem kernelRationalSourceProjection_norm_le (F : KernelQuotientL2) :
+    ‖kernelRationalSourceProjection F‖ ≤ ‖F‖ := by
+  have hc : 0 < (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℝ) :=
+    Nat.cast_pos.mpr Fintype.card_pos
+  rw [kernelRationalSourceProjection_apply, norm_smul, norm_inv, Complex.norm_natCast]
+  calc
+    _ ≤ (Fintype.card (rationalExtension ⧸ levelThreeInRationalExtension) : ℝ)⁻¹ *
+        ∑ q : rationalExtension ⧸ levelThreeInRationalExtension,
+          ‖kernelRationalPullback (rationalSourceLift (rationalSourceSection q)) F‖ :=
+      mul_le_mul_of_nonneg_left (norm_sum_le _ _) (inv_nonneg.mpr hc.le)
+    _ = ‖F‖ := by
+      simp only [LinearIsometry.norm_map, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+      exact inv_mul_cancel_left₀ hc.ne' _
+
+/-- Rational upper translations act on the actual cusp rows by conjugation. -/
+def rationalUnipotent (t : ℤ) : SL(2, ℤ) := ⟨!![1, t; 0, 1], by simp [Matrix.det_fin_two]⟩
+
+lemma rationalUnipotent_neg (t : ℤ) : rationalUnipotent (-t) = (rationalUnipotent t)⁻¹ := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [rationalUnipotent, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+
+lemma rationalUnipotent_embedding (t : ℤ) :
+    (rationalEmbedding (rationalUnipotent t) : Matrix (Fin 2) (Fin 2) O) = !![1, (t : O); 0, 1] := by
+  apply Matrix.ext
+  intro i j
+  change (Int.castRingHom O) ((!![1, t; 0, 1] : Matrix (Fin 2) (Fin 2) ℤ) i j) = _
+  fin_cases i <;> fin_cases j <;> simp
+
+lemma row_unipotent_conjugate (t : ℤ) (M : levelThree) :
+    row (levelThreeConjugate (rationalEmbedding (rationalUnipotent (-t))) M) =
+      Matrix.vecMul (row M) (rationalEmbedding (rationalUnipotent t) : SL(2, O)) := by
+  change ((rationalEmbedding (rationalUnipotent (-t)) * (M : SL(2, O)) *
+      (rationalEmbedding (rationalUnipotent (-t)))⁻¹ : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) 1 = _
+  simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv,
+    rationalUnipotent_embedding, Matrix.adjugate_fin_two]
+  funext j
+  fin_cases j <;> simp [row, Matrix.mul_apply, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+
+def cuspUnipotentTranslate (t : ℤ) : CuspCosets → CuspCosets :=
+  Quotient.map (fun M => levelThreeConjugate (rationalEmbedding (rationalUnipotent (-t))) M) (by
+    intro M N h
+    change row (levelThreeConjugate _ M) = row (levelThreeConjugate _ N)
+    rw [row_unipotent_conjugate, row_unipotent_conjugate, show row M = row N from h])
+
+lemma cuspUnipotentTranslate_inverse (t : ℤ) (x : CuspCosets) :
+    cuspUnipotentTranslate (-t) (cuspUnipotentTranslate t x) = x := by
+  induction x using Quotient.inductionOn with
+  | _ M =>
+    change cosetOf (levelThreeConjugate (rationalEmbedding (rationalUnipotent (- -t)))
+      (levelThreeConjugate (rationalEmbedding (rationalUnipotent (-t))) M)) = cosetOf M
+    rw [neg_neg, rationalUnipotent_neg, map_inv, ← levelThreeConjugate_mul,
+      mul_inv_cancel, levelThreeConjugate_one]
+
+def cuspUnipotentEquiv (t : ℤ) : CuspCosets ≃ CuspCosets where
+  toFun := cuspUnipotentTranslate t
+  invFun := cuspUnipotentTranslate (-t)
+  left_inv := cuspUnipotentTranslate_inverse t
+  right_inv x := by simpa only [neg_neg] using cuspUnipotentTranslate_inverse (-t) x
+
+lemma cosetRow_cuspUnipotentEquiv (t : ℤ) (x : CuspCosets) :
+    cosetRow (cuspUnipotentEquiv t x) =
+      Matrix.vecMul (cosetRow x) (rationalEmbedding (rationalUnipotent t) : SL(2, O)) := by
+  induction x using Quotient.inductionOn with
+  | _ M => exact row_unipotent_conjugate t M
+
+lemma cosetCharacter_cuspUnipotentEquiv (t : ℤ) (x : CuspCosets) :
+    cosetCharacter (cuspUnipotentEquiv t x) = cosetCharacter x := by
+  induction x using Quotient.inductionOn with
+  | _ M => exact complexCharacter_conjugate_rational (rationalUnipotent (-t)) M
+
+lemma embeddedRow_cuspUnipotentEquiv (t : ℤ) (x : CuspCosets) :
+    embeddedRow (cuspUnipotentEquiv t x) = Matrix.vecMul (embeddedRow x)
+      (integralComplexMatrix (rationalEmbedding (rationalUnipotent t)) : SL(2, ℂ)) := by
+  funext j
+  simp only [embeddedRow, Function.comp_def, cosetRow_cuspUnipotentEquiv,
+    Matrix.vecMul, dotProduct, map_sum, map_mul]
+  rfl
+
+/-- Integral horizontal translation reindexes the series, without a convergence hypothesis. -/
+theorem eisenstein_unipotent (t : ℤ) (g : SL(2, ℂ)) (s : ℂ) :
+    eisenstein (integralComplexMatrix (rationalEmbedding (rationalUnipotent t)) * g) s = eisenstein g s := by
+  have he (x : CuspCosets) :
+      summand (integralComplexMatrix (rationalEmbedding (rationalUnipotent t)) * g) s x =
+        summand g s (cuspUnipotentEquiv t x) := by
+    rw [summand, summand, cosetCharacter_cuspUnipotentEquiv,
+      embeddedRow_cuspUnipotentEquiv, ← rowOperator_apply, rowOperator_mul]
+  unfold eisenstein
+  simp_rw [he]
+  exact (cuspUnipotentEquiv t).tsum_eq _
+
+theorem hyperbolicEisenstein_unipotent (t : ℤ) (s : ℂ) (w : HyperbolicSpace) :
+    hyperbolicEisenstein s (integralComplexMatrix (rationalEmbedding (rationalUnipotent t)) • w) =
+      hyperbolicEisenstein s w := by
+  induction w using Quotient.inductionOn with
+  | _ g => exact eisenstein_unipotent t g s
+
+/-- The trivial bound counts the invertible residue classes. -/
+lemma cubicUnitGaussSum_norm_le (h c : O) (hc : c ≠ 0) (hp : lambda ^ 2 ∣ c - 1) :
+    ‖cubicUnitGaussSum h c‖ ≤ (Ideal.absNorm (Ideal.span {c}) : ℝ) := by
+  letI : Finite (O ⧸ Ideal.span {c}) := (Ideal.span {c}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hc)
+  letI : Fintype (O ⧸ Ideal.span {c}) := Fintype.ofFinite _
+  letI : Fintype (CubicUnitResidue c) := Fintype.ofFinite _
+  have hnorm (r : CubicUnitResidue c) :
+      ‖ringComplex (symbol (principalResidueRep c r.1) c) *
+        residueAdditive (3 * h) c (principalResidueRep c r.1)‖ = 1 := by
+    have hu : IsUnit (Ideal.Quotient.mk (Ideal.span {c}) (principalResidueRep c r.1)) := by
+      rw [principalResidueRep_spec]
+      exact r.2
+    rw [norm_mul, symbol_norm_one _ c hp ((isUnit_quotient_span_iff c _).mp hu).symm]
+    simp only [residueAdditive, tracePhase_norm, one_mul]
+  rw [cubicUnitGaussSum, tsum_fintype]
+  calc
+    _ ≤ ∑ r : CubicUnitResidue c,
+        ‖ringComplex (symbol (principalResidueRep c r.1) c) *
+          residueAdditive (3 * h) c (principalResidueRep c r.1)‖ := norm_sum_le _ _
+    _ = (Fintype.card (CubicUnitResidue c) : ℝ) := by simp only [hnorm, Finset.sum_const,
+      Finset.card_univ, nsmul_eq_mul, mul_one]
+    _ ≤ (Fintype.card (O ⧸ Ideal.span {c}) : ℝ) := by exact_mod_cast Fintype.card_subtype_le (IsUnit : (O ⧸ Ideal.span {c}) → Prop)
+    _ = _ := by
+      change (Fintype.card (O ⧸ Ideal.span {c}) : ℝ) = (Nat.card (O ⧸ Ideal.span {c}) : ℝ)
+      rw [Nat.card_eq_fintype_card]
+
+/-- The unramified Dirichlet series with the normalized trace phase. -/
+def unramifiedCubicGaussSeries (s : ℂ) (h : O) : ℂ :=
+  ∑' I : GoodIdeal, unramifiedNormWeight s I.1 * cubicUnitGaussSum h (primaryIdealGenerator I.1)
+
+lemma unramifiedNormWeight_mul_norm (s : ℂ) (I : GoodIdeal) :
+    ‖unramifiedNormWeight s I.1‖ * (Ideal.absNorm I.1 : ℝ) =
+      ‖unramifiedNormWeight (s - 1) I.1‖ := by
+  have hn : 0 < ‖ringComplex (primaryIdealGenerator I.1)‖ :=
+    norm_pos_iff.mpr (ringComplex_ne_zero I.2)
+  rw [norm_unramifiedNormWeight, norm_unramifiedNormWeight,
+    ← primaryIdealGenerator_norm_sq I.1 I.2, ← Real.rpow_natCast _ 2,
+    ← Real.rpow_add hn]
+  congr 1
+  simp only [Complex.sub_re, Complex.one_re, Nat.cast_ofNat]
+  ring
+
+/-- Absolute convergence holds in the same half-plane as the Eisenstein source. -/
+theorem unramifiedCubicGaussSeries_summable_norm (s : ℂ) (hs : 2 < s.re) (h : O) :
+    Summable (fun I : GoodIdeal =>
+      ‖unramifiedNormWeight s I.1 * cubicUnitGaussSum h (primaryIdealGenerator I.1)‖) := by
+  have hsum := (unramifiedNormWeight_summable_norm (s - 1) (by
+    simp only [Complex.sub_re, Complex.one_re]; linarith)).subtype
+      (fun I : Ideal O => primaryIdealGenerator I ≠ 0)
+  apply hsum.of_nonneg_of_le (fun _ => norm_nonneg _)
+  intro I
+  rw [norm_mul]
+  calc
+    _ ≤ ‖unramifiedNormWeight s I.1‖ * (Ideal.absNorm I.1 : ℝ) := by
+      apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+      have hb := cubicUnitGaussSum_norm_le h (primaryIdealGenerator I.1) I.2
+        (primaryIdealGenerator_spec I.1 I.2).2
+      simpa only [(primaryIdealGenerator_spec I.1 I.2).1] using hb
+    _ = _ := unramifiedNormWeight_mul_norm s I
+
+/-- Cubic frequency factors disappear away from the modulus. -/
+theorem cubicUnitGaussSum_cube_shift (h c t : O) (hc : c ≠ 0)
+    (hp : lambda ^ 2 ∣ c - 1) (ht : IsCoprime c t) :
+    cubicUnitGaussSum (h * t ^ 3) c = cubicUnitGaussSum h c := by
+  have he := cubicUnitGaussSum_frequency_twist h c (t ^ 3) hc ht.pow_right
+  rw [symbol_pow_numerator t c hp, symbol_cube_of_isCoprime t c hp ht.symm,
+    map_one, one_mul] at he
+  exact he
+
+/-- CRT on invertible classes, with no choice of compatible representatives. -/
+def cubicUnitCRTEquiv (a b : O) (hab : IsCoprime a b) :
+    CubicUnitResidue (a * b) ≃ CubicUnitResidue a × CubicUnitResidue b :=
+  ((quotientProductEquiv a b hab).toEquiv.subtypeEquiv (fun q => by
+    rw [← MulEquiv.isUnit_map (quotientProductEquiv a b hab) (x := q), Prod.isUnit_iff]
+    rfl)).trans
+      Equiv.subtypeProdEquivProd
+
+lemma cubicUnitCRT_rep_left (a b : O) (hab : IsCoprime a b) (r : CubicUnitResidue (a * b)) :
+    a ∣ principalResidueRep (a * b) r.1 - principalResidueRep a (cubicUnitCRTEquiv a b hab r).1.1 := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  rw [principalResidueRep_spec]
+  exact congrArg (fun x => (quotientProductEquiv a b hab x).1) (principalResidueRep_spec (a * b) r.1)
+
+lemma cubicUnitCRT_rep_right (a b : O) (hab : IsCoprime a b) (r : CubicUnitResidue (a * b)) :
+    b ∣ principalResidueRep (a * b) r.1 - principalResidueRep b (cubicUnitCRTEquiv a b hab r).2.1 := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  rw [principalResidueRep_spec]
+  exact congrArg (fun x => (quotientProductEquiv a b hab x).2) (principalResidueRep_spec (a * b) r.1)
+
+lemma residueAdditive_unit_crt (h a b α β d : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hbez : α * b + β * a = 1) :
+    residueAdditive (3 * h) (a * b) d =
+      residueAdditive (3 * (h * α)) a d * residueAdditive (3 * (h * β)) b d := by
+  unfold residueAdditive
+  rw [← AddChar.map_add_eq_mul]
+  congr 1
+  have hae := ringComplex_ne_zero ha
+  have hbe := ringComplex_ne_zero hb
+  have he := congrArg ringComplex hbez
+  simp only [map_add, map_mul, map_one] at he
+  simp only [cuspFrequency, map_mul, map_ofNat]
+  field_simp [hae, hbe, ringComplex_ne_zero traceLambda_ne_zero]
+  linear_combination -(ringComplex h * ringComplex d) * he
+
+lemma cubicUnitGaussSum_crt (h a b α β : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hbez : α * b + β * a = 1) :
+    cubicUnitGaussSum h (a * b) = cubicUnitGaussSum (h * α) a * cubicUnitGaussSum (h * β) b := by
+  have hab : IsCoprime a b := ⟨β, α, by linear_combination hbez⟩
+  letI : Finite (O ⧸ Ideal.span {a}) := (Ideal.span {a}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr ha)
+  letI : Finite (O ⧸ Ideal.span {b}) := (Ideal.span {b}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hb)
+  letI : Finite (O ⧸ Ideal.span {a * b}) := (Ideal.span {a * b}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (mul_ne_zero ha hb))
+  letI : Fintype (CubicUnitResidue a) := Fintype.ofFinite _
+  letI : Fintype (CubicUnitResidue b) := Fintype.ofFinite _
+  letI : Fintype (CubicUnitResidue (a * b)) := Fintype.ofFinite _
+  have hpoint (r : CubicUnitResidue (a * b)) :
+      ringComplex (symbol (principalResidueRep (a * b) r.1) (a * b)) *
+        residueAdditive (3 * h) (a * b) (principalResidueRep (a * b) r.1) =
+      (ringComplex (symbol (principalResidueRep a (cubicUnitCRTEquiv a b hab r).1.1) a) *
+        residueAdditive (3 * (h * α)) a (principalResidueRep a (cubicUnitCRTEquiv a b hab r).1.1)) *
+      (ringComplex (symbol (principalResidueRep b (cubicUnitCRTEquiv a b hab r).2.1) b) *
+        residueAdditive (3 * (h * β)) b (principalResidueRep b (cubicUnitCRTEquiv a b hab r).2.1)) := by
+    rw [symbol_mul_denominator, map_mul, residueAdditive_unit_crt h a b α β _ ha hb hbez,
+      symbol_congr (cubicUnitCRT_rep_left a b hab r), symbol_congr (cubicUnitCRT_rep_right a b hab r),
+      residueAdditive_three_congr (h * α) a _ _ ha (cubicUnitCRT_rep_left a b hab r),
+      residueAdditive_three_congr (h * β) b _ _ hb (cubicUnitCRT_rep_right a b hab r)]
+    ring
+  rw [cubicUnitGaussSum, cubicUnitGaussSum, cubicUnitGaussSum]
+  calc
+    _ = ∑' r : CubicUnitResidue (a * b),
+        (ringComplex (symbol (principalResidueRep a (cubicUnitCRTEquiv a b hab r).1.1) a) *
+          residueAdditive (3 * (h * α)) a (principalResidueRep a (cubicUnitCRTEquiv a b hab r).1.1)) *
+        (ringComplex (symbol (principalResidueRep b (cubicUnitCRTEquiv a b hab r).2.1) b) *
+          residueAdditive (3 * (h * β)) b (principalResidueRep b (cubicUnitCRTEquiv a b hab r).2.1)) := tsum_congr hpoint
+    _ = ∑' r : CubicUnitResidue a × CubicUnitResidue b,
+        (ringComplex (symbol (principalResidueRep a r.1.1) a) *
+          residueAdditive (3 * (h * α)) a (principalResidueRep a r.1.1)) *
+        (ringComplex (symbol (principalResidueRep b r.2.1) b) *
+          residueAdditive (3 * (h * β)) b (principalResidueRep b r.2.1)) :=
+      (cubicUnitCRTEquiv a b hab).tsum_eq (fun r : CubicUnitResidue a × CubicUnitResidue b =>
+        (ringComplex (symbol (principalResidueRep a r.1.1) a) *
+          residueAdditive (3 * (h * α)) a (principalResidueRep a r.1.1)) *
+        (ringComplex (symbol (principalResidueRep b r.2.1) b) *
+          residueAdditive (3 * (h * β)) b (principalResidueRep b r.2.1)))
+    _ = _ := by
+      simp only [tsum_fintype, Fintype.sum_prod_type]
+      rw [Finset.sum_mul]
+      apply Finset.sum_congr rfl
+      intro r hr
+      rw [Finset.mul_sum]
+
+/-- Coprime Gauss factors carry exactly the reciprocal cubic-symbol twist. -/
+theorem cubicUnitGaussSum_coprime_product (h a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hab : IsCoprime a b) :
+    cubicUnitGaussSum h (a * b) =
+      ringComplex (symbol b a) * ringComplex (symbol a b) * cubicUnitGaussSum h a * cubicUnitGaussSum h b := by
+  obtain ⟨β, α, hbez⟩ := hab
+  have hbez' : α * b + β * a = 1 := by linear_combination hbez
+  have hab' : IsCoprime a b := ⟨β, α, hbez⟩
+  have hleft := cubicUnitGaussSum_frequency_twist (h * α) a b ha hab'
+  have hright := cubicUnitGaussSum_frequency_twist (h * β) b a hb hab'.symm
+  have hA : a ∣ (h * α) * b - h := ⟨-h * β, by linear_combination h * hbez'⟩
+  have hB : b ∣ (h * β) * a - h := ⟨-h * α, by linear_combination h * hbez'⟩
+  rw [cubicUnitGaussSum_frequency_congr _ h a ha hA] at hleft
+  rw [cubicUnitGaussSum_frequency_congr _ h b hb hB] at hright
+  rw [cubicUnitGaussSum_crt h a b α β ha hb hbez', ← hleft, ← hright]
+  ring
+
+/-- A reciprocal cubic twist is absorbed by the frequency `9ah`. -/
+lemma cubicUnitGaussSum_ramified_twist (h a b : O) (hb : b ≠ 0)
+    (hp : lambda ^ 2 ∣ b - 1) (hab : IsCoprime (3 * a) b) :
+    ringComplex (symbol a b) * ringComplex (symbol (3 * a) b) * cubicUnitGaussSum h b =
+      cubicUnitGaussSum (9 * h * a) b := by
+  have ht : IsCoprime b (9 * a) := by
+    have h3 := hab.of_mul_left_left
+    have ha := hab.of_mul_left_right
+    have hn : (9 : O) = 3 * 3 := by norm_num
+    rw [hn]
+    exact ((h3.mul_left h3).mul_left ha).symm
+  have he := cubicUnitGaussSum_frequency_twist h b (9 * a) hb ht
+  have hc : ringComplex (symbol a b) * ringComplex (symbol (3 * a) b) *
+      ringComplex (symbol (9 * a) b) = 1 := by
+    rw [← map_mul, ← map_mul, ← symbol_mul_numerator, ← symbol_mul_numerator]
+    rw [show a * (3 * a) * (9 * a) = (3 * a) ^ 3 by ring,
+      symbol_pow_numerator _ b hp, symbol_cube_of_isCoprime _ b hp hab, map_one]
+  calc
+    _ = (ringComplex (symbol a b) * ringComplex (symbol (3 * a) b)) *
+        (ringComplex (symbol (9 * a) b) * cubicUnitGaussSum (h * (9 * a)) b) := by rw [he]
+    _ = cubicUnitGaussSum (h * (9 * a)) b := by rw [← mul_assoc, hc, one_mul]
+    _ = _ := by rw [show h * (9 * a) = 9 * h * a by ring]
+
+/-- The ramified arithmetic factor changes only the unramified frequency. -/
+theorem arithmeticResidueSum_ramified_gauss (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n)
+    (b : O) (hb : lambda ^ 2 ∣ b - 1) :
+    arithmeticResidueSum h (((u : O) * lambda ^ n) * b) =
+      arithmeticResidueSum h ((u : O) * lambda ^ n) *
+        cubicUnitGaussSum (9 * h * ((u : O) * lambda ^ n)) b := by
+  rw [arithmeticResidueSum_ramified_split h u n hn b hb]
+  have he := cubicUnitGaussSum_ramified_twist h ((u : O) * lambda ^ n) b
+    (primary_ne_zero b hb) hb (ramified_primary_coprime u n b hb)
+  rw [← he]
+  ring
+
+lemma ramifiedLower_norm_sq (u : Oˣ) (n : ℕ) (I : GoodIdeal) :
+    ‖ringComplex (ramifiedLower u n I)‖ ^ 2 = ((3 ^ (n + 2) * Ideal.absNorm I.1 : ℕ) : ℝ) := by
+  rw [ringComplex_norm_sq_eq_absNorm_span]
+  unfold ramifiedLower
+  rw [← Ideal.span_singleton_mul_span_singleton, map_mul, ramifiedElement_absNorm,
+    (primaryIdealGenerator_spec I.1 I.2).1]
+
+lemma arithmeticDirichletTerm_ramified_gauss (s : ℂ) (h : O) (u : Oˣ) (n : ℕ) (I : GoodIdeal) :
+    arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1 =
+      (((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) * arithmeticResidueSum h ((u : O) * lambda ^ (n + 2))) *
+        (unramifiedNormWeight s I.1 *
+          cubicUnitGaussSum (9 * h * ((u : O) * lambda ^ (n + 2))) (primaryIdealGenerator I.1)) := by
+  change arithmeticDirichletTerm s h ⟨ramifiedLower u n I, ramifiedLower_level u n I⟩ = _
+  rw [arithmeticDirichletTerm, if_neg (ramifiedLower_ne_zero u n I)]
+  have hweight : ((‖ringComplex (ramifiedLower u n I)‖ ^ 2 : ℝ) : ℂ) ^ (-s) =
+      ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) * unramifiedNormWeight s I.1 := by
+    rw [unramifiedNormWeight_of_good s I.1 I.2, ramifiedLower_norm_sq, Complex.ofReal_natCast, Nat.cast_mul]
+    exact Complex.natCast_mul_natCast_cpow _ _ _
+  dsimp only at *
+  rw [hweight]
+  dsimp only [ramifiedLower]
+  rw [arithmeticResidueSum_ramified_gauss h u (n + 2) (by omega) _ (primaryIdealGenerator_spec I.1 I.2).2]
+  ring
+
+/-- Exact finite Gauss-series decomposition of each nonconstant scattering mode. -/
+theorem arithmeticDirichletSeries_finite_gauss (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    arithmeticDirichletSeries s h =
+      ∑' u : Oˣ, ∑ n ∈ Finset.range (ramifiedFrequencyBound h + 1),
+        (((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) * arithmeticResidueSum h ((u : O) * lambda ^ (n + 2))) *
+          unramifiedCubicGaussSeries s (9 * h * ((u : O) * lambda ^ (n + 2))) := by
+  rw [arithmeticDirichletSeries_finite_ramified s hs h hh]
+  apply tsum_congr
+  intro u
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [unramifiedCubicGaussSeries, ← tsum_mul_left]
+  exact tsum_congr (fun I => arithmeticDirichletTerm_ramified_gauss s h u n I)
+
+/-- Translation by a multiple of the base preserves units modulo every positive power. -/
+def cubicUnitPowerShift (p : O) (n : ℕ) (w : O)
+    (r : CubicUnitResidue (p ^ (n + 1))) : CubicUnitResidue (p ^ (n + 1)) :=
+  ⟨Ideal.Quotient.mk (Ideal.span {p ^ (n + 1)}) (principalResidueRep _ r.1 + p * w), by
+    apply (isUnit_quotient_span_iff _ _).mpr
+    have hcop : IsCoprime (p ^ (n + 1)) (principalResidueRep _ r.1) := by
+      apply (isUnit_quotient_span_iff _ _).mp
+      rw [principalResidueRep_spec]
+      exact r.2
+    obtain ⟨a, b, hab⟩ := hcop
+    have hbase : IsCoprime p (principalResidueRep (p ^ (n + 1)) r.1 + p * w) := by
+      refine ⟨a * p ^ n - b * w, b, ?_⟩
+      linear_combination hab - a * (pow_succ p n)
+    exact hbase.pow_left⟩
+
+lemma cubicUnitPowerShift_injective (p : O) (n : ℕ) (w : O) :
+    Function.Injective (cubicUnitPowerShift p n w) := by
+  intro r t hrt
+  apply Subtype.ext
+  have he := congrArg Subtype.val hrt
+  change Ideal.Quotient.mk (Ideal.span {p ^ (n + 1)}) (principalResidueRep _ r.1 + p * w) =
+    Ideal.Quotient.mk (Ideal.span {p ^ (n + 1)}) (principalResidueRep _ t.1 + p * w) at he
+  simp only [map_add, principalResidueRep_spec] at he
+  exact add_right_cancel he
+
+lemma cubicUnitPowerShift_rep (p : O) (n : ℕ) (w : O) (r : CubicUnitResidue (p ^ (n + 1))) :
+    p ^ (n + 1) ∣ principalResidueRep _ (cubicUnitPowerShift p n w r).1 -
+      (principalResidueRep _ r.1 + p * w) := by
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  exact principalResidueRep_spec _ _
+
+lemma cubicUnitGaussSum_power_eigen (h p : O) (hp : p ≠ 0) (n : ℕ) (w : O) :
+    residueAdditive (3 * h) (p ^ (n + 1)) (p * w) * cubicUnitGaussSum h (p ^ (n + 1)) =
+      cubicUnitGaussSum h (p ^ (n + 1)) := by
+  letI : Finite (O ⧸ Ideal.span {p ^ (n + 1)}) := (Ideal.span {p ^ (n + 1)}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero _ hp))
+  let e : CubicUnitResidue (p ^ (n + 1)) ≃ CubicUnitResidue (p ^ (n + 1)) :=
+    Equiv.ofBijective (cubicUnitPowerShift p n w)
+      ⟨cubicUnitPowerShift_injective p n w, Finite.surjective_of_injective (cubicUnitPowerShift_injective p n w)⟩
+  have hrep (r : CubicUnitResidue (p ^ (n + 1))) :
+      p ^ (n + 1) ∣ principalResidueRep _ (e r).1 - (principalResidueRep _ r.1 + p * w) :=
+    cubicUnitPowerShift_rep p n w r
+  have hs (r : CubicUnitResidue (p ^ (n + 1))) :
+      symbol (principalResidueRep _ (e r).1) (p ^ (n + 1)) =
+        symbol (principalResidueRep _ r.1) (p ^ (n + 1)) := by
+    rw [symbol_congr (hrep r), symbol_pow_denominator, symbol_pow_denominator]
+    congr 1
+    exact symbol_congr ⟨w, by ring⟩
+  unfold cubicUnitGaussSum
+  rw [← tsum_mul_left]
+  calc
+    _ = ∑' r : CubicUnitResidue (p ^ (n + 1)),
+        ringComplex (symbol (principalResidueRep _ (e r).1) (p ^ (n + 1))) *
+          residueAdditive (3 * h) (p ^ (n + 1)) (principalResidueRep _ (e r).1) := by
+      apply tsum_congr
+      intro r
+      rw [hs, residueAdditive_three_congr h _ _ _ (pow_ne_zero _ hp) (hrep r),
+        residueAdditive_add]
+      ring
+    _ = _ := e.tsum_eq (fun r : CubicUnitResidue (p ^ (n + 1)) =>
+      ringComplex (symbol (principalResidueRep _ r.1) (p ^ (n + 1))) *
+        residueAdditive (3 * h) (p ^ (n + 1)) (principalResidueRep _ r.1))
+
+/-- A Gauss sum modulo `p^(n+1)` is supported on frequencies divisible by `p^n`. -/
+theorem cubicUnitGaussSum_power_support (h p : O) (hp : p ≠ 0) (n : ℕ)
+    (hG : cubicUnitGaussSum h (p ^ (n + 1)) ≠ 0) : p ^ n ∣ h := by
+  have hp' := ringComplex_ne_zero hp
+  have hphase (w : O) : residueAdditive (3 * h) (p ^ (n + 1)) (p * w) = 1 :=
+    mul_right_cancel₀ hG ((cubicUnitGaussSum_power_eigen h p hp n w).trans (one_mul _).symm)
+  obtain ⟨q, hq⟩ := tracePhase_dual_lattice (ringComplex h / ringComplex (p ^ n)) (by
+    intro w
+    convert hphase w using 1
+    unfold residueAdditive cuspFrequency
+    simp only [map_mul, map_pow, map_ofNat, pow_succ]
+    congr 1
+    field_simp)
+  refine ⟨q, ?_⟩
+  apply ringComplex_injective
+  rw [map_mul, hq]
+  field_simp [ringComplex_ne_zero (pow_ne_zero n hp)]
+
+lemma cubicUnitGaussSum_power_vanish (h p : O) (hp : p ≠ 0) (n : ℕ) (hh : ¬ p ^ n ∣ h) :
+    cubicUnitGaussSum h (p ^ (n + 1)) = 0 := by
+  by_contra hG
+  exact hh (cubicUnitGaussSum_power_support h p hp n hG)
+
+lemma residueTraceQuotientChar_mulShift (h c : O) (hc : c ≠ 0) :
+    residueTraceQuotientChar h c hc =
+      (residueTraceQuotientChar 1 c hc).mulShift (Ideal.Quotient.mk (Ideal.span {c}) h) := by
+  ext x
+  obtain ⟨d, rfl⟩ := Ideal.Quotient.mk_surjective x
+  rw [AddChar.mulShift_apply, ← map_mul, residueTraceQuotientChar_mk, residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency
+  simp only [map_mul, map_ofNat, map_one]
+  congr 1
+  ring
+
+/-- The actual prime cubic character, embedded in the complex numbers. -/
+def primeCubicMulChar (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    MulChar (O ⧸ Ideal.span {p}) ℂ := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  have hg : lambda ∉ (Ideal.span {p} : Ideal O) :=
+    primary_maximal_divisor_good p hprimary _ (Ideal.subset_span (by simp))
+  exact (cubicChar (Ideal.span {p}) hg).ringHomComp ringComplex
+
+lemma primeCubicMulChar_mk (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) (d : O) :
+    primeCubicMulChar p hp hprimary (Ideal.Quotient.mk (Ideal.span {p}) d) = ringComplex (symbol d p) := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  have hg : lambda ∉ (Ideal.span {p} : Ideal O) :=
+    primary_maximal_divisor_good p hprimary _ (Ideal.subset_span (by simp))
+  rw [symbol_prime p hp hprimary, primeValue_eq _ hg]
+  rfl
+
+/-- The prime Gauss factors use the same geometric trace phase as the scattering series. -/
+def primeCubicGauss (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) (e : ℕ) (h : O) : ℂ :=
+  ∑' x : O ⧸ Ideal.span {p}, (primeCubicMulChar p hp hprimary ^ e) x * residueTraceQuotientChar h p hp.ne_zero x
+
+lemma primeCubicGauss_one_eq (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) (h : O) :
+    primeCubicGauss p hp hprimary 1 h = cubicUnitGaussSum h p := by
+  let F : (O ⧸ Ideal.span {p}) → ℂ := fun x =>
+    primeCubicMulChar p hp hprimary x * residueTraceQuotientChar h p hp.ne_zero x
+  have hsup : Function.support F ⊆ {x | IsUnit x} := by
+    intro x hx
+    by_contra hn
+    exact hx (by dsimp [F]; rw [MulChar.map_nonunit _ hn, zero_mul])
+  change (∑' x : O ⧸ Ideal.span {p}, (primeCubicMulChar p hp hprimary ^ 1) x *
+    residueTraceQuotientChar h p hp.ne_zero x) = _
+  rw [pow_one]
+  change (∑' x, F x) = _
+  rw [← tsum_subtype_eq_of_support_subset hsup, cubicUnitGaussSum]
+  apply tsum_congr
+  intro x
+  have hx := principalResidueRep_spec p x.1
+  conv_lhs => rw [← hx]
+  change primeCubicMulChar p hp hprimary (Ideal.Quotient.mk _ (principalResidueRep p x.1)) *
+    residueTraceQuotientChar h p hp.ne_zero (Ideal.Quotient.mk _ (principalResidueRep p x.1)) = _
+  rw [primeCubicMulChar_mk, residueTraceQuotientChar_mk]
+
+/-- Cubing the geometric prime Gauss sum erases every invertible frequency twist. -/
+theorem cubicUnitGaussSum_prime_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    cubicUnitGaussSum h p ^ 3 = -ringComplex p * (Ideal.absNorm (Ideal.span {p}) : ℂ) := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  letI : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  letI : Finite (O ⧸ Ideal.span {p}) := (Ideal.span {p}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)
+  letI : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  have hg : lambda ∉ (Ideal.span {p} : Ideal O) :=
+    primary_maximal_divisor_good p hprimary _ (Ideal.subset_span (by simp))
+  have hu : IsUnit (Ideal.Quotient.mk (Ideal.span {p}) h) := by
+    apply isUnit_iff_ne_zero.mpr
+    intro hz
+    exact hph (Ideal.mem_span_singleton.mp (Ideal.Quotient.eq_zero_iff_mem.mp hz))
+  have hshift : residueTraceQuotientChar h p hp.ne_zero =
+      (residueTraceQuotientChar 1 p hp.ne_zero).mulShift hu.unit := by
+    rw [residueTraceQuotientChar_mulShift, hu.unit_spec]
+  have he : cubicUnitGaussSum h p =
+      gaussSum ((cubicChar (Ideal.span {p}) hg).ringHomComp ringComplex)
+        (residueTraceQuotientChar h p hp.ne_zero) := by
+    rw [← primeCubicGauss_one_eq p hp hprimary h]
+    simp only [primeCubicGauss, pow_one, tsum_fintype, gaussSum]
+    rfl
+  rw [he, hshift]
+  exact (cubicGauss_cube_mulShift ringComplex (Ideal.span {p}) hg
+    (residueTraceQuotientChar 1 p hp.ne_zero) hu.unit).trans
+      (cubicGauss_cube ringComplex ringComplex_injective (Ideal.span {p}) hg p rfl hprimary
+        (residueTraceQuotientChar 1 p hp.ne_zero) (residueTraceQuotientChar_primitive p hp.ne_zero))
+
+lemma finite_tsum_comp_addHom {R S : Type*} [AddGroup R] [AddGroup S] [Finite R] [Finite S]
+    (f : R →+ S) (hf : Function.Surjective f) (F : S → ℂ) :
+    (∑' x : R, F (f x)) = (Nat.card f.ker : ℂ) * ∑' y : S, F y := by
+  letI : Fintype R := Fintype.ofFinite _
+  letI : Fintype S := Fintype.ofFinite _
+  letI : Fintype f.ker := Fintype.ofFinite _
+  rw [tsum_fintype, tsum_fintype, ← Fintype.sum_fiberwise' f F]
+  have hc (y : S) : Fintype.card {x : R // f x = y} = Fintype.card f.ker :=
+    Fintype.card_congr (AddMonoidHom.fiberEquivKerOfSurjective hf y)
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hc, Nat.card_eq_fintype_card]
+  rw [Finset.mul_sum]
+
+/-- Reduction of a principal modulus to a divisor. -/
+def conductorReduction (a b : O) : (O ⧸ Ideal.span {a * b}) →+* (O ⧸ Ideal.span {a}) :=
+  Ideal.Quotient.factor (Ideal.span_singleton_le_span_singleton.mpr (dvd_mul_right a b))
+
+lemma conductorReduction_surjective (a b : O) : Function.Surjective (conductorReduction a b) :=
+  Ideal.Quotient.factor_surjective _
+
+lemma conductorReduction_kernel_card (a b : O) (ha : a ≠ 0) :
+    Nat.card (conductorReduction a b).toAddMonoidHom.ker = Ideal.absNorm (Ideal.span {b}) := by
+  have hc := card_ring_eq_card_mul_kernel (conductorReduction a b) (conductorReduction_surjective a b)
+  change Ideal.absNorm (Ideal.span {a * b}) =
+    Ideal.absNorm (Ideal.span {a}) * Nat.card (conductorReduction a b).toAddMonoidHom.ker at hc
+  have hnorm : Ideal.absNorm (Ideal.span {a * b}) =
+      Ideal.absNorm (Ideal.span {a}) * Ideal.absNorm (Ideal.span {b}) := by
+    rw [← Ideal.span_singleton_mul_span_singleton, map_mul]
+  rw [hnorm] at hc
+  exact Nat.eq_of_mul_eq_mul_left
+    (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr (Ideal.span_singleton_eq_bot.not.mpr ha))) hc.symm
+
+/-- Finite Fourier transform of a weight whose conductor divides the modulus. -/
+def conductorTraceSum (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (F : (O ⧸ Ideal.span {a}) → ℂ) (h : O) : ℂ :=
+  ∑' x : O ⧸ Ideal.span {a * b}, F (conductorReduction a b x) *
+    residueTraceQuotientChar h (a * b) (mul_ne_zero ha hb) x
+
+lemma residueTraceQuotientChar_conductor_lift (a b k : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (x : O ⧸ Ideal.span {a * b}) :
+    residueTraceQuotientChar (b * k) (a * b) (mul_ne_zero ha hb) x =
+      residueTraceQuotientChar k a ha (conductorReduction a b x) := by
+  obtain ⟨d, rfl⟩ := Ideal.Quotient.mk_surjective x
+  change residueTraceQuotientChar (b * k) (a * b) _ (Ideal.Quotient.mk _ d) =
+    residueTraceQuotientChar k a ha (Ideal.Quotient.mk _ d)
+  rw [residueTraceQuotientChar_mk, residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency
+  simp only [map_mul, map_ofNat]
+  congr 1
+  field_simp [ringComplex_ne_zero ha, ringComplex_ne_zero hb]
+
+/-- Lifting a frequency multiplies its finite Fourier transform by the kernel cardinality. -/
+theorem conductorTraceSum_lift (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (F : (O ⧸ Ideal.span {a}) → ℂ) (k : O) :
+    conductorTraceSum a b ha hb F (b * k) =
+      (Ideal.absNorm (Ideal.span {b}) : ℂ) *
+        ∑' x : O ⧸ Ideal.span {a}, F x * residueTraceQuotientChar k a ha x := by
+  letI : Finite (O ⧸ Ideal.span {a}) := (Ideal.span {a}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr ha)
+  letI : Finite (O ⧸ Ideal.span {a * b}) := (Ideal.span {a * b}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (mul_ne_zero ha hb))
+  have he := finite_tsum_comp_addHom (conductorReduction a b).toAddMonoidHom
+    (conductorReduction_surjective a b) (fun x => F x * residueTraceQuotientChar k a ha x)
+  rw [conductorReduction_kernel_card a b ha] at he
+  calc
+    _ = ∑' x : O ⧸ Ideal.span {a * b}, F (conductorReduction a b x) *
+        residueTraceQuotientChar k a ha (conductorReduction a b x) := by
+      apply tsum_congr
+      intro x
+      exact congrArg (fun z => F (conductorReduction a b x) * z)
+        (residueTraceQuotientChar_conductor_lift a b k ha hb x)
+    _ = _ := he
+
+lemma conductorReduction_power_unit (p : O) (n : ℕ) (x : O ⧸ Ideal.span {p * p ^ n}) :
+    IsUnit (conductorReduction p (p ^ n) x) ↔ IsUnit x := by
+  obtain ⟨d, rfl⟩ := Ideal.Quotient.mk_surjective x
+  change IsUnit (Ideal.Quotient.mk (Ideal.span {p}) d) ↔
+    IsUnit (Ideal.Quotient.mk (Ideal.span {p * p ^ n}) d)
+  rw [isUnit_quotient_span_iff, isUnit_quotient_span_iff]
+  constructor
+  · intro h
+    rw [← pow_succ']
+    exact h.pow_left
+  · rintro ⟨a, b, hab⟩
+    refine ⟨a * p ^ n, b, ?_⟩
+    linear_combination hab
+
+lemma cubicUnitGaussSum_prime_power_conductor (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (n : ℕ) (h : O) :
+    cubicUnitGaussSum h (p ^ (n + 1)) =
+      conductorTraceSum p (p ^ n) hp.ne_zero (pow_ne_zero _ hp.ne_zero)
+        (fun x => (primeCubicMulChar p hp hprimary ^ (n + 1)) x) h := by
+  let χ := primeCubicMulChar p hp hprimary
+  let F : (O ⧸ Ideal.span {p * p ^ n}) → ℂ := fun x =>
+    (χ ^ (n + 1)) (conductorReduction p (p ^ n) x) *
+      residueTraceQuotientChar h (p * p ^ n) (mul_ne_zero hp.ne_zero (pow_ne_zero _ hp.ne_zero)) x
+  have hsup : Function.support F ⊆ {x | IsUnit x} := by
+    intro x hx
+    by_contra hn
+    have hh : ¬ IsUnit (conductorReduction p (p ^ n) x) :=
+      fun hh => hn ((conductorReduction_power_unit p n x).mp hh)
+    exact hx (by dsimp [F]; rw [MulChar.map_nonunit _ hh, zero_mul])
+  rw [pow_succ' p n]
+  change cubicUnitGaussSum h (p * p ^ n) = ∑' x, F x
+  rw [← tsum_subtype_eq_of_support_subset hsup, cubicUnitGaussSum]
+  apply tsum_congr
+  intro x
+  let d := principalResidueRep (p * p ^ n) x.1
+  have hd : Ideal.Quotient.mk (Ideal.span {p * p ^ n}) d = x.1 := principalResidueRep_spec _ _
+  change ringComplex (symbol d (p * p ^ n)) * residueAdditive (3 * h) (p * p ^ n) d = F x.1
+  rw [← hd]
+  change _ = (χ ^ (n + 1)) (Ideal.Quotient.mk (Ideal.span {p}) d) *
+    residueTraceQuotientChar h (p * p ^ n) _ (Ideal.Quotient.mk _ d)
+  rw [MulChar.pow_apply' _ (Nat.succ_ne_zero n), primeCubicMulChar_mk,
+    residueTraceQuotientChar_mk, ← pow_succ' p n, symbol_pow_denominator, map_pow]
+
+/-- Prime-power Gauss sums reduce exactly to a residue-field sum with the correct character power. -/
+theorem cubicUnitGaussSum_prime_power_lift (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (n : ℕ) (h : O) :
+    cubicUnitGaussSum (p ^ n * h) (p ^ (n + 1)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ n * primeCubicGauss p hp hprimary (n + 1) h := by
+  rw [cubicUnitGaussSum_prime_power_conductor p hp hprimary n,
+    conductorTraceSum_lift p (p ^ n) hp.ne_zero (pow_ne_zero _ hp.ne_zero)]
+  rw [← Ideal.span_singleton_pow, map_pow, Nat.cast_pow]
+  rfl
+
+lemma primeCubicMulChar_cube (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    primeCubicMulChar p hp hprimary ^ 3 = 1 := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  have hg : lambda ∉ (Ideal.span {p} : Ideal O) :=
+    primary_maximal_divisor_good p hprimary _ (Ideal.subset_span (by simp))
+  change ((cubicChar (Ideal.span {p}) hg).ringHomComp ringComplex) ^ 3 = 1
+  rw [MulChar.ringHomComp_pow, cubicChar_pow_three, MulChar.ringHomComp_one]
+
+lemma primeCubicGauss_mod_three (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (e : ℕ) (h : O) :
+    primeCubicGauss p hp hprimary e h = primeCubicGauss p hp hprimary (e % 3) h := by
+  have he : primeCubicMulChar p hp hprimary ^ e = primeCubicMulChar p hp hprimary ^ (e % 3) := by
+    calc
+      _ = primeCubicMulChar p hp hprimary ^ (e % 3 + 3 * (e / 3)) := by rw [Nat.mod_add_div]
+      _ = _ := by rw [pow_add, pow_mul, primeCubicMulChar_cube, one_pow, mul_one]
+  unfold primeCubicGauss
+  rw [he]
+
+/-- The cubic identity gives the exact square-root size at a nonzero prime frequency. -/
+theorem cubicUnitGaussSum_prime_norm (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    ‖cubicUnitGaussSum h p‖ = ‖ringComplex p‖ := by
+  have hc := congrArg norm (cubicUnitGaussSum_prime_cube p hp hprimary h hph)
+  simp only [norm_pow, norm_mul, norm_neg, Complex.norm_natCast] at hc
+  rw [← ringComplex_norm_sq_eq_absNorm_span] at hc
+  have hp' : 0 < ‖ringComplex p‖ := norm_pos_iff.mpr (ringComplex_ne_zero hp.ne_zero)
+  have hg : 0 ≤ ‖cubicUnitGaussSum h p‖ := norm_nonneg _
+  have hpos : 0 < ‖cubicUnitGaussSum h p‖ ^ 2 +
+      ‖cubicUnitGaussSum h p‖ * ‖ringComplex p‖ + ‖ringComplex p‖ ^ 2 := by positivity
+  have he : (‖cubicUnitGaussSum h p‖ - ‖ringComplex p‖) *
+      (‖cubicUnitGaussSum h p‖ ^ 2 + ‖cubicUnitGaussSum h p‖ * ‖ringComplex p‖ + ‖ringComplex p‖ ^ 2) = 0 := by
+    nlinarith only [hc]
+  exact sub_eq_zero.mp ((mul_eq_zero.mp he).resolve_right hpos.ne')
+
+lemma primeCubicMulChar_ne_one (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    primeCubicMulChar p hp hprimary ≠ 1 := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  have hg : lambda ∉ (Ideal.span {p} : Ideal O) :=
+    primary_maximal_divisor_good p hprimary _ (Ideal.subset_span (by simp))
+  change (cubicChar (Ideal.span {p}) hg).ringHomComp ringComplex ≠ 1
+  exact (MulChar.ringHomComp_ne_one_iff ringComplex_injective).mpr (cubicChar_ne_one _ hg)
+
+lemma primeCubicMulChar_order (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    orderOf (primeCubicMulChar p hp hprimary) = 3 := by
+  have hd := orderOf_dvd_of_pow_eq_one (primeCubicMulChar_cube p hp hprimary)
+  rcases (Nat.dvd_prime Nat.prime_three).mp hd with h1 | h3
+  · exact False.elim (primeCubicMulChar_ne_one p hp hprimary (orderOf_eq_one_iff.mp h1))
+  · exact h3
+
+lemma primeCubicMulChar_pow_eq_one (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) (e : ℕ) :
+    primeCubicMulChar p hp hprimary ^ e = 1 ↔ 3 ∣ e := by
+  rw [← orderOf_dvd_iff_pow_eq_one, primeCubicMulChar_order]
+
+lemma primeCubicGauss_eq_gaussSum (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (e : ℕ) (h : O) [Fintype (O ⧸ Ideal.span {p})] :
+    primeCubicGauss p hp hprimary e h =
+      gaussSum (primeCubicMulChar p hp hprimary ^ e) (residueTraceQuotientChar h p hp.ne_zero) := by
+  simp only [primeCubicGauss, tsum_fintype, gaussSum]
+
+lemma residueTraceQuotientChar_ne_one (c h : O) (hc : c ≠ 0) (hh : ¬ c ∣ h) :
+    residueTraceQuotientChar h c hc ≠ 1 := by
+  rw [residueTraceQuotientChar_mulShift]
+  apply residueTraceQuotientChar_primitive c hc
+  intro hz
+  exact hh (Ideal.mem_span_singleton.mp (Ideal.Quotient.eq_zero_iff_mem.mp hz))
+
+/-- At zero frequency only the trivial character power survives. -/
+theorem primeCubicGauss_of_dvd (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (e : ℕ) (h : O) (hph : p ∣ h) :
+    primeCubicGauss p hp hprimary e h =
+      if 3 ∣ e then (Ideal.absNorm (Ideal.span {p}) : ℂ) - 1 else 0 := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  letI : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  letI : Finite (O ⧸ Ideal.span {p}) := (Ideal.span {p}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)
+  letI : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  have hh : Ideal.Quotient.mk (Ideal.span {p}) h = 0 :=
+    Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr hph)
+  rw [primeCubicGauss_eq_gaussSum, residueTraceQuotientChar_mulShift, hh, AddChar.mulShift_zero]
+  split_ifs with he
+  · rw [(primeCubicMulChar_pow_eq_one p hp hprimary e).mpr he, gaussSum_one_one,
+      Nat.card_units, Nat.cast_sub (Nat.succ_le_of_lt Nat.card_pos), Nat.cast_one]
+    rfl
+  · exact gaussSum_one_right (fun hχ => he ((primeCubicMulChar_pow_eq_one p hp hprimary e).mp hχ))
+
+lemma primeCubicGauss_trivial_nonzero (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (e : ℕ) (he : 3 ∣ e) (h : O) (hph : ¬ p ∣ h) : primeCubicGauss p hp hprimary e h = -1 := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  letI : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  letI : Finite (O ⧸ Ideal.span {p}) := (Ideal.span {p}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)
+  letI : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  rw [primeCubicGauss_eq_gaussSum, (primeCubicMulChar_pow_eq_one p hp hprimary e).mpr he]
+  exact gaussSum_one_left (residueTraceQuotientChar_ne_one p h hp.ne_zero hph)
+
+/-- The two nontrivial cubic Gauss factors multiply to the residue-field cardinality. -/
+theorem primeCubicGauss_one_mul_two (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (h : O) (hph : ¬ p ∣ h) :
+    primeCubicGauss p hp hprimary 1 h * primeCubicGauss p hp hprimary 2 h =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) := by
+  letI : (Ideal.span {p} : Ideal O).IsMaximal :=
+    PrincipalIdealRing.isMaximal_of_irreducible hp.irreducible
+  letI : Field (O ⧸ Ideal.span {p}) := Ideal.Quotient.field _
+  letI : Finite (O ⧸ Ideal.span {p}) := (Ideal.span {p}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)
+  letI : Fintype (O ⧸ Ideal.span {p}) := Fintype.ofFinite _
+  have hψ : (residueTraceQuotientChar h p hp.ne_zero).IsPrimitive :=
+    AddChar.IsPrimitive.of_ne_one (residueTraceQuotientChar_ne_one p h hp.ne_zero hph)
+  have he := gaussSum_mul_gaussSum_pow_orderOf_sub_one (primeCubicMulChar_ne_one p hp hprimary) hψ
+  rw [primeCubicMulChar_order] at he
+  have hm := MulChar.val_neg_one_eq_one_of_odd_order (by decide : Odd 3) (primeCubicMulChar_cube p hp hprimary)
+  rw [hm, one_mul] at he
+  change _ = (Nat.card (O ⧸ Ideal.span {p}) : ℂ)
+  simpa only [primeCubicGauss_eq_gaussSum, pow_one, Nat.reduceSub, Nat.card_eq_fintype_card] using he
+
+lemma cubicUnitGaussSum_frequency_dvd (h c : O) (hc : c ≠ 0) (hh : c ∣ h) :
+    cubicUnitGaussSum h c = cubicUnitGaussSum 0 c :=
+  cubicUnitGaussSum_frequency_congr h 0 c hc (by simpa only [sub_zero] using hh)
+
+lemma cubicUnitGaussSum_prime_power_zero (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) (n : ℕ) :
+    cubicUnitGaussSum 0 (p ^ (n + 1)) =
+      if 3 ∣ n + 1 then (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ n *
+        ((Ideal.absNorm (Ideal.span {p}) : ℂ) - 1) else 0 := by
+  have he := cubicUnitGaussSum_prime_power_lift p hp hprimary n 0
+  simp only [mul_zero] at he
+  rw [he, primeCubicGauss_of_dvd p hp hprimary (n + 1) 0 (dvd_zero _)]
+  split_ifs <;> ring
+
+/-- Reciprocity absorbs the coprime cubic twist into one frequency. -/
+theorem cubicUnitGaussSum_primary_product (h a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hpa : lambda ^ 2 ∣ a - 1) (hpb : lambda ^ 2 ∣ b - 1) (hab : IsCoprime a b) :
+    cubicUnitGaussSum h (a * b) = cubicUnitGaussSum h a * cubicUnitGaussSum (h * a) b := by
+  have ht := cubicUnitGaussSum_frequency_twist h b a hb hab.symm
+  have hc : ringComplex (symbol a b) ^ 3 = 1 := by
+    rw [← map_pow, symbol_cube_of_isCoprime a b hpb hab, map_one]
+  rw [cubicUnitGaussSum_coprime_product h a b ha hb hab, symbol_reciprocity b a hpb hpa,
+    ← ht]
+  calc
+    _ = ringComplex (symbol a b) ^ 3 *
+        (cubicUnitGaussSum h a * cubicUnitGaussSum (h * a) b) := by ring
+    _ = _ := by rw [hc, one_mul]
+
+/-- Unramified ideals with the chosen prime factor removed. -/
+abbrev PrimeDeletedIdeal (p : O) := {I : GoodIdeal // ¬ (Ideal.span {p} : Ideal O) ∣ I.1}
+
+def unramifiedPrimeDeletedSeries (p : O) (s : ℂ) (h : O) : ℂ :=
+  ∑' I : PrimeDeletedIdeal p,
+    unramifiedNormWeight s I.1.1 * cubicUnitGaussSum h (primaryIdealGenerator I.1.1)
+
+lemma primaryIdealGenerator_pow (I : Ideal O) (n : ℕ) :
+    primaryIdealGenerator (I ^ n) = primaryIdealGenerator I ^ n := map_pow primaryIdealGeneratorHom I n
+
+lemma gaussPrimeIdeal_prime (p : O) (hp : Prime p) : Prime (Ideal.span {p} : Ideal O) :=
+  Ideal.prime_of_isPrime (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero)
+    ((Ideal.span_singleton_prime hp.ne_zero).mpr hp)
+
+def gaussPrimeFactorMap (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (q : ℕ × PrimeDeletedIdeal p) : GoodIdeal :=
+  ⟨(Ideal.span {p}) ^ q.1 * q.2.1.1, by
+    rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow,
+      primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact mul_ne_zero (pow_ne_zero _ hp.ne_zero) q.2.1.2⟩
+
+lemma gaussPrimeFactorMap_bijective (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    Function.Bijective (gaussPrimeFactorMap p hp hprimary) := by
+  let P : Ideal O := Ideal.span {p}
+  have hP : Prime P := gaussPrimeIdeal_prime p hp
+  constructor
+  · rintro ⟨n, I⟩ ⟨m, J⟩ heq
+    have he : P ^ n * I.1.1 = P ^ m * J.1.1 := congrArg Subtype.val heq
+    have hn : n = m := by
+      have hm := congrArg (multiplicity P) he
+      rw [prime_power_remainder_multiplicity hP I.2,
+        prime_power_remainder_multiplicity hP J.2] at hm
+      exact hm
+    subst m
+    have hIJ : I = J := Subtype.ext (Subtype.ext (mul_left_cancel₀ (pow_ne_zero n hP.ne_zero) he))
+    subst J
+    rfl
+  · intro I
+    obtain ⟨J, hJ, hnot⟩ := (FiniteMultiplicity.of_prime_left hP
+      (primaryIdealGenerator_ne_zero_ideal I.1 I.2)).exists_eq_pow_mul_and_not_dvd
+    have hgood : primaryIdealGenerator J ≠ 0 := by
+      intro hz
+      apply I.2
+      rw [hJ, primaryIdealGenerator_mul, hz, mul_zero]
+    exact ⟨(multiplicity P I.1, ⟨⟨J, hgood⟩, hnot⟩), Subtype.ext hJ.symm⟩
+
+def gaussPrimeFactorEquiv (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    ℕ × PrimeDeletedIdeal p ≃ GoodIdeal :=
+  Equiv.ofBijective (gaussPrimeFactorMap p hp hprimary) (gaussPrimeFactorMap_bijective p hp hprimary)
+
+lemma primeDeleted_generator_coprime (p : O) (hp : Prime p) (I : PrimeDeletedIdeal p) :
+    IsCoprime p (primaryIdealGenerator I.1.1) := by
+  apply hp.coprime_iff_not_dvd.mpr
+  intro hd
+  apply I.2
+  rw [Ideal.dvd_iff_le, ← (primaryIdealGenerator_spec I.1.1 I.1.2).1,
+    Ideal.span_singleton_le_span_singleton]
+  exact hd
+
+lemma primary_pow_congruence (p : O) (hprimary : lambda ^ 2 ∣ p - 1) (n : ℕ) :
+    lambda ^ 2 ∣ p ^ n - 1 := by
+  simpa only [one_pow] using hprimary.trans (sub_dvd_pow_sub_pow p 1 n)
+
+lemma gaussPrimeFactor_term (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (h : O) (n : ℕ) (I : PrimeDeletedIdeal p) :
+    unramifiedNormWeight s (gaussPrimeFactorMap p hp hprimary (n, I)).1 *
+        cubicUnitGaussSum h (primaryIdealGenerator (gaussPrimeFactorMap p hp hprimary (n, I)).1) =
+      unramifiedNormWeight s (Ideal.span {p}) ^ n * cubicUnitGaussSum h (p ^ n) *
+        (unramifiedNormWeight s I.1.1 * cubicUnitGaussSum (h * p ^ n) (primaryIdealGenerator I.1.1)) := by
+  change unramifiedNormWeight s ((Ideal.span {p}) ^ n * I.1.1) *
+    cubicUnitGaussSum h (primaryIdealGenerator ((Ideal.span {p}) ^ n * I.1.1)) = _
+  rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow,
+    primaryIdealGenerator_span p hp.ne_zero hprimary,
+    cubicUnitGaussSum_primary_product h (p ^ n) (primaryIdealGenerator I.1.1)
+      (pow_ne_zero _ hp.ne_zero) I.1.2 (primary_pow_congruence p hprimary n)
+      (primaryIdealGenerator_spec I.1.1 I.1.2).2 (primeDeleted_generator_coprime p hp I).pow_left,
+    map_mul, map_pow]
+  ring
+
+/-- Splitting off one prime gives its exact local expansion, with an absolutely convergent remainder. -/
+theorem unramifiedCubicGaussSeries_prime_reindex (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    unramifiedCubicGaussSeries s h =
+      ∑' n : ℕ, unramifiedNormWeight s (Ideal.span {p}) ^ n * cubicUnitGaussSum h (p ^ n) *
+        unramifiedPrimeDeletedSeries p s (h * p ^ n) := by
+  let F : GoodIdeal → ℂ := fun I =>
+    unramifiedNormWeight s I.1 * cubicUnitGaussSum h (primaryIdealGenerator I.1)
+  have hsum : Summable F := (unramifiedCubicGaussSeries_summable_norm s hs h).of_norm
+  let e := gaussPrimeFactorEquiv p hp hprimary
+  have hpull : Summable (fun q : ℕ × PrimeDeletedIdeal p => F (e q)) := e.summable_iff.mpr hsum
+  change (∑' I, F I) = _
+  rw [← e.tsum_eq F, hpull.tsum_prod]
+  apply tsum_congr
+  intro n
+  change (∑' I : PrimeDeletedIdeal p,
+    unramifiedNormWeight s (gaussPrimeFactorMap p hp hprimary (n, I)).1 *
+      cubicUnitGaussSum h (primaryIdealGenerator (gaussPrimeFactorMap p hp hprimary (n, I)).1)) = _
+  simp_rw [gaussPrimeFactor_term p hp hprimary s h n]
+  exact tsum_mul_left
+
+lemma unramifiedPrimeDeletedSeries_cube_shift (p : O) (hp : Prime p) (s : ℂ) (h : O) :
+    unramifiedPrimeDeletedSeries p s (h * p ^ 3) = unramifiedPrimeDeletedSeries p s h := by
+  apply tsum_congr
+  intro I
+  congr 1
+  exact cubicUnitGaussSum_cube_shift h _ p I.1.2
+    (primaryIdealGenerator_spec I.1.1 I.1.2).2 (primeDeleted_generator_coprime p hp I).symm
+
+@[simp] lemma cubicUnitGaussSum_one (h : O) : cubicUnitGaussSum h 1 = 1 := by
+  letI : Subsingleton (O ⧸ Ideal.span {(1 : O)}) :=
+    Ideal.Quotient.subsingleton_iff.mpr (by simp)
+  let r : CubicUnitResidue (1 : O) := ⟨1, isUnit_one⟩
+  rw [cubicUnitGaussSum, tsum_eq_single r (fun b hb => False.elim (hb (Subsingleton.elim b r)))]
+  rw [symbol_one, map_one, one_mul,
+    residueAdditive_three_congr h 1 _ 0 one_ne_zero (one_dvd _)]
+  simp only [residueAdditive, map_zero, mul_zero, zero_div, AddChar.map_zero_eq_one]
+
+lemma cubicUnitGaussSum_prime_power_too_large (p : O) (hp : Prime p)
+    (h : O) (hph : ¬ p ∣ h) (a k : ℕ) (hk : a + 1 < k) :
+    cubicUnitGaussSum (h * p ^ a) (p ^ k) = 0 := by
+  by_contra hG
+  cases k with
+  | zero => omega
+  | succ n =>
+    have hd := cubicUnitGaussSum_power_support (h * p ^ a) p hp.ne_zero n hG
+    have hd' : p ^ (a + 1) ∣ p ^ a * h := by
+      rw [mul_comm]
+      exact (pow_dvd_pow p (by omega : a + 1 ≤ n)).trans hd
+    rw [pow_succ] at hd'
+    exact hph ((mul_dvd_mul_iff_left (pow_ne_zero _ hp.ne_zero)).mp hd')
+
+lemma unramifiedPrimeDeletedSeries_pow_mod (p : O) (hp : Prime p) (s : ℂ) (h : O) (n : ℕ) :
+    unramifiedPrimeDeletedSeries p s (h * p ^ n) =
+      unramifiedPrimeDeletedSeries p s (h * p ^ (n % 3)) := by
+  apply tsum_congr
+  intro I
+  congr 1
+  have he : p ^ n = p ^ (n % 3) * (p ^ (n / 3)) ^ 3 := by
+    rw [← pow_mul, ← pow_add]
+    congr 1
+    omega
+  rw [he, ← mul_assoc]
+  exact cubicUnitGaussSum_cube_shift _ _ _ I.1.2
+    (primaryIdealGenerator_spec I.1.1 I.1.2).2 (primeDeleted_generator_coprime p hp I).symm.pow_right
+
+/-- At a frequency of valuation `a`, the prime expansion ends at exponent `a+1`. -/
+theorem unramifiedCubicGaussSeries_prime_finite (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) (a : ℕ) :
+    unramifiedCubicGaussSeries s (h * p ^ a) =
+      ∑ k ∈ Finset.range (a + 2), unramifiedNormWeight s (Ideal.span {p}) ^ k *
+        cubicUnitGaussSum (h * p ^ a) (p ^ k) * unramifiedPrimeDeletedSeries p s (h * p ^ a * p ^ k) := by
+  rw [unramifiedCubicGaussSeries_prime_reindex p hp hprimary s hs]
+  apply tsum_eq_sum
+  intro k hk
+  have hk' : a + 1 < k := by
+    have hh : a + 2 ≤ k := by simpa only [Finset.mem_range, not_lt] using hk
+    omega
+  rw [cubicUnitGaussSum_prime_power_too_large p hp h hph a k hk', mul_zero, zero_mul]
+
+/-- The local recurrence follows from the four supported Gauss factors and cubic periodicity. -/
+theorem unramifiedCubicGaussSeries_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedCubicGaussSeries s (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        unramifiedCubicGaussSeries s h -
+      unramifiedNormWeight s (Ideal.span {p}) * primeCubicGauss p hp hprimary 1 h *
+        unramifiedCubicGaussSeries s (h * p) := by
+  let q : ℂ := Ideal.absNorm (Ideal.span {p})
+  have hg0 (k : ℕ) (hk : k ≤ 3) :
+      cubicUnitGaussSum (h * p ^ 3) (p ^ k) = cubicUnitGaussSum 0 (p ^ k) :=
+    cubicUnitGaussSum_frequency_dvd _ _ (pow_ne_zero _ hp.ne_zero)
+      ((pow_dvd_pow p hk).trans (dvd_mul_left (p ^ 3) h))
+  have hg1 : cubicUnitGaussSum (h * p ^ 3) p = 0 := by
+    have he := hg0 1 (by omega)
+    simp only [pow_one] at he
+    rw [he]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 0
+  have hg2 : cubicUnitGaussSum (h * p ^ 3) (p ^ 2) = 0 := by
+    rw [hg0 2 (by omega)]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 1
+  have hg3 : cubicUnitGaussSum (h * p ^ 3) (p ^ 3) = q ^ 2 * (q - 1) := by
+    rw [hg0 3 le_rfl]
+    simpa only [Nat.reduceAdd, dvd_refl, ite_true] using cubicUnitGaussSum_prime_power_zero p hp hprimary 2
+  have hg4 : cubicUnitGaussSum (h * p ^ 3) (p ^ 4) = q ^ 3 * primeCubicGauss p hp hprimary 1 h := by
+    have he := cubicUnitGaussSum_prime_power_lift p hp hprimary 3 h
+    rw [primeCubicGauss_mod_three p hp hprimary 4] at he
+    simpa only [mul_comm (p ^ 3) h, Nat.reduceMod] using he
+  have hj1 : cubicUnitGaussSum (h * p) p = 0 := by
+    rw [cubicUnitGaussSum_frequency_dvd _ p hp.ne_zero (dvd_mul_left p h)]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 0
+  have hj2 : cubicUnitGaussSum (h * p) (p ^ 2) = q * primeCubicGauss p hp hprimary 2 h := by
+    simpa only [pow_one, mul_comm p h] using cubicUnitGaussSum_prime_power_lift p hp hprimary 1 h
+  have e0 := unramifiedCubicGaussSeries_prime_finite p hp hprimary s hs h hph 0
+  have e1 := unramifiedCubicGaussSeries_prime_finite p hp hprimary s hs h hph 1
+  have e3 := unramifiedCubicGaussSeries_prime_finite p hp hprimary s hs h hph 3
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, pow_zero, pow_one,
+    cubicUnitGaussSum_one, mul_one, one_mul, hg1, hg2, hg3, hg4, hj1, hj2,
+    mul_zero, zero_mul, add_zero] at e0 e1 e3
+  rw [show h * p * p ^ 2 = h * p ^ 3 by ring, unramifiedPrimeDeletedSeries_cube_shift p hp] at e1
+  rw [unramifiedPrimeDeletedSeries_cube_shift p hp,
+    show h * p ^ 3 * p ^ 3 = h * p ^ 6 by ring,
+    show h * p ^ 3 * p ^ 4 = h * p ^ 7 by ring,
+    unramifiedPrimeDeletedSeries_pow_mod p hp s h 6,
+    unramifiedPrimeDeletedSeries_pow_mod p hp s h 7] at e3
+  simp only [Nat.reduceMod, pow_zero, pow_one, mul_one] at e3
+  rw [e3, e0, e1, ← primeCubicGauss_one_eq p hp hprimary h]
+  have hg := primeCubicGauss_one_mul_two p hp hprimary h hph
+  change _ = q at hg
+  change _ = (1 + q ^ 3 * _) * _ - _
+  linear_combination unramifiedNormWeight s (Ideal.span {p}) ^ 3 * q *
+    unramifiedPrimeDeletedSeries p s h * hg
+
+lemma primeCubicGauss_add_three (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (e : ℕ) (h : O) : primeCubicGauss p hp hprimary (e + 3) h = primeCubicGauss p hp hprimary e h := by
+  unfold primeCubicGauss
+  rw [pow_add, primeCubicMulChar_cube, mul_one]
+
+/-- Increasing both conductor and frequency by a cube scales every positive conductor term by `N(p)^3`. -/
+lemma cubicUnitGaussSum_prime_cube_shift_pos (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (n : ℕ) (h : O) :
+    cubicUnitGaussSum (h * p ^ 3) (p ^ (n + 4)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * cubicUnitGaussSum h (p ^ (n + 1)) := by
+  by_cases hd : p ^ n ∣ h
+  · obtain ⟨r, rfl⟩ := hd
+    rw [show p ^ n * r * p ^ 3 = p ^ (n + 3) * r by rw [pow_add]; ring,
+      show n + 4 = (n + 3) + 1 by omega,
+      cubicUnitGaussSum_prime_power_lift p hp hprimary (n + 3) r,
+      cubicUnitGaussSum_prime_power_lift p hp hprimary n r,
+      show n + 3 + 1 = (n + 1) + 3 by omega, primeCubicGauss_add_three, pow_add]
+    ring
+  · have hlow := cubicUnitGaussSum_power_vanish h p hp.ne_zero n hd
+    have hhigh : cubicUnitGaussSum (h * p ^ 3) (p ^ (n + 4)) = 0 := by
+      rw [show n + 4 = (n + 3) + 1 by omega]
+      apply cubicUnitGaussSum_power_vanish _ p hp.ne_zero (n + 3)
+      intro hh
+      have he : p ^ 3 * p ^ n ∣ p ^ 3 * h := by
+        simpa only [pow_add, mul_comm, mul_left_comm, mul_assoc] using hh
+      exact hd ((mul_dvd_mul_iff_left (pow_ne_zero 3 hp.ne_zero)).mp he)
+    rw [hhigh, hlow, mul_zero]
+
+lemma cubicUnitGaussSum_prime_cube_shift (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (k : ℕ) (h : O) :
+    cubicUnitGaussSum (h * p ^ 3) (p ^ (k + 3)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * cubicUnitGaussSum h (p ^ k) -
+        if k = 0 then (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 else 0 := by
+  cases k with
+  | zero =>
+    rw [Nat.zero_add, cubicUnitGaussSum_frequency_dvd _ _ (pow_ne_zero _ hp.ne_zero)
+      (dvd_mul_left (p ^ 3) h)]
+    have he := cubicUnitGaussSum_prime_power_zero p hp hprimary 2
+    simp only [Nat.reduceAdd, dvd_refl, ite_true] at he
+    rw [he]
+    simp only [pow_zero, cubicUnitGaussSum_one, mul_one, ite_true]
+    ring
+  | succ n =>
+    simpa only [show n + 1 + 3 = n + 4 by omega, Nat.succ_ne_zero, ite_false, sub_zero] using
+      cubicUnitGaussSum_prime_cube_shift_pos p hp hprimary n h
+
+/-- Compact support needed to test the continued source at a rationally translated cusp. -/
+def rationalCuspCompact (g : rationalExtension) : Set KernelQuotient :=
+  kernelRationalAction g '' kernelCuspAverageCompact
+
+lemma rationalCuspCompact_isCompact (g : rationalExtension) : IsCompact (rationalCuspCompact g) :=
+  kernelCuspAverageCompact_isCompact.image (kernelRationalAction_continuous g)
+
+def rationalCuspFourier (h : O) (g : rationalExtension) : KernelQuotientL2 →L[ℂ] ℂ :=
+  (kernelCuspFourier h).comp (kernelRationalPullback g).toContinuousLinearMap
+
+lemma rationalCuspFourier_integral (h : O) (g : rationalExtension) (F : KernelQuotientL2) :
+    rationalCuspFourier h g F = ∫ w in cuspPeriodStrip 5 6,
+      F (kernelRationalAction g (integralOrbitProjection globalKubotaKernel w)) *
+        cuspFourierPhase h w ∂hyperbolicVolume := by
+  rw [rationalCuspFourier, ContinuousLinearMap.comp_apply, kernelCuspFourier_integral]
+  have hm := kernelProjection_cuspPeriodStrip_measurePreserving 5 6 (by norm_num)
+  have he := hm.quasiMeasurePreserving.ae_eq_comp
+    (ae_restrict_of_ae (kernelRationalPullback_ae g F) (s := kernelCuspStripSet))
+  apply integral_congr_ae
+  filter_upwards [he] with w hw
+  exact congrArg (fun z : ℂ => z * cuspFourierPhase h w) hw
+
+lemma rationalCuspFourier_restrict (h : O) (g : rationalExtension) (F : KernelQuotientL2) :
+    rationalCuspFourier h g (kernelMassRestrictionCLM (rationalCuspCompact g)
+      (rationalCuspCompact_isCompact g).measurableSet F) = rationalCuspFourier h g F := by
+  rw [rationalCuspFourier_integral, rationalCuspFourier_integral]
+  have hsource := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (kernelMassRestriction_coe (rationalCuspCompact g) (rationalCuspCompact_isCompact g).measurableSet F)
+  have hm := kernelProjection_cuspPeriodStrip_measurePreserving 5 6 (by norm_num)
+  have he := hm.quasiMeasurePreserving.ae_eq_comp (ae_restrict_of_ae hsource (s := kernelCuspStripSet))
+  apply integral_congr_ae
+  filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable 5 6)] with w hw hwm
+  have hmem : kernelRationalAction g (integralOrbitProjection globalKubotaKernel w) ∈ rationalCuspCompact g :=
+    ⟨_, kernelCuspStripSet_subset_compact ⟨w, hwm, rfl⟩, rfl⟩
+  exact congrArg (fun z : ℂ => z * cuspFourierPhase h w) (hw.trans (Set.indicator_of_mem hmem _))
+
+/-- The continued scalar source tested at an arbitrary cusp in the rational extension. -/
+def rationalCuspFamily (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) (s : ℂ) : ℂ :=
+  rationalCuspFourier h g
+    (kernelLocalCorrectedSeed (rationalCuspCompact g) (rationalCuspCompact_isCompact g) a b ha hab s)
+
+lemma rationalCuspFamily_meromorphicAt (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) :
+    MeromorphicAt (rationalCuspFamily h g a b ha hab) (4 / 3 : ℂ) :=
+  meromorphicAt_clm (rationalCuspFourier h g)
+    (kernelLocalCorrectedSeed_meromorphicAt _ (rationalCuspCompact_isCompact g) a b ha hab)
+
+lemma rationalCuspFamily_analyticAt_nonreal (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) (s : ℂ) (hs : s.re ≠ 1) (hi : s.im ≠ 0) :
+    AnalyticAt ℂ (rationalCuspFamily h g a b ha hab) s :=
+  (ContinuousLinearMap.analyticAt (𝕜 := ℂ) (E := KernelQuotientL2) (F := ℂ)
+    (rationalCuspFourier h g) _).comp_of_eq
+      (kernelLocalCorrectedSeed_analyticAt_nonreal _ (rationalCuspCompact_isCompact g) a b ha hab s hs hi) rfl
+
+lemma rationalCuspFamily_residue_limit (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) :
+    Tendsto (fun s : ℂ => (s - 4 / 3) * rationalCuspFamily h g a b ha hab s)
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (rationalCuspFourier h g (kernelEisensteinResidueVector a b ha hab))) := by
+  have he := (rationalCuspFourier h g).continuous.continuousAt.tendsto.comp
+    (kernelLocalCorrectedSeed_residue_limit _ (rationalCuspCompact_isCompact g) a b ha hab)
+  simpa only [Function.comp_def, map_smul, smul_eq_mul, rationalCuspFourier_restrict,
+    rationalCuspFamily] using he
+
+lemma rationalCuspFamily_actual_integral (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) (s : ℂ) :
+    rationalCuspFamily h g a b ha hab s = ∫ w in cuspPeriodStrip 5 6,
+      kernelCorrectedSeed a b ha hab s (kernelRationalAction g (integralOrbitProjection globalKubotaKernel w)) *
+        cuspFourierPhase h w ∂hyperbolicVolume := by
+  rw [rationalCuspFamily, rationalCuspFourier_integral]
+  have hsource := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (kernelLocalCorrectedSeed_ae_eq _ (rationalCuspCompact_isCompact g) a b ha hab s)
+  have hm := kernelProjection_cuspPeriodStrip_measurePreserving 5 6 (by norm_num)
+  have he := hm.quasiMeasurePreserving.ae_eq_comp (ae_restrict_of_ae hsource (s := kernelCuspStripSet))
+  apply integral_congr_ae
+  filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable 5 6)] with w hw hwm
+  have hmem : kernelRationalAction g (integralOrbitProjection globalKubotaKernel w) ∈ rationalCuspCompact g :=
+    ⟨_, kernelCuspStripSet_subset_compact ⟨w, hwm, rfl⟩, rfl⟩
+  exact congrArg (fun z : ℂ => z * cuspFourierPhase h w) (hw.trans (Set.indicator_of_mem hmem _))
+
+theorem rationalCuspFamily_initial (h : O) (g : rationalExtension)
+    (a b : ℝ) (ha : 0 < a) (hab : a < b) (ha1 : 1 < a) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    rationalCuspFamily h g a b ha hab s = ∫ w in cuspPeriodStrip 5 6,
+      hyperbolicEisenstein s (integralComplexMatrix (g : SL(2, O)) • w) *
+        cuspFourierPhase h w ∂hyperbolicVolume := by
+  have hcorrected : kernelCorrectedSeed a b ha hab s =ᵐ[integralQuotientVolume globalKubotaKernel]
+      kernelQuotientEisenstein s (by linarith) := by
+    filter_upwards [kernelEisensteinL2Correction_initial_overlap a b ha1 hab s hs hi] with q hq
+    change kernelQuotientSeed a b s q + kernelEisensteinL2Correction a b ha hab s q = _
+    rw [hq]
+    ring
+  have hsource := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp hcorrected
+  have hm := kernelProjection_cuspPeriodStrip_measurePreserving 5 6 (by norm_num)
+  have he := hm.quasiMeasurePreserving.ae_eq_comp (ae_restrict_of_ae hsource (s := kernelCuspStripSet))
+  rw [rationalCuspFamily_actual_integral]
+  apply integral_congr_ae
+  filter_upwards [he] with w hw
+  exact congrArg (fun z : ℂ => z * cuspFourierPhase h w)
+    (hw.trans (by dsimp only [Function.comp_def]; rw [kernelRationalAction_mk, kernelQuotientEisenstein_mk]))
+
+/-- Rows at the opposite cusp, indexed directly by their unramified denominator ideal. -/
+abbrev OppositeData := Σ I : GoodIdeal, {x : O // IsCoprime (primaryIdealGenerator I.1) x}
+
+def oppositeDataToPrimitive (q : OppositeData) : PrimitiveRow :=
+  ⟨![-3 * q.2.1, primaryIdealGenerator q.1.1], by
+    change IsCoprime (-3 * q.2.1) (primaryIdealGenerator q.1.1) ∧
+      (3 : O) ∣ -3 * q.2.1 ∧ (3 : O) ∣ primaryIdealGenerator q.1.1 - 1
+    have hp := (primaryIdealGenerator_spec q.1.1 q.1.2).2
+    refine ⟨?_, ⟨-q.2.1, by ring⟩, three_dvd_primary_sub_one _ hp⟩
+    simpa only [neg_mul] using ((primary_coprime_three _ hp).mul_right q.2.2).symm.neg_left⟩
+
+lemma oppositeDataToPrimitive_bijective : Function.Bijective oppositeDataToPrimitive := by
+  constructor
+  · rintro ⟨I, x⟩ ⟨J, y⟩ he
+    have hr := congrArg Subtype.val he
+    have hI : I = J := primaryIdealGenerator_injective_good (congrFun hr 1)
+    subst J
+    have hx : x = y := by
+      apply Subtype.ext
+      exact mul_left_cancel₀ (by norm_num : -(3 : O) ≠ 0) (congrFun hr 0)
+    subst y
+    rfl
+  · intro r
+    obtain ⟨t, ht⟩ := r.2.2.1
+    have hp : lambda ^ 2 ∣ r.1 1 - 1 := lambda_sq_dvd_three.trans r.2.2.2
+    have hd := primary_ne_zero (r.1 1) hp
+    let I : GoodIdeal := ⟨Ideal.span {r.1 1}, by
+      rw [primaryIdealGenerator_span _ hd hp]
+      exact hd⟩
+    have hI : primaryIdealGenerator I.1 = r.1 1 := primaryIdealGenerator_span _ hd hp
+    have hc : IsCoprime (primaryIdealGenerator I.1) (-t) := by
+      rw [hI]
+      have he : IsCoprime (r.1 1) (3 * t) := by simpa only [ht] using r.2.1.symm
+      exact he.of_mul_right_right.neg_right
+    refine ⟨⟨I, ⟨-t, hc⟩⟩, Subtype.ext ?_⟩
+    funext i
+    fin_cases i
+    · change -3 * (-t) = r.1 0
+      rw [ht]
+      ring
+    · exact hI
+
+def oppositeDataEquiv : OppositeData ≃ PrimitiveRow :=
+  Equiv.ofBijective oppositeDataToPrimitive oppositeDataToPrimitive_bijective
+
+def oppositeMatrix : SL(2, ℂ) := ⟨!![0, -1; 1, 0], by simp [Matrix.det_fin_two]⟩
+
+lemma rowOperator_opposite (v : Fin 2 → ℂ) : rowOperator oppositeMatrix v = ![v 1, -v 0] := by
+  rw [rowOperator_apply]
+  funext i
+  fin_cases i <;> simp [oppositeMatrix, Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+
+def oppositeEisenstein (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ) : ℂ :=
+  eisenstein (oppositeMatrix * upperSection z v hv) s
+
+lemma rowHeight_eq_shiftedHeightKernel (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ)
+    (c d : O) (hc : c ≠ 0) :
+    ((v / (‖ringComplex c * z + ringComplex d‖ ^ 2 + ‖ringComplex c‖ ^ 2 * v ^ 2) : ℝ) : ℂ) ^ s =
+      ((‖ringComplex c‖ ^ 2 : ℝ) : ℂ) ^ (-s) *
+        shiftedHeightKernel v s (ringComplex d / ringComplex c) z := by
+  have hc' := ringComplex_ne_zero hc
+  have hn : 0 < ‖ringComplex c‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hc')
+  have hfac : ringComplex c * z + ringComplex d = ringComplex c * (z + ringComplex d / ringComplex c) := by
+    field_simp
+  have he : v / (‖ringComplex c * z + ringComplex d‖ ^ 2 + ‖ringComplex c‖ ^ 2 * v ^ 2) =
+      ((‖ringComplex c‖ ^ 2 * v) * (1 + ‖(z + ringComplex d / ringComplex c) / (v : ℂ)‖ ^ 2))⁻¹ := by
+    rw [hfac, norm_mul, mul_pow, norm_div, Complex.norm_real, Real.norm_of_nonneg hv.le]
+    field_simp
+    ring
+  unfold shiftedHeightKernel hyperbolicKernel
+  rw [he, Complex.ofReal_inv, inv_cpow_ofReal_nonneg (by positivity), ← Complex.cpow_neg,
+    Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg (mul_nonneg hn.le hv.le) (by positivity),
+    Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hn.le hv.le]
+  ring
+
+def oppositeTerm (z : ℂ) (v : ℝ) (s : ℂ) (c x : O) : ℂ :=
+  ringComplex (symbol (3 * x) c) *
+    ((v / (‖ringComplex c * z + ringComplex (3 * x)‖ ^ 2 + ‖ringComplex c‖ ^ 2 * v ^ 2) : ℝ) : ℂ) ^ s
+
+lemma oppositeTerm_eq_shifted (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ)
+    (c x : O) (hc : c ≠ 0) :
+    oppositeTerm z v s c x =
+      (ringComplex (symbol (3 * x) c) * ((‖ringComplex c‖ ^ 2 : ℝ) : ℂ) ^ (-s)) *
+        shiftedHeightKernel v s (ringComplex (3 * x) / ringComplex c) z := by
+  rw [oppositeTerm, rowHeight_eq_shiftedHeightKernel z v hv s c (3 * x) hc]
+  ring
+
+lemma opposite_summand (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ) (q : OppositeData) :
+    summand (oppositeMatrix * upperSection z v hv) s (primitiveRowEquiv.symm (oppositeDataEquiv q)) =
+      oppositeTerm z v s (primaryIdealGenerator q.1.1) q.2.1 := by
+  let r : Fin 2 → ℂ := ![ringComplex (primaryIdealGenerator q.1.1), ringComplex (3 * q.2.1)]
+  have hr : rowOperator oppositeMatrix (embeddedRow (primitiveRowEquiv.symm (oppositeDataEquiv q))) = r := by
+    rw [embeddedRow, primitiveRowEquiv_symm_row, rowOperator_opposite]
+    funext i
+    fin_cases i <;> simp [oppositeDataEquiv, Equiv.ofBijective_apply, oppositeDataToPrimitive, r, map_mul]
+  have hr0 : r ≠ 0 := by
+    intro he
+    exact ringComplex_ne_zero q.1.2 (congrFun he 0)
+  have hp := heightDenominator_pos z v hv r hr0
+  have hphase : (cosetCharacter (primitiveRowEquiv.symm (oppositeDataEquiv q)))⁻¹ =
+      ringComplex (symbol (3 * q.2.1) (primaryIdealGenerator q.1.1)) := by
+    rw [inverse_cosetCharacter_eq_row_symbol, primitiveRowEquiv_symm_row]
+    change ringComplex (symbol (-3 * q.2.1) (primaryIdealGenerator q.1.1)) = _
+    rw [neg_mul, symbol_neg_numerator _ _ (primaryIdealGenerator_spec q.1.1 q.1.2).2]
+  rw [summand, ← rowOperator_mul, hr, rowEnergy_upperSection, hphase]
+  change _ = ringComplex (symbol (3 * q.2.1) (primaryIdealGenerator q.1.1)) *
+    ((v / heightDenominator z v r : ℝ) : ℂ) ^ s
+  have hi : ((v / heightDenominator z v r : ℝ) : ℂ) = (((heightDenominator z v r / v : ℝ) : ℂ))⁻¹ := by
+    simp only [Complex.ofReal_div, inv_div]
+  rw [hi, inv_cpow_ofReal_nonneg (div_nonneg hp.le hv.le), Complex.cpow_neg]
+
+theorem oppositeEisenstein_eq_rows (z : ℂ) (v : ℝ) (hv : 0 < v) (s : ℂ) :
+    oppositeEisenstein z v hv s = ∑' q : OppositeData,
+      oppositeTerm z v s (primaryIdealGenerator q.1.1) q.2.1 := by
+  let e := oppositeDataEquiv.trans primitiveRowEquiv.symm
+  change (∑' x : CuspCosets, summand (oppositeMatrix * upperSection z v hv) s x) = _
+  rw [← e.tsum_eq (fun x => summand (oppositeMatrix * upperSection z v hv) s x)]
+  exact tsum_congr (opposite_summand z v hv s)
+
+abbrev CoprimeElement (c : O) := {x : O // IsCoprime c x}
+
+def cubicResidueElementMap (c : O) (q : CubicUnitResidue c × O) : CoprimeElement c :=
+  ⟨principalResidueRep c q.1.1 + c * q.2, by
+    apply (isUnit_quotient_span_iff c _).mp
+    have hc : Ideal.Quotient.mk (Ideal.span {c}) c = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span (by simp))
+    simpa only [map_add, map_mul, hc, zero_mul, add_zero, principalResidueRep_spec] using q.1.2⟩
+
+lemma cubicResidueElementMap_bijective (c : O) (hc : c ≠ 0) :
+    Function.Bijective (cubicResidueElementMap c) := by
+  have hmod (r : CubicUnitResidue c) (n : O) :
+      Ideal.Quotient.mk (Ideal.span {c}) (principalResidueRep c r.1 + c * n) = r.1 := by
+    have hz : Ideal.Quotient.mk (Ideal.span {c}) c = 0 :=
+      Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span (by simp))
+    rw [map_add, map_mul, hz, zero_mul, add_zero, principalResidueRep_spec]
+  constructor
+  · rintro ⟨r, n⟩ ⟨t, m⟩ he
+    have he' := congrArg Subtype.val he
+    change principalResidueRep c r.1 + c * n = principalResidueRep c t.1 + c * m at he'
+    have hr : r = t := Subtype.ext (by
+      simpa only [hmod] using congrArg (Ideal.Quotient.mk (Ideal.span {c})) he')
+    subst t
+    have hn : n = m := mul_left_cancel₀ hc (add_left_cancel he')
+    subst m
+    rfl
+  · intro x
+    let r : CubicUnitResidue c := ⟨Ideal.Quotient.mk (Ideal.span {c}) x.1,
+      (isUnit_quotient_span_iff c x.1).mpr x.2⟩
+    have hd : c ∣ x.1 - principalResidueRep c r.1 :=
+      Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+        (principalResidueRep_spec c r.1).symm)
+    obtain ⟨n, hn⟩ := hd
+    refine ⟨(r, n), Subtype.ext ?_⟩
+    change principalResidueRep c r.1 + c * n = x.1
+    linear_combination -hn
+
+def cubicResidueElementEquiv (c : O) (hc : c ≠ 0) : CubicUnitResidue c × O ≃ CoprimeElement c :=
+  Equiv.ofBijective (cubicResidueElementMap c) (cubicResidueElementMap_bijective c hc)
+
+lemma oppositeTerm_shift (z : ℂ) (v : ℝ) (s : ℂ) (c x n : O) :
+    oppositeTerm z v s c (x + c * n) = oppositeTerm (z + 3 * ringComplex n) v s c x := by
+  have hs : symbol (3 * (x + c * n)) c = symbol (3 * x) c := symbol_congr ⟨3 * n, by ring⟩
+  have he : ringComplex c * z + ringComplex (3 * (x + c * n)) =
+      ringComplex c * (z + 3 * ringComplex n) + ringComplex (3 * x) := by
+    simp only [map_mul, map_add, map_ofNat]
+    ring
+  rw [oppositeTerm, oppositeTerm, hs, he]
+
+def oppositeGaussSum (h c : O) : ℂ :=
+  ∑' r : CubicUnitResidue c, ringComplex (symbol (3 * principalResidueRep c r.1) c) *
+    residueAdditive h c (3 * principalResidueRep c r.1)
+
+lemma oppositeGaussSum_eq (h c : O) (hc : c ≠ 0) (hp : lambda ^ 2 ∣ c - 1) :
+    oppositeGaussSum h c = cubicUnitGaussSum (9 * h) c := by
+  have he : oppositeGaussSum h c = ringComplex (symbol 3 c) * cubicUnitGaussSum h c := by
+    rw [oppositeGaussSum, cubicUnitGaussSum, ← tsum_mul_left]
+    apply tsum_congr
+    intro r
+    rw [symbol_mul_numerator, map_mul]
+    have ht : residueAdditive h c (3 * principalResidueRep c r.1) =
+        residueAdditive (3 * h) c (principalResidueRep c r.1) := by
+      unfold residueAdditive cuspFrequency
+      simp only [map_mul, map_ofNat]
+      congr 1
+      ring
+    rw [ht]
+    ring
+  rw [he]
+  have ht := cubicUnitGaussSum_ramified_twist h 1 c hc hp
+    (by simpa only [mul_one] using (primary_coprime_three c hp).symm)
+  simpa only [symbol_one_numerator c hp, map_one, one_mul, mul_one] using ht
+
+lemma continuous_inverse_fixed_left_operator (a : SL(2, ℂ)) (v : ℝ) (hv : 0 < v) :
+    Continuous (fun z : ℂ => rowOperator (a * upperSection z v hv)⁻¹) := by
+  have he (z : ℂ) : rowOperator (a * upperSection z v hv)⁻¹ =
+      (rowOperator a⁻¹).comp (rowOperator (upperSection z v hv)⁻¹) := by
+    ext u
+    simp only [mul_inv_rev, ContinuousLinearMap.comp_apply, rowOperator_mul]
+  simp_rw [he]
+  exact continuous_const.clm_comp (continuous_inverse_upper_operator v hv)
+
+lemma exists_fixed_left_rowBound (a : SL(2, ℂ)) (v : ℝ) (hv : 0 < v) :
+    ∃ C : ℝ, 0 < C ∧ ∀ z ∈ periodDomain, rowBound (a * upperSection z v hv) ≤ C := by
+  have hc : Continuous (fun z : ℂ => rowBound (a * upperSection z v hv)) :=
+    continuous_const.mul (continuous_const.add (continuous_inverse_fixed_left_operator a v hv).norm)
+  let R : ℝ := ∑ i : Fin 2, ‖periodBasis i‖
+  obtain ⟨C, hC⟩ := (isCompact_closedBall (0 : ℂ) R).bddAbove_image hc.continuousOn
+  refine ⟨max 1 C, lt_of_lt_of_le (by norm_num) (le_max_left _ _), ?_⟩
+  intro z hz
+  apply (hC ?_).trans (le_max_right _ _)
+  exact ⟨z, by simpa only [Metric.mem_closedBall, dist_zero_right] using norm_mem_periodDomain z hz, rfl⟩
+
+lemma continuous_fixed_left_summand (a : SL(2, ℂ)) (v : ℝ) (hv : 0 < v) (s : ℂ) (x : CuspCosets) :
+    Continuous (fun z : ℂ => summand (a * upperSection z v hv) s x) := by
+  simp_rw [summand, ← rowOperator_mul, rowEnergy_upperSection]
+  apply continuous_const.mul
+  apply Continuous.cpow
+  · apply Complex.continuous_ofReal.comp
+    unfold heightDenominator
+    fun_prop
+  · exact continuous_const
+  · intro z
+    apply Complex.ofReal_mem_slitPlane.mpr
+    exact div_pos (heightDenominator_pos z v hv _ (rowOperator_ne_zero a _ (embeddedRow_ne_zero x))) hv
+
+/-- A fixed change of cusp preserves the summable integral-row majorant. -/
+lemma fixed_left_summable_majorant (a : SL(2, ℂ)) (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 2 < s.re) :
+    ∃ M : CuspCosets → ℝ, Summable M ∧ (∀ x, 0 ≤ M x) ∧
+      ∀ z ∈ periodDomain, ∀ x, ‖summand (a * upperSection z v hv) s x‖ ≤ M x := by
+  obtain ⟨C, hC, hbound⟩ := exists_fixed_left_rowBound a v hv
+  refine ⟨fun x => C ^ (2 * s.re) * ‖rowCoordinates (cosetRow x)‖ ^ (-(2 * s.re)), ?_, ?_, ?_⟩
+  · exact ((summable_integer_four_rpow (2 * s.re) (by linarith)).comp_injective
+      (rowCoordinates_injective.comp cosetRow_injective)).mul_left _
+  · intro x
+    positivity
+  · intro z hz x
+    apply (norm_summand_bound (a * upperSection z v hv) s (by linarith) x).trans
+    exact mul_le_mul_of_nonneg_right
+      (Real.rpow_le_rpow (rowBound_pos _).le (hbound z hz) (by linarith)) (by positivity)
+
+theorem hasSum_integral_fixed_left_Eisenstein (a : SL(2, ℂ)) (v : ℝ) (hv : 0 < v)
+    (s freq : ℂ) (hs : 2 < s.re) :
+    HasSum (fun x : CuspCosets => ∫ z in periodDomain,
+      summand (a * upperSection z v hv) s x * tracePhase (-freq * z))
+      (∫ z in periodDomain, eisenstein (a * upperSection z v hv) s * tracePhase (-freq * z)) := by
+  letI : Countable CuspCosets := (rowCoordinates_injective.comp cosetRow_injective).countable
+  letI := periodDomain_finiteMeasure
+  obtain ⟨M, hM, _, hbound⟩ := fixed_left_summable_majorant a v hv s hs
+  have hchar : Continuous (fun z : ℂ => tracePhase (-freq * z)) := by
+    change Continuous (fun z : ℂ => Complex.exp (2 * Real.pi * Complex.I *
+      ((-freq * z) + starRingEnd ℂ (-freq * z))))
+    fun_prop
+  exact hasSum_integral_of_dominated_convergence (μ := volume.restrict periodDomain)
+    (fun (x : CuspCosets) (_ : ℂ) => M x)
+    (fun x => ((continuous_fixed_left_summand a v hv s x).mul hchar).aestronglyMeasurable.restrict)
+    (fun x => (ae_restrict_mem periodDomain_measurable).mono fun z hz => by
+      simpa only [Pi.mul_apply, norm_mul, tracePhase_norm, mul_one] using hbound z hz x)
+    (Eventually.of_forall fun _ => hM) (integrable_const (∑' x, M x))
+    (Eventually.of_forall fun z => (summable_summand (a * upperSection z v hv) s hs).hasSum.mul_right
+      (tracePhase (-freq * z)))
+
+def oppositeIntegral (v : ℝ) (s freq : ℂ) (c x : O) : ℂ :=
+  ∫ z in periodDomain, oppositeTerm z v s c x * tracePhase (-freq * z)
+
+theorem hasSum_oppositeIntegrals (v : ℝ) (hv : 0 < v) (s freq : ℂ) (hs : 2 < s.re) :
+    HasSum (fun q : OppositeData => oppositeIntegral v s freq (primaryIdealGenerator q.1.1) q.2.1)
+      (∫ z in periodDomain, oppositeEisenstein z v hv s * tracePhase (-freq * z)) := by
+  have he := (oppositeDataEquiv.trans primitiveRowEquiv.symm).hasSum_iff.mpr
+    (hasSum_integral_fixed_left_Eisenstein oppositeMatrix v hv s freq hs)
+  apply he.congr_fun
+  intro q
+  apply integral_congr_ae
+  exact Eventually.of_forall fun z => by
+    dsimp only [Equiv.trans_apply]
+    rw [opposite_summand]
+
+lemma oppositeTerm_integrable (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 1 < s.re)
+    (c x : O) (hc : c ≠ 0) : Integrable (fun z => oppositeTerm z v s c x) := by
+  simp_rw [oppositeTerm_eq_shifted _ v hv s c x hc]
+  exact (shiftedHeightKernel_integrable v hv s _ hs).const_mul _
+
+lemma oppositeIntegral_sum_translate (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 1 < s.re)
+    (h c x : O) (hc : c ≠ 0) :
+    (∑' n : O, oppositeIntegral v s (cuspFrequency h) c (x + c * n)) =
+      ∫ z : ℂ, oppositeTerm z v s c x * tracePhase (-cuspFrequency h * z) := by
+  have hi := trace_mul_integrable (fun z => oppositeTerm z v s c x)
+    (oppositeTerm_integrable v hv s hs c x hc) (cuspFrequency h)
+  rw [integral_eq_period_integrals _ hi]
+  apply tsum_congr
+  intro n
+  apply integral_congr_ae
+  exact Eventually.of_forall fun z => by
+    dsimp only [oppositeIntegral]
+    rw [oppositeTerm_shift, cuspFrequency_negative_period]
+
+lemma oppositeTerm_fourier_integral (v : ℝ) (hv : 0 < v) (s freq : ℂ)
+    (c x : O) (hc : c ≠ 0) :
+    (∫ z : ℂ, oppositeTerm z v s c x * tracePhase (-freq * z)) =
+      ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (freq * v)) * ((‖ringComplex c‖ ^ 2 : ℝ) : ℂ) ^ (-s) *
+        (ringComplex (symbol (3 * x) c) * tracePhase (freq * ringComplex (3 * x) / ringComplex c)) := by
+  simp_rw [oppositeTerm_eq_shifted _ v hv s c x hc, mul_assoc]
+  rw [integral_const_mul, integral_const_mul,
+    traceIntegral_shiftedHeightKernel v hv s (ringComplex (3 * x) / ringComplex c) freq]
+  ring_nf
+
+lemma oppositeDenominator_integral_formula (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 2 < s.re)
+    (h : O) (I : GoodIdeal) :
+    (∑' x : CoprimeElement (primaryIdealGenerator I.1),
+      oppositeIntegral v s (cuspFrequency h) (primaryIdealGenerator I.1) x.1) =
+      ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+        (unramifiedNormWeight s I.1 * cubicUnitGaussSum (9 * h) (primaryIdealGenerator I.1)) := by
+  let c := primaryIdealGenerator I.1
+  let F : CoprimeElement c → ℂ := fun x => oppositeIntegral v s (cuspFrequency h) c x.1
+  have hf : Summable F := (hasSum_oppositeIntegrals v hv s (cuspFrequency h) hs).summable.sigma_factor I
+  let e := cubicResidueElementEquiv c I.2
+  have hsum : Summable (fun q : CubicUnitResidue c × O => F (e q)) := e.summable_iff.mpr hf
+  change (∑' x, F x) = _
+  rw [← e.tsum_eq F, hsum.tsum_prod]
+  change (∑' r : CubicUnitResidue c, ∑' n : O,
+    oppositeIntegral v s (cuspFrequency h) c (principalResidueRep c r.1 + c * n)) = _
+  simp_rw [oppositeIntegral_sum_translate v hv s (by linarith) h c _ I.2,
+    oppositeTerm_fourier_integral v hv s (cuspFrequency h) c _ I.2]
+  have he : ((‖ringComplex c‖ ^ 2 : ℝ) : ℂ) ^ (-s) = unramifiedNormWeight s I.1 := by
+    rw [unramifiedNormWeight_of_good s I.1 I.2, primaryIdealGenerator_norm_sq I.1 I.2,
+      Complex.ofReal_natCast]
+  rw [he, ← oppositeGaussSum_eq h c I.2 (primaryIdealGenerator_spec I.1 I.2).2]
+  change (∑' r : CubicUnitResidue c, _ *
+    (ringComplex (symbol (3 * principalResidueRep c r.1) c) * residueAdditive h c (3 * principalResidueRep c r.1))) = _
+  rw [tsum_mul_left]
+  unfold oppositeGaussSum
+  ring
+
+lemma unramifiedCubicGaussSeries_twentySeven (s : ℂ) (h : O) :
+    unramifiedCubicGaussSeries s (27 * h) = unramifiedCubicGaussSeries s h := by
+  apply tsum_congr
+  intro I
+  congr 1
+  have hp := (primaryIdealGenerator_spec I.1 I.2).2
+  simpa only [show (3 : O) ^ 3 = 27 by norm_num, mul_comm h 27] using
+    cubicUnitGaussSum_cube_shift h (primaryIdealGenerator I.1) 3 I.2 hp (primary_coprime_three _ hp)
+
+/-- Fourier unfolding at the opposite cusp gives the ordinary unramified Gauss series. -/
+theorem oppositeEisenstein_fourier (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    (∫ z in periodDomain, oppositeEisenstein z v hv s * tracePhase (-cuspFrequency h * z)) =
+      ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+        unramifiedCubicGaussSeries s (9 * h) := by
+  have he := hasSum_oppositeIntegrals v hv s (cuspFrequency h) hs
+  rw [← he.tsum_eq, he.summable.tsum_sigma]
+  simp_rw [oppositeDenominator_integral_formula v hv s hs h]
+  exact tsum_mul_left
+
+def primeExpansionTerm (p : O) (s : ℂ) (h : O) (k : ℕ) : ℂ :=
+  unramifiedNormWeight s (Ideal.span {p}) ^ k * cubicUnitGaussSum h (p ^ k) *
+    unramifiedPrimeDeletedSeries p s (h * p ^ k)
+
+lemma primeExpansionTerm_summable (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (hs : 2 < s.re) (h : O) : Summable (primeExpansionTerm p s h) := by
+  let F : GoodIdeal → ℂ := fun I =>
+    unramifiedNormWeight s I.1 * cubicUnitGaussSum h (primaryIdealGenerator I.1)
+  have hf : Summable F := (unramifiedCubicGaussSeries_summable_norm s hs h).of_norm
+  let e := gaussPrimeFactorEquiv p hp hprimary
+  have he : Summable (fun q : ℕ × PrimeDeletedIdeal p => F (e q)) := e.summable_iff.mpr hf
+  apply he.prod.congr
+  intro n
+  change (∑' I : PrimeDeletedIdeal p,
+    unramifiedNormWeight s (gaussPrimeFactorMap p hp hprimary (n, I)).1 *
+      cubicUnitGaussSum h (primaryIdealGenerator (gaussPrimeFactorMap p hp hprimary (n, I)).1)) = _
+  simp_rw [gaussPrimeFactor_term p hp hprimary s h n]
+  exact tsum_mul_left
+
+lemma primeExpansionTerm_cube_shift (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (h : O) (k : ℕ) :
+    primeExpansionTerm p s (h * p ^ 3) (k + 3) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        primeExpansionTerm p s h k -
+      if k = 0 then (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        unramifiedPrimeDeletedSeries p s h else 0 := by
+  have hv : unramifiedPrimeDeletedSeries p s (h * p ^ 3 * p ^ (k + 3)) =
+      unramifiedPrimeDeletedSeries p s (h * p ^ k) := by
+    rw [show h * p ^ 3 * p ^ (k + 3) = (h * p ^ k * p ^ 3) * p ^ 3 by rw [pow_add]; ring,
+      unramifiedPrimeDeletedSeries_cube_shift p hp, unramifiedPrimeDeletedSeries_cube_shift p hp]
+  unfold primeExpansionTerm
+  rw [cubicUnitGaussSum_prime_cube_shift p hp hprimary k h, hv, pow_add]
+  split_ifs with hk
+  · subst k
+    simp only [pow_zero, mul_one, cubicUnitGaussSum_one]
+    ring
+  · ring
+
+/-- The conductor shift gives a cubic recurrence at every frequency, including zero. -/
+theorem unramifiedCubicGaussSeries_cube_step (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    unramifiedCubicGaussSeries s (h * p ^ 3) =
+      (1 - (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        unramifiedPrimeDeletedSeries p s h +
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        unramifiedCubicGaussSeries s h := by
+  have hzero (k : ℕ) (hk : k ≤ 3) :
+      cubicUnitGaussSum (h * p ^ 3) (p ^ k) = cubicUnitGaussSum 0 (p ^ k) :=
+    cubicUnitGaussSum_frequency_dvd _ _ (pow_ne_zero _ hp.ne_zero)
+      ((pow_dvd_pow p hk).trans (dvd_mul_left (p ^ 3) h))
+  have hg1 : cubicUnitGaussSum (h * p ^ 3) p = 0 := by
+    have he := hzero 1 (by omega)
+    simp only [pow_one] at he
+    rw [he]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 0
+  have hg2 : cubicUnitGaussSum (h * p ^ 3) (p ^ 2) = 0 := by
+    rw [hzero 2 (by omega)]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 1
+  have hsmall : (∑ k ∈ Finset.range 3, primeExpansionTerm p s (h * p ^ 3) k) =
+      unramifiedPrimeDeletedSeries p s h := by
+    simp only [Finset.sum_range_succ, Finset.sum_range_zero, primeExpansionTerm,
+      pow_zero, pow_one, cubicUnitGaussSum_one, mul_one, one_mul, zero_add, hg1, hg2,
+      mul_zero, zero_mul, add_zero]
+    exact unramifiedPrimeDeletedSeries_cube_shift p hp s h
+  have hsum := primeExpansionTerm_summable p hp hprimary s hs h
+  have hsum' := primeExpansionTerm_summable p hp hprimary s hs (h * p ^ 3)
+  rw [unramifiedCubicGaussSeries_prime_reindex p hp hprimary s hs (h * p ^ 3)]
+  change (∑' k, primeExpansionTerm p s (h * p ^ 3) k) = _
+  rw [← hsum'.sum_add_tsum_nat_add 3, hsmall]
+  simp_rw [primeExpansionTerm_cube_shift p hp hprimary s h]
+  rw [(hsum.mul_left _).tsum_sub (hasSum_ite_eq (0 : ℕ)
+      ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        unramifiedPrimeDeletedSeries p s h)).summable,
+    tsum_mul_left, tsum_ite_eq]
+  have he : (∑' k, primeExpansionTerm p s h k) = unramifiedCubicGaussSeries s h :=
+    (unramifiedCubicGaussSeries_prime_reindex p hp hprimary s hs h).symm
+  rw [he]
+  ring
+
+theorem unramifiedCubicGaussSeries_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    unramifiedCubicGaussSeries s (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        unramifiedCubicGaussSeries s (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        unramifiedCubicGaussSeries s h := by
+  have hfirst := unramifiedCubicGaussSeries_cube_step p hp hprimary s hs h
+  have hsecond := unramifiedCubicGaussSeries_cube_step p hp hprimary s hs (h * p ^ 3)
+  rw [unramifiedPrimeDeletedSeries_cube_shift p hp,
+    show h * p ^ 3 * p ^ 3 = h * p ^ 6 by ring] at hsecond
+  linear_combination hsecond - hfirst
+
+def oppositeSource : rationalExtension := rationalSourceLift ModularGroup.S
+
+lemma oppositeSource_matrix : integralComplexMatrix (oppositeSource : SL(2, O)) = oppositeMatrix := by
+  apply Subtype.ext
+  apply Matrix.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [oppositeSource, rationalSourceLift, rationalEmbedding, integralComplexMatrix,
+      Matrix.SpecialLinearGroup.map_apply_coe, ModularGroup.coe_S, oppositeMatrix]
+
+lemma hyperbolicEisenstein_opposite_upper (s : ℂ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    hyperbolicEisenstein s (integralComplexMatrix (oppositeSource : SL(2, O)) • upperPoint z v hv) =
+      oppositeEisenstein z v hv s := by
+  rw [oppositeSource_matrix]
+  rfl
+
+theorem opposite_cusp_fourier_average (s : ℂ) (hs : 2 < s.re) (h : O) :
+    (∫ w in cuspPeriodStrip 5 6,
+      hyperbolicEisenstein s (integralComplexMatrix (oppositeSource : SL(2, O)) • w) *
+        cuspFourierPhase h w ∂hyperbolicVolume) =
+      unramifiedCubicGaussSeries s (9 * h) * cuspWhittakerHeightFactor s h := by
+  let g : HyperbolicSpace → ℂ := fun w =>
+    hyperbolicEisenstein s (integralComplexMatrix (oppositeSource : SL(2, O)) • w) * cuspFourierPhase h w
+  have hg : Continuous g := ((hyperbolicEisenstein_continuous s hs).comp
+    (continuous_hyperbolic_action _)).mul (cuspFourierPhase_continuous h)
+  rw [cuspPeriodStrip_integral_coordinates g hg.aestronglyMeasurable (cuspCoordinateLift_weighted_integrable g hg)]
+  have he : (∫ v in Set.Icc (5 : ℝ) 6,
+      (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) / (v : ℂ) ^ 3) =
+      ∫ v in Set.Icc (5 : ℝ) 6, unramifiedCubicGaussSeries s (9 * h) *
+        ((v : ℂ) ^ (-s - 1) * sourceFourierKernel s (cuspFrequency h * v)) := by
+    apply setIntegral_congr_fun measurableSet_Icc
+    intro v hv
+    have hv0 : 0 < v := lt_of_lt_of_le (by norm_num) hv.1
+    have hvz : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv0.ne'
+    have hslice : (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) =
+        ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+          unramifiedCubicGaussSeries s (9 * h) := by
+      simp_rw [g, cuspCoordinateLift_positive v _ hv0, hyperbolicEisenstein_opposite_upper,
+        cuspFourierPhase, hyperbolicHorizontal_upperPoint]
+      exact oppositeEisenstein_fourier v hv0 s hs h
+    have hp : (v : ℂ) ^ (-s - 1) = (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+      rw [show -s - 1 = (2 - s) - 3 by ring, Complex.cpow_sub _ _ hvz]
+      congr 1
+      exact Complex.cpow_natCast _ 3
+    dsimp only
+    rw [hslice, hp]
+    ring
+  rw [he, integral_const_mul]
+  rfl
+
+lemma rationalCuspFamily_opposite_initial (h : O) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    rationalCuspFamily (3 * h) oppositeSource 2 3 (by norm_num) (by norm_num) s =
+      unramifiedCubicGaussSeries s h * cuspWhittakerHeightFactor s (3 * h) := by
+  rw [rationalCuspFamily_initial (3 * h) oppositeSource 2 3
+    (by norm_num) (by norm_num) (by norm_num) s hs hi,
+    opposite_cusp_fourier_average s (by linarith),
+    show (9 : O) * (3 * h) = 27 * h by ring, unramifiedCubicGaussSeries_twentySeven]
+
+/-- Meromorphic continuation supplied by the opposite-cusp test of the actual resolvent. -/
+def continuedUnramifiedGauss (h : O) (s : ℂ) : ℂ :=
+  rationalCuspFamily (3 * h) oppositeSource 2 3 (by norm_num) (by norm_num) s /
+    cuspWhittakerHeightFactor s (3 * h)
+
+def unramifiedGaussResidue (h : O) : ℂ :=
+  rationalCuspFourier (3 * h) oppositeSource cubicEisensteinResidue /
+    cuspWhittakerHeightFactor (4 / 3 : ℂ) (3 * h)
+
+theorem continuedUnramifiedGauss_meromorphicAt_center (h : O) :
+    MeromorphicAt (continuedUnramifiedGauss h) (4 / 3 : ℂ) :=
+  (rationalCuspFamily_meromorphicAt (3 * h) oppositeSource 2 3 (by norm_num) (by norm_num)).div
+    (cuspWhittakerHeightFactor_analyticAt (3 * h) (4 / 3) (by norm_num)).meromorphicAt
+
+theorem continuedUnramifiedGauss_meromorphicOn_upper (h : O) :
+    MeromorphicOn (continuedUnramifiedGauss h) {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+  intro s hs
+  exact (rationalCuspFamily_analyticAt_nonreal (3 * h) oppositeSource 2 3
+    (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne').meromorphicAt.div
+      (cuspWhittakerHeightFactor_analyticAt (3 * h) s hs.1).meromorphicAt
+
+theorem continuedUnramifiedGauss_residue_limit (h : O) :
+    Tendsto (fun s : ℂ => (s - 4 / 3) * continuedUnramifiedGauss h s)
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (unramifiedGaussResidue h)) := by
+  have hd : Tendsto (fun s : ℂ => cuspWhittakerHeightFactor s (3 * h))
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (cuspWhittakerHeightFactor (4 / 3 : ℂ) (3 * h))) :=
+    (cuspWhittakerHeightFactor_analyticAt (3 * h) (4 / 3) (by norm_num)).continuousAt.tendsto.mono_left
+      nhdsWithin_le_nhds
+  have he := (rationalCuspFamily_residue_limit (3 * h) oppositeSource 2 3
+    (by norm_num) (by norm_num)).div hd (cuspWhittakerHeightFactor_center_ne_zero (3 * h))
+  convert he using 1
+  · funext s
+    simp only [continuedUnramifiedGauss, Pi.div_apply]
+    ring
+  · rfl
+
+theorem continuedUnramifiedGauss_initial (h : O) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im)
+    (hH : cuspWhittakerHeightFactor s (3 * h) ≠ 0) :
+    continuedUnramifiedGauss h s = unramifiedCubicGaussSeries s h := by
+  rw [continuedUnramifiedGauss, rationalCuspFamily_opposite_initial h s hs hi, mul_div_cancel_right₀ _ hH]
+
+lemma unramifiedCubicGaussSeries_prime_two_power (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedCubicGaussSeries s (h * p ^ 2) =
+      (1 - (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        unramifiedPrimeDeletedSeries p s (h * p ^ 2) := by
+  have he := unramifiedCubicGaussSeries_prime_finite p hp hprimary s hs h hph 2
+  have hg1 : cubicUnitGaussSum (h * p ^ 2) p = 0 := by
+    rw [cubicUnitGaussSum_frequency_dvd _ p hp.ne_zero
+      ((dvd_pow_self p (by decide : (2 : ℕ) ≠ 0)).trans (dvd_mul_left (p ^ 2) h))]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 0
+  have hg2 : cubicUnitGaussSum (h * p ^ 2) (p ^ 2) = 0 := by
+    rw [cubicUnitGaussSum_frequency_dvd _ (p ^ 2) (pow_ne_zero _ hp.ne_zero) (dvd_mul_left (p ^ 2) h)]
+    simpa using cubicUnitGaussSum_prime_power_zero p hp hprimary 1
+  have hg3 : cubicUnitGaussSum (h * p ^ 2) (p ^ 3) = -(Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 := by
+    have hh := cubicUnitGaussSum_prime_power_lift p hp hprimary 2 h
+    rw [primeCubicGauss_trivial_nonzero p hp hprimary 3 (dvd_refl 3) h hph] at hh
+    simpa only [mul_comm (p ^ 2) h, mul_neg_one] using hh
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, pow_zero, pow_one,
+    cubicUnitGaussSum_one, mul_one, one_mul, hg1, hg2, hg3, mul_zero, zero_mul, add_zero] at he
+  rw [unramifiedPrimeDeletedSeries_cube_shift p hp] at he
+  exact he.trans (by ring)
+
+lemma unramifiedCubicGaussSeries_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedCubicGaussSeries s (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        unramifiedCubicGaussSeries s (h * p ^ 2) := by
+  have he := unramifiedCubicGaussSeries_cube_step p hp hprimary s hs (h * p ^ 2)
+  rw [← unramifiedCubicGaussSeries_prime_two_power p hp hprimary s hs h hph,
+    show h * p ^ 2 * p ^ 3 = h * p ^ 5 by ring] at he
+  exact he.trans (by ring)
+
+/-- Clearing analytic height factors transfers a scalar relation from the initial half-plane to residues. -/
+theorem cuspScalarResidue_relation {ι : Type*} (T H : ι → ℂ → ℂ) (R : ι → ℂ)
+    (hT : ∀ i, AnalyticOnNhd ℂ (T i) {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hH : ∀ i, AnalyticOnNhd ℂ (H i) {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hHc : ∀ i, ContinuousAt (H i) (4 / 3 : ℂ))
+    (hR : ∀ i, Tendsto (fun s : ℂ => (s - 4 / 3) * T i s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (R i)))
+    (hHne : ∀ i, H i (4 / 3) ≠ 0) (i0 i1 i2 : ι) (A B : ℂ → ℂ)
+    (hA : AnalyticOnNhd ℂ A {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hB : AnalyticOnNhd ℂ B {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hAc : ContinuousAt A (4 / 3 : ℂ)) (hBc : ContinuousAt B (4 / 3 : ℂ))
+    (hrel : ∀ s : ℂ, 4 < s.re → 0 < s.im →
+      T i0 s * H i1 s * H i2 s =
+        A s * T i1 s * H i0 s * H i2 s + B s * T i2 s * H i0 s * H i1 s) :
+    R i0 / H i0 (4 / 3) = A (4 / 3) * (R i1 / H i1 (4 / 3)) +
+      B (4 / 3) * (R i2 / H i2 (4 / 3)) := by
+  let D : Set ℂ := {s | 1 < s.re ∧ 0 < s.im}
+  let f : ℂ → ℂ := fun s => T i0 s * H i1 s * H i2 s
+  let g : ℂ → ℂ := fun s => A s * T i1 s * H i0 s * H i2 s + B s * T i2 s * H i0 s * H i1 s
+  have hf : AnalyticOnNhd ℂ f D := fun s hs => ((hT i0 s hs).mul (hH i1 s hs)).mul (hH i2 s hs)
+  have hg : AnalyticOnNhd ℂ g D := fun s hs =>
+    ((((hA s hs).mul (hT i1 s hs)).mul (hH i0 s hs)).mul (hH i2 s hs)).add
+      ((((hB s hs).mul (hT i2 s hs)).mul (hH i0 s hs)).mul (hH i1 s hs))
+  have hconvex : Convex ℝ D :=
+    ((convex_Ioi (1 : ℝ)).linear_preimage Complex.reCLM.toLinearMap).inter
+      ((convex_Ioi (0 : ℝ)).linear_preimage Complex.imCLM.toLinearMap)
+  have hopen : IsOpen {s : ℂ | 4 < s.re ∧ 0 < s.im} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_im)
+  have hev : f =ᶠ[𝓝 (5 + Complex.I : ℂ)] g := by
+    filter_upwards [hopen.mem_nhds (by norm_num)] with s hs
+    exact hrel s hs.1 hs.2
+  have heq := hf.eqOn_of_preconnected_of_eventuallyEq hg hconvex.isPreconnected
+    (by norm_num [D] : (5 + Complex.I : ℂ) ∈ D) hev
+  have hlimH (i : ι) : Tendsto (H i) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (H i (4 / 3))) :=
+    (hHc i).tendsto.mono_left nhdsWithin_le_nhds
+  have hl := (((hR i0).mul (hlimH i1)).mul (hlimH i2)).comp thetaApproach_tendsto_complex_punctured
+  have hrightA := (((hAc.tendsto.mono_left nhdsWithin_le_nhds).mul (hR i1)).mul (hlimH i0)).mul (hlimH i2)
+  have hrightB := (((hBc.tendsto.mono_left nhdsWithin_le_nhds).mul (hR i2)).mul (hlimH i0)).mul (hlimH i1)
+  have hr := (hrightA.add hrightB).comp thetaApproach_tendsto_complex_punctured
+  have hcross : R i0 * H i1 (4 / 3) * H i2 (4 / 3) =
+      A (4 / 3) * R i1 * H i0 (4 / 3) * H i2 (4 / 3) +
+      B (4 / 3) * R i2 * H i0 (4 / 3) * H i1 (4 / 3) := by
+    apply tendsto_nhds_unique_of_eventuallyEq hl hr
+    filter_upwards [self_mem_nhdsWithin] with t ht
+    change 0 < t at ht
+    have htD : (4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I ∈ D := by
+      constructor
+      · norm_num
+        linarith
+      · simpa using ht
+    have hc := heq htD
+    dsimp only [Function.comp_def, f, g] at *
+    linear_combination (((4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I) - 4 / 3) * hc
+  field_simp [hHne i0, hHne i1, hHne i2]
+  linear_combination hcross
+
+/-- Analytic uniqueness transfers an initial Gauss-series relation to the actual residues.
+Multiplying by the three Whittaker factors avoids dividing at their possible zeros. -/
+theorem unramifiedGaussResidue_of_initial_relation (h0 h1 h2 : O) (A B : ℂ → ℂ)
+    (hA : AnalyticOnNhd ℂ A {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hB : AnalyticOnNhd ℂ B {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hAc : ContinuousAt A (4 / 3 : ℂ)) (hBc : ContinuousAt B (4 / 3 : ℂ))
+    (hrel : ∀ s : ℂ, 4 < s.re → 0 < s.im → unramifiedCubicGaussSeries s h0 =
+      A s * unramifiedCubicGaussSeries s h1 + B s * unramifiedCubicGaussSeries s h2) :
+    unramifiedGaussResidue h0 = A (4 / 3) * unramifiedGaussResidue h1 +
+      B (4 / 3) * unramifiedGaussResidue h2 := by
+  unfold unramifiedGaussResidue
+  apply cuspScalarResidue_relation
+    (fun h => rationalCuspFamily (3 * h) oppositeSource 2 3 (by norm_num) (by norm_num))
+    (fun h s => cuspWhittakerHeightFactor s (3 * h))
+    (fun h => rationalCuspFourier (3 * h) oppositeSource cubicEisensteinResidue)
+    (fun h s hs => rationalCuspFamily_analyticAt_nonreal (3 * h) oppositeSource 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun h s hs => cuspWhittakerHeightFactor_analyticAt (3 * h) s hs.1)
+    (fun h => (cuspWhittakerHeightFactor_analyticAt (3 * h) (4 / 3) (by norm_num)).continuousAt)
+    (fun h => rationalCuspFamily_residue_limit (3 * h) oppositeSource 2 3 (by norm_num) (by norm_num))
+    (fun h => cuspWhittakerHeightFactor_center_ne_zero (3 * h)) h0 h1 h2 A B hA hB hAc hBc
+  intro s hs hi
+  rw [rationalCuspFamily_opposite_initial h0 s hs hi,
+    rationalCuspFamily_opposite_initial h1 s hs hi,
+    rationalCuspFamily_opposite_initial h2 s hs hi, hrel s hs hi]
+  ring
+
+lemma gaussPrimeWeight_analytic (p : O) (hp : Prime p) (s : ℂ) :
+    AnalyticAt ℂ (fun z : ℂ => (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-z)) s := by
+  apply Complex.analyticAt_iff_eventually_differentiableAt.mpr
+  exact Eventually.of_forall fun z => (differentiableAt_id.neg).const_cpow (Or.inl
+    (Nat.cast_ne_zero.mpr (Ideal.absNorm_eq_zero_iff.not.mpr (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))))
+
+lemma gaussPrimeWeight_center (p : O) (hp : Prime p) :
+    (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+      ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ))) ^ 3 =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ := by
+  have hq : (Ideal.absNorm (Ideal.span {p}) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr
+    (Ideal.absNorm_eq_zero_iff.not.mpr (Ideal.span_singleton_eq_bot.not.mpr hp.ne_zero))
+  rw [← Complex.cpow_nat_mul, ← Complex.cpow_natCast _ 3, ← Complex.cpow_add _ _ hq]
+  convert Complex.cpow_neg_one (Ideal.absNorm (Ideal.span {p}) : ℂ) using 1
+  congr 1
+  norm_num
+
+/-- The residue satisfies the exact prime recurrence with coefficient `1+N(p)⁻¹`. -/
+theorem unramifiedGaussResidue_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedGaussResidue (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * unramifiedGaussResidue h -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) * primeCubicGauss p hp hprimary 1 h *
+        unramifiedGaussResidue (h * p) := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  let B : ℂ → ℂ := fun s => -((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s) * primeCubicGauss p hp hprimary 1 h)
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hB (s : ℂ) : AnalyticAt ℂ B s := ((gaussPrimeWeight_analytic p hp s).mul analyticAt_const).neg
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := unramifiedGaussResidue_of_initial_relation (h * p ^ 3) h (h * p) A B
+    (fun s _ => hA s) (fun s _ => hB s) (hA _).continuousAt (hB _).continuousAt (by
+      intro s hs hi
+      have hh := unramifiedCubicGaussSeries_prime_recurrence p hp hprimary s (by linarith) h hph
+      rw [unramifiedNormWeight_of_good s _ hgood] at hh
+      simpa only [A, B, neg_mul, sub_eq_add_neg] using hh)
+  dsimp only [A, B] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [neg_mul, sub_eq_add_neg] using he
+
+theorem unramifiedGaussResidue_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) :
+    unramifiedGaussResidue (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * unramifiedGaussResidue (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * unramifiedGaussResidue h := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  let B : ℂ → ℂ := fun s => -((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3)
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hB (s : ℂ) : AnalyticAt ℂ B s :=
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3)).neg
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := unramifiedGaussResidue_of_initial_relation (h * p ^ 6) (h * p ^ 3) h A B
+    (fun s _ => hA s) (fun s _ => hB s) (hA _).continuousAt (hB _).continuousAt (by
+      intro s hs hi
+      have hh := unramifiedCubicGaussSeries_cube_recurrence p hp hprimary s (by linarith) h
+      rw [unramifiedNormWeight_of_good s _ hgood] at hh
+      simpa only [A, B, neg_mul, sub_eq_add_neg] using hh)
+  dsimp only [A, B] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [neg_mul, sub_eq_add_neg] using he
+
+theorem unramifiedGaussResidue_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    unramifiedGaussResidue (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * unramifiedGaussResidue (h * p ^ 2) := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := unramifiedGaussResidue_of_initial_relation (h * p ^ 5) (h * p ^ 2) 0 A (fun _ => 0)
+    (fun s _ => hA s) (fun _ _ => analyticAt_const) (hA _).continuousAt continuousAt_const (by
+      intro s hs hi
+      have hh := unramifiedCubicGaussSeries_square_cube p hp hprimary s (by linarith) h hph
+      rw [unramifiedNormWeight_of_good s _ hgood] at hh
+      simpa only [A, zero_mul, add_zero] using hh)
+  dsimp only [A] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [zero_mul, add_zero] using he
+
+/-- An admissible cube has trivial cubic character in the ramified Fourier sum. -/
+lemma arithmeticResidueSum_frequency_cube (h c t : O) (hc : c ≠ 0) (hlevel : (3 : O) ∣ c)
+    (ht : lambda ^ 2 ∣ t - 1) (hct : IsCoprime c t) :
+    arithmeticResidueSum (h * t ^ 3) c = arithmeticResidueSum h c := by
+  have he := arithmeticResidueSum_frequency_twist h c (t ^ 3) hc hlevel
+    ⟨hct.pow_right, three_dvd_primary_sub_one _ (primary_pow_congruence t ht 3)⟩
+  rw [symbol_pow_denominator, symbol_cube_of_isCoprime c t ht hct, map_one, one_mul] at he
+  exact he
+
+lemma ramified_prime_frequency_not_dvd (h p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hph : ¬ p ∣ h) (u : Oˣ) (n : ℕ) :
+    ¬ p ∣ 9 * h * ((u : O) * lambda ^ n) := by
+  have hc := ramified_primary_coprime u n p hprimary
+  have h9 : IsCoprime (9 * ((u : O) * lambda ^ n)) p := by
+    rw [show (9 : O) = 3 * 3 by norm_num]
+    exact (hc.of_mul_left_left.mul_left hc.of_mul_left_left).mul_left hc.of_mul_left_right
+  have hn := hp.coprime_iff_not_dvd.mp h9.symm
+  rw [show 9 * h * ((u : O) * lambda ^ n) = (9 * ((u : O) * lambda ^ n)) * h by ring]
+  intro hd
+  exact (hp.dvd_mul.mp hd).elim hn hph
+
+/-- Any common cutoff above the ramified support can be used in the finite decomposition. -/
+theorem arithmeticDirichletSeries_finite_gauss_of_bound (s : ℂ) (hs : 2 < s.re)
+    (h : O) (hh : h ≠ 0) (N : ℕ) (hN : ramifiedFrequencyBound h + 1 ≤ N) :
+    arithmeticDirichletSeries s h =
+      ∑' u : Oˣ, ∑ n ∈ Finset.range N,
+        (((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) * arithmeticResidueSum h ((u : O) * lambda ^ (n + 2))) *
+          unramifiedCubicGaussSeries s (9 * h * ((u : O) * lambda ^ (n + 2))) := by
+  rw [arithmeticDirichletSeries_ramified_reindex s hs h]
+  apply tsum_congr
+  intro u
+  have hz (n : ℕ) (hn : n ∉ Finset.range N) :
+      (∑' I : GoodIdeal, arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1) = 0 := by
+    have hlarge : ramifiedFrequencyBound h < n + 2 := by
+      simp only [Finset.mem_range, not_lt] at hn
+      omega
+    have he (I : GoodIdeal) : arithmeticDirichletTerm s h (ramifiedLowerMap (u, n, I)).1 = 0 :=
+      arithmeticDirichletTerm_ramified_vanish s h hh u (n + 2) (by omega)
+        (primaryIdealGenerator I.1) (primaryIdealGenerator_spec I.1 I.2).2 hlarge
+    simp only [he, tsum_zero]
+  rw [tsum_eq_sum hz]
+  apply Finset.sum_congr rfl
+  intro n hn
+  rw [unramifiedCubicGaussSeries, ← tsum_mul_left]
+  exact tsum_congr (fun I => arithmeticDirichletTerm_ramified_gauss s h u n I)
+
+lemma cubic_units_finite : Finite Oˣ := by
+  letI : Fintype {z : O // ‖ringComplex z‖ ≤ 1} := (finite_norm_sublevel 1).fintype
+  have hn (u : Oˣ) : ‖ringComplex (u : O)‖ ≤ 1 := by
+    have he := ramifiedElement_absNorm u 0
+    simp only [pow_zero, mul_one] at he
+    have hs := ringComplex_norm_sq_eq_absNorm_span (u : O)
+    rw [he, Nat.cast_one] at hs
+    nlinarith only [hs, norm_nonneg (ringComplex (u : O))]
+  exact Finite.of_injective (fun u : Oˣ => (⟨u, hn u⟩ : {z : O // ‖ringComplex z‖ ≤ 1}))
+    (fun u v h => Units.ext (congrArg Subtype.val h))
+
+def ramifiedGaussTerm (s : ℂ) (h : O) (u : Oˣ) (n : ℕ) : ℂ :=
+  (((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) * arithmeticResidueSum h ((u : O) * lambda ^ (n + 2))) *
+    unramifiedCubicGaussSeries s (9 * h * ((u : O) * lambda ^ (n + 2)))
+
+/-- The ramified character cancels the frequency twist in the unramified prime factor. -/
+lemma ramifiedGaussTerm_prime_recurrence (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) (u : Oˣ) (n : ℕ) :
+    ramifiedGaussTerm s (h * p ^ 3) u n =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        ramifiedGaussTerm s h u n -
+      unramifiedNormWeight s (Ideal.span {p}) * cubicUnitGaussSum (9 * h) p *
+        ramifiedGaussTerm s (h * p) u n := by
+  let c : O := (u : O) * lambda ^ (n + 2)
+  have hc : c ≠ 0 := ramifiedElement_ne_zero u (n + 2)
+  have hlevel : (3 : O) ∣ c := ramifiedElement_level u (n + 2) (by omega)
+  have hcop : IsCoprime c p := (ramified_primary_coprime u (n + 2) p hprimary).of_mul_left_right
+  have ha := arithmeticResidueSum_frequency_cube h c p hc hlevel hprimary hcop
+  have ht := arithmeticResidueSum_frequency_twist h c p hc hlevel
+    ⟨hcop, three_dvd_primary_sub_one p hprimary⟩
+  have hg := cubicUnitGaussSum_frequency_twist (9 * h) p c hp.ne_zero hcop.symm
+  have hcub := unramifiedCubicGaussSeries_prime_recurrence p hp hprimary s hs (9 * h * c)
+    (ramified_prime_frequency_not_dvd h p hp hprimary hph u (n + 2))
+  rw [primeCubicGauss_one_eq] at hcub
+  have hcancel : arithmeticResidueSum h c * cubicUnitGaussSum (9 * h * c) p =
+      cubicUnitGaussSum (9 * h) p * arithmeticResidueSum (h * p) c := by
+    rw [← ht]
+    calc
+      _ = (ringComplex (symbol c p) * cubicUnitGaussSum (9 * h * c) p) *
+          arithmeticResidueSum (h * p) c := by ring
+      _ = _ := by rw [hg]
+  change (_ * arithmeticResidueSum (h * p ^ 3) c) * unramifiedCubicGaussSeries s (9 * (h * p ^ 3) * c) =
+    _ * ((_ * arithmeticResidueSum h c) * unramifiedCubicGaussSeries s (9 * h * c)) -
+    _ * ((_ * arithmeticResidueSum (h * p) c) * unramifiedCubicGaussSeries s (9 * (h * p) * c))
+  rw [ha, show 9 * (h * p ^ 3) * c = (9 * h * c) * p ^ 3 by ring, hcub,
+    show 9 * (h * p) * c = (9 * h * c) * p by ring]
+  linear_combination -unramifiedNormWeight s (Ideal.span {p}) * ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) *
+    unramifiedCubicGaussSeries s ((9 * h * c) * p) * hcancel
+
+theorem arithmeticDirichletSeries_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    arithmeticDirichletSeries s (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        arithmeticDirichletSeries s h -
+      unramifiedNormWeight s (Ideal.span {p}) * cubicUnitGaussSum (9 * h) p *
+        arithmeticDirichletSeries s (h * p) := by
+  letI : Finite Oˣ := cubic_units_finite
+  letI : Fintype Oˣ := Fintype.ofFinite _
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  let N := max (ramifiedFrequencyBound (h * p ^ 3) + 1)
+    (max (ramifiedFrequencyBound h + 1) (ramifiedFrequencyBound (h * p) + 1))
+  rw [arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p ^ 3)
+      (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) N (le_max_left _ _),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs h hh N ((le_max_left _ _).trans (le_max_right _ _)),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p)
+      (mul_ne_zero hh hp.ne_zero) N ((le_max_right _ _).trans (le_max_right _ _))]
+  change (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p ^ 3) u n) =
+    _ * (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s h u n) -
+    _ * (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p) u n)
+  simp_rw [ramifiedGaussTerm_prime_recurrence p hp hprimary s hs h hph,
+    Finset.sum_sub_distrib, ← Finset.mul_sum]
+  simp only [tsum_fintype, Finset.sum_sub_distrib, Finset.mul_sum]
+
+lemma ramifiedGaussTerm_cube_recurrence (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (hs : 2 < s.re) (h : O) (u : Oˣ) (n : ℕ) :
+    ramifiedGaussTerm s (h * p ^ 6) u n =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        ramifiedGaussTerm s (h * p ^ 3) u n -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        ramifiedGaussTerm s h u n := by
+  let c : O := (u : O) * lambda ^ (n + 2)
+  have ha (k : O) : arithmeticResidueSum (k * p ^ 3) c = arithmeticResidueSum k c :=
+    arithmeticResidueSum_frequency_cube k c p (ramifiedElement_ne_zero u (n + 2))
+      (ramifiedElement_level u (n + 2) (by omega)) hprimary
+      (ramified_primary_coprime u (n + 2) p hprimary).of_mul_left_right
+  have ha6 : arithmeticResidueSum (h * p ^ 6) c = arithmeticResidueSum h c := by
+    rw [show h * p ^ 6 = (h * p ^ 3) * p ^ 3 by ring, ha, ha]
+  have he := unramifiedCubicGaussSeries_cube_recurrence p hp hprimary s hs (9 * h * c)
+  change (_ * arithmeticResidueSum (h * p ^ 6) c) * unramifiedCubicGaussSeries s (9 * (h * p ^ 6) * c) =
+    _ * ((_ * arithmeticResidueSum (h * p ^ 3) c) * unramifiedCubicGaussSeries s (9 * (h * p ^ 3) * c)) -
+    _ * ((_ * arithmeticResidueSum h c) * unramifiedCubicGaussSeries s (9 * h * c))
+  rw [ha6, ha, show 9 * (h * p ^ 6) * c = (9 * h * c) * p ^ 6 by ring,
+    show 9 * (h * p ^ 3) * c = (9 * h * c) * p ^ 3 by ring, he]
+  ring
+
+theorem arithmeticDirichletSeries_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    arithmeticDirichletSeries s (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        arithmeticDirichletSeries s (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        arithmeticDirichletSeries s h := by
+  letI : Finite Oˣ := cubic_units_finite
+  letI : Fintype Oˣ := Fintype.ofFinite _
+  let N := max (ramifiedFrequencyBound (h * p ^ 6) + 1)
+    (max (ramifiedFrequencyBound (h * p ^ 3) + 1) (ramifiedFrequencyBound h + 1))
+  rw [arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p ^ 6)
+      (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) N (le_max_left _ _),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p ^ 3)
+      (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) N ((le_max_left _ _).trans (le_max_right _ _)),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs h hh N ((le_max_right _ _).trans (le_max_right _ _))]
+  change (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p ^ 6) u n) =
+    _ * (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p ^ 3) u n) -
+    _ * (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s h u n)
+  simp_rw [ramifiedGaussTerm_cube_recurrence p hp hprimary s hs h,
+    Finset.sum_sub_distrib, ← Finset.mul_sum]
+  simp only [tsum_fintype, Finset.sum_sub_distrib, Finset.mul_sum]
+
+lemma ramifiedGaussTerm_square_cube (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) (u : Oˣ) (n : ℕ) :
+    ramifiedGaussTerm s (h * p ^ 5) u n =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        ramifiedGaussTerm s (h * p ^ 2) u n := by
+  let c : O := (u : O) * lambda ^ (n + 2)
+  have ha := arithmeticResidueSum_frequency_cube (h * p ^ 2) c p
+    (ramifiedElement_ne_zero u (n + 2)) (ramifiedElement_level u (n + 2) (by omega)) hprimary
+    (ramified_primary_coprime u (n + 2) p hprimary).of_mul_left_right
+  rw [show (h * p ^ 2) * p ^ 3 = h * p ^ 5 by ring] at ha
+  have he := unramifiedCubicGaussSeries_square_cube p hp hprimary s hs (9 * h * c)
+    (ramified_prime_frequency_not_dvd h p hp hprimary hph u (n + 2))
+  change (_ * arithmeticResidueSum (h * p ^ 5) c) * unramifiedCubicGaussSeries s (9 * (h * p ^ 5) * c) =
+    _ * ((_ * arithmeticResidueSum (h * p ^ 2) c) * unramifiedCubicGaussSeries s (9 * (h * p ^ 2) * c))
+  rw [ha, show 9 * (h * p ^ 5) * c = (9 * h * c) * p ^ 5 by ring,
+    show 9 * (h * p ^ 2) * c = (9 * h * c) * p ^ 2 by ring, he]
+  ring
+
+theorem arithmeticDirichletSeries_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    arithmeticDirichletSeries s (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        arithmeticDirichletSeries s (h * p ^ 2) := by
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  let N := max (ramifiedFrequencyBound (h * p ^ 5) + 1) (ramifiedFrequencyBound (h * p ^ 2) + 1)
+  rw [arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p ^ 5)
+      (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) N (le_max_left _ _),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs (h * p ^ 2)
+      (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) N (le_max_right _ _)]
+  change (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p ^ 5) u n) =
+    _ * (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (h * p ^ 2) u n)
+  simp_rw [ramifiedGaussTerm_square_cube p hp hprimary s hs h hph, ← Finset.mul_sum]
+  exact tsum_mul_left
+
+theorem nonzeroScatteringResidue_of_initial_relation (h0 h1 h2 : O)
+    (hh0 : h0 ≠ 0) (hh1 : h1 ≠ 0) (hh2 : h2 ≠ 0) (A B : ℂ → ℂ)
+    (hA : AnalyticOnNhd ℂ A {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hB : AnalyticOnNhd ℂ B {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hAc : ContinuousAt A (4 / 3 : ℂ)) (hBc : ContinuousAt B (4 / 3 : ℂ))
+    (hrel : ∀ s : ℂ, 4 < s.re → 0 < s.im → scatteringCoefficient s h0 =
+      A s * scatteringCoefficient s h1 + B s * scatteringCoefficient s h2) :
+    nonzeroScatteringResidue h0 = A (4 / 3) * nonzeroScatteringResidue h1 +
+      B (4 / 3) * nonzeroScatteringResidue h2 := by
+  unfold nonzeroScatteringResidue
+  apply cuspScalarResidue_relation
+    (ι := {h : O // h ≠ 0})
+    (fun h => kernelCuspFourierFamily h.1 2 3 (by norm_num) (by norm_num))
+    (fun h s => ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * cuspWhittakerHeightFactor s h.1)
+    (fun h => kernelCuspFourier h.1 cubicEisensteinResidue)
+    (fun h s hs => kernelCuspFourierFamily_analyticAt_nonreal h.1 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun h s hs => analyticAt_const.mul (cuspWhittakerHeightFactor_analyticAt h.1 s hs.1))
+    (fun h => continuousAt_const.mul
+      (cuspWhittakerHeightFactor_analyticAt h.1 (4 / 3) (by norm_num)).continuousAt)
+    (fun h => kernelCuspFourierFamily_residue_limit h.1 2 3 (by norm_num) (by norm_num))
+    (fun h => mul_ne_zero cusp_volume_ne_zero (cuspWhittakerHeightFactor_center_ne_zero h.1))
+    ⟨h0, hh0⟩ ⟨h1, hh1⟩ ⟨h2, hh2⟩ A B hA hB hAc hBc
+  intro s hs hi
+  rw [kernelCuspFourierFamily_eq_upper h0 hh0 ⟨by linarith, hi⟩,
+    kernelCuspFourierFamily_eq_upper h1 hh1 ⟨by linarith, hi⟩,
+    kernelCuspFourierFamily_eq_upper h2 hh2 ⟨by linarith, hi⟩]
+  dsimp only
+  rw [hrel s hs hi]
+  ring
+
+/-- The actual nonconstant scattering residues inherit the prime recurrence. -/
+theorem nonzeroScatteringResidue_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    nonzeroScatteringResidue (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * nonzeroScatteringResidue h -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) * cubicUnitGaussSum (9 * h) p *
+        nonzeroScatteringResidue (h * p) := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  let B : ℂ → ℂ := fun s => -((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s) * cubicUnitGaussSum (9 * h) p)
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hB (s : ℂ) : AnalyticAt ℂ B s := ((gaussPrimeWeight_analytic p hp s).mul analyticAt_const).neg
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := nonzeroScatteringResidue_of_initial_relation (h * p ^ 3) h (h * p)
+    (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) hh (mul_ne_zero hh hp.ne_zero) A B
+    (fun s _ => hA s) (fun s _ => hB s) (hA _).continuousAt (hB _).continuousAt (by
+      intro s hs hi
+      have hr := arithmeticDirichletSeries_prime_recurrence p hp hprimary s (by linarith) h hph
+      rw [unramifiedNormWeight_of_good s _ hgood] at hr
+      unfold scatteringCoefficient
+      rw [hr]
+      dsimp only [A, B]
+      ring)
+  dsimp only [A, B] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [neg_mul, sub_eq_add_neg] using he
+
+theorem nonzeroScatteringResidue_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hh : h ≠ 0) :
+    nonzeroScatteringResidue (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * nonzeroScatteringResidue (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * nonzeroScatteringResidue h := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  let B : ℂ → ℂ := fun s => -((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3)
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hB (s : ℂ) : AnalyticAt ℂ B s :=
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3)).neg
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := nonzeroScatteringResidue_of_initial_relation (h * p ^ 6) (h * p ^ 3) h
+    (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) hh A B
+    (fun s _ => hA s) (fun s _ => hB s) (hA _).continuousAt (hB _).continuousAt (by
+      intro s hs hi
+      have hr := arithmeticDirichletSeries_cube_recurrence p hp hprimary s (by linarith) h hh
+      rw [unramifiedNormWeight_of_good s _ hgood] at hr
+      unfold scatteringCoefficient
+      rw [hr]
+      dsimp only [A, B]
+      ring)
+  dsimp only [A, B] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [neg_mul, sub_eq_add_neg] using he
+
+theorem nonzeroScatteringResidue_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    nonzeroScatteringResidue (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * nonzeroScatteringResidue (h * p ^ 2) := by
+  let A : ℂ → ℂ := fun s => 1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 *
+    ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-s)) ^ 3
+  have hA (s : ℂ) : AnalyticAt ℂ A s := analyticAt_const.add
+    (analyticAt_const.mul ((gaussPrimeWeight_analytic p hp s).pow 3))
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  have hgood : primaryIdealGenerator (Ideal.span {p}) ≠ 0 := by
+    rw [primaryIdealGenerator_span p hp.ne_zero hprimary]
+    exact hp.ne_zero
+  have he := nonzeroScatteringResidue_of_initial_relation (h * p ^ 5) (h * p ^ 2) h
+    (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) (mul_ne_zero hh (pow_ne_zero _ hp.ne_zero)) hh A (fun _ => 0)
+    (fun s _ => hA s) (fun _ _ => analyticAt_const) (hA _).continuousAt continuousAt_const (by
+      intro s hs hi
+      have hr := arithmeticDirichletSeries_square_cube p hp hprimary s (by linarith) h hph
+      rw [unramifiedNormWeight_of_good s _ hgood] at hr
+      unfold scatteringCoefficient
+      rw [hr]
+      dsimp only [A]
+      ring)
+  dsimp only [A] at he
+  rw [gaussPrimeWeight_center p hp] at he
+  simpa only [zero_mul, add_zero] using he
+
+/-- Rational matrices acting on hyperbolic space through the Eisenstein embedding. -/
+def rationalComplex : SL(2, ℤ) →* SL(2, ℂ) := integralComplexMatrix.comp rationalEmbedding
+
+lemma rational_translate_congr (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (r s : SL(2, ℤ)) (he : rationalSourceQuotient r = rationalSourceQuotient s)
+    (w : HyperbolicSpace) : f (rationalComplex r • w) = f (rationalComplex s • w) := by
+  have hm : rationalEmbedding (r * s⁻¹) ∈ levelThree := by
+    apply (QuotientGroup.eq_one_iff (N := levelThreeInRationalExtension)
+      (rationalSourceLift (r * s⁻¹))).mp
+    change rationalSourceQuotient (r * s⁻¹) = 1
+    rw [map_mul, map_inv, he, mul_inv_cancel]
+  have h := hf ⟨rationalEmbedding (r * s⁻¹), hm⟩ (rationalComplex s • w)
+  rw [complexCharacter_rational_intersection, one_mul] at h
+  change f (rationalComplex (r * s⁻¹) • (rationalComplex s • w)) = _ at h
+  simpa only [map_mul, map_inv, mul_smul, inv_smul_smul] using h
+
+/-- Left translation permutes the rational averaging classes. -/
+lemma rationalSourceProjection_left_invariant (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (r : SL(2, ℤ)) (w : HyperbolicSpace) :
+    rationalSourceProjection (fun v => f (rationalComplex r • v)) w = rationalSourceProjection f w := by
+  have he (q : rationalExtension ⧸ levelThreeInRationalExtension) :
+      f (rationalComplex r • (rationalComplex (rationalSourceSection q) • w)) =
+        f (rationalComplex (rationalSourceSection (rationalSourceQuotient r * q)) • w) := by
+    rw [← mul_smul, ← map_mul]
+    apply rational_translate_congr f hf
+    rw [map_mul, rationalSourceSection_spec, rationalSourceSection_spec]
+  change _ * (∑ q, f (rationalComplex r • (rationalComplex (rationalSourceSection q) • w))) =
+    _ * (∑ q, f (rationalComplex (rationalSourceSection q) • w))
+  simp_rw [he]
+  rw [Function.Bijective.sum_comp (Group.mulLeft_bijective (rationalSourceQuotient r))
+    (fun q => f (rationalComplex (rationalSourceSection q) • w))]
+
+lemma rational_translate_automorphy (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (r : SL(2, ℤ)) (n : levelThree) (w : HyperbolicSpace) :
+    f (rationalComplex r • (complexMatrix n • w)) =
+      complexCharacter n * f (rationalComplex r • w) := by
+  have he : rationalEmbedding r * (n : SL(2, O)) =
+      (levelThreeConjugate (rationalEmbedding r) n : SL(2, O)) * rationalEmbedding r := by
+    change _ = (rationalEmbedding r * (n : SL(2, O)) * (rationalEmbedding r)⁻¹) * rationalEmbedding r
+    group
+  change f (integralComplexMatrix (rationalEmbedding r) •
+    (integralComplexMatrix (n : SL(2, O)) • w)) = _
+  rw [← mul_smul, ← map_mul, he, map_mul, integralComplexMatrix_levelThree, mul_smul,
+    hf, complexCharacter_conjugate_rational]
+  rfl
+
+lemma rationalUnipotent_add (a b : ℤ) : rationalUnipotent (a + b) = rationalUnipotent a * rationalUnipotent b := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [rationalUnipotent, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, add_comm]
+
+lemma rationalUnipotent_nat (n : ℕ) : rationalUnipotent (n : ℤ) = ModularGroup.T ^ n := by
+  induction n with
+  | zero =>
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;> simp [rationalUnipotent]
+  | succ n ih =>
+    rw [Nat.cast_succ, rationalUnipotent_add, ih, pow_succ]
+    rfl
+
+lemma rational_T_cube_levelThree : rationalEmbedding (ModularGroup.T ^ 3) ∈ levelThree := by
+  rw [← rationalUnipotent_nat]
+  change Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+    (rationalEmbedding (rationalUnipotent 3)) = 1
+  have hz : Ideal.Quotient.mk (Ideal.span {(3 : O)}) 3 = 0 :=
+    Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span (by simp))
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  simp only [Matrix.SpecialLinearGroup.map_apply_coe, rationalUnipotent_embedding]
+  fin_cases i <;> fin_cases j <;> simp [hz]
+
+lemma rational_translate_T_cube (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (r : SL(2, ℤ)) (w : HyperbolicSpace) :
+    f (rationalComplex (r * ModularGroup.T ^ 3) • w) = f (rationalComplex r • w) := by
+  have he := rational_translate_automorphy f hf r
+    ⟨rationalEmbedding (ModularGroup.T ^ 3), rational_T_cube_levelThree⟩ w
+  rw [complexCharacter_rational_intersection, one_mul] at he
+  change f (rationalComplex r • (rationalComplex (ModularGroup.T ^ 3) • w)) = _ at he
+  simpa only [map_mul, mul_smul] using he
+
+/-- The four rational cusps; translation invariance collapses each parabolic fiber. -/
+def fourCuspAverage (f : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  (4 : ℂ)⁻¹ * (f w + f (rationalComplex ModularGroup.S • w) +
+    f (rationalComplex (ModularGroup.S * ModularGroup.T) • w) +
+    f (rationalComplex (ModularGroup.S * ModularGroup.T ^ 2) • w))
+
+lemma fourCuspAverage_automorphy (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (n : levelThree) (w : HyperbolicSpace) :
+    fourCuspAverage f (complexMatrix n • w) = complexCharacter n * fourCuspAverage f w := by
+  simp only [fourCuspAverage, hf, rational_translate_automorphy f hf]
+  ring
+
+lemma fourCuspAverage_T (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (hT : ∀ w, f (rationalComplex ModularGroup.T • w) = f w) (w : HyperbolicSpace) :
+    fourCuspAverage f (rationalComplex ModularGroup.T • w) = fourCuspAverage f w := by
+  have h2 : ModularGroup.S * ModularGroup.T * ModularGroup.T = ModularGroup.S * ModularGroup.T ^ 2 := by rw [pow_two, mul_assoc]
+  have h3 : ModularGroup.S * ModularGroup.T ^ 2 * ModularGroup.T = ModularGroup.S * ModularGroup.T ^ 3 := by group
+  simp only [fourCuspAverage, hT, ← mul_smul, ← map_mul, h2, h3, rational_translate_T_cube f hf]
+  ring
+
+lemma rational_STS : ModularGroup.S * ModularGroup.T * ModularGroup.S =
+    ModularGroup.T⁻¹ * ModularGroup.S * ModularGroup.T⁻¹ := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv,
+      ModularGroup.coe_S, ModularGroup.coe_T, Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+
+lemma rational_STTS : ModularGroup.S * ModularGroup.T ^ 2 * ModularGroup.S =
+    (ModularGroup.S * ModularGroup.T ^ 3 * ModularGroup.S⁻¹) *
+      (ModularGroup.S ^ 2 * ModularGroup.T * ModularGroup.S * ModularGroup.T) := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    norm_num [pow_succ, Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv,
+      ModularGroup.coe_S, ModularGroup.coe_T, Matrix.adjugate_fin_two, Matrix.mul_apply, Fin.sum_univ_two]
+
+lemma fourCuspAverage_S (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (hT : ∀ w, f (rationalComplex ModularGroup.T • w) = f w)
+    (hSS : ∀ w, f (rationalComplex (ModularGroup.S ^ 2) • w) = f w) (w : HyperbolicSpace) :
+    fourCuspAverage f (rationalComplex ModularGroup.S • w) = fourCuspAverage f w := by
+  have hTi (v : HyperbolicSpace) : f (rationalComplex ModularGroup.T⁻¹ • v) = f v := by
+    have he := hT (rationalComplex ModularGroup.T⁻¹ • v)
+    simpa only [map_inv, smul_inv_smul] using he.symm
+  have hSTS : f (rationalComplex (ModularGroup.S * ModularGroup.T * ModularGroup.S) • w) =
+      f (rationalComplex (ModularGroup.S * ModularGroup.T ^ 2) • w) := by
+    rw [rational_STS, map_mul, map_mul, mul_smul, mul_smul, hTi]
+    have he := rational_translate_T_cube f hf (ModularGroup.S * ModularGroup.T⁻¹) w
+    have hg : (ModularGroup.S * ModularGroup.T⁻¹) * ModularGroup.T ^ 3 =
+        ModularGroup.S * ModularGroup.T ^ 2 := by group
+    rw [hg] at he
+    simpa only [map_mul, mul_smul] using he.symm
+  have hconj : rationalEmbedding (ModularGroup.S * ModularGroup.T ^ 3 * ModularGroup.S⁻¹) ∈ levelThree := by
+    simpa only [levelThreeConjugate, map_mul, map_inv] using
+      (levelThreeConjugate (rationalEmbedding ModularGroup.S)
+        ⟨rationalEmbedding (ModularGroup.T ^ 3), rational_T_cube_levelThree⟩).property
+  have hSTTS : f (rationalComplex (ModularGroup.S * ModularGroup.T ^ 2 * ModularGroup.S) • w) =
+      f (rationalComplex (ModularGroup.S * ModularGroup.T) • w) := by
+    rw [rational_STTS, map_mul, mul_smul]
+    have he := hf ⟨_, hconj⟩ (rationalComplex
+      (ModularGroup.S ^ 2 * ModularGroup.T * ModularGroup.S * ModularGroup.T) • w)
+    rw [complexCharacter_rational_intersection, one_mul] at he
+    change f (rationalComplex _ • _) = _ at he
+    rw [he]
+    simp only [map_mul, mul_smul, hSS, hT]
+  simp only [fourCuspAverage, ← mul_smul, ← map_mul,
+    show ModularGroup.S * ModularGroup.S = ModularGroup.S ^ 2 by rw [pow_two], hSS, hSTS, hSTTS]
+  ring
+
+def rationalFunctionStabilizer (f : HyperbolicSpace → ℂ) : Subgroup (SL(2, ℤ)) where
+  carrier r := ∀ w, f (rationalComplex r • w) = f w
+  one_mem' w := by rw [map_one, one_smul]
+  mul_mem' hr hs w := by rw [map_mul, mul_smul, hr, hs]
+  inv_mem' {r} hr w := by
+    have he := hr (rationalComplex r⁻¹ • w)
+    simpa only [map_inv, smul_inv_smul] using he.symm
+
+lemma fourCuspAverage_rational (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (hT : ∀ w, f (rationalComplex ModularGroup.T • w) = f w)
+    (hSS : ∀ w, f (rationalComplex (ModularGroup.S ^ 2) • w) = f w)
+    (r : SL(2, ℤ)) (w : HyperbolicSpace) :
+    fourCuspAverage f (rationalComplex r • w) = fourCuspAverage f w := by
+  have htop : rationalFunctionStabilizer (fourCuspAverage f) = ⊤ := by
+    apply top_unique
+    rw [← SpecialLinearGroup.SL2Z_generators]
+    apply (Subgroup.closure_le _).mpr
+    intro g hg
+    rcases hg with (rfl | rfl)
+    · exact fourCuspAverage_S f hf hT hSS
+    · exact fourCuspAverage_T f hf hT
+  have hr : r ∈ rationalFunctionStabilizer (fourCuspAverage f) := by rw [htop]; trivial
+  exact hr w
+
+/-- Generator relations give the four-cusp formula without enumerating the finite quotient. -/
+theorem rationalSourceProjection_four_cusps (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (hT : ∀ w, f (rationalComplex ModularGroup.T • w) = f w)
+    (hSS : ∀ w, f (rationalComplex (ModularGroup.S ^ 2) • w) = f w)
+    (w : HyperbolicSpace) : rationalSourceProjection f w = fourCuspAverage f w := by
+  have hfixed : rationalSourceProjection (fourCuspAverage f) w = fourCuspAverage f w := by
+    apply rationalSourceProjection_fixed
+    intro g v
+    obtain ⟨n, r, hr⟩ := g.property
+    rw [← hr, map_mul, integralComplexMatrix_levelThree, mul_smul,
+      fourCuspAverage_automorphy f hf]
+    change complexCharacter n * fourCuspAverage f (rationalComplex r • v) = _
+    rw [fourCuspAverage_rational f hf hT hSS]
+    have he : extendedComplexCharacter g = complexCharacter n :=
+      rationalExtensionValue_of_product g n r hr
+    rw [he]
+  have havg : rationalSourceProjection (fourCuspAverage f) w = rationalSourceProjection f w := by
+    have hS := rationalSourceProjection_left_invariant f hf ModularGroup.S w
+    have hST := rationalSourceProjection_left_invariant f hf (ModularGroup.S * ModularGroup.T) w
+    have hSTT := rationalSourceProjection_left_invariant f hf (ModularGroup.S * ModularGroup.T ^ 2) w
+    unfold rationalSourceProjection fourCuspAverage
+    rw [← Finset.mul_sum, Finset.sum_add_distrib, Finset.sum_add_distrib, Finset.sum_add_distrib]
+    unfold rationalSourceProjection at hS hST hSTT
+    linear_combination (1 / 4 : ℂ) * hS + (1 / 4 : ℂ) * hST + (1 / 4 : ℂ) * hSTT
+  exact havg.symm.trans hfixed
+
+lemma rationalComplex_S_sq_row (v : Fin 2 → ℂ) :
+    rowOperator (rationalComplex (ModularGroup.S ^ 2)) v = -v := by
+  have hS : ((ModularGroup.S ^ 2 : SL(2, ℤ)) : Matrix (Fin 2) (Fin 2) ℤ) = !![-1, 0; 0, -1] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;>
+      norm_num [pow_two, Matrix.SpecialLinearGroup.coe_mul, ModularGroup.coe_S,
+        Matrix.mul_apply, Fin.sum_univ_two]
+  have hC : (rationalComplex (ModularGroup.S ^ 2) : Matrix (Fin 2) (Fin 2) ℂ) = !![-1, 0; 0, -1] := by
+    ext i j
+    change ringComplex ((Int.castRingHom O) ((ModularGroup.S ^ 2 : SL(2, ℤ)) i j)) = _
+    rw [congrFun (congrFun hS i) j]
+    fin_cases i <;> fin_cases j <;> simp
+  rw [rowOperator_apply, hC]
+  funext j
+  fin_cases j <;> simp [Matrix.vecMul, dotProduct, Fin.sum_univ_two]
+
+lemma hyperbolicEisenstein_S_sq (s : ℂ) (w : HyperbolicSpace) :
+    hyperbolicEisenstein s (rationalComplex (ModularGroup.S ^ 2) • w) = hyperbolicEisenstein s w := by
+  induction w using Quotient.inductionOn with
+  | _ g =>
+    change eisenstein (rationalComplex (ModularGroup.S ^ 2) * g) s = eisenstein g s
+    apply tsum_congr
+    intro x
+    unfold summand
+    rw [← rowOperator_mul, rationalComplex_S_sq_row, map_neg]
+    simp [rowEnergy]
+
+lemma hyperbolicEisenstein_T_pow (s : ℂ) (n : ℕ) (w : HyperbolicSpace) :
+    hyperbolicEisenstein s (rationalComplex (ModularGroup.T ^ n) • w) = hyperbolicEisenstein s w := by
+  simpa only [rationalUnipotent_nat, rationalComplex, MonoidHom.comp_apply] using
+    hyperbolicEisenstein_unipotent (n : ℤ) s w
+
+/-- The Eisenstein family averaged over the rational extension of the cubic group. -/
+def rationalSourceEisenstein (s : ℂ) : HyperbolicSpace → ℂ :=
+  rationalSourceProjection (hyperbolicEisenstein s)
+
+theorem rationalSourceEisenstein_four_cusps (s : ℂ) (hs : 2 < s.re) (w : HyperbolicSpace) :
+    rationalSourceEisenstein s w = fourCuspAverage (hyperbolicEisenstein s) w := by
+  exact rationalSourceProjection_four_cusps (hyperbolicEisenstein s)
+    (fun n v => hyperbolicEisenstein_automorphy n s hs v)
+    (fun v => by simpa only [pow_one] using hyperbolicEisenstein_T_pow s 1 v)
+    (hyperbolicEisenstein_S_sq s) w
+
+lemma cosetHeight_cuspUnipotentEquiv (t : ℤ) (x : CuspCosets) (w : HyperbolicSpace) :
+    cosetHeight x (rationalComplex (rationalUnipotent t) • w) =
+      cosetHeight (cuspUnipotentEquiv t x) w := by
+  induction w using Quotient.inductionOn with
+  | _ g =>
+    change (rowEnergy (rowOperator (rationalComplex (rationalUnipotent t) * g) (embeddedRow x)))⁻¹ =
+      (rowEnergy (rowOperator g (embeddedRow (cuspUnipotentEquiv t x))))⁻¹
+    rw [embeddedRow_cuspUnipotentEquiv, ← rowOperator_apply, rowOperator_mul]
+    rfl
+
+lemma cuspCutoffCorrection_unipotent (t : ℤ) (Y : ℝ) (F : ℝ → ℂ) (w : HyperbolicSpace) :
+    cuspCutoffCorrection Y F (rationalComplex (rationalUnipotent t) • w) = cuspCutoffCorrection Y F w := by
+  have he (x : CuspCosets) :
+      cuspCutoffTerm Y F x (rationalComplex (rationalUnipotent t) • w) =
+        cuspCutoffTerm Y F (cuspUnipotentEquiv t x) w := by
+    simp only [cuspCutoffTerm, cosetHeight_cuspUnipotentEquiv, cosetCharacter_cuspUnipotentEquiv]
+  unfold cuspCutoffCorrection
+  simp_rw [he]
+  exact (cuspUnipotentEquiv t).tsum_eq (fun x => cuspCutoffTerm Y F x w)
+
+lemma cosetHeight_S_sq (x : CuspCosets) (w : HyperbolicSpace) :
+    cosetHeight x (rationalComplex (ModularGroup.S ^ 2) • w) = cosetHeight x w := by
+  induction w using Quotient.inductionOn with
+  | _ g =>
+    change (rowEnergy (rowOperator (rationalComplex (ModularGroup.S ^ 2) * g) (embeddedRow x)))⁻¹ = _
+    rw [← rowOperator_mul, rationalComplex_S_sq_row, map_neg]
+    simp [rowEnergy, cosetHeight]
+
+lemma cuspCutoffCorrection_S_sq (Y : ℝ) (F : ℝ → ℂ) (w : HyperbolicSpace) :
+    cuspCutoffCorrection Y F (rationalComplex (ModularGroup.S ^ 2) • w) = cuspCutoffCorrection Y F w := by
+  simp only [cuspCutoffCorrection, cuspCutoffTerm, cosetHeight_S_sq]
+
+/-- A symmetry of the initial Eisenstein family and its cutoff survives the residue limit. -/
+theorem cubicEisensteinResidue_rational_symmetry (r : SL(2, ℤ))
+    (hE : ∀ s : ℂ, 2 < s.re → ∀ w,
+      hyperbolicEisenstein s (rationalComplex r • w) = hyperbolicEisenstein s w)
+    (hseed : ∀ s : ℂ, ∀ w,
+      smoothCuspSeed 2 3 s (rationalComplex r • w) = smoothCuspSeed 2 3 s w) :
+    kernelRationalPullback (rationalSourceLift r) cubicEisensteinResidue = cubicEisensteinResidue := by
+  let P := kernelRationalPullback (rationalSourceLift r)
+  let F := kernelEisensteinL2Correction 2 3 (by norm_num) (by norm_num)
+  have hc : AnalyticOnNhd ℂ F cuspUpperParameterRegion := fun s hs =>
+    kernelEisensteinL2Correction_analyticAt_nonreal 2 3 (by norm_num) (by norm_num)
+      s (by linarith [hs.1]) hs.2.ne'
+  have hl : AnalyticOnNhd ℂ (fun s => P (F s)) cuspUpperParameterRegion := fun s hs =>
+    (ContinuousLinearMap.analyticAt (𝕜 := ℂ) P.toContinuousLinearMap _).comp_of_eq (hc s hs) rfl
+  have hopen : IsOpen {s : ℂ | 4 < s.re ∧ 0 < s.im} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_im)
+  have hev : (fun s => P (F s)) =ᶠ[𝓝 (5 + Complex.I : ℂ)] F := by
+    filter_upwards [hopen.mem_nhds (by norm_num)] with s hs
+    have hF := kernelEisensteinL2Correction_initial_overlap 2 3 (by norm_num) (by norm_num) s hs.1 hs.2
+    have hcomp := (kernelRationalAction_measurePreserving (rationalSourceLift r)).quasiMeasurePreserving.ae_eq_comp hF
+    have hpoint (q : KernelQuotient) :
+        kernelQuotientEisenstein s (by linarith [hs.1]) (kernelRationalAction (rationalSourceLift r) q) -
+          kernelQuotientSeed 2 3 s (kernelRationalAction (rationalSourceLift r) q) =
+        kernelQuotientEisenstein s (by linarith [hs.1]) q - kernelQuotientSeed 2 3 s q := by
+      induction q using Quotient.inductionOn with
+      | _ w => exact congrArg₂ (fun a b : ℂ => a - b) (hE s (by linarith [hs.1]) w) (hseed s w)
+    apply Lp.ext
+    filter_upwards [kernelRationalPullback_ae (rationalSourceLift r) (F s), hcomp, hF] with q hp hq hf
+    exact hp.trans (hq.trans ((hpoint q).trans hf.symm))
+  have heq := hl.eqOn_of_preconnected_of_eventuallyEq hc cuspUpperParameterRegion_convex.isPreconnected
+    (by norm_num [cuspUpperParameterRegion]) hev
+  have hlim := (kernelEisensteinResidueVector_limit 2 3 (by norm_num) (by norm_num)).comp
+    thetaApproach_tendsto_complex_punctured
+  have hp := P.continuous.continuousAt.tendsto.comp hlim
+  apply tendsto_nhds_unique_of_eventuallyEq hp hlim
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change 0 < t at ht
+  have htD : (4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I ∈ cuspUpperParameterRegion := by
+    constructor
+    · norm_num
+      linarith
+    · simpa using ht
+  change P (_ • F _) = _ • F _
+  rw [map_smul]
+  exact congrArg (fun u : KernelQuotientL2 =>
+    ((4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I - 4 / 3) • u) (heq htD)
+
+theorem cubicResidualFunction_rational_symmetry (r : SL(2, ℤ))
+    (hr : kernelRationalPullback (rationalSourceLift r) cubicEisensteinResidue = cubicEisensteinResidue)
+    (w : HyperbolicSpace) : cubicResidualFunction (rationalComplex r • w) = cubicResidualFunction w := by
+  have he : (fun q => cubicEisensteinResidue (kernelRationalAction (rationalSourceLift r) q))
+      =ᵐ[integralQuotientVolume globalKubotaKernel] cubicEisensteinResidue := by
+    filter_upwards [kernelRationalPullback_ae (rationalSourceLift r) cubicEisensteinResidue] with q hq
+    rw [hr] at hq
+    exact hq.symm
+  have hl := kernelProjection_quasiMeasurePreserving.ae_eq_comp he
+  have hrep := cubicEisensteinResidue_continuous_representative
+  have hcomp := (measurePreserving_smul (rationalComplex r)
+    hyperbolicVolume).quasiMeasurePreserving.ae_eq_comp hrep
+  have hae : (fun p : HyperbolicSpace => cubicResidualFunction (rationalComplex r • p))
+      =ᵐ[hyperbolicVolume] cubicResidualFunction := by
+    filter_upwards [hcomp, hl, hrep] with p hp hc hq
+    exact hp.symm.trans (hc.trans hq)
+  exact congrFun (Measure.eq_of_ae_eq hae
+    (cubicResidualFunction_continuous.comp (continuous_hyperbolic_action (rationalComplex r)))
+    cubicResidualFunction_continuous) w
+
+lemma cubicResidualFunction_T (w : HyperbolicSpace) :
+    cubicResidualFunction (rationalComplex ModularGroup.T • w) = cubicResidualFunction w := by
+  apply cubicResidualFunction_rational_symmetry
+  apply cubicEisensteinResidue_rational_symmetry
+  · intro s hs v
+    simpa only [pow_one] using hyperbolicEisenstein_T_pow s 1 v
+  · intro s v
+    have he : rationalUnipotent (1 : ℤ) = ModularGroup.T := by
+      simpa only [Nat.cast_one, pow_one] using rationalUnipotent_nat 1
+    simpa only [he, smoothCuspSeed] using cuspCutoffCorrection_unipotent 1 1 (cuspSeedProfile 2 3 s) v
+
+lemma cubicResidualFunction_S_sq (w : HyperbolicSpace) :
+    cubicResidualFunction (rationalComplex (ModularGroup.S ^ 2) • w) = cubicResidualFunction w := by
+  apply cubicResidualFunction_rational_symmetry
+  apply cubicEisensteinResidue_rational_symmetry
+  · exact fun s _ v => hyperbolicEisenstein_S_sq s v
+  · exact fun s v => cuspCutoffCorrection_S_sq 1 (cuspSeedProfile 2 3 s) v
+
+/-- The actual residual source is the average of its four rational cusp translates. -/
+theorem cubicSourceResidualFunction_four_cusps (w : HyperbolicSpace) :
+    cubicSourceResidualFunction w = fourCuspAverage cubicResidualFunction w :=
+  rationalSourceProjection_four_cusps cubicResidualFunction cubicResidualFunction_automorphy
+    cubicResidualFunction_T cubicResidualFunction_S_sq w
+
+lemma rationalUnipotent_action (t : ℤ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    rationalComplex (rationalUnipotent t) • upperPoint z v hv = upperPoint (z + (t : ℂ)) v hv := by
+  have he : rationalEmbedding (rationalUnipotent t) = integralTranslation (t : O) := by
+    apply Subtype.ext
+    exact rationalUnipotent_embedding t
+  change integralComplexMatrix (rationalEmbedding (rationalUnipotent t)) • upperPoint z v hv = _
+  rw [he, integralTranslation_action, map_intCast]
+
+lemma rational_T_pow_action (n : ℕ) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    rationalComplex (ModularGroup.T ^ n) • upperPoint z v hv = upperPoint (z + (n : ℂ)) v hv := by
+  simpa only [rationalUnipotent_nat, Int.cast_natCast] using rationalUnipotent_action (n : ℤ) z v hv
+
+lemma rational_translate_period (f : HyperbolicSpace → ℂ)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (r : SL(2, ℤ)) (v : ℝ) (hv : 0 < v) (n : O) (z : ℂ) :
+    f (rationalComplex r • upperPoint (z + 3 * ringComplex n) v hv) =
+      f (rationalComplex r • upperPoint z v hv) := by
+  obtain ⟨hn, hchar⟩ := (globalKubotaKernel_mem _).mp (integralTranslation_three_mem_kernel n)
+  have he := rational_translate_automorphy f hf r ⟨integralTranslation (3 * n), hn⟩ (upperPoint z v hv)
+  rw [hchar, one_mul] at he
+  change f (rationalComplex r •
+    (integralComplexMatrix (integralTranslation (3 * n)) • upperPoint z v hv)) = _ at he
+  simpa only [integralTranslation_action, map_mul, map_ofNat] using he
+
+/-- Translation of a periodic function multiplies its Fourier coefficient by the dual character. -/
+lemma period_fourier_translation (f : ℂ → ℂ)
+    (hf : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z) (h : O) (b : ℂ) :
+    (∫ z in periodDomain, f (z + b) * tracePhase (-cuspFrequency h * z)) =
+      tracePhase (cuspFrequency h * b) * ∫ z in periodDomain, f z * tracePhase (-cuspFrequency h * z) := by
+  have hperiod (n : O) (z : ℂ) :
+      f (z + 3 * ringComplex n) * tracePhase (-cuspFrequency h * (z + 3 * ringComplex n)) =
+        f z * tracePhase (-cuspFrequency h * z) := by
+    rw [hf, cuspFrequency_negative_period]
+  have he (z : ℂ) : f (z + b) * tracePhase (-cuspFrequency h * z) =
+      tracePhase (cuspFrequency h * b) * (f (b + z) * tracePhase (-cuspFrequency h * (b + z))) := by
+    rw [mul_left_comm, ← AddChar.map_add_eq_mul]
+    rw [show cuspFrequency h * b + -cuspFrequency h * (b + z) = -cuspFrequency h * z by ring,
+      add_comm b z]
+  simp_rw [he]
+  rw [integral_const_mul]
+  exact congrArg (fun z : ℂ => tracePhase (cuspFrequency h * b) * z)
+    (period_integral_translation (fun z => f z * tracePhase (-cuspFrequency h * z)) hperiod b)
+
+def rationalCuspPhaseSum (h : O) : ℂ :=
+  1 + tracePhase (cuspFrequency h) + tracePhase (cuspFrequency h * 2)
+
+lemma fourCuspAverage_fourier (f : HyperbolicSpace → ℂ) (hc : Continuous f)
+    (hf : ∀ n : levelThree, ∀ w, f (complexMatrix n • w) = complexCharacter n * f w)
+    (v : ℝ) (hv : 0 < v) (h : O) :
+    (∫ z in periodDomain, fourCuspAverage f (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) =
+      (4 : ℂ)⁻¹ * ((∫ z in periodDomain, f (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) +
+        rationalCuspPhaseSum h * ∫ z in periodDomain,
+          f (rationalComplex ModularGroup.S • upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) := by
+  let A : ℂ → ℂ := fun z => f (upperPoint z v hv)
+  let B : ℂ → ℂ := fun z => f (rationalComplex ModularGroup.S • upperPoint z v hv)
+  let P : ℂ → ℂ := fun z => tracePhase (-cuspFrequency h * z)
+  have hcoord : Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) := by fun_prop
+  have hu : Continuous (fun z : ℂ => upperPoint z v hv) :=
+    upperCoordinatesHomeomorph.continuous.comp hcoord
+  have hA : Continuous A := hc.comp hu
+  have hB : Continuous B := hc.comp ((continuous_hyperbolic_action _).comp hu)
+  have hP : Continuous P := tracePhase_continuous.comp (continuous_const.mul continuous_id)
+  have hiA : IntegrableOn (fun z => A z * P z) periodDomain :=
+    periodDomain_continuous_integrable _ (hA.mul hP)
+  have hiB (b : ℂ) : IntegrableOn (fun z => B (z + b) * P z) periodDomain :=
+    periodDomain_continuous_integrable _ ((hB.comp (continuous_id.add continuous_const)).mul hP)
+  have hiB0 : IntegrableOn (fun z => B z * P z) periodDomain := by simpa only [add_zero] using hiB 0
+  have hiAB : IntegrableOn (fun z => A z * P z + B z * P z) periodDomain := hiA.add hiB0
+  have hiAB1 : IntegrableOn (fun z => A z * P z + B z * P z + B (z + 1) * P z) periodDomain :=
+    hiAB.add (hiB 1)
+  have hshift (b : ℂ) : (∫ z in periodDomain, B (z + b) * P z) =
+      tracePhase (cuspFrequency h * b) * ∫ z in periodDomain, B z * P z :=
+    period_fourier_translation B (rational_translate_period f hf ModularGroup.S v hv) h b
+  have he (z : ℂ) : fourCuspAverage f (upperPoint z v hv) * P z =
+      (4 : ℂ)⁻¹ * (A z * P z + B z * P z + B (z + 1) * P z + B (z + 2) * P z) := by
+    have h1 := rational_T_pow_action 1 z v hv
+    simp only [pow_one, Nat.cast_one] at h1
+    have h2 := rational_T_pow_action 2 z v hv
+    simp only [Nat.cast_ofNat] at h2
+    simp only [fourCuspAverage, map_mul, mul_smul, h1, h2, A, B]
+    ring
+  change (∫ z in periodDomain, fourCuspAverage f (upperPoint z v hv) * P z) = _
+  simp_rw [he]
+  rw [integral_const_mul, integral_add hiAB1 (hiB 2),
+    integral_add hiAB (hiB 1), integral_add hiA hiB0, hshift 1, hshift 2]
+  dsimp only [rationalCuspPhaseSum, A, B, P]
+  simp only [mul_one]
+  ring
+
+/-- The source Fourier series combines the original scattering series and the opposite-cusp Gauss series. -/
+theorem rationalSourceEisenstein_fourier (v : ℝ) (hv : 0 < v) (s : ℂ) (hs : 2 < s.re) (h : O) :
+    (∫ z in periodDomain, rationalSourceEisenstein s (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) =
+      (4 : ℂ)⁻¹ * ((v : ℂ) ^ s * (if h = 0 then ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) else 0) +
+        ((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+          (arithmeticDirichletSeries s h + rationalCuspPhaseSum h * unramifiedCubicGaussSeries s (9 * h))) := by
+  simp_rw [rationalSourceEisenstein_four_cusps s hs]
+  rw [fourCuspAverage_fourier _ (hyperbolicEisenstein_continuous s hs)
+    (fun n w => hyperbolicEisenstein_automorphy n s hs w)]
+  rw [show rationalComplex ModularGroup.S = oppositeMatrix from oppositeSource_matrix]
+  change (4 : ℂ)⁻¹ * ((∫ z in periodDomain, upperEisenstein z v hv s * tracePhase (-cuspFrequency h * z)) +
+    rationalCuspPhaseSum h * ∫ z in periodDomain, oppositeEisenstein z v hv s * tracePhase (-cuspFrequency h * z)) = _
+  rw [integral_upperEisenstein_arithmetic v hv s hs h, oppositeEisenstein_fourier v hv s hs h]
+  ring
+
+lemma tracePhase_primary_frequency (h p k : O) (hprimary : lambda ^ 2 ∣ p - 1) :
+    tracePhase (cuspFrequency (h * p) * ringComplex k) = tracePhase (cuspFrequency h * ringComplex k) := by
+  obtain ⟨t, ht⟩ := three_dvd_lambda_sq.trans hprimary
+  have hp : h * p = h + 3 * (h * t) := by linear_combination h * ht
+  have he : cuspFrequency (h * p) * ringComplex k =
+      cuspFrequency h * ringComplex k + ringComplex (h * t * k) / ringComplex traceLambda := by
+    rw [hp]
+    simp only [cuspFrequency, map_add, map_mul, map_ofNat]
+    field_simp
+  rw [he, AddChar.map_add_eq_mul, tracePhase_embedding_div_traceLambda, mul_one]
+
+lemma rationalCuspPhaseSum_primary_mul (h p : O) (hprimary : lambda ^ 2 ∣ p - 1) :
+    rationalCuspPhaseSum (h * p) = rationalCuspPhaseSum h := by
+  have h1 := tracePhase_primary_frequency h p 1 hprimary
+  have h2 := tracePhase_primary_frequency h p 2 hprimary
+  simp only [map_one, mul_one] at h1
+  simp only [map_ofNat] at h2
+  rw [rationalCuspPhaseSum, rationalCuspPhaseSum, h1, h2]
+
+/-- Arithmetic factor in the nonconstant Fourier modes of the rationally averaged source. -/
+def rationalSourceArithmeticSeries (s : ℂ) (h : O) : ℂ :=
+  (4 : ℂ)⁻¹ * (arithmeticDirichletSeries s h + rationalCuspPhaseSum h * unramifiedCubicGaussSeries s (9 * h))
+
+lemma primary_prime_not_dvd_nine_frequency (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) : ¬ p ∣ 9 * h := by
+  simpa only [Units.val_one, pow_zero, mul_one] using
+    ramified_prime_frequency_not_dvd h p hp hprimary hph 1 0
+
+theorem rationalSourceArithmeticSeries_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceArithmeticSeries s (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        rationalSourceArithmeticSeries s h -
+      unramifiedNormWeight s (Ideal.span {p}) * cubicUnitGaussSum (9 * h) p *
+        rationalSourceArithmeticSeries s (h * p) := by
+  have hg := unramifiedCubicGaussSeries_prime_recurrence p hp hprimary s hs (9 * h)
+    (primary_prime_not_dvd_nine_frequency p hp hprimary h hph)
+  rw [primeCubicGauss_one_eq] at hg
+  unfold rationalSourceArithmeticSeries
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 3) (primary_pow_congruence p hprimary 3),
+    rationalCuspPhaseSum_primary_mul h p hprimary, arithmeticDirichletSeries_prime_recurrence p hp hprimary s hs h hph,
+    show 9 * (h * p ^ 3) = (9 * h) * p ^ 3 by ring, hg,
+    show 9 * (h * p) = (9 * h) * p by ring]
+  ring
+
+theorem rationalSourceArithmeticSeries_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    rationalSourceArithmeticSeries s (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        rationalSourceArithmeticSeries s (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3 *
+        rationalSourceArithmeticSeries s h := by
+  unfold rationalSourceArithmeticSeries
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 6) (primary_pow_congruence p hprimary 6),
+    rationalCuspPhaseSum_primary_mul h (p ^ 3) (primary_pow_congruence p hprimary 3),
+    arithmeticDirichletSeries_cube_recurrence p hp hprimary s hs h hh,
+    show 9 * (h * p ^ 6) = (9 * h) * p ^ 6 by ring,
+    show 9 * (h * p ^ 3) = (9 * h) * p ^ 3 by ring,
+    unramifiedCubicGaussSeries_cube_recurrence p hp hprimary s hs (9 * h)]
+  ring
+
+theorem rationalSourceArithmeticSeries_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (s : ℂ) (hs : 2 < s.re) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceArithmeticSeries s (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 * unramifiedNormWeight s (Ideal.span {p}) ^ 3) *
+        rationalSourceArithmeticSeries s (h * p ^ 2) := by
+  unfold rationalSourceArithmeticSeries
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 5) (primary_pow_congruence p hprimary 5),
+    rationalCuspPhaseSum_primary_mul h (p ^ 2) (primary_pow_congruence p hprimary 2),
+    arithmeticDirichletSeries_square_cube p hp hprimary s hs h hph,
+    show 9 * (h * p ^ 5) = (9 * h) * p ^ 5 by ring,
+    show 9 * (h * p ^ 2) = (9 * h) * p ^ 2 by ring,
+    unramifiedCubicGaussSeries_square_cube p hp hprimary s hs (9 * h)
+      (primary_prime_not_dvd_nine_frequency p hp hprimary h hph)]
+  ring
+
+/-- Compact translated support for a Fourier test on an arbitrary positive height interval. -/
+def rationalIntervalCompact (a b : ℝ) (g : rationalExtension) : Set KernelQuotient :=
+  kernelRationalAction g '' kernelCuspIntervalCompact a b
+
+lemma rationalIntervalCompact_isCompact (a b : ℝ) (ha : 0 < a) (g : rationalExtension) :
+    IsCompact (rationalIntervalCompact a b g) :=
+  (kernelCuspIntervalCompact_isCompact a b ha).image (kernelRationalAction_continuous g)
+
+def rationalIntervalFourier (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) : KernelQuotientL2 →L[ℂ] ℂ :=
+  (kernelCuspIntervalFourier a b ha ρ h).comp (kernelRationalPullback g).toContinuousLinearMap
+
+lemma rationalIntervalFourier_integral (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) (F : KernelQuotientL2) :
+    rationalIntervalFourier a b ha ρ h g F = ∫ w in cuspPeriodStrip a b,
+      F (kernelRationalAction g (integralOrbitProjection globalKubotaKernel w)) *
+        cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  rw [rationalIntervalFourier, ContinuousLinearMap.comp_apply, kernelCuspIntervalFourier_integral]
+  have he := (kernelCuspInterval_projection_quasiMeasurePreserving a b ha).ae_eq_comp
+    (kernelRationalPullback_ae g F)
+  exact integral_congr_ae (he.mul (Eventually.of_forall (fun _ => rfl)))
+
+lemma rationalIntervalFourier_restrict (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) (F : KernelQuotientL2) :
+    rationalIntervalFourier a b ha ρ h g (kernelMassRestrictionCLM (rationalIntervalCompact a b g)
+      (rationalIntervalCompact_isCompact a b ha g).measurableSet F) = rationalIntervalFourier a b ha ρ h g F := by
+  rw [rationalIntervalFourier_integral, rationalIntervalFourier_integral]
+  have hsource := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (kernelMassRestriction_coe _ (rationalIntervalCompact_isCompact a b ha g).measurableSet F)
+  have he := (kernelCuspInterval_projection_quasiMeasurePreserving a b ha).ae_eq_comp hsource
+  apply integral_congr_ae
+  filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable a b)] with w hw hwm
+  have hm : kernelRationalAction g (integralOrbitProjection globalKubotaKernel w) ∈ rationalIntervalCompact a b g :=
+    Set.mem_image_of_mem _ (Set.mem_image_of_mem _ (cuspPeriodStrip_subset_intervalHull a b hwm))
+  exact congrArg (fun z : ℂ => z * cuspWeightedFourierPhase ρ h w)
+    (hw.trans (Set.indicator_of_mem hm _))
+
+def rationalIntervalFamily (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) (s : ℂ) : ℂ :=
+  rationalIntervalFourier a b ha ρ h g
+    (kernelLocalCorrectedSeed (rationalIntervalCompact a b g) (rationalIntervalCompact_isCompact a b ha g)
+      2 3 (by norm_num) (by norm_num) s)
+
+lemma rationalIntervalFamily_analyticAt (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) (s : ℂ) (hs : 1 < s.re) (hi : 0 < s.im) :
+    AnalyticAt ℂ (rationalIntervalFamily a b ha ρ h g) s :=
+  (ContinuousLinearMap.analyticAt (𝕜 := ℂ) (E := KernelQuotientL2) (F := ℂ)
+    (rationalIntervalFourier a b ha ρ h g) _).comp_of_eq
+      (kernelLocalCorrectedSeed_analyticAt_nonreal _ (rationalIntervalCompact_isCompact a b ha g)
+        2 3 (by norm_num) (by norm_num) s hs.ne' hi.ne') rfl
+
+lemma rationalIntervalFamily_residue_limit (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) :
+    Tendsto (fun s : ℂ => (s - 4 / 3) * rationalIntervalFamily a b ha ρ h g s)
+      (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (rationalIntervalFourier a b ha ρ h g cubicEisensteinResidue)) := by
+  have he := (rationalIntervalFourier a b ha ρ h g).continuous.continuousAt.tendsto.comp
+    (cubicEisensteinResidue_local_limit _ (rationalIntervalCompact_isCompact a b ha g))
+  simpa only [Function.comp_def, map_smul, smul_eq_mul, rationalIntervalFourier_restrict,
+    rationalIntervalFamily] using he
+
+lemma rationalIntervalFamily_initial (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    rationalIntervalFamily a b ha ρ h g s = ∫ w in cuspPeriodStrip a b,
+      hyperbolicEisenstein s (integralComplexMatrix (g : SL(2, O)) • w) *
+        cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  rw [rationalIntervalFamily, rationalIntervalFourier_integral]
+  have hsource := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (cubicEisensteinLocalFamily_initial_ae _ (rationalIntervalCompact_isCompact a b ha g) s hs hi)
+  have he := (kernelCuspInterval_projection_quasiMeasurePreserving a b ha).ae_eq_comp hsource
+  apply integral_congr_ae
+  filter_upwards [he, ae_restrict_mem (cuspPeriodStrip_measurable a b)] with w hw hwm
+  have hm : kernelRationalAction g (integralOrbitProjection globalKubotaKernel w) ∈ rationalIntervalCompact a b g :=
+    Set.mem_image_of_mem _ (Set.mem_image_of_mem _ (cuspPeriodStrip_subset_intervalHull a b hwm))
+  dsimp only [Function.comp_def] at hw
+  rw [hw, Set.indicator_of_mem hm, kernelRationalAction_mk, kernelQuotientEisenstein_mk]
+
+lemma rationalIntervalFamily_opposite_initial (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    rationalIntervalFamily a b ha ρ h oppositeSource s =
+      unramifiedCubicGaussSeries s (9 * h) * cuspIntervalWhittakerFactor a b ρ s h := by
+  rw [rationalIntervalFamily_initial a b ha ρ h oppositeSource s hs hi]
+  let g : HyperbolicSpace → ℂ := fun w =>
+    hyperbolicEisenstein s (integralComplexMatrix (oppositeSource : SL(2, O)) • w) * cuspWeightedFourierPhase ρ h w
+  have hg : Continuous g := ((hyperbolicEisenstein_continuous s (by linarith)).comp
+    (continuous_hyperbolic_action _)).mul (cuspWeightedFourierPhase_continuous ρ h)
+  rw [cuspInterval_integral_coordinates a b ha g hg.aestronglyMeasurable
+    (cuspInterval_continuous_integrable a b ha g hg)]
+  have hinner (v : ℝ) (hv : 0 < v) : (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) =
+      ρ v * (((v : ℂ) ^ (2 - s) * sourceFourierKernel s (cuspFrequency h * v)) *
+        unramifiedCubicGaussSeries s (9 * h)) := by
+    simp_rw [g, cuspCoordinateLift_positive v _ hv, hyperbolicEisenstein_opposite_upper,
+      cuspWeightedFourierPhase, hyperbolicHeight_upperPoint, cuspFourierPhase, hyperbolicHorizontal_upperPoint]
+    rw [← oppositeEisenstein_fourier v hv s (by linarith) h, ← integral_const_mul]
+    exact integral_congr_ae (Eventually.of_forall (fun z => by ring))
+  rw [cuspIntervalWhittakerFactor, ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  have hv0 := Complex.ofReal_ne_zero.mpr (ha.trans_le hv.1).ne'
+  dsimp only
+  rw [hinner v (ha.trans_le hv.1)]
+  have hp : (v : ℂ) ^ (-s - 1) = (v : ℂ) ^ (2 - s) / (v : ℂ) ^ 3 := by
+    rw [show -s - 1 = (2 - s) - 3 by ring, Complex.cpow_sub _ _ hv0]
+    congr 1
+    exact Complex.cpow_natCast _ 3
+  rw [hp]
+  ring
+
+/-- Cross multiplication continues a Fourier factorization even when a weighted height factor vanishes. -/
+theorem cuspScalarResidue_cross (T0 T1 H0 H1 : ℂ → ℂ) (R0 R1 : ℂ)
+    (hT0 : AnalyticOnNhd ℂ T0 {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hT1 : AnalyticOnNhd ℂ T1 {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hH0 : AnalyticOnNhd ℂ H0 {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hH1 : AnalyticOnNhd ℂ H1 {s : ℂ | 1 < s.re ∧ 0 < s.im})
+    (hH0c : ContinuousAt H0 (4 / 3 : ℂ)) (hH1c : ContinuousAt H1 (4 / 3 : ℂ))
+    (hR0 : Tendsto (fun s : ℂ => (s - 4 / 3) * T0 s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R0))
+    (hR1 : Tendsto (fun s : ℂ => (s - 4 / 3) * T1 s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 R1))
+    (hrel : ∀ s : ℂ, 4 < s.re → 0 < s.im → T0 s * H1 s = T1 s * H0 s) :
+    R0 * H1 (4 / 3) = R1 * H0 (4 / 3) := by
+  have hl : AnalyticOnNhd ℂ (fun s => T0 s * H1 s) {s : ℂ | 1 < s.re ∧ 0 < s.im} :=
+    fun s hs => (hT0 s hs).mul (hH1 s hs)
+  have hr : AnalyticOnNhd ℂ (fun s => T1 s * H0 s) {s : ℂ | 1 < s.re ∧ 0 < s.im} :=
+    fun s hs => (hT1 s hs).mul (hH0 s hs)
+  have hconvex : Convex ℝ {s : ℂ | 1 < s.re ∧ 0 < s.im} :=
+    ((convex_Ioi (1 : ℝ)).linear_preimage Complex.reCLM.toLinearMap).inter
+      ((convex_Ioi (0 : ℝ)).linear_preimage Complex.imCLM.toLinearMap)
+  have hopen : IsOpen {s : ℂ | 4 < s.re ∧ 0 < s.im} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter
+      (isOpen_lt continuous_const Complex.continuous_im)
+  have hev : (fun s => T0 s * H1 s) =ᶠ[𝓝 (5 + Complex.I : ℂ)] (fun s => T1 s * H0 s) := by
+    filter_upwards [hopen.mem_nhds (by norm_num)] with s hs
+    exact hrel s hs.1 hs.2
+  have heq := hl.eqOn_of_preconnected_of_eventuallyEq hr hconvex.isPreconnected (by norm_num) hev
+  have hlim0 := (hR0.mul (hH1c.tendsto.mono_left nhdsWithin_le_nhds)).comp thetaApproach_tendsto_complex_punctured
+  have hlim1 := (hR1.mul (hH0c.tendsto.mono_left nhdsWithin_le_nhds)).comp thetaApproach_tendsto_complex_punctured
+  apply tendsto_nhds_unique_of_eventuallyEq hlim0 hlim1
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change 0 < t at ht
+  have htD : (4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I ∈ {s : ℂ | 1 < s.re ∧ 0 < s.im} := by
+    constructor
+    · norm_num
+      linarith
+    · simpa using ht
+  simpa only [Function.comp_def, mul_assoc] using congrArg
+    (fun z : ℂ => ((4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I - 4 / 3) * z) (heq htD)
+
+lemma rationalCuspFamily_opposite_all_initial (h : O) (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    rationalCuspFamily h oppositeSource 2 3 (by norm_num) (by norm_num) s =
+      unramifiedCubicGaussSeries s (9 * h) * cuspWhittakerHeightFactor s h := by
+  rw [rationalCuspFamily_initial h oppositeSource 2 3
+    (by norm_num) (by norm_num) (by norm_num) s hs hi, opposite_cusp_fourier_average s (by linarith)]
+
+def oppositeCuspResidue (h : O) : ℂ :=
+  rationalCuspFourier h oppositeSource cubicEisensteinResidue / cuspWhittakerHeightFactor (4 / 3) h
+
+/-- Every positive height interval sees the same opposite-cusp residue, including the constant mode. -/
+theorem rationalIntervalFourier_opposite_residue (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) : rationalIntervalFourier a b ha ρ h oppositeSource cubicEisensteinResidue =
+      oppositeCuspResidue h * cuspIntervalWhittakerFactor a b ρ (4 / 3) h := by
+  have he := cuspScalarResidue_cross
+    (rationalIntervalFamily a b ha ρ h oppositeSource)
+    (rationalCuspFamily h oppositeSource 2 3 (by norm_num) (by norm_num))
+    (fun s => cuspIntervalWhittakerFactor a b ρ s h) (fun s => cuspWhittakerHeightFactor s h)
+    (rationalIntervalFourier a b ha ρ h oppositeSource cubicEisensteinResidue)
+    (rationalCuspFourier h oppositeSource cubicEisensteinResidue)
+    (fun s hs => rationalIntervalFamily_analyticAt a b ha ρ h oppositeSource s hs.1 hs.2)
+    (fun s hs => rationalCuspFamily_analyticAt_nonreal h oppositeSource 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun s hs => cuspIntervalWhittakerFactor_analyticAt a b ha ρ h s hs.1)
+    (fun s hs => cuspWhittakerHeightFactor_analyticAt h s hs.1)
+    (cuspIntervalWhittakerFactor_analyticAt a b ha ρ h (4 / 3) (by norm_num)).continuousAt
+    (cuspWhittakerHeightFactor_analyticAt h (4 / 3) (by norm_num)).continuousAt
+    (rationalIntervalFamily_residue_limit a b ha ρ h oppositeSource)
+    (rationalCuspFamily_residue_limit h oppositeSource 2 3 (by norm_num) (by norm_num)) (by
+      intro s hs hi
+      rw [rationalIntervalFamily_opposite_initial a b ha ρ h s hs hi,
+        rationalCuspFamily_opposite_all_initial h s hs hi]
+      ring)
+  apply mul_right_cancel₀ (cuspWhittakerHeightFactor_center_ne_zero h)
+  rw [he, oppositeCuspResidue]
+  field_simp [cuspWhittakerHeightFactor_center_ne_zero h]
+
+theorem oppositeCuspResidue_eq_unramified (h : O) : oppositeCuspResidue h = unramifiedGaussResidue (9 * h) := by
+  have he := cuspScalarResidue_cross
+    (rationalCuspFamily h oppositeSource 2 3 (by norm_num) (by norm_num))
+    (rationalCuspFamily (3 * (9 * h)) oppositeSource 2 3 (by norm_num) (by norm_num))
+    (fun s => cuspWhittakerHeightFactor s h) (fun s => cuspWhittakerHeightFactor s (3 * (9 * h)))
+    (rationalCuspFourier h oppositeSource cubicEisensteinResidue)
+    (rationalCuspFourier (3 * (9 * h)) oppositeSource cubicEisensteinResidue)
+    (fun s hs => rationalCuspFamily_analyticAt_nonreal h oppositeSource 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun s hs => rationalCuspFamily_analyticAt_nonreal (3 * (9 * h)) oppositeSource 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun s hs => cuspWhittakerHeightFactor_analyticAt h s hs.1)
+    (fun s hs => cuspWhittakerHeightFactor_analyticAt (3 * (9 * h)) s hs.1)
+    (cuspWhittakerHeightFactor_analyticAt h (4 / 3) (by norm_num)).continuousAt
+    (cuspWhittakerHeightFactor_analyticAt (3 * (9 * h)) (4 / 3) (by norm_num)).continuousAt
+    (rationalCuspFamily_residue_limit h oppositeSource 2 3 (by norm_num) (by norm_num))
+    (rationalCuspFamily_residue_limit (3 * (9 * h)) oppositeSource 2 3 (by norm_num) (by norm_num)) (by
+      intro s hs hi
+      rw [rationalCuspFamily_opposite_all_initial h s hs hi,
+        rationalCuspFamily_opposite_initial (9 * h) s hs hi]
+      ring)
+  unfold oppositeCuspResidue unramifiedGaussResidue
+  exact (div_eq_div_iff (cuspWhittakerHeightFactor_center_ne_zero h)
+    (cuspWhittakerHeightFactor_center_ne_zero (3 * (9 * h)))).mpr he
+
+lemma cuspIntervalWhittakerFactor_center_bessel (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (hh : h ≠ 0) :
+    cuspIntervalWhittakerFactor a b ρ (4 / 3) h =
+      ((2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) *
+        (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ)) *
+      ∫ v in Set.Icc a b, ρ v *
+        (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2) := by
+  rw [cuspIntervalWhittakerFactor, ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  dsimp only
+  rw [sourceFourierKernel_residual_height h hh v (ha.trans_le hv.1)]
+  ring
+
+/-- Bessel coefficient of the residual function at the opposite cusp. -/
+def oppositeResidualFourierCoefficient (h : O) : ℂ :=
+  (oppositeCuspResidue h / ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)) *
+    ((2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) *
+      (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ))
+
+theorem rationalIntervalFourier_opposite_bessel (a b : ℝ) (ha : 0 < a)
+    (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) (hh : h ≠ 0) :
+    rationalIntervalFourier a b ha ρ h oppositeSource cubicEisensteinResidue =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * oppositeResidualFourierCoefficient h *
+        ∫ v in Set.Icc a b, ρ v *
+          (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2) := by
+  rw [rationalIntervalFourier_opposite_residue,
+    cuspIntervalWhittakerFactor_center_bessel a b ha ρ h hh, oppositeResidualFourierCoefficient]
+  field_simp [cusp_volume_ne_zero]
+
+/-- Rational pullback preserves the uniform Fourier-test bound. -/
+theorem rationalIntervalFourier_uniform_bound (a b : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (ρ : BoundedContinuousFunction ℝ ℂ) (h : O)
+      (g : rationalExtension) (F : KernelQuotientL2),
+      ‖rationalIntervalFourier a b ha ρ h g F‖ ≤ C * ‖ρ‖ * ‖F‖ := by
+  obtain ⟨C, hC, hbound⟩ := kernelCuspIntervalFourier_uniform_bound a b ha
+  refine ⟨C, hC, ?_⟩
+  intro ρ h g F
+  change ‖kernelCuspIntervalFourier a b ha ρ h (kernelRationalPullback g F)‖ ≤ _
+  simpa only [LinearIsometry.norm_map] using hbound ρ h (kernelRationalPullback g F)
+
+lemma oppositeResidualFourierCoefficient_interval_bound (a b : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖oppositeResidualFourierCoefficient h‖ * ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ ≤ C := by
+  obtain ⟨C, hC, hbound⟩ := rationalIntervalFourier_uniform_bound a b ha
+  let area : ℂ := ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ)
+  have harea : 0 < ‖area‖ := norm_pos_iff.mpr cusp_volume_ne_zero
+  refine ⟨C * ‖BoundedContinuousFunction.const ℝ (1 : ℂ)‖ * ‖cubicEisensteinResidue‖ / ‖area‖,
+    by positivity, ?_⟩
+  intro h hh
+  have hb := hbound (BoundedContinuousFunction.const ℝ 1) h oppositeSource cubicEisensteinResidue
+  rw [rationalIntervalFourier_opposite_bessel a b ha _ h hh] at hb
+  simp only [BoundedContinuousFunction.const_apply, one_mul, norm_mul] at hb
+  apply (le_div_iff₀ harea).mpr
+  calc
+    _ = ‖area‖ * ‖oppositeResidualFourierCoefficient h‖ * ‖∫ v in Set.Icc a b,
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) / (v : ℂ) ^ 2‖ := by ring
+    _ ≤ _ := hb
+
+theorem oppositeResidualFourierCoefficient_subexponential (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖oppositeResidualFourierCoefficient h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) :=
+  cubicBesselCoefficient_subexponential oppositeResidualFourierCoefficient
+    oppositeResidualFourierCoefficient_interval_bound ε hε
+
+lemma rationalCuspPhaseSum_norm_le (h : O) : ‖rationalCuspPhaseSum h‖ ≤ 3 := by
+  calc
+    _ ≤ ‖(1 : ℂ) + tracePhase (cuspFrequency h)‖ + ‖tracePhase (cuspFrequency h * 2)‖ := norm_add_le _ _
+    _ ≤ (‖(1 : ℂ)‖ + ‖tracePhase (cuspFrequency h)‖) + ‖tracePhase (cuspFrequency h * 2)‖ :=
+      add_le_add (norm_add_le (1 : ℂ) (tracePhase (cuspFrequency h))) le_rfl
+    _ = 3 := by rw [norm_one, tracePhase_norm, tracePhase_norm]; norm_num
+
+def rationalSourceResidualFourierCoefficient (h : O) : ℂ :=
+  (4 : ℂ)⁻¹ * (cubicResidualFourierCoefficient h + rationalCuspPhaseSum h * oppositeResidualFourierCoefficient h)
+
+theorem rationalSourceResidualFourierCoefficient_subexponential (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖rationalSourceResidualFourierCoefficient h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖) := by
+  obtain ⟨C, hC, hboundC⟩ := cubicResidualFourierCoefficient_subexponential ε hε
+  obtain ⟨D, hD, hboundD⟩ := oppositeResidualFourierCoefficient_subexponential ε hε
+  refine ⟨(4 : ℝ)⁻¹ * (C + 3 * D), by positivity, ?_⟩
+  intro h hh
+  have hsum : ‖cubicResidualFourierCoefficient h + rationalCuspPhaseSum h * oppositeResidualFourierCoefficient h‖ ≤
+      ‖cubicResidualFourierCoefficient h‖ + 3 * ‖oppositeResidualFourierCoefficient h‖ := by
+    apply (norm_add_le _ _).trans
+    rw [norm_mul]
+    exact add_le_add le_rfl (mul_le_mul_of_nonneg_right (rationalCuspPhaseSum_norm_le h)
+      (norm_nonneg (oppositeResidualFourierCoefficient h)))
+  rw [rationalSourceResidualFourierCoefficient, norm_mul]
+  have hnorm : ‖(4 : ℂ)⁻¹‖ = (4 : ℝ)⁻¹ := by norm_num
+  rw [hnorm]
+  calc
+    _ ≤ (4 : ℝ)⁻¹ * (‖cubicResidualFourierCoefficient h‖ + 3 * ‖oppositeResidualFourierCoefficient h‖) :=
+      mul_le_mul_of_nonneg_left hsum (by positivity)
+    _ ≤ (4 : ℝ)⁻¹ * (C * Real.exp (ε * ‖cuspFrequency h‖) + 3 * (D * Real.exp (ε * ‖cuspFrequency h‖))) :=
+      mul_le_mul_of_nonneg_left (add_le_add (hboundC h hh)
+        (mul_le_mul_of_nonneg_left (hboundD h hh) (by norm_num))) (by positivity)
+    _ = _ := by ring
+
+lemma cuspFourier_continuous_log_height (f : HyperbolicSpace → ℂ) (hf : Continuous f) (h : O) :
+    Continuous (fun t : ℝ => ∫ z in periodDomain,
+      f (upperPoint z (Real.exp t) (Real.exp_pos t)) * tracePhase (-cuspFrequency h * z)) := by
+  let F : ℝ → ℂ → ℂ := fun t z =>
+    f (upperPoint z (Real.exp t) (Real.exp_pos t)) * tracePhase (-cuspFrequency h * z)
+  have hcoord : Continuous (fun p : ℝ × ℂ =>
+      (⟨(p.2, Real.exp p.1), Real.exp_pos p.1⟩ : UpperCoordinates)) := by fun_prop
+  have hF : Continuous F.uncurry :=
+    (hf.comp (upperCoordinatesHomeomorph.continuous.comp hcoord)).mul
+      (tracePhase_continuous.comp (continuous_const.mul continuous_snd))
+  let K : Set ℂ := Metric.closedBall 0 (∑ i, ‖periodBasis i‖)
+  have hsub : periodDomain ⊆ K := by
+    intro z hz
+    simpa only [K, Metric.mem_closedBall, dist_zero_right] using norm_mem_periodDomain z hz
+  have hμ : (volume.restrict periodDomain).restrict K = (volume : Measure ℂ).restrict periodDomain := by
+    rw [Measure.restrict_restrict (isCompact_closedBall 0 (∑ i, ‖periodBasis i‖)).measurableSet, inter_eq_right.mpr hsub]
+  letI : IsFiniteMeasure ((volume : Measure ℂ).restrict periodDomain) := isFiniteMeasure_restrict.mpr (by
+    rw [periodDomain_volume]
+    exact ENNReal.ofReal_ne_top)
+  have hc := continuous_parametric_integral_of_continuous (μ := volume.restrict periodDomain) hF
+    (isCompact_closedBall 0 (∑ i, ‖periodBasis i‖))
+  change Continuous (fun t => ∫ z, F t z ∂(volume.restrict periodDomain).restrict K) at hc
+  rw [hμ] at hc
+  exact hc
+
+def continuousCuspSlice (f : HyperbolicSpace → ℂ) (h : O) (v : ℝ) : ℂ :=
+  (∫ z in periodDomain, f (cuspCoordinateLift (v, z)) * tracePhase (-cuspFrequency h * z)) / (v : ℂ) ^ 3
+
+lemma continuousCuspSlice_continuousOn (f : HyperbolicSpace → ℂ) (hf : Continuous f) (h : O) :
+    ContinuousOn (continuousCuspSlice f h) (Ioi 0) := by
+  let J : ℝ → ℂ := fun t => ∫ z in periodDomain,
+    f (upperPoint z (Real.exp t) (Real.exp_pos t)) * tracePhase (-cuspFrequency h * z)
+  have hJ : Continuous J := cuspFourier_continuous_log_height f hf h
+  have hc : ContinuousOn (fun v : ℝ => J (Real.log v) / (v : ℂ) ^ 3) (Ioi 0) := by
+    intro v hv
+    exact ((hJ.continuousAt.comp (Real.continuousAt_log hv.ne')).div
+      ((Complex.continuous_ofReal.pow 3).continuousAt)
+      (pow_ne_zero 3 (Complex.ofReal_ne_zero.mpr hv.ne'))).continuousWithinAt
+  apply hc.congr
+  intro v hv
+  simp only [continuousCuspSlice, J, cuspCoordinateLift_positive v _ hv, Real.exp_log hv]
+
+lemma continuousCuspSlice_weighted_integral (f : HyperbolicSpace → ℂ) (hf : Continuous f)
+    (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ) (h : O) :
+    (∫ w in cuspPeriodStrip a b, f w * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+      ∫ v in Set.Icc a b, ρ v * continuousCuspSlice f h v := by
+  let g : HyperbolicSpace → ℂ := fun w => f w * cuspWeightedFourierPhase ρ h w
+  have hg : Continuous g := hf.mul (cuspWeightedFourierPhase_continuous ρ h)
+  rw [cuspInterval_integral_coordinates a b ha g hg.aestronglyMeasurable
+    (cuspInterval_continuous_integrable a b ha g hg)]
+  apply setIntegral_congr_fun measurableSet_Icc
+  intro v hv
+  have hpos := ha.trans_le hv.1
+  change (∫ z in periodDomain, g (cuspCoordinateLift (v, z))) / (v : ℂ) ^ 3 =
+    ρ v * ((∫ z in periodDomain,
+      f (cuspCoordinateLift (v, z)) * tracePhase (-cuspFrequency h * z)) / (v : ℂ) ^ 3)
+  rw [← mul_div_assoc]
+  congr 1
+  rw [← integral_const_mul]
+  apply integral_congr_ae
+  exact Eventually.of_forall (fun z => by
+    dsimp only [g]
+    rw [cuspWeightedFourierPhase, cuspFourierPhase, cuspCoordinateLift_positive v z hpos,
+      hyperbolicHeight_upperPoint, hyperbolicHorizontal_upperPoint]
+    ring)
+
+/-- Continuous Fourier slices are determined at every positive height by bounded interval tests. -/
+theorem continuousCuspSlice_eq_of_interval_tests (f : HyperbolicSpace → ℂ) (hf : Continuous f)
+    (h : O) (D : ℝ → ℂ) (hD : ContinuousOn D (Set.Ioi 0))
+    (htest : ∀ a b : ℝ, ∀ _ha : 0 < a, ∀ ρ : BoundedContinuousFunction ℝ ℂ,
+      (∫ w in cuspPeriodStrip a b, f w * cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) =
+        ∫ v in Set.Icc a b, ρ v * D v)
+    (v : ℝ) (hv : 0 < v) : continuousCuspSlice f h v = D v := by
+  let a := v / 2
+  let b := 2 * v
+  have ha : 0 < a := half_pos hv
+  have hs : Set.Icc a b ⊆ Set.Ioi 0 := fun x hx => ha.trans_le hx.1
+  have hc := (continuousCuspSlice_continuousOn f hf h).mono hs
+  have hd := hD.mono hs
+  have he : continuousCuspSlice f h =ᵐ[volume.restrict (Set.Icc a b)] D := by
+    apply interval_ae_eq_of_boundedContinuous_tests a b _ _ hc.integrableOn_Icc hd.integrableOn_Icc
+    intro ρ
+    rw [← continuousCuspSlice_weighted_integral f hf a b ha ρ h]
+    exact htest a b ha ρ
+  have he' := ae_restrict_of_ae_restrict_of_subset Ioo_subset_Icc_self he
+  exact Measure.eqOn_Ioo_of_ae_eq volume he' (hc.mono Ioo_subset_Icc_self)
+    (hd.mono Ioo_subset_Icc_self) (by constructor <;> dsimp [a, b] <;> linarith)
+
+lemma rationalIntervalFourier_residual_integral (a b : ℝ) (ha : 0 < a) (ρ : BoundedContinuousFunction ℝ ℂ)
+    (h : O) (g : rationalExtension) :
+    rationalIntervalFourier a b ha ρ h g cubicEisensteinResidue = ∫ w in cuspPeriodStrip a b,
+      cubicResidualFunction (integralComplexMatrix (g : SL(2, O)) • w) *
+        cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume := by
+  rw [rationalIntervalFourier_integral]
+  have he := (measurePreserving_smul (integralComplexMatrix (g : SL(2, O)))
+    hyperbolicVolume).quasiMeasurePreserving.ae_eq_comp cubicEisensteinResidue_continuous_representative
+  apply integral_congr_ae
+  filter_upwards [ae_restrict_of_ae he (s := cuspPeriodStrip a b)] with w hw
+  exact congrArg (fun z : ℂ => z * cuspWeightedFourierPhase ρ h w) hw
+
+/-- Every opposite-cusp Fourier mode is the archimedean kernel times the actual Gauss residue. -/
+theorem cubicResidualFunction_opposite_fourier (v : ℝ) (hv : 0 < v) (h : O) :
+    (∫ z in periodDomain, cubicResidualFunction (rationalComplex ModularGroup.S • upperPoint z v hv) *
+      tracePhase (-cuspFrequency h * z)) =
+      oppositeCuspResidue h * ((v : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) := by
+  let f : HyperbolicSpace → ℂ := fun w => cubicResidualFunction (rationalComplex ModularGroup.S • w)
+  have hf : Continuous f := cubicResidualFunction_continuous.comp (continuous_hyperbolic_action _)
+  let D : ℝ → ℂ := fun v => oppositeCuspResidue h *
+    ((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * sourceFourierKernel (4 / 3) (cuspFrequency h * v))
+  have hD : ContinuousOn D (Set.Ioi 0) := by
+    intro v hv
+    exact (continuousAt_const.mul
+      ((Complex.continuousAt_ofReal_cpow_const v _ (Or.inr hv.ne')).mul
+        (((sourceFourierKernel_continuous_freq (4 / 3) (by norm_num)).comp
+          (Complex.continuous_ofReal.const_mul (cuspFrequency h))).continuousAt))).continuousWithinAt
+  have he := continuousCuspSlice_eq_of_interval_tests f hf h D hD (by
+    intro a b ha ρ
+    change (∫ w in cuspPeriodStrip a b,
+      cubicResidualFunction (integralComplexMatrix (oppositeSource : SL(2, O)) • w) *
+        cuspWeightedFourierPhase ρ h w ∂hyperbolicVolume) = _
+    rw [← rationalIntervalFourier_residual_integral a b ha ρ h oppositeSource,
+      rationalIntervalFourier_opposite_residue, cuspIntervalWhittakerFactor, ← integral_const_mul]
+    apply integral_congr_ae
+    exact Eventually.of_forall (fun v => by dsimp only [D]; ring)) v hv
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hpow : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * (v : ℂ) ^ 3 = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    norm_num
+  dsimp only [continuousCuspSlice, f, D] at he
+  simp_rw [cuspCoordinateLift_positive v _ hv] at he
+  rw [div_eq_iff (pow_ne_zero 3 hv0)] at he
+  rw [he]
+  linear_combination oppositeCuspResidue h * sourceFourierKernel (4 / 3) (cuspFrequency h * v) * hpow
+
+lemma oppositeResidual_whittaker_bessel (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    oppositeCuspResidue h * ((v : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * oppositeResidualFourierCoefficient h * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hp : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * (v : ℂ) ^ 3 = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    norm_num
+  calc
+    _ = oppositeCuspResidue h * (((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) *
+        sourceFourierKernel (4 / 3) (cuspFrequency h * v)) * (v : ℂ) ^ 3) := by rw [← hp]; ring
+    _ = _ := by
+      rw [sourceFourierKernel_residual_height h hh v hv, oppositeResidualFourierCoefficient]
+      field_simp [hv0, cusp_volume_ne_zero]
+
+theorem cubicResidualFunction_opposite_fourier_bessel (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    (∫ z in periodDomain, cubicResidualFunction (rationalComplex ModularGroup.S • upperPoint z v hv) *
+      tracePhase (-cuspFrequency h * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * oppositeResidualFourierCoefficient h * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  rw [cubicResidualFunction_opposite_fourier, oppositeResidual_whittaker_bessel v hv h hh]
+
+/-- The explicit source coefficient is the Fourier coefficient of the actual projected residual vector. -/
+theorem cubicSourceResidualFunction_fourier_bessel (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    (∫ z in periodDomain, cubicSourceResidualFunction (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * rationalSourceResidualFourierCoefficient h * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  simp_rw [cubicSourceResidualFunction_four_cusps]
+  rw [fourCuspAverage_fourier _ cubicResidualFunction_continuous cubicResidualFunction_automorphy,
+    cubicResidualFunction_fourier, cubicResidualFunction_opposite_fourier_bessel v hv h hh,
+    cubicResidualFullModeAmplitude, if_neg hh, rationalSourceResidualFourierCoefficient]
+  ring
+
+/-- The two independent ramified symbol classes force both a sign and a cube exponent. -/
+lemma ramified_constant_support (u : Oˣ) (n : ℕ)
+    (hA : arithmeticResidueSum 0 ((u : O) * lambda ^ (n + 2)) ≠ 0) :
+    (u = 1 ∨ u = -1) ∧ 3 ∣ n + 2 := by
+  have he := constant_coefficient_ramified_equation _ (ramifiedElement_ne_zero u (n + 2))
+    (ramifiedElement_level u (n + 2) (by omega)) hA u (n + 2) 1 one_ne_zero
+    (by simp only [one_pow, mul_one])
+  have hu := unit_eq_sign_of_symbol_class u (by
+    simpa only [cubicExp_zero, one_pow, mul_one] using he 0 1)
+  have hpow : omega ^ (n + 2) = 1 := by
+    rcases hu with hu | hu
+    · simpa only [hu, symbol_one_numerator _ (primaryCoord_primary 1 0), one_mul,
+        cubicExp, Int.reduceMod, Int.toNat_one, pow_one] using he 1 0
+    · simpa only [hu, symbol_neg_one _ (primaryCoord_primary 1 0), one_mul,
+        cubicExp, Int.reduceMod, Int.toNat_one, pow_one] using he 1 0
+  exact ⟨hu.imp (fun h => Units.ext h) (fun h => Units.ext h),
+    (omega_primitive.pow_eq_one_iff_dvd (n + 2)).mp hpow⟩
+
+lemma arithmeticResidueSum_zero_ramified (u : Oˣ) (n : ℕ) :
+    arithmeticResidueSum 0 ((u : O) * lambda ^ (n + 2)) =
+      if u = 1 ∨ u = -1 then if 3 ∣ n + 2 then ((3 ^ (n + 2) : ℕ) : ℂ) else 0 else 0 := by
+  by_cases hu : u = 1 ∨ u = -1
+  · rw [if_pos hu]
+    by_cases hn : 3 ∣ n + 2
+    · rw [if_pos hn]
+      obtain ⟨j, hj⟩ := hn
+      have hjpos : 0 < j := by omega
+      obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hjpos.ne'
+      let I : GoodIdeal := ⟨1, by rw [primaryIdealGenerator_one]; exact one_ne_zero⟩
+      have hcol (b : Bool) : cubeColumn b k I = cubeSign b * lambda ^ (n + 2) := by
+        rw [cubeColumn_expanded]
+        simp only [I, primaryIdealGenerator_one, mul_one, cubeSign_cube]
+        rw [← hj]
+        exact mul_comm _ _
+      have hval (b : Bool) := (congrArg (arithmeticResidueSum 0) (hcol b)).symm.trans
+        (cubeColumn_arithmetic_sum b k I)
+      have htot : idealTotient (1 : Ideal O) = 1 := by
+        have hz (x : O ⧸ (1 : Ideal O)) : x = 0 := by
+          obtain ⟨a, rfl⟩ := Ideal.Quotient.mk_surjective x
+          exact Ideal.Quotient.eq_zero_iff_mem.mpr (by simp)
+        letI : Subsingleton (O ⧸ (1 : Ideal O)) := ⟨fun x y => (hz x).trans (hz y).symm⟩
+        simp [idealTotient]
+      simp only [I, map_one, one_pow, mul_one, htot] at hval
+      rcases hu with rfl | rfl
+      · simpa only [cubeSign, Units.val_one, one_mul, hj] using hval false
+      · simpa only [cubeSign, Units.val_neg, Units.val_one, hj] using hval true
+    · rw [if_neg hn]
+      exact not_ne_iff.mp (fun hA => hn (ramified_constant_support u n hA).2)
+  · rw [if_neg hu]
+    exact not_ne_iff.mp (fun hA => hu (ramified_constant_support u n hA).1)
+
+/-- The constant mode separates into a ramified scalar and the unramified Gauss series. -/
+lemma arithmeticDirichletSeries_zero_separate (s : ℂ) (hs : 2 < s.re) :
+    arithmeticDirichletSeries s 0 =
+      (∑' u : Oˣ, ∑' n : ℕ, ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) *
+        arithmeticResidueSum 0 ((u : O) * lambda ^ (n + 2))) * unramifiedCubicGaussSeries s 0 := by
+  rw [arithmeticDirichletSeries_ramified_reindex s hs 0, ← tsum_mul_right]
+  apply tsum_congr
+  intro u
+  rw [← tsum_mul_right]
+  apply tsum_congr
+  intro n
+  rw [unramifiedCubicGaussSeries, ← tsum_mul_left]
+  apply tsum_congr
+  intro I
+  simpa only [mul_zero, zero_mul] using arithmeticDirichletTerm_ramified_gauss s 0 u n I
+
+/-- Positive ramified cube exponents, with the level-three shift removed. -/
+def ramifiedCubeExponent : ℕ ≃ {n : ℕ // 3 ∣ n + 2} :=
+  Equiv.ofBijective (fun k => ⟨3 * k + 1, ⟨k + 1, by omega⟩⟩) ⟨by
+    intro a b he
+    have he' := congrArg Subtype.val he
+    dsimp only at he'
+    omega, by
+    rintro ⟨n, k, hk⟩
+    refine ⟨k - 1, Subtype.ext ?_⟩
+    dsimp only
+    omega⟩
+
+lemma zero_ramified_geometric (s : ℂ) (hs : 1 < s.re) :
+    (∑' n : ℕ, ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) *
+      (if 3 ∣ n + 2 then ((3 ^ (n + 2) : ℕ) : ℂ) else 0)) =
+      ((3 : ℂ) ^ (3 * s - 3) - 1)⁻¹ := by
+  let F : ℕ → ℂ := fun n => ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) *
+    (if 3 ∣ n + 2 then ((3 ^ (n + 2) : ℕ) : ℂ) else 0)
+  have hsup : Function.support F ⊆ {n : ℕ | 3 ∣ n + 2} := by
+    intro n hn
+    by_contra h
+    change ¬ 3 ∣ n + 2 at h
+    exact hn (by simp only [F, if_neg h, mul_zero])
+  change (∑' n, F n) = _
+  rw [← tsum_subtype_eq_of_support_subset hsup]
+  change (∑' n : {n : ℕ // 3 ∣ n + 2}, F n.val) = _
+  rw [← ramifiedCubeExponent.tsum_eq]
+  have he (k : ℕ) : F (ramifiedCubeExponent k).val = ramifiedRatio s ^ (k + 1) := by
+    change ((3 ^ (3 * k + 1 + 2) : ℕ) : ℂ) ^ (-s) *
+      (if 3 ∣ 3 * k + 1 + 2 then ((3 ^ (3 * k + 1 + 2) : ℕ) : ℂ) else 0) = _
+    rw [if_pos (show 3 ∣ 3 * k + 1 + 2 from ⟨k + 1, by omega⟩),
+      show 3 * k + 1 + 2 = 3 * (k + 1) by omega]
+    simpa using cube_norm_weight_algebra s k 1 (by decide)
+  simp_rw [he]
+  exact ramified_geometric_sum s hs
+
+lemma zero_ramified_factor (s : ℂ) (hs : 1 < s.re) :
+    (∑' u : Oˣ, ∑' n : ℕ, ((3 ^ (n + 2) : ℕ) : ℂ) ^ (-s) *
+      arithmeticResidueSum 0 ((u : O) * lambda ^ (n + 2))) =
+      2 * ((3 : ℂ) ^ (3 * s - 3) - 1)⁻¹ := by
+  have hne : (1 : Oˣ) ≠ -1 := by
+    intro he
+    have hv := congrArg Units.val he
+    norm_num at hv
+  rw [tsum_eq_sum (s := {1, -1}) (fun u hu => by
+    have hn : ¬ (u = 1 ∨ u = -1) := by simpa only [Finset.mem_insert,
+      Finset.mem_singleton] using hu
+    simp only [arithmeticResidueSum_zero_ramified, if_neg hn, mul_zero, tsum_zero])]
+  simp only [Finset.sum_insert, Finset.mem_singleton, hne, not_false_eq_true, Finset.sum_singleton,
+    arithmeticResidueSum_zero_ramified, true_or, or_true, ite_true]
+  rw [zero_ramified_geometric s hs]
+  ring
+
+theorem arithmeticDirichletSeries_zero_unramified (s : ℂ) (hs : 2 < s.re) :
+    arithmeticDirichletSeries s 0 =
+      (2 * ((3 : ℂ) ^ (3 * s - 3) - 1)⁻¹) * unramifiedCubicGaussSeries s 0 := by
+  rw [arithmeticDirichletSeries_zero_separate s hs, zero_ramified_factor s (by linarith)]
+
+lemma ramifiedDenominator_analytic (s : ℂ) :
+    AnalyticAt ℂ (fun z : ℂ => (3 : ℂ) ^ (3 * z - 3) - 1) s := by
+  apply Complex.analyticAt_iff_eventually_differentiableAt.mpr
+  exact Eventually.of_forall fun z =>
+    (((differentiableAt_id.const_mul 3).sub_const 3).const_cpow
+      (Or.inl (by norm_num : (3 : ℂ) ≠ 0))).sub_const 1
+
+lemma ramifiedDenominator_ne_zero (s : ℂ) (hs : 1 < s.re) :
+    (3 : ℂ) ^ (3 * s - 3) - 1 ≠ 0 := by
+  intro hz
+  have hn := norm_ramifiedRatio_lt_one s hs
+  have hi : ramifiedRatio s = ((3 : ℂ) ^ (3 * s - 3))⁻¹ := by
+    rw [ramifiedRatio, ← Complex.cpow_neg]
+    congr 1
+    ring
+  rw [hi, sub_eq_zero.mp hz, inv_one, norm_one] at hn
+  exact lt_irrefl 1 hn
+
+lemma cuspWhittakerHeightFactor_zero (s : ℂ) (hs : 1 < s.re) :
+    cuspWhittakerHeightFactor s 0 = (Real.pi : ℂ) / (s - 1) *
+      cuspIntervalMellin 5 6 (BoundedContinuousFunction.const ℝ 1) (-s - 1) := by
+  simp only [cuspWhittakerHeightFactor, cuspFrequency, map_zero, zero_div, zero_mul,
+    sourceFourierKernel_zero s hs, integral_mul_const, cuspIntervalMellin,
+    BoundedContinuousFunction.const_apply, one_mul]
+  exact mul_comm _ _
+
+lemma cuspIntervalOutgoingFamily_unit_initial (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    cuspIntervalOutgoingFamily 5 6 (by norm_num) (BoundedContinuousFunction.const ℝ 1) s =
+      arithmeticDirichletSeries s 0 * cuspWhittakerHeightFactor s 0 := by
+  rw [cuspIntervalOutgoingFamily,
+    kernelCuspIntervalFourierFamily_zero_initial 5 6 (by norm_num) _ s hs hi,
+    cuspWhittakerHeightFactor_zero s (by linarith), scatteringCoefficient]
+  field_simp [cusp_volume_ne_zero]
+  ring
+
+/-- The opposite cusp has the same constant residue as the original cusp. -/
+theorem oppositeCuspResidue_zero : oppositeCuspResidue 0 =
+    ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * constantArithmeticResidue := by
+  let η := BoundedContinuousFunction.const ℝ (1 : ℂ)
+  have he := cuspScalarResidue_cross
+    (cuspIntervalOutgoingFamily 5 6 (by norm_num) η)
+    (rationalCuspFamily 0 oppositeSource 2 3 (by norm_num) (by norm_num))
+    (fun _ => 2) (fun s => (3 : ℂ) ^ (3 * s - 3) - 1)
+    (kernelCuspIntervalFourier 5 6 (by norm_num) η 0 cubicEisensteinResidue)
+    (rationalCuspFourier 0 oppositeSource cubicEisensteinResidue)
+    (fun s hs => cuspIntervalOutgoingFamily_analyticAt 5 6 (by norm_num) η s hs.1 hs.2)
+    (fun s hs => rationalCuspFamily_analyticAt_nonreal 0 oppositeSource 2 3
+      (by norm_num) (by norm_num) s hs.1.ne' hs.2.ne')
+    (fun _ _ => analyticAt_const) (fun s _ => ramifiedDenominator_analytic s)
+    continuousAt_const (ramifiedDenominator_analytic (4 / 3)).continuousAt
+    (cuspIntervalOutgoingFamily_residue_limit 5 6 (by norm_num) η)
+    (rationalCuspFamily_residue_limit 0 oppositeSource 2 3 (by norm_num) (by norm_num)) (by
+      intro s hs hi
+      rw [cuspIntervalOutgoingFamily_unit_initial s hs hi,
+        rationalCuspFamily_opposite_all_initial 0 s hs hi, mul_zero,
+        arithmeticDirichletSeries_zero_unramified s (by linarith)]
+      have hd := ramifiedDenominator_ne_zero s (by linarith)
+      rw [show 3 * s - 3 = 3 * (s - 1) by ring] at hd ⊢
+      field_simp [hd])
+  norm_num at he
+  rw [oppositeCuspResidue, ← he, kernelCuspIntervalFourier_zero_residue]
+  apply (div_eq_iff (cuspWhittakerHeightFactor_center_ne_zero 0)).mpr
+  rw [cuspWhittakerHeightFactor_zero (4 / 3) (by norm_num)]
+  dsimp only [η]
+  ring
+
+theorem cubicSourceResidualFunction_fourier_zero (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubicSourceResidualFunction (upperPoint z v hv)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * (3 * (Real.pi : ℂ)) * constantArithmeticResidue *
+        (v : ℂ) ^ (2 / 3 : ℂ) := by
+  have he := fourCuspAverage_fourier cubicResidualFunction cubicResidualFunction_continuous
+    cubicResidualFunction_automorphy v hv 0
+  simp_rw [← cubicSourceResidualFunction_four_cusps] at he
+  rw [cubicResidualFunction_fourier, cubicResidualFullModeAmplitude, if_pos rfl,
+    cubicResidualFunction_opposite_fourier, oppositeCuspResidue_zero] at he
+  simp only [rationalCuspPhaseSum, cuspFrequency, map_zero, zero_div, zero_mul, neg_zero,
+    AddChar.map_zero_eq_one, mul_one, sourceFourierKernel_zero (4 / 3) (by norm_num)] at he
+  convert he using 1
+  ring
+
+theorem cubicSourceResidualFunction_ne_zero : cubicSourceResidualFunction ≠ 0 := by
+  intro hz
+  have he := cubicSourceResidualFunction_fourier_zero 1 (by norm_num)
+  simp only [hz, Pi.zero_apply, integral_zero, Complex.ofReal_one, Complex.one_cpow, mul_one] at he
+  exact (mul_ne_zero (mul_ne_zero cusp_volume_ne_zero
+    (mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)))
+      constantArithmeticResidue_ne_zero) he.symm
+
+theorem kernelRationalSourceProjection_cubicEisensteinResidue_ne_zero :
+    kernelRationalSourceProjection cubicEisensteinResidue ≠ 0 := by
+  intro hz
+  have he := cubicSourceResidualFunction_represents_projection
+  rw [hz] at he
+  have hae : (fun _ : HyperbolicSpace => (0 : ℂ)) =ᵐ[hyperbolicVolume] cubicSourceResidualFunction := by
+    have hzero : (0 : KernelQuotientL2) =ᵐ[integralQuotientVolume globalKubotaKernel]
+        (fun _ => (0 : ℂ)) := Lp.coeFn_zero ℂ 2 (integralQuotientVolume globalKubotaKernel)
+    have hp := kernelProjection_quasiMeasurePreserving.ae_eq_comp hzero
+    filter_upwards [hp, he] with w hw hr
+    exact hw.symm.trans hr
+  exact cubicSourceResidualFunction_ne_zero
+    (Measure.eq_of_ae_eq hae continuous_const cubicSourceResidualFunction_continuous).symm
+
+lemma kernelRationalAction_mul (g h : rationalExtension) (q : KernelQuotient) :
+    kernelRationalAction (g * h) q = kernelRationalAction g (kernelRationalAction h q) := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change integralOrbitProjection globalKubotaKernel (integralComplexMatrix ((g : SL(2, O)) * h) • w) =
+      integralOrbitProjection globalKubotaKernel (integralComplexMatrix (g : SL(2, O)) •
+        (integralComplexMatrix (h : SL(2, O)) • w))
+    rw [map_mul, mul_smul]
+
+lemma kernelRationalAction_one (q : KernelQuotient) : kernelRationalAction 1 q = q := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change integralOrbitProjection globalKubotaKernel (integralComplexMatrix (1 : SL(2, O)) • w) = _
+    rw [map_one, one_smul]
+    rfl
+
+def kernelRationalHomeomorph (g : rationalExtension) : KernelQuotient ≃ₜ KernelQuotient where
+  toFun := kernelRationalAction g
+  invFun := kernelRationalAction g⁻¹
+  left_inv q := by rw [← kernelRationalAction_mul, inv_mul_cancel, kernelRationalAction_one]
+  right_inv q := by rw [← kernelRationalAction_mul, mul_inv_cancel, kernelRationalAction_one]
+  continuous_toFun := kernelRationalAction_continuous g
+  continuous_invFun := kernelRationalAction_continuous g⁻¹
+
+lemma kernelRationalPullback_comp (g h : rationalExtension) (F : KernelQuotientL2) :
+    kernelRationalPullback g (kernelRationalPullback h F) = kernelRationalPullback (h * g) F := by
+  apply Lp.ext
+  have he := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (kernelRationalPullback_ae h F)
+  filter_upwards [kernelRationalPullback_ae g (kernelRationalPullback h F), he,
+    kernelRationalPullback_ae (h * g) F] with q hleft hmiddle hright
+  dsimp only [Function.comp_def] at hmiddle
+  rw [hleft, hmiddle, hright, kernelRationalAction_mul]
+
+lemma kernelRationalPullback_one (F : KernelQuotientL2) : kernelRationalPullback 1 F = F := by
+  apply Lp.ext
+  simpa only [kernelRationalAction_one] using kernelRationalPullback_ae 1 F
+
+open scoped Manifold ContDiff
+
+/-- The linear fractional action is smooth in the upper half-space atlas. -/
+lemma hyperbolicAction_contMDiff (g : SL(2, ℂ)) :
+    ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, SpatialCoordinates) ∞
+      (fun w : HyperbolicSpace => g • w) := by
+  intro w
+  rw [contMDiffAt_iff]
+  refine ⟨(continuous_hyperbolic_action g).continuousAt, ?_⟩
+  have hp : hyperbolicSpatialCoordinates w ∈ hyperbolicSpatialChart.target :=
+    hyperbolicSpatialChart.map_source (Set.mem_univ _)
+  have he : (fun p : SpatialCoordinates => hyperbolicSpatialCoordinates
+      (g • hyperbolicSpatialChart.symm p)) =ᶠ[𝓝 (hyperbolicSpatialCoordinates w)] mobiusSpatial g := by
+    filter_upwards [hyperbolicSpatialChart.open_target.mem_nhds hp] with p hpt
+    rw [mobiusSpatial_coordinates_global]
+    exact congrArg (mobiusSpatial g) (hyperbolicSpatialChart.right_inv hpt)
+  have hd := ((mobiusSpatial_contDiffAt g _ (hyperbolicSpatialCoordinates_positive w)).congr_of_eventuallyEq
+    he).contDiffWithinAt (s := Set.univ)
+  simpa only [extChartAt_coe, extChartAt_coe_symm, modelWithCornersSelf_coe,
+    modelWithCornersSelf_coe_symm, Function.id_comp, Function.comp_id, Set.preimage_id_eq,
+    Set.range_id, hyperbolicSpatial_chartAt, hyperbolicSpatialChart_apply, Function.comp_def, id_eq] using hd
+
+/-- Smoothness descends through the covering charts of the cubic quotient. -/
+lemma kernel_contMDiff_of_lift (f : KernelQuotient → ℂ)
+    (hf : ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞
+      (fun w : HyperbolicSpace => f (integralOrbitProjection globalKubotaKernel w))) :
+    ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞ f := by
+  intro q
+  have hq : q ∈ (kernelQuotientChart q).source := mem_chart_source SpatialCoordinates q
+  have hp : kernelQuotientChart q q ∈ hyperbolicSpatialChart.target :=
+    ((kernelQuotientChart q).map_source hq).1
+  have hs : ContMDiffOn 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, SpatialCoordinates) ∞
+      hyperbolicSpatialChart.symm hyperbolicSpatialChart.target := by
+    simpa only [hyperbolicSpatial_chartAt] using
+      (contMDiffOn_chart_symm (I := 𝓘(ℝ, SpatialCoordinates)) (n := ∞) (x := q.out))
+  have hd := (hf (hyperbolicSpatialChart.symm (kernelQuotientChart q q))).comp _
+    (hs.contMDiffAt (hyperbolicSpatialChart.open_target.mem_nhds hp))
+  have he : (fun p => f ((kernelQuotientChart q).symm p)) =
+      (fun p => f (integralOrbitProjection globalKubotaKernel (hyperbolicSpatialChart.symm p))) := by
+    funext p
+    rw [kernelQuotientChart_symm]
+  have hdc : ContDiffAt ℝ ∞ (fun p => f ((kernelQuotientChart q).symm p))
+      (kernelQuotientChart q q) := by
+    rw [he]
+    exact hd.contDiffAt
+  have hc : ContinuousAt f q := by
+    have hc := hdc.continuousAt.comp ((kernelQuotientChart q).continuousOn.continuousAt
+      ((kernelQuotientChart q).open_source.mem_nhds hq))
+    apply hc.congr
+    filter_upwards [(kernelQuotientChart q).open_source.mem_nhds hq] with r hr
+    exact congrArg f ((kernelQuotientChart q).left_inv hr)
+  rw [contMDiffAt_iff]
+  refine ⟨hc, ?_⟩
+  have hh := hdc.contDiffWithinAt (s := Set.univ)
+  simpa only [extChartAt_coe, extChartAt_coe_symm, modelWithCornersSelf_coe,
+    modelWithCornersSelf_coe_symm, Function.id_comp, Function.comp_id, Set.range_id,
+    kernelSpatial_chartAt, chartAt_self_eq, OpenPartialHomeomorph.refl_apply, Function.comp_def, id_eq] using hh
+
+lemma kernelRational_comp_contMDiff (g : rationalExtension) (f : KernelQuotient → ℂ)
+    (hf : ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞ f) :
+    ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞ (fun q => f (kernelRationalAction g q)) := by
+  apply kernel_contMDiff_of_lift
+  exact (hf.comp kernelProjection_contMDiff).comp (hyperbolicAction_contMDiff (integralComplexMatrix (g : SL(2, O))))
+
+def kernelRationalTest (g : rationalExtension) (f : kernelSmoothTests) : kernelSmoothTests :=
+  ⟨fun q => f.1 (kernelRationalAction g q), kernelRational_comp_contMDiff g f.1 f.2.1,
+    f.2.2.comp_homeomorph (kernelRationalHomeomorph g)⟩
+
+def kernelRationalTestLinear (g : rationalExtension) : kernelSmoothTests →ₗ[ℂ] kernelSmoothTests where
+  toFun := kernelRationalTest g
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+
+lemma kernelRationalTest_field (g : rationalExtension) (f : kernelSmoothTests) :
+    kernelTestField (kernelRationalTest g f) = kernelTestField f ∘ euclideanAction (integralComplexMatrix (g : SL(2, O))) := by
+  funext p
+  change f.1 (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (g : SL(2, O)) • euclideanToHyperbolic p)) =
+    f.1 (integralOrbitProjection globalKubotaKernel
+      (euclideanToHyperbolic (euclideanAction (integralComplexMatrix (g : SL(2, O))) p)))
+  rw [euclideanAction, euclideanToHyperbolic_coordinates]
+
+lemma kernelRationalTest_energyDensity (g : rationalExtension) (f : kernelSmoothTests) (w : HyperbolicSpace) :
+    kernelTestEnergyDensity (kernelRationalTest g f) w =
+      kernelTestEnergyDensity f (integralComplexMatrix (g : SL(2, O)) • w) := by
+  let A := integralComplexMatrix (g : SL(2, O))
+  have he : hyperbolicEuclideanCoordinates (A • w) = euclideanAction A (hyperbolicEuclideanCoordinates w) := by
+    rw [euclideanAction, euclideanToHyperbolic_coordinates]
+  have hr := hyperbolic_cotangent_energy_comp A (fun p : EuclideanSpatial => (kernelTestField f p).re)
+    (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w)
+    ((kernelTestField_re_contDiffAt f _ (euclideanAction_positive _ _)).differentiableAt (by simp))
+  have hi := hyperbolic_cotangent_energy_comp A (fun p : EuclideanSpatial => (kernelTestField f p).im)
+    (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w)
+    ((kernelTestField_im_contDiffAt f _ (euclideanAction_positive _ _)).differentiableAt (by simp))
+  unfold kernelTestEnergyDensity euclideanScalarDirichletDensity
+  rw [kernelRationalTest_field, he]
+  exact congrArg₂ (fun a b : ℝ => a + b) hr hi
+
+lemma kernelRationalTest_quotientDensity (g : rationalExtension) (f : kernelSmoothTests) (q : KernelQuotient) :
+    kernelQuotientEnergyDensity (kernelRationalTest g f) q =
+      kernelQuotientEnergyDensity f (kernelRationalAction g q) := by
+  induction q using Quotient.inductionOn with
+  | _ w => exact kernelRationalTest_energyDensity g f w
+
+lemma kernelRationalTest_energy (g : rationalExtension) (f : kernelSmoothTests) :
+    kernelDirichletEnergy (kernelRationalTest g f) = kernelDirichletEnergy f := by
+  unfold kernelDirichletEnergy
+  simp_rw [kernelRationalTest_quotientDensity]
+  exact (kernelRationalAction_measurePreserving g).integral_comp
+    (kernelRationalHomeomorph g).measurableEmbedding _
+
+lemma kernelRationalTest_mass (g : rationalExtension) (f : kernelSmoothTests) :
+    kernelSmoothTestsToL2 (kernelRationalTest g f) = kernelRationalPullback g (kernelSmoothTestsToL2 f) := by
+  apply Lp.ext
+  have he := (kernelRationalAction_measurePreserving g).quasiMeasurePreserving.ae_eq_comp
+    (kernelSmoothTests_memLp f).coeFn_toLp
+  filter_upwards [(kernelSmoothTests_memLp (kernelRationalTest g f)).coeFn_toLp,
+    kernelRationalPullback_ae g (kernelSmoothTestsToL2 f), he] with q hnew hpull hbase
+  exact hnew.trans (hpull.trans hbase).symm
+
+lemma kernelRationalTest_graph_norm (g : rationalExtension) (f : kernelSmoothTests) :
+    ‖kernelEnergyGraphCore (kernelRationalTest g f)‖ = ‖kernelEnergyGraphCore f‖ := by
+  apply (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp
+  rw [kernelEnergyGraphCore_norm_sq, kernelEnergyGraphCore_norm_sq,
+    kernelRationalTest_energy, kernelRationalTest_mass, LinearIsometry.norm_map]
+
+def kernelRationalTestEquiv (g : rationalExtension) : kernelSmoothTests ≃ₗ[ℂ] kernelSmoothTests where
+  __ := kernelRationalTestLinear g
+  invFun := kernelRationalTest g⁻¹
+  left_inv f := by
+    apply Subtype.ext
+    funext q
+    change f.1 (kernelRationalAction g (kernelRationalAction g⁻¹ q)) = f.1 q
+    rw [← kernelRationalAction_mul, mul_inv_cancel, kernelRationalAction_one]
+  right_inv f := by
+    apply Subtype.ext
+    funext q
+    change f.1 (kernelRationalAction g⁻¹ (kernelRationalAction g q)) = f.1 q
+    rw [← kernelRationalAction_mul, inv_mul_cancel, kernelRationalAction_one]
+
+/-- Rational pullback extends isometrically from smooth tests to the completed energy graph. -/
+def kernelRationalEnergyPullback (g : rationalExtension) : KernelEnergyGraph ≃ₗᵢ[ℂ] KernelEnergyGraph :=
+  (kernelRationalTestEquiv g).extendOfIsometry kernelEnergyGraphCore kernelEnergyGraphCore
+    kernelEnergyGraphCore_dense kernelEnergyGraphCore_dense (kernelRationalTest_graph_norm g)
+
+lemma kernelRationalEnergyPullback_core (g : rationalExtension) (f : kernelSmoothTests) :
+    kernelRationalEnergyPullback g (kernelEnergyGraphCore f) = kernelEnergyGraphCore (kernelRationalTest g f) :=
+  LinearEquiv.extendOfIsometry_eq (kernelRationalTestEquiv g) kernelEnergyGraphCore kernelEnergyGraphCore
+    kernelEnergyGraphCore_dense kernelEnergyGraphCore_dense (kernelRationalTest_graph_norm g) f
+
+lemma kernelRationalEnergyPullback_mass (g : rationalExtension) (u : KernelEnergyGraph) :
+    kernelEnergyMass (kernelRationalEnergyPullback g u) = kernelRationalPullback g (kernelEnergyMass u) := by
+  apply congrFun (kernelEnergyGraphCore_dense.equalizer
+    (kernelEnergyMass.continuous.comp (kernelRationalEnergyPullback g).continuous)
+    ((kernelRationalPullback g).continuous.comp kernelEnergyMass.continuous) ?_) u
+  funext f
+  change kernelEnergyMass (kernelRationalEnergyPullback g (kernelEnergyGraphCore f)) =
+    kernelRationalPullback g (kernelEnergyMass (kernelEnergyGraphCore f))
+  rw [kernelRationalEnergyPullback_core, kernelEnergyMass_core, kernelEnergyMass_core, kernelRationalTest_mass]
+
+theorem kernelRational_variationalSolution (g : rationalExtension) (F : KernelQuotientL2) :
+    kernelRationalEnergyPullback g (kernelVariationalSolution F) =
+      kernelVariationalSolution (kernelRationalPullback g F) := by
+  apply kernelVariationalSolution_unique
+  intro v
+  obtain ⟨w, rfl⟩ := (kernelRationalEnergyPullback g).surjective v
+  rw [← kernelEnergyGraph_inner, LinearIsometryEquiv.inner_map_map,
+    kernelRationalEnergyPullback_mass, LinearIsometry.inner_map_map, kernelEnergyGraph_inner]
+  exact kernelVariationalSolution_equation F w
+
+theorem kernelRational_variationalResolvent (g : rationalExtension) (F : KernelQuotientL2) :
+    kernelVariationalResolvent (kernelRationalPullback g F) =
+      kernelRationalPullback g (kernelVariationalResolvent F) := by
+  change kernelEnergyMass (kernelVariationalSolution (kernelRationalPullback g F)) =
+    kernelRationalPullback g (kernelEnergyMass (kernelVariationalSolution F))
+  rw [← kernelRational_variationalSolution, kernelRationalEnergyPullback_mass]
+
+theorem kernelRational_operatorGraph (g : rationalExtension) (F G : KernelQuotientL2)
+    (hFG : (F, G) ∈ kernelEnergyLaplacian.graph) :
+    (kernelRationalPullback g F, kernelRationalPullback g G) ∈ kernelEnergyLaplacian.graph := by
+  rw [kernelEnergyLaplacian_graph, mem_kernelLaplacianGraph] at hFG ⊢
+  rw [← map_add, kernelRational_variationalResolvent, hFG]
+
+theorem kernelRational_eigenvector (g : rationalExtension) (F : KernelQuotientL2) (z : ℂ)
+    (hF : (F, z • F) ∈ kernelEnergyLaplacian.graph) :
+    (kernelRationalPullback g F, z • kernelRationalPullback g F) ∈ kernelEnergyLaplacian.graph := by
+  simpa only [map_smul] using kernelRational_operatorGraph g F (z • F) hF
+
+theorem kernelRationalSourceProjection_variationalResolvent (F : KernelQuotientL2) :
+    kernelVariationalResolvent (kernelRationalSourceProjection F) =
+      kernelRationalSourceProjection (kernelVariationalResolvent F) := by
+  simp only [kernelRationalSourceProjection_apply, map_smul, map_sum, kernelRational_variationalResolvent]
+
+theorem kernelRationalSourceProjection_operatorGraph (F G : KernelQuotientL2)
+    (hFG : (F, G) ∈ kernelEnergyLaplacian.graph) :
+    (kernelRationalSourceProjection F, kernelRationalSourceProjection G) ∈ kernelEnergyLaplacian.graph := by
+  rw [kernelEnergyLaplacian_graph, mem_kernelLaplacianGraph] at hFG ⊢
+  rw [← map_add, kernelRationalSourceProjection_variationalResolvent, hFG]
+
+/-- The nonzero projected residual vector retains the subcritical eigenvalue `8/9`. -/
+theorem kernelRationalSourceProjection_cubicEisensteinResidue_eigenvector :
+    (kernelRationalSourceProjection cubicEisensteinResidue,
+      (8 / 9 : ℂ) • kernelRationalSourceProjection cubicEisensteinResidue) ∈ kernelEnergyLaplacian.graph := by
+  simpa only [map_smul] using kernelRationalSourceProjection_operatorGraph
+    cubicEisensteinResidue ((8 / 9 : ℂ) • cubicEisensteinResidue) cubicEisensteinResidue_eigenvector
+
+lemma hilbertProjectionSandwich_symmetric {E G : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    [NormedAddCommGroup G] [InnerProductSpace ℂ G] [CompleteSpace G]
+    (A : E →L[ℂ] G) (K : Submodule ℂ E) [K.HasOrthogonalProjection] (x y : G) :
+    inner ℂ x (A (K.starProjection (A.adjoint y))) =
+      inner ℂ (A (K.starProjection (A.adjoint x))) y := by
+  rw [← A.adjoint_inner_left, ← A.adjoint_inner_right]
+  exact (K.inner_starProjection_left_eq_right _ _).symm
+
+/-- The mass sandwich of the orthogonal nullspace projection is symmetric. -/
+lemma kernelThetaMassProjection_symmetric (F D : KernelQuotientL2) :
+    inner ℂ F (kernelThetaMassProjection D) = inner ℂ (kernelThetaMassProjection F) D :=
+  hilbertProjectionSandwich_symmetric kernelEnergyMass kernelThetaNull F D
+
+lemma kernelThetaMassProjection_eigenvector (F : KernelQuotientL2)
+    (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph) :
+    kernelThetaMassProjection F = (9 / 17 : ℂ) • F := by
+  let u : kernelEnergyLaplacian.domain := ⟨F, LinearPMap.mem_domain_of_mem_graph hF⟩
+  have hu : kernelEnergyLaplacian u = (8 / 9 : ℂ) • F :=
+    kernelEnergyLaplacian.mem_graph_snd_inj (kernelEnergyLaplacian.mem_graph u) hF rfl
+  let E : KernelEnergyGraph := kernelVariationalSolution (kernelEnergyLaplacian u + u)
+  have hE : E ∈ kernelThetaNull := by
+    change kernelSpectralFormOperator (8 / 9 : ℂ) E = 0
+    dsimp only [E]
+    rw [kernelSpectralFormOperator_of_domain, hu]
+    change kernelVariationalSolution ((8 / 9 : ℂ) • F - (8 / 9 : ℂ) • F) = 0
+    rw [sub_self, map_zero]
+  have hmass : kernelEnergyMass E = F := kernelEnergyLaplacian_resolvent_relation u
+  have hscale : kernelEnergyMass.adjoint F = (9 / 17 : ℂ) • E := by
+    dsimp only [E]
+    rw [hu]
+    change kernelVariationalSolution F = (9 / 17 : ℂ) • kernelVariationalSolution ((8 / 9 : ℂ) • F + F)
+    rw [map_add, map_smul, smul_add, smul_smul]
+    module
+  change kernelEnergyMass (kernelThetaNull.starProjection (kernelEnergyMass.adjoint F)) = _
+  rw [hscale, map_smul, kernelThetaNull.starProjection_eq_self_iff.mpr hE, map_smul, hmass]
+
+theorem kernelEisensteinResidueVector_pairing (a b : ℝ) (ha : 0 < a) (hab : a < b)
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph) :
+    inner ℂ F (kernelEisensteinResidueVector a b ha hab) =
+      (3 / 2 : ℂ) * inner ℂ F (kernelL2Defect a b ha hab (4 / 3)) := by
+  rw [kernelEisensteinResidueVector, inner_smul_right, kernelThetaMassProjection_symmetric,
+    kernelThetaMassProjection_eigenvector F hF, inner_smul_left]
+  simp only [map_div₀, map_ofNat]
+  ring
+
+lemma kernelLocalCorrectedSeed_initial_eq (S : Set KernelQuotient) (hS : IsCompact S)
+    (a b c d : ℝ) (ha : 1 < a) (hab : a < b) (hc : 1 < c) (hcd : c < d)
+    (s : ℂ) (hs : 4 < s.re) (hi : 0 < s.im) :
+    kernelLocalCorrectedSeed S hS a b (by linarith) hab s =
+      kernelLocalCorrectedSeed S hS c d (by linarith) hcd s := by
+  apply Lp.ext
+  filter_upwards [kernelLocalCorrectedSeed_ae_eq S hS a b (by linarith) hab s,
+    kernelLocalCorrectedSeed_ae_eq S hS c d (by linarith) hcd s,
+    kernelEisensteinL2Correction_initial_overlap a b ha hab s hs hi,
+    kernelEisensteinL2Correction_initial_overlap c d hc hcd s hs hi] with q h1 h2 h3 h4
+  rw [h1, h2]
+  by_cases hq : q ∈ S
+  · simp only [Set.indicator_of_mem hq, kernelCorrectedSeed, h3, h4]
+    ring
+  · simp only [Set.indicator_of_notMem hq]
+
+lemma kernelLocalCorrectedSeed_cutoff_eq (S : Set KernelQuotient) (hS : IsCompact S)
+    (a b c d : ℝ) (ha : 1 < a) (hab : a < b) (hc : 1 < c) (hcd : c < d) :
+    Set.EqOn (kernelLocalCorrectedSeed S hS a b (by linarith) hab)
+      (kernelLocalCorrectedSeed S hS c d (by linarith) hcd) cuspUpperParameterRegion := by
+  have h1 : AnalyticOnNhd ℂ (kernelLocalCorrectedSeed S hS a b (by linarith) hab) cuspUpperParameterRegion :=
+    fun s hs => kernelLocalCorrectedSeed_analyticAt_nonreal S hS a b (by linarith) hab s
+      (by linarith [hs.1]) hs.2.ne'
+  have h2 : AnalyticOnNhd ℂ (kernelLocalCorrectedSeed S hS c d (by linarith) hcd) cuspUpperParameterRegion :=
+    fun s hs => kernelLocalCorrectedSeed_analyticAt_nonreal S hS c d (by linarith) hcd s
+      (by linarith [hs.1]) hs.2.ne'
+  have hopen : IsOpen {s : ℂ | 4 < s.re ∧ 0 < s.im} :=
+    (isOpen_lt continuous_const Complex.continuous_re).inter (isOpen_lt continuous_const Complex.continuous_im)
+  apply h1.eqOn_of_preconnected_of_eventuallyEq h2 cuspUpperParameterRegion_convex.isPreconnected
+    (by norm_num [cuspUpperParameterRegion] : (5 + Complex.I : ℂ) ∈ cuspUpperParameterRegion)
+  filter_upwards [hopen.mem_nhds (by norm_num)] with s hs
+  exact kernelLocalCorrectedSeed_initial_eq S hS a b c d ha hab hc hcd s hs.1 hs.2
+
+lemma kernelEisensteinResidueVector_restrict_cutoff_eq (S : Set KernelQuotient) (hS : IsCompact S)
+    (a b c d : ℝ) (ha : 1 < a) (hab : a < b) (hc : 1 < c) (hcd : c < d) :
+    kernelMassRestrictionCLM S hS.measurableSet (kernelEisensteinResidueVector a b (by linarith) hab) =
+      kernelMassRestrictionCLM S hS.measurableSet (kernelEisensteinResidueVector c d (by linarith) hcd) := by
+  have h1 := (kernelLocalCorrectedSeed_residue_limit S hS a b (by linarith) hab).comp
+    thetaApproach_tendsto_complex_punctured
+  have h2 := (kernelLocalCorrectedSeed_residue_limit S hS c d (by linarith) hcd).comp
+    thetaApproach_tendsto_complex_punctured
+  apply tendsto_nhds_unique_of_eventuallyEq h1 h2
+  filter_upwards [self_mem_nhdsWithin] with t ht
+  change 0 < t at ht
+  have hs : (4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I ∈ cuspUpperParameterRegion := by
+    constructor
+    · norm_num
+      linarith
+    · simpa using ht
+  exact congrArg (fun u : KernelQuotientL2 =>
+    ((4 / 3 : ℂ) + (t : ℂ) + (t : ℂ) * Complex.I - 4 / 3) • u)
+    (kernelLocalCorrectedSeed_cutoff_eq S hS a b c d ha hab hc hcd hs)
+
+lemma kernelL2_eq_of_compact_restrictions (F G : KernelQuotientL2)
+    (h : ∀ S : Set KernelQuotient, ∀ hS : IsCompact S,
+      kernelMassRestrictionCLM S hS.measurableSet F = kernelMassRestrictionCLM S hS.measurableSet G) : F = G := by
+  let S : ℕ → Set KernelQuotient := fun n => {q | kernelQuotientBarrier 2 3 q ≤ n}
+  have hS (n : ℕ) : IsCompact (S n) := kernelBarrier_sublevel_isCompact n
+  have he (n : ℕ) : ∀ᵐ q ∂integralQuotientVolume globalKubotaKernel, q ∈ S n → F q = G q := by
+    have hi := h (S n) (hS n)
+    filter_upwards [kernelMassRestriction_coe (S n) (hS n).measurableSet F,
+      kernelMassRestriction_coe (S n) (hS n).measurableSet G] with q hf hg hq
+    rw [Set.indicator_of_mem hq] at hf hg
+    change kernelMassRestrictionCLM (S n) (hS n).measurableSet F q = F q at hf
+    change kernelMassRestrictionCLM (S n) (hS n).measurableSet G q = G q at hg
+    rw [hi] at hf
+    exact hf.symm.trans hg
+  apply Lp.ext
+  filter_upwards [ae_all_iff.mpr he] with q hq
+  obtain ⟨n, hn⟩ := exists_nat_ge (kernelQuotientBarrier 2 3 q)
+  exact hq n hn
+
+/-- Moving the incoming cutoff does not change the actual residual vector. -/
+theorem kernelEisensteinResidueVector_cutoff_independent
+    (a b c d : ℝ) (ha : 1 < a) (hab : a < b) (hc : 1 < c) (hcd : c < d) :
+    kernelEisensteinResidueVector a b (by linarith) hab = kernelEisensteinResidueVector c d (by linarith) hcd :=
+  kernelL2_eq_of_compact_restrictions _ _ (fun S hS =>
+    kernelEisensteinResidueVector_restrict_cutoff_eq S hS a b c d ha hab hc hcd)
+
+lemma cuspTransition_dilate (A : ℝ) (hA : A ≠ 0) :
+    cuspTransition A (2 * A) = fun v => cuspTransition 1 2 (v / A) := by
+  funext v
+  unfold cuspTransition
+  congr 1
+  field_simp
+
+lemma cuspTransition_dilate_deriv (A v : ℝ) (hA : A ≠ 0) :
+    deriv (cuspTransition A (2 * A)) v = deriv (cuspTransition 1 2) (v / A) / A := by
+  rw [cuspTransition_dilate A hA]
+  have hd := (((cuspTransition_contDiff 1 2).differentiable (by simp) (v / A)).hasDerivAt).comp v
+    ((hasDerivAt_id v).div_const A)
+  simpa only [Function.comp_def, id_eq, one_div, div_eq_mul_inv, one_mul] using hd.deriv
+
+lemma cuspTransition_dilate_second (A v : ℝ) (hA : A ≠ 0) :
+    deriv (deriv (cuspTransition A (2 * A))) v = deriv (deriv (cuspTransition 1 2)) (v / A) / A ^ 2 := by
+  have he : deriv (cuspTransition A (2 * A)) = fun x => deriv (cuspTransition 1 2) (x / A) / A :=
+    funext (fun x => cuspTransition_dilate_deriv A x hA)
+  rw [he]
+  have hc := (contDiff_infty_iff_deriv.mp (cuspTransition_contDiff 1 2)).2
+  have hd := (((hc.differentiable (by simp) (v / A)).hasDerivAt).comp v
+    ((hasDerivAt_id v).div_const A)).div_const A
+  simp only [Function.comp_def, id_eq] at hd
+  convert hd.deriv using 1
+  field_simp
+
+def cuspBaseDefectFactor (s : ℂ) (x : ℝ) : ℂ :=
+  (x : ℂ) ^ 2 * (deriv (deriv (cuspTransition 1 2)) x : ℝ) +
+    (2 * s - 1) * (x : ℂ) * (deriv (cuspTransition 1 2) x : ℝ)
+
+lemma cuspBaseDefectFactor_continuous (s : ℂ) : Continuous (cuspBaseDefectFactor s) := by
+  have h1 := (contDiff_infty_iff_deriv.mp (cuspTransition_contDiff 1 2)).2
+  have h2 := (contDiff_infty_iff_deriv.mp h1).2
+  exact ((Complex.continuous_ofReal.pow 2).mul (Complex.continuous_ofReal.comp h2.continuous)).add
+    ((continuous_const.mul Complex.continuous_ofReal).mul (Complex.continuous_ofReal.comp h1.continuous))
+
+lemma cuspBaseDefectFactor_compact (s : ℂ) : HasCompactSupport (cuspBaseDefectFactor s) := by
+  apply HasCompactSupport.of_support_subset_isCompact (isCompact_Icc : IsCompact (Set.Icc (1 : ℝ) 2))
+  intro x hx
+  by_contra hn
+  have hout : x < 1 ∨ 2 < x := by simpa only [Set.mem_Icc, not_and_or, not_le] using hn
+  obtain ⟨h1, h2⟩ := cuspTransition_derivatives 1 2 x (by norm_num) hout
+  exact hx (by simp only [cuspBaseDefectFactor, h1, h2, Complex.ofReal_zero, mul_zero, add_zero])
+
+lemma cuspSeedDefectProfile_dilate (A v : ℝ) (hA : A ≠ 0) (s : ℂ) :
+    cuspSeedDefectProfile A (2 * A) s v = positiveHeightPower s v * cuspBaseDefectFactor s (v / A) := by
+  rw [cuspSeedDefectProfile, cuspTransition_dilate_deriv A v hA, cuspTransition_dilate_second A v hA]
+  unfold cuspBaseDefectFactor
+  push_cast
+  field_simp
+
+/-- Dilating the transition interval gives a quadratic uniform bound on its defect. -/
+theorem cuspSeedDefectProfile_dilate_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ A : ℝ, 1 ≤ A → ∀ v : ℝ,
+      ‖cuspSeedDefectProfile A (2 * A) (4 / 3) v‖ ≤ C * A ^ 2 := by
+  obtain ⟨B, hB⟩ := (cuspBaseDefectFactor_compact (4 / 3)).exists_bound_of_continuous
+    (cuspBaseDefectFactor_continuous (4 / 3))
+  let C := max B 0
+  have hC : 0 ≤ C := le_max_right _ _
+  have hbound (x : ℝ) : ‖cuspBaseDefectFactor (4 / 3) x‖ ≤ C := (hB x).trans (le_max_left _ _)
+  refine ⟨4 * C, by positivity, fun A hA v => ?_⟩
+  have hApos : 0 < A := zero_lt_one.trans_le hA
+  by_cases hv : v ∈ Set.Icc A (2 * A)
+  · have hv1 : 1 ≤ v := hA.trans hv.1
+    have hvpos : 0 < v := hApos.trans_le hv.1
+    have hp : ‖positiveHeightPower (4 / 3) v‖ ≤ v ^ 2 := by
+      rw [positiveHeightPower_eq_cpow _ _ hvpos, Complex.norm_cpow_eq_rpow_re_of_pos hvpos]
+      norm_num
+      simpa using Real.rpow_le_rpow_of_exponent_le hv1 (show (4 / 3 : ℝ) ≤ 2 by norm_num)
+    rw [cuspSeedDefectProfile_dilate A v hApos.ne', norm_mul]
+    calc
+      _ ≤ v ^ 2 * C := mul_le_mul hp (hbound (v / A)) (norm_nonneg _) (sq_nonneg v)
+      _ ≤ (2 * A) ^ 2 * C := mul_le_mul_of_nonneg_right
+        ((sq_le_sq₀ hvpos.le (by positivity)).mpr hv.2) hC
+      _ = (4 * C) * A ^ 2 := by ring
+  · have hout : v < A ∨ 2 * A < v := by simpa only [Set.mem_Icc, not_and_or, not_le] using hv
+    rw [cuspSeedDefectProfile_zero A (2 * A) (4 / 3) v (by linarith) hout, norm_zero]
+    positivity
+
+theorem smoothCuspSeedDefect_dilate_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ A : ℝ, 1 ≤ A → ∀ w : HyperbolicSpace,
+      ‖smoothCuspSeedDefect A (2 * A) (4 / 3) w‖ ≤ C * A ^ 2 := by
+  obtain ⟨C, hC, hbound⟩ := cuspSeedDefectProfile_dilate_bound
+  exact ⟨C, hC, fun A hA w => cuspCutoffCorrection_norm_le _ _ (by positivity) (hbound A hA) w⟩
+
+lemma movingDefect_product_bound (f : KernelQuotient → ℂ) (K C : ℝ) (hK : 0 ≤ K) (hC : 0 ≤ C)
+    (hdec : ∀ w : HyperbolicSpace, ∀ r : CuspCosets, 1 < cosetHeight r w →
+      ‖f (integralOrbitProjection globalKubotaKernel w)‖ ≤ K / (cosetHeight r w) ^ 3)
+    (hbound : ∀ A : ℝ, 1 ≤ A → ∀ w : HyperbolicSpace,
+      ‖smoothCuspSeedDefect A (2 * A) (4 / 3) w‖ ≤ C * A ^ 2)
+    (A : ℝ) (hA : 1 < A) (q : KernelQuotient) :
+    ‖f q‖ * ‖kernelQuotientDefect A (2 * A) (4 / 3) q‖ ≤ K * C / A := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change ‖f (integralOrbitProjection globalKubotaKernel w)‖ *
+      ‖smoothCuspSeedDefect A (2 * A) (4 / 3) w‖ ≤ _
+    have hApos : 0 < A := zero_lt_one.trans hA
+    by_cases hz : smoothCuspSeedDefect A (2 * A) (4 / 3) w = 0
+    · rw [hz, norm_zero, mul_zero]
+      positivity
+    obtain ⟨r, hr, _⟩ := smoothCuspSeedDefect_support A (2 * A) (4 / 3) (by linarith) w hz
+    have hf : ‖f (integralOrbitProjection globalKubotaKernel w)‖ ≤ K / A ^ 3 :=
+      (hdec w r (hA.trans_le hr)).trans (div_le_div_of_nonneg_left hK (pow_pos hApos 3)
+        (pow_le_pow_left₀ hApos.le hr 3))
+    calc
+      _ ≤ (K / A ^ 3) * (C * A ^ 2) := mul_le_mul hf (hbound A hA.le w) (norm_nonneg _) (by positivity)
+      _ = K * C / A := by field_simp
+
+lemma movingDefect_inner_bound (F : KernelQuotientL2) (f : KernelQuotient → ℂ)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (K C : ℝ) (hK : 0 ≤ K) (hC : 0 ≤ C)
+    (hdec : ∀ w : HyperbolicSpace, ∀ r : CuspCosets, 1 < cosetHeight r w →
+      ‖f (integralOrbitProjection globalKubotaKernel w)‖ ≤ K / (cosetHeight r w) ^ 3)
+    (hbound : ∀ A : ℝ, 1 ≤ A → ∀ w : HyperbolicSpace,
+      ‖smoothCuspSeedDefect A (2 * A) (4 / 3) w‖ ≤ C * A ^ 2)
+    (A : ℝ) (hA : 1 < A) :
+    ‖inner ℂ F (kernelL2Defect A (2 * A) (by linarith) (by linarith) (4 / 3))‖ ≤
+      (K * C / A) * (integralQuotientVolume globalKubotaKernel).real Set.univ := by
+  rw [L2.inner_def]
+  apply norm_integral_le_of_norm_le_const
+  filter_upwards [hrep, kernelL2Defect_ae_eq A (2 * A) (by linarith) (by linarith) (4 / 3)] with q hf hd
+  rw [hf, hd, RCLike.inner_apply, norm_mul]
+  simpa only [starRingEnd_apply, norm_star, mul_comm] using
+    movingDefect_product_bound f K C hK hC hdec hbound A hA q
+
+/-- A moving cutoff makes the residual pairing of a rapidly decaying eigenvector tend to zero. -/
+theorem cubicEisensteinResidue_orthogonal_of_rapid_cusp_decay
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (K : ℝ) (hK : 0 ≤ K)
+    (hdec : ∀ w : HyperbolicSpace, ∀ r : CuspCosets, 1 < cosetHeight r w →
+      ‖f (integralOrbitProjection globalKubotaKernel w)‖ ≤ K / (cosetHeight r w) ^ 3) :
+    inner ℂ F cubicEisensteinResidue = 0 := by
+  obtain ⟨C, hC, hbound⟩ := smoothCuspSeedDefect_dilate_bound
+  let B : ℝ := (3 / 2) * (K * C) * (integralQuotientVolume globalKubotaKernel).real Set.univ
+  have hB : 0 ≤ B := by dsimp only [B]; positivity
+  have hb (A : ℝ) (hA : 1 < A) : ‖inner ℂ F cubicEisensteinResidue‖ ≤ B / A := by
+    have he : cubicEisensteinResidue = kernelEisensteinResidueVector A (2 * A) (by linarith) (by linarith) :=
+      kernelEisensteinResidueVector_cutoff_independent 2 3 A (2 * A)
+        (by norm_num) (by norm_num) hA (by linarith)
+    rw [he, kernelEisensteinResidueVector_pairing _ _ _ _ F hF, norm_mul]
+    norm_num
+    calc
+      _ ≤ (3 / 2) * ((K * C / A) * (integralQuotientVolume globalKubotaKernel).real Set.univ) :=
+        mul_le_mul_of_nonneg_left (movingDefect_inner_bound F f hrep K C hK hC hdec hbound A hA) (by norm_num)
+      _ = B / A := by dsimp only [B]; ring
+  apply norm_eq_zero.mp
+  by_contra hn
+  have hnpos := lt_of_le_of_ne (norm_nonneg (inner ℂ F cubicEisensteinResidue)) (Ne.symm hn)
+  let A := B / ‖inner ℂ F cubicEisensteinResidue‖ + 2
+  have hA : 1 < A := by
+    have hh := div_nonneg hB hnpos.le
+    dsimp only [A]
+    linarith
+  have hh := (le_div_iff₀ (zero_lt_one.trans hA)).mp (hb A hA)
+  have he : ‖inner ℂ F cubicEisensteinResidue‖ * A = B + 2 * ‖inner ℂ F cubicEisensteinResidue‖ := by
+    dsimp only [A]
+    field_simp
+  rw [he] at hh
+  linarith only [hh, hnpos]
+
+lemma coset_decay_of_cusp_chart_decay (f : KernelQuotient → ℂ) (K : ℝ)
+    (hdec : ∀ M : levelThree, ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))‖ ≤ K / v ^ 3) :
+    ∀ w : HyperbolicSpace, ∀ r : CuspCosets, 1 < cosetHeight r w →
+      ‖f (integralOrbitProjection globalKubotaKernel w)‖ ≤ K / (cosetHeight r w) ^ 3 := by
+  intro w r
+  induction r using Quotient.inductionOn with
+  | _ M =>
+    intro hr
+    change 1 < cosetHeight (cosetOf M) w at hr
+    change _ ≤ K / (cosetHeight (cosetOf M) w) ^ 3
+    rw [cosetHeight_cosetOf] at hr ⊢
+    obtain ⟨z, v, hv, hpt⟩ := upperPoint_surjective (complexMatrix M • w)
+    have hh : hyperbolicHeight (complexMatrix M • w) = v := by rw [← hpt, hyperbolicHeight_upperPoint]
+    rw [hh] at hr ⊢
+    have he : complexMatrix M⁻¹ • upperPoint z v hv = w := by rw [hpt, map_inv, inv_smul_smul]
+    simpa only [he] using hdec M⁻¹ z v hv hr
+
+theorem cubicEisensteinResidue_orthogonal_of_cusp_chart_decay
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (K : ℝ) (hK : 0 ≤ K)
+    (hdec : ∀ M : levelThree, ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))‖ ≤ K / v ^ 3) :
+    inner ℂ F cubicEisensteinResidue = 0 :=
+  cubicEisensteinResidue_orthogonal_of_rapid_cusp_decay F hF f hrep K hK
+    (coset_decay_of_cusp_chart_decay f K hdec)
+
+lemma kernelRationalPullback_pairing_inverse (g : rationalExtension) (F G : KernelQuotientL2) :
+    inner ℂ F (kernelRationalPullback g G) = inner ℂ (kernelRationalPullback g⁻¹ F) G := by
+  calc
+    _ = inner ℂ (kernelRationalPullback g (kernelRationalPullback g⁻¹ F)) (kernelRationalPullback g G) := by
+      rw [kernelRationalPullback_comp, inv_mul_cancel, kernelRationalPullback_one]
+    _ = _ := LinearIsometry.inner_map_map _ _ _
+
+lemma cubicEisensteinResidue_rational_translate_orthogonal
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (C : ℝ) (hC : 0 ≤ C)
+    (hdec : ∀ N : SL(2, O), ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))‖ ≤ C / v ^ 3)
+    (g : rationalExtension) : inner ℂ F (kernelRationalPullback g cubicEisensteinResidue) = 0 := by
+  rw [kernelRationalPullback_pairing_inverse]
+  have hrepG : kernelRationalPullback g⁻¹ F =ᵐ[integralQuotientVolume globalKubotaKernel]
+      fun q => f (kernelRationalAction g⁻¹ q) :=
+    (kernelRationalPullback_ae g⁻¹ F).trans
+      ((kernelRationalAction_measurePreserving g⁻¹).quasiMeasurePreserving.ae_eq_comp hrep)
+  apply cubicEisensteinResidue_orthogonal_of_cusp_chart_decay _
+    (kernelRational_eigenvector g⁻¹ F (8 / 9) hF) _ hrepG C hC
+  intro N z v hv hlarge
+  rw [kernelRationalAction_mk]
+  have hh := hdec ((g⁻¹ : rationalExtension) * (N : SL(2, O))) z v hv hlarge
+  simpa only [map_mul, mul_smul, integralComplexMatrix_levelThree] using hh
+
+theorem cubicSourceResidue_orthogonal_of_integral_cusp_decay
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (C : ℝ) (hC : 0 ≤ C)
+    (hdec : ∀ N : SL(2, O), ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))‖ ≤ C / v ^ 3) :
+    inner ℂ F (kernelRationalSourceProjection cubicEisensteinResidue) = 0 := by
+  rw [kernelRationalSourceProjection_apply, inner_smul_right, inner_sum]
+  simp only [cubicEisensteinResidue_rational_translate_orthogonal F hF f hrep C hC hdec,
+    Finset.sum_const_zero, mul_zero]
+
+/-- Adjoint orthogonality forces a finite correspondence combination of the source residue to vanish. -/
+theorem commonCover_source_span_vanish {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E]
+    [CompleteSpace E] {ι : Type*} [Fintype ι]
+    (leg : ι → KernelQuotientL2 →L[ℂ] E) (c : ι → ℂ) (D : E)
+    (hD : D = ∑ i, c i • leg i (kernelRationalSourceProjection cubicEisensteinResidue))
+    (hEig : ∀ i, (ContinuousLinearMap.adjoint (leg i) D,
+      (8 / 9 : ℂ) • ContinuousLinearMap.adjoint (leg i) D) ∈ kernelEnergyLaplacian.graph)
+    (f : ι → KernelQuotient → ℂ)
+    (hrep : ∀ i, ContinuousLinearMap.adjoint (leg i) D =ᵐ[integralQuotientVolume globalKubotaKernel] f i)
+    (C : ι → ℝ) (hC : ∀ i, 0 ≤ C i)
+    (hdec : ∀ i, ∀ N : SL(2, O), ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f i (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))‖ ≤ C i / v ^ 3) :
+    D = 0 := by
+  apply (inner_self_eq_zero (𝕜 := ℂ)).mp
+  calc
+    inner ℂ D D = inner ℂ D (∑ i, c i • leg i (kernelRationalSourceProjection cubicEisensteinResidue)) :=
+      congrArg (inner ℂ D) hD
+    _ = ∑ i, c i * inner ℂ D (leg i (kernelRationalSourceProjection cubicEisensteinResidue)) := by
+      simp only [inner_sum, inner_smul_right]
+    _ = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _
+      rw [← ContinuousLinearMap.adjoint_inner_left,
+        cubicSourceResidue_orthogonal_of_integral_cusp_decay _ (hEig i) (f i) (hrep i) (C i) (hC i) (hdec i), mul_zero]
+
+/-- Arithmetic residue of the projected source, normalized by the period area. -/
+def rationalSourceScatteringResidue (h : O) : ℂ :=
+  if h = 0 then constantArithmeticResidue else
+    (4 : ℂ)⁻¹ * (nonzeroScatteringResidue h + rationalCuspPhaseSum h *
+      oppositeCuspResidue h / ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ))
+
+lemma rationalSourceResidualFourierCoefficient_eq (h : O) (hh : h ≠ 0) :
+    rationalSourceResidualFourierCoefficient h = rationalSourceScatteringResidue h *
+      ((2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) * (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ)) := by
+  rw [rationalSourceResidualFourierCoefficient, cubicResidualFourierCoefficient,
+    oppositeResidualFourierCoefficient, rationalSourceScatteringResidue, if_neg hh]
+  ring
+
+lemma residue_whittaker_bessel (R : ℂ) (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    R * ((v : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) =
+      (R * ((2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) *
+        (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ))) * (v : ℂ) *
+        schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  have hp : (v : ℂ) ^ (-(4 / 3 : ℂ) - 1) * (v : ℂ) ^ 3 = (v : ℂ) ^ (2 / 3 : ℂ) := by
+    rw [← Complex.cpow_natCast, ← Complex.cpow_add _ _ hv0]
+    congr 1
+    norm_num
+  calc
+    _ = R * (((v : ℂ) ^ (-(4 / 3 : ℂ) - 1) *
+        sourceFourierKernel (4 / 3) (cuspFrequency h * v)) * (v : ℂ) ^ 3) := by rw [← hp]; ring
+    _ = _ := by
+      rw [sourceFourierKernel_residual_height h hh v hv]
+      field_simp [hv0]
+
+theorem cubicSourceResidualFunction_fourier (v : ℝ) (hv : 0 < v) (h : O) :
+    (∫ z in periodDomain, cubicSourceResidualFunction (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * rationalSourceScatteringResidue h *
+        ((v : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency h * v)) := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, neg_zero, zero_mul, AddChar.map_zero_eq_one, mul_one,
+      rationalSourceScatteringResidue, if_true, sourceFourierKernel_zero (4 / 3) (by norm_num)]
+    rw [cubicSourceResidualFunction_fourier_zero]
+    ring
+  · rw [cubicSourceResidualFunction_fourier_bessel v hv h hh,
+      rationalSourceResidualFourierCoefficient_eq h hh]
+    have he := residue_whittaker_bessel (rationalSourceScatteringResidue h) v hv h hh
+    linear_combination -((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * he
+
+theorem rationalSourceScatteringResidue_prime_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceScatteringResidue (h * p ^ 3) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * rationalSourceScatteringResidue h -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) * cubicUnitGaussSum (9 * h) p *
+        rationalSourceScatteringResidue (h * p) := by
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  have hg := unramifiedGaussResidue_prime_recurrence p hp hprimary (9 * h)
+    (primary_prime_not_dvd_nine_frequency p hp hprimary h hph)
+  rw [primeCubicGauss_one_eq] at hg
+  simp only [rationalSourceScatteringResidue, if_neg hh, if_neg (mul_ne_zero hh hp.ne_zero),
+    if_neg (mul_ne_zero hh (pow_ne_zero 3 hp.ne_zero)), oppositeCuspResidue_eq_unramified]
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 3) (primary_pow_congruence p hprimary 3),
+    rationalCuspPhaseSum_primary_mul h p hprimary, nonzeroScatteringResidue_prime_recurrence p hp hprimary h hph,
+    show 9 * (h * p ^ 3) = (9 * h) * p ^ 3 by ring, hg,
+    show 9 * (h * p) = (9 * h) * p by ring]
+  ring
+
+theorem rationalSourceScatteringResidue_cube_recurrence (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) :
+    rationalSourceScatteringResidue (h * p ^ 6) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * rationalSourceScatteringResidue (h * p ^ 3) -
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * rationalSourceScatteringResidue h := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [zero_mul]
+    ring
+  simp only [rationalSourceScatteringResidue, if_neg hh,
+    if_neg (mul_ne_zero hh (pow_ne_zero 3 hp.ne_zero)),
+    if_neg (mul_ne_zero hh (pow_ne_zero 6 hp.ne_zero)), oppositeCuspResidue_eq_unramified]
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 6) (primary_pow_congruence p hprimary 6),
+    rationalCuspPhaseSum_primary_mul h (p ^ 3) (primary_pow_congruence p hprimary 3),
+    nonzeroScatteringResidue_cube_recurrence p hp hprimary h hh,
+    show 9 * (h * p ^ 6) = (9 * h) * p ^ 6 by ring,
+    show 9 * (h * p ^ 3) = (9 * h) * p ^ 3 by ring,
+    unramifiedGaussResidue_cube_recurrence p hp hprimary (9 * h)]
+  ring
+
+theorem rationalSourceScatteringResidue_square_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceScatteringResidue (h * p ^ 5) =
+      (1 + (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹) * rationalSourceScatteringResidue (h * p ^ 2) := by
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  simp only [rationalSourceScatteringResidue,
+    if_neg (mul_ne_zero hh (pow_ne_zero 2 hp.ne_zero)),
+    if_neg (mul_ne_zero hh (pow_ne_zero 5 hp.ne_zero)), oppositeCuspResidue_eq_unramified]
+  rw [rationalCuspPhaseSum_primary_mul h (p ^ 5) (primary_pow_congruence p hprimary 5),
+    rationalCuspPhaseSum_primary_mul h (p ^ 2) (primary_pow_congruence p hprimary 2),
+    nonzeroScatteringResidue_square_cube p hp hprimary h hph,
+    show 9 * (h * p ^ 5) = (9 * h) * p ^ 5 by ring,
+    show 9 * (h * p ^ 2) = (9 * h) * p ^ 2 by ring,
+    unramifiedGaussResidue_square_cube p hp hprimary (9 * h)
+      (primary_prime_not_dvd_nine_frequency p hp hprimary h hph)]
+  ring
+
+/-- An absolutely convergent Fourier series on the Eisenstein period lattice. -/
+def cuspCharacterSeries (a : O → ℂ) (z : ℂ) : ℂ :=
+  ∑' h : O, a h * tracePhase (cuspFrequency h * z)
+
+lemma cuspCharacterSeries_continuous (a : O → ℂ) (ha : Summable (fun h => ‖a h‖)) :
+    Continuous (cuspCharacterSeries a) := by
+  apply continuous_tsum (u := fun h => ‖a h‖) _ ha
+  · intro h z
+    simp only [norm_mul, tracePhase_norm, mul_one, le_refl]
+  · intro h
+    change Continuous (fun z : ℂ => a h * Complex.exp (2 * Real.pi * Complex.I *
+      ((cuspFrequency h * z) + starRingEnd ℂ (cuspFrequency h * z))))
+    fun_prop
+
+lemma cuspCharacterSeries_period (a : O → ℂ) (z : ℂ) (n : O) :
+    cuspCharacterSeries a (z + 3 * ringComplex n) = cuspCharacterSeries a z := by
+  apply tsum_congr
+  intro h
+  rw [mul_add, AddChar.map_add_eq_mul, cuspFrequency_period, mul_one]
+
+theorem cuspCharacterSeries_fourier (a : O → ℂ) (ha : Summable (fun h => ‖a h‖)) (k : O) :
+    (∫ z in periodDomain, cuspCharacterSeries a z * tracePhase (-cuspFrequency k * z)) =
+      ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * a k := by
+  letI : Countable O := Coordinates.coordinateEquiv.injective.countable
+  letI : IsFiniteMeasure (volume.restrict periodDomain) := isFiniteMeasure_restrict.mpr (by
+    rw [periodDomain_volume]
+    exact ENNReal.ofReal_ne_top)
+  let f : O → ℂ → ℂ := fun h z => a h *
+    tracePhase (cuspFrequency h * z) * tracePhase (-cuspFrequency k * z)
+  have hc (h : O) : Continuous (f h) := by
+    change Continuous (fun z : ℂ => a h *
+      Complex.exp (2 * Real.pi * Complex.I * ((cuspFrequency h * z) + starRingEnd ℂ (cuspFrequency h * z))) *
+      Complex.exp (2 * Real.pi * Complex.I * ((-cuspFrequency k * z) + starRingEnd ℂ (-cuspFrequency k * z))))
+    fun_prop
+  have hn (h : O) (z : ℂ) : ‖f h z‖ = ‖a h‖ := by
+    simp only [f, norm_mul, tracePhase_norm, mul_one]
+  have hi (h : O) : IntegrableOn (f h) periodDomain :=
+    periodDomain_continuous_integrable _ (hc h)
+  have hs : Summable (fun h : O => ∫ z in periodDomain, ‖f h z‖) := by
+    simp only [hn, setIntegral_const, smul_eq_mul]
+    exact ha.mul_left (volume.real periodDomain)
+  have hterm (h : O) : (∫ z in periodDomain, f h z) =
+      if h = k then ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * a h else 0 := by
+    dsimp only [f]
+    simp_rw [mul_assoc]
+    rw [integral_const_mul, integral_cusp_character_product]
+    split_ifs <;> ring
+  calc
+    _ = ∫ z in periodDomain, ∑' h : O, f h z := by
+      apply integral_congr_ae
+      exact Eventually.of_forall (fun z => by
+        change (∑' h : O, a h * tracePhase (cuspFrequency h * z)) *
+          tracePhase (-cuspFrequency k * z) = _
+        rw [← tsum_mul_right])
+    _ = ∑' h : O, ∫ z in periodDomain, f h z := (integral_tsum_of_summable_integral_norm hi hs).symm
+    _ = _ := by simp only [hterm, tsum_ite_eq]
+
+/-- A summable majorant controls the entire nonconstant Fourier remainder. -/
+lemma cuspCharacterSeries_remainder_bound (a : O → ℂ) (B : O → ℝ) (hB : Summable B)
+    (hB0 : ∀ h, 0 ≤ B h) (ha : ∀ h, h ≠ 0 → ‖a h‖ ≤ B h) (z : ℂ) :
+    ‖cuspCharacterSeries a z - a 0‖ ≤ ∑' h, B h := by
+  let b : O → ℂ := fun h => if h = 0 then 0 else a h * tracePhase (cuspFrequency h * z)
+  have hb (h : O) : ‖b h‖ ≤ B h := by
+    by_cases hh : h = 0
+    · simpa only [b, if_pos hh, norm_zero] using hB0 h
+    · simpa only [b, if_neg hh, norm_mul, tracePhase_norm, mul_one] using ha h hh
+  have hbs : Summable (fun h => ‖b h‖) := Summable.of_nonneg_of_le (fun h => norm_nonneg _) hb hB
+  have hz : Summable (fun h : O => if h = 0 then a 0 else 0) := (hasSum_ite_eq 0 _).summable
+  have hsplit (h : O) : a h * tracePhase (cuspFrequency h * z) = (if h = 0 then a 0 else 0) + b h := by
+    by_cases hh : h = 0
+    · subst h
+      simp only [b, if_true, cuspFrequency, map_zero, zero_div, zero_mul,
+        AddChar.map_zero_eq_one, mul_one, add_zero]
+    · simp only [b, if_neg hh, zero_add]
+  rw [cuspCharacterSeries]
+  simp_rw [hsplit]
+  rw [hz.tsum_add hbs.of_norm, tsum_ite_eq, add_sub_cancel_left]
+  exact (norm_tsum_le_tsum_norm hbs).trans (Summable.tsum_le_tsum hb hbs hB)
+
+lemma periodDomain_continuous_memLp (f : ℂ → ℂ) (hf : Continuous f) :
+    MemLp f 2 (volume.restrict periodDomain) := by
+  apply (memLp_two_iff_integrable_sq_norm hf.aestronglyMeasurable).mpr
+  apply ((hf.norm.pow 2).continuousOn.integrableOn_compact
+    (isCompact_closedBall (0 : ℂ) (∑ i, ‖periodBasis i‖))).mono_set
+  intro z hz
+  simpa only [Metric.mem_closedBall, dist_zero_right] using norm_mem_periodDomain z hz
+
+/-- Continuity and periodicity upgrade equality of Fourier coefficients to pointwise equality. -/
+theorem periodDomain_continuous_ext (f g : ℂ → ℂ) (hf : Continuous f) (hg : Continuous g)
+    (hfper : ∀ n z, f (z + 3 * ringComplex n) = f z)
+    (hgper : ∀ n z, g (z + 3 * ringComplex n) = g z)
+    (heq : ∀ h : O, (∫ z in periodDomain, f z * tracePhase (-cuspFrequency h * z)) =
+      ∫ z in periodDomain, g z * tracePhase (-cuspFrequency h * z)) : f = g :=
+  Measure.eq_of_ae_eq (ae_eq_of_periodDomain_eq f g hfper hgper
+    (periodDomain_L2_ext f g (periodDomain_continuous_memLp f hf)
+      (periodDomain_continuous_memLp g hg) heq)) hf hg
+
+def rationalSourceModeAmplitude (v : ℝ) (h : O) : ℂ :=
+  rationalSourceScatteringResidue h * ((v : ℂ) ^ (2 / 3 : ℂ) *
+    sourceFourierKernel (4 / 3) (cuspFrequency h * v))
+
+lemma rationalSourceModeAmplitude_bessel (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    rationalSourceModeAmplitude v h = rationalSourceResidualFourierCoefficient h * (v : ℂ) *
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  rw [rationalSourceModeAmplitude, residue_whittaker_bessel _ v hv h hh,
+    rationalSourceResidualFourierCoefficient_eq h hh]
+
+lemma rationalSourceModeAmplitude_summable (v : ℝ) (hv : 0 < v) :
+    Summable (fun h => ‖rationalSourceModeAmplitude v h‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselCoefficient_strip_bound rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential v v hv le_rfl
+  have hs := (summable_exp_neg_cuspFrequency_norm (Real.pi * v)
+    (mul_pos Real.pi_pos hv)).mul_left C
+  have hz : Summable (fun h : O => if h = 0 then ‖rationalSourceModeAmplitude v 0‖ else 0) :=
+    (hasSum_ite_eq 0 _).summable
+  apply Summable.of_nonneg_of_le (fun h => norm_nonneg _) _ (hz.add hs)
+  intro h
+  by_cases hh : h = 0
+  · subst h
+    simp only [if_true]
+    exact le_add_of_nonneg_right (mul_nonneg hC (Real.exp_pos _).le)
+  · simp only [if_neg hh, zero_add]
+    rw [rationalSourceModeAmplitude_bessel v hv h hh]
+    exact hb h hh v ⟨le_rfl, le_rfl⟩
+
+lemma cubicSourceResidualFunction_period (v : ℝ) (hv : 0 < v) (z : ℂ) (n : O) :
+    cubicSourceResidualFunction (upperPoint (z + 3 * ringComplex n) v hv) =
+      cubicSourceResidualFunction (upperPoint z v hv) := by
+  have hn := integralTranslation_three_mem_kernel n
+  have he := cubicSourceResidualFunction_automorphy
+    ⟨integralTranslation (3 * n), levelThree_le_rationalExtension ((globalKubotaKernel_mem _).mp hn).1⟩
+      (upperPoint z v hv)
+  have hchar : extendedComplexCharacter
+      ⟨integralTranslation (3 * n), levelThree_le_rationalExtension ((globalKubotaKernel_mem _).mp hn).1⟩ = 1 := by
+    rw [extendedComplexCharacter_restrict ⟨_, ((globalKubotaKernel_mem _).mp hn).1⟩]
+    exact ((globalKubotaKernel_mem _).mp hn).2
+  simpa only [hchar, one_mul, integralTranslation_action, map_mul, map_ofNat] using he
+
+/-- The projected residual source equals its normally convergent Fourier expansion at every height. -/
+theorem cubicSourceResidualFunction_fourier_expansion (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    cubicSourceResidualFunction (upperPoint z v hv) =
+      cuspCharacterSeries (rationalSourceModeAmplitude v) z := by
+  have hc : Continuous (fun z : ℂ => cubicSourceResidualFunction (upperPoint z v hv)) :=
+    cubicSourceResidualFunction_continuous.comp
+      (upperCoordinatesHomeomorph.continuous.comp
+        (show Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) by fun_prop))
+  have hs := rationalSourceModeAmplitude_summable v hv
+  have he := periodDomain_continuous_ext _ _ hc (cuspCharacterSeries_continuous _ hs)
+    (fun n z => cubicSourceResidualFunction_period v hv z n)
+    (fun n z => cuspCharacterSeries_period _ z n) (fun h => by
+      rw [cubicSourceResidualFunction_fourier v hv h, cuspCharacterSeries_fourier _ hs h]
+      exact mul_assoc _ _ _)
+  exact congrFun he z
+
+lemma height_mul_exp_neg_le_inverse_cube (ε v : ℝ) (hε : 0 < ε) (hv : 0 < v) :
+    v * Real.exp (-ε * v) ≤ (24 / ε ^ 4) / v ^ 3 := by
+  have hp := Real.pow_div_factorial_le_exp (ε * v) (mul_pos hε hv).le 4
+  norm_num only [Nat.factorial] at hp
+  have hi := one_div_le_one_div_of_le (by positivity : (0 : ℝ) < (ε * v) ^ 4 / 24) hp
+  rw [one_div, ← Real.exp_neg] at hi
+  calc
+    _ ≤ v * (((ε * v) ^ 4 / 24)⁻¹) :=
+      mul_le_mul_of_nonneg_left (by simpa only [neg_mul, one_div] using hi) hv.le
+    _ = _ := by field_simp
+
+/-- A fixed frequency gap turns exponential Bessel decay into a summable cubic height bound. -/
+theorem cubicBesselCoefficient_cusp_bound (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 → ∀ v : ℝ, 1 ≤ v →
+      ‖c h * (v : ℂ) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)‖ ≤
+        (C / v ^ 3) * Real.exp (-(Real.pi / 2) * ‖cuspFrequency h‖) := by
+  let d : ℝ := ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹
+  have hd : 0 < d := inv_pos.mpr (norm_pos_iff.mpr
+    (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero)))
+  obtain ⟨B, hB, hb⟩ := schlafliBesselK_one_third_exp_upper (4 * Real.pi * d) (by positivity)
+  obtain ⟨A, hA, ha⟩ := hsub (Real.pi / 2) (by positivity)
+  refine ⟨A * B * (24 / (Real.pi * d) ^ 4), by positivity, ?_⟩
+  intro h hh v hv
+  have hvp : 0 < v := zero_lt_one.trans_le hv
+  have hgap : d ≤ ‖cuspFrequency h‖ := cuspFrequency_norm_lower h hh
+  have hrv : ‖cuspFrequency h‖ ≤ ‖cuspFrequency h‖ * v := by
+    simpa only [mul_one] using mul_le_mul_of_nonneg_left hv (norm_nonneg (cuspFrequency h))
+  have hdv := mul_le_mul_of_nonneg_right hgap hvp.le
+  have hx : 4 * Real.pi * d ≤ 4 * Real.pi * ‖cuspFrequency h‖ * v := by
+    simpa only [mul_assoc] using mul_le_mul_of_nonneg_left (hgap.trans hrv)
+      (show 0 ≤ 4 * Real.pi by positivity)
+  have he : (Real.pi / 2) * ‖cuspFrequency h‖ -
+      (4 * Real.pi * ‖cuspFrequency h‖ * v) / 2 ≤
+      -(Real.pi / 2) * ‖cuspFrequency h‖ + -(Real.pi * d) * v := by
+    have hm := mul_le_mul_of_nonneg_left (add_le_add hrv hdv) Real.pi_pos.le
+    nlinarith only [hm]
+  rw [norm_mul, norm_mul, Complex.norm_of_nonneg hvp.le]
+  calc
+    _ ≤ (A * Real.exp ((Real.pi / 2) * ‖cuspFrequency h‖)) * v *
+        (B * Real.exp (-(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2)) :=
+      mul_le_mul (mul_le_mul_of_nonneg_right (ha h hh) hvp.le)
+        (hb _ hx) (norm_nonneg _) (by positivity)
+    _ = (A * B * v) * Real.exp ((Real.pi / 2) * ‖cuspFrequency h‖ -
+        (4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) := by
+      rw [show -(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2 =
+        -((4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) by ring, Real.exp_neg, Real.exp_sub]
+      ring
+    _ ≤ (A * B * v) * Real.exp (-(Real.pi / 2) * ‖cuspFrequency h‖ + -(Real.pi * d) * v) :=
+      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) (by positivity)
+    _ = (A * B * Real.exp (-(Real.pi / 2) * ‖cuspFrequency h‖)) *
+        (v * Real.exp (-(Real.pi * d) * v)) := by rw [Real.exp_add]; ring
+    _ ≤ (A * B * Real.exp (-(Real.pi / 2) * ‖cuspFrequency h‖)) *
+        ((24 / (Real.pi * d) ^ 4) / v ^ 3) :=
+      mul_le_mul_of_nonneg_left (height_mul_exp_neg_le_inverse_cube _ _ (by positivity) hvp) (by positivity)
+    _ = _ := by ring
+
+lemma rationalSourceModeAmplitude_zero (v : ℝ) :
+    rationalSourceModeAmplitude v 0 =
+      3 * (Real.pi : ℂ) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ) := by
+  simp only [rationalSourceModeAmplitude, rationalSourceScatteringResidue, if_true,
+    cuspFrequency, map_zero, zero_div, zero_mul, sourceFourierKernel_zero (4 / 3) (by norm_num)]
+  ring
+
+/-- The source's nonconstant Fourier series decays cubically, uniformly along each horosphere. -/
+theorem cubicSourceResidualFunction_cusp_decay :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, ∀ hv : 0 < v, 1 ≤ v → ∀ z : ℂ,
+      ‖cubicSourceResidualFunction (upperPoint z v hv) -
+        3 * (Real.pi : ℂ) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ)‖ ≤ C / v ^ 3 := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselCoefficient_cusp_bound rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential
+  let w : O → ℝ := fun h => Real.exp (-(Real.pi / 2) * ‖cuspFrequency h‖)
+  have hw : Summable w := summable_exp_neg_cuspFrequency_norm (Real.pi / 2) (by positivity)
+  refine ⟨C * ∑' h, w h, mul_nonneg hC (tsum_nonneg (fun h => (Real.exp_pos _).le)), ?_⟩
+  intro v hv hlarge z
+  rw [cubicSourceResidualFunction_fourier_expansion v hv z, ← rationalSourceModeAmplitude_zero]
+  have he := cuspCharacterSeries_remainder_bound (rationalSourceModeAmplitude v)
+    (fun h => (C / v ^ 3) * w h) (hw.mul_left _) (fun h =>
+      mul_nonneg (div_nonneg hC (pow_nonneg hv.le _)) (Real.exp_pos _).le)
+    (fun h hh => by rw [rationalSourceModeAmplitude_bessel v hv h hh]; exact hb h hh v hlarge) z
+  rw [tsum_mul_left] at he
+  convert he using 1
+  ring
+
+/-- Cubic cusp decay holds uniformly above any fixed positive height. -/
+theorem cubicSourceResidualFunction_cusp_decay_from_height (a : ℝ) (ha : 0 < a) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ v : ℝ, ∀ hv : 0 < v, a ≤ v → ∀ z : ℂ,
+      ‖cubicSourceResidualFunction (upperPoint z v hv) -
+        3 * (Real.pi : ℂ) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ)‖ ≤ C / v ^ 3 := by
+  obtain ⟨C, hC, hc⟩ := cubicSourceResidualFunction_cusp_decay
+  obtain ⟨B, hB, hb⟩ := cubicBesselCoefficient_strip_bound rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential a (max a 1) ha (le_max_left _ _)
+  let w : O → ℝ := fun h => Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖)
+  have hw : Summable w := summable_exp_neg_cuspFrequency_norm (Real.pi * a) (mul_pos Real.pi_pos ha)
+  let D := B * ∑' h, w h
+  have hD : 0 ≤ D := mul_nonneg hB (tsum_nonneg (fun h => (Real.exp_pos _).le))
+  refine ⟨C + D, add_nonneg hC hD, ?_⟩
+  intro v hv hav z
+  by_cases hv1 : 1 ≤ v
+  · exact (hc v hv hv1 z).trans (div_le_div_of_nonneg_right (le_add_of_nonneg_right hD) (pow_nonneg hv.le _))
+  have hvlt : v < 1 := lt_of_not_ge hv1
+  have hbv : v ∈ Set.Icc a (max a 1) := ⟨hav, hvlt.le.trans (le_max_right _ _)⟩
+  have hn : ‖cubicSourceResidualFunction (upperPoint z v hv) -
+      3 * (Real.pi : ℂ) * constantArithmeticResidue * (v : ℂ) ^ (2 / 3 : ℂ)‖ ≤ D := by
+    rw [cubicSourceResidualFunction_fourier_expansion v hv z, ← rationalSourceModeAmplitude_zero]
+    have he := cuspCharacterSeries_remainder_bound (rationalSourceModeAmplitude v)
+      (fun h => B * w h) (hw.mul_left _) (fun h => mul_nonneg hB (Real.exp_pos _).le)
+      (fun h hh => by rw [rationalSourceModeAmplitude_bessel v hv h hh]; exact hb h hh v hbv) z
+    simpa only [tsum_mul_left] using he
+  have hv3 : v ^ 3 ≤ 1 := by simpa only [one_pow] using pow_le_pow_left₀ hv.le hvlt.le 3
+  apply hn.trans
+  apply (le_div_iff₀ (pow_pos hv 3)).mpr
+  exact (mul_le_of_le_one_right hD hv3).trans (le_add_of_nonneg_left hC)
+
+
+open scoped Matrix
+
+lemma cusp_omega_relation : omega ^ 2 + omega + 1 = (0 : O) := by
+  have h := lambda_sq_eq
+  rw [lambda_def] at h
+  linear_combination h
+
+def lowerCuspMatrix (t : O) : SL(2, O) :=
+  ⟨!![1, 0; t, 1], by simp [Matrix.det_fin_two]⟩
+
+/-- Translation by three, conjugated to the lower unipotent cusp. -/
+def ramifiedParabolic (t x : O) : levelThree := by
+  let M : SL(2, O) := ⟨!![1 - 3 * t * x, 3 * x; -3 * t ^ 2 * x, 1 + 3 * t * x], by
+    rw [Matrix.det_fin_two]
+    change (1 - 3 * t * x) * (1 + 3 * t * x) - (3 * x) * (-3 * t ^ 2 * x) = 1
+    ring⟩
+  refine ⟨M, levelThree_of_entries M ?_⟩
+  intro i j
+  fin_cases i <;> fin_cases j
+  · exact ⟨-t * x, by change 1 - 3 * t * x - 1 = 3 * (-t * x); ring⟩
+  · exact ⟨x, by change 3 * x - 0 = 3 * x; ring⟩
+  · exact ⟨-t ^ 2 * x, by change -3 * t ^ 2 * x - 0 = 3 * (-t ^ 2 * x); ring⟩
+  · exact ⟨t * x, by change 1 + 3 * t * x - 1 = 3 * (t * x); ring⟩
+
+lemma ramifiedParabolic_mul_lower (t x : O) :
+    (ramifiedParabolic t x : SL(2, O)) * lowerCuspMatrix t =
+      lowerCuspMatrix t * integralTranslation (3 * x) := by
+  apply Subtype.ext
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [ramifiedParabolic, lowerCuspMatrix, integralTranslation, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+lemma ramifiedParabolic_character (t x : O) :
+    complexCharacter (ramifiedParabolic t x) = ringComplex (symbol (-t) (1 - 3 * t * x)) := by
+  simp only [complexCharacter, MonoidHom.comp_apply, character, ramifiedParabolic]
+  apply congrArg ringComplex
+  apply symbol_congr
+  refine ⟨t, ?_⟩
+  change -3 * t ^ 2 * x - (-t) = (1 - 3 * t * x) * t
+  ring
+
+lemma ramifiedParabolic_omega_character (A B : ℤ) :
+    complexCharacter (ramifiedParabolic omega (Coordinates.eval A B)) =
+      ringComplex (cubicExp (A + B)) := by
+  rw [ramifiedParabolic_character]
+  have hd : 1 - 3 * omega * Coordinates.eval A B = primaryCoord B (B - A) := by
+    rw [primaryCoord_eq]
+    change 1 - 3 * omega * ((A : O) + (B : O) * omega) = _
+    push_cast
+    linear_combination -3 * (B : O) * cusp_omega_relation
+  rw [hd, symbol_neg_numerator _ _ (primaryCoord_primary _ _),
+    symbol_omega_eq_linearRay _ (primaryCoord_primary _ _), linearRay_primaryCoord]
+  congr 2
+  ring
+
+lemma ramifiedParabolic_omega_sq_character (A B : ℤ) :
+    complexCharacter (ramifiedParabolic (omega ^ 2) (Coordinates.eval A B)) =
+      ringComplex (cubicExp (-(A + B))) := by
+  rw [ramifiedParabolic_character]
+  have hd : 1 - 3 * omega ^ 2 * Coordinates.eval A B = primaryCoord (A - B) A := by
+    rw [primaryCoord_eq]
+    change 1 - 3 * omega ^ 2 * ((A : O) + (B : O) * omega) = _
+    push_cast
+    linear_combination -3 * ((A : O) + (B : O) * omega - (B : O)) * cusp_omega_relation
+  rw [hd, symbol_neg_numerator _ _ (primaryCoord_primary _ _),
+    symbol_pow_numerator _ _ (primaryCoord_primary _ _) 2,
+    symbol_omega_eq_linearRay _ (primaryCoord_primary _ _), linearRay_primaryCoord]
+  have he : cubicExp (2 * ((A - B) * 2 + (-1) * A)) = cubicExp (-(A + B)) := by
+    apply cubicExp_eq_of_dvd_sub
+    exact ⟨A - B, by ring⟩
+  have hs : cubicExp ((A - B) * 2 + (-1) * A) ^ 2 = cubicExp (2 * ((A - B) * 2 + (-1) * A)) := by
+    rw [pow_two, ← cubicExp_add]
+    congr 1
+    ring
+  convert congrArg ringComplex (hs.trans he) using 1
+  congr 2
+  ring
+
+def ramifiedSourceFunction (t : O) (w : HyperbolicSpace) : ℂ :=
+  cubicSourceResidualFunction (integralComplexMatrix (lowerCuspMatrix t) • w)
+
+lemma ramifiedSourceFunction_continuous (t : O) : Continuous (ramifiedSourceFunction t) :=
+  cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _)
+
+lemma ramifiedSourceFunction_period (t x : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    ramifiedSourceFunction t (upperPoint (z + 3 * ringComplex x) v hv) =
+      ringComplex (symbol (-t) (1 - 3 * t * x)) * ramifiedSourceFunction t (upperPoint z v hv) := by
+  let n := ramifiedParabolic t x
+  have he := cubicSourceResidualFunction_automorphy
+    ⟨(n : SL(2, O)), levelThree_le_rationalExtension n.property⟩
+      (integralComplexMatrix (lowerCuspMatrix t) • upperPoint z v hv)
+  rw [extendedComplexCharacter_restrict, ramifiedParabolic_character] at he
+  change cubicSourceResidualFunction (integralComplexMatrix (n : SL(2, O)) •
+    (integralComplexMatrix (lowerCuspMatrix t) • upperPoint z v hv)) = _ at he
+  rw [← mul_smul, ← map_mul, ramifiedParabolic_mul_lower, map_mul, mul_smul] at he
+  simpa only [ramifiedSourceFunction, integralTranslation_action, map_mul, map_ofNat] using he
+
+lemma ramifiedParabolic_three (t x : O) :
+    ramifiedParabolic t (3 * x) = ramifiedParabolic t x ^ 3 := by
+  apply Subtype.ext
+  apply Subtype.ext
+  funext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [ramifiedParabolic, pow_succ, Matrix.mul_apply, Fin.sum_univ_two] <;> ring
+
+lemma ramifiedSourceFunction_nine_period (t x : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    ramifiedSourceFunction t (upperPoint (z + 9 * ringComplex x) v hv) =
+      ramifiedSourceFunction t (upperPoint z v hv) := by
+  have he := ramifiedSourceFunction_period t (3 * x) z v hv
+  rw [← ramifiedParabolic_character, ramifiedParabolic_three, map_pow, complexCharacter_cube, one_mul] at he
+  rw [map_mul, map_ofNat, show 3 * ((3 : ℂ) * ringComplex x) = 9 * ringComplex x by ring] at he
+  exact he
+
+lemma ramifiedSourceFunction_scaled_period (t : O) (v : ℝ) (hv : 0 < v) (x : O) (z : ℂ) :
+    ramifiedSourceFunction t (upperPoint (3 * (z + 3 * ringComplex x)) v hv) =
+      ramifiedSourceFunction t (upperPoint (3 * z) v hv) := by
+  rw [show 3 * (z + 3 * ringComplex x) = 3 * z + 9 * ringComplex x by ring]
+  exact ramifiedSourceFunction_nine_period t x (3 * z) v hv
+
+/-- A nontrivial translation character annihilates the constant Fourier coefficient. -/
+lemma period_integral_zero_of_character (f : ℂ → ℂ)
+    (hper : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z)
+    (b χ : ℂ) (hχ : χ ≠ 1) (htranslate : ∀ z, f (z + b) = χ * f z) :
+    ∫ z in periodDomain, f z = 0 := by
+  have he := period_fourier_translation f hper 0 b
+  simp only [cuspFrequency, map_zero, zero_div, neg_zero, zero_mul,
+    AddChar.map_zero_eq_one, mul_one, one_mul] at he
+  simp_rw [htranslate] at he
+  rw [integral_const_mul] at he
+  have hz : (χ - 1) * ∫ z in periodDomain, f z = 0 := by linear_combination he
+  exact (mul_eq_zero.mp hz).resolve_left (sub_ne_zero.mpr hχ)
+
+theorem ramifiedSourceFunction_omega_constant_zero (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, ramifiedSourceFunction omega (upperPoint (3 * z) v hv) = 0 := by
+  apply period_integral_zero_of_character _ (ramifiedSourceFunction_scaled_period omega v hv)
+    1 (ringComplex omega)
+  · intro he
+    have hω : omega = 1 := ringComplex_injective (by simpa only [map_one] using he)
+    have h := (omega_primitive.pow_eq_one_iff_dvd 1).mp (by simpa only [pow_one] using hω)
+    norm_num at h
+  · intro z
+    have he := ramifiedSourceFunction_period omega (Coordinates.eval 1 0) (3 * z) v hv
+    rw [← ramifiedParabolic_character, ramifiedParabolic_omega_character] at he
+    norm_num [Coordinates.eval, cubicExp] at he
+    rw [show 3 * (z + 1) = 3 * z + (3 : ℂ) by ring]
+    exact he
+
+theorem ramifiedSourceFunction_omega_sq_constant_zero (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, ramifiedSourceFunction (omega ^ 2) (upperPoint (3 * z) v hv) = 0 := by
+  apply period_integral_zero_of_character _ (ramifiedSourceFunction_scaled_period (omega ^ 2) v hv)
+    1 (ringComplex (omega ^ 2))
+  · intro he
+    have hω : omega ^ 2 = 1 := ringComplex_injective (by simpa only [map_one] using he)
+    have h := (omega_primitive.pow_eq_one_iff_dvd 2).mp hω
+    norm_num at h
+  · intro z
+    have he := ramifiedSourceFunction_period (omega ^ 2) (Coordinates.eval 1 0) (3 * z) v hv
+    rw [← ramifiedParabolic_character, ramifiedParabolic_omega_sq_character] at he
+    norm_num [Coordinates.eval, cubicExp] at he
+    rw [map_pow, show 3 * (z + 1) = 3 * z + (3 : ℂ) by ring]
+    simpa only [Int.toNat] using he
+
+/-- The quotient map induced by inclusion of integral subgroups. -/
+def integralCoverMap {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) :
+    IntegralOrbitQuotient H → IntegralOrbitQuotient K :=
+  Quotient.map' id (by
+    rintro w u ⟨M, hM⟩
+    exact ⟨Subgroup.inclusion hHK M, hM⟩)
+
+lemma integralCoverMap_projection {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) (w : HyperbolicSpace) :
+    integralCoverMap hHK (integralOrbitProjection H w) = integralOrbitProjection K w := rfl
+
+lemma integralCoverMap_measurable {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) :
+    Measurable (integralCoverMap hHK) :=
+  measurable_from_quotient.mpr (measurable_integralOrbitProjection K)
+
+lemma integralCoverMap_continuous {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) :
+    Continuous (integralCoverMap hHK) := continuous_id.quotient_map' _
+
+lemma integralCoverMap_surjective {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) :
+    Function.Surjective (integralCoverMap hHK) := by
+  intro q
+  induction q using Quotient.inductionOn with
+  | _ w => exact ⟨integralOrbitProjection H w, rfl⟩
+
+abbrev IntegralCoverCosets (H K : Subgroup (SL(2, O))) := K ⧸ H.subgroupOf K
+
+def integralCoverRep (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) : K := q.out
+
+def integralCoverSheet (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) : Set HyperbolicSpace :=
+  (fun w => integralCoverRep H K q • w) ⁻¹' hyperbolicFundamentalSet K
+
+/-- Coset translates of a base fundamental domain form a domain for the covering subgroup. -/
+def integralCoverDomain (H K : Subgroup (SL(2, O))) : Set HyperbolicSpace :=
+  ⋃ q : IntegralCoverCosets H K, integralCoverSheet H K q
+
+lemma integralCoverSheet_measurable (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) :
+    MeasurableSet (integralCoverSheet H K q) :=
+  (measurable_const_smul (integralCoverRep H K q)) (hyperbolicFundamentalSet_measurable K)
+
+lemma integralCoverDomain_measurable (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K] :
+    MeasurableSet (integralCoverDomain H K) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  exact MeasurableSet.iUnion (integralCoverSheet_measurable H K)
+
+lemma fundamental_reduction_unique (K : Subgroup (SL(2, O))) (hK : K ≤ levelThree)
+    (r s : K) (w : HyperbolicSpace) (hr : r • w ∈ hyperbolicFundamentalSet K)
+    (hs : s • w ∈ hyperbolicFundamentalSet K) : r = s := by
+  obtain ⟨m, _, hm⟩ := hyperbolicFundamentalSet_unique K hK w
+  exact (hm r hr).trans (hm s hs).symm
+
+lemma integralCoverSheet_pairwiseDisjoint (H K : Subgroup (SL(2, O))) (hK : K ≤ levelThree) :
+    Pairwise (fun q r => Disjoint (integralCoverSheet H K q) (integralCoverSheet H K r)) := by
+  intro q r hqr
+  apply Set.disjoint_left.mpr
+  intro w hwq hwr
+  exact hqr (Quotient.out_injective
+    (fundamental_reduction_unique K hK (integralCoverRep H K q) (integralCoverRep H K r) w hwq hwr))
+
+lemma integralCoverRep_mul_projection {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (q : IntegralCoverCosets H K) (h : H) :
+    ((integralCoverRep H K q * Subgroup.inclusion hHK h : K) : IntegralCoverCosets H K) = q := by
+  rw [QuotientGroup.mk_mul_of_mem _ (show Subgroup.inclusion hHK h ∈ H.subgroupOf K from h.property)]
+  exact QuotientGroup.out_eq' q
+
+lemma integralCoverSheet_membership {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (q : IntegralCoverCosets H K) (h : H) (w : HyperbolicSpace) :
+    h • w ∈ integralCoverSheet H K q ↔
+      (integralCoverRep H K q * Subgroup.inclusion hHK h) • w ∈ hyperbolicFundamentalSet K := by
+  rw [mul_smul]
+  rfl
+
+lemma integralCoverDomain_covers {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) (w : HyperbolicSpace) :
+    ∃ h : H, h • w ∈ integralCoverDomain H K := by
+  obtain ⟨k, hk⟩ := hyperbolicFundamentalSet_covers K w
+  let q : IntegralCoverCosets H K := k
+  let r := integralCoverRep H K q
+  have hr : r⁻¹ * k ∈ H.subgroupOf K := QuotientGroup.eq.mp (QuotientGroup.out_eq' q)
+  let h : H := ⟨((r⁻¹ * k : K) : SL(2, O)), hr⟩
+  have hin : Subgroup.inclusion hHK h = r⁻¹ * k := rfl
+  refine ⟨h, Set.mem_iUnion.mpr ⟨q, ?_⟩⟩
+  apply (integralCoverSheet_membership hHK q h w).mpr
+  change (r * Subgroup.inclusion hHK h) • w ∈ hyperbolicFundamentalSet K
+  rw [hin, mul_inv_cancel_left]
+  exact hk
+
+lemma integralCoverDomain_unique {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) (hK : K ≤ levelThree)
+    (w : HyperbolicSpace) (h1 h2 : H) (hh1 : h1 • w ∈ integralCoverDomain H K)
+    (hh2 : h2 • w ∈ integralCoverDomain H K) : h1 = h2 := by
+  obtain ⟨q1, hq1⟩ := Set.mem_iUnion.mp hh1
+  obtain ⟨q2, hq2⟩ := Set.mem_iUnion.mp hh2
+  have he : integralCoverRep H K q1 * Subgroup.inclusion hHK h1 =
+      integralCoverRep H K q2 * Subgroup.inclusion hHK h2 :=
+    fundamental_reduction_unique K hK _ _ w
+      ((integralCoverSheet_membership hHK q1 h1 w).mp hq1)
+      ((integralCoverSheet_membership hHK q2 h2 w).mp hq2)
+  have hqeq : q1 = q2 := by
+    have hproj := congrArg (fun k : K => (k : IntegralCoverCosets H K)) he
+    rwa [integralCoverRep_mul_projection hHK q1 h1, integralCoverRep_mul_projection hHK q2 h2] at hproj
+  subst q2
+  exact (Subgroup.inclusion_injective hHK) (mul_left_cancel he)
+
+theorem integralCoverDomain_isFundamentalDomain {H K : Subgroup (SL(2, O))}
+    (hHK : H ≤ K) (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    IsFundamentalDomain H (integralCoverDomain H K) hyperbolicVolume := by
+  apply IsFundamentalDomain.mk' (integralCoverDomain_measurable H K).nullMeasurableSet
+  intro w
+  obtain ⟨h, hh⟩ := integralCoverDomain_covers hHK w
+  exact ⟨h, hh, fun g hg => integralCoverDomain_unique hHK hK w g h hg hh⟩
+
+lemma integralCoverSheet_measure (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K)
+    (S : Set (IntegralOrbitQuotient K)) (hS : MeasurableSet S) :
+    hyperbolicVolume ((integralOrbitProjection K) ⁻¹' S ∩ integralCoverSheet H K q) =
+      integralQuotientVolume K S := by
+  have he : (integralOrbitProjection K) ⁻¹' S ∩ integralCoverSheet H K q =
+      (fun w => integralCoverRep H K q • w) ⁻¹'
+        ((integralOrbitProjection K) ⁻¹' S ∩ hyperbolicFundamentalSet K) := by
+    ext w
+    change (integralOrbitProjection K w ∈ S ∧ integralCoverRep H K q • w ∈ hyperbolicFundamentalSet K) ↔
+      (integralOrbitProjection K (integralCoverRep H K q • w) ∈ S ∧
+        integralCoverRep H K q • w ∈ hyperbolicFundamentalSet K)
+    rw [integralSubgroup_smul, integralOrbitProjection_eq]
+  rw [he, measure_preimage_smul, integralQuotientVolume,
+    Measure.map_apply (measurable_integralOrbitProjection K) hS,
+    Measure.restrict_apply ((measurable_integralOrbitProjection K) hS)]
+
+/-- Quotient volume pushes forward with multiplicity equal to the covering degree. -/
+theorem integralCoverMap_measure {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    Measure.map (integralCoverMap hHK) (integralQuotientVolume H) =
+      (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  rw [← integralQuotientVolume_independent H (hHK.trans hK) (integralCoverDomain H K)
+    (integralCoverDomain_isFundamentalDomain hHK hK),
+    Measure.map_map (integralCoverMap_measurable hHK) (measurable_integralOrbitProjection H)]
+  change Measure.map (integralOrbitProjection K) (hyperbolicVolume.restrict (integralCoverDomain H K)) = _
+  apply Measure.ext
+  intro S hS
+  rw [Measure.map_apply (measurable_integralOrbitProjection K) hS,
+    Measure.restrict_apply ((measurable_integralOrbitProjection K) hS), Measure.smul_apply, smul_eq_mul,
+    integralCoverDomain, Set.inter_iUnion, measure_iUnion]
+  · simp_rw [integralCoverSheet_measure H K _ S hS]
+    rw [tsum_fintype]
+    simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    congr 1
+    rw [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card]
+  · intro q r hqr
+    exact (integralCoverSheet_pairwiseDisjoint H K hK hqr).mono Set.inter_subset_right Set.inter_subset_right
+  · intro q
+    exact ((measurable_integralOrbitProjection K) hS).inter (integralCoverSheet_measurable H K q)
+
+lemma integralCoverMap_measurePreserving {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    MeasurePreserving (integralCoverMap hHK) (integralQuotientVolume H)
+      ((H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) :=
+  ⟨integralCoverMap_measurable hHK, integralCoverMap_measure hHK hK⟩
+
+abbrev IntegralQuotientL2 (H : Subgroup (SL(2, O))) := Lp ℂ 2 (integralQuotientVolume H)
+
+def integralCoverPullback {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] : IntegralQuotientL2 K →L[ℂ] IntegralQuotientL2 H :=
+  (Lp.compMeasurePreservingₗᵢ ℂ (integralCoverMap hHK)
+    (integralCoverMap_measurePreserving hHK hK)).toContinuousLinearMap.comp
+      (dominatedComplexL2 (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤) le_rfl)
+
+theorem integralCoverPullback_ae {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (F : IntegralQuotientL2 K) :
+    integralCoverPullback hHK hK F =ᵐ[integralQuotientVolume H] fun q => F (integralCoverMap hHK q) := by
+  have hm := integralCoverMap_measurePreserving hHK hK
+  have he := dominatedComplexL2_ae (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤)
+    (le_rfl : (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K ≤
+      (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) F
+  exact (Lp.coeFn_compMeasurePreserving _ hm).trans (hm.quasiMeasurePreserving.ae_eq_comp he)
+
+theorem integralCoverPullback_inner {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (F G : IntegralQuotientL2 K) :
+    inner ℂ (integralCoverPullback hHK hK F) (integralCoverPullback hHK hK G) =
+      (H.relIndex K : ℂ) * inner ℂ F G := by
+  let changeMeasure : IntegralQuotientL2 K →L[ℂ] Lp ℂ 2 ((H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) :=
+    dominatedComplexL2 (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤) le_rfl
+  change inner ℂ ((Lp.compMeasurePreservingₗᵢ ℂ (integralCoverMap hHK)
+    (integralCoverMap_measurePreserving hHK hK)) (changeMeasure F))
+    ((Lp.compMeasurePreservingₗᵢ ℂ (integralCoverMap hHK)
+    (integralCoverMap_measurePreserving hHK hK)) (changeMeasure G)) = _
+  rw [LinearIsometry.inner_map_map, L2.inner_def, L2.inner_def]
+  have hF := dominatedComplexL2_ae (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤)
+    (le_rfl : (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K ≤
+      (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) F
+  have hG := dominatedComplexL2_ae (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤)
+    (le_rfl : (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K ≤
+      (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) G
+  calc
+    _ = ∫ q, inner ℂ (F q) (G q) ∂((H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) := by
+      apply integral_congr_ae
+      filter_upwards [hF, hG] with q hqF hqG
+      change inner ℂ (changeMeasure F q) (changeMeasure G q) = inner ℂ (F q) (G q)
+      rw [show changeMeasure F q = F q from hqF, show changeMeasure G q = G q from hqG]
+    _ = _ := by
+      rw [integral_smul_measure]
+      simp only [ENNReal.toReal_natCast, Complex.real_smul, Complex.ofReal_natCast]
+
+def integralCoverTrace {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] : IntegralQuotientL2 H →L[ℂ] IntegralQuotientL2 K :=
+  ContinuousLinearMap.adjoint (integralCoverPullback hHK hK)
+
+/-- Trace after pullback is multiplication by the finite covering degree. -/
+theorem integralCoverTrace_pullback {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (F : IntegralQuotientL2 K) :
+    integralCoverTrace hHK hK (integralCoverPullback hHK hK F) = (H.relIndex K : ℂ) • F := by
+  apply ext_inner_left ℂ
+  intro G
+  rw [integralCoverTrace, ContinuousLinearMap.adjoint_inner_right,
+    integralCoverPullback_inner, inner_smul_right]
+
+/-- A coset labels one point in each fiber of an integral cover. -/
+def integralCoverFiberPoint (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K)
+    (w : HyperbolicSpace) : IntegralOrbitQuotient H :=
+  Quotient.liftOn' q (fun r : K => integralOrbitProjection H (r⁻¹ • w)) (by
+    intro a b hab
+    have hh : b⁻¹ * a ∈ H.subgroupOf K := by
+      have h := QuotientGroup.leftRel_apply.mp hab
+      simpa only [mul_inv_rev, inv_inv] using (H.subgroupOf K).inv_mem h
+    apply Quotient.sound
+    refine ⟨⟨((b⁻¹ * a : K) : SL(2, O)), hh⟩, ?_⟩
+    change (b⁻¹ * a) • (a⁻¹ • w) = b⁻¹ • w
+    simp only [mul_smul, smul_inv_smul])
+
+lemma integralCoverFiberPoint_mk (H K : Subgroup (SL(2, O))) (r : K) (w : HyperbolicSpace) :
+    integralCoverFiberPoint H K r w = integralOrbitProjection H (r⁻¹ • w) := rfl
+
+lemma integralCoverFiberPoint_rep (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K)
+    (w : HyperbolicSpace) : integralCoverFiberPoint H K q w =
+      integralOrbitProjection H ((integralCoverRep H K q)⁻¹ • w) := by
+  conv_lhs => rw [← QuotientGroup.out_eq' q]
+  rfl
+
+lemma integralCoverFiberPoint_smul (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K)
+    (k : K) (w : HyperbolicSpace) :
+    integralCoverFiberPoint H K (k • q) (k • w) = integralCoverFiberPoint H K q w := by
+  induction q using Quotient.inductionOn with
+  | _ r =>
+    change integralOrbitProjection H ((k * r)⁻¹ • (k • w)) = integralOrbitProjection H (r⁻¹ • w)
+    rw [mul_inv_rev, mul_smul, inv_smul_smul]
+
+lemma integralCoverFiberPoint_measurable (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) :
+    Measurable (integralCoverFiberPoint H K q) := by
+  rw [show integralCoverFiberPoint H K q = fun w =>
+      integralOrbitProjection H ((integralCoverRep H K q)⁻¹ • w) from
+    funext (integralCoverFiberPoint_rep H K q)]
+  exact (measurable_integralOrbitProjection H).comp (measurable_const_smul _)
+
+def integralCoverTraceLift (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) (w : HyperbolicSpace) : ℂ :=
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  ∑ q : IntegralCoverCosets H K, f (integralCoverFiberPoint H K q w)
+
+lemma integralCoverTraceLift_smul (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) (k : K) (w : HyperbolicSpace) :
+    integralCoverTraceLift H K f (k • w) = integralCoverTraceLift H K f w := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  unfold integralCoverTraceLift
+  rw [← (MulAction.bijective k).sum_comp (fun q => f (integralCoverFiberPoint H K q (k • w)))]
+  simp only [integralCoverFiberPoint_smul]
+
+/-- The unnormalized fiber sum, descended to the base quotient. -/
+def integralCoverTraceFunction (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) : IntegralOrbitQuotient K → ℂ :=
+  Quotient.lift (integralCoverTraceLift H K f) (by
+    rintro w u ⟨k, rfl⟩
+    exact (integralCoverTraceLift_smul H K f k w).symm)
+
+lemma integralCoverTraceFunction_projection (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) (w : HyperbolicSpace) :
+    integralCoverTraceFunction H K f (integralOrbitProjection K w) = integralCoverTraceLift H K f w := rfl
+
+lemma integralCoverTraceFunction_measurable (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) (hf : Measurable f) : Measurable (integralCoverTraceFunction H K f) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  apply measurable_from_quotient.mpr
+  change Measurable (integralCoverTraceLift H K f)
+  unfold integralCoverTraceLift
+  exact Finset.measurable_sum Finset.univ (fun q _ => hf.comp (integralCoverFiberPoint_measurable H K q))
+
+theorem integralCoverTraceFunction_integral_cusp_decay (H K : Subgroup (SL(2, O)))
+    [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ) (C : ℝ)
+    (hdec : ∀ M : SL(2, O), ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection H (integralComplexMatrix M • upperPoint z v hv))‖ ≤ C / v ^ 3)
+    (M : SL(2, O)) (z : ℂ) (v : ℝ) (hv : 0 < v) (hlarge : 1 < v) :
+    ‖integralCoverTraceFunction H K f
+      (integralOrbitProjection K (integralComplexMatrix M • upperPoint z v hv))‖ ≤
+        (H.relIndex K : ℝ) * C / v ^ 3 := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  change ‖∑ q : IntegralCoverCosets H K,
+    f (integralCoverFiberPoint H K q (integralComplexMatrix M • upperPoint z v hv))‖ ≤ _
+  calc
+    _ ≤ ∑ q : IntegralCoverCosets H K,
+        ‖f (integralCoverFiberPoint H K q (integralComplexMatrix M • upperPoint z v hv))‖ := norm_sum_le _ _
+    _ ≤ ∑ _q : IntegralCoverCosets H K, C / v ^ 3 := by
+      apply Finset.sum_le_sum
+      intro q _
+      rw [integralCoverFiberPoint_rep, integralSubgroup_smul, ← mul_smul, ← map_mul]
+      exact hdec _ z v hv hlarge
+    _ = _ := by
+      simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+      have hc : Fintype.card (IntegralCoverCosets H K) = H.relIndex K := by
+        rw [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card]
+      rw [hc]
+      ring
+
+lemma integralCoverDomain_projection_measurePreserving {H K : Subgroup (SL(2, O))}
+    (hHK : H ≤ K) (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    MeasurePreserving (integralOrbitProjection H)
+      (hyperbolicVolume.restrict (integralCoverDomain H K)) (integralQuotientVolume H) :=
+  ⟨measurable_integralOrbitProjection H, integralQuotientVolume_independent H (hHK.trans hK) _
+    (integralCoverDomain_isFundamentalDomain hHK hK)⟩
+
+lemma integralCoverSheet_measurePreserving (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) :
+    MeasurePreserving (fun w : HyperbolicSpace => integralCoverRep H K q • w)
+      (hyperbolicVolume.restrict (integralCoverSheet H K q))
+      (hyperbolicVolume.restrict (hyperbolicFundamentalSet K)) :=
+  (measurePreserving_smul (integralCoverRep H K q) hyperbolicVolume).restrict_preimage
+    (hyperbolicFundamentalSet_measurable K)
+
+lemma integralCoverFiberPoint_rep_smul (H K : Subgroup (SL(2, O)))
+    (q : IntegralCoverCosets H K) (w : HyperbolicSpace) :
+    integralCoverFiberPoint H K q (integralCoverRep H K q • w) = integralOrbitProjection H w := by
+  rw [integralCoverFiberPoint_rep, inv_smul_smul]
+
+lemma integralCoverFiber_integrable {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : Integrable f (integralQuotientVolume H)) (q : IntegralCoverCosets H K) :
+    IntegrableOn (fun w => f (integralCoverFiberPoint H K q w)) (hyperbolicFundamentalSet K) hyperbolicVolume := by
+  have hD := (integralCoverDomain_projection_measurePreserving hHK hK).integrable_comp_of_integrable hf
+  have hS : IntegrableOn (fun w => f (integralOrbitProjection H w)) (integralCoverSheet H K q) hyperbolicVolume :=
+    IntegrableOn.mono_set hD (Set.subset_iUnion (integralCoverSheet H K) q)
+  apply ((integralCoverSheet_measurePreserving H K q).integrable_comp
+    (hmeas.comp (integralCoverFiberPoint_measurable H K q)).aestronglyMeasurable).mp
+  simpa only [IntegrableOn, Function.comp_def, integralCoverFiberPoint_rep_smul] using hS
+
+lemma integralCoverFiber_integral (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K)
+    (f : IntegralOrbitQuotient H → ℂ) :
+    (∫ w in hyperbolicFundamentalSet K, f (integralCoverFiberPoint H K q w) ∂hyperbolicVolume) =
+      ∫ w in integralCoverSheet H K q, f (integralOrbitProjection H w) ∂hyperbolicVolume := by
+  have hh := (measurePreserving_smul (integralCoverRep H K q) hyperbolicVolume).setIntegral_preimage_emb
+    (measurableEmbedding_const_smul (integralCoverRep H K q))
+    (fun w => f (integralCoverFiberPoint H K q w)) (hyperbolicFundamentalSet K)
+  simpa only [integralCoverSheet, integralCoverFiberPoint_rep_smul] using hh.symm
+
+/-- Integrating a fiber sum over the base equals integrating over the covering quotient. -/
+theorem integralCoverTraceFunction_integral {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : Integrable f (integralQuotientVolume H)) :
+    (∫ q, integralCoverTraceFunction H K f q ∂integralQuotientVolume K) =
+      ∫ q, f q ∂integralQuotientVolume H := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  have hD := (integralCoverDomain_projection_measurePreserving hHK hK).integrable_comp_of_integrable hf
+  have hS (q : IntegralCoverCosets H K) :
+      IntegrableOn (fun w => f (integralOrbitProjection H w)) (integralCoverSheet H K q) hyperbolicVolume :=
+    IntegrableOn.mono_set hD (Set.subset_iUnion (integralCoverSheet H K) q)
+  rw [integralQuotientVolume_integral K _
+    (integralCoverTraceFunction_measurable H K f hmeas).aestronglyMeasurable]
+  change (∫ w in hyperbolicFundamentalSet K,
+    ∑ q : IntegralCoverCosets H K, f (integralCoverFiberPoint H K q w) ∂hyperbolicVolume) = _
+  rw [integral_finsetSum Finset.univ (fun q _ => integralCoverFiber_integrable hHK hK f hmeas hf q)]
+  simp_rw [integralCoverFiber_integral H K]
+  rw [← integral_iUnion_fintype (integralCoverSheet_measurable H K)
+    (integralCoverSheet_pairwiseDisjoint H K hK) hS]
+  change (∫ w in integralCoverDomain H K, f (integralOrbitProjection H w) ∂hyperbolicVolume) = _
+  rw [← (integralCoverDomain_projection_measurePreserving hHK hK).map_eq]
+  exact (integral_map (measurable_integralOrbitProjection H).aemeasurable hmeas.aestronglyMeasurable).symm
+
+lemma integralCoverFiber_memLp {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : MemLp f 2 (integralQuotientVolume H)) (q : IntegralCoverCosets H K) :
+    MemLp (fun w => f (integralCoverFiberPoint H K q w)) 2
+      (hyperbolicVolume.restrict (hyperbolicFundamentalSet K)) := by
+  have hD := hf.comp_measurePreserving (integralCoverDomain_projection_measurePreserving hHK hK)
+  have hS := MemLp.mono_measure
+    (Measure.restrict_mono_set hyperbolicVolume (Set.subset_iUnion (integralCoverSheet H K) q)) hD
+  have hm := integralCoverSheet_measurePreserving H K q
+  have hi := memLp_map_measure_iff (p := 2)
+    (hmeas.comp (integralCoverFiberPoint_measurable H K q)).aestronglyMeasurable hm.aemeasurable
+  rw [hm.map_eq] at hi
+  apply hi.mpr
+  simpa only [Function.comp_def, integralCoverFiberPoint_rep_smul] using hS
+
+theorem integralCoverTraceFunction_memLp {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : MemLp f 2 (integralQuotientVolume H)) :
+    MemLp (integralCoverTraceFunction H K f) 2 (integralQuotientVolume K) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  have hm := quotient_projection_measurePreserving K
+  have hi := memLp_map_measure_iff (p := 2)
+    (integralCoverTraceFunction_measurable H K f hmeas).aestronglyMeasurable hm.aemeasurable
+  rw [hm.map_eq] at hi
+  apply hi.mpr
+  change MemLp (fun w => ∑ q : IntegralCoverCosets H K, f (integralCoverFiberPoint H K q w)) 2 _
+  exact memLp_finsetSum Finset.univ (fun q _ => integralCoverFiber_memLp hHK hK f hmeas hf q)
+
+lemma integralCoverMap_fiberPoint {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (q : IntegralCoverCosets H K) (w : HyperbolicSpace) :
+    integralCoverMap hHK (integralCoverFiberPoint H K q w) = integralOrbitProjection K w := by
+  rw [integralCoverFiberPoint_rep, integralCoverMap_projection, integralSubgroup_smul, integralOrbitProjection_eq]
+
+lemma integralCoverTraceFunction_pairing {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    [H.IsFiniteRelIndex K] (F : IntegralOrbitQuotient K → ℂ) (f : IntegralOrbitQuotient H → ℂ)
+    (q : IntegralOrbitQuotient K) :
+    integralCoverTraceFunction H K (fun r => inner ℂ (F (integralCoverMap hHK r)) (f r)) q =
+      inner ℂ (F q) (integralCoverTraceFunction H K f q) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change (∑ r : IntegralCoverCosets H K, inner ℂ
+      (F (integralCoverMap hHK (integralCoverFiberPoint H K r w))) (f (integralCoverFiberPoint H K r w))) =
+      inner ℂ (F (integralOrbitProjection K w)) (∑ r : IntegralCoverCosets H K, f (integralCoverFiberPoint H K r w))
+    simp only [integralCoverMap_fiberPoint, inner_sum]
+
+/-- The Hilbert adjoint of pullback is represented by the actual finite fiber sum. -/
+theorem integralCoverTrace_toLp_ae {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : MemLp f 2 (integralQuotientVolume H)) :
+    integralCoverTrace hHK hK (hf.toLp f) =ᵐ[integralQuotientVolume K] integralCoverTraceFunction H K f := by
+  let htr := integralCoverTraceFunction_memLp hHK hK f hmeas hf
+  let Tf : IntegralQuotientL2 K := htr.toLp (integralCoverTraceFunction H K f)
+  have he : Tf = integralCoverTrace hHK hK (hf.toLp f) := by
+    apply ext_inner_left ℂ
+    intro F
+    let pair : IntegralOrbitQuotient H → ℂ := fun r => inner ℂ (F (integralCoverMap hHK r)) (f r)
+    have hpm : Measurable pair := by
+      have hFm := (Lp.stronglyMeasurable F).measurable.comp (integralCoverMap_measurable hHK)
+      have hm := hmeas.mul (continuous_star.measurable.comp hFm)
+      change Measurable (fun r => f r * star (F (integralCoverMap hHK r))) at hm
+      simpa only [pair, RCLike.inner_apply, starRingEnd_apply] using hm
+    have hae : (fun r => inner ℂ (integralCoverPullback hHK hK F r) (hf.toLp f r))
+        =ᵐ[integralQuotientVolume H] pair := by
+      filter_upwards [integralCoverPullback_ae hHK hK F, hf.coeFn_toLp] with r hr hfR
+      dsimp only [pair]
+      rw [hr, hfR]
+    have hpi : Integrable pair (integralQuotientVolume H) :=
+      (L2.integrable_inner (integralCoverPullback hHK hK F) (hf.toLp f)).congr hae
+    calc
+      inner ℂ F Tf = ∫ q, inner ℂ (F q) (integralCoverTraceFunction H K f q) ∂integralQuotientVolume K := by
+        rw [L2.inner_def]
+        apply integral_congr_ae
+        filter_upwards [htr.coeFn_toLp] with q hq
+        change inner ℂ (F q) (htr.toLp (integralCoverTraceFunction H K f) q) = _
+        rw [hq]
+      _ = ∫ q, integralCoverTraceFunction H K pair q ∂integralQuotientVolume K :=
+        integral_congr_ae (Eventually.of_forall (fun q => (integralCoverTraceFunction_pairing hHK F f q).symm))
+      _ = ∫ r, pair r ∂integralQuotientVolume H := integralCoverTraceFunction_integral hHK hK pair hpm hpi
+      _ = inner ℂ (integralCoverPullback hHK hK F) (hf.toLp f) := (integral_congr_ae hae).symm
+      _ = inner ℂ F (integralCoverTrace hHK hK (hf.toLp f)) :=
+        (ContinuousLinearMap.adjoint_inner_right _ _ _).symm
+  rw [← he]
+  exact htr.coeFn_toLp
+
+theorem integralCoverTrace_representative {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (G : IntegralQuotientL2 H)
+    (f : IntegralOrbitQuotient H → ℂ) (hmeas : Measurable f) (hrep : G =ᵐ[integralQuotientVolume H] f) :
+    integralCoverTrace hHK hK G =ᵐ[integralQuotientVolume K] integralCoverTraceFunction H K f := by
+  have hf : MemLp f 2 (integralQuotientVolume H) := (memLp_congr_ae hrep).mp (Lp.memLp G)
+  have he : G = hf.toLp f := Lp.ext (hrep.trans hf.coeFn_toLp.symm)
+  rw [he]
+  exact integralCoverTrace_toLp_ae hHK hK f hmeas hf
+
+/-- Compatibility of a subgroup isomorphism with an actual hyperbolic isometry. -/
+def IntegralCoverIntertwines {H J : Subgroup (SL(2, O))} (e : H ≃* J) (g : SL(2, ℂ)) : Prop :=
+  ∀ h : H, g * integralComplexMatrix (h : SL(2, O)) = integralComplexMatrix (e h : SL(2, O)) * g
+
+lemma integralCoverIntertwines_action {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (h : H) (w : HyperbolicSpace) :
+    g • (h • w) = (e h) • (g • w) := by
+  rw [integralSubgroup_smul, integralSubgroup_smul, ← mul_smul, he, mul_smul]
+
+lemma integralCoverIntertwines_inverse {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) : IntegralCoverIntertwines e.symm g⁻¹ := by
+  intro j
+  have hh := he (e.symm j)
+  rw [e.apply_symm_apply] at hh
+  have hh' := congrArg (fun A : SL(2, ℂ) => g⁻¹ * A * g⁻¹) hh
+  simpa only [mul_assoc, inv_mul_cancel_left, mul_inv_cancel_right, mul_inv_cancel, mul_one] using hh'.symm
+
+def integralConjugateMap {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) : IntegralOrbitQuotient H → IntegralOrbitQuotient J :=
+  Quotient.map' (fun w => g • w) (by
+    rintro w u ⟨h, rfl⟩
+    exact ⟨e h, (integralCoverIntertwines_action e g he h w).symm⟩)
+
+lemma integralConjugateMap_projection {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (w : HyperbolicSpace) :
+    integralConjugateMap e g he (integralOrbitProjection H w) = integralOrbitProjection J (g • w) := rfl
+
+lemma integralConjugateMap_measurable {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) : Measurable (integralConjugateMap e g he) :=
+  measurable_from_quotient.mpr ((measurable_integralOrbitProjection J).comp (measurable_const_smul g))
+
+lemma integralConjugateMap_continuous {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) : Continuous (integralConjugateMap e g he) :=
+  (continuous_hyperbolic_action g).quotient_map' _
+
+lemma integralConjugateMap_inverse {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (q : IntegralOrbitQuotient H) :
+    integralConjugateMap e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) (integralConjugateMap e g he q) = q := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change integralOrbitProjection H (g⁻¹ • (g • w)) = integralOrbitProjection H w
+    rw [inv_smul_smul]
+
+def integralConjugateHomeomorph {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) : IntegralOrbitQuotient H ≃ₜ IntegralOrbitQuotient J where
+  toFun := integralConjugateMap e g he
+  invFun := integralConjugateMap e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+  left_inv := integralConjugateMap_inverse e g he
+  right_inv q := by
+    induction q using Quotient.inductionOn with
+    | _ w =>
+      change integralOrbitProjection J (g • (g⁻¹ • w)) = integralOrbitProjection J w
+      rw [smul_inv_smul]
+  continuous_toFun := integralConjugateMap_continuous e g he
+  continuous_invFun := integralConjugateMap_continuous e.symm g⁻¹ _
+
+lemma integralConjugate_fundamentalDomain {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) :
+    IsFundamentalDomain J ((fun w : HyperbolicSpace => g • w) '' hyperbolicFundamentalSet H) hyperbolicVolume := by
+  apply (hyperbolicFundamentalSet_isFundamentalDomain H hH hyperbolicVolume).image_of_equiv
+    (MulAction.toPerm g)
+    (show Measure.QuasiMeasurePreserving (MulAction.toPerm g).symm hyperbolicVolume hyperbolicVolume from
+      (measurePreserving_smul g⁻¹ hyperbolicVolume).quasiMeasurePreserving) e.symm.toEquiv
+  intro j w
+  change g • (e.symm j • w) = j • (g • w)
+  simpa only [e.apply_symm_apply] using integralCoverIntertwines_action e g he (e.symm j) w
+
+theorem integralConjugateMap_measurePreserving {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) (hJ : J ≤ levelThree) :
+    MeasurePreserving (integralConjugateMap e g he) (integralQuotientVolume H) (integralQuotientVolume J) := by
+  refine ⟨integralConjugateMap_measurable e g he, ?_⟩
+  have hmap := (measurePreserving_smul g hyperbolicVolume).restrict_image_emb
+    (measurableEmbedding_const_smul g) (hyperbolicFundamentalSet H)
+  change Measure.map (integralConjugateMap e g he)
+    (Measure.map (integralOrbitProjection H) (hyperbolicVolume.restrict (hyperbolicFundamentalSet H))) = _
+  rw [Measure.map_map (integralConjugateMap_measurable e g he) (measurable_integralOrbitProjection H)]
+  change Measure.map ((integralOrbitProjection J) ∘ (fun w : HyperbolicSpace => g • w))
+    (hyperbolicVolume.restrict (hyperbolicFundamentalSet H)) = _
+  rw [← Measure.map_map (measurable_integralOrbitProjection J) (measurable_const_smul g), hmap.map_eq]
+  exact integralQuotientVolume_independent J hJ _ (integralConjugate_fundamentalDomain e g he hH)
+
+def integralConjugatePullback {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) (hJ : J ≤ levelThree) :
+    IntegralQuotientL2 J →ₗᵢ[ℂ] IntegralQuotientL2 H :=
+  Lp.compMeasurePreservingₗᵢ ℂ (integralConjugateMap e g he)
+    (integralConjugateMap_measurePreserving e g he hH hJ)
+
+lemma integralConjugatePullback_ae {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) (hJ : J ≤ levelThree)
+    (F : IntegralQuotientL2 J) : integralConjugatePullback e g he hH hJ F =ᵐ[integralQuotientVolume H]
+      fun q => F (integralConjugateMap e g he q) :=
+  Lp.coeFn_compMeasurePreserving F (integralConjugateMap_measurePreserving e g he hH hJ)
+
+lemma integralConjugatePullback_inverse {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) (hJ : J ≤ levelThree)
+    (F : IntegralQuotientL2 H) :
+    integralConjugatePullback e g he hH hJ
+      (integralConjugatePullback e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) hJ hH F) = F := by
+  apply Lp.ext
+  have hp := (integralConjugateMap_measurePreserving e g he hH hJ).quasiMeasurePreserving.ae_eq_comp
+    (integralConjugatePullback_ae e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) hJ hH F)
+  filter_upwards [integralConjugatePullback_ae e g he hH hJ _, hp] with q hq hq'
+  dsimp only [Function.comp_def] at hq'
+  rw [hq, hq', integralConjugateMap_inverse]
+
+lemma integralConjugatePullback_adjoint {H J : Subgroup (SL(2, O))} (e : H ≃* J)
+    (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (hH : H ≤ levelThree) (hJ : J ≤ levelThree)
+    (F : IntegralQuotientL2 H) :
+    ContinuousLinearMap.adjoint (integralConjugatePullback e g he hH hJ).toContinuousLinearMap F =
+      integralConjugatePullback e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) hJ hH F := by
+  apply ext_inner_left ℂ
+  intro G
+  rw [ContinuousLinearMap.adjoint_inner_right]
+  calc
+    _ = inner ℂ (integralConjugatePullback e g he hH hJ G)
+        (integralConjugatePullback e g he hH hJ
+          (integralConjugatePullback e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) hJ hH F)) := by
+      rw [integralConjugatePullback_inverse]
+      rfl
+    _ = _ := LinearIsometry.inner_map_map _ _ _
+
+/-- One correspondence leg: lift to a finite cover, then pull back by the conjugating isometry. -/
+def kernelCoverLeg {H J : Subgroup (SL(2, O))} (hHK : H ≤ globalKubotaKernel)
+    (hJK : J ≤ globalKubotaKernel) [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) :
+    KernelQuotientL2 →L[ℂ] IntegralQuotientL2 H :=
+  (integralConjugatePullback e g he (hHK.trans globalKubotaKernel_le_levelThree)
+    (hJK.trans globalKubotaKernel_le_levelThree)).toContinuousLinearMap.comp
+      (integralCoverPullback hJK globalKubotaKernel_le_levelThree)
+
+theorem kernelCoverLeg_adjoint {H J : Subgroup (SL(2, O))} (hHK : H ≤ globalKubotaKernel)
+    (hJK : J ≤ globalKubotaKernel) [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g) (D : IntegralQuotientL2 H) :
+    ContinuousLinearMap.adjoint (kernelCoverLeg hHK hJK e g he) D =
+      integralCoverTrace hJK globalKubotaKernel_le_levelThree
+        (integralConjugatePullback e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+          (hJK.trans globalKubotaKernel_le_levelThree) (hHK.trans globalKubotaKernel_le_levelThree) D) := by
+  apply ext_inner_left ℂ
+  intro F
+  rw [ContinuousLinearMap.adjoint_inner_right, integralCoverTrace,
+    ContinuousLinearMap.adjoint_inner_right]
+  change inner ℂ ((integralConjugatePullback e g he (hHK.trans globalKubotaKernel_le_levelThree)
+    (hJK.trans globalKubotaKernel_le_levelThree)).toContinuousLinearMap
+      (integralCoverPullback hJK globalKubotaKernel_le_levelThree F)) D = _
+  rw [← ContinuousLinearMap.adjoint_inner_right, integralConjugatePullback_adjoint]
+
+def kernelCoverLegAdjointFunction {H J : Subgroup (SL(2, O))}
+    [J.IsFiniteRelIndex globalKubotaKernel] (e : H ≃* J) (g : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (f : IntegralOrbitQuotient H → ℂ) : KernelQuotient → ℂ :=
+  integralCoverTraceFunction J globalKubotaKernel
+    (fun q => f (integralConjugateMap e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) q))
+
+lemma kernelCoverLegAdjointFunction_measurable {H J : Subgroup (SL(2, O))}
+    [J.IsFiniteRelIndex globalKubotaKernel] (e : H ≃* J) (g : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (f : IntegralOrbitQuotient H → ℂ) (hf : Measurable f) :
+    Measurable (kernelCoverLegAdjointFunction e g he f) :=
+  integralCoverTraceFunction_measurable J globalKubotaKernel _
+    (hf.comp (integralConjugateMap_measurable _ _ _))
+
+theorem kernelCoverLegAdjointFunction_represents {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel) [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+    (D : IntegralQuotientL2 H) (f : IntegralOrbitQuotient H → ℂ) (hf : Measurable f)
+    (hrep : D =ᵐ[integralQuotientVolume H] f) :
+    ContinuousLinearMap.adjoint (kernelCoverLeg hHK hJK e g he) D =ᵐ[integralQuotientVolume globalKubotaKernel]
+      kernelCoverLegAdjointFunction e g he f := by
+  rw [kernelCoverLeg_adjoint]
+  apply integralCoverTrace_representative hJK globalKubotaKernel_le_levelThree _ _
+    (hf.comp (integralConjugateMap_measurable _ _ _))
+  exact (integralConjugatePullback_ae e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+    (hJK.trans globalKubotaKernel_le_levelThree) (hHK.trans globalKubotaKernel_le_levelThree) D).trans
+      ((integralConjugateMap_measurePreserving e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+        (hJK.trans globalKubotaKernel_le_levelThree) (hHK.trans globalKubotaKernel_le_levelThree)).quasiMeasurePreserving.ae_eq_comp hrep)
+
+theorem kernelCoverLegAdjointFunction_cusp_decay {H J : Subgroup (SL(2, O))}
+    [J.IsFiniteRelIndex globalKubotaKernel] (e : H ≃* J) (g : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (f : IntegralOrbitQuotient H → ℂ) (C : ℝ)
+    (hdec : ∀ M : SL(2, O), ∀ z : ℂ, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ‖f (integralOrbitProjection H (g⁻¹ • (integralComplexMatrix M • upperPoint z v hv)))‖ ≤ C / v ^ 3)
+    (M : SL(2, O)) (z : ℂ) (v : ℝ) (hv : 0 < v) (hlarge : 1 < v) :
+    ‖kernelCoverLegAdjointFunction e g he f
+      (integralOrbitProjection globalKubotaKernel (integralComplexMatrix M • upperPoint z v hv))‖ ≤
+        (J.relIndex globalKubotaKernel : ℝ) * C / v ^ 3 :=
+  integralCoverTraceFunction_integral_cusp_decay J globalKubotaKernel _ C hdec M z v hv hlarge
+
+/-- A primitive first column can be completed while preserving any given matrix congruence. -/
+lemma primitiveColumn_congruent_completion {R : Type*} [CommRing R]
+    (M : SL(2, R)) (a c r : R) (hac : IsCoprime a c)
+    (ha : r ∣ a - M 0 0) (hc : r ∣ c - M 1 0) :
+    ∃ N : SL(2, R), N 0 0 = a ∧ N 1 0 = c ∧ ∀ i j, r ∣ N i j - M i j := by
+  obtain ⟨x, hx⟩ := ha
+  obtain ⟨y, hy⟩ := hc
+  obtain ⟨u, v, huv⟩ := hac
+  let q := x * M 1 1 - M 0 1 * y
+  have hM : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using M.property
+  have hdet0 : a * M 1 1 - M 0 1 * c = 1 + r * q := by
+    dsimp only [q]
+    linear_combination hM + M 1 1 * hx - M 0 1 * hy
+  have hdet : a * (M 1 1 - r * q * u) - (M 0 1 + r * q * v) * c = 1 := by
+    linear_combination hdet0 - r * q * huv
+  let N : SL(2, R) := ⟨!![a, M 0 1 + r * q * v; c, M 1 1 - r * q * u], by
+    rw [Matrix.det_fin_two]
+    exact hdet⟩
+  refine ⟨N, rfl, rfl, ?_⟩
+  intro i j
+  fin_cases i <;> fin_cases j
+  · exact ⟨x, hx⟩
+  · exact ⟨q * v, by change M 0 1 + r * q * v - M 0 1 = r * (q * v); ring⟩
+  · exact ⟨y, hy⟩
+  · exact ⟨-(q * u), by change M 1 1 - r * q * u - M 1 1 = r * -(q * u); ring⟩
+
+lemma integralMatrix_congruent_levelThree (N M : SL(2, O))
+    (h : ∀ i j, (3 : O) ∣ N i j - M i j) : N * M⁻¹ ∈ levelThree := by
+  let reduction := Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+  have he : reduction N = reduction M := by
+    apply Subtype.ext
+    funext i j
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr (Ideal.mem_span_singleton.mpr (h i j))
+  change reduction (N * M⁻¹) = 1
+  rw [map_mul, map_inv, he, mul_inv_cancel]
+
+lemma exists_congruent_cusp_completion (M : SL(2, O)) (a c : O) (hac : IsCoprime a c)
+    (ha : (3 : O) ∣ a - M 0 0) (hc : (3 : O) ∣ c - M 1 0) :
+    ∃ N : SL(2, O), N 0 0 = a ∧ N 1 0 = c ∧ N * M⁻¹ ∈ levelThree := by
+  obtain ⟨N, hN0, hN1, hN⟩ := primitiveColumn_congruent_completion M a c 3 hac ha hc
+  exact ⟨N, hN0, hN1, integralMatrix_congruent_levelThree N M hN⟩
+
+lemma integralCoverFiberPoint_continuous (H K : Subgroup (SL(2, O))) (q : IntegralCoverCosets H K) :
+    Continuous (integralCoverFiberPoint H K q) := by
+  rw [show integralCoverFiberPoint H K q = fun w =>
+      integralOrbitProjection H ((integralCoverRep H K q)⁻¹ • w) from
+    funext (integralCoverFiberPoint_rep H K q)]
+  exact (continuous_integralOrbitProjection H).comp
+    (continuous_hyperbolic_action (integralComplexMatrix ((integralCoverRep H K q)⁻¹ : SL(2, O))))
+
+lemma integralCoverMap_fiber {H K : Subgroup (SL(2, O))} (hHK : H ≤ K) (w : HyperbolicSpace) :
+    (integralCoverMap hHK) ⁻¹' {integralOrbitProjection K w} =
+      Set.range (fun q : IntegralCoverCosets H K => integralCoverFiberPoint H K q w) := by
+  ext u
+  constructor
+  · intro hu
+    induction u using Quotient.inductionOn with
+    | _ z =>
+      have he : integralOrbitProjection K z = integralOrbitProjection K w := hu
+      obtain ⟨k, hk⟩ := Quotient.exact he
+      refine ⟨(k : IntegralCoverCosets H K), ?_⟩
+      change integralCoverFiberPoint H K (k : IntegralCoverCosets H K) w = integralOrbitProjection H z
+      rw [integralCoverFiberPoint_mk]
+      congr 1
+      rw [← hk]
+      exact inv_smul_smul k z
+  · rintro ⟨q, rfl⟩
+    exact integralCoverMap_fiberPoint hHK q w
+
+lemma integralCoverMap_preimage_image {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (S : Set (IntegralOrbitQuotient H)) :
+    (integralOrbitProjection K) ⁻¹' (integralCoverMap hHK '' S) =
+      ⋃ q : IntegralCoverCosets H K, (integralCoverFiberPoint H K q) ⁻¹' S := by
+  ext w
+  constructor
+  · rintro ⟨u, hu, huw⟩
+    have hh : u ∈ (integralCoverMap hHK) ⁻¹' {integralOrbitProjection K w} := huw
+    rw [integralCoverMap_fiber hHK w] at hh
+    obtain ⟨q, rfl⟩ := hh
+    exact Set.mem_iUnion.mpr ⟨q, hu⟩
+  · intro hw
+    obtain ⟨q, hq⟩ := Set.mem_iUnion.mp hw
+    exact ⟨integralCoverFiberPoint H K q w, hq, integralCoverMap_fiberPoint hHK q w⟩
+
+theorem integralCoverMap_isClosedMap {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    [H.IsFiniteRelIndex K] : IsClosedMap (integralCoverMap hHK) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  intro S hS
+  have hq : Topology.IsQuotientMap (integralOrbitProjection K) := isQuotientMap_quotient_mk'
+  apply hq.isCoinducing.isClosed_preimage.mp
+  rw [integralCoverMap_preimage_image]
+  exact isClosed_iUnion_of_finite (fun q => hS.preimage (integralCoverFiberPoint_continuous H K q))
+
+theorem integralCoverMap_isProperMap {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    [H.IsFiniteRelIndex K] : IsProperMap (integralCoverMap hHK) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  apply isProperMap_iff_isClosedMap_and_compact_fibers.mpr
+  refine ⟨integralCoverMap_continuous hHK, integralCoverMap_isClosedMap hHK, ?_⟩
+  intro q
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change IsCompact ((integralCoverMap hHK) ⁻¹' {integralOrbitProjection K w})
+    rw [integralCoverMap_fiber hHK w]
+    exact (Set.finite_range _).isCompact
+
+lemma integralCoverMap_hasCompactSupport {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient K → ℂ) (hf : HasCompactSupport f) :
+    HasCompactSupport (fun q => f (integralCoverMap hHK q)) := by
+  apply HasCompactSupport.of_support_subset_isCompact
+    ((integralCoverMap_isProperMap hHK).isCompact_preimage hf.isCompact)
+  intro q hq
+  exact subset_tsupport f hq
+
+lemma integralCoverTraceFunction_hasCompactSupport {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ) (hf : HasCompactSupport f) :
+    HasCompactSupport (integralCoverTraceFunction H K f) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  apply HasCompactSupport.of_support_subset_isCompact (hf.isCompact.image (integralCoverMap_continuous hHK))
+  intro q hq
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change (∑ r : IntegralCoverCosets H K, f (integralCoverFiberPoint H K r w)) ≠ 0 at hq
+    obtain ⟨r, _, hr⟩ := Finset.exists_ne_zero_of_sum_ne_zero hq
+    exact ⟨integralCoverFiberPoint H K r w, subset_tsupport f hr, integralCoverMap_fiberPoint hHK r w⟩
+
+section CorrespondenceTests
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+def kernelCorrespondenceFunction (f : KernelQuotient → ℂ) : KernelQuotient → ℂ :=
+  integralCoverTraceFunction H globalKubotaKernel
+    (fun q => f (integralCoverMap hJK (integralConjugateMap e g he q)))
+
+omit [J.IsFiniteRelIndex globalKubotaKernel] in
+lemma kernelCorrespondenceFunction_lift (f : KernelQuotient → ℂ) (w : HyperbolicSpace) :
+    kernelCorrespondenceFunction hJK e g he f (integralOrbitProjection globalKubotaKernel w) =
+      letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+      ∑ q : IntegralCoverCosets H globalKubotaKernel,
+        f (integralOrbitProjection globalKubotaKernel
+          ((g * integralComplexMatrix (((integralCoverRep H globalKubotaKernel q)⁻¹ : globalKubotaKernel) : SL(2, O))) • w)) := by
+  letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+  change (∑ q : IntegralCoverCosets H globalKubotaKernel, f (integralCoverMap hJK
+    (integralConjugateMap e g he (integralCoverFiberPoint H globalKubotaKernel q w)))) = _
+  apply Finset.sum_congr rfl
+  intro q _
+  rw [integralCoverFiberPoint_rep, integralSubgroup_smul,
+    integralConjugateMap_projection, integralCoverMap_projection, mul_smul]
+
+include hHK in
+lemma kernelCorrespondenceFunction_hasCompactSupport (f : KernelQuotient → ℂ)
+    (hf : HasCompactSupport f) : HasCompactSupport (kernelCorrespondenceFunction hJK e g he f) := by
+  apply integralCoverTraceFunction_hasCompactSupport hHK
+  exact (integralCoverMap_hasCompactSupport hJK f hf).comp_homeomorph (integralConjugateHomeomorph e g he)
+
+omit [J.IsFiniteRelIndex globalKubotaKernel] in
+lemma kernelCorrespondenceFunction_contMDiff (f : KernelQuotient → ℂ)
+    (hf : ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞ f) :
+    ContMDiff 𝓘(ℝ, SpatialCoordinates) 𝓘(ℝ, ℂ) ∞ (kernelCorrespondenceFunction hJK e g he f) := by
+  letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+  apply kernel_contMDiff_of_lift
+  simp_rw [kernelCorrespondenceFunction_lift]
+  apply ContMDiff.sum
+  intro q _
+  exact (hf.comp kernelProjection_contMDiff).comp
+    (hyperbolicAction_contMDiff (g * integralComplexMatrix
+      (((integralCoverRep H globalKubotaKernel q)⁻¹ : globalKubotaKernel) : SL(2, O))))
+
+def kernelCorrespondenceTest (f : kernelSmoothTests) : kernelSmoothTests :=
+  ⟨kernelCorrespondenceFunction hJK e g he f.1,
+    kernelCorrespondenceFunction_contMDiff hJK e g he f.1 f.2.1,
+    kernelCorrespondenceFunction_hasCompactSupport hHK hJK e g he f.1 f.2.2⟩
+
+end CorrespondenceTests
+
+lemma integralCoverMap_quasiMeasurePreserving {H K : Subgroup (SL(2, O))}
+    (hHK : H ≤ K) (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    Measure.QuasiMeasurePreserving (integralCoverMap hHK) (integralQuotientVolume H) (integralQuotientVolume K) := by
+  refine ⟨integralCoverMap_measurable hHK, ?_⟩
+  rw [integralCoverMap_measure hHK hK]
+  exact Measure.smul_absolutelyContinuous
+
+lemma integralCoverTraceFunction_integrable {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (f : IntegralOrbitQuotient H → ℂ)
+    (hmeas : Measurable f) (hf : Integrable f (integralQuotientVolume H)) :
+    Integrable (integralCoverTraceFunction H K f) (integralQuotientVolume K) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  apply ((quotient_projection_measurePreserving K).integrable_comp
+    (integralCoverTraceFunction_measurable H K f hmeas).aestronglyMeasurable).mp
+  change Integrable (fun w => ∑ q : IntegralCoverCosets H K, f (integralCoverFiberPoint H K q w)) _
+  exact integrable_finsetSum Finset.univ (fun q _ => integralCoverFiber_integrable hHK hK f hmeas hf q)
+
+lemma integralCoverPullback_norm_le {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] (F : IntegralQuotientL2 K) :
+    ‖integralCoverPullback hHK hK F‖ ≤ (H.relIndex K : ℝ) ^ ((1 : ℝ) / 2) * ‖F‖ := by
+  change ‖Lp.compMeasurePreserving (integralCoverMap hHK) (integralCoverMap_measurePreserving hHK hK)
+    (dominatedComplexL2 (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤) le_rfl F)‖ ≤ _
+  rw [Lp.norm_compMeasurePreserving]
+  simpa only [ENNReal.toReal_natCast] using dominatedComplexL2_norm_le
+    (by simp : (H.relIndex K : ℝ≥0∞) ≠ ⊤)
+    (le_rfl : (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K ≤
+      (H.relIndex K : ℝ≥0∞) • integralQuotientVolume K) F
+
+lemma integralCoverTrace_opNorm_le {H K : Subgroup (SL(2, O))} (hHK : H ≤ K)
+    (hK : K ≤ levelThree) [H.IsFiniteRelIndex K] :
+    ‖integralCoverTrace hHK hK‖ ≤ (H.relIndex K : ℝ) ^ ((1 : ℝ) / 2) := by
+  rw [integralCoverTrace, ContinuousLinearMap.adjoint.norm_map]
+  exact ContinuousLinearMap.opNorm_le_bound _ (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+    (integralCoverPullback_norm_le hHK hK)
+
+section CorrespondenceOperators
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+def kernelCorrespondenceL2 : KernelQuotientL2 →L[ℂ] KernelQuotientL2 :=
+  (integralCoverTrace hHK globalKubotaKernel_le_levelThree).comp (kernelCoverLeg hHK hJK e g he)
+
+lemma kernelCorrespondenceL2_representative (F : KernelQuotientL2) (f : KernelQuotient → ℂ)
+    (hf : Measurable f) (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f) :
+    kernelCorrespondenceL2 hHK hJK e g he F =ᵐ[integralQuotientVolume globalKubotaKernel]
+      kernelCorrespondenceFunction hJK e g he f := by
+  have hcover := (integralCoverPullback_ae hJK globalKubotaKernel_le_levelThree F).trans
+    ((integralCoverMap_quasiMeasurePreserving hJK globalKubotaKernel_le_levelThree).ae_eq_comp hrep)
+  have hconj := (integralConjugatePullback_ae e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree) _).trans
+    ((integralConjugateMap_measurePreserving e g he
+      (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)).quasiMeasurePreserving.ae_eq_comp hcover)
+  exact integralCoverTrace_representative hHK globalKubotaKernel_le_levelThree _ _
+    ((hf.comp (integralCoverMap_measurable hJK)).comp (integralConjugateMap_measurable e g he)) hconj
+
+lemma kernelCorrespondenceTest_mass (f : kernelSmoothTests) :
+    kernelSmoothTestsToL2 (kernelCorrespondenceTest hHK hJK e g he f) =
+      kernelCorrespondenceL2 hHK hJK e g he (kernelSmoothTestsToL2 f) := by
+  apply Lp.ext
+  exact (kernelSmoothTests_memLp (kernelCorrespondenceTest hHK hJK e g he f)).coeFn_toLp.trans
+    (kernelCorrespondenceL2_representative hHK hJK e g he _ f.1
+      f.2.1.continuous.measurable (kernelSmoothTests_memLp f).coeFn_toLp).symm
+
+lemma kernelCorrespondenceL2_pairing (F G : KernelQuotientL2) :
+    inner ℂ (kernelCorrespondenceL2 hHK hJK e g he F) G =
+      inner ℂ F (kernelCorrespondenceL2 hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) G) := by
+  change inner ℂ ((integralCoverTrace hHK globalKubotaKernel_le_levelThree)
+    ((integralConjugatePullback e g he (hHK.trans globalKubotaKernel_le_levelThree)
+      (hJK.trans globalKubotaKernel_le_levelThree)).toContinuousLinearMap
+        (integralCoverPullback hJK globalKubotaKernel_le_levelThree F))) G = _
+  rw [integralCoverTrace, ContinuousLinearMap.adjoint_inner_left,
+    ← ContinuousLinearMap.adjoint_inner_right, integralConjugatePullback_adjoint]
+  exact (ContinuousLinearMap.adjoint_inner_right _ _ _).symm
+
+lemma kernelCorrespondenceL2_norm_le (F : KernelQuotientL2) :
+    ‖kernelCorrespondenceL2 hHK hJK e g he F‖ ≤
+      Real.sqrt ((H.relIndex globalKubotaKernel : ℝ) * (J.relIndex globalKubotaKernel : ℝ)) * ‖F‖ := by
+  let C := integralConjugatePullback e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)
+  let P := integralCoverPullback hJK globalKubotaKernel_le_levelThree
+  let Tr := integralCoverTrace hHK globalKubotaKernel_le_levelThree
+  have hTr := integralCoverTrace_opNorm_le hHK globalKubotaKernel_le_levelThree
+  have hP := integralCoverPullback_norm_le hJK globalKubotaKernel_le_levelThree F
+  rw [← Real.sqrt_eq_rpow] at hTr hP
+  change ‖Tr (C (P F))‖ ≤ _
+  calc
+    _ ≤ ‖Tr‖ * ‖C (P F)‖ := Tr.le_opNorm _
+    _ ≤ Real.sqrt (H.relIndex globalKubotaKernel : ℝ) * ‖C (P F)‖ :=
+      mul_le_mul_of_nonneg_right hTr (norm_nonneg _)
+    _ = Real.sqrt (H.relIndex globalKubotaKernel : ℝ) * ‖P F‖ := by rw [C.norm_map]
+    _ ≤ Real.sqrt (H.relIndex globalKubotaKernel : ℝ) *
+        (Real.sqrt (J.relIndex globalKubotaKernel : ℝ) * ‖F‖) :=
+      mul_le_mul_of_nonneg_left hP (Real.sqrt_nonneg _)
+    _ = _ := by rw [Real.sqrt_mul (Nat.cast_nonneg _)]; ring
+
+include hHK in
+lemma kernelCorrespondenceFunction_integrable (f : KernelQuotient → ℂ) (hf : Measurable f)
+    (hi : Integrable f (integralQuotientVolume globalKubotaKernel)) :
+    Integrable (kernelCorrespondenceFunction hJK e g he f) (integralQuotientVolume globalKubotaKernel) := by
+  have hcover := (integralCoverMap_measurePreserving hJK globalKubotaKernel_le_levelThree).integrable_comp_of_integrable
+    (hi.smul_measure (c := (J.relIndex globalKubotaKernel : ℝ≥0∞)) (by simp))
+  have hconj := (integralConjugateMap_measurePreserving e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)).integrable_comp_of_integrable hcover
+  exact integralCoverTraceFunction_integrable hHK globalKubotaKernel_le_levelThree _
+    ((hf.comp (integralCoverMap_measurable hJK)).comp (integralConjugateMap_measurable e g he)) hconj
+
+include hHK in
+lemma kernelCorrespondenceFunction_integral (f : KernelQuotient → ℂ) (hf : Measurable f)
+    (hi : Integrable f (integralQuotientVolume globalKubotaKernel)) :
+    (∫ q, kernelCorrespondenceFunction hJK e g he f q ∂integralQuotientVolume globalKubotaKernel) =
+      (J.relIndex globalKubotaKernel : ℂ) * ∫ q, f q ∂integralQuotientVolume globalKubotaKernel := by
+  have hcover := (integralCoverMap_measurePreserving hJK globalKubotaKernel_le_levelThree).integrable_comp_of_integrable
+    (hi.smul_measure (c := (J.relIndex globalKubotaKernel : ℝ≥0∞)) (by simp))
+  have hm := integralConjugateMap_measurePreserving e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)
+  have hconj := hm.integrable_comp_of_integrable hcover
+  calc
+    _ = ∫ q, f (integralCoverMap hJK (integralConjugateMap e g he q)) ∂integralQuotientVolume H :=
+      integralCoverTraceFunction_integral hHK globalKubotaKernel_le_levelThree _
+        ((hf.comp (integralCoverMap_measurable hJK)).comp (integralConjugateMap_measurable e g he)) hconj
+    _ = ∫ q, f (integralCoverMap hJK q) ∂integralQuotientVolume J := by
+      have hh := integral_map (μ := integralQuotientVolume H) hm.measurable.aemeasurable
+        (hf.comp (integralCoverMap_measurable hJK)).aestronglyMeasurable
+      rw [hm.map_eq] at hh
+      exact hh.symm
+    _ = ∫ q, f q ∂Measure.map (integralCoverMap hJK) (integralQuotientVolume J) :=
+      (integral_map (integralCoverMap_measurable hJK).aemeasurable hf.aestronglyMeasurable).symm
+    _ = _ := by
+      rw [integralCoverMap_measure hJK globalKubotaKernel_le_levelThree, integral_smul_measure]
+      simp only [ENNReal.toReal_natCast, Complex.real_smul, Complex.ofReal_natCast]
+
+end CorrespondenceOperators
+
+/-- Hyperbolic energy of a complex field in upper-half-space coordinates. -/
+def coverEnergyDensity (F : EuclideanSpatial → ℂ) (p : EuclideanSpatial) : ℝ :=
+  euclideanScalarDirichletDensity (fun x => (F x).re) p +
+    euclideanScalarDirichletDensity (fun x => (F x).im) p
+
+def coverGradientAt (F : EuclideanSpatial → ℂ) (p : EuclideanSpatial) : EuclideanSpace ℂ (Fin 3) :=
+  WithLp.toLp 2 (fun j => (p 2 : ℂ) * fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j))
+
+lemma coverGradientAt_norm_sq (F : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) : ‖coverGradientAt F p‖ ^ 2 = coverEnergyDensity F p := by
+  have hr := (Complex.reCLM.hasFDerivAt.comp p hF.hasFDerivAt).fderiv
+  have hi := (Complex.imCLM.hasFDerivAt.comp p hF.hasFDerivAt).fderiv
+  change fderiv ℝ (fun x => (F x).re) p = _ at hr
+  change fderiv ℝ (fun x => (F x).im) p = _ at hi
+  unfold coverEnergyDensity euclideanScalarDirichletDensity
+  rw [hr, hi, (EuclideanSpace.basisFun (Fin 3) ℝ).norm_dual,
+    (EuclideanSpace.basisFun (Fin 3) ℝ).norm_dual, ← mul_add, ← Finset.sum_add_distrib,
+    PiLp.norm_sq_eq_of_L2]
+  change (∑ j : Fin 3, ‖(p 2 : ℂ) * fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j)‖ ^ 2) = _
+  simp only [norm_mul, mul_pow, Complex.norm_real, Real.norm_eq_abs, sq_abs, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  congr 1
+  change ‖fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j)‖ ^ 2 =
+    (fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j)).re ^ 2 +
+      (fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j)).im ^ 2
+  simpa only [Complex.normSq_apply, pow_two] using
+    (Complex.normSq_eq_norm_sq (fderiv ℝ F p (EuclideanSpace.basisFun (Fin 3) ℝ j))).symm
+
+lemma coverEnergyDensity_comp (g : SL(2, ℂ)) (F : EuclideanSpatial → ℂ)
+    (p : EuclideanSpatial) (hp : 0 < p 2) (hF : DifferentiableAt ℝ F (euclideanAction g p)) :
+    coverEnergyDensity (F ∘ euclideanAction g) p = coverEnergyDensity F (euclideanAction g p) :=
+  congrArg₂ (fun x y : ℝ => x + y)
+    (hyperbolic_cotangent_energy_comp g (fun p => (F p).re) p hp (Complex.reCLM.differentiableAt.comp _ hF))
+    (hyperbolic_cotangent_energy_comp g (fun p => (F p).im) p hp (Complex.imCLM.differentiableAt.comp _ hF))
+
+lemma coverGradientAt_sum {ι : Type*} (s : Finset ι) (F : ι → EuclideanSpatial → ℂ)
+    (p : EuclideanSpatial) (hF : ∀ i ∈ s, DifferentiableAt ℝ (F i) p) :
+    coverGradientAt (fun x => ∑ i ∈ s, F i x) p = ∑ i ∈ s, coverGradientAt (F i) p := by
+  apply (WithLp.equiv 2 (Fin 3 → ℂ)).injective
+  funext j
+  simp only [coverGradientAt, fderiv_fun_sum hF, _root_.sum_apply,
+    WithLp.equiv_apply, Finset.mul_sum, WithLp.ofLp_sum, Finset.sum_apply]
+
+lemma cover_norm_sum_sq_le_card {ι E : Type*} [NormedAddCommGroup E] (s : Finset ι) (f : ι → E) :
+    ‖∑ i ∈ s, f i‖ ^ 2 ≤ (s.card : ℝ) * ∑ i ∈ s, ‖f i‖ ^ 2 := by
+  calc
+    _ ≤ (∑ i ∈ s, ‖f i‖) ^ 2 :=
+      (sq_le_sq₀ (norm_nonneg _) (Finset.sum_nonneg (fun _ _ => norm_nonneg _))).mpr (norm_sum_le _ _)
+    _ ≤ _ := by
+      simpa only [one_mul, one_pow, Finset.sum_const, nsmul_eq_mul, mul_one] using
+        Finset.sum_mul_sq_le_sq_mul_sq s (fun _ => (1 : ℝ)) (fun i => ‖f i‖)
+
+lemma coverEnergyDensity_sum_le {ι : Type*} (s : Finset ι) (F : ι → EuclideanSpatial → ℂ)
+    (p : EuclideanSpatial) (hF : ∀ i ∈ s, DifferentiableAt ℝ (F i) p) :
+    coverEnergyDensity (fun x => ∑ i ∈ s, F i x) p ≤ (s.card : ℝ) * ∑ i ∈ s, coverEnergyDensity (F i) p := by
+  rw [← coverGradientAt_norm_sq _ _ (DifferentiableAt.fun_sum hF), coverGradientAt_sum s F p hF]
+  calc
+    _ ≤ (s.card : ℝ) * ∑ i ∈ s, ‖coverGradientAt (F i) p‖ ^ 2 :=
+      cover_norm_sum_sq_le_card s (fun i => coverGradientAt (F i) p)
+    _ = _ := by
+      congr 1
+      apply Finset.sum_congr rfl
+      intro i hi
+      exact coverGradientAt_norm_sq (F i) p (hF i hi)
+
+lemma coverGradientAt_add (F G : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) (hG : DifferentiableAt ℝ G p) :
+    coverGradientAt (F + G) p = coverGradientAt F p + coverGradientAt G p := by
+  apply (WithLp.equiv 2 (Fin 3 → ℂ)).injective
+  funext j
+  simp only [coverGradientAt, fderiv_add hF hG, WithLp.equiv_apply, WithLp.ofLp_add,
+    Pi.add_apply, _root_.add_apply, mul_add]
+
+lemma coverGradientAt_sub (F G : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) (hG : DifferentiableAt ℝ G p) :
+    coverGradientAt (F - G) p = coverGradientAt F p - coverGradientAt G p := by
+  apply (WithLp.equiv 2 (Fin 3 → ℂ)).injective
+  funext j
+  simp only [coverGradientAt, fderiv_sub hF hG, WithLp.equiv_apply, WithLp.ofLp_sub,
+    Pi.sub_apply, _root_.sub_apply, mul_sub]
+
+lemma coverGradientAt_smul (c : ℂ) (F : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) : coverGradientAt (c • F) p = c • coverGradientAt F p := by
+  apply (WithLp.equiv 2 (Fin 3 → ℂ)).injective
+  funext j
+  simp only [coverGradientAt, fderiv_const_smul hF, WithLp.equiv_apply, WithLp.ofLp_smul,
+    Pi.smul_apply, _root_.smul_apply, smul_eq_mul, mul_left_comm]
+
+def coverDirichletPair (F G : EuclideanSpatial → ℂ) (p : EuclideanSpatial) : ℂ :=
+  inner ℂ (coverGradientAt F p) (coverGradientAt G p)
+
+lemma coverDirichletPair_polarization (F G : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) (hG : DifferentiableAt ℝ G p) :
+    coverDirichletPair F G p = ((coverEnergyDensity (F + G) p : ℂ) - (coverEnergyDensity (F - G) p : ℂ) +
+      ((coverEnergyDensity (F - Complex.I • G) p : ℂ) - (coverEnergyDensity (F + Complex.I • G) p : ℂ)) * Complex.I) / 4 := by
+  unfold coverDirichletPair
+  rw [inner_eq_sum_norm_sq_div_four]
+  simp only [RCLike.I_to_complex]
+  rw [← coverGradientAt_add F G p hF hG, ← coverGradientAt_sub F G p hF hG,
+    ← coverGradientAt_smul Complex.I G p hG,
+    ← coverGradientAt_sub F (Complex.I • G) p hF (hG.const_smul _),
+    ← coverGradientAt_add F (Complex.I • G) p hF (hG.const_smul _)]
+  simp only [RCLike.ofReal_eq_complex_ofReal, ← Complex.ofReal_pow,
+    coverGradientAt_norm_sq _ _ (hF.add hG), coverGradientAt_norm_sq _ _ (hF.sub hG),
+    coverGradientAt_norm_sq _ _ (hF.sub (hG.const_smul _)), coverGradientAt_norm_sq _ _ (hF.add (hG.const_smul _))]
+
+/-- Polarization transfers isometry invariance of scalar energy to the complex Dirichlet pairing. -/
+lemma coverDirichletPair_comp (g : SL(2, ℂ)) (F G : EuclideanSpatial → ℂ)
+    (p : EuclideanSpatial) (hp : 0 < p 2)
+    (hF : DifferentiableAt ℝ F (euclideanAction g p)) (hG : DifferentiableAt ℝ G (euclideanAction g p)) :
+    coverDirichletPair (F ∘ euclideanAction g) (G ∘ euclideanAction g) p =
+      coverDirichletPair F G (euclideanAction g p) := by
+  obtain ⟨der, hder, _⟩ := hyperbolicDifferentialIsometry g p hp
+  rw [coverDirichletPair_polarization _ _ p (hF.comp p hder.differentiableAt) (hG.comp p hder.differentiableAt),
+    coverDirichletPair_polarization F G _ hF hG]
+  have ha : (F ∘ euclideanAction g) + (G ∘ euclideanAction g) = (F + G) ∘ euclideanAction g := rfl
+  have hs : (F ∘ euclideanAction g) - (G ∘ euclideanAction g) = (F - G) ∘ euclideanAction g := rfl
+  have hai : (F ∘ euclideanAction g) + Complex.I • (G ∘ euclideanAction g) = (F + Complex.I • G) ∘ euclideanAction g := rfl
+  have hsi : (F ∘ euclideanAction g) - Complex.I • (G ∘ euclideanAction g) = (F - Complex.I • G) ∘ euclideanAction g := rfl
+  rw [ha, hs, hai, hsi, coverEnergyDensity_comp g _ p hp (hF.add hG),
+    coverEnergyDensity_comp g _ p hp (hF.sub hG), coverEnergyDensity_comp g _ p hp (hF.add (hG.const_smul _)),
+    coverEnergyDensity_comp g _ p hp (hF.sub (hG.const_smul _))]
+
+lemma coverDirichletPair_sum_right {ι : Type*} (s : Finset ι) (F : EuclideanSpatial → ℂ)
+    (G : ι → EuclideanSpatial → ℂ) (p : EuclideanSpatial) (hG : ∀ i ∈ s, DifferentiableAt ℝ (G i) p) :
+    coverDirichletPair F (fun x => ∑ i ∈ s, G i x) p = ∑ i ∈ s, coverDirichletPair F (G i) p := by
+  simp only [coverDirichletPair, coverGradientAt_sum s G p hG, inner_sum]
+
+lemma coverDirichletPair_norm_le (F G : EuclideanSpatial → ℂ) (p : EuclideanSpatial)
+    (hF : DifferentiableAt ℝ F p) (hG : DifferentiableAt ℝ G p) :
+    ‖coverDirichletPair F G p‖ ≤ (coverEnergyDensity F p + coverEnergyDensity G p) / 2 := by
+  have hh := norm_inner_le_norm (𝕜 := ℂ) (coverGradientAt F p) (coverGradientAt G p)
+  have hs := sq_nonneg (‖coverGradientAt F p‖ - ‖coverGradientAt G p‖)
+  rw [← coverGradientAt_norm_sq F p hF, ← coverGradientAt_norm_sq G p hG]
+  exact le_trans hh (by nlinarith only [hs])
+
+lemma kernelDirichletPairDensity_eq_cover (f h : kernelSmoothTests) (w : HyperbolicSpace) :
+    kernelDirichletPairDensity f h (integralOrbitProjection globalKubotaKernel w) =
+      coverDirichletPair (kernelTestField f) (kernelTestField h) (hyperbolicEuclideanCoordinates w) := by
+  rw [kernelDirichletPairDensity_coordinate]
+  rfl
+
+lemma kernelTestEnergyDensity_eq_cover (f : kernelSmoothTests) (w : HyperbolicSpace) :
+    kernelTestEnergyDensity f w = coverEnergyDensity (kernelTestField f) (hyperbolicEuclideanCoordinates w) := rfl
+
+lemma kernelTestField_comp_contDiffAt (f : kernelSmoothTests) (g : SL(2, ℂ))
+    (p : EuclideanSpatial) (hp : 0 < p 2) :
+    ContDiffAt ℝ ∞ (kernelTestField f ∘ euclideanAction g) p := by
+  have hd := ((((f.2.1.comp kernelProjection_contMDiff).comp (hyperbolicAction_contMDiff g))
+    (euclideanToHyperbolic p)).comp p (euclideanToHyperbolic_contMDiffAt p hp)).contDiffAt
+  simpa only [Function.comp_def, kernelTestField, euclideanAction, euclideanToHyperbolic_coordinates] using hd
+
+section CorrespondenceEnergy
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+def kernelCorrespondenceMatrix (q : IntegralCoverCosets H globalKubotaKernel) : SL(2, ℂ) :=
+  g * integralComplexMatrix (((integralCoverRep H globalKubotaKernel q)⁻¹ : globalKubotaKernel) : SL(2, O))
+
+lemma kernelCorrespondenceTest_field (f : kernelSmoothTests) (p : EuclideanSpatial) :
+    kernelTestField (kernelCorrespondenceTest hHK hJK e g he f) p =
+      letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+      ∑ q : IntegralCoverCosets H globalKubotaKernel,
+        kernelTestField f (euclideanAction (kernelCorrespondenceMatrix g q) p) := by
+  letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+  change kernelCorrespondenceFunction hJK e g he f.1
+    (integralOrbitProjection globalKubotaKernel (euclideanToHyperbolic p)) = _
+  rw [kernelCorrespondenceFunction_lift]
+  apply Finset.sum_congr rfl
+  intro q _
+  change f.1 (integralOrbitProjection globalKubotaKernel
+    (kernelCorrespondenceMatrix g q • euclideanToHyperbolic p)) =
+      f.1 (integralOrbitProjection globalKubotaKernel
+        (euclideanToHyperbolic (euclideanAction (kernelCorrespondenceMatrix g q) p)))
+  rw [euclideanAction, euclideanToHyperbolic_coordinates]
+
+/-- Cauchy–Schwarz on the finite fiber bounds the energy of a trace. -/
+lemma kernelCorrespondenceTest_energyDensity_le (f : kernelSmoothTests) (w : HyperbolicSpace) :
+    kernelTestEnergyDensity (kernelCorrespondenceTest hHK hJK e g he f) w ≤
+      (H.relIndex globalKubotaKernel : ℝ) *
+        (kernelCorrespondenceFunction hJK e g he (fun q => (kernelQuotientEnergyDensity f q : ℂ))
+          (integralOrbitProjection globalKubotaKernel w)).re := by
+  letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+  let p := hyperbolicEuclideanCoordinates w
+  let A := kernelCorrespondenceMatrix (H := H) g
+  have hd (q : IntegralCoverCosets H globalKubotaKernel) :
+      DifferentiableAt ℝ (kernelTestField f) (euclideanAction (A q) p) :=
+    (kernelTestField_contDiffAt f _ (euclideanAction_positive _ _)).differentiableAt (by simp)
+  have hc (q : IntegralCoverCosets H globalKubotaKernel) :
+      DifferentiableAt ℝ (kernelTestField f ∘ euclideanAction (A q)) p :=
+    (kernelTestField_comp_contDiffAt f (A q) p (hyperbolicHeight_pos w)).differentiableAt (by simp)
+  have hfield := funext (kernelCorrespondenceTest_field hHK hJK e g he f)
+  rw [kernelTestEnergyDensity_eq_cover, hfield]
+  change coverEnergyDensity (fun p => ∑ q : IntegralCoverCosets H globalKubotaKernel,
+    kernelTestField f (euclideanAction (A q) p)) p ≤ _
+  calc
+    _ ≤ (Fintype.card (IntegralCoverCosets H globalKubotaKernel) : ℝ) *
+        ∑ q : IntegralCoverCosets H globalKubotaKernel,
+          coverEnergyDensity (kernelTestField f ∘ euclideanAction (A q)) p := by
+      simpa only [Finset.card_univ, Function.comp_def] using
+        coverEnergyDensity_sum_le Finset.univ
+          (fun q : IntegralCoverCosets H globalKubotaKernel => kernelTestField f ∘ euclideanAction (A q))
+          p (fun q _ => hc q)
+    _ = _ := by
+      have hcard : Fintype.card (IntegralCoverCosets H globalKubotaKernel) = H.relIndex globalKubotaKernel := by
+        rw [Subgroup.relIndex, Subgroup.index, Nat.card_eq_fintype_card]
+      rw [hcard, kernelCorrespondenceFunction_lift]
+      simp only [Complex.re_sum, Complex.ofReal_re]
+      congr 1
+      apply Finset.sum_congr rfl
+      intro q _
+      rw [coverEnergyDensity_comp (A q) _ p (hyperbolicHeight_pos w) (hd q)]
+      change coverEnergyDensity (kernelTestField f) (euclideanAction (A q) p) = kernelTestEnergyDensity f (A q • w)
+      rw [kernelTestEnergyDensity_eq_cover]
+      congr 1
+      dsimp [p, euclideanAction]
+      rw [euclideanToHyperbolic_coordinates]
+
+lemma kernelCorrespondenceTest_energy_le (f : kernelSmoothTests) :
+    kernelDirichletEnergy (kernelCorrespondenceTest hHK hJK e g he f) ≤
+      (H.relIndex globalKubotaKernel : ℝ) * (J.relIndex globalKubotaKernel : ℝ) * kernelDirichletEnergy f := by
+  let density : KernelQuotient → ℂ := fun q => (kernelQuotientEnergyDensity f q : ℂ)
+  have hm : Measurable density := Complex.continuous_ofReal.measurable.comp
+    (kernelQuotientEnergyDensity_continuous f).measurable
+  have hi : Integrable density (integralQuotientVolume globalKubotaKernel) :=
+    (kernelQuotientEnergyDensity_integrable f).ofReal
+  have hTi := kernelCorrespondenceFunction_integrable hHK hJK e g he density hm hi
+  have hint := kernelCorrespondenceFunction_integral hHK hJK e g he density hm hi
+  have hre : (∫ q, (kernelCorrespondenceFunction hJK e g he density q).re
+      ∂integralQuotientVolume globalKubotaKernel) =
+        (J.relIndex globalKubotaKernel : ℝ) * kernelDirichletEnergy f := by
+    have htr := integral_re hTi
+    have hdf := integral_re hi
+    simp only [RCLike.re_to_complex] at htr hdf
+    rw [htr, hint]
+    simp only [Complex.mul_re, Complex.natCast_re, Complex.natCast_im, zero_mul, sub_zero]
+    rw [← hdf]
+    rfl
+  unfold kernelDirichletEnergy
+  calc
+    _ ≤ ∫ q, (H.relIndex globalKubotaKernel : ℝ) *
+        (kernelCorrespondenceFunction hJK e g he density q).re
+        ∂integralQuotientVolume globalKubotaKernel := by
+      apply integral_mono (kernelQuotientEnergyDensity_integrable _) (hTi.re.const_mul _)
+      intro q
+      induction q using Quotient.inductionOn with
+      | _ w => exact kernelCorrespondenceTest_energyDensity_le hHK hJK e g he f w
+    _ = _ := by rw [integral_const_mul, hre]; exact (mul_assoc _ _ _).symm
+
+def kernelCorrespondenceTestLinear : kernelSmoothTests →ₗ[ℂ] kernelSmoothTests where
+  toFun := kernelCorrespondenceTest hHK hJK e g he
+  map_add' f h := by
+    apply Subtype.ext
+    funext q
+    induction q using Quotient.inductionOn with
+    | _ w =>
+      letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+      change kernelCorrespondenceFunction hJK e g he (f + h).1 (integralOrbitProjection globalKubotaKernel w) =
+        kernelCorrespondenceFunction hJK e g he f.1 (integralOrbitProjection globalKubotaKernel w) +
+        kernelCorrespondenceFunction hJK e g he h.1 (integralOrbitProjection globalKubotaKernel w)
+      simp only [kernelCorrespondenceFunction_lift, Submodule.coe_add, Pi.add_apply, Finset.sum_add_distrib]
+  map_smul' c f := by
+    apply Subtype.ext
+    funext q
+    induction q using Quotient.inductionOn with
+    | _ w =>
+      letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+      change kernelCorrespondenceFunction hJK e g he (c • f).1 (integralOrbitProjection globalKubotaKernel w) =
+        c • kernelCorrespondenceFunction hJK e g he f.1 (integralOrbitProjection globalKubotaKernel w)
+      simp only [kernelCorrespondenceFunction_lift, Submodule.coe_smul, Pi.smul_apply, Finset.smul_sum]
+
+lemma kernelCorrespondenceTest_graph_norm (f : kernelSmoothTests) :
+    ‖kernelEnergyGraphCore (kernelCorrespondenceTest hHK hJK e g he f)‖ ≤
+      Real.sqrt ((H.relIndex globalKubotaKernel : ℝ) * (J.relIndex globalKubotaKernel : ℝ)) *
+        ‖kernelEnergyGraphCore f‖ := by
+  have hm := kernelCorrespondenceL2_norm_le hHK hJK e g he (kernelSmoothTestsToL2 f)
+  have hs := (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _))).mpr hm
+  rw [← kernelCorrespondenceTest_mass hHK hJK e g he, mul_pow,
+    Real.sq_sqrt (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _))] at hs
+  apply (sq_le_sq₀ (norm_nonneg _) (mul_nonneg (Real.sqrt_nonneg _) (norm_nonneg _))).mp
+  rw [kernelEnergyGraphCore_norm_sq, mul_pow,
+    Real.sq_sqrt (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)), kernelEnergyGraphCore_norm_sq]
+  have hE := kernelCorrespondenceTest_energy_le hHK hJK e g he f
+  nlinarith only [hs, hE]
+
+/-- The finite correspondence extends continuously to the completed mass-gradient graph. -/
+def kernelCorrespondenceEnergy : KernelEnergyGraph →L[ℂ] KernelEnergyGraph :=
+  (kernelEnergyGraphCore.comp (kernelCorrespondenceTestLinear hHK hJK e g he)).extendOfNorm kernelEnergyGraphCore
+
+lemma kernelCorrespondenceEnergy_core (f : kernelSmoothTests) :
+    kernelCorrespondenceEnergy hHK hJK e g he (kernelEnergyGraphCore f) =
+      kernelEnergyGraphCore (kernelCorrespondenceTest hHK hJK e g he f) :=
+  LinearMap.extendOfNorm_eq kernelEnergyGraphCore_dense
+    ⟨_, kernelCorrespondenceTest_graph_norm hHK hJK e g he⟩ f
+
+lemma kernelCorrespondenceEnergy_mass (u : KernelEnergyGraph) :
+    kernelEnergyMass (kernelCorrespondenceEnergy hHK hJK e g he u) =
+      kernelCorrespondenceL2 hHK hJK e g he (kernelEnergyMass u) := by
+  apply congrFun (kernelEnergyGraphCore_dense.equalizer
+    (kernelEnergyMass.continuous.comp (kernelCorrespondenceEnergy hHK hJK e g he).continuous)
+    ((kernelCorrespondenceL2 hHK hJK e g he).continuous.comp kernelEnergyMass.continuous) ?_) u
+  funext f
+  change kernelEnergyMass (kernelCorrespondenceEnergy hHK hJK e g he (kernelEnergyGraphCore f)) =
+    kernelCorrespondenceL2 hHK hJK e g he (kernelEnergyMass (kernelEnergyGraphCore f))
+  rw [kernelCorrespondenceEnergy_core, kernelEnergyMass_core, kernelEnergyMass_core, kernelCorrespondenceTest_mass]
+
+end CorrespondenceEnergy
+
+lemma coverGradientAt_lift_continuous (F : EuclideanSpatial → ℂ)
+    (hF : ∀ p, 0 < p 2 → ContDiffAt ℝ ∞ F p) :
+    Continuous (fun w : HyperbolicSpace => coverGradientAt F (hyperbolicEuclideanCoordinates w)) := by
+  apply (PiLp.continuousLinearEquiv 2 ℂ (fun _ : Fin 3 => ℂ)).symm.continuous.comp
+  apply continuous_pi
+  intro j
+  apply (Complex.continuous_ofReal.comp hyperbolicHeight_continuous).mul
+  rw [continuous_iff_continuousAt]
+  intro w
+  exact (((hF _ (hyperbolicHeight_pos w)).continuousAt_fderiv (by simp)).clm_apply
+    continuousAt_const).comp hyperbolicEuclideanCoordinates_continuous.continuousAt
+
+/-- Mixed Dirichlet density on a common cover. -/
+def kernelCorrespondencePairLift (g : SL(2, ℂ)) (f h : kernelSmoothTests) (w : HyperbolicSpace) : ℂ :=
+  coverDirichletPair (kernelTestField f) (kernelTestField h ∘ euclideanAction g)
+    (hyperbolicEuclideanCoordinates w)
+
+lemma kernelCorrespondencePairLift_continuous (g : SL(2, ℂ)) (f h : kernelSmoothTests) :
+    Continuous (kernelCorrespondencePairLift g f h) :=
+  (coverGradientAt_lift_continuous _ (kernelTestField_contDiffAt f)).inner
+    (coverGradientAt_lift_continuous _ (kernelTestField_comp_contDiffAt h g))
+
+section CorrespondencePair
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+include hHK hJK he in
+lemma kernelCorrespondencePairLift_invariant (f h : kernelSmoothTests) (k : H) (w : HyperbolicSpace) :
+    kernelCorrespondencePairLift g f h (k • w) = kernelCorrespondencePairLift g f h w := by
+  let A := integralComplexMatrix (k : SL(2, O))
+  let B := integralComplexMatrix (e k : SL(2, O))
+  have hfi : kernelTestField f ∘ euclideanAction A = kernelTestField f :=
+    funext (kernelTestField_invariant f ⟨(k : SL(2, O)), hHK k.property⟩)
+  have hhi : (kernelTestField h ∘ euclideanAction g) ∘ euclideanAction A =
+      kernelTestField h ∘ euclideanAction g := by
+    rw [Function.comp_assoc, ← euclideanAction_mul, he k, euclideanAction_mul, ← Function.comp_assoc]
+    have hh : kernelTestField h ∘ euclideanAction B = kernelTestField h :=
+      funext (kernelTestField_invariant h ⟨(e k : SL(2, O)), hJK (e k).property⟩)
+    rw [hh]
+  have hh := coverDirichletPair_comp A (kernelTestField f) (kernelTestField h ∘ euclideanAction g)
+    (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w)
+    ((kernelTestField_contDiffAt f _ (euclideanAction_positive A _)).differentiableAt (by simp))
+    ((kernelTestField_comp_contDiffAt h g _ (euclideanAction_positive A _)).differentiableAt (by simp))
+  rw [hfi, hhi] at hh
+  change _ = coverDirichletPair (kernelTestField f) (kernelTestField h ∘ euclideanAction g)
+    (hyperbolicEuclideanCoordinates w)
+  rw [integralSubgroup_smul]
+  simpa only [kernelCorrespondencePairLift, A, euclideanAction, euclideanToHyperbolic_coordinates] using hh.symm
+
+def kernelCorrespondencePair (f h : kernelSmoothTests) : IntegralOrbitQuotient H → ℂ :=
+  Quotient.lift (kernelCorrespondencePairLift g f h) (by
+    rintro w v ⟨k, rfl⟩
+    exact (kernelCorrespondencePairLift_invariant hHK hJK e g he f h k w).symm)
+
+lemma kernelCorrespondencePair_projection (f h : kernelSmoothTests) (w : HyperbolicSpace) :
+    kernelCorrespondencePair hHK hJK e g he f h (integralOrbitProjection H w) =
+      kernelCorrespondencePairLift g f h w := rfl
+
+lemma kernelCorrespondencePair_measurable (f h : kernelSmoothTests) :
+    Measurable (kernelCorrespondencePair hHK hJK e g he f h) :=
+  measurable_from_quotient.mpr (kernelCorrespondencePairLift_continuous g f h).measurable
+
+lemma kernelCorrespondencePair_norm_le (f h : kernelSmoothTests) (q : IntegralOrbitQuotient H) :
+    ‖kernelCorrespondencePair hHK hJK e g he f h q‖ ≤
+      (kernelQuotientEnergyDensity f (integralCoverMap hHK q) +
+        kernelQuotientEnergyDensity h (integralCoverMap hJK (integralConjugateMap e g he q))) / 2 := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    have hf := (kernelTestField_contDiffAt f (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w)).differentiableAt (by simp)
+    have hh := (kernelTestField_comp_contDiffAt h g (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w)).differentiableAt (by simp)
+    have hb := coverDirichletPair_norm_le (kernelTestField f) (kernelTestField h ∘ euclideanAction g)
+      (hyperbolicEuclideanCoordinates w) hf hh
+    rw [coverEnergyDensity_comp g _ _ (hyperbolicHeight_pos w)
+      ((kernelTestField_contDiffAt h _ (euclideanAction_positive g _)).differentiableAt (by simp))] at hb
+    change ‖kernelCorrespondencePairLift g f h w‖ ≤ (kernelTestEnergyDensity f w + kernelTestEnergyDensity h (g • w)) / 2
+    simpa only [kernelCorrespondencePairLift, kernelTestEnergyDensity_eq_cover, euclideanAction,
+      euclideanToHyperbolic_coordinates] using hb
+
+variable [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+
+lemma kernelCorrespondencePair_integrable (f h : kernelSmoothTests) :
+    Integrable (kernelCorrespondencePair hHK hJK e g he f h) (integralQuotientVolume H) := by
+  have hf := (integralCoverMap_measurePreserving hHK globalKubotaKernel_le_levelThree).integrable_comp_of_integrable
+    ((kernelQuotientEnergyDensity_integrable f).smul_measure (c := (H.relIndex globalKubotaKernel : ℝ≥0∞)) (by simp))
+  have hh := (integralCoverMap_measurePreserving hJK globalKubotaKernel_le_levelThree).integrable_comp_of_integrable
+    ((kernelQuotientEnergyDensity_integrable h).smul_measure (c := (J.relIndex globalKubotaKernel : ℝ≥0∞)) (by simp))
+  have hhh := (integralConjugateMap_measurePreserving e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)).integrable_comp_of_integrable hh
+  apply ((hf.add hhh).div_const 2).mono' (kernelCorrespondencePair_measurable hHK hJK e g he f h).aestronglyMeasurable
+  exact Filter.Eventually.of_forall (kernelCorrespondencePair_norm_le hHK hJK e g he f h)
+
+end CorrespondencePair
+
+lemma kernelCorrespondencePairLift_kernel (g : SL(2, ℂ)) (f h : kernelSmoothTests)
+    (r : globalKubotaKernel) (w : HyperbolicSpace) :
+    kernelCorrespondencePairLift g f h (r • w) =
+      coverDirichletPair (kernelTestField f)
+        (kernelTestField h ∘ euclideanAction (g * integralComplexMatrix (r : SL(2, O))))
+        (hyperbolicEuclideanCoordinates w) := by
+  have hf := (kernelTestField_contDiffAt f _ (euclideanAction_positive (integralComplexMatrix r) (hyperbolicEuclideanCoordinates w))).differentiableAt (by simp)
+  have hh := (kernelTestField_comp_contDiffAt h g _ (euclideanAction_positive (integralComplexMatrix r) (hyperbolicEuclideanCoordinates w))).differentiableAt (by simp)
+  have hp := coverDirichletPair_comp (integralComplexMatrix r) (kernelTestField f)
+    (kernelTestField h ∘ euclideanAction g) (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w) hf hh
+  have hfi : kernelTestField f ∘ euclideanAction (integralComplexMatrix r) = kernelTestField f :=
+    funext (kernelTestField_invariant f r)
+  rw [hfi, Function.comp_assoc, ← euclideanAction_mul] at hp
+  simpa only [kernelCorrespondencePairLift, integralSubgroup_smul, euclideanAction,
+    euclideanToHyperbolic_coordinates] using hp.symm
+
+lemma kernelTestField_comp_inverse (f : kernelSmoothTests) (g : SL(2, ℂ)) :
+    (kernelTestField f ∘ euclideanAction g⁻¹) ∘ euclideanAction g = kernelTestField f := by
+  funext p
+  simp only [Function.comp_def, kernelTestField, euclideanAction, euclideanToHyperbolic_coordinates, inv_smul_smul]
+
+section CorrespondenceForm
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+lemma kernelCorrespondencePair_trace (f h : kernelSmoothTests) (q : KernelQuotient) :
+    kernelDirichletPairDensity f (kernelCorrespondenceTest hHK hJK e g he h) q =
+      integralCoverTraceFunction H globalKubotaKernel (kernelCorrespondencePair hHK hJK e g he f h) q := by
+  letI : Fintype (IntegralCoverCosets H globalKubotaKernel) := Fintype.ofFinite _
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change kernelDirichletPairDensity f (kernelCorrespondenceTest hHK hJK e g he h)
+      (integralOrbitProjection globalKubotaKernel w) = _
+    rw [kernelDirichletPairDensity_eq_cover, funext (kernelCorrespondenceTest_field hHK hJK e g he h)]
+    have hd (r : IntegralCoverCosets H globalKubotaKernel) :
+        DifferentiableAt ℝ (kernelTestField h ∘ euclideanAction (kernelCorrespondenceMatrix g r))
+          (hyperbolicEuclideanCoordinates w) :=
+      (kernelTestField_comp_contDiffAt h _ _ (hyperbolicHeight_pos w)).differentiableAt (by simp)
+    have hsum := coverDirichletPair_sum_right Finset.univ (kernelTestField f)
+      (fun r => kernelTestField h ∘ euclideanAction (kernelCorrespondenceMatrix g r))
+      (hyperbolicEuclideanCoordinates w) (fun r _ => hd r)
+    simp only [Function.comp_apply] at hsum
+    rw [hsum]
+    change (∑ r : IntegralCoverCosets H globalKubotaKernel, _) =
+      ∑ r : IntegralCoverCosets H globalKubotaKernel,
+        kernelCorrespondencePair hHK hJK e g he f h (integralCoverFiberPoint H globalKubotaKernel r w)
+    apply Finset.sum_congr rfl
+    intro r _
+    rw [integralCoverFiberPoint_rep, kernelCorrespondencePair_projection, kernelCorrespondencePairLift_kernel]
+    rfl
+
+lemma kernelCorrespondenceForm_integral (f h : kernelSmoothTests) :
+    kernelDirichletForm f (kernelCorrespondenceTest hHK hJK e g he h) =
+      ∫ q, kernelCorrespondencePair hHK hJK e g he f h q ∂integralQuotientVolume H := by
+  unfold kernelDirichletForm
+  simp_rw [kernelCorrespondencePair_trace]
+  exact integralCoverTraceFunction_integral hHK globalKubotaKernel_le_levelThree _
+    (kernelCorrespondencePair_measurable hHK hJK e g he f h)
+    (kernelCorrespondencePair_integrable hHK hJK e g he f h)
+
+omit [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel] in
+lemma kernelCorrespondencePair_conjugate (f h : kernelSmoothTests) (q : IntegralOrbitQuotient H) :
+    kernelCorrespondencePair hHK hJK e g he f h q =
+      star (kernelCorrespondencePair hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) h f
+        (integralConjugateMap e g he q)) := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change kernelCorrespondencePairLift g f h w = star (kernelCorrespondencePairLift g⁻¹ h f (g • w))
+    have hf := (kernelTestField_contDiffAt h _ (euclideanAction_positive g (hyperbolicEuclideanCoordinates w))).differentiableAt (by simp)
+    have hh := (kernelTestField_comp_contDiffAt f g⁻¹ _ (euclideanAction_positive g (hyperbolicEuclideanCoordinates w))).differentiableAt (by simp)
+    have hc := coverDirichletPair_comp g (kernelTestField h) (kernelTestField f ∘ euclideanAction g⁻¹)
+      (hyperbolicEuclideanCoordinates w) (hyperbolicHeight_pos w) hf hh
+    rw [kernelTestField_comp_inverse] at hc
+    have hs := congrArg star hc
+    have hswap : star (inner ℂ
+        (coverGradientAt (kernelTestField h ∘ euclideanAction g) (hyperbolicEuclideanCoordinates w))
+        (coverGradientAt (kernelTestField f) (hyperbolicEuclideanCoordinates w))) =
+        inner ℂ (coverGradientAt (kernelTestField f) (hyperbolicEuclideanCoordinates w))
+          (coverGradientAt (kernelTestField h ∘ euclideanAction g) (hyperbolicEuclideanCoordinates w)) := inner_conj_symm _ _
+    rw [coverDirichletPair, hswap] at hs
+    simpa only [kernelCorrespondencePairLift, coverDirichletPair, euclideanAction, euclideanToHyperbolic_coordinates] using hs
+
+/-- Reversing the finite correspondence gives its Dirichlet-form adjoint. -/
+theorem kernelCorrespondenceForm_adjoint (f h : kernelSmoothTests) :
+    kernelDirichletForm f (kernelCorrespondenceTest hHK hJK e g he h) =
+      kernelDirichletForm (kernelCorrespondenceTest hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) f) h := by
+  let opposite := kernelCorrespondencePair hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) h f
+  have hom := kernelCorrespondencePair_measurable hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) h f
+  have hm := integralConjugateMap_measurePreserving e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)
+  rw [kernelCorrespondenceForm_integral]
+  calc
+    _ = ∫ q, star (opposite (integralConjugateMap e g he q)) ∂integralQuotientVolume H :=
+      integral_congr_ae (Filter.Eventually.of_forall (kernelCorrespondencePair_conjugate hHK hJK e g he f h))
+    _ = ∫ q, star (opposite q) ∂integralQuotientVolume J := by
+      have hh := integral_map (μ := integralQuotientVolume H) hm.measurable.aemeasurable
+        (continuous_star.measurable.comp hom).aestronglyMeasurable
+      rw [hm.map_eq] at hh
+      exact hh.symm
+    _ = star (∫ q, opposite q ∂integralQuotientVolume J) := by
+      simp only [Complex.star_def]
+      exact integral_conj
+    _ = _ := by
+      rw [← kernelCorrespondenceForm_integral hJK hHK e.symm g⁻¹
+        (integralCoverIntertwines_inverse e g he), kernelDirichletForm_conj]
+
+end CorrespondenceForm
+
+section CorrespondenceLaplacian
+variable {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel)
+    [H.IsFiniteRelIndex globalKubotaKernel] [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+
+lemma kernelCorrespondenceL2_pairing_right (F G : KernelQuotientL2) :
+    inner ℂ F (kernelCorrespondenceL2 hHK hJK e g he G) =
+      inner ℂ (kernelCorrespondenceL2 hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) F) G := by
+  have hh := congrArg star (kernelCorrespondenceL2_pairing hHK hJK e g he G F)
+  simpa only [← starRingEnd_apply, inner_conj_symm] using hh
+
+lemma kernelCorrespondenceEnergy_pairing_core (f h : kernelSmoothTests) :
+    inner ℂ (kernelEnergyGraphCore f) (kernelCorrespondenceEnergy hHK hJK e g he (kernelEnergyGraphCore h)) =
+      inner ℂ (kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+        (kernelEnergyGraphCore f)) (kernelEnergyGraphCore h) := by
+  rw [kernelCorrespondenceEnergy_core, kernelCorrespondenceEnergy_core,
+    kernelEnergyGraph_inner, kernelEnergyGraph_inner]
+  simp only [kernelEnergyMass_core, kernelEnergyGradient_core, kernelGradientToL2_inner]
+  rw [kernelCorrespondenceTest_mass, kernelCorrespondenceTest_mass,
+    kernelCorrespondenceL2_pairing_right, kernelCorrespondenceForm_adjoint]
+
+theorem kernelCorrespondenceEnergy_pairing (u v : KernelEnergyGraph) :
+    inner ℂ u (kernelCorrespondenceEnergy hHK hJK e g he v) =
+      inner ℂ (kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) u) v := by
+  apply congrFun (kernelEnergyGraphCore_dense.equalizer
+    (continuous_id.inner continuous_const)
+    ((kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹
+      (integralCoverIntertwines_inverse e g he)).continuous.inner continuous_const) ?_) u
+  funext f
+  apply congrFun (kernelEnergyGraphCore_dense.equalizer
+    (continuous_const.inner (kernelCorrespondenceEnergy hHK hJK e g he).continuous)
+    (continuous_const.inner continuous_id) ?_) v
+  funext h
+  exact kernelCorrespondenceEnergy_pairing_core hHK hJK e g he f h
+
+lemma kernelCorrespondenceEnergy_pairing_left (u v : KernelEnergyGraph) :
+    inner ℂ (kernelCorrespondenceEnergy hHK hJK e g he u) v =
+      inner ℂ u (kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) v) := by
+  calc
+    _ = star (inner ℂ v (kernelCorrespondenceEnergy hHK hJK e g he u)) :=
+      (inner_conj_symm (𝕜 := ℂ) (kernelCorrespondenceEnergy hHK hJK e g he u) v).symm
+    _ = star (inner ℂ
+        (kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) v) u) :=
+      congrArg star (kernelCorrespondenceEnergy_pairing hHK hJK e g he v u)
+    _ = _ := inner_conj_symm (𝕜 := ℂ) u
+      (kernelCorrespondenceEnergy hJK hHK e.symm g⁻¹ (integralCoverIntertwines_inverse e g he) v)
+
+theorem kernelCorrespondence_variationalSolution (F : KernelQuotientL2) :
+    kernelCorrespondenceEnergy hHK hJK e g he (kernelVariationalSolution F) =
+      kernelVariationalSolution (kernelCorrespondenceL2 hHK hJK e g he F) := by
+  apply kernelVariationalSolution_unique
+  intro v
+  rw [← kernelEnergyGraph_inner, kernelCorrespondenceEnergy_pairing_left,
+    kernelEnergyGraph_inner, kernelVariationalSolution_equation, kernelCorrespondenceEnergy_mass]
+  exact (kernelCorrespondenceL2_pairing hHK hJK e g he F (kernelEnergyMass v)).symm
+
+/-- Finite geometric correspondences commute with the variational resolvent. -/
+theorem kernelCorrespondence_variationalResolvent (F : KernelQuotientL2) :
+    kernelVariationalResolvent (kernelCorrespondenceL2 hHK hJK e g he F) =
+      kernelCorrespondenceL2 hHK hJK e g he (kernelVariationalResolvent F) := by
+  change kernelEnergyMass (kernelVariationalSolution (kernelCorrespondenceL2 hHK hJK e g he F)) = _
+  rw [← kernelCorrespondence_variationalSolution, kernelCorrespondenceEnergy_mass]
+  rfl
+
+theorem kernelCorrespondence_operatorGraph (F G : KernelQuotientL2)
+    (hFG : (F, G) ∈ kernelEnergyLaplacian.graph) :
+    (kernelCorrespondenceL2 hHK hJK e g he F, kernelCorrespondenceL2 hHK hJK e g he G) ∈ kernelEnergyLaplacian.graph := by
+  rw [kernelEnergyLaplacian_graph, mem_kernelLaplacianGraph] at hFG ⊢
+  rw [← map_add, kernelCorrespondence_variationalResolvent, hFG]
+
+theorem kernelCorrespondence_eigenvector (F : KernelQuotientL2) (eigenvalue : ℂ)
+    (hF : (F, eigenvalue • F) ∈ kernelEnergyLaplacian.graph) :
+    (kernelCorrespondenceL2 hHK hJK e g he F,
+      eigenvalue • kernelCorrespondenceL2 hHK hJK e g he F) ∈ kernelEnergyLaplacian.graph := by
+  simpa only [map_smul] using kernelCorrespondence_operatorGraph hHK hJK e g he F (eigenvalue • F) hF
+
+end CorrespondenceLaplacian
+
+lemma integralCoverIntertwines_trans {H J K : Subgroup (SL(2, O))}
+    (e : H ≃* J) (f : J ≃* K) (g h : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (hf : IntegralCoverIntertwines f h) :
+    IntegralCoverIntertwines (e.trans f) (h * g) := by
+  intro k
+  change (h * g) * integralComplexMatrix (k : SL(2, O)) =
+    integralComplexMatrix (f (e k) : SL(2, O)) * (h * g)
+  rw [mul_assoc, he k, ← mul_assoc, hf (e k), mul_assoc]
+
+lemma integralConjugateMap_trans {H J K : Subgroup (SL(2, O))}
+    (e : H ≃* J) (f : J ≃* K) (g h : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (hf : IntegralCoverIntertwines f h) (q : IntegralOrbitQuotient H) :
+    integralConjugateMap f h hf (integralConjugateMap e g he q) =
+      integralConjugateMap (e.trans f) (h * g) (integralCoverIntertwines_trans e f g h he hf) q := by
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change integralOrbitProjection K (h • (g • w)) = integralOrbitProjection K ((h * g) • w)
+    rw [mul_smul]
+
+lemma integralConjugatePullback_trans {H J K : Subgroup (SL(2, O))}
+    (e : H ≃* J) (f : J ≃* K) (g h : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (hf : IntegralCoverIntertwines f h)
+    (hH : H ≤ levelThree) (hJ : J ≤ levelThree) (hK : K ≤ levelThree) (F : IntegralQuotientL2 K) :
+    integralConjugatePullback e g he hH hJ (integralConjugatePullback f h hf hJ hK F) =
+      integralConjugatePullback (e.trans f) (h * g) (integralCoverIntertwines_trans e f g h he hf) hH hK F := by
+  apply Lp.ext
+  have hinner := (integralConjugateMap_measurePreserving e g he hH hJ).quasiMeasurePreserving.ae_eq_comp
+    (integralConjugatePullback_ae f h hf hJ hK F)
+  filter_upwards [integralConjugatePullback_ae e g he hH hJ _, hinner,
+    integralConjugatePullback_ae (e.trans f) (h * g) (integralCoverIntertwines_trans e f g h he hf) hH hK F] with q ho hi ht
+  dsimp only [Function.comp_def] at hi
+  rw [ho, hi, ht, integralConjugateMap_trans]
+
+lemma kernelCoverLeg_representative {H J : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hJK : J ≤ globalKubotaKernel) [J.IsFiniteRelIndex globalKubotaKernel]
+    (e : H ≃* J) (g : SL(2, ℂ)) (he : IntegralCoverIntertwines e g)
+    (F : KernelQuotientL2) (f : KernelQuotient → ℂ)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f) :
+    kernelCoverLeg hHK hJK e g he F =ᵐ[integralQuotientVolume H]
+      fun q => f (integralCoverMap hJK (integralConjugateMap e g he q)) := by
+  have hc := (integralCoverPullback_ae hJK globalKubotaKernel_le_levelThree F).trans
+    ((integralCoverMap_quasiMeasurePreserving hJK globalKubotaKernel_le_levelThree).ae_eq_comp hrep)
+  exact (integralConjugatePullback_ae e g he
+    (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree) _).trans
+    ((integralConjugateMap_measurePreserving e g he
+      (hHK.trans globalKubotaKernel_le_levelThree) (hJK.trans globalKubotaKernel_le_levelThree)).quasiMeasurePreserving.ae_eq_comp hc)
+
+/-- Two legs on a common cover compose to a correspondence on the base quotient. -/
+theorem kernelCoverLeg_adjoint_comp {H Ji Jj : Subgroup (SL(2, O))}
+    (hHK : H ≤ globalKubotaKernel) (hiK : Ji ≤ globalKubotaKernel) (hjK : Jj ≤ globalKubotaKernel)
+    [Ji.IsFiniteRelIndex globalKubotaKernel] [Jj.IsFiniteRelIndex globalKubotaKernel]
+    (ei : H ≃* Ji) (ej : H ≃* Jj) (gi gj : SL(2, ℂ))
+    (hei : IntegralCoverIntertwines ei gi) (hej : IntegralCoverIntertwines ej gj) :
+    (ContinuousLinearMap.adjoint (kernelCoverLeg hHK hjK ej gj hej)).comp (kernelCoverLeg hHK hiK ei gi hei) =
+      kernelCorrespondenceL2 hjK hiK (ej.symm.trans ei) (gi * gj⁻¹)
+        (integralCoverIntertwines_trans ej.symm ei gj⁻¹ gi (integralCoverIntertwines_inverse ej gj hej) hei) := by
+  apply ContinuousLinearMap.ext
+  intro F
+  change ContinuousLinearMap.adjoint (kernelCoverLeg hHK hjK ej gj hej) (kernelCoverLeg hHK hiK ei gi hei F) = _
+  rw [kernelCoverLeg_adjoint]
+  change integralCoverTrace hjK globalKubotaKernel_le_levelThree
+    (integralConjugatePullback ej.symm gj⁻¹ (integralCoverIntertwines_inverse ej gj hej)
+      (hjK.trans globalKubotaKernel_le_levelThree) (hHK.trans globalKubotaKernel_le_levelThree)
+      (integralConjugatePullback ei gi hei
+        (hHK.trans globalKubotaKernel_le_levelThree) (hiK.trans globalKubotaKernel_le_levelThree)
+        (integralCoverPullback hiK globalKubotaKernel_le_levelThree F))) = _
+  rw [integralConjugatePullback_trans]
+  rfl
+
+theorem kernelCoverLeg_adjoint_sum_eigenvector
+    {H : Subgroup (SL(2, O))} {ι : Type*} [Fintype ι]
+    (J : ι → Subgroup (SL(2, O))) (hHK : H ≤ globalKubotaKernel) (hJK : ∀ i, J i ≤ globalKubotaKernel)
+    [∀ i, (J i).IsFiniteRelIndex globalKubotaKernel]
+    (e : ∀ i, H ≃* J i) (g : ι → SL(2, ℂ)) (he : ∀ i, IntegralCoverIntertwines (e i) (g i))
+    (F : KernelQuotientL2) (eigenvalue : ℂ) (hF : (F, eigenvalue • F) ∈ kernelEnergyLaplacian.graph)
+    (c : ι → ℂ) (j : ι) :
+    let D := ∑ i, c i • kernelCoverLeg hHK (hJK i) (e i) (g i) (he i) F
+    (ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK j) (e j) (g j) (he j)) D,
+      eigenvalue • ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK j) (e j) (g j) (he j)) D) ∈ kernelEnergyLaplacian.graph := by
+  let traced (i : ι) := ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK j) (e j) (g j) (he j))
+    (kernelCoverLeg hHK (hJK i) (e i) (g i) (he i) F)
+  have hi (i : ι) : (traced i, eigenvalue • traced i) ∈ kernelEnergyLaplacian.graph := by
+    change (((ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK j) (e j) (g j) (he j))).comp
+      (kernelCoverLeg hHK (hJK i) (e i) (g i) (he i))) F,
+      eigenvalue • ((ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK j) (e j) (g j) (he j))).comp
+      (kernelCoverLeg hHK (hJK i) (e i) (g i) (he i))) F) ∈ kernelEnergyLaplacian.graph
+    rw [kernelCoverLeg_adjoint_comp]
+    exact kernelCorrespondence_eigenvector _ _ _ _ _ F eigenvalue hF
+  have hsum : (∑ i, c i • (traced i, eigenvalue • traced i)) ∈ kernelEnergyLaplacian.graph :=
+    kernelEnergyLaplacian.graph.sum_mem (fun i _ => kernelEnergyLaplacian.graph.smul_mem (c i) (hi i))
+  have hEq : (∑ i, c i • (traced i, eigenvalue • traced i)) =
+      (∑ i, c i • traced i, eigenvalue • ∑ i, c i • traced i) := by
+    apply Prod.ext <;> simp only [Prod.fst_sum, Prod.snd_sum, Prod.smul_fst, Prod.smul_snd,
+      Finset.smul_sum, smul_smul, mul_comm]
+  rw [hEq] at hsum
+  simpa only [map_sum, map_smul] using hsum
+
+/-- A nonzero integral diagonal matrix defines a correspondence before imposing a character kernel. -/
+def integralDiagonalCorrespondence (d : O) : Subgroup (SL(2, O) × SL(2, O)) where
+  carrier := {MN | (!![d, 0; 0, 1] : Matrix (Fin 2) (Fin 2) O) * MN.1.val =
+    MN.2.val * !![d, 0; 0, 1]}
+  one_mem' := by simp
+  mul_mem' := by
+    rintro ⟨M, N⟩ ⟨M', N'⟩ h h'
+    change !![d, 0; 0, 1] * (M.val * M'.val) = (N.val * N'.val) * !![d, 0; 0, 1]
+    rw [← Matrix.mul_assoc, h, Matrix.mul_assoc, h', ← Matrix.mul_assoc]
+  inv_mem' := by
+    rintro ⟨M, N⟩ h
+    change !![d, 0; 0, 1] * (M⁻¹).val = (N⁻¹).val * !![d, 0; 0, 1]
+    calc
+      _ = ((N⁻¹).val * (N.val * !![d, 0; 0, 1])) * (M⁻¹).val := by
+        simp only [← Matrix.mul_assoc, ← Matrix.SpecialLinearGroup.coe_mul,
+          inv_mul_cancel, Matrix.SpecialLinearGroup.coe_one, Matrix.one_mul]
+      _ = ((N⁻¹).val * (!![d, 0; 0, 1] * M.val)) * (M⁻¹).val := by rw [h]
+      _ = _ := by
+        simp only [Matrix.mul_assoc, ← Matrix.SpecialLinearGroup.coe_mul,
+          mul_inv_cancel, Matrix.SpecialLinearGroup.coe_one, Matrix.mul_one]
+
+def integralDiagonalLeft (d : O) : integralDiagonalCorrespondence d →* SL(2, O) :=
+  (MonoidHom.fst _ _).comp (integralDiagonalCorrespondence d).subtype
+
+def integralDiagonalRight (d : O) : integralDiagonalCorrespondence d →* SL(2, O) :=
+  (MonoidHom.snd _ _).comp (integralDiagonalCorrespondence d).subtype
+
+lemma integralDiagonal_entries (d : O) (MN : integralDiagonalCorrespondence d) :
+    d * MN.1.1 0 0 = MN.1.2 0 0 * d ∧ d * MN.1.1 0 1 = MN.1.2 0 1 ∧
+      MN.1.1 1 0 = MN.1.2 1 0 * d ∧ MN.1.1 1 1 = MN.1.2 1 1 := by
+  have h := MN.property
+  have h00 := congrArg (fun A : Matrix (Fin 2) (Fin 2) O => A 0 0) h
+  have h01 := congrArg (fun A : Matrix (Fin 2) (Fin 2) O => A 0 1) h
+  have h10 := congrArg (fun A : Matrix (Fin 2) (Fin 2) O => A 1 0) h
+  have h11 := congrArg (fun A : Matrix (Fin 2) (Fin 2) O => A 1 1) h
+  norm_num [Matrix.mul_apply, Fin.sum_univ_two] at h00 h01 h10 h11
+  exact ⟨h00, h01, h10, h11⟩
+
+lemma integralDiagonalLeft_injective (d : O) (hd : d ≠ 0) : Function.Injective (integralDiagonalLeft d) := by
+  intro x y h
+  have hx := integralDiagonal_entries d x
+  have hy := integralDiagonal_entries d y
+  have hM : x.1.1 = y.1.1 := h
+  apply Subtype.ext
+  refine Prod.ext hM ?_
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j
+  · exact mul_right_cancel₀ hd (hx.1.symm.trans (by rw [hM]; exact hy.1))
+  · exact hx.2.1.symm.trans (by rw [hM]; exact hy.2.1)
+  · exact mul_right_cancel₀ hd (hx.2.2.1.symm.trans (by rw [hM]; exact hy.2.2.1))
+  · exact hx.2.2.2.symm.trans (by rw [hM]; exact hy.2.2.2)
+
+lemma integralDiagonalRight_injective (d : O) (hd : d ≠ 0) : Function.Injective (integralDiagonalRight d) := by
+  intro x y h
+  have hx := integralDiagonal_entries d x
+  have hy := integralDiagonal_entries d y
+  have hN : x.1.2 = y.1.2 := h
+  apply Subtype.ext
+  refine Prod.ext ?_ hN
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j
+  · exact mul_left_cancel₀ hd (hx.1.trans (by rw [hN]; exact hy.1.symm))
+  · exact mul_left_cancel₀ hd (hx.2.1.trans (by rw [hN]; exact hy.2.1.symm))
+  · exact hx.2.2.1.trans (by rw [hN]; exact hy.2.2.1.symm)
+  · exact hx.2.2.2.trans (by rw [hN]; exact hy.2.2.2.symm)
+
+def integralPrincipalLevel (d : O) : Subgroup (SL(2, O)) :=
+  (Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {d}))).ker
+
+lemma integralPrincipalLevel_entry (d : O) (M : integralPrincipalLevel d) (i j : Fin 2) :
+    d ∣ (M : SL(2, O)) i j - (if i = j then 1 else 0) := by
+  have hm : Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {d})) (M : SL(2, O)) = 1 := M.property
+  have h := congrArg (fun N : SL(2, O ⧸ Ideal.span {d}) => N i j) hm
+  change Ideal.Quotient.mk (Ideal.span {d}) ((M : SL(2, O)) i j) =
+    (1 : Matrix (Fin 2) (Fin 2) (O ⧸ Ideal.span {d})) i j at h
+  apply Ideal.mem_span_singleton.mp
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+  simpa only [Matrix.one_apply, apply_ite, map_one, map_zero] using h
+
+lemma integralPrincipalLevel_finiteIndex (d : O) (hd : d ≠ 0) : (integralPrincipalLevel d).FiniteIndex := by
+  letI : Finite (O ⧸ Ideal.span {d}) := (Ideal.span {d}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr hd)
+  unfold integralPrincipalLevel
+  infer_instance
+
+lemma integralPrincipalLevel_le_diagonalLeft (d : O) : integralPrincipalLevel d ≤ (integralDiagonalLeft d).range := by
+  intro M hM
+  obtain ⟨c, hc⟩ : d ∣ M 1 0 := by simpa using integralPrincipalLevel_entry d ⟨M, hM⟩ 1 0
+  let N : SL(2, O) := ⟨!![M 0 0, d * M 0 1; c, M 1 1], by
+    have hdet := M.property
+    rw [Matrix.det_fin_two, hc] at hdet
+    rw [Matrix.det_fin_two_of]
+    linear_combination hdet⟩
+  refine ⟨⟨(M, N), ?_⟩, rfl⟩
+  change !![d, 0; 0, 1] * M.val = N.val * !![d, 0; 0, 1]
+  apply Matrix.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;> simp [N, Matrix.mul_apply, Fin.sum_univ_two, hc, mul_comm]
+
+lemma integralPrincipalLevel_le_diagonalRight (d : O) : integralPrincipalLevel d ≤ (integralDiagonalRight d).range := by
+  intro N hN
+  obtain ⟨b, hb⟩ : d ∣ N 0 1 := by simpa using integralPrincipalLevel_entry d ⟨N, hN⟩ 0 1
+  let M : SL(2, O) := ⟨!![N 0 0, b; d * N 1 0, N 1 1], by
+    have hdet := N.property
+    rw [Matrix.det_fin_two, hb] at hdet
+    rw [Matrix.det_fin_two_of]
+    linear_combination hdet⟩
+  refine ⟨⟨(M, N), ?_⟩, rfl⟩
+  change !![d, 0; 0, 1] * M.val = N.val * !![d, 0; 0, 1]
+  apply Matrix.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;> simp [M, Matrix.mul_apply, Fin.sum_univ_two, hb, mul_comm]
+
+lemma integralDiagonal_finite_covers (d : O) (hd : d ≠ 0) :
+    (integralDiagonalLeft d).range.FiniteIndex ∧ (integralDiagonalRight d).range.FiniteIndex := by
+  letI := integralPrincipalLevel_finiteIndex d hd
+  exact ⟨Subgroup.finiteIndex_of_le (integralPrincipalLevel_le_diagonalLeft d),
+    Subgroup.finiteIndex_of_le (integralPrincipalLevel_le_diagonalRight d)⟩
+
+lemma finiteIndex_preimage {G G' : Type*} [Group G] [Group G']
+    (K : Subgroup G') [K.FiniteIndex] (f : G →* G') : (K.comap f).FiniteIndex := by
+  constructor
+  rw [Subgroup.index_comap]
+  exact fun h => (Subgroup.FiniteIndex.index_ne_zero (H := K)) (K.index_eq_zero_of_relIndex_eq_zero h)
+
+lemma finiteIndex_image {G G' : Type*} [Group G] [Group G']
+    (H : Subgroup G) [H.FiniteIndex] (f : G →* G') (hf : Function.Injective f)
+    [f.range.FiniteIndex] : (H.map f).FiniteIndex := by
+  constructor
+  rw [Subgroup.index_map_of_injective _ hf]
+  exact mul_ne_zero (Subgroup.FiniteIndex.index_ne_zero (H := H))
+    (Subgroup.FiniteIndex.index_ne_zero (H := f.range))
+
+/-- Restrict both sides to the actual multiplier kernel. Both restrictions retain finite index. -/
+def integralDiagonalKernel (d : O) : Subgroup (integralDiagonalCorrespondence d) :=
+  globalKubotaKernel.comap (integralDiagonalLeft d) ⊓ globalKubotaKernel.comap (integralDiagonalRight d)
+
+def integralDiagonalKernelLeft (d : O) : integralDiagonalKernel d →* SL(2, O) :=
+  (integralDiagonalLeft d).comp (integralDiagonalKernel d).subtype
+
+def integralDiagonalKernelRight (d : O) : integralDiagonalKernel d →* SL(2, O) :=
+  (integralDiagonalRight d).comp (integralDiagonalKernel d).subtype
+
+lemma integralDiagonalKernelLeft_le (d : O) : (integralDiagonalKernelLeft d).range ≤ globalKubotaKernel := by
+  rintro M ⟨x, rfl⟩
+  exact x.property.1
+
+lemma integralDiagonalKernelRight_le (d : O) : (integralDiagonalKernelRight d).range ≤ globalKubotaKernel := by
+  rintro M ⟨x, rfl⟩
+  exact x.property.2
+
+lemma integralDiagonalKernelLeft_injective (d : O) (hd : d ≠ 0) : Function.Injective (integralDiagonalKernelLeft d) :=
+  (integralDiagonalLeft_injective d hd).comp (integralDiagonalKernel d).subtype_injective
+
+lemma integralDiagonalKernelRight_injective (d : O) (hd : d ≠ 0) : Function.Injective (integralDiagonalKernelRight d) :=
+  (integralDiagonalRight_injective d hd).comp (integralDiagonalKernel d).subtype_injective
+
+lemma integralDiagonalKernel_finiteIndex (d : O) : (integralDiagonalKernel d).FiniteIndex := by
+  letI := globalKubotaKernel_finiteIndex
+  letI := finiteIndex_preimage globalKubotaKernel (integralDiagonalLeft d)
+  letI := finiteIndex_preimage globalKubotaKernel (integralDiagonalRight d)
+  unfold integralDiagonalKernel
+  infer_instance
+
+lemma integralDiagonalKernel_finite_covers (d : O) (hd : d ≠ 0) :
+    (integralDiagonalKernelLeft d).range.FiniteIndex ∧ (integralDiagonalKernelRight d).range.FiniteIndex := by
+  letI := integralDiagonalKernel_finiteIndex d
+  letI := (integralDiagonal_finite_covers d hd).1
+  letI := (integralDiagonal_finite_covers d hd).2
+  constructor
+  · rw [integralDiagonalKernelLeft, MonoidHom.range_comp, Subgroup.range_subtype]
+    exact finiteIndex_image _ _ (integralDiagonalLeft_injective d hd)
+  · rw [integralDiagonalKernelRight, MonoidHom.range_comp, Subgroup.range_subtype]
+    exact finiteIndex_image _ _ (integralDiagonalRight_injective d hd)
+
+def integralDiagonalKernelEquiv (d : O) (hd : d ≠ 0) :
+    (integralDiagonalKernelLeft d).range ≃* (integralDiagonalKernelRight d).range :=
+  (MonoidHom.ofInjective (integralDiagonalKernelLeft_injective d hd)).symm.trans
+    (MonoidHom.ofInjective (integralDiagonalKernelRight_injective d hd))
+
+lemma integralDiagonalKernel_pair (d : O) (hd : d ≠ 0) (M : (integralDiagonalKernelLeft d).range) :
+    ((M : SL(2, O)), (integralDiagonalKernelEquiv d hd M : SL(2, O))) ∈ integralDiagonalCorrespondence d := by
+  let x := (MonoidHom.ofInjective (integralDiagonalKernelLeft_injective d hd)).symm M
+  have hx : integralDiagonalKernelLeft d x = M := MonoidHom.apply_ofInjective_symm _ M
+  change ((M : SL(2, O)), integralDiagonalKernelRight d x) ∈ integralDiagonalCorrespondence d
+  rw [← hx]
+  exact x.1.property
+
+lemma integralDiagonal_complex_intertwines (d : O) (hd : d ≠ 0) (z : ℂ) (hz : z ≠ 0)
+    (hsq : z ^ 2 = ringComplex d) (MN : integralDiagonalCorrespondence d) :
+    complexDiagonal z hz * integralComplexMatrix MN.1.1 =
+      integralComplexMatrix MN.1.2 * complexDiagonal z hz := by
+  have he := integralDiagonal_entries d MN
+  have ha : MN.1.1 0 0 = MN.1.2 0 0 := mul_left_cancel₀ hd (he.1.trans (mul_comm _ _))
+  have h01 := congrArg ringComplex he.2.1
+  have h10 := congrArg ringComplex he.2.2.1
+  have h11 := congrArg ringComplex he.2.2.2
+  simp only [map_mul, ← hsq] at h01 h10
+  have hentry (M : SL(2, O)) (i j : Fin 2) : integralComplexMatrix M i j = ringComplex (M i j) := rfl
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, complexDiagonal, hentry]
+  · rw [ha, mul_comm]
+  · rw [← h01]
+    field_simp [hz]
+  · rw [h10]
+    field_simp [hz]
+  · rw [h11, mul_comm]
+
+lemma integralDiagonalKernel_intertwines (d : O) (hd : d ≠ 0) (z : ℂ) (hz : z ≠ 0)
+    (hsq : z ^ 2 = ringComplex d) : IntegralCoverIntertwines (integralDiagonalKernelEquiv d hd) (complexDiagonal z hz) := by
+  intro M
+  exact integralDiagonal_complex_intertwines d hd z hz hsq
+    ⟨_, integralDiagonalKernel_pair d hd M⟩
+
+namespace FiniteCorrespondenceCover
+variable {G : Type*} [Group G] {ι : Type*}
+
+/-- Intersect finitely many conjugated source subgroups inside the base group. -/
+def common (K R : Subgroup G) (a : ι → G ≃* G) : Subgroup G := K ⊓ ⨅ i, R.comap (a i).toMonoidHom
+
+lemma common_le (K R : Subgroup G) (a : ι → G ≃* G) : common K R a ≤ K := inf_le_left
+
+lemma common_le_preimage (K R : Subgroup G) (a : ι → G ≃* G) (i : ι) :
+    common K R a ≤ R.comap (a i).toMonoidHom := inf_le_right.trans (iInf_le _ i)
+
+lemma common_finiteIndex [Finite ι] (K R : Subgroup G) (a : ι → G ≃* G)
+    [K.FiniteIndex] [R.FiniteIndex] : (common K R a).FiniteIndex := by
+  letI : (⨅ i, R.comap (a i).toMonoidHom).FiniteIndex :=
+    Subgroup.finiteIndex_iInf (fun i => finiteIndex_preimage R (a i).toMonoidHom)
+  unfold common
+  infer_instance
+
+def toSource (K R : Subgroup G) (a : ι → G ≃* G) (i : ι) : common K R a →* R where
+  toFun h := ⟨a i (h : G), common_le_preimage K R a i h.property⟩
+  map_one' := Subtype.ext (map_one (a i))
+  map_mul' x y := Subtype.ext (map_mul (a i) (x : G) (y : G))
+
+lemma toSource_injective (K R : Subgroup G) (a : ι → G ≃* G) (i : ι) : Function.Injective (toSource K R a i) := by
+  intro x y hxy
+  apply Subtype.ext
+  exact (a i).injective (congrArg (fun r : R => (r : G)) hxy)
+
+lemma toSource_range (K R : Subgroup G) (a : ι → G ≃* G) (i : ι) :
+    (toSource K R a i).range = (common K R a).comap ((a i).symm.toMonoidHom.comp R.subtype) := by
+  ext r
+  constructor
+  · rintro ⟨h, rfl⟩
+    change (a i).symm (a i (h : G)) ∈ common K R a
+    simpa only [MulEquiv.symm_apply_apply] using h.property
+  · intro hr
+    refine ⟨⟨(a i).symm (r : G), hr⟩, ?_⟩
+    apply Subtype.ext
+    exact (a i).apply_symm_apply (r : G)
+
+lemma toSource_range_finiteIndex [Finite ι] (K R : Subgroup G) (a : ι → G ≃* G)
+    [K.FiniteIndex] [R.FiniteIndex] (i : ι) : (toSource K R a i).range.FiniteIndex := by
+  letI := common_finiteIndex K R a
+  rw [toSource_range]
+  exact finiteIndex_preimage _ _
+
+def hom (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) : common K R a →* G :=
+  L.subtype.comp (e.toMonoidHom.comp (toSource K R a i))
+
+lemma hom_injective (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) :
+    Function.Injective (hom K R L a e i) := L.subtype_injective.comp (e.injective.comp (toSource_injective K R a i))
+
+def target (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) : Subgroup G := (hom K R L a e i).range
+
+lemma target_le (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) : target K R L a e i ≤ L := by
+  rintro x ⟨h, rfl⟩
+  exact (e (toSource K R a i h)).property
+
+lemma target_finiteIndex [Finite ι] (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L)
+    [K.FiniteIndex] [R.FiniteIndex] [L.FiniteIndex] (i : ι) : (target K R L a e i).FiniteIndex := by
+  letI := toSource_range_finiteIndex K R a i
+  constructor
+  rw [target, hom, MonoidHom.range_comp, MonoidHom.range_comp, Subgroup.index_map_subtype,
+    Subgroup.index_map_of_bijective (f := e.toMonoidHom) e.bijective]
+  exact mul_ne_zero (Subgroup.FiniteIndex.index_ne_zero (H := (toSource K R a i).range))
+    (Subgroup.FiniteIndex.index_ne_zero (H := L))
+
+def equiv (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) : common K R a ≃* target K R L a e i :=
+  MonoidHom.ofInjective (hom_injective K R L a e i)
+
+lemma equiv_coe (K R L : Subgroup G) (a : ι → G ≃* G) (e : R ≃* L) (i : ι) (h : common K R a) :
+    (equiv K R L a e i h : G) = (e (toSource K R a i h) : G) := rfl
+
+end FiniteCorrespondenceCover
+
+abbrev CubeResidues (p : O) := O ⧸ Ideal.span {p ^ 3}
+
+def cubeResidueRepresentative (p : O) (r : CubeResidues p) : O := Classical.choose (Ideal.Quotient.mk_surjective r)
+
+lemma cubeResidueRepresentative_spec (p : O) (r : CubeResidues p) :
+    Ideal.Quotient.mk (Ideal.span {p ^ 3}) (cubeResidueRepresentative p r) = r :=
+  Classical.choose_spec (Ideal.Quotient.mk_surjective r)
+
+def cubeCommonAutomorphism (p : O) (r : CubeResidues p) : SL(2, O) ≃* SL(2, O) :=
+  MulAut.conj (integralTranslation (3 * cubeResidueRepresentative p r))
+
+/-- A single integral cover supports all translated cube-dilation branches. -/
+def cubeCommonCover (p : O) : Subgroup (SL(2, O)) :=
+  FiniteCorrespondenceCover.common globalKubotaKernel (integralDiagonalKernelRight (p ^ 3)).range
+    (cubeCommonAutomorphism p)
+
+lemma cubeCommonCover_le (p : O) : cubeCommonCover p ≤ globalKubotaKernel :=
+  FiniteCorrespondenceCover.common_le _ _ _
+
+lemma cubeCommonCover_finiteIndex (p : O) (hp : p ≠ 0) : (cubeCommonCover p).FiniteIndex := by
+  letI := globalKubotaKernel_finiteIndex
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI := (integralDiagonalKernel_finite_covers (p ^ 3) (pow_ne_zero 3 hp)).2
+  exact FiniteCorrespondenceCover.common_finiteIndex _ _ _
+
+def cubeCommonTarget (p : O) (hp : p ≠ 0) (r : CubeResidues p) : Subgroup (SL(2, O)) :=
+  FiniteCorrespondenceCover.target globalKubotaKernel (integralDiagonalKernelRight (p ^ 3)).range
+    (integralDiagonalKernelLeft (p ^ 3)).range (cubeCommonAutomorphism p)
+    (integralDiagonalKernelEquiv (p ^ 3) (pow_ne_zero 3 hp)).symm r
+
+lemma cubeCommonTarget_le (p : O) (hp : p ≠ 0) (r : CubeResidues p) : cubeCommonTarget p hp r ≤ globalKubotaKernel :=
+  (FiniteCorrespondenceCover.target_le _ _ _ _ _ r).trans (integralDiagonalKernelLeft_le (p ^ 3))
+
+lemma cubeCommonTarget_finiteIndex (p : O) (hp : p ≠ 0) (r : CubeResidues p) :
+    (cubeCommonTarget p hp r).FiniteIndex := by
+  letI := globalKubotaKernel_finiteIndex
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI := (integralDiagonalKernel_finite_covers (p ^ 3) (pow_ne_zero 3 hp)).1
+  letI := (integralDiagonalKernel_finite_covers (p ^ 3) (pow_ne_zero 3 hp)).2
+  exact FiniteCorrespondenceCover.target_finiteIndex _ _ _ _ _ r
+
+def cubeCommonEquiv (p : O) (hp : p ≠ 0) (r : CubeResidues p) : cubeCommonCover p ≃* cubeCommonTarget p hp r :=
+  FiniteCorrespondenceCover.equiv globalKubotaKernel (integralDiagonalKernelRight (p ^ 3)).range
+    (integralDiagonalKernelLeft (p ^ 3)).range (cubeCommonAutomorphism p)
+    (integralDiagonalKernelEquiv (p ^ 3) (pow_ne_zero 3 hp)).symm r
+
+def cubeDilationRoot (p : O) : ℂ :=
+  Classical.choose (IsAlgClosed.exists_pow_nat_eq (ringComplex (p ^ 3)) (by norm_num : 0 < 2))
+
+lemma cubeDilationRoot_sq (p : O) : cubeDilationRoot p ^ 2 = ringComplex (p ^ 3) :=
+  Classical.choose_spec (IsAlgClosed.exists_pow_nat_eq (ringComplex (p ^ 3)) (by norm_num : 0 < 2))
+
+lemma cubeDilationRoot_ne_zero (p : O) (hp : p ≠ 0) : cubeDilationRoot p ≠ 0 := by
+  intro hz
+  have hs := cubeDilationRoot_sq p
+  rw [hz, zero_pow (by norm_num)] at hs
+  exact ringComplex_ne_zero (pow_ne_zero 3 hp) hs.symm
+
+def cubeDilationMatrix (p : O) (hp : p ≠ 0) : SL(2, ℂ) := complexDiagonal (cubeDilationRoot p) (cubeDilationRoot_ne_zero p hp)
+
+def cubeAverageMatrix (p : O) (hp : p ≠ 0) (q : O) : SL(2, ℂ) :=
+  (cubeDilationMatrix p hp)⁻¹ * integralComplexMatrix (integralTranslation (3 * q))
+
+lemma cubeDilation_intertwines (p : O) (hp : p ≠ 0) :
+    IntegralCoverIntertwines (integralDiagonalKernelEquiv (p ^ 3) (pow_ne_zero 3 hp)) (cubeDilationMatrix p hp) :=
+  integralDiagonalKernel_intertwines (p ^ 3) (pow_ne_zero 3 hp) _ (cubeDilationRoot_ne_zero p hp) (cubeDilationRoot_sq p)
+
+/-- Every translated dilation acts between the two explicit finite-index subgroup quotients. -/
+lemma cubeCommon_intertwines (p : O) (hp : p ≠ 0) (r : CubeResidues p) :
+    IntegralCoverIntertwines (cubeCommonEquiv p hp r)
+      (cubeAverageMatrix p hp (cubeResidueRepresentative p r)) := by
+  intro h
+  let T := integralTranslation (3 * cubeResidueRepresentative p r)
+  let x := FiniteCorrespondenceCover.toSource globalKubotaKernel
+    (integralDiagonalKernelRight (p ^ 3)).range (cubeCommonAutomorphism p) r h
+  let e := integralDiagonalKernelEquiv (p ^ 3) (pow_ne_zero 3 hp)
+  have hT : T * (h : SL(2, O)) = (x : SL(2, O)) * T := by
+    change T * (h : SL(2, O)) = (T * (h : SL(2, O)) * T⁻¹) * T
+    simp only [mul_assoc, inv_mul_cancel, mul_one]
+  have hx := integralCoverIntertwines_inverse e (cubeDilationMatrix p hp) (cubeDilation_intertwines p hp) x
+  change ((cubeDilationMatrix p hp)⁻¹ * integralComplexMatrix T) * integralComplexMatrix (h : SL(2, O)) =
+    integralComplexMatrix (e.symm x : SL(2, O)) * ((cubeDilationMatrix p hp)⁻¹ * integralComplexMatrix T)
+  rw [mul_assoc, ← map_mul, hT, map_mul, ← mul_assoc, hx, mul_assoc]
+
+def cubeCommonLeg (p : O) (hp : p ≠ 0) (r : CubeResidues p) : KernelQuotientL2 →L[ℂ] IntegralQuotientL2 (cubeCommonCover p) := by
+  letI := cubeCommonTarget_finiteIndex p hp r
+  letI : (cubeCommonTarget p hp r).IsFiniteRelIndex globalKubotaKernel := Subgroup.isFiniteRelIndex_of_finiteIndex
+  exact kernelCoverLeg (cubeCommonCover_le p) (cubeCommonTarget_le p hp r) (cubeCommonEquiv p hp r)
+    (cubeAverageMatrix p hp (cubeResidueRepresentative p r)) (cubeCommon_intertwines p hp r)
+
+lemma integralProjection_translates_disjoint (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree)
+    (S : Set HyperbolicSpace) (hinj : Set.InjOn (integralOrbitProjection H) S) :
+    Pairwise (fun M N : H => Disjoint (M • S) (N • S)) := by
+  letI : IsCancelSMul H HyperbolicSpace := integralSubgroupFree H hH
+  intro M N hMN
+  apply Set.disjoint_left.mpr
+  rintro _ ⟨w, hw, rfl⟩ ⟨u, hu, he⟩
+  have hwu : w = u := hinj hw hu (by
+    calc
+      integralOrbitProjection H w = integralOrbitProjection H (M • w) := (integralOrbitProjection_eq H M w).symm
+      _ = integralOrbitProjection H (N • u) := congrArg _ he.symm
+      _ = integralOrbitProjection H u := integralOrbitProjection_eq H N u)
+  subst u
+  exact hMN (IsCancelSMul.right_cancel M N w he.symm)
+
+lemma integralProjection_measure_image (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree)
+    (S : Set HyperbolicSpace) (hS : MeasurableSet S) (hinj : Set.InjOn (integralOrbitProjection H) S) :
+    integralQuotientVolume H (integralOrbitProjection H '' S) = hyperbolicVolume S := by
+  have himg := hS.image_of_continuousOn_injOn (continuous_integralOrbitProjection H).continuousOn hinj
+  rw [integralQuotientVolume, Measure.map_apply (measurable_integralOrbitProjection _) himg,
+    Measure.restrict_apply ((measurable_integralOrbitProjection _) himg),
+    integralOrbitProjection_preimage_image, Set.iUnion_inter]
+  rw [measure_iUnion]
+  · exact ((hyperbolicFundamentalSet_isFundamentalDomain H hH hyperbolicVolume).measure_eq_tsum S).symm
+  · intro M N hMN
+    exact (integralProjection_translates_disjoint H hH S hinj hMN).mono Set.inter_subset_left Set.inter_subset_left
+  · intro M
+    exact (hS.const_smul M).inter (hyperbolicFundamentalSet_measurable _)
+
+/-- An injective measurable chart transports hyperbolic volume exactly to any level-three subgroup quotient. -/
+theorem integralProjection_measurePreserving_on (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree)
+    (U : Set HyperbolicSpace) (hU : MeasurableSet U) (hinj : Set.InjOn (integralOrbitProjection H) U) :
+    MeasurePreserving (integralOrbitProjection H) (hyperbolicVolume.restrict U)
+      ((integralQuotientVolume H).restrict (integralOrbitProjection H '' U)) := by
+  refine ⟨measurable_integralOrbitProjection _, ?_⟩
+  apply Measure.ext
+  intro B hB
+  rw [Measure.map_apply (measurable_integralOrbitProjection _) hB,
+    Measure.restrict_apply ((measurable_integralOrbitProjection _) hB), Measure.restrict_apply hB]
+  have he : B ∩ (integralOrbitProjection H '' U) =
+      integralOrbitProjection H '' (integralOrbitProjection H ⁻¹' B ∩ U) := by
+    ext q
+    constructor
+    · rintro ⟨hq, w, hw, rfl⟩
+      exact ⟨w, ⟨hq, hw⟩, rfl⟩
+    · rintro ⟨w, ⟨hw, hu⟩, rfl⟩
+      exact ⟨hw, ⟨w, hu, rfl⟩⟩
+  rw [he, integralProjection_measure_image H hH _ (((measurable_integralOrbitProjection _) hB).inter hU)
+    (hinj.mono Set.inter_subset_right)]
+
+lemma integralProjection_cuspPeriodRegion_injective (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree) :
+    Set.InjOn (integralOrbitProjection H) cuspPeriodRegion := by
+  intro u hu v hv he
+  obtain ⟨M, hM⟩ := (integralOrbitProjection_eq_iff H u v).mp he
+  have hMu : integralComplexMatrix (M : SL(2, O)) • v = u := hM
+  have hc : (M : SL(2, O)) 1 0 = 0 := by
+    by_contra hn
+    have hb := integral_hyperbolicHeight_mul_le_one (M : SL(2, O)) hn v
+    rw [hMu] at hb
+    have hhu : 1 < hyperbolicHeight u := hu.2
+    have hhv : 1 < hyperbolicHeight v := hv.2
+    nlinarith only [hb, hhu, hhv, mul_pos (sub_pos.mpr hhu) (sub_pos.mpr hhv)]
+  let N : levelThree := ⟨M, hH M.property⟩
+  have ht := levelThree_integral_eq_translation N hc
+  obtain ⟨z, t, htpos, hvrep⟩ := upperPoint_surjective v
+  have hua : u = upperPoint (z + ringComplex ((M : SL(2, O)) 0 1)) t htpos := by
+    rw [← hMu, ← hvrep, ht, complexTranslation_action]
+  have hvl : hyperbolicHorizontal v = z := by rw [← hvrep, hyperbolicHorizontal_upperPoint]
+  have hul : hyperbolicHorizontal u = z + ringComplex ((M : SL(2, O)) 0 1) := by
+    rw [hua, hyperbolicHorizontal_upperPoint]
+  obtain ⟨k, hk⟩ := levelThree_upper N
+  have hp : ringComplex ((M : SL(2, O)) 0 1) ∈ periodLattice := by
+    change ringComplex ((N : levelThree).1 0 1) ∈ periodLattice
+    rw [hk, map_mul, map_ofNat]
+    exact three_embedding_mem k
+  have hz := periodDomain_unique_translate _ _ _ hu.1 hv.1 hp (by rw [hul, hvl])
+  have hez : z + ringComplex ((M : SL(2, O)) 0 1) = z := by simpa only [hul, hvl] using hz
+  rw [hua, hez, ← hvrep]
+
+lemma integralProjection_cuspPeriodStrip_injective (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree)
+    (a b : ℝ) (ha : 1 < a) : Set.InjOn (integralOrbitProjection H) (cuspPeriodStrip a b) := by
+  apply (integralProjection_cuspPeriodRegion_injective H hH).mono
+  intro w hw
+  exact ⟨hw.1, ha.trans_le hw.2.1⟩
+
+lemma integralProjection_cuspPeriodStrip_measurePreserving (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree)
+    (a b : ℝ) (ha : 1 < a) :
+    MeasurePreserving (integralOrbitProjection H) (hyperbolicVolume.restrict (cuspPeriodStrip a b))
+      ((integralQuotientVolume H).restrict (integralOrbitProjection H '' cuspPeriodStrip a b)) := by
+  apply integralProjection_measurePreserving_on H hH _ (cuspPeriodStrip_measurable a b)
+  exact integralProjection_cuspPeriodStrip_injective H hH a b ha
+
+lemma integralCoverTraceFunction_continuous (H K : Subgroup (SL(2, O))) [H.IsFiniteRelIndex K]
+    (f : IntegralOrbitQuotient H → ℂ) (hf : Continuous f) : Continuous (integralCoverTraceFunction H K f) := by
+  letI : Fintype (IntegralCoverCosets H K) := Fintype.ofFinite _
+  have hc : Continuous (integralCoverTraceLift H K f) :=
+    continuous_finsetSum Finset.univ (fun q _ => hf.comp (integralCoverFiberPoint_continuous H K q))
+  exact hc.quotient_lift _
+
+section CuspAverageOrthogonality
+local instance kernelLevelFiniteCover : globalKubotaKernel.IsFiniteRelIndex levelThree := by
+  letI := globalKubotaKernel_finiteIndex
+  exact Subgroup.isFiniteRelIndex_of_finiteIndex
+
+/-- Fiber trace of the pairing with a fixed compact-height defect. -/
+def kernelDefectTrace (f : KernelQuotient → ℂ) : IntegralOrbitQuotient levelThree → ℂ :=
+  integralCoverTraceFunction globalKubotaKernel levelThree
+    (fun q => star (f q) * kernelQuotientDefect 5 6 (4 / 3) q)
+
+lemma kernelDefectTrace_continuous (f : KernelQuotient → ℂ) (hf : Continuous f) : Continuous (kernelDefectTrace f) :=
+  integralCoverTraceFunction_continuous _ _ _
+    (hf.star.mul (kernelQuotientDefect_contMDiff 5 6 (4 / 3) (by norm_num) (by norm_num)).continuous)
+
+lemma kernelDefectTrace_integral (f : KernelQuotient → ℂ) (hf : Continuous f) :
+    (∫ q, kernelDefectTrace f q ∂integralQuotientVolume levelThree) =
+      ∫ q, star (f q) * kernelQuotientDefect 5 6 (4 / 3) q ∂integralQuotientVolume globalKubotaKernel := by
+  apply integralCoverTraceFunction_integral globalKubotaKernel_le_levelThree le_rfl
+  · exact hf.star.measurable.mul (kernelQuotientDefect_measurable 5 6 (4 / 3) (by norm_num) (by norm_num))
+  · apply (hf.star.mul (kernelQuotientDefect_contMDiff 5 6 (4 / 3) (by norm_num) (by norm_num)).continuous).integrable_of_hasCompactSupport
+    exact (kernelQuotientDefect_hasCompactSupport 5 6 (by norm_num) (by norm_num) (4 / 3)).mul_left
+
+lemma kernelDefectTrace_upper (f : KernelQuotient → ℂ) (z : ℂ) (v : ℝ) (hv : 0 < v) (hv1 : 1 < v) :
+    kernelDefectTrace f (integralOrbitProjection levelThree (upperPoint z v hv)) =
+      letI : Fintype (IntegralCoverCosets globalKubotaKernel levelThree) := Fintype.ofFinite _
+      ∑ r : IntegralCoverCosets globalKubotaKernel levelThree,
+        (star (f (integralOrbitProjection globalKubotaKernel
+          (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv))) *
+            complexCharacter ((integralCoverRep globalKubotaKernel levelThree r)⁻¹)) *
+              cuspSeedDefectProfile 5 6 (4 / 3) v := by
+  letI : Fintype (IntegralCoverCosets globalKubotaKernel levelThree) := Fintype.ofFinite _
+  change (∑ r : IntegralCoverCosets globalKubotaKernel levelThree,
+    star (f (integralCoverFiberPoint globalKubotaKernel levelThree r (upperPoint z v hv))) *
+      kernelQuotientDefect 5 6 (4 / 3) (integralCoverFiberPoint globalKubotaKernel levelThree r (upperPoint z v hv))) = _
+  apply Finset.sum_congr rfl
+  intro r _
+  rw [integralCoverFiberPoint_rep, integralSubgroup_smul, integralComplexMatrix_levelThree]
+  change star (f (integralOrbitProjection globalKubotaKernel
+    (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv))) *
+      cuspCutoffCorrection 1 (cuspSeedDefectProfile 5 6 (4 / 3))
+        (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv) = _
+  rw [cuspCutoffCorrection_automorphy 1 le_rfl, cuspCutoffCorrection_upperPoint _ z v hv hv1]
+  exact (mul_assoc _ _ _).symm
+
+lemma kernelDefectTrace_average_zero (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (v : ℝ) (hv : 0 < v) (hv1 : 1 < v)
+    (havg : ∀ M : levelThree, (∫ z in periodDomain,
+      f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) = 0) :
+    (∫ z in periodDomain, kernelDefectTrace f (integralOrbitProjection levelThree (upperPoint z v hv))) = 0 := by
+  letI := periodDomain_finiteMeasure
+  letI : Fintype (IntegralCoverCosets globalKubotaKernel levelThree) := Fintype.ofFinite _
+  have hc (M : levelThree) : Continuous (fun z : ℂ =>
+      f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) :=
+    ((hf.comp (continuous_integralOrbitProjection _)).comp (continuous_hyperbolic_action _)).comp
+      (upperCoordinatesHomeomorph.continuous.comp
+        (show Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) by fun_prop))
+  simp_rw [kernelDefectTrace_upper f _ v hv hv1]
+  have hi (r : IntegralCoverCosets globalKubotaKernel levelThree) : Integrable
+      (fun z : ℂ => (star (f (integralOrbitProjection globalKubotaKernel
+        (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv))) *
+          complexCharacter ((integralCoverRep globalKubotaKernel levelThree r)⁻¹)) *
+            cuspSeedDefectProfile 5 6 (4 / 3) v) (volume.restrict periodDomain) := by
+    apply (periodDomain_continuous_memLp _ ?_).integrable (by norm_num)
+    exact (((hc ((integralCoverRep globalKubotaKernel levelThree r)⁻¹)).star.mul continuous_const).mul continuous_const)
+  rw [integral_finsetSum Finset.univ (fun r _ => hi r)]
+  apply Finset.sum_eq_zero
+  intro r _
+  rw [integral_mul_const, integral_mul_const]
+  have hstar : (∫ z in periodDomain,
+      star (f (integralOrbitProjection globalKubotaKernel
+        (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv)))) =
+      star (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel
+        (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • upperPoint z v hv))) := by
+    simp only [Complex.star_def]
+    exact integral_conj
+  rw [hstar, havg, star_zero, zero_mul, zero_mul]
+
+lemma kernelDefectTrace_strip_integral_zero (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (havg : ∀ M : levelThree, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) = 0) :
+    (∫ w in cuspPeriodStrip 5 6, kernelDefectTrace f (integralOrbitProjection levelThree w) ∂hyperbolicVolume) = 0 := by
+  let G : HyperbolicSpace → ℂ := fun w => kernelDefectTrace f (integralOrbitProjection levelThree w)
+  have hg : Continuous G := (kernelDefectTrace_continuous f hf).comp (continuous_integralOrbitProjection _)
+  change (∫ w in cuspPeriodStrip 5 6, G w ∂hyperbolicVolume) = 0
+  rw [cuspPeriodStrip_integral_coordinates G hg.aestronglyMeasurable (cuspCoordinateLift_weighted_integrable G hg)]
+  calc
+    _ = ∫ v in Set.Icc (5 : ℝ) 6, (0 : ℂ) := by
+      apply setIntegral_congr_fun measurableSet_Icc
+      intro v hv
+      have hp : 0 < v := lt_of_lt_of_le (by norm_num) hv.1
+      have h1 : 1 < v := lt_of_lt_of_le (by norm_num) hv.1
+      have hz := kernelDefectTrace_average_zero f hf v hp h1 (fun M => havg M v hp h1)
+      simp only [G, cuspCoordinateLift_positive v _ hp]
+      rw [hz, zero_div]
+    _ = 0 := by simp only [integral_zero]
+
+lemma periodDomain_reduction (z : ℂ) : ∃ n : O, z + 3 * ringComplex n ∈ periodDomain := by
+  obtain ⟨p, hp, _⟩ := ZSpan.exist_unique_vadd_mem_fundamentalDomain periodBasis z
+  obtain ⟨n, rfl⟩ := periodEquiv.surjective p
+  change 3 * ringComplex n + z ∈ periodDomain at hp
+  exact ⟨n, by simpa only [add_comm] using hp⟩
+
+lemma levelProjection_mem_cuspStrip_of_height (w : HyperbolicSpace)
+    (hw : hyperbolicHeight w ∈ Set.Icc (5 : ℝ) 6) :
+    integralOrbitProjection levelThree w ∈ integralOrbitProjection levelThree '' cuspPeriodStrip 5 6 := by
+  obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective w
+  obtain ⟨n, hn⟩ := periodDomain_reduction z
+  refine ⟨upperPoint (z + 3 * ringComplex n) v hv, ?_, ?_⟩
+  · exact ⟨by simpa only [hyperbolicHorizontal_upperPoint] using hn,
+      by simpa only [hyperbolicHeight_upperPoint] using hw⟩
+  · exact congrArg (integralCoverMap globalKubotaKernel_le_levelThree)
+      (kernelProjection_upper_period v hv z n)
+
+lemma smoothCuspSeedDefect_support_levelStrip (w : HyperbolicSpace)
+    (hw : smoothCuspSeedDefect 5 6 (4 / 3) w ≠ 0) :
+    integralOrbitProjection levelThree w ∈ integralOrbitProjection levelThree '' cuspPeriodStrip 5 6 := by
+  obtain ⟨r, hr⟩ := smoothCuspSeedDefect_support 5 6 (4 / 3) (by norm_num) w hw
+  induction r using Quotient.inductionOn with
+  | _ M =>
+    change (5 : ℝ) ≤ cosetHeight (cosetOf M) w ∧ cosetHeight (cosetOf M) w ≤ 6 at hr
+    rw [cosetHeight_cosetOf] at hr
+    have hm := levelProjection_mem_cuspStrip_of_height (complexMatrix M • w) hr
+    simpa only [← integralComplexMatrix_levelThree, integralOrbitProjection_eq] using hm
+
+/-- The finite character trace is supported in one ordinary cusp strip. -/
+lemma kernelDefectTrace_support (f : KernelQuotient → ℂ) (q : IntegralOrbitQuotient levelThree)
+    (hq : kernelDefectTrace f q ≠ 0) :
+    q ∈ integralOrbitProjection levelThree '' cuspPeriodStrip 5 6 := by
+  letI : Fintype (IntegralCoverCosets globalKubotaKernel levelThree) := Fintype.ofFinite _
+  induction q using Quotient.inductionOn with
+  | _ w =>
+    change integralOrbitProjection levelThree w ∈ integralOrbitProjection levelThree '' cuspPeriodStrip 5 6
+    change (∑ r : IntegralCoverCosets globalKubotaKernel levelThree,
+      star (f (integralCoverFiberPoint globalKubotaKernel levelThree r w)) *
+        kernelQuotientDefect 5 6 (4 / 3) (integralCoverFiberPoint globalKubotaKernel levelThree r w)) ≠ 0 at hq
+    obtain ⟨r, _, hr⟩ := Finset.exists_ne_zero_of_sum_ne_zero hq
+    have hd := (mul_ne_zero_iff.mp hr).2
+    rw [integralCoverFiberPoint_rep, integralSubgroup_smul, integralComplexMatrix_levelThree] at hd
+    have hs := smoothCuspSeedDefect_support_levelStrip
+      (complexMatrix ((integralCoverRep globalKubotaKernel levelThree r)⁻¹) • w) hd
+    simpa only [← integralComplexMatrix_levelThree, integralOrbitProjection_eq] using hs
+
+lemma kernelDefectTrace_integral_zero (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (havg : ∀ M : levelThree, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) = 0) :
+    (∫ q, kernelDefectTrace f q ∂integralQuotientVolume levelThree) = 0 := by
+  let S := integralOrbitProjection levelThree '' cuspPeriodStrip 5 6
+  have hS : MeasurableSet S := (cuspPeriodStrip_measurable 5 6).image_of_continuousOn_injOn
+    (continuous_integralOrbitProjection levelThree).continuousOn
+    (integralProjection_cuspPeriodStrip_injective levelThree le_rfl 5 6 (by norm_num))
+  have he : S.indicator (kernelDefectTrace f) = kernelDefectTrace f := by
+    funext q
+    by_cases hq : q ∈ S
+    · exact Set.indicator_of_mem hq _
+    · rw [Set.indicator_of_notMem hq]
+      exact (not_not.mp (fun hn => hq (kernelDefectTrace_support f q hn))).symm
+  calc
+    _ = ∫ q in S, kernelDefectTrace f q ∂integralQuotientVolume levelThree := by
+      rw [← integral_indicator hS, he]
+    _ = ∫ w in cuspPeriodStrip 5 6,
+        kernelDefectTrace f (integralOrbitProjection levelThree w) ∂hyperbolicVolume := by
+      rw [← (integralProjection_cuspPeriodStrip_measurePreserving levelThree le_rfl 5 6 (by norm_num)).map_eq]
+      exact integral_map (measurable_integralOrbitProjection _).aemeasurable
+        (kernelDefectTrace_continuous f hf).aestronglyMeasurable
+    _ = 0 := kernelDefectTrace_strip_integral_zero f hf havg
+
+lemma kernelL2Defect_inner_zero_of_cusp_averages (F : KernelQuotientL2)
+    (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (havg : ∀ M : levelThree, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) = 0) :
+    inner ℂ F (kernelL2Defect 5 6 (by norm_num) (by norm_num) (4 / 3)) = 0 := by
+  rw [L2.inner_def]
+  calc
+    _ = ∫ q, star (f q) * kernelQuotientDefect 5 6 (4 / 3) q ∂integralQuotientVolume globalKubotaKernel := by
+      apply integral_congr_ae
+      filter_upwards [hrep, kernelL2Defect_ae_eq 5 6 (by norm_num) (by norm_num) (4 / 3)] with q hq hd
+      rw [hq, hd, RCLike.inner_apply, starRingEnd_apply, mul_comm]
+    _ = ∫ q, kernelDefectTrace f q ∂integralQuotientVolume levelThree := (kernelDefectTrace_integral f hf).symm
+    _ = 0 := kernelDefectTrace_integral_zero f hf havg
+
+/-- Vanishing cusp averages annihilate the residue pairing at eigenvalue eight ninths. -/
+theorem cubicEisensteinResidue_orthogonal_of_zero_cusp_averages
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (havg : ∀ M : levelThree, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (complexMatrix M • upperPoint z v hv))) = 0) :
+    inner ℂ F cubicEisensteinResidue = 0 := by
+  have he : cubicEisensteinResidue = kernelEisensteinResidueVector 5 6 (by norm_num) (by norm_num) :=
+    kernelEisensteinResidueVector_cutoff_independent 2 3 5 6 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  rw [he, kernelEisensteinResidueVector_pairing _ _ _ _ F hF,
+    kernelL2Defect_inner_zero_of_cusp_averages F f hf hrep havg, mul_zero]
+
+lemma cubicEisensteinResidue_translate_orthogonal_of_zero_averages
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (havg : ∀ N : SL(2, O), ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))) = 0)
+    (g : rationalExtension) : inner ℂ F (kernelRationalPullback g cubicEisensteinResidue) = 0 := by
+  rw [kernelRationalPullback_pairing_inverse]
+  have hrepG : kernelRationalPullback g⁻¹ F =ᵐ[integralQuotientVolume globalKubotaKernel]
+      fun q => f (kernelRationalAction g⁻¹ q) :=
+    (kernelRationalPullback_ae g⁻¹ F).trans
+      ((kernelRationalAction_measurePreserving g⁻¹).quasiMeasurePreserving.ae_eq_comp hrep)
+  apply cubicEisensteinResidue_orthogonal_of_zero_cusp_averages _
+    (kernelRational_eigenvector g⁻¹ F (8 / 9) hF) _ (hf.comp (kernelRationalAction_continuous _)) hrepG
+  intro N v hv hlarge
+  simpa only [Function.comp_apply, kernelRationalAction_mk, map_mul, mul_smul, integralComplexMatrix_levelThree] using
+    havg ((g⁻¹ : rationalExtension) * (N : SL(2, O))) v hv hlarge
+
+theorem cubicSourceResidue_orthogonal_of_zero_integral_cusp_averages
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (havg : ∀ N : SL(2, O), ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))) = 0) :
+    inner ℂ F (kernelRationalSourceProjection cubicEisensteinResidue) = 0 := by
+  rw [kernelRationalSourceProjection_apply, inner_smul_right, inner_sum]
+  simp only [cubicEisensteinResidue_translate_orthogonal_of_zero_averages F hF f hf hrep havg,
+    Finset.sum_const_zero, mul_zero]
+
+/-- A finite correspondence combination vanishes if every adjoint has zero cusp averages. -/
+theorem commonCover_source_span_vanish_of_zero_averages
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℂ E] [CompleteSpace E]
+    {ι : Type*} [Fintype ι] (leg : ι → KernelQuotientL2 →L[ℂ] E) (c : ι → ℂ) (D : E)
+    (hD : D = ∑ i, c i • leg i (kernelRationalSourceProjection cubicEisensteinResidue))
+    (hEig : ∀ i, (ContinuousLinearMap.adjoint (leg i) D,
+      (8 / 9 : ℂ) • ContinuousLinearMap.adjoint (leg i) D) ∈ kernelEnergyLaplacian.graph)
+    (f : ι → KernelQuotient → ℂ) (hf : ∀ i, Continuous (f i))
+    (hrep : ∀ i, ContinuousLinearMap.adjoint (leg i) D =ᵐ[integralQuotientVolume globalKubotaKernel] f i)
+    (havg : ∀ i, ∀ N : SL(2, O), ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      (∫ z in periodDomain, f i (integralOrbitProjection globalKubotaKernel (integralComplexMatrix N • upperPoint z v hv))) = 0) :
+    D = 0 := by
+  apply (inner_self_eq_zero (𝕜 := ℂ)).mp
+  calc
+    inner ℂ D D = inner ℂ D (∑ i, c i • leg i (kernelRationalSourceProjection cubicEisensteinResidue)) :=
+      congrArg (inner ℂ D) hD
+    _ = ∑ i, c i * inner ℂ D (leg i (kernelRationalSourceProjection cubicEisensteinResidue)) := by
+      simp only [inner_sum, inner_smul_right]
+    _ = 0 := by
+      apply Finset.sum_eq_zero
+      intro i _
+      rw [← ContinuousLinearMap.adjoint_inner_left,
+        cubicSourceResidue_orthogonal_of_zero_integral_cusp_averages _ (hEig i) (f i) (hf i) (hrep i) (havg i), mul_zero]
+
+end CuspAverageOrthogonality
+
+section PeriodAffineAverages
+local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+local instance : Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
+  inferInstanceAs (Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
+local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
+  inferInstanceAs (IsProbabilityMeasure AddCircle.haarAddCircle)
+
+/-- Integral multiplication descends to an endomorphism of the cusp torus. -/
+def periodMultiplication (b : O) : UnitAddTorus (Fin 2) →+ UnitAddTorus (Fin 2) where
+  toFun t := ![(Coordinates.coords b).1 • t 0 + (Coordinates.coords (b * omega)).1 • t 1,
+    (Coordinates.coords b).2 • t 0 + (Coordinates.coords (b * omega)).2 • t 1]
+  map_zero' := by ext i; fin_cases i <;> simp
+  map_add' t u := by ext i; fin_cases i <;> simp [smul_add, add_add_add_comm]
+
+lemma periodVector_mul (b : O) (x : Fin 2 → ℝ) :
+    ringComplex b * periodVector x = periodVector
+      ![(Coordinates.coords b).1 * x 0 + (Coordinates.coords (b * omega)).1 * x 1,
+        (Coordinates.coords b).2 * x 0 + (Coordinates.coords (b * omega)).2 * x 1] := by
+  have he (c : O) : ringComplex c = (Coordinates.coords c).1 + (Coordinates.coords c).2 * ringComplex omega := by
+    conv_lhs => rw [← Coordinates.eval_coords c, ringComplex_eval]
+  rw [periodVector_apply, periodVector_apply]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+  push_cast
+  calc
+    ringComplex b * (3 * ((x 0 : ℂ) + (x 1 : ℂ) * ringComplex omega)) =
+        3 * ((x 0 : ℂ) * ringComplex b + (x 1 : ℂ) * ringComplex (b * omega)) := by rw [map_mul]; ring
+    _ = _ := by rw [he b, he (b * omega)]; ring
+
+lemma periodTorus_mul (b : O) (z : ℂ) :
+    periodTorus (ringComplex b * z) = periodMultiplication b (periodTorus z) := by
+  obtain ⟨x, rfl⟩ := periodVector.surjective z
+  rw [periodVector_mul, periodTorus_periodVector, periodTorus_periodVector]
+  ext i
+  fin_cases i <;> simp only [periodMultiplication, AddMonoidHom.coe_mk, ZeroHom.coe_mk,
+    ← AddCircle.coe_zsmul, ← AddCircle.coe_add, zsmul_eq_mul] <;> rfl
+
+lemma periodMultiplication_continuous (b : O) : Continuous (periodMultiplication b) := by
+  apply continuous_pi
+  intro i
+  fin_cases i <;> change Continuous (fun t : UnitAddTorus (Fin 2) => _ • t 0 + _ • t 1) <;> fun_prop
+
+lemma periodMultiplication_surjective (b : O) (hb : b ≠ 0) : Function.Surjective (periodMultiplication b) := by
+  intro t
+  refine ⟨periodTorus (periodSection t / ringComplex b), ?_⟩
+  have hc : ringComplex b * (periodSection t / ringComplex b) = periodSection t := by
+    field_simp [ringComplex_ne_zero hb]
+  rw [← periodTorus_mul, hc, periodTorus_section]
+
+lemma periodMultiplication_measurePreserving (b : O) (hb : b ≠ 0) :
+    MeasurePreserving (periodMultiplication b) volume volume :=
+  AddMonoidHom.measurePreserving (periodMultiplication_continuous b) (periodMultiplication_surjective b hb) rfl
+
+lemma periodFunction_descends (f : ℂ → ℂ)
+    (hper : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z)
+    (z w : ℂ) (he : periodTorus z = periodTorus w) : f z = f w := by
+  have hs (i : Fin 2) : ((periodBasis.equivFunL (z - w) i : ℝ) : UnitAddCircle) = 0 := by
+    simp only [map_sub, Pi.sub_apply, AddCircle.coe_sub]
+    exact sub_eq_zero.mpr (congrFun he i)
+  obtain ⟨a, ha⟩ := (AddCircle.coe_eq_zero_iff (1 : ℝ)).mp (hs 0)
+  obtain ⟨b, hb⟩ := (AddCircle.coe_eq_zero_iff (1 : ℝ)).mp (hs 1)
+  simp only [zsmul_eq_mul, mul_one] at ha hb
+  have hx : periodBasis.equivFunL (z - w) = ![(a : ℝ), (b : ℝ)] := by
+    ext i
+    fin_cases i
+    · exact ha.symm
+    · exact hb.symm
+  have hd : z - w = 3 * ringComplex (Coordinates.eval a b) := by
+    calc
+      z - w = periodVector (periodBasis.equivFunL (z - w)) := (periodBasis.equivFunL.symm_apply_apply _).symm
+      _ = _ := by
+        rw [hx, periodVector_apply, ringComplex_eval]
+        simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, Complex.ofReal_intCast]
+  have hz : z = w + 3 * ringComplex (Coordinates.eval a b) := by linear_combination hd
+  rw [hz, hper]
+
+/-- A nonzero integral dilation preserves the normalized average of a periodic function. -/
+theorem period_integral_eisenstein_mul (f : ℂ → ℂ) (hf : Measurable f)
+    (hper : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z) (b : O) (hb : b ≠ 0) :
+    (∫ z in periodDomain, f (ringComplex b * z)) = ∫ z in periodDomain, f z := by
+  let F := f ∘ periodSection
+  have hF : Measurable F := hf.comp periodSection_measurableEmbedding.measurable
+  have hdesc (z : ℂ) : F (periodTorus z) = f z :=
+    periodFunction_descends f hper _ _ (periodTorus_section _)
+  have hi : (∫ t, F (periodMultiplication b t)) = ∫ t, F t := by
+    calc
+      _ = ∫ t, F t ∂Measure.map (periodMultiplication b) volume :=
+        (integral_map (periodMultiplication_continuous b).measurable.aemeasurable hF.aestronglyMeasurable).symm
+      _ = _ := by rw [(periodMultiplication_measurePreserving b hb).map_eq]
+  rw [periodTorus_integral, periodTorus_integral] at hi
+  simp_rw [← periodTorus_mul, hdesc] at hi
+  have hc : (periodCovolumeDensity : ℝ) ≠ 0 := by exact_mod_cast periodCovolumeDensity_pos.ne'
+  have hi' := congrArg (fun x : ℂ => (periodCovolumeDensity : ℝ)⁻¹ • x) hi
+  simpa only [smul_smul, inv_mul_cancel₀ hc, one_smul] using hi' 
+
+lemma period_integral_eisenstein_affine (f : ℂ → ℂ) (hf : Measurable f)
+    (hper : ∀ (n : O) (z : ℂ), f (z + 3 * ringComplex n) = f z)
+    (b : O) (hb : b ≠ 0) (c : ℂ) :
+    (∫ z in periodDomain, f (ringComplex b * z + c)) = ∫ z in periodDomain, f z := by
+  have hshift : (∫ z in periodDomain, f (z + c)) = ∫ z in periodDomain, f z := by
+    simpa only [add_comm] using period_integral_translation f hper c
+  calc
+    _ = ∫ z in periodDomain, f (z + c) := period_integral_eisenstein_mul _
+      (hf.comp (continuous_id.add continuous_const).measurable)
+      (fun n z => by simpa only [Function.comp_apply, Pi.add_apply, id_eq, add_right_comm] using hper n (z + c)) b hb
+    _ = _ := hshift
+
+end PeriodAffineAverages
+
+lemma kernelRationalCusp_period (f : KernelQuotient → ℂ) (M : rationalExtension)
+    (v : ℝ) (hv : 0 < v) (n : O) (z : ℂ) :
+    f (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint (z + 3 * ringComplex n) v hv)) =
+    f (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint z v hv)) := by
+  simpa only [kernelRationalAction_mk] using
+    congrArg (fun q => f (kernelRationalAction M q)) (kernelProjection_upper_period v hv z n)
+
+lemma kernelRationalCusp_average_eq_enlarged (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (M : rationalExtension) (v : ℝ) (hv : 0 < v) (b : O) (hb : b ≠ 0) :
+    (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint (ringComplex b * z) v hv))) =
+    ∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint z v hv)) := by
+  refine period_integral_eisenstein_mul
+    (fun z => f (integralOrbitProjection globalKubotaKernel
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint z v hv))) ?_
+    (kernelRationalCusp_period f M v hv) b hb
+  exact (((hf.comp (continuous_integralOrbitProjection _)).comp (continuous_hyperbolic_action _)).comp
+    (upperCoordinatesHomeomorph.continuous.comp
+      (show Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) by fun_prop))).measurable
+
+/-- Enlarged cusp cells suffice: integral dilations preserve the ordinary cusp average. -/
+theorem cubicSourceResidue_orthogonal_of_zero_enlarged_cusp_averages
+    (F : KernelQuotientL2) (hF : (F, (8 / 9 : ℂ) • F) ∈ kernelEnergyLaplacian.graph)
+    (f : KernelQuotient → ℂ) (hf : Continuous f)
+    (hrep : F =ᵐ[integralQuotientVolume globalKubotaKernel] f)
+    (havg : ∀ N : rationalExtension, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ∃ b : O, b ≠ 0 ∧ (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel
+        (integralComplexMatrix (N : SL(2, O)) • upperPoint (ringComplex b * z) v hv))) = 0) :
+    inner ℂ F (kernelRationalSourceProjection cubicEisensteinResidue) = 0 := by
+  have hzero (N : rationalExtension) (v : ℝ) (hv : 0 < v) (h1 : 1 < v) :
+      (∫ z in periodDomain, f (integralOrbitProjection globalKubotaKernel
+        (integralComplexMatrix (N : SL(2, O)) • upperPoint z v hv))) = 0 := by
+    obtain ⟨b, hb, hav⟩ := havg N v hv h1
+    rw [kernelRationalCusp_average_eq_enlarged f hf N v hv b hb] at hav
+    exact hav
+  rw [kernelRationalSourceProjection_apply, inner_smul_right, inner_sum]
+  have htranslate (g : rationalExtension) : inner ℂ F (kernelRationalPullback g cubicEisensteinResidue) = 0 := by
+    rw [kernelRationalPullback_pairing_inverse]
+    have hrepG : kernelRationalPullback g⁻¹ F =ᵐ[integralQuotientVolume globalKubotaKernel]
+        fun q => f (kernelRationalAction g⁻¹ q) :=
+      (kernelRationalPullback_ae g⁻¹ F).trans
+        ((kernelRationalAction_measurePreserving g⁻¹).quasiMeasurePreserving.ae_eq_comp hrep)
+    apply cubicEisensteinResidue_orthogonal_of_zero_cusp_averages _
+      (kernelRational_eigenvector g⁻¹ F (8 / 9) hF) _ (hf.comp (kernelRationalAction_continuous _)) hrepG
+    intro N v hv hlarge
+    let N' : rationalExtension := ⟨N, levelThree_le_rationalExtension N.property⟩
+    simpa only [Function.comp_apply, kernelRationalAction_mk, map_mul, mul_smul,
+      Subgroup.coe_mul, integralComplexMatrix_levelThree, N'] using hzero (g⁻¹ * N') v hv hlarge
+  simp only [htranslate, Finset.sum_const_zero, mul_zero]
+
+/-- Energy compatibility supplies the adjoint eigenvector property for actual common-cover legs. -/
+theorem kernelCoverLeg_source_sum_vanish_of_zero_enlarged_averages
+    {H : Subgroup (SL(2, O))} {ι : Type*} [Fintype ι]
+    (J : ι → Subgroup (SL(2, O))) (hHK : H ≤ globalKubotaKernel) (hJK : ∀ i, J i ≤ globalKubotaKernel)
+    [∀ i, (J i).IsFiniteRelIndex globalKubotaKernel]
+    (e : ∀ i, H ≃* J i) (g : ι → SL(2, ℂ)) (he : ∀ i, IntegralCoverIntertwines (e i) (g i))
+    (c : ι → ℂ)
+    (f : ι → KernelQuotient → ℂ) (hf : ∀ i, Continuous (f i))
+    (hrep : ∀ i, ContinuousLinearMap.adjoint (kernelCoverLeg hHK (hJK i) (e i) (g i) (he i))
+      (∑ j, c j • kernelCoverLeg hHK (hJK j) (e j) (g j) (he j)
+        (kernelRationalSourceProjection cubicEisensteinResidue)) =ᵐ[integralQuotientVolume globalKubotaKernel] f i)
+    (havg : ∀ i, ∀ N : rationalExtension, ∀ v : ℝ, ∀ hv : 0 < v, 1 < v →
+      ∃ b : O, b ≠ 0 ∧ (∫ z in periodDomain, f i (integralOrbitProjection globalKubotaKernel
+        (integralComplexMatrix (N : SL(2, O)) • upperPoint (ringComplex b * z) v hv))) = 0) :
+    (∑ i, c i • kernelCoverLeg hHK (hJK i) (e i) (g i) (he i)
+      (kernelRationalSourceProjection cubicEisensteinResidue)) = 0 := by
+  let D := ∑ i, c i • kernelCoverLeg hHK (hJK i) (e i) (g i) (he i)
+    (kernelRationalSourceProjection cubicEisensteinResidue)
+  apply (inner_self_eq_zero (𝕜 := ℂ)).mp
+  change inner ℂ D D = 0
+  change inner ℂ D (∑ i, c i • kernelCoverLeg hHK (hJK i) (e i) (g i) (he i)
+    (kernelRationalSourceProjection cubicEisensteinResidue)) = 0
+  rw [inner_sum]
+  apply Finset.sum_eq_zero
+  intro i _
+  rw [inner_smul_right, ← ContinuousLinearMap.adjoint_inner_left]
+  have heig := kernelCoverLeg_adjoint_sum_eigenvector J hHK hJK e g he
+    (kernelRationalSourceProjection cubicEisensteinResidue) (8 / 9)
+    kernelRationalSourceProjection_cubicEisensteinResidue_eigenvector c i
+  rw [cubicSourceResidue_orthogonal_of_zero_enlarged_cusp_averages _ heig (f i) (hf i) (hrep i) (havg i), mul_zero]
+
+
+/-- Extract a prime power up to a prescribed exponent, including the zero input. -/
+lemma bounded_prime_power_factor (p a : O) (n : ℕ) :
+    ∃ j ≤ n, ∃ b, a = p ^ j * b ∧ (j = n ∨ ¬ p ∣ b) := by
+  induction n generalizing a with
+  | zero => exact ⟨0, le_rfl, a, by simp, Or.inl rfl⟩
+  | succ n ih =>
+    by_cases h : p ∣ a
+    · obtain ⟨a', rfl⟩ := h
+      obtain ⟨j, hj, b, hb, hn⟩ := ih a'
+      refine ⟨j + 1, Nat.succ_le_succ hj, b, ?_, ?_⟩
+      · rw [hb, pow_succ]; ring
+      · exact hn.elim (fun he => Or.inl (congrArg (fun k => k + 1) he)) Or.inr
+    · exact ⟨0, Nat.zero_le _, a, by simp, Or.inr h⟩
+
+lemma primary_pow_mod_three (p : O) (hp : lambda ^ 2 ∣ p - 1) (n : ℕ) :
+    (3 : O) ∣ p ^ n - 1 := by
+  simpa only [one_pow] using (three_dvd_primary_sub_one p hp).trans (sub_dvd_pow_sub_pow p 1 n)
+
+/-- Primitive normalization of a translated prime-power branch preserves its cusp class modulo three. -/
+theorem primePowerCusp_reduction (A : SL(2, O)) (p q : O) (n : ℕ)
+    (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    ∃ j ≤ n, ∃ N : SL(2, O),
+      A 0 0 + 3 * q * A 1 0 = p ^ j * N 0 0 ∧
+      p ^ n * A 1 0 = p ^ j * N 1 0 ∧ N * A⁻¹ ∈ levelThree ∧
+      (j = n ∨ ¬ p ∣ N 0 0) := by
+  let a := A 0 0 + 3 * q * A 1 0
+  have hd : A 0 0 * A 1 1 - A 0 1 * A 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using A.property
+  have haC : IsCoprime a (A 1 0) := by
+    refine ⟨A 1 1, -(A 0 1 + 3 * q * A 1 1), ?_⟩
+    dsimp only [a]
+    linear_combination hd
+  obtain ⟨j, hj, b, hab, hb⟩ := bounded_prime_power_factor p a n
+  have hbC : IsCoprime b (A 1 0) := by
+    rw [hab] at haC
+    exact haC.of_mul_left_right
+  have hbY : IsCoprime b (p ^ (n - j) * A 1 0) := by
+    rcases hb with h | h
+    · simpa only [h, Nat.sub_self, pow_zero, one_mul] using hbC
+    · exact ((hp.coprime_iff_not_dvd.mpr h).symm.pow_right).mul_right hbC
+  have hbA : (3 : O) ∣ b - A 0 0 := by
+    have h1 : (3 : O) ∣ a - A 0 0 := ⟨q * A 1 0, by dsimp only [a]; ring⟩
+    have h2 : (3 : O) ∣ a - b := by
+      rw [hab]
+      convert (primary_pow_mod_three p hprimary j).mul_right b using 1 <;> ring
+    convert dvd_sub h1 h2 using 1 <;> ring
+  have hyC : (3 : O) ∣ p ^ (n - j) * A 1 0 - A 1 0 := by
+    convert (primary_pow_mod_three p hprimary (n - j)).mul_right (A 1 0) using 1 <;> ring
+  obtain ⟨N, hN0, hN1, hNA⟩ := exists_congruent_cusp_completion A b (p ^ (n - j) * A 1 0) hbY hbA hyC
+  refine ⟨j, hj, N, ?_, ?_, hNA, ?_⟩
+  · rw [hN0]; exact hab
+  · rw [hN1, ← mul_assoc, ← pow_add, Nat.add_sub_of_le hj]
+  · simpa only [hN0] using hb
+
+/-- The inverse branch has the same congruence-preserving normalization. -/
+theorem primePowerCusp_inverse_reduction (A : SL(2, O)) (p q : O) (n : ℕ)
+    (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    ∃ j ≤ n, ∃ N : SL(2, O),
+      p ^ n * A 0 0 - 3 * q * A 1 0 = p ^ j * N 0 0 ∧
+      A 1 0 = p ^ j * N 1 0 ∧ N * A⁻¹ ∈ levelThree := by
+  have hd : A 0 0 * A 1 1 - A 0 1 * A 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using A.property
+  have hCA : IsCoprime (A 1 0) (A 0 0) := by
+    refine ⟨-A 0 1, A 1 1, ?_⟩
+    linear_combination hd
+  obtain ⟨j, hj, c, hC, hc⟩ := bounded_prime_power_factor p (A 1 0) n
+  have hcA : IsCoprime c (A 0 0) := by
+    rw [hC] at hCA
+    exact hCA.of_mul_left_right
+  have hcY : IsCoprime c (p ^ (n - j) * A 0 0) := by
+    rcases hc with h | h
+    · simpa only [h, Nat.sub_self, pow_zero, one_mul] using hcA
+    · exact ((hp.coprime_iff_not_dvd.mpr h).symm.pow_right).mul_right hcA
+  let a := p ^ (n - j) * A 0 0 - 3 * q * c
+  have hac : IsCoprime a c := by
+    obtain ⟨u, v, huv⟩ := hcY
+    refine ⟨v, u + 3 * q * v, ?_⟩
+    dsimp only [a]
+    linear_combination huv
+  have ha : (3 : O) ∣ a - A 0 0 := by
+    have h1 := (primary_pow_mod_three p hprimary (n - j)).mul_right (A 0 0)
+    have h2 : (3 : O) ∣ 3 * q * c := ⟨q * c, by ring⟩
+    convert dvd_sub h1 h2 using 1 <;> dsimp only [a] <;> ring
+  have hc : (3 : O) ∣ c - A 1 0 := by
+    rw [hC]
+    convert dvd_neg.mpr ((primary_pow_mod_three p hprimary j).mul_right c) using 1 <;> ring
+  obtain ⟨N, hN0, hN1, hNA⟩ := exists_congruent_cusp_completion A a c hac ha hc
+  refine ⟨j, hj, N, ?_, by rw [hN1]; exact hC, hNA⟩
+  rw [hN0, hC]
+  dsimp only [a]
+  have hpow : p ^ j * p ^ (n - j) = p ^ n := by rw [← pow_add, Nat.add_sub_of_le hj]
+  linear_combination -(A 0 0) * hpow
+
+lemma rationalExtension_of_congruent (A : rationalExtension) (N : SL(2, O))
+    (hNA : N * (A : SL(2, O))⁻¹ ∈ levelThree) : N ∈ rationalExtension := by
+  have h := rationalExtension.mul_mem (levelThree_le_rationalExtension hNA) A.property
+  simpa only [inv_mul_cancel_right] using h
+
+/-- The four possible common prime-power factors of a translated cube branch. -/
+structure CubeCuspData (A : SL(2, O)) (p q : O) where
+  exponent : Fin 4
+  matrix : SL(2, O)
+  first : A 0 0 + 3 * q * A 1 0 = p ^ exponent.val * matrix 0 0
+  second : p ^ 3 * A 1 0 = p ^ exponent.val * matrix 1 0
+  congruent : matrix * A⁻¹ ∈ levelThree
+
+def actualCubeCuspData (A : SL(2, O)) (p q : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    CubeCuspData A p q := by
+  let h := primePowerCusp_reduction A p q 3 hp hprimary
+  let j := Classical.choose h
+  have hj : j ≤ 3 := (Classical.choose_spec h).1
+  let N := Classical.choose (Classical.choose_spec h).2
+  have hN := Classical.choose_spec (Classical.choose_spec h).2
+  exact ⟨⟨j, by omega⟩, N, hN.1, hN.2.1, hN.2.2.1⟩
+
+lemma CubeCuspData.lower_eq {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    d.matrix 1 0 = p ^ (3 - d.exponent.val) * A 1 0 := by
+  apply mul_left_cancel₀ (pow_ne_zero d.exponent.val hp)
+  rw [← d.second, ← mul_assoc, ← pow_add, Nat.add_sub_of_le (by omega : d.exponent.val ≤ 3)]
+
+lemma CubeCuspData.rational_mem {A : rationalExtension} {p q : O}
+    (d : CubeCuspData (A : SL(2, O)) p q) : d.matrix ∈ rationalExtension :=
+  rationalExtension_of_congruent A d.matrix d.congruent
+
+/-- The source constant term in any rational cusp, with its exact multiplier. -/
+def rationalSourceCuspConstant (M : rationalExtension) : ℂ :=
+  extendedComplexCharacter M * ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) *
+    (3 * (Real.pi : ℂ)) * constantArithmeticResidue
+
+theorem rationalSourceCusp_average_enlarged_affine (M : rationalExtension) (b : O) (hb : b ≠ 0)
+    (c : ℂ) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubicSourceResidualFunction
+      (integralComplexMatrix (M : SL(2, O)) • upperPoint (ringComplex b * z + c) v hv)) =
+      rationalSourceCuspConstant M * (v : ℂ) ^ (2 / 3 : ℂ) := by
+  have hc : Continuous (fun z : ℂ => cubicSourceResidualFunction (upperPoint z v hv)) :=
+    cubicSourceResidualFunction_continuous.comp
+      (upperCoordinatesHomeomorph.continuous.comp
+        (show Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) by fun_prop))
+  simp_rw [cubicSourceResidualFunction_automorphy]
+  rw [integral_const_mul, period_integral_eisenstein_affine _ hc.measurable
+    (fun n z => cubicSourceResidualFunction_period v hv z n) b hb c,
+    cubicSourceResidualFunction_fourier_zero]
+  unfold rationalSourceCuspConstant
+  ring
+
+lemma rationalExtension_entry_integer (M : rationalExtension) (i j : Fin 2) :
+    ∃ r : ℤ, (3 : O) ∣ (M : SL(2, O)) i j - (r : O) := by
+  obtain ⟨n, r, hr⟩ := M.property
+  let red := Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+  have hn : red (n : SL(2, O)) = 1 := n.property
+  have he : red (M : SL(2, O)) = red (rationalEmbedding r) := by rw [← hr, map_mul, hn, one_mul]
+  refine ⟨r i j, Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp ?_)⟩
+  exact congrArg (fun A : SL(2, O ⧸ Ideal.span {(3 : O)}) => A i j) he
+
+/-- A determinant-one matrix with reduced first row and lower-left entry is the identity modulo three. -/
+lemma integralMatrix_levelThree_of_entries (N : SL(2, O))
+    (h00 : (3 : O) ∣ N 0 0 - 1) (h01 : (3 : O) ∣ N 0 1) (h10 : (3 : O) ∣ N 1 0) : N ∈ levelThree := by
+  let R := O ⧸ Ideal.span {(3 : O)}
+  let red := Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+  have ha : red N 0 0 = (1 : R) := by
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr (Ideal.mem_span_singleton.mpr h00)
+  have hb : red N 0 1 = (0 : R) := Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr h01)
+  have hc : red N 1 0 = (0 : R) := Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.mem_span_singleton.mpr h10)
+  have hd : red N 1 1 = (1 : R) := by
+    have hdet := (red N).property
+    simpa only [Matrix.det_fin_two, ha, hb, hc, one_mul, zero_mul, sub_zero] using hdet
+  change red N = 1
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j
+  · exact ha
+  · exact hb
+  · exact hc
+  · exact hd
+
+/-- On the rational extension, a primary upper-left entry reads the character from the first column. -/
+theorem extendedComplexCharacter_primary (M : rationalExtension)
+    (hM : lambda ^ 2 ∣ (M : SL(2, O)) 0 0 - 1) :
+    extendedComplexCharacter M = ringComplex (symbol ((M : SL(2, O)) 1 0) ((M : SL(2, O)) 0 0)) := by
+  obtain ⟨b, hb⟩ := rationalExtension_entry_integer M 0 1
+  obtain ⟨c, hc⟩ := rationalExtension_entry_integer M 1 0
+  let L : SL(2, ℤ) := ⟨!![1, 0; -c, 1], by simp [Matrix.det_fin_two]⟩
+  let U := rationalUnipotent (-b)
+  let L' := rationalSourceLift L
+  let U' := rationalSourceLift U
+  let N := L' * M * U'
+  have hN00 : (N : SL(2, O)) 0 0 = (M : SL(2, O)) 0 0 := by
+    simp [N, L', U', L, U, rationalSourceLift, rationalEmbedding, rationalUnipotent,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  have hN01 : (N : SL(2, O)) 0 1 = (M : SL(2, O)) 0 1 - (b : O) * (M : SL(2, O)) 0 0 := by
+    simp [N, L', U', L, U, rationalSourceLift, rationalEmbedding, rationalUnipotent,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+    ring
+  have hN10 : (N : SL(2, O)) 1 0 = (M : SL(2, O)) 1 0 - (c : O) * (M : SL(2, O)) 0 0 := by
+    simp [N, L', U', L, U, rationalSourceLift, rationalEmbedding, rationalUnipotent,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+    ring
+  have ha := three_dvd_primary_sub_one _ hM
+  have hn : (N : SL(2, O)) ∈ levelThree := by
+    apply integralMatrix_levelThree_of_entries
+    · rwa [hN00]
+    · rw [hN01]
+      convert dvd_sub hb (ha.mul_left (b : O)) using 1 <;> ring
+    · rw [hN10]
+      convert dvd_sub hc (ha.mul_left (c : O)) using 1 <;> ring
+  have hchar : extendedComplexCharacter N = extendedComplexCharacter M := by
+    dsimp only [N]
+    rw [map_mul, map_mul, extendedComplexCharacter_sourceLift, extendedComplexCharacter_sourceLift, one_mul, mul_one]
+  have hres : extendedComplexCharacter N = complexCharacter ⟨(N : SL(2, O)), hn⟩ :=
+    extendedComplexCharacter_restrict ⟨(N : SL(2, O)), hn⟩
+  rw [← hchar, hres]
+  change ringComplex (symbol ((N : SL(2, O)) 1 0) ((N : SL(2, O)) 0 0)) = _
+  rw [hN00, hN10]
+  apply congrArg ringComplex
+  apply symbol_congr
+  exact ⟨-(c : O), by ring⟩
+
+lemma integer_congruence_primary_cases (c : O) (r : ℤ) (h : (3 : O) ∣ c - (r : O)) :
+    (3 : O) ∣ c ∨ lambda ^ 2 ∣ c - 1 ∨ lambda ^ 2 ∣ -c - 1 := by
+  have hr : (3 : ℤ) ∣ r ∨ (3 : ℤ) ∣ r - 1 ∨ (3 : ℤ) ∣ r + 1 := by omega
+  rcases hr with hr | hr | hr
+  · left
+    obtain ⟨t, ht⟩ := hr
+    have hn : (3 : O) ∣ (r : O) := ⟨(t : O), by exact_mod_cast ht⟩
+    simpa only [sub_add_cancel] using dvd_add h hn
+  · right; left
+    obtain ⟨t, ht⟩ := hr
+    have hn : (3 : O) ∣ (r : O) - 1 := ⟨(t : O), by exact_mod_cast ht⟩
+    apply lambda_sq_dvd_three.trans
+    simpa only [sub_add_sub_cancel] using dvd_add h hn
+  · right; right
+    obtain ⟨t, ht⟩ := hr
+    have hn : (3 : O) ∣ (r : O) + 1 := ⟨(t : O), by exact_mod_cast ht⟩
+    apply lambda_sq_dvd_three.trans
+    convert dvd_neg.mpr (dvd_add h hn) using 1 <;> ring
+
+lemma symbol_three_shift_primary (c a t : O) (hc : lambda ^ 2 ∣ c - 1) (ha : lambda ^ 2 ∣ a - 1) :
+    symbol c (a + 3 * t * c) = symbol c a := by
+  have hs : lambda ^ 2 ∣ a + 3 * t * c - 1 := by
+    convert dvd_add ha ((lambda_sq_dvd_three.mul_right t).mul_right c) using 1 <;> ring
+  rw [symbol_reciprocity c _ hc hs]
+  calc
+    symbol (a + 3 * t * c) c = symbol a c := symbol_congr ⟨3 * t, by ring⟩
+    _ = symbol c a := symbol_reciprocity a c ha hc
+
+lemma symbol_three_shift_integer (c a t : O) (r : ℤ)
+    (ha : lambda ^ 2 ∣ a - 1) (hc : (3 : O) ∣ c - (r : O)) :
+    symbol c (a + 3 * t * c) = symbol c a := by
+  rcases integer_congruence_primary_cases c r hc with h | h | h
+  · exact symbol_three_shift c a t ha h
+  · exact symbol_three_shift_primary c a t h ha
+  · have hh := symbol_three_shift_primary (-c) a (-t) h ha
+    have hs : lambda ^ 2 ∣ a + 3 * t * c - 1 := by
+      convert dvd_add ha ((lambda_sq_dvd_three.mul_right t).mul_right c) using 1 <;> ring
+    rw [show a + 3 * (-t) * (-c) = a + 3 * t * c by ring,
+      symbol_neg_numerator _ _ hs, symbol_neg_numerator _ _ ha] at hh
+    exact hh
+
+
+lemma principalResidueRep_mk_sub_dvd (c a : O) :
+    c ∣ principalResidueRep c (Ideal.Quotient.mk (Ideal.span {c}) a) - a :=
+  Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp (principalResidueRep_spec _ _))
+
+/-- A residue modulo a prime cube is its exact valuation and an invertible residual factor. -/
+abbrev CubeResidueStrata (p : O) := Σ j : Fin 4, CubicUnitResidue (p ^ (3 - j.val))
+
+def cubeResidueStratumMap (p : O) (x : CubeResidueStrata p) : CubeResidues p :=
+  Ideal.Quotient.mk _ (p ^ x.1.val * principalResidueRep (p ^ (3 - x.1.val)) x.2.1)
+
+lemma cubicUnitResidue_rep_coprime (c : O) (x : CubicUnitResidue c) : IsCoprime c (principalResidueRep c x.1) := by
+  apply (isUnit_quotient_span_iff _ _).mp
+  simpa only [principalResidueRep_spec] using x.2
+
+lemma cube_strata_exponents (p : O) (hp : Prime p) (j k : Fin 4) (b d : O)
+    (hb : IsCoprime (p ^ (3 - j.val)) b) (he : p ^ 3 ∣ p ^ j.val * b - p ^ k.val * d) : ¬j.val < k.val := by
+  intro hjk
+  have hj3 : j.val + 1 ≤ 3 := by omega
+  have hjk' : j.val + 1 ≤ k.val := by omega
+  have h1 : p ^ (j.val + 1) ∣ p ^ j.val * b - p ^ k.val * d := (pow_dvd_pow p hj3).trans he
+  have h2 : p ^ (j.val + 1) ∣ p ^ k.val * d := dvd_mul_of_dvd_left (pow_dvd_pow p hjk') d
+  have h3 : p ^ (j.val + 1) ∣ p ^ j.val * b := by simpa only [sub_add_cancel] using dvd_add h1 h2
+  rw [pow_succ] at h3
+  have hpb : p ∣ b := (mul_dvd_mul_iff_left (pow_ne_zero j.val hp.ne_zero)).mp h3
+  have hpc : IsCoprime p b := hb.of_isCoprime_of_dvd_left (dvd_pow_self p (by omega : 3 - j.val ≠ 0))
+  exact (hp.coprime_iff_not_dvd.mp hpc) hpb
+
+lemma cubeResidueStratumMap_injective (p : O) (hp : Prime p) : Function.Injective (cubeResidueStratumMap p) := by
+  rintro ⟨j, b⟩ ⟨k, d⟩ he
+  have hd : p ^ 3 ∣ p ^ j.val * principalResidueRep (p ^ (3 - j.val)) b.1 -
+      p ^ k.val * principalResidueRep (p ^ (3 - k.val)) d.1 :=
+    Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp he)
+  have hle := cube_strata_exponents p hp j k _ _ (cubicUnitResidue_rep_coprime _ b) hd
+  have hge := cube_strata_exponents p hp k j _ _ (cubicUnitResidue_rep_coprime _ d)
+    (by simpa only [neg_sub] using dvd_neg.mpr hd)
+  have hjk : j = k := Fin.ext (by omega)
+  subst k
+  have hpow : p ^ 3 = p ^ j.val * p ^ (3 - j.val) := by rw [← pow_add, Nat.add_sub_of_le (by omega : j.val ≤ 3)]
+  rw [hpow, ← mul_sub] at hd
+  have hrep := (mul_dvd_mul_iff_left (pow_ne_zero j.val hp.ne_zero)).mp hd
+  have hbd : b = d := by
+    apply Subtype.ext
+    rw [← principalResidueRep_spec (p ^ (3 - j.val)) b.1,
+      ← principalResidueRep_spec (p ^ (3 - j.val)) d.1]
+    exact (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr (Ideal.mem_span_singleton.mpr hrep)
+  subst d
+  rfl
+
+lemma cubeResidueStratumMap_surjective (p : O) (hp : Prime p) : Function.Surjective (cubeResidueStratumMap p) := by
+  intro r
+  let a := principalResidueRep (p ^ 3) r
+  obtain ⟨j, hj, b, hab, hb⟩ := bounded_prime_power_factor p a 3
+  have hcop : IsCoprime (p ^ (3 - j)) b := by
+    rcases hb with h | h
+    · simp only [h, Nat.sub_self, pow_zero, isCoprime_one_left]
+    · exact (hp.coprime_iff_not_dvd.mpr h).pow_left
+  let u : CubicUnitResidue (p ^ (3 - j)) := ⟨Ideal.Quotient.mk _ b, (isUnit_quotient_span_iff _ _).mpr hcop⟩
+  refine ⟨⟨⟨j, by omega⟩, u⟩, ?_⟩
+  change Ideal.Quotient.mk (Ideal.span {p ^ 3}) (p ^ j * principalResidueRep (p ^ (3 - j)) u.1) = r
+  rw [← principalResidueRep_spec (p ^ 3) r]
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
+  apply Ideal.mem_span_singleton.mpr
+  change p ^ 3 ∣ p ^ j * principalResidueRep (p ^ (3 - j)) (Ideal.Quotient.mk _ b) - a
+  rw [hab, ← mul_sub, show p ^ 3 = p ^ j * p ^ (3 - j) by rw [← pow_add, Nat.add_sub_of_le hj]]
+  exact mul_dvd_mul_left _ (principalResidueRep_mk_sub_dvd _ _)
+
+def cubeResidueStrataEquiv (p : O) (hp : Prime p) : CubeResidueStrata p ≃ CubeResidues p :=
+  Equiv.ofBijective (cubeResidueStratumMap p)
+    ⟨cubeResidueStratumMap_injective p hp, cubeResidueStratumMap_surjective p hp⟩
+
+/-- The cubic character on an exact valuation stratum. -/
+def cubeStratumSymbol (p C : O) (j : Fin 4) (b : CubicUnitResidue (p ^ (3 - j.val))) : ℂ :=
+  ringComplex (symbol (principalResidueRep (p ^ (3 - j.val)) b.1 * C) (p ^ (3 - j.val)))
+
+lemma cubeUnitStratum_symbol_gauss (p C : O) (n : ℕ) :
+    (∑' b : CubicUnitResidue (p ^ n), ringComplex (symbol (principalResidueRep (p ^ n) b.1 * C) (p ^ n))) =
+      cubicUnitGaussSum 0 (p ^ n) * ringComplex (symbol C (p ^ n)) := by
+  rw [cubicUnitGaussSum]
+  simp only [mul_zero, residueAdditive, map_zero, cuspFrequency, zero_div, zero_mul,
+    AddChar.map_zero_eq_one, mul_one]
+  rw [← tsum_mul_right]
+  apply tsum_congr
+  intro b
+  rw [symbol_mul_numerator, map_mul]
+
+lemma cubeStratumSymbol_sum (p C : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (hC : IsCoprime C p) (j : Fin 4) :
+    (∑' b : CubicUnitResidue (p ^ (3 - j.val)), cubeStratumSymbol p C j b) =
+      if j = 0 then (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * ((Ideal.absNorm (Ideal.span {p}) : ℂ) - 1)
+      else if j = 3 then 1 else 0 := by
+  have h3 : ringComplex (symbol C (p ^ 3)) = 1 := by
+    rw [symbol_pow_denominator, symbol_cube_of_isCoprime C p hprimary hC, map_one]
+  unfold cubeStratumSymbol
+  rw [cubeUnitStratum_symbol_gauss p C (3 - j.val)]
+  fin_cases j
+  · have hh := cubicUnitGaussSum_prime_power_zero p hp hprimary 2
+    norm_num at hh ⊢
+    rw [hh, h3, mul_one]
+  · have hh := cubicUnitGaussSum_prime_power_zero p hp hprimary 1
+    norm_num at hh ⊢
+    simp [hh]
+  · have hh := cubicUnitGaussSum_prime_power_zero p hp hprimary 0
+    norm_num at hh ⊢
+    simp [hh]
+  · simp
+
+lemma cubeStrata_weighted_sum (p C : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (hC : IsCoprime C p) (w : Fin 4 → ℂ) :
+    (∑ j : Fin 4, w j * ∑' b : CubicUnitResidue (p ^ (3 - j.val)), cubeStratumSymbol p C j b) =
+      w 0 * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * ((Ideal.absNorm (Ideal.span {p}) : ℂ) - 1) + w 3 := by
+  simp_rw [cubeStratumSymbol_sum p C hp hprimary hC]
+  simp [Fin.sum_univ_succ] <;> ring
+
+lemma integralMatrix_comparison_mod_three (A N : SL(2, O)) (hNA : N * A⁻¹ ∈ levelThree)
+    (i j : Fin 2) : (3 : O) ∣ N i j - A i j := by
+  let red := Matrix.SpecialLinearGroup.map (n := Fin 2) (Ideal.Quotient.mk (Ideal.span {(3 : O)}))
+  have hh : red (N * A⁻¹) = 1 := hNA
+  rw [map_mul, map_inv] at hh
+  have he := congrArg (fun M : SL(2, O ⧸ Ideal.span {(3 : O)}) => M i j) (mul_inv_eq_one.mp hh)
+  exact Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp he)
+
+lemma integralMatrix_comparison_primary (A N : SL(2, O)) (hNA : N * A⁻¹ ∈ levelThree)
+    (hA : lambda ^ 2 ∣ A 0 0 - 1) : lambda ^ 2 ∣ N 0 0 - 1 := by
+  have h := lambda_sq_dvd_three.trans (integralMatrix_comparison_mod_three A N hNA 0 0)
+  simpa only [sub_add_sub_cancel] using dvd_add h hA
+
+/-- Reciprocity balances the multipliers before and after extracting the common prime power. -/
+lemma rationalCusp_cube_phase_balance (A N : rationalExtension) (p q : O) (j : ℕ)
+    (hp : lambda ^ 2 ∣ p - 1)
+    (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1) (hN : lambda ^ 2 ∣ (N : SL(2, O)) 0 0 - 1)
+    (hx : (A : SL(2, O)) 0 0 + 3 * q * (A : SL(2, O)) 1 0 = p ^ j * (N : SL(2, O)) 0 0)
+    (hc : (N : SL(2, O)) 1 0 = p ^ (3 - j) * (A : SL(2, O)) 1 0) :
+    extendedComplexCharacter N * ringComplex (symbol ((A : SL(2, O)) 1 0) p) ^ j =
+      extendedComplexCharacter A * ringComplex (symbol ((N : SL(2, O)) 0 0) p) ^ (3 - j) := by
+  obtain ⟨r, hr⟩ := rationalExtension_entry_integer A 1 0
+  have hs : symbol ((A : SL(2, O)) 1 0) ((A : SL(2, O)) 0 0) =
+      symbol ((A : SL(2, O)) 1 0) p ^ j * symbol ((A : SL(2, O)) 1 0) ((N : SL(2, O)) 0 0) := by
+    rw [← symbol_three_shift_integer _ _ q r hA hr, hx, symbol_mul_denominator, symbol_pow_denominator]
+  rw [extendedComplexCharacter_primary N hN, extendedComplexCharacter_primary A hA, hc,
+    symbol_mul_numerator, symbol_pow_numerator _ _ hN,
+    symbol_reciprocity p ((N : SL(2, O)) 0 0) hp hN,
+    hs, map_mul, map_pow, map_mul, map_pow]
+  ring
+
+lemma rationalCusp_comparison_character (A N : rationalExtension)
+    (hNA : (N : SL(2, O)) * (A : SL(2, O))⁻¹ ∈ levelThree) :
+    complexCharacter ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, hNA⟩ * extendedComplexCharacter A =
+      extendedComplexCharacter N := by
+  rw [← extendedComplexCharacter_restrict ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, hNA⟩]
+  change extendedComplexCharacter (N * A⁻¹) * extendedComplexCharacter A = extendedComplexCharacter N
+  rw [← map_mul, inv_mul_cancel_right]
+
+lemma rationalCusp_cube_comparison_phase (A N : rationalExtension) (p q : O) (j : ℕ) (hj : j ≤ 3)
+    (hp : lambda ^ 2 ∣ p - 1)
+    (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1) (hN : lambda ^ 2 ∣ (N : SL(2, O)) 0 0 - 1)
+    (hx : (A : SL(2, O)) 0 0 + 3 * q * (A : SL(2, O)) 1 0 = p ^ j * (N : SL(2, O)) 0 0)
+    (hc : (N : SL(2, O)) 1 0 = p ^ (3 - j) * (A : SL(2, O)) 1 0)
+    (hC : IsCoprime ((A : SL(2, O)) 1 0) p)
+    (hNA : (N : SL(2, O)) * (A : SL(2, O))⁻¹ ∈ levelThree) :
+    complexCharacter ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, hNA⟩ =
+      ringComplex (symbol ((N : SL(2, O)) 0 0 * (A : SL(2, O)) 1 0) p) ^ (3 - j) := by
+  let a := ringComplex (symbol ((A : SL(2, O)) 1 0) p)
+  let b := ringComplex (symbol ((N : SL(2, O)) 0 0) p)
+  have ha3 : a ^ 3 = 1 := by
+    dsimp only [a]
+    rw [← map_pow, symbol_cube_of_isCoprime _ _ hp hC, map_one]
+  have hpow : a ^ j * a ^ (3 - j) = 1 := by rw [← pow_add, Nat.add_sub_of_le hj, ha3]
+  have hbal := rationalCusp_cube_phase_balance A N p q j hp hA hN hx hc
+  change extendedComplexCharacter N * a ^ j = extendedComplexCharacter A * b ^ (3 - j) at hbal
+  have he : extendedComplexCharacter N = extendedComplexCharacter A * (b * a) ^ (3 - j) := by
+    calc
+      _ = extendedComplexCharacter N * (a ^ j * a ^ (3 - j)) := by rw [hpow, mul_one]
+      _ = (extendedComplexCharacter N * a ^ j) * a ^ (3 - j) := (mul_assoc _ _ _).symm
+      _ = (extendedComplexCharacter A * b ^ (3 - j)) * a ^ (3 - j) := by rw [hbal]
+      _ = _ := by rw [mul_pow]; ring
+  have hbase : extendedComplexCharacter A ≠ 0 := by
+    intro hz
+    have hh := extendedComplexCharacter_cube A
+    rw [hz] at hh
+    norm_num at hh
+  rw [symbol_mul_numerator, map_mul]
+  apply mul_right_cancel₀ hbase
+  rw [rationalCusp_comparison_character A N hNA, he]
+  ring
+
+lemma CubeCuspData.unit_top {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    IsUnit (Ideal.Quotient.mk (Ideal.span {p ^ (3 - d.exponent.val)}) (d.matrix 0 0)) := by
+  apply (isUnit_quotient_span_iff _ _).mpr
+  refine ⟨-d.matrix 0 1 * A 1 0, d.matrix 1 1, ?_⟩
+  have hd : d.matrix 0 0 * d.matrix 1 1 - d.matrix 0 1 * d.matrix 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using d.matrix.property
+  rw [d.lower_eq hp] at hd
+  linear_combination hd
+
+def CubeCuspData.stratum {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) : CubeResidueStrata p :=
+  ⟨d.exponent, ⟨Ideal.Quotient.mk _ (d.matrix 0 0), d.unit_top hp⟩⟩
+
+lemma CubeCuspData.stratum_map {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    cubeResidueStratumMap p (d.stratum hp) = Ideal.Quotient.mk (Ideal.span {p ^ 3}) (A 0 0 + 3 * q * A 1 0) := by
+  apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mpr
+  apply Ideal.mem_span_singleton.mpr
+  change p ^ 3 ∣ p ^ d.exponent.val * principalResidueRep (p ^ (3 - d.exponent.val))
+    (Ideal.Quotient.mk _ (d.matrix 0 0)) - (A 0 0 + 3 * q * A 1 0)
+  rw [d.first, ← mul_sub]
+  have hpow : p ^ 3 = p ^ d.exponent.val * p ^ (3 - d.exponent.val) := by
+    rw [← pow_add, Nat.add_sub_of_le (by omega : d.exponent.val ≤ 3)]
+  rw [hpow]
+  exact mul_dvd_mul_left _ (principalResidueRep_mk_sub_dvd _ _)
+
+lemma CubeCuspData.comparison_phase {p q : O} (A : rationalExtension)
+    (d : CubeCuspData (A : SL(2, O)) p q) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1) (hC : IsCoprime ((A : SL(2, O)) 1 0) p) :
+    complexCharacter ⟨d.matrix * (A : SL(2, O))⁻¹, d.congruent⟩ =
+      cubeStratumSymbol p ((A : SL(2, O)) 1 0) d.exponent (d.stratum hp.ne_zero).2 := by
+  let N : rationalExtension := ⟨d.matrix, d.rational_mem⟩
+  have hN := integralMatrix_comparison_primary (A : SL(2, O)) d.matrix d.congruent hA
+  have he := rationalCusp_cube_comparison_phase A N p q d.exponent.val
+    (by omega : d.exponent.val ≤ 3) hprimary hA hN d.first (d.lower_eq hp.ne_zero) hC d.congruent
+  rw [he]
+  unfold cubeStratumSymbol
+  rw [← map_pow, ← symbol_pow_denominator]
+  apply congrArg ringComplex
+  apply symbol_congr
+  have hd := principalResidueRep_mk_sub_dvd (p ^ (3 - d.exponent.val)) (d.matrix 0 0)
+  change p ^ (3 - d.exponent.val) ∣ d.matrix 0 0 * (A : SL(2, O)) 1 0 -
+    principalResidueRep (p ^ (3 - d.exponent.val)) (Ideal.Quotient.mk _ (d.matrix 0 0)) * (A : SL(2, O)) 1 0
+  convert (dvd_neg.mpr hd).mul_right ((A : SL(2, O)) 1 0) using 1 <;> ring
+
+lemma cube_affine_coefficient_unit (p C : O) (hprimary : lambda ^ 2 ∣ p - 1) (hC : IsCoprime C p) :
+    IsUnit (Ideal.Quotient.mk (Ideal.span {p ^ 3}) (3 * C)) := by
+  obtain ⟨t, ht⟩ := three_dvd_primary_sub_one p hprimary
+  have hp3 : IsCoprime p (3 : O) := by
+    refine ⟨1, -t, ?_⟩
+    linear_combination ht
+  apply (isUnit_quotient_span_iff _ _).mpr
+  exact hp3.pow_left.mul_right hC.symm.pow_left
+
+def cubeCuspAffineEquiv (p A C : O) (hprimary : lambda ^ 2 ∣ p - 1) (hC : IsCoprime C p) : CubeResidues p ≃ CubeResidues p := by
+  let a := Ideal.Quotient.mk (Ideal.span {p ^ 3}) A
+  let u := (cube_affine_coefficient_unit p C hprimary hC).unit
+  exact {
+    toFun := fun r => a + (u : _) * r
+    invFun := fun r => (↑u⁻¹ : _) * (r - a)
+    left_inv := fun r => by simp only [add_sub_cancel_left, ← mul_assoc, Units.inv_mul, one_mul]
+    right_inv := fun r => by simp only [← mul_assoc, Units.mul_inv, one_mul, add_sub_cancel] }
+
+lemma cubeCuspAffineEquiv_mk (p A C q : O) (hprimary : lambda ^ 2 ∣ p - 1) (hC : IsCoprime C p) :
+    cubeCuspAffineEquiv p A C hprimary hC (Ideal.Quotient.mk _ q) =
+      Ideal.Quotient.mk (Ideal.span {p ^ 3}) (A + 3 * q * C) := by
+  simp only [cubeCuspAffineEquiv, Equiv.coe_fn_mk, IsUnit.unit_spec, map_add, map_mul]
+  ring
+
+/-- Weighted multiplier sum over the actual translated cube branches. -/
+def actualCubeCuspPhaseSum (A : rationalExtension) (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (w : Fin 4 → ℂ) : ℂ :=
+  ∑' r : CubeResidues p,
+    let d := actualCubeCuspData (A : SL(2, O)) p (cubeResidueRepresentative p r) hp hprimary
+    w d.exponent * complexCharacter ⟨d.matrix * (A : SL(2, O))⁻¹, d.congruent⟩
+
+/-- The intermediate valuation strata cancel; only the unit and zero strata remain. -/
+theorem actualCubeCuspPhaseSum_coprime (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1)
+    (hC : IsCoprime ((A : SL(2, O)) 1 0) p) (w : Fin 4 → ℂ) :
+    actualCubeCuspPhaseSum A p hp hprimary w =
+      w 0 * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 * ((Ideal.absNorm (Ideal.span {p}) : ℂ) - 1) + w 3 := by
+  let e := cubeResidueStrataEquiv p hp
+  let a := cubeCuspAffineEquiv p ((A : SL(2, O)) 0 0) ((A : SL(2, O)) 1 0) hprimary hC
+  let d (r : CubeResidues p) := actualCubeCuspData (A : SL(2, O)) p (cubeResidueRepresentative p r) hp hprimary
+  let phi (s : CubeResidueStrata p) := w s.1 * cubeStratumSymbol p ((A : SL(2, O)) 1 0) s.1 s.2
+  have hpoint (r : CubeResidues p) :
+      w (d r).exponent * complexCharacter ⟨(d r).matrix * (A : SL(2, O))⁻¹, (d r).congruent⟩ = phi (e.symm (a r)) := by
+    rw [(d r).comparison_phase A hp hprimary hA hC]
+    change phi ((d r).stratum hp.ne_zero) = phi (e.symm (a r))
+    apply congrArg phi
+    apply e.injective
+    rw [e.apply_symm_apply]
+    change cubeResidueStratumMap p ((d r).stratum hp.ne_zero) = a r
+    rw [(d r).stratum_map hp.ne_zero]
+    rw [← cubeCuspAffineEquiv_mk p ((A : SL(2, O)) 0 0) ((A : SL(2, O)) 1 0)
+      (cubeResidueRepresentative p r) hprimary hC, cubeResidueRepresentative_spec]
+  letI : ∀ j : Fin 4, Finite (O ⧸ Ideal.span {p ^ (3 - j.val)}) := fun j =>
+    (Ideal.span {p ^ (3 - j.val)}).finiteQuotientOfFreeOfNeBot
+      (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero _ hp.ne_zero))
+  have hphi : Summable phi := Summable.of_finite
+  calc
+    actualCubeCuspPhaseSum A p hp hprimary w = ∑' r, phi (e.symm (a r)) := tsum_congr hpoint
+    _ = ∑' r, phi (e.symm r) := a.tsum_eq (fun r => phi (e.symm r))
+    _ = ∑' s, phi s := e.symm.tsum_eq phi
+    _ = ∑ j : Fin 4, w j * ∑' b : CubicUnitResidue (p ^ (3 - j.val)), cubeStratumSymbol p ((A : SL(2, O)) 1 0) j b := by
+      rw [hphi.tsum_sigma, tsum_fintype]
+      apply Finset.sum_congr rfl
+      intro j _
+      exact tsum_mul_left
+        (f := fun b : CubicUnitResidue (p ^ (3 - j.val)) => cubeStratumSymbol p ((A : SL(2, O)) 1 0) j b)
+        (a := w j)
+    _ = _ := cubeStrata_weighted_sum p ((A : SL(2, O)) 1 0) hp hprimary hC w
+
+lemma cube_exponent_zero_of_lower_divisible (A N : SL(2, O)) (p q : O) (j : ℕ)
+    (hp : Prime p) (hC : p ∣ A 1 0) (hx : A 0 0 + 3 * q * A 1 0 = p ^ j * N 0 0) : j = 0 := by
+  by_contra hj
+  have hpx : p ∣ A 0 0 + 3 * q * A 1 0 := by
+    rw [hx]
+    exact dvd_mul_of_dvd_left (dvd_pow_self p hj) (N 0 0)
+  have hpa : p ∣ A 0 0 := by
+    simpa only [add_sub_cancel_right] using dvd_sub hpx (dvd_mul_of_dvd_right hC (3 * q))
+  have hone : p ∣ (1 : O) := by
+    have hd : A 0 0 * A 1 1 - A 0 1 * A 1 0 = 1 := by simpa only [Matrix.det_fin_two] using A.property
+    rw [← hd]
+    exact dvd_sub (dvd_mul_of_dvd_left hpa _) (dvd_mul_of_dvd_right hC _)
+  exact hp.2.1 (isUnit_of_dvd_one hone)
+
+lemma rationalCusp_cube_zero_phase (A N : rationalExtension) (p q : O)
+    (hp : lambda ^ 2 ∣ p - 1)
+    (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1) (hN : lambda ^ 2 ∣ (N : SL(2, O)) 0 0 - 1)
+    (hx : (A : SL(2, O)) 0 0 + 3 * q * (A : SL(2, O)) 1 0 = (N : SL(2, O)) 0 0)
+    (hc : (N : SL(2, O)) 1 0 = p ^ 3 * (A : SL(2, O)) 1 0)
+    (hNA : (N : SL(2, O)) * (A : SL(2, O))⁻¹ ∈ levelThree) :
+    complexCharacter ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, hNA⟩ = 1 := by
+  have hcop : IsCoprime ((N : SL(2, O)) 0 0) p := by
+    refine ⟨(N : SL(2, O)) 1 1, -(N : SL(2, O)) 0 1 * p ^ 2 * (A : SL(2, O)) 1 0, ?_⟩
+    have hd : (N : SL(2, O)) 0 0 * (N : SL(2, O)) 1 1 - (N : SL(2, O)) 0 1 * (N : SL(2, O)) 1 0 = 1 := by
+      simpa only [Matrix.det_fin_two] using (N : SL(2, O)).property
+    rw [hc] at hd
+    linear_combination hd
+  have hcube : ringComplex (symbol ((N : SL(2, O)) 0 0) p) ^ 3 = 1 := by
+    rw [← map_pow, symbol_cube_of_isCoprime _ _ hp hcop, map_one]
+  have hb := rationalCusp_cube_phase_balance A N p q 0 hp hA hN (by simpa only [pow_zero, one_mul] using hx)
+    (by simpa only [Nat.sub_zero] using hc)
+  simp only [pow_zero, mul_one, Nat.sub_zero, hcube] at hb
+  have hbase : extendedComplexCharacter A ≠ 0 := by
+    intro he
+    have hh := extendedComplexCharacter_cube A
+    rw [he] at hh
+    norm_num at hh
+  apply mul_right_cancel₀ hbase
+  rw [one_mul, rationalCusp_comparison_character A N hNA, hb]
+
+theorem actualCubeCuspPhaseSum_dvd (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1)
+    (hC : p ∣ (A : SL(2, O)) 1 0) (w : Fin 4 → ℂ) :
+    actualCubeCuspPhaseSum A p hp hprimary w = w 0 * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 := by
+  let d (r : CubeResidues p) := actualCubeCuspData (A : SL(2, O)) p (cubeResidueRepresentative p r) hp hprimary
+  have hpoint (r : CubeResidues p) :
+      w (d r).exponent * complexCharacter ⟨(d r).matrix * (A : SL(2, O))⁻¹, (d r).congruent⟩ = w 0 := by
+    have hj : ((d r).exponent : ℕ) = 0 := cube_exponent_zero_of_lower_divisible
+      (A : SL(2, O)) (d r).matrix p _ _ hp hC (d r).first
+    have hj' : (d r).exponent = 0 := Fin.ext hj
+    let N : rationalExtension := ⟨(d r).matrix, (d r).rational_mem⟩
+    have hphase := rationalCusp_cube_zero_phase A N p (cubeResidueRepresentative p r) hprimary hA
+      (integralMatrix_comparison_primary _ _ (d r).congruent hA)
+      (by simpa only [hj, pow_zero, one_mul] using (d r).first)
+      (by simpa only [hj, Nat.sub_zero] using (d r).lower_eq hp.ne_zero) (d r).congruent
+    change w (d r).exponent * complexCharacter ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, (d r).congruent⟩ = w 0
+    rw [hphase, hj', mul_one]
+  calc
+    actualCubeCuspPhaseSum A p hp hprimary w = ∑' r : CubeResidues p, w 0 := tsum_congr hpoint
+    _ = (Nat.card (CubeResidues p) : ℂ) * w 0 := by rw [tsum_const, nsmul_eq_mul]
+    _ = _ := by
+      change (Ideal.absNorm (Ideal.span {p ^ 3}) : ℂ) * w 0 = _
+      rw [← Ideal.span_singleton_pow, map_pow, Nat.cast_pow]
+      ring
+
+
+lemma complexUpper_lowerRight_ne_zero (T : SL(2, ℂ)) (hT : T 1 0 = 0) : T 1 1 ≠ 0 := by
+  intro hd
+  have hdet := T.property
+  simp only [Matrix.det_fin_two, hT, hd, mul_zero, sub_zero] at hdet
+  exact zero_ne_one hdet
+
+/-- Upper triangular hyperbolic isometries act affinely on each horizontal plane. -/
+lemma complexUpper_action (T : SL(2, ℂ)) (hT : T 1 0 = 0) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    T • upperPoint z v hv = upperPoint ((T 0 0 * z + T 0 1) / T 1 1)
+      (v / ‖T 1 1‖ ^ 2) (div_pos hv (sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (complexUpper_lowerRight_ne_zero T hT)))) := by
+  have hdet : T 0 0 * T 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, hT, mul_zero, sub_zero] using T.property
+  have ha : T 0 0 ≠ 0 := by intro h; rw [h, zero_mul] at hdet; exact zero_ne_one hdet
+  have hd : T 1 1 = (T 0 0)⁻¹ := by
+    apply mul_left_cancel₀ ha
+    rw [hdet, mul_inv_cancel₀ ha]
+  have hfactor : T = complexTranslation (T 0 1 / T 1 1) * complexDiagonal (T 0 0) ha := by
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, complexTranslation, complexDiagonal, hT, hd, ha]
+  conv_lhs => rw [hfactor, mul_smul, complexDiagonal_action, complexTranslation_action]
+  apply upperPoint_congr
+  · rw [hd]
+    field_simp
+  · rw [hd, norm_inv, inv_pow, div_inv_eq_mul, Complex.normSq_eq_norm_sq]
+    ring
+
+lemma cubeAverageMatrix_entries (p : O) (hp : p ≠ 0) (q : O) :
+    (cubeAverageMatrix p hp q : Matrix (Fin 2) (Fin 2) ℂ) =
+      !![(cubeDilationRoot p)⁻¹, (cubeDilationRoot p)⁻¹ * (3 * ringComplex q); 0, cubeDilationRoot p] := by
+  have hentry (M : SL(2, O)) (i j : Fin 2) : integralComplexMatrix M i j = ringComplex (M i j) := rfl
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [cubeAverageMatrix, cubeDilationMatrix, complexDiagonal,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_two, hentry, integralTranslation, map_mul, map_ofNat]
+
+def cubeCuspTriangular {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) : SL(2, ℂ) :=
+  (integralComplexMatrix d.matrix)⁻¹ * cubeAverageMatrix p hp q * integralComplexMatrix A
+
+lemma cubeCuspTriangular_factor {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    cubeAverageMatrix p hp q * integralComplexMatrix A = integralComplexMatrix d.matrix * cubeCuspTriangular d hp := by
+  unfold cubeCuspTriangular
+  group
+
+lemma cubeCuspTriangular_entries {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    cubeCuspTriangular d hp 0 0 = (cubeDilationRoot p)⁻¹ * ringComplex p ^ d.exponent.val ∧
+    cubeCuspTriangular d hp 1 0 = 0 ∧
+    cubeCuspTriangular d hp 1 1 = (cubeDilationRoot p)⁻¹ * ringComplex p ^ (3 - d.exponent.val) := by
+  let B := cubeAverageMatrix p hp q * integralComplexMatrix A
+  have hz := cubeDilationRoot_ne_zero p hp
+  have he : cubeDilationRoot p ^ 2 = ringComplex p ^ 3 := by rw [cubeDilationRoot_sq, map_pow]
+  have hentry (M : SL(2, O)) (i j : Fin 2) : integralComplexMatrix M i j = ringComplex (M i j) := rfl
+  have hx : ringComplex (A 0 0) + 3 * ringComplex q * ringComplex (A 1 0) =
+      ringComplex p ^ d.exponent.val * ringComplex (d.matrix 0 0) := by
+    simpa only [map_add, map_mul, map_pow, map_ofNat] using congrArg ringComplex d.first
+  have hy : ringComplex p ^ 3 * ringComplex (A 1 0) =
+      ringComplex p ^ d.exponent.val * ringComplex (d.matrix 1 0) := by
+    simpa only [map_mul, map_pow] using congrArg ringComplex d.second
+  have hB0 : B 0 0 = (cubeDilationRoot p)⁻¹ * ringComplex p ^ d.exponent.val * ringComplex (d.matrix 0 0) := by
+    change (∑ k : Fin 2, cubeAverageMatrix p hp q 0 k * integralComplexMatrix A k 0) = _
+    simp only [cubeAverageMatrix_entries, hentry, Matrix.of_apply, Fin.sum_univ_two,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one]
+    linear_combination (cubeDilationRoot p)⁻¹ * hx
+  have hB1 : B 1 0 = (cubeDilationRoot p)⁻¹ * ringComplex p ^ d.exponent.val * ringComplex (d.matrix 1 0) := by
+    change (∑ k : Fin 2, cubeAverageMatrix p hp q 1 k * integralComplexMatrix A k 0) = _
+    simp only [cubeAverageMatrix_entries, hentry, Matrix.of_apply, Fin.sum_univ_two,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, zero_mul, zero_add]
+    rw [mul_assoc, ← hy, ← he]
+    field_simp
+  have hT : cubeCuspTriangular d hp = (integralComplexMatrix d.matrix)⁻¹ * B := by
+    dsimp only [cubeCuspTriangular, B]
+    group
+  have hdet : ringComplex (d.matrix 0 0) * ringComplex (d.matrix 1 1) -
+      ringComplex (d.matrix 0 1) * ringComplex (d.matrix 1 0) = 1 := by
+    have hd : d.matrix 0 0 * d.matrix 1 1 - d.matrix 0 1 * d.matrix 1 0 = 1 := by
+      simpa only [Matrix.det_fin_two] using d.matrix.property
+    simpa only [map_sub, map_mul, map_one] using congrArg ringComplex hd
+  have h00 : cubeCuspTriangular d hp 0 0 = (cubeDilationRoot p)⁻¹ * ringComplex p ^ d.exponent.val := by
+    rw [hT]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_two, hentry, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, hB0, hB1]
+    linear_combination (cubeDilationRoot p)⁻¹ * ringComplex p ^ d.exponent.val * hdet
+  have h10 : cubeCuspTriangular d hp 1 0 = 0 := by
+    rw [hT]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_two, hentry, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, hB0, hB1]
+    ring
+  refine ⟨h00, h10, ?_⟩
+  have hd : cubeCuspTriangular d hp 0 0 * cubeCuspTriangular d hp 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, h10, mul_zero, sub_zero] using (cubeCuspTriangular d hp).property
+  rw [h00] at hd
+  apply mul_left_cancel₀ (mul_ne_zero (inv_ne_zero hz) (pow_ne_zero _ (ringComplex_ne_zero hp)))
+  rw [hd]
+  have hpow : ringComplex p ^ d.exponent.val * ringComplex p ^ (3 - d.exponent.val) = ringComplex p ^ 3 := by
+    rw [← pow_add, Nat.add_sub_of_le (by omega : d.exponent.val ≤ 3)]
+  calc
+    1 = (cubeDilationRoot p)⁻¹ ^ 2 * ringComplex p ^ 3 := by rw [← he, inv_pow, inv_mul_cancel₀ (pow_ne_zero 2 hz)]
+    _ = _ := by rw [← hpow]; ring
+
+lemma cubeCuspTriangular_integral_scale {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    (cubeCuspTriangular d hp 0 0 / cubeCuspTriangular d hp 1 1) * ringComplex (p ^ 3) =
+      ringComplex (p ^ (2 * d.exponent.val)) := by
+  obtain ⟨h00, _, h11⟩ := cubeCuspTriangular_entries d hp
+  rw [h00, h11, map_pow, map_pow]
+  have hz := cubeDilationRoot_ne_zero p hp
+  have he := ringComplex_ne_zero hp
+  have hpow : ringComplex p ^ 3 = ringComplex p ^ d.exponent.val * ringComplex p ^ (3 - d.exponent.val) := by
+    rw [← pow_add, Nat.add_sub_of_le (by omega : d.exponent.val ≤ 3)]
+  rw [hpow, show ringComplex p ^ (2 * d.exponent.val) = (ringComplex p ^ d.exponent.val) ^ 2 by
+    rw [mul_comm 2 d.exponent.val, pow_mul]]
+  field_simp
+
+lemma cubeDilationRoot_norm_sq (p : O) : ‖cubeDilationRoot p‖ ^ 2 = ‖ringComplex p‖ ^ 3 := by
+  rw [← norm_pow, cubeDilationRoot_sq, map_pow, norm_pow]
+
+def cubeCuspHeightDenominator (p : O) (j : Fin 4) : ℝ :=
+  (‖cubeDilationRoot p‖ ^ 2)⁻¹ * (‖ringComplex p‖ ^ (3 - j.val)) ^ 2
+
+def cubeCuspHeightWeight (p : O) (j : Fin 4) : ℂ :=
+  (cubeCuspHeightDenominator p j ^ (-2 / 3 : ℝ) : ℝ)
+
+lemma cubeCuspHeightDenominator_pos (p : O) (hp : p ≠ 0) (j : Fin 4) : 0 < cubeCuspHeightDenominator p j := by
+  have hz : 0 < ‖cubeDilationRoot p‖ := norm_pos_iff.mpr (cubeDilationRoot_ne_zero p hp)
+  have hr : 0 < ‖ringComplex p‖ := norm_pos_iff.mpr (ringComplex_ne_zero hp)
+  unfold cubeCuspHeightDenominator
+  positivity
+
+lemma cubeCuspTriangular_norm_sq {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0) :
+    ‖cubeCuspTriangular d hp 1 1‖ ^ 2 = cubeCuspHeightDenominator p d.exponent := by
+  rw [(cubeCuspTriangular_entries d hp).2.2, norm_mul, norm_inv, norm_pow, mul_pow, inv_pow]
+  rfl
+
+lemma cubeCuspTriangular_height {A : SL(2, O)} {p q : O} (d : CubeCuspData A p q) (hp : p ≠ 0)
+    (v : ℝ) (hv : 0 < v) :
+    ((v / ‖cubeCuspTriangular d hp 1 1‖ ^ 2 : ℝ) : ℂ) ^ (2 / 3 : ℂ) =
+      (v : ℂ) ^ (2 / 3 : ℂ) * cubeCuspHeightWeight p d.exponent := by
+  have hD := cubeCuspHeightDenominator_pos p hp d.exponent
+  rw [cubeCuspTriangular_norm_sq]
+  have hc : ((2 / 3 : ℝ) : ℂ) = (2 / 3 : ℂ) := by norm_num
+  rw [← hc, ← Complex.ofReal_cpow (div_pos hv hD).le, ← Complex.ofReal_cpow hv.le,
+    cubeCuspHeightWeight, ← Complex.ofReal_mul]
+  apply congrArg Complex.ofReal
+  rw [Real.div_rpow hv.le hD.le, div_eq_mul_inv, ← Real.rpow_neg hD.le]
+  congr 2 <;> ring
+
+lemma cubeCuspHeightDenominator_zero (p : O) (hp : p ≠ 0) :
+    cubeCuspHeightDenominator p 0 = ‖ringComplex p‖ ^ 3 := by
+  unfold cubeCuspHeightDenominator
+  rw [cubeDilationRoot_norm_sq]
+  norm_num only [Fin.val_zero, Nat.sub_zero]
+  have hr := norm_ne_zero_iff.mpr (ringComplex_ne_zero hp)
+  field_simp <;> ring
+
+lemma cubeCuspHeightDenominator_three (p : O) :
+    cubeCuspHeightDenominator p 3 = (‖ringComplex p‖ ^ 3)⁻¹ := by
+  unfold cubeCuspHeightDenominator
+  rw [cubeDilationRoot_norm_sq]
+  norm_num
+
+lemma cubeCuspHeightWeight_zero (p : O) (hp : p ≠ 0) :
+    cubeCuspHeightWeight p 0 = (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ := by
+  have hr : 0 < ‖ringComplex p‖ := norm_pos_iff.mpr (ringComplex_ne_zero hp)
+  have he : (‖ringComplex p‖ ^ 3) ^ (-2 / 3 : ℝ) = (‖ringComplex p‖ ^ 2)⁻¹ := by
+    rw [← Real.rpow_natCast_mul hr.le 3, Nat.cast_ofNat]
+    rw [show (3 : ℝ) * (-2 / 3) = -(2 : ℝ) by ring, Real.rpow_neg hr.le, Real.rpow_ofNat]
+  rw [cubeCuspHeightWeight, cubeCuspHeightDenominator_zero p hp, he,
+    ringComplex_norm_sq_eq_absNorm_span, Complex.ofReal_inv, Complex.ofReal_natCast]
+
+lemma cubeCuspHeightWeight_three (p : O) (hp : p ≠ 0) :
+    cubeCuspHeightWeight p 3 = (Ideal.absNorm (Ideal.span {p}) : ℂ) := by
+  have hr : 0 < ‖ringComplex p‖ := norm_pos_iff.mpr (ringComplex_ne_zero hp)
+  have he : ((‖ringComplex p‖ ^ 3)⁻¹) ^ (-2 / 3 : ℝ) = ‖ringComplex p‖ ^ 2 := by
+    rw [Real.inv_rpow (pow_nonneg hr.le 3), ← Real.rpow_natCast_mul hr.le 3, Nat.cast_ofNat,
+      show (3 : ℝ) * (-2 / 3) = -(2 : ℝ) by ring, Real.rpow_neg hr.le, Real.rpow_ofNat, inv_inv]
+  rw [cubeCuspHeightWeight, cubeCuspHeightDenominator_three, he,
+    ringComplex_norm_sq_eq_absNorm_span, Complex.ofReal_natCast]
+
+lemma rationalSourceCuspConstant_congruent (A N : rationalExtension)
+    (hNA : (N : SL(2, O)) * (A : SL(2, O))⁻¹ ∈ levelThree) :
+    rationalSourceCuspConstant N = complexCharacter ⟨(N : SL(2, O)) * (A : SL(2, O))⁻¹, hNA⟩ * rationalSourceCuspConstant A := by
+  unfold rationalSourceCuspConstant
+  rw [← rationalCusp_comparison_character A N hNA]
+  ring
+
+/-- The average of one cube branch separates its exact height weight from its cubic multiplier. -/
+theorem rationalSourceCubeBranch_average (A : rationalExtension) {p q : O}
+    (d : CubeCuspData (A : SL(2, O)) p q) (hp : p ≠ 0) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubicSourceResidualFunction
+      (cubeAverageMatrix p hp q • (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * z) v hv))) =
+      rationalSourceCuspConstant A * (v : ℂ) ^ (2 / 3 : ℂ) *
+        (cubeCuspHeightWeight p d.exponent * complexCharacter ⟨d.matrix * (A : SL(2, O))⁻¹, d.congruent⟩) := by
+  let N : rationalExtension := ⟨d.matrix, d.rational_mem⟩
+  let T := cubeCuspTriangular d hp
+  have hT : T 1 0 = 0 := (cubeCuspTriangular_entries d hp).2.1
+  have hcoord (z : ℂ) : (T 0 0 * (ringComplex (p ^ 3) * z) + T 0 1) / T 1 1 =
+      ringComplex (p ^ (2 * d.exponent.val)) * z + T 0 1 / T 1 1 := by
+    calc
+      _ = ((T 0 0 / T 1 1) * ringComplex (p ^ 3)) * z + T 0 1 / T 1 1 := by ring
+      _ = _ := by rw [cubeCuspTriangular_integral_scale d hp]
+  have hact (z : ℂ) :
+      cubeAverageMatrix p hp q • (integralComplexMatrix (A : SL(2, O)) •
+        upperPoint (ringComplex (p ^ 3) * z) v hv) =
+      integralComplexMatrix (N : SL(2, O)) • upperPoint
+        (ringComplex (p ^ (2 * d.exponent.val)) * z + T 0 1 / T 1 1)
+        (v / ‖T 1 1‖ ^ 2)
+        (div_pos hv (sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (complexUpper_lowerRight_ne_zero T hT)))) := by
+    rw [← mul_smul, cubeCuspTriangular_factor d hp, mul_smul]
+    change integralComplexMatrix (N : SL(2, O)) • (T • upperPoint (ringComplex (p ^ 3) * z) v hv) = _
+    rw [complexUpper_action T hT, hcoord]
+  simp_rw [hact]
+  rw [rationalSourceCusp_average_enlarged_affine N (p ^ (2 * d.exponent.val))
+    (pow_ne_zero _ hp) (T 0 1 / T 1 1) _ _,
+    rationalSourceCuspConstant_congruent A N d.congruent, cubeCuspTriangular_height d hp v hv]
+  ring
+
+/-- Normalized average of the actual translated inverse cube dilations. -/
+def cubeAverage (p : O) (hp : p ≠ 0) (F : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 *
+    ∑' r : CubeResidues p, F (cubeAverageMatrix p hp (cubeResidueRepresentative p r) • w)
+
+lemma cubeAverage_continuous (p : O) (hp : p ≠ 0) (F : HyperbolicSpace → ℂ) (hF : Continuous F) :
+    Continuous (cubeAverage p hp F) := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  unfold cubeAverage
+  simp only [tsum_fintype]
+  exact continuous_const.mul (continuous_finsetSum Finset.univ (fun r _ => hF.comp (continuous_hyperbolic_action _)))
+
+lemma cubeAverage_cusp_integral (p : O) (hp : p ≠ 0) (F : HyperbolicSpace → ℂ) (hF : Continuous F)
+    (M : SL(2, O)) (b : O) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeAverage p hp F (integralComplexMatrix M • upperPoint (ringComplex b * z) v hv)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 *
+        ∑' r : CubeResidues p, ∫ z in periodDomain,
+          F (cubeAverageMatrix p hp (cubeResidueRepresentative p r) •
+            (integralComplexMatrix M • upperPoint (ringComplex b * z) v hv)) := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  letI := periodDomain_finiteMeasure
+  have hi (r : CubeResidues p) : IntegrableOn
+      (fun z : ℂ => F (cubeAverageMatrix p hp (cubeResidueRepresentative p r) •
+        (integralComplexMatrix M • upperPoint (ringComplex b * z) v hv))) periodDomain := by
+    apply (periodDomain_continuous_memLp _ ?_).integrable (by norm_num)
+    exact (((hF.comp (continuous_hyperbolic_action _)).comp (continuous_hyperbolic_action _)).comp
+      (upperCoordinatesHomeomorph.continuous.comp
+        (show Continuous (fun z : ℂ => (⟨(ringComplex b * z, v), hv⟩ : UpperCoordinates)) by fun_prop)))
+  unfold cubeAverage
+  simp only [tsum_fintype]
+  rw [integral_const_mul]
+  congr 1
+  exact integral_finsetSum Finset.univ (fun r _ => hi r)
+
+lemma principalNorm_complex_ne_zero (p : O) (hp : p ≠ 0) : (Ideal.absNorm (Ideal.span {p}) : ℂ) ≠ 0 := by
+  have hr : (Ideal.absNorm (Ideal.span {p}) : ℝ) ≠ 0 := by
+    rw [← ringComplex_norm_sq_eq_absNorm_span]
+    exact pow_ne_zero 2 (norm_ne_zero_iff.mpr (ringComplex_ne_zero hp))
+  exact_mod_cast hr
+
+/-- The exact height weights turn the surviving phase strata into the square of the prime norm. -/
+theorem actualCubeCuspPhaseSum_height (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1) :
+    actualCubeCuspPhaseSum A p hp hprimary (cubeCuspHeightWeight p) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 2 := by
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  by_cases hC : p ∣ (A : SL(2, O)) 1 0
+  · rw [actualCubeCuspPhaseSum_dvd A p hp hprimary hA hC, cubeCuspHeightWeight_zero p hp.ne_zero]
+    field_simp
+  · rw [actualCubeCuspPhaseSum_coprime A p hp hprimary hA (hp.coprime_iff_not_dvd.mpr hC).symm,
+      cubeCuspHeightWeight_zero p hp.ne_zero, cubeCuspHeightWeight_three p hp.ne_zero]
+    field_simp <;> ring
+
+/-- Every primary rational cusp has the expected cube-average constant term. -/
+theorem cubeSource_average_primary (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1)
+    (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeAverage p hp.ne_zero cubicSourceResidualFunction
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * z) v hv)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * rationalSourceCuspConstant A * (v : ℂ) ^ (2 / 3 : ℂ) := by
+  rw [cubeAverage_cusp_integral p hp.ne_zero cubicSourceResidualFunction cubicSourceResidualFunction_continuous]
+  have hterm (r : CubeResidues p) := rationalSourceCubeBranch_average A
+    (actualCubeCuspData (A : SL(2, O)) p (cubeResidueRepresentative p r) hp hprimary) hp.ne_zero v hv
+  simp_rw [hterm]
+  rw [tsum_mul_left]
+  change (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 *
+    ((rationalSourceCuspConstant A * (v : ℂ) ^ (2 / 3 : ℂ)) *
+      actualCubeCuspPhaseSum A p hp hprimary (cubeCuspHeightWeight p)) = _
+  rw [actualCubeCuspPhaseSum_height A p hp hprimary hA]
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  field_simp <;> ring
+
+def cubeSourceDifference (p : O) (hp : p ≠ 0) (w : HyperbolicSpace) : ℂ :=
+  cubeAverage p hp cubicSourceResidualFunction w -
+    (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * cubicSourceResidualFunction w
+
+lemma cubeSourceDifference_continuous (p : O) (hp : p ≠ 0) : Continuous (cubeSourceDifference p hp) :=
+  (cubeAverage_continuous p hp cubicSourceResidualFunction cubicSourceResidualFunction_continuous).sub
+    (continuous_const.mul cubicSourceResidualFunction_continuous)
+
+lemma cubeAverageMatrix_period (p : O) (hp : p ≠ 0) (q n : O) :
+    cubeAverageMatrix p hp (q + p ^ 3 * n) = complexTranslation (3 * ringComplex n) * cubeAverageMatrix p hp q := by
+  have hz := cubeDilationRoot_ne_zero p hp
+  have he : cubeDilationRoot p ^ 2 = ringComplex p ^ 3 := by rw [cubeDilationRoot_sq, map_pow]
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [cubeAverageMatrix_entries, Matrix.SpecialLinearGroup.coe_mul,
+      Matrix.mul_apply, Fin.sum_univ_two, complexTranslation, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, map_add, map_mul, map_pow,
+      zero_mul, mul_zero, one_mul, mul_one, zero_add, add_zero]
+  field_simp
+  linear_combination -(ringComplex n) * he
+
+lemma cubeSummand_congr (p : O) (hp : p ≠ 0) (F : HyperbolicSpace → ℂ)
+    (hper : ∀ n : O, ∀ w, F (complexTranslation (3 * ringComplex n) • w) = F w)
+    (q r : O) (hqr : p ^ 3 ∣ q - r) (w : HyperbolicSpace) :
+    F (cubeAverageMatrix p hp q • w) = F (cubeAverageMatrix p hp r • w) := by
+  obtain ⟨n, hn⟩ := hqr
+  have hq : q = r + p ^ 3 * n := by linear_combination hn
+  rw [hq, cubeAverageMatrix_period, mul_smul, hper]
+
+lemma cubeAverageMatrix_shift_one (p : O) (hp : p ≠ 0) (q t : O) (ht : p ^ 3 - 1 = 3 * t) :
+    cubeAverageMatrix p hp q * complexTranslation 1 = complexTranslation 1 * cubeAverageMatrix p hp (q - t) := by
+  have hz := cubeDilationRoot_ne_zero p hp
+  have he : cubeDilationRoot p ^ 2 = ringComplex p ^ 3 := by rw [cubeDilationRoot_sq, map_pow]
+  have ht' : ringComplex p ^ 3 - 1 = 3 * ringComplex t := by
+    simpa only [map_sub, map_pow, map_one, map_mul, map_ofNat] using congrArg ringComplex ht
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two,
+      cubeAverageMatrix_entries, complexTranslation, Matrix.of_apply, map_sub,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+      zero_mul, mul_zero, one_mul, mul_one, zero_add, add_zero]
+  field_simp
+  linear_combination -he - ht'
+
+/-- Primary cube averages retain the source's rational translation symmetry. -/
+theorem cubeAverage_period_one (p : O) (hp : p ≠ 0) (hprimary : lambda ^ 2 ∣ p - 1)
+    (F : HyperbolicSpace → ℂ)
+    (hper : ∀ n : O, ∀ w, F (complexTranslation (3 * ringComplex n) • w) = F w)
+    (hone : ∀ w, F (complexTranslation 1 • w) = F w) (w : HyperbolicSpace) :
+    cubeAverage p hp F (complexTranslation 1 • w) = cubeAverage p hp F w := by
+  obtain ⟨t, ht⟩ := primary_pow_mod_three p hprimary 3
+  let c := Ideal.Quotient.mk (Ideal.span {p ^ 3}) t
+  let e : CubeResidues p ≃ CubeResidues p := {
+    toFun := fun r => r - c
+    invFun := fun r => r + c
+    left_inv := fun r => sub_add_cancel r c
+    right_inv := fun r => add_sub_cancel_right r c }
+  have hterm (r : CubeResidues p) : F (cubeAverageMatrix p hp (cubeResidueRepresentative p r) •
+      (complexTranslation 1 • w)) = F (cubeAverageMatrix p hp (cubeResidueRepresentative p (e r)) • w) := by
+    rw [← mul_smul, cubeAverageMatrix_shift_one p hp _ t ht, mul_smul, hone]
+    apply cubeSummand_congr p hp F hper _ _ _ w
+    apply Ideal.mem_span_singleton.mp
+    apply (Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp
+    simp only [map_sub, cubeResidueRepresentative_spec]
+    rfl
+  unfold cubeAverage
+  congr 1
+  calc
+    _ = ∑' r : CubeResidues p, F (cubeAverageMatrix p hp (cubeResidueRepresentative p (e r)) • w) := tsum_congr hterm
+    _ = _ := e.tsum_eq (fun r : CubeResidues p => F (cubeAverageMatrix p hp (cubeResidueRepresentative p r) • w))
+
+lemma cubicSourceResidualFunction_period_one_action (w : HyperbolicSpace) :
+    cubicSourceResidualFunction (complexTranslation 1 • w) = cubicSourceResidualFunction w := by
+  obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective w
+  rw [complexTranslation_action]
+  have h := cubicSourceResidualFunction_rational (rationalUnipotent 1) (upperPoint z v hv)
+  change cubicSourceResidualFunction (rationalComplex (rationalUnipotent 1) • upperPoint z v hv) = _ at h
+  rw [rationalUnipotent_action] at h
+  simpa only [Int.cast_one] using h
+
+lemma cubeSourceDifference_period_one (p : O) (hp : p ≠ 0) (hprimary : lambda ^ 2 ∣ p - 1)
+    (w : HyperbolicSpace) : cubeSourceDifference p hp (complexTranslation 1 • w) = cubeSourceDifference p hp w := by
+  have hper (n : O) (u : HyperbolicSpace) :
+      cubicSourceResidualFunction (complexTranslation (3 * ringComplex n) • u) = cubicSourceResidualFunction u := by
+    obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective u
+    rw [complexTranslation_action]
+    exact cubicSourceResidualFunction_period v hv z n
+  unfold cubeSourceDifference
+  rw [cubeAverage_period_one p hp hprimary _ hper cubicSourceResidualFunction_period_one_action,
+    cubicSourceResidualFunction_period_one_action]
+
+
+/-- A rational cusp becomes primary after at most one integral translation and a sign. -/
+lemma rationalCusp_primary_cases (A : rationalExtension) :
+    (lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1 ∨ lambda ^ 2 ∣ -(A : SL(2, O)) 0 0 - 1) ∨
+    (lambda ^ 2 ∣ (A : SL(2, O)) 0 0 + (A : SL(2, O)) 1 0 - 1 ∨
+      lambda ^ 2 ∣ -((A : SL(2, O)) 0 0 + (A : SL(2, O)) 1 0) - 1) := by
+  obtain ⟨a, ha⟩ := rationalExtension_entry_integer A 0 0
+  obtain ⟨c, hc⟩ := rationalExtension_entry_integer A 1 0
+  rcases integer_congruence_primary_cases _ a ha with h0 | h1 | h1
+  · right
+    have hlambda : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 := lambda_sq_dvd_three.trans h0
+    rcases integer_congruence_primary_cases _ c hc with hC | hC | hC
+    · have hd : (3 : O) ∣ (1 : O) := by
+        have hdet : (A : SL(2, O)) 0 0 * (A : SL(2, O)) 1 1 -
+            (A : SL(2, O)) 0 1 * (A : SL(2, O)) 1 0 = 1 := by
+          simpa only [Matrix.det_fin_two] using (A : SL(2, O)).property
+        rw [← hdet]
+        exact dvd_sub (h0.mul_right _) (hC.mul_left _)
+      have hl : lambda ∣ lambda ^ 2 := ⟨lambda, by ring⟩
+      exact (lambda_not_dvd_two (hl.trans (lambda_sq_dvd_three.trans (hd.trans (one_dvd 2))))).elim
+    · exact Or.inl (by convert dvd_add hlambda hC using 1 <;> ring)
+    · exact Or.inr (by convert dvd_add (dvd_neg.mpr hlambda) hC using 1 <;> ring)
+  · exact Or.inl (Or.inl h1)
+  · exact Or.inl (Or.inr h1)
+
+def rationalCentralSign : SL(2, ℤ) := ⟨!![-1, 0; 0, -1], by simp [Matrix.det_fin_two]⟩
+
+lemma rationalCentralSign_action (w : HyperbolicSpace) :
+    integralComplexMatrix (rationalEmbedding rationalCentralSign) • w = w := by
+  have he : integralComplexMatrix (rationalEmbedding rationalCentralSign) = complexDiagonal (-1) (by norm_num) := by
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [rationalCentralSign, rationalEmbedding, integralComplexMatrix, complexDiagonal]
+  obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective w
+  rw [he, complexDiagonal_action]
+  apply upperPoint_congr <;> simp
+
+lemma rationalCentralSign_mul_entry (A : rationalExtension) :
+    ((rationalSourceLift rationalCentralSign * A : rationalExtension) : SL(2, O)) 0 0 =
+      -(A : SL(2, O)) 0 0 := by
+  simp [rationalSourceLift, rationalCentralSign, rationalEmbedding,
+    Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+
+lemma rationalUnipotent_one_mul_entry (A : rationalExtension) :
+    ((rationalSourceLift (rationalUnipotent 1) * A : rationalExtension) : SL(2, O)) 0 0 =
+      (A : SL(2, O)) 0 0 + (A : SL(2, O)) 1 0 := by
+  simp [rationalSourceLift, rationalUnipotent, rationalEmbedding,
+    Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+
+lemma rationalUnipotent_one_complex :
+    integralComplexMatrix (rationalEmbedding (rationalUnipotent 1)) = complexTranslation 1 := by
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [rationalEmbedding, rationalUnipotent, integralComplexMatrix, complexTranslation]
+
+lemma rationalCusp_primary_normalization (A : rationalExtension) (F : HyperbolicSpace → ℂ)
+    (hF : ∀ w, F (complexTranslation 1 • w) = F w) :
+    ∃ B : rationalExtension, lambda ^ 2 ∣ (B : SL(2, O)) 0 0 - 1 ∧
+      ∀ w, F (integralComplexMatrix (B : SL(2, O)) • w) = F (integralComplexMatrix (A : SL(2, O)) • w) := by
+  have hsign (B : rationalExtension) (hB : lambda ^ 2 ∣ -(B : SL(2, O)) 0 0 - 1) :
+      ∃ C : rationalExtension, lambda ^ 2 ∣ (C : SL(2, O)) 0 0 - 1 ∧
+        ∀ w, F (integralComplexMatrix (C : SL(2, O)) • w) = F (integralComplexMatrix (B : SL(2, O)) • w) := by
+    refine ⟨rationalSourceLift rationalCentralSign * B, ?_, ?_⟩
+    · rwa [rationalCentralSign_mul_entry]
+    · intro w
+      change F (integralComplexMatrix (rationalEmbedding rationalCentralSign * (B : SL(2, O))) • w) = _
+      rw [map_mul, mul_smul, rationalCentralSign_action]
+  rcases rationalCusp_primary_cases A with (h | h) | h
+  · exact ⟨A, h, fun _ => rfl⟩
+  · exact hsign A h
+  · let B := rationalSourceLift (rationalUnipotent 1) * A
+    have hBA (w : HyperbolicSpace) : F (integralComplexMatrix (B : SL(2, O)) • w) =
+        F (integralComplexMatrix (A : SL(2, O)) • w) := by
+      change F (integralComplexMatrix (rationalEmbedding (rationalUnipotent 1) * (A : SL(2, O))) • w) = _
+      rw [map_mul, mul_smul, rationalUnipotent_one_complex, hF]
+    have hb : (B : SL(2, O)) 0 0 = (A : SL(2, O)) 0 0 + (A : SL(2, O)) 1 0 :=
+      rationalUnipotent_one_mul_entry A
+    rcases h with h | h
+    · exact ⟨B, by rwa [hb], hBA⟩
+    · obtain ⟨C, hC, hCB⟩ := hsign B (by rwa [hb])
+      exact ⟨C, hC, fun w => (hCB w).trans (hBA w)⟩
+
+lemma continuous_rationalCusp_affine (F : HyperbolicSpace → ℂ) (hF : Continuous F)
+    (M : SL(2, O)) (b c : ℂ) (v : ℝ) (hv : 0 < v) :
+    Continuous (fun z : ℂ => F (integralComplexMatrix M • upperPoint (b * z + c) v hv)) :=
+  (hF.comp (continuous_hyperbolic_action _)).comp
+    (upperCoordinatesHomeomorph.continuous.comp
+      (show Continuous (fun z : ℂ => (⟨(b * z + c, v), hv⟩ : UpperCoordinates)) by fun_prop))
+
+lemma integrable_rationalCusp_scaled (F : HyperbolicSpace → ℂ) (hF : Continuous F)
+    (M : SL(2, O)) (b : ℂ) (v : ℝ) (hv : 0 < v) :
+    IntegrableOn (fun z : ℂ => F (integralComplexMatrix M • upperPoint (b * z) v hv)) periodDomain := by
+  letI := periodDomain_finiteMeasure
+  apply (periodDomain_continuous_memLp _ ?_).integrable (by norm_num)
+  simpa only [add_zero] using continuous_rationalCusp_affine F hF M b 0 v hv
+
+lemma cubeSourceDifference_primary_average_zero (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (hA : lambda ^ 2 ∣ (A : SL(2, O)) 0 0 - 1)
+    (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeSourceDifference p hp.ne_zero
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * z) v hv)) = 0 := by
+  have hU := integrable_rationalCusp_scaled _
+    (cubeAverage_continuous p hp.ne_zero _ cubicSourceResidualFunction_continuous)
+    (A : SL(2, O)) (ringComplex (p ^ 3)) v hv
+  have hS := integrable_rationalCusp_scaled _ cubicSourceResidualFunction_continuous
+    (A : SL(2, O)) (ringComplex (p ^ 3)) v hv
+  have hav := rationalSourceCusp_average_enlarged_affine A (p ^ 3) (pow_ne_zero 3 hp.ne_zero) 0 v hv
+  simp only [add_zero] at hav
+  unfold cubeSourceDifference
+  rw [integral_sub hU (hS.const_mul _), integral_const_mul,
+    cubeSource_average_primary A p hp hprimary hA, hav]
+  ring
+
+/-- Every rational cusp of the cube difference has zero mean on the same enlarged cell. -/
+theorem cubeSourceDifference_rational_average_zero (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeSourceDifference p hp.ne_zero
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * z) v hv)) = 0 := by
+  obtain ⟨B, hB, he⟩ := rationalCusp_primary_normalization A (cubeSourceDifference p hp.ne_zero)
+    (cubeSourceDifference_period_one p hp.ne_zero hprimary)
+  simp_rw [← he]
+  exact cubeSourceDifference_primary_average_zero B p hp hprimary hB v hv
+
+lemma cubicSourceResidualFunction_rationalCusp_period (A : rationalExtension)
+    (z : ℂ) (v : ℝ) (hv : 0 < v) (n : O) :
+    cubicSourceResidualFunction (integralComplexMatrix (A : SL(2, O)) • upperPoint (z + 3 * ringComplex n) v hv) =
+      cubicSourceResidualFunction (integralComplexMatrix (A : SL(2, O)) • upperPoint z v hv) := by
+  rw [cubicSourceResidualFunction_automorphy, cubicSourceResidualFunction_automorphy,
+    cubicSourceResidualFunction_period]
+
+lemma cubeSource_summand_rationalCusp_period {A : rationalExtension} {p q : O}
+    (d : CubeCuspData (A : SL(2, O)) p q) (hp : p ≠ 0) (z : ℂ) (v : ℝ) (hv : 0 < v) (n : O) :
+    cubicSourceResidualFunction (cubeAverageMatrix p hp q •
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (z + 3 * ringComplex (p ^ 3 * n)) v hv)) =
+    cubicSourceResidualFunction (cubeAverageMatrix p hp q •
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint z v hv)) := by
+  let T := cubeCuspTriangular d hp
+  have hT : T 1 0 = 0 := (cubeCuspTriangular_entries d hp).2.1
+  let V := v / ‖T 1 1‖ ^ 2
+  have hV : 0 < V := div_pos hv (sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (complexUpper_lowerRight_ne_zero T hT)))
+  have he (x : ℂ) : cubicSourceResidualFunction (cubeAverageMatrix p hp q •
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint x v hv)) =
+      cubicSourceResidualFunction (integralComplexMatrix d.matrix •
+        upperPoint ((T 0 0 * x + T 0 1) / T 1 1) V hV) := by
+    rw [← mul_smul, cubeCuspTriangular_factor d hp, mul_smul]
+    change cubicSourceResidualFunction (integralComplexMatrix d.matrix • (T • upperPoint x v hv)) = _
+    rw [complexUpper_action T hT]
+  have hx : (T 0 0 * (z + 3 * ringComplex (p ^ 3 * n)) + T 0 1) / T 1 1 =
+      (T 0 0 * z + T 0 1) / T 1 1 + 3 * ringComplex (p ^ (2 * d.exponent.val) * n) := by
+    calc
+      _ = (T 0 0 * z + T 0 1) / T 1 1 + 3 * ((T 0 0 / T 1 1) * ringComplex (p ^ 3)) * ringComplex n := by
+        rw [map_mul]
+        ring
+      _ = _ := by rw [cubeCuspTriangular_integral_scale d hp, map_mul]; ring
+  rw [he, he, hx]
+  exact cubicSourceResidualFunction_rationalCusp_period ⟨d.matrix, d.rational_mem⟩ _ V hV _
+
+lemma cubeSourceDifference_rationalCusp_period (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (z : ℂ) (v : ℝ) (hv : 0 < v) (n : O) :
+    cubeSourceDifference p hp.ne_zero
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (z + 3 * ringComplex (p ^ 3 * n)) v hv) =
+    cubeSourceDifference p hp.ne_zero (integralComplexMatrix (A : SL(2, O)) • upperPoint z v hv) := by
+  have hU : cubeAverage p hp.ne_zero cubicSourceResidualFunction
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (z + 3 * ringComplex (p ^ 3 * n)) v hv) =
+      cubeAverage p hp.ne_zero cubicSourceResidualFunction
+        (integralComplexMatrix (A : SL(2, O)) • upperPoint z v hv) := by
+    exact congrArg (fun t : ℂ => (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 * t)
+      (tsum_congr (fun r : CubeResidues p => cubeSource_summand_rationalCusp_period (A := A)
+        (actualCubeCuspData (A : SL(2, O)) p (cubeResidueRepresentative p r) hp hprimary) hp.ne_zero z v hv n))
+  exact congrArg₂ (fun a b : ℂ => a - (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * b)
+    hU (cubicSourceResidualFunction_rationalCusp_period A z v hv (p ^ 3 * n))
+
+/-- Integral dilation and arbitrary translation preserve the cube difference's zero mean. -/
+theorem cubeSourceDifference_rational_average_affine_zero (A : rationalExtension) (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (b : O) (hb : b ≠ 0) (c : ℂ) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeSourceDifference p hp.ne_zero
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * (ringComplex b * z + c)) v hv)) = 0 := by
+  let f := fun z : ℂ => cubeSourceDifference p hp.ne_zero
+    (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 3) * z) v hv)
+  have hf : Continuous f := by
+    simpa only [add_zero] using continuous_rationalCusp_affine _ (cubeSourceDifference_continuous p hp.ne_zero)
+      (A : SL(2, O)) (ringComplex (p ^ 3)) 0 v hv
+  have hper (n : O) (z : ℂ) : f (z + 3 * ringComplex n) = f z := by
+    have he : ringComplex (p ^ 3) * (z + 3 * ringComplex n) =
+        ringComplex (p ^ 3) * z + 3 * ringComplex (p ^ 3 * n) := by rw [map_mul]; ring
+    dsimp only [f]
+    rw [he, cubeSourceDifference_rationalCusp_period A p hp hprimary]
+  exact (period_integral_eisenstein_affine f hf.measurable hper b hb c).trans
+    (cubeSourceDifference_rational_average_zero A p hp hprimary v hv)
+
+/-- Primitive first-column normalization is exactly an upper triangular factorization. -/
+lemma complexFirstColumnTriangular_entries (B N : SL(2, ℂ)) (s : ℂ) (hs : s ≠ 0)
+    (h0 : B 0 0 = s * N 0 0) (h1 : B 1 0 = s * N 1 0) :
+    (N⁻¹ * B) 0 0 = s ∧ (N⁻¹ * B) 1 0 = 0 ∧ (N⁻¹ * B) 1 1 = s⁻¹ := by
+  have hd : N 0 0 * N 1 1 - N 0 1 * N 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using N.property
+  have h00 : (N⁻¹ * B) 0 0 = s := by
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, h0, h1]
+    linear_combination s * hd
+  have h10 : (N⁻¹ * B) 1 0 = 0 := by
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, h0, h1]
+    ring
+  refine ⟨h00, h10, ?_⟩
+  have ht : s * (N⁻¹ * B) 1 1 = 1 := by
+    simpa only [Matrix.det_fin_two, h00, h10, mul_zero, sub_zero] using (N⁻¹ * B).property
+  apply mul_left_cancel₀ hs
+  rw [ht, mul_inv_cancel₀ hs]
+
+/-- Every inverse branch maps a common `p^6` cell into an integral dilation of a `p^3` cell. -/
+theorem cubeSourceDifference_inverse_rational_average_zero (A : rationalExtension) (p q : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubeSourceDifference p hp.ne_zero
+      ((cubeAverageMatrix p hp.ne_zero q)⁻¹ •
+        (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 6) * z) v hv))) = 0 := by
+  obtain ⟨j, _, N, hx, hy, hNA⟩ := primePowerCusp_inverse_reduction (A : SL(2, O)) p q 3 hp hprimary
+  let N' : rationalExtension := ⟨N, rationalExtension_of_congruent A N hNA⟩
+  let B := (cubeAverageMatrix p hp.ne_zero q)⁻¹ * integralComplexMatrix (A : SL(2, O))
+  let T := (integralComplexMatrix N)⁻¹ * B
+  let s := (cubeDilationRoot p)⁻¹ * ringComplex p ^ j
+  have hz := cubeDilationRoot_ne_zero p hp.ne_zero
+  have hpC := ringComplex_ne_zero hp.ne_zero
+  have hs : s ≠ 0 := mul_ne_zero (inv_ne_zero hz) (pow_ne_zero j hpC)
+  have he : cubeDilationRoot p ^ 2 = ringComplex p ^ 3 := by rw [cubeDilationRoot_sq, map_pow]
+  have hx' : ringComplex p ^ 3 * ringComplex ((A : SL(2, O)) 0 0) -
+      3 * ringComplex q * ringComplex ((A : SL(2, O)) 1 0) = ringComplex p ^ j * ringComplex (N 0 0) := by
+    simpa only [map_sub, map_mul, map_pow, map_ofNat] using congrArg ringComplex hx
+  have hy' : ringComplex ((A : SL(2, O)) 1 0) = ringComplex p ^ j * ringComplex (N 1 0) := by
+    simpa only [map_mul, map_pow] using congrArg ringComplex hy
+  have hentry (M : SL(2, O)) (i k : Fin 2) : integralComplexMatrix M i k = ringComplex (M i k) := rfl
+  have h0 : B 0 0 = s * integralComplexMatrix N 0 0 := by
+    dsimp only [B]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      cubeAverageMatrix_entries, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, hentry]
+    change cubeDilationRoot p * ringComplex ((A : SL(2, O)) 0 0) +
+      (-((cubeDilationRoot p)⁻¹ * (3 * ringComplex q))) * ringComplex ((A : SL(2, O)) 1 0) = _
+    calc
+      _ = (cubeDilationRoot p)⁻¹ * (ringComplex p ^ 3 * ringComplex ((A : SL(2, O)) 0 0) -
+          3 * ringComplex q * ringComplex ((A : SL(2, O)) 1 0)) := by
+        rw [← he]
+        field_simp
+        ring
+      _ = _ := by rw [hx']; exact (mul_assoc _ _ _).symm
+  have h1 : B 1 0 = s * integralComplexMatrix N 1 0 := by
+    dsimp only [B, s]
+    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two,
+      cubeAverageMatrix_entries, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one, hentry,
+      neg_zero, zero_mul, zero_add, hy', mul_assoc]
+  obtain ⟨h00, h10, h11⟩ := complexFirstColumnTriangular_entries B (integralComplexMatrix N) s hs h0 h1
+  change T 0 0 = s at h00
+  change T 1 0 = 0 at h10
+  change T 1 1 = s⁻¹ at h11
+  have hscale : (T 0 0 / T 1 1) * ringComplex (p ^ 3) = ringComplex (p ^ (2 * j)) := by
+    rw [h00, h11, div_inv_eq_mul, map_pow, map_pow,
+      show ringComplex p ^ (2 * j) = (ringComplex p ^ j) ^ 2 by rw [mul_comm 2 j, pow_mul]]
+    dsimp only [s]
+    rw [← he]
+    field_simp
+  let c := (T 0 1 / T 1 1) / ringComplex (p ^ 3)
+  let V := v / ‖T 1 1‖ ^ 2
+  have hV : 0 < V := div_pos hv (sq_pos_of_ne_zero (norm_ne_zero_iff.mpr (complexUpper_lowerRight_ne_zero T h10)))
+  have hcoord (z : ℂ) : (T 0 0 * (ringComplex (p ^ 6) * z) + T 0 1) / T 1 1 =
+      ringComplex (p ^ 3) * (ringComplex (p ^ (2 * j)) * z + c) := by
+    have hpow : ringComplex (p ^ 6) = ringComplex (p ^ 3) * ringComplex (p ^ 3) := by
+      rw [← map_mul, ← pow_add]
+    calc
+      _ = ringComplex (p ^ 3) * (((T 0 0 / T 1 1) * ringComplex (p ^ 3)) * z + c) := by
+        rw [hpow]
+        dsimp only [c]
+        field_simp
+        <;> ring
+      _ = _ := by rw [hscale]
+  have hact (z : ℂ) : (cubeAverageMatrix p hp.ne_zero q)⁻¹ •
+      (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex (p ^ 6) * z) v hv) =
+      integralComplexMatrix N • upperPoint (ringComplex (p ^ 3) * (ringComplex (p ^ (2 * j)) * z + c)) V hV := by
+    have hfactor : B = integralComplexMatrix N * T := by dsimp only [T]; group
+    rw [← mul_smul]
+    change B • upperPoint (ringComplex (p ^ 6) * z) v hv = _
+    rw [hfactor, mul_smul]
+    change integralComplexMatrix N • (T • upperPoint (ringComplex (p ^ 6) * z) v hv) = _
+    rw [complexUpper_action T h10, hcoord]
+  simp_rw [hact]
+  exact cubeSourceDifference_rational_average_affine_zero N' p hp hprimary (p ^ (2 * j))
+    (pow_ne_zero _ hp.ne_zero) c V hV
+
+
+lemma kernelCoverLegAdjointFunction_continuous {H J : Subgroup (SL(2, O))}
+    [J.IsFiniteRelIndex globalKubotaKernel] (e : H ≃* J) (g : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (f : IntegralOrbitQuotient H → ℂ) (hf : Continuous f) :
+    Continuous (kernelCoverLegAdjointFunction e g he f) :=
+  integralCoverTraceFunction_continuous J globalKubotaKernel _
+    (hf.comp (integralConjugateMap_continuous _ _ _))
+
+/-- A common zero-mean cell passes through every finite fiber of the actual adjoint trace. -/
+theorem kernelCoverLegAdjointFunction_rational_average_zero {H J : Subgroup (SL(2, O))}
+    [J.IsFiniteRelIndex globalKubotaKernel] (e : H ≃* J) (g : SL(2, ℂ))
+    (he : IntegralCoverIntertwines e g) (f : IntegralOrbitQuotient H → ℂ) (hf : Continuous f)
+    (b : O) (v : ℝ) (hv : 0 < v)
+    (havg : ∀ M : rationalExtension, (∫ z in periodDomain,
+      f (integralOrbitProjection H (g⁻¹ •
+        (integralComplexMatrix (M : SL(2, O)) • upperPoint (ringComplex b * z) v hv)))) = 0)
+    (A : rationalExtension) :
+    (∫ z in periodDomain, kernelCoverLegAdjointFunction e g he f
+      (integralOrbitProjection globalKubotaKernel
+        (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex b * z) v hv))) = 0 := by
+  letI := periodDomain_finiteMeasure
+  letI : Fintype (IntegralCoverCosets J globalKubotaKernel) := Fintype.ofFinite _
+  let M (r : IntegralCoverCosets J globalKubotaKernel) : rationalExtension :=
+    ⟨(((integralCoverRep J globalKubotaKernel r)⁻¹ : globalKubotaKernel) : SL(2, O)) * (A : SL(2, O)),
+      rationalExtension.mul_mem (levelThree_le_rationalExtension
+        (globalKubotaKernel_le_levelThree ((integralCoverRep J globalKubotaKernel r)⁻¹).property)) A.property⟩
+  let F (r : IntegralCoverCosets J globalKubotaKernel) (z : ℂ) :=
+    f (integralOrbitProjection H (g⁻¹ • (integralComplexMatrix (M r : SL(2, O)) • upperPoint (ringComplex b * z) v hv)))
+  have hi (r : IntegralCoverCosets J globalKubotaKernel) : IntegrableOn (F r) periodDomain :=
+    integrable_rationalCusp_scaled _ ((hf.comp (continuous_integralOrbitProjection H)).comp
+      (continuous_hyperbolic_action g⁻¹)) (M r : SL(2, O)) (ringComplex b) v hv
+  have hterm (r : IntegralCoverCosets J globalKubotaKernel) (z : ℂ) :
+      f (integralConjugateMap e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+        (integralCoverFiberPoint J globalKubotaKernel r
+          (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex b * z) v hv))) = F r z := by
+    rw [integralCoverFiberPoint_rep, integralSubgroup_smul, integralConjugateMap_projection]
+    dsimp only [F, M]
+    rw [map_mul, mul_smul]
+  change (∫ z in periodDomain, ∑ r : IntegralCoverCosets J globalKubotaKernel,
+    f (integralConjugateMap e.symm g⁻¹ (integralCoverIntertwines_inverse e g he)
+      (integralCoverFiberPoint J globalKubotaKernel r
+        (integralComplexMatrix (A : SL(2, O)) • upperPoint (ringComplex b * z) v hv)))) = 0
+  simp_rw [hterm]
+  rw [integral_finsetSum Finset.univ (fun r _ => hi r)]
+  exact Finset.sum_eq_zero (fun r _ => havg (M r))
+
+
+lemma cubicSourceResidualFunction_kernel_invariant (k : globalKubotaKernel) (w : HyperbolicSpace) :
+    cubicSourceResidualFunction (k • w) = cubicSourceResidualFunction w := by
+  obtain ⟨hk, hchar⟩ := (globalKubotaKernel_mem (k : SL(2, O))).mp k.property
+  change cubicSourceResidualFunction (integralComplexMatrix (k : SL(2, O)) • w) = _
+  rw [cubicSourceResidualFunction_automorphy ⟨(k : SL(2, O)), levelThree_le_rationalExtension hk⟩,
+    extendedComplexCharacter_restrict ⟨(k : SL(2, O)), hk⟩, hchar, one_mul]
+
+def cubicSourceQuotientFunction : KernelQuotient → ℂ :=
+  Quotient.lift cubicSourceResidualFunction (by
+    rintro w u ⟨k, rfl⟩
+    exact (cubicSourceResidualFunction_kernel_invariant k w).symm)
+
+lemma cubicSourceQuotientFunction_projection (w : HyperbolicSpace) :
+    cubicSourceQuotientFunction (integralOrbitProjection globalKubotaKernel w) = cubicSourceResidualFunction w := rfl
+
+lemma cubicSourceQuotientFunction_continuous : Continuous cubicSourceQuotientFunction :=
+  cubicSourceResidualFunction_continuous.quotient_lift _
+
+lemma cubicSourceQuotientFunction_represents :
+    kernelRationalSourceProjection cubicEisensteinResidue =ᵐ[integralQuotientVolume globalKubotaKernel]
+      cubicSourceQuotientFunction := by
+  change _ =ᵐ[Measure.map (integralOrbitProjection globalKubotaKernel)
+    (hyperbolicVolume.restrict (hyperbolicFundamentalSet globalKubotaKernel))] _
+  apply (ae_map_iff (measurable_integralOrbitProjection _).aemeasurable
+    (measurableSet_eq_fun (Lp.stronglyMeasurable _).measurable cubicSourceQuotientFunction_continuous.measurable)).mpr
+  exact ae_restrict_of_ae cubicSourceResidualFunction_represents_projection
+
+/-- The identity branch and the translated cube branches share one finite cover. -/
+def cubeLegTarget (p : O) (hp : p ≠ 0) : Option (CubeResidues p) → Subgroup (SL(2, O))
+  | none => cubeCommonCover p
+  | some r => cubeCommonTarget p hp r
+
+lemma cubeLegTarget_le (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) :
+    cubeLegTarget p hp i ≤ globalKubotaKernel := by
+  cases i with
+  | none => exact cubeCommonCover_le p
+  | some r => exact cubeCommonTarget_le p hp r
+
+lemma cubeLegTarget_finiteIndex (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) :
+    (cubeLegTarget p hp i).FiniteIndex := by
+  cases i with
+  | none => exact cubeCommonCover_finiteIndex p hp
+  | some r => exact cubeCommonTarget_finiteIndex p hp r
+
+def cubeLegEquiv (p : O) (hp : p ≠ 0) : ∀ i : Option (CubeResidues p), cubeCommonCover p ≃* cubeLegTarget p hp i
+  | none => MulEquiv.refl _
+  | some r => cubeCommonEquiv p hp r
+
+def cubeLegMatrix (p : O) (hp : p ≠ 0) : Option (CubeResidues p) → SL(2, ℂ)
+  | none => 1
+  | some r => cubeAverageMatrix p hp (cubeResidueRepresentative p r)
+
+lemma cubeLeg_intertwines (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) :
+    IntegralCoverIntertwines (cubeLegEquiv p hp i) (cubeLegMatrix p hp i) := by
+  cases i with
+  | none => intro h; change 1 * integralComplexMatrix (h : SL(2, O)) = integralComplexMatrix (h : SL(2, O)) * 1; simp only [one_mul, mul_one]
+  | some r => exact cubeCommon_intertwines p hp r
+
+def cubeLegCoefficient (p : O) : Option (CubeResidues p) → ℂ
+  | none => -(Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹
+  | some _ => (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3
+
+def cubeLegFunction (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) :
+    IntegralOrbitQuotient (cubeCommonCover p) → ℂ :=
+  fun q => cubicSourceQuotientFunction (integralCoverMap (cubeLegTarget_le p hp i)
+    (integralConjugateMap (cubeLegEquiv p hp i) (cubeLegMatrix p hp i) (cubeLeg_intertwines p hp i) q))
+
+lemma cubeLegFunction_continuous (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) :
+    Continuous (cubeLegFunction p hp i) :=
+  (cubicSourceQuotientFunction_continuous.comp (integralCoverMap_continuous _)).comp
+    (integralConjugateMap_continuous _ _ _)
+
+lemma cubeLegFunction_projection (p : O) (hp : p ≠ 0) (i : Option (CubeResidues p)) (w : HyperbolicSpace) :
+    cubeLegFunction p hp i (integralOrbitProjection (cubeCommonCover p) w) =
+      cubicSourceResidualFunction (cubeLegMatrix p hp i • w) := rfl
+
+def cubeCommonDifferenceFunction (p : O) (hp : p ≠ 0) : IntegralOrbitQuotient (cubeCommonCover p) → ℂ :=
+  fun q => ∑' i : Option (CubeResidues p), cubeLegCoefficient p i * cubeLegFunction p hp i q
+
+lemma cubeCommonDifferenceFunction_continuous (p : O) (hp : p ≠ 0) :
+    Continuous (cubeCommonDifferenceFunction p hp) := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  unfold cubeCommonDifferenceFunction
+  simp only [tsum_fintype]
+  exact continuous_finsetSum Finset.univ (fun i _ => continuous_const.mul (cubeLegFunction_continuous p hp i))
+
+lemma cubeCommonDifferenceFunction_projection (p : O) (hp : p ≠ 0) (w : HyperbolicSpace) :
+    cubeCommonDifferenceFunction p hp (integralOrbitProjection (cubeCommonCover p) w) =
+      cubeSourceDifference p hp w := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  unfold cubeCommonDifferenceFunction cubeSourceDifference cubeAverage
+  simp only [tsum_fintype, Fintype.sum_option, cubeLegFunction_projection,
+    cubeLegCoefficient, cubeLegMatrix, one_smul, ← Finset.mul_sum]
+  ring
+
+lemma integralProjection_quasiMeasurePreserving (H : Subgroup (SL(2, O))) (hH : H ≤ levelThree) :
+    Measure.QuasiMeasurePreserving (integralOrbitProjection H) hyperbolicVolume (integralQuotientVolume H) := by
+  let proj := integralOrbitProjection H
+  have hp : Measurable proj := measurable_integralOrbitProjection _
+  refine ⟨hp, Measure.AbsolutelyContinuous.mk fun S hS hzero => ?_⟩
+  rw [Measure.map_apply hp hS]
+  have hd : hyperbolicVolume ((proj ⁻¹' S) ∩ hyperbolicFundamentalSet H) = 0 := by
+    simpa only [integralQuotientVolume, proj,
+      Measure.map_apply (measurable_integralOrbitProjection _) hS,
+      Measure.restrict_apply ((measurable_integralOrbitProjection _) hS)] using hzero
+  have hinv : ∀ M : H, M • (proj ⁻¹' S) = proj ⁻¹' S := by
+    intro M
+    ext w
+    constructor
+    · rintro ⟨u, hu, rfl⟩
+      change proj (M • u) ∈ S
+      change proj u ∈ S at hu
+      rwa [show proj (M • u) = proj u from integralOrbitProjection_eq _ M u]
+    · intro hw
+      refine ⟨M⁻¹ • w, ?_, smul_inv_smul M w⟩
+      change proj (M⁻¹ • w) ∈ S
+      rwa [show proj (M⁻¹ • w) = proj w from integralOrbitProjection_eq _ M⁻¹ w]
+  exact (hyperbolicFundamentalSet_isFundamentalDomain H hH hyperbolicVolume).measure_zero_of_invariant _ hinv hd
+
+/-- The actual common-cover difference vanishes: every adjoint trace has zero rational cusp mean. -/
+theorem cubeSourceDifference_eq_zero (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    cubeSourceDifference p hp.ne_zero = 0 := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp.ne_zero))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  letI : ∀ i : Option (CubeResidues p), (cubeLegTarget p hp.ne_zero i).IsFiniteRelIndex globalKubotaKernel := fun i => by
+    letI := cubeLegTarget_finiteIndex p hp.ne_zero i
+    exact Subgroup.isFiniteRelIndex_of_finiteIndex
+  let leg (i : Option (CubeResidues p)) := kernelCoverLeg (cubeCommonCover_le p) (cubeLegTarget_le p hp.ne_zero i)
+    (cubeLegEquiv p hp.ne_zero i) (cubeLegMatrix p hp.ne_zero i) (cubeLeg_intertwines p hp.ne_zero i)
+  let S := kernelRationalSourceProjection cubicEisensteinResidue
+  let D := ∑ i : Option (CubeResidues p), cubeLegCoefficient p i • leg i S
+  let f := cubeCommonDifferenceFunction p hp.ne_zero
+  have hf : Continuous f := cubeCommonDifferenceFunction_continuous p hp.ne_zero
+  have hleg (i : Option (CubeResidues p)) : leg i S =ᵐ[integralQuotientVolume (cubeCommonCover p)]
+      cubeLegFunction p hp.ne_zero i :=
+    kernelCoverLeg_representative (cubeCommonCover_le p) (cubeLegTarget_le p hp.ne_zero i)
+      (cubeLegEquiv p hp.ne_zero i) (cubeLegMatrix p hp.ne_zero i) (cubeLeg_intertwines p hp.ne_zero i)
+      S cubicSourceQuotientFunction cubicSourceQuotientFunction_represents
+  have hrep : D =ᵐ[integralQuotientVolume (cubeCommonCover p)] f := by
+    have hs := Lp.coeFn_fun_finsetSum Finset.univ
+      (fun i : Option (CubeResidues p) => cubeLegCoefficient p i • leg i S)
+    have hc := ae_all_iff.mpr (fun i : Option (CubeResidues p) => Lp.coeFn_smul (cubeLegCoefficient p i) (leg i S))
+    have hr := ae_all_iff.mpr hleg
+    filter_upwards [hs, hc, hr] with q hsum hscale hvalue
+    change (∑ i : Option (CubeResidues p), cubeLegCoefficient p i • leg i S) q =
+      ∑' i : Option (CubeResidues p), cubeLegCoefficient p i * cubeLegFunction p hp.ne_zero i q
+    rw [hsum, tsum_fintype]
+    change (∑ i : Option (CubeResidues p), (cubeLegCoefficient p i • leg i S) q) = _
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [hscale i, Pi.smul_apply, smul_eq_mul, hvalue i]
+  have hD : D = 0 := by
+    apply kernelCoverLeg_source_sum_vanish_of_zero_enlarged_averages
+      (cubeLegTarget p hp.ne_zero) (cubeCommonCover_le p) (cubeLegTarget_le p hp.ne_zero)
+      (cubeLegEquiv p hp.ne_zero) (cubeLegMatrix p hp.ne_zero) (cubeLeg_intertwines p hp.ne_zero)
+      (cubeLegCoefficient p)
+      (fun i => kernelCoverLegAdjointFunction (cubeLegEquiv p hp.ne_zero i) (cubeLegMatrix p hp.ne_zero i)
+        (cubeLeg_intertwines p hp.ne_zero i) f)
+    · intro i
+      exact kernelCoverLegAdjointFunction_continuous _ _ _ f hf
+    · intro i
+      exact kernelCoverLegAdjointFunction_represents (cubeCommonCover_le p) (cubeLegTarget_le p hp.ne_zero i)
+        (cubeLegEquiv p hp.ne_zero i) (cubeLegMatrix p hp.ne_zero i) (cubeLeg_intertwines p hp.ne_zero i)
+        D f hf.measurable hrep
+    · intro i A v hv _
+      refine ⟨p ^ 6, pow_ne_zero 6 hp.ne_zero, ?_⟩
+      apply kernelCoverLegAdjointFunction_rational_average_zero _ _ _ f hf (p ^ 6) v hv _ A
+      intro M
+      simp only [f, cubeCommonDifferenceFunction_projection]
+      cases i with
+      | none =>
+        simp only [cubeLegMatrix, inv_one, one_smul]
+        have hc (z : ℂ) : ringComplex (p ^ 3) * (ringComplex (p ^ 3) * z + 0) = ringComplex (p ^ 6) * z := by
+          rw [add_zero, ← mul_assoc, ← map_mul, ← pow_add]
+        simpa only [hc] using cubeSourceDifference_rational_average_affine_zero M p hp hprimary
+          (p ^ 3) (pow_ne_zero 3 hp.ne_zero) 0 v hv
+      | some r =>
+        exact cubeSourceDifference_inverse_rational_average_zero M p (cubeResidueRepresentative p r) hp hprimary v hv
+  have hzero : f =ᵐ[integralQuotientVolume (cubeCommonCover p)] fun _ => (0 : ℂ) := by
+    rw [hD] at hrep
+    exact hrep.symm.trans (Lp.coeFn_zero ℂ 2 (integralQuotientVolume (cubeCommonCover p)))
+  have hglobal := (integralProjection_quasiMeasurePreserving (cubeCommonCover p)
+    ((cubeCommonCover_le p).trans globalKubotaKernel_le_levelThree)).ae_eq_comp hzero
+  have he : cubeSourceDifference p hp.ne_zero =ᵐ[hyperbolicVolume] fun _ => (0 : ℂ) := by
+    simpa only [Function.comp_def, f, cubeCommonDifferenceFunction_projection] using hglobal
+  exact Measure.eq_of_ae_eq he (cubeSourceDifference_continuous p hp.ne_zero) continuous_const
+
+/-- Primary prime cubes act on the residual source by the inverse prime norm. -/
+theorem cubicSourceResidualFunction_cube_eigenrelation (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (w : HyperbolicSpace) :
+    cubeAverage p hp.ne_zero cubicSourceResidualFunction w =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * cubicSourceResidualFunction w := by
+  have h := congrFun (cubeSourceDifference_eq_zero p hp hprimary) w
+  exact sub_eq_zero.mp h
+
+
+lemma cuspFrequency_mul_right (h c : O) : cuspFrequency (h * c) = cuspFrequency h * ringComplex c := by
+  unfold cuspFrequency
+  rw [map_mul]
+  ring
+
+lemma cuspFourierCharacter_continuous (h : O) : Continuous (fun z : ℂ => tracePhase (-cuspFrequency h * z)) := by
+  change Continuous (fun z : ℂ => Complex.exp
+    (2 * Real.pi * Complex.I * ((-cuspFrequency h * z) + starRingEnd ℂ (-cuspFrequency h * z))))
+  fun_prop
+
+lemma cuspFourierCharacter_fractional_period (c : O) (hc : c ≠ 0) (h q : O) (z : ℂ) :
+    tracePhase (-cuspFrequency (h * c) * (z + 3 * ringComplex q / ringComplex c)) =
+      tracePhase (-cuspFrequency (h * c) * z) := by
+  have he : -cuspFrequency (h * c) * (z + 3 * ringComplex q / ringComplex c) =
+      -cuspFrequency (h * c) * z + -(cuspFrequency h * (3 * ringComplex q)) := by
+    rw [cuspFrequency_mul_right]
+    field_simp [ringComplex_ne_zero hc]
+    <;> ring
+  rw [he, AddChar.map_add_eq_mul, AddChar.map_neg_eq_inv, cuspFrequency_period, inv_one, mul_one]
+
+lemma period_fourier_fractional_translation (f : ℂ → ℂ)
+    (hper : ∀ n : O, ∀ z : ℂ, f (z + 3 * ringComplex n) = f z)
+    (c : O) (hc : c ≠ 0) (h q : O) :
+    (∫ z in periodDomain, f (z + 3 * ringComplex q / ringComplex c) * tracePhase (-cuspFrequency (h * c) * z)) =
+      ∫ z in periodDomain, f z * tracePhase (-cuspFrequency (h * c) * z) := by
+  let g := fun z : ℂ => f z * tracePhase (-cuspFrequency (h * c) * z)
+  have hg (n : O) (z : ℂ) : g (z + 3 * ringComplex n) = g z := by
+    dsimp only [g]
+    rw [hper, cuspFrequency_negative_period]
+  have hi := period_integral_translation g hg (3 * ringComplex q / ringComplex c)
+  have he (z : ℂ) : g (3 * ringComplex q / ringComplex c + z) =
+      f (z + 3 * ringComplex q / ringComplex c) * tracePhase (-cuspFrequency (h * c) * z) := by
+    dsimp only [g]
+    rw [add_comm (3 * ringComplex q / ringComplex c) z, cuspFourierCharacter_fractional_period c hc]
+  simpa only [he, g] using hi
+
+lemma cubeAverageMatrix_scaled_action (p : O) (hp : p ≠ 0) (q : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cubeAverageMatrix p hp q • upperPoint (ringComplex (p ^ 3) * z) v hv =
+      upperPoint (z + 3 * ringComplex q / ringComplex (p ^ 3)) (v / ‖ringComplex p‖ ^ 3)
+        (div_pos hv (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hp)) 3)) := by
+  have h10 : cubeAverageMatrix p hp q 1 0 = 0 := by rw [cubeAverageMatrix_entries]; rfl
+  have hz := cubeDilationRoot_ne_zero p hp
+  rw [complexUpper_action _ h10]
+  apply upperPoint_congr
+  · simp only [cubeAverageMatrix_entries, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one]
+    rw [← cubeDilationRoot_sq]
+    field_simp
+  · simp only [cubeAverageMatrix_entries, Matrix.of_apply, Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.cons_val_fin_one, cubeDilationRoot_norm_sq]
+
+/-- The cube eigenrelation transports Fourier frequency by `p^3` and height by `|p|^-3`. -/
+theorem cubicSourceResidualFunction_fourier_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (v : ℝ) (hv : 0 < v) :
+    (∫ z in periodDomain, cubicSourceResidualFunction
+      (upperPoint z (v / ‖ringComplex p‖ ^ 3)
+        (div_pos hv (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hp.ne_zero)) 3))) *
+        tracePhase (-cuspFrequency (h * p ^ 3) * z)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ *
+        ∫ z in periodDomain, cubicSourceResidualFunction (upperPoint z v hv) * tracePhase (-cuspFrequency h * z) := by
+  letI : Finite (CubeResidues p) := (Ideal.span {p ^ 3}).finiteQuotientOfFreeOfNeBot
+    (Ideal.span_singleton_eq_bot.not.mpr (pow_ne_zero 3 hp.ne_zero))
+  letI : Fintype (CubeResidues p) := Fintype.ofFinite _
+  let V := v / ‖ringComplex p‖ ^ 3
+  have hV : 0 < V := div_pos hv (pow_pos (norm_pos_iff.mpr (ringComplex_ne_zero hp.ne_zero)) 3)
+  let f := fun z : ℂ => cubicSourceResidualFunction (upperPoint z V hV)
+  let g := fun z : ℂ => cubicSourceResidualFunction (upperPoint z v hv) * tracePhase (-cuspFrequency h * z)
+  have hf : Continuous f := cubicSourceResidualFunction_continuous.comp
+    (upperCoordinatesHomeomorph.continuous.comp
+      (show Continuous (fun z : ℂ => (⟨(z, V), hV⟩ : UpperCoordinates)) by fun_prop))
+  have hg : Continuous g := (cubicSourceResidualFunction_continuous.comp
+    (upperCoordinatesHomeomorph.continuous.comp
+      (show Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) by fun_prop))).mul
+      (cuspFourierCharacter_continuous h)
+  have hper (n : O) (z : ℂ) : g (z + 3 * ringComplex n) = g z := by
+    dsimp only [g]
+    rw [cubicSourceResidualFunction_period, cuspFrequency_negative_period]
+  let term (r : CubeResidues p) (z : ℂ) :=
+    f (z + 3 * ringComplex (cubeResidueRepresentative p r) / ringComplex (p ^ 3)) *
+      tracePhase (-cuspFrequency (h * p ^ 3) * z)
+  have hi (r : CubeResidues p) : IntegrableOn (term r) periodDomain :=
+    periodDomain_continuous_integrable _ ((hf.comp (continuous_id.add continuous_const)).mul
+      (cuspFourierCharacter_continuous (h * p ^ 3)))
+  have hterm (r : CubeResidues p) : (∫ z in periodDomain, term r z) =
+      ∫ z in periodDomain, f z * tracePhase (-cuspFrequency (h * p ^ 3) * z) :=
+    period_fourier_fractional_translation f (fun n z => cubicSourceResidualFunction_period V hV z n)
+      (p ^ 3) (pow_ne_zero 3 hp.ne_zero) h (cubeResidueRepresentative p r)
+  have hphase (z : ℂ) : tracePhase (-cuspFrequency h * (ringComplex (p ^ 3) * z)) =
+      tracePhase (-cuspFrequency (h * p ^ 3) * z) := by rw [cuspFrequency_mul_right]; congr 1; ring
+  have he (z : ℂ) : (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 * (∑ r : CubeResidues p, term r z) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * g (ringComplex (p ^ 3) * z) := by
+    have hh := congrArg (fun t : ℂ => t * tracePhase (-cuspFrequency (h * p ^ 3) * z))
+      (cubicSourceResidualFunction_cube_eigenrelation p hp hprimary (upperPoint (ringComplex (p ^ 3) * z) v hv))
+    simp only [cubeAverage, tsum_fintype, cubeAverageMatrix_scaled_action] at hh
+    simpa only [term, f, g, hphase, Finset.sum_mul, mul_assoc] using hh
+  have heint := congrArg (fun k : ℂ → ℂ => ∫ z in periodDomain, k z) (funext he)
+  simp only [integral_const_mul] at heint
+  rw [integral_finsetSum Finset.univ (fun r _ => hi r)] at heint
+  simp_rw [hterm] at heint
+  rw [period_integral_eisenstein_mul g hg.measurable hper (p ^ 3) (pow_ne_zero 3 hp.ne_zero)] at heint
+  have hcard : (Fintype.card (CubeResidues p) : ℂ) = (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 := by
+    rw [← Nat.card_eq_fintype_card]
+    change (Ideal.absNorm (Ideal.span {p ^ 3}) : ℂ) = _
+    rw [← Ideal.span_singleton_pow, map_pow, Nat.cast_pow]
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hcard] at heint
+  have hfactor : (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ ^ 3 * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ 3 = 1 := by
+    rw [← mul_pow, inv_mul_cancel₀ hn, one_pow]
+  rw [← mul_assoc, hfactor, one_mul] at heint
+  exact heint
+
+/-- Removing a primary prime cube leaves the actual source arithmetic residue unchanged. -/
+theorem rationalSourceScatteringResidue_mul_prime_cube (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) :
+    rationalSourceScatteringResidue (h * p ^ 3) = rationalSourceScatteringResidue h := by
+  by_cases hh : h = 0
+  · subst h
+    simp only [zero_mul]
+  have hr : 0 < ‖ringComplex p‖ := norm_pos_iff.mpr (ringComplex_ne_zero hp.ne_zero)
+  let V : ℝ := 1 / ‖ringComplex p‖ ^ 3
+  have hV : 0 < V := div_pos zero_lt_one (pow_pos hr 3)
+  have hfreq : ‖cuspFrequency (h * p ^ 3) * (V : ℂ)‖ = ‖cuspFrequency h‖ := by
+    rw [cuspFrequency_mul_right, norm_mul, norm_mul, map_pow, norm_pow,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_pos hV]
+    dsimp only [V]
+    field_simp
+  have hfreq0 : cuspFrequency (h * p ^ 3) * (V : ℂ) ≠ 0 := by
+    intro he
+    rw [he, norm_zero] at hfreq
+    exact (norm_ne_zero_iff.mpr (cuspFrequency_ne_zero h hh)) hfreq.symm
+  have hkernel : sourceFourierKernel (4 / 3) (cuspFrequency (h * p ^ 3) * (V : ℂ)) =
+      sourceFourierKernel (4 / 3) (cuspFrequency h) := by
+    rw [sourceFourierKernel_four_thirds _ hfreq0,
+      sourceFourierKernel_four_thirds _ (cuspFrequency_ne_zero h hh), hfreq]
+  have hK : sourceFourierKernel (4 / 3) (cuspFrequency h) ≠ 0 := by
+    have hk : 0 < (sourceFourierKernel (4 / 3) (cuspFrequency h)).re := by
+      convert sourceFourierKernel_real_re_pos (4 / 3) (by norm_num) (cuspFrequency h) using 1 <;> norm_num
+    intro he
+    rw [he, Complex.zero_re] at hk
+    exact (lt_irrefl 0) hk
+  have hheight : (V : ℂ) ^ (2 / 3 : ℂ) = (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ := by
+    have he : V ^ (2 / 3 : ℝ) = (‖ringComplex p‖ ^ 3) ^ (-2 / 3 : ℝ) := by
+      dsimp only [V]
+      rw [one_div, Real.inv_rpow (pow_nonneg hr.le 3), ← Real.rpow_neg (pow_nonneg hr.le 3)]
+      congr 1 <;> ring
+    have hc : ((2 / 3 : ℝ) : ℂ) = (2 / 3 : ℂ) := by norm_num
+    rw [← hc, ← Complex.ofReal_cpow hV.le, he]
+    have hw := cubeCuspHeightWeight_zero p hp.ne_zero
+    rw [cubeCuspHeightWeight, cubeCuspHeightDenominator_zero p hp.ne_zero] at hw
+    exact hw
+  have he := cubicSourceResidualFunction_fourier_cube p hp hprimary h 1 zero_lt_one
+  rw [cubicSourceResidualFunction_fourier, cubicSourceResidualFunction_fourier] at he
+  change ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) * rationalSourceScatteringResidue (h * p ^ 3) *
+      ((V : ℂ) ^ (2 / 3 : ℂ) * sourceFourierKernel (4 / 3) (cuspFrequency (h * p ^ 3) * (V : ℂ))) = _ at he
+  rw [hheight, hkernel] at he
+  simp only [Complex.ofReal_one, Complex.one_cpow, mul_one, one_mul] at he
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  have harea : ((9 * Real.sqrt 3 / 2 : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by positivity)
+  apply mul_right_cancel₀ (mul_ne_zero (mul_ne_zero harea (inv_ne_zero hn)) hK)
+  linear_combination he
+
+/-- A square but no further prime factor annihilates the source residue. -/
+theorem rationalSourceScatteringResidue_prime_square_zero (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceScatteringResidue (h * p ^ 2) = 0 := by
+  have hc := rationalSourceScatteringResidue_mul_prime_cube p hp hprimary (h * p ^ 2)
+  have he : (h * p ^ 2) * p ^ 3 = h * p ^ 5 := by rw [mul_assoc, ← pow_add]
+  rw [he, rationalSourceScatteringResidue_square_cube p hp hprimary h hph] at hc
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  apply (mul_eq_zero.mp (show (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ *
+    rationalSourceScatteringResidue (h * p ^ 2) = 0 by linear_combination hc)).resolve_left (inv_ne_zero hn)
+
+/-- The surviving first-power residue is fixed by the actual cubic Gauss factor. -/
+theorem rationalSourceScatteringResidue_prime_relation (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) * cubicUnitGaussSum (9 * h) p *
+      rationalSourceScatteringResidue (h * p) =
+        (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * rationalSourceScatteringResidue h := by
+  have he := rationalSourceScatteringResidue_prime_recurrence p hp hprimary h hph
+  rw [rationalSourceScatteringResidue_mul_prime_cube p hp hprimary h] at he
+  linear_combination he
+
+
+lemma rationalSourceScatteringResidue_prime_pow_mod (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (n : ℕ) :
+    rationalSourceScatteringResidue (h * p ^ n) = rationalSourceScatteringResidue (h * p ^ (n % 3)) := by
+  induction n using Nat.strong_induction_on with
+  | h n ih =>
+    by_cases hn : n < 3
+    · rw [Nat.mod_eq_of_lt hn]
+    have h3 : 3 ≤ n := by omega
+    calc
+      _ = rationalSourceScatteringResidue ((h * p ^ (n - 3)) * p ^ 3) := by
+        rw [mul_assoc, ← pow_add, Nat.sub_add_cancel h3]
+      _ = rationalSourceScatteringResidue (h * p ^ (n - 3)) :=
+        rationalSourceScatteringResidue_mul_prime_cube p hp hprimary _
+      _ = rationalSourceScatteringResidue (h * p ^ ((n - 3) % 3)) := ih (n - 3) (by omega)
+      _ = _ := by rw [show (n - 3) % 3 = n % 3 by omega]
+
+/-- Cube removal extends to every primary element, without a coprimality restriction. -/
+theorem rationalSourceScatteringResidue_mul_primary_cube (b : O) (hb : b ≠ 0)
+    (hprimary : lambda ^ 2 ∣ b - 1) (h : O) :
+    rationalSourceScatteringResidue (h * b ^ 3) = rationalSourceScatteringResidue h := by
+  obtain ⟨s, hs, hpr⟩ := exists_primary_prime_factorization b hb hprimary
+  rw [← hs]
+  clear hs hb hprimary b
+  induction s using Multiset.induction_on generalizing h with
+  | empty => simp only [Multiset.prod_zero, one_pow, mul_one]
+  | @cons p s ih =>
+    obtain ⟨hp, hprimary⟩ := hpr p (Multiset.mem_cons_self _ _)
+    rw [Multiset.prod_cons, mul_pow, ← mul_assoc,
+      ih (h * p ^ 3) (fun q hq => hpr q (Multiset.mem_cons_of_mem hq)),
+      rationalSourceScatteringResidue_mul_prime_cube p hp hprimary h]
+
+/-- The first-power coefficient is the second cubic Gauss sum with its exact norm weight. -/
+theorem rationalSourceScatteringResidue_prime_explicit (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceScatteringResidue (h * p) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) *
+        primeCubicGauss p hp hprimary 2 (9 * h) * rationalSourceScatteringResidue h := by
+  have hn := principalNorm_complex_ne_zero p hp.ne_zero
+  have hgg := primeCubicGauss_one_mul_two p hp hprimary (9 * h)
+    (primary_prime_not_dvd_nine_frequency p hp hprimary h hph)
+  rw [primeCubicGauss_one_eq] at hgg
+  have hG : cubicUnitGaussSum (9 * h) p ≠ 0 := by
+    intro hz
+    rw [hz, zero_mul] at hgg
+    exact hn hgg.symm
+  have hweight : (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) ≠ 0 :=
+    Complex.cpow_ne_zero_iff.mpr (Or.inl hn)
+  have hfactor : (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) *
+      ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) * (Ideal.absNorm (Ideal.span {p}) : ℂ)) =
+      (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ := by
+    calc
+      _ = (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) *
+          ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (1 : ℂ)) := by
+        rw [Complex.cpow_one]
+      _ = _ := by
+        rw [← Complex.cpow_add _ _ hn, ← Complex.cpow_add _ _ hn]
+        convert Complex.cpow_neg_one (Ideal.absNorm (Ideal.span {p}) : ℂ) using 1
+        congr 1
+        norm_num
+  apply mul_left_cancel₀ (mul_ne_zero hweight hG)
+  calc
+    _ = (Ideal.absNorm (Ideal.span {p}) : ℂ)⁻¹ * rationalSourceScatteringResidue h :=
+      rationalSourceScatteringResidue_prime_relation p hp hprimary h hph
+    _ = ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-(4 / 3 : ℂ)) *
+        ((Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) *
+          (cubicUnitGaussSum (9 * h) p * primeCubicGauss p hp hprimary 2 (9 * h)))) * rationalSourceScatteringResidue h := by
+      rw [hgg, hfactor]
+    _ = _ := by ring
+
+/-- The full unramified prime-power table: only exponents zero and one modulo three survive. -/
+theorem rationalSourceScatteringResidue_prime_power_table (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) (n : ℕ) :
+    rationalSourceScatteringResidue (h * p ^ n) =
+      if n % 3 = 0 then rationalSourceScatteringResidue h
+      else if n % 3 = 1 then (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) *
+        primeCubicGauss p hp hprimary 2 (9 * h) * rationalSourceScatteringResidue h
+      else 0 := by
+  rw [rationalSourceScatteringResidue_prime_pow_mod p hp hprimary h n]
+  by_cases h0 : n % 3 = 0
+  · simp only [h0, pow_zero, mul_one, if_true]
+  by_cases h1 : n % 3 = 1
+  · simp only [h1, pow_one, if_true, Nat.one_ne_zero, if_false]
+    exact rationalSourceScatteringResidue_prime_explicit p hp hprimary h hph
+  have h2 : n % 3 = 2 := by omega
+  rw [if_neg h0, if_neg h1, h2]
+  exact rationalSourceScatteringResidue_prime_square_zero p hp hprimary h hph
+
+
+lemma primeCubicGauss_two_eq_star (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (h : O) (hph : ¬ p ∣ h) :
+    primeCubicGauss p hp hprimary 2 h = star (cubicUnitGaussSum h p) := by
+  have hn := cubicUnitGaussSum_prime_norm p hp hprimary h hph
+  have hG : cubicUnitGaussSum h p ≠ 0 := by
+    apply norm_ne_zero_iff.mp
+    rw [hn]
+    exact norm_ne_zero_iff.mpr (ringComplex_ne_zero hp.ne_zero)
+  have he := primeCubicGauss_one_mul_two p hp hprimary h hph
+  rw [primeCubicGauss_one_eq] at he
+  apply mul_left_cancel₀ hG
+  rw [he, Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq, hn,
+    ringComplex_norm_sq_eq_absNorm_span, Complex.ofReal_natCast]
+
+lemma cubicSymbol_star_mul (a b : O) (hb : lambda ^ 2 ∣ b - 1) (hab : IsCoprime a b) :
+    star (ringComplex (symbol a b)) * ringComplex (symbol a b) = 1 := by
+  rw [mul_comm]
+  simpa only [Complex.star_def, Complex.normSq_eq_norm_sq, symbol_norm_one a b hb hab,
+    one_pow, Complex.ofReal_one] using Complex.mul_conj (ringComplex (symbol a b))
+
+lemma primeCubicGauss_two_twist (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1)
+    (h : O) (hph : ¬ p ∣ h) :
+    primeCubicGauss p hp hprimary 2 h = ringComplex (symbol h p) * primeCubicGauss p hp hprimary 2 1 := by
+  have hc := hp.coprime_iff_not_dvd.mpr hph
+  have hp1 : ¬ p ∣ (1 : O) := fun hd => hp.2.1 (isUnit_of_dvd_one hd)
+  have he := cubicUnitGaussSum_frequency_twist 1 p h hp.ne_zero hc
+  simp only [one_mul] at he
+  have hs := congrArg star he
+  simp only [star_mul] at hs
+  rw [primeCubicGauss_two_eq_star p hp hprimary h hph, primeCubicGauss_two_eq_star p hp hprimary 1 hp1]
+  calc
+    _ = (star (ringComplex (symbol h p)) * ringComplex (symbol h p)) * star (cubicUnitGaussSum h p) := by
+      rw [cubicSymbol_star_mul h p hprimary hc.symm, one_mul]
+    _ = ringComplex (symbol h p) * (star (ringComplex (symbol h p)) * star (cubicUnitGaussSum h p)) := by ring
+    _ = _ := by rw [mul_comm (star (ringComplex (symbol h p))), hs]
+
+def sourceBesselNormalizer (h : O) : ℂ :=
+  (2 * Real.pi : ℂ) / Complex.Gamma (4 / 3) * (2 * Real.pi * ‖cuspFrequency h‖ : ℂ) ^ (1 / 3 : ℂ)
+
+lemma sourceBesselNormalizer_mul (h p : O) :
+    sourceBesselNormalizer (h * p) = (‖ringComplex p‖ : ℂ) ^ (1 / 3 : ℂ) * sourceBesselNormalizer h := by
+  have hf : ‖cuspFrequency (h * p)‖ = ‖cuspFrequency h‖ * ‖ringComplex p‖ := by
+    rw [cuspFrequency_mul_right, norm_mul]
+  have he : (2 * Real.pi * ‖cuspFrequency (h * p)‖ : ℂ) =
+      (‖ringComplex p‖ : ℂ) * ((2 * Real.pi * ‖cuspFrequency h‖ : ℝ) : ℂ) := by
+    rw [hf]
+    push_cast
+    ring
+  unfold sourceBesselNormalizer
+  rw [he, Complex.mul_cpow_ofReal_nonneg (norm_nonneg _) (by positivity)]
+  push_cast
+  ring
+
+lemma sourcePrimeNormalizer_powers (p : O) (hp : p ≠ 0) :
+    (‖ringComplex p‖ : ℂ) ^ (1 / 3 : ℂ) * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ) =
+      (‖ringComplex p‖ : ℂ)⁻¹ := by
+  have hr : (‖ringComplex p‖ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr (ringComplex_ne_zero hp))
+  rw [← Complex.ofReal_natCast, ← ringComplex_norm_sq_eq_absNorm_span, pow_two,
+    Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg (norm_nonneg _) (norm_nonneg _),
+    ← mul_assoc, ← Complex.cpow_add _ _ hr, ← Complex.cpow_add _ _ hr]
+  convert Complex.cpow_neg_one (‖ringComplex p‖ : ℂ) using 1
+  congr 1
+  norm_num
+
+/-- Fourier normalization converts the arithmetic prime factor to a unit-sized Gauss factor. -/
+theorem rationalSourceResidualFourierCoefficient_prime_factor (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceResidualFourierCoefficient (h * p) =
+      (primeCubicGauss p hp hprimary 2 (9 * h) / (‖ringComplex p‖ : ℂ)) * rationalSourceResidualFourierCoefficient h := by
+  have hh : h ≠ 0 := fun hz => hph (hz ▸ dvd_zero p)
+  rw [rationalSourceResidualFourierCoefficient_eq _ (mul_ne_zero hh hp.ne_zero),
+    rationalSourceResidualFourierCoefficient_eq h hh]
+  change rationalSourceScatteringResidue (h * p) * sourceBesselNormalizer (h * p) =
+    (primeCubicGauss p hp hprimary 2 (9 * h) / (‖ringComplex p‖ : ℂ)) *
+      (rationalSourceScatteringResidue h * sourceBesselNormalizer h)
+  rw [rationalSourceScatteringResidue_prime_explicit p hp hprimary h hph, sourceBesselNormalizer_mul]
+  calc
+    _ = ((‖ringComplex p‖ : ℂ) ^ (1 / 3 : ℂ) * (Ideal.absNorm (Ideal.span {p}) : ℂ) ^ (-2 / 3 : ℂ)) *
+        primeCubicGauss p hp hprimary 2 (9 * h) * (rationalSourceScatteringResidue h * sourceBesselNormalizer h) := by ring
+    _ = _ := by rw [sourcePrimeNormalizer_powers p hp.ne_zero]; ring
+
+def normalizedCubicUnitGauss (n : O) : ℂ := cubicUnitGaussSum 1 n / (‖ringComplex n‖ : ℂ)
+
+lemma normalizedCubicUnitGauss_one : normalizedCubicUnitGauss 1 = 1 := by
+  simp [normalizedCubicUnitGauss, cubicUnitGaussSum_one]
+
+theorem rationalSourceResidualFourierCoefficient_prime_normalized (p : O) (hp : Prime p)
+    (hprimary : lambda ^ 2 ∣ p - 1) (h : O) (hph : ¬ p ∣ h) :
+    rationalSourceResidualFourierCoefficient (h * p) = ringComplex (symbol (9 * h) p) *
+      star (normalizedCubicUnitGauss p) * rationalSourceResidualFourierCoefficient h := by
+  have hp9 := primary_prime_not_dvd_nine_frequency p hp hprimary h hph
+  have hp1 : ¬ p ∣ (1 : O) := fun hd => hp.2.1 (isUnit_of_dvd_one hd)
+  rw [rationalSourceResidualFourierCoefficient_prime_factor p hp hprimary h hph,
+    primeCubicGauss_two_twist p hp hprimary (9 * h) hp9, primeCubicGauss_two_eq_star p hp hprimary 1 hp1,
+    normalizedCubicUnitGauss, star_div₀, Complex.star_def, Complex.conj_ofReal]
+  ring
+
+
+lemma normalizedCubicUnitGauss_coprime_product (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hap : lambda ^ 2 ∣ a - 1) (hbp : lambda ^ 2 ∣ b - 1) (hab : IsCoprime a b) :
+    star (normalizedCubicUnitGauss (a * b)) = ringComplex (symbol a b) *
+      star (normalizedCubicUnitGauss a) * star (normalizedCubicUnitGauss b) := by
+  have hG := cubicUnitGaussSum_primary_product 1 a b ha hb hap hbp hab
+  have ht := cubicUnitGaussSum_frequency_twist 1 b a hb hab.symm
+  simp only [one_mul] at hG ht
+  have hN : ringComplex (symbol a b) * normalizedCubicUnitGauss (a * b) =
+      normalizedCubicUnitGauss a * normalizedCubicUnitGauss b := by
+    unfold normalizedCubicUnitGauss
+    rw [hG, map_mul, norm_mul, Complex.ofReal_mul]
+    calc
+      _ = cubicUnitGaussSum 1 a * (ringComplex (symbol a b) * cubicUnitGaussSum a b) /
+          ((‖ringComplex a‖ : ℂ) * (‖ringComplex b‖ : ℂ)) := by ring
+      _ = _ := by rw [ht]; ring
+  have hs := congrArg star hN
+  simp only [star_mul] at hs
+  calc
+    _ = (star (ringComplex (symbol a b)) * ringComplex (symbol a b)) * star (normalizedCubicUnitGauss (a * b)) := by
+      rw [cubicSymbol_star_mul a b hbp hab, one_mul]
+    _ = ringComplex (symbol a b) * (star (normalizedCubicUnitGauss (a * b)) * star (ringComplex (symbol a b))) := by ring
+    _ = _ := by rw [hs]; ring
+
+lemma primary_finset_product {ι : Type*} (s : Finset ι) (p : ι → O)
+    (hp : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1) : lambda ^ 2 ∣ (∏ i ∈ s, p i) - 1 := by
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.prod_empty, sub_self, dvd_zero]
+  | @insert i s hi ih =>
+    have h1 := hp i (Finset.mem_insert_self _ _)
+    have h2 := ih (fun j hj => hp j (Finset.mem_insert_of_mem hj))
+    rw [Finset.prod_insert hi]
+    convert dvd_add (h1.mul_right (∏ j ∈ s, p j)) h2 using 1 <;> ring
+
+/-- Pairwise coprime primary primes recover the composite normalized Gauss coefficient. -/
+theorem rationalSourceResidualFourierCoefficient_prime_product {ι : Type*}
+    (s : Finset ι) (p : ι → O) (hp : ∀ i ∈ s, Prime (p i))
+    (hprimary : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → IsCoprime (p i) (p j))
+    (h : O) (hph : ∀ i ∈ s, ¬ p i ∣ h) :
+    rationalSourceResidualFourierCoefficient (h * (∏ i ∈ s, p i)) =
+      ringComplex (symbol (9 * h) (∏ i ∈ s, p i)) * star (normalizedCubicUnitGauss (∏ i ∈ s, p i)) *
+        rationalSourceResidualFourierCoefficient h := by
+  induction s using Finset.induction_on with
+  | empty => simp only [Finset.prod_empty, mul_one, symbol_one, map_one, normalizedCubicUnitGauss_one, star_one, one_mul]
+  | @insert i s hi ih =>
+    have hpi := hp i (Finset.mem_insert_self _ _)
+    have hpri := hprimary i (Finset.mem_insert_self _ _)
+    have hps : ∀ j ∈ s, Prime (p j) := fun j hj => hp j (Finset.mem_insert_of_mem hj)
+    have hprs : ∀ j ∈ s, lambda ^ 2 ∣ p j - 1 := fun j hj => hprimary j (Finset.mem_insert_of_mem hj)
+    have hcpi : IsCoprime (p i) (∏ j ∈ s, p j) := IsCoprime.prod_right (fun j hj =>
+      hpair i (Finset.mem_insert_self _ _) j (Finset.mem_insert_of_mem hj) (by intro he; subst j; exact hi hj))
+    have hbs : (∏ j ∈ s, p j) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun j hj => (hps j hj).ne_zero)
+    have hpb : ¬ p i ∣ h * (∏ j ∈ s, p j) := by
+      intro hd
+      rcases hpi.dvd_mul.mp hd with hd | hd
+      · exact hph i (Finset.mem_insert_self _ _) hd
+      · exact hpi.2.1 (hcpi.isUnit_of_dvd hd)
+    have hih := ih hps hprs
+      (fun j hj k hk hjk => hpair j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk) hjk)
+      (fun j hj => hph j (Finset.mem_insert_of_mem hj))
+    rw [Finset.prod_insert hi, show h * (p i * (∏ j ∈ s, p j)) = (h * (∏ j ∈ s, p j)) * p i by ring,
+      rationalSourceResidualFourierCoefficient_prime_normalized (p i) hpi hpri _ hpb, hih]
+    rw [mul_comm (p i) (∏ j ∈ s, p j), normalizedCubicUnitGauss_coprime_product _ _ hbs hpi.ne_zero
+      (primary_finset_product s p hprs) hpri hcpi.symm, symbol_mul_denominator, map_mul,
+      show (9 : O) * (h * (∏ j ∈ s, p j)) = (9 * h) * (∏ j ∈ s, p j) by ring,
+      symbol_mul_numerator, map_mul]
+    ring
+
+/-- The actual residual coefficient on a squarefree primary product has a single scalar normalization. -/
+theorem rationalSourceResidualFourierCoefficient_primary_product {ι : Type*}
+    (s : Finset ι) (p : ι → O) (hp : ∀ i ∈ s, Prime (p i))
+    (hprimary : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → IsCoprime (p i) (p j)) :
+    star (rationalSourceResidualFourierCoefficient (∏ i ∈ s, p i)) =
+      star (rationalSourceResidualFourierCoefficient 1) *
+        star (ringComplex (symbol 9 (∏ i ∈ s, p i))) * normalizedCubicUnitGauss (∏ i ∈ s, p i) := by
+  have he := rationalSourceResidualFourierCoefficient_prime_product s p hp hprimary hpair 1
+    (fun i hi hd => (hp i hi).2.1 (isUnit_of_dvd_one hd))
+  simp only [one_mul, mul_one] at he
+  rw [he, star_mul, star_mul, star_star]
+  ring
+
+lemma sourceBesselNormalizer_mul_cube (h b : O) (hb : b ≠ 0) :
+    sourceBesselNormalizer (h * b ^ 3) = (‖ringComplex b‖ : ℂ) * sourceBesselNormalizer h := by
+  have hr : 0 < ‖ringComplex b‖ := norm_pos_iff.mpr (ringComplex_ne_zero hb)
+  have hc : (((‖ringComplex b‖ ^ 3 : ℝ) : ℂ) ^ (1 / 3 : ℂ)) = (‖ringComplex b‖ : ℂ) := by
+    have he : ((1 / 3 : ℝ) : ℂ) = (1 / 3 : ℂ) := by norm_num
+    rw [← he, ← Complex.ofReal_cpow (pow_nonneg hr.le 3), ← Real.rpow_natCast_mul hr.le 3, Nat.cast_ofNat,
+      show (3 : ℝ) * (1 / 3) = 1 by norm_num, Real.rpow_one]
+  rw [sourceBesselNormalizer_mul, map_pow, norm_pow, hc]
+
+theorem rationalSourceResidualFourierCoefficient_primary_cube (b : O) (hb : b ≠ 0)
+    (hprimary : lambda ^ 2 ∣ b - 1) (h : O) (hh : h ≠ 0) :
+    rationalSourceResidualFourierCoefficient (h * b ^ 3) =
+      (‖ringComplex b‖ : ℂ) * rationalSourceResidualFourierCoefficient h := by
+  rw [rationalSourceResidualFourierCoefficient_eq _ (mul_ne_zero hh (pow_ne_zero 3 hb)),
+    rationalSourceResidualFourierCoefficient_eq h hh]
+  change rationalSourceScatteringResidue (h * b ^ 3) * sourceBesselNormalizer (h * b ^ 3) =
+    (‖ringComplex b‖ : ℂ) * (rationalSourceScatteringResidue h * sourceBesselNormalizer h)
+  rw [rationalSourceScatteringResidue_mul_primary_cube b hb hprimary h, sourceBesselNormalizer_mul_cube h b hb]
+  ring
+
+lemma primaryIdealGenerator_squarefree_support (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0)
+    (hsq : Squarefree I) : primaryIdealGenerator I = ∏ P ∈ primeSupport I, primaryIdealPrime P := by
+  have hI0 := primaryIdealGenerator_ne_zero_ideal I hI
+  have hn := (UniqueFactorizationMonoid.squarefree_iff_nodup_normalizedFactors hI0).mp hsq
+  have hv : (primeSupport I).val = UniqueFactorizationMonoid.normalizedFactors I := by
+    simpa only [primeSupport, Multiset.toFinset_val] using hn.dedup
+  rw [primaryIdealGenerator, if_neg hI0]
+  change _ = ((primeSupport I).val.map primaryIdealPrime).prod
+  rw [hv]
+
+lemma primaryIdealPrime_isPrime_of_mem (I P : Ideal O) (hI : primaryIdealGenerator I ≠ 0)
+    (hP : P ∈ primeSupport I) : Prime (primaryIdealPrime P) := by
+  have hp0 := primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP)
+  have hs := primaryIdealPrime_spec P hp0
+  letI : P.IsMaximal := hs.1
+  apply (Ideal.span_singleton_prime hp0).mp
+  rw [hs.2.2.1]
+  infer_instance
+
+lemma primaryIdealPrime_support_coprime (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0)
+    (P : Ideal O) (hP : P ∈ primeSupport I) (Q : Ideal O) (hQ : Q ∈ primeSupport I) (hne : P ≠ Q) :
+    IsCoprime (primaryIdealPrime P) (primaryIdealPrime Q) := by
+  have hp := primaryIdealPrime_spec P (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))
+  have hq := primaryIdealPrime_spec Q (primaryIdealPrime_factor_ne_zero I Q hI (Multiset.mem_toFinset.mp hQ))
+  letI : P.IsMaximal := hp.1
+  letI : Q.IsMaximal := hq.1
+  apply (Ideal.isCoprime_span_singleton_iff _ _).mp
+  rw [hp.2.2.1, hq.2.2.1]
+  exact Ideal.isCoprime_of_isMaximal hne
+
+/-- The scalar shared by all unramified squarefree Fourier coefficients. -/
+def rationalSourceThetaScalar : ℂ := star (rationalSourceResidualFourierCoefficient 1)
+
+theorem rationalSourceResidualFourierCoefficient_squarefree (I : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hsq : Squarefree I) :
+    star (rationalSourceResidualFourierCoefficient (primaryIdealGenerator I)) =
+      rationalSourceThetaScalar * star (ringComplex (symbol 9 (primaryIdealGenerator I))) *
+        normalizedCubicUnitGauss (primaryIdealGenerator I) := by
+  have he := rationalSourceResidualFourierCoefficient_primary_product (primeSupport I) primaryIdealPrime
+    (fun P hP => primaryIdealPrime_isPrime_of_mem I P hI hP)
+    (fun P hP => (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2)
+    (primaryIdealPrime_support_coprime I hI)
+  rwa [← primaryIdealGenerator_squarefree_support I hI hsq] at he
+
+/-- Cube multiplication changes only the absolute-value factor in the theta coefficient. -/
+theorem rationalSourceResidualFourierCoefficient_squarefree_cube (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I) :
+    star (rationalSourceResidualFourierCoefficient (primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3)) =
+      rationalSourceThetaScalar * (‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+        star (ringComplex (symbol 9 (primaryIdealGenerator I))) * normalizedCubicUnitGauss (primaryIdealGenerator I) := by
+  rw [rationalSourceResidualFourierCoefficient_primary_cube _ hJ (primaryIdealGenerator_spec J hJ).2 _ hI,
+    star_mul, rationalSourceResidualFourierCoefficient_squarefree I hI hsq]
+  simp only [Complex.star_def, Complex.conj_ofReal]
+  ring
+
+open UniqueFactorizationMonoid
+
+/-- A nonzero unramified residue has no prime valuation congruent to two modulo three. -/
+theorem rationalSourceScatteringResidue_valuation_ne_two (I P : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hP : P ∈ normalizedFactors I)
+    (hR : rationalSourceScatteringResidue (primaryIdealGenerator I) ≠ 0) :
+    (normalizedFactors I).count P % 3 ≠ 2 := by
+  have hI0 := primaryIdealGenerator_ne_zero_ideal I hI
+  have hprime := prime_of_normalized_factor P hP
+  let p := primaryIdealPrime P
+  have hp0 : p ≠ 0 := primaryIdealPrime_factor_ne_zero I P hI hP
+  have hps := primaryIdealPrime_spec P hp0
+  have hp : Prime p := primaryIdealPrime_isPrime_of_mem I P hI (Multiset.mem_toFinset.mpr hP)
+  obtain ⟨J, hJ, hnot⟩ := (FiniteMultiplicity.of_prime_left hprime hI0).exists_eq_pow_mul_and_not_dvd
+  have hgen : primaryIdealGenerator I = p ^ (multiplicity P I) * primaryIdealGenerator J := by
+    calc
+      _ = primaryIdealGenerator (P ^ (multiplicity P I) * J) := congrArg primaryIdealGenerator hJ
+      _ = _ := by
+        rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow]
+        have hPgen : primaryIdealGenerator P = p := by
+          rw [← hps.2.2.1, primaryIdealGenerator_span p hp0 hps.2.2.2]
+        rw [hPgen]
+  have hgJ : primaryIdealGenerator J ≠ 0 := by
+    intro hz
+    exact hI (by rw [hgen, hz, mul_zero])
+  have hpd : ¬ p ∣ primaryIdealGenerator J := by
+    intro hd
+    apply hnot
+    rw [Ideal.dvd_iff_le, ← hps.2.2.1, ← (primaryIdealGenerator_spec J hgJ).1,
+      Ideal.span_singleton_le_span_singleton]
+    exact hd
+  have hcount := multiplicity_eq_count_normalizedFactors hprime.irreducible hI0
+  rw [normalize_normalized_factor P hP] at hcount
+  intro hc
+  have hm : (multiplicity P I) % 3 = 2 := by rwa [hcount]
+  apply hR
+  rw [hgen, mul_comm, rationalSourceScatteringResidue_prime_power_table p hp hps.2.2.2 _ hpd, hm]
+  norm_num
+
+/-- The squarefree factor selected by prime valuations congruent to one modulo three. -/
+def thetaSquarefreePart (I : Ideal O) : Ideal O :=
+  ∏ P ∈ (primeSupport I).filter (fun P => (normalizedFactors I).count P % 3 = 1), P
+
+/-- The cube root of the maximal cubical ideal factor. -/
+def thetaCubePart (I : Ideal O) : Ideal O :=
+  ∏ P ∈ primeSupport I, P ^ ((normalizedFactors I).count P / 3)
+
+lemma thetaSquarefreePart_squarefree (I : Ideal O) : Squarefree (thetaSquarefreePart I) :=
+  squarefree_support_product (Finset.filter_subset _ _)
+
+lemma thetaParts_mul_cube (I : Ideal O) (hI : I ≠ 0)
+    (he : ∀ P ∈ normalizedFactors I, (normalizedFactors I).count P % 3 ≠ 2) :
+    thetaSquarefreePart I * thetaCubePart I ^ 3 = I := by
+  rw [thetaSquarefreePart, Finset.prod_filter, thetaCubePart, ← Finset.prod_pow, ← Finset.prod_mul_distrib]
+  calc
+    _ = ∏ P ∈ primeSupport I, P ^ ((normalizedFactors I).count P) := by
+      apply Finset.prod_congr rfl
+      intro P hP
+      have hp := he P (Multiset.mem_toFinset.mp hP)
+      have hm : (normalizedFactors I).count P % 3 = 0 ∨ (normalizedFactors I).count P % 3 = 1 := by omega
+      rcases hm with hm | hm
+      · rw [if_neg (by omega), one_mul, ← pow_mul]
+        congr 1
+        omega
+      · rw [if_pos hm, ← pow_mul, ← pow_succ']
+        congr 1
+        omega
+    _ = (normalizedFactors I).prod := (Finset.prod_multiset_count (normalizedFactors I)).symm
+    _ = I := Ideal.prod_normalizedFactors_eq_self hI
+
+/-- Every nonzero unramified arithmetic residue lies on squarefree times cube support. -/
+theorem rationalSourceScatteringResidue_squarefree_cube_support (I : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hR : rationalSourceScatteringResidue (primaryIdealGenerator I) ≠ 0) :
+    Squarefree (thetaSquarefreePart I) ∧ primaryIdealGenerator (thetaSquarefreePart I) ≠ 0 ∧
+      primaryIdealGenerator (thetaCubePart I) ≠ 0 ∧ thetaSquarefreePart I * thetaCubePart I ^ 3 = I := by
+  have he := thetaParts_mul_cube I (primaryIdealGenerator_ne_zero_ideal I hI)
+    (fun P hP => rationalSourceScatteringResidue_valuation_ne_two I P hI hP hR)
+  have hgen : primaryIdealGenerator I =
+      primaryIdealGenerator (thetaSquarefreePart I) * (primaryIdealGenerator (thetaCubePart I)) ^ 3 := by
+    calc
+      _ = primaryIdealGenerator (thetaSquarefreePart I * thetaCubePart I ^ 3) := congrArg primaryIdealGenerator he.symm
+      _ = _ := by rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow]
+  have hA : primaryIdealGenerator (thetaSquarefreePart I) ≠ 0 := by
+    intro hz
+    exact hI (by rw [hgen, hz, zero_mul])
+  have hB : primaryIdealGenerator (thetaCubePart I) ≠ 0 := by
+    intro hz
+    exact hI (by rw [hgen, hz, zero_pow (by decide : (3 : ℕ) ≠ 0), mul_zero])
+  exact ⟨thetaSquarefreePart_squarefree I, hA, hB, he⟩
+
+theorem rationalSourceFourier_squarefree_cube_support (I : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hT : rationalSourceResidualFourierCoefficient (primaryIdealGenerator I) ≠ 0) :
+    ∃ A B : Ideal O, Squarefree A ∧ primaryIdealGenerator A ≠ 0 ∧ primaryIdealGenerator B ≠ 0 ∧ A * B ^ 3 = I := by
+  have hR : rationalSourceScatteringResidue (primaryIdealGenerator I) ≠ 0 := by
+    intro hz
+    exact hT (by rw [rationalSourceResidualFourierCoefficient_eq _ hI, hz, zero_mul])
+  exact ⟨thetaSquarefreePart I, thetaCubePart I, rationalSourceScatteringResidue_squarefree_cube_support I hI hR⟩
+
+theorem rationalSourceFourier_primary_zero_of_base_zero (hC : rationalSourceThetaScalar = 0)
+    (n : O) (hprimary : lambda ^ 2 ∣ n - 1) : rationalSourceResidualFourierCoefficient n = 0 := by
+  have hn : n ≠ 0 := primary_ne_zero n hprimary
+  let I : Ideal O := Ideal.span {n}
+  have hgen : primaryIdealGenerator I = n := primaryIdealGenerator_span n hn hprimary
+  have hI : primaryIdealGenerator I ≠ 0 := by rwa [hgen]
+  by_contra hT
+  have hTI : rationalSourceResidualFourierCoefficient (primaryIdealGenerator I) ≠ 0 := by rwa [hgen]
+  obtain ⟨A, B, hA, hAg, hBg, hAB⟩ := rationalSourceFourier_squarefree_cube_support I hI hTI
+  have harg : primaryIdealGenerator A * (primaryIdealGenerator B) ^ 3 = n := by
+    have he := congrArg primaryIdealGenerator hAB
+    simpa only [primaryIdealGenerator_mul, primaryIdealGenerator_pow, hgen] using he
+  have he := rationalSourceResidualFourierCoefficient_squarefree_cube A B hAg hBg hA
+  rw [harg, hC, zero_mul, zero_mul, zero_mul] at he
+  exact hT (star_eq_zero.mp he)
+
+lemma cubicUnitGaussSum_neg_frequency (h c : O) (hc : c ≠ 0) (hprimary : lambda ^ 2 ∣ c - 1) :
+    cubicUnitGaussSum (-h) c = cubicUnitGaussSum h c := by
+  have he := cubicUnitGaussSum_frequency_twist h c (-1) hc ⟨0, -1, by ring⟩
+  simpa only [symbol_neg_one c hprimary, map_one, one_mul, mul_neg_one] using he
+
+lemma unramifiedCubicGaussSeries_neg (s : ℂ) (h : O) :
+    unramifiedCubicGaussSeries s (-h) = unramifiedCubicGaussSeries s h := by
+  apply tsum_congr
+  intro I
+  rw [cubicUnitGaussSum_neg_frequency h _ I.2 (primaryIdealGenerator_spec I.1 I.2).2]
+
+lemma unramifiedGaussResidue_neg (h : O) : unramifiedGaussResidue (-h) = unramifiedGaussResidue h := by
+  have he := unramifiedGaussResidue_of_initial_relation (-h) h 0 (fun _ => 1) (fun _ => 0)
+    (fun _ _ => analyticAt_const) (fun _ _ => analyticAt_const) continuousAt_const continuousAt_const
+    (fun s _ _ => by simpa only [one_mul, zero_mul, add_zero] using unramifiedCubicGaussSeries_neg s h)
+  simpa only [one_mul, zero_mul, add_zero] using he
+
+lemma ramifiedFrequencyChar_neg_unit (k : O) (u : Oˣ) (n : ℕ) :
+    ramifiedFrequencyChar k (-u) n = ramifiedFrequencyChar k u n := by
+  ext x
+  rw [ramifiedFrequencyChar_rep, ramifiedFrequencyChar_rep]
+  simp only [Units.val_neg, neg_mul]
+  rw [symbol_neg_numerator _ _ (lambda_sq_dvd_three.trans ⟨_, by ring⟩)]
+
+lemma arithmeticResidueSum_neg_unit (h : O) (u : Oˣ) (n : ℕ) (hn : 2 ≤ n) :
+    arithmeticResidueSum (-h) ((u : O) * lambda ^ n) =
+      arithmeticResidueSum h (((-u : Oˣ) : O) * lambda ^ n) := by
+  by_cases hd : (u : O) * lambda ^ n ∣ 3 * (-h)
+  · obtain ⟨k, hk⟩ := hd
+    have hk' : 3 * h = (((-u : Oˣ) : O) * lambda ^ n) * k := by
+      simp only [Units.val_neg]
+      linear_combination -hk
+    rw [ramified_arithmetic_character_test (-h) k u n hn hk,
+      ramified_arithmetic_character_test h k (-u) n hn hk', ramifiedFrequencyChar_neg_unit]
+  · have hl : arithmeticResidueSum (-h) ((u : O) * lambda ^ n) = 0 := by
+      by_contra he
+      exact hd (ramified_arithmetic_support (-h) u n hn he)
+    have hr : arithmeticResidueSum h (((-u : Oˣ) : O) * lambda ^ n) = 0 := by
+      by_contra he
+      obtain ⟨k, hk⟩ := ramified_arithmetic_support h (-u) n hn he
+      apply hd
+      refine ⟨k, ?_⟩
+      simp only [Units.val_neg] at hk
+      linear_combination -hk
+    rw [hl, hr]
+
+/-- Negating the frequency is absorbed by negating the ramified unit. -/
+lemma arithmeticDirichletSeries_neg (s : ℂ) (hs : 2 < s.re) (h : O) (hh : h ≠ 0) :
+    arithmeticDirichletSeries s (-h) = arithmeticDirichletSeries s h := by
+  let N := max (ramifiedFrequencyBound (-h) + 1) (ramifiedFrequencyBound h + 1)
+  rw [arithmeticDirichletSeries_finite_gauss_of_bound s hs (-h) (neg_ne_zero.mpr hh) N (le_max_left _ _),
+    arithmeticDirichletSeries_finite_gauss_of_bound s hs h hh N (le_max_right _ _)]
+  have he (u : Oˣ) (n : ℕ) : ramifiedGaussTerm s (-h) u n = ramifiedGaussTerm s h (-u) n := by
+    unfold ramifiedGaussTerm
+    rw [arithmeticResidueSum_neg_unit h u (n + 2) (by omega)]
+    congr 2
+    simp only [Units.val_neg]
+    ring
+  change (∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s (-h) u n) =
+    ∑' u : Oˣ, ∑ n ∈ Finset.range N, ramifiedGaussTerm s h u n
+  simp_rw [he]
+  exact (Equiv.neg Oˣ).tsum_eq (fun u : Oˣ => ∑ n ∈ Finset.range N, ramifiedGaussTerm s h u n)
+
+lemma nonzeroScatteringResidue_neg (h : O) (hh : h ≠ 0) :
+    nonzeroScatteringResidue (-h) = nonzeroScatteringResidue h := by
+  have he := nonzeroScatteringResidue_of_initial_relation (-h) h h (neg_ne_zero.mpr hh) hh hh
+    (fun _ => 1) (fun _ => 0) (fun _ _ => analyticAt_const) (fun _ _ => analyticAt_const)
+    continuousAt_const continuousAt_const (fun s hs _ => by
+      simp only [one_mul, zero_mul, add_zero, scatteringCoefficient,
+        arithmeticDirichletSeries_neg s (by linarith) h hh])
+  simpa only [one_mul, zero_mul, add_zero] using he
+
+lemma cuspFrequency_neg (h : O) : cuspFrequency (-h) = -cuspFrequency h := by
+  simp only [cuspFrequency, map_neg, neg_div]
+
+lemma rationalCuspPhaseSum_neg (h : O) : rationalCuspPhaseSum (-h) = rationalCuspPhaseSum h := by
+  have h3 : tracePhase (3 * cuspFrequency h) = 1 := by
+    simpa only [map_one, mul_one, one_mul, mul_comm] using cuspFrequency_period h 1
+  have h1 : tracePhase (-cuspFrequency h) = tracePhase (cuspFrequency h * 2) := by
+    have he := AddChar.map_add_eq_mul tracePhase (-cuspFrequency h) (3 * cuspFrequency h)
+    rw [h3, mul_one] at he
+    convert he.symm using 1 <;> congr 1 <;> ring
+  have h2 : tracePhase (-cuspFrequency h * 2) = tracePhase (cuspFrequency h) := by
+    have he := AddChar.map_add_eq_mul tracePhase (-cuspFrequency h * 2) (3 * cuspFrequency h)
+    rw [h3, mul_one] at he
+    convert he.symm using 1 <;> congr 1 <;> ring
+  rw [rationalCuspPhaseSum, rationalCuspPhaseSum, cuspFrequency_neg, h1, h2]
+  ring
+
+lemma rationalSourceScatteringResidue_neg (h : O) :
+    rationalSourceScatteringResidue (-h) = rationalSourceScatteringResidue h := by
+  by_cases hh : h = 0
+  · simp only [hh, neg_zero]
+  rw [rationalSourceScatteringResidue, rationalSourceScatteringResidue, if_neg hh, if_neg (neg_ne_zero.mpr hh),
+    nonzeroScatteringResidue_neg h hh, rationalCuspPhaseSum_neg,
+    oppositeCuspResidue_eq_unramified, oppositeCuspResidue_eq_unramified,
+    mul_neg, unramifiedGaussResidue_neg]
+
+theorem rationalSourceResidualFourierCoefficient_neg (h : O) :
+    rationalSourceResidualFourierCoefficient (-h) = rationalSourceResidualFourierCoefficient h := by
+  by_cases hh : h = 0
+  · simp only [hh, neg_zero]
+  rw [rationalSourceResidualFourierCoefficient_eq _ (neg_ne_zero.mpr hh),
+    rationalSourceResidualFourierCoefficient_eq h hh, rationalSourceScatteringResidue_neg,
+    cuspFrequency_neg, norm_neg]
+
+/-- Full Eisenstein translation symmetry conflicts with the lower cusp's nontrivial cubic character. -/
+theorem cubicSource_not_eisenstein_periodic :
+    ¬ (∀ a : O, ∀ w : HyperbolicSpace,
+      cubicSourceResidualFunction (complexTranslation (ringComplex a) • w) = cubicSourceResidualFunction w) := by
+  intro hperiod
+  have hfactor : integralComplexMatrix (lowerCuspMatrix omega) =
+      integralComplexMatrix (rationalEmbedding ModularGroup.S) * complexTranslation (-ringComplex omega) *
+        integralComplexMatrix (rationalEmbedding ModularGroup.S⁻¹) := by
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
+    fin_cases i <;> fin_cases j <;>
+      simp [lowerCuspMatrix, integralComplexMatrix, rationalEmbedding, complexTranslation,
+        Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two, ModularGroup.S,
+        Matrix.adjugate_fin_two]
+  have hlow (w : HyperbolicSpace) : ramifiedSourceFunction omega w = cubicSourceResidualFunction w := by
+    unfold ramifiedSourceFunction
+    rw [hfactor, mul_smul, mul_smul, cubicSourceResidualFunction_rational]
+    have hm := hperiod (-omega) (integralComplexMatrix (rationalEmbedding ModularGroup.S⁻¹) • w)
+    simp only [map_neg] at hm
+    rw [hm, cubicSourceResidualFunction_rational]
+  have hchar : complexCharacter (ramifiedParabolic omega 1) = ringComplex omega := by
+    have he := ramifiedParabolic_omega_character 1 0
+    simpa [Coordinates.eval, cubicExp] using he
+  apply cubicSourceResidualFunction_ne_zero
+  funext w
+  obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective w
+  have he := ramifiedSourceFunction_period omega 1 z v hv
+  have hp := cubicSourceResidualFunction_period v hv z 1
+  simp only [map_one] at hp
+  rw [← ramifiedParabolic_character, hchar, hlow, hlow, map_one,
+    hp] at he
+  have hz : (ringComplex omega - 1) * cubicSourceResidualFunction (upperPoint z v hv) = 0 := by
+    linear_combination -he
+  have hn : ringComplex omega - 1 ≠ 0 := sub_ne_zero.mpr (by
+    intro h
+    exact omega_primitive.ne_one (by decide) (ringComplex_injective (by simpa only [map_one] using h)))
+  exact (mul_eq_zero.mp hz).resolve_left hn
+
+lemma source_period_of_three_supported
+    (hs : ∀ h : O, ¬ (3 : O) ∣ h → rationalSourceResidualFourierCoefficient h = 0)
+    (a : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    cubicSourceResidualFunction (upperPoint (z + ringComplex a) v hv) =
+      cubicSourceResidualFunction (upperPoint z v hv) := by
+  rw [cubicSourceResidualFunction_fourier_expansion, cubicSourceResidualFunction_fourier_expansion]
+  apply tsum_congr
+  intro h
+  by_cases hd : (3 : O) ∣ h
+  · obtain ⟨b, rfl⟩ := hd
+    have hp : tracePhase (cuspFrequency (3 * b) * ringComplex a) = 1 := by
+      have he : cuspFrequency (3 * b) * ringComplex a = cuspFrequency b * (3 * ringComplex a) := by
+        simp only [cuspFrequency, map_mul, map_ofNat]
+        ring
+      rw [he, cuspFrequency_period]
+    rw [mul_add, AddChar.map_add_eq_mul, hp, mul_one]
+  · have hh : h ≠ 0 := fun he => hd (he ▸ dvd_zero 3)
+    rw [rationalSourceModeAmplitude_bessel v hv h hh, hs h hd, zero_mul, zero_mul, zero_mul, zero_mul]
+
+theorem exists_source_coefficient_not_three :
+    ∃ h : O, ¬ (3 : O) ∣ h ∧ rationalSourceResidualFourierCoefficient h ≠ 0 := by
+  by_contra hn
+  have hs : ∀ h : O, ¬ (3 : O) ∣ h → rationalSourceResidualFourierCoefficient h = 0 := by
+    intro h hh
+    by_contra he
+    exact hn ⟨h, hh, he⟩
+  apply cubicSource_not_eisenstein_periodic
+  intro a w
+  obtain ⟨z, v, hv, rfl⟩ := upperPoint_surjective w
+  rw [complexTranslation_action]
+  exact source_period_of_three_supported hs a z v hv
+
+lemma sourceFourier_phase_of_ne_zero (h : O) (hh : h ≠ 0)
+    (hT : rationalSourceResidualFourierCoefficient h ≠ 0) : tracePhase (cuspFrequency h) = 1 := by
+  have hR : rationalSourceScatteringResidue h ≠ 0 := by
+    intro hz
+    exact hT (by rw [rationalSourceResidualFourierCoefficient_eq h hh, hz, zero_mul])
+  have hK : sourceFourierKernel (4 / 3) (cuspFrequency h) ≠ 0 := by
+    have hk : 0 < (sourceFourierKernel (4 / 3) (cuspFrequency h)).re := by
+      convert sourceFourierKernel_real_re_pos (4 / 3) (by norm_num) (cuspFrequency h) using 1 <;> norm_num
+    intro he
+    rw [he, Complex.zero_re] at hk
+    exact (lt_irrefl 0) hk
+  have hs (z : ℂ) : cubicSourceResidualFunction (upperPoint (z + 1) 1 (by norm_num)) =
+      cubicSourceResidualFunction (upperPoint z 1 (by norm_num)) := by
+    have he := cubicSourceResidualFunction_period_one_action (upperPoint z 1 (by norm_num))
+    rwa [complexTranslation_action] at he
+  have he := period_fourier_translation
+    (fun z => cubicSourceResidualFunction (upperPoint z 1 (by norm_num)))
+    (fun n z => cubicSourceResidualFunction_period 1 (by norm_num) z n) h 1
+  simp only [hs, mul_one] at he
+  rw [cubicSourceResidualFunction_fourier 1 (by norm_num) h] at he
+  simp only [Complex.ofReal_one, Complex.one_cpow, mul_one, one_mul] at he
+  exact mul_right_cancel₀ (mul_ne_zero (mul_ne_zero cusp_volume_ne_zero hR) hK)
+    (he.symm.trans (one_mul _).symm)
+
+lemma sourceRayPhase_coordinate (h : O) (hphase : tracePhase (cuspFrequency h) = 1) :
+    (3 : ℤ) ∣ (Coordinates.coords h).2 := by
+  have he := complexTrace_div_traceLambda (Coordinates.coords h).1 (Coordinates.coords h).2
+  rw [Coordinates.eval_coords] at he
+  have ht : cuspFrequency h + starRingEnd ℂ (cuspFrequency h) = ((Coordinates.coords h).2 : ℂ) / 3 := by
+    rw [cuspFrequency, show ringComplex h / (3 * ringComplex traceLambda) =
+      (ringComplex h / ringComplex traceLambda) / 3 by ring, map_div₀, map_ofNat, ← add_div, he]
+  change Complex.exp (2 * Real.pi * Complex.I * (cuspFrequency h + starRingEnd ℂ (cuspFrequency h))) = 1 at hphase
+  rw [ht] at hphase
+  have hp : Complex.exp (2 * Real.pi * Complex.I * ((((Coordinates.coords h).2 : ℝ) / 3 : ℝ) : ℂ)) = 1 := by
+    simpa only [Complex.ofReal_div, Complex.ofReal_intCast, Complex.ofReal_ofNat] using hphase
+  obtain ⟨n, hn⟩ := exp_two_pi_real_eq_one (((Coordinates.coords h).2 : ℝ) / 3) hp
+  refine ⟨n, ?_⟩
+  have hc : ((Coordinates.coords h).2 : ℝ) = 3 * (n : ℝ) := by linarith only [hn]
+  exact_mod_cast hc
+
+lemma primary_or_negative_primary_of_source_mask (h : O) (h3 : ¬ (3 : O) ∣ h)
+    (hphase : tracePhase (cuspFrequency h) = 1) : lambda ^ 2 ∣ h - 1 ∨ lambda ^ 2 ∣ -h - 1 := by
+  let a : ℤ := (Coordinates.coords h).1
+  let b : ℤ := (Coordinates.coords h).2
+  have heval : h = (a : O) + (b : O) * omega := (Coordinates.eval_coords h).symm
+  obtain ⟨B, hB⟩ := sourceRayPhase_coordinate h hphase
+  have hBc : (b : O) = 3 * (B : O) := by exact_mod_cast hB
+  have ha : ¬ (3 : ℤ) ∣ a := by
+    rintro ⟨A, hA⟩
+    apply h3
+    refine ⟨(A : O) + (B : O) * omega, ?_⟩
+    have hAc : (a : O) = 3 * (A : O) := by exact_mod_cast hA
+    rw [heval, hAc, hBc]
+    ring
+  have hcases : (3 : ℤ) ∣ a - 1 ∨ (3 : ℤ) ∣ a + 1 := by omega
+  rcases hcases with ⟨A, hA⟩ | ⟨A, hA⟩
+  · left
+    apply lambda_sq_dvd_three.trans
+    refine ⟨(A : O) + (B : O) * omega, ?_⟩
+    have hAc : (a : O) - 1 = 3 * (A : O) := by exact_mod_cast hA
+    rw [heval, hBc]
+    linear_combination hAc
+  · right
+    apply lambda_sq_dvd_three.trans
+    refine ⟨-((A : O) + (B : O) * omega), ?_⟩
+    have hAc : (a : O) + 1 = 3 * (A : O) := by exact_mod_cast hA
+    rw [heval, hBc]
+    linear_combination -hAc
+
+/-- The base Fourier coefficient is nonzero: otherwise the entire source gains a forbidden period. -/
+theorem rationalSourceThetaScalar_ne_zero : rationalSourceThetaScalar ≠ 0 := by
+  intro hC
+  obtain ⟨h, h3, hT⟩ := exists_source_coefficient_not_three
+  have hh : h ≠ 0 := fun he => h3 (he ▸ dvd_zero 3)
+  rcases primary_or_negative_primary_of_source_mask h h3 (sourceFourier_phase_of_ne_zero h hh hT) with hp | hp
+  · exact hT (rationalSourceFourier_primary_zero_of_base_zero hC h hp)
+  · exact hT ((rationalSourceResidualFourierCoefficient_neg h).symm.trans
+      (rationalSourceFourier_primary_zero_of_base_zero hC (-h) hp))
+
+/-- The frequency-nine twist is the cubic symbol of the different. -/
+lemma symbol_nine_eq_traceLambda (n : O) (hn : lambda ^ 2 ∣ n - 1) :
+    symbol 9 n = symbol traceLambda n := by
+  have hs : traceLambda ^ 2 = (-3 : O) := by
+    unfold traceLambda
+    linear_combination 4 * cusp_omega_relation
+  have hc3 : IsCoprime (3 : O) n := by
+    simpa only [Units.val_one, pow_zero, mul_one] using ramified_primary_coprime (1 : Oˣ) 0 n hn
+  have hc : IsCoprime traceLambda n := by
+    have he : traceLambda * (-traceLambda) = (3 : O) := by linear_combination -hs
+    rw [← he] at hc3
+    exact hc3.of_mul_left_left
+  have h9 : (9 : O) = traceLambda ^ 4 := by
+    rw [show (4 : ℕ) = 2 * 2 by decide, pow_mul, hs]
+    norm_num
+  rw [h9, symbol_pow_numerator _ _ hn 4, show (4 : ℕ) = 3 + 1 by decide, pow_add,
+    symbol_cube_of_isCoprime _ _ hn hc, pow_one, one_mul]
+
+/-- The normalized residual theta coefficient has the exact different-symbol phase. -/
+theorem normalized_sourceFourier_squarefree_cube (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I) :
+    rationalSourceThetaScalar⁻¹ *
+      star (rationalSourceResidualFourierCoefficient (primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3)) =
+        (‖ringComplex (primaryIdealGenerator J)‖ : ℂ) *
+          star (ringComplex (symbol traceLambda (primaryIdealGenerator I))) * normalizedCubicUnitGauss (primaryIdealGenerator I) := by
+  rw [rationalSourceResidualFourierCoefficient_squarefree_cube I J hI hJ hsq,
+    symbol_nine_eq_traceLambda _ (primaryIdealGenerator_spec I hI).2]
+  simp only [← mul_assoc, inv_mul_cancel₀ rationalSourceThetaScalar_ne_zero, one_mul]
+
+lemma normalizedCubicUnitGauss_prime_norm (p : O) (hp : Prime p) (hprimary : lambda ^ 2 ∣ p - 1) :
+    ‖normalizedCubicUnitGauss p‖ = 1 := by
+  have hp1 : ¬ p ∣ (1 : O) := fun hd => hp.2.1 (isUnit_of_dvd_one hd)
+  rw [normalizedCubicUnitGauss, norm_div, cubicUnitGaussSum_prime_norm p hp hprimary 1 hp1,
+    Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _),
+    div_self (norm_ne_zero_iff.mpr (ringComplex_ne_zero hp.ne_zero))]
+
+lemma normalizedCubicUnitGauss_coprime_norm (a b : O) (ha : a ≠ 0) (hb : b ≠ 0)
+    (hap : lambda ^ 2 ∣ a - 1) (hbp : lambda ^ 2 ∣ b - 1) (hab : IsCoprime a b) :
+    ‖normalizedCubicUnitGauss (a * b)‖ = ‖normalizedCubicUnitGauss a‖ * ‖normalizedCubicUnitGauss b‖ := by
+  have he := congrArg norm (normalizedCubicUnitGauss_coprime_product a b ha hb hap hbp hab)
+  simpa only [norm_mul, norm_star, symbol_norm_one a b hbp hab, one_mul] using he
+
+lemma normalizedCubicUnitGauss_prime_product_norm {ι : Type*} (s : Finset ι) (p : ι → O)
+    (hp : ∀ i ∈ s, Prime (p i)) (hprimary : ∀ i ∈ s, lambda ^ 2 ∣ p i - 1)
+    (hpair : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → IsCoprime (p i) (p j)) :
+    ‖normalizedCubicUnitGauss (∏ i ∈ s, p i)‖ = 1 := by
+  induction s using Finset.induction_on with
+  | empty => rw [Finset.prod_empty, normalizedCubicUnitGauss_one, norm_one]
+  | @insert i s hi ih =>
+    have hpi := hp i (Finset.mem_insert_self _ _)
+    have hpri := hprimary i (Finset.mem_insert_self _ _)
+    have hps : ∀ j ∈ s, Prime (p j) := fun j hj => hp j (Finset.mem_insert_of_mem hj)
+    have hprs : ∀ j ∈ s, lambda ^ 2 ∣ p j - 1 := fun j hj => hprimary j (Finset.mem_insert_of_mem hj)
+    have hc : IsCoprime (p i) (∏ j ∈ s, p j) := IsCoprime.prod_right (fun j hj =>
+      hpair i (Finset.mem_insert_self _ _) j (Finset.mem_insert_of_mem hj) (by intro he; subst j; exact hi hj))
+    have hbs : (∏ j ∈ s, p j) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun j hj => (hps j hj).ne_zero)
+    rw [Finset.prod_insert hi, normalizedCubicUnitGauss_coprime_norm _ _ hpi.ne_zero hbs hpri
+      (primary_finset_product s p hprs) hc, normalizedCubicUnitGauss_prime_norm _ hpi hpri,
+      ih hps hprs (fun j hj k hk hjk => hpair j (Finset.mem_insert_of_mem hj) k (Finset.mem_insert_of_mem hk) hjk),
+      one_mul]
+
+lemma normalizedCubicUnitGauss_squarefree_norm (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0)
+    (hsq : Squarefree I) : ‖normalizedCubicUnitGauss (primaryIdealGenerator I)‖ = 1 := by
+  rw [primaryIdealGenerator_squarefree_support I hI hsq]
+  exact normalizedCubicUnitGauss_prime_product_norm _ _
+    (fun P hP => primaryIdealPrime_isPrime_of_mem I P hI hP)
+    (fun P hP => (primaryIdealPrime_spec P
+      (primaryIdealPrime_factor_ne_zero I P hI (Multiset.mem_toFinset.mp hP))).2.2.2)
+    (primaryIdealPrime_support_coprime I hI)
+
+/-- The coefficient size on squarefree times cube support is exactly the cube-root factor. -/
+theorem sourceFourier_squarefree_cube_norm (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I) :
+    ‖rationalSourceResidualFourierCoefficient (primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3)‖ =
+      ‖rationalSourceThetaScalar‖ * ‖ringComplex (primaryIdealGenerator J)‖ := by
+  have hp := (primaryIdealGenerator_spec I hI).2
+  have hc3 : IsCoprime (3 : O) (primaryIdealGenerator I) := by
+    simpa only [Units.val_one, pow_zero, mul_one] using ramified_primary_coprime (1 : Oˣ) 0 _ hp
+  have hc9 : IsCoprime (9 : O) (primaryIdealGenerator I) := by
+    convert hc3.mul_left hc3 using 1 <;> norm_num
+  have he := congrArg norm (rationalSourceResidualFourierCoefficient_squarefree_cube I J hI hJ hsq)
+  simpa only [norm_star, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _),
+    symbol_norm_one _ _ hp hc9, normalizedCubicUnitGauss_squarefree_norm I hI hsq, mul_one] using he
+
+/-- Squarefree times cube is the exact support of the unramified Fourier coefficients. -/
+theorem sourceFourier_squarefree_cube_support_iff (I : Ideal O) (hI : primaryIdealGenerator I ≠ 0) :
+    rationalSourceResidualFourierCoefficient (primaryIdealGenerator I) ≠ 0 ↔
+      ∃ A B : Ideal O, Squarefree A ∧ primaryIdealGenerator A ≠ 0 ∧ primaryIdealGenerator B ≠ 0 ∧ A * B ^ 3 = I := by
+  constructor
+  · exact rationalSourceFourier_squarefree_cube_support I hI
+  · rintro ⟨A, B, hA, hAg, hBg, hAB⟩
+    have he := congrArg primaryIdealGenerator hAB
+    rw [primaryIdealGenerator_mul, primaryIdealGenerator_pow] at he
+    rw [← he]
+    apply norm_pos_iff.mp
+    rw [sourceFourier_squarefree_cube_norm A B hAg hBg hA]
+    exact mul_pos (norm_pos_iff.mpr rationalSourceThetaScalar_ne_zero)
+      (norm_pos_iff.mpr (ringComplex_ne_zero hBg))
+
+
+/-- The positive Gaussian Mellin integral is a scaled Gamma integral. -/
+lemma complex_gaussian_power_integrable (s : ℂ) (r : ℝ) (hs : 0 < s.re) (hr : 0 < r) :
+    IntegrableOn (fun x : ℝ => (x : ℂ) ^ (s - 1) * Complex.exp (-(r : ℂ) * (x : ℂ) ^ 2)) (Ioi 0) := by
+  have hs2 : 0 < (s / (2 : ℂ)).re := by simpa using half_pos hs
+  have hbase : MellinConvergent (fun t : ℝ => Complex.exp (-(t : ℂ))) (s / 2) := by
+    simpa only [MellinConvergent, smul_eq_mul, Complex.ofReal_exp, Complex.ofReal_neg, mul_comm]
+      using Complex.GammaIntegral_convergent hs2
+  have hlinear := (MellinConvergent.comp_mul_left
+    (f := fun t : ℝ => Complex.exp (-(t : ℂ))) (s := s / 2) hr).mpr hbase
+  have hgaussian := (MellinConvergent.comp_rpow
+    (f := fun t : ℝ => Complex.exp (-((r * t : ℝ) : ℂ))) (s := s) (a := 2) (by norm_num)).mpr hlinear
+  simpa only [MellinConvergent, smul_eq_mul, Real.rpow_two, Complex.ofReal_mul,
+    Complex.ofReal_pow, neg_mul] using hgaussian
+
+lemma complex_gaussian_power_integral (s : ℂ) (r : ℝ) (hs : 0 < s.re) (hr : 0 < r) :
+    (∫ x : ℝ in Ioi 0, (x : ℂ) ^ (s - 1) * Complex.exp (-(r : ℂ) * (x : ℂ) ^ 2)) =
+      (1 / 2 : ℂ) * ((1 / (r : ℂ)) ^ (s / 2) * Complex.Gamma (s / 2)) := by
+  have hs2 : 0 < (s / (2 : ℂ)).re := by simpa using half_pos hs
+  have he := mellin_comp_rpow (fun t : ℝ => Complex.exp (-((r * t : ℝ) : ℂ))) s 2
+  simp only [mellin, smul_eq_mul, Real.rpow_two, Complex.ofReal_mul, Complex.ofReal_pow, Complex.real_smul] at he
+  norm_num only [Complex.ofReal_ofNat] at he
+  rw [Complex.integral_cpow_mul_exp_neg_mul_Ioi hs2 hr] at he
+  simpa [neg_mul] using he
+
+/-- The Schläfli mixture after multiplying by the cubic Mellin weight. -/
+def cubicMellinMixture (s : ℂ) (t x : ℝ) : ℂ :=
+  (t : ℂ) ^ (-(2 : ℂ) / 3) * Complex.exp (-(t : ℂ)) *
+    ((x : ℂ) ^ ((s - 1 / 3) - 1) * Complex.exp (-((1 / (4 * t) : ℝ) : ℂ) * (x : ℂ) ^ 2))
+
+lemma cubicMellinMixture_slice_integrable (s : ℂ) (hs : 1 / 3 < s.re) (t : ℝ) (ht : 0 < t) :
+    IntegrableOn (cubicMellinMixture s t) (Ioi 0) := by
+  exact (complex_gaussian_power_integrable (s - 1 / 3) (1 / (4 * t))
+    (by norm_num; linarith) (by positivity)).const_mul _
+
+lemma cubicMellinMixture_integral_x (s : ℂ) (hs : 1 / 3 < s.re) (t : ℝ) (ht : 0 < t) :
+    (∫ x : ℝ in Ioi 0, cubicMellinMixture s t x) =
+      ((1 / 2 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) * Complex.Gamma ((s - 1 / 3) / 2)) *
+        ((t : ℂ) ^ ((s + 1 / 3) / 2 - 1) * Complex.exp (-(t : ℂ))) := by
+  simp only [cubicMellinMixture, integral_const_mul]
+  rw [complex_gaussian_power_integral (s - 1 / 3) (1 / (4 * t)) (by norm_num; linarith) (by positivity)]
+  have hb : (1 / (((1 / (4 * t) : ℝ) : ℂ))) = (4 : ℂ) * (t : ℂ) := by push_cast; field_simp
+  have hm : ((4 : ℂ) * (t : ℂ)) ^ ((s - 1 / 3) / 2) =
+      (4 : ℂ) ^ ((s - 1 / 3) / 2) * (t : ℂ) ^ ((s - 1 / 3) / 2) := by
+    simpa only [Complex.ofReal_ofNat] using
+      Complex.mul_cpow_ofReal_nonneg (by norm_num : 0 ≤ (4 : ℝ)) ht.le ((s - 1 / 3) / 2)
+  rw [hb, hm]
+  have hp : (t : ℂ) ^ (-(2 : ℂ) / 3) * (t : ℂ) ^ ((s - 1 / 3) / 2) =
+      (t : ℂ) ^ ((s + 1 / 3) / 2 - 1) := by
+    rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr ht.ne')]
+    congr 1
+    ring
+  calc
+    _ = ((1 / 2 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) * Complex.Gamma ((s - 1 / 3) / 2)) *
+        (((t : ℂ) ^ (-(2 : ℂ) / 3) * (t : ℂ) ^ ((s - 1 / 3) / 2)) * Complex.exp (-(t : ℂ))) := by ring
+    _ = _ := by rw [hp]
+
+lemma cubicMellinMixture_norm (s : ℂ) (t x : ℝ) (ht : 0 < t) (hx : 0 < x) :
+    ‖cubicMellinMixture s t x‖ =
+      (t ^ (-(2 : ℝ) / 3) * Real.exp (-t)) *
+        (x ^ ((s.re - 1 / 3) - 1) * Real.exp (-(1 / (4 * t)) * x ^ 2)) := by
+  have he : -((1 / (4 * t) : ℝ) : ℂ) * (x : ℂ) ^ 2 = (-(1 / (4 * t)) * x ^ 2 : ℝ) := by
+    push_cast
+    rfl
+  simp only [cubicMellinMixture, norm_mul, he,
+    Complex.norm_cpow_eq_rpow_re_of_pos ht, Complex.norm_cpow_eq_rpow_re_of_pos hx,
+    Complex.norm_exp, Complex.ofReal_re, Complex.neg_re]
+  norm_num
+
+lemma real_gaussian_power_integral (σ r : ℝ) (hs : 0 < σ) (hr : 0 < r) :
+    (∫ x : ℝ in Ioi 0, x ^ (σ - 1) * Real.exp (-r * x ^ 2)) =
+      r ^ (-σ / 2) * (1 / 2) * Real.Gamma (σ / 2) := by
+  simpa only [Real.rpow_two, sub_add_cancel] using
+    (_root_.integral_rpow_mul_exp_neg_mul_rpow (p := 2) (q := σ - 1) (b := r)
+      (by norm_num) (by linarith) hr)
+
+lemma cubicMellinMixture_integral_norm (s : ℂ) (hs : 1 / 3 < s.re) (t : ℝ) (ht : 0 < t) :
+    (∫ x : ℝ in Ioi 0, ‖cubicMellinMixture s t x‖) =
+      ((1 / 2 : ℝ) * (4 : ℝ) ^ ((s.re - 1 / 3) / 2) * Real.Gamma ((s.re - 1 / 3) / 2)) *
+        (t ^ ((s.re + 1 / 3) / 2 - 1) * Real.exp (-t)) := by
+  calc
+    _ = ∫ x : ℝ in Ioi 0, (t ^ (-(2 : ℝ) / 3) * Real.exp (-t)) *
+        (x ^ ((s.re - 1 / 3) - 1) * Real.exp (-(1 / (4 * t)) * x ^ 2)) :=
+      setIntegral_congr_fun measurableSet_Ioi (fun x hx => cubicMellinMixture_norm s t x ht hx)
+    _ = _ := by
+      rw [integral_const_mul, real_gaussian_power_integral (s.re - 1 / 3) (1 / (4 * t))
+        (by linarith) (by positivity)]
+      have hpow : (1 / (4 * t) : ℝ) ^ (-(s.re - 1 / 3) / 2) =
+          (4 : ℝ) ^ ((s.re - 1 / 3) / 2) * t ^ ((s.re - 1 / 3) / 2) := by
+        rw [show -(s.re - 1 / 3) / 2 = -((s.re - 1 / 3) / 2) by ring,
+          Real.rpow_neg_eq_inv_rpow, one_div, inv_inv,
+          Real.mul_rpow (by norm_num : 0 ≤ (4 : ℝ)) ht.le]
+      rw [hpow]
+      have hp : t ^ (-(2 : ℝ) / 3) * t ^ ((s.re - 1 / 3) / 2) = t ^ ((s.re + 1 / 3) / 2 - 1) := by
+        rw [← Real.rpow_add ht]
+        congr 1
+        ring
+      calc
+        _ = ((1 / 2 : ℝ) * (4 : ℝ) ^ ((s.re - 1 / 3) / 2) * Real.Gamma ((s.re - 1 / 3) / 2)) *
+            ((t ^ (-(2 : ℝ) / 3) * t ^ ((s.re - 1 / 3) / 2)) * Real.exp (-t)) := by ring
+        _ = _ := by rw [hp]
+
+/-- Absolute integrability justifies exchanging the Schläfli and Mellin integrals. -/
+lemma cubicMellinMixture_integrable (s : ℂ) (hs : 1 / 3 < s.re) :
+    Integrable (fun p : ℝ × ℝ => cubicMellinMixture s p.1 p.2)
+      ((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))) := by
+  have hm : AEStronglyMeasurable (fun p : ℝ × ℝ => cubicMellinMixture s p.1 p.2)
+      ((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))) := by
+    unfold cubicMellinMixture
+    fun_prop
+  apply (integrable_prod_iff hm).mpr
+  constructor
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact cubicMellinMixture_slice_integrable s hs t ht
+  · apply ((Real.GammaIntegral_convergent (show 0 < (s.re + 1 / 3) / 2 by linarith)).const_mul
+      ((1 / 2 : ℝ) * (4 : ℝ) ^ ((s.re - 1 / 3) / 2) * Real.Gamma ((s.re - 1 / 3) / 2))).congr
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    rw [cubicMellinMixture_integral_norm s hs t ht]
+    ring
+
+lemma cubicMellinMixture_integral_t (s : ℂ) (x : ℝ) :
+    (∫ t : ℝ in Ioi 0, cubicMellinMixture s t x) =
+      (x : ℂ) ^ ((s - 1 / 3) - 1) * schlafliIntegral (1 / 3) x := by
+  rw [schlafliIntegral, ← integral_const_mul]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro t ht
+  have he : Complex.exp (-(t : ℂ)) * Complex.exp (-((1 / (4 * t) : ℝ) : ℂ) * (x : ℂ) ^ 2) =
+      Complex.exp (-(t : ℂ) - (x : ℂ) ^ 2 / (4 * t)) := by
+    rw [← Complex.exp_add]
+    congr 1
+    push_cast
+    field_simp
+    ring
+  rw [show (1 / 3 : ℂ) - 1 = -(2 : ℂ) / 3 by ring]
+  unfold cubicMellinMixture
+  linear_combination (t : ℂ) ^ (-(2 : ℂ) / 3) * (x : ℂ) ^ ((s - 1 / 3) - 1) * he
+
+lemma schlafliBesselK_cubic_mellin_mixture (s : ℂ) (x : ℝ) (hx : 0 < x) :
+    (x : ℂ) ^ (s - 1) * schlafliBesselK (1 / 3) x =
+      ((1 / 2 : ℂ) * (2 : ℂ) ^ (1 / 3 : ℂ)) * (∫ t : ℝ in Ioi 0, cubicMellinMixture s t x) := by
+  rw [schlafliBesselK, cubicMellinMixture_integral_t]
+  have hdiv : (x / 2 : ℂ) ^ (-(1 / 3 : ℂ)) = (x : ℂ) ^ (-(1 / 3 : ℂ)) / (2 : ℂ) ^ (-(1 / 3 : ℂ)) := by
+    have hm := Complex.mul_cpow_ofReal_nonneg
+      (show 0 ≤ x / 2 by positivity) (by norm_num : 0 ≤ (2 : ℝ)) (-(1 / 3 : ℂ))
+    have he : ((x / 2 : ℝ) : ℂ) * (2 : ℂ) = (x : ℂ) := by push_cast; ring
+    norm_num only [Complex.ofReal_ofNat] at hm
+    rw [he] at hm
+    apply (eq_div_iff (Complex.cpow_ne_zero_iff.mpr (Or.inl (by norm_num : (2 : ℂ) ≠ 0)))).mpr
+    simpa only [Complex.ofReal_div, Complex.ofReal_ofNat] using hm.symm
+  rw [hdiv, Complex.cpow_neg (2 : ℂ) (1 / 3), div_inv_eq_mul]
+  have hp : (x : ℂ) ^ (s - 1) * (x : ℂ) ^ (-(1 / 3 : ℂ)) = (x : ℂ) ^ ((s - 1 / 3) - 1) := by
+    rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hx.ne')]
+    congr 1
+    ring
+  linear_combination (1 / 2 : ℂ) * (2 : ℂ) ^ (1 / 3 : ℂ) * schlafliIntegral (1 / 3) x * hp
+
+lemma schlafliBesselK_cubic_mellin_integrable (s : ℂ) (hs : 1 / 3 < s.re) :
+    IntegrableOn (fun x : ℝ => (x : ℂ) ^ (s - 1) * schlafliBesselK (1 / 3) x) (Ioi 0) := by
+  apply ((cubicMellinMixture_integrable s hs).integral_prod_right.const_mul
+    ((1 / 2 : ℂ) * (2 : ℂ) ^ (1 / 3 : ℂ))).congr
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
+  exact (schlafliBesselK_cubic_mellin_mixture s x hx).symm
+
+lemma cubicMellinMixture_double_integral (s : ℂ) (hs : 1 / 3 < s.re) :
+    (∫ t : ℝ in Ioi 0, ∫ x : ℝ in Ioi 0, cubicMellinMixture s t x) =
+      ((1 / 2 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) * Complex.Gamma ((s - 1 / 3) / 2)) *
+        Complex.Gamma ((s + 1 / 3) / 2) := by
+  have hB : 0 < ((s + 1 / 3) / 2).re := by norm_num; linarith
+  calc
+    _ = ∫ t : ℝ in Ioi 0,
+        ((1 / 2 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) * Complex.Gamma ((s - 1 / 3) / 2)) *
+          ((t : ℂ) ^ ((s + 1 / 3) / 2 - 1) * Complex.exp (-(t : ℂ))) :=
+      setIntegral_congr_fun measurableSet_Ioi (fun t ht => cubicMellinMixture_integral_x s hs t ht)
+    _ = _ := by
+      rw [integral_const_mul]
+      congr 1
+      simpa only [Complex.GammaIntegral, Complex.ofReal_exp, Complex.ofReal_neg, mul_comm] using
+        (Complex.Gamma_eq_integral hB).symm
+
+/-- The cubic Bessel Mellin transform, including absolute convergence in its full half-plane. -/
+theorem schlafliBesselK_cubic_mellin (s : ℂ) (hs : 1 / 3 < s.re) :
+    (∫ x : ℝ in Ioi 0, (x : ℂ) ^ (s - 1) * schlafliBesselK (1 / 3) x) =
+      (2 : ℂ) ^ (s - 2) * Complex.Gamma ((s - 1 / 3) / 2) * Complex.Gamma ((s + 1 / 3) / 2) := by
+  have hmix : Integrable (Function.uncurry (cubicMellinMixture s))
+      ((volume.restrict (Ioi 0)).prod (volume.restrict (Ioi 0))) := cubicMellinMixture_integrable s hs
+  have hswap := (integral_integral_swap hmix).symm
+  have h4 : (4 : ℂ) ^ ((s - 1 / 3) / 2) = (2 : ℂ) ^ (2 * ((s - 1 / 3) / 2)) := by
+    have hh := (Complex.natCast_cpow_natCast_mul 2 2 ((s - 1 / 3) / 2)).symm
+    norm_num at hh
+    exact hh
+  have hprod : (2 : ℂ) ^ (1 / 3 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) = (2 : ℂ) ^ s := by
+    rw [h4, ← Complex.cpow_add _ _ (by norm_num : (2 : ℂ) ≠ 0)]
+    congr 1
+    ring
+  have hscale : (1 / 4 : ℂ) * (2 : ℂ) ^ s = (2 : ℂ) ^ (s - 2) := by
+    rw [Complex.cpow_sub _ _ (by norm_num : (2 : ℂ) ≠ 0)]
+    norm_num
+    ring
+  calc
+    _ = ((1 / 2 : ℂ) * (2 : ℂ) ^ (1 / 3 : ℂ)) *
+        (∫ x : ℝ in Ioi 0, ∫ t : ℝ in Ioi 0, cubicMellinMixture s t x) := by
+      rw [← integral_const_mul]
+      exact setIntegral_congr_fun measurableSet_Ioi (fun x hx => schlafliBesselK_cubic_mellin_mixture s x hx)
+    _ = ((1 / 2 : ℂ) * (2 : ℂ) ^ (1 / 3 : ℂ)) *
+        (((1 / 2 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2) * Complex.Gamma ((s - 1 / 3) / 2)) *
+          Complex.Gamma ((s + 1 / 3) / 2)) := by rw [hswap, cubicMellinMixture_double_integral s hs]
+    _ = ((1 / 4 : ℂ) * ((2 : ℂ) ^ (1 / 3 : ℂ) * (4 : ℂ) ^ ((s - 1 / 3) / 2))) *
+        Complex.Gamma ((s - 1 / 3) / 2) * Complex.Gamma ((s + 1 / 3) / 2) := by ring
+    _ = _ := by rw [hprod, hscale]
+
+lemma schlafliBesselK_cubic_scaled_mellin_integrable (s : ℂ) (c : ℝ)
+    (hs : 1 / 3 < s.re) (hc : 0 < c) :
+    IntegrableOn (fun v : ℝ => (v : ℂ) ^ (s - 1) * schlafliBesselK (1 / 3) (c * v)) (Ioi 0) := by
+  have hb : MellinConvergent (fun v => schlafliBesselK (1 / 3) v) s := by
+    simpa only [MellinConvergent, smul_eq_mul] using schlafliBesselK_cubic_mellin_integrable s hs
+  simpa only [MellinConvergent, smul_eq_mul] using
+    (MellinConvergent.comp_mul_left (f := fun v => schlafliBesselK (1 / 3) v) (s := s) hc).mpr hb
+
+lemma schlafliBesselK_cubic_scaled_mellin (s : ℂ) (c : ℝ) (hs : 1 / 3 < s.re) (hc : 0 < c) :
+    (∫ v : ℝ in Ioi 0, (v : ℂ) ^ (s - 1) * schlafliBesselK (1 / 3) (c * v)) =
+      (c : ℂ) ^ (-s) * ((2 : ℂ) ^ (s - 2) * Complex.Gamma ((s - 1 / 3) / 2) * Complex.Gamma ((s + 1 / 3) / 2)) := by
+  have he := mellin_comp_mul_left (fun v => schlafliBesselK (1 / 3) v) s hc
+  simp only [mellin, smul_eq_mul] at he
+  rw [schlafliBesselK_cubic_mellin s hs] at he
+  exact he
+
+lemma source_cubic_bessel_mellin_integrable (s freq : ℂ) (hs : -(1 / 3) < s.re) (hfreq : freq ≠ 0) :
+    IntegrableOn (fun v : ℝ => (v : ℂ) ^ (2 * s) *
+      schlafliBesselK (1 / 3) (4 * Real.pi * ‖freq‖ * v)) (Ioi 0) := by
+  have hc : 0 < 4 * Real.pi * ‖freq‖ := by positivity
+  have ht : 1 / 3 < (2 * s + 1).re := by norm_num; linarith
+  simpa only [show (2 * s + 1 : ℂ) - 1 = 2 * s by ring] using
+    schlafliBesselK_cubic_scaled_mellin_integrable (2 * s + 1) (4 * Real.pi * ‖freq‖) ht hc
+
+/-- The exact Gamma factor for each nonzero source Fourier mode. -/
+theorem source_cubic_bessel_mellin (s freq : ℂ) (hs : -(1 / 3) < s.re) (hfreq : freq ≠ 0) :
+    (∫ v : ℝ in Ioi 0, (v : ℂ) ^ (2 * s) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖freq‖ * v)) =
+      ((2 : ℂ) ^ (2 * s - 1) * Complex.Gamma (s + 1 / 3) * Complex.Gamma (s + 2 / 3)) /
+        ((4 * Real.pi * ‖freq‖ : ℝ) : ℂ) ^ (2 * s + 1) := by
+  have hc : 0 < 4 * Real.pi * ‖freq‖ := by positivity
+  have ht : 1 / 3 < (2 * s + 1).re := by norm_num; linarith
+  have he := schlafliBesselK_cubic_scaled_mellin (2 * s + 1) (4 * Real.pi * ‖freq‖) ht hc
+  rw [show (2 * s + 1 : ℂ) - 1 = 2 * s by ring,
+    show (2 * s + 1 : ℂ) - 2 = 2 * s - 1 by ring,
+    show ((2 * s + 1 : ℂ) - 1 / 3) / 2 = s + 1 / 3 by ring,
+    show ((2 * s + 1 : ℂ) + 1 / 3) / 2 = s + 2 / 3 by ring, Complex.cpow_neg] at he
+  rw [he]
+  ring
+
+
+/-- Prime valuations determine the squarefree factor and the cube factor separately. -/
+theorem squarefree_cube_decomposition_unique {A B C D : Ideal O}
+    (hB : B ≠ 0) (hD : D ≠ 0) (hA : Squarefree A) (hC : Squarefree C)
+    (he : A * B ^ 3 = C * D ^ 3) : A = C ∧ B = D := by
+  have hf := congrArg normalizedFactors he
+  rw [normalizedFactors_mul hA.ne_zero (pow_ne_zero _ hB),
+    normalizedFactors_mul hC.ne_zero (pow_ne_zero _ hD),
+    normalizedFactors_pow, normalizedFactors_pow] at hf
+  have ha := (squarefree_iff_nodup_normalizedFactors hA.ne_zero).mp hA
+  have hc := (squarefree_iff_nodup_normalizedFactors hC.ne_zero).mp hC
+  have hcount (P : Ideal O) :
+      (normalizedFactors A).count P = (normalizedFactors C).count P ∧
+      (normalizedFactors B).count P = (normalizedFactors D).count P := by
+    have hp := congrArg (Multiset.count P) hf
+    simp only [Multiset.count_add, Multiset.count_nsmul] at hp
+    have ha1 := Multiset.nodup_iff_count_le_one.mp ha P
+    have hc1 := Multiset.nodup_iff_count_le_one.mp hc P
+    omega
+  constructor
+  · calc
+      A = (normalizedFactors A).prod := (Ideal.prod_normalizedFactors_eq_self hA.ne_zero).symm
+      _ = (normalizedFactors C).prod := congrArg Multiset.prod (Multiset.ext.mpr (fun P => (hcount P).1))
+      _ = C := Ideal.prod_normalizedFactors_eq_self hC.ne_zero
+  · calc
+      B = (normalizedFactors B).prod := (Ideal.prod_normalizedFactors_eq_self hB).symm
+      _ = (normalizedFactors D).prod := congrArg Multiset.prod (Multiset.ext.mpr (fun P => (hcount P).2))
+      _ = D := Ideal.prod_normalizedFactors_eq_self hD
+
+
+/-- The primary element `ab³` determines both ideal factors. -/
+theorem primary_squarefree_cube_injective :
+    Function.Injective (fun p :
+      {I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+      {J : Ideal O // primaryIdealGenerator J ≠ 0} =>
+        primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3) := by
+  intro p q he
+  have hi : p.1.val * p.2.val ^ 3 = q.1.val * q.2.val ^ 3 := by
+    have hs := congrArg (fun x : O => (Ideal.span {x} : Ideal O)) he
+    simpa only [← Ideal.span_singleton_mul_span_singleton, ← Ideal.span_singleton_pow,
+      (primaryIdealGenerator_spec p.1.val p.1.property.2).1,
+      (primaryIdealGenerator_spec p.2.val p.2.property).1,
+      (primaryIdealGenerator_spec q.1.val q.1.property.2).1,
+      (primaryIdealGenerator_spec q.2.val q.2.property).1] using hs
+  have hd := squarefree_cube_decomposition_unique
+    (primaryIdealGenerator_ne_zero_ideal _ p.2.property)
+    (primaryIdealGenerator_ne_zero_ideal _ q.2.property)
+    p.1.property.1 q.1.property.1 hi
+  exact Prod.ext (Subtype.ext hd.1) (Subtype.ext hd.2)
+
+lemma sourceFourier_primary_pair_preimage (x : O) (hx : lambda ^ 2 ∣ x - 1)
+    (hT : rationalSourceResidualFourierCoefficient x ≠ 0) :
+    ∃ p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+      {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+      primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3 = x := by
+  have hg : primaryIdealGenerator (Ideal.span {x}) = x :=
+    primaryIdealGenerator_span x (primary_ne_zero x hx) hx
+  have hg0 : primaryIdealGenerator (Ideal.span {x}) ≠ 0 := by rw [hg]; exact primary_ne_zero x hx
+  have ht : rationalSourceResidualFourierCoefficient (primaryIdealGenerator (Ideal.span {x})) ≠ 0 := by rwa [hg]
+  obtain ⟨I, J, hI, hIg, hJg, he⟩ := rationalSourceFourier_squarefree_cube_support (Ideal.span {x}) hg0 ht
+  refine ⟨(⟨I, hI, hIg⟩, ⟨J, hJg⟩), ?_⟩
+  simpa only [primaryIdealGenerator_mul, primaryIdealGenerator_pow, hg] using congrArg primaryIdealGenerator he
+
+/-- Reindex a primary-supported Fourier sum by its unique squarefree and cube factors. -/
+theorem sourceFourier_tsum_primary_pairs (w : O → ℂ)
+    (hw : ∀ x, w x ≠ 0 → lambda ^ 2 ∣ x - 1) :
+    (∑' x : O, w x * star (rationalSourceResidualFourierCoefficient x)) =
+      ∑' p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+        {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+        w (primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3) *
+          star (rationalSourceResidualFourierCoefficient
+            (primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3)) := by
+  let P := ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+    {J : Ideal O // primaryIdealGenerator J ≠ 0})
+  let φ : P → O := fun p => primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3
+  let f : O → ℂ := fun x => w x * star (rationalSourceResidualFourierCoefficient x)
+  change (∑' x, f x) = ∑' p : P, f (φ p)
+  apply tsum_eq_tsum_of_ne_zero_bij (fun p : Function.support (fun p : P => f (φ p)) => φ p.val)
+  · exact primary_squarefree_cube_injective.comp Subtype.val_injective
+  · intro x hx
+    have hwx : w x ≠ 0 := by intro hz; exact hx (by simp only [f, hz, zero_mul])
+    have hTx : rationalSourceResidualFourierCoefficient x ≠ 0 := by
+      intro hz
+      exact hx (by simp only [f, hz, star_zero, mul_zero])
+    obtain ⟨p, hp⟩ := sourceFourier_primary_pair_preimage x (hw x hwx) hTx
+    have hφ : φ p = x := hp
+    exact ⟨⟨p, by change f (φ p) ≠ 0; rwa [hφ]⟩, hφ⟩
+  · intro p
+    rfl
+
+/-- The different symbol is a cubic root of unity at every primary denominator. -/
+lemma traceLambda_symbol_cube (x : O) (hx : lambda ^ 2 ∣ x - 1) :
+    (ringComplex (symbol traceLambda x)) ^ 3 = 1 := by
+  have hs : traceLambda ^ 2 = (-3 : O) := by
+    unfold traceLambda
+    linear_combination 4 * cusp_omega_relation
+  have hc3 : IsCoprime (3 : O) x := by
+    simpa only [Units.val_one, pow_zero, mul_one] using ramified_primary_coprime (1 : Oˣ) 0 x hx
+  have hc : IsCoprime traceLambda x := by
+    have he : traceLambda * (-traceLambda) = (3 : O) := by linear_combination -hs
+    rw [← he] at hc3
+    exact hc3.of_mul_left_left
+  rw [← map_pow, symbol_cube_of_isCoprime _ _ hx hc, map_one]
+
+lemma traceLambda_symbol_norm (x : O) (hx : lambda ^ 2 ∣ x - 1) :
+    ‖ringComplex (symbol traceLambda x)‖ = 1 := by
+  apply (pow_left_inj₀ (norm_nonneg _) zero_le_one (by decide : (3 : ℕ) ≠ 0)).mp
+  simpa only [norm_pow, norm_one, one_pow] using congrArg norm (traceLambda_symbol_cube x hx)
+
+/-- Cubes contribute no different-symbol phase. -/
+lemma traceLambda_symbol_mul_cube (a b : O) (hb : lambda ^ 2 ∣ b - 1) :
+    ringComplex (symbol traceLambda (a * b ^ 3)) = ringComplex (symbol traceLambda a) := by
+  rw [symbol_mul_denominator, symbol_pow_denominator, map_mul, map_pow,
+    traceLambda_symbol_cube b hb, mul_one]
+
+/-- The primary mask and different phase converting theta coefficients to cubic Gauss sums. -/
+def fixedThetaTwist (Ψ : O →* ℂ) (x : O) : ℂ :=
+  if lambda ^ 2 ∣ x - 1 then ringComplex (symbol traceLambda x) * Ψ x else 0
+
+lemma fixedThetaTwist_primary (Ψ : O →* ℂ) (x : O) (hx : lambda ^ 2 ∣ x - 1) :
+    fixedThetaTwist Ψ x = ringComplex (symbol traceLambda x) * Ψ x := by
+  simp only [fixedThetaTwist, if_pos hx]
+
+lemma fixedThetaTwist_support (Ψ : O →* ℂ) (x : O) (hx : fixedThetaTwist Ψ x ≠ 0) :
+    lambda ^ 2 ∣ x - 1 := by
+  by_contra hn
+  exact hx (by simp only [fixedThetaTwist, if_neg hn])
+
+lemma fixedThetaTwist_norm (Ψ : O →* ℂ) (x : O) :
+    ‖fixedThetaTwist Ψ x‖ = if lambda ^ 2 ∣ x - 1 then ‖Ψ x‖ else 0 := by
+  by_cases hx : lambda ^ 2 ∣ x - 1
+  · rw [fixedThetaTwist_primary Ψ x hx, norm_mul, traceLambda_symbol_norm x hx, one_mul, if_pos hx]
+  · simp only [fixedThetaTwist, if_neg hx, norm_zero]
+
+/-- Twisting cancels the different phase, leaving the normalized cubic Gauss coefficient. -/
+theorem fixedThetaTwist_source_coefficient (Ψ : O →* ℂ) (I J : Ideal O)
+    (hI : primaryIdealGenerator I ≠ 0) (hJ : primaryIdealGenerator J ≠ 0) (hsq : Squarefree I) :
+    rationalSourceThetaScalar⁻¹ *
+      star (rationalSourceResidualFourierCoefficient (primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3)) *
+        fixedThetaTwist Ψ (primaryIdealGenerator I * (primaryIdealGenerator J) ^ 3) =
+      (‖ringComplex (primaryIdealGenerator J)‖ : ℂ) * normalizedCubicUnitGauss (primaryIdealGenerator I) *
+        Ψ (primaryIdealGenerator I) * (Ψ (primaryIdealGenerator J)) ^ 3 := by
+  have hIp := (primaryIdealGenerator_spec I hI).2
+  have hJp := (primaryIdealGenerator_spec J hJ).2
+  have hp := primary_mul _ _ hIp (primary_pow_congruence _ hJp 3)
+  rw [normalized_sourceFourier_squarefree_cube I J hI hJ hsq,
+    fixedThetaTwist_primary Ψ _ hp, traceLambda_symbol_mul_cube _ _ hJp, map_mul, map_pow]
+  have hu : star (ringComplex (symbol traceLambda (primaryIdealGenerator I))) *
+      ringComplex (symbol traceLambda (primaryIdealGenerator I)) = 1 := by
+    simpa only [Complex.star_def, traceLambda_symbol_norm _ hIp, one_pow, Complex.ofReal_one] using
+      Complex.conj_mul' (ringComplex (symbol traceLambda (primaryIdealGenerator I)))
+  calc
+    _ = (star (ringComplex (symbol traceLambda (primaryIdealGenerator I))) *
+        ringComplex (symbol traceLambda (primaryIdealGenerator I))) *
+        ((‖ringComplex (primaryIdealGenerator J)‖ : ℂ) * normalizedCubicUnitGauss (primaryIdealGenerator I) *
+          Ψ (primaryIdealGenerator I) * (Ψ (primaryIdealGenerator J)) ^ 3) := by ring
+    _ = _ := by rw [hu, one_mul]
+
+/-- The twisted primary Fourier sum is exactly the squarefree-times-cube Gauss series. -/
+theorem fixedThetaTwist_source_tsum (Ψ : O →* ℂ) (W : O → ℂ) :
+    (∑' x : O, (rationalSourceThetaScalar⁻¹ * star (rationalSourceResidualFourierCoefficient x) *
+      fixedThetaTwist Ψ x) * W x) =
+      ∑' p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+        {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+        ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+          normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+          Ψ (primaryIdealGenerator p.1.val) * (Ψ (primaryIdealGenerator p.2.val)) ^ 3) *
+          W (primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3) := by
+  let w : O → ℂ := fun x => rationalSourceThetaScalar⁻¹ * fixedThetaTwist Ψ x * W x
+  have hw (x : O) (hx : w x ≠ 0) : lambda ^ 2 ∣ x - 1 := by
+    apply fixedThetaTwist_support Ψ x
+    intro hz
+    exact hx (by simp only [w, hz, mul_zero, zero_mul])
+  calc
+    _ = ∑' x : O, w x * star (rationalSourceResidualFourierCoefficient x) := by
+      apply tsum_congr
+      intro x
+      dsimp only [w]
+      ring
+    _ = _ := by
+      rw [sourceFourier_tsum_primary_pairs w hw]
+      apply tsum_congr
+      intro p
+      have he := fixedThetaTwist_source_coefficient Ψ p.1.val p.2.val
+        p.1.property.2 p.2.property p.1.property.1
+      dsimp only [w]
+      linear_combination W (primaryIdealGenerator p.1.val * (primaryIdealGenerator p.2.val) ^ 3) * he
+
+/-- A character modulo `c` acquires precisely the additional modulus nine from the different. -/
+lemma fixedThetaTwist_quotient_period (c : O) (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (x y : O) (hxy : (9 * c : O) ∣ x - y) :
+    fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) x =
+      fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) y := by
+  have h9 : (9 : O) ∣ x - y := (dvd_mul_right 9 c).trans hxy
+  have hc : c ∣ x - y := (dvd_mul_left c 9).trans hxy
+  have hd : lambda ^ 2 ∣ x - y := lambda_sq_dvd_three.trans ((show (3 : O) ∣ 9 from ⟨3, by norm_num⟩).trans h9)
+  have hp : lambda ^ 2 ∣ x - 1 ↔ lambda ^ 2 ∣ y - 1 := by
+    constructor
+    · intro hx
+      convert dvd_sub hx hd using 1
+      ring
+    · intro hy
+      convert dvd_add hd hy using 1
+      ring
+  have he : Ideal.Quotient.mk (Ideal.span {c}) x = Ideal.Quotient.mk (Ideal.span {c}) y :=
+    Ideal.Quotient.eq.mpr (Ideal.mem_span_singleton.mpr hc)
+  by_cases hx : lambda ^ 2 ∣ x - 1
+  · rw [fixedThetaTwist_primary _ x hx, fixedThetaTwist_primary _ y (hp.mp hx),
+      symbol_traceLambda_congr_mod_nine x y hx (hp.mp hx) h9]
+    change ringComplex (symbol traceLambda y) * Ψ (Ideal.Quotient.mk _ x) =
+      ringComplex (symbol traceLambda y) * Ψ (Ideal.Quotient.mk _ y)
+    rw [he]
+  · simp only [fixedThetaTwist, if_neg hx, if_neg (fun hy => hx (hp.mpr hy))]
+
+/-- The finite residue-class multiplier used to twist the actual residual source. -/
+def finiteThetaTwist (c : O) (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (x : O ⧸ Ideal.span {9 * c}) : ℂ :=
+  fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) (Quotient.out x)
+
+lemma finiteThetaTwist_mk (c : O) (Ψ : (O ⧸ Ideal.span {c}) →* ℂ) (x : O) :
+    finiteThetaTwist c Ψ (Ideal.Quotient.mk (Ideal.span {9 * c}) x) =
+      fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) x := by
+  apply fixedThetaTwist_quotient_period
+  exact Ideal.mem_span_singleton.mp
+    (Ideal.Quotient.eq.mp (Ideal.Quotient.mk_out (Ideal.Quotient.mk (Ideal.span {9 * c}) x)))
+
+
+
+/-- Finite additive Fourier coefficients normalized for direct reconstruction. -/
+def finiteAdditiveFourierCoeff {R : Type*} [CommRing R] [Fintype R]
+    (ψ : AddChar R ℂ) (φ : R → ℂ) (h : R) : ℂ :=
+  (∑ x, φ x * ψ (-h * x)) / (Fintype.card R : ℂ)
+
+lemma finiteAdditiveFourier_inversion {R : Type*} [CommRing R] [Fintype R]
+    (ψ : AddChar R ℂ) (hψ : ψ.IsPrimitive) (φ : R → ℂ) (x : R) :
+    (∑ h, finiteAdditiveFourierCoeff ψ φ h * ψ (h * x)) = φ x := by
+  have hN : (Fintype.card R : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  calc
+    _ = (∑ h, ∑ y, φ y * ψ (-h * y) * ψ (h * x)) / (Fintype.card R : ℂ) := by
+      simp only [finiteAdditiveFourierCoeff, div_mul_eq_mul_div, Finset.sum_mul, Finset.sum_div]
+    _ = (∑ y, φ y * ∑ h, ψ (h * (x - y))) / (Fintype.card R : ℂ) := by
+      rw [Finset.sum_comm]
+      congr 1
+      apply Finset.sum_congr rfl
+      intro y hy
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro h hh
+      rw [mul_assoc, ← AddChar.map_add_eq_mul]
+      congr 2
+      ring
+    _ = (∑ y, φ y * (if x - y = 0 then (Fintype.card R : ℂ) else 0)) / (Fintype.card R : ℂ) := by
+      simp only [AddChar.sum_mulShift _ hψ, apply_ite, Nat.cast_zero]
+    _ = φ x := by
+      have he : (∑ y, φ y * (if x - y = 0 then (Fintype.card R : ℂ) else 0)) =
+          φ x * (Fintype.card R : ℂ) := by simp [sub_eq_zero]
+      rw [he, mul_div_cancel_right₀ _ hN]
+
+/-- Every Fourier coefficient is bounded by the mean absolute value of the multiplier. -/
+lemma finiteAdditiveFourierCoeff_norm_le {R : Type*} [CommRing R] [Fintype R]
+    (ψ : AddChar R ℂ) (φ : R → ℂ) (h : R) :
+    ‖finiteAdditiveFourierCoeff ψ φ h‖ ≤ (∑ x, ‖φ x‖) / (Fintype.card R : ℝ) := by
+  rw [finiteAdditiveFourierCoeff, norm_div, Complex.norm_natCast]
+  apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
+  calc
+    _ ≤ ∑ x, ‖φ x * ψ (-h * x)‖ := norm_sum_le _ _
+    _ = _ := by simp only [norm_mul, AddChar.norm_apply, mul_one]
+
+
+/-- Conjugation reverses the geometric trace character. -/
+lemma star_tracePhase (z : ℂ) : star (tracePhase z) = tracePhase (-z) := by
+  change star (Complex.exp (2 * Real.pi * Complex.I * (z + starRingEnd ℂ z))) =
+    Complex.exp (2 * Real.pi * Complex.I * (-z + starRingEnd ℂ (-z)))
+  rw [Complex.star_def, ← Complex.exp_conj]
+  congr 1
+  simp only [map_mul, map_add, map_neg, map_ofNat, Complex.conj_ofReal, Complex.conj_I,
+    Complex.conj_conj]
+  ring
+
+lemma conjugate_cuspCharacterSeries (a : O → ℂ) (z : ℂ) :
+    star (cuspCharacterSeries a z) =
+      ∑' h : O, star (a h) * tracePhase (-cuspFrequency h * z) := by
+  rw [cuspCharacterSeries, tsum_star]
+  apply tsum_congr
+  intro h
+  rw [star_mul, star_tracePhase, neg_mul]
+  ring
+
+lemma conjugate_cuspCharacterSeries_summable (a : O → ℂ)
+    (ha : Summable (fun h => ‖a h‖)) (z : ℂ) :
+    Summable (fun h => star (a h) * tracePhase (-cuspFrequency h * z)) := by
+  apply Summable.of_norm
+  simpa only [norm_mul, norm_star, tracePhase_norm, mul_one] using ha
+
+/-- A finite translation acts diagonally on the absolutely convergent source Fourier series. -/
+theorem conjugate_cuspCharacterSeries_finite_translation {ι : Type*} [Fintype ι]
+    (a : O → ℂ) (ha : Summable (fun h => ‖a h‖)) (shift weight : ι → ℂ) (z : ℂ) :
+    (∑ i, weight i * star (cuspCharacterSeries a (z + shift i))) =
+      ∑' h : O, (∑ i, weight i * tracePhase (-cuspFrequency h * shift i)) *
+        star (a h) * tracePhase (-cuspFrequency h * z) := by
+  simp only [conjugate_cuspCharacterSeries, ← tsum_mul_left]
+  rw [← Summable.tsum_finsetSum (fun i _ =>
+    (conjugate_cuspCharacterSeries_summable a ha (z + shift i)).mul_left (weight i))]
+  apply tsum_congr
+  intro h
+  simp only [Finset.sum_mul, mul_add, AddChar.map_add_eq_mul]
+  apply Finset.sum_congr rfl
+  intro i hi
+  ring
+
+/-- These rational translations realize the primitive residue trace character. -/
+def thetaFourierTranslation (c : O) (h : O ⧸ Ideal.span {c}) : ℂ :=
+  -3 * ringComplex (Quotient.out h) / ringComplex c
+
+lemma thetaFourierTranslation_phase (c : O) (hc : c ≠ 0)
+    (h : O ⧸ Ideal.span {c}) (x : O) :
+    tracePhase (-cuspFrequency x * thetaFourierTranslation c h) =
+      residueTraceQuotientChar 1 c hc (h * Ideal.Quotient.mk _ x) := by
+  have hm : h * Ideal.Quotient.mk _ x = Ideal.Quotient.mk _ (Quotient.out h * x) := by
+    rw [map_mul, Ideal.Quotient.mk_out]
+  rw [hm, residueTraceQuotientChar_mk]
+  unfold residueAdditive cuspFrequency thetaFourierTranslation
+  simp only [map_mul, map_ofNat, mul_one]
+  congr 1
+  field_simp
+
+lemma thetaFourierTranslation_inversion (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ) (x : O) :
+    (∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+      tracePhase (-cuspFrequency x * thetaFourierTranslation c h)) = φ (Ideal.Quotient.mk _ x) := by
+  simp only [thetaFourierTranslation_phase c hc]
+  exact finiteAdditiveFourier_inversion _ (residueTraceQuotientChar_primitive c hc) φ _
+
+/-- The actual conjugate residual source twisted by a finite residue-class multiplier. -/
+def traceTwistedConjugateSource (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {c})]
+    (φ : (O ⧸ Ideal.span {c}) → ℂ) (v : ℝ) (hv : 0 < v) (z : ℂ) : ℂ :=
+  ∑ h, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 c hc) φ h *
+    star (cubicSourceResidualFunction (upperPoint (z + thetaFourierTranslation c h) v hv))
+
+/-- Finite Fourier inversion inserts exactly the requested multiplier into every source mode. -/
+theorem traceTwistedConjugateSource_fourier (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    traceTwistedConjugateSource c hc φ v hv z =
+      ∑' h : O, φ (Ideal.Quotient.mk _ h) * star (rationalSourceModeAmplitude v h) *
+        tracePhase (-cuspFrequency h * z) := by
+  simp only [traceTwistedConjugateSource, cubicSourceResidualFunction_fourier_expansion]
+  rw [conjugate_cuspCharacterSeries_finite_translation _ (rationalSourceModeAmplitude_summable v hv)]
+  simp only [thetaFourierTranslation_inversion c hc]
+
+/-- The cubic Bessel kernel is real on the positive axis. -/
+lemma star_schlafliBesselK_cubic (x : ℝ) (hx : 0 < x) :
+    star (schlafliBesselK (1 / 3) x) = schlafliBesselK (1 / 3) x := by
+  have hp := (Complex.ofReal_cpow (show 0 ≤ x / 2 by positivity) (-(1 : ℝ) / 3)).symm
+  push_cast at hp
+  simp only [neg_div] at hp
+  rw [schlafliBesselK, hp, cubicSchlafliIntegral_ofReal]
+  simp only [Complex.star_def, map_mul, Complex.conj_ofReal, map_div₀, map_one, map_ofNat]
+
+lemma traceTwistedConjugateSource_bessel (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ) (hφ : φ 0 = 0)
+    (v : ℝ) (hv : 0 < v) :
+    traceTwistedConjugateSource c hc φ v hv 0 =
+      ∑' h : O, φ (Ideal.Quotient.mk _ h) * star (rationalSourceResidualFourierCoefficient h) *
+        (v : ℂ) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  rw [traceTwistedConjugateSource_fourier]
+  apply tsum_congr
+  intro h
+  simp only [mul_zero, AddChar.map_zero_eq_one, mul_one]
+  by_cases hh : h = 0
+  · subst h
+    simp only [map_zero, hφ, zero_mul]
+  · rw [rationalSourceModeAmplitude_bessel v hv h hh, star_mul, star_mul,
+      star_schlafliBesselK_cubic _ (by
+        have hf := norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)
+        positivity)]
+    simp only [Complex.star_def, Complex.conj_ofReal]
+    ring
+
+lemma fixedThetaTwist_zero (Ψ : O →* ℂ) : fixedThetaTwist Ψ 0 = 0 := by
+  by_contra hz
+  exact primary_ne_zero 0 (fixedThetaTwist_support Ψ 0 hz) rfl
+
+/-- An exact Gauss-series realization by a finite sum of translates of the actual residual source. -/
+theorem finiteThetaTwist_source_bessel (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    rationalSourceThetaScalar⁻¹ *
+      traceTwistedConjugateSource (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ) v hv 0 =
+      ∑' p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+        {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+        ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+          normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+          Ψ (Ideal.Quotient.mk _ (primaryIdealGenerator p.1.val)) *
+          (Ψ (Ideal.Quotient.mk _ (primaryIdealGenerator p.2.val))) ^ 3) *
+          ((v : ℂ) * schlafliBesselK (1 / 3)
+            (4 * Real.pi * ‖cuspFrequency (primaryIdealGenerator p.1.val *
+              (primaryIdealGenerator p.2.val) ^ 3)‖ * v)) := by
+  have hz : finiteThetaTwist c Ψ 0 = 0 := by
+    rw [← map_zero (Ideal.Quotient.mk (Ideal.span {9 * c})), finiteThetaTwist_mk, fixedThetaTwist_zero]
+  rw [traceTwistedConjugateSource_bessel _ _ _ hz v hv, ← tsum_mul_left]
+  calc
+    _ = ∑' h : O, (rationalSourceThetaScalar⁻¹ * star (rationalSourceResidualFourierCoefficient h) *
+        fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) h) *
+        ((v : ℂ) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)) := by
+      apply tsum_congr
+      intro h
+      rw [finiteThetaTwist_mk]
+      ring
+    _ = _ := fixedThetaTwist_source_tsum _ _
+
+
+def horizontalPhaseMultiplier (freq direction : ℂ) : ℂ :=
+  (2 * Real.pi * Complex.I) * (freq * direction + star (freq * direction))
+
+lemma tracePhase_hasDerivAt (freq z direction : ℂ) (t : ℝ) :
+    HasDerivAt (fun x : ℝ => tracePhase (freq * (z + (x : ℂ) * direction)))
+      (horizontalPhaseMultiplier freq direction * tracePhase (freq * (z + (t : ℂ) * direction))) t := by
+  have hz : HasDerivAt (fun x : ℝ => freq * (z + (x : ℂ) * direction)) (freq * direction) t := by
+    convert! (((Complex.ofRealCLM.hasDerivAt (x := t)).mul_const direction).const_add z).const_mul freq using 1 <;> norm_num
+  have he := ((hz.add hz.star).const_mul (2 * Real.pi * Complex.I)).cexp
+  change HasDerivAt (fun x : ℝ => Complex.exp ((2 * Real.pi * Complex.I) *
+      (freq * (z + (x : ℂ) * direction) + star (freq * (z + (x : ℂ) * direction)))))
+    ((2 * Real.pi * Complex.I) * (freq * direction + star (freq * direction)) *
+      Complex.exp ((2 * Real.pi * Complex.I) *
+        (freq * (z + (t : ℂ) * direction) + star (freq * (z + (t : ℂ) * direction))))) t
+  simpa only [Pi.add_apply, mul_comm] using he
+
+lemma horizontalPhaseMultiplier_norm (freq direction : ℂ) :
+    ‖horizontalPhaseMultiplier freq direction‖ ≤ 4 * Real.pi * ‖freq‖ * ‖direction‖ := by
+  have hc : ‖(2 * Real.pi * Complex.I : ℂ)‖ = 2 * Real.pi := by
+    norm_num [norm_mul, abs_of_pos Real.pi_pos]
+  unfold horizontalPhaseMultiplier
+  rw [norm_mul, hc]
+  calc
+    _ ≤ (2 * Real.pi) * (‖freq * direction‖ + ‖star (freq * direction)‖) :=
+      mul_le_mul_of_nonneg_left (norm_add_le _ _) (by positivity)
+    _ = _ := by rw [norm_star, norm_mul]; ring
+
+lemma horizontalPhaseMultiplier_wirtinger (freq : ℂ) :
+    (1 / 2 : ℂ) * (horizontalPhaseMultiplier freq 1 +
+      Complex.I * horizontalPhaseMultiplier freq Complex.I) = 2 * Real.pi * Complex.I * star freq := by
+  simp only [horizontalPhaseMultiplier, mul_one, star_mul, Complex.star_def, Complex.conj_I]
+  ring_nf
+  norm_num [Complex.I_sq, Complex.I_pow_three]
+  ring
+
+/-- The antiholomorphic derivative expressed through the two real horizontal directions. -/
+def horizontalWirtingerBar (f : ℂ → ℂ) (z : ℂ) : ℂ :=
+  (1 / 2 : ℂ) * (deriv (fun t : ℝ => f (z + (t : ℂ))) 0 +
+    Complex.I * deriv (fun t : ℝ => f (z + (t : ℂ) * Complex.I)) 0)
+
+/-- One summable frequency moment permits termwise horizontal differentiation. -/
+theorem traceFourierSeries_hasDerivAt {ι : Type*} (freq a : ι → ℂ)
+    (ha : Summable (fun i => ‖a i‖))
+    (hfa : Summable (fun i => ‖freq i‖ * ‖a i‖)) (z direction : ℂ) (t : ℝ) :
+    HasDerivAt (fun x : ℝ => ∑' i, a i * tracePhase (freq i * (z + (x : ℂ) * direction)))
+      (∑' i, horizontalPhaseMultiplier (freq i) direction *
+        (a i * tracePhase (freq i * (z + (t : ℂ) * direction)))) t := by
+  have hd (i : ι) (x : ℝ) :
+      HasDerivAt (fun y : ℝ => a i * tracePhase (freq i * (z + (y : ℂ) * direction)))
+        (horizontalPhaseMultiplier (freq i) direction *
+          (a i * tracePhase (freq i * (z + (x : ℂ) * direction)))) x := by
+    convert! (tracePhase_hasDerivAt (freq i) z direction x).const_mul (a i) using 1
+    ring
+  have hb (i : ι) (x : ℝ) :
+      ‖horizontalPhaseMultiplier (freq i) direction *
+        (a i * tracePhase (freq i * (z + (x : ℂ) * direction)))‖ ≤
+      (4 * Real.pi * ‖direction‖) * (‖freq i‖ * ‖a i‖) := by
+    rw [norm_mul, norm_mul, tracePhase_norm, mul_one]
+    calc
+      _ ≤ (4 * Real.pi * ‖freq i‖ * ‖direction‖) * ‖a i‖ :=
+        mul_le_mul_of_nonneg_right (horizontalPhaseMultiplier_norm _ _) (norm_nonneg _)
+      _ = _ := by ring
+  have hz : Summable (fun i => a i * tracePhase (freq i * (z + (0 : ℂ) * direction))) := by
+    apply Summable.of_norm
+    simpa only [norm_mul, tracePhase_norm, mul_one] using ha
+  exact hasDerivAt_tsum
+    (𝕜 := ℝ)
+    (g := fun i (x : ℝ) => a i * tracePhase (freq i * (z + (x : ℂ) * direction)))
+    (g' := fun i (x : ℝ) => horizontalPhaseMultiplier (freq i) direction *
+      (a i * tracePhase (freq i * (z + (x : ℂ) * direction))))
+    (y₀ := 0) (hfa.mul_left (4 * Real.pi * ‖direction‖)) hd hb hz t
+
+lemma traceFourierSeries_directional_summable {ι : Type*} (freq a : ι → ℂ)
+    (hfa : Summable (fun i => ‖freq i‖ * ‖a i‖)) (z direction : ℂ) :
+    Summable (fun i => horizontalPhaseMultiplier (freq i) direction *
+      (a i * tracePhase (freq i * z))) := by
+  apply Summable.of_norm
+  apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
+    (fun i => ?_) (hfa.mul_left (4 * Real.pi * ‖direction‖))
+  rw [norm_mul, norm_mul, tracePhase_norm, mul_one]
+  calc
+    _ ≤ (4 * Real.pi * ‖freq i‖ * ‖direction‖) * ‖a i‖ :=
+      mul_le_mul_of_nonneg_right (horizontalPhaseMultiplier_norm _ _) (norm_nonneg _)
+    _ = _ := by ring
+
+theorem traceFourierSeries_wirtingerBar {ι : Type*} (freq a : ι → ℂ)
+    (ha : Summable (fun i => ‖a i‖)) (hfa : Summable (fun i => ‖freq i‖ * ‖a i‖)) (z : ℂ) :
+    horizontalWirtingerBar (fun w => ∑' i, a i * tracePhase (freq i * w)) z =
+      ∑' i, (2 * Real.pi * Complex.I * star (freq i)) * (a i * tracePhase (freq i * z)) := by
+  have h1 := (traceFourierSeries_hasDerivAt freq a ha hfa z 1 0).deriv
+  have hI := (traceFourierSeries_hasDerivAt freq a ha hfa z Complex.I 0).deriv
+  simp only [mul_one, Complex.ofReal_zero, zero_mul, add_zero] at h1 hI
+  rw [horizontalWirtingerBar, h1, hI]
+  have hs1 := traceFourierSeries_directional_summable freq a hfa z 1
+  have hsI := (traceFourierSeries_directional_summable freq a hfa z Complex.I).mul_left Complex.I
+  rw [← tsum_mul_left, ← hs1.tsum_add hsI, ← tsum_mul_left]
+  apply tsum_congr
+  intro i
+  linear_combination (a i * tracePhase (freq i * z)) * horizontalPhaseMultiplier_wirtinger (freq i)
+
+
+lemma frequency_exp_absorption (a r : ℝ) (ha : 0 < a) :
+    r * Real.exp (-a * r) ≤ (2 / a) * Real.exp (-(a / 2) * r) := by
+  have he := Real.add_one_le_exp ((a / 2) * r)
+  have hr : r ≤ (2 / a) * Real.exp ((a / 2) * r) := by
+    rw [div_mul_eq_mul_div]
+    apply (le_div_iff₀ ha).mpr
+    nlinarith only [he]
+  calc
+    _ ≤ ((2 / a) * Real.exp ((a / 2) * r)) * Real.exp (-a * r) :=
+      mul_le_mul_of_nonneg_right hr (Real.exp_pos _).le
+    _ = _ := by rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+
+lemma cuspFrequency_firstMoment_exp_summable (a : ℝ) (ha : 0 < a) :
+    Summable (fun h : O => ‖cuspFrequency h‖ * Real.exp (-a * ‖cuspFrequency h‖)) := by
+  apply Summable.of_nonneg_of_le (fun _ => mul_nonneg (norm_nonneg _) (Real.exp_pos _).le)
+    (fun h => frequency_exp_absorption a _ ha)
+  exact (summable_exp_neg_cuspFrequency_norm (a / 2) (half_pos ha)).mul_left (2 / a)
+
+/-- The actual source amplitudes have a summable first frequency moment at every positive height. -/
+lemma rationalSourceModeAmplitude_frequency_summable (v : ℝ) (hv : 0 < v) :
+    Summable (fun h : O => ‖cuspFrequency h‖ * ‖rationalSourceModeAmplitude v h‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselCoefficient_strip_bound rationalSourceResidualFourierCoefficient
+    rationalSourceResidualFourierCoefficient_subexponential v v hv le_rfl
+  apply Summable.of_nonneg_of_le (fun _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    (fun h => ?_)
+    ((cuspFrequency_firstMoment_exp_summable (Real.pi * v) (mul_pos Real.pi_pos hv)).mul_left C)
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, norm_zero, zero_mul, mul_zero, le_refl]
+  · rw [rationalSourceModeAmplitude_bessel v hv h hh]
+    calc
+      _ ≤ ‖cuspFrequency h‖ * (C * Real.exp (-(Real.pi * v) * ‖cuspFrequency h‖)) :=
+        mul_le_mul_of_nonneg_left (hb h hh v ⟨le_rfl, le_rfl⟩) (norm_nonneg _)
+      _ = _ := by ring
+
+lemma residueMultiplier_source_summable (c : O) [Fintype (O ⧸ Ideal.span {c})]
+    (φ : (O ⧸ Ideal.span {c}) → ℂ) (v : ℝ) (hv : 0 < v) :
+    Summable (fun h : O => ‖φ (Ideal.Quotient.mk _ h) * star (rationalSourceModeAmplitude v h)‖) ∧
+      Summable (fun h : O => ‖-cuspFrequency h‖ *
+        ‖φ (Ideal.Quotient.mk _ h) * star (rationalSourceModeAmplitude v h)‖) := by
+  let C : ℝ := ∑ x, ‖φ x‖
+  have hb (h : O) : ‖φ (Ideal.Quotient.mk _ h)‖ ≤ C :=
+    Finset.single_le_sum (fun x _ => norm_nonneg (φ x)) (Finset.mem_univ _)
+  constructor
+  · apply Summable.of_nonneg_of_le (fun _ => norm_nonneg _)
+      (fun h => ?_) ((rationalSourceModeAmplitude_summable v hv).mul_left C)
+    rw [norm_mul, norm_star]
+    exact mul_le_mul_of_nonneg_right (hb h) (norm_nonneg _)
+  · apply Summable.of_nonneg_of_le (fun _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+      (fun h => ?_) ((rationalSourceModeAmplitude_frequency_summable v hv).mul_left C)
+    rw [norm_neg, norm_mul, norm_star]
+    calc
+      _ ≤ ‖cuspFrequency h‖ * (C * ‖rationalSourceModeAmplitude v h‖) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right (hb h) (norm_nonneg _)) (norm_nonneg _)
+      _ = _ := by ring
+
+/-- The horizontal derivative of the actual finite twist is its frequency-weighted Fourier series. -/
+theorem traceTwistedConjugateSource_wirtingerBar (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    horizontalWirtingerBar (traceTwistedConjugateSource c hc φ v hv) z =
+      ∑' h : O, (-2 * Real.pi * Complex.I * star (cuspFrequency h)) *
+        (φ (Ideal.Quotient.mk _ h) * star (rationalSourceModeAmplitude v h) *
+          tracePhase (-cuspFrequency h * z)) := by
+  have he : traceTwistedConjugateSource c hc φ v hv =
+      (fun z : ℂ => ∑' h : O, (φ (Ideal.Quotient.mk _ h) * star (rationalSourceModeAmplitude v h)) *
+        tracePhase ((-cuspFrequency h) * z)) :=
+    funext (traceTwistedConjugateSource_fourier c hc φ v hv)
+  obtain ⟨ha, hfa⟩ := residueMultiplier_source_summable c φ v hv
+  rw [he, traceFourierSeries_wirtingerBar _ _ ha hfa z]
+  apply tsum_congr
+  intro h
+  simp only [star_neg]
+  ring
+
+lemma traceTwistedConjugateSource_wirtingerBar_zero (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {c})] (φ : (O ⧸ Ideal.span {c}) → ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    horizontalWirtingerBar (traceTwistedConjugateSource c hc φ v hv) 0 =
+      ∑' h : O, (-2 * Real.pi * Complex.I * star (cuspFrequency h)) *
+        φ (Ideal.Quotient.mk _ h) * star (rationalSourceResidualFourierCoefficient h) *
+        (v : ℂ) * schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) := by
+  rw [traceTwistedConjugateSource_wirtingerBar]
+  apply tsum_congr
+  intro h
+  simp only [mul_zero, AddChar.map_zero_eq_one, mul_one]
+  by_cases hh : h = 0
+  · subst h
+    simp only [cuspFrequency, map_zero, zero_div, star_zero, mul_zero, zero_mul]
+  · rw [rationalSourceModeAmplitude_bessel v hv h hh, star_mul, star_mul,
+      star_schlafliBesselK_cubic _ (by
+        have hf := norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)
+        positivity)]
+    simp only [Complex.star_def, Complex.conj_ofReal]
+    ring
+
+/-- The frequency-weighted cubic Gauss series is an actual horizontal source derivative. -/
+theorem finiteThetaTwist_source_wirtingerBar (c : O) (hc : c ≠ 0)
+    [Fintype (O ⧸ Ideal.span {9 * c})] (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (v : ℝ) (hv : 0 < v) :
+    rationalSourceThetaScalar⁻¹ * horizontalWirtingerBar
+      (traceTwistedConjugateSource (9 * c) (mul_ne_zero (by norm_num) hc) (finiteThetaTwist c Ψ) v hv) 0 =
+      ∑' p : ({I : Ideal O // Squarefree I ∧ primaryIdealGenerator I ≠ 0} ×
+        {J : Ideal O // primaryIdealGenerator J ≠ 0}),
+        ((‖ringComplex (primaryIdealGenerator p.2.val)‖ : ℂ) *
+          normalizedCubicUnitGauss (primaryIdealGenerator p.1.val) *
+          Ψ (Ideal.Quotient.mk _ (primaryIdealGenerator p.1.val)) *
+          (Ψ (Ideal.Quotient.mk _ (primaryIdealGenerator p.2.val))) ^ 3) *
+          ((-2 * Real.pi * Complex.I * star (cuspFrequency (primaryIdealGenerator p.1.val *
+              (primaryIdealGenerator p.2.val) ^ 3))) * (v : ℂ) * schlafliBesselK (1 / 3)
+            (4 * Real.pi * ‖cuspFrequency (primaryIdealGenerator p.1.val *
+              (primaryIdealGenerator p.2.val) ^ 3)‖ * v)) := by
+  rw [traceTwistedConjugateSource_wirtingerBar_zero, ← tsum_mul_left]
+  calc
+    _ = ∑' h : O, (rationalSourceThetaScalar⁻¹ * star (rationalSourceResidualFourierCoefficient h) *
+        fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom) h) *
+        ((-2 * Real.pi * Complex.I * star (cuspFrequency h)) * (v : ℂ) *
+          schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)) := by
+      apply tsum_congr
+      intro h
+      rw [finiteThetaTwist_mk]
+      ring
+    _ = _ := fixedThetaTwist_source_tsum _ _
+
+/-- A common Gamma-density majorant for the cubic Schläfli kernel and its derivative. -/
+def cubicSchlafliMajorant (t : ℝ) : ℝ := t ^ (-(2 : ℝ) / 3) * Real.exp (-t / 2)
+
+lemma cubicSchlafliMajorant_integrable : IntegrableOn cubicSchlafliMajorant (Ioi 0) := by
+  have hh := integrableOn_rpow_mul_exp_neg_mul_rpow
+    (s := -(2 : ℝ) / 3) (p := (1 : ℝ)) (b := (1 / 2 : ℝ))
+    (by norm_num) (by norm_num) (by norm_num)
+  convert! hh using 1
+  congr 1
+  funext t
+  simp only [cubicSchlafliMajorant, Real.rpow_one]
+  congr 1
+  congr 1
+  ring
+
+lemma cubicSchlafliMajorant_integral_nonneg : 0 ≤ ∫ t in Ioi 0, cubicSchlafliMajorant t := by
+  apply integral_nonneg_of_ae
+  filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+  exact mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+
+def cubicSchlafliDensityDeriv (x t : ℝ) : ℝ := -(x / (2 * t)) * cubicSchlafliDensity x t
+
+lemma cubicSchlafliDensity_hasDerivAt (x t : ℝ) :
+    HasDerivAt (fun y : ℝ => cubicSchlafliDensity y t) (cubicSchlafliDensityDeriv x t) x := by
+  have he := ((((hasDerivAt_id x).pow 2).div_const (4 * t)).const_sub (-t)).exp.const_mul (t ^ (-(2 : ℝ) / 3))
+  simp only [Pi.pow_apply, id_eq, Nat.cast_ofNat, mul_one] at he
+  convert! he using 1
+  · funext y
+    rfl
+  · unfold cubicSchlafliDensityDeriv cubicSchlafliDensity
+    ring
+
+lemma cubicSchlafliDensityDeriv_bound (δ x t : ℝ) (hδ : 0 < δ) (hx : δ ≤ x) (ht : 0 < t) :
+    ‖cubicSchlafliDensityDeriv x t‖ ≤ (4 / δ) * Real.exp (-x / 2) * cubicSchlafliMajorant t := by
+  have hxp := hδ.trans_le hx
+  have hdamp : (x / (2 * t)) * Real.exp (-(x ^ 2 / (8 * t))) ≤ 4 / x := by
+    have hy : (x ^ 2 / (8 * t)) * Real.exp (-(x ^ 2 / (8 * t))) ≤ 1 := by
+      have hb : x ^ 2 / (8 * t) ≤ Real.exp (x ^ 2 / (8 * t)) := by
+        linarith only [Real.add_one_le_exp (x ^ 2 / (8 * t))]
+      calc
+        _ ≤ Real.exp (x ^ 2 / (8 * t)) * Real.exp (-(x ^ 2 / (8 * t))) :=
+          mul_le_mul_of_nonneg_right hb (Real.exp_pos _).le
+        _ = 1 := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero]
+    have hr : x / (2 * t) = (4 / x) * (x ^ 2 / (8 * t)) := by field_simp; ring
+    rw [hr, mul_assoc]
+    simpa only [mul_one] using mul_le_mul_of_nonneg_left hy (by positivity : 0 ≤ 4 / x)
+  have hyoung : x / 2 - t / 2 ≤ x ^ 2 / (8 * t) :=
+    (le_div_iff₀ (by positivity : 0 < 8 * t)).mpr (by nlinarith only [sq_nonneg (x - 2 * t)])
+  have he : Real.exp (-t - x ^ 2 / (4 * t)) ≤
+      Real.exp (-x / 2) * Real.exp (-t / 2) * Real.exp (-(x ^ 2 / (8 * t))) := by
+    rw [← Real.exp_add, ← Real.exp_add]
+    apply Real.exp_le_exp.mpr
+    rw [show x ^ 2 / (4 * t) = 2 * (x ^ 2 / (8 * t)) by ring]
+    linarith only [hyoung]
+  have hn : ‖cubicSchlafliDensityDeriv x t‖ =
+      (x / (2 * t)) * t ^ (-(2 : ℝ) / 3) * Real.exp (-t - x ^ 2 / (4 * t)) := by
+    unfold cubicSchlafliDensityDeriv cubicSchlafliDensity
+    rw [norm_mul, norm_neg, Real.norm_of_nonneg (by positivity), Real.norm_of_nonneg (by positivity)]
+    ring
+  rw [hn]
+  calc
+    _ ≤ (x / (2 * t)) * t ^ (-(2 : ℝ) / 3) *
+        (Real.exp (-x / 2) * Real.exp (-t / 2) * Real.exp (-(x ^ 2 / (8 * t)))) :=
+      mul_le_mul_of_nonneg_left he (by positivity)
+    _ = ((x / (2 * t)) * Real.exp (-(x ^ 2 / (8 * t)))) *
+        Real.exp (-x / 2) * cubicSchlafliMajorant t := by unfold cubicSchlafliMajorant; ring
+    _ ≤ (4 / x) * Real.exp (-x / 2) * cubicSchlafliMajorant t := by
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hdamp (Real.exp_pos _).le)
+        (mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le)
+    _ ≤ _ := by
+      apply mul_le_mul_of_nonneg_right _ (mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le)
+      exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_left (by norm_num) hδ hx) (Real.exp_pos _).le
+
+lemma cubicSchlafliDensityDeriv_integrable (x : ℝ) (hx : 0 < x) :
+    IntegrableOn (cubicSchlafliDensityDeriv x) (Ioi 0) := by
+  apply (cubicSchlafliMajorant_integrable.const_mul ((4 / x) * Real.exp (-x / 2))).mono'
+  · unfold cubicSchlafliDensityDeriv cubicSchlafliDensity
+    fun_prop
+  · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact cubicSchlafliDensityDeriv_bound x x t hx le_rfl ht
+
+/-- Local domination differentiates the Schläfli integral on the positive axis. -/
+lemma cubicSchlafliIntegral_hasDerivAt (x : ℝ) (hx : 0 < x) :
+    HasDerivAt (fun y : ℝ => ∫ t in Ioi 0, cubicSchlafliDensity y t)
+      (∫ t in Ioi 0, cubicSchlafliDensityDeriv x t) x := by
+  have hδ : 0 < x / 2 := half_pos hx
+  have hU : Ioi (x / 2) ∈ 𝓝 x := Ioi_mem_nhds (by linarith only [hx])
+  have hb : ∀ᵐ t ∂volume.restrict (Ioi (0 : ℝ)), ∀ y ∈ Ioi (x / 2),
+      ‖cubicSchlafliDensityDeriv y t‖ ≤ (4 / (x / 2)) * cubicSchlafliMajorant t := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    intro y hy
+    have hyp := hδ.trans hy
+    calc
+      _ ≤ (4 / (x / 2)) * Real.exp (-y / 2) * cubicSchlafliMajorant t :=
+        cubicSchlafliDensityDeriv_bound _ y t hδ hy.le ht
+      _ ≤ _ := by
+        have he : Real.exp (-y / 2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith only [hyp])
+        have hg : 0 ≤ cubicSchlafliMajorant t :=
+          mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+        simpa only [mul_one] using mul_le_mul_of_nonneg_right
+          (mul_le_mul_of_nonneg_left he (by positivity : 0 ≤ 4 / (x / 2))) hg
+  exact (hasDerivAt_integral_of_dominated_loc_of_deriv_le
+    (μ := volume.restrict (Ioi (0 : ℝ))) (F := cubicSchlafliDensity) (F' := cubicSchlafliDensityDeriv)
+    (bound := fun t => (4 / (x / 2)) * cubicSchlafliMajorant t) hU
+    (Eventually.of_forall (fun y => by unfold cubicSchlafliDensity; fun_prop))
+    (cubicSchlafliDensity_integrable x)
+    (by unfold cubicSchlafliDensityDeriv cubicSchlafliDensity; fun_prop)
+    hb (cubicSchlafliMajorant_integrable.const_mul (4 / (x / 2)))
+    (Eventually.of_forall (fun t y _ => cubicSchlafliDensity_hasDerivAt y t))).2
+
+lemma schlafliBesselK_one_third_ofReal (x : ℝ) (hx : 0 < x) :
+    schlafliBesselK (1 / 3) x =
+      (((1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) * ∫ t in Ioi 0, cubicSchlafliDensity x t : ℝ) : ℂ) := by
+  have hp := (Complex.ofReal_cpow (show 0 ≤ x / 2 by positivity) (-(1 : ℝ) / 3)).symm
+  push_cast at hp
+  simp only [neg_div] at hp
+  rw [schlafliBesselK, hp, cubicSchlafliIntegral_ofReal]
+  push_cast
+  simp only [neg_div]
+
+/-- The explicit derivative of the real cubic Bessel kernel. -/
+def cubicBesselRealDeriv (x : ℝ) : ℝ :=
+  (-(1 : ℝ) / 12) * (x / 2) ^ (-(4 : ℝ) / 3) * (∫ t in Ioi 0, cubicSchlafliDensity x t) +
+    (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) * (∫ t in Ioi 0, cubicSchlafliDensityDeriv x t)
+
+lemma schlafliBesselK_cubic_hasDerivAt (x : ℝ) (hx : 0 < x) :
+    HasDerivAt (fun y : ℝ => schlafliBesselK (1 / 3) y) (cubicBesselRealDeriv x : ℂ) x := by
+  have hp : HasDerivAt (fun y : ℝ => (1 / 2 : ℝ) * (y / 2) ^ (-(1 : ℝ) / 3))
+      ((-(1 : ℝ) / 12) * (x / 2) ^ (-(4 : ℝ) / 3)) x := by
+    have hh := (((hasDerivAt_id x).div_const 2).rpow_const
+      (p := -(1 : ℝ) / 3) (Or.inl (by positivity : x / 2 ≠ 0))).const_mul (1 / 2 : ℝ)
+    convert! hh using 1 <;> norm_num
+    ring
+  have hr := hp.mul (cubicSchlafliIntegral_hasDerivAt x hx)
+  have he : HasDerivAt (fun y : ℝ => (1 / 2 : ℝ) * (y / 2) ^ (-(1 : ℝ) / 3) *
+      ∫ t in Ioi 0, cubicSchlafliDensity y t) (cubicBesselRealDeriv x) x := hr
+  apply he.ofReal_comp.congr_of_eventuallyEq
+  filter_upwards [Ioi_mem_nhds hx] with y hy
+  exact schlafliBesselK_one_third_ofReal y hy
+
+lemma cubicSchlafliDensity_majorant (x t : ℝ) (ht : 0 < t) :
+    cubicSchlafliDensity x t ≤ Real.exp (-x / 2) * cubicSchlafliMajorant t := by
+  have hf : x / 2 - t / 2 ≤ x ^ 2 / (4 * t) :=
+    (le_div_iff₀ (by positivity : 0 < 4 * t)).mpr
+      (by nlinarith only [sq_nonneg (x - t), sq_nonneg t])
+  calc
+    _ ≤ t ^ (-(2 : ℝ) / 3) * Real.exp (-x / 2 + -t / 2) :=
+      mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hf]))
+        (Real.rpow_nonneg ht.le _)
+    _ = _ := by rw [Real.exp_add]; unfold cubicSchlafliMajorant; ring
+
+lemma cubicSchlafliIntegral_norm_upper (x : ℝ) :
+    ‖∫ t in Ioi 0, cubicSchlafliDensity x t‖ ≤
+      Real.exp (-x / 2) * ∫ t in Ioi 0, cubicSchlafliMajorant t := by
+  have hp : 0 ≤ ∫ t in Ioi 0, cubicSchlafliDensity x t := by
+    apply integral_nonneg_of_ae
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    exact mul_nonneg (Real.rpow_nonneg ht.le _) (Real.exp_pos _).le
+  rw [Real.norm_of_nonneg hp, ← integral_const_mul]
+  exact setIntegral_mono_on (cubicSchlafliDensity_integrable x)
+    (cubicSchlafliMajorant_integrable.const_mul (Real.exp (-x / 2))) measurableSet_Ioi
+    (fun t ht => cubicSchlafliDensity_majorant x t ht)
+
+lemma cubicSchlafliIntegralDeriv_norm_upper (δ x : ℝ) (hδ : 0 < δ) (hx : δ ≤ x) :
+    ‖∫ t in Ioi 0, cubicSchlafliDensityDeriv x t‖ ≤
+      ((4 / δ) * Real.exp (-x / 2)) * ∫ t in Ioi 0, cubicSchlafliMajorant t := by
+  have hi := cubicSchlafliDensityDeriv_integrable x (hδ.trans_le hx)
+  have hb := integral_mono_ae hi.norm
+    (cubicSchlafliMajorant_integrable.const_mul ((4 / δ) * Real.exp (-x / 2))) (by
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+      exact cubicSchlafliDensityDeriv_bound δ x t hδ hx ht)
+  rw [integral_const_mul] at hb
+  exact (norm_integral_le_integral_norm _).trans hb
+
+/-- The cubic Bessel derivative has uniform exponential decay away from zero. -/
+theorem cubicBesselRealDeriv_exp_upper (δ : ℝ) (hδ : 0 < δ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, δ ≤ x → ‖(cubicBesselRealDeriv x : ℂ)‖ ≤ C * Real.exp (-x / 2) := by
+  let A : ℝ := ∫ t in Ioi 0, cubicSchlafliMajorant t
+  have hA : 0 ≤ A := cubicSchlafliMajorant_integral_nonneg
+  refine ⟨((1 / 12 : ℝ) * (δ / 2) ^ (-(4 : ℝ) / 3) +
+    (1 / 2 : ℝ) * (δ / 2) ^ (-(1 : ℝ) / 3) * (4 / δ)) * A, by positivity, ?_⟩
+  intro x hx
+  have hxp := hδ.trans_le hx
+  have hp1 : (x / 2) ^ (-(1 : ℝ) / 3) ≤ (δ / 2) ^ (-(1 : ℝ) / 3) :=
+    Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith only [hx]) (by norm_num)
+  have hp4 : (x / 2) ^ (-(4 : ℝ) / 3) ≤ (δ / 2) ^ (-(4 : ℝ) / 3) :=
+    Real.rpow_le_rpow_of_nonpos (by positivity) (by linarith only [hx]) (by norm_num)
+  rw [Complex.norm_real, cubicBesselRealDeriv]
+  calc
+    _ ≤ ‖(-(1 : ℝ) / 12) * (x / 2) ^ (-(4 : ℝ) / 3) * (∫ t in Ioi 0, cubicSchlafliDensity x t)‖ +
+        ‖(1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) * (∫ t in Ioi 0, cubicSchlafliDensityDeriv x t)‖ := norm_add_le _ _
+    _ = (1 / 12 : ℝ) * (x / 2) ^ (-(4 : ℝ) / 3) * ‖∫ t in Ioi 0, cubicSchlafliDensity x t‖ +
+        (1 / 2 : ℝ) * (x / 2) ^ (-(1 : ℝ) / 3) * ‖∫ t in Ioi 0, cubicSchlafliDensityDeriv x t‖ := by
+      simp only [norm_mul, Real.norm_of_nonneg (Real.rpow_nonneg (by positivity : 0 ≤ x / 2) _)]
+      norm_num
+    _ ≤ (1 / 12 : ℝ) * (δ / 2) ^ (-(4 : ℝ) / 3) * (Real.exp (-x / 2) * A) +
+        (1 / 2 : ℝ) * (δ / 2) ^ (-(1 : ℝ) / 3) * (((4 / δ) * Real.exp (-x / 2)) * A) := by
+      apply add_le_add
+      · exact mul_le_mul (mul_le_mul_of_nonneg_left hp4 (by norm_num))
+          (cubicSchlafliIntegral_norm_upper x) (norm_nonneg _) (by positivity)
+      · exact mul_le_mul (mul_le_mul_of_nonneg_left hp1 (by norm_num))
+          (cubicSchlafliIntegralDeriv_norm_upper δ x hδ hx) (norm_nonneg _) (by positivity)
+    _ = _ := by ring
+
+
+/-- The real differential of the exponent of a horizontal trace character. -/
+def horizontalPhaseCLM (freq : ℂ) : ℂ →L[ℝ] ℂ :=
+  (2 * Real.pi * Complex.I : ℂ) •
+    (freq • ContinuousLinearMap.id ℝ ℂ +
+      (Complex.conjCLE : ℂ →L[ℝ] ℂ).comp (freq • ContinuousLinearMap.id ℝ ℂ))
+
+lemma horizontalPhaseCLM_apply (freq direction : ℂ) :
+    horizontalPhaseCLM freq direction =
+      (2 * Real.pi * Complex.I) * (freq * direction + star (freq * direction)) := by
+  simp only [horizontalPhaseCLM, ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+    ContinuousLinearMap.id_apply, ContinuousLinearMap.comp_apply, smul_eq_mul]
+  rfl
+
+lemma tracePhase_hasFDerivAt (freq z : ℂ) :
+    HasFDerivAt (fun w : ℂ => tracePhase (freq * w))
+      (tracePhase (freq * z) • horizontalPhaseCLM freq) z := by
+  have hh := (horizontalPhaseCLM freq).hasFDerivAt.cexp (x := z)
+  convert! hh using 1
+
+
+/-- The nonconstant Bessel amplitude associated with a Fourier coefficient sequence. -/
+def cubicBesselAmplitude (c : O → ℂ) (v : ℝ) (h : O) : ℂ :=
+  if h = 0 then 0 else c h * (v : ℂ) *
+    schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)
+
+def cubicBesselAmplitudeDeriv (c : O → ℂ) (v : ℝ) (h : O) : ℂ :=
+  if h = 0 then 0 else c h *
+    (schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v) +
+      (v : ℂ) * ((4 * Real.pi * ‖cuspFrequency h‖ : ℝ) : ℂ) *
+        (cubicBesselRealDeriv (4 * Real.pi * ‖cuspFrequency h‖ * v) : ℂ))
+
+lemma cubicBesselAmplitude_hasDerivAt (c : O → ℂ) (v : ℝ) (hv : 0 < v) (h : O) :
+    HasDerivAt (fun y : ℝ => cubicBesselAmplitude c y h) (cubicBesselAmplitudeDeriv c v h) v := by
+  by_cases hh : h = 0
+  · simp only [cubicBesselAmplitude, cubicBesselAmplitudeDeriv, if_pos hh]
+    exact hasDerivAt_const v 0
+  have hr := norm_pos_iff.mpr (cuspFrequency_ne_zero h hh)
+  have hslope : HasDerivAt (fun y : ℝ => 4 * Real.pi * ‖cuspFrequency h‖ * y)
+      (4 * Real.pi * ‖cuspFrequency h‖) v := by
+    simpa only [id_eq, mul_one] using (hasDerivAt_id v).const_mul (4 * Real.pi * ‖cuspFrequency h‖)
+  have hk := (schlafliBesselK_cubic_hasDerivAt (4 * Real.pi * ‖cuspFrequency h‖ * v)
+    (by positivity)).scomp v hslope
+  have he := ((Complex.ofRealCLM.hasDerivAt (x := v)).mul hk).const_mul (c h)
+  simp only [cubicBesselAmplitude, cubicBesselAmplitudeDeriv, if_neg hh]
+  convert! he using 1 <;>
+    simp only [Function.comp_def, Pi.mul_apply, Complex.ofRealCLM_apply, Complex.ofReal_one,
+      Complex.real_smul, mul_one, one_mul, mul_assoc]
+
+def cubicBesselTerm (c : O → ℂ) (h : O) (p : ℝ × ℂ) : ℂ :=
+  cubicBesselAmplitude c p.1 h * tracePhase (cuspFrequency h * p.2)
+
+def cubicBesselTermFDeriv (c : O → ℂ) (h : O) (p : ℝ × ℂ) : (ℝ × ℂ) →L[ℝ] ℂ :=
+  (ContinuousLinearMap.fst ℝ ℝ ℂ).smulRight
+    (cubicBesselAmplitudeDeriv c p.1 h * tracePhase (cuspFrequency h * p.2)) +
+      cubicBesselTerm c h p • (horizontalPhaseCLM (cuspFrequency h)).comp
+        (ContinuousLinearMap.snd ℝ ℝ ℂ)
+
+lemma cubicBesselTerm_hasFDerivAt (c : O → ℂ) (h : O) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    HasFDerivAt (cubicBesselTerm c h) (cubicBesselTermFDeriv c h p) p := by
+  have hvd := (cubicBesselAmplitude_hasDerivAt c p.1 hp h).hasFDerivAt.comp p
+    (hasFDerivAt_fst (𝕜 := ℝ) (p := p))
+  have hzd := (tracePhase_hasFDerivAt (cuspFrequency h) p.2).comp p
+    (hasFDerivAt_snd (𝕜 := ℝ) (p := p))
+  convert! hvd.mul hzd using 1
+  apply ContinuousLinearMap.ext
+  intro direction
+  change (direction.1 : ℂ) * (cubicBesselAmplitudeDeriv c p.1 h * tracePhase (cuspFrequency h * p.2)) +
+      cubicBesselTerm c h p * horizontalPhaseCLM (cuspFrequency h) direction.2 =
+    cubicBesselAmplitude c p.1 h *
+      (tracePhase (cuspFrequency h * p.2) * horizontalPhaseCLM (cuspFrequency h) direction.2) +
+      tracePhase (cuspFrequency h * p.2) * ((direction.1 : ℂ) * cubicBesselAmplitudeDeriv c p.1 h)
+  unfold cubicBesselTerm
+  ring
+
+lemma cubicBesselTerm_strip_bound (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖))
+    (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, ∀ p : ℝ × ℂ, p.1 ∈ Icc a b →
+      ‖cubicBesselTerm c h p‖ ≤ C * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselCoefficient_strip_bound c hsub a b ha hab
+  refine ⟨C, hC, ?_⟩
+  intro h p hp
+  by_cases hh : h = 0
+  · simp only [cubicBesselTerm, cubicBesselAmplitude, if_pos hh, zero_mul, norm_zero]
+    positivity
+  · simp only [cubicBesselTerm, cubicBesselAmplitude, if_neg hh, norm_mul, tracePhase_norm, mul_one]
+    simpa only [norm_mul] using hb h hh p.1 hp
+
+lemma cubicBesselTerm_summable_norm (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    Summable (fun h : O => ‖cubicBesselTerm c h p‖) := by
+  obtain ⟨C, hC, hb⟩ := cubicBesselTerm_strip_bound c hsub p.1 p.1 hp le_rfl
+  exact Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun h => hb h p ⟨le_rfl, le_rfl⟩)
+    ((summable_exp_neg_cuspFrequency_norm (Real.pi * p.1) (mul_pos Real.pi_pos hp)).mul_left C)
+
+/-- The frequency gap converts Bessel and Bessel-derivative decay into a common summable scale. -/
+lemma cubicBesselCoefficient_weighted_bounds (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (a : ℝ) (ha : 0 < a) :
+    ∃ A B : ℝ, 0 ≤ A ∧ 0 ≤ B ∧ ∀ h : O, h ≠ 0 → ∀ v : ℝ, a ≤ v →
+      ‖c h‖ * ‖schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)‖ ≤
+        A * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) ∧
+      ‖c h‖ * ‖(cubicBesselRealDeriv (4 * Real.pi * ‖cuspFrequency h‖ * v) : ℂ)‖ ≤
+        B * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by
+  have hd : 0 < ‖(3 : ℂ) * ringComplex traceLambda‖ := norm_pos_iff.mpr
+    (mul_ne_zero (by norm_num) (ringComplex_ne_zero traceLambda_ne_zero))
+  let δ : ℝ := 4 * Real.pi * a * ‖(3 : ℂ) * ringComplex traceLambda‖⁻¹
+  have hδ : 0 < δ := by dsimp [δ]; positivity
+  obtain ⟨U, hU, hu⟩ := schlafliBesselK_one_third_exp_upper δ hδ
+  obtain ⟨D, hD, hd⟩ := cubicBesselRealDeriv_exp_upper δ hδ
+  obtain ⟨C, hC, hc⟩ := hsub (Real.pi * a) (mul_pos Real.pi_pos ha)
+  refine ⟨C * U, C * D, mul_nonneg hC hU, mul_nonneg hC hD, ?_⟩
+  intro h hh v hv
+  have hx : δ ≤ 4 * Real.pi * ‖cuspFrequency h‖ * v := by
+    have hm := mul_le_mul (cuspFrequency_norm_lower h hh) hv ha.le (norm_nonneg _)
+    have hm' := mul_le_mul_of_nonneg_left hm (by positivity : 0 ≤ 4 * Real.pi)
+    dsimp [δ]
+    nlinarith only [hm']
+  have hcombine (y E : ℝ) (hy : 0 ≤ y) (hE : 0 ≤ E)
+      (he : y ≤ E * Real.exp (-(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2)) :
+      ‖c h‖ * y ≤ (C * E) * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by
+    calc
+      _ ≤ (C * Real.exp ((Real.pi * a) * ‖cuspFrequency h‖)) *
+          (E * Real.exp (-(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2)) :=
+        mul_le_mul (hc h hh) he hy (by positivity)
+      _ = (C * E) * Real.exp ((Real.pi * a) * ‖cuspFrequency h‖ +
+          -(4 * Real.pi * ‖cuspFrequency h‖ * v) / 2) := by rw [Real.exp_add]; ring
+      _ ≤ _ := by
+        apply mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (mul_nonneg hC hE)
+        have hm := mul_le_mul_of_nonneg_left hv (by positivity : 0 ≤ 2 * Real.pi * ‖cuspFrequency h‖)
+        nlinarith only [hm]
+  exact ⟨hcombine _ _ (norm_nonneg _) hU (hu _ hx), hcombine _ _ (norm_nonneg _) hD (hd _ hx)⟩
+
+lemma cubicBesselAmplitudeDeriv_norm_le (c : O → ℂ) (v : ℝ) (hv : 0 < v) (h : O) (hh : h ≠ 0) :
+    ‖cubicBesselAmplitudeDeriv c v h‖ ≤
+      ‖c h‖ * ‖schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)‖ +
+      (v * (4 * Real.pi * ‖cuspFrequency h‖)) *
+        (‖c h‖ * ‖(cubicBesselRealDeriv (4 * Real.pi * ‖cuspFrequency h‖ * v) : ℂ)‖) := by
+  rw [cubicBesselAmplitudeDeriv, if_neg hh, norm_mul]
+  calc
+    _ ≤ ‖c h‖ * (‖schlafliBesselK (1 / 3) (4 * Real.pi * ‖cuspFrequency h‖ * v)‖ +
+        ‖(v : ℂ) * ((4 * Real.pi * ‖cuspFrequency h‖ : ℝ) : ℂ) *
+          (cubicBesselRealDeriv (4 * Real.pi * ‖cuspFrequency h‖ * v) : ℂ)‖) :=
+      mul_le_mul_of_nonneg_left (norm_add_le _ _) (norm_nonneg _)
+    _ = _ := by
+      rw [norm_mul, norm_mul, Complex.norm_of_nonneg hv.le,
+        Complex.norm_of_nonneg (by positivity : 0 ≤ 4 * Real.pi * ‖cuspFrequency h‖)]
+      ring
+
+lemma cubicBesselTermFDeriv_norm_le (c : O → ℂ) (h : O) (p : ℝ × ℂ) :
+    ‖cubicBesselTermFDeriv c h p‖ ≤ ‖cubicBesselAmplitudeDeriv c p.1 h‖ +
+      ‖cubicBesselTerm c h p‖ * (4 * Real.pi * ‖cuspFrequency h‖) := by
+  apply ContinuousLinearMap.opNorm_le_bound _ (by positivity)
+  intro direction
+  change ‖(direction.1 : ℂ) * (cubicBesselAmplitudeDeriv c p.1 h * tracePhase (cuspFrequency h * p.2)) +
+    cubicBesselTerm c h p * horizontalPhaseCLM (cuspFrequency h) direction.2‖ ≤ _
+  calc
+    _ ≤ ‖(direction.1 : ℂ) * (cubicBesselAmplitudeDeriv c p.1 h * tracePhase (cuspFrequency h * p.2))‖ +
+        ‖cubicBesselTerm c h p * horizontalPhaseCLM (cuspFrequency h) direction.2‖ := norm_add_le _ _
+    _ = ‖direction.1‖ * ‖cubicBesselAmplitudeDeriv c p.1 h‖ +
+        ‖cubicBesselTerm c h p‖ * ‖horizontalPhaseMultiplier (cuspFrequency h) direction.2‖ := by
+      rw [norm_mul, norm_mul, Complex.norm_real, tracePhase_norm, mul_one, norm_mul, horizontalPhaseCLM_apply]
+      rfl
+    _ ≤ ‖direction‖ * ‖cubicBesselAmplitudeDeriv c p.1 h‖ +
+        ‖cubicBesselTerm c h p‖ * ((4 * Real.pi * ‖cuspFrequency h‖) * ‖direction‖) := by
+      apply add_le_add
+      · exact mul_le_mul_of_nonneg_right (norm_fst_le direction) (norm_nonneg _)
+      · apply mul_le_mul_of_nonneg_left _ (norm_nonneg _)
+        exact (horizontalPhaseMultiplier_norm _ _).trans
+          (mul_le_mul_of_nonneg_left (norm_snd_le direction) (by positivity))
+    _ = _ := by ring
+
+lemma cubicBesselTermFDeriv_strip_bound (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖))
+    (a b : ℝ) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, ∀ p : ℝ × ℂ, p.1 ∈ Icc a b →
+      ‖cubicBesselTermFDeriv c h p‖ ≤ C * ((1 + ‖cuspFrequency h‖) *
+        Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖)) := by
+  obtain ⟨A, B, hA, hB, hweighted⟩ := cubicBesselCoefficient_weighted_bounds c hsub a ha
+  obtain ⟨T, hT, ht⟩ := cubicBesselTerm_strip_bound c hsub a b ha hab
+  let D := B * b * (4 * Real.pi) + T * (4 * Real.pi)
+  have hb := ha.trans_le hab
+  have hD : 0 ≤ D := by dsimp [D]; positivity
+  refine ⟨A + D, add_nonneg hA hD, ?_⟩
+  intro h p hp
+  by_cases hh : h = 0
+  · simp only [cubicBesselTermFDeriv, cubicBesselAmplitudeDeriv, cubicBesselTerm,
+      cubicBesselAmplitude, if_pos hh, zero_mul, zero_smul, add_zero, norm_zero]
+    positivity
+  have hv := ha.trans_le hp.1
+  obtain ⟨hKu, hKd⟩ := hweighted h hh p.1 hp.1
+  have hamp : ‖cubicBesselAmplitudeDeriv c p.1 h‖ ≤
+      A * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) +
+      (b * (4 * Real.pi * ‖cuspFrequency h‖)) *
+        (B * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖)) := by
+    apply (cubicBesselAmplitudeDeriv_norm_le c p.1 hv h hh).trans
+    apply add_le_add hKu
+    exact mul_le_mul (mul_le_mul_of_nonneg_right hp.2 (by positivity)) hKd
+      (mul_nonneg (norm_nonneg _) (norm_nonneg _)) (by positivity)
+  calc
+    _ ≤ ‖cubicBesselAmplitudeDeriv c p.1 h‖ + ‖cubicBesselTerm c h p‖ *
+        (4 * Real.pi * ‖cuspFrequency h‖) := cubicBesselTermFDeriv_norm_le c h p
+    _ ≤ (A * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) +
+        (b * (4 * Real.pi * ‖cuspFrequency h‖)) * (B * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖))) +
+        (T * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖)) * (4 * Real.pi * ‖cuspFrequency h‖) :=
+      add_le_add hamp (mul_le_mul_of_nonneg_right (ht h p hp) (by positivity))
+    _ = (A + D * ‖cuspFrequency h‖) * Real.exp (-(Real.pi * a) * ‖cuspFrequency h‖) := by dsimp [D]; ring
+    _ ≤ _ := by
+      rw [← mul_assoc]
+      apply mul_le_mul_of_nonneg_right _ (Real.exp_pos _).le
+      nlinarith only [mul_nonneg hA (norm_nonneg (cuspFrequency h)), hD]
+
+/-- Local uniform derivative bounds give joint differentiability in height and horizontal position. -/
+theorem cubicBesselSeries_hasFDerivAt (c : O → ℂ)
+    (hsub : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ, 0 ≤ C ∧ ∀ h : O, h ≠ 0 →
+      ‖c h‖ ≤ C * Real.exp (ε * ‖cuspFrequency h‖)) (p : ℝ × ℂ) (hp : 0 < p.1) :
+    HasFDerivAt (fun q : ℝ × ℂ => ∑' h : O, cubicBesselTerm c h q)
+      (∑' h : O, cubicBesselTermFDeriv c h p) p := by
+  have ha : 0 < p.1 / 2 := half_pos hp
+  have hab : p.1 / 2 ≤ 2 * p.1 := by linarith only [hp]
+  obtain ⟨C, hC, hb⟩ := cubicBesselTermFDeriv_strip_bound c hsub _ _ ha hab
+  have hs : Summable (fun h : O => (1 + ‖cuspFrequency h‖) *
+      Real.exp (-(Real.pi * (p.1 / 2)) * ‖cuspFrequency h‖)) := by
+    simpa only [add_mul, one_mul] using
+      (summable_exp_neg_cuspFrequency_norm (Real.pi * (p.1 / 2)) (mul_pos Real.pi_pos ha)).add
+        (cuspFrequency_firstMoment_exp_summable (Real.pi * (p.1 / 2)) (mul_pos Real.pi_pos ha))
+  have hmem : p ∈ Ioo (p.1 / 2) (2 * p.1) ×ˢ (univ : Set ℂ) :=
+    ⟨⟨by linarith only [hp], by linarith only [hp]⟩, mem_univ _⟩
+  exact hasFDerivAt_tsum_of_isPreconnected
+    (f := cubicBesselTerm c) (f' := cubicBesselTermFDeriv c)
+    (hs.mul_left C) (isOpen_Ioo.prod isOpen_univ) (isPreconnected_Ioo.prod isPreconnected_univ)
+    (fun h q hq => cubicBesselTerm_hasFDerivAt c h q (ha.trans hq.1.1))
+    (fun h q hq => hb h q ⟨hq.1.1.le, hq.1.2.le⟩) hmem
+    (cubicBesselTerm_summable_norm c hsub p hp).of_norm hmem
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

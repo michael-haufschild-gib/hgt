@@ -24,8 +24,8 @@ The zero abscissa of `ζ` read on two scales.
   `Re ρ ≤ σ − ½` (`xiZeroHalfPlaneBound_of_jasDressedPSDAbove`), and level one is the Riemann
   hypothesis (`riemannHypothesis_iff_jasDressedPSD_one`).
 
-The exponent `b` of the signal and the level `b + ½` of the dressed aggregate measure the same
-abscissa; a half-plane is not a premise of the positivity criterion.
+A signal bound with exponent `b` and positivity at the level `b + ½` bound the same abscissa by
+`b`; a half-plane is not a premise of the positivity criterion.
 -/
 
 noncomputable section

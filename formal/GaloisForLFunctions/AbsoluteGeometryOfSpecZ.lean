@@ -64,8 +64,29 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountertermPaysForTheConta
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTreeOfAPrimeIsGluedAlongTheCombWithTheLengthLogP
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountOfASectionOnTwoGraphsIsTheSplitNorm
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCountOfSectionsInABoxIsItsVolumeOverTheGluingIndex
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.ThePoleTermFixesTheScaleOfTheContacts
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TwoVerticalLinesWeighTheZerosOfAFunctionOfOrderOne
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.AFunctionOfOrderOneWithAFunctionalEquationHasWeilsExplicitFormula
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheLogarithmicDerivativeOfAHeckeLSeriesRunsOverThePowersOfThePrimeIdeals
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheCompletedFunctionOfAPrimitiveHeckeCharacterHasOrderOne
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheZerosOfAFunctionOfOrderOneWithAReflectionFormATemperedConfiguration
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheLogarithmicDerivativeOfACompletedHeckeFunctionIsItsPolesItsGammaFactorsAndItsPrimeIdeals
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheZerosOfAHeckeLFunctionSatisfyWeilsExplicitFormula
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheIdealsOfANumberRingPairAsDegreePointsWithTheZerosOfItsHeckeFunctions
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquareOfANumberRingThroughItsIdealsHasTheIndexOfItsDedekindZetaFunction
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BelowTheFirstContactALargeDiscriminantGivesTheInequalityOnANumberRing
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheClassCharactersTogetherCarryTheContactsOfTheIdealsOfTrivialClass
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormOnStepPacketsIsDeterminedByItsValuesOnWindows
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.OnNestedWindowsTheCombFormTendsToWeilsFormOfTheStepPacket
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.UnderTheRiemannHypothesisWeilsFormOfAStepPacketIsNonnegative
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormIsContinuousUnderPacketSmoothing
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.BoundedPacketIndexCountsNoExtraZeros
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilGroundEnergyBoundsBoundedPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.StepPacketMassAndGroundEnergy
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsTheSignOfWeilsFormOnStepPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.WeilsFormOnTheCombIsAQuadraticFormInTheIncrementsOfTheDivisor
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.AtEveryPrimeAContactPaidAtItsPriceIsAMonotonePath
 
 /-!
 # Absolute geometry of `Spec ℤ`
@@ -92,6 +113,13 @@ genus of a degree point; the exchange law between the contacts and the constant 
 counterterm; the tree of a prime glued along the comb, whose edge length the inequality
 forces; the length of the tree of `2` as a monotone deformation of the pairing on packets
 shorter than `log 4`; the count of a section on two graphs, the split norm; the pole term
-as the scale of the contacts; and the zeros of a function of order one weighed by two vertical
-lines. See `AbsoluteGeometryOfSpecZ/README.md`.
+as the scale of the contacts; the zeros of a function of order one weighed by two vertical
+lines, and Weil's explicit formula for every such function with a functional equation; Weil's form on step packets as the limit of the form on block-constant divisors, its
+sign as the Riemann hypothesis, and the inequality at finite scale in both directions; the
+path of a contact paid at its price, monotone at every prime; the Hecke `L`-functions of a
+number field with their explicit formula, the tempered configuration of their zeros and their
+Hodge index, the ideals of a number ring as degree points, and the inequality below the first
+contact for a large discriminant; the count of sections in a box as the volume over the gluing
+index; and the form on the comb in the increments of the divisor. See
+`AbsoluteGeometryOfSpecZ/README.md`.
 -/

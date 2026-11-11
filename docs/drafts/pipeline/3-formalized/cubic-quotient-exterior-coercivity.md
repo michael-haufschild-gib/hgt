@@ -3,7 +3,7 @@
 - **ID:** cubic-quotient-exterior-coercivity
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** There are a compact quotient set `K` and `C≥0` such that every actual completed energy vector satisfies `‖Mu‖₂²≤‖Gu‖₂²+C‖1_KMu‖₂²`. The restriction map `u↦1_KMu` is compact.
 
 `M` is the actual mass embedding and `G` the completed hyperbolic gradient.

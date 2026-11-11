@@ -3,7 +3,7 @@
 - **ID:** cubic-constant-term-nonvanishing
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual incoming residue at `s=4/3` is a nonzero quotient `L²` eigenvector of the Laplacian with eigenvalue `8/9`.
 
 Let `V=9√3/2` be the covolume of the period lattice `3ℤ[ω]`, and let

@@ -113,7 +113,7 @@ theorem norm_gaussianHigherVaughanCofactorTail_le_gaussian (r : ℕ)
     _ = _ := by rw [hp]; dsimp only [B]; ring
 
 /-- Factorial order cost is paid by a height power throughout `r≤t`. -/
-private theorem higher_tail_factorial_le (r : ℕ) {t : ℝ}
+theorem higher_tail_factorial_le (r : ℕ) {t : ℝ}
     (ht : 32 ≤ t) (hrt : (r : ℝ) ≤ t) :
     (32 : ℝ) ^ r * ((r + 1).factorial : ℝ) ≤ t ^ (3 * r + 2) := by
   have ht0 : 0 ≤ t := by linarith only [ht]
@@ -253,7 +253,4 @@ theorem gaussianHigherCentredVaughan_sub_cofactorCurrent_eq (r : ℕ) {σ t : �
   dsimp only [f, g]
   ring
 
-#print axioms gaussianHigherCentredVaughan_sub_cofactorCurrent_eq
-#print axioms norm_gaussianHigherVaughanCofactorTail_le_exp_neg_sq
-#print axioms norm_gaussianHigherVaughanCofactorTail_le_gaussian
 end GaloisForLFunctions.ExceptionalLayerTheory

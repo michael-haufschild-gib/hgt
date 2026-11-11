@@ -87,18 +87,23 @@ private theorem norm_topPair_sum_ge {G : Finset XiZeroCopy} {γ : ℝ}
   rw [add_sub_cancel_right, norm_exceptionalOrdinateWave, norm_exceptionalOrdinateWave] at hn
   linarith only [hn]
 
-/-- In the actual finite-layer world, a top with only one positive ordinate
-forces pointwise growth of the corrected current at every supercritical speed.
-Thus phase cancellation can occur only when the top has distinct positive ordinates. -/
-theorem not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy :
+/-- The one-quartet alternative has the explicit eventual normalized lower bound
+`|G|(exp(πγ/4)−exp(−πγ/4))/4`, and its corrected current grows pointwise. -/
+theorem not_asymptoticAbscissaLaw_has_quantitative_top_ordinate_dichotomy :
     ¬ AsymptoticAbscissaLaw →
       ∃ σ β : ℝ, 1 / 2 < σ ∧ σ < β ∧ β < 1 ∧
         (∀ q : XiZeroCopy, (xiZero q).re ≤ β) ∧
         (∃ q : XiZeroCopy, (xiZero q).re = β) ∧
         ((∃ q r : XiZeroCopy, (xiZero q).re = β ∧ (xiZero r).re = β ∧
             0 < (xiZero q).im ∧ 0 < (xiZero r).im ∧ (xiZero q).im ≠ (xiZero r).im) ∨
-          ∀ a : ℝ, 0 < a → Real.pi / 2 < a * (β - σ) →
-            Tendsto (fun t : ℝ => ‖correctedExceptionalCurrent σ a t‖) atTop atTop) := by
+          ∃ (G : Finset XiZeroCopy) (γ : ℝ), 0 < γ ∧ G.Nonempty ∧
+            (∀ q : XiZeroCopy, q ∈ G ↔ (xiZero q).re = β) ∧
+            (∀ q ∈ G, (xiZero q).im = γ ∨ (xiZero q).im = -γ) ∧
+            ∀ a : ℝ, 0 < a → Real.pi / 2 < a * (β - σ) →
+              (∀ᶠ t : ℝ in atTop, (G.card : ℝ) / 4 *
+                (Real.exp (Real.pi * γ / 4) - Real.exp (Real.pi * (-γ) / 4)) ≤
+                  ‖normalizedExceptionalCurrent σ β a t‖) ∧
+              Tendsto (fun t : ℝ => ‖correctedExceptionalCurrent σ a t‖) atTop atTop) := by
   classical
   intro hnot
   obtain ⟨F, θ, σ, β, hθ, hgap, hσβ, hβ1, ⟨q₀, hq₀F, hq₀β⟩,
@@ -159,6 +164,7 @@ theorem not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy :
   let c : ℝ := (G.card : ℝ) / 2 *
     (Real.exp (Real.pi * γ / 4) - Real.exp (Real.pi * (-γ) / 4))
   have hc : 0 < c := topPair_amplitude_pos hG hγ
+  refine ⟨G, γ, hγ, hG, htop, hpair, ?_⟩
   intro a ha hsuper
   have hprof : Tendsto (fun t : ℝ => normalizedExceptionalCurrent σ β a t +
       ∑ q ∈ G, exceptionalOrdinateWave (xiZero q).im a t) atTop (𝓝 0) :=
@@ -175,6 +181,7 @@ theorem not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy :
       (normalizedExceptionalCurrent σ β a t)
     rw [add_sub_cancel_left] at hn
     linarith only [hs, hn, ht]
+  refine ⟨hJ.mono (fun t ht => by dsimp [c] at ht; linarith only [ht]), ?_⟩
   have hr : 0 < gaussianObservationRate (β : ℂ) σ a := by
     simp only [gaussianObservationRate, Complex.ofReal_re]
     linarith only [hsuper]
@@ -199,6 +206,23 @@ theorem not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy :
   rw [heq] at hbig
   linarith only [hb, hbig, le_abs_self B]
 
-#print axioms not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy
+/-- In the actual finite-layer world, a top with only one positive ordinate
+forces pointwise growth of the corrected current at every supercritical speed. -/
+theorem not_asymptoticAbscissaLaw_has_top_ordinate_dichotomy :
+    ¬ AsymptoticAbscissaLaw →
+      ∃ σ β : ℝ, 1 / 2 < σ ∧ σ < β ∧ β < 1 ∧
+        (∀ q : XiZeroCopy, (xiZero q).re ≤ β) ∧
+        (∃ q : XiZeroCopy, (xiZero q).re = β) ∧
+        ((∃ q r : XiZeroCopy, (xiZero q).re = β ∧ (xiZero r).re = β ∧
+            0 < (xiZero q).im ∧ 0 < (xiZero r).im ∧ (xiZero q).im ≠ (xiZero r).im) ∨
+          ∀ a : ℝ, 0 < a → Real.pi / 2 < a * (β - σ) →
+            Tendsto (fun t : ℝ => ‖correctedExceptionalCurrent σ a t‖) atTop atTop) := by
+  intro h
+  obtain ⟨σ, β, hσ, hσβ, hβ, hall, htop, hcases⟩ :=
+    not_asymptoticAbscissaLaw_has_quantitative_top_ordinate_dichotomy h
+  refine ⟨σ, β, hσ, hσβ, hβ, hall, htop, ?_⟩
+  rcases hcases with htwo | ⟨G, γ, hγ, hG, htopG, hpair, hquant⟩
+  · exact Or.inl htwo
+  · exact Or.inr fun a ha hsuper => (hquant a ha hsuper).2
 
 end GaloisForLFunctions.ExceptionalLayerTheory

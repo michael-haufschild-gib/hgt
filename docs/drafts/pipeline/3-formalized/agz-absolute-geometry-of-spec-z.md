@@ -822,6 +822,81 @@ e^{−T/2}))`. (c) `arch − 2d₁d₂ = (1/2π)∫|f̂_T|² A` with the archime
 `Re W_w + c∫f_T² ≤ |1+ε||Z(f_T)| − 2|ε| d₁(g)d₂(g) e^{T/2} + K` with `K` independent of `T`;
 divide by `e^{T/2}`. ∎
 
+**G14 (a contact paid at its price is a monotone path, at every prime).** Let `n₀ ≥ 2`,
+`x = log n₀`, `t ∈ ℝ`. Take the contacts `Λ + t·1_{n₀}` and the counterterm
+`log(n/2π) + 2|t|/√n₀`, the price of the deviation (G9). For a packet `f`:
+
+(i) the functional of the pair is `Z(f) + E_{n₀,t}(f)` with
+`E_{n₀,t}(f) = (2/√n₀)(|t| h_f(0) − t h_f(x)) = (|t|/√n₀) ∫ (f(u + x) − sgn(t) f(u))² du ≥ 0`.
+Proof: only the contact at `n₀` is changed, so `Re W_{Λ+δ} = Z(f) − (2t/√n₀) h_f(x)`, and the
+constant adds `(2|t|/√n₀) h_f(0)`; `∫ (f(u + x) − s f(u))² = 2(h(0) − s h(x))` for `s = ±1`.
+
+(ii) `E_{n₀,at} = a E_{n₀,t}` for `a ≥ 0`: along each ray the functional is affine with a
+nonnegative generator, and the square of `ℤ` (`a = 0`) is the least member.
+
+(iii) If `f` vanishes outside an interval of length `L ≤ m x`, then
+`∫ f² ≤ m² ∫ (f(u + x) − s f(u))²`. Proof: with `g(u) = f(u + x) − s f(u)`,
+`f(u) = s^m f(u + m x) − Σ_{k<m} s^{k+1} g(u + k x)` (induction, `s² = 1`); for `u` in the
+support `f(u + m x) = 0`, so `f(u)² ≤ m Σ_{k<m} g(u + k x)²`; integrate. Hence
+`E_{n₀,t}(f) ≥ (|t|/(√n₀ m²)) ∫ f²` on packets of length at most `m log n₀`.
+
+(iv) With `Z(f) ≥ −C(L) ∫ f²` on packets of length `L` (G11): for `a ≥ a₀(L)` the inequality
+`Z + a E ≥ 0` holds on the packets of length `L` without hypothesis; the set of such `a ≥ 0` is
+a closed half-line `[a*(L), ∞)` (monotone by (ii); closed because the functional is affine in
+`a`); `a*(L) = 0` iff the square of `ℤ` satisfies Bézout at the length `L`.
+
+(v) On all packets the inequality along the whole path is RH (G9 at the price).
+
+So a path with a nonnegative generator, a base point without hypothesis and one threshold exists
+at every prime when the counterterm moves at the price of the contact. The path of G11, where
+the counterterm follows the product formula (the mean `1/(p − 1)` of the Busemann function),
+exists at `p = 2` only.
+
+**G15 (the count of sections in a box is the volume over the gluing index).** Let `L ⊂ ℤ^ι`
+be a subgroup with `dℤ^ι ⊂ L`, and `B` a box with corner `a` and sides `d k_i`. Then
+`#(L ∩ B) · [ℤ^ι : L] = Π_i d k_i`.
+
+*Proof.* Let `r : ℤ^ι → (ℤ/d)^ι` be the reduction. Its kernel `dℤ^ι` lies in `L`, so `x ∈ L`
+iff `r(x) ∈ r(L)`, and `[(ℤ/d)^ι : r(L)] = [ℤ^ι : L]`, hence `#r(L) · [ℤ^ι : L] = d^{|ι|}`. An
+interval of `d k` consecutive integers has `k` members in each class modulo `d`, so each class
+`ρ ∈ (ℤ/d)^ι` has `Π k_i` points in `B`. Summing over `ρ ∈ r(L)`:
+`#(L ∩ B) = #r(L) Π k_i`. ∎
+
+*Two graphs.* The functions on `Γ_m ∪ Γ_n` are the pairs congruent modulo `J(m, n)`; with
+`c = #(ℤ/J)` and sides `c k₁`, `c k₂` the count is `c k₁ k₂`, the area over `c`.
+
+*The first `N` graphs.* The values of the sections on `Γ_1, …, Γ_N` are the lattice
+`M_N ℤ^N`, `M_N` the necklace matrix (`x_n = Σ_{d ∣ n} d b_d`), of determinant `N!`. By the
+adjugate `N! ℤ^N ⊂ M_N ℤ^N`, and the index is `|det M_N| = N!`. So in a box with sides
+`N! k_i` there are `Π(N! k_i)/N!` vectors of values, and
+`log #  = log vol − log N!`, with `log N! = Σ_{m ∣ n ≤ N, m < n} Λ(n/m)` the sum of the contacts.
+
+*Reading.* The count sees the contacts once, as a constant, with the sign of a condition; the
+sides of the box (the multiplicities of the divisor) do not multiply them. The pairing has the
+contact of `Γ_m` and `Γ_n` with the product of the multiplicities and the opposite sign. A count
+of sections of the object in archimedean boxes therefore has no quadratic term, on two graphs
+and on any number of them.
+
+**G16 (Weil's form on the comb in the increments of the divisor).** Notation of the
+continuation: `𝔚_S(c) = 2d₁d₂ − D·D` on a finite set `S`, `⟨c, e⟩_S` its bilinear form, `T` the
+flat divisor of `S`, and for `n ≤ M` the row
+`R_M(n) = M/n − ψ(M/n) + H_M − ½(H_{M−n} + H_{M+n}) + 3/(4n) − log 2π`, with
+`⟨T, e⟩_{[1,M]} = Σ_{n ≤ M} e_n R_M(n)` (continuation). If `c_{N+1} = 0`, then
+
+`𝔚_{[1,N]}(c) = Σ_{M ≤ N} (c_M − c_{M+1}) Σ_{n ≤ M} (2c_n − c_M − c_{M+1}) R_M(n)`.
+
+*Proof.* Bilinearity gives `𝔚_S(c + t) = 𝔚_S(c) + 2t⟨T, c⟩_S + t²𝔚_S(T)`. On `S = [1, N+1]`
+put `t = c_{N+1}` and `c⁻ = c − t`. Then `c⁻_{N+1} = 0`, so `𝔚_S(c⁻) = 𝔚_{[1,N]}(c⁻)`, and
+`2t⟨T, c⁻⟩ + t²𝔚(T) = t Σ_{n ≤ N+1}(2c⁻_n + t)R_{N+1}(n) = t Σ_{n ≤ N+1}(2c_n − t)R_{N+1}(n)`.
+Induction on `N`: the increments of `c⁻` below `N` are those of `c`, and
+`2c⁻_n − c⁻_M − c⁻_{M+1} = 2c_n − c_M − c_{M+1}`; the new term is the term `M = N + 1` since
+`c_{N+2} = 0`. ∎
+
+*Reading.* A divisor on `[1, N]` is the combination `Σ_M (c_M − c_{M+1}) T_M` of flat tails, and
+the form of a tail is a quadratic form in its increments whose coefficients are partial sums of
+the remainders of the prime number theorem at the ratios `M/n`. The Laguerre tails of the Li
+ladder are of this kind; for the flat tail one increment remains.
+
 ## Answers to the kill conditions
 
 - **A**: A9 and A10 prove the contact and ideal-power restriction laws. A closure based on evaluated δ-jets needs the additional descent argument. **B** met: B2. **D** met in the form D3; survivor D1, D2.
@@ -976,6 +1051,9 @@ All modules checked with `lake --old env lean`; umbrella `AbsoluteGeometryOfSpec
 | G11 | `LengtheningTheTreeOfTwoRaisesThePairingBelowTheSquareOfTwo` |
 | G12 | `TheCountOfASectionOnTwoGraphsIsTheSplitNorm` |
 | G13 | `ThePoleTermFixesTheScaleOfTheContacts` |
+| G14 | `AtEveryPrimeAContactPaidAtItsPriceIsAMonotonePath` |
+| G15 | `TheCountOfSectionsInABoxIsItsVolumeOverTheGluingIndex` (`card_filter_mem_alignedBox_mul_index`, `card_pairRing_box`, `mem_sectionLattice_iff`, `index_sectionLattice`, `card_sections_alignedBox`, `log_card_sections_alignedBox`) |
+| G16 | `WeilsFormOnTheCombIsAQuadraticFormInTheIncrementsOfTheDivisor` (`combForm_add_const`, `combForm_Icc_succ`, `combForm_Icc_eq_sum_increments`, `combForm_Icc_eq_sum_increments_cut`) |
 
 Oleans built by this programme: the first seven AGZ modules,
 `TheGraphsAreGluedAlongTheirContacts`, `TheGluingIndexCountsTheZeros`,
@@ -1015,12 +1093,13 @@ Open parts of the questions of the refined programme (details in the README, §1
 - The packet theorem on the comb of the `a`-th powers for real `a`, and on combs with a regularly
   varying density (the squares: C27).
 - Bézout for an integer-norm system on its own comb.
-- Number rings beyond F2–F5, G4, G5, C28: rings that are not abelian over `ℚ`; the contacts at
-  the ramified primes of an abelian ring of composite conductor as norms of ideals; the count
-  of odd characters modulo `p`; small conductors and packets with a contact; the ideals
-  themselves as degree points with the characters of the class group (Hecke `L`-functions), the
-  units of a real quadratic ring, the gluing index against the zero count of the Dedekind zeta
-  function; the exact index on real packets.
+- Number rings beyond F2–F5, G4, G5, C28 and the card
+  `agz-hecke-explicit-formula-and-ideal-squares.md` (every number field through its ideals, Hecke
+  characters, class characters, the inequality below the first contact): the index of an Artin
+  character of a ring that is not abelian; the contacts at the ramified primes of an abelian
+  ring of composite conductor as norms of ideals; the count of odd characters modulo `p`; small
+  conductors and packets with a contact; the units of a real quadratic ring; the gluing index
+  against the zero count of the Dedekind zeta function; the exact index on real packets.
 - The planar square (G2, G6): what its gluing conditions count, its dependence on the nodes, a
   count of sections, an archimedean pairing that is the jets.
 - Q21: the sign of the twisted part at the aperture `log log q + C` (Landau–Siegel). The
@@ -1033,6 +1112,8 @@ Open parts of the questions of the refined programme (details in the README, §1
   second point of a chain is seen; an operator that moves the archimedean fibre), II beyond G9,
   G10 and G13 (deviations that are neither summable against `n^{-1/2}` nor a multiple of `Λ`
   plus a summable one, such as other edge lengths at infinitely many primes without decay), V beyond G8 (combs
-  without a density; systems with their own jets), VI beyond G12 (a count whose Tate limit is
-  the pairing; counts in archimedean boxes on the pair ring; three or more graphs); question 7
-  (Hecke characters, one ring that is not abelian).
+  without a density; systems with their own jets), VI beyond G12 and G15 (a count whose Tate limit is
+  the pairing: on the object the residue count is the split norm and the box count is the
+  volume over the gluing index, on any number of graphs; a count with a quadratic term needs
+  an object of dimension two). Question 7 (Hecke characters, number rings through their
+  ideals) is on `agz-hecke-explicit-formula-and-ideal-squares.md`.

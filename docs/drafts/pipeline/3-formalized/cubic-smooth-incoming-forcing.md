@@ -3,7 +3,7 @@
 - **ID:** cubic-smooth-incoming-forcing
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** For `1<a<b`, a smooth cubic-equivariant incoming seed equals `v^s` above height `b`. Its Laplace defect descends to a smooth compactly supported quotient function and defines an entire quotient `L²` family.
 
 Distinct principal cusp cosets cannot both have height above one: their

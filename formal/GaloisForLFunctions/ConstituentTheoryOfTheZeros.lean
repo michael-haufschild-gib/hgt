@@ -9,9 +9,19 @@ import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentDir
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.NoAbsolutelyConvergentExpansionIsAConstituentInAStrip
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.InfinitelyManyZerosOfAnExpansionAreNotZerosOfXi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SummableResidueErrorsDoNotPermitZeros
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.OffLineZerosForceNonsummableResidues
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.WienerZeroDivisorsHaveBoundedLocalMass
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.VanishingZeroDisplacementsForcePurity
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.WienerZeroDivisorsResistSummableTransport
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ApproximantsThatShareZerosInGrowingBoxesLoseTheirZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.EveryBoxHasADirichletPolynomialWithExactlyTheZerosOfXi
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentLivesInTheBohrStrip
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.PureDivisorsAreConstantInADisc
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.BoundedDirichletTwists
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.PrimeCutoffMultipliers
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.PoissonExtensionOfHolomorphicFamilies
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.PrimeContractionOfBoundedDirichletSeries
+import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ABoundedConstituentHasNoZeros
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.SizesOnACircleCertifyTheDefectInside
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.ConsecutivePointsOfAProgressionDetectAPolynomial
 import GaloisForLFunctions.ConstituentTheoryOfTheZeros.TheJumpLawIsTheLawOfTheCarry
@@ -41,8 +51,10 @@ and uses no sign of a form and no operator.
   frequencies among them (`NoAbsolutelyConvergentExpansionIsAConstituentInAStrip`).
 * If such a function has a zero in the strip, infinitely many of its zeros there are not zeros of
   `ξ` (`InfinitelyManyZerosOfAnExpansionAreNotZerosOfXi`).
-  If all strip zeros lie on the critical line, their multiplicity-weighted zeta residues have
-  divergent total norm (`SummableResidueErrorsDoNotPermitZeros`).
+  Their multiplicity-weighted zeta residues have divergent total norm, with no purity assumption
+  (`SummableResidueErrorsDoNotPermitZeros`, `OffLineZerosForceNonsummableResidues`).
+  Cofinite transport of the strip zeros to zeta zeros is impossible with `ℓᵖ` displacements
+  for every finite `p > 0` (`WienerZeroDivisorsResistSummableTransport`).
 * Approximants that converge in the norm of absolute convergence and share zeros with `ξ` in
   growing boxes have, from some index on, no zero near the line at any height; for Dirichlet
   polynomials of bounded length the height of the first zero that is not a zero of `ξ` is bounded

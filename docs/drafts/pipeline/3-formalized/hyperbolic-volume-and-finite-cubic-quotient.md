@@ -3,7 +3,7 @@
 - **ID:** hyperbolic-volume-and-finite-cubic-quotient
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** Construct the invariant upper-half-space measure `dx dy dv/v³`; prove that the actual cubic kernel quotient has positive finite volume.
 
 Euclidean inversion has derivative equal to a reflection scaled by

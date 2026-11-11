@@ -49,7 +49,8 @@ private theorem cofactor_filter_scale (h c : ℝ) (ws : List ℂ) :
     simp only [List.map_cons, dampingFilterPolynomial, List.length_cons, pow_succ, he, Polynomial.C_mul]
     ring
 
-private theorem cofactor_filter_twist (h c : ℝ) (ws : List ℂ) (f : ℂ → ℂ) :
+/-- Multiplying samples by an exponential translates every filter root. -/
+theorem cofactor_filter_twist (h c : ℝ) (ws : List ℂ) (f : ℂ → ℂ) :
     (∑ j ∈ range ((dampingFilterPolynomial h ws).natDegree + 1),
       (dampingFilterPolynomial h ws).coeff j *
         (Complex.exp ((c : ℂ) * ((j : ℂ) * h)) * f ((j : ℂ) * h))) =
@@ -78,7 +79,8 @@ private theorem cofactor_damping_exp_split (ε z : ℂ) :
   rw [he, Complex.exp_add, ← Complex.ofReal_exp]
   ring
 
-private theorem cofactor_rotated_scale_upper {α ξ t X Y : ℝ} {z : ℂ}
+/-- A narrow complex damping rotation enlarges the dilated physical scale by at most two. -/
+theorem cofactor_rotated_scale_upper {α ξ t X Y : ℝ} {z : ℂ}
     (hα : 0 < α) (ht : 4 ≤ t) (hlo : 2 * α ≤ ξ) (hhi : ξ ≤ α * t)
     (hz : t * |z.im| ≤ 1 / 16) (hX : 0 < X) (hscale : α * X ^ 2 = 2)
     (hY : 0 < Y) (hscaleY : (((α : ℂ) - ξ * I) * Complex.exp (-2 * z)).re * Y ^ 2 = 2) :
@@ -456,12 +458,5 @@ theorem norm_filtered_gaussianCofactorReductionError_le_inv_of_power {σ β α �
   exact norm_filtered_gaussianCofactorReductionError_le_inv hσ hσ1 hβ hα ht hlo hhi
     (zero_lt_one.trans_le hX) hscale hU hV hW hUV hη hη1 hh hh1 ws k hcut
     (cofactor_power_budget hX ws.length k hUW hgain htX)
-
-#print axioms norm_filtered_gaussianCofactorReductionError_le_inv_of_power
-
-#print axioms norm_filtered_gaussianCofactorReductionError_le
-#print axioms norm_filtered_gaussianCofactorReductionError_le_inv
-
-#print axioms norm_filtered_gaussianVaughanCofactorTail_le
 
 end GaloisForLFunctions.ExceptionalLayerTheory

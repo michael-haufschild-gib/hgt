@@ -100,7 +100,7 @@ theorem cancellation_and_depth_ladder {C γ κ δ θ : ℝ}
             (κ * Real.log (A * Real.log (|ρ₀.im| + 3))) →
           0 ≤ (zetaZeroConfig.W f f).re) →
         ∃ ρ ∈ zetaZeroConfig.carrier, ρ ≠ ρ₀ ∧
-          ρ ≠ ArithmeticCastelnuovoSeveri.reflect ρ₀ ∧
+          ρ ≠ Zeta23.reflect ρ₀ ∧
           |ρ.im - ρ₀.im| ≤ Real.exp (κ * Real.log (A * Real.log (|ρ₀.im| + 3))) ∧
           ρ.re ≠ 1 / 2) ∧
       (∀ C' ε : ℝ, 0 ≤ C' → 0 < ε →

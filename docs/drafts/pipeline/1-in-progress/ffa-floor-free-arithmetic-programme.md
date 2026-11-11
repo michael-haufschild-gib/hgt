@@ -30,19 +30,23 @@ kill or its survivor, and record what a producer must be.
   `DampingFiltersReadTheExceptionalDivisor`).
 - Index exit: `ArithmeticOrientationGeometry.riemannHypothesis_iff_encard_rightZeros_lt_two`.
 
-## Tracks, first theorems, state
-| Track | Item | Statement | State |
+## Tracks, items of §4, state
+| Track | Item | Result | State |
 |---|---|---|---|
-| 1 | A121 N1 | finite top layer ⇒ `sup_{[T,T+L]}\|normTrace\| ≥ c` for every `L>0`, late `T`; window non-attainment ⇒ AAL | todo |
-| 1 | A121 N3 | one exponent for all even moments on late windows ⇒ AAL | todo |
-| 1 | A125 N4 | AAL ⇔ no line has a finite positive even number of zeros to its right (unit gap) | todo |
-| 1 | A127 | tangent datum; realization by configurations; linear identities are tautologies on it | todo |
-| 2 | A128 | feasible set at an aperture as positive measures; extreme points | todo |
-| 2 | A129 | prime side of pure objects with ζ's Gamma factor vs atoms on `log ℕ` | todo |
-| 3 | A126 | resonance functions of regulators, right-half zero counts | todo |
-| 4 | A130 | prime side of the projected divisor; monotone functionals | todo |
-| 5 | A131 | prime form of a tensor-uniform bound | todo |
-| 6 | A123, A124 | floor of a mechanism (definition, census as theorems) | todo |
+| 1 | A121 N1 | finite top layer ⇒ two-sided attainment on every late window of every length; window non-attainment ⇒ AAL, for the spline trace, for `ψ(x) − x`, at the primes, and for every tempered conjugation-symmetric configuration without real right zeros | Lean |
+| 1 | A121 N3 | window moments of a finite layer have rate `2k·b`; one exponent for all orders ⇒ AAL; a moment of one order of smaller order than its own rate ⇒ AAL (mean-square N1) | Lean |
+| 1 | A125 N4 | AAL ⇔ every line has at most one or infinitely many zeros to its right | Lean |
+| 1 | A127 | tangent datum = Bohr coefficients of the top trace; trace `o(e^{bu})` ⇔ empty top line; the trace determines the layer; dichotomy; one window length leaves the top line empty or infinite; integrality `e = 2m B̂²` and the unit gap of a multiplicity | Lean |
+| 1 | A127 tautology | every finite datum (depth in `(0, ½]`, positive ordinates, multiplicities) is the top layer of a finite configuration with both symmetries; mechanisms true on all tempered symmetric configurations have models at every depth | Lean (kill) |
+| 1 | mechanisms (ii), (iii) | positivity: for every `Θ < 1` and every finite datum a nonnegative density with Laplace transform `1/(s−1) − Σ m_j(1/(s−ρ_j)+1/(s−ρ̄_j)) + entire` (continuous primes, simple pole); Euler products: for every `½ < Θ < 1` and every finite datum natural norms `q_k ≥ 2` with `∏(1−q_k^{−s})^{−1} = Σ a_n n^{−s} = G(s)/(s−1)`, `a_n ∈ ℕ`, `G` holomorphic on `Re s > ½` vanishing exactly on the datum, linear counting; integrality gives the quantum of a multiplicity and no a priori bound below it | Lean (kill) |
+| 1 | mechanism (i) replication | bounded phase return ⇒ replication is `ArithmeticAuxiliaryDynamics.TheMissingInputOfTransport`; here: along every phase return the sup of the translates over a domain joining a zero of a finite layer to `Re s > 1` tends to infinity, a bounded normalization has `c_j → 0`, every locally uniform limit of normalized translates is `0` | Lean (kill) |
+| 2 | A128 | feasibility at an aperture ⇔ spectral kernels positive definite on intervals (Krein-ready form); a null vector makes its spectral kernel vanish on the whole interval (boundary systems); rigidity: every family of certificates converges to `Λ`. Krein's extension theorem itself (kernels ⇒ positive measures) not formalized | Lean; open (Krein extension) |
+| 2 | A129 | pencil at shift one: `ξ(s−1)/ξ(s+1) = 2π(s−2)/(s(s+1))·ζ(s−1)/ζ(s+1)`, `σ·ratio → 2π`, so `(ξ(s+1)+ξ(s−1))/ξ(s+1)` is the L-series of no sequence (prime side not carried by `log ℕ`). General shifts, cleared Eisenstein constant term, symmetric completions: paper remark only | Lean (shift one); open (other objects) |
+| 3 | A126 | Hurwitz transfer of bounded counts; tower `Λ(s)/Λ(s+N)` keeps the count (kill); index-`κ` realization bounds right zeros by `κ`; clock: `E_r ≤ E_s ≤ W`, negative directions of `W` are negative at every cutoff, sign or floor at one cutoff per aperture ⇒ RH (kill: no unit gap before the limit) | Lean |
+| 4 | A130 | prime side of a projected pair; second-order law and converse; no convergent linear statistic is monotone (kill); heat statistic monotone exactly below `(2t)^{−1/2}`; additive functionals of the depths = mixtures of counts / inner masses (kill of the additive class) | Lean |
+| 5 | A131 | moment law on fixed windows; a `2k`-th moment bound `Ce^{AT}` on a window gives `\|2Re S\|^{2k+1} ≤ 2^{2k+1}GCe^{(A+1)T}` there (Lipschitz rate `e^{R/2}` of the trace); moments of all orders with one exponent ⇔ sup powers with one exponent ⇐ two-sided `C_ε e^{εT}` (kill: amplification on windows = RH-quality bound on some late windows; one order = a half-plane). The trivial bound has slope 1 in the order | Lean |
+| 6 | A123, A124 | floor calculus; floors: tempered class `½`, exponent-`σ` floors exactly `σ`, count laws `½`, one-length window floors admit finite strata; A124 = MPG, A123 = `RHTower.fixed_slot_boundary` | Lean + citation |
+| — | B170, B171, B172, B173 | no producer found. B170/B171/B173 are of AAL/RH strength; B172 is excluded for linear statistics | open |
 
 ## Mathematics fixed so far (paper)
 1. **Uniform badness (N1).** Top trace of a finite layer: `P(u)=Re Σ_{z∈S} 2e_z e^{iγ_z u}` =
@@ -51,14 +55,87 @@ kill or its survivor, and record what a producer must be.
    `2|S|` consecutive samples, so on every window of length `L≥(2|S|+1)h`. Lower layers die out.
 2. **Positivity in tangent form.** At `Θ<1` the normalized prime sum
    `Σ_{p≤x}p^{−Θ}cos(γ log p) ~ −m log log x` has trivial bound `x^{1−Θ}/log x`: positivity of `Λ`
-   matches the normalization only at `Θ=1`. Continuous fake: density
-   `e^u(1+1_{[0,u₀]}−2e^{−(1−β)u}cos γu) ≥ 0`, `u₀=log2/(1−β)`, transform
-   `1/(s−1)−1/(s−ρ)−1/(s−ρ̄)+entire` bounded by `u₀` on `Re s≥1`: exactly the de la Vallée-Poussin
-   boundary `(1−β)log γ ≍ 1`.
+   matches the normalization only at `Θ=1`. Continuous fake, now in Lean for every finite datum:
+   density `e^u − Σ2m_j e^{Θu}cos γ_j u + 2M e^u 1_{u≤u₀} ≥ 0`, `u₀=log(2M+2)/(1−Θ)`, transform
+   `1/(s−1)−Σm_j(1/(s−ρ_j)+1/(s−ρ̄_j))+entire`. With a pole of order `A ≥ 2M` no compensator is
+   needed and the zeta function is rational. On `Re s = 1` a finite layer of zeros is compatible
+   with positivity exactly when `2M ≤ A` (value of the normalized density at a recurrence time);
+   with a simple pole: none.
 
-## Modules (folder `FloorFreeArithmetic/`)
-| Module | Content | State |
-|---|---|---|
+3. **Track 4 kill.** Reflection pair of depth `δ`, ordinate `ξ` ↔ spectral points `ξ∓iδ`.
+   Split increment of `Σ_ρ F(ξ_ρ)`: `Re F(ξ+iδ)+Re F(ξ−iδ)−2Re F(ξ) = −δ² Re F''(ξ)+O(δ⁴)`.
+   Monotone at all ordinates and small depths ⇒ `Re F` concave on `ℝ` ⇒ (bounded) constant ⇒
+   (decaying) zero. So no convergent explicit-formula statistic is monotone under projection;
+   the same for smooth functions of finitely many of them (gradient argument, paper only).
+   Heat statistic `e^{−tξ²}`: `Re F'' = (4t²ξ²−2t)e^{−tξ²}`, monotone exactly below the height
+   `(2t)^{−1/2}`: a floor in the height. Survivors are non-analytic in the zeros (Jensen,
+   Littlewood): mixtures of inner masses `I_σ`.
+4. **B171 receiver.** `N = arch − primes` (no pole term) has negative index `1 + #right zeros`:
+   `HTGeometry.card_upper_eigenvalues_le` with the spectral points `i(ρ−½)` of `ρ, ρ̄`. A proof of
+   index one needs `N ≥ 0` on a hyperplane, which is Weil positivity: no unit gap gained.
+
+5. **Integer norms at every depth (in Lean).** Density of a layer in the logarithmic coordinate:
+   `w(t) = (e^t − Σ2m_j e^{Θt}cos γ_j t)/t` for `t ≥ A`, `0` below, `A` one beyond the domination
+   length. Laplace transform `= −Φ_A(s−1) + Σ m_j(Φ_A(s−ρ_j)+Φ_A(s−ρ̄_j))` with the cut-off
+   Frullani logarithm of the corpus, so the continuous zeta function is
+   `∏(F_A(s−ρ_j)F_A(s−ρ̄_j))^{m_j}/F_A(s−1)`, `F_A` entire with the single zero `0`. Quantiles
+   `W(t_k) = k+1` (`|N − W| ≤ 1`), rounding `q_k = ⌈e^{t_k}⌉`: Euler logarithm
+   `= ∫e^{−su}w + sΛ(s) + primeCorrection + R(s)`, the last three holomorphic on `Re s > ½`.
+   Rounding to rational primes would cost the prime-gap exponent (not done).
+
+## Modules (folder `FloorFreeArithmetic/`) — all checked with `lake --old env lean`, clean
+| Module | Content |
+|---|---|
+| `TheFloorOfAMechanism` | `Mechanism`, `ExcludesBeyond`, `HasModelAt`, `HasFiniteStratumModel`, `floor`, `FloorFree`; floor calculus; `floor_temperedConfig`; `ExponentialFloor`, `floor_exponentialFloor`; `CountInvariant`, `floor_eq_half_of_countInvariant` |
+| `FloorsOnWindowsOfOneLengthHaveModels` | `WindowFloor L`, `topTrace_isolatedPair`, `hasFiniteStratumModel_windowFloor` |
+| `FiniteTopLayersAreSeenOnEveryWindow` | `exists_pos_forall_window_le_norm_realExpSum`, `finite_top_seen_on_every_window`, `WindowNonAttainment`, `not_windowNonAttainment_of_finite_top` |
+| `NonAttainmentGivesTheAbscissaLaw` | N1: `uniform_attainment_of_not_asymptoticAbscissaLaw`, `asymptoticAbscissaLaw_of_windowNonAttainment`; N4: `even_card_rightOf_zeta`, `asymptoticAbscissaLaw_iff_encard_rightOf_le_one` |
+| `QuantileDiscretizationOfAPrimeDensity` | `PrimeDensity` (density, cut, floor), `W`, `atom`, `atomCount_eq`, `abs_discrepancy_le`, `summable_exp_atom`, `discreteZeta_eq_tprod`, `correction`, `differentiableOn_correction`, `eulerLog_eq`, `discreteZeta_eq` |
+| `FiniteLayersInDiscreteEulerProducts` | `layerNumer`, `layerCut`, `layerLogDensity`, `layerPrimeDensity`, `integral_cexp_mul_layerLogDensity`, `frullaniUnit`, `layerRegular`, `layerRegular_eq_zero_iff`, `cexp_layer_eq`, `exists_discrete_euler_product_with_layer` |
+| `FiniteLayersInIntegerNormEulerProducts` | `PrimeDensity.primeNorm`, `roundedAtom`, `roundedCorrection`, `differentiableOn_roundedCorrection`, `genEulerLog_primeNorm_eq`, `exists_integer_norm_euler_product_with_layer` |
+| `PositivityAdmitsEveryFiniteDatum` | `dominationLength`, `layerDensity`, `layerCorrection`, `layerDensity_nonneg`, `laplace_layerDensity`, `exists_nonneg_density_with_layer` |
+| `TheTangentOrdersOfMobiusAndLiouville` | `analyticAt_zeta_two_mul`, `meromorphicOrderAt_mobius`, `meromorphicOrderAt_liouville`, `meromorphicOrderAt_zeta_two_mul_pow_div_pow` |
+| `EveryFiniteDatumIsATopLayer` | `layerConfig`, `mem_positiveTopSupport_layerConfig`, `exists_config_with_top_layer`, `not_abscissaLaw_layerConfig`, `hasModelAt_of_forall_tempered_symmetric` |
+| `NonAttainmentIsALawOfConfigurations` | `exists_finite_top_of_not_abscissaLawAt_config` (top layer beyond the depth `h`), `exists_finite_top_of_not_abscissaLaw_config`, `abscissaLaw_of_windowNonAttainment_config` |
+| `ThePrimeNumberTheoremIsNotAttainedOnWindows` | `psi_attained_on_every_window_of_not_asymptoticAbscissaLaw`, `asymptoticAbscissaLaw_of_psi_window_nonAttainment` |
+| `ThePrimesAttainTheTopRateOnEveryWindow` | `finite_top_seen_at_primes_on_every_window`, `asymptoticAbscissaLaw_of_prime_window_nonAttainment` |
+| `TheOrderOfAMomentIsTheDepthItReaches` | `false_of_frequently_exp_le`, `abscissaLawAt_of_window_moment` (order `2k`, exponent `A` ⇒ abscissa law at every depth `h ≥ A/2k`) |
+| `MomentBoundsOfAllOrdersAreSupBounds` | `norm_cexp_I_mul_sub_le`, `exists_lipschitz_two_re_lagStructure`, `pow_mul_min_le_integral_pow`, `topDepth_half`, `abs_two_re_lagStructure_le`, `exists_abs_trace_pow_le_of_moment_le`, `WindowMomentsBounded`, `WindowSupPowersBounded`, `windowMomentsBounded_iff_windowSupPowersBounded`, `windowSupPowersBounded_of_subexponential`, `asymptoticAbscissaLaw_of_windowSupPowersBounded` |
+| `MomentsOnWindowsAmplifyTheDepth` | `abs_topTrace_sub_le`, `finite_top_moment_lower_bound`, `finite_top_moment_upper_bound`, `asymptoticAbscissaLaw_of_window_moments`, `asymptoticAbscissaLaw_of_moment_window_nonAttainment` |
+| `TheTopTraceDeterminesTheTopLayer` | `bohrCoefficient_topTraceC`, `tendsto_normTrace_zero_iff`, `topCoeff_eq_of_tendsto_normTrace_sub`, `tendsto_normTrace_zero_or_attained`, `windowNonAttainment_forall_iff_tendsto`, `tendsto_normTrace_zeta_zero_iff`, `zeta_top_line_empty_or_infinite_of_windowNonAttainment` |
+| `TheMultiplicityIsAMeanOfTheTrace` | `tendsto_windowAverage_normTrace_bohrChar`, `evenCoeff_zeta_eq`, `not_mem_zetaZeroConfig_of_mean_lt_quantum` |
+| `UnitGapsPassToTheLimit` | `eventually_exists_zero_near`, `card_zeros_le_of_tendstoLocallyUniformlyOn`, `riemannHypothesis_of_unit_gap_limit`, `forall_re_le_of_unit_gap_limit`, `card_rightZeros_le_of_bounded_index_limit`, `towerQuotient_unit_gap_iff` |
+| `AnIndexOneRealizationIsAUnitGap` | `card_rightZeros_le_of_realization`, `encard_rightZeros_le_of_realization`, `riemannHypothesis_of_indexOne_realization` |
+| `FeasibleSystemsArePositiveDefiniteOnIntervals` | `PositiveDefiniteOnNodes`, `sum_spectralKernel_eq_weilFullFunctional`, `aperturePositive_iff_spectralKernel_positiveDefiniteOnNodes`, `eq_zero_of_positiveDefiniteOnNodes_of_zero`, `spectralKernel_eq_zero_of_null` |
+| `ThePencilAtShiftOneIsNotADirichletSeries` | `xi_eq_zeta_mul_gammaR`, `xi_ne_zero_of_one_lt_re`, `xi_sub_one_div_xi_add_one`, `tendsto_mul_xi_sub_one_div_xi_add_one`, `not_exists_lSeries_pencil` |
+| `CertificatesConvergeToThePrimes` | `exists_bound_of_aperturePositive`, `exists_re_weilFullFunctional_eq_finite`, `tendsto_weight_of_aperturePositive_seq`, `exists_aperture_forall_abs_weight_sub_le` |
+| `TranslatesAtAFiniteLayerHaveOnlyTheZeroLimit` | `isPhaseReturn_comp`, `translatesBoundedOn_of_eventually`, `NormalizedTranslatesBoundedOn`, `forall_eventually_exists_lt_norm_translate`, `tendsto_normalization_zero`, `eqOn_zero_of_tendstoLocallyUniformlyOn_normalized`, `asymptoticAbscissaLaw_of_boundedNormalizedReturns` |
+| `AdditiveFunctionalsOfTheDepthsAreMixturesOfInnerMasses` | `layerCount`, `layerInnerMass`, `sum_profile_sub_eq_integral_count`, `sum_profile_sub_nonneg`, `sum_profile_sub_eq_innerMass`, `sum_profile_sub_eq_of_innerMass_eq`, `rightZeros_profile_drop_eq_integral_count` |
+| `TheClockRegulatorLiesBelowWeilsForm` | `greenWeilEnergy_mono`, `greenWeilEnergy_le_form`, `greenWeilEnergy_neg_of_form_neg`, `riemannHypothesis_of_greenWeilEnergy_floor`, `riemannHypothesis_of_greenWeilEnergy_nonneg` |
+| `LinearStatisticsAreNotMonotoneUnderProjection` | `splitIncrement`, second-order law and converse, `concaveOn_re_of_splitIncrement_nonneg`, `exists_splitIncrement_neg_and_pos`, `heatSymbol_splitIncrement_sign`, `splitIncrement_fourierSymbol` |
+
+Umbrella `FloorFreeArithmetic.lean` (imported in `MainTheorems.lean`); README written.
+Oleans built for own modules imported by other own modules (`TheFloorOfAMechanism`,
+`FiniteTopLayersAreSeenOnEveryWindow`, `MomentsOnWindowsAmplifyTheDepth`,
+`TheTopTraceDeterminesTheTopLayer`, `NonAttainmentIsALawOfConfigurations`,
+`PositivityAdmitsEveryFiniteDatum`, `QuantileDiscretizationOfAPrimeDensity`,
+`FiniteLayersInDiscreteEulerProducts`) and for three missing dependencies
+(`SurfaceOfSpecZ/ScaleLocality/{FiniteTopLayersNeedNoSeparation,LengthDependentFloorsGiveTheAbscissaLaw}`,
+`SelectiveArithmetic/TheFirstSelectiveWindowOfZeta`).
+
+## Not done
+- Krein's extension theorem for the kernels of a feasible system, and the extreme points of a
+  feasible set (rest of A128).
+- A regulator that approaches Weil's form from above (B117); on paper the clock at a fixed cutoff
+  is negative on wide packets between zeros once the aperture is large, also under RH.
+- Prime side of pencils at a general shift, of the cleared Eisenstein constant term and of
+  symmetric completions (rest of A129).
+- Top traces of `μ`, `λ` and twisted multiplicative functions in world I (explicit formula for
+  `M(x)`); only the orders of their Dirichlet series at a zero are in Lean.
+- A model with an Euler product and a functional equation and a finite non-real top layer: none
+  is known (R3); rounding the discrete primes of a layer to rational primes.
+- A producer: none found; B170, B171, B173 are of AAL/RH strength.
 
 ## Log
 - 2026-11-10 — created; corpus survey done.
+- 2026-11-11 — 27 modules clean; README written; no producer.

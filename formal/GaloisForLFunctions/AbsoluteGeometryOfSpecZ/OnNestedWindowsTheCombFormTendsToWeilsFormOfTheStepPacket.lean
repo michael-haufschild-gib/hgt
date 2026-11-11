@@ -32,7 +32,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 
-open HodgeTheoryOfAFixedPart (degOne degTwo combPairing combBilin formBilin pairKernel contact
+open HodgeTheoryOfAFixedPart (degOne degTwo combBilin formBilin pairKernel contact
   counterterm flatContactPoints)
 
 local notation "combW" => HodgeTheoryOfAFixedPart.combForm
@@ -76,13 +76,11 @@ theorem polarOn_of_biadditive (B : (α → ℝ) → (α → ℝ) → ℝ)
       rw [hra, hrs, ih]
   refine polarOn_of_bilin (fun j l => B (v j) (v l)) ?_ ?_ (fun _ _ => rfl)
   · intro τ
-    beta_reduce
     rw [hlsum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [hrsum, Finset.mul_sum]
     exact Finset.sum_congr rfl fun l _ => by ring
   · intro j _ l _
-    beta_reduce
     have e : (fun u => v l u - v j u) = fun u => v l u + (-1) * v j u := by
       funext u
       ring
@@ -173,7 +171,8 @@ variable {S W : Finset ℕ} {c c' : ℕ → ℝ}
 theorem combForm_congr (h : ∀ n ∈ S, c n = c' n) : combW S c = combW S c' := by
   have h1 : degOne S c = degOne S c' := Finset.sum_congr rfl fun n hn => by rw [h n hn]
   have h2 : degTwo S c = degTwo S c' := Finset.sum_congr rfl fun n hn => h n hn
-  have h3 : combPairing S c = combPairing S c' := by
+  have h3 : HodgeTheoryOfAFixedPart.combPairing S c =
+      HodgeTheoryOfAFixedPart.combPairing S c' := by
     unfold HodgeTheoryOfAFixedPart.combPairing
     refine congrArg₂ (· - ·)
       (Finset.sum_congr rfl fun n hn => Finset.sum_congr rfl fun m hm => ?_)
@@ -188,7 +187,8 @@ theorem combForm_of_subset (hWS : W ⊆ S) (h0 : ∀ n ∈ S, n ∉ W → c n = 
     (Finset.sum_subset hWS fun n hn hnW => by rw [h0 n hn hnW, zero_div]).symm
   have h2 : degTwo S c = degTwo W c :=
     (Finset.sum_subset hWS fun n hn hnW => h0 n hn hnW).symm
-  have h3 : combPairing S c = combPairing W c := by
+  have h3 : HodgeTheoryOfAFixedPart.combPairing S c =
+      HodgeTheoryOfAFixedPart.combPairing W c := by
     unfold HodgeTheoryOfAFixedPart.combPairing
     have hout : ∑ n ∈ S, ∑ m ∈ S.erase n, c m * c n * pairKernel m n =
         ∑ n ∈ W, ∑ m ∈ S.erase n, c m * c n * pairKernel m n :=
@@ -241,8 +241,8 @@ theorem windowDivisor_sub {A B C : ℕ} (hAB : A ≤ B) (hBC : B ≤ C) (n : ℕ
 
 theorem combForm_windowDivisor {S : Finset ℕ} {A B : ℕ} (hS : Ioc A B ⊆ S) :
     combW S (windowDivisor A B) = combW (Ioc A B) (fun _ => 1) :=
-  (combForm_of_subset hS fun n _ hn => windowDivisor_of_notMem hn).trans
-    (combForm_congr fun n hn => windowDivisor_of_mem hn)
+  (combForm_of_subset hS fun _ _ hn => windowDivisor_of_notMem hn).trans
+    (combForm_congr fun _ hn => windowDivisor_of_mem hn)
 
 /-! ### One window at finite scale -/
 
@@ -341,7 +341,7 @@ theorem combForm_window_eq {A B Q : ℕ} (hAB : A ≤ B) (hQ : B ≤ Q * A) :
   have h2 : degTwo (Ioc A B) (fun _ => (1 : ℝ)) = (B : ℝ) - A := by
     rw [HodgeTheoryOfAFixedPart.degTwo, Finset.sum_const, Nat.card_Ioc, nsmul_eq_mul, mul_one,
       Nat.cast_sub hAB]
-  have h3 : combPairing (Ioc A B) (fun _ => (1 : ℝ)) =
+  have h3 : HodgeTheoryOfAFixedPart.combPairing (Ioc A B) (fun _ => (1 : ℝ)) =
       windowEnergy A B + ∑ n ∈ Ioc A B, ∑ m ∈ (Ioc A B).erase n, contact m n -
         ∑ n ∈ Ioc A B, Real.log ((n : ℝ) / (2 * Real.pi)) := by
     unfold HodgeTheoryOfAFixedPart.combPairing windowEnergy
@@ -449,7 +449,6 @@ theorem tendsto_combForm_window_div {a b Q : ℕ} (ha : 1 ≤ a) (hab : a ≤ b)
     ((Nat.mul_le_mul_right N hQ).trans_eq (Nat.mul_assoc Q a N)), hsumdiv]
   push_cast
   field_simp
-  ring
 
 /-! ### Nested windows -/
 

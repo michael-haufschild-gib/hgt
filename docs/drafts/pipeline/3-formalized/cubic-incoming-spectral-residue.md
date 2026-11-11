@@ -3,7 +3,7 @@
 - **ID:** cubic-incoming-spectral-residue
 - **Stage:** 3-formalized
 - **Type:** THEOREM
-- **Parent:** [cubic theta residue](../1-in-progress/cubic-theta-residue-and-gauss-coefficients.md)
+- **Parent:** [cubic theta residue](cubic-theta-residue-and-gauss-coefficients.md)
 - **Statement:** The actual incoming resolvent correction is meromorphic at `s=4/3`, with residue `(17/6) M P M* F(4/3)` in the `8/9` eigenspace. Adding the incoming seed gives the same residue on every compact quotient set.
 
 Here `F(s)` is the entire quotient `L²` defect, `M` is the energy mass
