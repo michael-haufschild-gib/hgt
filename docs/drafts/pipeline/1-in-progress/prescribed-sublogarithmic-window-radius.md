@@ -32,3 +32,21 @@ is required; enlarging the recursive centres alone is insufficient.
 
 The endogenous-radius theorem is already formalized. The prescribed-radius
 construction remains open; no new theorem is claimed.
+
+## Where the construction stops (2026-11-11)
+
+Level `k` uses `P_{m₀}(z)`, `z = e^{iδv}`, `δ = 1/(4R)`, frequencies `dδ ∈ [Γ, 2Γ]`, phase-split
+pairs: `8R` zeros per unit height at height `Γ`. Class `𝒵` allows `C log(Γ+3)`, so
+`Γ ≥ e^{8R/C}`. The coefficients reach `64^{m₀}`, `m₀ = 4ΓR`, against a phase precision `R/T`:
+`log T ≳ ΓR`. Together `R e^{8R/C} ≲ log T`, i.e. `R ≲ (C/8) log log T`.
+
+Both costs are intrinsic to one level of this kind. Positivity on `|v| ≤ R` with frequencies
+`≥ Γ` needs signed coefficients of size `≥ exp(c(ΓR)^α)` (test the window against a Gevrey bump:
+`|φ̂(γR)| ≤ exp(−c(γR)^α)`); nonnegative coefficients give no positivity beyond `|θ| ~ 1/m₀`.
+Frequencies at density `≤ C log t` approximate on a window of length `2R` only where
+`C log t ≳ R` (Landau density), so `Γ ≳ e^{cR}`.
+
+**Survivor (target).** For every prescribed `R(T) ≤ ε(C) log log T` the construction runs with
+level radii `R(T_k)` at minimal centres `T_k`: the centre thresholds are `exp(exp(O(r_k)))`.
+Lean status: not started.
+

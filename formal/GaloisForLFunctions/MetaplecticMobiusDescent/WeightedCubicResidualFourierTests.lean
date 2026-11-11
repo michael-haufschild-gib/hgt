@@ -26893,4 +26893,327 @@ theorem completedT_primeCuspRow_reflection {ι : Type*} [Fintype ι]
   simpa only [weight, Fintype.sum_prod_type] using
     completedT_finite_phase_reflection _ d weight hphase W a b ha hs hW X hX
 
+
+lemma assembleUnitFrequencies_prod {ι : Type*} [Fintype ι] {F : ι → Type*}
+    [∀ i, Field (F i)] {A : Type*} [CommMonoid A]
+    (s : Finset ι) (u : ∀ i : s, (F i.val)ˣ) (f : ∀ i, F i → A) :
+    (∏ i, f i (assembleUnitFrequencies s u i)) =
+      (∏ i : s, f i.val (u i)) * ∏ i : {i // i ∉ s}, f i.val 0 := by
+  classical
+  rw [← Finset.prod_mul_prod_compl s (fun i => f i (assembleUnitFrequencies s u i)),
+    Finset.prod_subtype (F := inferInstanceAs (Fintype s)) s (fun _ => Iff.rfl),
+    Finset.prod_subtype (F := inferInstanceAs (Fintype {i // i ∉ s})) sᶜ (fun _ => Finset.mem_compl)]
+  apply congrArg₂ (· * ·)
+  · exact Finset.prod_congr rfl (fun i _ => by simp only [assembleUnitFrequencies, dif_pos i.property])
+  · exact Finset.prod_congr rfl (fun i _ => by simp only [assembleUnitFrequencies, dif_neg i.property])
+
+/-- Fourier inversion splits into unit-frequency sums and the exact inactive-prime factors. -/
+theorem finiteAdditiveFourier_active_inversion {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (ψ : ∀ i, AddChar (F i) ℂ) (hψ : ∀ i, (ψ i).IsPrimitive)
+    (φ : ∀ i, F i → ℂ) (x : ∀ i, F i) :
+    (∏ i, φ i (x i)) = ∑ s : Finset ι,
+      (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (ψ i.val) (φ i.val) 0) *
+      ∑ u : ∀ i : s, (F i.val)ˣ, ∏ i : s,
+        finiteAdditiveFourierCoeff (ψ i.val) (φ i.val) (u i) * ψ i.val ((u i : F i.val) * x i.val) := by
+  classical
+  rw [← finiteAdditiveFourier_product_inversion ψ hψ φ x, finite_frequency_sum_strata]
+  apply Finset.sum_congr rfl
+  intro s hs
+  rw [Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro u hu
+  rw [assembleUnitFrequencies_prod s u (fun i y =>
+    finiteAdditiveFourierCoeff (ψ i) (φ i) y * ψ i (y * x i))]
+  simp only [zero_mul, AddChar.map_zero_eq_one, mul_one]
+  ring
+
+/-- The inactive factor vanishes unless every omitted prime carries the trivial character. -/
+lemma finiteAdditiveFourier_inactive_vanishes {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (χ : ∀ i, MulChar (F i) ℂ) (ψ : ∀ i, AddChar (F i) ℂ)
+    (s : Finset ι) (k : ι) (hk : k ∉ s) (hχ : χ k ≠ 1) :
+    (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (ψ i.val) (χ i.val) 0) = 0 := by
+  classical
+  apply Finset.prod_eq_zero (Finset.mem_univ ⟨k, hk⟩)
+  rw [finiteAdditiveFourierCoeff_mulChar_zero, if_neg hχ]
+
+/-- Every surviving inactive prime contributes its exact coprimality density. -/
+lemma finiteAdditiveFourier_inactive_density {ι : Type*} [Fintype ι]
+    {F : ι → Type*} [∀ i, Field (F i)] [∀ i, Fintype (F i)]
+    (χ : ∀ i, MulChar (F i) ℂ) (ψ : ∀ i, AddChar (F i) ℂ)
+    (s : Finset ι) (hχ : ∀ i, i ∉ s → χ i = 1) :
+    (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (ψ i.val) (χ i.val) 0) =
+      ∏ i : {i // i ∉ s}, (1 - (Fintype.card (F i.val) : ℂ)⁻¹) := by
+  classical
+  apply Finset.prod_congr rfl
+  intro i hi
+  rw [finiteAdditiveFourierCoeff_mulChar_zero, if_pos (hχ i.val i.property),
+    Nat.card_eq_fintype_card, Fintype.card_units,
+    Nat.cast_sub (Nat.succ_le_of_lt Fintype.card_pos), Nat.cast_one]
+  have hq : (Fintype.card (F i.val) : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  field_simp
+
+lemma finiteMulChar_unit_norm {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (u : Fˣ) : ‖χ u‖ = 1 :=
+  Complex.norm_eq_one_of_mem_rootsOfUnity (χ.apply_mem_rootsOfUnity u)
+
+/-- At odd good primes, the sextic character has all six distinct powers. -/
+lemma complexSexticChar_pow_ne_one (P : Ideal O) [P.IsMaximal]
+    (hg : lambda ∉ P) (hchar : ringChar (O ⧸ P) ≠ 2)
+    (j : ℕ) (hj : j < 6) (hj0 : j ≠ 0) : complexSexticChar P hg ^ j ≠ 1 := by
+  let χ := complexSexticChar P hg
+  have hχ : χ ≠ 1 := complexSexticChar_ne_one P hg
+  have h2 : χ ^ 2 ≠ 1 := by
+    rw [(complexSexticChar_powers P hg).1]
+    exact complexCubicChar_ne_one P hg
+  have h3 : χ ^ 3 ≠ 1 := by
+    rw [(complexSexticChar_powers P hg).2.1]
+    exact complexQuadraticChar_ne_one P hchar
+  have h6 : χ ^ 6 = 1 := (complexSexticChar_powers P hg).2.2
+  change χ ^ j ≠ 1
+  interval_cases j
+  · exact False.elim (hj0 rfl)
+  · simpa only [pow_one] using hχ
+  · exact h2
+  · exact h3
+  · intro h4
+    apply h2
+    have he : χ ^ 2 = χ ^ 6 * (χ ^ 4)⁻¹ := by group
+    rw [he, h6, h4, inv_one, one_mul]
+  · intro h5
+    apply hχ
+    have he : χ = χ ^ 6 * (χ ^ 5)⁻¹ := by group
+    rw [he, h6, h5, inv_one, one_mul]
+
+/-- Every nonexceptional local reflection is its predicted multiplicative output character. -/
+lemma finiteReflectionGauss_nonexceptional {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (j : ℕ) (hj : χ ^ (j + 2) ≠ 1) (x : F) :
+    finiteReflectionGauss χ ψ j x =
+      ((Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ j) (ψ.mulShift (-1)) * gaussSum (χ ^ (j + 2)) ψ) *
+      (χ ^ (j + 2))⁻¹ x := by
+  rw [finiteReflectionGauss_product, finiteGauss_mulShift_all _ _ hj]
+  ring
+
+/-- The trivial input row pays exactly one square root of the residue-field size. -/
+lemma finiteReflectionGauss_trivial_phase_norm_sq {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (hχ2 : χ ^ 2 ≠ 1) :
+    ‖(Fintype.card F : ℂ)⁻¹ * gaussSum (1 : MulChar F ℂ) (ψ.mulShift (-1)) * gaussSum (χ ^ 2) ψ‖ ^ 2 =
+      (Fintype.card F : ℝ)⁻¹ := by
+  have hneg : ψ.mulShift (-1) ≠ 1 := hψ (neg_ne_zero.mpr one_ne_zero)
+  have hn : ‖gaussSum (χ ^ 2) ψ‖ ^ 2 = (Fintype.card F : ℝ) := by
+    rw [← Complex.normSq_eq_norm_sq, ArithmeticEffectivityTheory.normSq_gaussSum_eq_card hχ2 hψ]
+  have hq : (Fintype.card F : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  rw [gaussSum_one_left hneg]
+  simp only [norm_mul, norm_inv, Complex.norm_natCast, norm_neg, norm_one, mul_one, mul_pow, hn]
+  field_simp
+
+/-- The fourth-power exceptional divisor bracket has the same square-root normalization. -/
+lemma finiteReflectionGauss_fourth_phase_norm_sq {F : Type*} [Field F] [Fintype F]
+    (χ : MulChar F ℂ) (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (hχ4 : χ ^ 4 ≠ 1) :
+    ‖(Fintype.card F : ℂ)⁻¹ * gaussSum (χ ^ 4) (ψ.mulShift (-1))‖ ^ 2 =
+      (Fintype.card F : ℝ)⁻¹ := by
+  have hneg : (ψ.mulShift (-1)).IsPrimitive := by
+    intro a ha
+    rw [AddChar.mulShift_mulShift]
+    exact hψ (mul_ne_zero (neg_ne_zero.mpr one_ne_zero) ha)
+  have hn : ‖gaussSum (χ ^ 4) (ψ.mulShift (-1))‖ ^ 2 = (Fintype.card F : ℝ) := by
+    rw [← Complex.normSq_eq_norm_sq, ArithmeticEffectivityTheory.normSq_gaussSum_eq_card hχ4 hneg]
+  have hq : (Fintype.card F : ℝ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  simp only [norm_mul, norm_inv, Complex.norm_natCast, mul_pow, hn]
+  field_simp
+
+/-- Local unit scales change a reflected sextic row only by one fixed phase of norm one. -/
+theorem finiteReflectionGauss_scaled_quadratic_family
+    {ι : Type*} [Fintype ι] (P : ι → Ideal O) [∀ i, (P i).IsMaximal]
+    (hg : ∀ i, lambda ∉ P i) (hchar : ∀ i, ringChar (O ⧸ P i) ≠ 2)
+    (ψ : ∀ i, AddChar (O ⧸ P i) ℂ) (hψ : ∀ i, (ψ i).IsPrimitive)
+    (σ ε : ∀ i, (O ⧸ P i)ˣ) :
+    ∃ η : ℂ, ‖η‖ = 1 ∧ ∀ x : ∀ i, O ⧸ P i,
+      (∏ i, ((complexSexticChar (P i) (hg i))⁻¹ ^ 2) (σ i) *
+        finiteReflectionGauss (complexSexticChar (P i) (hg i)) (ψ i) 1 ((ε i : O ⧸ P i) * x i)) =
+      η * ∏ i, complexQuadraticChar (P i) (x i) := by
+  classical
+  choose η hηnorm hη using fun i =>
+    finiteReflectionGauss_actual_quadratic (P i) (hg i) (hchar i) (ψ i) (hψ i)
+  refine ⟨∏ i, (((complexSexticChar (P i) (hg i))⁻¹ ^ 2) (σ i) * η i *
+    complexQuadraticChar (P i) (ε i)), ?_, ?_⟩
+  · simp only [norm_prod, norm_mul, finiteMulChar_unit_norm, hηnorm, one_mul, Finset.prod_const_one]
+  · intro x
+    simp_rw [hη, map_mul]
+    rw [← Finset.prod_mul_distrib]
+    exact Finset.prod_congr rfl (fun i _ => by ring)
+
+/-- Each active prime set may choose its own congruence-controlled unit lifts. -/
+theorem primeCuspRow_active_phase_decomposition {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+    (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {9 * c})]
+    (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (lift : (O ⧸ Ideal.span {9 * c}) → ∀ s : Finset ι,
+      (∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) → s → O)
+    (hlift : ∀ k s v i, Ideal.Quotient.mk (Ideal.span {p i.val}) (lift k s v i) =
+      (v i : O ⧸ Ideal.span {p i.val})) (h : O) :
+    (∑ k : O ⧸ Ideal.span {9 * c}, ∑ s : Finset ι,
+      ∑ v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ,
+      (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+          (finiteThetaTwist c Ψ) k *
+        (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) 0) *
+        ∏ i : s, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) (v i)) *
+      tracePhase (-cuspFrequency h * (thetaFourierTranslation (9 * c) k +
+        ringComplex traceLambda ^ 2 * ∑ i : s, ringComplex (lift k s v i) / ringComplex (p i.val)))) =
+    fixedThetaTwist
+      (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) h := by
+  classical
+  let ψ := fun i => residueTraceQuotientChar 1 (p i) (hp i)
+  let inactive := fun s : Finset ι => ∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (ψ i.val) (χ i.val) 0
+  let active := fun (s : Finset ι) (v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) =>
+    ∏ i : s, finiteAdditiveFourierCoeff (ψ i.val) (χ i.val) (v i)
+  let shift := fun (k : O ⧸ Ideal.span {9 * c}) (s : Finset ι) (v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) =>
+    ringComplex traceLambda ^ 2 * ∑ i : s, ringComplex (lift k s v i) / ringComplex (p i.val)
+  have hlocal (k) (s) (v) : tracePhase (-cuspFrequency h * shift k s v) =
+      ∏ i : s, ψ i.val ((v i : O ⧸ Ideal.span {p i.val}) * Ideal.Quotient.mk (Ideal.span {p i.val}) h) := by
+    change tracePhase (-cuspFrequency h * (ringComplex traceLambda ^ 2 *
+      ∑ i : s, ringComplex (lift k s v i) / ringComplex (p i.val))) = _
+    rw [primeCuspTranslation_phase (fun i : s => p i.val) (lift k s v) (fun i => hp i.val) h]
+    simp only [map_mul, hlift, ψ]
+  have hsum (k : O ⧸ Ideal.span {9 * c}) : (∑ s : Finset ι, inactive s *
+      ∑ v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ, active s v * tracePhase (-cuspFrequency h * shift k s v)) =
+      ∏ i, χ i (Ideal.Quotient.mk (Ideal.span {p i}) h) := by
+    rw [finiteAdditiveFourier_active_inversion ψ (fun i => residueTraceQuotientChar_primitive (p i) (hp i))
+      (fun i => χ i) (fun i => Ideal.Quotient.mk (Ideal.span {p i}) h)]
+    apply Finset.sum_congr rfl
+    intro s hs
+    congr 1
+    apply Finset.sum_congr rfl
+    intro v hv
+    rw [hlocal k, Finset.prod_mul_distrib]
+  let base := finiteAdditiveFourierCoeff
+    (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc)) (finiteThetaTwist c Ψ)
+  calc
+    _ = ∑ k : O ⧸ Ideal.span {9 * c},
+        (base k * tracePhase (-cuspFrequency h * thetaFourierTranslation (9 * c) k)) *
+        (∑ s : Finset ι, inactive s *
+          ∑ v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ, active s v * tracePhase (-cuspFrequency h * shift k s v)) := by
+      apply Finset.sum_congr rfl
+      intro k hk
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro s hs
+      rw [Finset.mul_sum, Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro v hv
+      rw [mul_add, AddChar.map_add_eq_mul]
+      dsimp only [base, inactive, active, shift, ψ]
+      ring
+    _ = _ := by
+      simp_rw [hsum]
+      rw [← Finset.sum_mul]
+      dsimp only [base]
+      rw [thetaFourierTranslation_inversion, finiteThetaTwist_mk, fixedThetaTwist_mul]
+      rfl
+
+/-- The completed row reflects stratum by stratum, with zero local frequencies kept as density factors. -/
+theorem completedT_active_primeCusp_reflection {ι : Type*} [Fintype ι]
+    (p : ι → O) [∀ i, (Ideal.span {p i}).IsMaximal] (hp : ∀ i, p i ≠ 0)
+    (χ : ∀ i, MulChar (O ⧸ Ideal.span {p i}) ℂ)
+    (c : O) (hc : c ≠ 0) [Fintype (O ⧸ Ideal.span {9 * c})]
+    (Ψ : (O ⧸ Ideal.span {c}) →* ℂ)
+    (lift : (O ⧸ Ideal.span {9 * c}) → ∀ s : Finset ι,
+      (∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) → s → O)
+    (hlift : ∀ k s v i, Ideal.Quotient.mk (Ideal.span {p i.val}) (lift k s v i) =
+      (v i : O ⧸ Ideal.span {p i.val}))
+    (d : (O ⧸ Ideal.span {9 * c}) × (Σ s : Finset ι, ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) → SourceCuspDatum)
+    (hd : ∀ k s v, (d (k, ⟨s, v⟩)).point = thetaFourierTranslation (9 * c) k +
+      ringComplex traceLambda ^ 2 * ∑ i : s, ringComplex (lift k s v i) / ringComplex (p i.val))
+    (W : ℝ → ℂ) (a b : ℝ) (ha : 0 < a)
+    (hs : Function.support W ⊆ Set.Icc a b) (hW : ContDiff ℝ ∞ W) (X : ℝ) (hX : 0 < X) :
+    completedT (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) W X =
+      thetaDerivativeScalar⁻¹ * ∑ k : O ⧸ Ideal.span {9 * c}, ∑ s : Finset ι,
+        ∑ v : ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ,
+        (finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+            (finiteThetaTwist c Ψ) k *
+          (∏ i : {i // i ∉ s}, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) 0) *
+          ∏ i : s, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) (v i)) *
+        ((d (k, ⟨s, v⟩)).smoothingMultiplier * ∑' h : O,
+          sourceCuspRadialCoefficient (d (k, ⟨s, v⟩)).index (d (k, ⟨s, v⟩)).dualPoint h *
+          paperKernel (Vstar W) ((d (k, ⟨s, v⟩)).smoothingScale X * sourceCuspRadialLength h)) := by
+  classical
+  let weight := fun q : (O ⧸ Ideal.span {9 * c}) ×
+      (Σ s : Finset ι, ∀ i : s, (O ⧸ Ideal.span {p i.val})ˣ) =>
+    finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (9 * c) (mul_ne_zero (by norm_num) hc))
+      (finiteThetaTwist c Ψ) q.1 *
+    (∏ i : {i // i ∉ q.2.1}, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) 0) *
+    ∏ i : q.2.1, finiteAdditiveFourierCoeff (residueTraceQuotientChar 1 (p i.val) (hp i.val)) (χ i.val) (q.2.2 i)
+  have hphase (h : O) : (∑ q, weight q * tracePhase (-cuspFrequency h * (d q).point)) =
+      fixedThetaTwist (Ψ.comp (Ideal.Quotient.mk (Ideal.span {c})).toMonoidHom * primeCuspRowCharacter p χ) h := by
+    rw [Fintype.sum_prod_type]
+    simp_rw [Fintype.sum_sigma, hd]
+    exact primeCuspRow_active_phase_decomposition p hp χ c hc Ψ lift hlift h
+  simpa only [weight, Fintype.sum_prod_type, Fintype.sum_sigma] using
+    completedT_finite_phase_reflection _ d weight hphase W a b ha hs hW X hX
+
+lemma exists_unit_primary_of_not_lambda_dvd (x : O) (hx : ¬ lambda ∣ x) :
+    ∃ u : Oˣ, lambda ^ 2 ∣ (u : O) * x - 1 := by
+  have hx0 : x ≠ 0 := by intro hz; exact hx (hz ▸ dvd_zero lambda)
+  obtain ⟨u, m, I, hI, he⟩ := exists_unit_lambda_primary_factor x hx0
+  have hm : m = 0 := by
+    by_contra hm
+    apply hx
+    rw [he]
+    exact dvd_mul_of_dvd_left (dvd_mul_of_dvd_right (dvd_pow_self lambda hm) (u : O)) _
+  refine ⟨u⁻¹, ?_⟩
+  rw [he, hm, pow_zero, mul_one, ← mul_assoc, Units.inv_mul, one_mul]
+  exact (primaryIdealGenerator_spec I hI).2
+
+lemma integralMatrix_cusp_denominator_dvd (M : SL(2, O)) (a c : O) (hc : c ≠ 0)
+    (hM : M 1 0 ≠ 0)
+    (hratio : ringComplex (M 0 0) / ringComplex (M 1 0) = ringComplex a / ringComplex c) :
+    M 1 0 ∣ c := by
+  have he : M 0 0 * c = a * M 1 0 := by
+    apply ringComplex_injective
+    simpa only [map_mul] using
+      (div_eq_div_iff (ringComplex_ne_zero hM) (ringComplex_ne_zero hc)).mp hratio
+  have hdet : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using M.property
+  refine ⟨a * M 1 1 - M 0 1 * c, ?_⟩
+  linear_combination -(c * hdet) + M 1 1 * he
+
+/-- Every rational Eisenstein cusp has primitive coordinates with one primary entry and denominator dividing the original. -/
+theorem exists_primary_cusp_coordinates (a c : O) (hc : c ≠ 0) :
+    ∃ a₀ c₀ : O, c₀ ≠ 0 ∧ IsCoprime a₀ c₀ ∧ c₀ ∣ c ∧
+      (lambda ^ 2 ∣ a₀ - 1 ∨ lambda ^ 2 ∣ c₀ - 1) ∧
+      ringComplex a₀ / ringComplex c₀ = ringComplex a / ringComplex c := by
+  obtain ⟨M, hMc, hratio⟩ := exists_integral_matrix_cusp_ratio a c hc
+  have hdet : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
+    simpa only [Matrix.det_fin_two] using M.property
+  have hprimitive : IsCoprime (M 0 0) (M 1 0) := ⟨M 1 1, -M 0 1, by linear_combination hdet⟩
+  have hdiv := integralMatrix_cusp_denominator_dvd M a c hc hMc hratio
+  have hu : ∃ u : Oˣ, lambda ^ 2 ∣ (u : O) * M 0 0 - 1 ∨ lambda ^ 2 ∣ (u : O) * M 1 0 - 1 := by
+    by_cases ha : lambda ∣ M 0 0
+    · have hcn : ¬ lambda ∣ M 1 0 := by
+        intro hcm
+        apply residue_lambda_prime.2.1
+        apply isUnit_of_dvd_one
+        rw [← hdet]
+        exact dvd_sub (dvd_mul_of_dvd_left ha _) (dvd_mul_of_dvd_right hcm _)
+      obtain ⟨u, hu⟩ := exists_unit_primary_of_not_lambda_dvd (M 1 0) hcn
+      exact ⟨u, Or.inr hu⟩
+    · obtain ⟨u, hu⟩ := exists_unit_primary_of_not_lambda_dvd (M 0 0) ha
+      exact ⟨u, Or.inl hu⟩
+  obtain ⟨u, hu⟩ := hu
+  refine ⟨(u : O) * M 0 0, (u : O) * M 1 0, mul_ne_zero u.ne_zero hMc, ?_, ?_, hu, ?_⟩
+  · refine ⟨(↑u⁻¹ : O) * M 1 1, -(↑u⁻¹ : O) * M 0 1, ?_⟩
+    calc
+      _ = ((↑u⁻¹ : O) * (u : O)) * (M 0 0 * M 1 1 - M 0 1 * M 1 0) := by ring
+      _ = 1 := by rw [Units.inv_mul, hdet, one_mul]
+  · obtain ⟨k, hk⟩ := hdiv
+    refine ⟨(↑u⁻¹ : O) * k, ?_⟩
+    rw [hk]
+    calc
+      M 1 0 * k = ((u : O) * (↑u⁻¹ : O)) * (M 1 0 * k) := by rw [Units.mul_inv, one_mul]
+      _ = _ := by ring
+  · rw [map_mul, map_mul, mul_div_mul_left _ _ (ringComplex_ne_zero u.ne_zero)]
+    exact hratio
+
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein

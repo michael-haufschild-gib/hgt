@@ -104,7 +104,7 @@ theorem residueFourier_congr_fun (N : O) [NeZero N] {f g : O → ℂ} (h : ∀ m
 /-- The sextic Gauss sum depends on its frequency modulo `c`. -/
 theorem sexticGauss_congr (c : O) [NeZero c] {x y : O} (hxy : c ∣ x - y) :
     sexticGauss c x = sexticGauss c y := by
-  unfold sexticGauss
+  unfold sexticGauss sexticGaussPow
   rw [(Ideal.Quotient.eq).mpr (Ideal.mem_span_singleton.mpr hxy)]
 
 /-- The Poisson coefficient `F(s, A; H) = Σ_{m mod sA} χ_A(m) g_s(−m) ψ_{sA}(Hm)`. -/

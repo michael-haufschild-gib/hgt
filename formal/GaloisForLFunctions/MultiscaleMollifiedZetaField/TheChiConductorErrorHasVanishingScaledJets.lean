@@ -105,7 +105,7 @@ theorem tendsto_scaledChiConductorError_jet {ι : Type*} {l : Filter ι}
         (20 * ((R + 1) / L N) / t N + 52 / (t N) ^ 2)) - 1)) l (𝓝 0) := by
     have hexp := Real.continuous_exp.continuousAt.tendsto.comp (ha.mul (h1.add h2))
     have hh := (hexp.sub_const 1).const_mul (j.factorial : ℝ)
-    simpa only [mul_zero, zero_add, Real.exp_zero, sub_self] using hh
+    simpa only [Function.comp_def, mul_zero, zero_add, Real.exp_zero, sub_self] using hh
   apply Metric.tendsto_nhds.2
   intro ε hε
   filter_upwards [hL.eventually_ge_atTop (R + 2), ht.eventually_ge_atTop 4,
