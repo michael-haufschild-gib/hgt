@@ -70,6 +70,17 @@ Rows: `(0,0)`: `1/(1−V) + W/(1−W)`; `(0,2r+2,k=0)`: `R^{r+1}(1−q)V^{m−r�
 `(1,2r,k=1,m≥r+1)`: `−η(Q−1)Q^{−x−w}R^rV^{m−r}` (`r(π,π) = χ(−1)`); odd `l` rows vanish at `j = 0`.
 Sum = source (7.11) at `j = 0`; with `(1−V)(1−W)/(1−D)` it is `principalLocalFactor` at `w = 1, z = 1/6`.
 
+## Correction of a row off the absolute region (paper proof)
+At a good prime with `j = 0` (`W = ρY`, `D = ηρ̄X`), `P = (1−V)⁻¹ + W(1−W)⁻¹ + P*`, `P* = (1−R)⁻¹B`,
+`B = R(1−q)(1−V)⁻¹ + WR − D − η(Q−1)XYV(1−V)⁻¹` (the `j = 0` base sums). With `E = P* + D =
+(1−R)⁻¹(R(1−q)(1−V)⁻¹ + WR − DR − η(Q−1)XYV(1−V)⁻¹)`:
+`H − 1 = P(1−V)(1−W)/(1−D) − 1 = (D(V + W − VW) − VW + (1−V)(1−W)E)/(1−D)`,
+which has no `(1 − W)` denominator: this pole-free form is the continuation of `H_v` to `Re w ≤ 0`.
+Bounds (good prime, `Q ≥ 7`): on `D2 = {Re x ≥ 7/8, Re z ≥ 33/200, Re w ≥ 19/20}` the largest
+term is `Q^{1−x−w−6z} ≤ Q^{−363/200}`, so `|H − 1| ≪ Q^{−363/200}`; on
+`D1(ε₀) = {Re x ≥ 51/100, Re z ≥ 17/50, Re w ≥ −1/100, Re(x+w) ≥ 1+ε₀}` the term `DW` gives
+`Q^{−1−ε₀}` and `(1−W)·R` gives `Q^{−27/25}`.
+
 ## Log
 - 2026-11-11 — created; frame defect found; closed form of the principal local factor checked
   against the source (Lemma 7.1 at `u = 1`) and the external `continuedCorrection`.

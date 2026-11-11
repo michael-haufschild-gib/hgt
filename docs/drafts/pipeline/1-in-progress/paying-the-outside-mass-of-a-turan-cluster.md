@@ -1,75 +1,62 @@
 # Paying the outside mass of a Turán cluster
 
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
-- **Target:** Remove the outside-mass premise in the bounded-cluster camera;
-  test its consequences for A78 and clustered zero visibility.
+- **Target:** Discharge the exterior-mass premise of `ClusterAt`.
+- **Status:** Near-top case formalized under a deep ordinate gap;
+  arbitrary bounded clusters remain open.
 
-## Question
+## Formalized exterior estimate
 
-`TheTuranCameraSeesBoundedClusters` detects an arbitrary cluster of at most
-`N` zeros without internal separation, provided its exterior weighted
-mass is smaller than the Turán signal. Can existing local-count, depth,
-annular-gap, or cancellation estimates prove that bound for actual ζ?
+Set `b=zetaZeroWidth` and `K_b(u)=exp(-bu)K(u)`. Every zero has
+nonpositive relative depth. If exterior zeros of depth at least `b-d`
+have ordinate distance at least `g`, their complete norm mass is at most
 
-## Constraint
+`profileMass(v)[(1+g²)/(δ²g²)+exp(-d(y-δ))] lorentzMass(t)`.
 
-A proof must pay the explicit loss `turanConstant N M`; a bound with an
-uncontrolled constant or a renamed outside-mass premise does not suffice.
-The existing inverse-square deep-ordinate leakage bound and the
-sector-coherent Turán theorem are the initial connection to test.
+All multiplicities are included. Shallow zeros need no separation.
+`lorentzMass(t)=O(log |t|)` is supplied by the corpus.
 
-## Checked partial discharge
-
-`TheStripPaysTheVeryDeepCameraNoise` removes the low-centre mass premise
-from the hyperbolic camera when `3c log T≤(1-3c)α`: choose
-`A=(1-3c)α/2`, so the putative very-deep zeros have depth greater than
-`A/(3c log T)≥1/2` and do not exist. The Blaschke-product condition remains.
-
-## Width-centered camera
-
-Let `b=zetaZeroWidth` and replace `K(u)` by `e^(-bu)K(u)`.
-Every zero has relative depth at most zero. Its transform is bounded by
-`profileMass(v)/(1+δ²(γ-t)²)` at positive lags `y≥δ`.
-If only the exterior zeros of depth at least `b-d` have ordinate gap `g`,
-their complete norm mass is bounded by
-
-`profileMass(v) [(1+g²)/(δ²g²)+exp(-d(y-δ))] lorentzMass(t)`.
-
-The unit-scale mass is proved `O(log |t|)`. Thus fixed positive `g,d`,
-`δ≈log T`, and `y-δ≈log T` make the exterior bound tend to zero.
-A sector cluster of at most `N` zeros within `η` of the top retains signal
-`(∫v)/2 · κ(N,M) exp(-η((M+N)h+δ))`, without internal separation.
-
-Centering has a controlled prime cost: the mean square acquires
-`exp(-2b(y-δ))`; the constant is uniform in `b` and the centre.
-The exterior-mass and near-top cluster-signal modules are checked in Lean.
-The eventual receiver, prime cost, and explicit-formula remainder are
-written, not yet checked.
-
-## Quantitative receiver
-
-For `δ=c log T`, `y-δ≥a log T`, and fixed positive `a,c,d,g`,
-the proposed explicit bound is `C/log T`, where
+For `δ=c log T`, `y-δ≥a log T`, and positive `a,c,d,g`, the bound is
+`C/log T`, with
 
 `C=8 profileMass(v)(Cξ+2)[(1+g²)/(c²g²)+4/(da)²]`.
 
-It uses `exp(-x)≤4/x²`. With `h=A log T`, `c<(M+1)A`, and
-`η=E/log T`, the cluster signal stays above
-`(∫v)/4 κ(N,M) exp(-E((M+N)A+c))` for all sufficiently large T.
-`TheCenteredCameraPaysTheTuranLoss` contains the uncompiled proof.
-Without an exterior hypothesis it also gives a dichotomy: the cluster is
-visible, or another zero outside it has depth at least `b-d` and ordinate
-distance less than `g`. Shallow zeros alone cannot hide the cluster.
+Lean: `TheDepthCenteredCameraPaysItsExteriorMass`,
+`TheCenteredCameraPaysTheTuranLoss.sum_widthCenteredCamera_deep_exterior_le_inv_log`.
 
-The centered explicit-formula remainder is bounded by
-`C_v exp(-b(y-δ))(1+log(2+t)/δ)` under the usual positive-support and
-polynomial-length conditions. `TheCenteredCameraRemainder` contains the
-uncompiled proof, with constants depending only on the original profile.
+## Formalized Turán receiver
 
-## Remaining
+A sector cluster of at most `N` distinct zeros, containing a zero of depth
+at least `b-E/log T`, is visible at one lag `ν A log T`, `M+1≤ν≤M+N`,
+provided `c<(M+1)A` and the stated deep exterior gap holds. For sufficiently
+large T its field norm is at least
 
-Check the receiver, prime cost, and remainder.
-The exterior estimate removes an analytic mass premise, but does not yet
-prove the required sector-cluster and deep-gap geometry for actual ζ.
-It therefore does not close A78 in full.
+`(∫v)/4 κ(N,M) exp(-E((M+N)A+c))`.
+
+The full fixed Turán loss is paid; no mass premise remains.
+Without the gap assumption: either this visibility holds, or another
+zero outside the cluster has depth at least `b-d` and distance less than `g`.
+
+Lean: `eventually_exists_nu_widthCenteredZeroField_ge`,
+`eventually_widthCentered_cluster_visible_or_has_deep_companion` in
+`TheCenteredCameraPaysTheTuranLoss`.
+
+## Prime side
+
+`TheWidthCenteredCameraPrimeCost` proves the mean-square gain
+`exp(-2b(y-δ))`, with an explicit constant uniform in b and the centre.
+The arithmetic square-weight bound is supplied, not assumed.
+
+`TheCenteredCameraRemainder` contains the still-unchecked remainder bound
+`C_v exp(-b(y-δ))(1+log(2+t)/δ)` under the usual support and length conditions.
+
+## Remaining obstruction
+
+The original core-cardinality bound controls neither exterior
+multiplicities nor surrounding annuli. It does not imply an empty annulus.
+The required near-top sector geometry and deep gap have not been proved
+for arbitrary ζ clusters. The old `ClusterAt` and full A78 remain open.
+
+Separately, `TheStripPaysTheVeryDeepCameraNoise` removes the hyperbolic
+camera's very-deep mass premise when `3c log T≤(1-3c)α`; its Blaschke-product
+condition remains.

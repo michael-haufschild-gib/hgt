@@ -1,70 +1,44 @@
-# A prescribed radius for the density-matched window model
+# Every prescribed sublogarithmic radius misses the minimal face
 
 - **ID:** A89
 - **Stage:** 1-in-progress
-- **Type:** CONJECTURE
+- **Type:** CANDIDATE
 
-## Target
+## Statement
 
-For a prescribed nonnegative radius `R(T)=o(log T)`, construct a tempered
-reflection-symmetric configuration with logarithmic local zero count,
-unattained positive top depth, and arbitrarily late windows of radius `R(T)`
-on which the spline trace exceeds every fixed floor.
+For every `γmin,C>0`, `0<Θ≤1/2`, and nonnegative radius `R(T)=o(log T)`,
+there is one simple configuration `Z∈InClassZ γmin C` whose top real part
+is `1/2+Θ` and is unattained. For every floor `K` and lower bound `U`,
+some centre `T≥U` satisfies
 
-## Existing result and obstruction
+`2 Re lagStructure Z (boxSpline 1 3) u ≥ K` whenever `|u−T|≤R(T)`.
 
-`SubLogarithmicWindowsMissTheMinimalFace` constructs its own radius,
-equal to `k+1` at the recursively chosen centres. It does not establish
-the prescribed-radius quantifier.
+Thus a prescribed sublogarithmic observation radius does not detect the
+minimal face, even with tempering, reflection symmetry and logarithmic local counts.
 
-Its binomial block has degree `m₀=4ΓR`, coefficient cost `64^m₀`,
-and phase-splitting error proportional to `1/T`. The existing error bound
-therefore requires `log T` to dominate `ΓR`. The sufficient local-count
-condition separately requires `log Γ` to dominate `R`. These sufficient
-conditions are incompatible with many sub-logarithmic prescriptions,
-including `R(T)=sqrt(log T)` for all sufficiently large `T`.
+## Proof
 
-This is a limitation of the present construction, not a counterexample
-to the target. A new block construction or sharper phase-error estimate
-is required; enlarging the recursive centres alone is insufficient.
+At `Γ=T^(1/4)`, use `k=ceil(2048Γ(R(T)+8))` equally spaced imaginary
+reference nodes. Solve `exp(Tz_j)=∏_{l≠j}(−z_l)/(z_j−z_l)` by contraction.
+Lagrange interpolation and its factorial remainder give
+`Re Σ exp((T+v)z_j)≥3/4` throughout the enlarged window.
+The normalized node count satisfies `k/Γ²→0` and `k/(Γ log Γ)→0`.
+
+Convolution with the nonnegative unit-mass kernel `upow 1 7` transfers
+positivity to the squared transform of `boxSpline 1 3`. Reflect positive
+depths across zero. Choose successive separated frequency blocks in depth
+bands increasing to `Θ`; their small coefficient masses give tempering
+and summable future tails. Each block dominates its predecessors on its
+prescribed window. The exact configuration trace is the sum of these blocks.
 
 ## Lean status
 
-Endogenous radius: `SubLogarithmicWindowsMissTheMinimalFace`. Prescribed radius up to
-`(C/256) log log T`: `DoubleLogarithmicWindowsMissTheMinimalFace`. Beyond: open.
+The calibration, interpolation, grid geometry and asymptotic density bounds
+passed Lean. The complete spline and configuration proof is drafted in
+`SurfaceOfSpecZ/ScaleLocality/EveryPrescribedSublogarithmicRadiusMissesTheMinimalFace.lean`;
+its final check remains.
 
-## Where the construction stops (2026-11-11)
+Declaration:
+`SurfaceOfSpecZ.ScaleLocality.exists_classZ_prescribed_sublogarithmic_windows_bddBelow_beyond_every_bound`.
 
-Level `k` uses `P_{m₀}(z)`, `z = e^{iδv}`, `δ = 1/(4R)`, frequencies `dδ ∈ [Γ, 2Γ]`, phase-split
-pairs: `8R` zeros per unit height at height `Γ`. Class `𝒵` allows `C log(Γ+3)`, so
-`Γ ≥ e^{8R/C}`. The coefficients reach `64^{m₀}`, `m₀ = 4ΓR`, against a phase precision `R/T`:
-`log T ≳ ΓR`. Together `R e^{8R/C} ≲ log T`, i.e. `R ≲ (C/8) log log T`.
-
-Both costs are intrinsic to one level of this kind. Positivity on `|v| ≤ R` with frequencies
-`≥ Γ` needs signed coefficients of size `≥ exp(c(ΓR)^α)` (test the window against a Gevrey bump:
-`|φ̂(γR)| ≤ exp(−c(γR)^α)`); nonnegative coefficients give no positivity beyond `|θ| ~ 1/m₀`.
-Frequencies at density `≤ C log t` approximate on a window of length `2R` only where
-`C log t ≳ R` (Landau density), so `Γ ≳ e^{cR}`.
-
-**Survivor (formalized).** One configuration serves every prescribed `R(T) ≤ (C/256) log log T`:
-`3-formalized/double-logarithmic-windows-miss-the-minimal-face.md`. Open: `log log T ≪ R(T) = o(log T)`.
-
-## Barrier for phase-coupled levels
-
-A zero of frequency `γ` has phase `γT + θ(γ, x)` at the centre, so a phase `φ` costs the
-frequency shift `(c − φ)/T`: the realizable terms are `cos(dδv + φ + (c_d − φ)v/T)`, `φ ∈ [0, 2π)`.
-By LP duality a nonnegative combination is `≥ 1` on `|v| ≤ R` unless some probability measure `μ`
-on `[−R, R]` has `Re(e^{iφ}∫e^{idδv + i(c_d−φ)v/T}dμ) ≤ 0` for all `d, φ`, which holds once
-`|μ̂(dδ)| ≲ R/T` on the harmonic range. A Gevrey bump gives `|μ̂(γ)| ≤ exp(−c(γR)^α)`, so such
-levels need `T ≳ exp(c(ΓR)^α)/R`; with `Γ ≥ e^{R/(πC)}` (Landau density) this is
-`R ≲ (πC/α) log log T`. Depth tuning has the same coupling (`e^{(x_d − x)v}`). Beyond `log log T`
-a construction must avoid phase alignment at the centre altogether. The dual (detection) side
-fails for every `R = o(log T)`: annihilating the frequencies below `T/R` is impossible at density
-`C log T > R/π`. Neither direction is proved between `log log T` and `log T`.
-
-## Candidate beyond fixed-weight phase splitting
-
-[Self-consistent interpolation weights](self-calibrated-exponential-window-blocks.md)
-move the nodes and weights together, imposing `exp(T z_j)=c_j(z)` exactly.
-The proposed contraction involves logarithmic derivatives of the weights.
-Its construction and the full configuration remain unproved.
+Construction details: [self-consistent interpolation weights](self-calibrated-exponential-window-blocks.md).
